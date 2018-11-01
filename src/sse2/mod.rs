@@ -9,9 +9,15 @@ use std::f32;
 use std::fmt;
 use std::ops::*;
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy)]
 #[repr(C)]
 pub struct Vec3(__m128);
+
+impl fmt::Debug for Vec3 {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Vec3 {{ x: {}, y: {}, z: {} }}", self.get_x(), self.get_y(), self.get_z())
+    }
+}
 
 #[inline]
 pub fn vec3(x: f32, y: f32, z: f32) -> Vec3 {
@@ -50,16 +56,6 @@ impl Vec3 {
     }
 
     #[inline]
-    pub fn yzx(self) -> Vec3 {
-        unsafe { Vec3(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_01)) }
-    }
-
-    #[inline]
-    pub fn zxy(self) -> Vec3 {
-        unsafe { Vec3(_mm_shuffle_ps(self.0, self.0, 0b01_01_00_10)) }
-    }
-
-    #[inline]
     pub fn set_x(&mut self, x: f32) {
         unsafe {
             self.0 = _mm_move_ss(self.0, _mm_set_ss(x));
@@ -85,7 +81,17 @@ impl Vec3 {
     }
 
     #[inline]
-    pub fn sum(self) -> f32 {
+    fn yzx(self) -> Vec3 {
+        unsafe { Vec3(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_01)) }
+    }
+
+    #[inline]
+    fn zxy(self) -> Vec3 {
+        unsafe { Vec3(_mm_shuffle_ps(self.0, self.0, 0b01_01_00_10)) }
+    }
+
+    #[inline]
+    fn sum(self) -> f32 {
         self.get_x() + self.get_y() + self.get_z()
     }
 
@@ -267,15 +273,18 @@ impl Neg for Vec3 {
 }
 
 impl PartialEq for Vec3 {
+    #[inline]
     fn eq(&self, rhs: &Vec3) -> bool {
         unsafe { _mm_movemask_ps(_mm_cmpeq_ps(self.0, rhs.0)) != 0 }
     }
+    #[inline]
     fn ne(&self, rhs: &Vec3) -> bool {
         unsafe { _mm_movemask_ps(_mm_cmpneq_ps(self.0, rhs.0)) != 0 }
     }
 }
 
 impl PartialOrd for Vec3 {
+    #[inline]
     fn partial_cmp(&self, rhs: &Vec3) -> Option<Ordering> {
         // TODO: do this with SIMD
         match (
@@ -298,31 +307,57 @@ impl PartialOrd for Vec3 {
 }
 
 impl From<Vec3> for __m128 {
+    #[inline]
     fn from(t: Vec3) -> Self {
         t.0
     }
 }
 
 impl From<(f32, f32, f32)> for Vec3 {
+    #[inline]
     fn from(t: (f32, f32, f32)) -> Self {
         Vec3::new(t.0, t.1, t.2)
     }
 }
 
 impl From<Vec3> for (f32, f32, f32) {
+    #[inline]
     fn from(v: Vec3) -> Self {
         (v.get_x(), v.get_y(), v.get_z())
     }
 }
 
 impl From<[f32; 3]> for Vec3 {
+    #[inline]
     fn from(a: [f32; 3]) -> Self {
         Vec3::new(a[0], a[1], a[2])
     }
 }
 
 impl From<Vec3> for [f32; 3] {
+    #[inline]
     fn from(v: Vec3) -> Self {
         [v.get_x(), v.get_y(), v.get_z()]
+    }
+}
+
+#[derive(Clone, Copy)]
+#[repr(C)]
+pub struct Vec3b(__m128);
+
+impl Vec3b {
+    #[inline]
+    pub fn mask(&self) -> u32 {
+        unsafe { _mm_movemask_ps(self.0) as u32 }
+    }
+
+    #[inline]
+    pub fn any(&self) -> bool {
+        self.mask() != 0
+    }
+
+    #[inline]
+    pub fn all(&self) -> bool {
+        self.mask() == 0xf
     }
 }

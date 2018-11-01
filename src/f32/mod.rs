@@ -5,9 +5,15 @@ use std::f32;
 use std::fmt;
 use std::ops::*;
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy)]
 #[repr(C, align(16))]
 pub struct Vec3(f32, f32, f32);
+
+impl fmt::Debug for Vec3 {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Vec3 {{ x: {}, y: {}, z: {} }}", self.get_x(), self.get_y(), self.get_z())
+    }
+}
 
 #[inline]
 pub fn vec3(x: f32, y: f32, z: f32) -> Vec3 {
@@ -43,6 +49,21 @@ impl Vec3 {
     #[inline]
     pub fn get_z(self) -> f32 {
         self.2
+    }
+
+    #[inline]
+    pub fn set_x(&mut self, x: f32) {
+        self.0 = x;
+    }
+
+    #[inline]
+    pub fn set_y(&mut self, y: f32) {
+        self.1 = y;
+    }
+
+    #[inline]
+    pub fn set_z(&mut self, z: f32) {
+        self.2 = z;
     }
 
     #[inline]
@@ -99,6 +120,21 @@ impl Vec3 {
 impl fmt::Display for Vec3 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{}, {}, {}]", self.0, self.1, self.2)
+    }
+}
+
+impl Div<Vec3> for Vec3 {
+    type Output = Vec3;
+    #[inline]
+    fn div(self, rhs: Vec3) -> Vec3 {
+        Vec3(self.0 / rhs.0, self.1 / rhs.1, self.2 / rhs.2)
+    }
+}
+
+impl DivAssign<Vec3> for Vec3 {
+    #[inline]
+    fn div_assign(&mut self, rhs: Vec3) {
+        *self = Vec3(self.0 / rhs.0, self.1 / rhs.1, self.2 / rhs.2)
     }
 }
 
@@ -244,5 +280,26 @@ impl From<[f32; 3]> for Vec3 {
 impl From<Vec3> for [f32; 3] {
     fn from(v: Vec3) -> Self {
         [v.get_x(), v.get_y(), v.get_z()]
+    }
+}
+
+#[derive(Clone, Copy)]
+#[repr(C, align(16))]
+pub struct Vec3b(bool, bool, bool);
+
+impl Vec3b {
+    #[inline]
+    pub fn mask(&self) -> u32 {
+        (self.0 as u32) | (self.1 as u32) << 1 | (self.2 as u32) << 2
+    }
+
+    #[inline]
+    pub fn any(&self) -> bool {
+        self.0 || self.1 || self.2
+    }
+
+    #[inline]
+    pub fn all(&self) -> bool {
+        self.0 && self.1 && self.2
     }
 }

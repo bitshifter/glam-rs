@@ -43,6 +43,66 @@ macro_rules! impl_vec3_tests {
             }
 
             #[test]
+            fn test_vec3_accessors() {
+                let mut a = vec3(0.0, 0.0, 0.0);
+                a.set_x(1.0);
+                a.set_y(2.0);
+                a.set_z(3.0);
+                assert_eq!(1.0, a.get_x());
+                assert_eq!(2.0, a.get_y());
+                assert_eq!(3.0, a.get_z());
+            }
+
+            #[test]
+            fn test_vec3_funcs() {
+                let x = vec3(1.0, 0.0, 0.0);
+                let y = vec3(0.0, 1.0, 0.0);
+                let z = vec3(0.0, 0.0, 1.0);
+                assert_eq!(1.0, x.dot(x));
+                assert_eq!(0.0, x.dot(y));
+                assert_eq!(-1.0, z.dot(-z));
+                assert_eq!(y, z.cross(x));
+                assert_eq!(z, x.cross(y));
+                assert_eq!(4.0, (2.0 * x).length_squared());
+                assert_eq!(9.0, (-3.0 * y).length_squared());
+                assert_eq!(16.0, (4.0 * z).length_squared());
+                assert_eq!(2.0, (-2.0 * x).length());
+                assert_eq!(3.0, (3.0 * y).length());
+                assert_eq!(4.0, (-4.0 * z).length());
+                assert_eq!(x, (2.0 * x).normalize());
+            }
+
+            #[test]
+            fn test_vec3_ops() {
+                let a = vec3(1.0, 2.0, 3.0);
+                assert_eq!((2.0, 4.0, 6.0), (a + a).into());
+                assert_eq!((0.0, 0.0, 0.0), (a - a).into());
+                assert_eq!((1.0, 4.0, 9.0), (a * a).into());
+                assert_eq!((2.0, 4.0, 6.0), (a * 2.0).into());
+                assert_eq!((1.0, 1.0, 1.0), (a / a).into());
+                assert_eq!((0.5, 1.0, 1.5), (a / 2.0).into());
+                assert_eq!((-1.0, -2.0, -3.0), (-a).into());
+            }
+
+            #[test]
+            fn test_vec3_assign_ops() {
+                let a = vec3(1.0, 2.0, 3.0);
+                let mut b = a;
+                b += a;
+                assert_eq!((2.0, 4.0, 6.0), b.into());
+                b -= a;
+                assert_eq!((1.0, 2.0, 3.0), b.into());
+                b *= a;
+                assert_eq!((1.0, 4.0, 9.0), b.into());
+                b /= a;
+                assert_eq!((1.0, 2.0, 3.0), b.into());
+                b *= 2.0;
+                assert_eq!((2.0, 4.0, 6.0), b.into());
+                b /= 2.0;
+                assert_eq!((1.0, 2.0, 3.0), b.into());
+            }
+
+            #[test]
             fn test_vec3_min_max() {
                 let a = vec3(-1.0, 2.0, -3.0);
                 let b = vec3(1.0, -2.0, 3.0);
