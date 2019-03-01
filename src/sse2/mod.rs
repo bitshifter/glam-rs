@@ -4,7 +4,6 @@
 use std::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use std::arch::x86_64::*;
-use std::cmp::{Ordering, PartialEq, PartialOrd};
 use std::f32;
 use std::fmt;
 use std::ops::*;
@@ -154,6 +153,36 @@ impl Vec3 {
             _mm_cvtss_f32(v)
         }
     }
+
+    #[inline]
+    pub fn eq(self, rhs: Vec3) -> Vec3b {
+        unsafe { Vec3b(_mm_cmpeq_ps(self.0, rhs.0)) }
+    }
+
+    #[inline]
+    pub fn ne(self, rhs: Vec3) -> Vec3b {
+        unsafe { Vec3b(_mm_cmpeq_ps(self.0, rhs.0)) }
+    }
+
+    #[inline]
+    pub fn ge(self, rhs: Vec3) -> Vec3b {
+        unsafe { Vec3b(_mm_cmpge_ps(self.0, rhs.0)) }
+    }
+
+    #[inline]
+    pub fn gt(self, rhs: Vec3) -> Vec3b {
+        unsafe { Vec3b(_mm_cmpgt_ps(self.0, rhs.0)) }
+    }
+
+    #[inline]
+    pub fn le(self, rhs: Vec3) -> Vec3b {
+        unsafe { Vec3b(_mm_cmple_ps(self.0, rhs.0)) }
+    }
+
+    #[inline]
+    pub fn lt(self, rhs: Vec3) -> Vec3b {
+        unsafe { Vec3b(_mm_cmplt_ps(self.0, rhs.0)) }
+    }
 }
 
 impl fmt::Display for Vec3 {
@@ -272,40 +301,6 @@ impl Neg for Vec3 {
     }
 }
 
-impl PartialEq for Vec3 {
-    #[inline]
-    fn eq(&self, rhs: &Vec3) -> bool {
-        unsafe { _mm_movemask_ps(_mm_cmpeq_ps(self.0, rhs.0)) != 0 }
-    }
-    #[inline]
-    fn ne(&self, rhs: &Vec3) -> bool {
-        unsafe { _mm_movemask_ps(_mm_cmpneq_ps(self.0, rhs.0)) != 0 }
-    }
-}
-
-impl PartialOrd for Vec3 {
-    #[inline]
-    fn partial_cmp(&self, rhs: &Vec3) -> Option<Ordering> {
-        // TODO: do this with SIMD
-        match (
-            self.get_x().partial_cmp(&rhs.get_x()),
-            self.get_y().partial_cmp(&rhs.get_y()),
-            self.get_z().partial_cmp(&rhs.get_z()),
-        ) {
-            (Some(Ordering::Greater), Some(Ordering::Greater), Some(Ordering::Greater)) => {
-                Some(Ordering::Greater)
-            }
-            (Some(Ordering::Less), Some(Ordering::Less), Some(Ordering::Less)) => {
-                Some(Ordering::Less)
-            }
-            (Some(Ordering::Equal), Some(Ordering::Equal), Some(Ordering::Equal)) => {
-                Some(Ordering::Equal)
-            }
-            _ => None,
-        }
-    }
-}
-
 impl From<Vec3> for __m128 {
     #[inline]
     fn from(t: Vec3) -> Self {
@@ -348,16 +343,16 @@ pub struct Vec3b(__m128);
 impl Vec3b {
     #[inline]
     pub fn mask(&self) -> u32 {
-        unsafe { _mm_movemask_ps(self.0) as u32 }
+        unsafe { (_mm_movemask_ps(self.0) as u32) & 0x7 }
     }
 
     #[inline]
     pub fn any(&self) -> bool {
-        self.mask() != 0
+        unsafe { _mm_movemask_ps(self.0) != 0 }
     }
 
     #[inline]
     pub fn all(&self) -> bool {
-        self.mask() == 0xf
+        unsafe { _mm_movemask_ps(self.0) == 0xf }
     }
 }

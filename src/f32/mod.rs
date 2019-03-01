@@ -1,6 +1,5 @@
 #![allow(dead_code)]
 
-use std::cmp::{Ordering, PartialEq, PartialOrd};
 use std::f32;
 use std::fmt;
 use std::ops::*;
@@ -115,6 +114,36 @@ impl Vec3 {
     pub fn hmax(self) -> f32 {
         self.0.max(self.1.max(self.2))
     }
+
+    #[inline]
+    pub fn eq(self, rhs: Vec3) -> Vec3b {
+        Vec3b(self.0.eq(&rhs.0), self.1.eq(&rhs.1), self.2.eq(&rhs.2))
+    }
+
+    #[inline]
+    pub fn ne(self, rhs: Vec3) -> Vec3b {
+        Vec3b(self.0.ne(&rhs.0), self.1.ne(&rhs.1), self.2.ne(&rhs.2))
+    }
+
+    #[inline]
+    pub fn ge(self, rhs: Vec3) -> Vec3b {
+        Vec3b(self.0.ge(&rhs.0), self.1.ge(&rhs.1), self.2.ge(&rhs.2))
+    }
+
+    #[inline]
+    pub fn gt(self, rhs: Vec3) -> Vec3b {
+        Vec3b(self.0.gt(&rhs.0), self.1.gt(&rhs.1), self.2.gt(&rhs.2))
+    }
+
+    #[inline]
+    pub fn le(self, rhs: Vec3) -> Vec3b {
+        Vec3b(self.0.le(&rhs.0), self.1.le(&rhs.1), self.2.le(&rhs.2))
+    }
+
+    #[inline]
+    pub fn lt(self, rhs: Vec3) -> Vec3b {
+        Vec3b(self.0.lt(&rhs.0), self.1.lt(&rhs.1), self.2.lt(&rhs.2))
+    }
 }
 
 impl fmt::Display for Vec3 {
@@ -226,36 +255,6 @@ impl Neg for Vec3 {
     #[inline]
     fn neg(self) -> Vec3 {
         Vec3(-self.0, -self.1, -self.2)
-    }
-}
-
-impl PartialEq for Vec3 {
-    fn eq(&self, rhs: &Vec3) -> bool {
-        self.0 == rhs.0 && self.1 == rhs.1 && self.2 == rhs.2
-    }
-    fn ne(&self, rhs: &Vec3) -> bool {
-        self.0 != rhs.0 || self.1 != rhs.1 || self.2 != rhs.2
-    }
-}
-
-impl PartialOrd for Vec3 {
-    fn partial_cmp(&self, rhs: &Vec3) -> Option<Ordering> {
-        match (
-            self.0.partial_cmp(&rhs.0),
-            self.1.partial_cmp(&rhs.1),
-            self.2.partial_cmp(&rhs.2),
-        ) {
-            (Some(Ordering::Greater), Some(Ordering::Greater), Some(Ordering::Greater)) => {
-                Some(Ordering::Greater)
-            }
-            (Some(Ordering::Less), Some(Ordering::Less), Some(Ordering::Less)) => {
-                Some(Ordering::Less)
-            }
-            (Some(Ordering::Equal), Some(Ordering::Equal), Some(Ordering::Equal)) => {
-                Some(Ordering::Equal)
-            }
-            _ => None,
-        }
     }
 }
 

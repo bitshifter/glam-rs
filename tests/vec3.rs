@@ -61,15 +61,15 @@ macro_rules! impl_vec3_tests {
                 assert_eq!(1.0, x.dot(x));
                 assert_eq!(0.0, x.dot(y));
                 assert_eq!(-1.0, z.dot(-z));
-                assert_eq!(y, z.cross(x));
-                assert_eq!(z, x.cross(y));
+                assert!(y.eq(z.cross(x)).all());
+                assert!(z.eq(x.cross(y)).all());
                 assert_eq!(4.0, (2.0 * x).length_squared());
                 assert_eq!(9.0, (-3.0 * y).length_squared());
                 assert_eq!(16.0, (4.0 * z).length_squared());
                 assert_eq!(2.0, (-2.0 * x).length());
                 assert_eq!(3.0, (3.0 * y).length());
                 assert_eq!(4.0, (-4.0 * z).length());
-                assert_eq!(x, (2.0 * x).normalize());
+                assert!(x.eq((2.0 * x).normalize()).all());
             }
 
             #[test]
@@ -120,31 +120,37 @@ macro_rules! impl_vec3_tests {
             }
 
             #[test]
-            fn test_vec3_partial_eq() {
+            fn test_vec3_eq() {
                 let a = vec3(1.0, 1.0, 1.0);
                 let b = vec3(1.0, 2.0, 3.0);
-                assert!(a == a);
-                assert!(b == b);
-                assert!(a != b);
-                assert!(b != a);
+                assert!(a.eq(a).all());
+                assert!(b.eq(b).all());
+                assert!(a.ne(b).any());
+                assert!(b.ne(a).any());
+                assert!(b.eq(a).any());
             }
 
             #[test]
-            fn test_vec3_partial_ord() {
+            fn test_vec3_cmp() {
                 let a = vec3(-1.0, -1.0, -1.0);
                 let b = vec3(1.0, 1.0, 1.0);
-                let c = vec3(1.0, -1.0, 1.0);
-                assert!(a < b);
-                assert!(a <= b);
-                assert!(a <= a);
-                assert!(b > a);
-                assert!(b >= a);
-                assert!(b >= b);
-                assert!(!(a < c));
-                assert!(!(a <= c));
-                assert!(!(a >= c));
-                assert!(c <= c);
-                assert!(c >= c);
+                let c = vec3(-1.0, -1.0, 1.0);
+                let d = vec3(1.0, -1.0, -1.0);
+                assert_eq!(a.lt(a).mask(), 0x0);
+                assert_eq!(a.lt(b).mask(), 0x7);
+                assert_eq!(a.lt(c).mask(), 0x4);
+                assert_eq!(c.le(a).mask(), 0x3);
+                assert_eq!(a.lt(d).mask(), 0x1);
+                assert!(a.lt(b).all());
+                assert!(a.lt(c).any());
+                assert!(a.le(b).all());
+                assert!(a.le(a).all());
+                assert!(b.gt(a).all());
+                assert!(b.ge(a).all());
+                assert!(b.ge(b).all());
+                assert!(!(a.ge(c).all()));
+                assert!(c.le(c).all());
+                assert!(c.ge(c).all());
             }
         }
     };
