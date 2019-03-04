@@ -1,9 +1,9 @@
-extern crate glam;
-
 macro_rules! impl_vec3_tests {
     ($mod_name:ident) => {
         mod $mod_name {
             use glam::$mod_name::*;
+            use rand::{Rng, SeedableRng};
+            use rand_xoshiro::Xoshiro256Plus;
             use std::mem;
 
             #[test]
@@ -151,6 +151,15 @@ macro_rules! impl_vec3_tests {
                 assert!(!(a.ge(c).all()));
                 assert!(c.le(c).all());
                 assert!(c.ge(c).all());
+            }
+
+            #[test]
+            fn test_vec3_rand() {
+                let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
+                let a: (f32, f32, f32) = rng1.gen();
+                let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
+                let b: Vec3 = rng2.gen();
+                assert_eq!(a, b.into());
             }
         }
     };

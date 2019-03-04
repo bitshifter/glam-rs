@@ -1,5 +1,10 @@
 #![allow(dead_code)]
 
+use rand::{
+    distributions::{Distribution, Standard},
+    Rng,
+};
+
 #[cfg(target_arch = "x86")]
 use std::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
@@ -333,6 +338,13 @@ impl From<Vec3> for [f32; 3] {
     #[inline]
     fn from(v: Vec3) -> Self {
         [v.get_x(), v.get_y(), v.get_z()]
+    }
+}
+
+impl Distribution<Vec3> for Standard {
+    #[inline]
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Vec3 {
+        rng.gen::<(f32, f32, f32)>().into()
     }
 }
 
