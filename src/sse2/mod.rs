@@ -19,7 +19,13 @@ pub struct Vec3(__m128);
 
 impl fmt::Debug for Vec3 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Vec3 {{ x: {}, y: {}, z: {} }}", self.get_x(), self.get_y(), self.get_z())
+        write!(
+            f,
+            "Vec3 {{ x: {}, y: {}, z: {} }}",
+            self.get_x(),
+            self.get_y(),
+            self.get_z()
+        )
     }
 }
 
