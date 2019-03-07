@@ -61,15 +61,15 @@ macro_rules! impl_vec3_tests {
                 assert_eq!(1.0, x.dot(x));
                 assert_eq!(0.0, x.dot(y));
                 assert_eq!(-1.0, z.dot(-z));
-                assert!(y.eq(z.cross(x)).all());
-                assert!(z.eq(x.cross(y)).all());
+                assert_eq!(y, z.cross(x));
+                assert_eq!(z, x.cross(y));
                 assert_eq!(4.0, (2.0 * x).length_squared());
                 assert_eq!(9.0, (-3.0 * y).length_squared());
                 assert_eq!(16.0, (4.0 * z).length_squared());
                 assert_eq!(2.0, (-2.0 * x).length());
                 assert_eq!(3.0, (3.0 * y).length());
                 assert_eq!(4.0, (-4.0 * z).length());
-                assert!(x.eq((2.0 * x).normalize()).all());
+                assert_eq!(x, (2.0 * x).normalize());
             }
 
             #[test]
@@ -123,11 +123,11 @@ macro_rules! impl_vec3_tests {
             fn test_vec3_eq() {
                 let a = vec3(1.0, 1.0, 1.0);
                 let b = vec3(1.0, 2.0, 3.0);
-                assert!(a.eq(a).all());
-                assert!(b.eq(b).all());
-                assert!(a.ne(b).any());
-                assert!(b.ne(a).any());
-                assert!(b.eq(a).any());
+                assert!(a.cmpeq(a).all());
+                assert!(b.cmpeq(b).all());
+                assert!(a.cmpne(b).any());
+                assert!(b.cmpne(a).any());
+                assert!(b.cmpeq(a).any());
             }
 
             #[test]
@@ -136,21 +136,42 @@ macro_rules! impl_vec3_tests {
                 let b = vec3(1.0, 1.0, 1.0);
                 let c = vec3(-1.0, -1.0, 1.0);
                 let d = vec3(1.0, -1.0, -1.0);
-                assert_eq!(a.lt(a).mask(), 0x0);
-                assert_eq!(a.lt(b).mask(), 0x7);
-                assert_eq!(a.lt(c).mask(), 0x4);
-                assert_eq!(c.le(a).mask(), 0x3);
-                assert_eq!(a.lt(d).mask(), 0x1);
-                assert!(a.lt(b).all());
-                assert!(a.lt(c).any());
-                assert!(a.le(b).all());
-                assert!(a.le(a).all());
-                assert!(b.gt(a).all());
-                assert!(b.ge(a).all());
-                assert!(b.ge(b).all());
-                assert!(!(a.ge(c).all()));
-                assert!(c.le(c).all());
-                assert!(c.ge(c).all());
+                assert_eq!(a.cmplt(a).mask(), 0x0);
+                assert_eq!(a.cmplt(b).mask(), 0x7);
+                assert_eq!(a.cmplt(c).mask(), 0x4);
+                assert_eq!(c.cmple(a).mask(), 0x3);
+                assert_eq!(a.cmplt(d).mask(), 0x1);
+                assert!(a.cmplt(b).all());
+                assert!(a.cmplt(c).any());
+                assert!(a.cmple(b).all());
+                assert!(a.cmple(a).all());
+                assert!(b.cmpgt(a).all());
+                assert!(b.cmpge(a).all());
+                assert!(b.cmpge(b).all());
+                assert!(!(a.cmpge(c).all()));
+                assert!(c.cmple(c).all());
+                assert!(c.cmpge(c).all());
+            }
+
+            #[test]
+            fn test_extend_truncate() {
+                let a = vec3(1.0, 2.0, 3.0);
+                let b = a.extend(4.0);
+                assert_eq!((1.0, 2.0, 3.0, 4.0), b.into());
+                let c = b.truncate();
+                assert_eq!(a, c);
+            }
+
+            #[test]
+            fn test_vec3b() {
+                // make sure the unused 'w' value doesn't break Vec3b behaviour
+                let a = Vec4::zero();
+                let mut b = a.truncate();
+                b.set_x(1.0);
+                b.set_y(1.0);
+                b.set_z(1.0);
+                assert!(!b.cmpeq(Vec3::zero()).any());
+                assert!(b.cmpeq(Vec3::splat(1.0)).all());
             }
 
             #[test]
