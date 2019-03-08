@@ -18,10 +18,7 @@ impl fmt::Debug for Vec4 {
         write!(
             f,
             "Vec4 {{ x: {}, y: {}, z: {}, w: {} }}",
-            self.get_x(),
-            self.get_y(),
-            self.get_z(),
-            self.get_w(),
+            self.0, self.1, self.2, self.3,
         )
     }
 }
@@ -202,6 +199,19 @@ impl Vec4 {
             self.3.lt(&rhs.3),
         )
     }
+
+    #[inline]
+    pub fn load_from_slice(slice: &[f32]) -> Vec4 {
+        Vec4::new(slice[0], slice[1], slice[2], slice[3])
+    }
+
+    #[inline]
+    pub fn store_to_slice(self, slice: &mut [f32]) {
+        slice[0] = self.0;
+        slice[1] = self.1;
+        slice[2] = self.2;
+        slice[3] = self.3;
+    }
 }
 
 impl fmt::Display for Vec4 {
@@ -371,7 +381,7 @@ impl From<(f32, f32, f32, f32)> for Vec4 {
 
 impl From<Vec4> for (f32, f32, f32, f32) {
     fn from(v: Vec4) -> Self {
-        (v.get_x(), v.get_y(), v.get_z(), v.get_w())
+        (v.0, v.1, v.2, v.3)
     }
 }
 
@@ -383,7 +393,7 @@ impl From<[f32; 4]> for Vec4 {
 
 impl From<Vec4> for [f32; 4] {
     fn from(v: Vec4) -> Self {
-        [v.get_x(), v.get_y(), v.get_z(), v.get_w()]
+        [v.0, v.1, v.2, v.3]
     }
 }
 

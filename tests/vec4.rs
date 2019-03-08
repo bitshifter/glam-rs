@@ -169,6 +169,17 @@ macro_rules! impl_vec4_tests {
                 let b: Vec4 = rng2.gen();
                 assert_eq!(a, b.into());
             }
+
+            #[test]
+            fn test_vec4_slice() {
+                let a = [1.0, 2.0, 3.0, 4.0];
+                let b = Vec4::load_from_slice(&a);
+                let c: [f32; 4] = b.into();
+                assert_eq!(a, c);
+                let mut d = [0.0, 0.0, 0.0, 0.0];
+                b.store_to_slice(&mut d[..]);
+                assert_eq!(a, d);
+            }
         }
     };
 }

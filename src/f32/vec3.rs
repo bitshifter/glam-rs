@@ -15,13 +15,7 @@ pub struct Vec3(f32, f32, f32);
 
 impl fmt::Debug for Vec3 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "Vec3 {{ x: {}, y: {}, z: {} }}",
-            self.get_x(),
-            self.get_y(),
-            self.get_z()
-        )
+        write!(f, "Vec3 {{ x: {}, y: {}, z: {} }}", self.0, self.1, self.2,)
     }
 }
 
@@ -289,7 +283,7 @@ impl From<(f32, f32, f32)> for Vec3 {
 
 impl From<Vec3> for (f32, f32, f32) {
     fn from(v: Vec3) -> Self {
-        (v.get_x(), v.get_y(), v.get_z())
+        (v.0, v.1, v.2)
     }
 }
 
@@ -301,7 +295,7 @@ impl From<[f32; 3]> for Vec3 {
 
 impl From<Vec3> for [f32; 3] {
     fn from(v: Vec3) -> Self {
-        [v.get_x(), v.get_y(), v.get_z()]
+        [v.0, v.1, v.2]
     }
 }
 

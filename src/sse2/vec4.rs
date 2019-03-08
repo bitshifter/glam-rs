@@ -200,6 +200,20 @@ impl Vec4 {
     pub fn cmplt(self, rhs: Vec4) -> Vec4b {
         unsafe { Vec4b(_mm_cmplt_ps(self.0, rhs.0)) }
     }
+
+    #[inline]
+    pub fn load_from_slice(slice: &[f32]) -> Vec4 {
+        assert!(slice.len() >= 4);
+        unsafe { Vec4(_mm_loadu_ps(slice.as_ptr())) }
+    }
+
+    #[inline]
+    pub fn store_to_slice(self, slice: &mut [f32]) {
+        assert!(slice.len() >= 4);
+        unsafe {
+            _mm_storeu_ps(slice.as_mut_ptr(), self.0);
+        }
+    }
 }
 
 impl fmt::Display for Vec4 {
