@@ -5,7 +5,7 @@ use rand::{
     Rng,
 };
 
-use crate::sse2::Vec4;
+use crate::{Align16, sse2::Vec4};
 
 #[cfg(target_arch = "x86")]
 use std::arch::x86::*;
@@ -366,6 +366,13 @@ impl From<Vec3> for [f32; 3] {
     #[inline]
     fn from(v: Vec3) -> Self {
         [v.get_x(), v.get_y(), v.get_z()]
+    }
+}
+
+impl From<Align16<[f32; 3]>> for Vec3 {
+    #[inline]
+    fn from(a: Align16<[f32; 3]>) -> Self {
+        unsafe { Vec3(_mm_load_ps(a.0.as_ptr())) }
     }
 }
 

@@ -5,7 +5,7 @@ use rand::{
     Rng,
 };
 
-use crate::sse2::Vec3;
+use crate::{Align16, sse2::Vec3};
 
 #[cfg(target_arch = "x86")]
 use std::arch::x86::*;
@@ -109,6 +109,26 @@ impl Vec4 {
             t = _mm_shuffle_ps(t, t, 0b00_10_01_00);
             self.0 = _mm_move_ss(t, self.0);
         }
+    }
+
+    #[inline]
+    pub fn dup_x(self) -> Vec4 {
+        unsafe { Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_00)) }
+    }
+
+    #[inline]
+    pub fn dup_y(self) -> Vec4 {
+        unsafe { Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_01)) }
+    }
+
+    #[inline]
+    pub fn dup_z(self) -> Vec4 {
+        unsafe { Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_10)) }
+    }
+
+    #[inline]
+    pub fn dup_w(self) -> Vec4 {
+        unsafe { Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_11_11)) }
     }
 
     #[inline]
@@ -385,10 +405,17 @@ impl From<Vec4> for [f32; 4] {
     #[inline]
     fn from(v: Vec4) -> Self {
         unsafe {
-            let mut out: [f32; 4] = mem::uninitialized();
-            _mm_storeu_ps(out.as_mut_ptr(), v.0);
-            out
+            let mut out: Align16<[f32; 4]> = Align16(mem::uninitialized());
+            _mm_store_ps(out.0.as_mut_ptr(), v.0);
+            out.0
         }
+    }
+}
+
+impl From<Align16<[f32; 4]>> for Vec4 {
+    #[inline]
+    fn from(a: Align16<[f32; 4]>) -> Self {
+        unsafe { Vec4(_mm_load_ps(a.0.as_ptr())) }
     }
 }
 
