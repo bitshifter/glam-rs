@@ -2,8 +2,18 @@ Experimenting with vector math libraries.
 
 This will change a lot, don't use it :)
 
+Design goals:
+* A simple and fast 3D math library for games and graphics
+* Row vectors instead of column vectors
+* Implemented with SIMD (only SSE2 for now)
+* No generics necessary - only f32 supported (although f64 should be feasible)
+* No traits necessary
+* Vector types are always 16 byte aligned
+* Dependencies are optional (e.g. mint, rand and serde)
+
 Potential goals:
-* f32 game math use case only
-* SSE implementation
-* no traits (will see how that goes)
-* By default the best implementation for your platform will be imported to glam (e.g. sse2 on x86_64) but other implementations are still available
+* Experimental fast-math scalar implementation
+
+Rejected goals:
+* Initially supporting having f32 and sse2 implementations available, mostly for ease of testing and benchmarking without recompiling, but this is starting to make the default use case (users won't switch between f32 and sse2 at runtime) more complicated.
+
