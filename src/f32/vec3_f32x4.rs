@@ -5,7 +5,7 @@ use rand::{
     Rng,
 };
 
-use crate::{Align16, sse2::Vec4};
+use crate::{f32::Vec4, Align16};
 
 #[cfg(target_arch = "x86")]
 use std::arch::x86::*;
