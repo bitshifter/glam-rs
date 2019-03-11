@@ -1,4 +1,7 @@
-use crate::{f32::{Vec3, Vec4}, Align16};
+use crate::{
+    f32::{Angle, Vec3, Vec4},
+    Align16,
+};
 use std::ops::Mul;
 
 const X_AXIS: Align16<[f32; 4]> = Align16([1.0, 0.0, 0.0, 0.0]);
@@ -61,7 +64,7 @@ impl Mat4 {
         m41: f32,
         m42: f32,
         m43: f32,
-        m44: f32
+        m44: f32,
     ) -> Mat4 {
         Mat4 {
             x_axis: Vec4::new(m11, m12, m13, m14),
@@ -92,6 +95,23 @@ impl Mat4 {
     }
 
     #[inline]
+    pub fn perspective(fovy: Angle, aspect: f32, near: f32, far: f32) -> Mat4 {
+        let fovy: f32 = fovy.as_radians().into();
+        let inv_length = 1.0 / (near - far);
+        let q = 1.0 / (0.5 * fovy).tan();
+        let a = q / aspect;
+        let b = (near + far) * inv_length;
+        let c = (2.0 * near * far) * inv_length;
+
+        Mat4::from_cols(
+            Vec4::new(a, 0.0, 0.0, 0.0),
+            Vec4::new(0.0, q, 0.0, 0.0),
+            Vec4::new(0.0, 0.0, b, -1.0),
+            Vec4::new(0.0, 0.0, c, 0.0),
+        )
+    }
+
+    #[inline]
     pub fn matrix_mul(&self, rhs: &Mat4) -> Mat4 {
         let mut tmp;
         tmp = self.x_axis.dup_x() * rhs.x_axis;
@@ -112,7 +132,7 @@ impl Mat4 {
         tmp = self.w_axis.dup_x() * rhs.x_axis;
         tmp = self.w_axis.dup_y() * rhs.y_axis + tmp;
         tmp = self.w_axis.dup_z() * rhs.z_axis + tmp;
-        let w_axis = self.w_axis + tmp;
+        let w_axis = rhs.w_axis + tmp;
 
         Mat4 {
             x_axis,

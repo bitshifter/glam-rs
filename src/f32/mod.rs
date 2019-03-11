@@ -35,8 +35,17 @@ impl Angle {
     pub fn as_degrees(self) -> Angle {
         match self {
             Angle::Rad(x) => Angle::Deg(x.to_degrees()),
-            Angle::Deg(_) => self
+            Angle::Deg(_) => self,
         }
     }
 }
 
+impl From<Angle> for f32 {
+    #[inline]
+    fn from(t: Angle) -> Self {
+        match t {
+            Angle::Rad(x) => x,
+            Angle::Deg(x) => x,
+        }
+    }
+}

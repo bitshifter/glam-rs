@@ -186,4 +186,3 @@ fn dup_element() {
     assert_eq!(vec4(3.0, 3.0, 3.0, 3.0), a.dup_z());
     assert_eq!(vec4(4.0, 4.0, 4.0, 4.0), a.dup_w());
 }
-
