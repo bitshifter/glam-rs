@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use crate::f32::Vec3;
+use crate::{Align16, f32::Vec3};
 
 use rand::{
     distributions::{Distribution, Standard},
@@ -87,6 +87,26 @@ impl Vec4 {
     #[inline]
     pub fn set_w(&mut self, w: f32) {
         self.3 = w;
+    }
+
+    #[inline]
+    pub fn dup_x(self) -> Vec4 {
+        Vec4(self.0, self.0, self.0, self.0)
+    }
+
+    #[inline]
+    pub fn dup_y(self) -> Vec4 {
+        Vec4(self.1, self.1, self.1, self.1)
+    }
+
+    #[inline]
+    pub fn dup_z(self) -> Vec4 {
+        Vec4(self.2, self.2, self.2, self.2)
+    }
+
+    #[inline]
+    pub fn dup_w(self) -> Vec4 {
+        Vec4(self.3, self.3, self.3, self.3)
     }
 
     #[inline]
@@ -394,6 +414,13 @@ impl From<[f32; 4]> for Vec4 {
 impl From<Vec4> for [f32; 4] {
     fn from(v: Vec4) -> Self {
         [v.0, v.1, v.2, v.3]
+    }
+}
+
+impl From<Align16<[f32; 4]>> for Vec4 {
+    #[inline]
+    fn from(a: Align16<[f32; 4]>) -> Self {
+        a.0.into()
     }
 }
 

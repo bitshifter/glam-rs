@@ -4,8 +4,14 @@ version = "0.1.0"
 authors = ["Cameron Hart <cameron.hart@gmail.com>"]
 edition = "2018"
 
+[features]
+default = ["rand"]
+
+# this is primarily for testing the fallback implementation
+no-simd = []
+
 [dependencies]
-rand = "0.6"
+rand = { version = "0.6", optional = true }
 
 [dev-dependencies]
 rand_xoshiro = "0.1"

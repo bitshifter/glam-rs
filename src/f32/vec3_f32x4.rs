@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 
+#[cfg(feature = "rand")]
 use rand::{
     distributions::{Distribution, Standard},
     Rng,
@@ -376,6 +377,7 @@ impl From<Align16<[f32; 3]>> for Vec3 {
     }
 }
 
+#[cfg(feature = "rand")]
 impl Distribution<Vec3> for Standard {
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Vec3 {

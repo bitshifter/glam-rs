@@ -1,5 +1,7 @@
 use glam::*;
+#[cfg(feature = "rand")]
 use rand::{Rng, SeedableRng};
+#[cfg(feature = "rand")]
 use rand_xoshiro::Xoshiro256Plus;
 use std::mem;
 
@@ -171,6 +173,7 @@ fn test_vec3b() {
     assert!(b.cmpeq(Vec3::splat(1.0)).all());
 }
 
+#[cfg(feature = "rand")]
 #[test]
 fn test_vec3_rand() {
     let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
