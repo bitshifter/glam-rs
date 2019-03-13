@@ -1,5 +1,5 @@
 use crate::{
-    f32::{Angle, Vec3, Vec4},
+    f32::{Vec3, Vec4},
     Align16,
 };
 use std::ops::Mul;
@@ -95,8 +95,60 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn perspective(fovy: Angle, aspect: f32, near: f32, far: f32) -> Mat4 {
-        let fovy: f32 = fovy.as_radians().into();
+    pub fn from_axis_angle(axis: Vec3, angle: f32) -> Mat4 {
+        let (x, y, z) = axis.into();
+        let (x2, y2, z2) = (axis * axis).into();
+        let (sin, cos) = angle.sin_cos();
+        let omc = 1.0 - cos;
+        Mat4::from_cols(
+            Vec4::new(
+                x2 * omc + cos,
+                y * x * omc + z * sin,
+                x * z * omc - y * sin,
+                0.0,
+            ),
+            Vec4::new(
+                x * y * omc - z * sin,
+                y2 * omc + cos,
+                y * z * omc + x * sin,
+                0.0,
+            ),
+            Vec4::new(
+                x * z * omc + y * sin,
+                y * z * omc - x * sin,
+                z2 * omc + cos,
+                0.0,
+            ),
+            W_AXIS.into(),
+        )
+    }
+
+    #[inline]
+    pub fn from_scale(scale: Vec3) -> Mat4 {
+        // TODO: shuffle
+        Mat4::from_cols(
+            Vec4::new(scale.get_x(), 0.0, 0.0, 0.0),
+            Vec4::new(0.0, scale.get_y(), 0.0, 0.0),
+            Vec4::new(0.0, 0.0, scale.get_z(), 0.0),
+            W_AXIS.into(),
+            )
+    }
+
+    #[inline]
+    pub fn look_at(eye: Vec3, center: Vec3, up: Vec3) -> Mat4 {
+        let f = (center - eye).normalize();
+        let s = f.cross(up);
+        let u = s.cross(f);
+        Mat4::from_cols(
+            Vec4::new(s.get_x(), u.get_x(), -f.get_x(), 0.0),
+            Vec4::new(s.get_y(), u.get_y(), -f.get_y(), 0.0),
+            Vec4::new(s.get_z(), u.get_z(), -f.get_z(), 0.0),
+            Vec4::new(-s.dot(eye), -u.dot(eye), f.dot(eye), 1.0),
+        )
+    }
+
+    #[inline]
+    pub fn perspective(fovy: f32, aspect: f32, near: f32, far: f32) -> Mat4 {
         let inv_length = 1.0 / (near - far);
         let q = 1.0 / (0.5 * fovy).tan();
         let a = q / aspect;
