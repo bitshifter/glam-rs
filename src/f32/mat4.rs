@@ -1,6 +1,6 @@
 use crate::{
     f32::{Vec3, Vec4},
-    Align16,
+    scalar_sin_cos, Align16, Angle,
 };
 use std::ops::Mul;
 
@@ -95,10 +95,10 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn from_axis_angle(axis: Vec3, angle: f32) -> Mat4 {
+    pub fn from_axis_angle(axis: Vec3, angle: Angle) -> Mat4 {
         let (x, y, z) = axis.into();
         let (x2, y2, z2) = (axis * axis).into();
-        let (sin, cos) = angle.sin_cos();
+        let (sin, cos) = scalar_sin_cos(angle.as_radians());
         let omc = 1.0 - cos;
         Mat4::from_cols(
             Vec4::new(
@@ -131,7 +131,7 @@ impl Mat4 {
             Vec4::new(0.0, scale.get_y(), 0.0, 0.0),
             Vec4::new(0.0, 0.0, scale.get_z(), 0.0),
             W_AXIS.into(),
-            )
+        )
     }
 
     #[inline]
@@ -148,9 +148,9 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn perspective(fovy: f32, aspect: f32, near: f32, far: f32) -> Mat4 {
+    pub fn perspective(fovy: Angle, aspect: f32, near: f32, far: f32) -> Mat4 {
         let inv_length = 1.0 / (near - far);
-        let q = 1.0 / (0.5 * fovy).tan();
+        let q = 1.0 / (0.5 * fovy.as_radians()).tan();
         let a = q / aspect;
         let b = (near + far) * inv_length;
         let c = (2.0 * near * far) * inv_length;
@@ -164,7 +164,8 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn matrix_mul(&self, rhs: &Mat4) -> Mat4 {
+    pub fn mul_mat(&self, rhs: &Mat4) -> Mat4 {
+        // TODO: add Vec4::mul_add
         let mut tmp;
         tmp = self.x_axis.dup_x() * rhs.x_axis;
         tmp = self.x_axis.dup_y() * rhs.y_axis + tmp;
@@ -195,6 +196,17 @@ impl Mat4 {
     }
 
     #[inline]
+    pub fn mul_vec(&self, rhs: Vec4) -> Vec4 {
+        // TODO: add Vec4::mul_add
+		let mut tmp;
+		tmp = rhs.dup_x() * self.x_axis;
+		tmp = rhs.dup_y() * self.y_axis + tmp;
+		tmp = rhs.dup_z() * self.z_axis + tmp;
+		tmp = rhs.dup_w() * self.w_axis + tmp;
+		tmp
+    }
+
+    #[inline]
     pub unsafe fn as_ptr(&self) -> *const f32 {
         // not sure I should keep this...
         std::mem::transmute(&self.x_axis)
@@ -205,6 +217,56 @@ impl Mul<Mat4> for Mat4 {
     type Output = Mat4;
     #[inline]
     fn mul(self, rhs: Mat4) -> Mat4 {
-        self.matrix_mul(&rhs)
+        self.mul_mat(&rhs)
+    }
+}
+
+impl Mul<Mat4> for Vec3 {
+    type Output = Vec3;
+    #[inline]
+    fn mul(self, rhs: Mat4) -> Vec3 {
+        rhs.mul_vec(self.extend(0.0)).truncate()
+    }
+}
+
+impl Mul<Mat4> for Vec4 {
+    type Output = Vec4;
+    #[inline]
+    fn mul(self, rhs: Mat4) -> Vec4 {
+        rhs.mul_vec(self)
+    }
+}
+
+impl PartialEq for Mat4 {
+    #[inline]
+    fn eq(&self, rhs: &Mat4) -> bool {
+        self.x_axis == rhs.x_axis
+            && self.y_axis == rhs.y_axis
+            && self.z_axis == rhs.z_axis
+            && self.w_axis == rhs.w_axis
+    }
+}
+
+impl From<[[f32; 4]; 4]> for Mat4 {
+    #[inline]
+    fn from(m: [[f32; 4]; 4]) -> Self {
+        Mat4 {
+            x_axis: m[0].into(),
+            y_axis: m[1].into(),
+            z_axis: m[2].into(),
+            w_axis: m[3].into(),
+        }
+    }
+}
+
+impl From<Mat4> for [[f32; 4]; 4] {
+    #[inline]
+    fn from(m: Mat4) -> Self {
+        [
+            m.x_axis.into(),
+            m.y_axis.into(),
+            m.z_axis.into(),
+            m.w_axis.into(),
+        ]
     }
 }

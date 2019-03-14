@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use crate::{Align16, f32::Vec3};
+use crate::{f32::Vec3, Align16};
 
 use rand::{
     distributions::{Distribution, Standard},

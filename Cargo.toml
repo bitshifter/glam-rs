@@ -5,13 +5,16 @@ authors = ["Cameron Hart <cameron.hart@gmail.com>"]
 edition = "2018"
 
 [features]
-default = ["rand"]
+default = ["approx", "rand"]
 
 # this is primarily for testing the fallback implementation
 no-simd = []
 
 [dependencies]
+# TODO: make this dev only
+approx = { version = "0.3", optional = true }
 rand = { version = "0.6", optional = true }
 
 [dev-dependencies]
+approx = "0.3"
 rand_xoshiro = "0.1"

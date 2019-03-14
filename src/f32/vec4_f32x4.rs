@@ -1,5 +1,8 @@
 #![allow(dead_code)]
 
+#[cfg(feature = "approx")]
+use approx::{AbsDiffEq, UlpsEq};
+
 #[cfg(feature = "rand")]
 use rand::{
     distributions::{Distribution, Standard},
@@ -17,7 +20,7 @@ use std::{f32, fmt, mem, ops::*};
 
 #[derive(Clone, Copy)]
 #[repr(C)]
-pub struct Vec4(__m128);
+pub struct Vec4(pub(crate) __m128);
 
 impl fmt::Debug for Vec4 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -395,6 +398,13 @@ impl From<Vec4> for (f32, f32, f32, f32) {
     }
 }
 
+impl From<&Vec4> for (f32, f32, f32, f32) {
+    #[inline]
+    fn from(v: &Vec4) -> Self {
+        (v.get_x(), v.get_y(), v.get_z(), v.get_w())
+    }
+}
+
 impl From<[f32; 4]> for Vec4 {
     #[inline]
     fn from(a: [f32; 4]) -> Self {
@@ -417,6 +427,37 @@ impl From<Align16<[f32; 4]>> for Vec4 {
     #[inline]
     fn from(a: Align16<[f32; 4]>) -> Self {
         unsafe { Vec4(_mm_load_ps(a.0.as_ptr())) }
+    }
+}
+
+#[cfg(feature = "approx")]
+impl AbsDiffEq for Vec4 {
+    type Epsilon = <f32 as AbsDiffEq>::Epsilon;
+    fn default_epsilon() -> Self::Epsilon {
+        f32::default_epsilon()
+    }
+    fn abs_diff_eq(&self, other: &Self, epsilon: Self::Epsilon) -> bool {
+        let (x1, y1, z1, w1) = self.into();
+        let (x2, y2, z2, w2) = other.into();
+        x1.abs_diff_eq(&x2, epsilon)
+            && y1.abs_diff_eq(&y2, epsilon)
+            && z1.abs_diff_eq(&z2, epsilon)
+            && w1.abs_diff_eq(&w2, epsilon)
+    }
+}
+
+#[cfg(feature = "approx")]
+impl UlpsEq for Vec4 {
+    fn default_max_ulps() -> u32 {
+        f32::default_max_ulps()
+    }
+    fn ulps_eq(&self, other: &Self, epsilon: Self::Epsilon, max_ulps: u32) -> bool {
+        let (x1, y1, z1, w1) = self.into();
+        let (x2, y2, z2, w2) = other.into();
+        x1.ulps_eq(&x2, epsilon, max_ulps)
+            && y1.ulps_eq(&y2, epsilon, max_ulps)
+            && z1.ulps_eq(&z2, epsilon, max_ulps)
+            && w1.ulps_eq(&w2, epsilon, max_ulps)
     }
 }
 
