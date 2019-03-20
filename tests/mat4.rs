@@ -1,5 +1,5 @@
-use glam::*;
 use approx::assert_ulps_eq;
+use glam::*;
 
 const IDENTITY: [[f32; 4]; 4] = [
     [1.0, 0.0, 0.0, 0.0],
@@ -32,9 +32,13 @@ fn test_mat4_zero() {
 
 #[test]
 fn test_mat4_new() {
-    let a = Mat4::new(
-        1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0,
-    );
+    let a: Mat4 = [
+        [1.0, 2.0, 3.0, 4.0],
+        [5.0, 6.0, 7.0, 8.0],
+        [9.0, 10.0, 11.0, 12.0],
+        [13.0, 14.0, 15.0, 16.0],
+    ]
+    .into();
     assert_eq!(MATRIX, Into::<[[f32; 4]; 4]>::into(a));
     let b = Mat4::from_cols(
         vec4(1.0, 2.0, 3.0, 4.0),

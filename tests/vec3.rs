@@ -27,6 +27,10 @@ fn test_vec3_new() {
 
     let v = Vec3::new(t.0, t.1, t.2);
     assert_eq!(t, v.into());
+
+    assert_eq!(Vec3::new(1.0, 0.0, 0.0), Vec3::unit_x());
+    assert_eq!(Vec3::new(0.0, 1.0, 0.0), Vec3::unit_y());
+    assert_eq!(Vec3::new(0.0, 0.0, 1.0), Vec3::unit_z());
 }
 
 #[test]

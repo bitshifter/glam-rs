@@ -9,7 +9,10 @@ use rand::{
     Rng,
 };
 
-use crate::{f32::Vec4, Align16};
+use crate::{
+    f32::{Vec4, X_AXIS, Y_AXIS, Z_AXIS},
+    Align16,
+};
 
 #[cfg(target_arch = "x86")]
 use std::arch::x86::*;
@@ -48,6 +51,21 @@ impl Vec3 {
     #[inline]
     pub fn new(x: f32, y: f32, z: f32) -> Vec3 {
         unsafe { Vec3(_mm_set_ps(z, z, y, x)) }
+    }
+
+    #[inline]
+    pub fn unit_x() -> Vec3 {
+        unsafe { Vec3(_mm_load_ps(X_AXIS.0.as_ptr())) }
+    }
+
+    #[inline]
+    pub fn unit_y() -> Vec3 {
+        unsafe { Vec3(_mm_load_ps(Y_AXIS.0.as_ptr())) }
+    }
+
+    #[inline]
+    pub fn unit_z() -> Vec3 {
+        unsafe { Vec3(_mm_load_ps(Z_AXIS.0.as_ptr())) }
     }
 
     #[inline]
@@ -396,9 +414,7 @@ impl AbsDiffEq for Vec3 {
     fn abs_diff_eq(&self, other: &Self, epsilon: Self::Epsilon) -> bool {
         let (x1, y1, z1) = self.into();
         let (x2, y2, z2) = other.into();
-        x1.abs_diff_eq(&x2, epsilon)
-            && y1.abs_diff_eq(&y2, epsilon)
-            && z1.abs_diff_eq(&z2, epsilon)
+        x1.abs_diff_eq(&x2, epsilon) && y1.abs_diff_eq(&y2, epsilon) && z1.abs_diff_eq(&z2, epsilon)
     }
 }
 

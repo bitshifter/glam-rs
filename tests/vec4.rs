@@ -28,6 +28,11 @@ fn test_vec4_new() {
 
     let v = Vec4::new(t.0, t.1, t.2, t.3);
     assert_eq!(t, v.into());
+
+    assert_eq!(Vec4::new(1.0, 0.0, 0.0, 0.0), Vec4::unit_x());
+    assert_eq!(Vec4::new(0.0, 1.0, 0.0, 0.0), Vec4::unit_y());
+    assert_eq!(Vec4::new(0.0, 0.0, 1.0, 0.0), Vec4::unit_z());
+    assert_eq!(Vec4::new(0.0, 0.0, 0.0, 1.0), Vec4::unit_w());
 }
 
 #[test]

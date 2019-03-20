@@ -36,6 +36,25 @@ impl Vec3 {
     }
 
     #[inline]
+    pub fn unit_x() -> Vec3 {
+        Vec3(1.0, 0.0, 0.0)
+    }
+
+    #[inline]
+    pub fn unit_y() -> Vec3 {
+        Vec3(0.0, 1.0, 0.0)
+    }
+
+    #[inline]
+    pub fn unit_z() -> Vec3 {
+        Vec3(0.0, 0.0, 1.0)
+    }
+
+    #[inline]
+    pub fn unit_w() -> Vec4 {
+        unsafe { Vec4(_mm_load_ps(W_AXIS.0.as_ptr())) }
+    }
+    #[inline]
     pub fn splat(v: f32) -> Vec3 {
         Vec3(v, v, v)
     }

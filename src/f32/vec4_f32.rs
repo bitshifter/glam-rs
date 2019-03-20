@@ -40,6 +40,26 @@ impl Vec4 {
     }
 
     #[inline]
+    pub fn unit_x() -> Vec4 {
+        Vec4(1.0, 0.0, 0.0, 0.0)
+    }
+
+    #[inline]
+    pub fn unit_y() -> Vec4 {
+        Vec4(0.0, 1.0, 0.0, 0.0)
+    }
+
+    #[inline]
+    pub fn unit_z() -> Vec4 {
+        Vec4(0.0, 0.0, 1.0, 0.0)
+    }
+
+    #[inline]
+    pub fn unit_z() -> Vec4 {
+        Vec4(0.0, 0.0, 0.0, 1.0)
+    }
+
+    #[inline]
     pub fn splat(v: f32) -> Vec4 {
         Vec4(v, v, v, v)
     }

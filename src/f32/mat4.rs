@@ -1,13 +1,8 @@
 use crate::{
-    f32::{Vec3, Vec4},
-    scalar_sin_cos, Align16, Angle,
+    f32::{Vec3, Vec4, W_AXIS, X_AXIS, Y_AXIS, Z_AXIS},
+    scalar_sin_cos, Angle,
 };
 use std::ops::Mul;
-
-const X_AXIS: Align16<[f32; 4]> = Align16([1.0, 0.0, 0.0, 0.0]);
-const Y_AXIS: Align16<[f32; 4]> = Align16([0.0, 1.0, 0.0, 0.0]);
-const Z_AXIS: Align16<[f32; 4]> = Align16([0.0, 0.0, 1.0, 0.0]);
-const W_AXIS: Align16<[f32; 4]> = Align16([0.0, 0.0, 0.0, 1.0]);
 
 pub fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat4 {
     Mat4 {
@@ -40,37 +35,10 @@ impl Mat4 {
     #[inline]
     pub fn identity() -> Mat4 {
         Mat4 {
-            x_axis: X_AXIS.into(),
-            y_axis: Y_AXIS.into(),
-            z_axis: Z_AXIS.into(),
-            w_axis: W_AXIS.into(),
-        }
-    }
-
-    #[inline]
-    pub fn new(
-        m11: f32,
-        m12: f32,
-        m13: f32,
-        m14: f32,
-        m21: f32,
-        m22: f32,
-        m23: f32,
-        m24: f32,
-        m31: f32,
-        m32: f32,
-        m33: f32,
-        m34: f32,
-        m41: f32,
-        m42: f32,
-        m43: f32,
-        m44: f32,
-    ) -> Mat4 {
-        Mat4 {
-            x_axis: Vec4::new(m11, m12, m13, m14),
-            y_axis: Vec4::new(m21, m22, m23, m24),
-            z_axis: Vec4::new(m31, m32, m33, m34),
-            w_axis: Vec4::new(m41, m42, m43, m44),
+            x_axis: Vec4::unit_x(),
+            y_axis: Vec4::unit_y(),
+            z_axis: Vec4::unit_z(),
+            w_axis: Vec4::unit_w(),
         }
     }
 
@@ -198,12 +166,12 @@ impl Mat4 {
     #[inline]
     pub fn mul_vec(&self, rhs: Vec4) -> Vec4 {
         // TODO: add Vec4::mul_add
-		let mut tmp;
-		tmp = rhs.dup_x() * self.x_axis;
-		tmp = rhs.dup_y() * self.y_axis + tmp;
-		tmp = rhs.dup_z() * self.z_axis + tmp;
-		tmp = rhs.dup_w() * self.w_axis + tmp;
-		tmp
+        let mut tmp;
+        tmp = rhs.dup_x() * self.x_axis;
+        tmp = rhs.dup_y() * self.y_axis + tmp;
+        tmp = rhs.dup_z() * self.z_axis + tmp;
+        tmp = rhs.dup_w() * self.w_axis + tmp;
+        tmp
     }
 
     #[inline]

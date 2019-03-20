@@ -9,7 +9,10 @@ use rand::{
     Rng,
 };
 
-use crate::{f32::Vec3, Align16};
+use crate::{
+    f32::{Vec3, W_AXIS, X_AXIS, Y_AXIS, Z_AXIS},
+    Align16,
+};
 
 #[cfg(target_arch = "x86")]
 use std::arch::x86::*;
@@ -49,6 +52,26 @@ impl Vec4 {
     #[inline]
     pub fn new(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
         unsafe { Vec4(_mm_set_ps(w, z, y, x)) }
+    }
+
+    #[inline]
+    pub fn unit_x() -> Vec4 {
+        unsafe { Vec4(_mm_load_ps(X_AXIS.0.as_ptr())) }
+    }
+
+    #[inline]
+    pub fn unit_y() -> Vec4 {
+        unsafe { Vec4(_mm_load_ps(Y_AXIS.0.as_ptr())) }
+    }
+
+    #[inline]
+    pub fn unit_z() -> Vec4 {
+        unsafe { Vec4(_mm_load_ps(Z_AXIS.0.as_ptr())) }
+    }
+
+    #[inline]
+    pub fn unit_w() -> Vec4 {
+        unsafe { Vec4(_mm_load_ps(W_AXIS.0.as_ptr())) }
     }
 
     #[inline]
