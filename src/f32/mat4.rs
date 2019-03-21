@@ -1,6 +1,6 @@
 use crate::{
     f32::{Vec3, Vec4, W_AXIS, X_AXIS, Y_AXIS, Z_AXIS},
-    scalar_sin_cos, Angle,
+    Angle,
 };
 use std::ops::Mul;
 
@@ -66,7 +66,7 @@ impl Mat4 {
     pub fn from_axis_angle(axis: Vec3, angle: Angle) -> Mat4 {
         let (x, y, z) = axis.into();
         let (x2, y2, z2) = (axis * axis).into();
-        let (sin, cos) = scalar_sin_cos(angle.as_radians());
+        let (sin, cos) = angle.sin_cos();
         let omc = 1.0 - cos;
         Mat4::from_cols(
             Vec4::new(

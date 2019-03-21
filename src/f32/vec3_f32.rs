@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use crate::f32::Vec4;
+use crate::f32::{Vec2, Vec4};
 
 use rand::{
     distributions::{Distribution, Standard},
@@ -51,10 +51,6 @@ impl Vec3 {
     }
 
     #[inline]
-    pub fn unit_w() -> Vec4 {
-        unsafe { Vec4(_mm_load_ps(W_AXIS.0.as_ptr())) }
-    }
-    #[inline]
     pub fn splat(v: f32) -> Vec3 {
         Vec3(v, v, v)
     }
@@ -62,6 +58,11 @@ impl Vec3 {
     #[inline]
     pub fn extend(self, w: f32) -> Vec4 {
         Vec4::new(self.0, self.1, self.2, w)
+    }
+
+    #[inline]
+    pub fn truncate(self) -> Vec2 {
+        Vec2::new(self.0, self.1)
     }
 
     #[inline]

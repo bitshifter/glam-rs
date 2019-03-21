@@ -10,7 +10,7 @@ use rand::{
 };
 
 use crate::{
-    f32::{Vec4, X_AXIS, Y_AXIS, Z_AXIS},
+    f32::{Vec2, Vec4, X_AXIS, Y_AXIS, Z_AXIS},
     Align16,
 };
 
@@ -78,6 +78,12 @@ impl Vec3 {
         let mut temp: Vec4 = self.0.into();
         temp.set_w(w);
         temp
+    }
+
+    #[inline]
+    pub fn truncate(self) -> Vec2 {
+        let (x, y, _) = self.into();
+        Vec2::new(x, y)
     }
 
     #[inline]
