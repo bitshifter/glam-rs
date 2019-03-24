@@ -173,3 +173,13 @@ fn test_vec2_rand() {
     let b: Vec2 = rng2.gen();
     assert_eq!(a, b.into());
 }
+
+#[cfg(feature = "serde")]
+#[test]
+fn test_vec2_serde() {
+    let a = Vec2::new(1.0, 2.0);
+    let serialized = serde_json::to_string(&a).unwrap();
+    assert_eq!(serialized, "{\"x\":1.0,\"y\":2.0}");
+    let deserialized = serde_json::from_str(&serialized).unwrap();
+    assert_eq!(a, deserialized);
+}

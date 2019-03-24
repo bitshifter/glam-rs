@@ -19,6 +19,17 @@ pub use vec4_f32::*;
 mod vec2_f32;
 pub use vec2_f32::*;
 
+mod funcs;
+pub(crate) use funcs::scalar_sin_cos;
+
+mod mat4;
+pub use mat4::*;
+
+#[cfg(feature = "serde")]
+mod glam_serde;
+#[cfg(feature = "serde")]
+pub use glam_serde::*;
+
 use crate::Align16;
 use std::mem;
 
@@ -108,9 +119,3 @@ impl AsMut<[f32; 4]> for Vec4 {
         unsafe { mem::transmute(self) }
     }
 }
-
-mod funcs;
-pub(crate) use funcs::scalar_sin_cos;
-
-mod mat4;
-pub use mat4::*;
