@@ -14,6 +14,8 @@ use std::{f32, fmt, ops::*};
 pub struct Vec3(f32, f32, f32);
 
 impl fmt::Debug for Vec3 {
+    // TODO: write test
+    #[cfg_attr(tarpaulin, skip)]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Vec3 {{ x: {}, y: {}, z: {} }}", self.0, self.1, self.2,)
     }
@@ -177,6 +179,8 @@ impl Vec3 {
 }
 
 impl fmt::Display for Vec3 {
+    // TODO: write test
+    #[cfg_attr(tarpaulin, skip)]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{}, {}, {}]", self.0, self.1, self.2)
     }

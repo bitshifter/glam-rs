@@ -14,6 +14,8 @@ use std::{f32, fmt, ops::*};
 pub struct Vec4(f32, f32, f32, f32);
 
 impl fmt::Debug for Vec4 {
+    // TODO: write test
+    #[cfg_attr(tarpaulin, skip)]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
@@ -255,6 +257,8 @@ impl Vec4 {
 }
 
 impl fmt::Display for Vec4 {
+    // TODO: write test
+    #[cfg_attr(tarpaulin, skip)]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{}, {}, {}, {}]", self.0, self.1, self.2, self.3)
     }
