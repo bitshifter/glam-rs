@@ -407,17 +407,32 @@ impl From<(f32, f32, f32, f32)> for Vec4 {
     }
 }
 
+impl From<&(f32, f32, f32, f32)> for Vec4 {
+    #[inline]
+    fn from(t: &(f32, f32, f32, f32)) -> Self {
+        Vec4::new(t.0, t.1, t.2, t.3)
+    }
+}
+
 impl From<Vec4> for (f32, f32, f32, f32) {
     #[inline]
     fn from(v: Vec4) -> Self {
-        (v.get_x(), v.get_y(), v.get_z(), v.get_w())
+        unsafe {
+            let out : Align16<(f32, f32, f32, f32)> = mem::uninitialized();
+            _mm_store_ps(mem::transmute(&out), v.0);
+            out.0
+        }
     }
 }
 
 impl From<&Vec4> for (f32, f32, f32, f32) {
     #[inline]
     fn from(v: &Vec4) -> Self {
-        (v.get_x(), v.get_y(), v.get_z(), v.get_w())
+        unsafe {
+            let out : Align16<(f32, f32, f32, f32)> = mem::uninitialized();
+            _mm_store_ps(mem::transmute(&out), v.0);
+            out.0
+        }
     }
 }
 
@@ -428,21 +443,32 @@ impl From<[f32; 4]> for Vec4 {
     }
 }
 
+impl From<&[f32; 4]> for Vec4 {
+    #[inline]
+    fn from(a: &[f32; 4]) -> Self {
+        unsafe { Vec4(_mm_loadu_ps(a.as_ptr())) }
+    }
+}
+
 impl From<Vec4> for [f32; 4] {
     #[inline]
     fn from(v: Vec4) -> Self {
         unsafe {
-            let mut out: Align16<[f32; 4]> = Align16(mem::uninitialized());
-            _mm_store_ps(out.0.as_mut_ptr(), v.0);
+            let out: Align16<[f32; 4]> = mem::uninitialized();
+            _mm_store_ps(mem::transmute(&out), v.0);
             out.0
         }
     }
 }
 
-impl From<Align16<(f32, f32, f32, f32)>> for Vec4 {
+impl From<&Vec4> for [f32; 4] {
     #[inline]
-    fn from(a: Align16<(f32, f32, f32, f32)>) -> Self {
-        unsafe { Vec4(_mm_load_ps(mem::transmute(&a))) }
+    fn from(v: &Vec4) -> Self {
+        unsafe {
+            let out: Align16<[f32; 4]> = mem::uninitialized();
+            _mm_store_ps(mem::transmute(&out), v.0);
+            out.0
+        }
     }
 }
 
