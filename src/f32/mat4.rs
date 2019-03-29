@@ -87,7 +87,7 @@ impl Mat4 {
                 z2 * omc + cos,
                 0.0,
             ),
-            Vec4::unit_w()
+            Vec4::unit_w(),
         )
     }
 
@@ -99,7 +99,7 @@ impl Mat4 {
             Vec4::new(x, 0.0, 0.0, 0.0),
             Vec4::new(0.0, y, 0.0, 0.0),
             Vec4::new(0.0, 0.0, z, 0.0),
-            Vec4::unit_w()
+            Vec4::unit_w(),
         )
     }
 

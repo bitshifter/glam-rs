@@ -58,7 +58,6 @@ impl<'de> Deserialize<'de> for Vec2 {
     where
         D: Deserializer<'de>,
     {
-
         struct Vec2Visitor;
 
         impl<'de> Visitor<'de> for Vec2Visitor {
@@ -158,4 +157,3 @@ impl<'de> Deserialize<'de> for Vec4 {
         deserializer.deserialize_tuple_struct("Vec4", 4, Vec4Visitor)
     }
 }
-

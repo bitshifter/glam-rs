@@ -209,4 +209,3 @@ fn test_vec3_serde() {
     let deserialized = serde_json::from_str::<Vec3>("[1.0,2.0,3.0,4.0]");
     assert!(deserialized.is_err());
 }
-
