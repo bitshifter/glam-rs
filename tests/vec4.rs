@@ -200,3 +200,23 @@ fn dup_element() {
     assert_eq!(vec4(3.0, 3.0, 3.0, 3.0), a.dup_z());
     assert_eq!(vec4(4.0, 4.0, 4.0, 4.0), a.dup_w());
 }
+
+#[cfg(feature = "serde")]
+#[test]
+fn test_vec4_serde() {
+    let a = Vec4::new(1.0, 2.0, 3.0, 4.0);
+    let serialized = serde_json::to_string(&a).unwrap();
+    assert_eq!(serialized, "[1.0,2.0,3.0,4.0]");
+    let deserialized = serde_json::from_str(&serialized).unwrap();
+    assert_eq!(a, deserialized);
+    let deserialized = serde_json::from_str::<Vec4>("[]");
+    assert!(deserialized.is_err());
+    let deserialized = serde_json::from_str::<Vec4>("[1.0]");
+    assert!(deserialized.is_err());
+    let deserialized = serde_json::from_str::<Vec4>("[1.0,2.0]");
+    assert!(deserialized.is_err());
+    let deserialized = serde_json::from_str::<Vec4>("[1.0,2.0,3.0]");
+    assert!(deserialized.is_err());
+    let deserialized = serde_json::from_str::<Vec4>("[1.0,2.0,3.0,4.0,5.0]");
+    assert!(deserialized.is_err());
+}

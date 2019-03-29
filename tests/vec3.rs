@@ -191,3 +191,22 @@ fn test_vec3_rand() {
     let b: Vec3 = rng2.gen();
     assert_eq!(a, b.into());
 }
+
+#[cfg(feature = "serde")]
+#[test]
+fn test_vec3_serde() {
+    let a = Vec3::new(1.0, 2.0, 3.0);
+    let serialized = serde_json::to_string(&a).unwrap();
+    assert_eq!(serialized, "[1.0,2.0,3.0]");
+    let deserialized = serde_json::from_str(&serialized).unwrap();
+    assert_eq!(a, deserialized);
+    let deserialized = serde_json::from_str::<Vec3>("[]");
+    assert!(deserialized.is_err());
+    let deserialized = serde_json::from_str::<Vec3>("[1.0]");
+    assert!(deserialized.is_err());
+    let deserialized = serde_json::from_str::<Vec3>("[1.0,2.0]");
+    assert!(deserialized.is_err());
+    let deserialized = serde_json::from_str::<Vec3>("[1.0,2.0,3.0,4.0]");
+    assert!(deserialized.is_err());
+}
+

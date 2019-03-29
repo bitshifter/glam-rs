@@ -184,7 +184,14 @@ fn test_vec2_rand() {
 fn test_vec2_serde() {
     let a = Vec2::new(1.0, 2.0);
     let serialized = serde_json::to_string(&a).unwrap();
-    assert_eq!(serialized, "{\"x\":1.0,\"y\":2.0}");
+    assert_eq!(serialized, "[1.0,2.0]");
     let deserialized = serde_json::from_str(&serialized).unwrap();
     assert_eq!(a, deserialized);
+    let deserialized = serde_json::from_str::<Vec2>("[]");
+    assert!(deserialized.is_err());
+    let deserialized = serde_json::from_str::<Vec2>("[1.0]");
+    assert!(deserialized.is_err());
+    let deserialized = serde_json::from_str::<Vec2>("[1.0,2.0,3.0]");
+    assert!(deserialized.is_err());
 }
+
