@@ -1,5 +1,5 @@
 use crate::{
-    f32::{Vec3, Vec4, W_AXIS, X_AXIS, Y_AXIS, Z_AXIS},
+    f32::{Vec3, Vec4},
     Angle,
 };
 use std::ops::Mul;
@@ -55,9 +55,9 @@ impl Mat4 {
     #[inline]
     pub fn from_translation(translation: Vec3) -> Mat4 {
         Mat4 {
-            x_axis: X_AXIS.into(),
-            y_axis: Y_AXIS.into(),
-            z_axis: Z_AXIS.into(),
+            x_axis: Vec4::unit_x(),
+            y_axis: Vec4::unit_y(),
+            z_axis: Vec4::unit_z(),
             w_axis: translation.extend(1.0),
         }
     }
@@ -87,18 +87,19 @@ impl Mat4 {
                 z2 * omc + cos,
                 0.0,
             ),
-            W_AXIS.into(),
+            Vec4::unit_w()
         )
     }
 
     #[inline]
     pub fn from_scale(scale: Vec3) -> Mat4 {
         // TODO: shuffle
+        let (x, y, z) = scale.into();
         Mat4::from_cols(
-            Vec4::new(scale.get_x(), 0.0, 0.0, 0.0),
-            Vec4::new(0.0, scale.get_y(), 0.0, 0.0),
-            Vec4::new(0.0, 0.0, scale.get_z(), 0.0),
-            W_AXIS.into(),
+            Vec4::new(x, 0.0, 0.0, 0.0),
+            Vec4::new(0.0, y, 0.0, 0.0),
+            Vec4::new(0.0, 0.0, z, 0.0),
+            Vec4::unit_w()
         )
     }
 
@@ -174,10 +175,12 @@ impl Mat4 {
         tmp
     }
 
+    // TODO: write test
+    #[cfg_attr(tarpaulin, skip)]
     #[inline]
     pub unsafe fn as_ptr(&self) -> *const f32 {
         // not sure I should keep this...
-        std::mem::transmute(&self.x_axis)
+        std::mem::transmute(&self)
     }
 }
 

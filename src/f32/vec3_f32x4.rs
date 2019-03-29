@@ -1,8 +1,5 @@
 #![allow(dead_code)]
 
-#[cfg(feature = "approx")]
-use approx::{AbsDiffEq, UlpsEq};
-
 #[cfg(feature = "rand")]
 use rand::{
     distributions::{Distribution, Standard},
@@ -19,21 +16,18 @@ use std::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use std::arch::x86_64::*;
 
-use std::{f32, fmt, ops::*};
+use std::{f32, fmt, mem, ops::*};
 
 #[derive(Clone, Copy)]
 #[repr(C)]
 pub struct Vec3(__m128);
 
 impl fmt::Debug for Vec3 {
+    // TODO: write test
+    #[cfg_attr(tarpaulin, skip)]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "Vec3 {{ x: {}, y: {}, z: {} }}",
-            self.get_x(),
-            self.get_y(),
-            self.get_z()
-        )
+        let (x, y, z) = self.into();
+        write!(f, "Vec3 {{ x: {}, y: {}, z: {} }}", x, y, z)
     }
 }
 
@@ -55,17 +49,17 @@ impl Vec3 {
 
     #[inline]
     pub fn unit_x() -> Vec3 {
-        unsafe { Vec3(_mm_load_ps(X_AXIS.0.as_ptr())) }
+        unsafe { Vec3(_mm_load_ps(mem::transmute(&X_AXIS))) }
     }
 
     #[inline]
     pub fn unit_y() -> Vec3 {
-        unsafe { Vec3(_mm_load_ps(Y_AXIS.0.as_ptr())) }
+        unsafe { Vec3(_mm_load_ps(mem::transmute(&Y_AXIS))) }
     }
 
     #[inline]
     pub fn unit_z() -> Vec3 {
-        unsafe { Vec3(_mm_load_ps(Z_AXIS.0.as_ptr())) }
+        unsafe { Vec3(_mm_load_ps(mem::transmute(&Z_AXIS))) }
     }
 
     #[inline]
@@ -208,7 +202,7 @@ impl Vec3 {
 
     #[inline]
     pub fn cmpne(self, rhs: Vec3) -> Vec3b {
-        unsafe { Vec3b(_mm_cmpeq_ps(self.0, rhs.0)) }
+        unsafe { Vec3b(_mm_cmpneq_ps(self.0, rhs.0)) }
     }
 
     #[inline]
@@ -233,8 +227,11 @@ impl Vec3 {
 }
 
 impl fmt::Display for Vec3 {
+    // TODO: write test
+    #[cfg_attr(tarpaulin, skip)]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "[{}, {}, {}]", self.get_x(), self.get_y(), self.get_z())
+        let (x, y, z) = self.into();
+        write!(f, "[{}, {}, {}]", x, y, z)
     }
 }
 
@@ -356,6 +353,8 @@ impl PartialEq for Vec3 {
 }
 
 impl From<Vec3> for __m128 {
+    // TODO: write test
+    #[cfg_attr(tarpaulin, skip)]
     #[inline]
     fn from(t: Vec3) -> Self {
         t.0
@@ -376,17 +375,32 @@ impl From<(f32, f32, f32)> for Vec3 {
     }
 }
 
+impl From<&(f32, f32, f32)> for Vec3 {
+    #[inline]
+    fn from(t: &(f32, f32, f32)) -> Self {
+        Vec3::new(t.0, t.1, t.2)
+    }
+}
+
 impl From<Vec3> for (f32, f32, f32) {
     #[inline]
     fn from(v: Vec3) -> Self {
-        (v.get_x(), v.get_y(), v.get_z())
+        unsafe {
+            let out: Align16<(f32, f32, f32, f32)> = mem::uninitialized();
+            _mm_store_ps(mem::transmute(&out), v.0);
+            ((out.0).0, (out.0).1, (out.0).2)
+        }
     }
 }
 
 impl From<&Vec3> for (f32, f32, f32) {
     #[inline]
     fn from(v: &Vec3) -> Self {
-        (v.get_x(), v.get_y(), v.get_z())
+        unsafe {
+            let out: Align16<(f32, f32, f32, f32)> = mem::uninitialized();
+            _mm_store_ps(mem::transmute(&out), v.0);
+            ((out.0).0, (out.0).1, (out.0).2)
+        }
     }
 }
 
@@ -397,44 +411,32 @@ impl From<[f32; 3]> for Vec3 {
     }
 }
 
+impl From<&[f32; 3]> for Vec3 {
+    #[inline]
+    fn from(a: &[f32; 3]) -> Self {
+        Vec3::new(a[0], a[1], a[2])
+    }
+}
+
 impl From<Vec3> for [f32; 3] {
     #[inline]
     fn from(v: Vec3) -> Self {
-        [v.get_x(), v.get_y(), v.get_z()]
+        unsafe {
+            let out: Align16<(f32, f32, f32, f32)> = mem::uninitialized();
+            _mm_store_ps(mem::transmute(&out), v.0);
+            [(out.0).0, (out.0).1, (out.0).2]
+        }
     }
 }
 
-impl From<Align16<[f32; 3]>> for Vec3 {
+impl From<&Vec3> for [f32; 3] {
     #[inline]
-    fn from(a: Align16<[f32; 3]>) -> Self {
-        unsafe { Vec3(_mm_load_ps(a.0.as_ptr())) }
-    }
-}
-
-#[cfg(feature = "approx")]
-impl AbsDiffEq for Vec3 {
-    type Epsilon = <f32 as AbsDiffEq>::Epsilon;
-    fn default_epsilon() -> Self::Epsilon {
-        f32::default_epsilon()
-    }
-    fn abs_diff_eq(&self, other: &Self, epsilon: Self::Epsilon) -> bool {
-        let (x1, y1, z1) = self.into();
-        let (x2, y2, z2) = other.into();
-        x1.abs_diff_eq(&x2, epsilon) && y1.abs_diff_eq(&y2, epsilon) && z1.abs_diff_eq(&z2, epsilon)
-    }
-}
-
-#[cfg(feature = "approx")]
-impl UlpsEq for Vec3 {
-    fn default_max_ulps() -> u32 {
-        f32::default_max_ulps()
-    }
-    fn ulps_eq(&self, other: &Self, epsilon: Self::Epsilon, max_ulps: u32) -> bool {
-        let (x1, y1, z1) = self.into();
-        let (x2, y2, z2) = other.into();
-        x1.ulps_eq(&x2, epsilon, max_ulps)
-            && y1.ulps_eq(&y2, epsilon, max_ulps)
-            && z1.ulps_eq(&z2, epsilon, max_ulps)
+    fn from(v: &Vec3) -> Self {
+        unsafe {
+            let out: Align16<(f32, f32, f32, f32)> = mem::uninitialized();
+            _mm_store_ps(mem::transmute(&out), v.0);
+            [(out.0).0, (out.0).1, (out.0).2]
+        }
     }
 }
 

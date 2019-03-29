@@ -163,6 +163,12 @@ fn test_vec4_cmp() {
     assert!(!(a.cmpge(c).all()));
     assert!(c.cmple(c).all());
     assert!(c.cmpge(c).all());
+    assert!(a.cmpeq(a).all());
+    assert!(!a.cmpeq(b).all());
+    assert!(a.cmpeq(c).any());
+    assert!(!a.cmpne(a).all());
+    assert!(a.cmpne(b).all());
+    assert!(a.cmpne(c).any());
 }
 
 #[cfg(feature = "rand")]

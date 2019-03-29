@@ -1,8 +1,5 @@
 #![allow(dead_code)]
 
-#[cfg(feature = "approx")]
-use approx::{AbsDiffEq, UlpsEq};
-
 #[cfg(feature = "rand")]
 use rand::{
     distributions::{Distribution, Standard},
@@ -26,15 +23,11 @@ use std::{f32, fmt, mem, ops::*};
 pub struct Vec4(pub(crate) __m128);
 
 impl fmt::Debug for Vec4 {
+    // TODO: write test
+    #[cfg_attr(tarpaulin, skip)]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "Vec4 {{ x: {}, y: {}, z: {}, w: {} }}",
-            self.get_x(),
-            self.get_y(),
-            self.get_z(),
-            self.get_w(),
-        )
+        let (x, y, z, w) = self.into();
+        write!(f, "Vec4 {{ x: {}, y: {}, z: {}, w: {} }}", x, y, z, w)
     }
 }
 
@@ -56,22 +49,22 @@ impl Vec4 {
 
     #[inline]
     pub fn unit_x() -> Vec4 {
-        unsafe { Vec4(_mm_load_ps(X_AXIS.0.as_ptr())) }
+        unsafe { Vec4(_mm_load_ps(mem::transmute(&X_AXIS))) }
     }
 
     #[inline]
     pub fn unit_y() -> Vec4 {
-        unsafe { Vec4(_mm_load_ps(Y_AXIS.0.as_ptr())) }
+        unsafe { Vec4(_mm_load_ps(mem::transmute(&Y_AXIS))) }
     }
 
     #[inline]
     pub fn unit_z() -> Vec4 {
-        unsafe { Vec4(_mm_load_ps(Z_AXIS.0.as_ptr())) }
+        unsafe { Vec4(_mm_load_ps(mem::transmute(&Z_AXIS))) }
     }
 
     #[inline]
     pub fn unit_w() -> Vec4 {
-        unsafe { Vec4(_mm_load_ps(W_AXIS.0.as_ptr())) }
+        unsafe { Vec4(_mm_load_ps(mem::transmute(&W_AXIS))) }
     }
 
     #[inline]
@@ -196,6 +189,7 @@ impl Vec4 {
         unsafe { Vec4(_mm_max_ps(self.0, rhs.0)) }
     }
 
+    #[cfg_attr(tarpaulin, skip)]
     #[inline]
     pub fn hmin(self) -> f32 {
         unimplemented!();
@@ -207,6 +201,7 @@ impl Vec4 {
         // }
     }
 
+    #[cfg_attr(tarpaulin, skip)]
     #[inline]
     pub fn hmax(self) -> f32 {
         unimplemented!();
@@ -225,7 +220,7 @@ impl Vec4 {
 
     #[inline]
     pub fn cmpne(self, rhs: Vec4) -> Vec4b {
-        unsafe { Vec4b(_mm_cmpeq_ps(self.0, rhs.0)) }
+        unsafe { Vec4b(_mm_cmpneq_ps(self.0, rhs.0)) }
     }
 
     #[inline]
@@ -264,15 +259,11 @@ impl Vec4 {
 }
 
 impl fmt::Display for Vec4 {
+    // TODO: write test
+    #[cfg_attr(tarpaulin, skip)]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "[{}, {}, {}, {}]",
-            self.get_x(),
-            self.get_y(),
-            self.get_z(),
-            self.get_w()
-        )
+        let (x, y, z, w) = self.into();
+        write!(f, "[{}, {}, {}, {}]", x, y, z, w)
     }
 }
 
@@ -394,6 +385,8 @@ impl PartialEq for Vec4 {
 }
 
 impl From<Vec4> for __m128 {
+    // TODO: write test
+    #[cfg_attr(tarpaulin, skip)]
     #[inline]
     fn from(t: Vec4) -> Self {
         t.0
@@ -446,41 +439,10 @@ impl From<Vec4> for [f32; 4] {
     }
 }
 
-impl From<Align16<[f32; 4]>> for Vec4 {
+impl From<Align16<(f32, f32, f32, f32)>> for Vec4 {
     #[inline]
-    fn from(a: Align16<[f32; 4]>) -> Self {
-        unsafe { Vec4(_mm_load_ps(a.0.as_ptr())) }
-    }
-}
-
-#[cfg(feature = "approx")]
-impl AbsDiffEq for Vec4 {
-    type Epsilon = <f32 as AbsDiffEq>::Epsilon;
-    fn default_epsilon() -> Self::Epsilon {
-        f32::default_epsilon()
-    }
-    fn abs_diff_eq(&self, other: &Self, epsilon: Self::Epsilon) -> bool {
-        let (x1, y1, z1, w1) = self.into();
-        let (x2, y2, z2, w2) = other.into();
-        x1.abs_diff_eq(&x2, epsilon)
-            && y1.abs_diff_eq(&y2, epsilon)
-            && z1.abs_diff_eq(&z2, epsilon)
-            && w1.abs_diff_eq(&w2, epsilon)
-    }
-}
-
-#[cfg(feature = "approx")]
-impl UlpsEq for Vec4 {
-    fn default_max_ulps() -> u32 {
-        f32::default_max_ulps()
-    }
-    fn ulps_eq(&self, other: &Self, epsilon: Self::Epsilon, max_ulps: u32) -> bool {
-        let (x1, y1, z1, w1) = self.into();
-        let (x2, y2, z2, w2) = other.into();
-        x1.ulps_eq(&x2, epsilon, max_ulps)
-            && y1.ulps_eq(&y2, epsilon, max_ulps)
-            && z1.ulps_eq(&z2, epsilon, max_ulps)
-            && w1.ulps_eq(&w2, epsilon, max_ulps)
+    fn from(a: Align16<(f32, f32, f32, f32)>) -> Self {
+        unsafe { Vec4(_mm_load_ps(mem::transmute(&a))) }
     }
 }
 

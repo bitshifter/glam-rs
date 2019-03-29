@@ -21,6 +21,8 @@ pub fn vec2(x: f32, y: f32) -> Vec2 {
 }
 
 impl fmt::Debug for Vec2 {
+    // TODO: write test
+    #[cfg_attr(tarpaulin, skip)]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Vec2 {{ x: {}, y: {} }}", self.0, self.1,)
     }
@@ -150,6 +152,8 @@ impl Vec2 {
 }
 
 impl fmt::Display for Vec2 {
+    // TODO: write test
+    #[cfg_attr(tarpaulin, skip)]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{}, {}]", self.0, self.1)
     }

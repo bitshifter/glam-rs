@@ -55,7 +55,7 @@ impl Vec4 {
     }
 
     #[inline]
-    pub fn unit_z() -> Vec4 {
+    pub fn unit_w() -> Vec4 {
         Vec4(0.0, 0.0, 0.0, 1.0)
     }
 
@@ -419,8 +419,27 @@ impl From<(f32, f32, f32, f32)> for Vec4 {
     }
 }
 
+impl From<&(f32, f32, f32, f32)> for Vec4 {
+    fn from(t: &(f32, f32, f32, f32)) -> Self {
+        Vec4::new(t.0, t.1, t.2, t.3)
+    }
+}
+
+impl From<Align16<(f32, f32, f32, f32)>> for Vec4 {
+    #[inline]
+    fn from(a: Align16<(f32, f32, f32, f32)>) -> Self {
+        a.0.into()
+    }
+}
+
 impl From<Vec4> for (f32, f32, f32, f32) {
     fn from(v: Vec4) -> Self {
+        (v.0, v.1, v.2, v.3)
+    }
+}
+
+impl From<&Vec4> for (f32, f32, f32, f32) {
+    fn from(v: &Vec4) -> Self {
         (v.0, v.1, v.2, v.3)
     }
 }
@@ -431,16 +450,21 @@ impl From<[f32; 4]> for Vec4 {
     }
 }
 
+impl From<&[f32; 4]> for Vec4 {
+    fn from(a: &[f32; 4]) -> Self {
+        Vec4::new(a[0], a[1], a[2], a[3])
+    }
+}
+
 impl From<Vec4> for [f32; 4] {
     fn from(v: Vec4) -> Self {
         [v.0, v.1, v.2, v.3]
     }
 }
 
-impl From<Align16<[f32; 4]>> for Vec4 {
-    #[inline]
-    fn from(a: Align16<[f32; 4]>) -> Self {
-        a.0.into()
+impl From<&Vec4> for [f32; 4] {
+    fn from(v: &Vec4) -> Self {
+        [v.0, v.1, v.2, v.3]
     }
 }
 
