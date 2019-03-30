@@ -2,7 +2,7 @@ use crate::{
     f32::{Vec3, Vec4},
     Angle,
 };
-use std::ops::Mul;
+use std::{mem, ops::Mul};
 
 pub fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat4 {
     Mat4 {
@@ -174,13 +174,19 @@ impl Mat4 {
         tmp = rhs.dup_w() * self.w_axis + tmp;
         tmp
     }
+}
 
-    // TODO: write test
-    #[cfg_attr(tarpaulin, skip)]
+impl AsRef<[f32; 16]> for Mat4 {
     #[inline]
-    pub unsafe fn as_ptr(&self) -> *const f32 {
-        // not sure I should keep this...
-        std::mem::transmute(&self)
+    fn as_ref(&self) -> &[f32; 16] {
+        unsafe { mem::transmute(self) }
+    }
+}
+
+impl AsMut<[f32; 16]> for Mat4 {
+    #[inline]
+    fn as_mut(&mut self) -> &mut [f32; 16] {
+        unsafe { mem::transmute(self) }
     }
 }
 
