@@ -2,6 +2,7 @@
 
 use crate::f32::{Vec2, Vec4};
 
+#[cfg(feature = "rand")]
 use rand::{
     distributions::{Distribution, Standard},
     Rng,
@@ -171,10 +172,8 @@ impl Vec3 {
 }
 
 impl fmt::Display for Vec3 {
-    // TODO: write test
-    #[cfg_attr(tarpaulin, skip)]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "[{}, {}, {}]", self.0, self.1, self.2)
+        write!(f, "({}, {}, {})", self.0, self.1, self.2)
     }
 }
 
@@ -339,6 +338,7 @@ impl From<&Vec3> for [f32; 3] {
     }
 }
 
+#[cfg(feature = "rand")]
 impl Distribution<Vec3> for Standard {
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Vec3 {

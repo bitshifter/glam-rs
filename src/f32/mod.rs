@@ -35,13 +35,7 @@ mod glam_serde;
 #[cfg(feature = "serde")]
 pub use glam_serde::*;
 
-use crate::Align16;
 use std::mem;
-
-const X_AXIS: Align16<(f32, f32, f32, f32)> = Align16((1.0, 0.0, 0.0, 0.0));
-const Y_AXIS: Align16<(f32, f32, f32, f32)> = Align16((0.0, 1.0, 0.0, 0.0));
-const Z_AXIS: Align16<(f32, f32, f32, f32)> = Align16((0.0, 0.0, 1.0, 0.0));
-const W_AXIS: Align16<(f32, f32, f32, f32)> = Align16((0.0, 0.0, 0.0, 1.0));
 
 #[derive(Copy, Clone, Debug)]
 pub struct Angle(f32);

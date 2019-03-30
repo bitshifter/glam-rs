@@ -225,11 +225,9 @@ impl Vec3 {
 }
 
 impl fmt::Display for Vec3 {
-    // TODO: write test
-    #[cfg_attr(tarpaulin, skip)]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let (x, y, z) = self.into();
-        write!(f, "[{}, {}, {}]", x, y, z)
+        write!(f, "({}, {}, {})", x, y, z)
     }
 }
 

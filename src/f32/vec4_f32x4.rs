@@ -6,10 +6,7 @@ use rand::{
     Rng,
 };
 
-use crate::{
-    f32::{Vec3, W_AXIS, X_AXIS, Y_AXIS, Z_AXIS},
-    Align16,
-};
+use crate::{f32::Vec3, Align16};
 
 #[cfg(target_arch = "x86")]
 use std::arch::x86::*;
@@ -17,6 +14,11 @@ use std::arch::x86::*;
 use std::arch::x86_64::*;
 
 use std::{f32, fmt, mem, ops::*};
+
+pub(crate) const X_AXIS: Align16<(f32, f32, f32, f32)> = Align16((1.0, 0.0, 0.0, 0.0));
+pub(crate) const Y_AXIS: Align16<(f32, f32, f32, f32)> = Align16((0.0, 1.0, 0.0, 0.0));
+pub(crate) const Z_AXIS: Align16<(f32, f32, f32, f32)> = Align16((0.0, 0.0, 1.0, 0.0));
+pub(crate) const W_AXIS: Align16<(f32, f32, f32, f32)> = Align16((0.0, 0.0, 0.0, 1.0));
 
 #[derive(Clone, Copy)]
 #[repr(C)]
@@ -262,11 +264,9 @@ impl Vec4 {
 }
 
 impl fmt::Display for Vec4 {
-    // TODO: write test
-    #[cfg_attr(tarpaulin, skip)]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let (x, y, z, w) = self.into();
-        write!(f, "[{}, {}, {}, {}]", x, y, z, w)
+        write!(f, "({}, {}, {}, {})", x, y, z, w)
     }
 }
 
