@@ -9,17 +9,9 @@ use rand::{
 
 use std::{f32, fmt, ops::*};
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 #[repr(C, align(16))]
 pub struct Vec3(f32, f32, f32);
-
-impl fmt::Debug for Vec3 {
-    // TODO: write test
-    #[cfg_attr(tarpaulin, skip)]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Vec3 {{ x: {}, y: {}, z: {} }}", self.0, self.1, self.2,)
-    }
-}
 
 #[inline]
 pub fn vec3(x: f32, y: f32, z: f32) -> Vec3 {

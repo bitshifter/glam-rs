@@ -39,6 +39,18 @@ fn test_vec3_new() {
 }
 
 #[test]
+fn test_vec3_debug() {
+    assert_eq!(
+        format!("{:?}", Vec3::new(1.0, 2.0, 3.0)),
+        "Vec3(1.0, 2.0, 3.0)"
+    );
+    assert_eq!(
+        format!("{:#?}", Vec3::new(1.0, 2.0, 3.0)),
+        "Vec3(\n    1.0,\n    2.0,\n    3.0\n)"
+    );
+}
+
+#[test]
 fn test_vec3_zero() {
     let v = Vec3::zero();
     assert_eq!((0.0, 0.0, 0.0), v.into());

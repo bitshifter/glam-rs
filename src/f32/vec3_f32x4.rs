@@ -23,11 +23,9 @@ use std::{f32, fmt, mem, ops::*};
 pub struct Vec3(__m128);
 
 impl fmt::Debug for Vec3 {
-    // TODO: write test
-    #[cfg_attr(tarpaulin, skip)]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let (x, y, z) = self.into();
-        write!(f, "Vec3 {{ x: {}, y: {}, z: {} }}", x, y, z)
+        f.debug_tuple("Vec3").field(&x).field(&y).field(&z).finish()
     }
 }
 

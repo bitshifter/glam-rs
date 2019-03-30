@@ -11,21 +11,13 @@ use std::{f32, fmt, ops::*};
 
 // TODO: to SIMD or not to SIMD?
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 #[repr(C)]
 pub struct Vec2(f32, f32);
 
 #[inline]
 pub fn vec2(x: f32, y: f32) -> Vec2 {
     Vec2(x, y)
-}
-
-impl fmt::Debug for Vec2 {
-    // TODO: write test
-    #[cfg_attr(tarpaulin, skip)]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Vec2 {{ x: {}, y: {} }}", self.0, self.1,)
-    }
 }
 
 impl Vec2 {

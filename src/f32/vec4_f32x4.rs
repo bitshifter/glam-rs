@@ -23,11 +23,14 @@ use std::{f32, fmt, mem, ops::*};
 pub struct Vec4(pub(crate) __m128);
 
 impl fmt::Debug for Vec4 {
-    // TODO: write test
-    #[cfg_attr(tarpaulin, skip)]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let (x, y, z, w) = self.into();
-        write!(f, "Vec4 {{ x: {}, y: {}, z: {}, w: {} }}", x, y, z, w)
+        f.debug_tuple("Vec4")
+            .field(&x)
+            .field(&y)
+            .field(&z)
+            .field(&w)
+            .finish()
     }
 }
 
@@ -418,7 +421,7 @@ impl From<Vec4> for (f32, f32, f32, f32) {
     #[inline]
     fn from(v: Vec4) -> Self {
         unsafe {
-            let out : Align16<(f32, f32, f32, f32)> = mem::uninitialized();
+            let out: Align16<(f32, f32, f32, f32)> = mem::uninitialized();
             _mm_store_ps(mem::transmute(&out), v.0);
             out.0
         }
@@ -429,7 +432,7 @@ impl From<&Vec4> for (f32, f32, f32, f32) {
     #[inline]
     fn from(v: &Vec4) -> Self {
         unsafe {
-            let out : Align16<(f32, f32, f32, f32)> = mem::uninitialized();
+            let out: Align16<(f32, f32, f32, f32)> = mem::uninitialized();
             _mm_store_ps(mem::transmute(&out), v.0);
             out.0
         }

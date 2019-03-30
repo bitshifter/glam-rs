@@ -41,6 +41,18 @@ fn test_vec4_new() {
 }
 
 #[test]
+fn test_vec4_debug() {
+    assert_eq!(
+        format!("{:?}", Vec4::new(1.0, 2.0, 3.0, 4.0)),
+        "Vec4(1.0, 2.0, 3.0, 4.0)"
+    );
+    assert_eq!(
+        format!("{:#?}", Vec4::new(1.0, 2.0, 3.0, 4.0)),
+        "Vec4(\n    1.0,\n    2.0,\n    3.0,\n    4.0\n)"
+    );
+}
+
+#[test]
 fn test_vec4_zero() {
     let v = Vec4::zero();
     assert_eq!((0.0, 0.0, 0.0, 0.0), v.into());

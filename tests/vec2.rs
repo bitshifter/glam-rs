@@ -37,6 +37,15 @@ fn test_vec2_new() {
 }
 
 #[test]
+fn test_vec2_debug() {
+    assert_eq!(format!("{:?}", Vec2::new(1.0, 2.0)), "Vec2(1.0, 2.0)");
+    assert_eq!(
+        format!("{:#?}", Vec2::new(1.0, 2.0)),
+        "Vec2(\n    1.0,\n    2.0\n)"
+    );
+}
+
+#[test]
 fn test_vec2_zero() {
     let v = Vec2::zero();
     assert_eq!(vec2(0.0, 0.0), v);
