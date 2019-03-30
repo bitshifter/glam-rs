@@ -1,0 +1,20 @@
+language: rust
+
+rust:
+  - nightly
+  - beta
+  - stable
+
+cache: cargo
+
+env:
+  - CARGO_FEATURES=""
+  - CARGO_FEATURES="no-simd"
+
+matrix:
+  allow_failures:
+    - rust: nightly
+
+script:
+  - cargo build --features "$CARGO_FEATURES"
+  - cargo test --features "$CARGO_FEATURES"
