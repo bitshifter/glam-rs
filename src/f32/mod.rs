@@ -118,3 +118,25 @@ impl AsMut<[f32; 4]> for Vec4 {
         unsafe { mem::transmute(self) }
     }
 }
+
+impl Vec2 {
+    #[inline]
+    pub fn lerp(self, rhs: Self, s: f32) -> Self {
+        self + ((rhs - self) * s)
+    }
+}
+
+impl Vec3 {
+    #[inline]
+    pub fn lerp(self, rhs: Self, s: f32) -> Self {
+        self + ((rhs - self) * s)
+    }
+}
+
+impl Vec4 {
+    #[inline]
+    pub fn lerp(self, rhs: Self, s: f32) -> Self {
+        self + ((rhs - self) * s)
+    }
+}
+
