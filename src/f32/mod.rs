@@ -1,3 +1,6 @@
+mod angle;
+pub use angle::*;
+
 #[cfg(all(target_feature = "sse2", not(feature = "no-simd")))]
 mod vec3_f32x4;
 #[cfg(all(target_feature = "sse2", not(feature = "no-simd")))]
@@ -36,46 +39,6 @@ mod glam_serde;
 pub use glam_serde::*;
 
 use std::mem;
-
-#[derive(Copy, Clone, Debug)]
-pub struct Angle(f32);
-
-impl Angle {
-    #[inline]
-    pub fn from_radians(a: f32) -> Angle {
-        Angle(a)
-    }
-
-    #[inline]
-    pub fn from_degrees(a: f32) -> Angle {
-        Angle(a.to_radians())
-    }
-
-    #[inline]
-    pub fn as_radians(self) -> f32 {
-        self.0
-    }
-
-    #[inline]
-    pub fn as_degrees(self) -> f32 {
-        self.0.to_degrees()
-    }
-
-    #[inline]
-    pub fn sin_cos(self) -> (f32, f32) {
-        scalar_sin_cos(self.0)
-    }
-}
-
-#[inline]
-pub fn rad(a: f32) -> Angle {
-    Angle::from_radians(a)
-}
-
-#[inline]
-pub fn deg(a: f32) -> Angle {
-    Angle::from_degrees(a)
-}
 
 impl AsRef<[f32; 2]> for Vec2 {
     #[inline]
