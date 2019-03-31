@@ -1,3 +1,8 @@
+# glam-rs
+
+[![Build Status](https://travis-ci.org/bitshifter/glam-rs.svg?branch=master)](https://travis-ci.org/bitshifter/glam-rs)
+[![Coverage Status](https://coveralls.io/repos/github/bitshifter/glam-rs/badge.svg?branch=master)](https://coveralls.io/github/bitshifter/glam-rs?branch=master)
+
 Experimenting with vector math libraries.
 
 This will change a lot, don't use it :)
