@@ -9,12 +9,13 @@ This will change a lot, don't use it :)
 
 Design goals:
 * A simple and fast 3D math library for games and graphics
-* Row vectors instead of column vectors
+* Row vectors instead of column vectors (for mul operator order)
 * Implemented with SIMD (only SSE2 for now)
 * No generics necessary - only f32 supported (although f64 should be feasible)
 * No traits necessary
 * Vector types are always 16 byte aligned
 * Dependencies are optional (e.g. mint, rand and serde)
+* Idiomatic Rust, e.g. methods instead of free functions
 
 Potential goals:
 * Experimental fast-math scalar implementation
@@ -22,3 +23,7 @@ Potential goals:
 Rejected goals:
 * Initially supporting having f32 and sse2 implementations available, mostly for ease of testing and benchmarking without recompiling, but this is starting to make the default use case (users won't switch between f32 and sse2 at runtime) more complicated.
 
+Inspired by a bunch of different math libraries in different ways:
+* cgmath
+* DirectX Math
+* Realtime Math
