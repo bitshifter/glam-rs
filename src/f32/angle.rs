@@ -30,6 +30,13 @@ impl Angle {
     }
 }
 
+impl PartialEq for Angle {
+    #[inline]
+    fn eq(&self, rhs: &Self) -> bool {
+        self.0 == rhs.0
+    }
+}
+
 #[inline]
 pub fn rad(a: f32) -> Angle {
     Angle::from_radians(a)
