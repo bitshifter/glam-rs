@@ -102,4 +102,3 @@ impl Vec4 {
         self + ((rhs - self) * s)
     }
 }
-

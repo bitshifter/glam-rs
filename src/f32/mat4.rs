@@ -43,13 +43,53 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn from_cols(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat4 {
+    pub fn from_axes(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat4 {
         Mat4 {
             x_axis,
             y_axis,
             z_axis,
             w_axis,
         }
+    }
+
+    #[inline]
+    pub fn set_x_axis(&mut self, x: Vec4) {
+        self.x_axis = x;
+    }
+
+    #[inline]
+    pub fn set_y_axis(&mut self, y: Vec4) {
+        self.y_axis = y;
+    }
+
+    #[inline]
+    pub fn set_z_axis(&mut self, z: Vec4) {
+        self.z_axis = z;
+    }
+
+    #[inline]
+    pub fn set_w_axis(&mut self, w: Vec4) {
+        self.w_axis = w;
+    }
+
+    #[inline]
+    pub fn get_x_axis(&self) -> Vec4 {
+        self.x_axis
+    }
+
+    #[inline]
+    pub fn get_y_axis(&self) -> Vec4 {
+        self.y_axis
+    }
+
+    #[inline]
+    pub fn get_z_axis(&self) -> Vec4 {
+        self.z_axis
+    }
+
+    #[inline]
+    pub fn get_w_axis(&self) -> Vec4 {
+        self.w_axis
     }
 
     #[inline]
@@ -68,52 +108,88 @@ impl Mat4 {
         let (x2, y2, z2) = (axis * axis).into();
         let (sin, cos) = angle.sin_cos();
         let omc = 1.0 - cos;
-        Mat4::from_cols(
-            Vec4::new(
+        Mat4 {
+            x_axis: Vec4::new(
                 x2 * omc + cos,
                 y * x * omc + z * sin,
                 x * z * omc - y * sin,
                 0.0,
             ),
-            Vec4::new(
+            y_axis: Vec4::new(
                 x * y * omc - z * sin,
                 y2 * omc + cos,
                 y * z * omc + x * sin,
                 0.0,
             ),
-            Vec4::new(
+            z_axis: Vec4::new(
                 x * z * omc + y * sin,
                 y * z * omc - x * sin,
                 z2 * omc + cos,
                 0.0,
             ),
-            Vec4::unit_w(),
-        )
+            w_axis: Vec4::unit_w(),
+        }
+    }
+
+    #[inline]
+    pub fn from_rotation_x(angle: Angle) -> Mat4 {
+        let (sina, cosa) = angle.sin_cos();
+        Mat4 {
+            x_axis: Vec4::unit_x(),
+            y_axis: Vec4::new(0.0, cosa, sina, 0.0),
+            z_axis: Vec4::new(0.0, -sina, cosa, 0.0),
+            w_axis: Vec4::unit_w(),
+        }
+    }
+
+    #[inline]
+    pub fn from_rotation_y(angle: Angle) -> Mat4 {
+        let (sina, cosa) = angle.sin_cos();
+        Mat4 {
+            x_axis: Vec4::new(cosa, 0.0, -sina, 0.0),
+            y_axis: Vec4::unit_y(),
+            z_axis: Vec4::new(sina, 0.0, cosa, 0.0),
+            w_axis: Vec4::unit_w(),
+        }
+    }
+
+    #[inline]
+    pub fn from_rotation_z(angle: Angle) -> Mat4 {
+        let (sina, cosa) = angle.sin_cos();
+        Mat4 {
+            x_axis: Vec4::new(cosa, sina, 0.0, 0.0),
+            y_axis: Vec4::new(-sina, cosa, 0.0, 0.0),
+            z_axis: Vec4::unit_z(),
+            w_axis: Vec4::unit_w(),
+        }
     }
 
     #[inline]
     pub fn from_scale(scale: Vec3) -> Mat4 {
         // TODO: shuffle
         let (x, y, z) = scale.into();
-        Mat4::from_cols(
-            Vec4::new(x, 0.0, 0.0, 0.0),
-            Vec4::new(0.0, y, 0.0, 0.0),
-            Vec4::new(0.0, 0.0, z, 0.0),
-            Vec4::unit_w(),
-        )
+        Mat4 {
+            x_axis: Vec4::new(x, 0.0, 0.0, 0.0),
+            y_axis: Vec4::new(0.0, y, 0.0, 0.0),
+            z_axis: Vec4::new(0.0, 0.0, z, 0.0),
+            w_axis: Vec4::unit_w(),
+        }
     }
 
     #[inline]
     pub fn look_at(eye: Vec3, center: Vec3, up: Vec3) -> Mat4 {
         let f = (center - eye).normalize();
+        let (fx, fy, fz) = f.into();
         let s = f.cross(up);
+        let (sx, sy, sz) = s.into();
         let u = s.cross(f);
-        Mat4::from_cols(
-            Vec4::new(s.get_x(), u.get_x(), -f.get_x(), 0.0),
-            Vec4::new(s.get_y(), u.get_y(), -f.get_y(), 0.0),
-            Vec4::new(s.get_z(), u.get_z(), -f.get_z(), 0.0),
-            Vec4::new(-s.dot(eye), -u.dot(eye), f.dot(eye), 1.0),
-        )
+        let (ux, uy, uz) = u.into();
+        Mat4 {
+            x_axis: Vec4::new(sx, ux, -fx, 0.0),
+            y_axis: Vec4::new(sy, uy, -fy, 0.0),
+            z_axis: Vec4::new(sz, uz, -fz, 0.0),
+            w_axis: Vec4::new(-s.dot(eye), -u.dot(eye), f.dot(eye), 1.0),
+        }
     }
 
     #[inline]
@@ -124,16 +200,16 @@ impl Mat4 {
         let b = (near + far) * inv_length;
         let c = (2.0 * near * far) * inv_length;
 
-        Mat4::from_cols(
-            Vec4::new(a, 0.0, 0.0, 0.0),
-            Vec4::new(0.0, q, 0.0, 0.0),
-            Vec4::new(0.0, 0.0, b, -1.0),
-            Vec4::new(0.0, 0.0, c, 0.0),
-        )
+        Mat4 {
+            x_axis: Vec4::new(a, 0.0, 0.0, 0.0),
+            y_axis: Vec4::new(0.0, q, 0.0, 0.0),
+            z_axis: Vec4::new(0.0, 0.0, b, -1.0),
+            w_axis: Vec4::new(0.0, 0.0, c, 0.0),
+        }
     }
 
     #[inline]
-    pub fn mul_mat(&self, rhs: &Mat4) -> Mat4 {
+    pub fn mul_mat4(&self, rhs: &Mat4) -> Mat4 {
         // TODO: add Vec4::mul_add
         let mut tmp;
         tmp = self.x_axis.dup_x() * rhs.x_axis;
@@ -165,7 +241,7 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn mul_vec(&self, rhs: Vec4) -> Vec4 {
+    pub fn transform_vec4(&self, rhs: Vec4) -> Vec4 {
         // TODO: add Vec4::mul_add
         let mut tmp;
         tmp = rhs.dup_x() * self.x_axis;
@@ -173,6 +249,18 @@ impl Mat4 {
         tmp = rhs.dup_z() * self.z_axis + tmp;
         tmp = rhs.dup_w() * self.w_axis + tmp;
         tmp
+    }
+
+    #[inline]
+    pub fn transform_point3(&self, rhs: Vec3) -> Vec3 {
+        // TODO: optimise
+        self.transform_vec4(rhs.extend(1.0)).truncate()
+    }
+
+    #[inline]
+    pub fn transform_normal3(&self, rhs: Vec3) -> Vec3 {
+        // TODO: optimise
+        self.transform_vec4(rhs.extend(0.0)).truncate()
     }
 }
 
@@ -194,15 +282,15 @@ impl Mul<Mat4> for Mat4 {
     type Output = Mat4;
     #[inline]
     fn mul(self, rhs: Mat4) -> Mat4 {
-        self.mul_mat(&rhs)
+        self.mul_mat4(&rhs)
     }
 }
 
-impl Mul<Mat4> for Vec3 {
-    type Output = Vec3;
+impl Mul<&Mat4> for Mat4 {
+    type Output = Mat4;
     #[inline]
-    fn mul(self, rhs: Mat4) -> Vec3 {
-        rhs.mul_vec(self.extend(0.0)).truncate()
+    fn mul(self, rhs: &Mat4) -> Mat4 {
+        self.mul_mat4(rhs)
     }
 }
 
@@ -210,7 +298,7 @@ impl Mul<Mat4> for Vec4 {
     type Output = Vec4;
     #[inline]
     fn mul(self, rhs: Mat4) -> Vec4 {
-        rhs.mul_vec(self)
+        rhs.transform_vec4(self)
     }
 }
 

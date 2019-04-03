@@ -46,4 +46,3 @@ pub fn rad(a: f32) -> Angle {
 pub fn deg(a: f32) -> Angle {
     Angle::from_degrees(a)
 }
-
