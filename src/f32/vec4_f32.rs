@@ -101,22 +101,22 @@ impl Vec4 {
     }
 
     #[inline]
-    pub fn dup_x(self) -> Vec4 {
+    pub(crate) fn dup_x(self) -> Vec4 {
         Vec4(self.0, self.0, self.0, self.0)
     }
 
     #[inline]
-    pub fn dup_y(self) -> Vec4 {
+    pub(crate) fn dup_y(self) -> Vec4 {
         Vec4(self.1, self.1, self.1, self.1)
     }
 
     #[inline]
-    pub fn dup_z(self) -> Vec4 {
+    pub(crate) fn dup_z(self) -> Vec4 {
         Vec4(self.2, self.2, self.2, self.2)
     }
 
     #[inline]
-    pub fn dup_w(self) -> Vec4 {
+    pub(crate) fn dup_w(self) -> Vec4 {
         Vec4(self.3, self.3, self.3, self.3)
     }
 

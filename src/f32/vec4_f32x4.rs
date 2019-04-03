@@ -137,22 +137,22 @@ impl Vec4 {
     }
 
     #[inline]
-    pub fn dup_x(self) -> Vec4 {
+    pub(crate) fn dup_x(self) -> Vec4 {
         unsafe { Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_00)) }
     }
 
     #[inline]
-    pub fn dup_y(self) -> Vec4 {
+    pub(crate) fn dup_y(self) -> Vec4 {
         unsafe { Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_01)) }
     }
 
     #[inline]
-    pub fn dup_z(self) -> Vec4 {
+    pub(crate) fn dup_z(self) -> Vec4 {
         unsafe { Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_10)) }
     }
 
     #[inline]
-    pub fn dup_w(self) -> Vec4 {
+    pub(crate) fn dup_w(self) -> Vec4 {
         unsafe { Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_11_11)) }
     }
 
