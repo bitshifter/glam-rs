@@ -325,17 +325,17 @@ pub struct Vec2b(bool, bool);
 
 impl Vec2b {
     #[inline]
-    pub fn mask(&self) -> u32 {
+    pub fn mask(self) -> u32 {
         (self.0 as u32) | (self.1 as u32) << 1
     }
 
     #[inline]
-    pub fn any(&self) -> bool {
+    pub fn any(self) -> bool {
         self.0 || self.1
     }
 
     #[inline]
-    pub fn all(&self) -> bool {
+    pub fn all(self) -> bool {
         self.0 && self.1
     }
 }

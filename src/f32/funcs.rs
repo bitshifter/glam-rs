@@ -31,16 +31,16 @@ _ps_const_ty!(PI32_INV_1, i32x4, !1);
 _ps_const_ty!(PI32_2, i32x4, 2);
 _ps_const_ty!(PI32_4, i32x4, 4);
 
-_ps_const_ty!(PS_MINUS_CEPHES_DP1, f32x4, -0.78515625);
-_ps_const_ty!(PS_MINUS_CEPHES_DP2, f32x4, -2.4187564849853515625e-4);
-_ps_const_ty!(PS_MINUS_CEPHES_DP3, f32x4, -3.77489497744594108e-8);
-_ps_const_ty!(PS_SINCOF_P0, f32x4, -1.9515295891E-4);
-_ps_const_ty!(PS_SINCOF_P1, f32x4, 8.3321608736E-3);
-_ps_const_ty!(PS_SINCOF_P2, f32x4, -1.6666654611E-1);
-_ps_const_ty!(PS_COSCOF_P0, f32x4, 2.443315711809948E-005);
-_ps_const_ty!(PS_COSCOF_P1, f32x4, -1.388731625493765E-003);
-_ps_const_ty!(PS_COSCOF_P2, f32x4, 4.166664568298827E-002);
-_ps_const_ty!(PS_CEPHES_FOPI, f32x4, 1.27323954473516); // 4 / M_PI
+_ps_const_ty!(PS_MINUS_CEPHES_DP1, f32x4, -0.785_156_25);
+_ps_const_ty!(PS_MINUS_CEPHES_DP2, f32x4, -2.418_756_5e-4);
+_ps_const_ty!(PS_MINUS_CEPHES_DP3, f32x4, -3.774_895e-8);
+_ps_const_ty!(PS_SINCOF_P0, f32x4, -1.951_529_6e-4);
+_ps_const_ty!(PS_SINCOF_P1, f32x4, 8.332_161e-3);
+_ps_const_ty!(PS_SINCOF_P2, f32x4, -1.666_665_5e-1);
+_ps_const_ty!(PS_COSCOF_P0, f32x4, 2.443_315_7e-5);
+_ps_const_ty!(PS_COSCOF_P1, f32x4, -1.388_731_6E-3);
+_ps_const_ty!(PS_COSCOF_P2, f32x4, 4.166_664_6e-2);
+_ps_const_ty!(PS_CEPHES_FOPI, f32x4, 1.273_239_5); // 4 / M_PI
 
 pub(crate) fn scalar_sin_cos(x: f32) -> (f32, f32) {
     // expect sse2 to be available on all x86 builds

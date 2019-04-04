@@ -38,47 +38,45 @@ mod glam_serde;
 #[cfg(feature = "serde")]
 pub use glam_serde::*;
 
-use std::mem;
-
 impl AsRef<[f32; 2]> for Vec2 {
     #[inline]
     fn as_ref(&self) -> &[f32; 2] {
-        unsafe { mem::transmute(self) }
+        unsafe { &*(self as *const Vec2 as *const [f32; 2]) }
     }
 }
 
 impl AsRef<[f32; 3]> for Vec3 {
     #[inline]
     fn as_ref(&self) -> &[f32; 3] {
-        unsafe { mem::transmute(self) }
+        unsafe { &*(self as *const Vec3 as *const [f32; 3]) }
     }
 }
 
 impl AsRef<[f32; 4]> for Vec4 {
     #[inline]
     fn as_ref(&self) -> &[f32; 4] {
-        unsafe { mem::transmute(self) }
+        unsafe { &*(self as *const Vec4 as *const [f32; 4]) }
     }
 }
 
 impl AsMut<[f32; 2]> for Vec2 {
     #[inline]
     fn as_mut(&mut self) -> &mut [f32; 2] {
-        unsafe { mem::transmute(self) }
+        unsafe { &mut *(self as *mut Vec2 as *mut [f32; 2]) }
     }
 }
 
 impl AsMut<[f32; 3]> for Vec3 {
     #[inline]
     fn as_mut(&mut self) -> &mut [f32; 3] {
-        unsafe { mem::transmute(self) }
+        unsafe { &mut *(self as *mut Vec3 as *mut [f32; 3]) }
     }
 }
 
 impl AsMut<[f32; 4]> for Vec4 {
     #[inline]
     fn as_mut(&mut self) -> &mut [f32; 4] {
-        unsafe { mem::transmute(self) }
+        unsafe { &mut *(self as *mut Vec4 as *mut [f32; 4]) }
     }
 }
 
