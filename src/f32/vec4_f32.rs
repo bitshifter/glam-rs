@@ -101,6 +101,29 @@ impl Vec4 {
     }
 
     #[inline]
+    pub(crate) fn mix(self, rhs: Vec4, mask: u8) -> Vec4 {
+        let mask = mask as usize;
+        let a = self.as_ref();
+        let b = rhs.as_ref();
+        let x67 = mask & 0b11;
+        let x45 = (mask >> 2) & 0b11;
+        let x23 = (mask >> 4) & 0b11;
+        let x01 = (mask >> 6) & 0b11;
+        Vec4(a[x01], a[x23], b[x45], b[x67])
+    }
+
+    #[inline]
+    pub(crate) fn swizzle(self, mask: u8) -> Vec4 {
+        let mask = mask as usize;
+        let a = self.as_ref();
+        let x67 = mask & 0b11;
+        let x45 = (mask >> 2) & 0b11;
+        let x23 = (mask >> 4) & 0b11;
+        let x01 = (mask >> 6) & 0b11;
+        Vec4(a[x01], a[x23], a[x45], a[x67])
+    }
+
+    #[inline]
     pub(crate) fn dup_x(self) -> Vec4 {
         Vec4(self.0, self.0, self.0, self.0)
     }

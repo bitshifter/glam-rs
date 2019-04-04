@@ -177,6 +177,26 @@ impl Mat4 {
     }
 
     #[inline]
+    pub fn transpose(&self) -> Mat4 {
+        let tmp0 = self.x_axis.mix(self.y_axis, 0b00_01_00_01);
+        let tmp1 = self.x_axis.mix(self.y_axis, 0b10_11_10_11);
+        let tmp2 = self.z_axis.mix(self.w_axis, 0b00_01_00_01);
+        let tmp3 = self.z_axis.mix(self.w_axis, 0b10_11_10_11);
+
+        let x_axis = tmp0.mix(tmp2, 0b00_10_00_10);
+        let y_axis = tmp0.mix(tmp2, 0b01_11_01_11);
+        let z_axis = tmp1.mix(tmp3, 0b00_10_00_10);
+        let w_axis = tmp1.mix(tmp3, 0b01_11_01_11);
+
+        Mat4 {
+            x_axis,
+            y_axis,
+            z_axis,
+            w_axis,
+        }
+    }
+
+    #[inline]
     pub fn look_at(eye: Vec3, center: Vec3, up: Vec3) -> Mat4 {
         let f = (center - eye).normalize();
         let (fx, fy, fz) = f.into();

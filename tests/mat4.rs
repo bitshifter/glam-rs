@@ -121,6 +121,21 @@ fn test_from_scale() {
 }
 
 #[test]
+fn test_mat4_transpose() {
+    let m = mat4(
+        vec4(1.0, 2.0, 3.0, 4.0),
+        vec4(5.0, 6.0, 7.0, 8.0),
+        vec4(9.0, 10.0, 11.0, 12.0),
+        vec4(13.0, 14.0, 15.0, 16.0),
+    );
+    let mt = m.transpose();
+    assert_eq!(mt.get_x_axis(), vec4(1.0, 5.0, 9.0, 13.0));
+    assert_eq!(mt.get_y_axis(), vec4(2.0, 6.0, 10.0, 14.0));
+    assert_eq!(mt.get_z_axis(), vec4(3.0, 7.0, 11.0, 15.0));
+    assert_eq!(mt.get_w_axis(), vec4(4.0, 8.0, 12.0, 16.0));
+}
+
+#[test]
 fn test_mat4_look_at() {
     let eye = Vec3::new(0.0, 0.0, -5.0);
     let center = Vec3::new(0.0, 0.0, 0.0);

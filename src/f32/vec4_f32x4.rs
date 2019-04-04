@@ -137,6 +137,63 @@ impl Vec4 {
     }
 
     #[inline]
+    pub(crate) fn mix(self, rhs: Vec4, mask: u8) -> Vec4 {
+        // this might be really bloated, should possibly just use sse in matrix code
+        macro_rules! shuffle_done {
+            ($x01:expr, $x23:expr, $x45:expr, $x67:expr) => {
+                unsafe {
+                    Vec4(_mm_shuffle_ps(
+                        self.0,
+                        rhs.0,
+                        ($x01 << 6) | ($x23 << 4) | ($x45 << 2) | $x67,
+                    ))
+                }
+            };
+        }
+        macro_rules! shuffle_x67 {
+            ($x01:expr, $x23:expr, $x45:expr) => {
+                match (mask >> 6) & 0b11 {
+                    0b00 => shuffle_done!($x01, $x23, $x45, 0),
+                    0b01 => shuffle_done!($x01, $x23, $x45, 1),
+                    0b10 => shuffle_done!($x01, $x23, $x45, 2),
+                    _ => shuffle_done!($x01, $x23, $x45, 3),
+                }
+            };
+        }
+        macro_rules! shuffle_x45 {
+            ($x01:expr, $x23:expr) => {
+                match (mask >> 4) & 0b11 {
+                    0b00 => shuffle_x67!($x01, $x23, 0),
+                    0b01 => shuffle_x67!($x01, $x23, 1),
+                    0b10 => shuffle_x67!($x01, $x23, 2),
+                    _ => shuffle_x67!($x01, $x23, 3),
+                }
+            };
+        }
+        macro_rules! shuffle_x23 {
+            ($x01:expr) => {
+                match (mask >> 2) & 0b11 {
+                    0b00 => shuffle_x45!($x01, 0),
+                    0b01 => shuffle_x45!($x01, 1),
+                    0b10 => shuffle_x45!($x01, 2),
+                    _ => shuffle_x45!($x01, 3),
+                }
+            };
+        }
+        match mask & 0b11 {
+            0b00 => shuffle_x23!(0),
+            0b01 => shuffle_x23!(1),
+            0b10 => shuffle_x23!(2),
+            _ => shuffle_x23!(3),
+        }
+    }
+
+    #[inline]
+    pub(crate) fn swizzle(self, mask: u8) -> Vec4 {
+        self.mix(self, mask)
+    }
+
+    #[inline]
     pub(crate) fn dup_x(self) -> Vec4 {
         unsafe { Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_00)) }
     }
