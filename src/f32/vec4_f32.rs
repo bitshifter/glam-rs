@@ -266,6 +266,16 @@ impl Vec4 {
         slice[2] = self.2;
         slice[3] = self.3;
     }
+
+    #[inline]
+    pub(crate) fn mul_add(self, a: Vec4, b: Vec4) -> Vec4 {
+        Vec4(
+            (self.0 * a.0) + b.0,
+            (self.1 * a.1) + b.1,
+            (self.2 * a.2) + b.2,
+            (self.3 * a.3) + b.3,
+        )
+    }
 }
 
 impl fmt::Display for Vec4 {

@@ -334,6 +334,12 @@ impl Vec4 {
             _mm_storeu_ps(slice.as_mut_ptr(), self.0);
         }
     }
+
+    #[inline]
+    /// Performs a fused multiply and add on platforms that support it.
+    pub(crate) fn mul_add(self, a: Vec4, b: Vec4) -> Vec4 {
+        unsafe { Vec4(_mm_add_ps(_mm_mul_ps(self.0, a.0), b.0)) }
+    }
 }
 
 impl fmt::Display for Vec4 {

@@ -2,7 +2,7 @@ use crate::{
     f32::{Vec3, Vec4},
     Angle,
 };
-use std::ops::Mul;
+use std::ops::{Add, Mul};
 
 pub fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat4 {
     Mat4 {
@@ -230,27 +230,25 @@ impl Mat4 {
 
     #[inline]
     pub fn mul_mat4(&self, rhs: &Mat4) -> Mat4 {
-        // TODO: add Vec4::mul_add
-        let mut tmp;
-        tmp = self.x_axis.dup_x() * rhs.x_axis;
-        tmp = self.x_axis.dup_y() * rhs.y_axis + tmp;
-        tmp = self.x_axis.dup_z() * rhs.z_axis + tmp;
+        let mut tmp = self.x_axis.dup_x().mul(rhs.x_axis);
+        tmp = self.x_axis.dup_y().mul_add(rhs.y_axis, tmp);
+        tmp = self.x_axis.dup_z().mul_add(rhs.z_axis, tmp);
         let x_axis = tmp;
 
-        tmp = self.y_axis.dup_x() * rhs.x_axis;
-        tmp = self.y_axis.dup_y() * rhs.y_axis + tmp;
-        tmp = self.y_axis.dup_z() * rhs.z_axis + tmp;
+        tmp = self.y_axis.dup_x().mul(rhs.x_axis);
+        tmp = self.y_axis.dup_y().mul_add(rhs.y_axis, tmp);
+        tmp = self.y_axis.dup_z().mul_add(rhs.z_axis, tmp);
         let y_axis = tmp;
 
-        tmp = self.z_axis.dup_x() * rhs.x_axis;
-        tmp = self.z_axis.dup_y() * rhs.y_axis + tmp;
-        tmp = self.z_axis.dup_z() * rhs.z_axis + tmp;
+        tmp = self.z_axis.dup_x().mul(rhs.x_axis);
+        tmp = self.z_axis.dup_y().mul_add(rhs.y_axis, tmp);
+        tmp = self.z_axis.dup_z().mul_add(rhs.z_axis, tmp);
         let z_axis = tmp;
 
-        tmp = self.w_axis.dup_x() * rhs.x_axis;
-        tmp = self.w_axis.dup_y() * rhs.y_axis + tmp;
-        tmp = self.w_axis.dup_z() * rhs.z_axis + tmp;
-        let w_axis = rhs.w_axis + tmp;
+        tmp = self.w_axis.dup_x().mul(rhs.x_axis);
+        tmp = self.w_axis.dup_y().mul_add(rhs.y_axis, tmp);
+        tmp = self.w_axis.dup_z().mul_add(rhs.z_axis, tmp);
+        let w_axis = rhs.w_axis.add(tmp);
 
         Mat4 {
             x_axis,
@@ -262,12 +260,10 @@ impl Mat4 {
 
     #[inline]
     pub fn transform_vec4(&self, rhs: Vec4) -> Vec4 {
-        // TODO: add Vec4::mul_add
-        let mut tmp;
-        tmp = rhs.dup_x() * self.x_axis;
-        tmp = rhs.dup_y() * self.y_axis + tmp;
-        tmp = rhs.dup_z() * self.z_axis + tmp;
-        tmp = rhs.dup_w() * self.w_axis + tmp;
+        let mut tmp = rhs.dup_x().mul(self.x_axis);
+        tmp = rhs.dup_y().mul_add(self.y_axis, tmp);
+        tmp = rhs.dup_z().mul_add(self.z_axis, tmp);
+        tmp = rhs.dup_w().mul_add(self.w_axis, tmp);
         tmp
     }
 
