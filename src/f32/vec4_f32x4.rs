@@ -153,7 +153,7 @@ impl Vec4 {
     }
 
     #[inline]
-    pub(crate) fn mix(self, rhs: Vec4, mask: u8) -> Vec4 {
+    pub(crate) fn shuffle(self, rhs: Vec4, mask: u8) -> Vec4 {
         // this might be really bloated, should possibly just use sse in matrix code
         macro_rules! shuffle_done {
             ($x01:expr, $x23:expr, $x45:expr, $x67:expr) => {
@@ -206,7 +206,7 @@ impl Vec4 {
 
     #[inline]
     pub(crate) fn swizzle(self, mask: u8) -> Vec4 {
-        self.mix(self, mask)
+        self.shuffle(self, mask)
     }
 
     #[inline]
@@ -336,9 +336,16 @@ impl Vec4 {
     }
 
     #[inline]
-    /// Performs a fused multiply and add on platforms that support it.
+    /// Per component multiplication/addition of the three inputs: b + (self * a)
     pub(crate) fn mul_add(self, a: Vec4, b: Vec4) -> Vec4 {
         unsafe { Vec4(_mm_add_ps(_mm_mul_ps(self.0, a.0), b.0)) }
+    }
+
+    #[inline]
+    /// Per component negative multiplication/subtraction of the three inputs `-((self * a) - b)`
+    /// This is mathematically equivalent to `b - (self * a)`
+    pub(crate) fn neg_mul_sub(self, a: Vec4, b: Vec4) -> Vec4 {
+        unsafe { Vec4(_mm_sub_ps(b.0, _mm_mul_ps(self.0, a.0))) }
     }
 }
 

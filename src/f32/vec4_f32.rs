@@ -101,7 +101,7 @@ impl Vec4 {
     }
 
     #[inline]
-    pub(crate) fn mix(self, rhs: Vec4, mask: u8) -> Vec4 {
+    pub(crate) fn shuffle(self, rhs: Vec4, mask: u8) -> Vec4 {
         let mask = mask as usize;
         let a = self.as_ref();
         let b = rhs.as_ref();
@@ -113,7 +113,7 @@ impl Vec4 {
     }
 
     #[inline]
-    pub(crate) fn swizzle(self, mask: u8) -> Vec4 {
+    pub(crate) fn permute(self, mask: u8) -> Vec4 {
         let mask = mask as usize;
         let a = self.as_ref();
         let x67 = mask & 0b11;
@@ -274,6 +274,16 @@ impl Vec4 {
             (self.1 * a.1) + b.1,
             (self.2 * a.2) + b.2,
             (self.3 * a.3) + b.3,
+        )
+    }
+
+    #[inline]
+    pub(crate) fn neg_mul_sub(self, a: Vec4, b: Vec4) -> Vec4 {
+        Vec4(
+            b.0 - (self.0 * a.0),
+            b.1 - (self.1 * a.1),
+            b.2 - (self.2 * a.2),
+            b.3 - (self.3 * a.3),
         )
     }
 }
