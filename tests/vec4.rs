@@ -200,11 +200,11 @@ fn test_vec4_rand() {
 #[test]
 fn test_vec4_slice() {
     let a = [1.0, 2.0, 3.0, 4.0];
-    let b = Vec4::load_from_slice(&a);
+    let b = Vec4::from_slice_unaligned(&a);
     let c: [f32; 4] = b.into();
     assert_eq!(a, c);
     let mut d = [0.0, 0.0, 0.0, 0.0];
-    b.store_to_slice(&mut d[..]);
+    b.write_to_slice_unaligned(&mut d[..]);
     assert_eq!(a, d);
 }
 

@@ -255,12 +255,12 @@ impl Vec4 {
     }
 
     #[inline]
-    pub fn load_from_slice(slice: &[f32]) -> Vec4 {
+    pub fn from_slice_unaligned(slice: &[f32]) -> Vec4 {
         Vec4::new(slice[0], slice[1], slice[2], slice[3])
     }
 
     #[inline]
-    pub fn store_to_slice(self, slice: &mut [f32]) {
+    pub fn write_to_slice_unaligned(self, slice: &mut [f32]) {
         slice[0] = self.0;
         slice[1] = self.1;
         slice[2] = self.2;

@@ -322,15 +322,15 @@ impl Vec4 {
     }
 
     #[inline]
-    pub fn load_from_slice(slice: &[f32]) -> Vec4 {
+    pub fn from_slice_unaligned(slice: &[f32]) -> Vec4 {
         assert!(slice.len() >= 4);
         unsafe { Vec4(_mm_loadu_ps(slice.as_ptr())) }
     }
 
     #[inline]
-    pub fn store_to_slice(self, slice: &mut [f32]) {
-        assert!(slice.len() >= 4);
+    pub fn write_to_slice_unaligned(self, slice: &mut [f32]) {
         unsafe {
+            assert!(slice.len() >= 4);
             _mm_storeu_ps(slice.as_mut_ptr(), self.0);
         }
     }
