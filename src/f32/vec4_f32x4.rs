@@ -205,7 +205,7 @@ impl Vec4 {
     }
 
     #[inline]
-    pub(crate) fn swizzle(self, mask: u8) -> Vec4 {
+    pub(crate) fn permute(self, mask: u8) -> Vec4 {
         self.shuffle(self, mask)
     }
 
