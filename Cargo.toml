@@ -18,5 +18,10 @@ serde = { version = "1.0", optional = true, features = ["derive"] }
 
 [dev-dependencies]
 approx = "0.3"
+criterion = "0.2"
 rand_xoshiro = "0.1"
 serde_json = "1.0"
+
+[[bench]]
+name = "mat4"
+harness = false
