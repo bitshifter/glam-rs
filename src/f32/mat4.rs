@@ -249,45 +249,44 @@ impl Mat4 {
         let a0113 = m10 * m31 - m11 * m30;
         let a0112 = m10 * m21 - m11 * m20;
 
-        let det = m00 * (m11 * a2323 - m12 * a1323 + m13 * a1223)
-            - m01 * (m10 * a2323 - m12 * a0323 + m13 * a0223)
-            + m02 * (m10 * a1323 - m11 * a0323 + m13 * a0123)
-            - m03 * (m10 * a1223 - m11 * a0223 + m12 * a0123);
-        if det == 0.0 {
-            return None;
-        }
-        let inv_det = 1.0 / det;
-
-        Some(Mat4 {
+        let inverse = Mat4 {
             x_axis: Vec4::new(
-                inv_det * (m11 * a2323 - m12 * a1323 + m13 * a1223),
-                inv_det * -(m01 * a2323 - m02 * a1323 + m03 * a1223),
-                inv_det * (m01 * a2313 - m02 * a1313 + m03 * a1213),
-                inv_det * -(m01 * a2312 - m02 * a1312 + m03 * a1212),
+                m11 * a2323 - m12 * a1323 + m13 * a1223,
+                -(m01 * a2323 - m02 * a1323 + m03 * a1223),
+                m01 * a2313 - m02 * a1313 + m03 * a1213,
+                -(m01 * a2312 - m02 * a1312 + m03 * a1212),
             ),
             y_axis: Vec4::new(
-                inv_det * -(m10 * a2323 - m12 * a0323 + m13 * a0223),
-                inv_det * (m00 * a2323 - m02 * a0323 + m03 * a0223),
-                inv_det * -(m00 * a2313 - m02 * a0313 + m03 * a0213),
-                inv_det * (m00 * a2312 - m02 * a0312 + m03 * a0212),
+                -(m10 * a2323 - m12 * a0323 + m13 * a0223),
+                m00 * a2323 - m02 * a0323 + m03 * a0223,
+                -(m00 * a2313 - m02 * a0313 + m03 * a0213),
+                m00 * a2312 - m02 * a0312 + m03 * a0212,
             ),
             z_axis: Vec4::new(
-                inv_det * (m10 * a1323 - m11 * a0323 + m13 * a0123),
-                inv_det * -(m00 * a1323 - m01 * a0323 + m03 * a0123),
-                inv_det * (m00 * a1313 - m01 * a0313 + m03 * a0113),
-                inv_det * -(m00 * a1312 - m01 * a0312 + m03 * a0112),
+                m10 * a1323 - m11 * a0323 + m13 * a0123,
+                -(m00 * a1323 - m01 * a0323 + m03 * a0123),
+                m00 * a1313 - m01 * a0313 + m03 * a0113,
+                -(m00 * a1312 - m01 * a0312 + m03 * a0112),
             ),
             w_axis: Vec4::new(
-                inv_det * -(m10 * a1223 - m11 * a0223 + m12 * a0123),
-                inv_det * (m00 * a1223 - m01 * a0223 + m02 * a0123),
-                inv_det * -(m00 * a1213 - m01 * a0213 + m02 * a0113),
-                inv_det * (m00 * a1212 - m01 * a0212 + m02 * a0112),
+                -(m10 * a1223 - m11 * a0223 + m12 * a0123),
+                m00 * a1223 - m01 * a0223 + m02 * a0123,
+                -(m00 * a1213 - m01 * a0213 + m02 * a0113),
+                m00 * a1212 - m01 * a0212 + m02 * a0112,
             ),
-        })
-        // let m0: (f32, f32, f32, f32) = self.x_axis.into();
-        // let m1: (f32, f32, f32, f32) = self.y_axis.into();
-        // let m2: (f32, f32, f32, f32) = self.z_axis.into();
-        // let m3: (f32, f32, f32, f32) = self.w_axis.into();
+        };
+
+        let det = m00 * inverse.x_axis.get_x()
+            + m01 * inverse.y_axis.get_x()
+            + m02 * inverse.z_axis.get_x()
+            + m03 * inverse.w_axis.get_x();
+
+        if det != 0.0 {
+            let inv_det = 1.0 / det;
+            Some(inv_det * inverse)
+        } else {
+            None
+        }
 
         // let coef00 = m2.2 * m3.3 - m3.2 * m2.3;
         // let coef02 = m1.2 * m3.3 - m3.2 * m1.3;
