@@ -2,6 +2,13 @@ use crate::{
     f32::{Vec3, Vec4},
     Angle,
 };
+
+#[cfg(feature = "rand")]
+use rand::{
+    distributions::{Distribution, Standard},
+    Rng,
+};
+
 use std::ops::{Add, Mul, Sub};
 
 pub fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat4 {
@@ -549,6 +556,14 @@ impl Vec4 {
         tmp = self.dup_z().mul_add(rhs.get_z_axis(), tmp);
         tmp = self.dup_w().mul_add(rhs.get_w_axis(), tmp);
         tmp
+    }
+}
+
+#[cfg(feature = "rand")]
+impl Distribution<Mat4> for Standard {
+    #[inline]
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Mat4 {
+        rng.gen::<[[f32; 4]; 4]>().into()
     }
 }
 
