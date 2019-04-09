@@ -20,9 +20,7 @@ macro_rules! bench_unop {
                 b.iter(|| {
                     i = (i + 1) & (LEN - 1);
 
-                    unsafe {
-                        criterion::black_box(elems.get_unchecked(i).$unop())
-                    }
+                    unsafe { criterion::black_box(elems.get_unchecked(i).$unop()) }
                 })
             });
         }
@@ -45,7 +43,9 @@ macro_rules! bench_binop {
                     i = (i + 1) & (LEN - 1);
 
                     unsafe {
-                        criterion::black_box(elems1.get_unchecked(i).$binop(elems2.get_unchecked(i)))
+                        criterion::black_box(
+                            elems1.get_unchecked(i).$binop(elems2.get_unchecked(i)),
+                        )
                     }
                 })
             });

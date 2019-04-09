@@ -230,123 +230,73 @@ impl Mat4 {
         let (m20, m21, m22, m23) = self.z_axis.into();
         let (m30, m31, m32, m33) = self.w_axis.into();
 
-        let a2323 = m22 * m33 - m23 * m32;
-        let a1323 = m21 * m33 - m23 * m31;
-        let a1223 = m21 * m32 - m22 * m31;
-        let a0323 = m20 * m33 - m23 * m30;
-        let a0223 = m20 * m32 - m22 * m30;
-        let a0123 = m20 * m31 - m21 * m30;
-        let a2313 = m12 * m33 - m13 * m32;
-        let a1313 = m11 * m33 - m13 * m31;
-        let a1213 = m11 * m32 - m12 * m31;
-        let a2312 = m12 * m23 - m13 * m22;
-        let a1312 = m11 * m23 - m13 * m21;
-        let a1212 = m11 * m22 - m12 * m21;
-        let a0313 = m10 * m33 - m13 * m30;
-        let a0213 = m10 * m32 - m12 * m30;
-        let a0312 = m10 * m23 - m13 * m20;
-        let a0212 = m10 * m22 - m12 * m20;
-        let a0113 = m10 * m31 - m11 * m30;
-        let a0112 = m10 * m21 - m11 * m20;
+        let coef00 = m22 * m33 - m32 * m23;
+        let coef02 = m12 * m33 - m32 * m13;
+        let coef03 = m12 * m23 - m22 * m13;
+
+        let coef04 = m21 * m33 - m31 * m23;
+        let coef06 = m11 * m33 - m31 * m13;
+        let coef07 = m11 * m23 - m21 * m13;
+
+        let coef08 = m21 * m32 - m31 * m22;
+        let coef10 = m11 * m32 - m31 * m12;
+        let coef11 = m11 * m22 - m21 * m12;
+
+        let coef12 = m20 * m33 - m30 * m23;
+        let coef14 = m10 * m33 - m30 * m13;
+        let coef15 = m10 * m23 - m20 * m13;
+
+        let coef16 = m20 * m32 - m30 * m22;
+        let coef18 = m10 * m32 - m30 * m12;
+        let coef19 = m10 * m22 - m20 * m12;
+
+        let coef20 = m20 * m31 - m30 * m21;
+        let coef22 = m10 * m31 - m30 * m11;
+        let coef23 = m10 * m21 - m20 * m11;
+
+        let fac0 = Vec4::new(coef00, coef00, coef02, coef03);
+        let fac1 = Vec4::new(coef04, coef04, coef06, coef07);
+        let fac2 = Vec4::new(coef08, coef08, coef10, coef11);
+        let fac3 = Vec4::new(coef12, coef12, coef14, coef15);
+        let fac4 = Vec4::new(coef16, coef16, coef18, coef19);
+        let fac5 = Vec4::new(coef20, coef20, coef22, coef23);
+
+        let vec0 = Vec4::new(m10, m00, m00, m00);
+        let vec1 = Vec4::new(m11, m01, m01, m01);
+        let vec2 = Vec4::new(m12, m02, m02, m02);
+        let vec3 = Vec4::new(m13, m03, m03, m03);
+
+        let inv0 = vec1 * fac0 - vec2 * fac1 + vec3 * fac2;
+        let inv1 = vec0 * fac0 - vec2 * fac3 + vec3 * fac4;
+        let inv2 = vec0 * fac1 - vec1 * fac3 + vec3 * fac5;
+        let inv3 = vec0 * fac2 - vec1 * fac4 + vec2 * fac5;
+
+        let sign_a = Vec4::new(1.0, -1.0, 1.0, -1.0);
+        let sign_b = Vec4::new(-1.0, 1.0, -1.0, 1.0);
 
         let inverse = Mat4 {
-            x_axis: Vec4::new(
-                m11 * a2323 - m12 * a1323 + m13 * a1223,
-                -(m01 * a2323 - m02 * a1323 + m03 * a1223),
-                m01 * a2313 - m02 * a1313 + m03 * a1213,
-                -(m01 * a2312 - m02 * a1312 + m03 * a1212),
-            ),
-            y_axis: Vec4::new(
-                -(m10 * a2323 - m12 * a0323 + m13 * a0223),
-                m00 * a2323 - m02 * a0323 + m03 * a0223,
-                -(m00 * a2313 - m02 * a0313 + m03 * a0213),
-                m00 * a2312 - m02 * a0312 + m03 * a0212,
-            ),
-            z_axis: Vec4::new(
-                m10 * a1323 - m11 * a0323 + m13 * a0123,
-                -(m00 * a1323 - m01 * a0323 + m03 * a0123),
-                m00 * a1313 - m01 * a0313 + m03 * a0113,
-                -(m00 * a1312 - m01 * a0312 + m03 * a0112),
-            ),
-            w_axis: Vec4::new(
-                -(m10 * a1223 - m11 * a0223 + m12 * a0123),
-                m00 * a1223 - m01 * a0223 + m02 * a0123,
-                -(m00 * a1213 - m01 * a0213 + m02 * a0113),
-                m00 * a1212 - m01 * a0212 + m02 * a0112,
-            ),
+            x_axis: inv0 * sign_a,
+            y_axis: inv1 * sign_b,
+            z_axis: inv2 * sign_a,
+            w_axis: inv3 * sign_b,
         };
 
-        let det = m00 * inverse.x_axis.get_x()
-            + m01 * inverse.y_axis.get_x()
-            + m02 * inverse.z_axis.get_x()
-            + m03 * inverse.w_axis.get_x();
+        let col0 = Vec4::new(
+            inverse.x_axis.get_x(),
+            inverse.y_axis.get_x(),
+            inverse.z_axis.get_x(),
+            inverse.w_axis.get_x(),
+        );
 
-        if det != 0.0 {
-            let inv_det = 1.0 / det;
-            Some(inv_det * inverse)
+        let dot0 = self.x_axis * col0;
+        let dot1 = (dot0.get_x() + dot0.get_y()) + (dot0.get_z() + dot0.get_w());
+
+        if dot1 != 0.0 {
+            let rcp_det = 1.0 / dot1;
+            Some(inverse * rcp_det)
         } else {
             None
         }
-
-        // let coef00 = m2.2 * m3.3 - m3.2 * m2.3;
-        // let coef02 = m1.2 * m3.3 - m3.2 * m1.3;
-        // let coef03 = m1.2 * m2.3 - m2.2 * m1.3;
-
-        // let coef04 = m2.1 * m3.3 - m3.1 * m2.3;
-        // let coef06 = m1.1 * m3.3 - m3.1 * m1.3;
-        // let coef07 = m1.1 * m2.3 - m2.1 * m1.3;
-
-        // let coef08 = m2.1 * m3.2 - m3.1 * m2.2;
-        // let coef10 = m1.1 * m3.2 - m3.1 * m1.2;
-        // let coef11 = m1.1 * m2.2 - m2.1 * m1.2;
-
-        // let coef12 = m2.0 * m3.3 - m3.0 * m2.3;
-        // let coef14 = m1.0 * m3.3 - m3.0 * m1.3;
-        // let coef15 = m1.0 * m2.3 - m2.0 * m1.3;
-
-        // let coef16 = m2.0 * m3.2 - m3.0 * m2.2;
-        // let coef18 = m1.0 * m3.2 - m3.0 * m1.2;
-        // let coef19 = m1.0 * m2.2 - m2.0 * m1.2;
-
-        // let coef20 = m2.0 * m3.1 - m3.0 * m2.1;
-        // let coef22 = m1.0 * m3.1 - m3.0 * m1.1;
-        // let coef23 = m1.0 * m2.1 - m2.0 * m1.1;
-
-        // let fac0 = Vec4::new(coef00, coef00, coef02, coef03);
-        // let fac1 = Vec4::new(coef04, coef04, coef06, coef07);
-        // let fac2 = Vec4::new(coef08, coef08, coef10, coef11);
-        // let fac3 = Vec4::new(coef12, coef12, coef14, coef15);
-        // let fac4 = Vec4::new(coef16, coef16, coef18, coef19);
-        // let fac5 = Vec4::new(coef20, coef20, coef22, coef23);
-
-        // let vec0 = Vec4::new(m1.0, m0.0, m0.0, m0.0);
-        // let vec1 = Vec4::new(m1.1, m0.1, m0.1, m0.1);
-        // let vec2 = Vec4::new(m1.2, m0.2, m0.2, m0.2);
-        // let vec3 = Vec4::new(m1.3, m0.3, m0.3, m0.3);
-
-        // let inv0 = Vec4::new(vec1 * fac0 - vec2 * fac1 + vec3 * fac2);
-        // let inv1 = Vec4::new(vec0 * fac0 - vec2 * fac3 + vec3 * fac4);
-        // let inv2 = Vec4::new(vec0 * fac1 - vec1 * fac3 + vec3 * fac5);
-        // let inv3 = Vec4::new(vec0 * fac2 - vec1 * fac4 + vec2 * fac5);
-
-        // let sign_a = Vec4::new(1.0, -1.0, 1.0, -1.0);
-        // let sign_b = Vec4::new(-1.0, 1.0, -1.0, 1.0);
-
-        // let inverse = Mat4 {
-        //     x_axis: inv0 * sign_a,
-        //     y_axis: inv1 * sign_b,
-        //     z_axis: inv2 * sign_a,
-        //     w_axis: inv3 * sign_b,
-        // };
-
-        // let Row0 = Vec4::new(Inverse[0][0], Inverse[1][0], Inverse[2][0], Inverse[3][0]);
-
-        // let Dot0 = (m[0] * Row0);
-        // let Dot1 = (Dot0.x + Dot0.y) + (Dot0.z + Dot0.w);
-
-        // let OneOverDeterminant = 1.0 / Dot1;
-
-        // inverse * OneOverDeterminant;
     }
 
     // #[inline]

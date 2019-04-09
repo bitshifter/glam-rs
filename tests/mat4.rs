@@ -142,7 +142,10 @@ fn test_mat4_det() {
     assert_eq!(1.0, Mat4::from_rotation_x(deg(90.0)).determinant());
     assert_eq!(1.0, Mat4::from_rotation_y(deg(180.0)).determinant());
     assert_eq!(1.0, Mat4::from_rotation_z(deg(270.0)).determinant());
-    assert_eq!(2.0 * 2.0 * 2.0, Mat4::from_scale(vec3(2.0, 2.0, 2.0)).determinant());
+    assert_eq!(
+        2.0 * 2.0 * 2.0,
+        Mat4::from_scale(vec3(2.0, 2.0, 2.0)).determinant()
+    );
 }
 
 #[test]
