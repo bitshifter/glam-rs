@@ -224,7 +224,6 @@ impl Mat4 {
     }
 
     #[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
-    #[inline]
     pub fn inverse(&self) -> Option<Mat4> {
         let (m00, m01, m02, m03) = self.x_axis.into();
         let (m10, m11, m12, m13) = self.y_axis.into();
@@ -301,7 +300,6 @@ impl Mat4 {
     }
 
     #[cfg(all(target_feature = "sse2", not(feature = "no-simd")))]
-    #[inline]
     pub fn inverse(&self) -> Option<Mat4> {
         // sse2 implemenation based off DirectXMath XMMatrixInverse (MIT License)
         #[cfg(target_arch = "x86")]
