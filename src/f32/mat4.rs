@@ -224,7 +224,7 @@ impl Mat4 {
     }
 
     #[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
-    pub fn inverse(&self) -> Option<Mat4> {
+    pub fn inverse(&self) -> Mat4 {
         let (m00, m01, m02, m03) = self.x_axis.into();
         let (m10, m11, m12, m13) = self.y_axis.into();
         let (m20, m21, m22, m23) = self.z_axis.into();
@@ -291,16 +291,14 @@ impl Mat4 {
         let dot0 = self.x_axis * col0;
         let dot1 = (dot0.get_x() + dot0.get_y()) + (dot0.get_z() + dot0.get_w());
 
-        if dot1 != 0.0 {
-            let rcp_det = 1.0 / dot1;
-            Some(inverse * rcp_det)
-        } else {
-            None
-        }
+        let rcp_det = 1.0 / dot1;
+        inverse * rcp_det
     }
 
     #[cfg(all(target_feature = "sse2", not(feature = "no-simd")))]
-    pub fn inverse(&self) -> Option<Mat4> {
+    /// Performs a matrix inverse. Note that this method does not check if the matrix is
+    /// invertible and will divide by zero if a non-invertible matrix is inverted.
+    pub fn inverse(&self) -> Mat4 {
         // sse2 implemenation based off DirectXMath XMMatrixInverse (MIT License)
         #[cfg(target_arch = "x86")]
         use std::arch::x86::*;
@@ -463,9 +461,6 @@ impl Mat4 {
             let det = Vec4::splat(c0.dot(Vec4(mtx)));
             // if (pDeterminant != nullptr)
             //     *pDeterminant = vTemp;
-            if det == Vec4::zero() {
-                return None;
-            }
             // vTemp = _mm_div_ps(g_XMOne,vTemp);
             let inv_det = Vec4::splat(1.0) / det;
 
@@ -475,12 +470,12 @@ impl Mat4 {
             // mResult.r[2] = _mm_mul_ps(C4,vTemp);
             // mResult.r[3] = _mm_mul_ps(C6,vTemp);
             // return mResult;
-            Some(Mat4 {
+            Mat4 {
                 x_axis: c0 * inv_det,
                 y_axis: c2 * inv_det,
                 z_axis: c4 * inv_det,
                 w_axis: c6 * inv_det,
-            })
+            }
         }
     }
 

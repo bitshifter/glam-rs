@@ -150,36 +150,36 @@ fn test_mat4_det() {
 
 #[test]
 fn test_mat4_inverse() {
-    assert_eq!(None, Mat4::zero().inverse());
+    // assert_eq!(None, Mat4::zero().inverse());
     let inv = Mat4::identity().inverse();
-    assert_ne!(None, inv);
-    assert_ulps_eq!(Mat4::identity(), inv.unwrap());
+    // assert_ne!(None, inv);
+    assert_ulps_eq!(Mat4::identity(), inv);
 
     let rotz = Mat4::from_rotation_z(deg(90.0));
     let rotz_inv = rotz.inverse();
-    assert_ne!(None, rotz_inv);
-    let rotz_inv = rotz_inv.unwrap();
+    // assert_ne!(None, rotz_inv);
+    // let rotz_inv = rotz_inv.unwrap();
     assert_ulps_eq!(Mat4::identity(), rotz * rotz_inv);
     assert_ulps_eq!(Mat4::identity(), rotz_inv * rotz);
 
     let trans = Mat4::from_translation(vec3(1.0, 2.0, 3.0));
     let trans_inv = trans.inverse();
-    assert_ne!(None, trans_inv);
-    let trans_inv = trans_inv.unwrap();
+    // assert_ne!(None, trans_inv);
+    // let trans_inv = trans_inv.unwrap();
     assert_ulps_eq!(Mat4::identity(), trans * trans_inv);
     assert_ulps_eq!(Mat4::identity(), trans_inv * trans);
 
     let scale = Mat4::from_scale(vec3(4.0, 5.0, 6.0));
     let scale_inv = scale.inverse();
-    assert_ne!(None, scale_inv);
-    let scale_inv = scale_inv.unwrap();
+    // assert_ne!(None, scale_inv);
+    // let scale_inv = scale_inv.unwrap();
     assert_ulps_eq!(Mat4::identity(), scale * scale_inv);
     assert_ulps_eq!(Mat4::identity(), scale_inv * scale);
 
     let m = scale * rotz * trans;
     let m_inv = m.inverse();
-    assert_ne!(None, m_inv);
-    let m_inv = m_inv.unwrap();
+    // assert_ne!(None, m_inv);
+    // let m_inv = m_inv.unwrap();
     assert_ulps_eq!(Mat4::identity(), m * m_inv);
     assert_ulps_eq!(Mat4::identity(), m_inv * m);
     assert_ulps_eq!(m_inv, trans_inv * rotz_inv * scale_inv);
