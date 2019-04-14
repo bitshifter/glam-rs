@@ -8,18 +8,13 @@
 
 use crate::{f32::{Angle, Vec3, Vec4}, Align16};
 
-#[cfg(target_arch = "x86")]
-use std::arch::x86::*;
-#[cfg(target_arch = "x86_64")]
-use std::arch::x86_64::*;
-
-use std::{f32, fmt, mem, ops::*};
+use std::{f32, fmt, ops::*};
 
 const IDENTITY: Align16<(f32, f32, f32, f32)> = Align16((0.0, 0.0, 0.0, 1.0));
 
 #[derive(Clone, Copy)]
 #[repr(C)]
-pub struct Quat(pub(crate) __m128);
+pub struct Quat(f32, f32, f32, f32);
 
 impl fmt::Debug for Quat {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -39,33 +34,40 @@ pub fn quat(x: f32, y: f32, z: f32, w: f32) -> Quat {
 }
 
 impl Quat {
+    // #[inline]
+    // pub fn zero() -> Quat {
+    //     unsafe { Quat(_mm_set1_ps(0.0)) }
+    // }
+
     #[inline]
     pub fn new(x: f32, y: f32, z: f32, w: f32) -> Quat {
-        unsafe { Quat(_mm_set_ps(w, z, y, x)) }
+        Quat(x, y, z, w)
     }
 
     #[inline]
     pub fn identity() -> Quat {
-        unsafe {
-            Quat(_mm_load_ps(
-                &IDENTITY as *const Align16<(f32, f32, f32, f32)> as *const f32,
-            ))
-        }
+        Quat(0.0, 0.0, 0.0, 1.0)
     }
 
     #[inline]
+    /// Create quaterion for a normalized rotation axis and angle.
     pub fn from_axis_angle(axis: Vec3, angle: Angle) -> Quat {
-        unimplemented!()
+        debug_assert!((axis.length_squared() - 1.0).abs() < 0.01);
+        let (s, c) = (angle * 0.5).sin_cos();
+        let (xi, yj, zk) = (axis * s).into();
+        Quat(xi, yj, zk, c)
     }
 
     #[inline]
     pub fn conjugate(self) -> Quat {
-        unimplemented!();
+        let (xi, yj, zk, w) = self.into();
+        Quat(-xi, -yj, -zk, w)
     }
 
     #[inline]
     pub fn dot(self, rhs: Quat) -> f32 {
-        unimplemented!();
+        let v: Vec4 = self.into();
+        v.dot(rhs.into())
     }
 
     #[inline]
@@ -95,16 +97,15 @@ impl Quat {
 
     #[inline]
     pub fn from_slice_unaligned(slice: &[f32]) -> Quat {
-        assert!(slice.len() >= 4);
-        unsafe { Quat(_mm_loadu_ps(slice.as_ptr())) }
+        Quat::new(slice[0], slice[1], slice[2], slice[3])
     }
 
     #[inline]
     pub fn write_to_slice_unaligned(self, slice: &mut [f32]) {
-        unsafe {
-            assert!(slice.len() >= 4);
-            _mm_storeu_ps(slice.as_mut_ptr(), self.0);
-        }
+        slice[0] = self.0;
+        slice[1] = self.1;
+        slice[2] = self.2;
+        slice[3] = self.3;
     }
 }
 
@@ -250,30 +251,16 @@ impl PartialEq for Quat {
 impl From<Vec4> for Quat {
     #[inline]
     fn from(v: Vec4) -> Self {
-        Quat(v.0)
+        let (x, y, z, w) = v.into();
+        Quat(x, y, z, w)
     }
 }
 
 impl From<&Vec4> for Quat {
     #[inline]
     fn from(v: &Vec4) -> Self {
-        Quat(v.0)
-    }
-}
-
-impl From<Quat> for __m128 {
-    // TODO: write test
-    #[cfg_attr(tarpaulin, skip)]
-    #[inline]
-    fn from(t: Quat) -> Self {
-        t.0
-    }
-}
-
-impl From<__m128> for Quat {
-    #[inline]
-    fn from(t: __m128) -> Self {
-        Quat(t)
+        let (x, y, z, w) = v.into();
+        Quat(x, y, z, w)
     }
 }
 
@@ -293,59 +280,43 @@ impl From<&(f32, f32, f32, f32)> for Quat {
 
 impl From<Quat> for (f32, f32, f32, f32) {
     #[inline]
-    fn from(v: Quat) -> Self {
-        unsafe {
-            let mut out: Align16<(f32, f32, f32, f32)> = mem::uninitialized();
-            _mm_store_ps(&mut out.0 as *mut (f32, f32, f32, f32) as *mut f32, v.0);
-            out.0
-        }
+    fn from(q: Quat) -> Self {
+        (q.0, q.1, q.2, q.3)
     }
 }
 
 impl From<&Quat> for (f32, f32, f32, f32) {
     #[inline]
-    fn from(v: &Quat) -> Self {
-        unsafe {
-            let mut out: Align16<(f32, f32, f32, f32)> = mem::uninitialized();
-            _mm_store_ps(&mut out.0 as *mut (f32, f32, f32, f32) as *mut f32, v.0);
-            out.0
-        }
+    fn from(q: &Quat) -> Self {
+        (q.0, q.1, q.2, q.3)
     }
 }
 
 impl From<[f32; 4]> for Quat {
     #[inline]
     fn from(a: [f32; 4]) -> Self {
-        unsafe { Quat(_mm_loadu_ps(a.as_ptr())) }
+        Quat::new(a[0], a[1], a[2], a[3])
     }
 }
 
 impl From<&[f32; 4]> for Quat {
     #[inline]
     fn from(a: &[f32; 4]) -> Self {
-        unsafe { Quat(_mm_loadu_ps(a.as_ptr())) }
+        Quat::new(a[0], a[1], a[2], a[3])
     }
 }
 
 impl From<Quat> for [f32; 4] {
     #[inline]
-    fn from(v: Quat) -> Self {
-        unsafe {
-            let mut out: Align16<[f32; 4]> = mem::uninitialized();
-            _mm_store_ps(&mut out.0 as *mut [f32; 4] as *mut f32, v.0);
-            out.0
-        }
+    fn from(q: Quat) -> Self {
+        [q.0, q.1, q.2, q.3]
     }
 }
 
 impl From<&Quat> for [f32; 4] {
     #[inline]
-    fn from(v: &Quat) -> Self {
-        unsafe {
-            let mut out: Align16<[f32; 4]> = mem::uninitialized();
-            _mm_store_ps(&mut out.0 as *mut [f32; 4] as *mut f32, v.0);
-            out.0
-        }
+    fn from(q: &Quat) -> Self {
+        [q.0, q.1, q.2, q.3]
     }
 }
 

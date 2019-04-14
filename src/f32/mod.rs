@@ -20,9 +20,13 @@ mod vec3_f32;
 #[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
 mod vec4_f32;
 #[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
+mod quat_f32;
+#[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
 pub use vec3_f32::*;
 #[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
 pub use vec4_f32::*;
+#[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
+pub use quat_f32::*;
 
 mod vec2_f32;
 pub use vec2_f32::*;

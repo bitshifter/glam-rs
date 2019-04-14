@@ -448,14 +448,15 @@ impl PartialEq for Vec4 {
 }
 
 impl From<(f32, f32, f32, f32)> for Vec4 {
+    #[inline]
     fn from(t: (f32, f32, f32, f32)) -> Self {
-        Vec4::new(t.0, t.1, t.2, t.3)
+        Vec4(t.0, t.1, t.2, t.3)
     }
 }
 
 impl From<&(f32, f32, f32, f32)> for Vec4 {
     fn from(t: &(f32, f32, f32, f32)) -> Self {
-        Vec4::new(t.0, t.1, t.2, t.3)
+        Vec4(t.0, t.1, t.2, t.3)
     }
 }
 
@@ -467,36 +468,42 @@ impl From<Align16<(f32, f32, f32, f32)>> for Vec4 {
 }
 
 impl From<Vec4> for (f32, f32, f32, f32) {
+    #[inline]
     fn from(v: Vec4) -> Self {
         (v.0, v.1, v.2, v.3)
     }
 }
 
 impl From<&Vec4> for (f32, f32, f32, f32) {
+    #[inline]
     fn from(v: &Vec4) -> Self {
         (v.0, v.1, v.2, v.3)
     }
 }
 
 impl From<[f32; 4]> for Vec4 {
+    #[inline]
     fn from(a: [f32; 4]) -> Self {
-        Vec4::new(a[0], a[1], a[2], a[3])
+        Vec4(a[0], a[1], a[2], a[3])
     }
 }
 
 impl From<&[f32; 4]> for Vec4 {
+    #[inline]
     fn from(a: &[f32; 4]) -> Self {
-        Vec4::new(a[0], a[1], a[2], a[3])
+        Vec4(a[0], a[1], a[2], a[3])
     }
 }
 
 impl From<Vec4> for [f32; 4] {
+    #[inline]
     fn from(v: Vec4) -> Self {
         [v.0, v.1, v.2, v.3]
     }
 }
 
 impl From<&Vec4> for [f32; 4] {
+    #[inline]
     fn from(v: &Vec4) -> Self {
         [v.0, v.1, v.2, v.3]
     }
