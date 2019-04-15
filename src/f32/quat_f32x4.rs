@@ -6,7 +6,10 @@
 //     Rng,
 // };
 
-use crate::{f32::{Angle, Vec3, Vec4}, Align16};
+use crate::{
+    f32::{Angle, Vec3, Vec4},
+    Align16,
+};
 
 #[cfg(target_arch = "x86")]
 use std::arch::x86::*;
@@ -55,32 +58,45 @@ impl Quat {
 
     #[inline]
     pub fn from_axis_angle(axis: Vec3, angle: Angle) -> Quat {
-        unimplemented!()
+        debug_assert!((axis.length_squared() - 1.0).abs() < 0.01);
+        let (s, c) = (angle * 0.5).sin_cos();
+        (axis * s).extend(c).into()
     }
 
     #[inline]
     pub fn conjugate(self) -> Quat {
-        unimplemented!();
+        let v: Vec4 = self.into();
+        v.truncate().neg().extend(v.get_w()).into()
     }
 
     #[inline]
     pub fn dot(self, rhs: Quat) -> f32 {
-        unimplemented!();
+        let v: Vec4 = self.into();
+        v.dot(rhs.into())
     }
 
     #[inline]
     pub fn length(self) -> f32 {
-        unimplemented!();
+        let v: Vec4 = self.into();
+        v.length()
     }
 
     #[inline]
     pub fn length_squared(self) -> f32 {
-        unimplemented!();
+        let v: Vec4 = self.into();
+        v.length_squared()
+    }
+
+    #[inline]
+    pub fn length_reciprocal(self) -> f32 {
+        1.0 / self.length()
     }
 
     #[inline]
     pub fn normalize(self) -> Quat {
-        unimplemented!();
+        let inv_len = self.length_reciprocal();
+        let v: Vec4 = self.into();
+        v.mul(inv_len).into()
     }
 
     #[inline]
@@ -88,10 +104,10 @@ impl Quat {
         unimplemented!();
     }
 
-    #[inline]
-    pub fn slerp(self, rhs: Quat, t: f32) -> Quat {
-        unimplemented!();
-    }
+    // #[inline]
+    // pub fn slerp(self, rhs: Quat, t: f32) -> Quat {
+    //     unimplemented!();
+    // }
 
     #[inline]
     pub fn from_slice_unaligned(slice: &[f32]) -> Quat {
@@ -115,42 +131,6 @@ impl fmt::Display for Quat {
     }
 }
 
-impl Div<Quat> for Quat {
-    type Output = Quat;
-    #[inline]
-    fn div(self, rhs: Quat) -> Quat {
-        unimplemented!();
-        // unsafe { Quat(_mm_div_ps(self.0, rhs.0)) }
-    }
-}
-
-impl DivAssign<Quat> for Quat {
-    #[inline]
-    fn div_assign(&mut self, rhs: Quat) {
-        unimplemented!();
-        // unsafe {
-        //     self.0 = _mm_div_ps(self.0, rhs.0);
-        // }
-    }
-}
-
-impl Div<f32> for Quat {
-    type Output = Quat;
-    #[inline]
-    fn div(self, rhs: f32) -> Quat {
-        unimplemented!();
-        // unsafe { Quat(_mm_div_ps(self.0, _mm_set1_ps(rhs))) }
-    }
-}
-
-impl DivAssign<f32> for Quat {
-    #[inline]
-    fn div_assign(&mut self, rhs: f32) {
-        unimplemented!();
-        // unsafe { self.0 = _mm_div_ps(self.0, _mm_set1_ps(rhs)) }
-    }
-}
-
 impl Mul<Quat> for Quat {
     type Output = Quat;
     #[inline]
@@ -170,80 +150,20 @@ impl MulAssign<Quat> for Quat {
     }
 }
 
-impl Mul<f32> for Quat {
-    type Output = Quat;
-    #[inline]
-    fn mul(self, rhs: f32) -> Quat {
-        unimplemented!();
-        // unsafe { Quat(_mm_mul_ps(self.0, _mm_set1_ps(rhs))) }
-    }
-}
-
-impl MulAssign<f32> for Quat {
-    #[inline]
-    fn mul_assign(&mut self, rhs: f32) {
-        unimplemented!();
-        // unsafe { self.0 = _mm_mul_ps(self.0, _mm_set1_ps(rhs)) }
-    }
-}
-
-impl Mul<Quat> for f32 {
-    type Output = Quat;
-    #[inline]
-    fn mul(self, rhs: Quat) -> Quat {
-        unimplemented!();
-        // unsafe { Quat(_mm_mul_ps(_mm_set1_ps(self), rhs.0)) }
-    }
-}
-
-impl Add for Quat {
-    type Output = Quat;
-    #[inline]
-    fn add(self, rhs: Quat) -> Quat {
-        unimplemented!();
-        // unsafe { Quat(_mm_add_ps(self.0, rhs.0)) }
-    }
-}
-
-impl AddAssign for Quat {
-    #[inline]
-    fn add_assign(&mut self, rhs: Quat) {
-        unimplemented!();
-        // unsafe { self.0 = _mm_add_ps(self.0, rhs.0) }
-    }
-}
-
-impl Sub for Quat {
-    type Output = Quat;
-    #[inline]
-    fn sub(self, rhs: Quat) -> Quat {
-        unimplemented!();
-        // unsafe { Quat(_mm_sub_ps(self.0, rhs.0)) }
-    }
-}
-
-impl SubAssign for Quat {
-    #[inline]
-    fn sub_assign(&mut self, rhs: Quat) {
-        unimplemented!();
-        // unsafe { self.0 = _mm_sub_ps(self.0, rhs.0) }
-    }
-}
-
 impl Neg for Quat {
     type Output = Quat;
     #[inline]
     fn neg(self) -> Quat {
-        unimplemented!();
-        // unsafe { Quat(_mm_sub_ps(_mm_set1_ps(0.0), self.0)) }
+        let v: Vec4 = self.into();
+        (-1.0 * v).into()
     }
 }
 
 impl PartialEq for Quat {
     #[inline]
     fn eq(&self, rhs: &Quat) -> bool {
-        unimplemented!();
-        // self.cmpeq(*rhs).all()
+        let v: Vec4 = self.into();
+        v.cmpeq(rhs.into()).all()
     }
 }
 
@@ -258,6 +178,20 @@ impl From<&Vec4> for Quat {
     #[inline]
     fn from(v: &Vec4) -> Self {
         Quat(v.0)
+    }
+}
+
+impl From<Quat> for Vec4 {
+    #[inline]
+    fn from(q: Quat) -> Self {
+        Vec4(q.0)
+    }
+}
+
+impl From<&Quat> for Vec4 {
+    #[inline]
+    fn from(q: &Quat) -> Self {
+        Vec4(q.0)
     }
 }
 
