@@ -1,41 +1,38 @@
 mod angle;
-pub use angle::*;
-
+mod funcs;
+mod mat4;
+mod quat;
+#[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
+mod quat_f32;
 #[cfg(all(target_feature = "sse2", not(feature = "no-simd")))]
 mod quat_f32x4;
+mod vec2_f32;
+#[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
+mod vec3_f32;
 #[cfg(all(target_feature = "sse2", not(feature = "no-simd")))]
 mod vec3_f32x4;
+#[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
+mod vec4_f32;
 #[cfg(all(target_feature = "sse2", not(feature = "no-simd")))]
 mod vec4_f32x4;
 
-#[cfg(all(target_feature = "sse2", not(feature = "no-simd")))]
-pub use quat_f32x4::*;
-#[cfg(all(target_feature = "sse2", not(feature = "no-simd")))]
-pub use vec3_f32x4::*;
-#[cfg(all(target_feature = "sse2", not(feature = "no-simd")))]
-pub use vec4_f32x4::*;
-
-#[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
-mod quat_f32;
-#[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
-mod vec3_f32;
-#[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
-mod vec4_f32;
+pub use angle::*;
+pub(crate) use funcs::scalar_sin_cos;
+pub use mat4::*;
+pub use quat::quat;
 #[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
 pub use quat_f32::*;
+#[cfg(all(target_feature = "sse2", not(feature = "no-simd")))]
+pub use quat_f32x4::*;
+pub use vec2_f32::*;
 #[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
 pub use vec3_f32::*;
+#[cfg(all(target_feature = "sse2", not(feature = "no-simd")))]
+pub use vec3_f32x4::*;
 #[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
 pub use vec4_f32::*;
-
-mod vec2_f32;
-pub use vec2_f32::*;
-
-mod funcs;
-pub(crate) use funcs::scalar_sin_cos;
-
-mod mat4;
-pub use mat4::*;
+#[cfg(all(target_feature = "sse2", not(feature = "no-simd")))]
+pub use vec4_f32x4::*;
 
 #[cfg(feature = "approx")]
 mod glam_approx;
@@ -68,13 +65,6 @@ impl AsRef<[f32; 4]> for Vec4 {
     }
 }
 
-impl AsRef<[f32; 4]> for Quat {
-    #[inline]
-    fn as_ref(&self) -> &[f32; 4] {
-        unsafe { &*(self as *const Quat as *const [f32; 4]) }
-    }
-}
-
 impl AsMut<[f32; 2]> for Vec2 {
     #[inline]
     fn as_mut(&mut self) -> &mut [f32; 2] {
@@ -93,13 +83,6 @@ impl AsMut<[f32; 4]> for Vec4 {
     #[inline]
     fn as_mut(&mut self) -> &mut [f32; 4] {
         unsafe { &mut *(self as *mut Vec4 as *mut [f32; 4]) }
-    }
-}
-
-impl AsMut<[f32; 4]> for Quat {
-    #[inline]
-    fn as_mut(&mut self) -> &mut [f32; 4] {
-        unsafe { &mut *(self as *mut Quat as *mut [f32; 4]) }
     }
 }
 
