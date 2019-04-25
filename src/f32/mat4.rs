@@ -1,6 +1,6 @@
-use crate::{
-    f32::{Vec3, Vec4},
-    Angle,
+use super::{
+    super::Angle,
+    {Quat, Vec3, Vec4},
 };
 
 #[cfg(feature = "rand")]
@@ -22,10 +22,10 @@ pub fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat4 {
 
 #[derive(Copy, Clone, Debug)]
 pub struct Mat4 {
-    x_axis: Vec4,
-    y_axis: Vec4,
-    z_axis: Vec4,
-    w_axis: Vec4,
+    pub(crate) x_axis: Vec4,
+    pub(crate) y_axis: Vec4,
+    pub(crate) z_axis: Vec4,
+    pub(crate) w_axis: Vec4,
 }
 
 impl Mat4 {
@@ -50,12 +50,119 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn from_axes(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat4 {
+    pub fn new(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat4 {
         Mat4 {
             x_axis,
             y_axis,
             z_axis,
             w_axis,
+        }
+    }
+
+    #[inline]
+    pub fn from_quat(quat: Quat) -> Mat4 {
+        debug_assert!(quat.is_normalized());
+        let (x, y, z, w) = quat.into();
+
+        let x2 = x + x;
+        let y2 = y + y;
+        let z2 = z + z;
+        let xx = x * x2;
+        let xy = x * y2;
+        let xz = x * z2;
+        let yy = y * y2;
+        let yz = y * z2;
+        let zz = z * z2;
+        let wx = w * x2;
+        let wy = w * y2;
+        let wz = w * z2;
+
+        let x_axis = Vec4::new(1.0 - (yy + zz), xy + wz, xz - wy, 0.0);
+        let y_axis = Vec4::new(xy - wz, 1.0 - (xx + zz), yz + wx, 0.0);
+        let z_axis = Vec4::new(xz + wy, yz - wx, 1.0 - (xx + yy), 0.0);
+        Mat4 {
+            x_axis,
+            y_axis,
+            z_axis,
+            w_axis: Vec4::unit_w(),
+        }
+    }
+
+    #[inline]
+    pub fn from_translation(translation: Vec3) -> Mat4 {
+        Mat4 {
+            x_axis: Vec4::unit_x(),
+            y_axis: Vec4::unit_y(),
+            z_axis: Vec4::unit_z(),
+            w_axis: translation.extend(1.0),
+        }
+    }
+
+    #[inline]
+    pub fn from_axis_angle(axis: Vec3, angle: Angle) -> Mat4 {
+        let (sin, cos) = angle.sin_cos();
+        let (x, y, z) = axis.into();
+        let (xsin, ysin, zsin) = (axis * sin).into();
+        let (x2, y2, z2) = (axis * axis).into();
+        let omc = 1.0 - cos;
+        let xyomc = x * y * omc;
+        let xzomc = x * z * omc;
+        let yzomc = y * z * omc;
+        Mat4 {
+            x_axis: Vec4::new(x2 * omc + cos, xyomc + zsin, xzomc - ysin, 0.0),
+            y_axis: Vec4::new(xyomc - zsin, y2 * omc + cos, yzomc + xsin, 0.0),
+            z_axis: Vec4::new(xzomc + ysin, yzomc - xsin, z2 * omc + cos, 0.0),
+            w_axis: Vec4::unit_w(),
+        }
+    }
+
+    #[inline]
+    pub fn from_ypr(yaw: Angle, pitch: Angle, roll: Angle) -> Mat4 {
+        let quat = Quat::from_ypr(yaw, pitch, roll);
+        Mat4::from_quat(quat)
+    }
+
+    #[inline]
+    pub fn from_rotation_x(angle: Angle) -> Mat4 {
+        let (sina, cosa) = angle.sin_cos();
+        Mat4 {
+            x_axis: Vec4::unit_x(),
+            y_axis: Vec4::new(0.0, cosa, sina, 0.0),
+            z_axis: Vec4::new(0.0, -sina, cosa, 0.0),
+            w_axis: Vec4::unit_w(),
+        }
+    }
+
+    #[inline]
+    pub fn from_rotation_y(angle: Angle) -> Mat4 {
+        let (sina, cosa) = angle.sin_cos();
+        Mat4 {
+            x_axis: Vec4::new(cosa, 0.0, -sina, 0.0),
+            y_axis: Vec4::unit_y(),
+            z_axis: Vec4::new(sina, 0.0, cosa, 0.0),
+            w_axis: Vec4::unit_w(),
+        }
+    }
+
+    #[inline]
+    pub fn from_rotation_z(angle: Angle) -> Mat4 {
+        let (sina, cosa) = angle.sin_cos();
+        Mat4 {
+            x_axis: Vec4::new(cosa, sina, 0.0, 0.0),
+            y_axis: Vec4::new(-sina, cosa, 0.0, 0.0),
+            z_axis: Vec4::unit_z(),
+            w_axis: Vec4::unit_w(),
+        }
+    }
+
+    #[inline]
+    pub fn from_scale(scale: Vec3) -> Mat4 {
+        let (x, y, z) = scale.into();
+        Mat4 {
+            x_axis: Vec4::new(x, 0.0, 0.0, 0.0),
+            y_axis: Vec4::new(0.0, y, 0.0, 0.0),
+            z_axis: Vec4::new(0.0, 0.0, z, 0.0),
+            w_axis: Vec4::unit_w(),
         }
     }
 
@@ -97,90 +204,6 @@ impl Mat4 {
     #[inline]
     pub fn get_w_axis(&self) -> Vec4 {
         self.w_axis
-    }
-
-    #[inline]
-    pub fn from_translation(translation: Vec3) -> Mat4 {
-        Mat4 {
-            x_axis: Vec4::unit_x(),
-            y_axis: Vec4::unit_y(),
-            z_axis: Vec4::unit_z(),
-            w_axis: translation.extend(1.0),
-        }
-    }
-
-    #[inline]
-    pub fn from_axis_angle(axis: Vec3, angle: Angle) -> Mat4 {
-        let (x, y, z) = axis.into();
-        let (x2, y2, z2) = (axis * axis).into();
-        let (sin, cos) = angle.sin_cos();
-        let omc = 1.0 - cos;
-        Mat4 {
-            x_axis: Vec4::new(
-                x2 * omc + cos,
-                y * x * omc + z * sin,
-                x * z * omc - y * sin,
-                0.0,
-            ),
-            y_axis: Vec4::new(
-                x * y * omc - z * sin,
-                y2 * omc + cos,
-                y * z * omc + x * sin,
-                0.0,
-            ),
-            z_axis: Vec4::new(
-                x * z * omc + y * sin,
-                y * z * omc - x * sin,
-                z2 * omc + cos,
-                0.0,
-            ),
-            w_axis: Vec4::unit_w(),
-        }
-    }
-
-    #[inline]
-    pub fn from_rotation_x(angle: Angle) -> Mat4 {
-        let (sina, cosa) = angle.sin_cos();
-        Mat4 {
-            x_axis: Vec4::unit_x(),
-            y_axis: Vec4::new(0.0, cosa, sina, 0.0),
-            z_axis: Vec4::new(0.0, -sina, cosa, 0.0),
-            w_axis: Vec4::unit_w(),
-        }
-    }
-
-    #[inline]
-    pub fn from_rotation_y(angle: Angle) -> Mat4 {
-        let (sina, cosa) = angle.sin_cos();
-        Mat4 {
-            x_axis: Vec4::new(cosa, 0.0, -sina, 0.0),
-            y_axis: Vec4::unit_y(),
-            z_axis: Vec4::new(sina, 0.0, cosa, 0.0),
-            w_axis: Vec4::unit_w(),
-        }
-    }
-
-    #[inline]
-    pub fn from_rotation_z(angle: Angle) -> Mat4 {
-        let (sina, cosa) = angle.sin_cos();
-        Mat4 {
-            x_axis: Vec4::new(cosa, sina, 0.0, 0.0),
-            y_axis: Vec4::new(-sina, cosa, 0.0, 0.0),
-            z_axis: Vec4::unit_z(),
-            w_axis: Vec4::unit_w(),
-        }
-    }
-
-    #[inline]
-    pub fn from_scale(scale: Vec3) -> Mat4 {
-        // TODO: shuffle
-        let (x, y, z) = scale.into();
-        Mat4 {
-            x_axis: Vec4::new(x, 0.0, 0.0, 0.0),
-            y_axis: Vec4::new(0.0, y, 0.0, 0.0),
-            z_axis: Vec4::new(0.0, 0.0, z, 0.0),
-            w_axis: Vec4::unit_w(),
-        }
     }
 
     #[cfg(all(target_feature = "sse2", not(feature = "no-simd")))]

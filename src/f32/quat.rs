@@ -1,4 +1,4 @@
-use super::{Angle, Quat, Vec3, Vec4};
+use super::{Angle, Mat4, Quat, Vec3, Vec4};
 use std::{
     fmt,
     ops::{Mul, MulAssign, Neg},
@@ -35,6 +35,66 @@ impl Quat {
     }
 
     #[inline]
+    pub fn from_rotation_matrix(mat: &Mat4) -> Quat {
+        // from DirectXMath XMQuaternionRotationMatrix
+        // TODO: sse2 version
+        let (m00, m01, m02, _m03) = mat.x_axis.into();
+        let (m10, m11, m12, _m13) = mat.y_axis.into();
+        let (m20, m21, m22, _m23) = mat.z_axis.into();
+        if m22 <= 0.0 {
+            // x^2 + y^2 >= z^2 + w^2
+            let dif10 = m11 - m00;
+            let omm22 = 1.0 - m22;
+            if dif10 <= 0.0 {
+                // x^2 >= y^2
+                let four_xsq = omm22 - dif10;
+                let inv4x = 0.5 / four_xsq.sqrt();
+                Quat::new(
+                    four_xsq * inv4x,
+                    (m01 + m10) * inv4x,
+                    (m02 + m20) * inv4x,
+                    (m12 - m21) * inv4x,
+                )
+            } else {
+                // y^2 >= x^2
+                let four_ysq = omm22 + dif10;
+                let inv4y = 0.5 / four_ysq.sqrt();
+                Quat::new(
+                    (m01 + m10) * inv4y,
+                    four_ysq * inv4y,
+                    (m12 + m21) * inv4y,
+                    (m20 - m02) * inv4y,
+                )
+            }
+        } else {
+            // z^2 + w^2 >= x^2 + y^2
+            let sum10 = m11 + m00;
+            let opm22 = 1.0 + m22;
+            if sum10 <= 0.0 {
+                // z^2 >= w^2
+                let four_zsq = opm22 - sum10;
+                let inv4z = 0.5 / four_zsq.sqrt();
+                Quat::new(
+                    (m02 + m20) * inv4z,
+                    (m12 + m21) * inv4z,
+                    four_zsq * inv4z,
+                    (m01 - m10) * inv4z,
+                )
+            } else {
+                // w^2 >= z^2
+                let four_wsq = opm22 + sum10;
+                let inv4w = 0.5 / four_wsq.sqrt();
+                Quat::new(
+                    (m12 - m21) * inv4w,
+                    (m20 - m02) * inv4w,
+                    (m01 - m10) * inv4w,
+                    four_wsq * inv4w,
+                )
+            }
+        }
+    }
+
+    #[inline]
     pub fn conjugate(self) -> Quat {
         let v: Vec4 = self.into();
         v.truncate().neg().extend(v.get_w()).into()
@@ -68,6 +128,12 @@ impl Quat {
         let inv_len = self.length_reciprocal();
         let v: Vec4 = self.into();
         v.mul(inv_len).into()
+    }
+
+    #[inline]
+    pub fn is_normalized(self) -> bool {
+        const THRESHOLD: f32 = 0.00001;
+        (self.length_squared() - 1.0).abs() < THRESHOLD
     }
 
     #[inline]

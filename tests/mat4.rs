@@ -54,7 +54,7 @@ fn test_mat4_from_axes() {
     ]
     .into();
     assert_eq!(MATRIX, Into::<[[f32; 4]; 4]>::into(a));
-    let b = Mat4::from_axes(
+    let b = Mat4::new(
         vec4(1.0, 2.0, 3.0, 4.0),
         vec4(5.0, 6.0, 7.0, 8.0),
         vec4(9.0, 10.0, 11.0, 12.0),
@@ -74,7 +74,7 @@ fn test_mat4_from_axes() {
 fn test_mat4_translation() {
     let translate = Mat4::from_translation(vec3(1.0, 2.0, 3.0));
     assert_eq!(
-        Mat4::from_axes(
+        Mat4::new(
             vec4(1.0, 0.0, 0.0, 0.0),
             vec4(0.0, 1.0, 0.0, 0.0),
             vec4(0.0, 0.0, 1.0, 0.0),
