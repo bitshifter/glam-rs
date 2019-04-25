@@ -23,8 +23,8 @@ impl Quat {
     pub fn from_ypr(yaw: Angle, pitch: Angle, roll: Angle) -> Quat {
         // From http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/index.htm
         let (s1, c1) = (yaw * 0.5).sin_cos();
-        let (s2, c2) = (pitch * 0.5).sin_cos();
-        let (s3, c3) = (roll * 0.5).sin_cos();
+        let (s2, c2) = (roll * 0.5).sin_cos();
+        let (s3, c3) = (pitch * 0.5).sin_cos();
         let c1c2 = c1 * c2;
         let s1s2 = s1 * s2;
         let w = c1c2 * c3 - s1s2 * s3;
