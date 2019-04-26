@@ -109,27 +109,29 @@ fn test_mat4_mul() {
 
 #[test]
 fn test_from_ypr() {
-    let y0 = Mat4::from_rotation_y(deg(30.0));
-    let y1 = Mat4::from_ypr(deg(30.0), deg(0.0), deg(0.0));
+    let zero = deg(0.0);
+    let yaw = deg(30.0);
+    let pitch = deg(60.0);
+    let roll = deg(90.0);
+    let y0 = Mat4::from_rotation_y(yaw);
+    let y1 = Mat4::from_ypr(yaw, zero, zero);
     assert_ulps_eq!(y0, y1);
 
-    let x0 = Mat4::from_rotation_x(deg(60.0));
-    let x1 = Mat4::from_ypr(deg(0.0), deg(60.0), deg(0.0));
+    let x0 = Mat4::from_rotation_x(pitch);
+    let x1 = Mat4::from_ypr(zero, pitch, zero);
     assert_ulps_eq!(x0, x1);
 
-    let z0 = Mat4::from_rotation_z(deg(90.0));
-    let z1 = Mat4::from_ypr(deg(0.0), deg(0.0), deg(90.0));
+    let z0 = Mat4::from_rotation_z(roll);
+    let z1 = Mat4::from_ypr(zero, zero, roll);
     assert_ulps_eq!(z0, z1);
 
     // TODO: this order is not what I expected... check Quat::from_ypr
-    let yx0 = Mat4::from_rotation_x(deg(60.0)) * Mat4::from_rotation_y(deg(30.0));
-    let yx1 = Mat4::from_ypr(deg(30.0), deg(60.0), deg(0.0));
+    let yx0 = x0 * y0;
+    let yx1 = Mat4::from_ypr(yaw, pitch, zero);
     assert_ulps_eq!(yx0, yx1);
 
-    let yxz0 = Mat4::from_rotation_x(deg(60.0))
-        * Mat4::from_rotation_z(deg(90.0))
-        * Mat4::from_rotation_y(deg(30.0));
-    let yxz1 = Mat4::from_ypr(deg(30.0), deg(60.0), deg(90.0));
+    let yxz0 = x0 * z0 * y0;
+    let yxz1 = Mat4::from_ypr(yaw, pitch, roll);
     assert_ulps_eq!(yxz0, yxz1);
 }
 

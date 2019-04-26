@@ -19,6 +19,24 @@ impl Quat {
     }
 
     #[inline]
+    pub fn from_rotation_x(angle: Angle) -> Quat {
+        let (s, c) = (angle * 0.5).sin_cos();
+        Quat::new(s, 0.0, 0.0, c)
+    }
+
+    #[inline]
+    pub fn from_rotation_y(angle: Angle) -> Quat {
+        let (s, c) = (angle * 0.5).sin_cos();
+        Quat::new(0.0, s, 0.0, c)
+    }
+
+    #[inline]
+    pub fn from_rotation_z(angle: Angle) -> Quat {
+        let (s, c) = (angle * 0.5).sin_cos();
+        Quat::new(0.0, 0.0, s, c)
+    }
+
+    #[inline]
     /// Create a quaternion from the given yaw (around y), pitch (around x) and roll (around z).
     pub fn from_ypr(yaw: Angle, pitch: Angle, roll: Angle) -> Quat {
         // From http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/index.htm

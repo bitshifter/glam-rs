@@ -1,5 +1,28 @@
-use crate::f32::{Mat4, Vec2, Vec3, Vec4};
+use crate::f32::{Mat4, Quat, Vec2, Vec3, Vec4};
 use approx::{AbsDiffEq, UlpsEq};
+
+impl AbsDiffEq for Quat {
+    type Epsilon = <f32 as AbsDiffEq>::Epsilon;
+    fn default_epsilon() -> Self::Epsilon {
+        f32::default_epsilon()
+    }
+    fn abs_diff_eq(&self, other: &Self, epsilon: Self::Epsilon) -> bool {
+        let q1 = self.as_ref();
+        let q2 = other.as_ref();
+        q1.abs_diff_eq(q2, epsilon)
+    }
+}
+
+impl UlpsEq for Quat {
+    fn default_max_ulps() -> u32 {
+        f32::default_max_ulps()
+    }
+    fn ulps_eq(&self, other: &Self, epsilon: Self::Epsilon, max_ulps: u32) -> bool {
+        let q1 = self.as_ref();
+        let q2 = other.as_ref();
+        q1.ulps_eq(q2, epsilon, max_ulps)
+    }
+}
 
 impl AbsDiffEq for Vec2 {
     type Epsilon = <f32 as AbsDiffEq>::Epsilon;
