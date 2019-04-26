@@ -16,6 +16,11 @@ impl Quat {
         Quat(0.0, 0.0, 0.0, 1.0)
     }
 
+    #[inlne]
+    pub(super) fn get_w(self) -> f32 {
+        self.3
+    }
+
     #[inline]
     pub fn from_slice_unaligned(slice: &[f32]) -> Quat {
         Quat(slice[0], slice[1], slice[2], slice[3])

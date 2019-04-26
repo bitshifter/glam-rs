@@ -29,6 +29,38 @@ impl Angle {
     pub fn sin_cos(self) -> (f32, f32) {
         scalar_sin_cos(self.0)
     }
+
+    #[inline]
+    pub fn acos(value: f32) -> Angle {
+        // from DirectXMath XMScalarAcos
+        // Clamp input to [-1,1].
+        let nonnegative = value >= 0.0;
+        let x = value.abs();
+        let mut omx = 1.0 - x;
+        if omx < 0.0 {
+            omx = 0.0;
+        }
+        let root = omx.sqrt();
+
+        // 7-degree minimax approximation
+        let mut result =
+            ((((((-0.0012624911 * x + 0.0066700901) * x - 0.0170881256) * x + 0.0308918810) * x
+                - 0.0501743046)
+                * x
+                + 0.0889789874)
+                * x
+                - 0.2145988016)
+                * x
+                + 1.5707963050;
+        result *= root;
+
+        // acos(x) = pi - acos(-x) when x < 0
+        Angle::from_radians(if nonnegative {
+            result
+        } else {
+            std::f32::consts::PI - result
+        })
+    }
 }
 
 impl PartialEq for Angle {

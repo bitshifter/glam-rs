@@ -111,6 +111,29 @@ impl Quat {
     }
 
     #[inline]
+    pub fn get_rotation_angle(self) -> Angle {
+        let w = self.get_w();
+        Angle::acos(w) * 2.0
+    }
+
+    #[inline]
+    pub fn get_rotation_axis(self) -> Vec3 {
+        let (x, y, z, w) = self.into();
+        let sin_theta_over_2sq = 1.0 - w * w;
+        if sin_theta_over_2sq <= 0.0 {
+            // panic?
+            return Vec3::unit_x();
+        }
+
+        let inv_sin_theta_over_2 = 1.0 / sin_theta_over_2sq.sqrt();
+        Vec3::new(
+            x * inv_sin_theta_over_2,
+            y * inv_sin_theta_over_2,
+            z * inv_sin_theta_over_2,
+        )
+    }
+
+    #[inline]
     pub fn conjugate(self) -> Quat {
         let v: Vec4 = self.into();
         v.truncate().neg().extend(v.get_w()).into()
