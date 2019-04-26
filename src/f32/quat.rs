@@ -40,15 +40,13 @@ impl Quat {
     /// Create a quaternion from the given yaw (around y), pitch (around x) and roll (around z).
     pub fn from_ypr(yaw: Angle, pitch: Angle, roll: Angle) -> Quat {
         // From http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/index.htm
-        let (s1, c1) = (yaw * 0.5).sin_cos();
-        let (s2, c2) = (roll * 0.5).sin_cos();
-        let (s3, c3) = (pitch * 0.5).sin_cos();
-        let c1c2 = c1 * c2;
-        let s1s2 = s1 * s2;
-        let w = c1c2 * c3 - s1s2 * s3;
-        let x = c1c2 * s3 + s1s2 * c3;
-        let y = s1 * c2 * c3 + c1 * s2 * s3;
-        let z = c1 * s2 * c3 - s1 * c2 * s3;
+        let (sy, cy) = (yaw * 0.5).sin_cos();
+        let (sr, cr) = (roll * 0.5).sin_cos();
+        let (sp, cp) = (pitch * 0.5).sin_cos();
+        let w = cy * cp * cr + sy * sp * sr;
+        let x = cy * sp * cr + sy * cp * sr;
+        let y = -cy * sp * sr + sy * cp * cr;
+        let z = -sy * sp * cr + cy * cp * sr;
         Quat::new(x, y, z, w)
     }
 

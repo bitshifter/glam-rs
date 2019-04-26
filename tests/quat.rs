@@ -2,7 +2,7 @@ use approx::assert_ulps_eq;
 use glam::f32::{deg, Quat};
 
 #[test]
-fn test_from_ypr() {
+fn test_quat_from_ypr() {
     let zero = deg(0.0);
     let yaw = deg(30.0);
     let pitch = deg(60.0);
