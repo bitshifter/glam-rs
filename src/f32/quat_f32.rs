@@ -16,7 +16,7 @@ impl Quat {
         Quat(0.0, 0.0, 0.0, 1.0)
     }
 
-    #[inlne]
+    #[inline]
     pub(super) fn get_w(self) -> f32 {
         self.3
     }
