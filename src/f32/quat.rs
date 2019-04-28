@@ -38,15 +38,14 @@ impl Quat {
 
     #[inline]
     /// Create a quaternion from the given yaw (around y), pitch (around x) and roll (around z).
-    pub fn from_ypr(yaw: Angle, pitch: Angle, roll: Angle) -> Quat {
-        // From http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/index.htm
-        let (sy, cy) = (yaw * 0.5).sin_cos();
-        let (sr, cr) = (roll * 0.5).sin_cos();
-        let (sp, cp) = (pitch * 0.5).sin_cos();
+    pub fn from_rotation_ypr(yaw: Angle, pitch: Angle, roll: Angle) -> Quat {
+        let (sy, cy) = (-0.5 * yaw).sin_cos();
+        let (sr, cr) = (-0.5 * roll).sin_cos();
+        let (sp, cp) = (-0.5 * pitch).sin_cos();
         let w = cy * cp * cr + sy * sp * sr;
-        let x = cy * sp * cr + sy * cp * sr;
-        let y = -cy * sp * sr + sy * cp * cr;
-        let z = -sy * sp * cr + cy * cp * sr;
+        let x = -cy * sp * cr - sy * cp * sr;
+        let y = cy * sp * sr - sy * cp * cr;
+        let z = sy * sp * cr - cy * cp * sr;
         Quat::new(x, y, z, w)
     }
 
@@ -186,10 +185,21 @@ impl Quat {
         result.normalize()
     }
 
-    // #[inline]
-    // pub fn slerp(self, rhs: Quat, t: f32) -> Quat {
-    //     unimplemented!();
-    // }
+    #[inline]
+    /// Multiplies two quaternions.
+    /// Note that due to floating point rounding the result may not be perfectly normalized.
+    /// Multiplication order is as follows:
+    /// `local_to_world = local_to_object * object_to_world`
+    pub fn mul_quat(self, rhs: Quat) -> Quat {
+        let (x0, y0, z0, w0) = self.into();
+        let (x1, y1, z1, w1) = rhs.into();
+
+        let x = (w1 * x0) + (x1 * w0) + (y1 * z0) - (z1 * y0);
+        let y = (w1 * y0) - (x1 * z0) + (y1 * w0) + (z1 * x0);
+        let z = (w1 * z0) + (x1 * y0) - (y1 * x0) + (z1 * w0);
+        let w = (w1 * w0) - (x1 * x0) - (y1 * y0) - (z1 * z0);
+        Quat::new(x, y, z, w)
+    }
 }
 
 impl fmt::Debug for Quat {
@@ -215,21 +225,14 @@ impl Mul<Quat> for Quat {
     type Output = Quat;
     #[inline]
     fn mul(self, rhs: Quat) -> Quat {
-        let (x0, y0, z0, w0) = self.into();
-        let (x1, y1, z1, w1) = rhs.into();
-
-        let x = (w1 * x0) + (x1 * w0) + (y1 * z0) - (z1 * y0);
-        let y = (w1 * y0) - (x1 * z0) + (y1 * w0) + (z1 * x0);
-        let z = (w1 * z0) + (x1 * y0) - (y1 * x0) + (z1 * w0);
-        let w = (w1 * w0) - (x1 * x0) - (y1 * y0) - (z1 * z0);
-        Quat::new(x, y, z, w)
+        self.mul_quat(rhs)
     }
 }
 
 impl MulAssign<Quat> for Quat {
     #[inline]
     fn mul_assign(&mut self, rhs: Quat) {
-        *self = self.mul(rhs);
+        *self = self.mul_quat(rhs);
     }
 }
 

@@ -114,23 +114,23 @@ fn test_from_ypr() {
     let pitch = deg(60.0);
     let roll = deg(90.0);
     let y0 = Mat4::from_rotation_y(yaw);
-    let y1 = Mat4::from_ypr(yaw, zero, zero);
+    let y1 = Mat4::from_rotation_ypr(yaw, zero, zero);
     assert_ulps_eq!(y0, y1);
 
     let x0 = Mat4::from_rotation_x(pitch);
-    let x1 = Mat4::from_ypr(zero, pitch, zero);
+    let x1 = Mat4::from_rotation_ypr(zero, pitch, zero);
     assert_ulps_eq!(x0, x1);
 
     let z0 = Mat4::from_rotation_z(roll);
-    let z1 = Mat4::from_ypr(zero, zero, roll);
+    let z1 = Mat4::from_rotation_ypr(zero, zero, roll);
     assert_ulps_eq!(z0, z1);
 
-    let yx0 = x0 * y0;
-    let yx1 = Mat4::from_ypr(yaw, pitch, zero);
+    let yx0 = y0 * x0;
+    let yx1 = Mat4::from_rotation_ypr(yaw, pitch, zero);
     assert_ulps_eq!(yx0, yx1);
 
-    let yxz0 = z0 * x0 * y0;
-    let yxz1 = Mat4::from_ypr(yaw, pitch, roll);
+    let yxz0 = y0 * x0 * z0;
+    let yxz1 = Mat4::from_rotation_ypr(yaw, pitch, roll);
     assert_ulps_eq!(yxz0, yxz1);
 }
 

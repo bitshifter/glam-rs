@@ -117,8 +117,8 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn from_ypr(yaw: Angle, pitch: Angle, roll: Angle) -> Mat4 {
-        let quat = Quat::from_ypr(yaw, pitch, roll);
+    pub fn from_rotation_ypr(yaw: Angle, pitch: Angle, roll: Angle) -> Mat4 {
+        let quat = Quat::from_rotation_ypr(yaw, pitch, roll);
         Mat4::from_quat(quat)
     }
 
@@ -555,6 +555,9 @@ impl Mat4 {
     }
 
     #[inline]
+    /// Multiplies two 4x4 matrices.
+    /// Multiplication order is as follows:
+    /// `local_to_world = local_to_object * local_to_world`
     pub fn mul_mat4(&self, rhs: &Mat4) -> Mat4 {
         let mut tmp = self.x_axis.dup_x().mul(rhs.x_axis);
         tmp = self.x_axis.dup_y().mul_add(rhs.y_axis, tmp);
@@ -619,12 +622,18 @@ impl Mat4 {
 // implemented here so they don't need to be duplicated between f32x4 and f32 versions
 impl Vec3 {
     #[inline]
+    /// Multiplies a 4x4 matrix and a 3D point.
+    /// Multiplication order is as follows:
+    /// `world_position = local_position.transform_mat4(local_to_world)`
     pub fn transform_mat4(self, rhs: &Mat4) -> Vec3 {
         // TODO: optimise
         self.extend(1.0).transform_mat4(rhs).truncate()
     }
 
     #[inline]
+    /// Multiplies a 4x4 matrix and a 3D direction vector. Translation is not applied.
+    /// Multiplication order is as follows:
+    /// `world_direction = local_direction.transform_mat4(local_to_world)`
     pub fn transform_normal_mat4(self, rhs: &Mat4) -> Vec3 {
         // TODO: optimise
         self.extend(0.0).transform_mat4(rhs).truncate()
@@ -634,6 +643,9 @@ impl Vec3 {
 // implemented here so they don't need to be duplicated between f32x4 and f32 versions
 impl Vec4 {
     #[inline]
+    /// Multiplies a 4x4 matrix and a 4D vector.
+    /// Multiplication order is as follows:
+    /// `world_position = local_position.transform_mat4(local_to_world)`
     pub fn transform_mat4(self, rhs: &Mat4) -> Vec4 {
         let mut tmp = self.dup_x().mul(rhs.get_x_axis());
         tmp = self.dup_y().mul_add(rhs.get_y_axis(), tmp);
