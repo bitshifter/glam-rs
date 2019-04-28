@@ -34,9 +34,9 @@ script:
 after_success: |
   if [[ "$TRAVIS_RUST_VERSION" == nightly ]]; then
     if [[ "$CARGO_FEATURES" == "no-simd" ]]; then
-      cargo tarpaulin --features no-simd --exclude-files src/fast_f32/mod.rs --exclude-files src/f32/vec3_f32x4.rs --exclude-files src/f32/vec4_f32x4.rs --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
+      cargo tarpaulin --features no-simd --exclude-files src/fast_f32/mod.rs --exclude-files src/f32/vec3_f32x4.rs --exclude-files src/f32/vec4_f32x4.rs --exclude-files src/f32/quat_sse2.rs --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
     else
-      cargo tarpaulin --exclude-files src/fast_f32/mod.rs --exclude-files src/f32/vec3_f32.rs --exclude-files src/f32/vec4_f32.rs --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
+      cargo tarpaulin --exclude-files src/fast_f32/mod.rs --exclude-files src/f32/vec3_f32.rs --exclude-files src/f32/vec4_f32.rs --exclude-files src/f32/quat_f32.rs --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
     fi
 
     # Uncomment the following two lines create and upload a report for codecov.io

@@ -21,11 +21,6 @@ impl Quat {
     }
 
     #[inline]
-    pub(super) fn get_w(self) -> f32 {
-        unsafe { _mm_cvtss_f32(_mm_shuffle_ps(self.0, self.0, 0b11_11_11_11)) }
-    }
-
-    #[inline]
     pub fn from_slice_unaligned(slice: &[f32]) -> Quat {
         assert!(slice.len() >= 4);
         unsafe { Quat(_mm_loadu_ps(slice.as_ptr())) }

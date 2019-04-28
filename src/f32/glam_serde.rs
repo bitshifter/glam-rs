@@ -1,4 +1,4 @@
-use crate::{Vec2, Vec3, Vec4};
+use crate::{Quat, Vec2, Vec3, Vec4};
 
 use serde::{
     de::{self, Deserialize, Deserializer, SeqAccess, Visitor},
@@ -43,7 +43,7 @@ impl Serialize for Vec4 {
         S: Serializer,
     {
         let (x, y, z, w) = self.into();
-        // 3 is the number of fields in the struct.
+        // 4 is the number of fields in the struct.
         let mut state = serializer.serialize_tuple_struct("Vec4", 4)?;
         state.serialize_field(&x)?;
         state.serialize_field(&y)?;
@@ -53,6 +53,22 @@ impl Serialize for Vec4 {
     }
 }
 
+#[cfg(feature = "serde")]
+impl Serialize for Quat {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let (x, y, z, w) = self.into();
+        // 4 is the number of fields in the struct.
+        let mut state = serializer.serialize_tuple_struct("Quat", 4)?;
+        state.serialize_field(&x)?;
+        state.serialize_field(&y)?;
+        state.serialize_field(&z)?;
+        state.serialize_field(&w)?;
+        state.end()
+    }
+}
 impl<'de> Deserialize<'de> for Vec2 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -161,5 +177,45 @@ impl<'de> Deserialize<'de> for Vec4 {
         }
 
         deserializer.deserialize_tuple_struct("Vec4", 4, Vec4Visitor)
+    }
+}
+
+impl<'de> Deserialize<'de> for Quat {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        struct QuatVisitor;
+
+        // TODO: Not sure why this line is reported ad uncovered
+        #[cfg_attr(tarpaulin, skip)]
+        impl<'de> Visitor<'de> for QuatVisitor {
+            type Value = Quat;
+
+            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                formatter.write_str("struct Vec2")
+            }
+
+            fn visit_seq<V>(self, mut seq: V) -> Result<Quat, V::Error>
+            where
+                V: SeqAccess<'de>,
+            {
+                let x = seq
+                    .next_element()?
+                    .ok_or_else(|| de::Error::invalid_length(0, &self))?;
+                let y = seq
+                    .next_element()?
+                    .ok_or_else(|| de::Error::invalid_length(1, &self))?;
+                let z = seq
+                    .next_element()?
+                    .ok_or_else(|| de::Error::invalid_length(2, &self))?;
+                let w = seq
+                    .next_element()?
+                    .ok_or_else(|| de::Error::invalid_length(3, &self))?;
+                Ok(Quat::new(x, y, z, w))
+            }
+        }
+
+        deserializer.deserialize_tuple_struct("Quat", 4, QuatVisitor)
     }
 }

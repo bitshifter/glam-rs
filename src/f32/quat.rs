@@ -110,26 +110,18 @@ impl Quat {
     }
 
     #[inline]
-    pub fn get_rotation_angle(self) -> Angle {
-        let w = self.get_w();
-        Angle::acos(w) * 2.0
-    }
-
-    #[inline]
-    pub fn get_rotation_axis(self) -> Vec3 {
+    pub fn get_axis_angle(self) -> (Vec3, Angle) {
+        const EPSILON: f32 = 1.0e-8;
+        const EPSILON_SQUARED: f32 = EPSILON * EPSILON;
         let (x, y, z, w) = self.into();
-        let sin_theta_over_2sq = 1.0 - w * w;
-        if sin_theta_over_2sq <= 0.0 {
-            // panic?
-            return Vec3::unit_x();
-        }
-
-        let inv_sin_theta_over_2 = 1.0 / sin_theta_over_2sq.sqrt();
-        Vec3::new(
-            x * inv_sin_theta_over_2,
-            y * inv_sin_theta_over_2,
-            z * inv_sin_theta_over_2,
-        )
+        let angle = Angle::acos(w) * 2.0;
+        let scale_sq = (1.0 - w * w).max(0.0);
+        let axis = if scale_sq >= EPSILON_SQUARED {
+            Vec3::new(x, y, z) / scale_sq.sqrt()
+        } else {
+            Vec3::unit_x()
+        };
+        (axis, angle)
     }
 
     #[inline]
