@@ -194,6 +194,19 @@ impl Quat {
     }
 }
 
+impl Vec3 {
+    #[inline]
+    /// Multiplies a quaternion and a 3D vector, rotating it.
+    /// Multiplication order is as follows:
+    /// `world_position = local_position * local_to_world`
+    pub fn transform_quat(self, rhs: Quat) -> Vec3 {
+        let vec_quat: Quat = self.extend(0.0).into();
+        let inv_self = rhs.conjugate();
+        let res_vec4: Vec4 = inv_self.mul_quat(vec_quat).mul_quat(rhs).into();
+        res_vec4.truncate()
+    }
+}
+
 impl fmt::Debug for Quat {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         let (x, y, z, w) = self.into();
@@ -225,6 +238,21 @@ impl MulAssign<Quat> for Quat {
     #[inline]
     fn mul_assign(&mut self, rhs: Quat) {
         *self = self.mul_quat(rhs);
+    }
+}
+
+impl Mul<Quat> for Vec3 {
+    type Output = Vec3;
+    #[inline]
+    fn mul(self, rhs: Quat) -> Vec3 {
+        self.transform_quat(rhs)
+    }
+}
+
+impl MulAssign<Quat> for Vec3 {
+    #[inline]
+    fn mul_assign(&mut self, rhs: Quat) {
+        *self = self.transform_quat(rhs);
     }
 }
 
