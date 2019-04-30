@@ -142,6 +142,11 @@ impl Vec2 {
     pub fn cmplt(self, rhs: Vec2) -> Vec2b {
         Vec2b(self.0.lt(&rhs.0), self.1.lt(&rhs.1))
     }
+
+    #[inline]
+    pub fn lerp(self, rhs: Self, s: f32) -> Self {
+        self + ((rhs - self) * s)
+    }
 }
 
 impl fmt::Display for Vec2 {
@@ -260,6 +265,20 @@ impl PartialEq for Vec2 {
     #[inline]
     fn eq(&self, rhs: &Vec2) -> bool {
         self.0 == rhs.0 && self.1 == rhs.1
+    }
+}
+
+impl AsRef<[f32; 2]> for Vec2 {
+    #[inline]
+    fn as_ref(&self) -> &[f32; 2] {
+        unsafe { &*(self as *const Vec2 as *const [f32; 2]) }
+    }
+}
+
+impl AsMut<[f32; 2]> for Vec2 {
+    #[inline]
+    fn as_mut(&mut self) -> &mut [f32; 2] {
+        unsafe { &mut *(self as *mut Vec2 as *mut [f32; 2]) }
     }
 }
 
