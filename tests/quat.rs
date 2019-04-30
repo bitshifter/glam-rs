@@ -1,5 +1,5 @@
 use approx::assert_ulps_eq;
-use glam::f32::{deg, quat, Quat, Vec3};
+use glam::f32::{deg, quat, Mat4, Quat, Vec3};
 use std::mem;
 
 #[test]
@@ -42,6 +42,9 @@ fn test_quat_rotation() {
     let yxz0 = y0 * x0 * z0;
     let yxz1 = Quat::from_rotation_ypr(yaw, pitch, roll);
     assert_ulps_eq!(yxz0, yxz1);
+
+    let yxz2 = Quat::from_rotation_mat4(&Mat4::from_quat(yxz0));
+    assert_ulps_eq!(yxz0, yxz2);
 }
 
 #[test]

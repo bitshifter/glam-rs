@@ -50,7 +50,7 @@ impl Quat {
     }
 
     #[inline]
-    pub fn from_rotation_matrix(mat: &Mat4) -> Quat {
+    pub fn from_rotation_mat4(mat: &Mat4) -> Quat {
         // from DirectXMath XMQuaternionRotationMatrix
         // TODO: sse2 version
         let (m00, m01, m02, _m03) = mat.x_axis.into();
