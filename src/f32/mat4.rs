@@ -634,7 +634,7 @@ impl Vec3 {
     /// Multiplies a 4x4 matrix and a 3D direction vector. Translation is not applied.
     /// Multiplication order is as follows:
     /// `world_direction = local_direction.transform_mat4(local_to_world)`
-    pub fn transform_normal_mat4(self, rhs: &Mat4) -> Vec3 {
+    pub fn rotate_mat4(self, rhs: &Mat4) -> Vec3 {
         // TODO: optimise
         self.extend(0.0).transform_mat4(rhs).truncate()
     }
@@ -725,6 +725,22 @@ impl Mul<&Mat4> for Mat4 {
     }
 }
 
+impl Mul<Mat4> for Vec3 {
+    type Output = Vec3;
+    #[inline]
+    fn mul(self, rhs: Mat4) -> Vec3 {
+        self.transform_mat4(&rhs)
+    }
+}
+
+impl Mul<&Mat4> for Vec3 {
+    type Output = Vec3;
+    #[inline]
+    fn mul(self, rhs: &Mat4) -> Vec3 {
+        self.transform_mat4(rhs)
+    }
+}
+
 impl Mul<Mat4> for Vec4 {
     type Output = Vec4;
     #[inline]
@@ -732,6 +748,7 @@ impl Mul<Mat4> for Vec4 {
         self.transform_mat4(&rhs)
     }
 }
+
 impl Mul<&Mat4> for Vec4 {
     type Output = Vec4;
     #[inline]

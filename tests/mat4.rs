@@ -101,9 +101,9 @@ fn test_from_rotation() {
 fn test_mat4_mul() {
     let mat_a = Mat4::from_axis_angle(Vec3::unit_z(), deg(90.0));
     // TODO: need to create a matrix with rotation and translation, not mul them togehter
-    let result3 = Vec3::unit_y().transform_normal_mat4(&mat_a);
+    let result3 = Vec3::unit_y().rotate_mat4(&mat_a);
     assert_ulps_eq!(vec3(-1.0, 0.0, 0.0), result3);
-    let result4 = Vec4::unit_y() * &mat_a;
+    let result4 = Vec4::unit_y().transform_mat4(&mat_a);
     assert_ulps_eq!(vec4(-1.0, 0.0, 0.0, 0.0), result4);
 }
 
@@ -220,5 +220,5 @@ fn test_mat4_look_at() {
     let m = Mat4::look_at(eye, center, up);
     let point = Vec3::new(1.0, 0.0, 0.0);
     let view_point = Vec3::new(0.0, 1.0, -5.0);
-    assert_ulps_eq!(point.transform_mat4(&m), view_point);
+    assert_ulps_eq!(point * &m, view_point);
 }
