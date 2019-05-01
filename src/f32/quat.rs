@@ -116,12 +116,11 @@ impl Quat {
         let (x, y, z, w) = self.into();
         let angle = Angle::acos(w) * 2.0;
         let scale_sq = (1.0 - w * w).max(0.0);
-        let axis = if scale_sq >= EPSILON_SQUARED {
-            Vec3::new(x, y, z) / scale_sq.sqrt()
+        if scale_sq >= EPSILON_SQUARED {
+            (Vec3::new(x, y, z) / scale_sq.sqrt(), angle)
         } else {
-            Vec3::unit_x()
-        };
-        (axis, angle)
+            (Vec3::unit_x(), angle)
+        }
     }
 
     #[inline]

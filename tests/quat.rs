@@ -1,5 +1,5 @@
 use approx::assert_ulps_eq;
-use glam::f32::{deg, quat, Mat4, Quat, Vec3};
+use glam::f32::{deg, rad, quat, Mat4, Quat, Vec3};
 use std::mem;
 
 #[test]
@@ -25,6 +25,8 @@ fn test_quat_rotation() {
     assert_ulps_eq!(x0, x1);
     let x2 = Quat::from_axis_angle(Vec3::unit_x(), pitch);
     assert_ulps_eq!(x0, x2);
+    let x3 = Quat::from_rotation_mat4(&Mat4::from_rotation_x(deg(180.0)));
+    assert_ulps_eq!(Quat::from_rotation_x(deg(180.0)), x3);
 
     let z0 = Quat::from_rotation_z(roll);
     let (axis, angle) = z0.get_axis_angle();
@@ -43,8 +45,17 @@ fn test_quat_rotation() {
     let yxz1 = Quat::from_rotation_ypr(yaw, pitch, roll);
     assert_ulps_eq!(yxz0, yxz1);
 
+    // use the conjugate of z0 to remove the rotation from yxz0
+    let yx2 = yxz0 * z0.conjugate();
+    assert_ulps_eq!(yx0, yx2);
+
     let yxz2 = Quat::from_rotation_mat4(&Mat4::from_quat(yxz0));
     assert_ulps_eq!(yxz0, yxz2);
+
+    // if near identity, just returns x axis and 0 rotation
+    let (axis, angle) = Quat::identity().get_axis_angle();
+    assert_eq!(axis, Vec3::unit_x());
+    assert_eq!(angle, rad(0.0));
 }
 
 #[test]
