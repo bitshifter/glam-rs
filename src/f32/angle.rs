@@ -70,21 +70,6 @@ impl PartialEq for Angle {
     }
 }
 
-impl Div<Angle> for Angle {
-    type Output = Angle;
-    #[inline]
-    fn div(self, rhs: Angle) -> Angle {
-        Angle(self.0 / rhs.0)
-    }
-}
-
-impl DivAssign<Angle> for Angle {
-    #[inline]
-    fn div_assign(&mut self, rhs: Angle) {
-        self.0 /= rhs.0;
-    }
-}
-
 impl Div<f32> for Angle {
     type Output = Angle;
     #[inline]
@@ -97,21 +82,6 @@ impl DivAssign<f32> for Angle {
     #[inline]
     fn div_assign(&mut self, rhs: f32) {
         self.0 /= rhs;
-    }
-}
-
-impl Mul<Angle> for Angle {
-    type Output = Angle;
-    #[inline]
-    fn mul(self, rhs: Angle) -> Angle {
-        Angle(self.0 * rhs.0)
-    }
-}
-
-impl MulAssign<Angle> for Angle {
-    #[inline]
-    fn mul_assign(&mut self, rhs: Angle) {
-        self.0 *= rhs.0;
     }
 }
 
