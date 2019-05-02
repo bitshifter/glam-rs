@@ -1,5 +1,5 @@
 use approx::assert_ulps_eq;
-use glam::f32::{deg, rad, quat, Mat4, Quat, Vec3};
+use glam::f32::{deg, quat, rad, Mat4, Quat, Vec3};
 use std::mem;
 
 #[test]

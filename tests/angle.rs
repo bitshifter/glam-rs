@@ -40,5 +40,4 @@ fn test_angle() {
     assert_eq!(rad(0.0), a);
 
     assert_eq!(rad(-consts::PI), -rad(consts::PI));
-
 }

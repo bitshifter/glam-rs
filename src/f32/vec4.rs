@@ -20,4 +20,3 @@ impl AsMut<[f32; 4]> for Vec4 {
         unsafe { &mut *(self as *mut Vec4 as *mut [f32; 4]) }
     }
 }
-

@@ -47,4 +47,3 @@ pub use glam_approx::*;
 mod glam_serde;
 #[cfg(feature = "serde")]
 pub use glam_serde::*;
-
