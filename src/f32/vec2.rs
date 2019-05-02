@@ -28,6 +28,11 @@ impl Vec2 {
     }
 
     #[inline]
+    pub fn one() -> Vec2 {
+        Vec2(1.0, 1.0)
+    }
+
+    #[inline]
     pub fn new(x: f32, y: f32) -> Vec2 {
         Vec2(x, y)
     }
@@ -141,6 +146,11 @@ impl Vec2 {
     #[inline]
     pub fn cmplt(self, rhs: Vec2) -> Vec2b {
         Vec2b(self.0.lt(&rhs.0), self.1.lt(&rhs.1))
+    }
+
+    #[inline]
+    pub fn reciprocal(self) -> Self {
+        Self::one() / self
     }
 
     #[inline]

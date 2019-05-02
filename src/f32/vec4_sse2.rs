@@ -53,6 +53,11 @@ impl Vec4 {
     }
 
     #[inline]
+    pub fn one() -> Vec4 {
+        unsafe { Vec4(_mm_set1_ps(1.0)) }
+    }
+
+    #[inline]
     pub fn unit_x() -> Vec4 {
         unsafe {
             Vec4(_mm_load_ps(

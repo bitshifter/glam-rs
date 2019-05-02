@@ -41,6 +41,11 @@ impl Vec3 {
     }
 
     #[inline]
+    pub fn one() -> Vec3 {
+        unsafe { Vec3(_mm_set1_ps(1.0)) }
+    }
+
+    #[inline]
     pub fn new(x: f32, y: f32, z: f32) -> Vec3 {
         unsafe { Vec3(_mm_set_ps(z, z, y, x)) }
     }

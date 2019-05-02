@@ -26,6 +26,11 @@ impl Vec3 {
     }
 
     #[inline]
+    pub fn one() -> Vec3 {
+        Vec4(1.0, 1.0, 1.0)
+    }
+
+    #[inline]
     pub fn new(x: f32, y: f32, z: f32) -> Vec3 {
         Vec3(x, y, z)
     }

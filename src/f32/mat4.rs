@@ -1,6 +1,6 @@
 use super::{
     super::Angle,
-    {Quat, Vec3, Vec4},
+    {Quat, TransformTR, TransformTRS, Vec3, Vec4},
 };
 
 #[cfg(feature = "rand")]
@@ -18,6 +18,29 @@ pub fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat4 {
         z_axis,
         w_axis,
     }
+}
+
+#[inline]
+fn quat_to_axes(rotation: Quat) -> (Vec4, Vec4, Vec4) {
+    debug_assert!(rotation.is_normalized());
+    let (x, y, z, w) = rotation.into();
+    let x2 = x + x;
+    let y2 = y + y;
+    let z2 = z + z;
+    let xx = x * x2;
+    let xy = x * y2;
+    let xz = x * z2;
+    let yy = y * y2;
+    let yz = y * z2;
+    let zz = z * z2;
+    let wx = w * x2;
+    let wy = w * y2;
+    let wz = w * z2;
+
+    let x_axis = Vec4::new(1.0 - (yy + zz), xy + wz, xz - wy, 0.0);
+    let y_axis = Vec4::new(xy - wz, 1.0 - (xx + zz), yz + wx, 0.0);
+    let z_axis = Vec4::new(xz + wy, yz - wx, 1.0 - (xx + yy), 0.0);
+    (x_axis, y_axis, z_axis)
 }
 
 #[derive(Copy, Clone, Debug)]
@@ -60,26 +83,31 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn from_quat(quat: Quat) -> Mat4 {
-        debug_assert!(quat.is_normalized());
-        let (x, y, z, w) = quat.into();
+    pub fn from_transform_trs(trs: &TransformTRS) -> Mat4 {
+        let (x_axis, y_axis, z_axis) = quat_to_axes(trs.rotation);
+        let (scale_x, scale_y, scale_z) = trs.scale.into();
+        Mat4 {
+            x_axis: x_axis * scale_x,
+            y_axis: y_axis * scale_y,
+            z_axis: z_axis * scale_z,
+            w_axis: trs.translation.extend(1.0),
+        }
+    }
 
-        let x2 = x + x;
-        let y2 = y + y;
-        let z2 = z + z;
-        let xx = x * x2;
-        let xy = x * y2;
-        let xz = x * z2;
-        let yy = y * y2;
-        let yz = y * z2;
-        let zz = z * z2;
-        let wx = w * x2;
-        let wy = w * y2;
-        let wz = w * z2;
+    #[inline]
+    pub fn from_transform_tr(tr: &TransformTR) -> Mat4 {
+        let (x_axis, y_axis, z_axis) = quat_to_axes(tr.rotation);
+        Mat4 {
+            x_axis,
+            y_axis,
+            z_axis,
+            w_axis: tr.translation.extend(1.0),
+        }
+    }
 
-        let x_axis = Vec4::new(1.0 - (yy + zz), xy + wz, xz - wy, 0.0);
-        let y_axis = Vec4::new(xy - wz, 1.0 - (xx + zz), yz + wx, 0.0);
-        let z_axis = Vec4::new(xz + wy, yz - wx, 1.0 - (xx + yy), 0.0);
+    #[inline]
+    pub fn from_quat(rotation: Quat) -> Mat4 {
+        let (x_axis, y_axis, z_axis) = quat_to_axes(rotation);
         Mat4 {
             x_axis,
             y_axis,

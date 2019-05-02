@@ -6,6 +6,7 @@ mod quat;
 mod quat_f32;
 #[cfg(all(target_feature = "sse2", not(feature = "no-simd")))]
 mod quat_sse2;
+mod transform;
 mod vec2;
 mod vec3;
 #[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
@@ -26,6 +27,7 @@ pub use quat::quat;
 pub use quat_f32::*;
 #[cfg(all(target_feature = "sse2", not(feature = "no-simd")))]
 pub use quat_sse2::*;
+pub use transform::*;
 pub use vec2::*;
 pub use vec3::*;
 #[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]

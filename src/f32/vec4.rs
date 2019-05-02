@@ -2,6 +2,12 @@ use super::Vec4;
 
 impl Vec4 {
     #[inline]
+    pub fn reciprocal(self) -> Self {
+        // TODO: Optimize
+        Self::one() / self
+    }
+
+    #[inline]
     pub fn lerp(self, rhs: Self, s: f32) -> Self {
         self + ((rhs - self) * s)
     }
