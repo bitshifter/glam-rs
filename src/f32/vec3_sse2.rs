@@ -136,6 +136,21 @@ impl Vec3 {
     }
 
     #[inline]
+    pub(crate) fn dup_x(self) -> Self {
+        unsafe { Self(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_00)) }
+    }
+
+    #[inline]
+    pub(crate) fn dup_y(self) -> Self {
+        unsafe { Self(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_01)) }
+    }
+
+    #[inline]
+    pub(crate) fn dup_z(self) -> Self {
+        unsafe { Self(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_10)) }
+    }
+
+    #[inline]
     pub fn dot(self, rhs: Vec3) -> f32 {
         unsafe {
             let x2_y2_z2_w2 = _mm_mul_ps(self.0, rhs.0);
@@ -479,5 +494,15 @@ impl Vec3b {
     #[inline]
     pub fn all(&self) -> bool {
         unsafe { (_mm_movemask_ps(self.0) & 0x7) == 0x7 }
+    }
+
+    #[inline]
+    pub fn select(self, if_true: Vec3, if_false: Vec3) -> Vec3 {
+        unsafe {
+            Vec3(_mm_or_ps(
+                _mm_andnot_ps(self.0, if_false.0),
+                _mm_and_ps(if_true.0, self.0),
+            ))
+        }
     }
 }

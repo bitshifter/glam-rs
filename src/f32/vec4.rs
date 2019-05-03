@@ -2,6 +2,12 @@ use super::Vec4;
 
 impl Vec4 {
     #[inline]
+    pub fn sign(self) -> Self {
+        let mask = self.cmpge(Self::zero());
+        mask.select(Self::splat(1.0), Self::splat(-1.0))
+    }
+
+    #[inline]
     pub fn reciprocal(self) -> Self {
         // TODO: Optimize
         Self::one() / self

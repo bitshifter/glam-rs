@@ -538,17 +538,27 @@ pub struct Vec4b(__m128);
 
 impl Vec4b {
     #[inline]
-    pub fn mask(&self) -> u32 {
+    pub fn mask(self) -> u32 {
         unsafe { (_mm_movemask_ps(self.0) as u32) }
     }
 
     #[inline]
-    pub fn any(&self) -> bool {
+    pub fn any(self) -> bool {
         unsafe { _mm_movemask_ps(self.0) != 0 }
     }
 
     #[inline]
-    pub fn all(&self) -> bool {
+    pub fn all(self) -> bool {
         unsafe { _mm_movemask_ps(self.0) == 0xf }
+    }
+
+    #[inline]
+    pub fn select(self, if_true: Vec4, if_false: Vec4) -> Vec4 {
+        unsafe {
+            Vec4(_mm_or_ps(
+                _mm_andnot_ps(self.0, if_false.0),
+                _mm_and_ps(if_true.0, self.0),
+            ))
+        }
     }
 }

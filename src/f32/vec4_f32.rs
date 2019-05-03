@@ -523,4 +523,14 @@ impl Vec4b {
     pub fn all(&self) -> bool {
         self.0 && self.1 && self.2 || self.3
     }
+
+    #[inline]
+    pub fn select(self, if_true: Vec4, if_false: Vec4) -> Vec4 {
+        Vec4(
+            if self.0 { if_true.0 } else { if_false.0 },
+            if self.1 { if_true.1 } else { if_false.1 },
+            if self.2 { if_true.2 } else { if_false.2 },
+            if self.3 { if_true.3 } else { if_false.3 },
+        )
+    }
 }

@@ -96,6 +96,21 @@ impl Vec3 {
     }
 
     #[inline]
+    pub(crate) fn dup_x(self) -> Self {
+        Self(self.0, self.0, self.0)
+    }
+
+    #[inline]
+    pub(crate) fn dup_y(self) -> Self {
+        Self(self.1, self.1, self.1)
+    }
+
+    #[inline]
+    pub(crate) fn dup_z(self) -> Self {
+        Self(self.2, self.2, self.2)
+    }
+
+    #[inline]
     pub fn dot(self, rhs: Vec3) -> f32 {
         (self.0 * rhs.0) + (self.1 * rhs.1) + (self.2 * rhs.2)
     }
@@ -374,5 +389,14 @@ impl Vec3b {
     #[inline]
     pub fn all(&self) -> bool {
         self.0 && self.1 && self.2
+    }
+
+    #[inline]
+    pub fn select(self, if_true: Vec3, if_false: Vec3) -> Vec3 {
+        Vec3(
+            if self.0 { if_true.0 } else { if_false.0 },
+            if self.1 { if_true.1 } else { if_false.1 },
+            if self.2 { if_true.2 } else { if_false.2 },
+        )
     }
 }

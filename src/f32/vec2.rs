@@ -149,6 +149,12 @@ impl Vec2 {
     }
 
     #[inline]
+    pub fn sign(self) -> Self {
+        let mask = self.cmpge(Self::zero());
+        mask.select(Self::splat(1.0), Self::splat(-1.0))
+    }
+
+    #[inline]
     pub fn reciprocal(self) -> Self {
         Self::one() / self
     }
@@ -366,5 +372,13 @@ impl Vec2b {
     #[inline]
     pub fn all(self) -> bool {
         self.0 && self.1
+    }
+
+    #[inline]
+    pub fn select(self, if_true: Vec2, if_false: Vec2) -> Vec2 {
+        Vec2(
+            if self.0 { if_true.0 } else { if_false.0 },
+            if self.1 { if_true.1 } else { if_false.1 },
+        )
     }
 }

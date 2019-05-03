@@ -208,6 +208,13 @@ fn test_vec4_slice() {
     assert_eq!(a, d);
 }
 
+#[test]
+fn test_vec4_sign() {
+    assert_eq!(Vec4::zero().sign(), Vec4::one());
+    assert_eq!(Vec4::one().sign(), Vec4::one());
+    assert_eq!((-Vec4::one()).sign(), -Vec4::one());
+}
+
 // #[test]
 // fn dup_element() {
 //     let a = vec4(1.0, 2.0, 3.0, 4.0);
