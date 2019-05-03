@@ -25,11 +25,11 @@ impl TransformSRT {
     }
 
     #[inline]
-    pub fn from_transform_tr(tr: &TransformRT, scale: Vec3) -> Self {
+    pub fn from_transform_rt(scale: Vec3, rt: &TransformRT) -> Self {
         Self {
             scale,
-            rotation: tr.rotation,
-            translation: tr.translation,
+            rotation: rt.rotation,
+            translation: rt.translation,
         }
     }
 
@@ -44,9 +44,9 @@ impl TransformSRT {
 
     #[inline]
     pub fn inverse(&self) -> Self {
-        let rotation = self.rotation.conjugate();
-        let translation = -(self.translation * rotation);
         let scale = self.scale.reciprocal();
+        let rotation = self.rotation.conjugate();
+        let translation = -((self.translation * scale) * rotation);
         Self {
             scale,
             rotation,

@@ -32,7 +32,7 @@ fn test_transform_new() {
 
     assert_eq!(tr, tr);
     assert_eq!(trs, trs);
-    assert_eq!(trs, TransformSRT::from_transform_tr(&tr, s));
+    assert_eq!(trs, TransformSRT::from_transform_rt(s, &tr));
 }
 
 #[test]
@@ -55,11 +55,10 @@ fn test_transform_mul() {
     let v0 = Vec3::unit_x();
     let v1 = v0 * trs;
     assert_ulps_eq!(v1, ((v0 * s) * r) + t);
-    // TODO: this is failing unexpectedly
-    // let inv_trs = trs.inverse();
-    // let v2 = v1 * inv_trs;
-    // assert_ulps_eq!(v0, v2);
+    let inv_trs = trs.inverse();
+    let v2 = v1 * inv_trs;
+    assert_ulps_eq!(v0, v2);
     
     assert_eq!(trs * TransformSRT::identity(), trs);
-    // assert_eq!(trs * inv_trs, TransformSRT::identity());
+    assert_eq!(trs * inv_trs, TransformSRT::identity());
 }
