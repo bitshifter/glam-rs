@@ -1,6 +1,6 @@
 use super::{
     super::Angle,
-    {Quat, TransformTR, TransformTRS, Vec3, Vec4},
+    {Quat, TransformRT, TransformSRT, Vec3, Vec4},
 };
 
 #[cfg(feature = "rand")]
@@ -83,7 +83,7 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn from_transform_trs(trs: &TransformTRS) -> Mat4 {
+    pub fn from_transform_srt(trs: &TransformSRT) -> Mat4 {
         let (x_axis, y_axis, z_axis) = quat_to_axes(trs.rotation);
         let (scale_x, scale_y, scale_z) = trs.scale.into();
         Mat4 {
@@ -95,7 +95,7 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn from_transform_tr(tr: &TransformTR) -> Mat4 {
+    pub fn from_transform_rt(tr: &TransformRT) -> Mat4 {
         let (x_axis, y_axis, z_axis) = quat_to_axes(tr.rotation);
         Mat4 {
             x_axis,

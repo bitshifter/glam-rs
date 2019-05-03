@@ -5,17 +5,27 @@
 
 Experimenting with vector math libraries.
 
+A simple and fast 3D math library for games and graphics.
+
 This will change a lot, don't use it :)
 
+Design decisions:
+* Only f32 implementations for now (no f64)
+* All Vec types have SSE2 version, everything is 16byte aligned (even Vec2)
+* Row vectors, multiplications are applied from left to right
+	* vector1 = vector0 * transform
+* Rotation is right handed (might change)
+* Coordinate space is left handed, with +Z forward, +Y up and +X right - only really relevant when creating rotations from euler angles
+* Types so far:
+  * Angle, Vec2, Vec3, Vec4, Quat, Mat4, TransformRT, TransformSRT
+* Dependencies are optional (e.g. mint, rand and serde)
+* Idiomatic Rust, e.g. methods instead of free functions
+
 Design goals:
-* A simple and fast 3D math library for games and graphics
 * Row vectors instead of column vectors (for mul operator order)
 * Implemented with SIMD (only SSE2 for now)
 * No generics necessary - only f32 supported (although f64 should be feasible)
 * No traits necessary
-* Vector types are always 16 byte aligned
-* Dependencies are optional (e.g. mint, rand and serde)
-* Idiomatic Rust, e.g. methods instead of free functions
 
 Potential goals:
 * Experimental fast-math scalar implementation
@@ -25,5 +35,7 @@ Rejected goals:
 
 Inspired by a bunch of different math libraries in different ways:
 * cgmath
-* DirectX Math
-* Realtime Math
+* nalgebra_glm
+* DirectXMath
+* DirectXTK SimpleMath
+* RealtimeMath

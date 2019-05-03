@@ -1,5 +1,5 @@
 use approx::assert_ulps_eq;
-use glam::*;
+use glam::f32::*;
 
 const IDENTITY: [[f32; 4]; 4] = [
     [1.0, 0.0, 0.0, 0.0],
