@@ -1,5 +1,5 @@
 use approx::assert_ulps_eq;
-use glam::f32::{deg, quat, rad, Mat4, Quat, Vec3};
+use glam::f32::{deg, quat, rad, Mat4, Quat, Vec3, Vec4};
 use std::mem;
 
 #[test]
@@ -93,6 +93,27 @@ fn test_quat_new() {
     let q1 = Quat::from(&a1);
     let a2: [f32; 4] = (&q1).into();
     assert_eq!(a1, a2);
+}
+
+#[test]
+fn test_quat_funcs() {
+    let q0 = Quat::from_rotation_ypr(deg(45.0), deg(180.0), deg(90.0));
+    assert!(q0.is_normalized());
+    assert_ulps_eq!(q0.length_squared(), 1.0);
+    assert_ulps_eq!(q0.length(), 1.0);
+    assert_ulps_eq!(q0.length_reciprocal(), 1.0);
+    assert_ulps_eq!(q0, q0.normalize());
+
+    assert_ulps_eq!(q0.dot(q0), 1.0);
+    assert_ulps_eq!(q0.dot(q0), 1.0);
+
+    let q1 = Quat::from(Vec4::from(q0) * 2.0);
+    assert!(!q1.is_normalized());
+    assert_ulps_eq!(q1.length_squared(), 4.0);
+    assert_ulps_eq!(q1.length(), 2.0);
+    assert_ulps_eq!(q1.length_reciprocal(), 0.5);
+    assert_ulps_eq!(q0, q1.normalize());
+    assert_ulps_eq!(q0.dot(q1), 2.0);
 }
 
 #[test]
