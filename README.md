@@ -14,7 +14,7 @@ Design decisions:
 * All Vec types have SSE2 version, everything is 16byte aligned (even Vec2)
 * Row vectors, multiplications are applied from left to right
 	* vector1 = vector0 * transform
-* Rotation is right handed (might change)
+* Rotation is left handed (+ve rotation is counter clockwise around axis)
 * Coordinate space is left handed, with +Z forward, +Y up and +X right - only really relevant when creating rotations from euler angles
 * Types so far:
   * Angle, Vec2, Vec3, Vec4, Quat, Mat4, TransformRT, TransformSRT
