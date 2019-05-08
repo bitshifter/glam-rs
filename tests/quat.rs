@@ -96,6 +96,28 @@ fn test_quat_new() {
 }
 
 #[test]
+fn test_quat_mul_vec() {
+    let rz = Quat::from_rotation_z(deg(90.0));
+    assert_ulps_eq!(Vec3::unit_y(), Vec3::unit_x() * rz);
+    assert_ulps_eq!(Vec3::unit_y(), Vec3::unit_x() * -rz);
+    assert_ulps_eq!(-Vec3::unit_x(), Vec3::unit_y() * rz);
+    assert_ulps_eq!(-Vec3::unit_x(), Vec3::unit_y() * -rz);
+
+    let rx = Quat::from_rotation_x(deg(90.0));
+    assert_ulps_eq!(Vec3::unit_x(), Vec3::unit_x() * rx);
+    assert_ulps_eq!(Vec3::unit_x(), Vec3::unit_x() * -rx);
+    assert_ulps_eq!(Vec3::unit_z(), Vec3::unit_y() * rx);
+    assert_ulps_eq!(Vec3::unit_z(), Vec3::unit_y() * -rx);
+
+    let rxz = rx * rz;
+    assert_ulps_eq!(Vec3::unit_y(), Vec3::unit_x() * rxz);
+    assert_ulps_eq!(Vec3::unit_z(), Vec3::unit_y() * rxz);
+    let rzx = rz * rx;
+    assert_ulps_eq!(Vec3::unit_z(), Vec3::unit_x() * rzx);
+    assert_ulps_eq!(-Vec3::unit_x(), Vec3::unit_y() * rzx);
+}
+
+#[test]
 fn test_quat_funcs() {
     let q0 = Quat::from_rotation_ypr(deg(45.0), deg(180.0), deg(90.0));
     assert!(q0.is_normalized());
