@@ -1,5 +1,11 @@
-use super::{Mat4, Quat, Vec3};
+use super::{Angle, Mat4, Quat, Vec3};
 use std::ops::Mul;
+
+#[cfg(feature = "rand")]
+use rand::{
+    distributions::{Distribution, Standard},
+    Rng,
+};
 
 #[derive(Copy, Clone, Debug)]
 pub struct TransformSRT {
@@ -320,5 +326,42 @@ impl From<&TransformRT> for TransformSRT {
             rotation: tr.rotation,
             scale: Vec3::one(),
         }
+    }
+}
+
+#[cfg(feature = "rand")]
+impl Distribution<TransformRT> for Standard {
+    #[inline]
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> TransformRT {
+        TransformRT::new(
+            Quat::from_rotation_ypr(rng.gen::<Angle>(), rng.gen::<Angle>(), rng.gen::<Angle>()),
+            Vec3::new(
+                rng.gen_range(std::f32::MIN, std::f32::MAX),
+                rng.gen_range(std::f32::MIN, std::f32::MAX),
+                rng.gen_range(std::f32::MIN, std::f32::MAX),
+            ),
+        )
+    }
+}
+
+#[cfg(feature = "rand")]
+impl Distribution<TransformSRT> for Standard {
+    #[inline]
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> TransformSRT {
+        let mut gen_non_zero = || loop {
+            let f: f32 = rng.gen_range(std::f32::MIN, std::f32::MAX);
+            if f.abs() > std::f32::MIN_POSITIVE {
+                return f;
+            }
+        };
+        TransformSRT::new(
+            Vec3::new(gen_non_zero(), gen_non_zero(), gen_non_zero()),
+            Quat::from_rotation_ypr(rng.gen::<Angle>(), rng.gen::<Angle>(), rng.gen::<Angle>()),
+            Vec3::new(
+                rng.gen_range(std::f32::MIN, std::f32::MAX),
+                rng.gen_range(std::f32::MIN, std::f32::MAX),
+                rng.gen_range(std::f32::MIN, std::f32::MAX),
+            ),
+        )
     }
 }

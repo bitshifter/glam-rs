@@ -818,6 +818,34 @@ impl PartialEq for Mat4 {
     }
 }
 
+impl From<TransformSRT> for Mat4 {
+    #[inline]
+    fn from(srt: TransformSRT) -> Self {
+        Mat4::from_transform_srt(&srt)
+    }
+}
+
+impl From<&TransformSRT> for Mat4 {
+    #[inline]
+    fn from(srt: &TransformSRT) -> Self {
+        Mat4::from_transform_srt(srt)
+    }
+}
+
+impl From<TransformRT> for Mat4 {
+    #[inline]
+    fn from(rt: TransformRT) -> Self {
+        Mat4::from_transform_rt(&rt)
+    }
+}
+
+impl From<&TransformRT> for Mat4 {
+    #[inline]
+    fn from(rt: &TransformRT) -> Self {
+        Mat4::from_transform_rt(rt)
+    }
+}
+
 impl From<[[f32; 4]; 4]> for Mat4 {
     #[inline]
     fn from(m: [[f32; 4]; 4]) -> Self {

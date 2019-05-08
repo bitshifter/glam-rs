@@ -1,6 +1,12 @@
 use crate::f32::scalar_sin_cos;
 use std::ops::*;
 
+#[cfg(feature = "rand")]
+use rand::{
+    distributions::{Distribution, Standard},
+    Rng,
+};
+
 #[derive(Copy, Clone, Debug)]
 pub struct Angle(f32);
 
@@ -144,6 +150,14 @@ impl Neg for Angle {
     #[inline]
     fn neg(self) -> Angle {
         Angle(-self.0)
+    }
+}
+
+#[cfg(feature = "rand")]
+impl Distribution<Angle> for Standard {
+    #[inline]
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Angle {
+        Angle::from_radians(rng.gen::<f32>() * 2.0 * std::f32::consts::PI)
     }
 }
 
