@@ -1,6 +1,6 @@
-use super::{super::Align16, Vec4};
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 use super::x86_utils::UnionCast;
+use super::{super::Align16, Vec3, Vec4};
 #[cfg(target_arch = "x86")]
 use std::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
@@ -87,6 +87,19 @@ impl Quat {
             let result1 = _mm_add_ps(lzry_lwry_nlxry_nlyry, nlyrz_lxrz_lwrz_wlzrz);
             Quat(_mm_add_ps(result0, result1))
         }
+    }
+}
+
+impl Vec3 {
+    #[inline]
+    /// Multiplies a quaternion and a 3D vector, rotating it.
+    /// Multiplication order is as follows:
+    /// `world_position = local_position * local_to_world`
+    pub fn rotate_quat(self, rhs: Quat) -> Vec3 {
+        let vec_quat = Quat(self.0);
+        let inv_self = rhs.conjugate();
+        let res_vec = inv_self * vec_quat * rhs;
+        Vec3(res_vec.0)
     }
 }
 

@@ -20,7 +20,7 @@ use std::{f32, fmt, mem, ops::*};
 
 #[derive(Clone, Copy)]
 #[repr(C)]
-pub struct Vec3(__m128);
+pub struct Vec3(pub(crate) __m128);
 
 impl fmt::Debug for Vec3 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

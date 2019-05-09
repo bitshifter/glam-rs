@@ -46,6 +46,19 @@ impl Quat {
     }
 }
 
+impl Vec3 {
+    #[inline]
+    /// Multiplies a quaternion and a 3D vector, rotating it.
+    /// Multiplication order is as follows:
+    /// `world_position = local_position * local_to_world`
+    pub fn rotate_quat(self, rhs: Quat) -> Vec3 {
+        let vec_quat: Quat = self.extend(0.0).into();
+        let inv_self = rhs.conjugate();
+        let res_vec4: Vec4 = inv_self.mul_quat(vec_quat).mul_quat(rhs).into();
+        res_vec4.truncate()
+    }
+}
+
 impl From<Vec4> for Quat {
     #[inline]
     fn from(v: Vec4) -> Self {
