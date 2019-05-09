@@ -20,6 +20,10 @@ macro_rules! bench_unop {
             });
         }
     };
+
+    ($name: ident, $desc: expr, $t: ty, $unop: ident) => {
+        bench_unop!($name, $desc, $t, $t, $unop);
+    };
 }
 
 #[macro_export]
@@ -46,5 +50,9 @@ macro_rules! bench_binop {
                 })
             });
         }
+    };
+
+    ($name: ident, $desc: expr, $t: ty, $binop: ident) => {
+        bench_binop!($name, $desc, $t, $t, $binop);
     };
 }

@@ -12,7 +12,6 @@ bench_unop!(
     transform_srt_inverse,
     "transform_srt inverse",
     TransformSRT,
-    TransformSRT,
     inverse
 );
 bench_unop!(
@@ -26,20 +25,17 @@ bench_unop!(
     transform_rt_inverse,
     "transform_rt inverse",
     TransformRT,
-    TransformRT,
     inverse
 );
 bench_binop!(
     transform_srt_mul_srt,
     "transform_srt * transform_srt",
     TransformSRT,
-    TransformSRT,
     mul
 );
 bench_binop!(
     transform_rt_mul_rt,
     "transform_rt * transform_rt",
-    TransformRT,
     TransformRT,
     mul
 );
