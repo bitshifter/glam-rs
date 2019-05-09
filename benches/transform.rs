@@ -11,33 +11,33 @@ use std::ops::Mul;
 bench_unop!(
     transform_srt_inverse,
     "transform_srt inverse",
-    TransformSRT,
-    inverse
+    op => inverse,
+    ty => TransformSRT
 );
 bench_unop!(
     transform_srt_inverse_ptv_scale,
     "transform_srt inverse (+ve scale)",
-    TransformSRT,
-    TransformRT,
-    inverse
+    op => inverse,
+    ty => TransformSRT,
+    from => TransformRT
 );
 bench_unop!(
     transform_rt_inverse,
     "transform_rt inverse",
-    TransformRT,
-    inverse
+    op => inverse,
+    ty => TransformRT
 );
 bench_binop!(
     transform_srt_mul_srt,
     "transform_srt * transform_srt",
-    TransformSRT,
-    mul
+    op => mul,
+    ty => TransformSRT
 );
 bench_binop!(
     transform_rt_mul_rt,
     "transform_rt * transform_rt",
-    TransformRT,
-    mul
+    op => mul,
+    ty => TransformRT
 );
 
 criterion_group!(
