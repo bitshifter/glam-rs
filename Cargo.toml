@@ -29,3 +29,7 @@ harness = false
 [[bench]]
 name = "transform"
 harness = false
+
+[[bench]]
+name = "vec3"
+harness = false

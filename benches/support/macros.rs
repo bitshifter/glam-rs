@@ -30,7 +30,7 @@ macro_rules! bench_unop {
 macro_rules! bench_binop {
     ($name: ident, $desc: expr, op => $binop: ident, ty1 => $ty1:ty, from1 => $from1:ty, ty2 => $ty2:ty, from2 => $from2:ty) => {
         pub(crate) fn $name(c: &mut Criterion) {
-            const LEN: usize = 1 << 13;
+            const LEN: usize = 1 << 7;
 
             let mut rng = Xoshiro256Plus::seed_from_u64(0);
 
@@ -39,21 +39,26 @@ macro_rules! bench_binop {
             let mut i = 0;
 
             c.bench_function($desc, move |b| {
-                b.iter(|| {
-                    i = (i + 1) & (LEN - 1);
-
-                    unsafe {
-                        criterion::black_box(
-                            elems1.get_unchecked(i).$binop(elems2.get_unchecked(i)),
-                        )
-                    }
-                })
+                for lhs in elems1.iter() {
+                    b.iter(|| {
+                        i = (i + 1) & (LEN - 1);
+                        unsafe {
+                            criterion::black_box(
+                                lhs.$binop(elems2.get_unchecked(i)),
+                                );
+                        }
+                    })
+                }
             });
         }
     };
 
     ($name: ident, $desc: expr, op => $binop: ident, ty => $t: ty, from => $from: ty) => {
         bench_binop!($name, $desc, op => $binop, ty1 => $t, from1 => $from, ty2 => $t, from2 => $from);
+    };
+
+    ($name: ident, $desc: expr, op => $binop: ident, ty1 => $t1: ty, ty2 => $t2: ty) => {
+        bench_binop!($name, $desc, op => $binop, ty1 => $t1, from1 => $t1, ty2 => $t2, from2 => $t2);
     };
 
     ($name: ident, $desc: expr, op => $binop: ident, ty => $t: ty) => {
