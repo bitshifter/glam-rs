@@ -1,3 +1,9 @@
+#[cfg(feature = "rand")]
+use rand::{
+    distributions::{Distribution, Standard},
+    Rng,
+};
+
 use super::{Angle, Mat4, Quat, Vec3, Vec4};
 use std::{
     fmt,
@@ -233,10 +239,25 @@ impl Mul<Quat> for Quat {
     }
 }
 
+impl Mul<&Quat> for Quat {
+    type Output = Quat;
+    #[inline]
+    fn mul(self, rhs: &Quat) -> Quat {
+        self.mul_quat(*rhs)
+    }
+}
+
 impl MulAssign<Quat> for Quat {
     #[inline]
     fn mul_assign(&mut self, rhs: Quat) {
         *self = self.mul_quat(rhs);
+    }
+}
+
+impl MulAssign<&Quat> for Quat {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &Quat) {
+        *self = self.mul_quat(*rhs);
     }
 }
 
@@ -248,10 +269,25 @@ impl Mul<Quat> for Vec3 {
     }
 }
 
+impl Mul<&Quat> for Vec3 {
+    type Output = Vec3;
+    #[inline]
+    fn mul(self, rhs: &Quat) -> Vec3 {
+        self.rotate_quat(*rhs)
+    }
+}
+
 impl MulAssign<Quat> for Vec3 {
     #[inline]
     fn mul_assign(&mut self, rhs: Quat) {
         *self = self.rotate_quat(rhs);
+    }
+}
+
+impl MulAssign<&Quat> for Vec3 {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &Quat) {
+        *self = self.rotate_quat(*rhs);
     }
 }
 
@@ -299,3 +335,12 @@ impl From<&(f32, f32, f32, f32)> for Quat {
         Quat::new(t.0, t.1, t.2, t.3)
     }
 }
+
+#[cfg(feature = "rand")]
+impl Distribution<Quat> for Standard {
+    #[inline]
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Quat {
+        Quat::from_rotation_ypr(rng.gen::<Angle>(), rng.gen::<Angle>(), rng.gen::<Angle>())
+    }
+}
+

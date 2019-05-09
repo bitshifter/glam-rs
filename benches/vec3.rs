@@ -3,10 +3,18 @@
 mod macros;
 
 use criterion::{criterion_group, criterion_main, Criterion};
-use glam::f32::{Mat4, TransformRT, TransformSRT, Vec3};
+use glam::f32::{Mat4, Quat, TransformRT, TransformSRT, Vec3};
 use rand::{Rng, SeedableRng};
 use rand_xoshiro::Xoshiro256Plus;
 use std::ops::Mul;
+
+bench_binop!(
+    vec3_mul_quat,
+    "vec3 * quat",
+    op => mul,
+    ty1 => Vec3,
+    ty2 => Quat
+);
 
 bench_binop!(
     vec3_mul_transform_srt,
@@ -15,6 +23,7 @@ bench_binop!(
     ty1 => Vec3,
     ty2 => TransformSRT
 );
+
 bench_binop!(
     vec3_mul_transform_rt,
     "vec3 * transform_rt",
@@ -35,9 +44,10 @@ bench_binop!(
 
 criterion_group!(
     benches,
+    vec3_mul_quat,
+    vec3_mul_mat4,
     vec3_mul_transform_rt,
     vec3_mul_transform_srt,
-    vec3_mul_mat4,
 );
 
 criterion_main!(benches);

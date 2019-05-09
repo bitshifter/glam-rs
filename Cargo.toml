@@ -27,6 +27,10 @@ name = "mat4"
 harness = false
 
 [[bench]]
+name = "quat"
+harness = false
+
+[[bench]]
 name = "transform"
 harness = false
 
