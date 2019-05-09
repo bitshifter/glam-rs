@@ -181,22 +181,6 @@ impl Quat {
         let result: Quat = interpolated.into();
         result.normalize()
     }
-
-    #[inline]
-    /// Multiplies two quaternions.
-    /// Note that due to floating point rounding the result may not be perfectly normalized.
-    /// Multiplication order is as follows:
-    /// `local_to_world = local_to_object * object_to_world`
-    pub fn mul_quat(self, rhs: Quat) -> Quat {
-        let (x0, y0, z0, w0) = self.into();
-        let (x1, y1, z1, w1) = rhs.into();
-
-        let x = (w1 * x0) + (x1 * w0) + (y1 * z0) - (z1 * y0);
-        let y = (w1 * y0) - (x1 * z0) + (y1 * w0) + (z1 * x0);
-        let z = (w1 * z0) + (x1 * y0) - (y1 * x0) + (z1 * w0);
-        let w = (w1 * w0) - (x1 * x0) - (y1 * y0) - (z1 * z0);
-        Quat::new(x, y, z, w)
-    }
 }
 
 impl Vec3 {
@@ -343,4 +327,3 @@ impl Distribution<Quat> for Standard {
         Quat::from_rotation_ypr(rng.gen::<Angle>(), rng.gen::<Angle>(), rng.gen::<Angle>())
     }
 }
-

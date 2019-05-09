@@ -16,9 +16,6 @@ bench_binop!(
     ty2 => Quat
 );
 
-criterion_group!(
-    benches,
-    quat_mul_quat,
-);
+criterion_group!(benches, quat_mul_quat,);
 
 criterion_main!(benches);

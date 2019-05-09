@@ -1,4 +1,6 @@
 use super::{super::Align16, Vec4};
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+use super::x86_utils::UnionCast;
 #[cfg(target_arch = "x86")]
 use std::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
@@ -31,6 +33,59 @@ impl Quat {
         unsafe {
             assert!(slice.len() >= 4);
             _mm_storeu_ps(slice.as_mut_ptr(), self.0);
+        }
+    }
+
+    #[inline]
+    /// Multiplies two quaternions.
+    /// Note that due to floating point rounding the result may not be perfectly normalized.
+    /// Multiplication order is as follows:
+    /// `local_to_world = local_to_object * object_to_world`
+    pub fn mul_quat(self, rhs: Quat) -> Quat {
+        // sse2 implementation from RTM
+        let lhs = self.0;
+        let rhs = rhs.0;
+        unsafe {
+            macro_rules! _MM_SHUFFLE {
+                ($z:expr, $y:expr, $x:expr, $w:expr) => {
+                    ($z << 6) | ($y << 4) | ($x << 2) | $w
+                };
+            };
+
+            const CONTROL_WZYX: UnionCast = UnionCast {
+                f32x4: [1.0, -1.0, 1.0, -1.0],
+            };
+            const CONTROL_ZWXY: UnionCast = UnionCast {
+                f32x4: [1.0, 1.0, -1.0, -1.0],
+            };
+            const CONTROL_YXWZ: UnionCast = UnionCast {
+                f32x4: [-1.0, 1.0, 1.0, -1.0],
+            };
+
+            let r_xxxx = _mm_shuffle_ps(rhs, rhs, _MM_SHUFFLE!(0, 0, 0, 0));
+            let r_yyyy = _mm_shuffle_ps(rhs, rhs, _MM_SHUFFLE!(1, 1, 1, 1));
+            let r_zzzz = _mm_shuffle_ps(rhs, rhs, _MM_SHUFFLE!(2, 2, 2, 2));
+            let r_wwww = _mm_shuffle_ps(rhs, rhs, _MM_SHUFFLE!(3, 3, 3, 3));
+
+            let lxrw_lyrw_lzrw_lwrw = _mm_mul_ps(r_wwww, lhs);
+            let l_wzyx = _mm_shuffle_ps(lhs, lhs, _MM_SHUFFLE!(0, 1, 2, 3));
+
+            let lwrx_lzrx_lyrx_lxrx = _mm_mul_ps(r_xxxx, l_wzyx);
+            let l_zwxy = _mm_shuffle_ps(l_wzyx, l_wzyx, _MM_SHUFFLE!(2, 3, 0, 1));
+
+            let lwrx_nlzrx_lyrx_nlxrx = _mm_mul_ps(lwrx_lzrx_lyrx_lxrx, CONTROL_WZYX.m128);
+
+            let lzry_lwry_lxry_lyry = _mm_mul_ps(r_yyyy, l_zwxy);
+            let l_yxwz = _mm_shuffle_ps(l_zwxy, l_zwxy, _MM_SHUFFLE!(0, 1, 2, 3));
+
+            let lzry_lwry_nlxry_nlyry = _mm_mul_ps(lzry_lwry_lxry_lyry, CONTROL_ZWXY.m128);
+
+            let lyrz_lxrz_lwrz_lzrz = _mm_mul_ps(r_zzzz, l_yxwz);
+            let result0 = _mm_add_ps(lxrw_lyrw_lzrw_lwrw, lwrx_nlzrx_lyrx_nlxrx);
+
+            let nlyrz_lxrz_lwrz_wlzrz = _mm_mul_ps(lyrz_lxrz_lwrz_lzrz, CONTROL_YXWZ.m128);
+            let result1 = _mm_add_ps(lzry_lwry_nlxry_nlyry, nlyrz_lxrz_lwrz_wlzrz);
+            Quat(_mm_add_ps(result0, result1))
         }
     }
 }
