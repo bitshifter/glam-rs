@@ -1,4 +1,4 @@
-use super::Vec4;
+use super::{Vec3, Vec4};
 use std::f32;
 
 #[derive(Clone, Copy)]
