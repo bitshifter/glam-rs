@@ -1,6 +1,6 @@
 use super::{
     super::Angle,
-    {Quat, TransformRT, TransformSRT, Vec3, Vec4},
+    {Quat, Vec3, Vec4},
 };
 
 #[cfg(feature = "rand")]
@@ -83,25 +83,25 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn from_transform_srt(trs: &TransformSRT) -> Mat4 {
-        let (x_axis, y_axis, z_axis) = quat_to_axes(trs.rotation);
-        let (scale_x, scale_y, scale_z) = trs.scale.into();
+    pub fn from_scale_rotation_translation(scale: Vec3, rotation: Quat, translation: Vec3) -> Mat4 {
+        let (x_axis, y_axis, z_axis) = quat_to_axes(rotation);
+        let (scale_x, scale_y, scale_z) = scale.into();
         Mat4 {
             x_axis: x_axis * scale_x,
             y_axis: y_axis * scale_y,
             z_axis: z_axis * scale_z,
-            w_axis: trs.translation.extend(1.0),
+            w_axis: translation.extend(1.0),
         }
     }
 
     #[inline]
-    pub fn from_transform_rt(tr: &TransformRT) -> Mat4 {
-        let (x_axis, y_axis, z_axis) = quat_to_axes(tr.rotation);
+    pub fn from_rotation_translation(rotation: Quat, translation: Vec3) -> Mat4 {
+        let (x_axis, y_axis, z_axis) = quat_to_axes(rotation);
         Mat4 {
             x_axis,
             y_axis,
             z_axis,
-            w_axis: tr.translation.extend(1.0),
+            w_axis: translation.extend(1.0),
         }
     }
 
@@ -815,34 +815,6 @@ impl PartialEq for Mat4 {
             && self.y_axis == rhs.y_axis
             && self.z_axis == rhs.z_axis
             && self.w_axis == rhs.w_axis
-    }
-}
-
-impl From<TransformSRT> for Mat4 {
-    #[inline]
-    fn from(srt: TransformSRT) -> Self {
-        Mat4::from_transform_srt(&srt)
-    }
-}
-
-impl From<&TransformSRT> for Mat4 {
-    #[inline]
-    fn from(srt: &TransformSRT) -> Self {
-        Mat4::from_transform_srt(srt)
-    }
-}
-
-impl From<TransformRT> for Mat4 {
-    #[inline]
-    fn from(rt: TransformRT) -> Self {
-        Mat4::from_transform_rt(&rt)
-    }
-}
-
-impl From<&TransformRT> for Mat4 {
-    #[inline]
-    fn from(rt: &TransformRT) -> Self {
-        Mat4::from_transform_rt(rt)
     }
 }
 

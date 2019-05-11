@@ -6,6 +6,7 @@ mod quat;
 mod quat_f32;
 #[cfg(all(target_feature = "sse2", not(feature = "no-simd")))]
 mod quat_sse2;
+#[cfg(feature = "transform-types")]
 mod transform;
 mod vec2;
 mod vec3;
@@ -29,6 +30,7 @@ pub use quat::quat;
 pub use quat_f32::*;
 #[cfg(all(target_feature = "sse2", not(feature = "no-simd")))]
 pub use quat_sse2::*;
+#[cfg(feature = "transform-types")]
 pub use transform::*;
 pub use vec2::*;
 pub use vec3::*;

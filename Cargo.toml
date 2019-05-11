@@ -10,6 +10,10 @@ default = ["approx", "rand", "serde"]
 # this is primarily for testing the fallback implementation
 no-simd = []
 
+# trying out transform types instead of matrices but they are generally slower
+# at everything except for inverse. They are 16 bytes smaller than a Mat4.
+transform-types = []
+
 [dependencies]
 # TODO: make this dev only
 approx = { version = "0.3", optional = true }
@@ -25,6 +29,7 @@ serde_json = "1.0"
 [[bench]]
 name = "mat4"
 harness = false
+required-features = ["transform-types"]
 
 [[bench]]
 name = "quat"
@@ -33,7 +38,9 @@ harness = false
 [[bench]]
 name = "transform"
 harness = false
+required-features = ["transform-types"]
 
 [[bench]]
 name = "vec3"
 harness = false
+required-features = ["transform-types"]

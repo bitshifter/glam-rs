@@ -84,8 +84,10 @@ fn mul_srt_srt(lhs: &TransformSRT, rhs: &TransformSRT) -> TransformSRT {
 
     if min_scale.cmplt(Vec3::zero()).any() {
         // If negative scale, we go through a matrix
-        let lhs_mtx = Mat4::from_transform_srt(lhs);
-        let rhs_mtx = Mat4::from_transform_srt(rhs);
+        let lhs_mtx =
+            Mat4::from_scale_rotation_translation(lhs.scale, lhs.rotation, lhs.translation);
+        let rhs_mtx =
+            Mat4::from_scale_rotation_translation(rhs.scale, rhs.rotation, rhs.translation);
         let mut result_mtx = lhs_mtx * rhs_mtx;
 
         let sign = scale.sign();
@@ -363,5 +365,33 @@ impl Distribution<TransformSRT> for Standard {
                 rng.gen_range(std::f32::MIN, std::f32::MAX),
             ),
         )
+    }
+}
+
+impl From<TransformSRT> for Mat4 {
+    #[inline]
+    fn from(srt: TransformSRT) -> Self {
+        Mat4::from_scale_rotation_translation(srt.scale, srt.rotation, srt.translation)
+    }
+}
+
+impl From<&TransformSRT> for Mat4 {
+    #[inline]
+    fn from(srt: &TransformSRT) -> Self {
+        Mat4::from_scale_rotation_translation(srt.scale, srt.rotation, srt.translation)
+    }
+}
+
+impl From<TransformRT> for Mat4 {
+    #[inline]
+    fn from(rt: TransformRT) -> Self {
+        Mat4::from_rotation_translation(rt.rotation, rt.translation)
+    }
+}
+
+impl From<&TransformRT> for Mat4 {
+    #[inline]
+    fn from(rt: &TransformRT) -> Self {
+        Mat4::from_rotation_translation(rt.rotation, rt.translation)
     }
 }
