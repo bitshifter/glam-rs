@@ -35,7 +35,7 @@ bench_binop!(
 bench_binop!(
     vec3_mul_mat4,
     "vec3 * mat4",
-    op => mul,
+    op => transform_mat4,
     ty1 => Vec3,
     from1 => Vec3,
     ty2 => Mat4,

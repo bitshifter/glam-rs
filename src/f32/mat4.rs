@@ -753,21 +753,21 @@ impl Mul<&Mat4> for Mat4 {
     }
 }
 
-impl Mul<Mat4> for Vec3 {
-    type Output = Vec3;
-    #[inline]
-    fn mul(self, rhs: Mat4) -> Vec3 {
-        self.transform_mat4(&rhs)
-    }
-}
+// impl Mul<Mat4> for Vec3 {
+//     type Output = Vec3;
+//     #[inline]
+//     fn mul(self, rhs: Mat4) -> Vec3 {
+//         self.transform_mat4(&rhs)
+//     }
+// }
 
-impl Mul<&Mat4> for Vec3 {
-    type Output = Vec3;
-    #[inline]
-    fn mul(self, rhs: &Mat4) -> Vec3 {
-        self.transform_mat4(rhs)
-    }
-}
+// impl Mul<&Mat4> for Vec3 {
+//     type Output = Vec3;
+//     #[inline]
+//     fn mul(self, rhs: &Mat4) -> Vec3 {
+//         self.transform_mat4(rhs)
+//     }
+// }
 
 impl Mul<Mat4> for Vec4 {
     type Output = Vec4;

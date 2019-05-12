@@ -220,5 +220,5 @@ fn test_mat4_look_at() {
     let m = Mat4::look_at(eye, center, up);
     let point = Vec3::new(1.0, 0.0, 0.0);
     let view_point = Vec3::new(0.0, 1.0, -5.0);
-    assert_ulps_eq!(point * &m, view_point);
+    assert_ulps_eq!(point.transform_mat4(&m), view_point);
 }
