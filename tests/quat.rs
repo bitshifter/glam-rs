@@ -1,6 +1,5 @@
 use approx::assert_ulps_eq;
 use glam::f32::{deg, quat, rad, Mat4, Quat, Vec3, Vec4};
-use std::mem;
 
 #[test]
 fn test_quat_rotation() {
@@ -62,9 +61,6 @@ fn test_quat_rotation() {
 fn test_quat_new() {
     let ytheta = deg(45.0);
     let q0 = Quat::from_rotation_y(ytheta);
-
-    assert_eq!(mem::size_of_val(&q0), 16);
-    assert_eq!(mem::align_of_val(&q0), 16);
 
     let t1 = (
         0.0,

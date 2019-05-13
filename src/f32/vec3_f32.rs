@@ -11,7 +11,7 @@ use rand::{
 use std::{f32, fmt, ops::*};
 
 #[derive(Clone, Copy, Debug)]
-#[repr(C, align(16))]
+#[repr(C)]
 pub struct Vec3(f32, f32, f32);
 
 #[inline]
@@ -372,7 +372,7 @@ impl Distribution<Vec3> for Standard {
 }
 
 #[derive(Clone, Copy)]
-#[repr(C, align(16))]
+#[repr(C)]
 pub struct Vec3b(bool, bool, bool);
 
 impl Vec3b {

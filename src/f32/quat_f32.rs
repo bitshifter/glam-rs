@@ -2,7 +2,7 @@ use super::{Vec3, Vec4};
 use std::f32;
 
 #[derive(Clone, Copy)]
-#[repr(align(16), C)]
+#[repr(C)]
 pub struct Quat(f32, f32, f32, f32);
 
 impl Quat {

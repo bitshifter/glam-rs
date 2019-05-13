@@ -3,14 +3,10 @@ use glam::*;
 use rand::{Rng, SeedableRng};
 #[cfg(feature = "rand")]
 use rand_xoshiro::Xoshiro256Plus;
-use std::mem;
 
 #[test]
 fn test_vec4_new() {
     let v = vec4(1.0, 2.0, 3.0, 4.0);
-
-    assert_eq!(mem::size_of_val(&v), 16);
-    assert_eq!(mem::align_of_val(&v), 16);
 
     assert_eq!(v.get_x(), 1.0);
     assert_eq!(v.get_y(), 2.0);
