@@ -65,3 +65,50 @@ macro_rules! bench_binop {
         bench_binop!($name, $desc, op => $binop, ty1 => $t, from1 => $t, ty2 => $t, from2 => $t);
     };
 }
+
+#[macro_export]
+macro_rules! euler {
+    ($name: ident, $desc: expr, ty => $t: ty, storage => $storage: ty, zero => $zero: expr) => {
+        pub(crate) fn $name(c: &mut Criterion) {
+            use rand::{Rng, SeedableRng};
+            use rand_xoshiro::Xoshiro256Plus;
+
+            const UPDATE_RATE: f32 = 1.0 / 60.0;
+            const NUM_OBJECTS: usize = 10000;
+
+            struct TestData {
+                acceleration: Vec<$storage>,
+                velocity: Vec<$storage>,
+                position: Vec<$storage>,
+            }
+
+            let mut rng = Xoshiro256Plus::seed_from_u64(0);
+            let mut data = TestData {
+                acceleration: vec![rng.gen(); NUM_OBJECTS],
+                velocity: vec![$zero; NUM_OBJECTS],
+                position: vec![$zero; NUM_OBJECTS],
+            };
+
+            c.bench_function($desc, move |b| {
+                b.iter(|| {
+                    let dt = UPDATE_RATE;
+                    for ((position, acceleration), velocity) in data
+                        .position
+                            .iter_mut()
+                            .zip(&data.acceleration)
+                            .zip(&mut data.velocity)
+                            {
+                                let local_acc: $t = (*acceleration).into();
+                                let mut local_pos: $t = (*position).into();
+                                let mut local_vel: $t = (*velocity).into();
+                                local_vel += local_acc * dt;
+                                local_pos += local_vel * dt;
+                                *velocity = local_vel.into();
+                                *position = local_pos.into();
+                            }
+                })
+            });
+        }
+    };
+}
+

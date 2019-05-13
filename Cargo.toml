@@ -41,6 +41,10 @@ harness = false
 required-features = ["transform-types"]
 
 [[bench]]
+name = "vec2"
+harness = false
+
+[[bench]]
 name = "vec3"
 harness = false
 required-features = ["transform-types"]
