@@ -254,6 +254,19 @@ impl Vec3 {
     pub fn cmplt(self, rhs: Self) -> Vec3b {
         unsafe { Vec3b(_mm_cmplt_ps(self.0, rhs.0)) }
     }
+
+    #[inline]
+    /// Per component multiplication/addition of the three inputs: b + (self * a)
+    pub(crate) fn mul_add(self, a: Self, b: Self) -> Self {
+        unsafe { Self(_mm_add_ps(_mm_mul_ps(self.0, a.0), b.0)) }
+    }
+
+    #[inline]
+    /// Per component negative multiplication/subtraction of the three inputs `-((self * a) - b)`
+    /// This is mathematically equivalent to `b - (self * a)`
+    pub(crate) fn neg_mul_sub(self, a: Self, b: Self) -> Self {
+        unsafe { Self(_mm_sub_ps(b.0, _mm_mul_ps(self.0, a.0))) }
+    }
 }
 
 impl fmt::Display for Vec3 {

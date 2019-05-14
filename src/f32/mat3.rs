@@ -506,31 +506,30 @@ impl Mat3 {
     // }
 
     #[inline]
-    /// Multiplies two 4x4 matrices.
+    /// Multiplies two 3x3 matrices.
     /// Multiplication order is as follows:
     /// `local_to_world = local_to_object * local_to_world`
-    pub fn mul_mat3(&self, _rhs: &Self) -> Self {
-        unimplemented!();
-        // let mut tmp = self.x_axis.dup_x().mul(rhs.x_axis);
-        // tmp = self.x_axis.dup_y().mul_add(rhs.y_axis, tmp);
-        // tmp = self.x_axis.dup_z().mul_add(rhs.z_axis, tmp);
-        // let x_axis = tmp;
+    pub fn mul_mat3(&self, rhs: &Self) -> Self {
+        let mut tmp = self.x_axis.dup_x().mul(rhs.x_axis);
+        tmp = self.x_axis.dup_y().mul_add(rhs.y_axis, tmp);
+        tmp = self.x_axis.dup_z().mul_add(rhs.z_axis, tmp);
+        let x_axis = tmp;
 
-        // tmp = self.y_axis.dup_x().mul(rhs.x_axis);
-        // tmp = self.y_axis.dup_y().mul_add(rhs.y_axis, tmp);
-        // tmp = self.y_axis.dup_z().mul_add(rhs.z_axis, tmp);
-        // let y_axis = tmp;
+        tmp = self.y_axis.dup_x().mul(rhs.x_axis);
+        tmp = self.y_axis.dup_y().mul_add(rhs.y_axis, tmp);
+        tmp = self.y_axis.dup_z().mul_add(rhs.z_axis, tmp);
+        let y_axis = tmp;
 
-        // tmp = self.z_axis.dup_x().mul(rhs.x_axis);
-        // tmp = self.z_axis.dup_y().mul_add(rhs.y_axis, tmp);
-        // tmp = self.z_axis.dup_z().mul_add(rhs.z_axis, tmp);
-        // let z_axis = tmp;
+        tmp = self.z_axis.dup_x().mul(rhs.x_axis);
+        tmp = self.z_axis.dup_y().mul_add(rhs.y_axis, tmp);
+        tmp = self.z_axis.dup_z().mul_add(rhs.z_axis, tmp);
+        let z_axis = tmp;
 
-        // Self {
-        //     x_axis,
-        //     y_axis,
-        //     z_axis,
-        // }
+        Self {
+            x_axis,
+            y_axis,
+            z_axis,
+        }
     }
 
     #[inline]
@@ -671,9 +670,7 @@ impl Mul<f32> for Mat3 {
 impl PartialEq for Mat3 {
     #[inline]
     fn eq(&self, rhs: &Mat3) -> bool {
-        self.x_axis == rhs.x_axis
-            && self.y_axis == rhs.y_axis
-            && self.z_axis == rhs.z_axis
+        self.x_axis == rhs.x_axis && self.y_axis == rhs.y_axis && self.z_axis == rhs.z_axis
     }
 }
 
@@ -691,10 +688,6 @@ impl From<[[f32; 3]; 3]> for Mat3 {
 impl From<Mat3> for [[f32; 3]; 3] {
     #[inline]
     fn from(m: Mat3) -> Self {
-        [
-            m.x_axis.into(),
-            m.y_axis.into(),
-            m.z_axis.into(),
-        ]
+        [m.x_axis.into(), m.y_axis.into(), m.z_axis.into()]
     }
 }

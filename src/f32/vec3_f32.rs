@@ -194,6 +194,26 @@ impl Vec3 {
     pub fn cmplt(self, rhs: Self) -> Vec3b {
         Vec3b(self.0.lt(&rhs.0), self.1.lt(&rhs.1), self.2.lt(&rhs.2))
     }
+
+    #[inline]
+    pub(crate) fn mul_add(self, a: Self, b: Self) -> Self {
+        Self(
+            (self.0 * a.0) + b.0,
+            (self.1 * a.1) + b.1,
+            (self.2 * a.2) + b.2,
+            (self.3 * a.3) + b.3,
+        )
+    }
+
+    #[inline]
+    pub(crate) fn neg_mul_sub(self, a: Self, b: Self) -> Self {
+        Self(
+            b.0 - (self.0 * a.0),
+            b.1 - (self.1 * a.1),
+            b.2 - (self.2 * a.2),
+            b.3 - (self.3 * a.3),
+        )
+    }
 }
 
 impl fmt::Display for Vec3 {
