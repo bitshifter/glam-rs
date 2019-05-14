@@ -94,21 +94,20 @@ macro_rules! euler {
                     let dt = UPDATE_RATE;
                     for ((position, acceleration), velocity) in data
                         .position
-                            .iter_mut()
-                            .zip(&data.acceleration)
-                            .zip(&mut data.velocity)
-                            {
-                                let local_acc: $t = (*acceleration).into();
-                                let mut local_pos: $t = (*position).into();
-                                let mut local_vel: $t = (*velocity).into();
-                                local_vel += local_acc * dt;
-                                local_pos += local_vel * dt;
-                                *velocity = local_vel.into();
-                                *position = local_pos.into();
-                            }
+                        .iter_mut()
+                        .zip(&data.acceleration)
+                        .zip(&mut data.velocity)
+                    {
+                        let local_acc: $t = (*acceleration).into();
+                        let mut local_pos: $t = (*position).into();
+                        let mut local_vel: $t = (*velocity).into();
+                        local_vel += local_acc * dt;
+                        local_pos += local_vel * dt;
+                        *velocity = local_vel.into();
+                        *position = local_pos.into();
+                    }
                 })
             });
         }
     };
 }
-

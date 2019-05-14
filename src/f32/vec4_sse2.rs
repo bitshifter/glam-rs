@@ -43,51 +43,51 @@ pub fn vec4(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
 
 impl Vec4 {
     #[inline]
-    pub fn new(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
-        unsafe { Vec4(_mm_set_ps(w, z, y, x)) }
+    pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
+        unsafe { Self(_mm_set_ps(w, z, y, x)) }
     }
 
     #[inline]
-    pub fn zero() -> Vec4 {
-        unsafe { Vec4(_mm_set1_ps(0.0)) }
+    pub fn zero() -> Self {
+        unsafe { Self(_mm_set1_ps(0.0)) }
     }
 
     #[inline]
-    pub fn one() -> Vec4 {
-        unsafe { Vec4(_mm_set1_ps(1.0)) }
+    pub fn one() -> Self {
+        unsafe { Self(_mm_set1_ps(1.0)) }
     }
 
     #[inline]
-    pub fn unit_x() -> Vec4 {
+    pub fn unit_x() -> Self {
         unsafe {
-            Vec4(_mm_load_ps(
+            Self(_mm_load_ps(
                 &X_AXIS as *const Align16<(f32, f32, f32, f32)> as *const f32,
             ))
         }
     }
 
     #[inline]
-    pub fn unit_y() -> Vec4 {
+    pub fn unit_y() -> Self {
         unsafe {
-            Vec4(_mm_load_ps(
+            Self(_mm_load_ps(
                 &Y_AXIS as *const Align16<(f32, f32, f32, f32)> as *const f32,
             ))
         }
     }
 
     #[inline]
-    pub fn unit_z() -> Vec4 {
+    pub fn unit_z() -> Self {
         unsafe {
-            Vec4(_mm_load_ps(
+            Self(_mm_load_ps(
                 &Z_AXIS as *const Align16<(f32, f32, f32, f32)> as *const f32,
             ))
         }
     }
 
     #[inline]
-    pub fn unit_w() -> Vec4 {
+    pub fn unit_w() -> Self {
         unsafe {
-            Vec4(_mm_load_ps(
+            Self(_mm_load_ps(
                 &W_AXIS as *const Align16<(f32, f32, f32, f32)> as *const f32,
             ))
         }
@@ -99,8 +99,8 @@ impl Vec4 {
     }
 
     #[inline]
-    pub fn splat(v: f32) -> Vec4 {
-        unsafe { Vec4(_mm_set_ps1(v)) }
+    pub fn splat(v: f32) -> Self {
+        unsafe { Self(_mm_set_ps1(v)) }
     }
 
     #[inline]
@@ -158,39 +158,39 @@ impl Vec4 {
     }
 
     #[inline]
-    pub(crate) fn dup_x(self) -> Vec4 {
-        unsafe { Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_00)) }
+    pub(crate) fn dup_x(self) -> Self {
+        unsafe { Self(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_00)) }
     }
 
     #[inline]
-    pub(crate) fn dup_y(self) -> Vec4 {
-        unsafe { Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_01)) }
+    pub(crate) fn dup_y(self) -> Self {
+        unsafe { Self(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_01)) }
     }
 
     #[inline]
-    pub(crate) fn dup_z(self) -> Vec4 {
-        unsafe { Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_10)) }
+    pub(crate) fn dup_z(self) -> Self {
+        unsafe { Self(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_10)) }
     }
 
     #[inline]
-    pub(crate) fn dup_w(self) -> Vec4 {
-        unsafe { Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_11_11)) }
+    pub(crate) fn dup_w(self) -> Self {
+        unsafe { Self(_mm_shuffle_ps(self.0, self.0, 0b11_11_11_11)) }
     }
 
     #[inline]
-    fn dot_as_vec4(self, rhs: Vec4) -> Vec4 {
+    fn dot_as_vec4(self, rhs: Self) -> Self {
         unsafe {
             let x2_y2_z2_w2 = _mm_mul_ps(self.0, rhs.0);
             let z2_w2_0_0 = _mm_shuffle_ps(x2_y2_z2_w2, x2_y2_z2_w2, 0b00_00_11_10);
             let x2z2_y2w2_0_0 = _mm_add_ps(x2_y2_z2_w2, z2_w2_0_0);
             let y2w2_0_0_0 = _mm_shuffle_ps(x2z2_y2w2_0_0, x2z2_y2w2_0_0, 0b00_00_00_01);
             let x2y2z2w2_0_0_0 = _mm_add_ps(x2z2_y2w2_0_0, y2w2_0_0_0);
-            Vec4(x2y2z2w2_0_0_0)
+            Self(x2y2z2w2_0_0_0)
         }
     }
 
     #[inline]
-    pub fn dot(self, rhs: Vec4) -> f32 {
+    pub fn dot(self, rhs: Self) -> f32 {
         self.dot_as_vec4(rhs).get_x()
     }
 
@@ -215,19 +215,19 @@ impl Vec4 {
     }
 
     #[inline]
-    pub fn normalize(self) -> Vec4 {
+    pub fn normalize(self) -> Self {
         let dot = self.dot_as_vec4(self);
-        unsafe { Vec4(_mm_div_ps(self.0, _mm_sqrt_ps(dot.0))) }
+        unsafe { Self(_mm_div_ps(self.0, _mm_sqrt_ps(dot.0))) }
     }
 
     #[inline]
-    pub fn min(self, rhs: Vec4) -> Vec4 {
-        unsafe { Vec4(_mm_min_ps(self.0, rhs.0)) }
+    pub fn min(self, rhs: Self) -> Self {
+        unsafe { Self(_mm_min_ps(self.0, rhs.0)) }
     }
 
     #[inline]
-    pub fn max(self, rhs: Vec4) -> Vec4 {
-        unsafe { Vec4(_mm_max_ps(self.0, rhs.0)) }
+    pub fn max(self, rhs: Self) -> Self {
+        unsafe { Self(_mm_max_ps(self.0, rhs.0)) }
     }
 
     #[cfg_attr(tarpaulin, skip)]
@@ -255,39 +255,39 @@ impl Vec4 {
     }
 
     #[inline]
-    pub fn cmpeq(self, rhs: Vec4) -> Vec4b {
+    pub fn cmpeq(self, rhs: Self) -> Vec4b {
         unsafe { Vec4b(_mm_cmpeq_ps(self.0, rhs.0)) }
     }
 
     #[inline]
-    pub fn cmpne(self, rhs: Vec4) -> Vec4b {
+    pub fn cmpne(self, rhs: Self) -> Vec4b {
         unsafe { Vec4b(_mm_cmpneq_ps(self.0, rhs.0)) }
     }
 
     #[inline]
-    pub fn cmpge(self, rhs: Vec4) -> Vec4b {
+    pub fn cmpge(self, rhs: Self) -> Vec4b {
         unsafe { Vec4b(_mm_cmpge_ps(self.0, rhs.0)) }
     }
 
     #[inline]
-    pub fn cmpgt(self, rhs: Vec4) -> Vec4b {
+    pub fn cmpgt(self, rhs: Self) -> Vec4b {
         unsafe { Vec4b(_mm_cmpgt_ps(self.0, rhs.0)) }
     }
 
     #[inline]
-    pub fn cmple(self, rhs: Vec4) -> Vec4b {
+    pub fn cmple(self, rhs: Self) -> Vec4b {
         unsafe { Vec4b(_mm_cmple_ps(self.0, rhs.0)) }
     }
 
     #[inline]
-    pub fn cmplt(self, rhs: Vec4) -> Vec4b {
+    pub fn cmplt(self, rhs: Self) -> Vec4b {
         unsafe { Vec4b(_mm_cmplt_ps(self.0, rhs.0)) }
     }
 
     #[inline]
-    pub fn from_slice_unaligned(slice: &[f32]) -> Vec4 {
+    pub fn from_slice_unaligned(slice: &[f32]) -> Self {
         assert!(slice.len() >= 4);
-        unsafe { Vec4(_mm_loadu_ps(slice.as_ptr())) }
+        unsafe { Self(_mm_loadu_ps(slice.as_ptr())) }
     }
 
     #[inline]
@@ -300,15 +300,15 @@ impl Vec4 {
 
     #[inline]
     /// Per component multiplication/addition of the three inputs: b + (self * a)
-    pub(crate) fn mul_add(self, a: Vec4, b: Vec4) -> Vec4 {
-        unsafe { Vec4(_mm_add_ps(_mm_mul_ps(self.0, a.0), b.0)) }
+    pub(crate) fn mul_add(self, a: Self, b: Self) -> Self {
+        unsafe { Self(_mm_add_ps(_mm_mul_ps(self.0, a.0), b.0)) }
     }
 
     #[inline]
     /// Per component negative multiplication/subtraction of the three inputs `-((self * a) - b)`
     /// This is mathematically equivalent to `b - (self * a)`
-    pub(crate) fn neg_mul_sub(self, a: Vec4, b: Vec4) -> Vec4 {
-        unsafe { Vec4(_mm_sub_ps(b.0, _mm_mul_ps(self.0, a.0))) }
+    pub(crate) fn neg_mul_sub(self, a: Self, b: Self) -> Self {
+        unsafe { Self(_mm_sub_ps(b.0, _mm_mul_ps(self.0, a.0))) }
     }
 }
 
@@ -320,16 +320,16 @@ impl fmt::Display for Vec4 {
 }
 
 impl Div<Vec4> for Vec4 {
-    type Output = Vec4;
+    type Output = Self;
     #[inline]
-    fn div(self, rhs: Vec4) -> Vec4 {
-        unsafe { Vec4(_mm_div_ps(self.0, rhs.0)) }
+    fn div(self, rhs: Self) -> Self {
+        unsafe { Self(_mm_div_ps(self.0, rhs.0)) }
     }
 }
 
 impl DivAssign<Vec4> for Vec4 {
     #[inline]
-    fn div_assign(&mut self, rhs: Vec4) {
+    fn div_assign(&mut self, rhs: Self) {
         unsafe {
             self.0 = _mm_div_ps(self.0, rhs.0);
         }
@@ -337,10 +337,10 @@ impl DivAssign<Vec4> for Vec4 {
 }
 
 impl Div<f32> for Vec4 {
-    type Output = Vec4;
+    type Output = Self;
     #[inline]
-    fn div(self, rhs: f32) -> Vec4 {
-        unsafe { Vec4(_mm_div_ps(self.0, _mm_set1_ps(rhs))) }
+    fn div(self, rhs: f32) -> Self {
+        unsafe { Self(_mm_div_ps(self.0, _mm_set1_ps(rhs))) }
     }
 }
 
@@ -352,16 +352,16 @@ impl DivAssign<f32> for Vec4 {
 }
 
 impl Mul<Vec4> for Vec4 {
-    type Output = Vec4;
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: Vec4) -> Vec4 {
-        unsafe { Vec4(_mm_mul_ps(self.0, rhs.0)) }
+    fn mul(self, rhs: Self) -> Self {
+        unsafe { Self(_mm_mul_ps(self.0, rhs.0)) }
     }
 }
 
 impl MulAssign<Vec4> for Vec4 {
     #[inline]
-    fn mul_assign(&mut self, rhs: Vec4) {
+    fn mul_assign(&mut self, rhs: Self) {
         unsafe {
             self.0 = _mm_mul_ps(self.0, rhs.0);
         }
@@ -369,10 +369,10 @@ impl MulAssign<Vec4> for Vec4 {
 }
 
 impl Mul<f32> for Vec4 {
-    type Output = Vec4;
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: f32) -> Vec4 {
-        unsafe { Vec4(_mm_mul_ps(self.0, _mm_set1_ps(rhs))) }
+    fn mul(self, rhs: f32) -> Self {
+        unsafe { Self(_mm_mul_ps(self.0, _mm_set1_ps(rhs))) }
     }
 }
 
@@ -392,46 +392,46 @@ impl Mul<Vec4> for f32 {
 }
 
 impl Add for Vec4 {
-    type Output = Vec4;
+    type Output = Self;
     #[inline]
-    fn add(self, rhs: Vec4) -> Vec4 {
-        unsafe { Vec4(_mm_add_ps(self.0, rhs.0)) }
+    fn add(self, rhs: Self) -> Self {
+        unsafe { Self(_mm_add_ps(self.0, rhs.0)) }
     }
 }
 
 impl AddAssign for Vec4 {
     #[inline]
-    fn add_assign(&mut self, rhs: Vec4) {
+    fn add_assign(&mut self, rhs: Self) {
         unsafe { self.0 = _mm_add_ps(self.0, rhs.0) }
     }
 }
 
 impl Sub for Vec4 {
-    type Output = Vec4;
+    type Output = Self;
     #[inline]
-    fn sub(self, rhs: Vec4) -> Vec4 {
-        unsafe { Vec4(_mm_sub_ps(self.0, rhs.0)) }
+    fn sub(self, rhs: Self) -> Self {
+        unsafe { Self(_mm_sub_ps(self.0, rhs.0)) }
     }
 }
 
 impl SubAssign for Vec4 {
     #[inline]
-    fn sub_assign(&mut self, rhs: Vec4) {
+    fn sub_assign(&mut self, rhs: Self) {
         unsafe { self.0 = _mm_sub_ps(self.0, rhs.0) }
     }
 }
 
 impl Neg for Vec4 {
-    type Output = Vec4;
+    type Output = Self;
     #[inline]
-    fn neg(self) -> Vec4 {
-        unsafe { Vec4(_mm_sub_ps(_mm_set1_ps(0.0), self.0)) }
+    fn neg(self) -> Self {
+        unsafe { Self(_mm_sub_ps(_mm_set1_ps(0.0), self.0)) }
     }
 }
 
 impl PartialEq for Vec4 {
     #[inline]
-    fn eq(&self, rhs: &Vec4) -> bool {
+    fn eq(&self, rhs: &Self) -> bool {
         self.cmpeq(*rhs).all()
     }
 }
@@ -448,21 +448,21 @@ impl From<Vec4> for __m128 {
 impl From<__m128> for Vec4 {
     #[inline]
     fn from(t: __m128) -> Self {
-        Vec4(t)
+        Self(t)
     }
 }
 
 impl From<(f32, f32, f32, f32)> for Vec4 {
     #[inline]
     fn from(t: (f32, f32, f32, f32)) -> Self {
-        Vec4::new(t.0, t.1, t.2, t.3)
+        Self::new(t.0, t.1, t.2, t.3)
     }
 }
 
 impl From<&(f32, f32, f32, f32)> for Vec4 {
     #[inline]
     fn from(t: &(f32, f32, f32, f32)) -> Self {
-        Vec4::new(t.0, t.1, t.2, t.3)
+        Self::new(t.0, t.1, t.2, t.3)
     }
 }
 
@@ -491,14 +491,14 @@ impl From<&Vec4> for (f32, f32, f32, f32) {
 impl From<[f32; 4]> for Vec4 {
     #[inline]
     fn from(a: [f32; 4]) -> Self {
-        unsafe { Vec4(_mm_loadu_ps(a.as_ptr())) }
+        unsafe { Self(_mm_loadu_ps(a.as_ptr())) }
     }
 }
 
 impl From<&[f32; 4]> for Vec4 {
     #[inline]
     fn from(a: &[f32; 4]) -> Self {
-        unsafe { Vec4(_mm_loadu_ps(a.as_ptr())) }
+        unsafe { Self(_mm_loadu_ps(a.as_ptr())) }
     }
 }
 

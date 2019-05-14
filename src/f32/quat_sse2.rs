@@ -13,19 +13,19 @@ pub struct Quat(pub(crate) __m128);
 
 impl Quat {
     #[inline]
-    pub fn new(x: f32, y: f32, z: f32, w: f32) -> Quat {
-        unsafe { Quat(_mm_set_ps(w, z, y, x)) }
+    pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
+        unsafe { Self(_mm_set_ps(w, z, y, x)) }
     }
 
     #[inline]
-    pub fn identity() -> Quat {
-        unsafe { Quat(_mm_set_ps(1.0, 0.0, 0.0, 0.0)) }
+    pub fn identity() -> Self {
+        unsafe { Self(_mm_set_ps(1.0, 0.0, 0.0, 0.0)) }
     }
 
     #[inline]
-    pub fn from_slice_unaligned(slice: &[f32]) -> Quat {
+    pub fn from_slice_unaligned(slice: &[f32]) -> Self {
         assert!(slice.len() >= 4);
-        unsafe { Quat(_mm_loadu_ps(slice.as_ptr())) }
+        unsafe { Self(_mm_loadu_ps(slice.as_ptr())) }
     }
 
     #[inline]
@@ -41,7 +41,7 @@ impl Quat {
     /// Note that due to floating point rounding the result may not be perfectly normalized.
     /// Multiplication order is as follows:
     /// `local_to_world = local_to_object * object_to_world`
-    pub fn mul_quat(self, rhs: Quat) -> Quat {
+    pub fn mul_quat(self, rhs: Self) -> Self {
         // sse2 implementation from RTM
         let lhs = self.0;
         let rhs = rhs.0;
@@ -85,7 +85,7 @@ impl Quat {
 
             let nlyrz_lxrz_lwrz_wlzrz = _mm_mul_ps(lyrz_lxrz_lwrz_lzrz, CONTROL_YXWZ.m128);
             let result1 = _mm_add_ps(lzry_lwry_nlxry_nlyry, nlyrz_lxrz_lwrz_wlzrz);
-            Quat(_mm_add_ps(result0, result1))
+            Self(_mm_add_ps(result0, result1))
         }
     }
 }
@@ -95,7 +95,7 @@ impl Vec3 {
     /// Multiplies a quaternion and a 3D vector, rotating it.
     /// Multiplication order is as follows:
     /// `world_position = local_position * local_to_world`
-    pub fn rotate_quat(self, rhs: Quat) -> Vec3 {
+    pub fn rotate_quat(self, rhs: Quat) -> Self {
         let vec_quat = Quat(self.0);
         let inv_self = rhs.conjugate();
         let res_vec = inv_self * vec_quat * rhs;
@@ -106,28 +106,28 @@ impl Vec3 {
 impl From<Vec4> for Quat {
     #[inline]
     fn from(v: Vec4) -> Self {
-        Quat(v.0)
+        Self(v.0)
     }
 }
 
 impl From<&Vec4> for Quat {
     #[inline]
     fn from(v: &Vec4) -> Self {
-        Quat(v.0)
+        Self(v.0)
     }
 }
 
 impl From<Quat> for Vec4 {
     #[inline]
     fn from(q: Quat) -> Self {
-        Vec4(q.0)
+        Self(q.0)
     }
 }
 
 impl From<&Quat> for Vec4 {
     #[inline]
     fn from(q: &Quat) -> Self {
-        Vec4(q.0)
+        Self(q.0)
     }
 }
 
@@ -143,7 +143,7 @@ impl From<Quat> for __m128 {
 impl From<__m128> for Quat {
     #[inline]
     fn from(t: __m128) -> Self {
-        Quat(t)
+        Self(t)
     }
 }
 
@@ -172,14 +172,14 @@ impl From<&Quat> for (f32, f32, f32, f32) {
 impl From<[f32; 4]> for Quat {
     #[inline]
     fn from(a: [f32; 4]) -> Self {
-        unsafe { Quat(_mm_loadu_ps(a.as_ptr())) }
+        unsafe { Self(_mm_loadu_ps(a.as_ptr())) }
     }
 }
 
 impl From<&[f32; 4]> for Quat {
     #[inline]
     fn from(a: &[f32; 4]) -> Self {
-        unsafe { Quat(_mm_loadu_ps(a.as_ptr())) }
+        unsafe { Self(_mm_loadu_ps(a.as_ptr())) }
     }
 }
 

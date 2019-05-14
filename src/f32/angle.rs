@@ -12,13 +12,13 @@ pub struct Angle(f32);
 
 impl Angle {
     #[inline]
-    pub fn from_radians(a: f32) -> Angle {
-        Angle(a)
+    pub fn from_radians(a: f32) -> Self {
+        Self(a)
     }
 
     #[inline]
-    pub fn from_degrees(a: f32) -> Angle {
-        Angle(a.to_radians())
+    pub fn from_degrees(a: f32) -> Self {
+        Self(a.to_radians())
     }
 
     #[inline]
@@ -37,7 +37,7 @@ impl Angle {
     }
 
     #[inline]
-    pub fn acos(value: f32) -> Angle {
+    pub fn acos(value: f32) -> Self {
         // from DirectXMath XMScalarAcos
         // Clamp input to [-1,1].
         let nonnegative = value >= 0.0;
@@ -62,7 +62,7 @@ impl Angle {
         result *= root;
 
         // acos(x) = pi - acos(-x) when x < 0
-        Angle::from_radians(if nonnegative {
+        Self::from_radians(if nonnegative {
             result
         } else {
             std::f32::consts::PI - result
@@ -78,10 +78,10 @@ impl PartialEq for Angle {
 }
 
 impl Div<f32> for Angle {
-    type Output = Angle;
+    type Output = Self;
     #[inline]
-    fn div(self, rhs: f32) -> Angle {
-        Angle(self.0 / rhs)
+    fn div(self, rhs: f32) -> Self {
+        Self(self.0 / rhs)
     }
 }
 
@@ -93,10 +93,10 @@ impl DivAssign<f32> for Angle {
 }
 
 impl Mul<f32> for Angle {
-    type Output = Angle;
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: f32) -> Angle {
-        Angle(self.0 * rhs)
+    fn mul(self, rhs: f32) -> Self {
+        Self(self.0 * rhs)
     }
 }
 
@@ -116,40 +116,40 @@ impl Mul<Angle> for f32 {
 }
 
 impl Add for Angle {
-    type Output = Angle;
+    type Output = Self;
     #[inline]
-    fn add(self, rhs: Angle) -> Angle {
-        Angle(self.0 + rhs.0)
+    fn add(self, rhs: Self) -> Self {
+        Self(self.0 + rhs.0)
     }
 }
 
 impl AddAssign for Angle {
     #[inline]
-    fn add_assign(&mut self, rhs: Angle) {
+    fn add_assign(&mut self, rhs: Self) {
         self.0 += rhs.0;
     }
 }
 
 impl Sub for Angle {
-    type Output = Angle;
+    type Output = Self;
     #[inline]
-    fn sub(self, rhs: Angle) -> Angle {
-        Angle(self.0 - rhs.0)
+    fn sub(self, rhs: Self) -> Self {
+        Self(self.0 - rhs.0)
     }
 }
 
 impl SubAssign for Angle {
     #[inline]
-    fn sub_assign(&mut self, rhs: Angle) {
+    fn sub_assign(&mut self, rhs: Self) {
         self.0 -= rhs.0;
     }
 }
 
 impl Neg for Angle {
-    type Output = Angle;
+    type Output = Self;
     #[inline]
-    fn neg(self) -> Angle {
-        Angle(-self.0)
+    fn neg(self) -> Self {
+        Self(-self.0)
     }
 }
 

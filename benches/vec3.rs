@@ -42,7 +42,6 @@ bench_binop!(
     from2 => Mat4
 );
 
-
 euler!(vec3_euler, "vec3 euler", ty => Vec3, storage => Vec3, zero => Vec3::zero());
 euler!(vec3_tuple_euler, "vec3 tuple euler", ty => Vec3, storage => (f32, f32, f32), zero => (0.0, 0.0, 0.0));
 

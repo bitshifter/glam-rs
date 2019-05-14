@@ -53,8 +53,8 @@ pub struct Mat4 {
 
 impl Mat4 {
     #[inline]
-    pub fn zero() -> Mat4 {
-        Mat4 {
+    pub fn zero() -> Self {
+        Self {
             x_axis: Vec4::zero(),
             y_axis: Vec4::zero(),
             z_axis: Vec4::zero(),
@@ -63,8 +63,8 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn identity() -> Mat4 {
-        Mat4 {
+    pub fn identity() -> Self {
+        Self {
             x_axis: Vec4::unit_x(),
             y_axis: Vec4::unit_y(),
             z_axis: Vec4::unit_z(),
@@ -73,8 +73,8 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn new(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat4 {
-        Mat4 {
+    pub fn new(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Self {
+        Self {
             x_axis,
             y_axis,
             z_axis,
@@ -83,10 +83,10 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn from_scale_rotation_translation(scale: Vec3, rotation: Quat, translation: Vec3) -> Mat4 {
+    pub fn from_scale_rotation_translation(scale: Vec3, rotation: Quat, translation: Vec3) -> Self {
         let (x_axis, y_axis, z_axis) = quat_to_axes(rotation);
         let (scale_x, scale_y, scale_z) = scale.into();
-        Mat4 {
+        Self {
             x_axis: x_axis * scale_x,
             y_axis: y_axis * scale_y,
             z_axis: z_axis * scale_z,
@@ -95,9 +95,9 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn from_rotation_translation(rotation: Quat, translation: Vec3) -> Mat4 {
+    pub fn from_rotation_translation(rotation: Quat, translation: Vec3) -> Self {
         let (x_axis, y_axis, z_axis) = quat_to_axes(rotation);
-        Mat4 {
+        Self {
             x_axis,
             y_axis,
             z_axis,
@@ -106,9 +106,9 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn from_quat(rotation: Quat) -> Mat4 {
+    pub fn from_quat(rotation: Quat) -> Self {
         let (x_axis, y_axis, z_axis) = quat_to_axes(rotation);
-        Mat4 {
+        Self {
             x_axis,
             y_axis,
             z_axis,
@@ -117,8 +117,8 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn from_translation(translation: Vec3) -> Mat4 {
-        Mat4 {
+    pub fn from_translation(translation: Vec3) -> Self {
+        Self {
             x_axis: Vec4::unit_x(),
             y_axis: Vec4::unit_y(),
             z_axis: Vec4::unit_z(),
@@ -127,7 +127,7 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn from_axis_angle(axis: Vec3, angle: Angle) -> Mat4 {
+    pub fn from_axis_angle(axis: Vec3, angle: Angle) -> Self {
         let (sin, cos) = angle.sin_cos();
         let (x, y, z) = axis.into();
         let (xsin, ysin, zsin) = (axis * sin).into();
@@ -136,7 +136,7 @@ impl Mat4 {
         let xyomc = x * y * omc;
         let xzomc = x * z * omc;
         let yzomc = y * z * omc;
-        Mat4 {
+        Self {
             x_axis: Vec4::new(x2 * omc + cos, xyomc + zsin, xzomc - ysin, 0.0),
             y_axis: Vec4::new(xyomc - zsin, y2 * omc + cos, yzomc + xsin, 0.0),
             z_axis: Vec4::new(xzomc + ysin, yzomc - xsin, z2 * omc + cos, 0.0),
@@ -145,15 +145,15 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn from_rotation_ypr(yaw: Angle, pitch: Angle, roll: Angle) -> Mat4 {
+    pub fn from_rotation_ypr(yaw: Angle, pitch: Angle, roll: Angle) -> Self {
         let quat = Quat::from_rotation_ypr(yaw, pitch, roll);
-        Mat4::from_quat(quat)
+        Self::from_quat(quat)
     }
 
     #[inline]
-    pub fn from_rotation_x(angle: Angle) -> Mat4 {
+    pub fn from_rotation_x(angle: Angle) -> Self {
         let (sina, cosa) = angle.sin_cos();
-        Mat4 {
+        Self {
             x_axis: Vec4::unit_x(),
             y_axis: Vec4::new(0.0, cosa, sina, 0.0),
             z_axis: Vec4::new(0.0, -sina, cosa, 0.0),
@@ -162,9 +162,9 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn from_rotation_y(angle: Angle) -> Mat4 {
+    pub fn from_rotation_y(angle: Angle) -> Self {
         let (sina, cosa) = angle.sin_cos();
-        Mat4 {
+        Self {
             x_axis: Vec4::new(cosa, 0.0, -sina, 0.0),
             y_axis: Vec4::unit_y(),
             z_axis: Vec4::new(sina, 0.0, cosa, 0.0),
@@ -173,9 +173,9 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn from_rotation_z(angle: Angle) -> Mat4 {
+    pub fn from_rotation_z(angle: Angle) -> Self {
         let (sina, cosa) = angle.sin_cos();
-        Mat4 {
+        Self {
             x_axis: Vec4::new(cosa, sina, 0.0, 0.0),
             y_axis: Vec4::new(-sina, cosa, 0.0, 0.0),
             z_axis: Vec4::unit_z(),
@@ -184,9 +184,9 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn from_scale(scale: Vec3) -> Mat4 {
+    pub fn from_scale(scale: Vec3) -> Self {
         let (x, y, z) = scale.into();
-        Mat4 {
+        Self {
             x_axis: Vec4::new(x, 0.0, 0.0, 0.0),
             y_axis: Vec4::new(0.0, y, 0.0, 0.0),
             z_axis: Vec4::new(0.0, 0.0, z, 0.0),
@@ -236,7 +236,7 @@ impl Mat4 {
 
     #[cfg(all(target_feature = "sse2", not(feature = "no-simd")))]
     #[inline]
-    pub fn transpose(&self) -> Mat4 {
+    pub fn transpose(&self) -> Self {
         // sse2 implemenation based off DirectXMath XMMatrixInverse (MIT License)
         #[cfg(target_arch = "x86")]
         use std::arch::x86::*;
@@ -249,7 +249,7 @@ impl Mat4 {
             let tmp2 = _mm_shuffle_ps(self.z_axis.0, self.w_axis.0, 0b01_00_01_00);
             let tmp3 = _mm_shuffle_ps(self.z_axis.0, self.w_axis.0, 0b11_10_11_10);
 
-            Mat4 {
+            Self {
                 x_axis: _mm_shuffle_ps(tmp0, tmp2, 0b10_00_10_00).into(),
                 y_axis: _mm_shuffle_ps(tmp0, tmp2, 0b11_01_11_01).into(),
                 z_axis: _mm_shuffle_ps(tmp1, tmp3, 0b10_00_10_00).into(),
@@ -260,13 +260,13 @@ impl Mat4 {
 
     #[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
     #[inline]
-    pub fn transpose(&self) -> Mat4 {
+    pub fn transpose(&self) -> Self {
         let (m00, m01, m02, m03) = self.x_axis.into();
         let (m10, m11, m12, m13) = self.y_axis.into();
         let (m20, m21, m22, m23) = self.z_axis.into();
         let (m30, m31, m32, m33) = self.w_axis.into();
 
-        Mat4 {
+        Self {
             x_axis: Vec4::new(m00, m10, m20, m30),
             y_axis: Vec4::new(m01, m11, m21, m31),
             z_axis: Vec4::new(m02, m12, m22, m32),
@@ -295,7 +295,7 @@ impl Mat4 {
     }
 
     #[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
-    pub fn inverse(&self) -> Mat4 {
+    pub fn inverse(&self) -> Self {
         let (m00, m01, m02, m03) = self.x_axis.into();
         let (m10, m11, m12, m13) = self.y_axis.into();
         let (m20, m21, m22, m23) = self.z_axis.into();
@@ -345,7 +345,7 @@ impl Mat4 {
         let sign_a = Vec4::new(1.0, -1.0, 1.0, -1.0);
         let sign_b = Vec4::new(-1.0, 1.0, -1.0, 1.0);
 
-        let inverse = Mat4 {
+        let inverse = Self {
             x_axis: inv0 * sign_a,
             y_axis: inv1 * sign_b,
             z_axis: inv2 * sign_a,
@@ -369,7 +369,7 @@ impl Mat4 {
     #[cfg(all(target_feature = "sse2", not(feature = "no-simd")))]
     /// Performs a matrix inverse. Note that this method does not check if the matrix is
     /// invertible and will divide by zero if a non-invertible matrix is inverted.
-    pub fn inverse(&self) -> Mat4 {
+    pub fn inverse(&self) -> Self {
         // sse2 implemenation based off DirectXMath XMMatrixInverse (MIT License)
         #[cfg(target_arch = "x86")]
         use std::arch::x86::*;
@@ -541,7 +541,7 @@ impl Mat4 {
             // mResult.r[2] = _mm_mul_ps(C4,vTemp);
             // mResult.r[3] = _mm_mul_ps(C6,vTemp);
             // return mResult;
-            Mat4 {
+            Self {
                 x_axis: c0 * inv_det,
                 y_axis: c2 * inv_det,
                 z_axis: c4 * inv_det,
@@ -551,14 +551,14 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn look_at(eye: Vec3, center: Vec3, up: Vec3) -> Mat4 {
+    pub fn look_at(eye: Vec3, center: Vec3, up: Vec3) -> Self {
         let f = (center - eye).normalize();
         let (fx, fy, fz) = f.into();
         let s = f.cross(up);
         let (sx, sy, sz) = s.into();
         let u = s.cross(f);
         let (ux, uy, uz) = u.into();
-        Mat4 {
+        Self {
             x_axis: Vec4::new(sx, ux, -fx, 0.0),
             y_axis: Vec4::new(sy, uy, -fy, 0.0),
             z_axis: Vec4::new(sz, uz, -fz, 0.0),
@@ -567,14 +567,14 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn perspective(fovy: Angle, aspect: f32, near: f32, far: f32) -> Mat4 {
+    pub fn perspective(fovy: Angle, aspect: f32, near: f32, far: f32) -> Self {
         let inv_length = 1.0 / (near - far);
         let q = 1.0 / (0.5 * fovy.as_radians()).tan();
         let a = q / aspect;
         let b = (near + far) * inv_length;
         let c = (2.0 * near * far) * inv_length;
 
-        Mat4 {
+        Self {
             x_axis: Vec4::new(a, 0.0, 0.0, 0.0),
             y_axis: Vec4::new(0.0, q, 0.0, 0.0),
             z_axis: Vec4::new(0.0, 0.0, b, -1.0),
@@ -586,7 +586,7 @@ impl Mat4 {
     /// Multiplies two 4x4 matrices.
     /// Multiplication order is as follows:
     /// `local_to_world = local_to_object * local_to_world`
-    pub fn mul_mat4(&self, rhs: &Mat4) -> Mat4 {
+    pub fn mul_mat4(&self, rhs: &Self) -> Self {
         let mut tmp = self.x_axis.dup_x().mul(rhs.x_axis);
         tmp = self.x_axis.dup_y().mul_add(rhs.y_axis, tmp);
         tmp = self.x_axis.dup_z().mul_add(rhs.z_axis, tmp);
@@ -607,7 +607,7 @@ impl Mat4 {
         tmp = self.w_axis.dup_z().mul_add(rhs.z_axis, tmp);
         let w_axis = rhs.w_axis.add(tmp);
 
-        Mat4 {
+        Self {
             x_axis,
             y_axis,
             z_axis,
@@ -616,8 +616,8 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn add_mat4(&self, rhs: &Mat4) -> Mat4 {
-        Mat4 {
+    pub fn add_mat4(&self, rhs: &Self) -> Self {
+        Self {
             x_axis: self.x_axis + rhs.x_axis,
             y_axis: self.y_axis + rhs.y_axis,
             z_axis: self.z_axis + rhs.z_axis,
@@ -626,8 +626,8 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn sub_mat4(&self, rhs: &Mat4) -> Mat4 {
-        Mat4 {
+    pub fn sub_mat4(&self, rhs: &Self) -> Self {
+        Self {
             x_axis: self.x_axis - rhs.x_axis,
             y_axis: self.y_axis - rhs.y_axis,
             z_axis: self.z_axis - rhs.z_axis,
@@ -636,9 +636,9 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn mul_scalar(&self, rhs: f32) -> Mat4 {
+    pub fn mul_scalar(&self, rhs: f32) -> Self {
         let s = Vec4::splat(rhs);
-        Mat4 {
+        Self {
             x_axis: self.x_axis * s,
             y_axis: self.y_axis * s,
             z_axis: self.z_axis * s,
@@ -653,7 +653,7 @@ impl Vec3 {
     /// Multiplies a 4x4 matrix and a 3D point.
     /// Multiplication order is as follows:
     /// `world_position = local_position.transform_mat4(local_to_world)`
-    pub fn transform_mat4(self, rhs: &Mat4) -> Vec3 {
+    pub fn transform_mat4(self, rhs: &Mat4) -> Self {
         // TODO: optimise
         self.extend(1.0).transform_mat4(rhs).truncate()
     }
@@ -662,7 +662,7 @@ impl Vec3 {
     /// Multiplies a 4x4 matrix and a 3D direction vector. Translation is not applied.
     /// Multiplication order is as follows:
     /// `world_direction = local_direction.transform_mat4(local_to_world)`
-    pub fn rotate_mat4(self, rhs: &Mat4) -> Vec3 {
+    pub fn rotate_mat4(self, rhs: &Mat4) -> Self {
         // TODO: optimise
         self.extend(0.0).transform_mat4(rhs).truncate()
     }
@@ -674,7 +674,7 @@ impl Vec4 {
     /// Multiplies a 4x4 matrix and a 4D vector.
     /// Multiplication order is as follows:
     /// `world_position = local_position.transform_mat4(local_to_world)`
-    pub fn transform_mat4(self, rhs: &Mat4) -> Vec4 {
+    pub fn transform_mat4(self, rhs: &Mat4) -> Self {
         let mut tmp = self.dup_x().mul(rhs.get_x_axis());
         tmp = self.dup_y().mul_add(rhs.get_y_axis(), tmp);
         tmp = self.dup_z().mul_add(rhs.get_z_axis(), tmp);
@@ -694,61 +694,61 @@ impl Distribution<Mat4> for Standard {
 impl AsRef<[f32; 16]> for Mat4 {
     #[inline]
     fn as_ref(&self) -> &[f32; 16] {
-        unsafe { &*(self as *const Mat4 as *const [f32; 16]) }
+        unsafe { &*(self as *const Self as *const [f32; 16]) }
     }
 }
 
 impl AsMut<[f32; 16]> for Mat4 {
     #[inline]
     fn as_mut(&mut self) -> &mut [f32; 16] {
-        unsafe { &mut *(self as *mut Mat4 as *mut [f32; 16]) }
+        unsafe { &mut *(self as *mut Self as *mut [f32; 16]) }
     }
 }
 
 impl Add<Mat4> for Mat4 {
-    type Output = Mat4;
+    type Output = Self;
     #[inline]
-    fn add(self, rhs: Mat4) -> Mat4 {
+    fn add(self, rhs: Self) -> Self {
         self.add_mat4(&rhs)
     }
 }
 
 impl Add<&Mat4> for Mat4 {
-    type Output = Mat4;
+    type Output = Self;
     #[inline]
-    fn add(self, rhs: &Mat4) -> Mat4 {
+    fn add(self, rhs: &Self) -> Self {
         self.add_mat4(rhs)
     }
 }
 
 impl Sub<Mat4> for Mat4 {
-    type Output = Mat4;
+    type Output = Self;
     #[inline]
-    fn sub(self, rhs: Mat4) -> Mat4 {
+    fn sub(self, rhs: Self) -> Self {
         self.sub_mat4(&rhs)
     }
 }
 
 impl Sub<&Mat4> for Mat4 {
-    type Output = Mat4;
+    type Output = Self;
     #[inline]
-    fn sub(self, rhs: &Mat4) -> Mat4 {
+    fn sub(self, rhs: &Self) -> Self {
         self.sub_mat4(rhs)
     }
 }
 
 impl Mul<Mat4> for Mat4 {
-    type Output = Mat4;
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: Mat4) -> Mat4 {
+    fn mul(self, rhs: Self) -> Self {
         self.mul_mat4(&rhs)
     }
 }
 
 impl Mul<&Mat4> for Mat4 {
-    type Output = Mat4;
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: &Mat4) -> Mat4 {
+    fn mul(self, rhs: &Self) -> Self {
         self.mul_mat4(rhs)
     }
 }
@@ -770,17 +770,17 @@ impl Mul<&Mat4> for Mat4 {
 // }
 
 impl Mul<Mat4> for Vec4 {
-    type Output = Vec4;
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: Mat4) -> Vec4 {
+    fn mul(self, rhs: Mat4) -> Self {
         self.transform_mat4(&rhs)
     }
 }
 
 impl Mul<&Mat4> for Vec4 {
-    type Output = Vec4;
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: &Mat4) -> Vec4 {
+    fn mul(self, rhs: &Mat4) -> Self {
         self.transform_mat4(rhs)
     }
 }
@@ -801,9 +801,9 @@ impl Mul<&Mat4> for f32 {
 }
 
 impl Mul<f32> for Mat4 {
-    type Output = Mat4;
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: f32) -> Mat4 {
+    fn mul(self, rhs: f32) -> Self {
         self.mul_scalar(rhs)
     }
 }

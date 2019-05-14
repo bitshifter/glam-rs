@@ -18,33 +18,33 @@ pub fn quat(x: f32, y: f32, z: f32, w: f32) -> Quat {
 impl Quat {
     #[inline]
     /// Create quaterion for a normalized rotation axis and angle.
-    pub fn from_axis_angle(axis: Vec3, angle: Angle) -> Quat {
+    pub fn from_axis_angle(axis: Vec3, angle: Angle) -> Self {
         debug_assert!((axis.length_squared() - 1.0).abs() < 0.01);
         let (s, c) = (angle * 0.5).sin_cos();
         (axis * s).extend(c).into()
     }
 
     #[inline]
-    pub fn from_rotation_x(angle: Angle) -> Quat {
+    pub fn from_rotation_x(angle: Angle) -> Self {
         let (s, c) = (angle * 0.5).sin_cos();
-        Quat::new(s, 0.0, 0.0, c)
+        Self::new(s, 0.0, 0.0, c)
     }
 
     #[inline]
-    pub fn from_rotation_y(angle: Angle) -> Quat {
+    pub fn from_rotation_y(angle: Angle) -> Self {
         let (s, c) = (angle * 0.5).sin_cos();
-        Quat::new(0.0, s, 0.0, c)
+        Self::new(0.0, s, 0.0, c)
     }
 
     #[inline]
-    pub fn from_rotation_z(angle: Angle) -> Quat {
+    pub fn from_rotation_z(angle: Angle) -> Self {
         let (s, c) = (angle * 0.5).sin_cos();
-        Quat::new(0.0, 0.0, s, c)
+        Self::new(0.0, 0.0, s, c)
     }
 
     #[inline]
     /// Create a quaternion from the given yaw (around y), pitch (around x) and roll (around z).
-    pub fn from_rotation_ypr(yaw: Angle, pitch: Angle, roll: Angle) -> Quat {
+    pub fn from_rotation_ypr(yaw: Angle, pitch: Angle, roll: Angle) -> Self {
         let (sy, cy) = (-0.5 * yaw).sin_cos();
         let (sr, cr) = (-0.5 * roll).sin_cos();
         let (sp, cp) = (-0.5 * pitch).sin_cos();
@@ -52,11 +52,11 @@ impl Quat {
         let x = -cy * sp * cr - sy * cp * sr;
         let y = cy * sp * sr - sy * cp * cr;
         let z = sy * sp * cr - cy * cp * sr;
-        Quat::new(x, y, z, w)
+        Self::new(x, y, z, w)
     }
 
     #[inline]
-    pub fn from_rotation_mat4(mat: &Mat4) -> Quat {
+    pub fn from_rotation_mat4(mat: &Mat4) -> Self {
         // from DirectXMath XMQuaternionRotationMatrix
         // TODO: sse2 version
         let (m00, m01, m02, _m03) = mat.x_axis.into();
@@ -70,7 +70,7 @@ impl Quat {
                 // x^2 >= y^2
                 let four_xsq = omm22 - dif10;
                 let inv4x = 0.5 / four_xsq.sqrt();
-                Quat::new(
+                Self::new(
                     four_xsq * inv4x,
                     (m01 + m10) * inv4x,
                     (m02 + m20) * inv4x,
@@ -80,7 +80,7 @@ impl Quat {
                 // y^2 >= x^2
                 let four_ysq = omm22 + dif10;
                 let inv4y = 0.5 / four_ysq.sqrt();
-                Quat::new(
+                Self::new(
                     (m01 + m10) * inv4y,
                     four_ysq * inv4y,
                     (m12 + m21) * inv4y,
@@ -95,7 +95,7 @@ impl Quat {
                 // z^2 >= w^2
                 let four_zsq = opm22 - sum10;
                 let inv4z = 0.5 / four_zsq.sqrt();
-                Quat::new(
+                Self::new(
                     (m02 + m20) * inv4z,
                     (m12 + m21) * inv4z,
                     four_zsq * inv4z,
@@ -105,7 +105,7 @@ impl Quat {
                 // w^2 >= z^2
                 let four_wsq = opm22 + sum10;
                 let inv4w = 0.5 / four_wsq.sqrt();
-                Quat::new(
+                Self::new(
                     (m12 - m21) * inv4w,
                     (m20 - m02) * inv4w,
                     (m01 - m10) * inv4w,
@@ -130,13 +130,13 @@ impl Quat {
     }
 
     #[inline]
-    pub fn conjugate(self) -> Quat {
+    pub fn conjugate(self) -> Self {
         let v: Vec4 = self.into();
         v.truncate().neg().extend(v.get_w()).into()
     }
 
     #[inline]
-    pub fn dot(self, rhs: Quat) -> f32 {
+    pub fn dot(self, rhs: Self) -> f32 {
         let v: Vec4 = self.into();
         v.dot(rhs.into())
     }
@@ -159,7 +159,7 @@ impl Quat {
     }
 
     #[inline]
-    pub fn normalize(self) -> Quat {
+    pub fn normalize(self) -> Self {
         let inv_len = self.length_reciprocal();
         let v: Vec4 = self.into();
         v.mul(inv_len).into()
@@ -172,13 +172,13 @@ impl Quat {
     }
 
     #[inline]
-    pub fn lerp(self, end: Quat, t: f32) -> Quat {
+    pub fn lerp(self, end: Self, t: f32) -> Self {
         let start: Vec4 = self.into();
         let end: Vec4 = end.into();
         let dot = start.dot(end);
         let bias = if dot >= 0.0 { 1.0 } else { -1.0 };
         let interpolated = start + (t * ((end * bias) - start));
-        let result: Quat = interpolated.into();
+        let result: Self = interpolated.into();
         result.normalize()
     }
 }
@@ -203,47 +203,47 @@ impl fmt::Display for Quat {
 }
 
 impl Mul<Quat> for Quat {
-    type Output = Quat;
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: Quat) -> Quat {
+    fn mul(self, rhs: Self) -> Self {
         self.mul_quat(rhs)
     }
 }
 
 impl Mul<&Quat> for Quat {
-    type Output = Quat;
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: &Quat) -> Quat {
+    fn mul(self, rhs: &Self) -> Self {
         self.mul_quat(*rhs)
     }
 }
 
 impl MulAssign<Quat> for Quat {
     #[inline]
-    fn mul_assign(&mut self, rhs: Quat) {
+    fn mul_assign(&mut self, rhs: Self) {
         *self = self.mul_quat(rhs);
     }
 }
 
 impl MulAssign<&Quat> for Quat {
     #[inline]
-    fn mul_assign(&mut self, rhs: &Quat) {
+    fn mul_assign(&mut self, rhs: &Self) {
         *self = self.mul_quat(*rhs);
     }
 }
 
 impl Mul<Quat> for Vec3 {
-    type Output = Vec3;
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: Quat) -> Vec3 {
+    fn mul(self, rhs: Quat) -> Self {
         self.rotate_quat(rhs)
     }
 }
 
 impl Mul<&Quat> for Vec3 {
-    type Output = Vec3;
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: &Quat) -> Vec3 {
+    fn mul(self, rhs: &Quat) -> Self {
         self.rotate_quat(*rhs)
     }
 }
@@ -263,9 +263,9 @@ impl MulAssign<&Quat> for Vec3 {
 }
 
 impl Neg for Quat {
-    type Output = Quat;
+    type Output = Self;
     #[inline]
-    fn neg(self) -> Quat {
+    fn neg(self) -> Self {
         let v: Vec4 = self.into();
         (-1.0 * v).into()
     }
@@ -273,7 +273,7 @@ impl Neg for Quat {
 
 impl PartialEq for Quat {
     #[inline]
-    fn eq(&self, rhs: &Quat) -> bool {
+    fn eq(&self, rhs: &Self) -> bool {
         let v: Vec4 = self.into();
         v.cmpeq(rhs.into()).all()
     }
@@ -282,14 +282,14 @@ impl PartialEq for Quat {
 impl AsRef<[f32; 4]> for Quat {
     #[inline]
     fn as_ref(&self) -> &[f32; 4] {
-        unsafe { &*(self as *const Quat as *const [f32; 4]) }
+        unsafe { &*(self as *const Self as *const [f32; 4]) }
     }
 }
 
 impl AsMut<[f32; 4]> for Quat {
     #[inline]
     fn as_mut(&mut self) -> &mut [f32; 4] {
-        unsafe { &mut *(self as *mut Quat as *mut [f32; 4]) }
+        unsafe { &mut *(self as *mut Self as *mut [f32; 4]) }
     }
 }
 
