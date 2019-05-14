@@ -1,5 +1,6 @@
 mod angle;
 mod funcs;
+mod mat3;
 mod mat4;
 mod quat;
 #[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
@@ -24,6 +25,7 @@ mod x86_utils;
 
 pub use angle::*;
 pub(crate) use funcs::scalar_sin_cos;
+pub use mat3::*;
 pub use mat4::*;
 pub use quat::quat;
 #[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
