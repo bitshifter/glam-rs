@@ -210,7 +210,6 @@ impl Mat3 {
     //             x_axis: _mm_shuffle_ps(tmp0, tmp2, 0b10_00_10_00).into(),
     //             y_axis: _mm_shuffle_ps(tmp0, tmp2, 0b11_01_11_01).into(),
     //             z_axis: _mm_shuffle_ps(tmp1, tmp3, 0b10_00_10_00).into(),
-    //             w_axis: _mm_shuffle_ps(tmp1, tmp3, 0b11_01_11_01).into(),
     //         }
     //     }
     // }
@@ -231,22 +230,13 @@ impl Mat3 {
 
     #[inline]
     pub fn determinant(&self) -> f32 {
-        unimplemented!();
-        // let (m00, m01, m02, m03) = self.x_axis.into();
-        // let (m10, m11, m12, m13) = self.y_axis.into();
-        // let (m20, m21, m22, m23) = self.z_axis.into();
+        let (m00, m01, m02) = self.x_axis.into();
+        let (m10, m11, m12) = self.y_axis.into();
+        let (m20, m21, m22) = self.z_axis.into();
 
-        // let a2323 = m22 * m33 - m23 * m32;
-        // let a1323 = m21 * m33 - m23 * m31;
-        // let a1223 = m21 * m32 - m22 * m31;
-        // let a0323 = m20 * m33 - m23 * m30;
-        // let a0223 = m20 * m32 - m22 * m30;
-        // let a0123 = m20 * m31 - m21 * m30;
-
-        // m00 * (m11 * a2323 - m12 * a1323 + m13 * a1223)
-        //     - m01 * (m10 * a2323 - m12 * a0323 + m13 * a0223)
-        //     + m02 * (m10 * a1323 - m11 * a0323 + m13 * a0123)
-        //     - m03 * (m10 * a1223 - m11 * a0223 + m12 * a0123)
+        m00 * (m11 * m22 - m12 * m21)
+            + m01 * (m12 * m20 - m10 * m22)
+            + m02 * (m10 * m21 - m11 * m20)
     }
 
     // #[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
@@ -564,11 +554,14 @@ impl Mat3 {
 // implemented here so they don't need to be duplicated between f32x4 and f32 versions
 impl Vec3 {
     #[inline]
-    /// Multiplies a 4x4 matrix and a 3D direction vector. Translation is not applied.
+    /// Multiplies a 3x3 matrix and a 3D direction vector.
     /// Multiplication order is as follows:
-    /// `world_direction = local_direction.transform_mat4(local_to_world)`
-    pub fn rotate_mat3(self, _rhs: &Mat3) -> Self {
-        unimplemented!();
+    /// `world_direction = local_direction.rotate_mat3(local_to_world)`
+    pub fn rotate_mat3(self, rhs: &Mat3) -> Self {
+        let mut tmp = self.dup_x().mul(rhs.get_x_axis());
+        tmp = self.dup_y().mul_add(rhs.get_y_axis(), tmp);
+        tmp = self.dup_z().mul_add(rhs.get_z_axis(), tmp);
+        tmp
     }
 }
 

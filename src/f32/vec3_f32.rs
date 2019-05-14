@@ -201,7 +201,6 @@ impl Vec3 {
             (self.0 * a.0) + b.0,
             (self.1 * a.1) + b.1,
             (self.2 * a.2) + b.2,
-            (self.3 * a.3) + b.3,
         )
     }
 
@@ -211,7 +210,6 @@ impl Vec3 {
             b.0 - (self.0 * a.0),
             b.1 - (self.1 * a.1),
             b.2 - (self.2 * a.2),
-            b.3 - (self.3 * a.3),
         )
     }
 }
