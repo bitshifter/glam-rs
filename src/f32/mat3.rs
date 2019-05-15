@@ -1,6 +1,6 @@
 use super::{
     super::Angle,
-    {Quat, Vec3},
+    {Quat, Vec2, Vec3},
 };
 
 #[cfg(feature = "rand")]
@@ -78,13 +78,14 @@ impl Mat3 {
     }
 
     #[inline]
-    pub fn from_scale_rotation(scale: Vec3, rotation: Quat) -> Self {
-        let (x_axis, y_axis, z_axis) = quat_to_axes(rotation);
-        let (scale_x, scale_y, scale_z) = scale.into();
+    /// Create a 3x3 matrix that can scale, rotate and translate a 2D vector.
+    pub fn from_scale_angle_translation(scale: Vec2, angle: Angle, translation: Vec2) -> Self {
+        let (sin, cos) = angle.sin_cos();
+        let (scale_x, scale_y) = scale.into();
         Self {
-            x_axis: x_axis * scale_x,
-            y_axis: y_axis * scale_y,
-            z_axis: z_axis * scale_z,
+            x_axis: Vec3::new(cos * scale_x, sin * scale_x, 0.0),
+            y_axis: Vec3::new(-sin * scale_y, cos * scale_y, 0.0),
+            z_axis: translation.extend(1.0),
         }
     }
 
@@ -497,6 +498,26 @@ impl Mat3 {
             y_axis: self.y_axis * s,
             z_axis: self.z_axis * s,
         }
+    }
+}
+
+impl Vec2 {
+    #[inline]
+    /// Multiplies a 3x3 matrix and a 2D point.
+    /// Multiplication order is as follows:
+    /// `world_position = local_position.transform_mat3(local_to_world)`
+    pub fn transform_mat3(self, rhs: &Mat3) -> Self {
+        // TODO: optimise
+        self.extend(1.0).transform_mat3(rhs).truncate()
+    }
+
+    #[inline]
+    /// Multiplies a 2x2 matrix and a 2D direction vector. Translation is not applied.
+    /// Multiplication order is as follows:
+    /// `world_direction = local_direction.transform_mat4(local_to_world)`
+    pub fn rotate_mat3(self, rhs: &Mat3) -> Self {
+        // TODO: optimise
+        self.extend(0.0).transform_mat3(rhs).truncate()
     }
 }
 

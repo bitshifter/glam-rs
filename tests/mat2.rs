@@ -34,15 +34,9 @@ fn test_mat2_accessors() {
 fn test_mat2_from_axes() {
     let a: Mat2 = [[1.0, 2.0], [3.0, 4.0]].into();
     assert_eq!(MATRIX, Into::<[[f32; 2]; 2]>::into(a));
-    let b = Mat2::new(
-        vec2(1.0, 2.0),
-        vec2(3.0, 4.0),
-    );
+    let b = Mat2::new(vec2(1.0, 2.0), vec2(3.0, 4.0));
     assert_eq!(a, b);
-    let c = mat2(
-        vec2(1.0, 2.0),
-        vec2(3.0, 4.0),
-    );
+    let c = mat2(vec2(1.0, 2.0), vec2(3.0, 4.0));
     assert_eq!(a, c);
 }
 
@@ -58,20 +52,14 @@ fn test_mat2_mul() {
 #[test]
 fn test_from_scale() {
     let m = Mat2::from_scale(Vec2::new(2.0, 4.0));
-    assert_ulps_eq!(
-        Vec2::new(1.0, 1.0).transform_mat2(&m),
-        Vec2::new(2.0, 4.0)
-    );
+    assert_ulps_eq!(Vec2::new(1.0, 1.0).transform_mat2(&m), Vec2::new(2.0, 4.0));
     assert_ulps_eq!(Vec2::unit_x() * 2.0, m.get_x_axis());
     assert_ulps_eq!(Vec2::unit_y() * 4.0, m.get_y_axis());
 }
 
 #[test]
 fn test_mat2_transpose() {
-    let m = mat2(
-        vec2(1.0, 2.0),
-        vec2(3.0, 4.0),
-    );
+    let m = mat2(vec2(1.0, 2.0), vec2(3.0, 4.0));
     let mt = m.transpose();
     assert_eq!(mt.get_x_axis(), vec2(1.0, 3.0));
     assert_eq!(mt.get_y_axis(), vec2(2.0, 4.0));
@@ -84,10 +72,7 @@ fn test_mat2_det() {
     assert_eq!(1.0, Mat2::from_angle(deg(90.0)).determinant());
     assert_eq!(1.0, Mat2::from_angle(deg(180.0)).determinant());
     assert_eq!(1.0, Mat2::from_angle(deg(270.0)).determinant());
-    assert_eq!(
-        2.0 * 2.0,
-        Mat2::from_scale(vec2(2.0, 2.0)).determinant()
-    );
+    assert_eq!(2.0 * 2.0, Mat2::from_scale(vec2(2.0, 2.0)).determinant());
 }
 
 #[test]
