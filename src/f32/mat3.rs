@@ -230,85 +230,34 @@ impl Mat3 {
 
     #[inline]
     pub fn determinant(&self) -> f32 {
-        let (m00, m01, m02) = self.x_axis.into();
         let (m10, m11, m12) = self.y_axis.into();
         let (m20, m21, m22) = self.z_axis.into();
 
-        m00 * (m11 * m22 - m12 * m21)
-            + m01 * (m12 * m20 - m10 * m22)
-            + m02 * (m10 * m21 - m11 * m20)
+        self.x_axis.dot(Vec3::new(
+            m11 * m22 - m12 * m21,
+            m12 * m20 - m10 * m22,
+            m10 * m21 - m11 * m20,
+        ))
     }
 
     // #[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
     pub fn inverse(&self) -> Self {
-        unimplemented!();
-        // let (m00, m01, m02) = self.x_axis.into();
-        // let (m10, m11, m12) = self.y_axis.into();
-        // let (m20, m21, m22) = self.z_axis.into();
+        let (m00, m01, m02) = self.x_axis.into();
+        let (m10, m11, m12) = self.y_axis.into();
+        let (m20, m21, m22) = self.z_axis.into();
 
-        // let coef00 = m22 * m33 - m32 * m23;
-        // let coef02 = m12 * m33 - m32 * m13;
-        // let coef03 = m12 * m23 - m22 * m13;
+        let inv00 = m11 * m22 - m12 * m21;
+        let inv10 = m12 * m20 - m10 * m22;
+        let inv20 = m10 * m21 - m11 * m20;
+        let dot = self.x_axis.dot(Vec3::new(inv00, inv10, inv20));
+        debug_assert!(dot.abs() > 0.000001);
+        let inv_dot = Vec3::splat(1.0 / dot);
 
-        // let coef04 = m21 * m33 - m31 * m23;
-        // let coef06 = m11 * m33 - m31 * m13;
-        // let coef07 = m11 * m23 - m21 * m13;
-
-        // let coef08 = m21 * m32 - m31 * m22;
-        // let coef10 = m11 * m32 - m31 * m12;
-        // let coef11 = m11 * m22 - m21 * m12;
-
-        // let coef12 = m20 * m33 - m30 * m23;
-        // let coef14 = m10 * m33 - m30 * m13;
-        // let coef15 = m10 * m23 - m20 * m13;
-
-        // let coef16 = m20 * m32 - m30 * m22;
-        // let coef18 = m10 * m32 - m30 * m12;
-        // let coef19 = m10 * m22 - m20 * m12;
-
-        // let coef20 = m20 * m31 - m30 * m21;
-        // let coef22 = m10 * m31 - m30 * m11;
-        // let coef23 = m10 * m21 - m20 * m11;
-
-        // let fac0 = Vec4::new(coef00, coef00, coef02, coef03);
-        // let fac1 = Vec4::new(coef04, coef04, coef06, coef07);
-        // let fac2 = Vec4::new(coef08, coef08, coef10, coef11);
-        // let fac3 = Vec4::new(coef12, coef12, coef14, coef15);
-        // let fac4 = Vec4::new(coef16, coef16, coef18, coef19);
-        // let fac5 = Vec4::new(coef20, coef20, coef22, coef23);
-
-        // let vec0 = Vec4::new(m10, m00, m00, m00);
-        // let vec1 = Vec4::new(m11, m01, m01, m01);
-        // let vec2 = Vec4::new(m12, m02, m02, m02);
-        // let vec3 = Vec4::new(m13, m03, m03, m03);
-
-        // let inv0 = vec1 * fac0 - vec2 * fac1 + vec3 * fac2;
-        // let inv1 = vec0 * fac0 - vec2 * fac3 + vec3 * fac4;
-        // let inv2 = vec0 * fac1 - vec1 * fac3 + vec3 * fac5;
-        // let inv3 = vec0 * fac2 - vec1 * fac4 + vec2 * fac5;
-
-        // let sign_a = Vec4::new(1.0, -1.0, 1.0, -1.0);
-        // let sign_b = Vec4::new(-1.0, 1.0, -1.0, 1.0);
-
-        // let inverse = Self {
-        //     x_axis: inv0 * sign_a,
-        //     y_axis: inv1 * sign_b,
-        //     z_axis: inv2 * sign_a,
-        //     w_axis: inv3 * sign_b,
-        // };
-
-        // let col0 = Vec4::new(
-        //     inverse.x_axis.get_x(),
-        //     inverse.y_axis.get_x(),
-        //     inverse.z_axis.get_x(),
-        //     inverse.w_axis.get_x(),
-        // );
-
-        // let dot0 = self.x_axis * col0;
-        // let dot1 = (dot0.get_x() + dot0.get_y()) + (dot0.get_z() + dot0.get_w());
-
-        // let rcp_det = 1.0 / dot1;
-        // inverse * rcp_det
+        Mat3 {
+            x_axis: inv_dot * Vec3::new(inv00, m02 * m21 - m01 * m22, m01 * m12 - m02 * m11),
+            y_axis: inv_dot * Vec3::new(inv10, m00 * m22 - m02 * m20, m02 * m10 - m00 * m12),
+            z_axis: inv_dot * Vec3::new(inv20, m01 * m20 - m00 * m21, m00 * m11 - m01 * m10),
+        }
     }
 
     // #[cfg(all(target_feature = "sse2", not(feature = "no-simd")))]
@@ -554,10 +503,10 @@ impl Mat3 {
 // implemented here so they don't need to be duplicated between f32x4 and f32 versions
 impl Vec3 {
     #[inline]
-    /// Multiplies a 3x3 matrix and a 3D direction vector.
+    /// Multiplies a 3x3 matrix and a 3D vector.
     /// Multiplication order is as follows:
-    /// `world_direction = local_direction.rotate_mat3(local_to_world)`
-    pub fn rotate_mat3(self, rhs: &Mat3) -> Self {
+    /// `world_direction = local_direction.transform_mat3(local_to_world)`
+    pub fn transform_mat3(self, rhs: &Mat3) -> Self {
         let mut tmp = self.dup_x().mul(rhs.get_x_axis());
         tmp = self.dup_y().mul_add(rhs.get_y_axis(), tmp);
         tmp = self.dup_z().mul_add(rhs.get_z_axis(), tmp);
@@ -625,7 +574,7 @@ impl Mul<Mat3> for Vec3 {
     type Output = Vec3;
     #[inline]
     fn mul(self, rhs: Mat3) -> Vec3 {
-        self.rotate_mat3(&rhs)
+        self.transform_mat3(&rhs)
     }
 }
 
@@ -633,7 +582,7 @@ impl Mul<&Mat3> for Vec3 {
     type Output = Vec3;
     #[inline]
     fn mul(self, rhs: &Mat3) -> Vec3 {
-        self.rotate_mat3(rhs)
+        self.transform_mat3(rhs)
     }
 }
 
@@ -670,6 +619,24 @@ impl PartialEq for Mat3 {
 impl From<[[f32; 3]; 3]> for Mat3 {
     #[inline]
     fn from(m: [[f32; 3]; 3]) -> Self {
+        Mat3 {
+            x_axis: m[0].into(),
+            y_axis: m[1].into(),
+            z_axis: m[2].into(),
+        }
+    }
+}
+
+impl From<&Mat3> for [[f32; 3]; 3] {
+    #[inline]
+    fn from(m: &Mat3) -> Self {
+        [m.x_axis.into(), m.y_axis.into(), m.z_axis.into()]
+    }
+}
+
+impl From<&[[f32; 3]; 3]> for Mat3 {
+    #[inline]
+    fn from(m: &[[f32; 3]; 3]) -> Self {
         Mat3 {
             x_axis: m[0].into(),
             y_axis: m[1].into(),
