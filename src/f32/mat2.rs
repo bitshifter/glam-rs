@@ -12,6 +12,7 @@ pub fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
     Mat2 { x_axis, y_axis }
 }
 
+// TODO: Could use Vec4 for storage
 #[derive(Copy, Clone, Debug)]
 pub struct Mat2 {
     pub(crate) x_axis: Vec2,
