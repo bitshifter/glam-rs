@@ -78,6 +78,16 @@ impl Vec2 {
     }
 
     #[inline]
+    pub(crate) fn dup_x(self) -> Self {
+        Self(self.0, self.0)
+    }
+
+    #[inline]
+    pub(crate) fn dup_y(self) -> Self {
+        Self(self.1, self.1)
+    }
+
+    #[inline]
     pub fn dot(self, rhs: Vec2) -> f32 {
         (self.0 * rhs.0) + (self.1 * rhs.1)
     }
@@ -162,6 +172,16 @@ impl Vec2 {
     #[inline]
     pub fn lerp(self, rhs: Self, s: f32) -> Self {
         self + ((rhs - self) * s)
+    }
+
+    #[inline]
+    pub(crate) fn mul_add(self, a: Self, b: Self) -> Self {
+        Self((self.0 * a.0) + b.0, (self.1 * a.1) + b.1)
+    }
+
+    #[inline]
+    pub(crate) fn neg_mul_sub(self, a: Self, b: Self) -> Self {
+        Self(b.0 - (self.0 * a.0), b.1 - (self.1 * a.1))
     }
 }
 

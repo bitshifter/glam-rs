@@ -1,5 +1,6 @@
 mod angle;
 mod funcs;
+mod mat2;
 mod mat3;
 mod mat4;
 mod quat;
@@ -25,6 +26,7 @@ mod x86_utils;
 
 pub use angle::*;
 pub(crate) use funcs::scalar_sin_cos;
+pub use mat2::*;
 pub use mat3::*;
 pub use mat4::*;
 pub use quat::quat;
