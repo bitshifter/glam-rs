@@ -41,3 +41,13 @@ fn test_angle() {
 
     assert_eq!(rad(-consts::PI), -rad(consts::PI));
 }
+
+#[cfg(feature = "rand")]
+#[test]
+fn test_angle_rnd() {
+    use rand::Rng;
+    let mut rng = rand::thread_rng();
+    let a: Angle = rng.gen();
+    assert!(a >= rad(0.0));
+    assert!(a < rad(std::f32::consts::PI * 2.0));
+}

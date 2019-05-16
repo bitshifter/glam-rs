@@ -7,7 +7,7 @@ use rand::{
     Rng,
 };
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, PartialOrd, PartialEq)]
 pub struct Angle(f32);
 
 impl Angle {
@@ -67,13 +67,6 @@ impl Angle {
         } else {
             std::f32::consts::PI - result
         })
-    }
-}
-
-impl PartialEq for Angle {
-    #[inline]
-    fn eq(&self, rhs: &Self) -> bool {
-        self.0 == rhs.0
     }
 }
 
