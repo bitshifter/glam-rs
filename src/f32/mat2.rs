@@ -125,8 +125,8 @@ impl Mat2 {
     /// `local_to_world = local_to_object * local_to_world`
     pub fn mul_mat2(&self, rhs: &Self) -> Self {
         Self {
-            x_axis: rhs.x_axis * self,
-            y_axis: rhs.y_axis * self,
+            x_axis: rhs.x_axis * *self,
+            y_axis: rhs.y_axis * *self,
         }
     }
 
@@ -185,27 +185,11 @@ impl Add<Mat2> for Mat2 {
     }
 }
 
-impl Add<&Mat2> for Mat2 {
-    type Output = Self;
-    #[inline]
-    fn add(self, rhs: &Self) -> Self {
-        self.add_mat2(rhs)
-    }
-}
-
 impl Sub<Mat2> for Mat2 {
     type Output = Self;
     #[inline]
     fn sub(self, rhs: Self) -> Self {
         self.sub_mat2(&rhs)
-    }
-}
-
-impl Sub<&Mat2> for Mat2 {
-    type Output = Self;
-    #[inline]
-    fn sub(self, rhs: &Self) -> Self {
-        self.sub_mat2(rhs)
     }
 }
 
@@ -217,14 +201,6 @@ impl Mul<Mat2> for Mat2 {
     }
 }
 
-impl Mul<&Mat2> for Mat2 {
-    type Output = Self;
-    #[inline]
-    fn mul(self, rhs: &Self) -> Self {
-        self.mul_mat2(rhs)
-    }
-}
-
 impl Mul<Mat2> for Vec2 {
     type Output = Vec2;
     #[inline]
@@ -233,25 +209,10 @@ impl Mul<Mat2> for Vec2 {
     }
 }
 
-impl Mul<&Mat2> for Vec2 {
-    type Output = Vec2;
-    #[inline]
-    fn mul(self, rhs: &Mat2) -> Vec2 {
-        self.transform_mat2(rhs)
-    }
-}
-
 impl Mul<Mat2> for f32 {
     type Output = Mat2;
     #[inline]
     fn mul(self, rhs: Mat2) -> Mat2 {
-        rhs.mul_scalar(self)
-    }
-}
-impl Mul<&Mat2> for f32 {
-    type Output = Mat2;
-    #[inline]
-    fn mul(self, rhs: &Mat2) -> Mat2 {
         rhs.mul_scalar(self)
     }
 }
@@ -281,13 +242,6 @@ impl From<[[f32; 2]; 2]> for Mat2 {
     }
 }
 
-impl From<&Mat2> for [[f32; 2]; 2] {
-    #[inline]
-    fn from(m: &Mat2) -> Self {
-        [m.x_axis.into(), m.y_axis.into()]
-    }
-}
-
 impl From<&[[f32; 2]; 2]> for Mat2 {
     #[inline]
     fn from(m: &[[f32; 2]; 2]) -> Self {
@@ -295,6 +249,13 @@ impl From<&[[f32; 2]; 2]> for Mat2 {
             x_axis: m[0].into(),
             y_axis: m[1].into(),
         }
+    }
+}
+
+impl From<&Mat2> for [[f32; 2]; 2] {
+    #[inline]
+    fn from(m: &Mat2) -> Self {
+        [m.x_axis.into(), m.y_axis.into()]
     }
 }
 

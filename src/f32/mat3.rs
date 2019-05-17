@@ -551,27 +551,11 @@ impl Add<Mat3> for Mat3 {
     }
 }
 
-impl Add<&Mat3> for Mat3 {
-    type Output = Self;
-    #[inline]
-    fn add(self, rhs: &Self) -> Self {
-        self.add_mat3(rhs)
-    }
-}
-
 impl Sub<Mat3> for Mat3 {
     type Output = Self;
     #[inline]
     fn sub(self, rhs: Self) -> Self {
         self.sub_mat3(&rhs)
-    }
-}
-
-impl Sub<&Mat3> for Mat3 {
-    type Output = Self;
-    #[inline]
-    fn sub(self, rhs: &Self) -> Self {
-        self.sub_mat3(rhs)
     }
 }
 
@@ -583,14 +567,6 @@ impl Mul<Mat3> for Mat3 {
     }
 }
 
-impl Mul<&Mat3> for Mat3 {
-    type Output = Self;
-    #[inline]
-    fn mul(self, rhs: &Self) -> Self {
-        self.mul_mat3(rhs)
-    }
-}
-
 impl Mul<Mat3> for Vec3 {
     type Output = Vec3;
     #[inline]
@@ -599,25 +575,10 @@ impl Mul<Mat3> for Vec3 {
     }
 }
 
-impl Mul<&Mat3> for Vec3 {
-    type Output = Vec3;
-    #[inline]
-    fn mul(self, rhs: &Mat3) -> Vec3 {
-        self.transform_mat3(rhs)
-    }
-}
-
 impl Mul<Mat3> for f32 {
     type Output = Mat3;
     #[inline]
     fn mul(self, rhs: Mat3) -> Mat3 {
-        rhs.mul_scalar(self)
-    }
-}
-impl Mul<&Mat3> for f32 {
-    type Output = Mat3;
-    #[inline]
-    fn mul(self, rhs: &Mat3) -> Mat3 {
         rhs.mul_scalar(self)
     }
 }
