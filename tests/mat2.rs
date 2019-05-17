@@ -12,7 +12,7 @@ fn test_mat2_identity() {
     let identity = Mat2::identity();
     assert_eq!(IDENTITY, Into::<[[f32; 2]; 2]>::into(identity));
     assert_eq!(Into::<Mat2>::into(IDENTITY), identity);
-    assert_eq!(identity, identity * &identity);
+    assert_eq!(identity, identity * identity);
 }
 
 #[test]
@@ -55,6 +55,10 @@ fn test_from_scale() {
     assert_ulps_eq!(Vec2::new(1.0, 1.0).transform_mat2(&m), Vec2::new(2.0, 4.0));
     assert_ulps_eq!(Vec2::unit_x() * 2.0, m.get_x_axis());
     assert_ulps_eq!(Vec2::unit_y() * 4.0, m.get_y_axis());
+
+    let rot = Mat2::from_scale_angle(Vec2::new(4.0, 2.0), deg(180.0));
+    assert_ulps_eq!(Vec2::unit_x() * -4.0, Vec2::unit_x() * rot);
+    assert_ulps_eq!(Vec2::unit_y() * -2.0, Vec2::unit_y() * rot);
 }
 
 #[test]
@@ -95,4 +99,15 @@ fn test_mat2_inverse() {
     assert_ulps_eq!(Mat2::identity(), m * m_inv);
     assert_ulps_eq!(Mat2::identity(), m_inv * m);
     assert_ulps_eq!(m_inv, rot_inv * scale_inv);
+}
+
+#[test]
+fn test_mat2_ops() {
+    let m0: Mat2 = MATRIX.into();
+    assert_eq!(Mat2::from([[2.0, 4.0], [6.0, 8.0]]), m0 * 2.0);
+    assert_eq!(Mat2::from([[2.0, 4.0], [6.0, 8.0]]), 2.0 * m0);
+    assert_eq!(Mat2::from([[2.0, 4.0], [6.0, 8.0]]), m0 + m0);
+    assert_eq!(Mat2::zero(), m0 - m0);
+    assert_ulps_eq!(Mat2::from([[1.0, 2.0], [3.0, 4.0]]), m0 * Mat2::identity());
+    assert_ulps_eq!(Mat2::from([[1.0, 2.0], [3.0, 4.0]]), Mat2::identity() * m0);
 }
