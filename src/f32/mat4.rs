@@ -590,22 +590,26 @@ impl Mat4 {
         let mut tmp = self.x_axis.dup_x().mul(rhs.x_axis);
         tmp = self.x_axis.dup_y().mul_add(rhs.y_axis, tmp);
         tmp = self.x_axis.dup_z().mul_add(rhs.z_axis, tmp);
+        tmp = self.x_axis.dup_w().mul_add(rhs.w_axis, tmp);
         let x_axis = tmp;
 
         tmp = self.y_axis.dup_x().mul(rhs.x_axis);
         tmp = self.y_axis.dup_y().mul_add(rhs.y_axis, tmp);
         tmp = self.y_axis.dup_z().mul_add(rhs.z_axis, tmp);
+        tmp = self.y_axis.dup_w().mul_add(rhs.w_axis, tmp);
         let y_axis = tmp;
 
         tmp = self.z_axis.dup_x().mul(rhs.x_axis);
         tmp = self.z_axis.dup_y().mul_add(rhs.y_axis, tmp);
         tmp = self.z_axis.dup_z().mul_add(rhs.z_axis, tmp);
+        tmp = self.z_axis.dup_w().mul_add(rhs.w_axis, tmp);
         let z_axis = tmp;
 
         tmp = self.w_axis.dup_x().mul(rhs.x_axis);
         tmp = self.w_axis.dup_y().mul_add(rhs.y_axis, tmp);
         tmp = self.w_axis.dup_z().mul_add(rhs.z_axis, tmp);
-        let w_axis = rhs.w_axis.add(tmp);
+        tmp = self.w_axis.dup_w().mul_add(rhs.w_axis, tmp);
+        let w_axis = tmp;
 
         Self {
             x_axis,

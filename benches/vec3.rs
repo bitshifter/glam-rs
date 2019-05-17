@@ -43,7 +43,6 @@ bench_binop!(
 );
 
 euler!(vec3_euler, "vec3 euler", ty => Vec3, storage => Vec3, zero => Vec3::zero());
-euler!(vec3_tuple_euler, "vec3 tuple euler", ty => Vec3, storage => (f32, f32, f32), zero => (0.0, 0.0, 0.0));
 
 criterion_group!(
     benches,
@@ -52,7 +51,6 @@ criterion_group!(
     vec3_mul_transform_rt,
     vec3_mul_transform_srt,
     vec3_euler,
-    vec3_tuple_euler,
 );
 
 criterion_main!(benches);

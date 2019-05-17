@@ -222,3 +222,21 @@ fn test_mat4_look_at() {
     let view_point = Vec3::new(0.0, 1.0, -5.0);
     assert_ulps_eq!(point.transform_mat4(&m), view_point);
 }
+
+#[test]
+fn test_mat4_ops() {
+    let m0: Mat4 = MATRIX.into();
+    let m0x2 = Mat4::from([
+        [2.0, 4.0, 6.0, 8.0],
+        [10.0, 12.0, 14.0, 16.0],
+        [18.0, 20.0, 22.0, 24.0],
+        [26.0, 28.0, 30.0, 32.0],
+    ]);
+    assert_eq!(m0x2, m0 * 2.0);
+    assert_eq!(m0x2, 2.0 * m0);
+    assert_eq!(m0x2, m0 + m0);
+    assert_eq!(Mat4::zero(), m0 - m0);
+    // TODO: Mat4 * Mat4 that's not identity
+    assert_ulps_eq!(m0, m0 * Mat4::identity());
+    assert_ulps_eq!(m0, Mat4::identity() * m0);
+}

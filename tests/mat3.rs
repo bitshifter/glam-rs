@@ -164,3 +164,16 @@ fn test_mat3_inverse() {
     assert_ulps_eq!(Mat3::identity(), m_inv * m);
     assert_ulps_eq!(m_inv, rotz_inv * scale_inv);
 }
+
+#[test]
+fn test_mat3_ops() {
+    let m0: Mat3 = MATRIX.into();
+    let m0x2 = Mat3::from([[2.0, 4.0, 6.0], [8.0, 10.0, 12.0], [14.0, 16.0, 18.0]]);
+    assert_eq!(m0x2, m0 * 2.0);
+    assert_eq!(m0x2, 2.0 * m0);
+    assert_eq!(m0x2, m0 + m0);
+    assert_eq!(Mat3::zero(), m0 - m0);
+    // TODO: Mat * Mat3 that's not identity
+    assert_ulps_eq!(m0, m0 * Mat3::identity());
+    assert_ulps_eq!(m0, Mat3::identity() * m0);
+}
