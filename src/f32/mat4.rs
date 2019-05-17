@@ -551,8 +551,9 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn look_at(eye: Vec3, center: Vec3, up: Vec3) -> Self {
-        let f = (center - eye).normalize();
+    // TODO: make public at some point
+    fn look_to_lh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
+        let f = dir.normalize();
         let (fx, fy, fz) = f.into();
         let s = f.cross(up);
         let (sx, sy, sz) = s.into();
@@ -567,10 +568,22 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn perspective(fovy: Angle, aspect: f32, near: f32, far: f32) -> Self {
+    pub fn look_at_lh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
+        Mat4::look_to_lh(eye, center - eye, up)
+    }
+
+    #[inline]
+    pub fn look_at_rh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
+        Mat4::look_to_lh(eye, eye - center, up)
+    }
+
+    #[inline]
+    /// Produces gluPerspective
+    pub fn perspective_glu(fovy: Angle, aspect: f32, near: f32, far: f32) -> Self {
         let inv_length = 1.0 / (near - far);
-        let q = 1.0 / (0.5 * fovy.as_radians()).tan();
-        let a = q / aspect;
+        let f = 1.0 / (0.5 * fovy.as_radians()).tan();
+        let a = f / aspect;
+        let q = f;
         let b = (near + far) * inv_length;
         let c = (2.0 * near * far) * inv_length;
 
@@ -579,6 +592,46 @@ impl Mat4 {
             y_axis: Vec4::new(0.0, q, 0.0, 0.0),
             z_axis: Vec4::new(0.0, 0.0, b, -1.0),
             w_axis: Vec4::new(0.0, 0.0, c, 0.0),
+        }
+    }
+
+    #[inline]
+    pub fn perspective_fov_lh(fovy: Angle, aspect: f32, nearz: f32, farz: f32) -> Self {
+        debug_assert!(nearz > 0.0 && farz > 0.0);
+        debug_assert!(fovy != Angle::from_radians(0.0));
+        debug_assert!(aspect != 0.0);
+        debug_assert!(farz !=  nearz);
+
+        let (sin_fov, cos_fov) = (0.5 * fovy).sin_cos();
+        let height = cos_fov / sin_fov;
+        let width = height / aspect;
+        let range = farz / (farz - nearz);
+
+        Mat4 {
+            x_axis: Vec4::new(width, 0.0, 0.0, 0.0),
+            y_axis: Vec4::new(0.0, height, 0.0, 0.0),
+            z_axis: Vec4::new(0.0, 0.0, range, 1.0),
+            w_axis: Vec4::new(0.0, 0.0, -range * nearz, 0.0)
+        }
+    }
+
+    #[inline]
+    pub fn perspective_fov_rh(fovy: Angle, aspect: f32, nearz: f32, farz: f32) -> Self {
+        debug_assert!(nearz > 0.0 && farz > 0.0);
+        debug_assert!(fovy != Angle::from_radians(0.0));
+        debug_assert!(aspect != 0.0);
+        debug_assert!(farz !=  nearz);
+
+        let (sin_fov, cos_fov) = (0.5 * fovy).sin_cos();
+        let height = cos_fov / sin_fov;
+        let width = height / aspect;
+        let range = farz / (nearz - farz);
+
+        Mat4 {
+            x_axis: Vec4::new(width, 0.0, 0.0, 0.0),
+            y_axis: Vec4::new(0.0, height, 0.0, 0.0),
+            z_axis: Vec4::new(0.0, 0.0, range, -1.0),
+            w_axis: Vec4::new(0.0, 0.0, range * nearz, 0.0)
         }
     }
 
