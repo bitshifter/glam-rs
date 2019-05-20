@@ -56,10 +56,9 @@ fn test_from_scale() {
     assert_ulps_eq!(Vec2::unit_x() * 2.0, m.get_x_axis());
     assert_ulps_eq!(Vec2::unit_y() * 4.0, m.get_y_axis());
 
-    // TODO: ulps is not forgiving enough for these to pass
-    // let rot = Mat2::from_scale_angle(Vec2::new(4.0, 2.0), deg(180.0));
-    // assert_ulps_eq!(Vec2::unit_x() * -4.0, Vec2::unit_x() * rot);
-    // assert_ulps_eq!(Vec2::unit_y() * -2.0, Vec2::unit_y() * rot);
+    let rot = Mat2::from_scale_angle(Vec2::new(4.0, 2.0), deg(180.0));
+    assert_ulps_eq!(Vec2::unit_x() * -4.0, Vec2::unit_x() * rot, epsilon = 1.0e-6);
+    assert_ulps_eq!(Vec2::unit_y() * -2.0, Vec2::unit_y() * rot, epsilon = 1.0e-6);
 }
 
 #[test]

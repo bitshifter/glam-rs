@@ -578,24 +578,6 @@ impl Mat4 {
     }
 
     #[inline]
-    /// Produces gluPerspective
-    pub fn perspective_glu(fovy: Angle, aspect: f32, near: f32, far: f32) -> Self {
-        let inv_length = 1.0 / (near - far);
-        let f = 1.0 / (0.5 * fovy.as_radians()).tan();
-        let a = f / aspect;
-        let q = f;
-        let b = (near + far) * inv_length;
-        let c = (2.0 * near * far) * inv_length;
-
-        Self {
-            x_axis: Vec4::new(a, 0.0, 0.0, 0.0),
-            y_axis: Vec4::new(0.0, q, 0.0, 0.0),
-            z_axis: Vec4::new(0.0, 0.0, b, -1.0),
-            w_axis: Vec4::new(0.0, 0.0, c, 0.0),
-        }
-    }
-
-    #[inline]
     pub fn perspective_fov_lh(fovy: Angle, aspect: f32, nearz: f32, farz: f32) -> Self {
         debug_assert!(nearz > 0.0 && farz > 0.0);
         debug_assert!(fovy != Angle::from_radians(0.0));
