@@ -205,27 +205,11 @@ impl Mul<TransformRT> for Vec3 {
     }
 }
 
-impl Mul<&TransformRT> for Vec3 {
-    type Output = Vec3;
-    #[inline]
-    fn mul(self, rhs: &TransformRT) -> Vec3 {
-        self.transform_tr(rhs)
-    }
-}
-
 impl Mul<TransformSRT> for Vec3 {
     type Output = Vec3;
     #[inline]
     fn mul(self, rhs: TransformSRT) -> Vec3 {
         self.transform_trs(&rhs)
-    }
-}
-
-impl Mul<&TransformSRT> for Vec3 {
-    type Output = Vec3;
-    #[inline]
-    fn mul(self, rhs: &TransformSRT) -> Vec3 {
-        self.transform_trs(rhs)
     }
 }
 
@@ -237,27 +221,11 @@ impl Mul<TransformRT> for TransformRT {
     }
 }
 
-impl Mul<&TransformRT> for TransformRT {
-    type Output = TransformRT;
-    #[inline]
-    fn mul(self, rhs: &TransformRT) -> TransformRT {
-        mul_rt_rt(&self, rhs)
-    }
-}
-
 impl Mul<TransformSRT> for TransformSRT {
     type Output = Self;
     #[inline]
     fn mul(self, rhs: Self) -> Self::Output {
         mul_srt_srt(&self, &rhs)
-    }
-}
-
-impl Mul<&TransformSRT> for TransformSRT {
-    type Output = Self;
-    #[inline]
-    fn mul(self, rhs: &Self) -> Self {
-        mul_srt_srt(&self, rhs)
     }
 }
 
@@ -269,27 +237,11 @@ impl Mul<TransformRT> for TransformSRT {
     }
 }
 
-impl Mul<&TransformRT> for TransformSRT {
-    type Output = TransformSRT;
-    #[inline]
-    fn mul(self, rhs: &TransformRT) -> Self::Output {
-        mul_srt_srt(&self, &rhs.into())
-    }
-}
-
 impl Mul<TransformSRT> for TransformRT {
     type Output = TransformSRT;
     #[inline]
     fn mul(self, rhs: TransformSRT) -> Self::Output {
         mul_srt_srt(&self.into(), &rhs)
-    }
-}
-
-impl Mul<&TransformSRT> for TransformRT {
-    type Output = TransformSRT;
-    #[inline]
-    fn mul(self, rhs: &TransformSRT) -> Self::Output {
-        mul_srt_srt(&self.into(), rhs)
     }
 }
 

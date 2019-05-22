@@ -44,7 +44,7 @@ macro_rules! bench_binop {
                         i = (i + 1) & (LEN - 1);
                         unsafe {
                             criterion::black_box(
-                                lhs.$binop(elems2.get_unchecked(i)),
+                                lhs.$binop(*elems2.get_unchecked(i)),
                                 );
                         }
                     })

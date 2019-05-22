@@ -24,8 +24,8 @@ bench_unop!(
 );
 bench_unop!(mat4_inverse, "mat4 inverse", op => inverse, ty => Mat4, from => TransformSRT);
 
-// bench_binop!(mat4_mul_op_mat4, "mat4 * mat4", op => mul, ty => Mat4, from => TransformSRT);
-bench_binop!(mat4_mul_mat4, "mat4 mul_mat4", op => mul_mat4, ty => Mat4, from => TransformSRT);
+bench_binop!(mat4_mul_mat4, "mat4 * mat4", op => mul, ty => Mat4, from => TransformSRT);
+// bench_binop!(mat4_mul_mat4, "mat4 mul_mat4", op => mul_mat4, ty => Mat4, from => TransformSRT);
 
 criterion_group!(
     benches,
