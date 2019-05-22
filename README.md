@@ -95,6 +95,7 @@ The design of this library is guided by a desire for simplicity and good perform
   - this will mean other architectures get SIMD support
 * Experiment with a using a 4x3 matrix as a 3D transform type that can be more efficient than `Mat4`
   for certain operations like inverse and multiplies
+* `no-std` support
 
 # Naming
 
