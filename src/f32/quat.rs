@@ -210,25 +210,10 @@ impl Mul<Quat> for Quat {
     }
 }
 
-impl Mul<&Quat> for Quat {
-    type Output = Self;
-    #[inline]
-    fn mul(self, rhs: &Self) -> Self {
-        self.mul_quat(*rhs)
-    }
-}
-
 impl MulAssign<Quat> for Quat {
     #[inline]
     fn mul_assign(&mut self, rhs: Self) {
         *self = self.mul_quat(rhs);
-    }
-}
-
-impl MulAssign<&Quat> for Quat {
-    #[inline]
-    fn mul_assign(&mut self, rhs: &Self) {
-        *self = self.mul_quat(*rhs);
     }
 }
 
@@ -240,25 +225,10 @@ impl Mul<Quat> for Vec3 {
     }
 }
 
-impl Mul<&Quat> for Vec3 {
-    type Output = Self;
-    #[inline]
-    fn mul(self, rhs: &Quat) -> Self {
-        self.rotate_quat(*rhs)
-    }
-}
-
 impl MulAssign<Quat> for Vec3 {
     #[inline]
     fn mul_assign(&mut self, rhs: Quat) {
         *self = self.rotate_quat(rhs);
-    }
-}
-
-impl MulAssign<&Quat> for Vec3 {
-    #[inline]
-    fn mul_assign(&mut self, rhs: &Quat) {
-        *self = self.rotate_quat(*rhs);
     }
 }
 
