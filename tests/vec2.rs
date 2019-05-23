@@ -8,8 +8,8 @@ use rand_xoshiro::Xoshiro256Plus;
 fn test_vec2_new() {
     let v = vec2(1.0, 2.0);
 
-    assert_eq!(v.get_x(), 1.0);
-    assert_eq!(v.get_y(), 2.0);
+    assert_eq!(v.x(), 1.0);
+    assert_eq!(v.y(), 2.0);
 
     let t = (1.0, 2.0);
     let v = Vec2::from(t);
@@ -57,8 +57,8 @@ fn test_vec2_accessors() {
     let mut a = vec2(0.0, 0.0);
     a.set_x(1.0);
     a.set_y(2.0);
-    assert_eq!(1.0, a.get_x());
-    assert_eq!(2.0, a.get_y());
+    assert_eq!(1.0, a.x());
+    assert_eq!(2.0, a.y());
 }
 
 #[test]

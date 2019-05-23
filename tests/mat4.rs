@@ -38,10 +38,10 @@ fn test_mat4_accessors() {
     m.set_z_axis(Vec4::new(9.0, 10.0, 11.0, 12.0));
     m.set_w_axis(Vec4::new(13.0, 14.0, 15.0, 16.0));
     assert_eq!(Into::<Mat4>::into(MATRIX), m);
-    assert_eq!(Vec4::new(1.0, 2.0, 3.0, 4.0), m.get_x_axis());
-    assert_eq!(Vec4::new(5.0, 6.0, 7.0, 8.0), m.get_y_axis());
-    assert_eq!(Vec4::new(9.0, 10.0, 11.0, 12.0), m.get_z_axis());
-    assert_eq!(Vec4::new(13.0, 14.0, 15.0, 16.0), m.get_w_axis());
+    assert_eq!(Vec4::new(1.0, 2.0, 3.0, 4.0), m.x_axis());
+    assert_eq!(Vec4::new(5.0, 6.0, 7.0, 8.0), m.y_axis());
+    assert_eq!(Vec4::new(9.0, 10.0, 11.0, 12.0), m.z_axis());
+    assert_eq!(Vec4::new(13.0, 14.0, 15.0, 16.0), m.w_axis());
 }
 
 #[test]
@@ -155,10 +155,10 @@ fn test_from_scale() {
         Vec3::new(1.0, 1.0, 1.0).transform_mat4(&m),
         Vec3::new(2.0, 4.0, 8.0)
     );
-    assert_ulps_eq!(Vec4::unit_x() * 2.0, m.get_x_axis());
-    assert_ulps_eq!(Vec4::unit_y() * 4.0, m.get_y_axis());
-    assert_ulps_eq!(Vec4::unit_z() * 8.0, m.get_z_axis());
-    assert_ulps_eq!(Vec4::unit_w(), m.get_w_axis());
+    assert_ulps_eq!(Vec4::unit_x() * 2.0, m.x_axis());
+    assert_ulps_eq!(Vec4::unit_y() * 4.0, m.y_axis());
+    assert_ulps_eq!(Vec4::unit_z() * 8.0, m.z_axis());
+    assert_ulps_eq!(Vec4::unit_w(), m.w_axis());
 }
 
 #[test]
@@ -170,10 +170,10 @@ fn test_mat4_transpose() {
         vec4(13.0, 14.0, 15.0, 16.0),
     );
     let mt = m.transpose();
-    assert_eq!(mt.get_x_axis(), vec4(1.0, 5.0, 9.0, 13.0));
-    assert_eq!(mt.get_y_axis(), vec4(2.0, 6.0, 10.0, 14.0));
-    assert_eq!(mt.get_z_axis(), vec4(3.0, 7.0, 11.0, 15.0));
-    assert_eq!(mt.get_w_axis(), vec4(4.0, 8.0, 12.0, 16.0));
+    assert_eq!(mt.x_axis(), vec4(1.0, 5.0, 9.0, 13.0));
+    assert_eq!(mt.y_axis(), vec4(2.0, 6.0, 10.0, 14.0));
+    assert_eq!(mt.z_axis(), vec4(3.0, 7.0, 11.0, 15.0));
+    assert_eq!(mt.w_axis(), vec4(4.0, 8.0, 12.0, 16.0));
 }
 
 #[test]

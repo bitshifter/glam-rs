@@ -122,8 +122,8 @@ impl AbsDiffEq for Mat2 {
         f32::default_epsilon()
     }
     fn abs_diff_eq(&self, other: &Self, epsilon: Self::Epsilon) -> bool {
-        self.get_x_axis().abs_diff_eq(&other.get_x_axis(), epsilon)
-            && self.get_y_axis().abs_diff_eq(&other.get_y_axis(), epsilon)
+        self.x_axis().abs_diff_eq(&other.x_axis(), epsilon)
+            && self.y_axis().abs_diff_eq(&other.y_axis(), epsilon)
     }
 }
 
@@ -132,11 +132,8 @@ impl UlpsEq for Mat2 {
         f32::default_max_ulps()
     }
     fn ulps_eq(&self, other: &Self, epsilon: Self::Epsilon, max_ulps: u32) -> bool {
-        self.get_x_axis()
-            .ulps_eq(&other.get_x_axis(), epsilon, max_ulps)
-            && self
-                .get_y_axis()
-                .ulps_eq(&other.get_y_axis(), epsilon, max_ulps)
+        self.x_axis().ulps_eq(&other.x_axis(), epsilon, max_ulps)
+            && self.y_axis().ulps_eq(&other.y_axis(), epsilon, max_ulps)
     }
 }
 
@@ -146,9 +143,9 @@ impl AbsDiffEq for Mat3 {
         f32::default_epsilon()
     }
     fn abs_diff_eq(&self, other: &Self, epsilon: Self::Epsilon) -> bool {
-        self.get_x_axis().abs_diff_eq(&other.get_x_axis(), epsilon)
-            && self.get_y_axis().abs_diff_eq(&other.get_y_axis(), epsilon)
-            && self.get_z_axis().abs_diff_eq(&other.get_z_axis(), epsilon)
+        self.x_axis().abs_diff_eq(&other.x_axis(), epsilon)
+            && self.y_axis().abs_diff_eq(&other.y_axis(), epsilon)
+            && self.z_axis().abs_diff_eq(&other.z_axis(), epsilon)
     }
 }
 
@@ -157,14 +154,9 @@ impl UlpsEq for Mat3 {
         f32::default_max_ulps()
     }
     fn ulps_eq(&self, other: &Self, epsilon: Self::Epsilon, max_ulps: u32) -> bool {
-        self.get_x_axis()
-            .ulps_eq(&other.get_x_axis(), epsilon, max_ulps)
-            && self
-                .get_y_axis()
-                .ulps_eq(&other.get_y_axis(), epsilon, max_ulps)
-            && self
-                .get_z_axis()
-                .ulps_eq(&other.get_z_axis(), epsilon, max_ulps)
+        self.x_axis().ulps_eq(&other.x_axis(), epsilon, max_ulps)
+            && self.y_axis().ulps_eq(&other.y_axis(), epsilon, max_ulps)
+            && self.z_axis().ulps_eq(&other.z_axis(), epsilon, max_ulps)
     }
 }
 

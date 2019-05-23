@@ -30,7 +30,7 @@ SSE2 for some functionality such as inverse and transpose. Not everything has a 
 yet.
 
 Due to the use of SIMD, vector elements may only be get and set via accessor methods, e.g.
-`Vec3::get_x()` and `Vec3::set_x()`. If getting or setting more than one element it is more
+`Vec3::x()` and `Vec3::set_x()`. If getting or setting more than one element it is more
 efficient to convert from tuples or arrays, e.g. `(x, y, z) = v.into()`.
 
 ## Default features

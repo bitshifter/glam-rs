@@ -8,9 +8,9 @@ use rand_xoshiro::Xoshiro256Plus;
 fn test_vec3_new() {
     let v = vec3(1.0, 2.0, 3.0);
 
-    assert_eq!(v.get_x(), 1.0);
-    assert_eq!(v.get_y(), 2.0);
-    assert_eq!(v.get_z(), 3.0);
+    assert_eq!(v.x(), 1.0);
+    assert_eq!(v.y(), 2.0);
+    assert_eq!(v.z(), 3.0);
 
     let t = (1.0, 2.0, 3.0);
     let v = Vec3::from(t);
@@ -60,9 +60,9 @@ fn test_vec3_accessors() {
     a.set_x(1.0);
     a.set_y(2.0);
     a.set_z(3.0);
-    assert_eq!(1.0, a.get_x());
-    assert_eq!(2.0, a.get_y());
-    assert_eq!(3.0, a.get_z());
+    assert_eq!(1.0, a.x());
+    assert_eq!(2.0, a.y());
+    assert_eq!(3.0, a.z());
 }
 
 #[test]

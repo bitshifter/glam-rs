@@ -117,20 +117,20 @@ impl Quat {
 
     #[inline]
     pub fn from_rotation_mat3(mat: &Mat3) -> Self {
-        Self::from_rotation_axes(mat.get_x_axis(), mat.get_y_axis(), mat.get_z_axis())
+        Self::from_rotation_axes(mat.x_axis(), mat.y_axis(), mat.z_axis())
     }
 
     #[inline]
     pub fn from_rotation_mat4(mat: &Mat4) -> Self {
         Self::from_rotation_axes(
-            mat.get_x_axis().truncate(),
-            mat.get_y_axis().truncate(),
-            mat.get_z_axis().truncate(),
+            mat.x_axis().truncate(),
+            mat.y_axis().truncate(),
+            mat.z_axis().truncate(),
         )
     }
 
     #[inline]
-    pub fn get_axis_angle(self) -> (Vec3, Angle) {
+    pub fn to_axis_angle(self) -> (Vec3, Angle) {
         const EPSILON: f32 = 1.0e-8;
         const EPSILON_SQUARED: f32 = EPSILON * EPSILON;
         let (x, y, z, w) = self.into();
@@ -146,7 +146,7 @@ impl Quat {
     #[inline]
     pub fn conjugate(self) -> Self {
         let v: Vec4 = self.into();
-        v.truncate().neg().extend(v.get_w()).into()
+        v.truncate().neg().extend(v.w()).into()
     }
 
     #[inline]

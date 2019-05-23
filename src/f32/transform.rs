@@ -91,18 +91,15 @@ fn mul_srt_srt(lhs: &TransformSRT, rhs: &TransformSRT) -> TransformSRT {
         let mut result_mtx = lhs_mtx * rhs_mtx;
 
         let sign = scale.sign();
-        result_mtx.set_x_axis(
-            (result_mtx.get_x_axis().truncate().normalize() * sign.dup_x()).extend(0.0),
-        );
-        result_mtx.set_y_axis(
-            (result_mtx.get_y_axis().truncate().normalize() * sign.dup_y()).extend(0.0),
-        );
-        result_mtx.set_z_axis(
-            (result_mtx.get_z_axis().truncate().normalize() * sign.dup_z()).extend(0.0),
-        );
+        result_mtx
+            .set_x_axis((result_mtx.x_axis().truncate().normalize() * sign.dup_x()).extend(0.0));
+        result_mtx
+            .set_y_axis((result_mtx.y_axis().truncate().normalize() * sign.dup_y()).extend(0.0));
+        result_mtx
+            .set_z_axis((result_mtx.z_axis().truncate().normalize() * sign.dup_z()).extend(0.0));
 
         let rotation = Quat::from_rotation_mat4(&result_mtx);
-        let translation = result_mtx.get_w_axis().truncate();
+        let translation = result_mtx.w_axis().truncate();
         TransformSRT {
             scale,
             rotation,

@@ -66,22 +66,22 @@ impl Vec4 {
     }
 
     #[inline]
-    pub fn get_x(self) -> f32 {
+    pub fn x(self) -> f32 {
         self.0
     }
 
     #[inline]
-    pub fn get_y(self) -> f32 {
+    pub fn y(self) -> f32 {
         self.1
     }
 
     #[inline]
-    pub fn get_z(self) -> f32 {
+    pub fn z(self) -> f32 {
         self.2
     }
 
     #[inline]
-    pub fn get_w(self) -> f32 {
+    pub fn w(self) -> f32 {
         self.3
     }
 

@@ -96,17 +96,17 @@ impl Vec3 {
     }
 
     #[inline]
-    pub fn get_x(self) -> f32 {
+    pub fn x(self) -> f32 {
         unsafe { _mm_cvtss_f32(self.0) }
     }
 
     #[inline]
-    pub fn get_y(self) -> f32 {
+    pub fn y(self) -> f32 {
         unsafe { _mm_cvtss_f32(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_01)) }
     }
 
     #[inline]
-    pub fn get_z(self) -> f32 {
+    pub fn z(self) -> f32 {
         unsafe { _mm_cvtss_f32(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_10)) }
     }
 

@@ -80,12 +80,12 @@ impl Mat2 {
     }
 
     #[inline]
-    pub fn get_x_axis(&self) -> Vec2 {
+    pub fn x_axis(&self) -> Vec2 {
         self.x_axis
     }
 
     #[inline]
-    pub fn get_y_axis(&self) -> Vec2 {
+    pub fn y_axis(&self) -> Vec2 {
         self.y_axis
     }
 
@@ -163,8 +163,8 @@ impl Vec2 {
     /// Multiplication order is as follows:
     /// `world_direction = local_direction.transform_mat3(local_to_world)`
     pub fn transform_mat2(self, rhs: &Mat2) -> Self {
-        let mut tmp = self.dup_x().mul(rhs.get_x_axis());
-        tmp = self.dup_y().mul_add(rhs.get_y_axis(), tmp);
+        let mut tmp = self.dup_x().mul(rhs.x_axis());
+        tmp = self.dup_y().mul_add(rhs.y_axis(), tmp);
         tmp
     }
 }

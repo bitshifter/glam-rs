@@ -8,10 +8,10 @@ use rand_xoshiro::Xoshiro256Plus;
 fn test_vec4_new() {
     let v = vec4(1.0, 2.0, 3.0, 4.0);
 
-    assert_eq!(v.get_x(), 1.0);
-    assert_eq!(v.get_y(), 2.0);
-    assert_eq!(v.get_z(), 3.0);
-    assert_eq!(v.get_w(), 4.0);
+    assert_eq!(v.x(), 1.0);
+    assert_eq!(v.y(), 2.0);
+    assert_eq!(v.z(), 3.0);
+    assert_eq!(v.w(), 4.0);
 
     let t = (1.0, 2.0, 3.0, 4.0);
     let v = Vec4::from(t);
@@ -66,10 +66,10 @@ fn test_vec4_accessors() {
     a.set_y(2.0);
     a.set_z(3.0);
     a.set_w(4.0);
-    assert_eq!(1.0, a.get_x());
-    assert_eq!(2.0, a.get_y());
-    assert_eq!(3.0, a.get_z());
-    assert_eq!(4.0, a.get_w());
+    assert_eq!(1.0, a.x());
+    assert_eq!(2.0, a.y());
+    assert_eq!(3.0, a.z());
+    assert_eq!(4.0, a.w());
     assert_eq!((1.0, 2.0, 3.0, 4.0), a.into());
 }
 

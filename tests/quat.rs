@@ -8,7 +8,7 @@ fn test_quat_rotation() {
     let pitch = deg(60.0);
     let roll = deg(90.0);
     let y0 = Quat::from_rotation_y(yaw);
-    let (axis, angle) = y0.get_axis_angle();
+    let (axis, angle) = y0.to_axis_angle();
     assert_ulps_eq!(axis, Vec3::unit_y());
     assert_ulps_eq!(angle, yaw);
     let y1 = Quat::from_rotation_ypr(yaw, zero, zero);
@@ -21,7 +21,7 @@ fn test_quat_rotation() {
     assert_ulps_eq!(y0, y4);
 
     let x0 = Quat::from_rotation_x(pitch);
-    let (axis, angle) = x0.get_axis_angle();
+    let (axis, angle) = x0.to_axis_angle();
     assert_ulps_eq!(axis, Vec3::unit_x());
     assert_ulps_eq!(angle, pitch);
     let x1 = Quat::from_rotation_ypr(zero, pitch, zero);
@@ -32,7 +32,7 @@ fn test_quat_rotation() {
     assert_ulps_eq!(Quat::from_rotation_x(deg(180.0)), x3);
 
     let z0 = Quat::from_rotation_z(roll);
-    let (axis, angle) = z0.get_axis_angle();
+    let (axis, angle) = z0.to_axis_angle();
     assert_ulps_eq!(axis, Vec3::unit_z());
     assert_ulps_eq!(angle, roll);
     let z1 = Quat::from_rotation_ypr(zero, zero, roll);
@@ -58,7 +58,7 @@ fn test_quat_rotation() {
     assert_ulps_eq!(yxz0, yxz2);
 
     // if near identity, just returns x axis and 0 rotation
-    let (axis, angle) = Quat::identity().get_axis_angle();
+    let (axis, angle) = Quat::identity().to_axis_angle();
     assert_eq!(axis, Vec3::unit_x());
     assert_eq!(angle, rad(0.0));
 }
@@ -68,12 +68,7 @@ fn test_quat_new() {
     let ytheta = deg(45.0);
     let q0 = Quat::from_rotation_y(ytheta);
 
-    let t1 = (
-        0.0,
-        (ytheta * 0.5).sin(),
-        0.0,
-        (ytheta * 0.5).cos(),
-    );
+    let t1 = (0.0, (ytheta * 0.5).sin(), 0.0, (ytheta * 0.5).cos());
     assert_eq!(q0, t1.into());
     let q1 = Quat::from(t1);
     assert_eq!(t1, q1.into());
@@ -82,12 +77,7 @@ fn test_quat_new() {
 
     assert_eq!(q0, quat(t1.0, t1.1, t1.2, t1.3));
 
-    let a1 = [
-        0.0,
-        (ytheta * 0.5).sin(),
-        0.0,
-        (ytheta * 0.5).cos(),
-    ];
+    let a1 = [0.0, (ytheta * 0.5).sin(), 0.0, (ytheta * 0.5).cos()];
     assert_eq!(q0, a1.into());
     let q1 = Quat::from(a1);
     let a2: [f32; 4] = q1.into();

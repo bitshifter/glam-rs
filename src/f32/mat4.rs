@@ -215,22 +215,22 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn get_x_axis(&self) -> Vec4 {
+    pub fn x_axis(&self) -> Vec4 {
         self.x_axis
     }
 
     #[inline]
-    pub fn get_y_axis(&self) -> Vec4 {
+    pub fn y_axis(&self) -> Vec4 {
         self.y_axis
     }
 
     #[inline]
-    pub fn get_z_axis(&self) -> Vec4 {
+    pub fn z_axis(&self) -> Vec4 {
         self.z_axis
     }
 
     #[inline]
-    pub fn get_w_axis(&self) -> Vec4 {
+    pub fn w_axis(&self) -> Vec4 {
         self.w_axis
     }
 
@@ -353,14 +353,14 @@ impl Mat4 {
         };
 
         let col0 = Vec4::new(
-            inverse.x_axis.get_x(),
-            inverse.y_axis.get_x(),
-            inverse.z_axis.get_x(),
-            inverse.w_axis.get_x(),
+            inverse.x_axis.x(),
+            inverse.y_axis.x(),
+            inverse.z_axis.x(),
+            inverse.w_axis.x(),
         );
 
         let dot0 = self.x_axis * col0;
-        let dot1 = (dot0.get_x() + dot0.get_y()) + (dot0.get_z() + dot0.get_w());
+        let dot1 = (dot0.x() + dot0.y()) + (dot0.z() + dot0.w());
 
         let rcp_det = 1.0 / dot1;
         inverse * rcp_det
@@ -401,10 +401,10 @@ impl Mat4 {
         };
 
         let mt = self.transpose();
-        let mtx = mt.get_x_axis().into();
-        let mty = mt.get_y_axis().into();
-        let mtz = mt.get_z_axis().into();
-        let mtw = mt.get_w_axis().into();
+        let mtx = mt.x_axis().into();
+        let mty = mt.y_axis().into();
+        let mtz = mt.z_axis().into();
+        let mtw = mt.w_axis().into();
 
         unsafe {
             let mut v00 = permute!(mtz, _MM_SHUFFLE!(1, 1, 0, 0));
@@ -714,10 +714,10 @@ impl Vec4 {
     /// Multiplication order is as follows:
     /// `world_position = local_position.transform_mat4(local_to_world)`
     pub fn transform_mat4(self, rhs: &Mat4) -> Self {
-        let mut tmp = self.dup_x().mul(rhs.get_x_axis());
-        tmp = self.dup_y().mul_add(rhs.get_y_axis(), tmp);
-        tmp = self.dup_z().mul_add(rhs.get_z_axis(), tmp);
-        tmp = self.dup_w().mul_add(rhs.get_w_axis(), tmp);
+        let mut tmp = self.dup_x().mul(rhs.x_axis());
+        tmp = self.dup_y().mul_add(rhs.y_axis(), tmp);
+        tmp = self.dup_z().mul_add(rhs.z_axis(), tmp);
+        tmp = self.dup_w().mul_add(rhs.w_axis(), tmp);
         tmp
     }
 }
