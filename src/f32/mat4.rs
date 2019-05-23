@@ -582,7 +582,7 @@ impl Mat4 {
         debug_assert!(nearz > 0.0 && farz > 0.0);
         debug_assert!(fovy != Angle::from_radians(0.0));
         debug_assert!(aspect != 0.0);
-        debug_assert!(farz !=  nearz);
+        debug_assert!(farz != nearz);
 
         let (sin_fov, cos_fov) = (0.5 * fovy).sin_cos();
         let height = cos_fov / sin_fov;
@@ -593,7 +593,7 @@ impl Mat4 {
             x_axis: Vec4::new(width, 0.0, 0.0, 0.0),
             y_axis: Vec4::new(0.0, height, 0.0, 0.0),
             z_axis: Vec4::new(0.0, 0.0, range, 1.0),
-            w_axis: Vec4::new(0.0, 0.0, -range * nearz, 0.0)
+            w_axis: Vec4::new(0.0, 0.0, -range * nearz, 0.0),
         }
     }
 
@@ -602,7 +602,7 @@ impl Mat4 {
         debug_assert!(nearz > 0.0 && farz > 0.0);
         debug_assert!(fovy != Angle::from_radians(0.0));
         debug_assert!(aspect != 0.0);
-        debug_assert!(farz !=  nearz);
+        debug_assert!(farz != nearz);
 
         let (sin_fov, cos_fov) = (0.5 * fovy).sin_cos();
         let height = cos_fov / sin_fov;
@@ -613,7 +613,7 @@ impl Mat4 {
             x_axis: Vec4::new(width, 0.0, 0.0, 0.0),
             y_axis: Vec4::new(0.0, height, 0.0, 0.0),
             z_axis: Vec4::new(0.0, 0.0, range, -1.0),
-            w_axis: Vec4::new(0.0, 0.0, range * nearz, 0.0)
+            w_axis: Vec4::new(0.0, 0.0, range * nearz, 0.0),
         }
     }
 

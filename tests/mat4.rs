@@ -107,7 +107,11 @@ fn test_mat4_mul() {
     assert_ulps_eq!(vec4(-1.0, 0.0, 0.0, 0.0), result4);
     assert_ulps_eq!(result4, Vec4::unit_y() * mat_a);
 
-    let mat_b = Mat4::from_scale_rotation_translation(Vec3::new(0.5, 1.5, 2.0), Quat::from_rotation_x(deg(90.0)), Vec3::new(1.0, 2.0, 3.0));
+    let mat_b = Mat4::from_scale_rotation_translation(
+        Vec3::new(0.5, 1.5, 2.0),
+        Quat::from_rotation_x(deg(90.0)),
+        Vec3::new(1.0, 2.0, 3.0),
+    );
     let result3 = Vec3::unit_y().rotate_mat4(&mat_b);
     assert_ulps_eq!(vec3(0.0, 0.0, 1.5), result3, epsilon = 1.0e-6);
     assert_ulps_eq!(result3, (Vec3::unit_y().extend(0.0) * mat_b).truncate());
