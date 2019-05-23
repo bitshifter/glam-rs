@@ -127,8 +127,8 @@ fn test_vec3_min_max() {
 #[test]
 fn test_vec3_hmin_hmax() {
     let a = vec3(-1.0, 2.0, -3.0);
-    assert_eq!(-3.0, a.hmin());
-    assert_eq!(2.0, a.hmax());
+    assert_eq!(-3.0, a.min_element());
+    assert_eq!(2.0, a.max_element());
 }
 
 #[test]

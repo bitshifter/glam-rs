@@ -206,7 +206,7 @@ impl Vec3 {
     }
 
     #[inline]
-    pub fn hmin(self) -> f32 {
+    pub fn min_element(self) -> f32 {
         unsafe {
             let v = self.0;
             let v = _mm_min_ps(v, _mm_shuffle_ps(v, v, 0b00_00_11_10));
@@ -216,7 +216,7 @@ impl Vec3 {
     }
 
     #[inline]
-    pub fn hmax(self) -> f32 {
+    pub fn max_element(self) -> f32 {
         unsafe {
             let v = self.0;
             let v = _mm_max_ps(v, _mm_shuffle_ps(v, v, 0b00_00_11_10));

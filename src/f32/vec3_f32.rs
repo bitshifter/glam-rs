@@ -156,12 +156,12 @@ impl Vec3 {
     }
 
     #[inline]
-    pub fn hmin(self) -> f32 {
+    pub fn min_element(self) -> f32 {
         self.0.min(self.1.min(self.2))
     }
 
     #[inline]
-    pub fn hmax(self) -> f32 {
+    pub fn max_element(self) -> f32 {
         self.0.max(self.1.max(self.2))
     }
 

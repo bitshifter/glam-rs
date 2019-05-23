@@ -119,12 +119,12 @@ impl Vec2 {
     }
 
     #[inline]
-    pub fn hmin(self) -> f32 {
+    pub fn min_element(self) -> f32 {
         self.0.min(self.1)
     }
 
     #[inline]
-    pub fn hmax(self) -> f32 {
+    pub fn max_element(self) -> f32 {
         self.0.max(self.1)
     }
 

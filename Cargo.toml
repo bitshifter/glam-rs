@@ -1,11 +1,12 @@
 [package]
 name = "glam"
-version = "0.4.0"
+version = "0.4.1"
 authors = ["Cameron Hart <cameron.hart@gmail.com>"]
 description = "A simple and fast 3D math library for games and graphics"
 edition = "2018"
 homepage = "https://github.com/bitshifter/glam-rs"
 repository = "https://github.com/bitshifter/glam-rs"
+documentation = "https://docs.rs/crate/glam"
 readme = "README.md"
 license = "MIT/Apache-2.0"
 keywords = ["gamedev", "math", "matrix", "vector", "quaternion"]

@@ -139,8 +139,8 @@ fn test_vec4_min_max() {
 // #[test]
 // fn test_vec4_hmin_hmax() {
 //     let a = vec4(-1.0, 2.0, -3.0);
-//     assert_eq!(-3.0, a.hmin());
-//     assert_eq!(2.0, a.hmax());
+//     assert_eq!(-3.0, a.min_element());
+//     assert_eq!(2.0, a.max_element());
 // }
 
 #[test]

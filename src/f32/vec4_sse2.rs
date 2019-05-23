@@ -232,7 +232,7 @@ impl Vec4 {
 
     #[cfg_attr(tarpaulin, skip)]
     #[inline]
-    pub fn hmin(self) -> f32 {
+    pub(crate) fn min_element(self) -> f32 {
         unimplemented!();
         // unsafe {
         //     let v = self.0;
@@ -244,7 +244,7 @@ impl Vec4 {
 
     #[cfg_attr(tarpaulin, skip)]
     #[inline]
-    pub fn hmax(self) -> f32 {
+    pub(crate) fn max_element(self) -> f32 {
         unimplemented!();
         // unsafe {
         //     let v = self.0;

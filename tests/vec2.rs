@@ -118,8 +118,8 @@ fn test_vec2_min_max() {
 #[test]
 fn test_vec2_hmin_hmax() {
     let a = vec2(-1.0, 2.0);
-    assert_eq!(-1.0, a.hmin());
-    assert_eq!(2.0, a.hmax());
+    assert_eq!(-1.0, a.min_element());
+    assert_eq!(2.0, a.max_element());
 }
 
 #[test]
