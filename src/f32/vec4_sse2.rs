@@ -230,28 +230,24 @@ impl Vec4 {
         unsafe { Self(_mm_max_ps(self.0, rhs.0)) }
     }
 
-    #[cfg_attr(tarpaulin, skip)]
     #[inline]
-    pub(crate) fn min_element(self) -> f32 {
-        unimplemented!();
-        // unsafe {
-        //     let v = self.0;
-        //     let v = _mm_min_ps(v, _mm_shuffle_ps(v, v, 0b00_00_11_10));
-        //     let v = _mm_min_ps(v, _mm_shuffle_ps(v, v, 0b00_00_00_01));
-        //     _mm_cvtss_f32(v)
-        // }
+    pub fn min_element(self) -> f32 {
+        unsafe {
+            let v = self.0;
+            let v = _mm_min_ps(v, _mm_shuffle_ps(v, v, 0b00_00_11_10));
+            let v = _mm_min_ps(v, _mm_shuffle_ps(v, v, 0b00_00_00_01));
+            _mm_cvtss_f32(v)
+        }
     }
 
-    #[cfg_attr(tarpaulin, skip)]
     #[inline]
-    pub(crate) fn max_element(self) -> f32 {
-        unimplemented!();
-        // unsafe {
-        //     let v = self.0;
-        //     let v = _mm_max_ps(v, _mm_shuffle_ps(v, v, 0b00_00_11_10));
-        //     let v = _mm_max_ps(v, _mm_shuffle_ps(v, v, 0b00_00_00_01));
-        //     _mm_cvtss_f32(v)
-        // }
+    pub fn max_element(self) -> f32 {
+        unsafe {
+            let v = self.0;
+            let v = _mm_max_ps(v, _mm_shuffle_ps(v, v, 0b00_00_11_10));
+            let v = _mm_max_ps(v, _mm_shuffle_ps(v, v, 0b00_00_00_01));
+            _mm_cvtss_f32(v)
+        }
     }
 
     #[inline]

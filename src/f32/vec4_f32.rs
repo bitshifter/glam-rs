@@ -172,12 +172,12 @@ impl Vec4 {
     }
 
     #[inline]
-    pub(crate) fn min_element(self) -> f32 {
+    pub fn min_element(self) -> f32 {
         self.0.min(self.1.min(self.2.min(self.3)))
     }
 
     #[inline]
-    pub(crate) fn max_element(self) -> f32 {
+    pub fn max_element(self) -> f32 {
         self.0.max(self.1.max(self.2.min(self.3)))
     }
 
