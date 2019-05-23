@@ -70,9 +70,9 @@ fn test_quat_new() {
 
     let t1 = (
         0.0,
-        (ytheta.as_radians() * 0.5).sin(),
+        (ytheta * 0.5).sin(),
         0.0,
-        (ytheta.as_radians() * 0.5).cos(),
+        (ytheta * 0.5).cos(),
     );
     assert_eq!(q0, t1.into());
     let q1 = Quat::from(t1);
@@ -84,9 +84,9 @@ fn test_quat_new() {
 
     let a1 = [
         0.0,
-        (ytheta.as_radians() * 0.5).sin(),
+        (ytheta * 0.5).sin(),
         0.0,
-        (ytheta.as_radians() * 0.5).cos(),
+        (ytheta * 0.5).cos(),
     ];
     assert_eq!(q0, a1.into());
     let q1 = Quat::from(a1);

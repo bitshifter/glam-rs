@@ -22,13 +22,25 @@ impl Angle {
     }
 
     #[inline]
-    pub fn as_radians(self) -> f32 {
+    pub fn radians(self) -> f32 {
         self.0
     }
 
     #[inline]
-    pub fn as_degrees(self) -> f32 {
+    pub fn to_degrees(self) -> f32 {
         self.0.to_degrees()
+    }
+
+    #[inline]
+    pub fn sin(self) -> f32 {
+        // TODO: optimize
+        self.0.sin()
+    }
+
+    #[inline]
+    pub fn cos(self) -> f32 {
+        // TODO: optimize
+        self.0.cos()
     }
 
     #[inline]
