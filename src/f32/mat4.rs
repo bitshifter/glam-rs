@@ -43,12 +43,19 @@ fn quat_to_axes(rotation: Quat) -> (Vec4, Vec4, Vec4) {
     (x_axis, y_axis, z_axis)
 }
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 pub struct Mat4 {
     pub(crate) x_axis: Vec4,
     pub(crate) y_axis: Vec4,
     pub(crate) z_axis: Vec4,
     pub(crate) w_axis: Vec4,
+}
+
+impl Default for Mat4 {
+    #[inline]
+    fn default() -> Self {
+        Self::identity()
+    }
 }
 
 impl Mat4 {
@@ -797,16 +804,6 @@ impl Mul<f32> for Mat4 {
     #[inline]
     fn mul(self, rhs: f32) -> Self {
         self.mul_scalar(rhs)
-    }
-}
-
-impl PartialEq for Mat4 {
-    #[inline]
-    fn eq(&self, rhs: &Mat4) -> bool {
-        self.x_axis == rhs.x_axis
-            && self.y_axis == rhs.y_axis
-            && self.z_axis == rhs.z_axis
-            && self.w_axis == rhs.w_axis
     }
 }
 

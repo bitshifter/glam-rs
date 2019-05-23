@@ -10,7 +10,7 @@ use rand::{
 
 use std::{f32, fmt, ops::*};
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
 #[repr(C)]
 pub struct Vec4(f32, f32, f32, f32);
 
@@ -424,13 +424,6 @@ impl Neg for Vec4 {
     #[inline]
     fn neg(self) -> Self {
         Self(-self.0, -self.1, -self.2, -self.3)
-    }
-}
-
-impl PartialEq for Vec4 {
-    #[inline]
-    fn eq(&self, rhs: &Self) -> bool {
-        self.0 == rhs.0 && self.1 == rhs.1 && self.2 == rhs.2 && self.3 == rhs.3
     }
 }
 

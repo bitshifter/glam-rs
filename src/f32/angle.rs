@@ -7,7 +7,7 @@ use rand::{
     Rng,
 };
 
-#[derive(Copy, Clone, Debug, PartialOrd, PartialEq)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
 pub struct Angle(f32);
 
 impl Angle {

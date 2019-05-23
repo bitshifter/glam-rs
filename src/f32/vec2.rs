@@ -12,7 +12,7 @@ use std::{f32, fmt, ops::*};
 
 // TODO: to SIMD or not to SIMD?
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
 #[repr(C)]
 pub struct Vec2(f32, f32);
 
@@ -294,13 +294,6 @@ impl Neg for Vec2 {
     #[inline]
     fn neg(self) -> Vec2 {
         Vec2(-self.0, -self.1)
-    }
-}
-
-impl PartialEq for Vec2 {
-    #[inline]
-    fn eq(&self, rhs: &Vec2) -> bool {
-        self.0 == rhs.0 && self.1 == rhs.1
     }
 }
 

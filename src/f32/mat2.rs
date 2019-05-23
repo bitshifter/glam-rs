@@ -13,10 +13,17 @@ pub fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
 }
 
 // TODO: Could use Vec4 for storage
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 pub struct Mat2 {
     pub(crate) x_axis: Vec2,
     pub(crate) y_axis: Vec2,
+}
+
+impl Default for Mat2 {
+    #[inline]
+    fn default() -> Self {
+        Self::identity()
+    }
 }
 
 impl Mat2 {
@@ -222,13 +229,6 @@ impl Mul<f32> for Mat2 {
     #[inline]
     fn mul(self, rhs: f32) -> Self {
         self.mul_scalar(rhs)
-    }
-}
-
-impl PartialEq for Mat2 {
-    #[inline]
-    fn eq(&self, rhs: &Mat2) -> bool {
-        self.x_axis == rhs.x_axis && self.y_axis == rhs.y_axis
     }
 }
 

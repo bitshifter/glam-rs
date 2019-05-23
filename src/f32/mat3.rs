@@ -42,11 +42,18 @@ fn quat_to_axes(rotation: Quat) -> (Vec3, Vec3, Vec3) {
     (x_axis, y_axis, z_axis)
 }
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 pub struct Mat3 {
     pub(crate) x_axis: Vec3,
     pub(crate) y_axis: Vec3,
     pub(crate) z_axis: Vec3,
+}
+
+impl Default for Mat3 {
+    #[inline]
+    fn default() -> Self {
+        Self::identity()
+    }
 }
 
 impl Mat3 {
@@ -379,13 +386,6 @@ impl Mul<f32> for Mat3 {
     #[inline]
     fn mul(self, rhs: f32) -> Self {
         self.mul_scalar(rhs)
-    }
-}
-
-impl PartialEq for Mat3 {
-    #[inline]
-    fn eq(&self, rhs: &Mat3) -> bool {
-        self.x_axis == rhs.x_axis && self.y_axis == rhs.y_axis && self.z_axis == rhs.z_axis
     }
 }
 

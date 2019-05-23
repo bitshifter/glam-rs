@@ -13,7 +13,7 @@ use std::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use std::arch::x86_64::*;
 
-use std::{f32, fmt, mem, ops::*};
+use std::{cmp::Ordering, f32, fmt, mem, ops::*};
 
 pub(crate) const X_AXIS: Align16<(f32, f32, f32, f32)> = Align16((1.0, 0.0, 0.0, 0.0));
 pub(crate) const Y_AXIS: Align16<(f32, f32, f32, f32)> = Align16((0.0, 1.0, 0.0, 0.0));
@@ -425,10 +425,24 @@ impl Neg for Vec4 {
     }
 }
 
+impl Default for Vec4 {
+    #[inline]
+    fn default() -> Self {
+        Self::zero()
+    }
+}
+
 impl PartialEq for Vec4 {
     #[inline]
     fn eq(&self, rhs: &Self) -> bool {
         self.cmpeq(*rhs).all()
+    }
+}
+
+impl PartialOrd for Vec4 {
+    #[inline]
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        self.as_ref().partial_cmp(other.as_ref())
     }
 }
 

@@ -6,6 +6,7 @@ use rand::{
 
 use super::{Angle, Mat3, Mat4, Quat, Vec3, Vec4};
 use std::{
+    cmp::Ordering,
     fmt,
     ops::{Mul, MulAssign, Neg},
 };
@@ -255,11 +256,25 @@ impl Neg for Quat {
     }
 }
 
+impl Default for Quat {
+    #[inline]
+    fn default() -> Self {
+        Self::identity()
+    }
+}
+
 impl PartialEq for Quat {
     #[inline]
     fn eq(&self, rhs: &Self) -> bool {
         let v: Vec4 = self.into();
         v.cmpeq(rhs.into()).all()
+    }
+}
+
+impl PartialOrd for Quat {
+    #[inline]
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        self.as_ref().partial_cmp(other.as_ref())
     }
 }
 

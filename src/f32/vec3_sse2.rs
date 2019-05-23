@@ -16,7 +16,7 @@ use std::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use std::arch::x86_64::*;
 
-use std::{f32, fmt, mem, ops::*};
+use std::{cmp::Ordering, f32, fmt, mem, ops::*};
 
 #[derive(Clone, Copy)]
 #[repr(C)]
@@ -386,10 +386,24 @@ impl Neg for Vec3 {
     }
 }
 
+impl Default for Vec3 {
+    #[inline]
+    fn default() -> Self {
+        Vec3::zero()
+    }
+}
+
 impl PartialEq for Vec3 {
     #[inline]
     fn eq(&self, rhs: &Self) -> bool {
         self.cmpeq(*rhs).all()
+    }
+}
+
+impl PartialOrd for Vec3 {
+    #[inline]
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        self.as_ref().partial_cmp(other.as_ref())
     }
 }
 
