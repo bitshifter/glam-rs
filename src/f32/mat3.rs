@@ -192,30 +192,6 @@ impl Mat3 {
         self.z_axis
     }
 
-    // #[cfg(all(target_feature = "sse2", not(feature = "no-simd")))]
-    // #[inline]
-    // pub fn transpose(&self) -> Self {
-    //     // sse2 implemenation based off DirectXMath XMMatrixInverse (MIT License)
-    //     #[cfg(target_arch = "x86")]
-    //     use std::arch::x86::*;
-    //     #[cfg(target_arch = "x86_64")]
-    //     use std::arch::x86_64::*;
-
-    //     unsafe {
-    //         let tmp0 = _mm_shuffle_ps(self.x_axis.0, self.y_axis.0, 0b01_00_01_00);
-    //         let tmp1 = _mm_shuffle_ps(self.x_axis.0, self.y_axis.0, 0b11_10_11_10);
-    //         let tmp2 = _mm_shuffle_ps(self.z_axis.0, self.w_axis.0, 0b01_00_01_00);
-    //         let tmp3 = _mm_shuffle_ps(self.z_axis.0, self.w_axis.0, 0b11_10_11_10);
-
-    //         Self {
-    //             x_axis: _mm_shuffle_ps(tmp0, tmp2, 0b10_00_10_00).into(),
-    //             y_axis: _mm_shuffle_ps(tmp0, tmp2, 0b11_01_11_01).into(),
-    //             z_axis: _mm_shuffle_ps(tmp1, tmp3, 0b10_00_10_00).into(),
-    //         }
-    //     }
-    // }
-
-    // #[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
     #[inline]
     pub fn transpose(&self) -> Self {
         let (m00, m01, m02) = self.x_axis.into();
@@ -241,7 +217,6 @@ impl Mat3 {
         ))
     }
 
-    // #[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
     pub fn inverse(&self) -> Self {
         let (m00, m01, m02) = self.x_axis.into();
         let (m10, m11, m12) = self.y_axis.into();

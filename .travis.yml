@@ -15,7 +15,7 @@ cache: cargo
 
 env:
   - CARGO_FEATURES=""
-  - CARGO_FEATURES="no-simd"
+  - CARGO_FEATURES="scalar-math"
 
 matrix:
   allow_failures:
@@ -35,8 +35,8 @@ script:
 
 after_success: |
   if [[ "$TRAVIS_RUST_VERSION" == nightly ]]; then
-    if [[ "$CARGO_FEATURES" == "no-simd" ]]; then
-      cargo tarpaulin --features no-simd --exclude-files src/f32/transform.rs --exclude-files src/fast_f32/mod.rs --exclude-files src/f32/vec3_sse2.rs --exclude-files src/f32/vec4_sse2.rs --exclude-files src/f32/quat_sse2.rs --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
+    if [[ "$CARGO_FEATURES" == "scalar-math" ]]; then
+      cargo tarpaulin --features scalar-math --exclude-files src/f32/transform.rs --exclude-files src/fast_f32/mod.rs --exclude-files src/f32/vec3_sse2.rs --exclude-files src/f32/vec4_sse2.rs --exclude-files src/f32/quat_sse2.rs --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
     else
       cargo tarpaulin --exclude-files src/f32/transform.rs --exclude-files src/fast_f32/mod.rs --exclude-files src/f32/vec3_f32.rs --exclude-files src/f32/vec4_f32.rs --exclude-files src/f32/quat_f32.rs --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
     fi

@@ -234,7 +234,7 @@ impl Mat4 {
         self.w_axis
     }
 
-    #[cfg(all(target_feature = "sse2", not(feature = "no-simd")))]
+    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
     #[inline]
     pub fn transpose(&self) -> Self {
         // sse2 implemenation based off DirectXMath XMMatrixInverse (MIT License)
@@ -258,7 +258,7 @@ impl Mat4 {
         }
     }
 
-    #[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
+    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
     #[inline]
     pub fn transpose(&self) -> Self {
         let (m00, m01, m02, m03) = self.x_axis.into();
@@ -294,7 +294,7 @@ impl Mat4 {
             - m03 * (m10 * a1223 - m11 * a0223 + m12 * a0123)
     }
 
-    #[cfg(any(not(target_feature = "sse2"), feature = "no-simd"))]
+    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
     pub fn inverse(&self) -> Self {
         let (m00, m01, m02, m03) = self.x_axis.into();
         let (m10, m11, m12, m13) = self.y_axis.into();
@@ -366,7 +366,7 @@ impl Mat4 {
         inverse * rcp_det
     }
 
-    #[cfg(all(target_feature = "sse2", not(feature = "no-simd")))]
+    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
     /// Performs a matrix inverse. Note that this method does not check if the matrix is
     /// invertible and will divide by zero if a non-invertible matrix is inverted.
     pub fn inverse(&self) -> Self {

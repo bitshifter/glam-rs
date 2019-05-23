@@ -42,7 +42,7 @@ efficient to convert from tuples or arrays, e.g. `(x, y, z) = v.into()`.
 
 ## Feature gates
 
-* `no-simd` - compiles with SIMD support disabled
+* `scalar-math` - compiles with SIMD support disabled
 
 # Conventions
 

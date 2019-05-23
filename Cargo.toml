@@ -20,7 +20,7 @@ coveralls = { repository = "bitshifter/glam-rs" }
 default = ["approx", "rand", "serde"]
 
 # this is primarily for testing the fallback implementation
-no-simd = []
+scalar-math = []
 
 # trying out transform types instead of matrices but they are generally slower
 # at everything except for inverse. They are 16 bytes smaller than a Mat4.
