@@ -4,7 +4,7 @@ use rand::{
     Rng,
 };
 
-use super::{Angle, Mat4, Quat, Vec3, Vec4};
+use super::{Angle, Mat3, Mat4, Quat, Vec3, Vec4};
 use std::{
     fmt,
     ops::{Mul, MulAssign, Neg},
@@ -56,12 +56,12 @@ impl Quat {
     }
 
     #[inline]
-    pub fn from_rotation_mat4(mat: &Mat4) -> Self {
+    fn from_rotation_axes(x_axis: Vec3, y_axis: Vec3, z_axis: Vec3) -> Self {
         // from DirectXMath XMQuaternionRotationMatrix
         // TODO: sse2 version
-        let (m00, m01, m02, _m03) = mat.x_axis.into();
-        let (m10, m11, m12, _m13) = mat.y_axis.into();
-        let (m20, m21, m22, _m23) = mat.z_axis.into();
+        let (m00, m01, m02) = x_axis.into();
+        let (m10, m11, m12) = y_axis.into();
+        let (m20, m21, m22) = z_axis.into();
         if m22 <= 0.0 {
             // x^2 + y^2 >= z^2 + w^2
             let dif10 = m11 - m00;
@@ -113,6 +113,20 @@ impl Quat {
                 )
             }
         }
+    }
+
+    #[inline]
+    pub fn from_rotation_mat3(mat: &Mat3) -> Self {
+        Self::from_rotation_axes(mat.get_x_axis(), mat.get_y_axis(), mat.get_z_axis())
+    }
+
+    #[inline]
+    pub fn from_rotation_mat4(mat: &Mat4) -> Self {
+        Self::from_rotation_axes(
+            mat.get_x_axis().truncate(),
+            mat.get_y_axis().truncate(),
+            mat.get_z_axis().truncate(),
+        )
     }
 
     #[inline]

@@ -1,5 +1,5 @@
 use approx::assert_ulps_eq;
-use glam::f32::{deg, quat, rad, Mat4, Quat, Vec3, Vec4};
+use glam::f32::{deg, quat, rad, Mat3, Mat4, Quat, Vec3, Vec4};
 
 #[test]
 fn test_quat_rotation() {
@@ -15,6 +15,10 @@ fn test_quat_rotation() {
     assert_ulps_eq!(y0, y1);
     let y2 = Quat::from_axis_angle(Vec3::unit_y(), yaw);
     assert_ulps_eq!(y0, y2);
+    let y3 = Quat::from_rotation_mat3(&Mat3::from_rotation_y(yaw));
+    assert_ulps_eq!(y0, y3);
+    let y4 = Quat::from_rotation_mat3(&Mat3::from_quat(y0));
+    assert_ulps_eq!(y0, y4);
 
     let x0 = Quat::from_rotation_x(pitch);
     let (axis, angle) = x0.get_axis_angle();
@@ -35,6 +39,8 @@ fn test_quat_rotation() {
     assert_ulps_eq!(z0, z1);
     let z2 = Quat::from_axis_angle(Vec3::unit_z(), roll);
     assert_ulps_eq!(z0, z2);
+    let z3 = Quat::from_rotation_mat4(&Mat4::from_rotation_z(roll));
+    assert_ulps_eq!(z0, z3);
 
     let yx0 = y0 * x0;
     let yx1 = Quat::from_rotation_ypr(yaw, pitch, zero);
@@ -132,6 +138,15 @@ fn test_quat_funcs() {
     assert_ulps_eq!(q1.length_reciprocal(), 0.5);
     assert_ulps_eq!(q0, q1.normalize());
     assert_ulps_eq!(q0.dot(q1), 2.0);
+}
+
+#[test]
+fn test_quat_lerp() {
+    let q0 = Quat::from_rotation_y(deg(0.0));
+    let q1 = Quat::from_rotation_y(deg(90.0));
+    assert_eq!(q0, q0.lerp(q1, 0.0));
+    assert_eq!(q1, q0.lerp(q1, 1.0));
+    assert_ulps_eq!(Quat::from_rotation_y(deg(45.0)), q0.lerp(q1, 0.5));
 }
 
 #[test]
