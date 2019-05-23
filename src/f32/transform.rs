@@ -7,14 +7,14 @@ use rand::{
     Rng,
 };
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 pub struct TransformSRT {
     pub scale: Vec3,
     pub rotation: Quat,
     pub translation: Vec3,
 }
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 pub struct TransformRT {
     pub rotation: Quat,
     pub translation: Vec3,
@@ -239,22 +239,6 @@ impl Mul<TransformSRT> for TransformRT {
     #[inline]
     fn mul(self, rhs: TransformSRT) -> Self::Output {
         mul_srt_srt(&self.into(), &rhs)
-    }
-}
-
-impl PartialEq for TransformRT {
-    #[inline]
-    fn eq(&self, rhs: &Self) -> bool {
-        self.translation == rhs.translation && self.rotation == rhs.rotation
-    }
-}
-
-impl PartialEq for TransformSRT {
-    #[inline]
-    fn eq(&self, rhs: &Self) -> bool {
-        self.translation == rhs.translation
-            && self.rotation == rhs.rotation
-            && self.scale == rhs.scale
     }
 }
 
