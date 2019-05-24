@@ -34,7 +34,7 @@ Note that this does result in some wasted space in the case of `Vec3` and `Mat3`
 as the base SIMD vector type is 16 bytes large and 16 byte aligned.
 
 `glam` outperforms similar Rust libraries such as [`cgmath`][cgmath] and
-[`nalgebra-glm`] for common operations as tested by the [`mathbench`][mathbench]
+[`nalgebra-glm`][nalgebra-glm] for common operations as tested by the [`mathbench`][mathbench]
 project.
 
 If you are more concerned with size than speed you can build glam with the
