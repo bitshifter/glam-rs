@@ -1,20 +1,19 @@
 [package]
 name = "glam"
-version = "0.4.1"
+version = "0.4.2" # remember to update html_root_url
+edition = "2018"
 authors = ["Cameron Hart <cameron.hart@gmail.com>"]
 description = "A simple and fast 3D math library for games and graphics"
-edition = "2018"
-homepage = "https://github.com/bitshifter/glam-rs"
 repository = "https://github.com/bitshifter/glam-rs"
-documentation = "https://docs.rs/crate/glam"
 readme = "README.md"
-license = "MIT/Apache-2.0"
+license = "MIT OR Apache-2.0"
 keywords = ["gamedev", "math", "matrix", "vector", "quaternion"]
 categories = ["game-engines"]
 
 [badges]
 travis-ci = { repository = "bitshifter/glam-rs" }
 coveralls = { repository = "bitshifter/glam-rs" }
+maintenance = { status = "experimental" }
 
 [features]
 default = ["approx", "rand", "serde"]
