@@ -33,6 +33,10 @@ Not everything has a SIMD implementation yet.
 Note that this does result in some wasted space in the case of `Vec3` and `Mat3`
 as the base SIMD vector type is 16 bytes large and 16 byte aligned.
 
+`glam` outperforms similar Rust libraries such as [`cgmath`][cgmath] and
+[`nalgebra-glm`] for common operations as tested by the [`mathbench`][mathbench]
+project.
+
 If you are more concerned with size than speed you can build glam with the
 feature `scalar-math` enabled to disable SIMD usage.
 
@@ -149,3 +153,6 @@ dual licensed as above, without any additional terms or conditions.
 [docs.rs]: https://docs.rs/glam/
 [Rust API Guidelines]: https://rust-lang-nursery.github.io/api-guidelines/
 [Criterion.rs]: https://bheisler.github.io/criterion.rs/book/index.html
+[cgmath]: https://github.com/rustgd/cgmath
+[nalgebra-glm]: https://github.com/rustsim/nalgebra
+[mathbench]: https://github.com/bitshifter/mathbench-rs
