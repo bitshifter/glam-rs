@@ -10,15 +10,13 @@ A simple and fast 3D math library for games and graphics.
 `glam` is in a pre-alpha stage. Base functionality has been implemented and the
 look and feel of the API has solidified.
 
-Only single precision floating point arithmetic (i.e. `f32`) is currently
-supported.
-
 At this point I'm looking to see if people are interested in using it and how
 they find it. So it is possible that future versions may include API changes or
 even changes in the conventions listed below.
 
 ## Features
 
+* Only single precision floating point (`f32`) arithmetic is supported
 * vectors: `Vec3`, `Vec3`, `Vec4`
 * square matrices: `Mat2`, `Mat3`, `Mat4`
 * a quaternion type: `Quat`
@@ -31,7 +29,7 @@ and `Mat4` also use SSE2 for some functionality such as inverse and transpose.
 Not everything has a SIMD implementation yet.
 
 Note that this does result in some wasted space in the case of `Vec3` and `Mat3`
-as the base SIMD vector type is 16 bytes large and 16 byte aligned.
+as the SIMD vector type is 16 bytes large and 16 byte aligned.
 
 `glam` outperforms similar Rust libraries such as [`cgmath`][cgmath] and
 [`nalgebra-glm`][nalgebra-glm] for common operations as tested by the [`mathbench`][mathbench]
@@ -40,7 +38,7 @@ project.
 If you are more concerned with size than speed you can build glam with the
 feature `scalar-math` enabled to disable SIMD usage.
 
-The `Vec2` and `Mat2` types do not have an implemenation. `Mat2` may benefit
+The `Vec2` and `Mat2` types do not have a SIMD implemenation. `Mat2` may benefit
 from a SIMD impelemtation in the future.
 
 Due to the use of SIMD, vector elements may only be get and set via accessor
@@ -54,15 +52,16 @@ let (x, y, z) = v.into();
 ### Default features
 
 * `approx` - implementations of the `AbsDiffEq` and `UlpsEq` traits for all
-  `glam` types
-* `rand` - implementations of `Distribution` trait for all `glam` types
+  `glam` types. This is primarily used for unit testing.
+* `rand` - implementations of `Distribution` trait for all `glam` types. This
+  is primarily used for unit testing.
 * `serde` - implementations of `Serialize` and `Deserialize` for all `glam`
   types. Note that serialization should work between builds of `glam` with and
   without SIMD enabled
 
 ### Feature gates
 
-* `scalar-math` - compiles with SIMD support disabled
+* `scalar-math` - compiles with SIMD support disabled.
 
 ## Conventions
 
@@ -104,7 +103,7 @@ The design of this library is guided by a desire for simplicity and good
 performance.
 
 * Only single precision floating point (`f32`) arithmetic is supported
-* No traits or generics
+* No traits or generics for simplicity of implementation and usage
 * All dependencies are optional (e.g. approx, rand and serde)
 * Follows the [Rust API Guidelines] where possible
 * Aiming for 100% test [coverage][coveralls.io]
