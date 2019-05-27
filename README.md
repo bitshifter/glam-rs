@@ -53,6 +53,7 @@ let (x, y, z) = v.into();
 
 * `approx` - implementations of the `AbsDiffEq` and `UlpsEq` traits for all
   `glam` types. This is primarily used for unit testing.
+* `mint` - for interoperating with other 3D math libraries
 * `rand` - implementations of `Distribution` trait for all `glam` types. This
   is primarily used for unit testing.
 * `serde` - implementations of `Serialize` and `Deserialize` for all `glam`
@@ -111,6 +112,7 @@ performance.
 
 ## Future work
 
+* Writing documentation
 * Experiment with replacing SSE2 code with `f32x4` from the `packed_simd`
   library - this will mean other architectures get SIMD support
 * Experiment with a using a 4x3 matrix as a 3D transform type that can be more
@@ -141,6 +143,10 @@ Unless you explicitly state otherwise, any contribution intentionally submitted
 for inclusion in the work by you, as defined in the Apache-2.0 license, shall be
 dual licensed as above, without any additional terms or conditions.
 
+## Support
+If you are interested in contributing or have a request or suggestion
+[create an issue] on github.
+
 [Build Status]: https://travis-ci.org/bitshifter/glam-rs.svg?branch=master
 [travis-ci]: https://travis-ci.org/bitshifter/glam-rs
 [Coverage Status]: https://coveralls.io/repos/github/bitshifter/glam-rs/badge.svg?branch=master
@@ -155,3 +161,4 @@ dual licensed as above, without any additional terms or conditions.
 [cgmath]: https://github.com/rustgd/cgmath
 [nalgebra-glm]: https://github.com/rustsim/nalgebra
 [mathbench]: https://github.com/bitshifter/mathbench-rs
+[create an issue]: https://github.com/bitshifter/glam-rs/issues

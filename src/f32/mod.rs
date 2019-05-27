@@ -53,6 +53,11 @@ mod glam_approx;
 #[cfg(feature = "approx")]
 pub use glam_approx::*;
 
+#[cfg(feature = "mint")]
+mod glam_mint;
+#[cfg(feature = "mint")]
+pub use glam_mint::*;
+
 #[cfg(feature = "serde")]
 mod glam_serde;
 #[cfg(feature = "serde")]
