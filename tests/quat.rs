@@ -72,8 +72,6 @@ fn test_quat_new() {
     assert_eq!(q0, t1.into());
     let q1 = Quat::from(t1);
     assert_eq!(t1, q1.into());
-    let q1 = Quat::from(&t1);
-    assert_eq!(t1, (&q1).into());
 
     assert_eq!(q0, quat(t1.0, t1.1, t1.2, t1.3));
 
@@ -81,9 +79,6 @@ fn test_quat_new() {
     assert_eq!(q0, a1.into());
     let q1 = Quat::from(a1);
     let a2: [f32; 4] = q1.into();
-    assert_eq!(a1, a2);
-    let q1 = Quat::from(&a1);
-    let a2: [f32; 4] = (&q1).into();
     assert_eq!(a1, a2);
 }
 

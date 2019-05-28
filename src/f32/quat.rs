@@ -200,7 +200,7 @@ impl Quat {
 
 impl fmt::Debug for Quat {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        let (x, y, z, w) = self.into();
+        let (x, y, z, w) = (*self).into();
         fmt.debug_tuple("Quat")
             .field(&x)
             .field(&y)
@@ -212,7 +212,7 @@ impl fmt::Debug for Quat {
 
 impl fmt::Display for Quat {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        let (x, y, z, w) = self.into();
+        let (x, y, z, w) = (*self).into();
         write!(fmt, "({}, {}, {}, {})", x, y, z, w)
     }
 }
@@ -266,8 +266,8 @@ impl Default for Quat {
 impl PartialEq for Quat {
     #[inline]
     fn eq(&self, rhs: &Self) -> bool {
-        let v: Vec4 = self.into();
-        v.cmpeq(rhs.into()).all()
+        let v: Vec4 = (*self).into();
+        v.cmpeq((*rhs).into()).all()
     }
 }
 
@@ -295,13 +295,6 @@ impl AsMut<[f32; 4]> for Quat {
 impl From<(f32, f32, f32, f32)> for Quat {
     #[inline]
     fn from(t: (f32, f32, f32, f32)) -> Self {
-        Quat::new(t.0, t.1, t.2, t.3)
-    }
-}
-
-impl From<&(f32, f32, f32, f32)> for Quat {
-    #[inline]
-    fn from(t: &(f32, f32, f32, f32)) -> Self {
         Quat::new(t.0, t.1, t.2, t.3)
     }
 }

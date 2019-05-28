@@ -15,16 +15,11 @@ fn test_vec3_new() {
     let t = (1.0, 2.0, 3.0);
     let v = Vec3::from(t);
     assert_eq!(t, v.into());
-    let v = Vec3::from(&t);
-    assert_eq!(t, (&v).into());
 
     let a = [1.0, 2.0, 3.0];
     let v = Vec3::from(a);
     let a1: [f32; 3] = v.into();
     assert_eq!(a, a1);
-    let v = Vec3::from(&a);
-    let a2: [f32; 3] = (&v).into();
-    assert_eq!(a, a2);
 
     let v = Vec3::new(t.0, t.1, t.2);
     assert_eq!(t, v.into());

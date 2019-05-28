@@ -400,24 +400,6 @@ impl From<[[f32; 3]; 3]> for Mat3 {
     }
 }
 
-impl From<&Mat3> for [[f32; 3]; 3] {
-    #[inline]
-    fn from(m: &Mat3) -> Self {
-        [m.x_axis.into(), m.y_axis.into(), m.z_axis.into()]
-    }
-}
-
-impl From<&[[f32; 3]; 3]> for Mat3 {
-    #[inline]
-    fn from(m: &[[f32; 3]; 3]) -> Self {
-        Mat3 {
-            x_axis: m[0].into(),
-            y_axis: m[1].into(),
-            z_axis: m[2].into(),
-        }
-    }
-}
-
 impl From<Mat3> for [[f32; 3]; 3] {
     #[inline]
     fn from(m: Mat3) -> Self {

@@ -110,23 +110,9 @@ impl From<Vec4> for Quat {
     }
 }
 
-impl From<&Vec4> for Quat {
-    #[inline]
-    fn from(v: &Vec4) -> Self {
-        Self(v.0)
-    }
-}
-
 impl From<Quat> for Vec4 {
     #[inline]
     fn from(q: Quat) -> Self {
-        Self(q.0)
-    }
-}
-
-impl From<&Quat> for Vec4 {
-    #[inline]
-    fn from(q: &Quat) -> Self {
         Self(q.0)
     }
 }
@@ -158,27 +144,9 @@ impl From<Quat> for (f32, f32, f32, f32) {
     }
 }
 
-impl From<&Quat> for (f32, f32, f32, f32) {
-    #[inline]
-    fn from(v: &Quat) -> Self {
-        unsafe {
-            let mut out: Align16<(f32, f32, f32, f32)> = mem::uninitialized();
-            _mm_store_ps(&mut out.0 as *mut (f32, f32, f32, f32) as *mut f32, v.0);
-            out.0
-        }
-    }
-}
-
 impl From<[f32; 4]> for Quat {
     #[inline]
     fn from(a: [f32; 4]) -> Self {
-        unsafe { Self(_mm_loadu_ps(a.as_ptr())) }
-    }
-}
-
-impl From<&[f32; 4]> for Quat {
-    #[inline]
-    fn from(a: &[f32; 4]) -> Self {
         unsafe { Self(_mm_loadu_ps(a.as_ptr())) }
     }
 }
@@ -194,13 +162,3 @@ impl From<Quat> for [f32; 4] {
     }
 }
 
-impl From<&Quat> for [f32; 4] {
-    #[inline]
-    fn from(v: &Quat) -> Self {
-        unsafe {
-            let mut out: Align16<[f32; 4]> = mem::uninitialized();
-            _mm_store_ps(&mut out.0 as *mut [f32; 4] as *mut f32, v.0);
-            out.0
-        }
-    }
-}

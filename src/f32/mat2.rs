@@ -242,23 +242,6 @@ impl From<[[f32; 2]; 2]> for Mat2 {
     }
 }
 
-impl From<&[[f32; 2]; 2]> for Mat2 {
-    #[inline]
-    fn from(m: &[[f32; 2]; 2]) -> Self {
-        Mat2 {
-            x_axis: m[0].into(),
-            y_axis: m[1].into(),
-        }
-    }
-}
-
-impl From<&Mat2> for [[f32; 2]; 2] {
-    #[inline]
-    fn from(m: &Mat2) -> Self {
-        [m.x_axis.into(), m.y_axis.into()]
-    }
-}
-
 impl From<Mat2> for [[f32; 2]; 2] {
     #[inline]
     fn from(m: Mat2) -> Self {

@@ -62,41 +62,20 @@ impl Vec3 {
 impl From<Vec4> for Quat {
     #[inline]
     fn from(v: Vec4) -> Self {
-        v.as_ref().into()
-    }
-}
-
-impl From<&Vec4> for Quat {
-    #[inline]
-    fn from(v: &Vec4) -> Self {
-        v.as_ref().into()
+        (*v.as_ref()).into()
     }
 }
 
 impl From<Quat> for Vec4 {
     #[inline]
     fn from(q: Quat) -> Self {
-        q.as_ref().into()
-    }
-}
-
-impl From<&Quat> for Vec4 {
-    #[inline]
-    fn from(q: &Quat) -> Self {
-        q.as_ref().into()
+        (*q.as_ref()).into()
     }
 }
 
 impl From<Quat> for (f32, f32, f32, f32) {
     #[inline]
     fn from(q: Quat) -> Self {
-        (q.0, q.1, q.2, q.3)
-    }
-}
-
-impl From<&Quat> for (f32, f32, f32, f32) {
-    #[inline]
-    fn from(q: &Quat) -> Self {
         (q.0, q.1, q.2, q.3)
     }
 }
@@ -108,23 +87,9 @@ impl From<[f32; 4]> for Quat {
     }
 }
 
-impl From<&[f32; 4]> for Quat {
-    #[inline]
-    fn from(a: &[f32; 4]) -> Self {
-        Quat(a[0], a[1], a[2], a[3])
-    }
-}
-
 impl From<Quat> for [f32; 4] {
     #[inline]
     fn from(q: Quat) -> Self {
-        [q.0, q.1, q.2, q.3]
-    }
-}
-
-impl From<&Quat> for [f32; 4] {
-    #[inline]
-    fn from(q: &Quat) -> Self {
         [q.0, q.1, q.2, q.3]
     }
 }

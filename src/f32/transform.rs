@@ -253,17 +253,6 @@ impl From<TransformRT> for TransformSRT {
     }
 }
 
-impl From<&TransformRT> for TransformSRT {
-    #[inline]
-    fn from(tr: &TransformRT) -> Self {
-        Self {
-            translation: tr.translation,
-            rotation: tr.rotation,
-            scale: Vec3::one(),
-        }
-    }
-}
-
 #[cfg(feature = "rand")]
 impl Distribution<TransformRT> for Standard {
     #[inline]
@@ -308,23 +297,9 @@ impl From<TransformSRT> for Mat4 {
     }
 }
 
-impl From<&TransformSRT> for Mat4 {
-    #[inline]
-    fn from(srt: &TransformSRT) -> Self {
-        Mat4::from_scale_rotation_translation(srt.scale, srt.rotation, srt.translation)
-    }
-}
-
 impl From<TransformRT> for Mat4 {
     #[inline]
     fn from(rt: TransformRT) -> Self {
-        Mat4::from_rotation_translation(rt.rotation, rt.translation)
-    }
-}
-
-impl From<&TransformRT> for Mat4 {
-    #[inline]
-    fn from(rt: &TransformRT) -> Self {
         Mat4::from_rotation_translation(rt.rotation, rt.translation)
     }
 }

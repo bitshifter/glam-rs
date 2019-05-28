@@ -14,15 +14,10 @@ fn test_vec2_new() {
     let t = (1.0, 2.0);
     let v = Vec2::from(t);
     assert_eq!(t, v.into());
-    let v = Vec2::from(&t);
-    assert_eq!(t, (&v).into());
 
     let a = [1.0, 2.0];
     let v = Vec2::from(a);
     let a1: [f32; 2] = v.into();
-    assert_eq!(a, a1);
-    let v = Vec2::from(&a);
-    let a1: [f32; 2] = (&v).into();
     assert_eq!(a, a1);
 
     let v = Vec2::new(t.0, t.1);

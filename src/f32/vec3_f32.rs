@@ -332,20 +332,8 @@ impl From<(f32, f32, f32)> for Vec3 {
     }
 }
 
-impl From<&(f32, f32, f32)> for Vec3 {
-    fn from(t: &(f32, f32, f32)) -> Self {
-        Self(t.0, t.1, t.2)
-    }
-}
-
 impl From<Vec3> for (f32, f32, f32) {
     fn from(v: Vec3) -> Self {
-        (v.0, v.1, v.2)
-    }
-}
-
-impl From<&Vec3> for (f32, f32, f32) {
-    fn from(v: &Vec3) -> Self {
         (v.0, v.1, v.2)
     }
 }
@@ -356,20 +344,8 @@ impl From<[f32; 3]> for Vec3 {
     }
 }
 
-impl From<&[f32; 3]> for Vec3 {
-    fn from(a: &[f32; 3]) -> Self {
-        Self(a[0], a[1], a[2])
-    }
-}
-
 impl From<Vec3> for [f32; 3] {
     fn from(v: Vec3) -> Self {
-        [v.0, v.1, v.2]
-    }
-}
-
-impl From<&Vec3> for [f32; 3] {
-    fn from(v: &Vec3) -> Self {
         [v.0, v.1, v.2]
     }
 }

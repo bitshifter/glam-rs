@@ -434,12 +434,6 @@ impl From<(f32, f32, f32, f32)> for Vec4 {
     }
 }
 
-impl From<&(f32, f32, f32, f32)> for Vec4 {
-    fn from(t: &(f32, f32, f32, f32)) -> Self {
-        Self(t.0, t.1, t.2, t.3)
-    }
-}
-
 impl From<Align16<(f32, f32, f32, f32)>> for Vec4 {
     #[inline]
     fn from(a: Align16<(f32, f32, f32, f32)>) -> Self {
@@ -454,13 +448,6 @@ impl From<Vec4> for (f32, f32, f32, f32) {
     }
 }
 
-impl From<&Vec4> for (f32, f32, f32, f32) {
-    #[inline]
-    fn from(v: &Vec4) -> Self {
-        (v.0, v.1, v.2, v.3)
-    }
-}
-
 impl From<[f32; 4]> for Vec4 {
     #[inline]
     fn from(a: [f32; 4]) -> Self {
@@ -468,23 +455,9 @@ impl From<[f32; 4]> for Vec4 {
     }
 }
 
-impl From<&[f32; 4]> for Vec4 {
-    #[inline]
-    fn from(a: &[f32; 4]) -> Self {
-        Self(a[0], a[1], a[2], a[3])
-    }
-}
-
 impl From<Vec4> for [f32; 4] {
     #[inline]
     fn from(v: Vec4) -> Self {
-        [v.0, v.1, v.2, v.3]
-    }
-}
-
-impl From<&Vec4> for [f32; 4] {
-    #[inline]
-    fn from(v: &Vec4) -> Self {
         [v.0, v.1, v.2, v.3]
     }
 }

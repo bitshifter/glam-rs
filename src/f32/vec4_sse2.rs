@@ -26,7 +26,7 @@ pub struct Vec4(pub(crate) __m128);
 
 impl fmt::Debug for Vec4 {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        let (x, y, z, w) = self.into();
+        let (x, y, z, w) = (*self).into();
         fmt.debug_tuple("Vec4")
             .field(&x)
             .field(&y)
@@ -310,7 +310,7 @@ impl Vec4 {
 
 impl fmt::Display for Vec4 {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        let (x, y, z, w) = self.into();
+        let (x, y, z, w) = (*self).into();
         write!(fmt, "({}, {}, {}, {})", x, y, z, w)
     }
 }
@@ -469,27 +469,9 @@ impl From<(f32, f32, f32, f32)> for Vec4 {
     }
 }
 
-impl From<&(f32, f32, f32, f32)> for Vec4 {
-    #[inline]
-    fn from(t: &(f32, f32, f32, f32)) -> Self {
-        Self::new(t.0, t.1, t.2, t.3)
-    }
-}
-
 impl From<Vec4> for (f32, f32, f32, f32) {
     #[inline]
     fn from(v: Vec4) -> Self {
-        unsafe {
-            let mut out: Align16<(f32, f32, f32, f32)> = mem::uninitialized();
-            _mm_store_ps(&mut out.0 as *mut (f32, f32, f32, f32) as *mut f32, v.0);
-            out.0
-        }
-    }
-}
-
-impl From<&Vec4> for (f32, f32, f32, f32) {
-    #[inline]
-    fn from(v: &Vec4) -> Self {
         unsafe {
             let mut out: Align16<(f32, f32, f32, f32)> = mem::uninitialized();
             _mm_store_ps(&mut out.0 as *mut (f32, f32, f32, f32) as *mut f32, v.0);
@@ -505,27 +487,9 @@ impl From<[f32; 4]> for Vec4 {
     }
 }
 
-impl From<&[f32; 4]> for Vec4 {
-    #[inline]
-    fn from(a: &[f32; 4]) -> Self {
-        unsafe { Self(_mm_loadu_ps(a.as_ptr())) }
-    }
-}
-
 impl From<Vec4> for [f32; 4] {
     #[inline]
     fn from(v: Vec4) -> Self {
-        unsafe {
-            let mut out: Align16<[f32; 4]> = mem::uninitialized();
-            _mm_store_ps(&mut out.0 as *mut [f32; 4] as *mut f32, v.0);
-            out.0
-        }
-    }
-}
-
-impl From<&Vec4> for [f32; 4] {
-    #[inline]
-    fn from(v: &Vec4) -> Self {
         unsafe {
             let mut out: Align16<[f32; 4]> = mem::uninitialized();
             _mm_store_ps(&mut out.0 as *mut [f32; 4] as *mut f32, v.0);

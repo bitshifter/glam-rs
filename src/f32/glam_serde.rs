@@ -12,7 +12,7 @@ impl Serialize for Vec2 {
     where
         S: Serializer,
     {
-        let (x, y) = self.into();
+        let (x, y) = (*self).into();
         let mut state = serializer.serialize_tuple_struct("Vec2", 2)?;
         state.serialize_field(&x)?;
         state.serialize_field(&y)?;
@@ -26,7 +26,7 @@ impl Serialize for Vec3 {
     where
         S: Serializer,
     {
-        let (x, y, z) = self.into();
+        let (x, y, z) = (*self).into();
         // 3 is the number of fields in the struct.
         let mut state = serializer.serialize_tuple_struct("Vec3", 3)?;
         state.serialize_field(&x)?;
@@ -42,7 +42,7 @@ impl Serialize for Vec4 {
     where
         S: Serializer,
     {
-        let (x, y, z, w) = self.into();
+        let (x, y, z, w) = (*self).into();
         // 4 is the number of fields in the struct.
         let mut state = serializer.serialize_tuple_struct("Vec4", 4)?;
         state.serialize_field(&x)?;
@@ -59,7 +59,7 @@ impl Serialize for Quat {
     where
         S: Serializer,
     {
-        let (x, y, z, w) = self.into();
+        let (x, y, z, w) = (*self).into();
         // 4 is the number of fields in the struct.
         let mut state = serializer.serialize_tuple_struct("Quat", 4)?;
         state.serialize_field(&x)?;
