@@ -161,4 +161,3 @@ impl From<Quat> for [f32; 4] {
         }
     }
 }
-

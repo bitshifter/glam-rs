@@ -1,19 +1,21 @@
 #[path = "support/macros.rs"]
 #[macro_use]
 mod macros;
+mod support;
 
 use criterion::{criterion_group, criterion_main, Criterion};
-use glam::f32::Quat;
-use rand::{Rng, SeedableRng};
+use glam::Quat;
+use rand::SeedableRng;
 use rand_xoshiro::Xoshiro256Plus;
 use std::ops::Mul;
+use support::random_quat;
 
 bench_binop!(
     quat_mul_quat,
     "quat * quat",
     op => mul,
-    ty1 => Quat,
-    ty2 => Quat
+    ty => Quat,
+    from => random_quat
 );
 
 criterion_group!(benches, quat_mul_quat,);

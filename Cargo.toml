@@ -39,9 +39,16 @@ rand_xoshiro = "0.1"
 serde_json = "1.0"
 
 [[bench]]
+name = "mat2"
+harness = false
+
+[[bench]]
+name = "mat3"
+harness = false
+
+[[bench]]
 name = "mat4"
 harness = false
-required-features = ["transform-types"]
 
 [[bench]]
 name = "quat"
@@ -59,4 +66,3 @@ harness = false
 [[bench]]
 name = "vec3"
 harness = false
-required-features = ["transform-types"]

@@ -1,35 +1,23 @@
 #[path = "support/macros.rs"]
 #[macro_use]
 mod macros;
+mod support;
 
 use criterion::{criterion_group, criterion_main, Criterion};
-use glam::f32::{Quat, TransformRT, TransformSRT, Vec3};
-use rand::{Rng, SeedableRng};
+use glam::f32::{Quat, Vec3};
+use rand::SeedableRng;
 use rand_xoshiro::Xoshiro256Plus;
 use std::ops::Mul;
+use support::{random_quat, random_vec3};
 
 bench_binop!(
     vec3_mul_quat,
     "vec3 * quat",
     op => mul,
     ty1 => Vec3,
-    ty2 => Quat
-);
-
-bench_binop!(
-    vec3_mul_transform_srt,
-    "vec3 * transform_srt",
-    op => mul,
-    ty1 => Vec3,
-    ty2 => TransformSRT
-);
-
-bench_binop!(
-    vec3_mul_transform_rt,
-    "vec3 * transform_rt",
-    op => mul,
-    ty1 => Vec3,
-    ty2 => TransformRT
+    from1 => random_vec3,
+    ty2 => Quat,
+    from2 => random_quat
 );
 
 // bench_binop!(
@@ -48,8 +36,6 @@ criterion_group!(
     benches,
     vec3_mul_quat,
     // vec3_mul_mat4,
-    vec3_mul_transform_rt,
-    vec3_mul_transform_srt,
     vec3_euler,
 );
 

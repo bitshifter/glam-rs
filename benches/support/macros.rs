@@ -1,6 +1,6 @@
 #[macro_export]
 macro_rules! bench_unop {
-    ($name: ident, $desc: expr, op => $unop: ident, ty => $t: ty, from => $from: ty) => {
+    ($name: ident, $desc: expr, op => $unop: ident, ty => $ty:ty, from => $from: expr) => {
         pub(crate) fn $name(c: &mut Criterion) {
             use rand::SeedableRng;
             use rand_xoshiro::Xoshiro256Plus;
@@ -8,7 +8,7 @@ macro_rules! bench_unop {
 
             let mut rng = Xoshiro256Plus::seed_from_u64(0);
 
-            let elems: Vec<$t> = (0..LEN).map(|_| rng.gen::<$from>().into()).collect();
+            let elems: Vec<$ty> = (0..LEN).map(|_| $from(&mut rng).into()).collect();
             let mut i = 0;
 
             c.bench_function($desc, move |b| {
@@ -20,22 +20,18 @@ macro_rules! bench_unop {
             });
         }
     };
-
-    ($name: ident, $desc: expr, op => $unop: ident, ty => $t: ty) => {
-        bench_unop!($name, $desc, op => $unop, ty => $t, from => $t);
-    };
 }
 
 #[macro_export]
 macro_rules! bench_binop {
-    ($name: ident, $desc: expr, op => $binop: ident, ty1 => $ty1:ty, from1 => $from1:ty, ty2 => $ty2:ty, from2 => $from2:ty) => {
+    ($name: ident, $desc: expr, op => $binop: ident, ty1 => $ty1:ty, from1 => $from1:expr, ty2 => $ty2:ty, from2 => $from2:expr) => {
         pub(crate) fn $name(c: &mut Criterion) {
             const LEN: usize = 1 << 7;
 
             let mut rng = Xoshiro256Plus::seed_from_u64(0);
 
-            let elems1: Vec<$ty1> = (0..LEN).map(|_| rng.gen::<$from1>().into()).collect();
-            let elems2: Vec<$ty2> = (0..LEN).map(|_| rng.gen::<$from2>().into()).collect();
+            let elems1: Vec<$ty1> = (0..LEN).map(|_| $from1(&mut rng).into()).collect();
+            let elems2: Vec<$ty2> = (0..LEN).map(|_| $from2(&mut rng).into()).collect();
             let mut i = 0;
 
             c.bench_function($desc, move |b| {
@@ -53,16 +49,8 @@ macro_rules! bench_binop {
         }
     };
 
-    ($name: ident, $desc: expr, op => $binop: ident, ty => $t: ty, from => $from: ty) => {
-        bench_binop!($name, $desc, op => $binop, ty1 => $t, from1 => $from, ty2 => $t, from2 => $from);
-    };
-
-    ($name: ident, $desc: expr, op => $binop: ident, ty1 => $t1: ty, ty2 => $t2: ty) => {
-        bench_binop!($name, $desc, op => $binop, ty1 => $t1, from1 => $t1, ty2 => $t2, from2 => $t2);
-    };
-
-    ($name: ident, $desc: expr, op => $binop: ident, ty => $t: ty) => {
-        bench_binop!($name, $desc, op => $binop, ty1 => $t, from1 => $t, ty2 => $t, from2 => $t);
+    ($name: ident, $desc: expr, op => $binop: ident, ty => $ty:ty, from => $from: expr) => {
+        bench_binop!($name, $desc, op => $binop, ty1 => $ty, from1 => $from, ty2 => $ty, from2 => $from);
     };
 }
 

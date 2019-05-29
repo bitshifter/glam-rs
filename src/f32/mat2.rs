@@ -131,10 +131,15 @@ impl Mat2 {
     /// Multiplication order is as follows:
     /// `local_to_world = local_to_object * local_to_world`
     pub fn mul_mat2(&self, rhs: &Self) -> Self {
-        Self {
-            x_axis: rhs.x_axis * *self,
-            y_axis: rhs.y_axis * *self,
-        }
+        let mut tmp = self.x_axis.dup_x().mul(rhs.x_axis);
+        tmp = self.x_axis.dup_y().mul_add(rhs.y_axis, tmp);
+        let x_axis = tmp;
+
+        tmp = self.y_axis.dup_x().mul(rhs.x_axis);
+        tmp = self.y_axis.dup_y().mul_add(rhs.y_axis, tmp);
+        let y_axis = tmp;
+
+        Self { x_axis, y_axis }
     }
 
     #[inline]
