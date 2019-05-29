@@ -367,7 +367,7 @@ impl Mat4 {
         );
 
         let dot0 = self.x_axis * col0;
-        let dot1 = (dot0.x() + dot0.y()) + (dot0.z() + dot0.w());
+        let dot1 = dot0.x() + dot0.y() + dot0.z() + dot0.w();
 
         let rcp_det = 1.0 / dot1;
         inverse * rcp_det
