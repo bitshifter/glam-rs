@@ -192,62 +192,62 @@ impl fmt::Display for Vec2 {
 }
 
 impl Div<Vec2> for Vec2 {
-    type Output = Vec2;
+    type Output = Self;
     #[inline]
-    fn div(self, rhs: Vec2) -> Vec2 {
-        Vec2(self.0 / rhs.0, self.1 / rhs.1)
+    fn div(self, rhs: Vec2) -> Self {
+        Self(self.0 / rhs.0, self.1 / rhs.1)
     }
 }
 
 impl DivAssign<Vec2> for Vec2 {
     #[inline]
     fn div_assign(&mut self, rhs: Vec2) {
-        *self = Vec2(self.0 / rhs.0, self.1 / rhs.1)
+        *self = Self(self.0 / rhs.0, self.1 / rhs.1)
     }
 }
 
 impl Div<f32> for Vec2 {
-    type Output = Vec2;
+    type Output = Self;
     #[inline]
-    fn div(self, rhs: f32) -> Vec2 {
-        Vec2(self.0 / rhs, self.1 / rhs)
+    fn div(self, rhs: f32) -> Self {
+        Self(self.0 / rhs, self.1 / rhs)
     }
 }
 
 impl DivAssign<f32> for Vec2 {
     #[inline]
     fn div_assign(&mut self, rhs: f32) {
-        *self = Vec2(self.0 / rhs, self.1 / rhs)
+        *self = Self(self.0 / rhs, self.1 / rhs)
     }
 }
 
 impl Mul<Vec2> for Vec2 {
-    type Output = Vec2;
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: Vec2) -> Vec2 {
-        Vec2(self.0 * rhs.0, self.1 * rhs.1)
+    fn mul(self, rhs: Vec2) -> Self {
+        Self(self.0 * rhs.0, self.1 * rhs.1)
     }
 }
 
 impl MulAssign<Vec2> for Vec2 {
     #[inline]
     fn mul_assign(&mut self, rhs: Vec2) {
-        *self = Vec2(self.0 * rhs.0, self.1 * rhs.1)
+        *self = Self(self.0 * rhs.0, self.1 * rhs.1)
     }
 }
 
 impl Mul<f32> for Vec2 {
-    type Output = Vec2;
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: f32) -> Vec2 {
-        Vec2(self.0 * rhs, self.1 * rhs)
+    fn mul(self, rhs: f32) -> Self {
+        Self(self.0 * rhs, self.1 * rhs)
     }
 }
 
 impl MulAssign<f32> for Vec2 {
     #[inline]
     fn mul_assign(&mut self, rhs: f32) {
-        *self = Vec2(self.0 * rhs, self.1 * rhs)
+        *self = Self(self.0 * rhs, self.1 * rhs)
     }
 }
 
@@ -260,40 +260,40 @@ impl Mul<Vec2> for f32 {
 }
 
 impl Add for Vec2 {
-    type Output = Vec2;
+    type Output = Self;
     #[inline]
-    fn add(self, rhs: Vec2) -> Vec2 {
-        Vec2(self.0 + rhs.0, self.1 + rhs.1)
+    fn add(self, rhs: Self) -> Self {
+        Self(self.0 + rhs.0, self.1 + rhs.1)
     }
 }
 
 impl AddAssign for Vec2 {
     #[inline]
-    fn add_assign(&mut self, rhs: Vec2) {
-        *self = Vec2(self.0 + rhs.0, self.1 + rhs.1)
+    fn add_assign(&mut self, rhs: Self) {
+        *self = Self(self.0 + rhs.0, self.1 + rhs.1)
     }
 }
 
 impl Sub for Vec2 {
-    type Output = Vec2;
+    type Output = Self;
     #[inline]
-    fn sub(self, rhs: Vec2) -> Vec2 {
-        Vec2(self.0 - rhs.0, self.1 - rhs.1)
+    fn sub(self, rhs: Vec2) -> Self {
+        Self(self.0 - rhs.0, self.1 - rhs.1)
     }
 }
 
 impl SubAssign for Vec2 {
     #[inline]
     fn sub_assign(&mut self, rhs: Vec2) {
-        *self = Vec2(self.0 - rhs.0, self.1 - rhs.1)
+        *self = Self(self.0 - rhs.0, self.1 - rhs.1)
     }
 }
 
 impl Neg for Vec2 {
-    type Output = Vec2;
+    type Output = Self;
     #[inline]
-    fn neg(self) -> Vec2 {
-        Vec2(-self.0, -self.1)
+    fn neg(self) -> Self {
+        Self(-self.0, -self.1)
     }
 }
 
@@ -314,7 +314,7 @@ impl AsMut<[f32; 2]> for Vec2 {
 impl From<(f32, f32)> for Vec2 {
     #[inline]
     fn from(t: (f32, f32)) -> Self {
-        Vec2::new(t.0, t.1)
+        Self(t.0, t.1)
     }
 }
 
@@ -328,7 +328,7 @@ impl From<Vec2> for (f32, f32) {
 impl From<[f32; 2]> for Vec2 {
     #[inline]
     fn from(a: [f32; 2]) -> Self {
-        Vec2::new(a[0], a[1])
+        Self(a[0], a[1])
     }
 }
 
