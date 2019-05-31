@@ -35,11 +35,17 @@ where
     Quat::from_rotation_ypr(yaw, pitch, roll)
 }
 
-pub fn random_mat2<R>(rng: &mut R) -> Mat2 where R: Rng {
+pub fn random_mat2<R>(rng: &mut R) -> Mat2
+where
+    R: Rng,
+{
     rng.gen()
 }
 
-pub fn random_mat3<R>(rng: &mut R) -> Mat3 where R: Rng {
+pub fn random_mat3<R>(rng: &mut R) -> Mat3
+where
+    R: Rng,
+{
     rng.gen()
 }
 
