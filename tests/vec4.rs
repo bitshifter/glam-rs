@@ -46,6 +46,7 @@ fn test_vec4_fmt() {
 fn test_vec4_zero() {
     let v = Vec4::zero();
     assert_eq!((0.0, 0.0, 0.0, 0.0), v.into());
+    assert_eq!(v, Vec4::default());
 }
 
 #[test]

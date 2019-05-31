@@ -4,6 +4,8 @@ use std::f32::consts;
 
 #[test]
 fn test_angle() {
+    assert_eq!(Angle::from_radians(0.0), Angle::default());
+
     let a = Angle::from_radians(consts::PI);
     let b = Angle::from_degrees(90.0);
     assert_eq!(a.radians(), consts::PI);

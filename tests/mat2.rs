@@ -13,6 +13,7 @@ fn test_mat2_identity() {
     assert_eq!(IDENTITY, Into::<[[f32; 2]; 2]>::into(identity));
     assert_eq!(Into::<Mat2>::into(IDENTITY), identity);
     assert_eq!(identity, identity * identity);
+    assert_eq!(identity, Mat2::default());
 }
 
 #[test]
