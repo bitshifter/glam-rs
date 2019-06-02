@@ -114,6 +114,7 @@ impl Mat2 {
         a * d - b * c
     }
 
+    #[inline]
     pub fn inverse(&self) -> Self {
         let (a, b) = self.x_axis.into();
         let (c, d) = self.y_axis.into();
