@@ -153,6 +153,7 @@ fn test_quat_identity() {
     let q = Quat::from_rotation_ypr(deg(10.0), deg(-10.0), deg(45.0));
     assert_eq!(q, q * identity);
     assert_eq!(q, identity * q);
+    assert_eq!(identity, Quat::default());
 }
 
 #[test]

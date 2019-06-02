@@ -23,6 +23,7 @@ fn test_mat4_identity() {
     assert_eq!(IDENTITY, Into::<[[f32; 4]; 4]>::into(identity));
     assert_eq!(Into::<Mat4>::into(IDENTITY), identity);
     assert_eq!(identity, identity * identity);
+    assert_eq!(identity, Mat4::default());
 }
 
 #[test]

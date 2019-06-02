@@ -15,6 +15,9 @@ mod transform {
         assert_eq!(srt.translation, Vec3::zero());
 
         assert_eq!(srt, tr.into());
+
+        assert_eq!(TransformRT::identity(), TransformRT::default());
+        assert_eq!(TransformSRT::identity(), TransformSRT::default());
     }
 
     #[test]

@@ -41,6 +41,7 @@ fn test_vec3_fmt() {
 fn test_vec3_zero() {
     let v = Vec3::zero();
     assert_eq!((0.0, 0.0, 0.0), v.into());
+    assert_eq!(v, Vec3::default());
 }
 
 #[test]

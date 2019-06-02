@@ -39,6 +39,7 @@ fn test_vec2_fmt() {
 fn test_vec2_zero() {
     let v = Vec2::zero();
     assert_eq!(vec2(0.0, 0.0), v);
+    assert_eq!(v, Vec2::default());
 }
 
 #[test]
