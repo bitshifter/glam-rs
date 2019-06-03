@@ -44,6 +44,12 @@ impl Angle {
     }
 
     #[inline]
+    pub fn tan(self) -> f32 {
+        // TODO: optimize
+        self.0.tan()
+    }
+
+    #[inline]
     pub fn sin_cos(self) -> (f32, f32) {
         scalar_sin_cos(self.0)
     }
