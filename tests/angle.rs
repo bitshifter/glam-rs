@@ -17,12 +17,12 @@ fn test_angle() {
     assert_eq!(b, deg(90.0));
 
     assert_ulps_eq!(rad(0.0f32.acos()), Angle::acos(0.0));
-    assert_eq!(rad(1.0f32.acos()), Angle::acos(1.0));
-    assert_eq!(rad((-1.0f32).acos()), Angle::acos(-1.0));
+    assert_ulps_eq!(rad(1.0f32.acos()), Angle::acos(1.0));
+    assert_ulps_eq!(rad((-1.0f32).acos()), Angle::acos(-1.0));
 
     // Angle::acos limits to [-1.0, 1.0]
-    assert_eq!(rad(1.0f32.acos()), Angle::acos(2.0));
-    assert_eq!(rad((-1.0f32).acos()), Angle::acos(-2.0));
+    assert_ulps_eq!(rad(1.0f32.acos()), Angle::acos(2.0));
+    assert_ulps_eq!(rad((-1.0f32).acos()), Angle::acos(-2.0));
 
     assert_eq!(rad(consts::PI * 2.0), rad(consts::PI) * 2.0);
     assert_eq!(rad(2.0 * consts::PI), 2.0 * rad(consts::PI));
