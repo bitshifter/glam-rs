@@ -190,6 +190,20 @@ impl Distribution<Mat2> for Standard {
     }
 }
 
+impl AsRef<[f32; 4]> for Mat2 {
+    #[inline]
+    fn as_ref(&self) -> &[f32; 4] {
+        unsafe { &*(self as *const Self as *const [f32; 4]) }
+    }
+}
+
+impl AsMut<[f32; 4]> for Mat2 {
+    #[inline]
+    fn as_mut(&mut self) -> &mut [f32; 4] {
+        unsafe { &mut *(self as *mut Self as *mut [f32; 4]) }
+    }
+}
+
 impl Add<Mat2> for Mat2 {
     type Output = Self;
     #[inline]
