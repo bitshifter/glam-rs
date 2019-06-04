@@ -5,6 +5,18 @@ use rand::{Rng, SeedableRng};
 use rand_xoshiro::Xoshiro256Plus;
 
 #[test]
+fn test_vec3_align() {
+    use std::mem;
+    if cfg!(feature = "scalar-math") {
+        assert_eq!(12, mem::size_of::<Vec3>());
+        assert_eq!(4, mem::align_of::<Vec3>());
+    } else {
+        assert_eq!(16, mem::size_of::<Vec3>());
+        assert_eq!(16, mem::align_of::<Vec3>());
+    }
+}
+
+#[test]
 fn test_vec3_new() {
     let v = vec3(1.0, 2.0, 3.0);
 

@@ -2,6 +2,17 @@ use approx::assert_ulps_eq;
 use glam::f32::{deg, quat, rad, Mat3, Mat4, Quat, Vec3, Vec4};
 
 #[test]
+fn test_quat_align() {
+    use std::mem;
+    assert_eq!(16, mem::size_of::<Quat>());
+    if cfg!(feature = "scalar-math") {
+        assert_eq!(4, mem::align_of::<Quat>());
+    } else {
+        assert_eq!(16, mem::align_of::<Quat>());
+    }
+}
+
+#[test]
 fn test_quat_rotation() {
     let zero = deg(0.0);
     let yaw = deg(30.0);

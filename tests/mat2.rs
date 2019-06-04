@@ -8,6 +8,13 @@ const MATRIX: [[f32; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
 const ZERO: [[f32; 2]; 2] = [[0.0; 2]; 2];
 
 #[test]
+fn test_mat2_align() {
+    use std::mem;
+    assert_eq!(16, mem::size_of::<Mat2>());
+    assert_eq!(4, mem::align_of::<Mat2>());
+}
+
+#[test]
 fn test_mat2_identity() {
     let identity = Mat2::identity();
     assert_eq!(IDENTITY, Into::<[[f32; 2]; 2]>::into(identity));

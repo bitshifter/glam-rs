@@ -18,6 +18,17 @@ const MATRIX: [[f32; 4]; 4] = [
 const ZERO: [[f32; 4]; 4] = [[0.0; 4]; 4];
 
 #[test]
+fn test_mat4_align() {
+    use std::mem;
+    assert_eq!(64, mem::size_of::<Mat4>());
+    if cfg!(feature = "scalar-math") {
+        assert_eq!(4, mem::align_of::<Mat4>());
+    } else {
+        assert_eq!(16, mem::align_of::<Mat4>());
+    }
+}
+
+#[test]
 fn test_mat4_identity() {
     let identity = Mat4::identity();
     assert_eq!(IDENTITY, Into::<[[f32; 4]; 4]>::into(identity));

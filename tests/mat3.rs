@@ -8,6 +8,18 @@ const MATRIX: [[f32; 3]; 3] = [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]
 const ZERO: [[f32; 3]; 3] = [[0.0; 3]; 3];
 
 #[test]
+fn test_mat3_align() {
+    use std::mem;
+    if cfg!(feature = "scalar-math") {
+        assert_eq!(36, mem::size_of::<Mat3>());
+        assert_eq!(4, mem::align_of::<Mat3>());
+    } else {
+        assert_eq!(48, mem::size_of::<Mat3>());
+        assert_eq!(16, mem::align_of::<Mat3>());
+    }
+}
+
+#[test]
 fn test_mat3_identity() {
     let identity = Mat3::identity();
     assert_eq!(IDENTITY, Into::<[[f32; 3]; 3]>::into(identity));

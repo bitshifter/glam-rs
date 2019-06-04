@@ -5,6 +5,13 @@ use rand::{Rng, SeedableRng};
 use rand_xoshiro::Xoshiro256Plus;
 
 #[test]
+fn test_vec2_align() {
+    use std::mem;
+    assert_eq!(8, mem::size_of::<Vec2>());
+    assert_eq!(4, mem::align_of::<Vec2>());
+}
+
+#[test]
 fn test_vec2_new() {
     let v = vec2(1.0, 2.0);
 
