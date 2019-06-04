@@ -8,6 +8,7 @@ use super::x86_utils::UnionCast;
 
 macro_rules! _ps_const_ty {
     ($name:ident, $field:ident, $x:expr) => {
+        #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
         const $name: UnionCast = UnionCast {
             $field: [$x, $x, $x, $x],
         };
