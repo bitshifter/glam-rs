@@ -84,64 +84,64 @@ impl From<Quat> for mint::Quaternion<f32> {
 
 impl From<mint::RowMatrix2<f32>> for Mat2 {
     fn from(m: mint::RowMatrix2<f32>) -> Self {
-        Self::new(m.x.into(), m.y.into())
+        Self::new(m.x.into(), m.y.into()).transpose()
     }
 }
 
 impl From<Mat2> for mint::RowMatrix2<f32> {
     fn from(m: Mat2) -> Self {
+        let mt = m.transpose();
         Self {
-            x: m.x_axis().into(),
-            y: m.y_axis().into(),
+            x: mt.x_axis().into(),
+            y: mt.y_axis().into(),
         }
     }
 }
 
 impl From<mint::ColumnMatrix2<f32>> for Mat2 {
     fn from(m: mint::ColumnMatrix2<f32>) -> Self {
-        Self::new(m.x.into(), m.y.into()).transpose()
+        Self::new(m.x.into(), m.y.into())
     }
 }
 
 impl From<Mat2> for mint::ColumnMatrix2<f32> {
     fn from(m: Mat2) -> Self {
-        let mt = m.transpose();
         Self {
-            x: mt.x_axis().into(),
-            y: mt.y_axis().into(),
+            x: m.x_axis().into(),
+            y: m.y_axis().into(),
         }
     }
 }
 
 impl From<mint::RowMatrix3<f32>> for Mat3 {
     fn from(m: mint::RowMatrix3<f32>) -> Self {
-        Self::new(m.x.into(), m.y.into(), m.z.into())
-    }
-}
-
-impl From<Mat3> for mint::RowMatrix3<f32> {
-    fn from(m: Mat3) -> Self {
-        Self {
-            x: m.x_axis().into(),
-            y: m.y_axis().into(),
-            z: m.z_axis().into(),
-        }
-    }
-}
-
-impl From<mint::ColumnMatrix3<f32>> for Mat3 {
-    fn from(m: mint::ColumnMatrix3<f32>) -> Self {
         Self::new(m.x.into(), m.y.into(), m.z.into()).transpose()
     }
 }
 
-impl From<Mat3> for mint::ColumnMatrix3<f32> {
+impl From<Mat3> for mint::RowMatrix3<f32> {
     fn from(m: Mat3) -> Self {
         let mt = m.transpose();
         Self {
             x: mt.x_axis().into(),
             y: mt.y_axis().into(),
             z: mt.z_axis().into(),
+        }
+    }
+}
+
+impl From<mint::ColumnMatrix3<f32>> for Mat3 {
+    fn from(m: mint::ColumnMatrix3<f32>) -> Self {
+        Self::new(m.x.into(), m.y.into(), m.z.into())
+    }
+}
+
+impl From<Mat3> for mint::ColumnMatrix3<f32> {
+    fn from(m: Mat3) -> Self {
+        Self {
+            x: m.x_axis().into(),
+            y: m.y_axis().into(),
+            z: m.z_axis().into(),
         }
     }
 }

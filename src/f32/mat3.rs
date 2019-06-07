@@ -225,48 +225,36 @@ impl Mat3 {
     }
 
     pub fn inverse(&self) -> Self {
-        let (m00, m01, m02) = self.x_axis.into();
-        let (m10, m11, m12) = self.y_axis.into();
-        let (m20, m21, m22) = self.z_axis.into();
+        let tmp0 = self.y_axis.cross(self.z_axis);
+        let tmp1 = self.z_axis.cross(self.x_axis);
+        let tmp2 = self.x_axis.cross(self.y_axis);
+        let inv_det = Vec3::splat(1.0 / self.z_axis().dot(tmp2));
+        Mat3::new(tmp0 * inv_det, tmp1 * inv_det, tmp2 * inv_det).transpose()
+        // let (m00, m10, m20) = self.x_axis.into();
+        // let (m01, m11, m21) = self.y_axis.into();
+        // let (m02, m12, m22) = self.z_axis.into();
 
-        let inv00 = m11 * m22 - m12 * m21;
-        let inv10 = m12 * m20 - m10 * m22;
-        let inv20 = m10 * m21 - m11 * m20;
-        let dot = self.x_axis.dot(Vec3::new(inv00, inv10, inv20));
-        debug_assert!(dot.abs() > 0.000001);
-        let inv_dot = Vec3::splat(1.0 / dot);
+        // let inv00 = m11 * m22 - m12 * m21;
+        // let inv10 = m12 * m20 - m10 * m22;
+        // let inv20 = m10 * m21 - m11 * m20;
+        // let dot = self.x_axis.dot(Vec3::new(inv00, inv10, inv20));
+        // debug_assert!(dot.abs() > 0.000001);
+        // let inv_dot = Vec3::splat(1.0 / dot);
 
-        Mat3 {
-            x_axis: inv_dot * Vec3::new(inv00, m02 * m21 - m01 * m22, m01 * m12 - m02 * m11),
-            y_axis: inv_dot * Vec3::new(inv10, m00 * m22 - m02 * m20, m02 * m10 - m00 * m12),
-            z_axis: inv_dot * Vec3::new(inv20, m01 * m20 - m00 * m21, m00 * m11 - m01 * m10),
-        }
+        // Mat3 {
+        //     x_axis: inv_dot * Vec3::new(inv00, m02 * m21 - m01 * m22, m01 * m12 - m02 * m11),
+        //     y_axis: inv_dot * Vec3::new(inv10, m00 * m22 - m02 * m20, m02 * m10 - m00 * m12),
+        //     z_axis: inv_dot * Vec3::new(inv20, m01 * m20 - m00 * m21, m00 * m11 - m01 * m10),
+        // }
     }
 
     #[inline]
     /// Multiplies two 3x3 matrices.
-    /// Multiplication order is as follows:
-    /// `local_to_world = local_to_object * local_to_world`
     pub fn mul_mat3(&self, rhs: &Self) -> Self {
-        let mut tmp = self.x_axis.dup_x().mul(rhs.x_axis);
-        tmp = self.x_axis.dup_y().mul_add(rhs.y_axis, tmp);
-        tmp = self.x_axis.dup_z().mul_add(rhs.z_axis, tmp);
-        let x_axis = tmp;
-
-        tmp = self.y_axis.dup_x().mul(rhs.x_axis);
-        tmp = self.y_axis.dup_y().mul_add(rhs.y_axis, tmp);
-        tmp = self.y_axis.dup_z().mul_add(rhs.z_axis, tmp);
-        let y_axis = tmp;
-
-        tmp = self.z_axis.dup_x().mul(rhs.x_axis);
-        tmp = self.z_axis.dup_y().mul_add(rhs.y_axis, tmp);
-        tmp = self.z_axis.dup_z().mul_add(rhs.z_axis, tmp);
-        let z_axis = tmp;
-
         Self {
-            x_axis,
-            y_axis,
-            z_axis,
+            x_axis: self.mul_vec3(rhs.x_axis),
+            y_axis: self.mul_vec3(rhs.y_axis),
+            z_axis: self.mul_vec3(rhs.z_axis),
         }
     }
 
@@ -297,39 +285,25 @@ impl Mat3 {
             z_axis: self.z_axis * s,
         }
     }
-}
 
-impl Vec2 {
     #[inline]
-    /// Multiplies a 3x3 matrix and a 2D point.
-    /// Multiplication order is as follows:
-    /// `world_position = local_position.transform_mat3(local_to_world)`
-    pub fn transform_mat3(self, rhs: &Mat3) -> Self {
-        // TODO: optimise
-        self.extend(1.0).transform_mat3(rhs).truncate()
+    pub fn mul_vec3(&self, rhs: Vec3) -> Vec3 {
+        let mut res = self.x_axis * rhs.dup_x();
+        res = self.y_axis.mul_add(rhs.dup_y(), res);
+        res = self.z_axis.mul_add(rhs.dup_z(), res);
+        res
     }
 
     #[inline]
-    /// Multiplies a 2x2 matrix and a 2D direction vector. Translation is not applied.
-    /// Multiplication order is as follows:
-    /// `world_direction = local_direction.transform_mat4(local_to_world)`
-    pub fn rotate_mat3(self, rhs: &Mat3) -> Self {
+    pub fn transform_point2(&self, rhs: Vec2) -> Vec2 {
         // TODO: optimise
-        self.extend(0.0).transform_mat3(rhs).truncate()
+        self.mul_vec3(rhs.extend(1.0)).truncate()
     }
-}
 
-// implemented here so they don't need to be duplicated between f32x4 and f32 versions
-impl Vec3 {
     #[inline]
-    /// Multiplies a 3x3 matrix and a 3D vector.
-    /// Multiplication order is as follows:
-    /// `world_direction = local_direction.transform_mat3(local_to_world)`
-    pub fn transform_mat3(self, rhs: &Mat3) -> Self {
-        let mut tmp = self.dup_x().mul(rhs.x_axis());
-        tmp = self.dup_y().mul_add(rhs.y_axis(), tmp);
-        tmp = self.dup_z().mul_add(rhs.z_axis(), tmp);
-        tmp
+    pub fn transform_vector2(&self, rhs: Vec2) -> Vec2 {
+        // TODO: optimise
+        self.mul_vec3(rhs.extend(0.0)).truncate()
     }
 }
 
@@ -365,11 +339,20 @@ impl Mul<Mat3> for Mat3 {
     }
 }
 
-impl Mul<Mat3> for Vec3 {
+impl Mul<Vec3> for Mat3 {
     type Output = Vec3;
     #[inline]
-    fn mul(self, rhs: Mat3) -> Vec3 {
-        self.transform_mat3(&rhs)
+    fn mul(self, rhs: Vec3) -> Vec3 {
+        self.mul_vec3(rhs)
+    }
+}
+
+// TODO: macro up this duplication
+impl Mul<&Vec3> for Mat3 {
+    type Output = Vec3;
+    #[inline]
+    fn mul(self, rhs: &Vec3) -> Vec3 {
+        self.mul_vec3(*rhs)
     }
 }
 

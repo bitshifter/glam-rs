@@ -51,28 +51,28 @@ fn test_mat2_from_axes() {
 #[test]
 fn test_mat2_mul() {
     let mat_a = Mat2::from_angle(deg(90.0));
-    let res_a = Vec2::unit_y().transform_mat2(&mat_a);
+    let res_a = mat_a * Vec2::unit_y();
     assert_ulps_eq!(vec2(-1.0, 0.0), res_a);
-    let res_b = Vec2::unit_x().transform_mat2(&mat_a);
+    let res_b = mat_a * Vec2::unit_x();
     assert_ulps_eq!(vec2(0.0, 1.0), res_b);
 }
 
 #[test]
 fn test_from_scale() {
     let m = Mat2::from_scale(Vec2::new(2.0, 4.0));
-    assert_ulps_eq!(Vec2::new(1.0, 1.0).transform_mat2(&m), Vec2::new(2.0, 4.0));
+    assert_ulps_eq!(m * Vec2::new(1.0, 1.0), Vec2::new(2.0, 4.0));
     assert_ulps_eq!(Vec2::unit_x() * 2.0, m.x_axis());
     assert_ulps_eq!(Vec2::unit_y() * 4.0, m.y_axis());
 
     let rot = Mat2::from_scale_angle(Vec2::new(4.0, 2.0), deg(180.0));
     assert_ulps_eq!(
         Vec2::unit_x() * -4.0,
-        Vec2::unit_x() * rot,
+        rot * Vec2::unit_x(),
         epsilon = 1.0e-6
     );
     assert_ulps_eq!(
         Vec2::unit_y() * -2.0,
-        Vec2::unit_y() * rot,
+        rot * Vec2::unit_y(),
         epsilon = 1.0e-6
     );
 }

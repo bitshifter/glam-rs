@@ -128,19 +128,11 @@ impl Mat2 {
     }
 
     #[inline]
-    /// Multiplies two 2x2 matrices.
-    /// Multiplication order is as follows:
-    /// `local_to_world = local_to_object * local_to_world`
     pub fn mul_mat2(&self, rhs: &Self) -> Self {
-        let mut tmp = self.x_axis.dup_x().mul(rhs.x_axis);
-        tmp = self.x_axis.dup_y().mul_add(rhs.y_axis, tmp);
-        let x_axis = tmp;
-
-        tmp = self.y_axis.dup_x().mul(rhs.x_axis);
-        tmp = self.y_axis.dup_y().mul_add(rhs.y_axis, tmp);
-        let y_axis = tmp;
-
-        Self { x_axis, y_axis }
+        Mat2 {
+            x_axis: self.mul_vec2(rhs.x_axis),
+            y_axis: self.mul_vec2(rhs.y_axis),
+        }
     }
 
     #[inline]
@@ -167,18 +159,13 @@ impl Mat2 {
             y_axis: self.y_axis * s,
         }
     }
-}
 
-// implemented here so they don't need to be duplicated between f32x4 and f32 versions
-impl Vec2 {
     #[inline]
-    /// Multiplies a 2x2 matrix and a 2D vector.
-    /// Multiplication order is as follows:
-    /// `world_direction = local_direction.transform_mat3(local_to_world)`
-    pub fn transform_mat2(self, rhs: &Mat2) -> Self {
-        let mut tmp = self.dup_x().mul(rhs.x_axis());
-        tmp = self.dup_y().mul_add(rhs.y_axis(), tmp);
-        tmp
+    pub fn mul_vec2(&self, rhs: Vec2) -> Vec2 {
+        let (x, y) = rhs.into();
+        let (m00, m10) = self.x_axis.into();
+        let (m01, m11) = self.y_axis.into();
+        Vec2::new(m00 * x + m01 * y, m10 * x + m11 * y)
     }
 }
 
@@ -228,11 +215,20 @@ impl Mul<Mat2> for Mat2 {
     }
 }
 
-impl Mul<Mat2> for Vec2 {
+impl Mul<Vec2> for Mat2 {
     type Output = Vec2;
     #[inline]
-    fn mul(self, rhs: Mat2) -> Vec2 {
-        self.transform_mat2(&rhs)
+    fn mul(self, rhs: Vec2) -> Vec2 {
+        self.mul_vec2(rhs)
+    }
+}
+
+// TODO: macro this duplication
+impl Mul<&Vec2> for Mat2 {
+    type Output = Vec2;
+    #[inline]
+    fn mul(self, rhs: &Vec2) -> Vec2 {
+        self.mul_vec2(*rhs)
     }
 }
 

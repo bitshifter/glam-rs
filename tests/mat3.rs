@@ -79,7 +79,7 @@ fn test_from_rotation() {
 #[test]
 fn test_mat3_mul() {
     let mat_a = Mat3::from_axis_angle(Vec3::unit_z(), deg(90.0));
-    let result3 = Vec3::unit_y().transform_mat3(&mat_a);
+    let result3 = mat_a * Vec3::unit_y();
     assert_ulps_eq!(vec3(-1.0, 0.0, 0.0), result3);
 }
 
@@ -101,11 +101,13 @@ fn test_from_ypr() {
     let z1 = Mat3::from_rotation_ypr(zero, zero, roll);
     assert_ulps_eq!(z0, z1);
 
-    let yx0 = y0 * x0;
+    // TODO: make order match?
+    let yx0 = x0 * y0;
     let yx1 = Mat3::from_rotation_ypr(yaw, pitch, zero);
     assert_ulps_eq!(yx0, yx1);
 
-    let yxz0 = y0 * x0 * z0;
+    // TODO: make order match?
+    let yxz0 = z0 * x0 * y0;
     let yxz1 = Mat3::from_rotation_ypr(yaw, pitch, roll);
     assert_ulps_eq!(yxz0, yxz1);
 }
@@ -113,10 +115,7 @@ fn test_from_ypr() {
 #[test]
 fn test_from_scale() {
     let m = Mat3::from_scale(Vec3::new(2.0, 4.0, 8.0));
-    assert_ulps_eq!(
-        Vec3::new(1.0, 1.0, 1.0).transform_mat3(&m),
-        Vec3::new(2.0, 4.0, 8.0)
-    );
+    assert_ulps_eq!(m * Vec3::new(1.0, 1.0, 1.0), Vec3::new(2.0, 4.0, 8.0));
     assert_ulps_eq!(Vec3::unit_x() * 2.0, m.x_axis());
     assert_ulps_eq!(Vec3::unit_y() * 4.0, m.y_axis());
     assert_ulps_eq!(Vec3::unit_z() * 8.0, m.z_axis());
