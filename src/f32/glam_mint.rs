@@ -148,28 +148,11 @@ impl From<Mat3> for mint::ColumnMatrix3<f32> {
 
 impl From<mint::RowMatrix4<f32>> for Mat4 {
     fn from(m: mint::RowMatrix4<f32>) -> Self {
-        Self::new(m.x.into(), m.y.into(), m.z.into(), m.w.into())
-    }
-}
-
-impl From<Mat4> for mint::RowMatrix4<f32> {
-    fn from(m: Mat4) -> Self {
-        Self {
-            x: m.x_axis().into(),
-            y: m.y_axis().into(),
-            z: m.z_axis().into(),
-            w: m.w_axis().into(),
-        }
-    }
-}
-
-impl From<mint::ColumnMatrix4<f32>> for Mat4 {
-    fn from(m: mint::ColumnMatrix4<f32>) -> Self {
         Self::new(m.x.into(), m.y.into(), m.z.into(), m.w.into()).transpose()
     }
 }
 
-impl From<Mat4> for mint::ColumnMatrix4<f32> {
+impl From<Mat4> for mint::RowMatrix4<f32> {
     fn from(m: Mat4) -> Self {
         let mt = m.transpose();
         Self {
@@ -177,6 +160,23 @@ impl From<Mat4> for mint::ColumnMatrix4<f32> {
             y: mt.y_axis().into(),
             z: mt.z_axis().into(),
             w: mt.w_axis().into(),
+        }
+    }
+}
+
+impl From<mint::ColumnMatrix4<f32>> for Mat4 {
+    fn from(m: mint::ColumnMatrix4<f32>) -> Self {
+        Self::new(m.x.into(), m.y.into(), m.z.into(), m.w.into())
+    }
+}
+
+impl From<Mat4> for mint::ColumnMatrix4<f32> {
+    fn from(m: Mat4) -> Self {
+        Self {
+            x: m.x_axis().into(),
+            y: m.y_axis().into(),
+            z: m.z_axis().into(),
+            w: m.w_axis().into(),
         }
     }
 }
