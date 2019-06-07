@@ -128,6 +128,13 @@ impl Mat2 {
     }
 
     #[inline]
+    pub fn mul_vec2(&self, rhs: Vec2) -> Vec2 {
+        let tmp0 = self.x_axis * rhs.x();
+        let tmp1 = self.y_axis * rhs.y();
+        tmp0 + tmp1
+    }
+
+    #[inline]
     pub fn mul_mat2(&self, rhs: &Self) -> Self {
         Mat2 {
             x_axis: self.mul_vec2(rhs.x_axis),
@@ -158,14 +165,6 @@ impl Mat2 {
             x_axis: self.x_axis * s,
             y_axis: self.y_axis * s,
         }
-    }
-
-    #[inline]
-    pub fn mul_vec2(&self, rhs: Vec2) -> Vec2 {
-        let (x, y) = rhs.into();
-        let (m00, m10) = self.x_axis.into();
-        let (m01, m11) = self.y_axis.into();
-        Vec2::new(m00 * x + m01 * y, m10 * x + m11 * y)
     }
 }
 

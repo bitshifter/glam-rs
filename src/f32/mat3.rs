@@ -214,14 +214,7 @@ impl Mat3 {
 
     #[inline]
     pub fn determinant(&self) -> f32 {
-        let (m10, m11, m12) = self.y_axis.into();
-        let (m20, m21, m22) = self.z_axis.into();
-
-        self.x_axis.dot(Vec3::new(
-            m11 * m22 - m12 * m21,
-            m12 * m20 - m10 * m22,
-            m10 * m21 - m11 * m20,
-        ))
+        self.z_axis.dot(self.x_axis.cross(self.y_axis))
     }
 
     pub fn inverse(&self) -> Self {
@@ -230,22 +223,14 @@ impl Mat3 {
         let tmp2 = self.x_axis.cross(self.y_axis);
         let inv_det = Vec3::splat(1.0 / self.z_axis().dot(tmp2));
         Mat3::new(tmp0 * inv_det, tmp1 * inv_det, tmp2 * inv_det).transpose()
-        // let (m00, m10, m20) = self.x_axis.into();
-        // let (m01, m11, m21) = self.y_axis.into();
-        // let (m02, m12, m22) = self.z_axis.into();
+    }
 
-        // let inv00 = m11 * m22 - m12 * m21;
-        // let inv10 = m12 * m20 - m10 * m22;
-        // let inv20 = m10 * m21 - m11 * m20;
-        // let dot = self.x_axis.dot(Vec3::new(inv00, inv10, inv20));
-        // debug_assert!(dot.abs() > 0.000001);
-        // let inv_dot = Vec3::splat(1.0 / dot);
-
-        // Mat3 {
-        //     x_axis: inv_dot * Vec3::new(inv00, m02 * m21 - m01 * m22, m01 * m12 - m02 * m11),
-        //     y_axis: inv_dot * Vec3::new(inv10, m00 * m22 - m02 * m20, m02 * m10 - m00 * m12),
-        //     z_axis: inv_dot * Vec3::new(inv20, m01 * m20 - m00 * m21, m00 * m11 - m01 * m10),
-        // }
+    #[inline]
+    pub fn mul_vec3(&self, rhs: Vec3) -> Vec3 {
+        let mut res = self.x_axis * rhs.dup_x();
+        res = self.y_axis.mul_add(rhs.dup_y(), res);
+        res = self.z_axis.mul_add(rhs.dup_z(), res);
+        res
     }
 
     #[inline]
@@ -284,14 +269,6 @@ impl Mat3 {
             y_axis: self.y_axis * s,
             z_axis: self.z_axis * s,
         }
-    }
-
-    #[inline]
-    pub fn mul_vec3(&self, rhs: Vec3) -> Vec3 {
-        let mut res = self.x_axis * rhs.dup_x();
-        res = self.y_axis.mul_add(rhs.dup_y(), res);
-        res = self.z_axis.mul_add(rhs.dup_z(), res);
-        res
     }
 
     #[inline]
