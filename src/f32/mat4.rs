@@ -512,14 +512,21 @@ impl Mat4 {
 
     #[inline]
     pub fn transform_point3(&self, rhs: Vec3) -> Vec3 {
-        // TODO: optimise
-        self.mul_vec4(rhs.extend(1.0)).truncate()
+        let mut res = self.x_axis.truncate() * rhs.dup_x();
+        res = self.y_axis.truncate().mul_add(rhs.dup_y(), res);
+        res = self.z_axis.truncate().mul_add(rhs.dup_z(), res);
+        // rhs w = 1
+        res = self.w_axis.truncate() + res;
+        res
     }
 
     #[inline]
     pub fn transform_vector3(&self, rhs: Vec3) -> Vec3 {
-        // TODO: optimise
-        self.mul_vec4(rhs.extend(0.0)).truncate()
+        let mut res = self.x_axis.truncate() * rhs.dup_x();
+        res = self.y_axis.truncate().mul_add(rhs.dup_y(), res);
+        res = self.z_axis.truncate().mul_add(rhs.dup_z(), res);
+        // rhs w = 0
+        res
     }
 }
 
