@@ -112,25 +112,25 @@ fn test_from_rotation() {
 #[test]
 fn test_mat4_mul() {
     let mat_a = Mat4::from_axis_angle(Vec3::unit_z(), deg(90.0));
-    let result3 = Vec3::unit_y().rotate_mat4(&mat_a);
+    let result3 = mat_a.transform_vector3(Vec3::unit_y());
     assert_ulps_eq!(vec3(-1.0, 0.0, 0.0), result3);
-    assert_ulps_eq!(result3, (Vec3::unit_y().extend(0.0) * mat_a).truncate());
-    let result4 = Vec4::unit_y().transform_mat4(&mat_a);
+    assert_ulps_eq!(result3, (mat_a * Vec3::unit_y().extend(0.0)).truncate());
+    let result4 = mat_a * Vec4::unit_y();
     assert_ulps_eq!(vec4(-1.0, 0.0, 0.0, 0.0), result4);
-    assert_ulps_eq!(result4, Vec4::unit_y() * mat_a);
+    assert_ulps_eq!(result4, mat_a * Vec4::unit_y());
 
     let mat_b = Mat4::from_scale_rotation_translation(
         Vec3::new(0.5, 1.5, 2.0),
         Quat::from_rotation_x(deg(90.0)),
         Vec3::new(1.0, 2.0, 3.0),
     );
-    let result3 = Vec3::unit_y().rotate_mat4(&mat_b);
+    let result3 = mat_b.transform_vector3(Vec3::unit_y());
     assert_ulps_eq!(vec3(0.0, 0.0, 1.5), result3, epsilon = 1.0e-6);
-    assert_ulps_eq!(result3, (Vec3::unit_y().extend(0.0) * mat_b).truncate());
+    assert_ulps_eq!(result3, (mat_b * Vec3::unit_y().extend(0.0)).truncate());
 
-    let result3 = Vec3::unit_y().transform_mat4(&mat_b);
+    let result3 = mat_b.transform_point3(Vec3::unit_y());
     assert_ulps_eq!(vec3(1.0, 2.0, 4.5), result3, epsilon = 1.0e-6);
-    assert_ulps_eq!(result3, (Vec3::unit_y().extend(1.0) * mat_b).truncate());
+    assert_ulps_eq!(result3, (mat_b * Vec3::unit_y().extend(1.0)).truncate());
 }
 
 #[test]
@@ -151,11 +151,12 @@ fn test_from_ypr() {
     let z1 = Mat4::from_rotation_ypr(zero, zero, roll);
     assert_ulps_eq!(z0, z1);
 
-    let yx0 = y0 * x0;
+    // TODO: fix ypr order
+    let yx0 = x0 * y0;
     let yx1 = Mat4::from_rotation_ypr(yaw, pitch, zero);
     assert_ulps_eq!(yx0, yx1);
 
-    let yxz0 = y0 * x0 * z0;
+    let yxz0 = z0 * x0 * y0;
     let yxz1 = Mat4::from_rotation_ypr(yaw, pitch, roll);
     assert_ulps_eq!(yxz0, yxz1);
 }
@@ -164,7 +165,7 @@ fn test_from_ypr() {
 fn test_from_scale() {
     let m = Mat4::from_scale(Vec3::new(2.0, 4.0, 8.0));
     assert_ulps_eq!(
-        Vec3::new(1.0, 1.0, 1.0).transform_mat4(&m),
+        m.transform_point3(Vec3::new(1.0, 1.0, 1.0)),
         Vec3::new(2.0, 4.0, 8.0)
     );
     assert_ulps_eq!(Vec4::unit_x() * 2.0, m.x_axis());
@@ -233,8 +234,8 @@ fn test_mat4_inverse() {
     let m_inv = m.inverse();
     // assert_ne!(None, m_inv);
     // let m_inv = m_inv.unwrap();
-    assert_ulps_eq!(Mat4::identity(), m * m_inv);
-    assert_ulps_eq!(Mat4::identity(), m_inv * m);
+    assert_ulps_eq!(Mat4::identity(), m * m_inv, epsilon = 1.0e-5);
+    assert_ulps_eq!(Mat4::identity(), m_inv * m, epsilon = 1.0e-5);
     assert_ulps_eq!(m_inv, trans_inv * rotz_inv * scale_inv);
 }
 
@@ -246,8 +247,8 @@ fn test_mat4_look_at() {
     let lh = Mat4::look_at_lh(eye, center, up);
     let rh = Mat4::look_at_rh(eye, center, up);
     let point = Vec3::new(1.0, 0.0, 0.0);
-    assert_ulps_eq!(point.transform_mat4(&lh), Vec3::new(0.0, 1.0, -5.0));
-    assert_ulps_eq!(point.transform_mat4(&rh), Vec3::new(0.0, 1.0, 5.0));
+    assert_ulps_eq!(lh.transform_point3(point), Vec3::new(0.0, 1.0, -5.0));
+    assert_ulps_eq!(rh.transform_point3(point), Vec3::new(0.0, 1.0, 5.0));
 }
 
 #[test]
