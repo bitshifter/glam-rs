@@ -66,24 +66,17 @@ let (x, y, z) = v.into();
 
 ## Conventions
 
-### Row vectors
+### Column vectors
 
-`glam` interprets vectors as row matrices (also known as "row vectors") meaning
-when transforming a vector with a matrix the matrix goes on the right, e.g. `v'
-= vM`.  DirectX uses row vectors, OpenGL uses column vectors. There are pros and
-cons to both, the main advantage of row vectors is multiplication reads from
-left to right:
+`glam` interprets vectors as column matrices (also known as "column vectors")
+meaning when transforming a vector with a matrix the matrix goes on the left,
+e.g. `v' = Mv`.  DirectX uses row vectors, OpenGL uses column vectors. There
+are pros and cons to both.
 
-```
-let result = input * local_to_object * object_to_world;
-```
+### Column-major order
 
-In the above example `input` is in local space, it is transformed into object
-space before the final transform into world space.
-
-### Row-major order
-
-Matrices are stored in row major format.
+Matrices are stored in column major format. Each column vector is stored in
+contiguous memory.
 
 ### Co-ordinate system
 
