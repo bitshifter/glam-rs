@@ -458,7 +458,6 @@ impl Mat4 {
     //     }
     // }
 
-
     #[inline]
     pub fn mul_vec4(&self, rhs: Vec4) -> Vec4 {
         let mut res = self.x_axis * rhs.dup_x();

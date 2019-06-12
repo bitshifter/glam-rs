@@ -1,5 +1,5 @@
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-use super::x86_utils::UnionCast;
+// use super::x86_utils::UnionCast;
 use super::{super::Align16, Vec3, Vec4};
 #[cfg(target_arch = "x86")]
 use std::arch::x86::*;
@@ -39,67 +39,72 @@ impl Quat {
     #[inline]
     /// Multiplies two quaternions.
     /// Note that due to floating point rounding the result may not be perfectly normalized.
-    /// Multiplication order is as follows:
-    /// `local_to_world = local_to_object * object_to_world`
     pub fn mul_quat(self, rhs: Self) -> Self {
-        // sse2 implementation from RTM
-        let lhs = self.0;
-        let rhs = rhs.0;
-        unsafe {
-            macro_rules! _MM_SHUFFLE {
-                ($z:expr, $y:expr, $x:expr, $w:expr) => {
-                    ($z << 6) | ($y << 4) | ($x << 2) | $w
-                };
-            };
+        // TODO: Optimize
+        let (x0, y0, z0, w0) = self.into();
+        let (x1, y1, z1, w1) = rhs.into();
+        Self::new(
+            w0 * x1 + x0 * w1 + y0 * z1 - z0 * y1,
+            w0 * y1 - x0 * z1 + y0 * w1 + z0 * x1,
+            w0 * z1 + x0 * y1 - y0 * x1 + z0 * w1,
+            w0 * w1 - x0 * x1 - y0 * y1 - z0 * z1,
+        )
+        // // sse2 implementation from RTM
+        // let lhs = self.0;
+        // let rhs = rhs.0;
+        // unsafe {
+        //     macro_rules! _MM_SHUFFLE {
+        //         ($z:expr, $y:expr, $x:expr, $w:expr) => {
+        //             ($z << 6) | ($y << 4) | ($x << 2) | $w
+        //         };
+        //     };
 
-            const CONTROL_WZYX: UnionCast = UnionCast {
-                f32x4: [1.0, -1.0, 1.0, -1.0],
-            };
-            const CONTROL_ZWXY: UnionCast = UnionCast {
-                f32x4: [1.0, 1.0, -1.0, -1.0],
-            };
-            const CONTROL_YXWZ: UnionCast = UnionCast {
-                f32x4: [-1.0, 1.0, 1.0, -1.0],
-            };
+        //     const CONTROL_WZYX: UnionCast = UnionCast {
+        //         f32x4: [1.0, -1.0, 1.0, -1.0],
+        //     };
+        //     const CONTROL_ZWXY: UnionCast = UnionCast {
+        //         f32x4: [1.0, 1.0, -1.0, -1.0],
+        //     };
+        //     const CONTROL_YXWZ: UnionCast = UnionCast {
+        //         f32x4: [-1.0, 1.0, 1.0, -1.0],
+        //     };
 
-            let r_xxxx = _mm_shuffle_ps(rhs, rhs, _MM_SHUFFLE!(0, 0, 0, 0));
-            let r_yyyy = _mm_shuffle_ps(rhs, rhs, _MM_SHUFFLE!(1, 1, 1, 1));
-            let r_zzzz = _mm_shuffle_ps(rhs, rhs, _MM_SHUFFLE!(2, 2, 2, 2));
-            let r_wwww = _mm_shuffle_ps(rhs, rhs, _MM_SHUFFLE!(3, 3, 3, 3));
+        //     let r_xxxx = _mm_shuffle_ps(rhs, rhs, _MM_SHUFFLE!(0, 0, 0, 0));
+        //     let r_yyyy = _mm_shuffle_ps(rhs, rhs, _MM_SHUFFLE!(1, 1, 1, 1));
+        //     let r_zzzz = _mm_shuffle_ps(rhs, rhs, _MM_SHUFFLE!(2, 2, 2, 2));
+        //     let r_wwww = _mm_shuffle_ps(rhs, rhs, _MM_SHUFFLE!(3, 3, 3, 3));
 
-            let lxrw_lyrw_lzrw_lwrw = _mm_mul_ps(r_wwww, lhs);
-            let l_wzyx = _mm_shuffle_ps(lhs, lhs, _MM_SHUFFLE!(0, 1, 2, 3));
+        //     let lxrw_lyrw_lzrw_lwrw = _mm_mul_ps(r_wwww, lhs);
+        //     let l_wzyx = _mm_shuffle_ps(lhs, lhs, _MM_SHUFFLE!(0, 1, 2, 3));
 
-            let lwrx_lzrx_lyrx_lxrx = _mm_mul_ps(r_xxxx, l_wzyx);
-            let l_zwxy = _mm_shuffle_ps(l_wzyx, l_wzyx, _MM_SHUFFLE!(2, 3, 0, 1));
+        //     let lwrx_lzrx_lyrx_lxrx = _mm_mul_ps(r_xxxx, l_wzyx);
+        //     let l_zwxy = _mm_shuffle_ps(l_wzyx, l_wzyx, _MM_SHUFFLE!(2, 3, 0, 1));
 
-            let lwrx_nlzrx_lyrx_nlxrx = _mm_mul_ps(lwrx_lzrx_lyrx_lxrx, CONTROL_WZYX.m128);
+        //     let lwrx_nlzrx_lyrx_nlxrx = _mm_mul_ps(lwrx_lzrx_lyrx_lxrx, CONTROL_WZYX.m128);
 
-            let lzry_lwry_lxry_lyry = _mm_mul_ps(r_yyyy, l_zwxy);
-            let l_yxwz = _mm_shuffle_ps(l_zwxy, l_zwxy, _MM_SHUFFLE!(0, 1, 2, 3));
+        //     let lzry_lwry_lxry_lyry = _mm_mul_ps(r_yyyy, l_zwxy);
+        //     let l_yxwz = _mm_shuffle_ps(l_zwxy, l_zwxy, _MM_SHUFFLE!(0, 1, 2, 3));
 
-            let lzry_lwry_nlxry_nlyry = _mm_mul_ps(lzry_lwry_lxry_lyry, CONTROL_ZWXY.m128);
+        //     let lzry_lwry_nlxry_nlyry = _mm_mul_ps(lzry_lwry_lxry_lyry, CONTROL_ZWXY.m128);
 
-            let lyrz_lxrz_lwrz_lzrz = _mm_mul_ps(r_zzzz, l_yxwz);
-            let result0 = _mm_add_ps(lxrw_lyrw_lzrw_lwrw, lwrx_nlzrx_lyrx_nlxrx);
+        //     let lyrz_lxrz_lwrz_lzrz = _mm_mul_ps(r_zzzz, l_yxwz);
+        //     let result0 = _mm_add_ps(lxrw_lyrw_lzrw_lwrw, lwrx_nlzrx_lyrx_nlxrx);
 
-            let nlyrz_lxrz_lwrz_wlzrz = _mm_mul_ps(lyrz_lxrz_lwrz_lzrz, CONTROL_YXWZ.m128);
-            let result1 = _mm_add_ps(lzry_lwry_nlxry_nlyry, nlyrz_lxrz_lwrz_wlzrz);
-            Self(_mm_add_ps(result0, result1))
-        }
+        //     let nlyrz_lxrz_lwrz_wlzrz = _mm_mul_ps(lyrz_lxrz_lwrz_lzrz, CONTROL_YXWZ.m128);
+        //     let result1 = _mm_add_ps(lzry_lwry_nlxry_nlyry, nlyrz_lxrz_lwrz_wlzrz);
+        //     Self(_mm_add_ps(result0, result1))
+        // }
     }
-}
 
-impl Vec3 {
     #[inline]
     /// Multiplies a quaternion and a 3D vector, rotating it.
-    /// Multiplication order is as follows:
-    /// `world_position = local_position * local_to_world`
-    pub fn rotate_quat(self, rhs: Quat) -> Self {
-        let vec_quat = Quat(self.0);
-        let inv_self = rhs.conjugate();
-        let res_vec = inv_self * vec_quat * rhs;
-        Vec3(res_vec.0)
+    pub fn mul_vec3(self, rhs: Vec3) -> Vec3 {
+        let q: Vec4 = self.into();
+        let w = q.dup_w().truncate();
+        let two = Vec3::splat(2.0);
+        let b = q.truncate();
+        let b2 = Vec3::splat(b.dot(b));
+        rhs * (w * w - b2) + b * (rhs.dot(b) * two) + b.cross(rhs) * (w * two)
     }
 }
 

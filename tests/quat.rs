@@ -95,24 +95,44 @@ fn test_quat_new() {
 
 #[test]
 fn test_quat_mul_vec() {
-    let rz = Quat::from_rotation_z(deg(90.0));
-    assert_ulps_eq!(Vec3::unit_y(), Vec3::unit_x() * rz);
-    assert_ulps_eq!(Vec3::unit_y(), Vec3::unit_x() * -rz);
-    assert_ulps_eq!(-Vec3::unit_x(), Vec3::unit_y() * rz);
-    assert_ulps_eq!(-Vec3::unit_x(), Vec3::unit_y() * -rz);
+    let qrz = Quat::from_rotation_z(deg(90.0));
+    assert_ulps_eq!(Vec3::unit_y(), qrz * Vec3::unit_x());
+    assert_ulps_eq!(Vec3::unit_y(), -qrz * Vec3::unit_x());
+    assert_ulps_eq!(-Vec3::unit_x(), qrz * Vec3::unit_y());
+    assert_ulps_eq!(-Vec3::unit_x(), -qrz * Vec3::unit_y());
 
-    let rx = Quat::from_rotation_x(deg(90.0));
-    assert_ulps_eq!(Vec3::unit_x(), Vec3::unit_x() * rx);
-    assert_ulps_eq!(Vec3::unit_x(), Vec3::unit_x() * -rx);
-    assert_ulps_eq!(Vec3::unit_z(), Vec3::unit_y() * rx);
-    assert_ulps_eq!(Vec3::unit_z(), Vec3::unit_y() * -rx);
+    // check vec3 * mat3 is the same
+    let mrz = Mat3::from_quat(qrz);
+    assert_ulps_eq!(Vec3::unit_y(), mrz * Vec3::unit_x());
+    // assert_ulps_eq!(Vec3::unit_y(), -mrz * Vec3::unit_x());
+    assert_ulps_eq!(-Vec3::unit_x(), mrz * Vec3::unit_y());
 
-    let rxz = rx * rz;
-    assert_ulps_eq!(Vec3::unit_y(), Vec3::unit_x() * rxz);
-    assert_ulps_eq!(Vec3::unit_z(), Vec3::unit_y() * rxz);
-    let rzx = rz * rx;
-    assert_ulps_eq!(Vec3::unit_z(), Vec3::unit_x() * rzx);
-    assert_ulps_eq!(-Vec3::unit_x(), Vec3::unit_y() * rzx);
+    let qrx = Quat::from_rotation_x(deg(90.0));
+    assert_ulps_eq!(Vec3::unit_x(), qrx * Vec3::unit_x());
+    assert_ulps_eq!(Vec3::unit_x(), -qrx * Vec3::unit_x());
+    assert_ulps_eq!(Vec3::unit_z(), qrx * Vec3::unit_y());
+    assert_ulps_eq!(Vec3::unit_z(), -qrx * Vec3::unit_y());
+
+    // check vec3 * mat3 is the same
+    let mrx = Mat3::from_quat(qrx);
+    assert_ulps_eq!(Vec3::unit_x(), mrx * Vec3::unit_x());
+    assert_ulps_eq!(Vec3::unit_z(), mrx * Vec3::unit_y());
+
+    let qrxz = qrz * qrx;
+    assert_ulps_eq!(Vec3::unit_y(), qrxz * Vec3::unit_x());
+    assert_ulps_eq!(Vec3::unit_z(), qrxz * Vec3::unit_y());
+
+    let mrxz = mrz * mrx;
+    assert_ulps_eq!(Vec3::unit_y(), mrxz * Vec3::unit_x());
+    assert_ulps_eq!(Vec3::unit_z(), mrxz * Vec3::unit_y());
+
+    let qrzx = qrx * qrz;
+    assert_ulps_eq!(Vec3::unit_z(), qrzx * Vec3::unit_x());
+    assert_ulps_eq!(-Vec3::unit_x(), qrzx * Vec3::unit_y());
+
+    let mrzx = qrx * qrz;
+    assert_ulps_eq!(Vec3::unit_z(), mrzx * Vec3::unit_x());
+    assert_ulps_eq!(-Vec3::unit_x(), mrzx * Vec3::unit_y());
 }
 
 #[test]

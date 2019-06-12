@@ -34,30 +34,25 @@ impl Quat {
     #[inline]
     /// Multiplies two quaternions.
     /// Note that due to floating point rounding the result may not be perfectly normalized.
-    /// Multiplication order is as follows:
-    /// `local_to_world = local_to_object * object_to_world`
     pub fn mul_quat(self, rhs: Self) -> Self {
         let (x0, y0, z0, w0) = self.into();
         let (x1, y1, z1, w1) = rhs.into();
-
-        let x = (w1 * x0) + (x1 * w0) + (y1 * z0) - (z1 * y0);
-        let y = (w1 * y0) - (x1 * z0) + (y1 * w0) + (z1 * x0);
-        let z = (w1 * z0) + (x1 * y0) - (y1 * x0) + (z1 * w0);
-        let w = (w1 * w0) - (x1 * x0) - (y1 * y0) - (z1 * z0);
-        Self::new(x, y, z, w)
+        Self::new(
+            w0 * x1 + x0 * w1 + y0 * z1 - z0 * y1,
+            w0 * y1 - x0 * z1 + y0 * w1 + z0 * x1,
+            w0 * z1 + x0 * y1 - y0 * x1 + z0 * w1,
+            w0 * w1 - x0 * x1 - y0 * y1 - z0 * z1,
+        )
     }
-}
 
-impl Vec3 {
     #[inline]
     /// Multiplies a quaternion and a 3D vector, rotating it.
-    /// Multiplication order is as follows:
-    /// `world_position = local_position * local_to_world`
-    pub fn rotate_quat(self, rhs: Quat) -> Self {
-        let vec_quat: Quat = self.extend(0.0).into();
-        let inv_self = rhs.conjugate();
-        let res_vec4: Vec4 = inv_self.mul_quat(vec_quat).mul_quat(rhs).into();
-        res_vec4.truncate()
+    pub fn mul_vec3(self, rhs: Vec3) -> Vec3 {
+        let q: Vec4 = self.into();
+        let w = q.w();
+        let b = q.truncate();
+        let b2 = b.dot(b);
+        rhs * (w * w - b2) + b * (rhs.dot(b) * 2.0) + b.cross(rhs) * (w * 2.0)
     }
 }
 

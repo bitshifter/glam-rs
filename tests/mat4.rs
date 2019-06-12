@@ -151,12 +151,11 @@ fn test_from_ypr() {
     let z1 = Mat4::from_rotation_ypr(zero, zero, roll);
     assert_ulps_eq!(z0, z1);
 
-    // TODO: fix ypr order
-    let yx0 = x0 * y0;
+    let yx0 = y0 * x0;
     let yx1 = Mat4::from_rotation_ypr(yaw, pitch, zero);
     assert_ulps_eq!(yx0, yx1);
 
-    let yxz0 = z0 * x0 * y0;
+    let yxz0 = y0 * x0 * z0;
     let yxz1 = Mat4::from_rotation_ypr(yaw, pitch, roll);
     assert_ulps_eq!(yxz0, yxz1);
 }

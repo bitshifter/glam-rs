@@ -46,14 +46,8 @@ impl Quat {
     #[inline]
     /// Create a quaternion from the given yaw (around y), pitch (around x) and roll (around z).
     pub fn from_rotation_ypr(yaw: Angle, pitch: Angle, roll: Angle) -> Self {
-        let (sy, cy) = (-0.5 * yaw).sin_cos();
-        let (sr, cr) = (-0.5 * roll).sin_cos();
-        let (sp, cp) = (-0.5 * pitch).sin_cos();
-        let w = cy * cp * cr + sy * sp * sr;
-        let x = -cy * sp * cr - sy * cp * sr;
-        let y = cy * sp * sr - sy * cp * cr;
-        let z = sy * sp * cr - cy * cp * sr;
-        Self::new(x, y, z, w)
+        // TODO: Optimize
+        Self::from_rotation_y(yaw) * Self::from_rotation_x(pitch) * Self::from_rotation_z(roll)
     }
 
     #[inline]
@@ -232,18 +226,11 @@ impl MulAssign<Quat> for Quat {
     }
 }
 
-impl Mul<Quat> for Vec3 {
-    type Output = Self;
+impl Mul<Vec3> for Quat {
+    type Output = Vec3;
     #[inline]
-    fn mul(self, rhs: Quat) -> Self {
-        self.rotate_quat(rhs)
-    }
-}
-
-impl MulAssign<Quat> for Vec3 {
-    #[inline]
-    fn mul_assign(&mut self, rhs: Quat) {
-        *self = self.rotate_quat(rhs);
+    fn mul(self, rhs: Vec3) -> Vec3 {
+        self.mul_vec3(rhs)
     }
 }
 
