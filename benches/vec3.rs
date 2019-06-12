@@ -12,12 +12,12 @@ use support::{random_quat, random_vec3};
 
 bench_binop!(
     vec3_mul_quat,
-    "vec3 * quat",
+    "quat * vec3",
     op => mul,
-    ty1 => Vec3,
-    from1 => random_vec3,
-    ty2 => Quat,
-    from2 => random_quat
+    ty1 => Quat,
+    from1 => random_quat,
+    ty2 => Vec3,
+    from2 => random_vec3
 );
 
 // bench_binop!(

@@ -34,22 +34,22 @@ bench_unop!(
 
 bench_binop!(
     vec3_mul_transform_srt,
-    "vec3 * transform_srt",
+    "transform_srt * vec3",
     op => mul,
-    ty1 => Vec3,
-    from1 => random_vec3,
-    ty2 => TransformSRT,
-    from2 => random_transform_srt
+    ty1 => TransformSRT,
+    from1 => random_transform_srt,
+    ty2 => Vec3,
+    from2 => random_vec3
 );
 
 bench_binop!(
     vec3_mul_transform_rt,
-    "vec3 * transform_rt",
+    "transform_rt * vec3",
     op => mul,
-    ty1 => Vec3,
-    from1 => random_vec3,
-    ty2 => TransformRT,
-    from2 => random_transform_rt
+    ty1 => TransformRT,
+    from1 => random_transform_rt,
+    ty2 => Vec3,
+    from2 => random_vec3
 );
 
 // bench_unop!(
