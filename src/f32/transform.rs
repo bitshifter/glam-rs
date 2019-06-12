@@ -14,10 +14,31 @@ pub struct TransformSRT {
     pub translation: Vec3,
 }
 
+impl Default for TransformSRT {
+    #[inline]
+    fn default() -> Self {
+        Self {
+            scale: Vec3::one(),
+            rotation: Quat::identity(),
+            translation: Vec3::zero(),
+        }
+    }
+}
+
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 pub struct TransformRT {
     pub rotation: Quat,
     pub translation: Vec3,
+}
+
+impl Default for TransformRT {
+    #[inline]
+    fn default() -> Self {
+        Self {
+            rotation: Quat::identity(),
+            translation: Vec3::zero(),
+        }
+    }
 }
 
 impl TransformSRT {
@@ -52,7 +73,7 @@ impl TransformSRT {
     pub fn inverse(&self) -> Self {
         let scale = self.scale.reciprocal();
         let rotation = self.rotation.conjugate();
-        let translation = -((self.translation * scale) * rotation);
+        let translation = -(rotation * (self.translation * scale));
         Self {
             scale,
             rotation,
@@ -73,6 +94,11 @@ impl TransformSRT {
     #[inline]
     pub fn mul_transform(&self, rhs: &Self) -> Self {
         mul_srt_srt(self, rhs)
+    }
+
+    #[inline]
+    pub fn transform_vec3(self, rhs: Vec3) -> Vec3 {
+        (self.rotation * (rhs * self.scale)) + self.translation
     }
 }
 
@@ -107,7 +133,7 @@ fn mul_srt_srt(lhs: &TransformSRT, rhs: &TransformSRT) -> TransformSRT {
         }
     } else {
         let rotation = lhs.rotation * rhs.rotation;
-        let translation = ((lhs.translation * rhs.scale) * rhs.rotation) + rhs.translation;
+        let translation = (rhs.rotation * (lhs.translation * rhs.scale)) + rhs.translation;
         TransformSRT {
             scale,
             rotation,
@@ -119,7 +145,7 @@ fn mul_srt_srt(lhs: &TransformSRT, rhs: &TransformSRT) -> TransformSRT {
 #[inline]
 fn mul_rt_rt(lhs: &TransformRT, rhs: &TransformRT) -> TransformRT {
     let rotation = lhs.rotation * rhs.rotation;
-    let translation = (lhs.translation * rhs.rotation) + rhs.translation;
+    let translation = (rhs.rotation * lhs.translation) + rhs.translation;
     TransformRT {
         rotation,
         translation,
@@ -146,7 +172,7 @@ impl TransformRT {
     #[inline]
     pub fn inverse(&self) -> Self {
         let rotation = self.rotation.conjugate();
-        let translation = -(self.translation * rotation);
+        let translation = -(rotation * self.translation);
         Self {
             rotation,
             translation,
@@ -166,17 +192,10 @@ impl TransformRT {
     pub fn mul_transform(&self, rhs: &Self) -> Self {
         mul_rt_rt(self, rhs)
     }
-}
-
-impl Vec3 {
-    #[inline]
-    pub fn transform_tr(self, rhs: &TransformRT) -> Vec3 {
-        (self * rhs.rotation) + rhs.translation
-    }
 
     #[inline]
-    pub fn transform_trs(self, rhs: &TransformSRT) -> Vec3 {
-        ((self * rhs.scale) * rhs.rotation) + rhs.translation
+    pub fn transform_vec3(self, rhs: Vec3) -> Vec3 {
+        (self.rotation * rhs) + self.translation
     }
 }
 
@@ -194,19 +213,19 @@ impl AsMut<TransformRT> for TransformSRT {
     }
 }
 
-impl Mul<TransformRT> for Vec3 {
+impl Mul<Vec3> for TransformRT {
     type Output = Vec3;
     #[inline]
-    fn mul(self, rhs: TransformRT) -> Vec3 {
-        self.transform_tr(&rhs)
+    fn mul(self, rhs: Vec3) -> Vec3 {
+        self.transform_vec3(rhs)
     }
 }
 
-impl Mul<TransformSRT> for Vec3 {
+impl Mul<Vec3> for TransformSRT {
     type Output = Vec3;
     #[inline]
-    fn mul(self, rhs: TransformSRT) -> Vec3 {
-        self.transform_trs(&rhs)
+    fn mul(self, rhs: Vec3) -> Vec3 {
+        self.transform_vec3(rhs)
     }
 }
 

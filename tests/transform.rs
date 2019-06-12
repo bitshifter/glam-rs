@@ -44,11 +44,11 @@ mod transform {
     fn test_mul() {
         let tr = TransformRT::new(Quat::from_rotation_z(deg(-90.0)), Vec3::unit_x());
         let v0 = Vec3::unit_y();
-        let v1 = v0 * tr;
+        let v1 = tr * v0;
         assert_ulps_eq!(v1, Vec3::unit_x() * 2.0);
-        assert_ulps_eq!(v1, v0 * &tr);
+        assert_ulps_eq!(v1, tr * v0);
         let inv_tr = tr.inverse();
-        let v2 = v1 * inv_tr;
+        let v2 = inv_tr * v1;
         assert_ulps_eq!(v0, v2);
 
         assert_eq!(tr * TransformRT::identity(), tr);
@@ -56,19 +56,17 @@ mod transform {
 
         assert_eq!(tr * TransformSRT::identity(), TransformSRT::from(tr));
         assert_eq!(TransformSRT::identity() * tr, TransformSRT::from(tr));
-        assert_eq!(tr * &TransformSRT::identity(), TransformSRT::from(tr));
-        assert_eq!(TransformSRT::identity() * &tr, TransformSRT::from(tr));
 
         let s = Vec3::splat(2.0);
         let r = Quat::from_rotation_y(deg(180.0));
         let t = -Vec3::unit_y();
         let srt = TransformSRT::new(s, r, t);
         let v0 = Vec3::unit_x();
-        let v1 = v0 * srt;
-        assert_ulps_eq!(v1, ((v0 * s) * r) + t);
-        assert_ulps_eq!(v1, v0 * &srt);
+        let v1 = srt * v0;
+        assert_ulps_eq!(v1, (r * (v0 * s)) + t);
+        assert_ulps_eq!(v1, srt * v0);
         let inv_srt = srt.inverse();
-        let v2 = v1 * inv_srt;
+        let v2 = inv_srt * v1;
         assert_ulps_eq!(v0, v2);
 
         assert_eq!(srt * TransformSRT::identity(), srt);
