@@ -7,12 +7,8 @@ A simple and fast 3D math library for games and graphics.
 
 ## Development status
 
-`glam` is in a pre-alpha stage. Base functionality has been implemented and the
-look and feel of the API has solidified.
-
-At this point I'm looking to see if people are interested in using it and how
-they find it. So it is possible that future versions may include API changes or
-even changes in the conventions listed below.
+`glam` is in a pre-alpha stage. Minimal base functionality has been implemented
+and the look and feel of the API has solidified.
 
 ## Features
 
