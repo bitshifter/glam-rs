@@ -1,10 +1,17 @@
 #![allow(dead_code)]
-use glam::f32::{Mat2, Mat3, Mat4, Quat, Vec3};
+use glam::f32::{Mat2, Mat3, Mat4, Quat, Vec3, Vec2};
 use rand::Rng;
 
 // pub fn random_type<T, R>(rng: &mut R) -> T where R: Rng, distributions::Standard: distributions::Distribution<T> {
 //     rng.gen()
 // }
+
+pub fn random_vec2<R>(rng: &mut R) -> Vec2
+where
+    R: Rng,
+{
+    rng.gen()
+}
 
 pub fn random_vec3<R>(rng: &mut R) -> Vec3
 where
