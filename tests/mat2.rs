@@ -11,7 +11,11 @@ const ZERO: [[f32; 2]; 2] = [[0.0; 2]; 2];
 fn test_mat2_align() {
     use std::mem;
     assert_eq!(16, mem::size_of::<Mat2>());
-    assert_eq!(4, mem::align_of::<Mat2>());
+    if cfg!(feature = "scalar-math") {
+        assert_eq!(4, mem::align_of::<Mat2>());
+    } else {
+        assert_eq!(16, mem::align_of::<Mat2>());
+    }
 }
 
 #[test]
