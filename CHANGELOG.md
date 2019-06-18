@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+### Changed
+#### Mat2 optimizations
+* `Mat2` now uses a `Vec4` internally which gives it some performance
+   improvements when SSE2 is available.
 
 ## [0.6.0] - 2019-06-13
 ### Changed
