@@ -42,7 +42,12 @@ impl Mat2 {
     pub fn from_scale_angle(scale: Vec2, angle: Angle) -> Self {
         let (sin, cos) = angle.sin_cos();
         let (scale_x, scale_y) = scale.into();
-        Self(Vec4::new(cos * scale_x, sin * scale_x, -sin * scale_y, cos * scale_y))
+        Self(Vec4::new(
+            cos * scale_x,
+            sin * scale_x,
+            -sin * scale_y,
+            cos * scale_y,
+        ))
     }
 
     #[inline]
@@ -119,7 +124,10 @@ impl Mat2 {
     pub fn mul_mat2(&self, rhs: &Self) -> Self {
         // TODO: SSE2
         let (x0, y0, x1, y1) = rhs.0.into();
-        Mat2::new(self.mul_vec2(Vec2::new(x0, y0)), self.mul_vec2(Vec2::new(x1, y1)))
+        Mat2::new(
+            self.mul_vec2(Vec2::new(x0, y0)),
+            self.mul_vec2(Vec2::new(x1, y1)),
+        )
     }
 
     #[inline]
