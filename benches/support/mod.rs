@@ -1,5 +1,5 @@
 #![allow(dead_code)]
-use glam::f32::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3};
+use glam::f32::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4};
 use rand::Rng;
 
 // pub fn random_type<T, R>(rng: &mut R) -> T where R: Rng, distributions::Standard: distributions::Distribution<T> {
@@ -14,6 +14,13 @@ where
 }
 
 pub fn random_vec3<R>(rng: &mut R) -> Vec3
+where
+    R: Rng,
+{
+    rng.gen()
+}
+
+pub fn random_vec4<R>(rng: &mut R) -> Vec4
 where
     R: Rng,
 {
