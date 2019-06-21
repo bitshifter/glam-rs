@@ -19,6 +19,7 @@ pub fn quat(x: f32, y: f32, z: f32, w: f32) -> Quat {
 impl Quat {
     #[inline]
     /// Create quaterion for a normalized rotation axis and angle.
+    /// The axis must be normalized.
     pub fn from_axis_angle(axis: Vec3, angle: Angle) -> Self {
         debug_assert!((axis.length_squared() - 1.0).abs() < 0.01);
         let (s, c) = (angle * 0.5).sin_cos();
