@@ -262,10 +262,10 @@ mod test {
     fn test_matrix2() {
         use crate::Mat2;
         let g = Mat2::from([[1.0, 2.0], [3.0, 4.0]]);
-        let m = mint::RowMatrix2::from(g);
+        let m = mint::ColumnMatrix2::from(g);
         assert_eq!(g, Mat2::from(m));
-        let mt = mint::ColumnMatrix2::from(g);
-        assert_eq!(mt, mint::ColumnMatrix2::from([[1.0, 3.0], [2.0, 4.0]]));
+        let mt = mint::RowMatrix2::from(g);
+        assert_eq!(mt, mint::RowMatrix2::from([[1.0, 3.0], [2.0, 4.0]]));
         assert_eq!(g, Mat2::from(mt));
     }
 
@@ -273,12 +273,12 @@ mod test {
     fn test_matrix3() {
         use crate::Mat3;
         let g = Mat3::from([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]]);
-        let m = mint::RowMatrix3::from(g);
+        let m = mint::ColumnMatrix3::from(g);
         assert_eq!(g, Mat3::from(m));
-        let mt = mint::ColumnMatrix3::from(g);
+        let mt = mint::RowMatrix3::from(g);
         assert_eq!(
             mt,
-            mint::ColumnMatrix3::from([[1.0, 4.0, 7.0], [2.0, 5.0, 8.0], [3.0, 6.0, 9.0]])
+            mint::RowMatrix3::from([[1.0, 4.0, 7.0], [2.0, 5.0, 8.0], [3.0, 6.0, 9.0]])
         );
         assert_eq!(g, Mat3::from(mt));
     }
@@ -292,12 +292,12 @@ mod test {
             [9.0, 10.0, 11.0, 12.0],
             [13.0, 14.0, 15.0, 16.0],
         ]);
-        let m = mint::RowMatrix4::from(g);
+        let m = mint::ColumnMatrix4::from(g);
         assert_eq!(g, Mat4::from(m));
-        let mt = mint::ColumnMatrix4::from(g);
+        let mt = mint::RowMatrix4::from(g);
         assert_eq!(
             mt,
-            mint::ColumnMatrix4::from([
+            mint::RowMatrix4::from([
                 [1.0, 5.0, 9.0, 13.0],
                 [2.0, 6.0, 10.0, 14.0],
                 [3.0, 7.0, 11.0, 15.0],
