@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
-## [Unreleased]
+## [0.6.1] - 2019-06-22
 ### Changed
 #### Mat2 optimizations
 * `Mat2` now uses a `Vec4` internally which gives it some performance
