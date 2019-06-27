@@ -61,6 +61,9 @@ fn test_mat3_from_axes() {
         vec3(7.0, 8.0, 9.0),
     );
     assert_eq!(a, c);
+    let d: [f32; 9] = b.into();
+    let f: Mat3 = d.into();
+    assert_eq!(b, f);
 }
 
 #[test]
@@ -183,7 +186,6 @@ fn test_mat3_ops() {
     assert_eq!(m0x2, 2.0 * m0);
     assert_eq!(m0x2, m0 + m0);
     assert_eq!(Mat3::zero(), m0 - m0);
-    // TODO: Mat * Mat3 that's not identity
     assert_ulps_eq!(m0, m0 * Mat3::identity());
     assert_ulps_eq!(m0, Mat3::identity() * m0);
 }

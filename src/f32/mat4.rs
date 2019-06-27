@@ -622,3 +622,22 @@ impl From<Mat4> for [[f32; 4]; 4] {
         ]
     }
 }
+
+impl From<[f32; 16]> for Mat4 {
+    #[inline]
+    fn from(m: [f32; 16]) -> Self {
+        Mat4 {
+            x_axis: Vec4::new(m[0], m[1], m[2], m[3]),
+            y_axis: Vec4::new(m[4], m[5], m[6], m[7]),
+            z_axis: Vec4::new(m[8], m[9], m[10], m[11]),
+            w_axis: Vec4::new(m[12], m[13], m[14], m[15]),
+        }
+    }
+}
+
+impl From<Mat4> for [f32; 16] {
+    #[inline]
+    fn from(m: Mat4) -> Self {
+        *m.as_ref()
+    }
+}

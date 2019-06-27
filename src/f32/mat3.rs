@@ -324,15 +324,6 @@ impl Mul<Vec3> for Mat3 {
     }
 }
 
-// TODO: macro up this duplication
-impl Mul<&Vec3> for Mat3 {
-    type Output = Vec3;
-    #[inline]
-    fn mul(self, rhs: &Vec3) -> Vec3 {
-        self.mul_vec3(*rhs)
-    }
-}
-
 impl Mul<Mat3> for f32 {
     type Output = Mat3;
     #[inline]
@@ -364,5 +355,28 @@ impl From<Mat3> for [[f32; 3]; 3] {
     #[inline]
     fn from(m: Mat3) -> Self {
         [m.x_axis.into(), m.y_axis.into(), m.z_axis.into()]
+    }
+}
+
+impl From<[f32; 9]> for Mat3 {
+    #[inline]
+    /// Load from array in column major order.
+    fn from(m: [f32; 9]) -> Self {
+        Mat3 {
+            x_axis: Vec3::new(m[0], m[1], m[2]),
+            y_axis: Vec3::new(m[3], m[4], m[5]),
+            z_axis: Vec3::new(m[6], m[7], m[8]),
+        }
+    }
+}
+
+impl From<Mat3> for [f32; 9] {
+    #[inline]
+    /// Store to array in column major order.
+    fn from(m: Mat3) -> Self {
+        let (m00, m01, m02) = m.x_axis.into();
+        let (m10, m11, m12) = m.y_axis.into();
+        let (m20, m21, m22) = m.z_axis.into();
+        [m00, m01, m02, m10, m11, m12, m20, m21, m22]
     }
 }

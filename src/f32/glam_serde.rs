@@ -76,7 +76,7 @@ impl<'de> Deserialize<'de> for Vec2 {
     {
         struct Vec2Visitor;
 
-        // TODO: Not sure why this line is reported ad uncovered
+        // TODO: Not sure why this line is reported as uncovered
         #[cfg_attr(tarpaulin, skip)]
         impl<'de> Visitor<'de> for Vec2Visitor {
             type Value = Vec2;
@@ -110,7 +110,7 @@ impl<'de> Deserialize<'de> for Vec3 {
     {
         struct Vec3Visitor;
 
-        // TODO: Not sure why this line is reported ad uncovered
+        // TODO: Not sure why this line is reported as uncovered
         #[cfg_attr(tarpaulin, skip)]
         impl<'de> Visitor<'de> for Vec3Visitor {
             type Value = Vec3;
@@ -147,7 +147,7 @@ impl<'de> Deserialize<'de> for Vec4 {
     {
         struct Vec4Visitor;
 
-        // TODO: Not sure why this line is reported ad uncovered
+        // TODO: Not sure why this line is reported as uncovered
         #[cfg_attr(tarpaulin, skip)]
         impl<'de> Visitor<'de> for Vec4Visitor {
             type Value = Vec4;
@@ -187,7 +187,7 @@ impl<'de> Deserialize<'de> for Quat {
     {
         struct QuatVisitor;
 
-        // TODO: Not sure why this line is reported ad uncovered
+        // TODO: Not sure why this line is reported as uncovered
         #[cfg_attr(tarpaulin, skip)]
         impl<'de> Visitor<'de> for QuatVisitor {
             type Value = Quat;

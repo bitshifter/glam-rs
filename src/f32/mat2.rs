@@ -201,15 +201,6 @@ impl Mul<Vec2> for Mat2 {
     }
 }
 
-// TODO: macro this duplication
-impl Mul<&Vec2> for Mat2 {
-    type Output = Vec2;
-    #[inline]
-    fn mul(self, rhs: &Vec2) -> Vec2 {
-        self.mul_vec2(*rhs)
-    }
-}
-
 impl Mul<Mat2> for f32 {
     type Output = Mat2;
     #[inline]
@@ -238,5 +229,21 @@ impl From<Mat2> for [[f32; 2]; 2] {
     fn from(m: Mat2) -> Self {
         let (x0, y0, x1, y1) = m.0.into();
         [[x0, y0], [x1, y1]]
+    }
+}
+
+impl From<[f32; 4]> for Mat2 {
+    #[inline]
+    /// Load from array in column major order.
+    fn from(m: [f32; 4]) -> Self {
+        Mat2(m.into())
+    }
+}
+
+impl From<Mat2> for [f32; 4] {
+    #[inline]
+    /// Store to array in column major order.
+    fn from(m: Mat2) -> Self {
+        m.0.into()
     }
 }

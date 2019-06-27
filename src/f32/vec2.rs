@@ -10,8 +10,6 @@ use rand::{
 
 use std::{f32, fmt, ops::*};
 
-// TODO: to SIMD or not to SIMD?
-
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
 #[repr(C)]
 pub struct Vec2(f32, f32);

@@ -50,6 +50,9 @@ fn test_mat2_from_axes() {
     assert_eq!(a, b);
     let c = mat2(vec2(1.0, 2.0), vec2(3.0, 4.0));
     assert_eq!(a, c);
+    let d: [f32; 4] = b.into();
+    let f: Mat2 = d.into();
+    assert_eq!(b, f);
 }
 
 #[test]

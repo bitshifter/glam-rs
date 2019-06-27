@@ -80,6 +80,9 @@ fn test_mat4_from_axes() {
         vec4(13.0, 14.0, 15.0, 16.0),
     );
     assert_eq!(a, c);
+    let d: [f32; 16] = b.into();
+    let f: Mat4 = d.into();
+    assert_eq!(b, f);
 }
 
 #[test]
@@ -263,7 +266,6 @@ fn test_mat4_ops() {
     assert_eq!(m0x2, 2.0 * m0);
     assert_eq!(m0x2, m0 + m0);
     assert_eq!(Mat4::zero(), m0 - m0);
-    // TODO: Mat4 * Mat4 that's not identity
     assert_ulps_eq!(m0, m0 * Mat4::identity());
     assert_ulps_eq!(m0, Mat4::identity() * m0);
 }
