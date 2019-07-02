@@ -43,7 +43,7 @@ fn quat_to_axes(rotation: Quat) -> (Vec3, Vec3, Vec3) {
     (x_axis, y_axis, z_axis)
 }
 
-/// A 4x4 column major matrix.
+/// A 3x3 column major matrix.
 ///
 /// This type is 16 byte aligned.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
