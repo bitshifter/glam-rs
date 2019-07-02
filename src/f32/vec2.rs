@@ -127,33 +127,33 @@ impl Vec2 {
     }
 
     #[inline]
-    pub fn cmpeq(self, rhs: Vec2) -> Vec2b {
-        Vec2b(self.0.eq(&rhs.0), self.1.eq(&rhs.1))
+    pub fn cmpeq(self, rhs: Vec2) -> Vec2Mask {
+        Vec2Mask::new(self.0.eq(&rhs.0), self.1.eq(&rhs.1))
     }
 
     #[inline]
-    pub fn cmpne(self, rhs: Vec2) -> Vec2b {
-        Vec2b(self.0.ne(&rhs.0), self.1.ne(&rhs.1))
+    pub fn cmpne(self, rhs: Vec2) -> Vec2Mask {
+        Vec2Mask::new(self.0.ne(&rhs.0), self.1.ne(&rhs.1))
     }
 
     #[inline]
-    pub fn cmpge(self, rhs: Vec2) -> Vec2b {
-        Vec2b(self.0.ge(&rhs.0), self.1.ge(&rhs.1))
+    pub fn cmpge(self, rhs: Vec2) -> Vec2Mask {
+        Vec2Mask::new(self.0.ge(&rhs.0), self.1.ge(&rhs.1))
     }
 
     #[inline]
-    pub fn cmpgt(self, rhs: Vec2) -> Vec2b {
-        Vec2b(self.0.gt(&rhs.0), self.1.gt(&rhs.1))
+    pub fn cmpgt(self, rhs: Vec2) -> Vec2Mask {
+        Vec2Mask::new(self.0.gt(&rhs.0), self.1.gt(&rhs.1))
     }
 
     #[inline]
-    pub fn cmple(self, rhs: Vec2) -> Vec2b {
-        Vec2b(self.0.le(&rhs.0), self.1.le(&rhs.1))
+    pub fn cmple(self, rhs: Vec2) -> Vec2Mask {
+        Vec2Mask::new(self.0.le(&rhs.0), self.1.le(&rhs.1))
     }
 
     #[inline]
-    pub fn cmplt(self, rhs: Vec2) -> Vec2b {
-        Vec2b(self.0.lt(&rhs.0), self.1.lt(&rhs.1))
+    pub fn cmplt(self, rhs: Vec2) -> Vec2Mask {
+        Vec2Mask::new(self.0.lt(&rhs.0), self.1.lt(&rhs.1))
     }
 
     #[inline]
@@ -345,31 +345,45 @@ impl Distribution<Vec2> for Standard {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Default)]
 #[repr(C)]
-pub struct Vec2b(bool, bool);
+pub struct Vec2Mask(u32, u32);
 
-impl Vec2b {
+#[deprecated(since = "0.7.1", note = "please use `Vec2Mask` instead")]
+pub type Vec2b = Vec2Mask;
+
+impl Vec2Mask {
+    pub(crate) fn new(x: bool, y: bool) -> Self {
+        const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
+        Self(MASK[x as usize], MASK[y as usize])
+    }
+
     #[inline]
+    #[deprecated(since = "0.7.1", note = "please use `bitmask` instead")]
     pub fn mask(self) -> u32 {
-        (self.0 as u32) | (self.1 as u32) << 1
+        self.bitmask()
+    }
+
+    #[inline]
+    pub fn bitmask(self) -> u32 {
+        (self.0 & 0x1) | (self.1 & 0x1) << 1
     }
 
     #[inline]
     pub fn any(self) -> bool {
-        self.0 || self.1
+        (self.0 != 0) || (self.1 != 0)
     }
 
     #[inline]
     pub fn all(self) -> bool {
-        self.0 && self.1
+        (self.0 != 0) && (self.1 != 0)
     }
 
     #[inline]
     pub fn select(self, if_true: Vec2, if_false: Vec2) -> Vec2 {
         Vec2(
-            if self.0 { if_true.0 } else { if_false.0 },
-            if self.1 { if_true.1 } else { if_false.1 },
+            if self.0 != 0 { if_true.0 } else { if_false.0 },
+            if self.1 != 0 { if_true.1 } else { if_false.1 },
         )
     }
 }

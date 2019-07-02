@@ -11,6 +11,7 @@ use rand::{
 
 use std::ops::{Add, Mul, Sub};
 
+#[inline]
 pub fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat4 {
     Mat4 {
         x_axis,

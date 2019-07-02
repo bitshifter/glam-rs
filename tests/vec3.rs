@@ -10,9 +10,13 @@ fn test_vec3_align() {
     if cfg!(feature = "scalar-math") {
         assert_eq!(12, mem::size_of::<Vec3>());
         assert_eq!(4, mem::align_of::<Vec3>());
+        assert_eq!(12, mem::size_of::<Vec3Mask>());
+        assert_eq!(4, mem::align_of::<Vec3Mask>());
     } else {
         assert_eq!(16, mem::size_of::<Vec3>());
         assert_eq!(16, mem::align_of::<Vec3>());
+        assert_eq!(16, mem::size_of::<Vec3Mask>());
+        assert_eq!(16, mem::align_of::<Vec3Mask>());
     }
 }
 
@@ -152,15 +156,18 @@ fn test_vec3_eq() {
 
 #[test]
 fn test_vec3_cmp() {
+    assert!(!Vec3Mask::default().any());
+    assert!(!Vec3Mask::default().all());
+    assert_eq!(Vec3Mask::default().bitmask(), 0x0);
     let a = vec3(-1.0, -1.0, -1.0);
     let b = vec3(1.0, 1.0, 1.0);
     let c = vec3(-1.0, -1.0, 1.0);
     let d = vec3(1.0, -1.0, -1.0);
-    assert_eq!(a.cmplt(a).mask(), 0x0);
-    assert_eq!(a.cmplt(b).mask(), 0x7);
-    assert_eq!(a.cmplt(c).mask(), 0x4);
-    assert_eq!(c.cmple(a).mask(), 0x3);
-    assert_eq!(a.cmplt(d).mask(), 0x1);
+    assert_eq!(a.cmplt(a).bitmask(), 0x0);
+    assert_eq!(a.cmplt(b).bitmask(), 0x7);
+    assert_eq!(a.cmplt(c).bitmask(), 0x4);
+    assert_eq!(c.cmple(a).bitmask(), 0x3);
+    assert_eq!(a.cmplt(d).bitmask(), 0x1);
     assert!(a.cmplt(b).all());
     assert!(a.cmplt(c).any());
     assert!(a.cmple(b).all());

@@ -9,6 +9,8 @@ fn test_vec2_align() {
     use std::mem;
     assert_eq!(8, mem::size_of::<Vec2>());
     assert_eq!(4, mem::align_of::<Vec2>());
+    assert_eq!(8, mem::size_of::<Vec2Mask>());
+    assert_eq!(4, mem::align_of::<Vec2Mask>());
 }
 
 #[test]
@@ -138,14 +140,17 @@ fn test_vec2_eq() {
 
 #[test]
 fn test_vec2_cmp() {
+    assert!(!Vec2Mask::default().any());
+    assert!(!Vec2Mask::default().all());
+    assert_eq!(Vec2Mask::default().bitmask(), 0x0);
     let a = vec2(-1.0, -1.0);
     let b = vec2(1.0, 1.0);
     let c = vec2(-1.0, -1.0);
     let d = vec2(1.0, -1.0);
-    assert_eq!(a.cmplt(a).mask(), 0x0);
-    assert_eq!(a.cmplt(b).mask(), 0x3);
-    assert_eq!(a.cmplt(d).mask(), 0x1);
-    assert_eq!(c.cmple(a).mask(), 0x3);
+    assert_eq!(a.cmplt(a).bitmask(), 0x0);
+    assert_eq!(a.cmplt(b).bitmask(), 0x3);
+    assert_eq!(a.cmplt(d).bitmask(), 0x1);
+    assert_eq!(c.cmple(a).bitmask(), 0x3);
     assert!(a.cmplt(b).all());
     assert!(a.cmplt(d).any());
     assert!(a.cmple(b).all());

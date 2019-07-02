@@ -8,6 +8,7 @@ use rand::{
 
 use std::ops::{Add, Mul, Sub};
 
+#[inline]
 pub fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
     Mat2::new(x_axis, y_axis)
 }

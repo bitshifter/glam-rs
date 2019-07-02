@@ -1,4 +1,12 @@
-use super::Vec4;
+use super::{Vec4, Vec4Mask};
+
+#[deprecated(since = "0.7.1", note = "please use `Vec3Mask` instead")]
+pub type Vec4b = Vec4Mask;
+
+#[inline]
+pub fn vec4(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
+    Vec4::new(x, y, z, w)
+}
 
 impl Vec4 {
     #[inline]

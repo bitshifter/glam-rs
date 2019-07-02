@@ -36,11 +36,6 @@ impl fmt::Debug for Vec4 {
     }
 }
 
-#[inline]
-pub fn vec4(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
-    Vec4::new(x, y, z, w)
-}
-
 impl Vec4 {
     #[inline]
     pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
@@ -251,33 +246,33 @@ impl Vec4 {
     }
 
     #[inline]
-    pub fn cmpeq(self, rhs: Self) -> Vec4b {
-        unsafe { Vec4b(_mm_cmpeq_ps(self.0, rhs.0)) }
+    pub fn cmpeq(self, rhs: Self) -> Vec4Mask {
+        unsafe { Vec4Mask(_mm_cmpeq_ps(self.0, rhs.0)) }
     }
 
     #[inline]
-    pub fn cmpne(self, rhs: Self) -> Vec4b {
-        unsafe { Vec4b(_mm_cmpneq_ps(self.0, rhs.0)) }
+    pub fn cmpne(self, rhs: Self) -> Vec4Mask {
+        unsafe { Vec4Mask(_mm_cmpneq_ps(self.0, rhs.0)) }
     }
 
     #[inline]
-    pub fn cmpge(self, rhs: Self) -> Vec4b {
-        unsafe { Vec4b(_mm_cmpge_ps(self.0, rhs.0)) }
+    pub fn cmpge(self, rhs: Self) -> Vec4Mask {
+        unsafe { Vec4Mask(_mm_cmpge_ps(self.0, rhs.0)) }
     }
 
     #[inline]
-    pub fn cmpgt(self, rhs: Self) -> Vec4b {
-        unsafe { Vec4b(_mm_cmpgt_ps(self.0, rhs.0)) }
+    pub fn cmpgt(self, rhs: Self) -> Vec4Mask {
+        unsafe { Vec4Mask(_mm_cmpgt_ps(self.0, rhs.0)) }
     }
 
     #[inline]
-    pub fn cmple(self, rhs: Self) -> Vec4b {
-        unsafe { Vec4b(_mm_cmple_ps(self.0, rhs.0)) }
+    pub fn cmple(self, rhs: Self) -> Vec4Mask {
+        unsafe { Vec4Mask(_mm_cmple_ps(self.0, rhs.0)) }
     }
 
     #[inline]
-    pub fn cmplt(self, rhs: Self) -> Vec4b {
-        unsafe { Vec4b(_mm_cmplt_ps(self.0, rhs.0)) }
+    pub fn cmplt(self, rhs: Self) -> Vec4Mask {
+        unsafe { Vec4Mask(_mm_cmplt_ps(self.0, rhs.0)) }
     }
 
     #[inline]
@@ -508,11 +503,17 @@ impl Distribution<Vec4> for Standard {
 
 #[derive(Clone, Copy)]
 #[repr(C)]
-pub struct Vec4b(__m128);
+pub struct Vec4Mask(__m128);
 
-impl Vec4b {
+impl Vec4Mask {
     #[inline]
+    #[deprecated(since = "0.7.1", note = "please use `bitmask` instead")]
     pub fn mask(self) -> u32 {
+        self.bitmask()
+    }
+
+    #[inline]
+    pub fn bitmask(self) -> u32 {
         unsafe { (_mm_movemask_ps(self.0) as u32) }
     }
 
@@ -534,5 +535,12 @@ impl Vec4b {
                 _mm_and_ps(if_true.0, self.0),
             ))
         }
+    }
+}
+
+impl Default for Vec4Mask {
+    #[inline]
+    fn default() -> Self {
+        unsafe { Self(_mm_setzero_ps()) }
     }
 }

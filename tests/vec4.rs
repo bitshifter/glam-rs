@@ -8,10 +8,13 @@ use rand_xoshiro::Xoshiro256Plus;
 fn test_vec4_align() {
     use std::mem;
     assert_eq!(16, mem::size_of::<Vec4>());
+    assert_eq!(16, mem::size_of::<Vec4Mask>());
     if cfg!(feature = "scalar-math") {
         assert_eq!(4, mem::align_of::<Vec4>());
+        assert_eq!(4, mem::align_of::<Vec4Mask>());
     } else {
         assert_eq!(16, mem::align_of::<Vec4>());
+        assert_eq!(16, mem::align_of::<Vec4Mask>());
     }
 }
 
@@ -165,15 +168,18 @@ fn test_vec4_eq() {
 
 #[test]
 fn test_vec4_cmp() {
+    assert!(!Vec4Mask::default().any());
+    assert!(!Vec4Mask::default().all());
+    assert_eq!(Vec4Mask::default().bitmask(), 0x0);
     let a = vec4(-1.0, -1.0, -1.0, -1.0);
     let b = vec4(1.0, 1.0, 1.0, 1.0);
     let c = vec4(-1.0, -1.0, 1.0, 1.0);
     let d = vec4(1.0, -1.0, -1.0, 1.0);
-    assert_eq!(a.cmplt(a).mask(), 0x0);
-    assert_eq!(a.cmplt(b).mask(), 0xf);
-    assert_eq!(a.cmplt(c).mask(), 0xc);
-    assert_eq!(c.cmple(a).mask(), 0x3);
-    assert_eq!(a.cmplt(d).mask(), 0x9);
+    assert_eq!(a.cmplt(a).bitmask(), 0x0);
+    assert_eq!(a.cmplt(b).bitmask(), 0xf);
+    assert_eq!(a.cmplt(c).bitmask(), 0xc);
+    assert_eq!(c.cmple(a).bitmask(), 0x3);
+    assert_eq!(a.cmplt(d).bitmask(), 0x9);
     assert!(a.cmplt(b).all());
     assert!(a.cmplt(c).any());
     assert!(a.cmple(b).all());

@@ -16,11 +16,6 @@ use std::{f32, fmt, ops::*};
 #[repr(C)]
 pub struct Vec3(f32, f32, f32);
 
-#[inline]
-pub fn vec3(x: f32, y: f32, z: f32) -> Vec3 {
-    Vec3(x, y, z)
-}
-
 impl Vec3 {
     #[inline]
     pub fn zero() -> Self {
@@ -168,33 +163,33 @@ impl Vec3 {
     }
 
     #[inline]
-    pub fn cmpeq(self, rhs: Self) -> Vec3b {
-        Vec3b(self.0.eq(&rhs.0), self.1.eq(&rhs.1), self.2.eq(&rhs.2))
+    pub fn cmpeq(self, rhs: Self) -> Vec3Mask {
+        Vec3Mask::new(self.0.eq(&rhs.0), self.1.eq(&rhs.1), self.2.eq(&rhs.2))
     }
 
     #[inline]
-    pub fn cmpne(self, rhs: Self) -> Vec3b {
-        Vec3b(self.0.ne(&rhs.0), self.1.ne(&rhs.1), self.2.ne(&rhs.2))
+    pub fn cmpne(self, rhs: Self) -> Vec3Mask {
+        Vec3Mask::new(self.0.ne(&rhs.0), self.1.ne(&rhs.1), self.2.ne(&rhs.2))
     }
 
     #[inline]
-    pub fn cmpge(self, rhs: Self) -> Vec3b {
-        Vec3b(self.0.ge(&rhs.0), self.1.ge(&rhs.1), self.2.ge(&rhs.2))
+    pub fn cmpge(self, rhs: Self) -> Vec3Mask {
+        Vec3Mask::new(self.0.ge(&rhs.0), self.1.ge(&rhs.1), self.2.ge(&rhs.2))
     }
 
     #[inline]
-    pub fn cmpgt(self, rhs: Self) -> Vec3b {
-        Vec3b(self.0.gt(&rhs.0), self.1.gt(&rhs.1), self.2.gt(&rhs.2))
+    pub fn cmpgt(self, rhs: Self) -> Vec3Mask {
+        Vec3Mask::new(self.0.gt(&rhs.0), self.1.gt(&rhs.1), self.2.gt(&rhs.2))
     }
 
     #[inline]
-    pub fn cmple(self, rhs: Self) -> Vec3b {
-        Vec3b(self.0.le(&rhs.0), self.1.le(&rhs.1), self.2.le(&rhs.2))
+    pub fn cmple(self, rhs: Self) -> Vec3Mask {
+        Vec3Mask::new(self.0.le(&rhs.0), self.1.le(&rhs.1), self.2.le(&rhs.2))
     }
 
     #[inline]
-    pub fn cmplt(self, rhs: Self) -> Vec3b {
-        Vec3b(self.0.lt(&rhs.0), self.1.lt(&rhs.1), self.2.lt(&rhs.2))
+    pub fn cmplt(self, rhs: Self) -> Vec3Mask {
+        Vec3Mask::new(self.0.lt(&rhs.0), self.1.lt(&rhs.1), self.2.lt(&rhs.2))
     }
 
     #[inline]
@@ -364,32 +359,45 @@ impl Distribution<Vec3> for Standard {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Default)]
+// if compiling with simd enabled assume alignment needs to match the simd type
+#[cfg_attr(not(feature = "scalar-math"), repr(align(16)))]
 #[repr(C)]
-pub struct Vec3b(bool, bool, bool);
+pub struct Vec3Mask(u32, u32, u32);
 
-impl Vec3b {
+impl Vec3Mask {
+    pub(crate) fn new(x: bool, y: bool, z: bool) -> Self {
+        const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
+        Self(MASK[x as usize], MASK[y as usize], MASK[z as usize])
+    }
+
     #[inline]
-    pub fn mask(&self) -> u32 {
-        (self.0 as u32) | (self.1 as u32) << 1 | (self.2 as u32) << 2
+    #[deprecated(since = "0.7.1", note = "please use `bitmask` instead")]
+    pub fn mask(self) -> u32 {
+        self.bitmask()
+    }
+
+    #[inline]
+    pub fn bitmask(&self) -> u32 {
+        (self.0 & 0x1) | (self.1 & 0x1) << 1 | (self.2 & 0x1) << 2
     }
 
     #[inline]
     pub fn any(&self) -> bool {
-        self.0 || self.1 || self.2
+        (self.0 != 0) || (self.1 != 0) || (self.2 != 0)
     }
 
     #[inline]
     pub fn all(&self) -> bool {
-        self.0 && self.1 && self.2
+        (self.0 != 0) && (self.1 != 0) && (self.2 != 0)
     }
 
     #[inline]
     pub fn select(self, if_true: Vec3, if_false: Vec3) -> Vec3 {
         Vec3(
-            if self.0 { if_true.0 } else { if_false.0 },
-            if self.1 { if_true.1 } else { if_false.1 },
-            if self.2 { if_true.2 } else { if_false.2 },
+            if self.0 != 0 { if_true.0 } else { if_false.0 },
+            if self.1 != 0 { if_true.1 } else { if_false.1 },
+            if self.2 != 0 { if_true.2 } else { if_false.2 },
         )
     }
 }
