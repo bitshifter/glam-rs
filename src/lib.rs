@@ -1,3 +1,127 @@
+/*!
+# glam
+
+`glam` is a simple and fast linear algebra library for games and graphics.
+
+## Features
+
+`glam` is built with SIMD in mind. Currently only SSE2 on x86/x86_64 is
+supported as this is what stable Rust supports.
+
+* Single precision float (`f32`) support only
+* SSE2 implementation for most types, including `Mat2`, `Mat3`, `Mat4`, `Quat`,
+  `Vec3` and `Vec4`
+* SSE2 implementation of `sin_cos`
+* Scalar fallback implementations exist when SSE2 is not available
+* Most functionality includes unit tests and benchmarks
+
+## Linear algebra conventions
+
+`glam` interprets vectors as column matrices (also known as "column vectors")
+meaning when transforming a vector with a matrix the matrix goes on the left.
+
+```
+use glam::{Mat3, Vec3};
+let m = Mat3::identity();
+let x = Vec3::unit_x();
+let v = m * x;
+assert_eq!(v, x);
+```
+
+Matrices are stored in memory in column-major order.
+
+Rotations follow left-hand rule. The direction of the axis gives the direction
+of rotation: with the left thumb pointing in the positive direction of the axis
+the left fingers curl around the axis in the direction of the rotation.
+
+```
+use approx::assert_ulps_eq;
+use glam::{deg, Mat3, Vec3};
+// rotate +x 90 degrees clockwise around y giving -z
+let m = Mat3::from_rotation_y(deg(90.0));
+let v = m * Vec3::unit_x();
+assert_ulps_eq!(v, -Vec3::unit_z());
+```
+
+## Size and alignment of types
+
+Most `glam` types use SIMD for storage meaning most types are 16 byte aligned.
+The only exceptions are `Angle` and `Vec2`. When SSE2 is not available on the
+target architecture the types will still be 16 byte aligned, so object sizes
+and layouts will not change between architectures.
+
+16 byte alignment means that some types will have a stride larger than their
+size resulting in some wasted space.
+
+| Type | f32 bytes | SIMD bytes | Wasted bytes |
+|:-----|----------:|-----------:|-------------:|
+|`Vec3`|         12|          16|             4|
+|`Mat3`|         36|          48|            12|
+
+Despite this wasted space the SIMD version tends to outperform the `f32`
+implementation in [**mathbench**](https://github.com/bitshifter/mathbench-rs)
+benchmarks.
+
+SIMD support can be disabled entirely using the `scalar-math` feature. This
+feature will also disable SIMD alignment meaning most types will use native
+`f32` alignment of 4 bytes.
+
+## Accessing internal data
+
+The SIMD types that `glam` builds on are opaque and their contents are not
+directly accessible. Because of this `glam` types uses getter and setter
+methods instead of providing direct access.
+
+```
+use glam::Vec3;
+let mut v = Vec3::new(1.0, 2.0, 3.0);
+assert_eq!(v.y(), 2.0);
+v.set_z(1.0);
+assert_eq!(v.z(), 1.0);
+```
+
+If you need to access multiple components it is easier to convert the type to a
+tuple or array:
+
+```
+use glam::Vec3;
+let v = Vec3::new(1.0, 2.0, 3.0);
+let (x, y, z) = v.into();
+assert_eq!((x, y, z), (1.0, 2.0, 3.0));
+```
+
+## SIMD and scalar consistency
+
+`glam` types implement `serde` `Serialize` and `Deserialize` traits to ensure
+that they will serialize and deserialize exactly the same whether or not
+SIMD support is being used.
+
+The SIMD versions implement `std::fmt::Debug` and `std::fmt::Display` traits so
+they print the same as the scalar version.
+
+```
+use glam::Vec3;
+let a = Vec3::new(1.0, 2.0, 3.0);
+assert_eq!(format!("{:?}", a), "Vec3(1.0, 2.0, 3.0)");
+assert_eq!(format!("{}", a), "(1, 2, 3)");
+```
+
+## Feature gates
+
+All `glam` dependencies are optional, however some are required for tests
+and benchmarks.
+
+* `"std"` - the default feature, includes `"approx"` and `"rand"`.
+* `"approx` - provides different methods of comparing floating point values.
+  Used in some unit tests.
+* `"rand"` - used to generate random values. Used in benchmarks.
+* `"serde"` - used for serialization and deserialization of types.
+* `"mint"` - used for interoperating with other linear algebra libraries.
+* `"scalar-math"` - disables SIMD support and uses native alignment for all
+  types.
+
+
+*/
 #![doc(html_root_url = "https://docs.rs/glam/0.7.1")]
 
 pub mod f32;

@@ -7,7 +7,7 @@ A simple and fast 3D math library for games and graphics.
 
 ## Development status
 
-`glam` is in a pre-alpha stage. Minimal base functionality has been implemented
+`glam` is in a alpha stage. Minimal base functionality has been implemented
 and the look and feel of the API has solidified.
 
 ## Features
@@ -17,6 +17,7 @@ and the look and feel of the API has solidified.
 * square matrices: `Mat2`, `Mat3`, `Mat4`
 * a quaternion type: `Quat`
 * an angle type: `Angle`
+* SSE2 opimized `sin_cos`
 
 ### SIMD
 
