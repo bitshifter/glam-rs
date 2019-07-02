@@ -167,18 +167,20 @@ fn test_quat_lerp() {
 
 #[test]
 fn test_quat_fmt() {
-    let a = Quat::new(1.0, 2.0, 3.0, 4.0);
-    assert_eq!(format!("{:?}", a), "Quat(1.0, 2.0, 3.0, 4.0)");
+    let a = Quat::identity();
+    assert_eq!(format!("{:?}", a), "Quat(0.0, 0.0, 0.0, 1.0)");
     // assert_eq!(
     //     format!("{:#?}", a),
     //     "Quat(\n    1.0,\n    2.0,\n    3.0,\n    4.0\n)"
     // );
-    assert_eq!(format!("{}", a), "(1, 2, 3, 4)");
+    assert_eq!(format!("{}", a), "(0, 0, 0, 1)");
 }
 
 #[test]
 fn test_quat_identity() {
     let identity = Quat::identity();
+    assert!(identity.is_near_identity());
+    assert!(identity.is_normalized());
     assert_eq!(identity, Quat::new(0.0, 0.0, 0.0, 1.0));
     assert_eq!(identity, identity * identity);
     let q = Quat::from_rotation_ypr(deg(10.0), deg(-10.0), deg(45.0));
@@ -189,7 +191,7 @@ fn test_quat_identity() {
 
 #[test]
 fn test_quat_slice() {
-    let a = [1.0, 2.0, 3.0, 4.0];
+    let a: [f32; 4] = Quat::from_rotation_ypr(deg(30.0), deg(60.0), deg(90.0)).into();
     let b = Quat::from_slice_unaligned(&a);
     let c: [f32; 4] = b.into();
     assert_eq!(a, c);

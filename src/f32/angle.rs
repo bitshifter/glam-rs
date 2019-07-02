@@ -7,12 +7,13 @@ use rand::{
     Rng,
 };
 
+/// An angle represented as radians.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
 pub struct Angle(f32);
 
 impl Angle {
     #[inline]
-    pub fn from_radians(a: f32) -> Self {
+    pub const fn from_radians(a: f32) -> Self {
         Self(a)
     }
 
@@ -173,7 +174,7 @@ impl Distribution<Angle> for Standard {
 }
 
 #[inline]
-pub fn rad(a: f32) -> Angle {
+pub const fn rad(a: f32) -> Angle {
     Angle::from_radians(a)
 }
 

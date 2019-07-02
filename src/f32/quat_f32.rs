@@ -14,6 +14,11 @@ impl Quat {
     }
 
     #[inline]
+    pub(crate) fn w(self) -> f32 {
+        self.3
+    }
+
+    #[inline]
     pub fn identity() -> Self {
         Self(0.0, 0.0, 0.0, 1.0)
     }

@@ -182,6 +182,27 @@ impl Quat {
     }
 
     #[inline]
+    pub fn is_near_identity(self) -> bool {
+        // Implementation taken from RTM
+        const THRESHOLD_ANGLE: Angle = Angle::from_radians(0.00284714461);
+        // Because of floating point precision, we cannot represent very small rotations.
+        // The closest f32 to 1.0 that is not 1.0 itself yields:
+        // 0.99999994.acos() * 2.0  = 0.000690533954 rad
+        //
+        // An error threshold of 1.e-6 is used by default.
+        // (1.0 - 1.e-6).acos() * 2.0 = 0.00284714461 rad
+        // (1.0 - 1.e-7).acos() * 2.0 = 0.00097656250 rad
+        //
+        // We don't really care about the angle value itself, only if it's close to 0.
+        // This will happen whenever quat.w is close to 1.0.
+        // If the quat.w is close to -1.0, the angle will be near 2*PI which is close to
+        // a negative 0 rotation. By forcing quat.w to be positive, we'll end up with
+        // the shortest path.
+        let positive_w_angle = Angle::acos(self.w().abs()) * 2.0;
+        positive_w_angle < THRESHOLD_ANGLE
+    }
+
+    #[inline]
     pub fn lerp(self, end: Self, t: f32) -> Self {
         let start: Vec4 = self.into();
         let end: Vec4 = end.into();

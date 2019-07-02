@@ -44,6 +44,9 @@ fn quat_to_axes(rotation: Quat) -> (Vec4, Vec4, Vec4) {
     (x_axis, y_axis, z_axis)
 }
 
+/// A 4x4 column major matrix.
+///
+/// This type is 16 byte aligned.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 pub struct Mat4 {
     pub(crate) x_axis: Vec4,

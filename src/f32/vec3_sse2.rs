@@ -18,6 +18,9 @@ use std::arch::x86_64::*;
 
 use std::{cmp::Ordering, f32, fmt, mem, ops::*};
 
+/// A 3-dimensional vector.
+///
+/// This type is 16 byte aligned and thus contains 4 bytes padding.
 #[derive(Clone, Copy)]
 #[repr(C)]
 pub struct Vec3(pub(crate) __m128);
@@ -462,6 +465,9 @@ impl Distribution<Vec3> for Standard {
     }
 }
 
+/// A 3-dimensional vector mask.
+///
+/// This type is typically created by comparison methods on `Vec3`.
 #[derive(Clone, Copy)]
 #[repr(C)]
 pub struct Vec3Mask(__m128);

@@ -13,6 +13,7 @@ pub fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
     Mat2::new(x_axis, y_axis)
 }
 
+/// A 2x2 column major matrix.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 pub struct Mat2(pub(crate) Vec4);
 

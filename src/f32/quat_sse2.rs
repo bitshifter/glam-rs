@@ -7,14 +7,33 @@ use std::arch::x86::*;
 use std::arch::x86_64::*;
 use std::{f32, mem};
 
+/// A quaternion representing an orientation.
+///
+/// This quaternion is intended to be of unit length but may denormalize due to
+/// floating point "error creep" which can occur when successive quaternion
+/// operations are applied.
+///
+/// This type is 16 byte aligned.
 #[derive(Clone, Copy)]
 #[repr(C)]
 pub struct Quat(pub(crate) __m128);
 
 impl Quat {
+    /// Creates a new rotation quaternion.
+    ///
+    /// # Preconditions
+    ///
+    /// The input must represent a quaternion of unit length.
     #[inline]
     pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
-        unsafe { Self(_mm_set_ps(w, z, y, x)) }
+        let q = unsafe { Self(_mm_set_ps(w, z, y, x)) };
+        debug_assert!(q.is_normalized());
+        q
+    }
+
+    #[inline]
+    pub(crate) fn w(self) -> f32 {
+        unsafe { _mm_cvtss_f32(_mm_shuffle_ps(self.0, self.0, 0b11_11_11_11)) }
     }
 
     #[inline]
@@ -22,13 +41,29 @@ impl Quat {
         unsafe { Self(_mm_set_ps(1.0, 0.0, 0.0, 0.0)) }
     }
 
+    /// Creates a new rotation quaternion from an unaligned `&[f32]`.
+    ///
+    /// # Preconditions
+    ///
+    /// The resulting quaternion is expected to be of unit length.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `slice` length is less than 4.
     #[inline]
     pub fn from_slice_unaligned(slice: &[f32]) -> Self {
         assert!(slice.len() >= 4);
-        unsafe { Self(_mm_loadu_ps(slice.as_ptr())) }
+        let q = unsafe { Self(_mm_loadu_ps(slice.as_ptr())) };
+        debug_assert!(q.is_normalized());
+        q
     }
 
     #[inline]
+    /// Writes the quaternion to an unaligned `&mut [f32]`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `slice` length is less than 4.
     pub fn write_to_slice_unaligned(self, slice: &mut [f32]) {
         unsafe {
             assert!(slice.len() >= 4);

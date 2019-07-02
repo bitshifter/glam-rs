@@ -20,6 +20,9 @@ pub(crate) const Y_AXIS: Align16<(f32, f32, f32, f32)> = Align16((0.0, 1.0, 0.0,
 pub(crate) const Z_AXIS: Align16<(f32, f32, f32, f32)> = Align16((0.0, 0.0, 1.0, 0.0));
 pub(crate) const W_AXIS: Align16<(f32, f32, f32, f32)> = Align16((0.0, 0.0, 0.0, 1.0));
 
+/// A 4-dimensional vector.
+///
+/// This type is 16 byte aligned.
 #[derive(Clone, Copy)]
 #[repr(C)]
 pub struct Vec4(pub(crate) __m128);
@@ -501,6 +504,9 @@ impl Distribution<Vec4> for Standard {
     }
 }
 
+/// A 4-dimensional vector mask.
+///
+/// This type is typically created by comparison methods on `Vec4`.
 #[derive(Clone, Copy)]
 #[repr(C)]
 pub struct Vec4Mask(__m128);

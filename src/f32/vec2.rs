@@ -10,6 +10,7 @@ use rand::{
 
 use std::{f32, fmt, ops::*};
 
+/// A 2-dimensional vector.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
 #[repr(C)]
 pub struct Vec2(f32, f32);
@@ -352,6 +353,9 @@ pub struct Vec2Mask(u32, u32);
 #[deprecated(since = "0.7.1", note = "please use `Vec2Mask` instead")]
 pub type Vec2b = Vec2Mask;
 
+/// A 3-dimensional vector mask.
+///
+/// This type is typically created by comparison methods on `Vec2`.
 impl Vec2Mask {
     pub(crate) fn new(x: bool, y: bool) -> Self {
         const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
