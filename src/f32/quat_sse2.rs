@@ -21,13 +21,16 @@ pub struct Quat(pub(crate) __m128);
 impl Quat {
     /// Creates a new rotation quaternion.
     ///
-    /// # Preconditions
+    /// This should generally not be called manually unless you know what you are doing. Use one of
+    /// the other constructors instead such as `identity` or `from_axis_angle`.
     ///
-    /// The input must represent a quaternion of unit length.
+    /// `new` is mostly used by unit tests and `serde` deserialization.
     #[inline]
     pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
         let q = unsafe { Self(_mm_set_ps(w, z, y, x)) };
-        debug_assert!(q.is_normalized());
+        // might be better as a warning - if this asserts during deserialization it's really
+        // obtuse.
+        // debug_assert!(q.is_normalized());
         q
     }
 

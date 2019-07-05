@@ -244,11 +244,18 @@ mod test {
 
     #[test]
     fn test_quaternion() {
-        use crate::{deg, Quat, Vec3};
-        let g = Quat::from_axis_angle(Vec3::new(1.0, 2.0, 3.0).normalize(), deg(270.0));
-        let m = mint::Quaternion::from(g);
+        use crate::Quat;
+        let m = mint::Quaternion {
+            v: mint::Vector3 {
+                x: 1.0,
+                y: 2.0,
+                z: 3.0,
+            },
+            s: 4.0,
+        };
+        let g = Quat::from(m);
+        assert_eq!(g, Quat::from((1.0, 2.0, 3.0, 4.0)));
         assert_eq!(m, g.into());
-        assert_eq!(g, m.into());
     }
 
     #[test]
