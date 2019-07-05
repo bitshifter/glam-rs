@@ -5,7 +5,7 @@ use super::{super::Align16, Vec3, Vec4};
 use std::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use std::arch::x86_64::*;
-use std::{f32, mem};
+use std::{f32, mem::MaybeUninit};
 
 /// A quaternion representing an orientation.
 ///
@@ -165,9 +165,9 @@ impl From<Quat> for (f32, f32, f32, f32) {
     #[inline]
     fn from(v: Quat) -> Self {
         unsafe {
-            let mut out: Align16<(f32, f32, f32, f32)> = mem::uninitialized();
-            _mm_store_ps(&mut out.0 as *mut (f32, f32, f32, f32) as *mut f32, v.0);
-            out.0
+            let mut out: MaybeUninit<Align16<[f32; 4]>> = MaybeUninit::uninit();
+            _mm_store_ps(out.as_mut_ptr() as *mut Align16<[f32; 4]> as *mut f32, v.0);
+            *(out.assume_init().0.as_ptr() as *const (f32, f32, f32, f32))
         }
     }
 }
@@ -183,9 +183,9 @@ impl From<Quat> for [f32; 4] {
     #[inline]
     fn from(v: Quat) -> Self {
         unsafe {
-            let mut out: Align16<[f32; 4]> = mem::uninitialized();
-            _mm_store_ps(&mut out.0 as *mut [f32; 4] as *mut f32, v.0);
-            out.0
+            let mut out: MaybeUninit<Align16<[f32; 4]>> = MaybeUninit::uninit();
+            _mm_store_ps(out.as_mut_ptr() as *mut Align16<[f32; 4]> as *mut f32, v.0);
+            out.assume_init().0
         }
     }
 }

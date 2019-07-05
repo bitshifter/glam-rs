@@ -13,7 +13,7 @@ use std::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use std::arch::x86_64::*;
 
-use std::{cmp::Ordering, f32, fmt, mem, ops::*};
+use std::{cmp::Ordering, f32, fmt, mem::MaybeUninit, ops::*};
 
 pub(crate) const X_AXIS: Align16<(f32, f32, f32, f32)> = Align16((1.0, 0.0, 0.0, 0.0));
 pub(crate) const Y_AXIS: Align16<(f32, f32, f32, f32)> = Align16((0.0, 1.0, 0.0, 0.0));
@@ -471,9 +471,9 @@ impl From<Vec4> for (f32, f32, f32, f32) {
     #[inline]
     fn from(v: Vec4) -> Self {
         unsafe {
-            let mut out: Align16<(f32, f32, f32, f32)> = mem::uninitialized();
-            _mm_store_ps(&mut out.0 as *mut (f32, f32, f32, f32) as *mut f32, v.0);
-            out.0
+            let mut out: MaybeUninit<Align16<[f32; 4]>> = MaybeUninit::uninit();
+            _mm_store_ps(out.as_mut_ptr() as *mut Align16<[f32; 4]> as *mut f32, v.0);
+            *(out.assume_init().0.as_ptr() as *const (f32, f32, f32, f32))
         }
     }
 }
@@ -489,9 +489,9 @@ impl From<Vec4> for [f32; 4] {
     #[inline]
     fn from(v: Vec4) -> Self {
         unsafe {
-            let mut out: Align16<[f32; 4]> = mem::uninitialized();
-            _mm_store_ps(&mut out.0 as *mut [f32; 4] as *mut f32, v.0);
-            out.0
+            let mut out: MaybeUninit<Align16<[f32; 4]>> = MaybeUninit::uninit();
+            _mm_store_ps(out.as_mut_ptr() as *mut Align16<[f32; 4]> as *mut f32, v.0);
+            out.assume_init().0
         }
     }
 }
