@@ -21,7 +21,7 @@ impl Quat {
     /// Create quaterion for a normalized rotation axis and angle.
     /// The axis must be normalized.
     pub fn from_axis_angle(axis: Vec3, angle: Angle) -> Self {
-        debug_assert!((axis.length_squared() - 1.0).abs() < 0.01);
+        glam_assert!(axis.is_normalized());
         let (s, c) = (angle * 0.5).sin_cos();
         (axis * s).extend(c).into()
     }
@@ -177,8 +177,7 @@ impl Quat {
 
     #[inline]
     pub fn is_normalized(self) -> bool {
-        const THRESHOLD: f32 = 0.00001;
-        (self.length_squared() - 1.0).abs() < THRESHOLD
+        is_normalized!(self)
     }
 
     #[inline]

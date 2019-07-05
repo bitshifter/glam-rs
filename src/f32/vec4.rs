@@ -25,6 +25,11 @@ impl Vec4 {
     pub fn lerp(self, rhs: Self, s: f32) -> Self {
         self + ((rhs - self) * s)
     }
+
+    #[inline]
+    pub fn is_normalized(self) -> bool {
+        is_normalized!(self)
+    }
 }
 
 impl AsRef<[f32; 4]> for Vec4 {

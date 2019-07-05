@@ -22,7 +22,7 @@ pub fn mat3(x_axis: Vec3, y_axis: Vec3, z_axis: Vec3) -> Mat3 {
 
 #[inline]
 fn quat_to_axes(rotation: Quat) -> (Vec3, Vec3, Vec3) {
-    debug_assert!(rotation.is_normalized());
+    glam_assert!(rotation.is_normalized());
     let (x, y, z, w) = rotation.into();
     let x2 = x + x;
     let y2 = y + y;
@@ -225,7 +225,9 @@ impl Mat3 {
         let tmp0 = self.y_axis.cross(self.z_axis);
         let tmp1 = self.z_axis.cross(self.x_axis);
         let tmp2 = self.x_axis.cross(self.y_axis);
-        let inv_det = Vec3::splat(1.0 / self.z_axis().dot(tmp2));
+        let det = self.z_axis().dot(tmp2);
+        glam_assert!(det != 0.0);
+        let inv_det = Vec3::splat(1.0 / det);
         Mat3::new(tmp0 * inv_det, tmp1 * inv_det, tmp2 * inv_det).transpose()
     }
 

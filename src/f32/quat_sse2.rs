@@ -30,7 +30,7 @@ impl Quat {
         let q = unsafe { Self(_mm_set_ps(w, z, y, x)) };
         // might be better as a warning - if this asserts during deserialization it's really
         // obtuse.
-        // debug_assert!(q.is_normalized());
+        // glam_assert!(q.is_normalized());
         q
     }
 
@@ -57,7 +57,7 @@ impl Quat {
     pub fn from_slice_unaligned(slice: &[f32]) -> Self {
         assert!(slice.len() >= 4);
         let q = unsafe { Self(_mm_loadu_ps(slice.as_ptr())) };
-        debug_assert!(q.is_normalized());
+        glam_assert!(q.is_normalized());
         q
     }
 

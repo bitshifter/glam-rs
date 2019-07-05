@@ -108,7 +108,7 @@ impl Mat2 {
         // TODO: SSE2
         let (a, b, c, d) = self.0.into();
         let det = a * d - b * c;
-        debug_assert!(det != 0.0);
+        glam_assert!(det != 0.0);
         let tmp = Vec4::new(1.0, -1.0, -1.0, 1.0) / det;
         Self(Vec4::new(d, b, c, a) * tmp)
     }

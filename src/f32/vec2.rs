@@ -174,6 +174,11 @@ impl Vec2 {
     }
 
     #[inline]
+    pub fn is_normalized(self) -> bool {
+        is_normalized!(self)
+    }
+
+    #[inline]
     pub(crate) fn mul_add(self, a: Self, b: Self) -> Self {
         Self((self.0 * a.0) + b.0, (self.1 * a.1) + b.1)
     }

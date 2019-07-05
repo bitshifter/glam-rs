@@ -23,7 +23,7 @@ pub fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat4 {
 
 #[inline]
 fn quat_to_axes(rotation: Quat) -> (Vec4, Vec4, Vec4) {
-    debug_assert!(rotation.is_normalized());
+    glam_assert!(rotation.is_normalized());
     let (x, y, z, w) = rotation.into();
     let x2 = x + x;
     let y2 = y + y;
@@ -373,6 +373,8 @@ impl Mat4 {
         let dot0 = self.x_axis * col0;
         let dot1 = dot0.x() + dot0.y() + dot0.z() + dot0.w();
 
+        glam_assert!(dot1 != 0.0);
+
         let rcp_det = 1.0 / dot1;
         inverse * rcp_det
     }
@@ -424,10 +426,10 @@ impl Mat4 {
 
     // #[inline]
     // pub fn perspective_fov_lh(fovy: Angle, aspect: f32, nearz: f32, farz: f32) -> Self {
-    //     debug_assert!(nearz > 0.0 && farz > 0.0);
-    //     debug_assert!(fovy != Angle::from_radians(0.0));
-    //     debug_assert!(aspect != 0.0);
-    //     debug_assert!(farz != nearz);
+    //     glam_assert!(nearz > 0.0 && farz > 0.0);
+    //     glam_assert!(fovy != Angle::from_radians(0.0));
+    //     glam_assert!(aspect != 0.0);
+    //     glam_assert!(farz != nearz);
 
     //     let (sin_fov, cos_fov) = (0.5 * fovy).sin_cos();
     //     let height = cos_fov / sin_fov;
@@ -444,10 +446,10 @@ impl Mat4 {
 
     // #[inline]
     // pub fn perspective_fov_rh(fovy: Angle, aspect: f32, nearz: f32, farz: f32) -> Self {
-    //     debug_assert!(nearz > 0.0 && farz > 0.0);
-    //     debug_assert!(fovy != Angle::from_radians(0.0));
-    //     debug_assert!(aspect != 0.0);
-    //     debug_assert!(farz != nearz);
+    //     glam_assert!(nearz > 0.0 && farz > 0.0);
+    //     glam_assert!(fovy != Angle::from_radians(0.0));
+    //     glam_assert!(aspect != 0.0);
+    //     glam_assert!(farz != nearz);
 
     //     let (sin_fov, cos_fov) = (0.5 * fovy).sin_cos();
     //     let height = cos_fov / sin_fov;

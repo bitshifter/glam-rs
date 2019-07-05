@@ -124,6 +124,9 @@ and benchmarks.
 */
 #![doc(html_root_url = "https://docs.rs/glam/0.7.1")]
 
+#[macro_use]
+mod macros;
+
 pub mod f32;
 
 pub use self::f32::{
