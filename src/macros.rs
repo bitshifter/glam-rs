@@ -1,11 +1,10 @@
-
 #[cfg(any(debug_assertions, feature = "glam-assert"))]
 macro_rules! glam_assert {
     ($($arg:tt)*) => ( assert!($($arg)*); )
 }
 #[cfg(not(any(debug_assertions, feature = "glam-assert")))]
 macro_rules! glam_assert {
-    ($($arg:tt)*) => ()
+    ($($arg:tt)*) => {};
 }
 
 macro_rules! is_normalized {
