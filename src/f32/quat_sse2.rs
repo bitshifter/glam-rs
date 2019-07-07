@@ -164,10 +164,10 @@ impl From<__m128> for Quat {
 impl From<Quat> for (f32, f32, f32, f32) {
     #[inline]
     fn from(v: Quat) -> Self {
+        let mut out: MaybeUninit<Align16<(f32, f32, f32, f32)>> = MaybeUninit::uninit();
         unsafe {
-            let mut out: MaybeUninit<Align16<[f32; 4]>> = MaybeUninit::uninit();
-            _mm_store_ps(out.as_mut_ptr() as *mut Align16<[f32; 4]> as *mut f32, v.0);
-            *(out.assume_init().0.as_ptr() as *const (f32, f32, f32, f32))
+            _mm_store_ps(out.as_mut_ptr() as *mut f32, v.0);
+            out.assume_init().0
         }
     }
 }
@@ -182,9 +182,9 @@ impl From<[f32; 4]> for Quat {
 impl From<Quat> for [f32; 4] {
     #[inline]
     fn from(v: Quat) -> Self {
+        let mut out: MaybeUninit<Align16<[f32; 4]>> = MaybeUninit::uninit();
         unsafe {
-            let mut out: MaybeUninit<Align16<[f32; 4]>> = MaybeUninit::uninit();
-            _mm_store_ps(out.as_mut_ptr() as *mut Align16<[f32; 4]> as *mut f32, v.0);
+            _mm_store_ps(out.as_mut_ptr() as *mut f32, v.0);
             out.assume_init().0
         }
     }

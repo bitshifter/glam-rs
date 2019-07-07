@@ -431,10 +431,11 @@ impl From<(f32, f32, f32)> for Vec3 {
 impl From<Vec3> for (f32, f32, f32) {
     #[inline]
     fn from(v: Vec3) -> Self {
+        let mut out: MaybeUninit<Align16<(f32, f32, f32)>> = MaybeUninit::uninit();
         unsafe {
-            let mut out: MaybeUninit<Align16<[f32; 4]>> = MaybeUninit::uninit();
-            _mm_store_ps(out.as_mut_ptr() as *mut Align16<[f32; 4]> as *mut f32, v.0);
-            *(out.assume_init().as_ptr() as *const (f32, f32, f32))
+            // out is 16 bytes in size due to alignment
+            _mm_store_ps(out.as_mut_ptr() as *mut f32, v.0);
+            out.assume_init().0
         }
     }
 }
@@ -449,10 +450,11 @@ impl From<[f32; 3]> for Vec3 {
 impl From<Vec3> for [f32; 3] {
     #[inline]
     fn from(v: Vec3) -> Self {
+        let mut out: MaybeUninit<Align16<[f32; 3]>> = MaybeUninit::uninit();
         unsafe {
-            let mut out: MaybeUninit<Align16<[f32; 4]>> = MaybeUninit::uninit();
-            _mm_store_ps(out.as_mut_ptr() as *mut Align16<[f32; 4]> as *mut f32, v.0);
-            *(out.assume_init().0.as_ptr() as *const [f32; 3])
+            // out is 16 bytes in size due to alignment
+            _mm_store_ps(out.as_mut_ptr() as *mut f32, v.0);
+            out.assume_init().0
         }
     }
 }
