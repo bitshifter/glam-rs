@@ -4,10 +4,6 @@ mod mat2;
 mod mat3;
 mod mat4;
 mod quat;
-#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-mod quat_f32;
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-mod quat_sse2;
 #[cfg(feature = "transform-types")]
 mod transform;
 mod vec2;
@@ -29,11 +25,7 @@ pub(crate) use funcs::scalar_sin_cos;
 pub use mat2::*;
 pub use mat3::*;
 pub use mat4::*;
-pub use quat::quat;
-#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-pub use quat_f32::*;
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-pub use quat_sse2::*;
+pub use quat::*;
 #[cfg(feature = "transform-types")]
 pub use transform::*;
 pub use vec2::*;
