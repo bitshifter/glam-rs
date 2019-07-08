@@ -265,7 +265,7 @@ impl Quat {
     #[inline]
     pub fn lerp(self, end: Self, t: f32) -> Self {
         let start = self.0;
-        let end = end.0; 
+        let end = end.0;
         let dot = start.dot(end);
         let bias = if dot >= 0.0 { 1.0 } else { -1.0 };
         let interpolated = start + (t * ((end * bias) - start));

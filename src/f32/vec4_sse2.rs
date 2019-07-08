@@ -176,20 +176,28 @@ impl Vec4 {
     }
 
     #[inline]
+    /// Calculates the Vec4 dot product and returns answer in x lane of __m128.
+    unsafe fn dot_as_m128(self, rhs: Self) -> __m128 {
+        let x2_y2_z2_w2 = _mm_mul_ps(self.0, rhs.0);
+        let z2_w2_0_0 = _mm_shuffle_ps(x2_y2_z2_w2, x2_y2_z2_w2, 0b00_00_11_10);
+        let x2z2_y2w2_0_0 = _mm_add_ps(x2_y2_z2_w2, z2_w2_0_0);
+        let y2w2_0_0_0 = _mm_shuffle_ps(x2z2_y2w2_0_0, x2z2_y2w2_0_0, 0b00_00_00_01);
+        let x2y2z2w2_0_0_0 = _mm_add_ps(x2z2_y2w2_0_0, y2w2_0_0_0);
+        x2y2z2w2_0_0_0
+    }
+
+    #[inline]
+    /// Returns Vec4 dot in all lanes of Vec4
     fn dot_as_vec4(self, rhs: Self) -> Self {
         unsafe {
-            let x2_y2_z2_w2 = _mm_mul_ps(self.0, rhs.0);
-            let z2_w2_0_0 = _mm_shuffle_ps(x2_y2_z2_w2, x2_y2_z2_w2, 0b00_00_11_10);
-            let x2z2_y2w2_0_0 = _mm_add_ps(x2_y2_z2_w2, z2_w2_0_0);
-            let y2w2_0_0_0 = _mm_shuffle_ps(x2z2_y2w2_0_0, x2z2_y2w2_0_0, 0b00_00_00_01);
-            let x2y2z2w2_0_0_0 = _mm_add_ps(x2z2_y2w2_0_0, y2w2_0_0_0);
-            Self(x2y2z2w2_0_0_0)
+            let dot_in_x = self.dot_as_m128(rhs);
+            Self(_mm_shuffle_ps(dot_in_x, dot_in_x, 0b00_00_00_00))
         }
     }
 
     #[inline]
     pub fn dot(self, rhs: Self) -> f32 {
-        self.dot_as_vec4(rhs).x()
+        unsafe { _mm_cvtss_f32(self.dot_as_m128(rhs)) }
     }
 
     #[inline]

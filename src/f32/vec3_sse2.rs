@@ -149,15 +149,26 @@ impl Vec3 {
     }
 
     #[inline]
-    pub fn dot(self, rhs: Self) -> f32 {
+    unsafe fn dot_as_m128(self, rhs: Self) -> __m128 {
+        let x2_y2_z2_w2 = _mm_mul_ps(self.0, rhs.0);
+        let y2_0_0_0 = _mm_shuffle_ps(x2_y2_z2_w2, x2_y2_z2_w2, 0b00_00_00_01);
+        let x2y2_0_0_0 = _mm_add_ss(x2_y2_z2_w2, y2_0_0_0);
+        let z2_0_0_0 = _mm_shuffle_ps(x2_y2_z2_w2, x2_y2_z2_w2, 0b00_00_00_10);
+        let x2y2z2_0_0_0 = _mm_add_ss(x2y2_0_0_0, z2_0_0_0);
+        x2y2z2_0_0_0
+    }
+
+    #[inline]
+    fn dot_as_vec3(self, rhs: Self) -> Self {
         unsafe {
-            let x2_y2_z2_w2 = _mm_mul_ps(self.0, rhs.0);
-            let y2_0_0_0 = _mm_shuffle_ps(x2_y2_z2_w2, x2_y2_z2_w2, 0b00_00_00_01);
-            let x2y2_0_0_0 = _mm_add_ss(x2_y2_z2_w2, y2_0_0_0);
-            let z2_0_0_0 = _mm_shuffle_ps(x2_y2_z2_w2, x2_y2_z2_w2, 0b00_00_00_10);
-            let x2y2z2_0_0_0 = _mm_add_ss(x2y2_0_0_0, z2_0_0_0);
-            _mm_cvtss_f32(x2y2z2_0_0_0)
+            let dot_in_x = self.dot_as_m128(rhs);
+            Vec3(_mm_shuffle_ps(dot_in_x, dot_in_x, 0b00_00_00_00))
         }
+    }
+
+    #[inline]
+    pub fn dot(self, rhs: Self) -> f32 {
+        unsafe { _mm_cvtss_f32(self.dot_as_m128(rhs)) }
     }
 
     #[inline]
@@ -179,7 +190,8 @@ impl Vec3 {
 
     #[inline]
     pub fn length(self) -> f32 {
-        self.dot(self).sqrt()
+        let dot = self.dot_as_vec3(self);
+        unsafe { _mm_cvtss_f32(_mm_sqrt_ps(dot.0)) }
     }
 
     #[inline]
@@ -188,9 +200,18 @@ impl Vec3 {
     }
 
     #[inline]
+    pub fn length_reciprocal(self) -> f32 {
+        let dot = self.dot_as_vec3(self);
+        unsafe {
+            // _mm_rsqrt_ps is lower precision
+            _mm_cvtss_f32(_mm_div_ps(_mm_set_ps1(1.0), _mm_sqrt_ps(dot.0)))
+        }
+    }
+
+    #[inline]
     pub fn normalize(self) -> Self {
-        let inv_length = 1.0 / self.dot(self).sqrt();
-        self * inv_length
+        let dot = self.dot_as_vec3(self);
+        unsafe { Self(_mm_div_ps(self.0, _mm_sqrt_ps(dot.0))) }
     }
 
     #[inline]
