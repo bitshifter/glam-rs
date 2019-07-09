@@ -413,12 +413,11 @@ impl Mat4 {
         let inv_length = 1.0 / (nearz - farz);
         let f = 1.0 / (0.5 * fovy).tan();
         let a = f / aspect;
-        let q = f;
         let b = (nearz + farz) * inv_length;
         let c = (2.0 * nearz * farz) * inv_length;
         Mat4::new(
             Vec4::new(a, 0.0, 0.0, 0.0),
-            Vec4::new(0.0, q, 0.0, 0.0),
+            Vec4::new(0.0, f, 0.0, 0.0),
             Vec4::new(0.0, 0.0, b, -1.0),
             Vec4::new(0.0, 0.0, c, 0.0),
         )

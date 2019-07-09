@@ -68,6 +68,7 @@ impl Angle {
         let root = omx.sqrt();
 
         // 7-degree minimax approximation
+        #[allow(clippy::approx_constant)]
         let mut result = ((((((-0.001_262_491_1 * x + 0.006_670_09) * x - 0.017_088_126) * x
             + 0.030_891_88)
             * x

@@ -244,7 +244,7 @@ impl Quat {
     #[inline]
     pub fn is_near_identity(self) -> bool {
         // Implementation taken from RTM
-        const THRESHOLD_ANGLE: Angle = Angle::from_radians(0.00284714461);
+        const THRESHOLD_ANGLE: Angle = Angle::from_radians(0.002_847_144_6);
         // Because of floating point precision, we cannot represent very small rotations.
         // The closest f32 to 1.0 that is not 1.0 itself yields:
         // 0.99999994.acos() * 2.0  = 0.000690533954 rad

@@ -182,8 +182,7 @@ impl Vec4 {
         let z2_w2_0_0 = _mm_shuffle_ps(x2_y2_z2_w2, x2_y2_z2_w2, 0b00_00_11_10);
         let x2z2_y2w2_0_0 = _mm_add_ps(x2_y2_z2_w2, z2_w2_0_0);
         let y2w2_0_0_0 = _mm_shuffle_ps(x2z2_y2w2_0_0, x2z2_y2w2_0_0, 0b00_00_00_01);
-        let x2y2z2w2_0_0_0 = _mm_add_ps(x2z2_y2w2_0_0, y2w2_0_0_0);
-        x2y2z2w2_0_0_0
+        _mm_add_ps(x2z2_y2w2_0_0, y2w2_0_0_0)
     }
 
     #[inline]

@@ -154,8 +154,7 @@ impl Vec3 {
         let y2_0_0_0 = _mm_shuffle_ps(x2_y2_z2_w2, x2_y2_z2_w2, 0b00_00_00_01);
         let x2y2_0_0_0 = _mm_add_ss(x2_y2_z2_w2, y2_0_0_0);
         let z2_0_0_0 = _mm_shuffle_ps(x2_y2_z2_w2, x2_y2_z2_w2, 0b00_00_00_10);
-        let x2y2z2_0_0_0 = _mm_add_ss(x2y2_0_0_0, z2_0_0_0);
-        x2y2z2_0_0_0
+        _mm_add_ss(x2y2_0_0_0, z2_0_0_0)
     }
 
     #[inline]
