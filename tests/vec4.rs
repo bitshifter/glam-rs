@@ -101,6 +101,27 @@ fn test_vec4_funcs() {
     assert_eq!(4.0, (-4.0 * z).length());
     assert_eq!(5.0, (-5.0 * w).length());
     assert_eq!(x, (2.0 * x).normalize());
+    assert_eq!(
+        1.0 * 5.0 + 2.0 * 6.0 + 3.0 * 7.0 + 4.0 * 8.0,
+        vec4(1.0, 2.0, 3.0, 4.0).dot(vec4(5.0, 6.0, 7.0, 8.0))
+    );
+    assert_eq!(
+        2.0 * 2.0 + 3.0 * 3.0 + 4.0 * 4.0 + 5.0 * 5.0,
+        vec4(2.0, 3.0, 4.0, 5.0).length_squared()
+    );
+    assert_eq!(
+        (2.0_f32 * 2.0 + 3.0 * 3.0 + 4.0 * 4.0 + 5.0 * 5.0).sqrt(),
+        vec4(2.0, 3.0, 4.0, 5.0).length()
+    );
+    assert_eq!(
+        1.0 / (2.0_f32 * 2.0 + 3.0 * 3.0 + 4.0 * 4.0 + 5.0 * 5.0).sqrt(),
+        vec4(2.0, 3.0, 4.0, 5.0).length_reciprocal()
+    );
+    assert!(vec4(2.0, 3.0, 4.0, 5.0).normalize().is_normalized());
+    assert_eq!(
+        vec4(2.0, 3.0, 4.0, 5.0) / (2.0_f32 * 2.0 + 3.0 * 3.0 + 4.0 * 4.0 + 5.0 * 5.0).sqrt(),
+        vec4(2.0, 3.0, 4.0, 5.0).normalize()
+    );
 }
 
 #[test]

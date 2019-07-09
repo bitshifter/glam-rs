@@ -102,6 +102,11 @@ impl Vec2 {
     }
 
     #[inline]
+    pub fn length_reciprocal(self) -> f32 {
+        1.0 / self.length()
+    }
+
+    #[inline]
     pub fn normalize(self) -> Vec2 {
         let inv_length = 1.0 / self.dot(self).sqrt();
         self * inv_length
