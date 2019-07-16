@@ -1,4 +1,38 @@
 #[macro_export]
+
+macro_rules! bench_func {
+    ($name: ident, $desc: expr, op => $func: ident, ty => $ty: ty, from => $from: expr) => {
+        pub(crate) fn $name(c: &mut Criterion) {
+            use rand::SeedableRng;
+            use rand_xoshiro::Xoshiro256Plus;
+            const LEN: usize = 1 << 13;
+            let mut rng = Xoshiro256Plus::seed_from_u64(0);
+            let elems: Vec<$ty> = (0..LEN).map(|_| $from(&mut rng).into()).collect();
+            let mut i = 0;
+            c.bench_function($desc, move |b| {
+                b.iter(|| {
+                    i = (i + 1) & (LEN - 1);
+                    unsafe { $func(elems.get_unchecked(i)) }
+                })
+            });
+        }
+    }; // ($name: ident, $desc: expr, op => $func: ident, ty1 => $ty1:ty, ty2 => $ty2:ty) => {{
+       //     const LEN: usize = 1 << 7;
+       //     let elems1: Vec<$ty> = (0..LEN).map(|_| $from(&mut rng).into()).collect();
+       //     let elems2: Vec<$ty> = (0..LEN).map(|_| $from(&mut rng).into()).collect();
+       //     let mut i = 0;
+       //     c.bench_function($desc, move |b| {
+       //         for lhs in elems1.iter() {
+       //             b.iter(|| {
+       //                 i = (i + 1) & (LEN - 1);
+       //                 $func(lhs, elems2.get_unchecked(i))
+       //             })
+       //         }
+       //     })
+       // }};
+}
+
+#[allow(unused_macros)]
 macro_rules! bench_unop {
     ($name: ident, $desc: expr, op => $unop: ident, ty => $ty:ty, from => $from: expr) => {
         pub(crate) fn $name(c: &mut Criterion) {
@@ -14,8 +48,7 @@ macro_rules! bench_unop {
             c.bench_function($desc, move |b| {
                 b.iter(|| {
                     i = (i + 1) & (LEN - 1);
-
-                    unsafe { criterion::black_box(elems.get_unchecked(i).$unop()) }
+                    unsafe { elems.get_unchecked(i).$unop() }
                 })
             });
         }
@@ -38,11 +71,7 @@ macro_rules! bench_binop {
                 for lhs in elems1.iter() {
                     b.iter(|| {
                         i = (i + 1) & (LEN - 1);
-                        unsafe {
-                            criterion::black_box(
-                                lhs.$binop(*elems2.get_unchecked(i)),
-                                );
-                        }
+                        unsafe { lhs.$binop(*elems2.get_unchecked(i)) }
                     })
                 }
             });
