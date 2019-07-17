@@ -113,7 +113,7 @@ impl Vec3 {
     }
 
     #[inline]
-    pub(crate) dot_as_vec3(self, rhs: Self) -> Self {
+    pub(crate) fn dot_as_vec3(self, rhs: Self) -> Self {
         Vec3::splat(self.dot(rhs))
     }
 
