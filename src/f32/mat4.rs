@@ -95,6 +95,8 @@ impl Mat4 {
 
     #[inline]
     pub fn from_scale_rotation_translation(scale: Vec3, rotation: Quat, translation: Vec3) -> Self {
+        glam_assert!(scale.cmpne(Vec3::zero()).all());
+        glam_assert!(rotation.is_normalized());
         let (x_axis, y_axis, z_axis) = quat_to_axes(rotation);
         let (scale_x, scale_y, scale_z) = scale.into();
         Self {
@@ -107,6 +109,7 @@ impl Mat4 {
 
     #[inline]
     pub fn from_rotation_translation(rotation: Quat, translation: Vec3) -> Self {
+        glam_assert!(rotation.is_normalized());
         let (x_axis, y_axis, z_axis) = quat_to_axes(rotation);
         Self {
             x_axis,
@@ -118,6 +121,7 @@ impl Mat4 {
 
     #[inline]
     pub fn from_quat(rotation: Quat) -> Self {
+        glam_assert!(rotation.is_normalized());
         let (x_axis, y_axis, z_axis) = quat_to_axes(rotation);
         Self {
             x_axis,
@@ -139,6 +143,7 @@ impl Mat4 {
 
     #[inline]
     pub fn from_axis_angle(axis: Vec3, angle: Angle) -> Self {
+        glam_assert!(axis.is_normalized());
         let (sin, cos) = angle.sin_cos();
         let (x, y, z) = axis.into();
         let (xsin, ysin, zsin) = (axis * sin).into();
@@ -196,6 +201,7 @@ impl Mat4 {
 
     #[inline]
     pub fn from_scale(scale: Vec3) -> Self {
+        glam_assert!(scale.cmpne(Vec3::zero()).all());
         let (x, y, z) = scale.into();
         Self {
             x_axis: Vec4::new(x, 0.0, 0.0, 0.0),
@@ -398,11 +404,13 @@ impl Mat4 {
 
     #[inline]
     pub fn look_at_lh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
+        glam_assert!(up.is_normalized());
         Mat4::look_to_lh(eye, center - eye, up)
     }
 
     #[inline]
     pub fn look_at_rh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
+        glam_assert!(up.is_normalized());
         Mat4::look_to_lh(eye, eye - center, up)
     }
 

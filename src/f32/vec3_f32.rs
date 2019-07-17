@@ -113,6 +113,11 @@ impl Vec3 {
     }
 
     #[inline]
+    pub(crate) dot_as_vec3(self, rhs: Self) -> Self {
+        Vec3::splat(self.dot(rhs))
+    }
+
+    #[inline]
     pub fn cross(self, rhs: Self) -> Self {
         Self(
             self.1 * rhs.2 - rhs.1 * self.2,
@@ -138,8 +143,7 @@ impl Vec3 {
 
     #[inline]
     pub fn normalize(self) -> Self {
-        let inv_length = 1.0 / self.dot(self).sqrt();
-        self * inv_length
+        self * self.length_reciprocal()
     }
 
     #[inline]

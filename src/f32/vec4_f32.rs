@@ -144,8 +144,7 @@ impl Vec4 {
 
     #[inline]
     pub fn normalize(self) -> Self {
-        let inv_length = 1.0 / self.dot(self).sqrt();
-        self * inv_length
+        self * self.length_reciprocal()
     }
 
     #[inline]

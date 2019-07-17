@@ -108,8 +108,7 @@ impl Vec2 {
 
     #[inline]
     pub fn normalize(self) -> Vec2 {
-        let inv_length = 1.0 / self.dot(self).sqrt();
-        self * inv_length
+        self * self.length_reciprocal()
     }
 
     #[inline]
@@ -175,6 +174,7 @@ impl Vec2 {
 
     #[inline]
     pub fn lerp(self, rhs: Self, s: f32) -> Self {
+        glam_assert!(s >= 0.0 && s <= 1.0);
         self + ((rhs - self) * s)
     }
 

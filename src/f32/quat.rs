@@ -264,6 +264,8 @@ impl Quat {
 
     #[inline]
     pub fn lerp(self, end: Self, t: f32) -> Self {
+        glam_assert!(self.is_normalized());
+        glam_assert!(end.is_normalized());
         let start = self.0;
         let end = end.0;
         let dot = start.dot(end);
@@ -276,6 +278,7 @@ impl Quat {
     #[inline]
     /// Multiplies a quaternion and a 3D vector, rotating it.
     pub fn mul_vec3(self, rhs: Vec3) -> Vec3 {
+        glam_assert!(self.is_normalized());
         let w = self.0.w();
         let b = self.0.truncate();
         let b2 = b.dot(b);
@@ -286,6 +289,7 @@ impl Quat {
     #[inline]
     /// Multiplies a quaternion and a 3D vector, rotating it.
     pub fn mul_vec3(self, rhs: Vec3) -> Vec3 {
+        glam_assert!(self.is_normalized());
         let w = self.0.dup_w().truncate();
         let two = Vec3::splat(2.0);
         let b = self.0.truncate();
@@ -298,6 +302,8 @@ impl Quat {
     /// Multiplies two quaternions.
     /// Note that due to floating point rounding the result may not be perfectly normalized.
     pub fn mul_quat(self, rhs: Self) -> Self {
+        glam_assert!(self.is_normalized());
+        glam_assert!(rhs.is_normalized());
         let (x0, y0, z0, w0) = self.0.into();
         let (x1, y1, z1, w1) = rhs.0.into();
         Self::new(
@@ -313,6 +319,8 @@ impl Quat {
     /// Multiplies two quaternions.
     /// Note that due to floating point rounding the result may not be perfectly normalized.
     pub fn mul_quat(self, rhs: Self) -> Self {
+        glam_assert!(self.is_normalized());
+        glam_assert!(rhs.is_normalized());
         // sse2 implementation from RTM
         let lhs = self.0.into();
         let rhs = rhs.0.into();

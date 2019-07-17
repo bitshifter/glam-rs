@@ -158,7 +158,7 @@ impl Vec3 {
     }
 
     #[inline]
-    fn dot_as_vec3(self, rhs: Self) -> Self {
+    pub(crate) fn dot_as_vec3(self, rhs: Self) -> Self {
         unsafe {
             let dot_in_x = self.dot_as_m128(rhs);
             Vec3(_mm_shuffle_ps(dot_in_x, dot_in_x, 0b00_00_00_00))

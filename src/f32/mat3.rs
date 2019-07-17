@@ -91,6 +91,7 @@ impl Mat3 {
     #[inline]
     /// Create a 3x3 matrix that can scale, rotate and translate a 2D vector.
     pub fn from_scale_angle_translation(scale: Vec2, angle: Angle, translation: Vec2) -> Self {
+        glam_assert!(scale.cmpne(Vec2::zero()).all());
         let (sin, cos) = angle.sin_cos();
         let (scale_x, scale_y) = scale.into();
         Self {
@@ -112,6 +113,7 @@ impl Mat3 {
 
     #[inline]
     pub fn from_axis_angle(axis: Vec3, angle: Angle) -> Self {
+        glam_assert!(axis.is_normalized());
         let (sin, cos) = angle.sin_cos();
         let (x, y, z) = axis.into();
         let (xsin, ysin, zsin) = (axis * sin).into();
@@ -165,6 +167,7 @@ impl Mat3 {
 
     #[inline]
     pub fn from_scale(scale: Vec3) -> Self {
+        glam_assert!(scale.cmpne(Vec3::zero()).all());
         let (x, y, z) = scale.into();
         Self {
             x_axis: Vec3::new(x, 0.0, 0.0),
@@ -225,9 +228,10 @@ impl Mat3 {
         let tmp0 = self.y_axis.cross(self.z_axis);
         let tmp1 = self.z_axis.cross(self.x_axis);
         let tmp2 = self.x_axis.cross(self.y_axis);
-        let det = self.z_axis().dot(tmp2);
-        glam_assert!(det != 0.0);
-        let inv_det = Vec3::splat(1.0 / det);
+        let det = self.z_axis.dot_as_vec3(tmp2);
+        glam_assert!(det.cmpne(Vec3::zero()).all());
+        let inv_det = det.reciprocal();
+        // TODO: Work out if it's possible to get rid of the transpose
         Mat3::new(tmp0 * inv_det, tmp1 * inv_det, tmp2 * inv_det).transpose()
     }
 
