@@ -17,136 +17,175 @@ use std::{f32, fmt, ops::*};
 pub struct Vec4(f32, f32, f32, f32);
 
 impl Vec4 {
+    /// Creates a new `Vec4` with all elements set to `0.0`.
     #[inline]
     pub fn zero() -> Self {
         Self(0.0, 0.0, 0.0, 0.0)
     }
 
+    /// Creates a new `Vec4` with all elements set to `1.0`.
     #[inline]
     pub fn one() -> Self {
         Self(1.0, 1.0, 1.0, 1.0)
     }
 
+    /// Creates a new `Vec4`.
     #[inline]
     pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
         Self(x, y, z, w)
     }
 
+    /// Creates a new `Vec4` with values `[x: 1.0, y: 0.0, z: 0.0, w: 0.0]`.
     #[inline]
     pub fn unit_x() -> Self {
         Self(1.0, 0.0, 0.0, 0.0)
     }
 
+    /// Creates a new `Vec4` with values `[x: 0.0, y: 1.0, z: 0.0, w: 0.0]`.
     #[inline]
     pub fn unit_y() -> Self {
         Self(0.0, 1.0, 0.0, 0.0)
     }
 
+    /// Creates a new `Vec4` with values `[x: 0.0, y: 0.0, z: 1.0, w: 0.0]`.
     #[inline]
     pub fn unit_z() -> Self {
         Self(0.0, 0.0, 1.0, 0.0)
     }
 
+    /// Creates a new `Vec4` with values `[x: 0.0, y: 0.0, z: 0.0, w: 1.0]`.
     #[inline]
     pub fn unit_w() -> Self {
         Self(0.0, 0.0, 0.0, 1.0)
     }
 
+    /// Creates a new `Vec4` with all elements set to `v`.
     #[inline]
     pub fn splat(v: f32) -> Self {
         Self(v, v, v, v)
     }
 
+    /// Creates a `Vec3` from the first three elements of the `Vec4`,
+    /// removing `w`.
     #[inline]
     pub fn truncate(self) -> Vec3 {
         Vec3::new(self.0, self.1, self.2)
     }
 
+    /// Returns element `x`.
     #[inline]
     pub fn x(self) -> f32 {
         self.0
     }
 
+    /// Returns element `y`.
     #[inline]
     pub fn y(self) -> f32 {
         self.1
     }
 
+    /// Returns element `z`.
     #[inline]
     pub fn z(self) -> f32 {
         self.2
     }
 
+    /// Returns element `w`.
     #[inline]
     pub fn w(self) -> f32 {
         self.3
     }
 
+    /// Sets element `x`.
     #[inline]
     pub fn set_x(&mut self, x: f32) {
         self.0 = x;
     }
 
+    /// Sets element `y`.
     #[inline]
     pub fn set_y(&mut self, y: f32) {
         self.1 = y;
     }
 
+    /// Sets element `z`.
     #[inline]
     pub fn set_z(&mut self, z: f32) {
         self.2 = z;
     }
 
+    /// Sets element `w`.
     #[inline]
     pub fn set_w(&mut self, w: f32) {
         self.3 = w;
     }
 
+    /// Returns a `Vec4` with all elements set to the value of element `x`.
     #[inline]
     pub(crate) fn dup_x(self) -> Self {
         Self(self.0, self.0, self.0, self.0)
     }
 
+    /// Returns a `Vec4` with all elements set to the value of element `y`.
     #[inline]
     pub(crate) fn dup_y(self) -> Self {
         Self(self.1, self.1, self.1, self.1)
     }
 
+    /// Returns a `Vec4` with all elements set to the value of element `z`.
     #[inline]
     pub(crate) fn dup_z(self) -> Self {
         Self(self.2, self.2, self.2, self.2)
     }
 
+    /// Returns a `Vec4` with all elements set to the value of element `w`.
     #[inline]
     pub(crate) fn dup_w(self) -> Self {
         Self(self.3, self.3, self.3, self.3)
     }
 
+    /// Computes the 4D dot product of the `Vec4` and `rhs`.
     #[inline]
     pub fn dot(self, rhs: Self) -> f32 {
         (self.0 * rhs.0) + (self.1 * rhs.1) + (self.2 * rhs.2) + (self.3 * rhs.3)
     }
 
+    /// Computes the 4D length of the `Vec4`.
     #[inline]
     pub fn length(self) -> f32 {
         self.dot(self).sqrt()
     }
 
+    /// Computes the squared 4D length of the `Vec4`.
+    ///
+    /// This is generally faster than `Vec4::length()` as it avoids a square
+    /// root operation.
     #[inline]
     pub fn length_squared(self) -> f32 {
         self.dot(self)
     }
 
+    /// Computes `1.0 / Vec4::length()`.
+    ///
+    /// For valid results, the `Vec4` must _not_ be of length zero.
     #[inline]
     pub fn length_reciprocal(self) -> f32 {
         1.0 / self.length()
     }
 
+    /// Returns the `Vec4` normalized to length 1.0.
+    ///
+    /// For valid results, the `Vec4` must _not_ be of length zero.
     #[inline]
     pub fn normalize(self) -> Self {
         self * self.length_reciprocal()
     }
 
+    /// Returns the vertical minimum of the `Vec4` and `rhs`.
+    ///
+    /// In other words, this computes
+    /// `[x: min(x1, x2), y: min(y1, y2), z: min(z1, z2), w: min(w1, w2)]`,
+    /// taking the minimum of each element individually.
     #[inline]
     pub fn min(self, rhs: Self) -> Self {
         Self(
@@ -157,6 +196,11 @@ impl Vec4 {
         )
     }
 
+    /// Returns the vertical maximum of the `Vec4` and `rhs`.
+    ///
+    /// In other words, this computes
+    /// `[x: max(x1, x2), y: max(y1, y2), z: max(z1, z2), w: max(w1, w2)]`,
+    /// taking the maximum of each element individually.
     #[inline]
     pub fn max(self, rhs: Self) -> Self {
         Self(
@@ -167,16 +211,26 @@ impl Vec4 {
         )
     }
 
+    /// Returns the minimum of all four elements in the `Vec4`.
+    ///
+    /// In other words, this computes `min(x, y, z, w)`.
     #[inline]
     pub fn min_element(self) -> f32 {
         self.0.min(self.1.min(self.2.min(self.3)))
     }
 
+    /// Returns the maximum of all four elements in the `Vec4`.
+    ///
+    /// In other words, this computes `max(x, y, z, w)`.
     #[inline]
     pub fn max_element(self) -> f32 {
         self.0.max(self.1.max(self.2.min(self.3)))
     }
 
+    /// Performs a vertical `==` comparison between the `Vec4` and `rhs`,
+    /// returning a `Vec4Mask` of the results.
+    ///
+    /// In other words, this computes `[x1 == x2, y1 == y2, z1 == z2, w1 == w2]`.
     #[inline]
     pub fn cmpeq(self, rhs: Self) -> Vec4Mask {
         Vec4Mask::new(
@@ -187,6 +241,10 @@ impl Vec4 {
         )
     }
 
+    /// Performs a vertical `!=` comparison between the `Vec4` and `rhs`,
+    /// returning a `Vec4Mask` of the results.
+    ///
+    /// In other words, this computes `[x1 != x2, y1 != y2, z1 != z2, w1 != w2]`.
     #[inline]
     pub fn cmpne(self, rhs: Self) -> Vec4Mask {
         Vec4Mask::new(
@@ -197,6 +255,10 @@ impl Vec4 {
         )
     }
 
+    /// Performs a vertical `>=` comparison between the `Vec4` and `rhs`,
+    /// returning a `Vec4Mask` of the results.
+    ///
+    /// In other words, this computes `[x1 >= x2, y1 >= y2, z1 >= z2, w1 >= w2]`.
     #[inline]
     pub fn cmpge(self, rhs: Self) -> Vec4Mask {
         Vec4Mask::new(
@@ -207,6 +269,10 @@ impl Vec4 {
         )
     }
 
+    /// Performs a vertical `>` comparison between the `Vec4` and `rhs`,
+    /// returning a `Vec4Mask` of the results.
+    ///
+    /// In other words, this computes `[x1 > x2, y1 > y2, z1 > z2, w1 > w2]`.
     #[inline]
     pub fn cmpgt(self, rhs: Self) -> Vec4Mask {
         Vec4Mask::new(
@@ -217,6 +283,10 @@ impl Vec4 {
         )
     }
 
+    /// Performs a vertical `<=` comparison between the `Vec4` and `rhs`,
+    /// returning a `Vec4Mask` of the results.
+    ///
+    /// In other words, this computes `[x1 <= x2, y1 <= y2, z1 <= z2, w1 <= w2]`.
     #[inline]
     pub fn cmple(self, rhs: Self) -> Vec4Mask {
         Vec4Mask::new(
@@ -227,6 +297,10 @@ impl Vec4 {
         )
     }
 
+    /// Performs a vertical `<` comparison between the `Vec4` and `rhs`,
+    /// returning a `Vec4Mask` of the results.
+    ///
+    /// In other words, this computes `[x1 < x2, y1 < y2, z1 < z2, w1 < w2]`.
     #[inline]
     pub fn cmplt(self, rhs: Self) -> Vec4Mask {
         Vec4Mask::new(
@@ -237,11 +311,21 @@ impl Vec4 {
         )
     }
 
+    /// Creates a new `Vec4` from the first four values in `slice`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `slice` is less than four elements long.
     #[inline]
     pub fn from_slice_unaligned(slice: &[f32]) -> Self {
         Self(slice[0], slice[1], slice[2], slice[3])
     }
 
+    /// Writes the elements of the `Vec4` to the first four elements in `slice`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `slice` is less than four elements long.
     #[inline]
     pub fn write_to_slice_unaligned(self, slice: &mut [f32]) {
         slice[0] = self.0;
