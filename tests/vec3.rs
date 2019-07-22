@@ -271,6 +271,86 @@ fn test_vec3mask_select() {
     );
 }
 
+#[test]
+fn test_vec3mask_and() {
+    assert_eq!(
+        (
+            Vec3Mask::new(false, false, false)
+            & Vec3Mask::new(false, false, false)
+        ).bitmask(),
+        0b000,
+    );
+    assert_eq!(
+        (
+            Vec3Mask::new(true, true, true)
+            & Vec3Mask::new(true, true, true)
+        ).bitmask(),
+        0b111,
+    );
+    assert_eq!(
+        (
+            Vec3Mask::new(true, false, true)
+            & Vec3Mask::new(false, true, false)
+        ).bitmask(),
+        0b000,
+    );
+    assert_eq!(
+        (
+            Vec3Mask::new(true, false, true)
+            & Vec3Mask::new(true, true, true)
+        ).bitmask(),
+        0b101,
+    );
+
+    let mut mask = Vec3Mask::new(true, true, false);
+    mask &= Vec3Mask::new(true, false, false);
+    assert_eq!(mask.bitmask(), 0b001);
+}
+
+#[test]
+fn test_vec3mask_or() {
+    assert_eq!(
+        (
+            Vec3Mask::new(false, false, false)
+            | Vec3Mask::new(false, false, false)
+        ).bitmask(),
+        0b000,
+    );
+    assert_eq!(
+        (
+            Vec3Mask::new(true, true, true)
+            | Vec3Mask::new(true, true, true)
+        ).bitmask(),
+        0b111,
+    );
+    assert_eq!(
+        (
+            Vec3Mask::new(true, false, true)
+            | Vec3Mask::new(false, true, false)
+        ).bitmask(),
+        0b111,
+    );
+    assert_eq!(
+        (
+            Vec3Mask::new(true, false, true)
+            | Vec3Mask::new(true, false, true)
+        ).bitmask(),
+        0b101,
+    );
+
+    let mut mask = Vec3Mask::new(true, true, false);
+    mask |= Vec3Mask::new(true, false, false);
+    assert_eq!(mask.bitmask(), 0b011);
+}
+
+#[test]
+fn test_vec3mask_not() {
+    assert_eq!((!Vec3Mask::new(false, false, false)).bitmask(), 0b111);
+    assert_eq!((!Vec3Mask::new(true, true, true)).bitmask(), 0b000);
+    assert_eq!((!Vec3Mask::new(true, false, true)).bitmask(), 0b010);
+    assert_eq!((!Vec3Mask::new(false, true, false)).bitmask(), 0b101);
+}
+
 #[cfg(feature = "rand")]
 #[test]
 fn test_vec3_rand() {

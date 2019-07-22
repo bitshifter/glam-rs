@@ -546,3 +546,51 @@ impl Default for Vec3Mask {
         unsafe { Self(_mm_setzero_ps()) }
     }
 }
+
+impl BitAnd for Vec3Mask {
+    type Output = Self;
+
+    #[inline]
+    fn bitand(self, rhs: Self) -> Self {
+        unsafe {
+            Self(_mm_and_ps(self.0, rhs.0))
+        }
+    }
+}
+
+impl BitAndAssign for Vec3Mask {
+    fn bitand_assign(&mut self, rhs: Self) {
+        *self = *self & rhs
+    }
+}
+
+impl BitOr for Vec3Mask {
+    type Output = Self;
+
+    #[inline]
+    fn bitor(self, rhs: Self) -> Self {
+        unsafe {
+            Self(_mm_or_ps(self.0, rhs.0))
+        }
+    }
+}
+
+impl BitOrAssign for Vec3Mask {
+    fn bitor_assign(&mut self, rhs: Self) {
+        *self = *self | rhs
+    }
+}
+
+impl Not for Vec3Mask {
+    type Output = Self;
+
+    #[inline]
+    fn not(self) -> Self {
+        unsafe {
+            Self(_mm_andnot_ps(
+                self.0,
+                _mm_set_ps1(f32::from_bits(0xff_ff_ff_ff))
+            ))
+        }
+    }
+}

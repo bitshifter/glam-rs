@@ -307,6 +307,86 @@ fn test_vec4mask_select() {
     );
 }
 
+#[test]
+fn test_vec4mask_and() {
+    assert_eq!(
+        (
+            Vec4Mask::new(false, false, false, false)
+            & Vec4Mask::new(false, false, false, false)
+        ).bitmask(),
+        0b0000,
+    );
+    assert_eq!(
+        (
+            Vec4Mask::new(true, true, true, true)
+            & Vec4Mask::new(true, true, true, true)
+        ).bitmask(),
+        0b1111,
+    );
+    assert_eq!(
+        (
+            Vec4Mask::new(true, false, true, false)
+            & Vec4Mask::new(false, true, false, true)
+        ).bitmask(),
+        0b0000,
+    );
+    assert_eq!(
+        (
+            Vec4Mask::new(true, false, true, true)
+            & Vec4Mask::new(true, true, true, false)
+        ).bitmask(),
+        0b0101,
+    );
+
+    let mut mask = Vec4Mask::new(true, true, false, false);
+    mask &= Vec4Mask::new(true, false, true, false);
+    assert_eq!(mask.bitmask(), 0b0001);
+}
+
+#[test]
+fn test_vec4mask_or() {
+    assert_eq!(
+        (
+            Vec4Mask::new(false, false, false, false)
+            | Vec4Mask::new(false, false, false, false)
+        ).bitmask(),
+        0b0000,
+    );
+    assert_eq!(
+        (
+            Vec4Mask::new(true, true, true, true)
+            | Vec4Mask::new(true, true, true, true)
+        ).bitmask(),
+        0b1111,
+    );
+    assert_eq!(
+        (
+            Vec4Mask::new(true, false, true, false)
+            | Vec4Mask::new(false, true, false, true)
+        ).bitmask(),
+        0b1111,
+    );
+    assert_eq!(
+        (
+            Vec4Mask::new(true, false, true, false)
+            | Vec4Mask::new(true, false, true, false)
+        ).bitmask(),
+        0b0101,
+    );
+
+    let mut mask = Vec4Mask::new(true, true, false, false);
+    mask |= Vec4Mask::new(true, false, true, false);
+    assert_eq!(mask.bitmask(), 0b0111);
+}
+
+#[test]
+fn test_vec4mask_not() {
+    assert_eq!((!Vec4Mask::new(false, false, false, false)).bitmask(), 0b1111);
+    assert_eq!((!Vec4Mask::new(true, true, true, true)).bitmask(), 0b0000);
+    assert_eq!((!Vec4Mask::new(true, false, true, false)).bitmask(), 0b1010);
+    assert_eq!((!Vec4Mask::new(false, true, false, true)).bitmask(), 0b0101);
+}
+
 #[cfg(feature = "serde")]
 #[test]
 fn test_vec4_serde() {
