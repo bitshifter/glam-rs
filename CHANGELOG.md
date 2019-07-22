@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+### Added
+* Added `Vec2Mask::new`, `Vec3Mask::new` and `Vec4Mask::new` methods.
+* Added method documentation for `Vec4` and `Vec4Mask` types.
 
 ## [0.7.1] - 2019-07-08
 ### Fixed
@@ -49,7 +52,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.7.0...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.7.1...HEAD
 [0.7.1]: https://github.com/bitshifter/glam-rs/compare/0.7.0...0.7.1
 [0.7.0]: https://github.com/bitshifter/glam-rs/compare/0.6.1...0.7.0
 [0.6.1]: https://github.com/bitshifter/glam-rs/compare/0.6.0...0.6.1
