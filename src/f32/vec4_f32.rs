@@ -550,6 +550,10 @@ impl Distribution<Vec4> for Standard {
     }
 }
 
+/// A 4-dimensional vector mask.
+///
+/// This type is typically created by comparison methods on `Vec4`.  It is
+/// essentially a vector of four boolean values.
 #[derive(Clone, Copy, Default)]
 // if compiling with simd enabled assume alignment needs to match the simd type
 #[cfg_attr(not(feature = "scalar-math"), repr(align(16)))]
@@ -557,6 +561,7 @@ impl Distribution<Vec4> for Standard {
 pub struct Vec4Mask(u32, u32, u32, u32);
 
 impl Vec4Mask {
+    /// Creates a new `Vec4Mask`.
     pub(crate) fn new(x: bool, y: bool, z: bool, w: bool) -> Self {
         const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
         Self(
@@ -573,21 +578,38 @@ impl Vec4Mask {
         self.bitmask()
     }
 
+    /// Returns a bitmask with the lowest four bits set from the elements of
+    /// the `Vec4Mask`.
+    ///
+    /// A true element results in a `1` bit and a false element in a `0` bit.
+    /// Element `x` goes into the first lowest bit, element `y` into the
+    /// second, etc.
     #[inline]
     pub fn bitmask(&self) -> u32 {
         (self.0 & 0x1) | (self.1 & 0x1) << 1 | (self.2 & 0x1) << 2 | (self.3 & 0x1) << 3
     }
 
+    /// Returns true if any of the elements are true, false otherwise.
+    ///
+    /// In other words: `x || y || z || w`.
     #[inline]
     pub fn any(&self) -> bool {
         (self.0 != 0) || (self.1 != 0) || (self.2 != 0) || (self.3 != 0)
     }
 
+    /// Returns true if all the elements are true, false otherwise.
+    ///
+    /// In other words: `x && y && z && w`.
     #[inline]
     pub fn all(&self) -> bool {
         (self.0 != 0) && (self.1 != 0) && (self.2 != 0) && (self.3 != 0)
     }
 
+    /// Creates a new `Vec4` from the elements in `if_true` and `if_false`,
+    /// selecting which to use for each element based on the `Vec4Mask`.
+    ///
+    /// A true element in the mask uses the corresponding element from
+    /// `if_true`, and false uses the element from `if_false`.
     #[inline]
     pub fn select(self, if_true: Vec4, if_false: Vec4) -> Vec4 {
         Vec4(
