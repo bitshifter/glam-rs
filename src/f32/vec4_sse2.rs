@@ -597,7 +597,8 @@ impl Distribution<Vec4> for Standard {
 
 /// A 4-dimensional vector mask.
 ///
-/// This type is typically created by comparison methods on `Vec4`.
+/// This type is typically created by comparison methods on `Vec4`.  It is
+/// essentially a vector of four boolean values.
 #[derive(Clone, Copy)]
 #[repr(C)]
 pub struct Vec4Mask(__m128);
@@ -609,21 +610,38 @@ impl Vec4Mask {
         self.bitmask()
     }
 
+    /// Returns a bitmask with the lowest four bits set from the elements of
+    /// the `Vec4Mask`.
+    ///
+    /// A true element results in a `1` bit and a false element in a `0` bit.
+    /// Element `x` goes into the first lowest bit, element `y` into the
+    /// second, etc.
     #[inline]
     pub fn bitmask(self) -> u32 {
         unsafe { (_mm_movemask_ps(self.0) as u32) }
     }
 
+    /// Returns true if any of the elements are true, false otherwise.
+    ///
+    /// In other words: `x || y || z || w`.
     #[inline]
     pub fn any(self) -> bool {
         unsafe { _mm_movemask_ps(self.0) != 0 }
     }
 
+    /// Returns true if all the elements are true, false otherwise.
+    ///
+    /// In other words: `x && y && z && w`.
     #[inline]
     pub fn all(self) -> bool {
         unsafe { _mm_movemask_ps(self.0) == 0xf }
     }
 
+    /// Creates a new `Vec4` from the elements in `if_true` and `if_false`,
+    /// selecting which to use for each element based on the `Vec4Mask`.
+    ///
+    /// A true element in the mask uses the corresponding element from
+    /// `if_true`, and false uses the element from `if_false`.
     #[inline]
     pub fn select(self, if_true: Vec4, if_false: Vec4) -> Vec4 {
         unsafe {
