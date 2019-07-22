@@ -239,6 +239,54 @@ fn test_vec2mask_select() {
     );
 }
 
+#[test]
+fn test_vec2mask_and() {
+    assert_eq!(
+        (Vec2Mask::new(false, false) & Vec2Mask::new(false, false)).bitmask(),
+        0b00,
+    );
+    assert_eq!(
+        (Vec2Mask::new(true, true) & Vec2Mask::new(true, false)).bitmask(),
+        0b01,
+    );
+    assert_eq!(
+        (Vec2Mask::new(true, false) & Vec2Mask::new(false, true)).bitmask(),
+        0b00,
+    );
+    assert_eq!(
+        (Vec2Mask::new(true, true) & Vec2Mask::new(true, true)).bitmask(),
+        0b11,
+    );
+}
+
+#[test]
+fn test_vec2mask_or() {
+    assert_eq!(
+        (Vec2Mask::new(false, false) | Vec2Mask::new(false, false)).bitmask(),
+        0b00,
+    );
+    assert_eq!(
+        (Vec2Mask::new(false, false) | Vec2Mask::new(false, true)).bitmask(),
+        0b10,
+    );
+    assert_eq!(
+        (Vec2Mask::new(true, false) | Vec2Mask::new(false, true)).bitmask(),
+        0b11,
+    );
+    assert_eq!(
+        (Vec2Mask::new(true, true) | Vec2Mask::new(true, true)).bitmask(),
+        0b11,
+    );
+}
+
+#[test]
+fn test_vec2mask_not() {
+    assert_eq!((!Vec2Mask::new(false, false)).bitmask(), 0b11);
+    assert_eq!((!Vec2Mask::new(true, false)).bitmask(), 0b10);
+    assert_eq!((!Vec2Mask::new(false, true)).bitmask(), 0b01);
+    assert_eq!((!Vec2Mask::new(true, true)).bitmask(), 0b00);
+}
+
 #[cfg(feature = "rand")]
 #[test]
 fn test_vec2_rand() {

@@ -402,3 +402,39 @@ impl Vec2Mask {
         )
     }
 }
+
+impl BitAnd for Vec2Mask {
+    type Output = Vec2Mask;
+
+    #[inline]
+    fn bitand(self, rhs: Vec2Mask) -> Vec2Mask {
+        Vec2Mask(
+            self.0 & rhs.0,
+            self.1 & rhs.1,
+        )
+    }
+}
+
+impl BitOr for Vec2Mask {
+    type Output = Vec2Mask;
+
+    #[inline]
+    fn bitor(self, rhs: Vec2Mask) -> Vec2Mask {
+        Vec2Mask(
+            self.0 | rhs.0,
+            self.1 | rhs.1,
+        )
+    }
+}
+
+impl Not for Vec2Mask {
+    type Output = Vec2Mask;
+
+    #[inline]
+    fn not(self) -> Vec2Mask {
+        Vec2Mask(
+            !self.0,
+            !self.1,
+        )
+    }
+}
