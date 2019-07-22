@@ -257,6 +257,56 @@ fn test_vec4_sign() {
 //     assert_eq!(vec4(4.0, 4.0, 4.0, 4.0), a.dup_w());
 // }
 
+#[test]
+fn test_vec4mask_bitmask() {
+    assert_eq!(Vec4Mask::new(false, false, false, false).bitmask(), 0b0000);
+    assert_eq!(Vec4Mask::new(false, false, true, true).bitmask(),   0b1100);
+    assert_eq!(Vec4Mask::new(true, true, false, false).bitmask(),   0b0011);
+    assert_eq!(Vec4Mask::new(false, true, false, true).bitmask(),   0b1010);
+    assert_eq!(Vec4Mask::new(true, false, true, false).bitmask(),   0b0101);
+    assert_eq!(Vec4Mask::new(true, true, true, true).bitmask(),     0b1111);
+}
+
+#[test]
+fn test_vec4mask_any() {
+    assert_eq!(Vec4Mask::new(false, false, false, false).any(), false);
+    assert_eq!(Vec4Mask::new(true, false, false, false).any(), true);
+    assert_eq!(Vec4Mask::new(false, true, false, false).any(), true);
+    assert_eq!(Vec4Mask::new(false, false, true, false).any(), true);
+    assert_eq!(Vec4Mask::new(false, false, false, true).any(), true);
+}
+
+#[test]
+fn test_vec4mask_all() {
+    assert_eq!(Vec4Mask::new(true, true, true, true).all(), true);
+    assert_eq!(Vec4Mask::new(false, true, true, true).all(), false);
+    assert_eq!(Vec4Mask::new(true, false, true, true).all(), false);
+    assert_eq!(Vec4Mask::new(true, true, false, true).all(), false);
+    assert_eq!(Vec4Mask::new(true, true, true, false).all(), false);
+}
+
+#[test]
+fn test_vec4mask_select() {
+    let a = Vec4::new(1.0, 2.0, 3.0, 4.0);
+    let b = Vec4::new(5.0, 6.0, 7.0, 8.0);
+    assert_eq!(
+        Vec4Mask::new(true, true, true, true).select(a, b),
+        Vec4::new(1.0, 2.0, 3.0, 4.0),
+    );
+    assert_eq!(
+        Vec4Mask::new(true, false, true, false).select(a, b),
+        Vec4::new(1.0, 6.0, 3.0, 8.0),
+    );
+    assert_eq!(
+        Vec4Mask::new(false, true, false, true).select(a, b),
+        Vec4::new(5.0, 2.0, 7.0, 4.0),
+    );
+    assert_eq!(
+        Vec4Mask::new(false, false, false, false).select(a, b),
+        Vec4::new(5.0, 6.0, 7.0, 8.0),
+    );
+}
+
 #[cfg(feature = "serde")]
 #[test]
 fn test_vec4_serde() {

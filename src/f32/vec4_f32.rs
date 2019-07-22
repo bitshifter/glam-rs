@@ -562,7 +562,8 @@ pub struct Vec4Mask(u32, u32, u32, u32);
 
 impl Vec4Mask {
     /// Creates a new `Vec4Mask`.
-    pub(crate) fn new(x: bool, y: bool, z: bool, w: bool) -> Self {
+    #[inline]
+    pub fn new(x: bool, y: bool, z: bool, w: bool) -> Self {
         const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
         Self(
             MASK[x as usize],
