@@ -604,6 +604,20 @@ impl Distribution<Vec4> for Standard {
 pub struct Vec4Mask(__m128);
 
 impl Vec4Mask {
+    /// Creates a new `Vec4Mask`.
+    #[inline]
+    pub fn new(x: bool, y: bool, z: bool, w: bool) -> Self {
+        const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
+        unsafe {
+            Self(_mm_set_ps(
+                f32::from_bits(MASK[w as usize]),
+                f32::from_bits(MASK[z as usize]),
+                f32::from_bits(MASK[y as usize]),
+                f32::from_bits(MASK[x as usize]),
+            ))
+        }
+    }
+
     #[inline]
     #[deprecated(since = "0.7.1", note = "please use `bitmask` instead")]
     pub fn mask(self) -> u32 {

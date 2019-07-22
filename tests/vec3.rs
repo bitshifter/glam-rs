@@ -223,6 +223,54 @@ fn test_vec3b() {
     assert!(b.cmpeq(Vec3::splat(1.0)).all());
 }
 
+#[test]
+fn test_vec3mask_bitmask() {
+    assert_eq!(Vec3Mask::new(false, false, false).bitmask(), 0b000);
+    assert_eq!(Vec3Mask::new(true, false, false).bitmask(),  0b001);
+    assert_eq!(Vec3Mask::new(false, true, true).bitmask(),   0b110);
+    assert_eq!(Vec3Mask::new(false, true, false).bitmask(),  0b010);
+    assert_eq!(Vec3Mask::new(true, false, true).bitmask(),   0b101);
+    assert_eq!(Vec3Mask::new(true, true, true).bitmask(),    0b111);
+}
+
+#[test]
+fn test_vec3mask_any() {
+    assert_eq!(Vec3Mask::new(false, false, false).any(), false);
+    assert_eq!(Vec3Mask::new(true, false, false).any(), true);
+    assert_eq!(Vec3Mask::new(false, true, false).any(), true);
+    assert_eq!(Vec3Mask::new(false, false, true).any(), true);
+}
+
+#[test]
+fn test_vec3mask_all() {
+    assert_eq!(Vec3Mask::new(true, true, true).all(), true);
+    assert_eq!(Vec3Mask::new(false, true, true).all(), false);
+    assert_eq!(Vec3Mask::new(true, false, true).all(), false);
+    assert_eq!(Vec3Mask::new(true, true, false).all(), false);
+}
+
+#[test]
+fn test_vec3mask_select() {
+    let a = Vec3::new(1.0, 2.0, 3.0);
+    let b = Vec3::new(4.0, 5.0, 6.0);
+    assert_eq!(
+        Vec3Mask::new(true, true, true).select(a, b),
+        Vec3::new(1.0, 2.0, 3.0),
+    );
+    assert_eq!(
+        Vec3Mask::new(true, false, true).select(a, b),
+        Vec3::new(1.0, 5.0, 3.0),
+    );
+    assert_eq!(
+        Vec3Mask::new(false, true, false).select(a, b),
+        Vec3::new(4.0, 2.0, 6.0),
+    );
+    assert_eq!(
+        Vec3Mask::new(false, false, false).select(a, b),
+        Vec3::new(4.0, 5.0, 6.0),
+    );
+}
+
 #[cfg(feature = "rand")]
 #[test]
 fn test_vec3_rand() {
