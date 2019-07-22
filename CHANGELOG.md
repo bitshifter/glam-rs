@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 ## [Unreleased]
 ### Added
 * Added `Vec2Mask::new`, `Vec3Mask::new` and `Vec4Mask::new` methods.
+* Implemented `std::ops` `BitAnd`, `BitAndAssign`, `BitOr`, `BitOrAssign`
+  and `Not` traits for `Vec2Mask`, `Vec3Mask` and `Vec4Mask`.
 * Added method documentation for `Vec4` and `Vec4Mask` types.
 
 ## [0.7.1] - 2019-07-08
