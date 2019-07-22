@@ -370,7 +370,8 @@ impl Distribution<Vec3> for Standard {
 pub struct Vec3Mask(u32, u32, u32);
 
 impl Vec3Mask {
-    pub(crate) fn new(x: bool, y: bool, z: bool) -> Self {
+    #[inline]
+    pub fn new(x: bool, y: bool, z: bool) -> Self {
         const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
         Self(MASK[x as usize], MASK[y as usize], MASK[z as usize])
     }

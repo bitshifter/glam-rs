@@ -367,7 +367,8 @@ pub struct Vec2Mask(u32, u32);
 pub type Vec2b = Vec2Mask;
 
 impl Vec2Mask {
-    pub(crate) fn new(x: bool, y: bool) -> Self {
+    #[inline]
+    pub fn new(x: bool, y: bool) -> Self {
         const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
         Self(MASK[x as usize], MASK[y as usize])
     }
