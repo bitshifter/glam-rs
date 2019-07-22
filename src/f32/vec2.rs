@@ -404,35 +404,47 @@ impl Vec2Mask {
 }
 
 impl BitAnd for Vec2Mask {
-    type Output = Vec2Mask;
+    type Output = Self;
 
     #[inline]
-    fn bitand(self, rhs: Vec2Mask) -> Vec2Mask {
-        Vec2Mask(
+    fn bitand(self, rhs: Self) -> Self {
+        Self(
             self.0 & rhs.0,
             self.1 & rhs.1,
         )
     }
 }
 
+impl BitAndAssign for Vec2Mask {
+    fn bitand_assign(&mut self, rhs: Self) {
+        *self = *self & rhs
+    }
+}
+
 impl BitOr for Vec2Mask {
-    type Output = Vec2Mask;
+    type Output = Self;
 
     #[inline]
-    fn bitor(self, rhs: Vec2Mask) -> Vec2Mask {
-        Vec2Mask(
+    fn bitor(self, rhs: Self) -> Self {
+        Self(
             self.0 | rhs.0,
             self.1 | rhs.1,
         )
     }
 }
 
+impl BitOrAssign for Vec2Mask {
+    fn bitor_assign(&mut self, rhs: Self) {
+        *self = *self | rhs
+    }
+}
+
 impl Not for Vec2Mask {
-    type Output = Vec2Mask;
+    type Output = Self;
 
     #[inline]
-    fn not(self) -> Vec2Mask {
-        Vec2Mask(
+    fn not(self) -> Self {
+        Self(
             !self.0,
             !self.1,
         )

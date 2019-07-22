@@ -301,6 +301,10 @@ fn test_vec3mask_and() {
         ).bitmask(),
         0b101,
     );
+
+    let mut mask = Vec3Mask::new(true, true, false);
+    mask &= Vec3Mask::new(true, false, false);
+    assert_eq!(mask.bitmask(), 0b001);
 }
 
 #[test]
@@ -333,6 +337,10 @@ fn test_vec3mask_or() {
         ).bitmask(),
         0b101,
     );
+
+    let mut mask = Vec3Mask::new(true, true, false);
+    mask |= Vec3Mask::new(true, false, false);
+    assert_eq!(mask.bitmask(), 0b011);
 }
 
 #[test]

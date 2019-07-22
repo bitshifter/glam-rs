@@ -257,6 +257,10 @@ fn test_vec2mask_and() {
         (Vec2Mask::new(true, true) & Vec2Mask::new(true, true)).bitmask(),
         0b11,
     );
+
+    let mut mask = Vec2Mask::new(true, true);
+    mask &= Vec2Mask::new(true, false);
+    assert_eq!(mask.bitmask(), 0b01);
 }
 
 #[test]
@@ -277,6 +281,10 @@ fn test_vec2mask_or() {
         (Vec2Mask::new(true, true) | Vec2Mask::new(true, true)).bitmask(),
         0b11,
     );
+
+    let mut mask = Vec2Mask::new(true, true);
+    mask |= Vec2Mask::new(true, false);
+    assert_eq!(mask.bitmask(), 0b11);
 }
 
 #[test]

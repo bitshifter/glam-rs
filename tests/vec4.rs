@@ -337,6 +337,10 @@ fn test_vec4mask_and() {
         ).bitmask(),
         0b0101,
     );
+
+    let mut mask = Vec4Mask::new(true, true, false, false);
+    mask &= Vec4Mask::new(true, false, true, false);
+    assert_eq!(mask.bitmask(), 0b0001);
 }
 
 #[test]
@@ -369,6 +373,10 @@ fn test_vec4mask_or() {
         ).bitmask(),
         0b0101,
     );
+
+    let mut mask = Vec4Mask::new(true, true, false, false);
+    mask |= Vec4Mask::new(true, false, true, false);
+    assert_eq!(mask.bitmask(), 0b0111);
 }
 
 #[test]

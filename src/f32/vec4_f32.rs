@@ -623,11 +623,11 @@ impl Vec4Mask {
 }
 
 impl BitAnd for Vec4Mask {
-    type Output = Vec4Mask;
+    type Output = Self;
 
     #[inline]
-    fn bitand(self, rhs: Vec4Mask) -> Vec4Mask {
-        Vec4Mask(
+    fn bitand(self, rhs: Self) -> Self {
+        Self(
             self.0 & rhs.0,
             self.1 & rhs.1,
             self.2 & rhs.2,
@@ -636,12 +636,19 @@ impl BitAnd for Vec4Mask {
     }
 }
 
+impl BitAndAssign for Vec4Mask {
+    fn bitand_assign(&mut self, rhs: Self) {
+        *self = *self & rhs
+    }
+}
+
+
 impl BitOr for Vec4Mask {
-    type Output = Vec4Mask;
+    type Output = Self;
 
     #[inline]
-    fn bitor(self, rhs: Vec4Mask) -> Vec4Mask {
-        Vec4Mask(
+    fn bitor(self, rhs: Self) -> Self {
+        Self(
             self.0 | rhs.0,
             self.1 | rhs.1,
             self.2 | rhs.2,
@@ -650,12 +657,18 @@ impl BitOr for Vec4Mask {
     }
 }
 
+impl BitOrAssign for Vec4Mask {
+    fn bitor_assign(&mut self, rhs: Self) {
+        *self = *self | rhs
+    }
+}
+
 impl Not for Vec4Mask {
-    type Output = Vec4Mask;
+    type Output = Self;
 
     #[inline]
-    fn not(self) -> Vec4Mask {
-        Vec4Mask(
+    fn not(self) -> Self {
+        Self(
             !self.0,
             !self.1,
             !self.2,
