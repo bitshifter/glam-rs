@@ -122,25 +122,25 @@ impl Vec4 {
 
     /// Returns a `Vec4` with all elements set to the value of element `x`.
     #[inline]
-    pub(crate) fn dup_x(self) -> Self {
+    pub fn dup_x(self) -> Self {
         Self(self.0, self.0, self.0, self.0)
     }
 
     /// Returns a `Vec4` with all elements set to the value of element `y`.
     #[inline]
-    pub(crate) fn dup_y(self) -> Self {
+    pub fn dup_y(self) -> Self {
         Self(self.1, self.1, self.1, self.1)
     }
 
     /// Returns a `Vec4` with all elements set to the value of element `z`.
     #[inline]
-    pub(crate) fn dup_z(self) -> Self {
+    pub fn dup_z(self) -> Self {
         Self(self.2, self.2, self.2, self.2)
     }
 
     /// Returns a `Vec4` with all elements set to the value of element `w`.
     #[inline]
-    pub(crate) fn dup_w(self) -> Self {
+    pub fn dup_w(self) -> Self {
         Self(self.3, self.3, self.3, self.3)
     }
 

@@ -248,14 +248,14 @@ fn test_vec4_sign() {
     assert_eq!((-Vec4::one()).sign(), -Vec4::one());
 }
 
-// #[test]
-// fn dup_element() {
-//     let a = vec4(1.0, 2.0, 3.0, 4.0);
-//     assert_eq!(vec4(1.0, 1.0, 1.0, 1.0), a.dup_x());
-//     assert_eq!(vec4(2.0, 2.0, 2.0, 2.0), a.dup_y());
-//     assert_eq!(vec4(3.0, 3.0, 3.0, 3.0), a.dup_z());
-//     assert_eq!(vec4(4.0, 4.0, 4.0, 4.0), a.dup_w());
-// }
+#[test]
+fn dup_element() {
+    let a = vec4(1.0, 2.0, 3.0, 4.0);
+    assert_eq!(vec4(1.0, 1.0, 1.0, 1.0), a.dup_x());
+    assert_eq!(vec4(2.0, 2.0, 2.0, 2.0), a.dup_y());
+    assert_eq!(vec4(3.0, 3.0, 3.0, 3.0), a.dup_z());
+    assert_eq!(vec4(4.0, 4.0, 4.0, 4.0), a.dup_w());
+}
 
 #[test]
 fn test_vec4mask_bitmask() {

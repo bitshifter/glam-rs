@@ -175,25 +175,25 @@ impl Vec4 {
 
     /// Returns a `Vec4` with all elements set to the value of element `x`.
     #[inline]
-    pub(crate) fn dup_x(self) -> Self {
+    pub fn dup_x(self) -> Self {
         unsafe { Self(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_00)) }
     }
 
     /// Returns a `Vec4` with all elements set to the value of element `y`.
     #[inline]
-    pub(crate) fn dup_y(self) -> Self {
+    pub fn dup_y(self) -> Self {
         unsafe { Self(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_01)) }
     }
 
     /// Returns a `Vec4` with all elements set to the value of element `z`.
     #[inline]
-    pub(crate) fn dup_z(self) -> Self {
+    pub fn dup_z(self) -> Self {
         unsafe { Self(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_10)) }
     }
 
     /// Returns a `Vec4` with all elements set to the value of element `w`.
     #[inline]
-    pub(crate) fn dup_w(self) -> Self {
+    pub fn dup_w(self) -> Self {
         unsafe { Self(_mm_shuffle_ps(self.0, self.0, 0b11_11_11_11)) }
     }
 
