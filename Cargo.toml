@@ -38,7 +38,7 @@ rand = { version = "0.7", optional = true, default-features = false }
 serde = { version = "1.0", optional = true, features = ["derive"] }
 
 [dev-dependencies]
-criterion = "0.2"
+criterion = "0.3"
 rand_xoshiro = "0.4"
 serde_json = "1.0"
 
