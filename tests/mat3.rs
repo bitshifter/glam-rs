@@ -189,3 +189,29 @@ fn test_mat3_ops() {
     assert_ulps_eq!(m0, m0 * Mat3::identity());
     assert_ulps_eq!(m0, Mat3::identity() * m0);
 }
+
+#[cfg(feature = "serde")]
+#[test]
+fn test_mat3_serde() {
+    let a = Mat3::new(
+        vec3(1.0, 2.0, 3.0),
+        vec3(4.0, 5.0, 6.0),
+        vec3(7.0, 8.0, 9.0),
+    );
+    let serialized = serde_json::to_string(&a).unwrap();
+    assert_eq!(serialized, "[1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0]");
+    let deserialized = serde_json::from_str(&serialized).unwrap();
+    assert_eq!(a, deserialized);
+    let deserialized = serde_json::from_str::<Mat3>("[]");
+    assert!(deserialized.is_err());
+    let deserialized = serde_json::from_str::<Mat3>("[1.0]");
+    assert!(deserialized.is_err());
+    let deserialized = serde_json::from_str::<Mat3>("[1.0,2.0]");
+    assert!(deserialized.is_err());
+    let deserialized = serde_json::from_str::<Mat3>("[1.0,2.0,3.0]");
+    assert!(deserialized.is_err());
+    let deserialized = serde_json::from_str::<Mat3>("[1.0,2.0,3.0,4.0,5.0]");
+    assert!(deserialized.is_err());
+    let deserialized = serde_json::from_str::<Mat3>("[[1.0,2.0,3.0],[4.0,5.0,6.0],[7.0,8.0,9.0]]");
+    assert!(deserialized.is_err());
+}
