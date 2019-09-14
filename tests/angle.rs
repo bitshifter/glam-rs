@@ -1,6 +1,10 @@
 use approx::assert_ulps_eq;
 use glam::f32::{deg, rad, Angle};
 use std::f32::consts;
+#[cfg(feature = "rand")]
+use rand::{Rng, SeedableRng};
+#[cfg(feature = "rand")]
+use rand_xoshiro::Xoshiro256Plus;
 
 #[test]
 fn test_angle() {
@@ -47,8 +51,7 @@ fn test_angle() {
 #[cfg(feature = "rand")]
 #[test]
 fn test_angle_rnd() {
-    use rand::Rng;
-    let mut rng = rand::thread_rng();
+    let mut rng = Xoshiro256Plus::seed_from_u64(0);
     let a: Angle = rng.gen();
     assert!(a >= rad(0.0));
     assert!(a < rad(std::f32::consts::PI * 2.0));
