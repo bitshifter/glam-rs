@@ -390,7 +390,7 @@ impl Mat4 {
     fn look_to_lh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
         let f = dir.normalize();
         let s = up.cross(f).normalize();
-        let u = f.cross(s).normalize();
+        let u = f.cross(s);
         let (fx, fy, fz) = f.into();
         let (sx, sy, sz) = s.into();
         let (ux, uy, uz) = u.into();
