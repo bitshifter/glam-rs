@@ -389,17 +389,17 @@ impl Mat4 {
     // TODO: make public at some point
     fn look_to_lh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
         let f = dir.normalize();
+        let s = up.cross(f).normalize();
+        let u = f.cross(s);
         let (fx, fy, fz) = f.into();
-        let s = f.cross(up);
         let (sx, sy, sz) = s.into();
-        let u = s.cross(f);
         let (ux, uy, uz) = u.into();
-        Self {
-            x_axis: Vec4::new(sx, ux, -fx, 0.0),
-            y_axis: Vec4::new(sy, uy, -fy, 0.0),
-            z_axis: Vec4::new(sz, uz, -fz, 0.0),
-            w_axis: Vec4::new(-s.dot(eye), -u.dot(eye), f.dot(eye), 1.0),
-        }
+        Mat4::new(
+            Vec4::new(sx, ux, fx, 0.0),
+            Vec4::new(sy, uy, fy, 0.0),
+            Vec4::new(sz, uz, fz, 0.0),
+            Vec4::new(-s.dot(eye), -u.dot(eye), -f.dot(eye), 1.0),
+        )
     }
 
     #[inline]
