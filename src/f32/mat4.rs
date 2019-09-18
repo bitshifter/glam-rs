@@ -415,14 +415,15 @@ impl Mat4 {
     }
 
     #[inline]
-    /// Returns the equivalent of the common pespective function `gluPerspective`.
+    /// Builds a right-handed perspective projection matrix with [-1,1] depth range.
+    /// This is the equivalent of the common pespective function `gluPerspective` in OpenGL.
     /// See https://www.khronos.org/opengl/wiki/GluPerspective_code
-    pub fn perspective_glu(fovy: Angle, aspect: f32, nearz: f32, farz: f32) -> Mat4 {
-        let inv_length = 1.0 / (nearz - farz);
-        let f = 1.0 / (0.5 * fovy).tan();
-        let a = f / aspect;
-        let b = (nearz + farz) * inv_length;
-        let c = (2.0 * nearz * farz) * inv_length;
+    pub fn perspective_glu(fov_y: Angle, aspect_ratio: f32, z_near: f32, z_far: f32) -> Mat4 {
+        let inv_length = 1.0 / (z_near - z_far);
+        let f = 1.0 / (0.5 * fov_y).tan();
+        let a = f / aspect_ratio;
+        let b = (z_near + z_far) * inv_length;
+        let c = (2.0 * z_near * z_far) * inv_length;
         Mat4::new(
             Vec4::new(a, 0.0, 0.0, 0.0),
             Vec4::new(0.0, f, 0.0, 0.0),
@@ -431,45 +432,27 @@ impl Mat4 {
         )
     }
 
-    // #[inline]
-    // pub fn perspective_fov_lh(fovy: Angle, aspect: f32, nearz: f32, farz: f32) -> Self {
-    //     glam_assert!(nearz > 0.0 && farz > 0.0);
-    //     glam_assert!(fovy != Angle::from_radians(0.0));
-    //     glam_assert!(aspect != 0.0);
-    //     glam_assert!(farz != nearz);
+    /// Build infinite right-handed perspective projection matrix with [0,1] depth range.
+    pub fn perspective_infinite_rh(fov_y: Angle, aspect_ratio: f32, z_near: f32) -> Mat4 {
+        let f = 1.0 / (0.5 * fov_y).tan();
+        Mat4::new(
+            Vec4::new(f / aspect_ratio, 0.0, 0.0, 0.0),
+            Vec4::new(0.0, f, 0.0, 0.0),
+            Vec4::new(0.0, 0.0, -1.0, -1.0),
+            Vec4::new(0.0, 0.0, -z_near, 0.0),
+        )
+    }
 
-    //     let (sin_fov, cos_fov) = (0.5 * fovy).sin_cos();
-    //     let height = cos_fov / sin_fov;
-    //     let width = height / aspect;
-    //     let range = farz / (farz - nearz);
-
-    //     Mat4 {
-    //         x_axis: Vec4::new(width, 0.0, 0.0, 0.0),
-    //         y_axis: Vec4::new(0.0, height, 0.0, 0.0),
-    //         z_axis: Vec4::new(0.0, 0.0, range, 1.0),
-    //         w_axis: Vec4::new(0.0, 0.0, -range * nearz, 0.0),
-    //     }
-    // }
-
-    // #[inline]
-    // pub fn perspective_fov_rh(fovy: Angle, aspect: f32, nearz: f32, farz: f32) -> Self {
-    //     glam_assert!(nearz > 0.0 && farz > 0.0);
-    //     glam_assert!(fovy != Angle::from_radians(0.0));
-    //     glam_assert!(aspect != 0.0);
-    //     glam_assert!(farz != nearz);
-
-    //     let (sin_fov, cos_fov) = (0.5 * fovy).sin_cos();
-    //     let height = cos_fov / sin_fov;
-    //     let width = height / aspect;
-    //     let range = farz / (nearz - farz);
-
-    //     Mat4 {
-    //         x_axis: Vec4::new(width, 0.0, 0.0, 0.0),
-    //         y_axis: Vec4::new(0.0, height, 0.0, 0.0),
-    //         z_axis: Vec4::new(0.0, 0.0, range, -1.0),
-    //         w_axis: Vec4::new(0.0, 0.0, range * nearz, 0.0),
-    //     }
-    // }
+    /// Build infinite reverse right-handed perspective projection matrix with [0,1] depth range.
+    pub fn perspective_infinite_reverse_rh(fov_y: Angle, aspect_ratio: f32, z_near: f32) -> Mat4 {
+        let f = 1.0 / (0.5 * fov_y).tan();
+        Mat4::new(
+            Vec4::new(f / aspect_ratio, 0.0, 0.0, 0.0),
+            Vec4::new(0.0, f, 0.0, 0.0),
+            Vec4::new(0.0, 0.0, 0.0, -1.0),
+            Vec4::new(0.0, 0.0, z_near, 0.0),
+        )
+    }
 
     #[inline]
     pub fn mul_vec4(&self, rhs: Vec4) -> Vec4 {
