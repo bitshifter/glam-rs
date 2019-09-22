@@ -5,11 +5,21 @@ The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+
+## [0.7.2] - 2019-09-22
+### Fixed
+* Fixed incorrect projection matrix methods `Mat4::look_at_lh`
+  and `Mat4::look_at_rh`.
 ### Added
+* Added support for building infinite projection matrices, including both
+  standard and reverse depth `Mat4::perspective_infinite_rh` and
+  `Mat4::perspective_infinite_rh`.
 * Added `Vec2Mask::new`, `Vec3Mask::new` and `Vec4Mask::new` methods.
 * Implemented `std::ops` `BitAnd`, `BitAndAssign`, `BitOr`, `BitOrAssign`
   and `Not` traits for `Vec2Mask`, `Vec3Mask` and `Vec4Mask`.
 * Added method documentation for `Vec4` and `Vec4Mask` types.
+* Added missing `serde` implementations for `Mat2`, `Mat3` and `Mat4`.
+* Updated `rand` and `criterion` versions.
 
 ## [0.7.1] - 2019-07-08
 ### Fixed
@@ -54,7 +64,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.7.1...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.7.2...HEAD
+[0.7.2]: https://github.com/bitshifter/glam-rs/compare/0.7.1...0.7.2
 [0.7.1]: https://github.com/bitshifter/glam-rs/compare/0.7.0...0.7.1
 [0.7.0]: https://github.com/bitshifter/glam-rs/compare/0.6.1...0.7.0
 [0.6.1]: https://github.com/bitshifter/glam-rs/compare/0.6.0...0.6.1
