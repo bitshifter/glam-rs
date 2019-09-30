@@ -196,9 +196,9 @@ fn test_vec2b() {
 #[test]
 fn test_vec2mask_bitmask() {
     assert_eq!(Vec2Mask::new(false, false).bitmask(), 0b00);
-    assert_eq!(Vec2Mask::new(true, false).bitmask(),  0b01);
-    assert_eq!(Vec2Mask::new(false, true).bitmask(),  0b10);
-    assert_eq!(Vec2Mask::new(true, true).bitmask(),   0b11);
+    assert_eq!(Vec2Mask::new(true, false).bitmask(), 0b01);
+    assert_eq!(Vec2Mask::new(false, true).bitmask(), 0b10);
+    assert_eq!(Vec2Mask::new(true, true).bitmask(), 0b11);
 }
 
 #[test]
@@ -221,18 +221,9 @@ fn test_vec2mask_all() {
 fn test_vec2mask_select() {
     let a = Vec2::new(1.0, 2.0);
     let b = Vec2::new(3.0, 4.0);
-    assert_eq!(
-        Vec2Mask::new(true, true).select(a, b),
-        Vec2::new(1.0, 2.0),
-    );
-    assert_eq!(
-        Vec2Mask::new(true, false).select(a, b),
-        Vec2::new(1.0, 4.0),
-    );
-    assert_eq!(
-        Vec2Mask::new(false, true).select(a, b),
-        Vec2::new(3.0, 2.0),
-    );
+    assert_eq!(Vec2Mask::new(true, true).select(a, b), Vec2::new(1.0, 2.0),);
+    assert_eq!(Vec2Mask::new(true, false).select(a, b), Vec2::new(1.0, 4.0),);
+    assert_eq!(Vec2Mask::new(false, true).select(a, b), Vec2::new(3.0, 2.0),);
     assert_eq!(
         Vec2Mask::new(false, false).select(a, b),
         Vec2::new(3.0, 4.0),

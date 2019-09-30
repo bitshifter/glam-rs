@@ -642,7 +642,6 @@ impl BitAndAssign for Vec4Mask {
     }
 }
 
-
 impl BitOr for Vec4Mask {
     type Output = Self;
 
@@ -668,11 +667,6 @@ impl Not for Vec4Mask {
 
     #[inline]
     fn not(self) -> Self {
-        Self(
-            !self.0,
-            !self.1,
-            !self.2,
-            !self.3,
-        )
+        Self(!self.0, !self.1, !self.2, !self.3)
     }
 }

@@ -1,4 +1,4 @@
-use crate::{Quat, Vec2, Vec3, Vec4, Mat2, Mat3, Mat4};
+use crate::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4};
 
 use serde::{
     de::{self, Deserialize, Deserializer, SeqAccess, Visitor},

@@ -260,11 +260,11 @@ fn test_vec4_sign() {
 #[test]
 fn test_vec4mask_bitmask() {
     assert_eq!(Vec4Mask::new(false, false, false, false).bitmask(), 0b0000);
-    assert_eq!(Vec4Mask::new(false, false, true, true).bitmask(),   0b1100);
-    assert_eq!(Vec4Mask::new(true, true, false, false).bitmask(),   0b0011);
-    assert_eq!(Vec4Mask::new(false, true, false, true).bitmask(),   0b1010);
-    assert_eq!(Vec4Mask::new(true, false, true, false).bitmask(),   0b0101);
-    assert_eq!(Vec4Mask::new(true, true, true, true).bitmask(),     0b1111);
+    assert_eq!(Vec4Mask::new(false, false, true, true).bitmask(), 0b1100);
+    assert_eq!(Vec4Mask::new(true, true, false, false).bitmask(), 0b0011);
+    assert_eq!(Vec4Mask::new(false, true, false, true).bitmask(), 0b1010);
+    assert_eq!(Vec4Mask::new(true, false, true, false).bitmask(), 0b0101);
+    assert_eq!(Vec4Mask::new(true, true, true, true).bitmask(), 0b1111);
 }
 
 #[test]
@@ -310,31 +310,21 @@ fn test_vec4mask_select() {
 #[test]
 fn test_vec4mask_and() {
     assert_eq!(
-        (
-            Vec4Mask::new(false, false, false, false)
-            & Vec4Mask::new(false, false, false, false)
-        ).bitmask(),
+        (Vec4Mask::new(false, false, false, false) & Vec4Mask::new(false, false, false, false))
+            .bitmask(),
         0b0000,
     );
     assert_eq!(
-        (
-            Vec4Mask::new(true, true, true, true)
-            & Vec4Mask::new(true, true, true, true)
-        ).bitmask(),
+        (Vec4Mask::new(true, true, true, true) & Vec4Mask::new(true, true, true, true)).bitmask(),
         0b1111,
     );
     assert_eq!(
-        (
-            Vec4Mask::new(true, false, true, false)
-            & Vec4Mask::new(false, true, false, true)
-        ).bitmask(),
+        (Vec4Mask::new(true, false, true, false) & Vec4Mask::new(false, true, false, true))
+            .bitmask(),
         0b0000,
     );
     assert_eq!(
-        (
-            Vec4Mask::new(true, false, true, true)
-            & Vec4Mask::new(true, true, true, false)
-        ).bitmask(),
+        (Vec4Mask::new(true, false, true, true) & Vec4Mask::new(true, true, true, false)).bitmask(),
         0b0101,
     );
 
@@ -346,31 +336,22 @@ fn test_vec4mask_and() {
 #[test]
 fn test_vec4mask_or() {
     assert_eq!(
-        (
-            Vec4Mask::new(false, false, false, false)
-            | Vec4Mask::new(false, false, false, false)
-        ).bitmask(),
+        (Vec4Mask::new(false, false, false, false) | Vec4Mask::new(false, false, false, false))
+            .bitmask(),
         0b0000,
     );
     assert_eq!(
-        (
-            Vec4Mask::new(true, true, true, true)
-            | Vec4Mask::new(true, true, true, true)
-        ).bitmask(),
+        (Vec4Mask::new(true, true, true, true) | Vec4Mask::new(true, true, true, true)).bitmask(),
         0b1111,
     );
     assert_eq!(
-        (
-            Vec4Mask::new(true, false, true, false)
-            | Vec4Mask::new(false, true, false, true)
-        ).bitmask(),
+        (Vec4Mask::new(true, false, true, false) | Vec4Mask::new(false, true, false, true))
+            .bitmask(),
         0b1111,
     );
     assert_eq!(
-        (
-            Vec4Mask::new(true, false, true, false)
-            | Vec4Mask::new(true, false, true, false)
-        ).bitmask(),
+        (Vec4Mask::new(true, false, true, false) | Vec4Mask::new(true, false, true, false))
+            .bitmask(),
         0b0101,
     );
 
@@ -381,7 +362,10 @@ fn test_vec4mask_or() {
 
 #[test]
 fn test_vec4mask_not() {
-    assert_eq!((!Vec4Mask::new(false, false, false, false)).bitmask(), 0b1111);
+    assert_eq!(
+        (!Vec4Mask::new(false, false, false, false)).bitmask(),
+        0b1111
+    );
     assert_eq!((!Vec4Mask::new(true, true, true, true)).bitmask(), 0b0000);
     assert_eq!((!Vec4Mask::new(true, false, true, false)).bitmask(), 0b1010);
     assert_eq!((!Vec4Mask::new(false, true, false, true)).bitmask(), 0b0101);

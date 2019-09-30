@@ -412,11 +412,7 @@ impl BitAnd for Vec3Mask {
 
     #[inline]
     fn bitand(self, rhs: Self) -> Self {
-        Self(
-            self.0 & rhs.0,
-            self.1 & rhs.1,
-            self.2 & rhs.2,
-        )
+        Self(self.0 & rhs.0, self.1 & rhs.1, self.2 & rhs.2)
     }
 }
 
@@ -431,11 +427,7 @@ impl BitOr for Vec3Mask {
 
     #[inline]
     fn bitor(self, rhs: Self) -> Self {
-        Self(
-            self.0 | rhs.0,
-            self.1 | rhs.1,
-            self.2 | rhs.2,
-        )
+        Self(self.0 | rhs.0, self.1 | rhs.1, self.2 | rhs.2)
     }
 }
 
@@ -450,10 +442,6 @@ impl Not for Vec3Mask {
 
     #[inline]
     fn not(self) -> Self {
-        Self(
-            !self.0,
-            !self.1,
-            !self.2,
-        )
+        Self(!self.0, !self.1, !self.2)
     }
 }

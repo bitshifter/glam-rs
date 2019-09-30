@@ -1,10 +1,10 @@
 use approx::assert_ulps_eq;
 use glam::f32::{deg, rad, Angle};
-use std::f32::consts;
 #[cfg(feature = "rand")]
 use rand::{Rng, SeedableRng};
 #[cfg(feature = "rand")]
 use rand_xoshiro::Xoshiro256Plus;
+use std::f32::consts;
 
 #[test]
 fn test_angle() {
