@@ -5,8 +5,6 @@ mod support;
 
 use criterion::{criterion_group, criterion_main, Criterion};
 use glam::f32::{Mat4, Vec4};
-use rand::SeedableRng;
-use rand_xoshiro::Xoshiro256Plus;
 use std::ops::Mul;
 use support::{random_srt_mat4, random_vec4};
 

@@ -5,8 +5,6 @@ mod support;
 
 use criterion::{criterion_group, criterion_main, Criterion};
 use glam::f32::{Mat3, Quat, Vec3};
-use rand::SeedableRng;
-use rand_xoshiro::Xoshiro256Plus;
 use std::ops::Mul;
 use support::{random_mat3, random_quat, random_vec3};
 
@@ -83,7 +81,7 @@ bench_func!(
     from => random_vec3
     );
 
-euler!(vec3_euler, "vec3 euler", ty => Vec3, storage => Vec3, zero => Vec3::zero());
+euler!(vec3_euler, "vec3 euler", ty => Vec3, storage => Vec3, zero => Vec3::zero(), rand => random_vec3);
 
 criterion_group!(
     benches,

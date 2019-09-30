@@ -1,6 +1,6 @@
 [package]
 name = "glam"
-version = "0.7.2" # remember to update html_root_url
+version = "0.7.3" # remember to update html_root_url
 edition = "2018"
 authors = ["Cameron Hart <cameron.hart@gmail.com>"]
 description = "A simple and fast 3D math library for games and graphics"
@@ -17,8 +17,8 @@ maintenance = { status = "experimental" }
 
 [features]
 default = ["std"]
-# approx is needed for unit tests, rand is needed for benchmarking
-std = ["approx", "rand"]
+# approx is needed for unit tests
+std = ["approx"]
 
 # enable additional glam checks
 glam-assert = []
@@ -39,7 +39,6 @@ serde = { version = "1.0", optional = true, features = ["derive"] }
 
 [dev-dependencies]
 criterion = "0.3"
-rand_xoshiro = "0.4"
 serde_json = "1.0"
 
 [[bench]]

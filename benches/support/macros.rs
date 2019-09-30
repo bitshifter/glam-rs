@@ -3,10 +3,8 @@
 macro_rules! bench_func {
     ($name: ident, $desc: expr, op => $func: ident, ty => $ty: ty, from => $from: expr) => {
         pub(crate) fn $name(c: &mut Criterion) {
-            use rand::SeedableRng;
-            use rand_xoshiro::Xoshiro256Plus;
             const LEN: usize = 1 << 13;
-            let mut rng = Xoshiro256Plus::seed_from_u64(0);
+            let mut rng = support::PCG32::default();
             let elems: Vec<$ty> = (0..LEN).map(|_| $from(&mut rng).into()).collect();
             let mut i = 0;
             c.bench_function($desc, move |b| {
@@ -36,11 +34,9 @@ macro_rules! bench_func {
 macro_rules! bench_unop {
     ($name: ident, $desc: expr, op => $unop: ident, ty => $ty:ty, from => $from: expr) => {
         pub(crate) fn $name(c: &mut Criterion) {
-            use rand::SeedableRng;
-            use rand_xoshiro::Xoshiro256Plus;
             const LEN: usize = 1 << 13;
 
-            let mut rng = Xoshiro256Plus::seed_from_u64(0);
+            let mut rng = support::PCG32::default();
 
             let elems: Vec<$ty> = (0..LEN).map(|_| $from(&mut rng).into()).collect();
             let mut i = 0;
@@ -61,7 +57,7 @@ macro_rules! bench_binop {
         pub(crate) fn $name(c: &mut Criterion) {
             const LEN: usize = 1 << 7;
 
-            let mut rng = Xoshiro256Plus::seed_from_u64(0);
+            let mut rng = support::PCG32::default();
 
             let elems1: Vec<$ty1> = (0..LEN).map(|_| $from1(&mut rng).into()).collect();
             let elems2: Vec<$ty2> = (0..LEN).map(|_| $from2(&mut rng).into()).collect();
@@ -85,11 +81,8 @@ macro_rules! bench_binop {
 
 #[macro_export]
 macro_rules! euler {
-    ($name: ident, $desc: expr, ty => $t: ty, storage => $storage: ty, zero => $zero: expr) => {
+    ($name: ident, $desc: expr, ty => $t: ty, storage => $storage: ty, zero => $zero: expr, rand => $rand: ident) => {
         pub(crate) fn $name(c: &mut Criterion) {
-            use rand::{Rng, SeedableRng};
-            use rand_xoshiro::Xoshiro256Plus;
-
             const UPDATE_RATE: f32 = 1.0 / 60.0;
             const NUM_OBJECTS: usize = 10000;
 
@@ -99,9 +92,9 @@ macro_rules! euler {
                 position: Vec<$storage>,
             }
 
-            let mut rng = Xoshiro256Plus::seed_from_u64(0);
+            let mut rng = support::PCG32::default();
             let mut data = TestData {
-                acceleration: vec![rng.gen(); NUM_OBJECTS],
+                acceleration: vec![$rand(&mut rng); NUM_OBJECTS],
                 velocity: vec![$zero; NUM_OBJECTS],
                 position: vec![$zero; NUM_OBJECTS],
             };
