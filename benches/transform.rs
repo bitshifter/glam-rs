@@ -5,23 +5,15 @@ mod support;
 
 use criterion::{criterion_group, criterion_main, Criterion};
 use glam::f32::{TransformRT, TransformSRT, Vec3};
-use rand::{Rng, SeedableRng};
-use rand_xoshiro::Xoshiro256Plus;
 use std::ops::Mul;
 use support::*;
 
-fn random_transform_srt<R>(rng: &mut R) -> TransformSRT
-where
-    R: Rng,
-{
-    rng.gen()
+fn random_transform_srt(rng: &mut PCG32) -> TransformSRT {
+    TransformSRT::new(random_nonzero_vec3(rng), random_quat(rng), random_vec3(rng))
 }
 
-fn random_transform_rt<R>(rng: &mut R) -> TransformRT
-where
-    R: Rng,
-{
-    rng.gen()
+fn random_transform_rt(rng: &mut PCG32) -> TransformRT {
+    TransformRT::new(random_quat(rng), random_vec3(rng))
 }
 
 bench_unop!(
