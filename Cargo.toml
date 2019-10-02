@@ -35,12 +35,12 @@ transform-types = []
 approx = { version = "0.3", optional = true, default-features = false }
 mint = { version = "0.5", optional = true, default-features = false  }
 rand = { version = "0.7", optional = true, default-features = false }
-# rand_xoshiro is required for rand tests
-rand_xoshiro = { version = "0.4", optional = true, default-features = false }
 serde = { version = "1.0", optional = true, features = ["derive"] }
 
 [dev-dependencies]
 criterion = "0.3"
+# rand_xoshiro is required for tests if rand is enabled
+rand_xoshiro = "0.4"
 serde_json = "1.0"
 
 [[bench]]
