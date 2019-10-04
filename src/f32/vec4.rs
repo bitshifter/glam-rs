@@ -9,15 +9,15 @@ pub fn vec4(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
 }
 
 impl Vec4 {
-    /// Returns a new `Vec4` with `1.0` for elements that are positive in
-    /// the original and `-1.0` for elements that are negative.
+    /// Returns a new `Vec4` with `1.0` for elements that are greater than or
+    /// equal to zero in the original and `-1.0` for elements that are negative.
     #[inline]
     pub fn sign(self) -> Self {
         let mask = self.cmpge(Self::zero());
         mask.select(Self::splat(1.0), Self::splat(-1.0))
     }
 
-    /// Computes the reciprocal (`1.0/n`) of each element, returning the
+    /// Computes the reciprocal `1.0/n` of each element, returning the
     /// results in a new `Vec4`.
     #[inline]
     pub fn reciprocal(self) -> Self {

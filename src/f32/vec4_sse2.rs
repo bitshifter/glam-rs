@@ -98,17 +98,17 @@ impl Vec4 {
         }
     }
 
+    /// Creates a new `Vec4` with all elements set to `v`.
+    #[inline]
+    pub fn splat(v: f32) -> Self {
+        unsafe { Self(_mm_set_ps1(v)) }
+    }
+
     /// Creates a `Vec3` from the first three elements of the `Vec4`,
     /// removing `w`.
     #[inline]
     pub fn truncate(self) -> Vec3 {
         self.0.into()
-    }
-
-    /// Creates a new `Vec4` with all elements set to `v`.
-    #[inline]
-    pub fn splat(v: f32) -> Self {
-        unsafe { Self(_mm_set_ps1(v)) }
     }
 
     /// Returns element `x`.
@@ -197,8 +197,8 @@ impl Vec4 {
         unsafe { Self(_mm_shuffle_ps(self.0, self.0, 0b11_11_11_11)) }
     }
 
-    #[inline]
     /// Calculates the Vec4 dot product and returns answer in x lane of __m128.
+    #[inline]
     unsafe fn dot_as_m128(self, rhs: Self) -> __m128 {
         let x2_y2_z2_w2 = _mm_mul_ps(self.0, rhs.0);
         let z2_w2_0_0 = _mm_shuffle_ps(x2_y2_z2_w2, x2_y2_z2_w2, 0b00_00_11_10);
@@ -207,8 +207,8 @@ impl Vec4 {
         _mm_add_ps(x2z2_y2w2_0_0, y2w2_0_0_0)
     }
 
-    #[inline]
     /// Returns Vec4 dot in all lanes of Vec4
+    #[inline]
     fn dot_as_vec4(self, rhs: Self) -> Self {
         unsafe {
             let dot_in_x = self.dot_as_m128(rhs);
@@ -279,7 +279,7 @@ impl Vec4 {
         unsafe { Self(_mm_max_ps(self.0, rhs.0)) }
     }
 
-    /// Returns the minimum of the `Vec4`'s elements.
+    /// Returns the horizontal minimum of the `Vec4`'s elements.
     ///
     /// In other words, this computes `min(x, y, z, w)`.
     #[inline]
@@ -292,7 +292,7 @@ impl Vec4 {
         }
     }
 
-    /// Returns the maximum of the `Vec4`'s elements.
+    /// Returns the horizontal maximum of the `Vec4`'s elements.
     ///
     /// In other words, this computes `max(x, y, z, w)`.
     #[inline]
@@ -383,15 +383,15 @@ impl Vec4 {
         }
     }
 
-    #[inline]
     /// Per component multiplication/addition of the three inputs: b + (self * a)
+    #[inline]
     pub(crate) fn mul_add(self, a: Self, b: Self) -> Self {
         unsafe { Self(_mm_add_ps(_mm_mul_ps(self.0, a.0), b.0)) }
     }
 
-    #[inline]
     /// Per component negative multiplication/subtraction of the three inputs `-((self * a) - b)`
     /// This is mathematically equivalent to `b - (self * a)`
+    #[inline]
     pub(crate) fn neg_mul_sub(self, a: Self, b: Self) -> Self {
         unsafe { Self(_mm_sub_ps(b.0, _mm_mul_ps(self.0, a.0))) }
     }
