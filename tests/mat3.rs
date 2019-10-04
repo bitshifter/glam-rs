@@ -1,5 +1,8 @@
+mod support;
+
 use approx::assert_ulps_eq;
 use glam::f32::*;
+use support::deg;
 
 const IDENTITY: [[f32; 3]; 3] = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]];
 

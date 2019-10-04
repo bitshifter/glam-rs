@@ -139,3 +139,36 @@ pub unsafe fn sin_cos_sse2(x: __m128) -> (__m128, __m128) {
         _mm_xor_ps(xmm2, sign_bit_cos),
     )
 }
+
+#[inline]
+pub fn scalar_acos(value: f32) -> f32 {
+    // from DirectXMath XMScalarAcos
+    // Clamp input to [-1,1].
+    let nonnegative = value >= 0.0;
+    let x = value.abs();
+    let mut omx = 1.0 - x;
+    if omx < 0.0 {
+        omx = 0.0;
+    }
+    let root = omx.sqrt();
+
+    // 7-degree minimax approximation
+    #[allow(clippy::approx_constant)]
+    let mut result =
+        ((((((-0.001_262_491_1 * x + 0.006_670_09) * x - 0.017_088_126) * x + 0.030_891_88) * x
+            - 0.050_174_303)
+            * x
+            + 0.088_978_99)
+            * x
+            - 0.214_598_8)
+            * x
+            + 1.570_796_3;
+    result *= root;
+
+    // acos(x) = pi - acos(-x) when x < 0
+    if nonnegative {
+        result
+    } else {
+        std::f32::consts::PI - result
+    }
+}

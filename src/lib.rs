@@ -36,9 +36,9 @@ the left fingers curl around the axis in the direction of the rotation.
 
 ```
 use approx::assert_ulps_eq;
-use glam::{deg, Mat3, Vec3};
+use glam::{Mat3, Vec3};
 // rotate +x 90 degrees clockwise around y giving -z
-let m = Mat3::from_rotation_y(deg(90.0));
+let m = Mat3::from_rotation_y(90.0_f32.to_radians());
 let v = m * Vec3::unit_x();
 assert_ulps_eq!(v, -Vec3::unit_z());
 ```
@@ -46,9 +46,9 @@ assert_ulps_eq!(v, -Vec3::unit_z());
 ## Size and alignment of types
 
 Most `glam` types use SIMD for storage meaning most types are 16 byte aligned.
-The only exceptions are `Angle` and `Vec2`. When SSE2 is not available on the
-target architecture the types will still be 16 byte aligned, so object sizes
-and layouts will not change between architectures.
+The only exception is Vec2`. When SSE2 is not available on the target
+architecture the types will still be 16 byte aligned, so object sizes and
+layouts will not change between architectures.
 
 16 byte alignment means that some types will have a stride larger than their
 size resulting in some wasted space.
@@ -122,7 +122,7 @@ and benchmarks.
 
 
 */
-#![doc(html_root_url = "https://docs.rs/glam/0.7.3")]
+#![doc(html_root_url = "https://docs.rs/glam/0.8.0")]
 
 #[macro_use]
 mod macros;
@@ -130,8 +130,8 @@ mod macros;
 pub mod f32;
 
 pub use self::f32::{
-    deg, mat2, mat3, mat4, quat, rad, vec2, vec3, vec4, Angle, Mat2, Mat3, Mat4, Quat, Vec2,
-    Vec2Mask, Vec3, Vec3Mask, Vec4, Vec4Mask,
+    mat2, mat3, mat4, quat, vec2, vec3, vec4, Mat2, Mat3, Mat4, Quat, Vec2, Vec2Mask, Vec3,
+    Vec3Mask, Vec4, Vec4Mask,
 };
 
 #[allow(deprecated)]

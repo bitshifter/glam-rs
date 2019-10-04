@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 use core::f32;
-use glam::f32::{rad, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4};
+use glam::f32::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4};
 
 pub struct PCG32 {
     state: u64,
@@ -72,7 +72,7 @@ pub fn random_quat(rng: &mut PCG32) -> Quat {
     let yaw = random_radians(rng);
     let pitch = random_radians(rng);
     let roll = random_radians(rng);
-    Quat::from_rotation_ypr(rad(yaw), rad(pitch), rad(roll))
+    Quat::from_rotation_ypr(yaw, pitch, roll)
 }
 
 pub fn random_mat2(rng: &mut PCG32) -> Mat2 {

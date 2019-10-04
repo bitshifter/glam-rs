@@ -1,44 +1,5 @@
-use crate::f32::{Angle, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4};
+use crate::f32::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4};
 use approx::{AbsDiffEq, RelativeEq, UlpsEq};
-
-impl AbsDiffEq for Angle {
-    type Epsilon = <f32 as AbsDiffEq>::Epsilon;
-    fn default_epsilon() -> Self::Epsilon {
-        f32::default_epsilon()
-    }
-    fn abs_diff_eq(&self, other: &Self, epsilon: Self::Epsilon) -> bool {
-        let a1 = self.radians();
-        let a2 = other.radians();
-        a1.abs_diff_eq(&a2, epsilon)
-    }
-}
-
-impl RelativeEq for Angle {
-    fn default_max_relative() -> Self::Epsilon {
-        f32::default_max_relative()
-    }
-    fn relative_eq(
-        &self,
-        other: &Self,
-        epsilon: Self::Epsilon,
-        max_relative: Self::Epsilon,
-    ) -> bool {
-        let a1 = self.radians();
-        let a2 = other.radians();
-        a1.relative_eq(&a2, epsilon, max_relative)
-    }
-}
-
-impl UlpsEq for Angle {
-    fn default_max_ulps() -> u32 {
-        f32::default_max_ulps()
-    }
-    fn ulps_eq(&self, other: &Self, epsilon: Self::Epsilon, max_ulps: u32) -> bool {
-        let a1 = self.radians();
-        let a2 = other.radians();
-        a1.ulps_eq(&a2, epsilon, max_ulps)
-    }
-}
 
 impl AbsDiffEq for Quat {
     type Epsilon = <f32 as AbsDiffEq>::Epsilon;

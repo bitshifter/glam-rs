@@ -1,7 +1,4 @@
-use super::{
-    super::Angle,
-    {Quat, Vec3, Vec4},
-};
+use super::{scalar_sin_cos, Quat, Vec3, Vec4};
 
 #[cfg(feature = "rand")]
 use rand::{
@@ -141,10 +138,12 @@ impl Mat4 {
         }
     }
 
+    /// Create a new homogenous `Mat4` containing a rotation around a normalized rotation axis of
+    /// angle (in radians).
     #[inline]
-    pub fn from_axis_angle(axis: Vec3, angle: Angle) -> Self {
+    pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
         glam_assert!(axis.is_normalized());
-        let (sin, cos) = angle.sin_cos();
+        let (sin, cos) = scalar_sin_cos(angle);
         let (x, y, z) = axis.into();
         let (xsin, ysin, zsin) = (axis * sin).into();
         let (x2, y2, z2) = (axis * axis).into();
@@ -160,15 +159,19 @@ impl Mat4 {
         }
     }
 
+    /// Create a new homogenous `Mat4` containing a rotation around the given euler angles
+    /// (in radians).
     #[inline]
-    pub fn from_rotation_ypr(yaw: Angle, pitch: Angle, roll: Angle) -> Self {
+    pub fn from_rotation_ypr(yaw: f32, pitch: f32, roll: f32) -> Self {
         let quat = Quat::from_rotation_ypr(yaw, pitch, roll);
         Self::from_quat(quat)
     }
 
+    /// Create a new homogenous `Mat4` containing a rotation around the x axis of angle
+    /// (in radians).
     #[inline]
-    pub fn from_rotation_x(angle: Angle) -> Self {
-        let (sina, cosa) = angle.sin_cos();
+    pub fn from_rotation_x(angle: f32) -> Self {
+        let (sina, cosa) = scalar_sin_cos(angle);
         Self {
             x_axis: Vec4::unit_x(),
             y_axis: Vec4::new(0.0, cosa, sina, 0.0),
@@ -177,9 +180,11 @@ impl Mat4 {
         }
     }
 
+    /// Create a new homogenous `Mat4` containing a rotation around the y axis of angle
+    /// (in radians).
     #[inline]
-    pub fn from_rotation_y(angle: Angle) -> Self {
-        let (sina, cosa) = angle.sin_cos();
+    pub fn from_rotation_y(angle: f32) -> Self {
+        let (sina, cosa) = scalar_sin_cos(angle);
         Self {
             x_axis: Vec4::new(cosa, 0.0, -sina, 0.0),
             y_axis: Vec4::unit_y(),
@@ -188,9 +193,11 @@ impl Mat4 {
         }
     }
 
+    /// Create a new homogenous `Mat4` containing a rotation around the z axis of angle
+    /// (in radians).
     #[inline]
-    pub fn from_rotation_z(angle: Angle) -> Self {
-        let (sina, cosa) = angle.sin_cos();
+    pub fn from_rotation_z(angle: f32) -> Self {
+        let (sina, cosa) = scalar_sin_cos(angle);
         Self {
             x_axis: Vec4::new(cosa, sina, 0.0, 0.0),
             y_axis: Vec4::new(-sina, cosa, 0.0, 0.0),
@@ -418,9 +425,9 @@ impl Mat4 {
     /// Builds a right-handed perspective projection matrix with [-1,1] depth range.
     /// This is the equivalent of the common pespective function `gluPerspective` in OpenGL.
     /// See https://www.khronos.org/opengl/wiki/GluPerspective_code
-    pub fn perspective_glu(fov_y: Angle, aspect_ratio: f32, z_near: f32, z_far: f32) -> Mat4 {
+    pub fn perspective_glu(fov_y_degrees: f32, aspect_ratio: f32, z_near: f32, z_far: f32) -> Mat4 {
         let inv_length = 1.0 / (z_near - z_far);
-        let f = 1.0 / (0.5 * fov_y).tan();
+        let f = 1.0 / (0.5 * fov_y_degrees.to_radians()).tan();
         let a = f / aspect_ratio;
         let b = (z_near + z_far) * inv_length;
         let c = (2.0 * z_near * z_far) * inv_length;
@@ -433,8 +440,8 @@ impl Mat4 {
     }
 
     /// Build infinite right-handed perspective projection matrix with [0,1] depth range.
-    pub fn perspective_infinite_rh(fov_y: Angle, aspect_ratio: f32, z_near: f32) -> Mat4 {
-        let f = 1.0 / (0.5 * fov_y).tan();
+    pub fn perspective_infinite_rh(fov_y_degrees: f32, aspect_ratio: f32, z_near: f32) -> Mat4 {
+        let f = 1.0 / (0.5 * fov_y_degrees.to_radians()).tan();
         Mat4::new(
             Vec4::new(f / aspect_ratio, 0.0, 0.0, 0.0),
             Vec4::new(0.0, f, 0.0, 0.0),
@@ -444,8 +451,12 @@ impl Mat4 {
     }
 
     /// Build infinite reverse right-handed perspective projection matrix with [0,1] depth range.
-    pub fn perspective_infinite_reverse_rh(fov_y: Angle, aspect_ratio: f32, z_near: f32) -> Mat4 {
-        let f = 1.0 / (0.5 * fov_y).tan();
+    pub fn perspective_infinite_reverse_rh(
+        fov_y_degrees: f32,
+        aspect_ratio: f32,
+        z_near: f32,
+    ) -> Mat4 {
+        let f = 1.0 / (0.5 * fov_y_degrees.to_radians()).tan();
         Mat4::new(
             Vec4::new(f / aspect_ratio, 0.0, 0.0, 0.0),
             Vec4::new(0.0, f, 0.0, 0.0),

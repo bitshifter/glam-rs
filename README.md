@@ -16,7 +16,6 @@ and the look and feel of the API has solidified.
 * vectors: `Vec3`, `Vec3`, `Vec4`
 * square matrices: `Mat2`, `Mat3`, `Mat4`
 * a quaternion type: `Quat`
-* an angle type: `Angle`
 * SSE2 opimized `sin_cos`
 
 ### SIMD

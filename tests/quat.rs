@@ -1,5 +1,8 @@
+mod support;
+
 use approx::assert_ulps_eq;
-use glam::f32::{deg, quat, rad, Mat3, Mat4, Quat, Vec3, Vec4};
+use glam::f32::{quat, Mat3, Mat4, Quat, Vec3, Vec4};
+use support::{deg, rad};
 
 #[test]
 fn test_quat_align() {

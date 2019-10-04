@@ -1,4 +1,3 @@
-mod angle;
 mod funcs;
 mod mat2;
 mod mat3;
@@ -20,8 +19,7 @@ mod vec4_sse2;
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 mod x86_utils;
 
-pub use angle::*;
-pub(crate) use funcs::scalar_sin_cos;
+pub(crate) use funcs::{scalar_acos, scalar_sin_cos};
 pub use mat2::*;
 pub use mat3::*;
 pub use mat4::*;

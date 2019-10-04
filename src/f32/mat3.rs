@@ -1,7 +1,4 @@
-use super::{
-    super::Angle,
-    {Quat, Vec2, Vec3},
-};
+use super::{scalar_sin_cos, Quat, Vec2, Vec3};
 
 #[cfg(feature = "rand")]
 use rand::{
@@ -88,11 +85,12 @@ impl Mat3 {
         }
     }
 
-    #[inline]
     /// Create a 3x3 matrix that can scale, rotate and translate a 2D vector.
-    pub fn from_scale_angle_translation(scale: Vec2, angle: Angle, translation: Vec2) -> Self {
+    /// `angle` is in radians.
+    #[inline]
+    pub fn from_scale_angle_translation(scale: Vec2, angle: f32, translation: Vec2) -> Self {
         glam_assert!(scale.cmpne(Vec2::zero()).all());
-        let (sin, cos) = angle.sin_cos();
+        let (sin, cos) = scalar_sin_cos(angle);
         let (scale_x, scale_y) = scale.into();
         Self {
             x_axis: Vec3::new(cos * scale_x, sin * scale_x, 0.0),
@@ -111,10 +109,11 @@ impl Mat3 {
         }
     }
 
+    /// Create a 3x3 rotation matrix from a normalized rotation axis and angle (in radians).
     #[inline]
-    pub fn from_axis_angle(axis: Vec3, angle: Angle) -> Self {
+    pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
         glam_assert!(axis.is_normalized());
-        let (sin, cos) = angle.sin_cos();
+        let (sin, cos) = scalar_sin_cos(angle);
         let (x, y, z) = axis.into();
         let (xsin, ysin, zsin) = (axis * sin).into();
         let (x2, y2, z2) = (axis * axis).into();
@@ -129,15 +128,17 @@ impl Mat3 {
         }
     }
 
+    /// Create a 3x3 rotation matrix from the given euler angles (in radians).
     #[inline]
-    pub fn from_rotation_ypr(yaw: Angle, pitch: Angle, roll: Angle) -> Self {
+    pub fn from_rotation_ypr(yaw: f32, pitch: f32, roll: f32) -> Self {
         let quat = Quat::from_rotation_ypr(yaw, pitch, roll);
         Self::from_quat(quat)
     }
 
+    /// Create a 3x3 rotation matrix from the angle (in radians) around the x axis.
     #[inline]
-    pub fn from_rotation_x(angle: Angle) -> Self {
-        let (sina, cosa) = angle.sin_cos();
+    pub fn from_rotation_x(angle: f32) -> Self {
+        let (sina, cosa) = scalar_sin_cos(angle);
         Self {
             x_axis: Vec3::unit_x(),
             y_axis: Vec3::new(0.0, cosa, sina),
@@ -145,9 +146,10 @@ impl Mat3 {
         }
     }
 
+    /// Create a 3x3 rotation matrix from the angle (in radians) around the y axis.
     #[inline]
-    pub fn from_rotation_y(angle: Angle) -> Self {
-        let (sina, cosa) = angle.sin_cos();
+    pub fn from_rotation_y(angle: f32) -> Self {
+        let (sina, cosa) = scalar_sin_cos(angle);
         Self {
             x_axis: Vec3::new(cosa, 0.0, -sina),
             y_axis: Vec3::unit_y(),
@@ -155,9 +157,10 @@ impl Mat3 {
         }
     }
 
+    /// Create a 3x3 rotation matrix from the angle (in radians) around the z axis.
     #[inline]
-    pub fn from_rotation_z(angle: Angle) -> Self {
-        let (sina, cosa) = angle.sin_cos();
+    pub fn from_rotation_z(angle: f32) -> Self {
+        let (sina, cosa) = scalar_sin_cos(angle);
         Self {
             x_axis: Vec3::new(cosa, sina, 0.0),
             y_axis: Vec3::new(-sina, cosa, 0.0),

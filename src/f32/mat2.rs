@@ -1,4 +1,4 @@
-use super::{super::Angle, Vec2, Vec4};
+use super::{scalar_sin_cos, Vec2, Vec4};
 
 #[cfg(feature = "rand")]
 use rand::{
@@ -40,9 +40,10 @@ impl Mat2 {
         Self(Vec4::new(x_axis.x(), x_axis.y(), y_axis.x(), y_axis.y()))
     }
 
+    /// Create a 2x2 matrix containing scale and rotation (in radians).
     #[inline]
-    pub fn from_scale_angle(scale: Vec2, angle: Angle) -> Self {
-        let (sin, cos) = angle.sin_cos();
+    pub fn from_scale_angle(scale: Vec2, angle: f32) -> Self {
+        let (sin, cos) = scalar_sin_cos(angle);
         let (scale_x, scale_y) = scale.into();
         Self(Vec4::new(
             cos * scale_x,
@@ -52,9 +53,10 @@ impl Mat2 {
         ))
     }
 
+    /// Create a 2x2 matrix containing a rotation (in radians).
     #[inline]
-    pub fn from_angle(angle: Angle) -> Self {
-        let (sin, cos) = angle.sin_cos();
+    pub fn from_angle(angle: f32) -> Self {
+        let (sin, cos) = scalar_sin_cos(angle);
         Self(Vec4::new(cos, sin, -sin, cos))
     }
 

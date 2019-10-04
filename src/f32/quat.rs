@@ -17,7 +17,7 @@ use rand::{
     Rng,
 };
 
-use super::{Angle, Mat3, Mat4, Vec3, Vec4};
+use super::{scalar_acos, scalar_sin_cos, Mat3, Mat4, Vec3, Vec4};
 use std::{
     cmp::Ordering,
     fmt,
@@ -73,46 +73,50 @@ impl Quat {
         q
     }
 
-    #[inline]
     /// Writes the quaternion to an unaligned `&mut [f32]`.
     ///
     /// # Panics
     ///
     /// Panics if `slice` length is less than 4.
+    #[inline]
     pub fn write_to_slice_unaligned(self, slice: &mut [f32]) {
         self.0.write_to_slice_unaligned(slice)
     }
 
+    /// Create a new quaterion for a normalized rotation axis and angle
+    /// (in radians).
     #[inline]
-    /// Create quaterion for a normalized rotation axis and angle.
-    /// The axis must be normalized.
-    pub fn from_axis_angle(axis: Vec3, angle: Angle) -> Self {
+    pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
         glam_assert!(axis.is_normalized());
-        let (s, c) = (angle * 0.5).sin_cos();
+        let (s, c) = scalar_sin_cos(angle * 0.5);
         Self((axis * s).extend(c))
     }
 
+    /// Creates a new quaternion from the angle (in radians) around the x axis.
     #[inline]
-    pub fn from_rotation_x(angle: Angle) -> Self {
-        let (s, c) = (angle * 0.5).sin_cos();
+    pub fn from_rotation_x(angle: f32) -> Self {
+        let (s, c) = scalar_sin_cos(angle * 0.5);
         Self::new(s, 0.0, 0.0, c)
     }
 
+    /// Creates a new quaternion from the angle (in radians) around the y axis.
     #[inline]
-    pub fn from_rotation_y(angle: Angle) -> Self {
-        let (s, c) = (angle * 0.5).sin_cos();
+    pub fn from_rotation_y(angle: f32) -> Self {
+        let (s, c) = scalar_sin_cos(angle * 0.5);
         Self::new(0.0, s, 0.0, c)
     }
 
+    /// Creates a new quaternion from the angle (in radians) around the z axis.
     #[inline]
-    pub fn from_rotation_z(angle: Angle) -> Self {
-        let (s, c) = (angle * 0.5).sin_cos();
+    pub fn from_rotation_z(angle: f32) -> Self {
+        let (s, c) = scalar_sin_cos(angle * 0.5);
         Self::new(0.0, 0.0, s, c)
     }
 
     #[inline]
-    /// Create a quaternion from the given yaw (around y), pitch (around x) and roll (around z).
-    pub fn from_rotation_ypr(yaw: Angle, pitch: Angle, roll: Angle) -> Self {
+    /// Create a quaternion from the given yaw (around y), pitch (around x) and roll (around z)
+    /// in radians.
+    pub fn from_rotation_ypr(yaw: f32, pitch: f32, roll: f32) -> Self {
         // TODO: Optimize
         Self::from_rotation_y(yaw) * Self::from_rotation_x(pitch) * Self::from_rotation_z(roll)
     }
@@ -192,11 +196,11 @@ impl Quat {
     }
 
     #[inline]
-    pub fn to_axis_angle(self) -> (Vec3, Angle) {
+    pub fn to_axis_angle(self) -> (Vec3, f32) {
         const EPSILON: f32 = 1.0e-8;
         const EPSILON_SQUARED: f32 = EPSILON * EPSILON;
         let (x, y, z, w) = self.0.into();
-        let angle = Angle::acos(w) * 2.0;
+        let angle = scalar_acos(w) * 2.0;
         let scale_sq = (1.0 - w * w).max(0.0);
         if scale_sq >= EPSILON_SQUARED {
             (Vec3::new(x, y, z) / scale_sq.sqrt(), angle)
@@ -244,7 +248,7 @@ impl Quat {
     #[inline]
     pub fn is_near_identity(self) -> bool {
         // Implementation taken from RTM
-        const THRESHOLD_ANGLE: Angle = Angle::from_radians(0.002_847_144_6);
+        const THRESHOLD_ANGLE: f32 = 0.002_847_144_6;
         // Because of floating point precision, we cannot represent very small rotations.
         // The closest f32 to 1.0 that is not 1.0 itself yields:
         // 0.99999994.acos() * 2.0  = 0.000690533954 rad
@@ -258,7 +262,7 @@ impl Quat {
         // If the quat.w is close to -1.0, the angle will be near 2*PI which is close to
         // a negative 0 rotation. By forcing quat.w to be positive, we'll end up with
         // the shortest path.
-        let positive_w_angle = Angle::acos(self.0.w().abs()) * 2.0;
+        let positive_w_angle = scalar_acos(self.0.w().abs()) * 2.0;
         positive_w_angle < THRESHOLD_ANGLE
     }
 
@@ -496,7 +500,11 @@ impl From<Quat> for [f32; 4] {
 impl Distribution<Quat> for Standard {
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Quat {
-        Quat::from_rotation_ypr(rng.gen::<Angle>(), rng.gen::<Angle>(), rng.gen::<Angle>())
+        use std::f32::consts::PI;
+        let yaw = -PI + rng.gen::<f32>() * 2.0 * PI;
+        let pitch = -PI + rng.gen::<f32>() * 2.0 * PI;
+        let roll = -PI + rng.gen::<f32>() * 2.0 * PI;
+        Quat::from_rotation_ypr(yaw, pitch, roll)
     }
 }
 
