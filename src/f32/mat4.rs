@@ -425,9 +425,9 @@ impl Mat4 {
     /// Builds a right-handed perspective projection matrix with [-1,1] depth range.
     /// This is the equivalent of the common pespective function `gluPerspective` in OpenGL.
     /// See https://www.khronos.org/opengl/wiki/GluPerspective_code
-    pub fn perspective_glu(fov_y_degrees: f32, aspect_ratio: f32, z_near: f32, z_far: f32) -> Mat4 {
+    pub fn perspective_glu(fov_y_radians: f32, aspect_ratio: f32, z_near: f32, z_far: f32) -> Mat4 {
         let inv_length = 1.0 / (z_near - z_far);
-        let f = 1.0 / (0.5 * fov_y_degrees.to_radians()).tan();
+        let f = 1.0 / (0.5 * fov_y_radians).tan();
         let a = f / aspect_ratio;
         let b = (z_near + z_far) * inv_length;
         let c = (2.0 * z_near * z_far) * inv_length;
@@ -440,8 +440,8 @@ impl Mat4 {
     }
 
     /// Build infinite right-handed perspective projection matrix with [0,1] depth range.
-    pub fn perspective_infinite_rh(fov_y_degrees: f32, aspect_ratio: f32, z_near: f32) -> Mat4 {
-        let f = 1.0 / (0.5 * fov_y_degrees.to_radians()).tan();
+    pub fn perspective_infinite_rh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Mat4 {
+        let f = 1.0 / (0.5 * fov_y_radians).tan();
         Mat4::new(
             Vec4::new(f / aspect_ratio, 0.0, 0.0, 0.0),
             Vec4::new(0.0, f, 0.0, 0.0),
@@ -452,11 +452,11 @@ impl Mat4 {
 
     /// Build infinite reverse right-handed perspective projection matrix with [0,1] depth range.
     pub fn perspective_infinite_reverse_rh(
-        fov_y_degrees: f32,
+        fov_y_radians: f32,
         aspect_ratio: f32,
         z_near: f32,
     ) -> Mat4 {
-        let f = 1.0 / (0.5 * fov_y_degrees.to_radians()).tan();
+        let f = 1.0 / (0.5 * fov_y_radians).tan();
         Mat4::new(
             Vec4::new(f / aspect_ratio, 0.0, 0.0, 0.0),
             Vec4::new(0.0, f, 0.0, 0.0),
