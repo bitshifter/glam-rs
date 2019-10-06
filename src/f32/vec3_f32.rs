@@ -213,6 +213,11 @@ impl Vec3 {
             b.2 - (self.2 * a.2),
         )
     }
+
+    #[inline]
+    pub fn abs(self) -> Self {
+        Self(self.0.abs(), self.1.abs(), self.2.abs())
+    }
 }
 
 impl fmt::Display for Vec3 {

@@ -353,6 +353,11 @@ impl Vec4 {
             b.3 - (self.3 * a.3),
         )
     }
+
+    #[inline]
+    pub fn abs(self) -> Self {
+        Self(self.0.abs(), self.1.abs(), self.2.abs(), self.3.abs())
+    }
 }
 
 impl fmt::Display for Vec4 {

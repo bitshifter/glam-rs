@@ -346,6 +346,20 @@ fn test_vec3_rand() {
     assert_eq!(a, b.into());
 }
 
+#[test]
+fn test_vec3_sign() {
+    assert_eq!(Vec3::zero().sign(), Vec3::one());
+    assert_eq!(Vec3::one().sign(), Vec3::one());
+    assert_eq!((-Vec3::one()).sign(), -Vec3::one());
+}
+
+#[test]
+fn test_vec3_abs() {
+    assert_eq!(Vec3::zero().abs(), Vec3::zero());
+    assert_eq!(Vec3::one().abs(), Vec3::one());
+    assert_eq!((-Vec3::one()).abs(), Vec3::one());
+}
+
 #[cfg(feature = "serde")]
 #[test]
 fn test_vec3_serde() {

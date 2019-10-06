@@ -295,6 +295,13 @@ impl Vec2 {
     pub(crate) fn neg_mul_sub(self, a: Self, b: Self) -> Self {
         Self(b.0 - (self.0 * a.0), b.1 - (self.1 * a.1))
     }
+
+    /// Returns a new `Vec2` containing the absolute value of each component of the original
+    /// `Vec2`.
+    #[inline]
+    pub fn abs(self) -> Self {
+        Self(self.0.abs(), self.1.abs())
+    }
 }
 
 impl fmt::Display for Vec2 {

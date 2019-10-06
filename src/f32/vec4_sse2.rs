@@ -395,6 +395,18 @@ impl Vec4 {
     pub(crate) fn neg_mul_sub(self, a: Self, b: Self) -> Self {
         unsafe { Self(_mm_sub_ps(b.0, _mm_mul_ps(self.0, a.0))) }
     }
+
+    /// Returns a new `Vec4` containing the absolute value of each component of the original
+    /// `Vec4`.
+    #[inline]
+    pub fn abs(self) -> Self {
+        unsafe {
+            Self(_mm_and_ps(
+                self.0,
+                _mm_castsi128_ps(_mm_set1_epi32(0x7f_ff_ff_ff)),
+            ))
+        }
+    }
 }
 
 impl fmt::Display for Vec4 {

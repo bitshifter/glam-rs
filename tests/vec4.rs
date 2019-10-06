@@ -250,6 +250,13 @@ fn test_vec4_sign() {
     assert_eq!(Vec4::splat(core::f32::NEG_INFINITY).sign(), -Vec4::one());
 }
 
+#[test]
+fn test_vec4_abs() {
+    assert_eq!(Vec4::zero().abs(), Vec4::zero());
+    assert_eq!(Vec4::one().abs(), Vec4::one());
+    assert_eq!((-Vec4::one()).abs(), Vec4::one());
+}
+
 // #[test]
 // fn dup_element() {
 //     let a = vec4(1.0, 2.0, 3.0, 4.0);
