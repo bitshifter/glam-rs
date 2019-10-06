@@ -1,4 +1,5 @@
-use approx::assert_ulps_eq;
+mod support;
+
 use glam::*;
 #[cfg(feature = "rand")]
 use rand::{Rng, SeedableRng};
@@ -112,7 +113,7 @@ fn test_vec3_funcs() {
         vec3(2.0, 3.0, 4.0).length_reciprocal()
     );
     assert!(vec3(2.0, 3.0, 4.0).normalize().is_normalized());
-    assert_ulps_eq!(
+    assert_approx_eq!(
         vec3(2.0, 3.0, 4.0) / (2.0_f32 * 2.0 + 3.0 * 3.0 + 4.0 * 4.0).sqrt(),
         vec3(2.0, 3.0, 4.0).normalize()
     );
@@ -344,13 +345,6 @@ fn test_vec3_rand() {
     let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
     let b: Vec3 = rng2.gen();
     assert_eq!(a, b.into());
-}
-
-#[test]
-fn test_vec3_sign() {
-    assert_eq!(Vec3::zero().sign(), Vec3::one());
-    assert_eq!(Vec3::one().sign(), Vec3::one());
-    assert_eq!((-Vec3::one()).sign(), -Vec3::one());
 }
 
 #[test]

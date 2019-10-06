@@ -1,6 +1,5 @@
 #[cfg(feature = "transform-types")]
 mod transform {
-    use approx::assert_ulps_eq;
     use glam::f32::*;
 
     #[test]
@@ -48,11 +47,11 @@ mod transform {
         );
         let v0 = Vec3::unit_y();
         let v1 = tr * v0;
-        assert_ulps_eq!(v1, Vec3::unit_x() * 2.0);
-        assert_ulps_eq!(v1, tr * v0);
+        assert_approx_eq!(v1, Vec3::unit_x() * 2.0);
+        assert_approx_eq!(v1, tr * v0);
         let inv_tr = tr.inverse();
         let v2 = inv_tr * v1;
-        assert_ulps_eq!(v0, v2);
+        assert_approx_eq!(v0, v2);
 
         assert_eq!(tr * TransformRT::identity(), tr);
         assert_eq!(tr * inv_tr, TransformRT::identity());
@@ -66,11 +65,11 @@ mod transform {
         let srt = TransformSRT::new(s, r, t);
         let v0 = Vec3::unit_x();
         let v1 = srt * v0;
-        assert_ulps_eq!(v1, (r * (v0 * s)) + t);
-        assert_ulps_eq!(v1, srt * v0);
+        assert_approx_eq!(v1, (r * (v0 * s)) + t);
+        assert_approx_eq!(v1, srt * v0);
         let inv_srt = srt.inverse();
         let v2 = inv_srt * v1;
-        assert_ulps_eq!(v0, v2);
+        assert_approx_eq!(v0, v2);
 
         assert_eq!(srt * TransformSRT::identity(), srt);
         assert_eq!(srt * inv_srt, TransformSRT::identity());

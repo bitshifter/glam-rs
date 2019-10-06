@@ -1,8 +1,7 @@
 mod support;
 
-use approx::assert_ulps_eq;
 use glam::f32::*;
-use support::*;
+use support::deg;
 
 const IDENTITY: [[f32; 2]; 2] = [[1.0, 0.0], [0.0, 1.0]];
 
@@ -62,29 +61,21 @@ fn test_mat2_from_axes() {
 fn test_mat2_mul() {
     let mat_a = Mat2::from_angle(deg(90.0));
     let res_a = mat_a * Vec2::unit_y();
-    assert_ulps_eq!(vec2(-1.0, 0.0), res_a);
+    assert_approx_eq!(vec2(-1.0, 0.0), res_a);
     let res_b = mat_a * Vec2::unit_x();
-    assert_ulps_eq!(vec2(0.0, 1.0), res_b);
+    assert_approx_eq!(vec2(0.0, 1.0), res_b);
 }
 
 #[test]
 fn test_from_scale() {
     let m = Mat2::from_scale(Vec2::new(2.0, 4.0));
-    assert_ulps_eq!(m * Vec2::new(1.0, 1.0), Vec2::new(2.0, 4.0));
-    assert_ulps_eq!(Vec2::unit_x() * 2.0, m.x_axis());
-    assert_ulps_eq!(Vec2::unit_y() * 4.0, m.y_axis());
+    assert_approx_eq!(m * Vec2::new(1.0, 1.0), Vec2::new(2.0, 4.0));
+    assert_approx_eq!(Vec2::unit_x() * 2.0, m.x_axis());
+    assert_approx_eq!(Vec2::unit_y() * 4.0, m.y_axis());
 
     let rot = Mat2::from_scale_angle(Vec2::new(4.0, 2.0), deg(180.0));
-    assert_ulps_eq!(
-        Vec2::unit_x() * -4.0,
-        rot * Vec2::unit_x(),
-        epsilon = 1.0e-6
-    );
-    assert_ulps_eq!(
-        Vec2::unit_y() * -2.0,
-        rot * Vec2::unit_y(),
-        epsilon = 1.0e-6
-    );
+    assert_approx_eq!(Vec2::unit_x() * -4.0, rot * Vec2::unit_x(), 1.0e-6);
+    assert_approx_eq!(Vec2::unit_y() * -2.0, rot * Vec2::unit_y(), 1.0e-6);
 }
 
 #[test]
@@ -108,23 +99,23 @@ fn test_mat2_det() {
 #[test]
 fn test_mat2_inverse() {
     let inv = Mat2::identity().inverse();
-    assert_ulps_eq!(Mat2::identity(), inv);
+    assert_approx_eq!(Mat2::identity(), inv);
 
     let rot = Mat2::from_angle(deg(90.0));
     let rot_inv = rot.inverse();
-    assert_ulps_eq!(Mat2::identity(), rot * rot_inv);
-    assert_ulps_eq!(Mat2::identity(), rot_inv * rot);
+    assert_approx_eq!(Mat2::identity(), rot * rot_inv);
+    assert_approx_eq!(Mat2::identity(), rot_inv * rot);
 
     let scale = Mat2::from_scale(vec2(4.0, 5.0));
     let scale_inv = scale.inverse();
-    assert_ulps_eq!(Mat2::identity(), scale * scale_inv);
-    assert_ulps_eq!(Mat2::identity(), scale_inv * scale);
+    assert_approx_eq!(Mat2::identity(), scale * scale_inv);
+    assert_approx_eq!(Mat2::identity(), scale_inv * scale);
 
     let m = scale * rot;
     let m_inv = m.inverse();
-    assert_ulps_eq!(Mat2::identity(), m * m_inv);
-    assert_ulps_eq!(Mat2::identity(), m_inv * m);
-    assert_ulps_eq!(m_inv, rot_inv * scale_inv);
+    assert_approx_eq!(Mat2::identity(), m * m_inv);
+    assert_approx_eq!(Mat2::identity(), m_inv * m);
+    assert_approx_eq!(m_inv, rot_inv * scale_inv);
 }
 
 #[test]
@@ -140,11 +131,11 @@ fn test_mat2_ops() {
     );
     assert_eq!(Mat2::from_cols_array_2d(&[[2.0, 4.0], [6.0, 8.0]]), m0 + m0);
     assert_eq!(Mat2::zero(), m0 - m0);
-    assert_ulps_eq!(
+    assert_approx_eq!(
         Mat2::from_cols_array_2d(&[[1.0, 2.0], [3.0, 4.0]]),
         m0 * Mat2::identity()
     );
-    assert_ulps_eq!(
+    assert_approx_eq!(
         Mat2::from_cols_array_2d(&[[1.0, 2.0], [3.0, 4.0]]),
         Mat2::identity() * m0
     );

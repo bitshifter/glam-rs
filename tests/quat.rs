@@ -1,6 +1,5 @@
 mod support;
 
-use approx::assert_ulps_eq;
 use glam::f32::{quat, Mat3, Mat4, Quat, Vec3, Vec4};
 use support::{deg, rad};
 
@@ -23,53 +22,53 @@ fn test_quat_rotation() {
     let roll = deg(90.0);
     let y0 = Quat::from_rotation_y(yaw);
     let (axis, angle) = y0.to_axis_angle();
-    assert_ulps_eq!(axis, Vec3::unit_y());
-    assert_ulps_eq!(angle, yaw);
+    assert_approx_eq!(axis, Vec3::unit_y(), 1.0e-6);
+    assert_approx_eq!(angle, yaw);
     let y1 = Quat::from_rotation_ypr(yaw, zero, zero);
-    assert_ulps_eq!(y0, y1);
+    assert_approx_eq!(y0, y1);
     let y2 = Quat::from_axis_angle(Vec3::unit_y(), yaw);
-    assert_ulps_eq!(y0, y2);
+    assert_approx_eq!(y0, y2);
     let y3 = Quat::from_rotation_mat3(&Mat3::from_rotation_y(yaw));
-    assert_ulps_eq!(y0, y3);
+    assert_approx_eq!(y0, y3);
     let y4 = Quat::from_rotation_mat3(&Mat3::from_quat(y0));
-    assert_ulps_eq!(y0, y4);
+    assert_approx_eq!(y0, y4);
 
     let x0 = Quat::from_rotation_x(pitch);
     let (axis, angle) = x0.to_axis_angle();
-    assert_ulps_eq!(axis, Vec3::unit_x());
-    assert_ulps_eq!(angle, pitch);
+    assert_approx_eq!(axis, Vec3::unit_x());
+    assert_approx_eq!(angle, pitch);
     let x1 = Quat::from_rotation_ypr(zero, pitch, zero);
-    assert_ulps_eq!(x0, x1);
+    assert_approx_eq!(x0, x1);
     let x2 = Quat::from_axis_angle(Vec3::unit_x(), pitch);
-    assert_ulps_eq!(x0, x2);
+    assert_approx_eq!(x0, x2);
     let x3 = Quat::from_rotation_mat4(&Mat4::from_rotation_x(deg(180.0)));
-    assert_ulps_eq!(Quat::from_rotation_x(deg(180.0)), x3);
+    assert_approx_eq!(Quat::from_rotation_x(deg(180.0)), x3);
 
     let z0 = Quat::from_rotation_z(roll);
     let (axis, angle) = z0.to_axis_angle();
-    assert_ulps_eq!(axis, Vec3::unit_z());
-    assert_ulps_eq!(angle, roll);
+    assert_approx_eq!(axis, Vec3::unit_z());
+    assert_approx_eq!(angle, roll);
     let z1 = Quat::from_rotation_ypr(zero, zero, roll);
-    assert_ulps_eq!(z0, z1);
+    assert_approx_eq!(z0, z1);
     let z2 = Quat::from_axis_angle(Vec3::unit_z(), roll);
-    assert_ulps_eq!(z0, z2);
+    assert_approx_eq!(z0, z2);
     let z3 = Quat::from_rotation_mat4(&Mat4::from_rotation_z(roll));
-    assert_ulps_eq!(z0, z3);
+    assert_approx_eq!(z0, z3);
 
     let yx0 = y0 * x0;
     let yx1 = Quat::from_rotation_ypr(yaw, pitch, zero);
-    assert_ulps_eq!(yx0, yx1);
+    assert_approx_eq!(yx0, yx1);
 
     let yxz0 = y0 * x0 * z0;
     let yxz1 = Quat::from_rotation_ypr(yaw, pitch, roll);
-    assert_ulps_eq!(yxz0, yxz1);
+    assert_approx_eq!(yxz0, yxz1);
 
     // use the conjugate of z0 to remove the rotation from yxz0
     let yx2 = yxz0 * z0.conjugate();
-    assert_ulps_eq!(yx0, yx2);
+    assert_approx_eq!(yx0, yx2);
 
     let yxz2 = Quat::from_rotation_mat4(&Mat4::from_quat(yxz0));
-    assert_ulps_eq!(yxz0, yxz2);
+    assert_approx_eq!(yxz0, yxz2);
 
     // if near identity, just returns x axis and 0 rotation
     let (axis, angle) = Quat::identity().to_axis_angle();
@@ -99,64 +98,64 @@ fn test_quat_new() {
 #[test]
 fn test_quat_mul_vec() {
     let qrz = Quat::from_rotation_z(deg(90.0));
-    assert_ulps_eq!(Vec3::unit_y(), qrz * Vec3::unit_x());
-    assert_ulps_eq!(Vec3::unit_y(), -qrz * Vec3::unit_x());
-    assert_ulps_eq!(-Vec3::unit_x(), qrz * Vec3::unit_y());
-    assert_ulps_eq!(-Vec3::unit_x(), -qrz * Vec3::unit_y());
+    assert_approx_eq!(Vec3::unit_y(), qrz * Vec3::unit_x());
+    assert_approx_eq!(Vec3::unit_y(), -qrz * Vec3::unit_x());
+    assert_approx_eq!(-Vec3::unit_x(), qrz * Vec3::unit_y());
+    assert_approx_eq!(-Vec3::unit_x(), -qrz * Vec3::unit_y());
 
     // check vec3 * mat3 is the same
     let mrz = Mat3::from_quat(qrz);
-    assert_ulps_eq!(Vec3::unit_y(), mrz * Vec3::unit_x());
-    // assert_ulps_eq!(Vec3::unit_y(), -mrz * Vec3::unit_x());
-    assert_ulps_eq!(-Vec3::unit_x(), mrz * Vec3::unit_y());
+    assert_approx_eq!(Vec3::unit_y(), mrz * Vec3::unit_x());
+    // assert_approx_eq!(Vec3::unit_y(), -mrz * Vec3::unit_x());
+    assert_approx_eq!(-Vec3::unit_x(), mrz * Vec3::unit_y());
 
     let qrx = Quat::from_rotation_x(deg(90.0));
-    assert_ulps_eq!(Vec3::unit_x(), qrx * Vec3::unit_x());
-    assert_ulps_eq!(Vec3::unit_x(), -qrx * Vec3::unit_x());
-    assert_ulps_eq!(Vec3::unit_z(), qrx * Vec3::unit_y());
-    assert_ulps_eq!(Vec3::unit_z(), -qrx * Vec3::unit_y());
+    assert_approx_eq!(Vec3::unit_x(), qrx * Vec3::unit_x());
+    assert_approx_eq!(Vec3::unit_x(), -qrx * Vec3::unit_x());
+    assert_approx_eq!(Vec3::unit_z(), qrx * Vec3::unit_y());
+    assert_approx_eq!(Vec3::unit_z(), -qrx * Vec3::unit_y());
 
     // check vec3 * mat3 is the same
     let mrx = Mat3::from_quat(qrx);
-    assert_ulps_eq!(Vec3::unit_x(), mrx * Vec3::unit_x());
-    assert_ulps_eq!(Vec3::unit_z(), mrx * Vec3::unit_y());
+    assert_approx_eq!(Vec3::unit_x(), mrx * Vec3::unit_x());
+    assert_approx_eq!(Vec3::unit_z(), mrx * Vec3::unit_y());
 
     let qrxz = qrz * qrx;
-    assert_ulps_eq!(Vec3::unit_y(), qrxz * Vec3::unit_x());
-    assert_ulps_eq!(Vec3::unit_z(), qrxz * Vec3::unit_y());
+    assert_approx_eq!(Vec3::unit_y(), qrxz * Vec3::unit_x());
+    assert_approx_eq!(Vec3::unit_z(), qrxz * Vec3::unit_y());
 
     let mrxz = mrz * mrx;
-    assert_ulps_eq!(Vec3::unit_y(), mrxz * Vec3::unit_x());
-    assert_ulps_eq!(Vec3::unit_z(), mrxz * Vec3::unit_y());
+    assert_approx_eq!(Vec3::unit_y(), mrxz * Vec3::unit_x());
+    assert_approx_eq!(Vec3::unit_z(), mrxz * Vec3::unit_y());
 
     let qrzx = qrx * qrz;
-    assert_ulps_eq!(Vec3::unit_z(), qrzx * Vec3::unit_x());
-    assert_ulps_eq!(-Vec3::unit_x(), qrzx * Vec3::unit_y());
+    assert_approx_eq!(Vec3::unit_z(), qrzx * Vec3::unit_x());
+    assert_approx_eq!(-Vec3::unit_x(), qrzx * Vec3::unit_y());
 
     let mrzx = qrx * qrz;
-    assert_ulps_eq!(Vec3::unit_z(), mrzx * Vec3::unit_x());
-    assert_ulps_eq!(-Vec3::unit_x(), mrzx * Vec3::unit_y());
+    assert_approx_eq!(Vec3::unit_z(), mrzx * Vec3::unit_x());
+    assert_approx_eq!(-Vec3::unit_x(), mrzx * Vec3::unit_y());
 }
 
 #[test]
 fn test_quat_funcs() {
     let q0 = Quat::from_rotation_ypr(deg(45.0), deg(180.0), deg(90.0));
     assert!(q0.is_normalized());
-    assert_ulps_eq!(q0.length_squared(), 1.0);
-    assert_ulps_eq!(q0.length(), 1.0);
-    assert_ulps_eq!(q0.length_reciprocal(), 1.0);
-    assert_ulps_eq!(q0, q0.normalize());
+    assert_approx_eq!(q0.length_squared(), 1.0);
+    assert_approx_eq!(q0.length(), 1.0);
+    assert_approx_eq!(q0.length_reciprocal(), 1.0);
+    assert_approx_eq!(q0, q0.normalize());
 
-    assert_ulps_eq!(q0.dot(q0), 1.0);
-    assert_ulps_eq!(q0.dot(q0), 1.0);
+    assert_approx_eq!(q0.dot(q0), 1.0);
+    assert_approx_eq!(q0.dot(q0), 1.0);
 
     let q1 = Quat::from(Vec4::from(q0) * 2.0);
     assert!(!q1.is_normalized());
-    assert_ulps_eq!(q1.length_squared(), 4.0);
-    assert_ulps_eq!(q1.length(), 2.0);
-    assert_ulps_eq!(q1.length_reciprocal(), 0.5);
-    assert_ulps_eq!(q0, q1.normalize());
-    assert_ulps_eq!(q0.dot(q1), 2.0);
+    assert_approx_eq!(q1.length_squared(), 4.0, 1.0e-6);
+    assert_approx_eq!(q1.length(), 2.0);
+    assert_approx_eq!(q1.length_reciprocal(), 0.5);
+    assert_approx_eq!(q0, q1.normalize());
+    assert_approx_eq!(q0.dot(q1), 2.0, 1.0e-6);
 }
 
 #[test]
@@ -165,7 +164,7 @@ fn test_quat_lerp() {
     let q1 = Quat::from_rotation_y(deg(90.0));
     assert_eq!(q0, q0.lerp(q1, 0.0));
     assert_eq!(q1, q0.lerp(q1, 1.0));
-    assert_ulps_eq!(Quat::from_rotation_y(deg(45.0)), q0.lerp(q1, 0.5));
+    assert_approx_eq!(Quat::from_rotation_y(deg(45.0)), q0.lerp(q1, 0.5));
 }
 
 #[test]

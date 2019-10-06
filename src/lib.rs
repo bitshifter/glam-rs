@@ -35,12 +35,11 @@ of rotation: with the left thumb pointing in the positive direction of the axis
 the left fingers curl around the axis in the direction of the rotation.
 
 ```
-use approx::assert_ulps_eq;
 use glam::{Mat3, Vec3};
 // rotate +x 90 degrees clockwise around y giving -z
 let m = Mat3::from_rotation_y(90.0_f32.to_radians());
 let v = m * Vec3::unit_x();
-assert_ulps_eq!(v, -Vec3::unit_z());
+assert!(v.abs_diff_eq(-Vec3::unit_z(), core::f32::EPSILON));
 ```
 
 ## Size and alignment of types
@@ -111,9 +110,7 @@ assert_eq!(format!("{}", a), "(1, 2, 3)");
 All `glam` dependencies are optional, however some are required for tests
 and benchmarks.
 
-* `"std"` - the default feature, includes `"approx"` and `"rand"`.
-* `"approx` - provides different methods of comparing floating point values.
-  Used in some unit tests.
+* `"std"` - the default feature, has no dependencies.
 * `"rand"` - used to generate random values. Used in benchmarks.
 * `"serde"` - used for serialization and deserialization of types.
 * `"mint"` - used for interoperating with other linear algebra libraries.

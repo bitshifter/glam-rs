@@ -1,4 +1,5 @@
-use approx::assert_ulps_eq;
+mod support;
+
 use glam::*;
 #[cfg(feature = "rand")]
 use rand::{Rng, SeedableRng};
@@ -119,7 +120,7 @@ fn test_vec4_funcs() {
         vec4(2.0, 3.0, 4.0, 5.0).length_reciprocal()
     );
     assert!(vec4(2.0, 3.0, 4.0, 5.0).normalize().is_normalized());
-    assert_ulps_eq!(
+    assert_approx_eq!(
         vec4(2.0, 3.0, 4.0, 5.0) / (2.0_f32 * 2.0 + 3.0 * 3.0 + 4.0 * 4.0 + 5.0 * 5.0).sqrt(),
         vec4(2.0, 3.0, 4.0, 5.0).normalize()
     );

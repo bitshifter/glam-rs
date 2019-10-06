@@ -341,6 +341,22 @@ impl Mat3 {
         // TODO: optimise
         self.mul_vec3(rhs.extend(0.0)).truncate()
     }
+
+    /// Returns true if the absolute difference of all elements between `self`
+    /// and `rhs` is less than or equal to `max_abs_diff`.
+    ///
+    /// This can be used to compare if two `Mat3`'s contain similar elements. It
+    /// works best when comparing with a known value. The `max_abs_diff` that
+    /// should be used used depends on the values being compared against.
+    ///
+    /// For more on floating point comparisons see
+    /// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
+    #[inline]
+    pub fn abs_diff_eq(&self, rhs: Self, max_abs_diff: f32) -> bool {
+        self.x_axis.abs_diff_eq(rhs.x_axis, max_abs_diff)
+            && self.y_axis.abs_diff_eq(rhs.y_axis, max_abs_diff)
+            && self.z_axis.abs_diff_eq(rhs.z_axis, max_abs_diff)
+    }
 }
 
 #[cfg(feature = "rand")]

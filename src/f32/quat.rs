@@ -266,6 +266,20 @@ impl Quat {
         positive_w_angle < THRESHOLD_ANGLE
     }
 
+    /// Returns true if the absolute difference of all elements between `self`
+    /// and `rhs` is less than or equal to `max_abs_diff`.
+    ///
+    /// This can be used to compare if two `Quat`'s contain similar elements. It
+    /// works best when comparing with a known value. The `max_abs_diff` that
+    /// should be used used depends on the values being compared against.
+    ///
+    /// For more on floating point comparisons see
+    /// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
+    #[inline]
+    pub fn abs_diff_eq(self, rhs: Self, max_abs_diff: f32) -> bool {
+        self.0.abs_diff_eq(rhs.0, max_abs_diff)
+    }
+
     #[inline]
     pub fn lerp(self, end: Self, t: f32) -> Self {
         glam_assert!(self.is_normalized());

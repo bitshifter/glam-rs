@@ -360,7 +360,7 @@ impl Vec3 {
         unsafe { Self(_mm_sub_ps(b.0, _mm_mul_ps(self.0, a.0))) }
     }
 
-    /// Returns a new `Vec3` containing the absolute value of each component of the original
+    /// Returns a new `Vec3` containing the absolute value of each element of the original
     /// `Vec3`.
     #[inline]
     pub fn abs(self) -> Self {

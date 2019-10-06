@@ -51,10 +51,24 @@ impl Vec2 {
 
     /// Returns whether the `Vec2` is normalized to length `1.0` or not.
     ///
-    /// Uses a precision threshold of `0.00001`.
+    /// Uses a precision threshold of `core::f32::EPSILON`.
     #[inline]
     pub fn is_normalized(self) -> bool {
         is_normalized!(self)
+    }
+
+    /// Returns true if the absolute difference of all elements between `self`
+    /// and `rhs` is less than or equal to `max_abs_diff`.
+    ///
+    /// This can be used to compare if two `Vec2`'s contain similar elements. It
+    /// works best when comparing with a known value. The `max_abs_diff` that
+    /// should be used used depends on the values being compared against.
+    ///
+    /// For more on floating point comparisons see
+    /// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
+    #[inline]
+    pub fn abs_diff_eq(self, rhs: Self, max_abs_diff: f32) -> bool {
+        abs_diff_eq!(self, rhs, max_abs_diff)
     }
 
     /// Creates a new `Vec2`.
@@ -296,7 +310,7 @@ impl Vec2 {
         Self(b.0 - (self.0 * a.0), b.1 - (self.1 * a.1))
     }
 
-    /// Returns a new `Vec2` containing the absolute value of each component of the original
+    /// Returns a new `Vec2` containing the absolute value of each element of the original
     /// `Vec2`.
     #[inline]
     pub fn abs(self) -> Self {

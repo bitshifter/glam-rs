@@ -14,8 +14,8 @@ rust:
 # cache: cargo
 
 env:
-  - CARGO_FEATURES="approx mint rand serde"
-  - CARGO_FEATURES="approx mint rand serde scalar-math"
+  - CARGO_FEATURES="mint rand serde"
+  - CARGO_FEATURES="mint rand serde scalar-math"
 
 matrix:
   allow_failures:

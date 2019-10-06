@@ -45,10 +45,8 @@ one element it is more efficient to convert from tuples or arrays:
 let (x, y, z) = v.into();
 ```
 
-### Default features
+### Optional features
 
-* `approx` - implementations of the `AbsDiffEq` and `UlpsEq` traits for all
-  `glam` types. This is primarily used for unit testing.
 * `mint` - for interoperating with other 3D math libraries
 * `rand` - implementations of `Distribution` trait for all `glam` types. This
   is primarily used for unit testing.
@@ -94,7 +92,7 @@ performance.
 
 * Only single precision floating point (`f32`) arithmetic is supported
 * No traits or generics for simplicity of implementation and usage
-* All dependencies are optional (e.g. approx, rand and serde)
+* All dependencies are optional (e.g. `mint`, `rand` and `serde`)
 * Follows the [Rust API Guidelines] where possible
 * Aiming for 100% test [coverage][coveralls.io]
 * Common functionality is benchmarked using [Criterion.rs]
