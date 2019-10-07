@@ -25,15 +25,15 @@ fn test_mat3_align() {
 #[test]
 fn test_mat3_identity() {
     let identity = Mat3::identity();
-    assert_eq!(IDENTITY, Into::<[[f32; 3]; 3]>::into(identity));
-    assert_eq!(Into::<Mat3>::into(IDENTITY), identity);
+    assert_eq!(IDENTITY, identity.to_cols_array_2d());
+    assert_eq!(Mat3::from_cols_array_2d(&IDENTITY), identity);
     assert_eq!(identity, identity * identity);
     assert_eq!(identity, Mat3::default());
 }
 
 #[test]
 fn test_mat3_zero() {
-    assert_eq!(Into::<Mat3>::into(ZERO), Mat3::zero());
+    assert_eq!(Mat3::from_cols_array_2d(&ZERO), Mat3::zero());
 }
 
 #[test]
@@ -42,7 +42,7 @@ fn test_mat3_accessors() {
     m.set_x_axis(Vec3::new(1.0, 2.0, 3.0));
     m.set_y_axis(Vec3::new(4.0, 5.0, 6.0));
     m.set_z_axis(Vec3::new(7.0, 8.0, 9.0));
-    assert_eq!(Into::<Mat3>::into(MATRIX), m);
+    assert_eq!(Mat3::from_cols_array_2d(&MATRIX), m);
     assert_eq!(Vec3::new(1.0, 2.0, 3.0), m.x_axis());
     assert_eq!(Vec3::new(4.0, 5.0, 6.0), m.y_axis());
     assert_eq!(Vec3::new(7.0, 8.0, 9.0), m.z_axis());
@@ -50,9 +50,9 @@ fn test_mat3_accessors() {
 
 #[test]
 fn test_mat3_from_axes() {
-    let a: Mat3 = [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]].into();
-    assert_eq!(MATRIX, Into::<[[f32; 3]; 3]>::into(a));
-    let b = Mat3::new(
+    let a = Mat3::from_cols_array_2d(&[[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]]);
+    assert_eq!(MATRIX, a.to_cols_array_2d());
+    let b = Mat3::from_cols(
         vec3(1.0, 2.0, 3.0),
         vec3(4.0, 5.0, 6.0),
         vec3(7.0, 8.0, 9.0),
@@ -64,8 +64,8 @@ fn test_mat3_from_axes() {
         vec3(7.0, 8.0, 9.0),
     );
     assert_eq!(a, c);
-    let d: [f32; 9] = b.into();
-    let f: Mat3 = d.into();
+    let d = b.to_cols_array();
+    let f = Mat3::from_cols_array(&d);
     assert_eq!(b, f);
 }
 
@@ -183,8 +183,8 @@ fn test_mat3_inverse() {
 
 #[test]
 fn test_mat3_ops() {
-    let m0: Mat3 = MATRIX.into();
-    let m0x2 = Mat3::from([[2.0, 4.0, 6.0], [8.0, 10.0, 12.0], [14.0, 16.0, 18.0]]);
+    let m0 = Mat3::from_cols_array_2d(&MATRIX);
+    let m0x2 = Mat3::from_cols_array_2d(&[[2.0, 4.0, 6.0], [8.0, 10.0, 12.0], [14.0, 16.0, 18.0]]);
     assert_eq!(m0x2, m0 * 2.0);
     assert_eq!(m0x2, 2.0 * m0);
     assert_eq!(m0x2, m0 + m0);
@@ -196,7 +196,7 @@ fn test_mat3_ops() {
 #[cfg(feature = "serde")]
 #[test]
 fn test_mat3_serde() {
-    let a = Mat3::new(
+    let a = Mat3::from_cols(
         vec3(1.0, 2.0, 3.0),
         vec3(4.0, 5.0, 6.0),
         vec3(7.0, 8.0, 9.0),

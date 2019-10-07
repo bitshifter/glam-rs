@@ -84,7 +84,7 @@ impl From<Quat> for mint::Quaternion<f32> {
 
 impl From<mint::RowMatrix2<f32>> for Mat2 {
     fn from(m: mint::RowMatrix2<f32>) -> Self {
-        Self::new(m.x.into(), m.y.into()).transpose()
+        Self::from_cols(m.x.into(), m.y.into()).transpose()
     }
 }
 
@@ -100,7 +100,7 @@ impl From<Mat2> for mint::RowMatrix2<f32> {
 
 impl From<mint::ColumnMatrix2<f32>> for Mat2 {
     fn from(m: mint::ColumnMatrix2<f32>) -> Self {
-        Self::new(m.x.into(), m.y.into())
+        Self::from_cols(m.x.into(), m.y.into())
     }
 }
 
@@ -115,7 +115,7 @@ impl From<Mat2> for mint::ColumnMatrix2<f32> {
 
 impl From<mint::RowMatrix3<f32>> for Mat3 {
     fn from(m: mint::RowMatrix3<f32>) -> Self {
-        Self::new(m.x.into(), m.y.into(), m.z.into()).transpose()
+        Self::from_cols(m.x.into(), m.y.into(), m.z.into()).transpose()
     }
 }
 
@@ -132,7 +132,7 @@ impl From<Mat3> for mint::RowMatrix3<f32> {
 
 impl From<mint::ColumnMatrix3<f32>> for Mat3 {
     fn from(m: mint::ColumnMatrix3<f32>) -> Self {
-        Self::new(m.x.into(), m.y.into(), m.z.into())
+        Self::from_cols(m.x.into(), m.y.into(), m.z.into())
     }
 }
 
@@ -148,7 +148,7 @@ impl From<Mat3> for mint::ColumnMatrix3<f32> {
 
 impl From<mint::RowMatrix4<f32>> for Mat4 {
     fn from(m: mint::RowMatrix4<f32>) -> Self {
-        Self::new(m.x.into(), m.y.into(), m.z.into(), m.w.into()).transpose()
+        Self::from_cols(m.x.into(), m.y.into(), m.z.into(), m.w.into()).transpose()
     }
 }
 
@@ -166,7 +166,7 @@ impl From<Mat4> for mint::RowMatrix4<f32> {
 
 impl From<mint::ColumnMatrix4<f32>> for Mat4 {
     fn from(m: mint::ColumnMatrix4<f32>) -> Self {
-        Self::new(m.x.into(), m.y.into(), m.z.into(), m.w.into())
+        Self::from_cols(m.x.into(), m.y.into(), m.z.into(), m.w.into())
     }
 }
 
@@ -261,7 +261,7 @@ mod test {
     #[test]
     fn test_matrix2() {
         use crate::Mat2;
-        let g = Mat2::from([[1.0, 2.0], [3.0, 4.0]]);
+        let g = Mat2::from_cols_array_2d(&[[1.0, 2.0], [3.0, 4.0]]);
         let m = mint::ColumnMatrix2::from(g);
         assert_eq!(g, Mat2::from(m));
         let mt = mint::RowMatrix2::from(g);
@@ -272,7 +272,7 @@ mod test {
     #[test]
     fn test_matrix3() {
         use crate::Mat3;
-        let g = Mat3::from([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]]);
+        let g = Mat3::from_cols_array_2d(&[[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]]);
         let m = mint::ColumnMatrix3::from(g);
         assert_eq!(g, Mat3::from(m));
         let mt = mint::RowMatrix3::from(g);
@@ -286,7 +286,7 @@ mod test {
     #[test]
     fn test_matrix4() {
         use crate::Mat4;
-        let g = Mat4::from([
+        let g = Mat4::from_cols_array_2d(&[
             [1.0, 2.0, 3.0, 4.0],
             [5.0, 6.0, 7.0, 8.0],
             [9.0, 10.0, 11.0, 12.0],

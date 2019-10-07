@@ -60,6 +60,7 @@ impl Default for Mat4 {
 }
 
 impl Mat4 {
+    /// Creates a new `Mat4` with all elements set to `0.0`.
     #[inline]
     pub fn zero() -> Self {
         Self {
@@ -70,6 +71,7 @@ impl Mat4 {
         }
     }
 
+    /// Creates a new `Mat4` identity matrix.
     #[inline]
     pub fn identity() -> Self {
         Self {
@@ -80,14 +82,64 @@ impl Mat4 {
         }
     }
 
+    #[deprecated(since = "0.7.2", note = "please use `Mat4::from_cols` instead")]
     #[inline]
     pub fn new(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Self {
+        Self::from_cols(x_axis, y_axis, z_axis, w_axis)
+    }
+
+    /// Creates a new `Mat4` from four column vectors.
+    #[inline]
+    pub fn from_cols(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Self {
         Self {
             x_axis,
             y_axis,
             z_axis,
             w_axis,
         }
+    }
+
+    /// Creates a new `Mat4` from a `[f32; 16]` stored in column major order.
+    /// If your data is stored in row major you will need to `transpose` the resulting `Mat4`.
+    #[inline]
+    pub fn from_cols_array(m: &[f32; 16]) -> Self {
+        Mat4 {
+            x_axis: Vec4::new(m[0], m[1], m[2], m[3]),
+            y_axis: Vec4::new(m[4], m[5], m[6], m[7]),
+            z_axis: Vec4::new(m[8], m[9], m[10], m[11]),
+            w_axis: Vec4::new(m[12], m[13], m[14], m[15]),
+        }
+    }
+
+    /// Creates a new `[f32; 16]` storing data in column major order.
+    /// If you require data in row major order `transpose` the `Mat4` first.
+    #[inline]
+    pub fn to_cols_array(&self) -> [f32; 16] {
+        *self.as_ref()
+    }
+
+    /// Creates a new `Mat4` from a `[[f32; 4]; 4]` stored in column major order.
+    /// If your data is in row major order you will need to `transpose` the resulting `Mat4`.
+    #[inline]
+    pub fn from_cols_array_2d(m: &[[f32; 4]; 4]) -> Self {
+        Mat4 {
+            x_axis: m[0].into(),
+            y_axis: m[1].into(),
+            z_axis: m[2].into(),
+            w_axis: m[3].into(),
+        }
+    }
+
+    /// Creates a new `[[f32; 4]; 4]` storing data in column major order.
+    /// If you require data in row major order `transpose` the `Mat4` first.
+    #[inline]
+    pub fn to_cols_array_2d(&self) -> [[f32; 4]; 4] {
+        [
+            self.x_axis.into(),
+            self.y_axis.into(),
+            self.z_axis.into(),
+            self.w_axis.into(),
+        ]
     }
 
     #[inline]
@@ -138,7 +190,7 @@ impl Mat4 {
         }
     }
 
-    /// Create a new homogenous `Mat4` containing a rotation around a normalized rotation axis of
+    /// Creates a new `Mat4` containing a rotation around a normalized rotation axis of
     /// angle (in radians).
     #[inline]
     pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
@@ -159,7 +211,7 @@ impl Mat4 {
         }
     }
 
-    /// Create a new homogenous `Mat4` containing a rotation around the given euler angles
+    /// Creates a new `Mat4` containing a rotation around the given euler angles
     /// (in radians).
     #[inline]
     pub fn from_rotation_ypr(yaw: f32, pitch: f32, roll: f32) -> Self {
@@ -167,7 +219,7 @@ impl Mat4 {
         Self::from_quat(quat)
     }
 
-    /// Create a new homogenous `Mat4` containing a rotation around the x axis of angle
+    /// Creates a new `Mat4` containing a rotation around the x axis of angle
     /// (in radians).
     #[inline]
     pub fn from_rotation_x(angle: f32) -> Self {
@@ -180,7 +232,7 @@ impl Mat4 {
         }
     }
 
-    /// Create a new homogenous `Mat4` containing a rotation around the y axis of angle
+    /// Creates a new `Mat4` containing a rotation around the y axis of angle
     /// (in radians).
     #[inline]
     pub fn from_rotation_y(angle: f32) -> Self {
@@ -193,7 +245,7 @@ impl Mat4 {
         }
     }
 
-    /// Create a new homogenous `Mat4` containing a rotation around the z axis of angle
+    /// Creates a new `Mat4` containing a rotation around the z axis of angle
     /// (in radians).
     #[inline]
     pub fn from_rotation_z(angle: f32) -> Self {
@@ -261,7 +313,7 @@ impl Mat4 {
     #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
     #[inline]
     pub fn transpose(&self) -> Self {
-        // sse2 implemenation based off DirectXMath XMMatrixInverse (MIT License)
+        // sse2 implementation based off DirectXMath XMMatrixInverse (MIT License)
         #[cfg(target_arch = "x86")]
         use std::arch::x86::*;
         #[cfg(target_arch = "x86_64")]
@@ -401,7 +453,7 @@ impl Mat4 {
         let (fx, fy, fz) = f.into();
         let (sx, sy, sz) = s.into();
         let (ux, uy, uz) = u.into();
-        Mat4::new(
+        Mat4::from_cols(
             Vec4::new(sx, ux, fx, 0.0),
             Vec4::new(sy, uy, fy, 0.0),
             Vec4::new(sz, uz, fz, 0.0),
@@ -423,15 +475,20 @@ impl Mat4 {
 
     #[inline]
     /// Builds a right-handed perspective projection matrix with [-1,1] depth range.
-    /// This is the equivalent of the common pespective function `gluPerspective` in OpenGL.
+    /// This is the equivalent of the common perspective function `gluPerspective` in OpenGL.
     /// See https://www.khronos.org/opengl/wiki/GluPerspective_code
-    pub fn perspective_glu(fov_y_radians: f32, aspect_ratio: f32, z_near: f32, z_far: f32) -> Mat4 {
+    pub fn perspective_glu_rh(
+        fov_y_radians: f32,
+        aspect_ratio: f32,
+        z_near: f32,
+        z_far: f32,
+    ) -> Mat4 {
         let inv_length = 1.0 / (z_near - z_far);
         let f = 1.0 / (0.5 * fov_y_radians).tan();
         let a = f / aspect_ratio;
         let b = (z_near + z_far) * inv_length;
         let c = (2.0 * z_near * z_far) * inv_length;
-        Mat4::new(
+        Mat4::from_cols(
             Vec4::new(a, 0.0, 0.0, 0.0),
             Vec4::new(0.0, f, 0.0, 0.0),
             Vec4::new(0.0, 0.0, b, -1.0),
@@ -442,7 +499,7 @@ impl Mat4 {
     /// Build infinite right-handed perspective projection matrix with [0,1] depth range.
     pub fn perspective_infinite_rh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Mat4 {
         let f = 1.0 / (0.5 * fov_y_radians).tan();
-        Mat4::new(
+        Mat4::from_cols(
             Vec4::new(f / aspect_ratio, 0.0, 0.0, 0.0),
             Vec4::new(0.0, f, 0.0, 0.0),
             Vec4::new(0.0, 0.0, -1.0, -1.0),
@@ -457,7 +514,7 @@ impl Mat4 {
         z_near: f32,
     ) -> Mat4 {
         let f = 1.0 / (0.5 * fov_y_radians).tan();
-        Mat4::new(
+        Mat4::from_cols(
             Vec4::new(f / aspect_ratio, 0.0, 0.0, 0.0),
             Vec4::new(0.0, f, 0.0, 0.0),
             Vec4::new(0.0, 0.0, 0.0, -1.0),
@@ -540,7 +597,7 @@ impl Mat4 {
 impl Distribution<Mat4> for Standard {
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Mat4 {
-        rng.gen::<[[f32; 4]; 4]>().into()
+        Mat4::from_cols_array(&rng.gen())
     }
 }
 
@@ -603,48 +660,5 @@ impl Mul<f32> for Mat4 {
     #[inline]
     fn mul(self, rhs: f32) -> Self {
         self.mul_scalar(rhs)
-    }
-}
-
-impl From<[[f32; 4]; 4]> for Mat4 {
-    #[inline]
-    fn from(m: [[f32; 4]; 4]) -> Self {
-        Mat4 {
-            x_axis: m[0].into(),
-            y_axis: m[1].into(),
-            z_axis: m[2].into(),
-            w_axis: m[3].into(),
-        }
-    }
-}
-
-impl From<Mat4> for [[f32; 4]; 4] {
-    #[inline]
-    fn from(m: Mat4) -> Self {
-        [
-            m.x_axis.into(),
-            m.y_axis.into(),
-            m.z_axis.into(),
-            m.w_axis.into(),
-        ]
-    }
-}
-
-impl From<[f32; 16]> for Mat4 {
-    #[inline]
-    fn from(m: [f32; 16]) -> Self {
-        Mat4 {
-            x_axis: Vec4::new(m[0], m[1], m[2], m[3]),
-            y_axis: Vec4::new(m[4], m[5], m[6], m[7]),
-            z_axis: Vec4::new(m[8], m[9], m[10], m[11]),
-            w_axis: Vec4::new(m[12], m[13], m[14], m[15]),
-        }
-    }
-}
-
-impl From<Mat4> for [f32; 16] {
-    #[inline]
-    fn from(m: Mat4) -> Self {
-        *m.as_ref()
     }
 }

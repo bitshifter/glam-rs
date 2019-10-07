@@ -34,15 +34,15 @@ fn test_mat4_align() {
 #[test]
 fn test_mat4_identity() {
     let identity = Mat4::identity();
-    assert_eq!(IDENTITY, Into::<[[f32; 4]; 4]>::into(identity));
-    assert_eq!(Into::<Mat4>::into(IDENTITY), identity);
+    assert_eq!(IDENTITY, identity.to_cols_array_2d());
+    assert_eq!(Mat4::from_cols_array_2d(&IDENTITY), identity);
     assert_eq!(identity, identity * identity);
     assert_eq!(identity, Mat4::default());
 }
 
 #[test]
 fn test_mat4_zero() {
-    assert_eq!(Into::<Mat4>::into(ZERO), Mat4::zero());
+    assert_eq!(Mat4::from_cols_array_2d(&ZERO), Mat4::zero());
 }
 
 #[test]
@@ -52,7 +52,7 @@ fn test_mat4_accessors() {
     m.set_y_axis(Vec4::new(5.0, 6.0, 7.0, 8.0));
     m.set_z_axis(Vec4::new(9.0, 10.0, 11.0, 12.0));
     m.set_w_axis(Vec4::new(13.0, 14.0, 15.0, 16.0));
-    assert_eq!(Into::<Mat4>::into(MATRIX), m);
+    assert_eq!(Mat4::from_cols_array_2d(&MATRIX), m);
     assert_eq!(Vec4::new(1.0, 2.0, 3.0, 4.0), m.x_axis());
     assert_eq!(Vec4::new(5.0, 6.0, 7.0, 8.0), m.y_axis());
     assert_eq!(Vec4::new(9.0, 10.0, 11.0, 12.0), m.z_axis());
@@ -61,15 +61,14 @@ fn test_mat4_accessors() {
 
 #[test]
 fn test_mat4_from_axes() {
-    let a: Mat4 = [
+    let a = Mat4::from_cols_array_2d(&[
         [1.0, 2.0, 3.0, 4.0],
         [5.0, 6.0, 7.0, 8.0],
         [9.0, 10.0, 11.0, 12.0],
         [13.0, 14.0, 15.0, 16.0],
-    ]
-    .into();
-    assert_eq!(MATRIX, Into::<[[f32; 4]; 4]>::into(a));
-    let b = Mat4::new(
+    ]);
+    assert_eq!(MATRIX, a.to_cols_array_2d());
+    let b = Mat4::from_cols(
         vec4(1.0, 2.0, 3.0, 4.0),
         vec4(5.0, 6.0, 7.0, 8.0),
         vec4(9.0, 10.0, 11.0, 12.0),
@@ -83,8 +82,8 @@ fn test_mat4_from_axes() {
         vec4(13.0, 14.0, 15.0, 16.0),
     );
     assert_eq!(a, c);
-    let d: [f32; 16] = b.into();
-    let f: Mat4 = d.into();
+    let d = b.to_cols_array();
+    let f = Mat4::from_cols_array(&d);
     assert_eq!(b, f);
 }
 
@@ -92,7 +91,7 @@ fn test_mat4_from_axes() {
 fn test_mat4_translation() {
     let translate = Mat4::from_translation(vec3(1.0, 2.0, 3.0));
     assert_eq!(
-        Mat4::new(
+        Mat4::from_cols(
             vec4(1.0, 0.0, 0.0, 0.0),
             vec4(0.0, 1.0, 0.0, 0.0),
             vec4(0.0, 0.0, 1.0, 0.0),
@@ -258,8 +257,8 @@ fn test_mat4_look_at() {
 
 #[test]
 fn test_mat4_ops() {
-    let m0: Mat4 = MATRIX.into();
-    let m0x2 = Mat4::from([
+    let m0 = Mat4::from_cols_array_2d(&MATRIX);
+    let m0x2 = Mat4::from_cols_array_2d(&[
         [2.0, 4.0, 6.0, 8.0],
         [10.0, 12.0, 14.0, 16.0],
         [18.0, 20.0, 22.0, 24.0],
@@ -276,7 +275,7 @@ fn test_mat4_ops() {
 #[cfg(feature = "serde")]
 #[test]
 fn test_mat4_serde() {
-    let a = Mat4::new(
+    let a = Mat4::from_cols(
         vec4(1.0, 2.0, 3.0, 4.0),
         vec4(5.0, 6.0, 7.0, 8.0),
         vec4(9.0, 10.0, 11.0, 12.0),

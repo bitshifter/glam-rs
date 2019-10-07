@@ -303,7 +303,7 @@ impl<'de> Deserialize<'de> for Mat2 {
                 }
                 let x = Vec2::new(f[0], f[1]);
                 let y = Vec2::new(f[2], f[3]);
-                Ok(Mat2::new(x, y))
+                Ok(Mat2::from_cols(x, y))
             }
         }
 
@@ -340,7 +340,7 @@ impl<'de> Deserialize<'de> for Mat3 {
                 let x = Vec3::new(f[0], f[1], f[2]);
                 let y = Vec3::new(f[3], f[4], f[5]);
                 let z = Vec3::new(f[6], f[7], f[8]);
-                Ok(Mat3::new(x, y, z))
+                Ok(Mat3::from_cols(x, y, z))
             }
         }
 
@@ -378,7 +378,7 @@ impl<'de> Deserialize<'de> for Mat4 {
                 let y = Vec4::new(f[4], f[5], f[6], f[7]);
                 let z = Vec4::new(f[8], f[9], f[10], f[11]);
                 let w = Vec4::new(f[12], f[13], f[14], f[15]);
-                Ok(Mat4::new(x, y, z, w))
+                Ok(Mat4::from_cols(x, y, z, w))
             }
         }
 

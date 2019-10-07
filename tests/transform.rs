@@ -23,7 +23,7 @@ mod transform {
     #[test]
     fn test_new() {
         let t = Vec3::new(1.0, 2.0, 3.0);
-        let r = Quat::from_rotation_y(deg(90.0));
+        let r = Quat::from_rotation_y(90.0_f32.to_radians());
         let s = Vec3::new(-1.0, -2.0, -3.0);
 
         let tr = TransformRT::new(r, t);
@@ -42,7 +42,10 @@ mod transform {
 
     #[test]
     fn test_mul() {
-        let tr = TransformRT::new(Quat::from_rotation_z(deg(-90.0)), Vec3::unit_x());
+        let tr = TransformRT::new(
+            Quat::from_rotation_z(-90.0_f32.to_radians()),
+            Vec3::unit_x(),
+        );
         let v0 = Vec3::unit_y();
         let v1 = tr * v0;
         assert_ulps_eq!(v1, Vec3::unit_x() * 2.0);
@@ -58,7 +61,7 @@ mod transform {
         assert_eq!(TransformSRT::identity() * tr, TransformSRT::from(tr));
 
         let s = Vec3::splat(2.0);
-        let r = Quat::from_rotation_y(deg(180.0));
+        let r = Quat::from_rotation_y(180.0_f32.to_radians());
         let t = -Vec3::unit_y();
         let srt = TransformSRT::new(s, r, t);
         let v0 = Vec3::unit_x();

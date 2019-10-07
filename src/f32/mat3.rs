@@ -76,8 +76,15 @@ impl Mat3 {
         }
     }
 
+    #[deprecated(since = "0.7.2", note = "please use `Mat3::from_cols` instead")]
     #[inline]
     pub fn new(x_axis: Vec3, y_axis: Vec3, z_axis: Vec3) -> Self {
+        Self::from_cols(x_axis, y_axis, z_axis)
+    }
+
+    /// Creates a new `Mat3` from three column vectors.
+    #[inline]
+    pub fn from_cols(x_axis: Vec3, y_axis: Vec3, z_axis: Vec3) -> Self {
         Self {
             x_axis,
             y_axis,
@@ -85,7 +92,46 @@ impl Mat3 {
         }
     }
 
-    /// Create a 3x3 matrix that can scale, rotate and translate a 2D vector.
+    /// Creates a new `Mat3` from a `[f32; 9]` stored in column major order.
+    /// If your data is stored in row major you will need to `transpose` the resulting `Mat3`.
+    #[inline]
+    pub fn from_cols_array(m: &[f32; 9]) -> Self {
+        Mat3 {
+            x_axis: Vec3::new(m[0], m[1], m[2]),
+            y_axis: Vec3::new(m[3], m[4], m[5]),
+            z_axis: Vec3::new(m[6], m[7], m[8]),
+        }
+    }
+
+    /// Creates a new `[f32; 9]` storing data in column major order.
+    /// If you require data in row major order `transpose` the `Mat3` first.
+    #[inline]
+    pub fn to_cols_array(&self) -> [f32; 9] {
+        let (m00, m01, m02) = self.x_axis.into();
+        let (m10, m11, m12) = self.y_axis.into();
+        let (m20, m21, m22) = self.z_axis.into();
+        [m00, m01, m02, m10, m11, m12, m20, m21, m22]
+    }
+
+    /// Creates a new `Mat3` from a `[[f32; 3]; 3]` stored in column major order.
+    /// If your data is in row major order you will need to `transpose` the resulting `Mat3`.
+    #[inline]
+    pub fn from_cols_array_2d(m: &[[f32; 3]; 3]) -> Self {
+        Mat3 {
+            x_axis: m[0].into(),
+            y_axis: m[1].into(),
+            z_axis: m[2].into(),
+        }
+    }
+
+    /// Creates a new `[[f32; 3]; 3]` storing data in column major order.
+    /// If you require data in row major order `transpose` the `Mat3` first.
+    #[inline]
+    pub fn to_cols_array_2d(&self) -> [[f32; 3]; 3] {
+        [self.x_axis.into(), self.y_axis.into(), self.z_axis.into()]
+    }
+
+    /// Creates a new `Mat3` that can scale, rotate and translate a 2D vector.
     /// `angle` is in radians.
     #[inline]
     pub fn from_scale_angle_translation(scale: Vec2, angle: f32, translation: Vec2) -> Self {
@@ -235,7 +281,7 @@ impl Mat3 {
         glam_assert!(det.cmpne(Vec3::zero()).all());
         let inv_det = det.reciprocal();
         // TODO: Work out if it's possible to get rid of the transpose
-        Mat3::new(tmp0 * inv_det, tmp1 * inv_det, tmp2 * inv_det).transpose()
+        Mat3::from_cols(tmp0 * inv_det, tmp1 * inv_det, tmp2 * inv_det).transpose()
     }
 
     #[inline]
@@ -301,7 +347,7 @@ impl Mat3 {
 impl Distribution<Mat3> for Standard {
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Mat3 {
-        rng.gen::<[[f32; 3]; 3]>().into()
+        Mat3::from_cols_array(&rng.gen())
     }
 }
 
@@ -350,46 +396,5 @@ impl Mul<f32> for Mat3 {
     #[inline]
     fn mul(self, rhs: f32) -> Self {
         self.mul_scalar(rhs)
-    }
-}
-
-impl From<[[f32; 3]; 3]> for Mat3 {
-    #[inline]
-    fn from(m: [[f32; 3]; 3]) -> Self {
-        Mat3 {
-            x_axis: m[0].into(),
-            y_axis: m[1].into(),
-            z_axis: m[2].into(),
-        }
-    }
-}
-
-impl From<Mat3> for [[f32; 3]; 3] {
-    #[inline]
-    fn from(m: Mat3) -> Self {
-        [m.x_axis.into(), m.y_axis.into(), m.z_axis.into()]
-    }
-}
-
-impl From<[f32; 9]> for Mat3 {
-    #[inline]
-    /// Load from array in column major order.
-    fn from(m: [f32; 9]) -> Self {
-        Mat3 {
-            x_axis: Vec3::new(m[0], m[1], m[2]),
-            y_axis: Vec3::new(m[3], m[4], m[5]),
-            z_axis: Vec3::new(m[6], m[7], m[8]),
-        }
-    }
-}
-
-impl From<Mat3> for [f32; 9] {
-    #[inline]
-    /// Store to array in column major order.
-    fn from(m: Mat3) -> Self {
-        let (m00, m01, m02) = m.x_axis.into();
-        let (m10, m11, m12) = m.y_axis.into();
-        let (m20, m21, m22) = m.z_axis.into();
-        [m00, m01, m02, m10, m11, m12, m20, m21, m22]
     }
 }

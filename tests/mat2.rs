@@ -24,15 +24,15 @@ fn test_mat2_align() {
 #[test]
 fn test_mat2_identity() {
     let identity = Mat2::identity();
-    assert_eq!(IDENTITY, Into::<[[f32; 2]; 2]>::into(identity));
-    assert_eq!(Into::<Mat2>::into(IDENTITY), identity);
+    assert_eq!(IDENTITY, identity.to_cols_array_2d());
+    assert_eq!(Mat2::from_cols_array_2d(&IDENTITY), identity);
     assert_eq!(identity, identity * identity);
     assert_eq!(identity, Mat2::default());
 }
 
 #[test]
 fn test_mat2_zero() {
-    assert_eq!(Into::<Mat2>::into(ZERO), Mat2::zero());
+    assert_eq!(Mat2::from_cols_array_2d(&ZERO), Mat2::zero());
 }
 
 #[test]
@@ -40,21 +40,21 @@ fn test_mat2_accessors() {
     let mut m = Mat2::zero();
     m.set_x_axis(Vec2::new(1.0, 2.0));
     m.set_y_axis(Vec2::new(3.0, 4.0));
-    assert_eq!(Into::<Mat2>::into(MATRIX), m);
+    assert_eq!(Mat2::from_cols_array_2d(&MATRIX), m);
     assert_eq!(Vec2::new(1.0, 2.0), m.x_axis());
     assert_eq!(Vec2::new(3.0, 4.0), m.y_axis());
 }
 
 #[test]
 fn test_mat2_from_axes() {
-    let a: Mat2 = [[1.0, 2.0], [3.0, 4.0]].into();
-    assert_eq!(MATRIX, Into::<[[f32; 2]; 2]>::into(a));
-    let b = Mat2::new(vec2(1.0, 2.0), vec2(3.0, 4.0));
+    let a = Mat2::from_cols_array_2d(&[[1.0, 2.0], [3.0, 4.0]]);
+    assert_eq!(MATRIX, a.to_cols_array_2d());
+    let b = Mat2::from_cols(vec2(1.0, 2.0), vec2(3.0, 4.0));
     assert_eq!(a, b);
     let c = mat2(vec2(1.0, 2.0), vec2(3.0, 4.0));
     assert_eq!(a, c);
-    let d: [f32; 4] = b.into();
-    let f: Mat2 = d.into();
+    let d = b.to_cols_array();
+    let f = Mat2::from_cols_array(&d);
     assert_eq!(b, f);
 }
 
@@ -129,19 +129,31 @@ fn test_mat2_inverse() {
 
 #[test]
 fn test_mat2_ops() {
-    let m0: Mat2 = MATRIX.into();
-    assert_eq!(Mat2::from([[2.0, 4.0], [6.0, 8.0]]), m0 * 2.0);
-    assert_eq!(Mat2::from([[2.0, 4.0], [6.0, 8.0]]), 2.0 * m0);
-    assert_eq!(Mat2::from([[2.0, 4.0], [6.0, 8.0]]), m0 + m0);
+    let m0 = Mat2::from_cols_array_2d(&MATRIX);
+    assert_eq!(
+        Mat2::from_cols_array_2d(&[[2.0, 4.0], [6.0, 8.0]]),
+        m0 * 2.0
+    );
+    assert_eq!(
+        Mat2::from_cols_array_2d(&[[2.0, 4.0], [6.0, 8.0]]),
+        2.0 * m0
+    );
+    assert_eq!(Mat2::from_cols_array_2d(&[[2.0, 4.0], [6.0, 8.0]]), m0 + m0);
     assert_eq!(Mat2::zero(), m0 - m0);
-    assert_ulps_eq!(Mat2::from([[1.0, 2.0], [3.0, 4.0]]), m0 * Mat2::identity());
-    assert_ulps_eq!(Mat2::from([[1.0, 2.0], [3.0, 4.0]]), Mat2::identity() * m0);
+    assert_ulps_eq!(
+        Mat2::from_cols_array_2d(&[[1.0, 2.0], [3.0, 4.0]]),
+        m0 * Mat2::identity()
+    );
+    assert_ulps_eq!(
+        Mat2::from_cols_array_2d(&[[1.0, 2.0], [3.0, 4.0]]),
+        Mat2::identity() * m0
+    );
 }
 
 #[cfg(feature = "serde")]
 #[test]
 fn test_mat2_serde() {
-    let a = Mat2::new(vec2(1.0, 2.0), vec2(3.0, 4.0));
+    let a = Mat2::from_cols(vec2(1.0, 2.0), vec2(3.0, 4.0));
     let serialized = serde_json::to_string(&a).unwrap();
     assert_eq!(serialized, "[1.0,2.0,3.0,4.0]");
     let deserialized = serde_json::from_str(&serialized).unwrap();

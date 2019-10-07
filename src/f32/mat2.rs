@@ -10,7 +10,7 @@ use std::ops::{Add, Mul, Sub};
 
 #[inline]
 pub fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
-    Mat2::new(x_axis, y_axis)
+    Mat2::from_cols(x_axis, y_axis)
 }
 
 /// A 2x2 column major matrix.
@@ -35,9 +35,45 @@ impl Mat2 {
         Self(Vec4::new(1.0, 0.0, 0.0, 1.0))
     }
 
+    #[deprecated(since = "0.7.2", note = "please use `Mat4::from_cols` instead")]
     #[inline]
     pub fn new(x_axis: Vec2, y_axis: Vec2) -> Self {
+        Self::from_cols(x_axis, y_axis)
+    }
+
+    /// Creates a new `Mat2` from four column vectors.
+    #[inline]
+    pub fn from_cols(x_axis: Vec2, y_axis: Vec2) -> Self {
         Self(Vec4::new(x_axis.x(), x_axis.y(), y_axis.x(), y_axis.y()))
+    }
+
+    /// Creates a new `Mat2` from a `[f32; 4]` stored in column major order.
+    /// If your data is stored in row major you will need to `transpose` the resulting `Mat2`.
+    #[inline]
+    pub fn from_cols_array(m: &[f32; 4]) -> Self {
+        Mat2(Vec4::new(m[0], m[1], m[2], m[3]))
+    }
+
+    /// Creates a new `[f32; 4]` storing data in column major order.
+    /// If you require data in row major order `transpose` the `Mat2` first.
+    #[inline]
+    pub fn to_cols_array(&self) -> [f32; 4] {
+        self.0.into()
+    }
+
+    /// Creates a new `Mat2` from a `[[f32; 2]; 2]` stored in column major order.
+    /// If your data is in row major order you will need to `transpose` the resulting `Mat2`.
+    #[inline]
+    pub fn from_cols_array_2d(m: &[[f32; 2]; 2]) -> Self {
+        Mat2(Vec4::new(m[0][0], m[0][1], m[1][0], m[1][1]))
+    }
+
+    /// Creates a new `[[f32; 2]; 2]` storing data in column major order.
+    /// If you require data in row major order `transpose` the `Mat2` first.
+    #[inline]
+    pub fn to_cols_array_2d(&self) -> [[f32; 2]; 2] {
+        let (x0, y0, x1, y1) = self.0.into();
+        [[x0, y0], [x1, y1]]
     }
 
     /// Create a 2x2 matrix containing scale and rotation (in radians).
@@ -128,7 +164,7 @@ impl Mat2 {
     pub fn mul_mat2(&self, rhs: &Self) -> Self {
         // TODO: SSE2
         let (x0, y0, x1, y1) = rhs.0.into();
-        Mat2::new(
+        Mat2::from_cols(
             self.mul_vec2(Vec2::new(x0, y0)),
             self.mul_vec2(Vec2::new(x1, y1)),
         )
@@ -155,7 +191,7 @@ impl Mat2 {
 impl Distribution<Mat2> for Standard {
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Mat2 {
-        rng.gen::<[[f32; 2]; 2]>().into()
+        Mat2::from_cols_array(&rng.gen())
     }
 }
 
@@ -218,36 +254,5 @@ impl Mul<f32> for Mat2 {
     #[inline]
     fn mul(self, rhs: f32) -> Self {
         self.mul_scalar(rhs)
-    }
-}
-
-impl From<[[f32; 2]; 2]> for Mat2 {
-    #[inline]
-    fn from(m: [[f32; 2]; 2]) -> Self {
-        Mat2(Vec4::new(m[0][0], m[0][1], m[1][0], m[1][1]))
-    }
-}
-
-impl From<Mat2> for [[f32; 2]; 2] {
-    #[inline]
-    fn from(m: Mat2) -> Self {
-        let (x0, y0, x1, y1) = m.0.into();
-        [[x0, y0], [x1, y1]]
-    }
-}
-
-impl From<[f32; 4]> for Mat2 {
-    #[inline]
-    /// Load from array in column major order.
-    fn from(m: [f32; 4]) -> Self {
-        Mat2(m.into())
-    }
-}
-
-impl From<Mat2> for [f32; 4] {
-    #[inline]
-    /// Store to array in column major order.
-    fn from(m: Mat2) -> Self {
-        m.0.into()
     }
 }
