@@ -466,21 +466,12 @@ impl Distribution<Vec2> for Standard {
 #[repr(C)]
 pub struct Vec2Mask(u32, u32);
 
-#[deprecated(since = "0.7.1", note = "please use `Vec2Mask` instead")]
-pub type Vec2b = Vec2Mask;
-
 impl Vec2Mask {
     /// Creates a new `Vec2Mask`.
     #[inline]
     pub fn new(x: bool, y: bool) -> Self {
         const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
         Self(MASK[x as usize], MASK[y as usize])
-    }
-
-    #[inline]
-    #[deprecated(since = "0.7.1", note = "please use `bitmask` instead")]
-    pub fn mask(self) -> u32 {
-        self.bitmask()
     }
 
     /// Returns a bitmask with the lowest two bits set from the elements of

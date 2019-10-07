@@ -584,12 +584,6 @@ impl Vec3Mask {
         }
     }
 
-    #[inline]
-    #[deprecated(since = "0.7.1", note = "please use `bitmask` instead")]
-    pub fn mask(self) -> u32 {
-        self.bitmask()
-    }
-
     /// Returns a bitmask with the lowest three bits set from the elements of
     /// the `Vec3Mask`.
     ///

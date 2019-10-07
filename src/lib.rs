@@ -134,9 +134,6 @@ pub use self::f32::{
     Vec3Mask, Vec4, Vec4Mask,
 };
 
-#[allow(deprecated)]
-pub use self::f32::{Vec2b, Vec3b, Vec4b};
-
 #[repr(align(16))]
 pub(crate) struct Align16<T>(T);
 

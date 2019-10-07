@@ -1,7 +1,4 @@
-use super::{Vec3, Vec3Mask};
-
-#[deprecated(since = "0.7.1", note = "please use `Vec3Mask` instead")]
-pub type Vec3b = Vec3Mask;
+use super::Vec3;
 
 #[inline]
 pub fn vec3(x: f32, y: f32, z: f32) -> Vec3 {

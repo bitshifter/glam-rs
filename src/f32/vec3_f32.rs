@@ -377,12 +377,6 @@ impl Vec3Mask {
     }
 
     #[inline]
-    #[deprecated(since = "0.7.1", note = "please use `bitmask` instead")]
-    pub fn mask(self) -> u32 {
-        self.bitmask()
-    }
-
-    #[inline]
     pub fn bitmask(&self) -> u32 {
         (self.0 & 0x1) | (self.1 & 0x1) << 1 | (self.2 & 0x1) << 2
     }
