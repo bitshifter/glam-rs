@@ -6,7 +6,7 @@ use rand_xoshiro::Xoshiro256Plus;
 
 #[test]
 fn test_vec2_align() {
-    use std::mem;
+    use core::mem;
     assert_eq!(8, mem::size_of::<Vec2>());
     assert_eq!(4, mem::align_of::<Vec2>());
     assert_eq!(8, mem::size_of::<Vec2Mask>());
@@ -284,6 +284,15 @@ fn test_vec2mask_not() {
     assert_eq!((!Vec2Mask::new(true, false)).bitmask(), 0b10);
     assert_eq!((!Vec2Mask::new(false, true)).bitmask(), 0b01);
     assert_eq!((!Vec2Mask::new(true, true)).bitmask(), 0b00);
+}
+
+#[test]
+fn test_vec2_sign() {
+    assert_eq!(Vec2::zero().sign(), Vec2::one());
+    assert_eq!(-Vec2::zero().sign(), -Vec2::one());
+    assert_eq!(Vec2::one().sign(), Vec2::one());
+    assert_eq!((-Vec2::one()).sign(), -Vec2::one());
+    assert_eq!(Vec2::splat(core::f32::NEG_INFINITY).sign(), -Vec2::one());
 }
 
 #[cfg(feature = "rand")]

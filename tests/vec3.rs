@@ -327,6 +327,15 @@ fn test_vec3mask_not() {
     assert_eq!((!Vec3Mask::new(false, true, false)).bitmask(), 0b101);
 }
 
+#[test]
+fn test_vec3_sign() {
+    assert_eq!(Vec3::zero().sign(), Vec3::one());
+    assert_eq!(-Vec3::zero().sign(), -Vec3::one());
+    assert_eq!(Vec3::one().sign(), Vec3::one());
+    assert_eq!((-Vec3::one()).sign(), -Vec3::one());
+    assert_eq!(Vec3::splat(core::f32::NEG_INFINITY).sign(), -Vec3::one());
+}
+
 #[cfg(feature = "rand")]
 #[test]
 fn test_vec3_rand() {

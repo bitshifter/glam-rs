@@ -9,8 +9,10 @@ pub fn vec4(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
 }
 
 impl Vec4 {
-    /// Returns a new `Vec4` with `1.0` for elements that are greater than or
-    /// equal to zero in the original and `-1.0` for elements that are negative.
+    /// Returns a new `Vec4` with elements representing the sign of `self`.
+    ///
+    /// - `1.0` if the number is positive, `+0.0` or `INFINITY`
+    /// - `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
     #[inline]
     pub fn sign(self) -> Self {
         let mask = self.cmpge(Self::zero());
