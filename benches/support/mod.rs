@@ -76,11 +76,11 @@ pub fn random_quat(rng: &mut PCG32) -> Quat {
 }
 
 pub fn random_mat2(rng: &mut PCG32) -> Mat2 {
-    Mat2::new(random_vec2(rng), random_vec2(rng))
+    Mat2::from_cols(random_vec2(rng), random_vec2(rng))
 }
 
 pub fn random_mat3(rng: &mut PCG32) -> Mat3 {
-    Mat3::new(random_vec3(rng), random_vec3(rng), random_vec3(rng))
+    Mat3::from_cols(random_vec3(rng), random_vec3(rng), random_vec3(rng))
 }
 
 pub fn random_srt_mat4(rng: &mut PCG32) -> Mat4 {
