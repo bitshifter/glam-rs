@@ -7,7 +7,7 @@ A simple and fast 3D math library for games and graphics.
 
 ## Development status
 
-`glam` is in a alpha stage. Minimal base functionality has been implemented
+`glam` is in alpha stage. Minimal base functionality has been implemented
 and the look and feel of the API has solidified.
 
 ## Features
@@ -28,8 +28,8 @@ Note that this does result in some wasted space in the case of `Vec3` and `Mat3`
 as the SIMD vector type is 16 bytes large and 16 byte aligned.
 
 `glam` outperforms similar Rust libraries such as [`cgmath`][cgmath] and
-[`nalgebra-glm`][nalgebra-glm] for common operations as tested by the [`mathbench`][mathbench]
-project.
+[`nalgebra-glm`][nalgebra-glm] for common operations as tested by the
+[`mathbench`][mathbench] project.
 
 If you are more concerned with size than speed you can build glam with the
 feature `scalar-math` enabled to disable SIMD usage.
