@@ -26,6 +26,7 @@ The format is based on [Keep a Changelog], and this project adheres to
   `from_cols_array` and `from_cols_array_2d`.
 * Matrix `new` methods have been renamed to `from_cols` to be consistent with
   the other methods that create matrices from data.
+* Renamed `Mat4::perspective_glu` to `Mat4::perspective_glu_rh`.
 
 ## [0.7.2] - 2019-09-22
 ### Fixed
@@ -91,4 +92,3 @@ The format is based on [Keep a Changelog], and this project adheres to
 [0.7.1]: https://github.com/bitshifter/glam-rs/compare/0.7.0...0.7.1
 [0.7.0]: https://github.com/bitshifter/glam-rs/compare/0.6.1...0.7.0
 [0.6.1]: https://github.com/bitshifter/glam-rs/compare/0.6.0...0.6.1
-
