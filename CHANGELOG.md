@@ -5,6 +5,25 @@ The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+### Removed
+* Removed the `approx` crate dependency. Each `glam` type has an `abs_diff_eq`
+  method added which is used by unit tests for approximate floating point
+  comparisons.
+* Removed the `Angle` type. All angles are now `f32` and are expected to
+  be in radians.
+* Removed the deprecated `Vec2b`, `Vec3b` and `Vec4b` types and the `mask`
+  methods on `Vec2Mask`, `Vec3Mask` and `Vec4Mask`.
+
+### Changed
+* The `rand` crate dependency has been removed from default features. This was
+  required for benchmarking but a simple random number generator has been added
+  to the benches `support` module instead.
+* The `From` trait implementation converting between 1D and 2D `f32` arrays and
+  matrix types have been removed. It was ambiguous how array data would map to
+  matrix columns so these have been replaced with explicit methods
+  `from_cols_array` and `from_cols_array_2d`.
+* Matrix `new` methods have been renamed to `from_cols` to be consistent with
+  the other methods that create matrices from data.
 
 ## [0.7.2] - 2019-09-22
 ### Fixed
