@@ -65,7 +65,7 @@ impl Vec4 {
         Self(v, v, v, v)
     }
 
-    /// Creates a `Vec3` from the first three elements of the `Vec4`,
+    /// Creates a `Vec3` from the first three elements of `self`,
     /// removing `w`.
     #[inline]
     pub fn truncate(self) -> Vec3 {
@@ -144,19 +144,19 @@ impl Vec4 {
         Self(self.3, self.3, self.3, self.3)
     }
 
-    /// Computes the 4D dot product of the `Vec4` and `rhs`.
+    /// Computes the 4D dot product of `self` and `other`.
     #[inline]
-    pub fn dot(self, rhs: Self) -> f32 {
-        (self.0 * rhs.0) + (self.1 * rhs.1) + (self.2 * rhs.2) + (self.3 * rhs.3)
+    pub fn dot(self, other: Self) -> f32 {
+        (self.0 * other.0) + (self.1 * other.1) + (self.2 * other.2) + (self.3 * other.3)
     }
 
-    /// Computes the 4D length of the `Vec4`.
+    /// Computes the 4D length of `self`.
     #[inline]
     pub fn length(self) -> f32 {
         self.dot(self).sqrt()
     }
 
-    /// Computes the squared 4D length of the `Vec4`.
+    /// Computes the squared 4D length of `self`.
     ///
     /// This is generally faster than `Vec4::length()` as it avoids a square
     /// root operation.
@@ -167,51 +167,51 @@ impl Vec4 {
 
     /// Computes `1.0 / Vec4::length()`.
     ///
-    /// For valid results, the `Vec4` must _not_ be of length zero.
+    /// For valid results, `self` must _not_ be of length zero.
     #[inline]
     pub fn length_reciprocal(self) -> f32 {
         1.0 / self.length()
     }
 
-    /// Returns the `Vec4` normalized to length 1.0.
+    /// Returns `self` normalized to length 1.0.
     ///
-    /// For valid results, the `Vec4` must _not_ be of length zero.
+    /// For valid results, `self` must _not_ be of length zero.
     #[inline]
     pub fn normalize(self) -> Self {
         self * self.length_reciprocal()
     }
 
-    /// Returns the vertical minimum of the `Vec4` and `rhs`.
+    /// Returns the vertical minimum of `self` and `other`.
     ///
     /// In other words, this computes
     /// `[x: min(x1, x2), y: min(y1, y2), z: min(z1, z2), w: min(w1, w2)]`,
     /// taking the minimum of each element individually.
     #[inline]
-    pub fn min(self, rhs: Self) -> Self {
+    pub fn min(self, other: Self) -> Self {
         Self(
-            self.0.min(rhs.0),
-            self.1.min(rhs.1),
-            self.2.min(rhs.2),
-            self.3.min(rhs.3),
+            self.0.min(other.0),
+            self.1.min(other.1),
+            self.2.min(other.2),
+            self.3.min(other.3),
         )
     }
 
-    /// Returns the vertical maximum of the `Vec4` and `rhs`.
+    /// Returns the vertical maximum of `self` and `other`.
     ///
     /// In other words, this computes
     /// `[x: max(x1, x2), y: max(y1, y2), z: max(z1, z2), w: max(w1, w2)]`,
     /// taking the maximum of each element individually.
     #[inline]
-    pub fn max(self, rhs: Self) -> Self {
+    pub fn max(self, other: Self) -> Self {
         Self(
-            self.0.max(rhs.0),
-            self.1.max(rhs.1),
-            self.2.max(rhs.2),
-            self.3.max(rhs.3),
+            self.0.max(other.0),
+            self.1.max(other.1),
+            self.2.max(other.2),
+            self.3.max(other.3),
         )
     }
 
-    /// Returns the minimum of all four elements in the `Vec4`.
+    /// Returns the minimum of all four elements in `self`.
     ///
     /// In other words, this computes `min(x, y, z, w)`.
     #[inline]
@@ -219,7 +219,7 @@ impl Vec4 {
         self.0.min(self.1.min(self.2.min(self.3)))
     }
 
-    /// Returns the maximum of all four elements in the `Vec4`.
+    /// Returns the maximum of all four elements in `self`.
     ///
     /// In other words, this computes `max(x, y, z, w)`.
     #[inline]
@@ -227,87 +227,87 @@ impl Vec4 {
         self.0.max(self.1.max(self.2.min(self.3)))
     }
 
-    /// Performs a vertical `==` comparison between the `Vec4` and `rhs`,
+    /// Performs a vertical `==` comparison between `self` and `other`,
     /// returning a `Vec4Mask` of the results.
     ///
     /// In other words, this computes `[x1 == x2, y1 == y2, z1 == z2, w1 == w2]`.
     #[inline]
-    pub fn cmpeq(self, rhs: Self) -> Vec4Mask {
+    pub fn cmpeq(self, other: Self) -> Vec4Mask {
         Vec4Mask::new(
-            self.0.eq(&rhs.0),
-            self.1.eq(&rhs.1),
-            self.2.eq(&rhs.2),
-            self.3.eq(&rhs.3),
+            self.0.eq(&other.0),
+            self.1.eq(&other.1),
+            self.2.eq(&other.2),
+            self.3.eq(&other.3),
         )
     }
 
-    /// Performs a vertical `!=` comparison between the `Vec4` and `rhs`,
+    /// Performs a vertical `!=` comparison between `self` and `other`,
     /// returning a `Vec4Mask` of the results.
     ///
     /// In other words, this computes `[x1 != x2, y1 != y2, z1 != z2, w1 != w2]`.
     #[inline]
-    pub fn cmpne(self, rhs: Self) -> Vec4Mask {
+    pub fn cmpne(self, other: Self) -> Vec4Mask {
         Vec4Mask::new(
-            self.0.ne(&rhs.0),
-            self.1.ne(&rhs.1),
-            self.2.ne(&rhs.2),
-            self.3.ne(&rhs.3),
+            self.0.ne(&other.0),
+            self.1.ne(&other.1),
+            self.2.ne(&other.2),
+            self.3.ne(&other.3),
         )
     }
 
-    /// Performs a vertical `>=` comparison between the `Vec4` and `rhs`,
+    /// Performs a vertical `>=` comparison between `self` and `other`,
     /// returning a `Vec4Mask` of the results.
     ///
     /// In other words, this computes `[x1 >= x2, y1 >= y2, z1 >= z2, w1 >= w2]`.
     #[inline]
-    pub fn cmpge(self, rhs: Self) -> Vec4Mask {
+    pub fn cmpge(self, other: Self) -> Vec4Mask {
         Vec4Mask::new(
-            self.0.ge(&rhs.0),
-            self.1.ge(&rhs.1),
-            self.2.ge(&rhs.2),
-            self.3.ge(&rhs.3),
+            self.0.ge(&other.0),
+            self.1.ge(&other.1),
+            self.2.ge(&other.2),
+            self.3.ge(&other.3),
         )
     }
 
-    /// Performs a vertical `>` comparison between the `Vec4` and `rhs`,
+    /// Performs a vertical `>` comparison between `self` and `other`,
     /// returning a `Vec4Mask` of the results.
     ///
     /// In other words, this computes `[x1 > x2, y1 > y2, z1 > z2, w1 > w2]`.
     #[inline]
-    pub fn cmpgt(self, rhs: Self) -> Vec4Mask {
+    pub fn cmpgt(self, other: Self) -> Vec4Mask {
         Vec4Mask::new(
-            self.0.gt(&rhs.0),
-            self.1.gt(&rhs.1),
-            self.2.gt(&rhs.2),
-            self.3.gt(&rhs.3),
+            self.0.gt(&other.0),
+            self.1.gt(&other.1),
+            self.2.gt(&other.2),
+            self.3.gt(&other.3),
         )
     }
 
-    /// Performs a vertical `<=` comparison between the `Vec4` and `rhs`,
+    /// Performs a vertical `<=` comparison between `self` and `other`,
     /// returning a `Vec4Mask` of the results.
     ///
     /// In other words, this computes `[x1 <= x2, y1 <= y2, z1 <= z2, w1 <= w2]`.
     #[inline]
-    pub fn cmple(self, rhs: Self) -> Vec4Mask {
+    pub fn cmple(self, other: Self) -> Vec4Mask {
         Vec4Mask::new(
-            self.0.le(&rhs.0),
-            self.1.le(&rhs.1),
-            self.2.le(&rhs.2),
-            self.3.le(&rhs.3),
+            self.0.le(&other.0),
+            self.1.le(&other.1),
+            self.2.le(&other.2),
+            self.3.le(&other.3),
         )
     }
 
-    /// Performs a vertical `<` comparison between the `Vec4` and `rhs`,
+    /// Performs a vertical `<` comparison between `self` and `other`,
     /// returning a `Vec4Mask` of the results.
     ///
     /// In other words, this computes `[x1 < x2, y1 < y2, z1 < z2, w1 < w2]`.
     #[inline]
-    pub fn cmplt(self, rhs: Self) -> Vec4Mask {
+    pub fn cmplt(self, other: Self) -> Vec4Mask {
         Vec4Mask::new(
-            self.0.lt(&rhs.0),
-            self.1.lt(&rhs.1),
-            self.2.lt(&rhs.2),
-            self.3.lt(&rhs.3),
+            self.0.lt(&other.0),
+            self.1.lt(&other.1),
+            self.2.lt(&other.2),
+            self.3.lt(&other.3),
         )
     }
 
@@ -321,7 +321,7 @@ impl Vec4 {
         Self(slice[0], slice[1], slice[2], slice[3])
     }
 
-    /// Writes the elements of the `Vec4` to the first four elements in `slice`.
+    /// Writes the elements of `self` to the first four elements in `slice`.
     ///
     /// # Panics
     ///
@@ -369,24 +369,24 @@ impl fmt::Display for Vec4 {
 impl Div<Vec4> for Vec4 {
     type Output = Self;
     #[inline]
-    fn div(self, rhs: Self) -> Self {
+    fn div(self, other: Self) -> Self {
         Self(
-            self.0 / rhs.0,
-            self.1 / rhs.1,
-            self.2 / rhs.2,
-            self.3 / rhs.3,
+            self.0 / other.0,
+            self.1 / other.1,
+            self.2 / other.2,
+            self.3 / other.3,
         )
     }
 }
 
 impl DivAssign<Vec4> for Vec4 {
     #[inline]
-    fn div_assign(&mut self, rhs: Self) {
+    fn div_assign(&mut self, other: Self) {
         *self = Self(
-            self.0 / rhs.0,
-            self.1 / rhs.1,
-            self.2 / rhs.2,
-            self.3 / rhs.3,
+            self.0 / other.0,
+            self.1 / other.1,
+            self.2 / other.2,
+            self.3 / other.3,
         )
     }
 }
@@ -394,39 +394,49 @@ impl DivAssign<Vec4> for Vec4 {
 impl Div<f32> for Vec4 {
     type Output = Self;
     #[inline]
-    fn div(self, rhs: f32) -> Self {
-        Self(self.0 / rhs, self.1 / rhs, self.2 / rhs, self.3 / rhs)
+    fn div(self, other: f32) -> Self {
+        Self(
+            self.0 / other,
+            self.1 / other,
+            self.2 / other,
+            self.3 / other,
+        )
     }
 }
 
 impl DivAssign<f32> for Vec4 {
     #[inline]
-    fn div_assign(&mut self, rhs: f32) {
-        *self = Self(self.0 / rhs, self.1 / rhs, self.2 / rhs, self.3 / rhs)
+    fn div_assign(&mut self, other: f32) {
+        *self = Self(
+            self.0 / other,
+            self.1 / other,
+            self.2 / other,
+            self.3 / other,
+        )
     }
 }
 
 impl Mul<Vec4> for Vec4 {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: Self) -> Self {
+    fn mul(self, other: Self) -> Self {
         Self(
-            self.0 * rhs.0,
-            self.1 * rhs.1,
-            self.2 * rhs.2,
-            self.3 * rhs.3,
+            self.0 * other.0,
+            self.1 * other.1,
+            self.2 * other.2,
+            self.3 * other.3,
         )
     }
 }
 
 impl MulAssign<Vec4> for Vec4 {
     #[inline]
-    fn mul_assign(&mut self, rhs: Self) {
+    fn mul_assign(&mut self, other: Self) {
         *self = Self(
-            self.0 * rhs.0,
-            self.1 * rhs.1,
-            self.2 * rhs.2,
-            self.3 * rhs.3,
+            self.0 * other.0,
+            self.1 * other.1,
+            self.2 * other.2,
+            self.3 * other.3,
         )
     }
 }
@@ -434,47 +444,62 @@ impl MulAssign<Vec4> for Vec4 {
 impl Mul<f32> for Vec4 {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: f32) -> Self {
-        Self(self.0 * rhs, self.1 * rhs, self.2 * rhs, self.3 * rhs)
+    fn mul(self, other: f32) -> Self {
+        Self(
+            self.0 * other,
+            self.1 * other,
+            self.2 * other,
+            self.3 * other,
+        )
     }
 }
 
 impl MulAssign<f32> for Vec4 {
     #[inline]
-    fn mul_assign(&mut self, rhs: f32) {
-        *self = Self(self.0 * rhs, self.1 * rhs, self.2 * rhs, self.3 * rhs)
+    fn mul_assign(&mut self, other: f32) {
+        *self = Self(
+            self.0 * other,
+            self.1 * other,
+            self.2 * other,
+            self.3 * other,
+        )
     }
 }
 
 impl Mul<Vec4> for f32 {
     type Output = Vec4;
     #[inline]
-    fn mul(self, rhs: Vec4) -> Vec4 {
-        Vec4(self * rhs.0, self * rhs.1, self * rhs.2, self * rhs.3)
+    fn mul(self, other: Vec4) -> Vec4 {
+        Vec4(
+            self * other.0,
+            self * other.1,
+            self * other.2,
+            self * other.3,
+        )
     }
 }
 
 impl Add for Vec4 {
     type Output = Self;
     #[inline]
-    fn add(self, rhs: Self) -> Self {
+    fn add(self, other: Self) -> Self {
         Self(
-            self.0 + rhs.0,
-            self.1 + rhs.1,
-            self.2 + rhs.2,
-            self.3 + rhs.3,
+            self.0 + other.0,
+            self.1 + other.1,
+            self.2 + other.2,
+            self.3 + other.3,
         )
     }
 }
 
 impl AddAssign for Vec4 {
     #[inline]
-    fn add_assign(&mut self, rhs: Self) {
+    fn add_assign(&mut self, other: Self) {
         *self = Self(
-            self.0 + rhs.0,
-            self.1 + rhs.1,
-            self.2 + rhs.2,
-            self.3 + rhs.3,
+            self.0 + other.0,
+            self.1 + other.1,
+            self.2 + other.2,
+            self.3 + other.3,
         )
     }
 }
@@ -482,24 +507,24 @@ impl AddAssign for Vec4 {
 impl Sub for Vec4 {
     type Output = Self;
     #[inline]
-    fn sub(self, rhs: Self) -> Self {
+    fn sub(self, other: Self) -> Self {
         Self(
-            self.0 - rhs.0,
-            self.1 - rhs.1,
-            self.2 - rhs.2,
-            self.3 - rhs.3,
+            self.0 - other.0,
+            self.1 - other.1,
+            self.2 - other.2,
+            self.3 - other.3,
         )
     }
 }
 
 impl SubAssign for Vec4 {
     #[inline]
-    fn sub_assign(&mut self, rhs: Self) {
+    fn sub_assign(&mut self, other: Self) {
         *self = Self(
-            self.0 - rhs.0,
-            self.1 - rhs.1,
-            self.2 - rhs.2,
-            self.3 - rhs.3,
+            self.0 - other.0,
+            self.1 - other.1,
+            self.2 - other.2,
+            self.3 - other.3,
         )
     }
 }
@@ -625,19 +650,19 @@ impl BitAnd for Vec4Mask {
     type Output = Self;
 
     #[inline]
-    fn bitand(self, rhs: Self) -> Self {
+    fn bitand(self, other: Self) -> Self {
         Self(
-            self.0 & rhs.0,
-            self.1 & rhs.1,
-            self.2 & rhs.2,
-            self.3 & rhs.3,
+            self.0 & other.0,
+            self.1 & other.1,
+            self.2 & other.2,
+            self.3 & other.3,
         )
     }
 }
 
 impl BitAndAssign for Vec4Mask {
-    fn bitand_assign(&mut self, rhs: Self) {
-        *self = *self & rhs
+    fn bitand_assign(&mut self, other: Self) {
+        *self = *self & other
     }
 }
 
@@ -645,19 +670,19 @@ impl BitOr for Vec4Mask {
     type Output = Self;
 
     #[inline]
-    fn bitor(self, rhs: Self) -> Self {
+    fn bitor(self, other: Self) -> Self {
         Self(
-            self.0 | rhs.0,
-            self.1 | rhs.1,
-            self.2 | rhs.2,
-            self.3 | rhs.3,
+            self.0 | other.0,
+            self.1 | other.1,
+            self.2 | other.2,
+            self.3 | other.3,
         )
     }
 }
 
 impl BitOrAssign for Vec4Mask {
-    fn bitor_assign(&mut self, rhs: Self) {
-        *self = *self | rhs
+    fn bitor_assign(&mut self, other: Self) {
+        *self = *self | other
     }
 }
 

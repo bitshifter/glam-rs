@@ -215,8 +215,8 @@ impl Quat {
     }
 
     #[inline]
-    pub fn dot(self, rhs: Self) -> f32 {
-        self.0.dot(rhs.0)
+    pub fn dot(self, other: Self) -> f32 {
+        self.0.dot(other.0)
     }
 
     #[inline]
@@ -267,7 +267,7 @@ impl Quat {
     }
 
     /// Returns true if the absolute difference of all elements between `self`
-    /// and `rhs` is less than or equal to `max_abs_diff`.
+    /// and `other` is less than or equal to `max_abs_diff`.
     ///
     /// This can be used to compare if two `Quat`'s contain similar elements. It
     /// works best when comparing with a known value. The `max_abs_diff` that
@@ -276,8 +276,8 @@ impl Quat {
     /// For more on floating point comparisons see
     /// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
     #[inline]
-    pub fn abs_diff_eq(self, rhs: Self, max_abs_diff: f32) -> bool {
-        self.0.abs_diff_eq(rhs.0, max_abs_diff)
+    pub fn abs_diff_eq(self, other: Self, max_abs_diff: f32) -> bool {
+        self.0.abs_diff_eq(other.0, max_abs_diff)
     }
 
     #[inline]
@@ -295,35 +295,35 @@ impl Quat {
     #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
     #[inline]
     /// Multiplies a quaternion and a 3D vector, rotating it.
-    pub fn mul_vec3(self, rhs: Vec3) -> Vec3 {
+    pub fn mul_vec3(self, other: Vec3) -> Vec3 {
         glam_assert!(self.is_normalized());
         let w = self.0.w();
         let b = self.0.truncate();
         let b2 = b.dot(b);
-        rhs * (w * w - b2) + b * (rhs.dot(b) * 2.0) + b.cross(rhs) * (w * 2.0)
+        other * (w * w - b2) + b * (other.dot(b) * 2.0) + b.cross(other) * (w * 2.0)
     }
 
     #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
     #[inline]
     /// Multiplies a quaternion and a 3D vector, rotating it.
-    pub fn mul_vec3(self, rhs: Vec3) -> Vec3 {
+    pub fn mul_vec3(self, other: Vec3) -> Vec3 {
         glam_assert!(self.is_normalized());
         let w = self.0.dup_w().truncate();
         let two = Vec3::splat(2.0);
         let b = self.0.truncate();
         let b2 = Vec3::splat(b.dot(b));
-        rhs * (w * w - b2) + b * (rhs.dot(b) * two) + b.cross(rhs) * (w * two)
+        other * (w * w - b2) + b * (other.dot(b) * two) + b.cross(other) * (w * two)
     }
 
     #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
     #[inline]
     /// Multiplies two quaternions.
     /// Note that due to floating point rounding the result may not be perfectly normalized.
-    pub fn mul_quat(self, rhs: Self) -> Self {
+    pub fn mul_quat(self, other: Self) -> Self {
         glam_assert!(self.is_normalized());
-        glam_assert!(rhs.is_normalized());
+        glam_assert!(other.is_normalized());
         let (x0, y0, z0, w0) = self.0.into();
-        let (x1, y1, z1, w1) = rhs.0.into();
+        let (x1, y1, z1, w1) = other.0.into();
         Self::new(
             w0 * x1 + x0 * w1 + y0 * z1 - z0 * y1,
             w0 * y1 - x0 * z1 + y0 * w1 + z0 * x1,
@@ -336,12 +336,12 @@ impl Quat {
     #[inline]
     /// Multiplies two quaternions.
     /// Note that due to floating point rounding the result may not be perfectly normalized.
-    pub fn mul_quat(self, rhs: Self) -> Self {
+    pub fn mul_quat(self, other: Self) -> Self {
         glam_assert!(self.is_normalized());
-        glam_assert!(rhs.is_normalized());
+        glam_assert!(other.is_normalized());
         // sse2 implementation from RTM
         let lhs = self.0.into();
-        let rhs = rhs.0.into();
+        let rhs = other.0.into();
         unsafe {
             #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
             use super::x86_utils::UnionCast;
@@ -405,23 +405,23 @@ impl fmt::Display for Quat {
 impl Mul<Quat> for Quat {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: Self) -> Self {
-        self.mul_quat(rhs)
+    fn mul(self, other: Self) -> Self {
+        self.mul_quat(other)
     }
 }
 
 impl MulAssign<Quat> for Quat {
     #[inline]
-    fn mul_assign(&mut self, rhs: Self) {
-        *self = self.mul_quat(rhs);
+    fn mul_assign(&mut self, other: Self) {
+        *self = self.mul_quat(other);
     }
 }
 
 impl Mul<Vec3> for Quat {
     type Output = Vec3;
     #[inline]
-    fn mul(self, rhs: Vec3) -> Vec3 {
-        self.mul_vec3(rhs)
+    fn mul(self, other: Vec3) -> Vec3 {
+        self.mul_vec3(other)
     }
 }
 
@@ -442,8 +442,8 @@ impl Default for Quat {
 
 impl PartialEq for Quat {
     #[inline]
-    fn eq(&self, rhs: &Self) -> bool {
-        self.0.cmpeq(rhs.0).all()
+    fn eq(&self, other: &Self) -> bool {
+        self.0.cmpeq(other.0).all()
     }
 }
 

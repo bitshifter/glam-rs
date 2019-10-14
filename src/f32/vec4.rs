@@ -24,27 +24,27 @@ impl Vec4 {
         Self::one() / self
     }
 
-    /// Performs a linear interpolation between the `Vec4` and `rhs` based on
+    /// Performs a linear interpolation between `self` and `other` based on
     /// the value `s`.
     ///
-    /// When `s` is `0.0`, the result will be equal to the `Vec4`.  When `s`
-    /// is `1.0`, the result will be equal to `rhs`.
+    /// When `s` is `0.0`, the result will be equal to `self`.  When `s`
+    /// is `1.0`, the result will be equal to `other`.
     #[inline]
-    pub fn lerp(self, rhs: Self, s: f32) -> Self {
+    pub fn lerp(self, other: Self, s: f32) -> Self {
         glam_assert!(s >= 0.0 && s <= 1.0);
-        self + ((rhs - self) * s)
+        self + ((other - self) * s)
     }
 
-    /// Returns whether the `Vec4` is normalized to length `1.0` or not.
+    /// Returns whether `self` is length `1.0` or not.
     ///
-    /// Uses a precision threshold of `core::f32::EPSILON`.
+    /// Uses a precision threshold of `std::f32::EPSILON`.
     #[inline]
     pub fn is_normalized(self) -> bool {
         is_normalized!(self)
     }
 
     /// Returns true if the absolute difference of all elements between `self`
-    /// and `rhs` is less than or equal to `max_abs_diff`.
+    /// and `other` is less than or equal to `max_abs_diff`.
     ///
     /// This can be used to compare if two `Vec4`'s contain similar elements. It
     /// works best when comparing with a known value. The `max_abs_diff` that
@@ -53,8 +53,8 @@ impl Vec4 {
     /// For more on floating point comparisons see
     /// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
     #[inline]
-    pub fn abs_diff_eq(self, rhs: Self, max_abs_diff: f32) -> bool {
-        abs_diff_eq!(self, rhs, max_abs_diff)
+    pub fn abs_diff_eq(self, other: Self, max_abs_diff: f32) -> bool {
+        abs_diff_eq!(self, other, max_abs_diff)
     }
 }
 

@@ -108,21 +108,21 @@ impl Vec3 {
     }
 
     #[inline]
-    pub fn dot(self, rhs: Self) -> f32 {
-        (self.0 * rhs.0) + (self.1 * rhs.1) + (self.2 * rhs.2)
+    pub fn dot(self, other: Self) -> f32 {
+        (self.0 * other.0) + (self.1 * other.1) + (self.2 * other.2)
     }
 
     #[inline]
-    pub(crate) fn dot_as_vec3(self, rhs: Self) -> Self {
-        Vec3::splat(self.dot(rhs))
+    pub(crate) fn dot_as_vec3(self, other: Self) -> Self {
+        Vec3::splat(self.dot(other))
     }
 
     #[inline]
-    pub fn cross(self, rhs: Self) -> Self {
+    pub fn cross(self, other: Self) -> Self {
         Self(
-            self.1 * rhs.2 - rhs.1 * self.2,
-            self.2 * rhs.0 - rhs.2 * self.0,
-            self.0 * rhs.1 - rhs.0 * self.1,
+            self.1 * other.2 - other.1 * self.2,
+            self.2 * other.0 - other.2 * self.0,
+            self.0 * other.1 - other.0 * self.1,
         )
     }
 
@@ -147,13 +147,21 @@ impl Vec3 {
     }
 
     #[inline]
-    pub fn min(self, rhs: Self) -> Self {
-        Self(self.0.min(rhs.0), self.1.min(rhs.1), self.2.min(rhs.2))
+    pub fn min(self, other: Self) -> Self {
+        Self(
+            self.0.min(other.0),
+            self.1.min(other.1),
+            self.2.min(other.2),
+        )
     }
 
     #[inline]
-    pub fn max(self, rhs: Self) -> Self {
-        Self(self.0.max(rhs.0), self.1.max(rhs.1), self.2.max(rhs.2))
+    pub fn max(self, other: Self) -> Self {
+        Self(
+            self.0.max(other.0),
+            self.1.max(other.1),
+            self.2.max(other.2),
+        )
     }
 
     #[inline]
@@ -167,33 +175,57 @@ impl Vec3 {
     }
 
     #[inline]
-    pub fn cmpeq(self, rhs: Self) -> Vec3Mask {
-        Vec3Mask::new(self.0.eq(&rhs.0), self.1.eq(&rhs.1), self.2.eq(&rhs.2))
+    pub fn cmpeq(self, other: Self) -> Vec3Mask {
+        Vec3Mask::new(
+            self.0.eq(&other.0),
+            self.1.eq(&other.1),
+            self.2.eq(&other.2),
+        )
     }
 
     #[inline]
-    pub fn cmpne(self, rhs: Self) -> Vec3Mask {
-        Vec3Mask::new(self.0.ne(&rhs.0), self.1.ne(&rhs.1), self.2.ne(&rhs.2))
+    pub fn cmpne(self, other: Self) -> Vec3Mask {
+        Vec3Mask::new(
+            self.0.ne(&other.0),
+            self.1.ne(&other.1),
+            self.2.ne(&other.2),
+        )
     }
 
     #[inline]
-    pub fn cmpge(self, rhs: Self) -> Vec3Mask {
-        Vec3Mask::new(self.0.ge(&rhs.0), self.1.ge(&rhs.1), self.2.ge(&rhs.2))
+    pub fn cmpge(self, other: Self) -> Vec3Mask {
+        Vec3Mask::new(
+            self.0.ge(&other.0),
+            self.1.ge(&other.1),
+            self.2.ge(&other.2),
+        )
     }
 
     #[inline]
-    pub fn cmpgt(self, rhs: Self) -> Vec3Mask {
-        Vec3Mask::new(self.0.gt(&rhs.0), self.1.gt(&rhs.1), self.2.gt(&rhs.2))
+    pub fn cmpgt(self, other: Self) -> Vec3Mask {
+        Vec3Mask::new(
+            self.0.gt(&other.0),
+            self.1.gt(&other.1),
+            self.2.gt(&other.2),
+        )
     }
 
     #[inline]
-    pub fn cmple(self, rhs: Self) -> Vec3Mask {
-        Vec3Mask::new(self.0.le(&rhs.0), self.1.le(&rhs.1), self.2.le(&rhs.2))
+    pub fn cmple(self, other: Self) -> Vec3Mask {
+        Vec3Mask::new(
+            self.0.le(&other.0),
+            self.1.le(&other.1),
+            self.2.le(&other.2),
+        )
     }
 
     #[inline]
-    pub fn cmplt(self, rhs: Self) -> Vec3Mask {
-        Vec3Mask::new(self.0.lt(&rhs.0), self.1.lt(&rhs.1), self.2.lt(&rhs.2))
+    pub fn cmplt(self, other: Self) -> Vec3Mask {
+        Vec3Mask::new(
+            self.0.lt(&other.0),
+            self.1.lt(&other.1),
+            self.2.lt(&other.2),
+        )
     }
 
     #[inline]
@@ -229,98 +261,98 @@ impl fmt::Display for Vec3 {
 impl Div<Vec3> for Vec3 {
     type Output = Self;
     #[inline]
-    fn div(self, rhs: Self) -> Self {
-        Self(self.0 / rhs.0, self.1 / rhs.1, self.2 / rhs.2)
+    fn div(self, other: Self) -> Self {
+        Self(self.0 / other.0, self.1 / other.1, self.2 / other.2)
     }
 }
 
 impl DivAssign<Vec3> for Vec3 {
     #[inline]
-    fn div_assign(&mut self, rhs: Self) {
-        *self = Self(self.0 / rhs.0, self.1 / rhs.1, self.2 / rhs.2)
+    fn div_assign(&mut self, other: Self) {
+        *self = Self(self.0 / other.0, self.1 / other.1, self.2 / other.2)
     }
 }
 
 impl Div<f32> for Vec3 {
     type Output = Self;
     #[inline]
-    fn div(self, rhs: f32) -> Self {
-        Self(self.0 / rhs, self.1 / rhs, self.2 / rhs)
+    fn div(self, other: f32) -> Self {
+        Self(self.0 / other, self.1 / other, self.2 / other)
     }
 }
 
 impl DivAssign<f32> for Vec3 {
     #[inline]
-    fn div_assign(&mut self, rhs: f32) {
-        *self = Self(self.0 / rhs, self.1 / rhs, self.2 / rhs)
+    fn div_assign(&mut self, other: f32) {
+        *self = Self(self.0 / other, self.1 / other, self.2 / other)
     }
 }
 
 impl Mul<Vec3> for Vec3 {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: Self) -> Self {
-        Self(self.0 * rhs.0, self.1 * rhs.1, self.2 * rhs.2)
+    fn mul(self, other: Self) -> Self {
+        Self(self.0 * other.0, self.1 * other.1, self.2 * other.2)
     }
 }
 
 impl MulAssign<Vec3> for Vec3 {
     #[inline]
-    fn mul_assign(&mut self, rhs: Self) {
-        *self = Self(self.0 * rhs.0, self.1 * rhs.1, self.2 * rhs.2)
+    fn mul_assign(&mut self, other: Self) {
+        *self = Self(self.0 * other.0, self.1 * other.1, self.2 * other.2)
     }
 }
 
 impl Mul<f32> for Vec3 {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: f32) -> Self {
-        Self(self.0 * rhs, self.1 * rhs, self.2 * rhs)
+    fn mul(self, other: f32) -> Self {
+        Self(self.0 * other, self.1 * other, self.2 * other)
     }
 }
 
 impl MulAssign<f32> for Vec3 {
     #[inline]
-    fn mul_assign(&mut self, rhs: f32) {
-        *self = Self(self.0 * rhs, self.1 * rhs, self.2 * rhs)
+    fn mul_assign(&mut self, other: f32) {
+        *self = Self(self.0 * other, self.1 * other, self.2 * other)
     }
 }
 
 impl Mul<Vec3> for f32 {
     type Output = Vec3;
     #[inline]
-    fn mul(self, rhs: Vec3) -> Vec3 {
-        Vec3(self * rhs.0, self * rhs.1, self * rhs.2)
+    fn mul(self, other: Vec3) -> Vec3 {
+        Vec3(self * other.0, self * other.1, self * other.2)
     }
 }
 
 impl Add for Vec3 {
     type Output = Self;
     #[inline]
-    fn add(self, rhs: Self) -> Self {
-        Self(self.0 + rhs.0, self.1 + rhs.1, self.2 + rhs.2)
+    fn add(self, other: Self) -> Self {
+        Self(self.0 + other.0, self.1 + other.1, self.2 + other.2)
     }
 }
 
 impl AddAssign for Vec3 {
     #[inline]
-    fn add_assign(&mut self, rhs: Self) {
-        *self = Self(self.0 + rhs.0, self.1 + rhs.1, self.2 + rhs.2)
+    fn add_assign(&mut self, other: Self) {
+        *self = Self(self.0 + other.0, self.1 + other.1, self.2 + other.2)
     }
 }
 
 impl Sub for Vec3 {
     type Output = Self;
     #[inline]
-    fn sub(self, rhs: Self) -> Self {
-        Self(self.0 - rhs.0, self.1 - rhs.1, self.2 - rhs.2)
+    fn sub(self, other: Self) -> Self {
+        Self(self.0 - other.0, self.1 - other.1, self.2 - other.2)
     }
 }
 
 impl SubAssign for Vec3 {
     #[inline]
-    fn sub_assign(&mut self, rhs: Self) {
-        *self = Self(self.0 - rhs.0, self.1 - rhs.1, self.2 - rhs.2)
+    fn sub_assign(&mut self, other: Self) {
+        *self = Self(self.0 - other.0, self.1 - other.1, self.2 - other.2)
     }
 }
 
@@ -410,14 +442,14 @@ impl BitAnd for Vec3Mask {
     type Output = Self;
 
     #[inline]
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0, self.1 & rhs.1, self.2 & rhs.2)
+    fn bitand(self, other: Self) -> Self {
+        Self(self.0 & other.0, self.1 & other.1, self.2 & other.2)
     }
 }
 
 impl BitAndAssign for Vec3Mask {
-    fn bitand_assign(&mut self, rhs: Self) {
-        *self = *self & rhs
+    fn bitand_assign(&mut self, other: Self) {
+        *self = *self & other
     }
 }
 
@@ -425,14 +457,14 @@ impl BitOr for Vec3Mask {
     type Output = Self;
 
     #[inline]
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0, self.1 | rhs.1, self.2 | rhs.2)
+    fn bitor(self, other: Self) -> Self {
+        Self(self.0 | other.0, self.1 | other.1, self.2 | other.2)
     }
 }
 
 impl BitOrAssign for Vec3Mask {
-    fn bitor_assign(&mut self, rhs: Self) {
-        *self = *self | rhs
+    fn bitor_assign(&mut self, other: Self) {
+        *self = *self | other
     }
 }
 

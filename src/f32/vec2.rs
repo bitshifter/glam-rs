@@ -38,27 +38,27 @@ impl Vec2 {
         Self::one() / self
     }
 
-    /// Performs a linear interpolation between the `Vec2` and `rhs` based on
+    /// Performs a linear interpolation between `self` and `other` based on
     /// the value `s`.
     ///
-    /// When `s` is `0.0`, the result will be equal to the `Vec2`.  When `s`
-    /// is `1.0`, the result will be equal to `rhs`.
+    /// When `s` is `0.0`, the result will be equal to `self`.  When `s`
+    /// is `1.0`, the result will be equal to `other`.
     #[inline]
-    pub fn lerp(self, rhs: Self, s: f32) -> Self {
+    pub fn lerp(self, other: Self, s: f32) -> Self {
         glam_assert!(s >= 0.0 && s <= 1.0);
-        self + ((rhs - self) * s)
+        self + ((other - self) * s)
     }
 
-    /// Returns whether the `Vec2` is normalized to length `1.0` or not.
+    /// Returns whether `self` is length `1.0` or not.
     ///
-    /// Uses a precision threshold of `core::f32::EPSILON`.
+    /// Uses a precision threshold of `std::f32::EPSILON`.
     #[inline]
     pub fn is_normalized(self) -> bool {
         is_normalized!(self)
     }
 
     /// Returns true if the absolute difference of all elements between `self`
-    /// and `rhs` is less than or equal to `max_abs_diff`.
+    /// and `other` is less than or equal to `max_abs_diff`.
     ///
     /// This can be used to compare if two `Vec2`'s contain similar elements. It
     /// works best when comparing with a known value. The `max_abs_diff` that
@@ -67,8 +67,8 @@ impl Vec2 {
     /// For more on floating point comparisons see
     /// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
     #[inline]
-    pub fn abs_diff_eq(self, rhs: Self, max_abs_diff: f32) -> bool {
-        abs_diff_eq!(self, rhs, max_abs_diff)
+    pub fn abs_diff_eq(self, other: Self, max_abs_diff: f32) -> bool {
+        abs_diff_eq!(self, other, max_abs_diff)
     }
 
     /// Creates a new `Vec2`.
@@ -107,7 +107,7 @@ impl Vec2 {
         Vec2(v, v)
     }
 
-    /// Creates a new `Vec3` from the `Vec2` and the given `z` value.
+    /// Creates a new `Vec3` from `self` and the given `z` value.
     #[inline]
     pub fn extend(self, z: f32) -> Vec3 {
         Vec3::new(self.0, self.1, z)
@@ -149,19 +149,19 @@ impl Vec2 {
         Self(self.1, self.1)
     }
 
-    /// Computes the dot product of the `Vec2` and `rhs`.
+    /// Computes the dot product of `self` and `other`.
     #[inline]
-    pub fn dot(self, rhs: Vec2) -> f32 {
-        (self.0 * rhs.0) + (self.1 * rhs.1)
+    pub fn dot(self, other: Vec2) -> f32 {
+        (self.0 * other.0) + (self.1 * other.1)
     }
 
-    /// Computes the length of the `Vec2`.
+    /// Computes the length of `self`.
     #[inline]
     pub fn length(self) -> f32 {
         self.dot(self).sqrt()
     }
 
-    /// Computes the squared length of the `Vec2`.
+    /// Computes the squared length of `self`.
     ///
     /// This is generally faster than `Vec2::length()` as it avoids a square
     /// root operation.
@@ -172,41 +172,41 @@ impl Vec2 {
 
     /// Computes `1.0 / Vec2::length()`.
     ///
-    /// For valid results, the `Vec2` must _not_ be of length zero.
+    /// For valid results, `self` must _not_ be of length zero.
     #[inline]
     pub fn length_reciprocal(self) -> f32 {
         1.0 / self.length()
     }
 
-    /// Returns the `Vec2` normalized to length 1.0.
+    /// Returns `self` normalized to length 1.0.
     ///
-    /// For valid results, the `Vec2` must _not_ be of length zero.
+    /// For valid results, `self` must _not_ be of length zero.
     #[inline]
     pub fn normalize(self) -> Vec2 {
         self * self.length_reciprocal()
     }
 
-    /// Returns the vertical minimum of the `Vec2` and `rhs`.
+    /// Returns the vertical minimum of `self` and `other`.
     ///
     /// In other words, this computes
     /// `[x: min(x1, x2), y: min(y1, y2)]`,
     /// taking the minimum of each element individually.
     #[inline]
-    pub fn min(self, rhs: Vec2) -> Vec2 {
-        Vec2(self.0.min(rhs.0), self.1.min(rhs.1))
+    pub fn min(self, other: Vec2) -> Vec2 {
+        Vec2(self.0.min(other.0), self.1.min(other.1))
     }
 
-    /// Returns the vertical maximum of the `Vec2` and `rhs`.
+    /// Returns the vertical maximum of `self` and `other`.
     ///
     /// In other words, this computes
     /// `[x: max(x1, x2), y: max(y1, y2)]`,
     /// taking the maximum of each element individually.
     #[inline]
-    pub fn max(self, rhs: Vec2) -> Vec2 {
-        Vec2(self.0.max(rhs.0), self.1.max(rhs.1))
+    pub fn max(self, other: Vec2) -> Vec2 {
+        Vec2(self.0.max(other.0), self.1.max(other.1))
     }
 
-    /// Returns the horizontal minimum of the `Vec2`'s elements.
+    /// Returns the horizontal minimum of `self`'s elements.
     ///
     /// In other words, this computes `min(x, y)`.
     #[inline]
@@ -214,7 +214,7 @@ impl Vec2 {
         self.0.min(self.1)
     }
 
-    /// Returns the horizontal maximum of the `Vec2`'s elements.
+    /// Returns the horizontal maximum of `self`'s elements.
     ///
     /// In other words, this computes `max(x, y)`.
     #[inline]
@@ -222,58 +222,58 @@ impl Vec2 {
         self.0.max(self.1)
     }
 
-    /// Performs a vertical `==` comparison between the `Vec2` and `rhs`,
+    /// Performs a vertical `==` comparison between `self` and `other`,
     /// returning a `Vec2Mask` of the results.
     ///
     /// In other words, this computes `[x1 == x2, y1 == y2, z1 == z2, w1 == w2]`.
     #[inline]
-    pub fn cmpeq(self, rhs: Vec2) -> Vec2Mask {
-        Vec2Mask::new(self.0.eq(&rhs.0), self.1.eq(&rhs.1))
+    pub fn cmpeq(self, other: Vec2) -> Vec2Mask {
+        Vec2Mask::new(self.0.eq(&other.0), self.1.eq(&other.1))
     }
 
-    /// Performs a vertical `!=` comparison between the `Vec2` and `rhs`,
+    /// Performs a vertical `!=` comparison between `self` and `other`,
     /// returning a `Vec2Mask` of the results.
     ///
     /// In other words, this computes `[x1 != x2, y1 != y2, z1 != z2, w1 != w2]`.
     #[inline]
-    pub fn cmpne(self, rhs: Vec2) -> Vec2Mask {
-        Vec2Mask::new(self.0.ne(&rhs.0), self.1.ne(&rhs.1))
+    pub fn cmpne(self, other: Vec2) -> Vec2Mask {
+        Vec2Mask::new(self.0.ne(&other.0), self.1.ne(&other.1))
     }
 
-    /// Performs a vertical `>=` comparison between the `Vec2` and `rhs`,
+    /// Performs a vertical `>=` comparison between `self` and `other`,
     /// returning a `Vec2Mask` of the results.
     ///
     /// In other words, this computes `[x1 >= x2, y1 >= y2, z1 >= z2, w1 >= w2]`.
     #[inline]
-    pub fn cmpge(self, rhs: Vec2) -> Vec2Mask {
-        Vec2Mask::new(self.0.ge(&rhs.0), self.1.ge(&rhs.1))
+    pub fn cmpge(self, other: Vec2) -> Vec2Mask {
+        Vec2Mask::new(self.0.ge(&other.0), self.1.ge(&other.1))
     }
 
-    /// Performs a vertical `>` comparison between the `Vec2` and `rhs`,
+    /// Performs a vertical `>` comparison between `self` and `other`,
     /// returning a `Vec2Mask` of the results.
     ///
     /// In other words, this computes `[x1 > x2, y1 > y2, z1 > z2, w1 > w2]`.
     #[inline]
-    pub fn cmpgt(self, rhs: Vec2) -> Vec2Mask {
-        Vec2Mask::new(self.0.gt(&rhs.0), self.1.gt(&rhs.1))
+    pub fn cmpgt(self, other: Vec2) -> Vec2Mask {
+        Vec2Mask::new(self.0.gt(&other.0), self.1.gt(&other.1))
     }
 
-    /// Performs a vertical `<=` comparison between the `Vec2` and `rhs`,
+    /// Performs a vertical `<=` comparison between `self` and `other`,
     /// returning a `Vec2Mask` of the results.
     ///
     /// In other words, this computes `[x1 <= x2, y1 <= y2, z1 <= z2, w1 <= w2]`.
     #[inline]
-    pub fn cmple(self, rhs: Vec2) -> Vec2Mask {
-        Vec2Mask::new(self.0.le(&rhs.0), self.1.le(&rhs.1))
+    pub fn cmple(self, other: Vec2) -> Vec2Mask {
+        Vec2Mask::new(self.0.le(&other.0), self.1.le(&other.1))
     }
 
-    /// Performs a vertical `<` comparison between the `Vec2` and `rhs`,
+    /// Performs a vertical `<` comparison between `self` and `other`,
     /// returning a `Vec2Mask` of the results.
     ///
     /// In other words, this computes `[x1 < x2, y1 < y2, z1 < z2, w1 < w2]`.
     #[inline]
-    pub fn cmplt(self, rhs: Vec2) -> Vec2Mask {
-        Vec2Mask::new(self.0.lt(&rhs.0), self.1.lt(&rhs.1))
+    pub fn cmplt(self, other: Vec2) -> Vec2Mask {
+        Vec2Mask::new(self.0.lt(&other.0), self.1.lt(&other.1))
     }
 
     /// Creates a new `Vec2` from the first two values in `slice`.
@@ -286,7 +286,7 @@ impl Vec2 {
         Self(slice[0], slice[1])
     }
 
-    /// Writes the elements of the `Vec2` to the first two elements in `slice`.
+    /// Writes the elements of `self` to the first two elements in `slice`.
     ///
     /// # Panics
     ///
@@ -327,98 +327,98 @@ impl fmt::Display for Vec2 {
 impl Div<Vec2> for Vec2 {
     type Output = Self;
     #[inline]
-    fn div(self, rhs: Vec2) -> Self {
-        Self(self.0 / rhs.0, self.1 / rhs.1)
+    fn div(self, other: Vec2) -> Self {
+        Self(self.0 / other.0, self.1 / other.1)
     }
 }
 
 impl DivAssign<Vec2> for Vec2 {
     #[inline]
-    fn div_assign(&mut self, rhs: Vec2) {
-        *self = Self(self.0 / rhs.0, self.1 / rhs.1)
+    fn div_assign(&mut self, other: Vec2) {
+        *self = Self(self.0 / other.0, self.1 / other.1)
     }
 }
 
 impl Div<f32> for Vec2 {
     type Output = Self;
     #[inline]
-    fn div(self, rhs: f32) -> Self {
-        Self(self.0 / rhs, self.1 / rhs)
+    fn div(self, other: f32) -> Self {
+        Self(self.0 / other, self.1 / other)
     }
 }
 
 impl DivAssign<f32> for Vec2 {
     #[inline]
-    fn div_assign(&mut self, rhs: f32) {
-        *self = Self(self.0 / rhs, self.1 / rhs)
+    fn div_assign(&mut self, other: f32) {
+        *self = Self(self.0 / other, self.1 / other)
     }
 }
 
 impl Mul<Vec2> for Vec2 {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: Vec2) -> Self {
-        Self(self.0 * rhs.0, self.1 * rhs.1)
+    fn mul(self, other: Vec2) -> Self {
+        Self(self.0 * other.0, self.1 * other.1)
     }
 }
 
 impl MulAssign<Vec2> for Vec2 {
     #[inline]
-    fn mul_assign(&mut self, rhs: Vec2) {
-        *self = Self(self.0 * rhs.0, self.1 * rhs.1)
+    fn mul_assign(&mut self, other: Vec2) {
+        *self = Self(self.0 * other.0, self.1 * other.1)
     }
 }
 
 impl Mul<f32> for Vec2 {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: f32) -> Self {
-        Self(self.0 * rhs, self.1 * rhs)
+    fn mul(self, other: f32) -> Self {
+        Self(self.0 * other, self.1 * other)
     }
 }
 
 impl MulAssign<f32> for Vec2 {
     #[inline]
-    fn mul_assign(&mut self, rhs: f32) {
-        *self = Self(self.0 * rhs, self.1 * rhs)
+    fn mul_assign(&mut self, other: f32) {
+        *self = Self(self.0 * other, self.1 * other)
     }
 }
 
 impl Mul<Vec2> for f32 {
     type Output = Vec2;
     #[inline]
-    fn mul(self, rhs: Vec2) -> Vec2 {
-        Vec2(self * rhs.0, self * rhs.1)
+    fn mul(self, other: Vec2) -> Vec2 {
+        Vec2(self * other.0, self * other.1)
     }
 }
 
 impl Add for Vec2 {
     type Output = Self;
     #[inline]
-    fn add(self, rhs: Self) -> Self {
-        Self(self.0 + rhs.0, self.1 + rhs.1)
+    fn add(self, other: Self) -> Self {
+        Self(self.0 + other.0, self.1 + other.1)
     }
 }
 
 impl AddAssign for Vec2 {
     #[inline]
-    fn add_assign(&mut self, rhs: Self) {
-        *self = Self(self.0 + rhs.0, self.1 + rhs.1)
+    fn add_assign(&mut self, other: Self) {
+        *self = Self(self.0 + other.0, self.1 + other.1)
     }
 }
 
 impl Sub for Vec2 {
     type Output = Self;
     #[inline]
-    fn sub(self, rhs: Vec2) -> Self {
-        Self(self.0 - rhs.0, self.1 - rhs.1)
+    fn sub(self, other: Vec2) -> Self {
+        Self(self.0 - other.0, self.1 - other.1)
     }
 }
 
 impl SubAssign for Vec2 {
     #[inline]
-    fn sub_assign(&mut self, rhs: Vec2) {
-        *self = Self(self.0 - rhs.0, self.1 - rhs.1)
+    fn sub_assign(&mut self, other: Vec2) {
+        *self = Self(self.0 - other.0, self.1 - other.1)
     }
 }
 
@@ -540,14 +540,14 @@ impl BitAnd for Vec2Mask {
     type Output = Self;
 
     #[inline]
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0, self.1 & rhs.1)
+    fn bitand(self, other: Self) -> Self {
+        Self(self.0 & other.0, self.1 & other.1)
     }
 }
 
 impl BitAndAssign for Vec2Mask {
-    fn bitand_assign(&mut self, rhs: Self) {
-        *self = *self & rhs
+    fn bitand_assign(&mut self, other: Self) {
+        *self = *self & other
     }
 }
 
@@ -555,14 +555,14 @@ impl BitOr for Vec2Mask {
     type Output = Self;
 
     #[inline]
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0, self.1 | rhs.1)
+    fn bitor(self, other: Self) -> Self {
+        Self(self.0 | other.0, self.1 | other.1)
     }
 }
 
 impl BitOrAssign for Vec2Mask {
-    fn bitor_assign(&mut self, rhs: Self) {
-        *self = *self | rhs
+    fn bitor_assign(&mut self, other: Self) {
+        *self = *self | other
     }
 }
 

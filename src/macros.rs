@@ -17,7 +17,10 @@ macro_rules! is_normalized {
 }
 
 macro_rules! abs_diff_eq {
-    ($self:expr, $rhs:expr, $max_abs_diff:expr) => {
-        ($self - $rhs).abs().cmple(Self::splat($max_abs_diff)).all()
+    ($self:expr, $other:expr, $max_abs_diff:expr) => {
+        ($self - $other)
+            .abs()
+            .cmple(Self::splat($max_abs_diff))
+            .all()
     };
 }

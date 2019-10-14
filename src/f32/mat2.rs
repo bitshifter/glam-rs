@@ -152,18 +152,18 @@ impl Mat2 {
     }
 
     #[inline]
-    pub fn mul_vec2(&self, rhs: Vec2) -> Vec2 {
+    pub fn mul_vec2(&self, other: Vec2) -> Vec2 {
         // TODO: SSE2
-        let rhs = Vec4::new(rhs.x(), rhs.x(), rhs.y(), rhs.y());
-        let tmp = self.0 * rhs;
+        let other = Vec4::new(other.x(), other.x(), other.y(), other.y());
+        let tmp = self.0 * other;
         let (x0, y0, x1, y1) = tmp.into();
         Vec2::new(x0 + x1, y0 + y1)
     }
 
     #[inline]
-    pub fn mul_mat2(&self, rhs: &Self) -> Self {
+    pub fn mul_mat2(&self, other: &Self) -> Self {
         // TODO: SSE2
-        let (x0, y0, x1, y1) = rhs.0.into();
+        let (x0, y0, x1, y1) = other.0.into();
         Mat2::from_cols(
             self.mul_vec2(Vec2::new(x0, y0)),
             self.mul_vec2(Vec2::new(x1, y1)),
@@ -171,23 +171,23 @@ impl Mat2 {
     }
 
     #[inline]
-    pub fn add_mat2(&self, rhs: &Self) -> Self {
-        Mat2(self.0 + rhs.0)
+    pub fn add_mat2(&self, other: &Self) -> Self {
+        Mat2(self.0 + other.0)
     }
 
     #[inline]
-    pub fn sub_mat2(&self, rhs: &Self) -> Self {
-        Mat2(self.0 - rhs.0)
+    pub fn sub_mat2(&self, other: &Self) -> Self {
+        Mat2(self.0 - other.0)
     }
 
     #[inline]
-    pub fn mul_scalar(&self, rhs: f32) -> Self {
-        let s = Vec4::splat(rhs);
+    pub fn mul_scalar(&self, other: f32) -> Self {
+        let s = Vec4::splat(other);
         Mat2(self.0 * s)
     }
 
     /// Returns true if the absolute difference of all elements between `self`
-    /// and `rhs` is less than or equal to `max_abs_diff`.
+    /// and `other` is less than or equal to `max_abs_diff`.
     ///
     /// This can be used to compare if two `Mat2`'s contain similar elements. It
     /// works best when comparing with a known value. The `max_abs_diff` that
@@ -196,8 +196,8 @@ impl Mat2 {
     /// For more on floating point comparisons see
     /// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
     #[inline]
-    pub fn abs_diff_eq(&self, rhs: Self, max_abs_diff: f32) -> bool {
-        self.0.abs_diff_eq(rhs.0, max_abs_diff)
+    pub fn abs_diff_eq(&self, other: Self, max_abs_diff: f32) -> bool {
+        self.0.abs_diff_eq(other.0, max_abs_diff)
     }
 }
 
@@ -226,47 +226,47 @@ impl AsMut<[f32; 4]> for Mat2 {
 impl Add<Mat2> for Mat2 {
     type Output = Self;
     #[inline]
-    fn add(self, rhs: Self) -> Self {
-        self.add_mat2(&rhs)
+    fn add(self, other: Self) -> Self {
+        self.add_mat2(&other)
     }
 }
 
 impl Sub<Mat2> for Mat2 {
     type Output = Self;
     #[inline]
-    fn sub(self, rhs: Self) -> Self {
-        self.sub_mat2(&rhs)
+    fn sub(self, other: Self) -> Self {
+        self.sub_mat2(&other)
     }
 }
 
 impl Mul<Mat2> for Mat2 {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: Self) -> Self {
-        self.mul_mat2(&rhs)
+    fn mul(self, other: Self) -> Self {
+        self.mul_mat2(&other)
     }
 }
 
 impl Mul<Vec2> for Mat2 {
     type Output = Vec2;
     #[inline]
-    fn mul(self, rhs: Vec2) -> Vec2 {
-        self.mul_vec2(rhs)
+    fn mul(self, other: Vec2) -> Vec2 {
+        self.mul_vec2(other)
     }
 }
 
 impl Mul<Mat2> for f32 {
     type Output = Mat2;
     #[inline]
-    fn mul(self, rhs: Mat2) -> Mat2 {
-        rhs.mul_scalar(self)
+    fn mul(self, other: Mat2) -> Mat2 {
+        other.mul_scalar(self)
     }
 }
 
 impl Mul<f32> for Mat2 {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: f32) -> Self {
-        self.mul_scalar(rhs)
+    fn mul(self, other: f32) -> Self {
+        self.mul_scalar(other)
     }
 }

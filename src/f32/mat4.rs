@@ -523,48 +523,48 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn mul_vec4(&self, rhs: Vec4) -> Vec4 {
-        let mut res = self.x_axis * rhs.dup_x();
-        res = self.y_axis.mul_add(rhs.dup_y(), res);
-        res = self.z_axis.mul_add(rhs.dup_z(), res);
-        res = self.w_axis.mul_add(rhs.dup_w(), res);
+    pub fn mul_vec4(&self, other: Vec4) -> Vec4 {
+        let mut res = self.x_axis * other.dup_x();
+        res = self.y_axis.mul_add(other.dup_y(), res);
+        res = self.z_axis.mul_add(other.dup_z(), res);
+        res = self.w_axis.mul_add(other.dup_w(), res);
         res
     }
 
     #[inline]
     /// Multiplies two 4x4 matrices.
-    pub fn mul_mat4(&self, rhs: &Self) -> Self {
+    pub fn mul_mat4(&self, other: &Self) -> Self {
         Self {
-            x_axis: self.mul_vec4(rhs.x_axis),
-            y_axis: self.mul_vec4(rhs.y_axis),
-            z_axis: self.mul_vec4(rhs.z_axis),
-            w_axis: self.mul_vec4(rhs.w_axis),
+            x_axis: self.mul_vec4(other.x_axis),
+            y_axis: self.mul_vec4(other.y_axis),
+            z_axis: self.mul_vec4(other.z_axis),
+            w_axis: self.mul_vec4(other.w_axis),
         }
     }
 
     #[inline]
-    pub fn add_mat4(&self, rhs: &Self) -> Self {
+    pub fn add_mat4(&self, other: &Self) -> Self {
         Self {
-            x_axis: self.x_axis + rhs.x_axis,
-            y_axis: self.y_axis + rhs.y_axis,
-            z_axis: self.z_axis + rhs.z_axis,
-            w_axis: self.w_axis + rhs.w_axis,
+            x_axis: self.x_axis + other.x_axis,
+            y_axis: self.y_axis + other.y_axis,
+            z_axis: self.z_axis + other.z_axis,
+            w_axis: self.w_axis + other.w_axis,
         }
     }
 
     #[inline]
-    pub fn sub_mat4(&self, rhs: &Self) -> Self {
+    pub fn sub_mat4(&self, other: &Self) -> Self {
         Self {
-            x_axis: self.x_axis - rhs.x_axis,
-            y_axis: self.y_axis - rhs.y_axis,
-            z_axis: self.z_axis - rhs.z_axis,
-            w_axis: self.w_axis - rhs.w_axis,
+            x_axis: self.x_axis - other.x_axis,
+            y_axis: self.y_axis - other.y_axis,
+            z_axis: self.z_axis - other.z_axis,
+            w_axis: self.w_axis - other.w_axis,
         }
     }
 
     #[inline]
-    pub fn mul_scalar(&self, rhs: f32) -> Self {
-        let s = Vec4::splat(rhs);
+    pub fn mul_scalar(&self, other: f32) -> Self {
+        let s = Vec4::splat(other);
         Self {
             x_axis: self.x_axis * s,
             y_axis: self.y_axis * s,
@@ -574,26 +574,26 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn transform_point3(&self, rhs: Vec3) -> Vec3 {
-        let mut res = self.x_axis.truncate() * rhs.dup_x();
-        res = self.y_axis.truncate().mul_add(rhs.dup_y(), res);
-        res = self.z_axis.truncate().mul_add(rhs.dup_z(), res);
-        // rhs w = 1
+    pub fn transform_point3(&self, other: Vec3) -> Vec3 {
+        let mut res = self.x_axis.truncate() * other.dup_x();
+        res = self.y_axis.truncate().mul_add(other.dup_y(), res);
+        res = self.z_axis.truncate().mul_add(other.dup_z(), res);
+        // other w = 1
         res = self.w_axis.truncate() + res;
         res
     }
 
     #[inline]
-    pub fn transform_vector3(&self, rhs: Vec3) -> Vec3 {
-        let mut res = self.x_axis.truncate() * rhs.dup_x();
-        res = self.y_axis.truncate().mul_add(rhs.dup_y(), res);
-        res = self.z_axis.truncate().mul_add(rhs.dup_z(), res);
-        // rhs w = 0
+    pub fn transform_vector3(&self, other: Vec3) -> Vec3 {
+        let mut res = self.x_axis.truncate() * other.dup_x();
+        res = self.y_axis.truncate().mul_add(other.dup_y(), res);
+        res = self.z_axis.truncate().mul_add(other.dup_z(), res);
+        // other w = 0
         res
     }
 
     /// Returns true if the absolute difference of all elements between `self`
-    /// and `rhs` is less than or equal to `max_abs_diff`.
+    /// and `other` is less than or equal to `max_abs_diff`.
     ///
     /// This can be used to compare if two `Mat4`'s contain similar elements. It
     /// works best when comparing with a known value. The `max_abs_diff` that
@@ -602,11 +602,11 @@ impl Mat4 {
     /// For more on floating point comparisons see
     /// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
     #[inline]
-    pub fn abs_diff_eq(&self, rhs: Self, max_abs_diff: f32) -> bool {
-        self.x_axis.abs_diff_eq(rhs.x_axis, max_abs_diff)
-            && self.y_axis.abs_diff_eq(rhs.y_axis, max_abs_diff)
-            && self.z_axis.abs_diff_eq(rhs.z_axis, max_abs_diff)
-            && self.w_axis.abs_diff_eq(rhs.w_axis, max_abs_diff)
+    pub fn abs_diff_eq(&self, other: Self, max_abs_diff: f32) -> bool {
+        self.x_axis.abs_diff_eq(other.x_axis, max_abs_diff)
+            && self.y_axis.abs_diff_eq(other.y_axis, max_abs_diff)
+            && self.z_axis.abs_diff_eq(other.z_axis, max_abs_diff)
+            && self.w_axis.abs_diff_eq(other.w_axis, max_abs_diff)
     }
 }
 
@@ -635,47 +635,47 @@ impl AsMut<[f32; 16]> for Mat4 {
 impl Add<Mat4> for Mat4 {
     type Output = Self;
     #[inline]
-    fn add(self, rhs: Self) -> Self {
-        self.add_mat4(&rhs)
+    fn add(self, other: Self) -> Self {
+        self.add_mat4(&other)
     }
 }
 
 impl Sub<Mat4> for Mat4 {
     type Output = Self;
     #[inline]
-    fn sub(self, rhs: Self) -> Self {
-        self.sub_mat4(&rhs)
+    fn sub(self, other: Self) -> Self {
+        self.sub_mat4(&other)
     }
 }
 
 impl Mul<Mat4> for Mat4 {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: Self) -> Self {
-        self.mul_mat4(&rhs)
+    fn mul(self, other: Self) -> Self {
+        self.mul_mat4(&other)
     }
 }
 
 impl Mul<Vec4> for Mat4 {
     type Output = Vec4;
     #[inline]
-    fn mul(self, rhs: Vec4) -> Vec4 {
-        self.mul_vec4(rhs)
+    fn mul(self, other: Vec4) -> Vec4 {
+        self.mul_vec4(other)
     }
 }
 
 impl Mul<Mat4> for f32 {
     type Output = Mat4;
     #[inline]
-    fn mul(self, rhs: Mat4) -> Mat4 {
-        rhs.mul_scalar(self)
+    fn mul(self, other: Mat4) -> Mat4 {
+        other.mul_scalar(self)
     }
 }
 
 impl Mul<f32> for Mat4 {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: f32) -> Self {
-        self.mul_scalar(rhs)
+    fn mul(self, other: f32) -> Self {
+        self.mul_scalar(other)
     }
 }

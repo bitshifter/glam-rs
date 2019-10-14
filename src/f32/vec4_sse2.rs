@@ -104,7 +104,7 @@ impl Vec4 {
         unsafe { Self(_mm_set_ps1(v)) }
     }
 
-    /// Creates a `Vec3` from the first three elements of the `Vec4`,
+    /// Creates a `Vec3` from the first three elements of `self`,
     /// removing `w`.
     #[inline]
     pub fn truncate(self) -> Vec3 {
@@ -199,8 +199,8 @@ impl Vec4 {
 
     /// Calculates the Vec4 dot product and returns answer in x lane of __m128.
     #[inline]
-    unsafe fn dot_as_m128(self, rhs: Self) -> __m128 {
-        let x2_y2_z2_w2 = _mm_mul_ps(self.0, rhs.0);
+    unsafe fn dot_as_m128(self, other: Self) -> __m128 {
+        let x2_y2_z2_w2 = _mm_mul_ps(self.0, other.0);
         let z2_w2_0_0 = _mm_shuffle_ps(x2_y2_z2_w2, x2_y2_z2_w2, 0b00_00_11_10);
         let x2z2_y2w2_0_0 = _mm_add_ps(x2_y2_z2_w2, z2_w2_0_0);
         let y2w2_0_0_0 = _mm_shuffle_ps(x2z2_y2w2_0_0, x2z2_y2w2_0_0, 0b00_00_00_01);
@@ -209,27 +209,27 @@ impl Vec4 {
 
     /// Returns Vec4 dot in all lanes of Vec4
     #[inline]
-    fn dot_as_vec4(self, rhs: Self) -> Self {
+    fn dot_as_vec4(self, other: Self) -> Self {
         unsafe {
-            let dot_in_x = self.dot_as_m128(rhs);
+            let dot_in_x = self.dot_as_m128(other);
             Self(_mm_shuffle_ps(dot_in_x, dot_in_x, 0b00_00_00_00))
         }
     }
 
-    /// Computes the 4D dot product of the `Vec4` and `rhs`.
+    /// Computes the 4D dot product of `self` and `other`.
     #[inline]
-    pub fn dot(self, rhs: Self) -> f32 {
-        unsafe { _mm_cvtss_f32(self.dot_as_m128(rhs)) }
+    pub fn dot(self, other: Self) -> f32 {
+        unsafe { _mm_cvtss_f32(self.dot_as_m128(other)) }
     }
 
-    /// Computes the 4D length of the `Vec4`.
+    /// Computes the 4D length of `self`.
     #[inline]
     pub fn length(self) -> f32 {
         let dot = self.dot_as_vec4(self);
         unsafe { _mm_cvtss_f32(_mm_sqrt_ps(dot.0)) }
     }
 
-    /// Computes the squared 4D length of the `Vec4`.
+    /// Computes the squared 4D length of `self`.
     ///
     /// This is generally faster than `Vec4::length()` as it avoids a square
     /// root operation.
@@ -240,7 +240,7 @@ impl Vec4 {
 
     /// Computes `1.0 / Vec4::length()`.
     ///
-    /// For valid results, the `Vec4` must _not_ be of length zero.
+    /// For valid results, `self` must _not_ be of length zero.
     #[inline]
     pub fn length_reciprocal(self) -> f32 {
         let dot = self.dot_as_vec4(self);
@@ -250,36 +250,36 @@ impl Vec4 {
         }
     }
 
-    /// Returns the `Vec4` normalized to length 1.0.
+    /// Returns `self` normalized to length 1.0.
     ///
-    /// For valid results, the `Vec4` must _not_ be of length zero.
+    /// For valid results, `self` must _not_ be of length zero.
     #[inline]
     pub fn normalize(self) -> Self {
         let dot = self.dot_as_vec4(self);
         unsafe { Self(_mm_div_ps(self.0, _mm_sqrt_ps(dot.0))) }
     }
 
-    /// Returns the vertical minimum of the `Vec4` and `rhs`.
+    /// Returns the vertical minimum of `self` and `other`.
     ///
     /// In other words, this computes
     /// `[x: min(x1, x2), y: min(y1, y2), z: min(z1, z2), w: min(w1, w2)]`,
     /// taking the minimum of each element individually.
     #[inline]
-    pub fn min(self, rhs: Self) -> Self {
-        unsafe { Self(_mm_min_ps(self.0, rhs.0)) }
+    pub fn min(self, other: Self) -> Self {
+        unsafe { Self(_mm_min_ps(self.0, other.0)) }
     }
 
-    /// Returns the vertical maximum of the `Vec4` and `rhs`.
+    /// Returns the vertical maximum of `self` and `other`.
     ///
     /// In other words, this computes
     /// `[x: max(x1, x2), y: max(y1, y2), z: max(z1, z2), w: max(w1, w2)]`,
     /// taking the maximum of each element individually.
     #[inline]
-    pub fn max(self, rhs: Self) -> Self {
-        unsafe { Self(_mm_max_ps(self.0, rhs.0)) }
+    pub fn max(self, other: Self) -> Self {
+        unsafe { Self(_mm_max_ps(self.0, other.0)) }
     }
 
-    /// Returns the horizontal minimum of the `Vec4`'s elements.
+    /// Returns the horizontal minimum of `self`'s elements.
     ///
     /// In other words, this computes `min(x, y, z, w)`.
     #[inline]
@@ -292,7 +292,7 @@ impl Vec4 {
         }
     }
 
-    /// Returns the horizontal maximum of the `Vec4`'s elements.
+    /// Returns the horizontal maximum of `self`'s elements.
     ///
     /// In other words, this computes `max(x, y, z, w)`.
     #[inline]
@@ -305,58 +305,58 @@ impl Vec4 {
         }
     }
 
-    /// Performs a vertical `==` comparison between the `Vec4` and `rhs`,
+    /// Performs a vertical `==` comparison between `self` and `other`,
     /// returning a `Vec4Mask` of the results.
     ///
     /// In other words, this computes `[x1 == x2, y1 == y2, z1 == z2, w1 == w2]`.
     #[inline]
-    pub fn cmpeq(self, rhs: Self) -> Vec4Mask {
-        unsafe { Vec4Mask(_mm_cmpeq_ps(self.0, rhs.0)) }
+    pub fn cmpeq(self, other: Self) -> Vec4Mask {
+        unsafe { Vec4Mask(_mm_cmpeq_ps(self.0, other.0)) }
     }
 
-    /// Performs a vertical `!=` comparison between the `Vec4` and `rhs`,
+    /// Performs a vertical `!=` comparison between `self` and `other`,
     /// returning a `Vec4Mask` of the results.
     ///
     /// In other words, this computes `[x1 != x2, y1 != y2, z1 != z2, w1 != w2]`.
     #[inline]
-    pub fn cmpne(self, rhs: Self) -> Vec4Mask {
-        unsafe { Vec4Mask(_mm_cmpneq_ps(self.0, rhs.0)) }
+    pub fn cmpne(self, other: Self) -> Vec4Mask {
+        unsafe { Vec4Mask(_mm_cmpneq_ps(self.0, other.0)) }
     }
 
-    /// Performs a vertical `>=` comparison between the `Vec4` and `rhs`,
+    /// Performs a vertical `>=` comparison between `self` and `other`,
     /// returning a `Vec4Mask` of the results.
     ///
     /// In other words, this computes `[x1 >= x2, y1 >= y2, z1 >= z2, w1 >= w2]`.
     #[inline]
-    pub fn cmpge(self, rhs: Self) -> Vec4Mask {
-        unsafe { Vec4Mask(_mm_cmpge_ps(self.0, rhs.0)) }
+    pub fn cmpge(self, other: Self) -> Vec4Mask {
+        unsafe { Vec4Mask(_mm_cmpge_ps(self.0, other.0)) }
     }
 
-    /// Performs a vertical `>` comparison between the `Vec4` and `rhs`,
+    /// Performs a vertical `>` comparison between `self` and `other`,
     /// returning a `Vec4Mask` of the results.
     ///
     /// In other words, this computes `[x1 > x2, y1 > y2, z1 > z2, w1 > w2]`.
     #[inline]
-    pub fn cmpgt(self, rhs: Self) -> Vec4Mask {
-        unsafe { Vec4Mask(_mm_cmpgt_ps(self.0, rhs.0)) }
+    pub fn cmpgt(self, other: Self) -> Vec4Mask {
+        unsafe { Vec4Mask(_mm_cmpgt_ps(self.0, other.0)) }
     }
 
-    /// Performs a vertical `<=` comparison between the `Vec4` and `rhs`,
+    /// Performs a vertical `<=` comparison between `self` and `other`,
     /// returning a `Vec4Mask` of the results.
     ///
     /// In other words, this computes `[x1 <= x2, y1 <= y2, z1 <= z2, w1 <= w2]`.
     #[inline]
-    pub fn cmple(self, rhs: Self) -> Vec4Mask {
-        unsafe { Vec4Mask(_mm_cmple_ps(self.0, rhs.0)) }
+    pub fn cmple(self, other: Self) -> Vec4Mask {
+        unsafe { Vec4Mask(_mm_cmple_ps(self.0, other.0)) }
     }
 
-    /// Performs a vertical `<` comparison between the `Vec4` and `rhs`,
+    /// Performs a vertical `<` comparison between `self` and `other`,
     /// returning a `Vec4Mask` of the results.
     ///
     /// In other words, this computes `[x1 < x2, y1 < y2, z1 < z2, w1 < w2]`.
     #[inline]
-    pub fn cmplt(self, rhs: Self) -> Vec4Mask {
-        unsafe { Vec4Mask(_mm_cmplt_ps(self.0, rhs.0)) }
+    pub fn cmplt(self, other: Self) -> Vec4Mask {
+        unsafe { Vec4Mask(_mm_cmplt_ps(self.0, other.0)) }
     }
 
     /// Creates a new `Vec4` from the first four values in `slice`.
@@ -370,7 +370,7 @@ impl Vec4 {
         unsafe { Self(_mm_loadu_ps(slice.as_ptr())) }
     }
 
-    /// Writes the elements of the `Vec4` to the first four elements in `slice`.
+    /// Writes the elements of `self` to the first four elements in `slice`.
     ///
     /// # Panics
     ///
@@ -419,16 +419,16 @@ impl fmt::Display for Vec4 {
 impl Div<Vec4> for Vec4 {
     type Output = Self;
     #[inline]
-    fn div(self, rhs: Self) -> Self {
-        unsafe { Self(_mm_div_ps(self.0, rhs.0)) }
+    fn div(self, other: Self) -> Self {
+        unsafe { Self(_mm_div_ps(self.0, other.0)) }
     }
 }
 
 impl DivAssign<Vec4> for Vec4 {
     #[inline]
-    fn div_assign(&mut self, rhs: Self) {
+    fn div_assign(&mut self, other: Self) {
         unsafe {
-            self.0 = _mm_div_ps(self.0, rhs.0);
+            self.0 = _mm_div_ps(self.0, other.0);
         }
     }
 }
@@ -436,31 +436,31 @@ impl DivAssign<Vec4> for Vec4 {
 impl Div<f32> for Vec4 {
     type Output = Self;
     #[inline]
-    fn div(self, rhs: f32) -> Self {
-        unsafe { Self(_mm_div_ps(self.0, _mm_set1_ps(rhs))) }
+    fn div(self, other: f32) -> Self {
+        unsafe { Self(_mm_div_ps(self.0, _mm_set1_ps(other))) }
     }
 }
 
 impl DivAssign<f32> for Vec4 {
     #[inline]
-    fn div_assign(&mut self, rhs: f32) {
-        unsafe { self.0 = _mm_div_ps(self.0, _mm_set1_ps(rhs)) }
+    fn div_assign(&mut self, other: f32) {
+        unsafe { self.0 = _mm_div_ps(self.0, _mm_set1_ps(other)) }
     }
 }
 
 impl Mul<Vec4> for Vec4 {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: Self) -> Self {
-        unsafe { Self(_mm_mul_ps(self.0, rhs.0)) }
+    fn mul(self, other: Self) -> Self {
+        unsafe { Self(_mm_mul_ps(self.0, other.0)) }
     }
 }
 
 impl MulAssign<Vec4> for Vec4 {
     #[inline]
-    fn mul_assign(&mut self, rhs: Self) {
+    fn mul_assign(&mut self, other: Self) {
         unsafe {
-            self.0 = _mm_mul_ps(self.0, rhs.0);
+            self.0 = _mm_mul_ps(self.0, other.0);
         }
     }
 }
@@ -468,53 +468,53 @@ impl MulAssign<Vec4> for Vec4 {
 impl Mul<f32> for Vec4 {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: f32) -> Self {
-        unsafe { Self(_mm_mul_ps(self.0, _mm_set1_ps(rhs))) }
+    fn mul(self, other: f32) -> Self {
+        unsafe { Self(_mm_mul_ps(self.0, _mm_set1_ps(other))) }
     }
 }
 
 impl MulAssign<f32> for Vec4 {
     #[inline]
-    fn mul_assign(&mut self, rhs: f32) {
-        unsafe { self.0 = _mm_mul_ps(self.0, _mm_set1_ps(rhs)) }
+    fn mul_assign(&mut self, other: f32) {
+        unsafe { self.0 = _mm_mul_ps(self.0, _mm_set1_ps(other)) }
     }
 }
 
 impl Mul<Vec4> for f32 {
     type Output = Vec4;
     #[inline]
-    fn mul(self, rhs: Vec4) -> Vec4 {
-        unsafe { Vec4(_mm_mul_ps(_mm_set1_ps(self), rhs.0)) }
+    fn mul(self, other: Vec4) -> Vec4 {
+        unsafe { Vec4(_mm_mul_ps(_mm_set1_ps(self), other.0)) }
     }
 }
 
 impl Add for Vec4 {
     type Output = Self;
     #[inline]
-    fn add(self, rhs: Self) -> Self {
-        unsafe { Self(_mm_add_ps(self.0, rhs.0)) }
+    fn add(self, other: Self) -> Self {
+        unsafe { Self(_mm_add_ps(self.0, other.0)) }
     }
 }
 
 impl AddAssign for Vec4 {
     #[inline]
-    fn add_assign(&mut self, rhs: Self) {
-        unsafe { self.0 = _mm_add_ps(self.0, rhs.0) }
+    fn add_assign(&mut self, other: Self) {
+        unsafe { self.0 = _mm_add_ps(self.0, other.0) }
     }
 }
 
 impl Sub for Vec4 {
     type Output = Self;
     #[inline]
-    fn sub(self, rhs: Self) -> Self {
-        unsafe { Self(_mm_sub_ps(self.0, rhs.0)) }
+    fn sub(self, other: Self) -> Self {
+        unsafe { Self(_mm_sub_ps(self.0, other.0)) }
     }
 }
 
 impl SubAssign for Vec4 {
     #[inline]
-    fn sub_assign(&mut self, rhs: Self) {
-        unsafe { self.0 = _mm_sub_ps(self.0, rhs.0) }
+    fn sub_assign(&mut self, other: Self) {
+        unsafe { self.0 = _mm_sub_ps(self.0, other.0) }
     }
 }
 
@@ -535,8 +535,8 @@ impl Default for Vec4 {
 
 impl PartialEq for Vec4 {
     #[inline]
-    fn eq(&self, rhs: &Self) -> bool {
-        self.cmpeq(*rhs).all()
+    fn eq(&self, other: &Self) -> bool {
+        self.cmpeq(*other).all()
     }
 }
 
@@ -684,14 +684,14 @@ impl BitAnd for Vec4Mask {
     type Output = Self;
 
     #[inline]
-    fn bitand(self, rhs: Self) -> Self {
-        unsafe { Self(_mm_and_ps(self.0, rhs.0)) }
+    fn bitand(self, other: Self) -> Self {
+        unsafe { Self(_mm_and_ps(self.0, other.0)) }
     }
 }
 
 impl BitAndAssign for Vec4Mask {
-    fn bitand_assign(&mut self, rhs: Self) {
-        *self = *self & rhs
+    fn bitand_assign(&mut self, other: Self) {
+        *self = *self & other
     }
 }
 
@@ -699,14 +699,14 @@ impl BitOr for Vec4Mask {
     type Output = Self;
 
     #[inline]
-    fn bitor(self, rhs: Self) -> Self {
-        unsafe { Self(_mm_or_ps(self.0, rhs.0)) }
+    fn bitor(self, other: Self) -> Self {
+        unsafe { Self(_mm_or_ps(self.0, other.0)) }
     }
 }
 
 impl BitOrAssign for Vec4Mask {
-    fn bitor_assign(&mut self, rhs: Self) {
-        *self = *self | rhs
+    fn bitor_assign(&mut self, other: Self) {
+        *self = *self | other
     }
 }
 

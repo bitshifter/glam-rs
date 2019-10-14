@@ -92,13 +92,13 @@ impl TransformSRT {
     }
 
     #[inline]
-    pub fn mul_transform(&self, rhs: &Self) -> Self {
-        mul_srt_srt(self, rhs)
+    pub fn mul_transform(&self, other: &Self) -> Self {
+        mul_srt_srt(self, other)
     }
 
     #[inline]
-    pub fn transform_vec3(self, rhs: Vec3) -> Vec3 {
-        (self.rotation * (rhs * self.scale)) + self.translation
+    pub fn transform_vec3(self, other: Vec3) -> Vec3 {
+        (self.rotation * (other * self.scale)) + self.translation
     }
 }
 
@@ -189,13 +189,13 @@ impl TransformRT {
     }
 
     #[inline]
-    pub fn mul_transform(&self, rhs: &Self) -> Self {
-        mul_rt_rt(self, rhs)
+    pub fn mul_transform(&self, other: &Self) -> Self {
+        mul_rt_rt(self, other)
     }
 
     #[inline]
-    pub fn transform_vec3(self, rhs: Vec3) -> Vec3 {
-        (self.rotation * rhs) + self.translation
+    pub fn transform_vec3(self, other: Vec3) -> Vec3 {
+        (self.rotation * other) + self.translation
     }
 }
 
@@ -216,48 +216,48 @@ impl AsMut<TransformRT> for TransformSRT {
 impl Mul<Vec3> for TransformRT {
     type Output = Vec3;
     #[inline]
-    fn mul(self, rhs: Vec3) -> Vec3 {
-        self.transform_vec3(rhs)
+    fn mul(self, other: Vec3) -> Vec3 {
+        self.transform_vec3(other)
     }
 }
 
 impl Mul<Vec3> for TransformSRT {
     type Output = Vec3;
     #[inline]
-    fn mul(self, rhs: Vec3) -> Vec3 {
-        self.transform_vec3(rhs)
+    fn mul(self, other: Vec3) -> Vec3 {
+        self.transform_vec3(other)
     }
 }
 
 impl Mul<TransformRT> for TransformRT {
     type Output = TransformRT;
     #[inline]
-    fn mul(self, rhs: TransformRT) -> TransformRT {
-        mul_rt_rt(&self, &rhs)
+    fn mul(self, other: TransformRT) -> TransformRT {
+        mul_rt_rt(&self, &other)
     }
 }
 
 impl Mul<TransformSRT> for TransformSRT {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: Self) -> Self::Output {
-        mul_srt_srt(&self, &rhs)
+    fn mul(self, other: Self) -> Self::Output {
+        mul_srt_srt(&self, &other)
     }
 }
 
 impl Mul<TransformRT> for TransformSRT {
     type Output = TransformSRT;
     #[inline]
-    fn mul(self, rhs: TransformRT) -> Self::Output {
-        mul_srt_srt(&self, &rhs.into())
+    fn mul(self, other: TransformRT) -> Self::Output {
+        mul_srt_srt(&self, &other.into())
     }
 }
 
 impl Mul<TransformSRT> for TransformRT {
     type Output = TransformSRT;
     #[inline]
-    fn mul(self, rhs: TransformSRT) -> Self::Output {
-        mul_srt_srt(&self.into(), &rhs)
+    fn mul(self, other: TransformSRT) -> Self::Output {
+        mul_srt_srt(&self.into(), &other)
     }
 }
 

@@ -285,44 +285,44 @@ impl Mat3 {
     }
 
     #[inline]
-    pub fn mul_vec3(&self, rhs: Vec3) -> Vec3 {
-        let mut res = self.x_axis * rhs.dup_x();
-        res = self.y_axis.mul_add(rhs.dup_y(), res);
-        res = self.z_axis.mul_add(rhs.dup_z(), res);
+    pub fn mul_vec3(&self, other: Vec3) -> Vec3 {
+        let mut res = self.x_axis * other.dup_x();
+        res = self.y_axis.mul_add(other.dup_y(), res);
+        res = self.z_axis.mul_add(other.dup_z(), res);
         res
     }
 
     #[inline]
     /// Multiplies two 3x3 matrices.
-    pub fn mul_mat3(&self, rhs: &Self) -> Self {
+    pub fn mul_mat3(&self, other: &Self) -> Self {
         Self {
-            x_axis: self.mul_vec3(rhs.x_axis),
-            y_axis: self.mul_vec3(rhs.y_axis),
-            z_axis: self.mul_vec3(rhs.z_axis),
+            x_axis: self.mul_vec3(other.x_axis),
+            y_axis: self.mul_vec3(other.y_axis),
+            z_axis: self.mul_vec3(other.z_axis),
         }
     }
 
     #[inline]
-    pub fn add_mat3(&self, rhs: &Self) -> Self {
+    pub fn add_mat3(&self, other: &Self) -> Self {
         Self {
-            x_axis: self.x_axis + rhs.x_axis,
-            y_axis: self.y_axis + rhs.y_axis,
-            z_axis: self.z_axis + rhs.z_axis,
+            x_axis: self.x_axis + other.x_axis,
+            y_axis: self.y_axis + other.y_axis,
+            z_axis: self.z_axis + other.z_axis,
         }
     }
 
     #[inline]
-    pub fn sub_mat3(&self, rhs: &Self) -> Self {
+    pub fn sub_mat3(&self, other: &Self) -> Self {
         Self {
-            x_axis: self.x_axis - rhs.x_axis,
-            y_axis: self.y_axis - rhs.y_axis,
-            z_axis: self.z_axis - rhs.z_axis,
+            x_axis: self.x_axis - other.x_axis,
+            y_axis: self.y_axis - other.y_axis,
+            z_axis: self.z_axis - other.z_axis,
         }
     }
 
     #[inline]
-    pub fn mul_scalar(&self, rhs: f32) -> Self {
-        let s = Vec3::splat(rhs);
+    pub fn mul_scalar(&self, other: f32) -> Self {
+        let s = Vec3::splat(other);
         Self {
             x_axis: self.x_axis * s,
             y_axis: self.y_axis * s,
@@ -331,19 +331,19 @@ impl Mat3 {
     }
 
     #[inline]
-    pub fn transform_point2(&self, rhs: Vec2) -> Vec2 {
+    pub fn transform_point2(&self, other: Vec2) -> Vec2 {
         // TODO: optimise
-        self.mul_vec3(rhs.extend(1.0)).truncate()
+        self.mul_vec3(other.extend(1.0)).truncate()
     }
 
     #[inline]
-    pub fn transform_vector2(&self, rhs: Vec2) -> Vec2 {
+    pub fn transform_vector2(&self, other: Vec2) -> Vec2 {
         // TODO: optimise
-        self.mul_vec3(rhs.extend(0.0)).truncate()
+        self.mul_vec3(other.extend(0.0)).truncate()
     }
 
     /// Returns true if the absolute difference of all elements between `self`
-    /// and `rhs` is less than or equal to `max_abs_diff`.
+    /// and `other` is less than or equal to `max_abs_diff`.
     ///
     /// This can be used to compare if two `Mat3`'s contain similar elements. It
     /// works best when comparing with a known value. The `max_abs_diff` that
@@ -352,10 +352,10 @@ impl Mat3 {
     /// For more on floating point comparisons see
     /// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
     #[inline]
-    pub fn abs_diff_eq(&self, rhs: Self, max_abs_diff: f32) -> bool {
-        self.x_axis.abs_diff_eq(rhs.x_axis, max_abs_diff)
-            && self.y_axis.abs_diff_eq(rhs.y_axis, max_abs_diff)
-            && self.z_axis.abs_diff_eq(rhs.z_axis, max_abs_diff)
+    pub fn abs_diff_eq(&self, other: Self, max_abs_diff: f32) -> bool {
+        self.x_axis.abs_diff_eq(other.x_axis, max_abs_diff)
+            && self.y_axis.abs_diff_eq(other.y_axis, max_abs_diff)
+            && self.z_axis.abs_diff_eq(other.z_axis, max_abs_diff)
     }
 }
 
@@ -370,47 +370,47 @@ impl Distribution<Mat3> for Standard {
 impl Add<Mat3> for Mat3 {
     type Output = Self;
     #[inline]
-    fn add(self, rhs: Self) -> Self {
-        self.add_mat3(&rhs)
+    fn add(self, other: Self) -> Self {
+        self.add_mat3(&other)
     }
 }
 
 impl Sub<Mat3> for Mat3 {
     type Output = Self;
     #[inline]
-    fn sub(self, rhs: Self) -> Self {
-        self.sub_mat3(&rhs)
+    fn sub(self, other: Self) -> Self {
+        self.sub_mat3(&other)
     }
 }
 
 impl Mul<Mat3> for Mat3 {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: Self) -> Self {
-        self.mul_mat3(&rhs)
+    fn mul(self, other: Self) -> Self {
+        self.mul_mat3(&other)
     }
 }
 
 impl Mul<Vec3> for Mat3 {
     type Output = Vec3;
     #[inline]
-    fn mul(self, rhs: Vec3) -> Vec3 {
-        self.mul_vec3(rhs)
+    fn mul(self, other: Vec3) -> Vec3 {
+        self.mul_vec3(other)
     }
 }
 
 impl Mul<Mat3> for f32 {
     type Output = Mat3;
     #[inline]
-    fn mul(self, rhs: Mat3) -> Mat3 {
-        rhs.mul_scalar(self)
+    fn mul(self, other: Mat3) -> Mat3 {
+        other.mul_scalar(self)
     }
 }
 
 impl Mul<f32> for Mat3 {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: f32) -> Self {
-        self.mul_scalar(rhs)
+    fn mul(self, other: f32) -> Self {
+        self.mul_scalar(other)
     }
 }
