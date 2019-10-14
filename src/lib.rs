@@ -79,7 +79,7 @@ v.set_z(1.0);
 assert_eq!(v.z(), 1.0);
 ```
 
-If you need to access multiple components it is easier to convert the type to a
+If you need to access multiple elements it is easier to convert the type to a
 tuple or array:
 
 ```

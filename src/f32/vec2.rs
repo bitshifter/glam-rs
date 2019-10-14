@@ -297,13 +297,13 @@ impl Vec2 {
         slice[1] = self.1;
     }
 
-    /// Per component multiplication/addition of the three inputs: b + (self * a)
+    /// Per element multiplication/addition of the three inputs: b + (self * a)
     #[inline]
     pub(crate) fn mul_add(self, a: Self, b: Self) -> Self {
         Self((self.0 * a.0) + b.0, (self.1 * a.1) + b.1)
     }
 
-    /// Per component negative multiplication/subtraction of the three inputs `-((self * a) - b)`
+    /// Per element negative multiplication/subtraction of the three inputs `-((self * a) - b)`
     /// This is mathematically equivalent to `b - (self * a)`
     #[inline]
     pub(crate) fn neg_mul_sub(self, a: Self, b: Self) -> Self {

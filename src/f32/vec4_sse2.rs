@@ -383,13 +383,13 @@ impl Vec4 {
         }
     }
 
-    /// Per component multiplication/addition of the three inputs: b + (self * a)
+    /// Per element multiplication/addition of the three inputs: b + (self * a)
     #[inline]
     pub(crate) fn mul_add(self, a: Self, b: Self) -> Self {
         unsafe { Self(_mm_add_ps(_mm_mul_ps(self.0, a.0), b.0)) }
     }
 
-    /// Per component negative multiplication/subtraction of the three inputs `-((self * a) - b)`
+    /// Per element negative multiplication/subtraction of the three inputs `-((self * a) - b)`
     /// This is mathematically equivalent to `b - (self * a)`
     #[inline]
     pub(crate) fn neg_mul_sub(self, a: Self, b: Self) -> Self {
