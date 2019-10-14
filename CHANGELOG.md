@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+
+## [0.8.0] - 2019-10-14
 ### Removed
 * Removed the `approx` crate dependency. Each `glam` type has an `abs_diff_eq`
   method added which is used by unit tests for approximate floating point
@@ -83,7 +85,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.7.2...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.8.0...HEAD
+[0.8.0]: https://github.com/bitshifter/glam-rs/compare/0.7.2...0.8.0
 [0.7.2]: https://github.com/bitshifter/glam-rs/compare/0.7.1...0.7.2
 [0.7.1]: https://github.com/bitshifter/glam-rs/compare/0.7.0...0.7.1
 [0.7.0]: https://github.com/bitshifter/glam-rs/compare/0.6.1...0.7.0
