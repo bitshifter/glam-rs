@@ -41,7 +41,7 @@ fn test_vec2_fmt() {
     let a = Vec2::new(1.0, 2.0);
     assert_eq!(format!("{:?}", a), "Vec2(1.0, 2.0)");
     // assert_eq!(format!("{:#?}", a), "Vec2(\n    1.0,\n    2.0\n)");
-    assert_eq!(format!("{}", a), "(1, 2)");
+    assert_eq!(format!("{}", a), "[1, 2]");
 }
 
 #[test]

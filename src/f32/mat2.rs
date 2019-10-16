@@ -6,7 +6,10 @@ use rand::{
     Rng,
 };
 
-use std::ops::{Add, Mul, Sub};
+use std::{
+    fmt,
+    ops::{Add, Mul, Sub},
+};
 
 #[inline]
 pub fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
@@ -21,6 +24,12 @@ impl Default for Mat2 {
     #[inline]
     fn default() -> Self {
         Self::identity()
+    }
+}
+
+impl fmt::Display for Mat2 {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "[{}, {}]", self.x_axis(), self.y_axis())
     }
 }
 

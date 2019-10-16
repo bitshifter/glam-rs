@@ -21,16 +21,9 @@ use std::{cmp::Ordering, f32, fmt, mem::MaybeUninit, ops::*};
 /// A 3-dimensional vector.
 ///
 /// This type is 16 byte aligned and thus contains 4 bytes padding.
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 #[repr(C)]
 pub struct Vec3(pub(crate) __m128);
-
-impl fmt::Debug for Vec3 {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let (x, y, z) = (*self).into();
-        f.debug_tuple("Vec3").field(&x).field(&y).field(&z).finish()
-    }
-}
 
 impl Vec3 {
     /// Creates a new `Vec3`.
@@ -376,7 +369,7 @@ impl Vec3 {
 impl fmt::Display for Vec3 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let (x, y, z) = (*self).into();
-        write!(f, "({}, {}, {})", x, y, z)
+        write!(f, "[{}, {}, {}]", x, y, z)
     }
 }
 

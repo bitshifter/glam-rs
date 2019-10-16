@@ -6,7 +6,10 @@ use rand::{
     Rng,
 };
 
-use std::ops::{Add, Mul, Sub};
+use std::{
+    fmt,
+    ops::{Add, Mul, Sub},
+};
 
 #[inline]
 pub fn mat3(x_axis: Vec3, y_axis: Vec3, z_axis: Vec3) -> Mat3 {
@@ -54,6 +57,12 @@ impl Default for Mat3 {
     #[inline]
     fn default() -> Self {
         Self::identity()
+    }
+}
+
+impl fmt::Display for Mat3 {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "[{}, {}, {}]", self.x_axis, self.y_axis, self.z_axis)
     }
 }
 

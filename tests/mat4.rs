@@ -271,6 +271,15 @@ fn test_mat4_ops() {
     assert_approx_eq!(m0, Mat4::identity() * m0);
 }
 
+#[test]
+fn test_mat4_fmt() {
+    let a = Mat4::from_cols_array_2d(&MATRIX);
+    assert_eq!(
+        format!("{}", a),
+        "[[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]]"
+    );
+}
+
 #[cfg(feature = "serde")]
 #[test]
 fn test_mat4_serde() {

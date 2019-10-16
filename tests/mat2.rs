@@ -141,6 +141,12 @@ fn test_mat2_ops() {
     );
 }
 
+#[test]
+fn test_mat2_fmt() {
+    let a = Mat2::from_cols_array_2d(&MATRIX);
+    assert_eq!(format!("{}", a), "[[1, 2], [3, 4]]");
+}
+
 #[cfg(feature = "serde")]
 #[test]
 fn test_mat2_serde() {

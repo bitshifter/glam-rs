@@ -95,14 +95,13 @@ assert_eq!((x, y, z), (1.0, 2.0, 3.0));
 that they will serialize and deserialize exactly the same whether or not
 SIMD support is being used.
 
-The SIMD versions implement `std::fmt::Debug` and `std::fmt::Display` traits so
-they print the same as the scalar version.
+The SIMD versions implement `std::fmt::Display` traits so they print the same as
+the scalar version.
 
 ```
 use glam::Vec3;
 let a = Vec3::new(1.0, 2.0, 3.0);
-assert_eq!(format!("{:?}", a), "Vec3(1.0, 2.0, 3.0)");
-assert_eq!(format!("{}", a), "(1, 2, 3)");
+assert_eq!(format!("{}", a), "[1, 2, 3]");
 ```
 
 ## Feature gates

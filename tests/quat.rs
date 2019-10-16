@@ -170,12 +170,15 @@ fn test_quat_lerp() {
 #[test]
 fn test_quat_fmt() {
     let a = Quat::identity();
+    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+    assert_eq!(format!("{:?}", a), "Quat(__m128(0.0, 0.0, 0.0, 1.0))");
+    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
     assert_eq!(format!("{:?}", a), "Quat(0.0, 0.0, 0.0, 1.0)");
     // assert_eq!(
     //     format!("{:#?}", a),
     //     "Quat(\n    1.0,\n    2.0,\n    3.0,\n    4.0\n)"
     // );
-    assert_eq!(format!("{}", a), "(0, 0, 0, 1)");
+    assert_eq!(format!("{}", a), "[0, 0, 0, 1]");
 }
 
 #[test]

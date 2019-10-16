@@ -192,6 +192,12 @@ fn test_mat3_ops() {
     assert_approx_eq!(m0, Mat3::identity() * m0);
 }
 
+#[test]
+fn test_mat3_fmt() {
+    let a = Mat3::from_cols_array_2d(&MATRIX);
+    assert_eq!(format!("{}", a), "[[1, 2, 3], [4, 5, 6], [7, 8, 9]]");
+}
+
 #[cfg(feature = "serde")]
 #[test]
 fn test_mat3_serde() {

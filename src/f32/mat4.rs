@@ -6,7 +6,10 @@ use rand::{
     Rng,
 };
 
-use std::ops::{Add, Mul, Sub};
+use std::{
+    fmt,
+    ops::{Add, Mul, Sub},
+};
 
 #[inline]
 pub fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat4 {
@@ -56,6 +59,16 @@ impl Default for Mat4 {
     #[inline]
     fn default() -> Self {
         Self::identity()
+    }
+}
+
+impl fmt::Display for Mat4 {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "[{}, {}, {}, {}]",
+            self.x_axis, self.y_axis, self.z_axis, self.w_axis
+        )
     }
 }
 

@@ -50,9 +50,12 @@ fn test_vec3_new() {
 #[test]
 fn test_vec3_fmt() {
     let a = Vec3::new(1.0, 2.0, 3.0);
+    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+    assert_eq!(format!("{:?}", a), "Vec3(__m128(1.0, 2.0, 3.0, 3.0))");
+    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
     assert_eq!(format!("{:?}", a), "Vec3(1.0, 2.0, 3.0)");
     // assert_eq!(format!("{:#?}", a), "Vec3(\n    1.0,\n    2.0,\n    3.0\n)");
-    assert_eq!(format!("{}", a), "(1, 2, 3)");
+    assert_eq!(format!("{}", a), "[1, 2, 3]");
 }
 
 #[test]

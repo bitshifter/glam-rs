@@ -385,20 +385,23 @@ impl Quat {
 
 impl fmt::Debug for Quat {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        let (x, y, z, w) = self.0.into();
-        fmt.debug_tuple("Quat")
-            .field(&x)
-            .field(&y)
-            .field(&z)
-            .field(&w)
-            .finish()
+        #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+        return fmt.debug_tuple("Quat").field(&(self.0).0).finish();
+        #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+        return fmt
+            .debug_tuple("Quat")
+            .field(&self.0.x())
+            .field(&self.0.y())
+            .field(&self.0.z())
+            .field(&self.0.w())
+            .finish();
     }
 }
 
 impl fmt::Display for Quat {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         let (x, y, z, w) = self.0.into();
-        write!(fmt, "({}, {}, {}, {})", x, y, z, w)
+        write!(fmt, "[{}, {}, {}, {}]", x, y, z, w)
     }
 }
 

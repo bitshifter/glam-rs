@@ -23,21 +23,9 @@ pub(crate) const W_AXIS: Align16<(f32, f32, f32, f32)> = Align16((0.0, 0.0, 0.0,
 /// A 4-dimensional vector.
 ///
 /// This type is 16 byte aligned.
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 #[repr(C)]
 pub struct Vec4(pub(crate) __m128);
-
-impl fmt::Debug for Vec4 {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        let (x, y, z, w) = (*self).into();
-        fmt.debug_tuple("Vec4")
-            .field(&x)
-            .field(&y)
-            .field(&z)
-            .field(&w)
-            .finish()
-    }
-}
 
 impl Vec4 {
     /// Creates a new `Vec4`.
@@ -412,7 +400,7 @@ impl Vec4 {
 impl fmt::Display for Vec4 {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         let (x, y, z, w) = (*self).into();
-        write!(fmt, "({}, {}, {}, {})", x, y, z, w)
+        write!(fmt, "[{}, {}, {}, {}]", x, y, z, w)
     }
 }
 

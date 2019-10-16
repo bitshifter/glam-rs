@@ -50,12 +50,15 @@ fn test_vec4_new() {
 #[test]
 fn test_vec4_fmt() {
     let a = Vec4::new(1.0, 2.0, 3.0, 4.0);
+    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+    assert_eq!(format!("{:?}", a), "Vec4(__m128(1.0, 2.0, 3.0, 4.0))");
+    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
     assert_eq!(format!("{:?}", a), "Vec4(1.0, 2.0, 3.0, 4.0)");
     // assert_eq!(
     //     format!("{:#?}", a),
     //     "Vec4(\n    1.0,\n    2.0,\n    3.0,\n    4.0\n)"
     // );
-    assert_eq!(format!("{}", a), "(1, 2, 3, 4)");
+    assert_eq!(format!("{}", a), "[1, 2, 3, 4]");
 }
 
 #[test]
