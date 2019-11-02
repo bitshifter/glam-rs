@@ -112,7 +112,7 @@ fn test_from_ypr() {
 
     let yxz0 = y0 * x0 * z0;
     let yxz1 = Mat3::from_rotation_ypr(yaw, pitch, roll);
-    assert_approx_eq!(yxz0, yxz1);
+    assert_approx_eq!(yxz0, yxz1, 1e-6);
 }
 
 #[test]
