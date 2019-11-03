@@ -12,7 +12,7 @@ macro_rules! is_normalized {
         ($self.length_squared() - 1.0).abs() <= $max_diff
     };
     ($self:expr) => {
-        is_normalized!($self, core::f32::EPSILON)
+        is_normalized!($self, 1e-6)
     };
 }
 
