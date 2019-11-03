@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+### Added
+* Added `Display` trait implementations for `Mat2`, `Mat3` and `Mat4`.
+
+### Changed
+* Disabled `glam`'s SSE2 `sin_cos` implementation - it became less precise for
+  large angle values.
+* Reduced the default epsilon used by the `is_normalized!` macro from
+  `std::f32::EPSILON` to `1e-6`.
 
 ## [0.8.0] - 2019-10-14
 ### Removed

@@ -118,7 +118,7 @@ and benchmarks.
 
 
 */
-#![doc(html_root_url = "https://docs.rs/glam/0.8.0")]
+#![doc(html_root_url = "https://docs.rs/glam/0.8.1")]
 
 #[macro_use]
 mod macros;
