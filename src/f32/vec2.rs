@@ -51,7 +51,7 @@ impl Vec2 {
 
     /// Returns whether `self` is length `1.0` or not.
     ///
-    /// Uses a precision threshold of `std::f32::EPSILON`.
+    /// Uses a precision threshold of `1e-6`.
     #[inline]
     pub fn is_normalized(self) -> bool {
         is_normalized!(self)

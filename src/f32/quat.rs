@@ -214,32 +214,47 @@ impl Quat {
         Self(self.0.truncate().neg().extend(self.0.w()))
     }
 
+    /// Computes the dot product of `self` and `other`.
     #[inline]
     pub fn dot(self, other: Self) -> f32 {
         self.0.dot(other.0)
     }
 
+    /// Computes the length of `self`.
     #[inline]
     pub fn length(self) -> f32 {
         self.0.length()
     }
 
+    /// Computes the squared length of `self`.
+    ///
+    /// This is generally faster than `Quat::length()` as it avoids a square
+    /// root operation.
     #[inline]
     pub fn length_squared(self) -> f32 {
         self.0.length_squared()
     }
 
+    /// Computes `1.0 / Quat::length()`.
+    ///
+    /// For valid results, `self` must _not_ be of length zero.
     #[inline]
     pub fn length_reciprocal(self) -> f32 {
         1.0 / self.0.length()
     }
 
+    /// Returns `self` normalized to length 1.0.
+    ///
+    /// For valid results, `self` must _not_ be of length zero.
     #[inline]
     pub fn normalize(self) -> Self {
         let inv_len = self.0.length_reciprocal();
         Self(self.0.mul(inv_len))
     }
 
+    /// Returns whether `self` of length `1.0` or not.
+    ///
+    /// Uses a precision threshold of `1e-6`.
     #[inline]
     pub fn is_normalized(self) -> bool {
         is_normalized!(self)
