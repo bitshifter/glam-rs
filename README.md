@@ -16,7 +16,6 @@ and the look and feel of the API has solidified.
 * vectors: `Vec3`, `Vec3`, `Vec4`
 * square matrices: `Mat2`, `Mat3`, `Mat4`
 * a quaternion type: `Quat`
-* SSE2 opimized `sin_cos`
 
 ### SIMD
 
@@ -49,14 +48,16 @@ let (x, y, z) = v.into();
 
 * `mint` - for interoperating with other 3D math libraries
 * `rand` - implementations of `Distribution` trait for all `glam` types. This
-  is primarily used for unit testing.
+  is primarily used for unit testing
 * `serde` - implementations of `Serialize` and `Deserialize` for all `glam`
   types. Note that serialization should work between builds of `glam` with and
   without SIMD enabled
 
 ### Feature gates
 
-* `scalar-math` - compiles with SIMD support disabled.
+* `scalar-math` - compiles with SIMD support disabled
+* `glam-assert` - adds assertions which check the validity of parameters passed to
+  `glam` to help catch runtime errors
 
 ## Conventions
 
@@ -100,11 +101,11 @@ performance.
 ## Future work
 
 * Writing documentation
-* Experiment with replacing SSE2 code with `f32x4` from the `packed_simd`
-  library - this will mean other architectures get SIMD support
 * Experiment with a using a 4x3 matrix as a 3D transform type that can be more
   efficient than `Mat4` for certain operations like inverse and multiplies
 * `no-std` support
+* Experiment with replacing SSE2 code with `f32x4` from the `packed_simd`
+  library - this will mean other architectures get SIMD support
 
 ## Naming
 

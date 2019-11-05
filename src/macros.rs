@@ -1,8 +1,8 @@
-#[cfg(any(debug_assertions, feature = "glam-assert"))]
+#[cfg(feature = "glam-assert")]
 macro_rules! glam_assert {
     ($($arg:tt)*) => ( assert!($($arg)*); )
 }
-#[cfg(not(any(debug_assertions, feature = "glam-assert")))]
+#[cfg(not(feature = "glam-assert"))]
 macro_rules! glam_assert {
     ($($arg:tt)*) => {};
 }

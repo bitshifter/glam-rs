@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+### Changed
+* `glam_assert` is no longer enabled by default in debug builds, they can be
+  enabled in any configuration using the `glam-assert` feature.
 
 ## [0.8.1] - 2019-11-03
 ### Added

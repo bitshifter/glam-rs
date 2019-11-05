@@ -30,7 +30,7 @@ before_cache: |
 script:
   - cargo clean
   - cargo build --features "$CARGO_FEATURES"
-  - cargo test --features "$CARGO_FEATURES"
+  - cargo test --features "$CARGO_FEATURES glam-assert"
   - cargo bench --features "$CARGO_FEATURES transform-types" --no-run
 
 after_success: |
