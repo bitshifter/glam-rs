@@ -3,3 +3,4 @@
 **/*.rs.bk
 Cargo.lock
 Session.vim
+.cargo-ok
