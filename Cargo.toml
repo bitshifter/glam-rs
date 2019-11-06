@@ -1,6 +1,6 @@
 [package]
 name = "glam"
-version = "0.8.1" # remember to update html_root_url
+version = "0.8.2" # remember to update html_root_url
 edition = "2018"
 authors = ["Cameron Hart <cameron.hart@gmail.com>"]
 description = "A simple and fast 3D math library for games and graphics"
@@ -19,7 +19,9 @@ maintenance = { status = "experimental" }
 default = ["std"]
 std = []
 
-# enable additional glam checks
+# enable additional glam checks if debug assertions are enabled
+debug-glam-assert = []
+# always enable additional glam checks
 glam-assert = []
 
 # this is primarily for testing the fallback implementation
