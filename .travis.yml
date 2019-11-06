@@ -14,8 +14,8 @@ rust:
 # cache: cargo
 
 env:
-  - CARGO_FEATURES="mint rand serde"
-  - CARGO_FEATURES="mint rand serde scalar-math"
+  - CARGO_FEATURES="mint rand serde debug-glam-assert"
+  - CARGO_FEATURES="mint rand serde scalar-math debug-glam-assert"
 
 matrix:
   allow_failures:
@@ -30,7 +30,7 @@ before_cache: |
 script:
   - cargo clean
   - cargo build --features "$CARGO_FEATURES"
-  - cargo test --features "$CARGO_FEATURES glam-assert"
+  - cargo test --features "$CARGO_FEATURES"
   - cargo bench --features "$CARGO_FEATURES transform-types" --no-run
 
 after_success: |
