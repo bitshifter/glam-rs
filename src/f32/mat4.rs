@@ -157,7 +157,6 @@ impl Mat4 {
 
     #[inline]
     pub fn from_scale_rotation_translation(scale: Vec3, rotation: Quat, translation: Vec3) -> Self {
-        glam_assert!(scale.cmpne(Vec3::zero()).all());
         glam_assert!(rotation.is_normalized());
         let (x_axis, y_axis, z_axis) = quat_to_axes(rotation);
         let (scale_x, scale_y, scale_z) = scale.into();

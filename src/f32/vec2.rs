@@ -45,7 +45,6 @@ impl Vec2 {
     /// is `1.0`, the result will be equal to `other`.
     #[inline]
     pub fn lerp(self, other: Self, s: f32) -> Self {
-        glam_assert!(s >= 0.0 && s <= 1.0);
         self + ((other - self) * s)
     }
 

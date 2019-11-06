@@ -144,7 +144,6 @@ impl Mat3 {
     /// `angle` is in radians.
     #[inline]
     pub fn from_scale_angle_translation(scale: Vec2, angle: f32, translation: Vec2) -> Self {
-        glam_assert!(scale.cmpne(Vec2::zero()).all());
         let (sin, cos) = scalar_sin_cos(angle);
         let (scale_x, scale_y) = scale.into();
         Self {
