@@ -230,7 +230,10 @@ fn test_scalar_acos() {
     const PTVE_ONE: u32 = 0x3f_80_00_00; // 1.0_f32.to_bits();
     const NGVE_ONE: u32 = SIGN | PTVE_ONE;
     const STEP_SIZE: usize = (PTVE_ONE / MAX_TESTS) as usize;
-    for f in (SIGN..=NGVE_ONE).step_by(STEP_SIZE).map(|i| f32::from_bits(i)) {
+    for f in (SIGN..=NGVE_ONE)
+        .step_by(STEP_SIZE)
+        .map(|i| f32::from_bits(i))
+    {
         test_scalar_acos_angle(f);
     }
     for f in (0..=PTVE_ONE).step_by(STEP_SIZE).map(|i| f32::from_bits(i)) {
@@ -269,7 +272,10 @@ fn test_scalar_sin_cos() {
     let ptve_inf = std::f32::INFINITY.to_bits();
     let ngve_inf = std::f32::NEG_INFINITY.to_bits();
     let step_inf = (ptve_inf / MAX_TESTS) as usize;
-    for f in (SIGN..ngve_inf).step_by(step_inf).map(|i| f32::from_bits(i)) {
+    for f in (SIGN..ngve_inf)
+        .step_by(step_inf)
+        .map(|i| f32::from_bits(i))
+    {
         test_scalar_sin_cos_angle(f);
     }
     for f in (0..ptve_inf).step_by(step_inf).map(|i| f32::from_bits(i)) {
@@ -285,4 +291,3 @@ fn test_scalar_sin_cos() {
     assert!(s.is_nan());
     assert!(c.is_nan());
 }
-
