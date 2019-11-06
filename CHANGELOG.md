@@ -5,10 +5,15 @@ The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+
+## [0.8.2] - 2019-11-06
 ### Changed
-* `glam_assert` is no longer enabled by default in debug builds, it can be
+* `glam_assert!` is no longer enabled by default in debug builds, it can be
   enabled in any configuration using the `glam-assert` feature or in debug
   builds only using the `debug-glam-assert` feature.
+### Removed
+* `glam_assert!`'s checking `lerp` is bounded between 0.0 and 1.0 and that
+  matrix scales are non-zero have been removed.
 
 ## [0.8.1] - 2019-11-03
 ### Added
@@ -100,7 +105,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.8.1...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.8.2...HEAD
+[0.8.1]: https://github.com/bitshifter/glam-rs/compare/0.8.1...0.8.2
 [0.8.1]: https://github.com/bitshifter/glam-rs/compare/0.8.0...0.8.1
 [0.8.0]: https://github.com/bitshifter/glam-rs/compare/0.7.2...0.8.0
 [0.7.2]: https://github.com/bitshifter/glam-rs/compare/0.7.1...0.7.2
