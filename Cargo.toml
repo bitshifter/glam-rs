@@ -19,7 +19,9 @@ maintenance = { status = "experimental" }
 default = ["std"]
 std = []
 
-# enable additional glam checks
+# enable additional glam checks if debug assertions are enabled
+debug-glam-assert = []
+# always enable additional glam checks
 glam-assert = []
 
 # this is primarily for testing the fallback implementation
