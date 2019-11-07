@@ -181,11 +181,14 @@ impl Quat {
         }
     }
 
+    /// Creates a new quaternion from a 3x3 rotation matrix.
     #[inline]
     pub fn from_rotation_mat3(mat: &Mat3) -> Self {
         Self::from_rotation_axes(mat.x_axis(), mat.y_axis(), mat.z_axis())
     }
 
+    /// Creates a new quaternion from a 3x3 rotation matrix inside a homogeneous
+    /// 4x4 matrix.
     #[inline]
     pub fn from_rotation_mat4(mat: &Mat4) -> Self {
         Self::from_rotation_axes(
@@ -195,6 +198,7 @@ impl Quat {
         )
     }
 
+    /// Returns the rotation axis and angle of `self`.
     #[inline]
     pub fn to_axis_angle(self) -> (Vec3, f32) {
         const EPSILON: f32 = 1.0e-8;
@@ -209,12 +213,15 @@ impl Quat {
         }
     }
 
+    /// Returns the quaternion conjugate of `self`. For a unit quaternion the
+    /// conjugate is also the inverse.
     #[inline]
     pub fn conjugate(self) -> Self {
         Self(self.0.truncate().neg().extend(self.0.w()))
     }
 
-    /// Computes the dot product of `self` and `other`.
+    /// Computes the dot product of `self` and `other`. The dot product is
+    /// equal to the the cosine of the angle between two quaterion rotations.
     #[inline]
     pub fn dot(self, other: Self) -> f32 {
         self.0.dot(other.0)
@@ -295,15 +302,20 @@ impl Quat {
         self.0.abs_diff_eq(other.0, max_abs_diff)
     }
 
+    /// Performs a linear interpolation between `self` and `other` based on
+    /// the value `s`.
+    ///
+    /// When `s` is `0.0`, the result will be equal to `self`.  When `s`
+    /// is `1.0`, the result will be equal to `other`.
     #[inline]
-    pub fn lerp(self, end: Self, t: f32) -> Self {
+    pub fn lerp(self, end: Self, s: f32) -> Self {
         glam_assert!(self.is_normalized());
         glam_assert!(end.is_normalized());
         let start = self.0;
         let end = end.0;
         let dot = start.dot(end);
         let bias = if dot >= 0.0 { 1.0 } else { -1.0 };
-        let interpolated = start + (t * ((end * bias) - start));
+        let interpolated = start + (s * ((end * bias) - start));
         Self(interpolated.normalize())
     }
 
