@@ -272,7 +272,8 @@ impl Mat4 {
 
     #[inline]
     pub fn from_scale(scale: Vec3) -> Self {
-        glam_assert!(scale.cmpne(Vec3::zero()).any()); // Do not panic as long as any component is non-zero
+        // Do not panic as long as any component is non-zero
+        glam_assert!(scale.cmpne(Vec3::zero()).any());
         let (x, y, z) = scale.into();
         Self {
             x_axis: Vec4::new(x, 0.0, 0.0, 0.0),

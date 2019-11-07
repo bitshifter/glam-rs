@@ -224,7 +224,8 @@ impl Mat3 {
 
     #[inline]
     pub fn from_scale(scale: Vec3) -> Self {
-        glam_assert!(scale.cmpne(Vec3::zero()).all());
+        // Do not panic as long as any component is non-zero
+        glam_assert!(scale.cmpne(Vec3::zero()).any());
         let (x, y, z) = scale.into();
         Self {
             x_axis: Vec3::new(x, 0.0, 0.0),
