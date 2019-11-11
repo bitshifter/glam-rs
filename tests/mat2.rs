@@ -94,6 +94,10 @@ fn test_mat2_det() {
     assert_eq!(1.0, Mat2::from_angle(deg(180.0)).determinant());
     assert_eq!(1.0, Mat2::from_angle(deg(270.0)).determinant());
     assert_eq!(2.0 * 2.0, Mat2::from_scale(vec2(2.0, 2.0)).determinant());
+    assert_eq!(
+        1.0 * 4.0 - 2.0 * 3.0,
+        Mat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]).determinant()
+    );
 }
 
 #[test]

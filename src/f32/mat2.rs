@@ -1,4 +1,16 @@
 use super::{scalar_sin_cos, Vec2, Vec4};
+#[cfg(all(
+    target_arch = "x86",
+    target_feature = "sse2",
+    not(feature = "scalar-math")
+))]
+use std::arch::x86::*;
+#[cfg(all(
+    target_arch = "x86_64",
+    target_feature = "sse2",
+    not(feature = "scalar-math")
+))]
+use std::arch::x86_64::*;
 
 #[cfg(feature = "rand")]
 use rand::{
@@ -143,11 +155,23 @@ impl Mat2 {
         Self(Vec4::new(m00, m10, m01, m11))
     }
 
+    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
     #[inline]
     pub fn determinant(&self) -> f32 {
-        // TODO: SSE2
         let (a, b, c, d) = self.0.into();
         a * d - b * c
+    }
+
+    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+    #[inline]
+    pub fn determinant(&self) -> f32 {
+        unsafe {
+            let abcd = self.0.into();
+            let dcba = _mm_shuffle_ps(abcd, abcd, 0b00_01_10_11);
+            let prod = _mm_mul_ps(abcd, dcba);
+            let sub = _mm_sub_ps(prod, _mm_shuffle_ps(prod, prod, 0b01_01_01_01));
+            _mm_cvtss_f32(sub)
+        }
     }
 
     #[inline]

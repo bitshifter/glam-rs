@@ -4,6 +4,7 @@ use std::arch::x86::*;
 use std::arch::x86_64::*;
 
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+#[allow(dead_code)]
 pub(crate) union UnionCast {
     pub m128: __m128,
     pub m128i: __m128i,
