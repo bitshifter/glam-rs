@@ -393,22 +393,13 @@ impl Quat {
 
         #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
         unsafe {
-            #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-            use super::x86_utils::UnionCast;
-
             // sse2 implementation from RTM
             let lhs = self.0.into();
             let rhs = other.0.into();
 
-            const CONTROL_WZYX: UnionCast = UnionCast {
-                f32x4: [1.0, -1.0, 1.0, -1.0],
-            };
-            const CONTROL_ZWXY: UnionCast = UnionCast {
-                f32x4: [1.0, 1.0, -1.0, -1.0],
-            };
-            const CONTROL_YXWZ: UnionCast = UnionCast {
-                f32x4: [-1.0, 1.0, 1.0, -1.0],
-            };
+            let control_wzyx = _mm_set_ps(-1.0, 1.0, -1.0, 1.0);
+            let control_zwxy = _mm_set_ps(-1.0, -1.0, 1.0, 1.0);
+            let control_yxwz = _mm_set_ps(-1.0, 1.0, 1.0, -1.0);
 
             let r_xxxx = _mm_shuffle_ps(lhs, lhs, 0b00_00_00_00);
             let r_yyyy = _mm_shuffle_ps(lhs, lhs, 0b01_01_01_01);
@@ -421,17 +412,17 @@ impl Quat {
             let lwrx_lzrx_lyrx_lxrx = _mm_mul_ps(r_xxxx, l_wzyx);
             let l_zwxy = _mm_shuffle_ps(l_wzyx, l_wzyx, 0b10_11_00_01);
 
-            let lwrx_nlzrx_lyrx_nlxrx = _mm_mul_ps(lwrx_lzrx_lyrx_lxrx, CONTROL_WZYX.m128);
+            let lwrx_nlzrx_lyrx_nlxrx = _mm_mul_ps(lwrx_lzrx_lyrx_lxrx, control_wzyx);
 
             let lzry_lwry_lxry_lyry = _mm_mul_ps(r_yyyy, l_zwxy);
             let l_yxwz = _mm_shuffle_ps(l_zwxy, l_zwxy, 0b00_01_10_11);
 
-            let lzry_lwry_nlxry_nlyry = _mm_mul_ps(lzry_lwry_lxry_lyry, CONTROL_ZWXY.m128);
+            let lzry_lwry_nlxry_nlyry = _mm_mul_ps(lzry_lwry_lxry_lyry, control_zwxy);
 
             let lyrz_lxrz_lwrz_lzrz = _mm_mul_ps(r_zzzz, l_yxwz);
             let result0 = _mm_add_ps(lxrw_lyrw_lzrw_lwrw, lwrx_nlzrx_lyrx_nlxrx);
 
-            let nlyrz_lxrz_lwrz_wlzrz = _mm_mul_ps(lyrz_lxrz_lwrz_lzrz, CONTROL_YXWZ.m128);
+            let nlyrz_lxrz_lwrz_wlzrz = _mm_mul_ps(lyrz_lxrz_lwrz_lzrz, control_yxwz);
             let result1 = _mm_add_ps(lzry_lwry_nlxry_nlyry, nlyrz_lxrz_lwrz_wlzrz);
             Self(Vec4(_mm_add_ps(result0, result1)))
         }
