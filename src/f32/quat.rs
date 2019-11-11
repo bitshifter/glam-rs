@@ -217,7 +217,18 @@ impl Quat {
     /// conjugate is also the inverse.
     #[inline]
     pub fn conjugate(self) -> Self {
-        Self(self.0.truncate().neg().extend(self.0.w()))
+        #[cfg(not(all(target_feature = "sse2", not(feature = "scalar-math"))))]
+        {
+            Self(self.0.truncate().neg().extend(self.0.w()))
+        }
+
+        #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+        unsafe {
+            Self(Vec4(_mm_xor_ps(
+                (self.0).0,
+                _mm_set_ps(0.0, -0.0, -0.0, -0.0),
+            )))
+        }
     }
 
     /// Computes the dot product of `self` and `other`. The dot product is
@@ -311,67 +322,84 @@ impl Quat {
     pub fn lerp(self, end: Self, s: f32) -> Self {
         glam_assert!(self.is_normalized());
         glam_assert!(end.is_normalized());
-        let start = self.0;
-        let end = end.0;
-        let dot = start.dot(end);
-        let bias = if dot >= 0.0 { 1.0 } else { -1.0 };
-        let interpolated = start + (s * ((end * bias) - start));
-        Self(interpolated.normalize())
+        #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+        unsafe {
+            let start = self.0;
+            let end = end.0;
+            let dot = start.dot_as_vec4(end);
+            // Calculate the bias, if the dot product is positive or zero, there is no bias
+            // but if it is negative, we want to flip the 'end' rotation XYZW components
+            let bias = _mm_and_ps(dot.into(), _mm_set_ps1(-0.0));
+            let interpolated = Vec4(_mm_add_ps(
+                _mm_mul_ps(
+                    _mm_sub_ps(_mm_xor_ps(end.into(), bias), start.0),
+                    _mm_set_ps1(s),
+                ),
+                start.0,
+            ));
+            Self(interpolated.normalize())
+        }
+
+        #[cfg(not(all(target_feature = "sse2", not(feature = "scalar-math"))))]
+        {
+            let start = self.0;
+            let end = end.0;
+            let dot = start.dot(end);
+            let bias = if dot >= 0.0 { 1.0 } else { -1.0 };
+            let interpolated = start + (s * ((end * bias) - start));
+            Self(interpolated.normalize())
+        }
     }
 
-    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
     #[inline]
     /// Multiplies a quaternion and a 3D vector, rotating it.
     pub fn mul_vec3(self, other: Vec3) -> Vec3 {
         glam_assert!(self.is_normalized());
-        let w = self.0.w();
-        let b = self.0.truncate();
-        let b2 = b.dot(b);
-        other * (w * w - b2) + b * (other.dot(b) * 2.0) + b.cross(other) * (w * 2.0)
+        #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+        {
+            let w = self.0.w();
+            let b = self.0.truncate();
+            let b2 = b.dot(b);
+            other * (w * w - b2) + b * (other.dot(b) * 2.0) + b.cross(other) * (w * 2.0)
+        }
+
+        #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+        {
+            let w = self.0.dup_w().truncate();
+            let two = Vec3::splat(2.0);
+            let b = self.0.truncate();
+            let b2 = b.dot_as_vec3(b);
+            other * (w * w - b2) + b * (other.dot_as_vec3(b) * two) + b.cross(other) * (w * two)
+        }
     }
 
-    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-    #[inline]
-    /// Multiplies a quaternion and a 3D vector, rotating it.
-    pub fn mul_vec3(self, other: Vec3) -> Vec3 {
-        glam_assert!(self.is_normalized());
-        let w = self.0.dup_w().truncate();
-        let two = Vec3::splat(2.0);
-        let b = self.0.truncate();
-        let b2 = Vec3::splat(b.dot(b));
-        other * (w * w - b2) + b * (other.dot(b) * two) + b.cross(other) * (w * two)
-    }
-
-    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
     #[inline]
     /// Multiplies two quaternions.
     /// Note that due to floating point rounding the result may not be perfectly normalized.
     pub fn mul_quat(self, other: Self) -> Self {
         glam_assert!(self.is_normalized());
         glam_assert!(other.is_normalized());
-        let (x0, y0, z0, w0) = self.0.into();
-        let (x1, y1, z1, w1) = other.0.into();
-        Self::new(
-            w0 * x1 + x0 * w1 + y0 * z1 - z0 * y1,
-            w0 * y1 - x0 * z1 + y0 * w1 + z0 * x1,
-            w0 * z1 + x0 * y1 - y0 * x1 + z0 * w1,
-            w0 * w1 - x0 * x1 - y0 * y1 - z0 * z1,
-        )
-    }
+        #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+        {
+            let (x0, y0, z0, w0) = self.0.into();
+            let (x1, y1, z1, w1) = other.0.into();
+            Self::new(
+                w0 * x1 + x0 * w1 + y0 * z1 - z0 * y1,
+                w0 * y1 - x0 * z1 + y0 * w1 + z0 * x1,
+                w0 * z1 + x0 * y1 - y0 * x1 + z0 * w1,
+                w0 * w1 - x0 * x1 - y0 * y1 - z0 * z1,
+            )
+        }
 
-    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-    #[inline]
-    /// Multiplies two quaternions.
-    /// Note that due to floating point rounding the result may not be perfectly normalized.
-    pub fn mul_quat(self, other: Self) -> Self {
-        glam_assert!(self.is_normalized());
-        glam_assert!(other.is_normalized());
-        // sse2 implementation from RTM
-        let lhs = self.0.into();
-        let rhs = other.0.into();
+        #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
         unsafe {
             #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
             use super::x86_utils::UnionCast;
+
+            // sse2 implementation from RTM
+            let lhs = self.0.into();
+            let rhs = other.0.into();
+
             const CONTROL_WZYX: UnionCast = UnionCast {
                 f32x4: [1.0, -1.0, 1.0, -1.0],
             };

@@ -64,6 +64,10 @@ pub fn random_nonzero_vec3(rng: &mut PCG32) -> Vec3 {
     }
 }
 
+pub fn random_f32(rng: &mut PCG32) -> f32 {
+    rng.next_f32()
+}
+
 pub fn random_radians(rng: &mut PCG32) -> f32 {
     -f32::consts::PI + rng.next_f32() * 2.0 * f32::consts::PI
 }

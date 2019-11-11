@@ -197,7 +197,7 @@ impl Vec4 {
 
     /// Returns Vec4 dot in all lanes of Vec4
     #[inline]
-    fn dot_as_vec4(self, other: Self) -> Self {
+    pub(crate) fn dot_as_vec4(self, other: Self) -> Self {
         unsafe {
             let dot_in_x = self.dot_as_m128(other);
             Self(_mm_shuffle_ps(dot_in_x, dot_in_x, 0b00_00_00_00))
