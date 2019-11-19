@@ -12,18 +12,16 @@ bench_unop!(
     mat4_transpose,
     "mat4 transpose",
     op => transpose,
-    ty => Mat4,
     from => random_srt_mat4
 );
 bench_unop!(
     mat4_determinant,
     "mat4 determinant",
     op => determinant,
-    ty => Mat4,
     from => random_srt_mat4
 );
-bench_unop!(mat4_inverse, "mat4 inverse", op => inverse, ty => Mat4, from => random_srt_mat4);
-bench_binop!(mat4_mul_mat4, "mat4 * mat4", op => mul, ty => Mat4, from => random_srt_mat4);
+bench_unop!(mat4_inverse, "mat4 inverse", op => inverse, from => random_srt_mat4);
+bench_binop!(mat4_mul_mat4, "mat4 * mat4", op => mul, from => random_srt_mat4);
 bench_from_ypr!(mat4_from_ypr, "mat4 from ypr", ty => Mat4);
 
 criterion_group!(

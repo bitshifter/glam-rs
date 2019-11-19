@@ -1,51 +1,30 @@
 #[macro_export]
-
 macro_rules! bench_func {
-    ($name: ident, $desc: expr, op => $func: ident, ty => $ty: ty, from => $from: expr) => {
+    ($name: ident, $desc: expr, op => $func: ident, from => $from: expr) => {
         pub(crate) fn $name(c: &mut Criterion) {
-            const LEN: usize = 1 << 13;
             let mut rng = support::PCG32::default();
-            let elems: Vec<$ty> = (0..LEN).map(|_| $from(&mut rng).into()).collect();
-            let mut i = 0;
-            c.bench_function($desc, move |b| {
-                b.iter(|| {
-                    i = (i + 1) & (LEN - 1);
-                    unsafe { $func(elems.get_unchecked(i)) }
-                })
+            c.bench_function($desc, |b| {
+                b.iter_batched_ref(
+                    || $from(&mut rng),
+                    |data| $func(&data),
+                    criterion::BatchSize::SmallInput,
+                )
             });
         }
-    }; // ($name: ident, $desc: expr, op => $func: ident, ty1 => $ty1:ty, ty2 => $ty2:ty) => {{
-       //     const LEN: usize = 1 << 7;
-       //     let elems1: Vec<$ty> = (0..LEN).map(|_| $from(&mut rng).into()).collect();
-       //     let elems2: Vec<$ty> = (0..LEN).map(|_| $from(&mut rng).into()).collect();
-       //     let mut i = 0;
-       //     c.bench_function($desc, move |b| {
-       //         for lhs in elems1.iter() {
-       //             b.iter(|| {
-       //                 i = (i + 1) & (LEN - 1);
-       //                 $func(lhs, elems2.get_unchecked(i))
-       //             })
-       //         }
-       //     })
-       // }};
+    };
 }
 
-#[allow(unused_macros)]
+#[macro_export]
 macro_rules! bench_unop {
-    ($name: ident, $desc: expr, op => $unop: ident, ty => $ty:ty, from => $from: expr) => {
+    ($name: ident, $desc: expr, op => $unop: ident, from => $from: expr) => {
         pub(crate) fn $name(c: &mut Criterion) {
-            const LEN: usize = 1 << 13;
-
             let mut rng = support::PCG32::default();
-
-            let elems: Vec<$ty> = (0..LEN).map(|_| $from(&mut rng).into()).collect();
-            let mut i = 0;
-
-            c.bench_function($desc, move |b| {
-                b.iter(|| {
-                    i = (i + 1) & (LEN - 1);
-                    unsafe { elems.get_unchecked(i).$unop() }
-                })
+            c.bench_function($desc, |b| {
+                b.iter_batched_ref(
+                    || $from(&mut rng),
+                    |data| data.$unop(),
+                    criterion::BatchSize::SmallInput,
+                )
             });
         }
     };
@@ -53,52 +32,34 @@ macro_rules! bench_unop {
 
 #[macro_export]
 macro_rules! bench_binop {
-    ($name: ident, $desc: expr, op => $binop: ident, ty1 => $ty1:ty, from1 => $from1:expr, ty2 => $ty2:ty, from2 => $from2:expr) => {
+    ($name: ident, $desc: expr, op => $binop: ident, from1 => $from1:expr, from2 => $from2:expr) => {
         pub(crate) fn $name(c: &mut Criterion) {
-            const LEN: usize = 1 << 7;
-
             let mut rng = support::PCG32::default();
-
-            let elems1: Vec<$ty1> = (0..LEN).map(|_| $from1(&mut rng).into()).collect();
-            let elems2: Vec<$ty2> = (0..LEN).map(|_| $from2(&mut rng).into()).collect();
-            let mut i = 0;
-
-            c.bench_function($desc, move |b| {
-                for lhs in elems1.iter() {
-                    b.iter(|| {
-                        i = (i + 1) & (LEN - 1);
-                        unsafe { lhs.$binop(*elems2.get_unchecked(i)) }
-                    })
-                }
+            c.bench_function($desc, |b| {
+                b.iter_batched_ref(
+                    || ($from1(&mut rng), $from2(&mut rng)),
+                    |data| (data.0).$binop(data.1),
+                    criterion::BatchSize::SmallInput,
+                )
             });
         }
     };
-
-    ($name: ident, $desc: expr, op => $binop: ident, ty => $ty:ty, from => $from: expr) => {
-        bench_binop!($name, $desc, op => $binop, ty1 => $ty, from1 => $from, ty2 => $ty, from2 => $from);
+    ($name: ident, $desc: expr, op => $binop: ident, from => $from: expr) => {
+        bench_binop!($name, $desc, op => $binop, from1 => $from, from2 => $from);
     };
 }
 
 #[macro_export]
 macro_rules! bench_trinop {
-    ($name: ident, $desc: expr, op => $trinop: ident, ty1 => $ty1:ty, from1 => $from1:expr, ty2 => $ty2:ty, from2 => $from2:expr, ty3 => $ty3:ty, from3 => $from3:expr) => {
+    ($name: ident, $desc: expr, op => $trinop: ident, from1 => $from1:expr, from2 => $from2:expr, from3 => $from3:expr) => {
         pub(crate) fn $name(c: &mut Criterion) {
-            const LEN: usize = 1 << 7;
-
             let mut rng = support::PCG32::default();
-
-            let elems1: Vec<$ty1> = (0..LEN).map(|_| $from1(&mut rng).into()).collect();
-            let elems2: Vec<$ty2> = (0..LEN).map(|_| $from2(&mut rng).into()).collect();
-            let elems3: Vec<$ty3> = (0..LEN).map(|_| $from3(&mut rng).into()).collect();
-            let mut i = 0;
-
-            c.bench_function($desc, move |b| {
-                for lhs in elems1.iter() {
-                    b.iter(|| {
-                        i = (i + 1) & (LEN - 1);
-                        unsafe { lhs.$trinop(*elems2.get_unchecked(i), *elems3.get_unchecked(i)) }
-                    })
-                }
+            c.bench_function($desc, |b| {
+                b.iter_batched_ref(
+                    || ($from1(&mut rng), $from2(&mut rng), $from3(&mut rng)),
+                    |data| (data.0).$trinop(data.1, data.2),
+                    criterion::BatchSize::SmallInput,
+                )
             });
         }
     };
@@ -110,12 +71,17 @@ macro_rules! bench_from_ypr {
         pub(crate) fn $name(c: &mut Criterion) {
             let mut rng = support::PCG32::default();
             c.bench_function($desc, move |b| {
-                let ypr = (
-                    random_radians(&mut rng),
-                    random_radians(&mut rng),
-                    random_radians(&mut rng),
-                );
-                b.iter(|| <$ty>::from_rotation_ypr(ypr.0, ypr.1, ypr.2))
+                b.iter_batched_ref(
+                    || {
+                        (
+                            random_radians(&mut rng),
+                            random_radians(&mut rng),
+                            random_radians(&mut rng),
+                        )
+                    },
+                    |data| <$ty>::from_rotation_ypr(data.0, data.1, data.2),
+                    criterion::BatchSize::SmallInput,
+                )
             });
         }
     };

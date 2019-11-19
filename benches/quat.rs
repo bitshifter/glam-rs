@@ -12,7 +12,6 @@ bench_unop!(
     quat_conjugate,
     "quat conjugate",
     op => conjugate,
-    ty => Quat,
     from => random_quat
 );
 
@@ -20,7 +19,6 @@ bench_binop!(
     quat_mul_quat,
     "quat * quat",
     op => mul,
-    ty => Quat,
     from => random_quat
 );
 
@@ -28,11 +26,8 @@ bench_trinop!(
     quat_lerp,
     "quat lerp",
     op => lerp,
-    ty1 => Quat,
     from1 => random_quat,
-    ty2 => Quat,
     from2 => random_quat,
-    ty3 => f32,
     from3 => random_f32
 );
 

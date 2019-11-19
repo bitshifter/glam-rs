@@ -12,18 +12,16 @@ bench_unop!(
     mat3_transpose,
     "mat3 transpose",
     op => transpose,
-    ty => Mat3,
     from => random_mat3
 );
 bench_unop!(
     mat3_determinant,
     "mat3 determinant",
     op => determinant,
-    ty => Mat3,
     from => random_mat3
 );
-bench_unop!(mat3_inverse, "mat3 inverse", op => inverse, ty => Mat3, from => random_mat3);
-bench_binop!(mat3_mul_mat3, "mat3 * mat3", op => mul, ty => Mat3, from => random_mat3);
+bench_unop!(mat3_inverse, "mat3 inverse", op => inverse, from => random_mat3);
+bench_binop!(mat3_mul_mat3, "mat3 * mat3", op => mul, from => random_mat3);
 bench_from_ypr!(mat3_from_ypr, "mat3 from ypr", ty => Mat3);
 
 criterion_group!(
