@@ -75,14 +75,8 @@ contiguous memory.
 
 ### Co-ordinate system
 
-When relevant, a left-handed co-ordinate system is used:
-
-* `+X` - right
-* `+Y` - up
-* `+Z` - forward
-
-The co-ordinate system primary affects functions that deal with Euler angle
-rotations.
+`glam` is co-ordinate system agnostic and intends to support both right handed
+and left handed conventions.
 
 Rotations follow the left-hand rule.
 
