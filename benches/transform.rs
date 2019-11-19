@@ -4,7 +4,7 @@ mod macros;
 mod support;
 
 use criterion::{criterion_group, criterion_main, Criterion};
-use glam::f32::{TransformRT, TransformSRT, Vec3};
+use glam::f32::{TransformRT, TransformSRT};
 use std::ops::Mul;
 use support::*;
 
@@ -20,7 +20,6 @@ bench_unop!(
     transform_srt_inverse,
     "transform_srt inverse",
     op => inverse,
-    ty => TransformSRT,
     from => random_transform_srt
 );
 
@@ -28,9 +27,7 @@ bench_binop!(
     vec3_mul_transform_srt,
     "transform_srt * vec3",
     op => mul,
-    ty1 => TransformSRT,
     from1 => random_transform_srt,
-    ty2 => Vec3,
     from2 => random_vec3
 );
 
@@ -38,9 +35,7 @@ bench_binop!(
     vec3_mul_transform_rt,
     "transform_rt * vec3",
     op => mul,
-    ty1 => TransformRT,
     from1 => random_transform_rt,
-    ty2 => Vec3,
     from2 => random_vec3
 );
 
@@ -62,7 +57,6 @@ bench_binop!(
     transform_srt_mul_srt,
     "transform_srt * transform_srt",
     op => mul,
-    ty => TransformSRT,
     from => random_transform_srt
 );
 
@@ -70,7 +64,6 @@ bench_binop!(
     transform_rt_mul_rt,
     "transform_rt * transform_rt",
     op => mul,
-    ty => TransformRT,
     from => random_transform_rt
 );
 

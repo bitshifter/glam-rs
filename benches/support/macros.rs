@@ -4,7 +4,7 @@ macro_rules! bench_func {
         pub(crate) fn $name(c: &mut Criterion) {
             let mut rng = support::PCG32::default();
             c.bench_function($desc, |b| {
-                b.iter_batched_ref(
+                b.iter_batched(
                     || $from(&mut rng),
                     |data| $func(&data),
                     criterion::BatchSize::SmallInput,
@@ -20,7 +20,7 @@ macro_rules! bench_unop {
         pub(crate) fn $name(c: &mut Criterion) {
             let mut rng = support::PCG32::default();
             c.bench_function($desc, |b| {
-                b.iter_batched_ref(
+                b.iter_batched(
                     || $from(&mut rng),
                     |data| data.$unop(),
                     criterion::BatchSize::SmallInput,
@@ -36,7 +36,7 @@ macro_rules! bench_binop {
         pub(crate) fn $name(c: &mut Criterion) {
             let mut rng = support::PCG32::default();
             c.bench_function($desc, |b| {
-                b.iter_batched_ref(
+                b.iter_batched(
                     || ($from1(&mut rng), $from2(&mut rng)),
                     |data| (data.0).$binop(data.1),
                     criterion::BatchSize::SmallInput,
@@ -55,7 +55,7 @@ macro_rules! bench_trinop {
         pub(crate) fn $name(c: &mut Criterion) {
             let mut rng = support::PCG32::default();
             c.bench_function($desc, |b| {
-                b.iter_batched_ref(
+                b.iter_batched(
                     || ($from1(&mut rng), $from2(&mut rng), $from3(&mut rng)),
                     |data| (data.0).$trinop(data.1, data.2),
                     criterion::BatchSize::SmallInput,
@@ -71,7 +71,7 @@ macro_rules! bench_from_ypr {
         pub(crate) fn $name(c: &mut Criterion) {
             let mut rng = support::PCG32::default();
             c.bench_function($desc, move |b| {
-                b.iter_batched_ref(
+                b.iter_batched(
                     || {
                         (
                             random_radians(&mut rng),
@@ -101,30 +101,33 @@ macro_rules! euler {
             }
 
             let mut rng = support::PCG32::default();
-            let mut data = TestData {
-                acceleration: vec![$rand(&mut rng); NUM_OBJECTS],
-                velocity: vec![$zero; NUM_OBJECTS],
-                position: vec![$zero; NUM_OBJECTS],
-            };
+            let dt = <$t>::splat(UPDATE_RATE);
 
             c.bench_function($desc, move |b| {
-                b.iter(|| {
-                    let dt = UPDATE_RATE;
-                    for ((position, acceleration), velocity) in data
-                        .position
-                        .iter_mut()
-                        .zip(&data.acceleration)
-                        .zip(&mut data.velocity)
-                    {
-                        let local_acc: $t = (*acceleration).into();
-                        let mut local_pos: $t = (*position).into();
-                        let mut local_vel: $t = (*velocity).into();
-                        local_vel += local_acc * dt;
-                        local_pos += local_vel * dt;
-                        *velocity = local_vel.into();
-                        *position = local_pos.into();
-                    }
-                })
+                b.iter_batched_ref(
+                    || TestData {
+                        acceleration: vec![$rand(&mut rng); NUM_OBJECTS],
+                        velocity: vec![<$t>::zero(); NUM_OBJECTS],
+                        position: vec![<$t>::zero(); NUM_OBJECTS],
+                    },
+                    |data| {
+                        for ((position, acceleration), velocity) in data
+                            .position
+                            .iter_mut()
+                            .zip(&data.acceleration)
+                            .zip(&mut data.velocity)
+                        {
+                            let local_acc: $t = (*acceleration).into();
+                            let mut local_pos: $t = (*position).into();
+                            let mut local_vel: $t = (*velocity).into();
+                            local_vel += local_acc * dt;
+                            local_pos += local_vel * dt;
+                            *velocity = local_vel.into();
+                            *position = local_pos.into();
+                        }
+                    },
+                    criterion::BatchSize::SmallInput,
+                )
             });
         }
     };
