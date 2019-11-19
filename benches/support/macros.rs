@@ -105,6 +105,23 @@ macro_rules! bench_trinop {
 }
 
 #[macro_export]
+macro_rules! bench_from_ypr {
+    ($name: ident, $desc: expr, ty => $ty:ty) => {
+        pub(crate) fn $name(c: &mut Criterion) {
+            let mut rng = support::PCG32::default();
+            c.bench_function($desc, move |b| {
+                let ypr = (
+                    random_radians(&mut rng),
+                    random_radians(&mut rng),
+                    random_radians(&mut rng),
+                );
+                b.iter(|| <$ty>::from_rotation_ypr(ypr.0, ypr.1, ypr.2))
+            });
+        }
+    };
+}
+
+#[macro_export]
 macro_rules! euler {
     ($name: ident, $desc: expr, ty => $t: ty, storage => $storage: ty, zero => $zero: expr, rand => $rand: ident) => {
         pub(crate) fn $name(c: &mut Criterion) {

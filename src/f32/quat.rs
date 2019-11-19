@@ -117,8 +117,22 @@ impl Quat {
     /// Create a quaternion from the given yaw (around y), pitch (around x) and roll (around z)
     /// in radians.
     pub fn from_rotation_ypr(yaw: f32, pitch: f32, roll: f32) -> Self {
-        // TODO: Optimize
-        Self::from_rotation_y(yaw) * Self::from_rotation_x(pitch) * Self::from_rotation_z(roll)
+        // Self::from_rotation_y(yaw) * Self::from_rotation_x(pitch) * Self::from_rotation_z(roll)
+        let (y0, w0) = scalar_sin_cos(yaw * 0.5);
+        let (x1, w1) = scalar_sin_cos(pitch * 0.5);
+        let (z2, w2) = scalar_sin_cos(roll * 0.5);
+
+        let x3 = w0 * x1;
+        let y3 = y0 * w1;
+        let z3 = -y0 * x1;
+        let w3 = w0 * w1;
+
+        let x4 = x3 * w2 + y3 * z2;
+        let y4 = -x3 * z2 + y3 * w2;
+        let z4 = w3 * z2 + z3 * w2;
+        let w4 = w3 * w2 - z3 * z2;
+
+        Self(Vec4::new(x4, y4, z4, w4))
     }
 
     #[inline]
