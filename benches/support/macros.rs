@@ -64,12 +64,10 @@ macro_rules! bench_binop {
             let mut i = 0;
 
             c.bench_function($desc, move |b| {
-                for lhs in elems1.iter() {
-                    b.iter(|| {
-                        i = (i + 1) & (LEN - 1);
-                        unsafe { lhs.$binop(*elems2.get_unchecked(i)) }
-                    })
-                }
+                b.iter(|| {
+                    i = (i + 1) & (LEN - 1);
+                    unsafe { elems1.get_unchecked(i).$binop(*elems2.get_unchecked(i)) }
+                })
             });
         }
     };
@@ -93,12 +91,14 @@ macro_rules! bench_trinop {
             let mut i = 0;
 
             c.bench_function($desc, move |b| {
-                for lhs in elems1.iter() {
-                    b.iter(|| {
-                        i = (i + 1) & (LEN - 1);
-                        unsafe { lhs.$trinop(*elems2.get_unchecked(i), *elems3.get_unchecked(i)) }
-                    })
-                }
+                b.iter(|| {
+                    i = (i + 1) & (LEN - 1);
+                    unsafe {
+                        elems1
+                            .get_unchecked(i)
+                            .$trinop(*elems2.get_unchecked(i), *elems3.get_unchecked(i))
+                    }
+                })
             });
         }
     };
@@ -108,14 +108,25 @@ macro_rules! bench_trinop {
 macro_rules! bench_from_ypr {
     ($name: ident, $desc: expr, ty => $ty:ty) => {
         pub(crate) fn $name(c: &mut Criterion) {
+            const LEN: usize = 1 << 7;
             let mut rng = support::PCG32::default();
+            let elems: Vec<(f32, f32, f32)> = (0..LEN)
+                .map(|_| {
+                    (
+                        random_radians(&mut rng),
+                        random_radians(&mut rng),
+                        random_radians(&mut rng),
+                    )
+                        .into()
+                })
+                .collect();
+            let mut i = 0;
             c.bench_function($desc, move |b| {
-                let ypr = (
-                    random_radians(&mut rng),
-                    random_radians(&mut rng),
-                    random_radians(&mut rng),
-                );
-                b.iter(|| <$ty>::from_rotation_ypr(ypr.0, ypr.1, ypr.2))
+                b.iter(|| {
+                    i = (i + 1) & (LEN - 1);
+                    let ypr = unsafe { elems.get_unchecked(i) };
+                    <$ty>::from_rotation_ypr(ypr.0, ypr.1, ypr.2)
+                })
             });
         }
     };
