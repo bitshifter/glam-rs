@@ -21,6 +21,7 @@ fn test_quat_rotation() {
     let pitch = deg(60.0);
     let roll = deg(90.0);
     let y0 = Quat::from_rotation_y(yaw);
+    assert!(y0.is_normalized());
     let (axis, angle) = y0.to_axis_angle();
     assert_approx_eq!(axis, Vec3::unit_y(), 1.0e-6);
     assert_approx_eq!(angle, yaw);
@@ -34,6 +35,7 @@ fn test_quat_rotation() {
     assert_approx_eq!(y0, y4);
 
     let x0 = Quat::from_rotation_x(pitch);
+    assert!(x0.is_normalized());
     let (axis, angle) = x0.to_axis_angle();
     assert_approx_eq!(axis, Vec3::unit_x());
     assert_approx_eq!(angle, pitch);
@@ -42,9 +44,11 @@ fn test_quat_rotation() {
     let x2 = Quat::from_axis_angle(Vec3::unit_x(), pitch);
     assert_approx_eq!(x0, x2);
     let x3 = Quat::from_rotation_mat4(&Mat4::from_rotation_x(deg(180.0)));
+    assert!(x3.is_normalized());
     assert_approx_eq!(Quat::from_rotation_x(deg(180.0)), x3);
 
     let z0 = Quat::from_rotation_z(roll);
+    assert!(z0.is_normalized());
     let (axis, angle) = z0.to_axis_angle();
     assert_approx_eq!(axis, Vec3::unit_z());
     assert_approx_eq!(angle, roll);
@@ -56,10 +60,12 @@ fn test_quat_rotation() {
     assert_approx_eq!(z0, z3);
 
     let yx0 = y0 * x0;
+    assert!(yx0.is_normalized());
     let yx1 = Quat::from_rotation_ypr(yaw, pitch, zero);
     assert_approx_eq!(yx0, yx1);
 
     let yxz0 = y0 * x0 * z0;
+    assert!(yxz0.is_normalized());
     let yxz1 = Quat::from_rotation_ypr(yaw, pitch, roll);
     assert_approx_eq!(yxz0, yxz1);
 
