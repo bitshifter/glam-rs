@@ -1,4 +1,16 @@
 use super::{scalar_sin_cos, Quat, Vec3, Vec4};
+#[cfg(all(
+    target_arch = "x86",
+    target_feature = "sse2",
+    not(feature = "scalar-math")
+))]
+use std::arch::x86::*;
+#[cfg(all(
+    target_arch = "x86_64",
+    target_feature = "sse2",
+    not(feature = "scalar-math")
+))]
+use std::arch::x86_64::*;
 
 #[cfg(feature = "rand")]
 use rand::{
@@ -323,16 +335,26 @@ impl Mat4 {
         self.w_axis
     }
 
-    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
     #[inline]
     pub fn transpose(&self) -> Self {
-        // sse2 implementation based off DirectXMath XMMatrixInverse (MIT License)
-        #[cfg(target_arch = "x86")]
-        use std::arch::x86::*;
-        #[cfg(target_arch = "x86_64")]
-        use std::arch::x86_64::*;
+        #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+        {
+            let (m00, m01, m02, m03) = self.x_axis.into();
+            let (m10, m11, m12, m13) = self.y_axis.into();
+            let (m20, m21, m22, m23) = self.z_axis.into();
+            let (m30, m31, m32, m33) = self.w_axis.into();
 
+            Self {
+                x_axis: Vec4::new(m00, m10, m20, m30),
+                y_axis: Vec4::new(m01, m11, m21, m31),
+                z_axis: Vec4::new(m02, m12, m22, m32),
+                w_axis: Vec4::new(m03, m13, m23, m33),
+            }
+        }
+
+        #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
         unsafe {
+            // sse2 implementation based off DirectXMath XMMatrixInverse (MIT License)
             let tmp0 = _mm_shuffle_ps(self.x_axis.0, self.y_axis.0, 0b01_00_01_00);
             let tmp1 = _mm_shuffle_ps(self.x_axis.0, self.y_axis.0, 0b11_10_11_10);
             let tmp2 = _mm_shuffle_ps(self.z_axis.0, self.w_axis.0, 0b01_00_01_00);
@@ -344,22 +366,6 @@ impl Mat4 {
                 z_axis: _mm_shuffle_ps(tmp1, tmp3, 0b10_00_10_00).into(),
                 w_axis: _mm_shuffle_ps(tmp1, tmp3, 0b11_01_11_01).into(),
             }
-        }
-    }
-
-    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-    #[inline]
-    pub fn transpose(&self) -> Self {
-        let (m00, m01, m02, m03) = self.x_axis.into();
-        let (m10, m11, m12, m13) = self.y_axis.into();
-        let (m20, m21, m22, m23) = self.z_axis.into();
-        let (m30, m31, m32, m33) = self.w_axis.into();
-
-        Self {
-            x_axis: Vec4::new(m00, m10, m20, m30),
-            y_axis: Vec4::new(m01, m11, m21, m31),
-            z_axis: Vec4::new(m02, m12, m22, m32),
-            w_axis: Vec4::new(m03, m13, m23, m33),
         }
     }
 
@@ -383,7 +389,6 @@ impl Mat4 {
             - m03 * (m10 * a1223 - m11 * a0223 + m12 * a0123)
     }
 
-    // #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
     pub fn inverse(&self) -> Self {
         let (m00, m01, m02, m03) = self.x_axis.into();
         let (m10, m11, m12, m13) = self.y_axis.into();

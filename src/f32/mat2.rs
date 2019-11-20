@@ -155,16 +155,15 @@ impl Mat2 {
         Self(Vec4::new(m00, m10, m01, m11))
     }
 
-    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
     #[inline]
     pub fn determinant(&self) -> f32 {
-        let (a, b, c, d) = self.0.into();
-        a * d - b * c
-    }
+        #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+        {
+            let (a, b, c, d) = self.0.into();
+            a * d - b * c
+        }
 
-    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-    #[inline]
-    pub fn determinant(&self) -> f32 {
+        #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
         unsafe {
             let abcd = self.0.into();
             let dcba = _mm_shuffle_ps(abcd, abcd, 0b00_01_10_11);
