@@ -6,7 +6,7 @@ macro_rules! bench_func {
             c.bench_function($desc, |b| {
                 b.iter_batched(
                     || $from(&mut rng),
-                    |data| $func(&data),
+                    |data| $func(data),
                     criterion::BatchSize::SmallInput,
                 )
             });
