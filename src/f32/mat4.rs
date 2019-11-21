@@ -549,14 +549,6 @@ impl Mat4 {
         let d2 = -(top + bottom) / (top - bottom);
         let d3 = -(far + near) / (far - near);
 
-        /*
-        let a = 2.0 / (right - left);
-        let b = 2.0 / (top - bottom);
-        let c = 2.0 / (near - far);
-        let d1 = -(right + left) / (right - left);
-        let d2 = -(top + bottom) / (top - bottom);
-        let d3 = -(far + near) / (far - near);
-        */
         Mat4::from_cols(
             Vec4::new(a, 0.0, 0.0, 0.0),
             Vec4::new(0.0, b, 0.0, 0.0),
