@@ -255,6 +255,14 @@ fn test_mat4_look_at() {
 }
 
 #[test]
+fn test_mat4_orthographic_rh() {
+    let projection = Mat4::orthographic_rh(-10.0, 10.0, -5.0, 5.0, 0.0, -10.0);
+    let original = Vec4::new(5.0, 5.0, -5.0, 1.0);
+    let projected = projection.mul_vec4(original);
+    assert_approx_eq!(projected, Vec4::new(0.5, 1.0, -2.0, 1.0));
+}
+
+#[test]
 fn test_mat4_ops() {
     let m0 = Mat4::from_cols_array_2d(&MATRIX);
     let m0x2 = Mat4::from_cols_array_2d(&[
