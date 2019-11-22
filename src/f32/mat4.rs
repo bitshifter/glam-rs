@@ -60,6 +60,7 @@ fn quat_to_axes(rotation: Quat) -> (Vec4, Vec4, Vec4) {
 ///
 /// This type is 16 byte aligned.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[repr(C)]
 pub struct Mat4 {
     pub(crate) x_axis: Vec4,
     pub(crate) y_axis: Vec4,

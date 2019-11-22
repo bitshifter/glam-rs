@@ -8,6 +8,7 @@ use rand::{
 };
 
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[repr(C)]
 pub struct TransformSRT {
     pub scale: Vec3,
     pub rotation: Quat,
@@ -26,6 +27,7 @@ impl Default for TransformSRT {
 }
 
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[repr(C)]
 pub struct TransformRT {
     pub rotation: Quat,
     pub translation: Vec3,
