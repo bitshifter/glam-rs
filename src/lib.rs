@@ -65,6 +65,10 @@ SIMD support can be disabled entirely using the `scalar-math` feature. This
 feature will also disable SIMD alignment meaning most types will use native
 `f32` alignment of 4 bytes.
 
+All the main `glam` types are tagged with #[repr(C)], so they are possible
+to expose as struct members to C interfaces if desired. Be mindful of Vec3's
+extra float though.
+
 ## Accessing internal data
 
 The SIMD types that `glam` builds on are opaque and their contents are not
