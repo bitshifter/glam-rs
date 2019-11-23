@@ -108,12 +108,6 @@ impl Mat4 {
         }
     }
 
-    #[deprecated(since = "0.7.2", note = "please use `Mat4::from_cols` instead")]
-    #[inline]
-    pub fn new(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Self {
-        Self::from_cols(x_axis, y_axis, z_axis, w_axis)
-    }
-
     /// Creates a new `Mat4` from four column vectors.
     #[inline]
     pub fn from_cols(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Self {

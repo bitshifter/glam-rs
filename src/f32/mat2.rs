@@ -57,12 +57,6 @@ impl Mat2 {
         Self(Vec4::new(1.0, 0.0, 0.0, 1.0))
     }
 
-    #[deprecated(since = "0.7.2", note = "please use `Mat4::from_cols` instead")]
-    #[inline]
-    pub fn new(x_axis: Vec2, y_axis: Vec2) -> Self {
-        Self::from_cols(x_axis, y_axis)
-    }
-
     /// Creates a new `Mat2` from four column vectors.
     #[inline]
     pub fn from_cols(x_axis: Vec2, y_axis: Vec2) -> Self {
