@@ -492,11 +492,10 @@ impl Mat4 {
         Mat4::look_to_lh(eye, eye - center, up)
     }
 
-    #[inline]
     /// Builds a right-handed perspective projection matrix with [-1,1] depth range.
-    /// This is the equivalent of the common perspective function `gluPerspective` in OpenGL.
-    /// See https://www.khronos.org/opengl/wiki/GluPerspective_code
-    pub fn perspective_glu_rh(
+    /// This is the same as the OpenGL `gluPerspective` function.
+    /// See https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
+    pub fn perspective_rh_gl(
         fov_y_radians: f32,
         aspect_ratio: f32,
         z_near: f32,
@@ -513,6 +512,17 @@ impl Mat4 {
             Vec4::new(0.0, 0.0, b, -1.0),
             Vec4::new(0.0, 0.0, c, 0.0),
         )
+    }
+
+    #[inline]
+    #[deprecated(since = "0.8.2", note = "please use `Mat4::perspective_rh_gl` instead")]
+    pub fn perspective_glu_rh(
+        fov_y_radians: f32,
+        aspect_ratio: f32,
+        z_near: f32,
+        z_far: f32,
+    ) -> Mat4 {
+        Mat4::perspective_rh_gl(fov_y_radians, aspect_ratio, z_near, z_far)
     }
 
     /// Build infinite right-handed perspective projection matrix with [0,1] depth range.
@@ -541,23 +551,31 @@ impl Mat4 {
         )
     }
 
-    /// Build right-handed orthographic projection matrix with the specified bounds and depth range.
-    pub fn orthographic_rh(left: f32, right: f32, bottom: f32, top: f32, near: f32, far: f32) -> Mat4 {
+    /// Build right-handed orthographic projection matrix with [-1,1] depth range.
+    /// This is the same as the OpenGL `glOrtho` function in OpenGL.
+    /// See https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml
+    pub fn orthographic_rh_gl(
+        left: f32,
+        right: f32,
+        bottom: f32,
+        top: f32,
+        near: f32,
+        far: f32,
+    ) -> Mat4 {
         let a = 2.0 / (right - left);
         let b = 2.0 / (top - bottom);
         let c = -2.0 / (far - near);
-        let d1 = -(right + left) / (right - left);
-        let d2 = -(top + bottom) / (top - bottom);
-        let d3 = -(far + near) / (far - near);
+        let tx = -(right + left) / (right - left);
+        let ty = -(top + bottom) / (top - bottom);
+        let tz = -(far + near) / (far - near);
 
         Mat4::from_cols(
             Vec4::new(a, 0.0, 0.0, 0.0),
             Vec4::new(0.0, b, 0.0, 0.0),
             Vec4::new(0.0, 0.0, c, 0.0),
-            Vec4::new(d1, d2, d3, 1.0),
+            Vec4::new(tx, ty, tz, 1.0),
         )
     }
-
 
     #[inline]
     pub fn mul_vec4(&self, other: Vec4) -> Vec4 {
