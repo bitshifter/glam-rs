@@ -165,8 +165,8 @@ impl Vec3 {
     unsafe fn dot_as_m128(self, other: Self) -> __m128 {
         let x2_y2_z2_w2 = _mm_mul_ps(self.0, other.0);
         let y2_0_0_0 = _mm_shuffle_ps(x2_y2_z2_w2, x2_y2_z2_w2, 0b00_00_00_01);
-        let x2y2_0_0_0 = _mm_add_ss(x2_y2_z2_w2, y2_0_0_0);
         let z2_0_0_0 = _mm_shuffle_ps(x2_y2_z2_w2, x2_y2_z2_w2, 0b00_00_00_10);
+        let x2y2_0_0_0 = _mm_add_ss(x2_y2_z2_w2, y2_0_0_0);
         _mm_add_ss(x2y2_0_0_0, z2_0_0_0)
     }
 
@@ -206,8 +206,7 @@ impl Vec3 {
     /// Computes the length of `self`.
     #[inline]
     pub fn length(self) -> f32 {
-        let dot = self.dot_as_vec3(self);
-        unsafe { _mm_cvtss_f32(_mm_sqrt_ps(dot.0)) }
+        unsafe { _mm_cvtss_f32(_mm_sqrt_ss(self.dot_as_m128(self))) }
     }
 
     /// Computes the squared length of `self`.
