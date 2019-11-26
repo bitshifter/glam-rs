@@ -58,8 +58,6 @@ fn quat_to_axes(rotation: Quat) -> (Vec3, Vec3, Vec3) {
 /// A 3x3 column major matrix.
 ///
 /// This type is 16 byte aligned.
-///
-/// `Mat3` can represent both 3D rotations and 2D affine transformations.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[repr(C)]
 pub struct Mat3 {
@@ -153,8 +151,10 @@ impl Mat3 {
         [self.x_axis.into(), self.y_axis.into(), self.z_axis.into()]
     }
 
-    /// Creates an affine transformation matrix from the given `scale`,
+    /// Creates a 3x3 homogeneous transformation matrix from the given `scale`,
     /// rotation `angle` (in radians) and `translation`.
+    ///
+    /// The resulting matrix can be used to transform 2D points and vectors.
     #[inline]
     pub fn from_scale_angle_translation(scale: Vec2, angle: f32, translation: Vec2) -> Self {
         let (sin, cos) = scalar_sin_cos(angle);
@@ -167,7 +167,7 @@ impl Mat3 {
     }
 
     #[inline]
-    /// Creates a 3D rotation matrix.
+    /// Creates a 3x3 rotation matrix from the given quaternion.
     pub fn from_quat(rotation: Quat) -> Self {
         let (x_axis, y_axis, z_axis) = quat_to_axes(rotation);
         Self {
@@ -177,7 +177,7 @@ impl Mat3 {
         }
     }
 
-    /// Creates a new 3D rotation matrix from a normalized rotation `axis` and
+    /// Creates a 3x3 rotation matrix from a normalized rotation `axis` and
     /// `angle` (in radians).
     #[inline]
     pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
@@ -197,14 +197,14 @@ impl Mat3 {
         }
     }
 
-    /// Creates a 3D rotation matrix from the given euler angles (in radians).
+    /// Creates a 3x3 rotation matrix from the given Euler angles (in radians).
     #[inline]
     pub fn from_rotation_ypr(yaw: f32, pitch: f32, roll: f32) -> Self {
         let quat = Quat::from_rotation_ypr(yaw, pitch, roll);
         Self::from_quat(quat)
     }
 
-    /// Creates a 3D rotation matrix from `angle` (in radians) around the x axis.
+    /// Creates a 3x3 rotation matrix from `angle` (in radians) around the x axis.
     #[inline]
     pub fn from_rotation_x(angle: f32) -> Self {
         let (sina, cosa) = scalar_sin_cos(angle);
@@ -215,7 +215,7 @@ impl Mat3 {
         }
     }
 
-    /// Creates a 3D rotation matrix from `angle` (in radians) around the y axis.
+    /// Creates a 3x3 rotation matrix from `angle` (in radians) around the y axis.
     #[inline]
     pub fn from_rotation_y(angle: f32) -> Self {
         let (sina, cosa) = scalar_sin_cos(angle);
@@ -226,7 +226,7 @@ impl Mat3 {
         }
     }
 
-    /// Creates a 3D rotation matrix from `angle` (in radians) around the z axis.
+    /// Creates a 3x3 rotation matrix from `angle` (in radians) around the z axis.
     #[inline]
     pub fn from_rotation_z(angle: f32) -> Self {
         let (sina, cosa) = scalar_sin_cos(angle);
@@ -237,7 +237,7 @@ impl Mat3 {
         }
     }
 
-    /// Creates a 3D non-uniform scale matrix.
+    /// Creates a 3x3 non-uniform scale matrix.
     #[inline]
     pub fn from_scale(scale: Vec3) -> Self {
         // TODO: should have a affine 2D scale and a 3d scale?
@@ -281,6 +281,7 @@ impl Mat3 {
         self.z_axis
     }
 
+    /// Returns the transpose of `self`.
     #[inline]
     pub fn transpose(&self) -> Self {
         #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
@@ -309,8 +310,8 @@ impl Mat3 {
         }
     }
 
-    #[inline]
     /// Returns the determinant of `self`.
+    #[inline]
     pub fn determinant(&self) -> f32 {
         self.z_axis.dot(self.x_axis.cross(self.y_axis))
     }
@@ -329,6 +330,7 @@ impl Mat3 {
         Mat3::from_cols(tmp0 * inv_det, tmp1 * inv_det, tmp2 * inv_det).transpose()
     }
 
+    /// Transforms a 3D vector.
     #[inline]
     pub fn mul_vec3(&self, other: Vec3) -> Vec3 {
         let mut res = self.x_axis * other.dup_x();
@@ -379,22 +381,27 @@ impl Mat3 {
     }
 
     /// Transforms the given `Vec2` as 2D point.
+    /// This is the equivalent of multiplying the `Vec2` as a `Vec3` where `w`
+    /// is `1.0`.
     #[inline]
     pub fn transform_point2(&self, other: Vec2) -> Vec2 {
-        // TODO: optimise
-        let mut res = self.x_axis * Vec3::splat(other.x());
-        res = self.y_axis.mul_add(Vec3::splat(other.y()), res);
-        res = self.z_axis + res;
-        res.truncate()
+        // let mut res = self.x_axis * Vec3::splat(other.x());
+        // res = self.y_axis.mul_add(Vec3::splat(other.y()), res);
+        // res = self.z_axis + res;
+        // res.truncate()
+        self.mul_vec3(other.extend(1.0)).truncate()
     }
 
     /// Transforms the given `Vec2` as 2D vector.
+    /// This is the equivalent of multiplying the `Vec2` as a `Vec3` where `w`
+    /// is `0.0`.
     #[inline]
     pub fn transform_vector2(&self, other: Vec2) -> Vec2 {
-        // TODO: optimise
-        let mut res = self.x_axis * Vec3::splat(other.x());
-        res = self.y_axis.mul_add(Vec3::splat(other.y()), res);
-        res.truncate()
+        // TODO: can optimize for w=0.
+        // let mut res = self.x_axis * Vec3::splat(other.x());
+        // res = self.y_axis.mul_add(Vec3::splat(other.y()), res);
+        // res.truncate()
+        self.mul_vec3(other.extend(0.0)).truncate()
     }
 
     /// Returns true if the absolute difference of all elements between `self`
