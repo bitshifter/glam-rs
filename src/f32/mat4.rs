@@ -86,7 +86,7 @@ impl fmt::Display for Mat4 {
 }
 
 impl Mat4 {
-    /// Creates a new `Mat4` with all elements set to `0.0`.
+    /// Creates a 4x4 matrix with all elements set to `0.0`.
     #[inline]
     pub fn zero() -> Self {
         Self {
@@ -97,7 +97,7 @@ impl Mat4 {
         }
     }
 
-    /// Creates a new `Mat4` identity matrix.
+    /// Creates a 4x4 identity matrix.
     #[inline]
     pub fn identity() -> Self {
         Self {
@@ -108,7 +108,7 @@ impl Mat4 {
         }
     }
 
-    /// Creates a new `Mat4` from four column vectors.
+    /// Creates a 4x4 matrix from four column vectors.
     #[inline]
     pub fn from_cols(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Self {
         Self {
@@ -119,8 +119,9 @@ impl Mat4 {
         }
     }
 
-    /// Creates a new `Mat4` from a `[f32; 16]` stored in column major order.
-    /// If your data is stored in row major you will need to `transpose` the resulting `Mat4`.
+    /// Creates a 4x4 matrix from a `[f32; 16]` stored in column major order.
+    /// If your data is stored in row major you will need to `transpose` the
+    /// returned matrix.
     #[inline]
     pub fn from_cols_array(m: &[f32; 16]) -> Self {
         Mat4 {
@@ -131,15 +132,16 @@ impl Mat4 {
         }
     }
 
-    /// Creates a new `[f32; 16]` storing data in column major order.
-    /// If you require data in row major order `transpose` the `Mat4` first.
+    /// Creates a `[f32; 16]` storing data in column major order.
+    /// If you require data in row major order `transpose` the matrix first.
     #[inline]
     pub fn to_cols_array(&self) -> [f32; 16] {
         *self.as_ref()
     }
 
-    /// Creates a new `Mat4` from a `[[f32; 4]; 4]` stored in column major order.
-    /// If your data is in row major order you will need to `transpose` the resulting `Mat4`.
+    /// Creates a 4x4 matrix from a `[[f32; 4]; 4]` stored in column major
+    /// order.  If your data is in row major order you will need to `transpose`
+    /// the returned matrix.
     #[inline]
     pub fn from_cols_array_2d(m: &[[f32; 4]; 4]) -> Self {
         Mat4 {
@@ -150,8 +152,8 @@ impl Mat4 {
         }
     }
 
-    /// Creates a new `[[f32; 4]; 4]` storing data in column major order.
-    /// If you require data in row major order `transpose` the `Mat4` first.
+    /// Creates a `[[f32; 4]; 4]` storing data in column major order.
+    /// If you require data in row major order `transpose` the matrix first.
     #[inline]
     pub fn to_cols_array_2d(&self) -> [[f32; 4]; 4] {
         [
@@ -162,6 +164,8 @@ impl Mat4 {
         ]
     }
 
+    /// Creates an affine transformation matrix from the given `scale`, `rotation`
+    /// and `translation`.
     #[inline]
     pub fn from_scale_rotation_translation(scale: Vec3, rotation: Quat, translation: Vec3) -> Self {
         glam_assert!(rotation.is_normalized());
@@ -175,6 +179,7 @@ impl Mat4 {
         }
     }
 
+    /// Creates an affine transformation matrix from the given `translation`.
     #[inline]
     pub fn from_rotation_translation(rotation: Quat, translation: Vec3) -> Self {
         glam_assert!(rotation.is_normalized());
@@ -187,6 +192,7 @@ impl Mat4 {
         }
     }
 
+    /// Creates an affine transformation matrix from the given `rotation`.
     #[inline]
     pub fn from_quat(rotation: Quat) -> Self {
         glam_assert!(rotation.is_normalized());
@@ -199,6 +205,7 @@ impl Mat4 {
         }
     }
 
+    /// Creates an affine transformation matrix from the given `translation`.
     #[inline]
     pub fn from_translation(translation: Vec3) -> Self {
         Self {
@@ -209,8 +216,8 @@ impl Mat4 {
         }
     }
 
-    /// Creates a new `Mat4` containing a rotation around a normalized rotation axis of
-    /// angle (in radians).
+    /// Creates an affine transformation matrix containing a rotation around a
+    /// normalized rotation `axis` of `angle` (in radians).
     #[inline]
     pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
         glam_assert!(axis.is_normalized());
@@ -230,16 +237,16 @@ impl Mat4 {
         }
     }
 
-    /// Creates a new `Mat4` containing a rotation around the given euler angles
-    /// (in radians).
+    /// Creates an affine transformation matrix containing a rotation around
+    /// the given euler angles (in radians).
     #[inline]
     pub fn from_rotation_ypr(yaw: f32, pitch: f32, roll: f32) -> Self {
         let quat = Quat::from_rotation_ypr(yaw, pitch, roll);
         Self::from_quat(quat)
     }
 
-    /// Creates a new `Mat4` containing a rotation around the x axis of angle
-    /// (in radians).
+    /// Creates an affine transformation matrix containing a rotation around
+    /// the x axis of `angle` (in radians).
     #[inline]
     pub fn from_rotation_x(angle: f32) -> Self {
         let (sina, cosa) = scalar_sin_cos(angle);
@@ -251,8 +258,8 @@ impl Mat4 {
         }
     }
 
-    /// Creates a new `Mat4` containing a rotation around the y axis of angle
-    /// (in radians).
+    /// Creates an affine transformation matrix containing a rotation around
+    /// the y axis of `angle` (in radians).
     #[inline]
     pub fn from_rotation_y(angle: f32) -> Self {
         let (sina, cosa) = scalar_sin_cos(angle);
@@ -264,8 +271,8 @@ impl Mat4 {
         }
     }
 
-    /// Creates a new `Mat4` containing a rotation around the z axis of angle
-    /// (in radians).
+    /// Creates an affine transformation matrix containing a rotation around
+    /// the z axis of `angle` (in radians).
     #[inline]
     pub fn from_rotation_z(angle: f32) -> Self {
         let (sina, cosa) = scalar_sin_cos(angle);
@@ -277,6 +284,8 @@ impl Mat4 {
         }
     }
 
+    /// Creates an affine transformation matrix containing the given non-uniform
+    /// `scale`.
     #[inline]
     pub fn from_scale(scale: Vec3) -> Self {
         // Do not panic as long as any component is non-zero
@@ -331,6 +340,7 @@ impl Mat4 {
     }
 
     #[inline]
+    /// Returns the transpose of `self`.
     pub fn transpose(&self) -> Self {
         #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
         {
@@ -365,6 +375,7 @@ impl Mat4 {
     }
 
     #[inline]
+    /// Returns the determinant of `self`.
     pub fn determinant(&self) -> f32 {
         let (m00, m01, m02, m03) = self.x_axis.into();
         let (m10, m11, m12, m13) = self.y_axis.into();
@@ -384,6 +395,9 @@ impl Mat4 {
             - m03 * (m10 * a1223 - m11 * a0223 + m12 * a0123)
     }
 
+    /// Returns the inverse of `self`.
+    ///
+    /// If the matrix is not invertible the returned matrix will be invalid.
     pub fn inverse(&self) -> Self {
         let (m00, m01, m02, m03) = self.x_axis.into();
         let (m10, m11, m12, m13) = self.y_axis.into();
@@ -486,7 +500,7 @@ impl Mat4 {
         Mat4::look_to_lh(eye, eye - center, up)
     }
 
-    /// Builds a right-handed perspective projection matrix with [-1,1] depth range.
+    /// Creates a right-handed perspective projection matrix with [-1,1] depth range.
     /// This is the same as the OpenGL `gluPerspective` function.
     /// See https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
     pub fn perspective_rh_gl(
@@ -519,7 +533,8 @@ impl Mat4 {
         Mat4::perspective_rh_gl(fov_y_radians, aspect_ratio, z_near, z_far)
     }
 
-    /// Build infinite right-handed perspective projection matrix with [0,1] depth range.
+    /// Creates an infinite right-handed perspective projection matrix with
+    /// [0,1] depth range.
     pub fn perspective_infinite_rh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Mat4 {
         let f = 1.0 / (0.5 * fov_y_radians).tan();
         Mat4::from_cols(
@@ -530,7 +545,8 @@ impl Mat4 {
         )
     }
 
-    /// Build infinite reverse right-handed perspective projection matrix with [0,1] depth range.
+    /// Creates an infinite reverse right-handed perspective projection matrix
+    /// with [0,1] depth range.
     pub fn perspective_infinite_reverse_rh(
         fov_y_radians: f32,
         aspect_ratio: f32,
@@ -545,9 +561,10 @@ impl Mat4 {
         )
     }
 
-    /// Build right-handed orthographic projection matrix with [-1,1] depth range.
-    /// This is the same as the OpenGL `glOrtho` function in OpenGL.
-    /// See https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml
+    /// Creates a right-handed orthographic projection matrix with [-1,1] depth
+    /// range.  This is the same as the OpenGL `glOrtho` function in OpenGL.
+    /// See
+    /// https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml
     pub fn orthographic_rh_gl(
         left: f32,
         right: f32,
@@ -622,6 +639,7 @@ impl Mat4 {
         }
     }
 
+    /// Transforms the given `Vec3` as 3D point.
     #[inline]
     pub fn transform_point3(&self, other: Vec3) -> Vec3 {
         let mut res = self.x_axis.truncate() * other.dup_x();
@@ -632,6 +650,7 @@ impl Mat4 {
         res
     }
 
+    /// Transforms the give `Vec3` as 3D vector.
     #[inline]
     pub fn transform_vector3(&self, other: Vec3) -> Vec3 {
         let mut res = self.x_axis.truncate() * other.dup_x();

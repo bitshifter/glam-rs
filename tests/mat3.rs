@@ -89,6 +89,22 @@ fn test_mat3_mul() {
 }
 
 #[test]
+fn test_mat3_transform2d() {
+    let mat_b = Mat3::from_scale_angle_translation(
+        Vec2::new(0.5, 1.5),
+        f32::to_radians(90.0),
+        Vec2::new(1.0, 2.0),
+    );
+    let result2 = mat_b.transform_vector2(Vec2::unit_y());
+    assert_approx_eq!(vec2(-1.5, 0.0), result2, 1.0e-6);
+    assert_approx_eq!(result2, (mat_b * Vec2::unit_y().extend(0.0)).truncate());
+
+    let result2 = mat_b.transform_point2(Vec2::unit_y());
+    assert_approx_eq!(vec2(-0.5, 2.0), result2, 1.0e-6);
+    assert_approx_eq!(result2, (mat_b * Vec2::unit_y().extend(1.0)).truncate());
+}
+
+#[test]
 fn test_from_ypr() {
     let zero = deg(0.0);
     let yaw = deg(30.0);

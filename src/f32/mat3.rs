@@ -58,6 +58,8 @@ fn quat_to_axes(rotation: Quat) -> (Vec3, Vec3, Vec3) {
 /// A 3x3 column major matrix.
 ///
 /// This type is 16 byte aligned.
+///
+/// `Mat3` can represent both 3D rotations and 2D affine transformations.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[repr(C)]
 pub struct Mat3 {
@@ -80,6 +82,7 @@ impl fmt::Display for Mat3 {
 }
 
 impl Mat3 {
+    /// Creates a 3x3 matrix with all elements set to `0.0`.
     #[inline]
     pub fn zero() -> Self {
         Self {
@@ -89,6 +92,7 @@ impl Mat3 {
         }
     }
 
+    /// Creates a 3x3 identity matrix.
     #[inline]
     pub fn identity() -> Self {
         Self {
@@ -98,7 +102,7 @@ impl Mat3 {
         }
     }
 
-    /// Creates a new `Mat3` from three column vectors.
+    /// Creates a 3x3 matrix from three column vectors.
     #[inline]
     pub fn from_cols(x_axis: Vec3, y_axis: Vec3, z_axis: Vec3) -> Self {
         Self {
@@ -108,8 +112,9 @@ impl Mat3 {
         }
     }
 
-    /// Creates a new `Mat3` from a `[f32; 9]` stored in column major order.
-    /// If your data is stored in row major you will need to `transpose` the resulting `Mat3`.
+    /// Creates a 3x3 matrix from a `[f32; 9]` stored in column major order.
+    /// If your data is stored in row major you will need to `transpose` the
+    /// returned matrix.
     #[inline]
     pub fn from_cols_array(m: &[f32; 9]) -> Self {
         Mat3 {
@@ -119,8 +124,8 @@ impl Mat3 {
         }
     }
 
-    /// Creates a new `[f32; 9]` storing data in column major order.
-    /// If you require data in row major order `transpose` the `Mat3` first.
+    /// Creates a `[f32; 9]` storing data in column major order.
+    /// If you require data in row major order `transpose` the matrix first.
     #[inline]
     pub fn to_cols_array(&self) -> [f32; 9] {
         let (m00, m01, m02) = self.x_axis.into();
@@ -129,8 +134,9 @@ impl Mat3 {
         [m00, m01, m02, m10, m11, m12, m20, m21, m22]
     }
 
-    /// Creates a new `Mat3` from a `[[f32; 3]; 3]` stored in column major order.
-    /// If your data is in row major order you will need to `transpose` the resulting `Mat3`.
+    /// Creates a 3x3 matrix from a `[[f32; 3]; 3]` stored in column major order.
+    /// If your data is in row major order you will need to `transpose` the
+    /// returned matrix.
     #[inline]
     pub fn from_cols_array_2d(m: &[[f32; 3]; 3]) -> Self {
         Mat3 {
@@ -140,15 +146,15 @@ impl Mat3 {
         }
     }
 
-    /// Creates a new `[[f32; 3]; 3]` storing data in column major order.
-    /// If you require data in row major order `transpose` the `Mat3` first.
+    /// Creates a `[[f32; 3]; 3]` storing data in column major order.
+    /// If you require data in row major order `transpose` the matrix first.
     #[inline]
     pub fn to_cols_array_2d(&self) -> [[f32; 3]; 3] {
         [self.x_axis.into(), self.y_axis.into(), self.z_axis.into()]
     }
 
-    /// Creates a new `Mat3` that can scale, rotate and translate a 2D vector.
-    /// `angle` is in radians.
+    /// Creates an affine transformation matrix from the given `scale`,
+    /// rotation `angle` (in radians) and `translation`.
     #[inline]
     pub fn from_scale_angle_translation(scale: Vec2, angle: f32, translation: Vec2) -> Self {
         let (sin, cos) = scalar_sin_cos(angle);
@@ -161,6 +167,7 @@ impl Mat3 {
     }
 
     #[inline]
+    /// Creates a 3D rotation matrix.
     pub fn from_quat(rotation: Quat) -> Self {
         let (x_axis, y_axis, z_axis) = quat_to_axes(rotation);
         Self {
@@ -170,7 +177,8 @@ impl Mat3 {
         }
     }
 
-    /// Create a 3x3 rotation matrix from a normalized rotation axis and angle (in radians).
+    /// Creates a new 3D rotation matrix from a normalized rotation `axis` and
+    /// `angle` (in radians).
     #[inline]
     pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
         glam_assert!(axis.is_normalized());
@@ -189,14 +197,14 @@ impl Mat3 {
         }
     }
 
-    /// Create a 3x3 rotation matrix from the given euler angles (in radians).
+    /// Creates a 3D rotation matrix from the given euler angles (in radians).
     #[inline]
     pub fn from_rotation_ypr(yaw: f32, pitch: f32, roll: f32) -> Self {
         let quat = Quat::from_rotation_ypr(yaw, pitch, roll);
         Self::from_quat(quat)
     }
 
-    /// Create a 3x3 rotation matrix from the angle (in radians) around the x axis.
+    /// Creates a 3D rotation matrix from `angle` (in radians) around the x axis.
     #[inline]
     pub fn from_rotation_x(angle: f32) -> Self {
         let (sina, cosa) = scalar_sin_cos(angle);
@@ -207,7 +215,7 @@ impl Mat3 {
         }
     }
 
-    /// Create a 3x3 rotation matrix from the angle (in radians) around the y axis.
+    /// Creates a 3D rotation matrix from `angle` (in radians) around the y axis.
     #[inline]
     pub fn from_rotation_y(angle: f32) -> Self {
         let (sina, cosa) = scalar_sin_cos(angle);
@@ -218,7 +226,7 @@ impl Mat3 {
         }
     }
 
-    /// Create a 3x3 rotation matrix from the angle (in radians) around the z axis.
+    /// Creates a 3D rotation matrix from `angle` (in radians) around the z axis.
     #[inline]
     pub fn from_rotation_z(angle: f32) -> Self {
         let (sina, cosa) = scalar_sin_cos(angle);
@@ -229,8 +237,10 @@ impl Mat3 {
         }
     }
 
+    /// Creates a 3D non-uniform scale matrix.
     #[inline]
     pub fn from_scale(scale: Vec3) -> Self {
+        // TODO: should have a affine 2D scale and a 3d scale?
         // Do not panic as long as any component is non-zero
         glam_assert!(scale.cmpne(Vec3::zero()).any());
         let (x, y, z) = scale.into();
@@ -300,10 +310,14 @@ impl Mat3 {
     }
 
     #[inline]
+    /// Returns the determinant of `self`.
     pub fn determinant(&self) -> f32 {
         self.z_axis.dot(self.x_axis.cross(self.y_axis))
     }
 
+    /// Returns the inverse of `self`.
+    ///
+    /// If the matrix is not invertible the returned matrix will be invalid.
     pub fn inverse(&self) -> Self {
         let tmp0 = self.y_axis.cross(self.z_axis);
         let tmp1 = self.z_axis.cross(self.x_axis);
@@ -323,8 +337,8 @@ impl Mat3 {
         res
     }
 
-    #[inline]
     /// Multiplies two 3x3 matrices.
+    #[inline]
     pub fn mul_mat3(&self, other: &Self) -> Self {
         Self {
             x_axis: self.mul_vec3(other.x_axis),
@@ -333,6 +347,7 @@ impl Mat3 {
         }
     }
 
+    /// Adds two 3x3 matrices.
     #[inline]
     pub fn add_mat3(&self, other: &Self) -> Self {
         Self {
@@ -342,6 +357,7 @@ impl Mat3 {
         }
     }
 
+    /// Subtracts two 3x3 matrices.
     #[inline]
     pub fn sub_mat3(&self, other: &Self) -> Self {
         Self {
@@ -352,6 +368,7 @@ impl Mat3 {
     }
 
     #[inline]
+    /// Multiplies a 3x3 matrix by a scalar.
     pub fn mul_scalar(&self, other: f32) -> Self {
         let s = Vec3::splat(other);
         Self {
@@ -361,16 +378,23 @@ impl Mat3 {
         }
     }
 
+    /// Transforms the given `Vec2` as 2D point.
     #[inline]
     pub fn transform_point2(&self, other: Vec2) -> Vec2 {
         // TODO: optimise
-        self.mul_vec3(other.extend(1.0)).truncate()
+        let mut res = self.x_axis * Vec3::splat(other.x());
+        res = self.y_axis.mul_add(Vec3::splat(other.y()), res);
+        res = self.z_axis + res;
+        res.truncate()
     }
 
+    /// Transforms the given `Vec2` as 2D vector.
     #[inline]
     pub fn transform_vector2(&self, other: Vec2) -> Vec2 {
         // TODO: optimise
-        self.mul_vec3(other.extend(0.0)).truncate()
+        let mut res = self.x_axis * Vec3::splat(other.x());
+        res = self.y_axis.mul_add(Vec3::splat(other.y()), res);
+        res.truncate()
     }
 
     /// Returns true if the absolute difference of all elements between `self`

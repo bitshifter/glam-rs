@@ -47,52 +47,57 @@ impl fmt::Display for Mat2 {
 }
 
 impl Mat2 {
+    /// Creates a 2x2 matrix with all elements set to `0.0`.
     #[inline]
     pub fn zero() -> Self {
         Mat2(Vec4::zero())
     }
 
+    /// Creates a 2x2 identity matrix.
     #[inline]
     pub fn identity() -> Self {
         Self(Vec4::new(1.0, 0.0, 0.0, 1.0))
     }
 
-    /// Creates a new `Mat2` from four column vectors.
+    /// Creates a 2x2 matrix from four column vectors.
     #[inline]
     pub fn from_cols(x_axis: Vec2, y_axis: Vec2) -> Self {
         Self(Vec4::new(x_axis.x(), x_axis.y(), y_axis.x(), y_axis.y()))
     }
 
-    /// Creates a new `Mat2` from a `[f32; 4]` stored in column major order.
-    /// If your data is stored in row major you will need to `transpose` the resulting `Mat2`.
+    /// Creates a 2x2 matrix from a `[f32; 4]` stored in column major order.  If
+    /// your data is stored in row major you will need to `transpose` the
+    /// returned matrix.
     #[inline]
     pub fn from_cols_array(m: &[f32; 4]) -> Self {
         Mat2(Vec4::new(m[0], m[1], m[2], m[3]))
     }
 
-    /// Creates a new `[f32; 4]` storing data in column major order.
-    /// If you require data in row major order `transpose` the `Mat2` first.
+    /// Creates a `[f32; 4]` storing data in column major order.
+    /// If you require data in row major order `transpose` the matrix first.
     #[inline]
     pub fn to_cols_array(&self) -> [f32; 4] {
         self.0.into()
     }
 
-    /// Creates a new `Mat2` from a `[[f32; 2]; 2]` stored in column major order.
-    /// If your data is in row major order you will need to `transpose` the resulting `Mat2`.
+    /// Creates a 2x2 matrix from a `[[f32; 2]; 2]` stored in column major
+    /// order.  If your data is in row major order you will need to `transpose`
+    /// the returned matrix.
     #[inline]
     pub fn from_cols_array_2d(m: &[[f32; 2]; 2]) -> Self {
         Mat2(Vec4::new(m[0][0], m[0][1], m[1][0], m[1][1]))
     }
 
-    /// Creates a new `[[f32; 2]; 2]` storing data in column major order.
-    /// If you require data in row major order `transpose` the `Mat2` first.
+    /// Creates a `[[f32; 2]; 2]` storing data in column major order.
+    /// If you require data in row major order `transpose` the matrix first.
     #[inline]
     pub fn to_cols_array_2d(&self) -> [[f32; 2]; 2] {
         let (x0, y0, x1, y1) = self.0.into();
         [[x0, y0], [x1, y1]]
     }
 
-    /// Create a 2x2 matrix containing scale and rotation (in radians).
+    /// Creates a 2x2 matrix containing the given `scale` and rotation of
+    /// `angle` (in radians).
     #[inline]
     pub fn from_scale_angle(scale: Vec2, angle: f32) -> Self {
         let (sin, cos) = scalar_sin_cos(angle);
@@ -105,13 +110,14 @@ impl Mat2 {
         ))
     }
 
-    /// Create a 2x2 matrix containing a rotation (in radians).
+    /// Creates a 2x2 matrix containing a rotation of `angle` (in radians).
     #[inline]
     pub fn from_angle(angle: f32) -> Self {
         let (sin, cos) = scalar_sin_cos(angle);
         Self(Vec4::new(cos, sin, -sin, cos))
     }
 
+    /// Creates a 2x2 matrix containing the given non-uniform `scale`.
     #[inline]
     pub fn from_scale(scale: Vec2) -> Self {
         let (x, y) = scale.into();
@@ -144,12 +150,14 @@ impl Mat2 {
         Vec2::new(x, y)
     }
 
+    /// Returns the transpose of `self`.
     #[inline]
     pub fn transpose(&self) -> Self {
         let (m00, m01, m10, m11) = self.0.into();
         Self(Vec4::new(m00, m10, m01, m11))
     }
 
+    /// Returns the determinant of `self`.
     #[inline]
     pub fn determinant(&self) -> f32 {
         #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
@@ -168,6 +176,9 @@ impl Mat2 {
         }
     }
 
+    /// Returns the inverse of `self`.
+    ///
+    /// If the matrix is not invertible the returned matrix will be invalid.
     #[inline]
     pub fn inverse(&self) -> Self {
         // TODO: SSE2
