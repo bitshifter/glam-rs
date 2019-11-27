@@ -164,8 +164,8 @@ impl Mat4 {
         ]
     }
 
-    /// Creates an affine transformation matrix from the given `scale`, `rotation`
-    /// and `translation`.
+    /// Creates a 4x4 homogeneous transformation matrix from the given `scale`,
+    /// `rotation` and `translation`.
     #[inline]
     pub fn from_scale_rotation_translation(scale: Vec3, rotation: Quat, translation: Vec3) -> Self {
         glam_assert!(rotation.is_normalized());
@@ -179,7 +179,7 @@ impl Mat4 {
         }
     }
 
-    /// Creates an affine transformation matrix from the given `translation`.
+    /// Creates a 4x4 homogeneous transformation matrix from the given `translation`.
     #[inline]
     pub fn from_rotation_translation(rotation: Quat, translation: Vec3) -> Self {
         glam_assert!(rotation.is_normalized());
@@ -192,7 +192,7 @@ impl Mat4 {
         }
     }
 
-    /// Creates an affine transformation matrix from the given `rotation`.
+    /// Creates a 4x4 homogeneous transformation matrix from the given `rotation`.
     #[inline]
     pub fn from_quat(rotation: Quat) -> Self {
         glam_assert!(rotation.is_normalized());
@@ -205,7 +205,7 @@ impl Mat4 {
         }
     }
 
-    /// Creates an affine transformation matrix from the given `translation`.
+    /// Creates a 4x4 homogeneous transformation matrix from the given `translation`.
     #[inline]
     pub fn from_translation(translation: Vec3) -> Self {
         Self {
@@ -216,8 +216,8 @@ impl Mat4 {
         }
     }
 
-    /// Creates an affine transformation matrix containing a rotation around a
-    /// normalized rotation `axis` of `angle` (in radians).
+    /// Creates a 4x4 homogeneous transformation matrix containing a rotation
+    /// around a normalized rotation `axis` of `angle` (in radians).
     #[inline]
     pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
         glam_assert!(axis.is_normalized());
@@ -237,16 +237,16 @@ impl Mat4 {
         }
     }
 
-    /// Creates an affine transformation matrix containing a rotation around
-    /// the given euler angles (in radians).
+    /// Creates a 4x4 homogeneous transformation matrix containing a rotation
+    /// around the given Euler angles (in radians).
     #[inline]
     pub fn from_rotation_ypr(yaw: f32, pitch: f32, roll: f32) -> Self {
         let quat = Quat::from_rotation_ypr(yaw, pitch, roll);
         Self::from_quat(quat)
     }
 
-    /// Creates an affine transformation matrix containing a rotation around
-    /// the x axis of `angle` (in radians).
+    /// Creates a 4x4 homogeneous transformation matrix containing a rotation
+    /// around the x axis of `angle` (in radians).
     #[inline]
     pub fn from_rotation_x(angle: f32) -> Self {
         let (sina, cosa) = scalar_sin_cos(angle);
@@ -258,8 +258,8 @@ impl Mat4 {
         }
     }
 
-    /// Creates an affine transformation matrix containing a rotation around
-    /// the y axis of `angle` (in radians).
+    /// Creates a 4x4 homogeneous transformation matrix containing a rotation
+    /// around the y axis of `angle` (in radians).
     #[inline]
     pub fn from_rotation_y(angle: f32) -> Self {
         let (sina, cosa) = scalar_sin_cos(angle);
@@ -271,8 +271,8 @@ impl Mat4 {
         }
     }
 
-    /// Creates an affine transformation matrix containing a rotation around
-    /// the z axis of `angle` (in radians).
+    /// Creates a 4x4 homogeneous transformation matrix containing a rotation
+    /// around the z axis of `angle` (in radians).
     #[inline]
     pub fn from_rotation_z(angle: f32) -> Self {
         let (sina, cosa) = scalar_sin_cos(angle);
@@ -284,8 +284,8 @@ impl Mat4 {
         }
     }
 
-    /// Creates an affine transformation matrix containing the given non-uniform
-    /// `scale`.
+    /// Creates a 4x4 homogeneous transformation matrix containing the given
+    /// non-uniform `scale`.
     #[inline]
     pub fn from_scale(scale: Vec3) -> Self {
         // Do not panic as long as any component is non-zero
@@ -339,8 +339,8 @@ impl Mat4 {
         self.w_axis
     }
 
-    #[inline]
     /// Returns the transpose of `self`.
+    #[inline]
     pub fn transpose(&self) -> Self {
         #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
         {
@@ -374,8 +374,8 @@ impl Mat4 {
         }
     }
 
-    #[inline]
     /// Returns the determinant of `self`.
+    #[inline]
     pub fn determinant(&self) -> f32 {
         let (m00, m01, m02, m03) = self.x_axis.into();
         let (m10, m11, m12, m13) = self.y_axis.into();
@@ -597,8 +597,8 @@ impl Mat4 {
         res
     }
 
-    #[inline]
     /// Multiplies two 4x4 matrices.
+    #[inline]
     pub fn mul_mat4(&self, other: &Self) -> Self {
         Self {
             x_axis: self.mul_vec4(other.x_axis),
@@ -640,24 +640,33 @@ impl Mat4 {
     }
 
     /// Transforms the given `Vec3` as 3D point.
+    /// This is the equivalent of multiplying the `Vec3` as a `Vec4` where `w`
+    /// is `1.0`.
     #[inline]
     pub fn transform_point3(&self, other: Vec3) -> Vec3 {
-        let mut res = self.x_axis.truncate() * other.dup_x();
-        res = self.y_axis.truncate().mul_add(other.dup_y(), res);
-        res = self.z_axis.truncate().mul_add(other.dup_z(), res);
-        // other w = 1
-        res = self.w_axis.truncate() + res;
-        res
+        // TODO: optimized version below probably won't work for perspective projections
+        // let mut res = self.x_axis.truncate() * other.dup_x();
+        // res = self.y_axis.truncate().mul_add(other.dup_y(), res);
+        // res = self.z_axis.truncate().mul_add(other.dup_z(), res);
+        // // other w = 1
+        // res = self.w_axis.truncate() + res;
+        // res
+        self.mul_vec4(other.extend(1.0)).truncate()
     }
 
     /// Transforms the give `Vec3` as 3D vector.
+    /// This is the equivalent of multiplying the `Vec3` as a `Vec4` where `w`
+    /// is `0.0`.
     #[inline]
     pub fn transform_vector3(&self, other: Vec3) -> Vec3 {
-        let mut res = self.x_axis.truncate() * other.dup_x();
-        res = self.y_axis.truncate().mul_add(other.dup_y(), res);
-        res = self.z_axis.truncate().mul_add(other.dup_z(), res);
-        // other w = 0
-        res
+        // TODO: can optimize for w=0.
+        // TODO: optimized version below probably won't work for perspective projections
+        // let mut res = self.x_axis.truncate() * other.dup_x();
+        // res = self.y_axis.truncate().mul_add(other.dup_y(), res);
+        // res = self.z_axis.truncate().mul_add(other.dup_z(), res);
+        // // other w = 0
+        // res
+        self.mul_vec4(other.extend(0.0)).truncate()
     }
 
     /// Returns true if the absolute difference of all elements between `self`
