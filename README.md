@@ -19,9 +19,9 @@ and the look and feel of the API has solidified.
 
 ### SIMD
 
-The `Vec3`, `Vec4` and `Quat` types use SSE2 on x86/x86_64 architectures. `Mat3`
-and `Mat4` also use SSE2 for some functionality such as inverse and transpose.
-Not everything has a SIMD implementation yet.
+The `Vec3`, `Vec4` and `Quat` types use SSE2 on x86/x86_64 architectures.
+`Mat2`, `Mat3` and `Mat4` also use SSE2 for some functionality. Not everything
+has a SIMD implementation yet.
 
 Note that this does result in some wasted space in the case of `Vec3` and `Mat3`
 as the SIMD vector type is 16 bytes large and 16 byte aligned.
@@ -32,9 +32,6 @@ as the SIMD vector type is 16 bytes large and 16 byte aligned.
 
 If you are more concerned with size than speed you can build glam with the
 feature `scalar-math` enabled to disable SIMD usage.
-
-The `Vec2` and `Mat2` types do not have a SIMD implemenation. `Mat2` may benefit
-from a SIMD impelemtation in the future.
 
 Due to the use of SIMD, vector elements may only be get and set via accessor
 methods, e.g. `Vec3::x()` and `Vec3::set_x()`. If getting or setting more than
