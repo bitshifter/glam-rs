@@ -12,9 +12,13 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Added `Mat4::orthographic_rh_gl` (thanks @icefoxen).
 
 ### Changed
+* Renamed `Mat4::perspective_glu_rh` to `Mat4::perspective_rh_gl`. 
 * SSE2 optimizations for `Mat2::determinant`, `Mat2::inverse`,
   `Mat2::transpose`, `Mat3::transpose`, `Quat::conjugate`, `Quat::lerp`,
   `Quat::mul_vec3`, `Quat::mul_quat` and `Quat::from_rotation_ypr`.
+* Disabled optimizations to `Mat4::transform_point3` and
+  `Mat4::transform_vector3` as they are probably incorrect and need
+  investigating.
 * Added missing `#[repr(C)]` to `Mat2`, `Mat3` and `Mat4` (thanks @hrygard).
 * Benchmarks now store output of functions to better estimate the cost of a
   function call.
