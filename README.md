@@ -26,8 +26,8 @@ Not everything has a SIMD implementation yet.
 Note that this does result in some wasted space in the case of `Vec3` and `Mat3`
 as the SIMD vector type is 16 bytes large and 16 byte aligned.
 
-`glam` outperforms similar Rust libraries such as [`cgmath`][cgmath] and
-[`nalgebra-glm`][nalgebra-glm] for common operations as tested by the
+`glam` outperforms similar Rust libraries such as [`cgmath`][cgmath],
+[`nalgebra-glm`][nalgebra-glm] and others for common operations as tested by the
 [`mathbench`][mathbench] project.
 
 If you are more concerned with size than speed you can build glam with the
@@ -98,8 +98,6 @@ performance.
 * Experiment with a using a 4x3 matrix as a 3D transform type that can be more
   efficient than `Mat4` for certain operations like inverse and multiplies
 * `no-std` support
-* Experiment with replacing SSE2 code with `f32x4` from the `packed_simd`
-  library - this will mean other architectures get SIMD support
 
 ## Naming
 

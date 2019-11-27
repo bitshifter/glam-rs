@@ -120,9 +120,8 @@ and benchmarks.
 * `"scalar-math"` - disables SIMD support and uses native alignment for all
   types.
 
-
 */
-#![doc(html_root_url = "https://docs.rs/glam/0.8.2")]
+#![doc(html_root_url = "https://docs.rs/glam/0.8.3")]
 
 #[macro_use]
 mod macros;
