@@ -153,8 +153,18 @@ impl Mat2 {
     /// Returns the transpose of `self`.
     #[inline]
     pub fn transpose(&self) -> Self {
-        let (m00, m01, m10, m11) = self.0.into();
-        Self(Vec4::new(m00, m10, m01, m11))
+        #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+        {
+            let (m00, m01, m10, m11) = self.0.into();
+            Self(Vec4::new(m00, m10, m01, m11))
+        }
+
+        #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+        unsafe {
+            let abcd = self.0.into();
+            let acbd = _mm_shuffle_ps(abcd, abcd, 0b11_01_10_00);
+            Self(acbd.into())
+        }
     }
 
     /// Returns the determinant of `self`.
@@ -171,8 +181,8 @@ impl Mat2 {
             let abcd = self.0.into();
             let dcba = _mm_shuffle_ps(abcd, abcd, 0b00_01_10_11);
             let prod = _mm_mul_ps(abcd, dcba);
-            let sub = _mm_sub_ps(prod, _mm_shuffle_ps(prod, prod, 0b01_01_01_01));
-            _mm_cvtss_f32(sub)
+            let det = _mm_sub_ps(prod, _mm_shuffle_ps(prod, prod, 0b01_01_01_01));
+            _mm_cvtss_f32(det)
         }
     }
 
@@ -181,12 +191,26 @@ impl Mat2 {
     /// If the matrix is not invertible the returned matrix will be invalid.
     #[inline]
     pub fn inverse(&self) -> Self {
-        // TODO: SSE2
-        let (a, b, c, d) = self.0.into();
-        let det = a * d - b * c;
-        glam_assert!(det != 0.0);
-        let tmp = Vec4::new(1.0, -1.0, -1.0, 1.0) / det;
-        Self(Vec4::new(d, b, c, a) * tmp)
+        #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+        {
+            let (a, b, c, d) = self.0.into();
+            let det = a * d - b * c;
+            glam_assert!(det != 0.0);
+            let tmp = Vec4::new(1.0, -1.0, -1.0, 1.0) / det;
+            Self(Vec4::new(d, b, c, a) * tmp)
+        }
+
+        #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+        unsafe {
+            let abcd = self.0.into();
+            let dcba = _mm_shuffle_ps(abcd, abcd, 0b00_01_10_11);
+            let prod = _mm_mul_ps(abcd, dcba);
+            let sub = _mm_sub_ps(prod, _mm_shuffle_ps(prod, prod, 0b01_01_01_01));
+            let det = _mm_shuffle_ps(sub, sub, 0b00_00_00_00);
+            let tmp = _mm_div_ps(_mm_set_ps(1.0, -1.0, -1.0, 1.0), det);
+            let dbca = _mm_shuffle_ps(abcd, abcd, 0b00_10_01_11);
+            Self(_mm_mul_ps(dbca, tmp).into())
+        }
     }
 
     #[inline]
