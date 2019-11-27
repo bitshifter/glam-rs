@@ -125,7 +125,7 @@ macro_rules! bench_from_ypr {
             );
             let mut outputs = vec![<$ty>::default(); SIZE];
             let mut i = 0;
-            c.bench_function($desc, move |b| {
+            c.bench_function($desc, |b| {
                 b.iter(|| {
                     i = (i + 1) & (SIZE - 1);
                     unsafe {
@@ -160,7 +160,7 @@ macro_rules! euler {
             };
             let dt = <$t>::splat(UPDATE_RATE);
 
-            c.bench_function($desc, move |b| {
+            c.bench_function($desc, |b| {
                 b.iter(|| {
                     for ((position, acceleration), velocity) in
                         data.pos.iter_mut().zip(&data.acc).zip(&mut data.vel)
