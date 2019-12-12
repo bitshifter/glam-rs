@@ -192,7 +192,7 @@ fn test_quat_identity() {
     let identity = Quat::identity();
     assert!(identity.is_near_identity());
     assert!(identity.is_normalized());
-    assert_eq!(identity, Quat::new(0.0, 0.0, 0.0, 1.0));
+    assert_eq!(identity, Quat::from_xyzw(0.0, 0.0, 0.0, 1.0));
     assert_eq!(identity, identity * identity);
     let q = Quat::from_rotation_ypr(deg(10.0), deg(-10.0), deg(45.0));
     assert_eq!(q, q * identity);
@@ -214,7 +214,7 @@ fn test_quat_slice() {
 #[cfg(feature = "serde")]
 #[test]
 fn test_quat_serde() {
-    let a = Quat::new(1.0, 2.0, 3.0, 4.0);
+    let a = Quat::from_xyzw(1.0, 2.0, 3.0, 4.0);
     let serialized = serde_json::to_string(&a).unwrap();
     assert_eq!(serialized, "[1.0,2.0,3.0,4.0]");
     let deserialized = serde_json::from_str(&serialized).unwrap();

@@ -68,7 +68,7 @@ impl From<Vec4> for mint::Vector4<f32> {
 
 impl From<mint::Quaternion<f32>> for Quat {
     fn from(q: mint::Quaternion<f32>) -> Self {
-        Self::new(q.v.x, q.v.y, q.v.z, q.s)
+        Self::from_xyzw(q.v.x, q.v.y, q.v.z, q.s)
     }
 }
 

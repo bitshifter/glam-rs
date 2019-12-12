@@ -37,7 +37,7 @@ pub struct Quat(pub(crate) Vec4);
 
 #[inline]
 pub fn quat(x: f32, y: f32, z: f32, w: f32) -> Quat {
-    Quat::new(x, y, z, w)
+    Quat::from_xyzw(x, y, z, w)
 }
 
 impl Quat {
@@ -46,8 +46,14 @@ impl Quat {
     /// This should generally not be called manually unless you know what you are doing. Use one of
     /// the other constructors instead such as `identity` or `from_axis_angle`.
     ///
-    /// `new` is mostly used by unit tests and `serde` deserialization.
+    /// `from_xyzw` is mostly used by unit tests and `serde` deserialization.
     #[inline]
+    pub fn from_xyzw(x: f32, y: f32, z: f32, w: f32) -> Self {
+        Self(Vec4::new(x, y, z, w))
+    }
+
+    #[inline]
+    #[deprecated(since = "0.8.3", note = "please use `Quat::from_xyzw` instead")]
     pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
         Self(Vec4::new(x, y, z, w))
     }
@@ -96,21 +102,21 @@ impl Quat {
     #[inline]
     pub fn from_rotation_x(angle: f32) -> Self {
         let (s, c) = scalar_sin_cos(angle * 0.5);
-        Self::new(s, 0.0, 0.0, c)
+        Self::from_xyzw(s, 0.0, 0.0, c)
     }
 
     /// Creates a new quaternion from the angle (in radians) around the y axis.
     #[inline]
     pub fn from_rotation_y(angle: f32) -> Self {
         let (s, c) = scalar_sin_cos(angle * 0.5);
-        Self::new(0.0, s, 0.0, c)
+        Self::from_xyzw(0.0, s, 0.0, c)
     }
 
     /// Creates a new quaternion from the angle (in radians) around the z axis.
     #[inline]
     pub fn from_rotation_z(angle: f32) -> Self {
         let (s, c) = scalar_sin_cos(angle * 0.5);
-        Self::new(0.0, 0.0, s, c)
+        Self::from_xyzw(0.0, 0.0, s, c)
     }
 
     #[inline]
@@ -150,7 +156,7 @@ impl Quat {
                 // x^2 >= y^2
                 let four_xsq = omm22 - dif10;
                 let inv4x = 0.5 / four_xsq.sqrt();
-                Self::new(
+                Self::from_xyzw(
                     four_xsq * inv4x,
                     (m01 + m10) * inv4x,
                     (m02 + m20) * inv4x,
@@ -160,7 +166,7 @@ impl Quat {
                 // y^2 >= x^2
                 let four_ysq = omm22 + dif10;
                 let inv4y = 0.5 / four_ysq.sqrt();
-                Self::new(
+                Self::from_xyzw(
                     (m01 + m10) * inv4y,
                     four_ysq * inv4y,
                     (m12 + m21) * inv4y,
@@ -175,7 +181,7 @@ impl Quat {
                 // z^2 >= w^2
                 let four_zsq = opm22 - sum10;
                 let inv4z = 0.5 / four_zsq.sqrt();
-                Self::new(
+                Self::from_xyzw(
                     (m02 + m20) * inv4z,
                     (m12 + m21) * inv4z,
                     four_zsq * inv4z,
@@ -185,7 +191,7 @@ impl Quat {
                 // w^2 >= z^2
                 let four_wsq = opm22 + sum10;
                 let inv4w = 0.5 / four_wsq.sqrt();
-                Self::new(
+                Self::from_xyzw(
                     (m12 - m21) * inv4w,
                     (m20 - m02) * inv4w,
                     (m01 - m10) * inv4w,
@@ -548,7 +554,7 @@ impl From<Quat> for Vec4 {
 impl From<(f32, f32, f32, f32)> for Quat {
     #[inline]
     fn from(t: (f32, f32, f32, f32)) -> Self {
-        Quat::new(t.0, t.1, t.2, t.3)
+        Quat::from_xyzw(t.0, t.1, t.2, t.3)
     }
 }
 

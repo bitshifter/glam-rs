@@ -267,7 +267,7 @@ impl<'de> Deserialize<'de> for Quat {
                 let w = seq
                     .next_element()?
                     .ok_or_else(|| de::Error::invalid_length(3, &self))?;
-                Ok(Quat::new(x, y, z, w))
+                Ok(Quat::from_xyzw(x, y, z, w))
             }
         }
 
