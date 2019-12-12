@@ -243,6 +243,52 @@ fn test_mat4_inverse() {
 }
 
 #[test]
+fn test_mat4_decompose() {
+    let (out_scale, out_rotation, out_translation) =
+        Mat4::identity().to_scale_rotation_translation();
+    assert_approx_eq!(Vec3::one(), out_scale);
+    assert!(out_rotation.is_near_identity());
+    assert_approx_eq!(Vec3::zero(), out_translation);
+
+    let in_scale = Vec3::one();
+    let in_translation = Vec3::new(-2.0, 4.0, -0.125);
+    let in_rotation = Quat::from_rotation_ypr(
+        f32::to_radians(-45.0),
+        f32::to_radians(180.0),
+        f32::to_radians(270.0),
+    );
+    let (out_scale, out_rotation, out_translation) =
+        Mat4::from_scale_rotation_translation(in_scale, in_rotation, in_translation)
+            .to_scale_rotation_translation();
+    assert_approx_eq!(in_scale, out_scale, 1e6);
+    // quat rotation might be in opposite direction
+    // TODO: can decompose handle that?
+    assert_approx_eq!(
+        in_rotation * Vec3::unit_x(),
+        out_rotation * Vec3::unit_x(),
+        1e6
+    );
+    assert_approx_eq!(in_translation, out_translation);
+
+    let in_scale = Vec3::new(-1.0, -2.0, 4.0);
+    let (out_scale, out_rotation, out_translation) =
+        Mat4::from_scale_rotation_translation(in_scale, Quat::identity(), in_translation)
+            .to_scale_rotation_translation();
+    assert_approx_eq!(in_scale, out_scale, 1e6);
+    // TODO: this should work
+    // assert!(out_rotation.is_near_identity());
+    assert_approx_eq!(Quat::identity(), out_rotation);
+    assert_approx_eq!(in_translation, out_translation);
+
+    // this is expected to fail:
+    // let (out_scale, out_rotation, out_translation) =
+    //     Mat4::zero().to_scale_rotation_translation();
+    // assert_approx_eq!(Vec3::zero(), out_scale);
+    // assert_approx_eq!(Quat::from_xyzw(0.0, 0.0, 0.0, 0.0), out_rotation);
+    // assert_approx_eq!(Vec3::zero(), out_translation);
+}
+
+#[test]
 fn test_mat4_look_at() {
     let eye = Vec3::new(0.0, 0.0, -5.0);
     let center = Vec3::new(0.0, 0.0, 0.0);

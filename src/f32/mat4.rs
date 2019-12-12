@@ -1,4 +1,4 @@
-use super::{scalar_sin_cos, Quat, Vec3, Vec4};
+use super::{scalar_sin_cos, Mat3, Quat, Vec3, Vec4};
 #[cfg(all(
     target_arch = "x86",
     target_feature = "sse2",
@@ -190,6 +190,31 @@ impl Mat4 {
             z_axis,
             w_axis: translation.extend(1.0),
         }
+    }
+
+    /// Returns a scale, rotation and translation extracted from the Mat4.
+    pub fn to_scale_rotation_translation(&self) -> (Vec3, Quat, Vec3) {
+        let det = self.determinant();
+        glam_assert!(det != 0.0);
+
+        let scale = Vec3::new(
+            self.x_axis.length() * det.signum(),
+            self.y_axis.length(),
+            self.z_axis.length(),
+        );
+        glam_assert!(scale.cmpne(Vec3::zero()).all());
+
+        let inv_scale = scale.reciprocal();
+
+        let rotation = Quat::from_rotation_mat3(&Mat3::from_cols(
+            self.x_axis().truncate() * inv_scale.dup_x(),
+            self.y_axis().truncate() * inv_scale.dup_y(),
+            self.z_axis().truncate() * inv_scale.dup_z(),
+        ));
+
+        let translation = self.w_axis.truncate();
+
+        (scale, rotation, translation)
     }
 
     /// Creates a 4x4 homogeneous transformation matrix from the given `rotation`.
