@@ -45,7 +45,7 @@ impl Default for TransformRT {
 
 impl TransformSRT {
     #[inline]
-    pub fn new(scale: Vec3, rotation: Quat, translation: Vec3) -> Self {
+    pub fn from_scale_rotation_translation(scale: Vec3, rotation: Quat, translation: Vec3) -> Self {
         Self {
             scale,
             rotation,
@@ -102,6 +102,24 @@ impl TransformSRT {
     pub fn transform_vec3(self, other: Vec3) -> Vec3 {
         (self.rotation * (other * self.scale)) + self.translation
     }
+
+    /// Returns true if the absolute difference of all elements between `self`
+    /// and `other` is less than or equal to `max_abs_diff`.
+    ///
+    /// This can be used to compare if two `Mat4`'s contain similar elements. It
+    /// works best when comparing with a known value. The `max_abs_diff` that
+    /// should be used used depends on the values being compared against.
+    ///
+    /// For more on floating point comparisons see
+    /// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
+    #[inline]
+    pub fn abs_diff_eq(&self, other: Self, max_abs_diff: f32) -> bool {
+        self.scale.abs_diff_eq(other.scale, max_abs_diff)
+            && self.rotation.abs_diff_eq(other.rotation, max_abs_diff)
+            && self
+                .translation
+                .abs_diff_eq(other.translation, max_abs_diff)
+    }
 }
 
 #[inline]
@@ -156,7 +174,7 @@ fn mul_rt_rt(lhs: &TransformRT, rhs: &TransformRT) -> TransformRT {
 
 impl TransformRT {
     #[inline]
-    pub fn new(rotation: Quat, translation: Vec3) -> Self {
+    pub fn from_rotation_translation(rotation: Quat, translation: Vec3) -> Self {
         Self {
             rotation,
             translation,
@@ -198,6 +216,23 @@ impl TransformRT {
     #[inline]
     pub fn transform_vec3(self, other: Vec3) -> Vec3 {
         (self.rotation * other) + self.translation
+    }
+
+    /// Returns true if the absolute difference of all elements between `self`
+    /// and `other` is less than or equal to `max_abs_diff`.
+    ///
+    /// This can be used to compare if two `Mat4`'s contain similar elements. It
+    /// works best when comparing with a known value. The `max_abs_diff` that
+    /// should be used used depends on the values being compared against.
+    ///
+    /// For more on floating point comparisons see
+    /// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
+    #[inline]
+    pub fn abs_diff_eq(&self, other: Self, max_abs_diff: f32) -> bool {
+        self.rotation.abs_diff_eq(other.rotation, max_abs_diff)
+            && self
+                .translation
+                .abs_diff_eq(other.translation, max_abs_diff)
     }
 }
 
@@ -278,7 +313,7 @@ impl From<TransformRT> for TransformSRT {
 impl Distribution<TransformRT> for Standard {
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> TransformRT {
-        TransformRT::new(
+        TransformRT::from_rotation_translation(
             rng.gen::<Quat>(),
             Vec3::new(
                 rng.gen_range(std::f32::MIN, std::f32::MAX),
@@ -299,7 +334,7 @@ impl Distribution<TransformSRT> for Standard {
                 return f;
             }
         };
-        TransformSRT::new(
+        TransformSRT::from_scale_rotation_translation(
             Vec3::new(gen_non_zero(), gen_non_zero(), gen_non_zero()),
             rng.gen::<Quat>(),
             Vec3::new(

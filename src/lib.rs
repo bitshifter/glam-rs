@@ -133,6 +133,9 @@ pub use self::f32::{
     Vec3Mask, Vec4, Vec4Mask,
 };
 
+#[cfg(feature = "transform-types")]
+pub use self::f32::{TransformRT, TransformSRT};
+
 #[repr(align(16))]
 pub(crate) struct Align16<T>(T);
 

@@ -9,11 +9,15 @@ use std::ops::Mul;
 use support::*;
 
 fn random_transform_srt(rng: &mut PCG32) -> TransformSRT {
-    TransformSRT::new(random_nonzero_vec3(rng), random_quat(rng), random_vec3(rng))
+    TransformSRT::from_scale_rotation_translation(
+        random_nonzero_vec3(rng),
+        random_quat(rng),
+        random_vec3(rng),
+    )
 }
 
 fn random_transform_rt(rng: &mut PCG32) -> TransformRT {
-    TransformRT::new(random_quat(rng), random_vec3(rng))
+    TransformRT::from_rotation_translation(random_quat(rng), random_vec3(rng))
 }
 
 bench_unop!(

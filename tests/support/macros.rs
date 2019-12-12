@@ -1,6 +1,7 @@
 #[macro_export]
 macro_rules! assert_approx_eq {
     ($a:expr, $b:expr) => {{
+        #[allow(unused_imports)]
         use support::FloatCompare;
         let eps = core::f32::EPSILON;
         let (a, b) = (&$a, &$b);

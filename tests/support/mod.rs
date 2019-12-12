@@ -3,6 +3,9 @@ mod macros;
 
 use glam::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4};
 
+#[cfg(feature = "transform-types")]
+use glam::{TransformRT, TransformSRT};
+
 /// Helper function for migrating away from `glam::angle::deg`.
 #[allow(dead_code)]
 #[inline]
@@ -126,5 +129,38 @@ impl FloatCompare for Vec4 {
     #[inline]
     fn abs_diff(&self, other: &Vec4) -> Vec4 {
         (*self - *other).abs()
+    }
+}
+
+#[cfg(feature = "transform-types")]
+impl FloatCompare for TransformSRT {
+    #[inline]
+    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
+        self.abs_diff_eq(*other, max_abs_diff)
+    }
+
+    #[inline]
+    fn abs_diff(&self, other: &Self) -> Self {
+        Self::from_scale_rotation_translation(
+            self.scale.abs_diff(&other.scale),
+            self.rotation.abs_diff(&other.rotation),
+            self.translation.abs_diff(&other.translation),
+        )
+    }
+}
+
+#[cfg(feature = "transform-types")]
+impl FloatCompare for TransformRT {
+    #[inline]
+    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
+        self.abs_diff_eq(*other, max_abs_diff)
+    }
+
+    #[inline]
+    fn abs_diff(&self, other: &Self) -> Self {
+        Self::from_rotation_translation(
+            self.rotation.abs_diff(&other.rotation),
+            self.translation.abs_diff(&other.translation),
+        )
     }
 }
