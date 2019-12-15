@@ -1,0 +1,20 @@
+[bans]
+multiple-versions = "deny"
+deny = []
+skip = [
+    # criterion uses old 0.3, glam uses 0.4
+    { name = "rand_xoshiro", version = "=0.3" },
+    # serde_json uses old 0.2 instead of 1.0
+    { name = "ryu", version = "=0.2" },
+]
+
+[licenses]
+unlicensed = "deny"
+allow = [
+    "Apache-2.0",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "MIT",
+    "MPL-2.0",
+]
