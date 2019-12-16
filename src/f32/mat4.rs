@@ -194,8 +194,91 @@ impl Mat4 {
 
     /// Returns a scale, rotation and translation extracted from the Mat4.
     pub fn to_scale_rotation_translation(&self) -> (Vec3, Quat, Vec3) {
+        // const EPSILON: f32 = 0.0001;
+        // const CANONICAL_BASIS: [[f32; 3]; 3] = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]];
+        // let rank = |[x, y, z]: [f32; 3]| -> (usize, usize, usize) {
+        //     if x < y {
+        //         if y < z {
+        //             (2, 1, 0)
+        //         } else {
+        //             if x < z {
+        //                 (1, 2, 0)
+        //             } else {
+        //                 (1, 0, 2)
+        //             }
+        //         }
+        //     } else {
+        //         if x < z {
+        //             (2, 0, 1)
+        //         } else {
+        //             if y < z {
+        //                 (0, 2, 1)
+        //             } else {
+        //                 (0, 1, 2)
+        //             }
+        //         }
+        //     }
+        // };
+
+        // let mut basis = Mat3::from_cols(
+        //     self.x_axis.truncate(),
+        //     self.y_axis.truncate(),
+        //     self.z_axis.truncate(),
+        // );
+
+        // let mut scales = [
+        //     self.x_axis.length(),
+        //     self.y_axis.length(),
+        //     self.z_axis.length(),
+        // ];
+
+        // let (a, b, c) = rank(scales);
+
+        // if scales[a] < EPSILON {
+        //     *basis.col_mut(a) = CANONICAL_BASIS[a].into();
+        // } else {
+        //     let basis_a = basis.col_mut(a);
+        //     *basis_a = basis_a.normalize();
+        // }
+
+        // if scales[b] < EPSILON {
+        //     let basis_a = basis.col(a);
+        //     let abs_basis_a = basis_a.abs();
+        //     let (_, _, cc) = rank(abs_basis_a.into());
+        //     *basis.col_mut(b) = basis_a.cross(CANONICAL_BASIS[cc].into());
+        // } else {
+        //     let basis_b = basis.col_mut(b);
+        //     *basis_b = basis_b.normalize();
+        // }
+
+        // if scales[c] < EPSILON {
+        //     *basis.col_mut(c) = basis.col(a).cross(basis.col(b));
+        // } else {
+        //     let basis_c = basis.col_mut(c);
+        //     *basis_c = basis_c.normalize();
+        // }
+
+        // // TODO: det of basis matrix
+        // let det = basis.determinant();
+        // // glam_assert!(det != 0.0);
+
+        // if det < 0.0 {
+        //     scales[a] = -scales[a];
+        //     *basis.col_mut(a) = -basis.col(a);
+        //     // TODO: check for error
+        //     // det = -det;
+        // }
+
+        // // det = det - 1.0;
+        // // det = det * det;
+
+        // let scale = scales.into();
+        // let translation = self.w_axis.truncate();
+        // let rotation = Quat::from_rotation_mat3(&basis);
+        // (scale, rotation, translation)
+
         let det = self.determinant();
-        glam_assert!(det != 0.0);
+        glam_assert!(deg != 0.0);
 
         let scale = Vec3::new(
             self.x_axis.length() * det.signum(),
@@ -362,6 +445,36 @@ impl Mat4 {
     #[inline]
     pub fn w_axis(&self) -> Vec4 {
         self.w_axis
+    }
+
+    #[allow(dead_code)]
+    #[inline]
+    pub(crate) fn col(&self, index: usize) -> Vec4 {
+        match index {
+            0 => self.x_axis,
+            1 => self.y_axis,
+            2 => self.z_axis,
+            3 => self.w_axis,
+            _ => panic!(
+                "index out of bounds: the len is 4 but the index is {}",
+                index
+            ),
+        }
+    }
+
+    #[allow(dead_code)]
+    #[inline]
+    pub(crate) fn col_mut(&mut self, index: usize) -> &mut Vec4 {
+        match index {
+            0 => &mut self.x_axis,
+            1 => &mut self.y_axis,
+            2 => &mut self.z_axis,
+            3 => &mut self.w_axis,
+            _ => panic!(
+                "index out of bounds: the len is 4 but the index is {}",
+                index
+            ),
+        }
     }
 
     /// Returns the transpose of `self`.
