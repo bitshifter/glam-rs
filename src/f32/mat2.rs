@@ -150,31 +150,29 @@ impl Mat2 {
         Vec2::new(x, y)
     }
 
-    #[allow(dead_code)]
-    #[inline]
-    pub(crate) fn col(&self, index: usize) -> Vec2 {
-        match index {
-            0 => self.x_axis(),
-            1 => self.y_axis(),
-            _ => panic!(
-                "index out of bounds: the len is 2 but the index is {}",
-                index
-            ),
-        }
-    }
+    // #[inline]
+    // pub(crate) fn col(&self, index: usize) -> Vec2 {
+    //     match index {
+    //         0 => self.x_axis(),
+    //         1 => self.y_axis(),
+    //         _ => panic!(
+    //             "index out of bounds: the len is 2 but the index is {}",
+    //             index
+    //         ),
+    //     }
+    // }
 
-    #[allow(dead_code)]
-    #[inline]
-    pub(crate) fn col_mut(&mut self, index: usize) -> &mut Vec2 {
-        match index {
-            0 => unsafe { &mut *(self.0.as_mut().as_mut_ptr() as *mut Vec2) },
-            1 => unsafe { &mut *(self.0.as_mut()[2..].as_mut_ptr() as *mut Vec2) },
-            _ => panic!(
-                "index out of bounds: the len is 2 but the index is {}",
-                index
-            ),
-        }
-    }
+    // #[inline]
+    // pub(crate) fn col_mut(&mut self, index: usize) -> &mut Vec2 {
+    //     match index {
+    //         0 => unsafe { &mut *(self.0.as_mut().as_mut_ptr() as *mut Vec2) },
+    //         1 => unsafe { &mut *(self.0.as_mut()[2..].as_mut_ptr() as *mut Vec2) },
+    //         _ => panic!(
+    //             "index out of bounds: the len is 2 but the index is {}",
+    //             index
+    //         ),
+    //     }
+    // }
 
     /// Returns the transpose of `self`.
     #[inline]
