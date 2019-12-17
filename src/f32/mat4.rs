@@ -1,4 +1,4 @@
-use super::{scalar_sin_cos, Quat, Vec3, Vec4};
+use super::{scalar_sin_cos, Mat3, Quat, Vec3, Vec4};
 #[cfg(all(
     target_arch = "x86",
     target_feature = "sse2",
@@ -192,6 +192,32 @@ impl Mat4 {
         }
     }
 
+    /// Extracts `scale`, `rotation` and `translation` from `self`. The input matrix is expected to
+    /// be a 4x4 homogeneous transformation matrix otherwise the output will be invalid.
+    pub fn to_scale_rotation_translation(&self) -> (Vec3, Quat, Vec3) {
+        let det = self.determinant();
+        glam_assert!(det != 0.0);
+
+        let scale = Vec3::new(
+            self.x_axis.length() * det.signum(),
+            self.y_axis.length(),
+            self.z_axis.length(),
+        );
+        glam_assert!(scale.cmpne(Vec3::zero()).all());
+
+        let inv_scale = scale.reciprocal();
+
+        let rotation = Quat::from_rotation_mat3(&Mat3::from_cols(
+            self.x_axis().truncate() * inv_scale.dup_x(),
+            self.y_axis().truncate() * inv_scale.dup_y(),
+            self.z_axis().truncate() * inv_scale.dup_z(),
+        ));
+
+        let translation = self.w_axis.truncate();
+
+        (scale, rotation, translation)
+    }
+
     /// Creates a 4x4 homogeneous transformation matrix from the given `rotation`.
     #[inline]
     pub fn from_quat(rotation: Quat) -> Self {
@@ -338,6 +364,34 @@ impl Mat4 {
     pub fn w_axis(&self) -> Vec4 {
         self.w_axis
     }
+
+    // #[inline]
+    // pub(crate) fn col(&self, index: usize) -> Vec4 {
+    //     match index {
+    //         0 => self.x_axis,
+    //         1 => self.y_axis,
+    //         2 => self.z_axis,
+    //         3 => self.w_axis,
+    //         _ => panic!(
+    //             "index out of bounds: the len is 4 but the index is {}",
+    //             index
+    //         ),
+    //     }
+    // }
+
+    // #[inline]
+    // pub(crate) fn col_mut(&mut self, index: usize) -> &mut Vec4 {
+    //     match index {
+    //         0 => &mut self.x_axis,
+    //         1 => &mut self.y_axis,
+    //         2 => &mut self.z_axis,
+    //         3 => &mut self.w_axis,
+    //         _ => panic!(
+    //             "index out of bounds: the len is 4 but the index is {}",
+    //             index
+    //         ),
+    //     }
+    // }
 
     /// Returns the transpose of `self`.
     #[inline]

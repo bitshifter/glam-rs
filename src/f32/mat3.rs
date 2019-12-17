@@ -281,6 +281,32 @@ impl Mat3 {
         self.z_axis
     }
 
+    // #[inline]
+    // pub(crate) fn col(&self, index: usize) -> Vec3 {
+    //     match index {
+    //         0 => self.x_axis,
+    //         1 => self.y_axis,
+    //         2 => self.z_axis,
+    //         _ => panic!(
+    //             "index out of bounds: the len is 3 but the index is {}",
+    //             index
+    //         ),
+    //     }
+    // }
+
+    // #[inline]
+    // pub(crate) fn col_mut(&mut self, index: usize) -> &mut Vec3 {
+    //     match index {
+    //         0 => &mut self.x_axis,
+    //         1 => &mut self.y_axis,
+    //         2 => &mut self.z_axis,
+    //         _ => panic!(
+    //             "index out of bounds: the len is 3 but the index is {}",
+    //             index
+    //         ),
+    //     }
+    // }
+
     /// Returns the transpose of `self`.
     #[inline]
     pub fn transpose(&self) -> Self {

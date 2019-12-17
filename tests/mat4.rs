@@ -243,6 +243,78 @@ fn test_mat4_inverse() {
 }
 
 #[test]
+fn test_mat4_decompose() {
+    // identity
+    let (out_scale, out_rotation, out_translation) =
+        Mat4::identity().to_scale_rotation_translation();
+    assert_approx_eq!(Vec3::one(), out_scale);
+    assert!(out_rotation.is_near_identity());
+    assert_approx_eq!(Vec3::zero(), out_translation);
+
+    // no scale
+    let in_scale = Vec3::one();
+    let in_translation = Vec3::new(-2.0, 4.0, -0.125);
+    let in_rotation = Quat::from_rotation_ypr(
+        f32::to_radians(-45.0),
+        f32::to_radians(180.0),
+        f32::to_radians(270.0),
+    );
+    let in_mat = Mat4::from_scale_rotation_translation(in_scale, in_rotation, in_translation);
+    let (out_scale, out_rotation, out_translation) = in_mat.to_scale_rotation_translation();
+    assert_approx_eq!(in_scale, out_scale, 1e-6);
+    // out_rotation is different but produces the same matrix
+    // assert_approx_eq!(in_rotation, out_rotation);
+    assert_approx_eq!(in_translation, out_translation);
+    assert_approx_eq!(
+        in_mat,
+        Mat4::from_scale_rotation_translation(out_scale, out_rotation, out_translation),
+        1e-6
+    );
+
+    // positive scale
+    let in_scale = Vec3::new(1.0, 2.0, 4.0);
+    let in_mat = Mat4::from_scale_rotation_translation(in_scale, in_rotation, in_translation);
+    let (out_scale, out_rotation, out_translation) = in_mat.to_scale_rotation_translation();
+    assert_approx_eq!(in_scale, out_scale, 1e-6);
+    // out_rotation is different but produces the same matrix
+    // assert_approx_eq!(in_rotation, out_rotation);
+    assert_approx_eq!(in_translation, out_translation);
+    assert_approx_eq!(
+        in_mat,
+        Mat4::from_scale_rotation_translation(out_scale, out_rotation, out_translation),
+        1e-6
+    );
+
+    // negative scale
+    let in_scale = Vec3::new(-4.0, 1.0, 2.0);
+    let in_mat = Mat4::from_scale_rotation_translation(in_scale, in_rotation, in_translation);
+    let (out_scale, out_rotation, out_translation) = in_mat.to_scale_rotation_translation();
+    assert_approx_eq!(in_scale, out_scale, 1e-6);
+    // out_rotation is different but produces the same matrix
+    // assert_approx_eq!(in_rotation, out_rotation);
+    assert_approx_eq!(in_translation, out_translation);
+    assert_approx_eq!(
+        in_mat,
+        Mat4::from_scale_rotation_translation(out_scale, out_rotation, out_translation),
+        1e-5
+    );
+
+    // negative scale
+    let in_scale = Vec3::new(4.0, -1.0, -2.0);
+    let in_mat = Mat4::from_scale_rotation_translation(in_scale, in_rotation, in_translation);
+    let (out_scale, out_rotation, out_translation) = in_mat.to_scale_rotation_translation();
+    // out_scale and out_rotation are different but they produce the same matrix
+    // assert_approx_eq!(in_scale, out_scale, 1e-6);
+    // assert_approx_eq!(in_rotation, out_rotation);
+    assert_approx_eq!(in_translation, out_translation);
+    assert_approx_eq!(
+        in_mat,
+        Mat4::from_scale_rotation_translation(out_scale, out_rotation, out_translation),
+        1e-6
+    );
+}
+
+#[test]
 fn test_mat4_look_at() {
     let eye = Vec3::new(0.0, 0.0, -5.0);
     let center = Vec3::new(0.0, 0.0, 0.0);
