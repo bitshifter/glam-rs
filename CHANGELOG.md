@@ -6,10 +6,20 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
+## [0.8.4] - 2019-12-17
+
+### Added
+* Added `Mat4::to_scale_rotation_translation` for extracting scale, rotation and
+  translation from a 4x4 homogeneous transformation matrix.
+* Added `cargo-deny` GitHub Action.
+
+### Changed
+* Renamed `Quat::new` to `Quat::from_xyzw`.
+
 ## [0.8.3] - 2019-11-27
 
 ### Added
-* Added `Mat4::orthographic_rh_gl` (thanks @icefoxen).
+* Added `Mat4::orthographic_rh_gl`.
 
 ### Changed
 * Renamed `Mat4::perspective_glu_rh` to `Mat4::perspective_rh_gl`. 
@@ -19,7 +29,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Disabled optimizations to `Mat4::transform_point3` and
   `Mat4::transform_vector3` as they are probably incorrect and need
   investigating.
-* Added missing `#[repr(C)]` to `Mat2`, `Mat3` and `Mat4` (thanks @hrygard).
+* Added missing `#[repr(C)]` to `Mat2`, `Mat3` and `Mat4`.
 * Benchmarks now store output of functions to better estimate the cost of a
   function call.
 
@@ -125,7 +135,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.8.3...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.8.4...HEAD
+[0.8.4]: https://github.com/bitshifter/glam-rs/compare/0.8.3...0.8.4
 [0.8.3]: https://github.com/bitshifter/glam-rs/compare/0.8.2...0.8.3
 [0.8.2]: https://github.com/bitshifter/glam-rs/compare/0.8.1...0.8.2
 [0.8.1]: https://github.com/bitshifter/glam-rs/compare/0.8.0...0.8.1

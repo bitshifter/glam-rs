@@ -11,7 +11,6 @@ supported as this is what stable Rust supports.
 * Single precision float (`f32`) support only
 * SSE2 implementation for most types, including `Mat2`, `Mat3`, `Mat4`, `Quat`,
   `Vec3` and `Vec4`
-* SSE2 implementation of `sin_cos`
 * Scalar fallback implementations exist when SSE2 is not available
 * Most functionality includes unit tests and benchmarks
 
@@ -113,15 +112,19 @@ assert_eq!(format!("{}", a), "[1, 2, 3]");
 All `glam` dependencies are optional, however some are required for tests
 and benchmarks.
 
-* `"std"` - the default feature, has no dependencies.
-* `"rand"` - used to generate random values. Used in benchmarks.
-* `"serde"` - used for serialization and deserialization of types.
-* `"mint"` - used for interoperating with other linear algebra libraries.
-* `"scalar-math"` - disables SIMD support and uses native alignment for all
+* `std` - the default feature, has no dependencies.
+* `rand` - used to generate random values. Used in benchmarks.
+* `serde` - used for serialization and deserialization of types.
+* `mint` - used for interoperating with other linear algebra libraries.
+* `scalar-math` - disables SIMD support and uses native alignment for all
   types.
+* `debug-glam-assert` - adds assertions in debug builds which check the validity
+  of parameters passed to `glam` to help catch runtime errors.
+* `glam-assert` - adds assertions to all builds which check the validity of
+  parameters passed to `glam` to help catch runtime errors.
 
 */
-#![doc(html_root_url = "https://docs.rs/glam/0.8.3")]
+#![doc(html_root_url = "https://docs.rs/glam/0.8.4")]
 
 #[macro_use]
 mod macros;

@@ -120,9 +120,12 @@ Unless you explicitly state otherwise, any contribution intentionally submitted
 for inclusion in the work by you, as defined in the Apache-2.0 license, shall be
 dual licensed as above, without any additional terms or conditions.
 
+Thank you to all of the `glam` [contributors]!
+
 ## Support
 If you are interested in contributing or have a request or suggestion
 [create an issue] on github.
+
 
 [Build Status]: https://travis-ci.org/bitshifter/glam-rs.svg?branch=master
 [travis-ci]: https://travis-ci.org/bitshifter/glam-rs
@@ -139,3 +142,4 @@ If you are interested in contributing or have a request or suggestion
 [nalgebra-glm]: https://github.com/rustsim/nalgebra
 [mathbench]: https://github.com/bitshifter/mathbench-rs
 [create an issue]: https://github.com/bitshifter/glam-rs/issues
+[contributors]: https://github.com/bitshifter/glam-rs/graphs/contributors
