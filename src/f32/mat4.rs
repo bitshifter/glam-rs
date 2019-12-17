@@ -196,7 +196,7 @@ impl Mat4 {
     /// be a 4x4 homogeneous transformation matrix otherwise the output will be invalid.
     pub fn to_scale_rotation_translation(&self) -> (Vec3, Quat, Vec3) {
         let det = self.determinant();
-        glam_assert!(deg != 0.0);
+        glam_assert!(det != 0.0);
 
         let scale = Vec3::new(
             self.x_axis.length() * det.signum(),
