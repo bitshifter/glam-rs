@@ -577,7 +577,7 @@ impl Mat4 {
     }
 
     /// Creates a left-handed perspective projection matrix with [0,1] depth range.
-    pub fn perspective_lh_dx(
+    pub fn perspective_lh(
         fov_y_radians: f32,
         aspect_ratio: f32,
         z_near: f32,
