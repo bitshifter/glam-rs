@@ -353,6 +353,32 @@ fn test_mat4_perspective_lh() {
 }
 
 #[test]
+fn test_mat4_perspective_infinite_lh() {
+    let projection = Mat4::perspective_infinite_lh(f32::to_radians(90.0), 2.0, 5.0);
+
+    let original = Vec3::new(5.0, 5.0, 15.0);
+    let projected = projection * original.extend(1.0);
+    assert_approx_eq!(Vec4::new(2.5, 5.0, 10.0, 15.0), projected);
+
+    let original = Vec3::new(5.0, 5.0, 5.0);
+    let projected = projection * original.extend(1.0);
+    assert_approx_eq!(Vec4::new(2.5, 5.0, 0.0, 5.0), projected);
+}
+
+#[test]
+fn test_mat4_perspective_infinite_reverse_lh() {
+    let projection = Mat4::perspective_infinite_reverse_lh(f32::to_radians(90.0), 2.0, 5.0);
+
+    let original = Vec3::new(5.0, 5.0, 15.0);
+    let projected = projection * original.extend(1.0);
+    assert_approx_eq!(Vec4::new(2.5, 5.0, 5.0, 15.0), projected);
+
+    let original = Vec3::new(5.0, 5.0, 5.0);
+    let projected = projection * original.extend(1.0);
+    assert_approx_eq!(Vec4::new(2.5, 5.0, 5.0, 5.0), projected);
+}
+
+#[test]
 fn test_mat4_orthographic_gl_rh() {
     let projection = Mat4::orthographic_rh_gl(-10.0, 10.0, -5.0, 5.0, 0.0, -10.0);
     let original = Vec4::new(5.0, 5.0, -5.0, 1.0);
