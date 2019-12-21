@@ -340,8 +340,8 @@ fn test_mat4_perspective_gl_rh() {
 }
 
 #[test]
-fn test_mat4_perspective_dx_lh() {
-    let projection = Mat4::perspective_lh_dx(f32::to_radians(90.0), 2.0, 5.0, 15.0);
+fn test_mat4_perspective_lh() {
+    let projection = Mat4::perspective_lh(f32::to_radians(90.0), 2.0, 5.0, 15.0);
 
     let original = Vec3::new(5.0, 5.0, 15.0);
     let projected = projection * original.extend(1.0);
