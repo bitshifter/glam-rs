@@ -562,7 +562,7 @@ impl Mat4 {
         aspect_ratio: f32,
         z_near: f32,
         z_far: f32,
-    ) -> Mat4 {
+    ) -> Self {
         let inv_length = 1.0 / (z_near - z_far);
         let f = 1.0 / (0.5 * fov_y_radians).tan();
         let a = f / aspect_ratio;
@@ -576,6 +576,26 @@ impl Mat4 {
         )
     }
 
+    /// Creates a left-handed perspective projection matrix with [0,1] depth range.
+    pub fn perspective_lh_dx(
+        fov_y_radians: f32,
+        aspect_ratio: f32,
+        z_near: f32,
+        z_far: f32,
+    ) -> Self {
+        glam_assert!(z_near > 0.0 && z_far > 0.0);
+        let (sin_fov, cos_fov) = scalar_sin_cos(0.5 * fov_y_radians);
+        let h = cos_fov / sin_fov;
+        let w = h / aspect_ratio;
+        let r = z_far / (z_far - z_near);
+        Mat4::from_cols(
+            Vec4::new(w, 0.0, 0.0, 0.0),
+            Vec4::new(0.0, h, 0.0, 0.0),
+            Vec4::new(0.0, 0.0, r, 1.0),
+            Vec4::new(0.0, 0.0, -r * z_near, 0.0),
+        )
+    }
+
     #[inline]
     #[deprecated(since = "0.8.2", note = "please use `Mat4::perspective_rh_gl` instead")]
     pub fn perspective_glu_rh(
@@ -583,13 +603,13 @@ impl Mat4 {
         aspect_ratio: f32,
         z_near: f32,
         z_far: f32,
-    ) -> Mat4 {
+    ) -> Self {
         Mat4::perspective_rh_gl(fov_y_radians, aspect_ratio, z_near, z_far)
     }
 
     /// Creates an infinite right-handed perspective projection matrix with
     /// [0,1] depth range.
-    pub fn perspective_infinite_rh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Mat4 {
+    pub fn perspective_infinite_rh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Self {
         let f = 1.0 / (0.5 * fov_y_radians).tan();
         Mat4::from_cols(
             Vec4::new(f / aspect_ratio, 0.0, 0.0, 0.0),
@@ -605,7 +625,7 @@ impl Mat4 {
         fov_y_radians: f32,
         aspect_ratio: f32,
         z_near: f32,
-    ) -> Mat4 {
+    ) -> Self {
         let f = 1.0 / (0.5 * fov_y_radians).tan();
         Mat4::from_cols(
             Vec4::new(f / aspect_ratio, 0.0, 0.0, 0.0),
@@ -626,7 +646,7 @@ impl Mat4 {
         top: f32,
         near: f32,
         far: f32,
-    ) -> Mat4 {
+    ) -> Self {
         let a = 2.0 / (right - left);
         let b = 2.0 / (top - bottom);
         let c = -2.0 / (far - near);
