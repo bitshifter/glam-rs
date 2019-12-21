@@ -577,12 +577,7 @@ impl Mat4 {
     }
 
     /// Creates a left-handed perspective projection matrix with [0,1] depth range.
-    pub fn perspective_lh(
-        fov_y_radians: f32,
-        aspect_ratio: f32,
-        z_near: f32,
-        z_far: f32,
-    ) -> Self {
+    pub fn perspective_lh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32, z_far: f32) -> Self {
         glam_assert!(z_near > 0.0 && z_far > 0.0);
         let (sin_fov, cos_fov) = scalar_sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
