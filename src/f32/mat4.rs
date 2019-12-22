@@ -591,6 +591,38 @@ impl Mat4 {
         )
     }
 
+    /// Creates an infinite left-handed perspective projection matrix with [0,1] depth range.
+    pub fn perspective_infinite_lh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Self {
+        glam_assert!(z_near > 0.0);
+        let (sin_fov, cos_fov) = scalar_sin_cos(0.5 * fov_y_radians);
+        let h = cos_fov / sin_fov;
+        let w = h / aspect_ratio;
+        Mat4::from_cols(
+            Vec4::new(w, 0.0, 0.0, 0.0),
+            Vec4::new(0.0, h, 0.0, 0.0),
+            Vec4::new(0.0, 0.0, 1.0, 1.0),
+            Vec4::new(0.0, 0.0, -z_near, 0.0),
+        )
+    }
+
+    /// Creates an infinite left-handed perspective projection matrix with [0,1] depth range.
+    pub fn perspective_infinite_reverse_lh(
+        fov_y_radians: f32,
+        aspect_ratio: f32,
+        z_near: f32,
+    ) -> Self {
+        glam_assert!(z_near > 0.0);
+        let (sin_fov, cos_fov) = scalar_sin_cos(0.5 * fov_y_radians);
+        let h = cos_fov / sin_fov;
+        let w = h / aspect_ratio;
+        Mat4::from_cols(
+            Vec4::new(w, 0.0, 0.0, 0.0),
+            Vec4::new(0.0, h, 0.0, 0.0),
+            Vec4::new(0.0, 0.0, 0.0, 1.0),
+            Vec4::new(0.0, 0.0, z_near, 0.0),
+        )
+    }
+
     #[inline]
     #[deprecated(since = "0.8.2", note = "please use `Mat4::perspective_rh_gl` instead")]
     pub fn perspective_glu_rh(
