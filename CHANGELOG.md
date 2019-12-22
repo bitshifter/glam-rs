@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
+### Added
+* Added `Mat4::perspective_lh`, `Mat4::perspective_infinite_lh` and
+  `Mat4::perspective_infinite_reverse_lh`.
+
 ## [0.8.4] - 2019-12-17
 
 ### Added
@@ -22,7 +26,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Added `Mat4::orthographic_rh_gl`.
 
 ### Changed
-* Renamed `Mat4::perspective_glu_rh` to `Mat4::perspective_rh_gl`. 
+* Renamed `Mat4::perspective_glu_rh` to `Mat4::perspective_rh_gl`.
 * SSE2 optimizations for `Mat2::determinant`, `Mat2::inverse`,
   `Mat2::transpose`, `Mat3::transpose`, `Quat::conjugate`, `Quat::lerp`,
   `Quat::mul_vec3`, `Quat::mul_quat` and `Quat::from_rotation_ypr`.
