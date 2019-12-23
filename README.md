@@ -13,7 +13,7 @@ and the look and feel of the API has solidified.
 ## Features
 
 * Only single precision floating point (`f32`) arithmetic is supported
-* vectors: `Vec3`, `Vec3`, `Vec4`
+* vectors: `Vec2`, `Vec3`, `Vec4`
 * square matrices: `Mat2`, `Mat3`, `Mat4`
 * a quaternion type: `Quat`
 
