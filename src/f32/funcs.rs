@@ -1,22 +1,23 @@
-// #[cfg(target_arch = "x86")]
-// use std::arch::x86::*;
-// #[cfg(target_arch = "x86_64")]
-// use std::arch::x86_64::*;
+#[cfg(target_arch = "x86")]
+use std::arch::x86::*;
+#[cfg(target_arch = "x86_64")]
+use std::arch::x86_64::*;
 
-// #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-// use super::x86_utils::UnionCast;
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+use crate::f32::x86_utils::UnionCast;
 
-// macro_rules! _ps_const_ty {
-//     ($name:ident, $field:ident, $x:expr) => {
-//         #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-//         const $name: UnionCast = UnionCast {
-//             $field: [$x, $x, $x, $x],
-//         };
-//     };
-// }
+macro_rules! _ps_const_ty {
+    ($name:ident, $field:ident, $x:expr) => {
+        #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+        const $name: UnionCast = UnionCast {
+            $field: [$x, $x, $x, $x],
+        };
+    };
+}
 
-// _ps_const_ty!(PS_INV_SIGN_MASK, u32x4, !0x8000_0000);
-// _ps_const_ty!(PS_SIGN_MASK, u32x4, 0x8000_0000);
+_ps_const_ty!(PS_INV_SIGN_MASK, u32x4, !0x8000_0000);
+_ps_const_ty!(PS_SIGN_MASK, u32x4, 0x8000_0000);
+_ps_const_ty!(PS_NO_FRACTION, f32x4, 8388608.0);
 
 // _ps_const_ty!(PS_1_0, f32x4, 1.0);
 // _ps_const_ty!(PS_0_5, f32x4, 0.5);
@@ -47,6 +48,20 @@ pub(crate) fn scalar_sin_cos(x: f32) -> (f32, f32) {
     // }
     // #[cfg(not(target_feature = "sse2"))]
     x.sin_cos()
+}
+
+// From DirectXMath.
+#[inline]
+pub unsafe fn m128_round_sse2(v: __m128) -> __m128 {
+    let sign = _mm_and_ps(v, PS_SIGN_MASK.m128);
+    let s_magic = _mm_or_ps(PS_NO_FRACTION.m128, sign);
+    let r1 = _mm_add_ps(v, s_magic);
+    let r1 = _mm_sub_ps(r1, s_magic);
+    let r2 = _mm_and_ps(v, PS_INV_SIGN_MASK.m128);
+    let mask = _mm_cmple_ps(r2, PS_NO_FRACTION.m128);
+    let r2 = _mm_andnot_ps(mask, v);
+    let r1 = _mm_and_ps(r1, mask);
+    _mm_xor_ps(r1, r2)
 }
 
 // Based on http://gruntthepeon.free.fr/ssemath/sse_mathfun.h
