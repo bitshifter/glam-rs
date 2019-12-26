@@ -357,7 +357,6 @@ fn test_vec3_abs() {
     assert_eq!((-Vec3::one()).abs(), Vec3::one());
 }
 
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 #[test]
 fn test_vec3_round() {
     assert_eq!(Vec3::new(1.35, 0.0, 0.0).round().x(), 1.0);

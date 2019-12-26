@@ -384,7 +384,6 @@ fn test_vec4mask_not() {
     assert_eq!((!Vec4Mask::new(false, true, false, true)).bitmask(), 0b0101);
 }
 
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 #[test]
 fn test_vec4_round() {
     assert_eq!(Vec4::new(1.35, 0.0, 0.0, 0.0).round().x(), 1.0);

@@ -358,6 +358,16 @@ impl Vec4 {
     pub fn abs(self) -> Self {
         Self(self.0.abs(), self.1.abs(), self.2.abs(), self.3.abs())
     }
+
+    #[inline]
+    pub fn round(self) -> Self {
+        Self(
+            self.0.round(),
+            self.1.round(),
+            self.2.round(),
+            self.3.round(),
+        )
+    }
 }
 
 impl fmt::Display for Vec4 {
