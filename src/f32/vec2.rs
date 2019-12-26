@@ -316,6 +316,7 @@ impl Vec2 {
         Self(self.0.abs(), self.1.abs())
     }
 
+    #[inline]
     pub fn round(self) -> Self {
         Self(self.0.round(), self.1.round())
     }
