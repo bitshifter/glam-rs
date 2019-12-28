@@ -52,7 +52,7 @@ pub(crate) fn scalar_sin_cos(x: f32) -> (f32, f32) {
 
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 #[inline]
-pub unsafe fn m128_round(v: __m128) -> __m128 {
+pub(crate) unsafe fn m128_round(v: __m128) -> __m128 {
     // From DirectXMath XMVectorRound.
     let sign = _mm_and_ps(v, PS_SIGN_MASK.m128);
     let s_magic = _mm_or_ps(PS_NO_FRACTION.m128, sign);
