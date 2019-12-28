@@ -3,6 +3,7 @@ use glam::*;
 use rand::{Rng, SeedableRng};
 #[cfg(feature = "rand")]
 use rand_xoshiro::Xoshiro256Plus;
+use std::f32;
 
 #[test]
 fn test_vec2_align() {
@@ -321,24 +322,48 @@ fn test_vec2_round() {
     assert_eq!(Vec2::new(0.0, 21.1).round().y(), 21.0);
     assert_eq!(Vec2::new(0.0, 11.123).round().y(), 11.0);
     assert_eq!(Vec2::new(0.0, 11.499).round().y(), 11.0);
+    assert_eq!(
+        Vec2::new(f32::NEG_INFINITY, f32::INFINITY).round(),
+        Vec2::new(f32::NEG_INFINITY, f32::INFINITY)
+    );
+    assert_eq!(
+        Vec2::new(f32::NAN, 0.0).round().x().is_nan(),
+        f32::NAN.is_nan()
+    );
 }
 
 #[test]
 fn test_vec2_floor() {
-    assert_eq!(Vec2::new(1.35, 0.0).floor().x(), 1.0);
-    assert_eq!(Vec2::new(-1.35, 0.0).floor().x(), -2.0);
-    assert_eq!(Vec2::new(0.0, 1000.9).floor().y(), 1000.0);
-    assert_eq!(Vec2::new(0.0, 10000000.123).floor().y(), 10000000.0);
-    assert_eq!(Vec2::new(-1000000.123, 0.0).floor().x(), -1000001.0);
+    assert_eq!(Vec2::new(1.35, -1.5).floor(), Vec2::new(1.0, -2.0));
+    assert_eq!(
+        Vec2::new(f32::INFINITY, f32::NEG_INFINITY).floor(),
+        Vec2::new(f32::INFINITY, f32::NEG_INFINITY)
+    );
+    assert_eq!(
+        Vec2::new(f32::NAN, 0.0).floor().x().is_nan(),
+        f32::NAN.is_nan()
+    );
+    assert_eq!(
+        Vec2::new(-2000000.123, 10000000.123).floor(),
+        Vec2::new(-2000001.0, 10000000.0)
+    );
 }
 
 #[test]
 fn test_vec2_ceil() {
-    assert_eq!(Vec2::new(1.35, 0.0).ceil().x(), 2.0);
-    assert_eq!(Vec2::new(-1.35, 0.0).ceil().x(), -1.0);
-    assert_eq!(Vec2::new(0.0, 1000.9).ceil().y(), 1001.0);
-    assert_eq!(Vec2::new(0.0, 1000000.123).ceil().y(), 1000001.0);
-    assert_eq!(Vec2::new(-1000000.123, 0.0).ceil().x(), -1000000.0);
+    assert_eq!(Vec2::new(1.35, -1.5).ceil(), Vec2::new(2.0, -1.0));
+    assert_eq!(
+        Vec2::new(f32::INFINITY, f32::NEG_INFINITY).ceil(),
+        Vec2::new(f32::INFINITY, f32::NEG_INFINITY)
+    );
+    assert_eq!(
+        Vec2::new(f32::NAN, 0.0).ceil().x().is_nan(),
+        f32::NAN.is_nan()
+    );
+    assert_eq!(
+        Vec2::new(-2000000.123, 1000000.123).ceil(),
+        Vec2::new(-2000000.0, 1000001.0)
+    );
 }
 
 #[cfg(feature = "serde")]
