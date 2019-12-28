@@ -315,6 +315,11 @@ impl Vec2 {
     pub fn abs(self) -> Self {
         Self(self.0.abs(), self.1.abs())
     }
+
+    #[inline]
+    pub fn round(self) -> Self {
+        Self(self.0.round(), self.1.round())
+    }
 }
 
 impl fmt::Display for Vec2 {

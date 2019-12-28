@@ -6,6 +6,7 @@ use rand::{
     Rng,
 };
 
+use crate::f32::funcs::m128_round;
 use crate::{
     f32::{Vec2, Vec4, X_AXIS, Y_AXIS, Z_AXIS},
     Align16,
@@ -362,6 +363,11 @@ impl Vec3 {
                 _mm_castsi128_ps(_mm_set1_epi32(0x7f_ff_ff_ff)),
             ))
         }
+    }
+
+    #[inline]
+    pub fn round(self) -> Self {
+        unsafe { Self(m128_round(self.0)) }
     }
 }
 

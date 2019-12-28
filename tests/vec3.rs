@@ -357,6 +357,17 @@ fn test_vec3_abs() {
     assert_eq!((-Vec3::one()).abs(), Vec3::one());
 }
 
+#[test]
+fn test_vec3_round() {
+    assert_eq!(Vec3::new(1.35, 0.0, 0.0).round().x(), 1.0);
+    assert_eq!(Vec3::new(0.0, 1.5, 0.0).round().y(), 2.0);
+    assert_eq!(Vec3::new(0.0, 0.0, -15.5).round().z(), -16.0);
+    assert_eq!(Vec3::new(0.0, 0.0, 0.0).round().z(), 0.0);
+    assert_eq!(Vec3::new(0.0, 21.1, 0.0).round().y(), 21.0);
+    assert_eq!(Vec3::new(0.0, 11.123, 0.0).round().y(), 11.0);
+    assert_eq!(Vec3::new(0.0, 11.499, 0.0).round().y(), 11.0);
+}
+
 #[cfg(feature = "serde")]
 #[test]
 fn test_vec3_serde() {
