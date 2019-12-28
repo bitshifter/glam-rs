@@ -65,6 +65,48 @@ pub(crate) unsafe fn m128_round(v: __m128) -> __m128 {
     _mm_xor_ps(r1, r2)
 }
 
+#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+#[inline]
+pub(crate) unsafe fn m128_floor(v: __m128) -> __m128 {
+    // From DirectXMath XMVectorFloor
+    // To handle NAN, INF and numbers greater than 8388608, use masking
+    let test = _mm_and_si128(_mm_castps_si128(v), PS_INV_SIGN_MASK.m128i);
+    let test = _mm_cmplt_epi32(test, PS_NO_FRACTION.m128i);
+    // Truncate
+    let vint = _mm_cvttps_epi32(v);
+    let result = _mm_cvtepi32_ps(vint);
+    let larger = _mm_cmpgt_ps(result, v);
+    // 0 -> 0, 0xffffffff -> -1.0f
+    let larger = _mm_cvtepi32_ps(_mm_castps_si128(larger));
+    let result = _mm_add_ps(result, larger);
+    // All numbers less than 8388608 will use the round to int
+    let result = _mm_and_ps(result, _mm_castsi128_ps(test));
+    // All others, use the ORIGINAL value
+    let test = _mm_andnot_si128(test, _mm_castps_si128(v));
+    _mm_or_ps(result, _mm_castsi128_ps(test))
+}
+
+#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+#[inline]
+pub(crate) unsafe fn m128_ceil(v: __m128) -> __m128 {
+    // From DirectXMath XMVectorCeil
+    // To handle NAN, INF and numbers greater than 8388608, use masking
+    let test = _mm_and_si128(_mm_castps_si128(v), PS_INV_SIGN_MASK.m128i);
+    let test = _mm_cmplt_epi32(test, PS_NO_FRACTION.m128i);
+    // Truncate
+    let vint = _mm_cvttps_epi32(v);
+    let result = _mm_cvtepi32_ps(vint);
+    let smaller = _mm_cmplt_ps(result, v);
+    // 0 -> 0, 0xffffffff -> -1.0f
+    let smaller = _mm_cvtepi32_ps(_mm_castps_si128(smaller));
+    let result = _mm_sub_ps(result, smaller);
+    // All numbers less than 8388608 will use the round to int
+    let result = _mm_and_ps(result, _mm_castsi128_ps(test));
+    // All others, use the ORIGINAL value
+    let test = _mm_andnot_si128(test, _mm_castps_si128(v));
+    _mm_or_ps(result, _mm_castsi128_ps(test))
+}
+
 // Based on http://gruntthepeon.free.fr/ssemath/sse_mathfun.h
 // #[cfg(target_feature = "sse2")]
 // unsafe fn sin_cos_sse2(x: __m128) -> (__m128, __m128) {

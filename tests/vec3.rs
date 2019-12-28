@@ -368,6 +368,24 @@ fn test_vec3_round() {
     assert_eq!(Vec3::new(0.0, 11.499, 0.0).round().y(), 11.0);
 }
 
+#[test]
+fn test_vec3_floor() {
+    assert_eq!(Vec3::new(1.35, 0.0, 0.0).floor().x(), 1.0);
+    assert_eq!(Vec3::new(-1.35, 0.0, 0.0).floor().x(), -2.0);
+    assert_eq!(Vec3::new(0.0, 0.0, 1000.9).floor().z(), 1000.0);
+    assert_eq!(Vec3::new(0.0, 10000000.123, 0.0).floor().y(), 10000000.0);
+    assert_eq!(Vec3::new(-2000000.123, 0.0, 0.0).floor().x(), -2000001.0);
+}
+
+#[test]
+fn test_vec3_ceil() {
+    assert_eq!(Vec3::new(1.35, 0.0, 0.0).ceil().x(), 2.0);
+    assert_eq!(Vec3::new(-1.35, 0.0, 0.0).ceil().x(), -1.0);
+    assert_eq!(Vec3::new(0.0, 0.0, 1000.9).ceil().z(), 1001.0);
+    assert_eq!(Vec3::new(0.0, 1000000.123, 0.0).ceil().y(), 1000001.0);
+    assert_eq!(Vec3::new(-2000000.123, 0.0, 0.0).ceil().x(), -2000000.0);
+}
+
 #[cfg(feature = "serde")]
 #[test]
 fn test_vec3_serde() {
