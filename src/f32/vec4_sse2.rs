@@ -6,7 +6,7 @@ use rand::{
     Rng,
 };
 
-use crate::f32::funcs::{m128_ceil, m128_floor, m128_round};
+use crate::f32::funcs::sse2::{m128_ceil, m128_floor, m128_round};
 use crate::{f32::Vec3, Align16};
 
 #[cfg(target_arch = "x86")]

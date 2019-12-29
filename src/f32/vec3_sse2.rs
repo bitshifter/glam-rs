@@ -6,7 +6,7 @@ use rand::{
     Rng,
 };
 
-use crate::f32::funcs::{m128_ceil, m128_floor, m128_round};
+use crate::f32::funcs::sse2::{m128_ceil, m128_floor, m128_round};
 use crate::{
     f32::{Vec2, Vec4, X_AXIS, Y_AXIS, Z_AXIS},
     Align16,
