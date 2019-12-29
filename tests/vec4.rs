@@ -5,6 +5,7 @@ use glam::*;
 use rand::{Rng, SeedableRng};
 #[cfg(feature = "rand")]
 use rand_xoshiro::Xoshiro256Plus;
+use std::f32;
 
 #[test]
 fn test_vec4_align() {
@@ -393,6 +394,54 @@ fn test_vec4_round() {
     assert_eq!(Vec4::new(0.0, 21.1, 0.0, 0.0).round().y(), 21.0);
     assert_eq!(Vec4::new(0.0, 0.0, 0.0, 11.123).round().w(), 11.0);
     assert_eq!(Vec4::new(0.0, 0.0, 11.501, 0.0).round().z(), 12.0);
+    assert_eq!(
+        Vec4::new(f32::NEG_INFINITY, f32::INFINITY, 1.0, -1.0).round(),
+        Vec4::new(f32::NEG_INFINITY, f32::INFINITY, 1.0, -1.0)
+    );
+    assert_eq!(
+        Vec4::new(f32::NAN, 0.0, 0.0, 1.0).round().x().is_nan(),
+        f32::NAN.is_nan()
+    );
+}
+
+#[test]
+fn test_vec4_floor() {
+    assert_eq!(
+        Vec4::new(1.35, 1.5, -1.5, 1.999).floor(),
+        Vec4::new(1.0, 1.0, -2.0, 1.0)
+    );
+    assert_eq!(
+        Vec4::new(f32::INFINITY, f32::NEG_INFINITY, 0.0, 0.0).floor(),
+        Vec4::new(f32::INFINITY, f32::NEG_INFINITY, 0.0, 0.0)
+    );
+    assert_eq!(
+        Vec4::new(0.0, f32::NAN, 0.0, 0.0).floor().y().is_nan(),
+        f32::NAN.is_nan()
+    );
+    assert_eq!(
+        Vec4::new(-0.0, -2000000.123, 10000000.123, 1000.9).floor(),
+        Vec4::new(-0.0, -2000001.0, 10000000.0, 1000.0)
+    );
+}
+
+#[test]
+fn test_vec4_ceil() {
+    assert_eq!(
+        Vec4::new(1.35, 1.5, -1.5, 1234.1234).ceil(),
+        Vec4::new(2.0, 2.0, -1.0, 1235.0)
+    );
+    assert_eq!(
+        Vec4::new(f32::INFINITY, f32::NEG_INFINITY, 0.0, 0.0).ceil(),
+        Vec4::new(f32::INFINITY, f32::NEG_INFINITY, 0.0, 0.0)
+    );
+    assert_eq!(
+        Vec4::new(0.0, 0.0, f32::NAN, 0.0).ceil().z().is_nan(),
+        f32::NAN.is_nan()
+    );
+    assert_eq!(
+        Vec4::new(-1234.1234, -2000000.123, 1000000.123, 1000.9).ceil(),
+        Vec4::new(-1234.0, -2000000.0, 1000001.0, 1001.0)
+    );
 }
 
 #[cfg(feature = "serde")]

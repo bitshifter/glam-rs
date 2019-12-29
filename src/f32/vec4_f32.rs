@@ -368,6 +368,21 @@ impl Vec4 {
             self.3.round(),
         )
     }
+
+    #[inline]
+    pub fn floor(self) -> Self {
+        Self(
+            self.0.floor(),
+            self.1.floor(),
+            self.2.floor(),
+            self.3.floor(),
+        )
+    }
+
+    #[inline]
+    pub fn ceil(self) -> Self {
+        Self(self.0.ceil(), self.1.ceil(), self.2.ceil(), self.3.ceil())
+    }
 }
 
 impl fmt::Display for Vec4 {
