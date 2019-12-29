@@ -371,10 +371,7 @@ fn test_vec3_round() {
         Vec3::new(f32::NEG_INFINITY, f32::INFINITY, 0.0).round(),
         Vec3::new(f32::NEG_INFINITY, f32::INFINITY, 0.0)
     );
-    assert_eq!(
-        Vec3::new(f32::NAN, 0.0, 0.0).round().x().is_nan(),
-        f32::NAN.is_nan()
-    );
+    assert!(Vec3::new(f32::NAN, 0.0, 0.0).round().x().is_nan());
 }
 
 #[test]
@@ -387,10 +384,7 @@ fn test_vec3_floor() {
         Vec3::new(f32::INFINITY, f32::NEG_INFINITY, 0.0).floor(),
         Vec3::new(f32::INFINITY, f32::NEG_INFINITY, 0.0)
     );
-    assert_eq!(
-        Vec3::new(f32::NAN, 0.0, 0.0).floor().x().is_nan(),
-        f32::NAN.is_nan()
-    );
+    assert!(Vec3::new(f32::NAN, 0.0, 0.0).floor().x().is_nan());
     assert_eq!(
         Vec3::new(-2000000.123, 10000000.123, 1000.9).floor(),
         Vec3::new(-2000001.0, 10000000.0, 1000.0)
@@ -404,10 +398,7 @@ fn test_vec3_ceil() {
         Vec3::new(f32::INFINITY, f32::NEG_INFINITY, 0.0).ceil(),
         Vec3::new(f32::INFINITY, f32::NEG_INFINITY, 0.0)
     );
-    assert_eq!(
-        Vec3::new(f32::NAN, 0.0, 0.0).ceil().x().is_nan(),
-        f32::NAN.is_nan()
-    );
+    assert!(Vec3::new(f32::NAN, 0.0, 0.0).ceil().x().is_nan());
     assert_eq!(
         Vec3::new(-2000000.123, 1000000.123, 1000.9).ceil(),
         Vec3::new(-2000000.0, 1000001.0, 1001.0)
