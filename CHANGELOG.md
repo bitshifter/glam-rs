@@ -6,9 +6,13 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
+## [0.8.5] - 2020-01-02
+
 ### Added
-* Added `Mat4::perspective_lh`, `Mat4::perspective_infinite_lh` and
-  `Mat4::perspective_infinite_reverse_lh`.
+* Added projection functions `Mat4::perspective_lh`,
+  `Mat4::perspective_infinite_lh`, `Mat4::perspective_infinite_reverse_lh`,
+  `Mat4::orthgraphic_lh` and `Mat4::orthographic_rh`.
+* Added `round`, `ceil` and `floor` methods to `Vec2`, `Vec3` and `Vec4`.
 
 ## [0.8.4] - 2019-12-17
 
@@ -139,7 +143,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.8.4...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.8.5...HEAD
+[0.8.5]: https://github.com/bitshifter/glam-rs/compare/0.8.4...0.8.5
 [0.8.4]: https://github.com/bitshifter/glam-rs/compare/0.8.3...0.8.4
 [0.8.3]: https://github.com/bitshifter/glam-rs/compare/0.8.2...0.8.3
 [0.8.2]: https://github.com/bitshifter/glam-rs/compare/0.8.1...0.8.2
