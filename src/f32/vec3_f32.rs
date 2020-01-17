@@ -10,6 +10,7 @@ use rand::{
 
 use std::{f32, fmt, ops::*};
 
+/// A 3-dimensional vector.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
 // if compiling with simd enabled assume alignment needs to match the simd type
 #[cfg_attr(not(feature = "scalar-math"), repr(align(16)))]
@@ -415,6 +416,7 @@ impl Distribution<Vec3> for Standard {
     }
 }
 
+/// A 3-dimensional vector mask.
 #[derive(Clone, Copy, Default)]
 // if compiling with simd enabled assume alignment needs to match the simd type
 #[cfg_attr(not(feature = "scalar-math"), repr(align(16)))]

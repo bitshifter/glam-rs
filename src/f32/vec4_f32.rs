@@ -10,6 +10,7 @@ use rand::{
 
 use std::{f32, fmt, ops::*};
 
+/// A 4-dimensional vector.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
 // if compiling with simd enabled assume alignment needs to match the simd type
 #[cfg_attr(not(feature = "scalar-math"), repr(align(16)))]
