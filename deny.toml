@@ -1,11 +1,9 @@
 [bans]
 multiple-versions = "deny"
 deny = []
-skip = [
-    # criterion uses old 0.3, glam uses 0.4
-    { name = "rand_xoshiro", version = "=0.3" },
-    # serde_json uses old 0.2 instead of 1.0
-    { name = "ryu", version = "=0.2" },
+skip-tree = [
+    # ignore criterion dev-dependency that often have duplicate dependencies internally
+    { name = "criterion" },
 ]
 
 [licenses]
