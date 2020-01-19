@@ -96,9 +96,17 @@ performance.
   efficient than `Mat4` for certain operations like inverse and multiplies
 * `no-std` support
 
-## Naming
+## Inspirations
 
-`glam` is a play on the name of the popular C++ library `glm`.
+There were many inspirations for the interface and internals of glam from the
+Rust and C++ worlds. In particular:
+
+* [How to write a maths library in 2016] inspired the initial `Vec3`
+  implementation
+* [Realtime Math] - header only C++11 with SSE and NEON SIMD intrinsic support
+* [DirectXMath] - header only SIMD C++ linear algebra library for use in games
+  and graphics apps
+* `glam` is a play on the name of the popular C++ library `glm`
 
 ## License
 
@@ -143,3 +151,6 @@ If you are interested in contributing or have a request or suggestion
 [mathbench]: https://github.com/bitshifter/mathbench-rs
 [create an issue]: https://github.com/bitshifter/glam-rs/issues
 [contributors]: https://github.com/bitshifter/glam-rs/graphs/contributors
+[How to write a maths library in 2016]: http://www.codersnotes.com/notes/maths-lib-2016/
+[Realtime Math]: https://github.com/nfrechette/rtm
+[DirectXMath]: https://docs.microsoft.com/en-us/windows/desktop/dxmath/directxmath-portal

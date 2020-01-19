@@ -300,7 +300,7 @@ impl Quat {
 
     #[inline]
     pub fn is_near_identity(self) -> bool {
-        // Implementation taken from RTM
+        // from rtm quat_near_identity
         const THRESHOLD_ANGLE: f32 = 0.002_847_144_6;
         // Because of floating point precision, we cannot represent very small rotations.
         // The closest f32 to 1.0 that is not 1.0 itself yields:
@@ -413,7 +413,7 @@ impl Quat {
 
         #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
         unsafe {
-            // sse2 implementation from RTM
+            // from rtm quat_mul
             let lhs = self.0.into();
             let rhs = other.0.into();
 
