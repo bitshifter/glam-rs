@@ -68,7 +68,7 @@ cfg_if! {
         // if compiling with simd enabled assume alignment needs to match the simd type
         #[cfg_attr(not(feature = "scalar-math"), repr(align(16)))]
         #[repr(C)]
-        pub struct Vec4(f32, f32, f32, f32);
+        pub struct Vec4(pub(crate) f32, pub(crate) f32,pub(crate) f32, pub(crate) f32);
     }
 }
 
