@@ -1,46 +1,76 @@
-use super::{Vec3, Vec4, Vec4Mask};
+use super::{Vec3, Vec4Mask};
 use cfg_if::cfg_if;
-
 use core::{fmt, ops::*};
 
 cfg_if! {
     if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
-        use crate::f32::funcs::sse2::{m128_ceil, m128_floor, m128_round};
-        use crate::Align16;
-
         #[cfg(target_arch = "x86")]
         use core::arch::x86::*;
         #[cfg(target_arch = "x86_64")]
         use core::arch::x86_64::*;
-
         use core::{cmp::Ordering, f32, mem::MaybeUninit};
+        use crate::Align16;
 
         pub(crate) const X_AXIS: Align16<(f32, f32, f32, f32)> = Align16((1.0, 0.0, 0.0, 0.0));
         pub(crate) const Y_AXIS: Align16<(f32, f32, f32, f32)> = Align16((0.0, 1.0, 0.0, 0.0));
         pub(crate) const Z_AXIS: Align16<(f32, f32, f32, f32)> = Align16((0.0, 0.0, 1.0, 0.0));
         pub(crate) const W_AXIS: Align16<(f32, f32, f32, f32)> = Align16((0.0, 0.0, 0.0, 1.0));
+
+        /// A 4-dimensional vector.
+        ///
+        /// This type is 16 byte aligned.
+        #[derive(Clone, Copy, Debug)]
+        #[repr(C)]
+        pub struct Vec4(pub(crate) __m128);
+
+        impl Default for Vec4 {
+            #[inline]
+            fn default() -> Self {
+                Self::zero()
+            }
+        }
+
+        impl PartialEq for Vec4 {
+            #[inline]
+            fn eq(&self, other: &Self) -> bool {
+                self.cmpeq(*other).all()
+            }
+        }
+
+        impl PartialOrd for Vec4 {
+            #[inline]
+            fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+                self.as_ref().partial_cmp(other.as_ref())
+            }
+        }
+
+        impl From<Vec4> for __m128 {
+            // TODO: write test
+            #[cfg_attr(tarpaulin, skip)]
+            #[inline]
+            fn from(t: Vec4) -> Self {
+                t.0
+            }
+        }
+
+        impl From<__m128> for Vec4 {
+            #[inline]
+            fn from(t: __m128) -> Self {
+                Self(t)
+            }
+        }
+
+    } else {
+        /// A 4-dimensional vector.
+        ///
+        /// This type is 16 byte aligned unless the `scalar-math` feature is enabed.
+        #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
+        // if compiling with simd enabled assume alignment needs to match the simd type
+        #[cfg_attr(not(feature = "scalar-math"), repr(align(16)))]
+        #[repr(C)]
+        pub struct Vec4(f32, f32, f32, f32);
     }
 }
-
-//cfg_if! {
-//    if #[cfg(not(feature = "scalar-math"))] {
-//        /// A 4-dimensional vector.
-//        ///
-//        /// This type is 16 byte aligned unless the `scalar-math` feature is enabed.
-//        #[derive(Clone, Copy, Debug)]
-//        #[repr(C)]
-//        pub struct Vec4(pub(crate) __m128);
-//    } else {
-//        /// A 4-dimensional vector.
-//        ///
-//        /// This type is 16 byte aligned unless the `scalar-math` feature is enabed.
-//        #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
-//        // if compiling with simd enabled assume alignment needs to match the simd type
-//        #[cfg_attr(not(feature = "scalar-math"), repr(align(16)))]
-//        #[repr(C)]
-//        pub struct Vec4(f32, f32, f32, f32);
-//    }
-//}
 
 #[inline]
 pub fn vec4(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
@@ -718,6 +748,7 @@ impl Vec4 {
     pub fn round(self) -> Self {
         cfg_if! {
             if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                use crate::f32::funcs::sse2::m128_round;
                 unsafe { Self(m128_round(self.0)) }
             } else {
                 Self(
@@ -734,6 +765,7 @@ impl Vec4 {
     pub fn floor(self) -> Self {
         cfg_if! {
             if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                use crate::f32::funcs::sse2::m128_floor;
                 unsafe { Self(m128_floor(self.0)) }
             } else {
                 Self(
@@ -750,6 +782,7 @@ impl Vec4 {
     pub fn ceil(self) -> Self {
         cfg_if! {
             if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                use crate::f32::funcs::sse2::m128_ceil;
                 unsafe { Self(m128_ceil(self.0)) }
             } else {
                 Self(self.0.ceil(), self.1.ceil(), self.2.ceil(), self.3.ceil())
@@ -836,47 +869,6 @@ impl fmt::Display for Vec4 {
                 write!(fmt, "[{}, {}, {}, {}]", x, y, z, w)
             } else {
                 write!(fmt, "[{}, {}, {}, {}]", self.0, self.1, self.2, self.3)
-            }
-        }
-    }
-}
-
-cfg_if! {
-    if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
-        impl Default for Vec4 {
-            #[inline]
-            fn default() -> Self {
-                Self::zero()
-            }
-        }
-
-        impl PartialEq for Vec4 {
-            #[inline]
-            fn eq(&self, other: &Self) -> bool {
-                self.cmpeq(*other).all()
-            }
-        }
-
-        impl PartialOrd for Vec4 {
-            #[inline]
-            fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-                self.as_ref().partial_cmp(other.as_ref())
-            }
-        }
-
-        impl From<Vec4> for __m128 {
-            // TODO: write test
-            #[cfg_attr(tarpaulin, skip)]
-            #[inline]
-            fn from(t: Vec4) -> Self {
-                t.0
-            }
-        }
-
-        impl From<__m128> for Vec4 {
-            #[inline]
-            fn from(t: __m128) -> Self {
-                Self(t)
             }
         }
     }
@@ -1120,184 +1112,6 @@ impl From<Vec4> for [f32; 4] {
                 }
             } else {
                 [v.0, v.1, v.2, v.3]
-            }
-        }
-    }
-}
-
-impl Vec4Mask {
-    /// Creates a new `Vec4Mask`.
-    #[inline]
-    pub fn new(x: bool, y: bool, z: bool, w: bool) -> Self {
-        const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
-        cfg_if! {
-            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
-                unsafe {
-                    Self(_mm_set_ps(
-                            f32::from_bits(MASK[w as usize]),
-                            f32::from_bits(MASK[z as usize]),
-                            f32::from_bits(MASK[y as usize]),
-                            f32::from_bits(MASK[x as usize]),
-                    ))
-                }
-            } else {
-                Self(
-                    MASK[x as usize],
-                    MASK[y as usize],
-                    MASK[z as usize],
-                    MASK[w as usize],
-                )
-            }
-        }
-    }
-
-    /// Returns a bitmask with the lowest four bits set from the elements of
-    /// the `Vec4Mask`.
-    ///
-    /// A true element results in a `1` bit and a false element in a `0` bit.
-    /// Element `x` goes into the first lowest bit, element `y` into the
-    /// second, etc.
-    #[inline]
-    pub fn bitmask(self) -> u32 {
-        cfg_if! {
-            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
-                unsafe { (_mm_movemask_ps(self.0) as u32) }
-            } else {
-                (self.0 & 0x1) | (self.1 & 0x1) << 1 | (self.2 & 0x1) << 2 | (self.3 & 0x1) << 3
-            }
-        }
-    }
-
-    /// Returns true if any of the elements are true, false otherwise.
-    ///
-    /// In other words: `x || y || z || w`.
-    #[inline]
-    pub fn any(self) -> bool {
-        cfg_if! {
-            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
-                unsafe { _mm_movemask_ps(self.0) != 0 }
-            } else {
-                (self.0 != 0) || (self.1 != 0) || (self.2 != 0) || (self.3 != 0)
-            }
-        }
-    }
-
-    /// Returns true if all the elements are true, false otherwise.
-    ///
-    /// In other words: `x && y && z && w`.
-    #[inline]
-    pub fn all(self) -> bool {
-        cfg_if! {
-            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
-                unsafe { _mm_movemask_ps(self.0) == 0xf }
-            } else {
-                (self.0 != 0) && (self.1 != 0) && (self.2 != 0) && (self.3 != 0)
-            }
-        }
-    }
-
-    /// Creates a new `Vec4` from the elements in `if_true` and `if_false`,
-    /// selecting which to use for each element based on the `Vec4Mask`.
-    ///
-    /// A true element in the mask uses the corresponding element from
-    /// `if_true`, and false uses the element from `if_false`.
-    #[inline]
-    pub fn select(self, if_true: Vec4, if_false: Vec4) -> Vec4 {
-        cfg_if! {
-            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
-                unsafe {
-                    Vec4(_mm_or_ps(
-                            _mm_andnot_ps(self.0, if_false.0),
-                            _mm_and_ps(if_true.0, self.0),
-                    ))
-                }
-            } else {
-                Vec4(
-                    if self.0 != 0 { if_true.0 } else { if_false.0 },
-                    if self.1 != 0 { if_true.1 } else { if_false.1 },
-                    if self.2 != 0 { if_true.2 } else { if_false.2 },
-                    if self.3 != 0 { if_true.3 } else { if_false.3 },
-                )
-            }
-        }
-    }
-}
-
-cfg_if! {
-    if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
-        impl Default for Vec4Mask {
-            #[inline]
-            fn default() -> Self {
-                unsafe { Self(_mm_setzero_ps()) }
-            }
-        }
-    }
-}
-
-impl BitAnd for Vec4Mask {
-    type Output = Self;
-    #[inline]
-    fn bitand(self, other: Self) -> Self {
-        cfg_if! {
-            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
-                unsafe { Self(_mm_and_ps(self.0, other.0)) }
-            } else {
-                Self(
-                    self.0 & other.0,
-                    self.1 & other.1,
-                    self.2 & other.2,
-                    self.3 & other.3,
-                )
-            }
-        }
-    }
-}
-
-impl BitAndAssign for Vec4Mask {
-    fn bitand_assign(&mut self, other: Self) {
-        *self = *self & other
-    }
-}
-
-impl BitOr for Vec4Mask {
-    type Output = Self;
-    #[inline]
-    fn bitor(self, other: Self) -> Self {
-        cfg_if! {
-            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
-                unsafe { Self(_mm_or_ps(self.0, other.0)) }
-            } else {
-                Self(
-                    self.0 | other.0,
-                    self.1 | other.1,
-                    self.2 | other.2,
-                    self.3 | other.3,
-                )
-            }
-        }
-    }
-}
-
-impl BitOrAssign for Vec4Mask {
-    fn bitor_assign(&mut self, other: Self) {
-        *self = *self | other
-    }
-}
-
-impl Not for Vec4Mask {
-    type Output = Self;
-    #[inline]
-    fn not(self) -> Self {
-        cfg_if! {
-            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
-                unsafe {
-                    Self(_mm_andnot_ps(
-                            self.0,
-                            _mm_set_ps1(f32::from_bits(0xff_ff_ff_ff)),
-                    ))
-                }
-            } else {
-                Self(!self.0, !self.1, !self.2, !self.3)
             }
         }
     }
