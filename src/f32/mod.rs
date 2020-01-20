@@ -43,6 +43,11 @@ mod glam_mint;
 #[cfg(feature = "mint")]
 pub use glam_mint::*;
 
+#[cfg(feature = "rand")]
+mod glam_rand;
+#[cfg(feature = "rand")]
+pub use glam_rand::*;
+
 #[cfg(feature = "serde")]
 mod glam_serde;
 #[cfg(feature = "serde")]
