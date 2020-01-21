@@ -1,9 +1,9 @@
-use super::{Vec2, Vec3, Vec3Mask, Vec4};
+use super::{Vec2, Vec3Mask, Vec4};
 use cfg_if::cfg_if;
+use core::{fmt, ops::*};
 
 cfg_if! {
     if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
-        use crate::f32::funcs::sse2::{m128_ceil, m128_floor, m128_round};
         use crate::{
             f32::{X_AXIS, Y_AXIS, Z_AXIS},
             Align16,
@@ -12,7 +12,14 @@ cfg_if! {
         use core::arch::x86::*;
         #[cfg(target_arch = "x86_64")]
         use core::arch::x86_64::*;
-        use core::{cmp::Ordering, f32};
+        use core::{cmp::Ordering, f32, mem::MaybeUninit};
+
+        /// A 3-dimensional vector.
+        ///
+        /// This type is 16 byte aligned and thus contains 4 bytes padding.
+#[derive(Clone, Copy, Debug)]
+#[repr(C)]
+        pub struct Vec3(pub(crate) __m128);
 
         impl Vec3 {
             /// Calculates the Vec3 dot product and returns answer in x lane of __m128.
@@ -62,6 +69,13 @@ cfg_if! {
                 Self(t)
             }
         }
+    } else {
+        /// A 3-dimensional vector.
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
+        // if compiling with simd enabled assume alignment needs to match the simd type
+#[cfg_attr(not(feature = "scalar-math"), repr(align(16)))]
+#[repr(C)]
+        pub struct Vec3(pub(crate) f32, pub(crate) f32, pub(crate) f32);
     }
 }
 
@@ -671,6 +685,7 @@ impl Vec3 {
     pub fn round(self) -> Self {
         cfg_if! {
             if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                use crate::f32::funcs::sse2::m128_round;
                 unsafe { Self(m128_round(self.0)) }
             } else {
                 Self(self.0.round(), self.1.round(), self.2.round())
@@ -682,6 +697,7 @@ impl Vec3 {
     pub fn floor(self) -> Self {
         cfg_if! {
             if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                use crate::f32::funcs::sse2::m128_floor;
                 unsafe { Self(m128_floor(self.0)) }
             } else {
                 Self(self.0.floor(), self.1.floor(), self.2.floor())
@@ -693,6 +709,7 @@ impl Vec3 {
     pub fn ceil(self) -> Self {
         cfg_if! {
             if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                use crate::f32::funcs::sse2::m128_ceil;
                 unsafe { Self(m128_ceil(self.0)) }
             } else {
                 Self(self.0.ceil(), self.1.ceil(), self.2.ceil())
@@ -762,5 +779,270 @@ impl AsMut<[f32; 3]> for Vec3 {
     #[inline]
     fn as_mut(&mut self) -> &mut [f32; 3] {
         unsafe { &mut *(self as *mut Vec3 as *mut [f32; 3]) }
+    }
+}
+
+impl fmt::Display for Vec3 {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                let (x, y, z) = (*self).into();
+                write!(f, "[{}, {}, {}]", x, y, z)
+            } else {
+                write!(f, "[{}, {}, {}]", self.0, self.1, self.2)
+            }
+        }
+    }
+}
+
+impl Div<Vec3> for Vec3 {
+    type Output = Self;
+    #[inline]
+    fn div(self, other: Self) -> Self {
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                unsafe { Self(_mm_div_ps(self.0, other.0)) }
+            } else {
+                Self(self.0 / other.0, self.1 / other.1, self.2 / other.2)
+            }
+        }
+    }
+}
+
+impl DivAssign<Vec3> for Vec3 {
+    #[inline]
+    fn div_assign(&mut self, other: Self) {
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                self.0 = unsafe { _mm_div_ps(self.0, other.0) };
+            } else {
+                self.0 /= other.0;
+                self.1 /= other.1;
+                self.2 /= other.2;
+            }
+        }
+    }
+}
+
+impl Div<f32> for Vec3 {
+    type Output = Self;
+    #[inline]
+    fn div(self, other: f32) -> Self {
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                unsafe { Self(_mm_div_ps(self.0, _mm_set1_ps(other))) }
+            } else {
+                Self(self.0 / other, self.1 / other, self.2 / other)
+            }
+        }
+    }
+}
+
+impl DivAssign<f32> for Vec3 {
+    #[inline]
+    fn div_assign(&mut self, other: f32) {
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                self.0 = unsafe { _mm_div_ps(self.0, _mm_set1_ps(other)) };
+            } else {
+                self.0 /= other;
+                self.1 /= other;
+                self.2 /= other;
+            }
+        }
+    }
+}
+
+impl Mul<Vec3> for Vec3 {
+    type Output = Self;
+    #[inline]
+    fn mul(self, other: Self) -> Self {
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                unsafe { Self(_mm_mul_ps(self.0, other.0)) }
+            } else {
+                Self(self.0 * other.0, self.1 * other.1, self.2 * other.2)
+            }
+        }
+    }
+}
+
+impl MulAssign<Vec3> for Vec3 {
+    #[inline]
+    fn mul_assign(&mut self, other: Self) {
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                self.0 = unsafe { _mm_mul_ps(self.0, other.0) };
+            } else {
+                self.0 *= other.0;
+                self.1 *= other.1;
+                self.2 *= other.2;
+            }
+        }
+    }
+}
+
+impl Mul<f32> for Vec3 {
+    type Output = Self;
+    #[inline]
+    fn mul(self, other: f32) -> Self {
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                unsafe { Self(_mm_mul_ps(self.0, _mm_set1_ps(other))) }
+            } else {
+                Self(self.0 * other, self.1 * other, self.2 * other)
+            }
+        }
+    }
+}
+
+impl MulAssign<f32> for Vec3 {
+    #[inline]
+    fn mul_assign(&mut self, other: f32) {
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                self.0 = unsafe { _mm_mul_ps(self.0, _mm_set1_ps(other)) };
+            } else {
+                self.0 *= other;
+                self.1 *= other;
+                self.2 *= other;
+            }
+        }
+    }
+}
+
+impl Mul<Vec3> for f32 {
+    type Output = Vec3;
+    #[inline]
+    fn mul(self, other: Vec3) -> Vec3 {
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                unsafe { Vec3(_mm_mul_ps(_mm_set1_ps(self), other.0)) }
+            } else {
+                Vec3(self * other.0, self * other.1, self * other.2)
+            }
+        }
+    }
+}
+
+impl Add for Vec3 {
+    type Output = Self;
+    #[inline]
+    fn add(self, other: Self) -> Self {
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                unsafe { Self(_mm_add_ps(self.0, other.0)) }
+            } else {
+                Self(self.0 + other.0, self.1 + other.1, self.2 + other.2)
+            }
+        }
+    }
+}
+
+impl AddAssign for Vec3 {
+    #[inline]
+    fn add_assign(&mut self, other: Self) {
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                self.0 = unsafe { _mm_add_ps(self.0, other.0) };
+            } else {
+                self.0 += other.0;
+                self.1 += other.1;
+                self.2 += other.2;
+            }
+        }
+    }
+}
+
+impl Sub for Vec3 {
+    type Output = Self;
+    #[inline]
+    fn sub(self, other: Self) -> Self {
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                unsafe { Self(_mm_sub_ps(self.0, other.0)) }
+            } else {
+                Self(self.0 - other.0, self.1 - other.1, self.2 - other.2)
+            }
+        }
+    }
+}
+
+impl SubAssign for Vec3 {
+    #[inline]
+    fn sub_assign(&mut self, other: Self) {
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                self.0 = unsafe { _mm_sub_ps(self.0, other.0) };
+            } else {
+                self.0 -= other.0;
+                self.1 -= other.1;
+                self.2 -= other.2;
+            }
+        }
+    }
+}
+
+impl Neg for Vec3 {
+    type Output = Self;
+    #[inline]
+    fn neg(self) -> Self {
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                unsafe { Self(_mm_sub_ps(_mm_set1_ps(0.0), self.0)) }
+            } else {
+                Self(-self.0, -self.1, -self.2)
+            }
+        }
+    }
+}
+
+impl From<(f32, f32, f32)> for Vec3 {
+    #[inline]
+    fn from(t: (f32, f32, f32)) -> Self {
+        Self::new(t.0, t.1, t.2)
+    }
+}
+
+impl From<Vec3> for (f32, f32, f32) {
+    #[inline]
+    fn from(v: Vec3) -> Self {
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                let mut out: MaybeUninit<Align16<(f32, f32, f32)>> = MaybeUninit::uninit();
+                unsafe {
+                    // out is 16 bytes in size due to alignment
+                    _mm_store_ps(out.as_mut_ptr() as *mut f32, v.0);
+                    out.assume_init().0
+                }
+            } else {
+                (v.0, v.1, v.2)
+            }
+        }
+    }
+}
+
+impl From<[f32; 3]> for Vec3 {
+    #[inline]
+    fn from(a: [f32; 3]) -> Self {
+        Self::new(a[0], a[1], a[2])
+    }
+}
+
+impl From<Vec3> for [f32; 3] {
+    #[inline]
+    fn from(v: Vec3) -> Self {
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                let mut out: MaybeUninit<Align16<[f32; 3]>> = MaybeUninit::uninit();
+                unsafe {
+                    // out is 16 bytes in size due to alignment
+                    _mm_store_ps(out.as_mut_ptr() as *mut f32, v.0);
+                    out.assume_init().0
+                }
+            } else {
+                [v.0, v.1, v.2]
+            }
+        }
     }
 }

@@ -11,12 +11,6 @@ use std::arch::x86::*;
 ))]
 use std::arch::x86_64::*;
 
-#[cfg(feature = "rand")]
-use rand::{
-    distributions::{Distribution, Standard},
-    Rng,
-};
-
 use super::{scalar_acos, scalar_sin_cos, Mat3, Mat4, Vec3, Vec4};
 use std::{
     cmp::Ordering,
@@ -576,18 +570,6 @@ impl From<Quat> for [f32; 4] {
     #[inline]
     fn from(q: Quat) -> Self {
         q.0.into()
-    }
-}
-
-#[cfg(feature = "rand")]
-impl Distribution<Quat> for Standard {
-    #[inline]
-    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Quat {
-        use std::f32::consts::PI;
-        let yaw = -PI + rng.gen::<f32>() * 2.0 * PI;
-        let pitch = -PI + rng.gen::<f32>() * 2.0 * PI;
-        let roll = -PI + rng.gen::<f32>() * 2.0 * PI;
-        Quat::from_rotation_ypr(yaw, pitch, roll)
     }
 }
 

@@ -95,7 +95,7 @@ impl Vec4 {
     pub fn zero() -> Self {
         cfg_if! {
             if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
-                unsafe { Self(_mm_set1_ps(0.0)) }
+                unsafe { Self(_mm_setzero_ps()) }
             } else {
                 Self(0.0, 0.0, 0.0, 0.0)
             }
@@ -896,7 +896,16 @@ impl Div<Vec4> for Vec4 {
 impl DivAssign<Vec4> for Vec4 {
     #[inline]
     fn div_assign(&mut self, other: Self) {
-        *self = *self / other;
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                self.0 = unsafe { _mm_div_ps(self.0, other.0) };
+            } else {
+                self.0 /= other.0;
+                self.1 /= other.1;
+                self.2 /= other.2;
+                self.3 /= other.3;
+            }
+        }
     }
 }
 
@@ -922,7 +931,16 @@ impl Div<f32> for Vec4 {
 impl DivAssign<f32> for Vec4 {
     #[inline]
     fn div_assign(&mut self, other: f32) {
-        *self = *self / other;
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                self.0 = unsafe { _mm_div_ps(self.0, _mm_set1_ps(other)) };
+            } else {
+                self.0 /= other;
+                self.1 /= other;
+                self.2 /= other;
+                self.3 /= other;
+            }
+        }
     }
 }
 
@@ -948,7 +966,16 @@ impl Mul<Vec4> for Vec4 {
 impl MulAssign<Vec4> for Vec4 {
     #[inline]
     fn mul_assign(&mut self, other: Self) {
-        *self = *self * other;
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                self.0 = unsafe { _mm_mul_ps(self.0, other.0) };
+            } else {
+                self.0 *= other.0;
+                self.1 *= other.1;
+                self.2 *= other.2;
+                self.3 *= other.3;
+            }
+        }
     }
 }
 
@@ -974,7 +1001,16 @@ impl Mul<f32> for Vec4 {
 impl MulAssign<f32> for Vec4 {
     #[inline]
     fn mul_assign(&mut self, other: f32) {
-        *self = *self * other;
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                self.0 = unsafe { _mm_mul_ps(self.0, _mm_set1_ps(other)) };
+            } else {
+                self.0 *= other;
+                self.1 *= other;
+                self.2 *= other;
+                self.3 *= other;
+            }
+        }
     }
 }
 
@@ -1019,7 +1055,16 @@ impl Add for Vec4 {
 impl AddAssign for Vec4 {
     #[inline]
     fn add_assign(&mut self, other: Self) {
-        *self = *self + other;
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                self.0 = unsafe { _mm_add_ps(self.0, other.0) };
+            } else {
+                self.0 += other.0;
+                self.1 += other.1;
+                self.2 += other.2;
+                self.3 += other.3;
+            }
+        }
     }
 }
 
@@ -1045,7 +1090,16 @@ impl Sub for Vec4 {
 impl SubAssign for Vec4 {
     #[inline]
     fn sub_assign(&mut self, other: Self) {
-        *self = *self - other;
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
+                self.0 = unsafe { _mm_sub_ps(self.0, other.0) };
+            } else {
+                self.0 -= other.0;
+                self.1 -= other.1;
+                self.2 -= other.2;
+                self.3 -= other.3;
+            }
+        }
     }
 }
 

@@ -12,12 +12,6 @@ use std::arch::x86::*;
 ))]
 use std::arch::x86_64::*;
 
-#[cfg(feature = "rand")]
-use rand::{
-    distributions::{Distribution, Standard},
-    Rng,
-};
-
 use std::{
     fmt,
     ops::{Add, Mul, Sub},
@@ -835,14 +829,6 @@ impl Mat4 {
             && self.y_axis.abs_diff_eq(other.y_axis, max_abs_diff)
             && self.z_axis.abs_diff_eq(other.z_axis, max_abs_diff)
             && self.w_axis.abs_diff_eq(other.w_axis, max_abs_diff)
-    }
-}
-
-#[cfg(feature = "rand")]
-impl Distribution<Mat4> for Standard {
-    #[inline]
-    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Mat4 {
-        Mat4::from_cols_array(&rng.gen())
     }
 }
 
