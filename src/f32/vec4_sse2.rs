@@ -16,10 +16,10 @@ use std::arch::x86_64::*;
 
 use std::{cmp::Ordering, f32, fmt, mem::MaybeUninit, ops::*};
 
-pub(crate) const X_AXIS: Align16<(f32, f32, f32, f32)> = Align16((1.0, 0.0, 0.0, 0.0));
-pub(crate) const Y_AXIS: Align16<(f32, f32, f32, f32)> = Align16((0.0, 1.0, 0.0, 0.0));
-pub(crate) const Z_AXIS: Align16<(f32, f32, f32, f32)> = Align16((0.0, 0.0, 1.0, 0.0));
-pub(crate) const W_AXIS: Align16<(f32, f32, f32, f32)> = Align16((0.0, 0.0, 0.0, 1.0));
+pub(crate) const X_AXIS: Align16<[f32; 4]> = Align16([1.0, 0.0, 0.0, 0.0]);
+pub(crate) const Y_AXIS: Align16<[f32; 4]> = Align16([0.0, 1.0, 0.0, 0.0]);
+pub(crate) const Z_AXIS: Align16<[f32; 4]> = Align16([0.0, 0.0, 1.0, 0.0]);
+pub(crate) const W_AXIS: Align16<[f32; 4]> = Align16([0.0, 0.0, 0.0, 1.0]);
 
 /// A 4-dimensional vector.
 ///
@@ -50,41 +50,25 @@ impl Vec4 {
     /// Creates a new `Vec4` with values `[x: 1.0, y: 0.0, z: 0.0, w: 0.0]`.
     #[inline]
     pub fn unit_x() -> Self {
-        unsafe {
-            Self(_mm_load_ps(
-                &X_AXIS as *const Align16<(f32, f32, f32, f32)> as *const f32,
-            ))
-        }
+        unsafe { Self(_mm_load_ps(X_AXIS.0.as_ptr())) }
     }
 
     /// Creates a new `Vec4` with values `[x: 0.0, y: 1.0, z: 0.0, w: 0.0]`.
     #[inline]
     pub fn unit_y() -> Self {
-        unsafe {
-            Self(_mm_load_ps(
-                &Y_AXIS as *const Align16<(f32, f32, f32, f32)> as *const f32,
-            ))
-        }
+        unsafe { Self(_mm_load_ps(Y_AXIS.0.as_ptr())) }
     }
 
     /// Creates a new `Vec4` with values `[x: 0.0, y: 0.0, z: 1.0, w: 0.0]`.
     #[inline]
     pub fn unit_z() -> Self {
-        unsafe {
-            Self(_mm_load_ps(
-                &Z_AXIS as *const Align16<(f32, f32, f32, f32)> as *const f32,
-            ))
-        }
+        unsafe { Self(_mm_load_ps(Z_AXIS.0.as_ptr())) }
     }
 
     /// Creates a new `Vec4` with values `[x: 0.0, y: 0.0, z: 0.0, w: 1.0]`.
     #[inline]
     pub fn unit_w() -> Self {
-        unsafe {
-            Self(_mm_load_ps(
-                &W_AXIS as *const Align16<(f32, f32, f32, f32)> as *const f32,
-            ))
-        }
+        unsafe { Self(_mm_load_ps(W_AXIS.0.as_ptr())) }
     }
 
     /// Creates a new `Vec4` with all elements set to `v`.

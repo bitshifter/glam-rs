@@ -48,31 +48,19 @@ impl Vec3 {
     /// Creates a new `Vec3` with values `[x: 1.0, y: 0.0, z: 0.0]`.
     #[inline]
     pub fn unit_x() -> Self {
-        unsafe {
-            Self(_mm_load_ps(
-                &X_AXIS as *const Align16<(f32, f32, f32, f32)> as *const f32,
-            ))
-        }
+        unsafe { Self(_mm_load_ps(X_AXIS.0.as_ptr())) }
     }
 
     /// Creates a new `Vec3` with values `[x: 0.0, y: 1.0, z: 0.0]`.
     #[inline]
     pub fn unit_y() -> Self {
-        unsafe {
-            Self(_mm_load_ps(
-                &Y_AXIS as *const Align16<(f32, f32, f32, f32)> as *const f32,
-            ))
-        }
+        unsafe { Self(_mm_load_ps(Y_AXIS.0.as_ptr())) }
     }
 
     /// Creates a new `Vec3` with values `[x: 0.0, y: 0.0, z: 1.0]`.
     #[inline]
     pub fn unit_z() -> Self {
-        unsafe {
-            Self(_mm_load_ps(
-                &Z_AXIS as *const Align16<(f32, f32, f32, f32)> as *const f32,
-            ))
-        }
+        unsafe { Self(_mm_load_ps(Z_AXIS.0.as_ptr())) }
     }
 
     /// Creates a new `Vec3` with all elements set to `v`.
