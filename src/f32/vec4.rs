@@ -11,10 +11,10 @@ cfg_if! {
         use core::{cmp::Ordering, f32, mem::MaybeUninit};
         use crate::Align16;
 
-        pub(crate) const X_AXIS: Align16<(f32, f32, f32, f32)> = Align16((1.0, 0.0, 0.0, 0.0));
-        pub(crate) const Y_AXIS: Align16<(f32, f32, f32, f32)> = Align16((0.0, 1.0, 0.0, 0.0));
-        pub(crate) const Z_AXIS: Align16<(f32, f32, f32, f32)> = Align16((0.0, 0.0, 1.0, 0.0));
-        pub(crate) const W_AXIS: Align16<(f32, f32, f32, f32)> = Align16((0.0, 0.0, 0.0, 1.0));
+        pub(crate) const X_AXIS: Align16<[f32; 4]> = Align16([1.0, 0.0, 0.0, 0.0]);
+        pub(crate) const Y_AXIS: Align16<[f32; 4]> = Align16([0.0, 1.0, 0.0, 0.0]);
+        pub(crate) const Z_AXIS: Align16<[f32; 4]> = Align16([0.0, 0.0, 1.0, 0.0]);
+        pub(crate) const W_AXIS: Align16<[f32; 4]> = Align16([0.0, 0.0, 0.0, 1.0]);
 
         /// A 4-dimensional vector.
         ///
@@ -119,11 +119,7 @@ impl Vec4 {
     pub fn unit_x() -> Self {
         cfg_if! {
             if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
-                unsafe {
-                    Self(_mm_load_ps(
-                            &X_AXIS as *const Align16<(f32, f32, f32, f32)> as *const f32,
-                    ))
-                }
+                unsafe { Self(_mm_load_ps(X_AXIS.0.as_ptr())) }
             } else {
                 Self(1.0, 0.0, 0.0, 0.0)
             }
@@ -135,11 +131,7 @@ impl Vec4 {
     pub fn unit_y() -> Self {
         cfg_if! {
             if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
-                unsafe {
-                    Self(_mm_load_ps(
-                            &Y_AXIS as *const Align16<(f32, f32, f32, f32)> as *const f32,
-                    ))
-                }
+                unsafe { Self(_mm_load_ps(Y_AXIS.0.as_ptr())) }
             } else {
                 Self(0.0, 1.0, 0.0, 0.0)
             }
@@ -151,11 +143,7 @@ impl Vec4 {
     pub fn unit_z() -> Self {
         cfg_if! {
             if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
-                unsafe {
-                    Self(_mm_load_ps(
-                            &Z_AXIS as *const Align16<(f32, f32, f32, f32)> as *const f32,
-                    ))
-                }
+                unsafe { Self(_mm_load_ps(Z_AXIS.0.as_ptr())) }
             } else {
                 Self(0.0, 0.0, 1.0, 0.0)
             }
@@ -167,11 +155,7 @@ impl Vec4 {
     pub fn unit_w() -> Self {
         cfg_if! {
             if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
-                unsafe {
-                    Self(_mm_load_ps(
-                            &W_AXIS as *const Align16<(f32, f32, f32, f32)> as *const f32,
-                    ))
-                }
+                unsafe { Self(_mm_load_ps(W_AXIS.0.as_ptr())) }
             } else {
                 Self(0.0, 0.0, 0.0, 1.0)
             }

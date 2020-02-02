@@ -126,11 +126,7 @@ impl Vec3 {
     pub fn unit_x() -> Self {
         cfg_if! {
             if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
-                unsafe {
-                    Self(_mm_load_ps(
-                            &X_AXIS as *const Align16<(f32, f32, f32, f32)> as *const f32,
-                    ))
-                }
+                unsafe { Self(_mm_load_ps(X_AXIS.0.as_ptr())) }
             } else {
                 Self(1.0, 0.0, 0.0)
             }
@@ -142,11 +138,7 @@ impl Vec3 {
     pub fn unit_y() -> Self {
         cfg_if! {
             if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
-                unsafe {
-                    Self(_mm_load_ps(
-                            &Y_AXIS as *const Align16<(f32, f32, f32, f32)> as *const f32,
-                    ))
-                }
+                unsafe { Self(_mm_load_ps(Y_AXIS.0.as_ptr())) }
             } else {
                 Self(0.0, 1.0, 0.0)
             }
@@ -158,11 +150,7 @@ impl Vec3 {
     pub fn unit_z() -> Self {
         cfg_if! {
             if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
-                unsafe {
-                    Self(_mm_load_ps(
-                            &Z_AXIS as *const Align16<(f32, f32, f32, f32)> as *const f32,
-                    ))
-                }
+                unsafe { Self(_mm_load_ps(Z_AXIS.0.as_ptr())) }
             } else {
                 Self(0.0, 0.0, 1.0)
             }
