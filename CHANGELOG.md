@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
+### Changed
+
+* Merged SSE2 and scalar `Vec3` and `Vec4` implementations into single files
+  using the `cfg-if` crate.
+
 ## [0.8.5] - 2020-01-02
 
 ### Added
