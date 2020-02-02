@@ -1,7 +1,6 @@
 # glam
 
-[![Build Status]][travis-ci] [![Coverage Status]][coveralls.io]
-[![Latest Version]][crates.io] [![docs]][docs.rs]
+[![Build Status]][travis-ci] [![Latest Version]][crates.io] [![docs]][docs.rs]
 
 A simple and fast 3D math library for games and graphics.
 

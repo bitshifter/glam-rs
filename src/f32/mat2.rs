@@ -12,12 +12,6 @@ use std::arch::x86::*;
 ))]
 use std::arch::x86_64::*;
 
-#[cfg(feature = "rand")]
-use rand::{
-    distributions::{Distribution, Standard},
-    Rng,
-};
-
 use std::{
     fmt,
     ops::{Add, Mul, Sub},
@@ -284,14 +278,6 @@ impl Mat2 {
     #[inline]
     pub fn abs_diff_eq(&self, other: Self, max_abs_diff: f32) -> bool {
         self.0.abs_diff_eq(other.0, max_abs_diff)
-    }
-}
-
-#[cfg(feature = "rand")]
-impl Distribution<Mat2> for Standard {
-    #[inline]
-    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Mat2 {
-        Mat2::from_cols_array(&rng.gen())
     }
 }
 

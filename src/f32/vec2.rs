@@ -1,19 +1,10 @@
-#![allow(dead_code)]
-
-use crate::f32::Vec3;
-
-#[cfg(feature = "rand")]
-use rand::{
-    distributions::{Distribution, Standard},
-    Rng,
-};
-
-use std::{f32, fmt, ops::*};
+use crate::f32::{Vec2Mask, Vec3};
+use core::{f32, fmt, ops::*};
 
 /// A 2-dimensional vector.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
 #[repr(C)]
-pub struct Vec2(f32, f32);
+pub struct Vec2(pub(crate) f32, pub(crate) f32);
 
 #[inline]
 pub fn vec2(x: f32, y: f32) -> Vec2 {
@@ -137,12 +128,14 @@ impl Vec2 {
     }
 
     /// Returns a `Vec2` with all elements set to the value of element `x`.
+    #[allow(dead_code)]
     #[inline]
     pub(crate) fn dup_x(self) -> Self {
         Self(self.0, self.0)
     }
 
     /// Returns a `Vec2` with all elements set to the value of element `y`.
+    #[allow(dead_code)]
     #[inline]
     pub(crate) fn dup_y(self) -> Self {
         Self(self.1, self.1)
@@ -297,6 +290,7 @@ impl Vec2 {
     }
 
     /// Per element multiplication/addition of the three inputs: b + (self * a)
+    #[allow(dead_code)]
     #[inline]
     pub(crate) fn mul_add(self, a: Self, b: Self) -> Self {
         Self((self.0 * a.0) + b.0, (self.1 * a.1) + b.1)
@@ -304,6 +298,7 @@ impl Vec2 {
 
     /// Per element negative multiplication/subtraction of the three inputs `-((self * a) - b)`
     /// This is mathematically equivalent to `b - (self * a)`
+    #[allow(dead_code)]
     #[inline]
     pub(crate) fn neg_mul_sub(self, a: Self, b: Self) -> Self {
         Self(b.0 - (self.0 * a.0), b.1 - (self.1 * a.1))
@@ -349,7 +344,8 @@ impl Div<Vec2> for Vec2 {
 impl DivAssign<Vec2> for Vec2 {
     #[inline]
     fn div_assign(&mut self, other: Vec2) {
-        *self = Self(self.0 / other.0, self.1 / other.1)
+        self.0 /= other.0;
+        self.1 /= other.1;
     }
 }
 
@@ -364,7 +360,8 @@ impl Div<f32> for Vec2 {
 impl DivAssign<f32> for Vec2 {
     #[inline]
     fn div_assign(&mut self, other: f32) {
-        *self = Self(self.0 / other, self.1 / other)
+        self.0 /= other;
+        self.1 /= other;
     }
 }
 
@@ -379,7 +376,8 @@ impl Mul<Vec2> for Vec2 {
 impl MulAssign<Vec2> for Vec2 {
     #[inline]
     fn mul_assign(&mut self, other: Vec2) {
-        *self = Self(self.0 * other.0, self.1 * other.1)
+        self.0 *= other.0;
+        self.1 *= other.1;
     }
 }
 
@@ -394,7 +392,8 @@ impl Mul<f32> for Vec2 {
 impl MulAssign<f32> for Vec2 {
     #[inline]
     fn mul_assign(&mut self, other: f32) {
-        *self = Self(self.0 * other, self.1 * other)
+        self.0 *= other;
+        self.1 *= other;
     }
 }
 
@@ -417,7 +416,8 @@ impl Add for Vec2 {
 impl AddAssign for Vec2 {
     #[inline]
     fn add_assign(&mut self, other: Self) {
-        *self = Self(self.0 + other.0, self.1 + other.1)
+        self.0 += other.0;
+        self.1 += other.1;
     }
 }
 
@@ -432,7 +432,8 @@ impl Sub for Vec2 {
 impl SubAssign for Vec2 {
     #[inline]
     fn sub_assign(&mut self, other: Vec2) {
-        *self = Self(self.0 - other.0, self.1 - other.1)
+        self.0 -= other.0;
+        self.1 -= other.1;
     }
 }
 
@@ -483,108 +484,5 @@ impl From<Vec2> for [f32; 2] {
     #[inline]
     fn from(v: Vec2) -> Self {
         [v.0, v.1]
-    }
-}
-
-#[cfg(feature = "rand")]
-impl Distribution<Vec2> for Standard {
-    #[inline]
-    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Vec2 {
-        rng.gen::<(f32, f32)>().into()
-    }
-}
-
-/// A 2-dimensional vector mask.
-///
-/// This type is typically created by comparison methods on `Vec2`.
-#[derive(Clone, Copy, Default)]
-#[repr(C)]
-pub struct Vec2Mask(u32, u32);
-
-impl Vec2Mask {
-    /// Creates a new `Vec2Mask`.
-    #[inline]
-    pub fn new(x: bool, y: bool) -> Self {
-        const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
-        Self(MASK[x as usize], MASK[y as usize])
-    }
-
-    /// Returns a bitmask with the lowest two bits set from the elements of
-    /// the `Vec2Mask`.
-    ///
-    /// A true element results in a `1` bit and a false element in a `0` bit.
-    /// Element `x` goes into the first lowest bit, element `y` into the
-    /// second, etc.
-    #[inline]
-    pub fn bitmask(self) -> u32 {
-        (self.0 & 0x1) | (self.1 & 0x1) << 1
-    }
-
-    /// Returns true if any of the elements are true, false otherwise.
-    ///
-    /// In other words: `x || y`.
-    #[inline]
-    pub fn any(self) -> bool {
-        (self.0 != 0) || (self.1 != 0)
-    }
-
-    /// Returns true if all the elements are true, false otherwise.
-    ///
-    /// In other words: `x && y`.
-    #[inline]
-    pub fn all(self) -> bool {
-        (self.0 != 0) && (self.1 != 0)
-    }
-
-    /// Creates a new `Vec2` from the elements in `if_true` and `if_false`,
-    /// selecting which to use for each element based on the `Vec2Mask`.
-    ///
-    /// A true element in the mask uses the corresponding element from
-    /// `if_true`, and false uses the element from `if_false`.
-    #[inline]
-    pub fn select(self, if_true: Vec2, if_false: Vec2) -> Vec2 {
-        Vec2(
-            if self.0 != 0 { if_true.0 } else { if_false.0 },
-            if self.1 != 0 { if_true.1 } else { if_false.1 },
-        )
-    }
-}
-
-impl BitAnd for Vec2Mask {
-    type Output = Self;
-
-    #[inline]
-    fn bitand(self, other: Self) -> Self {
-        Self(self.0 & other.0, self.1 & other.1)
-    }
-}
-
-impl BitAndAssign for Vec2Mask {
-    fn bitand_assign(&mut self, other: Self) {
-        *self = *self & other
-    }
-}
-
-impl BitOr for Vec2Mask {
-    type Output = Self;
-
-    #[inline]
-    fn bitor(self, other: Self) -> Self {
-        Self(self.0 | other.0, self.1 | other.1)
-    }
-}
-
-impl BitOrAssign for Vec2Mask {
-    fn bitor_assign(&mut self, other: Self) {
-        *self = *self | other
-    }
-}
-
-impl Not for Vec2Mask {
-    type Output = Self;
-
-    #[inline]
-    fn not(self) -> Self {
-        Self(!self.0, !self.1)
     }
 }

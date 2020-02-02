@@ -6,16 +6,11 @@ mod quat;
 #[cfg(feature = "transform-types")]
 mod transform;
 mod vec2;
+mod vec2_mask;
 mod vec3;
-#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-mod vec3_f32;
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-mod vec3_sse2;
+mod vec3_mask;
 mod vec4;
-#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-mod vec4_f32;
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-mod vec4_sse2;
+mod vec4_mask;
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 mod x86_utils;
 
@@ -27,21 +22,21 @@ pub use quat::*;
 #[cfg(feature = "transform-types")]
 pub use transform::*;
 pub use vec2::*;
+pub use vec2_mask::*;
 pub use vec3::*;
-#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-pub use vec3_f32::*;
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-pub use vec3_sse2::*;
+pub use vec3_mask::*;
 pub use vec4::*;
-#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-pub use vec4_f32::*;
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-pub use vec4_sse2::*;
+pub use vec4_mask::*;
 
 #[cfg(feature = "mint")]
 mod glam_mint;
 #[cfg(feature = "mint")]
 pub use glam_mint::*;
+
+#[cfg(feature = "rand")]
+mod glam_rand;
+#[cfg(feature = "rand")]
+pub use glam_rand::*;
 
 #[cfg(feature = "serde")]
 mod glam_serde;
