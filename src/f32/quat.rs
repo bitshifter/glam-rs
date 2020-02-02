@@ -233,7 +233,7 @@ impl Quat {
     pub fn conjugate(self) -> Self {
         #[cfg(not(all(target_feature = "sse2", not(feature = "scalar-math"))))]
         {
-            Self(self.0.truncate().neg().extend(self.0.w()))
+            Self::from_xyzw(-(self.0).0, -(self.0).1, -(self.0).2, (self.0).3)
         }
 
         #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
