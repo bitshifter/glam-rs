@@ -10,7 +10,7 @@ use std::f32;
 #[test]
 fn test_vec3_align() {
     use std::mem;
-    if cfg!(any(not(feature = "simd-vec3"), feature = "scalar-math")) {
+    if cfg!(any(feature = "packed-vec3", feature = "scalar-math")) {
         assert_eq!(12, mem::size_of::<Vec3>());
         assert_eq!(4, mem::align_of::<Vec3>());
         assert_eq!(12, mem::size_of::<Vec3Mask>());
@@ -53,13 +53,13 @@ fn test_vec3_fmt() {
     let a = Vec3::new(1.0, 2.0, 3.0);
     #[cfg(all(
         target_feature = "sse2",
-        feature = "simd-vec3",
+        not(feature = "packed-vec3"),
         not(feature = "scalar-math")
     ))]
     assert_eq!(format!("{:?}", a), "Vec3(__m128(1.0, 2.0, 3.0, 3.0))");
     #[cfg(any(
         not(target_feature = "sse2"),
-        not(feature = "simd-vec3"),
+        feature = "packed-vec3",
         feature = "scalar-math"
     ))]
     assert_eq!(format!("{:?}", a), "Vec3(1.0, 2.0, 3.0)");

@@ -294,7 +294,7 @@ impl Mat3 {
     #[inline]
     pub fn transpose(&self) -> Self {
         cfg_if! {
-            if #[cfg(all(target_feature = "sse2", feature = "simd-vec3", not(feature = "scalar-math")))] {
+            if #[cfg(all(target_feature = "sse2", not(feature = "packed-vec3"), not(feature = "scalar-math")))] {
                 #[cfg(all(target_arch = "x86", target_feature = "sse2"))]
                 use std::arch::x86::*;
                 #[cfg(all(target_arch = "x86_64", target_feature = "sse2"))]

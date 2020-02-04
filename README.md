@@ -25,6 +25,9 @@ has a SIMD implementation yet.
 Note that this does result in some wasted space in the case of `Vec3` and `Mat3`
 as the SIMD vector type is 16 bytes large and 16 byte aligned.
 
+It is possible to opt out of using SIMD types for Vec3 and Mat3 storage with the
+`packed-vec3` feature.
+
 `glam` outperforms similar Rust libraries such as [`cgmath`][cgmath],
 [`nalgebra-glm`][nalgebra-glm] and others for common operations as tested by the
 [`mathbench`][mathbench] project.
@@ -51,6 +54,8 @@ let (x, y, z) = v.into();
 
 ### Feature gates
 
+* `packed-vec3` - disable using SIMD types for `Vec3` and `Mat3` storage.  This
+  avoids wasting space due to 16 byte alignment at the cost of some performance.
 * `scalar-math` - compiles with SIMD support disabled
 * `glam-assert` - adds assertions which check the validity of parameters passed to
   `glam` to help catch runtime errors
@@ -81,8 +86,8 @@ Rotations follow the left-hand rule.
 The design of this library is guided by a desire for simplicity and good
 performance.
 
-* Only single precision floating point (`f32`) arithmetic is supported
 * No traits or generics for simplicity of implementation and usage
+* Only single precision floating point (`f32`) arithmetic is supported
 * All dependencies are optional (e.g. `mint`, `rand` and `serde`)
 * Follows the [Rust API Guidelines] where possible
 * Aiming for 100% test [coverage][coveralls.io]
@@ -90,10 +95,10 @@ performance.
 
 ## Future work
 
-* Writing documentation
 * Experiment with a using a 4x3 matrix as a 3D transform type that can be more
   efficient than `Mat4` for certain operations like inverse and multiplies
 * `no-std` support
+* `wasm` support
 
 ## Inspirations
 

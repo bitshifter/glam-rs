@@ -15,6 +15,7 @@ rust:
 
 env:
   - CARGO_FEATURES="mint rand serde debug-glam-assert transform-types"
+  - CARGO_FEATURES="mint rand serde packed-vec3 debug-glam-assert transform-types"
   - CARGO_FEATURES="mint rand serde scalar-math debug-glam-assert transform-types"
 
 matrix:

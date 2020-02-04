@@ -3,7 +3,7 @@ use cfg_if::cfg_if;
 use core::ops::*;
 
 cfg_if! {
-    if #[cfg(all(target_feature = "sse2", feature = "simd-vec3", not(feature = "scalar-math")))] {
+    if #[cfg(all(target_feature = "sse2", not(feature = "packed-vec3"), not(feature = "scalar-math")))] {
         #[cfg(target_arch = "x86")]
         use core::arch::x86::*;
         #[cfg(target_arch = "x86_64")]
@@ -24,7 +24,7 @@ cfg_if! {
                 unsafe { Self(_mm_setzero_ps()) }
             }
         }
-    } else if #[cfg(all(target_feature = "sse2", not(feature = "simd-vec3"), not(feature = "scalar-math")))] {
+    } else if #[cfg(all(target_feature = "sse2", feature = "packed-vec3", not(feature = "scalar-math")))] {
         /// A 3-dimensional vector mask.
         #[derive(Clone, Copy, Default)]
         #[repr(C)]
@@ -45,7 +45,7 @@ impl Vec3Mask {
     pub fn new(x: bool, y: bool, z: bool) -> Self {
         const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
         cfg_if! {
-            if #[cfg(all(target_feature = "sse2", feature = "simd-vec3", not(feature = "scalar-math")))] {
+            if #[cfg(all(target_feature = "sse2", not(feature = "packed-vec3"), not(feature = "scalar-math")))] {
                 unsafe {
                     Self(_mm_set_ps(
                             f32::from_bits(MASK[z as usize]),
@@ -69,7 +69,7 @@ impl Vec3Mask {
     #[inline]
     pub fn bitmask(&self) -> u32 {
         cfg_if! {
-            if #[cfg(all(target_feature = "sse2", feature = "simd-vec3", not(feature = "scalar-math")))] {
+            if #[cfg(all(target_feature = "sse2", not(feature = "packed-vec3"), not(feature = "scalar-math")))] {
                 unsafe { (_mm_movemask_ps(self.0) as u32) & 0x7 }
             } else {
                 (self.0 & 0x1) | (self.1 & 0x1) << 1 | (self.2 & 0x1) << 2
@@ -83,7 +83,7 @@ impl Vec3Mask {
     #[inline]
     pub fn any(&self) -> bool {
         cfg_if! {
-            if #[cfg(all(target_feature = "sse2", feature = "simd-vec3", not(feature = "scalar-math")))] {
+            if #[cfg(all(target_feature = "sse2", not(feature = "packed-vec3"), not(feature = "scalar-math")))] {
                 unsafe { (_mm_movemask_ps(self.0) & 0x7) != 0 }
             } else {
                 (self.0 != 0) || (self.1 != 0) || (self.2 != 0)
@@ -97,7 +97,7 @@ impl Vec3Mask {
     #[inline]
     pub fn all(&self) -> bool {
         cfg_if! {
-            if #[cfg(all(target_feature = "sse2", feature = "simd-vec3", not(feature = "scalar-math")))] {
+            if #[cfg(all(target_feature = "sse2", not(feature = "packed-vec3"), not(feature = "scalar-math")))] {
                 unsafe { (_mm_movemask_ps(self.0) & 0x7) == 0x7 }
             } else {
                 (self.0 != 0) && (self.1 != 0) && (self.2 != 0)
@@ -113,7 +113,7 @@ impl Vec3Mask {
     #[inline]
     pub fn select(self, if_true: Vec3, if_false: Vec3) -> Vec3 {
         cfg_if! {
-            if #[cfg(all(target_feature = "sse2", feature = "simd-vec3", not(feature = "scalar-math")))] {
+            if #[cfg(all(target_feature = "sse2", not(feature = "packed-vec3"), not(feature = "scalar-math")))] {
                 unsafe {
                     Vec3(_mm_or_ps(
                             _mm_andnot_ps(self.0, if_false.0),
@@ -136,7 +136,7 @@ impl BitAnd for Vec3Mask {
     #[inline]
     fn bitand(self, other: Self) -> Self {
         cfg_if! {
-            if #[cfg(all(target_feature = "sse2", feature = "simd-vec3", not(feature = "scalar-math")))] {
+            if #[cfg(all(target_feature = "sse2", not(feature = "packed-vec3"), not(feature = "scalar-math")))] {
                 unsafe { Self(_mm_and_ps(self.0, other.0)) }
             } else {
                 Self(self.0 & other.0, self.1 & other.1, self.2 & other.2)
@@ -148,7 +148,7 @@ impl BitAnd for Vec3Mask {
 impl BitAndAssign for Vec3Mask {
     fn bitand_assign(&mut self, other: Self) {
         cfg_if! {
-            if #[cfg(all(target_feature = "sse2", feature = "simd-vec3", not(feature = "scalar-math")))] {
+            if #[cfg(all(target_feature = "sse2", not(feature = "packed-vec3"), not(feature = "scalar-math")))] {
                 self.0 = unsafe { _mm_and_ps(self.0, other.0) };
             } else {
                 self.0 &= other.0;
@@ -164,7 +164,7 @@ impl BitOr for Vec3Mask {
     #[inline]
     fn bitor(self, other: Self) -> Self {
         cfg_if! {
-            if #[cfg(all(target_feature = "sse2", feature = "simd-vec3", not(feature = "scalar-math")))] {
+            if #[cfg(all(target_feature = "sse2", not(feature = "packed-vec3"), not(feature = "scalar-math")))] {
                 unsafe { Self(_mm_or_ps(self.0, other.0)) }
             } else {
                 Self(self.0 | other.0, self.1 | other.1, self.2 | other.2)
@@ -176,7 +176,7 @@ impl BitOr for Vec3Mask {
 impl BitOrAssign for Vec3Mask {
     fn bitor_assign(&mut self, other: Self) {
         cfg_if! {
-            if #[cfg(all(target_feature = "sse2", feature = "simd-vec3", not(feature = "scalar-math")))] {
+            if #[cfg(all(target_feature = "sse2", not(feature = "packed-vec3"), not(feature = "scalar-math")))] {
                 self.0 = unsafe { _mm_or_ps(self.0, other.0) };
             } else {
                 self.0 |= other.0;
@@ -192,7 +192,7 @@ impl Not for Vec3Mask {
     #[inline]
     fn not(self) -> Self {
         cfg_if! {
-            if #[cfg(all(target_feature = "sse2", feature = "simd-vec3", not(feature = "scalar-math")))] {
+            if #[cfg(all(target_feature = "sse2", not(feature = "packed-vec3"), not(feature = "scalar-math")))] {
                 unsafe {
                     Self(_mm_andnot_ps(
                             self.0,

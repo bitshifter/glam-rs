@@ -179,9 +179,9 @@ impl Vec4 {
     #[inline]
     pub fn truncate(self) -> Vec3 {
         cfg_if! {
-            if #[cfg(all(target_feature = "sse2", feature = "simd-vec3", not(feature = "scalar-math")))] {
+            if #[cfg(all(target_feature = "sse2", not(feature = "packed-vec3"), not(feature = "scalar-math")))] {
                 self.0.into()
-            } else if #[cfg(all(target_feature = "sse2", not(feature = "simd-vec3"), not(feature = "scalar-math")))] {
+            } else if #[cfg(all(target_feature = "sse2", feature = "packed-vec3", not(feature = "scalar-math")))] {
                 let (x, y, z, _) = self.into();
                 Vec3::new(x, y, z)
             } else {
