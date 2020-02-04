@@ -6,8 +6,12 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
-### Changed
+### Added
+* Added the `packed-vec3` feature flag to disable using SIMD types for `Vec3`
+  and `Mat3` types. This avoids wasting some space due to 16 byte alignment at
+  the cost of some performance.
 
+### Changed
 * Merged SSE2 and scalar `Vec3` and `Vec4` implementations into single files
   using the `cfg-if` crate.
 
