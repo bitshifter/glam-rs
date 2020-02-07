@@ -115,6 +115,18 @@ impl Vec2 {
         self.1
     }
 
+    /// Returns a mutable reference to element `x`.
+    #[inline]
+    pub fn x_mut(&mut self) -> &mut f32 {
+        &mut self.0
+    }
+
+    /// Returns a mutable reference to element `y`.
+    #[inline]
+    pub fn y_mut(&mut self) -> &mut f32 {
+        &mut self.1
+    }
+
     /// Sets element `x`.
     #[inline]
     pub fn set_x(&mut self, x: f32) {

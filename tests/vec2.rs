@@ -65,6 +65,12 @@ fn test_vec2_accessors() {
     a.set_y(2.0);
     assert_eq!(1.0, a.x());
     assert_eq!(2.0, a.y());
+
+    let mut a = vec2(0.0, 0.0);
+    *a.x_mut() = 1.0;
+    *a.y_mut() = 2.0;
+    assert_eq!(1.0, a.x());
+    assert_eq!(2.0, a.y());
 }
 
 #[test]

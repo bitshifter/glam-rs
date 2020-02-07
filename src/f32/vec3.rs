@@ -233,6 +233,42 @@ impl Vec3 {
         }
     }
 
+    /// Returns a mutable reference to element `x`.
+    #[inline]
+    pub fn x_mut(&mut self) -> &mut f32 {
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "packed-vec3"), not(feature = "scalar-math")))] {
+                unsafe { &mut *(self as *mut Self as *mut f32) }
+            } else {
+                &mut self.0
+            }
+        }
+    }
+
+    /// Returns a mutable reference to element `y`.
+    #[inline]
+    pub fn y_mut(&mut self) -> &mut f32 {
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "packed-vec3"), not(feature = "scalar-math")))] {
+                unsafe { &mut *(self as *mut Self as *mut f32).offset(1) }
+            } else {
+                &mut self.1
+            }
+        }
+    }
+
+    /// Returns a mutable reference to element `z`.
+    #[inline]
+    pub fn z_mut(&mut self) -> &mut f32 {
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "packed-vec3"), not(feature = "scalar-math")))] {
+                unsafe { &mut *(self as *mut Self as *mut f32).offset(2) }
+            } else {
+                &mut self.2
+            }
+        }
+    }
+
     /// Sets element `x`.
     #[inline]
     pub fn set_x(&mut self, x: f32) {

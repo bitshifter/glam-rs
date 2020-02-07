@@ -87,6 +87,17 @@ fn test_vec4_accessors() {
     assert_eq!(3.0, a.z());
     assert_eq!(4.0, a.w());
     assert_eq!((1.0, 2.0, 3.0, 4.0), a.into());
+
+    let mut a = vec4(0.0, 0.0, 0.0, 0.0);
+    *a.x_mut() = 1.0;
+    *a.y_mut() = 2.0;
+    *a.z_mut() = 3.0;
+    *a.w_mut() = 4.0;
+    assert_eq!(1.0, a.x());
+    assert_eq!(2.0, a.y());
+    assert_eq!(3.0, a.z());
+    assert_eq!(4.0, a.w());
+    assert_eq!((1.0, 2.0, 3.0, 4.0), a.into());
 }
 
 #[test]
