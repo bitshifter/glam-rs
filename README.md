@@ -36,11 +36,13 @@ If you are more concerned with size than speed you can build glam with the
 feature `scalar-math` enabled to disable SIMD usage.
 
 Due to the use of SIMD, vector elements may only be get and set via accessor
-methods, e.g. `Vec3::x()` and `Vec3::set_x()`. If getting or setting more than
-one element it is more efficient to convert from tuples or arrays:
+methods, e.g. `Vec3::x()` and `Vec3::x_mut()` or `Vec3::set_x()`. If getting or
+setting more than one element it is more efficient to convert from tuples or
+arrays:
 
 ```
 let (x, y, z) = v.into();
+let [x, y, z]: [f32; 3] = v.into();
 ```
 
 ### Optional features

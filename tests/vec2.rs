@@ -60,17 +60,26 @@ fn test_vec2_splat() {
 
 #[test]
 fn test_vec2_accessors() {
-    let mut a = vec2(0.0, 0.0);
+    let mut a = Vec2::zero();
     a.set_x(1.0);
     a.set_y(2.0);
     assert_eq!(1.0, a.x());
     assert_eq!(2.0, a.y());
+    assert_eq!(Vec2::new(1.0, 2.0), a);
 
-    let mut a = vec2(0.0, 0.0);
+    let mut a = Vec2::zero();
     *a.x_mut() = 1.0;
     *a.y_mut() = 2.0;
     assert_eq!(1.0, a.x());
     assert_eq!(2.0, a.y());
+    assert_eq!(Vec2::new(1.0, 2.0), a);
+
+    let mut a = Vec2::zero();
+    a[0] = 1.0;
+    a[1] = 2.0;
+    assert_eq!(1.0, a[0]);
+    assert_eq!(2.0, a[1]);
+    assert_eq!(Vec2::new(1.0, 2.0), a);
 }
 
 #[test]

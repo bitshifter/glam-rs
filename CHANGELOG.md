@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Added the `packed-vec3` feature flag to disable using SIMD types for `Vec3`
   and `Mat3` types. This avoids wasting some space due to 16 byte alignment at
   the cost of some performance.
+* Added `x_mut`, `y_mut`, `z_mut`, `w_mut` where appropriate to `Vec2`, `Vec3`
+  and `Vec4`.
+* Added implementation of `core::ops::Index` and `core::ops::IndexMut` for
+  `Vec2`, `Vec3` and `Vec4`.
 
 ### Changed
 * Merged SSE2 and scalar `Vec3` and `Vec4` implementations into single files
