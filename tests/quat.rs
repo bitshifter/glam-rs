@@ -230,3 +230,17 @@ fn test_quat_serde() {
     let deserialized = serde_json::from_str::<Quat>("[1.0,2.0,3.0,4.0,5.0]");
     assert!(deserialized.is_err());
 }
+
+#[test]
+fn test_quat_elements() {
+    let x = 1.0;
+    let y = 2.0;
+    let z = 3.0;
+    let w = 4.0;
+
+    let a = Quat::from_xyzw(x, y, z, w);
+    assert!(a.x() == x);
+    assert!(a.y() == y);
+    assert!(a.z() == z);
+    assert!(a.w() == w);
+}
