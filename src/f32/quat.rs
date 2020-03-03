@@ -441,6 +441,29 @@ impl Quat {
             Self(Vec4(_mm_add_ps(result0, result1)))
         }
     }
+    /// Returns element `x`.
+    #[inline]
+    pub fn x(self) -> f32 {
+        self.0.x()
+    }
+
+    /// Returns element `y`.
+    #[inline]
+    pub fn y(self) -> f32 {
+        self.0.y()
+    }
+
+    /// Returns element `z`.
+    #[inline]
+    pub fn z(self) -> f32 {
+        self.0.z()
+    }
+
+    /// Returns element `w`.
+    #[inline]
+    pub fn w(self) -> f32 {
+        self.0.w()
+    }
 }
 
 impl fmt::Debug for Quat {
