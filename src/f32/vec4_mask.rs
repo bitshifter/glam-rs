@@ -73,7 +73,7 @@ impl Vec4Mask {
     pub fn bitmask(self) -> u32 {
         cfg_if! {
             if #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))] {
-                unsafe { (_mm_movemask_ps(self.0) as u32) }
+                unsafe { _mm_movemask_ps(self.0) as u32 }
             } else {
                 (self.0 & 0x1) | (self.1 & 0x1) << 1 | (self.2 & 0x1) << 2 | (self.3 & 0x1) << 3
             }
