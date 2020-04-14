@@ -327,8 +327,19 @@ fn test_mat4_look_at() {
 }
 
 #[test]
-fn test_mat4_perspective_gl_rh() {
-    let projection = Mat4::perspective_rh_gl(f32::to_radians(90.0), 2.0, 5.0, 15.0);
+fn test_mat4_perspective_rh() {
+    let projection = Mat4::perspective_rh(f32::to_radians(90.0), 2.0, 5.0, 15.0);
+
+    #[allow(deprecated)]
+    let projection_deprecated_glu_rh =
+        Mat4::perspective_glu_rh(f32::to_radians(90.0), 2.0, 5.0, 15.0);
+
+    #[allow(deprecated)]
+    let projection_deprecated_rh_gl =
+        Mat4::perspective_rh_gl(f32::to_radians(90.0), 2.0, 5.0, 15.0);
+
+    assert_approx_eq!(projection, projection_deprecated_glu_rh);
+    assert_approx_eq!(projection, projection_deprecated_rh_gl);
 
     let original = Vec3::new(5.0, 5.0, -15.0);
     let projected = projection * original.extend(1.0);

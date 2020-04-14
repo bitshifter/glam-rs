@@ -554,12 +554,7 @@ impl Mat4 {
     /// Creates a right-handed perspective projection matrix with [-1,1] depth range.
     /// This is the same as the OpenGL `gluPerspective` function.
     /// See https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
-    pub fn perspective_rh(
-        fov_y_radians: f32,
-        aspect_ratio: f32,
-        z_near: f32,
-        z_far: f32,
-    ) -> Self {
+    pub fn perspective_rh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32, z_far: f32) -> Self {
         let inv_length = 1.0 / (z_near - z_far);
         let f = 1.0 / (0.5 * fov_y_radians).tan();
         let a = f / aspect_ratio;
@@ -621,14 +616,25 @@ impl Mat4 {
     }
 
     #[inline]
-    #[deprecated(since = "0.8.2", note = "please use `Mat4::perspective_rh_gl` instead")]
+    #[deprecated(since = "0.8.6", note = "please use `Mat4::perspective_rh` instead")]
+    pub fn perspective_rh_gl(
+        fov_y_radians: f32,
+        aspect_ratio: f32,
+        z_near: f32,
+        z_far: f32,
+    ) -> Self {
+        Mat4::perspective_rh(fov_y_radians, aspect_ratio, z_near, z_far)
+    }
+
+    #[inline]
+    #[deprecated(since = "0.8.2", note = "please use `Mat4::perspective_rh` instead")]
     pub fn perspective_glu_rh(
         fov_y_radians: f32,
         aspect_ratio: f32,
         z_near: f32,
         z_far: f32,
     ) -> Self {
-        Mat4::perspective_rh_gl(fov_y_radians, aspect_ratio, z_near, z_far)
+        Mat4::perspective_rh(fov_y_radians, aspect_ratio, z_near, z_far)
     }
 
     /// Creates an infinite right-handed perspective projection matrix with

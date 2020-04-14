@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+# [Unreleased]
+
+### Changed
+* Renamed `Mat4::perspective_rh_gl` to `Mat4::perspective_rh`.
+
 ## [0.8.6] - 2020-02-18
 
 ### Added
