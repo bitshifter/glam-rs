@@ -542,6 +542,9 @@ impl Mat4 {
         Mat4::look_to_lh(eye, center - eye, up)
     }
 
+    /// Creates a right-handed view transform.
+    /// This is the same as the OpenGL `gluLookAt` function.
+    /// See https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluLookAt.xml
     #[inline]
     pub fn look_at_rh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
         glam_assert!(up.is_normalized());
@@ -551,7 +554,7 @@ impl Mat4 {
     /// Creates a right-handed perspective projection matrix with [-1,1] depth range.
     /// This is the same as the OpenGL `gluPerspective` function.
     /// See https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
-    pub fn perspective_rh_gl(
+    pub fn perspective_rh(
         fov_y_radians: f32,
         aspect_ratio: f32,
         z_near: f32,
