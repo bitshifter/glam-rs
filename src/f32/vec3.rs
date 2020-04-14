@@ -790,6 +790,12 @@ impl Vec3 {
     pub fn abs_diff_eq(self, other: Self, max_abs_diff: f32) -> bool {
         abs_diff_eq!(self, other, max_abs_diff)
     }
+
+    /// Returns the angle between two vectors, in radians.
+    #[inline]
+    pub fn angle(self, other: Self) -> f32 {
+        f32::atan2(self.cross(other).length(), self.dot(other))
+    }
 }
 
 impl AsRef<[f32; 3]> for Vec3 {

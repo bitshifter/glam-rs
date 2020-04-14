@@ -337,6 +337,18 @@ impl Vec2 {
     pub fn ceil(self) -> Self {
         Self(self.0.ceil(), self.1.ceil())
     }
+
+    /// The perpendicular dot product of the vector and `other`.
+    #[inline]
+    pub fn perp_dot(self, other: Vec2) -> f32 {
+        (self.0 * other.1) - (self.1 * other.0)
+    }
+
+    /// Returns the angle between two vectors, in radians.
+    #[inline]
+    pub fn angle(self, other: Self) -> f32 {
+        f32::atan2(self.perp_dot(other), self.dot(other))
+    }
 }
 
 impl fmt::Display for Vec2 {
