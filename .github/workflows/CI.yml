@@ -6,3 +6,19 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: EmbarkStudios/cargo-deny-action@v0
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --features "debug-glam-assert"
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --features "debug-glam-assert, transform-types"
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --features "debug-glam-assert, packed-vec3"
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --features "debug-glam-assert, scalar-math"
