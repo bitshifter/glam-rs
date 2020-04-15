@@ -1,15 +1,7 @@
 use super::{scalar_sin_cos, Mat3, Quat, Vec3, Vec4};
-#[cfg(all(
-    target_arch = "x86",
-    target_feature = "sse2",
-    not(feature = "scalar-math")
-))]
+#[cfg(all(vec4sse2, target_arch = "x86"))]
 use std::arch::x86::*;
-#[cfg(all(
-    target_arch = "x86_64",
-    target_feature = "sse2",
-    not(feature = "scalar-math")
-))]
+#[cfg(all(vec4sse2, target_arch = "x86_64"))]
 use std::arch::x86_64::*;
 
 use std::{
@@ -390,22 +382,7 @@ impl Mat4 {
     /// Returns the transpose of `self`.
     #[inline]
     pub fn transpose(&self) -> Self {
-        #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-        {
-            let (m00, m01, m02, m03) = self.x_axis.into();
-            let (m10, m11, m12, m13) = self.y_axis.into();
-            let (m20, m21, m22, m23) = self.z_axis.into();
-            let (m30, m31, m32, m33) = self.w_axis.into();
-
-            Self {
-                x_axis: Vec4::new(m00, m10, m20, m30),
-                y_axis: Vec4::new(m01, m11, m21, m31),
-                z_axis: Vec4::new(m02, m12, m22, m32),
-                w_axis: Vec4::new(m03, m13, m23, m33),
-            }
-        }
-
-        #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+        #[cfg(vec4sse2)]
         unsafe {
             // sse2 implementation based off DirectXMath XMMatrixInverse (MIT License)
             let tmp0 = _mm_shuffle_ps(self.x_axis.0, self.y_axis.0, 0b01_00_01_00);
@@ -418,6 +395,21 @@ impl Mat4 {
                 y_axis: _mm_shuffle_ps(tmp0, tmp2, 0b11_01_11_01).into(),
                 z_axis: _mm_shuffle_ps(tmp1, tmp3, 0b10_00_10_00).into(),
                 w_axis: _mm_shuffle_ps(tmp1, tmp3, 0b11_01_11_01).into(),
+            }
+        }
+
+        #[cfg(vec4f32)]
+        {
+            let (m00, m01, m02, m03) = self.x_axis.into();
+            let (m10, m11, m12, m13) = self.y_axis.into();
+            let (m20, m21, m22, m23) = self.z_axis.into();
+            let (m30, m31, m32, m33) = self.w_axis.into();
+
+            Self {
+                x_axis: Vec4::new(m00, m10, m20, m30),
+                y_axis: Vec4::new(m01, m11, m21, m31),
+                z_axis: Vec4::new(m02, m12, m22, m32),
+                w_axis: Vec4::new(m03, m13, m23, m33),
             }
         }
     }
