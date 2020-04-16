@@ -294,9 +294,9 @@ impl Mat3 {
     pub fn transpose(&self) -> Self {
         #[cfg(vec3sse2)]
         {
-            #[cfg(all(target_arch = "x86", target_feature = "sse2"))]
+            #[cfg(target_arch = "x86")]
             use std::arch::x86::*;
-            #[cfg(all(target_arch = "x86_64", target_feature = "sse2"))]
+            #[cfg(target_arch = "x86_64")]
             use std::arch::x86_64::*;
             unsafe {
                 let tmp0 = _mm_shuffle_ps(self.x_axis.0, self.y_axis.0, 0b01_00_01_00);
