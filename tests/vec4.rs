@@ -408,6 +408,53 @@ fn test_vec4mask_not() {
 }
 
 #[test]
+fn test_vec4mask_fmt() {
+    let a = Vec4Mask::new(true, false, true, false);
+
+    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+    assert_eq!(format!("{}", a), "[true, false, true, false]");
+    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+    assert_eq!(
+        format!("{:?}", a),
+        "Vec4Mask(0xffffffff, 0x0, 0xffffffff, 0x0)"
+    );
+
+    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+    assert_eq!(format!("{}", a), "[true, false, false, true]");
+    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+    assert_eq!(
+        format!("{:?}", a),
+        "Vec4Mask(0xffffffff, 0x0, 0xffffffff, 0x0)"
+    );
+}
+
+#[test]
+fn test_vec4mask_eq() {
+    let a = Vec4Mask::new(true, false, true, false);
+    let b = Vec4Mask::new(true, false, true, false);
+    let c = Vec4Mask::new(false, true, true, false);
+
+    assert_eq!(a, b);
+    assert_eq!(b, a);
+    assert_ne!(a, c);
+    assert_ne!(b, c);
+}
+
+#[test]
+fn test_vec4mask_hash() {
+    use std::collections::hash_map::DefaultHasher;
+    use std::hash::Hash;
+
+    let a = Vec4Mask::new(true, false, true, false);
+    let b = Vec4Mask::new(true, false, true, false);
+    assert_eq!(a, b);
+    assert_eq!(
+        a.hash(&mut DefaultHasher::new()),
+        b.hash(&mut DefaultHasher::new())
+    );
+}
+
+#[test]
 fn test_vec4_round() {
     assert_eq!(Vec4::new(1.35, 0.0, 0.0, 0.0).round().x(), 1.0);
     assert_eq!(Vec4::new(0.0, 1.5, 0.0, 0.0).round().y(), 2.0);

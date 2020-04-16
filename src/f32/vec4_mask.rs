@@ -1,5 +1,6 @@
 use crate::Vec4;
 use core::ops::*;
+use core::{fmt, hash};
 
 #[cfg(all(vec4sse2, target_arch = "x86"))]
 use core::arch::x86::*;
@@ -16,7 +17,7 @@ use core::arch::x86_64::*;
 pub struct Vec4Mask(pub(crate) __m128);
 
 #[cfg(vec4f32)]
-#[derive(Clone, Copy, Default)]
+#[derive(Clone, Copy, Default, PartialEq, Eq, Hash)]
 #[cfg_attr(vec4f32_align16, repr(align(16)))]
 #[repr(C)]
 pub struct Vec4Mask(u32, u32, u32, u32);
@@ -26,6 +27,34 @@ impl Default for Vec4Mask {
     #[inline]
     fn default() -> Self {
         unsafe { Self(_mm_setzero_ps()) }
+    }
+}
+
+#[cfg(vec3sse2)]
+impl PartialEq for Vec4Mask {
+    fn eq(&self, other: &Self) -> bool {
+        let self_arr = unsafe { &*(self as *const Vec4Mask as *const [f32; 4]) };
+        let other_arr = unsafe { &*(other as *const Vec4Mask as *const [f32; 4]) };
+
+        self_arr
+            .iter()
+            .zip(other_arr.iter())
+            .all(|(a, b)| a.to_bits().eq(&b.to_bits()))
+    }
+}
+
+#[cfg(vec3sse2)]
+impl Eq for Vec4Mask {}
+
+#[cfg(vec3sse2)]
+impl hash::Hash for Vec4Mask {
+    fn hash<H: hash::Hasher>(&self, state: &mut H) {
+        let self_arr = unsafe { &*(self as *const Vec4Mask as *const [f32; 4]) };
+
+        self_arr[0].to_bits().hash(state);
+        self_arr[1].to_bits().hash(state);
+        self_arr[2].to_bits().hash(state);
+        self_arr[3].to_bits().hash(state);
     }
 }
 
@@ -224,6 +253,62 @@ impl Not for Vec4Mask {
         #[cfg(vec4f32)]
         {
             Self(!self.0, !self.1, !self.2, !self.3)
+        }
+    }
+}
+
+impl fmt::Debug for Vec4Mask {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        #[cfg(vec4sse2)]
+        {
+            let arr = unsafe { &*(self as *const Vec4Mask as *const [f32; 4]) };
+            write!(
+                f,
+                "Vec4Mask({:#x}, {:#x}, {:#x}, {:#x})",
+                arr[0].to_bits(),
+                arr[1].to_bits(),
+                arr[2].to_bits(),
+                arr[3].to_bits()
+            )
+        }
+
+        #[cfg(vec4f32)]
+        {
+            write!(
+                f,
+                "Vec4Mask({:#x}, {:#x}, {:#x}, {:#x})",
+                self.0, self.1, self.2, self.3
+            )
+        }
+    }
+}
+
+impl fmt::Display for Vec4Mask {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        #[cfg(vec4sse2)]
+        {
+            let arr = unsafe { &*(self as *const Vec4Mask as *const [f32; 4]) };
+
+            write!(
+                f,
+                "[{}, {}, {}, {}]",
+                arr[0].to_bits() != 0,
+                arr[1].to_bits() != 0,
+                arr[2].to_bits() != 0,
+                arr[3].to_bits() != 0
+            )
+        }
+
+        #[cfg(vec4f32)]
+        {
+            write!(
+                f,
+                "[{}, {}, {}, {}]",
+                self.0 != 0,
+                self.1 != 0,
+                self.2 != 0,
+                self.3 != 0
+            )
         }
     }
 }
