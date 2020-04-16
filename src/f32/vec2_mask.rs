@@ -1,10 +1,11 @@
 use super::Vec2;
+use core::fmt;
 use core::ops::*;
 
 /// A 2-dimensional vector mask.
 ///
 /// This type is typically created by comparison methods on `Vec2`.
-#[derive(Clone, Copy, Default)]
+#[derive(Clone, Copy, Default, PartialEq, Eq, Hash)]
 #[repr(C)]
 pub struct Vec2Mask(u32, u32);
 
@@ -92,5 +93,17 @@ impl Not for Vec2Mask {
     #[inline]
     fn not(self) -> Self {
         Self(!self.0, !self.1)
+    }
+}
+
+impl fmt::Debug for Vec2Mask {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Vec2Mask({:#x}, {:#x})", self.0, self.1)
+    }
+}
+
+impl fmt::Display for Vec2Mask {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "[{}, {}]", self.0 != 0, self.1 != 0)
     }
 }
