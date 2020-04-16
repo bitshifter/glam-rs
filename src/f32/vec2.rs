@@ -345,9 +345,20 @@ impl Vec2 {
     }
 
     /// Returns the angle between two vectors, in radians.
+    ///
+    /// The vectors do not need to be unit length, but this function does
+    /// perform a `sqrt`.
     #[inline]
-    pub fn angle(self, other: Self) -> f32 {
-        f32::atan2(self.perp_dot(other), self.dot(other))
+    pub fn angle_between(self, other: Self) -> f32 {
+        let angle = crate::f32::funcs::scalar_acos(
+            self.dot(other) / (self.dot(self) * other.dot(other)).sqrt(),
+        );
+
+        if self.perp_dot(other) < 0.0 {
+            -angle
+        } else {
+            angle
+        }
     }
 }
 

@@ -792,9 +792,12 @@ impl Vec3 {
     }
 
     /// Returns the angle between two vectors, in radians.
+    ///
+    /// The vectors do not need to be unit length, but this function does
+    /// perform a `sqrt`.
     #[inline]
-    pub fn angle(self, other: Self) -> f32 {
-        f32::atan2(self.cross(other).length(), self.dot(other))
+    pub fn angle_between(self, other: Self) -> f32 {
+        crate::f32::funcs::scalar_acos(self.dot(other) / (self.dot(self) * other.dot(other)).sqrt())
     }
 }
 

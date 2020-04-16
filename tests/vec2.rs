@@ -391,13 +391,13 @@ fn test_vec2_serde() {
 }
 
 #[test]
-fn test_vec2_angle() {
-    let angle = Vec2::new(1.0, 0.0).angle(Vec2::new(0.0, 1.0));
-    assert_approx_eq!(f32::consts::FRAC_PI_2, angle);
+fn test_vec2_angle_between() {
+    let angle = Vec2::new(1.0, 0.0).angle_between(Vec2::new(0.0, 1.0));
+    assert_approx_eq!(f32::consts::FRAC_PI_2, angle, 1e-6);
 
-    let angle = Vec2::new(10.0, 0.0).angle(Vec2::new(0.0, 5.0));
-    assert_approx_eq!(f32::consts::FRAC_PI_2, angle);
+    let angle = Vec2::new(10.0, 0.0).angle_between(Vec2::new(0.0, 5.0));
+    assert_approx_eq!(f32::consts::FRAC_PI_2, angle, 1e-6);
 
-    let angle = Vec2::new(-1.0, 0.0).angle(Vec2::new(0.0, 1.0));
-    assert_approx_eq!(-f32::consts::FRAC_PI_2, angle);
+    let angle = Vec2::new(-1.0, 0.0).angle_between(Vec2::new(0.0, 1.0));
+    assert_approx_eq!(-f32::consts::FRAC_PI_2, angle, 1e-6);
 }
