@@ -31,12 +31,22 @@ bench_trinop!(
     from3 => random_f32
 );
 
+bench_trinop!(
+    quat_slerp,
+    "quat slerp",
+    op => slerp,
+    from1 => random_quat,
+    from2 => random_quat,
+    from3 => random_f32
+);
+
 bench_from_ypr!(quat_from_ypr, "quat from ypr", ty => Quat);
 
 criterion_group!(
     benches,
     quat_conjugate,
     quat_lerp,
+    quat_slerp,
     quat_mul_quat,
     quat_from_ypr
 );

@@ -60,6 +60,13 @@ pub(crate) mod sse2 {
                 $field: [$x, $x, $x, $x],
             };
         };
+
+        ($name:ident, $field:ident, $x:expr, $y:expr, $z:expr, $w:expr) => {
+            #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+            const $name: UnionCast = UnionCast {
+                $field: [$x, $y, $z, $w],
+            };
+        };
     }
 
     _ps_const_ty!(PS_INV_SIGN_MASK, u32x4, !0x8000_0000);
@@ -84,6 +91,28 @@ pub(crate) mod sse2 {
     // _ps_const_ty!(PS_COSCOF_P1, f32x4, -1.388_731_6E-3);
     // _ps_const_ty!(PS_COSCOF_P2, f32x4, 4.166_664_6e-2);
     // _ps_const_ty!(PS_CEPHES_FOPI, f32x4, 1.273_239_5); // 4 / M_PI
+
+    _ps_const_ty!(g_XMNegativeZero, u32x4, 0x80000000);
+    _ps_const_ty!(g_XMPi, f32x4, std::f32::consts::PI);
+    _ps_const_ty!(g_XMHalfPi, f32x4, std::f32::consts::FRAC_PI_2);
+    _ps_const_ty!(g_XMSinCoefficients0 , f32x4, -0.16666667, 0.0083333310, -0.00019840874, 2.7525562e-06);
+    _ps_const_ty!(g_XMSinCoefficients1 , f32x4, -2.3889859e-08, -0.16665852 /*Est1*/, 0.0083139502 /*Est2*/, -0.00018524670 /*Est3*/);
+    _ps_const_ty!(g_XMOne, f32x4, 1.0);
+    _ps_const_ty!(g_XMTwoPi, f32x4, std::f32::consts::PI * 2.0);
+    _ps_const_ty!(g_XMReciprocalTwoPi , f32x4, 0.159154943);
+
+    macro_rules! XM_PERMUTE_PS {
+        ($v:expr, $c:expr) => {
+            _mm_shuffle_ps($v, $v, $c)
+        }
+    }
+
+    // XMVectorNegativeMultiplySubtract
+    macro_rules! XM_FMADD_PS {
+        ($a:expr, $b:expr, $c:expr) => {
+            _mm_fmadd_ps($a, $b, $c)
+        }
+    }
 
     #[inline]
     pub(crate) unsafe fn m128_round(v: __m128) -> __m128 {
@@ -137,6 +166,69 @@ pub(crate) mod sse2 {
         // All others, use the ORIGINAL value
         let test = _mm_andnot_si128(test, _mm_castps_si128(v));
         _mm_or_ps(result, _mm_castsi128_ps(test))
+    }
+
+    #[inline]
+    #[allow(non_snake_case)]
+    pub(crate) const fn _MM_SHUFFLE(z: u32, y: u32, x: u32, w: u32) -> i32 {
+        // core::arch::x86_64::_MM_SHUFFLE requires nightly
+        ((z << 6) | (y << 4) | (x << 2) | w) as i32
+    }
+
+    /// From DirectXMath: XMVectorModAngles
+    /// 
+    /// Returns a vector whose components are the corresponding components of Angles modulo 2PI.
+    pub(crate) unsafe fn m128_mod_angles(angles: __m128) -> __m128 {
+        let v = _mm_mul_ps(angles, g_XMReciprocalTwoPi.m128);
+        let v = m128_round(v);
+        XM_FMADD_PS!(g_XMTwoPi.m128, v, angles) // XMVectorNegativeMultiplySubtract
+    }
+
+    /// From DirectXMath: XMVectorSin
+    pub(crate) unsafe fn m128_sin(v: __m128) -> __m128 {
+        // Note that XMVectorSin clamps the value here with XMVectorModAngles,
+        // but this adds about 15% overhead.
+        //
+        // // Force the value within the bounds of pi
+        // let mut x = m128_mod_angles(v);
+
+        let mut x = v;
+
+        // Map in [-pi/2,pi/2] with sin(y) = sin(x).
+        let sign = _mm_and_ps(x, g_XMNegativeZero.m128);
+        // pi when x >= 0, -pi when x < 0
+        let c = _mm_or_ps(g_XMPi.m128, sign);
+        // |x|
+        let absx = _mm_andnot_ps(sign, x);
+        let rflx = _mm_sub_ps(c, x);
+        let comp = _mm_cmple_ps(absx, g_XMHalfPi.m128);
+        let select0 = _mm_and_ps(comp, x);
+        let select1 = _mm_andnot_ps(comp, rflx);
+        x = _mm_or_ps(select0, select1);
+
+        let x2 = _mm_mul_ps(x, x);
+
+        // Compute polynomial approximation
+        let sc1 = g_XMSinCoefficients1;
+        let v_constants_b = XM_PERMUTE_PS!(sc1.m128, _MM_SHUFFLE(0, 0, 0, 0));
+
+        let sc0 = g_XMSinCoefficients0.m128;
+        let mut v_constants = XM_PERMUTE_PS!(sc0, _MM_SHUFFLE(3, 3, 3, 3));
+        let mut result = XM_FMADD_PS!(v_constants_b, x2, v_constants);
+
+        v_constants = XM_PERMUTE_PS!(sc0, _MM_SHUFFLE(2, 2, 2, 2));
+        result = XM_FMADD_PS!(result, x2, v_constants);
+
+        v_constants = XM_PERMUTE_PS!(sc0, _MM_SHUFFLE(1, 1, 1, 1));
+        result = XM_FMADD_PS!(result, x2, v_constants);
+
+        v_constants = XM_PERMUTE_PS!(sc0, _MM_SHUFFLE(0, 0, 0, 0));
+        result = XM_FMADD_PS!(result, x2, v_constants);
+
+        result = XM_FMADD_PS!(result, x2, g_XMOne.m128);
+        result = _mm_mul_ps(result, x);
+
+        result
     }
 
     // Based on http://gruntthepeon.free.fr/ssemath/sse_mathfun.h
