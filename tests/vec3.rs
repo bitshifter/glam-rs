@@ -410,14 +410,21 @@ fn test_vec3mask_eq() {
 fn test_vec3mask_hash() {
     use std::collections::hash_map::DefaultHasher;
     use std::hash::Hash;
+    use std::hash::Hasher;
 
     let a = Vec3Mask::new(true, false, true);
     let b = Vec3Mask::new(true, false, true);
+
+    let mut a_hasher = DefaultHasher::new();
+    let mut b_hasher = DefaultHasher::new();
+
+    a.hash(&mut a_hasher);
+    let a_hashed = a_hasher.finish();
+    b.hash(&mut b_hasher);
+    let b_hashed = b_hasher.finish();
+
     assert_eq!(a, b);
-    assert_eq!(
-        a.hash(&mut DefaultHasher::new()),
-        b.hash(&mut DefaultHasher::new())
-    );
+    assert_eq!(a_hashed, b_hashed);
 }
 
 #[test]

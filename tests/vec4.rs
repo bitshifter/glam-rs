@@ -444,14 +444,22 @@ fn test_vec4mask_eq() {
 fn test_vec4mask_hash() {
     use std::collections::hash_map::DefaultHasher;
     use std::hash::Hash;
+    use std::hash::Hasher;
 
     let a = Vec4Mask::new(true, false, true, false);
     let b = Vec4Mask::new(true, false, true, false);
+
+    let mut a_hasher = DefaultHasher::new();
+    let mut b_hasher = DefaultHasher::new();
+
+    a.hash(&mut a_hasher);
+    let a_hashed = a_hasher.finish();
+    b.hash(&mut b_hasher);
+    let b_hashed = b_hasher.finish();
+
+    // if a == b then hash(a) == hash(b)
     assert_eq!(a, b);
-    assert_eq!(
-        a.hash(&mut DefaultHasher::new()),
-        b.hash(&mut DefaultHasher::new())
-    );
+    assert_eq!(a_hashed, b_hashed);
 }
 
 #[test]
