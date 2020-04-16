@@ -5,22 +5,21 @@ fn main() {
     let force_packed_vec3 = env::var("CARGO_FEATURE_PACKED_VEC3").is_ok();
 
     let cfg_target_feature: Option<String> = env::var("CARGO_CFG_TARGET_FEATURE").ok();
+
+    // TODO: probably excessive making a hashmap
     let target_features: HashSet<&str> = cfg_target_feature
         .as_ref()
         .map_or(HashSet::new(), |v| v.split(',').collect());
-
     let target_feature_sse2 = target_features.contains("sse2");
 
     if target_feature_sse2 && !force_scalar_math && !force_packed_vec3 {
-        println!("cargo:rustc-cfg=vec3sse2_data");
-        println!("cargo:rustc-cfg=vec3sse2_impl");
-    } else if force_scalar_math || force_packed_vec3 {
-        println!("cargo:rustc-cfg=vec3f32_data");
-        println!("cargo:rustc-cfg=vec3f32_impl");
+        println!("cargo:rustc-cfg=vec3sse2");
     } else {
-        // simd not available but not explicitly disabled so maintain 16 byte alignment
-        println!("cargo:rustc-cfg=vec3f32a16_data");
-        println!("cargo:rustc-cfg=vec3f32_impl");
+        if !force_scalar_math && !force_packed_vec3 {
+            // simd not available but not explicitly disabled so maintain 16 byte alignment
+            println!("cargo:rustc-cfg=vec3f32_align16");
+        }
+        println!("cargo:rustc-cfg=vec3f32");
     }
 
     if target_feature_sse2 && !force_scalar_math {

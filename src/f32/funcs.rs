@@ -43,7 +43,7 @@ pub fn scalar_acos(value: f32) -> f32 {
     }
 }
 
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+#[cfg(vec4sse2)]
 pub(crate) mod sse2 {
     #[cfg(target_arch = "x86")]
     use std::arch::x86::*;
