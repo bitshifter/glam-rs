@@ -1,5 +1,6 @@
 use super::Vec3;
 use cfg_if::cfg_if;
+use core::fmt;
 use core::ops::*;
 
 cfg_if! {
@@ -26,12 +27,12 @@ cfg_if! {
         }
     } else if #[cfg(all(target_feature = "sse2", feature = "packed-vec3", not(feature = "scalar-math")))] {
         /// A 3-dimensional vector mask.
-        #[derive(Clone, Copy, Default)]
+        #[derive(Clone, Copy, Default, PartialEq, Eq)]
         #[repr(C)]
         pub struct Vec3Mask(pub(crate) u32, pub(crate) u32, pub(crate) u32);
     } else {
         /// A 3-dimensional vector mask.
-#[derive(Clone, Copy, Default)]
+#[derive(Clone, Copy, Default, PartialEq, Eq)]
         // if compiling with simd enabled assume alignment needs to match the simd type
 #[cfg_attr(not(feature = "scalar-math"), repr(align(16)))]
 #[repr(C)]
@@ -202,6 +203,34 @@ impl Not for Vec3Mask {
             } else {
                 Self(!self.0, !self.1, !self.2)
             }
+        }
+    }
+}
+
+impl fmt::Debug for Vec3Mask {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "packed-vec3"), not(feature = "scalar-math")))] {
+                let arr = unsafe { &*(self as *const Vec3Mask as *const [f32; 3]) };
+                write!(f, "Vec3Mask({:#x}, {:#x}, {:#x})", arr[0].to_bits(),arr[1].to_bits(),arr[2].to_bits())
+            } else {
+                write!(f, "Vec3Mask({:#x}, {:#x}, {:#x})", self.0, self.1, self.2)
+            }
+        }
+    }
+}
+
+impl fmt::Display for Vec3Mask {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        cfg_if! {
+            if #[cfg(all(target_feature = "sse2", not(feature = "packed-vec3"), not(feature = "scalar-math")))] {
+                let arr = unsafe { &*(self as *const Vec3Mask as *const [f32; 3]) };
+
+                write!(f, "[{}, {}, {}]", arr[0].to_bits() != 0, arr[1].to_bits() != 0, arr[2].to_bits() != 0)
+            } else {
+                write!(f, "[{}, {}, {}]", self.0 != 0, self.1 != 0, self.2 != 0)
+            }
+
         }
     }
 }

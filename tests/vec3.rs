@@ -360,6 +360,41 @@ fn test_vec3mask_not() {
 }
 
 #[test]
+fn text_vec3mask_fmt() {
+    let a = Vec3Mask::new(true, false, false);
+
+    // debug fmt
+    #[cfg(all(
+        target_feature = "sse2",
+        not(feature = "packed-vec3"),
+        not(feature = "scalar-math")
+    ))]
+    assert_eq!(format!("{:?}", a), "Vec3Mask(0xffffffff, 0x0, 0x0)");
+
+    #[cfg(any(
+        not(target_feature = "sse2"),
+        feature = "packed-vec3",
+        feature = "scalar-math"
+    ))]
+    assert_eq!(format!("{:?}", a), "Vec3Mask(0xffffffff, 0x0, 0x0)");
+
+    // display fmt
+    #[cfg(all(
+        target_feature = "sse2",
+        not(feature = "packed-vec3"),
+        not(feature = "scalar-math")
+    ))]
+    assert_eq!(format!("{}", a), "[true, false, false]");
+
+    #[cfg(any(
+        not(target_feature = "sse2"),
+        feature = "packed-vec3",
+        feature = "scalar-math"
+    ))]
+    assert_eq!(format!("{}", a), "[true, false, false]");
+}
+
+#[test]
 fn test_vec3_sign() {
     assert_eq!(Vec3::zero().sign(), Vec3::one());
     assert_eq!(-Vec3::zero().sign(), -Vec3::one());
