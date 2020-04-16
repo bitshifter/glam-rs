@@ -337,6 +337,29 @@ impl Vec2 {
     pub fn ceil(self) -> Self {
         Self(self.0.ceil(), self.1.ceil())
     }
+
+    /// The perpendicular dot product of the vector and `other`.
+    #[inline]
+    pub fn perp_dot(self, other: Vec2) -> f32 {
+        (self.0 * other.1) - (self.1 * other.0)
+    }
+
+    /// Returns the angle between two vectors, in radians.
+    ///
+    /// The vectors do not need to be unit length, but this function does
+    /// perform a `sqrt`.
+    #[inline]
+    pub fn angle_between(self, other: Self) -> f32 {
+        let angle = crate::f32::funcs::scalar_acos(
+            self.dot(other) / (self.dot(self) * other.dot(other)).sqrt(),
+        );
+
+        if self.perp_dot(other) < 0.0 {
+            -angle
+        } else {
+            angle
+        }
+    }
 }
 
 impl fmt::Display for Vec2 {
