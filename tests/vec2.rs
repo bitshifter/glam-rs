@@ -1,3 +1,5 @@
+mod support;
+
 use glam::*;
 #[cfg(feature = "rand")]
 use rand::{Rng, SeedableRng};
@@ -386,4 +388,16 @@ fn test_vec2_serde() {
     assert!(deserialized.is_err());
     let deserialized = serde_json::from_str::<Vec2>("[1.0,2.0,3.0]");
     assert!(deserialized.is_err());
+}
+
+#[test]
+fn test_vec2_angle_between() {
+    let angle = Vec2::new(1.0, 0.0).angle_between(Vec2::new(0.0, 1.0));
+    assert_approx_eq!(f32::consts::FRAC_PI_2, angle, 1e-6);
+
+    let angle = Vec2::new(10.0, 0.0).angle_between(Vec2::new(0.0, 5.0));
+    assert_approx_eq!(f32::consts::FRAC_PI_2, angle, 1e-6);
+
+    let angle = Vec2::new(-1.0, 0.0).angle_between(Vec2::new(0.0, 1.0));
+    assert_approx_eq!(-f32::consts::FRAC_PI_2, angle, 1e-6);
 }
