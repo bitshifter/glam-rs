@@ -18,6 +18,14 @@ bench_binop!(
     from2 => random_vec2
 );
 
-criterion_group!(benches, vec2_euler, mat2_mul_vec2);
+bench_binop!(
+    vec2_angle_between,
+    "vec2 angle_between",
+    op => angle_between,
+    from1 => random_vec2,
+    from2 => random_vec2
+);
+
+criterion_group!(benches, vec2_euler, mat2_mul_vec2, vec2_angle_between);
 
 criterion_main!(benches);

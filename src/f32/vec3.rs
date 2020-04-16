@@ -790,6 +790,15 @@ impl Vec3 {
     pub fn abs_diff_eq(self, other: Self, max_abs_diff: f32) -> bool {
         abs_diff_eq!(self, other, max_abs_diff)
     }
+
+    /// Returns the angle between two vectors, in radians.
+    ///
+    /// The vectors do not need to be unit length, but this function does
+    /// perform a `sqrt`.
+    #[inline]
+    pub fn angle_between(self, other: Self) -> f32 {
+        crate::f32::funcs::scalar_acos(self.dot(other) / (self.dot(self) * other.dot(other)).sqrt())
+    }
 }
 
 impl AsRef<[f32; 3]> for Vec3 {

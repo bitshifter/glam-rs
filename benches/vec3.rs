@@ -75,10 +75,19 @@ bench_func!(
 
 euler!(vec3_euler, "vec3 euler", ty => Vec3, storage => Vec3, zero => Vec3::zero(), rand => random_vec3);
 
+bench_binop!(
+    vec3_angle_between,
+    "vec3 angle_between",
+    op => angle_between,
+    from1 => random_vec3,
+    from2 => random_vec3
+);
+
 criterion_group!(
     benches,
     quat_mul_vec3,
     mat3_mul_vec3,
+    vec3_angle_between,
     vec3_euler,
     vec3_to_rgb,
     vec3_to_array_accessors,
