@@ -1,15 +1,7 @@
 use super::{scalar_sin_cos, Vec2, Vec4};
-#[cfg(all(
-    target_arch = "x86",
-    target_feature = "sse2",
-    not(feature = "scalar-math")
-))]
+#[cfg(all(vec4sse2, target_arch = "x86",))]
 use std::arch::x86::*;
-#[cfg(all(
-    target_arch = "x86_64",
-    target_feature = "sse2",
-    not(feature = "scalar-math")
-))]
+#[cfg(all(vec4sse2, target_arch = "x86_64",))]
 use std::arch::x86_64::*;
 
 use std::{
@@ -171,36 +163,36 @@ impl Mat2 {
     /// Returns the transpose of `self`.
     #[inline]
     pub fn transpose(&self) -> Self {
-        #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-        {
-            let (m00, m01, m10, m11) = self.0.into();
-            Self(Vec4::new(m00, m10, m01, m11))
-        }
-
-        #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+        #[cfg(vec4sse2)]
         unsafe {
             let abcd = self.0.into();
             let acbd = _mm_shuffle_ps(abcd, abcd, 0b11_01_10_00);
             Self(acbd.into())
+        }
+
+        #[cfg(vec4f32)]
+        {
+            let (m00, m01, m10, m11) = self.0.into();
+            Self(Vec4::new(m00, m10, m01, m11))
         }
     }
 
     /// Returns the determinant of `self`.
     #[inline]
     pub fn determinant(&self) -> f32 {
-        #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-        {
-            let (a, b, c, d) = self.0.into();
-            a * d - b * c
-        }
-
-        #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+        #[cfg(vec4sse2)]
         unsafe {
             let abcd = self.0.into();
             let dcba = _mm_shuffle_ps(abcd, abcd, 0b00_01_10_11);
             let prod = _mm_mul_ps(abcd, dcba);
             let det = _mm_sub_ps(prod, _mm_shuffle_ps(prod, prod, 0b01_01_01_01));
             _mm_cvtss_f32(det)
+        }
+
+        #[cfg(vec4f32)]
+        {
+            let (a, b, c, d) = self.0.into();
+            a * d - b * c
         }
     }
 
@@ -209,16 +201,7 @@ impl Mat2 {
     /// If the matrix is not invertible the returned matrix will be invalid.
     #[inline]
     pub fn inverse(&self) -> Self {
-        #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-        {
-            let (a, b, c, d) = self.0.into();
-            let det = a * d - b * c;
-            glam_assert!(det != 0.0);
-            let tmp = Vec4::new(1.0, -1.0, -1.0, 1.0) / det;
-            Self(Vec4::new(d, b, c, a) * tmp)
-        }
-
-        #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+        #[cfg(vec4sse2)]
         unsafe {
             let abcd = self.0.into();
             let dcba = _mm_shuffle_ps(abcd, abcd, 0b00_01_10_11);
@@ -228,6 +211,15 @@ impl Mat2 {
             let tmp = _mm_div_ps(_mm_set_ps(1.0, -1.0, -1.0, 1.0), det);
             let dbca = _mm_shuffle_ps(abcd, abcd, 0b00_10_01_11);
             Self(_mm_mul_ps(dbca, tmp).into())
+        }
+
+        #[cfg(vec4f32)]
+        {
+            let (a, b, c, d) = self.0.into();
+            let det = a * d - b * c;
+            glam_assert!(det != 0.0);
+            let tmp = Vec4::new(1.0, -1.0, -1.0, 1.0) / det;
+            Self(Vec4::new(d, b, c, a) * tmp)
         }
     }
 

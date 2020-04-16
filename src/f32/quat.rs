@@ -1,14 +1,6 @@
-#[cfg(all(
-    target_arch = "x86",
-    target_feature = "sse2",
-    not(feature = "scalar-math")
-))]
+#[cfg(all(vec4sse2, target_arch = "x86",))]
 use std::arch::x86::*;
-#[cfg(all(
-    target_arch = "x86_64",
-    target_feature = "sse2",
-    not(feature = "scalar-math")
-))]
+#[cfg(all(vec4sse2, target_arch = "x86_64",))]
 use std::arch::x86_64::*;
 
 use super::{scalar_acos, scalar_sin_cos, Mat3, Mat4, Vec3, Vec4};
@@ -231,17 +223,17 @@ impl Quat {
     /// conjugate is also the inverse.
     #[inline]
     pub fn conjugate(self) -> Self {
-        #[cfg(not(all(target_feature = "sse2", not(feature = "scalar-math"))))]
-        {
-            Self::from_xyzw(-(self.0).0, -(self.0).1, -(self.0).2, (self.0).3)
-        }
-
-        #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+        #[cfg(vec4sse2)]
         unsafe {
             Self(Vec4(_mm_xor_ps(
                 (self.0).0,
                 _mm_set_ps(0.0, -0.0, -0.0, -0.0),
             )))
+        }
+
+        #[cfg(vec4f32)]
+        {
+            Self::from_xyzw(-(self.0).0, -(self.0).1, -(self.0).2, (self.0).3)
         }
     }
 
@@ -336,7 +328,8 @@ impl Quat {
     pub fn lerp(self, end: Self, s: f32) -> Self {
         glam_assert!(self.is_normalized());
         glam_assert!(end.is_normalized());
-        #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+
+        #[cfg(vec4sse2)]
         unsafe {
             let start = self.0;
             let end = end.0;
@@ -354,7 +347,7 @@ impl Quat {
             Self(interpolated.normalize())
         }
 
-        #[cfg(not(all(target_feature = "sse2", not(feature = "scalar-math"))))]
+        #[cfg(vec4f32)]
         {
             let start = self.0;
             let end = end.0;
@@ -369,21 +362,22 @@ impl Quat {
     /// Multiplies a quaternion and a 3D vector, rotating it.
     pub fn mul_vec3(self, other: Vec3) -> Vec3 {
         glam_assert!(self.is_normalized());
-        #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-        {
-            let w = self.0.w();
-            let b = self.0.truncate();
-            let b2 = b.dot(b);
-            other * (w * w - b2) + b * (other.dot(b) * 2.0) + b.cross(other) * (w * 2.0)
-        }
 
-        #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+        #[cfg(vec4sse2)]
         {
             let w = self.0.dup_w().truncate();
             let two = Vec3::splat(2.0);
             let b = self.0.truncate();
             let b2 = b.dot_as_vec3(b);
             other * (w * w - b2) + b * (other.dot_as_vec3(b) * two) + b.cross(other) * (w * two)
+        }
+
+        #[cfg(vec4f32)]
+        {
+            let w = self.0.w();
+            let b = self.0.truncate();
+            let b2 = b.dot(b);
+            other * (w * w - b2) + b * (other.dot(b) * 2.0) + b.cross(other) * (w * 2.0)
         }
     }
 
@@ -393,19 +387,8 @@ impl Quat {
     pub fn mul_quat(self, other: Self) -> Self {
         glam_assert!(self.is_normalized());
         glam_assert!(other.is_normalized());
-        #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-        {
-            let (x0, y0, z0, w0) = self.0.into();
-            let (x1, y1, z1, w1) = other.0.into();
-            Self::from_xyzw(
-                w0 * x1 + x0 * w1 + y0 * z1 - z0 * y1,
-                w0 * y1 - x0 * z1 + y0 * w1 + z0 * x1,
-                w0 * z1 + x0 * y1 - y0 * x1 + z0 * w1,
-                w0 * w1 - x0 * x1 - y0 * y1 - z0 * z1,
-            )
-        }
 
-        #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+        #[cfg(vec4sse2)]
         unsafe {
             // from rtm quat_mul
             let lhs = self.0.into();
@@ -440,6 +423,18 @@ impl Quat {
             let result1 = _mm_add_ps(lzry_lwry_nlxry_nlyry, nlyrz_lxrz_lwrz_wlzrz);
             Self(Vec4(_mm_add_ps(result0, result1)))
         }
+
+        #[cfg(vec4f32)]
+        {
+            let (x0, y0, z0, w0) = self.0.into();
+            let (x1, y1, z1, w1) = other.0.into();
+            Self::from_xyzw(
+                w0 * x1 + x0 * w1 + y0 * z1 - z0 * y1,
+                w0 * y1 - x0 * z1 + y0 * w1 + z0 * x1,
+                w0 * z1 + x0 * y1 - y0 * x1 + z0 * w1,
+                w0 * w1 - x0 * x1 - y0 * y1 - z0 * z1,
+            )
+        }
     }
     /// Returns element `x`.
     #[inline]
@@ -468,16 +463,20 @@ impl Quat {
 
 impl fmt::Debug for Quat {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-        return fmt.debug_tuple("Quat").field(&(self.0).0).finish();
-        #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-        return fmt
-            .debug_tuple("Quat")
-            .field(&self.0.x())
-            .field(&self.0.y())
-            .field(&self.0.z())
-            .field(&self.0.w())
-            .finish();
+        #[cfg(vec4sse2)]
+        {
+            fmt.debug_tuple("Quat").field(&(self.0).0).finish()
+        }
+
+        #[cfg(vec4f32)]
+        {
+            fmt.debug_tuple("Quat")
+                .field(&self.0.x())
+                .field(&self.0.y())
+                .field(&self.0.z())
+                .field(&self.0.w())
+                .finish()
+        }
     }
 }
 
@@ -596,7 +595,7 @@ impl From<Quat> for [f32; 4] {
     }
 }
 
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+#[cfg(vec4sse2)]
 impl From<Quat> for __m128 {
     // TODO: write test
     #[cfg_attr(tarpaulin, skip)]
@@ -606,7 +605,7 @@ impl From<Quat> for __m128 {
     }
 }
 
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+#[cfg(vec4sse2)]
 impl From<__m128> for Quat {
     #[inline]
     fn from(t: __m128) -> Self {
