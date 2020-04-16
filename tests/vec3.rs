@@ -360,7 +360,7 @@ fn test_vec3mask_not() {
 }
 
 #[test]
-fn text_vec3mask_fmt() {
+fn test_vec3mask_fmt() {
     let a = Vec3Mask::new(true, false, false);
 
     // debug fmt
@@ -392,6 +392,32 @@ fn text_vec3mask_fmt() {
         feature = "scalar-math"
     ))]
     assert_eq!(format!("{}", a), "[true, false, false]");
+}
+
+#[test]
+fn test_vec3mask_eq() {
+    let a = Vec3Mask::new(true, false, true);
+    let b = Vec3Mask::new(true, false, true);
+    let c = Vec3Mask::new(false, true, true);
+
+    assert_eq!(a, b);
+    assert_eq!(b, a);
+    assert_ne!(a, c);
+    assert_ne!(b, c);
+}
+
+#[test]
+fn test_vec3mask_hash() {
+    use std::collections::hash_map::DefaultHasher;
+    use std::hash::Hash;
+
+    let a = Vec3Mask::new(true, false, true);
+    let b = Vec3Mask::new(true, false, true);
+    assert_eq!(a, b);
+    assert_eq!(
+        a.hash(&mut DefaultHasher::new()),
+        b.hash(&mut DefaultHasher::new())
+    );
 }
 
 #[test]

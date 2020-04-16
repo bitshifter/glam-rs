@@ -1,4 +1,6 @@
 use super::Vec3;
+use core::fmt;
+use core::hash;
 use core::ops::*;
 
 #[cfg(all(vec3sse2, target_arch = "x86"))]
@@ -17,7 +19,7 @@ pub struct Vec3Mask(pub(crate) __m128);
 
 /// A 3-dimensional vector mask.
 #[cfg(vec3f32)]
-#[derive(Clone, Copy, Default)]
+#[derive(Clone, Copy, Default, PartialEq, Eq, Hash)]
 // if compiling with simd enabled assume alignment needs to match the simd type
 #[cfg_attr(vec3f32_align16, repr(align(16)))]
 #[repr(C)]
@@ -28,6 +30,33 @@ impl Default for Vec3Mask {
     #[inline]
     fn default() -> Self {
         unsafe { Self(_mm_setzero_ps()) }
+    }
+}
+
+#[cfg(vec3sse2)]
+impl PartialEq for Vec3Mask {
+    fn eq(&self, other: &Self) -> bool {
+        let self_arr = unsafe { &*(self as *const Vec3Mask as *const [f32; 3]) };
+        let other_arr = unsafe { &*(other as *const Vec3Mask as *const [f32; 3]) };
+
+        self_arr
+            .iter()
+            .zip(other_arr.iter())
+            .all(|(a, b)| a.to_bits().eq(&b.to_bits()))
+    }
+}
+
+#[cfg(vec3sse2)]
+impl Eq for Vec3Mask {}
+
+#[cfg(vec3sse2)]
+impl hash::Hash for Vec3Mask {
+    fn hash<H: hash::Hasher>(&self, state: &mut H) {
+        let self_arr = unsafe { &*(self as *const Vec3Mask as *const [f32; 3]) };
+
+        self_arr[0].to_bits().hash(state);
+        self_arr[1].to_bits().hash(state);
+        self_arr[2].to_bits().hash(state);
     }
 }
 
@@ -214,28 +243,43 @@ impl Not for Vec3Mask {
 
 impl fmt::Debug for Vec3Mask {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        cfg_if! {
-            if #[cfg(all(target_feature = "sse2", not(feature = "packed-vec3"), not(feature = "scalar-math")))] {
-                let arr = unsafe { &*(self as *const Vec3Mask as *const [f32; 3]) };
-                write!(f, "Vec3Mask({:#x}, {:#x}, {:#x})", arr[0].to_bits(),arr[1].to_bits(),arr[2].to_bits())
-            } else {
-                write!(f, "Vec3Mask({:#x}, {:#x}, {:#x})", self.0, self.1, self.2)
-            }
+        #[cfg(vec3sse2)]
+        {
+            let arr = unsafe { &*(self as *const Vec3Mask as *const [f32; 3]) };
+            write!(
+                f,
+                "Vec3Mask({:#x}, {:#x}, {:#x})",
+                arr[0].to_bits(),
+                arr[1].to_bits(),
+                arr[2].to_bits()
+            )
+        }
+
+        #[cfg(vec3f32)]
+        {
+            write!(f, "Vec3Mask({:#x}, {:#x}, {:#x})", self.0, self.1, self.2)
         }
     }
 }
 
 impl fmt::Display for Vec3Mask {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        cfg_if! {
-            if #[cfg(all(target_feature = "sse2", not(feature = "packed-vec3"), not(feature = "scalar-math")))] {
-                let arr = unsafe { &*(self as *const Vec3Mask as *const [f32; 3]) };
+        #[cfg(vec3sse2)]
+        {
+            let arr = unsafe { &*(self as *const Vec3Mask as *const [f32; 3]) };
 
-                write!(f, "[{}, {}, {}]", arr[0].to_bits() != 0, arr[1].to_bits() != 0, arr[2].to_bits() != 0)
-            } else {
-                write!(f, "[{}, {}, {}]", self.0 != 0, self.1 != 0, self.2 != 0)
-            }
+            write!(
+                f,
+                "[{}, {}, {}]",
+                arr[0].to_bits() != 0,
+                arr[1].to_bits() != 0,
+                arr[2].to_bits() != 0
+            )
+        }
 
+        #[cfg(vec3f32)]
+        {
+            write!(f, "[{}, {}, {}]", self.0 != 0, self.1 != 0, self.2 != 0)
         }
     }
 }
