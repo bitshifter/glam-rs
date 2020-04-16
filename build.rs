@@ -1,16 +1,11 @@
-use std::{collections::HashSet, env};
+use std::env;
 
 fn main() {
     let force_scalar_math = env::var("CARGO_FEATURE_SCALAR_MATH").is_ok();
     let force_packed_vec3 = env::var("CARGO_FEATURE_PACKED_VEC3").is_ok();
 
-    let cfg_target_feature: Option<String> = env::var("CARGO_CFG_TARGET_FEATURE").ok();
-
-    // TODO: probably excessive making a hashmap
-    let target_features: HashSet<&str> = cfg_target_feature
-        .as_ref()
-        .map_or(HashSet::new(), |v| v.split(',').collect());
-    let target_feature_sse2 = target_features.contains("sse2");
+    let target_feature_sse2 = env::var("CARGO_CFG_TARGET_FEATURE")
+        .map_or(false, |cfg| cfg.split(',').find(|&f| f == "sse2").is_some());
 
     if target_feature_sse2 && !force_scalar_math && !force_packed_vec3 {
         println!("cargo:rustc-cfg=vec3sse2");
