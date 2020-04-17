@@ -420,7 +420,7 @@ fn test_vec4mask_fmt() {
     );
 
     #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-    assert_eq!(format!("{}", a), "[true, false, false, true]");
+    assert_eq!(format!("{}", a), "[true, false, true, false]");
     #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
     assert_eq!(
         format!("{:?}", a),

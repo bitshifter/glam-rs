@@ -1,11 +1,13 @@
 use crate::Vec4;
+use core::fmt;
 use core::ops::*;
-use core::{fmt, hash};
 
 #[cfg(all(vec4sse2, target_arch = "x86"))]
 use core::arch::x86::*;
 #[cfg(all(vec4sse2, target_arch = "x86_64"))]
 use core::arch::x86_64::*;
+#[cfg(vec4sse2)]
+use core::hash;
 
 /// A 4-dimensional vector mask.
 ///

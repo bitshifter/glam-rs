@@ -1,12 +1,13 @@
 use super::Vec3;
 use core::fmt;
-use core::hash;
 use core::ops::*;
 
 #[cfg(all(vec3sse2, target_arch = "x86"))]
 use core::arch::x86::*;
 #[cfg(all(vec3sse2, target_arch = "x86_64"))]
 use core::arch::x86_64::*;
+#[cfg(vec3sse2)]
+use core::hash;
 
 /// A 3-dimensional vector mask.
 ///
