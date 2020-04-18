@@ -92,26 +92,55 @@ pub(crate) mod sse2 {
     // _ps_const_ty!(PS_COSCOF_P2, f32x4, 4.166_664_6e-2);
     // _ps_const_ty!(PS_CEPHES_FOPI, f32x4, 1.273_239_5); // 4 / M_PI
 
-    _ps_const_ty!(g_XMNegativeZero, u32x4, 0x80000000);
-    _ps_const_ty!(g_XMPi, f32x4, std::f32::consts::PI);
-    _ps_const_ty!(g_XMHalfPi, f32x4, std::f32::consts::FRAC_PI_2);
-    _ps_const_ty!(g_XMSinCoefficients0 , f32x4, -0.16666667, 0.0083333310, -0.00019840874, 2.7525562e-06);
-    _ps_const_ty!(g_XMSinCoefficients1 , f32x4, -2.3889859e-08, -0.16665852 /*Est1*/, 0.0083139502 /*Est2*/, -0.00018524670 /*Est3*/);
-    _ps_const_ty!(g_XMOne, f32x4, 1.0);
-    _ps_const_ty!(g_XMTwoPi, f32x4, std::f32::consts::PI * 2.0);
-    _ps_const_ty!(g_XMReciprocalTwoPi , f32x4, 0.159154943);
+    _ps_const_ty!(XM_NEGATIVE_ZERO, u32x4, 0x80000000);
+    _ps_const_ty!(XM_PI, f32x4, std::f32::consts::PI);
+    _ps_const_ty!(XM_HALF_PI, f32x4, std::f32::consts::FRAC_PI_2);
+    _ps_const_ty!(
+        XM_SIN_COEFFICIENTS0,
+        f32x4,
+        -0.16666667,
+        0.0083333310,
+        -0.00019840874,
+        2.7525562e-06
+    );
+    _ps_const_ty!(
+        XM_SIN_COEFFICIENTS1,
+        f32x4,
+        -2.3889859e-08,
+        -0.16665852,    /*Est1*/
+        0.0083139502,   /*Est2*/
+        -0.00018524670  /*Est3*/
+    );
+    _ps_const_ty!(XM_ONE, f32x4, 1.0);
+    _ps_const_ty!(XM_TWO_PI, f32x4, std::f32::consts::PI * 2.0);
+    _ps_const_ty!(XM_RECIPROCAL_TWO_PI, f32x4, 0.159154943);
 
+    #[cfg(target_feature = "avx")]
+    macro_rules! XM_PERMUTE_PS {
+        ($v:expr, $c:expr) => {
+            _mm_permute_ps($v, $c)
+        };
+    }
+
+    #[cfg(not(target_feature = "avx"))]
     macro_rules! XM_PERMUTE_PS {
         ($v:expr, $c:expr) => {
             _mm_shuffle_ps($v, $v, $c)
-        }
+        };
     }
 
-    // XMVectorNegativeMultiplySubtract
+    #[cfg(target_feature = "fma")]
     macro_rules! XM_FMADD_PS {
         ($a:expr, $b:expr, $c:expr) => {
             _mm_fmadd_ps($a, $b, $c)
-        }
+        };
+    }
+
+    #[cfg(not(target_feature = "fma"))]
+    macro_rules! XM_FMADD_PS {
+        ($a:expr, $b:expr, $c:expr) => {
+            _mm_add_ps(_mm_mul_ps(($a), ($b)), ($c))
+        };
     }
 
     #[inline]
@@ -168,40 +197,35 @@ pub(crate) mod sse2 {
         _mm_or_ps(result, _mm_castsi128_ps(test))
     }
 
-    #[inline]
-    #[allow(non_snake_case)]
-    pub(crate) const fn _MM_SHUFFLE(z: u32, y: u32, x: u32, w: u32) -> i32 {
-        // core::arch::x86_64::_MM_SHUFFLE requires nightly
-        ((z << 6) | (y << 4) | (x << 2) | w) as i32
-    }
-
-    /// From DirectXMath: XMVectorModAngles
-    /// 
     /// Returns a vector whose components are the corresponding components of Angles modulo 2PI.
+    #[allow(dead_code)]
     pub(crate) unsafe fn m128_mod_angles(angles: __m128) -> __m128 {
-        let v = _mm_mul_ps(angles, g_XMReciprocalTwoPi.m128);
+        // From DirectXMath: XMVectorModAngles
+        let v = _mm_mul_ps(angles, XM_RECIPROCAL_TWO_PI.m128);
         let v = m128_round(v);
-        XM_FMADD_PS!(g_XMTwoPi.m128, v, angles) // XMVectorNegativeMultiplySubtract
+        XM_FMADD_PS!(XM_TWO_PI.m128, v, angles)
     }
 
-    /// From DirectXMath: XMVectorSin
     pub(crate) unsafe fn m128_sin(v: __m128) -> __m128 {
+        // From DirectXMath: XMVectorSin
+        //
+        // 11-degree minimax approximation
+        //
         // Note that XMVectorSin clamps the value here with XMVectorModAngles,
-        // but this adds about 15% overhead.
+        // but this adds about 25% overhead.
         //
         // // Force the value within the bounds of pi
         // let mut x = m128_mod_angles(v);
-
         let mut x = v;
 
         // Map in [-pi/2,pi/2] with sin(y) = sin(x).
-        let sign = _mm_and_ps(x, g_XMNegativeZero.m128);
+        let sign = _mm_and_ps(x, XM_NEGATIVE_ZERO.m128);
         // pi when x >= 0, -pi when x < 0
-        let c = _mm_or_ps(g_XMPi.m128, sign);
+        let c = _mm_or_ps(XM_PI.m128, sign);
         // |x|
         let absx = _mm_andnot_ps(sign, x);
         let rflx = _mm_sub_ps(c, x);
-        let comp = _mm_cmple_ps(absx, g_XMHalfPi.m128);
+        let comp = _mm_cmple_ps(absx, XM_HALF_PI.m128);
         let select0 = _mm_and_ps(comp, x);
         let select1 = _mm_andnot_ps(comp, rflx);
         x = _mm_or_ps(select0, select1);
@@ -209,23 +233,23 @@ pub(crate) mod sse2 {
         let x2 = _mm_mul_ps(x, x);
 
         // Compute polynomial approximation
-        let sc1 = g_XMSinCoefficients1;
-        let v_constants_b = XM_PERMUTE_PS!(sc1.m128, _MM_SHUFFLE(0, 0, 0, 0));
+        let sc1 = XM_SIN_COEFFICIENTS1;
+        let v_constants_b = XM_PERMUTE_PS!(sc1.m128, 0b00_00_00_00);
 
-        let sc0 = g_XMSinCoefficients0.m128;
-        let mut v_constants = XM_PERMUTE_PS!(sc0, _MM_SHUFFLE(3, 3, 3, 3));
+        let sc0 = XM_SIN_COEFFICIENTS0.m128;
+        let mut v_constants = XM_PERMUTE_PS!(sc0, 0b11_11_11_11);
         let mut result = XM_FMADD_PS!(v_constants_b, x2, v_constants);
 
-        v_constants = XM_PERMUTE_PS!(sc0, _MM_SHUFFLE(2, 2, 2, 2));
+        v_constants = XM_PERMUTE_PS!(sc0, 0b10_10_10_10);
         result = XM_FMADD_PS!(result, x2, v_constants);
 
-        v_constants = XM_PERMUTE_PS!(sc0, _MM_SHUFFLE(1, 1, 1, 1));
+        v_constants = XM_PERMUTE_PS!(sc0, 0b01_01_01_01);
         result = XM_FMADD_PS!(result, x2, v_constants);
 
-        v_constants = XM_PERMUTE_PS!(sc0, _MM_SHUFFLE(0, 0, 0, 0));
+        v_constants = XM_PERMUTE_PS!(sc0, 0b00_00_00_00);
         result = XM_FMADD_PS!(result, x2, v_constants);
 
-        result = XM_FMADD_PS!(result, x2, g_XMOne.m128);
+        result = XM_FMADD_PS!(result, x2, XM_ONE.m128);
         result = _mm_mul_ps(result, x);
 
         result
@@ -440,4 +464,26 @@ fn test_scalar_sin_cos() {
     let (s, c) = scalar_sin_cos(std::f32::NEG_INFINITY);
     assert!(s.is_nan());
     assert!(c.is_nan());
+}
+
+#[test]
+#[cfg(vec4sse2)]
+fn test_sse2_m128_sin() {
+    use crate::Vec4;
+    use std::f32::consts::PI;
+
+    fn test_sse2_m128_sin_angle(a: f32) {
+        let v = Vec4::splat(a);
+        let v = unsafe { Vec4(sse2::m128_sin(v.0)) };
+        assert_approx_eq!(v.x(), a.sin(), 1e-6);
+    }
+
+    let mut a = -PI;
+    let end = PI;
+    let step = PI / 1024.0;
+
+    while a <= end {
+        test_sse2_m128_sin_angle(a);
+        a += step;
+    }
 }

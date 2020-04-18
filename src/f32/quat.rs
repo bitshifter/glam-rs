@@ -358,18 +358,25 @@ impl Quat {
         }
     }
 
-    /// Performs a spherical linear interpolation between `self` and `other`
+    /// Performs a spherical linear interpolation between `self` and `end`
     /// based on the value `s`.
     ///
     /// When `s` is `0.0`, the result will be equal to `self`.  When `s`
-    /// is `1.0`, the result will be equal to `other`.
+    /// is `1.0`, the result will be equal to `end`.
+    ///
+    /// Note that a rotation can be represented by two quaternions: `q` and
+    /// `-q`. The slerp path between `q` and `end` will be different from the
+    /// path between `-q` and `end`. One path will take the long way around and
+    /// one will take the short way. In order to correct for this, the `dot`
+    /// product between `self` and `end` should be positive. If the `dot`
+    /// product is negative, slerp between `-self` and `end`.
     #[inline]
     pub fn slerp(self, end: Self, s: f32) -> Self {
         // http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/
 
         glam_assert!(self.is_normalized());
         glam_assert!(end.is_normalized());
-        
+
         const DOT_THRESHOLD: f32 = 0.9995;
 
         let dot = self.dot(end);
@@ -378,8 +385,8 @@ impl Quat {
             // assumes lerp returns a normalized quaternion
             self.lerp(end, s)
         } else {
-            #[cfg(not(vec4sse2))]
-            {                
+            #[cfg(vec4f32)]
+            {
                 // assumes scalar_acos clamps the input to [-1.0, 1.0]
                 let theta = crate::f32::funcs::scalar_acos(dot);
                 let scale1 = f32::sin(theta * (1.0 - s));
@@ -391,22 +398,20 @@ impl Quat {
 
             #[cfg(vec4sse2)]
             {
-                use crate::f32::funcs::sse2::_MM_SHUFFLE;
-
                 // assumes scalar_acos clamps the input to [-1.0, 1.0]
                 let theta = crate::f32::funcs::scalar_acos(dot);
-    
+
                 let x = 1.0 - s;
                 let y = s;
                 let z = 1.0;
-    
+
                 unsafe {
                     let tmp = Vec4::splat(theta) * Vec4::new(x, y, z, 0.0);
                     let tmp = crate::f32::funcs::sse2::m128_sin(tmp.0);
 
-                    let scale1 = _mm_shuffle_ps(tmp, tmp, _MM_SHUFFLE(0, 0, 0, 0));
-                    let scale2 = _mm_shuffle_ps(tmp, tmp, _MM_SHUFFLE(1, 1, 1, 1));
-                    let theta_sin = _mm_shuffle_ps(tmp, tmp, _MM_SHUFFLE(2, 2, 2, 2));
+                    let scale1 = _mm_shuffle_ps(tmp, tmp, 0b00_00_00_00);
+                    let scale2 = _mm_shuffle_ps(tmp, tmp, 0b01_01_01_01);
+                    let theta_sin = _mm_shuffle_ps(tmp, tmp, 0b10_10_10_10);
 
                     let theta_sin_recip = Vec4(_mm_rcp_ps(theta_sin));
 
