@@ -37,13 +37,10 @@ impl Default for Vec3Mask {
 #[cfg(vec3sse2)]
 impl PartialEq for Vec3Mask {
     fn eq(&self, other: &Self) -> bool {
-        let self_arr = unsafe { &*(self as *const Vec3Mask as *const [f32; 3]) };
-        let other_arr = unsafe { &*(other as *const Vec3Mask as *const [f32; 3]) };
+        let self_arr: [u32; 3] = (*self).into();
+        let other_arr: [u32; 3] = (*other).into();
 
-        self_arr
-            .iter()
-            .zip(other_arr.iter())
-            .all(|(a, b)| a.to_bits().eq(&b.to_bits()))
+        self_arr.iter().zip(other_arr.iter()).all(|(a, b)| a.eq(b))
     }
 }
 
@@ -53,11 +50,12 @@ impl Eq for Vec3Mask {}
 #[cfg(vec3sse2)]
 impl hash::Hash for Vec3Mask {
     fn hash<H: hash::Hasher>(&self, state: &mut H) {
-        let self_arr = unsafe { &*(self as *const Vec3Mask as *const [f32; 3]) };
+        let self_arr: [u32; 3] = (*self).into();
 
-        self_arr[0].to_bits().hash(state);
-        self_arr[1].to_bits().hash(state);
-        self_arr[2].to_bits().hash(state);
+        self_arr.hash(state);
+        // self_arr[0].hash(state);
+        // self_arr[1].hash(state);
+        // self_arr[2].hash(state);
     }
 }
 
@@ -246,14 +244,8 @@ impl fmt::Debug for Vec3Mask {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         #[cfg(vec3sse2)]
         {
-            let arr = unsafe { &*(self as *const Vec3Mask as *const [f32; 3]) };
-            write!(
-                f,
-                "Vec3Mask({:#x}, {:#x}, {:#x})",
-                arr[0].to_bits(),
-                arr[1].to_bits(),
-                arr[2].to_bits()
-            )
+            let arr: [u32; 3] = (*self).into();
+            write!(f, "Vec3Mask({:#x}, {:#x}, {:#x})", arr[0], arr[1], arr[2])
         }
 
         #[cfg(vec3f32)]
@@ -267,20 +259,28 @@ impl fmt::Display for Vec3Mask {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         #[cfg(vec3sse2)]
         {
-            let arr = unsafe { &*(self as *const Vec3Mask as *const [f32; 3]) };
+            let arr: [u32; 3] = (*self).into();
 
-            write!(
-                f,
-                "[{}, {}, {}]",
-                arr[0].to_bits() != 0,
-                arr[1].to_bits() != 0,
-                arr[2].to_bits() != 0
-            )
+            write!(f, "[{}, {}, {}]", arr[0] != 0, arr[1] != 0, arr[2] != 0)
         }
 
         #[cfg(vec3f32)]
         {
             write!(f, "[{}, {}, {}]", self.0 != 0, self.1 != 0, self.2 != 0)
+        }
+    }
+}
+
+impl From<Vec3Mask> for [u32; 3] {
+    fn from(mask: Vec3Mask) -> Self {
+        #[cfg(vec3sse2)]
+        {
+            unsafe { *(&mask as *const Vec3Mask as *const [u32; 3]) }
+        }
+
+        #[cfg(vec3f32)]
+        {
+            [mask.0, mask.1, mask.2]
         }
     }
 }

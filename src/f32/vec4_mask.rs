@@ -32,31 +32,29 @@ impl Default for Vec4Mask {
     }
 }
 
-#[cfg(vec3sse2)]
+#[cfg(vec4sse2)]
 impl PartialEq for Vec4Mask {
     fn eq(&self, other: &Self) -> bool {
-        let self_arr = unsafe { &*(self as *const Vec4Mask as *const [f32; 4]) };
-        let other_arr = unsafe { &*(other as *const Vec4Mask as *const [f32; 4]) };
+        let self_arr: [u32; 4] = (*self).into();
+        let other_arr: [u32; 4] = (*other).into();
 
-        self_arr
-            .iter()
-            .zip(other_arr.iter())
-            .all(|(a, b)| a.to_bits().eq(&b.to_bits()))
+        self_arr.iter().zip(other_arr.iter()).all(|(a, b)| a.eq(b))
     }
 }
 
-#[cfg(vec3sse2)]
+#[cfg(vec4sse2)]
 impl Eq for Vec4Mask {}
 
-#[cfg(vec3sse2)]
+#[cfg(vec4sse2)]
 impl hash::Hash for Vec4Mask {
     fn hash<H: hash::Hasher>(&self, state: &mut H) {
-        let self_arr = unsafe { &*(self as *const Vec4Mask as *const [f32; 4]) };
+        let self_arr: [u32; 4] = (*self).into();
 
-        self_arr[0].to_bits().hash(state);
-        self_arr[1].to_bits().hash(state);
-        self_arr[2].to_bits().hash(state);
-        self_arr[3].to_bits().hash(state);
+        self_arr.hash(state);
+        // self_arr[0].hash(state);
+        // self_arr[1].hash(state);
+        // self_arr[2].hash(state);
+        // self_arr[3].hash(state);
     }
 }
 
@@ -263,14 +261,11 @@ impl fmt::Debug for Vec4Mask {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         #[cfg(vec4sse2)]
         {
-            let arr = unsafe { &*(self as *const Vec4Mask as *const [f32; 4]) };
+            let arr: [u32; 4] = (*self).into();
             write!(
                 f,
                 "Vec4Mask({:#x}, {:#x}, {:#x}, {:#x})",
-                arr[0].to_bits(),
-                arr[1].to_bits(),
-                arr[2].to_bits(),
-                arr[3].to_bits()
+                arr[0], arr[1], arr[2], arr[3]
             )
         }
 
@@ -289,15 +284,15 @@ impl fmt::Display for Vec4Mask {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         #[cfg(vec4sse2)]
         {
-            let arr = unsafe { &*(self as *const Vec4Mask as *const [f32; 4]) };
+            let arr: [u32; 4] = (*self).into();
 
             write!(
                 f,
                 "[{}, {}, {}, {}]",
-                arr[0].to_bits() != 0,
-                arr[1].to_bits() != 0,
-                arr[2].to_bits() != 0,
-                arr[3].to_bits() != 0
+                arr[0] != 0,
+                arr[1] != 0,
+                arr[2] != 0,
+                arr[3] != 0
             )
         }
 
@@ -311,6 +306,20 @@ impl fmt::Display for Vec4Mask {
                 self.2 != 0,
                 self.3 != 0
             )
+        }
+    }
+}
+
+impl From<Vec4Mask> for [u32; 4] {
+    fn from(mask: Vec4Mask) -> Self {
+        #[cfg(vec4sse2)]
+        {
+            unsafe { *(&mask as *const Vec4Mask as *const [u32; 4]) }
+        }
+
+        #[cfg(vec4f32)]
+        {
+            [mask.0, mask.1, mask.2, mask.3]
         }
     }
 }
