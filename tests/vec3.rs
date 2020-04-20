@@ -360,6 +360,74 @@ fn test_vec3mask_not() {
 }
 
 #[test]
+fn test_vec3mask_fmt() {
+    let a = Vec3Mask::new(true, false, false);
+
+    // debug fmt
+    #[cfg(all(
+        target_feature = "sse2",
+        not(feature = "packed-vec3"),
+        not(feature = "scalar-math")
+    ))]
+    assert_eq!(format!("{:?}", a), "Vec3Mask(0xffffffff, 0x0, 0x0)");
+
+    #[cfg(any(
+        not(target_feature = "sse2"),
+        feature = "packed-vec3",
+        feature = "scalar-math"
+    ))]
+    assert_eq!(format!("{:?}", a), "Vec3Mask(0xffffffff, 0x0, 0x0)");
+
+    // display fmt
+    #[cfg(all(
+        target_feature = "sse2",
+        not(feature = "packed-vec3"),
+        not(feature = "scalar-math")
+    ))]
+    assert_eq!(format!("{}", a), "[true, false, false]");
+
+    #[cfg(any(
+        not(target_feature = "sse2"),
+        feature = "packed-vec3",
+        feature = "scalar-math"
+    ))]
+    assert_eq!(format!("{}", a), "[true, false, false]");
+}
+
+#[test]
+fn test_vec3mask_eq() {
+    let a = Vec3Mask::new(true, false, true);
+    let b = Vec3Mask::new(true, false, true);
+    let c = Vec3Mask::new(false, true, true);
+
+    assert_eq!(a, b);
+    assert_eq!(b, a);
+    assert_ne!(a, c);
+    assert_ne!(b, c);
+}
+
+#[test]
+fn test_vec3mask_hash() {
+    use std::collections::hash_map::DefaultHasher;
+    use std::hash::Hash;
+    use std::hash::Hasher;
+
+    let a = Vec3Mask::new(true, false, true);
+    let b = Vec3Mask::new(true, false, true);
+
+    let mut a_hasher = DefaultHasher::new();
+    let mut b_hasher = DefaultHasher::new();
+
+    a.hash(&mut a_hasher);
+    let a_hashed = a_hasher.finish();
+    b.hash(&mut b_hasher);
+    let b_hashed = b_hasher.finish();
+
+    assert_eq!(a, b);
+    assert_eq!(a_hashed, b_hashed);
+}
+
+#[test]
 fn test_vec3_sign() {
     assert_eq!(Vec3::zero().sign(), Vec3::one());
     assert_eq!(-Vec3::zero().sign(), -Vec3::one());

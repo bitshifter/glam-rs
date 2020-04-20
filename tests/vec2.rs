@@ -305,6 +305,14 @@ fn test_vec2mask_not() {
 }
 
 #[test]
+fn test_vec2mask_fmt() {
+    let a = Vec2Mask::new(true, false);
+
+    assert_eq!(format!("{:?}", a), "Vec2Mask(0xffffffff, 0x0)");
+    assert_eq!(format!("{}", a), "[true, false]");
+}
+
+#[test]
 fn test_vec2_sign() {
     assert_eq!(Vec2::zero().sign(), Vec2::one());
     assert_eq!(-Vec2::zero().sign(), -Vec2::one());

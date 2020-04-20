@@ -1,10 +1,13 @@
 use super::Vec3;
+use core::fmt;
 use core::ops::*;
 
 #[cfg(all(vec3sse2, target_arch = "x86"))]
 use core::arch::x86::*;
 #[cfg(all(vec3sse2, target_arch = "x86_64"))]
 use core::arch::x86_64::*;
+#[cfg(vec3sse2)]
+use core::hash;
 
 /// A 3-dimensional vector mask.
 ///
@@ -17,7 +20,7 @@ pub struct Vec3Mask(pub(crate) __m128);
 
 /// A 3-dimensional vector mask.
 #[cfg(vec3f32)]
-#[derive(Clone, Copy, Default)]
+#[derive(Clone, Copy, Default, PartialEq, Eq, Hash)]
 // if compiling with simd enabled assume alignment needs to match the simd type
 #[cfg_attr(vec3f32_align16, repr(align(16)))]
 #[repr(C)]
@@ -28,6 +31,28 @@ impl Default for Vec3Mask {
     #[inline]
     fn default() -> Self {
         unsafe { Self(_mm_setzero_ps()) }
+    }
+}
+
+#[cfg(vec3sse2)]
+impl PartialEq for Vec3Mask {
+    fn eq(&self, other: &Self) -> bool {
+        let self_arr: [u32; 3] = (*self).into();
+        let other_arr: [u32; 3] = (*other).into();
+
+        self_arr.eq(&other_arr)
+    }
+}
+
+#[cfg(vec3sse2)]
+impl Eq for Vec3Mask {}
+
+#[cfg(vec3sse2)]
+impl hash::Hash for Vec3Mask {
+    fn hash<H: hash::Hasher>(&self, state: &mut H) {
+        let self_arr: [u32; 3] = (*self).into();
+
+        self_arr.hash(state);
     }
 }
 
@@ -208,6 +233,51 @@ impl Not for Vec3Mask {
         #[cfg(vec3f32)]
         {
             Self(!self.0, !self.1, !self.2)
+        }
+    }
+}
+
+impl fmt::Debug for Vec3Mask {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        #[cfg(vec3sse2)]
+        {
+            let arr: [u32; 3] = (*self).into();
+            write!(f, "Vec3Mask({:#x}, {:#x}, {:#x})", arr[0], arr[1], arr[2])
+        }
+
+        #[cfg(vec3f32)]
+        {
+            write!(f, "Vec3Mask({:#x}, {:#x}, {:#x})", self.0, self.1, self.2)
+        }
+    }
+}
+
+impl fmt::Display for Vec3Mask {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        #[cfg(vec3sse2)]
+        {
+            let arr: [u32; 3] = (*self).into();
+
+            write!(f, "[{}, {}, {}]", arr[0] != 0, arr[1] != 0, arr[2] != 0)
+        }
+
+        #[cfg(vec3f32)]
+        {
+            write!(f, "[{}, {}, {}]", self.0 != 0, self.1 != 0, self.2 != 0)
+        }
+    }
+}
+
+impl From<Vec3Mask> for [u32; 3] {
+    fn from(mask: Vec3Mask) -> Self {
+        #[cfg(vec3sse2)]
+        {
+            unsafe { *(&mask as *const Vec3Mask as *const [u32; 3]) }
+        }
+
+        #[cfg(vec3f32)]
+        {
+            [mask.0, mask.1, mask.2]
         }
     }
 }

@@ -1,10 +1,13 @@
 use crate::Vec4;
+use core::fmt;
 use core::ops::*;
 
 #[cfg(all(vec4sse2, target_arch = "x86"))]
 use core::arch::x86::*;
 #[cfg(all(vec4sse2, target_arch = "x86_64"))]
 use core::arch::x86_64::*;
+#[cfg(vec4sse2)]
+use core::hash;
 
 /// A 4-dimensional vector mask.
 ///
@@ -16,7 +19,7 @@ use core::arch::x86_64::*;
 pub struct Vec4Mask(pub(crate) __m128);
 
 #[cfg(vec4f32)]
-#[derive(Clone, Copy, Default)]
+#[derive(Clone, Copy, Default, PartialEq, Eq, Hash)]
 #[cfg_attr(vec4f32_align16, repr(align(16)))]
 #[repr(C)]
 pub struct Vec4Mask(u32, u32, u32, u32);
@@ -26,6 +29,28 @@ impl Default for Vec4Mask {
     #[inline]
     fn default() -> Self {
         unsafe { Self(_mm_setzero_ps()) }
+    }
+}
+
+#[cfg(vec4sse2)]
+impl PartialEq for Vec4Mask {
+    fn eq(&self, other: &Self) -> bool {
+        let self_arr: [u32; 4] = (*self).into();
+        let other_arr: [u32; 4] = (*other).into();
+
+        self_arr.eq(&other_arr)
+    }
+}
+
+#[cfg(vec4sse2)]
+impl Eq for Vec4Mask {}
+
+#[cfg(vec4sse2)]
+impl hash::Hash for Vec4Mask {
+    fn hash<H: hash::Hasher>(&self, state: &mut H) {
+        let self_arr: [u32; 4] = (*self).into();
+
+        self_arr.hash(state);
     }
 }
 
@@ -224,6 +249,73 @@ impl Not for Vec4Mask {
         #[cfg(vec4f32)]
         {
             Self(!self.0, !self.1, !self.2, !self.3)
+        }
+    }
+}
+
+impl fmt::Debug for Vec4Mask {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        #[cfg(vec4sse2)]
+        {
+            let arr: [u32; 4] = (*self).into();
+            write!(
+                f,
+                "Vec4Mask({:#x}, {:#x}, {:#x}, {:#x})",
+                arr[0], arr[1], arr[2], arr[3]
+            )
+        }
+
+        #[cfg(vec4f32)]
+        {
+            write!(
+                f,
+                "Vec4Mask({:#x}, {:#x}, {:#x}, {:#x})",
+                self.0, self.1, self.2, self.3
+            )
+        }
+    }
+}
+
+impl fmt::Display for Vec4Mask {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        #[cfg(vec4sse2)]
+        {
+            let arr: [u32; 4] = (*self).into();
+
+            write!(
+                f,
+                "[{}, {}, {}, {}]",
+                arr[0] != 0,
+                arr[1] != 0,
+                arr[2] != 0,
+                arr[3] != 0
+            )
+        }
+
+        #[cfg(vec4f32)]
+        {
+            write!(
+                f,
+                "[{}, {}, {}, {}]",
+                self.0 != 0,
+                self.1 != 0,
+                self.2 != 0,
+                self.3 != 0
+            )
+        }
+    }
+}
+
+impl From<Vec4Mask> for [u32; 4] {
+    fn from(mask: Vec4Mask) -> Self {
+        #[cfg(vec4sse2)]
+        {
+            unsafe { *(&mask as *const Vec4Mask as *const [u32; 4]) }
+        }
+
+        #[cfg(vec4f32)]
+        {
+            [mask.0, mask.1, mask.2, mask.3]
         }
     }
 }
