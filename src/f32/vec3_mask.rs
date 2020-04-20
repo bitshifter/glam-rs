@@ -40,7 +40,7 @@ impl PartialEq for Vec3Mask {
         let self_arr: [u32; 3] = (*self).into();
         let other_arr: [u32; 3] = (*other).into();
 
-        self_arr.iter().zip(other_arr.iter()).all(|(a, b)| a.eq(b))
+        self_arr.eq(&other_arr)
     }
 }
 
@@ -53,9 +53,6 @@ impl hash::Hash for Vec3Mask {
         let self_arr: [u32; 3] = (*self).into();
 
         self_arr.hash(state);
-        // self_arr[0].hash(state);
-        // self_arr[1].hash(state);
-        // self_arr[2].hash(state);
     }
 }
 
