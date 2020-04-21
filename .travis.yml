@@ -6,12 +6,12 @@ addons:
     packages:
       - libssl-dev
 
-rust:
-  - nightly
-  - beta
-  - stable
+cache: cargo
 
-# cache: cargo
+rust:
+  - stable
+  - beta
+  - nightly
 
 env:
   - CARGO_FEATURES="mint rand serde debug-glam-assert transform-types"
@@ -23,9 +23,9 @@ matrix:
     - rust: nightly
   fast_finish: true
 
-before_cache: |
-  if [[ "$TRAVIS_RUST_VERSION" == nightly ]]; then
-    RUSTFLAGS="--cfg procmacro2_semver_exempt" cargo install cargo-tarpaulin -f
+before_script: |
+  if [[ "$TRAVIS_RUST_VERSION" == stable ]]; then
+    cargo install cargo-tarpaulin
   fi
 
 script:
@@ -35,11 +35,11 @@ script:
   - cargo bench --features "$CARGO_FEATURES" --no-run
 
 after_success: |
-  if [[ "$TRAVIS_RUST_VERSION" == nightly ]]; then
+  if [[ "$TRAVIS_RUST_VERSION" == stable ]]; then
     if [[ "$CARGO_FEATURES" == "scalar-math" ]]; then
-      cargo tarpaulin --features scalar-math --exclude-files src/f32/transform.rs --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
+      cargo tarpaulin --features scalar-math --exclude-files src/f32/transform.rs --exclude-files benches/* --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
     else
-      cargo tarpaulin --exclude-files src/f32/transform.rs --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
+      cargo tarpaulin --exclude-files src/f32/transform.rs --exclude-files benches/* --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
     fi
 
     # Uncomment the following two lines create and upload a report for codecov.io
