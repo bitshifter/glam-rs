@@ -29,16 +29,12 @@ before_script: |
   fi
 
 script:
-  - cargo clean
+  # - cargo clean
   - cargo build --features "$CARGO_FEATURES"
   - cargo test --features "$CARGO_FEATURES"
   - cargo bench --features "$CARGO_FEATURES" --no-run
 
 after_success: |
   if [[ "$TRAVIS_RUST_VERSION" == stable ]]; then
-    cargo tarpaulin --features "$CARGO_FEATURES" --exclude-files src/f32/transform.rs --exclude-files benches/* --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
-
-    # Uncomment the following two lines create and upload a report for codecov.io
-    # cargo tarpaulin --out Xml
-    # bash <(curl -s https://codecov.io/bash)
+    cargo tarpaulin --force-clean --features "$CARGO_FEATURES" --exclude-files src/f32/transform.rs --exclude-files benches/* --exclude-files tests/* --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
   fi
