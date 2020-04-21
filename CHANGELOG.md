@@ -6,11 +6,16 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
+### Added
 * Added `angle_between` for `Vec2` and `Vec3`.
 * Implemented `Debug`, `Display`, `PartialEq`, `Eq`, `PartialOrd`, `Ord`,
   `Hash`, and `AsRef` traits for `Vec2Mask`, `Vec3Mask` and `Vec4Mask`.
 * Added conversion functions from `Vec2Mask`, `Vec3Mask` and `Vec4Mask` to an
   array of `[u32]`.
+* Added `build.rs` to simplify conditional feature compilation.
+
+### Changed
+* Removed `cfg-if` dependency
 
 ## [0.8.6] - 2020-02-18
 
