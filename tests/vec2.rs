@@ -212,6 +212,22 @@ fn test_vec2b() {
 }
 
 #[test]
+fn test_vec2mask_as_ref() {
+    assert_eq!(Vec2Mask::new(false, false).as_ref(), &[0, 0]);
+    assert_eq!(Vec2Mask::new(true, false).as_ref(), &[!0, 0]);
+    assert_eq!(Vec2Mask::new(false, true).as_ref(), &[0, !0]);
+    assert_eq!(Vec2Mask::new(true, true).as_ref(), &[!0, !0]);
+}
+
+#[test]
+fn test_vec2mask_from() {
+    assert_eq!(Into::<[u32; 2]>::into(Vec2Mask::new(false, false)), [0, 0]);
+    assert_eq!(Into::<[u32; 2]>::into(Vec2Mask::new(true, false)), [!0, 0]);
+    assert_eq!(Into::<[u32; 2]>::into(Vec2Mask::new(false, true)), [0, !0]);
+    assert_eq!(Into::<[u32; 2]>::into(Vec2Mask::new(true, true)), [!0, !0]);
+}
+
+#[test]
 fn test_vec2mask_bitmask() {
     assert_eq!(Vec2Mask::new(false, false).bitmask(), 0b00);
     assert_eq!(Vec2Mask::new(true, false).bitmask(), 0b01);
@@ -310,6 +326,49 @@ fn test_vec2mask_fmt() {
 
     assert_eq!(format!("{:?}", a), "Vec2Mask(0xffffffff, 0x0)");
     assert_eq!(format!("{}", a), "[true, false]");
+}
+
+#[test]
+fn test_vec2mask_eq() {
+    let a = Vec2Mask::new(true, false);
+    let b = Vec2Mask::new(true, false);
+    let c = Vec2Mask::new(false, true);
+
+    assert_eq!(a, b);
+    assert_eq!(b, a);
+    assert_ne!(a, c);
+    assert_ne!(b, c);
+
+    assert!(a > c);
+    assert!(c < a);
+}
+
+#[test]
+fn test_vec2mask_hash() {
+    use std::collections::hash_map::DefaultHasher;
+    use std::hash::Hash;
+    use std::hash::Hasher;
+
+    let a = Vec2Mask::new(true, false);
+    let b = Vec2Mask::new(true, false);
+    let c = Vec2Mask::new(false, true);
+
+    let mut hasher = DefaultHasher::new();
+    a.hash(&mut hasher);
+    let a_hashed = hasher.finish();
+
+    let mut hasher = DefaultHasher::new();
+    b.hash(&mut hasher);
+    let b_hashed = hasher.finish();
+
+    let mut hasher = DefaultHasher::new();
+    c.hash(&mut hasher);
+    let c_hashed = hasher.finish();
+
+    assert_eq!(a, b);
+    assert_eq!(a_hashed, b_hashed);
+    assert_ne!(a, c);
+    assert_ne!(a_hashed, c_hashed);
 }
 
 #[test]

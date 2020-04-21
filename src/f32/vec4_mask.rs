@@ -1,13 +1,12 @@
 use crate::Vec4;
-use core::fmt;
-use core::ops::*;
+use core::{fmt, ops::*};
 
 #[cfg(all(vec4sse2, target_arch = "x86"))]
 use core::arch::x86::*;
 #[cfg(all(vec4sse2, target_arch = "x86_64"))]
 use core::arch::x86_64::*;
 #[cfg(vec4sse2)]
-use core::hash;
+use core::{cmp::Ordering, hash};
 
 /// A 4-dimensional vector mask.
 ///
@@ -19,7 +18,7 @@ use core::hash;
 pub struct Vec4Mask(pub(crate) __m128);
 
 #[cfg(vec4f32)]
-#[derive(Clone, Copy, Default, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, Default, PartialEq, Eq, Ord, PartialOrd, Hash)]
 #[cfg_attr(vec4f32_align16, repr(align(16)))]
 #[repr(C)]
 pub struct Vec4Mask(u32, u32, u32, u32);
@@ -35,10 +34,7 @@ impl Default for Vec4Mask {
 #[cfg(vec4sse2)]
 impl PartialEq for Vec4Mask {
     fn eq(&self, other: &Self) -> bool {
-        let self_arr: [u32; 4] = (*self).into();
-        let other_arr: [u32; 4] = (*other).into();
-
-        self_arr.eq(&other_arr)
+        self.as_ref().eq(other.as_ref())
     }
 }
 
@@ -46,11 +42,23 @@ impl PartialEq for Vec4Mask {
 impl Eq for Vec4Mask {}
 
 #[cfg(vec4sse2)]
+impl Ord for Vec4Mask {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.as_ref().cmp(other.as_ref())
+    }
+}
+
+#[cfg(vec4sse2)]
+impl PartialOrd for Vec4Mask {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+#[cfg(vec4sse2)]
 impl hash::Hash for Vec4Mask {
     fn hash<H: hash::Hasher>(&self, state: &mut H) {
-        let self_arr: [u32; 4] = (*self).into();
-
-        self_arr.hash(state);
+        self.as_ref().hash(state);
     }
 }
 
@@ -58,6 +66,10 @@ impl Vec4Mask {
     /// Creates a new `Vec4Mask`.
     #[inline]
     pub fn new(x: bool, y: bool, z: bool, w: bool) -> Self {
+        // A SSE2 mask can be any bit pattern but for the `Vec4Mask` implementation of select we
+        // expect either 0 or 0xff_ff_ff_ff. This should be a safe assumption as this type can only
+        // be created via this function or by `Vec4` methods.
+
         const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
         #[cfg(vec4sse2)]
         unsafe {
@@ -88,6 +100,9 @@ impl Vec4Mask {
     /// second, etc.
     #[inline]
     pub fn bitmask(self) -> u32 {
+        // _mm_movemask_ps only checks the most significant bit of the u32 is true, so we replicate
+        // that here with the non-SSE2 version.
+
         #[cfg(vec4sse2)]
         unsafe {
             _mm_movemask_ps(self.0) as u32
@@ -111,7 +126,7 @@ impl Vec4Mask {
 
         #[cfg(vec4f32)]
         {
-            (self.0 != 0) || (self.1 != 0) || (self.2 != 0) || (self.3 != 0)
+            ((self.0 | self.1 | self.2 | self.3) & 0x1) != 0
         }
     }
 
@@ -127,7 +142,7 @@ impl Vec4Mask {
 
         #[cfg(vec4f32)]
         {
-            (self.0 != 0) && (self.1 != 0) && (self.2 != 0) && (self.3 != 0)
+            ((self.0 & self.1 & self.2 & self.3) & 0x1) != 0
         }
     }
 
@@ -138,6 +153,9 @@ impl Vec4Mask {
     /// `if_true`, and false uses the element from `if_false`.
     #[inline]
     pub fn select(self, if_true: Vec4, if_false: Vec4) -> Vec4 {
+        // We are assuming that the mask values are either 0 or 0xff_ff_ff_ff for the SSE2 and f32
+        // to behave the same here.
+
         #[cfg(vec4sse2)]
         unsafe {
             Vec4(_mm_or_ps(
@@ -257,7 +275,7 @@ impl fmt::Debug for Vec4Mask {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         #[cfg(vec4sse2)]
         {
-            let arr: [u32; 4] = (*self).into();
+            let arr = self.as_ref();
             write!(
                 f,
                 "Vec4Mask({:#x}, {:#x}, {:#x}, {:#x})",
@@ -278,44 +296,27 @@ impl fmt::Debug for Vec4Mask {
 
 impl fmt::Display for Vec4Mask {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        #[cfg(vec4sse2)]
-        {
-            let arr: [u32; 4] = (*self).into();
-
-            write!(
-                f,
-                "[{}, {}, {}, {}]",
-                arr[0] != 0,
-                arr[1] != 0,
-                arr[2] != 0,
-                arr[3] != 0
-            )
-        }
-
-        #[cfg(vec4f32)]
-        {
-            write!(
-                f,
-                "[{}, {}, {}, {}]",
-                self.0 != 0,
-                self.1 != 0,
-                self.2 != 0,
-                self.3 != 0
-            )
-        }
+        let arr = self.as_ref();
+        write!(
+            f,
+            "[{}, {}, {}, {}]",
+            arr[0] != 0,
+            arr[1] != 0,
+            arr[2] != 0,
+            arr[3] != 0
+        )
     }
 }
 
 impl From<Vec4Mask> for [u32; 4] {
     fn from(mask: Vec4Mask) -> Self {
-        #[cfg(vec4sse2)]
-        {
-            unsafe { *(&mask as *const Vec4Mask as *const [u32; 4]) }
-        }
+        *mask.as_ref()
+    }
+}
 
-        #[cfg(vec4f32)]
-        {
-            [mask.0, mask.1, mask.2, mask.3]
-        }
+impl AsRef<[u32; 4]> for Vec4Mask {
+    #[inline]
+    fn as_ref(&self) -> &[u32; 4] {
+        unsafe { &*(self as *const Self as *const [u32; 4]) }
     }
 }

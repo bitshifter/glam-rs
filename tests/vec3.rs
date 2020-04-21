@@ -256,6 +256,44 @@ fn test_vec3b() {
 }
 
 #[test]
+fn test_vec3mask_as_ref() {
+    assert_eq!(Vec3Mask::new(false, false, false).as_ref(), &[0, 0, 0]);
+    assert_eq!(Vec3Mask::new(true, false, false).as_ref(), &[!0, 0, 0]);
+    assert_eq!(Vec3Mask::new(false, true, true).as_ref(), &[0, !0, !0]);
+    assert_eq!(Vec3Mask::new(false, true, false).as_ref(), &[0, !0, 0]);
+    assert_eq!(Vec3Mask::new(true, false, true).as_ref(), &[!0, 0, !0]);
+    assert_eq!(Vec3Mask::new(true, true, true).as_ref(), &[!0, !0, !0]);
+}
+
+#[test]
+fn test_vec3mask_from() {
+    assert_eq!(
+        Into::<[u32; 3]>::into(Vec3Mask::new(false, false, false)),
+        [0, 0, 0]
+    );
+    assert_eq!(
+        Into::<[u32; 3]>::into(Vec3Mask::new(true, false, false)),
+        [!0, 0, 0]
+    );
+    assert_eq!(
+        Into::<[u32; 3]>::into(Vec3Mask::new(false, true, true)),
+        [0, !0, !0]
+    );
+    assert_eq!(
+        Into::<[u32; 3]>::into(Vec3Mask::new(false, true, false)),
+        [0, !0, 0]
+    );
+    assert_eq!(
+        Into::<[u32; 3]>::into(Vec3Mask::new(true, false, true)),
+        [!0, 0, !0]
+    );
+    assert_eq!(
+        Into::<[u32; 3]>::into(Vec3Mask::new(true, true, true)),
+        [!0, !0, !0]
+    );
+}
+
+#[test]
 fn test_vec3mask_bitmask() {
     assert_eq!(Vec3Mask::new(false, false, false).bitmask(), 0b000);
     assert_eq!(Vec3Mask::new(true, false, false).bitmask(), 0b001);
@@ -404,6 +442,9 @@ fn test_vec3mask_eq() {
     assert_eq!(b, a);
     assert_ne!(a, c);
     assert_ne!(b, c);
+
+    assert!(a > c);
+    assert!(c < a);
 }
 
 #[test]
@@ -414,17 +455,24 @@ fn test_vec3mask_hash() {
 
     let a = Vec3Mask::new(true, false, true);
     let b = Vec3Mask::new(true, false, true);
+    let c = Vec3Mask::new(false, true, true);
 
-    let mut a_hasher = DefaultHasher::new();
-    let mut b_hasher = DefaultHasher::new();
+    let mut hasher = DefaultHasher::new();
+    a.hash(&mut hasher);
+    let a_hashed = hasher.finish();
 
-    a.hash(&mut a_hasher);
-    let a_hashed = a_hasher.finish();
-    b.hash(&mut b_hasher);
-    let b_hashed = b_hasher.finish();
+    let mut hasher = DefaultHasher::new();
+    b.hash(&mut hasher);
+    let b_hashed = hasher.finish();
+
+    let mut hasher = DefaultHasher::new();
+    c.hash(&mut hasher);
+    let c_hashed = hasher.finish();
 
     assert_eq!(a, b);
     assert_eq!(a_hashed, b_hashed);
+    assert_ne!(a, c);
+    assert_ne!(a_hashed, c_hashed);
 }
 
 #[test]

@@ -1,11 +1,10 @@
 use super::Vec2;
-use core::fmt;
-use core::ops::*;
+use core::{fmt, ops::*};
 
 /// A 2-dimensional vector mask.
 ///
 /// This type is typically created by comparison methods on `Vec2`.
-#[derive(Clone, Copy, Default, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, Default, PartialEq, Eq, Ord, PartialOrd, Hash)]
 #[repr(C)]
 pub struct Vec2Mask(u32, u32);
 
@@ -33,7 +32,8 @@ impl Vec2Mask {
     /// In other words: `x || y`.
     #[inline]
     pub fn any(self) -> bool {
-        (self.0 != 0) || (self.1 != 0)
+        // implementaton matches SSE2 `Vec4Mask` version
+        ((self.0 | self.1) & 0x1) != 0
     }
 
     /// Returns true if all the elements are true, false otherwise.
@@ -41,7 +41,8 @@ impl Vec2Mask {
     /// In other words: `x && y`.
     #[inline]
     pub fn all(self) -> bool {
-        (self.0 != 0) && (self.1 != 0)
+        // implementaton matches SSE2 `Vec4Mask` version
+        ((self.0 & self.1) & 0x1) != 0
     }
 
     /// Creates a new `Vec2` from the elements in `if_true` and `if_false`,
@@ -105,5 +106,18 @@ impl fmt::Debug for Vec2Mask {
 impl fmt::Display for Vec2Mask {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "[{}, {}]", self.0 != 0, self.1 != 0)
+    }
+}
+
+impl From<Vec2Mask> for [u32; 2] {
+    fn from(mask: Vec2Mask) -> Self {
+        [mask.0, mask.1]
+    }
+}
+
+impl AsRef<[u32; 2]> for Vec2Mask {
+    #[inline]
+    fn as_ref(&self) -> &[u32; 2] {
+        unsafe { &*(self as *const Self as *const [u32; 2]) }
     }
 }

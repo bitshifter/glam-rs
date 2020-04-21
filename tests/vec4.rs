@@ -294,6 +294,62 @@ fn test_vec4_abs() {
 // }
 
 #[test]
+fn test_vec4mask_as_ref() {
+    assert_eq!(
+        Vec4Mask::new(false, false, false, false).as_ref(),
+        &[0, 0, 0, 0]
+    );
+    assert_eq!(
+        Vec4Mask::new(false, false, true, true).as_ref(),
+        &[0, 0, !0, !0]
+    );
+    assert_eq!(
+        Vec4Mask::new(true, true, false, false).as_ref(),
+        &[!0, !0, 0, 0]
+    );
+    assert_eq!(
+        Vec4Mask::new(false, true, false, true).as_ref(),
+        &[0, !0, 0, !0]
+    );
+    assert_eq!(
+        Vec4Mask::new(true, false, true, false).as_ref(),
+        &[!0, 0, !0, 0]
+    );
+    assert_eq!(
+        Vec4Mask::new(true, true, true, true).as_ref(),
+        &[!0, !0, !0, !0]
+    );
+}
+
+#[test]
+fn test_vec4mask_from() {
+    assert_eq!(
+        Into::<[u32; 4]>::into(Vec4Mask::new(false, false, false, false)),
+        [0, 0, 0, 0]
+    );
+    assert_eq!(
+        Into::<[u32; 4]>::into(Vec4Mask::new(false, false, true, true)),
+        [0, 0, !0, !0]
+    );
+    assert_eq!(
+        Into::<[u32; 4]>::into(Vec4Mask::new(true, true, false, false)),
+        [!0, !0, 0, 0]
+    );
+    assert_eq!(
+        Into::<[u32; 4]>::into(Vec4Mask::new(false, true, false, true)),
+        [0, !0, 0, !0]
+    );
+    assert_eq!(
+        Into::<[u32; 4]>::into(Vec4Mask::new(true, false, true, false)),
+        [!0, 0, !0, 0]
+    );
+    assert_eq!(
+        Into::<[u32; 4]>::into(Vec4Mask::new(true, true, true, true)),
+        [!0, !0, !0, !0]
+    );
+}
+
+#[test]
 fn test_vec4mask_bitmask() {
     assert_eq!(Vec4Mask::new(false, false, false, false).bitmask(), 0b0000);
     assert_eq!(Vec4Mask::new(false, false, true, true).bitmask(), 0b1100);
@@ -438,6 +494,9 @@ fn test_vec4mask_eq() {
     assert_eq!(b, a);
     assert_ne!(a, c);
     assert_ne!(b, c);
+
+    assert!(a > c);
+    assert!(c < a);
 }
 
 #[test]
@@ -448,18 +507,24 @@ fn test_vec4mask_hash() {
 
     let a = Vec4Mask::new(true, false, true, false);
     let b = Vec4Mask::new(true, false, true, false);
+    let c = Vec4Mask::new(false, true, true, false);
 
-    let mut a_hasher = DefaultHasher::new();
-    let mut b_hasher = DefaultHasher::new();
+    let mut hasher = DefaultHasher::new();
+    a.hash(&mut hasher);
+    let a_hashed = hasher.finish();
 
-    a.hash(&mut a_hasher);
-    let a_hashed = a_hasher.finish();
-    b.hash(&mut b_hasher);
-    let b_hashed = b_hasher.finish();
+    let mut hasher = DefaultHasher::new();
+    b.hash(&mut hasher);
+    let b_hashed = hasher.finish();
 
-    // if a == b then hash(a) == hash(b)
+    let mut hasher = DefaultHasher::new();
+    c.hash(&mut hasher);
+    let c_hashed = hasher.finish();
+
     assert_eq!(a, b);
     assert_eq!(a_hashed, b_hashed);
+    assert_ne!(a, c);
+    assert_ne!(a_hashed, c_hashed);
 }
 
 #[test]
