@@ -29,7 +29,7 @@ impl Distribution<Mat4> for Standard {
 impl Distribution<Quat> for Standard {
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Quat {
-        use std::f32::consts::PI;
+        use core::f32::consts::PI;
         let yaw = -PI + rng.gen::<f32>() * 2.0 * PI;
         let pitch = -PI + rng.gen::<f32>() * 2.0 * PI;
         let roll = -PI + rng.gen::<f32>() * 2.0 * PI;

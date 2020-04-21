@@ -1,5 +1,5 @@
 use super::{Mat4, Quat, Vec3};
-use std::ops::Mul;
+use core::ops::Mul;
 
 #[cfg(feature = "rand")]
 use rand::{
@@ -316,9 +316,9 @@ impl Distribution<TransformRT> for Standard {
         TransformRT::from_rotation_translation(
             rng.gen::<Quat>(),
             Vec3::new(
-                rng.gen_range(std::f32::MIN, std::f32::MAX),
-                rng.gen_range(std::f32::MIN, std::f32::MAX),
-                rng.gen_range(std::f32::MIN, std::f32::MAX),
+                rng.gen_range(core::f32::MIN, core::f32::MAX),
+                rng.gen_range(core::f32::MIN, core::f32::MAX),
+                rng.gen_range(core::f32::MIN, core::f32::MAX),
             ),
         )
     }
@@ -329,8 +329,8 @@ impl Distribution<TransformSRT> for Standard {
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> TransformSRT {
         let mut gen_non_zero = || loop {
-            let f: f32 = rng.gen_range(std::f32::MIN, std::f32::MAX);
-            if f.abs() > std::f32::MIN_POSITIVE {
+            let f: f32 = rng.gen_range(core::f32::MIN, core::f32::MAX);
+            if f.abs() > core::f32::MIN_POSITIVE {
                 return f;
             }
         };
@@ -338,9 +338,9 @@ impl Distribution<TransformSRT> for Standard {
             Vec3::new(gen_non_zero(), gen_non_zero(), gen_non_zero()),
             rng.gen::<Quat>(),
             Vec3::new(
-                rng.gen_range(std::f32::MIN, std::f32::MAX),
-                rng.gen_range(std::f32::MIN, std::f32::MAX),
-                rng.gen_range(std::f32::MIN, std::f32::MAX),
+                rng.gen_range(core::f32::MIN, core::f32::MAX),
+                rng.gen_range(core::f32::MIN, core::f32::MAX),
+                rng.gen_range(core::f32::MIN, core::f32::MAX),
             ),
         )
     }

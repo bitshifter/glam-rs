@@ -39,19 +39,18 @@ pub fn scalar_acos(value: f32) -> f32 {
     if nonnegative {
         result
     } else {
-        std::f32::consts::PI - result
+        core::f32::consts::PI - result
     }
 }
 
 #[cfg(vec4sse2)]
 pub(crate) mod sse2 {
-    #[cfg(target_arch = "x86")]
-    use std::arch::x86::*;
-    #[cfg(target_arch = "x86_64")]
-    use std::arch::x86_64::*;
-
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
     use crate::f32::x86_utils::UnionCast;
+    #[cfg(target_arch = "x86")]
+    use core::arch::x86::*;
+    #[cfg(target_arch = "x86_64")]
+    use core::arch::x86_64::*;
 
     macro_rules! _ps_const_ty {
         ($name:ident, $field:ident, $x:expr) => {
@@ -300,7 +299,7 @@ fn test_scalar_acos() {
 
     // input is clamped to -1.0..1.0
     assert_approx_eq!(scalar_acos(2.0), 0.0);
-    assert_approx_eq!(scalar_acos(-2.0), std::f32::consts::PI);
+    assert_approx_eq!(scalar_acos(-2.0), core::f32::consts::PI);
 }
 
 #[test]
@@ -316,7 +315,7 @@ fn test_scalar_sin_cos() {
     // test 1024 floats between -PI and PI inclusive
     const MAX_TESTS: u32 = 1024 / 2;
     const SIGN: u32 = 0x80_00_00_00;
-    let ptve_pi = std::f32::consts::PI.to_bits();
+    let ptve_pi = core::f32::consts::PI.to_bits();
     let ngve_pi = SIGN | ptve_pi;
     let step_pi = (ptve_pi / MAX_TESTS) as usize;
     for f in (SIGN..=ngve_pi).step_by(step_pi).map(|i| f32::from_bits(i)) {
@@ -327,8 +326,8 @@ fn test_scalar_sin_cos() {
     }
 
     // test 1024 floats between -INF and +INF exclusive
-    let ptve_inf = std::f32::INFINITY.to_bits();
-    let ngve_inf = std::f32::NEG_INFINITY.to_bits();
+    let ptve_inf = core::f32::INFINITY.to_bits();
+    let ngve_inf = core::f32::NEG_INFINITY.to_bits();
     let step_inf = (ptve_inf / MAX_TESTS) as usize;
     for f in (SIGN..ngve_inf)
         .step_by(step_inf)
@@ -341,11 +340,11 @@ fn test_scalar_sin_cos() {
     }
 
     // +inf and -inf should return NaN
-    let (s, c) = scalar_sin_cos(std::f32::INFINITY);
+    let (s, c) = scalar_sin_cos(core::f32::INFINITY);
     assert!(s.is_nan());
     assert!(c.is_nan());
 
-    let (s, c) = scalar_sin_cos(std::f32::NEG_INFINITY);
+    let (s, c) = scalar_sin_cos(core::f32::NEG_INFINITY);
     assert!(s.is_nan());
     assert!(c.is_nan());
 }

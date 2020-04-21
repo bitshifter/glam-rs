@@ -1,6 +1,5 @@
 use super::{scalar_sin_cos, Quat, Vec2, Vec3};
-
-use std::{
+use core::{
     fmt,
     ops::{Add, Mul, Sub},
 };
@@ -295,9 +294,9 @@ impl Mat3 {
         #[cfg(vec3sse2)]
         {
             #[cfg(target_arch = "x86")]
-            use std::arch::x86::*;
+            use core::arch::x86::*;
             #[cfg(target_arch = "x86_64")]
-            use std::arch::x86_64::*;
+            use core::arch::x86_64::*;
             unsafe {
                 let tmp0 = _mm_shuffle_ps(self.x_axis.0, self.y_axis.0, 0b01_00_01_00);
                 let tmp1 = _mm_shuffle_ps(self.x_axis.0, self.y_axis.0, 0b11_10_11_10);

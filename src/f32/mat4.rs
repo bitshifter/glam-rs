@@ -1,10 +1,9 @@
 use super::{scalar_sin_cos, Mat3, Quat, Vec3, Vec4};
 #[cfg(all(vec4sse2, target_arch = "x86"))]
-use std::arch::x86::*;
+use core::arch::x86::*;
 #[cfg(all(vec4sse2, target_arch = "x86_64"))]
-use std::arch::x86_64::*;
-
-use std::{
+use core::arch::x86_64::*;
+use core::{
     fmt,
     ops::{Add, Mul, Sub},
 };

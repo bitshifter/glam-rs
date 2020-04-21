@@ -1,11 +1,9 @@
 use crate::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4};
-
+use core::fmt;
 use serde::{
     de::{self, Deserialize, Deserializer, SeqAccess, Visitor},
     ser::{Serialize, SerializeTupleStruct, Serializer},
 };
-
-use std::fmt;
 
 impl Serialize for Vec2 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>

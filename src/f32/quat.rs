@@ -1,10 +1,9 @@
-#[cfg(all(vec4sse2, target_arch = "x86",))]
-use std::arch::x86::*;
-#[cfg(all(vec4sse2, target_arch = "x86_64",))]
-use std::arch::x86_64::*;
-
 use super::{scalar_acos, scalar_sin_cos, Mat3, Mat4, Vec3, Vec4};
-use std::{
+#[cfg(all(vec4sse2, target_arch = "x86",))]
+use core::arch::x86::*;
+#[cfg(all(vec4sse2, target_arch = "x86_64",))]
+use core::arch::x86_64::*;
+use core::{
     cmp::Ordering,
     fmt,
     ops::{Mul, MulAssign, Neg},
