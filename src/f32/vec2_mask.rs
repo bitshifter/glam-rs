@@ -68,6 +68,7 @@ impl BitAnd for Vec2Mask {
 }
 
 impl BitAndAssign for Vec2Mask {
+    #[inline]
     fn bitand_assign(&mut self, other: Self) {
         self.0 &= other.0;
         self.1 &= other.1;
@@ -83,6 +84,7 @@ impl BitOr for Vec2Mask {
 }
 
 impl BitOrAssign for Vec2Mask {
+    #[inline]
     fn bitor_assign(&mut self, other: Self) {
         self.0 |= other.0;
         self.1 |= other.1;
@@ -110,6 +112,7 @@ impl fmt::Display for Vec2Mask {
 }
 
 impl From<Vec2Mask> for [u32; 2] {
+    #[inline]
     fn from(mask: Vec2Mask) -> Self {
         [mask.0, mask.1]
     }

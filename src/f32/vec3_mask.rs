@@ -35,6 +35,7 @@ impl Default for Vec3Mask {
 
 #[cfg(vec3sse2)]
 impl PartialEq for Vec3Mask {
+    #[inline]
     fn eq(&self, other: &Self) -> bool {
         self.as_ref().eq(other.as_ref())
     }
@@ -45,6 +46,7 @@ impl Eq for Vec3Mask {}
 
 #[cfg(vec3sse2)]
 impl Ord for Vec3Mask {
+    #[inline]
     fn cmp(&self, other: &Self) -> Ordering {
         self.as_ref().cmp(other.as_ref())
     }
@@ -52,6 +54,7 @@ impl Ord for Vec3Mask {
 
 #[cfg(vec3sse2)]
 impl PartialOrd for Vec3Mask {
+    #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
     }
@@ -59,6 +62,7 @@ impl PartialOrd for Vec3Mask {
 
 #[cfg(vec3sse2)]
 impl hash::Hash for Vec3Mask {
+    #[inline]
     fn hash<H: hash::Hasher>(&self, state: &mut H) {
         self.as_ref().hash(state);
     }
@@ -189,6 +193,7 @@ impl BitAnd for Vec3Mask {
 }
 
 impl BitAndAssign for Vec3Mask {
+    #[inline]
     fn bitand_assign(&mut self, other: Self) {
         #[cfg(vec3sse2)]
         {
@@ -221,6 +226,7 @@ impl BitOr for Vec3Mask {
 }
 
 impl BitOrAssign for Vec3Mask {
+    #[inline]
     fn bitor_assign(&mut self, other: Self) {
         #[cfg(vec3sse2)]
         {
@@ -278,6 +284,7 @@ impl fmt::Display for Vec3Mask {
 }
 
 impl From<Vec3Mask> for [u32; 3] {
+    #[inline]
     fn from(mask: Vec3Mask) -> Self {
         *mask.as_ref()
     }
