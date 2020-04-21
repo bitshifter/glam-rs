@@ -36,11 +36,7 @@ script:
 
 after_success: |
   if [[ "$TRAVIS_RUST_VERSION" == stable ]]; then
-    if [[ "$CARGO_FEATURES" == "scalar-math" ]]; then
-      cargo tarpaulin --features scalar-math --exclude-files src/f32/transform.rs --exclude-files benches/* --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
-    else
-      cargo tarpaulin --exclude-files src/f32/transform.rs --exclude-files benches/* --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
-    fi
+    cargo tarpaulin --features "$CARGO_FEATURES" --exclude-files src/f32/transform.rs --exclude-files benches/* --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
 
     # Uncomment the following two lines create and upload a report for codecov.io
     # cargo tarpaulin --out Xml
