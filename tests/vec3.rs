@@ -148,6 +148,7 @@ fn test_vec3_funcs() {
         vec3(2.0, 3.0, 4.0) / (2.0_f32 * 2.0 + 3.0 * 3.0 + 4.0 * 4.0).sqrt(),
         vec3(2.0, 3.0, 4.0).normalize()
     );
+    assert_eq!(vec3(0.5, 0.25, 0.125), vec3(2.0, 4.0, 8.0).reciprocal());
 }
 
 #[test]
@@ -546,6 +547,23 @@ fn test_vec3_ceil() {
         Vec3::new(-2000000.123, 1000000.123, 1000.9).ceil(),
         Vec3::new(-2000000.0, 1000001.0, 1001.0)
     );
+}
+
+#[test]
+fn test_vec3_lerp() {
+    let v0 = Vec3::new(-1.0, -1.0, -1.0);
+    let v1 = Vec3::new(1.0, 1.0, 1.0);
+    assert_approx_eq!(v0, v0.lerp(v1, 0.0));
+    assert_approx_eq!(v1, v0.lerp(v1, 1.0));
+    assert_approx_eq!(Vec3::zero(), v0.lerp(v1, 0.5));
+}
+
+#[test]
+fn test_vec3_to_from_slice() {
+    let v = Vec3::new(1.0, 2.0, 3.0);
+    let mut a = [0.0, 0.0, 0.0];
+    v.write_to_slice_unaligned(&mut a);
+    assert_eq!(v, Vec3::from_slice_unaligned(&a));
 }
 
 #[cfg(feature = "serde")]

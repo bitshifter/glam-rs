@@ -720,6 +720,29 @@ impl Vec3 {
         }
     }
 
+    /// Creates a new `Vec3` from the first four values in `slice`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `slice` is less than three elements long.
+    #[inline]
+    pub fn from_slice_unaligned(slice: &[f32]) -> Self {
+        Self::new(slice[0], slice[1], slice[2])
+    }
+
+    /// Writes the elements of `self` to the first three elements in `slice`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `slice` is less than three elements long.
+    #[inline]
+    pub fn write_to_slice_unaligned(self, slice: &mut [f32]) {
+        let a = self.as_ref();
+        slice[0] = a[0];
+        slice[1] = a[1];
+        slice[2] = a[2];
+    }
+
     /// Per element multiplication/addition of the three inputs: b + (self * a)
     #[inline]
     pub(crate) fn mul_add(self, a: Self, b: Self) -> Self {
@@ -734,26 +757,6 @@ impl Vec3 {
                 (self.0 * a.0) + b.0,
                 (self.1 * a.1) + b.1,
                 (self.2 * a.2) + b.2,
-            )
-        }
-    }
-
-    /// Per element negative multiplication/subtraction of the three inputs `-((self * a) - b)`
-    /// This is mathematically equivalent to `b - (self * a)`
-    #[allow(dead_code)]
-    #[inline]
-    pub(crate) fn neg_mul_sub(self, a: Self, b: Self) -> Self {
-        #[cfg(vec3sse2)]
-        unsafe {
-            Self(_mm_sub_ps(b.0, _mm_mul_ps(self.0, a.0)))
-        }
-
-        #[cfg(vec3f32)]
-        {
-            Self(
-                b.0 - (self.0 * a.0),
-                b.1 - (self.1 * a.1),
-                b.2 - (self.2 * a.2),
             )
         }
     }
@@ -1204,4 +1207,15 @@ impl From<Vec3> for [f32; 3] {
             [v.0, v.1, v.2]
         }
     }
+}
+
+#[test]
+fn test_vec3_private() {
+    assert_eq!(
+        vec3(1.0, 1.0, 1.0).mul_add(vec3(0.5, 2.0, -4.0), vec3(-1.0, -1.0, -1.0)),
+        vec3(-0.5, 1.0, -5.0)
+    );
+    assert_eq!(vec3(1.0, 2.0, 3.0).dup_x(), vec3(1.0, 1.0, 1.0));
+    assert_eq!(vec3(1.0, 2.0, 3.0).dup_y(), vec3(2.0, 2.0, 2.0));
+    assert_eq!(vec3(1.0, 2.0, 3.0).dup_z(), vec3(3.0, 3.0, 3.0));
 }

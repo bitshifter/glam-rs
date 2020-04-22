@@ -139,20 +139,6 @@ impl Vec2 {
         self.1 = y;
     }
 
-    /// Returns a `Vec2` with all elements set to the value of element `x`.
-    #[allow(dead_code)]
-    #[inline]
-    pub(crate) fn dup_x(self) -> Self {
-        Self(self.0, self.0)
-    }
-
-    /// Returns a `Vec2` with all elements set to the value of element `y`.
-    #[allow(dead_code)]
-    #[inline]
-    pub(crate) fn dup_y(self) -> Self {
-        Self(self.1, self.1)
-    }
-
     /// Computes the dot product of `self` and `other`.
     #[inline]
     pub fn dot(self, other: Vec2) -> f32 {
@@ -299,21 +285,6 @@ impl Vec2 {
     pub fn write_to_slice_unaligned(self, slice: &mut [f32]) {
         slice[0] = self.0;
         slice[1] = self.1;
-    }
-
-    /// Per element multiplication/addition of the three inputs: b + (self * a)
-    #[allow(dead_code)]
-    #[inline]
-    pub(crate) fn mul_add(self, a: Self, b: Self) -> Self {
-        Self((self.0 * a.0) + b.0, (self.1 * a.1) + b.1)
-    }
-
-    /// Per element negative multiplication/subtraction of the three inputs `-((self * a) - b)`
-    /// This is mathematically equivalent to `b - (self * a)`
-    #[allow(dead_code)]
-    #[inline]
-    pub(crate) fn neg_mul_sub(self, a: Self, b: Self) -> Self {
-        Self(b.0 - (self.0 * a.0), b.1 - (self.1 * a.1))
     }
 
     /// Returns a new `Vec2` containing the absolute value of each element of the original

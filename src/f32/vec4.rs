@@ -825,27 +825,6 @@ impl Vec4 {
         }
     }
 
-    /// Per element negative multiplication/subtraction of the three inputs `-((self * a) - b)`
-    /// This is mathematically equivalent to `b - (self * a)`
-    #[allow(dead_code)]
-    #[inline]
-    pub(crate) fn neg_mul_sub(self, a: Self, b: Self) -> Self {
-        #[cfg(vec4sse2)]
-        unsafe {
-            Self(_mm_sub_ps(b.0, _mm_mul_ps(self.0, a.0)))
-        }
-
-        #[cfg(vec4f32)]
-        {
-            Self(
-                b.0 - (self.0 * a.0),
-                b.1 - (self.1 * a.1),
-                b.2 - (self.2 * a.2),
-                b.3 - (self.3 * a.3),
-            )
-        }
-    }
-
     /// Returns a new `Vec4` containing the absolute value of each element of the original
     /// `Vec4`.
     #[inline]
@@ -1353,4 +1332,16 @@ impl From<Vec4> for [f32; 4] {
             [v.0, v.1, v.2, v.3]
         }
     }
+}
+
+#[test]
+fn test_vec4_private() {
+    assert_eq!(
+        vec4(1.0, 1.0, 1.0, 1.0).mul_add(vec4(0.5, 2.0, -4.0, 0.0), vec4(-1.0, -1.0, -1.0, -1.0)),
+        vec4(-0.5, 1.0, -5.0, -1.0)
+    );
+    assert_eq!(vec4(1.0, 2.0, 3.0, 4.0).dup_x(), vec4(1.0, 1.0, 1.0, 1.0));
+    assert_eq!(vec4(1.0, 2.0, 3.0, 4.0).dup_y(), vec4(2.0, 2.0, 2.0, 2.0));
+    assert_eq!(vec4(1.0, 2.0, 3.0, 4.0).dup_z(), vec4(3.0, 3.0, 3.0, 3.0));
+    assert_eq!(vec4(1.0, 2.0, 4.0, 4.0).dup_w(), vec4(4.0, 4.0, 4.0, 4.0));
 }

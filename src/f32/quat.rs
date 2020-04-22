@@ -38,12 +38,6 @@ impl Quat {
     }
 
     #[inline]
-    #[deprecated(since = "0.8.3", note = "please use `Quat::from_xyzw` instead")]
-    pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
-        Self(Vec4::new(x, y, z, w))
-    }
-
-    #[inline]
     pub fn identity() -> Self {
         Self(Vec4::new(0.0, 0.0, 0.0, 1.0))
     }
