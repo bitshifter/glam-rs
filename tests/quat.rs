@@ -211,6 +211,20 @@ fn test_quat_slice() {
     assert_eq!(a, d);
 }
 
+#[test]
+fn test_quat_elements() {
+    let x = 1.0;
+    let y = 2.0;
+    let z = 3.0;
+    let w = 4.0;
+
+    let a = Quat::from_xyzw(x, y, z, w);
+    assert!(a.x() == x);
+    assert!(a.y() == y);
+    assert!(a.z() == z);
+    assert!(a.w() == w);
+}
+
 #[cfg(feature = "serde")]
 #[test]
 fn test_quat_serde() {
@@ -231,16 +245,15 @@ fn test_quat_serde() {
     assert!(deserialized.is_err());
 }
 
+#[cfg(feature = "rand")]
 #[test]
-fn test_quat_elements() {
-    let x = 1.0;
-    let y = 2.0;
-    let z = 3.0;
-    let w = 4.0;
-
-    let a = Quat::from_xyzw(x, y, z, w);
-    assert!(a.x() == x);
-    assert!(a.y() == y);
-    assert!(a.z() == z);
-    assert!(a.w() == w);
+fn test_quat_rand() {
+    use rand::{Rng, SeedableRng};
+    use rand_xoshiro::Xoshiro256Plus;
+    let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
+    let a: Quat = rng1.gen();
+    assert!(a.is_normalized());
+    let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
+    let b: Quat = rng2.gen();
+    assert_eq!(a, b);
 }

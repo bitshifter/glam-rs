@@ -1,10 +1,6 @@
 mod support;
 
 use glam::*;
-#[cfg(feature = "rand")]
-use rand::{Rng, SeedableRng};
-#[cfg(feature = "rand")]
-use rand_xoshiro::Xoshiro256Plus;
 use std::f32;
 
 #[test]
@@ -249,16 +245,6 @@ fn test_vec4_cmp() {
     assert!(!a.cmpne(a).all());
     assert!(a.cmpne(b).all());
     assert!(a.cmpne(c).any());
-}
-
-#[cfg(feature = "rand")]
-#[test]
-fn test_vec4_rand() {
-    let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
-    let a: (f32, f32, f32, f32) = rng1.gen();
-    let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
-    let b: Vec4 = rng2.gen();
-    assert_eq!(a, b.into());
 }
 
 #[test]
@@ -616,4 +602,16 @@ fn test_vec4_serde() {
     assert!(deserialized.is_err());
     let deserialized = serde_json::from_str::<Vec4>("[1.0,2.0,3.0,4.0,5.0]");
     assert!(deserialized.is_err());
+}
+
+#[cfg(feature = "rand")]
+#[test]
+fn test_vec4_rand() {
+    use rand::{Rng, SeedableRng};
+    use rand_xoshiro::Xoshiro256Plus;
+    let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
+    let a: (f32, f32, f32, f32) = rng1.gen();
+    let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
+    let b: Vec4 = rng2.gen();
+    assert_eq!(a, b.into());
 }

@@ -172,3 +172,15 @@ fn test_mat2_serde() {
     let deserialized = serde_json::from_str::<Mat2>("[[1.0,2.0],[3.0,4.0]]");
     assert!(deserialized.is_err());
 }
+
+#[cfg(feature = "rand")]
+#[test]
+fn test_mat2_rand() {
+    use rand::{Rng, SeedableRng};
+    use rand_xoshiro::Xoshiro256Plus;
+    let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
+    let a = Mat2::from_cols_array(&rng1.gen::<[f32; 4]>());
+    let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
+    let b = rng2.gen::<Mat2>();
+    assert_eq!(a, b);
+}

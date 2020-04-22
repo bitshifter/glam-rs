@@ -469,3 +469,15 @@ fn test_mat4_serde() {
     );
     assert!(deserialized.is_err());
 }
+
+#[cfg(feature = "rand")]
+#[test]
+fn test_mat4_rand() {
+    use rand::{Rng, SeedableRng};
+    use rand_xoshiro::Xoshiro256Plus;
+    let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
+    let a = Mat4::from_cols_array(&rng1.gen::<[f32; 16]>());
+    let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
+    let b = rng2.gen::<Mat4>();
+    assert_eq!(a, b);
+}

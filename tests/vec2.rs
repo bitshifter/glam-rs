@@ -1,10 +1,6 @@
 mod support;
 
 use glam::*;
-#[cfg(feature = "rand")]
-use rand::{Rng, SeedableRng};
-#[cfg(feature = "rand")]
-use rand_xoshiro::Xoshiro256Plus;
 use std::f32;
 
 #[test]
@@ -381,16 +377,6 @@ fn test_vec2_sign() {
     assert_eq!(Vec2::splat(core::f32::NEG_INFINITY).sign(), -Vec2::one());
 }
 
-#[cfg(feature = "rand")]
-#[test]
-fn test_vec2_rand() {
-    let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
-    let a: (f32, f32) = rng1.gen();
-    let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
-    let b: Vec2 = rng2.gen();
-    assert_eq!(a, b.into());
-}
-
 #[test]
 fn test_vec2_abs() {
     assert_eq!(Vec2::zero().abs(), Vec2::zero());
@@ -459,6 +445,18 @@ fn test_vec2_to_from_slice() {
     assert_eq!(v, Vec2::from_slice_unaligned(&a));
 }
 
+#[test]
+fn test_vec2_angle_between() {
+    let angle = Vec2::new(1.0, 0.0).angle_between(Vec2::new(0.0, 1.0));
+    assert_approx_eq!(f32::consts::FRAC_PI_2, angle, 1e-6);
+
+    let angle = Vec2::new(10.0, 0.0).angle_between(Vec2::new(0.0, 5.0));
+    assert_approx_eq!(f32::consts::FRAC_PI_2, angle, 1e-6);
+
+    let angle = Vec2::new(-1.0, 0.0).angle_between(Vec2::new(0.0, 1.0));
+    assert_approx_eq!(-f32::consts::FRAC_PI_2, angle, 1e-6);
+}
+
 #[cfg(feature = "serde")]
 #[test]
 fn test_vec2_serde() {
@@ -475,14 +473,14 @@ fn test_vec2_serde() {
     assert!(deserialized.is_err());
 }
 
+#[cfg(feature = "rand")]
 #[test]
-fn test_vec2_angle_between() {
-    let angle = Vec2::new(1.0, 0.0).angle_between(Vec2::new(0.0, 1.0));
-    assert_approx_eq!(f32::consts::FRAC_PI_2, angle, 1e-6);
-
-    let angle = Vec2::new(10.0, 0.0).angle_between(Vec2::new(0.0, 5.0));
-    assert_approx_eq!(f32::consts::FRAC_PI_2, angle, 1e-6);
-
-    let angle = Vec2::new(-1.0, 0.0).angle_between(Vec2::new(0.0, 1.0));
-    assert_approx_eq!(-f32::consts::FRAC_PI_2, angle, 1e-6);
+fn test_vec2_rand() {
+    use rand::{Rng, SeedableRng};
+    use rand_xoshiro::Xoshiro256Plus;
+    let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
+    let a: (f32, f32) = rng1.gen();
+    let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
+    let b: Vec2 = rng2.gen();
+    assert_eq!(a, b.into());
 }
