@@ -245,6 +245,9 @@ fn test_vec4_cmp() {
     assert!(!a.cmpne(a).all());
     assert!(a.cmpne(b).all());
     assert!(a.cmpne(c).any());
+    assert!(a == a);
+    assert!(a < b);
+    assert!(b > a);
 }
 
 #[test]

@@ -188,6 +188,9 @@ fn test_vec2_cmp() {
     assert!(!(a.cmpge(d).all()));
     assert!(c.cmple(c).all());
     assert!(c.cmpge(c).all());
+    assert!(a == a);
+    assert!(a < b);
+    assert!(b > a);
 }
 
 #[test]
