@@ -115,20 +115,6 @@ pub(crate) mod sse2 {
     _ps_const_ty!(PS_TWO_PI, f32x4, std::f32::consts::PI * 2.0);
     _ps_const_ty!(PS_RECIPROCAL_TWO_PI, f32x4, 0.159154943);
 
-    #[cfg(target_feature = "avx")]
-    macro_rules! m128_permute {
-        ($v:expr, $c:expr) => {
-            _mm_permute_ps($v, $c)
-        };
-    }
-
-    #[cfg(not(target_feature = "avx"))]
-    macro_rules! m128_permute {
-        ($v:expr, $c:expr) => {
-            _mm_shuffle_ps($v, $v, $c)
-        };
-    }
-
     #[cfg(target_feature = "fma")]
     macro_rules! m128_mul_add {
         ($a:expr, $b:expr, $c:expr) => {
@@ -248,19 +234,19 @@ pub(crate) mod sse2 {
 
         // Compute polynomial approximation
         const SC1: __m128 = unsafe { PS_SIN_COEFFICIENTS1.m128 };
-        let v_constants_b = m128_permute!(SC1, 0b00_00_00_00);
+        let v_constants_b = _mm_shuffle_ps(SC1, SC1, 0b00_00_00_00);
 
         const SC0: __m128 = unsafe { PS_SIN_COEFFICIENTS0.m128 };
-        let mut v_constants = m128_permute!(SC0, 0b11_11_11_11);
+        let mut v_constants = _mm_shuffle_ps(SC0, SC0, 0b11_11_11_11);
         let mut result = m128_mul_add!(v_constants_b, x2, v_constants);
 
-        v_constants = m128_permute!(SC0, 0b10_10_10_10);
+        v_constants = _mm_shuffle_ps(SC0, SC0, 0b10_10_10_10);
         result = m128_mul_add!(result, x2, v_constants);
 
-        v_constants = m128_permute!(SC0, 0b01_01_01_01);
+        v_constants = _mm_shuffle_ps(SC0, SC0, 0b01_01_01_01);
         result = m128_mul_add!(result, x2, v_constants);
 
-        v_constants = m128_permute!(SC0, 0b00_00_00_00);
+        v_constants = _mm_shuffle_ps(SC0, SC0, 0b00_00_00_00);
         result = m128_mul_add!(result, x2, v_constants);
 
         result = m128_mul_add!(result, x2, PS_ONE.m128);
