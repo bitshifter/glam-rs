@@ -59,6 +59,13 @@ pub(crate) mod sse2 {
                 $field: [$x, $x, $x, $x],
             };
         };
+
+        ($name:ident, $field:ident, $x:expr, $y:expr, $z:expr, $w:expr) => {
+            #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+            const $name: UnionCast = UnionCast {
+                $field: [$x, $y, $z, $w],
+            };
+        };
     }
 
     _ps_const_ty!(PS_INV_SIGN_MASK, u32x4, !0x8000_0000);
@@ -83,6 +90,57 @@ pub(crate) mod sse2 {
     // _ps_const_ty!(PS_COSCOF_P1, f32x4, -1.388_731_6E-3);
     // _ps_const_ty!(PS_COSCOF_P2, f32x4, 4.166_664_6e-2);
     // _ps_const_ty!(PS_CEPHES_FOPI, f32x4, 1.273_239_5); // 4 / M_PI
+
+    _ps_const_ty!(PS_NEGATIVE_ZERO, u32x4, 0x80000000);
+    _ps_const_ty!(PS_PI, f32x4, std::f32::consts::PI);
+    _ps_const_ty!(PS_HALF_PI, f32x4, std::f32::consts::FRAC_PI_2);
+    _ps_const_ty!(
+        PS_SIN_COEFFICIENTS0,
+        f32x4,
+        -0.16666667,
+        0.0083333310,
+        -0.00019840874,
+        2.7525562e-06
+    );
+    _ps_const_ty!(
+        PS_SIN_COEFFICIENTS1,
+        f32x4,
+        -2.3889859e-08,
+        -0.16665852,    /*Est1*/
+        0.0083139502,   /*Est2*/
+        -0.00018524670  /*Est3*/
+    );
+    _ps_const_ty!(PS_ONE, f32x4, 1.0);
+    _ps_const_ty!(PS_TWO_PI, f32x4, std::f32::consts::PI * 2.0);
+    _ps_const_ty!(PS_RECIPROCAL_TWO_PI, f32x4, 0.159154943);
+
+    #[cfg(target_feature = "fma")]
+    macro_rules! m128_mul_add {
+        ($a:expr, $b:expr, $c:expr) => {
+            _mm_fmadd_ps($a, $b, $c)
+        };
+    }
+
+    #[cfg(not(target_feature = "fma"))]
+    macro_rules! m128_mul_add {
+        ($a:expr, $b:expr, $c:expr) => {
+            _mm_add_ps(_mm_mul_ps($a, $b), $c)
+        };
+    }
+
+    #[cfg(target_feature = "fma")]
+    macro_rules! m128_neg_mul_sub {
+        ($a:expr, $b:expr, $c:expr) => {
+            _mm_fnmadd_ps($a, $b, $c)
+        };
+    }
+
+    #[cfg(not(target_feature = "fma"))]
+    macro_rules! m128_neg_mul_sub {
+        ($a:expr, $b:expr, $c:expr) => {
+            _mm_sub_ps($c, _mm_mul_ps($a, $b))
+        };
+    }
 
     #[inline]
     pub(crate) unsafe fn m128_round(v: __m128) -> __m128 {
@@ -136,6 +194,64 @@ pub(crate) mod sse2 {
         // All others, use the ORIGINAL value
         let test = _mm_andnot_si128(test, _mm_castps_si128(v));
         _mm_or_ps(result, _mm_castsi128_ps(test))
+    }
+
+    /// Returns a vector whose components are the corresponding components of Angles modulo 2PI.
+    #[inline]
+    pub(crate) unsafe fn m128_mod_angles(angles: __m128) -> __m128 {
+        // From DirectXMath: XMVectorModAngles
+        let v = _mm_mul_ps(angles, PS_RECIPROCAL_TWO_PI.m128);
+        let v = m128_round(v);
+        m128_neg_mul_sub!(PS_TWO_PI.m128, v, angles)
+    }
+
+    /// Computes the sine of the angle in each lane of `v`. Values outside
+    /// the bounds of PI may produce an increasing error as the input angle
+    /// drifts from `[-PI, PI]`.
+    #[inline]
+    pub(crate) unsafe fn m128_sin(v: __m128) -> __m128 {
+        // From DirectXMath: XMVectorSin
+        //
+        // 11-degree minimax approximation
+        //
+        // Force the value within the bounds of pi
+        let mut x = m128_mod_angles(v);
+
+        // Map in [-pi/2,pi/2] with sin(y) = sin(x).
+        let sign = _mm_and_ps(x, PS_NEGATIVE_ZERO.m128);
+        // pi when x >= 0, -pi when x < 0
+        let c = _mm_or_ps(PS_PI.m128, sign);
+        // |x|
+        let absx = _mm_andnot_ps(sign, x);
+        let rflx = _mm_sub_ps(c, x);
+        let comp = _mm_cmple_ps(absx, PS_HALF_PI.m128);
+        let select0 = _mm_and_ps(comp, x);
+        let select1 = _mm_andnot_ps(comp, rflx);
+        x = _mm_or_ps(select0, select1);
+
+        let x2 = _mm_mul_ps(x, x);
+
+        // Compute polynomial approximation
+        const SC1: __m128 = unsafe { PS_SIN_COEFFICIENTS1.m128 };
+        let v_constants_b = _mm_shuffle_ps(SC1, SC1, 0b00_00_00_00);
+
+        const SC0: __m128 = unsafe { PS_SIN_COEFFICIENTS0.m128 };
+        let mut v_constants = _mm_shuffle_ps(SC0, SC0, 0b11_11_11_11);
+        let mut result = m128_mul_add!(v_constants_b, x2, v_constants);
+
+        v_constants = _mm_shuffle_ps(SC0, SC0, 0b10_10_10_10);
+        result = m128_mul_add!(result, x2, v_constants);
+
+        v_constants = _mm_shuffle_ps(SC0, SC0, 0b01_01_01_01);
+        result = m128_mul_add!(result, x2, v_constants);
+
+        v_constants = _mm_shuffle_ps(SC0, SC0, 0b00_00_00_00);
+        result = m128_mul_add!(result, x2, v_constants);
+
+        result = m128_mul_add!(result, x2, PS_ONE.m128);
+        result = _mm_mul_ps(result, x);
+
+        result
     }
 
     // Based on http://gruntthepeon.free.fr/ssemath/sse_mathfun.h
@@ -348,3 +464,87 @@ fn test_scalar_sin_cos() {
     assert!(s.is_nan());
     assert!(c.is_nan());
 }
+
+#[test]
+#[cfg(vec4sse2)]
+fn test_sse2_m128_sin() {
+    use crate::Vec4;
+    use std::f32::consts::PI;
+
+    fn test_sse2_m128_sin_angle(a: f32) {
+        let v = Vec4::splat(a);
+        let v = unsafe { Vec4(sse2::m128_sin(v.0)) };
+        let a_sin = a.sin();
+        dbg!((a, a_sin, v));
+        assert_approx_eq!(v.x(), a_sin, 1e-6);
+        assert_approx_eq!(v.z(), a_sin, 1e-6);
+        assert_approx_eq!(v.y(), a_sin, 1e-6);
+        assert_approx_eq!(v.w(), a_sin, 1e-6);
+    }
+
+    let mut a = -PI;
+    let end = PI;
+    let step = PI / 8192.0;
+
+    while a <= end {
+        test_sse2_m128_sin_angle(a);
+        a += step;
+    }
+}
+
+// sse2::m128_sin is derived from the XMVectorSin in DirectXMath. It's been
+// observed both here and in the C++ version that the error rate increases
+// as the input angle drifts further from the bounds of PI.
+//
+// #[test]
+// #[cfg(vec4sse2)]
+// fn test_sse2_m128_sin2() {
+//     use crate::Vec4;
+
+//     fn test_sse2_m128_sin_angle(a: f32) -> f32 {
+//         let v = Vec4::splat(a);
+//         let v = unsafe { Vec4(sse2::m128_sin(v.0)) };
+//         let a_sin = a.sin();
+//         let v_sin = v.x();
+//         // println!("{:?}", (a, a_sin, v_sin));
+//         assert_approx_eq!(a_sin, v.x(), 1e-4);
+//         assert_approx_eq!(a_sin, v.z(), 1e-4);
+//         assert_approx_eq!(a_sin, v.y(), 1e-4);
+//         assert_approx_eq!(a_sin, v.w(), 1e-4);
+//         v.x()
+//     }
+
+//     // test 1024 floats between -PI and PI inclusive
+//     const MAX_TESTS: u32 = 1024 / 2;
+//     const SIGN: u32 = 0x80_00_00_00;
+//     let ptve_pi = std::f32::consts::PI.to_bits();
+//     let ngve_pi = SIGN | ptve_pi;
+//     let step_pi = (ptve_pi / MAX_TESTS) as usize;
+//     for f in (SIGN..=ngve_pi).step_by(step_pi).map(|i| f32::from_bits(i)) {
+//         test_sse2_m128_sin_angle(f);
+//     }
+//     for f in (0..=ptve_pi).step_by(step_pi).map(|i| f32::from_bits(i)) {
+//         test_sse2_m128_sin_angle(f);
+//     }
+
+//     // test 1024 floats between -INF and +INF exclusive
+//     let ptve_inf = std::f32::INFINITY.to_bits();
+//     let ngve_inf = std::f32::NEG_INFINITY.to_bits();
+//     let step_inf = (ptve_inf / MAX_TESTS) as usize;
+//     for f in (SIGN..ngve_inf)
+//         .step_by(step_inf)
+//         .map(|i| f32::from_bits(i))
+//     {
+//         test_sse2_m128_sin_angle(f);
+//     }
+//     for f in (0..ptve_inf).step_by(step_inf).map(|i| f32::from_bits(i)) {
+//         test_sse2_m128_sin_angle(f);
+//     }
+
+//     // +inf and -inf should return NaN
+//     let s  = test_sse2_m128_sin_angle(std::f32::INFINITY);
+//     assert!(s.is_nan());
+
+//     let s  = test_sse2_m128_sin_angle(std::f32::NEG_INFINITY);
+//     assert!(s.is_nan());
+// }

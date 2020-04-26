@@ -174,6 +174,31 @@ fn test_quat_lerp() {
 }
 
 #[test]
+fn test_quat_slerp() {
+    let q0 = Quat::from_rotation_y(deg(0.0));
+    let q1 = Quat::from_rotation_y(deg(90.0));
+    assert_approx_eq!(q0, q0.slerp(q1, 0.0), 1.0e-3);
+    assert_approx_eq!(q1, q0.slerp(q1, 1.0), 1.0e-3);
+    assert_approx_eq!(Quat::from_rotation_y(deg(45.0)), q0.slerp(q1, 0.5), 1.0e-3);
+}
+
+#[test]
+fn test_quat_slerp_constant_speed() {
+    let step = 0.01;
+    let mut s = 0.0;
+    while s <= 1.0 {
+        let q0 = Quat::from_rotation_y(deg(0.0));
+        let q1 = Quat::from_rotation_y(deg(90.0));
+        assert_approx_eq!(
+            Quat::from_rotation_y(deg(s * 90.0)),
+            q0.slerp(q1, s),
+            1.0e-3
+        );
+        s += step;
+    }
+}
+
+#[test]
 fn test_quat_fmt() {
     let a = Quat::identity();
     #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
