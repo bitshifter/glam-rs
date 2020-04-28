@@ -1,6 +1,6 @@
 [package]
 name = "glam"
-version = "0.8.6" # remember to update html_root_url
+version = "0.8.7" # remember to update html_root_url
 edition = "2018"
 authors = ["Cameron Hart <cameron.hart@gmail.com>"]
 description = "A simple and fast 3D math library for games and graphics"
@@ -18,6 +18,8 @@ maintenance = { status = "experimental" }
 
 [features]
 default = ["std"]
+
+# enable support for the standard library
 std = []
 
 # enable additional glam checks if debug assertions are enabled

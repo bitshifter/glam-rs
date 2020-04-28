@@ -92,8 +92,8 @@ pub(crate) mod sse2 {
     // _ps_const_ty!(PS_CEPHES_FOPI, f32x4, 1.273_239_5); // 4 / M_PI
 
     _ps_const_ty!(PS_NEGATIVE_ZERO, u32x4, 0x80000000);
-    _ps_const_ty!(PS_PI, f32x4, std::f32::consts::PI);
-    _ps_const_ty!(PS_HALF_PI, f32x4, std::f32::consts::FRAC_PI_2);
+    _ps_const_ty!(PS_PI, f32x4, core::f32::consts::PI);
+    _ps_const_ty!(PS_HALF_PI, f32x4, core::f32::consts::FRAC_PI_2);
     _ps_const_ty!(
         PS_SIN_COEFFICIENTS0,
         f32x4,
@@ -111,7 +111,7 @@ pub(crate) mod sse2 {
         -0.00018524670  /*Est3*/
     );
     _ps_const_ty!(PS_ONE, f32x4, 1.0);
-    _ps_const_ty!(PS_TWO_PI, f32x4, std::f32::consts::PI * 2.0);
+    _ps_const_ty!(PS_TWO_PI, f32x4, core::f32::consts::PI * 2.0);
     _ps_const_ty!(PS_RECIPROCAL_TWO_PI, f32x4, 0.159154943);
 
     #[cfg(target_feature = "fma")]
@@ -469,7 +469,7 @@ fn test_scalar_sin_cos() {
 #[cfg(vec4sse2)]
 fn test_sse2_m128_sin() {
     use crate::Vec4;
-    use std::f32::consts::PI;
+    use core::f32::consts::PI;
 
     fn test_sse2_m128_sin_angle(a: f32) {
         let v = Vec4::splat(a);
