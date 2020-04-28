@@ -41,6 +41,7 @@ transform-types = []
 mint = { version = "0.5", optional = true, default-features = false  }
 rand = { version = "0.7", optional = true, default-features = false }
 serde = { version = "1.0", optional = true, features = ["derive"] }
+sleef = { path = "../sleef-rs" }
 
 [dev-dependencies]
 criterion = "0.3"

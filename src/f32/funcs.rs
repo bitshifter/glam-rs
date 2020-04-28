@@ -1,13 +1,42 @@
 #[inline]
 pub(crate) fn scalar_sin_cos(x: f32) -> (f32, f32) {
-    // // expect sse2 to be available on all x86 builds
-    // #[cfg(target_feature = "sse2")]
-    // unsafe {
-    //     let (sinx, cosx) = sin_cos_sse2(_mm_set1_ps(x));
-    //     (_mm_cvtss_f32(sinx), _mm_cvtss_f32(cosx))
-    // }
-    // #[cfg(not(target_feature = "sse2"))]
+    // expect sse2 to be available on all x86 builds
+    #[cfg(target_feature = "sse2")]
+    unsafe {
+        #[cfg(target_arch = "x86")]
+        use core::arch::x86::*;
+        #[cfg(target_arch = "x86_64")]
+        use core::arch::x86_64::*;
+        let (sinx, cosx) = sleef::sincosf4_u10(_mm_set1_ps(x));
+        (_mm_cvtss_f32(sinx), _mm_cvtss_f32(cosx))
+    }
+    #[cfg(not(target_feature = "sse2"))]
     x.sin_cos()
+}
+
+#[inline]
+pub fn sin_cos_f32x3(y: f32, p: f32, r: f32) -> ((f32, f32), (f32, f32), (f32, f32)) {
+    #[cfg(target_feature = "sse2")]
+    unsafe {
+        use crate::Align16;
+        #[cfg(target_arch = "x86")]
+        use core::arch::x86::*;
+        #[cfg(target_arch = "x86_64")]
+        use core::arch::x86_64::*;
+        use core::mem::MaybeUninit;
+        let (xm128, ym128) = sleef::sincosf4_u10(_mm_set_ps(0.0, r, p, y));
+        let mut xa16: MaybeUninit<Align16<[f32; 4]>> = MaybeUninit::uninit();
+        let mut ya16: MaybeUninit<Align16<[f32; 4]>> = MaybeUninit::uninit();
+        let xa: [f32; 4];
+        let ya: [f32; 4];
+        _mm_store_ps(xa16.as_mut_ptr() as *mut f32, xm128);
+        _mm_store_ps(ya16.as_mut_ptr() as *mut f32, ym128);
+        xa = xa16.assume_init().0;
+        ya = ya16.assume_init().0;
+        ((xa[0], ya[0]), (xa[1], ya[1]), (xa[2], ya[2]))
+    }
+    #[cfg(not(target_feature = "sse2"))]
+    (y.sin_cos(), p.sin_cos(), r.sin_cos())
 }
 
 #[inline]
