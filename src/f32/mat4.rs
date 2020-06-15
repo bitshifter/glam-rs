@@ -350,6 +350,26 @@ impl Mat4 {
         self.w_axis
     }
 
+    #[inline]
+    pub fn x_axis_mut(&mut self) -> &mut Vec4 {
+        &mut self.x_axis
+    }
+
+    #[inline]
+    pub fn y_axis_mut(&mut self) -> &mut Vec4 {
+        &mut self.y_axis
+    }
+
+    #[inline]
+    pub fn z_axis_mut(&mut self) -> &mut Vec4 {
+        &mut self.z_axis
+    }
+
+    #[inline]
+    pub fn w_axis_mut(&mut self) -> &mut Vec4 {
+        &mut self.w_axis
+    }
+
     // #[inline]
     // pub(crate) fn col(&self, index: usize) -> Vec4 {
     //     match index {

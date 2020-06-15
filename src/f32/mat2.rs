@@ -135,6 +135,16 @@ impl Mat2 {
         Vec2::new(x, y)
     }
 
+    #[inline]
+    pub fn x_axis_mut(&mut self) -> &mut Vec2 {
+        unsafe { &mut *(self.0.as_mut().as_mut_ptr() as *mut Vec2) }
+    }
+
+    #[inline]
+    pub fn y_axis_mut(&mut self) -> &mut Vec2 {
+        unsafe { &mut *(self.0.as_mut()[2..].as_mut_ptr() as *mut Vec2) }
+    }
+
     // #[inline]
     // pub(crate) fn col(&self, index: usize) -> Vec2 {
     //     match index {

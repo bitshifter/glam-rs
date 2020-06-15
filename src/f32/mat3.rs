@@ -262,6 +262,21 @@ impl Mat3 {
         self.z_axis
     }
 
+    #[inline]
+    pub fn x_axis_mut(&mut self) -> &mut Vec3 {
+        &mut self.x_axis
+    }
+
+    #[inline]
+    pub fn y_axis_mut(&mut self) -> &mut Vec3 {
+        &mut self.y_axis
+    }
+
+    #[inline]
+    pub fn z_axis_mut(&mut self) -> &mut Vec3 {
+        &mut self.z_axis
+    }
+
     // #[inline]
     // pub(crate) fn col(&self, index: usize) -> Vec3 {
     //     match index {

@@ -56,6 +56,14 @@ fn test_mat4_accessors() {
     assert_eq!(Vec4::new(5.0, 6.0, 7.0, 8.0), m.y_axis());
     assert_eq!(Vec4::new(9.0, 10.0, 11.0, 12.0), m.z_axis());
     assert_eq!(Vec4::new(13.0, 14.0, 15.0, 16.0), m.w_axis());
+    *m.x_axis_mut() = Vec4::new(0.0, 1.0, 2.0, 3.0);
+    *m.y_axis_mut() = Vec4::new(4.0, 5.0, 6.0, 7.0);
+    *m.z_axis_mut() = Vec4::new(8.0, 9.0, 10.0, 11.0);
+    *m.w_axis_mut() = Vec4::new(12.0, 13.0, 14.0, 15.0);
+    assert_eq!(Vec4::new(0.0, 1.0, 2.0, 3.0), m.x_axis());
+    assert_eq!(Vec4::new(4.0, 5.0, 6.0, 7.0), m.y_axis());
+    assert_eq!(Vec4::new(8.0, 9.0, 10.0, 11.0), m.z_axis());
+    assert_eq!(Vec4::new(12.0, 13.0, 14.0, 15.0), m.w_axis());
 }
 
 #[test]

@@ -45,6 +45,12 @@ fn test_mat3_accessors() {
     assert_eq!(Vec3::new(1.0, 2.0, 3.0), m.x_axis());
     assert_eq!(Vec3::new(4.0, 5.0, 6.0), m.y_axis());
     assert_eq!(Vec3::new(7.0, 8.0, 9.0), m.z_axis());
+    *m.x_axis_mut() = Vec3::new(0.0, 1.0, 2.0);
+    *m.y_axis_mut() = Vec3::new(3.0, 4.0, 5.0);
+    *m.z_axis_mut() = Vec3::new(6.0, 7.0, 8.0);
+    assert_eq!(Vec3::new(0.0, 1.0, 2.0), m.x_axis());
+    assert_eq!(Vec3::new(3.0, 4.0, 5.0), m.y_axis());
+    assert_eq!(Vec3::new(6.0, 7.0, 8.0), m.z_axis());
 }
 
 #[test]

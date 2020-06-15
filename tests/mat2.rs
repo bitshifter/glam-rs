@@ -42,6 +42,10 @@ fn test_mat2_accessors() {
     assert_eq!(Mat2::from_cols_array_2d(&MATRIX), m);
     assert_eq!(Vec2::new(1.0, 2.0), m.x_axis());
     assert_eq!(Vec2::new(3.0, 4.0), m.y_axis());
+    *m.x_axis_mut() = Vec2::new(0.0, 1.0);
+    *m.y_axis_mut() = Vec2::new(2.0, 3.0);
+    assert_eq!(Vec2::new(0.0, 1.0), m.x_axis());
+    assert_eq!(Vec2::new(2.0, 3.0), m.y_axis());
 }
 
 #[test]
