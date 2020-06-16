@@ -12,13 +12,8 @@ const ZERO: [[f32; 3]; 3] = [[0.0; 3]; 3];
 #[test]
 fn test_mat3_align() {
     use std::mem;
-    if cfg!(any(feature = "packed-vec3", feature = "scalar-math")) {
-        assert_eq!(36, mem::size_of::<Mat3>());
-        assert_eq!(4, mem::align_of::<Mat3>());
-    } else {
-        assert_eq!(48, mem::size_of::<Mat3>());
-        assert_eq!(16, mem::align_of::<Mat3>());
-    }
+    assert_eq!(36, mem::size_of::<Mat3>());
+    assert_eq!(4, mem::align_of::<Mat3>());
 }
 
 #[test]

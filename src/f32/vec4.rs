@@ -208,11 +208,6 @@ impl Vec4 {
     pub fn truncate(self) -> Vec3 {
         #[cfg(all(vec4sse2, vec3sse2))]
         {
-            self.0.into()
-        }
-
-        #[cfg(all(vec4sse2, not(vec3sse2)))]
-        {
             let (x, y, z, _) = self.into();
             Vec3::new(x, y, z)
         }

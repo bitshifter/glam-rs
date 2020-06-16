@@ -8,7 +8,9 @@ mod transform;
 mod vec2;
 mod vec2_mask;
 mod vec3;
+mod vec3_align16;
 mod vec3_mask;
+mod vec3_mask_align16;
 mod vec4;
 mod vec4_mask;
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
@@ -24,7 +26,9 @@ pub use transform::*;
 pub use vec2::*;
 pub use vec2_mask::*;
 pub use vec3::*;
+pub use vec3_align16::*;
 pub use vec3_mask::*;
+pub use vec3_mask_align16::*;
 pub use vec4::*;
 pub use vec4_mask::*;
 

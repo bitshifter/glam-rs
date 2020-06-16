@@ -26,9 +26,6 @@ has a SIMD implementation yet.
 Note that this does result in some wasted space in the case of `Vec3` and `Mat3`
 as the SIMD vector type is 16 bytes large and 16 byte aligned.
 
-It is possible to opt out of using SIMD types for Vec3 and Mat3 storage with the
-`packed-vec3` feature.
-
 `glam` outperforms similar Rust libraries such as [`cgmath`][cgmath],
 [`nalgebra-glm`][nalgebra-glm] and others for common operations as tested by the
 [`mathbench`][mathbench] project.
@@ -57,8 +54,6 @@ let [x, y, z]: [f32; 3] = v.into();
 
 ### Feature gates
 
-* `packed-vec3` - disable using SIMD types for `Vec3` and `Mat3` storage.  This
-  avoids wasting space due to 16 byte alignment at the cost of some performance.
 * `scalar-math` - compiles with SIMD support disabled
 * `glam-assert` - adds assertions which check the validity of parameters passed to
   `glam` to help catch runtime errors

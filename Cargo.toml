@@ -27,9 +27,6 @@ debug-glam-assert = []
 # always enable additional glam checks
 glam-assert = []
 
-# opt out of Vec3 and Mat3 using SIMD (and thus being 16 byte aligned)
-packed-vec3 = []
-
 # this is primarily for testing the fallback implementation
 scalar-math = []
 
