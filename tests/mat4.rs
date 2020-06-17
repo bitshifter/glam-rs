@@ -1,6 +1,6 @@
 mod support;
 
-use glam::f32::*;
+use glam::{mat4, vec3, vec4, Mat4, Quat, Vec3, Vec4};
 use support::deg;
 
 const IDENTITY: [[f32; 4]; 4] = [

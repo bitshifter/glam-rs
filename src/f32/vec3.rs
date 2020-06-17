@@ -1,4 +1,4 @@
-use super::{Vec2, Vec3Mask, Vec4};
+use super::{Vec2, Vec3Align16, Vec3Mask, Vec4};
 use core::{fmt, ops::*};
 
 /// A 3-dimensional vector.
@@ -607,6 +607,29 @@ impl From<Vec3> for [f32; 3] {
     #[inline]
     fn from(v: Vec3) -> Self {
         [v.0, v.1, v.2]
+    }
+}
+
+impl From<Vec3Align16> for Vec3 {
+    #[inline]
+    fn from(v: Vec3Align16) -> Self {
+        #[cfg(vec3align16sse2)]
+        {
+            let (x, y, z) = v.into();
+            Self(x, y, z)
+        }
+
+        #[cfg(vec3align16f32)]
+        {
+            v.0
+        }
+    }
+}
+
+impl From<Vec4> for Vec3 {
+    #[inline]
+    fn from(v: Vec4) -> Self {
+        v.truncate()
     }
 }
 

@@ -1,6 +1,4 @@
-#[cfg(vec3align16f32)]
-use super::Vec3;
-use super::{Vec2, Vec3MaskAlign16, Vec4};
+use super::{Vec2, Vec3, Vec3MaskAlign16, Vec4};
 use core::{fmt, ops::*};
 
 #[cfg(all(vec3align16sse2, target_arch = "x86"))]
@@ -87,7 +85,7 @@ impl From<__m128> for Vec3Align16 {
 }
 
 #[inline]
-pub fn vec3align16(x: f32, y: f32, z: f32) -> Vec3Align16 {
+pub fn vec3_align16(x: f32, y: f32, z: f32) -> Vec3Align16 {
     Vec3Align16::new(x, y, z)
 }
 
@@ -1161,23 +1159,44 @@ impl From<Vec3Align16> for [f32; 3] {
     }
 }
 
+impl From<Vec4> for Vec3Align16 {
+    #[inline]
+    fn from(v: Vec4) -> Self {
+        #[cfg(vec4sse2)]
+        {
+            Self(v.0)
+        }
+        #[cfg(vec4f32)]
+        {
+            Self(v.truncate())
+        }
+    }
+}
+
+impl From<Vec3> for Vec3Align16 {
+    #[inline]
+    fn from(v: Vec3) -> Self {
+        Vec3Align16::new(v.0, v.1, v.2)
+    }
+}
+
 #[test]
 fn test_vec3_private() {
     assert_eq!(
-        vec3align16(1.0, 1.0, 1.0)
-            .mul_add(vec3align16(0.5, 2.0, -4.0), vec3align16(-1.0, -1.0, -1.0)),
-        vec3align16(-0.5, 1.0, -5.0)
+        vec3_align16(1.0, 1.0, 1.0)
+            .mul_add(vec3_align16(0.5, 2.0, -4.0), vec3_align16(-1.0, -1.0, -1.0)),
+        vec3_align16(-0.5, 1.0, -5.0)
     );
     assert_eq!(
-        vec3align16(1.0, 2.0, 3.0).dup_x(),
-        vec3align16(1.0, 1.0, 1.0)
+        vec3_align16(1.0, 2.0, 3.0).dup_x(),
+        vec3_align16(1.0, 1.0, 1.0)
     );
     assert_eq!(
-        vec3align16(1.0, 2.0, 3.0).dup_y(),
-        vec3align16(2.0, 2.0, 2.0)
+        vec3_align16(1.0, 2.0, 3.0).dup_y(),
+        vec3_align16(2.0, 2.0, 2.0)
     );
     assert_eq!(
-        vec3align16(1.0, 2.0, 3.0).dup_z(),
-        vec3align16(3.0, 3.0, 3.0)
+        vec3_align16(1.0, 2.0, 3.0).dup_z(),
+        vec3_align16(3.0, 3.0, 3.0)
     );
 }

@@ -1,6 +1,6 @@
 mod support;
 
-use glam::*;
+use glam::{vec2, vec3, Vec2, Vec2Mask, Vec3};
 use std::f32;
 
 #[test]
@@ -201,7 +201,7 @@ fn test_extend_truncate() {
 }
 
 #[test]
-fn test_vec2b() {
+fn test_vec2mask() {
     // make sure the unused 'w' value doesn't break Vec2b behaviour
     let a = Vec3::zero();
     let mut b = a.truncate();

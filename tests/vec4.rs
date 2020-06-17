@@ -1,6 +1,6 @@
 mod support;
 
-use glam::*;
+use glam::{vec4, Vec4, Vec4Mask};
 use std::f32;
 
 #[test]
