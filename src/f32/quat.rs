@@ -1,4 +1,6 @@
 use super::{scalar_acos, scalar_sin_cos, Mat3, Mat4, Vec3, Vec4};
+#[cfg(vec4sse2)]
+use super::Vec3Align16;
 #[cfg(all(vec4sse2, target_arch = "x86",))]
 use core::arch::x86::*;
 #[cfg(all(vec4sse2, target_arch = "x86_64",))]
@@ -191,9 +193,9 @@ impl Quat {
     #[inline]
     pub fn from_rotation_mat4(mat: &Mat4) -> Self {
         Self::from_rotation_axes(
-            mat.x_axis().truncate(),
-            mat.y_axis().truncate(),
-            mat.z_axis().truncate(),
+            Vec3::from(mat.x_axis().truncate()),
+            Vec3::from(mat.y_axis().truncate()),
+            Vec3::from(mat.z_axis().truncate()),
         )
     }
 
@@ -422,16 +424,21 @@ impl Quat {
         #[cfg(vec4sse2)]
         {
             let w = self.0.dup_w().truncate();
-            let two = Vec3::splat(2.0);
+            let two = Vec3Align16::splat(2.0);
             let b = self.0.truncate();
             let b2 = b.dot_as_vec3(b);
-            other * (w * w - b2) + b * (other.dot_as_vec3(b) * two) + b.cross(other) * (w * two)
+            let other = Vec3Align16::from(other);
+            Vec3::from(
+                other * (w * w - b2)
+                    + b * (other.dot_as_vec3(b) * two)
+                    + b.cross(other) * (w * two),
+            )
         }
 
         #[cfg(vec4f32)]
         {
             let w = self.0.w();
-            let b = self.0.truncate();
+            let b = Vec3::from(self.0.truncate());
             let b2 = b.dot(b);
             other * (w * w - b2) + b * (other.dot(b) * 2.0) + b.cross(other) * (w * 2.0)
         }

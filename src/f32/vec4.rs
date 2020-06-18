@@ -1,4 +1,4 @@
-use super::{Vec3, Vec4Mask};
+use super::{Vec3Align16, Vec4Mask};
 use core::{fmt, ops::*};
 
 #[cfg(all(vec4sse2, target_arch = "x86"))]
@@ -205,16 +205,15 @@ impl Vec4 {
     /// Creates a `Vec3` from the first three elements of `self`,
     /// removing `w`.
     #[inline]
-    pub fn truncate(self) -> Vec3 {
+    pub fn truncate(self) -> Vec3Align16 {
         #[cfg(all(vec4sse2, vec3sse2))]
         {
-            let (x, y, z, _) = self.into();
-            Vec3::new(x, y, z)
+            Vec3Align16(self.0)
         }
 
         #[cfg(vec4f32)]
         {
-            Vec3::new(self.0, self.1, self.2)
+            Vec3Align16::new(self.0, self.1, self.2)
         }
     }
 

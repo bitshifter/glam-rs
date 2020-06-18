@@ -1,4 +1,4 @@
-use super::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4};
+use super::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3Align16, Vec4};
 use mint;
 
 impl From<mint::Point2<f32>> for Vec2 {
@@ -20,8 +20,21 @@ impl From<mint::Point3<f32>> for Vec3 {
     }
 }
 
+impl From<mint::Point3<f32>> for Vec3Align16 {
+    fn from(v: mint::Point3<f32>) -> Self {
+        Self::new(v.x, v.y, v.z)
+    }
+}
+
 impl From<Vec3> for mint::Point3<f32> {
     fn from(v: Vec3) -> Self {
+        let (x, y, z) = v.into();
+        Self { x, y, z }
+    }
+}
+
+impl From<Vec3Align16> for mint::Point3<f32> {
+    fn from(v: Vec3Align16) -> Self {
         let (x, y, z) = v.into();
         Self { x, y, z }
     }
@@ -46,8 +59,21 @@ impl From<mint::Vector3<f32>> for Vec3 {
     }
 }
 
+impl From<mint::Vector3<f32>> for Vec3Align16 {
+    fn from(v: mint::Vector3<f32>) -> Self {
+        Self::new(v.x, v.y, v.z)
+    }
+}
+
 impl From<Vec3> for mint::Vector3<f32> {
     fn from(v: Vec3) -> Self {
+        let (x, y, z) = v.into();
+        Self { x, y, z }
+    }
+}
+
+impl From<Vec3Align16> for mint::Vector3<f32> {
+    fn from(v: Vec3Align16) -> Self {
         let (x, y, z) = v.into();
         Self { x, y, z }
     }
@@ -195,7 +221,7 @@ mod test {
 
     #[test]
     fn test_point3() {
-        use crate::Vec3;
+        use crate::{Vec3, Vec3Align16};
         let m = mint::Point3 {
             x: 1.0,
             y: 2.0,
@@ -203,6 +229,9 @@ mod test {
         };
         let g = Vec3::from(m);
         assert_eq!(g, Vec3::new(1.0, 2.0, 3.0));
+        assert_eq!(m, g.into());
+        let g = Vec3Align16::from(m);
+        assert_eq!(g, Vec3Align16::new(1.0, 2.0, 3.0));
         assert_eq!(m, g.into());
     }
 
@@ -217,7 +246,7 @@ mod test {
 
     #[test]
     fn test_vector3() {
-        use crate::Vec3;
+        use crate::{Vec3, Vec3Align16};
         let m = mint::Vector3 {
             x: 1.0,
             y: 2.0,
@@ -225,6 +254,9 @@ mod test {
         };
         let g = Vec3::from(m);
         assert_eq!(g, Vec3::new(1.0, 2.0, 3.0));
+        assert_eq!(m, g.into());
+        let g = Vec3Align16::from(m);
+        assert_eq!(g, Vec3Align16::new(1.0, 2.0, 3.0));
         assert_eq!(m, g.into());
     }
 

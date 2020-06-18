@@ -1,6 +1,6 @@
 mod support;
 
-use glam::{vec3, Vec3, Vec3Mask, Vec4};
+use glam::{vec3, Vec3, Vec3Mask};
 use std::f32;
 
 #[test]
@@ -221,20 +221,18 @@ fn test_extend_truncate() {
     let a = vec3(1.0, 2.0, 3.0);
     let b = a.extend(4.0);
     assert_eq!((1.0, 2.0, 3.0, 4.0), b.into());
-    let c = b.truncate();
+    let c = Vec3::from(b.truncate());
     assert_eq!(a, c);
 }
 
 #[test]
 fn test_vec3_mask() {
-    // make sure the unused 'w' value doesn't break Vec3b behaviour
-    let a = Vec4::zero();
-    let mut b = a.truncate();
-    b.set_x(1.0);
-    b.set_y(1.0);
-    b.set_z(1.0);
-    assert!(!b.cmpeq(Vec3::zero()).any());
-    assert!(b.cmpeq(Vec3::splat(1.0)).all());
+    let mut a = Vec3::zero();
+    a.set_x(1.0);
+    a.set_y(1.0);
+    a.set_z(1.0);
+    assert!(!a.cmpeq(Vec3::zero()).any());
+    assert!(a.cmpeq(Vec3::splat(1.0)).all());
 }
 
 #[test]

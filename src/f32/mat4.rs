@@ -1,4 +1,4 @@
-use super::{scalar_sin_cos, Mat3, Quat, Vec3, Vec4};
+use super::{scalar_sin_cos, Mat3, Quat, Vec3, Vec3Align16, Vec4};
 #[cfg(all(vec4sse2, target_arch = "x86"))]
 use core::arch::x86::*;
 #[cfg(all(vec4sse2, target_arch = "x86_64"))]
@@ -183,7 +183,7 @@ impl Mat4 {
         let det = self.determinant();
         glam_assert!(det != 0.0);
 
-        let scale = Vec3::new(
+        let scale = Vec3Align16::new(
             self.x_axis.length() * det.signum(),
             self.y_axis.length(),
             self.z_axis.length(),
@@ -193,12 +193,13 @@ impl Mat4 {
         let inv_scale = scale.reciprocal();
 
         let rotation = Quat::from_rotation_mat3(&Mat3::from_cols(
-            self.x_axis().truncate() * inv_scale.dup_x(),
-            self.y_axis().truncate() * inv_scale.dup_y(),
-            self.z_axis().truncate() * inv_scale.dup_z(),
+            Vec3::from(self.x_axis().truncate() * inv_scale.dup_x()),
+            Vec3::from(self.y_axis().truncate() * inv_scale.dup_y()),
+            Vec3::from(self.z_axis().truncate() * inv_scale.dup_z()),
         ));
 
-        let translation = self.w_axis.truncate();
+        let translation = Vec3::from(self.w_axis.truncate());
+        let scale = Vec3::from(scale);
 
         (scale, rotation, translation)
     }
@@ -807,7 +808,7 @@ impl Mat4 {
         // // other w = 1
         // res = self.w_axis.truncate() + res;
         // res
-        self.mul_vec4(other.extend(1.0)).truncate()
+        Vec3::from(self.mul_vec4(other.extend(1.0)).truncate())
     }
 
     /// Transforms the give `Vec3` as 3D vector.
@@ -822,7 +823,7 @@ impl Mat4 {
         // res = self.z_axis.truncate().mul_add(other.dup_z(), res);
         // // other w = 0
         // res
-        self.mul_vec4(other.extend(0.0)).truncate()
+        Vec3::from(self.mul_vec4(other.extend(0.0)).truncate())
     }
 
     /// Returns true if the absolute difference of all elements between `self`

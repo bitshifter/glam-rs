@@ -1,4 +1,4 @@
-use crate::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4};
+use crate::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3Align16, Vec4};
 use core::fmt;
 use serde::{
     de::{self, Deserialize, Deserializer, SeqAccess, Visitor},
@@ -27,6 +27,22 @@ impl Serialize for Vec3 {
         let (x, y, z) = (*self).into();
         // 3 is the number of fields in the struct.
         let mut state = serializer.serialize_tuple_struct("Vec3", 3)?;
+        state.serialize_field(&x)?;
+        state.serialize_field(&y)?;
+        state.serialize_field(&z)?;
+        state.end()
+    }
+}
+
+#[cfg(feature = "serde")]
+impl Serialize for Vec3Align16 {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let (x, y, z) = (*self).into();
+        // 3 is the number of fields in the struct.
+        let mut state = serializer.serialize_tuple_struct("Vec3Align16", 3)?;
         state.serialize_field(&x)?;
         state.serialize_field(&y)?;
         state.serialize_field(&z)?;
@@ -190,6 +206,43 @@ impl<'de> Deserialize<'de> for Vec3 {
         }
 
         deserializer.deserialize_tuple_struct("Vec3", 3, Vec3Visitor)
+    }
+}
+
+impl<'de> Deserialize<'de> for Vec3Align16 {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        struct Vec3Align16Visitor;
+
+        // TODO: Not sure why this line is reported as uncovered
+        #[cfg_attr(tarpaulin, skip)]
+        impl<'de> Visitor<'de> for Vec3Align16Visitor {
+            type Value = Vec3Align16;
+
+            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                formatter.write_str("struct Vec2")
+            }
+
+            fn visit_seq<V>(self, mut seq: V) -> Result<Vec3Align16, V::Error>
+            where
+                V: SeqAccess<'de>,
+            {
+                let x = seq
+                    .next_element()?
+                    .ok_or_else(|| de::Error::invalid_length(0, &self))?;
+                let y = seq
+                    .next_element()?
+                    .ok_or_else(|| de::Error::invalid_length(1, &self))?;
+                let z = seq
+                    .next_element()?
+                    .ok_or_else(|| de::Error::invalid_length(2, &self))?;
+                Ok(Vec3Align16::new(x, y, z))
+            }
+        }
+
+        deserializer.deserialize_tuple_struct("Vec3Align16", 3, Vec3Align16Visitor)
     }
 }
 

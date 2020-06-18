@@ -1159,20 +1159,6 @@ impl From<Vec3Align16> for [f32; 3] {
     }
 }
 
-impl From<Vec4> for Vec3Align16 {
-    #[inline]
-    fn from(v: Vec4) -> Self {
-        #[cfg(vec4sse2)]
-        {
-            Self(v.0)
-        }
-        #[cfg(vec4f32)]
-        {
-            Self(v.truncate())
-        }
-    }
-}
-
 impl From<Vec3> for Vec3Align16 {
     #[inline]
     fn from(v: Vec3) -> Self {

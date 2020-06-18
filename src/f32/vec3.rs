@@ -626,13 +626,6 @@ impl From<Vec3Align16> for Vec3 {
     }
 }
 
-impl From<Vec4> for Vec3 {
-    #[inline]
-    fn from(v: Vec4) -> Self {
-        v.truncate()
-    }
-}
-
 #[test]
 fn test_vec3_private() {
     assert_eq!(
