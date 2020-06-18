@@ -188,7 +188,7 @@ impl Mat4 {
             self.y_axis.length(),
             self.z_axis.length(),
         );
-        glam_assert!(scale.cmpne(Vec3::zero()).all());
+        glam_assert!(scale.cmpne(Vec3Align16::zero()).all());
 
         let inv_scale = scale.reciprocal();
 
