@@ -1,4 +1,4 @@
-use super::{Mat4, Quat, Vec3};
+use super::{Mat4, Quat, Vec3, Vec3Align16};
 use core::ops::Mul;
 
 #[cfg(feature = "rand")]
@@ -125,10 +125,12 @@ impl TransformSRT {
 #[inline]
 fn mul_srt_srt(lhs: &TransformSRT, rhs: &TransformSRT) -> TransformSRT {
     // from rtm qvv_mul
-    let min_scale = lhs.scale.min(rhs.scale);
-    let scale = lhs.scale * rhs.scale;
+    let lhs_scale = Vec3Align16::from(lhs.scale);
+    let rhs_scale = Vec3Align16::from(rhs.scale);
+    let min_scale = lhs_scale.min(rhs_scale);
+    let scale = lhs_scale * rhs_scale;
 
-    if min_scale.cmplt(Vec3::zero()).any() {
+    if min_scale.cmplt(Vec3Align16::zero()).any() {
         // If negative scale, we go through a matrix
         let lhs_mtx =
             Mat4::from_scale_rotation_translation(lhs.scale, lhs.rotation, lhs.translation);
@@ -144,16 +146,21 @@ fn mul_srt_srt(lhs: &TransformSRT, rhs: &TransformSRT) -> TransformSRT {
         result_mtx
             .set_z_axis((result_mtx.z_axis().truncate().normalize() * sign.dup_z()).extend(0.0));
 
+        let scale = Vec3::from(scale);
         let rotation = Quat::from_rotation_mat4(&result_mtx);
-        let translation = result_mtx.w_axis().truncate();
+        let translation = Vec3::from(result_mtx.w_axis().truncate());
         TransformSRT {
             scale,
             rotation,
             translation,
         }
     } else {
+        let scale = Vec3::from(scale);
         let rotation = lhs.rotation * rhs.rotation;
-        let translation = (rhs.rotation * (lhs.translation * rhs.scale)) + rhs.translation;
+        let translation = Vec3::from(
+            (rhs.rotation * (Vec3Align16::from(lhs.translation) * rhs_scale))
+                + Vec3Align16::from(rhs.translation),
+        );
         TransformSRT {
             scale,
             rotation,

@@ -1,6 +1,4 @@
-use super::{scalar_acos, scalar_sin_cos, Mat3, Mat4, Vec3, Vec4};
-#[cfg(vec4sse2)]
-use super::Vec3Align16;
+use super::{scalar_acos, scalar_sin_cos, Mat3, Mat4, Vec3, Vec3Align16, Vec4};
 #[cfg(all(vec4sse2, target_arch = "x86",))]
 use core::arch::x86::*;
 #[cfg(all(vec4sse2, target_arch = "x86_64",))]
@@ -418,7 +416,7 @@ impl Quat {
 
     #[inline]
     /// Multiplies a quaternion and a 3D vector, rotating it.
-    pub fn mul_vec3(self, other: Vec3) -> Vec3 {
+    pub fn mul_vec3(self, other: Vec3Align16) -> Vec3Align16 {
         glam_assert!(self.is_normalized());
 
         #[cfg(vec4sse2)]
@@ -427,20 +425,18 @@ impl Quat {
             let two = Vec3Align16::splat(2.0);
             let b = self.0.truncate();
             let b2 = b.dot_as_vec3(b);
-            let other = Vec3Align16::from(other);
-            Vec3::from(
-                other * (w * w - b2)
-                    + b * (other.dot_as_vec3(b) * two)
-                    + b.cross(other) * (w * two),
-            )
+            other * (w * w - b2) + b * (other.dot_as_vec3(b) * two) + b.cross(other) * (w * two)
         }
 
         #[cfg(vec4f32)]
         {
+            let other = Vec3::from(other);
             let w = self.0.w();
             let b = Vec3::from(self.0.truncate());
             let b2 = b.dot(b);
-            other * (w * w - b2) + b * (other.dot(b) * 2.0) + b.cross(other) * (w * 2.0)
+            Vec3Align16::from(
+                other * (w * w - b2) + b * (other.dot(b) * 2.0) + b.cross(other) * (w * 2.0),
+            )
         }
     }
 
@@ -568,7 +564,15 @@ impl MulAssign<Quat> for Quat {
 impl Mul<Vec3> for Quat {
     type Output = Vec3;
     #[inline]
-    fn mul(self, other: Vec3) -> Vec3 {
+    fn mul(self, other: Vec3) -> Self::Output {
+        Vec3::from(self.mul_vec3(Vec3Align16::from(other)))
+    }
+}
+
+impl Mul<Vec3Align16> for Quat {
+    type Output = Vec3Align16;
+    #[inline]
+    fn mul(self, other: Vec3Align16) -> Self::Output {
         self.mul_vec3(other)
     }
 }
