@@ -934,6 +934,22 @@ impl DivAssign<f32> for Vec3Align16 {
     }
 }
 
+impl Div<Vec3Align16> for f32 {
+    type Output = Vec3Align16;
+    #[inline]
+    fn div(self, other: Vec3Align16) -> Vec3Align16 {
+        #[cfg(vec3align16sse2)]
+        unsafe {
+            Vec3Align16(_mm_div_ps(_mm_set1_ps(self), other.0))
+        }
+
+        #[cfg(vec3align16f32)]
+        {
+            Vec3Align16(self.div(other.0))
+        }
+    }
+}
+
 impl Mul<Vec3Align16> for Vec3Align16 {
     type Output = Self;
     #[inline]

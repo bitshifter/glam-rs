@@ -483,6 +483,14 @@ impl DivAssign<f32> for Vec3 {
     }
 }
 
+impl Div<Vec3> for f32 {
+    type Output = Vec3;
+    #[inline]
+    fn div(self, other: Vec3) -> Vec3 {
+        Vec3(self / other.0, self / other.1, self / other.2)
+    }
+}
+
 impl Mul<Vec3> for Vec3 {
     type Output = Self;
     #[inline]

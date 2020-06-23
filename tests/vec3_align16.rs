@@ -145,8 +145,10 @@ fn test_vec3_align16_ops() {
     assert_eq!((0.0, 0.0, 0.0), (a - a).into());
     assert_eq!((1.0, 4.0, 9.0), (a * a).into());
     assert_eq!((2.0, 4.0, 6.0), (a * 2.0).into());
+    assert_eq!((2.0, 4.0, 6.0), (2.0 * a).into());
     assert_eq!((1.0, 1.0, 1.0), (a / a).into());
     assert_eq!((0.5, 1.0, 1.5), (a / 2.0).into());
+    assert_eq!((2.0, 1.0, 2.0 / 3.0), (2.0 / a).into());
     assert_eq!((-1.0, -2.0, -3.0), (-a).into());
 }
 

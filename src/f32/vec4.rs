@@ -1060,6 +1060,27 @@ impl DivAssign<f32> for Vec4 {
     }
 }
 
+impl Div<Vec4> for f32 {
+    type Output = Vec4;
+    #[inline]
+    fn div(self, other: Vec4) -> Vec4 {
+        #[cfg(vec4sse2)]
+        unsafe {
+            Vec4(_mm_div_ps(_mm_set1_ps(self), other.0))
+        }
+
+        #[cfg(vec4f32)]
+        {
+            Vec4(
+                self / other.0,
+                self / other.1,
+                self / other.2,
+                self / other.3,
+            )
+        }
+    }
+}
+
 impl Mul<Vec4> for Vec4 {
     type Output = Self;
     #[inline]
