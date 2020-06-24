@@ -123,18 +123,21 @@ impl Vec3 {
 
     /// Returns a `Vec3` with all elements set to the value of element `x`.
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn dup_x(self) -> Self {
         Self(self.0, self.0, self.0)
     }
 
     /// Returns a `Vec3` with all elements set to the value of element `y`.
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn dup_y(self) -> Self {
         Self(self.1, self.1, self.1)
     }
 
     /// Returns a `Vec3` with all elements set to the value of element `z`.
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn dup_z(self) -> Self {
         Self(self.2, self.2, self.2)
     }
@@ -147,6 +150,7 @@ impl Vec3 {
 
     /// Returns Vec3 dot in all lanes of Vec3
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn dot_as_vec3(self, other: Self) -> Self {
         let dot = self.dot(other);
         Vec3::new(dot, dot, dot)
@@ -340,6 +344,7 @@ impl Vec3 {
 
     /// Per element multiplication/addition of the three inputs: b + (self * a)
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn mul_add(self, a: Self, b: Self) -> Self {
         Self(
             (self.0 * a.0) + b.0,

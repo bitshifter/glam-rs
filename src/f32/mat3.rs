@@ -1,4 +1,4 @@
-use super::{scalar_sin_cos, Quat, Vec2, Vec3};
+use super::{scalar_sin_cos, Quat, Vec2, Vec3, Vec3Align16};
 use core::{
     fmt,
     ops::{Add, Mul, Sub},
@@ -325,14 +325,10 @@ impl Mat3 {
         // }
         // #[cfg(vec3f32)]
         {
-            let (m00, m01, m02) = self.x_axis.into();
-            let (m10, m11, m12) = self.y_axis.into();
-            let (m20, m21, m22) = self.z_axis.into();
-
             Self {
-                x_axis: Vec3::new(m00, m10, m20),
-                y_axis: Vec3::new(m01, m11, m21),
-                z_axis: Vec3::new(m02, m12, m22),
+                x_axis: Vec3::new(self.x_axis.0, self.y_axis.0, self.z_axis.0),
+                y_axis: Vec3::new(self.x_axis.1, self.y_axis.1, self.z_axis.1),
+                z_axis: Vec3::new(self.x_axis.2, self.y_axis.2, self.z_axis.2),
             }
         }
     }
@@ -360,11 +356,10 @@ impl Mat3 {
     /// Transforms a 3D vector.
     #[inline]
     pub fn mul_vec3(&self, other: Vec3) -> Vec3 {
-        // TODO: is it worth converting to Vec3Align16 for multiply?
-        let mut res = self.x_axis * other.dup_x();
-        res = self.y_axis.mul_add(other.dup_y(), res);
-        res = self.z_axis.mul_add(other.dup_z(), res);
-        res
+        let mut res = Vec3Align16::from(self.x_axis) * Vec3Align16::splat(other.x());
+        res = Vec3Align16::from(self.y_axis).mul_add(Vec3Align16::splat(other.y()), res);
+        res = Vec3Align16::from(self.z_axis).mul_add(Vec3Align16::splat(other.z()), res);
+        Vec3::from(res)
     }
 
     /// Multiplies two 3x3 matrices.
