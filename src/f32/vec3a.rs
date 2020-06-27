@@ -1,4 +1,4 @@
-use super::{Vec2, Vec3, Vec3MaskAlign16, Vec4};
+use super::{Vec2, Vec3, Vec3AMask, Vec4};
 use core::{fmt, ops::*};
 
 #[cfg(all(vec3align16sse2, target_arch = "x86"))]
@@ -17,21 +17,24 @@ use crate::{
 
 /// A 3-dimensional vector.
 ///
-/// This type is 16 byte aligned and thus contains 4 bytes padding.
+/// This type uses 16 byte aligned SIMD vector4 types for storage on supported platforms for better
+/// performance than the `Vec3` type.
+///
+/// It is possible to convert between `Vec3` and `Vec3A` types using `From` trait implementations.
 #[cfg(vec3align16sse2)]
 #[derive(Clone, Copy, Debug)]
 #[repr(C)]
-pub struct Vec3Align16(pub(crate) __m128);
+pub struct Vec3A(pub(crate) __m128);
 
 /// A 3-dimensional vector.
 #[cfg(vec3align16f32)]
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
 #[repr(align(16), C)]
-pub struct Vec3Align16(pub(crate) Vec3);
+pub struct Vec3A(pub(crate) Vec3);
 
 #[cfg(vec3align16sse2)]
-impl Vec3Align16 {
-    /// Calculates the Vec3Align16 dot product and returns answer in x lane of __m128.
+impl Vec3A {
+    /// Calculates the Vec3A dot product and returns answer in x lane of __m128.
     #[inline]
     unsafe fn dot_as_m128(self, other: Self) -> __m128 {
         let x2_y2_z2_w2 = _mm_mul_ps(self.0, other.0);
@@ -43,15 +46,15 @@ impl Vec3Align16 {
 }
 
 #[cfg(vec3align16sse2)]
-impl Default for Vec3Align16 {
+impl Default for Vec3A {
     #[inline]
     fn default() -> Self {
-        Vec3Align16::zero()
+        Vec3A::zero()
     }
 }
 
 #[cfg(vec3align16sse2)]
-impl PartialEq for Vec3Align16 {
+impl PartialEq for Vec3A {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
         self.cmpeq(*other).all()
@@ -59,7 +62,7 @@ impl PartialEq for Vec3Align16 {
 }
 
 #[cfg(vec3align16sse2)]
-impl PartialOrd for Vec3Align16 {
+impl PartialOrd for Vec3A {
     #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         self.as_ref().partial_cmp(other.as_ref())
@@ -67,17 +70,17 @@ impl PartialOrd for Vec3Align16 {
 }
 
 #[cfg(vec3align16sse2)]
-impl From<Vec3Align16> for __m128 {
+impl From<Vec3A> for __m128 {
     // TODO: write test
     #[cfg_attr(tarpaulin, skip)]
     #[inline]
-    fn from(t: Vec3Align16) -> Self {
+    fn from(t: Vec3A) -> Self {
         t.0
     }
 }
 
 #[cfg(vec3align16sse2)]
-impl From<__m128> for Vec3Align16 {
+impl From<__m128> for Vec3A {
     #[inline]
     fn from(t: __m128) -> Self {
         Self(t)
@@ -85,12 +88,12 @@ impl From<__m128> for Vec3Align16 {
 }
 
 #[inline]
-pub fn vec3_align16(x: f32, y: f32, z: f32) -> Vec3Align16 {
-    Vec3Align16::new(x, y, z)
+pub fn vec3a(x: f32, y: f32, z: f32) -> Vec3A {
+    Vec3A::new(x, y, z)
 }
 
-impl Vec3Align16 {
-    /// Creates a new `Vec3Align16`.
+impl Vec3A {
+    /// Creates a new `Vec3A`.
     #[inline]
     pub fn new(x: f32, y: f32, z: f32) -> Self {
         #[cfg(vec3align16sse2)]
@@ -104,7 +107,7 @@ impl Vec3Align16 {
         }
     }
 
-    /// Creates a new `Vec3Align16` with all elements set to `0.0`.
+    /// Creates a new `Vec3A` with all elements set to `0.0`.
     #[inline]
     pub fn zero() -> Self {
         #[cfg(vec3align16sse2)]
@@ -118,7 +121,7 @@ impl Vec3Align16 {
         }
     }
 
-    /// Creates a new `Vec3Align16` with all elements set to `1.0`.
+    /// Creates a new `Vec3A` with all elements set to `1.0`.
     #[inline]
     pub fn one() -> Self {
         #[cfg(vec3align16sse2)]
@@ -132,7 +135,7 @@ impl Vec3Align16 {
         }
     }
 
-    /// Creates a new `Vec3Align16` with values `[x: 1.0, y: 0.0, z: 0.0]`.
+    /// Creates a new `Vec3A` with values `[x: 1.0, y: 0.0, z: 0.0]`.
     #[inline]
     pub fn unit_x() -> Self {
         #[cfg(vec3align16sse2)]
@@ -146,7 +149,7 @@ impl Vec3Align16 {
         }
     }
 
-    /// Creates a new `Vec3Align16` with values `[x: 0.0, y: 1.0, z: 0.0]`.
+    /// Creates a new `Vec3A` with values `[x: 0.0, y: 1.0, z: 0.0]`.
     #[inline]
     pub fn unit_y() -> Self {
         #[cfg(vec3align16sse2)]
@@ -160,7 +163,7 @@ impl Vec3Align16 {
         }
     }
 
-    /// Creates a new `Vec3Align16` with values `[x: 0.0, y: 0.0, z: 1.0]`.
+    /// Creates a new `Vec3A` with values `[x: 0.0, y: 0.0, z: 1.0]`.
     #[inline]
     pub fn unit_z() -> Self {
         #[cfg(vec3align16sse2)]
@@ -174,7 +177,7 @@ impl Vec3Align16 {
         }
     }
 
-    /// Creates a new `Vec3Align16` with all elements set to `v`.
+    /// Creates a new `Vec3A` with all elements set to `v`.
     #[inline]
     pub fn splat(v: f32) -> Self {
         #[cfg(vec3align16sse2)]
@@ -350,7 +353,7 @@ impl Vec3Align16 {
         }
     }
 
-    /// Returns a `Vec3Align16` with all elements set to the value of element `x`.
+    /// Returns a `Vec3A` with all elements set to the value of element `x`.
     #[inline]
     #[allow(dead_code)]
     pub(crate) fn dup_x(self) -> Self {
@@ -365,7 +368,7 @@ impl Vec3Align16 {
         }
     }
 
-    /// Returns a `Vec3Align16` with all elements set to the value of element `y`.
+    /// Returns a `Vec3A` with all elements set to the value of element `y`.
     #[inline]
     #[allow(dead_code)]
     pub(crate) fn dup_y(self) -> Self {
@@ -380,7 +383,7 @@ impl Vec3Align16 {
         }
     }
 
-    /// Returns a `Vec3Align16` with all elements set to the value of element `z`.
+    /// Returns a `Vec3A` with all elements set to the value of element `z`.
     #[inline]
     #[allow(dead_code)]
     pub(crate) fn dup_z(self) -> Self {
@@ -409,14 +412,14 @@ impl Vec3Align16 {
         }
     }
 
-    /// Returns Vec3Align16 dot in all lanes of Vec3Align16
+    /// Returns Vec3A dot in all lanes of Vec3A
     #[inline]
     #[allow(dead_code)]
     pub(crate) fn dot_as_vec3(self, other: Self) -> Self {
         #[cfg(vec3align16sse2)]
         unsafe {
             let dot_in_x = self.dot_as_m128(other);
-            Vec3Align16(_mm_shuffle_ps(dot_in_x, dot_in_x, 0b00_00_00_00))
+            Vec3A(_mm_shuffle_ps(dot_in_x, dot_in_x, 0b00_00_00_00))
         }
 
         #[cfg(vec3align16f32)]
@@ -465,14 +468,14 @@ impl Vec3Align16 {
 
     /// Computes the squared length of `self`.
     ///
-    /// This is generally faster than `Vec3Align16::length()` as it avoids a square
+    /// This is generally faster than `Vec3A::length()` as it avoids a square
     /// root operation.
     #[inline]
     pub fn length_squared(self) -> f32 {
         self.dot(self)
     }
 
-    /// Computes `1.0 / Vec3Align16::length()`.
+    /// Computes `1.0 / Vec3A::length()`.
     ///
     /// For valid results, `self` must _not_ be of length zero.
     #[inline]
@@ -584,108 +587,108 @@ impl Vec3Align16 {
     }
 
     /// Performs a vertical `==` comparison between `self` and `other`,
-    /// returning a `Vec3MaskAlign16` of the results.
+    /// returning a `Vec3AMask` of the results.
     ///
     /// In other words, this computes `[x1 == x2, y1 == y2, z1 == z2, w1 == w2]`.
     #[inline]
-    pub fn cmpeq(self, other: Self) -> Vec3MaskAlign16 {
+    pub fn cmpeq(self, other: Self) -> Vec3AMask {
         #[cfg(vec3align16sse2)]
         unsafe {
-            Vec3MaskAlign16(_mm_cmpeq_ps(self.0, other.0))
+            Vec3AMask(_mm_cmpeq_ps(self.0, other.0))
         }
 
         #[cfg(vec3align16f32)]
         {
-            Vec3MaskAlign16(self.0.cmpeq(other.0))
+            Vec3AMask(self.0.cmpeq(other.0))
         }
     }
 
     /// Performs a vertical `!=` comparison between `self` and `other`,
-    /// returning a `Vec3MaskAlign16` of the results.
+    /// returning a `Vec3AMask` of the results.
     ///
     /// In other words, this computes `[x1 != x2, y1 != y2, z1 != z2, w1 != w2]`.
     #[inline]
-    pub fn cmpne(self, other: Self) -> Vec3MaskAlign16 {
+    pub fn cmpne(self, other: Self) -> Vec3AMask {
         #[cfg(vec3align16sse2)]
         unsafe {
-            Vec3MaskAlign16(_mm_cmpneq_ps(self.0, other.0))
+            Vec3AMask(_mm_cmpneq_ps(self.0, other.0))
         }
 
         #[cfg(vec3align16f32)]
         {
-            Vec3MaskAlign16(self.0.cmpne(other.0))
+            Vec3AMask(self.0.cmpne(other.0))
         }
     }
 
     /// Performs a vertical `>=` comparison between `self` and `other`,
-    /// returning a `Vec3MaskAlign16` of the results.
+    /// returning a `Vec3AMask` of the results.
     ///
     /// In other words, this computes `[x1 >= x2, y1 >= y2, z1 >= z2, w1 >= w2]`.
     #[inline]
-    pub fn cmpge(self, other: Self) -> Vec3MaskAlign16 {
+    pub fn cmpge(self, other: Self) -> Vec3AMask {
         #[cfg(vec3align16sse2)]
         unsafe {
-            Vec3MaskAlign16(_mm_cmpge_ps(self.0, other.0))
+            Vec3AMask(_mm_cmpge_ps(self.0, other.0))
         }
 
         #[cfg(vec3align16f32)]
         {
-            Vec3MaskAlign16(self.0.cmpge(other.0))
+            Vec3AMask(self.0.cmpge(other.0))
         }
     }
 
     /// Performs a vertical `>` comparison between `self` and `other`,
-    /// returning a `Vec3MaskAlign16` of the results.
+    /// returning a `Vec3AMask` of the results.
     ///
     /// In other words, this computes `[x1 > x2, y1 > y2, z1 > z2, w1 > w2]`.
     #[inline]
-    pub fn cmpgt(self, other: Self) -> Vec3MaskAlign16 {
+    pub fn cmpgt(self, other: Self) -> Vec3AMask {
         #[cfg(vec3align16sse2)]
         unsafe {
-            Vec3MaskAlign16(_mm_cmpgt_ps(self.0, other.0))
+            Vec3AMask(_mm_cmpgt_ps(self.0, other.0))
         }
 
         #[cfg(vec3align16f32)]
         {
-            Vec3MaskAlign16(self.0.cmpgt(other.0))
+            Vec3AMask(self.0.cmpgt(other.0))
         }
     }
 
     /// Performs a vertical `<=` comparison between `self` and `other`,
-    /// returning a `Vec3MaskAlign16` of the results.
+    /// returning a `Vec3AMask` of the results.
     ///
     /// In other words, this computes `[x1 <= x2, y1 <= y2, z1 <= z2, w1 <= w2]`.
     #[inline]
-    pub fn cmple(self, other: Self) -> Vec3MaskAlign16 {
+    pub fn cmple(self, other: Self) -> Vec3AMask {
         #[cfg(vec3align16sse2)]
         unsafe {
-            Vec3MaskAlign16(_mm_cmple_ps(self.0, other.0))
+            Vec3AMask(_mm_cmple_ps(self.0, other.0))
         }
 
         #[cfg(vec3align16f32)]
         {
-            Vec3MaskAlign16(self.0.cmple(other.0))
+            Vec3AMask(self.0.cmple(other.0))
         }
     }
 
     /// Performs a vertical `<` comparison between `self` and `other`,
-    /// returning a `Vec3MaskAlign16` of the results.
+    /// returning a `Vec3AMask` of the results.
     ///
     /// In other words, this computes `[x1 < x2, y1 < y2, z1 < z2, w1 < w2]`.
     #[inline]
-    pub fn cmplt(self, other: Self) -> Vec3MaskAlign16 {
+    pub fn cmplt(self, other: Self) -> Vec3AMask {
         #[cfg(vec3align16sse2)]
         unsafe {
-            Vec3MaskAlign16(_mm_cmplt_ps(self.0, other.0))
+            Vec3AMask(_mm_cmplt_ps(self.0, other.0))
         }
 
         #[cfg(vec3align16f32)]
         {
-            Vec3MaskAlign16(self.0.cmplt(other.0))
+            Vec3AMask(self.0.cmplt(other.0))
         }
     }
 
-    /// Creates a new `Vec3Align16` from the first four values in `slice`.
+    /// Creates a new `Vec3A` from the first four values in `slice`.
     ///
     /// # Panics
     ///
@@ -723,8 +726,8 @@ impl Vec3Align16 {
         }
     }
 
-    /// Returns a new `Vec3Align16` containing the absolute value of each element of the original
-    /// `Vec3Align16`.
+    /// Returns a new `Vec3A` containing the absolute value of each element of the original
+    /// `Vec3A`.
     #[inline]
     pub fn abs(self) -> Self {
         #[cfg(vec3align16sse2)]
@@ -794,7 +797,7 @@ impl Vec3Align16 {
     }
 
     /// Computes the reciprocal `1.0/n` of each element, returning the
-    /// results in a new `Vec3Align16`.
+    /// results in a new `Vec3A`.
     #[inline]
     pub fn reciprocal(self) -> Self {
         // TODO: Optimize
@@ -822,7 +825,7 @@ impl Vec3Align16 {
     /// Returns true if the absolute difference of all elements between `self`
     /// and `other` is less than or equal to `max_abs_diff`.
     ///
-    /// This can be used to compare if two `Vec3Align16`'s contain similar elements. It
+    /// This can be used to compare if two `Vec3A`'s contain similar elements. It
     /// works best when comparing with a known value. The `max_abs_diff` that
     /// should be used used depends on the values being compared against.
     ///
@@ -843,21 +846,21 @@ impl Vec3Align16 {
     }
 }
 
-impl AsRef<[f32; 3]> for Vec3Align16 {
+impl AsRef<[f32; 3]> for Vec3A {
     #[inline]
     fn as_ref(&self) -> &[f32; 3] {
-        unsafe { &*(self as *const Vec3Align16 as *const [f32; 3]) }
+        unsafe { &*(self as *const Vec3A as *const [f32; 3]) }
     }
 }
 
-impl AsMut<[f32; 3]> for Vec3Align16 {
+impl AsMut<[f32; 3]> for Vec3A {
     #[inline]
     fn as_mut(&mut self) -> &mut [f32; 3] {
-        unsafe { &mut *(self as *mut Vec3Align16 as *mut [f32; 3]) }
+        unsafe { &mut *(self as *mut Vec3A as *mut [f32; 3]) }
     }
 }
 
-impl fmt::Display for Vec3Align16 {
+impl fmt::Display for Vec3A {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         #[cfg(vec3align16sse2)]
         {
@@ -872,7 +875,7 @@ impl fmt::Display for Vec3Align16 {
     }
 }
 
-impl Div<Vec3Align16> for Vec3Align16 {
+impl Div<Vec3A> for Vec3A {
     type Output = Self;
     #[inline]
     fn div(self, other: Self) -> Self {
@@ -888,7 +891,7 @@ impl Div<Vec3Align16> for Vec3Align16 {
     }
 }
 
-impl DivAssign<Vec3Align16> for Vec3Align16 {
+impl DivAssign<Vec3A> for Vec3A {
     #[inline]
     fn div_assign(&mut self, other: Self) {
         #[cfg(vec3align16sse2)]
@@ -903,7 +906,7 @@ impl DivAssign<Vec3Align16> for Vec3Align16 {
     }
 }
 
-impl Div<f32> for Vec3Align16 {
+impl Div<f32> for Vec3A {
     type Output = Self;
     #[inline]
     fn div(self, other: f32) -> Self {
@@ -919,7 +922,7 @@ impl Div<f32> for Vec3Align16 {
     }
 }
 
-impl DivAssign<f32> for Vec3Align16 {
+impl DivAssign<f32> for Vec3A {
     #[inline]
     fn div_assign(&mut self, other: f32) {
         #[cfg(vec3align16sse2)]
@@ -934,23 +937,23 @@ impl DivAssign<f32> for Vec3Align16 {
     }
 }
 
-impl Div<Vec3Align16> for f32 {
-    type Output = Vec3Align16;
+impl Div<Vec3A> for f32 {
+    type Output = Vec3A;
     #[inline]
-    fn div(self, other: Vec3Align16) -> Vec3Align16 {
+    fn div(self, other: Vec3A) -> Vec3A {
         #[cfg(vec3align16sse2)]
         unsafe {
-            Vec3Align16(_mm_div_ps(_mm_set1_ps(self), other.0))
+            Vec3A(_mm_div_ps(_mm_set1_ps(self), other.0))
         }
 
         #[cfg(vec3align16f32)]
         {
-            Vec3Align16(self.div(other.0))
+            Vec3A(self.div(other.0))
         }
     }
 }
 
-impl Mul<Vec3Align16> for Vec3Align16 {
+impl Mul<Vec3A> for Vec3A {
     type Output = Self;
     #[inline]
     fn mul(self, other: Self) -> Self {
@@ -966,7 +969,7 @@ impl Mul<Vec3Align16> for Vec3Align16 {
     }
 }
 
-impl MulAssign<Vec3Align16> for Vec3Align16 {
+impl MulAssign<Vec3A> for Vec3A {
     #[inline]
     fn mul_assign(&mut self, other: Self) {
         #[cfg(vec3align16sse2)]
@@ -981,7 +984,7 @@ impl MulAssign<Vec3Align16> for Vec3Align16 {
     }
 }
 
-impl Mul<f32> for Vec3Align16 {
+impl Mul<f32> for Vec3A {
     type Output = Self;
     #[inline]
     fn mul(self, other: f32) -> Self {
@@ -997,7 +1000,7 @@ impl Mul<f32> for Vec3Align16 {
     }
 }
 
-impl MulAssign<f32> for Vec3Align16 {
+impl MulAssign<f32> for Vec3A {
     #[inline]
     fn mul_assign(&mut self, other: f32) {
         #[cfg(vec3align16sse2)]
@@ -1012,23 +1015,23 @@ impl MulAssign<f32> for Vec3Align16 {
     }
 }
 
-impl Mul<Vec3Align16> for f32 {
-    type Output = Vec3Align16;
+impl Mul<Vec3A> for f32 {
+    type Output = Vec3A;
     #[inline]
-    fn mul(self, other: Vec3Align16) -> Vec3Align16 {
+    fn mul(self, other: Vec3A) -> Vec3A {
         #[cfg(vec3align16sse2)]
         unsafe {
-            Vec3Align16(_mm_mul_ps(_mm_set1_ps(self), other.0))
+            Vec3A(_mm_mul_ps(_mm_set1_ps(self), other.0))
         }
 
         #[cfg(vec3align16f32)]
         {
-            Vec3Align16(self.mul(other.0))
+            Vec3A(self.mul(other.0))
         }
     }
 }
 
-impl Add for Vec3Align16 {
+impl Add for Vec3A {
     type Output = Self;
     #[inline]
     fn add(self, other: Self) -> Self {
@@ -1044,7 +1047,7 @@ impl Add for Vec3Align16 {
     }
 }
 
-impl AddAssign for Vec3Align16 {
+impl AddAssign for Vec3A {
     #[inline]
     fn add_assign(&mut self, other: Self) {
         #[cfg(vec3align16sse2)]
@@ -1059,7 +1062,7 @@ impl AddAssign for Vec3Align16 {
     }
 }
 
-impl Sub for Vec3Align16 {
+impl Sub for Vec3A {
     type Output = Self;
     #[inline]
     fn sub(self, other: Self) -> Self {
@@ -1075,7 +1078,7 @@ impl Sub for Vec3Align16 {
     }
 }
 
-impl SubAssign for Vec3Align16 {
+impl SubAssign for Vec3A {
     #[inline]
     fn sub_assign(&mut self, other: Self) {
         #[cfg(vec3align16sse2)]
@@ -1090,7 +1093,7 @@ impl SubAssign for Vec3Align16 {
     }
 }
 
-impl Neg for Vec3Align16 {
+impl Neg for Vec3A {
     type Output = Self;
     #[inline]
     fn neg(self) -> Self {
@@ -1106,7 +1109,7 @@ impl Neg for Vec3Align16 {
     }
 }
 
-impl Index<usize> for Vec3Align16 {
+impl Index<usize> for Vec3A {
     type Output = f32;
     #[inline]
     fn index(&self, index: usize) -> &Self::Output {
@@ -1114,23 +1117,23 @@ impl Index<usize> for Vec3Align16 {
     }
 }
 
-impl IndexMut<usize> for Vec3Align16 {
+impl IndexMut<usize> for Vec3A {
     #[inline]
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         &mut self.as_mut()[index]
     }
 }
 
-impl From<(f32, f32, f32)> for Vec3Align16 {
+impl From<(f32, f32, f32)> for Vec3A {
     #[inline]
     fn from(t: (f32, f32, f32)) -> Self {
         Self::new(t.0, t.1, t.2)
     }
 }
 
-impl From<Vec3Align16> for (f32, f32, f32) {
+impl From<Vec3A> for (f32, f32, f32) {
     #[inline]
-    fn from(v: Vec3Align16) -> Self {
+    fn from(v: Vec3A) -> Self {
         #[cfg(vec3align16sse2)]
         {
             let mut out: MaybeUninit<Align16<(f32, f32, f32)>> = MaybeUninit::uninit();
@@ -1148,16 +1151,16 @@ impl From<Vec3Align16> for (f32, f32, f32) {
     }
 }
 
-impl From<[f32; 3]> for Vec3Align16 {
+impl From<[f32; 3]> for Vec3A {
     #[inline]
     fn from(a: [f32; 3]) -> Self {
         Self::new(a[0], a[1], a[2])
     }
 }
 
-impl From<Vec3Align16> for [f32; 3] {
+impl From<Vec3A> for [f32; 3] {
     #[inline]
-    fn from(v: Vec3Align16) -> Self {
+    fn from(v: Vec3A) -> Self {
         #[cfg(vec3align16sse2)]
         {
             let mut out: MaybeUninit<Align16<[f32; 3]>> = MaybeUninit::uninit();
@@ -1175,30 +1178,20 @@ impl From<Vec3Align16> for [f32; 3] {
     }
 }
 
-impl From<Vec3> for Vec3Align16 {
+impl From<Vec3> for Vec3A {
     #[inline]
     fn from(v: Vec3) -> Self {
-        Vec3Align16::new(v.0, v.1, v.2)
+        Vec3A::new(v.0, v.1, v.2)
     }
 }
 
 #[test]
 fn test_vec3_private() {
     assert_eq!(
-        vec3_align16(1.0, 1.0, 1.0)
-            .mul_add(vec3_align16(0.5, 2.0, -4.0), vec3_align16(-1.0, -1.0, -1.0)),
-        vec3_align16(-0.5, 1.0, -5.0)
+        vec3a(1.0, 1.0, 1.0).mul_add(vec3a(0.5, 2.0, -4.0), vec3a(-1.0, -1.0, -1.0)),
+        vec3a(-0.5, 1.0, -5.0)
     );
-    assert_eq!(
-        vec3_align16(1.0, 2.0, 3.0).dup_x(),
-        vec3_align16(1.0, 1.0, 1.0)
-    );
-    assert_eq!(
-        vec3_align16(1.0, 2.0, 3.0).dup_y(),
-        vec3_align16(2.0, 2.0, 2.0)
-    );
-    assert_eq!(
-        vec3_align16(1.0, 2.0, 3.0).dup_z(),
-        vec3_align16(3.0, 3.0, 3.0)
-    );
+    assert_eq!(vec3a(1.0, 2.0, 3.0).dup_x(), vec3a(1.0, 1.0, 1.0));
+    assert_eq!(vec3a(1.0, 2.0, 3.0).dup_y(), vec3a(2.0, 2.0, 2.0));
+    assert_eq!(vec3a(1.0, 2.0, 3.0).dup_z(), vec3a(3.0, 3.0, 3.0));
 }

@@ -1,4 +1,4 @@
-use super::{scalar_sin_cos, Quat, Vec2, Vec3, Vec3Align16};
+use super::{scalar_sin_cos, Quat, Vec2, Vec3, Vec3A};
 use core::{
     fmt,
     ops::{Add, Mul, Sub},
@@ -356,9 +356,9 @@ impl Mat3 {
     /// Transforms a 3D vector.
     #[inline]
     pub fn mul_vec3(&self, other: Vec3) -> Vec3 {
-        let mut res = Vec3Align16::from(self.x_axis) * Vec3Align16::splat(other.x());
-        res = Vec3Align16::from(self.y_axis).mul_add(Vec3Align16::splat(other.y()), res);
-        res = Vec3Align16::from(self.z_axis).mul_add(Vec3Align16::splat(other.z()), res);
+        let mut res = Vec3A::from(self.x_axis) * Vec3A::splat(other.x());
+        res = Vec3A::from(self.y_axis).mul_add(Vec3A::splat(other.y()), res);
+        res = Vec3A::from(self.z_axis).mul_add(Vec3A::splat(other.z()), res);
         Vec3::from(res)
     }
 

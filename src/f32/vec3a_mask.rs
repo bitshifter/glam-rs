@@ -1,4 +1,4 @@
-use super::Vec3Align16;
+use super::Vec3A;
 #[cfg(vec3align16f32)]
 use super::Vec3Mask;
 use core::{fmt, ops::*};
@@ -12,21 +12,21 @@ use core::{cmp::Ordering, hash};
 
 /// A 3-dimensional vector mask.
 ///
-/// This type is typically created by comparison methods on `Vec3Align16`.  It is
+/// This type is typically created by comparison methods on `Vec3A`.  It is
 /// essentially a vector of three boolean values.
 #[cfg(vec3align16sse2)]
 #[derive(Clone, Copy)]
 #[repr(C)]
-pub struct Vec3MaskAlign16(pub(crate) __m128);
+pub struct Vec3AMask(pub(crate) __m128);
 
 /// A 3-dimensional vector mask.
 #[cfg(vec3align16f32)]
 #[derive(Clone, Copy, Default, PartialEq, Eq, Ord, PartialOrd, Hash)]
 #[repr(align(16), C)]
-pub struct Vec3MaskAlign16(pub(crate) Vec3Mask);
+pub struct Vec3AMask(pub(crate) Vec3Mask);
 
 #[cfg(vec3align16sse2)]
-impl Default for Vec3MaskAlign16 {
+impl Default for Vec3AMask {
     #[inline]
     fn default() -> Self {
         unsafe { Self(_mm_setzero_ps()) }
@@ -34,7 +34,7 @@ impl Default for Vec3MaskAlign16 {
 }
 
 #[cfg(vec3align16sse2)]
-impl PartialEq for Vec3MaskAlign16 {
+impl PartialEq for Vec3AMask {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
         self.as_ref().eq(other.as_ref())
@@ -42,10 +42,10 @@ impl PartialEq for Vec3MaskAlign16 {
 }
 
 #[cfg(vec3align16sse2)]
-impl Eq for Vec3MaskAlign16 {}
+impl Eq for Vec3AMask {}
 
 #[cfg(vec3align16sse2)]
-impl Ord for Vec3MaskAlign16 {
+impl Ord for Vec3AMask {
     #[inline]
     fn cmp(&self, other: &Self) -> Ordering {
         self.as_ref().cmp(other.as_ref())
@@ -53,7 +53,7 @@ impl Ord for Vec3MaskAlign16 {
 }
 
 #[cfg(vec3align16sse2)]
-impl PartialOrd for Vec3MaskAlign16 {
+impl PartialOrd for Vec3AMask {
     #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
@@ -61,20 +61,20 @@ impl PartialOrd for Vec3MaskAlign16 {
 }
 
 #[cfg(vec3align16sse2)]
-impl hash::Hash for Vec3MaskAlign16 {
+impl hash::Hash for Vec3AMask {
     #[inline]
     fn hash<H: hash::Hasher>(&self, state: &mut H) {
         self.as_ref().hash(state);
     }
 }
 
-impl Vec3MaskAlign16 {
-    /// Creates a new `Vec3MaskAlign16`.
+impl Vec3AMask {
+    /// Creates a new `Vec3AMask`.
     #[inline]
     pub fn new(x: bool, y: bool, z: bool) -> Self {
-        // A SSE2 mask can be any bit pattern but for the `Vec3MaskAlign16` implementation of select we
+        // A SSE2 mask can be any bit pattern but for the `Vec3AMask` implementation of select we
         // expect either 0 or 0xff_ff_ff_ff. This should be a safe assumption as this type can only
-        // be created via this function or by `Vec3Align16` methods.
+        // be created via this function or by `Vec3A` methods.
 
         #[cfg(vec3align16sse2)]
         unsafe {
@@ -94,7 +94,7 @@ impl Vec3MaskAlign16 {
     }
 
     /// Returns a bitmask with the lowest three bits set from the elements of
-    /// the `Vec3MaskAlign16`.
+    /// the `Vec3AMask`.
     ///
     /// A true element results in a `1` bit and a false element in a `0` bit.
     /// Element `x` goes into the first lowest bit, element `y` into the
@@ -147,19 +147,19 @@ impl Vec3MaskAlign16 {
         }
     }
 
-    /// Creates a new `Vec3Align16` from the elements in `if_true` and `if_false`,
-    /// selecting which to use for each element based on the `Vec3MaskAlign16`.
+    /// Creates a new `Vec3A` from the elements in `if_true` and `if_false`,
+    /// selecting which to use for each element based on the `Vec3AMask`.
     ///
     /// A true element in the mask uses the corresponding element from
     /// `if_true`, and false uses the element from `if_false`.
     #[inline]
-    pub fn select(self, if_true: Vec3Align16, if_false: Vec3Align16) -> Vec3Align16 {
+    pub fn select(self, if_true: Vec3A, if_false: Vec3A) -> Vec3A {
         // We are assuming that the mask values are either 0 or 0xff_ff_ff_ff for the SSE2 and f32
         // to behave the same here.
 
         #[cfg(vec3align16sse2)]
         unsafe {
-            Vec3Align16(_mm_or_ps(
+            Vec3A(_mm_or_ps(
                 _mm_andnot_ps(self.0, if_false.0),
                 _mm_and_ps(if_true.0, self.0),
             ))
@@ -167,12 +167,12 @@ impl Vec3MaskAlign16 {
 
         #[cfg(vec3align16f32)]
         {
-            Vec3Align16(self.0.select(if_true.0, if_false.0))
+            Vec3A(self.0.select(if_true.0, if_false.0))
         }
     }
 }
 
-impl BitAnd for Vec3MaskAlign16 {
+impl BitAnd for Vec3AMask {
     type Output = Self;
     #[inline]
     fn bitand(self, other: Self) -> Self {
@@ -188,7 +188,7 @@ impl BitAnd for Vec3MaskAlign16 {
     }
 }
 
-impl BitAndAssign for Vec3MaskAlign16 {
+impl BitAndAssign for Vec3AMask {
     #[inline]
     fn bitand_assign(&mut self, other: Self) {
         #[cfg(vec3align16sse2)]
@@ -203,7 +203,7 @@ impl BitAndAssign for Vec3MaskAlign16 {
     }
 }
 
-impl BitOr for Vec3MaskAlign16 {
+impl BitOr for Vec3AMask {
     type Output = Self;
     #[inline]
     fn bitor(self, other: Self) -> Self {
@@ -219,7 +219,7 @@ impl BitOr for Vec3MaskAlign16 {
     }
 }
 
-impl BitOrAssign for Vec3MaskAlign16 {
+impl BitOrAssign for Vec3AMask {
     #[inline]
     fn bitor_assign(&mut self, other: Self) {
         #[cfg(vec3align16sse2)]
@@ -234,7 +234,7 @@ impl BitOrAssign for Vec3MaskAlign16 {
     }
 }
 
-impl Not for Vec3MaskAlign16 {
+impl Not for Vec3AMask {
     type Output = Self;
     #[inline]
     fn not(self) -> Self {
@@ -253,23 +253,19 @@ impl Not for Vec3MaskAlign16 {
     }
 }
 
-impl fmt::Debug for Vec3MaskAlign16 {
+impl fmt::Debug for Vec3AMask {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         #[cfg(vec3align16sse2)]
         {
             let arr = self.as_ref();
-            write!(
-                f,
-                "Vec3MaskAlign16({:#x}, {:#x}, {:#x})",
-                arr[0], arr[1], arr[2]
-            )
+            write!(f, "Vec3AMask({:#x}, {:#x}, {:#x})", arr[0], arr[1], arr[2])
         }
 
         #[cfg(vec3align16f32)]
         {
             write!(
                 f,
-                "Vec3MaskAlign16({:#x}, {:#x}, {:#x})",
+                "Vec3AMask({:#x}, {:#x}, {:#x})",
                 (self.0).0,
                 (self.0).1,
                 (self.0).2
@@ -278,21 +274,21 @@ impl fmt::Debug for Vec3MaskAlign16 {
     }
 }
 
-impl fmt::Display for Vec3MaskAlign16 {
+impl fmt::Display for Vec3AMask {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let arr = self.as_ref();
         write!(f, "[{}, {}, {}]", arr[0] != 0, arr[1] != 0, arr[2] != 0,)
     }
 }
 
-impl From<Vec3MaskAlign16> for [u32; 3] {
+impl From<Vec3AMask> for [u32; 3] {
     #[inline]
-    fn from(mask: Vec3MaskAlign16) -> Self {
+    fn from(mask: Vec3AMask) -> Self {
         *mask.as_ref()
     }
 }
 
-impl AsRef<[u32; 3]> for Vec3MaskAlign16 {
+impl AsRef<[u32; 3]> for Vec3AMask {
     #[inline]
     fn as_ref(&self) -> &[u32; 3] {
         unsafe { &*(self as *const Self as *const [u32; 3]) }

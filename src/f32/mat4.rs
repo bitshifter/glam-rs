@@ -1,4 +1,4 @@
-use super::{scalar_sin_cos, Mat3, Quat, Vec3, Vec3Align16, Vec4};
+use super::{scalar_sin_cos, Mat3, Quat, Vec3, Vec3A, Vec4};
 #[cfg(all(vec4sse2, target_arch = "x86"))]
 use core::arch::x86::*;
 #[cfg(all(vec4sse2, target_arch = "x86_64"))]
@@ -183,12 +183,12 @@ impl Mat4 {
         let det = self.determinant();
         glam_assert!(det != 0.0);
 
-        let scale = Vec3Align16::new(
+        let scale = Vec3A::new(
             self.x_axis.length() * det.signum(),
             self.y_axis.length(),
             self.z_axis.length(),
         );
-        glam_assert!(scale.cmpne(Vec3Align16::zero()).all());
+        glam_assert!(scale.cmpne(Vec3A::zero()).all());
 
         let inv_scale = scale.reciprocal();
 

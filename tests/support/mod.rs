@@ -1,7 +1,7 @@
 #[macro_use]
 mod macros;
 
-use glam::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3Align16, Vec4};
+use glam::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
 
 #[cfg(feature = "transform-types")]
 use glam::{TransformRT, TransformSRT};
@@ -121,7 +121,7 @@ impl FloatCompare for Vec3 {
     }
 }
 
-impl FloatCompare for Vec3Align16 {
+impl FloatCompare for Vec3A {
     #[inline]
     fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
         self.abs_diff_eq(*other, max_abs_diff)

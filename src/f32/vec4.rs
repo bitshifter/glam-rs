@@ -1,4 +1,4 @@
-use super::{Vec3Align16, Vec4Mask};
+use super::{Vec3A, Vec4Mask};
 use core::{fmt, ops::*};
 
 #[cfg(all(vec4sse2, target_arch = "x86"))]
@@ -202,18 +202,21 @@ impl Vec4 {
         }
     }
 
-    /// Creates a `Vec3` from the first three elements of `self`,
-    /// removing `w`.
+    /// Creates a `Vec3A` from the first three elements of `self`, removing `w`.
+    ///
+    /// Note that a `Vec3A` is returned as both `Vec4` and `Vec3A` use SIMD storage so the
+    /// conversion is very cheap. If you need a `Vec3` you can convert from `Vec3A` using `.into()`
+    /// or `Vec3::from`.
     #[inline]
-    pub fn truncate(self) -> Vec3Align16 {
+    pub fn truncate(self) -> Vec3A {
         #[cfg(all(vec4sse2, vec3sse2))]
         {
-            Vec3Align16(self.0)
+            Vec3A(self.0)
         }
 
         #[cfg(vec4f32)]
         {
-            Vec3Align16::new(self.0, self.1, self.2)
+            Vec3A::new(self.0, self.1, self.2)
         }
     }
 
