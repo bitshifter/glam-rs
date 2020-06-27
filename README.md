@@ -13,25 +13,22 @@ and the look and feel of the API has solidified.
 ## Features
 
 * Only single precision floating point (`f32`) arithmetic is supported
-* vectors: `Vec2`, `Vec3`, `Vec4`
+* vectors: `Vec2`, `Vec3`, `Vec3A` `Vec4`
 * square matrices: `Mat2`, `Mat3`, `Mat4`
 * a quaternion type: `Quat`
 
 ### SIMD
 
-The `Vec3`, `Vec4` and `Quat` types use SSE2 on x86/x86_64 architectures.
+The `Vec3A`, `Vec4` and `Quat` types use SSE2 on x86/x86_64 architectures.
 `Mat2`, `Mat3` and `Mat4` also use SSE2 for some functionality. Not everything
 has a SIMD implementation yet.
 
-Note that this does result in some wasted space in the case of `Vec3` and `Mat3`
-as the SIMD vector type is 16 bytes large and 16 byte aligned.
+Note that this does result in some wasted space in the case of `Vec3A` as the
+SIMD vector type is 16 bytes large and 16 byte aligned.
 
 `glam` outperforms similar Rust libraries such as [`cgmath`][cgmath],
 [`nalgebra-glm`][nalgebra-glm] and others for common operations as tested by the
 [`mathbench`][mathbench] project.
-
-If you are more concerned with size than speed you can build glam with the
-feature `scalar-math` enabled to disable SIMD usage.
 
 Due to the use of SIMD, vector elements may only be get and set via accessor
 methods, e.g. `Vec3::x()` and `Vec3::x_mut()` or `Vec3::set_x()`. If getting or
@@ -55,8 +52,9 @@ let [x, y, z]: [f32; 3] = v.into();
 ### Feature gates
 
 * `scalar-math` - compiles with SIMD support disabled
-* `glam-assert` - adds assertions which check the validity of parameters passed to
-  `glam` to help catch runtime errors
+* `debug-glam-assert` - adds assertions in debug builds which check the validity
+  of parameters passed to `glam` to help catch runtime errors
+* `glam-assert` - adds validation assertions to all builds
 
 ## Conventions
 
