@@ -7,8 +7,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 ## [Unreleased]
 
 ### Changed
-* `Vec3` has been split into scalar `Vec3` and packed `Vec3Align16` types. Only
-  the `Vec3Align16` type currently uses SIMD optimizations.
+* `Vec3` has been split into scalar `Vec3` and 16 byte aligned `Vec3A` types. Only
+  the `Vec3A` type currently uses SIMD optimizations.
 * `Vec3Mask` has been split into scalar `Vec3Mask` and packad `Vec3MaskAlign16`
   types.
 * The `Mat3` type is using the scalar `Vec3` type for storage.
