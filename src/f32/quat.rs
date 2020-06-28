@@ -665,7 +665,6 @@ impl From<Quat> for [f32; 4] {
 #[cfg(vec4_sse2)]
 impl From<Quat> for __m128 {
     // TODO: write test
-    #[cfg_attr(tarpaulin, skip)]
     #[inline]
     fn from(q: Quat) -> Self {
         (q.0).0

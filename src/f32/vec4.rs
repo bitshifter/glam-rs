@@ -70,7 +70,6 @@ impl PartialOrd for Vec4 {
 #[cfg(vec4_sse2)]
 impl From<Vec4> for __m128 {
     // TODO: write test
-    #[cfg_attr(tarpaulin, skip)]
     #[inline]
     fn from(t: Vec4) -> Self {
         t.0

@@ -72,7 +72,6 @@ impl PartialOrd for Vec3A {
 #[cfg(vec3a_sse2)]
 impl From<Vec3A> for __m128 {
     // TODO: write test
-    #[cfg_attr(tarpaulin, skip)]
     #[inline]
     fn from(t: Vec3A) -> Self {
         t.0

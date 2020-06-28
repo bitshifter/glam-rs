@@ -146,7 +146,6 @@ impl<'de> Deserialize<'de> for Vec2 {
         struct Vec2Visitor;
 
         // TODO: Not sure why this line is reported as uncovered
-        #[cfg_attr(tarpaulin, skip)]
         impl<'de> Visitor<'de> for Vec2Visitor {
             type Value = Vec2;
 
@@ -180,7 +179,6 @@ impl<'de> Deserialize<'de> for Vec3 {
         struct Vec3Visitor;
 
         // TODO: Not sure why this line is reported as uncovered
-        #[cfg_attr(tarpaulin, skip)]
         impl<'de> Visitor<'de> for Vec3Visitor {
             type Value = Vec3;
 
@@ -217,7 +215,6 @@ impl<'de> Deserialize<'de> for Vec3A {
         struct Vec3AVisitor;
 
         // TODO: Not sure why this line is reported as uncovered
-        #[cfg_attr(tarpaulin, skip)]
         impl<'de> Visitor<'de> for Vec3AVisitor {
             type Value = Vec3A;
 
@@ -254,7 +251,6 @@ impl<'de> Deserialize<'de> for Vec4 {
         struct Vec4Visitor;
 
         // TODO: Not sure why this line is reported as uncovered
-        #[cfg_attr(tarpaulin, skip)]
         impl<'de> Visitor<'de> for Vec4Visitor {
             type Value = Vec4;
 
@@ -294,7 +290,6 @@ impl<'de> Deserialize<'de> for Quat {
         struct QuatVisitor;
 
         // TODO: Not sure why this line is reported as uncovered
-        #[cfg_attr(tarpaulin, skip)]
         impl<'de> Visitor<'de> for QuatVisitor {
             type Value = Quat;
 
@@ -334,7 +329,6 @@ impl<'de> Deserialize<'de> for Mat2 {
         struct Mat2Visitor;
 
         // TODO: Not sure why this line is reported as uncovered
-        #[cfg_attr(tarpaulin, skip)]
         impl<'de> Visitor<'de> for Mat2Visitor {
             type Value = Mat2;
 
@@ -370,7 +364,6 @@ impl<'de> Deserialize<'de> for Mat3 {
         struct Mat3Visitor;
 
         // TODO: Not sure why this line is reported as uncovered
-        #[cfg_attr(tarpaulin, skip)]
         impl<'de> Visitor<'de> for Mat3Visitor {
             type Value = Mat3;
 
@@ -407,7 +400,6 @@ impl<'de> Deserialize<'de> for Mat4 {
         struct Mat4Visitor;
 
         // TODO: Not sure why this line is reported as uncovered
-        #[cfg_attr(tarpaulin, skip)]
         impl<'de> Visitor<'de> for Mat4Visitor {
             type Value = Mat4;
 
