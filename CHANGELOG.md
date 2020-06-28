@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [0.9.0] - 2020-06-28
 
-### Added 
+### Added
 * `Vec3` has been split into scalar `Vec3` and 16 byte aligned `Vec3A` types.
   Only the `Vec3A` type currently uses SIMD optimizations.
 * `Vec3Mask` has been split into scalar `Vec3Mask` and 16 byte aligned
