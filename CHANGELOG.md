@@ -4,15 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
-## [Unreleased]
+## [0.9.0] - 2020-06-28
 
-### Changed
+### Added 
 * `Vec3` has been split into scalar `Vec3` and 16 byte aligned `Vec3A` types.
   Only the `Vec3A` type currently uses SIMD optimizations.
 * `Vec3Mask` has been split into scalar `Vec3Mask` and 16 byte aligned
   `Vec3AMask` types.
+* Added `mut` column accessors to all matrix types, e.g. `Mat2::x_axis_mut()`.
+* Added `From` trait implementations for `Vec3AMask` and `Vec4Mask` to `__m128`.
+
+### Changed
 * The `Mat3` type is using the scalar `Vec3` type for storage.
 * Removed the `packed-vec3` feature flag as it is now redundant.
+* Simplified `Debug` trait output for `Quat`, `Vec4` and `Vec3A`.
 
 ## [0.8.7] - 2020-04-28
 
@@ -181,7 +186,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.8.7...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.9.0...HEAD
+[0.8.7]: https://github.com/bitshifter/glam-rs/compare/0.8.7...0.9.0
 [0.8.7]: https://github.com/bitshifter/glam-rs/compare/0.8.6...0.8.7
 [0.8.6]: https://github.com/bitshifter/glam-rs/compare/0.8.5...0.8.6
 [0.8.5]: https://github.com/bitshifter/glam-rs/compare/0.8.4...0.8.5
