@@ -371,6 +371,14 @@ impl DivAssign<f32> for Vec2 {
     }
 }
 
+impl Div<Vec2> for f32 {
+    type Output = Vec2;
+    #[inline]
+    fn div(self, other: Vec2) -> Vec2 {
+        Vec2(self / other.0, self / other.1)
+    }
+}
+
 impl Mul<Vec2> for Vec2 {
     type Output = Self;
     #[inline]

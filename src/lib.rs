@@ -124,7 +124,7 @@ and benchmarks.
   parameters passed to `glam` to help catch runtime errors.
 
 */
-#![doc(html_root_url = "https://docs.rs/glam/0.8.7")]
+#![doc(html_root_url = "https://docs.rs/glam/0.9.0-beta0")]
 
 #[macro_use]
 mod macros;
@@ -132,8 +132,8 @@ mod macros;
 pub mod f32;
 
 pub use self::f32::{
-    mat2, mat3, mat4, quat, vec2, vec3, vec4, Mat2, Mat3, Mat4, Quat, Vec2, Vec2Mask, Vec3,
-    Vec3Mask, Vec4, Vec4Mask,
+    mat2, mat3, mat4, quat, vec2, vec3, vec3a, vec4, Mat2, Mat3, Mat4, Quat, Vec2, Vec2Mask, Vec3,
+    Vec3A, Vec3AMask, Vec3Mask, Vec4, Vec4Mask,
 };
 
 #[cfg(feature = "transform-types")]

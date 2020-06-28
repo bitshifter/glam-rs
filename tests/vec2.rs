@@ -1,6 +1,6 @@
 mod support;
 
-use glam::*;
+use glam::{vec2, vec3, Vec2, Vec2Mask, Vec3};
 use std::f32;
 
 #[test]
@@ -114,8 +114,10 @@ fn test_vec2_ops() {
     assert_eq!(vec2(0.0, 0.0), (a - a));
     assert_eq!(vec2(1.0, 4.0), (a * a));
     assert_eq!(vec2(2.0, 4.0), (a * 2.0));
+    assert_eq!(vec2(2.0, 4.0), (2.0 * a));
     assert_eq!(vec2(1.0, 1.0), (a / a));
     assert_eq!(vec2(0.5, 1.0), (a / 2.0));
+    assert_eq!(vec2(2.0, 1.0), (2.0 / a));
     assert_eq!(vec2(-1.0, -2.0), (-a));
 }
 
@@ -201,7 +203,7 @@ fn test_extend_truncate() {
 }
 
 #[test]
-fn test_vec2b() {
+fn test_vec2mask() {
     // make sure the unused 'w' value doesn't break Vec2b behaviour
     let a = Vec3::zero();
     let mut b = a.truncate();

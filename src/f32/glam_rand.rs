@@ -1,4 +1,4 @@
-use super::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4};
+use super::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
 
 use rand::{
     distributions::{Distribution, Standard},
@@ -40,14 +40,21 @@ impl Distribution<Quat> for Standard {
 impl Distribution<Vec2> for Standard {
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Vec2 {
-        rng.gen::<(f32, f32)>().into()
+        rng.gen::<[f32; 2]>().into()
     }
 }
 
 impl Distribution<Vec3> for Standard {
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Vec3 {
-        rng.gen::<(f32, f32, f32)>().into()
+        rng.gen::<[f32; 3]>().into()
+    }
+}
+
+impl Distribution<Vec3A> for Standard {
+    #[inline]
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Vec3A {
+        rng.gen::<[f32; 3]>().into()
     }
 }
 

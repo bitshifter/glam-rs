@@ -1,6 +1,6 @@
 mod support;
 
-use glam::*;
+use glam::{vec4, Vec4, Vec4Mask};
 use std::f32;
 
 #[test]
@@ -162,8 +162,7 @@ fn test_vec4_ops() {
     assert_eq!((2.0, 4.0, 6.0, 8.0), (2.0 * a).into());
     assert_eq!((1.0, 1.0, 1.0, 1.0), (a / a).into());
     assert_eq!((0.5, 1.0, 1.5, 2.0), (a / 2.0).into());
-    // is this a sensible operator?
-    // assert_eq!((1.0, 0.5, 1.0/3.0, 0.25), (1.0 / a).into());
+    assert_eq!((1.0, 0.5, 1.0 / 3.0, 0.25), (1.0 / a).into());
     assert_eq!((-1.0, -2.0, -3.0, -4.0), (-a).into());
 }
 

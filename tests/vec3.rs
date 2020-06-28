@@ -1,22 +1,15 @@
 mod support;
 
-use glam::*;
+use glam::{vec3, Vec3, Vec3Mask};
 use std::f32;
 
 #[test]
 fn test_vec3_align() {
     use std::mem;
-    if cfg!(any(feature = "packed-vec3", feature = "scalar-math")) {
-        assert_eq!(12, mem::size_of::<Vec3>());
-        assert_eq!(4, mem::align_of::<Vec3>());
-        assert_eq!(12, mem::size_of::<Vec3Mask>());
-        assert_eq!(4, mem::align_of::<Vec3Mask>());
-    } else {
-        assert_eq!(16, mem::size_of::<Vec3>());
-        assert_eq!(16, mem::align_of::<Vec3>());
-        assert_eq!(16, mem::size_of::<Vec3Mask>());
-        assert_eq!(16, mem::align_of::<Vec3Mask>());
-    }
+    assert_eq!(12, mem::size_of::<Vec3>());
+    assert_eq!(4, mem::align_of::<Vec3>());
+    assert_eq!(12, mem::size_of::<Vec3Mask>());
+    assert_eq!(4, mem::align_of::<Vec3Mask>());
 }
 
 #[test]
@@ -47,17 +40,6 @@ fn test_vec3_new() {
 #[test]
 fn test_vec3_fmt() {
     let a = Vec3::new(1.0, 2.0, 3.0);
-    #[cfg(all(
-        target_feature = "sse2",
-        not(feature = "packed-vec3"),
-        not(feature = "scalar-math")
-    ))]
-    assert_eq!(format!("{:?}", a), "Vec3(__m128(1.0, 2.0, 3.0, 3.0))");
-    #[cfg(any(
-        not(target_feature = "sse2"),
-        feature = "packed-vec3",
-        feature = "scalar-math"
-    ))]
     assert_eq!(format!("{:?}", a), "Vec3(1.0, 2.0, 3.0)");
     // assert_eq!(format!("{:#?}", a), "Vec3(\n    1.0,\n    2.0,\n    3.0\n)");
     assert_eq!(format!("{}", a), "[1, 2, 3]");
@@ -154,8 +136,10 @@ fn test_vec3_ops() {
     assert_eq!((0.0, 0.0, 0.0), (a - a).into());
     assert_eq!((1.0, 4.0, 9.0), (a * a).into());
     assert_eq!((2.0, 4.0, 6.0), (a * 2.0).into());
+    assert_eq!((2.0, 4.0, 6.0), (2.0 * a).into());
     assert_eq!((1.0, 1.0, 1.0), (a / a).into());
     assert_eq!((0.5, 1.0, 1.5), (a / 2.0).into());
+    assert_eq!((2.0, 1.0, 2.0 / 3.0), (2.0 / a).into());
     assert_eq!((-1.0, -2.0, -3.0), (-a).into());
 }
 
@@ -239,20 +223,18 @@ fn test_extend_truncate() {
     let a = vec3(1.0, 2.0, 3.0);
     let b = a.extend(4.0);
     assert_eq!((1.0, 2.0, 3.0, 4.0), b.into());
-    let c = b.truncate();
+    let c = Vec3::from(b.truncate());
     assert_eq!(a, c);
 }
 
 #[test]
-fn test_vec3b() {
-    // make sure the unused 'w' value doesn't break Vec3b behaviour
-    let a = Vec4::zero();
-    let mut b = a.truncate();
-    b.set_x(1.0);
-    b.set_y(1.0);
-    b.set_z(1.0);
-    assert!(!b.cmpeq(Vec3::zero()).any());
-    assert!(b.cmpeq(Vec3::splat(1.0)).all());
+fn test_vec3_mask() {
+    let mut a = Vec3::zero();
+    a.set_x(1.0);
+    a.set_y(1.0);
+    a.set_z(1.0);
+    assert!(!a.cmpeq(Vec3::zero()).any());
+    assert!(a.cmpeq(Vec3::splat(1.0)).all());
 }
 
 #[test]
@@ -402,33 +384,9 @@ fn test_vec3mask_fmt() {
     let a = Vec3Mask::new(true, false, false);
 
     // debug fmt
-    #[cfg(all(
-        target_feature = "sse2",
-        not(feature = "packed-vec3"),
-        not(feature = "scalar-math")
-    ))]
-    assert_eq!(format!("{:?}", a), "Vec3Mask(0xffffffff, 0x0, 0x0)");
-
-    #[cfg(any(
-        not(target_feature = "sse2"),
-        feature = "packed-vec3",
-        feature = "scalar-math"
-    ))]
     assert_eq!(format!("{:?}", a), "Vec3Mask(0xffffffff, 0x0, 0x0)");
 
     // display fmt
-    #[cfg(all(
-        target_feature = "sse2",
-        not(feature = "packed-vec3"),
-        not(feature = "scalar-math")
-    ))]
-    assert_eq!(format!("{}", a), "[true, false, false]");
-
-    #[cfg(any(
-        not(target_feature = "sse2"),
-        feature = "packed-vec3",
-        feature = "scalar-math"
-    ))]
     assert_eq!(format!("{}", a), "[true, false, false]");
 }
 

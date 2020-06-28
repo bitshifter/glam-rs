@@ -1,7 +1,7 @@
 #[macro_use]
 mod macros;
 
-use glam::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4};
+use glam::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
 
 #[cfg(feature = "transform-types")]
 use glam::{TransformRT, TransformSRT};
@@ -43,11 +43,11 @@ impl FloatCompare for f32 {
 
 impl FloatCompare for Mat2 {
     #[inline]
-    fn approx_eq(&self, other: &Mat2, max_abs_diff: f32) -> bool {
+    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
         self.abs_diff_eq(*other, max_abs_diff)
     }
     #[inline]
-    fn abs_diff(&self, other: &Mat2) -> Mat2 {
+    fn abs_diff(&self, other: &Self) -> Self {
         Mat2::from_cols(
             (self.x_axis() - other.x_axis()).abs(),
             (self.y_axis() - other.y_axis()).abs(),
@@ -57,11 +57,11 @@ impl FloatCompare for Mat2 {
 
 impl FloatCompare for Mat3 {
     #[inline]
-    fn approx_eq(&self, other: &Mat3, max_abs_diff: f32) -> bool {
+    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
         self.abs_diff_eq(*other, max_abs_diff)
     }
     #[inline]
-    fn abs_diff(&self, other: &Mat3) -> Mat3 {
+    fn abs_diff(&self, other: &Self) -> Self {
         Mat3::from_cols(
             (self.x_axis() - other.x_axis()).abs(),
             (self.y_axis() - other.y_axis()).abs(),
@@ -72,11 +72,11 @@ impl FloatCompare for Mat3 {
 
 impl FloatCompare for Mat4 {
     #[inline]
-    fn approx_eq(&self, other: &Mat4, max_abs_diff: f32) -> bool {
+    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
         self.abs_diff_eq(*other, max_abs_diff)
     }
     #[inline]
-    fn abs_diff(&self, other: &Mat4) -> Mat4 {
+    fn abs_diff(&self, other: &Self) -> Self {
         Mat4::from_cols(
             (self.x_axis() - other.x_axis()).abs(),
             (self.y_axis() - other.y_axis()).abs(),
@@ -88,11 +88,11 @@ impl FloatCompare for Mat4 {
 
 impl FloatCompare for Quat {
     #[inline]
-    fn approx_eq(&self, other: &Quat, max_abs_diff: f32) -> bool {
+    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
         self.abs_diff_eq(*other, max_abs_diff)
     }
     #[inline]
-    fn abs_diff(&self, other: &Quat) -> Quat {
+    fn abs_diff(&self, other: &Self) -> Self {
         let a: Vec4 = (*self).into();
         let b: Vec4 = (*other).into();
         (a - b).abs().into()
@@ -101,33 +101,44 @@ impl FloatCompare for Quat {
 
 impl FloatCompare for Vec2 {
     #[inline]
-    fn approx_eq(&self, other: &Vec2, max_abs_diff: f32) -> bool {
+    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
         self.abs_diff_eq(*other, max_abs_diff)
     }
     #[inline]
-    fn abs_diff(&self, other: &Vec2) -> Vec2 {
+    fn abs_diff(&self, other: &Self) -> Self {
         (*self - *other).abs()
     }
 }
 
 impl FloatCompare for Vec3 {
     #[inline]
-    fn approx_eq(&self, other: &Vec3, max_abs_diff: f32) -> bool {
+    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
         self.abs_diff_eq(*other, max_abs_diff)
     }
     #[inline]
-    fn abs_diff(&self, other: &Vec3) -> Vec3 {
+    fn abs_diff(&self, other: &Self) -> Self {
+        (*self - *other).abs()
+    }
+}
+
+impl FloatCompare for Vec3A {
+    #[inline]
+    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
+        self.abs_diff_eq(*other, max_abs_diff)
+    }
+    #[inline]
+    fn abs_diff(&self, other: &Self) -> Self {
         (*self - *other).abs()
     }
 }
 
 impl FloatCompare for Vec4 {
     #[inline]
-    fn approx_eq(&self, other: &Vec4, max_abs_diff: f32) -> bool {
+    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
         self.abs_diff_eq(*other, max_abs_diff)
     }
     #[inline]
-    fn abs_diff(&self, other: &Vec4) -> Vec4 {
+    fn abs_diff(&self, other: &Self) -> Self {
         (*self - *other).abs()
     }
 }

@@ -1,6 +1,6 @@
 mod support;
 
-use glam::f32::*;
+use glam::{mat4, vec3, vec4, Mat4, Quat, Vec3, Vec4};
 use support::deg;
 
 const IDENTITY: [[f32; 4]; 4] = [
@@ -126,7 +126,10 @@ fn test_mat4_mul() {
     let mat_a = Mat4::from_axis_angle(Vec3::unit_z(), deg(90.0));
     let result3 = mat_a.transform_vector3(Vec3::unit_y());
     assert_approx_eq!(vec3(-1.0, 0.0, 0.0), result3);
-    assert_approx_eq!(result3, (mat_a * Vec3::unit_y().extend(0.0)).truncate());
+    assert_approx_eq!(
+        result3,
+        (mat_a * Vec3::unit_y().extend(0.0)).truncate().into()
+    );
     let result4 = mat_a * Vec4::unit_y();
     assert_approx_eq!(vec4(-1.0, 0.0, 0.0, 0.0), result4);
     assert_approx_eq!(result4, mat_a * Vec4::unit_y());
@@ -138,11 +141,17 @@ fn test_mat4_mul() {
     );
     let result3 = mat_b.transform_vector3(Vec3::unit_y());
     assert_approx_eq!(vec3(0.0, 0.0, 1.5), result3, 1.0e-6);
-    assert_approx_eq!(result3, (mat_b * Vec3::unit_y().extend(0.0)).truncate());
+    assert_approx_eq!(
+        result3,
+        (mat_b * Vec3::unit_y().extend(0.0)).truncate().into()
+    );
 
     let result3 = mat_b.transform_point3(Vec3::unit_y());
     assert_approx_eq!(vec3(1.0, 2.0, 4.5), result3, 1.0e-6);
-    assert_approx_eq!(result3, (mat_b * Vec3::unit_y().extend(1.0)).truncate());
+    assert_approx_eq!(
+        result3,
+        (mat_b * Vec3::unit_y().extend(1.0)).truncate().into()
+    );
 }
 
 #[test]

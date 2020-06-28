@@ -1,6 +1,6 @@
 mod support;
 
-use glam::f32::{quat, Mat3, Mat4, Quat, Vec3, Vec4};
+use glam::{quat, Mat3, Mat4, Quat, Vec3, Vec4};
 use support::{deg, rad};
 
 #[test]

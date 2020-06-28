@@ -1,7 +1,7 @@
-use super::{scalar_sin_cos, Mat3, Quat, Vec3, Vec4};
-#[cfg(all(vec4sse2, target_arch = "x86"))]
+use super::{scalar_sin_cos, Mat3, Quat, Vec3, Vec3A, Vec4};
+#[cfg(all(vec4_sse2, target_arch = "x86"))]
 use core::arch::x86::*;
-#[cfg(all(vec4sse2, target_arch = "x86_64"))]
+#[cfg(all(vec4_sse2, target_arch = "x86_64"))]
 use core::arch::x86_64::*;
 use core::{
     fmt,
@@ -183,22 +183,23 @@ impl Mat4 {
         let det = self.determinant();
         glam_assert!(det != 0.0);
 
-        let scale = Vec3::new(
+        let scale = Vec3A::new(
             self.x_axis.length() * det.signum(),
             self.y_axis.length(),
             self.z_axis.length(),
         );
-        glam_assert!(scale.cmpne(Vec3::zero()).all());
+        glam_assert!(scale.cmpne(Vec3A::zero()).all());
 
         let inv_scale = scale.reciprocal();
 
         let rotation = Quat::from_rotation_mat3(&Mat3::from_cols(
-            self.x_axis().truncate() * inv_scale.dup_x(),
-            self.y_axis().truncate() * inv_scale.dup_y(),
-            self.z_axis().truncate() * inv_scale.dup_z(),
+            Vec3::from(self.x_axis().truncate() * inv_scale.dup_x()),
+            Vec3::from(self.y_axis().truncate() * inv_scale.dup_y()),
+            Vec3::from(self.z_axis().truncate() * inv_scale.dup_z()),
         ));
 
-        let translation = self.w_axis.truncate();
+        let translation = Vec3::from(self.w_axis.truncate());
+        let scale = Vec3::from(scale);
 
         (scale, rotation, translation)
     }
@@ -401,7 +402,7 @@ impl Mat4 {
     /// Returns the transpose of `self`.
     #[inline]
     pub fn transpose(&self) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             // sse2 implementation based off DirectXMath XMMatrixInverse (MIT License)
             let tmp0 = _mm_shuffle_ps(self.x_axis.0, self.y_axis.0, 0b01_00_01_00);
@@ -417,7 +418,7 @@ impl Mat4 {
             }
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             let (m00, m01, m02, m03) = self.x_axis.into();
             let (m10, m11, m12, m13) = self.y_axis.into();
@@ -807,7 +808,7 @@ impl Mat4 {
         // // other w = 1
         // res = self.w_axis.truncate() + res;
         // res
-        self.mul_vec4(other.extend(1.0)).truncate()
+        Vec3::from(self.mul_vec4(other.extend(1.0)).truncate())
     }
 
     /// Transforms the give `Vec3` as 3D vector.
@@ -822,7 +823,7 @@ impl Mat4 {
         // res = self.z_axis.truncate().mul_add(other.dup_z(), res);
         // // other w = 0
         // res
-        self.mul_vec4(other.extend(0.0)).truncate()
+        Vec3::from(self.mul_vec4(other.extend(0.0)).truncate())
     }
 
     /// Returns true if the absolute difference of all elements between `self`
