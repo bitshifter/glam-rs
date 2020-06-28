@@ -187,7 +187,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
 [Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.9.0...HEAD
-[0.8.7]: https://github.com/bitshifter/glam-rs/compare/0.8.7...0.9.0
+[0.9.0]: https://github.com/bitshifter/glam-rs/compare/0.8.7...0.9.0
 [0.8.7]: https://github.com/bitshifter/glam-rs/compare/0.8.6...0.8.7
 [0.8.6]: https://github.com/bitshifter/glam-rs/compare/0.8.5...0.8.6
 [0.8.5]: https://github.com/bitshifter/glam-rs/compare/0.8.4...0.8.5
