@@ -201,9 +201,6 @@ fn test_quat_slerp_constant_speed() {
 #[test]
 fn test_quat_fmt() {
     let a = Quat::identity();
-    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-    assert_eq!(format!("{:?}", a), "Quat(__m128(0.0, 0.0, 0.0, 1.0))");
-    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
     assert_eq!(format!("{:?}", a), "Quat(0.0, 0.0, 0.0, 1.0)");
     // assert_eq!(
     //     format!("{:#?}", a),

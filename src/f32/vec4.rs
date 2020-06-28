@@ -24,7 +24,7 @@ pub(crate) const W_AXIS: Align16<[f32; 4]> = Align16([0.0, 0.0, 0.0, 1.0]);
 ///
 /// This type is 16 byte aligned.
 #[cfg(vec4_sse2)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy)]
 #[repr(C)]
 pub struct Vec4(pub(crate) __m128);
 
@@ -969,18 +969,23 @@ impl AsMut<[f32; 4]> for Vec4 {
     }
 }
 
+#[cfg(vec4_sse2)]
+impl fmt::Debug for Vec4 {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        let a = self.as_ref();
+        fmt.debug_tuple("Vec4")
+            .field(&a[0])
+            .field(&a[1])
+            .field(&a[2])
+            .field(&a[3])
+            .finish()
+    }
+}
+
 impl fmt::Display for Vec4 {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        #[cfg(vec4_sse2)]
-        {
-            let (x, y, z, w) = (*self).into();
-            write!(fmt, "[{}, {}, {}, {}]", x, y, z, w)
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            write!(fmt, "[{}, {}, {}, {}]", self.0, self.1, self.2, self.3)
-        }
+        let a = self.as_ref();
+        write!(fmt, "[{}, {}, {}, {}]", a[0], a[1], a[2], a[3])
     }
 }
 

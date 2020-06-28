@@ -40,10 +40,7 @@ fn test_vec3a_new() {
 #[test]
 fn test_vec3a_fmt() {
     let a = Vec3A::new(1.0, 2.0, 3.0);
-    #[cfg(vec3a_sse2)]
-    assert_eq!(format!("{:?}", a), "Vec3A(__m128(1.0, 2.0, 3.0, 3.0))");
-    #[cfg(vec3a_f32)]
-    assert_eq!(format!("{:?}", a), "Vec3A(Vec3(1.0, 2.0, 3.0))");
+    assert_eq!(format!("{:?}", a), "Vec3A(1.0, 2.0, 3.0)");
     // assert_eq!(format!("{:#?}", a), "Vec3A(\n    1.0,\n    2.0,\n    3.0\n)");
     assert_eq!(format!("{}", a), "[1, 2, 3]");
 }
@@ -389,17 +386,9 @@ fn test_vec3mask_fmt() {
     let a = Vec3AMask::new(true, false, false);
 
     // debug fmt
-    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-    assert_eq!(format!("{:?}", a), "Vec3AMask(0xffffffff, 0x0, 0x0)");
-
-    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
     assert_eq!(format!("{:?}", a), "Vec3AMask(0xffffffff, 0x0, 0x0)");
 
     // display fmt
-    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-    assert_eq!(format!("{}", a), "[true, false, false]");
-
-    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
     assert_eq!(format!("{}", a), "[true, false, false]");
 }
 

@@ -22,13 +22,13 @@ use crate::{
 ///
 /// It is possible to convert between `Vec3` and `Vec3A` types using `From` trait implementations.
 #[cfg(vec3a_sse2)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy)]
 #[repr(C)]
 pub struct Vec3A(pub(crate) __m128);
 
 /// A 3-dimensional vector.
 #[cfg(vec3a_f32)]
-#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Default)]
 #[repr(align(16), C)]
 pub struct Vec3A(pub(crate) Vec3);
 
@@ -856,6 +856,17 @@ impl AsMut<[f32; 3]> for Vec3A {
     #[inline]
     fn as_mut(&mut self) -> &mut [f32; 3] {
         unsafe { &mut *(self as *mut Vec3A as *mut [f32; 3]) }
+    }
+}
+
+impl fmt::Debug for Vec3A {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        let a = self.as_ref();
+        fmt.debug_tuple("Vec3A")
+            .field(&a[0])
+            .field(&a[1])
+            .field(&a[2])
+            .finish()
     }
 }
 

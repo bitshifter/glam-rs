@@ -522,20 +522,13 @@ impl Quat {
 
 impl fmt::Debug for Quat {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        #[cfg(vec4_sse2)]
-        {
-            fmt.debug_tuple("Quat").field(&(self.0).0).finish()
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            fmt.debug_tuple("Quat")
-                .field(&self.0.x())
-                .field(&self.0.y())
-                .field(&self.0.z())
-                .field(&self.0.w())
-                .finish()
-        }
+        let a = self.as_ref();
+        fmt.debug_tuple("Quat")
+            .field(&a[0])
+            .field(&a[1])
+            .field(&a[2])
+            .field(&a[3])
+            .finish()
     }
 }
 
