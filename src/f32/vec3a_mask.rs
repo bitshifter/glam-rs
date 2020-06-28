@@ -288,6 +288,14 @@ impl From<Vec3AMask> for [u32; 3] {
     }
 }
 
+#[cfg(vec3a_sse2)]
+impl From<Vec3AMask> for __m128 {
+    #[inline]
+    fn from(t: Vec3AMask) -> Self {
+        t.0
+    }
+}
+
 impl AsRef<[u32; 3]> for Vec3AMask {
     #[inline]
     fn as_ref(&self) -> &[u32; 3] {

@@ -541,6 +541,39 @@ fn test_vec3a_angle_between() {
     assert_approx_eq!(2.0 * f32::consts::FRAC_PI_3, angle, 1e-6);
 }
 
+#[cfg(vec3a_sse2)]
+#[test]
+fn test_vec3a_m128() {
+    #[cfg(target_arch = "x86")]
+    use core::arch::x86::*;
+    #[cfg(target_arch = "x86_64")]
+    use core::arch::x86_64::*;
+
+    #[repr(C, align(16))]
+    struct F32x3_A16([f32; 3]);
+
+    let v0 = Vec3A::new(1.0, 2.0, 3.0);
+    let m0: __m128 = v0.into();
+    let mut a0 = F32x3_A16([0.0, 0.0, 0.0]);
+    unsafe {
+        _mm_store_ps(a0.0.as_mut_ptr(), m0);
+    }
+    assert_eq!([1.0, 2.0, 3.0], a0.0);
+    let v1 = Vec3A::from(m0);
+    assert_eq!(v0, v1);
+
+    #[repr(C, align(16))]
+    struct U32x3_A16([u32; 3]);
+
+    let v0 = Vec3AMask::new(true, false, true);
+    let m0: __m128 = v0.into();
+    let mut a0 = U32x3_A16([1, 2, 3]);
+    unsafe {
+        _mm_store_ps(a0.0.as_mut_ptr() as *mut f32, m0);
+    }
+    assert_eq!([0xffffffff, 0, 0xffffffff], a0.0);
+}
+
 #[cfg(feature = "serde")]
 #[test]
 fn test_vec3a_serde() {

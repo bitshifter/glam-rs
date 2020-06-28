@@ -321,6 +321,14 @@ impl From<Vec4Mask> for [u32; 4] {
     }
 }
 
+#[cfg(vec4_sse2)]
+impl From<Vec4Mask> for __m128 {
+    #[inline]
+    fn from(t: Vec4Mask) -> Self {
+        t.0
+    }
+}
+
 impl AsRef<[u32; 4]> for Vec4Mask {
     #[inline]
     fn as_ref(&self) -> &[u32; 4] {
