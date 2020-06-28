@@ -1,7 +1,7 @@
 use super::{Vec2, Vec3A, Vec3Mask, Vec4};
 use core::{fmt, ops::*};
 
-/// A 3-dimensional vector.
+/// A 3-dimensional vector without SIMD support.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
 #[repr(C)]
 pub struct Vec3(pub(crate) f32, pub(crate) f32, pub(crate) f32);

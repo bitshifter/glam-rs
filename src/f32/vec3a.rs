@@ -15,7 +15,7 @@ use crate::{
     Align16,
 };
 
-/// A 3-dimensional vector.
+/// A 3-dimensional vector with SIMD support.
 ///
 /// This type uses 16 byte aligned SIMD vector4 types for storage on supported platforms for better
 /// performance than the `Vec3` type.
