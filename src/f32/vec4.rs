@@ -1,29 +1,29 @@
 use super::{Vec3A, Vec4Mask};
 use core::{fmt, ops::*};
 
-#[cfg(all(vec4sse2, target_arch = "x86"))]
+#[cfg(all(vec4_sse2, target_arch = "x86"))]
 use core::arch::x86::*;
-#[cfg(all(vec4sse2, target_arch = "x86_64"))]
+#[cfg(all(vec4_sse2, target_arch = "x86_64"))]
 use core::arch::x86_64::*;
 
-#[cfg(vec4sse2)]
+#[cfg(vec4_sse2)]
 use crate::Align16;
-#[cfg(vec4sse2)]
+#[cfg(vec4_sse2)]
 use core::{cmp::Ordering, f32, mem::MaybeUninit};
 
-#[cfg(vec4sse2)]
+#[cfg(vec4_sse2)]
 pub(crate) const X_AXIS: Align16<[f32; 4]> = Align16([1.0, 0.0, 0.0, 0.0]);
-#[cfg(vec4sse2)]
+#[cfg(vec4_sse2)]
 pub(crate) const Y_AXIS: Align16<[f32; 4]> = Align16([0.0, 1.0, 0.0, 0.0]);
-#[cfg(vec4sse2)]
+#[cfg(vec4_sse2)]
 pub(crate) const Z_AXIS: Align16<[f32; 4]> = Align16([0.0, 0.0, 1.0, 0.0]);
-#[cfg(vec4sse2)]
+#[cfg(vec4_sse2)]
 pub(crate) const W_AXIS: Align16<[f32; 4]> = Align16([0.0, 0.0, 0.0, 1.0]);
 
 /// A 4-dimensional vector.
 ///
 /// This type is 16 byte aligned.
-#[cfg(vec4sse2)]
+#[cfg(vec4_sse2)]
 #[derive(Clone, Copy, Debug)]
 #[repr(C)]
 pub struct Vec4(pub(crate) __m128);
@@ -31,10 +31,10 @@ pub struct Vec4(pub(crate) __m128);
 /// A 4-dimensional vector.
 ///
 /// This type is 16 byte aligned unless the `scalar-math` feature is enabed.
-#[cfg(vec4f32)]
+#[cfg(vec4_f32)]
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
 // if compiling with simd enabled assume alignment needs to match the simd type
-#[cfg_attr(vec4f32_align16, repr(align(16)))]
+#[cfg_attr(vec4_f32_align16, repr(align(16)))]
 #[repr(C)]
 pub struct Vec4(
     pub(crate) f32,
@@ -43,7 +43,7 @@ pub struct Vec4(
     pub(crate) f32,
 );
 
-#[cfg(vec4sse2)]
+#[cfg(vec4_sse2)]
 impl Default for Vec4 {
     #[inline]
     fn default() -> Self {
@@ -51,7 +51,7 @@ impl Default for Vec4 {
     }
 }
 
-#[cfg(vec4sse2)]
+#[cfg(vec4_sse2)]
 impl PartialEq for Vec4 {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
@@ -59,7 +59,7 @@ impl PartialEq for Vec4 {
     }
 }
 
-#[cfg(vec4sse2)]
+#[cfg(vec4_sse2)]
 impl PartialOrd for Vec4 {
     #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
@@ -67,7 +67,7 @@ impl PartialOrd for Vec4 {
     }
 }
 
-#[cfg(vec4sse2)]
+#[cfg(vec4_sse2)]
 impl From<Vec4> for __m128 {
     // TODO: write test
     #[cfg_attr(tarpaulin, skip)]
@@ -77,7 +77,7 @@ impl From<Vec4> for __m128 {
     }
 }
 
-#[cfg(vec4sse2)]
+#[cfg(vec4_sse2)]
 impl From<__m128> for Vec4 {
     #[inline]
     fn from(t: __m128) -> Self {
@@ -94,11 +94,11 @@ impl Vec4 {
     /// Creates a new `Vec4`.
     #[inline]
     pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Self(_mm_set_ps(w, z, y, x))
         }
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(x, y, z, w)
         }
@@ -107,12 +107,12 @@ impl Vec4 {
     /// Creates a new `Vec4` with all elements set to `0.0`.
     #[inline]
     pub fn zero() -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Self(_mm_setzero_ps())
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(0.0, 0.0, 0.0, 0.0)
         }
@@ -121,12 +121,12 @@ impl Vec4 {
     /// Creates a new `Vec4` with all elements set to `1.0`.
     #[inline]
     pub fn one() -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Self(_mm_set1_ps(1.0))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(1.0, 1.0, 1.0, 1.0)
         }
@@ -135,12 +135,12 @@ impl Vec4 {
     /// Creates a new `Vec4` with values `[x: 1.0, y: 0.0, z: 0.0, w: 0.0]`.
     #[inline]
     pub fn unit_x() -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Self(_mm_load_ps(X_AXIS.0.as_ptr()))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(1.0, 0.0, 0.0, 0.0)
         }
@@ -149,12 +149,12 @@ impl Vec4 {
     /// Creates a new `Vec4` with values `[x: 0.0, y: 1.0, z: 0.0, w: 0.0]`.
     #[inline]
     pub fn unit_y() -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Self(_mm_load_ps(Y_AXIS.0.as_ptr()))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(0.0, 1.0, 0.0, 0.0)
         }
@@ -163,12 +163,12 @@ impl Vec4 {
     /// Creates a new `Vec4` with values `[x: 0.0, y: 0.0, z: 1.0, w: 0.0]`.
     #[inline]
     pub fn unit_z() -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Self(_mm_load_ps(Z_AXIS.0.as_ptr()))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(0.0, 0.0, 1.0, 0.0)
         }
@@ -177,12 +177,12 @@ impl Vec4 {
     /// Creates a new `Vec4` with values `[x: 0.0, y: 0.0, z: 0.0, w: 1.0]`.
     #[inline]
     pub fn unit_w() -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Self(_mm_load_ps(W_AXIS.0.as_ptr()))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(0.0, 0.0, 0.0, 1.0)
         }
@@ -191,12 +191,12 @@ impl Vec4 {
     /// Creates a new `Vec4` with all elements set to `v`.
     #[inline]
     pub fn splat(v: f32) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Self(_mm_set_ps1(v))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(v, v, v, v)
         }
@@ -209,12 +209,12 @@ impl Vec4 {
     /// or `Vec3::from`.
     #[inline]
     pub fn truncate(self) -> Vec3A {
-        #[cfg(all(vec4sse2, vec3sse2))]
+        #[cfg(all(vec4_sse2, vec3a_sse2))]
         {
             Vec3A(self.0)
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Vec3A::new(self.0, self.1, self.2)
         }
@@ -223,12 +223,12 @@ impl Vec4 {
     /// Returns element `x`.
     #[inline]
     pub fn x(self) -> f32 {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             _mm_cvtss_f32(self.0)
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             self.0
         }
@@ -237,12 +237,12 @@ impl Vec4 {
     /// Returns element `y`.
     #[inline]
     pub fn y(self) -> f32 {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             _mm_cvtss_f32(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_01))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             self.1
         }
@@ -251,12 +251,12 @@ impl Vec4 {
     /// Returns element `z`.
     #[inline]
     pub fn z(self) -> f32 {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             _mm_cvtss_f32(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_10))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             self.2
         }
@@ -265,12 +265,12 @@ impl Vec4 {
     /// Returns element `w`.
     #[inline]
     pub fn w(self) -> f32 {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             _mm_cvtss_f32(_mm_shuffle_ps(self.0, self.0, 0b11_11_11_11))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             self.3
         }
@@ -279,12 +279,12 @@ impl Vec4 {
     /// Returns a mutable reference to element `x`.
     #[inline]
     pub fn x_mut(&mut self) -> &mut f32 {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             &mut *(self as *mut Self as *mut f32)
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             &mut self.0
         }
@@ -293,12 +293,12 @@ impl Vec4 {
     /// Returns a mutable reference to element `y`.
     #[inline]
     pub fn y_mut(&mut self) -> &mut f32 {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             &mut *(self as *mut Self as *mut f32).offset(1)
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             &mut self.1
         }
@@ -307,12 +307,12 @@ impl Vec4 {
     /// Returns a mutable reference to element `z`.
     #[inline]
     pub fn z_mut(&mut self) -> &mut f32 {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             &mut *(self as *mut Self as *mut f32).offset(2)
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             &mut self.2
         }
@@ -321,12 +321,12 @@ impl Vec4 {
     /// Returns a mutable reference to element `w`.
     #[inline]
     pub fn w_mut(&mut self) -> &mut f32 {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             &mut *(self as *mut Self as *mut f32).offset(3)
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             &mut self.3
         }
@@ -335,12 +335,12 @@ impl Vec4 {
     /// Sets element `x`.
     #[inline]
     pub fn set_x(&mut self, x: f32) {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             self.0 = _mm_move_ss(self.0, _mm_set_ss(x));
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             self.0 = x;
         }
@@ -349,14 +349,14 @@ impl Vec4 {
     /// Sets element `y`.
     #[inline]
     pub fn set_y(&mut self, y: f32) {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             let mut t = _mm_move_ss(self.0, _mm_set_ss(y));
             t = _mm_shuffle_ps(t, t, 0b11_10_00_00);
             self.0 = _mm_move_ss(t, self.0);
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             self.1 = y;
         }
@@ -365,14 +365,14 @@ impl Vec4 {
     /// Sets element `z`.
     #[inline]
     pub fn set_z(&mut self, z: f32) {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             let mut t = _mm_move_ss(self.0, _mm_set_ss(z));
             t = _mm_shuffle_ps(t, t, 0b11_00_01_00);
             self.0 = _mm_move_ss(t, self.0);
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             self.2 = z;
         }
@@ -381,14 +381,14 @@ impl Vec4 {
     /// Sets element `w`.
     #[inline]
     pub fn set_w(&mut self, w: f32) {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             let mut t = _mm_move_ss(self.0, _mm_set_ss(w));
             t = _mm_shuffle_ps(t, t, 0b00_10_01_00);
             self.0 = _mm_move_ss(t, self.0);
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             self.3 = w;
         }
@@ -397,12 +397,12 @@ impl Vec4 {
     /// Returns a `Vec4` with all elements set to the value of element `x`.
     #[inline]
     pub(crate) fn dup_x(self) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Self(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_00))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(self.0, self.0, self.0, self.0)
         }
@@ -411,12 +411,12 @@ impl Vec4 {
     /// Returns a `Vec4` with all elements set to the value of element `y`.
     #[inline]
     pub(crate) fn dup_y(self) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Self(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_01))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(self.1, self.1, self.1, self.1)
         }
@@ -425,12 +425,12 @@ impl Vec4 {
     /// Returns a `Vec4` with all elements set to the value of element `z`.
     #[inline]
     pub(crate) fn dup_z(self) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Self(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_10))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(self.2, self.2, self.2, self.2)
         }
@@ -439,19 +439,19 @@ impl Vec4 {
     /// Returns a `Vec4` with all elements set to the value of element `w`.
     #[inline]
     pub(crate) fn dup_w(self) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Self(_mm_shuffle_ps(self.0, self.0, 0b11_11_11_11))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(self.3, self.3, self.3, self.3)
         }
     }
 
     /// Calculates the Vec4 dot product and returns answer in x lane of __m128.
-    #[cfg(vec4sse2)]
+    #[cfg(vec4_sse2)]
     #[inline]
     unsafe fn dot_as_m128(self, other: Self) -> __m128 {
         let x2_y2_z2_w2 = _mm_mul_ps(self.0, other.0);
@@ -462,7 +462,7 @@ impl Vec4 {
     }
 
     /// Returns Vec4 dot in all lanes of Vec4
-    #[cfg(vec4sse2)]
+    #[cfg(vec4_sse2)]
     #[inline]
     pub(crate) fn dot_as_vec4(self, other: Self) -> Self {
         unsafe {
@@ -474,12 +474,12 @@ impl Vec4 {
     /// Computes the 4D dot product of `self` and `other`.
     #[inline]
     pub fn dot(self, other: Self) -> f32 {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             _mm_cvtss_f32(self.dot_as_m128(other))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             (self.0 * other.0) + (self.1 * other.1) + (self.2 * other.2) + (self.3 * other.3)
         }
@@ -488,13 +488,13 @@ impl Vec4 {
     /// Computes the 4D length of `self`.
     #[inline]
     pub fn length(self) -> f32 {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         {
             let dot = self.dot_as_vec4(self);
             unsafe { _mm_cvtss_f32(_mm_sqrt_ps(dot.0)) }
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             self.dot(self).sqrt()
         }
@@ -514,7 +514,7 @@ impl Vec4 {
     /// For valid results, `self` must _not_ be of length zero.
     #[inline]
     pub fn length_reciprocal(self) -> f32 {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         {
             let dot = self.dot_as_vec4(self);
             unsafe {
@@ -523,7 +523,7 @@ impl Vec4 {
             }
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             1.0 / self.length()
         }
@@ -534,13 +534,13 @@ impl Vec4 {
     /// For valid results, `self` must _not_ be of length zero.
     #[inline]
     pub fn normalize(self) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         {
             let dot = self.dot_as_vec4(self);
             unsafe { Self(_mm_div_ps(self.0, _mm_sqrt_ps(dot.0))) }
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             self * self.length_reciprocal()
         }
@@ -553,12 +553,12 @@ impl Vec4 {
     /// taking the minimum of each element individually.
     #[inline]
     pub fn min(self, other: Self) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Self(_mm_min_ps(self.0, other.0))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(
                 self.0.min(other.0),
@@ -576,12 +576,12 @@ impl Vec4 {
     /// taking the maximum of each element individually.
     #[inline]
     pub fn max(self, other: Self) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Self(_mm_max_ps(self.0, other.0))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(
                 self.0.max(other.0),
@@ -597,7 +597,7 @@ impl Vec4 {
     /// In other words, this computes `min(x, y, z, w)`.
     #[inline]
     pub fn min_element(self) -> f32 {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             let v = self.0;
             let v = _mm_min_ps(v, _mm_shuffle_ps(v, v, 0b00_00_11_10));
@@ -605,7 +605,7 @@ impl Vec4 {
             _mm_cvtss_f32(v)
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             self.0.min(self.1.min(self.2.min(self.3)))
         }
@@ -616,7 +616,7 @@ impl Vec4 {
     /// In other words, this computes `max(x, y, z, w)`.
     #[inline]
     pub fn max_element(self) -> f32 {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             let v = self.0;
             let v = _mm_max_ps(v, _mm_shuffle_ps(v, v, 0b00_00_11_10));
@@ -624,7 +624,7 @@ impl Vec4 {
             _mm_cvtss_f32(v)
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             self.0.max(self.1.max(self.2.min(self.3)))
         }
@@ -636,12 +636,12 @@ impl Vec4 {
     /// In other words, this computes `[x1 == x2, y1 == y2, z1 == z2, w1 == w2]`.
     #[inline]
     pub fn cmpeq(self, other: Self) -> Vec4Mask {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Vec4Mask(_mm_cmpeq_ps(self.0, other.0))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Vec4Mask::new(
                 self.0.eq(&other.0),
@@ -658,12 +658,12 @@ impl Vec4 {
     /// In other words, this computes `[x1 != x2, y1 != y2, z1 != z2, w1 != w2]`.
     #[inline]
     pub fn cmpne(self, other: Self) -> Vec4Mask {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Vec4Mask(_mm_cmpneq_ps(self.0, other.0))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Vec4Mask::new(
                 self.0.ne(&other.0),
@@ -680,12 +680,12 @@ impl Vec4 {
     /// In other words, this computes `[x1 >= x2, y1 >= y2, z1 >= z2, w1 >= w2]`.
     #[inline]
     pub fn cmpge(self, other: Self) -> Vec4Mask {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Vec4Mask(_mm_cmpge_ps(self.0, other.0))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Vec4Mask::new(
                 self.0.ge(&other.0),
@@ -702,12 +702,12 @@ impl Vec4 {
     /// In other words, this computes `[x1 > x2, y1 > y2, z1 > z2, w1 > w2]`.
     #[inline]
     pub fn cmpgt(self, other: Self) -> Vec4Mask {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Vec4Mask(_mm_cmpgt_ps(self.0, other.0))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Vec4Mask::new(
                 self.0.gt(&other.0),
@@ -724,12 +724,12 @@ impl Vec4 {
     /// In other words, this computes `[x1 <= x2, y1 <= y2, z1 <= z2, w1 <= w2]`.
     #[inline]
     pub fn cmple(self, other: Self) -> Vec4Mask {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Vec4Mask(_mm_cmple_ps(self.0, other.0))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Vec4Mask::new(
                 self.0.le(&other.0),
@@ -746,12 +746,12 @@ impl Vec4 {
     /// In other words, this computes `[x1 < x2, y1 < y2, z1 < z2, w1 < w2]`.
     #[inline]
     pub fn cmplt(self, other: Self) -> Vec4Mask {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Vec4Mask(_mm_cmplt_ps(self.0, other.0))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Vec4Mask::new(
                 self.0.lt(&other.0),
@@ -769,13 +769,13 @@ impl Vec4 {
     /// Panics if `slice` is less than four elements long.
     #[inline]
     pub fn from_slice_unaligned(slice: &[f32]) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         {
             assert!(slice.len() >= 4);
             unsafe { Self(_mm_loadu_ps(slice.as_ptr())) }
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(slice[0], slice[1], slice[2], slice[3])
         }
@@ -788,13 +788,13 @@ impl Vec4 {
     /// Panics if `slice` is less than four elements long.
     #[inline]
     pub fn write_to_slice_unaligned(self, slice: &mut [f32]) {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             assert!(slice.len() >= 4);
             _mm_storeu_ps(slice.as_mut_ptr(), self.0);
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             slice[0] = self.0;
             slice[1] = self.1;
@@ -806,12 +806,12 @@ impl Vec4 {
     /// Per element multiplication/addition of the three inputs: b + (self * a)
     #[inline]
     pub(crate) fn mul_add(self, a: Self, b: Self) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Self(_mm_add_ps(_mm_mul_ps(self.0, a.0), b.0))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(
                 (self.0 * a.0) + b.0,
@@ -826,7 +826,7 @@ impl Vec4 {
     /// `Vec4`.
     #[inline]
     pub fn abs(self) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Self(_mm_and_ps(
                 self.0,
@@ -834,7 +834,7 @@ impl Vec4 {
             ))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(self.0.abs(), self.1.abs(), self.2.abs(), self.3.abs())
         }
@@ -842,13 +842,13 @@ impl Vec4 {
 
     #[inline]
     pub fn round(self) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             use crate::f32::funcs::sse2::m128_round;
             Self(m128_round(self.0))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(
                 self.0.round(),
@@ -861,13 +861,13 @@ impl Vec4 {
 
     #[inline]
     pub fn floor(self) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             use crate::f32::funcs::sse2::m128_floor;
             Self(m128_floor(self.0))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(
                 self.0.floor(),
@@ -880,13 +880,13 @@ impl Vec4 {
 
     #[inline]
     pub fn ceil(self) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             use crate::f32::funcs::sse2::m128_ceil;
             Self(m128_ceil(self.0))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(self.0.ceil(), self.1.ceil(), self.2.ceil(), self.3.ceil())
         }
@@ -898,13 +898,13 @@ impl Vec4 {
     /// - `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
     #[inline]
     pub fn sign(self) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         {
             let mask = self.cmpge(Self::zero());
             mask.select(Self::splat(1.0), Self::splat(-1.0))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(
                 self.0.signum(),
@@ -972,13 +972,13 @@ impl AsMut<[f32; 4]> for Vec4 {
 
 impl fmt::Display for Vec4 {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         {
             let (x, y, z, w) = (*self).into();
             write!(fmt, "[{}, {}, {}, {}]", x, y, z, w)
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             write!(fmt, "[{}, {}, {}, {}]", self.0, self.1, self.2, self.3)
         }
@@ -989,12 +989,12 @@ impl Div<Vec4> for Vec4 {
     type Output = Self;
     #[inline]
     fn div(self, other: Self) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Self(_mm_div_ps(self.0, other.0))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(
                 self.0 / other.0,
@@ -1009,12 +1009,12 @@ impl Div<Vec4> for Vec4 {
 impl DivAssign<Vec4> for Vec4 {
     #[inline]
     fn div_assign(&mut self, other: Self) {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         {
             self.0 = unsafe { _mm_div_ps(self.0, other.0) };
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             self.0 /= other.0;
             self.1 /= other.1;
@@ -1028,12 +1028,12 @@ impl Div<f32> for Vec4 {
     type Output = Self;
     #[inline]
     fn div(self, other: f32) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Self(_mm_div_ps(self.0, _mm_set1_ps(other)))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(
                 self.0 / other,
@@ -1048,12 +1048,12 @@ impl Div<f32> for Vec4 {
 impl DivAssign<f32> for Vec4 {
     #[inline]
     fn div_assign(&mut self, other: f32) {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         {
             self.0 = unsafe { _mm_div_ps(self.0, _mm_set1_ps(other)) };
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             self.0 /= other;
             self.1 /= other;
@@ -1067,12 +1067,12 @@ impl Div<Vec4> for f32 {
     type Output = Vec4;
     #[inline]
     fn div(self, other: Vec4) -> Vec4 {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Vec4(_mm_div_ps(_mm_set1_ps(self), other.0))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Vec4(
                 self / other.0,
@@ -1088,12 +1088,12 @@ impl Mul<Vec4> for Vec4 {
     type Output = Self;
     #[inline]
     fn mul(self, other: Self) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Self(_mm_mul_ps(self.0, other.0))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(
                 self.0 * other.0,
@@ -1108,12 +1108,12 @@ impl Mul<Vec4> for Vec4 {
 impl MulAssign<Vec4> for Vec4 {
     #[inline]
     fn mul_assign(&mut self, other: Self) {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         {
             self.0 = unsafe { _mm_mul_ps(self.0, other.0) };
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             self.0 *= other.0;
             self.1 *= other.1;
@@ -1127,12 +1127,12 @@ impl Mul<f32> for Vec4 {
     type Output = Self;
     #[inline]
     fn mul(self, other: f32) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Self(_mm_mul_ps(self.0, _mm_set1_ps(other)))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(
                 self.0 * other,
@@ -1147,12 +1147,12 @@ impl Mul<f32> for Vec4 {
 impl MulAssign<f32> for Vec4 {
     #[inline]
     fn mul_assign(&mut self, other: f32) {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         {
             self.0 = unsafe { _mm_mul_ps(self.0, _mm_set1_ps(other)) };
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             self.0 *= other;
             self.1 *= other;
@@ -1166,12 +1166,12 @@ impl Mul<Vec4> for f32 {
     type Output = Vec4;
     #[inline]
     fn mul(self, other: Vec4) -> Vec4 {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Vec4(_mm_mul_ps(_mm_set1_ps(self), other.0))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Vec4(
                 self * other.0,
@@ -1187,12 +1187,12 @@ impl Add for Vec4 {
     type Output = Self;
     #[inline]
     fn add(self, other: Self) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Self(_mm_add_ps(self.0, other.0))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(
                 self.0 + other.0,
@@ -1207,12 +1207,12 @@ impl Add for Vec4 {
 impl AddAssign for Vec4 {
     #[inline]
     fn add_assign(&mut self, other: Self) {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         {
             self.0 = unsafe { _mm_add_ps(self.0, other.0) };
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             self.0 += other.0;
             self.1 += other.1;
@@ -1226,12 +1226,12 @@ impl Sub for Vec4 {
     type Output = Self;
     #[inline]
     fn sub(self, other: Self) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Self(_mm_sub_ps(self.0, other.0))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(
                 self.0 - other.0,
@@ -1246,12 +1246,12 @@ impl Sub for Vec4 {
 impl SubAssign for Vec4 {
     #[inline]
     fn sub_assign(&mut self, other: Self) {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         {
             self.0 = unsafe { _mm_sub_ps(self.0, other.0) };
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             self.0 -= other.0;
             self.1 -= other.1;
@@ -1265,12 +1265,12 @@ impl Neg for Vec4 {
     type Output = Self;
     #[inline]
     fn neg(self) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Self(_mm_sub_ps(_mm_set1_ps(0.0), self.0))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(-self.0, -self.1, -self.2, -self.3)
         }
@@ -1302,7 +1302,7 @@ impl From<(f32, f32, f32, f32)> for Vec4 {
 impl From<Vec4> for (f32, f32, f32, f32) {
     #[inline]
     fn from(v: Vec4) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         {
             let mut out: MaybeUninit<Align16<(f32, f32, f32, f32)>> = MaybeUninit::uninit();
             unsafe {
@@ -1311,7 +1311,7 @@ impl From<Vec4> for (f32, f32, f32, f32) {
             }
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             (v.0, v.1, v.2, v.3)
         }
@@ -1321,12 +1321,12 @@ impl From<Vec4> for (f32, f32, f32, f32) {
 impl From<[f32; 4]> for Vec4 {
     #[inline]
     fn from(a: [f32; 4]) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             Self(_mm_loadu_ps(a.as_ptr()))
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             Self(a[0], a[1], a[2], a[3])
         }
@@ -1336,7 +1336,7 @@ impl From<[f32; 4]> for Vec4 {
 impl From<Vec4> for [f32; 4] {
     #[inline]
     fn from(v: Vec4) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         {
             let mut out: MaybeUninit<Align16<[f32; 4]>> = MaybeUninit::uninit();
             unsafe {
@@ -1345,7 +1345,7 @@ impl From<Vec4> for [f32; 4] {
             }
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             [v.0, v.1, v.2, v.3]
         }

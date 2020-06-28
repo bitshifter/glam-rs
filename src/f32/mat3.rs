@@ -306,7 +306,7 @@ impl Mat3 {
     /// Returns the transpose of `self`.
     #[inline]
     pub fn transpose(&self) -> Self {
-        // #[cfg(vec3sse2)]
+        // #[cfg(vec3a_sse2)]
         // {
         //     #[cfg(target_arch = "x86")]
         //     use core::arch::x86::*;
@@ -323,7 +323,7 @@ impl Mat3 {
         //         }
         //     }
         // }
-        // #[cfg(vec3f32)]
+        // #[cfg(vec3a_f32)]
         {
             Self {
                 x_axis: Vec3::new(self.x_axis.0, self.y_axis.0, self.z_axis.0),

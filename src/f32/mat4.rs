@@ -1,7 +1,7 @@
 use super::{scalar_sin_cos, Mat3, Quat, Vec3, Vec3A, Vec4};
-#[cfg(all(vec4sse2, target_arch = "x86"))]
+#[cfg(all(vec4_sse2, target_arch = "x86"))]
 use core::arch::x86::*;
-#[cfg(all(vec4sse2, target_arch = "x86_64"))]
+#[cfg(all(vec4_sse2, target_arch = "x86_64"))]
 use core::arch::x86_64::*;
 use core::{
     fmt,
@@ -402,7 +402,7 @@ impl Mat4 {
     /// Returns the transpose of `self`.
     #[inline]
     pub fn transpose(&self) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             // sse2 implementation based off DirectXMath XMMatrixInverse (MIT License)
             let tmp0 = _mm_shuffle_ps(self.x_axis.0, self.y_axis.0, 0b01_00_01_00);
@@ -418,7 +418,7 @@ impl Mat4 {
             }
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             let (m00, m01, m02, m03) = self.x_axis.into();
             let (m10, m11, m12, m13) = self.y_axis.into();

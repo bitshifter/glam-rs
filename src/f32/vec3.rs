@@ -626,13 +626,13 @@ impl From<Vec3> for [f32; 3] {
 impl From<Vec3A> for Vec3 {
     #[inline]
     fn from(v: Vec3A) -> Self {
-        #[cfg(vec3align16sse2)]
+        #[cfg(vec3a_sse2)]
         {
             let (x, y, z) = v.into();
             Self(x, y, z)
         }
 
-        #[cfg(vec3align16f32)]
+        #[cfg(vec3a_f32)]
         {
             v.0
         }

@@ -40,9 +40,9 @@ fn test_vec3a_new() {
 #[test]
 fn test_vec3a_fmt() {
     let a = Vec3A::new(1.0, 2.0, 3.0);
-    #[cfg(vec3align16sse2)]
+    #[cfg(vec3a_sse2)]
     assert_eq!(format!("{:?}", a), "Vec3A(__m128(1.0, 2.0, 3.0, 3.0))");
-    #[cfg(vec3align16f32)]
+    #[cfg(vec3a_f32)]
     assert_eq!(format!("{:?}", a), "Vec3A(Vec3(1.0, 2.0, 3.0))");
     // assert_eq!(format!("{:#?}", a), "Vec3A(\n    1.0,\n    2.0,\n    3.0\n)");
     assert_eq!(format!("{}", a), "[1, 2, 3]");

@@ -43,7 +43,7 @@ pub fn scalar_acos(value: f32) -> f32 {
     }
 }
 
-#[cfg(vec4sse2)]
+#[cfg(vec4_sse2)]
 pub(crate) mod sse2 {
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
     use crate::f32::x86_utils::UnionCast;
@@ -466,7 +466,7 @@ fn test_scalar_sin_cos() {
 }
 
 #[test]
-#[cfg(vec4sse2)]
+#[cfg(vec4_sse2)]
 fn test_sse2_m128_sin() {
     use crate::Vec4;
     use core::f32::consts::PI;
@@ -497,7 +497,7 @@ fn test_sse2_m128_sin() {
 // as the input angle drifts further from the bounds of PI.
 //
 // #[test]
-// #[cfg(vec4sse2)]
+// #[cfg(vec4_sse2)]
 // fn test_sse2_m128_sin2() {
 //     use crate::Vec4;
 

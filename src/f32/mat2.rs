@@ -1,7 +1,7 @@
 use super::{scalar_sin_cos, Vec2, Vec4};
-#[cfg(all(vec4sse2, target_arch = "x86",))]
+#[cfg(all(vec4_sse2, target_arch = "x86",))]
 use core::arch::x86::*;
-#[cfg(all(vec4sse2, target_arch = "x86_64",))]
+#[cfg(all(vec4_sse2, target_arch = "x86_64",))]
 use core::arch::x86_64::*;
 use core::{
     fmt,
@@ -172,14 +172,14 @@ impl Mat2 {
     /// Returns the transpose of `self`.
     #[inline]
     pub fn transpose(&self) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             let abcd = self.0.into();
             let acbd = _mm_shuffle_ps(abcd, abcd, 0b11_01_10_00);
             Self(acbd.into())
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             let (m00, m01, m10, m11) = self.0.into();
             Self(Vec4::new(m00, m10, m01, m11))
@@ -189,7 +189,7 @@ impl Mat2 {
     /// Returns the determinant of `self`.
     #[inline]
     pub fn determinant(&self) -> f32 {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             let abcd = self.0.into();
             let dcba = _mm_shuffle_ps(abcd, abcd, 0b00_01_10_11);
@@ -198,7 +198,7 @@ impl Mat2 {
             _mm_cvtss_f32(det)
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             let (a, b, c, d) = self.0.into();
             a * d - b * c
@@ -210,7 +210,7 @@ impl Mat2 {
     /// If the matrix is not invertible the returned matrix will be invalid.
     #[inline]
     pub fn inverse(&self) -> Self {
-        #[cfg(vec4sse2)]
+        #[cfg(vec4_sse2)]
         unsafe {
             let abcd = self.0.into();
             let dcba = _mm_shuffle_ps(abcd, abcd, 0b00_01_10_11);
@@ -222,7 +222,7 @@ impl Mat2 {
             Self(_mm_mul_ps(dbca, tmp).into())
         }
 
-        #[cfg(vec4f32)]
+        #[cfg(vec4_f32)]
         {
             let (a, b, c, d) = self.0.into();
             let det = a * d - b * c;
