@@ -9,8 +9,8 @@
 supported as this is what stable Rust supports.
 
 * Single precision float (`f32`) support only
-* SSE2 implementation for most types, including `Mat2`, `Mat3`, `Mat4`, `Quat`,
-  `Vec3A` and `Vec4`
+* SSE2 storage and optimization for many types, including `Mat2`, `Mat4`,
+  `Quat`, `Vec3A` and `Vec4`
 * Scalar fallback implementations exist when SSE2 is not available
 * Most functionality includes unit tests and benchmarks
 
@@ -43,21 +43,24 @@ assert!(v.abs_diff_eq(-Vec3::unit_z(), core::f32::EPSILON));
 
 ## Size and alignment of types
 
-Most `glam` types use SIMD for storage meaning most types are 16 byte aligned.
-The exceptions are `Vec2`, `Vec3` and `Mat3` types.
-`Vec3A` is a 3D vector type that is 16 byte aligned. Having 16 byte alignment means that
-it will have a stride larger than their size resulting in some wasted space.  
-When SSE2 is not available on the target architecture this type will still be 16 byte aligned, 
-so object sizes and layouts will not change between architectures.
+Some `glam` types use SIMD for storage meaning they are 16 byte aligned, these
+types include `Mat2`, `Mat4`, `Quat`, `Vec3A` and `Vec4`.
 
-| Type | f32 bytes | SIMD bytes | Wasted bytes |
-|:-----|----------:|-----------:|-------------:|
-|`Vec3` |        12|         N/A|            0|
-|`Vec3A`|        12|          16|            4|
+`Vec3A` is a SIMD optimized version of the `Vec3` type, which due to 16 byte
+alignment results in `Vec3A` containing 4 bytes of padding making it 16 bytes
+in size in total.
+
+| Type  | `f32` bytes | Align bytes | Padding | Size bytes |
+|:------|------------:|------------:|--------:|-----------:|
+|`Vec3` |           12|            4|        0|          12|
+|`Vec3A`|           12|           16|        4|          16|
 
 Despite this wasted space the SIMD version tends to outperform the `f32`
 implementation in [**mathbench**](https://github.com/bitshifter/mathbench-rs)
 benchmarks.
+
+When SSE2 is not available on the target architecture this type will still be 16
+byte aligned, so object sizes and layouts will not change between architectures.
 
 SIMD support can be disabled entirely using the `scalar-math` feature. This
 feature will also disable SIMD alignment meaning most types will use native
@@ -65,13 +68,14 @@ feature will also disable SIMD alignment meaning most types will use native
 
 All the main `glam` types are tagged with #[repr(C)], so they are possible
 to expose as struct members to C interfaces if desired. Be mindful of Vec3A's
-extra float though.
+extra padding though.
 
 ## Accessing internal data
 
 The SIMD types that `glam` builds on are opaque and their contents are not
-directly accessible. Because of this `glam` types uses getter and setter
-methods instead of providing direct access.
+directly accessible. Because of this all types use getter and setter methods
+instead of providing direct access, regardless of whether they are using scalar
+or SIMD storage.
 
 ```
 use glam::Vec3A;
@@ -79,6 +83,8 @@ let mut v = Vec3A::new(1.0, 2.0, 3.0);
 assert_eq!(v.y(), 2.0);
 v.set_z(1.0);
 assert_eq!(v.z(), 1.0);
+*v.x_mut() = 2.0;
+assert_eq!(v.x(), 2.0);
 ```
 
 If you need to access multiple elements it is easier to convert the type to a
@@ -97,8 +103,8 @@ assert_eq!((x, y, z), (1.0, 2.0, 3.0));
 that they will serialize and deserialize exactly the same whether or not
 SIMD support is being used.
 
-The SIMD versions implement `core::fmt::Display` traits so they print the same as
-the scalar version.
+The SIMD versions implement the `core::fmt::Debug` and `core::fmt::Display`
+traits so they print the same as the scalar version.
 
 ```
 use glam::Vec3A;

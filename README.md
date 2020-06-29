@@ -31,13 +31,13 @@ SIMD vector type is 16 bytes large and 16 byte aligned.
 [`mathbench`][mathbench] project.
 
 Due to the use of SIMD, vector elements may only be get and set via accessor
-methods, e.g. `Vec3::x()` and `Vec3::x_mut()` or `Vec3::set_x()`. If getting or
+methods, e.g. `Vec4::x()` and `Vec4::x_mut()` or `Vec4::set_x()`. If getting or
 setting more than one element it is more efficient to convert from tuples or
 arrays:
 
 ```
-let (x, y, z) = v.into();
-let [x, y, z]: [f32; 3] = v.into();
+let (x, y, z, w) = v.into();
+let [x, y, z, w]: [f32; 4] = v.into();
 ```
 
 ### Optional features
