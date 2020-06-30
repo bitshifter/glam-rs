@@ -1,6 +1,6 @@
 mod support;
 
-use glam::{mat3, vec2, vec3, Mat3, Vec2, Vec3};
+use glam::{mat3, vec2, vec3, vec3a, Mat3, Vec2, Vec3, Vec3A};
 use support::deg;
 
 const IDENTITY: [[f32; 3]; 3] = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]];
@@ -87,6 +87,8 @@ fn test_mat3_mul() {
     let mat_a = Mat3::from_axis_angle(Vec3::unit_z(), deg(90.0));
     let result3 = mat_a * Vec3::unit_y();
     assert_approx_eq!(vec3(-1.0, 0.0, 0.0), result3);
+    let result3 = mat_a * Vec3A::unit_y();
+    assert_approx_eq!(vec3a(-1.0, 0.0, 0.0), result3);
 }
 
 #[test]
