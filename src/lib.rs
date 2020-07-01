@@ -129,7 +129,7 @@ and benchmarks.
   parameters passed to `glam` to help catch runtime errors.
 
 */
-#![doc(html_root_url = "https://docs.rs/glam/0.9.0")]
+#![doc(html_root_url = "https://docs.rs/glam/0.9.1")]
 
 #[macro_use]
 mod macros;

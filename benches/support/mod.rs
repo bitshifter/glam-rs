@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 use core::f32;
-use glam::f32::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4};
+use glam::f32::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
 
 pub struct PCG32 {
     state: u64,
@@ -44,6 +44,10 @@ pub fn random_vec2(rng: &mut PCG32) -> Vec2 {
 
 pub fn random_vec3(rng: &mut PCG32) -> Vec3 {
     Vec3::new(rng.next_f32(), rng.next_f32(), rng.next_f32())
+}
+
+pub fn random_vec3a(rng: &mut PCG32) -> Vec3A {
+    Vec3A::new(rng.next_f32(), rng.next_f32(), rng.next_f32())
 }
 
 pub fn random_vec4(rng: &mut PCG32) -> Vec4 {
