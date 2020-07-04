@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+### Added
+* Added `Mat3::mul_vec3a` and `Quat::mul_vec3a`.
+
+### Changed
+* Changed `Quat::mul_vec3` to accept and return `Vec3` instead of `Vec3A`.
+
 ## [0.9.1] - 2020-07-01
 
 ### Added
