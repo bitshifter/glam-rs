@@ -353,8 +353,8 @@ impl Mat3 {
         Mat3::from_cols(tmp0 * inv_det, tmp1 * inv_det, tmp2 * inv_det).transpose()
     }
 
-    #[inline(always)]
-    pub(crate) fn mul_vec3a(&self, other: Vec3A) -> Vec3A {
+    #[inline]
+    pub fn mul_vec3a(&self, other: Vec3A) -> Vec3A {
         let mut res = Vec3A::from(self.x_axis) * other.dup_x();
         res = Vec3A::from(self.y_axis).mul_add(other.dup_y(), res);
         res = Vec3A::from(self.z_axis).mul_add(other.dup_z(), res);

@@ -416,7 +416,7 @@ impl Quat {
 
     #[inline]
     /// Multiplies a quaternion and a 3D vector, rotating it.
-    pub fn mul_vec3(self, other: Vec3A) -> Vec3A {
+    pub fn mul_vec3a(self, other: Vec3A) -> Vec3A {
         glam_assert!(self.is_normalized());
 
         #[cfg(vec4_sse2)]
@@ -438,6 +438,13 @@ impl Quat {
                 other * (w * w - b2) + b * (other.dot(b) * 2.0) + b.cross(other) * (w * 2.0),
             )
         }
+    }
+
+    #[inline]
+    /// Multiplies a quaternion and a 3D vector, rotating it.
+    pub fn mul_vec3(self, other: Vec3) -> Vec3 {
+        glam_assert!(self.is_normalized());
+        self.mul_vec3a(Vec3A::from(other)).into()
     }
 
     #[inline]
@@ -558,7 +565,7 @@ impl Mul<Vec3> for Quat {
     type Output = Vec3;
     #[inline]
     fn mul(self, other: Vec3) -> Self::Output {
-        Vec3::from(self.mul_vec3(Vec3A::from(other)))
+        self.mul_vec3(other)
     }
 }
 
@@ -566,7 +573,7 @@ impl Mul<Vec3A> for Quat {
     type Output = Vec3A;
     #[inline]
     fn mul(self, other: Vec3A) -> Self::Output {
-        self.mul_vec3(other)
+        self.mul_vec3a(other)
     }
 }
 
