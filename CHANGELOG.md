@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
-## [Unreleased]
+## [0.9.2] - 2020-07-09
 
 ### Added
 * Added `Mat3::mul_vec3a` and `Quat::mul_vec3a`.
@@ -203,7 +203,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.9.1...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.9.2...HEAD
+[0.9.1]: https://github.com/bitshifter/glam-rs/compare/0.9.1...0.9.2
 [0.9.1]: https://github.com/bitshifter/glam-rs/compare/0.9.0...0.9.1
 [0.9.0]: https://github.com/bitshifter/glam-rs/compare/0.8.7...0.9.0
 [0.8.7]: https://github.com/bitshifter/glam-rs/compare/0.8.6...0.8.7
