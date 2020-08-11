@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
-## [Unreleased]
+## [0.9.3] - 2020-08-11
 
 ### Added
 * Added `Mat4::perspective_rh`.
@@ -208,8 +208,9 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.9.2...HEAD
-[0.9.1]: https://github.com/bitshifter/glam-rs/compare/0.9.1...0.9.2
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.9.3...HEAD
+[0.9.3]: https://github.com/bitshifter/glam-rs/compare/0.9.2...0.9.3
+[0.9.2]: https://github.com/bitshifter/glam-rs/compare/0.9.1...0.9.2
 [0.9.1]: https://github.com/bitshifter/glam-rs/compare/0.9.0...0.9.1
 [0.9.0]: https://github.com/bitshifter/glam-rs/compare/0.8.7...0.9.0
 [0.8.7]: https://github.com/bitshifter/glam-rs/compare/0.8.6...0.8.7
