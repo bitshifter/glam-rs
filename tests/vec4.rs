@@ -147,6 +147,9 @@ fn test_vec4_funcs() {
         vec4(0.5, 0.25, 0.125, 0.0625),
         vec4(2.0, 4.0, 8.0, 16.0).reciprocal()
     );
+
+    let zero = vec4(0.0, 0.0, 0.0, 0.0);
+    assert_eq!(zero, zero.normalize_safe());
 }
 
 #[test]

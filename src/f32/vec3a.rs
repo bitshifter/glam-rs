@@ -511,6 +511,17 @@ impl Vec3A {
         }
     }
 
+    /// Same as `normalize`, but will not normalize if `self` is zero length.
+    ///
+    /// Slightly slower than `normalize`.
+    #[inline]
+    pub fn normalize_safe(self) -> Self{
+        if self.length_squared() > f32::EPSILON {
+            return self.normalize();
+        }
+        return self;
+    }
+
     /// Returns the vertical minimum of `self` and `other`.
     ///
     /// In other words, this computes

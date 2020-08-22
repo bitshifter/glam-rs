@@ -127,6 +127,9 @@ fn test_vec3_funcs() {
         vec3(2.0, 3.0, 4.0).normalize()
     );
     assert_eq!(vec3(0.5, 0.25, 0.125), vec3(2.0, 4.0, 8.0).reciprocal());
+
+    let zero = vec3(0.0, 0.0, 0.0);
+    assert_eq!(zero, zero.normalize_safe());
 }
 
 #[test]
