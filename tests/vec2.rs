@@ -106,7 +106,7 @@ fn test_vec2_funcs() {
     );
     assert_eq!(vec2(0.5, 0.25), vec2(2.0, 4.0).reciprocal());
 
-    let zero = vec2(0.0, 0.0, 0.0);
+    let zero = vec2(0.0, 0.0);
     assert_eq!(zero, zero.normalize_safe());
 }
 
