@@ -531,9 +531,11 @@ impl Mat4 {
         inverse * rcp_det
     }
 
+    /// Creates a left-handed view matrix using a camera position, an up direction, and a camera
+    /// direction.
     #[inline]
     // TODO: make public at some point
-    fn look_to_lh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
+    fn look_to_lh(eye: Vec3A, dir: Vec3A, up: Vec3A) -> Self {
         let f = dir.normalize();
         let s = up.cross(f).normalize();
         let u = f.cross(s);
@@ -548,14 +550,24 @@ impl Mat4 {
         )
     }
 
+    /// Creates a left-handed view matrix using a camera position, an up direction, and a focal
+    /// point.
     #[inline]
     pub fn look_at_lh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
+        let eye = Vec3A::from(eye);
+        let center = Vec3A::from(center);
+        let up = Vec3A::from(up);
         glam_assert!(up.is_normalized());
         Mat4::look_to_lh(eye, center - eye, up)
     }
 
+    /// Creates a right-handed view matrix using a camera position, an up direction, and a focal
+    /// point.
     #[inline]
     pub fn look_at_rh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
+        let eye = Vec3A::from(eye);
+        let center = Vec3A::from(center);
+        let up = Vec3A::from(up);
         glam_assert!(up.is_normalized());
         Mat4::look_to_lh(eye, eye - center, up)
     }
