@@ -12,7 +12,7 @@ pub fn vec2(x: f32, y: f32) -> Vec2 {
 }
 
 impl Vec2 {
-    /// Returns a new `Vec4` with elements representing the sign of `self`.
+    /// Returns a new `Vec2` with elements representing the sign of `self`.
     ///
     /// - `1.0` if the number is positive, `+0.0` or `INFINITY`
     /// - `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
