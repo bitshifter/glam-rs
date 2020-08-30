@@ -412,7 +412,7 @@ impl Mat3 {
     }
 
     /// Transforms the given `Vec2` as 2D point.
-    /// This is the equivalent of multiplying the `Vec2` as a `Vec3` where `w`
+    /// This is the equivalent of multiplying the `Vec2` as a `Vec3` where `z`
     /// is `1.0`.
     #[inline]
     pub fn transform_point2(&self, other: Vec2) -> Vec2 {
@@ -420,11 +420,13 @@ impl Mat3 {
         // res = self.y_axis.mul_add(Vec3::splat(other.y()), res);
         // res = self.z_axis + res;
         // res.truncate()
-        self.mul_vec3(other.extend(1.0)).truncate()
+        let result = self.mul_vec3(other.extend(1.0));
+        let z_recip = result.z().recip();
+        result.truncate() * z_recip
     }
 
     /// Transforms the given `Vec2` as 2D vector.
-    /// This is the equivalent of multiplying the `Vec2` as a `Vec3` where `w`
+    /// This is the equivalent of multiplying the `Vec2` as a `Vec3` where `z`
     /// is `0.0`.
     #[inline]
     pub fn transform_vector2(&self, other: Vec2) -> Vec2 {
