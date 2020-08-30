@@ -835,7 +835,9 @@ impl Mat4 {
         // // other w = 1
         // res = self.w_axis.truncate() + res;
         // res
-        Vec3::from(self.mul_vec4(other.extend(1.0)).truncate())
+        let transformed = self.mul_vec4(other.extend(1.0));
+        let w = transformed.w();
+        Vec3::from(transformed.truncate() / w)
     }
 
     /// Transforms the give `Vec3` as 3D vector.
