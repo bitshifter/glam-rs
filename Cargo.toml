@@ -40,10 +40,13 @@ rand = { version = "0.7", optional = true, default-features = false }
 serde = { version = "1.0", optional = true, features = ["derive"] }
 
 [dev-dependencies]
-criterion = "0.3"
+criterion = "0.3.2"
 # rand_xoshiro is required for tests if rand is enabled
 rand_xoshiro = "0.4"
 serde_json = "1.0"
+
+[lib]
+bench = false
 
 [[bench]]
 name = "mat2"
