@@ -45,6 +45,9 @@ criterion = "0.3"
 rand_xoshiro = "0.4"
 serde_json = "1.0"
 
+[lib]
+bench = false
+
 [[bench]]
 name = "mat2"
 harness = false
