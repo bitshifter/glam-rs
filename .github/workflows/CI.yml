@@ -21,9 +21,8 @@ jobs:
           name: Rust Benchmark
           tool: 'cargo'
           output-file-path: output.txt
-          # Use personal access token instead of GITHUB_TOKEN due to https://github.community/t5/GitHub-Actions/Github-action-not-triggering-gh-pages-upon-push/td-p/26869/highlight/false
-          # github-token: ${{ secrets.GITHUB_TOKEN }}
-          # auto-push: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: false
           # Show alert with commit comment on detecting possible performance regression
           alert-threshold: '200%'
           comment-on-alert: true
