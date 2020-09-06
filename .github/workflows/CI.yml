@@ -14,6 +14,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Run benchmark
+        # this isn't going to work because there are multiple bench executables and
+        # passing criterion parameters to them doesn't work.
         run: cargo bench -- --output-format bencher | tee output.txt
       - name: Store benchmark result
         uses: rhysd/github-action-benchmark@v1
