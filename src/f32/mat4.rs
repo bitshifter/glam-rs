@@ -836,7 +836,7 @@ impl Mat4 {
         // res = self.w_axis.truncate() + res;
         // res
         let transformed = self.mul_vec4(other.extend(1.0));
-        let w_recip = transformed.w().recip();
+        let w_recip = transformed.w().abs().recip();
         Vec3::from(transformed.truncate() * w_recip)
     }
 
