@@ -59,6 +59,15 @@ pub fn random_vec4(rng: &mut PCG32) -> Vec4 {
     )
 }
 
+pub fn random_nonzero_vec2(rng: &mut PCG32) -> Vec2 {
+    loop {
+        let v = random_vec2(rng);
+        if v.length_squared() > 0.01 {
+            return v;
+        }
+    }
+}
+
 pub fn random_nonzero_vec3(rng: &mut PCG32) -> Vec3 {
     loop {
         let v = random_vec3(rng);
@@ -91,6 +100,13 @@ pub fn random_mat3(rng: &mut PCG32) -> Mat3 {
     Mat3::from_cols(random_vec3(rng), random_vec3(rng), random_vec3(rng))
 }
 
+pub fn random_srt_mat3(rng: &mut PCG32) -> Mat3 {
+    Mat3::from_scale_angle_translation(
+        random_nonzero_vec2(rng),
+        random_radians(rng),
+        random_vec2(rng),
+    )
+}
 pub fn random_srt_mat4(rng: &mut PCG32) -> Mat4 {
     Mat4::from_scale_rotation_translation(
         random_nonzero_vec3(rng),
