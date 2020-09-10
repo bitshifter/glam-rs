@@ -104,7 +104,7 @@ fn test_vec2_funcs() {
         vec2(2.0, 3.0) / (2.0_f32 * 2.0 + 3.0 * 3.0).sqrt(),
         vec2(2.0, 3.0).normalize()
     );
-    assert_eq!(vec2(0.5, 0.25), vec2(2.0, 4.0).reciprocal());
+    assert_eq!(vec2(0.5, 0.25), vec2(2.0, 4.0).recip());
 }
 
 #[test]

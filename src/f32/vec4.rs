@@ -914,10 +914,16 @@ impl Vec4 {
         }
     }
 
+    #[deprecated(since = "0.9.5", note = "please use `Vec4::recip` instead")]
+    #[inline(always)]
+    pub fn reciprocal(self) -> Self {
+        self.recip()
+    }
+
     /// Computes the reciprocal `1.0/n` of each element, returning the
     /// results in a new `Vec4`.
     #[inline]
-    pub fn reciprocal(self) -> Self {
+    pub fn recip(self) -> Self {
         // TODO: Optimize
         Self::one() / self
     }

@@ -145,7 +145,7 @@ fn test_vec4_funcs() {
     );
     assert_eq!(
         vec4(0.5, 0.25, 0.125, 0.0625),
-        vec4(2.0, 4.0, 8.0, 16.0).reciprocal()
+        vec4(2.0, 4.0, 8.0, 16.0).recip()
     );
 }
 

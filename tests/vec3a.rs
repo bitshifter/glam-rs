@@ -126,7 +126,7 @@ fn test_vec3a_funcs() {
         vec3a(2.0, 3.0, 4.0) / (2.0_f32 * 2.0 + 3.0 * 3.0 + 4.0 * 4.0).sqrt(),
         vec3a(2.0, 3.0, 4.0).normalize()
     );
-    assert_eq!(vec3a(0.5, 0.25, 0.125), vec3a(2.0, 4.0, 8.0).reciprocal());
+    assert_eq!(vec3a(0.5, 0.25, 0.125), vec3a(2.0, 4.0, 8.0).recip());
 }
 
 #[test]

@@ -190,7 +190,7 @@ impl Mat4 {
         );
         glam_assert!(scale.cmpne(Vec3A::zero()).all());
 
-        let inv_scale = scale.reciprocal();
+        let inv_scale = scale.recip();
 
         let rotation = Quat::from_rotation_mat3(&Mat3::from_cols(
             Vec3::from(self.x_axis().truncate() * inv_scale.dup_x()),

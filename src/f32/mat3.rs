@@ -348,7 +348,7 @@ impl Mat3 {
         let tmp2 = self.x_axis.cross(self.y_axis);
         let det = self.z_axis.dot_as_vec3(tmp2);
         glam_assert!(det.cmpne(Vec3::zero()).all());
-        let inv_det = det.reciprocal();
+        let inv_det = det.recip();
         // TODO: Work out if it's possible to get rid of the transpose
         Mat3::from_cols(tmp0 * inv_det, tmp1 * inv_det, tmp2 * inv_det).transpose()
     }

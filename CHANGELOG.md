@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
+## Changed
+
+* Renamed the vector `reciprocal` methods to `recip` to match the Rust standard
+  library naming. The old functions have been deprecated.
+
 ## Removed
 
 * Removed deprecated function `Mat4::perspective_glu_rh`.

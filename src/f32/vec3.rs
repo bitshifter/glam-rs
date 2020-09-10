@@ -385,10 +385,16 @@ impl Vec3 {
         mask.select(Self::splat(1.0), Self::splat(-1.0))
     }
 
+    #[deprecated(since = "0.9.5", note = "please use `Vec3::recip` instead")]
+    #[inline(always)]
+    pub fn reciprocal(self) -> Self {
+        self.recip()
+    }
+
     /// Computes the reciprocal `1.0/n` of each element, returning the
     /// results in a new `Vec3`.
     #[inline]
-    pub fn reciprocal(self) -> Self {
+    pub fn recip(self) -> Self {
         Self::new(1.0 / self.0, 1.0 / self.1, 1.0 / self.2)
     }
 
