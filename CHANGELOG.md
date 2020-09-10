@@ -61,8 +61,11 @@ The format is based on [Keep a Changelog], and this project adheres to
 ### Changed
 
 * The `Mat3` type is using the scalar `Vec3` type for storage.
-* Removed the `packed-vec3` feature flag as it is now redundant.
 * Simplified `Debug` trait output for `Quat`, `Vec4` and `Vec3A`.
+
+## Removed
+
+* Removed the `packed-vec3` feature flag as it is now redundant.
 
 ## [0.8.7] - 2020-04-28
 
@@ -78,8 +81,11 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ### Changed
 
-* Removed `cfg-if` dependency.
 * Increased test coverage.
+
+### Removed
+
+* Removed `cfg-if` dependency.
 
 ## [0.8.6] - 2020-02-18
 
@@ -247,7 +253,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Added `Mat2` into `[f32; 4]`, `Mat3` into `[f32; 9]` and `Mat4` into
   `[f32; 16]`.
 
-### Changed
+### Removed
 
 * Removed `impl Mul<&Vec2> for Mat2` and `impl Mul<&Vec3> for Vec3` as these
   don't exist for any other types.
