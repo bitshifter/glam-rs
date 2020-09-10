@@ -817,16 +817,12 @@ impl Mat4 {
     /// is `1.0`.
     #[inline]
     pub fn transform_point3(&self, other: Vec3) -> Vec3 {
-        // TODO: optimized version below probably won't work for perspective projections
-        // let mut res = self.x_axis.truncate() * other.dup_x();
-        // res = self.y_axis.truncate().mul_add(other.dup_y(), res);
-        // res = self.z_axis.truncate().mul_add(other.dup_z(), res);
-        // // other w = 1
-        // res = self.w_axis.truncate() + res;
-        // res
-        let transformed = self.mul_vec4(other.extend(1.0));
-        let w_recip = transformed.w().recip();
-        Vec3::from(transformed.truncate() * w_recip)
+        let mut res = self.x_axis.mul(Vec4::splat(other.x()));
+        res = self.y_axis.mul_add(Vec4::splat(other.y()), res);
+        res = self.z_axis.mul_add(Vec4::splat(other.z()), res);
+        res = self.w_axis.add(res);
+        res = res.mul(res.dup_w().recip());
+        Vec3::from(res.truncate())
     }
 
     /// Transforms the give `Vec3` as 3D vector.
@@ -834,14 +830,10 @@ impl Mat4 {
     /// is `0.0`.
     #[inline]
     pub fn transform_vector3(&self, other: Vec3) -> Vec3 {
-        // TODO: can optimize for w=0.
-        // TODO: optimized version below probably won't work for perspective projections
-        // let mut res = self.x_axis.truncate() * other.dup_x();
-        // res = self.y_axis.truncate().mul_add(other.dup_y(), res);
-        // res = self.z_axis.truncate().mul_add(other.dup_z(), res);
-        // // other w = 0
-        // res
-        Vec3::from(self.mul_vec4(other.extend(0.0)).truncate())
+        let mut res = self.x_axis.mul(Vec4::splat(other.x()));
+        res = self.y_axis.mul_add(Vec4::splat(other.y()), res);
+        res = self.z_axis.mul_add(Vec4::splat(other.z()), res);
+        Vec3::from(res.truncate())
     }
 
     /// Returns true if the absolute difference of all elements between `self`

@@ -416,13 +416,11 @@ impl Mat3 {
     /// is `1.0`.
     #[inline]
     pub fn transform_point2(&self, other: Vec2) -> Vec2 {
-        // let mut res = self.x_axis * Vec3::splat(other.x());
-        // res = self.y_axis.mul_add(Vec3::splat(other.y()), res);
-        // res = self.z_axis + res;
-        // res.truncate()
-        let result = self.mul_vec3(other.extend(1.0));
-        let z_recip = result.z().recip();
-        result.truncate() * z_recip
+        let mut res = Vec3A::from(self.x_axis).mul(Vec3A::splat(other.x()));
+        res = Vec3A::from(self.y_axis).mul_add(Vec3A::splat(other.y()), res);
+        res = Vec3A::from(self.z_axis).add(res);
+        res = res.mul(res.dup_z().recip());
+        res.truncate()
     }
 
     /// Transforms the given `Vec2` as 2D vector.
@@ -430,11 +428,9 @@ impl Mat3 {
     /// is `0.0`.
     #[inline]
     pub fn transform_vector2(&self, other: Vec2) -> Vec2 {
-        // TODO: can optimize for w=0.
-        // let mut res = self.x_axis * Vec3::splat(other.x());
-        // res = self.y_axis.mul_add(Vec3::splat(other.y()), res);
-        // res.truncate()
-        self.mul_vec3(other.extend(0.0)).truncate()
+        let mut res = Vec3A::from(self.x_axis).mul(Vec3A::splat(other.x()));
+        res = Vec3A::from(self.y_axis).mul_add(Vec3A::splat(other.y()), res);
+        res.truncate()
     }
 
     /// Returns true if the absolute difference of all elements between `self`
