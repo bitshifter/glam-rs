@@ -656,17 +656,6 @@ impl Mat4 {
         )
     }
 
-    #[inline]
-    #[deprecated(since = "0.8.2", note = "please use `Mat4::perspective_rh_gl` instead")]
-    pub fn perspective_glu_rh(
-        fov_y_radians: f32,
-        aspect_ratio: f32,
-        z_near: f32,
-        z_far: f32,
-    ) -> Self {
-        Mat4::perspective_rh_gl(fov_y_radians, aspect_ratio, z_near, z_far)
-    }
-
     /// Creates an infinite right-handed perspective projection matrix with
     /// [0,1] depth range.
     pub fn perspective_infinite_rh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Self {
