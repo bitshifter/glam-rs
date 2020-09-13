@@ -13,8 +13,6 @@ mod vec3a;
 mod vec3a_mask;
 mod vec4;
 mod vec4_mask;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-mod x86_utils;
 
 pub(crate) use funcs::{scalar_acos, scalar_sin_cos};
 pub use mat2::*;

@@ -134,6 +134,9 @@ and benchmarks.
 #[macro_use]
 mod macros;
 
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+mod x86_utils;
+
 pub mod f32;
 
 pub use self::f32::{
