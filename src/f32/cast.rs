@@ -20,6 +20,7 @@ pub union F32x4Cast {
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
     pub m128: __m128,
     pub f32x4: [f32; 4],
+    pub f32x2x2: [[f32; 2]; 2],
     pub vec4: Vec4,
     pub vec3a: Vec3A,
     pub quat: Quat,
