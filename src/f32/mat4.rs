@@ -8,6 +8,14 @@ use core::{
     ops::{Add, Mul, Sub},
 };
 
+const ZERO: Mat4 = const_mat4!([0.0; 16]);
+const IDENTITY: Mat4 = const_mat4!(
+    [1.0, 0.0, 0.0, 0.0],
+    [0.0, 1.0, 0.0, 0.0],
+    [0.0, 0.0, 1.0, 0.0],
+    [0.0, 0.0, 0.0, 1.0]
+);
+
 #[inline]
 pub fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat4 {
     Mat4 {
@@ -56,7 +64,7 @@ pub struct Mat4 {
 impl Default for Mat4 {
     #[inline]
     fn default() -> Self {
-        Self::identity()
+        IDENTITY
     }
 }
 
@@ -74,23 +82,13 @@ impl Mat4 {
     /// Creates a 4x4 matrix with all elements set to `0.0`.
     #[inline]
     pub const fn zero() -> Self {
-        Self {
-            x_axis: Vec4::zero(),
-            y_axis: Vec4::zero(),
-            z_axis: Vec4::zero(),
-            w_axis: Vec4::zero(),
-        }
+        ZERO
     }
 
     /// Creates a 4x4 identity matrix.
     #[inline]
     pub const fn identity() -> Self {
-        Self {
-            x_axis: Vec4::unit_x(),
-            y_axis: Vec4::unit_y(),
-            z_axis: Vec4::unit_z(),
-            w_axis: Vec4::unit_w(),
-        }
+        IDENTITY
     }
 
     /// Creates a 4x4 matrix from four column vectors.

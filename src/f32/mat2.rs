@@ -1,5 +1,3 @@
-#[cfg(vec4_sse2)]
-use super::x86_utils::UnionCast;
 use super::{scalar_sin_cos, Vec2, Vec4};
 #[cfg(all(vec4_sse2, target_arch = "x86",))]
 use core::arch::x86::*;
@@ -10,17 +8,8 @@ use core::{
     ops::{Add, Mul, Sub},
 };
 
-#[cfg(vec4_sse2)]
-const IDENTITY: Mat2 = unsafe {
-    Mat2(Vec4(
-        UnionCast {
-            f32x4: [1.0, 0.0, 0.0, 1.0],
-        }
-        .m128,
-    ))
-};
-#[cfg(vec4_f32)]
-const IDENTITY: Mat2 = Mat2(Vec4(1.0, 0.0, 0.0, 1.0));
+const ZERO: Mat2 = const_mat2!([0.0, 0.0], [0.0, 0.0]);
+const IDENTITY: Mat2 = const_mat2!([1.0, 0.0], [0.0, 1.0]);
 
 #[inline]
 pub fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
@@ -35,7 +24,7 @@ pub struct Mat2(pub(crate) Vec4);
 impl Default for Mat2 {
     #[inline]
     fn default() -> Self {
-        Self::identity()
+        IDENTITY
     }
 }
 
@@ -49,7 +38,7 @@ impl Mat2 {
     /// Creates a 2x2 matrix with all elements set to `0.0`.
     #[inline]
     pub const fn zero() -> Self {
-        Mat2(Vec4::zero())
+        ZERO
     }
 
     /// Creates a 2x2 identity matrix.

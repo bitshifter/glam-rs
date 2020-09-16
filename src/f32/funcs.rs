@@ -47,7 +47,7 @@ pub fn scalar_acos(value: f32) -> f32 {
 #[allow(clippy::excessive_precision)]
 pub(crate) mod sse2 {
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-    use crate::f32::x86_utils::UnionCast;
+    use crate::f32::cast::UnionCast;
     #[cfg(target_arch = "x86")]
     use core::arch::x86::*;
     #[cfg(target_arch = "x86_64")]

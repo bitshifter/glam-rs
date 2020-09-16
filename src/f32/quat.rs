@@ -9,6 +9,8 @@ use core::{
     ops::{Mul, MulAssign, Neg},
 };
 
+const IDENTITY: Quat = const_quat!([0.0, 0.0, 0.0, 1.0]);
+
 /// A quaternion representing an orientation.
 ///
 /// This quaternion is intended to be of unit length but may denormalize due to
@@ -39,7 +41,7 @@ impl Quat {
 
     #[inline]
     pub const fn identity() -> Self {
-        Self(Vec4::unit_w())
+        IDENTITY
     }
 
     /// Creates a new rotation quaternion from an unaligned `&[f32]`.
@@ -595,7 +597,7 @@ impl Neg for Quat {
 impl Default for Quat {
     #[inline]
     fn default() -> Self {
-        Self::identity()
+        IDENTITY
     }
 }
 

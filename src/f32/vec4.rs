@@ -1,5 +1,3 @@
-#[cfg(vec4_sse2)]
-use super::x86_utils::UnionCast;
 use super::{Vec3A, Vec4Mask};
 use core::{fmt, ops::*};
 
@@ -13,48 +11,12 @@ use crate::Align16;
 #[cfg(vec4_sse2)]
 use core::{cmp::Ordering, f32, mem::MaybeUninit};
 
-#[cfg(vec4_sse2)]
-pub(crate) const ZERO: __m128 = unsafe {
-    UnionCast {
-        f32x4: [0.0, 0.0, 0.0, 0.0],
-    }
-    .m128
-};
-#[cfg(vec4_sse2)]
-pub(crate) const ONE: __m128 = unsafe {
-    UnionCast {
-        f32x4: [1.0, 1.0, 1.0, 1.0],
-    }
-    .m128
-};
-#[cfg(vec4_sse2)]
-pub(crate) const X_AXIS: __m128 = unsafe {
-    UnionCast {
-        f32x4: [1.0, 0.0, 0.0, 0.0],
-    }
-    .m128
-};
-#[cfg(vec4_sse2)]
-pub(crate) const Y_AXIS: __m128 = unsafe {
-    UnionCast {
-        f32x4: [0.0, 1.0, 0.0, 0.0],
-    }
-    .m128
-};
-#[cfg(vec4_sse2)]
-pub(crate) const Z_AXIS: __m128 = unsafe {
-    UnionCast {
-        f32x4: [0.0, 0.0, 1.0, 0.0],
-    }
-    .m128
-};
-#[cfg(vec4_sse2)]
-pub(crate) const W_AXIS: __m128 = unsafe {
-    UnionCast {
-        f32x4: [0.0, 0.0, 0.0, 1.0],
-    }
-    .m128
-};
+const ZERO: Vec4 = const_vec4!([0.0; 4]);
+const ONE: Vec4 = const_vec4!([1.0; 4]);
+const X_AXIS: Vec4 = const_vec4!([1.0, 0.0, 0.0, 0.0]);
+const Y_AXIS: Vec4 = const_vec4!([0.0, 1.0, 0.0, 0.0]);
+const Z_AXIS: Vec4 = const_vec4!([0.0, 0.0, 1.0, 0.0]);
+const W_AXIS: Vec4 = const_vec4!([0.0, 0.0, 0.0, 1.0]);
 
 /// A 4-dimensional vector.
 ///
@@ -83,7 +45,7 @@ pub struct Vec4(
 impl Default for Vec4 {
     #[inline]
     fn default() -> Self {
-        Self::zero()
+        ZERO
     }
 }
 
@@ -142,85 +104,37 @@ impl Vec4 {
     /// Creates a new `Vec4` with all elements set to `0.0`.
     #[inline]
     pub const fn zero() -> Self {
-        #[cfg(vec4_sse2)]
-        {
-            Self(ZERO)
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            Self(0.0, 0.0, 0.0, 0.0)
-        }
+        ZERO
     }
 
     /// Creates a new `Vec4` with all elements set to `1.0`.
     #[inline]
     pub const fn one() -> Self {
-        #[cfg(vec4_sse2)]
-        {
-            Self(ONE)
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            Self(1.0, 1.0, 1.0, 1.0)
-        }
+        ONE
     }
 
     /// Creates a new `Vec4` with values `[x: 1.0, y: 0.0, z: 0.0, w: 0.0]`.
     #[inline]
     pub const fn unit_x() -> Self {
-        #[cfg(vec4_sse2)]
-        {
-            Self(X_AXIS)
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            Self(1.0, 0.0, 0.0, 0.0)
-        }
+        X_AXIS
     }
 
     /// Creates a new `Vec4` with values `[x: 0.0, y: 1.0, z: 0.0, w: 0.0]`.
     #[inline]
     pub const fn unit_y() -> Self {
-        #[cfg(vec4_sse2)]
-        {
-            Self(Y_AXIS)
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            Self(0.0, 1.0, 0.0, 0.0)
-        }
+        Y_AXIS
     }
 
     /// Creates a new `Vec4` with values `[x: 0.0, y: 0.0, z: 1.0, w: 0.0]`.
     #[inline]
     pub const fn unit_z() -> Self {
-        #[cfg(vec4_sse2)]
-        {
-            Self(Z_AXIS)
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            Self(0.0, 0.0, 1.0, 0.0)
-        }
+        Z_AXIS
     }
 
     /// Creates a new `Vec4` with values `[x: 0.0, y: 0.0, z: 0.0, w: 1.0]`.
     #[inline]
     pub const fn unit_w() -> Self {
-        #[cfg(vec4_sse2)]
-        {
-            Self(W_AXIS)
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            Self(0.0, 0.0, 0.0, 1.0)
-        }
+        W_AXIS
     }
 
     /// Creates a new `Vec4` with all elements set to `v`.

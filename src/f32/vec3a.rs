@@ -10,10 +10,13 @@ use core::arch::x86_64::*;
 use core::{cmp::Ordering, f32, mem::MaybeUninit};
 
 #[cfg(vec3a_sse2)]
-use crate::{
-    f32::{X_AXIS, Y_AXIS, Z_AXIS},
-    Align16,
-};
+use crate::Align16;
+
+const ZERO: Vec3A = const_vec3a!([0.0; 3]);
+const ONE: Vec3A = const_vec3a!([1.0; 3]);
+const X_AXIS: Vec3A = const_vec3a!([1.0, 0.0, 0.0]);
+const Y_AXIS: Vec3A = const_vec3a!([0.0, 1.0, 0.0]);
+const Z_AXIS: Vec3A = const_vec3a!([0.0, 0.0, 1.0]);
 
 /// A 3-dimensional vector with SIMD support.
 ///
@@ -49,7 +52,7 @@ impl Vec3A {
 impl Default for Vec3A {
     #[inline]
     fn default() -> Self {
-        Vec3A::zero()
+        ZERO
     }
 }
 
@@ -108,72 +111,32 @@ impl Vec3A {
 
     /// Creates a new `Vec3A` with all elements set to `0.0`.
     #[inline]
-    pub fn zero() -> Self {
-        #[cfg(vec3a_sse2)]
-        unsafe {
-            Self(_mm_setzero_ps())
-        }
-
-        #[cfg(vec3a_f32)]
-        {
-            Self(Vec3::zero())
-        }
+    pub const fn zero() -> Self {
+        ZERO
     }
 
     /// Creates a new `Vec3A` with all elements set to `1.0`.
     #[inline]
-    pub fn one() -> Self {
-        #[cfg(vec3a_sse2)]
-        unsafe {
-            Self(_mm_set1_ps(1.0))
-        }
-
-        #[cfg(vec3a_f32)]
-        {
-            Self(Vec3::one())
-        }
+    pub const fn one() -> Self {
+        ONE
     }
 
     /// Creates a new `Vec3A` with values `[x: 1.0, y: 0.0, z: 0.0]`.
     #[inline]
     pub const fn unit_x() -> Self {
-        #[cfg(vec3a_sse2)]
-        {
-            Self(X_AXIS)
-        }
-
-        #[cfg(vec3a_f32)]
-        {
-            Self(Vec3::unit_x())
-        }
+        X_AXIS
     }
 
     /// Creates a new `Vec3A` with values `[x: 0.0, y: 1.0, z: 0.0]`.
     #[inline]
     pub const fn unit_y() -> Self {
-        #[cfg(vec3a_sse2)]
-        {
-            Self(Y_AXIS)
-        }
-
-        #[cfg(vec3a_f32)]
-        {
-            Self(Vec3::unit_y())
-        }
+        Y_AXIS
     }
 
     /// Creates a new `Vec3A` with values `[x: 0.0, y: 0.0, z: 1.0]`.
     #[inline]
     pub const fn unit_z() -> Self {
-        #[cfg(vec3a_sse2)]
-        {
-            Self(Z_AXIS)
-        }
-
-        #[cfg(vec3a_f32)]
-        {
-            Self(Vec3::unit_z())
-        }
+        Z_AXIS
     }
 
     /// Creates a new `Vec3A` with all elements set to `v`.

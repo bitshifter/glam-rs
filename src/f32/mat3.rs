@@ -4,6 +4,9 @@ use core::{
     ops::{Add, Mul, Sub},
 };
 
+const ZERO: Mat3 = const_mat3!([0.0; 9]);
+const IDENTITY: Mat3 = const_mat3!([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
+
 #[inline]
 pub fn mat3(x_axis: Vec3, y_axis: Vec3, z_axis: Vec3) -> Mat3 {
     Mat3 {
@@ -50,7 +53,7 @@ pub struct Mat3 {
 impl Default for Mat3 {
     #[inline]
     fn default() -> Self {
-        Self::identity()
+        IDENTITY
     }
 }
 
@@ -64,21 +67,13 @@ impl Mat3 {
     /// Creates a 3x3 matrix with all elements set to `0.0`.
     #[inline]
     pub const fn zero() -> Self {
-        Self {
-            x_axis: Vec3::zero(),
-            y_axis: Vec3::zero(),
-            z_axis: Vec3::zero(),
-        }
+        ZERO
     }
 
     /// Creates a 3x3 identity matrix.
     #[inline]
     pub const fn identity() -> Self {
-        Self {
-            x_axis: Vec3::unit_x(),
-            y_axis: Vec3::unit_y(),
-            z_axis: Vec3::unit_z(),
-        }
+        IDENTITY
     }
 
     /// Creates a 3x3 matrix from three column vectors.

@@ -1,6 +1,11 @@
 use crate::f32::{Vec2Mask, Vec3};
 use core::{f32, fmt, ops::*};
 
+const ZERO: Vec2 = const_vec2!([0.0; 2]);
+const ONE: Vec2 = const_vec2!([1.0; 2]);
+const X_AXIS: Vec2 = const_vec2!([1.0, 0.0]);
+const Y_AXIS: Vec2 = const_vec2!([0.0, 1.0]);
+
 /// A 2-dimensional vector.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
 #[repr(C)]
@@ -76,25 +81,25 @@ impl Vec2 {
     /// Creates a new `Vec2` with all elements set to `0.0`.
     #[inline]
     pub const fn zero() -> Vec2 {
-        Vec2(0.0, 0.0)
+        ZERO
     }
 
     /// Creates a new `Vec2` with all elements set to `1.0`.
     #[inline]
     pub const fn one() -> Vec2 {
-        Vec2(1.0, 1.0)
+        ONE
     }
 
     /// Creates a new `Vec2` with values `[x: 1.0, y: 0.0]`.
     #[inline]
     pub const fn unit_x() -> Vec2 {
-        Vec2(1.0, 0.0)
+        X_AXIS
     }
 
     /// Creates a new `Vec2` with values `[x: 0.0, y: 1.0]`.
     #[inline]
     pub const fn unit_y() -> Vec2 {
-        Vec2(0.0, 1.0)
+        Y_AXIS
     }
 
     /// Creates a new `Vec2` with all elements set to `v`.

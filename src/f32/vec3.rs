@@ -1,6 +1,12 @@
 use super::{Vec2, Vec3A, Vec3Mask, Vec4};
 use core::{fmt, ops::*};
 
+const ZERO: Vec3 = const_vec3!([0.0; 3]);
+const ONE: Vec3 = const_vec3!([1.0; 3]);
+const X_AXIS: Vec3 = const_vec3!([1.0, 0.0, 0.0]);
+const Y_AXIS: Vec3 = const_vec3!([0.0, 1.0, 0.0]);
+const Z_AXIS: Vec3 = const_vec3!([0.0, 0.0, 1.0]);
+
 /// A 3-dimensional vector without SIMD support.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
 #[repr(C)]
@@ -21,31 +27,31 @@ impl Vec3 {
     /// Creates a new `Vec3` with all elements set to `0.0`.
     #[inline]
     pub const fn zero() -> Self {
-        Self(0.0, 0.0, 0.0)
+        ZERO
     }
 
     /// Creates a new `Vec3` with all elements set to `1.0`.
     #[inline]
     pub const fn one() -> Self {
-        Self(1.0, 1.0, 1.0)
+        ONE
     }
 
     /// Creates a new `Vec3` with values `[x: 1.0, y: 0.0, z: 0.0]`.
     #[inline]
     pub const fn unit_x() -> Self {
-        Self(1.0, 0.0, 0.0)
+        X_AXIS
     }
 
     /// Creates a new `Vec3` with values `[x: 0.0, y: 1.0, z: 0.0]`.
     #[inline]
     pub const fn unit_y() -> Self {
-        Self(0.0, 1.0, 0.0)
+        Y_AXIS
     }
 
     /// Creates a new `Vec3` with values `[x: 0.0, y: 0.0, z: 1.0]`.
     #[inline]
     pub const fn unit_z() -> Self {
-        Self(0.0, 0.0, 1.0)
+        Z_AXIS
     }
 
     /// Creates a new `Vec3` with all elements set to `v`.
