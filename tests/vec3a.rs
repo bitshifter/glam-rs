@@ -119,7 +119,7 @@ fn test_vec3a_funcs() {
     );
     assert_eq!(
         1.0 / (2.0_f32 * 2.0 + 3.0 * 3.0 + 4.0 * 4.0).sqrt(),
-        vec3a(2.0, 3.0, 4.0).length_reciprocal()
+        vec3a(2.0, 3.0, 4.0).length_recip()
     );
     assert!(vec3a(2.0, 3.0, 4.0).normalize().is_normalized());
     assert_approx_eq!(

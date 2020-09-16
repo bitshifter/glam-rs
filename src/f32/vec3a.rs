@@ -474,11 +474,17 @@ impl Vec3A {
         self.dot(self)
     }
 
+    #[deprecated(since = "0.9.5", note = "please use `Vec3A::length_recip` instead")]
+    #[inline(always)]
+    pub fn length_reciprocal(self) -> f32 {
+        self.length_recip()
+    }
+
     /// Computes `1.0 / Vec3A::length()`.
     ///
     /// For valid results, `self` must _not_ be of length zero.
     #[inline]
-    pub fn length_reciprocal(self) -> f32 {
+    pub fn length_recip(self) -> f32 {
         #[cfg(vec3a_sse2)]
         {
             let dot = self.dot_as_vec3(self);
@@ -490,7 +496,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            self.0.length_reciprocal()
+            self.0.length_recip()
         }
     }
 

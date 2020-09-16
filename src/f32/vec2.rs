@@ -166,12 +166,18 @@ impl Vec2 {
         self.dot(self)
     }
 
+    #[deprecated(since = "0.9.5", note = "please use `Vec3::length_recip` instead")]
+    #[inline(always)]
+    pub fn length_reciprocal(self) -> f32 {
+        self.length_recip()
+    }
+
     /// Computes `1.0 / Vec2::length()`.
     ///
     /// For valid results, `self` must _not_ be of length zero.
     #[inline]
-    pub fn length_reciprocal(self) -> f32 {
-        1.0 / self.length()
+    pub fn length_recip(self) -> f32 {
+        self.length().recip()
     }
 
     /// Returns `self` normalized to length 1.0.
@@ -179,7 +185,7 @@ impl Vec2 {
     /// For valid results, `self` must _not_ be of length zero.
     #[inline]
     pub fn normalize(self) -> Vec2 {
-        self * self.length_reciprocal()
+        self * self.length_recip()
     }
 
     /// Returns the vertical minimum of `self` and `other`.

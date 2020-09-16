@@ -97,7 +97,7 @@ fn test_vec2_funcs() {
     assert_eq!((2.0_f32 * 2.0 + 3.0 * 3.0).sqrt(), vec2(2.0, 3.0).length());
     assert_eq!(
         1.0 / (2.0_f32 * 2.0 + 3.0 * 3.0).sqrt(),
-        vec2(2.0, 3.0).length_reciprocal()
+        vec2(2.0, 3.0).length_recip()
     );
     assert!(vec2(2.0, 3.0).normalize().is_normalized());
     assert_eq!(

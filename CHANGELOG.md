@@ -9,8 +9,9 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## Changed
 
-* Renamed the vector `reciprocal` methods to `recip` to match the Rust standard
-  library naming. The old functions have been deprecated.
+* Renamed the vector `reciprocal` and `length_reciprocal` methods to `recip`
+  and `length_recip` to match the Rust standard library naming. The old
+  functions have been deprecated.
 
 ## Removed
 

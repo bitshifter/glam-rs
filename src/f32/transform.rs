@@ -73,7 +73,7 @@ impl TransformSRT {
 
     #[inline]
     pub fn inverse(&self) -> Self {
-        let scale = self.scale.reciprocal();
+        let scale = self.scale.recip();
         let rotation = self.rotation.conjugate();
         let translation = -(rotation * (self.translation * scale));
         Self {
