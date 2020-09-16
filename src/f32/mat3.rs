@@ -63,7 +63,7 @@ impl fmt::Display for Mat3 {
 impl Mat3 {
     /// Creates a 3x3 matrix with all elements set to `0.0`.
     #[inline]
-    pub fn zero() -> Self {
+    pub const fn zero() -> Self {
         Self {
             x_axis: Vec3::zero(),
             y_axis: Vec3::zero(),
@@ -73,7 +73,7 @@ impl Mat3 {
 
     /// Creates a 3x3 identity matrix.
     #[inline]
-    pub fn identity() -> Self {
+    pub const fn identity() -> Self {
         Self {
             x_axis: Vec3::unit_x(),
             y_axis: Vec3::unit_y(),

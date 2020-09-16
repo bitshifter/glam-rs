@@ -20,31 +20,31 @@ impl Vec3 {
 
     /// Creates a new `Vec3` with all elements set to `0.0`.
     #[inline]
-    pub fn zero() -> Self {
+    pub const fn zero() -> Self {
         Self(0.0, 0.0, 0.0)
     }
 
     /// Creates a new `Vec3` with all elements set to `1.0`.
     #[inline]
-    pub fn one() -> Self {
+    pub const fn one() -> Self {
         Self(1.0, 1.0, 1.0)
     }
 
     /// Creates a new `Vec3` with values `[x: 1.0, y: 0.0, z: 0.0]`.
     #[inline]
-    pub fn unit_x() -> Self {
+    pub const fn unit_x() -> Self {
         Self(1.0, 0.0, 0.0)
     }
 
     /// Creates a new `Vec3` with values `[x: 0.0, y: 1.0, z: 0.0]`.
     #[inline]
-    pub fn unit_y() -> Self {
+    pub const fn unit_y() -> Self {
         Self(0.0, 1.0, 0.0)
     }
 
     /// Creates a new `Vec3` with values `[x: 0.0, y: 0.0, z: 1.0]`.
     #[inline]
-    pub fn unit_z() -> Self {
+    pub const fn unit_z() -> Self {
         Self(0.0, 0.0, 1.0)
     }
 

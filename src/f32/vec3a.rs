@@ -136,10 +136,10 @@ impl Vec3A {
 
     /// Creates a new `Vec3A` with values `[x: 1.0, y: 0.0, z: 0.0]`.
     #[inline]
-    pub fn unit_x() -> Self {
+    pub const fn unit_x() -> Self {
         #[cfg(vec3a_sse2)]
-        unsafe {
-            Self(_mm_load_ps(X_AXIS.0.as_ptr()))
+        {
+            Self(X_AXIS)
         }
 
         #[cfg(vec3a_f32)]
@@ -150,10 +150,10 @@ impl Vec3A {
 
     /// Creates a new `Vec3A` with values `[x: 0.0, y: 1.0, z: 0.0]`.
     #[inline]
-    pub fn unit_y() -> Self {
+    pub const fn unit_y() -> Self {
         #[cfg(vec3a_sse2)]
-        unsafe {
-            Self(_mm_load_ps(Y_AXIS.0.as_ptr()))
+        {
+            Self(Y_AXIS)
         }
 
         #[cfg(vec3a_f32)]
@@ -164,10 +164,10 @@ impl Vec3A {
 
     /// Creates a new `Vec3A` with values `[x: 0.0, y: 0.0, z: 1.0]`.
     #[inline]
-    pub fn unit_z() -> Self {
+    pub const fn unit_z() -> Self {
         #[cfg(vec3a_sse2)]
-        unsafe {
-            Self(_mm_load_ps(Z_AXIS.0.as_ptr()))
+        {
+            Self(Z_AXIS)
         }
 
         #[cfg(vec3a_f32)]

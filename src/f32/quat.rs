@@ -38,8 +38,8 @@ impl Quat {
     }
 
     #[inline]
-    pub fn identity() -> Self {
-        Self(Vec4::new(0.0, 0.0, 0.0, 1.0))
+    pub const fn identity() -> Self {
+        Self(Vec4::unit_w())
     }
 
     /// Creates a new rotation quaternion from an unaligned `&[f32]`.

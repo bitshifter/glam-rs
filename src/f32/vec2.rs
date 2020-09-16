@@ -75,25 +75,25 @@ impl Vec2 {
 
     /// Creates a new `Vec2` with all elements set to `0.0`.
     #[inline]
-    pub fn zero() -> Vec2 {
+    pub const fn zero() -> Vec2 {
         Vec2(0.0, 0.0)
     }
 
     /// Creates a new `Vec2` with all elements set to `1.0`.
     #[inline]
-    pub fn one() -> Vec2 {
+    pub const fn one() -> Vec2 {
         Vec2(1.0, 1.0)
     }
 
     /// Creates a new `Vec2` with values `[x: 1.0, y: 0.0]`.
     #[inline]
-    pub fn unit_x() -> Vec2 {
+    pub const fn unit_x() -> Vec2 {
         Vec2(1.0, 0.0)
     }
 
     /// Creates a new `Vec2` with values `[x: 0.0, y: 1.0]`.
     #[inline]
-    pub fn unit_y() -> Vec2 {
+    pub const fn unit_y() -> Vec2 {
         Vec2(0.0, 1.0)
     }
 

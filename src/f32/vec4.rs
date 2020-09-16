@@ -1,3 +1,5 @@
+#[cfg(vec4_sse2)]
+use super::x86_utils::UnionCast;
 use super::{Vec3A, Vec4Mask};
 use core::{fmt, ops::*};
 
@@ -12,13 +14,47 @@ use crate::Align16;
 use core::{cmp::Ordering, f32, mem::MaybeUninit};
 
 #[cfg(vec4_sse2)]
-pub(crate) const X_AXIS: Align16<[f32; 4]> = Align16([1.0, 0.0, 0.0, 0.0]);
+pub(crate) const ZERO: __m128 = unsafe {
+    UnionCast {
+        f32x4: [0.0, 0.0, 0.0, 0.0],
+    }
+    .m128
+};
 #[cfg(vec4_sse2)]
-pub(crate) const Y_AXIS: Align16<[f32; 4]> = Align16([0.0, 1.0, 0.0, 0.0]);
+pub(crate) const ONE: __m128 = unsafe {
+    UnionCast {
+        f32x4: [1.0, 1.0, 1.0, 1.0],
+    }
+    .m128
+};
 #[cfg(vec4_sse2)]
-pub(crate) const Z_AXIS: Align16<[f32; 4]> = Align16([0.0, 0.0, 1.0, 0.0]);
+pub(crate) const X_AXIS: __m128 = unsafe {
+    UnionCast {
+        f32x4: [1.0, 0.0, 0.0, 0.0],
+    }
+    .m128
+};
 #[cfg(vec4_sse2)]
-pub(crate) const W_AXIS: Align16<[f32; 4]> = Align16([0.0, 0.0, 0.0, 1.0]);
+pub(crate) const Y_AXIS: __m128 = unsafe {
+    UnionCast {
+        f32x4: [0.0, 1.0, 0.0, 0.0],
+    }
+    .m128
+};
+#[cfg(vec4_sse2)]
+pub(crate) const Z_AXIS: __m128 = unsafe {
+    UnionCast {
+        f32x4: [0.0, 0.0, 1.0, 0.0],
+    }
+    .m128
+};
+#[cfg(vec4_sse2)]
+pub(crate) const W_AXIS: __m128 = unsafe {
+    UnionCast {
+        f32x4: [0.0, 0.0, 0.0, 1.0],
+    }
+    .m128
+};
 
 /// A 4-dimensional vector.
 ///
@@ -105,10 +141,10 @@ impl Vec4 {
 
     /// Creates a new `Vec4` with all elements set to `0.0`.
     #[inline]
-    pub fn zero() -> Self {
+    pub const fn zero() -> Self {
         #[cfg(vec4_sse2)]
-        unsafe {
-            Self(_mm_setzero_ps())
+        {
+            Self(ZERO)
         }
 
         #[cfg(vec4_f32)]
@@ -119,10 +155,10 @@ impl Vec4 {
 
     /// Creates a new `Vec4` with all elements set to `1.0`.
     #[inline]
-    pub fn one() -> Self {
+    pub const fn one() -> Self {
         #[cfg(vec4_sse2)]
-        unsafe {
-            Self(_mm_set1_ps(1.0))
+        {
+            Self(ONE)
         }
 
         #[cfg(vec4_f32)]
@@ -133,10 +169,10 @@ impl Vec4 {
 
     /// Creates a new `Vec4` with values `[x: 1.0, y: 0.0, z: 0.0, w: 0.0]`.
     #[inline]
-    pub fn unit_x() -> Self {
+    pub const fn unit_x() -> Self {
         #[cfg(vec4_sse2)]
-        unsafe {
-            Self(_mm_load_ps(X_AXIS.0.as_ptr()))
+        {
+            Self(X_AXIS)
         }
 
         #[cfg(vec4_f32)]
@@ -147,10 +183,10 @@ impl Vec4 {
 
     /// Creates a new `Vec4` with values `[x: 0.0, y: 1.0, z: 0.0, w: 0.0]`.
     #[inline]
-    pub fn unit_y() -> Self {
+    pub const fn unit_y() -> Self {
         #[cfg(vec4_sse2)]
-        unsafe {
-            Self(_mm_load_ps(Y_AXIS.0.as_ptr()))
+        {
+            Self(Y_AXIS)
         }
 
         #[cfg(vec4_f32)]
@@ -161,10 +197,10 @@ impl Vec4 {
 
     /// Creates a new `Vec4` with values `[x: 0.0, y: 0.0, z: 1.0, w: 0.0]`.
     #[inline]
-    pub fn unit_z() -> Self {
+    pub const fn unit_z() -> Self {
         #[cfg(vec4_sse2)]
-        unsafe {
-            Self(_mm_load_ps(Z_AXIS.0.as_ptr()))
+        {
+            Self(Z_AXIS)
         }
 
         #[cfg(vec4_f32)]
@@ -175,10 +211,10 @@ impl Vec4 {
 
     /// Creates a new `Vec4` with values `[x: 0.0, y: 0.0, z: 0.0, w: 1.0]`.
     #[inline]
-    pub fn unit_w() -> Self {
+    pub const fn unit_w() -> Self {
         #[cfg(vec4_sse2)]
-        unsafe {
-            Self(_mm_load_ps(W_AXIS.0.as_ptr()))
+        {
+            Self(W_AXIS)
         }
 
         #[cfg(vec4_f32)]

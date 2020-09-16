@@ -73,7 +73,7 @@ impl fmt::Display for Mat4 {
 impl Mat4 {
     /// Creates a 4x4 matrix with all elements set to `0.0`.
     #[inline]
-    pub fn zero() -> Self {
+    pub const fn zero() -> Self {
         Self {
             x_axis: Vec4::zero(),
             y_axis: Vec4::zero(),
@@ -84,7 +84,7 @@ impl Mat4 {
 
     /// Creates a 4x4 identity matrix.
     #[inline]
-    pub fn identity() -> Self {
+    pub const fn identity() -> Self {
         Self {
             x_axis: Vec4::unit_x(),
             y_axis: Vec4::unit_y(),
