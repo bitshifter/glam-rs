@@ -21,24 +21,70 @@ pub fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat4 {
 #[inline]
 fn quat_to_axes(rotation: Quat) -> (Vec4, Vec4, Vec4) {
     glam_assert!(rotation.is_normalized());
-    let (x, y, z, w) = rotation.into();
-    let x2 = x + x;
-    let y2 = y + y;
-    let z2 = z + z;
-    let xx = x * x2;
-    let xy = x * y2;
-    let xz = x * z2;
-    let yy = y * y2;
-    let yz = y * z2;
-    let zz = z * z2;
-    let wx = w * x2;
-    let wy = w * y2;
-    let wz = w * z2;
+    #[cfg(vec4_sse2)]
+    unsafe {
+        let q = (rotation.0).0;
+        let w = _mm_shuffle_ps(q, q, 0b11_11_11_11);
+        let v = _mm_mul_ps(_mm_set_ps(0.0, 1.0, 1.0, 1.0), q);
+        //let x2 = x + x; let y2 = y + y; let z2 = z + z;
+        let x2_y2_z2 = _mm_add_ps(v, v);
+        //let xx = x * x2; let xy = x * y2; let xz = x * z2;
+        let xx_xy_xz = _mm_mul_ps(_mm_shuffle_ps(v, v, 0b00_00_00_00), x2_y2_z2);
+        //let yy = y * y2; let yz = y * z2; let zz = z * z2;
+        let y_y_z = _mm_shuffle_ps(v, v, 0b11_10_01_01);
+        let y2_z2_z2 = _mm_shuffle_ps(x2_y2_z2, x2_y2_z2, 0b11_01_10_10);
+        let yy_yz_zz = _mm_mul_ps(y_y_z, y2_z2_z2);
+        //let wx = w * x2; let wy = w * y2; let wz = w * z2;
+        let wx_wy_wz = _mm_mul_ps(w, x2_y2_z2);
 
-    let x_axis = Vec4::new(1.0 - (yy + zz), xy + wz, xz - wy, 0.0);
-    let y_axis = Vec4::new(xy - wz, 1.0 - (xx + zz), yz + wx, 0.0);
-    let z_axis = Vec4::new(xz + wy, yz - wx, 1.0 - (xx + yy), 0.0);
-    (x_axis, y_axis, z_axis)
+        let nwz_nwx_nwy = _mm_sub_ps(
+            _mm_setzero_ps(),
+            _mm_shuffle_ps(wx_wy_wz, wx_wy_wz, 0b11_01_00_10),
+        );
+
+        //let x_axis = (1.0 - (yy + zz), xy + wz, xz - wy, 0.0);
+        // let yy_yz_xy = _mm_shuffle_ps(yy_yz_zz, xx_xy_xz, 0b11_01_01_00);
+        let yy_xy_xz = _mm_move_ss(xx_xy_xz, yy_yz_zz);
+        let zz_wz_nwy = _mm_shuffle_ps(yy_yz_zz, wx_wy_wz, TODO);
+        let unit_x = _mm_set_ps(0.0, 0.0, 0.0, 1.0);
+        let x_axis = _mm_sub_ps(unit_x, _mm_add_ps(yy_xy_xz, zz_wz_nwy));
+
+        //let y_axis = Vec4::new(xy - wz, 1.0 - (xx + zz), yz + wx, 0.0);
+        let xy_xx_yz = _mm_shuffle_ps(xx_xy_xz, yy_yz_zz, 0b11_10_00_01);
+        let nwz_zz_wx = _mm_shuffle_ps(nwz_nwx_nwy, yy_yz_zz, wx_wy_wz, TODO);
+        let unit_y = _mm_set_ps(0.0, 0.0, 1.0, 0.0);
+        let y_axis = _mm_sub_ps(unit_z, _mm_add_ps(xy_xx_yz, nwz_zz_wx));
+
+        //let z_axis = Vec4::new(xz + wy, yz - wx, 1.0 - (xx + yy), 0.0);
+        let xz_yz_xx = _mm_shuffle_ps(xx_xy_xz, yy_yz_zz, TODO);
+        let wy_nwx_yy = _mm_shuffle_ps(wx_wy_wz, nwz_nwx_nwy, TODO);
+        let unit_z = _mm_set_ps(0.0, 1.0, 0.0, 0.0);
+        let z_axis = _mm_sub_ps(unit_z, _mm_add_ps(xz_yz_xx, wy_nwx_yy));
+
+        (Vec4(x_axis), Vec4(y_axis), Vec4(z_axis))
+    }
+
+    #[cfg(vec4_f32)]
+    {
+        let (x, y, z, w) = rotation.into();
+        let x2 = x + x;
+        let y2 = y + y;
+        let z2 = z + z;
+        let xx = x * x2;
+        let xy = x * y2;
+        let xz = x * z2;
+        let yy = y * y2;
+        let yz = y * z2;
+        let zz = z * z2;
+        let wx = w * x2;
+        let wy = w * y2;
+        let wz = w * z2;
+
+        let x_axis = Vec4::new(1.0 - (yy + zz), xy + wz, xz - wy, 0.0);
+        let y_axis = Vec4::new(xy - wz, 1.0 - (xx + zz), yz + wx, 0.0);
+        let z_axis = Vec4::new(xz + wy, yz - wx, 1.0 - (xx + yy), 0.0);
+        (x_axis, y_axis, z_axis)
+    }
 }
 
 /// A 4x4 column major matrix.
