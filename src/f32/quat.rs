@@ -53,6 +53,7 @@ impl Quat {
     /// Panics if `slice` length is less than 4.
     #[inline]
     pub fn from_slice_unaligned(slice: &[f32]) -> Self {
+        #[allow(clippy::let_and_return)]
         let q = Self(Vec4::from_slice_unaligned(slice));
         glam_assert!(q.is_normalized());
         q
