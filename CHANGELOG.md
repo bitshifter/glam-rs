@@ -7,6 +7,14 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
+## Added
+
+* `glam` uses SSE2 for some types which prevents constructor functions can not
+  be made `const fn`. To work around this limitation the following macro
+  functions have been added to support creating `const` values of `glam` types:
+  `const_mat2`, `const_mat3`, `const_mat4`, `const_quat`, `const_vec2`,
+  `const_vec3`, `const_vec3a` and `const_vec4`.
+  
 ## Changed
 
 * Renamed the vector `reciprocal` and `length_reciprocal` methods to `recip`
