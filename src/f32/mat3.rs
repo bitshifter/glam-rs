@@ -7,6 +7,7 @@ use core::{
 const ZERO: Mat3 = const_mat3!([0.0; 9]);
 const IDENTITY: Mat3 = const_mat3!([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
 
+/// Creates a 3x3 matrix from three column vectors.
 #[inline]
 pub fn mat3(x_axis: Vec3, y_axis: Vec3, z_axis: Vec3) -> Mat3 {
     Mat3 {
@@ -40,8 +41,6 @@ fn quat_to_axes(rotation: Quat) -> (Vec3, Vec3, Vec3) {
 }
 
 /// A 3x3 column major matrix.
-///
-/// This type is 16 byte aligned.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[repr(C)]
 pub struct Mat3 {
@@ -227,46 +226,55 @@ impl Mat3 {
         }
     }
 
+    /// Sets the first column, the `x` axis.
     #[inline]
     pub fn set_x_axis(&mut self, x: Vec3) {
         self.x_axis = x;
     }
 
+    /// Sets the second column, the `y` axis.
     #[inline]
     pub fn set_y_axis(&mut self, y: Vec3) {
         self.y_axis = y;
     }
 
+    /// Sets the third column, the `z` axis.
     #[inline]
     pub fn set_z_axis(&mut self, z: Vec3) {
         self.z_axis = z;
     }
 
+    /// Returns the first column, the `x` axis.
     #[inline]
     pub fn x_axis(&self) -> Vec3 {
         self.x_axis
     }
 
+    /// Returns the second column, the `y` axis.
     #[inline]
     pub fn y_axis(&self) -> Vec3 {
         self.y_axis
     }
 
+    /// Returns the third column, the `z` axis.
     #[inline]
     pub fn z_axis(&self) -> Vec3 {
         self.z_axis
     }
 
+    /// Returns a mutable reference to the first column, the `x` axis.
     #[inline]
     pub fn x_axis_mut(&mut self) -> &mut Vec3 {
         &mut self.x_axis
     }
 
+    /// Returns a mutable reference to the second column, the `y` axis.
     #[inline]
     pub fn y_axis_mut(&mut self) -> &mut Vec3 {
         &mut self.y_axis
     }
 
+    /// Returns a mutable reference to the third column, the `z` axis.
     #[inline]
     pub fn z_axis_mut(&mut self) -> &mut Vec3 {
         &mut self.z_axis
@@ -348,6 +356,7 @@ impl Mat3 {
         Mat3::from_cols(tmp0 * inv_det, tmp1 * inv_det, tmp2 * inv_det).transpose()
     }
 
+    /// Transforms a 3D vector.
     #[inline]
     pub fn mul_vec3a(&self, other: Vec3A) -> Vec3A {
         let mut res = Vec3A::from(self.x_axis) * other.dup_x();

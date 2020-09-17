@@ -16,6 +16,7 @@ const IDENTITY: Mat4 = const_mat4!(
     [0.0, 0.0, 0.0, 1.0]
 );
 
+/// Creates a 4x4 matrix from four column vectors.
 #[inline]
 pub fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat4 {
     Mat4 {
@@ -309,61 +310,73 @@ impl Mat4 {
         }
     }
 
+    /// Sets the first column, the `x` axis.
     #[inline]
     pub fn set_x_axis(&mut self, x: Vec4) {
         self.x_axis = x;
     }
 
+    /// Sets the second column, the `y` axis.
     #[inline]
     pub fn set_y_axis(&mut self, y: Vec4) {
         self.y_axis = y;
     }
 
+    /// Sets the third column, the `z` axis.
     #[inline]
     pub fn set_z_axis(&mut self, z: Vec4) {
         self.z_axis = z;
     }
 
+    /// Sets the fourth column, the `w` axis.
     #[inline]
     pub fn set_w_axis(&mut self, w: Vec4) {
         self.w_axis = w;
     }
 
+    /// Returns the first column, the `x` axis.
     #[inline]
     pub fn x_axis(&self) -> Vec4 {
         self.x_axis
     }
 
+    /// Returns the second column, the `y` axis.
     #[inline]
     pub fn y_axis(&self) -> Vec4 {
         self.y_axis
     }
 
+    /// Returns the third column, the `z` axis.
     #[inline]
     pub fn z_axis(&self) -> Vec4 {
         self.z_axis
     }
 
+    /// Returns the fourth column, the `w` axis.
     #[inline]
     pub fn w_axis(&self) -> Vec4 {
         self.w_axis
     }
 
+    /// Returns a mutable reference to the first column, the `x` axis.
     #[inline]
     pub fn x_axis_mut(&mut self) -> &mut Vec4 {
         &mut self.x_axis
     }
 
+    /// Returns a mutable reference to the second column, the `y` axis.
     #[inline]
     pub fn y_axis_mut(&mut self) -> &mut Vec4 {
         &mut self.y_axis
     }
 
+    /// Returns a mutable reference to the third column, the `z` axis.
     #[inline]
     pub fn z_axis_mut(&mut self) -> &mut Vec4 {
         &mut self.z_axis
     }
 
+    /// Returns a mutable reference to the fourth column, the `w` axis.
     #[inline]
     pub fn w_axis_mut(&mut self) -> &mut Vec4 {
         &mut self.w_axis
@@ -759,6 +772,7 @@ impl Mat4 {
         )
     }
 
+    /// Transforms a 4D vector.
     #[inline]
     pub fn mul_vec4(&self, other: Vec4) -> Vec4 {
         let mut res = self.x_axis * other.dup_x();
@@ -779,6 +793,7 @@ impl Mat4 {
         }
     }
 
+    /// Adds two 4x4 matrices.
     #[inline]
     pub fn add_mat4(&self, other: &Self) -> Self {
         Self {
@@ -789,6 +804,7 @@ impl Mat4 {
         }
     }
 
+    /// Subtracts two 4x4 matrices.
     #[inline]
     pub fn sub_mat4(&self, other: &Self) -> Self {
         Self {
@@ -799,6 +815,7 @@ impl Mat4 {
         }
     }
 
+    /// Multiplies this matrix by a scalar value.
     #[inline]
     pub fn mul_scalar(&self, other: f32) -> Self {
         let s = Vec4::splat(other);
@@ -811,8 +828,8 @@ impl Mat4 {
     }
 
     /// Transforms the given `Vec3` as 3D point.
-    /// This is the equivalent of multiplying the `Vec3` as a `Vec4` where `w`
-    /// is `1.0`.
+    ///
+    /// This is the equivalent of multiplying the `Vec3` as a `Vec4` where `w` is `1.0`.
     #[inline]
     pub fn transform_point3(&self, other: Vec3) -> Vec3 {
         let mut res = self.x_axis.mul(Vec4::splat(other.x()));
@@ -824,8 +841,8 @@ impl Mat4 {
     }
 
     /// Transforms the give `Vec3` as 3D vector.
-    /// This is the equivalent of multiplying the `Vec3` as a `Vec4` where `w`
-    /// is `0.0`.
+    ///
+    /// This is the equivalent of multiplying the `Vec3` as a `Vec4` where `w` is `0.0`.
     #[inline]
     pub fn transform_vector3(&self, other: Vec3) -> Vec3 {
         let mut res = self.x_axis.mul(Vec4::splat(other.x()));
@@ -834,12 +851,12 @@ impl Mat4 {
         Vec3::from(res.truncate())
     }
 
-    /// Returns true if the absolute difference of all elements between `self`
-    /// and `other` is less than or equal to `max_abs_diff`.
+    /// Returns true if the absolute difference of all elements between `self` and `other` is less
+    /// than or equal to `max_abs_diff`.
     ///
-    /// This can be used to compare if two `Mat4`'s contain similar elements. It
-    /// works best when comparing with a known value. The `max_abs_diff` that
-    /// should be used used depends on the values being compared against.
+    /// This can be used to compare if two `Mat4`'s contain similar elements. It works best when
+    /// comparing with a known value. The `max_abs_diff` that should be used used depends on the
+    /// values being compared against.
     ///
     /// For more on floating point comparisons see
     /// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/

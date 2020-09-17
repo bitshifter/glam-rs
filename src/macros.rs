@@ -31,8 +31,18 @@ macro_rules! abs_diff_eq {
     };
 }
 
+/// Creates a 2x2 matrix from two column vectors. Can be used to create a constant value.
+///
+/// ```
+/// use glam::{const_mat2, Mat2};
+/// const ZERO: Mat2 = const_mat2!([0.0; 4]);
+/// const IDENTITY: Mat2 = const_mat2!([1.0, 0.0], [0.0, 1.0]);
+/// ```
 #[macro_export]
 macro_rules! const_mat2 {
+    ($f32x4:expr) => {
+        unsafe { $crate::f32::F32x4Cast { f32x4: $f32x4 }.mat2 }
+    };
     ($col0:expr, $col1:expr) => {
         unsafe {
             $crate::f32::F32x4Cast {
@@ -43,6 +53,13 @@ macro_rules! const_mat2 {
     };
 }
 
+/// Creates a 3x3 matrix from three column vectors. Can be used to create a constant value.
+///
+/// ```
+/// use glam::{const_mat3, Mat3};
+/// const ZERO: Mat3 = const_mat3!([0.0; 9]);
+/// const IDENTITY: Mat3 = const_mat3!([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
+/// ```
 #[macro_export]
 macro_rules! const_mat3 {
     ($f32x9:expr) => {
@@ -58,6 +75,18 @@ macro_rules! const_mat3 {
     };
 }
 
+/// Creates a 4x4 matrix from four column vectors. Can be used to create a constant value.
+///
+/// ```
+/// use glam::{const_mat4, Mat4};
+/// const ZERO: Mat4 = const_mat4!([0.0; 16]);
+/// const IDENTITY: Mat4 = const_mat4!(
+///     [1.0, 0.0, 0.0, 0.0],
+///     [0.0, 1.0, 0.0, 0.0],
+///     [0.0, 0.0, 1.0, 0.0],
+///     [0.0, 0.0, 0.0, 1.0]
+/// );
+/// ```
 #[macro_export]
 macro_rules! const_mat4 {
     ($f32x16:expr) => {
@@ -73,6 +102,20 @@ macro_rules! const_mat4 {
     };
 }
 
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+macro_rules! const_m128 {
+    ($f32x4:expr) => {
+        unsafe { $crate::f32::F32x4Cast { f32x4: $f32x4 }.m128 }
+    };
+}
+
+/// Creates a new rotation quaternion from `x`, `y`, `z` and `w` values. Can be used to create a
+/// constant value.
+///
+/// ```
+/// use glam::{const_quat, Quat};
+/// const IDENTITY: Quat = const_quat!([0.0, 0.0, 0.0, 1.0]);
+/// ```
 #[macro_export]
 macro_rules! const_quat {
     ($f32x4:expr) => {
@@ -80,6 +123,13 @@ macro_rules! const_quat {
     };
 }
 
+/// Creates a new 2D vector. Can be used to create a constant value.
+///
+/// ```
+/// use glam::{const_vec2, Vec2};
+/// const ONE: Vec2 = const_vec2!([1.0; 2]);
+/// const X_AXIS: Vec2 = const_vec2!([1.0, 0.0]);
+/// ```
 #[macro_export]
 macro_rules! const_vec2 {
     ($f32x2:expr) => {
@@ -87,6 +137,13 @@ macro_rules! const_vec2 {
     };
 }
 
+/// Creates a new 3D vector. Can be used to create a constant value.
+///
+/// ```
+/// use glam::{const_vec3, Vec3};
+/// const ONE: Vec3 = const_vec3!([1.0; 3]);
+/// const X_AXIS: Vec3 = const_vec3!([1.0, 0.0, 0.0]);
+/// ```
 #[macro_export]
 macro_rules! const_vec3 {
     ($f32x3:expr) => {
@@ -94,13 +151,13 @@ macro_rules! const_vec3 {
     };
 }
 
-#[macro_export]
-macro_rules! const_vec4 {
-    ($f32x4:expr) => {
-        unsafe { $crate::f32::F32x4Cast { f32x4: $f32x4 }.vec4 }
-    };
-}
-
+/// Creates a new `Vec3A`. Can be used to create a constant value.
+///
+/// ```
+/// use glam::{const_vec3a, Vec3A};
+/// const ONE: Vec3A = const_vec3a!([1.0; 3]);
+/// const X_AXIS: Vec3A = const_vec3a!([1.0, 0.0, 0.0]);
+/// ```
 #[macro_export]
 macro_rules! const_vec3a {
     ($f32x3:expr) => {
@@ -110,5 +167,19 @@ macro_rules! const_vec3a {
             }
             .vec3a
         }
+    };
+}
+
+/// Creates a new 4D vector. Can be used to create a constant value.
+///
+/// ```
+/// use glam::{const_vec4, Vec4};
+/// const ONE: Vec4 = const_vec4!([1.0; 4]);
+/// const X_AXIS: Vec4 = const_vec4!([1.0, 0.0, 0.0, 0.0]);
+/// ```
+#[macro_export]
+macro_rules! const_vec4 {
+    ($f32x4:expr) => {
+        unsafe { $crate::f32::F32x4Cast { f32x4: $f32x4 }.vec4 }
     };
 }

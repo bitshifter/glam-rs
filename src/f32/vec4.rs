@@ -82,6 +82,7 @@ impl From<__m128> for Vec4 {
     }
 }
 
+/// Creates a new `Vec4`.
 #[inline]
 pub fn vec4(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
     Vec4::new(x, y, z, w)

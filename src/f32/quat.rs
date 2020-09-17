@@ -22,6 +22,10 @@ const IDENTITY: Quat = const_quat!([0.0, 0.0, 0.0, 1.0]);
 #[repr(C)]
 pub struct Quat(pub(crate) Vec4);
 
+/// Creates a new rotation quaternion from `x`, `y`, `z` and `w` values.
+///
+/// This should generally not be called manually unless you know what you are doing. Use one of
+/// the other constructors instead such as `identity` or `from_axis_angle`.
 #[inline]
 pub fn quat(x: f32, y: f32, z: f32, w: f32) -> Quat {
     Quat::from_xyzw(x, y, z, w)

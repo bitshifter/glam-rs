@@ -8,9 +8,10 @@ use core::{
     ops::{Add, Mul, Sub},
 };
 
-const ZERO: Mat2 = const_mat2!([0.0, 0.0], [0.0, 0.0]);
+const ZERO: Mat2 = const_mat2!([0.0; 4]);
 const IDENTITY: Mat2 = const_mat2!([1.0, 0.0], [0.0, 1.0]);
 
+/// Creates a 2x2 matrix from two column vectors.
 #[inline]
 pub fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
     Mat2::from_cols(x_axis, y_axis)
@@ -47,7 +48,7 @@ impl Mat2 {
         IDENTITY
     }
 
-    /// Creates a 2x2 matrix from four column vectors.
+    /// Creates a 2x2 matrix from two column vectors.
     #[inline]
     pub fn from_cols(x_axis: Vec2, y_axis: Vec2) -> Self {
         Self(Vec4::new(x_axis.x(), x_axis.y(), y_axis.x(), y_axis.y()))
@@ -112,6 +113,7 @@ impl Mat2 {
         Self(Vec4::new(x, 0.0, 0.0, y))
     }
 
+    /// Sets the first column, the `x` axis.
     #[inline]
     pub fn set_x_axis(&mut self, x: Vec2) {
         let m = self.0.as_mut();
@@ -119,6 +121,7 @@ impl Mat2 {
         m[1] = x.y();
     }
 
+    /// Sets the second column, the `y` axis.
     #[inline]
     pub fn set_y_axis(&mut self, y: Vec2) {
         let m = self.0.as_mut();
@@ -126,23 +129,27 @@ impl Mat2 {
         m[3] = y.y();
     }
 
+    /// Returns the first column, the `x` axis.
     #[inline]
     pub fn x_axis(&self) -> Vec2 {
         let (x, y, _, _) = self.0.into();
         Vec2::new(x, y)
     }
 
+    /// Returns the second column, the `y` axis.
     #[inline]
     pub fn y_axis(&self) -> Vec2 {
         let (_, _, x, y) = self.0.into();
         Vec2::new(x, y)
     }
 
+    /// Returns a mutable reference to the first column, the `x` axis.
     #[inline]
     pub fn x_axis_mut(&mut self) -> &mut Vec2 {
         unsafe { &mut *(self.0.as_mut().as_mut_ptr() as *mut Vec2) }
     }
 
+    /// Returns a mutable reference to the second column, the `y` axis.
     #[inline]
     pub fn y_axis_mut(&mut self) -> &mut Vec2 {
         unsafe { &mut *(self.0.as_mut()[2..].as_mut_ptr() as *mut Vec2) }
