@@ -222,12 +222,13 @@ impl Mat2 {
     pub fn inverse(&self) -> Self {
         #[cfg(vec4_sse2)]
         unsafe {
+            const SIGN: __m128 = const_m128!([1.0, -1.0, -1.0, 1.0]);
             let abcd = self.0.into();
             let dcba = _mm_shuffle_ps(abcd, abcd, 0b00_01_10_11);
             let prod = _mm_mul_ps(abcd, dcba);
             let sub = _mm_sub_ps(prod, _mm_shuffle_ps(prod, prod, 0b01_01_01_01));
             let det = _mm_shuffle_ps(sub, sub, 0b00_00_00_00);
-            let tmp = _mm_div_ps(_mm_set_ps(1.0, -1.0, -1.0, 1.0), det);
+            let tmp = _mm_div_ps(SIGN, det);
             let dbca = _mm_shuffle_ps(abcd, abcd, 0b00_10_01_11);
             Self(_mm_mul_ps(dbca, tmp).into())
         }

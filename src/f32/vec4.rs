@@ -475,7 +475,7 @@ impl Vec4 {
             let dot = self.dot_as_vec4(self);
             unsafe {
                 // _mm_rsqrt_ps is lower precision
-                _mm_cvtss_f32(_mm_div_ps(_mm_set_ps1(1.0), _mm_sqrt_ps(dot.0)))
+                _mm_cvtss_f32(_mm_div_ps(ONE.0, _mm_sqrt_ps(dot.0)))
             }
         }
 
@@ -1234,7 +1234,7 @@ impl Neg for Vec4 {
     fn neg(self) -> Self {
         #[cfg(vec4_sse2)]
         unsafe {
-            Self(_mm_sub_ps(_mm_set1_ps(0.0), self.0))
+            Self(_mm_sub_ps(ZERO.0, self.0))
         }
 
         #[cfg(vec4_f32)]
