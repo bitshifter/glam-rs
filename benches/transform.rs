@@ -29,7 +29,7 @@ bench_unop!(
 
 bench_binop!(
     vec3_mul_transform_srt,
-    "transform_srt * vec3",
+    "transform_srt mul vec3",
     op => mul,
     from1 => random_transform_srt,
     from2 => random_vec3
@@ -37,7 +37,7 @@ bench_binop!(
 
 bench_binop!(
     vec3_mul_transform_rt,
-    "transform_rt * vec3",
+    "transform_rt mul vec3",
     op => mul,
     from1 => random_transform_rt,
     from2 => random_vec3

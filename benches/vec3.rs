@@ -10,7 +10,7 @@ use support::{random_mat3, random_quat, random_srt_mat4, random_vec3};
 
 bench_binop!(
     quat_mul_vec3,
-    "quat * vec3",
+    "quat mul vec3",
     op => mul,
     from1 => random_quat,
     from2 => random_vec3
@@ -18,7 +18,7 @@ bench_binop!(
 
 bench_binop!(
     mat3_mul_vec3,
-    "mat3 * vec3",
+    "mat3 mul vec3",
     op => mul,
     from1 => random_mat3,
     from2 => random_vec3

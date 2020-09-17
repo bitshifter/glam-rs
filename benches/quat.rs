@@ -17,7 +17,7 @@ bench_unop!(
 
 bench_binop!(
     quat_mul_quat,
-    "quat * quat",
+    "quat mul quat",
     op => mul,
     from => random_quat
 );

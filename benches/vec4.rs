@@ -9,7 +9,7 @@ use support::{random_srt_mat4, random_vec4};
 
 bench_binop!(
     vec4_mul_mat4,
-    "vec4 * mat4",
+    "vec4 mul mat4",
     op => mul,
     from1 => random_srt_mat4,
     from2 => random_vec4

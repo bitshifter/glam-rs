@@ -20,7 +20,7 @@ bench_unop!(
     from => random_mat2
 );
 bench_unop!(mat2_inverse, "mat2 inverse", op => inverse, from => random_mat2);
-bench_binop!(mat2_mul_mat2, "mat2 * mat2", op => mul, from => random_mat2);
+bench_binop!(mat2_mul_mat2, "mat2 mul mat2", op => mul, from => random_mat2);
 
 criterion_group!(
     benches,

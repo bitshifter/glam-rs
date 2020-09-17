@@ -12,7 +12,7 @@ euler!(vec2_euler, "vec2 euler", ty => Vec2, storage => Vec2, zero => Vec2::zero
 
 bench_binop!(
     mat2_mul_vec2,
-    "mat2 * vec2",
+    "mat2 mul vec2",
     op => mul,
     from1 => random_mat2,
     from2 => random_vec2
