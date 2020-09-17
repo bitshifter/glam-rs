@@ -29,18 +29,6 @@ assert_eq!(v, x);
 
 Matrices are stored in memory in column-major order.
 
-Rotations follow left-hand rule. The direction of the axis gives the direction
-of rotation: with the left thumb pointing in the positive direction of the axis
-the left fingers curl around the axis in the direction of the rotation.
-
-```
-use glam::{Mat3, Vec3};
-// rotate +x 90 degrees clockwise around y giving -z
-let m = Mat3::from_rotation_y(90.0_f32.to_radians());
-let v = m * Vec3::unit_x();
-assert!(v.abs_diff_eq(-Vec3::unit_z(), core::f32::EPSILON));
-```
-
 ## Size and alignment of types
 
 Some `glam` types use SIMD for storage meaning they are 16 byte aligned, these
