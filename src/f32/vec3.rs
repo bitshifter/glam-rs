@@ -12,6 +12,7 @@ const Z_AXIS: Vec3 = const_vec3!([0.0, 0.0, 1.0]);
 #[repr(C)]
 pub struct Vec3(pub(crate) f32, pub(crate) f32, pub(crate) f32);
 
+/// Creates a `Vec3`.
 #[inline]
 pub fn vec3(x: f32, y: f32, z: f32) -> Vec3 {
     Vec3::new(x, y, z)

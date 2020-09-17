@@ -16,7 +16,7 @@ const IDENTITY: Mat4 = const_mat4!(
     [0.0, 0.0, 0.0, 1.0]
 );
 
-/// Creates a 4x4 matrix from four column vectors.
+/// Creates a `Mat4` from four column vectors.
 #[inline]
 pub fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat4 {
     Mat4 {

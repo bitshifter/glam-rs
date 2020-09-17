@@ -22,7 +22,7 @@ const IDENTITY: Quat = const_quat!([0.0, 0.0, 0.0, 1.0]);
 #[repr(C)]
 pub struct Quat(pub(crate) Vec4);
 
-/// Creates a new rotation quaternion from `x`, `y`, `z` and `w` values.
+/// Creates a `Quat` from `x`, `y`, `z` and `w` values.
 ///
 /// This should generally not be called manually unless you know what you are doing. Use one of
 /// the other constructors instead such as `identity` or `from_axis_angle`.
@@ -343,10 +343,7 @@ impl Quat {
             // but if it is negative, we want to flip the 'end' rotation XYZW components
             let bias = _mm_and_ps(dot.0, NEG_ZERO);
             let interpolated = Vec4(_mm_add_ps(
-                _mm_mul_ps(
-                    _mm_sub_ps(_mm_xor_ps(end.0, bias), start.0),
-                    _mm_set_ps1(s),
-                ),
+                _mm_mul_ps(_mm_sub_ps(_mm_xor_ps(end.0, bias), start.0), _mm_set_ps1(s)),
                 start.0,
             ));
             Self(interpolated.normalize())
@@ -472,9 +469,9 @@ impl Quat {
             let lhs = (self.0).0;
             let rhs = (other.0).0;
 
-            const CONTROL_WZYX: __m128 = const_m128!([ 1.0,-1.0, 1.0,-1.0]);
-            const CONTROL_ZWXY: __m128 = const_m128!([ 1.0, 1.0,-1.0,-1.0]);
-            const CONTROL_YXWZ: __m128 = const_m128!([-1.0, 1.0, 1.0,-1.0]);
+            const CONTROL_WZYX: __m128 = const_m128!([1.0, -1.0, 1.0, -1.0]);
+            const CONTROL_ZWXY: __m128 = const_m128!([1.0, 1.0, -1.0, -1.0]);
+            const CONTROL_YXWZ: __m128 = const_m128!([-1.0, 1.0, 1.0, -1.0]);
 
             let r_xxxx = _mm_shuffle_ps(lhs, lhs, 0b00_00_00_00);
             let r_yyyy = _mm_shuffle_ps(lhs, lhs, 0b01_01_01_01);

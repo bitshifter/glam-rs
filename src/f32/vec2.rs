@@ -11,6 +11,7 @@ const Y_AXIS: Vec2 = const_vec2!([0.0, 1.0]);
 #[repr(C)]
 pub struct Vec2(pub(crate) f32, pub(crate) f32);
 
+/// Creates a `Vec2`.
 #[inline]
 pub fn vec2(x: f32, y: f32) -> Vec2 {
     Vec2(x, y)

@@ -31,7 +31,7 @@ macro_rules! abs_diff_eq {
     };
 }
 
-/// Creates a 2x2 matrix from two column vectors. Can be used to create a constant value.
+/// Creates a `Mat2` from two column vectors that can be used to initialize a constant value.
 ///
 /// ```
 /// use glam::{const_mat2, Mat2};
@@ -53,7 +53,7 @@ macro_rules! const_mat2 {
     };
 }
 
-/// Creates a 3x3 matrix from three column vectors. Can be used to create a constant value.
+/// Creates a `Mat3` from three column vectors that can be used to initialize a constant value.
 ///
 /// ```
 /// use glam::{const_mat3, Mat3};
@@ -75,7 +75,7 @@ macro_rules! const_mat3 {
     };
 }
 
-/// Creates a 4x4 matrix from four column vectors. Can be used to create a constant value.
+/// Creates a `Mat4` from four column vectors that can be used to initialize a constant value.
 ///
 /// ```
 /// use glam::{const_mat4, Mat4};
@@ -109,8 +109,8 @@ macro_rules! const_m128 {
     };
 }
 
-/// Creates a new rotation quaternion from `x`, `y`, `z` and `w` values. Can be used to create a
-/// constant value.
+/// Creates a `Quat` from `x`, `y`, `z` and `w` values that can be used to initialize a constant
+/// value.
 ///
 /// ```
 /// use glam::{const_quat, Quat};
@@ -123,7 +123,7 @@ macro_rules! const_quat {
     };
 }
 
-/// Creates a new 2D vector. Can be used to create a constant value.
+/// Creates a `Vec2` that can be used to initialize a constant value.
 ///
 /// ```
 /// use glam::{const_vec2, Vec2};
@@ -137,7 +137,7 @@ macro_rules! const_vec2 {
     };
 }
 
-/// Creates a new 3D vector. Can be used to create a constant value.
+/// Creates a `Vec3` that can be used to initialize a constant value.
 ///
 /// ```
 /// use glam::{const_vec3, Vec3};
@@ -151,7 +151,7 @@ macro_rules! const_vec3 {
     };
 }
 
-/// Creates a new `Vec3A`. Can be used to create a constant value.
+/// Creates a `Vec3A` that can be used to initialize a constant value.
 ///
 /// ```
 /// use glam::{const_vec3a, Vec3A};
@@ -170,7 +170,7 @@ macro_rules! const_vec3a {
     };
 }
 
-/// Creates a new 4D vector. Can be used to create a constant value.
+/// Creates a `Vec4` that can be used to initialize a constant value.
 ///
 /// ```
 /// use glam::{const_vec4, Vec4};

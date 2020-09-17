@@ -11,7 +11,7 @@ use core::{
 const ZERO: Mat2 = const_mat2!([0.0; 4]);
 const IDENTITY: Mat2 = const_mat2!([1.0, 0.0], [0.0, 1.0]);
 
-/// Creates a 2x2 matrix from two column vectors.
+/// Creates a `Mat2` from two column vectors.
 #[inline]
 pub fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
     Mat2::from_cols(x_axis, y_axis)
@@ -243,6 +243,7 @@ impl Mat2 {
         }
     }
 
+    /// Transforms a `Vec2`.
     #[inline]
     pub fn mul_vec2(&self, other: Vec2) -> Vec2 {
         // TODO: SSE2
@@ -252,6 +253,7 @@ impl Mat2 {
         Vec2::new(x0 + x1, y0 + y1)
     }
 
+    /// Multiplies two 2x2 matrices.
     #[inline]
     pub fn mul_mat2(&self, other: &Self) -> Self {
         // TODO: SSE2
@@ -262,16 +264,19 @@ impl Mat2 {
         )
     }
 
+    /// Adds two 2x2 matrices.
     #[inline]
     pub fn add_mat2(&self, other: &Self) -> Self {
         Mat2(self.0 + other.0)
     }
 
+    /// Subtracts two 2x2 matrices.
     #[inline]
     pub fn sub_mat2(&self, other: &Self) -> Self {
         Mat2(self.0 - other.0)
     }
 
+    /// Multiplies a 2x2 matrix by a scalar.
     #[inline]
     pub fn mul_scalar(&self, other: f32) -> Self {
         let s = Vec4::splat(other);

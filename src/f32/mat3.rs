@@ -7,7 +7,7 @@ use core::{
 const ZERO: Mat3 = const_mat3!([0.0; 9]);
 const IDENTITY: Mat3 = const_mat3!([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
 
-/// Creates a 3x3 matrix from three column vectors.
+/// Creates a `Mat3` from three column vectors.
 #[inline]
 pub fn mat3(x_axis: Vec3, y_axis: Vec3, z_axis: Vec3) -> Mat3 {
     Mat3 {
@@ -356,7 +356,7 @@ impl Mat3 {
         Mat3::from_cols(tmp0 * inv_det, tmp1 * inv_det, tmp2 * inv_det).transpose()
     }
 
-    /// Transforms a 3D vector.
+    /// Transforms a `Vec3A`.
     #[inline]
     pub fn mul_vec3a(&self, other: Vec3A) -> Vec3A {
         let mut res = Vec3A::from(self.x_axis) * other.dup_x();
@@ -365,7 +365,7 @@ impl Mat3 {
         res
     }
 
-    /// Transforms a 3D vector.
+    /// Transforms a `Vec3`.
     #[inline]
     pub fn mul_vec3(&self, other: Vec3) -> Vec3 {
         let mut res = Vec3A::from(self.x_axis) * Vec3A::splat(other.x());
