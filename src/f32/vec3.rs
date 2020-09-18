@@ -257,7 +257,7 @@ impl Vec3 {
     /// Performs a vertical `==` comparison between `self` and `other`,
     /// returning a `Vec3Mask` of the results.
     ///
-    /// In other words, this computes `[x1 == x2, y1 == y2, z1 == z2, w1 == w2]`.
+    /// In other words, this computes `[x1 == x2, y1 == y2, z1 == z2]`.
     #[inline]
     pub fn cmpeq(self, other: Self) -> Vec3Mask {
         Vec3Mask::new(
@@ -270,7 +270,7 @@ impl Vec3 {
     /// Performs a vertical `!=` comparison between `self` and `other`,
     /// returning a `Vec3Mask` of the results.
     ///
-    /// In other words, this computes `[x1 != x2, y1 != y2, z1 != z2, w1 != w2]`.
+    /// In other words, this computes `[x1 != x2, y1 != y2, z1 != z2]`.
     #[inline]
     pub fn cmpne(self, other: Self) -> Vec3Mask {
         Vec3Mask::new(
@@ -283,7 +283,7 @@ impl Vec3 {
     /// Performs a vertical `>=` comparison between `self` and `other`,
     /// returning a `Vec3Mask` of the results.
     ///
-    /// In other words, this computes `[x1 >= x2, y1 >= y2, z1 >= z2, w1 >= w2]`.
+    /// In other words, this computes `[x1 >= x2, y1 >= y2, z1 >= z2]`.
     #[inline]
     pub fn cmpge(self, other: Self) -> Vec3Mask {
         Vec3Mask::new(
@@ -296,7 +296,7 @@ impl Vec3 {
     /// Performs a vertical `>` comparison between `self` and `other`,
     /// returning a `Vec3Mask` of the results.
     ///
-    /// In other words, this computes `[x1 > x2, y1 > y2, z1 > z2, w1 > w2]`.
+    /// In other words, this computes `[x1 > x2, y1 > y2, z1 > z2]`.
     #[inline]
     pub fn cmpgt(self, other: Self) -> Vec3Mask {
         Vec3Mask::new(
@@ -309,7 +309,7 @@ impl Vec3 {
     /// Performs a vertical `<=` comparison between `self` and `other`,
     /// returning a `Vec3Mask` of the results.
     ///
-    /// In other words, this computes `[x1 <= x2, y1 <= y2, z1 <= z2, w1 <= w2]`.
+    /// In other words, this computes `[x1 <= x2, y1 <= y2, z1 <= z2]`.
     #[inline]
     pub fn cmple(self, other: Self) -> Vec3Mask {
         Vec3Mask::new(
@@ -322,7 +322,7 @@ impl Vec3 {
     /// Performs a vertical `<` comparison between `self` and `other`,
     /// returning a `Vec3Mask` of the results.
     ///
-    /// In other words, this computes `[x1 < x2, y1 < y2, z1 < z2, w1 < w2]`.
+    /// In other words, this computes `[x1 < x2, y1 < y2, z1 < z2]`.
     #[inline]
     pub fn cmplt(self, other: Self) -> Vec3Mask {
         Vec3Mask::new(
@@ -332,7 +332,7 @@ impl Vec3 {
         )
     }
 
-    /// Creates a new `Vec3` from the first four values in `slice`.
+    /// Creates a new `Vec3` from the first three values in `slice`.
     ///
     /// # Panics
     ///
@@ -388,7 +388,7 @@ impl Vec3 {
         Self(self.0.ceil(), self.1.ceil(), self.2.ceil())
     }
 
-    /// Returns a new `Vec4` with elements representing the sign of `self`.
+    /// Returns a new `Vec3` with elements representing the sign of `self`.
     ///
     /// - `1.0` if the number is positive, `+0.0` or `INFINITY`
     /// - `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`

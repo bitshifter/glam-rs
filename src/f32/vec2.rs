@@ -172,7 +172,7 @@ impl Vec2 {
         self.dot(self)
     }
 
-    #[deprecated(since = "0.9.5", note = "please use `Vec3::length_recip` instead")]
+    #[deprecated(since = "0.9.5", note = "please use `Vec2::length_recip` instead")]
     #[inline(always)]
     pub fn length_reciprocal(self) -> f32 {
         self.length_recip()
@@ -233,7 +233,7 @@ impl Vec2 {
     /// Performs a vertical `==` comparison between `self` and `other`,
     /// returning a `Vec2Mask` of the results.
     ///
-    /// In other words, this computes `[x1 == x2, y1 == y2, z1 == z2, w1 == w2]`.
+    /// In other words, this computes `[x1 == x2, y1 == y2]`.
     #[inline]
     pub fn cmpeq(self, other: Vec2) -> Vec2Mask {
         Vec2Mask::new(self.0.eq(&other.0), self.1.eq(&other.1))
@@ -242,7 +242,7 @@ impl Vec2 {
     /// Performs a vertical `!=` comparison between `self` and `other`,
     /// returning a `Vec2Mask` of the results.
     ///
-    /// In other words, this computes `[x1 != x2, y1 != y2, z1 != z2, w1 != w2]`.
+    /// In other words, this computes `[x1 != x2, y1 != y2]`.
     #[inline]
     pub fn cmpne(self, other: Vec2) -> Vec2Mask {
         Vec2Mask::new(self.0.ne(&other.0), self.1.ne(&other.1))
@@ -251,7 +251,7 @@ impl Vec2 {
     /// Performs a vertical `>=` comparison between `self` and `other`,
     /// returning a `Vec2Mask` of the results.
     ///
-    /// In other words, this computes `[x1 >= x2, y1 >= y2, z1 >= z2, w1 >= w2]`.
+    /// In other words, this computes `[x1 >= x2, y1 >= y2]`.
     #[inline]
     pub fn cmpge(self, other: Vec2) -> Vec2Mask {
         Vec2Mask::new(self.0.ge(&other.0), self.1.ge(&other.1))
@@ -260,7 +260,7 @@ impl Vec2 {
     /// Performs a vertical `>` comparison between `self` and `other`,
     /// returning a `Vec2Mask` of the results.
     ///
-    /// In other words, this computes `[x1 > x2, y1 > y2, z1 > z2, w1 > w2]`.
+    /// In other words, this computes `[x1 > x2, y1 > y2]`.
     #[inline]
     pub fn cmpgt(self, other: Vec2) -> Vec2Mask {
         Vec2Mask::new(self.0.gt(&other.0), self.1.gt(&other.1))
@@ -269,7 +269,7 @@ impl Vec2 {
     /// Performs a vertical `<=` comparison between `self` and `other`,
     /// returning a `Vec2Mask` of the results.
     ///
-    /// In other words, this computes `[x1 <= x2, y1 <= y2, z1 <= z2, w1 <= w2]`.
+    /// In other words, this computes `[x1 <= x2, y1 <= y2]`.
     #[inline]
     pub fn cmple(self, other: Vec2) -> Vec2Mask {
         Vec2Mask::new(self.0.le(&other.0), self.1.le(&other.1))
@@ -278,7 +278,7 @@ impl Vec2 {
     /// Performs a vertical `<` comparison between `self` and `other`,
     /// returning a `Vec2Mask` of the results.
     ///
-    /// In other words, this computes `[x1 < x2, y1 < y2, z1 < z2, w1 < w2]`.
+    /// In other words, this computes `[x1 < x2, y1 < y2]`.
     #[inline]
     pub fn cmplt(self, other: Vec2) -> Vec2Mask {
         Vec2Mask::new(self.0.lt(&other.0), self.1.lt(&other.1))
