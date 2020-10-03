@@ -481,7 +481,7 @@ impl Mat4 {
 
                 let addres = _mm_add_ps(subres, mulfacc);
                 let detcof = _mm_mul_ps(addres, _mm_setr_ps(1.0, -1.0, 1.0, -1.0));
-                
+
                 self.x_axis.dot(detcof.into())
             }
         }
@@ -491,14 +491,14 @@ impl Mat4 {
             let (m10, m11, m12, m13) = self.y_axis.into();
             let (m20, m21, m22, m23) = self.z_axis.into();
             let (m30, m31, m32, m33) = self.w_axis.into();
-    
+
             let a2323 = m22 * m33 - m23 * m32;
             let a1323 = m21 * m33 - m23 * m31;
             let a1223 = m21 * m32 - m22 * m31;
             let a0323 = m20 * m33 - m23 * m30;
             let a0223 = m20 * m32 - m22 * m30;
             let a0123 = m20 * m31 - m21 * m30;
-    
+
             m00 * (m11 * a2323 - m12 * a1323 + m13 * a1223)
                 - m01 * (m10 * a2323 - m12 * a0323 + m13 * a0223)
                 + m02 * (m10 * a1323 - m11 * a0323 + m13 * a0123)
@@ -594,7 +594,7 @@ impl Mat4 {
                 };
                 let sign_a = _mm_set_ps(1.0, -1.0, 1.0, -1.0);
                 let sign_b = _mm_set_ps(-1.0, 1.0, -1.0, 1.0);
-                
+
                 let temp0 = _mm_shuffle_ps(self.y_axis.0, self.x_axis.0, 0b00_00_00_00);
                 let vec0 = _mm_shuffle_ps(temp0, temp0, 0b10_10_10_00);
 
