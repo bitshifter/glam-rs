@@ -451,6 +451,7 @@ impl Mat4 {
         #[cfg(vec4_sse2)]
         {
             unsafe {
+                // Based on GLM licensed under The Happy Bunny License or MIT License
                 let swp2a = _mm_shuffle_ps(self.z_axis.0, self.z_axis.0, 0b00_01_01_10);
                 let swp3a = _mm_shuffle_ps(self.w_axis.0, self.w_axis.0, 0b11_10_11_11);
                 let swp2b = _mm_shuffle_ps(self.z_axis.0, self.z_axis.0, 0b11_10_11_11);
@@ -639,8 +640,10 @@ impl Mat4 {
                 let row1 = _mm_shuffle_ps(inv2, inv3, 0b00_00_00_00);
                 let row2 = _mm_shuffle_ps(row0, row1, 0b10_00_10_00);
 
-                let det0 = self.x_axis.dot(row2.into());
-                let rcp0 = _mm_set1_ps(1.0 / det0);
+                let dot0 = self.x_axis.dot(row2.into());
+                glam_assert!(dot1 != 0.0);
+
+                let rcp0 = _mm_set1_ps(1.0 / dot0);
 
                 Self {
                     x_axis: _mm_mul_ps(inv0, rcp0).into(),
