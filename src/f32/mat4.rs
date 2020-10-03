@@ -641,7 +641,7 @@ impl Mat4 {
                 let row2 = _mm_shuffle_ps(row0, row1, 0b10_00_10_00);
 
                 let dot0 = self.x_axis.dot(row2.into());
-                glam_assert!(dot1 != 0.0);
+                glam_assert!(dot0 != 0.0);
 
                 let rcp0 = _mm_set1_ps(1.0 / dot0);
 
