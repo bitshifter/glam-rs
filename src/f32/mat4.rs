@@ -448,98 +448,281 @@ impl Mat4 {
     /// Returns the determinant of `self`.
     #[inline]
     pub fn determinant(&self) -> f32 {
-        let (m00, m01, m02, m03) = self.x_axis.into();
-        let (m10, m11, m12, m13) = self.y_axis.into();
-        let (m20, m21, m22, m23) = self.z_axis.into();
-        let (m30, m31, m32, m33) = self.w_axis.into();
+        #[cfg(vec4_sse2)]
+        {
+            unsafe {
+                let swp2a = _mm_shuffle_ps(self.z_axis.0, self.z_axis.0, 0b00_01_01_10);
+                let swp3a = _mm_shuffle_ps(self.w_axis.0, self.w_axis.0, 0b11_10_11_11);
+                let swp2b = _mm_shuffle_ps(self.z_axis.0, self.z_axis.0, 0b11_10_11_11);
+                let swp3b = _mm_shuffle_ps(self.w_axis.0, self.w_axis.0, 0b00_10_01_10);
+                let swp2c = _mm_shuffle_ps(self.z_axis.0, self.z_axis.0, 0b00_00_01_10);
+                let swp3c = _mm_shuffle_ps(self.w_axis.0, self.w_axis.0, 0b01_10_00_00);
 
-        let a2323 = m22 * m33 - m23 * m32;
-        let a1323 = m21 * m33 - m23 * m31;
-        let a1223 = m21 * m32 - m22 * m31;
-        let a0323 = m20 * m33 - m23 * m30;
-        let a0223 = m20 * m32 - m22 * m30;
-        let a0123 = m20 * m31 - m21 * m30;
+                let mula = _mm_mul_ps(swp2a, swp3a);
+                let mulb = _mm_mul_ps(swp2b, swp3b);
+                let mulc = _mm_mul_ps(swp2c, swp3c);
+                let sube = _mm_sub_ps(mula, mulb);
+                let subf = _mm_sub_ps(_mm_movehl_ps(mulc, mulc), mulc);
 
-        m00 * (m11 * a2323 - m12 * a1323 + m13 * a1223)
-            - m01 * (m10 * a2323 - m12 * a0323 + m13 * a0223)
-            + m02 * (m10 * a1323 - m11 * a0323 + m13 * a0123)
-            - m03 * (m10 * a1223 - m11 * a0223 + m12 * a0123)
+                let subfaca = _mm_shuffle_ps(sube, sube, 0b10_01_00_00);
+                let swpfaca = _mm_shuffle_ps(self.y_axis.0, self.y_axis.0, 0b00_00_00_01);
+                let mulfaca = _mm_mul_ps(swpfaca, subfaca);
+
+                let subtmpb = _mm_shuffle_ps(sube, subf, 0b00_00_11_01);
+                let subfacb = _mm_shuffle_ps(subtmpb, subtmpb, 0b11_01_01_00);
+                let swpfacb = _mm_shuffle_ps(self.y_axis.0, self.y_axis.0, 0b01_01_10_10);
+                let mulfacb = _mm_mul_ps(swpfacb, subfacb);
+
+                let subres = _mm_sub_ps(mulfaca, mulfacb);
+                let subtmpc = _mm_shuffle_ps(sube, subf, 0b01_00_10_10);
+                let subfacc = _mm_shuffle_ps(subtmpc, subtmpc, 0b11_11_10_00);
+                let swpfacc = _mm_shuffle_ps(self.y_axis.0, self.y_axis.0, 0b10_11_11_11);
+                let mulfacc = _mm_mul_ps(swpfacc, subfacc);
+
+                let addres = _mm_add_ps(subres, mulfacc);
+                let detcof = _mm_mul_ps(addres, _mm_setr_ps(1.0, -1.0, 1.0, -1.0));
+                
+                self.x_axis.dot(detcof.into())
+            }
+        }
+        #[cfg(vec4_f32)]
+        {
+            let (m00, m01, m02, m03) = self.x_axis.into();
+            let (m10, m11, m12, m13) = self.y_axis.into();
+            let (m20, m21, m22, m23) = self.z_axis.into();
+            let (m30, m31, m32, m33) = self.w_axis.into();
+    
+            let a2323 = m22 * m33 - m23 * m32;
+            let a1323 = m21 * m33 - m23 * m31;
+            let a1223 = m21 * m32 - m22 * m31;
+            let a0323 = m20 * m33 - m23 * m30;
+            let a0223 = m20 * m32 - m22 * m30;
+            let a0123 = m20 * m31 - m21 * m30;
+    
+            m00 * (m11 * a2323 - m12 * a1323 + m13 * a1223)
+                - m01 * (m10 * a2323 - m12 * a0323 + m13 * a0223)
+                + m02 * (m10 * a1323 - m11 * a0323 + m13 * a0123)
+                - m03 * (m10 * a1223 - m11 * a0223 + m12 * a0123)
+        }
     }
 
     /// Returns the inverse of `self`.
     ///
     /// If the matrix is not invertible the returned matrix will be invalid.
     pub fn inverse(&self) -> Self {
-        let (m00, m01, m02, m03) = self.x_axis.into();
-        let (m10, m11, m12, m13) = self.y_axis.into();
-        let (m20, m21, m22, m23) = self.z_axis.into();
-        let (m30, m31, m32, m33) = self.w_axis.into();
+        #[cfg(vec4_sse2)]
+        {
+            unsafe {
+                // Based on GLM licensed under The Happy Bunny License or MIT License
+                let fac0 = {
+                    let swp0a = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b11_11_11_11);
+                    let swp0b = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b10_10_10_10);
 
-        let coef00 = m22 * m33 - m32 * m23;
-        let coef02 = m12 * m33 - m32 * m13;
-        let coef03 = m12 * m23 - m22 * m13;
+                    let swp00 = _mm_shuffle_ps(self.z_axis.0, self.y_axis.0, 0b10_10_10_10);
+                    let swp01 = _mm_shuffle_ps(swp0a, swp0a, 0b10_00_00_00);
+                    let swp02 = _mm_shuffle_ps(swp0b, swp0b, 0b10_00_00_00);
+                    let swp03 = _mm_shuffle_ps(self.z_axis.0, self.y_axis.0, 0b11_11_11_11);
 
-        let coef04 = m21 * m33 - m31 * m23;
-        let coef06 = m11 * m33 - m31 * m13;
-        let coef07 = m11 * m23 - m21 * m13;
+                    let mul00 = _mm_mul_ps(swp00, swp01);
+                    let mul01 = _mm_mul_ps(swp02, swp03);
+                    _mm_sub_ps(mul00, mul01)
+                };
+                let fac1 = {
+                    let swp0a = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b11_11_11_11);
+                    let swp0b = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b01_01_01_01);
 
-        let coef08 = m21 * m32 - m31 * m22;
-        let coef10 = m11 * m32 - m31 * m12;
-        let coef11 = m11 * m22 - m21 * m12;
+                    let swp00 = _mm_shuffle_ps(self.z_axis.0, self.y_axis.0, 0b01_01_01_01);
+                    let swp01 = _mm_shuffle_ps(swp0a, swp0a, 0b10_00_00_00);
+                    let swp02 = _mm_shuffle_ps(swp0b, swp0b, 0b10_00_00_00);
+                    let swp03 = _mm_shuffle_ps(self.z_axis.0, self.y_axis.0, 0b11_11_11_11);
 
-        let coef12 = m20 * m33 - m30 * m23;
-        let coef14 = m10 * m33 - m30 * m13;
-        let coef15 = m10 * m23 - m20 * m13;
+                    let mul00 = _mm_mul_ps(swp00, swp01);
+                    let mul01 = _mm_mul_ps(swp02, swp03);
+                    _mm_sub_ps(mul00, mul01)
+                };
+                let fac2 = {
+                    let swp0a = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b10_10_10_10);
+                    let swp0b = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b01_01_01_01);
 
-        let coef16 = m20 * m32 - m30 * m22;
-        let coef18 = m10 * m32 - m30 * m12;
-        let coef19 = m10 * m22 - m20 * m12;
+                    let swp00 = _mm_shuffle_ps(self.z_axis.0, self.y_axis.0, 0b01_01_01_01);
+                    let swp01 = _mm_shuffle_ps(swp0a, swp0a, 0b10_00_00_00);
+                    let swp02 = _mm_shuffle_ps(swp0b, swp0b, 0b10_00_00_00);
+                    let swp03 = _mm_shuffle_ps(self.z_axis.0, self.y_axis.0, 0b10_10_10_10);
 
-        let coef20 = m20 * m31 - m30 * m21;
-        let coef22 = m10 * m31 - m30 * m11;
-        let coef23 = m10 * m21 - m20 * m11;
+                    let mul00 = _mm_mul_ps(swp00, swp01);
+                    let mul01 = _mm_mul_ps(swp02, swp03);
+                    _mm_sub_ps(mul00, mul01)
+                };
+                let fac3 = {
+                    let swp0a = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b11_11_11_11);
+                    let swp0b = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b00_00_00_00);
 
-        let fac0 = Vec4::new(coef00, coef00, coef02, coef03);
-        let fac1 = Vec4::new(coef04, coef04, coef06, coef07);
-        let fac2 = Vec4::new(coef08, coef08, coef10, coef11);
-        let fac3 = Vec4::new(coef12, coef12, coef14, coef15);
-        let fac4 = Vec4::new(coef16, coef16, coef18, coef19);
-        let fac5 = Vec4::new(coef20, coef20, coef22, coef23);
+                    let swp00 = _mm_shuffle_ps(self.z_axis.0, self.y_axis.0, 0b00_00_00_00);
+                    let swp01 = _mm_shuffle_ps(swp0a, swp0a, 0b10_00_00_00);
+                    let swp02 = _mm_shuffle_ps(swp0b, swp0b, 0b10_00_00_00);
+                    let swp03 = _mm_shuffle_ps(self.z_axis.0, self.y_axis.0, 0b11_11_11_11);
 
-        let vec0 = Vec4::new(m10, m00, m00, m00);
-        let vec1 = Vec4::new(m11, m01, m01, m01);
-        let vec2 = Vec4::new(m12, m02, m02, m02);
-        let vec3 = Vec4::new(m13, m03, m03, m03);
+                    let mul00 = _mm_mul_ps(swp00, swp01);
+                    let mul01 = _mm_mul_ps(swp02, swp03);
+                    _mm_sub_ps(mul00, mul01)
+                };
+                let fac4 = {
+                    let swp0a = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b10_10_10_10);
+                    let swp0b = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b00_00_00_00);
 
-        let inv0 = vec1 * fac0 - vec2 * fac1 + vec3 * fac2;
-        let inv1 = vec0 * fac0 - vec2 * fac3 + vec3 * fac4;
-        let inv2 = vec0 * fac1 - vec1 * fac3 + vec3 * fac5;
-        let inv3 = vec0 * fac2 - vec1 * fac4 + vec2 * fac5;
+                    let swp00 = _mm_shuffle_ps(self.z_axis.0, self.y_axis.0, 0b00_00_00_00);
+                    let swp01 = _mm_shuffle_ps(swp0a, swp0a, 0b10_00_00_00);
+                    let swp02 = _mm_shuffle_ps(swp0b, swp0b, 0b10_00_00_00);
+                    let swp03 = _mm_shuffle_ps(self.z_axis.0, self.y_axis.0, 0b10_10_10_10);
 
-        let sign_a = Vec4::new(1.0, -1.0, 1.0, -1.0);
-        let sign_b = Vec4::new(-1.0, 1.0, -1.0, 1.0);
+                    let mul00 = _mm_mul_ps(swp00, swp01);
+                    let mul01 = _mm_mul_ps(swp02, swp03);
+                    _mm_sub_ps(mul00, mul01)
+                };
+                let fac5 = {
+                    let swp0a = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b01_01_01_01);
+                    let swp0b = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b00_00_00_00);
 
-        let inverse = Self {
-            x_axis: inv0 * sign_a,
-            y_axis: inv1 * sign_b,
-            z_axis: inv2 * sign_a,
-            w_axis: inv3 * sign_b,
-        };
+                    let swp00 = _mm_shuffle_ps(self.z_axis.0, self.y_axis.0, 0b00_00_00_00);
+                    let swp01 = _mm_shuffle_ps(swp0a, swp0a, 0b10_00_00_00);
+                    let swp02 = _mm_shuffle_ps(swp0b, swp0b, 0b10_00_00_00);
+                    let swp03 = _mm_shuffle_ps(self.z_axis.0, self.y_axis.0, 0b01_01_01_01);
 
-        let col0 = Vec4::new(
-            inverse.x_axis.x(),
-            inverse.y_axis.x(),
-            inverse.z_axis.x(),
-            inverse.w_axis.x(),
-        );
+                    let mul00 = _mm_mul_ps(swp00, swp01);
+                    let mul01 = _mm_mul_ps(swp02, swp03);
+                    _mm_sub_ps(mul00, mul01)
+                };
+                let sign_a = _mm_set_ps(1.0, -1.0, 1.0, -1.0);
+                let sign_b = _mm_set_ps(-1.0, 1.0, -1.0, 1.0);
+                
+                let temp0 = _mm_shuffle_ps(self.y_axis.0, self.x_axis.0, 0b00_00_00_00);
+                let vec0 = _mm_shuffle_ps(temp0, temp0, 0b10_10_10_00);
 
-        let dot0 = self.x_axis * col0;
-        let dot1 = dot0.x() + dot0.y() + dot0.z() + dot0.w();
+                let temp1 = _mm_shuffle_ps(self.y_axis.0, self.x_axis.0, 0b01_01_01_01);
+                let vec1 = _mm_shuffle_ps(temp1, temp1, 0b10_10_10_00);
 
-        glam_assert!(dot1 != 0.0);
+                let temp2 = _mm_shuffle_ps(self.y_axis.0, self.x_axis.0, 0b10_10_10_10);
+                let vec2 = _mm_shuffle_ps(temp2, temp2, 0b10_10_10_00);
 
-        let rcp_det = 1.0 / dot1;
-        inverse * rcp_det
+                let temp3 = _mm_shuffle_ps(self.y_axis.0, self.x_axis.0, 0b11_11_11_11);
+                let vec3 = _mm_shuffle_ps(temp3, temp3, 0b10_10_10_00);
+
+                let mul00 = _mm_mul_ps(vec1, fac0);
+                let mul01 = _mm_mul_ps(vec2, fac1);
+                let mul02 = _mm_mul_ps(vec3, fac2);
+                let sub00 = _mm_sub_ps(mul00, mul01);
+                let add00 = _mm_add_ps(sub00, mul02);
+                let inv0 = _mm_mul_ps(sign_b, add00);
+
+                let mul03 = _mm_mul_ps(vec0, fac0);
+                let mul04 = _mm_mul_ps(vec2, fac3);
+                let mul05 = _mm_mul_ps(vec3, fac4);
+                let sub01 = _mm_sub_ps(mul03, mul04);
+                let add01 = _mm_add_ps(sub01, mul05);
+                let inv1 = _mm_mul_ps(sign_a, add01);
+
+                let mul06 = _mm_mul_ps(vec0, fac1);
+                let mul07 = _mm_mul_ps(vec1, fac3);
+                let mul08 = _mm_mul_ps(vec3, fac5);
+                let sub02 = _mm_sub_ps(mul06, mul07);
+                let add02 = _mm_add_ps(sub02, mul08);
+                let inv2 = _mm_mul_ps(sign_b, add02);
+
+                let mul09 = _mm_mul_ps(vec0, fac2);
+                let mul10 = _mm_mul_ps(vec1, fac4);
+                let mul11 = _mm_mul_ps(vec2, fac5);
+                let sub03 = _mm_sub_ps(mul09, mul10);
+                let add03 = _mm_add_ps(sub03, mul11);
+                let inv3 = _mm_mul_ps(sign_a, add03);
+
+                let row0 = _mm_shuffle_ps(inv0, inv1, 0b00_00_00_00);
+                let row1 = _mm_shuffle_ps(inv2, inv3, 0b00_00_00_00);
+                let row2 = _mm_shuffle_ps(row0, row1, 0b10_00_10_00);
+
+                let det0 = self.x_axis.dot(row2.into());
+                let rcp0 = _mm_set1_ps(1.0 / det0);
+
+                Self {
+                    x_axis: _mm_mul_ps(inv0, rcp0).into(),
+                    y_axis: _mm_mul_ps(inv1, rcp0).into(),
+                    z_axis: _mm_mul_ps(inv2, rcp0).into(),
+                    w_axis: _mm_mul_ps(inv3, rcp0).into(),
+                }
+            }
+        }
+        #[cfg(vec4_f32)]
+        {
+            let (m00, m01, m02, m03) = self.x_axis.into();
+            let (m10, m11, m12, m13) = self.y_axis.into();
+            let (m20, m21, m22, m23) = self.z_axis.into();
+            let (m30, m31, m32, m33) = self.w_axis.into();
+
+            let coef00 = m22 * m33 - m32 * m23;
+            let coef02 = m12 * m33 - m32 * m13;
+            let coef03 = m12 * m23 - m22 * m13;
+
+            let coef04 = m21 * m33 - m31 * m23;
+            let coef06 = m11 * m33 - m31 * m13;
+            let coef07 = m11 * m23 - m21 * m13;
+
+            let coef08 = m21 * m32 - m31 * m22;
+            let coef10 = m11 * m32 - m31 * m12;
+            let coef11 = m11 * m22 - m21 * m12;
+
+            let coef12 = m20 * m33 - m30 * m23;
+            let coef14 = m10 * m33 - m30 * m13;
+            let coef15 = m10 * m23 - m20 * m13;
+
+            let coef16 = m20 * m32 - m30 * m22;
+            let coef18 = m10 * m32 - m30 * m12;
+            let coef19 = m10 * m22 - m20 * m12;
+
+            let coef20 = m20 * m31 - m30 * m21;
+            let coef22 = m10 * m31 - m30 * m11;
+            let coef23 = m10 * m21 - m20 * m11;
+
+            let fac0 = Vec4::new(coef00, coef00, coef02, coef03);
+            let fac1 = Vec4::new(coef04, coef04, coef06, coef07);
+            let fac2 = Vec4::new(coef08, coef08, coef10, coef11);
+            let fac3 = Vec4::new(coef12, coef12, coef14, coef15);
+            let fac4 = Vec4::new(coef16, coef16, coef18, coef19);
+            let fac5 = Vec4::new(coef20, coef20, coef22, coef23);
+
+            let vec0 = Vec4::new(m10, m00, m00, m00);
+            let vec1 = Vec4::new(m11, m01, m01, m01);
+            let vec2 = Vec4::new(m12, m02, m02, m02);
+            let vec3 = Vec4::new(m13, m03, m03, m03);
+
+            let inv0 = vec1 * fac0 - vec2 * fac1 + vec3 * fac2;
+            let inv1 = vec0 * fac0 - vec2 * fac3 + vec3 * fac4;
+            let inv2 = vec0 * fac1 - vec1 * fac3 + vec3 * fac5;
+            let inv3 = vec0 * fac2 - vec1 * fac4 + vec2 * fac5;
+
+            let sign_a = Vec4::new(1.0, -1.0, 1.0, -1.0);
+            let sign_b = Vec4::new(-1.0, 1.0, -1.0, 1.0);
+
+            let inverse = Self {
+                x_axis: inv0 * sign_a,
+                y_axis: inv1 * sign_b,
+                z_axis: inv2 * sign_a,
+                w_axis: inv3 * sign_b,
+            };
+
+            let col0 = Vec4::new(
+                inverse.x_axis.x(),
+                inverse.y_axis.x(),
+                inverse.z_axis.x(),
+                inverse.w_axis.x(),
+            );
+
+            let dot0 = self.x_axis * col0;
+            let dot1 = dot0.x() + dot0.y() + dot0.z() + dot0.w();
+
+            glam_assert!(dot1 != 0.0);
+
+            let rcp_det = 1.0 / dot1;
+            inverse * rcp_det
+        }
     }
 
     /// Creates a left-handed view matrix using a camera position, an up direction, and a camera
