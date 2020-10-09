@@ -854,21 +854,8 @@ impl Vec4 {
     /// - `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
     #[inline]
     pub fn sign(self) -> Self {
-        #[cfg(vec4_sse2)]
-        {
-            let mask = self.cmpge(Self::zero());
-            mask.select(Self::splat(1.0), Self::splat(-1.0))
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            Self(
-                self.0.signum(),
-                self.1.signum(),
-                self.2.signum(),
-                self.3.signum(),
-            )
-        }
+        let mask = self.cmpge(Self::zero());
+        mask.select(Self::splat(1.0), Self::splat(-1.0))
     }
 
     #[deprecated(since = "0.9.5", note = "please use `Vec4::recip` instead")]

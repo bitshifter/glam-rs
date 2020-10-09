@@ -263,7 +263,10 @@ fn test_vec4_sign() {
     assert_eq!(-Vec4::zero().sign(), -Vec4::one());
     assert_eq!(Vec4::one().sign(), Vec4::one());
     assert_eq!((-Vec4::one()).sign(), -Vec4::one());
+    assert_eq!(Vec4::splat(core::f32::INFINITY).sign(), Vec4::one());
     assert_eq!(Vec4::splat(core::f32::NEG_INFINITY).sign(), -Vec4::one());
+    // there is no special handling of NaN which is different to `core::f32::signum`
+    assert_eq!(Vec4::splat(core::f32::NAN).sign(), -Vec4::one());
 }
 
 #[test]

@@ -441,7 +441,10 @@ fn test_vec3a_sign() {
     assert_eq!(-Vec3A::zero().sign(), -Vec3A::one());
     assert_eq!(Vec3A::one().sign(), Vec3A::one());
     assert_eq!((-Vec3A::one()).sign(), -Vec3A::one());
+    assert_eq!(Vec3A::splat(core::f32::INFINITY).sign(), Vec3A::one());
     assert_eq!(Vec3A::splat(core::f32::NEG_INFINITY).sign(), -Vec3A::one());
+    // there is no special handling of NaN which is different to `core::f32::signum`
+    assert_eq!(Vec3A::splat(core::f32::NAN).sign(), -Vec3A::one());
 }
 
 #[test]
