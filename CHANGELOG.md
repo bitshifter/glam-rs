@@ -20,6 +20,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Renamed the vector `reciprocal` and `length_reciprocal` methods to `recip`
   and `length_recip` to match the Rust standard library naming. The old
   functions have been deprecated.
+* Added SSE2 optimized implementations of `Mat4::determinant` and
+  `Mat4::inverse`.
 
 ## Removed
 
