@@ -124,7 +124,7 @@ impl TransformSRT {
 
 #[inline]
 fn mul_srt_srt(lhs: &TransformSRT, rhs: &TransformSRT) -> TransformSRT {
-    // from rtm qvv_mul
+    // Based on https://github.com/nfrechette/rtm `rtm::qvv_mul`
     let lhs_scale = Vec3A::from(lhs.scale);
     let rhs_scale = Vec3A::from(rhs.scale);
     let min_scale = lhs_scale.min(rhs_scale);

@@ -415,7 +415,7 @@ impl Mat4 {
     pub fn transpose(&self) -> Self {
         #[cfg(vec4_sse2)]
         unsafe {
-            // sse2 implementation based off DirectXMath XMMatrixInverse (MIT License)
+            // Based on https://github.com/microsoft/DirectXMath `XMMatrixTranspose`
             let tmp0 = _mm_shuffle_ps(self.x_axis.0, self.y_axis.0, 0b01_00_01_00);
             let tmp1 = _mm_shuffle_ps(self.x_axis.0, self.y_axis.0, 0b11_10_11_10);
             let tmp2 = _mm_shuffle_ps(self.z_axis.0, self.w_axis.0, 0b01_00_01_00);
@@ -451,7 +451,7 @@ impl Mat4 {
         #[cfg(vec4_sse2)]
         {
             unsafe {
-                // Based on GLM licensed under The Happy Bunny License or MIT License
+                // Based on https://github.com/g-truc/glm `glm_mat4_determinant`
                 let swp2a = _mm_shuffle_ps(self.z_axis.0, self.z_axis.0, 0b00_01_01_10);
                 let swp3a = _mm_shuffle_ps(self.w_axis.0, self.w_axis.0, 0b11_10_11_11);
                 let swp2b = _mm_shuffle_ps(self.z_axis.0, self.z_axis.0, 0b11_10_11_11);
@@ -514,7 +514,7 @@ impl Mat4 {
         #[cfg(vec4_sse2)]
         {
             unsafe {
-                // Based on GLM licensed under The Happy Bunny License or MIT License
+                // Based on https://github.com/g-truc/glm `glm_mat4_inverse`
                 let fac0 = {
                     let swp0a = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b11_11_11_11);
                     let swp0b = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b10_10_10_10);

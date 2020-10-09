@@ -12,7 +12,7 @@ pub(crate) fn scalar_sin_cos(x: f32) -> (f32, f32) {
 
 #[inline]
 pub fn scalar_acos(value: f32) -> f32 {
-    // from DirectXMath XMScalarAcos
+    // Based on https://github.com/microsoft/DirectXMath `XMScalarAcos`
     // Clamp input to [-1,1].
     let nonnegative = value >= 0.0;
     let x = value.abs();
@@ -145,7 +145,7 @@ pub(crate) mod sse2 {
 
     #[inline]
     pub(crate) unsafe fn m128_round(v: __m128) -> __m128 {
-        // From DirectXMath XMVectorRound.
+        // Based on https://github.com/microsoft/DirectXMath `XMVectorRound`
         let sign = _mm_and_ps(v, PS_SIGN_MASK.m128);
         let s_magic = _mm_or_ps(PS_NO_FRACTION.m128, sign);
         let r1 = _mm_add_ps(v, s_magic);
@@ -159,7 +159,7 @@ pub(crate) mod sse2 {
 
     #[inline]
     pub(crate) unsafe fn m128_floor(v: __m128) -> __m128 {
-        // From DirectXMath XMVectorFloor
+        // Based on https://github.com/microsoft/DirectXMath `XMVectorFloor`
         // To handle NAN, INF and numbers greater than 8388608, use masking
         let test = _mm_and_si128(_mm_castps_si128(v), PS_INV_SIGN_MASK.m128i);
         let test = _mm_cmplt_epi32(test, PS_NO_FRACTION.m128i);
@@ -179,7 +179,7 @@ pub(crate) mod sse2 {
 
     #[inline]
     pub(crate) unsafe fn m128_ceil(v: __m128) -> __m128 {
-        // From DirectXMath XMVectorCeil
+        // Based on https://github.com/microsoft/DirectXMath `XMVectorCeil`
         // To handle NAN, INF and numbers greater than 8388608, use masking
         let test = _mm_and_si128(_mm_castps_si128(v), PS_INV_SIGN_MASK.m128i);
         let test = _mm_cmplt_epi32(test, PS_NO_FRACTION.m128i);
@@ -200,7 +200,7 @@ pub(crate) mod sse2 {
     /// Returns a vector whose components are the corresponding components of Angles modulo 2PI.
     #[inline]
     pub(crate) unsafe fn m128_mod_angles(angles: __m128) -> __m128 {
-        // From DirectXMath: XMVectorModAngles
+        // Based on https://github.com/microsoft/DirectXMath `XMVectorModAngles`
         let v = _mm_mul_ps(angles, PS_RECIPROCAL_TWO_PI.m128);
         let v = m128_round(v);
         m128_neg_mul_sub!(PS_TWO_PI.m128, v, angles)
@@ -211,10 +211,10 @@ pub(crate) mod sse2 {
     /// drifts from `[-PI, PI]`.
     #[inline]
     pub(crate) unsafe fn m128_sin(v: __m128) -> __m128 {
-        // From DirectXMath: XMVectorSin
-        //
+        // Based on https://github.com/microsoft/DirectXMath `XMVectorSin`
+        
         // 11-degree minimax approximation
-        //
+        
         // Force the value within the bounds of pi
         let mut x = m128_mod_angles(v);
 

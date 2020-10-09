@@ -109,7 +109,7 @@ Rust and C++ worlds. In particular:
 * [Realtime Math] - header only C++11 with SSE and NEON SIMD intrinsic support
 * [DirectXMath] - header only SIMD C++ linear algebra library for use in games
   and graphics apps
-* `glam` is a play on the name of the popular C++ library `glm`
+* `glam` is a play on the name of the popular C++ library `GLM`
 
 [How to write a maths library in 2016]: http://www.codersnotes.com/notes/maths-lib-2016/
 [Realtime Math]: https://github.com/nfrechette/rtm
@@ -147,6 +147,18 @@ If you are interested in contributing or have a request or suggestion
 
 The [Game Development in Rust Discord] and [Bevy Engine Discord] servers can are
 also good places to ask for help with `glam`.
+
+## Attribution
+
+`glam` contains code ported from the following C++ libraries:
+
+* [DirectXMath - MIT License] - Copyright (c) 2011-2020 Microsoft Corp
+* [Realtime Math - MIT License] - Copyright (c) 2018 Nicholas Frechette
+* [GLM - MIT License] - Copyright (c) 2005 - G-Truc Creation
+
+[DirectXMath - MIT License]: https://github.com/microsoft/DirectXMath/blob/master/LICENSE
+[Realtime Math - MIT License]: https://github.com/nfrechette/rtm/blob/develop/LICENSE
+[GLM - MIT License]: https://github.com/g-truc/glm/blob/master/copying.txt
 
 [create an issue]: https://github.com/bitshifter/glam-rs/issues
 [Game Development in Rust Discord]: https://discord.gg/yNtPTb2
