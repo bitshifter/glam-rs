@@ -16,12 +16,10 @@ impl Vec2Mask {
         Self(MASK[x as usize], MASK[y as usize])
     }
 
-    /// Returns a bitmask with the lowest two bits set from the elements of
-    /// the `Vec2Mask`.
+    /// Returns a bitmask with the lowest two bits set from the elements of `self`.
     ///
-    /// A true element results in a `1` bit and a false element in a `0` bit.
-    /// Element `x` goes into the first lowest bit, element `y` into the
-    /// second, etc.
+    /// A true element results in a `1` bit and a false element in a `0` bit.  Element `x` goes
+    /// into the first lowest bit, element `y` into the second, etc.
     #[inline]
     pub fn bitmask(self) -> u32 {
         (self.0 & 0x1) | (self.1 & 0x1) << 1
@@ -45,11 +43,11 @@ impl Vec2Mask {
         ((self.0 & self.1) & 0x1) != 0
     }
 
-    /// Creates a new `Vec2` from the elements in `if_true` and `if_false`,
-    /// selecting which to use for each element based on the `Vec2Mask`.
+    /// Creates a `Vec2` from the elements in `if_true` and `if_false`, selecting which to use for
+    /// each element of `self`.
     ///
-    /// A true element in the mask uses the corresponding element from
-    /// `if_true`, and false uses the element from `if_false`.
+    /// A true element in the mask uses the corresponding element from `if_true`, and false uses
+    /// the element from `if_false`.
     #[inline]
     pub fn select(self, if_true: Vec2, if_false: Vec2) -> Vec2 {
         Vec2(

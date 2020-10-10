@@ -48,7 +48,7 @@ impl Quat {
         IDENTITY
     }
 
-    /// Creates a new rotation quaternion from an unaligned `&[f32]`.
+    /// Creates a rotation quaternion from an unaligned `&[f32]`.
     ///
     /// # Preconditions
     ///
@@ -75,8 +75,7 @@ impl Quat {
         self.0.write_to_slice_unaligned(slice)
     }
 
-    /// Create a new quaterion for a normalized rotation axis and angle
-    /// (in radians).
+    /// Create a quaterion for a normalized rotation axis and angle (in radians).
     #[inline]
     pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
         glam_assert!(axis.is_normalized());
@@ -84,21 +83,21 @@ impl Quat {
         Self((axis * s).extend(c))
     }
 
-    /// Creates a new quaternion from the angle (in radians) around the x axis.
+    /// Creates a quaternion from the angle (in radians) around the x axis.
     #[inline]
     pub fn from_rotation_x(angle: f32) -> Self {
         let (s, c) = scalar_sin_cos(angle * 0.5);
         Self::from_xyzw(s, 0.0, 0.0, c)
     }
 
-    /// Creates a new quaternion from the angle (in radians) around the y axis.
+    /// Creates a quaternion from the angle (in radians) around the y axis.
     #[inline]
     pub fn from_rotation_y(angle: f32) -> Self {
         let (s, c) = scalar_sin_cos(angle * 0.5);
         Self::from_xyzw(0.0, s, 0.0, c)
     }
 
-    /// Creates a new quaternion from the angle (in radians) around the z axis.
+    /// Creates a quaternion from the angle (in radians) around the z axis.
     #[inline]
     pub fn from_rotation_z(angle: f32) -> Self {
         let (s, c) = scalar_sin_cos(angle * 0.5);
@@ -187,14 +186,13 @@ impl Quat {
         }
     }
 
-    /// Creates a new quaternion from a 3x3 rotation matrix.
+    /// Creates a quaternion from a 3x3 rotation matrix.
     #[inline]
     pub fn from_rotation_mat3(mat: &Mat3) -> Self {
         Self::from_rotation_axes(mat.x_axis(), mat.y_axis(), mat.z_axis())
     }
 
-    /// Creates a new quaternion from a 3x3 rotation matrix inside a homogeneous
-    /// 4x4 matrix.
+    /// Creates a quaternion from a 3x3 rotation matrix inside a homogeneous 4x4 matrix.
     #[inline]
     pub fn from_rotation_mat4(mat: &Mat4) -> Self {
         Self::from_rotation_axes(

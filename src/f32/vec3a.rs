@@ -110,37 +110,37 @@ impl Vec3A {
         }
     }
 
-    /// Creates a new `Vec3A` with all elements set to `0.0`.
+    /// Creates a `Vec3A` with all elements set to `0.0`.
     #[inline]
     pub const fn zero() -> Self {
         ZERO
     }
 
-    /// Creates a new `Vec3A` with all elements set to `1.0`.
+    /// Creates a `Vec3A` with all elements set to `1.0`.
     #[inline]
     pub const fn one() -> Self {
         ONE
     }
 
-    /// Creates a new `Vec3A` with values `[x: 1.0, y: 0.0, z: 0.0]`.
+    /// Creates a `Vec3A` with values `[x: 1.0, y: 0.0, z: 0.0]`.
     #[inline]
     pub const fn unit_x() -> Self {
         X_AXIS
     }
 
-    /// Creates a new `Vec3A` with values `[x: 0.0, y: 1.0, z: 0.0]`.
+    /// Creates a `Vec3A` with values `[x: 0.0, y: 1.0, z: 0.0]`.
     #[inline]
     pub const fn unit_y() -> Self {
         Y_AXIS
     }
 
-    /// Creates a new `Vec3A` with values `[x: 0.0, y: 0.0, z: 1.0]`.
+    /// Creates a `Vec3A` with values `[x: 0.0, y: 0.0, z: 1.0]`.
     #[inline]
     pub const fn unit_z() -> Self {
         Z_AXIS
     }
 
-    /// Creates a new `Vec3A` with all elements set to `v`.
+    /// Creates a `Vec3A` with all elements set to `v`.
     #[inline]
     pub fn splat(v: f32) -> Self {
         #[cfg(vec3a_sse2)]
@@ -154,7 +154,7 @@ impl Vec3A {
         }
     }
 
-    /// Creates a new `Vec4` from `self` and the given `w` value.
+    /// Creates a `Vec4` from `self` and the given `w` value.
     #[inline]
     pub fn extend(self, w: f32) -> Vec4 {
         #[cfg(vec3a_sse2)]
@@ -657,7 +657,7 @@ impl Vec3A {
         }
     }
 
-    /// Creates a new `Vec3A` from the first four values in `slice`.
+    /// Creates a `Vec3A` from the first four values in `slice`.
     ///
     /// # Panics
     ///
@@ -695,8 +695,7 @@ impl Vec3A {
         }
     }
 
-    /// Returns a new `Vec3A` containing the absolute value of each element of the original
-    /// `Vec3A`.
+    /// Returns a `Vec3A` containing the absolute value of each element of `self`.
     #[inline]
     pub fn abs(self) -> Self {
         #[cfg(vec3a_sse2)]
@@ -713,6 +712,8 @@ impl Vec3A {
         }
     }
 
+    /// Returns a `Vec3A` containing the nearest integer to a number for each element of `self`.
+    /// Round half-way cases away from 0.0.
     #[inline]
     pub fn round(self) -> Self {
         #[cfg(vec3a_sse2)]
@@ -727,6 +728,8 @@ impl Vec3A {
         }
     }
 
+    /// Returns a `Vec3A` containing the largest integer less than or equal to a number for each
+    /// element of `self`.
     #[inline]
     pub fn floor(self) -> Self {
         #[cfg(vec3a_sse2)]
@@ -741,6 +744,8 @@ impl Vec3A {
         }
     }
 
+    /// Returns a `Vec3A` containing the smallest integer greater than or equal to a number for each
+    /// element of `self`.
     #[inline]
     pub fn ceil(self) -> Self {
         #[cfg(vec3a_sse2)]
@@ -755,7 +760,7 @@ impl Vec3A {
         }
     }
 
-    /// Returns a new `Vec4` with elements representing the sign of `self`.
+    /// Returns a `Vec4` with elements representing the sign of `self`.
     ///
     /// - `1.0` if the number is positive, `+0.0` or `INFINITY`
     /// - `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
@@ -771,8 +776,7 @@ impl Vec3A {
         self.recip()
     }
 
-    /// Computes the reciprocal `1.0/n` of each element, returning the
-    /// results in a new `Vec3A`.
+    /// Returns a `Vec3A` containing the reciprocal `1.0/n` of each element of `self`.
     #[inline]
     pub fn recip(self) -> Self {
         // TODO: Optimize

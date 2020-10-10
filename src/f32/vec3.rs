@@ -25,43 +25,43 @@ impl Vec3 {
         Self(x, y, z)
     }
 
-    /// Creates a new `Vec3` with all elements set to `0.0`.
+    /// Creates a `Vec3` with all elements set to `0.0`.
     #[inline]
     pub const fn zero() -> Self {
         ZERO
     }
 
-    /// Creates a new `Vec3` with all elements set to `1.0`.
+    /// Creates a `Vec3` with all elements set to `1.0`.
     #[inline]
     pub const fn one() -> Self {
         ONE
     }
 
-    /// Creates a new `Vec3` with values `[x: 1.0, y: 0.0, z: 0.0]`.
+    /// Creates a `Vec3` with values `[x: 1.0, y: 0.0, z: 0.0]`.
     #[inline]
     pub const fn unit_x() -> Self {
         X_AXIS
     }
 
-    /// Creates a new `Vec3` with values `[x: 0.0, y: 1.0, z: 0.0]`.
+    /// Creates a `Vec3` with values `[x: 0.0, y: 1.0, z: 0.0]`.
     #[inline]
     pub const fn unit_y() -> Self {
         Y_AXIS
     }
 
-    /// Creates a new `Vec3` with values `[x: 0.0, y: 0.0, z: 1.0]`.
+    /// Creates a `Vec3` with values `[x: 0.0, y: 0.0, z: 1.0]`.
     #[inline]
     pub const fn unit_z() -> Self {
         Z_AXIS
     }
 
-    /// Creates a new `Vec3` with all elements set to `v`.
+    /// Creates a `Vec3` with all elements set to `v`.
     #[inline]
     pub fn splat(v: f32) -> Self {
         Self(v, v, v)
     }
 
-    /// Creates a new `Vec4` from `self` and the given `w` value.
+    /// Creates a `Vec4` from `self` and the given `w` value.
     #[inline]
     pub fn extend(self, w: f32) -> Vec4 {
         Vec4::new(self.0, self.1, self.2, w)
@@ -332,7 +332,7 @@ impl Vec3 {
         )
     }
 
-    /// Creates a new `Vec3` from the first three values in `slice`.
+    /// Creates a `Vec3` from the first three values in `slice`.
     ///
     /// # Panics
     ///
@@ -366,29 +366,34 @@ impl Vec3 {
         )
     }
 
-    /// Returns a new `Vec3` containing the absolute value of each element of the original
-    /// `Vec3`.
+    /// Returns a `Vec3` containing the absolute value of each element of `self`.
     #[inline]
     pub fn abs(self) -> Self {
         Self(self.0.abs(), self.1.abs(), self.2.abs())
     }
 
+    /// Returns a `Vec3` containing the nearest integer to a number for each element of `self`.
+    /// Round half-way cases away from 0.0.
     #[inline]
     pub fn round(self) -> Self {
         Self(self.0.round(), self.1.round(), self.2.round())
     }
 
+    /// Returns a `Vec3` containing the largest integer less than or equal to a number for each
+    /// element of `self`.
     #[inline]
     pub fn floor(self) -> Self {
         Self(self.0.floor(), self.1.floor(), self.2.floor())
     }
 
+    /// Returns a `Vec3` containing the smallest integer greater than or equal to a number for each
+    /// element of `self`.
     #[inline]
     pub fn ceil(self) -> Self {
         Self(self.0.ceil(), self.1.ceil(), self.2.ceil())
     }
 
-    /// Returns a new `Vec3` with elements representing the sign of `self`.
+    /// Returns a `Vec3` with elements representing the sign of `self`.
     ///
     /// - `1.0` if the number is positive, `+0.0` or `INFINITY`
     /// - `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
@@ -404,11 +409,10 @@ impl Vec3 {
         self.recip()
     }
 
-    /// Computes the reciprocal `1.0/n` of each element, returning the
-    /// results in a new `Vec3`.
+    /// Returns a `Vec3` containing the reciprocal `1.0/n` of each element of `self`.
     #[inline]
     pub fn recip(self) -> Self {
-        Self::new(1.0 / self.0, 1.0 / self.1, 1.0 / self.2)
+        Self(self.0.recip(), self.1.recip(), self.2.recip())
     }
 
     /// Performs a linear interpolation between `self` and `other` based on

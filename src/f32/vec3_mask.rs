@@ -17,12 +17,10 @@ impl Vec3Mask {
         Self(MASK[x as usize], MASK[y as usize], MASK[z as usize])
     }
 
-    /// Returns a bitmask with the lowest three bits set from the elements of
-    /// the `Vec3Mask`.
+    /// Returns a bitmask with the lowest three bits set from the elements of `self`.
     ///
-    /// A true element results in a `1` bit and a false element in a `0` bit.
-    /// Element `x` goes into the first lowest bit, element `y` into the
-    /// second, etc.
+    /// A true element results in a `1` bit and a false element in a `0` bit.  Element `x` goes
+    /// into the first lowest bit, element `y` into the second, etc.
     #[inline]
     pub fn bitmask(&self) -> u32 {
         // _mm_movemask_ps only checks the most significant bit of the u32 is
@@ -46,11 +44,11 @@ impl Vec3Mask {
         ((self.0 & self.1 & self.2) & 0x1) != 0
     }
 
-    /// Creates a new `Vec3` from the elements in `if_true` and `if_false`,
-    /// selecting which to use for each element based on the `Vec3Mask`.
+    /// Creates a `Vec3` from the elements in `if_true` and `if_false`, selecting which to use for
+    /// each element of `self`.
     ///
-    /// A true element in the mask uses the corresponding element from
-    /// `if_true`, and false uses the element from `if_false`.
+    /// A true element in the mask uses the corresponding element from `if_true`, and false uses
+    /// the element from `if_false`.
     #[inline]
     pub fn select(self, if_true: Vec3, if_false: Vec3) -> Vec3 {
         // We are assuming that the mask values are either 0 or 0xff_ff_ff_ff for the SSE2 and f32

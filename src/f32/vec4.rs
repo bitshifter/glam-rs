@@ -102,43 +102,43 @@ impl Vec4 {
         }
     }
 
-    /// Creates a new `Vec4` with all elements set to `0.0`.
+    /// Creates a `Vec4` with all elements set to `0.0`.
     #[inline]
     pub const fn zero() -> Self {
         ZERO
     }
 
-    /// Creates a new `Vec4` with all elements set to `1.0`.
+    /// Creates a `Vec4` with all elements set to `1.0`.
     #[inline]
     pub const fn one() -> Self {
         ONE
     }
 
-    /// Creates a new `Vec4` with values `[x: 1.0, y: 0.0, z: 0.0, w: 0.0]`.
+    /// Creates a `Vec4` with values `[x: 1.0, y: 0.0, z: 0.0, w: 0.0]`.
     #[inline]
     pub const fn unit_x() -> Self {
         X_AXIS
     }
 
-    /// Creates a new `Vec4` with values `[x: 0.0, y: 1.0, z: 0.0, w: 0.0]`.
+    /// Creates a `Vec4` with values `[x: 0.0, y: 1.0, z: 0.0, w: 0.0]`.
     #[inline]
     pub const fn unit_y() -> Self {
         Y_AXIS
     }
 
-    /// Creates a new `Vec4` with values `[x: 0.0, y: 0.0, z: 1.0, w: 0.0]`.
+    /// Creates a `Vec4` with values `[x: 0.0, y: 0.0, z: 1.0, w: 0.0]`.
     #[inline]
     pub const fn unit_z() -> Self {
         Z_AXIS
     }
 
-    /// Creates a new `Vec4` with values `[x: 0.0, y: 0.0, z: 0.0, w: 1.0]`.
+    /// Creates a `Vec4` with values `[x: 0.0, y: 0.0, z: 0.0, w: 1.0]`.
     #[inline]
     pub const fn unit_w() -> Self {
         W_AXIS
     }
 
-    /// Creates a new `Vec4` with all elements set to `v`.
+    /// Creates a `Vec4` with all elements set to `v`.
     #[inline]
     pub fn splat(v: f32) -> Self {
         #[cfg(vec4_sse2)]
@@ -718,7 +718,7 @@ impl Vec4 {
         }
     }
 
-    /// Creates a new `Vec4` from the first four values in `slice`.
+    /// Creates a `Vec4` from the first four values in `slice`.
     ///
     /// # Panics
     ///
@@ -778,8 +778,7 @@ impl Vec4 {
         }
     }
 
-    /// Returns a new `Vec4` containing the absolute value of each element of the original
-    /// `Vec4`.
+    /// Returns a `Vec4` containing the absolute value of each element of `self`.
     #[inline]
     pub fn abs(self) -> Self {
         #[cfg(vec4_sse2)]
@@ -796,6 +795,8 @@ impl Vec4 {
         }
     }
 
+    /// Returns a `Vec4` containing the nearest integer to a number for each element of `self`.
+    /// Round half-way cases away from 0.0.
     #[inline]
     pub fn round(self) -> Self {
         #[cfg(vec4_sse2)]
@@ -815,6 +816,8 @@ impl Vec4 {
         }
     }
 
+    /// Returns a `Vec4` containing the largest integer less than or equal to a number for each
+    /// element of `self`.
     #[inline]
     pub fn floor(self) -> Self {
         #[cfg(vec4_sse2)]
@@ -834,6 +837,8 @@ impl Vec4 {
         }
     }
 
+    /// Returns a `Vec4` containing the smallest integer greater than or equal to a number for each
+    /// element of `self`.
     #[inline]
     pub fn ceil(self) -> Self {
         #[cfg(vec4_sse2)]
@@ -848,7 +853,7 @@ impl Vec4 {
         }
     }
 
-    /// Returns a new `Vec4` with elements representing the sign of `self`.
+    /// Returns a `Vec4` with elements representing the sign of `self`.
     ///
     /// - `1.0` if the number is positive, `+0.0` or `INFINITY`
     /// - `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
@@ -864,8 +869,7 @@ impl Vec4 {
         self.recip()
     }
 
-    /// Computes the reciprocal `1.0/n` of each element, returning the
-    /// results in a new `Vec4`.
+    /// Returns a `Vec4` containing the reciprocal `1.0/n` of each element of `self`.
     #[inline]
     pub fn recip(self) -> Self {
         // TODO: Optimize

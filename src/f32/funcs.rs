@@ -212,9 +212,9 @@ pub(crate) mod sse2 {
     #[inline]
     pub(crate) unsafe fn m128_sin(v: __m128) -> __m128 {
         // Based on https://github.com/microsoft/DirectXMath `XMVectorSin`
-        
+
         // 11-degree minimax approximation
-        
+
         // Force the value within the bounds of pi
         let mut x = m128_mod_angles(v);
 
