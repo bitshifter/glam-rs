@@ -29,7 +29,7 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## [Realtime Math]
 
-[Realtime Math](https://github.com/nfrechette/rtm)
+[Realtime Math]: https://github.com/nfrechette/rtm
 
 [MIT License](https://github.com/nfrechette/rtm/blob/develop/LICENSE)
 
