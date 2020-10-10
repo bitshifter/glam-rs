@@ -324,6 +324,8 @@ impl Vec2 {
         Self(self.0.floor(), self.1.floor())
     }
 
+    /// Returns a `Vec2` containing the smallest integer greater than or equal to a number for each
+    /// element of `self`.
     #[inline]
     pub fn ceil(self) -> Self {
         Self(self.0.ceil(), self.1.ceil())
