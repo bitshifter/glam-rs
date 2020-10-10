@@ -102,7 +102,10 @@ macro_rules! const_mat4 {
     };
 }
 
-#[cfg(all(not(feature = "scalar-math"), any(target_arch = "x86", target_arch = "x86_64")))]
+#[cfg(all(
+    not(feature = "scalar-math"),
+    any(target_arch = "x86", target_arch = "x86_64")
+))]
 macro_rules! const_m128 {
     ($f32x4:expr) => {
         unsafe { $crate::f32::F32x4Cast { f32x4: $f32x4 }.m128 }

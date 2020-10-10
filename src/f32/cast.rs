@@ -4,7 +4,10 @@ use core::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use core::arch::x86_64::*;
 
-#[cfg(all(not(feature = "scalar-math"), any(target_arch = "x86", target_arch = "x86_64")))]
+#[cfg(all(
+    not(feature = "scalar-math"),
+    any(target_arch = "x86", target_arch = "x86_64")
+))]
 #[repr(C)]
 pub(crate) union UnionCast {
     pub m128: __m128,
