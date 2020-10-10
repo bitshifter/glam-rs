@@ -14,12 +14,17 @@ The format is based on [Keep a Changelog], and this project adheres to
   functions have been added to support creating `const` values of `glam` types:
   `const_mat2`, `const_mat3`, `const_mat4`, `const_quat`, `const_vec2`,
   `const_vec3`, `const_vec3a` and `const_vec4`.
+* Added `is_nan` methods to `Vec2`, `Vec3`, `Vec3A` and `Vec4` which return a
+  mask.
 
 ## Changed
 
 * Renamed the vector `reciprocal` and `length_reciprocal` methods to `recip`
-  and `length_recip` to match the Rust standard library naming. The old
-  functions have been deprecated.
+  and `length_recip` to match the Rust standard library naming. The old methods
+  have been deprecated.
+* Renamed the vector `sign` methods to `signum` match the Rust standard library
+  naming. The new methods now check for `NAN`. The old methods have been
+  deprecated.
 * Added SSE2 optimized implementations of `Mat4::determinant` and
   `Mat4::inverse`.
 
