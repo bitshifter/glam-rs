@@ -14,7 +14,6 @@ use crate::Align16;
 
 const ZERO: Vec3A = const_vec3a!([0.0; 3]);
 const ONE: Vec3A = const_vec3a!([1.0; 3]);
-const NEG_ONE: Vec3A = const_vec3a!([-1.0; 3]);
 const X_AXIS: Vec3A = const_vec3a!([1.0, 0.0, 0.0]);
 const Y_AXIS: Vec3A = const_vec3a!([0.0, 1.0, 0.0]);
 const Z_AXIS: Vec3A = const_vec3a!([0.0, 0.0, 1.0]);
@@ -773,7 +772,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3AMask::new(self.0.is_nan(), self.1.is_nan(), self.2.is_nan())
+            Vec3AMask(self.0.is_nan())
         }
     }
 
@@ -792,6 +791,7 @@ impl Vec3A {
     pub fn signum(self) -> Self {
         #[cfg(vec3a_sse2)]
         {
+            const NEG_ONE: Vec3A = const_vec3a!([-1.0; 3]);
             let mask = self.cmpge(ZERO);
             let result = mask.select(ONE, NEG_ONE);
             self.is_nan().select(self, result)
@@ -799,7 +799,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(self.0.signum(), self.1.signum(), self.2.signum())
+            Vec3A(self.0.signum())
         }
     }
 

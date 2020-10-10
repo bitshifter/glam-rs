@@ -13,7 +13,6 @@ use core::{cmp::Ordering, f32, mem::MaybeUninit};
 
 const ZERO: Vec4 = const_vec4!([0.0; 4]);
 const ONE: Vec4 = const_vec4!([1.0; 4]);
-const NEG_ONE: Vec4 = const_vec4!([-1.0; 4]);
 const X_AXIS: Vec4 = const_vec4!([1.0, 0.0, 0.0, 0.0]);
 const Y_AXIS: Vec4 = const_vec4!([0.0, 1.0, 0.0, 0.0]);
 const Z_AXIS: Vec4 = const_vec4!([0.0, 0.0, 1.0, 0.0]);
@@ -890,6 +889,7 @@ impl Vec4 {
     pub fn signum(self) -> Self {
         #[cfg(vec4_sse2)]
         {
+            const NEG_ONE: Vec4 = const_vec4!([-1.0; 4]);
             let mask = self.cmpge(ZERO);
             let result = mask.select(ONE, NEG_ONE);
             self.is_nan().select(self, result)
