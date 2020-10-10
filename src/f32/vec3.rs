@@ -393,14 +393,28 @@ impl Vec3 {
         Self(self.0.ceil(), self.1.ceil(), self.2.ceil())
     }
 
+    /// Performs `is_nan()` on each element of self, returning a `Vec3Mask` of the results.
+    ///
+    /// In other words, this computes `[x.is_nan(), y.is_nan(), z.is_nan()]`.
+    #[inline]
+    pub fn is_nan(self) -> Vec3Mask {
+        Vec3Mask::new(self.0.is_nan(), self.1.is_nan(), self.2.is_nan())
+    }
+
+    #[deprecated(since = "0.9.5", note = "please use `Vec3::signum` instead")]
+    #[inline(always)]
+    pub fn sign(self) -> Self {
+        self.signum()
+    }
+
     /// Returns a `Vec3` with elements representing the sign of `self`.
     ///
     /// - `1.0` if the number is positive, `+0.0` or `INFINITY`
     /// - `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
+    /// - `NAN` if the number is `NAN`
     #[inline]
-    pub fn sign(self) -> Self {
-        let mask = self.cmpge(Self::zero());
-        mask.select(Self::splat(1.0), Self::splat(-1.0))
+    pub fn signum(self) -> Self {
+        Self(self.0.signum(), self.1.signum(), self.2.signum())
     }
 
     #[deprecated(since = "0.9.5", note = "please use `Vec3::recip` instead")]

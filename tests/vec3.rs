@@ -434,15 +434,14 @@ fn test_vec3mask_hash() {
 }
 
 #[test]
-fn test_vec3_sign() {
-    assert_eq!(Vec3::zero().sign(), Vec3::one());
-    assert_eq!(-Vec3::zero().sign(), -Vec3::one());
-    assert_eq!(Vec3::one().sign(), Vec3::one());
-    assert_eq!((-Vec3::one()).sign(), -Vec3::one());
-    assert_eq!(Vec3::splat(core::f32::INFINITY).sign(), Vec3::one());
-    assert_eq!(Vec3::splat(core::f32::NEG_INFINITY).sign(), -Vec3::one());
-    // there is no special handling of NaN which is different to `core::f32::signum`
-    assert_eq!(Vec3::splat(core::f32::NAN).sign(), -Vec3::one());
+fn test_vec3_signum() {
+    assert_eq!(Vec3::zero().signum(), Vec3::one());
+    assert_eq!(-Vec3::zero().signum(), -Vec3::one());
+    assert_eq!(Vec3::one().signum(), Vec3::one());
+    assert_eq!((-Vec3::one()).signum(), -Vec3::one());
+    assert_eq!(Vec3::splat(f32::INFINITY).signum(), Vec3::one());
+    assert_eq!(Vec3::splat(f32::NEG_INFINITY).signum(), -Vec3::one());
+    assert!(Vec3::splat(f32::NAN).signum().is_nan().all());
 }
 
 #[test]

@@ -18,14 +18,28 @@ pub fn vec2(x: f32, y: f32) -> Vec2 {
 }
 
 impl Vec2 {
+    /// Performs `is_nan` on each element of self, returning a `Vec2Mask` of the results.
+    ///
+    /// In other words, this computes `[x.is_nan(), y.is_nan()]`.
+    #[inline]
+    pub fn is_nan(self) -> Vec2Mask {
+        Vec2Mask::new(self.0.is_nan(), self.1.is_nan())
+    }
+
+    #[deprecated(since = "0.9.5", note = "please use `Vec2::signum` instead")]
+    #[inline(always)]
+    pub fn sign(self) -> Self {
+        self.signum()
+    }
+
     /// Returns a `Vec2` with elements representing the sign of `self`.
     ///
     /// - `1.0` if the number is positive, `+0.0` or `INFINITY`
     /// - `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
+    /// - `NAN` if the number is `NAN`
     #[inline]
-    pub fn sign(self) -> Self {
-        let mask = self.cmpge(Self::zero());
-        mask.select(Self::splat(1.0), Self::splat(-1.0))
+    pub fn signum(self) -> Self {
+        Self(self.0.signum(), self.1.signum())
     }
 
     #[deprecated(since = "0.9.5", note = "please use `Vec2::recip` instead")]

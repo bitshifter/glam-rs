@@ -13,6 +13,7 @@ use core::{cmp::Ordering, f32, mem::MaybeUninit};
 
 const ZERO: Vec4 = const_vec4!([0.0; 4]);
 const ONE: Vec4 = const_vec4!([1.0; 4]);
+const NEG_ONE: Vec4 = const_vec4!([-1.0; 4]);
 const X_AXIS: Vec4 = const_vec4!([1.0, 0.0, 0.0, 0.0]);
 const Y_AXIS: Vec4 = const_vec4!([0.0, 1.0, 0.0, 0.0]);
 const Z_AXIS: Vec4 = const_vec4!([0.0, 0.0, 1.0, 0.0]);
@@ -853,14 +854,56 @@ impl Vec4 {
         }
     }
 
+    /// Performs `is_nan` on each element of self, returning a `Vec4Mask` of the results.
+    ///
+    /// In other words, this computes `[x.is_nan(), y.is_nan(), z.is_nan(), w.is_nan()]`.
+    #[inline]
+    pub fn is_nan(self) -> Vec4Mask {
+        #[cfg(vec4_sse2)]
+        unsafe {
+            Vec4Mask(_mm_cmpunord_ps(self.0, self.0))
+        }
+
+        #[cfg(vec4_f32)]
+        {
+            Vec4Mask::new(
+                self.0.is_nan(),
+                self.1.is_nan(),
+                self.2.is_nan(),
+                self.3.is_nan(),
+            )
+        }
+    }
+
+    #[deprecated(since = "0.9.5", note = "please use `Vec4::signum` instead")]
+    #[inline(always)]
+    pub fn sign(self) -> Self {
+        self.signum()
+    }
+
     /// Returns a `Vec4` with elements representing the sign of `self`.
     ///
     /// - `1.0` if the number is positive, `+0.0` or `INFINITY`
     /// - `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
+    /// - `NAN` if the number is `NAN`
     #[inline]
-    pub fn sign(self) -> Self {
-        let mask = self.cmpge(Self::zero());
-        mask.select(Self::splat(1.0), Self::splat(-1.0))
+    pub fn signum(self) -> Self {
+        #[cfg(vec4_sse2)]
+        {
+            let mask = self.cmpge(ZERO);
+            let result = mask.select(ONE, NEG_ONE);
+            self.is_nan().select(self, result)
+        }
+
+        #[cfg(vec4_f32)]
+        {
+            Vec4(
+                self.0.signum(),
+                self.1.signum(),
+                self.2.signum(),
+                self.3.signum(),
+            )
+        }
     }
 
     #[deprecated(since = "0.9.5", note = "please use `Vec4::recip` instead")]
