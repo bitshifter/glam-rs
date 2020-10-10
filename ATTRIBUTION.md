@@ -6,9 +6,7 @@
 
 [DirectXMath]: https://docs.microsoft.com/en-us/windows/win32/dxmath/directxmath-portal
 
-[MIT License](https://github.com/microsoft/DirectXMath/blob/master/LICENSE)
-
-The MIT License (MIT)
+[The MIT License (MIT)](https://github.com/microsoft/DirectXMath/blob/master/LICENSE)
 
 Copyright (c) 2011-2020 Microsoft Corp
 
@@ -31,9 +29,9 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## [Realtime Math]
 
-[MIT License](https://github.com/nfrechette/rtm/blob/develop/LICENSE)
+[Realtime Math](https://github.com/nfrechette/rtm)
 
-MIT License
+[MIT License](https://github.com/nfrechette/rtm/blob/develop/LICENSE)
 
 Copyright (c) 2018 Nicholas Frechette
 
@@ -59,9 +57,7 @@ SOFTWARE.
 
 [GLM]: https://glm.g-truc.net
 
-[MIT License](https://github.com/g-truc/glm/blob/master/copying.txt)
-
-The MIT License
+[The MIT License](https://github.com/g-truc/glm/blob/master/copying.txt)
 
 Copyright (c) 2005 - G-Truc Creation
 
