@@ -1,5 +1,5 @@
 language: rust
-sudo: required
+os: linux
 dist: trusty
 addons:
   apt:
@@ -17,7 +17,7 @@ env:
   - CARGO_FEATURES="mint rand serde debug-glam-assert transform-types"
   - CARGO_FEATURES="mint rand serde scalar-math debug-glam-assert transform-types"
 
-matrix:
+jobs:
   allow_failures:
     - rust: nightly
   fast_finish: true
