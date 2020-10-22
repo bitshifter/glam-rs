@@ -1208,6 +1208,26 @@ impl From<Vec3> for Vec3A {
     }
 }
 
+impl From<Vec3A> for Vec2 {
+    #[inline]
+    fn from(v: Vec3A) -> Self {
+        #[cfg(vec3a_sse2)]
+        {
+            let mut out: MaybeUninit<Align16<Vec2>> = MaybeUninit::uninit();
+            unsafe {
+                // out is 16 bytes in size due to alignment
+                _mm_store_ps(out.as_mut_ptr() as *mut f32, v.0);
+                out.assume_init().0
+            }
+        }
+
+        #[cfg(vec3a_f32)]
+        {
+            v.0.into()
+        }
+    }
+}
+
 #[test]
 fn test_vec3_private() {
     assert_eq!(

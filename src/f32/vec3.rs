@@ -676,6 +676,13 @@ impl From<Vec3A> for Vec3 {
     }
 }
 
+impl From<Vec3> for Vec2 {
+    #[inline]
+    fn from(v: Vec3) -> Self {
+        Vec2(v.0, v.1)
+    }
+}
+
 #[test]
 fn test_vec3_private() {
     assert_eq!(

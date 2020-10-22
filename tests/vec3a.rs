@@ -223,7 +223,7 @@ fn test_extend_truncate() {
     let a = vec3a(1.0, 2.0, 3.0);
     let b = a.extend(4.0);
     assert_eq!((1.0, 2.0, 3.0, 4.0), b.into());
-    let c = b.truncate();
+    let c = Vec3A::from(b);
     assert_eq!(a, c);
 }
 
@@ -231,7 +231,7 @@ fn test_extend_truncate() {
 fn test_vec3_mask_align16() {
     // make sure the unused 'w' value doesn't break Vec3Ab behaviour
     let a = Vec4::zero();
-    let mut b = a.truncate();
+    let mut b = Vec3A::from(a);
     b.set_x(1.0);
     b.set_y(1.0);
     b.set_z(1.0);

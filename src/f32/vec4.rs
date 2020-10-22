@@ -1,4 +1,4 @@
-use super::{Vec3A, Vec4Mask};
+use super::{Vec2, Vec3, Vec3A, Vec4Mask};
 use core::{fmt, ops::*};
 
 #[cfg(all(vec4_sse2, target_arch = "x86"))]
@@ -152,22 +152,10 @@ impl Vec4 {
         }
     }
 
-    /// Creates a `Vec3A` from the first three elements of `self`, removing `w`.
-    ///
-    /// Note that a `Vec3A` is returned as both `Vec4` and `Vec3A` use SIMD storage so the
-    /// conversion is very cheap. If you need a `Vec3` you can convert from `Vec3A` using `.into()`
-    /// or `Vec3::from`.
+    /// Creates a `Vec3` from the first three elements of `self`, removing `w`.
     #[inline]
-    pub fn truncate(self) -> Vec3A {
-        #[cfg(all(vec4_sse2, vec3a_sse2))]
-        {
-            Vec3A(self.0)
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            Vec3A::new(self.0, self.1, self.2)
-        }
+    pub fn truncate(self) -> Vec3 {
+        self.into()
     }
 
     /// Returns element `x`.
@@ -1349,6 +1337,59 @@ impl From<Vec4> for [f32; 4] {
         #[cfg(vec4_f32)]
         {
             [v.0, v.1, v.2, v.3]
+        }
+    }
+}
+
+impl From<Vec4> for Vec3A {
+    #[inline]
+    fn from(v: Vec4) -> Self {
+        #[cfg(vec4_sse2)]
+        {
+            Vec3A(v.0)
+        }
+
+        #[cfg(vec4_f32)]
+        {
+            Vec3A::new(v.0, v.1, v.2)
+        }
+    }
+}
+
+impl From<Vec4> for Vec3 {
+    #[inline]
+    fn from(v: Vec4) -> Self {
+        #[cfg(vec4_sse2)]
+        {
+            let mut out: MaybeUninit<Align16<Vec3>> = MaybeUninit::uninit();
+            unsafe {
+                _mm_store_ps(out.as_mut_ptr() as *mut f32, v.0);
+                out.assume_init().0
+            }
+        }
+
+        #[cfg(vec4_f32)]
+        {
+            Vec3(v.0, v.1, v.2)
+        }
+    }
+}
+
+impl From<Vec4> for Vec2 {
+    #[inline]
+    fn from(v: Vec4) -> Self {
+        #[cfg(vec4_sse2)]
+        {
+            let mut out: MaybeUninit<Align16<Vec2>> = MaybeUninit::uninit();
+            unsafe {
+                _mm_store_ps(out.as_mut_ptr() as *mut f32, v.0);
+                out.assume_init().0
+            }
+        }
+
+        #[cfg(vec4_f32)]
+        {
+            Vec2(v.0, v.1)
         }
     }
 }

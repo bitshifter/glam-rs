@@ -192,12 +192,12 @@ impl Mat4 {
         let inv_scale = scale.recip();
 
         let rotation = Quat::from_rotation_mat3(&Mat3::from_cols(
-            Vec3::from(self.x_axis().truncate() * inv_scale.dup_x()),
-            Vec3::from(self.y_axis().truncate() * inv_scale.dup_y()),
-            Vec3::from(self.z_axis().truncate() * inv_scale.dup_z()),
+            Vec3::from(Vec3A::from(self.x_axis()) * inv_scale.dup_x()),
+            Vec3::from(Vec3A::from(self.y_axis()) * inv_scale.dup_y()),
+            Vec3::from(Vec3A::from(self.z_axis()) * inv_scale.dup_z()),
         ));
 
-        let translation = Vec3::from(self.w_axis.truncate());
+        let translation = Vec3::from(self.w_axis);
         let scale = Vec3::from(scale);
 
         (scale, rotation, translation)

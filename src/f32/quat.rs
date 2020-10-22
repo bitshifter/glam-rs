@@ -428,9 +428,9 @@ impl Quat {
 
         #[cfg(vec4_sse2)]
         {
-            let w = self.0.dup_w().truncate();
+            let w = Vec3A::from(self.0.dup_w());
             let two = Vec3A::splat(2.0);
-            let b = self.0.truncate();
+            let b = Vec3A::from(self.0);
             let b2 = b.dot_as_vec3(b);
             other * (w * w - b2) + b * (other.dot_as_vec3(b) * two) + b.cross(other) * (w * two)
         }
@@ -439,7 +439,7 @@ impl Quat {
         {
             let other = Vec3::from(other);
             let w = self.0.w();
-            let b = Vec3::from(self.0.truncate());
+            let b = Vec3::from(self.0);
             let b2 = b.dot(b);
             Vec3A::from(
                 other * (w * w - b2) + b * (other.dot(b) * 2.0) + b.cross(other) * (w * 2.0),
