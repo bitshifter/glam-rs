@@ -138,13 +138,13 @@ fn mul_srt_srt(lhs: &TransformSRT, rhs: &TransformSRT) -> TransformSRT {
             Mat4::from_scale_rotation_translation(rhs.scale, rhs.rotation, rhs.translation);
         let mut result_mtx = lhs_mtx * rhs_mtx;
 
-        let sign = scale.sign();
+        let sign = scale.signum();
         result_mtx
-            .set_x_axis((result_mtx.x_axis().truncate().normalize() * sign.dup_x()).extend(0.0));
+            .set_x_axis((Vec3A::from(result_mtx.x_axis()).normalize() * sign.dup_x()).extend(0.0));
         result_mtx
-            .set_y_axis((result_mtx.y_axis().truncate().normalize() * sign.dup_y()).extend(0.0));
+            .set_y_axis((Vec3A::from(result_mtx.y_axis()).normalize() * sign.dup_y()).extend(0.0));
         result_mtx
-            .set_z_axis((result_mtx.z_axis().truncate().normalize() * sign.dup_z()).extend(0.0));
+            .set_z_axis((Vec3A::from(result_mtx.z_axis()).normalize() * sign.dup_z()).extend(0.0));
 
         let scale = Vec3::from(scale);
         let rotation = Quat::from_rotation_mat4(&result_mtx);
