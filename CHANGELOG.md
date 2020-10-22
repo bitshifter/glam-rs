@@ -7,6 +7,15 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
+## Added
+
+* Added `From` implementations to truncate to narrower vector types, e.g.
+  `Vec4` to `Vec3A`, `Vec3` and `Vec2` and from `Vec3A` and `Vec3` to `Vec2`.
+
+## Changed
+
+* Changed the return type of `Vec4::truncate` from `Vec3A` to `Vec3`.
+
 ## [0.9.5] - 2020-10-10
 
 ## Added
