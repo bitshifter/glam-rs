@@ -5,8 +5,16 @@ mod support;
 
 use criterion::{criterion_group, criterion_main, Criterion};
 use glam::f32::Vec3;
-use std::ops::Mul;
+use std::ops::{Add, Mul};
 use support::{random_mat3, random_quat, random_srt_mat4, random_vec3};
+
+bench_binop!(
+    vec3_add_vec3,
+    "vec3 add vec3",
+    op => add,
+    from1 => random_vec3,
+    from2 => random_vec3
+);
 
 bench_binop!(
     quat_mul_vec3,
@@ -101,6 +109,7 @@ bench_binop!(
 
 criterion_group!(
     benches,
+    vec3_add_vec3,
     quat_mul_vec3,
     mat3_mul_vec3,
     mat4_transform_point3,

@@ -4,7 +4,7 @@ mod macros;
 mod support;
 
 use criterion::{criterion_group, criterion_main, Criterion};
-use glam::f32::Vec3A;
+use glam::f32::{Vec3, Vec3A};
 use std::ops::Mul;
 use support::{random_mat3, random_quat, random_vec3a};
 
@@ -44,6 +44,18 @@ fn vec3a_into_array(v: Vec3A) -> [f32; 3] {
 fn vec3a_into_tuple(v: Vec3A) -> (f32, f32, f32) {
     v.into()
 }
+
+#[inline]
+fn vec3a_into_vec3(v: Vec3A) -> Vec3 {
+    v.into()
+}
+
+bench_func!(
+vec3a_to_vec3,
+"vec3a into vec3",
+op => vec3a_into_vec3,
+from => random_vec3a
+);
 
 bench_func!(
 vec3a_to_rgb,
@@ -93,6 +105,7 @@ criterion_group!(
     vec3a_to_array_accessors,
     vec3a_to_array_into,
     vec3a_to_tuple_into,
+    vec3a_to_vec3,
 );
 
 criterion_main!(benches);
