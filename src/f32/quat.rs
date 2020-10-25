@@ -6,7 +6,7 @@ use core::arch::x86_64::*;
 use core::{
     cmp::Ordering,
     fmt,
-    ops::{Add, Mul, MulAssign, Neg, Sub},
+    ops::{Add, Div, Mul, MulAssign, Neg, Sub},
 };
 
 const IDENTITY: Quat = const_quat!([0.0, 0.0, 0.0, 1.0]);
@@ -456,11 +456,18 @@ impl Quat {
 
     #[inline]
     /// Adds two quaternions.
-    /// The sum is probably not anywhere near normalized.
+    /// The sum not guaranteed to be normalized.
     /// NB: Addition is not the same as combining the rotations represented by the two quaternions!
     /// That corresponds to multiplication.
     pub fn add_quat(self, other: Self) -> Self {
         Self(self.0 + other.0)
+    }
+
+    #[inline]
+    /// Multiplies a quaternion with an f32.
+    /// The product is not guaranteed to be normalized.
+    pub fn mul_f32(self, other: f32) -> Self {
+        Self(self.0 * other)
     }
 
     #[inline]
@@ -576,6 +583,22 @@ impl Sub<Quat> for Quat {
     #[inline]
     fn sub(self, other: Self) -> Self {
         Self(self.0 - other.0)
+    }
+}
+
+impl Mul<f32> for Quat {
+    type Output = Self;
+    #[inline]
+    fn mul(self, other: f32) -> Self {
+        self.mul_f32(other)
+    }
+}
+
+impl Div<f32> for Quat {
+    type Output = Self;
+    #[inline]
+    fn div(self, other: f32) -> Self {
+        self.mul_f32(1. / other)
     }
 }
 
