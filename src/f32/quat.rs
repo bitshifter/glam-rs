@@ -6,7 +6,7 @@ use core::arch::x86_64::*;
 use core::{
     cmp::Ordering,
     fmt,
-    ops::{Mul, MulAssign, Neg},
+    ops::{Add, Mul, MulAssign, Neg, Sub},
 };
 
 const IDENTITY: Quat = const_quat!([0.0, 0.0, 0.0, 1.0]);
@@ -455,7 +455,17 @@ impl Quat {
     }
 
     #[inline]
+    /// Adds two quaternions.
+    /// The sum is probably not anywhere near normalized.
+    /// NB: Addition is not the same as combining the rotations represented by the two quaternions!
+    /// That corresponds to multiplication.
+    pub fn add_quat(self, other: Self) -> Self {
+        Self(self.0 + other.0)
+    }
+
+    #[inline]
     /// Multiplies two quaternions.
+    /// If they each represent a rotation, the result will represent the combined rotation.
     /// Note that due to floating point rounding the result may not be perfectly normalized.
     pub fn mul_quat(self, other: Self) -> Self {
         glam_assert!(self.is_normalized());
@@ -550,6 +560,22 @@ impl fmt::Display for Quat {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         let (x, y, z, w) = self.0.into();
         write!(fmt, "[{}, {}, {}, {}]", x, y, z, w)
+    }
+}
+
+impl Add<Quat> for Quat {
+    type Output = Self;
+    #[inline]
+    fn add(self, other: Self) -> Self {
+        self.add_quat(other)
+    }
+}
+
+impl Sub<Quat> for Quat {
+    type Output = Self;
+    #[inline]
+    fn sub(self, other: Self) -> Self {
+        Self(self.0 - other.0)
     }
 }
 
