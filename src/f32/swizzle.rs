@@ -23,7 +23,7 @@ impl Vec4 {
     pub fn xxxy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_00_00))
         }
 
         #[cfg(vec4_f32)]
@@ -35,7 +35,7 @@ impl Vec4 {
     pub fn xxxz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_00_00))
         }
 
         #[cfg(vec4_f32)]
@@ -47,7 +47,7 @@ impl Vec4 {
     pub fn xxxw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_00_00))
         }
 
         #[cfg(vec4_f32)]
@@ -59,7 +59,7 @@ impl Vec4 {
     pub fn xxyx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_00))
         }
 
         #[cfg(vec4_f32)]
@@ -71,7 +71,7 @@ impl Vec4 {
     pub fn xxyy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_00_00))
         }
 
         #[cfg(vec4_f32)]
@@ -83,7 +83,7 @@ impl Vec4 {
     pub fn xxyz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_00_00))
         }
 
         #[cfg(vec4_f32)]
@@ -95,7 +95,7 @@ impl Vec4 {
     pub fn xxyw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_00_00))
         }
 
         #[cfg(vec4_f32)]
@@ -107,7 +107,7 @@ impl Vec4 {
     pub fn xxzx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_00))
         }
 
         #[cfg(vec4_f32)]
@@ -119,7 +119,7 @@ impl Vec4 {
     pub fn xxzy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_00_00))
         }
 
         #[cfg(vec4_f32)]
@@ -131,7 +131,7 @@ impl Vec4 {
     pub fn xxzz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_00_00))
         }
 
         #[cfg(vec4_f32)]
@@ -143,7 +143,7 @@ impl Vec4 {
     pub fn xxzw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_00_00))
         }
 
         #[cfg(vec4_f32)]
@@ -155,7 +155,7 @@ impl Vec4 {
     pub fn xxwx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_11_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_00_00))
         }
 
         #[cfg(vec4_f32)]
@@ -167,7 +167,7 @@ impl Vec4 {
     pub fn xxwy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_11_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_00_00))
         }
 
         #[cfg(vec4_f32)]
@@ -179,7 +179,7 @@ impl Vec4 {
     pub fn xxwz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_11_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_00_00))
         }
 
         #[cfg(vec4_f32)]
@@ -191,7 +191,7 @@ impl Vec4 {
     pub fn xxww(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_11_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_00_00))
         }
 
         #[cfg(vec4_f32)]
@@ -203,7 +203,7 @@ impl Vec4 {
     pub fn xyxx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_00))
         }
 
         #[cfg(vec4_f32)]
@@ -215,7 +215,7 @@ impl Vec4 {
     pub fn xyxy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_01_00))
         }
 
         #[cfg(vec4_f32)]
@@ -227,7 +227,7 @@ impl Vec4 {
     pub fn xyxz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_01_00))
         }
 
         #[cfg(vec4_f32)]
@@ -239,7 +239,7 @@ impl Vec4 {
     pub fn xyxw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_01_00))
         }
 
         #[cfg(vec4_f32)]
@@ -263,7 +263,7 @@ impl Vec4 {
     pub fn xyyy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_01_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_00))
         }
 
         #[cfg(vec4_f32)]
@@ -275,7 +275,7 @@ impl Vec4 {
     pub fn xyyz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_01_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_01_00))
         }
 
         #[cfg(vec4_f32)]
@@ -287,7 +287,7 @@ impl Vec4 {
     pub fn xyyw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_01_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_01_00))
         }
 
         #[cfg(vec4_f32)]
@@ -299,7 +299,7 @@ impl Vec4 {
     pub fn xyzx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_10_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_01_00))
         }
 
         #[cfg(vec4_f32)]
@@ -311,7 +311,7 @@ impl Vec4 {
     pub fn xyzy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_10_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_01_00))
         }
 
         #[cfg(vec4_f32)]
@@ -323,7 +323,7 @@ impl Vec4 {
     pub fn xyzz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_10_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_01_00))
         }
 
         #[cfg(vec4_f32)]
@@ -332,22 +332,10 @@ impl Vec4 {
         }
     }
     #[inline]
-    pub fn xyzw(self) -> Vec4 {
-        #[cfg(vec4_sse2)]
-        unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_10_11))
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            Vec4(self.0, self.1, self.2, self.3)
-        }
-    }
-    #[inline]
     pub fn xywx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_11_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_01_00))
         }
 
         #[cfg(vec4_f32)]
@@ -359,7 +347,7 @@ impl Vec4 {
     pub fn xywy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_11_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_01_00))
         }
 
         #[cfg(vec4_f32)]
@@ -371,7 +359,7 @@ impl Vec4 {
     pub fn xywz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_11_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_01_00))
         }
 
         #[cfg(vec4_f32)]
@@ -383,7 +371,7 @@ impl Vec4 {
     pub fn xyww(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_11_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_01_00))
         }
 
         #[cfg(vec4_f32)]
@@ -395,7 +383,7 @@ impl Vec4 {
     pub fn xzxx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_00))
         }
 
         #[cfg(vec4_f32)]
@@ -407,7 +395,7 @@ impl Vec4 {
     pub fn xzxy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_10_00))
         }
 
         #[cfg(vec4_f32)]
@@ -419,7 +407,7 @@ impl Vec4 {
     pub fn xzxz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_10_00))
         }
 
         #[cfg(vec4_f32)]
@@ -431,7 +419,7 @@ impl Vec4 {
     pub fn xzxw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_10_00))
         }
 
         #[cfg(vec4_f32)]
@@ -443,7 +431,7 @@ impl Vec4 {
     pub fn xzyx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_01_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_10_00))
         }
 
         #[cfg(vec4_f32)]
@@ -455,7 +443,7 @@ impl Vec4 {
     pub fn xzyy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_01_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_10_00))
         }
 
         #[cfg(vec4_f32)]
@@ -467,7 +455,7 @@ impl Vec4 {
     pub fn xzyz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_01_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_10_00))
         }
 
         #[cfg(vec4_f32)]
@@ -479,7 +467,7 @@ impl Vec4 {
     pub fn xzyw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_01_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_10_00))
         }
 
         #[cfg(vec4_f32)]
@@ -503,7 +491,7 @@ impl Vec4 {
     pub fn xzzy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_10_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_10_00))
         }
 
         #[cfg(vec4_f32)]
@@ -515,7 +503,7 @@ impl Vec4 {
     pub fn xzzz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_10_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_00))
         }
 
         #[cfg(vec4_f32)]
@@ -527,7 +515,7 @@ impl Vec4 {
     pub fn xzzw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_10_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_10_00))
         }
 
         #[cfg(vec4_f32)]
@@ -539,7 +527,7 @@ impl Vec4 {
     pub fn xzwx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_11_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_10_00))
         }
 
         #[cfg(vec4_f32)]
@@ -551,7 +539,7 @@ impl Vec4 {
     pub fn xzwy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_11_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_10_00))
         }
 
         #[cfg(vec4_f32)]
@@ -563,7 +551,7 @@ impl Vec4 {
     pub fn xzwz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_11_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_10_00))
         }
 
         #[cfg(vec4_f32)]
@@ -575,7 +563,7 @@ impl Vec4 {
     pub fn xzww(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_11_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_10_00))
         }
 
         #[cfg(vec4_f32)]
@@ -587,7 +575,7 @@ impl Vec4 {
     pub fn xwxx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_00_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_11_00))
         }
 
         #[cfg(vec4_f32)]
@@ -599,7 +587,7 @@ impl Vec4 {
     pub fn xwxy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_00_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_11_00))
         }
 
         #[cfg(vec4_f32)]
@@ -611,7 +599,7 @@ impl Vec4 {
     pub fn xwxz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_00_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_11_00))
         }
 
         #[cfg(vec4_f32)]
@@ -623,7 +611,7 @@ impl Vec4 {
     pub fn xwxw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_00_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_11_00))
         }
 
         #[cfg(vec4_f32)]
@@ -635,7 +623,7 @@ impl Vec4 {
     pub fn xwyx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_01_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_11_00))
         }
 
         #[cfg(vec4_f32)]
@@ -647,7 +635,7 @@ impl Vec4 {
     pub fn xwyy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_01_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_11_00))
         }
 
         #[cfg(vec4_f32)]
@@ -659,7 +647,7 @@ impl Vec4 {
     pub fn xwyz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_01_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_11_00))
         }
 
         #[cfg(vec4_f32)]
@@ -671,7 +659,7 @@ impl Vec4 {
     pub fn xwyw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_01_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_11_00))
         }
 
         #[cfg(vec4_f32)]
@@ -683,7 +671,7 @@ impl Vec4 {
     pub fn xwzx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_10_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_11_00))
         }
 
         #[cfg(vec4_f32)]
@@ -695,7 +683,7 @@ impl Vec4 {
     pub fn xwzy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_10_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_11_00))
         }
 
         #[cfg(vec4_f32)]
@@ -707,7 +695,7 @@ impl Vec4 {
     pub fn xwzz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_10_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_11_00))
         }
 
         #[cfg(vec4_f32)]
@@ -719,7 +707,7 @@ impl Vec4 {
     pub fn xwzw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_10_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_11_00))
         }
 
         #[cfg(vec4_f32)]
@@ -743,7 +731,7 @@ impl Vec4 {
     pub fn xwwy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_11_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_11_00))
         }
 
         #[cfg(vec4_f32)]
@@ -755,7 +743,7 @@ impl Vec4 {
     pub fn xwwz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_11_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_11_00))
         }
 
         #[cfg(vec4_f32)]
@@ -767,7 +755,7 @@ impl Vec4 {
     pub fn xwww(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_11_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_11_00))
         }
 
         #[cfg(vec4_f32)]
@@ -779,7 +767,7 @@ impl Vec4 {
     pub fn yxxx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_00_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_01))
         }
 
         #[cfg(vec4_f32)]
@@ -803,7 +791,7 @@ impl Vec4 {
     pub fn yxxz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_00_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_00_01))
         }
 
         #[cfg(vec4_f32)]
@@ -815,7 +803,7 @@ impl Vec4 {
     pub fn yxxw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_00_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_00_01))
         }
 
         #[cfg(vec4_f32)]
@@ -827,7 +815,7 @@ impl Vec4 {
     pub fn yxyx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_01_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_01))
         }
 
         #[cfg(vec4_f32)]
@@ -839,7 +827,7 @@ impl Vec4 {
     pub fn yxyy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_01_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_00_01))
         }
 
         #[cfg(vec4_f32)]
@@ -851,7 +839,7 @@ impl Vec4 {
     pub fn yxyz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_01_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_00_01))
         }
 
         #[cfg(vec4_f32)]
@@ -863,7 +851,7 @@ impl Vec4 {
     pub fn yxyw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_01_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_00_01))
         }
 
         #[cfg(vec4_f32)]
@@ -875,7 +863,7 @@ impl Vec4 {
     pub fn yxzx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_10_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_01))
         }
 
         #[cfg(vec4_f32)]
@@ -887,7 +875,7 @@ impl Vec4 {
     pub fn yxzy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_10_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_00_01))
         }
 
         #[cfg(vec4_f32)]
@@ -899,7 +887,7 @@ impl Vec4 {
     pub fn yxzz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_10_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_00_01))
         }
 
         #[cfg(vec4_f32)]
@@ -911,7 +899,7 @@ impl Vec4 {
     pub fn yxzw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_10_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_00_01))
         }
 
         #[cfg(vec4_f32)]
@@ -923,7 +911,7 @@ impl Vec4 {
     pub fn yxwx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_11_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_00_01))
         }
 
         #[cfg(vec4_f32)]
@@ -935,7 +923,7 @@ impl Vec4 {
     pub fn yxwy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_11_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_00_01))
         }
 
         #[cfg(vec4_f32)]
@@ -947,7 +935,7 @@ impl Vec4 {
     pub fn yxwz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_11_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_00_01))
         }
 
         #[cfg(vec4_f32)]
@@ -959,7 +947,7 @@ impl Vec4 {
     pub fn yxww(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_11_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_00_01))
         }
 
         #[cfg(vec4_f32)]
@@ -971,7 +959,7 @@ impl Vec4 {
     pub fn yyxx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_00_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_01))
         }
 
         #[cfg(vec4_f32)]
@@ -983,7 +971,7 @@ impl Vec4 {
     pub fn yyxy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_00_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_01_01))
         }
 
         #[cfg(vec4_f32)]
@@ -995,7 +983,7 @@ impl Vec4 {
     pub fn yyxz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_00_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_01_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1007,7 +995,7 @@ impl Vec4 {
     pub fn yyxw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_00_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_01_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1019,7 +1007,7 @@ impl Vec4 {
     pub fn yyyx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_01_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1043,7 +1031,7 @@ impl Vec4 {
     pub fn yyyz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_01_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1055,7 +1043,7 @@ impl Vec4 {
     pub fn yyyw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_01_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1067,7 +1055,7 @@ impl Vec4 {
     pub fn yyzx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_10_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_01_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1079,7 +1067,7 @@ impl Vec4 {
     pub fn yyzy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_10_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_01_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1091,7 +1079,7 @@ impl Vec4 {
     pub fn yyzz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_10_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_01_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1103,7 +1091,7 @@ impl Vec4 {
     pub fn yyzw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_10_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_01_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1115,7 +1103,7 @@ impl Vec4 {
     pub fn yywx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_11_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_01_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1127,7 +1115,7 @@ impl Vec4 {
     pub fn yywy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_11_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_01_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1139,7 +1127,7 @@ impl Vec4 {
     pub fn yywz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_11_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_01_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1151,7 +1139,7 @@ impl Vec4 {
     pub fn yyww(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_11_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_01_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1163,7 +1151,7 @@ impl Vec4 {
     pub fn yzxx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_00_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1175,7 +1163,7 @@ impl Vec4 {
     pub fn yzxy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_00_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_10_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1187,7 +1175,7 @@ impl Vec4 {
     pub fn yzxz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_00_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_10_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1199,7 +1187,7 @@ impl Vec4 {
     pub fn yzxw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_00_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_10_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1211,7 +1199,7 @@ impl Vec4 {
     pub fn yzyx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_01_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_10_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1223,7 +1211,7 @@ impl Vec4 {
     pub fn yzyy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_01_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_10_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1235,7 +1223,7 @@ impl Vec4 {
     pub fn yzyz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_01_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_10_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1247,7 +1235,7 @@ impl Vec4 {
     pub fn yzyw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_01_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_10_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1259,7 +1247,7 @@ impl Vec4 {
     pub fn yzzx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_10_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_10_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1283,7 +1271,7 @@ impl Vec4 {
     pub fn yzzz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_10_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1295,7 +1283,7 @@ impl Vec4 {
     pub fn yzzw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_10_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_10_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1307,7 +1295,7 @@ impl Vec4 {
     pub fn yzwx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_11_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_10_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1319,7 +1307,7 @@ impl Vec4 {
     pub fn yzwy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_11_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_10_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1331,7 +1319,7 @@ impl Vec4 {
     pub fn yzwz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_11_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_10_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1343,7 +1331,7 @@ impl Vec4 {
     pub fn yzww(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_11_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_10_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1355,7 +1343,7 @@ impl Vec4 {
     pub fn ywxx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_00_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_11_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1367,7 +1355,7 @@ impl Vec4 {
     pub fn ywxy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_00_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_11_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1379,7 +1367,7 @@ impl Vec4 {
     pub fn ywxz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_00_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_11_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1391,7 +1379,7 @@ impl Vec4 {
     pub fn ywxw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_00_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_11_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1403,7 +1391,7 @@ impl Vec4 {
     pub fn ywyx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_01_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_11_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1415,7 +1403,7 @@ impl Vec4 {
     pub fn ywyy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_01_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_11_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1427,7 +1415,7 @@ impl Vec4 {
     pub fn ywyz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_01_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_11_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1439,7 +1427,7 @@ impl Vec4 {
     pub fn ywyw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_01_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_11_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1451,7 +1439,7 @@ impl Vec4 {
     pub fn ywzx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_10_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_11_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1463,7 +1451,7 @@ impl Vec4 {
     pub fn ywzy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_10_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_11_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1475,7 +1463,7 @@ impl Vec4 {
     pub fn ywzz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_10_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_11_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1487,7 +1475,7 @@ impl Vec4 {
     pub fn ywzw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_10_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_11_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1499,7 +1487,7 @@ impl Vec4 {
     pub fn ywwx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_11_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_11_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1523,7 +1511,7 @@ impl Vec4 {
     pub fn ywwz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_11_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_11_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1535,7 +1523,7 @@ impl Vec4 {
     pub fn ywww(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_11_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_11_01))
         }
 
         #[cfg(vec4_f32)]
@@ -1547,7 +1535,7 @@ impl Vec4 {
     pub fn zxxx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_00_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1559,7 +1547,7 @@ impl Vec4 {
     pub fn zxxy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_00_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_00_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1583,7 +1571,7 @@ impl Vec4 {
     pub fn zxxw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_00_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_00_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1595,7 +1583,7 @@ impl Vec4 {
     pub fn zxyx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_01_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1607,7 +1595,7 @@ impl Vec4 {
     pub fn zxyy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_01_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_00_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1619,7 +1607,7 @@ impl Vec4 {
     pub fn zxyz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_01_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_00_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1631,7 +1619,7 @@ impl Vec4 {
     pub fn zxyw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_01_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_00_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1643,7 +1631,7 @@ impl Vec4 {
     pub fn zxzx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_10_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1655,7 +1643,7 @@ impl Vec4 {
     pub fn zxzy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_10_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_00_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1667,7 +1655,7 @@ impl Vec4 {
     pub fn zxzz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_10_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_00_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1679,7 +1667,7 @@ impl Vec4 {
     pub fn zxzw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_10_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_00_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1691,7 +1679,7 @@ impl Vec4 {
     pub fn zxwx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_11_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_00_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1703,7 +1691,7 @@ impl Vec4 {
     pub fn zxwy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_11_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_00_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1715,7 +1703,7 @@ impl Vec4 {
     pub fn zxwz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_11_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_00_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1727,7 +1715,7 @@ impl Vec4 {
     pub fn zxww(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_11_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_00_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1739,7 +1727,7 @@ impl Vec4 {
     pub fn zyxx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_00_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1751,7 +1739,7 @@ impl Vec4 {
     pub fn zyxy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_00_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_01_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1763,7 +1751,7 @@ impl Vec4 {
     pub fn zyxz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_00_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_01_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1775,7 +1763,7 @@ impl Vec4 {
     pub fn zyxw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_00_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_01_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1787,7 +1775,7 @@ impl Vec4 {
     pub fn zyyx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_01_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_01_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1799,7 +1787,7 @@ impl Vec4 {
     pub fn zyyy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_01_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1823,7 +1811,7 @@ impl Vec4 {
     pub fn zyyw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_01_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_01_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1835,7 +1823,7 @@ impl Vec4 {
     pub fn zyzx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_10_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_01_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1847,7 +1835,7 @@ impl Vec4 {
     pub fn zyzy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_10_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_01_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1859,7 +1847,7 @@ impl Vec4 {
     pub fn zyzz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_10_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_01_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1871,7 +1859,7 @@ impl Vec4 {
     pub fn zyzw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_10_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_01_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1883,7 +1871,7 @@ impl Vec4 {
     pub fn zywx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_11_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_01_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1895,7 +1883,7 @@ impl Vec4 {
     pub fn zywy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_11_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_01_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1907,7 +1895,7 @@ impl Vec4 {
     pub fn zywz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_11_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_01_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1919,7 +1907,7 @@ impl Vec4 {
     pub fn zyww(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_11_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_01_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1931,7 +1919,7 @@ impl Vec4 {
     pub fn zzxx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_00_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1943,7 +1931,7 @@ impl Vec4 {
     pub fn zzxy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_00_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_10_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1955,7 +1943,7 @@ impl Vec4 {
     pub fn zzxz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_00_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_10_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1967,7 +1955,7 @@ impl Vec4 {
     pub fn zzxw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_00_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_10_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1979,7 +1967,7 @@ impl Vec4 {
     pub fn zzyx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_01_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_10_10))
         }
 
         #[cfg(vec4_f32)]
@@ -1991,7 +1979,7 @@ impl Vec4 {
     pub fn zzyy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_01_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_10_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2003,7 +1991,7 @@ impl Vec4 {
     pub fn zzyz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_01_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_10_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2015,7 +2003,7 @@ impl Vec4 {
     pub fn zzyw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_01_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_10_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2027,7 +2015,7 @@ impl Vec4 {
     pub fn zzzx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_10_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2039,7 +2027,7 @@ impl Vec4 {
     pub fn zzzy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_10_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2063,7 +2051,7 @@ impl Vec4 {
     pub fn zzzw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_10_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2075,7 +2063,7 @@ impl Vec4 {
     pub fn zzwx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_11_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_10_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2087,7 +2075,7 @@ impl Vec4 {
     pub fn zzwy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_11_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_10_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2099,7 +2087,7 @@ impl Vec4 {
     pub fn zzwz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_11_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_10_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2111,7 +2099,7 @@ impl Vec4 {
     pub fn zzww(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_11_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_10_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2123,7 +2111,7 @@ impl Vec4 {
     pub fn zwxx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_00_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_11_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2135,7 +2123,7 @@ impl Vec4 {
     pub fn zwxy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_00_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_11_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2147,7 +2135,7 @@ impl Vec4 {
     pub fn zwxz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_00_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_11_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2159,7 +2147,7 @@ impl Vec4 {
     pub fn zwxw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_00_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_11_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2171,7 +2159,7 @@ impl Vec4 {
     pub fn zwyx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_01_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_11_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2183,7 +2171,7 @@ impl Vec4 {
     pub fn zwyy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_01_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_11_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2195,7 +2183,7 @@ impl Vec4 {
     pub fn zwyz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_01_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_11_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2207,7 +2195,7 @@ impl Vec4 {
     pub fn zwyw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_01_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_11_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2219,7 +2207,7 @@ impl Vec4 {
     pub fn zwzx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_10_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_11_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2231,7 +2219,7 @@ impl Vec4 {
     pub fn zwzy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_10_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_11_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2243,7 +2231,7 @@ impl Vec4 {
     pub fn zwzz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_10_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_11_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2255,7 +2243,7 @@ impl Vec4 {
     pub fn zwzw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_10_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_11_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2267,7 +2255,7 @@ impl Vec4 {
     pub fn zwwx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_11_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_11_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2279,7 +2267,7 @@ impl Vec4 {
     pub fn zwwy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_11_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_11_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2303,7 +2291,7 @@ impl Vec4 {
     pub fn zwww(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_11_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_11_10))
         }
 
         #[cfg(vec4_f32)]
@@ -2315,7 +2303,7 @@ impl Vec4 {
     pub fn wxxx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_00_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2327,7 +2315,7 @@ impl Vec4 {
     pub fn wxxy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_00_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_00_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2339,7 +2327,7 @@ impl Vec4 {
     pub fn wxxz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_00_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_00_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2363,7 +2351,7 @@ impl Vec4 {
     pub fn wxyx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_01_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2375,7 +2363,7 @@ impl Vec4 {
     pub fn wxyy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_01_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_00_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2387,7 +2375,7 @@ impl Vec4 {
     pub fn wxyz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_01_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_00_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2399,7 +2387,7 @@ impl Vec4 {
     pub fn wxyw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_01_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_00_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2411,7 +2399,7 @@ impl Vec4 {
     pub fn wxzx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_10_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2423,7 +2411,7 @@ impl Vec4 {
     pub fn wxzy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_10_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_00_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2435,7 +2423,7 @@ impl Vec4 {
     pub fn wxzz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_10_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_00_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2447,7 +2435,7 @@ impl Vec4 {
     pub fn wxzw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_10_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_00_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2459,7 +2447,7 @@ impl Vec4 {
     pub fn wxwx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_11_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_00_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2471,7 +2459,7 @@ impl Vec4 {
     pub fn wxwy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_11_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_00_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2483,7 +2471,7 @@ impl Vec4 {
     pub fn wxwz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_11_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_00_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2495,7 +2483,7 @@ impl Vec4 {
     pub fn wxww(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_11_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_00_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2507,7 +2495,7 @@ impl Vec4 {
     pub fn wyxx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_00_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2519,7 +2507,7 @@ impl Vec4 {
     pub fn wyxy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_00_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_01_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2531,7 +2519,7 @@ impl Vec4 {
     pub fn wyxz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_00_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_01_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2543,7 +2531,7 @@ impl Vec4 {
     pub fn wyxw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_00_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_01_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2555,7 +2543,7 @@ impl Vec4 {
     pub fn wyyx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_01_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_01_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2567,7 +2555,7 @@ impl Vec4 {
     pub fn wyyy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_01_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2579,7 +2567,7 @@ impl Vec4 {
     pub fn wyyz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_01_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_01_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2603,7 +2591,7 @@ impl Vec4 {
     pub fn wyzx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_10_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_01_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2615,7 +2603,7 @@ impl Vec4 {
     pub fn wyzy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_10_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_01_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2627,7 +2615,7 @@ impl Vec4 {
     pub fn wyzz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_10_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_01_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2639,7 +2627,7 @@ impl Vec4 {
     pub fn wyzw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_10_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_01_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2651,7 +2639,7 @@ impl Vec4 {
     pub fn wywx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_11_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_01_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2663,7 +2651,7 @@ impl Vec4 {
     pub fn wywy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_11_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_01_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2675,7 +2663,7 @@ impl Vec4 {
     pub fn wywz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_11_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_01_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2687,7 +2675,7 @@ impl Vec4 {
     pub fn wyww(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_11_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_01_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2699,7 +2687,7 @@ impl Vec4 {
     pub fn wzxx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_00_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2711,7 +2699,7 @@ impl Vec4 {
     pub fn wzxy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_00_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_10_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2723,7 +2711,7 @@ impl Vec4 {
     pub fn wzxz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_00_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_10_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2735,7 +2723,7 @@ impl Vec4 {
     pub fn wzxw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_00_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_10_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2747,7 +2735,7 @@ impl Vec4 {
     pub fn wzyx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_01_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_10_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2759,7 +2747,7 @@ impl Vec4 {
     pub fn wzyy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_01_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_10_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2771,7 +2759,7 @@ impl Vec4 {
     pub fn wzyz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_01_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_10_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2783,7 +2771,7 @@ impl Vec4 {
     pub fn wzyw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_01_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_10_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2795,7 +2783,7 @@ impl Vec4 {
     pub fn wzzx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_10_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_10_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2807,7 +2795,7 @@ impl Vec4 {
     pub fn wzzy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_10_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_10_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2819,7 +2807,7 @@ impl Vec4 {
     pub fn wzzz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_10_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2843,7 +2831,7 @@ impl Vec4 {
     pub fn wzwx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_11_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_10_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2855,7 +2843,7 @@ impl Vec4 {
     pub fn wzwy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_11_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_10_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2867,7 +2855,7 @@ impl Vec4 {
     pub fn wzwz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_11_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_10_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2879,7 +2867,7 @@ impl Vec4 {
     pub fn wzww(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_11_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_10_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2891,7 +2879,7 @@ impl Vec4 {
     pub fn wwxx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_00_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_11_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2903,7 +2891,7 @@ impl Vec4 {
     pub fn wwxy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_00_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_11_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2915,7 +2903,7 @@ impl Vec4 {
     pub fn wwxz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_00_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_11_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2927,7 +2915,7 @@ impl Vec4 {
     pub fn wwxw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_00_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_11_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2939,7 +2927,7 @@ impl Vec4 {
     pub fn wwyx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_01_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_11_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2951,7 +2939,7 @@ impl Vec4 {
     pub fn wwyy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_01_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_11_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2963,7 +2951,7 @@ impl Vec4 {
     pub fn wwyz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_01_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_11_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2975,7 +2963,7 @@ impl Vec4 {
     pub fn wwyw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_01_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_11_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2987,7 +2975,7 @@ impl Vec4 {
     pub fn wwzx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_10_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_11_11))
         }
 
         #[cfg(vec4_f32)]
@@ -2999,7 +2987,7 @@ impl Vec4 {
     pub fn wwzy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_10_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_11_11))
         }
 
         #[cfg(vec4_f32)]
@@ -3011,7 +2999,7 @@ impl Vec4 {
     pub fn wwzz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_10_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_11_11))
         }
 
         #[cfg(vec4_f32)]
@@ -3023,7 +3011,7 @@ impl Vec4 {
     pub fn wwzw(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_10_11))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_11_11))
         }
 
         #[cfg(vec4_f32)]
@@ -3035,7 +3023,7 @@ impl Vec4 {
     pub fn wwwx(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_11_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_11_11))
         }
 
         #[cfg(vec4_f32)]
@@ -3047,7 +3035,7 @@ impl Vec4 {
     pub fn wwwy(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_11_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_11_11))
         }
 
         #[cfg(vec4_f32)]
@@ -3059,7 +3047,7 @@ impl Vec4 {
     pub fn wwwz(self) -> Vec4 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_11_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_11_11))
         }
 
         #[cfg(vec4_f32)]
@@ -3095,7 +3083,7 @@ impl Vec4 {
     pub fn xxy(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_00)))
         }
 
         #[cfg(vec4_f32)]
@@ -3107,7 +3095,7 @@ impl Vec4 {
     pub fn xxz(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_00)))
         }
 
         #[cfg(vec4_f32)]
@@ -3119,7 +3107,7 @@ impl Vec4 {
     pub fn xxw(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_11_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_00_00)))
         }
 
         #[cfg(vec4_f32)]
@@ -3131,7 +3119,7 @@ impl Vec4 {
     pub fn xyx(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_00)))
         }
 
         #[cfg(vec4_f32)]
@@ -3155,7 +3143,7 @@ impl Vec4 {
     pub fn xyz(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_10_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_01_00)))
         }
 
         #[cfg(vec4_f32)]
@@ -3167,7 +3155,7 @@ impl Vec4 {
     pub fn xyw(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_11_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_01_00)))
         }
 
         #[cfg(vec4_f32)]
@@ -3179,7 +3167,7 @@ impl Vec4 {
     pub fn xzx(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_00)))
         }
 
         #[cfg(vec4_f32)]
@@ -3191,7 +3179,7 @@ impl Vec4 {
     pub fn xzy(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_01_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_10_00)))
         }
 
         #[cfg(vec4_f32)]
@@ -3215,7 +3203,7 @@ impl Vec4 {
     pub fn xzw(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_11_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_10_00)))
         }
 
         #[cfg(vec4_f32)]
@@ -3227,7 +3215,7 @@ impl Vec4 {
     pub fn xwx(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_00_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_11_00)))
         }
 
         #[cfg(vec4_f32)]
@@ -3239,7 +3227,7 @@ impl Vec4 {
     pub fn xwy(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_01_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_11_00)))
         }
 
         #[cfg(vec4_f32)]
@@ -3251,7 +3239,7 @@ impl Vec4 {
     pub fn xwz(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_10_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_11_00)))
         }
 
         #[cfg(vec4_f32)]
@@ -3275,7 +3263,7 @@ impl Vec4 {
     pub fn yxx(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_00_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_01)))
         }
 
         #[cfg(vec4_f32)]
@@ -3287,7 +3275,7 @@ impl Vec4 {
     pub fn yxy(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_01_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_01)))
         }
 
         #[cfg(vec4_f32)]
@@ -3299,7 +3287,7 @@ impl Vec4 {
     pub fn yxz(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_10_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_01)))
         }
 
         #[cfg(vec4_f32)]
@@ -3311,7 +3299,7 @@ impl Vec4 {
     pub fn yxw(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_11_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_00_01)))
         }
 
         #[cfg(vec4_f32)]
@@ -3323,7 +3311,7 @@ impl Vec4 {
     pub fn yyx(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_00_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_01)))
         }
 
         #[cfg(vec4_f32)]
@@ -3335,7 +3323,7 @@ impl Vec4 {
     pub fn yyy(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_01_01)))
         }
 
         #[cfg(vec4_f32)]
@@ -3347,7 +3335,7 @@ impl Vec4 {
     pub fn yyz(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_10_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_01_01)))
         }
 
         #[cfg(vec4_f32)]
@@ -3359,7 +3347,7 @@ impl Vec4 {
     pub fn yyw(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_11_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_01_01)))
         }
 
         #[cfg(vec4_f32)]
@@ -3371,7 +3359,7 @@ impl Vec4 {
     pub fn yzx(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_00_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_01)))
         }
 
         #[cfg(vec4_f32)]
@@ -3383,7 +3371,7 @@ impl Vec4 {
     pub fn yzy(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_01_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_10_01)))
         }
 
         #[cfg(vec4_f32)]
@@ -3395,7 +3383,7 @@ impl Vec4 {
     pub fn yzz(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_10_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_10_01)))
         }
 
         #[cfg(vec4_f32)]
@@ -3407,7 +3395,7 @@ impl Vec4 {
     pub fn yzw(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_11_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_10_01)))
         }
 
         #[cfg(vec4_f32)]
@@ -3419,7 +3407,7 @@ impl Vec4 {
     pub fn ywx(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_00_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_11_01)))
         }
 
         #[cfg(vec4_f32)]
@@ -3431,7 +3419,7 @@ impl Vec4 {
     pub fn ywy(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_01_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_11_01)))
         }
 
         #[cfg(vec4_f32)]
@@ -3443,7 +3431,7 @@ impl Vec4 {
     pub fn ywz(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_10_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_11_01)))
         }
 
         #[cfg(vec4_f32)]
@@ -3455,7 +3443,7 @@ impl Vec4 {
     pub fn yww(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_11_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_11_01)))
         }
 
         #[cfg(vec4_f32)]
@@ -3467,7 +3455,7 @@ impl Vec4 {
     pub fn zxx(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_00_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_10)))
         }
 
         #[cfg(vec4_f32)]
@@ -3479,7 +3467,7 @@ impl Vec4 {
     pub fn zxy(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_01_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_10)))
         }
 
         #[cfg(vec4_f32)]
@@ -3491,7 +3479,7 @@ impl Vec4 {
     pub fn zxz(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_10_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_10)))
         }
 
         #[cfg(vec4_f32)]
@@ -3503,7 +3491,7 @@ impl Vec4 {
     pub fn zxw(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_11_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_00_10)))
         }
 
         #[cfg(vec4_f32)]
@@ -3515,7 +3503,7 @@ impl Vec4 {
     pub fn zyx(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_00_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_10)))
         }
 
         #[cfg(vec4_f32)]
@@ -3527,7 +3515,7 @@ impl Vec4 {
     pub fn zyy(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_01_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_01_10)))
         }
 
         #[cfg(vec4_f32)]
@@ -3539,7 +3527,7 @@ impl Vec4 {
     pub fn zyz(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_10_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_01_10)))
         }
 
         #[cfg(vec4_f32)]
@@ -3551,7 +3539,7 @@ impl Vec4 {
     pub fn zyw(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_11_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_01_10)))
         }
 
         #[cfg(vec4_f32)]
@@ -3563,7 +3551,7 @@ impl Vec4 {
     pub fn zzx(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_00_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_10)))
         }
 
         #[cfg(vec4_f32)]
@@ -3575,7 +3563,7 @@ impl Vec4 {
     pub fn zzy(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_01_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_10_10)))
         }
 
         #[cfg(vec4_f32)]
@@ -3587,7 +3575,7 @@ impl Vec4 {
     pub fn zzz(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_10_10)))
         }
 
         #[cfg(vec4_f32)]
@@ -3599,7 +3587,7 @@ impl Vec4 {
     pub fn zzw(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_11_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_10_10)))
         }
 
         #[cfg(vec4_f32)]
@@ -3611,7 +3599,7 @@ impl Vec4 {
     pub fn zwx(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_00_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_11_10)))
         }
 
         #[cfg(vec4_f32)]
@@ -3623,7 +3611,7 @@ impl Vec4 {
     pub fn zwy(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_01_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_11_10)))
         }
 
         #[cfg(vec4_f32)]
@@ -3635,7 +3623,7 @@ impl Vec4 {
     pub fn zwz(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_10_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_11_10)))
         }
 
         #[cfg(vec4_f32)]
@@ -3647,7 +3635,7 @@ impl Vec4 {
     pub fn zww(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_11_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_11_10)))
         }
 
         #[cfg(vec4_f32)]
@@ -3659,7 +3647,7 @@ impl Vec4 {
     pub fn wxx(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_00_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_11)))
         }
 
         #[cfg(vec4_f32)]
@@ -3671,7 +3659,7 @@ impl Vec4 {
     pub fn wxy(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_01_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_11)))
         }
 
         #[cfg(vec4_f32)]
@@ -3683,7 +3671,7 @@ impl Vec4 {
     pub fn wxz(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_10_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_11)))
         }
 
         #[cfg(vec4_f32)]
@@ -3695,7 +3683,7 @@ impl Vec4 {
     pub fn wxw(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_11_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_00_11)))
         }
 
         #[cfg(vec4_f32)]
@@ -3707,7 +3695,7 @@ impl Vec4 {
     pub fn wyx(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_00_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_11)))
         }
 
         #[cfg(vec4_f32)]
@@ -3719,7 +3707,7 @@ impl Vec4 {
     pub fn wyy(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_01_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_01_11)))
         }
 
         #[cfg(vec4_f32)]
@@ -3731,7 +3719,7 @@ impl Vec4 {
     pub fn wyz(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_10_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_01_11)))
         }
 
         #[cfg(vec4_f32)]
@@ -3743,7 +3731,7 @@ impl Vec4 {
     pub fn wyw(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_11_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_01_11)))
         }
 
         #[cfg(vec4_f32)]
@@ -3755,7 +3743,7 @@ impl Vec4 {
     pub fn wzx(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_00_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_11)))
         }
 
         #[cfg(vec4_f32)]
@@ -3767,7 +3755,7 @@ impl Vec4 {
     pub fn wzy(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_01_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_10_11)))
         }
 
         #[cfg(vec4_f32)]
@@ -3779,7 +3767,7 @@ impl Vec4 {
     pub fn wzz(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_10_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_10_11)))
         }
 
         #[cfg(vec4_f32)]
@@ -3791,7 +3779,7 @@ impl Vec4 {
     pub fn wzw(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_11_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_10_11)))
         }
 
         #[cfg(vec4_f32)]
@@ -3803,7 +3791,7 @@ impl Vec4 {
     pub fn wwx(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_00_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_11_11)))
         }
 
         #[cfg(vec4_f32)]
@@ -3815,7 +3803,7 @@ impl Vec4 {
     pub fn wwy(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_01_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_11_11)))
         }
 
         #[cfg(vec4_f32)]
@@ -3827,7 +3815,7 @@ impl Vec4 {
     pub fn wwz(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_10_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_11_11)))
         }
 
         #[cfg(vec4_f32)]
@@ -3839,7 +3827,7 @@ impl Vec4 {
     pub fn www(self) -> Vec3 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_11_00)))
+            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_11_11)))
         }
 
         #[cfg(vec4_f32)]
@@ -3863,7 +3851,7 @@ impl Vec4 {
     pub fn xy(self) -> Vec2 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_00)))
+            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_00)))
         }
 
         #[cfg(vec4_f32)]
@@ -3875,7 +3863,7 @@ impl Vec4 {
     pub fn xz(self) -> Vec2 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_00)))
+            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_00)))
         }
 
         #[cfg(vec4_f32)]
@@ -3887,7 +3875,7 @@ impl Vec4 {
     pub fn xw(self) -> Vec2 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_11_00_00)))
+            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_11_00)))
         }
 
         #[cfg(vec4_f32)]
@@ -3899,7 +3887,7 @@ impl Vec4 {
     pub fn yx(self) -> Vec2 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_00_00)))
+            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_01)))
         }
 
         #[cfg(vec4_f32)]
@@ -3911,7 +3899,7 @@ impl Vec4 {
     pub fn yy(self) -> Vec2 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_00_00)))
+            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_01)))
         }
 
         #[cfg(vec4_f32)]
@@ -3923,7 +3911,7 @@ impl Vec4 {
     pub fn yz(self) -> Vec2 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_00_00)))
+            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_01)))
         }
 
         #[cfg(vec4_f32)]
@@ -3935,7 +3923,7 @@ impl Vec4 {
     pub fn yw(self) -> Vec2 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_11_00_00)))
+            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_11_01)))
         }
 
         #[cfg(vec4_f32)]
@@ -3947,7 +3935,7 @@ impl Vec4 {
     pub fn zx(self) -> Vec2 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_00_00)))
+            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_10)))
         }
 
         #[cfg(vec4_f32)]
@@ -3959,7 +3947,7 @@ impl Vec4 {
     pub fn zy(self) -> Vec2 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_00_00)))
+            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_10)))
         }
 
         #[cfg(vec4_f32)]
@@ -3971,7 +3959,7 @@ impl Vec4 {
     pub fn zz(self) -> Vec2 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_00_00)))
+            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_10)))
         }
 
         #[cfg(vec4_f32)]
@@ -3983,7 +3971,7 @@ impl Vec4 {
     pub fn zw(self) -> Vec2 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_11_00_00)))
+            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_11_10)))
         }
 
         #[cfg(vec4_f32)]
@@ -3995,7 +3983,7 @@ impl Vec4 {
     pub fn wx(self) -> Vec2 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_00_00_00)))
+            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_11)))
         }
 
         #[cfg(vec4_f32)]
@@ -4007,7 +3995,7 @@ impl Vec4 {
     pub fn wy(self) -> Vec2 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_01_00_00)))
+            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_11)))
         }
 
         #[cfg(vec4_f32)]
@@ -4019,7 +4007,7 @@ impl Vec4 {
     pub fn wz(self) -> Vec2 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_10_00_00)))
+            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_11)))
         }
 
         #[cfg(vec4_f32)]
@@ -4031,7 +4019,7 @@ impl Vec4 {
     pub fn ww(self) -> Vec2 {
         #[cfg(vec4_sse2)]
         unsafe {
-            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b11_11_00_00)))
+            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_11_11)))
         }
 
         #[cfg(vec4_f32)]
@@ -4058,7 +4046,7 @@ impl Vec3A {
     pub fn xxxy(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_00_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -4070,7 +4058,7 @@ impl Vec3A {
     pub fn xxxz(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_00_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -4082,7 +4070,7 @@ impl Vec3A {
     pub fn xxyx(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -4094,7 +4082,7 @@ impl Vec3A {
     pub fn xxyy(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_00_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -4106,7 +4094,7 @@ impl Vec3A {
     pub fn xxyz(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_00_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -4118,7 +4106,7 @@ impl Vec3A {
     pub fn xxzx(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -4130,7 +4118,7 @@ impl Vec3A {
     pub fn xxzy(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_00_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -4142,7 +4130,7 @@ impl Vec3A {
     pub fn xxzz(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_00_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -4154,7 +4142,7 @@ impl Vec3A {
     pub fn xyxx(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -4166,7 +4154,7 @@ impl Vec3A {
     pub fn xyxy(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_01_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -4178,7 +4166,7 @@ impl Vec3A {
     pub fn xyxz(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_01_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -4202,7 +4190,7 @@ impl Vec3A {
     pub fn xyyy(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_01_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -4214,7 +4202,7 @@ impl Vec3A {
     pub fn xyyz(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_01_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_01_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -4226,7 +4214,7 @@ impl Vec3A {
     pub fn xyzx(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_10_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_01_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -4238,7 +4226,7 @@ impl Vec3A {
     pub fn xyzy(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_10_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_01_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -4250,7 +4238,7 @@ impl Vec3A {
     pub fn xyzz(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_10_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_01_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -4262,7 +4250,7 @@ impl Vec3A {
     pub fn xzxx(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -4274,7 +4262,7 @@ impl Vec3A {
     pub fn xzxy(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_10_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -4286,7 +4274,7 @@ impl Vec3A {
     pub fn xzxz(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_10_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -4298,7 +4286,7 @@ impl Vec3A {
     pub fn xzyx(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_01_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_10_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -4310,7 +4298,7 @@ impl Vec3A {
     pub fn xzyy(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_01_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_10_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -4322,7 +4310,7 @@ impl Vec3A {
     pub fn xzyz(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_01_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_10_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -4346,7 +4334,7 @@ impl Vec3A {
     pub fn xzzy(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_10_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_10_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -4358,7 +4346,7 @@ impl Vec3A {
     pub fn xzzz(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_10_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -4370,7 +4358,7 @@ impl Vec3A {
     pub fn yxxx(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_00_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -4394,7 +4382,7 @@ impl Vec3A {
     pub fn yxxz(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_00_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_00_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -4406,7 +4394,7 @@ impl Vec3A {
     pub fn yxyx(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_01_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -4418,7 +4406,7 @@ impl Vec3A {
     pub fn yxyy(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_01_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_00_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -4430,7 +4418,7 @@ impl Vec3A {
     pub fn yxyz(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_01_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_00_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -4442,7 +4430,7 @@ impl Vec3A {
     pub fn yxzx(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_10_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -4454,7 +4442,7 @@ impl Vec3A {
     pub fn yxzy(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_10_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_00_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -4466,7 +4454,7 @@ impl Vec3A {
     pub fn yxzz(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_10_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_00_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -4478,7 +4466,7 @@ impl Vec3A {
     pub fn yyxx(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_00_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -4490,7 +4478,7 @@ impl Vec3A {
     pub fn yyxy(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_00_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_01_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -4502,7 +4490,7 @@ impl Vec3A {
     pub fn yyxz(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_00_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_01_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -4514,7 +4502,7 @@ impl Vec3A {
     pub fn yyyx(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_01_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -4538,7 +4526,7 @@ impl Vec3A {
     pub fn yyyz(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_01_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -4550,7 +4538,7 @@ impl Vec3A {
     pub fn yyzx(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_10_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_01_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -4562,7 +4550,7 @@ impl Vec3A {
     pub fn yyzy(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_10_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_01_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -4574,7 +4562,7 @@ impl Vec3A {
     pub fn yyzz(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_10_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_01_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -4586,7 +4574,7 @@ impl Vec3A {
     pub fn yzxx(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_00_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -4598,7 +4586,7 @@ impl Vec3A {
     pub fn yzxy(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_00_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_10_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -4610,7 +4598,7 @@ impl Vec3A {
     pub fn yzxz(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_00_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_10_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -4622,7 +4610,7 @@ impl Vec3A {
     pub fn yzyx(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_01_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_10_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -4634,7 +4622,7 @@ impl Vec3A {
     pub fn yzyy(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_01_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_10_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -4646,7 +4634,7 @@ impl Vec3A {
     pub fn yzyz(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_01_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_10_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -4658,7 +4646,7 @@ impl Vec3A {
     pub fn yzzx(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_10_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_10_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -4682,7 +4670,7 @@ impl Vec3A {
     pub fn yzzz(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_10_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -4694,7 +4682,7 @@ impl Vec3A {
     pub fn zxxx(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_00_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -4706,7 +4694,7 @@ impl Vec3A {
     pub fn zxxy(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_00_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_00_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -4730,7 +4718,7 @@ impl Vec3A {
     pub fn zxyx(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_01_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -4742,7 +4730,7 @@ impl Vec3A {
     pub fn zxyy(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_01_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_00_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -4754,7 +4742,7 @@ impl Vec3A {
     pub fn zxyz(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_01_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_00_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -4766,7 +4754,7 @@ impl Vec3A {
     pub fn zxzx(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_10_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -4778,7 +4766,7 @@ impl Vec3A {
     pub fn zxzy(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_10_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_00_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -4790,7 +4778,7 @@ impl Vec3A {
     pub fn zxzz(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_10_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_00_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -4802,7 +4790,7 @@ impl Vec3A {
     pub fn zyxx(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_00_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -4814,7 +4802,7 @@ impl Vec3A {
     pub fn zyxy(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_00_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_01_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -4826,7 +4814,7 @@ impl Vec3A {
     pub fn zyxz(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_00_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_01_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -4838,7 +4826,7 @@ impl Vec3A {
     pub fn zyyx(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_01_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_01_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -4850,7 +4838,7 @@ impl Vec3A {
     pub fn zyyy(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_01_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -4874,7 +4862,7 @@ impl Vec3A {
     pub fn zyzx(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_10_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_01_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -4886,7 +4874,7 @@ impl Vec3A {
     pub fn zyzy(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_10_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_01_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -4898,7 +4886,7 @@ impl Vec3A {
     pub fn zyzz(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_10_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_01_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -4910,7 +4898,7 @@ impl Vec3A {
     pub fn zzxx(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_00_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -4922,7 +4910,7 @@ impl Vec3A {
     pub fn zzxy(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_00_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_00_10_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -4934,7 +4922,7 @@ impl Vec3A {
     pub fn zzxz(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_00_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_00_10_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -4946,7 +4934,7 @@ impl Vec3A {
     pub fn zzyx(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_01_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_01_10_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -4958,7 +4946,7 @@ impl Vec3A {
     pub fn zzyy(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_01_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_01_10_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -4970,7 +4958,7 @@ impl Vec3A {
     pub fn zzyz(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_01_10))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_01_10_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -4982,7 +4970,7 @@ impl Vec3A {
     pub fn zzzx(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_00))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_10_10_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -4994,7 +4982,7 @@ impl Vec3A {
     pub fn zzzy(self) -> Vec4 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_01))
+            Vec4(_mm_shuffle_ps(self.0, self.0, 0b01_10_10_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -5030,7 +5018,7 @@ impl Vec3A {
     pub fn xxy(self) -> Vec3A {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_00))
+            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -5042,7 +5030,7 @@ impl Vec3A {
     pub fn xxz(self) -> Vec3A {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_00))
+            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -5054,7 +5042,7 @@ impl Vec3A {
     pub fn xyx(self) -> Vec3A {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_00))
+            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -5075,22 +5063,10 @@ impl Vec3A {
         }
     }
     #[inline]
-    pub fn xyz(self) -> Vec3A {
-        #[cfg(vec3a_sse2)]
-        unsafe {
-            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_01_10_00))
-        }
-
-        #[cfg(vec3a_f32)]
-        {
-            Vec3A(Vec3(self.0.0, self.0.1, self.0.2))
-        }
-    }
-    #[inline]
     pub fn xzx(self) -> Vec3A {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_00))
+            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -5102,7 +5078,7 @@ impl Vec3A {
     pub fn xzy(self) -> Vec3A {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_10_01_00))
+            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_01_10_00))
         }
 
         #[cfg(vec3a_f32)]
@@ -5126,7 +5102,7 @@ impl Vec3A {
     pub fn yxx(self) -> Vec3A {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b01_00_00_00))
+            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -5138,7 +5114,7 @@ impl Vec3A {
     pub fn yxy(self) -> Vec3A {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b01_00_01_00))
+            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -5150,7 +5126,7 @@ impl Vec3A {
     pub fn yxz(self) -> Vec3A {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b01_00_10_00))
+            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -5162,7 +5138,7 @@ impl Vec3A {
     pub fn yyx(self) -> Vec3A {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b01_01_00_00))
+            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -5174,7 +5150,7 @@ impl Vec3A {
     pub fn yyy(self) -> Vec3A {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_00))
+            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_01_01_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -5186,7 +5162,7 @@ impl Vec3A {
     pub fn yyz(self) -> Vec3A {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b01_01_10_00))
+            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_10_01_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -5198,7 +5174,7 @@ impl Vec3A {
     pub fn yzx(self) -> Vec3A {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b01_10_00_00))
+            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -5210,7 +5186,7 @@ impl Vec3A {
     pub fn yzy(self) -> Vec3A {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b01_10_01_00))
+            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_01_10_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -5222,7 +5198,7 @@ impl Vec3A {
     pub fn yzz(self) -> Vec3A {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b01_10_10_00))
+            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_10_10_01))
         }
 
         #[cfg(vec3a_f32)]
@@ -5234,7 +5210,7 @@ impl Vec3A {
     pub fn zxx(self) -> Vec3A {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b10_00_00_00))
+            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -5246,7 +5222,7 @@ impl Vec3A {
     pub fn zxy(self) -> Vec3A {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b10_00_01_00))
+            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -5258,7 +5234,7 @@ impl Vec3A {
     pub fn zxz(self) -> Vec3A {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b10_00_10_00))
+            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -5270,7 +5246,7 @@ impl Vec3A {
     pub fn zyx(self) -> Vec3A {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b10_01_00_00))
+            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -5282,7 +5258,7 @@ impl Vec3A {
     pub fn zyy(self) -> Vec3A {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b10_01_01_00))
+            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_01_01_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -5294,7 +5270,7 @@ impl Vec3A {
     pub fn zyz(self) -> Vec3A {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b10_01_10_00))
+            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_10_01_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -5306,7 +5282,7 @@ impl Vec3A {
     pub fn zzx(self) -> Vec3A {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b10_10_00_00))
+            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -5318,7 +5294,7 @@ impl Vec3A {
     pub fn zzy(self) -> Vec3A {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b10_10_01_00))
+            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_01_10_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -5330,7 +5306,7 @@ impl Vec3A {
     pub fn zzz(self) -> Vec3A {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_00))
+            Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_10_10_10))
         }
 
         #[cfg(vec3a_f32)]
@@ -5354,7 +5330,7 @@ impl Vec3A {
     pub fn xy(self) -> Vec2 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec2::from(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_01_00_00)))
+            Vec2::from(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_00)))
         }
 
         #[cfg(vec3a_f32)]
@@ -5366,7 +5342,7 @@ impl Vec3A {
     pub fn xz(self) -> Vec2 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec2::from(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_10_00_00)))
+            Vec2::from(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_00)))
         }
 
         #[cfg(vec3a_f32)]
@@ -5378,7 +5354,7 @@ impl Vec3A {
     pub fn yx(self) -> Vec2 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec2::from(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b01_00_00_00)))
+            Vec2::from(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_01)))
         }
 
         #[cfg(vec3a_f32)]
@@ -5390,7 +5366,7 @@ impl Vec3A {
     pub fn yy(self) -> Vec2 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec2::from(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b01_01_00_00)))
+            Vec2::from(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_01)))
         }
 
         #[cfg(vec3a_f32)]
@@ -5402,7 +5378,7 @@ impl Vec3A {
     pub fn yz(self) -> Vec2 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec2::from(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b01_10_00_00)))
+            Vec2::from(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_01)))
         }
 
         #[cfg(vec3a_f32)]
@@ -5414,7 +5390,7 @@ impl Vec3A {
     pub fn zx(self) -> Vec2 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec2::from(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b10_00_00_00)))
+            Vec2::from(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_10)))
         }
 
         #[cfg(vec3a_f32)]
@@ -5426,7 +5402,7 @@ impl Vec3A {
     pub fn zy(self) -> Vec2 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec2::from(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b10_01_00_00)))
+            Vec2::from(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_10)))
         }
 
         #[cfg(vec3a_f32)]
@@ -5438,7 +5414,7 @@ impl Vec3A {
     pub fn zz(self) -> Vec2 {
         #[cfg(vec3a_sse2)]
         unsafe {
-            Vec2::from(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b10_10_00_00)))
+            Vec2::from(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_10)))
         }
 
         #[cfg(vec3a_f32)]
@@ -5794,10 +5770,6 @@ impl Vec3 {
         Vec3(self.0, self.1, self.1)
     }
     #[inline]
-    pub fn xyz(self) -> Vec3 {
-        Vec3(self.0, self.1, self.2)
-    }
-    #[inline]
     pub fn xzx(self) -> Vec3 {
         Vec3(self.0, self.2, self.0)
     }
@@ -6019,10 +5991,6 @@ impl Vec2 {
     #[inline]
     pub fn xx(self) -> Vec2 {
         Vec2(self.0, self.0)
-    }
-    #[inline]
-    pub fn xy(self) -> Vec2 {
-        Vec2(self.0, self.1)
     }
     #[inline]
     pub fn yx(self) -> Vec2 {
