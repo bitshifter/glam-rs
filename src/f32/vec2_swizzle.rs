@@ -2,140 +2,143 @@
 
 use super::{Vec2, Vec3, Vec4};
 
-impl Vec2 {
+pub trait Vec2Swizzles {
+    fn xxxx(self) -> Vec4;
+    fn xxxy(self) -> Vec4;
+    fn xxyx(self) -> Vec4;
+    fn xxyy(self) -> Vec4;
+    fn xyxx(self) -> Vec4;
+    fn xyxy(self) -> Vec4;
+    fn xyyx(self) -> Vec4;
+    fn xyyy(self) -> Vec4;
+    fn yxxx(self) -> Vec4;
+    fn yxxy(self) -> Vec4;
+    fn yxyx(self) -> Vec4;
+    fn yxyy(self) -> Vec4;
+    fn yyxx(self) -> Vec4;
+    fn yyxy(self) -> Vec4;
+    fn yyyx(self) -> Vec4;
+    fn yyyy(self) -> Vec4;
+    fn xxx(self) -> Vec3;
+    fn xxy(self) -> Vec3;
+    fn xyx(self) -> Vec3;
+    fn xyy(self) -> Vec3;
+    fn yxx(self) -> Vec3;
+    fn yxy(self) -> Vec3;
+    fn yyx(self) -> Vec3;
+    fn yyy(self) -> Vec3;
+    fn xx(self) -> Vec2;
+    fn yx(self) -> Vec2;
+    fn yy(self) -> Vec2;
+}
+
+impl Vec2Swizzles for Vec2 {
     #[inline]
-    pub fn xxxx(self) -> Vec4 {
+    fn xxxx(self) -> Vec4 {
         Vec4::new(self.0, self.0, self.0, self.0)
     }
-
     #[inline]
-    pub fn xxxy(self) -> Vec4 {
+    fn xxxy(self) -> Vec4 {
         Vec4::new(self.0, self.0, self.0, self.1)
     }
-
     #[inline]
-    pub fn xxyx(self) -> Vec4 {
+    fn xxyx(self) -> Vec4 {
         Vec4::new(self.0, self.0, self.1, self.0)
     }
-
     #[inline]
-    pub fn xxyy(self) -> Vec4 {
+    fn xxyy(self) -> Vec4 {
         Vec4::new(self.0, self.0, self.1, self.1)
     }
-
     #[inline]
-    pub fn xyxx(self) -> Vec4 {
+    fn xyxx(self) -> Vec4 {
         Vec4::new(self.0, self.1, self.0, self.0)
     }
-
     #[inline]
-    pub fn xyxy(self) -> Vec4 {
+    fn xyxy(self) -> Vec4 {
         Vec4::new(self.0, self.1, self.0, self.1)
     }
-
     #[inline]
-    pub fn xyyx(self) -> Vec4 {
+    fn xyyx(self) -> Vec4 {
         Vec4::new(self.0, self.1, self.1, self.0)
     }
-
     #[inline]
-    pub fn xyyy(self) -> Vec4 {
+    fn xyyy(self) -> Vec4 {
         Vec4::new(self.0, self.1, self.1, self.1)
     }
-
     #[inline]
-    pub fn yxxx(self) -> Vec4 {
+    fn yxxx(self) -> Vec4 {
         Vec4::new(self.1, self.0, self.0, self.0)
     }
-
     #[inline]
-    pub fn yxxy(self) -> Vec4 {
+    fn yxxy(self) -> Vec4 {
         Vec4::new(self.1, self.0, self.0, self.1)
     }
-
     #[inline]
-    pub fn yxyx(self) -> Vec4 {
+    fn yxyx(self) -> Vec4 {
         Vec4::new(self.1, self.0, self.1, self.0)
     }
-
     #[inline]
-    pub fn yxyy(self) -> Vec4 {
+    fn yxyy(self) -> Vec4 {
         Vec4::new(self.1, self.0, self.1, self.1)
     }
-
     #[inline]
-    pub fn yyxx(self) -> Vec4 {
+    fn yyxx(self) -> Vec4 {
         Vec4::new(self.1, self.1, self.0, self.0)
     }
-
     #[inline]
-    pub fn yyxy(self) -> Vec4 {
+    fn yyxy(self) -> Vec4 {
         Vec4::new(self.1, self.1, self.0, self.1)
     }
-
     #[inline]
-    pub fn yyyx(self) -> Vec4 {
+    fn yyyx(self) -> Vec4 {
         Vec4::new(self.1, self.1, self.1, self.0)
     }
-
     #[inline]
-    pub fn yyyy(self) -> Vec4 {
+    fn yyyy(self) -> Vec4 {
         Vec4::new(self.1, self.1, self.1, self.1)
     }
-
     #[inline]
-    pub fn xxx(self) -> Vec3 {
+    fn xxx(self) -> Vec3 {
         Vec3(self.0, self.0, self.0)
     }
-
     #[inline]
-    pub fn xxy(self) -> Vec3 {
+    fn xxy(self) -> Vec3 {
         Vec3(self.0, self.0, self.1)
     }
-
     #[inline]
-    pub fn xyx(self) -> Vec3 {
+    fn xyx(self) -> Vec3 {
         Vec3(self.0, self.1, self.0)
     }
-
     #[inline]
-    pub fn xyy(self) -> Vec3 {
+    fn xyy(self) -> Vec3 {
         Vec3(self.0, self.1, self.1)
     }
-
     #[inline]
-    pub fn yxx(self) -> Vec3 {
+    fn yxx(self) -> Vec3 {
         Vec3(self.1, self.0, self.0)
     }
-
     #[inline]
-    pub fn yxy(self) -> Vec3 {
+    fn yxy(self) -> Vec3 {
         Vec3(self.1, self.0, self.1)
     }
-
     #[inline]
-    pub fn yyx(self) -> Vec3 {
+    fn yyx(self) -> Vec3 {
         Vec3(self.1, self.1, self.0)
     }
-
     #[inline]
-    pub fn yyy(self) -> Vec3 {
+    fn yyy(self) -> Vec3 {
         Vec3(self.1, self.1, self.1)
     }
-
     #[inline]
-    pub fn xx(self) -> Vec2 {
+    fn xx(self) -> Vec2 {
         Vec2(self.0, self.0)
     }
-
     #[inline]
-    pub fn yx(self) -> Vec2 {
+    fn yx(self) -> Vec2 {
         Vec2(self.1, self.0)
     }
-
     #[inline]
-    pub fn yy(self) -> Vec2 {
+    fn yy(self) -> Vec2 {
         Vec2(self.1, self.1)
     }
-
 }
