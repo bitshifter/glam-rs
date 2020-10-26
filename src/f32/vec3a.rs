@@ -1,4 +1,4 @@
-use super::{Vec2, Vec3, Vec3AMask, Vec4};
+use super::{Vec2, Vec3, Vec3AMask, Vec3ASwizzles, Vec4};
 use core::{fmt, ops::*};
 
 #[cfg(all(vec3a_sse2, target_arch = "x86"))]
@@ -320,45 +320,21 @@ impl Vec3A {
     #[inline]
     #[allow(dead_code)]
     pub(crate) fn dup_x(self) -> Self {
-        #[cfg(vec3a_sse2)]
-        unsafe {
-            Self(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_00))
-        }
-
-        #[cfg(vec3a_f32)]
-        {
-            Self(self.0.dup_x())
-        }
+        self.xxx()
     }
 
     /// Returns a `Vec3A` with all elements set to the value of element `y`.
     #[inline]
     #[allow(dead_code)]
     pub(crate) fn dup_y(self) -> Self {
-        #[cfg(vec3a_sse2)]
-        unsafe {
-            Self(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_01))
-        }
-
-        #[cfg(vec3a_f32)]
-        {
-            Self(self.0.dup_y())
-        }
+        self.yyy()
     }
 
     /// Returns a `Vec3A` with all elements set to the value of element `z`.
     #[inline]
     #[allow(dead_code)]
     pub(crate) fn dup_z(self) -> Self {
-        #[cfg(vec3a_sse2)]
-        unsafe {
-            Self(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_10))
-        }
-
-        #[cfg(vec3a_f32)]
-        {
-            Self(self.0.dup_z())
-        }
+        self.zzz()
     }
 
     /// Computes the dot product of `self` and `other`.

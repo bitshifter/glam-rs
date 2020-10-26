@@ -1,4 +1,4 @@
-use super::{Vec2, Vec3A, Vec3Mask, Vec4};
+use super::{Vec2, Vec3A, Vec3Mask, Vec3Swizzles, Vec4};
 use core::{fmt, ops::*};
 
 const ZERO: Vec3 = const_vec3!([0.0; 3]);
@@ -132,21 +132,21 @@ impl Vec3 {
     #[inline]
     #[allow(dead_code)]
     pub(crate) fn dup_x(self) -> Self {
-        Self(self.0, self.0, self.0)
+        self.xxx()
     }
 
     /// Returns a `Vec3` with all elements set to the value of element `y`.
     #[inline]
     #[allow(dead_code)]
     pub(crate) fn dup_y(self) -> Self {
-        Self(self.1, self.1, self.1)
+        self.yyy()
     }
 
     /// Returns a `Vec3` with all elements set to the value of element `z`.
     #[inline]
     #[allow(dead_code)]
     pub(crate) fn dup_z(self) -> Self {
-        Self(self.2, self.2, self.2)
+        self.zzz()
     }
 
     /// Computes the dot product of `self` and `other`.

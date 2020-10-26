@@ -1,4 +1,4 @@
-use super::{Vec2, Vec3, Vec3A, Vec4Mask};
+use super::{Vec2, Vec3, Vec3A, Vec4Mask, Vec4Swizzles};
 use core::{fmt, ops::*};
 
 #[cfg(all(vec4_sse2, target_arch = "x86"))]
@@ -335,57 +335,25 @@ impl Vec4 {
     /// Returns a `Vec4` with all elements set to the value of element `x`.
     #[inline]
     pub(crate) fn dup_x(self) -> Self {
-        #[cfg(vec4_sse2)]
-        unsafe {
-            Self(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_00))
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            Self(self.0, self.0, self.0, self.0)
-        }
+        self.xxxx()
     }
 
     /// Returns a `Vec4` with all elements set to the value of element `y`.
     #[inline]
     pub(crate) fn dup_y(self) -> Self {
-        #[cfg(vec4_sse2)]
-        unsafe {
-            Self(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_01))
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            Self(self.1, self.1, self.1, self.1)
-        }
+        self.yyyy()
     }
 
     /// Returns a `Vec4` with all elements set to the value of element `z`.
     #[inline]
     pub(crate) fn dup_z(self) -> Self {
-        #[cfg(vec4_sse2)]
-        unsafe {
-            Self(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_10))
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            Self(self.2, self.2, self.2, self.2)
-        }
+        self.zzzz()
     }
 
     /// Returns a `Vec4` with all elements set to the value of element `w`.
     #[inline]
     pub(crate) fn dup_w(self) -> Self {
-        #[cfg(vec4_sse2)]
-        unsafe {
-            Self(_mm_shuffle_ps(self.0, self.0, 0b11_11_11_11))
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            Self(self.3, self.3, self.3, self.3)
-        }
+        self.wwww()
     }
 
     /// Calculates the Vec4 dot product and returns answer in x lane of __m128.
