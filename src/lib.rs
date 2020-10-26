@@ -1,3 +1,9 @@
+#![cfg_attr(target_arch = "spirv", no_std)]
+#![cfg_attr(
+    target_arch = "spirv",
+    feature(register_attr, repr_simd, core_intrinsics)
+)]
+
 /*!
 # glam
 

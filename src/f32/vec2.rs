@@ -1,3 +1,6 @@
+#[cfg(target_arch = "spirv")]
+use super::spirv::MathExt;
+
 use crate::f32::{Vec2Mask, Vec3};
 use core::{f32, fmt, ops::*};
 

@@ -1,12 +1,14 @@
+#[cfg(target_arch = "spirv")]
+use super::spirv::MathExt;
+
 use super::{scalar_sin_cos, Mat3, Quat, Vec3, Vec3A, Vec3ASwizzles, Vec4, Vec4Swizzles};
 #[cfg(all(vec4_sse2, target_arch = "x86"))]
 use core::arch::x86::*;
 #[cfg(all(vec4_sse2, target_arch = "x86_64"))]
 use core::arch::x86_64::*;
-use core::{
-    fmt,
-    ops::{Add, Mul, Sub},
-};
+#[cfg(not(target_arch = "spirv"))]
+use core::fmt;
+use core::ops::{Add, Mul, Sub};
 
 const ZERO: Mat4 = const_mat4!([0.0; 16]);
 const IDENTITY: Mat4 = const_mat4!(
@@ -69,6 +71,9 @@ impl Default for Mat4 {
     }
 }
 
+// TODO: fix failing compile, disabled for now. fails on:
+// error: OpBitcast on ptr without AddressingModel != Logical
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Mat4 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
@@ -772,6 +777,7 @@ impl Mat4 {
     /// Creates a right-handed perspective projection matrix with [-1,1] depth range.
     /// This is the same as the OpenGL `gluPerspective` function.
     /// See https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
+    #[cfg(not(target_arch = "spirv"))] // TODO: Add back when we have `tan`
     pub fn perspective_rh_gl(
         fov_y_radians: f32,
         aspect_ratio: f32,
@@ -855,6 +861,7 @@ impl Mat4 {
 
     /// Creates an infinite right-handed perspective projection matrix with
     /// [0,1] depth range.
+    #[cfg(not(target_arch = "spirv"))] // TODO: Add back when we have `tan`
     pub fn perspective_infinite_rh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Self {
         let f = 1.0 / (0.5 * fov_y_radians).tan();
         Mat4::from_cols(
@@ -867,6 +874,7 @@ impl Mat4 {
 
     /// Creates an infinite reverse right-handed perspective projection matrix
     /// with [0,1] depth range.
+    #[cfg(not(target_arch = "spirv"))] // TODO: Add back when we have `tan`
     pub fn perspective_infinite_reverse_rh(
         fov_y_radians: f32,
         aspect_ratio: f32,

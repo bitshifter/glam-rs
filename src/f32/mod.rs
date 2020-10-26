@@ -4,6 +4,8 @@ mod mat2;
 mod mat3;
 mod mat4;
 mod quat;
+#[cfg(target_arch = "spirv")]
+pub mod spirv;
 #[cfg(feature = "transform-types")]
 mod transform;
 mod vec2;

@@ -1,3 +1,6 @@
+#[cfg(target_arch = "spirv")]
+use super::spirv::MathExt;
+
 #[inline]
 pub(crate) fn scalar_sin_cos(x: f32) -> (f32, f32) {
     // // expect sse2 to be available on all x86 builds
