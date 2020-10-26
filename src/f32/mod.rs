@@ -8,14 +8,16 @@ mod quat;
 mod transform;
 mod vec2;
 mod vec2_mask;
+mod vec2_swizzle;
 mod vec3;
 mod vec3_mask;
+mod vec3_swizzle;
 mod vec3a;
 mod vec3a_mask;
+mod vec3a_swizzle;
 mod vec4;
 mod vec4_mask;
-
-mod swizzle;
+mod vec4_swizzle;
 
 pub use cast::{F32x16Cast, F32x2Cast, F32x3Cast, F32x4Cast, F32x9Cast};
 pub(crate) use funcs::{scalar_acos, scalar_sin_cos};
@@ -27,14 +29,16 @@ pub use quat::*;
 pub use transform::*;
 pub use vec2::*;
 pub use vec2_mask::*;
+pub use vec2_swizzle::*;
 pub use vec3::*;
 pub use vec3_mask::*;
+pub use vec3_swizzle::*;
 pub use vec3a::*;
 pub use vec3a_mask::*;
+pub use vec3a_swizzle::*;
 pub use vec4::*;
 pub use vec4_mask::*;
-
-pub use swizzle::*;
+pub use vec4_swizzle::*;
 
 #[cfg(feature = "mint")]
 mod glam_mint;
