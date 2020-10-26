@@ -455,22 +455,6 @@ impl Quat {
     }
 
     #[inline]
-    /// Adds two quaternions.
-    /// The sum not guaranteed to be normalized.
-    /// NB: Addition is not the same as combining the rotations represented by the two quaternions!
-    /// That corresponds to multiplication.
-    pub fn add_quat(self, other: Self) -> Self {
-        Self(self.0 + other.0)
-    }
-
-    #[inline]
-    /// Multiplies a quaternion with an f32.
-    /// The product is not guaranteed to be normalized.
-    pub fn mul_f32(self, other: f32) -> Self {
-        Self(self.0 * other)
-    }
-
-    #[inline]
     /// Multiplies two quaternions.
     /// If they each represent a rotation, the result will represent the combined rotation.
     /// Note that due to floating point rounding the result may not be perfectly normalized.
@@ -573,14 +557,21 @@ impl fmt::Display for Quat {
 impl Add<Quat> for Quat {
     type Output = Self;
     #[inline]
+    /// Adds two quaternions.
+    /// The sum is not guaranteed to be normalized.
+    ///
+    /// NB: Addition is not the same as combining the rotations represented by the two quaternions!
+    /// That corresponds to multiplication.
     fn add(self, other: Self) -> Self {
-        self.add_quat(other)
+        Self(self.0 + other.0)
     }
 }
 
 impl Sub<Quat> for Quat {
     type Output = Self;
     #[inline]
+    /// Subtracts the other quaternion from self.
+    /// The difference is not guaranteed to be normalized.
     fn sub(self, other: Self) -> Self {
         Self(self.0 - other.0)
     }
@@ -589,16 +580,20 @@ impl Sub<Quat> for Quat {
 impl Mul<f32> for Quat {
     type Output = Self;
     #[inline]
+    /// Multiplies a quaternion with an f32.
+    /// The product is not guaranteed to be normalized.
     fn mul(self, other: f32) -> Self {
-        self.mul_f32(other)
+        Self(self.0 * other)
     }
 }
 
 impl Div<f32> for Quat {
     type Output = Self;
     #[inline]
+    /// Divides a quaternion by an f32.
+    /// The quotient is not guaranteed to be normalized.
     fn div(self, other: f32) -> Self {
-        self.mul_f32(1. / other)
+        Self(self.0 / other)
     }
 }
 
