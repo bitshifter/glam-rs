@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog], and this project adheres to
   These are used by other crates for interpolation quaternions along splines.
   Note that these operations will not return unit length quaternions, thus the
   results must be normalized before performing other `Quat` operations.
+* Added `Mat4::transform_point3a` and `Mat4::transform_vector3a`.
 
 ## Changed
 

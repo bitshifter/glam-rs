@@ -1,5 +1,5 @@
 use super::{
-    scalar_sin_cos, Mat3, Quat, Vec3, Vec3A, Vec3ASwizzles, Vec3Swizzles, Vec4, Vec4Swizzles,
+    scalar_sin_cos, Mat3, Quat, Vec3, Vec3A, Vec3ASwizzles, Vec4, Vec4Swizzles,
 };
 #[cfg(all(vec4_sse2, target_arch = "x86"))]
 use core::arch::x86::*;
@@ -1020,12 +1020,20 @@ impl Mat4 {
     /// This is the equivalent of multiplying the `Vec3` as a `Vec4` where `w` is `1.0`.
     #[inline]
     pub fn transform_point3(&self, other: Vec3) -> Vec3 {
+        Vec3::from(self.transform_point3a(Vec3A::from(other)))
+    }
+
+    /// Transforms the given `Vec3A` as 3D point.
+    ///
+    /// This is the equivalent of multiplying the `Vec3A` as a `Vec4` where `w` is `1.0`.
+    #[inline]
+    pub fn transform_point3a(&self, other: Vec3A) -> Vec3A {
         let mut res = self.x_axis.mul(other.xxxx());
         res = self.y_axis.mul_add(other.yyyy(), res);
         res = self.z_axis.mul_add(other.zzzz(), res);
         res = self.w_axis.add(res);
         res = res.mul(res.wwww().recip());
-        res.xyz()
+        Vec3A::from(res)
     }
 
     /// Transforms the give `Vec3` as 3D vector.
@@ -1033,10 +1041,18 @@ impl Mat4 {
     /// This is the equivalent of multiplying the `Vec3` as a `Vec4` where `w` is `0.0`.
     #[inline]
     pub fn transform_vector3(&self, other: Vec3) -> Vec3 {
+        Vec3::from(self.transform_vector3a(Vec3A::from(other)))
+    }
+
+    /// Transforms the give `Vec3A` as 3D vector.
+    ///
+    /// This is the equivalent of multiplying the `Vec3A` as a `Vec4` where `w` is `0.0`.
+    #[inline]
+    pub fn transform_vector3a(&self, other: Vec3A) -> Vec3A {
         let mut res = self.x_axis.mul(other.xxxx());
         res = self.y_axis.mul_add(other.yyyy(), res);
         res = self.z_axis.mul_add(other.zzzz(), res);
-        res.xyz()
+        Vec3A::from(res)
     }
 
     /// Returns true if the absolute difference of all elements between `self` and `other` is less
