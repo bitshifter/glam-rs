@@ -1,4 +1,4 @@
-use super::{Mat4, Quat, Vec3, Vec3A};
+use super::{Mat4, Quat, Vec3, Vec3A, Vec3ASwizzles, Vec4Swizzles};
 use core::ops::Mul;
 
 #[cfg(feature = "rand")]
@@ -140,15 +140,15 @@ fn mul_srt_srt(lhs: &TransformSRT, rhs: &TransformSRT) -> TransformSRT {
 
         let sign = scale.signum();
         result_mtx
-            .set_x_axis((Vec3A::from(result_mtx.x_axis()).normalize() * sign.dup_x()).extend(0.0));
+            .set_x_axis((Vec3A::from(result_mtx.x_axis()).normalize() * sign.xxx()).extend(0.0));
         result_mtx
-            .set_y_axis((Vec3A::from(result_mtx.y_axis()).normalize() * sign.dup_y()).extend(0.0));
+            .set_y_axis((Vec3A::from(result_mtx.y_axis()).normalize() * sign.yyy()).extend(0.0));
         result_mtx
-            .set_z_axis((Vec3A::from(result_mtx.z_axis()).normalize() * sign.dup_z()).extend(0.0));
+            .set_z_axis((Vec3A::from(result_mtx.z_axis()).normalize() * sign.zzz()).extend(0.0));
 
         let scale = Vec3::from(scale);
         let rotation = Quat::from_rotation_mat4(&result_mtx);
-        let translation = Vec3::from(result_mtx.w_axis().truncate());
+        let translation = result_mtx.w_axis().xyz();
         TransformSRT {
             scale,
             rotation,
