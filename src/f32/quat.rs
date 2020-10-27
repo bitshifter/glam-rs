@@ -1,4 +1,4 @@
-use super::{scalar_acos, scalar_sin_cos, Mat3, Mat4, Vec3, Vec3A, Vec4};
+use super::{scalar_acos, scalar_sin_cos, Mat3, Mat4, Vec3, Vec3A, Vec4, Vec4Swizzles};
 #[cfg(all(vec4_sse2, target_arch = "x86",))]
 use core::arch::x86::*;
 #[cfg(all(vec4_sse2, target_arch = "x86_64",))]
@@ -189,17 +189,13 @@ impl Quat {
     /// Creates a quaternion from a 3x3 rotation matrix.
     #[inline]
     pub fn from_rotation_mat3(mat: &Mat3) -> Self {
-        Self::from_rotation_axes(mat.x_axis(), mat.y_axis(), mat.z_axis())
+        Self::from_rotation_axes(mat.x_axis, mat.y_axis, mat.z_axis)
     }
 
     /// Creates a quaternion from a 3x3 rotation matrix inside a homogeneous 4x4 matrix.
     #[inline]
     pub fn from_rotation_mat4(mat: &Mat4) -> Self {
-        Self::from_rotation_axes(
-            Vec3::from(mat.x_axis().truncate()),
-            Vec3::from(mat.y_axis().truncate()),
-            Vec3::from(mat.z_axis().truncate()),
-        )
+        Self::from_rotation_axes(mat.x_axis.xyz(), mat.y_axis.xyz(), mat.z_axis.xyz())
     }
 
     /// Returns the rotation axis and angle of `self`.
@@ -428,7 +424,7 @@ impl Quat {
 
         #[cfg(vec4_sse2)]
         {
-            let w = Vec3A::from(self.0.dup_w());
+            let w = Vec3A::from(self.0.wwww());
             let two = Vec3A::splat(2.0);
             let b = Vec3A::from(self.0);
             let b2 = b.dot_as_vec3(b);

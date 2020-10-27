@@ -11,6 +11,14 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 * Added `From` implementations to truncate to narrower vector types, e.g.
   `Vec4` to `Vec3A`, `Vec3` and `Vec2` and from `Vec3A` and `Vec3` to `Vec2`.
+* Added swizzles for `Vec4`, `Vec3A`, `Vec3` and `Vec2`. These can be used to
+  reorder elements in the same type and also to create larger or smaller
+  vectors from the given vectors elements.
+* Added `Quat` operators `Add<Quat>`, `Sub<Quat>`, `Mul<f32>` and `Div<f32`.
+  These are used by other crates for interpolation quaternions along splines.
+  Note that these operations will not return unit length quaternions, thus the
+  results must be normalized before performing other `Quat` operations.
+* Added `Mat4::transform_point3a` and `Mat4::transform_vector3a`.
 
 ## Changed
 

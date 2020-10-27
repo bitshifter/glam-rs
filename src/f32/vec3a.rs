@@ -170,8 +170,9 @@ impl Vec3A {
         }
     }
 
-    /// Creates a `Vec2` from the first three elements of `self`,
-    /// removing `z`.
+    /// Creates a `Vec2` from the `x` and `y` elements of `self`, discarding `z`.
+    ///
+    /// Truncation may also be performed by using `self.xy()` or `Vec2::from()`.
     #[inline]
     pub fn truncate(self) -> Vec2 {
         #[cfg(vec3a_sse2)]
@@ -313,51 +314,6 @@ impl Vec3A {
         #[cfg(vec3a_f32)]
         {
             *self.0.z_mut() = z;
-        }
-    }
-
-    /// Returns a `Vec3A` with all elements set to the value of element `x`.
-    #[inline]
-    #[allow(dead_code)]
-    pub(crate) fn dup_x(self) -> Self {
-        #[cfg(vec3a_sse2)]
-        unsafe {
-            Self(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_00))
-        }
-
-        #[cfg(vec3a_f32)]
-        {
-            Self(self.0.dup_x())
-        }
-    }
-
-    /// Returns a `Vec3A` with all elements set to the value of element `y`.
-    #[inline]
-    #[allow(dead_code)]
-    pub(crate) fn dup_y(self) -> Self {
-        #[cfg(vec3a_sse2)]
-        unsafe {
-            Self(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_01))
-        }
-
-        #[cfg(vec3a_f32)]
-        {
-            Self(self.0.dup_y())
-        }
-    }
-
-    /// Returns a `Vec3A` with all elements set to the value of element `z`.
-    #[inline]
-    #[allow(dead_code)]
-    pub(crate) fn dup_z(self) -> Self {
-        #[cfg(vec3a_sse2)]
-        unsafe {
-            Self(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_10))
-        }
-
-        #[cfg(vec3a_f32)]
-        {
-            Self(self.0.dup_z())
         }
     }
 
@@ -1209,6 +1165,7 @@ impl From<Vec3> for Vec3A {
 }
 
 impl From<Vec3A> for Vec2 {
+    /// Creates a `Vec2` from the `x` and `y` elements of the `Vec3A`, discarding `z`.
     #[inline]
     fn from(v: Vec3A) -> Self {
         #[cfg(vec3a_sse2)]
@@ -1234,7 +1191,4 @@ fn test_vec3_private() {
         vec3a(1.0, 1.0, 1.0).mul_add(vec3a(0.5, 2.0, -4.0), vec3a(-1.0, -1.0, -1.0)),
         vec3a(-0.5, 1.0, -5.0)
     );
-    assert_eq!(vec3a(1.0, 2.0, 3.0).dup_x(), vec3a(1.0, 1.0, 1.0));
-    assert_eq!(vec3a(1.0, 2.0, 3.0).dup_y(), vec3a(2.0, 2.0, 2.0));
-    assert_eq!(vec3a(1.0, 2.0, 3.0).dup_z(), vec3a(3.0, 3.0, 3.0));
 }

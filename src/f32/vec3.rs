@@ -67,8 +67,9 @@ impl Vec3 {
         Vec4::new(self.0, self.1, self.2, w)
     }
 
-    /// Creates a `Vec2` from the first three elements of `self`,
-    /// removing `z`.
+    /// Creates a `Vec2` from the `x` and `y` elements of `self`, discarding `z`.
+    ///
+    /// Truncation may also be performed by using `self.xy()` or `Vec2::from()`.
     #[inline]
     pub fn truncate(self) -> Vec2 {
         Vec2::new(self.0, self.1)
@@ -126,27 +127,6 @@ impl Vec3 {
     #[inline]
     pub fn set_z(&mut self, z: f32) {
         self.2 = z;
-    }
-
-    /// Returns a `Vec3` with all elements set to the value of element `x`.
-    #[inline]
-    #[allow(dead_code)]
-    pub(crate) fn dup_x(self) -> Self {
-        Self(self.0, self.0, self.0)
-    }
-
-    /// Returns a `Vec3` with all elements set to the value of element `y`.
-    #[inline]
-    #[allow(dead_code)]
-    pub(crate) fn dup_y(self) -> Self {
-        Self(self.1, self.1, self.1)
-    }
-
-    /// Returns a `Vec3` with all elements set to the value of element `z`.
-    #[inline]
-    #[allow(dead_code)]
-    pub(crate) fn dup_z(self) -> Self {
-        Self(self.2, self.2, self.2)
     }
 
     /// Computes the dot product of `self` and `other`.
@@ -677,6 +657,7 @@ impl From<Vec3A> for Vec3 {
 }
 
 impl From<Vec3> for Vec2 {
+    /// Creates a `Vec2` from the `x` and `y` elements of the `Vec3`, discarding `z`.
     #[inline]
     fn from(v: Vec3) -> Self {
         Vec2(v.0, v.1)
@@ -689,7 +670,4 @@ fn test_vec3_private() {
         vec3(1.0, 1.0, 1.0).mul_add(vec3(0.5, 2.0, -4.0), vec3(-1.0, -1.0, -1.0)),
         vec3(-0.5, 1.0, -5.0)
     );
-    assert_eq!(vec3(1.0, 2.0, 3.0).dup_x(), vec3(1.0, 1.0, 1.0));
-    assert_eq!(vec3(1.0, 2.0, 3.0).dup_y(), vec3(2.0, 2.0, 2.0));
-    assert_eq!(vec3(1.0, 2.0, 3.0).dup_z(), vec3(3.0, 3.0, 3.0));
 }

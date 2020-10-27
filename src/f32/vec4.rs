@@ -152,7 +152,11 @@ impl Vec4 {
         }
     }
 
-    /// Creates a `Vec3` from the first three elements of `self`, removing `w`.
+    /// Creates a `Vec3` from the `x`, `y` and `z` elements of `self`, discarding `w`.
+    ///
+    /// Truncation to `Vec3` may also be performed by using `self.xyz()` or `Vec3::from()`.
+    ///
+    /// To truncate to `Vec3A` use `Vec3A::from()`.
     #[inline]
     pub fn truncate(self) -> Vec3 {
         self.into()
@@ -329,62 +333,6 @@ impl Vec4 {
         #[cfg(vec4_f32)]
         {
             self.3 = w;
-        }
-    }
-
-    /// Returns a `Vec4` with all elements set to the value of element `x`.
-    #[inline]
-    pub(crate) fn dup_x(self) -> Self {
-        #[cfg(vec4_sse2)]
-        unsafe {
-            Self(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_00))
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            Self(self.0, self.0, self.0, self.0)
-        }
-    }
-
-    /// Returns a `Vec4` with all elements set to the value of element `y`.
-    #[inline]
-    pub(crate) fn dup_y(self) -> Self {
-        #[cfg(vec4_sse2)]
-        unsafe {
-            Self(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_01))
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            Self(self.1, self.1, self.1, self.1)
-        }
-    }
-
-    /// Returns a `Vec4` with all elements set to the value of element `z`.
-    #[inline]
-    pub(crate) fn dup_z(self) -> Self {
-        #[cfg(vec4_sse2)]
-        unsafe {
-            Self(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_10))
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            Self(self.2, self.2, self.2, self.2)
-        }
-    }
-
-    /// Returns a `Vec4` with all elements set to the value of element `w`.
-    #[inline]
-    pub(crate) fn dup_w(self) -> Self {
-        #[cfg(vec4_sse2)]
-        unsafe {
-            Self(_mm_shuffle_ps(self.0, self.0, 0b11_11_11_11))
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            Self(self.3, self.3, self.3, self.3)
         }
     }
 
@@ -1342,6 +1290,9 @@ impl From<Vec4> for [f32; 4] {
 }
 
 impl From<Vec4> for Vec3A {
+    /// Creates a `Vec3` from the `x`, `y` and `z` elements of the `Vec4`, discarding `z`.
+    ///
+    /// On architectures where SIMD is supported such as SSE2 on x86_64 this conversion is a noop.
     #[inline]
     fn from(v: Vec4) -> Self {
         #[cfg(vec4_sse2)]
@@ -1357,6 +1308,7 @@ impl From<Vec4> for Vec3A {
 }
 
 impl From<Vec4> for Vec3 {
+    /// Creates a `Vec3` from the `x`, `y` and `z` elements of the `Vec4`, discarding `z`.
     #[inline]
     fn from(v: Vec4) -> Self {
         #[cfg(vec4_sse2)]
@@ -1376,6 +1328,7 @@ impl From<Vec4> for Vec3 {
 }
 
 impl From<Vec4> for Vec2 {
+    /// Creates a `Vec2` from the `x` and `y` elements of the `Vec4`, discarding `z`.
     #[inline]
     fn from(v: Vec4) -> Self {
         #[cfg(vec4_sse2)]
@@ -1400,8 +1353,4 @@ fn test_vec4_private() {
         vec4(1.0, 1.0, 1.0, 1.0).mul_add(vec4(0.5, 2.0, -4.0, 0.0), vec4(-1.0, -1.0, -1.0, -1.0)),
         vec4(-0.5, 1.0, -5.0, -1.0)
     );
-    assert_eq!(vec4(1.0, 2.0, 3.0, 4.0).dup_x(), vec4(1.0, 1.0, 1.0, 1.0));
-    assert_eq!(vec4(1.0, 2.0, 3.0, 4.0).dup_y(), vec4(2.0, 2.0, 2.0, 2.0));
-    assert_eq!(vec4(1.0, 2.0, 3.0, 4.0).dup_z(), vec4(3.0, 3.0, 3.0, 3.0));
-    assert_eq!(vec4(1.0, 2.0, 4.0, 4.0).dup_w(), vec4(4.0, 4.0, 4.0, 4.0));
 }
