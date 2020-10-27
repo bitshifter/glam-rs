@@ -170,8 +170,9 @@ impl Vec3A {
         }
     }
 
-    /// Creates a `Vec2` from the first three elements of `self`,
-    /// removing `z`.
+    /// Creates a `Vec2` from the `x` and `y` elements of `self`, discarding `z`.
+    ///
+    /// Truncation may also be performed by using `self.xy()` or `Vec2::from()`.
     #[inline]
     pub fn truncate(self) -> Vec2 {
         #[cfg(vec3a_sse2)]
@@ -1164,6 +1165,7 @@ impl From<Vec3> for Vec3A {
 }
 
 impl From<Vec3A> for Vec2 {
+    /// Creates a `Vec2` from the `x` and `y` elements of the `Vec3A`, discarding `z`.
     #[inline]
     fn from(v: Vec3A) -> Self {
         #[cfg(vec3a_sse2)]

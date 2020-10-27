@@ -67,8 +67,9 @@ impl Vec3 {
         Vec4::new(self.0, self.1, self.2, w)
     }
 
-    /// Creates a `Vec2` from the first three elements of `self`,
-    /// removing `z`.
+    /// Creates a `Vec2` from the `x` and `y` elements of `self`, discarding `z`.
+    ///
+    /// Truncation may also be performed by using `self.xy()` or `Vec2::from()`.
     #[inline]
     pub fn truncate(self) -> Vec2 {
         Vec2::new(self.0, self.1)
@@ -656,6 +657,7 @@ impl From<Vec3A> for Vec3 {
 }
 
 impl From<Vec3> for Vec2 {
+    /// Creates a `Vec2` from the `x` and `y` elements of the `Vec3`, discarding `z`.
     #[inline]
     fn from(v: Vec3) -> Self {
         Vec2(v.0, v.1)

@@ -82,7 +82,7 @@ The design of this library is guided by a desire for simplicity and good
 performance.
 
 * No traits or generics for simplicity of implementation and usage
-* Only single precision floating point (`f32`) arithmetic is supported
+* Only single precision floating point `f32` arithmetic is supported for now
 * All dependencies are optional (e.g. `mint`, `rand` and `serde`)
 * Follows the [Rust API Guidelines] where possible
 * Aiming for 100% test [coverage]

@@ -152,7 +152,11 @@ impl Vec4 {
         }
     }
 
-    /// Creates a `Vec3` from the first three elements of `self`, removing `w`.
+    /// Creates a `Vec3` from the `x`, `y` and `z` elements of `self`, discarding `w`.
+    ///
+    /// Truncation to `Vec3` may also be performed by using `self.xyz()` or `Vec3::from()`.
+    ///
+    /// To truncate to `Vec3A` use `Vec3A::from()`.
     #[inline]
     pub fn truncate(self) -> Vec3 {
         self.into()
@@ -1286,6 +1290,9 @@ impl From<Vec4> for [f32; 4] {
 }
 
 impl From<Vec4> for Vec3A {
+    /// Creates a `Vec3` from the `x`, `y` and `z` elements of the `Vec4`, discarding `z`.
+    ///
+    /// On architectures where SIMD is supported such as SSE2 on x86_64 this conversion is a noop.
     #[inline]
     fn from(v: Vec4) -> Self {
         #[cfg(vec4_sse2)]
@@ -1301,6 +1308,7 @@ impl From<Vec4> for Vec3A {
 }
 
 impl From<Vec4> for Vec3 {
+    /// Creates a `Vec3` from the `x`, `y` and `z` elements of the `Vec4`, discarding `z`.
     #[inline]
     fn from(v: Vec4) -> Self {
         #[cfg(vec4_sse2)]
@@ -1320,6 +1328,7 @@ impl From<Vec4> for Vec3 {
 }
 
 impl From<Vec4> for Vec2 {
+    /// Creates a `Vec2` from the `x` and `y` elements of the `Vec4`, discarding `z`.
     #[inline]
     fn from(v: Vec4) -> Self {
         #[cfg(vec4_sse2)]
