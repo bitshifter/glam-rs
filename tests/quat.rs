@@ -330,6 +330,32 @@ fn test_quat_elements() {
     assert!(a.w() == w);
 }
 
+#[test]
+fn test_quat_addition() {
+    let a = Quat::from_xyzw(1.0, 2.0, 3.0, 4.0);
+    let b = Quat::from_xyzw(5.0, 6.0, 7.0, -9.0);
+    assert_eq!(a + b, Quat::from_xyzw(6.0, 8.0, 10.0, -5.0));
+}
+
+#[test]
+fn test_quat_subtraction() {
+    let a = Quat::from_xyzw(6.0, 8.0, 10.0, -5.0);
+    let b = Quat::from_xyzw(5.0, 6.0, 7.0, -9.0);
+    assert_eq!(a - b, Quat::from_xyzw(1.0, 2.0, 3.0, 4.0));
+}
+
+#[test]
+fn test_quat_f32_multiplication() {
+    let a = Quat::from_xyzw(1.0, 2.0, 3.0, 4.0);
+    assert_eq!(a * 2.0, Quat::from_xyzw(2.0, 4.0, 6.0, 8.0));
+}
+
+#[test]
+fn test_quat_f32_division() {
+    let a = Quat::from_xyzw(2.0, 4.0, 6.0, 8.0);
+    assert_eq!(a / 2.0, Quat::from_xyzw(1.0, 2.0, 3.0, 4.0));
+}
+
 #[cfg(feature = "serde")]
 #[test]
 fn test_quat_serde() {
