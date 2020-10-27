@@ -1,4 +1,4 @@
-use super::{Vec2, Vec3A, Vec3Mask, Vec3Swizzles, Vec4};
+use super::{Vec2, Vec3A, Vec3Mask, Vec4};
 use core::{fmt, ops::*};
 
 const ZERO: Vec3 = const_vec3!([0.0; 3]);
@@ -126,27 +126,6 @@ impl Vec3 {
     #[inline]
     pub fn set_z(&mut self, z: f32) {
         self.2 = z;
-    }
-
-    /// Returns a `Vec3` with all elements set to the value of element `x`.
-    #[inline]
-    #[allow(dead_code)]
-    pub(crate) fn dup_x(self) -> Self {
-        self.xxx()
-    }
-
-    /// Returns a `Vec3` with all elements set to the value of element `y`.
-    #[inline]
-    #[allow(dead_code)]
-    pub(crate) fn dup_y(self) -> Self {
-        self.yyy()
-    }
-
-    /// Returns a `Vec3` with all elements set to the value of element `z`.
-    #[inline]
-    #[allow(dead_code)]
-    pub(crate) fn dup_z(self) -> Self {
-        self.zzz()
     }
 
     /// Computes the dot product of `self` and `other`.
@@ -689,7 +668,4 @@ fn test_vec3_private() {
         vec3(1.0, 1.0, 1.0).mul_add(vec3(0.5, 2.0, -4.0), vec3(-1.0, -1.0, -1.0)),
         vec3(-0.5, 1.0, -5.0)
     );
-    assert_eq!(vec3(1.0, 2.0, 3.0).dup_x(), vec3(1.0, 1.0, 1.0));
-    assert_eq!(vec3(1.0, 2.0, 3.0).dup_y(), vec3(2.0, 2.0, 2.0));
-    assert_eq!(vec3(1.0, 2.0, 3.0).dup_z(), vec3(3.0, 3.0, 3.0));
 }

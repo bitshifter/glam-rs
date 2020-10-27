@@ -1,4 +1,4 @@
-use super::{Vec2, Vec3, Vec3A, Vec4Mask, Vec4Swizzles};
+use super::{Vec2, Vec3, Vec3A, Vec4Mask};
 use core::{fmt, ops::*};
 
 #[cfg(all(vec4_sse2, target_arch = "x86"))]
@@ -330,30 +330,6 @@ impl Vec4 {
         {
             self.3 = w;
         }
-    }
-
-    /// Returns a `Vec4` with all elements set to the value of element `x`.
-    #[inline]
-    pub(crate) fn dup_x(self) -> Self {
-        self.xxxx()
-    }
-
-    /// Returns a `Vec4` with all elements set to the value of element `y`.
-    #[inline]
-    pub(crate) fn dup_y(self) -> Self {
-        self.yyyy()
-    }
-
-    /// Returns a `Vec4` with all elements set to the value of element `z`.
-    #[inline]
-    pub(crate) fn dup_z(self) -> Self {
-        self.zzzz()
-    }
-
-    /// Returns a `Vec4` with all elements set to the value of element `w`.
-    #[inline]
-    pub(crate) fn dup_w(self) -> Self {
-        self.wwww()
     }
 
     /// Calculates the Vec4 dot product and returns answer in x lane of __m128.
@@ -1368,8 +1344,4 @@ fn test_vec4_private() {
         vec4(1.0, 1.0, 1.0, 1.0).mul_add(vec4(0.5, 2.0, -4.0, 0.0), vec4(-1.0, -1.0, -1.0, -1.0)),
         vec4(-0.5, 1.0, -5.0, -1.0)
     );
-    assert_eq!(vec4(1.0, 2.0, 3.0, 4.0).dup_x(), vec4(1.0, 1.0, 1.0, 1.0));
-    assert_eq!(vec4(1.0, 2.0, 3.0, 4.0).dup_y(), vec4(2.0, 2.0, 2.0, 2.0));
-    assert_eq!(vec4(1.0, 2.0, 3.0, 4.0).dup_z(), vec4(3.0, 3.0, 3.0, 3.0));
-    assert_eq!(vec4(1.0, 2.0, 4.0, 4.0).dup_w(), vec4(4.0, 4.0, 4.0, 4.0));
 }

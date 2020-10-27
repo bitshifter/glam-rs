@@ -1,4 +1,6 @@
-use super::{scalar_sin_cos, Mat3, Quat, Vec3, Vec3A, Vec4};
+use super::{
+    scalar_sin_cos, Mat3, Quat, Vec3, Vec3A, Vec3ASwizzles, Vec3Swizzles, Vec4, Vec4Swizzles,
+};
 #[cfg(all(vec4_sse2, target_arch = "x86"))]
 use core::arch::x86::*;
 #[cfg(all(vec4_sse2, target_arch = "x86_64"))]
@@ -192,12 +194,12 @@ impl Mat4 {
         let inv_scale = scale.recip();
 
         let rotation = Quat::from_rotation_mat3(&Mat3::from_cols(
-            Vec3::from(Vec3A::from(self.x_axis()) * inv_scale.dup_x()),
-            Vec3::from(Vec3A::from(self.y_axis()) * inv_scale.dup_y()),
-            Vec3::from(Vec3A::from(self.z_axis()) * inv_scale.dup_z()),
+            Vec3::from(Vec3A::from(self.x_axis()) * inv_scale.xxx()),
+            Vec3::from(Vec3A::from(self.y_axis()) * inv_scale.yyy()),
+            Vec3::from(Vec3A::from(self.z_axis()) * inv_scale.zzz()),
         ));
 
-        let translation = Vec3::from(self.w_axis);
+        let translation = self.w_axis.xyz();
         let scale = Vec3::from(scale);
 
         (scale, rotation, translation)
@@ -961,10 +963,10 @@ impl Mat4 {
     /// Transforms a 4D vector.
     #[inline]
     pub fn mul_vec4(&self, other: Vec4) -> Vec4 {
-        let mut res = self.x_axis * other.dup_x();
-        res = self.y_axis.mul_add(other.dup_y(), res);
-        res = self.z_axis.mul_add(other.dup_z(), res);
-        res = self.w_axis.mul_add(other.dup_w(), res);
+        let mut res = self.x_axis * other.xxxx();
+        res = self.y_axis.mul_add(other.yyyy(), res);
+        res = self.z_axis.mul_add(other.zzzz(), res);
+        res = self.w_axis.mul_add(other.wwww(), res);
         res
     }
 
@@ -1018,12 +1020,12 @@ impl Mat4 {
     /// This is the equivalent of multiplying the `Vec3` as a `Vec4` where `w` is `1.0`.
     #[inline]
     pub fn transform_point3(&self, other: Vec3) -> Vec3 {
-        let mut res = self.x_axis.mul(Vec4::splat(other.x()));
-        res = self.y_axis.mul_add(Vec4::splat(other.y()), res);
-        res = self.z_axis.mul_add(Vec4::splat(other.z()), res);
+        let mut res = self.x_axis.mul(other.xxxx());
+        res = self.y_axis.mul_add(other.yyyy(), res);
+        res = self.z_axis.mul_add(other.zzzz(), res);
         res = self.w_axis.add(res);
-        res = res.mul(res.dup_w().recip());
-        Vec3::from(res.truncate())
+        res = res.mul(res.wwww().recip());
+        res.xyz()
     }
 
     /// Transforms the give `Vec3` as 3D vector.
@@ -1031,10 +1033,10 @@ impl Mat4 {
     /// This is the equivalent of multiplying the `Vec3` as a `Vec4` where `w` is `0.0`.
     #[inline]
     pub fn transform_vector3(&self, other: Vec3) -> Vec3 {
-        let mut res = self.x_axis.mul(Vec4::splat(other.x()));
-        res = self.y_axis.mul_add(Vec4::splat(other.y()), res);
-        res = self.z_axis.mul_add(Vec4::splat(other.z()), res);
-        Vec3::from(res.truncate())
+        let mut res = self.x_axis.mul(other.xxxx());
+        res = self.y_axis.mul_add(other.yyyy(), res);
+        res = self.z_axis.mul_add(other.zzzz(), res);
+        res.xyz()
     }
 
     /// Returns true if the absolute difference of all elements between `self` and `other` is less
