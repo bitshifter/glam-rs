@@ -193,6 +193,55 @@ The minimum supported version of Rust for `glam` is `1.36.0`.
 */
 #![doc(html_root_url = "https://docs.rs/glam/0.9.5")]
 
+#![cfg_attr(not(feature = "std"), no_std)]
+
+#[cfg(all(not(feature = "std"), feature = "libm"))]
+use libm;
+
+#[cfg(all(not(feature = "std"), feature = "libm"))]
+trait LibM {
+    fn abs(self) -> Self where Self: core::marker::Sized;
+    fn ceil(self) -> Self where Self: core::marker::Sized;
+    fn copysign(self, sign: Self) -> Self where Self: core::marker::Sized;
+    fn floor(self) -> Self where Self: core::marker::Sized;
+    fn round(self) -> Self where Self: core::marker::Sized;
+    fn signum(self) -> Self where Self: core::marker::Sized;
+    fn sin_cos(self) -> (Self, Self) where Self: core::marker::Sized;
+    fn sqrt(self) -> Self where Self: core::marker::Sized;
+    fn tan(self) -> Self where Self: core::marker::Sized;
+}
+
+#[cfg(all(not(feature = "std"), feature = "libm"))]
+impl LibM for f32 {
+    fn abs(self) -> Self {
+        libm::fabsf(self)
+    }
+    fn ceil(self) -> Self {
+        libm::ceilf(self)
+    }
+    fn copysign(self, sign: Self) -> Self {
+        libm::copysignf(self, sign)
+    }
+    fn floor(self) -> Self {
+        libm::floorf(self)
+    }
+    fn round(self) -> Self {
+        libm::roundf(self)
+    }
+    fn signum(self) -> Self {
+        if self.is_nan() { Self::NAN } else { 1.0_f32.copysign(self) }
+    }
+    fn sin_cos(self) -> (Self, Self) {
+        libm::sincosf(self)
+    }
+    fn sqrt(self) -> Self {
+        libm::sqrtf(self)
+    }
+    fn tan(self) -> Self {
+        libm::tanf(self)
+    }
+}
+
 #[macro_use]
 mod macros;
 

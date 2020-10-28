@@ -1,3 +1,6 @@
+#[cfg(all(not(feature = "std"), feature = "libm"))]
+use crate::LibM;
+
 #[inline]
 pub(crate) fn scalar_sin_cos(x: f32) -> (f32, f32) {
     // // expect sse2 to be available on all x86 builds
@@ -424,7 +427,7 @@ fn test_scalar_sin_cos() {
     fn test_scalar_sin_cos_angle(a: f32) {
         let (s1, c1) = scalar_sin_cos(a);
         let (s2, c2) = a.sin_cos();
-        dbg!(a);
+        // dbg!(a);
         assert_approx_eq!(s1, s2);
         assert_approx_eq!(c1, c2);
     }
@@ -476,7 +479,7 @@ fn test_sse2_m128_sin() {
         let v = Vec4::splat(a);
         let v = unsafe { Vec4(sse2::m128_sin(v.0)) };
         let a_sin = a.sin();
-        dbg!((a, a_sin, v));
+        // dbg!((a, a_sin, v));
         assert_approx_eq!(v.x(), a_sin, 1e-6);
         assert_approx_eq!(v.z(), a_sin, 1e-6);
         assert_approx_eq!(v.y(), a_sin, 1e-6);
