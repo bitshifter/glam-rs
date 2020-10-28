@@ -58,6 +58,10 @@ let [x, y, z, w]: [f32; 4] = v.into();
   of parameters passed to `glam` to help catch runtime errors
 * `glam-assert` - adds validation assertions to all builds
 
+### Minimum Supported Version of Rust (MSVR)
+
+The minimum supported version of Rust for `glam` is `1.36.0`.
+
 ## Conventions
 
 ### Column vectors

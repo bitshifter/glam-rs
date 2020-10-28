@@ -140,7 +140,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.0, self.0.0, self.0.0)
+            Vec4((self.0).0, (self.0).0, (self.0).0, (self.0).0)
         }
     }
     #[inline]
@@ -152,7 +152,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.0, self.0.0, self.0.1)
+            Vec4((self.0).0, (self.0).0, (self.0).0, (self.0).1)
         }
     }
     #[inline]
@@ -164,7 +164,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.0, self.0.0, self.0.2)
+            Vec4((self.0).0, (self.0).0, (self.0).0, (self.0).2)
         }
     }
     #[inline]
@@ -176,7 +176,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.0, self.0.1, self.0.0)
+            Vec4((self.0).0, (self.0).0, (self.0).1, (self.0).0)
         }
     }
     #[inline]
@@ -188,7 +188,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.0, self.0.1, self.0.1)
+            Vec4((self.0).0, (self.0).0, (self.0).1, (self.0).1)
         }
     }
     #[inline]
@@ -200,7 +200,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.0, self.0.1, self.0.2)
+            Vec4((self.0).0, (self.0).0, (self.0).1, (self.0).2)
         }
     }
     #[inline]
@@ -212,7 +212,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.0, self.0.2, self.0.0)
+            Vec4((self.0).0, (self.0).0, (self.0).2, (self.0).0)
         }
     }
     #[inline]
@@ -224,7 +224,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.0, self.0.2, self.0.1)
+            Vec4((self.0).0, (self.0).0, (self.0).2, (self.0).1)
         }
     }
     #[inline]
@@ -236,7 +236,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.0, self.0.2, self.0.2)
+            Vec4((self.0).0, (self.0).0, (self.0).2, (self.0).2)
         }
     }
     #[inline]
@@ -248,7 +248,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.1, self.0.0, self.0.0)
+            Vec4((self.0).0, (self.0).1, (self.0).0, (self.0).0)
         }
     }
     #[inline]
@@ -260,7 +260,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.1, self.0.0, self.0.1)
+            Vec4((self.0).0, (self.0).1, (self.0).0, (self.0).1)
         }
     }
     #[inline]
@@ -272,7 +272,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.1, self.0.0, self.0.2)
+            Vec4((self.0).0, (self.0).1, (self.0).0, (self.0).2)
         }
     }
     #[inline]
@@ -284,7 +284,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.1, self.0.1, self.0.0)
+            Vec4((self.0).0, (self.0).1, (self.0).1, (self.0).0)
         }
     }
     #[inline]
@@ -296,7 +296,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.1, self.0.1, self.0.1)
+            Vec4((self.0).0, (self.0).1, (self.0).1, (self.0).1)
         }
     }
     #[inline]
@@ -308,7 +308,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.1, self.0.1, self.0.2)
+            Vec4((self.0).0, (self.0).1, (self.0).1, (self.0).2)
         }
     }
     #[inline]
@@ -320,7 +320,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.1, self.0.2, self.0.0)
+            Vec4((self.0).0, (self.0).1, (self.0).2, (self.0).0)
         }
     }
     #[inline]
@@ -332,7 +332,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.1, self.0.2, self.0.1)
+            Vec4((self.0).0, (self.0).1, (self.0).2, (self.0).1)
         }
     }
     #[inline]
@@ -344,7 +344,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.1, self.0.2, self.0.2)
+            Vec4((self.0).0, (self.0).1, (self.0).2, (self.0).2)
         }
     }
     #[inline]
@@ -356,7 +356,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.2, self.0.0, self.0.0)
+            Vec4((self.0).0, (self.0).2, (self.0).0, (self.0).0)
         }
     }
     #[inline]
@@ -368,7 +368,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.2, self.0.0, self.0.1)
+            Vec4((self.0).0, (self.0).2, (self.0).0, (self.0).1)
         }
     }
     #[inline]
@@ -380,7 +380,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.2, self.0.0, self.0.2)
+            Vec4((self.0).0, (self.0).2, (self.0).0, (self.0).2)
         }
     }
     #[inline]
@@ -392,7 +392,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.2, self.0.1, self.0.0)
+            Vec4((self.0).0, (self.0).2, (self.0).1, (self.0).0)
         }
     }
     #[inline]
@@ -404,7 +404,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.2, self.0.1, self.0.1)
+            Vec4((self.0).0, (self.0).2, (self.0).1, (self.0).1)
         }
     }
     #[inline]
@@ -416,7 +416,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.2, self.0.1, self.0.2)
+            Vec4((self.0).0, (self.0).2, (self.0).1, (self.0).2)
         }
     }
     #[inline]
@@ -428,7 +428,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.2, self.0.2, self.0.0)
+            Vec4((self.0).0, (self.0).2, (self.0).2, (self.0).0)
         }
     }
     #[inline]
@@ -440,7 +440,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.2, self.0.2, self.0.1)
+            Vec4((self.0).0, (self.0).2, (self.0).2, (self.0).1)
         }
     }
     #[inline]
@@ -452,7 +452,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.0, self.0.2, self.0.2, self.0.2)
+            Vec4((self.0).0, (self.0).2, (self.0).2, (self.0).2)
         }
     }
     #[inline]
@@ -464,7 +464,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.0, self.0.0, self.0.0)
+            Vec4((self.0).1, (self.0).0, (self.0).0, (self.0).0)
         }
     }
     #[inline]
@@ -476,7 +476,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.0, self.0.0, self.0.1)
+            Vec4((self.0).1, (self.0).0, (self.0).0, (self.0).1)
         }
     }
     #[inline]
@@ -488,7 +488,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.0, self.0.0, self.0.2)
+            Vec4((self.0).1, (self.0).0, (self.0).0, (self.0).2)
         }
     }
     #[inline]
@@ -500,7 +500,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.0, self.0.1, self.0.0)
+            Vec4((self.0).1, (self.0).0, (self.0).1, (self.0).0)
         }
     }
     #[inline]
@@ -512,7 +512,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.0, self.0.1, self.0.1)
+            Vec4((self.0).1, (self.0).0, (self.0).1, (self.0).1)
         }
     }
     #[inline]
@@ -524,7 +524,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.0, self.0.1, self.0.2)
+            Vec4((self.0).1, (self.0).0, (self.0).1, (self.0).2)
         }
     }
     #[inline]
@@ -536,7 +536,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.0, self.0.2, self.0.0)
+            Vec4((self.0).1, (self.0).0, (self.0).2, (self.0).0)
         }
     }
     #[inline]
@@ -548,7 +548,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.0, self.0.2, self.0.1)
+            Vec4((self.0).1, (self.0).0, (self.0).2, (self.0).1)
         }
     }
     #[inline]
@@ -560,7 +560,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.0, self.0.2, self.0.2)
+            Vec4((self.0).1, (self.0).0, (self.0).2, (self.0).2)
         }
     }
     #[inline]
@@ -572,7 +572,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.1, self.0.0, self.0.0)
+            Vec4((self.0).1, (self.0).1, (self.0).0, (self.0).0)
         }
     }
     #[inline]
@@ -584,7 +584,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.1, self.0.0, self.0.1)
+            Vec4((self.0).1, (self.0).1, (self.0).0, (self.0).1)
         }
     }
     #[inline]
@@ -596,7 +596,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.1, self.0.0, self.0.2)
+            Vec4((self.0).1, (self.0).1, (self.0).0, (self.0).2)
         }
     }
     #[inline]
@@ -608,7 +608,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.1, self.0.1, self.0.0)
+            Vec4((self.0).1, (self.0).1, (self.0).1, (self.0).0)
         }
     }
     #[inline]
@@ -620,7 +620,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.1, self.0.1, self.0.1)
+            Vec4((self.0).1, (self.0).1, (self.0).1, (self.0).1)
         }
     }
     #[inline]
@@ -632,7 +632,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.1, self.0.1, self.0.2)
+            Vec4((self.0).1, (self.0).1, (self.0).1, (self.0).2)
         }
     }
     #[inline]
@@ -644,7 +644,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.1, self.0.2, self.0.0)
+            Vec4((self.0).1, (self.0).1, (self.0).2, (self.0).0)
         }
     }
     #[inline]
@@ -656,7 +656,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.1, self.0.2, self.0.1)
+            Vec4((self.0).1, (self.0).1, (self.0).2, (self.0).1)
         }
     }
     #[inline]
@@ -668,7 +668,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.1, self.0.2, self.0.2)
+            Vec4((self.0).1, (self.0).1, (self.0).2, (self.0).2)
         }
     }
     #[inline]
@@ -680,7 +680,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.2, self.0.0, self.0.0)
+            Vec4((self.0).1, (self.0).2, (self.0).0, (self.0).0)
         }
     }
     #[inline]
@@ -692,7 +692,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.2, self.0.0, self.0.1)
+            Vec4((self.0).1, (self.0).2, (self.0).0, (self.0).1)
         }
     }
     #[inline]
@@ -704,7 +704,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.2, self.0.0, self.0.2)
+            Vec4((self.0).1, (self.0).2, (self.0).0, (self.0).2)
         }
     }
     #[inline]
@@ -716,7 +716,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.2, self.0.1, self.0.0)
+            Vec4((self.0).1, (self.0).2, (self.0).1, (self.0).0)
         }
     }
     #[inline]
@@ -728,7 +728,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.2, self.0.1, self.0.1)
+            Vec4((self.0).1, (self.0).2, (self.0).1, (self.0).1)
         }
     }
     #[inline]
@@ -740,7 +740,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.2, self.0.1, self.0.2)
+            Vec4((self.0).1, (self.0).2, (self.0).1, (self.0).2)
         }
     }
     #[inline]
@@ -752,7 +752,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.2, self.0.2, self.0.0)
+            Vec4((self.0).1, (self.0).2, (self.0).2, (self.0).0)
         }
     }
     #[inline]
@@ -764,7 +764,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.2, self.0.2, self.0.1)
+            Vec4((self.0).1, (self.0).2, (self.0).2, (self.0).1)
         }
     }
     #[inline]
@@ -776,7 +776,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.1, self.0.2, self.0.2, self.0.2)
+            Vec4((self.0).1, (self.0).2, (self.0).2, (self.0).2)
         }
     }
     #[inline]
@@ -788,7 +788,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.0, self.0.0, self.0.0)
+            Vec4((self.0).2, (self.0).0, (self.0).0, (self.0).0)
         }
     }
     #[inline]
@@ -800,7 +800,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.0, self.0.0, self.0.1)
+            Vec4((self.0).2, (self.0).0, (self.0).0, (self.0).1)
         }
     }
     #[inline]
@@ -812,7 +812,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.0, self.0.0, self.0.2)
+            Vec4((self.0).2, (self.0).0, (self.0).0, (self.0).2)
         }
     }
     #[inline]
@@ -824,7 +824,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.0, self.0.1, self.0.0)
+            Vec4((self.0).2, (self.0).0, (self.0).1, (self.0).0)
         }
     }
     #[inline]
@@ -836,7 +836,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.0, self.0.1, self.0.1)
+            Vec4((self.0).2, (self.0).0, (self.0).1, (self.0).1)
         }
     }
     #[inline]
@@ -848,7 +848,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.0, self.0.1, self.0.2)
+            Vec4((self.0).2, (self.0).0, (self.0).1, (self.0).2)
         }
     }
     #[inline]
@@ -860,7 +860,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.0, self.0.2, self.0.0)
+            Vec4((self.0).2, (self.0).0, (self.0).2, (self.0).0)
         }
     }
     #[inline]
@@ -872,7 +872,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.0, self.0.2, self.0.1)
+            Vec4((self.0).2, (self.0).0, (self.0).2, (self.0).1)
         }
     }
     #[inline]
@@ -884,7 +884,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.0, self.0.2, self.0.2)
+            Vec4((self.0).2, (self.0).0, (self.0).2, (self.0).2)
         }
     }
     #[inline]
@@ -896,7 +896,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.1, self.0.0, self.0.0)
+            Vec4((self.0).2, (self.0).1, (self.0).0, (self.0).0)
         }
     }
     #[inline]
@@ -908,7 +908,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.1, self.0.0, self.0.1)
+            Vec4((self.0).2, (self.0).1, (self.0).0, (self.0).1)
         }
     }
     #[inline]
@@ -920,7 +920,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.1, self.0.0, self.0.2)
+            Vec4((self.0).2, (self.0).1, (self.0).0, (self.0).2)
         }
     }
     #[inline]
@@ -932,7 +932,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.1, self.0.1, self.0.0)
+            Vec4((self.0).2, (self.0).1, (self.0).1, (self.0).0)
         }
     }
     #[inline]
@@ -944,7 +944,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.1, self.0.1, self.0.1)
+            Vec4((self.0).2, (self.0).1, (self.0).1, (self.0).1)
         }
     }
     #[inline]
@@ -956,7 +956,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.1, self.0.1, self.0.2)
+            Vec4((self.0).2, (self.0).1, (self.0).1, (self.0).2)
         }
     }
     #[inline]
@@ -968,7 +968,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.1, self.0.2, self.0.0)
+            Vec4((self.0).2, (self.0).1, (self.0).2, (self.0).0)
         }
     }
     #[inline]
@@ -980,7 +980,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.1, self.0.2, self.0.1)
+            Vec4((self.0).2, (self.0).1, (self.0).2, (self.0).1)
         }
     }
     #[inline]
@@ -992,7 +992,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.1, self.0.2, self.0.2)
+            Vec4((self.0).2, (self.0).1, (self.0).2, (self.0).2)
         }
     }
     #[inline]
@@ -1004,7 +1004,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.2, self.0.0, self.0.0)
+            Vec4((self.0).2, (self.0).2, (self.0).0, (self.0).0)
         }
     }
     #[inline]
@@ -1016,7 +1016,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.2, self.0.0, self.0.1)
+            Vec4((self.0).2, (self.0).2, (self.0).0, (self.0).1)
         }
     }
     #[inline]
@@ -1028,7 +1028,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.2, self.0.0, self.0.2)
+            Vec4((self.0).2, (self.0).2, (self.0).0, (self.0).2)
         }
     }
     #[inline]
@@ -1040,7 +1040,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.2, self.0.1, self.0.0)
+            Vec4((self.0).2, (self.0).2, (self.0).1, (self.0).0)
         }
     }
     #[inline]
@@ -1052,7 +1052,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.2, self.0.1, self.0.1)
+            Vec4((self.0).2, (self.0).2, (self.0).1, (self.0).1)
         }
     }
     #[inline]
@@ -1064,7 +1064,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.2, self.0.1, self.0.2)
+            Vec4((self.0).2, (self.0).2, (self.0).1, (self.0).2)
         }
     }
     #[inline]
@@ -1076,7 +1076,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.2, self.0.2, self.0.0)
+            Vec4((self.0).2, (self.0).2, (self.0).2, (self.0).0)
         }
     }
     #[inline]
@@ -1088,7 +1088,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.2, self.0.2, self.0.1)
+            Vec4((self.0).2, (self.0).2, (self.0).2, (self.0).1)
         }
     }
     #[inline]
@@ -1100,7 +1100,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec4(self.0.2, self.0.2, self.0.2, self.0.2)
+            Vec4((self.0).2, (self.0).2, (self.0).2, (self.0).2)
         }
     }
     #[inline]
@@ -1112,7 +1112,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.0, self.0.0, self.0.0))
+            Vec3A(Vec3((self.0).0, (self.0).0, (self.0).0))
         }
     }
     #[inline]
@@ -1124,7 +1124,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.0, self.0.0, self.0.1))
+            Vec3A(Vec3((self.0).0, (self.0).0, (self.0).1))
         }
     }
     #[inline]
@@ -1136,7 +1136,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.0, self.0.0, self.0.2))
+            Vec3A(Vec3((self.0).0, (self.0).0, (self.0).2))
         }
     }
     #[inline]
@@ -1148,7 +1148,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.0, self.0.1, self.0.0))
+            Vec3A(Vec3((self.0).0, (self.0).1, (self.0).0))
         }
     }
     #[inline]
@@ -1160,7 +1160,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.0, self.0.1, self.0.1))
+            Vec3A(Vec3((self.0).0, (self.0).1, (self.0).1))
         }
     }
     #[inline]
@@ -1172,7 +1172,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.0, self.0.2, self.0.0))
+            Vec3A(Vec3((self.0).0, (self.0).2, (self.0).0))
         }
     }
     #[inline]
@@ -1184,7 +1184,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.0, self.0.2, self.0.1))
+            Vec3A(Vec3((self.0).0, (self.0).2, (self.0).1))
         }
     }
     #[inline]
@@ -1196,7 +1196,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.0, self.0.2, self.0.2))
+            Vec3A(Vec3((self.0).0, (self.0).2, (self.0).2))
         }
     }
     #[inline]
@@ -1208,7 +1208,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.1, self.0.0, self.0.0))
+            Vec3A(Vec3((self.0).1, (self.0).0, (self.0).0))
         }
     }
     #[inline]
@@ -1220,7 +1220,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.1, self.0.0, self.0.1))
+            Vec3A(Vec3((self.0).1, (self.0).0, (self.0).1))
         }
     }
     #[inline]
@@ -1232,7 +1232,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.1, self.0.0, self.0.2))
+            Vec3A(Vec3((self.0).1, (self.0).0, (self.0).2))
         }
     }
     #[inline]
@@ -1244,7 +1244,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.1, self.0.1, self.0.0))
+            Vec3A(Vec3((self.0).1, (self.0).1, (self.0).0))
         }
     }
     #[inline]
@@ -1256,7 +1256,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.1, self.0.1, self.0.1))
+            Vec3A(Vec3((self.0).1, (self.0).1, (self.0).1))
         }
     }
     #[inline]
@@ -1268,7 +1268,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.1, self.0.1, self.0.2))
+            Vec3A(Vec3((self.0).1, (self.0).1, (self.0).2))
         }
     }
     #[inline]
@@ -1280,7 +1280,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.1, self.0.2, self.0.0))
+            Vec3A(Vec3((self.0).1, (self.0).2, (self.0).0))
         }
     }
     #[inline]
@@ -1292,7 +1292,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.1, self.0.2, self.0.1))
+            Vec3A(Vec3((self.0).1, (self.0).2, (self.0).1))
         }
     }
     #[inline]
@@ -1304,7 +1304,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.1, self.0.2, self.0.2))
+            Vec3A(Vec3((self.0).1, (self.0).2, (self.0).2))
         }
     }
     #[inline]
@@ -1316,7 +1316,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.2, self.0.0, self.0.0))
+            Vec3A(Vec3((self.0).2, (self.0).0, (self.0).0))
         }
     }
     #[inline]
@@ -1328,7 +1328,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.2, self.0.0, self.0.1))
+            Vec3A(Vec3((self.0).2, (self.0).0, (self.0).1))
         }
     }
     #[inline]
@@ -1340,7 +1340,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.2, self.0.0, self.0.2))
+            Vec3A(Vec3((self.0).2, (self.0).0, (self.0).2))
         }
     }
     #[inline]
@@ -1352,7 +1352,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.2, self.0.1, self.0.0))
+            Vec3A(Vec3((self.0).2, (self.0).1, (self.0).0))
         }
     }
     #[inline]
@@ -1364,7 +1364,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.2, self.0.1, self.0.1))
+            Vec3A(Vec3((self.0).2, (self.0).1, (self.0).1))
         }
     }
     #[inline]
@@ -1376,7 +1376,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.2, self.0.1, self.0.2))
+            Vec3A(Vec3((self.0).2, (self.0).1, (self.0).2))
         }
     }
     #[inline]
@@ -1388,7 +1388,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.2, self.0.2, self.0.0))
+            Vec3A(Vec3((self.0).2, (self.0).2, (self.0).0))
         }
     }
     #[inline]
@@ -1400,7 +1400,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.2, self.0.2, self.0.1))
+            Vec3A(Vec3((self.0).2, (self.0).2, (self.0).1))
         }
     }
     #[inline]
@@ -1412,7 +1412,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(Vec3(self.0.2, self.0.2, self.0.2))
+            Vec3A(Vec3((self.0).2, (self.0).2, (self.0).2))
         }
     }
     #[inline]
@@ -1424,7 +1424,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec2(self.0.0, self.0.0)
+            Vec2((self.0).0, (self.0).0)
         }
     }
     #[inline]
@@ -1436,7 +1436,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec2(self.0.0, self.0.1)
+            Vec2((self.0).0, (self.0).1)
         }
     }
     #[inline]
@@ -1448,7 +1448,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec2(self.0.0, self.0.2)
+            Vec2((self.0).0, (self.0).2)
         }
     }
     #[inline]
@@ -1460,7 +1460,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec2(self.0.1, self.0.0)
+            Vec2((self.0).1, (self.0).0)
         }
     }
     #[inline]
@@ -1472,7 +1472,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec2(self.0.1, self.0.1)
+            Vec2((self.0).1, (self.0).1)
         }
     }
     #[inline]
@@ -1484,7 +1484,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec2(self.0.1, self.0.2)
+            Vec2((self.0).1, (self.0).2)
         }
     }
     #[inline]
@@ -1496,7 +1496,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec2(self.0.2, self.0.0)
+            Vec2((self.0).2, (self.0).0)
         }
     }
     #[inline]
@@ -1508,7 +1508,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec2(self.0.2, self.0.1)
+            Vec2((self.0).2, (self.0).1)
         }
     }
     #[inline]
@@ -1520,7 +1520,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec2(self.0.2, self.0.2)
+            Vec2((self.0).2, (self.0).2)
         }
     }
 }

@@ -40,6 +40,9 @@ mint = { version = "0.5", optional = true, default-features = false  }
 rand = { version = "0.7", optional = true, default-features = false }
 serde = { version = "1.0", optional = true, features = ["derive"] }
 
+[build-dependencies]
+version_check = "0.9"
+
 [dev-dependencies]
 criterion = "0.3"
 # rand_xoshiro is required for tests if rand is enabled
