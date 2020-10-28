@@ -40,6 +40,11 @@ pub use vec4::*;
 pub use vec4_mask::*;
 pub use vec4_swizzle::*;
 
+#[cfg(feature = "bytemuck")]
+mod glam_bytemuck;
+#[cfg(feature = "bytemuck")]
+pub use glam_bytemuck::*;
+
 #[cfg(feature = "mint")]
 mod glam_mint;
 #[cfg(feature = "mint")]

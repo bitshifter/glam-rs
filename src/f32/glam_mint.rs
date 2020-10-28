@@ -206,6 +206,7 @@ impl From<Mat4> for mint::ColumnMatrix4<f32> {
         }
     }
 }
+
 #[cfg(test)]
 mod test {
     use mint;

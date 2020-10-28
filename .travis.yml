@@ -14,8 +14,8 @@ rust:
   - nightly
 
 env:
-  - CARGO_FEATURES="mint rand serde debug-glam-assert transform-types"
-  - CARGO_FEATURES="mint rand serde scalar-math debug-glam-assert transform-types"
+  - CARGO_FEATURES="bytemuck mint rand serde debug-glam-assert transform-types"
+  - CARGO_FEATURES="bytemuck mint rand serde scalar-math debug-glam-assert transform-types"
 
 jobs:
   allow_failures:

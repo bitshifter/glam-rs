@@ -19,6 +19,8 @@ The format is based on [Keep a Changelog], and this project adheres to
   Note that these operations will not return unit length quaternions, thus the
   results must be normalized before performing other `Quat` operations.
 * Added `Mat4::transform_point3a` and `Mat4::transform_vector3a`.
+* Added `AsRef<[f32; 9]>` and `AsMut<[f32; 9]>` trait implementations to `Mat3`.
+* Added optional `bytemuck` support primarily for casting types to `&[u8]`.
 
 ## Changed
 

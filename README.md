@@ -43,6 +43,7 @@ let [x, y, z, w]: [f32; 4] = v.into();
 
 ### Optional features
 
+* `bytemuck` - for casting into slices of bytes
 * `mint` - for interoperating with other 3D math libraries
 * `rand` - implementations of `Distribution` trait for all `glam` types. This
   is primarily used for unit testing

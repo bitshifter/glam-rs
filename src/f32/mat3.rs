@@ -451,6 +451,20 @@ impl Mat3 {
     }
 }
 
+impl AsRef<[f32; 9]> for Mat3 {
+    #[inline]
+    fn as_ref(&self) -> &[f32; 9] {
+        unsafe { &*(self as *const Self as *const [f32; 9]) }
+    }
+}
+
+impl AsMut<[f32; 9]> for Mat3 {
+    #[inline]
+    fn as_mut(&mut self) -> &mut [f32; 9] {
+        unsafe { &mut *(self as *mut Self as *mut [f32; 9]) }
+    }
+}
+
 impl Add<Mat3> for Mat3 {
     type Output = Self;
     #[inline]
