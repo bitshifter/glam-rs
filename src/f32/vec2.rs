@@ -2,7 +2,9 @@
 use super::spirv::MathExt;
 
 use crate::f32::{Vec2Mask, Vec3};
-use core::{f32, fmt, ops::*};
+#[cfg(not(target_arch = "spirv"))]
+use core::fmt;
+use core::{f32, ops::*};
 
 const ZERO: Vec2 = const_vec2!([0.0; 2]);
 const ONE: Vec2 = const_vec2!([1.0; 2]);
@@ -384,6 +386,7 @@ impl Vec2 {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Vec2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{}, {}]", self.0, self.1)

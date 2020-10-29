@@ -1,8 +1,7 @@
 use super::{scalar_sin_cos, Quat, Vec2, Vec3, Vec3A, Vec3ASwizzles};
-use core::{
-    fmt,
-    ops::{Add, Mul, Sub},
-};
+#[cfg(not(target_arch = "spirv"))]
+use core::fmt;
+use core::ops::{Add, Mul, Sub};
 
 const ZERO: Mat3 = const_mat3!([0.0; 9]);
 const IDENTITY: Mat3 = const_mat3!([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
@@ -56,6 +55,7 @@ impl Default for Mat3 {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Mat3 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{}, {}, {}]", self.x_axis, self.y_axis, self.z_axis)

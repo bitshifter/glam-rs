@@ -1,5 +1,7 @@
 use crate::Vec4;
-use core::{fmt, ops::*};
+#[cfg(not(target_arch = "spirv"))]
+use core::fmt;
+use core::ops::*;
 
 #[cfg(all(vec4_sse2, target_arch = "x86"))]
 use core::arch::x86::*;
@@ -275,6 +277,7 @@ impl Not for Vec4Mask {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for Vec4Mask {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         #[cfg(vec4_sse2)]
@@ -298,6 +301,7 @@ impl fmt::Debug for Vec4Mask {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Vec4Mask {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let arr = self.as_ref();

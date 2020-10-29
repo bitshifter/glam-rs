@@ -2,7 +2,9 @@
 use super::spirv::MathExt;
 
 use super::{Vec2, Vec3, Vec3AMask, Vec4};
-use core::{fmt, ops::*};
+#[cfg(not(target_arch = "spirv"))]
+use core::fmt;
+use core::ops::*;
 
 #[cfg(all(vec3a_sse2, target_arch = "x86"))]
 use core::arch::x86::*;
@@ -843,6 +845,7 @@ impl AsMut<[f32; 3]> for Vec3A {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for Vec3A {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         let a = self.as_ref();
@@ -854,6 +857,7 @@ impl fmt::Debug for Vec3A {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Vec3A {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         #[cfg(vec3a_sse2)]

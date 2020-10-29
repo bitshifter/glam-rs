@@ -71,8 +71,6 @@ impl Default for Mat4 {
     }
 }
 
-// TODO: fix failing compile, disabled for now. fails on:
-// error: OpBitcast on ptr without AddressingModel != Logical
 #[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Mat4 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

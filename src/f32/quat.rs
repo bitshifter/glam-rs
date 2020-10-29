@@ -6,9 +6,10 @@ use super::{scalar_acos, scalar_sin_cos, Mat3, Mat4, Vec3, Vec3A, Vec4, Vec4Swiz
 use core::arch::x86::*;
 #[cfg(all(vec4_sse2, target_arch = "x86_64",))]
 use core::arch::x86_64::*;
+#[cfg(not(target_arch = "spirv"))]
+use core::fmt;
 use core::{
     cmp::Ordering,
-    fmt,
     ops::{Add, Div, Mul, MulAssign, Neg, Sub},
 };
 
@@ -534,6 +535,7 @@ impl Quat {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for Quat {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         let a = self.as_ref();
@@ -546,6 +548,7 @@ impl fmt::Debug for Quat {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Quat {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         let (x, y, z, w) = self.0.into();

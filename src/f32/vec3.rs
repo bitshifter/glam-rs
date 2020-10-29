@@ -2,7 +2,9 @@
 use super::spirv::MathExt;
 
 use super::{Vec2, Vec3A, Vec3Mask, Vec4};
-use core::{fmt, ops::*};
+#[cfg(not(target_arch = "spirv"))]
+use core::fmt;
+use core::ops::*;
 
 const ZERO: Vec3 = const_vec3!([0.0; 3]);
 const ONE: Vec3 = const_vec3!([1.0; 3]);
@@ -480,6 +482,7 @@ impl AsMut<[f32; 3]> for Vec3 {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Vec3 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{}, {}, {}]", self.0, self.1, self.2)
