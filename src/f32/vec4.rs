@@ -38,7 +38,8 @@ pub struct Vec4(pub(crate) __m128);
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
 // if compiling with simd enabled assume alignment needs to match the simd type
 #[cfg_attr(vec4_f32_align16, repr(align(16)))]
-#[repr(C)]
+#[cfg_attr(not(target_arch = "spirv"), repr(C))]
+#[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct Vec4(
     pub(crate) f32,
     pub(crate) f32,

@@ -22,7 +22,8 @@ pub struct Vec4Mask(pub(crate) __m128);
 #[cfg(vec4_f32)]
 #[derive(Clone, Copy, Default, PartialEq, Eq, Ord, PartialOrd, Hash)]
 #[cfg_attr(vec4_f32_align16, repr(align(16)))]
-#[repr(C)]
+#[cfg_attr(not(target_arch = "spirv"), repr(C))]
+#[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct Vec4Mask(u32, u32, u32, u32);
 
 #[cfg(vec4_sse2)]

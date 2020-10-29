@@ -7,7 +7,8 @@ use core::ops::*;
 ///
 /// This type is typically created by comparison methods on `Vec2`.
 #[derive(Clone, Copy, Default, PartialEq, Eq, Ord, PartialOrd, Hash)]
-#[repr(C)]
+#[cfg_attr(not(target_arch = "spirv"), repr(C))]
+#[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct Vec2Mask(u32, u32);
 
 impl Vec2Mask {

@@ -5,7 +5,8 @@ use core::ops::*;
 
 /// A 3-dimensional vector mask.
 #[derive(Clone, Copy, Default, PartialEq, Eq, Ord, PartialOrd, Hash)]
-#[repr(C)]
+#[cfg_attr(not(target_arch = "spirv"), repr(C))]
+#[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct Vec3Mask(pub(crate) u32, pub(crate) u32, pub(crate) u32);
 
 impl Vec3Mask {

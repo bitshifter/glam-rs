@@ -13,7 +13,8 @@ const Y_AXIS: Vec2 = const_vec2!([0.0, 1.0]);
 
 /// A 2-dimensional vector.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
-#[repr(C)]
+#[cfg_attr(not(target_arch = "spirv"), repr(C))]
+#[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct Vec2(pub(crate) f32, pub(crate) f32);
 
 /// Creates a `Vec2`.

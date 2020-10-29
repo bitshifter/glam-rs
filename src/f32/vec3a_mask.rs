@@ -18,7 +18,8 @@ use core::{cmp::Ordering, hash};
 /// three boolean values.
 #[cfg(vec3a_sse2)]
 #[derive(Clone, Copy)]
-#[repr(C)]
+#[cfg_attr(not(target_arch = "spirv"), repr(C))]
+#[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct Vec3AMask(pub(crate) __m128);
 
 /// A 3-dimensional vector mask.
