@@ -193,10 +193,15 @@ The minimum supported version of Rust for `glam` is `1.36.0`.
 */
 #![doc(html_root_url = "https://docs.rs/glam/0.9.5")]
 
+#![cfg_attr(not(feature = "std"), no_std)]
+
 #[macro_use]
 mod macros;
 
 pub mod f32;
+
+#[cfg(all(not(feature = "std"), feature = "libm"))]
+extern crate num_traits;
 
 pub use self::f32::{
     mat2, mat3, mat4, quat, vec2, vec3, vec3a, vec4, Mat2, Mat3, Mat4, Quat, Vec2, Vec2Mask,

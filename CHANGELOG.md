@@ -21,6 +21,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Added `Mat4::transform_point3a` and `Mat4::transform_vector3a`.
 * Added `AsRef<[f32; 9]>` and `AsMut<[f32; 9]>` trait implementations to `Mat3`.
 * Added optional `bytemuck` support primarily for casting types to `&[u8]`.
+* Added support for compiling with `no_std` by disabling the default `std`
+  feature and adding the `libm` feature.
 
 ## Changed
 
