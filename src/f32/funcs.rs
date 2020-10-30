@@ -1,6 +1,3 @@
-#[cfg(all(not(feature = "std"), feature = "libm"))]
-use crate::LibM;
-
 #[inline]
 pub(crate) fn scalar_sin_cos(x: f32) -> (f32, f32) {
     // // expect sse2 to be available on all x86 builds

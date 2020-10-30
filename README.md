@@ -41,10 +41,24 @@ let (x, y, z, w) = v.into();
 let [x, y, z, w]: [f32; 4] = v.into();
 ```
 
+### `no_std` support
+
+`no_std` support can be enabled by compiling with `--no-default-features` to
+disable `std` support and `--features libm` for math functions that are only
+defined in `std`. For example:
+
+```toml
+[dependencies]
+glam = { version = "0.10.0", default-features = false, features = ["libm"] }
+```
+
 ### Optional features
 
 * `bytemuck` - for casting into slices of bytes
+* `libm` - required to compile with `no_std`
 * `mint` - for interoperating with other 3D math libraries
+* `num-traits` - required to compile `no_std`, will be included when enabling
+  the `libm` feature
 * `rand` - implementations of `Distribution` trait for all `glam` types. This
   is primarily used for unit testing
 * `serde` - implementations of `Serialize` and `Deserialize` for all `glam`

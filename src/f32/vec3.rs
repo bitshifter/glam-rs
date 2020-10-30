@@ -1,5 +1,3 @@
-#[cfg(all(not(feature = "std"), feature = "libm"))]
-use crate::LibM;
 use super::{Vec2, Vec3A, Vec3Mask, Vec4};
 use core::{fmt, ops::*};
 
