@@ -182,6 +182,14 @@ impl Vec3 {
         self.length().recip()
     }
 
+    /// Computes the Euclidean distance between two points in space.
+    #[inline]
+    pub fn distance(self, other: Vec3) -> f32 { (self - other).length() }
+
+    /// Compute the squared Euclidean distance between two points in space.
+    #[inline]
+    pub fn distance_squared(self, other: Vec3) -> f32 { (self - other).length_squared() }
+
     /// Returns `self` normalized to length 1.0.
     ///
     /// For valid results, `self` must _not_ be of length zero.
