@@ -191,7 +191,7 @@ and benchmarks.
 The minimum supported version of Rust for `glam` is `1.36.0`.
 
 */
-#![doc(html_root_url = "https://docs.rs/glam/0.9.5")]
+#![doc(html_root_url = "https://docs.rs/glam/0.10.0")]
 
 #![cfg_attr(not(feature = "std"), no_std)]
 

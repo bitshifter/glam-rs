@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
-## [Unreleased]
+## [0.10.0] - 2020-10-31
 
 ## Added
 
@@ -23,10 +23,13 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Added optional `bytemuck` support primarily for casting types to `&[u8]`.
 * Added support for compiling with `no_std` by disabling the default `std`
   feature and adding the `libm` feature.
+* Added `distance` and `distance_squared` methods to `Vec2`, `Vec3`, `Vec3A`
+  and `Vec4`.
 
 ## Changed
 
-* Changed the return type of `Vec4::truncate` from `Vec3A` to `Vec3`.
+* Changed the return type of `Vec4::truncate` from `Vec3A` to `Vec3`. This is a
+  breaking change.
 
 ## [0.9.5] - 2020-10-10
 
@@ -318,7 +321,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.9.5...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.10.0...HEAD
+[0.10.0]: https://github.com/bitshifter/glam-rs/compare/0.9.5...0.10.0
 [0.9.5]: https://github.com/bitshifter/glam-rs/compare/0.9.4...0.9.5
 [0.9.4]: https://github.com/bitshifter/glam-rs/compare/0.9.3...0.9.4
 [0.9.3]: https://github.com/bitshifter/glam-rs/compare/0.9.2...0.9.3
