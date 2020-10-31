@@ -121,6 +121,11 @@ fn test_vec4_funcs() {
     assert_eq!(3.0, (3.0 * y).length());
     assert_eq!(4.0, (-4.0 * z).length());
     assert_eq!(5.0, (-5.0 * w).length());
+    assert_eq!(2.0, x.distance_squared(y));
+    assert_eq!(13.0, (2.0 * x).distance_squared(-3.0 * z));
+    assert_eq!(2.0_f32.sqrt(), w.distance(y));
+    assert_eq!(5.0, (3.0 * x).distance(-4.0 * y));
+    assert_eq!(13.0, (-5.0 * w).distance(12.0 * y));
     assert_eq!(x, (2.0 * x).normalize());
     assert_eq!(
         1.0 * 5.0 + 2.0 * 6.0 + 3.0 * 7.0 + 4.0 * 8.0,

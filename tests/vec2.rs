@@ -91,6 +91,11 @@ fn test_vec2_funcs() {
     assert_eq!(9.0, (-3.0 * y).length_squared());
     assert_eq!(2.0, (-2.0 * x).length());
     assert_eq!(3.0, (3.0 * y).length());
+    assert_eq!(2.0, x.distance_squared(y));
+    assert_eq!(13.0, (2.0 * x).distance_squared(-3.0 * y));
+    assert_eq!(2.0_f32.sqrt(), x.distance(y));
+    assert_eq!(5.0, (3.0 * x).distance(-4.0 * y));
+    assert_eq!(13.0, (-5.0 * x).distance(12.0 * y));
     assert_eq!(x, (2.0 * x).normalize());
     assert_eq!(1.0 * 3.0 + 2.0 * 4.0, vec2(1.0, 2.0).dot(vec2(3.0, 4.0)));
     assert_eq!(2.0 * 2.0 + 3.0 * 3.0, vec2(2.0, 3.0).length_squared());
