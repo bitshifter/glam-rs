@@ -201,6 +201,21 @@ The minimum supported version of Rust for `glam` is `1.36.0`.
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
+#[cfg(all(target_arch = "spirv", feature = "glam-assert"))]
+compile_error!("`glam-assert` feature is not supported when building for SPIRV");
+
+#[cfg(all(target_arch = "spirv", feature = "debug-glam-assert"))]
+compile_error!("`debug-glam-assert` feature is not supported when building for SPIRV");
+
+#[cfg(all(target_arch = "spirv", feature = "serde"))]
+compile_error!("`serde` feature is not supported when building for SPIRV");
+
+#[cfg(all(target_arch = "spirv", feature = "rand"))]
+compile_error!("`rand` feature is not supported when building for SPIRV");
+
+#[cfg(all(target_arch = "spirv", feature = "bytemuck"))]
+compile_error!("`bytemuck` feature is not supported when building for SPIRV");
+
 #[macro_use]
 mod macros;
 
