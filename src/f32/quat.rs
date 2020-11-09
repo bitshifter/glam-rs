@@ -9,6 +9,10 @@ use core::{
     ops::{Add, Div, Mul, MulAssign, Neg, Sub},
 };
 
+#[cfg(feature = "std")]
+use std::iter::{Product, Sum};
+
+const ZERO: Quat = const_quat!([0.0, 0.0, 0.0, 0.0]);
 const IDENTITY: Quat = const_quat!([0.0, 0.0, 0.0, 1.0]);
 
 /// A quaternion representing an orientation.
@@ -723,5 +727,25 @@ impl From<__m128> for Quat {
     #[inline]
     fn from(t: __m128) -> Self {
         Self(Vec4(t))
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> Sum<&'a Self> for Quat {
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Self>,
+    {
+        iter.fold(ZERO, |a, &b| Self::add(a, b))
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> Product<&'a Self> for Quat {
+    fn product<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Self>,
+    {
+        iter.fold(IDENTITY, |a, &b| Self::mul(a, b))
     }
 }
