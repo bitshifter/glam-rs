@@ -9,6 +9,9 @@ use core::arch::x86_64::*;
 #[cfg(vec3a_sse2)]
 use core::{cmp::Ordering, f32, mem::MaybeUninit};
 
+#[cfg(feature = "std")]
+use std::iter::{Product, Sum};
+
 #[cfg(vec3a_sse2)]
 use crate::Align16;
 
@@ -1194,6 +1197,26 @@ impl From<Vec3A> for Vec2 {
         {
             v.0.into()
         }
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> Sum<&'a Self> for Vec3A {
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Self>,
+    {
+        iter.fold(ZERO, |a, &b| Self::add(a, b))
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> Product<&'a Self> for Vec3A {
+    fn product<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Self>,
+    {
+        iter.fold(ONE, |a, &b| Self::mul(a, b))
     }
 }
 
