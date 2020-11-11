@@ -10,7 +10,7 @@ fn main() {
 
     let target_feature_sse2 = match env::var("CARGO_CFG_TARGET_FEATURE") {
         Ok(cfg) => cfg.split(',').find(|&f| f == "sse2").is_some(),
-        Err(_) => false
+        Err(_) => false,
     };
 
     if target_feature_sse2 && !force_scalar_math {
