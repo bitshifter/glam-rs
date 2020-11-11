@@ -128,7 +128,7 @@ type for 3 element swizzles. `Vec3ASwizzles` will return a `Vec3A` for 3 element
 swizzles.
 
 ```
-use glam::{Vec2, Vec2Swizzles, Vec3, Vec3Swizzles, Vec3A, Vec3ASwizzles, Vec4, Vec4Swizzles};
+use glam::{swizzles::*, Vec2, Vec3, Vec3A, Vec4};
 
 let v = Vec4::new(1.0, 2.0, 3.0, 4.0);
 
@@ -192,21 +192,28 @@ The minimum supported version of Rust for `glam` is `1.36.0`.
 
 */
 #![doc(html_root_url = "https://docs.rs/glam/0.10.0")]
-
 #![cfg_attr(not(feature = "std"), no_std)]
 
 #[macro_use]
 mod macros;
 
+#[doc(hidden)]
 pub mod f32;
 
 #[cfg(all(not(feature = "std"), feature = "libm"))]
 extern crate num_traits;
 
 pub use self::f32::{
-    mat2, mat3, mat4, quat, vec2, vec3, vec3a, vec4, Mat2, Mat3, Mat4, Quat, Vec2, Vec2Mask,
-    Vec2Swizzles, Vec3, Vec3A, Vec3AMask, Vec3ASwizzles, Vec3Mask, Vec3Swizzles, Vec4, Vec4Mask,
-    Vec4Swizzles,
+    mat2, mat3, mat4, quat, vec2, vec3, vec3a, vec4, Mat2, Mat3, Mat4, Quat, Vec2,
+    Vec2Mask, Vec3, Vec3A, Vec3AMask, Vec3Mask, Vec4, Vec4Mask,
+};
+pub mod swizzles {
+    pub use super::f32::{
+        Vec2Swizzles, Vec3ASwizzles, Vec3Swizzles, Vec4Swizzles,
+    };
+}
+pub use swizzles::{
+    Vec2Swizzles, Vec3ASwizzles, Vec3Swizzles, Vec4Swizzles,
 };
 
 #[cfg(feature = "transform-types")]
