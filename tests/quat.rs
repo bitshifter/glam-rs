@@ -399,6 +399,6 @@ fn test_sum() {
 #[cfg(feature = "std")]
 #[test]
 fn test_product() {
-    let two = quat(2.0, 2.0, 2.0, 2.0);
+    let two = quat(2.0, 2.0, 2.0, 2.0).normalize();
     assert_eq!(vec![two, two].iter().product::<Quat>(), two * two);
 }
