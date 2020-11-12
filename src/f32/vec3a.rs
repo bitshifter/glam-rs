@@ -163,7 +163,7 @@ impl Vec3A {
         #[cfg(vec3a_sse2)]
         {
             let mut temp: Vec4 = self.0.into();
-            temp.set_w(w);
+            temp.w = w;
             temp
         }
 
@@ -1197,6 +1197,19 @@ impl From<Vec3A> for Vec2 {
         {
             v.0.into()
         }
+    }
+}
+
+impl Deref for Vec3A {
+    type Target = super::XYZ;
+    fn deref(&self) -> &Self::Target {
+        unsafe { &*(self as *const Self as *const Self::Target) }
+    }
+}
+
+impl DerefMut for Vec3A {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        unsafe { &mut *(self as *mut Self as *mut Self::Target) }
     }
 }
 

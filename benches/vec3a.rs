@@ -31,6 +31,11 @@ fn vec3a_to_rgb_op(v: Vec3A) -> u32 {
 }
 
 #[inline]
+fn vec3a_deref(v: Vec3A) -> [f32; 3] {
+    [v.x, v.y, v.z]
+}
+
+#[inline]
 fn vec3a_accessors(v: Vec3A) -> [f32; 3] {
     [v.x(), v.y(), v.z()]
 }
@@ -61,6 +66,13 @@ bench_func!(
 vec3a_to_rgb,
 "vec3a to rgb",
 op => vec3a_to_rgb_op,
+from => random_vec3a
+);
+
+bench_func!(
+vec3a_to_array_deref,
+"vec3a into array deref",
+op => vec3a_deref,
 from => random_vec3a
 );
 

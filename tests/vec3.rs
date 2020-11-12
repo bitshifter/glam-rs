@@ -575,4 +575,3 @@ fn test_product() {
     let two = Vec3::new(2.0, 2.0, 2.0);
     assert_eq!(vec![two, two].iter().product::<Vec3>(), two * two);
 }
-

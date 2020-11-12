@@ -33,16 +33,16 @@ pub struct Vec4(pub(crate) __m128);
 ///
 /// This type is 16 byte aligned unless the `scalar-math` feature is enabed.
 #[cfg(vec4_f32)]
-#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Default)]
 // if compiling with simd enabled assume alignment needs to match the simd type
 #[cfg_attr(vec4_f32_align16, repr(align(16)))]
 #[repr(C)]
-pub struct Vec4(
-    pub(crate) f32,
-    pub(crate) f32,
-    pub(crate) f32,
-    pub(crate) f32,
-);
+pub struct Vec4 {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+    pub w: f32,
+}
 
 #[cfg(vec4_sse2)]
 impl Default for Vec4 {
@@ -101,7 +101,7 @@ impl Vec4 {
         }
         #[cfg(vec4_f32)]
         {
-            Self(x, y, z, w)
+            Self { x, y, z, w }
         }
     }
 
@@ -151,7 +151,12 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Self(v, v, v, v)
+            Self {
+                x: v,
+                y: v,
+                z: v,
+                w: v,
+            }
         }
     }
 
@@ -175,7 +180,7 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            self.0
+            self.x
         }
     }
 
@@ -189,7 +194,7 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            self.1
+            self.y
         }
     }
 
@@ -203,7 +208,7 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            self.2
+            self.z
         }
     }
 
@@ -217,7 +222,7 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            self.3
+            self.w
         }
     }
 
@@ -231,7 +236,7 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            &mut self.0
+            &mut self.x
         }
     }
 
@@ -245,7 +250,7 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            &mut self.1
+            &mut self.y
         }
     }
 
@@ -259,7 +264,7 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            &mut self.2
+            &mut self.z
         }
     }
 
@@ -273,7 +278,7 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            &mut self.3
+            &mut self.w
         }
     }
 
@@ -287,7 +292,7 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            self.0 = x;
+            self.x = x;
         }
     }
 
@@ -303,7 +308,7 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            self.1 = y;
+            self.y = y;
         }
     }
 
@@ -319,7 +324,7 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            self.2 = z;
+            self.z = z;
         }
     }
 
@@ -335,7 +340,7 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            self.3 = w;
+            self.w = w;
         }
     }
 
@@ -370,7 +375,7 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            (self.0 * other.0) + (self.1 * other.1) + (self.2 * other.2) + (self.3 * other.3)
+            (self.x * other.x) + (self.y * other.y) + (self.z * other.z) + (self.w * other.w)
         }
     }
 
@@ -467,12 +472,12 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Self(
-                self.0.min(other.0),
-                self.1.min(other.1),
-                self.2.min(other.2),
-                self.3.min(other.3),
-            )
+            Self {
+                x: self.x.min(other.x),
+                y: self.y.min(other.y),
+                z: self.z.min(other.z),
+                w: self.w.min(other.w),
+            }
         }
     }
 
@@ -490,12 +495,12 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Self(
-                self.0.max(other.0),
-                self.1.max(other.1),
-                self.2.max(other.2),
-                self.3.max(other.3),
-            )
+            Self {
+                x: self.x.max(other.x),
+                y: self.y.max(other.y),
+                z: self.z.max(other.z),
+                w: self.w.max(other.w),
+            }
         }
     }
 
@@ -514,7 +519,7 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            self.0.min(self.1.min(self.2.min(self.3)))
+            self.x.min(self.y.min(self.z.min(self.w)))
         }
     }
 
@@ -533,7 +538,7 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            self.0.max(self.1.max(self.2.min(self.3)))
+            self.x.max(self.y.max(self.z.min(self.w)))
         }
     }
 
@@ -551,10 +556,10 @@ impl Vec4 {
         #[cfg(vec4_f32)]
         {
             Vec4Mask::new(
-                self.0.eq(&other.0),
-                self.1.eq(&other.1),
-                self.2.eq(&other.2),
-                self.3.eq(&other.3),
+                self.x.eq(&other.x),
+                self.y.eq(&other.y),
+                self.z.eq(&other.z),
+                self.w.eq(&other.w),
             )
         }
     }
@@ -573,10 +578,10 @@ impl Vec4 {
         #[cfg(vec4_f32)]
         {
             Vec4Mask::new(
-                self.0.ne(&other.0),
-                self.1.ne(&other.1),
-                self.2.ne(&other.2),
-                self.3.ne(&other.3),
+                self.x.ne(&other.x),
+                self.y.ne(&other.y),
+                self.z.ne(&other.z),
+                self.w.ne(&other.w),
             )
         }
     }
@@ -595,10 +600,10 @@ impl Vec4 {
         #[cfg(vec4_f32)]
         {
             Vec4Mask::new(
-                self.0.ge(&other.0),
-                self.1.ge(&other.1),
-                self.2.ge(&other.2),
-                self.3.ge(&other.3),
+                self.x.ge(&other.x),
+                self.y.ge(&other.y),
+                self.z.ge(&other.z),
+                self.w.ge(&other.w),
             )
         }
     }
@@ -617,10 +622,10 @@ impl Vec4 {
         #[cfg(vec4_f32)]
         {
             Vec4Mask::new(
-                self.0.gt(&other.0),
-                self.1.gt(&other.1),
-                self.2.gt(&other.2),
-                self.3.gt(&other.3),
+                self.x.gt(&other.x),
+                self.y.gt(&other.y),
+                self.z.gt(&other.z),
+                self.w.gt(&other.w),
             )
         }
     }
@@ -639,10 +644,10 @@ impl Vec4 {
         #[cfg(vec4_f32)]
         {
             Vec4Mask::new(
-                self.0.le(&other.0),
-                self.1.le(&other.1),
-                self.2.le(&other.2),
-                self.3.le(&other.3),
+                self.x.le(&other.x),
+                self.y.le(&other.y),
+                self.z.le(&other.z),
+                self.w.le(&other.w),
             )
         }
     }
@@ -661,10 +666,10 @@ impl Vec4 {
         #[cfg(vec4_f32)]
         {
             Vec4Mask::new(
-                self.0.lt(&other.0),
-                self.1.lt(&other.1),
-                self.2.lt(&other.2),
-                self.3.lt(&other.3),
+                self.x.lt(&other.x),
+                self.y.lt(&other.y),
+                self.z.lt(&other.z),
+                self.w.lt(&other.w),
             )
         }
     }
@@ -684,7 +689,12 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Self(slice[0], slice[1], slice[2], slice[3])
+            Self {
+                x: slice[0],
+                y: slice[1],
+                z: slice[2],
+                w: slice[3],
+            }
         }
     }
 
@@ -703,10 +713,10 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            slice[0] = self.0;
-            slice[1] = self.1;
-            slice[2] = self.2;
-            slice[3] = self.3;
+            slice[0] = self.x;
+            slice[1] = self.y;
+            slice[2] = self.z;
+            slice[3] = self.w;
         }
     }
 
@@ -720,12 +730,12 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Self(
-                (self.0 * a.0) + b.0,
-                (self.1 * a.1) + b.1,
-                (self.2 * a.2) + b.2,
-                (self.3 * a.3) + b.3,
-            )
+            Self {
+                x: (self.x * a.x) + b.x,
+                y: (self.y * a.y) + b.y,
+                z: (self.z * a.z) + b.z,
+                w: (self.w * a.w) + b.w,
+            }
         }
     }
 
@@ -742,7 +752,12 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Self(self.0.abs(), self.1.abs(), self.2.abs(), self.3.abs())
+            Self {
+                x: self.x.abs(),
+                y: self.y.abs(),
+                z: self.z.abs(),
+                w: self.w.abs(),
+            }
         }
     }
 
@@ -758,12 +773,12 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Self(
-                self.0.round(),
-                self.1.round(),
-                self.2.round(),
-                self.3.round(),
-            )
+            Self {
+                x: self.x.round(),
+                y: self.y.round(),
+                z: self.z.round(),
+                w: self.w.round(),
+            }
         }
     }
 
@@ -779,12 +794,12 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Self(
-                self.0.floor(),
-                self.1.floor(),
-                self.2.floor(),
-                self.3.floor(),
-            )
+            Self {
+                x: self.x.floor(),
+                y: self.y.floor(),
+                z: self.z.floor(),
+                w: self.w.floor(),
+            }
         }
     }
 
@@ -800,7 +815,12 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Self(self.0.ceil(), self.1.ceil(), self.2.ceil(), self.3.ceil())
+            Self {
+                x: self.x.ceil(),
+                y: self.y.ceil(),
+                z: self.z.ceil(),
+                w: self.w.ceil(),
+            }
         }
     }
 
@@ -817,10 +837,10 @@ impl Vec4 {
         #[cfg(vec4_f32)]
         {
             Vec4Mask::new(
-                self.0.is_nan(),
-                self.1.is_nan(),
-                self.2.is_nan(),
-                self.3.is_nan(),
+                self.x.is_nan(),
+                self.y.is_nan(),
+                self.z.is_nan(),
+                self.w.is_nan(),
             )
         }
     }
@@ -848,12 +868,12 @@ impl Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Vec4(
-                self.0.signum(),
-                self.1.signum(),
-                self.2.signum(),
-                self.3.signum(),
-            )
+            Vec4 {
+                x: self.x.signum(),
+                y: self.y.signum(),
+                z: self.z.signum(),
+                w: self.w.signum(),
+            }
         }
     }
 
@@ -917,7 +937,6 @@ impl AsMut<[f32; 4]> for Vec4 {
     }
 }
 
-#[cfg(vec4_sse2)]
 impl fmt::Debug for Vec4 {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         let a = self.as_ref();
@@ -948,12 +967,12 @@ impl Div<Vec4> for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Self(
-                self.0 / other.0,
-                self.1 / other.1,
-                self.2 / other.2,
-                self.3 / other.3,
-            )
+            Self {
+                x: self.x / other.x,
+                y: self.y / other.y,
+                z: self.z / other.z,
+                w: self.w / other.w,
+            }
         }
     }
 }
@@ -968,10 +987,10 @@ impl DivAssign<Vec4> for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            self.0 /= other.0;
-            self.1 /= other.1;
-            self.2 /= other.2;
-            self.3 /= other.3;
+            self.x /= other.x;
+            self.y /= other.y;
+            self.z /= other.z;
+            self.w /= other.w;
         }
     }
 }
@@ -987,12 +1006,12 @@ impl Div<f32> for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Self(
-                self.0 / other,
-                self.1 / other,
-                self.2 / other,
-                self.3 / other,
-            )
+            Self {
+                x: self.x / other,
+                y: self.y / other,
+                z: self.z / other,
+                w: self.w / other,
+            }
         }
     }
 }
@@ -1007,10 +1026,10 @@ impl DivAssign<f32> for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            self.0 /= other;
-            self.1 /= other;
-            self.2 /= other;
-            self.3 /= other;
+            self.x /= other;
+            self.y /= other;
+            self.z /= other;
+            self.w /= other;
         }
     }
 }
@@ -1026,12 +1045,12 @@ impl Div<Vec4> for f32 {
 
         #[cfg(vec4_f32)]
         {
-            Vec4(
-                self / other.0,
-                self / other.1,
-                self / other.2,
-                self / other.3,
-            )
+            Vec4 {
+                x: self / other.x,
+                y: self / other.y,
+                z: self / other.z,
+                w: self / other.w,
+            }
         }
     }
 }
@@ -1047,12 +1066,12 @@ impl Mul<Vec4> for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Self(
-                self.0 * other.0,
-                self.1 * other.1,
-                self.2 * other.2,
-                self.3 * other.3,
-            )
+            Self {
+                x: self.x * other.x,
+                y: self.y * other.y,
+                z: self.z * other.z,
+                w: self.w * other.w,
+            }
         }
     }
 }
@@ -1067,10 +1086,10 @@ impl MulAssign<Vec4> for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            self.0 *= other.0;
-            self.1 *= other.1;
-            self.2 *= other.2;
-            self.3 *= other.3;
+            self.x *= other.x;
+            self.y *= other.y;
+            self.z *= other.z;
+            self.w *= other.w;
         }
     }
 }
@@ -1086,12 +1105,12 @@ impl Mul<f32> for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Self(
-                self.0 * other,
-                self.1 * other,
-                self.2 * other,
-                self.3 * other,
-            )
+            Self {
+                x: self.x * other,
+                y: self.y * other,
+                z: self.z * other,
+                w: self.w * other,
+            }
         }
     }
 }
@@ -1106,10 +1125,10 @@ impl MulAssign<f32> for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            self.0 *= other;
-            self.1 *= other;
-            self.2 *= other;
-            self.3 *= other;
+            self.x *= other;
+            self.y *= other;
+            self.z *= other;
+            self.w *= other;
         }
     }
 }
@@ -1125,12 +1144,12 @@ impl Mul<Vec4> for f32 {
 
         #[cfg(vec4_f32)]
         {
-            Vec4(
-                self * other.0,
-                self * other.1,
-                self * other.2,
-                self * other.3,
-            )
+            Vec4 {
+                x: self * other.x,
+                y: self * other.y,
+                z: self * other.z,
+                w: self * other.w,
+            }
         }
     }
 }
@@ -1146,12 +1165,12 @@ impl Add for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Self(
-                self.0 + other.0,
-                self.1 + other.1,
-                self.2 + other.2,
-                self.3 + other.3,
-            )
+            Self {
+                x: self.x + other.x,
+                y: self.y + other.y,
+                z: self.z + other.z,
+                w: self.w + other.w,
+            }
         }
     }
 }
@@ -1166,10 +1185,10 @@ impl AddAssign for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            self.0 += other.0;
-            self.1 += other.1;
-            self.2 += other.2;
-            self.3 += other.3;
+            self.x += other.x;
+            self.y += other.y;
+            self.z += other.z;
+            self.w += other.w;
         }
     }
 }
@@ -1185,12 +1204,12 @@ impl Sub for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Self(
-                self.0 - other.0,
-                self.1 - other.1,
-                self.2 - other.2,
-                self.3 - other.3,
-            )
+            Self {
+                x: self.x - other.x,
+                y: self.y - other.y,
+                z: self.z - other.z,
+                w: self.w - other.w,
+            }
         }
     }
 }
@@ -1205,10 +1224,10 @@ impl SubAssign for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            self.0 -= other.0;
-            self.1 -= other.1;
-            self.2 -= other.2;
-            self.3 -= other.3;
+            self.x -= other.x;
+            self.y -= other.y;
+            self.z -= other.z;
+            self.w -= other.w;
         }
     }
 }
@@ -1224,7 +1243,12 @@ impl Neg for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Self(-self.0, -self.1, -self.2, -self.3)
+            Self {
+                x: -self.x,
+                y: -self.y,
+                z: -self.z,
+                w: -self.w,
+            }
         }
     }
 }
@@ -1265,7 +1289,7 @@ impl From<Vec4> for (f32, f32, f32, f32) {
 
         #[cfg(vec4_f32)]
         {
-            (v.0, v.1, v.2, v.3)
+            (v.x, v.y, v.z, v.w)
         }
     }
 }
@@ -1280,7 +1304,12 @@ impl From<[f32; 4]> for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Self(a[0], a[1], a[2], a[3])
+            Self {
+                x: a[0],
+                y: a[1],
+                z: a[2],
+                w: a[3],
+            }
         }
     }
 }
@@ -1299,7 +1328,7 @@ impl From<Vec4> for [f32; 4] {
 
         #[cfg(vec4_f32)]
         {
-            [v.0, v.1, v.2, v.3]
+            [v.x, v.y, v.z, v.w]
         }
     }
 }
@@ -1317,7 +1346,7 @@ impl From<Vec4> for Vec3A {
 
         #[cfg(vec4_f32)]
         {
-            Vec3A::new(v.0, v.1, v.2)
+            Vec3A::new(v.x, v.y, v.z)
         }
     }
 }
@@ -1337,7 +1366,7 @@ impl From<Vec4> for Vec3 {
 
         #[cfg(vec4_f32)]
         {
-            Vec3(v.0, v.1, v.2)
+            Vec3(v.x, v.y, v.z)
         }
     }
 }
@@ -1357,8 +1386,23 @@ impl From<Vec4> for Vec2 {
 
         #[cfg(vec4_f32)]
         {
-            Vec2(v.0, v.1)
+            Vec2(v.x, v.y)
         }
+    }
+}
+
+#[cfg(vec4_sse2)]
+impl Deref for Vec4 {
+    type Target = super::XYZW;
+    fn deref(&self) -> &Self::Target {
+        unsafe { &*(self as *const Self as *const Self::Target) }
+    }
+}
+
+#[cfg(vec4_sse2)]
+impl DerefMut for Vec4 {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        unsafe { &mut *(self as *mut Self as *mut Self::Target) }
     }
 }
 

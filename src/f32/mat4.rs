@@ -715,14 +715,14 @@ impl Mat4 {
             };
 
             let col0 = Vec4::new(
-                inverse.x_axis.x(),
-                inverse.y_axis.x(),
-                inverse.z_axis.x(),
-                inverse.w_axis.x(),
+                inverse.x_axis.x,
+                inverse.y_axis.x,
+                inverse.z_axis.x,
+                inverse.w_axis.x,
             );
 
             let dot0 = self.x_axis * col0;
-            let dot1 = dot0.x() + dot0.y() + dot0.z() + dot0.w();
+            let dot1 = dot0.x + dot0.y + dot0.z + dot0.w;
 
             glam_assert!(dot1 != 0.0);
 

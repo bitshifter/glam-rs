@@ -56,11 +56,11 @@ or SIMD storage.
 ```
 use glam::Vec4;
 let mut v = Vec4::new(1.0, 2.0, 3.0, 4.0);
-assert_eq!(v.y(), 2.0);
-v.set_z(1.0);
-assert_eq!(v.z(), 1.0);
-*v.x_mut() = 2.0;
-assert_eq!(v.x(), 2.0);
+assert_eq!(v.y, 2.0);
+v.z = 1.0;
+assert_eq!(v.z, 1.0);
+v.x = 2.0;
+assert_eq!(v.x, 2.0);
 ```
 
 If you need to access multiple elements it is easier to convert the type to a
@@ -204,17 +204,13 @@ pub mod f32;
 extern crate num_traits;
 
 pub use self::f32::{
-    mat2, mat3, mat4, quat, vec2, vec3, vec3a, vec4, Mat2, Mat3, Mat4, Quat, Vec2,
-    Vec2Mask, Vec3, Vec3A, Vec3AMask, Vec3Mask, Vec4, Vec4Mask,
+    mat2, mat3, mat4, quat, vec2, vec3, vec3a, vec4, Mat2, Mat3, Mat4, Quat, Vec2, Vec2Mask, Vec3,
+    Vec3A, Vec3AMask, Vec3Mask, Vec4, Vec4Mask,
 };
 pub mod swizzles {
-    pub use super::f32::{
-        Vec2Swizzles, Vec3ASwizzles, Vec3Swizzles, Vec4Swizzles,
-    };
+    pub use super::f32::{Vec2Swizzles, Vec3ASwizzles, Vec3Swizzles, Vec4Swizzles};
 }
-pub use swizzles::{
-    Vec2Swizzles, Vec3ASwizzles, Vec3Swizzles, Vec4Swizzles,
-};
+pub use swizzles::{Vec2Swizzles, Vec3ASwizzles, Vec3Swizzles, Vec4Swizzles};
 
 #[cfg(feature = "transform-types")]
 pub use self::f32::{TransformRT, TransformSRT};

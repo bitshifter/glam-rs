@@ -16,6 +16,10 @@ fn test_vec3a_align() {
 fn test_vec3a_new() {
     let v = vec3a(1.0, 2.0, 3.0);
 
+    assert_eq!(v.x, 1.0);
+    assert_eq!(v.y, 2.0);
+    assert_eq!(v.z, 3.0);
+
     assert_eq!(v.x(), 1.0);
     assert_eq!(v.y(), 2.0);
     assert_eq!(v.z(), 3.0);
