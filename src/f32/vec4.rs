@@ -6,6 +6,9 @@ use core::arch::x86::*;
 #[cfg(all(vec4_sse2, target_arch = "x86_64"))]
 use core::arch::x86_64::*;
 
+#[cfg(feature = "std")]
+use std::iter::{Product, Sum};
+
 #[cfg(vec4_sse2)]
 use crate::Align16;
 #[cfg(vec4_sse2)]
@@ -1356,6 +1359,26 @@ impl From<Vec4> for Vec2 {
         {
             Vec2(v.0, v.1)
         }
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> Sum<&'a Self> for Vec4 {
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Self>,
+    {
+        iter.fold(ZERO, |a, &b| Self::add(a, b))
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> Product<&'a Self> for Vec4 {
+    fn product<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Self>,
+    {
+        iter.fold(ONE, |a, &b| Self::mul(a, b))
     }
 }
 

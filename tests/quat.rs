@@ -388,3 +388,17 @@ fn test_quat_rand() {
     let b: Quat = rng2.gen();
     assert_eq!(a, b);
 }
+
+#[cfg(feature = "std")]
+#[test]
+fn test_sum() {
+    let two = quat(2.0, 2.0, 2.0, 2.0);
+    assert_eq!(vec![two, two].iter().sum::<Quat>(), two + two);
+}
+
+#[cfg(feature = "std")]
+#[test]
+fn test_product() {
+    let two = quat(2.0, 2.0, 2.0, 2.0);
+    assert_eq!(vec![two, two].iter().product::<Quat>(), two * two);
+}

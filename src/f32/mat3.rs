@@ -4,6 +4,9 @@ use core::{
     ops::{Add, Mul, Sub},
 };
 
+#[cfg(feature = "std")]
+use std::iter::{Product, Sum};
+
 const ZERO: Mat3 = const_mat3!([0.0; 9]);
 const IDENTITY: Mat3 = const_mat3!([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
 
@@ -518,5 +521,25 @@ impl Mul<f32> for Mat3 {
     #[inline]
     fn mul(self, other: f32) -> Self {
         self.mul_scalar(other)
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> Sum<&'a Self> for Mat3 {
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Self>,
+    {
+        iter.fold(ZERO, |a, &b| Self::add(a, b))
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> Product<&'a Self> for Mat3 {
+    fn product<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Self>,
+    {
+        iter.fold(IDENTITY, |a, &b| Self::mul(a, b))
     }
 }

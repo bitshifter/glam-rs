@@ -188,3 +188,17 @@ fn test_mat2_rand() {
     let b = rng2.gen::<Mat2>();
     assert_eq!(a, b);
 }
+
+#[cfg(feature = "std")]
+#[test]
+fn test_sum() {
+    let id = Mat2::identity();
+    assert_eq!(vec![id, id].iter().sum::<Mat2>(), id + id);
+}
+
+#[cfg(feature = "std")]
+#[test]
+fn test_product() {
+    let two = Mat2::identity() + Mat2::identity();
+    assert_eq!(vec![two, two].iter().product::<Mat2>(), two * two);
+}

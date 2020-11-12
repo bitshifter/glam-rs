@@ -537,3 +537,17 @@ fn test_mat4_rand() {
     let b = rng2.gen::<Mat4>();
     assert_eq!(a, b);
 }
+
+#[cfg(feature = "std")]
+#[test]
+fn test_sum() {
+    let id = Mat4::identity();
+    assert_eq!(vec![id, id].iter().sum::<Mat4>(), id + id);
+}
+
+#[cfg(feature = "std")]
+#[test]
+fn test_product() {
+    let two = Mat4::identity() + Mat4::identity();
+    assert_eq!(vec![two, two].iter().product::<Mat4>(), two * two);
+}

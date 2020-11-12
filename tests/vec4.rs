@@ -635,3 +635,17 @@ fn test_vec4_rand() {
     let b: Vec4 = rng2.gen();
     assert_eq!(a, b.into());
 }
+
+#[cfg(feature = "std")]
+#[test]
+fn test_sum() {
+    let one = Vec4::one();
+    assert_eq!(vec![one, one].iter().sum::<Vec4>(), one + one);
+}
+
+#[cfg(feature = "std")]
+#[test]
+fn test_product() {
+    let two = Vec4::new(2.0, 2.0, 2.0, 2.0);
+    assert_eq!(vec![two, two].iter().product::<Vec4>(), two * two);
+}

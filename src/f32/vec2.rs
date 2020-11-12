@@ -1,6 +1,9 @@
 use crate::f32::{Vec2Mask, Vec3};
 use core::{f32, fmt, ops::*};
 
+#[cfg(feature = "std")]
+use std::iter::{Product, Sum};
+
 const ZERO: Vec2 = const_vec2!([0.0; 2]);
 const ONE: Vec2 = const_vec2!([1.0; 2]);
 const X_AXIS: Vec2 = const_vec2!([1.0, 0.0]);
@@ -561,5 +564,25 @@ impl From<Vec2> for [f32; 2] {
     #[inline]
     fn from(v: Vec2) -> Self {
         [v.0, v.1]
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> Sum<&'a Self> for Vec2 {
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Self>,
+    {
+        iter.fold(ZERO, |a, &b| Self::add(a, b))
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> Product<&'a Self> for Vec2 {
+    fn product<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Self>,
+    {
+        iter.fold(ONE, |a, &b| Self::mul(a, b))
     }
 }

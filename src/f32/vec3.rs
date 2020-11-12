@@ -1,6 +1,9 @@
 use super::{Vec2, Vec3A, Vec3Mask, Vec4};
 use core::{fmt, ops::*};
 
+#[cfg(feature = "std")]
+use std::iter::{Product, Sum};
+
 const ZERO: Vec3 = const_vec3!([0.0; 3]);
 const ONE: Vec3 = const_vec3!([1.0; 3]);
 const X_AXIS: Vec3 = const_vec3!([1.0, 0.0, 0.0]);
@@ -682,4 +685,24 @@ fn test_vec3_private() {
         vec3(1.0, 1.0, 1.0).mul_add(vec3(0.5, 2.0, -4.0), vec3(-1.0, -1.0, -1.0)),
         vec3(-0.5, 1.0, -5.0)
     );
+}
+
+#[cfg(feature = "std")]
+impl<'a> Sum<&'a Self> for Vec3 {
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Self>,
+    {
+        iter.fold(ZERO, |a, &b| Self::add(a, b))
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> Product<&'a Self> for Vec3 {
+    fn product<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Self>,
+    {
+        iter.fold(ONE, |a, &b| Self::mul(a, b))
+    }
 }
