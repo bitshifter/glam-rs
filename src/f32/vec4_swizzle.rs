@@ -5458,7 +5458,10 @@ impl Vec4Swizzles for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Vec2(self.x, self.x)
+            Vec2 {
+                x: self.x,
+                y: self.x,
+            }
         }
     }
     #[inline]
@@ -5470,7 +5473,10 @@ impl Vec4Swizzles for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Vec2(self.x, self.y)
+            Vec2 {
+                x: self.x,
+                y: self.y,
+            }
         }
     }
     #[inline]
@@ -5482,7 +5488,10 @@ impl Vec4Swizzles for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Vec2(self.x, self.z)
+            Vec2 {
+                x: self.x,
+                y: self.z,
+            }
         }
     }
     #[inline]
@@ -5494,7 +5503,10 @@ impl Vec4Swizzles for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Vec2(self.x, self.w)
+            Vec2 {
+                x: self.x,
+                y: self.w,
+            }
         }
     }
     #[inline]
@@ -5506,7 +5518,10 @@ impl Vec4Swizzles for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Vec2(self.y, self.x)
+            Vec2 {
+                x: self.y,
+                y: self.x,
+            }
         }
     }
     #[inline]
@@ -5518,7 +5533,10 @@ impl Vec4Swizzles for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Vec2(self.y, self.y)
+            Vec2 {
+                x: self.y,
+                y: self.y,
+            }
         }
     }
     #[inline]
@@ -5530,7 +5548,10 @@ impl Vec4Swizzles for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Vec2(self.y, self.z)
+            Vec2 {
+                x: self.y,
+                y: self.z,
+            }
         }
     }
     #[inline]
@@ -5542,7 +5563,10 @@ impl Vec4Swizzles for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Vec2(self.y, self.w)
+            Vec2 {
+                x: self.y,
+                y: self.w,
+            }
         }
     }
     #[inline]
@@ -5554,7 +5578,10 @@ impl Vec4Swizzles for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Vec2(self.z, self.x)
+            Vec2 {
+                x: self.z,
+                y: self.x,
+            }
         }
     }
     #[inline]
@@ -5566,7 +5593,10 @@ impl Vec4Swizzles for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Vec2(self.z, self.y)
+            Vec2 {
+                x: self.z,
+                y: self.y,
+            }
         }
     }
     #[inline]
@@ -5578,7 +5608,10 @@ impl Vec4Swizzles for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Vec2(self.z, self.z)
+            Vec2 {
+                x: self.z,
+                y: self.z,
+            }
         }
     }
     #[inline]
@@ -5590,7 +5623,10 @@ impl Vec4Swizzles for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Vec2(self.z, self.w)
+            Vec2 {
+                x: self.z,
+                y: self.w,
+            }
         }
     }
     #[inline]
@@ -5602,7 +5638,10 @@ impl Vec4Swizzles for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Vec2(self.w, self.x)
+            Vec2 {
+                x: self.w,
+                y: self.x,
+            }
         }
     }
     #[inline]
@@ -5614,7 +5653,10 @@ impl Vec4Swizzles for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Vec2(self.w, self.y)
+            Vec2 {
+                x: self.w,
+                y: self.y,
+            }
         }
     }
     #[inline]
@@ -5626,7 +5668,10 @@ impl Vec4Swizzles for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Vec2(self.w, self.z)
+            Vec2 {
+                x: self.w,
+                y: self.z,
+            }
         }
     }
     #[inline]
@@ -5638,7 +5683,10 @@ impl Vec4Swizzles for Vec4 {
 
         #[cfg(vec4_f32)]
         {
-            Vec2(self.w, self.w)
+            Vec2 {
+                x: self.w,
+                y: self.w,
+            }
         }
     }
 }

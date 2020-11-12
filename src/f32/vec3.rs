@@ -675,7 +675,7 @@ impl From<Vec3> for Vec2 {
     /// Creates a `Vec2` from the `x` and `y` elements of the `Vec3`, discarding `z`.
     #[inline]
     fn from(v: Vec3) -> Self {
-        Vec2(v.0, v.1)
+        Vec2 { x: v.0, y: v.1 }
     }
 }
 

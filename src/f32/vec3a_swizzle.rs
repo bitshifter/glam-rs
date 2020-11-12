@@ -1424,7 +1424,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec2((self.0).x(), (self.0).x())
+            Vec2 { x: (self.0).x(), y: (self.0).x() }
         }
     }
     #[inline]
@@ -1436,7 +1436,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec2((self.0).x(), (self.0).y())
+            Vec2 { x: (self.0).x(), y: (self.0).y() }
         }
     }
     #[inline]
@@ -1448,7 +1448,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec2((self.0).x(), (self.0).z())
+            Vec2 { x: (self.0).x(), y: (self.0).z() }
         }
     }
     #[inline]
@@ -1460,7 +1460,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec2((self.0).y(), (self.0).x())
+            Vec2 { x: (self.0).y(), y: (self.0).x() }
         }
     }
     #[inline]
@@ -1472,7 +1472,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec2((self.0).y(), (self.0).y())
+            Vec2 { x: (self.0).y(), y: (self.0).y() }
         }
     }
     #[inline]
@@ -1484,7 +1484,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec2((self.0).y(), (self.0).z())
+            Vec2 { x: (self.0).y(), y: (self.0).z() }
         }
     }
     #[inline]
@@ -1496,7 +1496,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec2((self.0).z(), (self.0).x())
+            Vec2 { x: (self.0).z(), y: (self.0).x() }
         }
     }
     #[inline]
@@ -1508,7 +1508,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec2((self.0).z(), (self.0).y())
+            Vec2 { x: (self.0).z(), y: (self.0).y() }
         }
     }
     #[inline]
@@ -1520,7 +1520,7 @@ impl Vec3ASwizzles for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec2((self.0).z(), (self.0).z())
+            Vec2 { x: (self.0).z(), y: (self.0).z() }
         }
     }
 }
