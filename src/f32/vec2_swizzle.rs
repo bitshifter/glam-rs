@@ -99,35 +99,67 @@ impl Vec2Swizzles for Vec2 {
     }
     #[inline]
     fn xxx(self) -> Vec3 {
-        Vec3(self.x, self.x, self.x)
+        Vec3 {
+            x: self.x,
+            y: self.x,
+            z: self.x,
+        }
     }
     #[inline]
     fn xxy(self) -> Vec3 {
-        Vec3(self.x, self.x, self.y)
+        Vec3 {
+            x: self.x,
+            y: self.x,
+            z: self.y,
+        }
     }
     #[inline]
     fn xyx(self) -> Vec3 {
-        Vec3(self.x, self.y, self.x)
+        Vec3 {
+            x: self.x,
+            y: self.y,
+            z: self.x,
+        }
     }
     #[inline]
     fn xyy(self) -> Vec3 {
-        Vec3(self.x, self.y, self.y)
+        Vec3 {
+            x: self.x,
+            y: self.y,
+            z: self.y,
+        }
     }
     #[inline]
     fn yxx(self) -> Vec3 {
-        Vec3(self.y, self.x, self.x)
+        Vec3 {
+            x: self.y,
+            y: self.x,
+            z: self.x,
+        }
     }
     #[inline]
     fn yxy(self) -> Vec3 {
-        Vec3(self.y, self.x, self.y)
+        Vec3 {
+            x: self.y,
+            y: self.x,
+            z: self.y,
+        }
     }
     #[inline]
     fn yyx(self) -> Vec3 {
-        Vec3(self.y, self.y, self.x)
+        Vec3 {
+            x: self.y,
+            y: self.y,
+            z: self.x,
+        }
     }
     #[inline]
     fn yyy(self) -> Vec3 {
-        Vec3(self.y, self.y, self.y)
+        Vec3 {
+            x: self.y,
+            y: self.y,
+            z: self.y,
+        }
     }
     #[inline]
     fn xx(self) -> Vec2 {

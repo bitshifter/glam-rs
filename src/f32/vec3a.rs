@@ -1175,7 +1175,7 @@ impl From<Vec3A> for [f32; 3] {
 impl From<Vec3> for Vec3A {
     #[inline]
     fn from(v: Vec3) -> Self {
-        Vec3A::new(v.0, v.1, v.2)
+        Vec3A::new(v.x, v.y, v.z)
     }
 }
 
