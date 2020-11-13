@@ -46,33 +46,6 @@ All the main `glam` types are `#[repr(C)]`, so they are possible to expose as
 struct members to C interfaces if desired. Be mindful of Vec3A's extra padding
 though.
 
-## Accessing internal data
-
-The SIMD types that `glam` builds on are opaque and their contents are not
-directly accessible. Because of this all types use getter and setter methods
-instead of providing direct access, regardless of whether they are using scalar
-or SIMD storage.
-
-```
-use glam::Vec4;
-let mut v = Vec4::new(1.0, 2.0, 3.0, 4.0);
-assert_eq!(v.y, 2.0);
-v.z = 1.0;
-assert_eq!(v.z, 1.0);
-v.x = 2.0;
-assert_eq!(v.x, 2.0);
-```
-
-If you need to access multiple elements it is easier to convert the type to a
-tuple or array:
-
-```
-use glam::Vec4;
-let v = Vec4::new(1.0, 2.0, 3.0, 4.0);
-let (x, y, z, w) = v.into();
-assert_eq!((x, y, z, w), (1.0, 2.0, 3.0, 4.0));
-```
-
 ## Vec3A
 
 `Vec3A` is a SIMD optimized version of the `Vec3` type, which due to 16 byte

@@ -40,6 +40,8 @@ pub use vec4::*;
 pub use vec4_mask::*;
 pub use vec4_swizzle::*;
 
+#[derive(Clone, Copy, Default, PartialEq, PartialOrd)]
+#[repr(C)]
 pub struct XYZW {
     pub x: f32,
     pub y: f32,
@@ -47,6 +49,8 @@ pub struct XYZW {
     pub w: f32,
 }
 
+#[derive(Clone, Copy, Default, PartialEq, PartialOrd)]
+#[repr(C)]
 pub struct XYZ {
     pub x: f32,
     pub y: f32,
