@@ -50,10 +50,10 @@ impl Vec2Mask {
     /// the element from `if_false`.
     #[inline]
     pub fn select(self, if_true: Vec2, if_false: Vec2) -> Vec2 {
-        Vec2(
-            if self.0 != 0 { if_true.0 } else { if_false.0 },
-            if self.1 != 0 { if_true.1 } else { if_false.1 },
-        )
+        Vec2 {
+            x: if self.0 != 0 { if_true.x } else { if_false.x },
+            y: if self.1 != 0 { if_true.y } else { if_false.y },
+        }
     }
 }
 

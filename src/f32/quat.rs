@@ -6,12 +6,13 @@ use core::arch::x86_64::*;
 use core::{
     cmp::Ordering,
     fmt,
-    ops::{Add, Div, Mul, MulAssign, Neg, Sub},
+    ops::{Add, Deref, DerefMut, Div, Mul, MulAssign, Neg, Sub},
 };
 
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
 
+#[cfg(feature = "std")]
 const ZERO: Quat = const_quat!([0.0, 0.0, 0.0, 0.0]);
 const IDENTITY: Quat = const_quat!([0.0, 0.0, 0.0, 1.0]);
 
@@ -229,7 +230,7 @@ impl Quat {
 
         #[cfg(vec4_f32)]
         {
-            Self::from_xyzw(-(self.0).0, -(self.0).1, -(self.0).2, (self.0).3)
+            Self::from_xyzw(-self.0.x, -self.0.y, -self.0.z, self.0.w)
         }
     }
 
@@ -303,7 +304,7 @@ impl Quat {
         // If the quat.w is close to -1.0, the angle will be near 2*PI which is close to
         // a negative 0 rotation. By forcing quat.w to be positive, we'll end up with
         // the shortest path.
-        let positive_w_angle = scalar_acos(self.0.w().abs()) * 2.0;
+        let positive_w_angle = scalar_acos(self.0.w.abs()) * 2.0;
         positive_w_angle < THRESHOLD_ANGLE
     }
 
@@ -438,7 +439,7 @@ impl Quat {
         #[cfg(vec4_f32)]
         {
             let other = Vec3::from(other);
-            let w = self.0.w();
+            let w = self.0.w;
             let b = Vec3::from(self.0);
             let b2 = b.dot(b);
             Vec3A::from(
@@ -727,6 +728,21 @@ impl From<__m128> for Quat {
     #[inline]
     fn from(t: __m128) -> Self {
         Self(Vec4(t))
+    }
+}
+
+impl Deref for Quat {
+    type Target = super::XYZW;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        unsafe { &*(self as *const Self as *const Self::Target) }
+    }
+}
+
+impl DerefMut for Quat {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        unsafe { &mut *(self as *mut Self as *mut Self::Target) }
     }
 }
 

@@ -40,6 +40,23 @@ pub use vec4::*;
 pub use vec4_mask::*;
 pub use vec4_swizzle::*;
 
+#[derive(Clone, Copy, Default, PartialEq, PartialOrd)]
+#[repr(C)]
+pub struct XYZW {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+    pub w: f32,
+}
+
+#[derive(Clone, Copy, Default, PartialEq, PartialOrd)]
+#[repr(C)]
+pub struct XYZ {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+}
+
 #[cfg(feature = "bytemuck")]
 mod glam_bytemuck;
 #[cfg(feature = "bytemuck")]

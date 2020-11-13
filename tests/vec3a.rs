@@ -16,6 +16,10 @@ fn test_vec3a_align() {
 fn test_vec3a_new() {
     let v = vec3a(1.0, 2.0, 3.0);
 
+    assert_eq!(v.x, 1.0);
+    assert_eq!(v.y, 2.0);
+    assert_eq!(v.z, 3.0);
+
     assert_eq!(v.x(), 1.0);
     assert_eq!(v.y(), 2.0);
     assert_eq!(v.z(), 3.0);
@@ -460,18 +464,18 @@ fn test_vec3a_abs() {
 
 #[test]
 fn test_vec3a_round() {
-    assert_eq!(Vec3A::new(1.35, 0.0, 0.0).round().x(), 1.0);
-    assert_eq!(Vec3A::new(0.0, 1.5, 0.0).round().y(), 2.0);
-    assert_eq!(Vec3A::new(0.0, 0.0, -15.5).round().z(), -16.0);
-    assert_eq!(Vec3A::new(0.0, 0.0, 0.0).round().z(), 0.0);
-    assert_eq!(Vec3A::new(0.0, 21.1, 0.0).round().y(), 21.0);
-    assert_eq!(Vec3A::new(0.0, 11.123, 0.0).round().y(), 11.0);
-    assert_eq!(Vec3A::new(0.0, 11.499, 0.0).round().y(), 11.0);
+    assert_eq!(Vec3A::new(1.35, 0.0, 0.0).round().x, 1.0);
+    assert_eq!(Vec3A::new(0.0, 1.5, 0.0).round().y, 2.0);
+    assert_eq!(Vec3A::new(0.0, 0.0, -15.5).round().z, -16.0);
+    assert_eq!(Vec3A::new(0.0, 0.0, 0.0).round().z, 0.0);
+    assert_eq!(Vec3A::new(0.0, 21.1, 0.0).round().y, 21.0);
+    assert_eq!(Vec3A::new(0.0, 11.123, 0.0).round().y, 11.0);
+    assert_eq!(Vec3A::new(0.0, 11.499, 0.0).round().y, 11.0);
     assert_eq!(
         Vec3A::new(f32::NEG_INFINITY, f32::INFINITY, 0.0).round(),
         Vec3A::new(f32::NEG_INFINITY, f32::INFINITY, 0.0)
     );
-    assert!(Vec3A::new(f32::NAN, 0.0, 0.0).round().x().is_nan());
+    assert!(Vec3A::new(f32::NAN, 0.0, 0.0).round().x.is_nan());
 }
 
 #[test]
@@ -484,7 +488,7 @@ fn test_vec3a_floor() {
         Vec3A::new(f32::INFINITY, f32::NEG_INFINITY, 0.0).floor(),
         Vec3A::new(f32::INFINITY, f32::NEG_INFINITY, 0.0)
     );
-    assert!(Vec3A::new(f32::NAN, 0.0, 0.0).floor().x().is_nan());
+    assert!(Vec3A::new(f32::NAN, 0.0, 0.0).floor().x.is_nan());
     assert_eq!(
         Vec3A::new(-2000000.123, 10000000.123, 1000.9).floor(),
         Vec3A::new(-2000001.0, 10000000.0, 1000.0)
@@ -501,7 +505,7 @@ fn test_vec3a_ceil() {
         Vec3A::new(f32::INFINITY, f32::NEG_INFINITY, 0.0).ceil(),
         Vec3A::new(f32::INFINITY, f32::NEG_INFINITY, 0.0)
     );
-    assert!(Vec3A::new(f32::NAN, 0.0, 0.0).ceil().x().is_nan());
+    assert!(Vec3A::new(f32::NAN, 0.0, 0.0).ceil().x.is_nan());
     assert_eq!(
         Vec3A::new(-2000000.123, 1000000.123, 1000.9).ceil(),
         Vec3A::new(-2000000.0, 1000001.0, 1001.0)

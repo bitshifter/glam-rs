@@ -161,10 +161,15 @@ impl Vec4Swizzles for Vec4 {{"#
 
         #[cfg(vec4_f32)]
         {{
-            Vec4(self.{}, self.{}, self.{}, self.{})
+            Vec4 {{
+                x: self.{},
+                y: self.{},
+                z: self.{},
+                w: self.{},
+            }}
         }}
     }}"#,
-                E[e0], E[e1], E[e2], E[e3], B[e3], B[e2], B[e1], B[e0], e0, e1, e2, e3,
+                E[e0], E[e1], E[e2], E[e3], B[e3], B[e2], B[e1], B[e0], E[e0], E[e1], E[e2], E[e3],
             )
         },
         |out, e0, e1, e2| {
@@ -180,10 +185,14 @@ impl Vec4Swizzles for Vec4 {{"#
 
         #[cfg(vec4_f32)]
         {{
-            Vec3(self.{}, self.{}, self.{})
+            Vec3 {{
+                x: self.{},
+                y: self.{},
+                z: self.{},
+            }}
         }}
     }}"#,
-                E[e0], E[e1], E[e2], B[e2], B[e1], B[e0], e0, e1, e2
+                E[e0], E[e1], E[e2], B[e2], B[e1], B[e0], E[e0], E[e1], E[e2]
             )
         },
         |out, e0, e1| {
@@ -199,10 +208,13 @@ impl Vec4Swizzles for Vec4 {{"#
 
         #[cfg(vec4_f32)]
         {{
-            Vec2(self.{}, self.{})
+            Vec2 {{
+                x: self.{},
+                y: self.{},
+            }}
         }}
     }}"#,
-                E[e0], E[e1], B[e1], B[e0], e0, e1
+                E[e0], E[e1], B[e1], B[e0], E[e0], E[e1]
             )
         },
     )?;
@@ -255,10 +267,10 @@ impl Vec3ASwizzles for Vec3A {{"#
 
         #[cfg(vec3a_f32)]
         {{
-            Vec4((self.0).{}, (self.0).{}, (self.0).{}, (self.0).{})
+            Vec4 {{ x: self.0.{}(), y: self.0.{}(), z: self.0.{}(), w: self.0.{}() }}
         }}
     }}"#,
-                E[e0], E[e1], E[e2], E[e3], B[e3], B[e2], B[e1], B[e0], e0, e1, e2, e3,
+                E[e0], E[e1], E[e2], E[e3], B[e3], B[e2], B[e1], B[e0], E[e0], E[e1], E[e2], E[e3],
             )
         },
         |out, e0, e1, e2| {
@@ -274,10 +286,10 @@ impl Vec3ASwizzles for Vec3A {{"#
 
         #[cfg(vec3a_f32)]
         {{
-            Vec3A(Vec3((self.0).{}, (self.0).{}, (self.0).{}))
+            Vec3A(Vec3 {{ x: self.0.{}(), y: self.0.{}(), z: self.0.{}() }})
         }}
     }}"#,
-                E[e0], E[e1], E[e2], B[e2], B[e1], B[e0], e0, e1, e2
+                E[e0], E[e1], E[e2], B[e2], B[e1], B[e0], E[e0], E[e1], E[e2]
             )
         },
         |out, e0, e1| {
@@ -293,10 +305,10 @@ impl Vec3ASwizzles for Vec3A {{"#
 
         #[cfg(vec3a_f32)]
         {{
-            Vec2((self.0).{}, (self.0).{})
+            Vec2 {{ x: self.0.{}, y: self.0.{} }}
         }}
     }}"#,
-                E[e0], E[e1], B[e1], B[e0], e0, e1
+                E[e0], E[e1], B[e1], B[e0], E[e0], E[e1]
             )
         },
     )?;
@@ -335,7 +347,7 @@ impl Vec3Swizzles for Vec3 {{"#
     fn {}{}{}{}(self) -> Vec4 {{
         Vec4::new(self.{}, self.{}, self.{}, self.{})
     }}"#,
-                E[e0], E[e1], E[e2], E[e3], e0, e1, e2, e3,
+                E[e0], E[e1], E[e2], E[e3], E[e0], E[e1], E[e2], E[e3],
             )
         },
         |out, e0, e1, e2| {
@@ -344,9 +356,13 @@ impl Vec3Swizzles for Vec3 {{"#
                 r#"
     #[inline]
     fn {}{}{}(self) -> Vec3 {{
-        Vec3(self.{}, self.{}, self.{})
+        Vec3 {{
+            x: self.{},
+            y: self.{},
+            z: self.{},
+        }}
     }}"#,
-                E[e0], E[e1], E[e2], e0, e1, e2
+                E[e0], E[e1], E[e2], E[e0], E[e1], E[e2]
             )
         },
         |out, e0, e1| {
@@ -355,9 +371,12 @@ impl Vec3Swizzles for Vec3 {{"#
                 r#"
     #[inline]
     fn {}{}(self) -> Vec2 {{
-        Vec2(self.{}, self.{})
+        Vec2 {{
+            x: self.{},
+            y: self.{},
+        }}
     }}"#,
-                E[e0], E[e1], e0, e1
+                E[e0], E[e1], E[e0], E[e1]
             )
         },
     )?;
@@ -396,7 +415,7 @@ impl Vec2Swizzles for Vec2 {{"#
     fn {}{}{}{}(self) -> Vec4 {{
         Vec4::new(self.{}, self.{}, self.{}, self.{})
     }}"#,
-                E[e0], E[e1], E[e2], E[e3], e0, e1, e2, e3,
+                E[e0], E[e1], E[e2], E[e3], E[e0], E[e1], E[e2], E[e3],
             )
         },
         |out, e0, e1, e2| {
@@ -405,9 +424,13 @@ impl Vec2Swizzles for Vec2 {{"#
                 r#"
     #[inline]
     fn {}{}{}(self) -> Vec3 {{
-        Vec3(self.{}, self.{}, self.{})
+        Vec3 {{
+            x: self.{},
+            y: self.{},
+            z: self.{},
+        }}
     }}"#,
-                E[e0], E[e1], E[e2], e0, e1, e2
+                E[e0], E[e1], E[e2], E[e0], E[e1], E[e2]
             )
         },
         |out, e0, e1| {
@@ -416,9 +439,12 @@ impl Vec2Swizzles for Vec2 {{"#
                 r#"
     #[inline]
     fn {}{}(self) -> Vec2 {{
-        Vec2(self.{}, self.{})
+        Vec2 {{
+            x: self.{},
+            y: self.{},
+        }}
     }}"#,
-                E[e0], E[e1], e0, e1
+                E[e0], E[e1], E[e0], E[e1]
             )
         },
     )?;
@@ -452,7 +478,7 @@ fn write_test_head(out: &mut impl Write) -> Result<()> {
     write!(
         out,
         r#"// Generated by swizzles. Do not edit.
-use glam::{{vec2, vec3, vec3a, vec4, Vec2Swizzles, Vec3ASwizzles, Vec3Swizzles, Vec4Swizzles}};
+use glam::{{swizzles::*, vec2, vec3, vec3a, vec4}};
 "#
     )?;
     Ok(())

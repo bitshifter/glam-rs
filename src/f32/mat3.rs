@@ -332,9 +332,21 @@ impl Mat3 {
         // #[cfg(vec3a_f32)]
         {
             Self {
-                x_axis: Vec3::new(self.x_axis.0, self.y_axis.0, self.z_axis.0),
-                y_axis: Vec3::new(self.x_axis.1, self.y_axis.1, self.z_axis.1),
-                z_axis: Vec3::new(self.x_axis.2, self.y_axis.2, self.z_axis.2),
+                x_axis: Vec3 {
+                    x: self.x_axis.x,
+                    y: self.y_axis.x,
+                    z: self.z_axis.x,
+                },
+                y_axis: Vec3 {
+                    x: self.x_axis.y,
+                    y: self.y_axis.y,
+                    z: self.z_axis.y,
+                },
+                z_axis: Vec3 {
+                    x: self.x_axis.z,
+                    y: self.y_axis.z,
+                    z: self.z_axis.z,
+                },
             }
         }
     }

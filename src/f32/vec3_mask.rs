@@ -53,11 +53,11 @@ impl Vec3Mask {
     pub fn select(self, if_true: Vec3, if_false: Vec3) -> Vec3 {
         // We are assuming that the mask values are either 0 or 0xff_ff_ff_ff for the SSE2 and f32
         // to behave the same here.
-        Vec3(
-            if self.0 != 0 { if_true.0 } else { if_false.0 },
-            if self.1 != 0 { if_true.1 } else { if_false.1 },
-            if self.2 != 0 { if_true.2 } else { if_false.2 },
-        )
+        Vec3 {
+            x: if self.0 != 0 { if_true.x } else { if_false.x },
+            y: if self.1 != 0 { if_true.y } else { if_false.y },
+            z: if self.2 != 0 { if_true.z } else { if_false.z },
+        }
     }
 }
 

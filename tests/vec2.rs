@@ -16,6 +16,9 @@ fn test_vec2_align() {
 fn test_vec2_new() {
     let v = vec2(1.0, 2.0);
 
+    assert_eq!(v.x, 1.0);
+    assert_eq!(v.y, 2.0);
+
     assert_eq!(v.x(), 1.0);
     assert_eq!(v.y(), 2.0);
 
@@ -58,6 +61,13 @@ fn test_vec2_splat() {
 
 #[test]
 fn test_vec2_accessors() {
+    let mut a = Vec2::zero();
+    a.x = 1.0;
+    a.y = 2.0;
+    assert_eq!(1.0, a.x);
+    assert_eq!(2.0, a.y);
+    assert_eq!(Vec2::new(1.0, 2.0), a);
+
     let mut a = Vec2::zero();
     a.set_x(1.0);
     a.set_y(2.0);
@@ -398,18 +408,18 @@ fn test_vec2_abs() {
 
 #[test]
 fn test_vec2_round() {
-    assert_eq!(Vec2::new(1.35, 0.0).round().x(), 1.0);
-    assert_eq!(Vec2::new(0.0, 1.5).round().y(), 2.0);
-    assert_eq!(Vec2::new(0.0, -15.5).round().y(), -16.0);
-    assert_eq!(Vec2::new(0.0, 0.0).round().y(), 0.0);
-    assert_eq!(Vec2::new(0.0, 21.1).round().y(), 21.0);
-    assert_eq!(Vec2::new(0.0, 11.123).round().y(), 11.0);
-    assert_eq!(Vec2::new(0.0, 11.499).round().y(), 11.0);
+    assert_eq!(Vec2::new(1.35, 0.0).round().x, 1.0);
+    assert_eq!(Vec2::new(0.0, 1.5).round().y, 2.0);
+    assert_eq!(Vec2::new(0.0, -15.5).round().y, -16.0);
+    assert_eq!(Vec2::new(0.0, 0.0).round().y, 0.0);
+    assert_eq!(Vec2::new(0.0, 21.1).round().y, 21.0);
+    assert_eq!(Vec2::new(0.0, 11.123).round().y, 11.0);
+    assert_eq!(Vec2::new(0.0, 11.499).round().y, 11.0);
     assert_eq!(
         Vec2::new(f32::NEG_INFINITY, f32::INFINITY).round(),
         Vec2::new(f32::NEG_INFINITY, f32::INFINITY)
     );
-    assert!(Vec2::new(f32::NAN, 0.0).round().x().is_nan());
+    assert!(Vec2::new(f32::NAN, 0.0).round().x.is_nan());
 }
 
 #[test]
@@ -419,7 +429,7 @@ fn test_vec2_floor() {
         Vec2::new(f32::INFINITY, f32::NEG_INFINITY).floor(),
         Vec2::new(f32::INFINITY, f32::NEG_INFINITY)
     );
-    assert!(Vec2::new(f32::NAN, 0.0).floor().x().is_nan());
+    assert!(Vec2::new(f32::NAN, 0.0).floor().x.is_nan());
     assert_eq!(
         Vec2::new(-2000000.123, 10000000.123).floor(),
         Vec2::new(-2000001.0, 10000000.0)
@@ -433,7 +443,7 @@ fn test_vec2_ceil() {
         Vec2::new(f32::INFINITY, f32::NEG_INFINITY).ceil(),
         Vec2::new(f32::INFINITY, f32::NEG_INFINITY)
     );
-    assert!(Vec2::new(f32::NAN, 0.0).ceil().x().is_nan());
+    assert!(Vec2::new(f32::NAN, 0.0).ceil().x.is_nan());
     assert_eq!(
         Vec2::new(-2000000.123, 1000000.123).ceil(),
         Vec2::new(-2000000.0, 1000001.0)

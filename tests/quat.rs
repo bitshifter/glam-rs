@@ -324,6 +324,11 @@ fn test_quat_elements() {
     let w = 4.0;
 
     let a = Quat::from_xyzw(x, y, z, w);
+    assert!(a.x == x);
+    assert!(a.y == y);
+    assert!(a.z == z);
+    assert!(a.w == w);
+
     assert!(a.x() == x);
     assert!(a.y() == y);
     assert!(a.z() == z);

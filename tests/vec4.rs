@@ -21,6 +21,11 @@ fn test_vec4_align() {
 fn test_vec4_new() {
     let v = vec4(1.0, 2.0, 3.0, 4.0);
 
+    assert_eq!(v.x, 1.0);
+    assert_eq!(v.y, 2.0);
+    assert_eq!(v.z, 3.0);
+    assert_eq!(v.w, 4.0);
+
     assert_eq!(v.x(), 1.0);
     assert_eq!(v.y(), 2.0);
     assert_eq!(v.z(), 3.0);
@@ -70,6 +75,17 @@ fn test_vec4_splat() {
 
 #[test]
 fn test_vec4_accessors() {
+    let mut a = Vec4::zero();
+    a.x = 1.0;
+    a.y = 2.0;
+    a.z = 3.0;
+    a.w = 4.0;
+    assert_eq!(1.0, a.x);
+    assert_eq!(2.0, a.y);
+    assert_eq!(3.0, a.z);
+    assert_eq!(4.0, a.w);
+    assert_eq!((1.0, 2.0, 3.0, 4.0), a.into());
+
     let mut a = Vec4::zero();
     a.set_x(1.0);
     a.set_y(2.0);
@@ -506,18 +522,18 @@ fn test_vec4mask_hash() {
 
 #[test]
 fn test_vec4_round() {
-    assert_eq!(Vec4::new(1.35, 0.0, 0.0, 0.0).round().x(), 1.0);
-    assert_eq!(Vec4::new(0.0, 1.5, 0.0, 0.0).round().y(), 2.0);
-    assert_eq!(Vec4::new(0.0, 0.0, -15.5, 0.0).round().z(), -16.0);
-    assert_eq!(Vec4::new(0.0, 0.0, 0.0, 0.0).round().z(), 0.0);
-    assert_eq!(Vec4::new(0.0, 21.1, 0.0, 0.0).round().y(), 21.0);
-    assert_eq!(Vec4::new(0.0, 0.0, 0.0, 11.123).round().w(), 11.0);
-    assert_eq!(Vec4::new(0.0, 0.0, 11.501, 0.0).round().z(), 12.0);
+    assert_eq!(Vec4::new(1.35, 0.0, 0.0, 0.0).round().x, 1.0);
+    assert_eq!(Vec4::new(0.0, 1.5, 0.0, 0.0).round().y, 2.0);
+    assert_eq!(Vec4::new(0.0, 0.0, -15.5, 0.0).round().z, -16.0);
+    assert_eq!(Vec4::new(0.0, 0.0, 0.0, 0.0).round().z, 0.0);
+    assert_eq!(Vec4::new(0.0, 21.1, 0.0, 0.0).round().y, 21.0);
+    assert_eq!(Vec4::new(0.0, 0.0, 0.0, 11.123).round().w, 11.0);
+    assert_eq!(Vec4::new(0.0, 0.0, 11.501, 0.0).round().z, 12.0);
     assert_eq!(
         Vec4::new(f32::NEG_INFINITY, f32::INFINITY, 1.0, -1.0).round(),
         Vec4::new(f32::NEG_INFINITY, f32::INFINITY, 1.0, -1.0)
     );
-    assert!(Vec4::new(f32::NAN, 0.0, 0.0, 1.0).round().x().is_nan());
+    assert!(Vec4::new(f32::NAN, 0.0, 0.0, 1.0).round().x.is_nan());
 }
 
 #[test]
