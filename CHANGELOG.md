@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+## Changed
+
+* `Vec2` and `Vec3` types were changed to use public named fields for `.x`,
+  `.y`, and `.z` intead of accessors.
+* `Quat`, `Vec3A` and `Vec4` implement `Deref` and `DerefMut` for the new `XYZ`
+  and `XYZW` structs to emulate public named field access.
+
 ## [0.10.0] - 2020-10-31
 
 ## Added

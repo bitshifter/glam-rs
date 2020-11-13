@@ -31,16 +31,6 @@ SIMD vector type is 16 bytes large and 16 byte aligned.
 
 [mathbench]: https://github.com/bitshifter/mathbench-rs
 
-Due to the use of SIMD, vector elements may only be get and set via accessor
-methods, e.g. `Vec4::x()` and `Vec4::x_mut()` or `Vec4::set_x()`. If getting or
-setting more than one element it is more efficient to convert from tuples or
-arrays:
-
-```
-let (x, y, z, w) = v.into();
-let [x, y, z, w]: [f32; 4] = v.into();
-```
-
 ### `no_std` support
 
 `no_std` support can be enabled by compiling with `--no-default-features` to
