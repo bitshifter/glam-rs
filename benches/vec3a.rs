@@ -115,6 +115,7 @@ criterion_group!(
     vec3a_euler,
     vec3a_to_rgb,
     vec3a_to_array_accessors,
+    vec3a_to_array_deref,
     vec3a_to_array_into,
     vec3a_to_tuple_into,
     vec3a_to_vec3,

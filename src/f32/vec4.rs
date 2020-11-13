@@ -1398,6 +1398,7 @@ impl From<Vec4> for Vec2 {
 #[cfg(vec4_sse2)]
 impl Deref for Vec4 {
     type Target = super::XYZW;
+    #[inline(always)]
     fn deref(&self) -> &Self::Target {
         unsafe { &*(self as *const Self as *const Self::Target) }
     }
@@ -1405,6 +1406,7 @@ impl Deref for Vec4 {
 
 #[cfg(vec4_sse2)]
 impl DerefMut for Vec4 {
+    #[inline(always)]
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe { &mut *(self as *mut Self as *mut Self::Target) }
     }

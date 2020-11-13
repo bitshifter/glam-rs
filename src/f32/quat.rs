@@ -733,12 +733,14 @@ impl From<__m128> for Quat {
 
 impl Deref for Quat {
     type Target = super::XYZW;
+    #[inline(always)]
     fn deref(&self) -> &Self::Target {
         unsafe { &*(self as *const Self as *const Self::Target) }
     }
 }
 
 impl DerefMut for Quat {
+    #[inline(always)]
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe { &mut *(self as *mut Self as *mut Self::Target) }
     }

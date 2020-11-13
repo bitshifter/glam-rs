@@ -1202,12 +1202,14 @@ impl From<Vec3A> for Vec2 {
 
 impl Deref for Vec3A {
     type Target = super::XYZ;
+    #[inline(always)]
     fn deref(&self) -> &Self::Target {
         unsafe { &*(self as *const Self as *const Self::Target) }
     }
 }
 
 impl DerefMut for Vec3A {
+    #[inline(always)]
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe { &mut *(self as *mut Self as *mut Self::Target) }
     }
