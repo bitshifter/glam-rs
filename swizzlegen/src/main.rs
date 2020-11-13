@@ -305,7 +305,7 @@ impl Vec3ASwizzles for Vec3A {{"#
 
         #[cfg(vec3a_f32)]
         {{
-            Vec2 {{ x: (self.0).{}(), y: (self.0).{}() }}
+            Vec2 {{ x: self.0.{}, y: self.0.{} }}
         }}
     }}"#,
                 E[e0], E[e1], B[e1], B[e0], E[e0], E[e1]
