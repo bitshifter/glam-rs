@@ -18,6 +18,10 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 * Removed deprecated `length_reciprocal` and `sign` methods.
 
+## Fixed
+
+* Adding `glam` as a `no_std` dependency should now work as expected.
+
 ## [0.10.0] - 2020-10-31
 
 ## Added

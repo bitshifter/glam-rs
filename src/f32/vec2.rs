@@ -1,3 +1,6 @@
+#[cfg(feature = "num-traits")]
+use num_traits::Float;
+
 use crate::f32::{Vec2Mask, Vec3};
 use core::{f32, fmt, ops::*};
 

@@ -1,3 +1,6 @@
+#[cfg(feature = "num-traits")]
+use num_traits::Float;
+
 #[inline]
 pub(crate) fn scalar_sin_cos(x: f32) -> (f32, f32) {
     // // expect sse2 to be available on all x86 builds

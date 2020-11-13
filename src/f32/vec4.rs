@@ -1,3 +1,6 @@
+#[cfg(feature = "num-traits")]
+use num_traits::Float;
+
 use super::{Vec2, Vec3, Vec3A, Vec4Mask};
 use core::{fmt, ops::*};
 

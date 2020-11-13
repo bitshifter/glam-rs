@@ -173,9 +173,6 @@ mod macros;
 #[doc(hidden)]
 pub mod f32;
 
-#[cfg(all(not(feature = "std"), feature = "libm"))]
-extern crate num_traits;
-
 pub use self::f32::{
     mat2, mat3, mat4, quat, vec2, vec3, vec3a, vec4, Mat2, Mat3, Mat4, Quat, Vec2, Vec2Mask, Vec3,
     Vec3A, Vec3AMask, Vec3Mask, Vec4, Vec4Mask,

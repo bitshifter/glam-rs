@@ -39,7 +39,21 @@ defined in `std`. For example:
 
 ```toml
 [dependencies]
-glam = { version = "0.10.0", default-features = false, features = ["libm"] }
+glam = { version = "0.10.1", default-features = false, features = ["libm"] }
+```
+
+To support both `std` and `no_std` builds in project, you can use the following
+in your `Cargo.toml`:
+
+```toml
+[features]
+default = ["std"]
+
+std = ["glam/std"]
+libm = ["glam/libm"]
+
+[dependencies]
+glam = { version = "0.10.1", default-features = false }
 ```
 
 ### Optional features
