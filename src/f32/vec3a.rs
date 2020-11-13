@@ -201,7 +201,7 @@ impl Vec3A {
         }
     }
 
-    /// Returns element `x`.
+    #[deprecated(since = "0.10.0", note = "please use `.x` instead")]
     #[inline]
     pub fn x(self) -> f32 {
         #[cfg(vec3a_sse2)]
@@ -215,7 +215,7 @@ impl Vec3A {
         }
     }
 
-    /// Returns element `y`.
+    #[deprecated(since = "0.10.0", note = "please use `.y` instead")]
     #[inline]
     pub fn y(self) -> f32 {
         #[cfg(vec3a_sse2)]
@@ -229,7 +229,7 @@ impl Vec3A {
         }
     }
 
-    /// Returns element `z`.
+    #[deprecated(since = "0.10.0", note = "please use `.z` instead")]
     #[inline]
     pub fn z(self) -> f32 {
         #[cfg(vec3a_sse2)]
@@ -243,7 +243,7 @@ impl Vec3A {
         }
     }
 
-    /// Returns a mutable reference to element `x`.
+    #[deprecated(since = "0.10.0", note = "please use `.x` instead")]
     #[inline]
     pub fn x_mut(&mut self) -> &mut f32 {
         #[cfg(vec3a_sse2)]
@@ -257,7 +257,7 @@ impl Vec3A {
         }
     }
 
-    /// Returns a mutable reference to element `y`.
+    #[deprecated(since = "0.10.0", note = "please use `.y` instead")]
     #[inline]
     pub fn y_mut(&mut self) -> &mut f32 {
         #[cfg(vec3a_sse2)]
@@ -271,7 +271,7 @@ impl Vec3A {
         }
     }
 
-    /// Returns a mutable reference to element `z`.
+    #[deprecated(since = "0.10.0", note = "please use `.z` instead")]
     #[inline]
     pub fn z_mut(&mut self) -> &mut f32 {
         #[cfg(vec3a_sse2)]
@@ -285,7 +285,7 @@ impl Vec3A {
         }
     }
 
-    /// Sets element `x`.
+    #[deprecated(since = "0.10.0", note = "please use `.x` instead")]
     #[inline]
     pub fn set_x(&mut self, x: f32) {
         #[cfg(vec3a_sse2)]
@@ -299,7 +299,7 @@ impl Vec3A {
         }
     }
 
-    /// Sets element `y`.
+    #[deprecated(since = "0.10.0", note = "please use `.y` instead")]
     #[inline]
     pub fn set_y(&mut self, y: f32) {
         #[cfg(vec3a_sse2)]
@@ -315,7 +315,7 @@ impl Vec3A {
         }
     }
 
-    /// Sets element `z`.
+    #[deprecated(since = "0.10.0", note = "please use `.z` instead")]
     #[inline]
     pub fn set_z(&mut self, z: f32) {
         #[cfg(vec3a_sse2)]

@@ -85,55 +85,55 @@ impl Vec3 {
         Vec2::new(self.x, self.y)
     }
 
-    /// Returns element `x`.
+    #[deprecated(since = "0.10.0", note = "please use `.x` instead")]
     #[inline]
     pub fn x(self) -> f32 {
         self.x
     }
 
-    /// Returns element `y`.
+    #[deprecated(since = "0.10.0", note = "please use `.y` instead")]
     #[inline]
     pub fn y(self) -> f32 {
         self.y
     }
 
-    /// Returns element `z`.
+    #[deprecated(since = "0.10.0", note = "please use `.z` instead")]
     #[inline]
     pub fn z(self) -> f32 {
         self.z
     }
 
-    /// Returns a mutable reference to element `x`.
+    #[deprecated(since = "0.10.0", note = "please use `.x` instead")]
     #[inline]
     pub fn x_mut(&mut self) -> &mut f32 {
         &mut self.x
     }
 
-    /// Returns a mutable reference to element `y`.
+    #[deprecated(since = "0.10.0", note = "please use `.y` instead")]
     #[inline]
     pub fn y_mut(&mut self) -> &mut f32 {
         &mut self.y
     }
 
-    /// Returns a mutable reference to element `z`.
+    #[deprecated(since = "0.10.0", note = "please use `.z` instead")]
     #[inline]
     pub fn z_mut(&mut self) -> &mut f32 {
         &mut self.z
     }
 
-    /// Sets element `x`.
+    #[deprecated(since = "0.10.0", note = "please use `.x` instead")]
     #[inline]
     pub fn set_x(&mut self, x: f32) {
         self.x = x;
     }
 
-    /// Sets element `y`.
+    #[deprecated(since = "0.10.0", note = "please use `.y` instead")]
     #[inline]
     pub fn set_y(&mut self, y: f32) {
         self.y = y;
     }
 
-    /// Sets element `z`.
+    #[deprecated(since = "0.10.0", note = "please use `.z` instead")]
     #[inline]
     pub fn set_z(&mut self, z: f32) {
         self.z = z;

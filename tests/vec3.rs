@@ -13,6 +13,7 @@ fn test_vec3_align() {
 }
 
 #[test]
+#[allow(deprecated)]
 fn test_vec3_new() {
     let v = vec3(1.0, 2.0, 3.0);
 
@@ -63,6 +64,7 @@ fn test_vec3_splat() {
 }
 
 #[test]
+#[allow(deprecated)]
 fn test_vec3_accessors() {
     let mut a = Vec3::zero();
     a.x = 1.0;

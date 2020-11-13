@@ -317,6 +317,7 @@ fn test_quat_slice() {
 }
 
 #[test]
+#[allow(deprecated)]
 fn test_quat_elements() {
     let x = 1.0;
     let y = 2.0;
