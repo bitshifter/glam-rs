@@ -14,6 +14,10 @@ The format is based on [Keep a Changelog], and this project adheres to
 * `Quat`, `Vec3A` and `Vec4` implement `Deref` and `DerefMut` for the new `XYZ`
   and `XYZW` structs to emulate public named field access.
 
+## Removed
+
+* Removed deprecated `length_reciprocal` and `sign` methods.
+
 ## [0.10.0] - 2020-10-31
 
 ## Added

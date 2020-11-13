@@ -32,12 +32,6 @@ impl Vec2 {
         Vec2Mask::new(self.x.is_nan(), self.y.is_nan())
     }
 
-    #[deprecated(since = "0.9.5", note = "please use `Vec2::signum` instead")]
-    #[inline(always)]
-    pub fn sign(self) -> Self {
-        self.signum()
-    }
-
     /// Returns a `Vec2` with elements representing the sign of `self`.
     ///
     /// - `1.0` if the number is positive, `+0.0` or `INFINITY`
@@ -49,12 +43,6 @@ impl Vec2 {
             x: self.x.signum(),
             y: self.y.signum(),
         }
-    }
-
-    #[deprecated(since = "0.9.5", note = "please use `Vec2::recip` instead")]
-    #[inline(always)]
-    pub fn reciprocal(self) -> Self {
-        self.recip()
     }
 
     /// Returns a `Vec2` containing the reciprocal `1.0/n` of each element of `self`.
@@ -195,12 +183,6 @@ impl Vec2 {
     #[inline]
     pub fn length_squared(self) -> f32 {
         self.dot(self)
-    }
-
-    #[deprecated(since = "0.9.5", note = "please use `Vec2::length_recip` instead")]
-    #[inline(always)]
-    pub fn length_reciprocal(self) -> f32 {
-        self.length_recip()
     }
 
     /// Computes `1.0 / Vec2::length()`.

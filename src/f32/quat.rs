@@ -256,12 +256,6 @@ impl Quat {
         self.0.length_squared()
     }
 
-    #[deprecated(since = "0.9.5", note = "please use `Quat::length_recip` instead")]
-    #[inline(always)]
-    pub fn length_reciprocal(self) -> f32 {
-        self.length_recip()
-    }
-
     /// Computes `1.0 / Quat::length()`.
     ///
     /// For valid results, `self` must _not_ be of length zero.

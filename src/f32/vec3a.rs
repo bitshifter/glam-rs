@@ -397,12 +397,6 @@ impl Vec3A {
         self.dot(self)
     }
 
-    #[deprecated(since = "0.9.5", note = "please use `Vec3A::length_recip` instead")]
-    #[inline(always)]
-    pub fn length_reciprocal(self) -> f32 {
-        self.length_recip()
-    }
-
     /// Computes `1.0 / Vec3A::length()`.
     ///
     /// For valid results, `self` must _not_ be of length zero.
@@ -747,12 +741,6 @@ impl Vec3A {
         }
     }
 
-    #[deprecated(since = "0.9.5", note = "please use `Vec3A::signum` instead")]
-    #[inline(always)]
-    pub fn sign(self) -> Self {
-        self.signum()
-    }
-
     /// Returns a `Vec3A` with elements representing the sign of `self`.
     ///
     /// - `1.0` if the number is positive, `+0.0` or `INFINITY`
@@ -772,12 +760,6 @@ impl Vec3A {
         {
             Vec3A(self.0.signum())
         }
-    }
-
-    #[deprecated(since = "0.9.5", note = "please use `Vec3A::recip` instead")]
-    #[inline(always)]
-    pub fn reciprocal(self) -> Self {
-        self.recip()
     }
 
     /// Returns a `Vec3A` containing the reciprocal `1.0/n` of each element of `self`.

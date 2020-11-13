@@ -403,12 +403,6 @@ impl Vec4 {
         self.dot(self)
     }
 
-    #[deprecated(since = "0.9.5", note = "please use `Vec4::length_recip` instead")]
-    #[inline(always)]
-    pub fn length_reciprocal(self) -> f32 {
-        self.length_recip()
-    }
-
     /// Computes `1.0 / Vec4::length()`.
     ///
     /// For valid results, `self` must _not_ be of length zero.
@@ -845,12 +839,6 @@ impl Vec4 {
         }
     }
 
-    #[deprecated(since = "0.9.5", note = "please use `Vec4::signum` instead")]
-    #[inline(always)]
-    pub fn sign(self) -> Self {
-        self.signum()
-    }
-
     /// Returns a `Vec4` with elements representing the sign of `self`.
     ///
     /// - `1.0` if the number is positive, `+0.0` or `INFINITY`
@@ -875,12 +863,6 @@ impl Vec4 {
                 w: self.w.signum(),
             }
         }
-    }
-
-    #[deprecated(since = "0.9.5", note = "please use `Vec4::recip` instead")]
-    #[inline(always)]
-    pub fn reciprocal(self) -> Self {
-        self.recip()
     }
 
     /// Returns a `Vec4` containing the reciprocal `1.0/n` of each element of `self`.

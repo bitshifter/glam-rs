@@ -175,12 +175,6 @@ impl Vec3 {
         self.dot(self)
     }
 
-    #[deprecated(since = "0.9.5", note = "please use `Vec3::length_recip` instead")]
-    #[inline(always)]
-    pub fn length_reciprocal(self) -> f32 {
-        self.length_recip()
-    }
-
     /// Computes `1.0 / Vec3::length()`.
     ///
     /// For valid results, `self` must _not_ be of length zero.
@@ -416,12 +410,6 @@ impl Vec3 {
         Vec3Mask::new(self.x.is_nan(), self.y.is_nan(), self.z.is_nan())
     }
 
-    #[deprecated(since = "0.9.5", note = "please use `Vec3::signum` instead")]
-    #[inline(always)]
-    pub fn sign(self) -> Self {
-        self.signum()
-    }
-
     /// Returns a `Vec3` with elements representing the sign of `self`.
     ///
     /// - `1.0` if the number is positive, `+0.0` or `INFINITY`
@@ -434,12 +422,6 @@ impl Vec3 {
             y: self.y.signum(),
             z: self.z.signum(),
         }
-    }
-
-    #[deprecated(since = "0.9.5", note = "please use `Vec3::recip` instead")]
-    #[inline(always)]
-    pub fn reciprocal(self) -> Self {
-        self.recip()
     }
 
     /// Returns a `Vec3` containing the reciprocal `1.0/n` of each element of `self`.
