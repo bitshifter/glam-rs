@@ -241,9 +241,9 @@ fn test_vec3_mask_align16() {
     // make sure the unused 'w' value doesn't break Vec3Ab behaviour
     let a = Vec4::zero();
     let mut b = Vec3A::from(a);
-    b.set_x(1.0);
-    b.set_y(1.0);
-    b.set_z(1.0);
+    b.x = 1.0;
+    b.y = 1.0;
+    b.z = 1.0;
     assert!(!b.cmpeq(Vec3A::zero()).any());
     assert!(b.cmpeq(Vec3A::splat(1.0)).all());
 }

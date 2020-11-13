@@ -6,7 +6,7 @@ use core::arch::x86_64::*;
 use core::{
     cmp::Ordering,
     fmt,
-    ops::{Add, Deref, DerefMut, Div, Mul, MulAssign, Neg, Sub},
+    ops::{Add, Deref, Div, Mul, MulAssign, Neg, Sub},
 };
 
 #[cfg(feature = "std")]
@@ -730,13 +730,6 @@ impl Deref for Quat {
     #[inline(always)]
     fn deref(&self) -> &Self::Target {
         unsafe { &*(self as *const Self as *const Self::Target) }
-    }
-}
-
-impl DerefMut for Quat {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        unsafe { &mut *(self as *mut Self as *mut Self::Target) }
     }
 }
 
