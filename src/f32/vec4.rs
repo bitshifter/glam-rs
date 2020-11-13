@@ -1366,7 +1366,11 @@ impl From<Vec4> for Vec3 {
 
         #[cfg(vec4_f32)]
         {
-            Vec3(v.x, v.y, v.z)
+            Vec3 {
+                x: v.x,
+                y: v.y,
+                z: v.z,
+            }
         }
     }
 }
@@ -1386,7 +1390,7 @@ impl From<Vec4> for Vec2 {
 
         #[cfg(vec4_f32)]
         {
-            Vec2(v.x, v.y)
+            Vec2 { x: v.x, y: v.y }
         }
     }
 }

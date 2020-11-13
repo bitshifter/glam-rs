@@ -12,6 +12,7 @@ use core::{
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
 
+#[cfg(feature = "std")]
 const ZERO: Quat = const_quat!([0.0, 0.0, 0.0, 0.0]);
 const IDENTITY: Quat = const_quat!([0.0, 0.0, 0.0, 1.0]);
 
