@@ -118,8 +118,8 @@ impl From<Mat2> for mint::RowMatrix2<f32> {
     fn from(m: Mat2) -> Self {
         let mt = m.transpose();
         Self {
-            x: mt.x_axis().into(),
-            y: mt.y_axis().into(),
+            x: mt.x_axis.into(),
+            y: mt.y_axis.into(),
         }
     }
 }
@@ -133,8 +133,8 @@ impl From<mint::ColumnMatrix2<f32>> for Mat2 {
 impl From<Mat2> for mint::ColumnMatrix2<f32> {
     fn from(m: Mat2) -> Self {
         Self {
-            x: m.x_axis().into(),
-            y: m.y_axis().into(),
+            x: m.x_axis.into(),
+            y: m.y_axis.into(),
         }
     }
 }
@@ -149,9 +149,9 @@ impl From<Mat3> for mint::RowMatrix3<f32> {
     fn from(m: Mat3) -> Self {
         let mt = m.transpose();
         Self {
-            x: mt.x_axis().into(),
-            y: mt.y_axis().into(),
-            z: mt.z_axis().into(),
+            x: mt.x_axis.into(),
+            y: mt.y_axis.into(),
+            z: mt.z_axis.into(),
         }
     }
 }
@@ -165,9 +165,9 @@ impl From<mint::ColumnMatrix3<f32>> for Mat3 {
 impl From<Mat3> for mint::ColumnMatrix3<f32> {
     fn from(m: Mat3) -> Self {
         Self {
-            x: m.x_axis().into(),
-            y: m.y_axis().into(),
-            z: m.z_axis().into(),
+            x: m.x_axis.into(),
+            y: m.y_axis.into(),
+            z: m.z_axis.into(),
         }
     }
 }
@@ -182,10 +182,10 @@ impl From<Mat4> for mint::RowMatrix4<f32> {
     fn from(m: Mat4) -> Self {
         let mt = m.transpose();
         Self {
-            x: mt.x_axis().into(),
-            y: mt.y_axis().into(),
-            z: mt.z_axis().into(),
-            w: mt.w_axis().into(),
+            x: mt.x_axis.into(),
+            y: mt.y_axis.into(),
+            z: mt.z_axis.into(),
+            w: mt.w_axis.into(),
         }
     }
 }
@@ -199,10 +199,10 @@ impl From<mint::ColumnMatrix4<f32>> for Mat4 {
 impl From<Mat4> for mint::ColumnMatrix4<f32> {
     fn from(m: Mat4) -> Self {
         Self {
-            x: m.x_axis().into(),
-            y: m.y_axis().into(),
-            z: m.z_axis().into(),
-            w: m.w_axis().into(),
+            x: m.x_axis.into(),
+            y: m.y_axis.into(),
+            z: m.z_axis.into(),
+            w: m.w_axis.into(),
         }
     }
 }

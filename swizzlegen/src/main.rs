@@ -267,7 +267,7 @@ impl Vec3ASwizzles for Vec3A {{"#
 
         #[cfg(vec3a_f32)]
         {{
-            Vec4 {{ x: self.0.{}(), y: self.0.{}(), z: self.0.{}(), w: self.0.{}() }}
+            Vec4 {{ x: self.0.{}, y: self.0.{}, z: self.0.{}, w: self.0.{} }}
         }}
     }}"#,
                 E[e0], E[e1], E[e2], E[e3], B[e3], B[e2], B[e1], B[e0], E[e0], E[e1], E[e2], E[e3],
@@ -286,7 +286,7 @@ impl Vec3ASwizzles for Vec3A {{"#
 
         #[cfg(vec3a_f32)]
         {{
-            Vec3A(Vec3 {{ x: self.0.{}(), y: self.0.{}(), z: self.0.{}() }})
+            Vec3A(Vec3 {{ x: self.0.{}, y: self.0.{}, z: self.0.{} }})
         }}
     }}"#,
                 E[e0], E[e1], E[e2], B[e2], B[e1], B[e0], E[e0], E[e1], E[e2]

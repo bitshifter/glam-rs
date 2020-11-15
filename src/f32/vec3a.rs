@@ -211,7 +211,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            self.0.x()
+            self.0.x
         }
     }
 
@@ -225,7 +225,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            self.0.y()
+            self.0.y
         }
     }
 
@@ -239,7 +239,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            self.0.z()
+            self.0.z
         }
     }
 
@@ -253,7 +253,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            self.0.x_mut()
+            &mut self.0.x
         }
     }
 
@@ -267,7 +267,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            self.0.y_mut()
+            &mut self.0.y
         }
     }
 
@@ -281,7 +281,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            self.0.z_mut()
+            &mut self.0.z
         }
     }
 
@@ -295,7 +295,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            *self.0.x_mut() = x;
+            self.0.x = x;
         }
     }
 
@@ -311,7 +311,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            *self.0.y_mut() = y;
+            self.0.y = y;
         }
     }
 
@@ -327,7 +327,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            *self.0.z_mut() = z;
+            self.0.z = z;
         }
     }
 
