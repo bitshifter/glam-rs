@@ -81,8 +81,8 @@ fn test_mat2_mul() {
 fn test_from_scale() {
     let m = Mat2::from_scale(Vec2::new(2.0, 4.0));
     assert_approx_eq!(m * Vec2::new(1.0, 1.0), Vec2::new(2.0, 4.0));
-    assert_approx_eq!(Vec2::unit_x() * 2.0, m.x_axis());
-    assert_approx_eq!(Vec2::unit_y() * 4.0, m.y_axis());
+    assert_approx_eq!(Vec2::unit_x() * 2.0, m.x_axis);
+    assert_approx_eq!(Vec2::unit_y() * 4.0, m.y_axis);
 
     let rot = Mat2::from_scale_angle(Vec2::new(4.0, 2.0), deg(180.0));
     assert_approx_eq!(Vec2::unit_x() * -4.0, rot * Vec2::unit_x(), 1.0e-6);
@@ -93,8 +93,8 @@ fn test_from_scale() {
 fn test_mat2_transpose() {
     let m = mat2(vec2(1.0, 2.0), vec2(3.0, 4.0));
     let mt = m.transpose();
-    assert_eq!(mt.x_axis(), vec2(1.0, 3.0));
-    assert_eq!(mt.y_axis(), vec2(2.0, 4.0));
+    assert_eq!(mt.x_axis, vec2(1.0, 3.0));
+    assert_eq!(mt.y_axis, vec2(2.0, 4.0));
 }
 
 #[test]

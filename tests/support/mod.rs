@@ -49,8 +49,8 @@ impl FloatCompare for Mat2 {
     #[inline]
     fn abs_diff(&self, other: &Self) -> Self {
         Mat2::from_cols(
-            (self.x_axis() - other.x_axis()).abs(),
-            (self.y_axis() - other.y_axis()).abs(),
+            (self.x_axis - other.x_axis).abs(),
+            (self.y_axis - other.y_axis).abs(),
         )
     }
 }

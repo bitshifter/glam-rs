@@ -222,8 +222,8 @@ fn test_vec2mask() {
     // make sure the unused 'w' value doesn't break Vec2b behaviour
     let a = Vec3::zero();
     let mut b = a.truncate();
-    b.set_x(1.0);
-    b.set_y(1.0);
+    b.x = 1.0;
+    b.y = 1.0;
     assert!(!b.cmpeq(Vec2::zero()).any());
     assert!(b.cmpeq(Vec2::splat(1.0)).all());
 }

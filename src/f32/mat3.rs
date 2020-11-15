@@ -432,8 +432,8 @@ impl Mat3 {
     /// is `1.0`.
     #[inline]
     pub fn transform_point2(&self, other: Vec2) -> Vec2 {
-        let mut res = Vec3A::from(self.x_axis).mul(Vec3A::splat(other.x()));
-        res = Vec3A::from(self.y_axis).mul_add(Vec3A::splat(other.y()), res);
+        let mut res = Vec3A::from(self.x_axis).mul(Vec3A::splat(other.x));
+        res = Vec3A::from(self.y_axis).mul_add(Vec3A::splat(other.y), res);
         res = Vec3A::from(self.z_axis).add(res);
         res = res.mul(res.zzz().recip());
         res.xy()
@@ -444,8 +444,8 @@ impl Mat3 {
     /// is `0.0`.
     #[inline]
     pub fn transform_vector2(&self, other: Vec2) -> Vec2 {
-        let mut res = Vec3A::from(self.x_axis).mul(Vec3A::splat(other.x()));
-        res = Vec3A::from(self.y_axis).mul_add(Vec3A::splat(other.y()), res);
+        let mut res = Vec3A::from(self.x_axis).mul(Vec3A::splat(other.x));
+        res = Vec3A::from(self.y_axis).mul_add(Vec3A::splat(other.y), res);
         res.xy()
     }
 

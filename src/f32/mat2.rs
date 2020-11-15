@@ -1,3 +1,4 @@
+use crate::swizzles::*;
 use super::{scalar_sin_cos, Vec2, Vec4};
 #[cfg(all(vec4_sse2, target_arch = "x86",))]
 use core::arch::x86::*;
@@ -43,7 +44,7 @@ impl Default for Mat2 {
 
 impl fmt::Display for Mat2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "[{}, {}]", self.x_axis(), self.y_axis())
+        write!(f, "[{}, {}]", self.x_axis, self.y_axis)
     }
 }
 
@@ -63,7 +64,7 @@ impl Mat2 {
     /// Creates a 2x2 matrix from two column vectors.
     #[inline]
     pub fn from_cols(x_axis: Vec2, y_axis: Vec2) -> Self {
-        Self(Vec4::new(x_axis.x(), x_axis.y(), y_axis.x(), y_axis.y()))
+        Self(Vec4::new(x_axis.x, x_axis.y, y_axis.x, y_axis.y))
     }
 
     /// Creates a 2x2 matrix from a `[f32; 4]` stored in column major order.  If
@@ -259,7 +260,7 @@ impl Mat2 {
     #[inline]
     pub fn mul_vec2(&self, other: Vec2) -> Vec2 {
         // TODO: SSE2
-        let other = Vec4::new(other.x(), other.x(), other.y(), other.y());
+        let other = other.xxyy();
         let tmp = self.0 * other;
         let (x0, y0, x1, y1) = tmp.into();
         Vec2::new(x0 + x1, y0 + y1)
