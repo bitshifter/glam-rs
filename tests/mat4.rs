@@ -45,6 +45,7 @@ fn test_mat4_zero() {
 }
 
 #[test]
+#[allow(deprecated)]
 fn test_mat4_accessors() {
     let mut m = Mat4::zero();
     m.x_axis = Vec4::new(1.0, 2.0, 3.0, 4.0);
