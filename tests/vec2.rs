@@ -13,6 +13,7 @@ fn test_vec2_align() {
 }
 
 #[test]
+#[allow(deprecated)]
 fn test_vec2_new() {
     let v = vec2(1.0, 2.0);
 
@@ -60,6 +61,7 @@ fn test_vec2_splat() {
 }
 
 #[test]
+#[allow(deprecated)]
 fn test_vec2_accessors() {
     let mut a = Vec2::zero();
     a.x = 1.0;

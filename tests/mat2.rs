@@ -35,6 +35,7 @@ fn test_mat2_zero() {
 }
 
 #[test]
+#[allow(deprecated)]
 fn test_mat2_accessors() {
     let mut m = Mat2::zero();
     m.x_axis = Vec2::new(1.0, 2.0);
