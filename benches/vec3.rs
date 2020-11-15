@@ -55,8 +55,8 @@ fn vec3_to_rgb_op(v: Vec3) -> u32 {
 }
 
 #[inline]
-fn vec3_accessors(v: Vec3) -> [f32; 3] {
-    [v.x(), v.y(), v.z()]
+fn vec3_fields(v: Vec3) -> [f32; 3] {
+    [v.x, v.y, v.z]
 }
 
 #[inline]
@@ -77,9 +77,9 @@ from => random_vec3
 );
 
 bench_func!(
-vec3_to_array_accessors,
-"vec3 into array slow",
-op => vec3_accessors,
+vec3_to_array_fields,
+"vec3 into array fields",
+op => vec3_fields,
 from => random_vec3
 );
 
@@ -117,7 +117,7 @@ criterion_group!(
     vec3_angle_between,
     vec3_euler,
     vec3_to_rgb,
-    vec3_to_array_accessors,
+    vec3_to_array_fields,
     vec3_to_array_into,
     vec3_to_tuple_into,
 );
