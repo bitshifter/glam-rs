@@ -199,10 +199,10 @@ fn test_from_scale() {
         m.transform_point3(Vec3::new(1.0, 1.0, 1.0)),
         Vec3::new(2.0, 4.0, 8.0)
     );
-    assert_approx_eq!(Vec4::unit_x() * 2.0, m.x_axis());
-    assert_approx_eq!(Vec4::unit_y() * 4.0, m.y_axis());
-    assert_approx_eq!(Vec4::unit_z() * 8.0, m.z_axis());
-    assert_approx_eq!(Vec4::unit_w(), m.w_axis());
+    assert_approx_eq!(Vec4::unit_x() * 2.0, m.x_axis);
+    assert_approx_eq!(Vec4::unit_y() * 4.0, m.y_axis);
+    assert_approx_eq!(Vec4::unit_z() * 8.0, m.z_axis);
+    assert_approx_eq!(Vec4::unit_w(), m.w_axis);
 }
 
 #[test]
@@ -214,10 +214,10 @@ fn test_mat4_transpose() {
         vec4(13.0, 14.0, 15.0, 16.0),
     );
     let mt = m.transpose();
-    assert_eq!(mt.x_axis(), vec4(1.0, 5.0, 9.0, 13.0));
-    assert_eq!(mt.y_axis(), vec4(2.0, 6.0, 10.0, 14.0));
-    assert_eq!(mt.z_axis(), vec4(3.0, 7.0, 11.0, 15.0));
-    assert_eq!(mt.w_axis(), vec4(4.0, 8.0, 12.0, 16.0));
+    assert_eq!(mt.x_axis, vec4(1.0, 5.0, 9.0, 13.0));
+    assert_eq!(mt.y_axis, vec4(2.0, 6.0, 10.0, 14.0));
+    assert_eq!(mt.z_axis, vec4(3.0, 7.0, 11.0, 15.0));
+    assert_eq!(mt.w_axis, vec4(4.0, 8.0, 12.0, 16.0));
 }
 
 #[test]

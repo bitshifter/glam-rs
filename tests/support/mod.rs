@@ -63,9 +63,9 @@ impl FloatCompare for Mat3 {
     #[inline]
     fn abs_diff(&self, other: &Self) -> Self {
         Mat3::from_cols(
-            (self.x_axis() - other.x_axis()).abs(),
-            (self.y_axis() - other.y_axis()).abs(),
-            (self.z_axis() - other.z_axis()).abs(),
+            (self.x_axis - other.x_axis).abs(),
+            (self.y_axis - other.y_axis).abs(),
+            (self.z_axis - other.z_axis).abs(),
         )
     }
 }
@@ -78,10 +78,10 @@ impl FloatCompare for Mat4 {
     #[inline]
     fn abs_diff(&self, other: &Self) -> Self {
         Mat4::from_cols(
-            (self.x_axis() - other.x_axis()).abs(),
-            (self.y_axis() - other.y_axis()).abs(),
-            (self.z_axis() - other.z_axis()).abs(),
-            (self.w_axis() - other.w_axis()).abs(),
+            (self.x_axis - other.x_axis).abs(),
+            (self.y_axis - other.y_axis).abs(),
+            (self.z_axis - other.z_axis).abs(),
+            (self.w_axis - other.w_axis).abs(),
         )
     }
 }

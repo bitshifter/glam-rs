@@ -147,9 +147,9 @@ fn test_from_ypr() {
 fn test_from_scale() {
     let m = Mat3::from_scale(Vec3::new(2.0, 4.0, 8.0));
     assert_approx_eq!(m * Vec3::new(1.0, 1.0, 1.0), Vec3::new(2.0, 4.0, 8.0));
-    assert_approx_eq!(Vec3::unit_x() * 2.0, m.x_axis());
-    assert_approx_eq!(Vec3::unit_y() * 4.0, m.y_axis());
-    assert_approx_eq!(Vec3::unit_z() * 8.0, m.z_axis());
+    assert_approx_eq!(Vec3::unit_x() * 2.0, m.x_axis);
+    assert_approx_eq!(Vec3::unit_y() * 4.0, m.y_axis);
+    assert_approx_eq!(Vec3::unit_z() * 8.0, m.z_axis);
 }
 
 #[test]
@@ -160,9 +160,9 @@ fn test_mat3_transpose() {
         vec3(7.0, 8.0, 9.0),
     );
     let mt = m.transpose();
-    assert_eq!(mt.x_axis(), vec3(1.0, 4.0, 7.0));
-    assert_eq!(mt.y_axis(), vec3(2.0, 5.0, 8.0));
-    assert_eq!(mt.z_axis(), vec3(3.0, 6.0, 9.0));
+    assert_eq!(mt.x_axis, vec3(1.0, 4.0, 7.0));
+    assert_eq!(mt.y_axis, vec3(2.0, 5.0, 8.0));
+    assert_eq!(mt.z_axis, vec3(3.0, 6.0, 9.0));
 }
 
 #[test]

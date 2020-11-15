@@ -198,9 +198,9 @@ impl Mat4 {
         let inv_scale = scale.recip();
 
         let rotation = Quat::from_rotation_mat3(&Mat3::from_cols(
-            Vec3::from(Vec3A::from(self.x_axis()) * inv_scale.xxx()),
-            Vec3::from(Vec3A::from(self.y_axis()) * inv_scale.yyy()),
-            Vec3::from(Vec3A::from(self.z_axis()) * inv_scale.zzz()),
+            Vec3::from(Vec3A::from(self.x_axis) * inv_scale.xxx()),
+            Vec3::from(Vec3A::from(self.y_axis) * inv_scale.yyy()),
+            Vec3::from(Vec3A::from(self.z_axis) * inv_scale.zzz()),
         ));
 
         let translation = self.w_axis.xyz();

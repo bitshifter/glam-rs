@@ -1,5 +1,5 @@
-use crate::swizzles::*;
 use super::{scalar_sin_cos, Vec2, Vec4};
+use crate::swizzles::*;
 #[cfg(all(vec4_sse2, target_arch = "x86",))]
 use core::arch::x86::*;
 #[cfg(all(vec4_sse2, target_arch = "x86_64",))]
