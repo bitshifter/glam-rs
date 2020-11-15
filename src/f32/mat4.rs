@@ -62,10 +62,10 @@ fn quat_to_axes(rotation: Quat) -> (Vec4, Vec4, Vec4) {
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[repr(C)]
 pub struct Mat4 {
-    pub(crate) x_axis: Vec4,
-    pub(crate) y_axis: Vec4,
-    pub(crate) z_axis: Vec4,
-    pub(crate) w_axis: Vec4,
+    pub x_axis: Vec4,
+    pub y_axis: Vec4,
+    pub z_axis: Vec4,
+    pub w_axis: Vec4,
 }
 
 impl Default for Mat4 {

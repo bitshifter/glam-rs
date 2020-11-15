@@ -57,6 +57,13 @@ pub struct XYZ {
     pub z: f32,
 }
 
+#[derive(Clone, Copy, Default, PartialEq, PartialOrd)]
+#[repr(C)]
+pub struct XYAxes {
+    pub x_axis: Vec2,
+    pub y_axis: Vec2,
+}
+
 #[cfg(feature = "bytemuck")]
 mod glam_bytemuck;
 #[cfg(feature = "bytemuck")]

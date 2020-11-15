@@ -47,9 +47,9 @@ fn quat_to_axes(rotation: Quat) -> (Vec3, Vec3, Vec3) {
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[repr(C)]
 pub struct Mat3 {
-    pub(crate) x_axis: Vec3,
-    pub(crate) y_axis: Vec3,
-    pub(crate) z_axis: Vec3,
+    pub x_axis: Vec3,
+    pub y_axis: Vec3,
+    pub z_axis: Vec3,
 }
 
 impl Default for Mat3 {

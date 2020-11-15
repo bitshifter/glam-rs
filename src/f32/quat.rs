@@ -26,6 +26,17 @@ const IDENTITY: Quat = const_quat!([0.0, 0.0, 0.0, 1.0]);
 /// operations are applied.
 ///
 /// This type is 16 byte aligned.
+#[cfg(doc)]
+#[derive(Clone, Copy)]
+#[repr(C)]
+pub struct Quat {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+    pub w: f32,
+}
+
+#[cfg(not(doc))]
 #[derive(Clone, Copy)]
 #[repr(C)]
 pub struct Quat(pub(crate) Vec4);

@@ -5,7 +5,7 @@ use core::arch::x86::*;
 use core::arch::x86_64::*;
 use core::{
     fmt,
-    ops::{Add, Mul, Sub},
+    ops::{Add, Deref, DerefMut, Mul, Sub},
 };
 
 #[cfg(feature = "std")]
@@ -21,6 +21,15 @@ pub fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
 }
 
 /// A 2x2 column major matrix.
+#[cfg(doc)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[repr(C)]
+pub struct Mat2 {
+    pub x_axis: Vec2,
+    pub y_axis: Vec2,
+}
+
+#[cfg(not(doc))]
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[repr(C)]
 pub struct Mat2(pub(crate) Vec4);
@@ -360,6 +369,21 @@ impl Mul<f32> for Mat2 {
     #[inline]
     fn mul(self, other: f32) -> Self {
         self.mul_scalar(other)
+    }
+}
+
+impl Deref for Mat2 {
+    type Target = super::XYAxes;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        unsafe { &*(self as *const Self as *const Self::Target) }
+    }
+}
+
+impl DerefMut for Mat2 {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        unsafe { &mut *(self as *mut Self as *mut Self::Target) }
     }
 }
 

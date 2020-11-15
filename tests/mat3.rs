@@ -33,6 +33,15 @@ fn test_mat3_zero() {
 #[test]
 fn test_mat3_accessors() {
     let mut m = Mat3::zero();
+    m.x_axis = Vec3::new(1.0, 2.0, 3.0);
+    m.y_axis = Vec3::new(4.0, 5.0, 6.0);
+    m.z_axis = Vec3::new(7.0, 8.0, 9.0);
+    assert_eq!(Mat3::from_cols_array_2d(&MATRIX), m);
+    assert_eq!(Vec3::new(1.0, 2.0, 3.0), m.x_axis);
+    assert_eq!(Vec3::new(4.0, 5.0, 6.0), m.y_axis);
+    assert_eq!(Vec3::new(7.0, 8.0, 9.0), m.z_axis);
+
+    let mut m = Mat3::zero();
     m.set_x_axis(Vec3::new(1.0, 2.0, 3.0));
     m.set_y_axis(Vec3::new(4.0, 5.0, 6.0));
     m.set_z_axis(Vec3::new(7.0, 8.0, 9.0));

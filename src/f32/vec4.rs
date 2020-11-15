@@ -27,7 +27,7 @@ const W_AXIS: Vec4 = const_vec4!([0.0, 0.0, 0.0, 1.0]);
 /// A 4-dimensional vector.
 ///
 /// This type is 16 byte aligned.
-#[cfg(vec4_sse2)]
+#[cfg(all(vec4_sse2, not(doc)))]
 #[derive(Clone, Copy)]
 #[repr(C)]
 pub struct Vec4(pub(crate) __m128);
@@ -35,10 +35,10 @@ pub struct Vec4(pub(crate) __m128);
 /// A 4-dimensional vector.
 ///
 /// This type is 16 byte aligned unless the `scalar-math` feature is enabed.
-#[cfg(vec4_f32)]
+#[cfg(any(vec4_f32, doc))]
 #[derive(Clone, Copy, PartialEq, PartialOrd, Default)]
 // if compiling with simd enabled assume alignment needs to match the simd type
-#[cfg_attr(vec4_f32_align16, repr(align(16)))]
+#[cfg_attr(any(vec4_sse2, vec4_f32_align16), repr(align(16)))]
 #[repr(C)]
 pub struct Vec4 {
     pub x: f32,
@@ -47,7 +47,7 @@ pub struct Vec4 {
     pub w: f32,
 }
 
-#[cfg(vec4_sse2)]
+#[cfg(all(vec4_sse2, not(doc)))]
 impl Default for Vec4 {
     #[inline]
     fn default() -> Self {
@@ -55,7 +55,7 @@ impl Default for Vec4 {
     }
 }
 
-#[cfg(vec4_sse2)]
+#[cfg(all(vec4_sse2, not(doc)))]
 impl PartialEq for Vec4 {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
@@ -63,7 +63,7 @@ impl PartialEq for Vec4 {
     }
 }
 
-#[cfg(vec4_sse2)]
+#[cfg(all(vec4_sse2, not(doc)))]
 impl PartialOrd for Vec4 {
     #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {

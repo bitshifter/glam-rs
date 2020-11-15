@@ -13,6 +13,10 @@ The format is based on [Keep a Changelog], and this project adheres to
   `.y`, and `.z` intead of accessors.
 * `Quat`, `Vec3A` and `Vec4` implement `Deref` and `DerefMut` for the new `XYZ`
   and `XYZW` structs to emulate public named field access.
+* `Mat3` and `Mat4` had their axis members made pubic intead of needing
+  accessors.
+* `Mat2` implements `Deref` and `DerefMut` for the new `XYAxes` struct to
+  emulate public named field access.
 
 ## Removed
 

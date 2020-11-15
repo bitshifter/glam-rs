@@ -30,13 +30,21 @@ const Z_AXIS: Vec3A = const_vec3a!([0.0, 0.0, 1.0]);
 /// performance than the `Vec3` type.
 ///
 /// It is possible to convert between `Vec3` and `Vec3A` types using `From` trait implementations.
-#[cfg(vec3a_sse2)]
+#[cfg(doc)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Default)]
+#[repr(align(16), C)]
+pub struct Vec3A {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+}
+
+#[cfg(all(vec3a_sse2, not(doc)))]
 #[derive(Clone, Copy)]
 #[repr(C)]
 pub struct Vec3A(pub(crate) __m128);
 
-/// A 3-dimensional vector.
-#[cfg(vec3a_f32)]
+#[cfg(all(vec3a_f32, not(doc)))]
 #[derive(Clone, Copy, PartialEq, PartialOrd, Default)]
 #[repr(align(16), C)]
 pub struct Vec3A(pub(crate) Vec3);
@@ -54,7 +62,7 @@ impl Vec3A {
     }
 }
 
-#[cfg(vec3a_sse2)]
+#[cfg(all(vec3a_sse2, not(doc)))]
 impl Default for Vec3A {
     #[inline]
     fn default() -> Self {
@@ -62,7 +70,7 @@ impl Default for Vec3A {
     }
 }
 
-#[cfg(vec3a_sse2)]
+#[cfg(all(vec3a_sse2, not(doc)))]
 impl PartialEq for Vec3A {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
@@ -70,7 +78,7 @@ impl PartialEq for Vec3A {
     }
 }
 
-#[cfg(vec3a_sse2)]
+#[cfg(all(vec3a_sse2, not(doc)))]
 impl PartialOrd for Vec3A {
     #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {

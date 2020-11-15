@@ -47,6 +47,17 @@ fn test_mat4_zero() {
 #[test]
 fn test_mat4_accessors() {
     let mut m = Mat4::zero();
+    m.x_axis = Vec4::new(1.0, 2.0, 3.0, 4.0);
+    m.y_axis = Vec4::new(5.0, 6.0, 7.0, 8.0);
+    m.z_axis = Vec4::new(9.0, 10.0, 11.0, 12.0);
+    m.w_axis = Vec4::new(13.0, 14.0, 15.0, 16.0);
+    assert_eq!(Mat4::from_cols_array_2d(&MATRIX), m);
+    assert_eq!(Vec4::new(1.0, 2.0, 3.0, 4.0), m.x_axis);
+    assert_eq!(Vec4::new(5.0, 6.0, 7.0, 8.0), m.y_axis);
+    assert_eq!(Vec4::new(9.0, 10.0, 11.0, 12.0), m.z_axis);
+    assert_eq!(Vec4::new(13.0, 14.0, 15.0, 16.0), m.w_axis);
+
+    let mut m = Mat4::zero();
     m.set_x_axis(Vec4::new(1.0, 2.0, 3.0, 4.0));
     m.set_y_axis(Vec4::new(5.0, 6.0, 7.0, 8.0));
     m.set_z_axis(Vec4::new(9.0, 10.0, 11.0, 12.0));
