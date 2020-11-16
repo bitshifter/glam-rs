@@ -5,7 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
-## [Unreleased]
+## [0.10.1] - 2020-11-15
+
+## Added
+
+* Added the `Vec2::perp` method which returns a `Vec2` perpendicular to `self`.
 
 ## Changed
 
@@ -342,7 +346,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.10.0...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.10.1...HEAD
+[0.10.1]: https://github.com/bitshifter/glam-rs/compare/0.10.0...0.10.1
 [0.10.0]: https://github.com/bitshifter/glam-rs/compare/0.9.5...0.10.0
 [0.9.5]: https://github.com/bitshifter/glam-rs/compare/0.9.4...0.9.5
 [0.9.4]: https://github.com/bitshifter/glam-rs/compare/0.9.3...0.9.4
