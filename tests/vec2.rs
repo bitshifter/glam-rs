@@ -1,6 +1,6 @@
 mod support;
 
-use glam::{vec2, vec3, Vec2, Vec2Mask, Vec3};
+use glam::{vec2, vec3, Vec2, Vec2Mask, Vec3, Mat2};
 use std::f32;
 
 #[test]
@@ -477,6 +477,21 @@ fn test_vec2_angle_between() {
 
     let angle = Vec2::new(-1.0, 0.0).angle_between(Vec2::new(0.0, 1.0));
     assert_approx_eq!(-f32::consts::FRAC_PI_2, angle, 1e-6);
+}
+
+#[test]
+fn test_vec2_perp() {
+    let v1 = Vec2::new(1.0, 2.0);
+    let v2 = Vec2::new(1.0, 1.0);
+    let v1_perp = Vec2::new(-2.0, 1.0);
+    let rot90 = Mat2::from_angle(90.0_f32.to_radians());
+    
+    assert_eq!(v1_perp, v1.perp());
+    assert_eq!(v1.perp().dot(v1), 0.0);
+    assert_eq!(v2.perp().dot(v2), 0.0);
+    assert_eq!(v1.perp().dot(v2), v1.perp_dot(v2));
+
+    assert_approx_eq!(v1.perp(), rot90 * v1);
 }
 
 #[cfg(feature = "serde")]

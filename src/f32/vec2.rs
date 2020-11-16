@@ -375,6 +375,14 @@ impl Vec2 {
         }
     }
 
+    /// Returns a `Vec2` that is equal to `self` rotated by 90 degrees.
+    pub fn perp(self) -> Self {
+        return Self {
+            x: -self.y,
+            y: self.x
+        }
+    }
+
     /// The perpendicular dot product of the vector and `other`.
     #[inline]
     pub fn perp_dot(self, other: Vec2) -> f32 {
