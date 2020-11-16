@@ -316,73 +316,73 @@ impl Mat4 {
         }
     }
 
-    /// Sets the first column, the `x` axis.
+    #[deprecated(since = "0.10.0", note = "please use `.x_axis` instead")]
     #[inline]
     pub fn set_x_axis(&mut self, x: Vec4) {
         self.x_axis = x;
     }
 
-    /// Sets the second column, the `y` axis.
+    #[deprecated(since = "0.10.0", note = "please use `.y_axis` instead")]
     #[inline]
     pub fn set_y_axis(&mut self, y: Vec4) {
         self.y_axis = y;
     }
 
-    /// Sets the third column, the `z` axis.
+    #[deprecated(since = "0.10.0", note = "please use `.z_axis` instead")]
     #[inline]
     pub fn set_z_axis(&mut self, z: Vec4) {
         self.z_axis = z;
     }
 
-    /// Sets the fourth column, the `w` axis.
+    #[deprecated(since = "0.10.0", note = "please use `.w_axis` instead")]
     #[inline]
     pub fn set_w_axis(&mut self, w: Vec4) {
         self.w_axis = w;
     }
 
-    /// Returns the first column, the `x` axis.
+    #[deprecated(since = "0.10.0", note = "please use `.x_axis` instead")]
     #[inline]
     pub fn x_axis(&self) -> Vec4 {
         self.x_axis
     }
 
-    /// Returns the second column, the `y` axis.
+    #[deprecated(since = "0.10.0", note = "please use `.y_axis` instead")]
     #[inline]
     pub fn y_axis(&self) -> Vec4 {
         self.y_axis
     }
 
-    /// Returns the third column, the `z` axis.
+    #[deprecated(since = "0.10.0", note = "please use `.z_axis` instead")]
     #[inline]
     pub fn z_axis(&self) -> Vec4 {
         self.z_axis
     }
 
-    /// Returns the fourth column, the `w` axis.
+    #[deprecated(since = "0.10.0", note = "please use `.w_axis` instead")]
     #[inline]
     pub fn w_axis(&self) -> Vec4 {
         self.w_axis
     }
 
-    /// Returns a mutable reference to the first column, the `x` axis.
+    #[deprecated(since = "0.10.0", note = "please use `.x_axis` instead")]
     #[inline]
     pub fn x_axis_mut(&mut self) -> &mut Vec4 {
         &mut self.x_axis
     }
 
-    /// Returns a mutable reference to the second column, the `y` axis.
+    #[deprecated(since = "0.10.0", note = "please use `.y_axis` instead")]
     #[inline]
     pub fn y_axis_mut(&mut self) -> &mut Vec4 {
         &mut self.y_axis
     }
 
-    /// Returns a mutable reference to the third column, the `z` axis.
+    #[deprecated(since = "0.10.0", note = "please use `.z_axis` instead")]
     #[inline]
     pub fn z_axis_mut(&mut self) -> &mut Vec4 {
         &mut self.z_axis
     }
 
-    /// Returns a mutable reference to the fourth column, the `w` axis.
+    #[deprecated(since = "0.10.0", note = "please use `.w_axis` instead")]
     #[inline]
     pub fn w_axis_mut(&mut self) -> &mut Vec4 {
         &mut self.w_axis

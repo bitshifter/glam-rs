@@ -519,28 +519,29 @@ impl Quat {
             )
         }
     }
-    /// Returns element `x`.
+
+    #[deprecated(since = "0.10.0", note = "please use `.x` instead")]
     #[inline]
     pub fn x(self) -> f32 {
-        self.0.x()
+        self.0.x
     }
 
-    /// Returns element `y`.
+    #[deprecated(since = "0.10.0", note = "please use `.y` instead")]
     #[inline]
     pub fn y(self) -> f32 {
-        self.0.y()
+        self.0.y
     }
 
-    /// Returns element `z`.
+    #[deprecated(since = "0.10.0", note = "please use `.z` instead")]
     #[inline]
     pub fn z(self) -> f32 {
-        self.0.z()
+        self.0.z
     }
 
-    /// Returns element `w`.
+    #[deprecated(since = "0.10.0", note = "please use `.w` instead")]
     #[inline]
     pub fn w(self) -> f32 {
-        self.0.w()
+        self.0.w
     }
 }
 

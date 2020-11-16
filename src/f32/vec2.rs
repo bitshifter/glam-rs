@@ -131,37 +131,37 @@ impl Vec2 {
         Vec3::new(self.x, self.y, z)
     }
 
-    /// Returns element `x`.
+    #[deprecated(since = "0.10.0", note = "please use `.x` instead")]
     #[inline]
     pub fn x(self) -> f32 {
         self.x
     }
 
-    /// Returns element `y`.
+    #[deprecated(since = "0.10.0", note = "please use `.y` instead")]
     #[inline]
     pub fn y(self) -> f32 {
         self.y
     }
 
-    /// Returns a mutable reference to element `x`.
+    #[deprecated(since = "0.10.0", note = "please use `.x` instead")]
     #[inline]
     pub fn x_mut(&mut self) -> &mut f32 {
         &mut self.x
     }
 
-    /// Returns a mutable reference to element `y`.
+    #[deprecated(since = "0.10.0", note = "please use `.y` instead")]
     #[inline]
     pub fn y_mut(&mut self) -> &mut f32 {
         &mut self.y
     }
 
-    /// Sets element `x`.
+    #[deprecated(since = "0.10.0", note = "please use `.x` instead")]
     #[inline]
     pub fn set_x(&mut self, x: f32) {
         self.x = x;
     }
 
-    /// Sets element `y`.
+    #[deprecated(since = "0.10.0", note = "please use `.y` instead")]
     #[inline]
     pub fn set_y(&mut self, y: f32) {
         self.y = y;

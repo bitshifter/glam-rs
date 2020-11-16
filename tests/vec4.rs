@@ -18,6 +18,7 @@ fn test_vec4_align() {
 }
 
 #[test]
+#[allow(deprecated)]
 fn test_vec4_new() {
     let v = vec4(1.0, 2.0, 3.0, 4.0);
 
@@ -74,6 +75,7 @@ fn test_vec4_splat() {
 }
 
 #[test]
+#[allow(deprecated)]
 fn test_vec4_accessors() {
     let mut a = Vec4::zero();
     a.x = 1.0;

@@ -36,6 +36,7 @@ fn vec3a_deref(v: Vec3A) -> [f32; 3] {
 }
 
 #[inline]
+#[allow(deprecated)]
 fn vec3a_accessors(v: Vec3A) -> [f32; 3] {
     [v.x(), v.y(), v.z()]
 }

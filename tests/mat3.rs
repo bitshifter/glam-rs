@@ -31,6 +31,7 @@ fn test_mat3_zero() {
 }
 
 #[test]
+#[allow(deprecated)]
 fn test_mat3_accessors() {
     let mut m = Mat3::zero();
     m.x_axis = Vec3::new(1.0, 2.0, 3.0);

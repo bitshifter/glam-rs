@@ -126,46 +126,40 @@ impl Mat2 {
         Self(Vec4::new(x, 0.0, 0.0, y))
     }
 
-    /// Sets the first column, the `x` axis.
-    #[inline]
+    #[deprecated(since = "0.10.0", note = "please use `.x_axis` instead")]
+    #[inline(always)]
     pub fn set_x_axis(&mut self, x: Vec2) {
-        let m = self.0.as_mut();
-        m[0] = x.x();
-        m[1] = x.y();
+        self.x_axis = x;
     }
 
-    /// Sets the second column, the `y` axis.
-    #[inline]
+    #[deprecated(since = "0.10.0", note = "please use `.y_axis` instead")]
+    #[inline(always)]
     pub fn set_y_axis(&mut self, y: Vec2) {
-        let m = self.0.as_mut();
-        m[2] = y.x();
-        m[3] = y.y();
+        self.y_axis = y;
     }
 
-    /// Returns the first column, the `x` axis.
-    #[inline]
+    #[deprecated(since = "0.10.0", note = "please use `.x_axis` instead")]
+    #[inline(always)]
     pub fn x_axis(&self) -> Vec2 {
-        let (x, y, _, _) = self.0.into();
-        Vec2::new(x, y)
+        self.x_axis
     }
 
-    /// Returns the second column, the `y` axis.
-    #[inline]
+    #[deprecated(since = "0.10.0", note = "please use `.y_axis` instead")]
+    #[inline(always)]
     pub fn y_axis(&self) -> Vec2 {
-        let (_, _, x, y) = self.0.into();
-        Vec2::new(x, y)
+        self.y_axis
     }
 
-    /// Returns a mutable reference to the first column, the `x` axis.
-    #[inline]
+    #[deprecated(since = "0.10.0", note = "please use `.x_axis` instead")]
+    #[inline(always)]
     pub fn x_axis_mut(&mut self) -> &mut Vec2 {
-        unsafe { &mut *(self.0.as_mut().as_mut_ptr() as *mut Vec2) }
+        &mut self.x_axis
     }
 
-    /// Returns a mutable reference to the second column, the `y` axis.
-    #[inline]
+    #[deprecated(since = "0.10.0", note = "please use `.x_axis` instead")]
+    #[inline(always)]
     pub fn y_axis_mut(&mut self) -> &mut Vec2 {
-        unsafe { &mut *(self.0.as_mut()[2..].as_mut_ptr() as *mut Vec2) }
+        &mut self.y_axis
     }
 
     // #[inline]

@@ -13,6 +13,7 @@ fn test_vec3a_align() {
 }
 
 #[test]
+#[allow(deprecated)]
 fn test_vec3a_new() {
     let v = vec3a(1.0, 2.0, 3.0);
 
@@ -63,6 +64,7 @@ fn test_vec3a_splat() {
 }
 
 #[test]
+#[allow(deprecated)]
 fn test_vec3a_accessors() {
     let mut a = Vec3A::zero();
     a.set_x(1.0);
