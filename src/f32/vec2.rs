@@ -377,9 +377,9 @@ impl Vec2 {
 
     /// Returns a `Vec2` that is equal to `self` rotated by 90 degrees.
     pub fn perp(self) -> Self {
-        return Self {
+        Self {
             x: -self.y,
-            y: self.x
+            y: self.x,
         }
     }
 

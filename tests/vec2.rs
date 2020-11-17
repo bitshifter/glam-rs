@@ -1,6 +1,6 @@
 mod support;
 
-use glam::{vec2, vec3, Vec2, Vec2Mask, Vec3, Mat2};
+use glam::{vec2, vec3, Mat2, Vec2, Vec2Mask, Vec3};
 use std::f32;
 
 #[test]
@@ -487,7 +487,7 @@ fn test_vec2_perp() {
     let v2 = Vec2::new(1.0, 1.0);
     let v1_perp = Vec2::new(-2.0, 1.0);
     let rot90 = Mat2::from_angle(90.0_f32.to_radians());
-    
+
     assert_eq!(v1_perp, v1.perp());
     assert_eq!(v1.perp().dot(v1), 0.0);
     assert_eq!(v2.perp().dot(v2), 0.0);
