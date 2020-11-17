@@ -1,22 +1,41 @@
 #[macro_use]
 mod macros;
 
-use glam::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
+use glam::{
+    DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A,
+    Vec4,
+};
 
 #[cfg(feature = "transform-types")]
 use glam::{TransformRT, TransformSRT};
 
+pub trait Deg {
+    fn to_radians(self) -> Self;
+}
+
+impl Deg for f32 {
+    fn to_radians(self) -> f32 {
+        f32::to_radians(self)
+    }
+}
+
+impl Deg for f64 {
+    fn to_radians(self) -> f64 {
+        f64::to_radians(self)
+    }
+}
+
 /// Helper function for migrating away from `glam::angle::deg`.
 #[allow(dead_code)]
 #[inline]
-pub fn deg(angle: f32) -> f32 {
+pub fn deg<T: Deg>(angle: T) -> T {
     angle.to_radians()
 }
 
 /// Helper function for migrating away from `glam::angle::rad`.
 #[allow(dead_code)]
 #[inline]
-pub fn rad(angle: f32) -> f32 {
+pub fn rad<T>(angle: T) -> T {
     angle
 }
 
@@ -41,14 +60,39 @@ impl FloatCompare for f32 {
     }
 }
 
+impl FloatCompare for f64 {
+    #[inline]
+    fn approx_eq(&self, other: &f64, max_abs_diff: f32) -> bool {
+        (self - other).abs() <= max_abs_diff as f64
+    }
+    #[inline]
+    fn abs_diff(&self, other: &f64) -> f64 {
+        (self - other).abs()
+    }
+}
+
 impl FloatCompare for Mat2 {
     #[inline]
     fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
-        self.abs_diff_eq(*other, max_abs_diff)
+        self.abs_diff_eq(other, max_abs_diff)
     }
     #[inline]
     fn abs_diff(&self, other: &Self) -> Self {
-        Mat2::from_cols(
+        Self::from_cols(
+            (self.x_axis - other.x_axis).abs(),
+            (self.y_axis - other.y_axis).abs(),
+        )
+    }
+}
+
+impl FloatCompare for DMat2 {
+    #[inline]
+    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
+        self.abs_diff_eq(other, max_abs_diff as f64)
+    }
+    #[inline]
+    fn abs_diff(&self, other: &Self) -> Self {
+        Self::from_cols(
             (self.x_axis - other.x_axis).abs(),
             (self.y_axis - other.y_axis).abs(),
         )
@@ -62,10 +106,41 @@ impl FloatCompare for Mat3 {
     }
     #[inline]
     fn abs_diff(&self, other: &Self) -> Self {
-        Mat3::from_cols(
+        Self::from_cols(
             (self.x_axis - other.x_axis).abs(),
             (self.y_axis - other.y_axis).abs(),
             (self.z_axis - other.z_axis).abs(),
+        )
+    }
+}
+
+impl FloatCompare for DMat3 {
+    #[inline]
+    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
+        self.abs_diff_eq(*other, max_abs_diff as f64)
+    }
+    #[inline]
+    fn abs_diff(&self, other: &Self) -> Self {
+        Self::from_cols(
+            (self.x_axis - other.x_axis).abs(),
+            (self.y_axis - other.y_axis).abs(),
+            (self.z_axis - other.z_axis).abs(),
+        )
+    }
+}
+
+impl FloatCompare for DMat4 {
+    #[inline]
+    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
+        self.abs_diff_eq(*other, max_abs_diff as f64)
+    }
+    #[inline]
+    fn abs_diff(&self, other: &Self) -> Self {
+        Self::from_cols(
+            (self.x_axis - other.x_axis).abs(),
+            (self.y_axis - other.y_axis).abs(),
+            (self.z_axis - other.z_axis).abs(),
+            (self.w_axis - other.w_axis).abs(),
         )
     }
 }
@@ -77,7 +152,7 @@ impl FloatCompare for Mat4 {
     }
     #[inline]
     fn abs_diff(&self, other: &Self) -> Self {
-        Mat4::from_cols(
+        Self::from_cols(
             (self.x_axis - other.x_axis).abs(),
             (self.y_axis - other.y_axis).abs(),
             (self.z_axis - other.z_axis).abs(),
@@ -136,6 +211,52 @@ impl FloatCompare for Vec4 {
     #[inline]
     fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
         self.abs_diff_eq(*other, max_abs_diff)
+    }
+    #[inline]
+    fn abs_diff(&self, other: &Self) -> Self {
+        (*self - *other).abs()
+    }
+}
+
+impl FloatCompare for DQuat {
+    #[inline]
+    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
+        self.abs_diff_eq(*other, max_abs_diff as f64)
+    }
+    #[inline]
+    fn abs_diff(&self, other: &Self) -> Self {
+        let a: DVec4 = (*self).into();
+        let b: DVec4 = (*other).into();
+        (a - b).abs().into()
+    }
+}
+
+impl FloatCompare for DVec2 {
+    #[inline]
+    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
+        self.abs_diff_eq(*other, max_abs_diff as f64)
+    }
+    #[inline]
+    fn abs_diff(&self, other: &Self) -> Self {
+        (*self - *other).abs()
+    }
+}
+
+impl FloatCompare for DVec3 {
+    #[inline]
+    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
+        self.abs_diff_eq(*other, max_abs_diff as f64)
+    }
+    #[inline]
+    fn abs_diff(&self, other: &Self) -> Self {
+        (*self - *other).abs()
+    }
+}
+
+impl FloatCompare for DVec4 {
+    #[inline]
+    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
+        self.abs_diff_eq(*other, max_abs_diff as f64)
     }
     #[inline]
     fn abs_diff(&self, other: &Self) -> Self {

@@ -188,45 +188,52 @@ compile_error!("`bytemuck` feature is not supported when building for SPIRV");
 
 #[macro_use]
 mod macros;
+#[macro_use]
+mod vec;
+
+mod core;
+mod mat2;
+mod mat3;
+mod mat4;
+mod quat;
+pub mod swizzles;
+mod vec2;
+mod vec3;
+mod vec4;
+mod vec_mask;
 
 #[doc(hidden)]
 pub mod f32;
 
-pub use self::f32::{
-    mat2, mat3, mat4, quat, vec2, vec3, vec3a, vec4, Mat2, Mat3, Mat4, Quat, Vec2, Vec2Mask, Vec3,
-    Vec3A, Vec3AMask, Vec3Mask, Vec4, Vec4Mask,
-};
-pub mod swizzles {
-    pub use super::f32::{Vec2Swizzles, Vec3ASwizzles, Vec3Swizzles, Vec4Swizzles};
-}
-pub use swizzles::{Vec2Swizzles, Vec3ASwizzles, Vec3Swizzles, Vec4Swizzles};
+pub use self::core::storage::{XY, XYZ, XYZW};
+
+pub use self::mat2::{dmat2, DMat2};
+pub use self::mat3::{dmat3, DMat3};
+pub use self::mat4::{dmat4, DMat4};
+pub use self::quat::{dquat, DQuat};
+pub use self::vec2::{dvec2, DVec2};
+pub use self::vec3::{dvec3, DVec3};
+pub use self::vec4::{dvec4, DVec4};
+
+pub use self::vec2::{ivec2, IVec2};
+pub use self::vec3::{ivec3, IVec3};
+pub use self::vec4::{ivec4, IVec4};
+
+pub use self::vec2::{uvec2, UVec2};
+pub use self::vec3::{uvec3, UVec3};
+pub use self::vec4::{uvec4, UVec4};
+pub use self::vec_mask::{UVec2Mask, UVec3Mask, UVec4Mask};
+
+pub use self::mat2::{mat2, Mat2};
+pub use self::mat3::{mat3, Mat3};
+pub use self::mat4::{mat4, Mat4};
+pub use self::quat::{quat, Quat};
+pub use self::vec2::{vec2, Vec2};
+pub use self::vec3::{vec3, vec3a, Vec3, Vec3A};
+pub use self::vec4::{vec4, Vec4};
+pub use self::vec_mask::{Vec2Mask, Vec3AMask, Vec3Mask, Vec4Mask};
+
+pub use self::swizzles::{Vec2Swizzles, Vec3ASwizzles, Vec3Swizzles, Vec4Swizzles};
 
 #[cfg(feature = "transform-types")]
 pub use self::f32::{TransformRT, TransformSRT};
-
-#[repr(align(16))]
-pub(crate) struct Align16<T>(T);
-
-impl<T> Align16<T> {
-    #[allow(dead_code)]
-    pub fn as_ptr(&self) -> *const T {
-        &self.0
-    }
-
-    #[allow(dead_code)]
-    pub fn as_mut_ptr(&mut self) -> *mut T {
-        &mut self.0
-    }
-}
-
-#[test]
-fn test_align16() {
-    use core::{mem, ptr};
-    let mut a = Align16::<f32>(1.0);
-    assert_eq!(mem::align_of_val(&a), 16);
-    unsafe {
-        assert_eq!(ptr::read(a.as_ptr()), 1.0);
-        ptr::write(a.as_mut_ptr(), -1.0);
-    }
-    assert_eq!(a.0, -1.0);
-}

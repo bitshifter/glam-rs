@@ -1,4 +1,4 @@
-use super::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
+use crate::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
 use mint;
 
 impl From<mint::Point2<f32>> for Vec2 {

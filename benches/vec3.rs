@@ -4,7 +4,7 @@ mod macros;
 mod support;
 
 use criterion::{criterion_group, criterion_main, Criterion};
-use glam::f32::Vec3;
+use glam::Vec3;
 use std::ops::{Add, Mul};
 use support::{random_mat3, random_quat, random_srt_mat4, random_vec3};
 

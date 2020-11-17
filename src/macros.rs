@@ -13,24 +13,6 @@ macro_rules! glam_assert {
     ($($arg:tt)*) => {};
 }
 
-macro_rules! is_normalized {
-    ($self:expr, $max_diff:expr) => {
-        ($self.length_squared() - 1.0).abs() <= $max_diff
-    };
-    ($self:expr) => {
-        is_normalized!($self, 1e-6)
-    };
-}
-
-macro_rules! abs_diff_eq {
-    ($self:expr, $other:expr, $max_abs_diff:expr) => {
-        ($self - $other)
-            .abs()
-            .cmple(Self::splat($max_abs_diff))
-            .all()
-    };
-}
-
 /// Creates a `Vec2` that can be used to initialize a constant value.
 ///
 /// ```
@@ -114,7 +96,7 @@ macro_rules! const_mat2 {
     };
 }
 
-
+/*
 /// Creates a `Mat3` from three column vectors that can be used to initialize a constant value.
 ///
 /// ```
@@ -140,6 +122,7 @@ macro_rules! const_mat3 {
         }
     };
 }
+*/
 
 /// Creates a `Mat4` from four column vectors that can be used to initialize a constant value.
 ///
@@ -168,10 +151,8 @@ macro_rules! const_mat4 {
     };
 }
 
-#[cfg(all(
-    not(feature = "scalar-math"),
-    any(target_arch = "x86", target_arch = "x86_64")
-))]
+#[macro_export]
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 macro_rules! const_m128 {
     ($f32x4:expr) => {
         unsafe { $crate::f32::F32x4Cast { f32x4: $f32x4 }.m128 }

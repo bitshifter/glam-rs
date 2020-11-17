@@ -128,7 +128,10 @@ fn write_swizzle_vec4(out: &mut impl Write) -> Result<()> {
     write!(
         out,
         r#"
-use super::{{Vec2, Vec3, Vec4}};
+use crate::{{Vec2, Vec3, Vec4}};
+
+#[cfg(vec4_f32)]
+use crate::{{XY, XYZ, XYZW}};
 
 #[cfg(all(vec4_sse2, target_arch = "x86"))]
 use core::arch::x86::*;
@@ -161,12 +164,12 @@ impl Vec4Swizzles for Vec4 {{"#
 
         #[cfg(vec4_f32)]
         {{
-            Vec4 {{
+            Vec4(XYZW {{
                 x: self.{},
                 y: self.{},
                 z: self.{},
                 w: self.{},
-            }}
+            }})
         }}
     }}"#,
                 E[e0], E[e1], E[e2], E[e3], B[e3], B[e2], B[e1], B[e0], E[e0], E[e1], E[e2], E[e3],
@@ -185,11 +188,11 @@ impl Vec4Swizzles for Vec4 {{"#
 
         #[cfg(vec4_f32)]
         {{
-            Vec3 {{
+            Vec3(XYZ {{
                 x: self.{},
                 y: self.{},
                 z: self.{},
-            }}
+            }})
         }}
     }}"#,
                 E[e0], E[e1], E[e2], B[e2], B[e1], B[e0], E[e0], E[e1], E[e2]
@@ -208,10 +211,10 @@ impl Vec4Swizzles for Vec4 {{"#
 
         #[cfg(vec4_f32)]
         {{
-            Vec2 {{
+            Vec2(XY {{
                 x: self.{},
                 y: self.{},
-            }}
+            }})
         }}
     }}"#,
                 E[e0], E[e1], B[e1], B[e0], E[e0], E[e1]
@@ -230,7 +233,10 @@ fn write_swizzle_vec3a(out: &mut impl Write) -> Result<()> {
     write!(
         out,
         r#"
-use super::{{Vec2, Vec3A, Vec4}};
+use crate::{{Vec2, Vec3A, Vec4}};
+
+#[cfg(vec3a_f32)]
+use crate::{{XY, XYZ, XYZW}};
 
 #[cfg(all(vec3a_sse2, target_arch = "x86"))]
 use core::arch::x86::*;
@@ -264,7 +270,7 @@ impl Vec3ASwizzles for Vec3A {{"#
 
         #[cfg(vec3a_f32)]
         {{
-            Vec4 {{ x: self.{}, y: self.{}, z: self.{}, w: self.{} }}
+            Vec4(XYZW {{ x: self.0.{}, y: self.0.{}, z: self.0.{}, w: self.0.{} }})
         }}
     }}"#,
                 E[e0], E[e1], E[e2], E[e3], B[e3], B[e2], B[e1], B[e0], E[e0], E[e1], E[e2], E[e3],
@@ -283,7 +289,7 @@ impl Vec3ASwizzles for Vec3A {{"#
 
         #[cfg(vec3a_f32)]
         {{
-            Vec3A {{ x: self.{}, y: self.{}, z: self.{} }}
+            Vec3A(XYZ {{ x: self.0.{}, y: self.0.{}, z: self.0.{} }})
         }}
     }}"#,
                 E[e0], E[e1], E[e2], B[e2], B[e1], B[e0], E[e0], E[e1], E[e2]
@@ -302,7 +308,7 @@ impl Vec3ASwizzles for Vec3A {{"#
 
         #[cfg(vec3a_f32)]
         {{
-            Vec2 {{ x: self.{}, y: self.{} }}
+            Vec2(XY {{ x: self.0.{}, y: self.0.{} }})
         }}
     }}"#,
                 E[e0], E[e1], B[e1], B[e0], E[e0], E[e1]
@@ -321,7 +327,7 @@ fn write_swizzle_vec3(out: &mut impl Write) -> Result<()> {
     write!(
         out,
         r#"
-use super::{{Vec2, Vec3, Vec4}};
+use crate::{{XY, XYZ, Vec2, Vec3, Vec4}};
 "#
     )?;
 
@@ -353,11 +359,11 @@ impl Vec3Swizzles for Vec3 {{"#
                 r#"
     #[inline]
     fn {}{}{}(self) -> Vec3 {{
-        Vec3 {{
+        Vec3(XYZ {{
             x: self.{},
             y: self.{},
             z: self.{},
-        }}
+        }})
     }}"#,
                 E[e0], E[e1], E[e2], E[e0], E[e1], E[e2]
             )
@@ -368,10 +374,10 @@ impl Vec3Swizzles for Vec3 {{"#
                 r#"
     #[inline]
     fn {}{}(self) -> Vec2 {{
-        Vec2 {{
+        Vec2(XY {{
             x: self.{},
             y: self.{},
-        }}
+        }})
     }}"#,
                 E[e0], E[e1], E[e0], E[e1]
             )
@@ -389,7 +395,7 @@ fn write_swizzle_vec2(out: &mut impl Write) -> Result<()> {
     write!(
         out,
         r#"
-use super::{{Vec2, Vec3, Vec4}};
+use crate::{{XY, XYZ, Vec2, Vec3, Vec4}};
 "#
     )?;
 
@@ -421,11 +427,11 @@ impl Vec2Swizzles for Vec2 {{"#
                 r#"
     #[inline]
     fn {}{}{}(self) -> Vec3 {{
-        Vec3 {{
+        Vec3(XYZ {{
             x: self.{},
             y: self.{},
             z: self.{},
-        }}
+        }})
     }}"#,
                 E[e0], E[e1], E[e2], E[e0], E[e1], E[e2]
             )
@@ -436,10 +442,10 @@ impl Vec2Swizzles for Vec2 {{"#
                 r#"
     #[inline]
     fn {}{}(self) -> Vec2 {{
-        Vec2 {{
+        Vec2(XY {{
             x: self.{},
             y: self.{},
-        }}
+        }})
     }}"#,
                 E[e0], E[e1], E[e0], E[e1]
             )
@@ -452,19 +458,19 @@ impl Vec2Swizzles for Vec2 {{"#
 }
 
 fn write_src() -> Result<()> {
-    let mut out = File::create("../src/f32/vec4_swizzle.rs")?;
+    let mut out = File::create("../src/swizzles/vec4_swizzle.rs")?;
     write_swizzle_head(&mut out)?;
     write_swizzle_vec4(&mut out)?;
 
-    let mut out = File::create("../src/f32/vec3a_swizzle.rs")?;
+    let mut out = File::create("../src/swizzles/vec3a_swizzle.rs")?;
     write_swizzle_head(&mut out)?;
     write_swizzle_vec3a(&mut out)?;
 
-    let mut out = File::create("../src/f32/vec3_swizzle.rs")?;
+    let mut out = File::create("../src/swizzles/vec3_swizzle.rs")?;
     write_swizzle_head(&mut out)?;
     write_swizzle_vec3(&mut out)?;
 
-    let mut out = File::create("../src/f32/vec2_swizzle.rs")?;
+    let mut out = File::create("../src/swizzles/vec2_swizzle.rs")?;
     write_swizzle_head(&mut out)?;
     write_swizzle_vec2(&mut out)?;
 

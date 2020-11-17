@@ -5,7 +5,7 @@ mod support;
 #[cfg(feature = "transform-types")]
 mod transform {
     use super::support;
-    use glam::f32::*;
+    use glam::*;
 
     #[test]
     fn test_identity() {
