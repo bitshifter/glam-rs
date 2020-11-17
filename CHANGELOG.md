@@ -5,13 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [0.10.2] - 2020-11-17
+
+### Changed
+
+* Deprecated element accessor members `.x()`, `.x_mut()`, `.set_x()`, etc. on
+  vector and quaternion types.
+* Deprecated column accessor members `.x_axis()`, `.x_axis_mut()`,
+  `.set_x_axis()`, etc. on matrix types.
+
 ## [0.10.1] - 2020-11-15
 
-## Added
+### Added
 
 * Added the `Vec2::perp` method which returns a `Vec2` perpendicular to `self`.
 
-## Changed
+### Changed
 
 * `Vec2` and `Vec3` types were changed to use public named fields for `.x`,
   `.y`, and `.z` intead of accessors.
@@ -22,17 +31,17 @@ The format is based on [Keep a Changelog], and this project adheres to
 * `Mat2` implements `Deref` and `DerefMut` for the new `XYAxes` struct to
   emulate public named field access.
 
-## Removed
+### Removed
 
 * Removed deprecated `length_reciprocal` and `sign` methods.
 
-## Fixed
+### Fixed
 
 * Adding `glam` as a `no_std` dependency should now work as expected.
 
 ## [0.10.0] - 2020-10-31
 
-## Added
+### Added
 
 * Added `From` implementations to truncate to narrower vector types, e.g.
   `Vec4` to `Vec3A`, `Vec3` and `Vec2` and from `Vec3A` and `Vec3` to `Vec2`.
@@ -51,14 +60,14 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Added `distance` and `distance_squared` methods to `Vec2`, `Vec3`, `Vec3A`
   and `Vec4`.
 
-## Changed
+### Changed
 
 * Changed the return type of `Vec4::truncate` from `Vec3A` to `Vec3`. This is a
   breaking change.
 
 ## [0.9.5] - 2020-10-10
 
-## Added
+### Added
 
 * `glam` uses SSE2 for some types which prevents constructor functions can not
   be made `const fn`. To work around this limitation the following macro
@@ -79,7 +88,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Added SSE2 optimized implementations of `Mat4::determinant` and
   `Mat4::inverse`.
 
-## Removed
+### Removed
 
 * Removed deprecated function `Mat4::perspective_glu_rh`.
 
