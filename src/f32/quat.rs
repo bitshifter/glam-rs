@@ -519,30 +519,6 @@ impl Quat {
             )
         }
     }
-
-    #[deprecated(since = "0.10.0", note = "please use `.x` instead")]
-    #[inline]
-    pub fn x(self) -> f32 {
-        self.0.x
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.y` instead")]
-    #[inline]
-    pub fn y(self) -> f32 {
-        self.0.y
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.z` instead")]
-    #[inline]
-    pub fn z(self) -> f32 {
-        self.0.z
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.w` instead")]
-    #[inline]
-    pub fn w(self) -> f32 {
-        self.0.w
-    }
 }
 
 impl fmt::Debug for Quat {

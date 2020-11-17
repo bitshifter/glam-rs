@@ -13,17 +13,12 @@ fn test_vec3a_align() {
 }
 
 #[test]
-#[allow(deprecated)]
 fn test_vec3a_new() {
     let v = vec3a(1.0, 2.0, 3.0);
 
     assert_eq!(v.x, 1.0);
     assert_eq!(v.y, 2.0);
     assert_eq!(v.z, 3.0);
-
-    assert_eq!(v.x(), 1.0);
-    assert_eq!(v.y(), 2.0);
-    assert_eq!(v.z(), 3.0);
 
     let t = (1.0, 2.0, 3.0);
     let v = Vec3A::from(t);
@@ -64,24 +59,14 @@ fn test_vec3a_splat() {
 }
 
 #[test]
-#[allow(deprecated)]
 fn test_vec3a_accessors() {
     let mut a = Vec3A::zero();
-    a.set_x(1.0);
-    a.set_y(2.0);
-    a.set_z(3.0);
-    assert_eq!(1.0, a.x());
-    assert_eq!(2.0, a.y());
-    assert_eq!(3.0, a.z());
-    assert_eq!((1.0, 2.0, 3.0), a.into());
-
-    let mut a = Vec3A::zero();
-    *a.x_mut() = 1.0;
-    *a.y_mut() = 2.0;
-    *a.z_mut() = 3.0;
-    assert_eq!(1.0, a.x());
-    assert_eq!(2.0, a.y());
-    assert_eq!(3.0, a.z());
+    a.x = 1.0;
+    a.y = 2.0;
+    a.z = 3.0;
+    assert_eq!(1.0, a.x);
+    assert_eq!(2.0, a.y);
+    assert_eq!(3.0, a.z);
     assert_eq!((1.0, 2.0, 3.0), a.into());
 
     let mut a = Vec3A::zero();

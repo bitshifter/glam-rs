@@ -13,15 +13,11 @@ fn test_vec2_align() {
 }
 
 #[test]
-#[allow(deprecated)]
 fn test_vec2_new() {
     let v = vec2(1.0, 2.0);
 
     assert_eq!(v.x, 1.0);
     assert_eq!(v.y, 2.0);
-
-    assert_eq!(v.x(), 1.0);
-    assert_eq!(v.y(), 2.0);
 
     let t = (1.0, 2.0);
     let v = Vec2::from(t);
@@ -61,27 +57,12 @@ fn test_vec2_splat() {
 }
 
 #[test]
-#[allow(deprecated)]
 fn test_vec2_accessors() {
     let mut a = Vec2::zero();
     a.x = 1.0;
     a.y = 2.0;
     assert_eq!(1.0, a.x);
     assert_eq!(2.0, a.y);
-    assert_eq!(Vec2::new(1.0, 2.0), a);
-
-    let mut a = Vec2::zero();
-    a.set_x(1.0);
-    a.set_y(2.0);
-    assert_eq!(1.0, a.x());
-    assert_eq!(2.0, a.y());
-    assert_eq!(Vec2::new(1.0, 2.0), a);
-
-    let mut a = Vec2::zero();
-    *a.x_mut() = 1.0;
-    *a.y_mut() = 2.0;
-    assert_eq!(1.0, a.x());
-    assert_eq!(2.0, a.y());
     assert_eq!(Vec2::new(1.0, 2.0), a);
 
     let mut a = Vec2::zero();

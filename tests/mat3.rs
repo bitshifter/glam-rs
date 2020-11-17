@@ -31,7 +31,6 @@ fn test_mat3_zero() {
 }
 
 #[test]
-#[allow(deprecated)]
 fn test_mat3_accessors() {
     let mut m = Mat3::zero();
     m.x_axis = Vec3::new(1.0, 2.0, 3.0);
@@ -41,21 +40,6 @@ fn test_mat3_accessors() {
     assert_eq!(Vec3::new(1.0, 2.0, 3.0), m.x_axis);
     assert_eq!(Vec3::new(4.0, 5.0, 6.0), m.y_axis);
     assert_eq!(Vec3::new(7.0, 8.0, 9.0), m.z_axis);
-
-    let mut m = Mat3::zero();
-    m.set_x_axis(Vec3::new(1.0, 2.0, 3.0));
-    m.set_y_axis(Vec3::new(4.0, 5.0, 6.0));
-    m.set_z_axis(Vec3::new(7.0, 8.0, 9.0));
-    assert_eq!(Mat3::from_cols_array_2d(&MATRIX), m);
-    assert_eq!(Vec3::new(1.0, 2.0, 3.0), m.x_axis());
-    assert_eq!(Vec3::new(4.0, 5.0, 6.0), m.y_axis());
-    assert_eq!(Vec3::new(7.0, 8.0, 9.0), m.z_axis());
-    *m.x_axis_mut() = Vec3::new(0.0, 1.0, 2.0);
-    *m.y_axis_mut() = Vec3::new(3.0, 4.0, 5.0);
-    *m.z_axis_mut() = Vec3::new(6.0, 7.0, 8.0);
-    assert_eq!(Vec3::new(0.0, 1.0, 2.0), m.x_axis());
-    assert_eq!(Vec3::new(3.0, 4.0, 5.0), m.y_axis());
-    assert_eq!(Vec3::new(6.0, 7.0, 8.0), m.z_axis());
 }
 
 #[test]

@@ -126,42 +126,6 @@ impl Mat2 {
         Self(Vec4::new(x, 0.0, 0.0, y))
     }
 
-    #[deprecated(since = "0.10.0", note = "please use `.x_axis` instead")]
-    #[inline(always)]
-    pub fn set_x_axis(&mut self, x: Vec2) {
-        self.x_axis = x;
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.y_axis` instead")]
-    #[inline(always)]
-    pub fn set_y_axis(&mut self, y: Vec2) {
-        self.y_axis = y;
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.x_axis` instead")]
-    #[inline(always)]
-    pub fn x_axis(&self) -> Vec2 {
-        self.x_axis
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.y_axis` instead")]
-    #[inline(always)]
-    pub fn y_axis(&self) -> Vec2 {
-        self.y_axis
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.x_axis` instead")]
-    #[inline(always)]
-    pub fn x_axis_mut(&mut self) -> &mut Vec2 {
-        &mut self.x_axis
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.x_axis` instead")]
-    #[inline(always)]
-    pub fn y_axis_mut(&mut self) -> &mut Vec2 {
-        &mut self.y_axis
-    }
-
     // #[inline]
     // pub(crate) fn col(&self, index: usize) -> Vec2 {
     //     match index {

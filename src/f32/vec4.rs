@@ -173,180 +173,6 @@ impl Vec4 {
         self.into()
     }
 
-    #[deprecated(since = "0.10.0", note = "please use `.x` instead")]
-    #[inline]
-    pub fn x(self) -> f32 {
-        #[cfg(vec4_sse2)]
-        unsafe {
-            _mm_cvtss_f32(self.0)
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            self.x
-        }
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.y` instead")]
-    #[inline]
-    pub fn y(self) -> f32 {
-        #[cfg(vec4_sse2)]
-        unsafe {
-            _mm_cvtss_f32(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_01))
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            self.y
-        }
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.z` instead")]
-    #[inline]
-    pub fn z(self) -> f32 {
-        #[cfg(vec4_sse2)]
-        unsafe {
-            _mm_cvtss_f32(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_10))
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            self.z
-        }
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.w` instead")]
-    #[inline]
-    pub fn w(self) -> f32 {
-        #[cfg(vec4_sse2)]
-        unsafe {
-            _mm_cvtss_f32(_mm_shuffle_ps(self.0, self.0, 0b11_11_11_11))
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            self.w
-        }
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.x` instead")]
-    #[inline]
-    pub fn x_mut(&mut self) -> &mut f32 {
-        #[cfg(vec4_sse2)]
-        unsafe {
-            &mut *(self as *mut Self as *mut f32)
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            &mut self.x
-        }
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.y` instead")]
-    #[inline]
-    pub fn y_mut(&mut self) -> &mut f32 {
-        #[cfg(vec4_sse2)]
-        unsafe {
-            &mut *(self as *mut Self as *mut f32).offset(1)
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            &mut self.y
-        }
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.z` instead")]
-    #[inline]
-    pub fn z_mut(&mut self) -> &mut f32 {
-        #[cfg(vec4_sse2)]
-        unsafe {
-            &mut *(self as *mut Self as *mut f32).offset(2)
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            &mut self.z
-        }
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.w` instead")]
-    #[inline]
-    pub fn w_mut(&mut self) -> &mut f32 {
-        #[cfg(vec4_sse2)]
-        unsafe {
-            &mut *(self as *mut Self as *mut f32).offset(3)
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            &mut self.w
-        }
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.x` instead")]
-    #[inline]
-    pub fn set_x(&mut self, x: f32) {
-        #[cfg(vec4_sse2)]
-        unsafe {
-            self.0 = _mm_move_ss(self.0, _mm_set_ss(x));
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            self.x = x;
-        }
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.y` instead")]
-    #[inline]
-    pub fn set_y(&mut self, y: f32) {
-        #[cfg(vec4_sse2)]
-        unsafe {
-            let mut t = _mm_move_ss(self.0, _mm_set_ss(y));
-            t = _mm_shuffle_ps(t, t, 0b11_10_00_00);
-            self.0 = _mm_move_ss(t, self.0);
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            self.y = y;
-        }
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.z` instead")]
-    #[inline]
-    pub fn set_z(&mut self, z: f32) {
-        #[cfg(vec4_sse2)]
-        unsafe {
-            let mut t = _mm_move_ss(self.0, _mm_set_ss(z));
-            t = _mm_shuffle_ps(t, t, 0b11_00_01_00);
-            self.0 = _mm_move_ss(t, self.0);
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            self.z = z;
-        }
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.w` instead")]
-    #[inline]
-    pub fn set_w(&mut self, w: f32) {
-        #[cfg(vec4_sse2)]
-        unsafe {
-            let mut t = _mm_move_ss(self.0, _mm_set_ss(w));
-            t = _mm_shuffle_ps(t, t, 0b00_10_01_00);
-            self.0 = _mm_move_ss(t, self.0);
-        }
-
-        #[cfg(vec4_f32)]
-        {
-            self.w = w;
-        }
-    }
-
     /// Calculates the Vec4 dot product and returns answer in x lane of __m128.
     #[cfg(vec4_sse2)]
     #[inline]
@@ -387,8 +213,10 @@ impl Vec4 {
     pub fn length(self) -> f32 {
         #[cfg(vec4_sse2)]
         {
-            let dot = self.dot_as_vec4(self);
-            unsafe { _mm_cvtss_f32(_mm_sqrt_ps(dot.0)) }
+            unsafe {
+                let dot = self.dot_as_m128(self);
+                _mm_cvtss_f32(_mm_sqrt_ps(dot))
+            }
         }
 
         #[cfg(vec4_f32)]
@@ -413,10 +241,10 @@ impl Vec4 {
     pub fn length_recip(self) -> f32 {
         #[cfg(vec4_sse2)]
         {
-            let dot = self.dot_as_vec4(self);
             unsafe {
+                let dot = self.dot_as_m128(self);
                 // _mm_rsqrt_ps is lower precision
-                _mm_cvtss_f32(_mm_div_ps(ONE.0, _mm_sqrt_ps(dot.0)))
+                _mm_cvtss_f32(_mm_div_ps(ONE.0, _mm_sqrt_ps(dot)))
             }
         }
 

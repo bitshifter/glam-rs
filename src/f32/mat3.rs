@@ -229,60 +229,6 @@ impl Mat3 {
         }
     }
 
-    #[deprecated(since = "0.10.0", note = "please use `.x_axis` instead")]
-    #[inline]
-    pub fn set_x_axis(&mut self, x: Vec3) {
-        self.x_axis = x;
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.y_axis` instead")]
-    #[inline]
-    pub fn set_y_axis(&mut self, y: Vec3) {
-        self.y_axis = y;
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.z_axis` instead")]
-    #[inline]
-    pub fn set_z_axis(&mut self, z: Vec3) {
-        self.z_axis = z;
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.x_axis` instead")]
-    #[inline]
-    pub fn x_axis(&self) -> Vec3 {
-        self.x_axis
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.y_axis` instead")]
-    #[inline]
-    pub fn y_axis(&self) -> Vec3 {
-        self.y_axis
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.z_axis` instead")]
-    #[inline]
-    pub fn z_axis(&self) -> Vec3 {
-        self.z_axis
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.x_axis` instead")]
-    #[inline]
-    pub fn x_axis_mut(&mut self) -> &mut Vec3 {
-        &mut self.x_axis
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.y_axis` instead")]
-    #[inline]
-    pub fn y_axis_mut(&mut self) -> &mut Vec3 {
-        &mut self.y_axis
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.z_axis` instead")]
-    #[inline]
-    pub fn z_axis_mut(&mut self) -> &mut Vec3 {
-        &mut self.z_axis
-    }
-
     // #[inline]
     // pub(crate) fn col(&self, index: usize) -> Vec3 {
     //     match index {

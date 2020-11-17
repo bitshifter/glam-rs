@@ -317,7 +317,6 @@ fn test_quat_slice() {
 }
 
 #[test]
-#[allow(deprecated)]
 fn test_quat_elements() {
     let x = 1.0;
     let y = 2.0;
@@ -329,11 +328,6 @@ fn test_quat_elements() {
     assert!(a.y == y);
     assert!(a.z == z);
     assert!(a.w == w);
-
-    assert!(a.x() == x);
-    assert!(a.y() == y);
-    assert!(a.z() == z);
-    assert!(a.w() == w);
 }
 
 #[test]

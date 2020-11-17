@@ -131,42 +131,6 @@ impl Vec2 {
         Vec3::new(self.x, self.y, z)
     }
 
-    #[deprecated(since = "0.10.0", note = "please use `.x` instead")]
-    #[inline]
-    pub fn x(self) -> f32 {
-        self.x
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.y` instead")]
-    #[inline]
-    pub fn y(self) -> f32 {
-        self.y
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.x` instead")]
-    #[inline]
-    pub fn x_mut(&mut self) -> &mut f32 {
-        &mut self.x
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.y` instead")]
-    #[inline]
-    pub fn y_mut(&mut self) -> &mut f32 {
-        &mut self.y
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.x` instead")]
-    #[inline]
-    pub fn set_x(&mut self, x: f32) {
-        self.x = x;
-    }
-
-    #[deprecated(since = "0.10.0", note = "please use `.y` instead")]
-    #[inline]
-    pub fn set_y(&mut self, y: f32) {
-        self.y = y;
-    }
-
     /// Computes the dot product of `self` and `other`.
     #[inline]
     pub fn dot(self, other: Vec2) -> f32 {

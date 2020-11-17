@@ -36,12 +36,6 @@ fn vec3a_deref(v: Vec3A) -> [f32; 3] {
 }
 
 #[inline]
-#[allow(deprecated)]
-fn vec3a_accessors(v: Vec3A) -> [f32; 3] {
-    [v.x(), v.y(), v.z()]
-}
-
-#[inline]
 fn vec3a_into_array(v: Vec3A) -> [f32; 3] {
     v.into()
 }
@@ -78,13 +72,6 @@ from => random_vec3a
 );
 
 bench_func!(
-vec3a_to_array_accessors,
-"vec3a into array slow",
-op => vec3a_accessors,
-from => random_vec3a
-);
-
-bench_func!(
 vec3a_to_array_into,
 "vec3a into array fast",
 op => vec3a_into_array,
@@ -115,7 +102,6 @@ criterion_group!(
     vec3a_angle_between,
     vec3a_euler,
     vec3a_to_rgb,
-    vec3a_to_array_accessors,
     vec3a_to_array_deref,
     vec3a_to_array_into,
     vec3a_to_tuple_into,
