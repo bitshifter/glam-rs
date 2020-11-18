@@ -193,6 +193,13 @@ impl TransformRT {
         }
     }
 
+    /// Returns `true` if, and only if, all elements are finite.
+    /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
+    #[inline]
+    pub fn is_finite(&self) -> bool {
+        self.rotation.is_finite() && self.translation.is_finite()
+    }
+
     #[inline]
     pub fn inverse(&self) -> Self {
         let rotation = self.rotation.conjugate();
