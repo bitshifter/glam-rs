@@ -139,16 +139,13 @@ fn mul_srt_srt(lhs: &TransformSRT, rhs: &TransformSRT) -> TransformSRT {
         let mut result_mtx = lhs_mtx * rhs_mtx;
 
         let sign = scale.signum();
-        result_mtx
-            .set_x_axis((Vec3A::from(result_mtx.x_axis()).normalize() * sign.xxx()).extend(0.0));
-        result_mtx
-            .set_y_axis((Vec3A::from(result_mtx.y_axis()).normalize() * sign.yyy()).extend(0.0));
-        result_mtx
-            .set_z_axis((Vec3A::from(result_mtx.z_axis()).normalize() * sign.zzz()).extend(0.0));
+        result_mtx.x_axis = (Vec3A::from(result_mtx.x_axis).normalize() * sign.xxx()).extend(0.0);
+        result_mtx.y_axis = (Vec3A::from(result_mtx.y_axis).normalize() * sign.yyy()).extend(0.0);
+        result_mtx.z_axis = (Vec3A::from(result_mtx.z_axis).normalize() * sign.zzz()).extend(0.0);
 
         let scale = Vec3::from(scale);
         let rotation = Quat::from_rotation_mat4(&result_mtx);
-        let translation = result_mtx.w_axis().xyz();
+        let translation = result_mtx.w_axis.xyz();
         TransformSRT {
             scale,
             rotation,

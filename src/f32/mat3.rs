@@ -3,6 +3,9 @@ use super::{scalar_sin_cos, Quat, Vec2, Vec3, Vec3A, Vec3ASwizzles};
 use core::fmt;
 use core::ops::{Add, Mul, Sub};
 
+#[cfg(feature = "std")]
+use std::iter::{Product, Sum};
+
 const ZERO: Mat3 = const_mat3!([0.0; 9]);
 const IDENTITY: Mat3 = const_mat3!([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
 
@@ -43,9 +46,9 @@ fn quat_to_axes(rotation: Quat) -> (Vec3, Vec3, Vec3) {
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[repr(C)]
 pub struct Mat3 {
-    pub(crate) x_axis: Vec3,
-    pub(crate) y_axis: Vec3,
-    pub(crate) z_axis: Vec3,
+    pub x_axis: Vec3,
+    pub y_axis: Vec3,
+    pub z_axis: Vec3,
 }
 
 impl Default for Mat3 {
@@ -226,60 +229,6 @@ impl Mat3 {
         }
     }
 
-    /// Sets the first column, the `x` axis.
-    #[inline]
-    pub fn set_x_axis(&mut self, x: Vec3) {
-        self.x_axis = x;
-    }
-
-    /// Sets the second column, the `y` axis.
-    #[inline]
-    pub fn set_y_axis(&mut self, y: Vec3) {
-        self.y_axis = y;
-    }
-
-    /// Sets the third column, the `z` axis.
-    #[inline]
-    pub fn set_z_axis(&mut self, z: Vec3) {
-        self.z_axis = z;
-    }
-
-    /// Returns the first column, the `x` axis.
-    #[inline]
-    pub fn x_axis(&self) -> Vec3 {
-        self.x_axis
-    }
-
-    /// Returns the second column, the `y` axis.
-    #[inline]
-    pub fn y_axis(&self) -> Vec3 {
-        self.y_axis
-    }
-
-    /// Returns the third column, the `z` axis.
-    #[inline]
-    pub fn z_axis(&self) -> Vec3 {
-        self.z_axis
-    }
-
-    /// Returns a mutable reference to the first column, the `x` axis.
-    #[inline]
-    pub fn x_axis_mut(&mut self) -> &mut Vec3 {
-        &mut self.x_axis
-    }
-
-    /// Returns a mutable reference to the second column, the `y` axis.
-    #[inline]
-    pub fn y_axis_mut(&mut self) -> &mut Vec3 {
-        &mut self.y_axis
-    }
-
-    /// Returns a mutable reference to the third column, the `z` axis.
-    #[inline]
-    pub fn z_axis_mut(&mut self) -> &mut Vec3 {
-        &mut self.z_axis
-    }
-
     // #[inline]
     // pub(crate) fn col(&self, index: usize) -> Vec3 {
     //     match index {
@@ -329,9 +278,21 @@ impl Mat3 {
         // #[cfg(vec3a_f32)]
         {
             Self {
-                x_axis: Vec3::new(self.x_axis.0, self.y_axis.0, self.z_axis.0),
-                y_axis: Vec3::new(self.x_axis.1, self.y_axis.1, self.z_axis.1),
-                z_axis: Vec3::new(self.x_axis.2, self.y_axis.2, self.z_axis.2),
+                x_axis: Vec3 {
+                    x: self.x_axis.x,
+                    y: self.y_axis.x,
+                    z: self.z_axis.x,
+                },
+                y_axis: Vec3 {
+                    x: self.x_axis.y,
+                    y: self.y_axis.y,
+                    z: self.z_axis.y,
+                },
+                z_axis: Vec3 {
+                    x: self.x_axis.z,
+                    y: self.y_axis.z,
+                    z: self.z_axis.z,
+                },
             }
         }
     }
@@ -417,8 +378,8 @@ impl Mat3 {
     /// is `1.0`.
     #[inline]
     pub fn transform_point2(&self, other: Vec2) -> Vec2 {
-        let mut res = Vec3A::from(self.x_axis).mul(Vec3A::splat(other.x()));
-        res = Vec3A::from(self.y_axis).mul_add(Vec3A::splat(other.y()), res);
+        let mut res = Vec3A::from(self.x_axis).mul(Vec3A::splat(other.x));
+        res = Vec3A::from(self.y_axis).mul_add(Vec3A::splat(other.y), res);
         res = Vec3A::from(self.z_axis).add(res);
         res = res.mul(res.zzz().recip());
         res.xy()
@@ -429,8 +390,8 @@ impl Mat3 {
     /// is `0.0`.
     #[inline]
     pub fn transform_vector2(&self, other: Vec2) -> Vec2 {
-        let mut res = Vec3A::from(self.x_axis).mul(Vec3A::splat(other.x()));
-        res = Vec3A::from(self.y_axis).mul_add(Vec3A::splat(other.y()), res);
+        let mut res = Vec3A::from(self.x_axis).mul(Vec3A::splat(other.x));
+        res = Vec3A::from(self.y_axis).mul_add(Vec3A::splat(other.y), res);
         res.xy()
     }
 
@@ -518,5 +479,25 @@ impl Mul<f32> for Mat3 {
     #[inline]
     fn mul(self, other: f32) -> Self {
         self.mul_scalar(other)
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> Sum<&'a Self> for Mat3 {
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Self>,
+    {
+        iter.fold(ZERO, |a, &b| Self::add(a, b))
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> Product<&'a Self> for Mat3 {
+    fn product<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Self>,
+    {
+        iter.fold(IDENTITY, |a, &b| Self::mul(a, b))
     }
 }

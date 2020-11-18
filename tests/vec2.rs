@@ -1,6 +1,6 @@
 mod support;
 
-use glam::{vec2, vec3, Vec2, Vec2Mask, Vec3};
+use glam::{vec2, vec3, Mat2, Vec2, Vec2Mask, Vec3};
 use std::f32;
 
 #[test]
@@ -16,8 +16,8 @@ fn test_vec2_align() {
 fn test_vec2_new() {
     let v = vec2(1.0, 2.0);
 
-    assert_eq!(v.x(), 1.0);
-    assert_eq!(v.y(), 2.0);
+    assert_eq!(v.x, 1.0);
+    assert_eq!(v.y, 2.0);
 
     let t = (1.0, 2.0);
     let v = Vec2::from(t);
@@ -59,17 +59,10 @@ fn test_vec2_splat() {
 #[test]
 fn test_vec2_accessors() {
     let mut a = Vec2::zero();
-    a.set_x(1.0);
-    a.set_y(2.0);
-    assert_eq!(1.0, a.x());
-    assert_eq!(2.0, a.y());
-    assert_eq!(Vec2::new(1.0, 2.0), a);
-
-    let mut a = Vec2::zero();
-    *a.x_mut() = 1.0;
-    *a.y_mut() = 2.0;
-    assert_eq!(1.0, a.x());
-    assert_eq!(2.0, a.y());
+    a.x = 1.0;
+    a.y = 2.0;
+    assert_eq!(1.0, a.x);
+    assert_eq!(2.0, a.y);
     assert_eq!(Vec2::new(1.0, 2.0), a);
 
     let mut a = Vec2::zero();
@@ -212,8 +205,8 @@ fn test_vec2mask() {
     // make sure the unused 'w' value doesn't break Vec2b behaviour
     let a = Vec3::zero();
     let mut b = a.truncate();
-    b.set_x(1.0);
-    b.set_y(1.0);
+    b.x = 1.0;
+    b.y = 1.0;
     assert!(!b.cmpeq(Vec2::zero()).any());
     assert!(b.cmpeq(Vec2::splat(1.0)).all());
 }
@@ -398,18 +391,18 @@ fn test_vec2_abs() {
 
 #[test]
 fn test_vec2_round() {
-    assert_eq!(Vec2::new(1.35, 0.0).round().x(), 1.0);
-    assert_eq!(Vec2::new(0.0, 1.5).round().y(), 2.0);
-    assert_eq!(Vec2::new(0.0, -15.5).round().y(), -16.0);
-    assert_eq!(Vec2::new(0.0, 0.0).round().y(), 0.0);
-    assert_eq!(Vec2::new(0.0, 21.1).round().y(), 21.0);
-    assert_eq!(Vec2::new(0.0, 11.123).round().y(), 11.0);
-    assert_eq!(Vec2::new(0.0, 11.499).round().y(), 11.0);
+    assert_eq!(Vec2::new(1.35, 0.0).round().x, 1.0);
+    assert_eq!(Vec2::new(0.0, 1.5).round().y, 2.0);
+    assert_eq!(Vec2::new(0.0, -15.5).round().y, -16.0);
+    assert_eq!(Vec2::new(0.0, 0.0).round().y, 0.0);
+    assert_eq!(Vec2::new(0.0, 21.1).round().y, 21.0);
+    assert_eq!(Vec2::new(0.0, 11.123).round().y, 11.0);
+    assert_eq!(Vec2::new(0.0, 11.499).round().y, 11.0);
     assert_eq!(
         Vec2::new(f32::NEG_INFINITY, f32::INFINITY).round(),
         Vec2::new(f32::NEG_INFINITY, f32::INFINITY)
     );
-    assert!(Vec2::new(f32::NAN, 0.0).round().x().is_nan());
+    assert!(Vec2::new(f32::NAN, 0.0).round().x.is_nan());
 }
 
 #[test]
@@ -419,7 +412,7 @@ fn test_vec2_floor() {
         Vec2::new(f32::INFINITY, f32::NEG_INFINITY).floor(),
         Vec2::new(f32::INFINITY, f32::NEG_INFINITY)
     );
-    assert!(Vec2::new(f32::NAN, 0.0).floor().x().is_nan());
+    assert!(Vec2::new(f32::NAN, 0.0).floor().x.is_nan());
     assert_eq!(
         Vec2::new(-2000000.123, 10000000.123).floor(),
         Vec2::new(-2000001.0, 10000000.0)
@@ -433,7 +426,7 @@ fn test_vec2_ceil() {
         Vec2::new(f32::INFINITY, f32::NEG_INFINITY).ceil(),
         Vec2::new(f32::INFINITY, f32::NEG_INFINITY)
     );
-    assert!(Vec2::new(f32::NAN, 0.0).ceil().x().is_nan());
+    assert!(Vec2::new(f32::NAN, 0.0).ceil().x.is_nan());
     assert_eq!(
         Vec2::new(-2000000.123, 1000000.123).ceil(),
         Vec2::new(-2000000.0, 1000001.0)
@@ -469,6 +462,21 @@ fn test_vec2_angle_between() {
     assert_approx_eq!(-f32::consts::FRAC_PI_2, angle, 1e-6);
 }
 
+#[test]
+fn test_vec2_perp() {
+    let v1 = Vec2::new(1.0, 2.0);
+    let v2 = Vec2::new(1.0, 1.0);
+    let v1_perp = Vec2::new(-2.0, 1.0);
+    let rot90 = Mat2::from_angle(90.0_f32.to_radians());
+
+    assert_eq!(v1_perp, v1.perp());
+    assert_eq!(v1.perp().dot(v1), 0.0);
+    assert_eq!(v2.perp().dot(v2), 0.0);
+    assert_eq!(v1.perp().dot(v2), v1.perp_dot(v2));
+
+    assert_approx_eq!(v1.perp(), rot90 * v1);
+}
+
 #[cfg(feature = "serde")]
 #[test]
 fn test_vec2_serde() {
@@ -495,4 +503,18 @@ fn test_vec2_rand() {
     let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
     let b: Vec2 = rng2.gen();
     assert_eq!(a, b.into());
+}
+
+#[cfg(feature = "std")]
+#[test]
+fn test_sum() {
+    let one = Vec2::one();
+    assert_eq!(vec![one, one].iter().sum::<Vec2>(), one + one);
+}
+
+#[cfg(feature = "std")]
+#[test]
+fn test_product() {
+    let two = Vec2::new(2.0, 2.0);
+    assert_eq!(vec![two, two].iter().product::<Vec2>(), two * two);
 }

@@ -1,5 +1,7 @@
 #[cfg(target_arch = "spirv")]
 use super::spirv::MathExt;
+#[cfg(feature = "num-traits")]
+use num_traits::Float;
 
 use super::{scalar_sin_cos, Mat3, Quat, Vec3, Vec3A, Vec3ASwizzles, Vec4, Vec4Swizzles};
 #[cfg(all(vec4_sse2, target_arch = "x86"))]
@@ -9,6 +11,9 @@ use core::arch::x86_64::*;
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::ops::{Add, Mul, Sub};
+
+#[cfg(feature = "std")]
+use std::iter::{Product, Sum};
 
 const ZERO: Mat4 = const_mat4!([0.0; 16]);
 const IDENTITY: Mat4 = const_mat4!(
@@ -58,10 +63,10 @@ fn quat_to_axes(rotation: Quat) -> (Vec4, Vec4, Vec4) {
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[repr(C)]
 pub struct Mat4 {
-    pub(crate) x_axis: Vec4,
-    pub(crate) y_axis: Vec4,
-    pub(crate) z_axis: Vec4,
-    pub(crate) w_axis: Vec4,
+    pub x_axis: Vec4,
+    pub y_axis: Vec4,
+    pub z_axis: Vec4,
+    pub w_axis: Vec4,
 }
 
 impl Default for Mat4 {
@@ -195,9 +200,9 @@ impl Mat4 {
         let inv_scale = scale.recip();
 
         let rotation = Quat::from_rotation_mat3(&Mat3::from_cols(
-            Vec3::from(Vec3A::from(self.x_axis()) * inv_scale.xxx()),
-            Vec3::from(Vec3A::from(self.y_axis()) * inv_scale.yyy()),
-            Vec3::from(Vec3A::from(self.z_axis()) * inv_scale.zzz()),
+            Vec3::from(Vec3A::from(self.x_axis) * inv_scale.xxx()),
+            Vec3::from(Vec3A::from(self.y_axis) * inv_scale.yyy()),
+            Vec3::from(Vec3A::from(self.z_axis) * inv_scale.zzz()),
         ));
 
         let translation = self.w_axis.xyz();
@@ -311,78 +316,6 @@ impl Mat4 {
             z_axis: Vec4::new(0.0, 0.0, z, 0.0),
             w_axis: Vec4::unit_w(),
         }
-    }
-
-    /// Sets the first column, the `x` axis.
-    #[inline]
-    pub fn set_x_axis(&mut self, x: Vec4) {
-        self.x_axis = x;
-    }
-
-    /// Sets the second column, the `y` axis.
-    #[inline]
-    pub fn set_y_axis(&mut self, y: Vec4) {
-        self.y_axis = y;
-    }
-
-    /// Sets the third column, the `z` axis.
-    #[inline]
-    pub fn set_z_axis(&mut self, z: Vec4) {
-        self.z_axis = z;
-    }
-
-    /// Sets the fourth column, the `w` axis.
-    #[inline]
-    pub fn set_w_axis(&mut self, w: Vec4) {
-        self.w_axis = w;
-    }
-
-    /// Returns the first column, the `x` axis.
-    #[inline]
-    pub fn x_axis(&self) -> Vec4 {
-        self.x_axis
-    }
-
-    /// Returns the second column, the `y` axis.
-    #[inline]
-    pub fn y_axis(&self) -> Vec4 {
-        self.y_axis
-    }
-
-    /// Returns the third column, the `z` axis.
-    #[inline]
-    pub fn z_axis(&self) -> Vec4 {
-        self.z_axis
-    }
-
-    /// Returns the fourth column, the `w` axis.
-    #[inline]
-    pub fn w_axis(&self) -> Vec4 {
-        self.w_axis
-    }
-
-    /// Returns a mutable reference to the first column, the `x` axis.
-    #[inline]
-    pub fn x_axis_mut(&mut self) -> &mut Vec4 {
-        &mut self.x_axis
-    }
-
-    /// Returns a mutable reference to the second column, the `y` axis.
-    #[inline]
-    pub fn y_axis_mut(&mut self) -> &mut Vec4 {
-        &mut self.y_axis
-    }
-
-    /// Returns a mutable reference to the third column, the `z` axis.
-    #[inline]
-    pub fn z_axis_mut(&mut self) -> &mut Vec4 {
-        &mut self.z_axis
-    }
-
-    /// Returns a mutable reference to the fourth column, the `w` axis.
-    #[inline]
-    pub fn w_axis_mut(&mut self) -> &mut Vec4 {
-        &mut self.w_axis
     }
 
     // #[inline]
@@ -715,14 +648,14 @@ impl Mat4 {
             };
 
             let col0 = Vec4::new(
-                inverse.x_axis.x(),
-                inverse.y_axis.x(),
-                inverse.z_axis.x(),
-                inverse.w_axis.x(),
+                inverse.x_axis.x,
+                inverse.y_axis.x,
+                inverse.z_axis.x,
+                inverse.w_axis.x,
             );
 
             let dot0 = self.x_axis * col0;
-            let dot1 = dot0.x() + dot0.y() + dot0.z() + dot0.w();
+            let dot1 = dot0.x + dot0.y + dot0.z + dot0.w;
 
             glam_assert!(dot1 != 0.0);
 
@@ -1136,5 +1069,25 @@ impl Mul<f32> for Mat4 {
     #[inline]
     fn mul(self, other: f32) -> Self {
         self.mul_scalar(other)
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> Sum<&'a Self> for Mat4 {
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Self>,
+    {
+        iter.fold(ZERO, |a, &b| Self::add(a, b))
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> Product<&'a Self> for Mat4 {
+    fn product<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Self>,
+    {
+        iter.fold(IDENTITY, |a, &b| Self::mul(a, b))
     }
 }

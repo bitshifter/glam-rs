@@ -47,23 +47,15 @@ fn test_mat4_zero() {
 #[test]
 fn test_mat4_accessors() {
     let mut m = Mat4::zero();
-    m.set_x_axis(Vec4::new(1.0, 2.0, 3.0, 4.0));
-    m.set_y_axis(Vec4::new(5.0, 6.0, 7.0, 8.0));
-    m.set_z_axis(Vec4::new(9.0, 10.0, 11.0, 12.0));
-    m.set_w_axis(Vec4::new(13.0, 14.0, 15.0, 16.0));
+    m.x_axis = Vec4::new(1.0, 2.0, 3.0, 4.0);
+    m.y_axis = Vec4::new(5.0, 6.0, 7.0, 8.0);
+    m.z_axis = Vec4::new(9.0, 10.0, 11.0, 12.0);
+    m.w_axis = Vec4::new(13.0, 14.0, 15.0, 16.0);
     assert_eq!(Mat4::from_cols_array_2d(&MATRIX), m);
-    assert_eq!(Vec4::new(1.0, 2.0, 3.0, 4.0), m.x_axis());
-    assert_eq!(Vec4::new(5.0, 6.0, 7.0, 8.0), m.y_axis());
-    assert_eq!(Vec4::new(9.0, 10.0, 11.0, 12.0), m.z_axis());
-    assert_eq!(Vec4::new(13.0, 14.0, 15.0, 16.0), m.w_axis());
-    *m.x_axis_mut() = Vec4::new(0.0, 1.0, 2.0, 3.0);
-    *m.y_axis_mut() = Vec4::new(4.0, 5.0, 6.0, 7.0);
-    *m.z_axis_mut() = Vec4::new(8.0, 9.0, 10.0, 11.0);
-    *m.w_axis_mut() = Vec4::new(12.0, 13.0, 14.0, 15.0);
-    assert_eq!(Vec4::new(0.0, 1.0, 2.0, 3.0), m.x_axis());
-    assert_eq!(Vec4::new(4.0, 5.0, 6.0, 7.0), m.y_axis());
-    assert_eq!(Vec4::new(8.0, 9.0, 10.0, 11.0), m.z_axis());
-    assert_eq!(Vec4::new(12.0, 13.0, 14.0, 15.0), m.w_axis());
+    assert_eq!(Vec4::new(1.0, 2.0, 3.0, 4.0), m.x_axis);
+    assert_eq!(Vec4::new(5.0, 6.0, 7.0, 8.0), m.y_axis);
+    assert_eq!(Vec4::new(9.0, 10.0, 11.0, 12.0), m.z_axis);
+    assert_eq!(Vec4::new(13.0, 14.0, 15.0, 16.0), m.w_axis);
 }
 
 #[test]
@@ -188,10 +180,10 @@ fn test_from_scale() {
         m.transform_point3(Vec3::new(1.0, 1.0, 1.0)),
         Vec3::new(2.0, 4.0, 8.0)
     );
-    assert_approx_eq!(Vec4::unit_x() * 2.0, m.x_axis());
-    assert_approx_eq!(Vec4::unit_y() * 4.0, m.y_axis());
-    assert_approx_eq!(Vec4::unit_z() * 8.0, m.z_axis());
-    assert_approx_eq!(Vec4::unit_w(), m.w_axis());
+    assert_approx_eq!(Vec4::unit_x() * 2.0, m.x_axis);
+    assert_approx_eq!(Vec4::unit_y() * 4.0, m.y_axis);
+    assert_approx_eq!(Vec4::unit_z() * 8.0, m.z_axis);
+    assert_approx_eq!(Vec4::unit_w(), m.w_axis);
 }
 
 #[test]
@@ -203,10 +195,10 @@ fn test_mat4_transpose() {
         vec4(13.0, 14.0, 15.0, 16.0),
     );
     let mt = m.transpose();
-    assert_eq!(mt.x_axis(), vec4(1.0, 5.0, 9.0, 13.0));
-    assert_eq!(mt.y_axis(), vec4(2.0, 6.0, 10.0, 14.0));
-    assert_eq!(mt.z_axis(), vec4(3.0, 7.0, 11.0, 15.0));
-    assert_eq!(mt.w_axis(), vec4(4.0, 8.0, 12.0, 16.0));
+    assert_eq!(mt.x_axis, vec4(1.0, 5.0, 9.0, 13.0));
+    assert_eq!(mt.y_axis, vec4(2.0, 6.0, 10.0, 14.0));
+    assert_eq!(mt.z_axis, vec4(3.0, 7.0, 11.0, 15.0));
+    assert_eq!(mt.w_axis, vec4(4.0, 8.0, 12.0, 16.0));
 }
 
 #[test]
@@ -536,4 +528,18 @@ fn test_mat4_rand() {
     let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
     let b = rng2.gen::<Mat4>();
     assert_eq!(a, b);
+}
+
+#[cfg(feature = "std")]
+#[test]
+fn test_sum() {
+    let id = Mat4::identity();
+    assert_eq!(vec![id, id].iter().sum::<Mat4>(), id + id);
+}
+
+#[cfg(feature = "std")]
+#[test]
+fn test_product() {
+    let two = Mat4::identity() + Mat4::identity();
+    assert_eq!(vec![two, two].iter().product::<Mat4>(), two * two);
 }

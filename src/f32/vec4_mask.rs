@@ -171,12 +171,12 @@ impl Vec4Mask {
 
         #[cfg(vec4_f32)]
         {
-            Vec4(
-                if self.0 != 0 { if_true.0 } else { if_false.0 },
-                if self.1 != 0 { if_true.1 } else { if_false.1 },
-                if self.2 != 0 { if_true.2 } else { if_false.2 },
-                if self.3 != 0 { if_true.3 } else { if_false.3 },
-            )
+            Vec4 {
+                x: if self.0 != 0 { if_true.x } else { if_false.x },
+                y: if self.1 != 0 { if_true.y } else { if_false.y },
+                z: if self.2 != 0 { if_true.z } else { if_false.z },
+                w: if self.3 != 0 { if_true.w } else { if_false.w },
+            }
         }
     }
 }

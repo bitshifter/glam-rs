@@ -1,10 +1,15 @@
 #[cfg(target_arch = "spirv")]
 use super::spirv::MathExt;
+#[cfg(feature = "num-traits")]
+use num_traits::Float;
 
 use super::{Vec2, Vec3A, Vec3Mask, Vec4};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::ops::*;
+
+#[cfg(feature = "std")]
+use std::iter::{Product, Sum};
 
 const ZERO: Vec3 = const_vec3!([0.0; 3]);
 const ONE: Vec3 = const_vec3!([1.0; 3]);
@@ -13,10 +18,14 @@ const Y_AXIS: Vec3 = const_vec3!([0.0, 1.0, 0.0]);
 const Z_AXIS: Vec3 = const_vec3!([0.0, 0.0, 1.0]);
 
 /// A 3-dimensional vector without SIMD support.
-#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Default)]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
-pub struct Vec3(pub(crate) f32, pub(crate) f32, pub(crate) f32);
+pub struct Vec3 {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+}
 
 /// Creates a `Vec3`.
 #[inline]
@@ -28,7 +37,7 @@ impl Vec3 {
     /// Creates a new `Vec3`.
     #[inline]
     pub fn new(x: f32, y: f32, z: f32) -> Self {
-        Self(x, y, z)
+        Self { x, y, z }
     }
 
     /// Creates a `Vec3` with all elements set to `0.0`.
@@ -64,13 +73,13 @@ impl Vec3 {
     /// Creates a `Vec3` with all elements set to `v`.
     #[inline]
     pub fn splat(v: f32) -> Self {
-        Self(v, v, v)
+        Self { x: v, y: v, z: v }
     }
 
     /// Creates a `Vec4` from `self` and the given `w` value.
     #[inline]
     pub fn extend(self, w: f32) -> Vec4 {
-        Vec4::new(self.0, self.1, self.2, w)
+        Vec4::new(self.x, self.y, self.z, w)
     }
 
     /// Creates a `Vec2` from the `x` and `y` elements of `self`, discarding `z`.
@@ -78,67 +87,13 @@ impl Vec3 {
     /// Truncation may also be performed by using `self.xy()` or `Vec2::from()`.
     #[inline]
     pub fn truncate(self) -> Vec2 {
-        Vec2::new(self.0, self.1)
-    }
-
-    /// Returns element `x`.
-    #[inline]
-    pub fn x(self) -> f32 {
-        self.0
-    }
-
-    /// Returns element `y`.
-    #[inline]
-    pub fn y(self) -> f32 {
-        self.1
-    }
-
-    /// Returns element `z`.
-    #[inline]
-    pub fn z(self) -> f32 {
-        self.2
-    }
-
-    /// Returns a mutable reference to element `x`.
-    #[inline]
-    pub fn x_mut(&mut self) -> &mut f32 {
-        &mut self.0
-    }
-
-    /// Returns a mutable reference to element `y`.
-    #[inline]
-    pub fn y_mut(&mut self) -> &mut f32 {
-        &mut self.1
-    }
-
-    /// Returns a mutable reference to element `z`.
-    #[inline]
-    pub fn z_mut(&mut self) -> &mut f32 {
-        &mut self.2
-    }
-
-    /// Sets element `x`.
-    #[inline]
-    pub fn set_x(&mut self, x: f32) {
-        self.0 = x;
-    }
-
-    /// Sets element `y`.
-    #[inline]
-    pub fn set_y(&mut self, y: f32) {
-        self.1 = y;
-    }
-
-    /// Sets element `z`.
-    #[inline]
-    pub fn set_z(&mut self, z: f32) {
-        self.2 = z;
+        Vec2::new(self.x, self.y)
     }
 
     /// Computes the dot product of `self` and `other`.
     #[inline]
     pub fn dot(self, other: Self) -> f32 {
-        (self.0 * other.0) + (self.1 * other.1) + (self.2 * other.2)
+        (self.x * other.x) + (self.y * other.y) + (self.z * other.z)
     }
 
     /// Returns Vec3 dot in all lanes of Vec3
@@ -152,11 +107,11 @@ impl Vec3 {
     /// Computes the cross product of `self` and `other`.
     #[inline]
     pub fn cross(self, other: Self) -> Self {
-        Self(
-            self.1 * other.2 - other.1 * self.2,
-            self.2 * other.0 - other.2 * self.0,
-            self.0 * other.1 - other.0 * self.1,
-        )
+        Self {
+            x: self.y * other.z - other.y * self.z,
+            y: self.z * other.x - other.z * self.x,
+            z: self.x * other.y - other.x * self.y,
+        }
     }
 
     /// Computes the length of `self`.
@@ -172,12 +127,6 @@ impl Vec3 {
     #[inline]
     pub fn length_squared(self) -> f32 {
         self.dot(self)
-    }
-
-    #[deprecated(since = "0.9.5", note = "please use `Vec3::length_recip` instead")]
-    #[inline(always)]
-    pub fn length_reciprocal(self) -> f32 {
-        self.length_recip()
     }
 
     /// Computes `1.0 / Vec3::length()`.
@@ -215,11 +164,11 @@ impl Vec3 {
     /// taking the minimum of each element individually.
     #[inline]
     pub fn min(self, other: Self) -> Self {
-        Self(
-            self.0.min(other.0),
-            self.1.min(other.1),
-            self.2.min(other.2),
-        )
+        Self {
+            x: self.x.min(other.x),
+            y: self.y.min(other.y),
+            z: self.z.min(other.z),
+        }
     }
 
     /// Returns the vertical maximum of `self` and `other`.
@@ -229,11 +178,11 @@ impl Vec3 {
     /// taking the maximum of each element individually.
     #[inline]
     pub fn max(self, other: Self) -> Self {
-        Self(
-            self.0.max(other.0),
-            self.1.max(other.1),
-            self.2.max(other.2),
-        )
+        Self {
+            x: self.x.max(other.x),
+            y: self.y.max(other.y),
+            z: self.z.max(other.z),
+        }
     }
 
     /// Returns the horizontal minimum of `self`'s elements.
@@ -241,7 +190,7 @@ impl Vec3 {
     /// In other words, this computes `min(x, y, z)`.
     #[inline]
     pub fn min_element(self) -> f32 {
-        self.0.min(self.1.min(self.2))
+        self.x.min(self.y.min(self.z))
     }
 
     /// Returns the horizontal maximum of `self`'s elements.
@@ -249,7 +198,7 @@ impl Vec3 {
     /// In other words, this computes `max(x, y, z)`.
     #[inline]
     pub fn max_element(self) -> f32 {
-        self.0.max(self.1.max(self.2))
+        self.x.max(self.y.max(self.z))
     }
 
     /// Performs a vertical `==` comparison between `self` and `other`,
@@ -259,9 +208,9 @@ impl Vec3 {
     #[inline]
     pub fn cmpeq(self, other: Self) -> Vec3Mask {
         Vec3Mask::new(
-            self.0.eq(&other.0),
-            self.1.eq(&other.1),
-            self.2.eq(&other.2),
+            self.x.eq(&other.x),
+            self.y.eq(&other.y),
+            self.z.eq(&other.z),
         )
     }
 
@@ -272,9 +221,9 @@ impl Vec3 {
     #[inline]
     pub fn cmpne(self, other: Self) -> Vec3Mask {
         Vec3Mask::new(
-            self.0.ne(&other.0),
-            self.1.ne(&other.1),
-            self.2.ne(&other.2),
+            self.x.ne(&other.x),
+            self.y.ne(&other.y),
+            self.z.ne(&other.z),
         )
     }
 
@@ -285,9 +234,9 @@ impl Vec3 {
     #[inline]
     pub fn cmpge(self, other: Self) -> Vec3Mask {
         Vec3Mask::new(
-            self.0.ge(&other.0),
-            self.1.ge(&other.1),
-            self.2.ge(&other.2),
+            self.x.ge(&other.x),
+            self.y.ge(&other.y),
+            self.z.ge(&other.z),
         )
     }
 
@@ -298,9 +247,9 @@ impl Vec3 {
     #[inline]
     pub fn cmpgt(self, other: Self) -> Vec3Mask {
         Vec3Mask::new(
-            self.0.gt(&other.0),
-            self.1.gt(&other.1),
-            self.2.gt(&other.2),
+            self.x.gt(&other.x),
+            self.y.gt(&other.y),
+            self.z.gt(&other.z),
         )
     }
 
@@ -311,9 +260,9 @@ impl Vec3 {
     #[inline]
     pub fn cmple(self, other: Self) -> Vec3Mask {
         Vec3Mask::new(
-            self.0.le(&other.0),
-            self.1.le(&other.1),
-            self.2.le(&other.2),
+            self.x.le(&other.x),
+            self.y.le(&other.y),
+            self.z.le(&other.z),
         )
     }
 
@@ -324,9 +273,9 @@ impl Vec3 {
     #[inline]
     pub fn cmplt(self, other: Self) -> Vec3Mask {
         Vec3Mask::new(
-            self.0.lt(&other.0),
-            self.1.lt(&other.1),
-            self.2.lt(&other.2),
+            self.x.lt(&other.x),
+            self.y.lt(&other.y),
+            self.z.lt(&other.z),
         )
     }
 
@@ -357,38 +306,54 @@ impl Vec3 {
     #[inline]
     #[allow(dead_code)]
     pub(crate) fn mul_add(self, a: Self, b: Self) -> Self {
-        Self(
-            (self.0 * a.0) + b.0,
-            (self.1 * a.1) + b.1,
-            (self.2 * a.2) + b.2,
-        )
+        Self {
+            x: (self.x * a.x) + b.x,
+            y: (self.y * a.y) + b.y,
+            z: (self.z * a.z) + b.z,
+        }
     }
 
     /// Returns a `Vec3` containing the absolute value of each element of `self`.
     #[inline]
     pub fn abs(self) -> Self {
-        Self(self.0.abs(), self.1.abs(), self.2.abs())
+        Self {
+            x: self.x.abs(),
+            y: self.y.abs(),
+            z: self.z.abs(),
+        }
     }
 
     /// Returns a `Vec3` containing the nearest integer to a number for each element of `self`.
     /// Round half-way cases away from 0.0.
     #[inline]
     pub fn round(self) -> Self {
-        Self(self.0.round(), self.1.round(), self.2.round())
+        Self {
+            x: self.x.round(),
+            y: self.y.round(),
+            z: self.z.round(),
+        }
     }
 
     /// Returns a `Vec3` containing the largest integer less than or equal to a number for each
     /// element of `self`.
     #[inline]
     pub fn floor(self) -> Self {
-        Self(self.0.floor(), self.1.floor(), self.2.floor())
+        Self {
+            x: self.x.floor(),
+            y: self.y.floor(),
+            z: self.z.floor(),
+        }
     }
 
     /// Returns a `Vec3` containing the smallest integer greater than or equal to a number for each
     /// element of `self`.
     #[inline]
     pub fn ceil(self) -> Self {
-        Self(self.0.ceil(), self.1.ceil(), self.2.ceil())
+        Self {
+            x: self.x.ceil(),
+            y: self.y.ceil(),
+            z: self.z.ceil(),
+        }
     }
 
     /// Performs `is_nan()` on each element of self, returning a `Vec3Mask` of the results.
@@ -396,13 +361,7 @@ impl Vec3 {
     /// In other words, this computes `[x.is_nan(), y.is_nan(), z.is_nan()]`.
     #[inline]
     pub fn is_nan(self) -> Vec3Mask {
-        Vec3Mask::new(self.0.is_nan(), self.1.is_nan(), self.2.is_nan())
-    }
-
-    #[deprecated(since = "0.9.5", note = "please use `Vec3::signum` instead")]
-    #[inline(always)]
-    pub fn sign(self) -> Self {
-        self.signum()
+        Vec3Mask::new(self.x.is_nan(), self.y.is_nan(), self.z.is_nan())
     }
 
     /// Returns a `Vec3` with elements representing the sign of `self`.
@@ -412,19 +371,21 @@ impl Vec3 {
     /// - `NAN` if the number is `NAN`
     #[inline]
     pub fn signum(self) -> Self {
-        Self(self.0.signum(), self.1.signum(), self.2.signum())
-    }
-
-    #[deprecated(since = "0.9.5", note = "please use `Vec3::recip` instead")]
-    #[inline(always)]
-    pub fn reciprocal(self) -> Self {
-        self.recip()
+        Self {
+            x: self.x.signum(),
+            y: self.y.signum(),
+            z: self.z.signum(),
+        }
     }
 
     /// Returns a `Vec3` containing the reciprocal `1.0/n` of each element of `self`.
     #[inline]
     pub fn recip(self) -> Self {
-        Self(self.0.recip(), self.1.recip(), self.2.recip())
+        Self {
+            x: self.x.recip(),
+            y: self.y.recip(),
+            z: self.z.recip(),
+        }
     }
 
     /// Performs a linear interpolation between `self` and `other` based on
@@ -484,9 +445,20 @@ impl AsMut<[f32; 3]> for Vec3 {
 }
 
 #[cfg(not(target_arch = "spirv"))]
+impl fmt::Debug for Vec3 {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_tuple("Vec3")
+            .field(&self.x)
+            .field(&self.y)
+            .field(&self.z)
+            .finish()
+    }
+}
+
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Vec3 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "[{}, {}, {}]", self.0, self.1, self.2)
+        write!(f, "[{}, {}, {}]", self.x, self.y, self.z)
     }
 }
 
@@ -494,16 +466,20 @@ impl Div<Vec3> for Vec3 {
     type Output = Self;
     #[inline]
     fn div(self, other: Self) -> Self {
-        Self(self.0 / other.0, self.1 / other.1, self.2 / other.2)
+        Self {
+            x: self.x / other.x,
+            y: self.y / other.y,
+            z: self.z / other.z,
+        }
     }
 }
 
 impl DivAssign<Vec3> for Vec3 {
     #[inline]
     fn div_assign(&mut self, other: Self) {
-        self.0 /= other.0;
-        self.1 /= other.1;
-        self.2 /= other.2;
+        self.x /= other.x;
+        self.y /= other.y;
+        self.z /= other.z;
     }
 }
 
@@ -511,16 +487,20 @@ impl Div<f32> for Vec3 {
     type Output = Self;
     #[inline]
     fn div(self, other: f32) -> Self {
-        Self(self.0 / other, self.1 / other, self.2 / other)
+        Self {
+            x: self.x / other,
+            y: self.y / other,
+            z: self.z / other,
+        }
     }
 }
 
 impl DivAssign<f32> for Vec3 {
     #[inline]
     fn div_assign(&mut self, other: f32) {
-        self.0 /= other;
-        self.1 /= other;
-        self.2 /= other;
+        self.x /= other;
+        self.y /= other;
+        self.z /= other;
     }
 }
 
@@ -528,7 +508,11 @@ impl Div<Vec3> for f32 {
     type Output = Vec3;
     #[inline]
     fn div(self, other: Vec3) -> Vec3 {
-        Vec3(self / other.0, self / other.1, self / other.2)
+        Vec3 {
+            x: self / other.x,
+            y: self / other.y,
+            z: self / other.z,
+        }
     }
 }
 
@@ -536,16 +520,20 @@ impl Mul<Vec3> for Vec3 {
     type Output = Self;
     #[inline]
     fn mul(self, other: Self) -> Self {
-        Self(self.0 * other.0, self.1 * other.1, self.2 * other.2)
+        Self {
+            x: self.x * other.x,
+            y: self.y * other.y,
+            z: self.z * other.z,
+        }
     }
 }
 
 impl MulAssign<Vec3> for Vec3 {
     #[inline]
     fn mul_assign(&mut self, other: Self) {
-        self.0 *= other.0;
-        self.1 *= other.1;
-        self.2 *= other.2;
+        self.x *= other.x;
+        self.y *= other.y;
+        self.z *= other.z;
     }
 }
 
@@ -553,16 +541,20 @@ impl Mul<f32> for Vec3 {
     type Output = Self;
     #[inline]
     fn mul(self, other: f32) -> Self {
-        Self(self.0 * other, self.1 * other, self.2 * other)
+        Self {
+            x: self.x * other,
+            y: self.y * other,
+            z: self.z * other,
+        }
     }
 }
 
 impl MulAssign<f32> for Vec3 {
     #[inline]
     fn mul_assign(&mut self, other: f32) {
-        self.0 *= other;
-        self.1 *= other;
-        self.2 *= other;
+        self.x *= other;
+        self.y *= other;
+        self.z *= other;
     }
 }
 
@@ -570,7 +562,11 @@ impl Mul<Vec3> for f32 {
     type Output = Vec3;
     #[inline]
     fn mul(self, other: Vec3) -> Vec3 {
-        Vec3(self * other.0, self * other.1, self * other.2)
+        Vec3 {
+            x: self * other.x,
+            y: self * other.y,
+            z: self * other.z,
+        }
     }
 }
 
@@ -578,16 +574,20 @@ impl Add for Vec3 {
     type Output = Self;
     #[inline]
     fn add(self, other: Self) -> Self {
-        Self(self.0 + other.0, self.1 + other.1, self.2 + other.2)
+        Self {
+            x: self.x + other.x,
+            y: self.y + other.y,
+            z: self.z + other.z,
+        }
     }
 }
 
 impl AddAssign for Vec3 {
     #[inline]
     fn add_assign(&mut self, other: Self) {
-        self.0 += other.0;
-        self.1 += other.1;
-        self.2 += other.2;
+        self.x += other.x;
+        self.y += other.y;
+        self.z += other.z;
     }
 }
 
@@ -595,16 +595,20 @@ impl Sub for Vec3 {
     type Output = Self;
     #[inline]
     fn sub(self, other: Self) -> Self {
-        Self(self.0 - other.0, self.1 - other.1, self.2 - other.2)
+        Self {
+            x: self.x - other.x,
+            y: self.y - other.y,
+            z: self.z - other.z,
+        }
     }
 }
 
 impl SubAssign for Vec3 {
     #[inline]
     fn sub_assign(&mut self, other: Self) {
-        self.0 -= other.0;
-        self.1 -= other.1;
-        self.2 -= other.2;
+        self.x -= other.x;
+        self.y -= other.y;
+        self.z -= other.z;
     }
 }
 
@@ -612,7 +616,11 @@ impl Neg for Vec3 {
     type Output = Self;
     #[inline]
     fn neg(self) -> Self {
-        Self(-self.0, -self.1, -self.2)
+        Self {
+            x: -self.x,
+            y: -self.y,
+            z: -self.z,
+        }
     }
 }
 
@@ -641,7 +649,7 @@ impl From<(f32, f32, f32)> for Vec3 {
 impl From<Vec3> for (f32, f32, f32) {
     #[inline]
     fn from(v: Vec3) -> Self {
-        (v.0, v.1, v.2)
+        (v.x, v.y, v.z)
     }
 }
 
@@ -655,7 +663,7 @@ impl From<[f32; 3]> for Vec3 {
 impl From<Vec3> for [f32; 3] {
     #[inline]
     fn from(v: Vec3) -> Self {
-        [v.0, v.1, v.2]
+        [v.x, v.y, v.z]
     }
 }
 
@@ -665,7 +673,7 @@ impl From<Vec3A> for Vec3 {
         #[cfg(vec3a_sse2)]
         {
             let (x, y, z) = v.into();
-            Self(x, y, z)
+            Self { x, y, z }
         }
 
         #[cfg(vec3a_f32)]
@@ -679,7 +687,7 @@ impl From<Vec3> for Vec2 {
     /// Creates a `Vec2` from the `x` and `y` elements of the `Vec3`, discarding `z`.
     #[inline]
     fn from(v: Vec3) -> Self {
-        Vec2(v.0, v.1)
+        Vec2 { x: v.x, y: v.y }
     }
 }
 
@@ -689,4 +697,24 @@ fn test_vec3_private() {
         vec3(1.0, 1.0, 1.0).mul_add(vec3(0.5, 2.0, -4.0), vec3(-1.0, -1.0, -1.0)),
         vec3(-0.5, 1.0, -5.0)
     );
+}
+
+#[cfg(feature = "std")]
+impl<'a> Sum<&'a Self> for Vec3 {
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Self>,
+    {
+        iter.fold(ZERO, |a, &b| Self::add(a, b))
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> Product<&'a Self> for Vec3 {
+    fn product<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Self>,
+    {
+        iter.fold(ONE, |a, &b| Self::mul(a, b))
+    }
 }

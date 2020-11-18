@@ -1,5 +1,7 @@
 #[cfg(target_arch = "spirv")]
 use super::spirv::MathExt;
+#[cfg(feature = "num-traits")]
+use num_traits::Float;
 
 use super::{scalar_acos, scalar_sin_cos, Mat3, Mat4, Vec3, Vec3A, Vec4, Vec4Swizzles};
 #[cfg(all(vec4_sse2, target_arch = "x86",))]
@@ -10,9 +12,14 @@ use core::arch::x86_64::*;
 use core::fmt;
 use core::{
     cmp::Ordering,
-    ops::{Add, Div, Mul, MulAssign, Neg, Sub},
+    ops::{Add, Deref, Div, Mul, MulAssign, Neg, Sub},
 };
 
+#[cfg(feature = "std")]
+use std::iter::{Product, Sum};
+
+#[cfg(feature = "std")]
+const ZERO: Quat = const_quat!([0.0, 0.0, 0.0, 0.0]);
 const IDENTITY: Quat = const_quat!([0.0, 0.0, 0.0, 1.0]);
 
 /// A quaternion representing an orientation.
@@ -22,6 +29,17 @@ const IDENTITY: Quat = const_quat!([0.0, 0.0, 0.0, 1.0]);
 /// operations are applied.
 ///
 /// This type is 16 byte aligned.
+#[cfg(doc)]
+#[derive(Clone, Copy)]
+#[repr(C)]
+pub struct Quat {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+    pub w: f32,
+}
+
+#[cfg(not(doc))]
 #[derive(Clone, Copy)]
 #[repr(C)]
 pub struct Quat(pub(crate) Vec4);
@@ -229,7 +247,7 @@ impl Quat {
 
         #[cfg(vec4_f32)]
         {
-            Self::from_xyzw(-(self.0).0, -(self.0).1, -(self.0).2, (self.0).3)
+            Self::from_xyzw(-self.0.x, -self.0.y, -self.0.z, self.0.w)
         }
     }
 
@@ -253,12 +271,6 @@ impl Quat {
     #[inline]
     pub fn length_squared(self) -> f32 {
         self.0.length_squared()
-    }
-
-    #[deprecated(since = "0.9.5", note = "please use `Quat::length_recip` instead")]
-    #[inline(always)]
-    pub fn length_reciprocal(self) -> f32 {
-        self.length_recip()
     }
 
     /// Computes `1.0 / Quat::length()`.
@@ -303,7 +315,7 @@ impl Quat {
         // If the quat.w is close to -1.0, the angle will be near 2*PI which is close to
         // a negative 0 rotation. By forcing quat.w to be positive, we'll end up with
         // the shortest path.
-        let positive_w_angle = scalar_acos(self.0.w().abs()) * 2.0;
+        let positive_w_angle = scalar_acos(self.0.w.abs()) * 2.0;
         positive_w_angle < THRESHOLD_ANGLE
     }
 
@@ -438,7 +450,7 @@ impl Quat {
         #[cfg(vec4_f32)]
         {
             let other = Vec3::from(other);
-            let w = self.0.w();
+            let w = self.0.w;
             let b = Vec3::from(self.0);
             let b2 = b.dot(b);
             Vec3A::from(
@@ -509,29 +521,6 @@ impl Quat {
                 w0 * w1 - x0 * x1 - y0 * y1 - z0 * z1,
             )
         }
-    }
-    /// Returns element `x`.
-    #[inline]
-    pub fn x(self) -> f32 {
-        self.0.x()
-    }
-
-    /// Returns element `y`.
-    #[inline]
-    pub fn y(self) -> f32 {
-        self.0.y()
-    }
-
-    /// Returns element `z`.
-    #[inline]
-    pub fn z(self) -> f32 {
-        self.0.z()
-    }
-
-    /// Returns element `w`.
-    #[inline]
-    pub fn w(self) -> f32 {
-        self.0.w()
     }
 }
 
@@ -729,5 +718,33 @@ impl From<__m128> for Quat {
     #[inline]
     fn from(t: __m128) -> Self {
         Self(Vec4(t))
+    }
+}
+
+impl Deref for Quat {
+    type Target = super::XYZW;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        unsafe { &*(self as *const Self as *const Self::Target) }
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> Sum<&'a Self> for Quat {
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Self>,
+    {
+        iter.fold(ZERO, |a, &b| Self::add(a, b))
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> Product<&'a Self> for Quat {
+    fn product<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Self>,
+    {
+        iter.fold(IDENTITY, |a, &b| Self::mul(a, b))
     }
 }

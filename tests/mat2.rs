@@ -37,15 +37,11 @@ fn test_mat2_zero() {
 #[test]
 fn test_mat2_accessors() {
     let mut m = Mat2::zero();
-    m.set_x_axis(Vec2::new(1.0, 2.0));
-    m.set_y_axis(Vec2::new(3.0, 4.0));
+    m.x_axis = Vec2::new(1.0, 2.0);
+    m.y_axis = Vec2::new(3.0, 4.0);
     assert_eq!(Mat2::from_cols_array_2d(&MATRIX), m);
-    assert_eq!(Vec2::new(1.0, 2.0), m.x_axis());
-    assert_eq!(Vec2::new(3.0, 4.0), m.y_axis());
-    *m.x_axis_mut() = Vec2::new(0.0, 1.0);
-    *m.y_axis_mut() = Vec2::new(2.0, 3.0);
-    assert_eq!(Vec2::new(0.0, 1.0), m.x_axis());
-    assert_eq!(Vec2::new(2.0, 3.0), m.y_axis());
+    assert_eq!(Vec2::new(1.0, 2.0), m.x_axis);
+    assert_eq!(Vec2::new(3.0, 4.0), m.y_axis);
 }
 
 #[test]
@@ -74,8 +70,8 @@ fn test_mat2_mul() {
 fn test_from_scale() {
     let m = Mat2::from_scale(Vec2::new(2.0, 4.0));
     assert_approx_eq!(m * Vec2::new(1.0, 1.0), Vec2::new(2.0, 4.0));
-    assert_approx_eq!(Vec2::unit_x() * 2.0, m.x_axis());
-    assert_approx_eq!(Vec2::unit_y() * 4.0, m.y_axis());
+    assert_approx_eq!(Vec2::unit_x() * 2.0, m.x_axis);
+    assert_approx_eq!(Vec2::unit_y() * 4.0, m.y_axis);
 
     let rot = Mat2::from_scale_angle(Vec2::new(4.0, 2.0), deg(180.0));
     assert_approx_eq!(Vec2::unit_x() * -4.0, rot * Vec2::unit_x(), 1.0e-6);
@@ -86,8 +82,8 @@ fn test_from_scale() {
 fn test_mat2_transpose() {
     let m = mat2(vec2(1.0, 2.0), vec2(3.0, 4.0));
     let mt = m.transpose();
-    assert_eq!(mt.x_axis(), vec2(1.0, 3.0));
-    assert_eq!(mt.y_axis(), vec2(2.0, 4.0));
+    assert_eq!(mt.x_axis, vec2(1.0, 3.0));
+    assert_eq!(mt.y_axis, vec2(2.0, 4.0));
 }
 
 #[test]
@@ -187,4 +183,18 @@ fn test_mat2_rand() {
     let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
     let b = rng2.gen::<Mat2>();
     assert_eq!(a, b);
+}
+
+#[cfg(feature = "std")]
+#[test]
+fn test_sum() {
+    let id = Mat2::identity();
+    assert_eq!(vec![id, id].iter().sum::<Mat2>(), id + id);
+}
+
+#[cfg(feature = "std")]
+#[test]
+fn test_product() {
+    let two = Mat2::identity() + Mat2::identity();
+    assert_eq!(vec![two, two].iter().product::<Mat2>(), two * two);
 }

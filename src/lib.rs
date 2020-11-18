@@ -52,33 +52,6 @@ All the main `glam` types are `#[repr(C)]`, so they are possible to expose as
 struct members to C interfaces if desired. Be mindful of Vec3A's extra padding
 though.
 
-## Accessing internal data
-
-The SIMD types that `glam` builds on are opaque and their contents are not
-directly accessible. Because of this all types use getter and setter methods
-instead of providing direct access, regardless of whether they are using scalar
-or SIMD storage.
-
-```
-use glam::Vec4;
-let mut v = Vec4::new(1.0, 2.0, 3.0, 4.0);
-assert_eq!(v.y(), 2.0);
-v.set_z(1.0);
-assert_eq!(v.z(), 1.0);
-*v.x_mut() = 2.0;
-assert_eq!(v.x(), 2.0);
-```
-
-If you need to access multiple elements it is easier to convert the type to a
-tuple or array:
-
-```
-use glam::Vec4;
-let v = Vec4::new(1.0, 2.0, 3.0, 4.0);
-let (x, y, z, w) = v.into();
-assert_eq!((x, y, z, w), (1.0, 2.0, 3.0, 4.0));
-```
-
 ## Vec3A
 
 `Vec3A` is a SIMD optimized version of the `Vec3` type, which due to 16 byte
@@ -134,7 +107,7 @@ type for 3 element swizzles. `Vec3ASwizzles` will return a `Vec3A` for 3 element
 swizzles.
 
 ```
-use glam::{Vec2, Vec2Swizzles, Vec3, Vec3Swizzles, Vec3A, Vec3ASwizzles, Vec4, Vec4Swizzles};
+use glam::{swizzles::*, Vec2, Vec3, Vec3A, Vec4};
 
 let v = Vec4::new(1.0, 2.0, 3.0, 4.0);
 
@@ -197,8 +170,7 @@ and benchmarks.
 The minimum supported version of Rust for `glam` is `1.36.0`.
 
 */
-#![doc(html_root_url = "https://docs.rs/glam/0.10.0")]
-
+#![doc(html_root_url = "https://docs.rs/glam/0.10.2")]
 #![cfg_attr(not(feature = "std"), no_std)]
 
 #[cfg(all(target_arch = "spirv", feature = "glam-assert"))]
@@ -219,16 +191,17 @@ compile_error!("`bytemuck` feature is not supported when building for SPIRV");
 #[macro_use]
 mod macros;
 
+#[doc(hidden)]
 pub mod f32;
 
-#[cfg(all(not(feature = "std"), feature = "libm"))]
-extern crate num_traits;
-
 pub use self::f32::{
-    mat2, mat3, mat4, quat, vec2, vec3, vec3a, vec4, Mat2, Mat3, Mat4, Quat, Vec2, Vec2Mask,
-    Vec2Swizzles, Vec3, Vec3A, Vec3AMask, Vec3ASwizzles, Vec3Mask, Vec3Swizzles, Vec4, Vec4Mask,
-    Vec4Swizzles,
+    mat2, mat3, mat4, quat, vec2, vec3, vec3a, vec4, Mat2, Mat3, Mat4, Quat, Vec2, Vec2Mask, Vec3,
+    Vec3A, Vec3AMask, Vec3Mask, Vec4, Vec4Mask,
 };
+pub mod swizzles {
+    pub use super::f32::{Vec2Swizzles, Vec3ASwizzles, Vec3Swizzles, Vec4Swizzles};
+}
+pub use swizzles::{Vec2Swizzles, Vec3ASwizzles, Vec3Swizzles, Vec4Swizzles};
 
 #[cfg(feature = "transform-types")]
 pub use self::f32::{TransformRT, TransformSRT};

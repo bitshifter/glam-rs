@@ -1,5 +1,7 @@
 #[cfg(target_arch = "spirv")]
 use super::spirv::MathExt;
+#[cfg(feature = "num-traits")]
+use num_traits::Float;
 
 use super::{Vec2, Vec3, Vec3AMask, Vec4};
 #[cfg(not(target_arch = "spirv"))]
@@ -13,6 +15,9 @@ use core::arch::x86_64::*;
 
 #[cfg(vec3a_sse2)]
 use core::{cmp::Ordering, f32, mem::MaybeUninit};
+
+#[cfg(feature = "std")]
+use std::iter::{Product, Sum};
 
 #[cfg(vec3a_sse2)]
 use crate::Align16;
@@ -29,13 +34,21 @@ const Z_AXIS: Vec3A = const_vec3a!([0.0, 0.0, 1.0]);
 /// performance than the `Vec3` type.
 ///
 /// It is possible to convert between `Vec3` and `Vec3A` types using `From` trait implementations.
-#[cfg(vec3a_sse2)]
+#[cfg(doc)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Default)]
+#[repr(align(16), C)]
+pub struct Vec3A {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+}
+
+#[cfg(all(vec3a_sse2, not(doc)))]
 #[derive(Clone, Copy)]
 #[repr(C)]
 pub struct Vec3A(pub(crate) __m128);
 
-/// A 3-dimensional vector.
-#[cfg(vec3a_f32)]
+#[cfg(all(vec3a_f32, not(doc)))]
 #[derive(Clone, Copy, PartialEq, PartialOrd, Default)]
 #[repr(align(16), C)]
 pub struct Vec3A(pub(crate) Vec3);
@@ -53,7 +66,7 @@ impl Vec3A {
     }
 }
 
-#[cfg(vec3a_sse2)]
+#[cfg(all(vec3a_sse2, not(doc)))]
 impl Default for Vec3A {
     #[inline]
     fn default() -> Self {
@@ -61,7 +74,7 @@ impl Default for Vec3A {
     }
 }
 
-#[cfg(vec3a_sse2)]
+#[cfg(all(vec3a_sse2, not(doc)))]
 impl PartialEq for Vec3A {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
@@ -69,7 +82,7 @@ impl PartialEq for Vec3A {
     }
 }
 
-#[cfg(vec3a_sse2)]
+#[cfg(all(vec3a_sse2, not(doc)))]
 impl PartialOrd for Vec3A {
     #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
@@ -165,7 +178,7 @@ impl Vec3A {
         #[cfg(vec3a_sse2)]
         {
             let mut temp: Vec4 = self.0.into();
-            temp.set_w(w);
+            temp.w = w;
             temp
         }
 
@@ -189,136 +202,6 @@ impl Vec3A {
         #[cfg(vec3a_f32)]
         {
             self.0.truncate()
-        }
-    }
-
-    /// Returns element `x`.
-    #[inline]
-    pub fn x(self) -> f32 {
-        #[cfg(vec3a_sse2)]
-        unsafe {
-            _mm_cvtss_f32(self.0)
-        }
-
-        #[cfg(vec3a_f32)]
-        {
-            self.0.x()
-        }
-    }
-
-    /// Returns element `y`.
-    #[inline]
-    pub fn y(self) -> f32 {
-        #[cfg(vec3a_sse2)]
-        unsafe {
-            _mm_cvtss_f32(_mm_shuffle_ps(self.0, self.0, 0b01_01_01_01))
-        }
-
-        #[cfg(vec3a_f32)]
-        {
-            self.0.y()
-        }
-    }
-
-    /// Returns element `z`.
-    #[inline]
-    pub fn z(self) -> f32 {
-        #[cfg(vec3a_sse2)]
-        unsafe {
-            _mm_cvtss_f32(_mm_shuffle_ps(self.0, self.0, 0b10_10_10_10))
-        }
-
-        #[cfg(vec3a_f32)]
-        {
-            self.0.z()
-        }
-    }
-
-    /// Returns a mutable reference to element `x`.
-    #[inline]
-    pub fn x_mut(&mut self) -> &mut f32 {
-        #[cfg(vec3a_sse2)]
-        unsafe {
-            &mut *(self as *mut Self as *mut f32)
-        }
-
-        #[cfg(vec3a_f32)]
-        {
-            self.0.x_mut()
-        }
-    }
-
-    /// Returns a mutable reference to element `y`.
-    #[inline]
-    pub fn y_mut(&mut self) -> &mut f32 {
-        #[cfg(vec3a_sse2)]
-        unsafe {
-            &mut *(self as *mut Self as *mut f32).offset(1)
-        }
-
-        #[cfg(vec3a_f32)]
-        {
-            self.0.y_mut()
-        }
-    }
-
-    /// Returns a mutable reference to element `z`.
-    #[inline]
-    pub fn z_mut(&mut self) -> &mut f32 {
-        #[cfg(vec3a_sse2)]
-        unsafe {
-            &mut *(self as *mut Self as *mut f32).offset(2)
-        }
-
-        #[cfg(vec3a_f32)]
-        {
-            self.0.z_mut()
-        }
-    }
-
-    /// Sets element `x`.
-    #[inline]
-    pub fn set_x(&mut self, x: f32) {
-        #[cfg(vec3a_sse2)]
-        unsafe {
-            self.0 = _mm_move_ss(self.0, _mm_set_ss(x));
-        }
-
-        #[cfg(vec3a_f32)]
-        {
-            *self.0.x_mut() = x;
-        }
-    }
-
-    /// Sets element `y`.
-    #[inline]
-    pub fn set_y(&mut self, y: f32) {
-        #[cfg(vec3a_sse2)]
-        unsafe {
-            let mut t = _mm_move_ss(self.0, _mm_set_ss(y));
-            t = _mm_shuffle_ps(t, t, 0b11_10_00_00);
-            self.0 = _mm_move_ss(t, self.0);
-        }
-
-        #[cfg(vec3a_f32)]
-        {
-            *self.0.y_mut() = y;
-        }
-    }
-
-    /// Sets element `z`.
-    #[inline]
-    pub fn set_z(&mut self, z: f32) {
-        #[cfg(vec3a_sse2)]
-        unsafe {
-            let mut t = _mm_move_ss(self.0, _mm_set_ss(z));
-            t = _mm_shuffle_ps(t, t, 0b11_00_01_00);
-            self.0 = _mm_move_ss(t, self.0);
-        }
-
-        #[cfg(vec3a_f32)]
-        {
-            *self.0.z_mut() = z;
         }
     }
 
@@ -397,12 +280,6 @@ impl Vec3A {
     #[inline]
     pub fn length_squared(self) -> f32 {
         self.dot(self)
-    }
-
-    #[deprecated(since = "0.9.5", note = "please use `Vec3A::length_recip` instead")]
-    #[inline(always)]
-    pub fn length_reciprocal(self) -> f32 {
-        self.length_recip()
     }
 
     /// Computes `1.0 / Vec3A::length()`.
@@ -749,12 +626,6 @@ impl Vec3A {
         }
     }
 
-    #[deprecated(since = "0.9.5", note = "please use `Vec3A::signum` instead")]
-    #[inline(always)]
-    pub fn sign(self) -> Self {
-        self.signum()
-    }
-
     /// Returns a `Vec3A` with elements representing the sign of `self`.
     ///
     /// - `1.0` if the number is positive, `+0.0` or `INFINITY`
@@ -774,12 +645,6 @@ impl Vec3A {
         {
             Vec3A(self.0.signum())
         }
-    }
-
-    #[deprecated(since = "0.9.5", note = "please use `Vec3A::recip` instead")]
-    #[inline(always)]
-    pub fn reciprocal(self) -> Self {
-        self.recip()
     }
 
     /// Returns a `Vec3A` containing the reciprocal `1.0/n` of each element of `self`.
@@ -1179,7 +1044,7 @@ impl From<Vec3A> for [f32; 3] {
 impl From<Vec3> for Vec3A {
     #[inline]
     fn from(v: Vec3) -> Self {
-        Vec3A::new(v.0, v.1, v.2)
+        Vec3A::new(v.x, v.y, v.z)
     }
 }
 
@@ -1201,6 +1066,41 @@ impl From<Vec3A> for Vec2 {
         {
             v.0.into()
         }
+    }
+}
+
+impl Deref for Vec3A {
+    type Target = super::XYZ;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        unsafe { &*(self as *const Self as *const Self::Target) }
+    }
+}
+
+impl DerefMut for Vec3A {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        unsafe { &mut *(self as *mut Self as *mut Self::Target) }
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> Sum<&'a Self> for Vec3A {
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Self>,
+    {
+        iter.fold(ZERO, |a, &b| Self::add(a, b))
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> Product<&'a Self> for Vec3A {
+    fn product<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Self>,
+    {
+        iter.fold(ONE, |a, &b| Self::mul(a, b))
     }
 }
 

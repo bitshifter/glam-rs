@@ -1,5 +1,7 @@
 #[cfg(target_arch = "spirv")]
 use super::spirv::MathExt;
+#[cfg(feature = "num-traits")]
+use num_traits::Float;
 
 #[inline]
 pub(crate) fn scalar_sin_cos(x: f32) -> (f32, f32) {
@@ -480,10 +482,10 @@ fn test_sse2_m128_sin() {
         let v = unsafe { Vec4(sse2::m128_sin(v.0)) };
         let a_sin = a.sin();
         // dbg!((a, a_sin, v));
-        assert_approx_eq!(v.x(), a_sin, 1e-6);
-        assert_approx_eq!(v.z(), a_sin, 1e-6);
-        assert_approx_eq!(v.y(), a_sin, 1e-6);
-        assert_approx_eq!(v.w(), a_sin, 1e-6);
+        assert_approx_eq!(v.x, a_sin, 1e-6);
+        assert_approx_eq!(v.z, a_sin, 1e-6);
+        assert_approx_eq!(v.y, a_sin, 1e-6);
+        assert_approx_eq!(v.w, a_sin, 1e-6);
     }
 
     let mut a = -PI;

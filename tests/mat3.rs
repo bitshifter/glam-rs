@@ -33,19 +33,13 @@ fn test_mat3_zero() {
 #[test]
 fn test_mat3_accessors() {
     let mut m = Mat3::zero();
-    m.set_x_axis(Vec3::new(1.0, 2.0, 3.0));
-    m.set_y_axis(Vec3::new(4.0, 5.0, 6.0));
-    m.set_z_axis(Vec3::new(7.0, 8.0, 9.0));
+    m.x_axis = Vec3::new(1.0, 2.0, 3.0);
+    m.y_axis = Vec3::new(4.0, 5.0, 6.0);
+    m.z_axis = Vec3::new(7.0, 8.0, 9.0);
     assert_eq!(Mat3::from_cols_array_2d(&MATRIX), m);
-    assert_eq!(Vec3::new(1.0, 2.0, 3.0), m.x_axis());
-    assert_eq!(Vec3::new(4.0, 5.0, 6.0), m.y_axis());
-    assert_eq!(Vec3::new(7.0, 8.0, 9.0), m.z_axis());
-    *m.x_axis_mut() = Vec3::new(0.0, 1.0, 2.0);
-    *m.y_axis_mut() = Vec3::new(3.0, 4.0, 5.0);
-    *m.z_axis_mut() = Vec3::new(6.0, 7.0, 8.0);
-    assert_eq!(Vec3::new(0.0, 1.0, 2.0), m.x_axis());
-    assert_eq!(Vec3::new(3.0, 4.0, 5.0), m.y_axis());
-    assert_eq!(Vec3::new(6.0, 7.0, 8.0), m.z_axis());
+    assert_eq!(Vec3::new(1.0, 2.0, 3.0), m.x_axis);
+    assert_eq!(Vec3::new(4.0, 5.0, 6.0), m.y_axis);
+    assert_eq!(Vec3::new(7.0, 8.0, 9.0), m.z_axis);
 }
 
 #[test]
@@ -138,9 +132,9 @@ fn test_from_ypr() {
 fn test_from_scale() {
     let m = Mat3::from_scale(Vec3::new(2.0, 4.0, 8.0));
     assert_approx_eq!(m * Vec3::new(1.0, 1.0, 1.0), Vec3::new(2.0, 4.0, 8.0));
-    assert_approx_eq!(Vec3::unit_x() * 2.0, m.x_axis());
-    assert_approx_eq!(Vec3::unit_y() * 4.0, m.y_axis());
-    assert_approx_eq!(Vec3::unit_z() * 8.0, m.z_axis());
+    assert_approx_eq!(Vec3::unit_x() * 2.0, m.x_axis);
+    assert_approx_eq!(Vec3::unit_y() * 4.0, m.y_axis);
+    assert_approx_eq!(Vec3::unit_z() * 8.0, m.z_axis);
 }
 
 #[test]
@@ -151,9 +145,9 @@ fn test_mat3_transpose() {
         vec3(7.0, 8.0, 9.0),
     );
     let mt = m.transpose();
-    assert_eq!(mt.x_axis(), vec3(1.0, 4.0, 7.0));
-    assert_eq!(mt.y_axis(), vec3(2.0, 5.0, 8.0));
-    assert_eq!(mt.z_axis(), vec3(3.0, 6.0, 9.0));
+    assert_eq!(mt.x_axis, vec3(1.0, 4.0, 7.0));
+    assert_eq!(mt.y_axis, vec3(2.0, 5.0, 8.0));
+    assert_eq!(mt.z_axis, vec3(3.0, 6.0, 9.0));
 }
 
 #[test]
@@ -253,4 +247,18 @@ fn test_mat3_rand() {
     let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
     let b = rng2.gen::<Mat3>();
     assert_eq!(a, b);
+}
+
+#[cfg(feature = "std")]
+#[test]
+fn test_sum() {
+    let id = Mat3::identity();
+    assert_eq!(vec![id, id].iter().sum::<Mat3>(), id + id);
+}
+
+#[cfg(feature = "std")]
+#[test]
+fn test_product() {
+    let two = Mat3::identity() + Mat3::identity();
+    assert_eq!(vec![two, two].iter().product::<Mat3>(), two * two);
 }

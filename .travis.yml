@@ -14,8 +14,9 @@ rust:
   - nightly
 
 env:
+  - CARGO_FEATURES="std bytemuck mint rand serde debug-glam-assert transform-types"
+  - CARGO_FEATURES="std bytemuck mint rand serde scalar-math debug-glam-assert transform-types"
   - CARGO_FEATURES="bytemuck mint rand serde debug-glam-assert transform-types"
-  - CARGO_FEATURES="bytemuck mint rand serde scalar-math debug-glam-assert transform-types"
 
 jobs:
   allow_failures:
@@ -29,11 +30,11 @@ before_script: |
 
 script:
   - cargo clean
-  - cargo build --features "$CARGO_FEATURES"
-  - cargo test --features "$CARGO_FEATURES"
-  - cargo bench --features "$CARGO_FEATURES" --no-run
+  - cargo build --no-default-features --features "$CARGO_FEATURES"
+  - cargo test --no-default-features --features "$CARGO_FEATURES"
+  - cargo bench --no-default-features --features "$CARGO_FEATURES" --no-run
 
 after_success: |
   if [[ "$TRAVIS_RUST_VERSION" == stable ]]; then
-    cargo tarpaulin --features "$CARGO_FEATURES" --exclude-files src/f32/transform.rs --exclude-files benches/* --exclude-files tests/support/mod.rs --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
+    cargo tarpaulin --no-default-features --features "$CARGO_FEATURES" --exclude-files src/f32/transform.rs --exclude-files benches/* --exclude-files tests/support/mod.rs --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
   fi

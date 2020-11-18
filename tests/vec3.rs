@@ -16,9 +16,9 @@ fn test_vec3_align() {
 fn test_vec3_new() {
     let v = vec3(1.0, 2.0, 3.0);
 
-    assert_eq!(v.x(), 1.0);
-    assert_eq!(v.y(), 2.0);
-    assert_eq!(v.z(), 3.0);
+    assert_eq!(v.x, 1.0);
+    assert_eq!(v.y, 2.0);
+    assert_eq!(v.z, 3.0);
 
     let t = (1.0, 2.0, 3.0);
     let v = Vec3::from(t);
@@ -61,21 +61,12 @@ fn test_vec3_splat() {
 #[test]
 fn test_vec3_accessors() {
     let mut a = Vec3::zero();
-    a.set_x(1.0);
-    a.set_y(2.0);
-    a.set_z(3.0);
-    assert_eq!(1.0, a.x());
-    assert_eq!(2.0, a.y());
-    assert_eq!(3.0, a.z());
-    assert_eq!((1.0, 2.0, 3.0), a.into());
-
-    let mut a = Vec3::zero();
-    *a.x_mut() = 1.0;
-    *a.y_mut() = 2.0;
-    *a.z_mut() = 3.0;
-    assert_eq!(1.0, a.x());
-    assert_eq!(2.0, a.y());
-    assert_eq!(3.0, a.z());
+    a.x = 1.0;
+    a.y = 2.0;
+    a.z = 3.0;
+    assert_eq!(1.0, a.x);
+    assert_eq!(2.0, a.y);
+    assert_eq!(3.0, a.z);
     assert_eq!((1.0, 2.0, 3.0), a.into());
 
     let mut a = Vec3::zero();
@@ -235,9 +226,9 @@ fn test_extend_truncate() {
 #[test]
 fn test_vec3_mask() {
     let mut a = Vec3::zero();
-    a.set_x(1.0);
-    a.set_y(1.0);
-    a.set_z(1.0);
+    a.x = 1.0;
+    a.y = 1.0;
+    a.z = 1.0;
     assert!(!a.cmpeq(Vec3::zero()).any());
     assert!(a.cmpeq(Vec3::splat(1.0)).all());
 }
@@ -458,18 +449,18 @@ fn test_vec3_abs() {
 
 #[test]
 fn test_vec3_round() {
-    assert_eq!(Vec3::new(1.35, 0.0, 0.0).round().x(), 1.0);
-    assert_eq!(Vec3::new(0.0, 1.5, 0.0).round().y(), 2.0);
-    assert_eq!(Vec3::new(0.0, 0.0, -15.5).round().z(), -16.0);
-    assert_eq!(Vec3::new(0.0, 0.0, 0.0).round().z(), 0.0);
-    assert_eq!(Vec3::new(0.0, 21.1, 0.0).round().y(), 21.0);
-    assert_eq!(Vec3::new(0.0, 11.123, 0.0).round().y(), 11.0);
-    assert_eq!(Vec3::new(0.0, 11.499, 0.0).round().y(), 11.0);
+    assert_eq!(Vec3::new(1.35, 0.0, 0.0).round().x, 1.0);
+    assert_eq!(Vec3::new(0.0, 1.5, 0.0).round().y, 2.0);
+    assert_eq!(Vec3::new(0.0, 0.0, -15.5).round().z, -16.0);
+    assert_eq!(Vec3::new(0.0, 0.0, 0.0).round().z, 0.0);
+    assert_eq!(Vec3::new(0.0, 21.1, 0.0).round().y, 21.0);
+    assert_eq!(Vec3::new(0.0, 11.123, 0.0).round().y, 11.0);
+    assert_eq!(Vec3::new(0.0, 11.499, 0.0).round().y, 11.0);
     assert_eq!(
         Vec3::new(f32::NEG_INFINITY, f32::INFINITY, 0.0).round(),
         Vec3::new(f32::NEG_INFINITY, f32::INFINITY, 0.0)
     );
-    assert!(Vec3::new(f32::NAN, 0.0, 0.0).round().x().is_nan());
+    assert!(Vec3::new(f32::NAN, 0.0, 0.0).round().x.is_nan());
 }
 
 #[test]
@@ -482,7 +473,7 @@ fn test_vec3_floor() {
         Vec3::new(f32::INFINITY, f32::NEG_INFINITY, 0.0).floor(),
         Vec3::new(f32::INFINITY, f32::NEG_INFINITY, 0.0)
     );
-    assert!(Vec3::new(f32::NAN, 0.0, 0.0).floor().x().is_nan());
+    assert!(Vec3::new(f32::NAN, 0.0, 0.0).floor().x.is_nan());
     assert_eq!(
         Vec3::new(-2000000.123, 10000000.123, 1000.9).floor(),
         Vec3::new(-2000001.0, 10000000.0, 1000.0)
@@ -496,7 +487,7 @@ fn test_vec3_ceil() {
         Vec3::new(f32::INFINITY, f32::NEG_INFINITY, 0.0).ceil(),
         Vec3::new(f32::INFINITY, f32::NEG_INFINITY, 0.0)
     );
-    assert!(Vec3::new(f32::NAN, 0.0, 0.0).ceil().x().is_nan());
+    assert!(Vec3::new(f32::NAN, 0.0, 0.0).ceil().x.is_nan());
     assert_eq!(
         Vec3::new(-2000000.123, 1000000.123, 1000.9).ceil(),
         Vec3::new(-2000000.0, 1000001.0, 1001.0)
@@ -560,4 +551,18 @@ fn test_vec3_rand() {
     let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
     let b: Vec3 = rng2.gen();
     assert_eq!(a, b.into());
+}
+
+#[cfg(feature = "std")]
+#[test]
+fn test_sum() {
+    let one = Vec3::one();
+    assert_eq!(vec![one, one].iter().sum::<Vec3>(), one + one);
+}
+
+#[cfg(feature = "std")]
+#[test]
+fn test_product() {
+    let two = Vec3::new(2.0, 2.0, 2.0);
+    assert_eq!(vec![two, two].iter().product::<Vec3>(), two * two);
 }

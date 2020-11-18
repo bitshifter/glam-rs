@@ -324,10 +324,10 @@ fn test_quat_elements() {
     let w = 4.0;
 
     let a = Quat::from_xyzw(x, y, z, w);
-    assert!(a.x() == x);
-    assert!(a.y() == y);
-    assert!(a.z() == z);
-    assert!(a.w() == w);
+    assert!(a.x == x);
+    assert!(a.y == y);
+    assert!(a.z == z);
+    assert!(a.w == w);
 }
 
 #[test]
@@ -387,4 +387,18 @@ fn test_quat_rand() {
     let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
     let b: Quat = rng2.gen();
     assert_eq!(a, b);
+}
+
+#[cfg(feature = "std")]
+#[test]
+fn test_sum() {
+    let two = quat(2.0, 2.0, 2.0, 2.0);
+    assert_eq!(vec![two, two].iter().sum::<Quat>(), two + two);
+}
+
+#[cfg(feature = "std")]
+#[test]
+fn test_product() {
+    let two = quat(2.0, 2.0, 2.0, 2.0).normalize();
+    assert_eq!(vec![two, two].iter().product::<Quat>(), two * two);
 }

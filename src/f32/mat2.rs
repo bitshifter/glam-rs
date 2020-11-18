@@ -1,11 +1,15 @@
 use super::{scalar_sin_cos, Vec2, Vec4};
+use crate::swizzles::*;
 #[cfg(all(vec4_sse2, target_arch = "x86",))]
 use core::arch::x86::*;
 #[cfg(all(vec4_sse2, target_arch = "x86_64",))]
 use core::arch::x86_64::*;
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
-use core::ops::{Add, Mul, Sub};
+use core::ops::{Add, Deref, DerefMut, Mul, Sub};
+
+#[cfg(feature = "std")]
+use std::iter::{Product, Sum};
 
 const ZERO: Mat2 = const_mat2!([0.0; 4]);
 const IDENTITY: Mat2 = const_mat2!([1.0, 0.0], [0.0, 1.0]);
@@ -17,6 +21,15 @@ pub fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
 }
 
 /// A 2x2 column major matrix.
+#[cfg(doc)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[repr(C)]
+pub struct Mat2 {
+    pub x_axis: Vec2,
+    pub y_axis: Vec2,
+}
+
+#[cfg(not(doc))]
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[repr(C)]
 pub struct Mat2(pub(crate) Vec4);
@@ -31,7 +44,7 @@ impl Default for Mat2 {
 #[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Mat2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "[{}, {}]", self.x_axis(), self.y_axis())
+        write!(f, "[{}, {}]", self.x_axis, self.y_axis)
     }
 }
 
@@ -51,7 +64,7 @@ impl Mat2 {
     /// Creates a 2x2 matrix from two column vectors.
     #[inline]
     pub fn from_cols(x_axis: Vec2, y_axis: Vec2) -> Self {
-        Self(Vec4::new(x_axis.x(), x_axis.y(), y_axis.x(), y_axis.y()))
+        Self(Vec4::new(x_axis.x, x_axis.y, y_axis.x, y_axis.y))
     }
 
     /// Creates a 2x2 matrix from a `[f32; 4]` stored in column major order.  If
@@ -111,48 +124,6 @@ impl Mat2 {
     pub fn from_scale(scale: Vec2) -> Self {
         let (x, y) = scale.into();
         Self(Vec4::new(x, 0.0, 0.0, y))
-    }
-
-    /// Sets the first column, the `x` axis.
-    #[inline]
-    pub fn set_x_axis(&mut self, x: Vec2) {
-        let m = self.0.as_mut();
-        m[0] = x.x();
-        m[1] = x.y();
-    }
-
-    /// Sets the second column, the `y` axis.
-    #[inline]
-    pub fn set_y_axis(&mut self, y: Vec2) {
-        let m = self.0.as_mut();
-        m[2] = y.x();
-        m[3] = y.y();
-    }
-
-    /// Returns the first column, the `x` axis.
-    #[inline]
-    pub fn x_axis(&self) -> Vec2 {
-        let (x, y, _, _) = self.0.into();
-        Vec2::new(x, y)
-    }
-
-    /// Returns the second column, the `y` axis.
-    #[inline]
-    pub fn y_axis(&self) -> Vec2 {
-        let (_, _, x, y) = self.0.into();
-        Vec2::new(x, y)
-    }
-
-    /// Returns a mutable reference to the first column, the `x` axis.
-    #[inline]
-    pub fn x_axis_mut(&mut self) -> &mut Vec2 {
-        unsafe { &mut *(self.0.as_mut().as_mut_ptr() as *mut Vec2) }
-    }
-
-    /// Returns a mutable reference to the second column, the `y` axis.
-    #[inline]
-    pub fn y_axis_mut(&mut self) -> &mut Vec2 {
-        unsafe { &mut *(self.0.as_mut()[2..].as_mut_ptr() as *mut Vec2) }
     }
 
     // #[inline]
@@ -247,7 +218,7 @@ impl Mat2 {
     #[inline]
     pub fn mul_vec2(&self, other: Vec2) -> Vec2 {
         // TODO: SSE2
-        let other = Vec4::new(other.x(), other.x(), other.y(), other.y());
+        let other = other.xxyy();
         let tmp = self.0 * other;
         let (x0, y0, x1, y1) = tmp.into();
         Vec2::new(x0 + x1, y0 + y1)
@@ -357,5 +328,40 @@ impl Mul<f32> for Mat2 {
     #[inline]
     fn mul(self, other: f32) -> Self {
         self.mul_scalar(other)
+    }
+}
+
+impl Deref for Mat2 {
+    type Target = super::XYAxes;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        unsafe { &*(self as *const Self as *const Self::Target) }
+    }
+}
+
+impl DerefMut for Mat2 {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        unsafe { &mut *(self as *mut Self as *mut Self::Target) }
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> Sum<&'a Self> for Mat2 {
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Self>,
+    {
+        iter.fold(ZERO, |a, &b| Self::add(a, b))
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> Product<&'a Self> for Mat2 {
+    fn product<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Self>,
+    {
+        iter.fold(IDENTITY, |a, &b| Self::mul(a, b))
     }
 }
