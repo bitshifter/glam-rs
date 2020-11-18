@@ -20,7 +20,6 @@ const Y_AXIS: Vec2 = const_vec2!([0.0, 1.0]);
 #[derive(Clone, Copy, PartialEq, PartialOrd, Default)]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
-#[repr(C)]
 pub struct Vec2 {
     pub x: f32,
     pub y: f32,
@@ -545,6 +544,7 @@ impl AsMut<[f32; 2]> for Vec2 {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for Vec2 {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         fmt.debug_tuple("Vec2")

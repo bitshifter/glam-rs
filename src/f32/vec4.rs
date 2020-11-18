@@ -755,6 +755,7 @@ impl AsMut<[f32; 4]> for Vec4 {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for Vec4 {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         let a = self.as_ref();

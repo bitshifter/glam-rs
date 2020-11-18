@@ -43,7 +43,8 @@ fn quat_to_axes(rotation: Quat) -> (Vec3, Vec3, Vec3) {
 }
 
 /// A 3x3 column major matrix.
-#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[derive(Clone, Copy, PartialEq, PartialOrd)]
+#[cfg_attr(not(target_arch = "spirv"), derive(Debug))]
 #[repr(C)]
 pub struct Mat3 {
     pub x_axis: Vec3,

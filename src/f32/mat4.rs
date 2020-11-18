@@ -60,7 +60,8 @@ fn quat_to_axes(rotation: Quat) -> (Vec4, Vec4, Vec4) {
 /// A 4x4 column major matrix.
 ///
 /// This type is 16 byte aligned.
-#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[derive(Clone, Copy, PartialEq, PartialOrd)]
+#[cfg_attr(not(target_arch = "spirv"), derive(Debug))]
 #[repr(C)]
 pub struct Mat4 {
     pub x_axis: Vec4,

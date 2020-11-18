@@ -22,7 +22,8 @@ pub fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
 
 /// A 2x2 column major matrix.
 #[cfg(doc)]
-#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[derive(Clone, Copy, PartialEq, PartialOrd)]
+#[cfg_attr(not(target_arch = "spirv"), derive(Debug))]
 #[repr(C)]
 pub struct Mat2 {
     pub x_axis: Vec2,
@@ -30,7 +31,8 @@ pub struct Mat2 {
 }
 
 #[cfg(not(doc))]
-#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[derive(Clone, Copy, PartialEq, PartialOrd)]
+#[cfg_attr(not(target_arch = "spirv"), derive(Debug))]
 #[repr(C)]
 pub struct Mat2(pub(crate) Vec4);
 

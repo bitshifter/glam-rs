@@ -80,9 +80,9 @@ macro_rules! const_mat3 {
         //     = note: The rules on what exactly is undefined behavior aren't clear, so this check might be overzealous. Please open an issue on the rustc repository if you believe it should not be considered undefined behavior.
         #[cfg(target_arch = "spirv")]
         $crate::Mat3 {
-            x_axis: Vec3($f32x9[0], $f32x9[1], $f32x9[2]),
-            y_axis: Vec3($f32x9[3], $f32x9[4], $f32x9[5]),
-            z_axis: Vec3($f32x9[6], $f32x9[7], $f32x9[8]),
+            x_axis: Vec3 { x: $f32x9[0], y: $f32x9[1], z: $f32x9[2] },
+            y_axis: Vec3 { x: $f32x9[3], y: $f32x9[4], z: $f32x9[5] },
+            z_axis: Vec3 { x: $f32x9[6], y: $f32x9[7], z: $f32x9[8] },
         }
     }};
     ($col0:expr, $col1:expr, $col2:expr) => {{
@@ -106,9 +106,9 @@ macro_rules! const_mat3 {
         //      = note: The rules on what exactly is undefined behavior aren't clear, so this check might be overzealous. Please open an issue on the rustc repository if you believe it should not be considered undefined behavior.
         #[cfg(target_arch = "spirv")]
         $crate::Mat3 {
-            x_axis: Vec3($col0[0], $col0[1], $col0[2]),
-            y_axis: Vec3($col1[0], $col1[1], $col1[2]),
-            z_axis: Vec3($col2[0], $col2[1], $col2[2]),
+            x_axis: Vec3 { x: $col0[0], y: $col0[1], z: $col0[2] },
+            y_axis: Vec3 { x: $col1[0], y: $col1[1], z: $col1[2] },
+            z_axis: Vec3 { x: $col2[0], y: $col2[1], z: $col2[2] },
         }
     }};
 }
@@ -125,16 +125,16 @@ macro_rules! const_mat3 {
 macro_rules! const_mat3 {
     ($f32x9:expr) => {
         $crate::Mat3 {
-            x_axis: Vec3($f32x9[0], $f32x9[1], $f32x9[2]),
-            y_axis: Vec3($f32x9[3], $f32x9[4], $f32x9[5]),
-            z_axis: Vec3($f32x9[6], $f32x9[7], $f32x9[8]),
+            x_axis: Vec3 { x: $f32x9[0], y: $f32x9[1], z: $f32x9[2] },
+            y_axis: Vec3 { x: $f32x9[3], y: $f32x9[4], z: $f32x9[5] },
+            z_axis: Vec3 { x: $f32x9[6], y: $f32x9[7], z: $f32x9[8] },
         }
     };
     ($col0:expr, $col1:expr, $col2:expr) => {
         $crate::Mat3 {
-            x_axis: Vec3($col0[0], $col0[1], $col0[2]),
-            y_axis: Vec3($col1[0], $col1[1], $col1[2]),
-            z_axis: Vec3($col2[0], $col2[1], $col2[2]),
+            x_axis: Vec3 { x: $col0[0], y: $col0[1], z: $col0[2] },
+            y_axis: Vec3 { x: $col1[0], y: $col1[1], z: $col1[2] },
+            z_axis: Vec3 { x: $col2[0], y: $col2[1], z: $col2[2] },
         }
     };
 }
