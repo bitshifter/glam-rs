@@ -604,3 +604,26 @@ fn test_product() {
     let two = Vec3A::new(2.0, 2.0, 2.0);
     assert_eq!(vec![two, two].iter().product::<Vec3A>(), two * two);
 }
+
+#[test]
+fn test_vec3a_is_finite() {
+    use std::f32::INFINITY;
+    use std::f32::NAN;
+    use std::f32::NEG_INFINITY;
+    assert!(Vec3A::new(0.0, 0.0, 0.0).is_finite());
+    assert!(Vec3A::new(-1e-10, 1.0, 1e10).is_finite());
+    assert!(!Vec3A::new(INFINITY, 0.0, 0.0).is_finite());
+    assert!(!Vec3A::new(0.0, NAN, 0.0).is_finite());
+    assert!(!Vec3A::new(0.0, 0.0, NEG_INFINITY).is_finite());
+    assert!(!Vec3A::splat(NAN).is_finite());
+
+    {
+        // Check that the implicit fourth element (in simd) does not affect `is_finite()`:
+        let mut v = Vec3A::splat(NAN);
+        assert!(!v.is_finite());
+        v.x = 42.0;
+        v.y = 42.0;
+        v.z = 42.0;
+        assert!(v.is_finite());
+    }
+}

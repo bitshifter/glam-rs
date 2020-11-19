@@ -262,3 +262,14 @@ fn test_product() {
     let two = Mat3::identity() + Mat3::identity();
     assert_eq!(vec![two, two].iter().product::<Mat3>(), two * two);
 }
+
+#[test]
+fn test_mat3_is_finite() {
+    use std::f32::INFINITY;
+    use std::f32::NAN;
+    use std::f32::NEG_INFINITY;
+    assert!(Mat3::identity().is_finite());
+    assert!(!(Mat3::identity() * INFINITY).is_finite());
+    assert!(!(Mat3::identity() * NEG_INFINITY).is_finite());
+    assert!(!(Mat3::identity() * NAN).is_finite());
+}
