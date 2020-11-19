@@ -668,6 +668,13 @@ impl Vec3A {
         is_normalized!(self)
     }
 
+    /// Returns `true` if, and only if, all elements are finite.
+    /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
+    #[inline]
+    pub fn is_finite(&self) -> bool {
+        self.x.is_finite() && self.y.is_finite() && self.z.is_finite()
+    }
+
     /// Returns true if the absolute difference of all elements between `self`
     /// and `other` is less than or equal to `max_abs_diff`.
     ///

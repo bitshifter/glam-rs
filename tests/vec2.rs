@@ -518,3 +518,16 @@ fn test_product() {
     let two = Vec2::new(2.0, 2.0);
     assert_eq!(vec![two, two].iter().product::<Vec2>(), two * two);
 }
+
+#[test]
+fn test_vec2_is_finite() {
+    use std::f32::INFINITY;
+    use std::f32::NAN;
+    use std::f32::NEG_INFINITY;
+    assert!(Vec2::new(0.0, 0.0).is_finite());
+    assert!(Vec2::new(-1e-10, 1e10).is_finite());
+    assert!(!Vec2::new(INFINITY, 0.0).is_finite());
+    assert!(!Vec2::new(0.0, NAN).is_finite());
+    assert!(!Vec2::new(0.0, NEG_INFINITY).is_finite());
+    assert!(!Vec2::new(INFINITY, NEG_INFINITY).is_finite());
+}

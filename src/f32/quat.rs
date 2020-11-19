@@ -287,6 +287,13 @@ impl Quat {
         Self(self.0.mul(inv_len))
     }
 
+    /// Returns `true` if, and only if, all elements are finite.
+    /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
+    #[inline]
+    pub fn is_finite(&self) -> bool {
+        self.x.is_finite() && self.y.is_finite() && self.z.is_finite() && self.w.is_finite()
+    }
+
     /// Returns whether `self` of length `1.0` or not.
     ///
     /// Uses a precision threshold of `1e-6`.
