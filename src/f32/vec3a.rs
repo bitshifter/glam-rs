@@ -610,7 +610,7 @@ impl Vec3A {
     ///
     /// In other words, this computes `[x.is_nan(), y.is_nan(), z.is_nan()]`.
     #[inline]
-    pub fn is_nan(self) -> Vec3AMask {
+    pub fn is_nan_mask(self) -> Vec3AMask {
         #[cfg(vec3a_sse2)]
         unsafe {
             Vec3AMask(_mm_cmpunord_ps(self.0, self.0))
@@ -618,7 +618,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3AMask(self.0.is_nan())
+            Vec3AMask(self.0.is_nan_mask())
         }
     }
 
@@ -634,7 +634,7 @@ impl Vec3A {
             const NEG_ONE: Vec3A = const_vec3a!([-1.0; 3]);
             let mask = self.cmpge(ZERO);
             let result = mask.select(ONE, NEG_ONE);
-            self.is_nan().select(self, result)
+            self.is_nan_mask().select(self, result)
         }
 
         #[cfg(vec3a_f32)]
@@ -671,8 +671,22 @@ impl Vec3A {
     /// Returns `true` if, and only if, all elements are finite.
     /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
     #[inline]
-    pub fn is_finite(&self) -> bool {
+    pub fn is_finite(self) -> bool {
         self.x.is_finite() && self.y.is_finite() && self.z.is_finite()
+    }
+
+    /// Returns `true` if any elements are `NaN`.
+    #[inline]
+    pub fn is_nan(self) -> bool {
+        #[cfg(vec3a_sse2)]
+        {
+            self.is_nan_mask().any()
+        }
+
+        #[cfg(vec3a_f32)]
+        {
+            self.0.is_nan()
+        }
     }
 
     /// Returns true if the absolute difference of all elements between `self`

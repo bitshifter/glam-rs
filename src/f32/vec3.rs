@@ -355,7 +355,7 @@ impl Vec3 {
     ///
     /// In other words, this computes `[x.is_nan(), y.is_nan(), z.is_nan()]`.
     #[inline]
-    pub fn is_nan(self) -> Vec3Mask {
+    pub fn is_nan_mask(self) -> Vec3Mask {
         Vec3Mask::new(self.x.is_nan(), self.y.is_nan(), self.z.is_nan())
     }
 
@@ -396,8 +396,14 @@ impl Vec3 {
     /// Returns `true` if, and only if, all elements are finite.
     /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
     #[inline]
-    pub fn is_finite(&self) -> bool {
+    pub fn is_finite(self) -> bool {
         self.x.is_finite() && self.y.is_finite() && self.z.is_finite()
+    }
+
+    /// Returns `true` if any elements are `NaN`.
+    #[inline]
+    pub fn is_nan(self) -> bool {
+        self.x.is_nan() || self.y.is_nan() || self.z.is_nan()
     }
 
     /// Returns whether `self` of length `1.0` or not.

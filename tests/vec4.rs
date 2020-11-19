@@ -259,7 +259,7 @@ fn test_vec4_signum() {
     assert_eq!((-Vec4::one()).signum(), -Vec4::one());
     assert_eq!(Vec4::splat(f32::INFINITY).signum(), Vec4::one());
     assert_eq!(Vec4::splat(f32::NEG_INFINITY).signum(), -Vec4::one());
-    assert!(Vec4::splat(f32::NAN).signum().is_nan().all());
+    assert!(Vec4::splat(f32::NAN).signum().is_nan_mask().all());
 }
 
 #[test]

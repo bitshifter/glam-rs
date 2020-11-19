@@ -262,6 +262,12 @@ impl Mat3 {
         self.x_axis.is_finite() && self.y_axis.is_finite() && self.z_axis.is_finite()
     }
 
+    /// Returns `true` if any elements are `NaN`.
+    #[inline]
+    pub fn is_nan(&self) -> bool {
+        self.x_axis.is_nan() || self.y_axis.is_nan() || self.z_axis.is_nan()
+    }
+
     /// Returns the transpose of `self`.
     #[inline]
     pub fn transpose(&self) -> Self {

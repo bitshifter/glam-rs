@@ -437,7 +437,7 @@ fn test_vec3_signum() {
     assert_eq!((-Vec3::one()).signum(), -Vec3::one());
     assert_eq!(Vec3::splat(f32::INFINITY).signum(), Vec3::one());
     assert_eq!(Vec3::splat(f32::NEG_INFINITY).signum(), -Vec3::one());
-    assert!(Vec3::splat(f32::NAN).signum().is_nan().all());
+    assert!(Vec3::splat(f32::NAN).signum().is_nan_mask().all());
 }
 
 #[test]

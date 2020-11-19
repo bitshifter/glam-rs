@@ -379,7 +379,7 @@ fn test_vec2_sign() {
     assert_eq!((-Vec2::one()).signum(), -Vec2::one());
     assert_eq!(Vec2::splat(f32::INFINITY).signum(), Vec2::one());
     assert_eq!(Vec2::splat(f32::NEG_INFINITY).signum(), -Vec2::one());
-    assert!(Vec2::splat(f32::NAN).signum().is_nan().all());
+    assert!(Vec2::splat(f32::NAN).signum().is_nan_mask().all());
 }
 
 #[test]

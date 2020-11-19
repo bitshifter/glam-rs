@@ -201,6 +201,11 @@ impl TransformRT {
     }
 
     #[inline]
+    pub fn is_nan(&self) -> bool {
+        self.rotation.is_nan() || self.translation.is_nan()
+    }
+
+    #[inline]
     pub fn inverse(&self) -> Self {
         let rotation = self.rotation.conjugate();
         let translation = -(rotation * self.translation);
