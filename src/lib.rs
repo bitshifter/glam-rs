@@ -1,4 +1,4 @@
-#![cfg_attr(target_arch = "spirv", no_std)]
+#![cfg_attr(any(not(feature = "std"), target_arch = "spirv"), no_std)]
 #![cfg_attr(
     target_arch = "spirv",
     feature(register_attr, repr_simd, core_intrinsics)
@@ -171,7 +171,6 @@ The minimum supported version of Rust for `glam` is `1.36.0`.
 
 */
 #![doc(html_root_url = "https://docs.rs/glam/0.10.2")]
-#![cfg_attr(not(feature = "std"), no_std)]
 
 #[cfg(all(target_arch = "spirv", feature = "glam-assert"))]
 compile_error!("`glam-assert` feature is not supported when building for SPIRV");
