@@ -61,7 +61,6 @@ macro_rules! const_mat2 {
 /// const IDENTITY: Mat3 = const_mat3!([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
 /// ```
 #[macro_export]
-//#[cfg(not(target_arch = "spirv"))]
 macro_rules! const_mat3 {
     ($f32x9:expr) => {{
         #[cfg(not(target_arch = "spirv"))]

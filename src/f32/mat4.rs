@@ -1,5 +1,3 @@
-#[cfg(target_arch = "spirv")]
-use super::spirv::MathExt;
 #[cfg(feature = "num-traits")]
 use num_traits::Float;
 

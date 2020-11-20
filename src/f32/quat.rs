@@ -1,6 +1,4 @@
-#[cfg(target_arch = "spirv")]
-use super::spirv::MathExt;
-#[cfg(all(not(target_arch = "spirv"), feature = "num-traits"))]
+#[cfg(feature = "num-traits")]
 use num_traits::Float;
 
 use super::{scalar_acos, scalar_sin_cos, Mat3, Mat4, Vec3, Vec3A, Vec4, Vec4Swizzles};
