@@ -543,3 +543,14 @@ fn test_product() {
     let two = Mat4::identity() + Mat4::identity();
     assert_eq!(vec![two, two].iter().product::<Mat4>(), two * two);
 }
+
+#[test]
+fn test_mat4_is_finite() {
+    use std::f32::INFINITY;
+    use std::f32::NAN;
+    use std::f32::NEG_INFINITY;
+    assert!(Mat4::identity().is_finite());
+    assert!(!(Mat4::identity() * INFINITY).is_finite());
+    assert!(!(Mat4::identity() * NEG_INFINITY).is_finite());
+    assert!(!(Mat4::identity() * NAN).is_finite());
+}

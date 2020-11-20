@@ -347,6 +347,22 @@ impl Mat4 {
     //     }
     // }
 
+    /// Returns `true` if, and only if, all elements are finite.
+    /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
+    #[inline]
+    pub fn is_finite(&self) -> bool {
+        self.x_axis.is_finite()
+            && self.y_axis.is_finite()
+            && self.z_axis.is_finite()
+            && self.w_axis.is_finite()
+    }
+
+    /// Returns `true` if any elements are `NaN`.
+    #[inline]
+    pub fn is_nan(&self) -> bool {
+        self.x_axis.is_nan() || self.y_axis.is_nan() || self.z_axis.is_nan() || self.w_axis.is_nan()
+    }
+
     /// Returns the transpose of `self`.
     #[inline]
     pub fn transpose(&self) -> Self {

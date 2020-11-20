@@ -402,3 +402,16 @@ fn test_product() {
     let two = quat(2.0, 2.0, 2.0, 2.0).normalize();
     assert_eq!(vec![two, two].iter().product::<Quat>(), two * two);
 }
+
+#[test]
+fn test_quat_is_finite() {
+    use std::f32::INFINITY;
+    use std::f32::NAN;
+    use std::f32::NEG_INFINITY;
+    assert!(Quat::from_xyzw(0.0, 0.0, 0.0, 0.0).is_finite());
+    assert!(Quat::from_xyzw(-1e-10, 1.0, 1e10, 42.0).is_finite());
+    assert!(!Quat::from_xyzw(INFINITY, 0.0, 0.0, 0.0).is_finite());
+    assert!(!Quat::from_xyzw(0.0, NAN, 0.0, 0.0).is_finite());
+    assert!(!Quat::from_xyzw(0.0, 0.0, NEG_INFINITY, 0.0).is_finite());
+    assert!(!Quat::from_xyzw(0.0, 0.0, 0.0, NAN).is_finite());
+}

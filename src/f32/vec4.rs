@@ -658,7 +658,7 @@ impl Vec4 {
     ///
     /// In other words, this computes `[x.is_nan(), y.is_nan(), z.is_nan(), w.is_nan()]`.
     #[inline]
-    pub fn is_nan(self) -> Vec4Mask {
+    pub fn is_nan_mask(self) -> Vec4Mask {
         #[cfg(vec4_sse2)]
         unsafe {
             Vec4Mask(_mm_cmpunord_ps(self.0, self.0))
@@ -687,7 +687,7 @@ impl Vec4 {
             const NEG_ONE: Vec4 = const_vec4!([-1.0; 4]);
             let mask = self.cmpge(ZERO);
             let result = mask.select(ONE, NEG_ONE);
-            self.is_nan().select(self, result)
+            self.is_nan_mask().select(self, result)
         }
 
         #[cfg(vec4_f32)]
@@ -716,6 +716,27 @@ impl Vec4 {
     #[inline]
     pub fn lerp(self, other: Self, s: f32) -> Self {
         self + ((other - self) * s)
+    }
+
+    /// Returns `true` if, and only if, all elements are finite.
+    /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
+    #[inline]
+    pub fn is_finite(self) -> bool {
+        self.x.is_finite() && self.y.is_finite() && self.z.is_finite() && self.w.is_finite()
+    }
+
+    /// Returns `true` if any elements are `NaN`.
+    #[inline]
+    pub fn is_nan(self) -> bool {
+        #[cfg(vec4_sse2)]
+        {
+            self.is_nan_mask().any()
+        }
+
+        #[cfg(vec4_f32)]
+        {
+            self.x.is_nan() || self.y.is_nan() || self.z.is_nan() || self.w.is_nan()
+        }
     }
 
     /// Returns whether `self` is length `1.0` or not.

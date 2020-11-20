@@ -437,7 +437,7 @@ fn test_vec3_signum() {
     assert_eq!((-Vec3::one()).signum(), -Vec3::one());
     assert_eq!(Vec3::splat(f32::INFINITY).signum(), Vec3::one());
     assert_eq!(Vec3::splat(f32::NEG_INFINITY).signum(), -Vec3::one());
-    assert!(Vec3::splat(f32::NAN).signum().is_nan().all());
+    assert!(Vec3::splat(f32::NAN).signum().is_nan_mask().all());
 }
 
 #[test]
@@ -565,4 +565,17 @@ fn test_sum() {
 fn test_product() {
     let two = Vec3::new(2.0, 2.0, 2.0);
     assert_eq!(vec![two, two].iter().product::<Vec3>(), two * two);
+}
+
+#[test]
+fn test_vec3_is_finite() {
+    use std::f32::INFINITY;
+    use std::f32::NAN;
+    use std::f32::NEG_INFINITY;
+    assert!(Vec3::new(0.0, 0.0, 0.0).is_finite());
+    assert!(Vec3::new(-1e-10, 1.0, 1e10).is_finite());
+    assert!(!Vec3::new(INFINITY, 0.0, 0.0).is_finite());
+    assert!(!Vec3::new(0.0, NAN, 0.0).is_finite());
+    assert!(!Vec3::new(0.0, 0.0, NEG_INFINITY).is_finite());
+    assert!(!Vec3::splat(NAN).is_finite());
 }

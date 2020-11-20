@@ -36,7 +36,7 @@ impl Vec2 {
     ///
     /// In other words, this computes `[x.is_nan(), y.is_nan()]`.
     #[inline]
-    pub fn is_nan(self) -> Vec2Mask {
+    pub fn is_nan_mask(self) -> Vec2Mask {
         Vec2Mask::new(self.x.is_nan(), self.y.is_nan())
     }
 
@@ -78,6 +78,19 @@ impl Vec2 {
     #[inline]
     pub fn is_normalized(self) -> bool {
         is_normalized!(self)
+    }
+
+    /// Returns `true` if, and only if, all elements are finite.
+    /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
+    #[inline]
+    pub fn is_finite(self) -> bool {
+        self.x.is_finite() && self.y.is_finite()
+    }
+
+    /// Returns `true` if any elements are `NaN`.
+    #[inline]
+    pub fn is_nan(self) -> bool {
+        self.x.is_nan() || self.y.is_nan()
     }
 
     /// Returns true if the absolute difference of all elements between `self`
