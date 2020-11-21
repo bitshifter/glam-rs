@@ -14,13 +14,13 @@ use core::{cmp::Ordering, hash};
 ///
 /// This type is typically created by comparison methods on `Vec3A`.  It is essentially a vector of
 /// three boolean values.
-#[cfg(vec3a_sse2)]
+#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 #[derive(Clone, Copy)]
 #[repr(C)]
 pub struct Vec3AMask(pub(crate) __m128);
 
 /// A 3-dimensional vector mask.
-#[cfg(vec3a_f32)]
+#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
 #[derive(Clone, Copy, Default, PartialEq, Eq, Ord, PartialOrd, Hash)]
 #[repr(align(16), C)]
 pub struct Vec3AMask(pub(crate) Vec3Mask);

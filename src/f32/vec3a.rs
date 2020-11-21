@@ -39,12 +39,12 @@ pub struct Vec3A {
     pub z: f32,
 }
 
-#[cfg(all(vec3a_sse2, not(doc)))]
+#[cfg(all(target_feature = "sse2", not(feature = "scalar-math"), not(doc)))]
 #[derive(Clone, Copy)]
 #[repr(C)]
 pub struct Vec3A(pub(crate) __m128);
 
-#[cfg(all(vec3a_f32, not(doc)))]
+#[cfg(all(any(not(target_feature = "sse2"), feature = "scalar-math"), not(doc)))]
 #[derive(Clone, Copy, PartialEq, PartialOrd, Default)]
 #[repr(align(16), C)]
 pub struct Vec3A(pub(crate) Vec3);

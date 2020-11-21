@@ -12,14 +12,14 @@ use core::{cmp::Ordering, hash};
 ///
 /// This type is typically created by comparison methods on `Vec4`.  It is
 /// essentially a vector of four boolean values.
-#[cfg(vec4_sse2)]
+#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 #[derive(Clone, Copy)]
 #[repr(C)]
 pub struct Vec4Mask(pub(crate) __m128);
 
-#[cfg(vec4_f32)]
+#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
 #[derive(Clone, Copy, Default, PartialEq, Eq, Ord, PartialOrd, Hash)]
-#[cfg_attr(vec4_f32_align16, repr(align(16)))]
+#[cfg_attr(not(feature = "scalar-math"), repr(align(16)))]
 #[repr(C)]
 pub struct Vec4Mask(u32, u32, u32, u32);
 
