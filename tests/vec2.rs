@@ -531,3 +531,16 @@ fn test_vec2_is_finite() {
     assert!(!Vec2::new(0.0, NEG_INFINITY).is_finite());
     assert!(!Vec2::new(INFINITY, NEG_INFINITY).is_finite());
 }
+
+#[test]
+fn test_powf() {
+    assert_eq!(Vec2::new(2.0, 4.0).powf(2.0), Vec2::new(4.0, 16.0));
+}
+
+#[test]
+fn test_exp() {
+    assert_eq!(
+        Vec2::new(1.0, 2.0).exp(),
+        Vec2::new(1.0_f32.exp(), 2.0_f32.exp())
+    );
+}

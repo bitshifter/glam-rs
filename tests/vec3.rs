@@ -579,3 +579,19 @@ fn test_vec3_is_finite() {
     assert!(!Vec3::new(0.0, 0.0, NEG_INFINITY).is_finite());
     assert!(!Vec3::splat(NAN).is_finite());
 }
+
+#[test]
+fn test_powf() {
+    assert_eq!(
+        Vec3::new(2.0, 4.0, 8.0).powf(2.0),
+        Vec3::new(4.0, 16.0, 64.0)
+    );
+}
+
+#[test]
+fn test_exp() {
+    assert_eq!(
+        Vec3::new(1.0, 2.0, 3.0).exp(),
+        Vec3::new(1.0_f32.exp(), 2.0_f32.exp(), 3.0_f32.exp())
+    );
+}

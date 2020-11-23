@@ -352,7 +352,26 @@ impl Vec2 {
         }
     }
 
+    /// Returns a `Vec2` containing `e^self` (the exponential function) for each element of `self`.
+    #[inline]
+    pub fn exp(self) -> Self {
+        Self {
+            x: self.x.exp(),
+            y: self.y.exp(),
+        }
+    }
+
+    /// Returns a `Vec2` containing each element of `self` raised to the power of `n`.
+    #[inline]
+    pub fn powf(self, n: f32) -> Self {
+        Self {
+            x: self.x.powf(n),
+            y: self.y.powf(n),
+        }
+    }
+
     /// Returns a `Vec2` that is equal to `self` rotated by 90 degrees.
+    #[inline]
     pub fn perp(self) -> Self {
         Self {
             x: -self.y,
