@@ -723,7 +723,6 @@ impl Mat4 {
     /// Creates a right-handed perspective projection matrix with [-1,1] depth range.
     /// This is the same as the OpenGL `gluPerspective` function.
     /// See https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
-    #[cfg(not(target_arch = "spirv"))] // TODO: Add back when we have `tan`
     pub fn perspective_rh_gl(
         fov_y_radians: f32,
         aspect_ratio: f32,
@@ -807,7 +806,6 @@ impl Mat4 {
 
     /// Creates an infinite right-handed perspective projection matrix with
     /// [0,1] depth range.
-    #[cfg(not(target_arch = "spirv"))] // TODO: Add back when we have `tan`
     pub fn perspective_infinite_rh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Self {
         let f = 1.0 / (0.5 * fov_y_radians).tan();
         Mat4::from_cols(
@@ -820,7 +818,6 @@ impl Mat4 {
 
     /// Creates an infinite reverse right-handed perspective projection matrix
     /// with [0,1] depth range.
-    #[cfg(not(target_arch = "spirv"))] // TODO: Add back when we have `tan`
     pub fn perspective_infinite_reverse_rh(
         fov_y_radians: f32,
         aspect_ratio: f32,
