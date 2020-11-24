@@ -1,5 +1,3 @@
-#![cfg_attr(target_arch = "spirv", feature(register_attr, repr_simd))]
-
 /*!
 # glam
 
@@ -168,6 +166,7 @@ The minimum supported version of Rust for `glam` is `1.36.0`.
 */
 #![doc(html_root_url = "https://docs.rs/glam/0.10.2")]
 #![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(target_arch = "spirv", feature(register_attr, repr_simd))]
 
 #[cfg(all(target_arch = "spirv", feature = "std"))]
 compile_error!("`std` feature is not supported when building for SPIRV");
