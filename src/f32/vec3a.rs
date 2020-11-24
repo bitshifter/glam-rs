@@ -34,7 +34,9 @@ const Z_AXIS: Vec3A = const_vec3a!([0.0, 0.0, 1.0]);
 /// It is possible to convert between `Vec3` and `Vec3A` types using `From` trait implementations.
 #[cfg(doc)]
 #[derive(Clone, Copy, PartialEq, PartialOrd, Default)]
-#[repr(align(16), C)]
+#[repr(align(16))]
+#[cfg_attr(not(target_arch = "spirv"), repr(C))]
+#[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct Vec3A {
     pub x: f32,
     pub y: f32,
