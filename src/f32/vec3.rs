@@ -353,6 +353,26 @@ impl Vec3 {
         }
     }
 
+    /// Returns a `Vec3` containing `e^self` (the exponential function) for each element of `self`.
+    #[inline]
+    pub fn exp(self) -> Self {
+        Self {
+            x: self.x.exp(),
+            y: self.y.exp(),
+            z: self.z.exp(),
+        }
+    }
+
+    /// Returns a `Vec3` containing each element of `self` raised to the power of `n`.
+    #[inline]
+    pub fn powf(self, n: f32) -> Self {
+        Self {
+            x: self.x.powf(n),
+            y: self.y.powf(n),
+            z: self.z.powf(n),
+        }
+    }
+
     /// Performs `is_nan()` on each element of self, returning a `Vec3Mask` of the results.
     ///
     /// In other words, this computes `[x.is_nan(), y.is_nan(), z.is_nan()]`.

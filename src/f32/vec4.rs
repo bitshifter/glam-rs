@@ -29,7 +29,7 @@ const W_AXIS: Vec4 = const_vec4!([0.0, 0.0, 0.0, 1.0]);
 /// A 4-dimensional vector.
 ///
 /// This type is 16 byte aligned.
-#[cfg(all(vec4_sse2, not(doc)))]
+#[cfg(all(target_feature = "sse2", not(feature = "scalar-math"), not(doc)))]
 #[derive(Clone, Copy)]
 #[repr(C)]
 pub struct Vec4(pub(crate) __m128);
@@ -650,6 +650,23 @@ impl Vec4 {
                 w: self.w.ceil(),
             }
         }
+    }
+
+    /// Returns a `Vec4` containing `e^self` (the exponential function) for each element of `self`.
+    #[inline]
+    pub fn exp(self) -> Self {
+        Self::new(self.x.exp(), self.y.exp(), self.z.exp(), self.w.exp())
+    }
+
+    /// Returns a `Vec4` containing each element of `self` raised to the power of `n`.
+    #[inline]
+    pub fn powf(self, n: f32) -> Self {
+        Self::new(
+            self.x.powf(n),
+            self.y.powf(n),
+            self.z.powf(n),
+            self.w.powf(n),
+        )
     }
 
     /// Performs `is_nan` on each element of self, returning a `Vec4Mask` of the results.

@@ -627,3 +627,19 @@ fn test_vec3a_is_finite() {
         assert!(v.is_finite());
     }
 }
+
+#[test]
+fn test_powf() {
+    assert_eq!(
+        Vec3A::new(2.0, 4.0, 8.0).powf(2.0),
+        Vec3A::new(4.0, 16.0, 64.0)
+    );
+}
+
+#[test]
+fn test_exp() {
+    assert_eq!(
+        Vec3A::new(1.0, 2.0, 3.0).exp(),
+        Vec3A::new(1.0_f32.exp(), 2.0_f32.exp(), 3.0_f32.exp())
+    );
+}
