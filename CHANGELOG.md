@@ -7,6 +7,23 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
+## [0.11.0] - 2020-11-26
+
+### Added
+
+* Added `is_finite` method to all types which returns `true` if, and only if,
+  all contained elements are finite.
+* Added `exp` and `powf` methods for all vector types.
+
+### Changed
+
+* The `is_nan` method now returns a `bool` to match the new `is_finite` method
+  and to be consistent with the same methods on the `f32` and `f64` primitive
+  types.
+* Renamed `is_nan` which returns a vector mask to `is_nan_mask`.
+* Don't use the `cfg` definitions added by `build.rs` for definining structs as
+  `rust-analyzer` is not aware of them.
+
 ### Removed
 
 * Removed deprecated accessor methods.
@@ -361,7 +378,9 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.10.1...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.11.0...HEAD
+[0.11.0]: https://github.com/bitshifter/glam-rs/compare/0.10.2...0.11.0
+[0.10.2]: https://github.com/bitshifter/glam-rs/compare/0.10.1...0.10.2
 [0.10.1]: https://github.com/bitshifter/glam-rs/compare/0.10.0...0.10.1
 [0.10.0]: https://github.com/bitshifter/glam-rs/compare/0.9.5...0.10.0
 [0.9.5]: https://github.com/bitshifter/glam-rs/compare/0.9.4...0.9.5
