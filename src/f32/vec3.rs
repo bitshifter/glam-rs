@@ -456,6 +456,36 @@ impl Vec3 {
     pub fn angle_between(self, other: Self) -> f32 {
         crate::f32::funcs::scalar_acos(self.dot(other) / (self.dot(self) * other.dot(other)).sqrt())
     }
+
+    /// Returns a `Vec3` with a length no less than `min` and no more than `max`
+    pub fn clamp_length(&self, min: f32, max: f32) -> Self {
+        let length_sq = self.length_squared();
+        if length_sq < min * min {
+            self.normalize() * min
+        } else if length_sq > max * max {
+            self.normalize() * max
+        } else {
+            *self
+        }
+    }
+
+    /// Returns a `Vec3` with a length no more than `max`
+    pub fn clamp_length_max(&self, max: f32) -> Self {
+        if self.length_squared() > max * max {
+            self.normalize() * max
+        } else {
+            *self
+        }
+    }
+
+    /// Returns a `Vec3` with a length no less than `min`
+    pub fn clamp_length_min(&self, min: f32) -> Self {
+        if self.length_squared() < min * min {
+            self.normalize() * min
+        } else {
+            *self
+        }
+    }
 }
 
 impl AsRef<[f32; 3]> for Vec3 {
