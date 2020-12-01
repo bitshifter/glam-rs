@@ -38,12 +38,10 @@ transform-types = []
 libm = ["num-traits/libm"]
 
 [dependencies]
+bytemuck = { version = "1.4", optional = true, default-features = false }
 mint = { version = "0.5", optional = true, default-features = false }
 # enabled by the libm feature, required when building no_std
 num-traits = { version = "0.2.14", optional = true, default-features = false }
-
-[target.'cfg(not(target_arch = "spirv"))'.dependencies]
-bytemuck = { version = "1.4", optional = true, default-features = false }
 rand = { version = "0.7", optional = true, default-features = false }
 serde = { version = "1.0", optional = true, features = ["derive"] }
 

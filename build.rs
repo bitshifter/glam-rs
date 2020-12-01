@@ -6,8 +6,7 @@ fn main() {
         panic!("The minimum supported version of Rust for `glam` is 1.36.0");
     }
 
-    let force_scalar_math = env::var("CARGO_FEATURE_SCALAR_MATH").is_ok()
-        || env::var("CARGO_CFG_TARGET_ARCH").unwrap() == "spirv";
+    let force_scalar_math = env::var("CARGO_FEATURE_SCALAR_MATH").is_ok();
 
     let target_feature_sse2 = match env::var("CARGO_CFG_TARGET_FEATURE") {
         Ok(cfg) => cfg.split(',').find(|&f| f == "sse2").is_some(),
