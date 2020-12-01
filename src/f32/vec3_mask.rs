@@ -1,5 +1,7 @@
 use super::Vec3;
-use core::{fmt, ops::*};
+#[cfg(not(target_arch = "spirv"))]
+use core::fmt;
+use core::ops::*;
 
 /// A 3-dimensional vector mask.
 #[derive(Clone, Copy, Default, PartialEq, Eq, Ord, PartialOrd, Hash)]
@@ -103,12 +105,14 @@ impl Not for Vec3Mask {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for Vec3Mask {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "Vec3Mask({:#x}, {:#x}, {:#x})", self.0, self.1, self.2)
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Vec3Mask {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let arr = self.as_ref();

@@ -1,7 +1,9 @@
 use super::Vec3A;
 #[cfg(vec3a_f32)]
 use super::Vec3Mask;
-use core::{fmt, ops::*};
+#[cfg(not(target_arch = "spirv"))]
+use core::fmt;
+use core::ops::*;
 
 #[cfg(all(vec3a_sse2, target_arch = "x86"))]
 use core::arch::x86::*;
@@ -251,6 +253,7 @@ impl Not for Vec3AMask {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for Vec3AMask {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         #[cfg(vec3a_sse2)]
@@ -272,6 +275,7 @@ impl fmt::Debug for Vec3AMask {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Vec3AMask {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let arr = self.as_ref();

@@ -2,7 +2,9 @@
 use num_traits::Float;
 
 use super::{Vec2, Vec3A, Vec3Mask, Vec4};
-use core::{fmt, ops::*};
+#[cfg(not(target_arch = "spirv"))]
+use core::fmt;
+use core::ops::*;
 
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
@@ -472,6 +474,7 @@ impl AsMut<[f32; 3]> for Vec3 {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for Vec3 {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         fmt.debug_tuple("Vec3")
@@ -482,6 +485,7 @@ impl fmt::Debug for Vec3 {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Vec3 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{}, {}, {}]", self.x, self.y, self.z)

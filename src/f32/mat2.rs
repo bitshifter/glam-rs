@@ -4,10 +4,9 @@ use crate::swizzles::*;
 use core::arch::x86::*;
 #[cfg(all(vec4_sse2, target_arch = "x86_64",))]
 use core::arch::x86_64::*;
-use core::{
-    fmt,
-    ops::{Add, Deref, DerefMut, Mul, Sub},
-};
+#[cfg(not(target_arch = "spirv"))]
+use core::fmt;
+use core::ops::{Add, Deref, DerefMut, Mul, Sub};
 
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
@@ -23,7 +22,8 @@ pub fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
 
 /// A 2x2 column major matrix.
 #[cfg(doc)]
-#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[derive(Clone, Copy, PartialEq, PartialOrd)]
+#[cfg_attr(not(target_arch = "spirv"), derive(Debug))]
 #[repr(C)]
 pub struct Mat2 {
     pub x_axis: Vec2,
@@ -31,7 +31,8 @@ pub struct Mat2 {
 }
 
 #[cfg(not(doc))]
-#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[derive(Clone, Copy, PartialEq, PartialOrd)]
+#[cfg_attr(not(target_arch = "spirv"), derive(Debug))]
 #[repr(C)]
 pub struct Mat2(pub(crate) Vec4);
 
@@ -42,6 +43,7 @@ impl Default for Mat2 {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Mat2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{}, {}]", self.x_axis, self.y_axis)

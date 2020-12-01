@@ -2,7 +2,9 @@
 use num_traits::Float;
 
 use crate::f32::{Vec2Mask, Vec3};
-use core::{f32, fmt, ops::*};
+#[cfg(not(target_arch = "spirv"))]
+use core::fmt;
+use core::{f32, ops::*};
 
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
@@ -14,7 +16,8 @@ const Y_AXIS: Vec2 = const_vec2!([0.0, 1.0]);
 
 /// A 2-dimensional vector.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Default)]
-#[repr(C)]
+#[cfg_attr(not(target_arch = "spirv"), repr(C))]
+#[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct Vec2 {
     pub x: f32,
     pub y: f32,
@@ -403,6 +406,7 @@ impl Vec2 {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Vec2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{}, {}]", self.x, self.y)
@@ -570,6 +574,7 @@ impl AsMut<[f32; 2]> for Vec2 {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for Vec2 {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         fmt.debug_tuple("Vec2")

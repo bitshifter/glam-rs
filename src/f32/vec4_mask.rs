@@ -1,5 +1,7 @@
 use crate::Vec4;
-use core::{fmt, ops::*};
+#[cfg(not(target_arch = "spirv"))]
+use core::fmt;
+use core::ops::*;
 
 #[cfg(all(vec4_sse2, target_arch = "x86"))]
 use core::arch::x86::*;
@@ -20,7 +22,8 @@ pub struct Vec4Mask(pub(crate) __m128);
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
 #[derive(Clone, Copy, Default, PartialEq, Eq, Ord, PartialOrd, Hash)]
 #[cfg_attr(not(feature = "scalar-math"), repr(align(16)))]
-#[repr(C)]
+#[cfg_attr(not(target_arch = "spirv"), repr(C))]
+#[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct Vec4Mask(u32, u32, u32, u32);
 
 #[cfg(vec4_sse2)]
@@ -275,6 +278,7 @@ impl Not for Vec4Mask {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for Vec4Mask {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         #[cfg(vec4_sse2)]
@@ -298,6 +302,7 @@ impl fmt::Debug for Vec4Mask {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Vec4Mask {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let arr = self.as_ref();

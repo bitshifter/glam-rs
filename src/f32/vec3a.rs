@@ -2,7 +2,9 @@
 use num_traits::Float;
 
 use super::{Vec2, Vec3, Vec3AMask, Vec4};
-use core::{fmt, ops::*};
+#[cfg(not(target_arch = "spirv"))]
+use core::fmt;
+use core::ops::*;
 
 #[cfg(all(vec3a_sse2, target_arch = "x86"))]
 use core::arch::x86::*;
@@ -32,7 +34,9 @@ const Z_AXIS: Vec3A = const_vec3a!([0.0, 0.0, 1.0]);
 /// It is possible to convert between `Vec3` and `Vec3A` types using `From` trait implementations.
 #[cfg(doc)]
 #[derive(Clone, Copy, PartialEq, PartialOrd, Default)]
-#[repr(align(16), C)]
+#[repr(align(16))]
+#[cfg_attr(not(target_arch = "spirv"), repr(C))]
+#[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct Vec3A {
     pub x: f32,
     pub y: f32,
@@ -739,6 +743,7 @@ impl AsMut<[f32; 3]> for Vec3A {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for Vec3A {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         let a = self.as_ref();
@@ -750,6 +755,7 @@ impl fmt::Debug for Vec3A {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Vec3A {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         #[cfg(vec3a_sse2)]

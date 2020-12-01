@@ -1,11 +1,14 @@
 use super::Vec2;
-use core::{fmt, ops::*};
+#[cfg(not(target_arch = "spirv"))]
+use core::fmt;
+use core::ops::*;
 
 /// A 2-dimensional vector mask.
 ///
 /// This type is typically created by comparison methods on `Vec2`.
 #[derive(Clone, Copy, Default, PartialEq, Eq, Ord, PartialOrd, Hash)]
-#[repr(C)]
+#[cfg_attr(not(target_arch = "spirv"), repr(C))]
+#[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct Vec2Mask(u32, u32);
 
 impl Vec2Mask {
@@ -97,12 +100,14 @@ impl Not for Vec2Mask {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for Vec2Mask {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "Vec2Mask({:#x}, {:#x})", self.0, self.1)
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Vec2Mask {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "[{}, {}]", self.0 != 0, self.1 != 0)

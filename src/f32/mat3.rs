@@ -1,8 +1,7 @@
 use super::{scalar_sin_cos, Quat, Vec2, Vec3, Vec3A, Vec3ASwizzles};
-use core::{
-    fmt,
-    ops::{Add, Mul, Sub},
-};
+#[cfg(not(target_arch = "spirv"))]
+use core::fmt;
+use core::ops::{Add, Mul, Sub};
 
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
@@ -44,7 +43,8 @@ fn quat_to_axes(rotation: Quat) -> (Vec3, Vec3, Vec3) {
 }
 
 /// A 3x3 column major matrix.
-#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[derive(Clone, Copy, PartialEq, PartialOrd)]
+#[cfg_attr(not(target_arch = "spirv"), derive(Debug))]
 #[repr(C)]
 pub struct Mat3 {
     pub x_axis: Vec3,
@@ -59,6 +59,7 @@ impl Default for Mat3 {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Mat3 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{}, {}, {}]", self.x_axis, self.y_axis, self.z_axis)

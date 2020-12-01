@@ -2,7 +2,9 @@
 use num_traits::Float;
 
 use super::{Vec2, Vec3, Vec3A, Vec4Mask};
-use core::{fmt, ops::*};
+#[cfg(not(target_arch = "spirv"))]
+use core::fmt;
+use core::ops::*;
 
 #[cfg(all(vec4_sse2, target_arch = "x86"))]
 use core::arch::x86::*;
@@ -39,7 +41,8 @@ pub struct Vec4(pub(crate) __m128);
 #[derive(Clone, Copy, PartialEq, PartialOrd, Default)]
 // if compiling with simd enabled assume alignment needs to match the simd type
 #[cfg_attr(any(vec4_sse2, vec4_f32_align16), repr(align(16)))]
-#[repr(C)]
+#[cfg_attr(not(target_arch = "spirv"), repr(C))]
+#[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct Vec4 {
     pub x: f32,
     pub y: f32,
@@ -788,6 +791,7 @@ impl AsMut<[f32; 4]> for Vec4 {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for Vec4 {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         let a = self.as_ref();
@@ -800,6 +804,7 @@ impl fmt::Debug for Vec4 {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Vec4 {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         let a = self.as_ref();

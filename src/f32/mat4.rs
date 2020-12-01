@@ -6,10 +6,9 @@ use super::{scalar_sin_cos, Mat3, Quat, Vec3, Vec3A, Vec3ASwizzles, Vec4, Vec4Sw
 use core::arch::x86::*;
 #[cfg(all(vec4_sse2, target_arch = "x86_64"))]
 use core::arch::x86_64::*;
-use core::{
-    fmt,
-    ops::{Add, Mul, Sub},
-};
+#[cfg(not(target_arch = "spirv"))]
+use core::fmt;
+use core::ops::{Add, Mul, Sub};
 
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
@@ -59,7 +58,8 @@ fn quat_to_axes(rotation: Quat) -> (Vec4, Vec4, Vec4) {
 /// A 4x4 column major matrix.
 ///
 /// This type is 16 byte aligned.
-#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[derive(Clone, Copy, PartialEq, PartialOrd)]
+#[cfg_attr(not(target_arch = "spirv"), derive(Debug))]
 #[repr(C)]
 pub struct Mat4 {
     pub x_axis: Vec4,
@@ -75,6 +75,7 @@ impl Default for Mat4 {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Mat4 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
