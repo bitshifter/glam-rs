@@ -675,21 +675,21 @@ impl Vec3A {
     /// Returns a `Vec3A` containing `e^self` (the exponential function) for each element of `self`.
     #[inline]
     pub fn exp(self) -> Self {
-        Self {
-            x: self.x.exp(),
-            y: self.y.exp(),
-            z: self.z.exp(),
-        }
+        Self::new(
+            self.x.exp(),
+            self.y.exp(),
+            self.z.exp(),
+        )
     }
 
     /// Returns a `Vec3A` containing each element of `self` raised to the power of `n`.
     #[inline]
     pub fn powf(self, n: f32) -> Self {
-        Self {
-            x: self.x.powf(n),
-            y: self.y.powf(n),
-            z: self.z.powf(n),
-        }
+        Self::new(
+            self.x.powf(n),
+            self.y.powf(n),
+            self.z.powf(n),
+        )
     }
 
     /// Performs `is_nan()` on each element of self, returning a `Vec3AMask` of the results.
@@ -725,22 +725,22 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Self {
-                x: self.x.signum(),
-                y: self.y.signum(),
-                z: self.z.signum(),
-            }
+            Self::new(
+                self.x.signum(),
+                self.y.signum(),
+                self.z.signum(),
+            )
         }
     }
 
     /// Returns a `Vec3A` containing the reciprocal `1.0/n` of each element of `self`.
     #[inline]
     pub fn recip(self) -> Self {
-        Self {
-            x: self.x.recip(),
-            y: self.y.recip(),
-            z: self.z.recip(),
-        }
+        Self::new(
+            self.x.recip(),
+            self.y.recip(),
+            self.z.recip(),
+        )
     }
 
     /// Performs a linear interpolation between `self` and `other` based on
