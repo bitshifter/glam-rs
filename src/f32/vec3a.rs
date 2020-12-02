@@ -19,6 +19,7 @@ use std::iter::{Product, Sum};
 
 #[cfg(vec3a_sse2)]
 use crate::Align16;
+use crate::Vec3Mask;
 
 const ZERO: Vec3A = const_vec3a!([0.0; 3]);
 const ONE: Vec3A = const_vec3a!([1.0; 3]);
@@ -34,9 +35,7 @@ const Z_AXIS: Vec3A = const_vec3a!([0.0, 0.0, 1.0]);
 /// It is possible to convert between `Vec3` and `Vec3A` types using `From` trait implementations.
 #[cfg(doc)]
 #[derive(Clone, Copy, PartialEq, PartialOrd, Default)]
-#[repr(align(16))]
-#[cfg_attr(not(target_arch = "spirv"), repr(C))]
-#[cfg_attr(target_arch = "spirv", repr(simd))]
+#[repr(align(16), C)]
 pub struct Vec3A {
     pub x: f32,
     pub y: f32,
@@ -50,8 +49,14 @@ pub struct Vec3A(pub(crate) __m128);
 
 #[cfg(all(any(not(target_feature = "sse2"), feature = "scalar-math"), not(doc)))]
 #[derive(Clone, Copy, PartialEq, PartialOrd, Default)]
-#[repr(align(16), C)]
-pub struct Vec3A(pub(crate) Vec3);
+#[repr(align(16))]
+#[cfg_attr(not(target_arch = "spirv"), repr(C))]
+#[cfg_attr(target_arch = "spirv", repr(simd))]
+pub struct Vec3A {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+}
 
 #[cfg(vec3a_sse2)]
 impl Vec3A {
@@ -124,7 +129,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Self(Vec3::new(x, y, z))
+            Self {x, y, z }
         }
     }
 
@@ -168,7 +173,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Self(Vec3::splat(v))
+            Self { x: v, y: v, z: v }
         }
     }
 
@@ -184,7 +189,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            self.0.extend(w)
+            Vec4::new(self.x, self.y, self.z, w)
         }
     }
 
@@ -201,7 +206,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            self.0.truncate()
+            Vec2::new(self.x, self.y)
         }
     }
 
@@ -215,7 +220,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            self.0.dot(other.0)
+            (self.x * other.x) + (self.y * other.y) + (self.z * other.z)
         }
     }
 
@@ -231,7 +236,8 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Self(self.0.dot_as_vec3(other.0))
+            let dot = self.dot(other);
+            Self { x: dot, y: dot, z: dot }
         }
     }
 
@@ -255,7 +261,11 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Self(self.0.cross(other.0))
+            Self {
+                x: self.y * other.z - other.y * self.z,
+                y: self.z * other.x - other.z * self.x,
+                z: self.x * other.y - other.x * self.y,
+            }
         }
     }
 
@@ -269,7 +279,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            self.0.length()
+            self.dot(self).sqrt()
         }
     }
 
@@ -298,7 +308,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            self.0.length_recip()
+            self.length().recip()
         }
     }
 
@@ -327,7 +337,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Self(self.0.normalize())
+            self * self.length_recip()
         }
     }
 
@@ -345,7 +355,11 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Self(self.0.min(other.0))
+            Self {
+                x: self.x.min(other.x),
+                y: self.y.min(other.y),
+                z: self.z.min(other.z),
+            }
         }
     }
 
@@ -363,7 +377,11 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Self(self.0.max(other.0))
+            Self {
+                x: self.x.max(other.x),
+                y: self.y.max(other.y),
+                z: self.z.max(other.z),
+            }
         }
     }
 
@@ -382,7 +400,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            self.0.min_element()
+            self.x.min(self.y.min(self.z))
         }
     }
 
@@ -401,7 +419,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            self.0.max_element()
+            self.x.max(self.y.max(self.z))
         }
     }
 
@@ -418,7 +436,11 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3AMask(self.0.cmpeq(other.0))
+            Vec3AMask::new(
+                self.x.eq(&other.x),
+                self.y.eq(&other.y),
+                self.z.eq(&other.z),
+            )
         }
     }
 
@@ -435,7 +457,11 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3AMask(self.0.cmpne(other.0))
+            Vec3AMask::new(
+                self.x.ne(&other.x),
+                self.y.ne(&other.y),
+                self.z.ne(&other.z),
+            )
         }
     }
 
@@ -452,7 +478,11 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3AMask(self.0.cmpge(other.0))
+            Vec3AMask::new(
+                self.x.ge(&other.x),
+                self.y.ge(&other.y),
+                self.z.ge(&other.z),
+            )
         }
     }
 
@@ -469,7 +499,11 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3AMask(self.0.cmpgt(other.0))
+            Vec3AMask::new(
+                self.x.gt(&other.x),
+                self.y.gt(&other.y),
+                self.z.gt(&other.z),
+            )
         }
     }
 
@@ -486,7 +520,11 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3AMask(self.0.cmple(other.0))
+            Vec3AMask::new(
+                self.x.le(&other.x),
+                self.y.le(&other.y),
+                self.z.le(&other.z),
+            )
         }
     }
 
@@ -503,7 +541,11 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3AMask(self.0.cmplt(other.0))
+            Vec3AMask::new(
+                self.x.lt(&other.x),
+                self.y.lt(&other.y),
+                self.z.lt(&other.z),
+            )
         }
     }
 
@@ -541,7 +583,11 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Self(self.0.mul_add(a.0, b.0))
+            Self {
+                x: (self.x * a.x) + b.x,
+                y: (self.y * a.y) + b.y,
+                z: (self.z * a.z) + b.z,
+            }
         }
     }
 
@@ -558,7 +604,11 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Self(self.0.abs())
+            Self {
+                x: self.x.abs(),
+                y: self.y.abs(),
+                z: self.z.abs(),
+            }
         }
     }
 
@@ -574,7 +624,11 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Self(self.0.round())
+            Self {
+                x: self.x.round(),
+                y: self.y.round(),
+                z: self.z.round(),
+            }
         }
     }
 
@@ -590,7 +644,11 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Self(self.0.floor())
+            Self {
+                x: self.x.floor(),
+                y: self.y.floor(),
+                z: self.z.floor(),
+            }
         }
     }
 
@@ -606,20 +664,32 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Self(self.0.ceil())
+            Self {
+                x: self.x.ceil(),
+                y: self.y.ceil(),
+                z: self.z.ceil(),
+            }
         }
     }
 
     /// Returns a `Vec3A` containing `e^self` (the exponential function) for each element of `self`.
     #[inline]
     pub fn exp(self) -> Self {
-        Self::new(self.x.exp(), self.y.exp(), self.z.exp())
+        Self::new(
+            self.x.exp(),
+            self.y.exp(),
+            self.z.exp(),
+        )
     }
 
     /// Returns a `Vec3A` containing each element of `self` raised to the power of `n`.
     #[inline]
     pub fn powf(self, n: f32) -> Self {
-        Self::new(self.x.powf(n), self.y.powf(n), self.z.powf(n))
+        Self::new(
+            self.x.powf(n),
+            self.y.powf(n),
+            self.z.powf(n),
+        )
     }
 
     /// Performs `is_nan()` on each element of self, returning a `Vec3AMask` of the results.
@@ -634,7 +704,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3AMask(self.0.is_nan_mask())
+            Vec3AMask::new(self.x.is_nan(), self.y.is_nan(), self.z.is_nan())
         }
     }
 
@@ -655,15 +725,22 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(self.0.signum())
+            Self::new(
+                self.x.signum(),
+                self.y.signum(),
+                self.z.signum(),
+            )
         }
     }
 
     /// Returns a `Vec3A` containing the reciprocal `1.0/n` of each element of `self`.
     #[inline]
     pub fn recip(self) -> Self {
-        // TODO: Optimize
-        Self::one() / self
+        Self::new(
+            self.x.recip(),
+            self.y.recip(),
+            self.z.recip(),
+        )
     }
 
     /// Performs a linear interpolation between `self` and `other` based on
@@ -701,7 +778,7 @@ impl Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            self.0.is_nan()
+            self.x.is_nan() || self.y.is_nan() || self.z.is_nan()
         }
     }
 
@@ -766,7 +843,7 @@ impl fmt::Display for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            self.0.fmt(f)
+            write!(f, "[{}, {}, {}]", self.x, self.y, self.z)
         }
     }
 }
@@ -782,7 +859,11 @@ impl Div<Vec3A> for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Self(self.0.div(other.0))
+            Self {
+                x: self.x / other.x,
+                y: self.y / other.y,
+                z: self.z / other.z,
+            }
         }
     }
 }
@@ -797,7 +878,9 @@ impl DivAssign<Vec3A> for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            self.0.div_assign(other.0);
+            self.x /= other.x;
+            self.y /= other.y;
+            self.z /= other.z;
         }
     }
 }
@@ -813,7 +896,11 @@ impl Div<f32> for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Self(self.0.div(other))
+            Self {
+                x: self.x / other,
+                y: self.y / other,
+                z: self.z / other,
+            }
         }
     }
 }
@@ -828,7 +915,9 @@ impl DivAssign<f32> for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            self.0.div_assign(other)
+            self.x /= other;
+            self.y /= other;
+            self.z /= other;
         }
     }
 }
@@ -844,7 +933,11 @@ impl Div<Vec3A> for f32 {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(self.div(other.0))
+            Vec3A {
+                x: self / other.x,
+                y: self / other.y,
+                z: self / other.z,
+            }
         }
     }
 }
@@ -860,7 +953,11 @@ impl Mul<Vec3A> for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Self(self.0.mul(other.0))
+            Self {
+                x: self.x * other.x,
+                y: self.y * other.y,
+                z: self.z * other.z,
+            }
         }
     }
 }
@@ -875,7 +972,9 @@ impl MulAssign<Vec3A> for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            self.0.mul_assign(other.0);
+            self.x *= other.x;
+            self.y *= other.y;
+            self.z *= other.z;
         }
     }
 }
@@ -891,7 +990,11 @@ impl Mul<f32> for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Self(self.0.mul(other))
+            Self {
+                x: self.x * other,
+                y: self.y * other,
+                z: self.z * other,
+            }
         }
     }
 }
@@ -906,7 +1009,9 @@ impl MulAssign<f32> for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            self.0.mul_assign(other);
+            self.x *= other;
+            self.y *= other;
+            self.z *= other;
         }
     }
 }
@@ -922,7 +1027,11 @@ impl Mul<Vec3A> for f32 {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(self.mul(other.0))
+            Vec3A {
+                x: self * other.x,
+                y: self * other.y,
+                z: self * other.z,
+            }
         }
     }
 }
@@ -938,7 +1047,11 @@ impl Add for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Self(self.0.add(other.0))
+            Self {
+                x: self.x + other.x,
+                y: self.y + other.y,
+                z: self.z + other.z,
+            }
         }
     }
 }
@@ -953,7 +1066,9 @@ impl AddAssign for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            self.0.add_assign(other.0);
+            self.x += other.x;
+            self.y += other.y;
+            self.z += other.z;
         }
     }
 }
@@ -969,7 +1084,11 @@ impl Sub for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Self(self.0.sub(other.0))
+            Self {
+                x: self.x - other.x,
+                y: self.y - other.y,
+                z: self.z - other.z,
+            }
         }
     }
 }
@@ -984,7 +1103,9 @@ impl SubAssign for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            self.0.sub_assign(other.0);
+            self.x -= other.x;
+            self.y -= other.y;
+            self.z -= other.z;
         }
     }
 }
@@ -1000,7 +1121,11 @@ impl Neg for Vec3A {
 
         #[cfg(vec3a_f32)]
         {
-            Self(self.0.neg())
+            Self {
+                x: -self.x,
+                y: -self.y,
+                z: -self.z,
+            }
         }
     }
 }
@@ -1042,7 +1167,7 @@ impl From<Vec3A> for (f32, f32, f32) {
 
         #[cfg(vec3a_f32)]
         {
-            v.0.into()
+            (v.x, v.y, v.z)
         }
     }
 }
@@ -1069,7 +1194,7 @@ impl From<Vec3A> for [f32; 3] {
 
         #[cfg(vec3a_f32)]
         {
-            v.0.into()
+            [v.x, v.y, v.z]
         }
     }
 }
@@ -1097,7 +1222,7 @@ impl From<Vec3A> for Vec2 {
 
         #[cfg(vec3a_f32)]
         {
-            v.0.into()
+            v.into()
         }
     }
 }
