@@ -708,7 +708,8 @@ impl From<Vec3A> for Vec3 {
 
         #[cfg(vec3a_f32)]
         {
-            v.0
+            let (x, y, z) = v.into();
+            Self { x, y, z }
         }
     }
 }

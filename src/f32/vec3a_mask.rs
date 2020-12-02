@@ -167,7 +167,11 @@ impl Vec3AMask {
 
         #[cfg(vec3a_f32)]
         {
-            Vec3A(self.0.select(if_true.0, if_false.0))
+            Vec3A {
+                x: if self.0.0 != 0 { if_true.x } else { if_false.x },
+                y: if self.0.1 != 0 { if_true.y } else { if_false.y },
+                z: if self.0.2 != 0 { if_true.z } else { if_false.z },
+            }
         }
     }
 }
