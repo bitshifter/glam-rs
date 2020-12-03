@@ -19,7 +19,6 @@ use std::iter::{Product, Sum};
 
 #[cfg(vec3a_sse2)]
 use crate::Align16;
-use crate::Vec3Mask;
 
 const ZERO: Vec3A = const_vec3a!([0.0; 3]);
 const ONE: Vec3A = const_vec3a!([1.0; 3]);
