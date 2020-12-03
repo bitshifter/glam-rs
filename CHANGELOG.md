@@ -7,6 +7,12 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
+## [0.11.2] - 2020-12-04
+
+### Changed
+
+* Compilation fixes for Rust 1.36.0.
+
 ## [0.11.1] - 2020-12-03
 
 ### Added

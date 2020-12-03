@@ -232,9 +232,6 @@ fn write_swizzle_vec3a(out: &mut impl Write) -> Result<()> {
         r#"
 use super::{{Vec2, Vec3A, Vec4}};
 
-#[cfg(vec3a_f32)]
-use super::Vec3;
-
 #[cfg(all(vec3a_sse2, target_arch = "x86"))]
 use core::arch::x86::*;
 #[cfg(all(vec3a_sse2, target_arch = "x86_64"))]
