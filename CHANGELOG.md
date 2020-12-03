@@ -7,6 +7,13 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
+## [0.11.1] - 2020-12-03
+
+### Added
+
+* Added support for the [Rust GPU](https://github.com/EmbarkStudios/rust-gpu)
+  SPIRV target architecture.
+
 ## [0.11.0] - 2020-11-26
 
 ### Added
@@ -378,7 +385,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.11.0...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.11.1...HEAD
+[0.11.1]: https://github.com/bitshifter/glam-rs/compare/0.11.0...0.11.1
 [0.11.0]: https://github.com/bitshifter/glam-rs/compare/0.10.2...0.11.0
 [0.10.2]: https://github.com/bitshifter/glam-rs/compare/0.10.1...0.10.2
 [0.10.1]: https://github.com/bitshifter/glam-rs/compare/0.10.0...0.10.1
