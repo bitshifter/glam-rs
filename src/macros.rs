@@ -62,17 +62,54 @@ macro_rules! const_mat2 {
 /// ```
 #[macro_export]
 macro_rules! const_mat3 {
-    ($f32x9:expr) => {
-        unsafe { $crate::f32::F32x9Cast { f32x9: $f32x9 }.mat3 }
-    };
-    ($col0:expr, $col1:expr, $col2:expr) => {
+    ($f32x9:expr) => {{
+        #[cfg(not(target_arch = "spirv"))]
+        unsafe {
+            $crate::f32::F32x9Cast { f32x9: $f32x9 }.mat3
+        }
+
+        // special path for SPIRV, without this we get:
+        //
+        //    error[E0080]: it is undefined behavior to use this value
+        //    --> glam-rs\src\f32\mat3.rs:6:1
+        //     |
+        //   6 | const ZERO: Mat3 = const_mat3!([0.0; 9]);
+        //     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ type validation failed: encountered uninitialized bytes at .z_axis.1, but expected initialized plain (non-pointer) bytes
+        //     |
+        //     = note: The rules on what exactly is undefined behavior aren't clear, so this check might be overzealous. Please open an issue on the rustc repository if you believe it should not be considered undefined behavior.
+        #[cfg(target_arch = "spirv")]
+        $crate::Mat3 {
+            x_axis: Vec3 { x: $f32x9[0], y: $f32x9[1], z: $f32x9[2] },
+            y_axis: Vec3 { x: $f32x9[3], y: $f32x9[4], z: $f32x9[5] },
+            z_axis: Vec3 { x: $f32x9[6], y: $f32x9[7], z: $f32x9[8] },
+        }
+    }};
+    ($col0:expr, $col1:expr, $col2:expr) => {{
+        #[cfg(not(target_arch = "spirv"))]
         unsafe {
             $crate::f32::F32x9Cast {
                 f32x3x3: [$col0, $col1, $col2],
             }
             .mat3
         }
-    };
+
+        // special path for SPIRv, without this we get:
+        //
+        //    error[E0080]: it is undefined behavior to use this value
+        //      --> glam-rs\src\f32\mat3.rs:7:1
+        //      |
+        //    7 | const IDENTITY: Mat3 = const_mat3!([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
+        //      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ type validation failed: encountered uninitialized bytes at .z_axis.1, but expected initialized
+        //    plain (non-pointer) bytes
+        //      |
+        //      = note: The rules on what exactly is undefined behavior aren't clear, so this check might be overzealous. Please open an issue on the rustc repository if you believe it should not be considered undefined behavior.
+        #[cfg(target_arch = "spirv")]
+        $crate::Mat3 {
+            x_axis: Vec3 { x: $col0[0], y: $col0[1], z: $col0[2] },
+            y_axis: Vec3 { x: $col1[0], y: $col1[1], z: $col1[2] },
+            z_axis: Vec3 { x: $col2[0], y: $col2[1], z: $col2[2] },
+        }
+    }};
 }
 
 /// Creates a `Mat4` from four column vectors that can be used to initialize a constant value.
