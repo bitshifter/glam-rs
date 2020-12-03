@@ -676,6 +676,13 @@ impl From<(f32, f32, f32)> for Vec3 {
     }
 }
 
+impl From<(Vec2, f32)> for Vec3 {
+    #[inline]
+    fn from((v, z): (Vec2, f32)) -> Self {
+        Self::new(v.x, v.y, z)
+    }
+}
+
 impl From<Vec3> for (f32, f32, f32) {
     #[inline]
     fn from(v: Vec3) -> Self {

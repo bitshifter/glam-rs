@@ -1131,6 +1131,13 @@ impl From<(f32, f32, f32, f32)> for Vec4 {
     }
 }
 
+impl From<(Vec3, f32)> for Vec4 {
+    #[inline]
+    fn from((v, w): (Vec3, f32)) -> Self {
+        Self::new(v.x, v.y, v.z, w)
+    }
+}
+
 impl From<Vec4> for (f32, f32, f32, f32) {
     #[inline]
     fn from(v: Vec4) -> Self {
