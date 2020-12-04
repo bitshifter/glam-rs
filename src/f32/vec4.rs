@@ -777,9 +777,9 @@ impl Vec4 {
     pub fn clamp_length(&self, min: f32, max: f32) -> Self {
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            self.normalize() * min
+            *self * (length_sq.sqrt().recip() * min)
         } else if length_sq > max * max {
-            self.normalize() * max
+            *self * (length_sq.sqrt().recip() * max)
         } else {
             *self
         }
@@ -787,8 +787,9 @@ impl Vec4 {
 
     /// Returns a `Vec4` with a length no more than `max`
     pub fn clamp_length_max(&self, max: f32) -> Self {
-        if self.length_squared() > max * max {
-            self.normalize() * max
+        let length_sq = self.length_squared();
+        if length_sq > max * max {
+            *self * (length_sq.sqrt().recip() * max)
         } else {
             *self
         }
@@ -796,8 +797,9 @@ impl Vec4 {
 
     /// Returns a `Vec4` with a length no less than `min`
     pub fn clamp_length_min(&self, min: f32) -> Self {
+        let length_sq = self.length_squared();
         if self.length_squared() < min * min {
-            self.normalize() * min
+            *self * (length_sq.sqrt().recip() * min)
         } else {
             *self
         }
