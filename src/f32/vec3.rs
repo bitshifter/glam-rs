@@ -17,7 +17,8 @@ const Z_AXIS: Vec3 = const_vec3!([0.0, 0.0, 1.0]);
 
 /// A 3-dimensional vector without SIMD support.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Default)]
-#[repr(C)]
+#[cfg_attr(not(target_arch = "spirv"), repr(C))]
+#[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct Vec3 {
     pub x: f32,
     pub y: f32,
