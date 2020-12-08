@@ -756,3 +756,13 @@ impl<'a> Product<&'a Self> for Vec3 {
         iter.fold(ONE, |a, &b| Self::mul(a, b))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::{Vec2, vec3};
+    
+    #[test]
+    fn from_vec2() {
+        assert_eq!(vec3(1.0, 2.0, 3.0), (Vec2::new(1.0, 2.0), 3.0).into());
+    }
+}
