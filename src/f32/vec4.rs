@@ -1131,6 +1131,13 @@ impl From<(f32, f32, f32, f32)> for Vec4 {
     }
 }
 
+impl From<(Vec3, f32)> for Vec4 {
+    #[inline]
+    fn from((v, w): (Vec3, f32)) -> Self {
+        Self::new(v.x, v.y, v.z, w)
+    }
+}
+
 impl From<Vec4> for (f32, f32, f32, f32) {
     #[inline]
     fn from(v: Vec4) -> Self {
@@ -1294,4 +1301,14 @@ fn test_vec4_private() {
         vec4(1.0, 1.0, 1.0, 1.0).mul_add(vec4(0.5, 2.0, -4.0, 0.0), vec4(-1.0, -1.0, -1.0, -1.0)),
         vec4(-0.5, 1.0, -5.0, -1.0)
     );
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{Vec3, vec4};
+    
+    #[test]
+    fn from_vec3() {
+        assert_eq!(vec4(1.0, 2.0, 3.0, 4.0), (Vec3::new(1.0, 2.0, 3.0), 4.0).into());
+    }
 }

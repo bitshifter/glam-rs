@@ -677,6 +677,13 @@ impl From<(f32, f32, f32)> for Vec3 {
     }
 }
 
+impl From<(Vec2, f32)> for Vec3 {
+    #[inline]
+    fn from((v, z): (Vec2, f32)) -> Self {
+        Self::new(v.x, v.y, z)
+    }
+}
+
 impl From<Vec3> for (f32, f32, f32) {
     #[inline]
     fn from(v: Vec3) -> Self {
@@ -748,5 +755,15 @@ impl<'a> Product<&'a Self> for Vec3 {
         I: Iterator<Item = &'a Self>,
     {
         iter.fold(ONE, |a, &b| Self::mul(a, b))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{Vec2, vec3};
+    
+    #[test]
+    fn from_vec2() {
+        assert_eq!(vec3(1.0, 2.0, 3.0), (Vec2::new(1.0, 2.0), 3.0).into());
     }
 }
