@@ -443,7 +443,7 @@ impl Quat {
     }
 
     #[inline]
-    /// Multiplies a quaternion and a 3D vector, rotating it.
+    /// Multiplies a quaternion and a 3D vector, returning the rotated vector.
     pub fn mul_vec3a(self, other: Vec3A) -> Vec3A {
         glam_assert!(self.is_normalized());
 
@@ -469,7 +469,7 @@ impl Quat {
     }
 
     #[inline]
-    /// Multiplies a quaternion and a 3D vector, rotating it.
+    /// Multiplies a quaternion and a 3D vector, returning the rotated vector.
     pub fn mul_vec3(self, other: Vec3) -> Vec3 {
         glam_assert!(self.is_normalized());
         self.mul_vec3a(Vec3A::from(other)).into()
