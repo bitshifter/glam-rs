@@ -96,30 +96,30 @@ macro_rules! impl_mat3 {
                 Self(Matrix3x3::from_cols(x_axis.0, y_axis.0, z_axis.0))
             }
 
-            /// Creates a 3x3 matrix from a `[$t; 9]` stored in column major order.
-            /// If your data is stored in row major you will need to `transpose` the
-            /// returned matrix.
+            /// Creates a 3x3 matrix from a `[S; 9]` array stored in column major order.
+            /// If your data is stored in row major you will need to `transpose` the returned
+            /// matrix.
             #[inline(always)]
             pub fn from_cols_array(m: &[$t; 9]) -> Self {
                 Self(Matrix3x3::from_cols_array(m))
             }
 
-            /// Creates a `[$t; 9]` storing data in column major order.
+            /// Creates a `[S; 9]` array storing data in column major order.
             /// If you require data in row major order `transpose` the matrix first.
             #[inline(always)]
             pub fn to_cols_array(&self) -> [$t; 9] {
                 self.0.to_cols_array()
             }
 
-            /// Creates a 3x3 matrix from a `[[$t; 3]; 3]` stored in column major order.
-            /// If your data is in row major order you will need to `transpose` the
-            /// returned matrix.
+            /// Creates a 3x3 matrix from a `[[S; 3]; 3]` 2D array stored in column major order.
+            /// If your data is in row major order you will need to `transpose` the returned
+            /// matrix.
             #[inline(always)]
             pub fn from_cols_array_2d(m: &[[$t; 3]; 3]) -> Self {
                 Self(Matrix3x3::from_cols_array_2d(m))
             }
 
-            /// Creates a `[[$t; 3]; 3]` storing data in column major order.
+            /// Creates a `[[S; 3]; 3]` 2D array storing data in column major order.
             /// If you require data in row major order `transpose` the matrix first.
             #[inline(always)]
             pub fn to_cols_array_2d(&self) -> [[$t; 3]; 3] {

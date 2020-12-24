@@ -59,7 +59,7 @@ macro_rules! impl_quat {
                 Self($inner::UNIT_W)
             }
 
-            /// Creates a rotation quaternion from an unaligned `&[$t]`.
+            /// Creates a rotation quaternion from an unaligned slice.
             ///
             /// # Preconditions
             ///
@@ -76,7 +76,7 @@ macro_rules! impl_quat {
                 Self(q)
             }
 
-            /// Writes the quaternion to an unaligned `&mut [$t]`.
+            /// Writes the quaternion to an unaligned slice.
             ///
             /// # Panics
             ///
@@ -173,7 +173,7 @@ macro_rules! impl_quat {
                 FloatVector4::length_squared(self.0)
             }
 
-            /// Computes `1.0 / $quat::length()`.
+            /// Computes `1.0 / length()`.
             ///
             /// For valid results, `self` must _not_ be of length zero.
             #[inline(always)]
@@ -315,7 +315,7 @@ macro_rules! impl_quat {
         impl Mul<$t> for $quat {
             type Output = Self;
             #[inline]
-            /// Multiplies a quaternion with an $t.
+            /// Multiplies a quaternion by a scalar value.
             /// The product is not guaranteed to be normalized.
             fn mul(self, other: $t) -> Self {
                 Self(self.0.scale(other))
@@ -325,7 +325,7 @@ macro_rules! impl_quat {
         impl Div<$t> for $quat {
             type Output = Self;
             #[inline]
-            /// Divides a quaternion by an $t.
+            /// Divides a quaternion by a scalar value.
             /// The quotient is not guaranteed to be normalized.
             fn div(self, other: $t) -> Self {
                 Self(self.0.scale(other.recip()))

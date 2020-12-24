@@ -74,30 +74,30 @@ macro_rules! impl_mat2 {
                 Self($inner::from_cols(x_axis.0, y_axis.0))
             }
 
-            /// Creates a 2x2 matrix from a `[$t; 4]` stored in column major order.  If
-            /// your data is stored in row major you will need to `transpose` the
-            /// returned matrix.
+            /// Creates a 2x2 matrix from a `[S; 4]` array stored in column major order.
+            /// If your data is stored in row major you will need to `transpose` the returned
+            /// matrix.
             #[inline(always)]
             pub fn from_cols_array(m: &[$t; 4]) -> Self {
                 Self($inner::from_cols_array(m))
             }
 
-            /// Creates a `[$t; 4]` storing data in column major order.
+            /// Creates a `[S; 4]` array storing data in column major order.
             /// If you require data in row major order `transpose` the matrix first.
             #[inline(always)]
             pub fn to_cols_array(&self) -> [$t; 4] {
                 self.0.to_cols_array()
             }
 
-            /// Creates a 2x2 matrix from a `[[$t; 2]; 2]` stored in column major
-            /// order.  If your data is in row major order you will need to `transpose`
-            /// the returned matrix.
+            /// Creates a 2x2 matrix from a `[[S; 2]; 2]` 2D array stored in column major order.
+            /// If your data is in row major order you will need to `transpose` the returned
+            /// matrix.
             #[inline(always)]
             pub fn from_cols_array_2d(m: &[[$t; 2]; 2]) -> Self {
                 $mat2($inner::from_cols_array_2d(m))
             }
 
-            /// Creates a `[[$t; 2]; 2]` storing data in column major order.
+            /// Creates a `[[S; 2]; 2]` 2D array storing data in column major order.
             /// If you require data in row major order `transpose` the matrix first.
             #[inline(always)]
             pub fn to_cols_array_2d(&self) -> [[$t; 2]; 2] {

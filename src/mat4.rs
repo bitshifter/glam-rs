@@ -71,30 +71,30 @@ macro_rules! impl_mat4 {
                 Self($inner::from_cols(x_axis.0, y_axis.0, z_axis.0, w_axis.0))
             }
 
-            /// Creates a 4x4 matrix from a `[$t; 16]` stored in column major order.
-            /// If your data is stored in row major you will need to `transpose` the
-            /// returned matrix.
+            /// Creates a 4x4 matrix from a `[S; 16]` array stored in column major order.
+            /// If your data is stored in row major you will need to `transpose` the returned
+            /// matrix.
             #[inline(always)]
             pub fn from_cols_array(m: &[$t; 16]) -> Self {
                 Self($inner::from_cols_array(m))
             }
 
-            /// Creates a `[$t; 16]` storing data in column major order.
+            /// Creates a `[S; 16]` array storing data in column major order.
             /// If you require data in row major order `transpose` the matrix first.
             #[inline(always)]
             pub fn to_cols_array(&self) -> [$t; 16] {
                 *self.as_ref()
             }
 
-            /// Creates a 4x4 matrix from a `[[$t; 4]; 4]` stored in column major
-            /// order.  If your data is in row major order you will need to `transpose`
-            /// the returned matrix.
+            /// Creates a 4x4 matrix from a `[[S; 4]; 4]` 2D array stored in column major order.
+            /// If your data is in row major order you will need to `transpose` the returned
+            /// matrix.
             #[inline(always)]
             pub fn from_cols_array_2d(m: &[[$t; 4]; 4]) -> Self {
                 Self($inner::from_cols_array_2d(m))
             }
 
-            /// Creates a `[[$t; 4]; 4]` storing data in column major order.
+            /// Creates a `[[S; 4]; 4]` 2D array storing data in column major order.
             /// If you require data in row major order `transpose` the matrix first.
             #[inline(always)]
             pub fn to_cols_array_2d(&self) -> [[$t; 4]; 4] {
@@ -477,8 +477,8 @@ macro_rules! impl_mat4 {
             /// best when comparing with a known value. The `max_abs_diff` that should be used used
             /// depends on the values being compared against.
             ///
-            /// For more on floating point comparisons see
-            /// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
+            /// For more see
+            /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
             #[inline(always)]
             pub fn abs_diff_eq(&self, other: Self, max_abs_diff: $t) -> bool {
                 self.0.abs_diff_eq(&other.0, max_abs_diff)

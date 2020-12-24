@@ -66,7 +66,7 @@ macro_rules! impl_vec3_common_methods {
             $vec2(Vector3::into_xy(self.0))
         }
 
-        /// Returns $vec3 dot in all lanes of $vec3
+        /// Returns the dot product result in all elements of the vector
         #[inline]
         #[allow(dead_code)]
         pub(crate) fn dot_as_vec3(self, other: Self) -> Self {
