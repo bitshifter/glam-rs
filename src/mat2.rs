@@ -28,7 +28,7 @@ use std::iter::{Product, Sum};
 
 macro_rules! impl_mat2 {
     ($new:ident, $mat2:ident, $vec2:ident, $t:ty, $inner:ident) => {
-        /// Creates a `$mat2` from two column vectors.
+        /// Creates a 2x2 matrix from two column vectors.
         #[inline(always)]
         pub fn $new(x_axis: $vec2, y_axis: $vec2) -> $mat2 {
             $mat2::from_cols(x_axis, y_axis)
@@ -207,7 +207,7 @@ macro_rules! impl_mat2 {
                 // }
             }
 
-            /// Transforms a `$vec2`.
+            /// Transforms a 2D vector.
             #[inline(always)]
             pub fn mul_vec2(&self, other: $vec2) -> $vec2 {
                 $vec2(self.0.mul_vector(other.0))
@@ -237,12 +237,12 @@ macro_rules! impl_mat2 {
                 $mat2(self.0.mul_scalar(other))
             }
 
-            /// Returns true if the absolute difference of all elements between `self`
-            /// and `other` is less than or equal to `max_abs_diff`.
+            /// Returns true if the absolute difference of all elements between `self` and `other`
+            /// is less than or equal to `max_abs_diff`.
             ///
-            /// This can be used to compare if two `$mat2`'s contain similar elements. It
-            /// works best when comparing with a known value. The `max_abs_diff` that
-            /// should be used used depends on the values being compared against.
+            /// This can be used to compare if two matrices contain similar elements. It works best
+            /// when comparing with a known value. The `max_abs_diff` that should be used used
+            /// depends on the values being compared against.
             ///
             /// For more on floating point comparisons see
             /// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/

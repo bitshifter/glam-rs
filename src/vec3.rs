@@ -27,31 +27,31 @@ use std::iter::{Product, Sum};
 
 macro_rules! impl_vec3_common_methods {
     ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
-        /// Creates a new `$vec3`.
+        /// Creates a new 3D vector.
         #[inline]
         pub fn new(x: $t, y: $t, z: $t) -> Self {
             Self(Vector3::new(x, y, z))
         }
 
-        /// Creates a `$vec3` with values `[x: 1.0, y: 0.0, z: 0.0]`.
+        /// Creates a vector with values `[x: 1.0, y: 0.0, z: 0.0]`.
         #[inline]
         pub const fn unit_x() -> Self {
             Self(Vector3Const::UNIT_X)
         }
 
-        /// Creates a `$vec3` with values `[x: 0.0, y: 1.0, z: 0.0]`.
+        /// Creates a vector with values `[x: 0.0, y: 1.0, z: 0.0]`.
         #[inline]
         pub const fn unit_y() -> Self {
             Self(Vector3Const::UNIT_Y)
         }
 
-        /// Creates a `$vec3` with values `[x: 0.0, y: 0.0, z: 1.0]`.
+        /// Creates a vector with values `[x: 0.0, y: 0.0, z: 1.0]`.
         #[inline]
         pub const fn unit_z() -> Self {
             Self(Vector3Const::UNIT_Z)
         }
 
-        /// Creates a `Vec4` from `self` and the given `w` value.
+        /// Creates a 4D vector from `self` and the given `w` value.
         #[inline]
         pub fn extend(self, w: $t) -> $vec4 {
             // TODO: Optimize?
@@ -132,7 +132,7 @@ macro_rules! impl_vec3_common_traits {
         }
 
         impl From<$vec3> for $vec2 {
-            /// Creates a `Vec2` from the `x` and `y` elements of the `$vec3`, discarding `z`.
+            /// Creates a `Vec2` from the `x` and `y` elements of `self`, discarding `z`.
             #[inline(always)]
             fn from(v: $vec3) -> Self {
                 Self(v.into_xy())

@@ -15,7 +15,7 @@ use std::iter::{Product, Sum};
 
 macro_rules! impl_mat3 {
     ($new:ident, $mat3:ident, $vec3: ident, $vec2:ident, $quat:ident, $t:ty, $inner:ident) => {
-        /// Creates a `$mat3` from three column vectors.
+        /// Creates a 3x3 matrix from three column vectors.
         #[inline(always)]
         pub fn $new(x_axis: $vec3, y_axis: $vec3, z_axis: $vec3) -> $mat3 {
             $mat3::from_cols(x_axis, y_axis, z_axis)
@@ -298,28 +298,28 @@ macro_rules! impl_mat3 {
                 Self(self.0.mul_scalar(other))
             }
 
-            /// Transforms the given `$vec2` as 2D point.
-            /// This is the equivalent of multiplying the `$vec2` as a `$vec3` where `z`
+            /// Transforms the given 2D vector as a point.
+            /// This is the equivalent of multiplying the 2D vector as a 3D vector where `z`
             /// is `1.0`.
             #[inline(always)]
             pub fn transform_point2(&self, other: $vec2) -> $vec2 {
                 self.transform_point2_as_vec3a(other)
             }
 
-            /// Transforms the given `$vec2` as 2D vector.
-            /// This is the equivalent of multiplying the `$vec2` as a `$vec3` where `z`
+            /// Rotates the given 2D vector.
+            /// This is the equivalent of multiplying the 2D vector as a 3D vector where `z`
             /// is `0.0`.
             #[inline(always)]
             pub fn transform_vector2(&self, other: $vec2) -> $vec2 {
                 self.transform_vector2_as_vec3a(other)
             }
 
-            /// Returns true if the absolute difference of all elements between `self`
-            /// and `other` is less than or equal to `max_abs_diff`.
+            /// Returns true if the absolute difference of all elements between `self` and `other`
+            /// is less than or equal to `max_abs_diff`.
             ///
-            /// This can be used to compare if two `$mat3`'s contain similar elements. It
-            /// works best when comparing with a known value. The `max_abs_diff` that
-            /// should be used used depends on the values being compared against.
+            /// This can be used to compare if two matrices contain similar elements. It works best
+            /// when comparing with a known value. The `max_abs_diff` that should be used used
+            /// depends on the values being compared against.
             ///
             /// For more on floating point comparisons see
             /// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
@@ -433,7 +433,7 @@ impl Mat3 {
         res
     }
 
-    /// Transforms a `$vec3`.
+    /// Transforms a `Vec3`.
     #[inline(always)]
     fn mul_vec3_as_vec3a(&self, other: Vec3) -> Vec3 {
         Vec3::from(self.mul_vec3a(Vec3A::from(other)))

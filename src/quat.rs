@@ -166,7 +166,7 @@ macro_rules! impl_quat {
 
             /// Computes the squared length of `self`.
             ///
-            /// This is generally faster than `$quat::length()` as it avoids a square
+            /// This is generally faster than `length()` as it avoids a square
             /// root operation.
             #[inline(always)]
             pub fn length_squared(self) -> $t {
@@ -214,12 +214,12 @@ macro_rules! impl_quat {
                 self.0.is_near_identity()
             }
 
-            /// Returns true if the absolute difference of all elements between `self`
-            /// and `other` is less than or equal to `max_abs_diff`.
+            /// Returns true if the absolute difference of all elements between `self` and `other`
+            /// is less than or equal to `max_abs_diff`.
             ///
-            /// This can be used to compare if two `$quat`'s contain similar elements. It
-            /// works best when comparing with a known value. The `max_abs_diff` that
-            /// should be used used depends on the values being compared against.
+            /// This can be used to compare if two quaternions contain similar elements. It works
+            /// best when comparing with a known value. The `max_abs_diff` that should be used used
+            /// depends on the values being compared against.
             ///
             /// For more on floating point comparisons see
             /// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/

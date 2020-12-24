@@ -29,31 +29,31 @@ use core::{cmp::Ordering, f32};
 
 macro_rules! impl_vec4_common_methods {
     ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
-        /// Creates a new `$vec4`.
+        /// Creates a new 4D vector.
         #[inline]
         pub fn new(x: $t, y: $t, z: $t, w: $t) -> Self {
             Self(Vector4::new(x, y, z, w))
         }
 
-        /// Creates a `$vec4` with values `[x: 1.0, y: 0.0, z: 0.0, w: 0.0]`.
+        /// Creates a 4D vector with values `[x: 1.0, y: 0.0, z: 0.0, w: 0.0]`.
         #[inline]
         pub const fn unit_x() -> Self {
             Self(Vector4Const::UNIT_X)
         }
 
-        /// Creates a `$vec4` with values `[x: 0.0, y: 1.0, z: 0.0, w: 0.0]`.
+        /// Creates a 4D vector with values `[x: 0.0, y: 1.0, z: 0.0, w: 0.0]`.
         #[inline]
         pub const fn unit_y() -> Self {
             Self(Vector4Const::UNIT_Y)
         }
 
-        /// Creates a `$vec4` with values `[x: 0.0, y: 0.0, z: 1.0, w: 0.0]`.
+        /// Creates a 4D vector with values `[x: 0.0, y: 0.0, z: 1.0, w: 0.0]`.
         #[inline]
         pub const fn unit_z() -> Self {
             Self(Vector4Const::UNIT_Z)
         }
 
-        /// Creates a `$vec4` with values `[x: 0.0, y: 0.0, z: 0.0, w: 1.0]`.
+        /// Creates a 4D vector with values `[x: 0.0, y: 0.0, z: 0.0, w: 1.0]`.
         #[inline]
         pub const fn unit_w() -> Self {
             Self(Vector4Const::UNIT_W)
@@ -75,7 +75,7 @@ macro_rules! impl_vec4_common_methods {
 
 macro_rules! impl_vec4_common_traits {
     ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
-        /// Creates a `$vec4`.
+        /// Creates a new 4D vector.
         #[inline]
         pub fn $new(x: $t, y: $t, z: $t, w: $t) -> $vec4 {
             $vec4::new(x, y, z, w)
@@ -124,7 +124,7 @@ macro_rules! impl_vec4_common_traits {
         }
 
         impl From<$vec4> for $vec3 {
-            /// Creates a `Vec3` from the `x`, `y` and `z` elements of the `$vec4`, discarding `z`.
+            /// Creates a 3D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
             #[inline(always)]
             fn from(v: $vec4) -> Self {
                 Self(v.into_xyz())
@@ -132,7 +132,8 @@ macro_rules! impl_vec4_common_traits {
         }
 
         impl From<$vec4> for $vec2 {
-            /// Creates a `Vec2` from the `x` and `y` elements of the `$vec4`, discarding `z`.
+            /// Creates a 2D vector from the `x` and `y` elements of `self`, discarding `z` and
+            /// `w`.
             #[inline(always)]
             fn from(v: $vec4) -> Self {
                 Self(v.into_xy())
@@ -217,7 +218,7 @@ pub struct Vec4(pub(crate) __m128);
 impl_float_vec4!(f32, vec4, Vec2, Vec3, Vec4, Vec4Mask, __m128);
 
 impl From<Vec4> for Vec3A {
-    /// Creates a `Vec3A` from the `x`, `y` and `z` elements of the `$vec4`, discarding `z`.
+    /// Creates a `Vec3A` from the `x`, `y` and `z` elements of `self` discarding `w`.
     ///
     /// On architectures where SIMD is supported such as SSE2 on x86_64 this conversion is a noop.
     #[inline(always)]

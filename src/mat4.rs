@@ -25,7 +25,7 @@ use std::iter::{Product, Sum};
 
 macro_rules! impl_mat4 {
     ($new:ident, $mat4:ident, $vec4:ident, $vec3:ident, $quat:ident, $t:ty, $inner:ident) => {
-        /// Creates a `$mat4` from four column vectors.
+        /// Creates a 4x4 matrix from four column vectors.
         #[inline(always)]
         pub fn $new(x_axis: $vec4, y_axis: $vec4, z_axis: $vec4, w_axis: $vec4) -> $mat4 {
             $mat4::from_cols(x_axis, y_axis, z_axis, w_axis)
@@ -451,28 +451,31 @@ macro_rules! impl_mat4 {
                 Self(self.0.mul_scalar(other))
             }
 
-            /// Transforms the given `$vec3` as 3D point.
+            /// Transforms the given 3D vector as a point.
             ///
-            /// This is the equivalent of multiplying the `$vec3` as a `$vec4` where `w` is `1.0`.
+            /// This is the equivalent of multiplying the 3D vector as a 4D vector where `w` is
+            /// `1.0`. Perspective correction is performed meaning the resulting `x`, `y` and `z`
+            /// values are divided by `w`.
             #[inline]
             pub fn transform_point3(&self, other: $vec3) -> $vec3 {
                 $vec3(self.0.transform_point3(other.0))
             }
 
-            /// Transforms the give `$vec3` as 3D vector.
+            /// Transforms the give 3D vector as a direction.
             ///
-            /// This is the equivalent of multiplying the `$vec3` as a `$vec4` where `w` is `0.0`.
+            /// This is the equivalent of multiplying the 3D vector as a 4D vector where `w` is
+            /// `0.0`.
             #[inline]
             pub fn transform_vector3(&self, other: $vec3) -> $vec3 {
                 $vec3(self.0.transform_vector3(other.0))
             }
 
-            /// Returns true if the absolute difference of all elements between `self` and `other` is less
-            /// than or equal to `max_abs_diff`.
+            /// Returns true if the absolute difference of all elements between `self` and `other`
+            /// is less than or equal to `max_abs_diff`.
             ///
-            /// This can be used to compare if two `$mat4`'s contain similar elements. It works best when
-            /// comparing with a known value. The `max_abs_diff` that should be used used depends on the
-            /// values being compared against.
+            /// This can be used to compare if two 4x4 matrices contain similar elements. It works
+            /// best when comparing with a known value. The `max_abs_diff` that should be used used
+            /// depends on the values being compared against.
             ///
             /// For more on floating point comparisons see
             /// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
@@ -622,7 +625,7 @@ impl_mat4!(mat4, Mat4, Vec4, Vec3, Quat, f32, InnerF32);
 impl Mat4 {
     /// Transforms the given `Vec3A` as 3D point.
     ///
-    /// This is the equivalent of multiplying the `Vec3A` as a `$vec4` where `w` is `1.0`.
+    /// This is the equivalent of multiplying the `Vec3A` as a 4D vector where `w` is `1.0`.
     #[inline(always)]
     pub fn transform_point3a(&self, other: Vec3A) -> Vec3A {
         Vec3A(self.0.transform_float4_as_point3(other.0))
@@ -630,7 +633,7 @@ impl Mat4 {
 
     /// Transforms the give `Vec3A` as 3D vector.
     ///
-    /// This is the equivalent of multiplying the `Vec3A` as a `$vec4` where `w` is `0.0`.
+    /// This is the equivalent of multiplying the `Vec3A` as a 4D vector where `w` is `0.0`.
     #[inline(always)]
     pub fn transform_vector3a(&self, other: Vec3A) -> Vec3A {
         Vec3A(self.0.transform_float4_as_vector3(other.0))
