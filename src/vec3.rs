@@ -85,7 +85,7 @@ macro_rules! impl_vec3_common_methods {
 
 macro_rules! impl_vec3_common_traits {
     ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
-        /// Creates a `Vec3`.
+        /// Creates a 3-dimensional vector.
         #[inline]
         pub fn $new(x: $t, y: $t, z: $t) -> $vec3 {
             $vec3::new(x, y, z)
@@ -204,17 +204,17 @@ macro_rules! impl_float_vec3 {
 
 type XYZF32 = XYZ<f32>;
 
-/// A 3-dimensional vector without SIMD support.
+/// A `f32` 3-dimensional vector without SIMD support.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct Vec3(pub(crate) XYZF32);
 
 impl_float_vec3!(f32, vec3, Vec2, Vec3, Vec4, Vec3Mask, XYZF32);
 
-/// A 3-dimensional vector with SIMD support.
+/// A `f32` 3-dimensional vector with SIMD support.
 ///
-/// This type uses 16 byte aligned SIMD vector4 types for storage on supported platforms for better
-/// performance than the `Vec3` type.
+/// This type is 16 byte aligned. A SIMD vector type is used for storage on supported platforms for
+/// better performance than the `Vec3` type.
 ///
 /// It is possible to convert between `Vec3` and `Vec3A` types using `From` trait implementations.
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
@@ -222,10 +222,9 @@ impl_float_vec3!(f32, vec3, Vec2, Vec3, Vec4, Vec3Mask, XYZF32);
 #[repr(transparent)]
 pub struct Vec3A(pub(crate) __m128);
 
-/// A 3-dimensional vector with SIMD support.
+/// A `f32` 3-dimensional vector.
 ///
-/// This type uses 16 byte aligned SIMD vector4 types for storage on supported platforms for better
-/// performance than the `Vec3` type.
+/// This type is 16 byte aligned.
 ///
 /// It is possible to convert between `Vec3` and `Vec3A` types using `From` trait implementations.
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
@@ -256,7 +255,7 @@ impl From<Vec3A> for Vec3 {
 
 type XYZF64 = XYZ<f64>;
 
-/// A 3-dimensional vector.
+/// A `f64` 3-dimensional vector.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct DVec3(pub(crate) XYZF64);
@@ -265,7 +264,7 @@ impl_float_vec3!(f64, dvec3, DVec2, DVec3, DVec4, UVec3Mask, XYZF64);
 
 type XYZI32 = XYZ<i32>;
 
-/// A 3-dimensional `i32` vector.
+/// A `i32` 3-dimensional vector.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct IVec3(pub(crate) XYZI32);
@@ -274,7 +273,7 @@ impl_signed_vec3!(i32, ivec3, IVec2, IVec3, IVec4, UVec3Mask, XYZI32);
 
 type XYZU32 = XYZ<u32>;
 
-/// A 3-dimensional `u32` vector.
+/// A `u32` 3-dimensional vector.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct UVec3(pub(crate) XYZU32);

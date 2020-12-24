@@ -8,8 +8,9 @@
 `glam` is built with SIMD in mind. Currently only SSE2 on x86/x86_64 is
 supported as this is what stable Rust supports.
 
-* Single precision float `f32` support only (for now)
-* SSE2 storage and optimization for many types, including `Mat2`, `Mat4`,
+* All types support for `f32` and `f64`
+* Vector types supported for `i32` and `u32`
+* SSE2 storage and optimization for many `f32` types, including `Mat2`, `Mat4`,
   `Quat`, `Vec3A` and `Vec4`
 * Scalar fallback implementations exist when SSE2 is not available
 * Most functionality includes unit tests and benchmarks
@@ -205,6 +206,7 @@ mod vec_mask;
 #[doc(hidden)]
 pub mod f32;
 
+#[doc(hidden)]
 pub use self::core::storage::{XY, XYZ, XYZW};
 
 pub use self::mat2::{dmat2, DMat2};

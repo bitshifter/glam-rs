@@ -12,10 +12,19 @@ and feel of the API has solidified.
 
 ## Features
 
-* Only single precision floating point (`f32`) arithmetic is supported
-* vectors: `Vec2`, `Vec3`, `Vec3A` `Vec4`
-* square matrices: `Mat2`, `Mat3`, `Mat4`
-* a quaternion type: `Quat`
+* `f32` types
+  * vectors: `Vec2`, `Vec3`, `Vec3A` and `Vec4`
+  * square matrices: `Mat2`, `Mat3` and `Mat4`
+  * a quaternion type: `Quat`
+* `f64` types
+  * vectors: `DVec2`, `DVec3` and `DVec4`
+  * square matrices: `DMat2`, `DMat3` and `DMat4`
+  * a quaternion type: `DQuat`
+* `i32` types
+  * vectors: `IVec2`, `IVec3` and `IVec4`
+* `u32` types
+  * vectors: `UVec2`, `UVec3` and `UVec4`
+
 
 ### SIMD
 

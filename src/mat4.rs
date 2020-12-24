@@ -613,9 +613,9 @@ type InnerF32 = Vector4x4<__m128>;
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
 type InnerF32 = Vector4x4<XYZW<f32>>;
 
-/// A 4x4 column major matrix.
+/// A `f32` 4x4 column major matrix.
 ///
-/// This type is 16 byte aligned.
+/// This type is 16 byte aligned if SIMD is available.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct Mat4(pub(crate) InnerF32);
@@ -642,7 +642,7 @@ impl Mat4 {
 
 type InnerF64 = Vector4x4<XYZW<f64>>;
 
-/// A 4x4 column major matrix.
+/// A `f64` 4x4 column major matrix.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct DMat4(pub(crate) InnerF64);

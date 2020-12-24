@@ -221,8 +221,8 @@ macro_rules! impl_quat {
             /// best when comparing with a known value. The `max_abs_diff` that should be used used
             /// depends on the values being compared against.
             ///
-            /// For more on floating point comparisons see
-            /// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
+            /// For more see
+            /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
             #[inline(always)]
             pub fn abs_diff_eq(self, other: Self, max_abs_diff: $t) -> bool {
                 FloatVector4::abs_diff_eq(self.0, other.0, max_abs_diff)
@@ -492,7 +492,7 @@ type InnerF32 = __m128;
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
 type InnerF32 = crate::XYZW<f32>;
 
-/// A quaternion representing an orientation.
+/// A `f32` quaternion representing an orientation.
 ///
 /// This quaternion is intended to be of unit length but may denormalize due to
 /// floating point "error creep" which can occur when successive quaternion
@@ -524,7 +524,7 @@ impl Mul<Vec3A> for Quat {
 
 type InnerF64 = crate::XYZW<f64>;
 
-/// A quaternion representing an orientation.
+/// A `f64` quaternion representing an orientation.
 ///
 /// This quaternion is intended to be of unit length but may denormalize due to
 /// floating point "error creep" which can occur when successive quaternion

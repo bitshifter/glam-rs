@@ -78,7 +78,7 @@ macro_rules! impl_vec2_float_methods {
 
 macro_rules! impl_vec2_common_traits {
     ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $mask:ident, $inner:ident) => {
-        /// Creates a 2D vector.
+        /// Creates a 2-dimensional vector.
         #[inline]
         pub fn $new(x: $t, y: $t) -> $vec2 {
             $vec2::new(x, y)
@@ -179,7 +179,7 @@ macro_rules! impl_float_vec2 {
 
 type XYF32 = XY<f32>;
 
-/// A 2-dimensional `f32` vector.
+/// A `f32` 2-dimensional vector.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct Vec2(pub(crate) XYF32);
@@ -188,7 +188,7 @@ impl_float_vec2!(f32, vec2, Vec2, Vec3, Vec2Mask, XYF32);
 
 type XYF64 = XY<f64>;
 
-/// A 2-dimensional `f64` vector.
+/// A `f64` 2-dimensional vector.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct DVec2(pub(crate) XYF64);
@@ -197,7 +197,7 @@ impl_float_vec2!(f64, dvec2, DVec2, DVec3, UVec2Mask, XYF64);
 
 type XYI32 = XY<i32>;
 
-/// A 2-dimensional `i32` vector.
+/// A `i32` 2-dimensional vector.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct IVec2(pub(crate) XYI32);
@@ -206,7 +206,7 @@ impl_signed_vec2!(i32, ivec2, IVec2, IVec3, UVec2Mask, XYI32);
 
 type XYU32 = XY<u32>;
 
-/// A 2-dimensional `u32` vector.
+/// A `u32` 2-dimensional vector.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct UVec2(pub(crate) XYU32);

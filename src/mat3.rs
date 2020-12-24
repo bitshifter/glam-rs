@@ -321,8 +321,8 @@ macro_rules! impl_mat3 {
             /// when comparing with a known value. The `max_abs_diff` that should be used used
             /// depends on the values being compared against.
             ///
-            /// For more on floating point comparisons see
-            /// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
+            /// For more see
+            /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
             #[inline(always)]
             pub fn abs_diff_eq(&self, other: Self, max_abs_diff: $t) -> bool {
                 self.0.abs_diff_eq(&other.0, max_abs_diff)
@@ -415,7 +415,7 @@ macro_rules! impl_mat3 {
 
 type InnerF32 = Vector3x3<XYZ<f32>>;
 
-/// A 3x3 column major matrix.
+/// A `f32` 3x3 column major matrix.
 #[derive(Clone, Copy)]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 pub struct Mat3(pub(crate) InnerF32);
@@ -466,7 +466,7 @@ impl Mul<Vec3A> for Mat3 {
 
 type InnerF64 = Vector3x3<XYZ<f64>>;
 
-/// A 3x3 column major matrix.
+/// A `f64` 3x3 column major matrix.
 #[derive(Clone, Copy)]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 pub struct DMat3(pub(crate) InnerF64);

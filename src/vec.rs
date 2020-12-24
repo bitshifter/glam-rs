@@ -306,8 +306,8 @@ macro_rules! impl_vecn_float_methods {
         /// comparing with a known value. The `max_abs_diff` that should be used used depends on
         /// the values being compared against.
         ///
-        /// For more on floating point comparisons see
-        /// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
+        /// For more see
+        /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
         #[inline]
         pub fn abs_diff_eq(self, other: Self, max_abs_diff: $t) -> bool {
             $flttrait::abs_diff_eq(self.0, other.0, max_abs_diff)

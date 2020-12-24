@@ -244,8 +244,8 @@ macro_rules! impl_mat2 {
             /// when comparing with a known value. The `max_abs_diff` that should be used used
             /// depends on the values being compared against.
             ///
-            /// For more on floating point comparisons see
-            /// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
+            /// For more see
+            /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
             #[inline(always)]
             pub fn abs_diff_eq(&self, other: &Self, max_abs_diff: $t) -> bool {
                 self.0.abs_diff_eq(&other.0, max_abs_diff)
@@ -374,7 +374,7 @@ type InnerF32 = __m128;
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
 type InnerF32 = crate::core::storage::Vector2x2<XY<f32>>;
 
-/// A 2x2 column major matrix.
+/// A `f32` 2x2 column major matrix.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct Mat2(pub(crate) InnerF32);
@@ -383,7 +383,7 @@ impl_mat2!(mat2, Mat2, Vec2, f32, InnerF32);
 
 type InnerF64 = crate::core::storage::Vector2x2<XY<f64>>;
 
-/// A 2x2 column major matrix.
+/// A `f64` 2x2 column major matrix.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct DMat2(pub(crate) InnerF64);

@@ -369,17 +369,17 @@ pub struct Vec4Mask(pub(crate) XYZWU32);
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
 impl_vec4mask!(Vec4Mask, u32, XYZWU32);
 
-/// A 2-dimensional vector mask.
+/// A `u32` 2-dimensional vector mask.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct UVec2Mask(pub(crate) XYU32);
 
-/// A 3-dimensional vector mask.
+/// A `u32` 3-dimensional vector mask.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct UVec3Mask(pub(crate) XYZU32);
 
-/// A 4-dimensional vector mask.
+/// A `u32` 4-dimensional vector mask.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct UVec4Mask(pub(crate) XYZWU32);
