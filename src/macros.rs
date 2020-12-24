@@ -23,7 +23,7 @@ macro_rules! glam_assert {
 #[macro_export]
 macro_rules! const_vec2 {
     ($f32x2:expr) => {
-        unsafe { $crate::f32::F32x2Cast { f32x2: $f32x2 }.vec2 }
+        unsafe { $crate::F32x2Cast { f32x2: $f32x2 }.vec2 }
     };
 }
 
@@ -37,7 +37,7 @@ macro_rules! const_vec2 {
 #[macro_export]
 macro_rules! const_vec3 {
     ($f32x3:expr) => {
-        unsafe { $crate::f32::F32x3Cast { f32x3: $f32x3 }.vec3 }
+        unsafe { $crate::F32x3Cast { f32x3: $f32x3 }.vec3 }
     };
 }
 
@@ -52,7 +52,7 @@ macro_rules! const_vec3 {
 macro_rules! const_vec3a {
     ($f32x3:expr) => {
         unsafe {
-            $crate::f32::F32x4Cast {
+            $crate::F32x4Cast {
                 f32x4: [$f32x3[0], $f32x3[1], $f32x3[2], 0.0],
             }
             .vec3a
@@ -70,7 +70,7 @@ macro_rules! const_vec3a {
 #[macro_export]
 macro_rules! const_vec4 {
     ($f32x4:expr) => {
-        unsafe { $crate::f32::F32x4Cast { f32x4: $f32x4 }.vec4 }
+        unsafe { $crate::F32x4Cast { f32x4: $f32x4 }.vec4 }
     };
 }
 
@@ -84,11 +84,11 @@ macro_rules! const_vec4 {
 #[macro_export]
 macro_rules! const_mat2 {
     ($f32x4:expr) => {
-        unsafe { $crate::f32::F32x4Cast { f32x4: $f32x4 }.mat2 }
+        unsafe { $crate::F32x4Cast { f32x4: $f32x4 }.mat2 }
     };
     ($col0:expr, $col1:expr) => {
         unsafe {
-            $crate::f32::F32x4Cast {
+            $crate::F32x4Cast {
                 f32x2x2: [$col0, $col1],
             }
             .mat2
@@ -139,11 +139,11 @@ macro_rules! const_mat3 {
 #[macro_export]
 macro_rules! const_mat4 {
     ($f32x16:expr) => {
-        unsafe { $crate::f32::F32x16Cast { f32x16: $f32x16 }.mat4 }
+        unsafe { $crate::F32x16Cast { f32x16: $f32x16 }.mat4 }
     };
     ($col0:expr, $col1:expr, $col2:expr, $col3:expr) => {
         unsafe {
-            $crate::f32::F32x16Cast {
+            $crate::F32x16Cast {
                 f32x4x4: [$col0, $col1, $col2, $col3],
             }
             .mat4
@@ -155,7 +155,7 @@ macro_rules! const_mat4 {
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 macro_rules! const_m128 {
     ($f32x4:expr) => {
-        unsafe { $crate::f32::F32x4Cast { f32x4: $f32x4 }.m128 }
+        unsafe { $crate::F32x4Cast { f32x4: $f32x4 }.m128 }
     };
 }
 
@@ -169,6 +169,6 @@ macro_rules! const_m128 {
 #[macro_export]
 macro_rules! const_quat {
     ($f32x4:expr) => {
-        unsafe { $crate::f32::F32x4Cast { f32x4: $f32x4 }.quat }
+        unsafe { $crate::F32x4Cast { f32x4: $f32x4 }.quat }
     };
 }

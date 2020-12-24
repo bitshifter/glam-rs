@@ -192,6 +192,7 @@ mod macros;
 #[macro_use]
 mod vec;
 
+mod cast;
 mod core;
 mod mat2;
 mod mat3;
@@ -203,8 +204,10 @@ mod vec3;
 mod vec4;
 mod vec_mask;
 
-#[doc(hidden)]
-pub mod f32;
+#[cfg(feature = "transform-types")]
+mod transform;
+
+pub use self::cast::{F32x16Cast, F32x2Cast, F32x3Cast, F32x4Cast, F32x9Cast};
 
 #[doc(hidden)]
 pub use self::core::storage::{XY, XYZ, XYZW};
@@ -238,4 +241,24 @@ pub use self::vec_mask::{Vec2Mask, Vec3AMask, Vec3Mask, Vec4Mask};
 pub use self::swizzles::{Vec2Swizzles, Vec3ASwizzles, Vec3Swizzles, Vec4Swizzles};
 
 #[cfg(feature = "transform-types")]
-pub use self::f32::{TransformRT, TransformSRT};
+pub use self::transform::{TransformRT, TransformSRT};
+
+#[cfg(feature = "bytemuck")]
+mod glam_bytemuck;
+#[cfg(feature = "bytemuck")]
+pub use glam_bytemuck::*;
+
+#[cfg(feature = "mint")]
+mod glam_mint;
+#[cfg(feature = "mint")]
+pub use glam_mint::*;
+
+#[cfg(feature = "rand")]
+mod glam_rand;
+#[cfg(feature = "rand")]
+pub use glam_rand::*;
+
+#[cfg(feature = "serde")]
+mod glam_serde;
+#[cfg(feature = "serde")]
+pub use glam_serde::*;
