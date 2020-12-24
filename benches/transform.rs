@@ -4,7 +4,7 @@ mod macros;
 mod support;
 
 use criterion::{criterion_group, criterion_main, Criterion};
-use glam::f32::{TransformRT, TransformSRT};
+use glam::{TransformRT, TransformSRT};
 use std::ops::Mul;
 use support::*;
 
