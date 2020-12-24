@@ -2,7 +2,7 @@
 mod support;
 
 macro_rules! impl_mat2_tests {
-    ($newmat2:ident, $mat2:ident, $newvec2:ident, $vec2:ident, $t:ident) => {
+    ($t:ident, $newmat2:ident, $mat2:ident, $newvec2:ident, $vec2:ident) => {
         const IDENTITY: [[$t; 2]; 2] = [[1.0, 0.0], [0.0, 1.0]];
 
         const MATRIX: [[$t; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
@@ -188,7 +188,7 @@ mod mat2 {
         }
     }
 
-    impl_mat2_tests!(mat2, Mat2, vec2, Vec2, f32);
+    impl_mat2_tests!(f32, mat2, Mat2, vec2, Vec2);
 }
 
 mod dmat2 {
@@ -202,5 +202,5 @@ mod dmat2 {
         assert_eq!(8, mem::align_of::<DMat2>());
     }
 
-    impl_mat2_tests!(dmat2, DMat2, dvec2, DVec2, f64);
+    impl_mat2_tests!(f64, dmat2, DMat2, dvec2, DVec2);
 }

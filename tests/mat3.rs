@@ -2,7 +2,11 @@
 mod support;
 
 macro_rules! impl_mat3_tests {
-    ($newmat3:ident, $mat3:ident, $newvec3:ident, $vec3:ident, $vec2:ident, $t:ident) => {
+    ($t:ident, $newmat3:ident, $mat3:ident, $newvec3:ident, $vec3:ident, $vec2:ident) => {
+        use core::$t::INFINITY;
+        use core::$t::NAN;
+        use core::$t::NEG_INFINITY;
+
         const IDENTITY: [[$t; 3]; 3] = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]];
 
         const MATRIX: [[$t; 3]; 3] = [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]];
@@ -222,9 +226,6 @@ macro_rules! impl_mat3_tests {
 
         #[test]
         fn test_mat3_is_finite() {
-            use std::$t::INFINITY;
-            use std::$t::NAN;
-            use std::$t::NEG_INFINITY;
             assert!($mat3::identity().is_finite());
             assert!(!($mat3::identity() * INFINITY).is_finite());
             assert!(!($mat3::identity() * NEG_INFINITY).is_finite());
@@ -251,7 +252,7 @@ mod mat3 {
         assert_approx_eq!(vec3a(-1.0, 0.0, 0.0), mat_a.mul_vec3a(Vec3A::unit_y()));
     }
 
-    impl_mat3_tests!(mat3, Mat3, vec3, Vec3, Vec2, f32);
+    impl_mat3_tests!(f32, mat3, Mat3, vec3, Vec3, Vec2);
 }
 
 mod dmat3 {
@@ -265,5 +266,5 @@ mod dmat3 {
         assert_eq!(8, mem::align_of::<DMat3>());
     }
 
-    impl_mat3_tests!(dmat3, DMat3, dvec3, DVec3, DVec2, f64);
+    impl_mat3_tests!(f64, dmat3, DMat3, dvec3, DVec3, DVec2);
 }

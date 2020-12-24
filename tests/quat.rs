@@ -3,6 +3,10 @@ mod support;
 
 macro_rules! impl_quat_tests {
     ($t:ident, $new:ident, $mat3:ident, $mat4:ident, $quat:ident, $vec3:ident, $vec4:ident) => {
+        use core::$t::INFINITY;
+        use core::$t::NAN;
+        use core::$t::NEG_INFINITY;
+
         #[test]
         fn test_new() {
             let ytheta = deg(45.0);
@@ -300,9 +304,6 @@ macro_rules! impl_quat_tests {
 
         #[test]
         fn test_is_finite() {
-            use std::$t::INFINITY;
-            use std::$t::NAN;
-            use std::$t::NEG_INFINITY;
             assert!($quat::from_xyzw(0.0, 0.0, 0.0, 0.0).is_finite());
             assert!($quat::from_xyzw(-1e-10, 1.0, 1e10, 42.0).is_finite());
             assert!(!$quat::from_xyzw(INFINITY, 0.0, 0.0, 0.0).is_finite());

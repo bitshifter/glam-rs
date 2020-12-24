@@ -361,6 +361,6 @@ fn test_scalar_acos() {
     }
 
     // input is clamped to -1.0..1.0
-    assert_approx_eq!(2.0.acos_approx(), 0.0);
-    assert_approx_eq!((-2.0).acos_approx(), core::f32::consts::PI);
+    assert_approx_eq!(2.0_f32.acos_approx(), 0.0);
+    assert_approx_eq!((-2.0_f32).acos_approx(), core::f32::consts::PI);
 }

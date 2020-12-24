@@ -2,7 +2,11 @@
 mod support;
 
 macro_rules! impl_mat4_tests {
-    ($newmat4:ident, $newvec4:ident, $newvec3:ident, $mat4:ident, $quat:ident, $vec4:ident, $vec3:ident, $t:ident) => {
+    ($t:ident, $newmat4:ident, $newvec4:ident, $newvec3:ident, $mat4:ident, $quat:ident, $vec4:ident, $vec3:ident) => {
+        use core::$t::INFINITY;
+        use core::$t::NAN;
+        use core::$t::NEG_INFINITY;
+
         const IDENTITY: [[$t; 4]; 4] = [
             [1.0, 0.0, 0.0, 0.0],
             [0.0, 1.0, 0.0, 0.0],
@@ -493,9 +497,6 @@ macro_rules! impl_mat4_tests {
 
         #[test]
         fn test_mat4_is_finite() {
-            use std::$t::INFINITY;
-            use std::$t::NAN;
-            use std::$t::NEG_INFINITY;
             assert!($mat4::identity().is_finite());
             assert!(!($mat4::identity() * INFINITY).is_finite());
             assert!(!($mat4::identity() * NEG_INFINITY).is_finite());
@@ -519,7 +520,7 @@ mod mat3 {
         }
     }
 
-    impl_mat4_tests!(mat4, vec4, vec3, Mat4, Quat, Vec4, Vec3, f32);
+    impl_mat4_tests!(f32, mat4, vec4, vec3, Mat4, Quat, Vec4, Vec3);
 }
 
 mod dmat3 {
@@ -533,5 +534,5 @@ mod dmat3 {
         assert_eq!(8, mem::align_of::<DMat4>());
     }
 
-    impl_mat4_tests!(dmat4, dvec4, dvec3, DMat4, DQuat, DVec4, DVec3, f64);
+    impl_mat4_tests!(f64, dmat4, dvec4, dvec3, DMat4, DQuat, DVec4, DVec3);
 }

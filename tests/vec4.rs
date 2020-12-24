@@ -504,6 +504,10 @@ macro_rules! impl_vec4_float_tests {
     ($t:ident, $new:ident, $vec4:ident, $mask:ident) => {
         impl_vec4_signed_tests!($t, $new, $vec4, $mask);
 
+        use core::$t::INFINITY;
+        use core::$t::NAN;
+        use core::$t::NEG_INFINITY;
+
         #[test]
         fn test_funcs() {
             let x = $new(1.0, 0.0, 0.0, 0.0);
@@ -558,9 +562,9 @@ macro_rules! impl_vec4_float_tests {
             assert_eq!(-$vec4::zero().signum(), -$vec4::one());
             assert_eq!($vec4::one().signum(), $vec4::one());
             assert_eq!((-$vec4::one()).signum(), -$vec4::one());
-            assert_eq!($vec4::splat($t::INFINITY).signum(), $vec4::one());
-            assert_eq!($vec4::splat($t::NEG_INFINITY).signum(), -$vec4::one());
-            assert!($vec4::splat($t::NAN).signum().is_nan_mask().all());
+            assert_eq!($vec4::splat(INFINITY).signum(), $vec4::one());
+            assert_eq!($vec4::splat(NEG_INFINITY).signum(), -$vec4::one());
+            assert!($vec4::splat(NAN).signum().is_nan_mask().all());
         }
 
         #[test]
@@ -580,10 +584,10 @@ macro_rules! impl_vec4_float_tests {
             assert_eq!($vec4::new(0.0, 0.0, 0.0, 11.123).round().w, 11.0);
             assert_eq!($vec4::new(0.0, 0.0, 11.501, 0.0).round().z, 12.0);
             assert_eq!(
-                $vec4::new($t::NEG_INFINITY, $t::INFINITY, 1.0, -1.0).round(),
-                $vec4::new($t::NEG_INFINITY, $t::INFINITY, 1.0, -1.0)
+                $vec4::new(NEG_INFINITY, INFINITY, 1.0, -1.0).round(),
+                $vec4::new(NEG_INFINITY, INFINITY, 1.0, -1.0)
             );
-            assert!($vec4::new($t::NAN, 0.0, 0.0, 1.0).round().x.is_nan());
+            assert!($vec4::new(NAN, 0.0, 0.0, 1.0).round().x.is_nan());
         }
 
         #[test]
@@ -593,10 +597,10 @@ macro_rules! impl_vec4_float_tests {
                 $vec4::new(1.0, 1.0, -2.0, 1.0)
             );
             assert_eq!(
-                $vec4::new($t::INFINITY, $t::NEG_INFINITY, 0.0, 0.0).floor(),
-                $vec4::new($t::INFINITY, $t::NEG_INFINITY, 0.0, 0.0)
+                $vec4::new(INFINITY, NEG_INFINITY, 0.0, 0.0).floor(),
+                $vec4::new(INFINITY, NEG_INFINITY, 0.0, 0.0)
             );
-            assert!($vec4::new(0.0, $t::NAN, 0.0, 0.0).floor().y.is_nan());
+            assert!($vec4::new(0.0, NAN, 0.0, 0.0).floor().y.is_nan());
             assert_eq!(
                 $vec4::new(-0.0, -2000000.123, 10000000.123, 1000.9).floor(),
                 $vec4::new(-0.0, -2000001.0, 10000000.0, 1000.0)
@@ -610,10 +614,10 @@ macro_rules! impl_vec4_float_tests {
                 $vec4::new(2.0, 2.0, -1.0, 1235.0)
             );
             assert_eq!(
-                $vec4::new($t::INFINITY, $t::NEG_INFINITY, 0.0, 0.0).ceil(),
-                $vec4::new($t::INFINITY, $t::NEG_INFINITY, 0.0, 0.0)
+                $vec4::new(INFINITY, NEG_INFINITY, 0.0, 0.0).ceil(),
+                $vec4::new(INFINITY, NEG_INFINITY, 0.0, 0.0)
             );
-            assert!($vec4::new(0.0, 0.0, $t::NAN, 0.0).ceil().z.is_nan());
+            assert!($vec4::new(0.0, 0.0, NAN, 0.0).ceil().z.is_nan());
             assert_eq!(
                 $vec4::new(-1234.1234, -2000000.123, 1000000.123, 1000.9).ceil(),
                 $vec4::new(-1234.0, -2000000.0, 1000001.0, 1001.0)
@@ -631,9 +635,6 @@ macro_rules! impl_vec4_float_tests {
 
         #[test]
         fn test_is_finite() {
-            use std::$t::INFINITY;
-            use std::$t::NAN;
-            use std::$t::NEG_INFINITY;
             assert!($vec4::new(0.0, 0.0, 0.0, 0.0).is_finite());
             assert!($vec4::new(-1e-10, 1.0, 1e10, 42.0).is_finite());
             assert!(!$vec4::new(INFINITY, 0.0, 0.0, 0.0).is_finite());

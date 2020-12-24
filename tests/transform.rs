@@ -4,7 +4,6 @@ mod support;
 
 #[cfg(feature = "transform-types")]
 mod transform {
-    use super::support;
     use glam::*;
 
     #[test]

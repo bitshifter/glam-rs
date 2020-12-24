@@ -3,7 +3,7 @@ use num_traits::Float;
 
 use crate::core::traits::{
     quaternion::Quaternion,
-    vector::{FloatVector4, MaskVector4, Vector, Vector4, Vector4Const, VectorConst},
+    vector::{FloatVector4, MaskVector4, Vector, Vector4, Vector4Const},
 };
 use crate::{DMat3, DMat4, DVec3, DVec4};
 use crate::{Mat3, Mat4, Vec3, Vec3A, Vec4};
@@ -469,6 +469,7 @@ macro_rules! impl_quat {
             where
                 I: Iterator<Item = &'a Self>,
             {
+                use crate::core::traits::vector::VectorConst;
                 iter.fold(Self($inner::ZERO), |a, &b| Self::add(a, b))
             }
         }

@@ -446,6 +446,10 @@ macro_rules! impl_vec3_float_tests {
     ($t:ident, $new:ident, $vec3:ident, $mask:ident) => {
         impl_vec3_signed_tests!($t, $new, $vec3, $mask);
 
+        use core::$t::INFINITY;
+        use core::$t::NAN;
+        use core::$t::NEG_INFINITY;
+
         #[test]
         fn test_funcs() {
             let x = $new(1.0, 0.0, 0.0);
@@ -495,9 +499,9 @@ macro_rules! impl_vec3_float_tests {
             assert_eq!(-$vec3::zero().signum(), -$vec3::one());
             assert_eq!($vec3::one().signum(), $vec3::one());
             assert_eq!((-$vec3::one()).signum(), -$vec3::one());
-            assert_eq!($vec3::splat($t::INFINITY).signum(), $vec3::one());
-            assert_eq!($vec3::splat($t::NEG_INFINITY).signum(), -$vec3::one());
-            assert!($vec3::splat($t::NAN).signum().is_nan_mask().all());
+            assert_eq!($vec3::splat(INFINITY).signum(), $vec3::one());
+            assert_eq!($vec3::splat(NEG_INFINITY).signum(), -$vec3::one());
+            assert!($vec3::splat(NAN).signum().is_nan_mask().all());
         }
 
         #[test]
@@ -517,10 +521,10 @@ macro_rules! impl_vec3_float_tests {
             assert_eq!($vec3::new(0.0, 11.123, 0.0).round().y, 11.0);
             assert_eq!($vec3::new(0.0, 11.499, 0.0).round().y, 11.0);
             assert_eq!(
-                $vec3::new($t::NEG_INFINITY, $t::INFINITY, 0.0).round(),
-                $vec3::new($t::NEG_INFINITY, $t::INFINITY, 0.0)
+                $vec3::new(NEG_INFINITY, INFINITY, 0.0).round(),
+                $vec3::new(NEG_INFINITY, INFINITY, 0.0)
             );
-            assert!($vec3::new($t::NAN, 0.0, 0.0).round().x.is_nan());
+            assert!($vec3::new(NAN, 0.0, 0.0).round().x.is_nan());
         }
 
         #[test]
@@ -530,10 +534,10 @@ macro_rules! impl_vec3_float_tests {
                 $vec3::new(1.0, 1.0, -2.0)
             );
             assert_eq!(
-                $vec3::new($t::INFINITY, $t::NEG_INFINITY, 0.0).floor(),
-                $vec3::new($t::INFINITY, $t::NEG_INFINITY, 0.0)
+                $vec3::new(INFINITY, NEG_INFINITY, 0.0).floor(),
+                $vec3::new(INFINITY, NEG_INFINITY, 0.0)
             );
-            assert!($vec3::new($t::NAN, 0.0, 0.0).floor().x.is_nan());
+            assert!($vec3::new(NAN, 0.0, 0.0).floor().x.is_nan());
             assert_eq!(
                 $vec3::new(-2000000.123, 10000000.123, 1000.9).floor(),
                 $vec3::new(-2000001.0, 10000000.0, 1000.0)
@@ -547,10 +551,10 @@ macro_rules! impl_vec3_float_tests {
                 $vec3::new(2.0, 2.0, -1.0)
             );
             assert_eq!(
-                $vec3::new($t::INFINITY, $t::NEG_INFINITY, 0.0).ceil(),
-                $vec3::new($t::INFINITY, $t::NEG_INFINITY, 0.0)
+                $vec3::new(INFINITY, NEG_INFINITY, 0.0).ceil(),
+                $vec3::new(INFINITY, NEG_INFINITY, 0.0)
             );
-            assert!($vec3::new($t::NAN, 0.0, 0.0).ceil().x.is_nan());
+            assert!($vec3::new(NAN, 0.0, 0.0).ceil().x.is_nan());
             assert_eq!(
                 $vec3::new(-2000000.123, 1000000.123, 1000.9).ceil(),
                 $vec3::new(-2000000.0, 1000001.0, 1001.0)
@@ -567,9 +571,6 @@ macro_rules! impl_vec3_float_tests {
         }
         #[test]
         fn test_is_finite() {
-            use core::$t::INFINITY;
-            use core::$t::NAN;
-            use core::$t::NEG_INFINITY;
             assert!($vec3::new(0.0, 0.0, 0.0).is_finite());
             assert!($vec3::new(-1e-10, 1.0, 1e10).is_finite());
             assert!(!$vec3::new(INFINITY, 0.0, 0.0).is_finite());
