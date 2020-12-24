@@ -25,70 +25,71 @@ use core::arch::x86_64::*;
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
 
-macro_rules! impl_vec3 {
+macro_rules! impl_vec3_common_methods {
+    ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
+        /// Creates a new `$vec3`.
+        #[inline]
+        pub fn new(x: $t, y: $t, z: $t) -> Self {
+            Self(Vector3::new(x, y, z))
+        }
+
+        /// Creates a `$vec3` with values `[x: 1.0, y: 0.0, z: 0.0]`.
+        #[inline]
+        pub const fn unit_x() -> Self {
+            Self(Vector3Const::UNIT_X)
+        }
+
+        /// Creates a `$vec3` with values `[x: 0.0, y: 1.0, z: 0.0]`.
+        #[inline]
+        pub const fn unit_y() -> Self {
+            Self(Vector3Const::UNIT_Y)
+        }
+
+        /// Creates a `$vec3` with values `[x: 0.0, y: 0.0, z: 1.0]`.
+        #[inline]
+        pub const fn unit_z() -> Self {
+            Self(Vector3Const::UNIT_Z)
+        }
+
+        /// Creates a `Vec4` from `self` and the given `w` value.
+        #[inline]
+        pub fn extend(self, w: $t) -> $vec4 {
+            // TODO: Optimize?
+            $vec4(Vector4::new(self.x, self.y, self.z, w))
+        }
+
+        /// Creates a `Vec2` from the `x` and `y` elements of `self`, discarding `z`.
+        ///
+        /// Truncation may also be performed by using `self.xy()` or `Vec2::from()`.
+        #[inline]
+        pub fn truncate(self) -> $vec2 {
+            $vec2(Vector3::into_xy(self.0))
+        }
+
+        /// Returns $vec3 dot in all lanes of $vec3
+        #[inline]
+        #[allow(dead_code)]
+        pub(crate) fn dot_as_vec3(self, other: Self) -> Self {
+            Self(Vector3::dot_into_vec(self.0, other.0))
+        }
+
+        /// Computes the cross product of `self` and `other`.
+        #[inline]
+        pub fn cross(self, other: Self) -> Self {
+            Self(self.0.cross(other.0))
+        }
+
+        impl_vecn_common_methods!($t, $vec3, $mask, $inner, Vector3);
+    };
+}
+
+macro_rules! impl_vec3_common_traits {
     ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
         /// Creates a `Vec3`.
         #[inline]
         pub fn $new(x: $t, y: $t, z: $t) -> $vec3 {
             $vec3::new(x, y, z)
         }
-
-        impl $vec3 {
-            /// Creates a new `$vec3`.
-            #[inline]
-            pub fn new(x: $t, y: $t, z: $t) -> Self {
-                Self(Vector3::new(x, y, z))
-            }
-
-            /// Creates a `$vec3` with values `[x: 1.0, y: 0.0, z: 0.0]`.
-            #[inline]
-            pub const fn unit_x() -> Self {
-                Self(Vector3Const::UNIT_X)
-            }
-
-            /// Creates a `$vec3` with values `[x: 0.0, y: 1.0, z: 0.0]`.
-            #[inline]
-            pub const fn unit_y() -> Self {
-                Self(Vector3Const::UNIT_Y)
-            }
-
-            /// Creates a `$vec3` with values `[x: 0.0, y: 0.0, z: 1.0]`.
-            #[inline]
-            pub const fn unit_z() -> Self {
-                Self(Vector3Const::UNIT_Z)
-            }
-
-            /// Creates a `Vec4` from `self` and the given `w` value.
-            #[inline]
-            pub fn extend(self, w: $t) -> $vec4 {
-                // TODO: Optimize?
-                $vec4(Vector4::new(self.x, self.y, self.z, w))
-            }
-
-            /// Creates a `Vec2` from the `x` and `y` elements of `self`, discarding `z`.
-            ///
-            /// Truncation may also be performed by using `self.xy()` or `Vec2::from()`.
-            #[inline]
-            pub fn truncate(self) -> $vec2 {
-                $vec2(Vector3::into_xy(self.0))
-            }
-
-            /// Returns $vec3 dot in all lanes of $vec3
-            #[inline]
-            #[allow(dead_code)]
-            pub(crate) fn dot_as_vec3(self, other: Self) -> Self {
-                Self(Vector3::dot_into_vec(self.0, other.0))
-            }
-
-            /// Computes the cross product of `self` and `other`.
-            #[inline]
-            pub fn cross(self, other: Self) -> Self {
-                Self(self.0.cross(other.0))
-            }
-        }
-
-        impl_vec_common_methods!($t, $vec3, $mask, $inner, Vector3);
-        impl_vec_common_traits!($t, 3, $vec3, $inner, Vector3);
 
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Debug for $vec3 {
@@ -152,22 +153,40 @@ macro_rules! impl_vec3 {
                 self.0.as_mut_xyz()
             }
         }
+
+        impl_vecn_common_traits!($t, 3, $vec3, $inner, Vector3);
+    };
+}
+
+macro_rules! impl_unsigned_vec3 {
+    ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
+        impl $vec3 {
+            impl_vec3_common_methods!($t, $vec2, $vec3, $vec4, $mask, $inner);
+        }
+
+        impl_vec3_common_traits!($t, $new, $vec2, $vec3, $vec4, $mask, $inner);
     };
 }
 
 macro_rules! impl_signed_vec3 {
     ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
-        impl_vec3!($t, $new, $vec2, $vec3, $vec4, $mask, $inner);
-        impl_vec_signed_methods!($vec3, SignedVector3);
+        impl $vec3 {
+            impl_vec3_common_methods!($t, $vec2, $vec3, $vec4, $mask, $inner);
+            impl_vecn_signed_methods!($t, $vec3, $mask, $inner, SignedVector3);
+        }
+
+        impl_vec3_common_traits!($t, $new, $vec2, $vec3, $vec4, $mask, $inner);
+        impl_vecn_signed_traits!($t, 3, $vec3, $inner, SignedVector3);
     };
 }
 
 macro_rules! impl_float_vec3 {
     ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
-        impl_signed_vec3!($t, $new, $vec2, $vec3, $vec4, $mask, $inner);
-        impl_vec_float_methods!($t, $vec3, $mask, $inner, FloatVector3);
-
         impl $vec3 {
+            impl_vec3_common_methods!($t, $vec2, $vec3, $vec4, $mask, $inner);
+            impl_vecn_signed_methods!($t, $vec3, $mask, $inner, SignedVector3);
+            impl_vecn_float_methods!($t, $vec3, $mask, $inner, FloatVector3);
+
             /// Returns the angle between two vectors, in radians.
             ///
             /// The vectors do not need to be unit length, but this function does
@@ -177,6 +196,9 @@ macro_rules! impl_float_vec3 {
                 self.0.angle_between(other.0)
             }
         }
+
+        impl_vec3_common_traits!($t, $new, $vec2, $vec3, $vec4, $mask, $inner);
+        impl_vecn_signed_traits!($t, 3, $vec3, $inner, SignedVector3);
     };
 }
 
@@ -257,7 +279,7 @@ type XYZU32 = XYZ<u32>;
 #[repr(transparent)]
 pub struct UVec3(pub(crate) XYZU32);
 
-impl_vec3!(u32, uvec3, UVec2, UVec3, UVec4, UVec3Mask, XYZU32);
+impl_unsigned_vec3!(u32, uvec3, UVec2, UVec3, UVec4, UVec3Mask, XYZU32);
 
 #[test]
 fn test_vec3_private() {

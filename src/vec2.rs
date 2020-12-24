@@ -11,42 +11,78 @@ use core::{cmp::Ordering, f32, ops::*};
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
 
-macro_rules! impl_vec2 {
+macro_rules! impl_vec2_common_methods {
+    ($t:ty, $vec2:ident, $vec3:ident, $mask:ident, $inner:ident) => {
+        /// Creates a new vector.
+        #[inline]
+        pub fn new(x: $t, y: $t) -> $vec2 {
+            Self(Vector2::new(x, y))
+        }
+
+        /// Creates a vector with values `[x: 1.0, y: 0.0]`.
+        #[inline]
+        pub const fn unit_x() -> $vec2 {
+            Self($inner::UNIT_X)
+        }
+
+        /// Creates a vector with values `[x: 0.0, y: 1.0]`.
+        #[inline]
+        pub const fn unit_y() -> $vec2 {
+            Self($inner::UNIT_Y)
+        }
+
+        /// Creates a 3D vector from `self` and the given `z` value.
+        #[inline]
+        pub fn extend(self, z: $t) -> $vec3 {
+            $vec3::new(self.x, self.y, z)
+        }
+
+        impl_vecn_common_methods!($t, $vec2, $mask, $inner, Vector2);
+    };
+}
+
+macro_rules! impl_vec2_signed_methods {
+    ($t:ty, $vec2:ident, $vec3:ident, $mask:ident, $inner:ident) => {
+        impl_vec2_common_methods!($t, $vec2, $vec3, $mask, $inner);
+        impl_vecn_signed_methods!($t, $vec2, $mask, $inner, SignedVector2);
+
+        /// Returns a vector that is equal to `self` rotated by 90 degrees.
+        #[inline]
+        pub fn perp(self) -> Self {
+            Self(self.0.perp())
+        }
+
+        /// The perpendicular dot product of `self` and `other`.
+        #[inline]
+        pub fn perp_dot(self, other: $vec2) -> $t {
+            self.0.perp_dot(other.0)
+        }
+    };
+}
+
+macro_rules! impl_vec2_float_methods {
+    ($t:ty, $vec2:ident, $vec3:ident, $mask:ident, $inner:ident) => {
+        impl_vec2_signed_methods!($t, $vec2, $vec3, $mask, $inner);
+        impl_vecn_float_methods!($t, $vec2, $mask, $inner, FloatVector2);
+
+        /// Returns the angle between `self` and `other` in radians.
+        ///
+        /// The vectors do not need to be unit length, but this function does
+        /// perform a `sqrt`.
+        #[inline]
+        pub fn angle_between(self, other: Self) -> $t {
+            self.0.angle_between(other.0)
+        }
+    };
+}
+
+macro_rules! impl_vec2_common_traits {
     ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $mask:ident, $inner:ident) => {
         /// Creates a 2D vector.
         #[inline]
         pub fn $new(x: $t, y: $t) -> $vec2 {
             $vec2::new(x, y)
         }
-
-        impl $vec2 {
-            /// Creates a new `$vec2`.
-            #[inline]
-            pub fn new(x: $t, y: $t) -> $vec2 {
-                Self(Vector2::new(x, y))
-            }
-
-            /// Creates a `$vec2` with values `[x: 1.0, y: 0.0]`.
-            #[inline]
-            pub const fn unit_x() -> $vec2 {
-                Self($inner::UNIT_X)
-            }
-
-            /// Creates a `$vec2` with values `[x: 0.0, y: 1.0]`.
-            #[inline]
-            pub const fn unit_y() -> $vec2 {
-                Self($inner::UNIT_Y)
-            }
-
-            /// Creates a `$vec2` from `self` and the given `z` value.
-            #[inline]
-            pub fn extend(self, z: $t) -> $vec3 {
-                $vec3::new(self.x, self.y, z)
-            }
-        }
-
-        impl_vec_common_methods!($t, $vec2, $mask, $inner, Vector2);
-        impl_vec_common_traits!($t, 2, $vec2, $inner, Vector2);
 
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Display for $vec2 {
@@ -93,45 +129,51 @@ macro_rules! impl_vec2 {
                 self.0.as_mut_xy()
             }
         }
+
+        impl_vecn_common_traits!($t, 2, $vec2, $inner, Vector2);
+    };
+}
+
+macro_rules! impl_vec2_unsigned_traits {
+    ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $mask:ident, $inner:ident) => {
+        impl_vec2_common_traits!($t, $new, $vec2, $vec3, $mask, $inner);
+    };
+}
+
+macro_rules! impl_vec2_signed_traits {
+    ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $mask:ident, $inner:ident) => {
+        impl_vec2_common_traits!($t, $new, $vec2, $vec3, $mask, $inner);
+        impl_vecn_signed_traits!($t, 2, $vec2, $inner, SignedVector2);
+    };
+}
+
+macro_rules! impl_unsigned_vec2 {
+    ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $mask:ident, $inner:ident) => {
+        impl $vec2 {
+            impl_vec2_common_methods!($t, $vec2, $vec3, $mask, $inner);
+        }
+
+        impl_vec2_unsigned_traits!($t, $new, $vec2, $vec3, $mask, $inner);
     };
 }
 
 macro_rules! impl_signed_vec2 {
     ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $mask:ident, $inner:ident) => {
-        impl_vec2!($t, $new, $vec2, $vec3, $mask, $inner);
-        impl_vec_signed_methods!($vec2, SignedVector2);
-
         impl $vec2 {
-            /// Returns a `$vec2` that is equal to `self` rotated by 90 degrees.
-            #[inline]
-            pub fn perp(self) -> Self {
-                Self(self.0.perp())
-            }
-
-            /// The perpendicular dot product of the vector and `other`.
-            #[inline]
-            pub fn perp_dot(self, other: $vec2) -> $t {
-                self.0.perp_dot(other.0)
-            }
+            impl_vec2_signed_methods!($t, $vec2, $vec3, $mask, $inner);
         }
+
+        impl_vec2_signed_traits!($t, $new, $vec2, $vec3, $mask, $inner);
     };
 }
 
 macro_rules! impl_float_vec2 {
     ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $mask:ident, $inner:ident) => {
-        impl_signed_vec2!($t, $new, $vec2, $vec3, $mask, $inner);
-        impl_vec_float_methods!($t, $vec2, $mask, $inner, FloatVector2);
-
         impl $vec2 {
-            /// Returns the angle between two vectors, in radians.
-            ///
-            /// The vectors do not need to be unit length, but this function does
-            /// perform a `sqrt`.
-            #[inline]
-            pub fn angle_between(self, other: Self) -> $t {
-                self.0.angle_between(other.0)
-            }
+            impl_vec2_float_methods!($t, $vec2, $vec3, $mask, $inner);
         }
+
+        impl_vec2_signed_traits!($t, $new, $vec2, $vec3, $mask, $inner);
     };
 }
 
@@ -169,4 +211,4 @@ type XYU32 = XY<u32>;
 #[repr(transparent)]
 pub struct UVec2(pub(crate) XYU32);
 
-impl_vec2!(u32, uvec2, UVec2, UVec3, UVec2Mask, XYU32);
+impl_unsigned_vec2!(u32, uvec2, UVec2, UVec3, UVec2Mask, XYU32);

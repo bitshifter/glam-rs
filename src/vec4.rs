@@ -27,58 +27,59 @@ use std::iter::{Product, Sum};
 
 use core::{cmp::Ordering, f32};
 
-macro_rules! impl_vec4 {
+macro_rules! impl_vec4_common_methods {
+    ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
+        /// Creates a new `$vec4`.
+        #[inline]
+        pub fn new(x: $t, y: $t, z: $t, w: $t) -> Self {
+            Self(Vector4::new(x, y, z, w))
+        }
+
+        /// Creates a `$vec4` with values `[x: 1.0, y: 0.0, z: 0.0, w: 0.0]`.
+        #[inline]
+        pub const fn unit_x() -> Self {
+            Self(Vector4Const::UNIT_X)
+        }
+
+        /// Creates a `$vec4` with values `[x: 0.0, y: 1.0, z: 0.0, w: 0.0]`.
+        #[inline]
+        pub const fn unit_y() -> Self {
+            Self(Vector4Const::UNIT_Y)
+        }
+
+        /// Creates a `$vec4` with values `[x: 0.0, y: 0.0, z: 1.0, w: 0.0]`.
+        #[inline]
+        pub const fn unit_z() -> Self {
+            Self(Vector4Const::UNIT_Z)
+        }
+
+        /// Creates a `$vec4` with values `[x: 0.0, y: 0.0, z: 0.0, w: 1.0]`.
+        #[inline]
+        pub const fn unit_w() -> Self {
+            Self(Vector4Const::UNIT_W)
+        }
+
+        /// Creates a `Vec3` from the `x`, `y` and `z` elements of `self`, discarding `w`.
+        ///
+        /// Truncation to `Vec3` may also be performed by using `self.xyz()` or `Vec3::from()`.
+        ///
+        /// To truncate to `Vec3A` use `Vec3A::from()`.
+        #[inline]
+        pub fn truncate(self) -> $vec3 {
+            $vec3::new(self.x, self.y, self.z)
+        }
+
+        impl_vecn_common_methods!($t, $vec4, $mask, $inner, Vector4);
+    };
+}
+
+macro_rules! impl_vec4_common_traits {
     ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
         /// Creates a `$vec4`.
         #[inline]
         pub fn $new(x: $t, y: $t, z: $t, w: $t) -> $vec4 {
             $vec4::new(x, y, z, w)
         }
-
-        impl $vec4 {
-            /// Creates a new `$vec4`.
-            #[inline]
-            pub fn new(x: $t, y: $t, z: $t, w: $t) -> Self {
-                Self(Vector4::new(x, y, z, w))
-            }
-
-            /// Creates a `$vec4` with values `[x: 1.0, y: 0.0, z: 0.0, w: 0.0]`.
-            #[inline]
-            pub const fn unit_x() -> Self {
-                Self(Vector4Const::UNIT_X)
-            }
-
-            /// Creates a `$vec4` with values `[x: 0.0, y: 1.0, z: 0.0, w: 0.0]`.
-            #[inline]
-            pub const fn unit_y() -> Self {
-                Self(Vector4Const::UNIT_Y)
-            }
-
-            /// Creates a `$vec4` with values `[x: 0.0, y: 0.0, z: 1.0, w: 0.0]`.
-            #[inline]
-            pub const fn unit_z() -> Self {
-                Self(Vector4Const::UNIT_Z)
-            }
-
-            /// Creates a `$vec4` with values `[x: 0.0, y: 0.0, z: 0.0, w: 1.0]`.
-            #[inline]
-            pub const fn unit_w() -> Self {
-                Self(Vector4Const::UNIT_W)
-            }
-
-            /// Creates a `Vec3` from the `x`, `y` and `z` elements of `self`, discarding `w`.
-            ///
-            /// Truncation to `Vec3` may also be performed by using `self.xyz()` or `Vec3::from()`.
-            ///
-            /// To truncate to `Vec3A` use `Vec3A::from()`.
-            #[inline]
-            pub fn truncate(self) -> $vec3 {
-                $vec3::new(self.x, self.y, self.z)
-            }
-        }
-
-        impl_vec_common_methods!($t, $vec4, $mask, $inner, Vector4);
-        impl_vec_common_traits!($t, 4, $vec4, $inner, Vector4);
 
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Debug for $vec4 {
@@ -152,20 +153,43 @@ macro_rules! impl_vec4 {
                 self.0.as_mut_xyzw()
             }
         }
+
+        impl_vecn_common_traits!($t, 4, $vec4, $inner, Vector4);
+    };
+}
+
+macro_rules! impl_unsigned_vec4 {
+    ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
+        impl $vec4 {
+            impl_vec4_common_methods!($t, $vec2, $vec3, $vec4, $mask, $inner);
+        }
+
+        impl_vec4_common_traits!($t, $new, $vec2, $vec3, $vec4, $mask, $inner);
     };
 }
 
 macro_rules! impl_signed_vec4 {
     ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
-        impl_vec4!($t, $new, $vec2, $vec3, $vec4, $mask, $inner);
-        impl_vec_signed_methods!($vec4, SignedVector4);
+        impl $vec4 {
+            impl_vec4_common_methods!($t, $vec2, $vec3, $vec4, $mask, $inner);
+            impl_vecn_signed_methods!($t, $vec4, $mask, $inner, SignedVector4);
+        }
+
+        impl_vec4_common_traits!($t, $new, $vec2, $vec3, $vec4, $mask, $inner);
+        impl_vecn_signed_traits!($t, 4, $vec4, $inner, SignedVector4);
     };
 }
 
 macro_rules! impl_float_vec4 {
     ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
-        impl_signed_vec4!($t, $new, $vec2, $vec3, $vec4, $mask, $inner);
-        impl_vec_float_methods!($t, $vec4, $mask, $inner, FloatVector4);
+        impl $vec4 {
+            impl_vec4_common_methods!($t, $vec2, $vec3, $vec4, $mask, $inner);
+            impl_vecn_signed_methods!($t, $vec4, $mask, $inner, SignedVector4);
+            impl_vecn_float_methods!($t, $vec4, $mask, $inner, FloatVector4);
+        }
+
+        impl_vec4_common_traits!($t, $new, $vec2, $vec3, $vec4, $mask, $inner);
+        impl_vecn_signed_traits!($t, 4, $vec4, $inner, SignedVector4);
     };
 }
 
@@ -227,7 +251,7 @@ type XYZWU32 = XYZW<u32>;
 #[repr(transparent)]
 pub struct UVec4(pub(crate) XYZWU32);
 
-impl_vec4!(u32, uvec4, UVec2, UVec3, UVec4, UVec4Mask, XYZWU32);
+impl_unsigned_vec4!(u32, uvec4, UVec2, UVec3, UVec4, UVec4Mask, XYZWU32);
 
 #[test]
 fn test_vec4_private() {
