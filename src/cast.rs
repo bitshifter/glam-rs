@@ -17,27 +17,43 @@ pub union F32x4Cast {
 }
 
 #[repr(C)]
-pub union F32x16Cast {
-    pub f32x4x4: [[f32; 4]; 4],
-    pub f32x16: [f32; 16],
-    pub mat4: Mat4,
-}
-
-#[repr(C)]
 pub union F32x3Cast {
     pub f32x3: [f32; 3],
     pub vec3: Vec3,
 }
 
 #[repr(C)]
+pub union F32x2Cast {
+    pub f32x2: [f32; 2],
+    pub vec2: Vec2,
+}
+
+#[repr(C)]
 pub union F32x9Cast {
     pub f32x3x3: [[f32; 3]; 3],
     pub f32x9: [f32; 9],
+}
+
+#[repr(C)]
+pub union F32x16Cast {
+    pub f32x4x4: [[f32; 4]; 4],
+    pub f32x16: [f32; 16],
+}
+
+#[repr(C)]
+pub union Mat4Cast {
+    pub vec4x4: [Vec4; 4],
+    pub mat4: Mat4,
+}
+
+#[repr(C)]
+pub union Mat3Cast {
+    pub vec3x3: [Vec3; 3],
     pub mat3: Mat3,
 }
 
 #[repr(C)]
-pub union F32x2Cast {
-    pub f32x2: [f32; 2],
-    pub vec2: Vec2,
+pub union Mat2Cast {
+    pub vec2x2: [Vec2; 2],
+    pub mat2: Mat2,
 }

@@ -317,7 +317,7 @@ macro_rules! impl_quat_tests {
 mod quat {
     use crate::support::{deg, rad};
     use core::ops::Neg;
-    use glam::{quat, Mat3, Mat4, Quat, Vec3, Vec3A, Vec4};
+    use glam::{const_quat, quat, Mat3, Mat4, Quat, Vec3, Vec3A, Vec4};
 
     #[test]
     fn test_align() {
@@ -390,6 +390,12 @@ mod quat {
         assert_approx_eq!(Vec3A::unit_z(), mrzx.mul_vec3a(Vec3A::unit_x()));
         assert_approx_eq!(-Vec3A::unit_x(), mrzx * Vec3A::unit_y());
         assert_approx_eq!(-Vec3A::unit_x(), mrzx.mul_vec3a(Vec3A::unit_y()));
+    }
+
+    #[test]
+    fn test_const() {
+        const Q: Quat = const_quat!([1.0, 2.0, 3.0, 4.0]);
+        assert_eq!(Quat::from_xyzw(1.0, 2.0, 3.0, 4.0), Q);
     }
 
     impl_quat_tests!(f32, quat, Mat3, Mat4, Quat, Vec3, Vec4);

@@ -561,7 +561,7 @@ macro_rules! impl_vec2_float_tests {
 }
 
 mod vec2 {
-    use glam::{vec2, Mat2, Vec2, Vec2Mask, Vec3};
+    use glam::{const_vec2, vec2, Mat2, Vec2, Vec2Mask, Vec3};
 
     #[test]
     fn test_align() {
@@ -570,6 +570,12 @@ mod vec2 {
         assert_eq!(4, mem::align_of::<Vec2>());
         assert_eq!(8, mem::size_of::<Vec2Mask>());
         assert_eq!(4, mem::align_of::<Vec2Mask>());
+    }
+
+    #[test]
+    fn test_const() {
+        const V: Vec2 = const_vec2!([1.0, 2.0]);
+        assert_eq!(Vec2::new(1.0, 2.0), V);
     }
 
     impl_vec2_float_tests!(f32, vec2, Vec2, Vec3, Vec2Mask, Mat2);

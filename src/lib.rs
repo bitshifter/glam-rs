@@ -192,7 +192,7 @@ mod macros;
 #[macro_use]
 mod vec;
 
-mod cast;
+pub mod cast;
 mod core;
 mod mat2;
 mod mat3;
@@ -206,8 +206,6 @@ mod vec_mask;
 
 #[cfg(feature = "transform-types")]
 mod transform;
-
-pub use self::cast::{F32x16Cast, F32x2Cast, F32x3Cast, F32x4Cast, F32x9Cast};
 
 #[doc(hidden)]
 pub use self::core::storage::{XY, XYZ, XYZW};

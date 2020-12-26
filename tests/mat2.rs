@@ -188,6 +188,17 @@ mod mat2 {
         }
     }
 
+    #[test]
+    fn test_const() {
+        use glam::const_mat2;
+        const M0: Mat2 = const_mat2!([0.0; 4]);
+        const M1: Mat2 = const_mat2!([1.0, 2.0, 3.0, 4.0]);
+        const M2: Mat2 = const_mat2!([1.0, 2.0], [3.0, 4.0]);
+        assert_eq!(Mat2::zero(), M0);
+        assert_eq!(Mat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]), M1);
+        assert_eq!(Mat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]), M2);
+    }
+
     impl_mat2_tests!(f32, mat2, Mat2, vec2, Vec2);
 }
 

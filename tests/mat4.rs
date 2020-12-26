@@ -505,7 +505,7 @@ macro_rules! impl_mat4_tests {
     };
 }
 
-mod mat3 {
+mod mat4 {
     use super::support::deg;
     use glam::{mat4, vec3, vec4, Mat4, Quat, Vec3, Vec4};
 
@@ -520,10 +520,44 @@ mod mat3 {
         }
     }
 
+    #[test]
+    fn test_const() {
+        use glam::const_mat4;
+        const M0: Mat4 = const_mat4!([0.0; 16]);
+        const M1: Mat4 = const_mat4!([
+            1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0
+        ]);
+        const M2: Mat4 = const_mat4!(
+            [1.0, 2.0, 3.0, 4.0],
+            [5.0, 6.0, 7.0, 8.0],
+            [9.0, 10.0, 11.0, 12.0],
+            [13.0, 14.0, 15.0, 16.0]
+        );
+        assert_eq!(Mat4::zero(), M0);
+        assert_eq!(
+            Mat4::from_cols_array_2d(&[
+                [1.0, 2.0, 3.0, 4.0],
+                [5.0, 6.0, 7.0, 8.0],
+                [9.0, 10.0, 11.0, 12.0],
+                [13.0, 14.0, 15.0, 16.0]
+            ]),
+            M1
+        );
+        assert_eq!(
+            Mat4::from_cols_array_2d(&[
+                [1.0, 2.0, 3.0, 4.0],
+                [5.0, 6.0, 7.0, 8.0],
+                [9.0, 10.0, 11.0, 12.0],
+                [13.0, 14.0, 15.0, 16.0]
+            ]),
+            M2
+        );
+    }
+
     impl_mat4_tests!(f32, mat4, vec4, vec3, Mat4, Quat, Vec4, Vec3);
 }
 
-mod dmat3 {
+mod dmat4 {
     use super::support::deg;
     use glam::{dmat4, dvec3, dvec4, DMat4, DQuat, DVec3, DVec4};
 

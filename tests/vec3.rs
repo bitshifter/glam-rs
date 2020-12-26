@@ -610,7 +610,7 @@ macro_rules! impl_vec3_float_tests {
 }
 
 mod vec3 {
-    use glam::{vec3, Vec3, Vec3Mask};
+    use glam::{const_vec3, vec3, Vec3, Vec3Mask};
 
     #[test]
     fn test_align() {
@@ -621,11 +621,17 @@ mod vec3 {
         assert_eq!(4, mem::align_of::<Vec3Mask>());
     }
 
+    #[test]
+    fn test_const() {
+        const V: Vec3 = const_vec3!([1.0, 2.0, 3.0]);
+        assert_eq!(Vec3::new(1.0, 2.0, 3.0), V);
+    }
+
     impl_vec3_float_tests!(f32, vec3, Vec3, Vec3Mask);
 }
 
 mod vec3a {
-    use glam::{vec3a, Vec3A, Vec3AMask, Vec4};
+    use glam::{const_vec3a, vec3a, Vec3A, Vec3AMask, Vec4};
 
     #[test]
     fn test_align() {
@@ -688,10 +694,17 @@ mod vec3a {
 
     #[test]
     fn test_min_max_from_vec4() {
+        // checks that the 4th element is unused.
         let v1 = Vec3A::from(Vec4::new(1.0, 2.0, 3.0, 4.0));
         assert_eq!(v1.max_element(), 3.0);
         let v2 = Vec3A::from(Vec4::new(4.0, 3.0, 2.0, 1.0));
         assert_eq!(v2.min_element(), 2.0);
+    }
+
+    #[test]
+    fn test_const() {
+        const V: Vec3A = const_vec3a!([1.0, 2.0, 3.0]);
+        assert_eq!(Vec3A::new(1.0, 2.0, 3.0), V);
     }
 
     impl_vec3_float_tests!(f32, vec3a, Vec3A, Vec3AMask);

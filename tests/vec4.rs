@@ -667,7 +667,7 @@ macro_rules! impl_vec4_float_tests {
 }
 
 mod vec4 {
-    use glam::{vec4, Vec4, Vec4Mask};
+    use glam::{const_vec4, vec4, Vec4, Vec4Mask};
 
     #[test]
     fn test_align() {
@@ -714,6 +714,12 @@ mod vec4 {
             _mm_store_ps(a0.0.as_mut_ptr() as *mut f32, m0);
         }
         assert_eq!([0xffffffff, 0, 0xffffffff, 0], a0.0);
+    }
+
+    #[test]
+    fn test_const() {
+        const V: Vec4 = const_vec4!([1.0, 2.0, 3.0, 4.0]);
+        assert_eq!(Vec4::new(1.0, 2.0, 3.0, 4.0), V);
     }
 
     impl_vec4_float_tests!(f32, vec4, Vec4, Vec4Mask);
