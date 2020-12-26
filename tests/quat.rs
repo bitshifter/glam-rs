@@ -2,10 +2,16 @@
 mod support;
 
 macro_rules! impl_quat_tests {
-    ($t:ident, $new:ident, $mat3:ident, $mat4:ident, $quat:ident, $vec3:ident, $vec4:ident) => {
+    ($t:ident, $const_new:ident, $new:ident, $mat3:ident, $mat4:ident, $quat:ident, $vec3:ident, $vec4:ident) => {
         use core::$t::INFINITY;
         use core::$t::NAN;
         use core::$t::NEG_INFINITY;
+
+        #[test]
+        fn test_const() {
+            const Q: $quat = $const_new!([1.0, 2.0, 3.0, 4.0]);
+            assert_eq!($quat::from_xyzw(1.0, 2.0, 3.0, 4.0), Q);
+        }
 
         #[test]
         fn test_new() {
@@ -392,19 +398,13 @@ mod quat {
         assert_approx_eq!(-Vec3A::unit_x(), mrzx.mul_vec3a(Vec3A::unit_y()));
     }
 
-    #[test]
-    fn test_const() {
-        const Q: Quat = const_quat!([1.0, 2.0, 3.0, 4.0]);
-        assert_eq!(Quat::from_xyzw(1.0, 2.0, 3.0, 4.0), Q);
-    }
-
-    impl_quat_tests!(f32, quat, Mat3, Mat4, Quat, Vec3, Vec4);
+    impl_quat_tests!(f32, const_quat, quat, Mat3, Mat4, Quat, Vec3, Vec4);
 }
 
 mod dquat {
     use crate::support::{deg, rad};
     use core::ops::Neg;
-    use glam::{dquat, DMat3, DMat4, DQuat, DVec3, DVec4};
+    use glam::{const_dquat, dquat, DMat3, DMat4, DQuat, DVec3, DVec4};
 
     #[test]
     fn test_align() {
@@ -413,5 +413,5 @@ mod dquat {
         assert_eq!(8, mem::align_of::<DQuat>());
     }
 
-    impl_quat_tests!(f64, dquat, DMat3, DMat4, DQuat, DVec3, DVec4);
+    impl_quat_tests!(f64, const_dquat, dquat, DMat3, DMat4, DQuat, DVec3, DVec4);
 }

@@ -2,12 +2,22 @@
 mod support;
 
 macro_rules! impl_mat2_tests {
-    ($t:ident, $newmat2:ident, $mat2:ident, $newvec2:ident, $vec2:ident) => {
+    ($t:ident, $const_new:ident, $newmat2:ident, $mat2:ident, $newvec2:ident, $vec2:ident) => {
         const IDENTITY: [[$t; 2]; 2] = [[1.0, 0.0], [0.0, 1.0]];
 
         const MATRIX: [[$t; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
 
         const ZERO: [[$t; 2]; 2] = [[0.0; 2]; 2];
+
+        #[test]
+        fn test_const() {
+            const M0: $mat2 = $const_new!([0.0; 4]);
+            const M1: $mat2 = $const_new!([1.0, 2.0, 3.0, 4.0]);
+            const M2: $mat2 = $const_new!([1.0, 2.0], [3.0, 4.0]);
+            assert_eq!($mat2::zero(), M0);
+            assert_eq!($mat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]), M1);
+            assert_eq!($mat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]), M2);
+        }
 
         #[test]
         fn test_mat2_identity() {
@@ -175,7 +185,7 @@ macro_rules! impl_mat2_tests {
 
 mod mat2 {
     use super::support::deg;
-    use glam::{mat2, vec2, Mat2, Vec2};
+    use glam::{const_mat2, mat2, vec2, Mat2, Vec2};
 
     #[test]
     fn test_mat2_align() {
@@ -188,23 +198,12 @@ mod mat2 {
         }
     }
 
-    #[test]
-    fn test_const() {
-        use glam::const_mat2;
-        const M0: Mat2 = const_mat2!([0.0; 4]);
-        const M1: Mat2 = const_mat2!([1.0, 2.0, 3.0, 4.0]);
-        const M2: Mat2 = const_mat2!([1.0, 2.0], [3.0, 4.0]);
-        assert_eq!(Mat2::zero(), M0);
-        assert_eq!(Mat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]), M1);
-        assert_eq!(Mat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]), M2);
-    }
-
-    impl_mat2_tests!(f32, mat2, Mat2, vec2, Vec2);
+    impl_mat2_tests!(f32, const_mat2, mat2, Mat2, vec2, Vec2);
 }
 
 mod dmat2 {
     use super::support::deg;
-    use glam::{dmat2, dvec2, DMat2, DVec2};
+    use glam::{const_dmat2, dmat2, dvec2, DMat2, DVec2};
 
     #[test]
     fn test_mat2_align() {
@@ -213,5 +212,5 @@ mod dmat2 {
         assert_eq!(8, mem::align_of::<DMat2>());
     }
 
-    impl_mat2_tests!(f64, dmat2, DMat2, dvec2, DVec2);
+    impl_mat2_tests!(f64, const_dmat2, dmat2, DMat2, dvec2, DVec2);
 }

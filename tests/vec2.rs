@@ -2,7 +2,13 @@
 mod support;
 
 macro_rules! impl_vec2_tests {
-    ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $mask:ident) => {
+    ($t:ty, $const_new:ident, $new:ident, $vec2:ident, $vec3:ident, $mask:ident) => {
+        #[test]
+        fn test_const() {
+            const V: $vec2 = $const_new!([1 as $t, 2 as $t]);
+            assert_eq!($vec2::new(1 as $t, 2 as $t), V);
+        }
+
         #[test]
         fn test_new() {
             let v = $new(1 as $t, 2 as $t);
@@ -377,8 +383,8 @@ macro_rules! impl_vec2_tests {
 }
 
 macro_rules! impl_vec2_signed_tests {
-    ($t:ident, $new:ident, $vec2:ident, $vec3:ident, $mask:ident) => {
-        impl_vec2_tests!($t, $new, $vec2, $vec3, $mask);
+    ($t:ident, $const_new:ident, $new:ident, $vec2:ident, $vec3:ident, $mask:ident) => {
+        impl_vec2_tests!($t, $const_new, $new, $vec2, $vec3, $mask);
 
         #[test]
         fn test_dot_signed() {
@@ -398,8 +404,8 @@ macro_rules! impl_vec2_signed_tests {
 }
 
 macro_rules! impl_vec2_float_tests {
-    ($t:ident, $new:ident, $vec2:ident, $vec3:ident, $mask:ident, $mat2:ident) => {
-        impl_vec2_signed_tests!($t, $new, $vec2, $vec3, $mask);
+    ($t:ident, $const_new:ident, $new:ident, $vec2:ident, $vec3:ident, $mask:ident, $mat2:ident) => {
+        impl_vec2_signed_tests!($t, $const_new, $new, $vec2, $vec3, $mask);
 
         use core::$t::INFINITY;
         use core::$t::NAN;
@@ -572,17 +578,11 @@ mod vec2 {
         assert_eq!(4, mem::align_of::<Vec2Mask>());
     }
 
-    #[test]
-    fn test_const() {
-        const V: Vec2 = const_vec2!([1.0, 2.0]);
-        assert_eq!(Vec2::new(1.0, 2.0), V);
-    }
-
-    impl_vec2_float_tests!(f32, vec2, Vec2, Vec3, Vec2Mask, Mat2);
+    impl_vec2_float_tests!(f32, const_vec2, vec2, Vec2, Vec3, Vec2Mask, Mat2);
 }
 
 mod dvec2 {
-    use glam::{dvec2, DMat2, DVec2, DVec3, UVec2Mask};
+    use glam::{const_dvec2, dvec2, DMat2, DVec2, DVec3, UVec2Mask};
 
     #[test]
     fn test_align() {
@@ -593,11 +593,11 @@ mod dvec2 {
         assert_eq!(4, mem::align_of::<UVec2Mask>());
     }
 
-    impl_vec2_float_tests!(f64, dvec2, DVec2, DVec3, UVec2Mask, DMat2);
+    impl_vec2_float_tests!(f64, const_dvec2, dvec2, DVec2, DVec3, UVec2Mask, DMat2);
 }
 
 mod ivec2 {
-    use glam::{ivec2, IVec2, IVec3, UVec2Mask};
+    use glam::{const_ivec2, ivec2, IVec2, IVec3, UVec2Mask};
 
     #[test]
     fn test_align() {
@@ -608,11 +608,11 @@ mod ivec2 {
         assert_eq!(4, mem::align_of::<UVec2Mask>());
     }
 
-    impl_vec2_signed_tests!(i32, ivec2, IVec2, IVec3, UVec2Mask);
+    impl_vec2_signed_tests!(i32, const_ivec2, ivec2, IVec2, IVec3, UVec2Mask);
 }
 
 mod uvec2 {
-    use glam::{uvec2, UVec2, UVec2Mask, UVec3};
+    use glam::{const_uvec2, uvec2, UVec2, UVec2Mask, UVec3};
 
     #[test]
     fn test_align() {
@@ -623,5 +623,5 @@ mod uvec2 {
         assert_eq!(4, mem::align_of::<UVec2Mask>());
     }
 
-    impl_vec2_tests!(u32, uvec2, UVec2, UVec3, UVec2Mask);
+    impl_vec2_tests!(u32, const_uvec2, uvec2, UVec2, UVec3, UVec2Mask);
 }

@@ -2,7 +2,13 @@
 mod support;
 
 macro_rules! impl_vec4_tests {
-    ($t:ident, $new:ident, $vec4:ident, $mask:ident) => {
+    ($t:ident, $const_new:ident, $new:ident, $vec4:ident, $mask:ident) => {
+        #[test]
+        fn test_const() {
+            const V: $vec4 = $const_new!([1 as $t, 2 as $t, 3 as $t, 4 as $t]);
+            assert_eq!($vec4::new(1 as $t, 2 as $t, 3 as $t, 4 as $t), V);
+        }
+
         #[test]
         fn test_new() {
             let v = $new(1 as $t, 2 as $t, 3 as $t, 4 as $t);
@@ -477,8 +483,8 @@ macro_rules! impl_vec4_tests {
 }
 
 macro_rules! impl_vec4_signed_tests {
-    ($t:ident, $new:ident, $vec4:ident, $mask:ident) => {
-        impl_vec4_tests!($t, $new, $vec4, $mask);
+    ($t:ident, $const_new:ident, $new:ident, $vec4:ident, $mask:ident) => {
+        impl_vec4_tests!($t, $const_new, $new, $vec4, $mask);
 
         #[test]
         fn test_neg() {
@@ -501,8 +507,8 @@ macro_rules! impl_vec4_signed_tests {
 }
 
 macro_rules! impl_vec4_float_tests {
-    ($t:ident, $new:ident, $vec4:ident, $mask:ident) => {
-        impl_vec4_signed_tests!($t, $new, $vec4, $mask);
+    ($t:ident, $const_new:ident, $new:ident, $vec4:ident, $mask:ident) => {
+        impl_vec4_signed_tests!($t, $const_new, $new, $vec4, $mask);
 
         use core::$t::INFINITY;
         use core::$t::NAN;
@@ -716,17 +722,11 @@ mod vec4 {
         assert_eq!([0xffffffff, 0, 0xffffffff, 0], a0.0);
     }
 
-    #[test]
-    fn test_const() {
-        const V: Vec4 = const_vec4!([1.0, 2.0, 3.0, 4.0]);
-        assert_eq!(Vec4::new(1.0, 2.0, 3.0, 4.0), V);
-    }
-
-    impl_vec4_float_tests!(f32, vec4, Vec4, Vec4Mask);
+    impl_vec4_float_tests!(f32, const_vec4, vec4, Vec4, Vec4Mask);
 }
 
 mod dvec4 {
-    use glam::{dvec4, DVec4, UVec4Mask};
+    use glam::{const_dvec4, dvec4, DVec4, UVec4Mask};
 
     #[test]
     fn test_align() {
@@ -737,11 +737,11 @@ mod dvec4 {
         assert_eq!(4, mem::align_of::<UVec4Mask>());
     }
 
-    impl_vec4_float_tests!(f64, dvec4, DVec4, UVec4Mask);
+    impl_vec4_float_tests!(f64, const_dvec4, dvec4, DVec4, UVec4Mask);
 }
 
 mod ivec4 {
-    use glam::{ivec4, IVec4, UVec4Mask};
+    use glam::{const_ivec4, ivec4, IVec4, UVec4Mask};
 
     #[test]
     fn test_align() {
@@ -752,11 +752,11 @@ mod ivec4 {
         assert_eq!(4, mem::align_of::<UVec4Mask>());
     }
 
-    impl_vec4_signed_tests!(i32, ivec4, IVec4, UVec4Mask);
+    impl_vec4_signed_tests!(i32, const_ivec4, ivec4, IVec4, UVec4Mask);
 }
 
 mod uvec4 {
-    use glam::{uvec4, UVec4, UVec4Mask};
+    use glam::{const_uvec4, uvec4, UVec4, UVec4Mask};
 
     #[test]
     fn test_align() {
@@ -767,5 +767,5 @@ mod uvec4 {
         assert_eq!(4, mem::align_of::<UVec4Mask>());
     }
 
-    impl_vec4_tests!(u32, uvec4, UVec4, UVec4Mask);
+    impl_vec4_tests!(u32, const_uvec4, uvec4, UVec4, UVec4Mask);
 }

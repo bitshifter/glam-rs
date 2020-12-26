@@ -2,7 +2,7 @@
 mod support;
 
 macro_rules! impl_mat4_tests {
-    ($t:ident, $newmat4:ident, $newvec4:ident, $newvec3:ident, $mat4:ident, $quat:ident, $vec4:ident, $vec3:ident) => {
+    ($t:ident, $const_new:ident, $newmat4:ident, $newvec4:ident, $newvec3:ident, $mat4:ident, $quat:ident, $vec4:ident, $vec3:ident) => {
         use core::$t::INFINITY;
         use core::$t::NAN;
         use core::$t::NEG_INFINITY;
@@ -13,15 +13,47 @@ macro_rules! impl_mat4_tests {
             [0.0, 0.0, 1.0, 0.0],
             [0.0, 0.0, 0.0, 1.0],
         ];
-
         const MATRIX: [[$t; 4]; 4] = [
             [1.0, 2.0, 3.0, 4.0],
             [5.0, 6.0, 7.0, 8.0],
             [9.0, 10.0, 11.0, 12.0],
             [13.0, 14.0, 15.0, 16.0],
         ];
-
         const ZERO: [[$t; 4]; 4] = [[0.0; 4]; 4];
+
+        #[test]
+        fn test_const() {
+            const M0: $mat4 = $const_new!([0.0; 16]);
+            const M1: $mat4 = $const_new!([
+                1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0,
+                16.0
+            ]);
+            const M2: $mat4 = $const_new!(
+                [1.0, 2.0, 3.0, 4.0],
+                [5.0, 6.0, 7.0, 8.0],
+                [9.0, 10.0, 11.0, 12.0],
+                [13.0, 14.0, 15.0, 16.0]
+            );
+            assert_eq!($mat4::zero(), M0);
+            assert_eq!(
+                $mat4::from_cols_array_2d(&[
+                    [1.0, 2.0, 3.0, 4.0],
+                    [5.0, 6.0, 7.0, 8.0],
+                    [9.0, 10.0, 11.0, 12.0],
+                    [13.0, 14.0, 15.0, 16.0]
+                ]),
+                M1
+            );
+            assert_eq!(
+                $mat4::from_cols_array_2d(&[
+                    [1.0, 2.0, 3.0, 4.0],
+                    [5.0, 6.0, 7.0, 8.0],
+                    [9.0, 10.0, 11.0, 12.0],
+                    [13.0, 14.0, 15.0, 16.0]
+                ]),
+                M2
+            );
+        }
 
         #[test]
         fn test_mat4_identity() {
@@ -507,7 +539,7 @@ macro_rules! impl_mat4_tests {
 
 mod mat4 {
     use super::support::deg;
-    use glam::{mat4, vec3, vec4, Mat4, Quat, Vec3, Vec4};
+    use glam::{const_mat4, mat4, vec3, vec4, Mat4, Quat, Vec3, Vec4};
 
     #[test]
     fn test_align() {
@@ -520,46 +552,12 @@ mod mat4 {
         }
     }
 
-    #[test]
-    fn test_const() {
-        use glam::const_mat4;
-        const M0: Mat4 = const_mat4!([0.0; 16]);
-        const M1: Mat4 = const_mat4!([
-            1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0
-        ]);
-        const M2: Mat4 = const_mat4!(
-            [1.0, 2.0, 3.0, 4.0],
-            [5.0, 6.0, 7.0, 8.0],
-            [9.0, 10.0, 11.0, 12.0],
-            [13.0, 14.0, 15.0, 16.0]
-        );
-        assert_eq!(Mat4::zero(), M0);
-        assert_eq!(
-            Mat4::from_cols_array_2d(&[
-                [1.0, 2.0, 3.0, 4.0],
-                [5.0, 6.0, 7.0, 8.0],
-                [9.0, 10.0, 11.0, 12.0],
-                [13.0, 14.0, 15.0, 16.0]
-            ]),
-            M1
-        );
-        assert_eq!(
-            Mat4::from_cols_array_2d(&[
-                [1.0, 2.0, 3.0, 4.0],
-                [5.0, 6.0, 7.0, 8.0],
-                [9.0, 10.0, 11.0, 12.0],
-                [13.0, 14.0, 15.0, 16.0]
-            ]),
-            M2
-        );
-    }
-
-    impl_mat4_tests!(f32, mat4, vec4, vec3, Mat4, Quat, Vec4, Vec3);
+    impl_mat4_tests!(f32, const_mat4, mat4, vec4, vec3, Mat4, Quat, Vec4, Vec3);
 }
 
 mod dmat4 {
     use super::support::deg;
-    use glam::{dmat4, dvec3, dvec4, DMat4, DQuat, DVec3, DVec4};
+    use glam::{const_dmat4, dmat4, dvec3, dvec4, DMat4, DQuat, DVec3, DVec4};
 
     #[test]
     fn test_align() {
@@ -568,5 +566,15 @@ mod dmat4 {
         assert_eq!(8, mem::align_of::<DMat4>());
     }
 
-    impl_mat4_tests!(f64, dmat4, dvec4, dvec3, DMat4, DQuat, DVec4, DVec3);
+    impl_mat4_tests!(
+        f64,
+        const_dmat4,
+        dmat4,
+        dvec4,
+        dvec3,
+        DMat4,
+        DQuat,
+        DVec4,
+        DVec3
+    );
 }
