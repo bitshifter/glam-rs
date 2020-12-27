@@ -2,7 +2,7 @@ use crate::core::{
     storage::{Vector3x3, XYZ},
     traits::matrix::{FloatMatrix3x3, Matrix3x3, MatrixConst},
 };
-use crate::{DQuat, DVec2, DVec3, Quat, Vec2, Vec3, Vec3A, Vec3ASwizzles};
+use crate::{DQuat, DVec2, DVec3, Quat, Vec2, Vec3, Vec3A, Vec3Swizzles};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::{

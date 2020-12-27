@@ -236,7 +236,7 @@ pub use self::vec3::{vec3, vec3a, Vec3, Vec3A};
 pub use self::vec4::{vec4, Vec4};
 pub use self::vec_mask::{Vec2Mask, Vec3AMask, Vec3Mask, Vec4Mask};
 
-pub use self::swizzles::{Vec2Swizzles, Vec3ASwizzles, Vec3Swizzles, Vec4Swizzles};
+pub use self::swizzles::{Vec2Swizzles, Vec3Swizzles, Vec4Swizzles};
 
 #[cfg(feature = "transform-types")]
 pub use self::transform::{TransformRT, TransformSRT};
