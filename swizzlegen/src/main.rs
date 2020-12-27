@@ -64,14 +64,6 @@ where
     Ok(())
 }
 
-fn type_or_self<'a>(t0: &'a str, t1: &'a str) -> &'a str {
-    if t0 == t1 {
-        "Self"
-    } else {
-        t1
-    }
-}
-
 fn write_swizzle_trait(
     out: &mut impl Write,
     size: usize,
@@ -86,12 +78,19 @@ fn write_swizzle_trait(
         _ => unreachable!(),
     };
 
-    write!(
-        out,
-        r#"
-pub trait {}Swizzles {{"#,
-        t
-    )?;
+    writeln!(out, r#"pub trait {}Swizzles {{"#, t)?;
+
+    if size != 2 {
+        writeln!(out, r#"    type Vec2;"#)?;
+    }
+
+    if size != 3 {
+        writeln!(out, r#"    type Vec3;"#)?;
+    }
+
+    if size != 4 {
+        writeln!(out, r#"    type Vec4;"#)?;
+    }
 
     write_loops(
         out,
@@ -105,7 +104,7 @@ pub trait {}Swizzles {{"#,
                 E[e1],
                 E[e2],
                 E[e3],
-                type_or_self(t, vec4t)
+                if size == 4 { "Self" } else { "Self::Vec4" }
             )
         },
         |out, e0, e1, e2| {
@@ -116,7 +115,7 @@ pub trait {}Swizzles {{"#,
                 E[e0],
                 E[e1],
                 E[e2],
-                type_or_self(t, vec3t)
+                if size == 3 { "Self" } else { "Self::Vec3" }
             )
         },
         |out, e0, e1| {
@@ -126,7 +125,7 @@ pub trait {}Swizzles {{"#,
     fn {}{}(self) -> {};"#,
                 E[e0],
                 E[e1],
-                type_or_self(t, vec2t)
+                if size == 2 { "Self" } else { "Self::Vec2" }
             )
         },
     )?;
@@ -153,9 +152,8 @@ fn write_vec4_impl_scalar(
     write!(
         out,
         r#"
-use crate::{{{}, {}, {}}};
-use crate::{{XY, XYZ, XYZW}};
 use super::Vec4Swizzles;
+use crate::{{{}, {}, {}, XY, XYZ, XYZW}};
 "#,
         vec2t, vec3t, vec4t,
     )?;
@@ -163,8 +161,11 @@ use super::Vec4Swizzles;
     write!(
         out,
         r#"
-impl Vec4Swizzles for {} {{"#,
-        vec4t
+impl Vec4Swizzles for {} {{
+    type Vec2 = {};
+    type Vec3 = {};
+"#,
+        vec4t, vec2t, vec3t,
     )?;
 
     write_loops(
@@ -230,8 +231,8 @@ fn write_vec4_impl_sse2(out: &mut impl Write) -> Result<()> {
     write!(
         out,
         r#"
-use crate::{{Vec2, Vec3, Vec4}};
 use super::Vec4Swizzles;
+use crate::{{Vec2, Vec3, Vec4}};
 
 #[cfg(target_arch = "x86")]
 use core::arch::x86::*;
@@ -243,7 +244,10 @@ use core::arch::x86_64::*;
     write!(
         out,
         r#"
-impl Vec4Swizzles for Vec4 {{"#
+impl Vec4Swizzles for Vec4 {{
+    type Vec2 = Vec2;
+    type Vec3 = Vec3;
+"#,
     )?;
 
     write_loops(
@@ -255,9 +259,7 @@ impl Vec4Swizzles for Vec4 {{"#
                 r#"
     #[inline]
     fn {}{}{}{}(self) -> Vec4 {{
-        unsafe {{
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b{}_{}_{}_{}))
-        }}
+        unsafe {{ Vec4(_mm_shuffle_ps(self.0, self.0, 0b{}_{}_{}_{})) }}
     }}"#,
                 E[e0], E[e1], E[e2], E[e3], B[e3], B[e2], B[e1], B[e0],
             )
@@ -268,9 +270,7 @@ impl Vec4Swizzles for Vec4 {{"#
                 r#"
     #[inline]
     fn {}{}{}(self) -> Vec3 {{
-        unsafe {{
-            Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_{}_{}_{})))
-        }}
+        unsafe {{ Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_{}_{}_{}))) }}
     }}"#,
                 E[e0], E[e1], E[e2], B[e2], B[e1], B[e0],
             )
@@ -281,9 +281,7 @@ impl Vec4Swizzles for Vec4 {{"#
                 r#"
     #[inline]
     fn {}{}(self) -> Vec2 {{
-        unsafe {{
-            Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_{}_{})))
-        }}
+        unsafe {{ Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_{}_{}))) }}
     }}"#,
                 E[e0], E[e1], B[e1], B[e0],
             )
@@ -303,8 +301,8 @@ fn write_vec3a_impl_sse2(out: &mut impl Write) -> Result<()> {
     write!(
         out,
         r#"
-use crate::{{Vec2, Vec3A, Vec4}};
 use super::Vec3Swizzles;
+use crate::{{Vec2, Vec3A, Vec4}};
 
 #[cfg(all(vec3a_sse2, target_arch = "x86"))]
 use core::arch::x86::*;
@@ -316,7 +314,10 @@ use core::arch::x86_64::*;
     write!(
         out,
         r#"
-impl Vec3Swizzles for Vec3A {{"#
+impl Vec3Swizzles for Vec3A {{
+    type Vec2 = Vec2;
+    type Vec4 = Vec4;
+"#
     )?;
 
     write_loops(
@@ -328,9 +329,7 @@ impl Vec3Swizzles for Vec3A {{"#
                 r#"
     #[inline]
     fn {}{}{}{}(self) -> Vec4 {{
-        unsafe {{
-            Vec4(_mm_shuffle_ps(self.0, self.0, 0b{}_{}_{}_{}))
-        }}
+        unsafe {{ Vec4(_mm_shuffle_ps(self.0, self.0, 0b{}_{}_{}_{})) }}
     }}"#,
                 E[e0], E[e1], E[e2], E[e3], B[e3], B[e2], B[e1], B[e0],
             )
@@ -341,9 +340,7 @@ impl Vec3Swizzles for Vec3A {{"#
                 r#"
     #[inline]
     fn {}{}{}(self) -> Self {{
-        unsafe {{
-            Self(_mm_shuffle_ps(self.0, self.0, 0b00_{}_{}_{}))
-        }}
+        unsafe {{ Self(_mm_shuffle_ps(self.0, self.0, 0b00_{}_{}_{})) }}
     }}"#,
                 E[e0], E[e1], E[e2], B[e2], B[e1], B[e0],
             )
@@ -354,9 +351,7 @@ impl Vec3Swizzles for Vec3A {{"#
                 r#"
     #[inline]
     fn {}{}(self) -> Vec2 {{
-        unsafe {{
-            Vec2::from(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_{}_{})))
-        }}
+        unsafe {{ Vec2::from(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_{}_{}))) }}
     }}"#,
                 E[e0], E[e1], B[e1], B[e0],
             )
@@ -381,8 +376,8 @@ fn write_vec3_impl_scalar(
     write!(
         out,
         r#"
-use crate::{{XY, XYZ, {}, {}, {}}};
 use super::Vec3Swizzles;
+use crate::{{{}, {}, {}, XY, XYZ}};
 "#,
         vec2t, vec3t, vec4t
     )?;
@@ -390,8 +385,11 @@ use super::Vec3Swizzles;
     write!(
         out,
         r#"
-impl Vec3Swizzles for {} {{"#,
-        vec3t,
+impl Vec3Swizzles for {} {{
+    type Vec2 = {};
+    type Vec4 = {};
+"#,
+        vec3t, vec2t, vec4t,
     )?;
 
     write_loops(
@@ -457,8 +455,8 @@ fn write_vec2_impl_scalar(
     write!(
         out,
         r#"
-use crate::{{XY, XYZ, {}, {}, {}}};
 use super::Vec2Swizzles;
+use crate::{{{}, {}, {}, XY, XYZ}};
 "#,
         vec2t, vec3t, vec4t,
     )?;
@@ -466,8 +464,11 @@ use super::Vec2Swizzles;
     write!(
         out,
         r#"
-impl Vec2Swizzles for {} {{"#,
-        vec2t,
+impl Vec2Swizzles for {} {{
+    type Vec3 = {};
+    type Vec4 = {};
+"#,
+        vec2t, vec3t, vec4t,
     )?;
 
     write_loops(
@@ -523,7 +524,6 @@ impl Vec2Swizzles for {} {{"#,
 fn write_swizzle_traits() -> Result<()> {
     let mut out = File::create("../src/swizzles/vec_traits.rs")?;
     write_swizzle_head(&mut out)?;
-    writeln!(out, r#"use crate::{{Vec2, Vec3, Vec4}};"#)?;
     write_swizzle_trait(&mut out, 2, "Vec4", "Vec3", "Vec2")?;
     write_swizzle_trait(&mut out, 3, "Vec4", "Vec3", "Vec2")?;
     write_swizzle_trait(&mut out, 4, "Vec4", "Vec3", "Vec2")?;
@@ -650,7 +650,10 @@ fn write_test_loops(
 fn write_swizzle_tests() -> Result<()> {
     let mut out = File::create("../tests/swizzle.rs")?;
     write_swizzle_head(&mut out)?;
-    writeln!(&mut out, r#"use glam::{{vec2, vec3, vec3a, vec4, swizzles::*}};"#)?;
+    writeln!(
+        &mut out,
+        r#"use glam::{{swizzles::*, vec2, vec3, vec3a, vec4}};"#
+    )?;
     write_test_vec4(&mut out, "vec4", "vec3", "vec2")?;
     write_test_vec3(&mut out, "vec4", "vec3a", "vec2")?;
     write_test_vec3(&mut out, "vec4", "vec3", "vec2")?;
