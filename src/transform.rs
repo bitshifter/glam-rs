@@ -1,4 +1,4 @@
-use crate::{Mat4, Quat, Vec3, Vec3A, Vec3ASwizzles, Vec4Swizzles};
+use crate::{Mat4, Quat, Vec3, Vec3A, Vec3Swizzles, Vec4Swizzles};
 use core::ops::Mul;
 
 #[cfg(feature = "rand")]

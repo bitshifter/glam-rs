@@ -95,11 +95,10 @@ this includes creating a vector of a different size from the vectors elements.
 The swizzle functions are implemented using traits to add them to each vector
 type. This is primarily because there are a lot of swizzle functions which can
 obfuscate the other vector functions in documentation and so on. The traits are
-`Vec2Swizzles`, `Vec3Swizzles`, `Vec3ASwizzles` and `Vec4Swizzles`.
+`Vec2Swizzles`, `Vec3Swizzles` and `Vec4Swizzles`.
 
-Note that `Vec2Swizzles`, `Vec3Swizzles` and `Vec4Swizzles` will return a `Vec3`
-type for 3 element swizzles. `Vec3ASwizzles` will return a `Vec3A` for 3 element
-swizzles.
+Note that the `Vec3Swizzles` implementation for `Vec3A` will return a `Vec3A`
+for 3 element swizzles, all other implementations will return `Vec3`.
 
 ```
 use glam::{swizzles::*, Vec2, Vec3, Vec3A, Vec4};
