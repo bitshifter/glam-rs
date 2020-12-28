@@ -3,7 +3,7 @@ use std::io::{Result, Write};
 
 const E: [char; 4] = ['x', 'y', 'z', 'w']; // element name
 const B: [&str; 4] = ["00", "01", "10", "11"]; // shuffle bits
-const V: [&str; 4] = ["1.0", "2.0", "3.0", "4.0"]; //element value
+const V: [&str; 4] = ["1", "2", "3", "4"]; //element value
 
 // const VEC4: &str = "Vec4";
 // const VEC3A: &str = "Vec3A";
@@ -531,18 +531,18 @@ fn write_swizzle_traits() -> Result<()> {
     Ok(())
 }
 
-fn write_swizzle_impls() -> Result<()> {
+fn write_swizzle_impls_f32() -> Result<()> {
     let mut out = File::create("../src/swizzles/vec4_impl_scalar.rs")?;
     write_vec4_impl_scalar(&mut out, "Vec4", "Vec3", "Vec2")?;
 
     let mut out = File::create("../src/swizzles/vec3_impl_scalar.rs")?;
     write_vec3_impl_scalar(&mut out, "Vec4", "Vec3", "Vec2")?;
 
-    let mut out = File::create("../src/swizzles/vec3a_impl_scalar.rs")?;
-    write_vec3_impl_scalar(&mut out, "Vec4", "Vec3A", "Vec2")?;
-
     let mut out = File::create("../src/swizzles/vec2_impl_scalar.rs")?;
     write_vec2_impl_scalar(&mut out, "Vec4", "Vec3", "Vec2")?;
+
+    let mut out = File::create("../src/swizzles/vec3a_impl_scalar.rs")?;
+    write_vec3_impl_scalar(&mut out, "Vec4", "Vec3A", "Vec2")?;
 
     let mut out = File::create("../src/swizzles/vec4_impl_sse2.rs")?;
     write_vec4_impl_sse2(&mut out)?;
@@ -553,7 +553,52 @@ fn write_swizzle_impls() -> Result<()> {
     Ok(())
 }
 
-fn write_test_vec4(out: &mut impl Write, vec4t: &str, vec3t: &str, vec2t: &str) -> Result<()> {
+fn write_swizzle_impls_f64() -> Result<()> {
+    let mut out = File::create("../src/swizzles/dvec4_impl_scalar.rs")?;
+    write_vec4_impl_scalar(&mut out, "DVec4", "DVec3", "DVec2")?;
+
+    let mut out = File::create("../src/swizzles/dvec3_impl_scalar.rs")?;
+    write_vec3_impl_scalar(&mut out, "DVec4", "DVec3", "DVec2")?;
+
+    let mut out = File::create("../src/swizzles/dvec2_impl_scalar.rs")?;
+    write_vec2_impl_scalar(&mut out, "DVec4", "DVec3", "DVec2")?;
+
+    Ok(())
+}
+
+fn write_swizzle_impls_i32() -> Result<()> {
+    let mut out = File::create("../src/swizzles/ivec4_impl_scalar.rs")?;
+    write_vec4_impl_scalar(&mut out, "IVec4", "IVec3", "IVec2")?;
+
+    let mut out = File::create("../src/swizzles/ivec3_impl_scalar.rs")?;
+    write_vec3_impl_scalar(&mut out, "IVec4", "IVec3", "IVec2")?;
+
+    let mut out = File::create("../src/swizzles/ivec2_impl_scalar.rs")?;
+    write_vec2_impl_scalar(&mut out, "IVec4", "IVec3", "IVec2")?;
+
+    Ok(())
+}
+
+fn write_swizzle_impls_u32() -> Result<()> {
+    let mut out = File::create("../src/swizzles/uvec4_impl_scalar.rs")?;
+    write_vec4_impl_scalar(&mut out, "UVec4", "UVec3", "UVec2")?;
+
+    let mut out = File::create("../src/swizzles/uvec3_impl_scalar.rs")?;
+    write_vec3_impl_scalar(&mut out, "UVec4", "UVec3", "UVec2")?;
+
+    let mut out = File::create("../src/swizzles/uvec2_impl_scalar.rs")?;
+    write_vec2_impl_scalar(&mut out, "UVec4", "UVec3", "UVec2")?;
+
+    Ok(())
+}
+
+fn write_test_vec4(
+    out: &mut impl Write,
+    t: &str,
+    vec4t: &str,
+    vec3t: &str,
+    vec2t: &str,
+) -> Result<()> {
     const SIZE: usize = 4;
 
     write!(
@@ -561,19 +606,25 @@ fn write_test_vec4(out: &mut impl Write, vec4t: &str, vec3t: &str, vec2t: &str) 
         r#"
 #[test]
 fn test_{}_swizzles() {{
-    let v = {}(1.0, 2.0, 3.0, 4.0);
+    let v = {}(1_{}, 2_{}, 3_{}, 4_{});
 "#,
-        vec4t, vec4t,
+        vec4t, vec4t, t, t, t, t,
     )?;
 
-    write_test_loops(out, SIZE, vec4t, vec3t, vec2t)?;
+    write_test_loops(out, SIZE, t, vec4t, vec3t, vec2t)?;
 
     writeln!(out, "}}")?;
 
     Ok(())
 }
 
-fn write_test_vec3(out: &mut impl Write, vec4t: &str, vec3t: &str, vec2t: &str) -> Result<()> {
+fn write_test_vec3(
+    out: &mut impl Write,
+    t: &str,
+    vec4t: &str,
+    vec3t: &str,
+    vec2t: &str,
+) -> Result<()> {
     const SIZE: usize = 3;
 
     write!(
@@ -581,19 +632,25 @@ fn write_test_vec3(out: &mut impl Write, vec4t: &str, vec3t: &str, vec2t: &str) 
         r#"
 #[test]
 fn test_{}_swizzles() {{
-    let v = {}(1.0, 2.0, 3.0);
+    let v = {}(1_{}, 2_{}, 3_{});
 "#,
-        vec3t, vec3t,
+        vec3t, vec3t, t, t, t,
     )?;
 
-    write_test_loops(out, SIZE, vec4t, vec3t, vec2t)?;
+    write_test_loops(out, SIZE, t, vec4t, vec3t, vec2t)?;
 
     writeln!(out, "}}")?;
 
     Ok(())
 }
 
-fn write_test_vec2(out: &mut impl Write, vec4t: &str, vec3t: &str, vec2t: &str) -> Result<()> {
+fn write_test_vec2(
+    out: &mut impl Write,
+    t: &str,
+    vec4t: &str,
+    vec3t: &str,
+    vec2t: &str,
+) -> Result<()> {
     const SIZE: usize = 2;
 
     write!(
@@ -601,12 +658,12 @@ fn write_test_vec2(out: &mut impl Write, vec4t: &str, vec3t: &str, vec2t: &str) 
         r#"
 #[test]
 fn test_{}_swizzles() {{
-    let v = {}(1.0, 2.0);
+    let v = {}(1_{}, 2_{});
 "#,
-        vec2t, vec2t,
+        vec2t, vec2t, t, t,
     )?;
 
-    write_test_loops(out, SIZE, vec4t, vec3t, vec2t)?;
+    write_test_loops(out, SIZE, t, vec4t, vec3t, vec2t)?;
 
     writeln!(out, "}}")?;
 
@@ -616,6 +673,7 @@ fn test_{}_swizzles() {{
 fn write_test_loops(
     out: &mut impl Write,
     size: usize,
+    t: &str,
     vec4t: &str,
     vec3t: &str,
     vec2t: &str,
@@ -626,22 +684,22 @@ fn write_test_loops(
         |out, e0, e1, e2, e3| {
             writeln!(
                 out,
-                "    assert_eq!(v.{}{}{}{}(), {}({}, {}, {}, {}));",
-                E[e0], E[e1], E[e2], E[e3], vec4t, V[e0], V[e1], V[e2], V[e3]
+                "    assert_eq!(v.{}{}{}{}(), {}({}_{}, {}_{}, {}_{}, {}_{}));",
+                E[e0], E[e1], E[e2], E[e3], vec4t, V[e0], t, V[e1], t, V[e2], t, V[e3], t
             )
         },
         |out, e0, e1, e2| {
             writeln!(
                 out,
-                "    assert_eq!(v.{}{}{}(), {}({}, {}, {}));",
-                E[e0], E[e1], E[e2], vec3t, V[e0], V[e1], V[e2]
+                "    assert_eq!(v.{}{}{}(), {}({}_{}, {}_{}, {}_{}));",
+                E[e0], E[e1], E[e2], vec3t, V[e0], t, V[e1], t, V[e2], t,
             )
         },
         |out, e0, e1| {
             writeln!(
                 out,
-                "    assert_eq!(v.{}{}(), {}({}, {}));",
-                E[e0], E[e1], vec2t, V[e0], V[e1]
+                "    assert_eq!(v.{}{}(), {}({}_{}, {}_{}));",
+                E[e0], E[e1], vec2t, V[e0], t, V[e1], t,
             )
         },
     )
@@ -652,18 +710,33 @@ fn write_swizzle_tests() -> Result<()> {
     write_swizzle_head(&mut out)?;
     writeln!(
         &mut out,
-        r#"use glam::{{swizzles::*, vec2, vec3, vec3a, vec4}};"#
+        r#"use glam::{{swizzles::*, dvec2, dvec3, dvec4, ivec2, ivec3, ivec4, uvec2, uvec3, uvec4, vec2, vec3, vec3a, vec4}};"#
     )?;
-    write_test_vec4(&mut out, "vec4", "vec3", "vec2")?;
-    write_test_vec3(&mut out, "vec4", "vec3a", "vec2")?;
-    write_test_vec3(&mut out, "vec4", "vec3", "vec2")?;
-    write_test_vec2(&mut out, "vec4", "vec3", "vec2")?;
+    write_test_vec4(&mut out, "f32", "vec4", "vec3", "vec2")?;
+    write_test_vec3(&mut out, "f32", "vec4", "vec3a", "vec2")?;
+    write_test_vec3(&mut out, "f32", "vec4", "vec3", "vec2")?;
+    write_test_vec2(&mut out, "f32", "vec4", "vec3", "vec2")?;
+
+    write_test_vec4(&mut out, "f64", "dvec4", "dvec3", "dvec2")?;
+    write_test_vec3(&mut out, "f64", "dvec4", "dvec3", "dvec2")?;
+    write_test_vec2(&mut out, "f64", "dvec4", "dvec3", "dvec2")?;
+
+    write_test_vec4(&mut out, "i32", "ivec4", "ivec3", "ivec2")?;
+    write_test_vec3(&mut out, "i32", "ivec4", "ivec3", "ivec2")?;
+    write_test_vec2(&mut out, "i32", "ivec4", "ivec3", "ivec2")?;
+
+    write_test_vec4(&mut out, "u32", "uvec4", "uvec3", "uvec2")?;
+    write_test_vec3(&mut out, "u32", "uvec4", "uvec3", "uvec2")?;
+    write_test_vec2(&mut out, "u32", "uvec4", "uvec3", "uvec2")?;
     Ok(())
 }
 
 fn main() -> Result<()> {
     write_swizzle_traits()?;
-    write_swizzle_impls()?;
+    write_swizzle_impls_f32()?;
+    write_swizzle_impls_f64()?;
+    write_swizzle_impls_i32()?;
+    write_swizzle_impls_u32()?;
     write_swizzle_tests()?;
     Ok(())
 }
