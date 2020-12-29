@@ -7,6 +7,16 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
+## [0.11.3] - 2020-12-29
+
+### Changed
+
+* Made `Vec3` `repr(simd)` for `spriv` targets.
+
+### Added
+
+* Added `From<(Vec2, f32)>` for `Vec3` and `From<(Vec3, f32)` for `Vec4`.
+
 ## [0.11.2] - 2020-12-04
 
 ### Changed
@@ -391,7 +401,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.11.2...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.11.3...HEAD
+[0.11.2]: https://github.com/bitshifter/glam-rs/compare/0.11.2...0.11.3
 [0.11.2]: https://github.com/bitshifter/glam-rs/compare/0.11.1...0.11.2
 [0.11.1]: https://github.com/bitshifter/glam-rs/compare/0.11.0...0.11.1
 [0.11.0]: https://github.com/bitshifter/glam-rs/compare/0.10.2...0.11.0
