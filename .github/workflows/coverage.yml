@@ -1,0 +1,26 @@
+name: coverage
+on: [push]
+jobs:
+  coverage:
+    container:
+      image: xd009642/tarpaulin
+      options: --security-opt seccomp=unconfined
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: rustup default nightly
+      - name: Generate code coverage
+        run: >
+          cargo tarpaulin \
+              --no-default-features \
+              --features "std scalar-math bytemuck mint rand serde debug-glam-assert transform-types" \
+              --exclude-files src/f32/transform.rs \
+              --exclude-files benches/* \
+              --exclude-files tests/support/mod.rs \
+              --timeout 120 \
+              --out Xml
+
+      - name: Upload to codecov.io
+        uses: codecov/codecov-action@v1
+        with:
+          fail_ci_if_error: true
