@@ -1,426 +1,409 @@
+use crate::{DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
+use crate::{IVec2, IVec3, IVec4};
 use crate::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
+use crate::{UVec2, UVec3, UVec4};
 use core::fmt;
 use serde::{
     de::{self, Deserialize, Deserializer, SeqAccess, Visitor},
     ser::{Serialize, SerializeTupleStruct, Serializer},
 };
 
-impl Serialize for Vec2 {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let (x, y) = (*self).into();
-        let mut state = serializer.serialize_tuple_struct("Vec2", 2)?;
-        state.serialize_field(&x)?;
-        state.serialize_field(&y)?;
-        state.end()
-    }
-}
-
-impl Serialize for Vec3 {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let (x, y, z) = (*self).into();
-        // 3 is the number of fields in the struct.
-        let mut state = serializer.serialize_tuple_struct("Vec3", 3)?;
-        state.serialize_field(&x)?;
-        state.serialize_field(&y)?;
-        state.serialize_field(&z)?;
-        state.end()
-    }
-}
-
-impl Serialize for Vec3A {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let (x, y, z) = (*self).into();
-        // 3 is the number of fields in the struct.
-        let mut state = serializer.serialize_tuple_struct("Vec3A", 3)?;
-        state.serialize_field(&x)?;
-        state.serialize_field(&y)?;
-        state.serialize_field(&z)?;
-        state.end()
-    }
-}
-
-impl Serialize for Vec4 {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let (x, y, z, w) = (*self).into();
-        // 4 is the number of fields in the struct.
-        let mut state = serializer.serialize_tuple_struct("Vec4", 4)?;
-        state.serialize_field(&x)?;
-        state.serialize_field(&y)?;
-        state.serialize_field(&z)?;
-        state.serialize_field(&w)?;
-        state.end()
-    }
-}
-
-impl Serialize for Quat {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let (x, y, z, w) = (*self).into();
-        // 4 is the number of fields in the struct.
-        let mut state = serializer.serialize_tuple_struct("Quat", 4)?;
-        state.serialize_field(&x)?;
-        state.serialize_field(&y)?;
-        state.serialize_field(&z)?;
-        state.serialize_field(&w)?;
-        state.end()
-    }
-}
-
-impl Serialize for Mat2 {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let f: &[f32; 4] = self.as_ref();
-        let mut state = serializer.serialize_tuple_struct("Mat2", 4)?;
-        state.serialize_field(&f[0])?;
-        state.serialize_field(&f[1])?;
-        state.serialize_field(&f[2])?;
-        state.serialize_field(&f[3])?;
-        state.end()
-    }
-}
-
-impl Serialize for Mat3 {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let (m00, m01, m02) = self.x_axis.into();
-        let (m10, m11, m12) = self.y_axis.into();
-        let (m20, m21, m22) = self.z_axis.into();
-
-        let mut state = serializer.serialize_tuple_struct("Mat3", 9)?;
-        state.serialize_field(&m00)?;
-        state.serialize_field(&m01)?;
-        state.serialize_field(&m02)?;
-        state.serialize_field(&m10)?;
-        state.serialize_field(&m11)?;
-        state.serialize_field(&m12)?;
-        state.serialize_field(&m20)?;
-        state.serialize_field(&m21)?;
-        state.serialize_field(&m22)?;
-        state.end()
-    }
-}
-
-impl Serialize for Mat4 {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let mut state = serializer.serialize_tuple_struct("Mat4", 16)?;
-        for f in self.as_ref() {
-            state.serialize_field(f)?;
-        }
-        state.end()
-    }
-}
-
-impl<'de> Deserialize<'de> for Vec2 {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        struct Vec2Visitor;
-
-        // TODO: Not sure why this line is reported as uncovered
-        impl<'de> Visitor<'de> for Vec2Visitor {
-            type Value = Vec2;
-
-            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-                formatter.write_str("struct Vec2")
-            }
-
-            fn visit_seq<V>(self, mut seq: V) -> Result<Vec2, V::Error>
+macro_rules! impl_serde_vec2 {
+    ($vec2:ident) => {
+        impl Serialize for $vec2 {
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
-                V: SeqAccess<'de>,
+                S: Serializer,
             {
-                let x = seq
-                    .next_element()?
-                    .ok_or_else(|| de::Error::invalid_length(0, &self))?;
-                let y = seq
-                    .next_element()?
-                    .ok_or_else(|| de::Error::invalid_length(1, &self))?;
-                Ok(Vec2::new(x, y))
+                let mut state = serializer.serialize_tuple_struct(stringify!($vec2), 2)?;
+                state.serialize_field(&self.x)?;
+                state.serialize_field(&self.y)?;
+                state.end()
             }
         }
 
-        deserializer.deserialize_tuple_struct("Vec2", 2, Vec2Visitor)
-    }
-}
-
-impl<'de> Deserialize<'de> for Vec3 {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        struct Vec3Visitor;
-
-        // TODO: Not sure why this line is reported as uncovered
-        impl<'de> Visitor<'de> for Vec3Visitor {
-            type Value = Vec3;
-
-            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-                formatter.write_str("struct Vec2")
-            }
-
-            fn visit_seq<V>(self, mut seq: V) -> Result<Vec3, V::Error>
+        impl<'de> Deserialize<'de> for $vec2 {
+            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
-                V: SeqAccess<'de>,
+                D: Deserializer<'de>,
             {
-                let x = seq
-                    .next_element()?
-                    .ok_or_else(|| de::Error::invalid_length(0, &self))?;
-                let y = seq
-                    .next_element()?
-                    .ok_or_else(|| de::Error::invalid_length(1, &self))?;
-                let z = seq
-                    .next_element()?
-                    .ok_or_else(|| de::Error::invalid_length(2, &self))?;
-                Ok(Vec3::new(x, y, z))
-            }
-        }
+                struct Vec2Visitor;
 
-        deserializer.deserialize_tuple_struct("Vec3", 3, Vec3Visitor)
-    }
-}
+                impl<'de> Visitor<'de> for Vec2Visitor {
+                    type Value = $vec2;
 
-impl<'de> Deserialize<'de> for Vec3A {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        struct Vec3AVisitor;
+                    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                        formatter.write_str(concat!("struct ", stringify!($vec2)))
+                    }
 
-        // TODO: Not sure why this line is reported as uncovered
-        impl<'de> Visitor<'de> for Vec3AVisitor {
-            type Value = Vec3A;
-
-            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-                formatter.write_str("struct Vec2")
-            }
-
-            fn visit_seq<V>(self, mut seq: V) -> Result<Vec3A, V::Error>
-            where
-                V: SeqAccess<'de>,
-            {
-                let x = seq
-                    .next_element()?
-                    .ok_or_else(|| de::Error::invalid_length(0, &self))?;
-                let y = seq
-                    .next_element()?
-                    .ok_or_else(|| de::Error::invalid_length(1, &self))?;
-                let z = seq
-                    .next_element()?
-                    .ok_or_else(|| de::Error::invalid_length(2, &self))?;
-                Ok(Vec3A::new(x, y, z))
-            }
-        }
-
-        deserializer.deserialize_tuple_struct("Vec3A", 3, Vec3AVisitor)
-    }
-}
-
-impl<'de> Deserialize<'de> for Vec4 {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        struct Vec4Visitor;
-
-        // TODO: Not sure why this line is reported as uncovered
-        impl<'de> Visitor<'de> for Vec4Visitor {
-            type Value = Vec4;
-
-            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-                formatter.write_str("struct Vec2")
-            }
-
-            fn visit_seq<V>(self, mut seq: V) -> Result<Vec4, V::Error>
-            where
-                V: SeqAccess<'de>,
-            {
-                let x = seq
-                    .next_element()?
-                    .ok_or_else(|| de::Error::invalid_length(0, &self))?;
-                let y = seq
-                    .next_element()?
-                    .ok_or_else(|| de::Error::invalid_length(1, &self))?;
-                let z = seq
-                    .next_element()?
-                    .ok_or_else(|| de::Error::invalid_length(2, &self))?;
-                let w = seq
-                    .next_element()?
-                    .ok_or_else(|| de::Error::invalid_length(3, &self))?;
-                Ok(Vec4::new(x, y, z, w))
-            }
-        }
-
-        deserializer.deserialize_tuple_struct("Vec4", 4, Vec4Visitor)
-    }
-}
-
-impl<'de> Deserialize<'de> for Quat {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        struct QuatVisitor;
-
-        // TODO: Not sure why this line is reported as uncovered
-        impl<'de> Visitor<'de> for QuatVisitor {
-            type Value = Quat;
-
-            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-                formatter.write_str("struct Vec2")
-            }
-
-            fn visit_seq<V>(self, mut seq: V) -> Result<Quat, V::Error>
-            where
-                V: SeqAccess<'de>,
-            {
-                let x = seq
-                    .next_element()?
-                    .ok_or_else(|| de::Error::invalid_length(0, &self))?;
-                let y = seq
-                    .next_element()?
-                    .ok_or_else(|| de::Error::invalid_length(1, &self))?;
-                let z = seq
-                    .next_element()?
-                    .ok_or_else(|| de::Error::invalid_length(2, &self))?;
-                let w = seq
-                    .next_element()?
-                    .ok_or_else(|| de::Error::invalid_length(3, &self))?;
-                Ok(Quat::from_xyzw(x, y, z, w))
-            }
-        }
-
-        deserializer.deserialize_tuple_struct("Quat", 4, QuatVisitor)
-    }
-}
-
-impl<'de> Deserialize<'de> for Mat2 {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        struct Mat2Visitor;
-
-        // TODO: Not sure why this line is reported as uncovered
-        impl<'de> Visitor<'de> for Mat2Visitor {
-            type Value = Mat2;
-
-            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-                formatter.write_str("struct Mat2")
-            }
-
-            fn visit_seq<V>(self, mut seq: V) -> Result<Mat2, V::Error>
-            where
-                V: SeqAccess<'de>,
-            {
-                let mut f = { [0.0; 4] };
-                for i in 0..4 {
-                    f[i] = seq
-                        .next_element()?
-                        .ok_or_else(|| de::Error::invalid_length(i, &self))?;
+                    fn visit_seq<V>(self, mut seq: V) -> Result<$vec2, V::Error>
+                    where
+                        V: SeqAccess<'de>,
+                    {
+                        let x = seq
+                            .next_element()?
+                            .ok_or_else(|| de::Error::invalid_length(0, &self))?;
+                        let y = seq
+                            .next_element()?
+                            .ok_or_else(|| de::Error::invalid_length(1, &self))?;
+                        Ok($vec2::new(x, y))
+                    }
                 }
-                let x = Vec2::new(f[0], f[1]);
-                let y = Vec2::new(f[2], f[3]);
-                Ok(Mat2::from_cols(x, y))
+
+                deserializer.deserialize_tuple_struct(stringify!($vec2), 2, Vec2Visitor)
             }
         }
-
-        deserializer.deserialize_tuple_struct("Mat2", 4, Mat2Visitor)
-    }
+    };
 }
 
-impl<'de> Deserialize<'de> for Mat3 {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        struct Mat3Visitor;
-
-        // TODO: Not sure why this line is reported as uncovered
-        impl<'de> Visitor<'de> for Mat3Visitor {
-            type Value = Mat3;
-
-            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-                formatter.write_str("struct Mat3")
-            }
-
-            fn visit_seq<V>(self, mut seq: V) -> Result<Mat3, V::Error>
+macro_rules! impl_serde_vec3 {
+    ($vec3:ident) => {
+        impl Serialize for $vec3 {
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
-                V: SeqAccess<'de>,
+                S: Serializer,
             {
-                let mut f = { [0.0; 9] };
-                for i in 0..9 {
-                    f[i] = seq
-                        .next_element()?
-                        .ok_or_else(|| de::Error::invalid_length(i, &self))?;
-                }
-                let x = Vec3::new(f[0], f[1], f[2]);
-                let y = Vec3::new(f[3], f[4], f[5]);
-                let z = Vec3::new(f[6], f[7], f[8]);
-                Ok(Mat3::from_cols(x, y, z))
+                let mut state = serializer.serialize_tuple_struct(stringify!($vec3), 3)?;
+                state.serialize_field(&self.x)?;
+                state.serialize_field(&self.y)?;
+                state.serialize_field(&self.z)?;
+                state.end()
             }
         }
 
-        deserializer.deserialize_tuple_struct("Mat3", 9, Mat3Visitor)
-    }
-}
-
-impl<'de> Deserialize<'de> for Mat4 {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        struct Mat4Visitor;
-
-        // TODO: Not sure why this line is reported as uncovered
-        impl<'de> Visitor<'de> for Mat4Visitor {
-            type Value = Mat4;
-
-            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-                formatter.write_str("struct Mat4")
-            }
-
-            fn visit_seq<V>(self, mut seq: V) -> Result<Mat4, V::Error>
+        impl<'de> Deserialize<'de> for $vec3 {
+            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
-                V: SeqAccess<'de>,
+                D: Deserializer<'de>,
             {
-                let mut f = { [0.0; 16] };
-                for i in 0..16 {
-                    f[i] = seq
-                        .next_element()?
-                        .ok_or_else(|| de::Error::invalid_length(i, &self))?;
+                struct Vec3Visitor;
+
+                impl<'de> Visitor<'de> for Vec3Visitor {
+                    type Value = $vec3;
+
+                    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                        formatter.write_str(concat!("struct ", stringify!($vec3)))
+                    }
+
+                    fn visit_seq<V>(self, mut seq: V) -> Result<$vec3, V::Error>
+                    where
+                        V: SeqAccess<'de>,
+                    {
+                        let x = seq
+                            .next_element()?
+                            .ok_or_else(|| de::Error::invalid_length(0, &self))?;
+                        let y = seq
+                            .next_element()?
+                            .ok_or_else(|| de::Error::invalid_length(1, &self))?;
+                        let z = seq
+                            .next_element()?
+                            .ok_or_else(|| de::Error::invalid_length(2, &self))?;
+                        Ok($vec3::new(x, y, z))
+                    }
                 }
-                let x = Vec4::new(f[0], f[1], f[2], f[3]);
-                let y = Vec4::new(f[4], f[5], f[6], f[7]);
-                let z = Vec4::new(f[8], f[9], f[10], f[11]);
-                let w = Vec4::new(f[12], f[13], f[14], f[15]);
-                Ok(Mat4::from_cols(x, y, z, w))
+
+                deserializer.deserialize_tuple_struct(stringify!($vec3), 3, Vec3Visitor)
+            }
+        }
+    };
+}
+
+macro_rules! impl_serde_vec4 {
+    ($vec4:ident) => {
+        impl Serialize for $vec4 {
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            where
+                S: Serializer,
+            {
+                let mut state = serializer.serialize_tuple_struct(stringify!($vec4), 4)?;
+                state.serialize_field(&self.x)?;
+                state.serialize_field(&self.y)?;
+                state.serialize_field(&self.z)?;
+                state.serialize_field(&self.w)?;
+                state.end()
             }
         }
 
-        deserializer.deserialize_tuple_struct("Mat4", 16, Mat4Visitor)
-    }
+        impl<'de> Deserialize<'de> for $vec4 {
+            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+            where
+                D: Deserializer<'de>,
+            {
+                struct Vec4Visitor;
+
+                impl<'de> Visitor<'de> for Vec4Visitor {
+                    type Value = $vec4;
+
+                    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                        formatter.write_str(concat!("struct ", stringify!($vec4)))
+                    }
+
+                    fn visit_seq<V>(self, mut seq: V) -> Result<$vec4, V::Error>
+                    where
+                        V: SeqAccess<'de>,
+                    {
+                        let x = seq
+                            .next_element()?
+                            .ok_or_else(|| de::Error::invalid_length(0, &self))?;
+                        let y = seq
+                            .next_element()?
+                            .ok_or_else(|| de::Error::invalid_length(1, &self))?;
+                        let z = seq
+                            .next_element()?
+                            .ok_or_else(|| de::Error::invalid_length(2, &self))?;
+                        let w = seq
+                            .next_element()?
+                            .ok_or_else(|| de::Error::invalid_length(3, &self))?;
+                        Ok($vec4::new(x, y, z, w))
+                    }
+                }
+
+                deserializer.deserialize_tuple_struct(stringify!($vec4), 4, Vec4Visitor)
+            }
+        }
+    };
 }
+
+macro_rules! impl_serde_quat {
+    ($quat:ident) => {
+        impl Serialize for $quat {
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            where
+                S: Serializer,
+            {
+                let mut state = serializer.serialize_tuple_struct(stringify!($quat), 4)?;
+                state.serialize_field(&self.x)?;
+                state.serialize_field(&self.y)?;
+                state.serialize_field(&self.z)?;
+                state.serialize_field(&self.w)?;
+                state.end()
+            }
+        }
+
+        impl<'de> Deserialize<'de> for $quat {
+            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+            where
+                D: Deserializer<'de>,
+            {
+                struct QuatVisitor;
+
+                impl<'de> Visitor<'de> for QuatVisitor {
+                    type Value = $quat;
+
+                    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                        formatter.write_str(concat!("struct ", stringify!($quat)))
+                    }
+
+                    fn visit_seq<V>(self, mut seq: V) -> Result<$quat, V::Error>
+                    where
+                        V: SeqAccess<'de>,
+                    {
+                        let x = seq
+                            .next_element()?
+                            .ok_or_else(|| de::Error::invalid_length(0, &self))?;
+                        let y = seq
+                            .next_element()?
+                            .ok_or_else(|| de::Error::invalid_length(1, &self))?;
+                        let z = seq
+                            .next_element()?
+                            .ok_or_else(|| de::Error::invalid_length(2, &self))?;
+                        let w = seq
+                            .next_element()?
+                            .ok_or_else(|| de::Error::invalid_length(3, &self))?;
+                        Ok($quat::from_xyzw(x, y, z, w))
+                    }
+                }
+
+                deserializer.deserialize_tuple_struct(stringify!($quat), 4, QuatVisitor)
+            }
+        }
+    };
+}
+
+macro_rules! impl_serde_mat2 {
+    ($mat2:ident) => {
+        impl Serialize for $mat2 {
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            where
+                S: Serializer,
+            {
+                let f: &[_; 4] = self.as_ref();
+                let mut state = serializer.serialize_tuple_struct(stringify!($mat2), 4)?;
+                state.serialize_field(&f[0])?;
+                state.serialize_field(&f[1])?;
+                state.serialize_field(&f[2])?;
+                state.serialize_field(&f[3])?;
+                state.end()
+            }
+        }
+
+        impl<'de> Deserialize<'de> for $mat2 {
+            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+            where
+                D: Deserializer<'de>,
+            {
+                struct Mat2Visitor;
+
+                impl<'de> Visitor<'de> for Mat2Visitor {
+                    type Value = $mat2;
+
+                    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                        formatter.write_str(concat!("struct ", stringify!($mat2)))
+                    }
+
+                    fn visit_seq<V>(self, mut seq: V) -> Result<$mat2, V::Error>
+                    where
+                        V: SeqAccess<'de>,
+                    {
+                        let mut f = { [0.0; 4] };
+                        for i in 0..4 {
+                            f[i] = seq
+                                .next_element()?
+                                .ok_or_else(|| de::Error::invalid_length(i, &self))?;
+                        }
+                        Ok($mat2::from_cols_array(&f))
+                    }
+                }
+
+                deserializer.deserialize_tuple_struct(stringify!($mat2), 4, Mat2Visitor)
+            }
+        }
+    };
+}
+
+macro_rules! impl_serde_mat3 {
+    ($mat3:ident) => {
+        impl Serialize for $mat3 {
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            where
+                S: Serializer,
+            {
+                let (m00, m01, m02) = self.x_axis.into();
+                let (m10, m11, m12) = self.y_axis.into();
+                let (m20, m21, m22) = self.z_axis.into();
+
+                let mut state = serializer.serialize_tuple_struct(stringify!($mat3), 9)?;
+                state.serialize_field(&m00)?;
+                state.serialize_field(&m01)?;
+                state.serialize_field(&m02)?;
+                state.serialize_field(&m10)?;
+                state.serialize_field(&m11)?;
+                state.serialize_field(&m12)?;
+                state.serialize_field(&m20)?;
+                state.serialize_field(&m21)?;
+                state.serialize_field(&m22)?;
+                state.end()
+            }
+        }
+
+        impl<'de> Deserialize<'de> for $mat3 {
+            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+            where
+                D: Deserializer<'de>,
+            {
+                struct Mat3Visitor;
+
+                impl<'de> Visitor<'de> for Mat3Visitor {
+                    type Value = $mat3;
+
+                    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                        formatter.write_str(concat!("struct ", stringify!($mat3)))
+                    }
+
+                    fn visit_seq<V>(self, mut seq: V) -> Result<$mat3, V::Error>
+                    where
+                        V: SeqAccess<'de>,
+                    {
+                        let mut f = { [0.0; 9] };
+                        for i in 0..9 {
+                            f[i] = seq
+                                .next_element()?
+                                .ok_or_else(|| de::Error::invalid_length(i, &self))?;
+                        }
+                        Ok($mat3::from_cols_array(&f))
+                    }
+                }
+
+                deserializer.deserialize_tuple_struct(stringify!($mat3), 9, Mat3Visitor)
+            }
+        }
+    };
+}
+
+macro_rules! impl_serde_mat4 {
+    ($mat4:ident) => {
+        impl Serialize for $mat4 {
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            where
+                S: Serializer,
+            {
+                let mut state = serializer.serialize_tuple_struct(stringify!($mat4), 16)?;
+                for f in self.as_ref() {
+                    state.serialize_field(f)?;
+                }
+                state.end()
+            }
+        }
+
+        impl<'de> Deserialize<'de> for $mat4 {
+            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+            where
+                D: Deserializer<'de>,
+            {
+                struct Mat4Visitor;
+
+                impl<'de> Visitor<'de> for Mat4Visitor {
+                    type Value = $mat4;
+
+                    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                        formatter.write_str(concat!("struct ", stringify!($mat4)))
+                    }
+
+                    fn visit_seq<V>(self, mut seq: V) -> Result<$mat4, V::Error>
+                    where
+                        V: SeqAccess<'de>,
+                    {
+                        let mut f = { [0.0; 16] };
+                        for i in 0..16 {
+                            f[i] = seq
+                                .next_element()?
+                                .ok_or_else(|| de::Error::invalid_length(i, &self))?;
+                        }
+                        Ok($mat4::from_cols_array(&f))
+                    }
+                }
+
+                deserializer.deserialize_tuple_struct(stringify!($mat4), 16, Mat4Visitor)
+            }
+        }
+    };
+}
+
+macro_rules! impl_serde_vec_types {
+    ($vec2:ident, $vec3:ident, $vec4:ident) => {
+        impl_serde_vec2!($vec2);
+        impl_serde_vec3!($vec3);
+        impl_serde_vec4!($vec4);
+    };
+}
+
+macro_rules! impl_serde_float_types {
+    ($mat2:ident, $mat3:ident, $mat4:ident, $quat:ident, $vec2:ident, $vec3:ident, $vec4:ident) => {
+        impl_serde_mat2!($mat2);
+        impl_serde_mat3!($mat3);
+        impl_serde_mat4!($mat4);
+        impl_serde_quat!($quat);
+        impl_serde_vec_types!($vec2, $vec3, $vec4);
+    };
+}
+
+impl_serde_float_types!(DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4);
+
+impl_serde_vec_types!(IVec2, IVec3, IVec4);
+impl_serde_vec_types!(UVec2, UVec3, UVec4);
+
+impl_serde_float_types!(Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4);
+impl_serde_vec3!(Vec3A);
 
 #[test]
 fn test_mat2_serde() {
