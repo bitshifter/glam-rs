@@ -18,5 +18,5 @@ jobs:
       - name: Upload to coveralls.io
         uses: coverallsapp/github-action@master
         with:
-          github-toek: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           fail_ci_if_error: true
