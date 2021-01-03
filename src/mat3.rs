@@ -414,7 +414,7 @@ macro_rules! impl_mat3 {
 
 type InnerF32 = Vector3x3<XYZ<f32>>;
 
-/// A `f32` 3x3 column major matrix.
+/// A 3x3 column major matrix.
 #[derive(Clone, Copy)]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 pub struct Mat3(pub(crate) InnerF32);
@@ -465,7 +465,7 @@ impl Mul<Vec3A> for Mat3 {
 
 type InnerF64 = Vector3x3<XYZ<f64>>;
 
-/// A `f64` 3x3 column major matrix.
+/// A 3x3 column major matrix.
 #[derive(Clone, Copy)]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 pub struct DMat3(pub(crate) InnerF64);

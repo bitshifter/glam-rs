@@ -524,8 +524,20 @@ impl Vec2Swizzles for {} {{
 fn write_swizzle_traits() -> Result<()> {
     let mut out = File::create("../src/swizzles/vec_traits.rs")?;
     write_swizzle_head(&mut out)?;
+    writeln!(
+        out,
+        r#"/** Swizzle methods for 2-dimensional vector types. */"#
+    )?;
     write_swizzle_trait(&mut out, 2, "Vec4", "Vec3", "Vec2")?;
+    writeln!(
+        out,
+        r#"/** Swizzle methods for 3-dimensional vector types. */"#
+    )?;
     write_swizzle_trait(&mut out, 3, "Vec4", "Vec3", "Vec2")?;
+    writeln!(
+        out,
+        r#"/** Swizzle methods for 3-dimensional vector types. */"#
+    )?;
     write_swizzle_trait(&mut out, 4, "Vec4", "Vec3", "Vec2")?;
 
     Ok(())
@@ -710,7 +722,10 @@ fn write_swizzle_tests() -> Result<()> {
     write_swizzle_head(&mut out)?;
     writeln!(
         &mut out,
-        r#"use glam::{{swizzles::*, dvec2, dvec3, dvec4, ivec2, ivec3, ivec4, uvec2, uvec3, uvec4, vec2, vec3, vec3a, vec4}};"#
+        r#"use glam::{{
+    dvec2, dvec3, dvec4, ivec2, ivec3, ivec4, swizzles::*, uvec2, uvec3, uvec4, vec2, vec3, vec3a,
+    vec4,
+}};"#
     )?;
     write_test_vec4(&mut out, "f32", "vec4", "vec3", "vec2")?;
     write_test_vec3(&mut out, "f32", "vec4", "vec3a", "vec2")?;

@@ -8,7 +8,7 @@
 `glam` is built with SIMD in mind. Currently only SSE2 on x86/x86_64 is
 supported as this is what stable Rust supports.
 
-* All types support for `f32` and `f64`
+* Vector, quaternion and matrix types support for `f32` and `f64`
 * Vector types supported for `i32` and `u32`
 * SSE2 storage and optimization for many `f32` types, including `Mat2`, `Mat4`,
   `Quat`, `Vec3A` and `Vec4`
@@ -191,19 +191,20 @@ mod macros;
 #[macro_use]
 mod vec;
 
+#[doc(hidden)]
 pub mod cast;
+
 mod core;
 mod mat2;
 mod mat3;
 mod mat4;
 mod quat;
-pub mod swizzles;
 mod vec2;
 mod vec3;
 mod vec4;
 mod vec_mask;
 
-pub mod features;
+mod features;
 
 #[cfg(feature = "transform-types")]
 mod transform;
@@ -211,33 +212,69 @@ mod transform;
 #[doc(hidden)]
 pub use self::core::storage::{XY, XYZ, XYZW};
 
-pub use self::mat2::{dmat2, DMat2};
-pub use self::mat3::{dmat3, DMat3};
-pub use self::mat4::{dmat4, DMat4};
-pub use self::quat::{dquat, DQuat};
-pub use self::vec2::{dvec2, DVec2};
-pub use self::vec3::{dvec3, DVec3};
-pub use self::vec4::{dvec4, DVec4};
+/** `f32` vector, quaternion and matrix types. */
+pub mod f32 {
+    // pub use super::cast::{
+    //     F32x16Cast, F32x9Cast, Mat2Cast, Mat3Cast, Mat4Cast, Vec2Cast, Vec3Cast, Vec4Cast,
+    // };
+    pub use super::mat2::{mat2, Mat2};
+    pub use super::mat3::{mat3, Mat3};
+    pub use super::mat4::{mat4, Mat4};
+    pub use super::quat::{quat, Quat};
+    pub use super::vec2::{vec2, Vec2};
+    pub use super::vec3::{vec3, vec3a, Vec3, Vec3A};
+    pub use super::vec4::{vec4, Vec4};
 
-pub use self::vec2::{ivec2, IVec2};
-pub use self::vec3::{ivec3, IVec3};
-pub use self::vec4::{ivec4, IVec4};
+    #[cfg(feature = "transform-types")]
+    pub use super::transform::{TransformRT, TransformSRT};
+}
+pub use self::f32::*;
 
-pub use self::vec2::{uvec2, UVec2};
-pub use self::vec3::{uvec3, UVec3};
-pub use self::vec4::{uvec4, UVec4};
-pub use self::vec_mask::{UVec2Mask, UVec3Mask, UVec4Mask};
+/** `f64` vector, quaternion and matrix types. */
+pub mod f64 {
+    // pub use super::cast::{
+    //     DMat2Cast, DMat3Cast, DMat4Cast, DVec2Cast, DVec3Cast, DVec4Cast, F64x16Cast, F64x9Cast,
+    // };
+    pub use super::mat2::{dmat2, DMat2};
+    pub use super::mat3::{dmat3, DMat3};
+    pub use super::mat4::{dmat4, DMat4};
+    pub use super::quat::{dquat, DQuat};
+    pub use super::vec2::{dvec2, DVec2};
+    pub use super::vec3::{dvec3, DVec3};
+    pub use super::vec4::{dvec4, DVec4};
+}
+pub use self::f64::*;
 
-pub use self::mat2::{mat2, Mat2};
-pub use self::mat3::{mat3, Mat3};
-pub use self::mat4::{mat4, Mat4};
-pub use self::quat::{quat, Quat};
-pub use self::vec2::{vec2, Vec2};
-pub use self::vec3::{vec3, vec3a, Vec3, Vec3A};
-pub use self::vec4::{vec4, Vec4};
-pub use self::vec_mask::{Vec2Mask, Vec3AMask, Vec3Mask, Vec4Mask};
+/** `i32` vector types. */
+pub mod i32 {
+    // pub use super::cast::{
+    //     IVec2Cast, IVec3Cast, IVec4Cast,
+    // };
+    pub use super::vec2::{ivec2, IVec2};
+    pub use super::vec3::{ivec3, IVec3};
+    pub use super::vec4::{ivec4, IVec4};
+}
+pub use self::i32::*;
+
+/** `u32` vector types. */
+pub mod u32 {
+    // pub use super::cast::{
+    //     UVec2Cast, UVec3Cast, UVec4Cast,
+    // };
+    pub use super::vec2::{uvec2, UVec2};
+    pub use super::vec3::{uvec3, UVec3};
+    pub use super::vec4::{uvec4, UVec4};
+}
+pub use self::u32::*;
+
+/** Vector mask types. */
+pub mod mask {
+    pub use super::vec_mask::{UVec2Mask, UVec3Mask, UVec4Mask};
+    pub use super::vec_mask::{Vec2Mask, Vec3AMask, Vec3Mask, Vec4Mask};
+}
+pub use self::mask::*;
+
+/** Traits adding swizzle methods to all vector types. */
+pub mod swizzles;
 
 pub use self::swizzles::{Vec2Swizzles, Vec3Swizzles, Vec4Swizzles};
-
-#[cfg(feature = "transform-types")]
-pub use self::transform::{TransformRT, TransformSRT};

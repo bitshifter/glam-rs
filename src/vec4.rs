@@ -197,7 +197,7 @@ macro_rules! impl_float_vec4 {
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
 type XYZWF32 = XYZW<f32>;
 
-/// A `f32` 4-dimensional vector.
+/// A 4-dimensional vector.
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
 #[derive(Clone, Copy)]
 #[repr(transparent)]
@@ -206,7 +206,7 @@ pub struct Vec4(pub(crate) XYZWF32);
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
 impl_float_vec4!(f32, vec4, Vec2, Vec3, Vec4, Vec4Mask, XYZWF32);
 
-/// A `f32` 4-dimensional vector.
+/// A 4-dimensional vector.
 ///
 /// This type uses 16 byte aligned SIMD vector type for storage on supported platforms.
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
@@ -229,7 +229,7 @@ impl From<Vec4> for Vec3A {
 
 type XYZWF64 = XYZW<f64>;
 
-/// A `f64` 4-dimensional vector.
+/// A 4-dimensional vector.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct DVec4(pub(crate) XYZWF64);
@@ -238,7 +238,7 @@ impl_float_vec4!(f64, dvec4, DVec2, DVec3, DVec4, UVec4Mask, XYZWF64);
 
 type XYZWI32 = XYZW<i32>;
 
-/// A `i32` 4-dimensional vector.
+/// A 4-dimensional vector.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct IVec4(pub(crate) XYZWI32);
@@ -247,7 +247,7 @@ impl_signed_vec4!(i32, ivec4, IVec2, IVec3, IVec4, UVec4Mask, XYZWI32);
 
 type XYZWU32 = XYZW<u32>;
 
-/// A `u32` 4-dimensional vector.
+/// A 4-dimensional vector.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct UVec4(pub(crate) XYZWU32);

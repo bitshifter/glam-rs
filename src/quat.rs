@@ -492,7 +492,7 @@ type InnerF32 = __m128;
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
 type InnerF32 = crate::XYZW<f32>;
 
-/// A `f32` quaternion representing an orientation.
+/// A quaternion representing an orientation.
 ///
 /// This quaternion is intended to be of unit length but may denormalize due to
 /// floating point "error creep" which can occur when successive quaternion
@@ -524,7 +524,7 @@ impl Mul<Vec3A> for Quat {
 
 type InnerF64 = crate::XYZW<f64>;
 
-/// A `f64` quaternion representing an orientation.
+/// A quaternion representing an orientation.
 ///
 /// This quaternion is intended to be of unit length but may denormalize due to
 /// floating point "error creep" which can occur when successive quaternion
