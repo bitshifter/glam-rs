@@ -46,20 +46,16 @@ macro_rules! impl_serde_vec2 {
 
         #[test]
         fn test_vec2_serde() {
-            let s1 = 1 as $t;
-            let s2 = 2 as $t;
-            let s3 = 3 as $t;
-            let a = $vec2::new(s1, s2);
+            let a = $vec2::new(1 as $t, 2 as $t);
             let serialized = serde_json::to_string(&a).unwrap();
-            assert_eq!(serialized, format!("[{:?},{:?}]", s1, s2).as_str());
+            assert_eq!(SX2, serialized);
             let deserialized = serde_json::from_str(&serialized).unwrap();
             assert_eq!(a, deserialized);
-            let deserialized = serde_json::from_str::<$vec2>("[]");
+            let deserialized = serde_json::from_str::<$vec2>(SX0);
             assert!(deserialized.is_err());
-            let deserialized = serde_json::from_str::<$vec2>(format!("[{:?}]", s1).as_str());
+            let deserialized = serde_json::from_str::<$vec2>(SX1);
             assert!(deserialized.is_err());
-            let deserialized =
-                serde_json::from_str::<$vec2>(format!("[{:?},{:?},{:?}]", s1, s2, s3).as_str());
+            let deserialized = serde_json::from_str::<$vec2>(SX3);
             assert!(deserialized.is_err());
         }
     };
@@ -120,25 +116,18 @@ macro_rules! impl_serde_vec3 {
 
         #[test]
         fn $test_name() {
-            let s1 = 1 as $t;
-            let s2 = 2 as $t;
-            let s3 = 3 as $t;
-            let s4 = 4 as $t;
-            let a = $vec3::new(s1, s2, s3);
+            let a = $vec3::new(1 as $t, 2 as $t, 3 as $t);
             let serialized = serde_json::to_string(&a).unwrap();
-            assert_eq!(serialized, format!("[{:?},{:?},{:?}]", s1, s2, s3).as_str());
+            assert_eq!(SX3, serialized);
             let deserialized = serde_json::from_str(&serialized).unwrap();
             assert_eq!(a, deserialized);
-            let deserialized = serde_json::from_str::<$vec3>("[]");
+            let deserialized = serde_json::from_str::<$vec3>(SX0);
             assert!(deserialized.is_err());
-            let deserialized = serde_json::from_str::<$vec3>(format!("[{:?}]", s1).as_str());
+            let deserialized = serde_json::from_str::<$vec3>(SX1);
             assert!(deserialized.is_err());
-            let deserialized =
-                serde_json::from_str::<$vec3>(format!("[{:?},{:?}]", s1, s2).as_str());
+            let deserialized = serde_json::from_str::<$vec3>(SX2);
             assert!(deserialized.is_err());
-            let deserialized = serde_json::from_str::<$vec3>(
-                format!("[{:?},{:?},{:?},{:?}]", s1, s2, s3, s4).as_str(),
-            );
+            let deserialized = serde_json::from_str::<$vec3>(SX4);
             assert!(deserialized.is_err());
         }
     };
@@ -200,32 +189,20 @@ macro_rules! impl_serde_vec4 {
 
         #[test]
         fn test_vec4_serde() {
-            let s1 = 1 as $t;
-            let s2 = 2 as $t;
-            let s3 = 3 as $t;
-            let s4 = 4 as $t;
-            let s5 = 5 as $t;
-            let a = $vec4::new(s1, s2, s3, s4);
+            let a = $vec4::new(1 as $t, 2 as $t, 3 as $t, 4 as $t);
             let serialized = serde_json::to_string(&a).unwrap();
-            assert_eq!(
-                serialized,
-                format!("[{:?},{:?},{:?},{:?}]", s1, s2, s3, s4).as_str()
-            );
+            assert_eq!(SX4, serialized);
             let deserialized = serde_json::from_str(&serialized).unwrap();
             assert_eq!(a, deserialized);
-            let deserialized = serde_json::from_str::<$vec4>("[]");
+            let deserialized = serde_json::from_str::<$vec4>(SX0);
             assert!(deserialized.is_err());
-            let deserialized = serde_json::from_str::<$vec4>(format!("[{:?}]", s1).as_str());
+            let deserialized = serde_json::from_str::<$vec4>(SX1);
             assert!(deserialized.is_err());
-            let deserialized =
-                serde_json::from_str::<$vec4>(format!("[{:?},{:?}]", s1, s2).as_str());
+            let deserialized = serde_json::from_str::<$vec4>(SX2);
             assert!(deserialized.is_err());
-            let deserialized =
-                serde_json::from_str::<$vec4>(format!("[{:?},{:?},{:?}]", s1, s2, s3).as_str());
+            let deserialized = serde_json::from_str::<$vec4>(SX3);
             assert!(deserialized.is_err());
-            let deserialized = serde_json::from_str::<$vec4>(
-                format!("[{:?},{:?},{:?},{:?},{:?}]", s1, s2, s3, s4, s5).as_str(),
-            );
+            let deserialized = serde_json::from_str::<$vec4>(SX5);
             assert!(deserialized.is_err());
         }
     };
@@ -558,7 +535,29 @@ macro_rules! impl_serde_float_types {
     };
 }
 
+#[cfg(test)]
+mod test_float {
+    pub const SX0: &str = "[]";
+    pub const SX1: &str = "[1.0]";
+    pub const SX2: &str = "[1.0,2.0]";
+    pub const SX3: &str = "[1.0,2.0,3.0]";
+    pub const SX4: &str = "[1.0,2.0,3.0,4.0]";
+    pub const SX5: &str = "[1.0,2.0,3.0,4.0,5.0]";
+}
+
+#[cfg(test)]
+mod test_int {
+    pub const SX0: &str = "[]";
+    pub const SX1: &str = "[1]";
+    pub const SX2: &str = "[1,2]";
+    pub const SX3: &str = "[1,2,3]";
+    pub const SX4: &str = "[1,2,3,4]";
+    pub const SX5: &str = "[1,2,3,4,5]";
+}
+
 mod f32 {
+    #[cfg(test)]
+    use super::test_float::*;
     use crate::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
     use core::fmt;
     use serde::{
@@ -571,6 +570,8 @@ mod f32 {
 }
 
 mod f64 {
+    #[cfg(test)]
+    use super::test_float::*;
     use crate::{DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
     use core::fmt;
     use serde::{
@@ -582,6 +583,8 @@ mod f64 {
 }
 
 mod i32 {
+    #[cfg(test)]
+    use super::test_int::*;
     use crate::{IVec2, IVec3, IVec4};
     use core::fmt;
     use serde::{
@@ -593,6 +596,8 @@ mod i32 {
 }
 
 mod u32 {
+    #[cfg(test)]
+    use super::test_int::*;
     use crate::{UVec2, UVec3, UVec4};
     use core::fmt;
     use serde::{
