@@ -5,7 +5,7 @@ use crate::core::{
 
 impl<T> XY<T> {
     #[inline(always)]
-    fn map<D, F>(self, f: F) -> XY<D>
+    pub(crate) fn map<D, F>(self, f: F) -> XY<D>
     where
         F: Fn(T) -> D,
     {
@@ -16,7 +16,7 @@ impl<T> XY<T> {
     }
 
     #[inline(always)]
-    fn map2<D, F>(self, other: Self, f: F) -> XY<D>
+    pub(crate) fn map2<D, F>(self, other: Self, f: F) -> XY<D>
     where
         F: Fn(T, T) -> D,
     {
@@ -27,7 +27,7 @@ impl<T> XY<T> {
     }
 
     #[inline(always)]
-    fn map3<D, F>(self, a: Self, b: Self, f: F) -> XY<D>
+    pub(crate) fn map3<D, F>(self, a: Self, b: Self, f: F) -> XY<D>
     where
         F: Fn(T, T, T) -> D,
     {
@@ -40,7 +40,7 @@ impl<T> XY<T> {
 
 impl<T> XYZ<T> {
     #[inline(always)]
-    fn map<D, F>(self, f: F) -> XYZ<D>
+    pub(crate) fn map<D, F>(self, f: F) -> XYZ<D>
     where
         F: Fn(T) -> D,
     {
@@ -52,7 +52,7 @@ impl<T> XYZ<T> {
     }
 
     #[inline(always)]
-    fn map2<D, F>(self, other: Self, f: F) -> XYZ<D>
+    pub(crate) fn map2<D, F>(self, other: Self, f: F) -> XYZ<D>
     where
         F: Fn(T, T) -> D,
     {
@@ -64,7 +64,7 @@ impl<T> XYZ<T> {
     }
 
     #[inline(always)]
-    fn map3<D, F>(self, a: Self, b: Self, f: F) -> XYZ<D>
+    pub(crate) fn map3<D, F>(self, a: Self, b: Self, f: F) -> XYZ<D>
     where
         F: Fn(T, T, T) -> D,
     {
@@ -78,7 +78,7 @@ impl<T> XYZ<T> {
 
 impl<T> XYZW<T> {
     #[inline(always)]
-    fn map<D, F>(self, f: F) -> XYZW<D>
+    pub(crate) fn map<D, F>(self, f: F) -> XYZW<D>
     where
         F: Fn(T) -> D,
     {
@@ -91,7 +91,7 @@ impl<T> XYZW<T> {
     }
 
     #[inline(always)]
-    fn map2<D, F>(self, other: Self, f: F) -> XYZW<D>
+    pub(crate) fn map2<D, F>(self, other: Self, f: F) -> XYZW<D>
     where
         F: Fn(T, T) -> D,
     {
@@ -104,7 +104,7 @@ impl<T> XYZW<T> {
     }
 
     #[inline(always)]
-    fn map3<D, F>(self, a: Self, b: Self, f: F) -> XYZW<D>
+    pub(crate) fn map3<D, F>(self, a: Self, b: Self, f: F) -> XYZW<D>
     where
         F: Fn(T, T, T) -> D,
     {
@@ -114,158 +114,6 @@ impl<T> XYZW<T> {
             z: f(self.z, a.z, b.z),
             w: f(self.w, a.w, b.w),
         }
-    }
-}
-
-impl MaskVectorConst for XY<u32> {
-    const FALSE: Self = Self { x: 0, y: 0 };
-}
-
-impl MaskVectorConst for XYZ<u32> {
-    const FALSE: Self = Self { x: 0, y: 0, z: 0 };
-}
-
-impl MaskVectorConst for XYZW<u32> {
-    const FALSE: Self = Self {
-        x: 0,
-        y: 0,
-        z: 0,
-        w: 0,
-    };
-}
-
-impl MaskVector for XY<u32> {
-    #[inline]
-    fn bitand(self, other: Self) -> Self {
-        self.map2(other, |a, b| a & b)
-    }
-
-    #[inline]
-    fn bitor(self, other: Self) -> Self {
-        self.map2(other, |a, b| a | b)
-    }
-
-    #[inline]
-    fn not(self) -> Self {
-        self.map(|a| !a)
-    }
-}
-
-impl MaskVector for XYZ<u32> {
-    #[inline]
-    fn bitand(self, other: Self) -> Self {
-        self.map2(other, |a, b| a & b)
-    }
-
-    #[inline]
-    fn bitor(self, other: Self) -> Self {
-        self.map2(other, |a, b| a | b)
-    }
-
-    #[inline]
-    fn not(self) -> Self {
-        self.map(|a| !a)
-    }
-}
-
-impl MaskVector for XYZW<u32> {
-    #[inline]
-    fn bitand(self, other: Self) -> Self {
-        self.map2(other, |a, b| a & b)
-    }
-
-    #[inline]
-    fn bitor(self, other: Self) -> Self {
-        self.map2(other, |a, b| a | b)
-    }
-
-    #[inline]
-    fn not(self) -> Self {
-        self.map(|a| !a)
-    }
-}
-
-impl MaskVector2 for XY<u32> {
-    #[inline(always)]
-    fn new(x: bool, y: bool) -> Self {
-        Self {
-            x: MaskConst::MASK[x as usize],
-            y: MaskConst::MASK[y as usize],
-        }
-    }
-
-    #[inline]
-    fn bitmask(self) -> u32 {
-        (self.x as u32 & 0x1) | (self.y as u32 & 0x1) << 1
-    }
-
-    #[inline]
-    fn any(self) -> bool {
-        ((self.x | self.y) & 0x1) != 0
-    }
-
-    #[inline]
-    fn all(self) -> bool {
-        ((self.x & self.y) & 0x1) != 0
-    }
-}
-
-impl MaskVector3 for XYZ<u32> {
-    #[inline(always)]
-    fn new(x: bool, y: bool, z: bool) -> Self {
-        // A SSE2 mask can be any bit pattern but for the `Vec3Mask` implementation of select
-        // we expect either 0 or 0xff_ff_ff_ff. This should be a safe assumption as this type
-        // can only be created via this function or by `Vec3` methods.
-        Self {
-            x: MaskConst::MASK[x as usize],
-            y: MaskConst::MASK[y as usize],
-            z: MaskConst::MASK[z as usize],
-        }
-    }
-
-    #[inline]
-    fn bitmask(self) -> u32 {
-        (self.x & 0x1) | (self.y & 0x1) << 1 | (self.z & 0x1) << 2
-    }
-
-    #[inline]
-    fn any(self) -> bool {
-        ((self.x | self.y | self.z) & 0x1) != 0
-    }
-
-    #[inline]
-    fn all(self) -> bool {
-        ((self.x & self.y & self.z) & 0x1) != 0
-    }
-}
-
-impl MaskVector4 for XYZW<u32> {
-    #[inline(always)]
-    fn new(x: bool, y: bool, z: bool, w: bool) -> Self {
-        // A SSE2 mask can be any bit pattern but for the `Vec4Mask` implementation of select
-        // we expect either 0 or 0xff_ff_ff_ff. This should be a safe assumption as this type
-        // can only be created via this function or by `Vec4` methods.
-        Self {
-            x: MaskConst::MASK[x as usize],
-            y: MaskConst::MASK[y as usize],
-            z: MaskConst::MASK[z as usize],
-            w: MaskConst::MASK[w as usize],
-        }
-    }
-
-    #[inline]
-    fn bitmask(self) -> u32 {
-        (self.x & 0x1) | (self.y & 0x1) << 1 | (self.z & 0x1) << 2 | (self.w & 0x1) << 3
-    }
-
-    #[inline]
-    fn any(self) -> bool {
-        ((self.x | self.y | self.z | self.w) & 0x1) != 0
-    }
-
-    #[inline]
-    fn all(self) -> bool {
-        ((self.x & self.y & self.z & self.w) & 0x1) != 0
     }
 }
 
@@ -364,7 +212,7 @@ impl<T: NumEx> Vector4Const for XYZW<T> {
 }
 
 impl<T: NumEx> Vector<T> for XY<T> {
-    type Mask = XY<u32>;
+    type Mask = XY<bool>;
 
     #[inline]
     fn splat(s: T) -> Self {
@@ -374,39 +222,39 @@ impl<T: NumEx> Vector<T> for XY<T> {
     #[inline]
     fn select(mask: Self::Mask, if_true: Self, if_false: Self) -> Self {
         Self {
-            x: if mask.x != 0 { if_true.x } else { if_false.x },
-            y: if mask.y != 0 { if_true.y } else { if_false.y },
+            x: if mask.x { if_true.x } else { if_false.x },
+            y: if mask.y { if_true.y } else { if_false.y },
         }
     }
 
     #[inline]
     fn cmpeq(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| MaskConst::MASK[a.eq(&b) as usize])
+        self.map2(other, |a, b| a.eq(&b))
     }
 
     #[inline]
     fn cmpne(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| MaskConst::MASK[a.ne(&b) as usize])
+        self.map2(other, |a, b| a.ne(&b))
     }
 
     #[inline]
     fn cmpge(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| MaskConst::MASK[a.ge(&b) as usize])
+        self.map2(other, |a, b| a.ge(&b))
     }
 
     #[inline]
     fn cmpgt(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| MaskConst::MASK[a.gt(&b) as usize])
+        self.map2(other, |a, b| a.gt(&b))
     }
 
     #[inline]
     fn cmple(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| MaskConst::MASK[a.le(&b) as usize])
+        self.map2(other, |a, b| a.le(&b))
     }
 
     #[inline]
     fn cmplt(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| MaskConst::MASK[a.lt(&b) as usize])
+        self.map2(other, |a, b| a.lt(&b))
     }
 
     #[inline]
@@ -1048,7 +896,7 @@ impl<T: FloatEx> FloatVector2<T> for XY<T> {
 
     #[inline]
     fn is_nan_mask(self) -> Self::Mask {
-        self.map(|a| MaskConst::MASK[a.is_nan() as usize])
+        self.map(|a| a.is_nan())
     }
 
     #[inline]

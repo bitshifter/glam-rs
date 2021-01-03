@@ -16,6 +16,8 @@ pub trait MaskVector2: MaskVector {
     fn bitmask(self) -> u32;
     fn any(self) -> bool;
     fn all(self) -> bool;
+    fn into_bool_array(self) -> [bool; 2];
+    fn into_u32_array(self) -> [u32; 2];
 }
 
 pub trait MaskVector3: MaskVector {
@@ -23,6 +25,8 @@ pub trait MaskVector3: MaskVector {
     fn bitmask(self) -> u32;
     fn any(self) -> bool;
     fn all(self) -> bool;
+    fn into_bool_array(self) -> [bool; 3];
+    fn into_u32_array(self) -> [u32; 3];
 }
 
 pub trait MaskVector4: MaskVector {
@@ -30,6 +34,8 @@ pub trait MaskVector4: MaskVector {
     fn bitmask(self) -> u32;
     fn any(self) -> bool;
     fn all(self) -> bool;
+    fn into_bool_array(self) -> [bool; 4];
+    fn into_u32_array(self) -> [u32; 4];
 }
 
 pub trait VectorConst {

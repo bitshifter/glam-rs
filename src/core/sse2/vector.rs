@@ -63,6 +63,22 @@ impl MaskVector3 for __m128 {
     fn all(self) -> bool {
         unsafe { (_mm_movemask_ps(self) & 0x7) == 0x7 }
     }
+
+    #[inline]
+    fn into_bool_array(self) -> [bool; 3] {
+        let bitmask = MaskVector3::bitmask(self);
+        [(bitmask & 1) != 0, (bitmask & 2) != 0, (bitmask & 4) != 0]
+    }
+
+    #[inline]
+    fn into_u32_array(self) -> [u32; 3] {
+        let bitmask = MaskVector3::bitmask(self);
+        [
+            MaskConst::MASK[(bitmask & 1) as usize],
+            MaskConst::MASK[((bitmask >> 1) & 1) as usize],
+            MaskConst::MASK[((bitmask >> 2) & 1) as usize],
+        ]
+    }
 }
 
 impl MaskVector4 for __m128 {
@@ -95,6 +111,28 @@ impl MaskVector4 for __m128 {
     #[inline(always)]
     fn all(self) -> bool {
         unsafe { _mm_movemask_ps(self) == 0xf }
+    }
+
+    #[inline]
+    fn into_bool_array(self) -> [bool; 4] {
+        let bitmask = MaskVector4::bitmask(self);
+        [
+            (bitmask & 1) != 0,
+            (bitmask & 2) != 0,
+            (bitmask & 4) != 0,
+            (bitmask & 8) != 0,
+        ]
+    }
+
+    #[inline]
+    fn into_u32_array(self) -> [u32; 4] {
+        let bitmask = MaskVector4::bitmask(self);
+        [
+            MaskConst::MASK[(bitmask & 1) as usize],
+            MaskConst::MASK[((bitmask >> 1) & 1) as usize],
+            MaskConst::MASK[((bitmask >> 2) & 1) as usize],
+            MaskConst::MASK[((bitmask >> 3) & 1) as usize],
+        ]
     }
 }
 

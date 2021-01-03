@@ -2,8 +2,7 @@
 use num_traits::Float;
 
 use crate::core::traits::vector::*;
-use crate::{DVec3, UVec2Mask};
-use crate::{IVec3, UVec3, Vec2Mask, Vec3, XY};
+use crate::{BVec2, DVec3, IVec3, UVec3, Vec3, XY};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::{cmp::Ordering, f32, ops::*};
@@ -184,7 +183,7 @@ type XYF32 = XY<f32>;
 #[repr(transparent)]
 pub struct Vec2(pub(crate) XYF32);
 
-impl_float_vec2!(f32, vec2, Vec2, Vec3, Vec2Mask, XYF32);
+impl_float_vec2!(f32, vec2, Vec2, Vec3, BVec2, XYF32);
 
 type XYF64 = XY<f64>;
 
@@ -193,7 +192,7 @@ type XYF64 = XY<f64>;
 #[repr(transparent)]
 pub struct DVec2(pub(crate) XYF64);
 
-impl_float_vec2!(f64, dvec2, DVec2, DVec3, UVec2Mask, XYF64);
+impl_float_vec2!(f64, dvec2, DVec2, DVec3, BVec2, XYF64);
 
 type XYI32 = XY<i32>;
 
@@ -202,7 +201,7 @@ type XYI32 = XY<i32>;
 #[repr(transparent)]
 pub struct IVec2(pub(crate) XYI32);
 
-impl_signed_vec2!(i32, ivec2, IVec2, IVec3, UVec2Mask, XYI32);
+impl_signed_vec2!(i32, ivec2, IVec2, IVec3, BVec2, XYI32);
 
 type XYU32 = XY<u32>;
 
@@ -211,4 +210,4 @@ type XYU32 = XY<u32>;
 #[repr(transparent)]
 pub struct UVec2(pub(crate) XYU32);
 
-impl_unsigned_vec2!(u32, uvec2, UVec2, UVec3, UVec2Mask, XYU32);
+impl_unsigned_vec2!(u32, uvec2, UVec2, UVec3, BVec2, XYU32);

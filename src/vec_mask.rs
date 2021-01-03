@@ -149,7 +149,7 @@ macro_rules! impl_vec2mask {
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Debug for $vec2mask {
             fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-                let arr = self.as_ref();
+                let arr = self.0.into_u32_array();
                 write!(f, "{}({:#x}, {:#x})", stringify!($vec2mask), arr[0], arr[1])
             }
         }
@@ -157,15 +157,22 @@ macro_rules! impl_vec2mask {
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Display for $vec2mask {
             fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-                let arr = self.as_ref();
-                write!(f, "[{}, {}]", arr[0] != 0, arr[1] != 0)
+                let arr = self.0.into_bool_array();
+                write!(f, "[{}, {}]", arr[0], arr[1])
             }
         }
 
-        impl From<$vec2mask> for [$t; 2] {
+        impl From<$vec2mask> for [bool; 2] {
             #[inline]
             fn from(mask: $vec2mask) -> Self {
-                *mask.as_ref()
+                mask.0.into_bool_array()
+            }
+        }
+
+        impl From<$vec2mask> for [u32; 2] {
+            #[inline]
+            fn from(mask: $vec2mask) -> Self {
+                mask.0.into_u32_array()
             }
         }
 
@@ -196,7 +203,7 @@ macro_rules! impl_vec3mask {
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Debug for $vec3mask {
             fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-                let arr = self.as_ref();
+                let arr = MaskVector3::into_u32_array(self.0);
                 write!(
                     f,
                     "{}({:#x}, {:#x}, {:#x})",
@@ -211,15 +218,22 @@ macro_rules! impl_vec3mask {
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Display for $vec3mask {
             fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-                let arr = self.as_ref();
-                write!(f, "[{}, {}, {}]", arr[0] != 0, arr[1] != 0, arr[2] != 0)
+                let arr = MaskVector3::into_bool_array(self.0);
+                write!(f, "[{}, {}, {}]", arr[0], arr[1], arr[2])
             }
         }
 
-        impl From<$vec3mask> for [$t; 3] {
+        impl From<$vec3mask> for [bool; 3] {
             #[inline]
             fn from(mask: $vec3mask) -> Self {
-                *mask.as_ref()
+                MaskVector3::into_bool_array(mask.0)
+            }
+        }
+
+        impl From<$vec3mask> for [u32; 3] {
+            #[inline]
+            fn from(mask: $vec3mask) -> Self {
+                MaskVector3::into_u32_array(mask.0)
             }
         }
 
@@ -250,7 +264,7 @@ macro_rules! impl_vec4mask {
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Debug for $vec4mask {
             fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-                let arr = self.as_ref();
+                let arr = MaskVector4::into_u32_array(self.0);
                 write!(
                     f,
                     "{}({:#x}, {:#x}, {:#x}, {:#x})",
@@ -266,22 +280,22 @@ macro_rules! impl_vec4mask {
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Display for $vec4mask {
             fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-                let arr = self.as_ref();
-                write!(
-                    f,
-                    "[{}, {}, {}, {}]",
-                    arr[0] != 0,
-                    arr[1] != 0,
-                    arr[2] != 0,
-                    arr[3] != 0
-                )
+                let arr = MaskVector4::into_bool_array(self.0);
+                write!(f, "[{}, {}, {}, {}]", arr[0], arr[1], arr[2], arr[3])
             }
         }
 
-        impl From<$vec4mask> for [$t; 4] {
+        impl From<$vec4mask> for [bool; 4] {
             #[inline]
             fn from(mask: $vec4mask) -> Self {
-                *mask.as_ref()
+                MaskVector4::into_bool_array(mask.0)
+            }
+        }
+
+        impl From<$vec4mask> for [u32; 4] {
+            #[inline]
+            fn from(mask: $vec4mask) -> Self {
+                MaskVector4::into_u32_array(mask.0)
             }
         }
 
@@ -387,6 +401,27 @@ pub struct UVec4Mask(pub(crate) XYZWU32);
 impl_vec2mask!(UVec2Mask, u32, XYU32);
 impl_vec3mask!(UVec3Mask, u32, XYZU32);
 impl_vec4mask!(UVec4Mask, u32, XYZWU32);
+
+type XYBool = crate::XY<bool>;
+
+#[derive(Copy, Clone)]
+#[repr(transparent)]
+pub struct BVec2(pub(crate) XYBool);
+impl_vec2mask!(BVec2, bool, XYBool);
+
+type XYZBool = crate::XYZ<bool>;
+
+#[derive(Copy, Clone)]
+#[repr(transparent)]
+pub struct BVec3(pub(crate) XYZBool);
+impl_vec3mask!(BVec3, bool, XYZBool);
+
+type XYZWBool = crate::XYZW<bool>;
+
+#[derive(Copy, Clone)]
+#[repr(transparent)]
+pub struct BVec4(pub(crate) XYZWBool);
+impl_vec4mask!(BVec4, bool, XYZWBool);
 
 // pub type DVec2Mask = UVec2Mask;
 // pub type DVec3Mask = UVec3Mask;

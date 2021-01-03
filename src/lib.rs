@@ -212,6 +212,11 @@ mod transform;
 #[doc(hidden)]
 pub use self::core::storage::{XY, XYZ, XYZW};
 
+pub mod bool {
+    pub use super::vec_mask::{BVec2, BVec3, BVec4};
+}
+pub use self::bool::*;
+
 /** `f32` vector, quaternion and matrix types. */
 pub mod f32 {
     // pub use super::cast::{

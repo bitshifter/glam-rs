@@ -56,14 +56,6 @@ pub trait FloatEx: Float + FloatConstEx + SignedEx {
     fn from_f64(f: f64) -> Self;
 }
 
-impl MaskConst for u32 {
-    const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
-}
-
-impl MaskConst for u64 {
-    const MASK: [u64; 2] = [0, 0xff_ff_ff_ff_ff_ff_ff_ff];
-}
-
 impl NumConstEx for f32 {
     const ZERO: Self = 0.0;
     const ONE: Self = 1.0;
