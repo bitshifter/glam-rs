@@ -689,7 +689,7 @@ mod vec4 {
         }
     }
 
-    #[cfg(vec4_sse2)]
+    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
     #[test]
     fn test_m128() {
         #[cfg(target_arch = "x86")]

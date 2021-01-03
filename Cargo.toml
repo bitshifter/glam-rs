@@ -9,7 +9,6 @@ readme = "README.md"
 license = "MIT OR Apache-2.0"
 keywords = ["gamedev", "math", "matrix", "vector", "quaternion"]
 categories = ["game-engines", "no-std"]
-build = "build.rs"
 
 [badges]
 travis-ci = { repository = "bitshifter/glam-rs" }

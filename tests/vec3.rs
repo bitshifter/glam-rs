@@ -659,7 +659,7 @@ mod vec3a {
         assert!(b.cmpeq(Vec3A::splat(1.0)).all());
     }
 
-    #[cfg(vec3a_sse2)]
+    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
     #[test]
     fn test_m128() {
         #[cfg(target_arch = "x86")]

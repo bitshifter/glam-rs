@@ -231,7 +231,6 @@ macro_rules! impl_mat3 {
             #[inline(always)]
             pub fn transpose(&self) -> Self {
                 Self(self.0.transpose())
-                // #[cfg(vec3a_sse2)]
                 // {
                 //     #[cfg(target_arch = "x86")]
                 //     use core::arch::x86::*;

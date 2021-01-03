@@ -304,9 +304,9 @@ fn write_vec3a_impl_sse2(out: &mut impl Write) -> Result<()> {
 use super::Vec3Swizzles;
 use crate::{{Vec2, Vec3A, Vec4}};
 
-#[cfg(all(vec3a_sse2, target_arch = "x86"))]
+#[cfg(target_arch = "x86")]
 use core::arch::x86::*;
-#[cfg(all(vec3a_sse2, target_arch = "x86_64"))]
+#[cfg(target_arch = "x86_64")]
 use core::arch::x86_64::*;
 "#
     )?;

@@ -9,10 +9,20 @@ use crate::core::{
     },
 };
 use crate::{DQuat, DVec3, DVec4, Quat, Vec3, Vec3A, Vec4};
-#[cfg(all(vec4_sse2, target_arch = "x86"))]
+
+#[cfg(all(
+    target_feature = "sse2",
+    not(feature = "scalar-math"),
+    target_arch = "x86"
+))]
 use core::arch::x86::*;
-#[cfg(all(vec4_sse2, target_arch = "x86_64"))]
+#[cfg(all(
+    target_feature = "sse2",
+    not(feature = "scalar-math"),
+    target_arch = "x86_64"
+))]
 use core::arch::x86_64::*;
+
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::{
