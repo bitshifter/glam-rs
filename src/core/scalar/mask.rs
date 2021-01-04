@@ -11,6 +11,9 @@ impl MaskConst for u64 {
     const MASK: [u64; 2] = [0, 0xff_ff_ff_ff_ff_ff_ff_ff];
 }
 
+// u32 (currently unused)
+
+/*
 impl MaskVectorConst for XY<u32> {
     const FALSE: Self = Self { x: 0, y: 0 };
 }
@@ -228,6 +231,7 @@ impl MaskVector4 for XYZW<u32> {
         [self.x, self.y, self.z, self.w]
     }
 }
+*/
 
 // bool
 
