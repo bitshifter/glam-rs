@@ -13,25 +13,25 @@ use std::iter::{Product, Sum};
 macro_rules! impl_vec2_common_methods {
     ($t:ty, $vec2:ident, $vec3:ident, $mask:ident, $inner:ident) => {
         /// Creates a new vector.
-        #[inline]
+        #[inline(always)]
         pub fn new(x: $t, y: $t) -> $vec2 {
             Self(Vector2::new(x, y))
         }
 
         /// Creates a vector with values `[x: 1.0, y: 0.0]`.
-        #[inline]
+        #[inline(always)]
         pub const fn unit_x() -> $vec2 {
             Self($inner::UNIT_X)
         }
 
         /// Creates a vector with values `[x: 0.0, y: 1.0]`.
-        #[inline]
+        #[inline(always)]
         pub const fn unit_y() -> $vec2 {
             Self($inner::UNIT_Y)
         }
 
         /// Creates a 3D vector from `self` and the given `z` value.
-        #[inline]
+        #[inline(always)]
         pub fn extend(self, z: $t) -> $vec3 {
             $vec3::new(self.x, self.y, z)
         }
@@ -46,13 +46,13 @@ macro_rules! impl_vec2_signed_methods {
         impl_vecn_signed_methods!($t, $vec2, $mask, $inner, SignedVector2);
 
         /// Returns a vector that is equal to `self` rotated by 90 degrees.
-        #[inline]
+        #[inline(always)]
         pub fn perp(self) -> Self {
             Self(self.0.perp())
         }
 
         /// The perpendicular dot product of `self` and `other`.
-        #[inline]
+        #[inline(always)]
         pub fn perp_dot(self, other: $vec2) -> $t {
             self.0.perp_dot(other.0)
         }
@@ -68,7 +68,7 @@ macro_rules! impl_vec2_float_methods {
         ///
         /// The vectors do not need to be unit length, but this function does
         /// perform a `sqrt`.
-        #[inline]
+        #[inline(always)]
         pub fn angle_between(self, other: Self) -> $t {
             self.0.angle_between(other.0)
         }
@@ -78,7 +78,7 @@ macro_rules! impl_vec2_float_methods {
 macro_rules! impl_vec2_common_traits {
     ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $mask:ident, $inner:ident) => {
         /// Creates a 2-dimensional vector.
-        #[inline]
+        #[inline(always)]
         pub fn $new(x: $t, y: $t) -> $vec2 {
             $vec2::new(x, y)
         }

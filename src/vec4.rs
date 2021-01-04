@@ -31,31 +31,31 @@ use core::{cmp::Ordering, f32};
 macro_rules! impl_vec4_common_methods {
     ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
         /// Creates a new 4D vector.
-        #[inline]
+        #[inline(always)]
         pub fn new(x: $t, y: $t, z: $t, w: $t) -> Self {
             Self(Vector4::new(x, y, z, w))
         }
 
         /// Creates a 4D vector with values `[x: 1.0, y: 0.0, z: 0.0, w: 0.0]`.
-        #[inline]
+        #[inline(always)]
         pub const fn unit_x() -> Self {
             Self(Vector4Const::UNIT_X)
         }
 
         /// Creates a 4D vector with values `[x: 0.0, y: 1.0, z: 0.0, w: 0.0]`.
-        #[inline]
+        #[inline(always)]
         pub const fn unit_y() -> Self {
             Self(Vector4Const::UNIT_Y)
         }
 
         /// Creates a 4D vector with values `[x: 0.0, y: 0.0, z: 1.0, w: 0.0]`.
-        #[inline]
+        #[inline(always)]
         pub const fn unit_z() -> Self {
             Self(Vector4Const::UNIT_Z)
         }
 
         /// Creates a 4D vector with values `[x: 0.0, y: 0.0, z: 0.0, w: 1.0]`.
-        #[inline]
+        #[inline(always)]
         pub const fn unit_w() -> Self {
             Self(Vector4Const::UNIT_W)
         }
@@ -65,7 +65,7 @@ macro_rules! impl_vec4_common_methods {
         /// Truncation to `Vec3` may also be performed by using `self.xyz()` or `Vec3::from()`.
         ///
         /// To truncate to `Vec3A` use `Vec3A::from()`.
-        #[inline]
+        #[inline(always)]
         pub fn truncate(self) -> $vec3 {
             $vec3::new(self.x, self.y, self.z)
         }
@@ -77,7 +77,7 @@ macro_rules! impl_vec4_common_methods {
 macro_rules! impl_vec4_common_traits {
     ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
         /// Creates a 4-dimensional vector.
-        #[inline]
+        #[inline(always)]
         pub fn $new(x: $t, y: $t, z: $t, w: $t) -> $vec4 {
             $vec4::new(x, y, z, w)
         }

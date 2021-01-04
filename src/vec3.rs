@@ -28,31 +28,31 @@ use std::iter::{Product, Sum};
 macro_rules! impl_vec3_common_methods {
     ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
         /// Creates a new 3D vector.
-        #[inline]
+        #[inline(always)]
         pub fn new(x: $t, y: $t, z: $t) -> Self {
             Self(Vector3::new(x, y, z))
         }
 
         /// Creates a vector with values `[x: 1.0, y: 0.0, z: 0.0]`.
-        #[inline]
+        #[inline(always)]
         pub const fn unit_x() -> Self {
             Self(Vector3Const::UNIT_X)
         }
 
         /// Creates a vector with values `[x: 0.0, y: 1.0, z: 0.0]`.
-        #[inline]
+        #[inline(always)]
         pub const fn unit_y() -> Self {
             Self(Vector3Const::UNIT_Y)
         }
 
         /// Creates a vector with values `[x: 0.0, y: 0.0, z: 1.0]`.
-        #[inline]
+        #[inline(always)]
         pub const fn unit_z() -> Self {
             Self(Vector3Const::UNIT_Z)
         }
 
         /// Creates a 4D vector from `self` and the given `w` value.
-        #[inline]
+        #[inline(always)]
         pub fn extend(self, w: $t) -> $vec4 {
             // TODO: Optimize?
             $vec4(Vector4::new(self.x, self.y, self.z, w))
@@ -61,20 +61,20 @@ macro_rules! impl_vec3_common_methods {
         /// Creates a `Vec2` from the `x` and `y` elements of `self`, discarding `z`.
         ///
         /// Truncation may also be performed by using `self.xy()` or `Vec2::from()`.
-        #[inline]
+        #[inline(always)]
         pub fn truncate(self) -> $vec2 {
             $vec2(Vector3::into_xy(self.0))
         }
 
         /// Returns the dot product result in all elements of the vector
-        #[inline]
+        #[inline(always)]
         #[allow(dead_code)]
         pub(crate) fn dot_as_vec3(self, other: Self) -> Self {
             Self(Vector3::dot_into_vec(self.0, other.0))
         }
 
         /// Computes the cross product of `self` and `other`.
-        #[inline]
+        #[inline(always)]
         pub fn cross(self, other: Self) -> Self {
             Self(self.0.cross(other.0))
         }
@@ -86,7 +86,7 @@ macro_rules! impl_vec3_common_methods {
 macro_rules! impl_vec3_common_traits {
     ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
         /// Creates a 3-dimensional vector.
-        #[inline]
+        #[inline(always)]
         pub fn $new(x: $t, y: $t, z: $t) -> $vec3 {
             $vec3::new(x, y, z)
         }
@@ -191,7 +191,7 @@ macro_rules! impl_float_vec3 {
             ///
             /// The vectors do not need to be unit length, but this function does
             /// perform a `sqrt`.
-            #[inline]
+            #[inline(always)]
             pub fn angle_between(self, other: Self) -> $t {
                 self.0.angle_between(other.0)
             }

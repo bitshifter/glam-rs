@@ -1,19 +1,19 @@
 macro_rules! impl_vecn_common_methods {
     ($t:ty, $vecn:ident, $mask:ident, $inner:ident, $vectrait:ident) => {
         /// Creates a vector with all elements set to `0.0`.
-        #[inline]
+        #[inline(always)]
         pub const fn zero() -> Self {
             Self($inner::ZERO)
         }
 
         /// Creates a vector with all elements set to `1.0`.
-        #[inline]
+        #[inline(always)]
         pub const fn one() -> Self {
             Self($inner::ONE)
         }
 
         /// Creates a vector with all elements set to `v`.
-        #[inline]
+        #[inline(always)]
         pub fn splat(v: $t) -> Self {
             Self($inner::splat(v))
         }
@@ -23,13 +23,13 @@ macro_rules! impl_vecn_common_methods {
         ///
         /// A true element in the mask uses the corresponding element from `if_true`, and false
         /// uses the element from `if_false`.
-        #[inline]
+        #[inline(always)]
         pub fn select(mask: $mask, if_true: $vecn, if_false: $vecn) -> $vecn {
             Self($inner::select(mask.0, if_true.0, if_false.0))
         }
 
         /// Computes the dot product of `self` and `other`.
-        #[inline]
+        #[inline(always)]
         pub fn dot(self, other: Self) -> $t {
             $vectrait::dot(self.0, other.0)
         }
@@ -39,7 +39,7 @@ macro_rules! impl_vecn_common_methods {
         /// In other words, this computes
         /// `[x: min(x1, x2), y: min(y1, y2), z: min(z1, z2), w: min(w1, w2)]`,
         /// taking the minimum of each element individually.
-        #[inline]
+        #[inline(always)]
         pub fn min(self, other: Self) -> Self {
             Self(self.0.min(other.0))
         }
@@ -49,7 +49,7 @@ macro_rules! impl_vecn_common_methods {
         /// In other words, this computes
         /// `[x: max(x1, x2), y: max(y1, y2), z: max(z1, z2), w: max(w1, w2)]`,
         /// taking the maximum of each element individually.
-        #[inline]
+        #[inline(always)]
         pub fn max(self, other: Self) -> Self {
             Self(self.0.max(other.0))
         }
@@ -57,7 +57,7 @@ macro_rules! impl_vecn_common_methods {
         /// Returns the horizontal minimum of `self`'s elements.
         ///
         /// In other words, this computes `min(x, y, z, w)`.
-        #[inline]
+        #[inline(always)]
         pub fn min_element(self) -> $t {
             $vectrait::min_element(self.0)
         }
@@ -65,7 +65,7 @@ macro_rules! impl_vecn_common_methods {
         /// Returns the horizontal maximum of `self`'s elements.
         ///
         /// In other words, this computes `max(x, y, z, w)`.
-        #[inline]
+        #[inline(always)]
         pub fn max_element(self) -> $t {
             $vectrait::max_element(self.0)
         }
@@ -74,7 +74,7 @@ macro_rules! impl_vecn_common_methods {
         /// returning a vector mask of the results.
         ///
         /// In other words, this computes `[x1 == x2, y1 == y2, z1 == z2, w1 == w2]`.
-        #[inline]
+        #[inline(always)]
         pub fn cmpeq(self, other: Self) -> $mask {
             $mask(self.0.cmpeq(other.0))
         }
@@ -83,7 +83,7 @@ macro_rules! impl_vecn_common_methods {
         /// returning a vector mask of the results.
         ///
         /// In other words, this computes `[x1 != x2, y1 != y2, z1 != z2, w1 != w2]`.
-        #[inline]
+        #[inline(always)]
         pub fn cmpne(self, other: Self) -> $mask {
             $mask(self.0.cmpne(other.0))
         }
@@ -92,7 +92,7 @@ macro_rules! impl_vecn_common_methods {
         /// returning a vector mask of the results.
         ///
         /// In other words, this computes `[x1 >= x2, y1 >= y2, z1 >= z2, w1 >= w2]`.
-        #[inline]
+        #[inline(always)]
         pub fn cmpge(self, other: Self) -> $mask {
             $mask(self.0.cmpge(other.0))
         }
@@ -101,7 +101,7 @@ macro_rules! impl_vecn_common_methods {
         /// returning a vector mask of the results.
         ///
         /// In other words, this computes `[x1 > x2, y1 > y2, z1 > z2, w1 > w2]`.
-        #[inline]
+        #[inline(always)]
         pub fn cmpgt(self, other: Self) -> $mask {
             $mask(self.0.cmpgt(other.0))
         }
@@ -110,7 +110,7 @@ macro_rules! impl_vecn_common_methods {
         /// returning a vector mask of the results.
         ///
         /// In other words, this computes `[x1 <= x2, y1 <= y2, z1 <= z2, w1 <= w2]`.
-        #[inline]
+        #[inline(always)]
         pub fn cmple(self, other: Self) -> $mask {
             $mask(self.0.cmple(other.0))
         }
@@ -119,7 +119,7 @@ macro_rules! impl_vecn_common_methods {
         /// returning a vector mask of the results.
         ///
         /// In other words, this computes `[x1 < x2, y1 < y2, z1 < z2, w1 < w2]`.
-        #[inline]
+        #[inline(always)]
         pub fn cmplt(self, other: Self) -> $mask {
             $mask(self.0.cmplt(other.0))
         }
@@ -129,7 +129,7 @@ macro_rules! impl_vecn_common_methods {
         /// # Panics
         ///
         /// Panics if `slice` is less than four elements long.
-        #[inline]
+        #[inline(always)]
         pub fn from_slice_unaligned(slice: &[$t]) -> Self {
             Self($vectrait::from_slice_unaligned(slice))
         }
@@ -139,13 +139,13 @@ macro_rules! impl_vecn_common_methods {
         /// # Panics
         ///
         /// Panics if `slice` is less than four elements long.
-        #[inline]
+        #[inline(always)]
         pub fn write_to_slice_unaligned(self, slice: &mut [$t]) {
             $vectrait::write_to_slice_unaligned(self.0, slice)
         }
 
         /// Per element multiplication/addition of the three inputs: b + (self * a)
-        #[inline]
+        #[inline(always)]
         #[allow(dead_code)]
         pub(crate) fn mul_add(self, a: Self, b: Self) -> Self {
             Self(self.0.mul_add(a.0, b.0))
@@ -158,7 +158,7 @@ macro_rules! impl_vecn_signed_methods {
         // impl_vecn_common_methods!($t, $vecn, $mask, $inner, $vectrait);
 
         /// Returns a vector containing the absolute value of each element of `self`.
-        #[inline]
+        #[inline(always)]
         pub fn abs(self) -> Self {
             Self($sgntrait::abs(self.0))
         }
@@ -168,7 +168,7 @@ macro_rules! impl_vecn_signed_methods {
         /// - `1.0` if the number is positive, `+0.0` or `INFINITY`
         /// - `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
         /// - `NAN` if the number is `NAN`
-        #[inline]
+        #[inline(always)]
         pub fn signum(self) -> Self {
             Self($sgntrait::signum(self.0))
         }
@@ -181,13 +181,13 @@ macro_rules! impl_vecn_float_methods {
 
         /// Returns `true` if, and only if, all elements are finite.  If any element is either
         /// `NaN`, positive or negative infinity, this will return `false`.
-        #[inline]
+        #[inline(always)]
         pub fn is_finite(self) -> bool {
             $flttrait::is_finite(self.0)
         }
 
         /// Returns `true` if any elements are `NaN`.
-        #[inline]
+        #[inline(always)]
         pub fn is_nan(self) -> bool {
             $flttrait::is_nan(self.0)
         }
@@ -195,13 +195,13 @@ macro_rules! impl_vecn_float_methods {
         /// Performs `is_nan` on each element of self, returning a vector mask of the results.
         ///
         /// In other words, this computes `[x.is_nan(), y.is_nan(), z.is_nan(), w.is_nan()]`.
-        #[inline]
+        #[inline(always)]
         pub fn is_nan_mask(self) -> $mask {
             $mask($flttrait::is_nan_mask(self.0))
         }
 
         /// Computes the length of `self`.
-        #[inline]
+        #[inline(always)]
         pub fn length(self) -> $t {
             $flttrait::length(self.0)
         }
@@ -209,7 +209,7 @@ macro_rules! impl_vecn_float_methods {
         /// Computes the squared length of `self`.
         ///
         /// This is faster than `length()` as it avoids a square root operation.
-        #[inline]
+        #[inline(always)]
         pub fn length_squared(self) -> $t {
             $flttrait::length_squared(self.0)
         }
@@ -217,7 +217,7 @@ macro_rules! impl_vecn_float_methods {
         /// Computes `1.0 / length()`.
         ///
         /// For valid results, `self` must _not_ be of length zero.
-        #[inline]
+        #[inline(always)]
         pub fn length_recip(self) -> $t {
             $flttrait::length_recip(self.0)
         }
@@ -237,7 +237,7 @@ macro_rules! impl_vecn_float_methods {
         /// Returns `self` normalized to length 1.0.
         ///
         /// For valid results, `self` must _not_ be of length zero.
-        #[inline]
+        #[inline(always)]
         pub fn normalize(self) -> Self {
             Self($flttrait::normalize(self.0))
         }
@@ -245,47 +245,47 @@ macro_rules! impl_vecn_float_methods {
         /// Returns whether `self` is length `1.0` or not.
         ///
         /// Uses a precision threshold of `1e-6`.
-        #[inline]
+        #[inline(always)]
         pub fn is_normalized(self) -> bool {
             $flttrait::is_normalized(self.0)
         }
 
         /// Returns a vector containing the nearest integer to a number for each element of `self`.
         /// Round half-way cases away from 0.0.
-        #[inline]
+        #[inline(always)]
         pub fn round(self) -> Self {
             Self($flttrait::round(self.0))
         }
 
         /// Returns a vector containing the largest integer less than or equal to a number for each
         /// element of `self`.
-        #[inline]
+        #[inline(always)]
         pub fn floor(self) -> Self {
             Self($flttrait::floor(self.0))
         }
 
         /// Returns a vector containing the smallest integer greater than or equal to a number for
         /// each element of `self`.
-        #[inline]
+        #[inline(always)]
         pub fn ceil(self) -> Self {
             Self($flttrait::ceil(self.0))
         }
 
         /// Returns a vector containing `e^self` (the exponential function) for each element of
         /// `self`.
-        #[inline]
+        #[inline(always)]
         pub fn exp(self) -> Self {
             Self($flttrait::exp(self.0))
         }
 
         /// Returns a vector containing each element of `self` raised to the power of `n`.
-        #[inline]
+        #[inline(always)]
         pub fn powf(self, n: $t) -> Self {
             Self($flttrait::powf(self.0, n))
         }
 
         /// Returns a vector containing the reciprocal `1.0/n` of each element of `self`.
-        #[inline]
+        #[inline(always)]
         pub fn recip(self) -> Self {
             Self($flttrait::recip(self.0))
         }
@@ -308,7 +308,7 @@ macro_rules! impl_vecn_float_methods {
         ///
         /// For more see
         /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
-        #[inline]
+        #[inline(always)]
         pub fn abs_diff_eq(self, other: Self, max_abs_diff: $t) -> bool {
             $flttrait::abs_diff_eq(self.0, other.0, max_abs_diff)
         }
@@ -318,14 +318,14 @@ macro_rules! impl_vecn_float_methods {
 macro_rules! impl_vecn_common_traits {
     ($t:ty, $size:literal, $vecn:ident, $inner:ident, $trait:ident) => {
         impl Default for $vecn {
-            #[inline]
+            #[inline(always)]
             fn default() -> Self {
                 Self($inner::ZERO)
             }
         }
 
         impl PartialEq for $vecn {
-            #[inline]
+            #[inline(always)]
             fn eq(&self, other: &Self) -> bool {
                 self.cmpeq(*other).all()
             }
@@ -354,14 +354,14 @@ macro_rules! impl_vecn_common_traits {
 
         impl Div<$vecn> for $vecn {
             type Output = Self;
-            #[inline]
+            #[inline(always)]
             fn div(self, other: $vecn) -> Self {
                 Self(self.0.div(other.0))
             }
         }
 
         impl DivAssign<$vecn> for $vecn {
-            #[inline]
+            #[inline(always)]
             fn div_assign(&mut self, other: $vecn) {
                 self.0 = self.0.div(other.0)
             }
@@ -369,14 +369,14 @@ macro_rules! impl_vecn_common_traits {
 
         impl Div<$t> for $vecn {
             type Output = Self;
-            #[inline]
+            #[inline(always)]
             fn div(self, other: $t) -> Self {
                 Self(self.0.div_scalar(other))
             }
         }
 
         impl DivAssign<$t> for $vecn {
-            #[inline]
+            #[inline(always)]
             fn div_assign(&mut self, other: $t) {
                 self.0 = self.0.div_scalar(other)
             }
@@ -384,7 +384,7 @@ macro_rules! impl_vecn_common_traits {
 
         impl Div<$vecn> for $t {
             type Output = $vecn;
-            #[inline]
+            #[inline(always)]
             fn div(self, other: $vecn) -> $vecn {
                 $vecn($inner::splat(self).div(other.0))
             }
@@ -392,14 +392,14 @@ macro_rules! impl_vecn_common_traits {
 
         impl Mul<$vecn> for $vecn {
             type Output = Self;
-            #[inline]
+            #[inline(always)]
             fn mul(self, other: $vecn) -> Self {
                 Self(self.0.mul(other.0))
             }
         }
 
         impl MulAssign<$vecn> for $vecn {
-            #[inline]
+            #[inline(always)]
             fn mul_assign(&mut self, other: $vecn) {
                 self.0 = self.0.mul(other.0)
             }
@@ -407,14 +407,14 @@ macro_rules! impl_vecn_common_traits {
 
         impl Mul<$t> for $vecn {
             type Output = Self;
-            #[inline]
+            #[inline(always)]
             fn mul(self, other: $t) -> Self {
                 Self(self.0.mul_scalar(other))
             }
         }
 
         impl MulAssign<$t> for $vecn {
-            #[inline]
+            #[inline(always)]
             fn mul_assign(&mut self, other: $t) {
                 self.0 = self.0.mul_scalar(other)
             }
@@ -422,7 +422,7 @@ macro_rules! impl_vecn_common_traits {
 
         impl Mul<$vecn> for $t {
             type Output = $vecn;
-            #[inline]
+            #[inline(always)]
             fn mul(self, other: $vecn) -> $vecn {
                 $vecn($inner::splat(self).mul(other.0))
             }
@@ -430,14 +430,14 @@ macro_rules! impl_vecn_common_traits {
 
         impl Add for $vecn {
             type Output = Self;
-            #[inline]
+            #[inline(always)]
             fn add(self, other: Self) -> Self {
                 Self(self.0.add(other.0))
             }
         }
 
         impl AddAssign for $vecn {
-            #[inline]
+            #[inline(always)]
             fn add_assign(&mut self, other: Self) {
                 self.0 = self.0.add(other.0)
             }
@@ -445,14 +445,14 @@ macro_rules! impl_vecn_common_traits {
 
         impl Sub for $vecn {
             type Output = Self;
-            #[inline]
+            #[inline(always)]
             fn sub(self, other: $vecn) -> Self {
                 Self(self.0.sub(other.0))
             }
         }
 
         impl SubAssign for $vecn {
-            #[inline]
+            #[inline(always)]
             fn sub_assign(&mut self, other: $vecn) {
                 self.0 = self.0.sub(other.0)
             }
