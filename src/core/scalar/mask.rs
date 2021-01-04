@@ -31,51 +31,87 @@ impl MaskVectorConst for XYZW<u32> {
 impl MaskVector for XY<u32> {
     #[inline]
     fn bitand(self, other: Self) -> Self {
-        self.map2(other, |a, b| a & b)
+        Self {
+            x: self.x & other.x,
+            y: self.y & other.y,
+        }
     }
 
     #[inline]
     fn bitor(self, other: Self) -> Self {
-        self.map2(other, |a, b| a | b)
+        Self {
+            x: self.x | other.x,
+            y: self.y | other.y,
+        }
     }
 
     #[inline]
     fn not(self) -> Self {
-        self.map(|a| !a)
+        Self {
+            x: !self.x,
+            y: !self.y,
+        }
     }
 }
 
 impl MaskVector for XYZ<u32> {
     #[inline]
     fn bitand(self, other: Self) -> Self {
-        self.map2(other, |a, b| a & b)
+        Self {
+            x: self.x & other.x,
+            y: self.y & other.y,
+            z: self.z & other.z,
+        }
     }
 
     #[inline]
     fn bitor(self, other: Self) -> Self {
-        self.map2(other, |a, b| a | b)
+        Self {
+            x: self.x | other.x,
+            y: self.y | other.y,
+            z: self.z | other.z,
+        }
     }
 
     #[inline]
     fn not(self) -> Self {
-        self.map(|a| !a)
+        Self {
+            x: !self.x,
+            y: !self.y,
+            z: !self.z,
+        }
     }
 }
 
 impl MaskVector for XYZW<u32> {
     #[inline]
     fn bitand(self, other: Self) -> Self {
-        self.map2(other, |a, b| a & b)
+        Self {
+            x: self.x & other.x,
+            y: self.y & other.y,
+            z: self.z & other.z,
+            w: self.w & other.w,
+        }
     }
 
     #[inline]
     fn bitor(self, other: Self) -> Self {
-        self.map2(other, |a, b| a | b)
+        Self {
+            x: self.x | other.x,
+            y: self.y | other.y,
+            z: self.z | other.z,
+            w: self.w | other.w,
+        }
     }
 
     #[inline]
     fn not(self) -> Self {
-        self.map(|a| !a)
+        Self {
+            x: !self.x,
+            y: !self.y,
+            z: !self.z,
+            w: !self.w,
+        }
     }
 }
 
@@ -219,51 +255,87 @@ impl MaskVectorConst for XYZW<bool> {
 impl MaskVector for XY<bool> {
     #[inline]
     fn bitand(self, other: Self) -> Self {
-        self.map2(other, |a, b| a & b)
+        Self {
+            x: self.x && other.x,
+            y: self.y && other.y,
+        }
     }
 
     #[inline]
     fn bitor(self, other: Self) -> Self {
-        self.map2(other, |a, b| a | b)
+        Self {
+            x: self.x || other.x,
+            y: self.y || other.y,
+        }
     }
 
     #[inline]
     fn not(self) -> Self {
-        self.map(|a| !a)
+        Self {
+            x: !self.x,
+            y: !self.y,
+        }
     }
 }
 
 impl MaskVector for XYZ<bool> {
     #[inline]
     fn bitand(self, other: Self) -> Self {
-        self.map2(other, |a, b| a & b)
+        Self {
+            x: self.x && other.x,
+            y: self.y && other.y,
+            z: self.z && other.z,
+        }
     }
 
     #[inline]
     fn bitor(self, other: Self) -> Self {
-        self.map2(other, |a, b| a | b)
+        Self {
+            x: self.x || other.x,
+            y: self.y || other.y,
+            z: self.z || other.z,
+        }
     }
 
     #[inline]
     fn not(self) -> Self {
-        self.map(|a| !a)
+        Self {
+            x: !self.x,
+            y: !self.y,
+            z: !self.z,
+        }
     }
 }
 
 impl MaskVector for XYZW<bool> {
     #[inline]
     fn bitand(self, other: Self) -> Self {
-        self.map2(other, |a, b| a & b)
+        Self {
+            x: self.x && other.x,
+            y: self.y && other.y,
+            z: self.z && other.z,
+            w: self.w && other.w,
+        }
     }
 
     #[inline]
     fn bitor(self, other: Self) -> Self {
-        self.map2(other, |a, b| a | b)
+        Self {
+            x: self.x || other.x,
+            y: self.y || other.y,
+            z: self.z || other.z,
+            w: self.w || other.w,
+        }
     }
 
     #[inline]
     fn not(self) -> Self {
-        self.map(|a| !a)
+        Self {
+            x: !self.x,
+            y: !self.y,
+            z: !self.z,
+            w: !self.w,
+        }
     }
 }
 

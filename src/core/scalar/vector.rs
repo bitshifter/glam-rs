@@ -3,120 +3,6 @@ use crate::core::{
     traits::{scalar::*, vector::*},
 };
 
-impl<T> XY<T> {
-    #[inline(always)]
-    pub(crate) fn map<D, F>(self, f: F) -> XY<D>
-    where
-        F: Fn(T) -> D,
-    {
-        XY {
-            x: f(self.x),
-            y: f(self.y),
-        }
-    }
-
-    #[inline(always)]
-    pub(crate) fn map2<D, F>(self, other: Self, f: F) -> XY<D>
-    where
-        F: Fn(T, T) -> D,
-    {
-        XY {
-            x: f(self.x, other.x),
-            y: f(self.y, other.y),
-        }
-    }
-
-    #[inline(always)]
-    pub(crate) fn map3<D, F>(self, a: Self, b: Self, f: F) -> XY<D>
-    where
-        F: Fn(T, T, T) -> D,
-    {
-        XY {
-            x: f(self.x, a.x, b.x),
-            y: f(self.y, a.y, b.y),
-        }
-    }
-}
-
-impl<T> XYZ<T> {
-    #[inline(always)]
-    pub(crate) fn map<D, F>(self, f: F) -> XYZ<D>
-    where
-        F: Fn(T) -> D,
-    {
-        XYZ {
-            x: f(self.x),
-            y: f(self.y),
-            z: f(self.z),
-        }
-    }
-
-    #[inline(always)]
-    pub(crate) fn map2<D, F>(self, other: Self, f: F) -> XYZ<D>
-    where
-        F: Fn(T, T) -> D,
-    {
-        XYZ {
-            x: f(self.x, other.x),
-            y: f(self.y, other.y),
-            z: f(self.z, other.z),
-        }
-    }
-
-    #[inline(always)]
-    pub(crate) fn map3<D, F>(self, a: Self, b: Self, f: F) -> XYZ<D>
-    where
-        F: Fn(T, T, T) -> D,
-    {
-        XYZ {
-            x: f(self.x, a.x, b.x),
-            y: f(self.y, a.y, b.y),
-            z: f(self.z, a.z, b.z),
-        }
-    }
-}
-
-impl<T> XYZW<T> {
-    #[inline(always)]
-    pub(crate) fn map<D, F>(self, f: F) -> XYZW<D>
-    where
-        F: Fn(T) -> D,
-    {
-        XYZW {
-            x: f(self.x),
-            y: f(self.y),
-            z: f(self.z),
-            w: f(self.w),
-        }
-    }
-
-    #[inline(always)]
-    pub(crate) fn map2<D, F>(self, other: Self, f: F) -> XYZW<D>
-    where
-        F: Fn(T, T) -> D,
-    {
-        XYZW {
-            x: f(self.x, other.x),
-            y: f(self.y, other.y),
-            z: f(self.z, other.z),
-            w: f(self.w, other.w),
-        }
-    }
-
-    #[inline(always)]
-    pub(crate) fn map3<D, F>(self, a: Self, b: Self, f: F) -> XYZW<D>
-    where
-        F: Fn(T, T, T) -> D,
-    {
-        XYZW {
-            x: f(self.x, a.x, b.x),
-            y: f(self.y, a.y, b.y),
-            z: f(self.z, a.z, b.z),
-            w: f(self.w, a.w, b.w),
-        }
-    }
-}
-
 impl<T: NumEx> VectorConst for XY<T> {
     const ZERO: Self = Self {
         x: <T as NumConstEx>::ZERO,
@@ -229,77 +115,122 @@ impl<T: NumEx> Vector<T> for XY<T> {
 
     #[inline]
     fn cmpeq(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| a.eq(&b))
+        Self::Mask {
+            x: self.x.eq(&other.x),
+            y: self.y.eq(&other.y),
+        }
     }
 
     #[inline]
     fn cmpne(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| a.ne(&b))
+        Self::Mask {
+            x: self.x.ne(&other.x),
+            y: self.y.ne(&other.y),
+        }
     }
 
     #[inline]
     fn cmpge(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| a.ge(&b))
+        Self::Mask {
+            x: self.x.ge(&other.x),
+            y: self.y.ge(&other.y),
+        }
     }
 
     #[inline]
     fn cmpgt(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| a.gt(&b))
+        Self::Mask {
+            x: self.x.gt(&other.x),
+            y: self.y.gt(&other.y),
+        }
     }
 
     #[inline]
     fn cmple(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| a.le(&b))
+        Self::Mask {
+            x: self.x.le(&other.x),
+            y: self.y.le(&other.y),
+        }
     }
 
     #[inline]
     fn cmplt(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| a.lt(&b))
+        Self::Mask {
+            x: self.x.lt(&other.x),
+            y: self.y.lt(&other.y),
+        }
     }
 
     #[inline]
     fn add(self, other: Self) -> Self {
-        self.map2(other, |a, b| a + b)
+        Self {
+            x: self.x + other.x,
+            y: self.y + other.y,
+        }
     }
 
     #[inline]
     fn div(self, other: Self) -> Self {
-        self.map2(other, |a, b| a / b)
+        Self {
+            x: self.x / other.x,
+            y: self.y / other.y,
+        }
     }
 
     #[inline]
     fn mul(self, other: Self) -> Self {
-        self.map2(other, |a, b| a * b)
+        Self {
+            x: self.x * other.x,
+            y: self.y * other.y,
+        }
     }
 
     #[inline]
     fn mul_add(self, b: Self, c: Self) -> Self {
-        self.map3(b, c, |a, b, c| a * b + c)
+        Self {
+            x: self.x * b.x + c.x,
+            y: self.y * b.y + c.y,
+        }
     }
 
     #[inline]
     fn sub(self, other: Self) -> Self {
-        self.map2(other, |a, b| a - b)
+        Self {
+            x: self.x - other.x,
+            y: self.y - other.y,
+        }
     }
 
     #[inline]
     fn mul_scalar(self, other: T) -> Self {
-        self.map(|a| a * other)
+        Self {
+            x: self.x * other,
+            y: self.y * other,
+        }
     }
 
     #[inline]
     fn div_scalar(self, other: T) -> Self {
-        self.map(|a| a / other)
+        Self {
+            x: self.x / other,
+            y: self.y / other,
+        }
     }
 
     #[inline]
     fn min(self, other: Self) -> Self {
-        self.map2(other, |a, b| a.min(b))
+        Self {
+            x: self.x.min(other.x),
+            y: self.y.min(other.y),
+        }
     }
 
     #[inline]
     fn max(self, other: Self) -> Self {
-        self.map2(other, |a, b| a.max(b))
+        Self {
+            x: self.x.max(other.x),
+            y: self.y.max(other.y),
+        }
     }
 }
 
@@ -322,77 +253,137 @@ impl<T: NumEx> Vector<T> for XYZ<T> {
 
     #[inline]
     fn cmpeq(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| a.eq(&b))
+        Self::Mask {
+            x: self.x.eq(&other.x),
+            y: self.y.eq(&other.y),
+            z: self.z.eq(&other.z),
+        }
     }
 
     #[inline]
     fn cmpne(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| a.ne(&b))
+        Self::Mask {
+            x: self.x.ne(&other.x),
+            y: self.y.ne(&other.y),
+            z: self.z.ne(&other.z),
+        }
     }
 
     #[inline]
     fn cmpge(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| a.ge(&b))
+        Self::Mask {
+            x: self.x.ge(&other.x),
+            y: self.y.ge(&other.y),
+            z: self.z.ge(&other.z),
+        }
     }
 
     #[inline]
     fn cmpgt(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| a.gt(&b))
+        Self::Mask {
+            x: self.x.gt(&other.x),
+            y: self.y.gt(&other.y),
+            z: self.z.gt(&other.z),
+        }
     }
 
     #[inline]
     fn cmple(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| a.le(&b))
+        Self::Mask {
+            x: self.x.le(&other.x),
+            y: self.y.le(&other.y),
+            z: self.z.le(&other.z),
+        }
     }
 
     #[inline]
     fn cmplt(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| a.lt(&b))
+        Self::Mask {
+            x: self.x.lt(&other.x),
+            y: self.y.lt(&other.y),
+            z: self.z.lt(&other.z),
+        }
     }
 
     #[inline]
     fn add(self, other: Self) -> Self {
-        self.map2(other, |a, b| a + b)
+        Self {
+            x: self.x + other.x,
+            y: self.y + other.y,
+            z: self.z + other.z,
+        }
     }
 
     #[inline]
     fn div(self, other: Self) -> Self {
-        self.map2(other, |a, b| a / b)
+        Self {
+            x: self.x / other.x,
+            y: self.y / other.y,
+            z: self.z / other.z,
+        }
     }
 
     #[inline]
     fn mul(self, other: Self) -> Self {
-        self.map2(other, |a, b| a * b)
+        Self {
+            x: self.x * other.x,
+            y: self.y * other.y,
+            z: self.z * other.z,
+        }
     }
 
     #[inline]
     fn mul_add(self, b: Self, c: Self) -> Self {
-        self.map3(b, c, |a, b, c| a * b + c)
+        Self {
+            x: self.x * b.x + c.x,
+            y: self.y * b.y + c.y,
+            z: self.z * b.z + c.z,
+        }
     }
 
     #[inline]
     fn sub(self, other: Self) -> Self {
-        self.map2(other, |a, b| a - b)
+        Self {
+            x: self.x - other.x,
+            y: self.y - other.y,
+            z: self.z - other.z,
+        }
     }
 
     #[inline]
     fn mul_scalar(self, other: T) -> Self {
-        self.map(|a| a * other)
+        Self {
+            x: self.x * other,
+            y: self.y * other,
+            z: self.z * other,
+        }
     }
 
     #[inline]
     fn div_scalar(self, other: T) -> Self {
-        self.map(|a| a / other)
+        Self {
+            x: self.x / other,
+            y: self.y / other,
+            z: self.z / other,
+        }
     }
 
     #[inline]
     fn min(self, other: Self) -> Self {
-        self.map2(other, |a, b| a.min(b))
+        Self {
+            x: self.x.min(other.x),
+            y: self.y.min(other.y),
+            z: self.z.min(other.z),
+        }
     }
 
     #[inline]
     fn max(self, other: Self) -> Self {
-        self.map2(other, |a, b| a.max(b))
+        Self {
+            x: self.x.max(other.x),
+            y: self.y.max(other.y),
+            z: self.z.max(other.z),
+        }
     }
 }
 
@@ -421,77 +412,152 @@ impl<T: NumEx> Vector<T> for XYZW<T> {
 
     #[inline]
     fn cmpeq(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| a.eq(&b))
+        Self::Mask {
+            x: self.x.eq(&other.x),
+            y: self.y.eq(&other.y),
+            z: self.z.eq(&other.z),
+            w: self.w.eq(&other.w),
+        }
     }
 
     #[inline]
     fn cmpne(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| a.ne(&b))
+        Self::Mask {
+            x: self.x.ne(&other.x),
+            y: self.y.ne(&other.y),
+            z: self.z.ne(&other.z),
+            w: self.w.ne(&other.w),
+        }
     }
 
     #[inline]
     fn cmpge(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| a.ge(&b))
+        Self::Mask {
+            x: self.x.ge(&other.x),
+            y: self.y.ge(&other.y),
+            z: self.z.ge(&other.z),
+            w: self.w.ge(&other.w),
+        }
     }
 
     #[inline]
     fn cmpgt(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| a.gt(&b))
+        Self::Mask {
+            x: self.x.gt(&other.x),
+            y: self.y.gt(&other.y),
+            z: self.z.gt(&other.z),
+            w: self.w.gt(&other.w),
+        }
     }
 
     #[inline]
     fn cmple(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| a.le(&b))
+        Self::Mask {
+            x: self.x.le(&other.x),
+            y: self.y.le(&other.y),
+            z: self.z.le(&other.z),
+            w: self.w.le(&other.w),
+        }
     }
 
     #[inline]
     fn cmplt(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| a.lt(&b))
+        Self::Mask {
+            x: self.x.lt(&other.x),
+            y: self.y.lt(&other.y),
+            z: self.z.lt(&other.z),
+            w: self.w.lt(&other.w),
+        }
     }
 
     #[inline]
     fn add(self, other: Self) -> Self {
-        self.map2(other, |a, b| a + b)
+        Self {
+            x: self.x + other.x,
+            y: self.y + other.y,
+            z: self.z + other.z,
+            w: self.w + other.w,
+        }
     }
 
     #[inline]
     fn div(self, other: Self) -> Self {
-        self.map2(other, |a, b| a / b)
+        Self {
+            x: self.x / other.x,
+            y: self.y / other.y,
+            z: self.z / other.z,
+            w: self.w / other.w,
+        }
     }
 
     #[inline]
     fn mul(self, other: Self) -> Self {
-        self.map2(other, |a, b| a * b)
+        Self {
+            x: self.x * other.x,
+            y: self.y * other.y,
+            z: self.z * other.z,
+            w: self.w * other.w,
+        }
     }
 
     #[inline]
     fn mul_add(self, b: Self, c: Self) -> Self {
-        self.map3(b, c, |a, b, c| a * b + c)
+        Self {
+            x: self.x * b.x + c.x,
+            y: self.y * b.y + c.y,
+            z: self.z * b.z + c.z,
+            w: self.w * b.w + c.w,
+        }
     }
 
     #[inline]
     fn sub(self, other: Self) -> Self {
-        self.map2(other, |a, b| a - b)
+        Self {
+            x: self.x - other.x,
+            y: self.y - other.y,
+            z: self.z - other.z,
+            w: self.w - other.w,
+        }
     }
 
     #[inline]
     fn mul_scalar(self, other: T) -> Self {
-        self.map(|a| a * other)
+        Self {
+            x: self.x * other,
+            y: self.y * other,
+            z: self.z * other,
+            w: self.w * other,
+        }
     }
 
     #[inline]
     fn div_scalar(self, other: T) -> Self {
-        self.map(|a| a / other)
+        Self {
+            x: self.x / other,
+            y: self.y / other,
+            z: self.z / other,
+            w: self.w / other,
+        }
     }
 
     #[inline]
     fn min(self, other: Self) -> Self {
-        self.map2(other, |a, b| a.min(b))
+        Self {
+            x: self.x.min(other.x),
+            y: self.y.min(other.y),
+            z: self.z.min(other.z),
+            w: self.w.min(other.w),
+        }
     }
 
     #[inline]
     fn max(self, other: Self) -> Self {
-        self.map2(other, |a, b| a.max(b))
+        Self {
+            x: self.x.max(other.x),
+            y: self.y.max(other.y),
+            z: self.z.max(other.z),
+            w: self.w.max(other.w),
+        }
     }
 }
 
@@ -816,19 +882,28 @@ impl<T: NumEx> Vector4<T> for XYZW<T> {
 impl<T: SignedEx> SignedVector<T> for XY<T> {
     #[inline]
     fn neg(self) -> Self {
-        self.map(|a| a.neg())
+        Self {
+            x: self.x.neg(),
+            y: self.y.neg(),
+        }
     }
 }
 
 impl<T: SignedEx> SignedVector2<T> for XY<T> {
     #[inline]
     fn abs(self) -> Self {
-        self.map(|a| a.abs())
+        Self {
+            x: self.x.abs(),
+            y: self.y.abs(),
+        }
     }
 
     #[inline]
     fn signum(self) -> Self {
-        self.map(|a| a.signum())
+        Self {
+            x: self.x.signum(),
+            y: self.y.signum(),
+        }
     }
 
     #[inline]
@@ -848,42 +923,117 @@ impl<T: SignedEx> SignedVector2<T> for XY<T> {
 impl<T: SignedEx> SignedVector<T> for XYZ<T> {
     #[inline]
     fn neg(self) -> Self {
-        self.map(|a| a.neg())
+        Self {
+            x: self.x.neg(),
+            y: self.y.neg(),
+            z: self.z.neg(),
+        }
     }
 }
 
 impl<T: SignedEx> SignedVector3<T> for XYZ<T> {
     #[inline]
     fn abs(self) -> Self {
-        self.map(|a| a.abs())
+        Self {
+            x: self.x.abs(),
+            y: self.y.abs(),
+            z: self.z.abs(),
+        }
     }
 
     #[inline]
     fn signum(self) -> Self {
-        self.map(|a| a.signum())
+        Self {
+            x: self.x.signum(),
+            y: self.y.signum(),
+            z: self.z.signum(),
+        }
     }
 }
 
 impl<T: SignedEx> SignedVector<T> for XYZW<T> {
     #[inline]
     fn neg(self) -> Self {
-        self.map(|a| a.neg())
+        Self {
+            x: self.x.neg(),
+            y: self.y.neg(),
+            z: self.z.neg(),
+            w: self.w.neg(),
+        }
     }
 }
 
 impl<T: SignedEx> SignedVector4<T> for XYZW<T> {
     #[inline]
     fn abs(self) -> Self {
-        self.map(|a| a.abs())
+        Self {
+            x: self.x.abs(),
+            y: self.y.abs(),
+            z: self.z.abs(),
+            w: self.w.abs(),
+        }
     }
 
     #[inline]
     fn signum(self) -> Self {
-        self.map(|a| a.signum())
+        Self {
+            x: self.x.signum(),
+            y: self.y.signum(),
+            z: self.z.signum(),
+            w: self.w.signum(),
+        }
     }
 }
 
 impl<T: FloatEx> FloatVector2<T> for XY<T> {
+    #[inline]
+    fn floor(self) -> Self {
+        Self {
+            x: self.x.floor(),
+            y: self.y.floor(),
+        }
+    }
+
+    #[inline]
+    fn ceil(self) -> Self {
+        Self {
+            x: self.x.ceil(),
+            y: self.y.ceil(),
+        }
+    }
+
+    #[inline]
+    fn round(self) -> Self {
+        Self {
+            x: self.x.round(),
+            y: self.y.round(),
+        }
+    }
+
+    #[inline]
+    fn recip(self) -> Self {
+        Self {
+            x: self.x.recip(),
+            y: self.y.recip(),
+        }
+    }
+
+    #[inline]
+    fn exp(self) -> Self {
+        Self {
+            x: self.x.exp(),
+            y: self.y.exp(),
+        }
+    }
+
+    #[inline]
+    fn powf(self, n: T) -> Self {
+        Self {
+            x: self.x.powf(n),
+            y: self.y.powf(n),
+        }
+    }
+
     #[inline]
     fn is_finite(self) -> bool {
         self.x.is_finite() && self.y.is_finite()
@@ -896,69 +1046,66 @@ impl<T: FloatEx> FloatVector2<T> for XY<T> {
 
     #[inline]
     fn is_nan_mask(self) -> Self::Mask {
-        self.map(|a| a.is_nan())
-    }
-
-    #[inline]
-    fn floor(self) -> Self {
-        self.map(Float::floor)
-    }
-
-    #[inline]
-    fn ceil(self) -> Self {
-        self.map(Float::ceil)
-    }
-
-    #[inline]
-    fn round(self) -> Self {
-        self.map(Float::round)
-    }
-
-    #[inline]
-    fn recip(self) -> Self {
-        self.map(Float::recip)
-    }
-
-    #[inline]
-    fn exp(self) -> Self {
-        self.map(Float::exp)
-    }
-
-    #[inline]
-    fn powf(self, n: T) -> Self {
-        self.map(|a| a.powf(n))
+        Self::Mask {
+            x: self.x.is_nan(),
+            y: self.y.is_nan(),
+        }
     }
 }
 
 impl<T: FloatEx> FloatVector3<T> for XYZ<T> {
     #[inline]
     fn floor(self) -> Self {
-        self.map(Float::floor)
+        Self {
+            x: self.x.floor(),
+            y: self.y.floor(),
+            z: self.z.floor(),
+        }
     }
 
     #[inline]
     fn ceil(self) -> Self {
-        self.map(Float::ceil)
+        Self {
+            x: self.x.ceil(),
+            y: self.y.ceil(),
+            z: self.z.ceil(),
+        }
     }
 
     #[inline]
     fn round(self) -> Self {
-        self.map(Float::round)
+        Self {
+            x: self.x.round(),
+            y: self.y.round(),
+            z: self.z.round(),
+        }
     }
 
     #[inline]
     fn recip(self) -> Self {
-        self.map(Float::recip)
+        Self {
+            x: self.x.recip(),
+            y: self.y.recip(),
+            z: self.z.recip(),
+        }
     }
 
     #[inline]
     fn exp(self) -> Self {
-        self.map(Float::exp)
+        Self {
+            x: self.x.exp(),
+            y: self.y.exp(),
+            z: self.z.exp(),
+        }
     }
 
     #[inline]
     fn powf(self, n: T) -> Self {
-        self.map(|a| a.powf(n))
+        Self {
+            x: self.x.powf(n),
+            y: self.y.powf(n),
+            z: self.z.powf(n),
+        }
     }
 
     #[inline]
@@ -970,41 +1117,76 @@ impl<T: FloatEx> FloatVector3<T> for XYZ<T> {
     fn is_nan(self) -> bool {
         self.x.is_nan() || self.y.is_nan() || self.z.is_nan()
     }
+
     #[inline]
     fn is_nan_mask(self) -> Self::Mask {
-        self.map(|a| a.is_nan())
+        Self::Mask {
+            x: self.x.is_nan(),
+            y: self.y.is_nan(),
+            z: self.z.is_nan(),
+        }
     }
 }
 
 impl<T: FloatEx> FloatVector4<T> for XYZW<T> {
     #[inline]
     fn floor(self) -> Self {
-        self.map(Float::floor)
+        Self {
+            x: self.x.floor(),
+            y: self.y.floor(),
+            z: self.z.floor(),
+            w: self.w.floor(),
+        }
     }
 
     #[inline]
     fn ceil(self) -> Self {
-        self.map(Float::ceil)
+        Self {
+            x: self.x.ceil(),
+            y: self.y.ceil(),
+            z: self.z.ceil(),
+            w: self.w.ceil(),
+        }
     }
 
     #[inline]
     fn round(self) -> Self {
-        self.map(Float::round)
+        Self {
+            x: self.x.round(),
+            y: self.y.round(),
+            z: self.z.round(),
+            w: self.w.round(),
+        }
     }
 
     #[inline]
     fn recip(self) -> Self {
-        self.map(Float::recip)
+        Self {
+            x: self.x.recip(),
+            y: self.y.recip(),
+            z: self.z.recip(),
+            w: self.w.recip(),
+        }
     }
 
     #[inline]
     fn exp(self) -> Self {
-        self.map(Float::exp)
+        Self {
+            x: self.x.exp(),
+            y: self.y.exp(),
+            z: self.z.exp(),
+            w: self.w.exp(),
+        }
     }
 
     #[inline]
     fn powf(self, n: T) -> Self {
-        self.map(|a| a.powf(n))
+        Self {
+            x: self.x.powf(n),
+            y: self.y.powf(n),
+            z: self.z.powf(n),
+            w: self.w.powf(n),
+        }
     }
 
     #[inline]
@@ -1016,9 +1198,15 @@ impl<T: FloatEx> FloatVector4<T> for XYZW<T> {
     fn is_nan(self) -> bool {
         self.x.is_nan() || self.y.is_nan() || self.z.is_nan() || self.w.is_nan()
     }
+
     #[inline]
     fn is_nan_mask(self) -> Self::Mask {
-        self.map(|a| a.is_nan())
+        Self::Mask {
+            x: self.x.is_nan(),
+            y: self.y.is_nan(),
+            z: self.z.is_nan(),
+            w: self.w.is_nan(),
+        }
     }
 }
 
