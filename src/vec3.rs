@@ -2,9 +2,9 @@
 use num_traits::Float;
 
 use crate::core::traits::vector::*;
-use crate::XYZ;
-use crate::{DVec2, DVec4, UVec3Mask};
-use crate::{IVec2, IVec4, UVec2, UVec4, Vec2, Vec3AMask, Vec3Mask, Vec4};
+#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+use crate::BVec3A;
+use crate::{BVec3, DVec2, DVec4, IVec2, IVec4, UVec2, UVec4, Vec2, Vec4, XYZ};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::{cmp::Ordering, f32, ops::*};
@@ -208,8 +208,7 @@ type XYZF32 = XYZ<f32>;
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct Vec3(pub(crate) XYZF32);
-
-impl_float_vec3!(f32, vec3, Vec2, Vec3, Vec4, Vec3Mask, XYZF32);
+impl_float_vec3!(f32, vec3, Vec2, Vec3, Vec4, BVec3, XYZF32);
 
 /// A 3-dimensional vector with SIMD support.
 ///
@@ -234,10 +233,10 @@ pub struct Vec3A(pub(crate) __m128);
 pub struct Vec3A(pub(crate) XYZF32);
 
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-impl_float_vec3!(f32, vec3a, Vec2, Vec3A, Vec4, Vec3AMask, __m128);
+impl_float_vec3!(f32, vec3a, Vec2, Vec3A, Vec4, BVec3A, __m128);
 
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-impl_float_vec3!(f32, vec3a, Vec2, Vec3A, Vec4, Vec3AMask, XYZF32);
+impl_float_vec3!(f32, vec3a, Vec2, Vec3A, Vec4, BVec3, XYZF32);
 
 impl From<Vec3> for Vec3A {
     #[inline(always)]
@@ -260,7 +259,7 @@ type XYZF64 = XYZ<f64>;
 #[repr(transparent)]
 pub struct DVec3(pub(crate) XYZF64);
 
-impl_float_vec3!(f64, dvec3, DVec2, DVec3, DVec4, UVec3Mask, XYZF64);
+impl_float_vec3!(f64, dvec3, DVec2, DVec3, DVec4, BVec3, XYZF64);
 
 type XYZI32 = XYZ<i32>;
 
@@ -269,7 +268,7 @@ type XYZI32 = XYZ<i32>;
 #[repr(transparent)]
 pub struct IVec3(pub(crate) XYZI32);
 
-impl_signed_vec3!(i32, ivec3, IVec2, IVec3, IVec4, UVec3Mask, XYZI32);
+impl_signed_vec3!(i32, ivec3, IVec2, IVec3, IVec4, BVec3, XYZI32);
 
 type XYZU32 = XYZ<u32>;
 
@@ -278,7 +277,7 @@ type XYZU32 = XYZ<u32>;
 #[repr(transparent)]
 pub struct UVec3(pub(crate) XYZU32);
 
-impl_unsigned_vec3!(u32, uvec3, UVec2, UVec3, UVec4, UVec3Mask, XYZU32);
+impl_unsigned_vec3!(u32, uvec3, UVec2, UVec3, UVec4, BVec3, XYZU32);
 
 #[test]
 fn test_vec3_private() {

@@ -236,33 +236,33 @@ macro_rules! impl_vec4_tests {
             assert_eq!(a, d);
         }
 
-        #[test]
-        fn test_mask_as_ref() {
-            assert_eq!(
-                $mask::new(false, false, false, false).as_ref(),
-                &[0, 0, 0, 0]
-            );
-            assert_eq!(
-                $mask::new(false, false, true, true).as_ref(),
-                &[0, 0, !0, !0]
-            );
-            assert_eq!(
-                $mask::new(true, true, false, false).as_ref(),
-                &[!0, !0, 0, 0]
-            );
-            assert_eq!(
-                $mask::new(false, true, false, true).as_ref(),
-                &[0, !0, 0, !0]
-            );
-            assert_eq!(
-                $mask::new(true, false, true, false).as_ref(),
-                &[!0, 0, !0, 0]
-            );
-            assert_eq!(
-                $mask::new(true, true, true, true).as_ref(),
-                &[!0, !0, !0, !0]
-            );
-        }
+        // #[test]
+        // fn test_mask_as_ref() {
+        //     assert_eq!(
+        //         $mask::new(false, false, false, false).as_ref(),
+        //         &[0, 0, 0, 0]
+        //     );
+        //     assert_eq!(
+        //         $mask::new(false, false, true, true).as_ref(),
+        //         &[0, 0, !0, !0]
+        //     );
+        //     assert_eq!(
+        //         $mask::new(true, true, false, false).as_ref(),
+        //         &[!0, !0, 0, 0]
+        //     );
+        //     assert_eq!(
+        //         $mask::new(false, true, false, true).as_ref(),
+        //         &[0, !0, 0, !0]
+        //     );
+        //     assert_eq!(
+        //         $mask::new(true, false, true, false).as_ref(),
+        //         &[!0, 0, !0, 0]
+        //     );
+        //     assert_eq!(
+        //         $mask::new(true, true, true, true).as_ref(),
+        //         &[!0, !0, !0, !0]
+        //     );
+        // }
 
         #[test]
         fn test_mask_from() {
@@ -409,10 +409,10 @@ macro_rules! impl_vec4_tests {
             let a = $mask::new(true, false, true, false);
 
             assert_eq!(format!("{}", a), "[true, false, true, false]");
-            assert_eq!(
-                format!("{:?}", a),
-                format!("{}(0xffffffff, 0x0, 0xffffffff, 0x0)", stringify!($mask))
-            );
+            // assert_eq!(
+            //     format!("{:?}", a),
+            //     format!("{}(0xffffffff, 0x0, 0xffffffff, 0x0)", stringify!($mask))
+            // );
         }
 
         #[test]
@@ -673,18 +673,25 @@ macro_rules! impl_vec4_float_tests {
 }
 
 mod vec4 {
-    use glam::{const_vec4, vec4, Vec4, Vec4Mask};
+    use glam::{const_vec4, vec4, Vec4};
+
+    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+    type Vec4Mask = glam::BVec4A;
+
+    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+    type Vec4Mask = glam::BVec4;
 
     #[test]
     fn test_align() {
         use std::mem;
         assert_eq!(16, mem::size_of::<Vec4>());
-        assert_eq!(16, mem::size_of::<Vec4Mask>());
         if cfg!(feature = "scalar-math") {
             assert_eq!(4, mem::align_of::<Vec4>());
-            assert_eq!(4, mem::align_of::<Vec4Mask>());
+            assert_eq!(4, mem::size_of::<Vec4Mask>());
+            assert_eq!(1, mem::align_of::<Vec4Mask>());
         } else {
             assert_eq!(16, mem::align_of::<Vec4>());
+            assert_eq!(16, mem::size_of::<Vec4Mask>());
             assert_eq!(16, mem::align_of::<Vec4Mask>());
         }
     }
@@ -726,46 +733,46 @@ mod vec4 {
 }
 
 mod dvec4 {
-    use glam::{const_dvec4, dvec4, DVec4, UVec4Mask};
+    use glam::{const_dvec4, dvec4, BVec4, DVec4};
 
     #[test]
     fn test_align() {
         use std::mem;
         assert_eq!(32, mem::size_of::<DVec4>());
-        assert_eq!(16, mem::size_of::<UVec4Mask>());
         assert_eq!(8, mem::align_of::<DVec4>());
-        assert_eq!(4, mem::align_of::<UVec4Mask>());
+        assert_eq!(4, mem::size_of::<BVec4>());
+        assert_eq!(1, mem::align_of::<BVec4>());
     }
 
-    impl_vec4_float_tests!(f64, const_dvec4, dvec4, DVec4, UVec4Mask);
+    impl_vec4_float_tests!(f64, const_dvec4, dvec4, DVec4, BVec4);
 }
 
 mod ivec4 {
-    use glam::{const_ivec4, ivec4, IVec4, UVec4Mask};
+    use glam::{const_ivec4, ivec4, BVec4, IVec4};
 
     #[test]
     fn test_align() {
         use std::mem;
         assert_eq!(16, mem::size_of::<IVec4>());
-        assert_eq!(16, mem::size_of::<UVec4Mask>());
         assert_eq!(4, mem::align_of::<IVec4>());
-        assert_eq!(4, mem::align_of::<UVec4Mask>());
+        assert_eq!(4, mem::size_of::<BVec4>());
+        assert_eq!(1, mem::align_of::<BVec4>());
     }
 
-    impl_vec4_signed_tests!(i32, const_ivec4, ivec4, IVec4, UVec4Mask);
+    impl_vec4_signed_tests!(i32, const_ivec4, ivec4, IVec4, BVec4);
 }
 
 mod uvec4 {
-    use glam::{const_uvec4, uvec4, UVec4, UVec4Mask};
+    use glam::{const_uvec4, uvec4, BVec4, UVec4};
 
     #[test]
     fn test_align() {
         use std::mem;
         assert_eq!(16, mem::size_of::<UVec4>());
-        assert_eq!(16, mem::size_of::<UVec4Mask>());
         assert_eq!(4, mem::align_of::<UVec4>());
-        assert_eq!(4, mem::align_of::<UVec4Mask>());
+        assert_eq!(4, mem::size_of::<BVec4>());
+        assert_eq!(1, mem::align_of::<BVec4>());
     }
 
-    impl_vec4_tests!(u32, const_uvec4, uvec4, UVec4, UVec4Mask);
+    impl_vec4_tests!(u32, const_uvec4, uvec4, UVec4, BVec4);
 }

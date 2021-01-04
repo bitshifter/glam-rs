@@ -95,15 +95,24 @@ bench_binop!(
     from2 => random_vec3a
 );
 
+bench_select!(
+    vec3a_select,
+    "vec3a select",
+    ty => Vec3A,
+    op => cmple,
+    from => random_vec3a
+);
+
 criterion_group!(
     benches,
-    quat_mul_vec3a,
     mat3_mul_vec3a,
+    quat_mul_vec3a,
     vec3a_angle_between,
     vec3a_euler,
-    vec3a_to_rgb,
+    vec3a_select,
     vec3a_to_array_deref,
     vec3a_to_array_into,
+    vec3a_to_rgb,
     vec3a_to_tuple_into,
     vec3a_to_vec3,
 );

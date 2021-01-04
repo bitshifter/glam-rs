@@ -304,7 +304,7 @@ impl<T: NumEx> Vector<T> for XY<T> {
 }
 
 impl<T: NumEx> Vector<T> for XYZ<T> {
-    type Mask = XYZ<u32>;
+    type Mask = XYZ<bool>;
 
     #[inline]
     fn splat(s: T) -> Self {
@@ -314,40 +314,40 @@ impl<T: NumEx> Vector<T> for XYZ<T> {
     #[inline]
     fn select(mask: Self::Mask, if_true: Self, if_false: Self) -> Self {
         Self {
-            x: if mask.x != 0 { if_true.x } else { if_false.x },
-            y: if mask.y != 0 { if_true.y } else { if_false.y },
-            z: if mask.z != 0 { if_true.z } else { if_false.z },
+            x: if mask.x { if_true.x } else { if_false.x },
+            y: if mask.y { if_true.y } else { if_false.y },
+            z: if mask.z { if_true.z } else { if_false.z },
         }
     }
 
     #[inline]
     fn cmpeq(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| MaskConst::MASK[a.eq(&b) as usize])
+        self.map2(other, |a, b| a.eq(&b))
     }
 
     #[inline]
     fn cmpne(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| MaskConst::MASK[a.ne(&b) as usize])
+        self.map2(other, |a, b| a.ne(&b))
     }
 
     #[inline]
     fn cmpge(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| MaskConst::MASK[a.ge(&b) as usize])
+        self.map2(other, |a, b| a.ge(&b))
     }
 
     #[inline]
     fn cmpgt(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| MaskConst::MASK[a.gt(&b) as usize])
+        self.map2(other, |a, b| a.gt(&b))
     }
 
     #[inline]
     fn cmple(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| MaskConst::MASK[a.le(&b) as usize])
+        self.map2(other, |a, b| a.le(&b))
     }
 
     #[inline]
     fn cmplt(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| MaskConst::MASK[a.lt(&b) as usize])
+        self.map2(other, |a, b| a.lt(&b))
     }
 
     #[inline]
@@ -397,7 +397,7 @@ impl<T: NumEx> Vector<T> for XYZ<T> {
 }
 
 impl<T: NumEx> Vector<T> for XYZW<T> {
-    type Mask = XYZW<u32>;
+    type Mask = XYZW<bool>;
 
     #[inline]
     fn splat(s: T) -> Self {
@@ -412,41 +412,41 @@ impl<T: NumEx> Vector<T> for XYZW<T> {
     #[inline]
     fn select(mask: Self::Mask, if_true: Self, if_false: Self) -> Self {
         Self {
-            x: if mask.x != 0 { if_true.x } else { if_false.x },
-            y: if mask.y != 0 { if_true.y } else { if_false.y },
-            z: if mask.z != 0 { if_true.z } else { if_false.z },
-            w: if mask.w != 0 { if_true.w } else { if_false.w },
+            x: if mask.x { if_true.x } else { if_false.x },
+            y: if mask.y { if_true.y } else { if_false.y },
+            z: if mask.z { if_true.z } else { if_false.z },
+            w: if mask.w { if_true.w } else { if_false.w },
         }
     }
 
     #[inline]
     fn cmpeq(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| MaskConst::MASK[a.eq(&b) as usize])
+        self.map2(other, |a, b| a.eq(&b))
     }
 
     #[inline]
     fn cmpne(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| MaskConst::MASK[a.ne(&b) as usize])
+        self.map2(other, |a, b| a.ne(&b))
     }
 
     #[inline]
     fn cmpge(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| MaskConst::MASK[a.ge(&b) as usize])
+        self.map2(other, |a, b| a.ge(&b))
     }
 
     #[inline]
     fn cmpgt(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| MaskConst::MASK[a.gt(&b) as usize])
+        self.map2(other, |a, b| a.gt(&b))
     }
 
     #[inline]
     fn cmple(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| MaskConst::MASK[a.le(&b) as usize])
+        self.map2(other, |a, b| a.le(&b))
     }
 
     #[inline]
     fn cmplt(self, other: Self) -> Self::Mask {
-        self.map2(other, |a, b| MaskConst::MASK[a.lt(&b) as usize])
+        self.map2(other, |a, b| a.lt(&b))
     }
 
     #[inline]
@@ -972,7 +972,7 @@ impl<T: FloatEx> FloatVector3<T> for XYZ<T> {
     }
     #[inline]
     fn is_nan_mask(self) -> Self::Mask {
-        self.map(|a| MaskConst::MASK[a.is_nan() as usize])
+        self.map(|a| a.is_nan())
     }
 }
 
@@ -1018,7 +1018,7 @@ impl<T: FloatEx> FloatVector4<T> for XYZW<T> {
     }
     #[inline]
     fn is_nan_mask(self) -> Self::Mask {
-        self.map(|a| MaskConst::MASK[a.is_nan() as usize])
+        self.map(|a| a.is_nan())
     }
 }
 

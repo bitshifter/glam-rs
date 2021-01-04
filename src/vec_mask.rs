@@ -308,102 +308,78 @@ macro_rules! impl_vec4mask {
     };
 }
 
-// Vec2Mask ///////////////////////////////////////////////////////////////////////////////////////
+// BVec3A /////////////////////////////////////////////////////////////////////////////////////////
 
-type XYU32 = crate::XY<u32>;
-
-/// A 2-dimensional vector mask.
+/// A 3-dimensional SIMD vector mask.
 ///
-/// This type is typically created by comparison methods on `Vec2`.
-#[derive(Clone, Copy)]
-#[repr(transparent)]
-pub struct Vec2Mask(pub(crate) XYU32);
-
-impl_vec2mask!(Vec2Mask, u32, XYU32);
-
-// Vec3Mask ///////////////////////////////////////////////////////////////////////////////////////
-
-type XYZU32 = crate::XYZ<u32>;
-
-/// A 3-dimensional vector mask.
-///
-/// This type is typically created by comparison methods on `Vec2`.
-#[derive(Clone, Copy)]
-#[repr(transparent)]
-pub struct Vec3Mask(pub(crate) XYZU32);
-
-impl_vec3mask!(Vec3Mask, u32, XYZU32);
-
-// Vec3AMask //////////////////////////////////////////////////////////////////////////////////////
-
-/// A 3-dimensional vector mask.
-///
-/// This type is typically created by comparison methods on `Vec3A`.
+/// This type is 16 byte aligned and is backed by a SIMD vector. If SIMD is not available `BVec3A`
+/// will be a type alias for `BVec3`.
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 #[derive(Clone, Copy)]
 #[repr(transparent)]
-pub struct Vec3AMask(pub(crate) __m128);
-
-#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-#[derive(Clone, Copy)]
-#[repr(transparent)]
-pub struct Vec3AMask(pub(crate) XYZU32);
+pub struct BVec3A(pub(crate) __m128);
 
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-impl_vec3mask!(Vec3AMask, u32, __m128);
+impl_vec3mask!(BVec3A, u32, __m128);
 
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-impl_vec3mask!(Vec3AMask, u32, XYZU32);
+pub type BVec3A = BVec3;
 
-// Vec4Mask ///////////////////////////////////////////////////////////////////////////////////////
+#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+impl From<BVec3> for BVec3A {
+    #[inline]
+    fn from(b: BVec3) -> Self {
+        Self::new(b.0.x, b.0.y, b.0.z)
+    }
+}
 
-type XYZWU32 = crate::XYZW<u32>;
+#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+impl From<BVec3A> for BVec3 {
+    #[inline]
+    fn from(b: BVec3A) -> Self {
+        let b: [bool; 3] = b.into();
+        Self::new(b[0], b[1], b[2])
+    }
+}
 
-/// A 4-dimensional vector mask.
+// BVec4A  ////////////////////////////////////////////////////////////////////////////////////////
+
+/// A 4-dimensional SIMD vector mask.
 ///
-/// This type is typically created by comparison methods on `Vec4`.  It is
-/// essentially a vector of four boolean values.
+/// This type is 16 byte aligned and is backed by a SIMD vector. If SIMD is not available `BVec4A`
+/// will be a type alias for `BVec4`.
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 #[derive(Clone, Copy)]
 #[repr(transparent)]
-pub struct Vec4Mask(pub(crate) __m128);
+pub struct BVec4A(pub(crate) __m128);
 
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-impl_vec4mask!(Vec4Mask, u32, __m128);
-
-/// A 4-dimensional vector mask.
-///
-/// This type is typically created by comparison methods on `Vec4`.  It is
-/// essentially a vector of four boolean values.
-#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-#[derive(Clone, Copy)]
-#[repr(transparent)]
-pub struct Vec4Mask(pub(crate) XYZWU32);
+impl_vec4mask!(BVec4A, u32, __m128);
 
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-impl_vec4mask!(Vec4Mask, u32, XYZWU32);
+pub type BVec4A = BVec4;
 
-/// A `u32` 2-dimensional vector mask.
-#[derive(Clone, Copy)]
-#[repr(transparent)]
-pub struct UVec2Mask(pub(crate) XYU32);
+#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+impl From<BVec4> for BVec4A {
+    #[inline]
+    fn from(b: BVec4) -> Self {
+        Self::new(b.0.x, b.0.y, b.0.z, b.0.w)
+    }
+}
 
-/// A `u32` 3-dimensional vector mask.
-#[derive(Clone, Copy)]
-#[repr(transparent)]
-pub struct UVec3Mask(pub(crate) XYZU32);
+#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+impl From<BVec4A> for BVec4 {
+    #[inline]
+    fn from(b: BVec4A) -> Self {
+        let b: [bool; 4] = b.into();
+        Self::new(b[0], b[1], b[2], b[3])
+    }
+}
 
-/// A `u32` 4-dimensional vector mask.
-#[derive(Clone, Copy)]
-#[repr(transparent)]
-pub struct UVec4Mask(pub(crate) XYZWU32);
-
-impl_vec2mask!(UVec2Mask, u32, XYU32);
-impl_vec3mask!(UVec3Mask, u32, XYZU32);
-impl_vec4mask!(UVec4Mask, u32, XYZWU32);
-
+// boolean vectors ////////////////////////////////////////////////////////////////////////////////
 type XYBool = crate::XY<bool>;
 
+/// A 2-dimensional boolean vector.
 #[derive(Copy, Clone)]
 #[repr(transparent)]
 pub struct BVec2(pub(crate) XYBool);
@@ -411,6 +387,7 @@ impl_vec2mask!(BVec2, bool, XYBool);
 
 type XYZBool = crate::XYZ<bool>;
 
+/// A 3-dimensional boolean vector.
 #[derive(Copy, Clone)]
 #[repr(transparent)]
 pub struct BVec3(pub(crate) XYZBool);
@@ -418,14 +395,8 @@ impl_vec3mask!(BVec3, bool, XYZBool);
 
 type XYZWBool = crate::XYZW<bool>;
 
+/// A 4-dimensional boolean vector.
 #[derive(Copy, Clone)]
 #[repr(transparent)]
 pub struct BVec4(pub(crate) XYZWBool);
 impl_vec4mask!(BVec4, bool, XYZWBool);
-
-// pub type DVec2Mask = UVec2Mask;
-// pub type DVec3Mask = UVec3Mask;
-// pub type DVec4Mask = UVec4Mask;
-// pub type IVec2Mask = UVec2Mask;
-// pub type IVec3Mask = UVec3Mask;
-// pub type IVec4Mask = UVec4Mask;

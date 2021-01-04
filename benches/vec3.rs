@@ -107,18 +107,27 @@ bench_binop!(
     from2 => random_vec3
 );
 
+bench_select!(
+    vec3_select,
+    "vec3 select",
+    ty => Vec3,
+    op => cmple,
+    from => random_vec3
+);
+
 criterion_group!(
     benches,
-    vec3_add_vec3,
-    quat_mul_vec3,
     mat3_mul_vec3,
     mat4_transform_point3,
     mat4_transform_vector3,
+    quat_mul_vec3,
+    vec3_add_vec3,
     vec3_angle_between,
     vec3_euler,
-    vec3_to_rgb,
+    vec3_select,
     vec3_to_array_fields,
     vec3_to_array_into,
+    vec3_to_rgb,
     vec3_to_tuple_into,
 );
 

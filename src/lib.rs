@@ -212,8 +212,9 @@ mod transform;
 #[doc(hidden)]
 pub use self::core::storage::{XY, XYZ, XYZW};
 
+/** `bool` vector mask types. */
 pub mod bool {
-    pub use super::vec_mask::{BVec2, BVec3, BVec4};
+    pub use super::vec_mask::{BVec2, BVec3, BVec3A, BVec4, BVec4A};
 }
 pub use self::bool::*;
 
@@ -271,13 +272,6 @@ pub mod u32 {
     pub use super::vec4::{uvec4, UVec4};
 }
 pub use self::u32::*;
-
-/** Vector mask types. */
-pub mod mask {
-    pub use super::vec_mask::{UVec2Mask, UVec3Mask, UVec4Mask};
-    pub use super::vec_mask::{Vec2Mask, Vec3AMask, Vec3Mask, Vec4Mask};
-}
-pub use self::mask::*;
 
 /** Traits adding swizzle methods to all vector types. */
 pub mod swizzles;

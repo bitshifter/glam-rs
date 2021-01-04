@@ -3,8 +3,9 @@ use num_traits::Float;
 
 use crate::core::traits::vector::*;
 
-use crate::{DVec2, DVec3, UVec4Mask};
-use crate::{IVec2, IVec3, UVec2, UVec3, Vec2, Vec3, Vec3A, Vec4Mask, XYZW};
+#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+use crate::BVec4A;
+use crate::{BVec4, DVec2, DVec3, IVec2, IVec3, UVec2, UVec3, Vec2, Vec3, Vec3A, XYZW};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::ops::*;
@@ -204,7 +205,7 @@ type XYZWF32 = XYZW<f32>;
 pub struct Vec4(pub(crate) XYZWF32);
 
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-impl_float_vec4!(f32, vec4, Vec2, Vec3, Vec4, Vec4Mask, XYZWF32);
+impl_float_vec4!(f32, vec4, Vec2, Vec3, Vec4, BVec4, XYZWF32);
 
 /// A 4-dimensional vector.
 ///
@@ -215,7 +216,7 @@ impl_float_vec4!(f32, vec4, Vec2, Vec3, Vec4, Vec4Mask, XYZWF32);
 pub struct Vec4(pub(crate) __m128);
 
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-impl_float_vec4!(f32, vec4, Vec2, Vec3, Vec4, Vec4Mask, __m128);
+impl_float_vec4!(f32, vec4, Vec2, Vec3, Vec4, BVec4A, __m128);
 
 impl From<Vec4> for Vec3A {
     /// Creates a `Vec3A` from the `x`, `y` and `z` elements of `self` discarding `w`.
@@ -234,7 +235,7 @@ type XYZWF64 = XYZW<f64>;
 #[repr(transparent)]
 pub struct DVec4(pub(crate) XYZWF64);
 
-impl_float_vec4!(f64, dvec4, DVec2, DVec3, DVec4, UVec4Mask, XYZWF64);
+impl_float_vec4!(f64, dvec4, DVec2, DVec3, DVec4, BVec4, XYZWF64);
 
 type XYZWI32 = XYZW<i32>;
 
@@ -243,7 +244,7 @@ type XYZWI32 = XYZW<i32>;
 #[repr(transparent)]
 pub struct IVec4(pub(crate) XYZWI32);
 
-impl_signed_vec4!(i32, ivec4, IVec2, IVec3, IVec4, UVec4Mask, XYZWI32);
+impl_signed_vec4!(i32, ivec4, IVec2, IVec3, IVec4, BVec4, XYZWI32);
 
 type XYZWU32 = XYZW<u32>;
 
@@ -252,7 +253,7 @@ type XYZWU32 = XYZW<u32>;
 #[repr(transparent)]
 pub struct UVec4(pub(crate) XYZWU32);
 
-impl_unsigned_vec4!(u32, uvec4, UVec2, UVec3, UVec4, UVec4Mask, XYZWU32);
+impl_unsigned_vec4!(u32, uvec4, UVec2, UVec3, UVec4, BVec4, XYZWU32);
 
 #[test]
 fn test_vec4_private() {
