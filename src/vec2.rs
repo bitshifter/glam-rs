@@ -1,6 +1,3 @@
-#[allow(unused_imports)]
-use num_traits::Float;
-
 use crate::core::traits::vector::*;
 use crate::{BVec2, DVec3, IVec3, UVec3, Vec3, XY};
 #[cfg(not(target_arch = "spirv"))]

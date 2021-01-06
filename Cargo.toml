@@ -19,7 +19,7 @@ maintenance = { status = "experimental" }
 default = ["std"]
 
 # enable support for the standard library
-std = ["num-traits/std"]
+std = []
 
 # enable additional glam checks if debug assertions are enabled
 debug-glam-assert = []
@@ -39,7 +39,7 @@ libm = ["num-traits/libm"]
 [dependencies]
 bytemuck = { version = "1.4", optional = true, default-features = false }
 mint = { version = "0.5", optional = true, default-features = false }
-num-traits = { version = "0.2.14", default-features = false }
+num-traits = { version = "0.2.14", optional = true, default-features = false }
 rand = { version = "0.7", optional = true, default-features = false }
 serde = { version = "1.0", optional = true, features = ["derive"] }
 

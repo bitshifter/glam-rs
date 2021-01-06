@@ -1,9 +1,134 @@
+// num_traits is optional as it adds 70% to compile times. It is needed by no_std builds
+#[cfg(feature = "libm")]
 pub use num_traits::{Float, Num, Signed};
 
 use core::{
     marker::Sized,
     ops::{Add, Div, Mul, Sub},
 };
+
+// Stub the necessary parts of num traits
+#[cfg(not(feature = "libm"))]
+pub trait Num: PartialEq {}
+
+#[cfg(not(feature = "libm"))]
+pub trait Signed: Sized + Num + core::ops::Neg<Output = Self> {
+    fn abs(self) -> Self;
+    fn signum(self) -> Self;
+}
+
+#[cfg(not(feature = "libm"))]
+pub trait Float: Num + Copy + core::ops::Neg<Output = Self> {
+    fn acos(self) -> Self;
+    fn ceil(self) -> Self;
+    fn exp(self) -> Self;
+    fn floor(self) -> Self;
+    fn is_finite(self) -> bool;
+    fn is_nan(self) -> bool;
+    fn powf(self, n: Self) -> Self;
+    fn recip(self) -> Self;
+    fn round(self) -> Self;
+    fn sqrt(self) -> Self;
+    fn sin(self) -> Self;
+    fn sin_cos(self) -> (Self, Self);
+    fn tan(self) -> Self;
+}
+
+#[cfg(not(feature = "libm"))]
+macro_rules! impl_num_trait {
+    ($t:ident) => {
+        impl Num for $t {}
+    };
+}
+
+#[cfg(not(feature = "libm"))]
+macro_rules! impl_signed_trait {
+    ($t:ident) => {
+        impl_num_trait!($t);
+
+        impl Signed for $t {
+            #[inline(always)]
+            fn abs(self) -> Self {
+                $t::abs(self)
+            }
+            #[inline(always)]
+            fn signum(self) -> Self {
+                $t::signum(self)
+            }
+        }
+    };
+}
+
+#[cfg(not(feature = "libm"))]
+macro_rules! impl_float_trait {
+    ($t:ident) => {
+        impl_signed_trait!($t);
+
+        impl Float for $t {
+            #[inline(always)]
+            fn acos(self) -> Self {
+                $t::acos(self)
+            }
+            #[inline(always)]
+            fn ceil(self) -> Self {
+                $t::ceil(self)
+            }
+            #[inline(always)]
+            fn exp(self) -> Self {
+                $t::exp(self)
+            }
+            #[inline(always)]
+            fn floor(self) -> Self {
+                $t::floor(self)
+            }
+            #[inline(always)]
+            fn is_finite(self) -> bool {
+                $t::is_finite(self)
+            }
+            #[inline(always)]
+            fn is_nan(self) -> bool {
+                $t::is_nan(self)
+            }
+            #[inline(always)]
+            fn powf(self, n: Self) -> Self {
+                $t::powf(self, n)
+            }
+            #[inline(always)]
+            fn recip(self) -> Self {
+                $t::recip(self)
+            }
+            #[inline(always)]
+            fn round(self) -> Self {
+                $t::round(self)
+            }
+            #[inline(always)]
+            fn sin(self) -> Self {
+                $t::sin(self)
+            }
+            #[inline(always)]
+            fn sin_cos(self) -> (Self, Self) {
+                $t::sin_cos(self)
+            }
+            #[inline(always)]
+            fn sqrt(self) -> Self {
+                $t::sqrt(self)
+            }
+            #[inline(always)]
+            fn tan(self) -> Self {
+                $t::tan(self)
+            }
+        }
+    };
+}
+
+#[cfg(not(feature = "libm"))]
+impl_float_trait!(f32);
+#[cfg(not(feature = "libm"))]
+impl_float_trait!(f64);
+#[cfg(not(feature = "libm"))]
+impl_signed_trait!(i32);
+#[cfg(not(feature = "libm"))]
+impl_num_trait!(u32);
 
 pub trait MaskConst: Sized {
     const MASK: [Self; 2];
@@ -39,19 +164,7 @@ pub trait NumEx:
 pub trait SignedEx: Signed + NumEx {}
 
 pub trait FloatEx: Float + FloatConstEx + SignedEx {
-    // TODO: Move to Signed
-    // fn abs(self) -> Self;
-    // fn ceil(self) -> Self;
-    // fn floor(self) -> Self;
-    // fn is_finite(self) -> bool;
-    // fn is_nan(self) -> bool;
-    // fn recip(self) -> Self;
-    // fn round(self) -> Self;
-    // fn signum(self) -> Self;
-    // fn sqrt(self) -> Self;
     fn acos_approx(self) -> Self;
-    // fn sin(self) -> Self;
-    // fn sin_cos(self) -> (Self, Self);
     fn from_f32(f: f32) -> Self;
     fn from_f64(f: f64) -> Self;
 }
@@ -89,50 +202,6 @@ impl FloatEx for f32 {
     fn from_f64(v: f64) -> Self {
         v as Self
     }
-    // #[inline(always)]
-    // fn abs(self) -> Self {
-    //     Self::abs(self)
-    // }
-    // #[inline(always)]
-    // fn ceil(self) -> Self {
-    //     Self::ceil(self)
-    // }
-    // #[inline(always)]
-    // fn floor(self) -> Self {
-    //     Self::floor(self)
-    // }
-    // #[inline(always)]
-    // fn is_finite(self) -> bool {
-    //     Self::is_finite(self)
-    // }
-    // #[inline(always)]
-    // fn is_nan(self) -> bool {
-    //     Self::is_nan(self)
-    // }
-    // #[inline(always)]
-    // fn recip(self) -> Self {
-    //     Self::recip(self)
-    // }
-    // #[inline(always)]
-    // fn round(self) -> Self {
-    //     Self::round(self)
-    // }
-    // #[inline(always)]
-    // fn sin(self) -> Self {
-    //     Self::sin(self)
-    // }
-    // #[inline(always)]
-    // fn sin_cos(self) -> (Self, Self) {
-    //     Self::sin_cos(self)
-    // }
-    // #[inline(always)]
-    // fn signum(self) -> Self {
-    //     Self::signum(self)
-    // }
-    // #[inline(always)]
-    // fn sqrt(self) -> Self {
-    //     Self::sqrt(self)
-    // }
     #[inline(always)]
     fn acos_approx(self) -> Self {
         // Based on https://github.com/microsoft/DirectXMath `XMScalarAcos`
@@ -201,54 +270,10 @@ impl FloatEx for f64 {
     fn from_f64(v: f64) -> Self {
         v
     }
-    // #[inline(always)]
-    // fn abs(self) -> Self {
-    //     Self::abs(self)
-    // }
-    // #[inline(always)]
-    // fn ceil(self) -> Self {
-    //     Self::ceil(self)
-    // }
-    // #[inline(always)]
-    // fn floor(self) -> Self {
-    //     Self::floor(self)
-    // }
-    // #[inline(always)]
-    // fn is_finite(self) -> bool {
-    //     Self::is_finite(self)
-    // }
-    // #[inline(always)]
-    // fn is_nan(self) -> bool {
-    //     Self::is_nan(self)
-    // }
-    // #[inline(always)]
-    // fn recip(self) -> Self {
-    //     Self::recip(self)
-    // }
-    // #[inline(always)]
-    // fn round(self) -> Self {
-    //     Self::round(self)
-    // }
-    // #[inline(always)]
-    // fn sin(self) -> Self {
-    //     Self::sin(self)
-    // }
-    // #[inline(always)]
-    // fn sin_cos(self) -> (Self, Self) {
-    //     Self::sin_cos(self)
-    // }
-    // #[inline(always)]
-    // fn signum(self) -> Self {
-    //     Self::signum(self)
-    // }
-    // #[inline(always)]
-    // fn sqrt(self) -> Self {
-    //     Self::sqrt(self)
-    // }
     #[inline(always)]
     fn acos_approx(self) -> Self {
         // TODO: clamp range
-        Self::acos(self)
+        f64::acos(self)
     }
 }
 

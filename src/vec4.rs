@@ -1,6 +1,3 @@
-#[allow(unused_imports)]
-use num_traits::Float;
-
 use crate::core::traits::vector::*;
 
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]

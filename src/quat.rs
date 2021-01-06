@@ -1,6 +1,3 @@
-#[allow(unused_imports)]
-use num_traits::Float;
-
 use crate::core::traits::{
     quaternion::Quaternion,
     vector::{FloatVector4, MaskVector4, Vector, Vector4, Vector4Const},

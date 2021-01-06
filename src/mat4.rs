@@ -1,6 +1,3 @@
-#[allow(unused_imports)]
-use num_traits::Float;
-
 use crate::core::{
     storage::{Vector4x4, XYZW},
     traits::{
