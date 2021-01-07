@@ -155,47 +155,58 @@ macro_rules! impl_vec3_common_traits {
     };
 }
 
-macro_rules! impl_unsigned_vec3 {
-    ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
-        impl $vec3 {
-            impl_vec3_common_methods!($t, $vec2, $vec3, $vec4, $mask, $inner);
-        }
-
-        impl_vec3_common_traits!($t, $new, $vec2, $vec3, $vec4, $mask, $inner);
+macro_rules! impl_vec3_signed_methods {
+    ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
+        impl_vec3_common_methods!($t, $vec2, $vec3, $vec4, $mask, $inner);
+        impl_vecn_signed_methods!($t, $vec3, $mask, $inner, SignedVector3);
     };
 }
 
-macro_rules! impl_signed_vec3 {
-    ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
-        impl $vec3 {
-            impl_vec3_common_methods!($t, $vec2, $vec3, $vec4, $mask, $inner);
-            impl_vecn_signed_methods!($t, $vec3, $mask, $inner, SignedVector3);
-        }
+macro_rules! impl_vec3_float_methods {
+    ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
+        impl_vec3_signed_methods!($t, $vec2, $vec3, $vec4, $mask, $inner);
+        impl_vecn_float_methods!($t, $vec3, $mask, $inner, FloatVector3);
 
+        /// Returns the angle between two vectors, in radians.
+        ///
+        /// The vectors do not need to be unit length, but this function does
+        /// perform a `sqrt`.
+        #[inline(always)]
+        pub fn angle_between(self, other: Self) -> $t {
+            self.0.angle_between(other.0)
+        }
+    };
+}
+
+macro_rules! impl_vec3_float_traits {
+    ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
         impl_vec3_common_traits!($t, $new, $vec2, $vec3, $vec4, $mask, $inner);
         impl_vecn_signed_traits!($t, 3, $vec3, $inner, SignedVector3);
     };
 }
 
-macro_rules! impl_float_vec3 {
-    ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
+macro_rules! impl_f32_vec3 {
+    ($new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
         impl $vec3 {
-            impl_vec3_common_methods!($t, $vec2, $vec3, $vec4, $mask, $inner);
-            impl_vecn_signed_methods!($t, $vec3, $mask, $inner, SignedVector3);
-            impl_vecn_float_methods!($t, $vec3, $mask, $inner, FloatVector3);
+            impl_vec3_float_methods!(f32, $vec2, $vec3, $vec4, $mask, $inner);
 
-            /// Returns the angle between two vectors, in radians.
-            ///
-            /// The vectors do not need to be unit length, but this function does
-            /// perform a `sqrt`.
             #[inline(always)]
-            pub fn angle_between(self, other: Self) -> $t {
-                self.0.angle_between(other.0)
+            pub fn as_f64(&self) -> DVec3 {
+                DVec3::new(self.x as f64, self.y as f64, self.z as f64)
+            }
+
+            #[inline(always)]
+            pub fn as_i32(&self) -> IVec3 {
+                IVec3::new(self.x as i32, self.y as i32, self.z as i32)
+            }
+
+            #[inline(always)]
+            pub fn as_u32(&self) -> UVec3 {
+                UVec3::new(self.x as u32, self.y as u32, self.z as u32)
             }
         }
 
-        impl_vec3_common_traits!($t, $new, $vec2, $vec3, $vec4, $mask, $inner);
-        impl_vecn_signed_traits!($t, 3, $vec3, $inner, SignedVector3);
+        impl_vec3_float_traits!(f32, $new, $vec2, $vec3, $vec4, $mask, $inner);
     };
 }
 
@@ -205,7 +216,7 @@ type XYZF32 = XYZ<f32>;
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct Vec3(pub(crate) XYZF32);
-impl_float_vec3!(f32, vec3, Vec2, Vec3, Vec4, BVec3, XYZF32);
+impl_f32_vec3!(vec3, Vec2, Vec3, Vec4, BVec3, XYZF32);
 
 /// A 3-dimensional vector with SIMD support.
 ///
@@ -230,10 +241,10 @@ pub struct Vec3A(pub(crate) __m128);
 pub struct Vec3A(pub(crate) XYZF32);
 
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-impl_float_vec3!(f32, vec3a, Vec2, Vec3A, Vec4, BVec3A, __m128);
+impl_f32_vec3!(vec3a, Vec2, Vec3A, Vec4, BVec3A, __m128);
 
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-impl_float_vec3!(f32, vec3a, Vec2, Vec3A, Vec4, BVec3, XYZF32);
+impl_f32_vec3!(vec3a, Vec2, Vec3A, Vec4, BVec3, XYZF32);
 
 impl From<Vec3> for Vec3A {
     #[inline(always)]
@@ -256,7 +267,25 @@ type XYZF64 = XYZ<f64>;
 #[repr(transparent)]
 pub struct DVec3(pub(crate) XYZF64);
 
-impl_float_vec3!(f64, dvec3, DVec2, DVec3, DVec4, BVec3, XYZF64);
+impl DVec3 {
+    impl_vec3_float_methods!(f64, DVec2, DVec3, DVec4, BVec3, XYZF64);
+
+    #[inline(always)]
+    pub fn as_f32(&self) -> Vec3 {
+        Vec3::new(self.x as f32, self.y as f32, self.z as f32)
+    }
+
+    #[inline(always)]
+    pub fn as_i32(&self) -> IVec3 {
+        IVec3::new(self.x as i32, self.y as i32, self.z as i32)
+    }
+
+    #[inline(always)]
+    pub fn as_u32(&self) -> UVec3 {
+        UVec3::new(self.x as u32, self.y as u32, self.z as u32)
+    }
+}
+impl_vec3_float_traits!(f64, dvec3, DVec2, DVec3, DVec4, BVec3, XYZF64);
 
 type XYZI32 = XYZ<i32>;
 
@@ -265,7 +294,27 @@ type XYZI32 = XYZ<i32>;
 #[repr(transparent)]
 pub struct IVec3(pub(crate) XYZI32);
 
-impl_signed_vec3!(i32, ivec3, IVec2, IVec3, IVec4, BVec3, XYZI32);
+impl IVec3 {
+    impl_vec3_common_methods!(i32, IVec2, IVec3, IVec4, BVec3, XYZI32);
+    impl_vecn_signed_methods!(i32, IVec3, BVec3, XYZI32, SignedVector3);
+
+    #[inline(always)]
+    pub fn as_f32(&self) -> Vec3 {
+        Vec3::new(self.x as f32, self.y as f32, self.z as f32)
+    }
+
+    #[inline(always)]
+    pub fn as_f64(&self) -> DVec3 {
+        DVec3::new(self.x as f64, self.y as f64, self.z as f64)
+    }
+
+    #[inline(always)]
+    pub fn as_u32(&self) -> UVec3 {
+        UVec3::new(self.x as u32, self.y as u32, self.z as u32)
+    }
+}
+impl_vec3_common_traits!(i32, ivec3, IVec2, IVec3, IVec4, BVec3, XYZI32);
+impl_vecn_signed_traits!(i32, 3, IVec3, XYZI32, SignedVector3);
 
 type XYZU32 = XYZ<u32>;
 
@@ -274,7 +323,25 @@ type XYZU32 = XYZ<u32>;
 #[repr(transparent)]
 pub struct UVec3(pub(crate) XYZU32);
 
-impl_unsigned_vec3!(u32, uvec3, UVec2, UVec3, UVec4, BVec3, XYZU32);
+impl UVec3 {
+    impl_vec3_common_methods!(u32, UVec2, UVec3, UVec4, BVec3, XYZU32);
+
+    #[inline(always)]
+    pub fn as_f32(&self) -> Vec3 {
+        Vec3::new(self.x as f32, self.y as f32, self.z as f32)
+    }
+
+    #[inline(always)]
+    pub fn as_f64(&self) -> DVec3 {
+        DVec3::new(self.x as f64, self.y as f64, self.z as f64)
+    }
+
+    #[inline(always)]
+    pub fn as_i32(&self) -> IVec3 {
+        IVec3::new(self.x as i32, self.y as i32, self.z as i32)
+    }
+}
+impl_vec3_common_traits!(u32, uvec3, UVec2, UVec3, UVec4, BVec3, XYZU32);
 
 #[test]
 fn test_vec3_private() {

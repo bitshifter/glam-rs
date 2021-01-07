@@ -157,38 +157,48 @@ macro_rules! impl_vec4_common_traits {
     };
 }
 
-macro_rules! impl_unsigned_vec4 {
-    ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
-        impl $vec4 {
-            impl_vec4_common_methods!($t, $vec2, $vec3, $vec4, $mask, $inner);
-        }
-
-        impl_vec4_common_traits!($t, $new, $vec2, $vec3, $vec4, $mask, $inner);
+macro_rules! impl_vec4_signed_methods {
+    ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
+        impl_vec4_common_methods!($t, $vec2, $vec3, $vec4, $mask, $inner);
+        impl_vecn_signed_methods!($t, $vec4, $mask, $inner, SignedVector4);
     };
 }
 
-macro_rules! impl_signed_vec4 {
+macro_rules! impl_vec4_signed_traits {
     ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
-        impl $vec4 {
-            impl_vec4_common_methods!($t, $vec2, $vec3, $vec4, $mask, $inner);
-            impl_vecn_signed_methods!($t, $vec4, $mask, $inner, SignedVector4);
-        }
-
         impl_vec4_common_traits!($t, $new, $vec2, $vec3, $vec4, $mask, $inner);
         impl_vecn_signed_traits!($t, 4, $vec4, $inner, SignedVector4);
     };
 }
 
-macro_rules! impl_float_vec4 {
-    ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
-        impl $vec4 {
-            impl_vec4_common_methods!($t, $vec2, $vec3, $vec4, $mask, $inner);
-            impl_vecn_signed_methods!($t, $vec4, $mask, $inner, SignedVector4);
-            impl_vecn_float_methods!($t, $vec4, $mask, $inner, FloatVector4);
-        }
+macro_rules! impl_vec4_float_methods {
+    ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
+        impl_vec4_signed_methods!($t, $vec2, $vec3, $vec4, $mask, $inner);
+        impl_vecn_float_methods!($t, $vec4, $mask, $inner, FloatVector4);
+    };
+}
 
-        impl_vec4_common_traits!($t, $new, $vec2, $vec3, $vec4, $mask, $inner);
-        impl_vecn_signed_traits!($t, 4, $vec4, $inner, SignedVector4);
+macro_rules! impl_f32_vec4 {
+    ($new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
+        impl $vec4 {
+            impl_vec4_float_methods!(f32, $vec2, $vec3, $vec4, $mask, $inner);
+
+            #[inline(always)]
+            pub fn as_f64(&self) -> DVec4 {
+                DVec4::new(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
+            }
+
+            #[inline(always)]
+            pub fn as_i32(&self) -> IVec4 {
+                IVec4::new(self.x as i32, self.y as i32, self.z as i32, self.w as i32)
+            }
+
+            #[inline(always)]
+            pub fn as_u32(&self) -> UVec4 {
+                UVec4::new(self.x as u32, self.y as u32, self.z as u32, self.w as u32)
+            }
+        }
+        impl_vec4_signed_traits!(f32, $new, $vec2, $vec3, $vec4, $mask, $inner);
     };
 }
 
@@ -202,7 +212,7 @@ type XYZWF32 = XYZW<f32>;
 pub struct Vec4(pub(crate) XYZWF32);
 
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-impl_float_vec4!(f32, vec4, Vec2, Vec3, Vec4, BVec4, XYZWF32);
+impl_f32_vec4!(vec4, Vec2, Vec3, Vec4, BVec4, XYZWF32);
 
 /// A 4-dimensional vector.
 ///
@@ -213,7 +223,7 @@ impl_float_vec4!(f32, vec4, Vec2, Vec3, Vec4, BVec4, XYZWF32);
 pub struct Vec4(pub(crate) __m128);
 
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-impl_float_vec4!(f32, vec4, Vec2, Vec3, Vec4, BVec4A, __m128);
+impl_f32_vec4!(vec4, Vec2, Vec3, Vec4, BVec4A, __m128);
 
 impl From<Vec4> for Vec3A {
     /// Creates a `Vec3A` from the `x`, `y` and `z` elements of `self` discarding `w`.
@@ -232,7 +242,25 @@ type XYZWF64 = XYZW<f64>;
 #[repr(transparent)]
 pub struct DVec4(pub(crate) XYZWF64);
 
-impl_float_vec4!(f64, dvec4, DVec2, DVec3, DVec4, BVec4, XYZWF64);
+impl DVec4 {
+    impl_vec4_float_methods!(f64, DVec2, DVec3, DVec4, BVec4, XYZWF64);
+
+    #[inline(always)]
+    pub fn as_f32(&self) -> Vec4 {
+        Vec4::new(self.x as f32, self.y as f32, self.z as f32, self.w as f32)
+    }
+
+    #[inline(always)]
+    pub fn as_i32(&self) -> IVec4 {
+        IVec4::new(self.x as i32, self.y as i32, self.z as i32, self.w as i32)
+    }
+
+    #[inline(always)]
+    pub fn as_u32(&self) -> UVec4 {
+        UVec4::new(self.x as u32, self.y as u32, self.z as u32, self.w as u32)
+    }
+}
+impl_vec4_signed_traits!(f64, dvec4, DVec2, DVec3, DVec4, BVec4, XYZWF64);
 
 type XYZWI32 = XYZW<i32>;
 
@@ -241,7 +269,25 @@ type XYZWI32 = XYZW<i32>;
 #[repr(transparent)]
 pub struct IVec4(pub(crate) XYZWI32);
 
-impl_signed_vec4!(i32, ivec4, IVec2, IVec3, IVec4, BVec4, XYZWI32);
+impl IVec4 {
+    impl_vec4_signed_methods!(i32, IVec2, IVec3, IVec4, BVec4, XYZWI32);
+
+    #[inline(always)]
+    pub fn as_f32(&self) -> Vec4 {
+        Vec4::new(self.x as f32, self.y as f32, self.z as f32, self.w as f32)
+    }
+
+    #[inline(always)]
+    pub fn as_f64(&self) -> DVec4 {
+        DVec4::new(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
+    }
+
+    #[inline(always)]
+    pub fn as_u32(&self) -> UVec4 {
+        UVec4::new(self.x as u32, self.y as u32, self.z as u32, self.w as u32)
+    }
+}
+impl_vec4_signed_traits!(i32, ivec4, IVec2, IVec3, IVec4, BVec4, XYZWI32);
 
 type XYZWU32 = XYZW<u32>;
 
@@ -250,7 +296,25 @@ type XYZWU32 = XYZW<u32>;
 #[repr(transparent)]
 pub struct UVec4(pub(crate) XYZWU32);
 
-impl_unsigned_vec4!(u32, uvec4, UVec2, UVec3, UVec4, BVec4, XYZWU32);
+impl UVec4 {
+    impl_vec4_common_methods!(u32, UVec2, UVec3, UVec4, BVec4, XYZWU32);
+
+    #[inline(always)]
+    pub fn as_f32(&self) -> Vec4 {
+        Vec4::new(self.x as f32, self.y as f32, self.z as f32, self.w as f32)
+    }
+
+    #[inline(always)]
+    pub fn as_f64(&self) -> DVec4 {
+        DVec4::new(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
+    }
+
+    #[inline(always)]
+    pub fn as_i32(&self) -> IVec4 {
+        IVec4::new(self.x as i32, self.y as i32, self.z as i32, self.w as i32)
+    }
+}
+impl_vec4_common_traits!(u32, uvec4, UVec2, UVec3, UVec4, BVec4, XYZWU32);
 
 #[test]
 fn test_vec4_private() {

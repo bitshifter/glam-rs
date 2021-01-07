@@ -143,36 +143,6 @@ macro_rules! impl_vec2_signed_traits {
     };
 }
 
-macro_rules! impl_unsigned_vec2 {
-    ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $mask:ident, $inner:ident) => {
-        impl $vec2 {
-            impl_vec2_common_methods!($t, $vec2, $vec3, $mask, $inner);
-        }
-
-        impl_vec2_unsigned_traits!($t, $new, $vec2, $vec3, $mask, $inner);
-    };
-}
-
-macro_rules! impl_signed_vec2 {
-    ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $mask:ident, $inner:ident) => {
-        impl $vec2 {
-            impl_vec2_signed_methods!($t, $vec2, $vec3, $mask, $inner);
-        }
-
-        impl_vec2_signed_traits!($t, $new, $vec2, $vec3, $mask, $inner);
-    };
-}
-
-macro_rules! impl_float_vec2 {
-    ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $mask:ident, $inner:ident) => {
-        impl $vec2 {
-            impl_vec2_float_methods!($t, $vec2, $vec3, $mask, $inner);
-        }
-
-        impl_vec2_signed_traits!($t, $new, $vec2, $vec3, $mask, $inner);
-    };
-}
-
 type XYF32 = XY<f32>;
 
 /// A 2-dimensional vector.
@@ -180,7 +150,25 @@ type XYF32 = XY<f32>;
 #[repr(transparent)]
 pub struct Vec2(pub(crate) XYF32);
 
-impl_float_vec2!(f32, vec2, Vec2, Vec3, BVec2, XYF32);
+impl Vec2 {
+    impl_vec2_float_methods!(f32, Vec2, Vec3, BVec2, XYF32);
+
+    #[inline(always)]
+    pub fn as_f64(&self) -> DVec2 {
+        DVec2::new(self.x as f64, self.y as f64)
+    }
+
+    #[inline(always)]
+    pub fn as_i32(&self) -> IVec2 {
+        IVec2::new(self.x as i32, self.y as i32)
+    }
+
+    #[inline(always)]
+    pub fn as_u32(&self) -> UVec2 {
+        UVec2::new(self.x as u32, self.y as u32)
+    }
+}
+impl_vec2_signed_traits!(f32, vec2, Vec2, Vec3, BVec2, XYF32);
 
 type XYF64 = XY<f64>;
 
@@ -189,7 +177,25 @@ type XYF64 = XY<f64>;
 #[repr(transparent)]
 pub struct DVec2(pub(crate) XYF64);
 
-impl_float_vec2!(f64, dvec2, DVec2, DVec3, BVec2, XYF64);
+impl DVec2 {
+    impl_vec2_float_methods!(f64, DVec2, DVec3, BVec2, XYF64);
+
+    #[inline(always)]
+    pub fn as_f32(&self) -> Vec2 {
+        Vec2::new(self.x as f32, self.y as f32)
+    }
+
+    #[inline(always)]
+    pub fn as_i32(&self) -> IVec2 {
+        IVec2::new(self.x as i32, self.y as i32)
+    }
+
+    #[inline(always)]
+    pub fn as_u32(&self) -> UVec2 {
+        UVec2::new(self.x as u32, self.y as u32)
+    }
+}
+impl_vec2_signed_traits!(f64, dvec2, DVec2, DVec3, BVec2, XYF64);
 
 type XYI32 = XY<i32>;
 
@@ -198,7 +204,25 @@ type XYI32 = XY<i32>;
 #[repr(transparent)]
 pub struct IVec2(pub(crate) XYI32);
 
-impl_signed_vec2!(i32, ivec2, IVec2, IVec3, BVec2, XYI32);
+impl IVec2 {
+    impl_vec2_signed_methods!(i32, IVec2, IVec3, BVec2, XYI32);
+
+    #[inline(always)]
+    pub fn as_f32(&self) -> Vec2 {
+        Vec2::new(self.x as f32, self.y as f32)
+    }
+
+    #[inline(always)]
+    pub fn as_f64(&self) -> DVec2 {
+        DVec2::new(self.x as f64, self.y as f64)
+    }
+
+    #[inline(always)]
+    pub fn as_u32(&self) -> UVec2 {
+        UVec2::new(self.x as u32, self.y as u32)
+    }
+}
+impl_vec2_signed_traits!(i32, ivec2, IVec2, IVec3, BVec2, XYI32);
 
 type XYU32 = XY<u32>;
 
@@ -207,4 +231,22 @@ type XYU32 = XY<u32>;
 #[repr(transparent)]
 pub struct UVec2(pub(crate) XYU32);
 
-impl_unsigned_vec2!(u32, uvec2, UVec2, UVec3, BVec2, XYU32);
+impl UVec2 {
+    impl_vec2_common_methods!(u32, UVec2, UVec3, BVec2, XYU32);
+
+    #[inline(always)]
+    pub fn as_f32(&self) -> Vec2 {
+        Vec2::new(self.x as f32, self.y as f32)
+    }
+
+    #[inline(always)]
+    pub fn as_f64(&self) -> DVec2 {
+        DVec2::new(self.x as f64, self.y as f64)
+    }
+
+    #[inline(always)]
+    pub fn as_i32(&self) -> IVec2 {
+        IVec2::new(self.x as i32, self.y as i32)
+    }
+}
+impl_vec2_unsigned_traits!(u32, uvec2, UVec2, UVec3, BVec2, XYU32);
