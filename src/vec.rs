@@ -1,3 +1,5 @@
+// Adds common vector methods to an impl.
+// The methods here should be supported for all types of $t and all sizes of vector.
 macro_rules! impl_vecn_common_methods {
     ($t:ty, $vecn:ident, $mask:ident, $inner:ident, $vectrait:ident) => {
         /// Creates a vector with all elements set to `0.0`.
@@ -34,111 +36,113 @@ macro_rules! impl_vecn_common_methods {
             $vectrait::dot(self.0, other.0)
         }
 
-        /// Returns the vertical minimum of `self` and `other`.
+        /// Returns a vector containing the mininum values for each element of `self` and `other`.
         ///
-        /// In other words, this computes
-        /// `[x: min(x1, x2), y: min(y1, y2), z: min(z1, z2), w: min(w1, w2)]`,
-        /// taking the minimum of each element individually.
+        /// In other words this computes `[self.x.max(other.x), self.y.max(other.y), ..]`.
         #[inline(always)]
         pub fn min(self, other: Self) -> Self {
             Self(self.0.min(other.0))
         }
 
-        /// Returns the vertical maximum of `self` and `other`.
+        /// Returns a vector containing the maximum values for each element of `self` and `other`.
         ///
-        /// In other words, this computes
-        /// `[x: max(x1, x2), y: max(y1, y2), z: max(z1, z2), w: max(w1, w2)]`,
-        /// taking the maximum of each element individually.
+        /// In other words this computes `[self.x.max(other.x), self.y.max(other.y), ..]`.
         #[inline(always)]
         pub fn max(self, other: Self) -> Self {
             Self(self.0.max(other.0))
         }
 
-        /// Returns the horizontal minimum of `self`'s elements.
+        /// Returns the horizontal minimum of `self`.
         ///
-        /// In other words, this computes `min(x, y, z, w)`.
+        /// In other words this computes `min(x, y, ..)`.
         #[inline(always)]
         pub fn min_element(self) -> $t {
             $vectrait::min_element(self.0)
         }
 
-        /// Returns the horizontal maximum of `self`'s elements.
+        /// Returns the horizontal maximum of `self`.
         ///
-        /// In other words, this computes `max(x, y, z, w)`.
+        /// In other words this computes `max(x, y, ..)`.
         #[inline(always)]
         pub fn max_element(self) -> $t {
             $vectrait::max_element(self.0)
         }
 
-        /// Performs a vertical `==` comparison between `self` and `other`,
-        /// returning a vector mask of the results.
+        /// Returns a vector mask containing the result of a `==` comparison for each element of
+        /// `self` and `other`.
         ///
-        /// In other words, this computes `[x1 == x2, y1 == y2, z1 == z2, w1 == w2]`.
+        /// In other words, this computes `[self.x == other.x, self.y == other.y, ..]` for all
+        /// elements.
         #[inline(always)]
         pub fn cmpeq(self, other: Self) -> $mask {
             $mask(self.0.cmpeq(other.0))
         }
 
-        /// Performs a vertical `!=` comparison between `self` and `other`,
-        /// returning a vector mask of the results.
+        /// Returns a vector mask containing the result of a `!=` comparison for each element of
+        /// `self` and `other`.
         ///
-        /// In other words, this computes `[x1 != x2, y1 != y2, z1 != z2, w1 != w2]`.
+        /// In other words this computes `[self.x != other.x, self.y != other.y, ..]` for all
+        /// elements.
         #[inline(always)]
         pub fn cmpne(self, other: Self) -> $mask {
             $mask(self.0.cmpne(other.0))
         }
 
-        /// Performs a vertical `>=` comparison between `self` and `other`,
-        /// returning a vector mask of the results.
+        /// Returns a vector mask containing the result of a `>=` comparison for each element of
+        /// `self` and `other`.
         ///
-        /// In other words, this computes `[x1 >= x2, y1 >= y2, z1 >= z2, w1 >= w2]`.
+        /// In other words this computes `[self.x >= other.x, self.y >= other.y, ..]` for all
+        /// elements.
         #[inline(always)]
         pub fn cmpge(self, other: Self) -> $mask {
             $mask(self.0.cmpge(other.0))
         }
 
-        /// Performs a vertical `>` comparison between `self` and `other`,
-        /// returning a vector mask of the results.
+        /// Returns a vector mask containing the result of a `>` comparison for each element of
+        /// `self` and `other`.
         ///
-        /// In other words, this computes `[x1 > x2, y1 > y2, z1 > z2, w1 > w2]`.
+        /// In other words this computes `[self.x > other.x, self.y > other.y, ..]` for all
+        /// elements.
         #[inline(always)]
         pub fn cmpgt(self, other: Self) -> $mask {
             $mask(self.0.cmpgt(other.0))
         }
 
-        /// Performs a vertical `<=` comparison between `self` and `other`,
-        /// returning a vector mask of the results.
+        /// Returns a vector mask containing the result of a `<=` comparison for each element of
+        /// `self` and `other`.
         ///
-        /// In other words, this computes `[x1 <= x2, y1 <= y2, z1 <= z2, w1 <= w2]`.
+        /// In other words this computes `[self.x <= other.x, self.y <= other.y, ..]` for all
+        /// elements.
         #[inline(always)]
         pub fn cmple(self, other: Self) -> $mask {
             $mask(self.0.cmple(other.0))
         }
 
-        /// Performs a vertical `<` comparison between `self` and `other`,
-        /// returning a vector mask of the results.
+        /// Returns a vector mask containing the result of a `<` comparison for each element of
+        /// `self` and `other`.
         ///
-        /// In other words, this computes `[x1 < x2, y1 < y2, z1 < z2, w1 < w2]`.
+        /// In other words this computes `[self.x < other.x, self.y < other.y, ..]` for all
+        /// elements.
         #[inline(always)]
         pub fn cmplt(self, other: Self) -> $mask {
             $mask(self.0.cmplt(other.0))
         }
 
-        /// Creates a vector from the first four values in `slice`.
+        /// Creates a vector from the first N values in `slice`.
         ///
         /// # Panics
         ///
-        /// Panics if `slice` is less than four elements long.
+        /// Panics if `slice` is less than N elements long.
         #[inline(always)]
         pub fn from_slice_unaligned(slice: &[$t]) -> Self {
             Self($vectrait::from_slice_unaligned(slice))
         }
 
-        /// Writes the elements of `self` to the first four elements in `slice`.
+        /// Writes the elements of `self` to the first N elements in `slice`.
         ///
         /// # Panics
         ///
-        /// Panics if `slice` is less than four elements long.
+        /// Panics if `slice` is less than N elements long.
         #[inline(always)]
         pub fn write_to_slice_unaligned(self, slice: &mut [$t]) {
             $vectrait::write_to_slice_unaligned(self.0, slice)
@@ -153,6 +157,8 @@ macro_rules! impl_vecn_common_methods {
     };
 }
 
+// Adds signed type vector methods to an impl.
+// The methods here should be supported for signed types of $t and all sizes of vector.
 macro_rules! impl_vecn_signed_methods {
     ($t:ty, $vecn:ident, $mask:ident, $inner:ident, $sgntrait:ident) => {
         // impl_vecn_common_methods!($t, $vecn, $mask, $inner, $vectrait);
@@ -175,6 +181,8 @@ macro_rules! impl_vecn_signed_methods {
     };
 }
 
+// Adds float type vector methods to an impl.
+// The methods here should be supported for float types of $t and all sizes of vector.
 macro_rules! impl_vecn_float_methods {
     ($t:ty, $vecn:ident, $mask:ident, $inner:ident, $flttrait:ident) => {
         // impl_vecn_signed_methods!($t, $vecn, $mask, $inner, $sgntrait, $vectrait);
@@ -315,6 +323,8 @@ macro_rules! impl_vecn_float_methods {
     };
 }
 
+// Adds common vector trait implementations.
+// The traits here should be supported for all types of $t and all sizes of vector.
 macro_rules! impl_vecn_common_traits {
     ($t:ty, $size:literal, $vecn:ident, $inner:ident, $trait:ident) => {
         impl Default for $vecn {
@@ -525,6 +535,8 @@ macro_rules! impl_vecn_common_traits {
     };
 }
 
+// Adds signed vector trait implementations.
+// The traits here should be supported for signed types of $t and all sizes of vector.
 macro_rules! impl_vecn_signed_traits {
     ($t:ty, $size:literal, $vecn:ident, $inner:ident, $sgntrait:ident) => {
         // impl_vecn_common_traits!($t, $size, $vecn, $inner, $sgntrait, $vectrait);
@@ -538,9 +550,3 @@ macro_rules! impl_vecn_signed_traits {
         }
     };
 }
-
-// macro_rules! impl_vecn_float_traits {
-//     ($t:ty, $size:literal, $vecn:ident, $inner:ident, $trait:ident) => {
-//         impl_vecn_signed_traits!($t, $size, $vecn, $inner, $trait);
-//     };
-// }
