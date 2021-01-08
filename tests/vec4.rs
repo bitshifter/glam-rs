@@ -729,6 +729,56 @@ mod vec4 {
         assert_eq!([0xffffffff, 0, 0xffffffff, 0], a0.0);
     }
 
+    #[test]
+    fn test_as() {
+        use glam::{DVec4, IVec4, UVec4};
+        assert_eq!(
+            DVec4::new(-1.0, -2.0, -3.0, -4.0),
+            Vec4::new(-1.0, -2.0, -3.0, -4.0).as_f64()
+        );
+        assert_eq!(
+            IVec4::new(-1, -2, -3, -4),
+            Vec4::new(-1.0, -2.0, -3.0, -4.0).as_i32()
+        );
+        assert_eq!(
+            UVec4::new(1, 2, 3, 4),
+            Vec4::new(1.0, 2.0, 3.0, 4.0).as_u32()
+        );
+
+        assert_eq!(
+            IVec4::new(-1, -2, -3, -4),
+            DVec4::new(-1.0, -2.0, -3.0, -4.0).as_i32()
+        );
+        assert_eq!(
+            UVec4::new(1, 2, 3, 4),
+            DVec4::new(1.0, 2.0, 3.0, 4.0).as_u32()
+        );
+        assert_eq!(
+            Vec4::new(-1.0, -2.0, -3.0, -4.0),
+            DVec4::new(-1.0, -2.0, -3.0, -4.0).as_f32()
+        );
+
+        assert_eq!(
+            DVec4::new(-1.0, -2.0, -3.0, -4.0),
+            IVec4::new(-1, -2, -3, -4).as_f64()
+        );
+        assert_eq!(UVec4::new(1, 2, 3, 4), IVec4::new(1, 2, 3, 4).as_u32());
+        assert_eq!(
+            Vec4::new(-1.0, -2.0, -3.0, -4.0),
+            IVec4::new(-1, -2, -3, -4).as_f32()
+        );
+
+        assert_eq!(
+            DVec4::new(1.0, 2.0, 3.0, 4.0),
+            UVec4::new(1, 2, 3, 4).as_f64()
+        );
+        assert_eq!(IVec4::new(1, 2, 3, 4), UVec4::new(1, 2, 3, 4).as_i32());
+        assert_eq!(
+            Vec4::new(1.0, 2.0, 3.0, 4.0),
+            UVec4::new(1, 2, 3, 4).as_f32()
+        );
+    }
+
     impl_vec4_float_tests!(f32, const_vec4, vec4, Vec4, Vec4Mask);
 }
 

@@ -188,7 +188,7 @@ mod mat2 {
     use glam::{const_mat2, mat2, vec2, Mat2, Vec2};
 
     #[test]
-    fn test_mat2_align() {
+    fn test_align() {
         use std::mem;
         assert_eq!(16, mem::size_of::<Mat2>());
         if cfg!(feature = "scalar-math") {
@@ -196,6 +196,19 @@ mod mat2 {
         } else {
             assert_eq!(16, mem::align_of::<Mat2>());
         }
+    }
+
+    #[test]
+    fn test_as() {
+        use glam::DMat2;
+        assert_eq!(
+            DMat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]),
+            Mat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]).as_f64()
+        );
+        assert_eq!(
+            Mat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]),
+            DMat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]).as_f32()
+        );
     }
 
     impl_mat2_tests!(f32, const_mat2, mat2, Mat2, vec2, Vec2);
@@ -206,7 +219,7 @@ mod dmat2 {
     use glam::{const_dmat2, dmat2, dvec2, DMat2, DVec2};
 
     #[test]
-    fn test_mat2_align() {
+    fn test_align() {
         use std::mem;
         assert_eq!(32, mem::size_of::<DMat2>());
         assert_eq!(8, mem::align_of::<DMat2>());

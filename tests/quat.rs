@@ -398,6 +398,19 @@ mod quat {
         assert_approx_eq!(-Vec3A::unit_x(), mrzx.mul_vec3a(Vec3A::unit_y()));
     }
 
+    #[test]
+    fn test_as() {
+        use glam::DQuat;
+        assert_approx_eq!(
+            DQuat::from_rotation_ypr(1.0, 2.0, 3.0),
+            Quat::from_rotation_ypr(1.0, 2.0, 3.0).as_f64()
+        );
+        assert_approx_eq!(
+            Quat::from_rotation_ypr(1.0, 2.0, 3.0),
+            DQuat::from_rotation_ypr(1.0, 2.0, 3.0).as_f32()
+        );
+    }
+
     impl_quat_tests!(f32, const_quat, quat, Mat3, Mat4, Quat, Vec3, Vec4);
 }
 

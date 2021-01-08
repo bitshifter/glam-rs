@@ -268,6 +268,19 @@ mod mat3 {
         assert_approx_eq!(vec3a(-1.0, 0.0, 0.0), mat_a.mul_vec3a(Vec3A::unit_y()));
     }
 
+    #[test]
+    fn test_as() {
+        use glam::DMat3;
+        assert_eq!(
+            DMat3::from_cols_array(&[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]),
+            Mat3::from_cols_array(&[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]).as_f64()
+        );
+        assert_eq!(
+            Mat3::from_cols_array(&[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]),
+            DMat3::from_cols_array(&[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]).as_f32()
+        );
+    }
+
     impl_mat3_tests!(f32, const_mat3, mat3, Mat3, vec3, Vec3, Vec2);
 }
 
