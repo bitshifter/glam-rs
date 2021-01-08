@@ -26,8 +26,181 @@ use core::arch::x86_64::*;
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
 
-macro_rules! impl_mat2 {
-    ($new:ident, $mat2:ident, $vec2:ident, $t:ty, $inner:ident) => {
+macro_rules! impl_mat2_methods {
+    ($t:ty, $vec2:ident, $inner:ident) => {
+        /// Creates a 2x2 matrix with all elements set to `0.0`.
+        #[inline(always)]
+        pub const fn zero() -> Self {
+            Self($inner::ZERO)
+        }
+
+        /// Creates a 2x2 identity matrix.
+        #[inline(always)]
+        pub const fn identity() -> Self {
+            Self($inner::IDENTITY)
+        }
+
+        /// Creates a 2x2 matrix from two column vectors.
+        #[inline(always)]
+        pub fn from_cols(x_axis: $vec2, y_axis: $vec2) -> Self {
+            Self($inner::from_cols(x_axis.0, y_axis.0))
+        }
+
+        /// Creates a 2x2 matrix from a `[S; 4]` array stored in column major order.
+        /// If your data is stored in row major you will need to `transpose` the returned
+        /// matrix.
+        #[inline(always)]
+        pub fn from_cols_array(m: &[$t; 4]) -> Self {
+            Self($inner::from_cols_array(m))
+        }
+
+        /// Creates a `[S; 4]` array storing data in column major order.
+        /// If you require data in row major order `transpose` the matrix first.
+        #[inline(always)]
+        pub fn to_cols_array(&self) -> [$t; 4] {
+            self.0.to_cols_array()
+        }
+
+        /// Creates a 2x2 matrix from a `[[S; 2]; 2]` 2D array stored in column major order.
+        /// If your data is in row major order you will need to `transpose` the returned
+        /// matrix.
+        #[inline(always)]
+        pub fn from_cols_array_2d(m: &[[$t; 2]; 2]) -> Self {
+            Self($inner::from_cols_array_2d(m))
+        }
+
+        /// Creates a `[[S; 2]; 2]` 2D array storing data in column major order.
+        /// If you require data in row major order `transpose` the matrix first.
+        #[inline(always)]
+        pub fn to_cols_array_2d(&self) -> [[$t; 2]; 2] {
+            self.0.to_cols_array_2d()
+        }
+
+        /// Creates a 2x2 matrix containing the given `scale` and rotation of
+        /// `angle` (in radians).
+        #[inline(always)]
+        pub fn from_scale_angle(scale: $vec2, angle: $t) -> Self {
+            Self($inner::from_scale_angle(scale.0, angle))
+        }
+
+        /// Creates a 2x2 matrix containing a rotation of `angle` (in radians).
+        #[inline(always)]
+        pub fn from_angle(angle: $t) -> Self {
+            Self($inner::from_angle(angle))
+        }
+
+        /// Creates a 2x2 matrix containing the given non-uniform `scale`.
+        #[inline(always)]
+        pub fn from_scale(scale: $vec2) -> Self {
+            Self($inner::from_scale(scale.0))
+        }
+
+        // #[inline]
+        // pub(crate) fn col(&self, index: usize) -> $vec2 {
+        //     match index {
+        //         0 => self.x_axis(),
+        //         1 => self.y_axis(),
+        //         _ => panic!(
+        //             "index out of bounds: the len is 2 but the index is {}",
+        //             index
+        //         ),
+        //     }
+        // }
+
+        // #[inline]
+        // pub(crate) fn col_mut(&mut self, index: usize) -> &mut $vec2 {
+        //     match index {
+        //         0 => unsafe { &mut *(self.0.as_mut().as_mut_ptr() as *mut $vec2) },
+        //         1 => unsafe { &mut *(self.0.as_mut()[2..].as_mut_ptr() as *mut $vec2) },
+        //         _ => panic!(
+        //             "index out of bounds: the len is 2 but the index is {}",
+        //             index
+        //         ),
+        //     }
+        // }
+
+        /// Returns `true` if, and only if, all elements are finite.
+        /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
+        #[inline]
+        pub fn is_finite(&self) -> bool {
+            // TODO
+            self.x_axis.is_finite() && self.y_axis.is_finite()
+        }
+
+        /// Returns `true` if any elements are `NaN`.
+        #[inline]
+        pub fn is_nan(&self) -> bool {
+            self.x_axis.is_nan() || self.y_axis.is_nan()
+        }
+
+        /// Returns the transpose of `self`.
+        #[inline(always)]
+        pub fn transpose(&self) -> Self {
+            Self(self.0.transpose())
+        }
+
+        /// Returns the determinant of `self`.
+        #[inline(always)]
+        pub fn determinant(&self) -> $t {
+            self.0.determinant()
+        }
+
+        /// Returns the inverse of `self`.
+        ///
+        /// If the matrix is not invertible the returned matrix will be invalid.
+        #[inline(always)]
+        pub fn inverse(&self) -> Self {
+            Self(self.0.inverse())
+        }
+
+        /// Transforms a 2D vector.
+        #[inline(always)]
+        pub fn mul_vec2(&self, other: $vec2) -> $vec2 {
+            $vec2(self.0.mul_vector(other.0))
+        }
+
+        /// Multiplies two 2x2 matrices.
+        #[inline(always)]
+        pub fn mul_mat2(&self, other: &Self) -> Self {
+            Self(self.0.mul_matrix(&other.0))
+        }
+
+        /// Adds two 2x2 matrices.
+        #[inline(always)]
+        pub fn add_mat2(&self, other: &Self) -> Self {
+            Self(self.0.add_matrix(&other.0))
+        }
+
+        /// Subtracts two 2x2 matrices.
+        #[inline(always)]
+        pub fn sub_mat2(&self, other: &Self) -> Self {
+            Self(self.0.sub_matrix(&other.0))
+        }
+
+        /// Multiplies a 2x2 matrix by a scalar.
+        #[inline(always)]
+        pub fn mul_scalar(&self, other: $t) -> Self {
+            Self(self.0.mul_scalar(other))
+        }
+
+        /// Returns true if the absolute difference of all elements between `self` and `other`
+        /// is less than or equal to `max_abs_diff`.
+        ///
+        /// This can be used to compare if two matrices contain similar elements. It works best
+        /// when comparing with a known value. The `max_abs_diff` that should be used used
+        /// depends on the values being compared against.
+        ///
+        /// For more see
+        /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
+        #[inline(always)]
+        pub fn abs_diff_eq(&self, other: &Self, max_abs_diff: $t) -> bool {
+            self.0.abs_diff_eq(&other.0, max_abs_diff)
+        }
+    };
+}
+
+macro_rules! impl_mat2_traits {
+    ($t:ty, $new:ident, $mat2:ident, $vec2:ident) => {
         /// Creates a 2x2 matrix from two column vectors.
         #[inline(always)]
         pub fn $new(x_axis: $vec2, y_axis: $vec2) -> $mat2 {
@@ -52,177 +225,6 @@ macro_rules! impl_mat2 {
             #[inline]
             fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
                 self.as_ref().partial_cmp(other.as_ref())
-            }
-        }
-
-        impl $mat2 {
-            /// Creates a 2x2 matrix with all elements set to `0.0`.
-            #[inline(always)]
-            pub const fn zero() -> Self {
-                Self($inner::ZERO)
-            }
-
-            /// Creates a 2x2 identity matrix.
-            #[inline(always)]
-            pub const fn identity() -> Self {
-                Self($inner::IDENTITY)
-            }
-
-            /// Creates a 2x2 matrix from two column vectors.
-            #[inline(always)]
-            pub fn from_cols(x_axis: $vec2, y_axis: $vec2) -> Self {
-                Self($inner::from_cols(x_axis.0, y_axis.0))
-            }
-
-            /// Creates a 2x2 matrix from a `[S; 4]` array stored in column major order.
-            /// If your data is stored in row major you will need to `transpose` the returned
-            /// matrix.
-            #[inline(always)]
-            pub fn from_cols_array(m: &[$t; 4]) -> Self {
-                Self($inner::from_cols_array(m))
-            }
-
-            /// Creates a `[S; 4]` array storing data in column major order.
-            /// If you require data in row major order `transpose` the matrix first.
-            #[inline(always)]
-            pub fn to_cols_array(&self) -> [$t; 4] {
-                self.0.to_cols_array()
-            }
-
-            /// Creates a 2x2 matrix from a `[[S; 2]; 2]` 2D array stored in column major order.
-            /// If your data is in row major order you will need to `transpose` the returned
-            /// matrix.
-            #[inline(always)]
-            pub fn from_cols_array_2d(m: &[[$t; 2]; 2]) -> Self {
-                $mat2($inner::from_cols_array_2d(m))
-            }
-
-            /// Creates a `[[S; 2]; 2]` 2D array storing data in column major order.
-            /// If you require data in row major order `transpose` the matrix first.
-            #[inline(always)]
-            pub fn to_cols_array_2d(&self) -> [[$t; 2]; 2] {
-                self.0.to_cols_array_2d()
-            }
-
-            /// Creates a 2x2 matrix containing the given `scale` and rotation of
-            /// `angle` (in radians).
-            #[inline(always)]
-            pub fn from_scale_angle(scale: $vec2, angle: $t) -> Self {
-                Self($inner::from_scale_angle(scale.0, angle))
-            }
-
-            /// Creates a 2x2 matrix containing a rotation of `angle` (in radians).
-            #[inline(always)]
-            pub fn from_angle(angle: $t) -> Self {
-                Self($inner::from_angle(angle))
-            }
-
-            /// Creates a 2x2 matrix containing the given non-uniform `scale`.
-            #[inline(always)]
-            pub fn from_scale(scale: $vec2) -> Self {
-                Self($inner::from_scale(scale.0))
-            }
-
-            // #[inline]
-            // pub(crate) fn col(&self, index: usize) -> $vec2 {
-            //     match index {
-            //         0 => self.x_axis(),
-            //         1 => self.y_axis(),
-            //         _ => panic!(
-            //             "index out of bounds: the len is 2 but the index is {}",
-            //             index
-            //         ),
-            //     }
-            // }
-
-            // #[inline]
-            // pub(crate) fn col_mut(&mut self, index: usize) -> &mut $vec2 {
-            //     match index {
-            //         0 => unsafe { &mut *(self.0.as_mut().as_mut_ptr() as *mut $vec2) },
-            //         1 => unsafe { &mut *(self.0.as_mut()[2..].as_mut_ptr() as *mut $vec2) },
-            //         _ => panic!(
-            //             "index out of bounds: the len is 2 but the index is {}",
-            //             index
-            //         ),
-            //     }
-            // }
-
-            /// Returns `true` if, and only if, all elements are finite.
-            /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
-            #[inline]
-            pub fn is_finite(&self) -> bool {
-                // TODO
-                self.x_axis.is_finite() && self.y_axis.is_finite()
-            }
-
-            /// Returns `true` if any elements are `NaN`.
-            #[inline]
-            pub fn is_nan(&self) -> bool {
-                self.x_axis.is_nan() || self.y_axis.is_nan()
-            }
-
-            /// Returns the transpose of `self`.
-            #[inline(always)]
-            pub fn transpose(&self) -> Self {
-                Self(self.0.transpose())
-            }
-
-            /// Returns the determinant of `self`.
-            #[inline(always)]
-            pub fn determinant(&self) -> $t {
-                self.0.determinant()
-            }
-
-            /// Returns the inverse of `self`.
-            ///
-            /// If the matrix is not invertible the returned matrix will be invalid.
-            #[inline(always)]
-            pub fn inverse(&self) -> Self {
-                Self(self.0.inverse())
-            }
-
-            /// Transforms a 2D vector.
-            #[inline(always)]
-            pub fn mul_vec2(&self, other: $vec2) -> $vec2 {
-                $vec2(self.0.mul_vector(other.0))
-            }
-
-            /// Multiplies two 2x2 matrices.
-            #[inline(always)]
-            pub fn mul_mat2(&self, other: &Self) -> Self {
-                $mat2(self.0.mul_matrix(&other.0))
-            }
-
-            /// Adds two 2x2 matrices.
-            #[inline(always)]
-            pub fn add_mat2(&self, other: &Self) -> Self {
-                $mat2(self.0.add_matrix(&other.0))
-            }
-
-            /// Subtracts two 2x2 matrices.
-            #[inline(always)]
-            pub fn sub_mat2(&self, other: &Self) -> Self {
-                $mat2(self.0.sub_matrix(&other.0))
-            }
-
-            /// Multiplies a 2x2 matrix by a scalar.
-            #[inline(always)]
-            pub fn mul_scalar(&self, other: $t) -> Self {
-                $mat2(self.0.mul_scalar(other))
-            }
-
-            /// Returns true if the absolute difference of all elements between `self` and `other`
-            /// is less than or equal to `max_abs_diff`.
-            ///
-            /// This can be used to compare if two matrices contain similar elements. It works best
-            /// when comparing with a known value. The `max_abs_diff` that should be used used
-            /// depends on the values being compared against.
-            ///
-            /// For more see
-            /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
-            #[inline(always)]
-            pub fn abs_diff_eq(&self, other: &Self, max_abs_diff: $t) -> bool {
-                self.0.abs_diff_eq(&other.0, max_abs_diff)
             }
         }
 
@@ -353,7 +355,15 @@ type InnerF32 = crate::core::storage::Vector2x2<XY<f32>>;
 #[repr(transparent)]
 pub struct Mat2(pub(crate) InnerF32);
 
-impl_mat2!(mat2, Mat2, Vec2, f32, InnerF32);
+impl Mat2 {
+    impl_mat2_methods!(f32, Vec2, InnerF32);
+
+    #[inline(always)]
+    pub fn as_f64(&self) -> DMat2 {
+        DMat2::from_cols(self.x_axis.as_f64(), self.y_axis.as_f64())
+    }
+}
+impl_mat2_traits!(f32, mat2, Mat2, Vec2);
 
 type InnerF64 = crate::core::storage::Vector2x2<XY<f64>>;
 
@@ -362,4 +372,12 @@ type InnerF64 = crate::core::storage::Vector2x2<XY<f64>>;
 #[repr(transparent)]
 pub struct DMat2(pub(crate) InnerF64);
 
-impl_mat2!(dmat2, DMat2, DVec2, f64, InnerF64);
+impl DMat2 {
+    impl_mat2_methods!(f64, DVec2, InnerF64);
+
+    #[inline(always)]
+    pub fn as_f32(&self) -> Mat2 {
+        Mat2::from_cols(self.x_axis.as_f32(), self.y_axis.as_f32())
+    }
+}
+impl_mat2_traits!(f64, dmat2, DMat2, DVec2);
