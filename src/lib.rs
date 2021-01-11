@@ -8,11 +8,11 @@
 `glam` is built with SIMD in mind. Currently only SSE2 on x86/x86_64 is
 supported as this is what stable Rust supports.
 
-* Vector, quaternion and matrix types support for `f32` and `f64`
-* Vector types supported for `i32` and `u32`
-* SSE2 storage and optimization for many `f32` types, including `Mat2`, `Mat4`,
-  `Quat`, `Vec3A` and `Vec4`
-* Scalar fallback implementations exist when SSE2 is not available
+* Vector, quaternion and matrix types support for [`f32`](mod@f32) and [`f64`](mod@f64)
+* Vector types supported for [`i32`](mod@i32), [`u32`](mod@u32) and [`bool`](mod@bool)
+* SSE2 storage and optimization for many [`f32`](mod@f32) types, including [`Mat2`], [`Mat4`],
+  [`Quat`], [`Vec3A`] and [`Vec4`]
+* Scalar math fallback implementations exist when SSE2 is not available
 * Most functionality includes unit tests and benchmarks
 
 ## Linear algebra conventions
@@ -30,10 +30,23 @@ assert_eq!(v, x);
 
 Matrices are stored in memory in column-major order.
 
+## Direct element access
+
+Because some types may internally be implemeted using SIMD types, direct access to vector elements
+is supported by implementing the `Deref` and `DerefMut` traits.
+
+```
+use glam::{Vec3A};
+let mut v = Vec3A::new(1.0, 2.0, 3.0);
+assert_eq!(3.0, v.z);
+v.z += 1.0;
+assert_eq!(4.0, v.z);
+```
+
 ## Size and alignment of types
 
 Some `glam` types use SIMD for storage meaning they are 16 byte aligned, these
-types include `Mat2`, `Mat4`, `Quat`, `Vec3A` and `Vec4`.
+types include [`Mat2`], [`Mat4`], [`Quat`], [`Vec3A`] and [`Vec4`].
 
 When SSE2 is not available on the target architecture this type will still be 16
 byte aligned so that object sizes and layouts will not change between
@@ -49,26 +62,25 @@ though.
 
 ## Vec3A
 
-`Vec3A` is a SIMD optimized version of the `Vec3` type, which due to 16 byte
-alignment results in `Vec3A` containing 4 bytes of padding making it 16 bytes
+[`Vec3A`] is a SIMD optimized version of the [`Vec3`] type, which due to 16 byte
+alignment results in [`Vec3A`] containing 4 bytes of padding making it 16 bytes
 in size in total.
 
-| Type  | `f32` bytes | Align bytes | Padding | Size bytes |
-|:------|------------:|------------:|--------:|-----------:|
-|`Vec3` |           12|            4|        0|          12|
-|`Vec3A`|           12|           16|        4|          16|
+| Type    | `f32` bytes | Align bytes | Padding | Size bytes |
+|:--------|------------:|------------:|--------:|-----------:|
+|[`Vec3`] |           12|            4|        0|          12|
+|[`Vec3A`]|           12|           16|        4|          16|
 
 Despite this wasted space the SIMD version tends to outperform the `f32`
 implementation in [**mathbench**](https://github.com/bitshifter/mathbench-rs)
 benchmarks.
 
-`glam` treats `Vec3` as the default vector 3 type and `Vec3A` a special case for
+`glam` treats [`Vec3`] as the default vector 3 type and [`Vec3A`] a special case for
 optimization. When methods need to return a vector 3 type they will generally
-return `Vec3`.
+return [`Vec3`].
 
-There are `From` trait implementations for converting from `Vec4` to a `Vec3A`
-and between `Vec3` and `Vec3A` (and vice versa).
-
+There are [`From`] trait implementations for converting from [`Vec4`] to a [`Vec3A`]
+and between [`Vec3`] and [`Vec3A`] (and vice versa).
 ```
 use glam::{Vec3, Vec3A, Vec4};
 
@@ -95,10 +107,10 @@ this includes creating a vector of a different size from the vectors elements.
 The swizzle functions are implemented using traits to add them to each vector
 type. This is primarily because there are a lot of swizzle functions which can
 obfuscate the other vector functions in documentation and so on. The traits are
-`Vec2Swizzles`, `Vec3Swizzles` and `Vec4Swizzles`.
+[`Vec2Swizzles`], [`Vec3Swizzles`] and [`Vec4Swizzles`].
 
-Note that the `Vec3Swizzles` implementation for `Vec3A` will return a `Vec3A`
-for 3 element swizzles, all other implementations will return `Vec3`.
+Note that the [`Vec3Swizzles`] implementation for [`Vec3A`] will return a [`Vec3A`]
+for 3 element swizzles, all other implementations will return [`Vec3`].
 
 ```
 use glam::{swizzles::*, Vec2, Vec3, Vec3A, Vec4};
