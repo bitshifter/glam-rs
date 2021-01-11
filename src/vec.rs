@@ -539,14 +539,52 @@ macro_rules! impl_vecn_common_traits {
 // The traits here should be supported for signed types of $t and all sizes of vector.
 macro_rules! impl_vecn_signed_traits {
     ($t:ty, $size:literal, $vecn:ident, $inner:ident, $sgntrait:ident) => {
-        // impl_vecn_common_traits!($t, $size, $vecn, $inner, $sgntrait, $vectrait);
-
         impl Neg for $vecn {
             type Output = Self;
             #[inline(always)]
             fn neg(self) -> Self {
                 Self(self.0.neg())
             }
+        }
+    };
+}
+
+macro_rules! impl_vecn_as_f32 {
+    ($ret:ident, $($e:ident),+) => {
+        /// Casts all elements of `self` to `f32`.
+        #[inline(always)]
+        pub fn as_f32(&self) -> $ret {
+            $ret::new($(self.$e as f32),+)
+        }
+    };
+}
+
+macro_rules! impl_vecn_as_f64 {
+    ($ret:ident, $($e:ident),+) => {
+        /// Casts all elements of `self` to `f64`.
+        #[inline(always)]
+        pub fn as_f64(&self) -> $ret {
+            $ret::new($(self.$e as f64),+)
+        }
+    };
+}
+
+macro_rules! impl_vecn_as_i32 {
+    ($ret:ident, $($e:ident),+) => {
+        /// Casts all elements of `self` to `i32`.
+        #[inline(always)]
+        pub fn as_i32(&self) -> $ret {
+            $ret::new($(self.$e as i32),+)
+        }
+    };
+}
+
+macro_rules! impl_vecn_as_u32 {
+    ($ret:ident, $($e:ident),+) => {
+        /// Casts all elements of `self` to `u32`.
+        #[inline(always)]
+        pub fn as_u32(&self) -> $ret {
+            $ret::new($(self.$e as u32),+)
         }
     };
 }

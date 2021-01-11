@@ -178,6 +178,7 @@ macro_rules! impl_vec3_float_methods {
     };
 }
 
+// implements traits that are common between `Vec3`, `Vec3A` and `Vec4` types.
 macro_rules! impl_vec3_float_traits {
     ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
         impl_vec3_common_traits!($t, $new, $vec2, $vec3, $vec4, $mask, $inner);
@@ -185,27 +186,15 @@ macro_rules! impl_vec3_float_traits {
     };
 }
 
+// implements f32 functionality common between `Vec3` and `Vec3A` types.
 macro_rules! impl_f32_vec3 {
     ($new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
         impl $vec3 {
             impl_vec3_float_methods!(f32, $vec2, $vec3, $vec4, $mask, $inner);
-
-            #[inline(always)]
-            pub fn as_f64(&self) -> DVec3 {
-                DVec3::new(self.x as f64, self.y as f64, self.z as f64)
-            }
-
-            #[inline(always)]
-            pub fn as_i32(&self) -> IVec3 {
-                IVec3::new(self.x as i32, self.y as i32, self.z as i32)
-            }
-
-            #[inline(always)]
-            pub fn as_u32(&self) -> UVec3 {
-                UVec3::new(self.x as u32, self.y as u32, self.z as u32)
-            }
+            impl_vecn_as_f64!(DVec3, x, y, z);
+            impl_vecn_as_i32!(IVec3, x, y, z);
+            impl_vecn_as_u32!(UVec3, x, y, z);
         }
-
         impl_vec3_float_traits!(f32, $new, $vec2, $vec3, $vec4, $mask, $inner);
     };
 }
@@ -269,21 +258,9 @@ pub struct DVec3(pub(crate) XYZF64);
 
 impl DVec3 {
     impl_vec3_float_methods!(f64, DVec2, DVec3, DVec4, BVec3, XYZF64);
-
-    #[inline(always)]
-    pub fn as_f32(&self) -> Vec3 {
-        Vec3::new(self.x as f32, self.y as f32, self.z as f32)
-    }
-
-    #[inline(always)]
-    pub fn as_i32(&self) -> IVec3 {
-        IVec3::new(self.x as i32, self.y as i32, self.z as i32)
-    }
-
-    #[inline(always)]
-    pub fn as_u32(&self) -> UVec3 {
-        UVec3::new(self.x as u32, self.y as u32, self.z as u32)
-    }
+    impl_vecn_as_f32!(Vec3, x, y, z);
+    impl_vecn_as_i32!(IVec3, x, y, z);
+    impl_vecn_as_u32!(UVec3, x, y, z);
 }
 impl_vec3_float_traits!(f64, dvec3, DVec2, DVec3, DVec4, BVec3, XYZF64);
 
@@ -297,21 +274,9 @@ pub struct IVec3(pub(crate) XYZI32);
 impl IVec3 {
     impl_vec3_common_methods!(i32, IVec2, IVec3, IVec4, BVec3, XYZI32);
     impl_vecn_signed_methods!(i32, IVec3, BVec3, XYZI32, SignedVector3);
-
-    #[inline(always)]
-    pub fn as_f32(&self) -> Vec3 {
-        Vec3::new(self.x as f32, self.y as f32, self.z as f32)
-    }
-
-    #[inline(always)]
-    pub fn as_f64(&self) -> DVec3 {
-        DVec3::new(self.x as f64, self.y as f64, self.z as f64)
-    }
-
-    #[inline(always)]
-    pub fn as_u32(&self) -> UVec3 {
-        UVec3::new(self.x as u32, self.y as u32, self.z as u32)
-    }
+    impl_vecn_as_f32!(Vec3, x, y, z);
+    impl_vecn_as_f64!(DVec3, x, y, z);
+    impl_vecn_as_u32!(UVec3, x, y, z);
 }
 impl_vec3_common_traits!(i32, ivec3, IVec2, IVec3, IVec4, BVec3, XYZI32);
 impl_vecn_signed_traits!(i32, 3, IVec3, XYZI32, SignedVector3);
@@ -325,21 +290,9 @@ pub struct UVec3(pub(crate) XYZU32);
 
 impl UVec3 {
     impl_vec3_common_methods!(u32, UVec2, UVec3, UVec4, BVec3, XYZU32);
-
-    #[inline(always)]
-    pub fn as_f32(&self) -> Vec3 {
-        Vec3::new(self.x as f32, self.y as f32, self.z as f32)
-    }
-
-    #[inline(always)]
-    pub fn as_f64(&self) -> DVec3 {
-        DVec3::new(self.x as f64, self.y as f64, self.z as f64)
-    }
-
-    #[inline(always)]
-    pub fn as_i32(&self) -> IVec3 {
-        IVec3::new(self.x as i32, self.y as i32, self.z as i32)
-    }
+    impl_vecn_as_f32!(Vec3, x, y, z);
+    impl_vecn_as_f64!(DVec3, x, y, z);
+    impl_vecn_as_i32!(IVec3, x, y, z);
 }
 impl_vec3_common_traits!(u32, uvec3, UVec2, UVec3, UVec4, BVec3, XYZU32);
 

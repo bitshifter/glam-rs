@@ -178,25 +178,14 @@ macro_rules! impl_vec4_float_methods {
     };
 }
 
+// implement `Vec4` functionality
 macro_rules! impl_f32_vec4 {
     ($new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
         impl $vec4 {
             impl_vec4_float_methods!(f32, $vec2, $vec3, $vec4, $mask, $inner);
-
-            #[inline(always)]
-            pub fn as_f64(&self) -> DVec4 {
-                DVec4::new(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
-            }
-
-            #[inline(always)]
-            pub fn as_i32(&self) -> IVec4 {
-                IVec4::new(self.x as i32, self.y as i32, self.z as i32, self.w as i32)
-            }
-
-            #[inline(always)]
-            pub fn as_u32(&self) -> UVec4 {
-                UVec4::new(self.x as u32, self.y as u32, self.z as u32, self.w as u32)
-            }
+            impl_vecn_as_f64!(DVec4, x, y, z, w);
+            impl_vecn_as_i32!(IVec4, x, y, z, w);
+            impl_vecn_as_u32!(UVec4, x, y, z, w);
         }
         impl_vec4_signed_traits!(f32, $new, $vec2, $vec3, $vec4, $mask, $inner);
     };
@@ -205,22 +194,18 @@ macro_rules! impl_f32_vec4 {
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
 type XYZWF32 = XYZW<f32>;
 
+#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+type XYZWF32 = __m128;
+
 /// A 4-dimensional vector.
-#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+///
+/// This type uses 16 byte aligned SIMD vector type for storage on supported platforms.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct Vec4(pub(crate) XYZWF32);
 
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
 impl_f32_vec4!(vec4, Vec2, Vec3, Vec4, BVec4, XYZWF32);
-
-/// A 4-dimensional vector.
-///
-/// This type uses 16 byte aligned SIMD vector type for storage on supported platforms.
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-#[derive(Clone, Copy)]
-#[repr(transparent)]
-pub struct Vec4(pub(crate) __m128);
 
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 impl_f32_vec4!(vec4, Vec2, Vec3, Vec4, BVec4A, __m128);
@@ -244,21 +229,9 @@ pub struct DVec4(pub(crate) XYZWF64);
 
 impl DVec4 {
     impl_vec4_float_methods!(f64, DVec2, DVec3, DVec4, BVec4, XYZWF64);
-
-    #[inline(always)]
-    pub fn as_f32(&self) -> Vec4 {
-        Vec4::new(self.x as f32, self.y as f32, self.z as f32, self.w as f32)
-    }
-
-    #[inline(always)]
-    pub fn as_i32(&self) -> IVec4 {
-        IVec4::new(self.x as i32, self.y as i32, self.z as i32, self.w as i32)
-    }
-
-    #[inline(always)]
-    pub fn as_u32(&self) -> UVec4 {
-        UVec4::new(self.x as u32, self.y as u32, self.z as u32, self.w as u32)
-    }
+    impl_vecn_as_f32!(Vec4, x, y, z, w);
+    impl_vecn_as_i32!(IVec4, x, y, z, w);
+    impl_vecn_as_u32!(UVec4, x, y, z, w);
 }
 impl_vec4_signed_traits!(f64, dvec4, DVec2, DVec3, DVec4, BVec4, XYZWF64);
 
@@ -271,21 +244,9 @@ pub struct IVec4(pub(crate) XYZWI32);
 
 impl IVec4 {
     impl_vec4_signed_methods!(i32, IVec2, IVec3, IVec4, BVec4, XYZWI32);
-
-    #[inline(always)]
-    pub fn as_f32(&self) -> Vec4 {
-        Vec4::new(self.x as f32, self.y as f32, self.z as f32, self.w as f32)
-    }
-
-    #[inline(always)]
-    pub fn as_f64(&self) -> DVec4 {
-        DVec4::new(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
-    }
-
-    #[inline(always)]
-    pub fn as_u32(&self) -> UVec4 {
-        UVec4::new(self.x as u32, self.y as u32, self.z as u32, self.w as u32)
-    }
+    impl_vecn_as_f32!(Vec4, x, y, z, w);
+    impl_vecn_as_f64!(DVec4, x, y, z, w);
+    impl_vecn_as_u32!(UVec4, x, y, z, w);
 }
 impl_vec4_signed_traits!(i32, ivec4, IVec2, IVec3, IVec4, BVec4, XYZWI32);
 
@@ -298,21 +259,9 @@ pub struct UVec4(pub(crate) XYZWU32);
 
 impl UVec4 {
     impl_vec4_common_methods!(u32, UVec2, UVec3, UVec4, BVec4, XYZWU32);
-
-    #[inline(always)]
-    pub fn as_f32(&self) -> Vec4 {
-        Vec4::new(self.x as f32, self.y as f32, self.z as f32, self.w as f32)
-    }
-
-    #[inline(always)]
-    pub fn as_f64(&self) -> DVec4 {
-        DVec4::new(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
-    }
-
-    #[inline(always)]
-    pub fn as_i32(&self) -> IVec4 {
-        IVec4::new(self.x as i32, self.y as i32, self.z as i32, self.w as i32)
-    }
+    impl_vecn_as_f32!(Vec4, x, y, z, w);
+    impl_vecn_as_f64!(DVec4, x, y, z, w);
+    impl_vecn_as_i32!(IVec4, x, y, z, w);
 }
 impl_vec4_common_traits!(u32, uvec4, UVec2, UVec3, UVec4, BVec4, XYZWU32);
 
