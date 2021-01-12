@@ -4,3 +4,4 @@
 Cargo.lock
 Session.vim
 .cargo-ok
+cargo-timing*.html

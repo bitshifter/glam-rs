@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 use core::f32;
-use glam::f32::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
+use glam::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
 
 pub struct PCG32 {
     state: u64,

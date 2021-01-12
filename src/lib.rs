@@ -8,10 +8,11 @@
 `glam` is built with SIMD in mind. Currently only SSE2 on x86/x86_64 is
 supported as this is what stable Rust supports.
 
-* Single precision float `f32` support only (for now)
-* SSE2 storage and optimization for many types, including `Mat2`, `Mat4`,
-  `Quat`, `Vec3A` and `Vec4`
-* Scalar fallback implementations exist when SSE2 is not available
+* Vector, quaternion and matrix types support for [`f32`](mod@f32) and [`f64`](mod@f64)
+* Vector types supported for [`i32`](mod@i32), [`u32`](mod@u32) and [`bool`](mod@bool)
+* SSE2 storage and optimization for many [`f32`](mod@f32) types, including [`Mat2`], [`Mat4`],
+  [`Quat`], [`Vec3A`] and [`Vec4`]
+* Scalar math fallback implementations exist when SSE2 is not available
 * Most functionality includes unit tests and benchmarks
 
 ## Linear algebra conventions
@@ -29,10 +30,23 @@ assert_eq!(v, x);
 
 Matrices are stored in memory in column-major order.
 
+## Direct element access
+
+Because some types may internally be implemeted using SIMD types, direct access to vector elements
+is supported by implementing the `Deref` and `DerefMut` traits.
+
+```
+use glam::{Vec3A};
+let mut v = Vec3A::new(1.0, 2.0, 3.0);
+assert_eq!(3.0, v.z);
+v.z += 1.0;
+assert_eq!(4.0, v.z);
+```
+
 ## Size and alignment of types
 
 Some `glam` types use SIMD for storage meaning they are 16 byte aligned, these
-types include `Mat2`, `Mat4`, `Quat`, `Vec3A` and `Vec4`.
+types include [`Mat2`], [`Mat4`], [`Quat`], [`Vec3A`] and [`Vec4`].
 
 When SSE2 is not available on the target architecture this type will still be 16
 byte aligned so that object sizes and layouts will not change between
@@ -48,26 +62,25 @@ though.
 
 ## Vec3A
 
-`Vec3A` is a SIMD optimized version of the `Vec3` type, which due to 16 byte
-alignment results in `Vec3A` containing 4 bytes of padding making it 16 bytes
+[`Vec3A`] is a SIMD optimized version of the [`Vec3`] type, which due to 16 byte
+alignment results in [`Vec3A`] containing 4 bytes of padding making it 16 bytes
 in size in total.
 
-| Type  | `f32` bytes | Align bytes | Padding | Size bytes |
-|:------|------------:|------------:|--------:|-----------:|
-|`Vec3` |           12|            4|        0|          12|
-|`Vec3A`|           12|           16|        4|          16|
+| Type    | `f32` bytes | Align bytes | Padding | Size bytes |
+|:--------|------------:|------------:|--------:|-----------:|
+|[`Vec3`] |           12|            4|        0|          12|
+|[`Vec3A`]|           12|           16|        4|          16|
 
 Despite this wasted space the SIMD version tends to outperform the `f32`
 implementation in [**mathbench**](https://github.com/bitshifter/mathbench-rs)
 benchmarks.
 
-`glam` treats `Vec3` as the default vector 3 type and `Vec3A` a special case for
+`glam` treats [`Vec3`] as the default vector 3 type and [`Vec3A`] a special case for
 optimization. When methods need to return a vector 3 type they will generally
-return `Vec3`.
+return [`Vec3`].
 
-There are `From` trait implementations for converting from `Vec4` to a `Vec3A`
-and between `Vec3` and `Vec3A` (and vice versa).
-
+There are [`From`] trait implementations for converting from [`Vec4`] to a [`Vec3A`]
+and between [`Vec3`] and [`Vec3A`] (and vice versa).
 ```
 use glam::{Vec3, Vec3A, Vec4};
 
@@ -94,11 +107,10 @@ this includes creating a vector of a different size from the vectors elements.
 The swizzle functions are implemented using traits to add them to each vector
 type. This is primarily because there are a lot of swizzle functions which can
 obfuscate the other vector functions in documentation and so on. The traits are
-`Vec2Swizzles`, `Vec3Swizzles`, `Vec3ASwizzles` and `Vec4Swizzles`.
+[`Vec2Swizzles`], [`Vec3Swizzles`] and [`Vec4Swizzles`].
 
-Note that `Vec2Swizzles`, `Vec3Swizzles` and `Vec4Swizzles` will return a `Vec3`
-type for 3 element swizzles. `Vec3ASwizzles` will return a `Vec3A` for 3 element
-swizzles.
+Note that the [`Vec3Swizzles`] implementation for [`Vec3A`] will return a [`Vec3A`]
+for 3 element swizzles, all other implementations will return [`Vec3`].
 
 ```
 use glam::{swizzles::*, Vec2, Vec3, Vec3A, Vec4};
@@ -164,7 +176,7 @@ and benchmarks.
 The minimum supported version of Rust for `glam` is `1.36.0`.
 
 */
-#![doc(html_root_url = "https://docs.rs/glam/0.11.3")]
+#![doc(html_root_url = "https://docs.rs/glam/0.12.0")]
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(target_arch = "spirv", feature(register_attr, repr_simd))]
 
@@ -188,45 +200,92 @@ compile_error!("`bytemuck` feature is not supported when building for SPIRV");
 
 #[macro_use]
 mod macros;
+#[macro_use]
+mod vec;
 
 #[doc(hidden)]
-pub mod f32;
+pub mod cast;
 
-pub use self::f32::{
-    mat2, mat3, mat4, quat, vec2, vec3, vec3a, vec4, Mat2, Mat3, Mat4, Quat, Vec2, Vec2Mask, Vec3,
-    Vec3A, Vec3AMask, Vec3Mask, Vec4, Vec4Mask,
-};
-pub mod swizzles {
-    pub use super::f32::{Vec2Swizzles, Vec3ASwizzles, Vec3Swizzles, Vec4Swizzles};
-}
-pub use swizzles::{Vec2Swizzles, Vec3ASwizzles, Vec3Swizzles, Vec4Swizzles};
+mod core;
+mod mat2;
+mod mat3;
+mod mat4;
+mod quat;
+mod vec2;
+mod vec3;
+mod vec4;
+mod vec_mask;
+
+mod features;
 
 #[cfg(feature = "transform-types")]
-pub use self::f32::{TransformRT, TransformSRT};
+mod transform;
 
-#[repr(align(16))]
-pub(crate) struct Align16<T>(T);
+#[doc(hidden)]
+pub use self::core::storage::{XY, XYZ, XYZW};
 
-impl<T> Align16<T> {
-    #[allow(dead_code)]
-    pub fn as_ptr(&self) -> *const T {
-        &self.0
-    }
-
-    #[allow(dead_code)]
-    pub fn as_mut_ptr(&mut self) -> *mut T {
-        &mut self.0
-    }
+/** `bool` vector mask types. */
+pub mod bool {
+    pub use super::vec_mask::{BVec2, BVec3, BVec3A, BVec4, BVec4A};
 }
+pub use self::bool::*;
 
-#[test]
-fn test_align16() {
-    use core::{mem, ptr};
-    let mut a = Align16::<f32>(1.0);
-    assert_eq!(mem::align_of_val(&a), 16);
-    unsafe {
-        assert_eq!(ptr::read(a.as_ptr()), 1.0);
-        ptr::write(a.as_mut_ptr(), -1.0);
-    }
-    assert_eq!(a.0, -1.0);
+/** `f32` vector, quaternion and matrix types. */
+pub mod f32 {
+    // pub use super::cast::{
+    //     F32x16Cast, F32x9Cast, Mat2Cast, Mat3Cast, Mat4Cast, Vec2Cast, Vec3Cast, Vec4Cast,
+    // };
+    pub use super::mat2::{mat2, Mat2};
+    pub use super::mat3::{mat3, Mat3};
+    pub use super::mat4::{mat4, Mat4};
+    pub use super::quat::{quat, Quat};
+    pub use super::vec2::{vec2, Vec2};
+    pub use super::vec3::{vec3, vec3a, Vec3, Vec3A};
+    pub use super::vec4::{vec4, Vec4};
+
+    #[cfg(feature = "transform-types")]
+    pub use super::transform::{TransformRT, TransformSRT};
 }
+pub use self::f32::*;
+
+/** `f64` vector, quaternion and matrix types. */
+pub mod f64 {
+    // pub use super::cast::{
+    //     DMat2Cast, DMat3Cast, DMat4Cast, DVec2Cast, DVec3Cast, DVec4Cast, F64x16Cast, F64x9Cast,
+    // };
+    pub use super::mat2::{dmat2, DMat2};
+    pub use super::mat3::{dmat3, DMat3};
+    pub use super::mat4::{dmat4, DMat4};
+    pub use super::quat::{dquat, DQuat};
+    pub use super::vec2::{dvec2, DVec2};
+    pub use super::vec3::{dvec3, DVec3};
+    pub use super::vec4::{dvec4, DVec4};
+}
+pub use self::f64::*;
+
+/** `i32` vector types. */
+pub mod i32 {
+    // pub use super::cast::{
+    //     IVec2Cast, IVec3Cast, IVec4Cast,
+    // };
+    pub use super::vec2::{ivec2, IVec2};
+    pub use super::vec3::{ivec3, IVec3};
+    pub use super::vec4::{ivec4, IVec4};
+}
+pub use self::i32::*;
+
+/** `u32` vector types. */
+pub mod u32 {
+    // pub use super::cast::{
+    //     UVec2Cast, UVec3Cast, UVec4Cast,
+    // };
+    pub use super::vec2::{uvec2, UVec2};
+    pub use super::vec3::{uvec3, UVec3};
+    pub use super::vec4::{uvec4, UVec4};
+}
+pub use self::u32::*;
+
+/** Traits adding swizzle methods to all vector types. */
+pub mod swizzles;
+
+pub use self::swizzles::{Vec2Swizzles, Vec3Swizzles, Vec4Swizzles};

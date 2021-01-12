@@ -107,6 +107,36 @@ macro_rules! bench_trinop {
 }
 
 #[macro_export]
+macro_rules! bench_select {
+    ($name:ident, $desc:expr, ty => $ty: ident, op => $op: ident, from => $from:expr) => {
+        pub(crate) fn $name(c: &mut Criterion) {
+            const SIZE: usize = 1 << 13;
+            let mut rng = support::PCG32::default();
+            let inputs1 =
+                criterion::black_box((0..SIZE).map(|_| $from(&mut rng)).collect::<Vec<_>>());
+            let inputs2 =
+                criterion::black_box((0..SIZE).map(|_| $from(&mut rng)).collect::<Vec<_>>());
+            let masks = vec![$from(&mut rng).$op($from(&mut rng)); SIZE];
+            // pre-fill output vector with some random value
+            let mut outputs = vec![$from(&mut rng); SIZE];
+            let mut i = 0;
+            c.bench_function($desc, |b| {
+                b.iter(|| {
+                    i = (i + 1) & (SIZE - 1);
+                    unsafe {
+                        *outputs.get_unchecked_mut(i) = $ty::select(
+                            *masks.get_unchecked(i),
+                            *inputs1.get_unchecked(i),
+                            *inputs2.get_unchecked(i),
+                        );
+                    }
+                })
+            });
+            criterion::black_box(outputs);
+        }
+    };
+}
+#[macro_export]
 macro_rules! bench_from_ypr {
     ($name: ident, $desc: expr, ty => $ty:ty) => {
         pub(crate) fn $name(c: &mut Criterion) {

@@ -12,10 +12,20 @@ and feel of the API has solidified.
 
 ## Features
 
-* Only single precision floating point (`f32`) arithmetic is supported
-* vectors: `Vec2`, `Vec3`, `Vec3A` `Vec4`
-* square matrices: `Mat2`, `Mat3`, `Mat4`
-* a quaternion type: `Quat`
+* `f32` types
+  * vectors: `Vec2`, `Vec3`, `Vec3A` and `Vec4`
+  * square matrices: `Mat2`, `Mat3` and `Mat4`
+  * a quaternion type: `Quat`
+* `f64` types
+  * vectors: `DVec2`, `DVec3` and `DVec4`
+  * square matrices: `DMat2`, `DMat3` and `DMat4`
+  * a quaternion type: `DQuat`
+* `i32` types
+  * vectors: `IVec2`, `IVec3` and `IVec4`
+* `u32` types
+  * vectors: `UVec2`, `UVec3` and `UVec4`
+* `bool` types
+  * vectors: `BVec2`, `BVec3` and `BVec4`
 
 ### SIMD
 
@@ -105,7 +115,6 @@ The design of this library is guided by a desire for simplicity and good
 performance.
 
 * No traits or generics for simplicity of implementation and usage
-* Only single precision floating point `f32` arithmetic is supported for now
 * All dependencies are optional (e.g. `mint`, `rand` and `serde`)
 * Follows the [Rust API Guidelines] where possible
 * Aiming for 100% test [coverage]
@@ -119,7 +128,6 @@ performance.
 
 * Experiment with a using a 4x3 matrix as a 3D transform type that can be more
   efficient than `Mat4` for certain operations like inverse and multiplies
-* `no-std` support
 * `wasm` support
 
 ## Inspirations
