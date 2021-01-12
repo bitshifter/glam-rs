@@ -7,6 +7,29 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+* Added `f64` primitive type support
+  * vectors: `DVec2`, `DVec3` and `DVec4`
+  * square matrices: `DMat2`, `DMat3` and `DMat4`
+  * a quaternion type: `DQuat`
+* Added `i32` primitive type support
+  * vectors: `IVec2`, `IVec3` and `IVec4`
+* Added `u32` primitive type support
+  * vectors: `UVec2`, `UVec3` and `UVec4`
+* Added `bool` primitive type support
+  * vectors: `BVec2`, `BVec3` and `BVec4`
+
+### Changed
+
+* `Vec2Mask`, `Vec3Mask` and `Vec4Mask` have been replaced by `BVec2`, `BVec3`,
+  `BVec3A`, `BVec4` and `BVec4A`. These types ar used by some vector methods
+  and are not typically referenced directly. This is a breaking change.
+
+### Removed
+
+* `build.rs` has been removed.
+
 ## [0.11.3] - 2020-12-29
 
 ### Changed
