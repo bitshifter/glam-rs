@@ -49,7 +49,7 @@ defined in `std`. For example:
 
 ```toml
 [dependencies]
-glam = { version = "0.10.1", default-features = false, features = ["libm"] }
+glam = { version = "0.12.0", default-features = false, features = ["libm"] }
 ```
 
 To support both `std` and `no_std` builds in project, you can use the following
@@ -63,21 +63,28 @@ std = ["glam/std"]
 libm = ["glam/libm"]
 
 [dependencies]
-glam = { version = "0.10.1", default-features = false }
+glam = { version = "0.12.0", default-features = false }
 ```
 
 ### Optional features
 
-* `bytemuck` - for casting into slices of bytes
-* `libm` - required to compile with `no_std`
-* `mint` - for interoperating with other 3D math libraries
-* `num-traits` - required to compile `no_std`, will be included when enabling
+* [`bytemuck`] - for casting into slices of bytes
+* [`libm`] - required to compile with `no_std`
+* [`mint`] - for interoperating with other 3D math libraries
+* [`num-traits`] - required to compile `no_std`, will be included when enabling
   the `libm` feature
-* `rand` - implementations of `Distribution` trait for all `glam` types. This
+* [`rand`] - implementations of `Distribution` trait for all `glam` types. This
   is primarily used for unit testing
-* `serde` - implementations of `Serialize` and `Deserialize` for all `glam`
+* [`serde`] - implementations of `Serialize` and `Deserialize` for all `glam`
   types. Note that serialization should work between builds of `glam` with and
   without SIMD enabled
+
+[`bytemuck`]: https://docs.rs/bytemuck
+[`libm`]: https://github.com/rust-lang/libm
+[`mint`]: https://github.com/kvark/mint
+[`num-traits`]: https://github.com/rust-num/num-traits
+[`rand`]: https://github.com/rust-random/rand
+[`serde`]: https://serde.rs
 
 ### Feature gates
 
@@ -114,7 +121,8 @@ and left handed conventions.
 The design of this library is guided by a desire for simplicity and good
 performance.
 
-* No traits or generics for simplicity of implementation and usage
+* No traits or generics in the public API for simplicity of implementation and
+  usage
 * All dependencies are optional (e.g. `mint`, `rand` and `serde`)
 * Follows the [Rust API Guidelines] where possible
 * Aiming for 100% test [coverage]

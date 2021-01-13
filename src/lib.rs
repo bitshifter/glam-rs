@@ -33,15 +33,18 @@ Matrices are stored in memory in column-major order.
 ## Direct element access
 
 Because some types may internally be implemeted using SIMD types, direct access to vector elements
-is supported by implementing the `Deref` and `DerefMut` traits.
+is supported by implementing the [`Deref`] and [`DerefMut`] traits.
 
 ```
-use glam::{Vec3A};
+use glam::Vec3A;
 let mut v = Vec3A::new(1.0, 2.0, 3.0);
 assert_eq!(3.0, v.z);
 v.z += 1.0;
 assert_eq!(4.0, v.z);
 ```
+
+[`Deref`]: https://doc.rust-lang.org/std/ops/trait.Deref.html
+[`DerefMut`]: https://doc.rust-lang.org/std/ops/trait.DerefMut.html
 
 ## Size and alignment of types
 
@@ -171,7 +174,7 @@ and benchmarks.
 * `glam-assert` - adds assertions to all builds which check the validity of
   parameters passed to `glam` to help catch runtime errors.
 
-### Minimum Supported Version or Rust (MSVR)
+## Minimum Supported Version or Rust (MSVR)
 
 The minimum supported version of Rust for `glam` is `1.36.0`.
 

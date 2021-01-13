@@ -25,16 +25,6 @@ for it just so I have a better understanding of the feature. I'd like to keep
 functionality that is missing is very welcome. If you do submit a pull request
 please ensure any new functionality also has a test.
 
-# New types
-
-If you would like to add a new type to `glam` please [open a github issue]. Only
-`f32` has been supported for now but long term I'd like to support people with
-other needs. I am interested in what types you feel you need and what you would
-use them for. Examples might be `i32` or `f64` vectors or generic types. I don't
-want to rush to support new types until the API has stabilised a bit more but it
-would be good to collect information on functionality people would like to see
-in `glam`.
-
 # Optimizations
 
 If you feel some functionality could be optimized please [open a github issue]
