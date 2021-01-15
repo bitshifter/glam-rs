@@ -183,10 +183,15 @@ Thank you to all of the `glam` [contributors]!
 ## Support
 
 If you are interested in contributing or have a request or suggestion
-[create an issue] on github.
+[start a discussion] on github. See [CONTRIBUTING.md] for more information for
+contributors.
 
 The [Game Development in Rust Discord] and [Bevy Engine Discord] servers can are
 also good places to ask for help with `glam`.
+
+[start a discussion]: https://github.com/bitshifter/glam-rs/discussions
+[Game Development in Rust Discord]: https://discord.gg/yNtPTb2
+[Bevy Engine Discord]: https://discord.gg/gMUk5Ph
 
 ## Attribution
 
@@ -199,10 +204,6 @@ also good places to ask for help with `glam`.
 See [ATTRIBUTION.md] for details.
 
 [ATTRIBUTION.md]: ATTRIBUTION.md
-
-[create an issue]: https://github.com/bitshifter/glam-rs/issues
-[Game Development in Rust Discord]: https://discord.gg/yNtPTb2
-[Bevy Engine Discord]: https://discord.gg/gMUk5Ph
 
 [Build Status]: https://travis-ci.org/bitshifter/glam-rs.svg?branch=master
 [travis-ci]: https://travis-ci.org/bitshifter/glam-rs
