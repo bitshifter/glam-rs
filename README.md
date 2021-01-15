@@ -190,6 +190,7 @@ The [Game Development in Rust Discord] and [Bevy Engine Discord] servers can are
 also good places to ask for help with `glam`.
 
 [start a discussion]: https://github.com/bitshifter/glam-rs/discussions
+[CONTRIBUTING.md]: CONTRIBUTING.md
 [Game Development in Rust Discord]: https://discord.gg/yNtPTb2
 [Bevy Engine Discord]: https://discord.gg/gMUk5Ph
 
