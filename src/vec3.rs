@@ -24,6 +24,15 @@ use std::iter::{Product, Sum};
 
 macro_rules! impl_vec3_common_methods {
     ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
+        /// `[1, 0, 0]`: a unit-length vector pointing along the positive X axis.
+        pub const X: Self = Self(Vector3Const::UNIT_X);
+
+        /// `[0, 1, 0]`: a unit-length vector pointing along the positive Y axis.
+        pub const Y: Self = Self(Vector3Const::UNIT_Y);
+
+        /// `[0, 0, 1]`: a unit-length vector pointing along the positive Z axis.
+        pub const Z: Self = Self(Vector3Const::UNIT_Z);
+
         /// Creates a new 3D vector.
         #[inline(always)]
         pub fn new(x: $t, y: $t, z: $t) -> Self {
