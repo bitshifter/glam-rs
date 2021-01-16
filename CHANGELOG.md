@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
+## [0.12.0] - 2021-01-15
+
 ### Added
 
 * Added `f64` primitive type support
@@ -424,7 +426,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.11.3...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.12.0...HEAD
+[0.12.0]: https://github.com/bitshifter/glam-rs/compare/0.11.3...0.12.0
 [0.11.3]: https://github.com/bitshifter/glam-rs/compare/0.11.2...0.11.3
 [0.11.2]: https://github.com/bitshifter/glam-rs/compare/0.11.1...0.11.2
 [0.11.1]: https://github.com/bitshifter/glam-rs/compare/0.11.0...0.11.1
