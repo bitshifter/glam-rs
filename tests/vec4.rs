@@ -669,6 +669,53 @@ macro_rules! impl_vec4_float_tests {
                 )
             );
         }
+
+        #[test]
+        fn test_clamp_length() {
+            // Too long gets shortened
+            assert_eq!(
+                $vec4::new(12.0, 16.0, 0.0, 0.0).clamp_length(7.0, 10.0),
+                $vec4::new(6.0, 8.0, 0.0, 0.0) // shortened to length 10.0
+            );
+            // In the middle is unchanged
+            assert_eq!(
+                $vec4::new(2.0, 1.0, 0.0, 0.0).clamp_length(0.5, 5.0),
+                $vec4::new(2.0, 1.0, 0.0, 0.0) // unchanged
+            );
+            // Too short gets lengthened
+            assert_eq!(
+                $vec4::new(0.6, 0.8, 0.0, 0.0).clamp_length(10.0, 20.0),
+                $vec4::new(6.0, 8.0, 0.0, 0.0) // lengthened to length 10.0
+            );
+        }
+
+        #[test]
+        fn test_clamp_length_max() {
+            // Too long gets shortened
+            assert_eq!(
+                $vec4::new(12.0, 16.0, 0.0, 0.0).clamp_length_max(10.0),
+                $vec4::new(6.0, 8.0, 0.0, 0.0) // shortened to length 10.0
+            );
+            // Not too long is unchanged
+            assert_eq!(
+                $vec4::new(2.0, 1.0, 0.0, 0.0).clamp_length_max(5.0),
+                $vec4::new(2.0, 1.0, 0.0, 0.0) // unchanged
+            );
+        }
+
+        #[test]
+        fn test_clamp_length_min() {
+            // Not too short is unchanged
+            assert_eq!(
+                $vec4::new(2.0, 1.0, 0.0, 0.0).clamp_length_min(0.5),
+                $vec4::new(2.0, 1.0, 0.0, 0.0) // unchanged
+            );
+            // Too short gets lengthened
+            assert_eq!(
+                $vec4::new(0.6, 0.8, 0.0, 0.0).clamp_length_min(10.0),
+                $vec4::new(6.0, 8.0, 0.0, 0.0) // lengthened to length 10.0
+            );
+        }
     };
 }
 

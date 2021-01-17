@@ -21,6 +21,8 @@ The format is based on [Keep a Changelog], and this project adheres to
   * vectors: `UVec2`, `UVec3` and `UVec4`
 * Added `bool` primitive type support
   * vectors: `BVec2`, `BVec3` and `BVec4`
+* Added `clamp_length()`, `clamp_length_max()`, and `clamp_length_min` methods for `Vec2`, `Vec3`,
+  and `Vec4` for `f32` and `f64`.
 
 ### Changed
 
