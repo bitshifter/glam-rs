@@ -27,6 +27,18 @@ use core::{cmp::Ordering, f32};
 
 macro_rules! impl_vec4_common_methods {
     ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
+        /// `[1, 0, 0, 0]`: a unit-length vector pointing along the positive X axis.
+        pub const X: Self = Self(Vector4Const::UNIT_X);
+
+        /// `[0, 1, 0, 0]`: a unit-length vector pointing along the positive Y axis.
+        pub const Y: Self = Self(Vector4Const::UNIT_Y);
+
+        /// `[0, 0, 1, 0]`: a unit-length vector pointing along the positive Z axis.
+        pub const Z: Self = Self(Vector4Const::UNIT_Z);
+
+        /// `[0, 0, 0, 1]`: a unit-length vector pointing along the positive W axis.
+        pub const W: Self = Self(Vector4Const::UNIT_W);
+
         /// Creates a new 4D vector.
         #[inline(always)]
         pub fn new(x: $t, y: $t, z: $t, w: $t) -> Self {

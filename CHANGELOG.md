@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+### Added
+* Added `Vec2::X`, `Vec4::W` etc as a shorter versions of `unit_x()` and friends.
 
 ## [0.12.0] - 2021-01-15
 

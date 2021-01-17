@@ -9,6 +9,12 @@ use std::iter::{Product, Sum};
 
 macro_rules! impl_vec2_common_methods {
     ($t:ty, $vec2:ident, $vec3:ident, $mask:ident, $inner:ident) => {
+        /// `[1, 0]`: a unit-length vector pointing along the positive X axis.
+        pub const X: Self = Self($inner::UNIT_X);
+
+        /// `[0, 1]`: a unit-length vector pointing along the positive Y axis.
+        pub const Y: Self = Self($inner::UNIT_Y);
+
         /// Creates a new vector.
         #[inline(always)]
         pub fn new(x: $t, y: $t) -> $vec2 {

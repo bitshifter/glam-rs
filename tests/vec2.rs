@@ -412,6 +412,12 @@ macro_rules! impl_vec2_float_tests {
         use core::$t::NEG_INFINITY;
 
         #[test]
+        fn test_vec2_consts() {
+            assert_eq!($vec2::X, $new(1 as $t, 0 as $t));
+            assert_eq!($vec2::Y, $new(0 as $t, 1 as $t));
+        }
+
+        #[test]
         fn test_length() {
             let x = $new(1.0, 0.0);
             let y = $new(0.0, 1.0);
