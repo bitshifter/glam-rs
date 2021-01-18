@@ -9,6 +9,11 @@ The format is based on [Keep a Changelog], and this project adheres to
 ### Added
 * Added `Vec2::X`, `Vec4::W` etc as a shorter versions of `unit_x()` and friends.
 
+### Added
+
+* Added `clamp_length()`, `clamp_length_max()`, and `clamp_length_min` methods for `Vec2`, `Vec3`,
+  and `Vec4` for `f32` and `f64`.
+
 ## [0.12.0] - 2021-01-15
 
 ### Added

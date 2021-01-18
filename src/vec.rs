@@ -320,6 +320,39 @@ macro_rules! impl_vecn_float_methods {
         pub fn abs_diff_eq(self, other: Self, max_abs_diff: $t) -> bool {
             $flttrait::abs_diff_eq(self.0, other.0, max_abs_diff)
         }
+
+        /// Returns a vector with a length no less than `min` and no more than `max`
+        #[inline]
+        pub fn clamp_length(self, min: $t, max: $t) -> Self {
+            let length_sq = self.length_squared();
+            if length_sq < min * min {
+                self * (length_sq.sqrt().recip() * min)
+            } else if length_sq > max * max {
+                self * (length_sq.sqrt().recip() * max)
+            } else {
+                self
+            }
+        }
+
+        /// Returns a vector with a length no more than `max`
+        pub fn clamp_length_max(self, max: $t) -> Self {
+            let length_sq = self.length_squared();
+            if length_sq > max * max {
+                self * (length_sq.sqrt().recip() * max)
+            } else {
+                self
+            }
+        }
+
+        /// Returns a vector with a length no less than `min`
+        pub fn clamp_length_min(self, min: $t) -> Self {
+            let length_sq = self.length_squared();
+            if self.length_squared() < min * min {
+                self * (length_sq.sqrt().recip() * min)
+            } else {
+                self
+            }
+        }
     };
 }
 
