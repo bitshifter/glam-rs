@@ -61,9 +61,9 @@ macro_rules! impl_mat2_tests {
         #[test]
         fn test_mat2_mul() {
             let mat_a = $mat2::from_angle(deg(90.0));
-            let res_a = mat_a * $vec2::unit_y();
+            let res_a = mat_a * $vec2::Y;
             assert_approx_eq!($newvec2(-1.0, 0.0), res_a);
-            let res_b = mat_a * $vec2::unit_x();
+            let res_b = mat_a * $vec2::X;
             assert_approx_eq!($newvec2(0.0, 1.0), res_b);
         }
 
@@ -71,12 +71,12 @@ macro_rules! impl_mat2_tests {
         fn test_from_scale() {
             let m = $mat2::from_scale($vec2::new(2.0, 4.0));
             assert_approx_eq!(m * $vec2::new(1.0, 1.0), $vec2::new(2.0, 4.0));
-            assert_approx_eq!($vec2::unit_x() * 2.0, m.x_axis);
-            assert_approx_eq!($vec2::unit_y() * 4.0, m.y_axis);
+            assert_approx_eq!($vec2::X * 2.0, m.x_axis);
+            assert_approx_eq!($vec2::Y * 4.0, m.y_axis);
 
             let rot = $mat2::from_scale_angle($vec2::new(4.0, 2.0), deg(180.0));
-            assert_approx_eq!($vec2::unit_x() * -4.0, rot * $vec2::unit_x(), 1.0e-6);
-            assert_approx_eq!($vec2::unit_y() * -2.0, rot * $vec2::unit_y(), 1.0e-6);
+            assert_approx_eq!($vec2::X * -4.0, rot * $vec2::X, 1.0e-6);
+            assert_approx_eq!($vec2::Y * -2.0, rot * $vec2::Y, 1.0e-6);
         }
 
         #[test]

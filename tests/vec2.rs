@@ -28,8 +28,8 @@ macro_rules! impl_vec2_tests {
             let v = $vec2::new(t.0, t.1);
             assert_eq!(t, v.into());
 
-            assert_eq!($vec2::new(1 as $t, 0 as $t), $vec2::unit_x());
-            assert_eq!($vec2::new(0 as $t, 1 as $t), $vec2::unit_y());
+            assert_eq!($vec2::new(1 as $t, 0 as $t), $vec2::X);
+            assert_eq!($vec2::new(0 as $t, 1 as $t), $vec2::Y);
         }
 
         #[test]

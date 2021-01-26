@@ -40,22 +40,10 @@ macro_rules! impl_vec4_tests {
             let v = $vec4::new(t.0, t.1, t.2, t.3);
             assert_eq!(t, v.into());
 
-            assert_eq!(
-                $vec4::new(1 as $t, 0 as $t, 0 as $t, 0 as $t),
-                $vec4::unit_x()
-            );
-            assert_eq!(
-                $vec4::new(0 as $t, 1 as $t, 0 as $t, 0 as $t),
-                $vec4::unit_y()
-            );
-            assert_eq!(
-                $vec4::new(0 as $t, 0 as $t, 1 as $t, 0 as $t),
-                $vec4::unit_z()
-            );
-            assert_eq!(
-                $vec4::new(0 as $t, 0 as $t, 0 as $t, 1 as $t),
-                $vec4::unit_w()
-            );
+            assert_eq!($vec4::new(1 as $t, 0 as $t, 0 as $t, 0 as $t), $vec4::X);
+            assert_eq!($vec4::new(0 as $t, 1 as $t, 0 as $t, 0 as $t), $vec4::Y);
+            assert_eq!($vec4::new(0 as $t, 0 as $t, 1 as $t, 0 as $t), $vec4::Z);
+            assert_eq!($vec4::new(0 as $t, 0 as $t, 0 as $t, 1 as $t), $vec4::W);
         }
 
         #[test]

@@ -146,47 +146,38 @@ macro_rules! impl_mat4_tests {
         #[test]
         fn test_from_rotation() {
             let rot_x1 = $mat4::from_rotation_x(deg(180.0));
-            let rot_x2 = $mat4::from_axis_angle($vec3::unit_x(), deg(180.0));
+            let rot_x2 = $mat4::from_axis_angle($vec3::X, deg(180.0));
             assert_approx_eq!(rot_x1, rot_x2);
             let rot_y1 = $mat4::from_rotation_y(deg(180.0));
-            let rot_y2 = $mat4::from_axis_angle($vec3::unit_y(), deg(180.0));
+            let rot_y2 = $mat4::from_axis_angle($vec3::Y, deg(180.0));
             assert_approx_eq!(rot_y1, rot_y2);
             let rot_z1 = $mat4::from_rotation_z(deg(180.0));
-            let rot_z2 = $mat4::from_axis_angle($vec3::unit_z(), deg(180.0));
+            let rot_z2 = $mat4::from_axis_angle($vec3::Z, deg(180.0));
             assert_approx_eq!(rot_z1, rot_z2);
         }
 
         #[test]
         fn test_mat4_mul() {
-            let mat_a = $mat4::from_axis_angle($vec3::unit_z(), deg(90.0));
-            let result3 = mat_a.transform_vector3($vec3::unit_y());
+            let mat_a = $mat4::from_axis_angle($vec3::Z, deg(90.0));
+            let result3 = mat_a.transform_vector3($vec3::Y);
             assert_approx_eq!($newvec3(-1.0, 0.0, 0.0), result3);
-            assert_approx_eq!(
-                result3,
-                (mat_a * $vec3::unit_y().extend(0.0)).truncate().into()
-            );
-            let result4 = mat_a * $vec4::unit_y();
+            assert_approx_eq!(result3, (mat_a * $vec3::Y.extend(0.0)).truncate().into());
+            let result4 = mat_a * $vec4::Y;
             assert_approx_eq!($newvec4(-1.0, 0.0, 0.0, 0.0), result4);
-            assert_approx_eq!(result4, mat_a * $vec4::unit_y());
+            assert_approx_eq!(result4, mat_a * $vec4::Y);
 
             let mat_b = $mat4::from_scale_rotation_translation(
                 $vec3::new(0.5, 1.5, 2.0),
                 $quat::from_rotation_x(deg(90.0)),
                 $vec3::new(1.0, 2.0, 3.0),
             );
-            let result3 = mat_b.transform_vector3($vec3::unit_y());
+            let result3 = mat_b.transform_vector3($vec3::Y);
             assert_approx_eq!($newvec3(0.0, 0.0, 1.5), result3, 1.0e-6);
-            assert_approx_eq!(
-                result3,
-                (mat_b * $vec3::unit_y().extend(0.0)).truncate().into()
-            );
+            assert_approx_eq!(result3, (mat_b * $vec3::Y.extend(0.0)).truncate().into());
 
-            let result3 = mat_b.transform_point3($vec3::unit_y());
+            let result3 = mat_b.transform_point3($vec3::Y);
             assert_approx_eq!($newvec3(1.0, 2.0, 4.5), result3, 1.0e-6);
-            assert_approx_eq!(
-                result3,
-                (mat_b * $vec3::unit_y().extend(1.0)).truncate().into()
-            );
+            assert_approx_eq!(result3, (mat_b * $vec3::Y.extend(1.0)).truncate().into());
         }
 
         #[test]
@@ -219,10 +210,10 @@ macro_rules! impl_mat4_tests {
         #[test]
         fn test_from_scale() {
             let m = $mat4::from_scale($vec3::new(2.0, 4.0, 8.0));
-            assert_approx_eq!($vec4::unit_x() * 2.0, m.x_axis);
-            assert_approx_eq!($vec4::unit_y() * 4.0, m.y_axis);
-            assert_approx_eq!($vec4::unit_z() * 8.0, m.z_axis);
-            assert_approx_eq!($vec4::unit_w(), m.w_axis);
+            assert_approx_eq!($vec4::X * 2.0, m.x_axis);
+            assert_approx_eq!($vec4::Y * 4.0, m.y_axis);
+            assert_approx_eq!($vec4::Z * 8.0, m.z_axis);
+            assert_approx_eq!($vec4::W, m.w_axis);
             assert_approx_eq!(
                 m.transform_point3($vec3::new(1.0, 1.0, 1.0)),
                 $vec3::new(2.0, 4.0, 8.0)
