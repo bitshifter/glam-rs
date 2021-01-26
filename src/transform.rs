@@ -69,6 +69,7 @@ impl TransformSRT {
         }
     }
 
+    #[deprecated = "use TransformSRT::IDENTITY instead"]
     #[inline]
     pub const fn identity() -> Self {
         Self::IDENTITY
@@ -194,6 +195,7 @@ impl TransformRT {
         }
     }
 
+    #[deprecated = "use TransformRT::IDENTITY instead"]
     #[inline]
     pub const fn identity() -> Self {
         Self::IDENTITY
