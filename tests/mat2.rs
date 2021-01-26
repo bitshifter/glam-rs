@@ -22,7 +22,7 @@ macro_rules! impl_mat2_tests {
         #[test]
         fn test_mat2_identity() {
             assert_eq!($mat2::IDENTITY, $mat2::from_cols_array(&[1., 0., 0., 1.]));
-            let identity = $mat2::identity();
+            let identity = $mat2::IDENTITY;
             assert_eq!(IDENTITY, identity.to_cols_array_2d());
             assert_eq!($mat2::from_cols_array_2d(&IDENTITY), identity);
             assert_eq!(identity, identity * identity);
@@ -90,7 +90,7 @@ macro_rules! impl_mat2_tests {
         #[test]
         fn test_mat2_det() {
             assert_eq!(0.0, $mat2::ZERO.determinant());
-            assert_eq!(1.0, $mat2::identity().determinant());
+            assert_eq!(1.0, $mat2::IDENTITY.determinant());
             assert_eq!(1.0, $mat2::from_angle(deg(90.0)).determinant());
             assert_eq!(1.0, $mat2::from_angle(deg(180.0)).determinant());
             assert_eq!(1.0, $mat2::from_angle(deg(270.0)).determinant());
@@ -106,23 +106,23 @@ macro_rules! impl_mat2_tests {
 
         #[test]
         fn test_mat2_inverse() {
-            let inv = $mat2::identity().inverse();
-            assert_approx_eq!($mat2::identity(), inv);
+            let inv = $mat2::IDENTITY.inverse();
+            assert_approx_eq!($mat2::IDENTITY, inv);
 
             let rot = $mat2::from_angle(deg(90.0));
             let rot_inv = rot.inverse();
-            assert_approx_eq!($mat2::identity(), rot * rot_inv);
-            assert_approx_eq!($mat2::identity(), rot_inv * rot);
+            assert_approx_eq!($mat2::IDENTITY, rot * rot_inv);
+            assert_approx_eq!($mat2::IDENTITY, rot_inv * rot);
 
             let scale = $mat2::from_scale($newvec2(4.0, 5.0));
             let scale_inv = scale.inverse();
-            assert_approx_eq!($mat2::identity(), scale * scale_inv);
-            assert_approx_eq!($mat2::identity(), scale_inv * scale);
+            assert_approx_eq!($mat2::IDENTITY, scale * scale_inv);
+            assert_approx_eq!($mat2::IDENTITY, scale_inv * scale);
 
             let m = scale * rot;
             let m_inv = m.inverse();
-            assert_approx_eq!($mat2::identity(), m * m_inv);
-            assert_approx_eq!($mat2::identity(), m_inv * m);
+            assert_approx_eq!($mat2::IDENTITY, m * m_inv);
+            assert_approx_eq!($mat2::IDENTITY, m_inv * m);
             assert_approx_eq!(m_inv, rot_inv * scale_inv);
         }
 
@@ -144,11 +144,11 @@ macro_rules! impl_mat2_tests {
             assert_eq!($mat2::ZERO, m0 - m0);
             assert_approx_eq!(
                 $mat2::from_cols_array_2d(&[[1.0, 2.0], [3.0, 4.0]]),
-                m0 * $mat2::identity()
+                m0 * $mat2::IDENTITY
             );
             assert_approx_eq!(
                 $mat2::from_cols_array_2d(&[[1.0, 2.0], [3.0, 4.0]]),
-                $mat2::identity() * m0
+                $mat2::IDENTITY * m0
             );
         }
 
@@ -161,14 +161,14 @@ macro_rules! impl_mat2_tests {
         #[cfg(feature = "std")]
         #[test]
         fn test_sum() {
-            let id = $mat2::identity();
+            let id = $mat2::IDENTITY;
             assert_eq!(vec![id, id].iter().sum::<$mat2>(), id + id);
         }
 
         #[cfg(feature = "std")]
         #[test]
         fn test_product() {
-            let two = $mat2::identity() + $mat2::identity();
+            let two = $mat2::IDENTITY + $mat2::IDENTITY;
             assert_eq!(vec![two, two].iter().product::<$mat2>(), two * two);
         }
 
@@ -177,10 +177,10 @@ macro_rules! impl_mat2_tests {
             use std::$t::INFINITY;
             use std::$t::NAN;
             use std::$t::NEG_INFINITY;
-            assert!($mat2::identity().is_finite());
-            assert!(!($mat2::identity() * INFINITY).is_finite());
-            assert!(!($mat2::identity() * NEG_INFINITY).is_finite());
-            assert!(!($mat2::identity() * NAN).is_finite());
+            assert!($mat2::IDENTITY.is_finite());
+            assert!(!($mat2::IDENTITY * INFINITY).is_finite());
+            assert!(!($mat2::IDENTITY * NEG_INFINITY).is_finite());
+            assert!(!($mat2::IDENTITY * NAN).is_finite());
         }
     };
 }

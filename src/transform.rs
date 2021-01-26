@@ -20,7 +20,7 @@ impl Default for TransformSRT {
     fn default() -> Self {
         Self {
             scale: Vec3::ONE,
-            rotation: Quat::identity(),
+            rotation: Quat::IDENTITY,
             translation: Vec3::ZERO,
         }
     }
@@ -37,7 +37,7 @@ impl Default for TransformRT {
     #[inline]
     fn default() -> Self {
         Self {
-            rotation: Quat::identity(),
+            rotation: Quat::IDENTITY,
             translation: Vec3::ZERO,
         }
     }
@@ -66,7 +66,7 @@ impl TransformSRT {
     pub fn identity() -> Self {
         Self {
             scale: Vec3::ONE,
-            rotation: Quat::identity(),
+            rotation: Quat::IDENTITY,
             translation: Vec3::ZERO,
         }
     }
@@ -188,7 +188,7 @@ impl TransformRT {
     #[inline]
     pub fn identity() -> Self {
         Self {
-            rotation: Quat::identity(),
+            rotation: Quat::IDENTITY,
             translation: Vec3::ZERO,
         }
     }

@@ -279,7 +279,7 @@ macro_rules! impl_mat3_traits {
         impl Default for $mat3 {
             #[inline(always)]
             fn default() -> Self {
-                Self::identity()
+                Self::IDENTITY
             }
         }
 
@@ -409,7 +409,7 @@ macro_rules! impl_mat3_traits {
             where
                 I: Iterator<Item = &'a Self>,
             {
-                iter.fold($mat3::identity(), |a, &b| Self::mul(a, b))
+                iter.fold($mat3::IDENTITY, |a, &b| Self::mul(a, b))
             }
         }
     };

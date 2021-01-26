@@ -116,7 +116,7 @@ macro_rules! impl_quat_tests {
             assert_approx_eq!(yxz0, yxz2);
 
             // if near identity, just returns x axis and 0 rotation
-            let (axis, angle) = $quat::identity().to_axis_angle();
+            let (axis, angle) = $quat::IDENTITY.to_axis_angle();
             assert_eq!(axis, $vec3::X);
             assert_eq!(angle, rad(0.0));
         }
@@ -218,7 +218,7 @@ macro_rules! impl_quat_tests {
 
         #[test]
         fn test_fmt() {
-            let a = $quat::identity();
+            let a = $quat::IDENTITY;
             assert_eq!(
                 format!("{:?}", a),
                 format!("{}(0.0, 0.0, 0.0, 1.0)", stringify!($quat))
@@ -232,7 +232,7 @@ macro_rules! impl_quat_tests {
 
         #[test]
         fn test_identity() {
-            let identity = $quat::identity();
+            let identity = $quat::IDENTITY;
             assert!(identity.is_near_identity());
             assert!(identity.is_normalized());
             assert_eq!(identity, $quat::from_xyzw(0.0, 0.0, 0.0, 1.0));

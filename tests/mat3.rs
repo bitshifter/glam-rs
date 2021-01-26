@@ -39,7 +39,7 @@ macro_rules! impl_mat3_tests {
                     0., 0., 1., //
                 ])
             );
-            let identity = $mat3::identity();
+            let identity = $mat3::IDENTITY;
             assert_eq!(IDENTITY, identity.to_cols_array_2d());
             assert_eq!($mat3::from_cols_array_2d(&IDENTITY), identity);
             assert_eq!(identity, identity * identity);
@@ -176,7 +176,7 @@ macro_rules! impl_mat3_tests {
         #[test]
         fn test_mat3_det() {
             assert_eq!(0.0, $mat3::ZERO.determinant());
-            assert_eq!(1.0, $mat3::identity().determinant());
+            assert_eq!(1.0, $mat3::IDENTITY.determinant());
             assert_eq!(1.0, $mat3::from_rotation_x(deg(90.0)).determinant());
             assert_eq!(1.0, $mat3::from_rotation_y(deg(180.0)).determinant());
             assert_eq!(1.0, $mat3::from_rotation_z(deg(270.0)).determinant());
@@ -189,30 +189,30 @@ macro_rules! impl_mat3_tests {
         #[test]
         fn test_mat3_inverse() {
             // assert_eq!(None, $mat3::ZERO.inverse());
-            let inv = $mat3::identity().inverse();
+            let inv = $mat3::IDENTITY.inverse();
             // assert_ne!(None, inv);
-            assert_approx_eq!($mat3::identity(), inv);
+            assert_approx_eq!($mat3::IDENTITY, inv);
 
             let rotz = $mat3::from_rotation_z(deg(90.0));
             let rotz_inv = rotz.inverse();
             // assert_ne!(None, rotz_inv);
             // let rotz_inv = rotz_inv.unwrap();
-            assert_approx_eq!($mat3::identity(), rotz * rotz_inv);
-            assert_approx_eq!($mat3::identity(), rotz_inv * rotz);
+            assert_approx_eq!($mat3::IDENTITY, rotz * rotz_inv);
+            assert_approx_eq!($mat3::IDENTITY, rotz_inv * rotz);
 
             let scale = $mat3::from_scale($newvec3(4.0, 5.0, 6.0));
             let scale_inv = scale.inverse();
             // assert_ne!(None, scale_inv);
             // let scale_inv = scale_inv.unwrap();
-            assert_approx_eq!($mat3::identity(), scale * scale_inv);
-            assert_approx_eq!($mat3::identity(), scale_inv * scale);
+            assert_approx_eq!($mat3::IDENTITY, scale * scale_inv);
+            assert_approx_eq!($mat3::IDENTITY, scale_inv * scale);
 
             let m = scale * rotz;
             let m_inv = m.inverse();
             // assert_ne!(None, m_inv);
             // let m_inv = m_inv.unwrap();
-            assert_approx_eq!($mat3::identity(), m * m_inv);
-            assert_approx_eq!($mat3::identity(), m_inv * m);
+            assert_approx_eq!($mat3::IDENTITY, m * m_inv);
+            assert_approx_eq!($mat3::IDENTITY, m_inv * m);
             assert_approx_eq!(m_inv, rotz_inv * scale_inv);
         }
 
@@ -228,8 +228,8 @@ macro_rules! impl_mat3_tests {
             assert_eq!(m0x2, 2.0 * m0);
             assert_eq!(m0x2, m0 + m0);
             assert_eq!($mat3::ZERO, m0 - m0);
-            assert_approx_eq!(m0, m0 * $mat3::identity());
-            assert_approx_eq!(m0, $mat3::identity() * m0);
+            assert_approx_eq!(m0, m0 * $mat3::IDENTITY);
+            assert_approx_eq!(m0, $mat3::IDENTITY * m0);
         }
 
         #[test]
@@ -241,23 +241,23 @@ macro_rules! impl_mat3_tests {
         #[cfg(feature = "std")]
         #[test]
         fn test_sum() {
-            let id = $mat3::identity();
+            let id = $mat3::IDENTITY;
             assert_eq!(vec![id, id].iter().sum::<$mat3>(), id + id);
         }
 
         #[cfg(feature = "std")]
         #[test]
         fn test_product() {
-            let two = $mat3::identity() + $mat3::identity();
+            let two = $mat3::IDENTITY + $mat3::IDENTITY;
             assert_eq!(vec![two, two].iter().product::<$mat3>(), two * two);
         }
 
         #[test]
         fn test_mat3_is_finite() {
-            assert!($mat3::identity().is_finite());
-            assert!(!($mat3::identity() * INFINITY).is_finite());
-            assert!(!($mat3::identity() * NEG_INFINITY).is_finite());
-            assert!(!($mat3::identity() * NAN).is_finite());
+            assert!($mat3::IDENTITY.is_finite());
+            assert!(!($mat3::IDENTITY * INFINITY).is_finite());
+            assert!(!($mat3::IDENTITY * NEG_INFINITY).is_finite());
+            assert!(!($mat3::IDENTITY * NAN).is_finite());
         }
     };
 }

@@ -464,7 +464,7 @@ macro_rules! impl_mat4_traits {
         impl Default for $mat4 {
             #[inline(always)]
             fn default() -> Self {
-                Self::identity()
+                Self::IDENTITY
             }
         }
 
@@ -597,7 +597,7 @@ macro_rules! impl_mat4_traits {
             where
                 I: Iterator<Item = &'a Self>,
             {
-                iter.fold(Self::identity(), |a, &b| Self::mul(a, b))
+                iter.fold(Self::IDENTITY, |a, &b| Self::mul(a, b))
             }
         }
     };

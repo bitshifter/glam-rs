@@ -8,19 +8,19 @@ mod transform {
 
     #[test]
     fn test_identity() {
-        let tr = TransformRT::identity();
-        assert_eq!(tr.rotation, Quat::identity());
+        let tr = TransformRT::IDENTITY;
+        assert_eq!(tr.rotation, Quat::IDENTITY);
         assert_eq!(tr.translation, Vec3::ZERO);
 
-        let srt = TransformSRT::identity();
+        let srt = TransformSRT::IDENTITY;
         assert_eq!(srt.scale, Vec3::ONE);
-        assert_eq!(srt.rotation, Quat::identity());
+        assert_eq!(srt.rotation, Quat::IDENTITY);
         assert_eq!(srt.translation, Vec3::ZERO);
 
         assert_eq!(srt, tr.into());
 
-        assert_eq!(TransformRT::identity(), TransformRT::default());
-        assert_eq!(TransformSRT::identity(), TransformSRT::default());
+        assert_eq!(TransformRT::IDENTITY, TransformRT::default());
+        assert_eq!(TransformSRT::IDENTITY, TransformSRT::default());
     }
 
     #[test]
@@ -57,11 +57,11 @@ mod transform {
         let v2 = inv_tr * v1;
         assert_approx_eq!(v0, v2);
 
-        assert_eq!(tr * TransformRT::identity(), tr);
-        assert_approx_eq!(tr * inv_tr, TransformRT::identity());
+        assert_eq!(tr * TransformRT::IDENTITY, tr);
+        assert_approx_eq!(tr * inv_tr, TransformRT::IDENTITY);
 
-        assert_eq!(tr * TransformSRT::identity(), TransformSRT::from(tr));
-        assert_eq!(TransformSRT::identity() * tr, TransformSRT::from(tr));
+        assert_eq!(tr * TransformSRT::IDENTITY, TransformSRT::from(tr));
+        assert_eq!(TransformSRT::IDENTITY * tr, TransformSRT::from(tr));
 
         let s = Vec3::splat(2.0);
         let r = Quat::from_rotation_y(180.0_f32.to_radians());
@@ -75,13 +75,13 @@ mod transform {
         let v2 = inv_srt * v1;
         assert_approx_eq!(v0, v2);
 
-        assert_eq!(srt * TransformSRT::identity(), srt);
-        assert_eq!(srt * inv_srt, TransformSRT::identity());
+        assert_eq!(srt * TransformSRT::IDENTITY, srt);
+        assert_eq!(srt * inv_srt, TransformSRT::IDENTITY);
 
         // negative scale mul test
         let s = Vec3::splat(-2.0);
         let srt = TransformSRT::from_scale_rotation_translation(s, r, t);
         let inv_srt = srt.inverse();
-        assert_eq!(srt * inv_srt, TransformSRT::identity());
+        assert_eq!(srt * inv_srt, TransformSRT::IDENTITY);
     }
 }

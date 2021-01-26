@@ -66,7 +66,7 @@ macro_rules! impl_mat4_tests {
                     0., 0., 0., 1., //
                 ])
             );
-            let identity = $mat4::identity();
+            let identity = $mat4::IDENTITY;
             assert_eq!(IDENTITY, identity.to_cols_array_2d());
             assert_eq!($mat4::from_cols_array_2d(&IDENTITY), identity);
             assert_eq!(identity, identity * identity);
@@ -238,7 +238,7 @@ macro_rules! impl_mat4_tests {
         #[test]
         fn test_mat4_det() {
             assert_eq!(0.0, $mat4::ZERO.determinant());
-            assert_eq!(1.0, $mat4::identity().determinant());
+            assert_eq!(1.0, $mat4::IDENTITY.determinant());
             assert_eq!(1.0, $mat4::from_rotation_x(deg(90.0)).determinant());
             assert_eq!(1.0, $mat4::from_rotation_y(deg(180.0)).determinant());
             assert_eq!(1.0, $mat4::from_rotation_z(deg(270.0)).determinant());
@@ -251,37 +251,37 @@ macro_rules! impl_mat4_tests {
         #[test]
         fn test_mat4_inverse() {
             // assert_eq!(None, $mat4::ZERO.inverse());
-            let inv = $mat4::identity().inverse();
+            let inv = $mat4::IDENTITY.inverse();
             // assert_ne!(None, inv);
-            assert_approx_eq!($mat4::identity(), inv);
+            assert_approx_eq!($mat4::IDENTITY, inv);
 
             let rotz = $mat4::from_rotation_z(deg(90.0));
             let rotz_inv = rotz.inverse();
             // assert_ne!(None, rotz_inv);
             // let rotz_inv = rotz_inv.unwrap();
-            assert_approx_eq!($mat4::identity(), rotz * rotz_inv);
-            assert_approx_eq!($mat4::identity(), rotz_inv * rotz);
+            assert_approx_eq!($mat4::IDENTITY, rotz * rotz_inv);
+            assert_approx_eq!($mat4::IDENTITY, rotz_inv * rotz);
 
             let trans = $mat4::from_translation($newvec3(1.0, 2.0, 3.0));
             let trans_inv = trans.inverse();
             // assert_ne!(None, trans_inv);
             // let trans_inv = trans_inv.unwrap();
-            assert_approx_eq!($mat4::identity(), trans * trans_inv);
-            assert_approx_eq!($mat4::identity(), trans_inv * trans);
+            assert_approx_eq!($mat4::IDENTITY, trans * trans_inv);
+            assert_approx_eq!($mat4::IDENTITY, trans_inv * trans);
 
             let scale = $mat4::from_scale($newvec3(4.0, 5.0, 6.0));
             let scale_inv = scale.inverse();
             // assert_ne!(None, scale_inv);
             // let scale_inv = scale_inv.unwrap();
-            assert_approx_eq!($mat4::identity(), scale * scale_inv);
-            assert_approx_eq!($mat4::identity(), scale_inv * scale);
+            assert_approx_eq!($mat4::IDENTITY, scale * scale_inv);
+            assert_approx_eq!($mat4::IDENTITY, scale_inv * scale);
 
             let m = scale * rotz * trans;
             let m_inv = m.inverse();
             // assert_ne!(None, m_inv);
             // let m_inv = m_inv.unwrap();
-            assert_approx_eq!($mat4::identity(), m * m_inv, 1.0e-5);
-            assert_approx_eq!($mat4::identity(), m_inv * m, 1.0e-5);
+            assert_approx_eq!($mat4::IDENTITY, m * m_inv, 1.0e-5);
+            assert_approx_eq!($mat4::IDENTITY, m_inv * m, 1.0e-5);
             assert_approx_eq!(m_inv, trans_inv * rotz_inv * scale_inv, 1.0e-6);
         }
 
@@ -289,7 +289,7 @@ macro_rules! impl_mat4_tests {
         fn test_mat4_decompose() {
             // identity
             let (out_scale, out_rotation, out_translation) =
-                $mat4::identity().to_scale_rotation_translation();
+                $mat4::IDENTITY.to_scale_rotation_translation();
             assert_approx_eq!($vec3::ONE, out_scale);
             assert!(out_rotation.is_near_identity());
             assert_approx_eq!($vec3::ZERO, out_translation);
@@ -509,8 +509,8 @@ macro_rules! impl_mat4_tests {
             assert_eq!(m0x2, 2.0 * m0);
             assert_eq!(m0x2, m0 + m0);
             assert_eq!($mat4::ZERO, m0 - m0);
-            assert_approx_eq!(m0, m0 * $mat4::identity());
-            assert_approx_eq!(m0, $mat4::identity() * m0);
+            assert_approx_eq!(m0, m0 * $mat4::IDENTITY);
+            assert_approx_eq!(m0, $mat4::IDENTITY * m0);
         }
 
         #[test]
@@ -525,23 +525,23 @@ macro_rules! impl_mat4_tests {
         #[cfg(feature = "std")]
         #[test]
         fn test_sum() {
-            let id = $mat4::identity();
+            let id = $mat4::IDENTITY;
             assert_eq!(vec![id, id].iter().sum::<$mat4>(), id + id);
         }
 
         #[cfg(feature = "std")]
         #[test]
         fn test_product() {
-            let two = $mat4::identity() + $mat4::identity();
+            let two = $mat4::IDENTITY + $mat4::IDENTITY;
             assert_eq!(vec![two, two].iter().product::<$mat4>(), two * two);
         }
 
         #[test]
         fn test_mat4_is_finite() {
-            assert!($mat4::identity().is_finite());
-            assert!(!($mat4::identity() * INFINITY).is_finite());
-            assert!(!($mat4::identity() * NEG_INFINITY).is_finite());
-            assert!(!($mat4::identity() * NAN).is_finite());
+            assert!($mat4::IDENTITY.is_finite());
+            assert!(!($mat4::IDENTITY * INFINITY).is_finite());
+            assert!(!($mat4::IDENTITY * NEG_INFINITY).is_finite());
+            assert!(!($mat4::IDENTITY * NAN).is_finite());
         }
     };
 }

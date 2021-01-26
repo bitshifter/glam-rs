@@ -22,7 +22,7 @@ meaning when transforming a vector with a matrix the matrix goes on the left.
 
 ```
 use glam::{Mat3, Vec3};
-let m = Mat3::identity();
+let m = Mat3::IDENTITY;
 let x = Vec3::X;
 let v = m * x;
 assert_eq!(v, x);
