@@ -55,7 +55,7 @@ macro_rules! impl_vec3_tests {
         #[test]
         fn test_splat() {
             let v = $vec3::splat(1 as $t);
-            assert_eq!($vec3::one(), v);
+            assert_eq!($vec3::ONE, v);
         }
 
         #[test]
@@ -200,7 +200,7 @@ macro_rules! impl_vec3_tests {
             a.y = 1 as $t;
             a.z = 1 as $t;
             assert!(!a.cmpeq($vec3::ZERO).any());
-            assert!(a.cmpeq($vec3::one()).all());
+            assert!(a.cmpeq($vec3::ONE).all());
         }
 
         // #[test]
@@ -413,7 +413,7 @@ macro_rules! impl_vec3_tests {
         #[cfg(feature = "std")]
         #[test]
         fn test_sum() {
-            let one = $vec3::one();
+            let one = $vec3::ONE;
             assert_eq!(vec![one, one].iter().sum::<$vec3>(), one + one);
         }
 
@@ -510,20 +510,20 @@ macro_rules! impl_vec3_float_tests {
 
         #[test]
         fn test_signum() {
-            assert_eq!($vec3::ZERO.signum(), $vec3::one());
-            assert_eq!(-$vec3::ZERO.signum(), -$vec3::one());
-            assert_eq!($vec3::one().signum(), $vec3::one());
-            assert_eq!((-$vec3::one()).signum(), -$vec3::one());
-            assert_eq!($vec3::splat(INFINITY).signum(), $vec3::one());
-            assert_eq!($vec3::splat(NEG_INFINITY).signum(), -$vec3::one());
+            assert_eq!($vec3::ZERO.signum(), $vec3::ONE);
+            assert_eq!(-$vec3::ZERO.signum(), -$vec3::ONE);
+            assert_eq!($vec3::ONE.signum(), $vec3::ONE);
+            assert_eq!((-$vec3::ONE).signum(), -$vec3::ONE);
+            assert_eq!($vec3::splat(INFINITY).signum(), $vec3::ONE);
+            assert_eq!($vec3::splat(NEG_INFINITY).signum(), -$vec3::ONE);
             assert!($vec3::splat(NAN).signum().is_nan_mask().all());
         }
 
         #[test]
         fn test_abs() {
             assert_eq!($vec3::ZERO.abs(), $vec3::ZERO);
-            assert_eq!($vec3::one().abs(), $vec3::one());
-            assert_eq!((-$vec3::one()).abs(), $vec3::one());
+            assert_eq!($vec3::ONE.abs(), $vec3::ONE);
+            assert_eq!((-$vec3::ONE).abs(), $vec3::ONE);
         }
 
         #[test]

@@ -26,7 +26,7 @@ bench_binop!(
 
 #[inline]
 fn vec3a_to_rgb_op(v: Vec3A) -> u32 {
-    let (red, green, blue) = (v.min(Vec3A::one()).max(Vec3A::ZERO) * 255.0).into();
+    let (red, green, blue) = (v.min(Vec3A::ONE).max(Vec3A::ZERO) * 255.0).into();
     ((red as u32) << 16 | (green as u32) << 8 | (blue as u32)).into()
 }
 

@@ -299,12 +299,12 @@ macro_rules! impl_mat4_tests {
             // identity
             let (out_scale, out_rotation, out_translation) =
                 $mat4::identity().to_scale_rotation_translation();
-            assert_approx_eq!($vec3::one(), out_scale);
+            assert_approx_eq!($vec3::ONE, out_scale);
             assert!(out_rotation.is_near_identity());
             assert_approx_eq!($vec3::ZERO, out_translation);
 
             // no scale
-            let in_scale = $vec3::one();
+            let in_scale = $vec3::ONE;
             let in_translation = $vec3::new(-2.0, 4.0, -0.125);
             let in_rotation = $quat::from_rotation_ypr(
                 $t::to_radians(-45.0),

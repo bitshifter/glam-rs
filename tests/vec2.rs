@@ -53,7 +53,7 @@ macro_rules! impl_vec2_tests {
         #[test]
         fn test_splat() {
             let v = $vec2::splat(1 as $t);
-            assert_eq!($vec2::one(), v);
+            assert_eq!($vec2::ONE, v);
         }
 
         #[test]
@@ -369,7 +369,7 @@ macro_rules! impl_vec2_tests {
         #[cfg(feature = "std")]
         #[test]
         fn test_sum() {
-            let one = $vec2::one();
+            let one = $vec2::ONE;
             assert_eq!(vec![one, one].iter().sum::<$vec2>(), one + one);
         }
 
@@ -468,20 +468,20 @@ macro_rules! impl_vec2_float_tests {
 
         #[test]
         fn test_sign() {
-            assert_eq!($vec2::ZERO.signum(), $vec2::one());
-            assert_eq!(-$vec2::ZERO.signum(), -$vec2::one());
-            assert_eq!($vec2::one().signum(), $vec2::one());
-            assert_eq!((-$vec2::one()).signum(), -$vec2::one());
-            assert_eq!($vec2::splat(INFINITY).signum(), $vec2::one());
-            assert_eq!($vec2::splat(NEG_INFINITY).signum(), -$vec2::one());
+            assert_eq!($vec2::ZERO.signum(), $vec2::ONE);
+            assert_eq!(-$vec2::ZERO.signum(), -$vec2::ONE);
+            assert_eq!($vec2::ONE.signum(), $vec2::ONE);
+            assert_eq!((-$vec2::ONE).signum(), -$vec2::ONE);
+            assert_eq!($vec2::splat(INFINITY).signum(), $vec2::ONE);
+            assert_eq!($vec2::splat(NEG_INFINITY).signum(), -$vec2::ONE);
             assert!($vec2::splat(NAN).signum().is_nan_mask().all());
         }
 
         #[test]
         fn test_abs() {
             assert_eq!($vec2::ZERO.abs(), $vec2::ZERO);
-            assert_eq!($vec2::one().abs(), $vec2::one());
-            assert_eq!((-$vec2::one()).abs(), $vec2::one());
+            assert_eq!($vec2::ONE.abs(), $vec2::ONE);
+            assert_eq!((-$vec2::ONE).abs(), $vec2::ONE);
         }
 
         #[test]

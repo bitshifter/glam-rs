@@ -562,7 +562,7 @@ macro_rules! impl_vecn_common_traits {
             where
                 I: Iterator<Item = &'a Self>,
             {
-                iter.fold(Self::one(), |a, &b| Self::mul(a, b))
+                iter.fold(Self::ONE, |a, &b| Self::mul(a, b))
             }
         }
     };
