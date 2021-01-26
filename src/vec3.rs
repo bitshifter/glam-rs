@@ -27,6 +27,9 @@ macro_rules! impl_vec3_common_methods {
         /// All zeroes.
         pub const ZERO: Self = Self(VectorConst::ZERO);
 
+        /// All ones.
+        pub const ONE: Self = Self(VectorConst::ONE);
+
         /// `[1, 0, 0]`: a unit-length vector pointing along the positive X axis.
         pub const X: Self = Self(Vector3Const::X);
 

@@ -12,6 +12,9 @@ macro_rules! impl_vec2_common_methods {
         /// All zeroes.
         pub const ZERO: Self = Self($inner::ZERO);
 
+        /// All ones.
+        pub const ONE: Self = Self($inner::ONE);
+
         /// `[1, 0]`: a unit-length vector pointing along the positive X axis.
         pub const X: Self = Self($inner::X);
 
