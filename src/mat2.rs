@@ -35,15 +35,16 @@ macro_rules! impl_mat2_methods {
         pub const IDENTITY: Self = Self($inner::IDENTITY);
 
         /// Creates a 2x2 matrix with all elements set to `0.0`.
+        #[deprecated = "use Mat2::ZERO instead"]
         #[inline(always)]
         pub const fn zero() -> Self {
-            Self($inner::ZERO)
+            Self::ZERO
         }
 
         /// Creates a 2x2 identity matrix.
         #[inline(always)]
         pub const fn identity() -> Self {
-            Self($inner::IDENTITY)
+            Self::IDENTITY
         }
 
         /// Creates a 2x2 matrix from two column vectors.

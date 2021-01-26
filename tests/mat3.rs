@@ -11,8 +11,6 @@ macro_rules! impl_mat3_tests {
 
         const MATRIX: [[$t; 3]; 3] = [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]];
 
-        const ZERO: [[$t; 3]; 3] = [[0.0; 3]; 3];
-
         #[test]
         fn test_const() {
             const M0: $mat3 = $const_new!([0.0; 9]);
@@ -52,7 +50,6 @@ macro_rules! impl_mat3_tests {
                 $mat3::ZERO,
                 $mat3::from_cols_array(&[0., 0., 0., 0., 0., 0., 0., 0., 0.])
             );
-            assert_eq!($mat3::from_cols_array_2d(&ZERO), $mat3::zero());
         }
 
         #[test]

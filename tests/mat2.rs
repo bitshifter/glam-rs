@@ -7,8 +7,6 @@ macro_rules! impl_mat2_tests {
 
         const MATRIX: [[$t; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
 
-        const ZERO: [[$t; 2]; 2] = [[0.0; 2]; 2];
-
         #[test]
         fn test_const() {
             const M0: $mat2 = $const_new!([0.0; 4]);
@@ -32,7 +30,6 @@ macro_rules! impl_mat2_tests {
         #[test]
         fn test_mat2_zero() {
             assert_eq!($mat2::ZERO, $mat2::from_cols_array(&[0., 0., 0., 0.]));
-            assert_eq!($mat2::from_cols_array_2d(&ZERO), $mat2::zero());
         }
 
         #[test]

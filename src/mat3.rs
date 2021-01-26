@@ -22,15 +22,16 @@ macro_rules! impl_mat3_methods {
         pub const IDENTITY: Self = Self($inner::IDENTITY);
 
         /// Creates a 3x3 matrix with all elements set to `0.0`.
+        #[deprecated = "use Mat3::ZERO instead"]
         #[inline(always)]
         pub const fn zero() -> Self {
-            Self($inner::ZERO)
+            Self::ZERO
         }
 
         /// Creates a 3x3 identity matrix.
         #[inline(always)]
         pub const fn identity() -> Self {
-            Self($inner::IDENTITY)
+            Self::IDENTITY
         }
 
         /// Creates a 3x3 matrix from three column vectors.

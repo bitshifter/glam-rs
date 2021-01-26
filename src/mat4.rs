@@ -39,15 +39,16 @@ macro_rules! impl_mat4_methods {
         pub const IDENTITY: Self = Self($inner::IDENTITY);
 
         /// Creates a 4x4 matrix with all elements set to `0.0`.
+        #[deprecated = "use Mat4::ZERO instead"]
         #[inline(always)]
         pub const fn zero() -> Self {
-            Self($inner::ZERO)
+            Self::ZERO
         }
 
         /// Creates a 4x4 identity matrix.
         #[inline(always)]
         pub const fn identity() -> Self {
-            Self($inner::IDENTITY)
+            Self::IDENTITY
         }
 
         /// Creates a 4x4 matrix from four column vectors.

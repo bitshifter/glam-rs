@@ -19,7 +19,6 @@ macro_rules! impl_mat4_tests {
             [9.0, 10.0, 11.0, 12.0],
             [13.0, 14.0, 15.0, 16.0],
         ];
-        const ZERO: [[$t; 4]; 4] = [[0.0; 4]; 4];
 
         #[test]
         fn test_const() {
@@ -84,7 +83,6 @@ macro_rules! impl_mat4_tests {
                     0., 0., 0., 0., //
                 ])
             );
-            assert_eq!($mat4::from_cols_array_2d(&ZERO), $mat4::zero());
         }
 
         #[test]

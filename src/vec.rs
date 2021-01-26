@@ -3,9 +3,10 @@
 macro_rules! impl_vecn_common_methods {
     ($t:ty, $vecn:ident, $mask:ident, $inner:ident, $vectrait:ident) => {
         /// Creates a vector with all elements set to `0.0`.
+        #[deprecated = "use ZERO constant instead"]
         #[inline(always)]
         pub const fn zero() -> Self {
-            Self($inner::ZERO)
+            Self::ZERO
         }
 
         /// Creates a vector with all elements set to `1.0`.
