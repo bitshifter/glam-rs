@@ -28,12 +28,14 @@ macro_rules! impl_vec2_common_methods {
         }
 
         /// Creates a vector with values `[x: 1.0, y: 0.0]`.
+        #[deprecated = "Use Vec2::X instead"]
         #[inline(always)]
         pub const fn unit_x() -> $vec2 {
             Self($inner::X)
         }
 
         /// Creates a vector with values `[x: 0.0, y: 1.0]`.
+        #[deprecated = "Use Vec2::Y instead"]
         #[inline(always)]
         pub const fn unit_y() -> $vec2 {
             Self($inner::Y)

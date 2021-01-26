@@ -46,6 +46,7 @@ macro_rules! impl_vec3_common_methods {
         }
 
         /// Creates a vector with values `[x: 1.0, y: 0.0, z: 0.0]`.
+        #[deprecated = "Use Vec3::X instead"]
         #[inline(always)]
         pub const fn unit_x() -> Self {
             Self(Vector3Const::X)
@@ -53,12 +54,14 @@ macro_rules! impl_vec3_common_methods {
 
         /// Creates a vector with values `[x: 0.0, y: 1.0, z: 0.0]`.
         #[inline(always)]
+        #[deprecated = "Use Vec3::Y instead"]
         pub const fn unit_y() -> Self {
             Self(Vector3Const::Y)
         }
 
         /// Creates a vector with values `[x: 0.0, y: 0.0, z: 1.0]`.
         #[inline(always)]
+        #[deprecated = "Use Vec3::Z instead"]
         pub const fn unit_z() -> Self {
             Self(Vector3Const::Z)
         }
