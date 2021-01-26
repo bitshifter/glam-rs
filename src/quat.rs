@@ -30,6 +30,9 @@ use std::iter::{Product, Sum};
 
 macro_rules! impl_quat_methods {
     ($t:ty, $quat:ident, $vec3:ident, $mat3:ident, $mat4:ident, $inner:ident) => {
+        /// The identity quaternion. Corresponds to no rotation.
+        pub const IDENTITY: Self = Self($inner::W);
+
         /// Creates a new rotation quaternion.
         ///
         /// This should generally not be called manually unless you know what you are doing.
@@ -43,7 +46,7 @@ macro_rules! impl_quat_methods {
 
         #[inline(always)]
         pub const fn identity() -> Self {
-            Self($inner::W)
+            Self::IDENTITY
         }
 
         /// Creates a rotation quaternion from an unaligned slice.
