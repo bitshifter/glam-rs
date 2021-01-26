@@ -18,7 +18,7 @@ macro_rules! impl_mat3_tests {
             const M0: $mat3 = $const_new!([0.0; 9]);
             const M1: $mat3 = $const_new!([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]);
             const M2: $mat3 = $const_new!([1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]);
-            assert_eq!($mat3::zero(), M0);
+            assert_eq!($mat3::ZERO, M0);
             assert_eq!(
                 $mat3::from_cols_array(&[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]),
                 M1
@@ -57,7 +57,7 @@ macro_rules! impl_mat3_tests {
 
         #[test]
         fn test_mat3_accessors() {
-            let mut m = $mat3::zero();
+            let mut m = $mat3::ZERO;
             m.x_axis = $vec3::new(1.0, 2.0, 3.0);
             m.y_axis = $vec3::new(4.0, 5.0, 6.0);
             m.z_axis = $vec3::new(7.0, 8.0, 9.0);
@@ -175,7 +175,7 @@ macro_rules! impl_mat3_tests {
 
         #[test]
         fn test_mat3_det() {
-            assert_eq!(0.0, $mat3::zero().determinant());
+            assert_eq!(0.0, $mat3::ZERO.determinant());
             assert_eq!(1.0, $mat3::identity().determinant());
             assert_eq!(1.0, $mat3::from_rotation_x(deg(90.0)).determinant());
             assert_eq!(1.0, $mat3::from_rotation_y(deg(180.0)).determinant());
@@ -188,7 +188,7 @@ macro_rules! impl_mat3_tests {
 
         #[test]
         fn test_mat3_inverse() {
-            // assert_eq!(None, $mat3::zero().inverse());
+            // assert_eq!(None, $mat3::ZERO.inverse());
             let inv = $mat3::identity().inverse();
             // assert_ne!(None, inv);
             assert_approx_eq!($mat3::identity(), inv);
@@ -227,7 +227,7 @@ macro_rules! impl_mat3_tests {
             assert_eq!(m0x2, m0 * 2.0);
             assert_eq!(m0x2, 2.0 * m0);
             assert_eq!(m0x2, m0 + m0);
-            assert_eq!($mat3::zero(), m0 - m0);
+            assert_eq!($mat3::ZERO, m0 - m0);
             assert_approx_eq!(m0, m0 * $mat3::identity());
             assert_approx_eq!(m0, $mat3::identity() * m0);
         }

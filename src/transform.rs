@@ -21,7 +21,7 @@ impl Default for TransformSRT {
         Self {
             scale: Vec3::one(),
             rotation: Quat::identity(),
-            translation: Vec3::zero(),
+            translation: Vec3::ZERO,
         }
     }
 }
@@ -38,7 +38,7 @@ impl Default for TransformRT {
     fn default() -> Self {
         Self {
             rotation: Quat::identity(),
-            translation: Vec3::zero(),
+            translation: Vec3::ZERO,
         }
     }
 }
@@ -67,7 +67,7 @@ impl TransformSRT {
         Self {
             scale: Vec3::one(),
             rotation: Quat::identity(),
-            translation: Vec3::zero(),
+            translation: Vec3::ZERO,
         }
     }
 
@@ -130,7 +130,7 @@ fn mul_srt_srt(lhs: &TransformSRT, rhs: &TransformSRT) -> TransformSRT {
     let min_scale = lhs_scale.min(rhs_scale);
     let scale = lhs_scale * rhs_scale;
 
-    if min_scale.cmplt(Vec3A::zero()).any() {
+    if min_scale.cmplt(Vec3A::ZERO).any() {
         // If negative scale, we go through a matrix
         let lhs_mtx =
             Mat4::from_scale_rotation_translation(lhs.scale, lhs.rotation, lhs.translation);
@@ -189,7 +189,7 @@ impl TransformRT {
     pub fn identity() -> Self {
         Self {
             rotation: Quat::identity(),
-            translation: Vec3::zero(),
+            translation: Vec3::ZERO,
         }
     }
 

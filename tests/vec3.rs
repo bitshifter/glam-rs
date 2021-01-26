@@ -47,7 +47,7 @@ macro_rules! impl_vec3_tests {
 
         #[test]
         fn test_zero() {
-            let v = $vec3::zero();
+            let v = $vec3::ZERO;
             assert_eq!((0 as $t, 0 as $t, 0 as $t), v.into());
             assert_eq!(v, $vec3::default());
         }
@@ -60,7 +60,7 @@ macro_rules! impl_vec3_tests {
 
         #[test]
         fn test_accessors() {
-            let mut a = $vec3::zero();
+            let mut a = $vec3::ZERO;
             a.x = 1 as $t;
             a.y = 2 as $t;
             a.z = 3 as $t;
@@ -69,7 +69,7 @@ macro_rules! impl_vec3_tests {
             assert_eq!(3 as $t, a.z);
             assert_eq!((1 as $t, 2 as $t, 3 as $t), a.into());
 
-            let mut a = $vec3::zero();
+            let mut a = $vec3::ZERO;
             a[0] = 1 as $t;
             a[1] = 2 as $t;
             a[2] = 3 as $t;
@@ -195,11 +195,11 @@ macro_rules! impl_vec3_tests {
 
         #[test]
         fn test_mask() {
-            let mut a = $vec3::zero();
+            let mut a = $vec3::ZERO;
             a.x = 1 as $t;
             a.y = 1 as $t;
             a.z = 1 as $t;
-            assert!(!a.cmpeq($vec3::zero()).any());
+            assert!(!a.cmpeq($vec3::ZERO).any());
             assert!(a.cmpeq($vec3::one()).all());
         }
 
@@ -510,8 +510,8 @@ macro_rules! impl_vec3_float_tests {
 
         #[test]
         fn test_signum() {
-            assert_eq!($vec3::zero().signum(), $vec3::one());
-            assert_eq!(-$vec3::zero().signum(), -$vec3::one());
+            assert_eq!($vec3::ZERO.signum(), $vec3::one());
+            assert_eq!(-$vec3::ZERO.signum(), -$vec3::one());
             assert_eq!($vec3::one().signum(), $vec3::one());
             assert_eq!((-$vec3::one()).signum(), -$vec3::one());
             assert_eq!($vec3::splat(INFINITY).signum(), $vec3::one());
@@ -521,7 +521,7 @@ macro_rules! impl_vec3_float_tests {
 
         #[test]
         fn test_abs() {
-            assert_eq!($vec3::zero().abs(), $vec3::zero());
+            assert_eq!($vec3::ZERO.abs(), $vec3::ZERO);
             assert_eq!($vec3::one().abs(), $vec3::one());
             assert_eq!((-$vec3::one()).abs(), $vec3::one());
         }
@@ -582,7 +582,7 @@ macro_rules! impl_vec3_float_tests {
             let v1 = $vec3::new(1.0, 1.0, 1.0);
             assert_approx_eq!(v0, v0.lerp(v1, 0.0));
             assert_approx_eq!(v1, v0.lerp(v1, 1.0));
-            assert_approx_eq!($vec3::zero(), v0.lerp(v1, 0.5));
+            assert_approx_eq!($vec3::ZERO, v0.lerp(v1, 0.5));
         }
         #[test]
         fn test_is_finite() {
@@ -749,12 +749,12 @@ mod vec3a {
     #[test]
     fn test_mask_align16() {
         // make sure the unused 'w' value doesn't break Vec3Ab behaviour
-        let a = Vec4::zero();
+        let a = Vec4::ZERO;
         let mut b = Vec3A::from(a);
         b.x = 1.0;
         b.y = 1.0;
         b.z = 1.0;
-        assert!(!b.cmpeq(Vec3A::zero()).any());
+        assert!(!b.cmpeq(Vec3A::ZERO).any());
         assert!(b.cmpeq(Vec3A::splat(1.0)).all());
     }
 

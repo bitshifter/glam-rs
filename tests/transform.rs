@@ -10,12 +10,12 @@ mod transform {
     fn test_identity() {
         let tr = TransformRT::identity();
         assert_eq!(tr.rotation, Quat::identity());
-        assert_eq!(tr.translation, Vec3::zero());
+        assert_eq!(tr.translation, Vec3::ZERO);
 
         let srt = TransformSRT::identity();
         assert_eq!(srt.scale, Vec3::one());
         assert_eq!(srt.rotation, Quat::identity());
-        assert_eq!(srt.translation, Vec3::zero());
+        assert_eq!(srt.translation, Vec3::ZERO);
 
         assert_eq!(srt, tr.into());
 

@@ -45,7 +45,7 @@ macro_rules! impl_vec2_tests {
 
         #[test]
         fn test_zero() {
-            let v = $vec2::zero();
+            let v = $vec2::ZERO;
             assert_eq!($new(0 as $t, 0 as $t), v);
             assert_eq!(v, $vec2::default());
         }
@@ -58,14 +58,14 @@ macro_rules! impl_vec2_tests {
 
         #[test]
         fn test_accessors() {
-            let mut a = $vec2::zero();
+            let mut a = $vec2::ZERO;
             a.x = 1 as $t;
             a.y = 2 as $t;
             assert_eq!(1 as $t, a.x);
             assert_eq!(2 as $t, a.y);
             assert_eq!($vec2::new(1 as $t, 2 as $t), a);
 
-            let mut a = $vec2::zero();
+            let mut a = $vec2::ZERO;
             a[0] = 1 as $t;
             a[1] = 2 as $t;
             assert_eq!(1 as $t, a[0]);
@@ -178,11 +178,11 @@ macro_rules! impl_vec2_tests {
         #[test]
         fn test_vec2mask() {
             // make sure the unused 'z' value doesn't break $vec2 behaviour
-            let a = $vec3::zero();
+            let a = $vec3::ZERO;
             let mut b = a.truncate();
             b.x = 1 as $t;
             b.y = 1 as $t;
-            assert!(!b.cmpeq($vec2::zero()).any());
+            assert!(!b.cmpeq($vec2::ZERO).any());
             assert!(b.cmpeq($vec2::splat(1 as $t)).all());
         }
 
@@ -468,8 +468,8 @@ macro_rules! impl_vec2_float_tests {
 
         #[test]
         fn test_sign() {
-            assert_eq!($vec2::zero().signum(), $vec2::one());
-            assert_eq!(-$vec2::zero().signum(), -$vec2::one());
+            assert_eq!($vec2::ZERO.signum(), $vec2::one());
+            assert_eq!(-$vec2::ZERO.signum(), -$vec2::one());
             assert_eq!($vec2::one().signum(), $vec2::one());
             assert_eq!((-$vec2::one()).signum(), -$vec2::one());
             assert_eq!($vec2::splat(INFINITY).signum(), $vec2::one());
@@ -479,7 +479,7 @@ macro_rules! impl_vec2_float_tests {
 
         #[test]
         fn test_abs() {
-            assert_eq!($vec2::zero().abs(), $vec2::zero());
+            assert_eq!($vec2::ZERO.abs(), $vec2::ZERO);
             assert_eq!($vec2::one().abs(), $vec2::one());
             assert_eq!((-$vec2::one()).abs(), $vec2::one());
         }
@@ -534,7 +534,7 @@ macro_rules! impl_vec2_float_tests {
             let v1 = $vec2::new(1.0, 1.0);
             assert_approx_eq!(v0, v0.lerp(v1, 0.0));
             assert_approx_eq!(v1, v0.lerp(v1, 1.0));
-            assert_approx_eq!($vec2::zero(), v0.lerp(v1, 0.5));
+            assert_approx_eq!($vec2::ZERO, v0.lerp(v1, 0.5));
         }
 
         #[test]

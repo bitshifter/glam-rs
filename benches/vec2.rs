@@ -13,7 +13,7 @@ euler!(
     "vec2 euler",
     ty => Vec2,
     storage => Vec2,
-    zero => Vec2::zero(),
+    zero => Vec2::ZERO,
     rand => random_vec2);
 
 bench_binop!(

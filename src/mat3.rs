@@ -399,7 +399,7 @@ macro_rules! impl_mat3_traits {
             where
                 I: Iterator<Item = &'a Self>,
             {
-                iter.fold($mat3::zero(), |a, &b| Self::add(a, b))
+                iter.fold($mat3::ZERO, |a, &b| Self::add(a, b))
             }
         }
 

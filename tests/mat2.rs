@@ -14,7 +14,7 @@ macro_rules! impl_mat2_tests {
             const M0: $mat2 = $const_new!([0.0; 4]);
             const M1: $mat2 = $const_new!([1.0, 2.0, 3.0, 4.0]);
             const M2: $mat2 = $const_new!([1.0, 2.0], [3.0, 4.0]);
-            assert_eq!($mat2::zero(), M0);
+            assert_eq!($mat2::ZERO, M0);
             assert_eq!($mat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]), M1);
             assert_eq!($mat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]), M2);
         }
@@ -37,7 +37,7 @@ macro_rules! impl_mat2_tests {
 
         #[test]
         fn test_mat2_accessors() {
-            let mut m = $mat2::zero();
+            let mut m = $mat2::ZERO;
             m.x_axis = $vec2::new(1.0, 2.0);
             m.y_axis = $vec2::new(3.0, 4.0);
             assert_eq!($mat2::from_cols_array_2d(&MATRIX), m);
@@ -89,7 +89,7 @@ macro_rules! impl_mat2_tests {
 
         #[test]
         fn test_mat2_det() {
-            assert_eq!(0.0, $mat2::zero().determinant());
+            assert_eq!(0.0, $mat2::ZERO.determinant());
             assert_eq!(1.0, $mat2::identity().determinant());
             assert_eq!(1.0, $mat2::from_angle(deg(90.0)).determinant());
             assert_eq!(1.0, $mat2::from_angle(deg(180.0)).determinant());
@@ -141,7 +141,7 @@ macro_rules! impl_mat2_tests {
                 $mat2::from_cols_array_2d(&[[2.0, 4.0], [6.0, 8.0]]),
                 m0 + m0
             );
-            assert_eq!($mat2::zero(), m0 - m0);
+            assert_eq!($mat2::ZERO, m0 - m0);
             assert_approx_eq!(
                 $mat2::from_cols_array_2d(&[[1.0, 2.0], [3.0, 4.0]]),
                 m0 * $mat2::identity()

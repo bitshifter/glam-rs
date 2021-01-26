@@ -34,7 +34,7 @@ macro_rules! impl_mat4_tests {
                 [9.0, 10.0, 11.0, 12.0],
                 [13.0, 14.0, 15.0, 16.0]
             );
-            assert_eq!($mat4::zero(), M0);
+            assert_eq!($mat4::ZERO, M0);
             assert_eq!(
                 $mat4::from_cols_array_2d(&[
                     [1.0, 2.0, 3.0, 4.0],
@@ -89,7 +89,7 @@ macro_rules! impl_mat4_tests {
 
         #[test]
         fn test_mat4_accessors() {
-            let mut m = $mat4::zero();
+            let mut m = $mat4::ZERO;
             m.x_axis = $vec4::new(1.0, 2.0, 3.0, 4.0);
             m.y_axis = $vec4::new(5.0, 6.0, 7.0, 8.0);
             m.z_axis = $vec4::new(9.0, 10.0, 11.0, 12.0);
@@ -246,7 +246,7 @@ macro_rules! impl_mat4_tests {
 
         #[test]
         fn test_mat4_det() {
-            assert_eq!(0.0, $mat4::zero().determinant());
+            assert_eq!(0.0, $mat4::ZERO.determinant());
             assert_eq!(1.0, $mat4::identity().determinant());
             assert_eq!(1.0, $mat4::from_rotation_x(deg(90.0)).determinant());
             assert_eq!(1.0, $mat4::from_rotation_y(deg(180.0)).determinant());
@@ -259,7 +259,7 @@ macro_rules! impl_mat4_tests {
 
         #[test]
         fn test_mat4_inverse() {
-            // assert_eq!(None, $mat4::zero().inverse());
+            // assert_eq!(None, $mat4::ZERO.inverse());
             let inv = $mat4::identity().inverse();
             // assert_ne!(None, inv);
             assert_approx_eq!($mat4::identity(), inv);
@@ -301,7 +301,7 @@ macro_rules! impl_mat4_tests {
                 $mat4::identity().to_scale_rotation_translation();
             assert_approx_eq!($vec3::one(), out_scale);
             assert!(out_rotation.is_near_identity());
-            assert_approx_eq!($vec3::zero(), out_translation);
+            assert_approx_eq!($vec3::ZERO, out_translation);
 
             // no scale
             let in_scale = $vec3::one();
@@ -517,7 +517,7 @@ macro_rules! impl_mat4_tests {
             assert_eq!(m0x2, m0 * 2.0);
             assert_eq!(m0x2, 2.0 * m0);
             assert_eq!(m0x2, m0 + m0);
-            assert_eq!($mat4::zero(), m0 - m0);
+            assert_eq!($mat4::ZERO, m0 - m0);
             assert_approx_eq!(m0, m0 * $mat4::identity());
             assert_approx_eq!(m0, $mat4::identity() * m0);
         }

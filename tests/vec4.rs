@@ -81,7 +81,7 @@ macro_rules! impl_vec4_tests {
 
         #[test]
         fn test_zero() {
-            let v = $vec4::zero();
+            let v = $vec4::ZERO;
             assert_eq!((0 as $t, 0 as $t, 0 as $t, 0 as $t), v.into());
             assert_eq!(v, $vec4::default());
         }
@@ -94,7 +94,7 @@ macro_rules! impl_vec4_tests {
 
         #[test]
         fn test_accessors() {
-            let mut a = $vec4::zero();
+            let mut a = $vec4::ZERO;
             a.x = 1 as $t;
             a.y = 2 as $t;
             a.z = 3 as $t;
@@ -105,7 +105,7 @@ macro_rules! impl_vec4_tests {
             assert_eq!(4 as $t, a.w);
             assert_eq!((1 as $t, 2 as $t, 3 as $t, 4 as $t), a.into());
 
-            let mut a = $vec4::zero();
+            let mut a = $vec4::ZERO;
             a[0] = 1 as $t;
             a[1] = 2 as $t;
             a[2] = 3 as $t;
@@ -574,8 +574,8 @@ macro_rules! impl_vec4_float_tests {
 
         #[test]
         fn test_signum() {
-            assert_eq!($vec4::zero().signum(), $vec4::one());
-            assert_eq!(-$vec4::zero().signum(), -$vec4::one());
+            assert_eq!($vec4::ZERO.signum(), $vec4::one());
+            assert_eq!(-$vec4::ZERO.signum(), -$vec4::one());
             assert_eq!($vec4::one().signum(), $vec4::one());
             assert_eq!((-$vec4::one()).signum(), -$vec4::one());
             assert_eq!($vec4::splat(INFINITY).signum(), $vec4::one());
@@ -585,7 +585,7 @@ macro_rules! impl_vec4_float_tests {
 
         #[test]
         fn test_abs() {
-            assert_eq!($vec4::zero().abs(), $vec4::zero());
+            assert_eq!($vec4::ZERO.abs(), $vec4::ZERO);
             assert_eq!($vec4::one().abs(), $vec4::one());
             assert_eq!((-$vec4::one()).abs(), $vec4::one());
         }
@@ -646,7 +646,7 @@ macro_rules! impl_vec4_float_tests {
             let v1 = $vec4::new(1.0, 1.0, 1.0, 1.0);
             assert_approx_eq!(v0, v0.lerp(v1, 0.0));
             assert_approx_eq!(v1, v0.lerp(v1, 1.0));
-            assert_approx_eq!($vec4::zero(), v0.lerp(v1, 0.5));
+            assert_approx_eq!($vec4::ZERO, v0.lerp(v1, 0.5));
         }
 
         #[test]
