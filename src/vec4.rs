@@ -28,16 +28,16 @@ use core::{cmp::Ordering, f32};
 macro_rules! impl_vec4_common_methods {
     ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
         /// `[1, 0, 0, 0]`: a unit-length vector pointing along the positive X axis.
-        pub const X: Self = Self(Vector4Const::UNIT_X);
+        pub const X: Self = Self(Vector4Const::X);
 
         /// `[0, 1, 0, 0]`: a unit-length vector pointing along the positive Y axis.
-        pub const Y: Self = Self(Vector4Const::UNIT_Y);
+        pub const Y: Self = Self(Vector4Const::Y);
 
         /// `[0, 0, 1, 0]`: a unit-length vector pointing along the positive Z axis.
-        pub const Z: Self = Self(Vector4Const::UNIT_Z);
+        pub const Z: Self = Self(Vector4Const::Z);
 
         /// `[0, 0, 0, 1]`: a unit-length vector pointing along the positive W axis.
-        pub const W: Self = Self(Vector4Const::UNIT_W);
+        pub const W: Self = Self(Vector4Const::W);
 
         /// Creates a new 4D vector.
         #[inline(always)]
@@ -48,25 +48,25 @@ macro_rules! impl_vec4_common_methods {
         /// Creates a 4D vector with values `[x: 1.0, y: 0.0, z: 0.0, w: 0.0]`.
         #[inline(always)]
         pub const fn unit_x() -> Self {
-            Self(Vector4Const::UNIT_X)
+            Self(Vector4Const::X)
         }
 
         /// Creates a 4D vector with values `[x: 0.0, y: 1.0, z: 0.0, w: 0.0]`.
         #[inline(always)]
         pub const fn unit_y() -> Self {
-            Self(Vector4Const::UNIT_Y)
+            Self(Vector4Const::Y)
         }
 
         /// Creates a 4D vector with values `[x: 0.0, y: 0.0, z: 1.0, w: 0.0]`.
         #[inline(always)]
         pub const fn unit_z() -> Self {
-            Self(Vector4Const::UNIT_Z)
+            Self(Vector4Const::Z)
         }
 
         /// Creates a 4D vector with values `[x: 0.0, y: 0.0, z: 0.0, w: 1.0]`.
         #[inline(always)]
         pub const fn unit_w() -> Self {
-            Self(Vector4Const::UNIT_W)
+            Self(Vector4Const::W)
         }
 
         /// Creates a `Vec3` from the `x`, `y` and `z` elements of `self`, discarding `w`.

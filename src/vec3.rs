@@ -25,13 +25,13 @@ use std::iter::{Product, Sum};
 macro_rules! impl_vec3_common_methods {
     ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
         /// `[1, 0, 0]`: a unit-length vector pointing along the positive X axis.
-        pub const X: Self = Self(Vector3Const::UNIT_X);
+        pub const X: Self = Self(Vector3Const::X);
 
         /// `[0, 1, 0]`: a unit-length vector pointing along the positive Y axis.
-        pub const Y: Self = Self(Vector3Const::UNIT_Y);
+        pub const Y: Self = Self(Vector3Const::Y);
 
         /// `[0, 0, 1]`: a unit-length vector pointing along the positive Z axis.
-        pub const Z: Self = Self(Vector3Const::UNIT_Z);
+        pub const Z: Self = Self(Vector3Const::Z);
 
         /// Creates a new 3D vector.
         #[inline(always)]
@@ -42,19 +42,19 @@ macro_rules! impl_vec3_common_methods {
         /// Creates a vector with values `[x: 1.0, y: 0.0, z: 0.0]`.
         #[inline(always)]
         pub const fn unit_x() -> Self {
-            Self(Vector3Const::UNIT_X)
+            Self(Vector3Const::X)
         }
 
         /// Creates a vector with values `[x: 0.0, y: 1.0, z: 0.0]`.
         #[inline(always)]
         pub const fn unit_y() -> Self {
-            Self(Vector3Const::UNIT_Y)
+            Self(Vector3Const::Y)
         }
 
         /// Creates a vector with values `[x: 0.0, y: 0.0, z: 1.0]`.
         #[inline(always)]
         pub const fn unit_z() -> Self {
-            Self(Vector3Const::UNIT_Z)
+            Self(Vector3Const::Z)
         }
 
         /// Creates a 4D vector from `self` and the given `w` value.

@@ -162,16 +162,16 @@ impl VectorConst for __m128 {
 }
 
 impl Vector3Const for __m128 {
-    const UNIT_X: __m128 = const_m128!([1.0, 0.0, 0.0, 0.0]);
-    const UNIT_Y: __m128 = const_m128!([0.0, 1.0, 0.0, 0.0]);
-    const UNIT_Z: __m128 = const_m128!([0.0, 0.0, 1.0, 0.0]);
+    const X: __m128 = const_m128!([1.0, 0.0, 0.0, 0.0]);
+    const Y: __m128 = const_m128!([0.0, 1.0, 0.0, 0.0]);
+    const Z: __m128 = const_m128!([0.0, 0.0, 1.0, 0.0]);
 }
 
 impl Vector4Const for __m128 {
-    const UNIT_X: __m128 = const_m128!([1.0, 0.0, 0.0, 0.0]);
-    const UNIT_Y: __m128 = const_m128!([0.0, 1.0, 0.0, 0.0]);
-    const UNIT_Z: __m128 = const_m128!([0.0, 0.0, 1.0, 0.0]);
-    const UNIT_W: __m128 = const_m128!([0.0, 0.0, 0.0, 1.0]);
+    const X: __m128 = const_m128!([1.0, 0.0, 0.0, 0.0]);
+    const Y: __m128 = const_m128!([0.0, 1.0, 0.0, 0.0]);
+    const Z: __m128 = const_m128!([0.0, 0.0, 1.0, 0.0]);
+    const W: __m128 = const_m128!([0.0, 0.0, 0.0, 1.0]);
 }
 
 impl Vector<f32> for __m128 {

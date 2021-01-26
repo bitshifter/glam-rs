@@ -140,10 +140,10 @@ impl MatrixConst for Vector4x4<__m128> {
         w_axis: __m128::ZERO,
     };
     const IDENTITY: Vector4x4<__m128> = Vector4x4 {
-        x_axis: __m128::UNIT_X,
-        y_axis: __m128::UNIT_Y,
-        z_axis: __m128::UNIT_Z,
-        w_axis: __m128::UNIT_W,
+        x_axis: __m128::X,
+        y_axis: __m128::Y,
+        z_axis: __m128::Z,
+        w_axis: __m128::W,
     };
 }
 

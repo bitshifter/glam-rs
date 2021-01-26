@@ -15,11 +15,11 @@ impl<T: NumEx> VectorConst for XY<T> {
 }
 
 impl<T: NumEx> Vector2Const for XY<T> {
-    const UNIT_X: Self = Self {
+    const X: Self = Self {
         x: <T as NumConstEx>::ONE,
         y: <T as NumConstEx>::ZERO,
     };
-    const UNIT_Y: Self = Self {
+    const Y: Self = Self {
         x: <T as NumConstEx>::ZERO,
         y: <T as NumConstEx>::ONE,
     };
@@ -39,17 +39,17 @@ impl<T: NumEx> VectorConst for XYZ<T> {
 }
 
 impl<T: NumEx> Vector3Const for XYZ<T> {
-    const UNIT_X: Self = Self {
+    const X: Self = Self {
         x: <T as NumConstEx>::ONE,
         y: <T as NumConstEx>::ZERO,
         z: <T as NumConstEx>::ZERO,
     };
-    const UNIT_Y: Self = Self {
+    const Y: Self = Self {
         x: <T as NumConstEx>::ZERO,
         y: <T as NumConstEx>::ONE,
         z: <T as NumConstEx>::ZERO,
     };
-    const UNIT_Z: Self = Self {
+    const Z: Self = Self {
         x: <T as NumConstEx>::ZERO,
         y: <T as NumConstEx>::ZERO,
         z: <T as NumConstEx>::ONE,
@@ -71,25 +71,25 @@ impl<T: NumEx> VectorConst for XYZW<T> {
     };
 }
 impl<T: NumEx> Vector4Const for XYZW<T> {
-    const UNIT_X: Self = Self {
+    const X: Self = Self {
         x: <T as NumConstEx>::ONE,
         y: <T as NumConstEx>::ZERO,
         z: <T as NumConstEx>::ZERO,
         w: <T as NumConstEx>::ZERO,
     };
-    const UNIT_Y: Self = Self {
+    const Y: Self = Self {
         x: <T as NumConstEx>::ZERO,
         y: <T as NumConstEx>::ONE,
         z: <T as NumConstEx>::ZERO,
         w: <T as NumConstEx>::ZERO,
     };
-    const UNIT_Z: Self = Self {
+    const Z: Self = Self {
         x: <T as NumConstEx>::ZERO,
         y: <T as NumConstEx>::ZERO,
         z: <T as NumConstEx>::ONE,
         w: <T as NumConstEx>::ZERO,
     };
-    const UNIT_W: Self = Self {
+    const W: Self = Self {
         x: <T as NumConstEx>::ZERO,
         y: <T as NumConstEx>::ZERO,
         z: <T as NumConstEx>::ZERO,

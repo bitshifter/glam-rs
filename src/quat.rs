@@ -43,7 +43,7 @@ macro_rules! impl_quat_methods {
 
         #[inline(always)]
         pub const fn identity() -> Self {
-            Self($inner::UNIT_W)
+            Self($inner::W)
         }
 
         /// Creates a rotation quaternion from an unaligned slice.
