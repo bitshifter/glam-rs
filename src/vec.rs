@@ -10,9 +10,10 @@ macro_rules! impl_vecn_common_methods {
         }
 
         /// Creates a vector with all elements set to `1.0`.
+        #[deprecated = "use ONE constant instead"]
         #[inline(always)]
         pub const fn one() -> Self {
-            Self($inner::ONE)
+            Self::ONE
         }
 
         /// Creates a vector with all elements set to `v`.
