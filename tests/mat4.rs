@@ -57,6 +57,15 @@ macro_rules! impl_mat4_tests {
 
         #[test]
         fn test_mat4_identity() {
+            assert_eq!(
+                $mat4::IDENTITY,
+                $mat4::from_cols_array(&[
+                    1., 0., 0., 0., //
+                    0., 1., 0., 0., //
+                    0., 0., 1., 0., //
+                    0., 0., 0., 1., //
+                ])
+            );
             let identity = $mat4::identity();
             assert_eq!(IDENTITY, identity.to_cols_array_2d());
             assert_eq!($mat4::from_cols_array_2d(&IDENTITY), identity);
@@ -66,6 +75,15 @@ macro_rules! impl_mat4_tests {
 
         #[test]
         fn test_mat4_zero() {
+            assert_eq!(
+                $mat4::ZERO,
+                $mat4::from_cols_array(&[
+                    0., 0., 0., 0., //
+                    0., 0., 0., 0., //
+                    0., 0., 0., 0., //
+                    0., 0., 0., 0., //
+                ])
+            );
             assert_eq!($mat4::from_cols_array_2d(&ZERO), $mat4::zero());
         }
 

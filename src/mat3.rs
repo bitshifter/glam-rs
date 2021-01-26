@@ -15,6 +15,12 @@ use std::iter::{Product, Sum};
 
 macro_rules! impl_mat3_methods {
     ($t:ty, $vec3: ident, $vec2:ident, $quat:ident, $inner:ident) => {
+        /// A 3x3 matrix with all elements set to `0.0`.
+        pub const ZERO: Self = Self($inner::ZERO);
+
+        /// A 3x3 identity matrix, where all diagonal elements are `1`, and all off-diagonal elements are `0`.
+        pub const IDENTITY: Self = Self($inner::IDENTITY);
+
         /// Creates a 3x3 matrix with all elements set to `0.0`.
         #[inline(always)]
         pub const fn zero() -> Self {

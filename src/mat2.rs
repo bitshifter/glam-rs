@@ -28,6 +28,12 @@ use std::iter::{Product, Sum};
 
 macro_rules! impl_mat2_methods {
     ($t:ty, $vec2:ident, $inner:ident) => {
+        /// A 2x2 matrix with all elements set to `0.0`.
+        pub const ZERO: Self = Self($inner::ZERO);
+
+        /// A 2x2 identity matrix, where all diagonal elements are `1`, and all off-diagonal elements are `0`.
+        pub const IDENTITY: Self = Self($inner::IDENTITY);
+
         /// Creates a 2x2 matrix with all elements set to `0.0`.
         #[inline(always)]
         pub const fn zero() -> Self {

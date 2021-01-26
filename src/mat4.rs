@@ -32,6 +32,12 @@ use std::iter::{Product, Sum};
 
 macro_rules! impl_mat4_methods {
     ($t:ty, $vec4:ident, $vec3:ident, $quat:ident, $inner:ident) => {
+        /// A 4x4 matrix with all elements set to `0.0`.
+        pub const ZERO: Self = Self($inner::ZERO);
+
+        /// A 4x4 identity matrix, where all diagonal elements are `1`, and all off-diagonal elements are `0`.
+        pub const IDENTITY: Self = Self($inner::IDENTITY);
+
         /// Creates a 4x4 matrix with all elements set to `0.0`.
         #[inline(always)]
         pub const fn zero() -> Self {

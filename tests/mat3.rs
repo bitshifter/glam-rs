@@ -31,6 +31,14 @@ macro_rules! impl_mat3_tests {
 
         #[test]
         fn test_mat3_identity() {
+            assert_eq!(
+                $mat3::IDENTITY,
+                $mat3::from_cols_array(&[
+                    1., 0., 0., //
+                    0., 1., 0., //
+                    0., 0., 1., //
+                ])
+            );
             let identity = $mat3::identity();
             assert_eq!(IDENTITY, identity.to_cols_array_2d());
             assert_eq!($mat3::from_cols_array_2d(&IDENTITY), identity);
@@ -40,6 +48,10 @@ macro_rules! impl_mat3_tests {
 
         #[test]
         fn test_mat3_zero() {
+            assert_eq!(
+                $mat3::ZERO,
+                $mat3::from_cols_array(&[0., 0., 0., 0., 0., 0., 0., 0., 0.])
+            );
             assert_eq!($mat3::from_cols_array_2d(&ZERO), $mat3::zero());
         }
 

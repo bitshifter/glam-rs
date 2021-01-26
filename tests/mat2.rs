@@ -21,6 +21,7 @@ macro_rules! impl_mat2_tests {
 
         #[test]
         fn test_mat2_identity() {
+            assert_eq!($mat2::IDENTITY, $mat2::from_cols_array(&[1., 0., 0., 1.]));
             let identity = $mat2::identity();
             assert_eq!(IDENTITY, identity.to_cols_array_2d());
             assert_eq!($mat2::from_cols_array_2d(&IDENTITY), identity);
@@ -30,6 +31,7 @@ macro_rules! impl_mat2_tests {
 
         #[test]
         fn test_mat2_zero() {
+            assert_eq!($mat2::ZERO, $mat2::from_cols_array(&[0., 0., 0., 0.]));
             assert_eq!($mat2::from_cols_array_2d(&ZERO), $mat2::zero());
         }
 
