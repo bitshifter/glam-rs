@@ -413,6 +413,7 @@ macro_rules! impl_vec2_float_tests {
 
         #[test]
         fn test_vec2_consts() {
+            assert_eq!($vec2::ZERO, $new(0 as $t, 0 as $t));
             assert_eq!($vec2::X, $new(1 as $t, 0 as $t));
             assert_eq!($vec2::Y, $new(0 as $t, 1 as $t));
         }

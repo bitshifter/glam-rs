@@ -11,6 +11,7 @@ macro_rules! impl_vec4_tests {
 
         #[test]
         fn test_vec4_consts() {
+            assert_eq!($vec4::ZERO, $new(0 as $t, 0 as $t, 0 as $t, 0 as $t));
             assert_eq!($vec4::X, $new(1 as $t, 0 as $t, 0 as $t, 0 as $t));
             assert_eq!($vec4::Y, $new(0 as $t, 1 as $t, 0 as $t, 0 as $t));
             assert_eq!($vec4::Z, $new(0 as $t, 0 as $t, 1 as $t, 0 as $t));

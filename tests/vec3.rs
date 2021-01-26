@@ -458,6 +458,7 @@ macro_rules! impl_vec3_float_tests {
 
         #[test]
         fn test_vec3_consts() {
+            assert_eq!($vec3::ZERO, $new(0 as $t, 0 as $t, 0 as $t));
             assert_eq!($vec3::X, $new(1 as $t, 0 as $t, 0 as $t));
             assert_eq!($vec3::Y, $new(0 as $t, 1 as $t, 0 as $t));
             assert_eq!($vec3::Z, $new(0 as $t, 0 as $t, 1 as $t));

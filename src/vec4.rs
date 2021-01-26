@@ -27,6 +27,9 @@ use core::{cmp::Ordering, f32};
 
 macro_rules! impl_vec4_common_methods {
     ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
+        /// All zeroes.
+        pub const ZERO: Self = Self(VectorConst::ZERO);
+
         /// `[1, 0, 0, 0]`: a unit-length vector pointing along the positive X axis.
         pub const X: Self = Self(Vector4Const::X);
 

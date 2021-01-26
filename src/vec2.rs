@@ -9,6 +9,9 @@ use std::iter::{Product, Sum};
 
 macro_rules! impl_vec2_common_methods {
     ($t:ty, $vec2:ident, $vec3:ident, $mask:ident, $inner:ident) => {
+        /// All zeroes.
+        pub const ZERO: Self = Self($inner::ZERO);
+
         /// `[1, 0]`: a unit-length vector pointing along the positive X axis.
         pub const X: Self = Self($inner::X);
 
