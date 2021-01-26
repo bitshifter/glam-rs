@@ -44,6 +44,13 @@ impl Default for TransformRT {
 }
 
 impl TransformSRT {
+    /// The identity transforms that does nothing.
+    pub const IDENTITY: Self = Self {
+        scale: Vec3::ONE,
+        rotation: Quat::IDENTITY,
+        translation: Vec3::ZERO,
+    };
+
     #[inline]
     pub fn from_scale_rotation_translation(scale: Vec3, rotation: Quat, translation: Vec3) -> Self {
         Self {
@@ -63,12 +70,8 @@ impl TransformSRT {
     }
 
     #[inline]
-    pub fn identity() -> Self {
-        Self {
-            scale: Vec3::ONE,
-            rotation: Quat::IDENTITY,
-            translation: Vec3::ZERO,
-        }
+    pub const fn identity() -> Self {
+        Self::IDENTITY
     }
 
     #[inline]
@@ -177,6 +180,12 @@ fn mul_rt_rt(lhs: &TransformRT, rhs: &TransformRT) -> TransformRT {
 }
 
 impl TransformRT {
+    /// The identity transforms that does nothing.
+    pub const IDENTITY: Self = Self {
+        rotation: Quat::IDENTITY,
+        translation: Vec3::ZERO,
+    };
+
     #[inline]
     pub fn from_rotation_translation(rotation: Quat, translation: Vec3) -> Self {
         Self {
@@ -186,11 +195,8 @@ impl TransformRT {
     }
 
     #[inline]
-    pub fn identity() -> Self {
-        Self {
-            rotation: Quat::IDENTITY,
-            translation: Vec3::ZERO,
-        }
+    pub const fn identity() -> Self {
+        Self::IDENTITY
     }
 
     /// Returns `true` if, and only if, all elements are finite.
