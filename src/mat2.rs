@@ -42,6 +42,7 @@ macro_rules! impl_mat2_methods {
         }
 
         /// Creates a 2x2 identity matrix.
+        #[deprecated = "use Mat2::IDENTITY instead"]
         #[inline(always)]
         pub const fn identity() -> Self {
             Self::IDENTITY

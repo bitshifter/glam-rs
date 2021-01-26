@@ -46,6 +46,7 @@ macro_rules! impl_mat4_methods {
         }
 
         /// Creates a 4x4 identity matrix.
+        #[deprecated = "use Mat4::IDENTITY instead"]
         #[inline(always)]
         pub const fn identity() -> Self {
             Self::IDENTITY

@@ -29,6 +29,7 @@ macro_rules! impl_mat3_methods {
         }
 
         /// Creates a 3x3 identity matrix.
+        #[deprecated = "use Mat3::IDENTITY instead"]
         #[inline(always)]
         pub const fn identity() -> Self {
             Self::IDENTITY
