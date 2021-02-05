@@ -97,6 +97,30 @@ op => vec3_into_tuple,
 from => random_vec3
 );
 
+#[inline]
+fn vec3_normalize(v: Vec3) -> Vec3 {
+    v.normalize()
+}
+
+bench_func!(
+    vec3_normalize_bench,
+    "vec3 normalize",
+    op => vec3_normalize,
+    from => random_vec3
+);
+
+#[inline]
+fn vec3_normalize_or_zero(v: Vec3) -> Vec3 {
+    v.normalize_or_zero()
+}
+
+bench_func!(
+    vec3_normalize_or_zero_bench,
+    "vec3 normalize_or_zero",
+    op => vec3_normalize_or_zero,
+    from => random_vec3
+);
+
 euler!(vec3_euler, "vec3 euler", ty => Vec3, storage => Vec3, zero => Vec3::ZERO, rand => random_vec3);
 
 bench_binop!(
@@ -123,6 +147,8 @@ criterion_group!(
     quat_mul_vec3,
     vec3_add_vec3,
     vec3_angle_between,
+    vec3_normalize_bench,
+    vec3_normalize_or_zero_bench,
     vec3_euler,
     vec3_select,
     vec3_to_array_fields,
