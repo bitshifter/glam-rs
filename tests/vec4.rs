@@ -507,6 +507,7 @@ macro_rules! impl_vec4_signed_tests {
 macro_rules! impl_vec4_float_tests {
     ($t:ident, $const_new:ident, $new:ident, $vec4:ident, $mask:ident) => {
         impl_vec4_signed_tests!($t, $const_new, $new, $vec4, $mask);
+        impl_vec_float_normalize_tests!($t, $vec4);
 
         use core::$t::INFINITY;
         use core::$t::NAN;

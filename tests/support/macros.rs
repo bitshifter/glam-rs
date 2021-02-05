@@ -30,3 +30,40 @@ macro_rules! assert_approx_eq {
         );
     }};
 }
+
+/// Test vector normalization for float vector
+#[macro_export]
+macro_rules! impl_vec_float_normalize_tests {
+    ($t:ident, $vec:ident) => {
+        use core::$t::MIN_POSITIVE;
+
+        #[test]
+        fn test_normalize() {
+            assert_eq!((-42.0 * $vec::X).normalize(), -$vec::X);
+
+            // We expect not to be able to normalize small numbers:
+            assert!(!$vec::default().normalize().is_finite());
+            assert!(!(MIN_POSITIVE * $vec::X).normalize().is_finite());
+
+            // We expect not to be able to normalize non-finite values:
+            assert!(!(INFINITY * $vec::X).normalize().is_finite());
+            assert!(!(NAN * $vec::X).normalize().is_finite());
+        }
+
+        #[test]
+        fn test_normalize_or_zero() {
+            assert_eq!((-42.0 * $vec::X).normalize(), -$vec::X);
+
+            // We expect `normalize_or_zero` to return zero when inputs are very small:
+            assert_eq!($vec::default().normalize_or_zero(), $vec::default());
+            assert_eq!(
+                (MIN_POSITIVE * $vec::X).normalize_or_zero(),
+                $vec::default()
+            );
+
+            // We expect `normalize_or_zero` to return zero when inputs are non-finite:
+            assert_eq!((INFINITY * $vec::X).normalize_or_zero(), $vec::default());
+            assert_eq!((NAN * $vec::X).normalize_or_zero(), $vec::default());
+        }
+    };
+}
