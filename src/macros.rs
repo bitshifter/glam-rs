@@ -26,7 +26,7 @@ macro_rules! const_m128 {
 /// ```
 /// use glam::{const_vec2, Vec2};
 /// const ONE: Vec2 = const_vec2!([1.0; 2]);
-/// const UNIT_X: Vec2 = const_vec2!([1.0, 0.0]);
+/// const X: Vec2 = const_vec2!([1.0, 0.0]);
 /// ```
 #[macro_export]
 macro_rules! const_vec2 {
@@ -40,7 +40,7 @@ macro_rules! const_vec2 {
 /// ```
 /// use glam::{const_vec3, Vec3};
 /// const ONE: Vec3 = const_vec3!([1.0; 3]);
-/// const UNIT_X: Vec3 = const_vec3!([1.0, 0.0, 0.0]);
+/// const X: Vec3 = const_vec3!([1.0, 0.0, 0.0]);
 /// ```
 #[macro_export]
 macro_rules! const_vec3 {
@@ -54,7 +54,7 @@ macro_rules! const_vec3 {
 /// ```
 /// use glam::{const_vec3a, Vec3A};
 /// const ONE: Vec3A = const_vec3a!([1.0; 3]);
-/// const UNIT_X: Vec3A = const_vec3a!([1.0, 0.0, 0.0]);
+/// const X: Vec3A = const_vec3a!([1.0, 0.0, 0.0]);
 /// ```
 #[macro_export]
 macro_rules! const_vec3a {
@@ -73,7 +73,7 @@ macro_rules! const_vec3a {
 /// ```
 /// use glam::{const_vec4, Vec4};
 /// const ONE: Vec4 = const_vec4!([1.0; 4]);
-/// const UNIT_X: Vec4 = const_vec4!([1.0, 0.0, 0.0, 0.0]);
+/// const X: Vec4 = const_vec4!([1.0, 0.0, 0.0, 0.0]);
 /// ```
 #[macro_export]
 macro_rules! const_vec4 {
@@ -193,7 +193,7 @@ macro_rules! const_quat {
 /// ```
 /// use glam::{const_dvec2, DVec2};
 /// const ONE: DVec2 = const_dvec2!([1.0; 2]);
-/// const UNIT_X: DVec2 = const_dvec2!([1.0, 0.0]);
+/// const X: DVec2 = const_dvec2!([1.0, 0.0]);
 /// ```
 #[macro_export]
 macro_rules! const_dvec2 {
@@ -207,7 +207,7 @@ macro_rules! const_dvec2 {
 /// ```
 /// use glam::{const_dvec3, DVec3};
 /// const ONE: DVec3 = const_dvec3!([1.0; 3]);
-/// const UNIT_X: DVec3 = const_dvec3!([1.0, 0.0, 0.0]);
+/// const X: DVec3 = const_dvec3!([1.0, 0.0, 0.0]);
 /// ```
 #[macro_export]
 macro_rules! const_dvec3 {
@@ -221,7 +221,7 @@ macro_rules! const_dvec3 {
 /// ```
 /// use glam::{const_dvec4, DVec4};
 /// const ONE: DVec4 = const_dvec4!([1.0; 4]);
-/// const UNIT_X: DVec4 = const_dvec4!([1.0, 0.0, 0.0, 0.0]);
+/// const X: DVec4 = const_dvec4!([1.0, 0.0, 0.0, 0.0]);
 /// ```
 #[macro_export]
 macro_rules! const_dvec4 {
@@ -342,7 +342,7 @@ macro_rules! const_dquat {
 /// ```
 /// use glam::{const_ivec2, IVec2};
 /// const ONE: IVec2 = const_ivec2!([1; 2]);
-/// const UNIT_X: IVec2 = const_ivec2!([1, 0]);
+/// const X: IVec2 = const_ivec2!([1, 0]);
 /// ```
 #[macro_export]
 macro_rules! const_ivec2 {
@@ -356,7 +356,7 @@ macro_rules! const_ivec2 {
 /// ```
 /// use glam::{const_ivec3, IVec3};
 /// const ONE: IVec3 = const_ivec3!([1; 3]);
-/// const UNIT_X: IVec3 = const_ivec3!([1, 0, 0]);
+/// const X: IVec3 = const_ivec3!([1, 0, 0]);
 /// ```
 #[macro_export]
 macro_rules! const_ivec3 {
@@ -370,7 +370,7 @@ macro_rules! const_ivec3 {
 /// ```
 /// use glam::{const_ivec4, IVec4};
 /// const ONE: IVec4 = const_ivec4!([1; 4]);
-/// const UNIT_X: IVec4 = const_ivec4!([1, 0, 0, 0]);
+/// const X: IVec4 = const_ivec4!([1, 0, 0, 0]);
 /// ```
 #[macro_export]
 macro_rules! const_ivec4 {
@@ -384,7 +384,7 @@ macro_rules! const_ivec4 {
 /// ```
 /// use glam::{const_uvec2, UVec2};
 /// const ONE: UVec2 = const_uvec2!([1; 2]);
-/// const UNIT_X: UVec2 = const_uvec2!([1, 0]);
+/// const X: UVec2 = const_uvec2!([1, 0]);
 /// ```
 #[macro_export]
 macro_rules! const_uvec2 {
@@ -398,7 +398,7 @@ macro_rules! const_uvec2 {
 /// ```
 /// use glam::{const_uvec3, UVec3};
 /// const ONE: UVec3 = const_uvec3!([1; 3]);
-/// const UNIT_X: UVec3 = const_uvec3!([1, 0, 0]);
+/// const X: UVec3 = const_uvec3!([1, 0, 0]);
 /// ```
 #[macro_export]
 macro_rules! const_uvec3 {
@@ -412,7 +412,7 @@ macro_rules! const_uvec3 {
 /// ```
 /// use glam::{const_uvec4, UVec4};
 /// const ONE: UVec4 = const_uvec4!([1; 4]);
-/// const UNIT_X: UVec4 = const_uvec4!([1, 0, 0, 0]);
+/// const X: UVec4 = const_uvec4!([1, 0, 0, 0]);
 /// ```
 #[macro_export]
 macro_rules! const_uvec4 {

@@ -125,7 +125,7 @@ pub trait Quaternion<T: FloatEx>: FloatVector4<T> {
         if scale_sq >= T::from_f32(1.0e-8 * 1.0e-8) {
             (XYZ { x, y, z }.mul_scalar(scale_sq.sqrt().recip()), angle)
         } else {
-            (Vector3Const::UNIT_X, angle)
+            (Vector3Const::X, angle)
         }
     }
 

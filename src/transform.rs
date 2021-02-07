@@ -19,9 +19,9 @@ impl Default for TransformSRT {
     #[inline]
     fn default() -> Self {
         Self {
-            scale: Vec3::one(),
-            rotation: Quat::identity(),
-            translation: Vec3::zero(),
+            scale: Vec3::ONE,
+            rotation: Quat::IDENTITY,
+            translation: Vec3::ZERO,
         }
     }
 }
@@ -37,13 +37,20 @@ impl Default for TransformRT {
     #[inline]
     fn default() -> Self {
         Self {
-            rotation: Quat::identity(),
-            translation: Vec3::zero(),
+            rotation: Quat::IDENTITY,
+            translation: Vec3::ZERO,
         }
     }
 }
 
 impl TransformSRT {
+    /// The identity transforms that does nothing.
+    pub const IDENTITY: Self = Self {
+        scale: Vec3::ONE,
+        rotation: Quat::IDENTITY,
+        translation: Vec3::ZERO,
+    };
+
     #[inline]
     pub fn from_scale_rotation_translation(scale: Vec3, rotation: Quat, translation: Vec3) -> Self {
         Self {
@@ -62,13 +69,10 @@ impl TransformSRT {
         }
     }
 
+    #[deprecated = "use TransformSRT::IDENTITY instead"]
     #[inline]
-    pub fn identity() -> Self {
-        Self {
-            scale: Vec3::one(),
-            rotation: Quat::identity(),
-            translation: Vec3::zero(),
-        }
+    pub const fn identity() -> Self {
+        Self::IDENTITY
     }
 
     #[inline]
@@ -130,7 +134,7 @@ fn mul_srt_srt(lhs: &TransformSRT, rhs: &TransformSRT) -> TransformSRT {
     let min_scale = lhs_scale.min(rhs_scale);
     let scale = lhs_scale * rhs_scale;
 
-    if min_scale.cmplt(Vec3A::zero()).any() {
+    if min_scale.cmplt(Vec3A::ZERO).any() {
         // If negative scale, we go through a matrix
         let lhs_mtx =
             Mat4::from_scale_rotation_translation(lhs.scale, lhs.rotation, lhs.translation);
@@ -177,6 +181,12 @@ fn mul_rt_rt(lhs: &TransformRT, rhs: &TransformRT) -> TransformRT {
 }
 
 impl TransformRT {
+    /// The identity transforms that does nothing.
+    pub const IDENTITY: Self = Self {
+        rotation: Quat::IDENTITY,
+        translation: Vec3::ZERO,
+    };
+
     #[inline]
     pub fn from_rotation_translation(rotation: Quat, translation: Vec3) -> Self {
         Self {
@@ -185,12 +195,10 @@ impl TransformRT {
         }
     }
 
+    #[deprecated = "use TransformRT::IDENTITY instead"]
     #[inline]
-    pub fn identity() -> Self {
-        Self {
-            rotation: Quat::identity(),
-            translation: Vec3::zero(),
-        }
+    pub const fn identity() -> Self {
+        Self::IDENTITY
     }
 
     /// Returns `true` if, and only if, all elements are finite.
@@ -320,7 +328,7 @@ impl From<TransformRT> for TransformSRT {
         Self {
             translation: tr.translation,
             rotation: tr.rotation,
-            scale: Vec3::one(),
+            scale: Vec3::ONE,
         }
     }
 }

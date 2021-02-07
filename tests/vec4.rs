@@ -11,6 +11,8 @@ macro_rules! impl_vec4_tests {
 
         #[test]
         fn test_vec4_consts() {
+            assert_eq!($vec4::ZERO, $new(0 as $t, 0 as $t, 0 as $t, 0 as $t));
+            assert_eq!($vec4::ONE, $new(1 as $t, 1 as $t, 1 as $t, 1 as $t));
             assert_eq!($vec4::X, $new(1 as $t, 0 as $t, 0 as $t, 0 as $t));
             assert_eq!($vec4::Y, $new(0 as $t, 1 as $t, 0 as $t, 0 as $t));
             assert_eq!($vec4::Z, $new(0 as $t, 0 as $t, 1 as $t, 0 as $t));
@@ -38,22 +40,10 @@ macro_rules! impl_vec4_tests {
             let v = $vec4::new(t.0, t.1, t.2, t.3);
             assert_eq!(t, v.into());
 
-            assert_eq!(
-                $vec4::new(1 as $t, 0 as $t, 0 as $t, 0 as $t),
-                $vec4::unit_x()
-            );
-            assert_eq!(
-                $vec4::new(0 as $t, 1 as $t, 0 as $t, 0 as $t),
-                $vec4::unit_y()
-            );
-            assert_eq!(
-                $vec4::new(0 as $t, 0 as $t, 1 as $t, 0 as $t),
-                $vec4::unit_z()
-            );
-            assert_eq!(
-                $vec4::new(0 as $t, 0 as $t, 0 as $t, 1 as $t),
-                $vec4::unit_w()
-            );
+            assert_eq!($vec4::new(1 as $t, 0 as $t, 0 as $t, 0 as $t), $vec4::X);
+            assert_eq!($vec4::new(0 as $t, 1 as $t, 0 as $t, 0 as $t), $vec4::Y);
+            assert_eq!($vec4::new(0 as $t, 0 as $t, 1 as $t, 0 as $t), $vec4::Z);
+            assert_eq!($vec4::new(0 as $t, 0 as $t, 0 as $t, 1 as $t), $vec4::W);
         }
 
         #[test]
@@ -79,7 +69,7 @@ macro_rules! impl_vec4_tests {
 
         #[test]
         fn test_zero() {
-            let v = $vec4::zero();
+            let v = $vec4::ZERO;
             assert_eq!((0 as $t, 0 as $t, 0 as $t, 0 as $t), v.into());
             assert_eq!(v, $vec4::default());
         }
@@ -87,12 +77,12 @@ macro_rules! impl_vec4_tests {
         #[test]
         fn test_splat() {
             let v = $vec4::splat(1 as $t);
-            assert_eq!($vec4::one(), v);
+            assert_eq!($vec4::ONE, v);
         }
 
         #[test]
         fn test_accessors() {
-            let mut a = $vec4::zero();
+            let mut a = $vec4::ZERO;
             a.x = 1 as $t;
             a.y = 2 as $t;
             a.z = 3 as $t;
@@ -103,7 +93,7 @@ macro_rules! impl_vec4_tests {
             assert_eq!(4 as $t, a.w);
             assert_eq!((1 as $t, 2 as $t, 3 as $t, 4 as $t), a.into());
 
-            let mut a = $vec4::zero();
+            let mut a = $vec4::ZERO;
             a[0] = 1 as $t;
             a[1] = 2 as $t;
             a[2] = 3 as $t;
@@ -477,7 +467,7 @@ macro_rules! impl_vec4_tests {
         #[cfg(feature = "std")]
         #[test]
         fn test_sum() {
-            let one = $vec4::one();
+            let one = $vec4::ONE;
             assert_eq!(vec![one, one].iter().sum::<$vec4>(), one + one);
         }
 
@@ -572,20 +562,20 @@ macro_rules! impl_vec4_float_tests {
 
         #[test]
         fn test_signum() {
-            assert_eq!($vec4::zero().signum(), $vec4::one());
-            assert_eq!(-$vec4::zero().signum(), -$vec4::one());
-            assert_eq!($vec4::one().signum(), $vec4::one());
-            assert_eq!((-$vec4::one()).signum(), -$vec4::one());
-            assert_eq!($vec4::splat(INFINITY).signum(), $vec4::one());
-            assert_eq!($vec4::splat(NEG_INFINITY).signum(), -$vec4::one());
+            assert_eq!($vec4::ZERO.signum(), $vec4::ONE);
+            assert_eq!(-$vec4::ZERO.signum(), -$vec4::ONE);
+            assert_eq!($vec4::ONE.signum(), $vec4::ONE);
+            assert_eq!((-$vec4::ONE).signum(), -$vec4::ONE);
+            assert_eq!($vec4::splat(INFINITY).signum(), $vec4::ONE);
+            assert_eq!($vec4::splat(NEG_INFINITY).signum(), -$vec4::ONE);
             assert!($vec4::splat(NAN).signum().is_nan_mask().all());
         }
 
         #[test]
         fn test_abs() {
-            assert_eq!($vec4::zero().abs(), $vec4::zero());
-            assert_eq!($vec4::one().abs(), $vec4::one());
-            assert_eq!((-$vec4::one()).abs(), $vec4::one());
+            assert_eq!($vec4::ZERO.abs(), $vec4::ZERO);
+            assert_eq!($vec4::ONE.abs(), $vec4::ONE);
+            assert_eq!((-$vec4::ONE).abs(), $vec4::ONE);
         }
 
         #[test]
@@ -644,7 +634,7 @@ macro_rules! impl_vec4_float_tests {
             let v1 = $vec4::new(1.0, 1.0, 1.0, 1.0);
             assert_approx_eq!(v0, v0.lerp(v1, 0.0));
             assert_approx_eq!(v1, v0.lerp(v1, 1.0));
-            assert_approx_eq!($vec4::zero(), v0.lerp(v1, 0.5));
+            assert_approx_eq!($vec4::ZERO, v0.lerp(v1, 0.5));
         }
 
         #[test]

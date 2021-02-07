@@ -17,8 +17,8 @@ impl<T: NumEx> MatrixConst for Vector2x2<XY<T>> {
         y_axis: XY::ZERO,
     };
     const IDENTITY: Self = Self {
-        x_axis: XY::UNIT_X,
-        y_axis: XY::UNIT_Y,
+        x_axis: XY::X,
+        y_axis: XY::Y,
     };
 }
 
@@ -103,9 +103,9 @@ impl<T: NumEx> MatrixConst for Vector3x3<XYZ<T>> {
         z_axis: XYZ::ZERO,
     };
     const IDENTITY: Self = Self {
-        x_axis: XYZ::UNIT_X,
-        y_axis: XYZ::UNIT_Y,
-        z_axis: XYZ::UNIT_Z,
+        x_axis: XYZ::X,
+        y_axis: XYZ::Y,
+        z_axis: XYZ::Z,
     };
 }
 
@@ -234,10 +234,10 @@ impl<T: NumEx> MatrixConst for Vector4x4<XYZW<T>> {
         w_axis: XYZW::ZERO,
     };
     const IDENTITY: Self = Self {
-        x_axis: XYZW::UNIT_X,
-        y_axis: XYZW::UNIT_Y,
-        z_axis: XYZW::UNIT_Z,
-        w_axis: XYZW::UNIT_W,
+        x_axis: XYZW::X,
+        y_axis: XYZW::Y,
+        z_axis: XYZW::Z,
+        w_axis: XYZW::W,
     };
 }
 

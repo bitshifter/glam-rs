@@ -15,16 +15,24 @@ use std::iter::{Product, Sum};
 
 macro_rules! impl_mat3_methods {
     ($t:ty, $vec3: ident, $vec2:ident, $quat:ident, $inner:ident) => {
+        /// A 3x3 matrix with all elements set to `0.0`.
+        pub const ZERO: Self = Self($inner::ZERO);
+
+        /// A 3x3 identity matrix, where all diagonal elements are `1`, and all off-diagonal elements are `0`.
+        pub const IDENTITY: Self = Self($inner::IDENTITY);
+
         /// Creates a 3x3 matrix with all elements set to `0.0`.
+        #[deprecated = "use Mat3::ZERO instead"]
         #[inline(always)]
         pub const fn zero() -> Self {
-            Self($inner::ZERO)
+            Self::ZERO
         }
 
         /// Creates a 3x3 identity matrix.
+        #[deprecated = "use Mat3::IDENTITY instead"]
         #[inline(always)]
         pub const fn identity() -> Self {
-            Self($inner::IDENTITY)
+            Self::IDENTITY
         }
 
         /// Creates a 3x3 matrix from three column vectors.
@@ -273,7 +281,7 @@ macro_rules! impl_mat3_traits {
         impl Default for $mat3 {
             #[inline(always)]
             fn default() -> Self {
-                Self::identity()
+                Self::IDENTITY
             }
         }
 
@@ -393,7 +401,7 @@ macro_rules! impl_mat3_traits {
             where
                 I: Iterator<Item = &'a Self>,
             {
-                iter.fold($mat3::zero(), |a, &b| Self::add(a, b))
+                iter.fold($mat3::ZERO, |a, &b| Self::add(a, b))
             }
         }
 
@@ -403,7 +411,7 @@ macro_rules! impl_mat3_traits {
             where
                 I: Iterator<Item = &'a Self>,
             {
-                iter.fold($mat3::identity(), |a, &b| Self::mul(a, b))
+                iter.fold($mat3::IDENTITY, |a, &b| Self::mul(a, b))
             }
         }
     };

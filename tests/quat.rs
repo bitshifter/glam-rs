@@ -62,11 +62,11 @@ macro_rules! impl_quat_tests {
             let y0 = $quat::from_rotation_y(yaw);
             assert!(y0.is_normalized());
             let (axis, angle) = y0.to_axis_angle();
-            assert_approx_eq!(axis, $vec3::unit_y(), 1.0e-6);
+            assert_approx_eq!(axis, $vec3::Y, 1.0e-6);
             assert_approx_eq!(angle, yaw);
             let y1 = $quat::from_rotation_ypr(yaw, zero, zero);
             assert_approx_eq!(y0, y1);
-            let y2 = $quat::from_axis_angle($vec3::unit_y(), yaw);
+            let y2 = $quat::from_axis_angle($vec3::Y, yaw);
             assert_approx_eq!(y0, y2);
             let y3 = $quat::from_rotation_mat3(&$mat3::from_rotation_y(yaw));
             assert_approx_eq!(y0, y3);
@@ -76,11 +76,11 @@ macro_rules! impl_quat_tests {
             let x0 = $quat::from_rotation_x(pitch);
             assert!(x0.is_normalized());
             let (axis, angle) = x0.to_axis_angle();
-            assert_approx_eq!(axis, $vec3::unit_x());
+            assert_approx_eq!(axis, $vec3::X);
             assert_approx_eq!(angle, pitch);
             let x1 = $quat::from_rotation_ypr(zero, pitch, zero);
             assert_approx_eq!(x0, x1);
-            let x2 = $quat::from_axis_angle($vec3::unit_x(), pitch);
+            let x2 = $quat::from_axis_angle($vec3::X, pitch);
             assert_approx_eq!(x0, x2);
             let x3 = $quat::from_rotation_mat4(&$mat4::from_rotation_x(deg(180.0)));
             assert!(x3.is_normalized());
@@ -89,11 +89,11 @@ macro_rules! impl_quat_tests {
             let z0 = $quat::from_rotation_z(roll);
             assert!(z0.is_normalized());
             let (axis, angle) = z0.to_axis_angle();
-            assert_approx_eq!(axis, $vec3::unit_z());
+            assert_approx_eq!(axis, $vec3::Z);
             assert_approx_eq!(angle, roll);
             let z1 = $quat::from_rotation_ypr(zero, zero, roll);
             assert_approx_eq!(z0, z1);
-            let z2 = $quat::from_axis_angle($vec3::unit_z(), roll);
+            let z2 = $quat::from_axis_angle($vec3::Z, roll);
             assert_approx_eq!(z0, z2);
             let z3 = $quat::from_rotation_mat4(&$mat4::from_rotation_z(roll));
             assert_approx_eq!(z0, z3);
@@ -116,71 +116,71 @@ macro_rules! impl_quat_tests {
             assert_approx_eq!(yxz0, yxz2);
 
             // if near identity, just returns x axis and 0 rotation
-            let (axis, angle) = $quat::identity().to_axis_angle();
-            assert_eq!(axis, $vec3::unit_x());
+            let (axis, angle) = $quat::IDENTITY.to_axis_angle();
+            assert_eq!(axis, $vec3::X);
             assert_eq!(angle, rad(0.0));
         }
 
         #[test]
         fn test_mul_vec3() {
             let qrz = $quat::from_rotation_z(deg(90.0));
-            assert_approx_eq!($vec3::unit_y(), qrz * $vec3::unit_x());
-            assert_approx_eq!($vec3::unit_y(), qrz.mul_vec3($vec3::unit_x()));
-            assert_approx_eq!($vec3::unit_y(), -qrz * $vec3::unit_x());
-            assert_approx_eq!($vec3::unit_y(), qrz.neg().mul_vec3($vec3::unit_x()));
-            assert_approx_eq!(-$vec3::unit_x(), qrz * $vec3::unit_y());
-            assert_approx_eq!(-$vec3::unit_x(), qrz.mul_vec3($vec3::unit_y()));
-            assert_approx_eq!(-$vec3::unit_x(), -qrz * $vec3::unit_y());
-            assert_approx_eq!(-$vec3::unit_x(), qrz.neg().mul_vec3($vec3::unit_y()));
+            assert_approx_eq!($vec3::Y, qrz * $vec3::X);
+            assert_approx_eq!($vec3::Y, qrz.mul_vec3($vec3::X));
+            assert_approx_eq!($vec3::Y, -qrz * $vec3::X);
+            assert_approx_eq!($vec3::Y, qrz.neg().mul_vec3($vec3::X));
+            assert_approx_eq!(-$vec3::X, qrz * $vec3::Y);
+            assert_approx_eq!(-$vec3::X, qrz.mul_vec3($vec3::Y));
+            assert_approx_eq!(-$vec3::X, -qrz * $vec3::Y);
+            assert_approx_eq!(-$vec3::X, qrz.neg().mul_vec3($vec3::Y));
 
             // check vec3 * mat3 is the same
             let mrz = $mat3::from_quat(qrz);
-            assert_approx_eq!($vec3::unit_y(), mrz * $vec3::unit_x());
-            assert_approx_eq!($vec3::unit_y(), mrz.mul_vec3($vec3::unit_x()));
-            // assert_approx_eq!($vec3::unit_y(), -mrz * $vec3::unit_x());
-            assert_approx_eq!(-$vec3::unit_x(), mrz * $vec3::unit_y());
-            assert_approx_eq!(-$vec3::unit_x(), mrz.mul_vec3($vec3::unit_y()));
+            assert_approx_eq!($vec3::Y, mrz * $vec3::X);
+            assert_approx_eq!($vec3::Y, mrz.mul_vec3($vec3::X));
+            // assert_approx_eq!($vec3::Y, -mrz * $vec3::X);
+            assert_approx_eq!(-$vec3::X, mrz * $vec3::Y);
+            assert_approx_eq!(-$vec3::X, mrz.mul_vec3($vec3::Y));
 
             let qrx = $quat::from_rotation_x(deg(90.0));
-            assert_approx_eq!($vec3::unit_x(), qrx * $vec3::unit_x());
-            assert_approx_eq!($vec3::unit_x(), qrx.mul_vec3($vec3::unit_x()));
-            assert_approx_eq!($vec3::unit_x(), -qrx * $vec3::unit_x());
-            assert_approx_eq!($vec3::unit_x(), qrx.neg().mul_vec3($vec3::unit_x()));
-            assert_approx_eq!($vec3::unit_z(), qrx * $vec3::unit_y());
-            assert_approx_eq!($vec3::unit_z(), qrx.mul_vec3($vec3::unit_y()));
-            assert_approx_eq!($vec3::unit_z(), -qrx * $vec3::unit_y());
-            assert_approx_eq!($vec3::unit_z(), qrx.neg().mul_vec3($vec3::unit_y()));
+            assert_approx_eq!($vec3::X, qrx * $vec3::X);
+            assert_approx_eq!($vec3::X, qrx.mul_vec3($vec3::X));
+            assert_approx_eq!($vec3::X, -qrx * $vec3::X);
+            assert_approx_eq!($vec3::X, qrx.neg().mul_vec3($vec3::X));
+            assert_approx_eq!($vec3::Z, qrx * $vec3::Y);
+            assert_approx_eq!($vec3::Z, qrx.mul_vec3($vec3::Y));
+            assert_approx_eq!($vec3::Z, -qrx * $vec3::Y);
+            assert_approx_eq!($vec3::Z, qrx.neg().mul_vec3($vec3::Y));
 
             // check vec3 * mat3 is the same
             let mrx = $mat3::from_quat(qrx);
-            assert_approx_eq!($vec3::unit_x(), mrx * $vec3::unit_x());
-            assert_approx_eq!($vec3::unit_x(), mrx.mul_vec3($vec3::unit_x()));
-            assert_approx_eq!($vec3::unit_z(), mrx * $vec3::unit_y());
-            assert_approx_eq!($vec3::unit_z(), mrx.mul_vec3($vec3::unit_y()));
+            assert_approx_eq!($vec3::X, mrx * $vec3::X);
+            assert_approx_eq!($vec3::X, mrx.mul_vec3($vec3::X));
+            assert_approx_eq!($vec3::Z, mrx * $vec3::Y);
+            assert_approx_eq!($vec3::Z, mrx.mul_vec3($vec3::Y));
 
             let qrxz = qrz * qrx;
-            assert_approx_eq!($vec3::unit_y(), qrxz * $vec3::unit_x());
-            assert_approx_eq!($vec3::unit_y(), qrxz.mul_vec3($vec3::unit_x()));
-            assert_approx_eq!($vec3::unit_z(), qrxz * $vec3::unit_y());
-            assert_approx_eq!($vec3::unit_z(), qrxz.mul_vec3($vec3::unit_y()));
+            assert_approx_eq!($vec3::Y, qrxz * $vec3::X);
+            assert_approx_eq!($vec3::Y, qrxz.mul_vec3($vec3::X));
+            assert_approx_eq!($vec3::Z, qrxz * $vec3::Y);
+            assert_approx_eq!($vec3::Z, qrxz.mul_vec3($vec3::Y));
 
             let mrxz = mrz * mrx;
-            assert_approx_eq!($vec3::unit_y(), mrxz * $vec3::unit_x());
-            assert_approx_eq!($vec3::unit_y(), mrxz.mul_vec3($vec3::unit_x()));
-            assert_approx_eq!($vec3::unit_z(), mrxz * $vec3::unit_y());
-            assert_approx_eq!($vec3::unit_z(), mrxz.mul_vec3($vec3::unit_y()));
+            assert_approx_eq!($vec3::Y, mrxz * $vec3::X);
+            assert_approx_eq!($vec3::Y, mrxz.mul_vec3($vec3::X));
+            assert_approx_eq!($vec3::Z, mrxz * $vec3::Y);
+            assert_approx_eq!($vec3::Z, mrxz.mul_vec3($vec3::Y));
 
             let qrzx = qrx * qrz;
-            assert_approx_eq!($vec3::unit_z(), qrzx * $vec3::unit_x());
-            assert_approx_eq!($vec3::unit_z(), qrzx.mul_vec3($vec3::unit_x()));
-            assert_approx_eq!(-$vec3::unit_x(), qrzx * $vec3::unit_y());
-            assert_approx_eq!(-$vec3::unit_x(), qrzx.mul_vec3($vec3::unit_y()));
+            assert_approx_eq!($vec3::Z, qrzx * $vec3::X);
+            assert_approx_eq!($vec3::Z, qrzx.mul_vec3($vec3::X));
+            assert_approx_eq!(-$vec3::X, qrzx * $vec3::Y);
+            assert_approx_eq!(-$vec3::X, qrzx.mul_vec3($vec3::Y));
 
             let mrzx = qrx * qrz;
-            assert_approx_eq!($vec3::unit_z(), mrzx * $vec3::unit_x());
-            assert_approx_eq!($vec3::unit_z(), mrzx.mul_vec3($vec3::unit_x()));
-            assert_approx_eq!(-$vec3::unit_x(), mrzx * $vec3::unit_y());
-            assert_approx_eq!(-$vec3::unit_x(), mrzx.mul_vec3($vec3::unit_y()));
+            assert_approx_eq!($vec3::Z, mrzx * $vec3::X);
+            assert_approx_eq!($vec3::Z, mrzx.mul_vec3($vec3::X));
+            assert_approx_eq!(-$vec3::X, mrzx * $vec3::Y);
+            assert_approx_eq!(-$vec3::X, mrzx.mul_vec3($vec3::Y));
         }
         #[test]
         fn test_lerp() {
@@ -218,7 +218,7 @@ macro_rules! impl_quat_tests {
 
         #[test]
         fn test_fmt() {
-            let a = $quat::identity();
+            let a = $quat::IDENTITY;
             assert_eq!(
                 format!("{:?}", a),
                 format!("{}(0.0, 0.0, 0.0, 1.0)", stringify!($quat))
@@ -232,7 +232,7 @@ macro_rules! impl_quat_tests {
 
         #[test]
         fn test_identity() {
-            let identity = $quat::identity();
+            let identity = $quat::IDENTITY;
             assert!(identity.is_near_identity());
             assert!(identity.is_normalized());
             assert_eq!(identity, $quat::from_xyzw(0.0, 0.0, 0.0, 1.0));
@@ -339,63 +339,63 @@ mod quat {
     #[test]
     fn test_mul_vec3a() {
         let qrz = Quat::from_rotation_z(deg(90.0));
-        assert_approx_eq!(Vec3A::unit_y(), qrz * Vec3A::unit_x());
-        assert_approx_eq!(Vec3A::unit_y(), qrz.mul_vec3a(Vec3A::unit_x()));
-        assert_approx_eq!(Vec3A::unit_y(), -qrz * Vec3A::unit_x());
-        assert_approx_eq!(Vec3A::unit_y(), qrz.neg().mul_vec3a(Vec3A::unit_x()));
-        assert_approx_eq!(-Vec3A::unit_x(), qrz * Vec3A::unit_y());
-        assert_approx_eq!(-Vec3A::unit_x(), qrz.mul_vec3a(Vec3A::unit_y()));
-        assert_approx_eq!(-Vec3A::unit_x(), -qrz * Vec3A::unit_y());
-        assert_approx_eq!(-Vec3A::unit_x(), qrz.neg().mul_vec3a(Vec3A::unit_y()));
+        assert_approx_eq!(Vec3A::Y, qrz * Vec3A::X);
+        assert_approx_eq!(Vec3A::Y, qrz.mul_vec3a(Vec3A::X));
+        assert_approx_eq!(Vec3A::Y, -qrz * Vec3A::X);
+        assert_approx_eq!(Vec3A::Y, qrz.neg().mul_vec3a(Vec3A::X));
+        assert_approx_eq!(-Vec3A::X, qrz * Vec3A::Y);
+        assert_approx_eq!(-Vec3A::X, qrz.mul_vec3a(Vec3A::Y));
+        assert_approx_eq!(-Vec3A::X, -qrz * Vec3A::Y);
+        assert_approx_eq!(-Vec3A::X, qrz.neg().mul_vec3a(Vec3A::Y));
 
         // check vec3 * mat3 is the same
         let mrz = Mat3::from_quat(qrz);
-        assert_approx_eq!(Vec3A::unit_y(), mrz * Vec3A::unit_x());
-        assert_approx_eq!(Vec3A::unit_y(), mrz.mul_vec3a(Vec3A::unit_x()));
-        // assert_approx_eq!(Vec3A::unit_y(), -mrz * Vec3A::unit_x());
-        assert_approx_eq!(-Vec3A::unit_x(), mrz * Vec3A::unit_y());
-        assert_approx_eq!(-Vec3A::unit_x(), mrz.mul_vec3a(Vec3A::unit_y()));
+        assert_approx_eq!(Vec3A::Y, mrz * Vec3A::X);
+        assert_approx_eq!(Vec3A::Y, mrz.mul_vec3a(Vec3A::X));
+        // assert_approx_eq!(Vec3A::Y, -mrz * Vec3A::X);
+        assert_approx_eq!(-Vec3A::X, mrz * Vec3A::Y);
+        assert_approx_eq!(-Vec3A::X, mrz.mul_vec3a(Vec3A::Y));
 
         let qrx = Quat::from_rotation_x(deg(90.0));
-        assert_approx_eq!(Vec3A::unit_x(), qrx * Vec3A::unit_x());
-        assert_approx_eq!(Vec3A::unit_x(), qrx.mul_vec3a(Vec3A::unit_x()));
-        assert_approx_eq!(Vec3A::unit_x(), -qrx * Vec3A::unit_x());
-        assert_approx_eq!(Vec3A::unit_x(), qrx.neg().mul_vec3a(Vec3A::unit_x()));
-        assert_approx_eq!(Vec3A::unit_z(), qrx * Vec3A::unit_y());
-        assert_approx_eq!(Vec3A::unit_z(), qrx.mul_vec3a(Vec3A::unit_y()));
-        assert_approx_eq!(Vec3A::unit_z(), -qrx * Vec3A::unit_y());
-        assert_approx_eq!(Vec3A::unit_z(), qrx.neg().mul_vec3a(Vec3A::unit_y()));
+        assert_approx_eq!(Vec3A::X, qrx * Vec3A::X);
+        assert_approx_eq!(Vec3A::X, qrx.mul_vec3a(Vec3A::X));
+        assert_approx_eq!(Vec3A::X, -qrx * Vec3A::X);
+        assert_approx_eq!(Vec3A::X, qrx.neg().mul_vec3a(Vec3A::X));
+        assert_approx_eq!(Vec3A::Z, qrx * Vec3A::Y);
+        assert_approx_eq!(Vec3A::Z, qrx.mul_vec3a(Vec3A::Y));
+        assert_approx_eq!(Vec3A::Z, -qrx * Vec3A::Y);
+        assert_approx_eq!(Vec3A::Z, qrx.neg().mul_vec3a(Vec3A::Y));
 
         // check vec3 * mat3 is the same
         let mrx = Mat3::from_quat(qrx);
-        assert_approx_eq!(Vec3A::unit_x(), mrx * Vec3A::unit_x());
-        assert_approx_eq!(Vec3A::unit_x(), mrx.mul_vec3a(Vec3A::unit_x()));
-        assert_approx_eq!(Vec3A::unit_z(), mrx * Vec3A::unit_y());
-        assert_approx_eq!(Vec3A::unit_z(), mrx.mul_vec3a(Vec3A::unit_y()));
+        assert_approx_eq!(Vec3A::X, mrx * Vec3A::X);
+        assert_approx_eq!(Vec3A::X, mrx.mul_vec3a(Vec3A::X));
+        assert_approx_eq!(Vec3A::Z, mrx * Vec3A::Y);
+        assert_approx_eq!(Vec3A::Z, mrx.mul_vec3a(Vec3A::Y));
 
         let qrxz = qrz * qrx;
-        assert_approx_eq!(Vec3A::unit_y(), qrxz * Vec3A::unit_x());
-        assert_approx_eq!(Vec3A::unit_y(), qrxz.mul_vec3a(Vec3A::unit_x()));
-        assert_approx_eq!(Vec3A::unit_z(), qrxz * Vec3A::unit_y());
-        assert_approx_eq!(Vec3A::unit_z(), qrxz.mul_vec3a(Vec3A::unit_y()));
+        assert_approx_eq!(Vec3A::Y, qrxz * Vec3A::X);
+        assert_approx_eq!(Vec3A::Y, qrxz.mul_vec3a(Vec3A::X));
+        assert_approx_eq!(Vec3A::Z, qrxz * Vec3A::Y);
+        assert_approx_eq!(Vec3A::Z, qrxz.mul_vec3a(Vec3A::Y));
 
         let mrxz = mrz * mrx;
-        assert_approx_eq!(Vec3A::unit_y(), mrxz * Vec3A::unit_x());
-        assert_approx_eq!(Vec3A::unit_y(), mrxz.mul_vec3a(Vec3A::unit_x()));
-        assert_approx_eq!(Vec3A::unit_z(), mrxz * Vec3A::unit_y());
-        assert_approx_eq!(Vec3A::unit_z(), mrxz.mul_vec3a(Vec3A::unit_y()));
+        assert_approx_eq!(Vec3A::Y, mrxz * Vec3A::X);
+        assert_approx_eq!(Vec3A::Y, mrxz.mul_vec3a(Vec3A::X));
+        assert_approx_eq!(Vec3A::Z, mrxz * Vec3A::Y);
+        assert_approx_eq!(Vec3A::Z, mrxz.mul_vec3a(Vec3A::Y));
 
         let qrzx = qrx * qrz;
-        assert_approx_eq!(Vec3A::unit_z(), qrzx * Vec3A::unit_x());
-        assert_approx_eq!(Vec3A::unit_z(), qrzx.mul_vec3a(Vec3A::unit_x()));
-        assert_approx_eq!(-Vec3A::unit_x(), qrzx * Vec3A::unit_y());
-        assert_approx_eq!(-Vec3A::unit_x(), qrzx.mul_vec3a(Vec3A::unit_y()));
+        assert_approx_eq!(Vec3A::Z, qrzx * Vec3A::X);
+        assert_approx_eq!(Vec3A::Z, qrzx.mul_vec3a(Vec3A::X));
+        assert_approx_eq!(-Vec3A::X, qrzx * Vec3A::Y);
+        assert_approx_eq!(-Vec3A::X, qrzx.mul_vec3a(Vec3A::Y));
 
         let mrzx = qrx * qrz;
-        assert_approx_eq!(Vec3A::unit_z(), mrzx * Vec3A::unit_x());
-        assert_approx_eq!(Vec3A::unit_z(), mrzx.mul_vec3a(Vec3A::unit_x()));
-        assert_approx_eq!(-Vec3A::unit_x(), mrzx * Vec3A::unit_y());
-        assert_approx_eq!(-Vec3A::unit_x(), mrzx.mul_vec3a(Vec3A::unit_y()));
+        assert_approx_eq!(Vec3A::Z, mrzx * Vec3A::X);
+        assert_approx_eq!(Vec3A::Z, mrzx.mul_vec3a(Vec3A::X));
+        assert_approx_eq!(-Vec3A::X, mrzx * Vec3A::Y);
+        assert_approx_eq!(-Vec3A::X, mrzx.mul_vec3a(Vec3A::Y));
     }
 
     #[test]

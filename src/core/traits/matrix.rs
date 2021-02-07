@@ -387,16 +387,16 @@ pub trait Matrix4x4<T: NumEx, V4: Vector4<T>>: Matrix<T> {
             V4::new(scale.x, T::ZERO, T::ZERO, T::ZERO),
             V4::new(T::ZERO, scale.y, T::ZERO, T::ZERO),
             V4::new(T::ZERO, T::ZERO, scale.z, T::ZERO),
-            V4::UNIT_W,
+            V4::W,
         )
     }
 
     #[inline(always)]
     fn from_translation(translation: XYZ<T>) -> Self {
         Self::from_cols(
-            V4::UNIT_X,
-            V4::UNIT_Y,
-            V4::UNIT_Z,
+            V4::X,
+            V4::Y,
+            V4::Z,
             V4::new(translation.x, translation.y, translation.z, T::ONE),
         )
     }
@@ -500,7 +500,7 @@ pub trait FloatMatrix4x4<T: FloatEx, V4: FloatVector4<T> + Quaternion<T>>:
     fn from_quaternion(rotation: V4) -> Self {
         glam_assert!(rotation.is_normalized());
         let (x_axis, y_axis, z_axis) = Self::quaternion_to_axes(rotation);
-        Self::from_cols(x_axis, y_axis, z_axis, V4::UNIT_W)
+        Self::from_cols(x_axis, y_axis, z_axis, V4::W)
     }
 
     fn to_scale_quaternion_translation(&self) -> (XYZ<T>, V4, XYZ<T>) {
@@ -576,7 +576,7 @@ pub trait FloatMatrix4x4<T: FloatEx, V4: FloatVector4<T> + Quaternion<T>>:
                 axis_sq.z * omc + cos,
                 T::ZERO,
             ),
-            V4::UNIT_W,
+            V4::W,
         )
     }
 
@@ -584,10 +584,10 @@ pub trait FloatMatrix4x4<T: FloatEx, V4: FloatVector4<T> + Quaternion<T>>:
     fn from_rotation_x(angle: T) -> Self {
         let (sina, cosa) = angle.sin_cos();
         Self::from_cols(
-            V4::UNIT_X,
+            V4::X,
             V4::new(T::ZERO, cosa, sina, T::ZERO),
             V4::new(T::ZERO, -sina, cosa, T::ZERO),
-            V4::UNIT_W,
+            V4::W,
         )
     }
 
@@ -596,9 +596,9 @@ pub trait FloatMatrix4x4<T: FloatEx, V4: FloatVector4<T> + Quaternion<T>>:
         let (sina, cosa) = angle.sin_cos();
         Self::from_cols(
             V4::new(cosa, T::ZERO, -sina, T::ZERO),
-            V4::UNIT_Y,
+            V4::Y,
             V4::new(sina, T::ZERO, cosa, T::ZERO),
-            V4::UNIT_W,
+            V4::W,
         )
     }
 
@@ -608,8 +608,8 @@ pub trait FloatMatrix4x4<T: FloatEx, V4: FloatVector4<T> + Quaternion<T>>:
         Self::from_cols(
             V4::new(cosa, sina, T::ZERO, T::ZERO),
             V4::new(-sina, cosa, T::ZERO, T::ZERO),
-            V4::UNIT_Z,
-            V4::UNIT_W,
+            V4::Z,
+            V4::W,
         )
     }
 

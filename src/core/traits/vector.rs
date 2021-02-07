@@ -44,21 +44,21 @@ pub trait VectorConst {
 }
 
 pub trait Vector2Const: VectorConst {
-    const UNIT_X: Self;
-    const UNIT_Y: Self;
+    const X: Self;
+    const Y: Self;
 }
 
 pub trait Vector3Const: VectorConst {
-    const UNIT_X: Self;
-    const UNIT_Y: Self;
-    const UNIT_Z: Self;
+    const X: Self;
+    const Y: Self;
+    const Z: Self;
 }
 
 pub trait Vector4Const: VectorConst {
-    const UNIT_X: Self;
-    const UNIT_Y: Self;
-    const UNIT_Z: Self;
-    const UNIT_W: Self;
+    const X: Self;
+    const Y: Self;
+    const Z: Self;
+    const W: Self;
 }
 
 pub trait Vector<T>: Sized + Copy + Clone {

@@ -32,16 +32,24 @@ use std::iter::{Product, Sum};
 
 macro_rules! impl_mat4_methods {
     ($t:ty, $vec4:ident, $vec3:ident, $quat:ident, $inner:ident) => {
+        /// A 4x4 matrix with all elements set to `0.0`.
+        pub const ZERO: Self = Self($inner::ZERO);
+
+        /// A 4x4 identity matrix, where all diagonal elements are `1`, and all off-diagonal elements are `0`.
+        pub const IDENTITY: Self = Self($inner::IDENTITY);
+
         /// Creates a 4x4 matrix with all elements set to `0.0`.
+        #[deprecated = "use Mat4::ZERO instead"]
         #[inline(always)]
         pub const fn zero() -> Self {
-            Self($inner::ZERO)
+            Self::ZERO
         }
 
         /// Creates a 4x4 identity matrix.
+        #[deprecated = "use Mat4::IDENTITY instead"]
         #[inline(always)]
         pub const fn identity() -> Self {
-            Self($inner::IDENTITY)
+            Self::IDENTITY
         }
 
         /// Creates a 4x4 matrix from four column vectors.
@@ -458,7 +466,7 @@ macro_rules! impl_mat4_traits {
         impl Default for $mat4 {
             #[inline(always)]
             fn default() -> Self {
-                Self::identity()
+                Self::IDENTITY
             }
         }
 
@@ -581,7 +589,7 @@ macro_rules! impl_mat4_traits {
             where
                 I: Iterator<Item = &'a Self>,
             {
-                iter.fold(Self::zero(), |a, &b| Self::add(a, b))
+                iter.fold(Self::ZERO, |a, &b| Self::add(a, b))
             }
         }
 
@@ -591,7 +599,7 @@ macro_rules! impl_mat4_traits {
             where
                 I: Iterator<Item = &'a Self>,
             {
-                iter.fold(Self::identity(), |a, &b| Self::mul(a, b))
+                iter.fold(Self::IDENTITY, |a, &b| Self::mul(a, b))
             }
         }
     };

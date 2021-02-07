@@ -9,11 +9,17 @@ use std::iter::{Product, Sum};
 
 macro_rules! impl_vec2_common_methods {
     ($t:ty, $vec2:ident, $vec3:ident, $mask:ident, $inner:ident) => {
+        /// All zeroes.
+        pub const ZERO: Self = Self($inner::ZERO);
+
+        /// All ones.
+        pub const ONE: Self = Self($inner::ONE);
+
         /// `[1, 0]`: a unit-length vector pointing along the positive X axis.
-        pub const X: Self = Self($inner::UNIT_X);
+        pub const X: Self = Self($inner::X);
 
         /// `[0, 1]`: a unit-length vector pointing along the positive Y axis.
-        pub const Y: Self = Self($inner::UNIT_Y);
+        pub const Y: Self = Self($inner::Y);
 
         /// Creates a new vector.
         #[inline(always)]
@@ -22,15 +28,17 @@ macro_rules! impl_vec2_common_methods {
         }
 
         /// Creates a vector with values `[x: 1.0, y: 0.0]`.
+        #[deprecated = "Use Vec2::X instead"]
         #[inline(always)]
         pub const fn unit_x() -> $vec2 {
-            Self($inner::UNIT_X)
+            Self($inner::X)
         }
 
         /// Creates a vector with values `[x: 0.0, y: 1.0]`.
+        #[deprecated = "Use Vec2::Y instead"]
         #[inline(always)]
         pub const fn unit_y() -> $vec2 {
-            Self($inner::UNIT_Y)
+            Self($inner::Y)
         }
 
         /// Creates a 3D vector from `self` and the given `z` value.

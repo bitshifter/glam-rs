@@ -3,15 +3,17 @@
 macro_rules! impl_vecn_common_methods {
     ($t:ty, $vecn:ident, $mask:ident, $inner:ident, $vectrait:ident) => {
         /// Creates a vector with all elements set to `0.0`.
+        #[deprecated = "use ZERO constant instead"]
         #[inline(always)]
         pub const fn zero() -> Self {
-            Self($inner::ZERO)
+            Self::ZERO
         }
 
         /// Creates a vector with all elements set to `1.0`.
+        #[deprecated = "use ONE constant instead"]
         #[inline(always)]
         pub const fn one() -> Self {
-            Self($inner::ONE)
+            Self::ONE
         }
 
         /// Creates a vector with all elements set to `v`.
@@ -551,7 +553,7 @@ macro_rules! impl_vecn_common_traits {
             where
                 I: Iterator<Item = &'a Self>,
             {
-                iter.fold(Self::zero(), |a, &b| Self::add(a, b))
+                iter.fold(Self::ZERO, |a, &b| Self::add(a, b))
             }
         }
 
@@ -562,7 +564,7 @@ macro_rules! impl_vecn_common_traits {
             where
                 I: Iterator<Item = &'a Self>,
             {
-                iter.fold(Self::one(), |a, &b| Self::mul(a, b))
+                iter.fold(Self::ONE, |a, &b| Self::mul(a, b))
             }
         }
     };

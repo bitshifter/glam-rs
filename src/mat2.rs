@@ -28,16 +28,24 @@ use std::iter::{Product, Sum};
 
 macro_rules! impl_mat2_methods {
     ($t:ty, $vec2:ident, $inner:ident) => {
+        /// A 2x2 matrix with all elements set to `0.0`.
+        pub const ZERO: Self = Self($inner::ZERO);
+
+        /// A 2x2 identity matrix, where all diagonal elements are `1`, and all off-diagonal elements are `0`.
+        pub const IDENTITY: Self = Self($inner::IDENTITY);
+
         /// Creates a 2x2 matrix with all elements set to `0.0`.
+        #[deprecated = "use Mat2::ZERO instead"]
         #[inline(always)]
         pub const fn zero() -> Self {
-            Self($inner::ZERO)
+            Self::ZERO
         }
 
         /// Creates a 2x2 identity matrix.
+        #[deprecated = "use Mat2::IDENTITY instead"]
         #[inline(always)]
         pub const fn identity() -> Self {
-            Self($inner::IDENTITY)
+            Self::IDENTITY
         }
 
         /// Creates a 2x2 matrix from two column vectors.
@@ -210,7 +218,7 @@ macro_rules! impl_mat2_traits {
         impl Default for $mat2 {
             #[inline(always)]
             fn default() -> Self {
-                Self::identity()
+                Self::IDENTITY
             }
         }
 
@@ -328,7 +336,7 @@ macro_rules! impl_mat2_traits {
             where
                 I: Iterator<Item = &'a Self>,
             {
-                iter.fold(Self::zero(), |a, &b| Self::add(a, b))
+                iter.fold(Self::ZERO, |a, &b| Self::add(a, b))
             }
         }
 
@@ -338,7 +346,7 @@ macro_rules! impl_mat2_traits {
             where
                 I: Iterator<Item = &'a Self>,
             {
-                iter.fold(Self::identity(), |a, &b| Self::mul(a, b))
+                iter.fold(Self::IDENTITY, |a, &b| Self::mul(a, b))
             }
         }
     };

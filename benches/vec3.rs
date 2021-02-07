@@ -50,7 +50,7 @@ bench_binop!(
 
 #[inline]
 fn vec3_to_rgb_op(v: Vec3) -> u32 {
-    let (red, green, blue) = (v.min(Vec3::one()).max(Vec3::zero()) * 255.0).into();
+    let (red, green, blue) = (v.min(Vec3::ONE).max(Vec3::ZERO) * 255.0).into();
     ((red as u32) << 16 | (green as u32) << 8 | (blue as u32)).into()
 }
 
@@ -97,7 +97,7 @@ op => vec3_into_tuple,
 from => random_vec3
 );
 
-euler!(vec3_euler, "vec3 euler", ty => Vec3, storage => Vec3, zero => Vec3::zero(), rand => random_vec3);
+euler!(vec3_euler, "vec3 euler", ty => Vec3, storage => Vec3, zero => Vec3::ZERO, rand => random_vec3);
 
 bench_binop!(
     vec3_angle_between,

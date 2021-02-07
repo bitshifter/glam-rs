@@ -11,14 +11,12 @@ macro_rules! impl_mat3_tests {
 
         const MATRIX: [[$t; 3]; 3] = [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]];
 
-        const ZERO: [[$t; 3]; 3] = [[0.0; 3]; 3];
-
         #[test]
         fn test_const() {
             const M0: $mat3 = $const_new!([0.0; 9]);
             const M1: $mat3 = $const_new!([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]);
             const M2: $mat3 = $const_new!([1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]);
-            assert_eq!($mat3::zero(), M0);
+            assert_eq!($mat3::ZERO, M0);
             assert_eq!(
                 $mat3::from_cols_array(&[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]),
                 M1
@@ -31,7 +29,15 @@ macro_rules! impl_mat3_tests {
 
         #[test]
         fn test_mat3_identity() {
-            let identity = $mat3::identity();
+            assert_eq!(
+                $mat3::IDENTITY,
+                $mat3::from_cols_array(&[
+                    1., 0., 0., //
+                    0., 1., 0., //
+                    0., 0., 1., //
+                ])
+            );
+            let identity = $mat3::IDENTITY;
             assert_eq!(IDENTITY, identity.to_cols_array_2d());
             assert_eq!($mat3::from_cols_array_2d(&IDENTITY), identity);
             assert_eq!(identity, identity * identity);
@@ -40,12 +46,15 @@ macro_rules! impl_mat3_tests {
 
         #[test]
         fn test_mat3_zero() {
-            assert_eq!($mat3::from_cols_array_2d(&ZERO), $mat3::zero());
+            assert_eq!(
+                $mat3::ZERO,
+                $mat3::from_cols_array(&[0., 0., 0., 0., 0., 0., 0., 0., 0.])
+            );
         }
 
         #[test]
         fn test_mat3_accessors() {
-            let mut m = $mat3::zero();
+            let mut m = $mat3::ZERO;
             m.x_axis = $vec3::new(1.0, 2.0, 3.0);
             m.y_axis = $vec3::new(4.0, 5.0, 6.0);
             m.z_axis = $vec3::new(7.0, 8.0, 9.0);
@@ -79,21 +88,21 @@ macro_rules! impl_mat3_tests {
         #[test]
         fn test_from_rotation() {
             let rot_x1 = $mat3::from_rotation_x(deg(180.0));
-            let rot_x2 = $mat3::from_axis_angle($vec3::unit_x(), deg(180.0));
+            let rot_x2 = $mat3::from_axis_angle($vec3::X, deg(180.0));
             assert_approx_eq!(rot_x1, rot_x2);
             let rot_y1 = $mat3::from_rotation_y(deg(180.0));
-            let rot_y2 = $mat3::from_axis_angle($vec3::unit_y(), deg(180.0));
+            let rot_y2 = $mat3::from_axis_angle($vec3::Y, deg(180.0));
             assert_approx_eq!(rot_y1, rot_y2);
             let rot_z1 = $mat3::from_rotation_z(deg(180.0));
-            let rot_z2 = $mat3::from_axis_angle($vec3::unit_z(), deg(180.0));
+            let rot_z2 = $mat3::from_axis_angle($vec3::Z, deg(180.0));
             assert_approx_eq!(rot_z1, rot_z2);
         }
 
         #[test]
         fn test_mat3_mul() {
-            let mat_a = $mat3::from_axis_angle($vec3::unit_z(), deg(90.0));
-            assert_approx_eq!($newvec3(-1.0, 0.0, 0.0), mat_a * $vec3::unit_y());
-            assert_approx_eq!($newvec3(-1.0, 0.0, 0.0), mat_a.mul_vec3($vec3::unit_y()));
+            let mat_a = $mat3::from_axis_angle($vec3::Z, deg(90.0));
+            assert_approx_eq!($newvec3(-1.0, 0.0, 0.0), mat_a * $vec3::Y);
+            assert_approx_eq!($newvec3(-1.0, 0.0, 0.0), mat_a.mul_vec3($vec3::Y));
         }
 
         #[test]
@@ -103,13 +112,13 @@ macro_rules! impl_mat3_tests {
                 $t::to_radians(90.0),
                 $vec2::new(1.0, 2.0),
             );
-            let result2 = mat_b.transform_vector2($vec2::unit_y());
+            let result2 = mat_b.transform_vector2($vec2::Y);
             assert_approx_eq!($vec2::new(-1.5, 0.0), result2, 1.0e-6);
-            assert_approx_eq!(result2, (mat_b * $vec2::unit_y().extend(0.0)).truncate());
+            assert_approx_eq!(result2, (mat_b * $vec2::Y.extend(0.0)).truncate());
 
-            let result2 = mat_b.transform_point2($vec2::unit_y());
+            let result2 = mat_b.transform_point2($vec2::Y);
             assert_approx_eq!($vec2::new(-0.5, 2.0), result2, 1.0e-6);
-            assert_approx_eq!(result2, (mat_b * $vec2::unit_y().extend(1.0)).truncate());
+            assert_approx_eq!(result2, (mat_b * $vec2::Y.extend(1.0)).truncate());
         }
 
         #[test]
@@ -143,9 +152,9 @@ macro_rules! impl_mat3_tests {
         fn test_from_scale() {
             let m = $mat3::from_scale($vec3::new(2.0, 4.0, 8.0));
             assert_approx_eq!(m * $vec3::new(1.0, 1.0, 1.0), $vec3::new(2.0, 4.0, 8.0));
-            assert_approx_eq!($vec3::unit_x() * 2.0, m.x_axis);
-            assert_approx_eq!($vec3::unit_y() * 4.0, m.y_axis);
-            assert_approx_eq!($vec3::unit_z() * 8.0, m.z_axis);
+            assert_approx_eq!($vec3::X * 2.0, m.x_axis);
+            assert_approx_eq!($vec3::Y * 4.0, m.y_axis);
+            assert_approx_eq!($vec3::Z * 8.0, m.z_axis);
         }
 
         #[test]
@@ -163,8 +172,8 @@ macro_rules! impl_mat3_tests {
 
         #[test]
         fn test_mat3_det() {
-            assert_eq!(0.0, $mat3::zero().determinant());
-            assert_eq!(1.0, $mat3::identity().determinant());
+            assert_eq!(0.0, $mat3::ZERO.determinant());
+            assert_eq!(1.0, $mat3::IDENTITY.determinant());
             assert_eq!(1.0, $mat3::from_rotation_x(deg(90.0)).determinant());
             assert_eq!(1.0, $mat3::from_rotation_y(deg(180.0)).determinant());
             assert_eq!(1.0, $mat3::from_rotation_z(deg(270.0)).determinant());
@@ -176,31 +185,31 @@ macro_rules! impl_mat3_tests {
 
         #[test]
         fn test_mat3_inverse() {
-            // assert_eq!(None, $mat3::zero().inverse());
-            let inv = $mat3::identity().inverse();
+            // assert_eq!(None, $mat3::ZERO.inverse());
+            let inv = $mat3::IDENTITY.inverse();
             // assert_ne!(None, inv);
-            assert_approx_eq!($mat3::identity(), inv);
+            assert_approx_eq!($mat3::IDENTITY, inv);
 
             let rotz = $mat3::from_rotation_z(deg(90.0));
             let rotz_inv = rotz.inverse();
             // assert_ne!(None, rotz_inv);
             // let rotz_inv = rotz_inv.unwrap();
-            assert_approx_eq!($mat3::identity(), rotz * rotz_inv);
-            assert_approx_eq!($mat3::identity(), rotz_inv * rotz);
+            assert_approx_eq!($mat3::IDENTITY, rotz * rotz_inv);
+            assert_approx_eq!($mat3::IDENTITY, rotz_inv * rotz);
 
             let scale = $mat3::from_scale($newvec3(4.0, 5.0, 6.0));
             let scale_inv = scale.inverse();
             // assert_ne!(None, scale_inv);
             // let scale_inv = scale_inv.unwrap();
-            assert_approx_eq!($mat3::identity(), scale * scale_inv);
-            assert_approx_eq!($mat3::identity(), scale_inv * scale);
+            assert_approx_eq!($mat3::IDENTITY, scale * scale_inv);
+            assert_approx_eq!($mat3::IDENTITY, scale_inv * scale);
 
             let m = scale * rotz;
             let m_inv = m.inverse();
             // assert_ne!(None, m_inv);
             // let m_inv = m_inv.unwrap();
-            assert_approx_eq!($mat3::identity(), m * m_inv);
-            assert_approx_eq!($mat3::identity(), m_inv * m);
+            assert_approx_eq!($mat3::IDENTITY, m * m_inv);
+            assert_approx_eq!($mat3::IDENTITY, m_inv * m);
             assert_approx_eq!(m_inv, rotz_inv * scale_inv);
         }
 
@@ -215,9 +224,9 @@ macro_rules! impl_mat3_tests {
             assert_eq!(m0x2, m0 * 2.0);
             assert_eq!(m0x2, 2.0 * m0);
             assert_eq!(m0x2, m0 + m0);
-            assert_eq!($mat3::zero(), m0 - m0);
-            assert_approx_eq!(m0, m0 * $mat3::identity());
-            assert_approx_eq!(m0, $mat3::identity() * m0);
+            assert_eq!($mat3::ZERO, m0 - m0);
+            assert_approx_eq!(m0, m0 * $mat3::IDENTITY);
+            assert_approx_eq!(m0, $mat3::IDENTITY * m0);
         }
 
         #[test]
@@ -229,23 +238,23 @@ macro_rules! impl_mat3_tests {
         #[cfg(feature = "std")]
         #[test]
         fn test_sum() {
-            let id = $mat3::identity();
+            let id = $mat3::IDENTITY;
             assert_eq!(vec![id, id].iter().sum::<$mat3>(), id + id);
         }
 
         #[cfg(feature = "std")]
         #[test]
         fn test_product() {
-            let two = $mat3::identity() + $mat3::identity();
+            let two = $mat3::IDENTITY + $mat3::IDENTITY;
             assert_eq!(vec![two, two].iter().product::<$mat3>(), two * two);
         }
 
         #[test]
         fn test_mat3_is_finite() {
-            assert!($mat3::identity().is_finite());
-            assert!(!($mat3::identity() * INFINITY).is_finite());
-            assert!(!($mat3::identity() * NEG_INFINITY).is_finite());
-            assert!(!($mat3::identity() * NAN).is_finite());
+            assert!($mat3::IDENTITY.is_finite());
+            assert!(!($mat3::IDENTITY * INFINITY).is_finite());
+            assert!(!($mat3::IDENTITY * NEG_INFINITY).is_finite());
+            assert!(!($mat3::IDENTITY * NAN).is_finite());
         }
     };
 }
@@ -263,9 +272,9 @@ mod mat3 {
 
     #[test]
     fn test_mul_vec3a() {
-        let mat_a = Mat3::from_axis_angle(Vec3::unit_z(), deg(90.0));
-        assert_approx_eq!(vec3a(-1.0, 0.0, 0.0), mat_a * Vec3A::unit_y());
-        assert_approx_eq!(vec3a(-1.0, 0.0, 0.0), mat_a.mul_vec3a(Vec3A::unit_y()));
+        let mat_a = Mat3::from_axis_angle(Vec3::Z, deg(90.0));
+        assert_approx_eq!(vec3a(-1.0, 0.0, 0.0), mat_a * Vec3A::Y);
+        assert_approx_eq!(vec3a(-1.0, 0.0, 0.0), mat_a.mul_vec3a(Vec3A::Y));
     }
 
     #[test]
