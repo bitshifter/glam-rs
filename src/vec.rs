@@ -260,7 +260,7 @@ macro_rules! impl_vecn_float_methods {
         #[inline(always)]
         pub fn normalize_or_zero(self) -> Self {
             let rcp = self.length_recip();
-            if rcp.is_finite() {
+            if rcp.is_finite() && rcp > 0.0 {
                 self * rcp
             } else {
                 Self::ZERO
