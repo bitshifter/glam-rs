@@ -35,32 +35,45 @@ macro_rules! assert_approx_eq {
 #[macro_export]
 macro_rules! impl_vec_float_normalize_tests {
     ($t:ident, $vec:ident) => {
+        use core::$t::MAX;
         use core::$t::MIN_POSITIVE;
 
         #[test]
         fn test_normalize() {
-            assert_eq!((-42.0 * $vec::X).normalize(), -$vec::X);
+            let x = $vec::X;
+
+            assert_eq!((-42.0 * x).normalize(), -x);
+            assert_eq!((MAX.sqrt() * x).normalize(), x);
+            // assert_eq!((MAX * x).normalize(), x); // normalize fails for huge vectors and returns zero
 
             // We expect not to be able to normalize small numbers:
             assert!(!$vec::ZERO.normalize().is_finite());
-            assert!(!(MIN_POSITIVE * $vec::X).normalize().is_finite());
+            assert!(!(MIN_POSITIVE * x).normalize().is_finite());
 
-            // We expect not to be able to normalize non-finite values:
-            assert!(!(INFINITY * $vec::X).normalize().is_finite());
-            assert!(!(NAN * $vec::X).normalize().is_finite());
+            // We expect not to be able to normalize non-finite vectors:
+            assert!(!(INFINITY * x).normalize().is_finite());
+            assert!(!(NAN * x).normalize().is_finite());
         }
 
         #[test]
         fn test_normalize_or_zero() {
-            assert_eq!((-42.0 * $vec::X).normalize(), -$vec::X);
+            let x = $vec::X;
+            let y = $vec::Y;
+
+            assert_eq!((-42.0 * x).normalize(), -x);
+            assert_eq!((MAX.sqrt() * x).normalize_or_zero(), x);
 
             // We expect `normalize_or_zero` to return zero when inputs are very small:
             assert_eq!($vec::ZERO.normalize_or_zero(), $vec::ZERO);
-            assert_eq!((MIN_POSITIVE * $vec::X).normalize_or_zero(), $vec::ZERO);
+            assert_eq!((MIN_POSITIVE * x).normalize_or_zero(), $vec::ZERO);
 
             // We expect `normalize_or_zero` to return zero when inputs are non-finite:
-            assert_eq!((INFINITY * $vec::X).normalize_or_zero(), $vec::ZERO);
-            assert_eq!((NAN * $vec::X).normalize_or_zero(), $vec::ZERO);
+            assert_eq!((INFINITY * x).normalize_or_zero(), $vec::ZERO);
+            assert_eq!((NAN * x).normalize_or_zero(), $vec::ZERO);
+
+            // We expect `normalize_or_zero` to return zero when inputs are very large:
+            assert_eq!((MAX * x).normalize_or_zero(), $vec::ZERO);
+            assert_eq!((MAX * (x + y)).normalize_or_zero(), $vec::ZERO);
         }
     };
 }
