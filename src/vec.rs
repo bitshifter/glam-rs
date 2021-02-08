@@ -263,7 +263,7 @@ macro_rules! impl_vecn_float_methods {
             if v.is_finite() {
                 v
             } else {
-                Self::default()
+                Self::ZERO
             }
         }
 

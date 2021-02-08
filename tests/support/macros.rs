@@ -42,7 +42,7 @@ macro_rules! impl_vec_float_normalize_tests {
             assert_eq!((-42.0 * $vec::X).normalize(), -$vec::X);
 
             // We expect not to be able to normalize small numbers:
-            assert!(!$vec::default().normalize().is_finite());
+            assert!(!$vec::ZERO.normalize().is_finite());
             assert!(!(MIN_POSITIVE * $vec::X).normalize().is_finite());
 
             // We expect not to be able to normalize non-finite values:
@@ -55,15 +55,12 @@ macro_rules! impl_vec_float_normalize_tests {
             assert_eq!((-42.0 * $vec::X).normalize(), -$vec::X);
 
             // We expect `normalize_or_zero` to return zero when inputs are very small:
-            assert_eq!($vec::default().normalize_or_zero(), $vec::default());
-            assert_eq!(
-                (MIN_POSITIVE * $vec::X).normalize_or_zero(),
-                $vec::default()
-            );
+            assert_eq!($vec::ZERO.normalize_or_zero(), $vec::ZERO);
+            assert_eq!((MIN_POSITIVE * $vec::X).normalize_or_zero(), $vec::ZERO);
 
             // We expect `normalize_or_zero` to return zero when inputs are non-finite:
-            assert_eq!((INFINITY * $vec::X).normalize_or_zero(), $vec::default());
-            assert_eq!((NAN * $vec::X).normalize_or_zero(), $vec::default());
+            assert_eq!((INFINITY * $vec::X).normalize_or_zero(), $vec::ZERO);
+            assert_eq!((NAN * $vec::X).normalize_or_zero(), $vec::ZERO);
         }
     };
 }
