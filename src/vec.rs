@@ -259,9 +259,9 @@ macro_rules! impl_vecn_float_methods {
         /// the result of this operation will be zero.
         #[inline(always)]
         pub fn normalize_or_zero(self) -> Self {
-            let v = self.normalize();
-            if v.is_finite() {
-                v
+            let rcp = self.length_recip();
+            if rcp.is_finite() {
+                self * rcp
             } else {
                 Self::ZERO
             }
