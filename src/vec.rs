@@ -246,10 +246,25 @@ macro_rules! impl_vecn_float_methods {
 
         /// Returns `self` normalized to length 1.0.
         ///
-        /// For valid results, `self` must _not_ be of length zero.
+        /// For valid results, `self` must _not_ be of length zero, nor very close to zero.
+        /// You can check the results with [`Self::is_finite`], or use [`Self::normalize_or_zero`].
         #[inline(always)]
         pub fn normalize(self) -> Self {
             Self($flttrait::normalize(self.0))
+        }
+
+        /// Returns `self` normalized to length 1.0 if possible, else returns zero.
+        ///
+        /// In particular, if the input is zero (or very close to zero), or non-finite,
+        /// the result of this operation will be zero.
+        #[inline(always)]
+        pub fn normalize_or_zero(self) -> Self {
+            let rcp = self.length_recip();
+            if rcp.is_finite() && rcp > 0.0 {
+                self * rcp
+            } else {
+                Self::ZERO
+            }
         }
 
         /// Returns whether `self` is length `1.0` or not.
