@@ -317,6 +317,30 @@ macro_rules! impl_quat_tests {
             assert!(!$quat::from_xyzw(0.0, 0.0, NEG_INFINITY, 0.0).is_finite());
             assert!(!$quat::from_xyzw(0.0, 0.0, 0.0, NAN).is_finite());
         }
+
+        #[test]
+        fn test_rotation_arc() {
+            let eps = 1e-6;
+            {
+                let q = $quat::from_rotation_arc($vec3::X, $vec3::X);
+                assert!(q.is_near_identity());
+            }
+            {
+                let from = $vec3::X;
+                let to = $vec3::Y;
+                assert_approx_eq!(
+                    ($quat::from_rotation_arc(from, to) * from - to).length(),
+                    0.0,
+                    eps
+                );
+            }
+            {
+                let from = $vec3::new(0.2, 0.3, 0.4).normalize();
+                let to = -from;
+                let q = $quat::from_rotation_arc(from, to);
+                assert_approx_eq!((q * from - to).length(), 0.0, eps);
+            }
+        }
     };
 }
 

@@ -128,6 +128,45 @@ macro_rules! impl_quat_methods {
             ))
         }
 
+        /// Gets the minimal rotation for transforming `from` to `to`.
+        /// The rotation is in the plane spanned by the two vectors.
+        /// Will rotate at most 180 degrees.
+        ///
+        /// The input vectors must be finite and non-zero.
+        ///
+        /// `from_rotation_arc(from, to) * from ≈ to`.
+        pub fn from_rotation_arc(from: $vec3, to: $vec3) -> Self {
+            let from = from.normalize();
+            let to = to.normalize();
+            let w2 = (2.0 + 2.0 * from.dot(to)).sqrt();
+            let w2_inv = 1.0 / w2;
+            if w2_inv.is_finite() {
+                let v = from.cross(to) * w2_inv;
+                Self::from_xyzw(v.x, v.y, v.z, w2 / 2.0)
+            } else {
+                // 180° singulary.
+                let tau = 6.28318530717958647692528676655900577;
+                Self::from_axis_angle(from.any_orthonormal(), tau / 2.0)
+            }
+        }
+
+        /// Gets the minimal rotation for transforming `from` to either `to` or `-to`.
+        /// This means that the resulting quaternion will rotate `from` so that it is colinear with `to`.
+        ///
+        /// The rotation is in the plane spanned by the two vectors.
+        /// Will rotate at most 90 degrees.
+        ///
+        /// The input vectors must be finite and non-zero.
+        ///
+        /// `to.dot(from_rotation_arc_colinear(from, to) * from).abs() ≈ 1`.
+        pub fn from_rotation_arc_colinear(from: $vec3, to: $vec3) -> Self {
+            if from.dot(to) < 0.0 {
+                Self::from_rotation_arc(from, -to)
+            } else {
+                Self::from_rotation_arc(from, to)
+            }
+        }
+
         /// Returns the rotation axis and angle of `self`.
         #[inline(always)]
         pub fn to_axis_angle(self) -> ($vec3, $t) {
