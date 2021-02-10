@@ -193,6 +193,28 @@ macro_rules! impl_vec3_float_methods {
         pub fn angle_between(self, other: Self) -> $t {
             self.0.angle_between(other.0)
         }
+
+        /// Returns somes vector that is orthogonal to the given one.
+        ///
+        /// The output vector is not necessarily unit-length.
+        /// For that use [`Self::any_orthonormal`] instead.
+        ///
+        /// The input vector must be finite and non-zero.
+        #[inline]
+        pub fn any_orthogonal(&self) -> Self {
+            if self.x.abs() > self.y.abs() {
+                Self::new(-self.z, 0.0, self.x) // self.cross(Self::Y)
+            } else {
+                Self::new(0.0, self.z, -self.y) // self.cross(Self::X)
+            }
+        }
+
+        /// Returns any unit-length vector that is orthogonal to the given one.
+        /// The input vector must be finite and non-zero.
+        #[inline]
+        pub fn any_orthonormal(&self) -> Self {
+            self.any_orthogonal().normalize()
+        }
     };
 }
 

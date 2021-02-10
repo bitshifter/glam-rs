@@ -457,6 +457,8 @@ macro_rules! impl_vec3_float_tests {
         use core::$t::NAN;
         use core::$t::NEG_INFINITY;
 
+        const NONZERO_TEST_VECTORS: [$vec3; 3] = [$vec3::X, $vec3::Y, $vec3::Z];
+
         #[test]
         fn test_vec3_consts() {
             assert_eq!($vec3::ZERO, $new(0 as $t, 0 as $t, 0 as $t));
@@ -668,6 +670,19 @@ macro_rules! impl_vec3_float_tests {
                 $vec3::new(0.6, 0.8, 0.0).clamp_length_min(10.0),
                 $vec3::new(6.0, 8.0, 0.0) // lengthened to length 10.0
             );
+        }
+
+        #[test]
+        fn test_any_orthogonal() {
+            for &v in &NONZERO_TEST_VECTORS {
+                let orthogonal = v.any_orthogonal();
+                assert!(orthogonal != $vec3::ZERO);
+                assert!(v.dot(orthogonal).abs() < 1e-5);
+
+                let orthonormal = v.any_orthonormal();
+                assert!(orthonormal.is_normalized());
+                assert!(v.dot(orthonormal).abs() < 1e-5);
+            }
         }
     };
 }
