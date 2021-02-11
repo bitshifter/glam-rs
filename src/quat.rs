@@ -143,7 +143,7 @@ macro_rules! impl_quat_methods {
             glam_assert!(from.is_normalized());
             glam_assert!(to.is_normalized());
 
-            let one_minus_eps = 1.0 - 2.0 * $t::EPSILON;
+            let one_minus_eps = 1.0 - 2.0 * core::$t::EPSILON;
             let dot = from.dot(to);
             if dot > one_minus_eps {
                 // 0° singulary: from ≈ to
