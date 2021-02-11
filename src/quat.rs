@@ -133,19 +133,19 @@ macro_rules! impl_quat_methods {
         /// The rotation is in the plane spanned by the two vectors.
         /// Will rotate at most 180 degrees.
         ///
-        /// The input vectors must be finite and non-zero.
+        /// The input vectors must be normalized (unit-length).
         ///
         /// `from_rotation_arc(from, to) * from ≈ to`.
         pub fn from_rotation_arc(from: $vec3, to: $vec3) -> Self {
-            let from = from.normalize();
-            let to = to.normalize();
-            let w2 = (2.0 + 2.0 * from.dot(to)).sqrt();
-            let w2_inv = 1.0 / w2;
-            if w2_inv.is_finite() {
-                let v = from.cross(to) * w2_inv;
+            glam_assert!(from.is_normalized());
+            glam_assert!(to.is_normalized());
+            let w2_sqr = (2.0 + 2.0 * from.dot(to));
+            if w2_sqr > 16.0 * $t::EPSILON {
+                let w2 = w2_sqr.sqrt();
+                let v = from.cross(to) / w2;
                 Self::from_xyzw(v.x, v.y, v.z, w2 / 2.0)
             } else {
-                // 180° singulary.
+                // 180° singulary: from ≈ -to
                 let pi = std::$t::consts::PI; // half a turn = 𝛕/2 = 180°
                 Self::from_axis_angle(from.any_orthonormal(), pi)
             }
@@ -157,7 +157,7 @@ macro_rules! impl_quat_methods {
         /// The rotation is in the plane spanned by the two vectors.
         /// Will rotate at most 90 degrees.
         ///
-        /// The input vectors must be finite and non-zero.
+        /// The input vectors must be normalized (unit-length).
         ///
         /// `to.dot(from_rotation_arc_colinear(from, to) * from).abs() ≈ 1`.
         pub fn from_rotation_arc_colinear(from: $vec3, to: $vec3) -> Self {

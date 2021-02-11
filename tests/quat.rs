@@ -320,25 +320,41 @@ macro_rules! impl_quat_tests {
 
         #[test]
         fn test_rotation_arc() {
-            let eps = 1e-6;
-            {
-                let q = $quat::from_rotation_arc($vec3::X, $vec3::X);
-                assert!(q.is_near_identity());
-            }
-            {
-                let from = $vec3::X;
-                let to = $vec3::Y;
-                assert_approx_eq!(
-                    ($quat::from_rotation_arc(from, to) * from - to).length(),
-                    0.0,
-                    eps
-                );
-            }
-            {
-                let from = $vec3::new(0.2, 0.3, 0.4).normalize();
-                let to = -from;
-                let q = $quat::from_rotation_arc(from, to);
-                assert_approx_eq!((q * from - to).length(), 0.0, eps);
+            let nonzero_test_vectors = [
+                $vec3::X,
+                $vec3::Y,
+                $vec3::Z,
+                $vec3::new(0.1, 0.2, 0.3),
+                $vec3::new(0.2, 0.3, 0.4),
+                $vec3::new(4.0, -5.0, 6.0),
+                $vec3::new(1.0, 1e-5, 0.0),
+                $vec3::new(-2.0, 0.5, -1.0),
+            ];
+
+            let eps = 10.0 * $t::EPSILON;
+
+            for &from in &nonzero_test_vectors {
+                let from = from.normalize();
+
+                {
+                    let q = $quat::from_rotation_arc(from, from);
+                    assert!(q.is_near_identity());
+                }
+
+                {
+                    let to = -from;
+                    let q = $quat::from_rotation_arc(from, to);
+                    assert!(q.is_normalized());
+                    assert!((q * from - to).length() < eps);
+                }
+
+                for &to in &nonzero_test_vectors {
+                    let to = to.normalize();
+
+                    let q = $quat::from_rotation_arc(from, to);
+                    assert!(q.is_normalized());
+                    assert!((q * from - to).length() < eps,);
+                }
             }
         }
     };
