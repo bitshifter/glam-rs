@@ -278,7 +278,12 @@ macro_rules! impl_vecn_float_methods {
         /// See also [`Self::try_normalize`].
         #[inline]
         pub fn normalize_or_zero(self) -> Self {
-            self.try_normalize().unwrap_or(Self::ZERO)
+            let rcp = self.length_recip();
+            if rcp.is_finite() && rcp > 0.0 {
+                self * rcp
+            } else {
+                Self::ZERO
+            }
         }
 
         /// Returns whether `self` is length `1.0` or not.
