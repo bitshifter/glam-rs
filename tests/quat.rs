@@ -338,7 +338,7 @@ macro_rules! impl_quat_tests {
                 $vec3::new(-0.00019813581, -0.00008946839, -0.99999988079),
             ];
 
-            let eps = 8.0 * $t::EPSILON.sqrt(); // the accuracy is very bad for the pathological cases :(
+            let eps = 5e3 * $t::EPSILON;
 
             for &from in &nonzero_test_vectors {
                 let from = from.normalize();
