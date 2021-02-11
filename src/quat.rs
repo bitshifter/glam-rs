@@ -136,6 +136,9 @@ macro_rules! impl_quat_methods {
         /// The input vectors must be normalized (unit-length).
         ///
         /// `from_rotation_arc(from, to) * from ≈ to`.
+        ///
+        /// For near-singular cases (from≈to and from≈-to) the current implementation
+        /// is only accurate to about 0.002 (for `f32`).
         pub fn from_rotation_arc(from: $vec3, to: $vec3) -> Self {
             glam_assert!(from.is_normalized());
             glam_assert!(to.is_normalized());
