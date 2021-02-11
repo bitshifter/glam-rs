@@ -89,7 +89,6 @@ macro_rules! impl_mat4_methods {
         }
 
         /// Creates a 4x4 matrix with its diagonal set to `diagonal` and all other entries set to 0.
-        #[doc(alias = "scale")]
         #[inline(always)]
         pub fn from_diagonal(diagonal: $vec4) -> Self {
             Self($inner::from_diagonal(diagonal.0))
