@@ -669,6 +669,27 @@ macro_rules! impl_vec3_float_tests {
                 $vec3::new(6.0, 8.0, 0.0) // lengthened to length 10.0
             );
         }
+
+        #[test]
+        fn test_any_ortho() {
+            let eps = 2.0 * core::$t::EPSILON;
+
+            for &v in &vec3_float_test_vectors!($vec3) {
+                let orthogonal = v.any_orthogonal_vector();
+                assert!(orthogonal != $vec3::ZERO && orthogonal.is_finite());
+                assert!(v.dot(orthogonal).abs() < eps);
+
+                let n = v.normalize();
+
+                let orthonormal = n.any_orthonormal_vector();
+                assert!(orthonormal.is_normalized());
+                assert!(n.dot(orthonormal).abs() < eps);
+
+                let (a, b) = n.any_orthonormal_pair();
+                assert!(a.is_normalized() && n.dot(a).abs() < eps);
+                assert!(b.is_normalized() && n.dot(b).abs() < eps);
+            }
+        }
     };
 }
 

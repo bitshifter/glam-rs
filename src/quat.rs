@@ -29,7 +29,7 @@ use core::{
 use std::iter::{Product, Sum};
 
 macro_rules! impl_quat_methods {
-    ($t:ty, $quat:ident, $vec3:ident, $mat3:ident, $mat4:ident, $inner:ident) => {
+    ($t:ident, $quat:ident, $vec3:ident, $mat3:ident, $mat4:ident, $inner:ident) => {
         /// The identity quaternion. Corresponds to no rotation.
         pub const IDENTITY: Self = Self($inner::W);
 
@@ -78,6 +78,7 @@ macro_rules! impl_quat_methods {
         }
 
         /// Create a quaterion for a normalized rotation axis and angle (in radians).
+        /// The axis must be normalized (unit-length).
         #[inline(always)]
         pub fn from_axis_angle(axis: $vec3, angle: $t) -> Self {
             Self($inner::from_axis_angle(axis.0, angle))
@@ -126,6 +127,52 @@ macro_rules! impl_quat_methods {
                 mat.y_axis.0.into(),
                 mat.z_axis.0.into(),
             ))
+        }
+
+        /// Gets the minimal rotation for transforming `from` to `to`.
+        /// The rotation is in the plane spanned by the two vectors.
+        /// Will rotate at most 180 degrees.
+        ///
+        /// The input vectors must be normalized (unit-length).
+        ///
+        /// `from_rotation_arc(from, to) * from ≈ to`.
+        ///
+        /// For near-singular cases (from≈to and from≈-to) the current implementation
+        /// is only accurate to about 0.001 (for `f32`).
+        pub fn from_rotation_arc(from: $vec3, to: $vec3) -> Self {
+            glam_assert!(from.is_normalized());
+            glam_assert!(to.is_normalized());
+
+            let one_minus_eps = 1.0 - 2.0 * core::$t::EPSILON;
+            let dot = from.dot(to);
+            if dot > one_minus_eps {
+                // 0° singulary: from ≈ to
+                Self::IDENTITY
+            } else if dot < -one_minus_eps {
+                // 180° singulary: from ≈ -to
+                let pi = core::$t::consts::PI; // half a turn = 𝛕/2 = 180°
+                Self::from_axis_angle(from.any_orthonormal_vector(), pi)
+            } else {
+                let c = from.cross(to);
+                Self::from_xyzw(c.x, c.y, c.z, 1.0 + dot).normalize()
+            }
+        }
+
+        /// Gets the minimal rotation for transforming `from` to either `to` or `-to`.
+        /// This means that the resulting quaternion will rotate `from` so that it is colinear with `to`.
+        ///
+        /// The rotation is in the plane spanned by the two vectors.
+        /// Will rotate at most 90 degrees.
+        ///
+        /// The input vectors must be normalized (unit-length).
+        ///
+        /// `to.dot(from_rotation_arc_colinear(from, to) * from).abs() ≈ 1`.
+        pub fn from_rotation_arc_colinear(from: $vec3, to: $vec3) -> Self {
+            if from.dot(to) < 0.0 {
+                Self::from_rotation_arc(from, -to)
+            } else {
+                Self::from_rotation_arc(from, to)
+            }
         }
 
         /// Returns the rotation axis and angle of `self`.

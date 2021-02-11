@@ -317,6 +317,53 @@ macro_rules! impl_quat_tests {
             assert!(!$quat::from_xyzw(0.0, 0.0, NEG_INFINITY, 0.0).is_finite());
             assert!(!$quat::from_xyzw(0.0, 0.0, 0.0, NAN).is_finite());
         }
+
+        #[test]
+        fn test_rotation_arc() {
+            let eps = 2.0 * core::$t::EPSILON.sqrt();
+
+            for &from in &vec3_float_test_vectors!($vec3) {
+                let from = from.normalize();
+
+                {
+                    let q = $quat::from_rotation_arc(from, from);
+                    assert!(q.is_near_identity(), "from: {}, q: {}", from, q);
+                }
+
+                {
+                    let q = $quat::from_rotation_arc_colinear(from, from);
+                    assert!(q.is_near_identity(), "from: {}, q: {}", from, q);
+                }
+
+                {
+                    let to = -from;
+                    let q = $quat::from_rotation_arc(from, to);
+                    assert!(q.is_normalized());
+                    assert!((q * from - to).length() < eps);
+                }
+
+                {
+                    let to = -from;
+                    let q = $quat::from_rotation_arc_colinear(from, to);
+                    assert!(q.is_near_identity(), "from: {}, q: {}", from, q);
+                }
+
+                for &to in &vec3_float_test_vectors!($vec3) {
+                    let to = to.normalize();
+
+                    let q = $quat::from_rotation_arc(from, to);
+                    assert!(q.is_normalized());
+                    assert!((q * from - to).length() < eps);
+
+                    let q = $quat::from_rotation_arc_colinear(from, to);
+                    assert!(q.is_normalized());
+                    let transformed = q * from;
+                    assert!(
+                        (transformed - to).length() < eps || (-transformed - to).length() < eps
+                    );
+                }
+            }
+        }
     };
 }
 
