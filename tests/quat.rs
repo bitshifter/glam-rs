@@ -355,10 +355,21 @@ macro_rules! impl_quat_tests {
                 }
 
                 {
+                    let q = $quat::from_rotation_arc_colinear(from, from);
+                    assert!(q.is_near_identity(), "from: {}, q: {}", from, q);
+                }
+
+                {
                     let to = -from;
                     let q = $quat::from_rotation_arc(from, to);
                     assert!(q.is_normalized());
                     assert!((q * from - to).length() < eps);
+                }
+
+                {
+                    let to = -from;
+                    let q = $quat::from_rotation_arc_colinear(from, to);
+                    assert!(q.is_near_identity(), "from: {}, q: {}", from, q);
                 }
 
                 for &to in &nonzero_test_vectors {
@@ -367,6 +378,13 @@ macro_rules! impl_quat_tests {
                     let q = $quat::from_rotation_arc(from, to);
                     assert!(q.is_normalized());
                     assert!((q * from - to).length() < eps);
+
+                    let q = $quat::from_rotation_arc_colinear(from, to);
+                    assert!(q.is_normalized());
+                    let transformed = q * from;
+                    assert!(
+                        (transformed - to).length() < eps || (-transformed - to).length() < eps
+                    );
                 }
             }
         }
