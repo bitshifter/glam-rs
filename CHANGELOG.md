@@ -6,17 +6,27 @@ The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+
 ### Added
-* Added `Vec2::X`, `Vec4::W` etc as a shorter versions of `unit_x()` and friends.
+
+* Added `Vec2::X`, `Vec4::W` etc as a shorter versions of `unit_x()` and
+  friends.
 * Added `Vec2::ONE`, `Vec3::ONE` and `Vec4::ONE`.
 * Added `IDENTITY` constants for `Mat2`, `Mat3`, `Mat4` and `Quat`.
 * Added `ZERO` constant for vectors and matrices.
-* Added `clamp_length()`, `clamp_length_max()`, and `clamp_length_min` methods for `Vec2`, `Vec3`,
-  and `Vec4` for `f32` and `f64`.
+* Added `clamp_length()`, `clamp_length_max()`, and `clamp_length_min` methods
+  for `Vec2`, `Vec3`, and `Vec4` for `f32` and `f64`.
 * Added `try_normalize()` and `normalize_or_zero()` for all real vector types.
+* Added `from_diagonal` methods to all matrix types for creating diagonal
+  matrices.
 
 ### Changed
-* Deprecated `::unit_x/y/z()`, `::zero()`, `::one()`, `::identity()` functions in favor of constants.
+
+* Deprecated `::unit_x/y/z()`, `::zero()`, `::one()`, `::identity()` functions
+  in favor of constants.
+* The 3x3 matrix `from_scale` method was changed to create a affine transform
+  containing a 2-dimentional non-uniform scale. The `from_diagoanl` method may
+  be used to create a 3x3 scale matrix.
 
 ## [0.12.0] - 2021-01-15
 

@@ -71,10 +71,19 @@ macro_rules! impl_mat3_methods {
             self.0.to_cols_array_2d()
         }
 
-        /// Creates a 3x3 homogeneous transformation matrix from the given `scale`,
-        /// rotation `angle` (in radians) and `translation`.
+        /// Creates a 3x3 matrix with its diagonal set to `diagonal` and all other entries set to 0.
+        /// The resulting matrix is a 3D scale transfom.
+        #[doc(alias = "scale")]
+        #[inline(always)]
+        pub fn from_diagonal(diagonal: $vec3) -> Self {
+            Self($inner::from_diagonal(diagonal.0))
+        }
+
+        /// Creates a 2D affine transformation matrix from the given `scale`, rotation `angle` (in
+        /// radians) and `translation`.
         ///
-        /// The resulting matrix can be used to transform 2D points and vectors.
+        /// The resulting matrix can be used to transform 2D points and vectors. See
+        /// [`Self::transform_point2()`] and [`Self::transform_vector2()`].
         #[inline(always)]
         pub fn from_scale_angle_translation(scale: $vec2, angle: $t, translation: $vec2) -> Self {
             Self(FloatMatrix3x3::from_scale_angle_translation(
@@ -82,6 +91,15 @@ macro_rules! impl_mat3_methods {
                 angle,
                 translation.0,
             ))
+        }
+
+        /// Creates a 2D affine transformation matrix from the given non-uniform `scale`.
+        ///
+        /// The resulting matrix can be used to transform 2D points and vectors. See
+        /// [`Self::transform_point2()`] and [`Self::transform_vector2()`].
+        #[inline(always)]
+        pub fn from_scale(scale: $vec2) -> Self {
+            Self(Matrix3x3::from_scale(scale.0))
         }
 
         #[inline(always)]
@@ -121,12 +139,6 @@ macro_rules! impl_mat3_methods {
         #[inline(always)]
         pub fn from_rotation_z(angle: $t) -> Self {
             Self($inner::from_rotation_z(angle))
-        }
-
-        /// Creates a 3x3 non-uniform scale matrix.
-        #[inline(always)]
-        pub fn from_scale(scale: $vec3) -> Self {
-            Self(Matrix3x3::from_scale(scale.0))
         }
 
         // #[inline]

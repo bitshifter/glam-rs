@@ -88,8 +88,18 @@ macro_rules! impl_mat4_methods {
             self.0.to_cols_array_2d()
         }
 
-        /// Creates a 4x4 homogeneous transformation matrix from the given `scale`,
-        /// `rotation` and `translation`.
+        /// Creates a 4x4 matrix with its diagonal set to `diagonal` and all other entries set to 0.
+        #[doc(alias = "scale")]
+        #[inline(always)]
+        pub fn from_diagonal(diagonal: $vec4) -> Self {
+            Self($inner::from_diagonal(diagonal.0))
+        }
+
+        /// Creates a 3D affine transformation matrix from the given `scale`, `rotation` and
+        /// `translation`.
+        ///
+        /// The resulting matrix can be used to transform 3D points and vectors. See
+        /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
         #[inline(always)]
         pub fn from_scale_rotation_translation(
             scale: $vec3,
@@ -103,7 +113,10 @@ macro_rules! impl_mat4_methods {
             ))
         }
 
-        /// Creates a 4x4 homogeneous transformation matrix from the given `translation`.
+        /// Creates a 3D affine transformation matrix from the given `translation`.
+        ///
+        /// The resulting matrix can be used to transform 3D points and vectors. See
+        /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
         #[inline(always)]
         pub fn from_rotation_translation(rotation: $quat, translation: $vec3) -> Self {
             Self($inner::from_quaternion_translation(
@@ -112,64 +125,87 @@ macro_rules! impl_mat4_methods {
             ))
         }
 
-        /// Extracts `scale`, `rotation` and `translation` from `self`. The input matrix is expected to
-        /// be a 4x4 homogeneous transformation matrix otherwise the output will be invalid.
+        /// Extracts `scale`, `rotation` and `translation` from `self`. The input matrix is
+        /// expected to be a 3D affine transformation matrix otherwise the output will be invalid.
         #[inline(always)]
         pub fn to_scale_rotation_translation(&self) -> ($vec3, $quat, $vec3) {
             let (scale, rotation, translation) = self.0.to_scale_quaternion_translation();
             ($vec3(scale), $quat(rotation), $vec3(translation))
         }
 
-        /// Creates a 4x4 homogeneous transformation matrix from the given `rotation`.
+        /// Creates a 3D affine transformation matrix from the given `rotation` quaternion.
+        ///
+        /// The resulting matrix can be used to transform 3D points and vectors. See
+        /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
         #[inline(always)]
         pub fn from_quat(rotation: $quat) -> Self {
             Self($inner::from_quaternion(rotation.0))
         }
 
-        /// Creates a 4x4 homogeneous transformation matrix from the given `translation`.
+        /// Creates a 3D affine transformation matrix from the given `translation`.
+        ///
+        /// The resulting matrix can be used to transform 3D points and vectors. See
+        /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
         #[inline(always)]
         pub fn from_translation(translation: $vec3) -> Self {
             Self($inner::from_translation(translation.0))
         }
 
-        /// Creates a 4x4 homogeneous transformation matrix containing a rotation
-        /// around a normalized rotation `axis` of `angle` (in radians).
+        /// Creates a 3D affine transformation matrix containing a rotation around a normalized
+        /// rotation `axis` of `angle` (in radians).
+        ///
+        /// The resulting matrix can be used to transform 3D points and vectors. See
+        /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
         #[inline(always)]
         pub fn from_axis_angle(axis: $vec3, angle: $t) -> Self {
             Self($inner::from_axis_angle(axis.0, angle))
         }
 
-        /// Creates a 4x4 homogeneous transformation matrix containing a rotation
-        /// around the given Euler angles (in radians).
+        /// Creates a 3D affine transformation matrix containing a rotation around the given Euler
+        /// angles (in radians).
+        ///
+        /// The resulting matrix can be used to transform 3D points and vectors. See
+        /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
         #[inline(always)]
         pub fn from_rotation_ypr(yaw: $t, pitch: $t, roll: $t) -> Self {
             let quat = $quat::from_rotation_ypr(yaw, pitch, roll);
             Self::from_quat(quat)
         }
 
-        /// Creates a 4x4 homogeneous transformation matrix containing a rotation
-        /// around the x axis of `angle` (in radians).
+        /// Creates a 3D affine transformation matrix containing a rotation around the x axis of
+        /// `angle` (in radians).
+        ///
+        /// The resulting matrix can be used to transform 3D points and vectors. See
+        /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
         #[inline(always)]
         pub fn from_rotation_x(angle: $t) -> Self {
             Self($inner::from_rotation_x(angle))
         }
 
-        /// Creates a 4x4 homogeneous transformation matrix containing a rotation
-        /// around the y axis of `angle` (in radians).
+        /// Creates a 3D affine transformation matrix containing a rotation around the y axis of
+        /// `angle` (in radians).
+        ///
+        /// The resulting matrix can be used to transform 3D points and vectors. See
+        /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
         #[inline(always)]
         pub fn from_rotation_y(angle: $t) -> Self {
             Self($inner::from_rotation_y(angle))
         }
 
-        /// Creates a 4x4 homogeneous transformation matrix containing a rotation
-        /// around the z axis of `angle` (in radians).
+        /// Creates a 3D affine transformation matrix containing a rotation around the z axis of
+        /// `angle` (in radians).
+        ///
+        /// The resulting matrix can be used to transform 3D points and vectors. See
+        /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
         #[inline(always)]
         pub fn from_rotation_z(angle: $t) -> Self {
             Self($inner::from_rotation_z(angle))
         }
 
-        /// Creates a 4x4 homogeneous transformation matrix containing the given
-        /// non-uniform `scale`.
+        /// Creates a 3D affine transformation matrix containing the given non-uniform `scale`.
+        ///
+        /// The resulting matrix can be used to transform 3D points and vectors. See
+        /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
         #[inline(always)]
         pub fn from_scale(scale: $vec3) -> Self {
             Self($inner::from_scale(scale.0))

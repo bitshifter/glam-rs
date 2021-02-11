@@ -107,6 +107,12 @@ macro_rules! impl_mat3_tests {
 
         #[test]
         fn test_mat3_transform2d() {
+            let mat_a = $mat3::from_scale($vec2::new(2.0, 4.0));
+            assert_eq!($vec2::new(2.0, 0.0), mat_a.transform_vector2($vec2::X));
+            assert_eq!($vec2::new(0.0, 4.0), mat_a.transform_vector2($vec2::Y));
+            assert_eq!($vec2::new(2.0, 0.0), mat_a.transform_point2($vec2::X));
+            assert_eq!($vec2::new(0.0, 4.0), mat_a.transform_point2($vec2::Y));
+
             let mat_b = $mat3::from_scale_angle_translation(
                 $vec2::new(0.5, 1.5),
                 $t::to_radians(90.0),
@@ -149,8 +155,8 @@ macro_rules! impl_mat3_tests {
         }
 
         #[test]
-        fn test_from_scale() {
-            let m = $mat3::from_scale($vec3::new(2.0, 4.0, 8.0));
+        fn test_from_diagonal() {
+            let m = $mat3::from_diagonal($vec3::new(2.0, 4.0, 8.0));
             assert_approx_eq!(m * $vec3::new(1.0, 1.0, 1.0), $vec3::new(2.0, 4.0, 8.0));
             assert_approx_eq!($vec3::X * 2.0, m.x_axis);
             assert_approx_eq!($vec3::Y * 4.0, m.y_axis);
@@ -179,7 +185,7 @@ macro_rules! impl_mat3_tests {
             assert_eq!(1.0, $mat3::from_rotation_z(deg(270.0)).determinant());
             assert_eq!(
                 2.0 * 2.0 * 2.0,
-                $mat3::from_scale($newvec3(2.0, 2.0, 2.0)).determinant()
+                $mat3::from_diagonal($newvec3(2.0, 2.0, 2.0)).determinant()
             );
         }
 
@@ -197,7 +203,7 @@ macro_rules! impl_mat3_tests {
             assert_approx_eq!($mat3::IDENTITY, rotz * rotz_inv);
             assert_approx_eq!($mat3::IDENTITY, rotz_inv * rotz);
 
-            let scale = $mat3::from_scale($newvec3(4.0, 5.0, 6.0));
+            let scale = $mat3::from_diagonal($newvec3(4.0, 5.0, 6.0));
             let scale_inv = scale.inverse();
             // assert_ne!(None, scale_inv);
             // let scale_inv = scale_inv.unwrap();

@@ -61,11 +61,11 @@ pub trait Matrix2x2<T: NumEx, V2: Vector2<T>>: Matrix<T> {
 
     #[rustfmt::skip]
     #[inline(always)]
-    fn from_scale(scale: V2) -> Self {
-        let (scale_x, scale_y) = scale.into_tuple();
+    fn from_diagonal(diagonal: V2) -> Self {
+        let (x, y) = diagonal.into_tuple();
         Self::new(
-            scale_x, T::ZERO,
-            T::ZERO, scale_y)
+            x, T::ZERO,
+            T::ZERO, y)
     }
 
     fn determinant(&self) -> T;
@@ -176,13 +176,24 @@ pub trait Matrix3x3<T: NumEx, V3: Vector3<T>>: Matrix<T> {
 
     #[rustfmt::skip]
     #[inline(always)]
-    fn from_scale(scale: V3) -> Self {
+    fn from_diagonal(diagonal: V3) -> Self {
         // glam_assert!(MaskVector3::any(scale.cmpne(V3::ZERO)));
-        let (scale_x, scale_y, scale_z) = scale.into_tuple();
+        let (x, y, z) = diagonal.into_tuple();
         Self::new(
-            scale_x, T::ZERO, T::ZERO,
-            T::ZERO, scale_y, T::ZERO,
-            T::ZERO, T::ZERO, scale_z,
+            x, T::ZERO, T::ZERO,
+            T::ZERO, y, T::ZERO,
+            T::ZERO, T::ZERO, z,
+        )
+    }
+
+    #[inline(always)]
+    fn from_scale(scale: XY<T>) -> Self {
+        // Do not panic as long as any component is non-zero
+        glam_assert!(scale.cmpne(XY::<T>::ZERO).any());
+        Self::from_cols(
+            V3::new(scale.x, T::ZERO, T::ZERO),
+            V3::new(T::ZERO, scale.y, T::ZERO),
+            V3::Z,
         )
     }
 
@@ -288,19 +299,6 @@ pub trait FloatMatrix3x3<T: FloatEx, V3: FloatVector3<T>>: Matrix3x3<T, V3> {
             T::ZERO, T::ZERO, T::ONE)
     }
 
-    // #[rustfmt::skip]
-    // #[inline]
-    // fn from_scale(scale: XYZ<T>) -> Self {
-    //     // TODO: should have a affine 2D scale and a 3d scale?
-    //     // Do not panic as long as any component is non-zero
-    //     glam_assert!(scale.cmpne(XYZ::ZERO).any());
-    //     Self::new(
-    //         scale.x, T::ZERO, T::ZERO,
-    //         T::ZERO, scale.y, T::ZERO,
-    //         T::ZERO, T::ZERO, scale.z,
-    //     )
-    // }
-
     fn transform_point2(&self, other: XY<T>) -> XY<T>;
     fn transform_vector2(&self, other: XY<T>) -> XY<T>;
 
@@ -377,6 +375,29 @@ pub trait Matrix4x4<T: NumEx, V4: Vector4<T>>: Matrix<T> {
             self.z_axis().into_array(),
             self.w_axis().into_array(),
         ]
+    }
+
+    #[inline(always)]
+    fn from_diagonal(diagonal: V4) -> Self {
+        let (x, y, z, w) = diagonal.into_tuple();
+        Self::new(
+            x,
+            T::ZERO,
+            T::ZERO,
+            T::ZERO,
+            T::ZERO,
+            y,
+            T::ZERO,
+            T::ZERO,
+            T::ZERO,
+            T::ZERO,
+            z,
+            T::ZERO,
+            T::ZERO,
+            T::ZERO,
+            T::ZERO,
+            w,
+        )
     }
 
     #[inline(always)]

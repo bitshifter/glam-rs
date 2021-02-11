@@ -65,15 +65,22 @@ macro_rules! impl_mat2_tests {
         }
 
         #[test]
-        fn test_from_scale() {
-            let m = $mat2::from_scale($vec2::new(2.0, 4.0));
-            assert_approx_eq!(m * $vec2::new(1.0, 1.0), $vec2::new(2.0, 4.0));
-            assert_approx_eq!($vec2::X * 2.0, m.x_axis);
-            assert_approx_eq!($vec2::Y * 4.0, m.y_axis);
-
+        fn test_from_scale_angle() {
             let rot = $mat2::from_scale_angle($vec2::new(4.0, 2.0), deg(180.0));
             assert_approx_eq!($vec2::X * -4.0, rot * $vec2::X, 1.0e-6);
             assert_approx_eq!($vec2::Y * -2.0, rot * $vec2::Y, 1.0e-6);
+        }
+
+        #[test]
+        fn test_from_diagonal() {
+            let m = $mat2::from_diagonal($vec2::new(2 as $t, 4 as $t));
+            assert_eq!(
+                $mat2::from_cols_array_2d(&[[2 as $t, 0 as $t], [0 as $t, 4 as $t]]),
+                m
+            );
+            assert_approx_eq!(m * $vec2::new(1.0, 1.0), $vec2::new(2.0, 4.0));
+            assert_approx_eq!($vec2::X * 2.0, m.x_axis);
+            assert_approx_eq!($vec2::Y * 4.0, m.y_axis);
         }
 
         #[test]
@@ -93,7 +100,7 @@ macro_rules! impl_mat2_tests {
             assert_eq!(1.0, $mat2::from_angle(deg(270.0)).determinant());
             assert_eq!(
                 2.0 * 2.0,
-                $mat2::from_scale($newvec2(2.0, 2.0)).determinant()
+                $mat2::from_diagonal($newvec2(2.0, 2.0)).determinant()
             );
             assert_eq!(
                 1.0 * 4.0 - 2.0 * 3.0,
@@ -111,7 +118,7 @@ macro_rules! impl_mat2_tests {
             assert_approx_eq!($mat2::IDENTITY, rot * rot_inv);
             assert_approx_eq!($mat2::IDENTITY, rot_inv * rot);
 
-            let scale = $mat2::from_scale($newvec2(4.0, 5.0));
+            let scale = $mat2::from_diagonal($newvec2(4.0, 5.0));
             let scale_inv = scale.inverse();
             assert_approx_eq!($mat2::IDENTITY, scale * scale_inv);
             assert_approx_eq!($mat2::IDENTITY, scale_inv * scale);

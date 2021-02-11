@@ -84,7 +84,14 @@ macro_rules! impl_mat2_methods {
             self.0.to_cols_array_2d()
         }
 
-        /// Creates a 2x2 matrix containing the given `scale` and rotation of
+        /// Creates a 2x2 matrix with its diagonal set to `diagonal` and all other entries set to 0.
+        #[doc(alias = "scale")]
+        #[inline(always)]
+        pub fn from_diagonal(diagonal: $vec2) -> Self {
+            Self($inner::from_diagonal(diagonal.0))
+        }
+
+        /// Creates a 2x2 matrix containing the combining non-uniform `scale` and rotation of
         /// `angle` (in radians).
         #[inline(always)]
         pub fn from_scale_angle(scale: $vec2, angle: $t) -> Self {
@@ -97,10 +104,10 @@ macro_rules! impl_mat2_methods {
             Self($inner::from_angle(angle))
         }
 
-        /// Creates a 2x2 matrix containing the given non-uniform `scale`.
+        #[deprecated = "Use from_diagonal instead"]
         #[inline(always)]
         pub fn from_scale(scale: $vec2) -> Self {
-            Self($inner::from_scale(scale.0))
+            Self($inner::from_diagonal(scale.0))
         }
 
         // #[inline]
