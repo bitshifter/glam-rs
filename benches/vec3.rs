@@ -97,6 +97,8 @@ op => vec3_into_tuple,
 from => random_vec3
 );
 
+// ---
+
 #[inline]
 fn vec3_normalize(v: Vec3) -> Vec3 {
     v.normalize()
@@ -120,6 +122,46 @@ bench_func!(
     op => vec3_normalize_or_zero,
     from => random_vec3
 );
+
+// ---
+
+#[inline(always)]
+fn vec3_any_orthogonal(v: Vec3) -> Vec3 {
+    v.any_orthogonal()
+}
+
+bench_func!(
+    vec3_any_orthogonal_bench,
+    "vec3 any_orthogonal",
+    op => vec3_any_orthogonal,
+    from => random_vec3
+);
+
+#[inline(always)]
+fn vec3_any_orthonormal(v: Vec3) -> Vec3 {
+    v.any_orthonormal()
+}
+
+bench_func!(
+    vec3_any_orthonormal_bench,
+    "vec3 any_orthonormal",
+    op => vec3_any_orthonormal,
+    from => random_vec3
+);
+
+#[inline(always)]
+fn vec3_any_orthonormal_pair(v: Vec3) -> (Vec3, Vec3) {
+    v.any_orthonormal_pair()
+}
+
+bench_func!(
+    vec3_any_orthonormal_pair_bench,
+    "vec3 any_orthonormal_pair",
+    op => vec3_any_orthonormal_pair,
+    from => random_vec3
+);
+
+// ---
 
 euler!(vec3_euler, "vec3 euler", ty => Vec3, storage => Vec3, zero => Vec3::ZERO, rand => random_vec3);
 
@@ -149,6 +191,9 @@ criterion_group!(
     vec3_angle_between,
     vec3_normalize_bench,
     vec3_normalize_or_zero_bench,
+    vec3_any_orthogonal_bench,
+    vec3_any_orthonormal_bench,
+    vec3_any_orthonormal_pair_bench,
     vec3_euler,
     vec3_select,
     vec3_to_array_fields,

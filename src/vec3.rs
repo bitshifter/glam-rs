@@ -196,12 +196,13 @@ macro_rules! impl_vec3_float_methods {
 
         /// Returns somes vector that is orthogonal to the given one.
         ///
+        /// The input vector must be finite and non-zero.
+        ///
         /// The output vector is not necessarily unit-length.
         /// For that use [`Self::any_orthonormal`] instead.
-        ///
-        /// The input vector must be finite and non-zero.
         #[inline]
         pub fn any_orthogonal(&self) -> Self {
+            // This can probably be optimized
             if self.x.abs() > self.y.abs() {
                 Self::new(-self.z, 0.0, self.x) // self.cross(Self::Y)
             } else {
@@ -213,7 +214,27 @@ macro_rules! impl_vec3_float_methods {
         /// The input vector must be finite and non-zero.
         #[inline]
         pub fn any_orthonormal(&self) -> Self {
-            self.any_orthogonal().normalize()
+            glam_assert!(self.is_normalized());
+            // From https://graphics.pixar.com/library/OrthonormalB/paper.pdf
+            let sign = (1.0 as $t).copysign(self.z);
+            let a = -1.0 / (sign + self.z);
+            let b = self.x * self.y * a;
+            Self::new(b, sign + self.y * self.y * a, -self.y)
+        }
+
+        /// Given a unit-length vector return two other vectors that together form an orthonormal basis.
+        /// That is, all three vectors are orthogonal to each other and are normalized.
+        #[inline]
+        pub fn any_orthonormal_pair(&self) -> (Self, Self) {
+            glam_assert!(self.is_normalized());
+            // From https://graphics.pixar.com/library/OrthonormalB/paper.pdf
+            let sign = (1.0 as $t).copysign(self.z);
+            let a = -1.0 / (sign + self.z);
+            let b = self.x * self.y * a;
+            (
+                Self::new(1.0 + sign * self.x * self.x * a, sign * b, -sign * self.x),
+                Self::new(b, sign + self.y * self.y * a, -self.y),
+            )
         }
     };
 }

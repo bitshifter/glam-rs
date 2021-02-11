@@ -677,6 +677,7 @@ macro_rules! impl_vec3_float_tests {
                 $vec3::Y,
                 $vec3::Z,
                 $vec3::new(0.1, 0.2, 0.3),
+                $vec3::new(0.2, 0.3, 0.4),
                 $vec3::new(4.0, -5.0, 6.0),
                 $vec3::new(1.0, 1e-5, 0.0),
                 $vec3::new(-2.0, 0.5, -1.0),
@@ -690,9 +691,15 @@ macro_rules! impl_vec3_float_tests {
                 assert!(orthogonal != $vec3::ZERO);
                 assert!(v.dot(orthogonal).abs() < 1e-6);
 
-                let orthonormal = v.any_orthonormal();
+                let n = v.normalize();
+
+                let orthonormal = n.any_orthonormal();
                 assert!(orthonormal.is_normalized());
-                assert!(v.dot(orthonormal).abs() < 1e-6);
+                assert!(n.dot(orthonormal).abs() < 1e-6);
+
+                let (a, b) = n.any_orthonormal_pair();
+                assert!(a.is_normalized() && n.dot(a).abs() < 1e-6);
+                assert!(b.is_normalized() && n.dot(b).abs() < 1e-6);
             }
         }
     };
