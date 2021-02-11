@@ -672,7 +672,7 @@ macro_rules! impl_vec3_float_tests {
 
         #[test]
         fn test_any_ortho() {
-            let eps = 2.0 * $t::EPSILON;
+            let eps = 2.0 * core::$t::EPSILON;
 
             for &v in &vec3_float_test_vectors!($vec3) {
                 let orthogonal = v.any_orthogonal_vector();

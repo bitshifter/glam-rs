@@ -320,7 +320,7 @@ macro_rules! impl_quat_tests {
 
         #[test]
         fn test_rotation_arc() {
-            let eps = 2.0 * $t::EPSILON.sqrt();
+            let eps = 2.0 * core::$t::EPSILON.sqrt();
 
             for &from in &vec3_float_test_vectors!($vec3) {
                 let from = from.normalize();
