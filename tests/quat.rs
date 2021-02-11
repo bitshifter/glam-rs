@@ -328,7 +328,13 @@ macro_rules! impl_quat_tests {
                 -$vec3::Y,
                 -$vec3::Z,
                 $vec3::new(1.0, 1e-3, 0.0),
+                $vec3::new(1.0, 1e-4, 0.0),
                 $vec3::new(1.0, 1e-5, 0.0),
+                $vec3::new(1.0, 1e-6, 0.0),
+                $vec3::new(1.0, 1e-7, 0.0),
+                $vec3::new(1.0, 1e-14, 0.0),
+                $vec3::new(1.0, 1e-15, 0.0),
+                $vec3::new(1.0, 1e-16, 0.0),
                 $vec3::new(0.1, 0.2, 0.3),
                 $vec3::new(0.2, 0.3, 0.4),
                 $vec3::new(4.0, -5.0, 6.0),
@@ -338,7 +344,7 @@ macro_rules! impl_quat_tests {
                 $vec3::new(-0.00019813581, -0.00008946839, -0.99999988079),
             ];
 
-            let eps = 5e3 * $t::EPSILON;
+            let eps = 2.0 * $t::EPSILON.sqrt();
 
             for &from in &nonzero_test_vectors {
                 let from = from.normalize();
