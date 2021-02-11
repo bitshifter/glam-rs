@@ -29,7 +29,7 @@ use core::{
 use std::iter::{Product, Sum};
 
 macro_rules! impl_quat_methods {
-    ($t:ty, $quat:ident, $vec3:ident, $mat3:ident, $mat4:ident, $inner:ident) => {
+    ($t:ident, $quat:ident, $vec3:ident, $mat3:ident, $mat4:ident, $inner:ident) => {
         /// The identity quaternion. Corresponds to no rotation.
         pub const IDENTITY: Self = Self($inner::W);
 
@@ -145,8 +145,8 @@ macro_rules! impl_quat_methods {
                 Self::from_xyzw(v.x, v.y, v.z, w2 / 2.0)
             } else {
                 // 180° singulary.
-                let tau = 6.28318530717958647692528676655900577;
-                Self::from_axis_angle(from.any_orthonormal(), tau / 2.0)
+                let pi = std::$t::consts::PI; // half a turn = 𝛕/2 = 180°
+                Self::from_axis_angle(from.any_orthonormal(), pi)
             }
         }
 
