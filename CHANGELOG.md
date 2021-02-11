@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Added `ZERO` constant for vectors and matrices.
 * Added `clamp_length()`, `clamp_length_max()`, and `clamp_length_min` methods for `Vec2`, `Vec3`,
   and `Vec4` for `f32` and `f64`.
+* Added `try_normalize()` and `normalize_or_zero()` for all real vector types.
 
 ### Changed
 * Deprecated `::unit_x/y/z()`, `::zero()`, `::one()`, `::identity()` functions in favor of constants.
