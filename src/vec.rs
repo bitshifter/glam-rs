@@ -254,10 +254,10 @@ macro_rules! impl_vecn_float_methods {
             Self($flttrait::normalize(self.0))
         }
 
-        /// Returns `self` normalized to length 1.0 if possible, else returns None.
+        /// Returns `self` normalized to length 1.0 if possible, else returns `None`.
         ///
         /// In particular, if the input is zero (or very close to zero), or non-finite,
-        /// the result of this operation will be None.
+        /// the result of this operation will be `None`.
         ///
         /// See also [`Self::normalize_or_zero`].
         #[inline]
