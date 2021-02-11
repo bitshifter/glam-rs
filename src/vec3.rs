@@ -199,9 +199,9 @@ macro_rules! impl_vec3_float_methods {
         /// The input vector must be finite and non-zero.
         ///
         /// The output vector is not necessarily unit-length.
-        /// For that use [`Self::any_orthonormal`] instead.
+        /// For that use [`Self::any_orthonormal_vector`] instead.
         #[inline]
-        pub fn any_orthogonal(&self) -> Self {
+        pub fn any_orthogonal_vector(&self) -> Self {
             // This can probably be optimized
             if self.x.abs() > self.y.abs() {
                 Self::new(-self.z, 0.0, self.x) // self.cross(Self::Y)
@@ -213,7 +213,7 @@ macro_rules! impl_vec3_float_methods {
         /// Returns any unit-length vector that is orthogonal to the given one.
         /// The input vector must be finite and non-zero.
         #[inline]
-        pub fn any_orthonormal(&self) -> Self {
+        pub fn any_orthonormal_vector(&self) -> Self {
             glam_assert!(self.is_normalized());
             // From https://graphics.pixar.com/library/OrthonormalB/paper.pdf
             let sign = (1.0 as $t).copysign(self.z);

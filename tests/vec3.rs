@@ -671,7 +671,7 @@ macro_rules! impl_vec3_float_tests {
         }
 
         #[test]
-        fn test_any_orthogonal() {
+        fn test_any_ortho() {
             let nonzero_test_vectors = [
                 $vec3::X,
                 $vec3::Y,
@@ -686,20 +686,22 @@ macro_rules! impl_vec3_float_tests {
                 $vec3::new(-0.00019813581, -0.00008946839, -0.99999988079),
             ];
 
+            let eps = $t::EPSILON;
+
             for &v in &nonzero_test_vectors {
-                let orthogonal = v.any_orthogonal();
-                assert!(orthogonal != $vec3::ZERO);
-                assert!(v.dot(orthogonal).abs() < 1e-6);
+                let orthogonal = v.any_orthogonal_vector();
+                assert!(orthogonal != $vec3::ZERO && orthogonal.is_finite());
+                assert!(v.dot(orthogonal).abs() < eps);
 
                 let n = v.normalize();
 
-                let orthonormal = n.any_orthonormal();
+                let orthonormal = n.any_orthonormal_vector();
                 assert!(orthonormal.is_normalized());
-                assert!(n.dot(orthonormal).abs() < 1e-6);
+                assert!(n.dot(orthonormal).abs() < eps);
 
                 let (a, b) = n.any_orthonormal_pair();
-                assert!(a.is_normalized() && n.dot(a).abs() < 1e-6);
-                assert!(b.is_normalized() && n.dot(b).abs() < 1e-6);
+                assert!(a.is_normalized() && n.dot(a).abs() < eps);
+                assert!(b.is_normalized() && n.dot(b).abs() < eps);
             }
         }
     };

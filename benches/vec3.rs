@@ -126,26 +126,26 @@ bench_func!(
 // ---
 
 #[inline(always)]
-fn vec3_any_orthogonal(v: Vec3) -> Vec3 {
-    v.any_orthogonal()
+fn vec3_any_orthogonal_vector(v: Vec3) -> Vec3 {
+    v.any_orthogonal_vector()
 }
 
 bench_func!(
-    vec3_any_orthogonal_bench,
-    "vec3 any_orthogonal",
-    op => vec3_any_orthogonal,
+    vec3_any_orthogonal_vector_bench,
+    "vec3 any_orthogonal_vector",
+    op => vec3_any_orthogonal_vector,
     from => random_vec3
 );
 
 #[inline(always)]
-fn vec3_any_orthonormal(v: Vec3) -> Vec3 {
-    v.any_orthonormal()
+fn vec3_any_orthonormal_vector(v: Vec3) -> Vec3 {
+    v.any_orthonormal_vector()
 }
 
 bench_func!(
-    vec3_any_orthonormal_bench,
-    "vec3 any_orthonormal",
-    op => vec3_any_orthonormal,
+    vec3_any_orthonormal_vector_bench,
+    "vec3 any_orthonormal_vector",
+    op => vec3_any_orthonormal_vector,
     from => random_vec3
 );
 
@@ -191,8 +191,8 @@ criterion_group!(
     vec3_angle_between,
     vec3_normalize_bench,
     vec3_normalize_or_zero_bench,
-    vec3_any_orthogonal_bench,
-    vec3_any_orthonormal_bench,
+    vec3_any_orthogonal_vector_bench,
+    vec3_any_orthonormal_vector_bench,
     vec3_any_orthonormal_pair_bench,
     vec3_euler,
     vec3_select,

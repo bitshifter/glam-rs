@@ -147,7 +147,7 @@ macro_rules! impl_quat_methods {
             } else {
                 // 180° singulary: from ≈ -to
                 let pi = std::$t::consts::PI; // half a turn = 𝛕/2 = 180°
-                Self::from_axis_angle(from.any_orthonormal(), pi)
+                Self::from_axis_angle(from.any_orthonormal_vector(), pi)
             }
         }
 
