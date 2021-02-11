@@ -78,6 +78,7 @@ macro_rules! impl_quat_methods {
         }
 
         /// Create a quaterion for a normalized rotation axis and angle (in radians).
+        /// The axis must be normalized (unit-length).
         #[inline(always)]
         pub fn from_axis_angle(axis: $vec3, angle: $t) -> Self {
             Self($inner::from_axis_angle(axis.0, angle))
