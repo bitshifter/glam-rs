@@ -457,8 +457,6 @@ macro_rules! impl_vec3_float_tests {
         use core::$t::NAN;
         use core::$t::NEG_INFINITY;
 
-        const NONZERO_TEST_VECTORS: [$vec3; 3] = [$vec3::X, $vec3::Y, $vec3::Z];
-
         #[test]
         fn test_vec3_consts() {
             assert_eq!($vec3::ZERO, $new(0 as $t, 0 as $t, 0 as $t));
@@ -674,14 +672,27 @@ macro_rules! impl_vec3_float_tests {
 
         #[test]
         fn test_any_orthogonal() {
-            for &v in &NONZERO_TEST_VECTORS {
+            let nonzero_test_vectors = [
+                $vec3::X,
+                $vec3::Y,
+                $vec3::Z,
+                $vec3::new(0.1, 0.2, 0.3),
+                $vec3::new(4.0, -5.0, 6.0),
+                $vec3::new(1.0, 1e-5, 0.0),
+                $vec3::new(-2.0, 0.5, -1.0),
+                // Pathalogical cases from <https://graphics.pixar.com/library/OrthonormalB/paper.pdf>:
+                $vec3::new(0.00038527316, 0.00038460016, -0.99999988079),
+                $vec3::new(-0.00019813581, -0.00008946839, -0.99999988079),
+            ];
+
+            for &v in &nonzero_test_vectors {
                 let orthogonal = v.any_orthogonal();
                 assert!(orthogonal != $vec3::ZERO);
-                assert!(v.dot(orthogonal).abs() < 1e-5);
+                assert!(v.dot(orthogonal).abs() < 1e-6);
 
                 let orthonormal = v.any_orthonormal();
                 assert!(orthonormal.is_normalized());
-                assert!(v.dot(orthonormal).abs() < 1e-5);
+                assert!(v.dot(orthonormal).abs() < 1e-6);
             }
         }
     };
