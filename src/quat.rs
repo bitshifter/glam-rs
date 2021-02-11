@@ -149,7 +149,7 @@ macro_rules! impl_quat_methods {
                 Self::from_xyzw(v.x, v.y, v.z, w2 / 2.0)
             } else {
                 // 180° singulary: from ≈ -to
-                let pi = std::$t::consts::PI; // half a turn = 𝛕/2 = 180°
+                let pi = core::$t::consts::PI; // half a turn = 𝛕/2 = 180°
                 Self::from_axis_angle(from.any_orthonormal_vector(), pi)
             }
         }
