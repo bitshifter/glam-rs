@@ -320,33 +320,9 @@ macro_rules! impl_quat_tests {
 
         #[test]
         fn test_rotation_arc() {
-            let nonzero_test_vectors = [
-                $vec3::X,
-                $vec3::Y,
-                $vec3::Z,
-                -$vec3::X,
-                -$vec3::Y,
-                -$vec3::Z,
-                $vec3::new(1.0, 1e-3, 0.0),
-                $vec3::new(1.0, 1e-4, 0.0),
-                $vec3::new(1.0, 1e-5, 0.0),
-                $vec3::new(1.0, 1e-6, 0.0),
-                $vec3::new(1.0, 1e-7, 0.0),
-                $vec3::new(1.0, 1e-14, 0.0),
-                $vec3::new(1.0, 1e-15, 0.0),
-                $vec3::new(1.0, 1e-16, 0.0),
-                $vec3::new(0.1, 0.2, 0.3),
-                $vec3::new(0.2, 0.3, 0.4),
-                $vec3::new(4.0, -5.0, 6.0),
-                $vec3::new(-2.0, 0.5, -1.0),
-                // Pathalogical cases from <https://graphics.pixar.com/library/OrthonormalB/paper.pdf>:
-                $vec3::new(0.00038527316, 0.00038460016, -0.99999988079),
-                $vec3::new(-0.00019813581, -0.00008946839, -0.99999988079),
-            ];
-
             let eps = 2.0 * $t::EPSILON.sqrt();
 
-            for &from in &nonzero_test_vectors {
+            for &from in &vec3_float_test_vectors!($vec3) {
                 let from = from.normalize();
 
                 {
@@ -372,7 +348,7 @@ macro_rules! impl_quat_tests {
                     assert!(q.is_near_identity(), "from: {}, q: {}", from, q);
                 }
 
-                for &to in &nonzero_test_vectors {
+                for &to in &vec3_float_test_vectors!($vec3) {
                     let to = to.normalize();
 
                     let q = $quat::from_rotation_arc(from, to);
