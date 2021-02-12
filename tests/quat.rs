@@ -182,6 +182,36 @@ macro_rules! impl_quat_tests {
             assert_approx_eq!(-$vec3::X, mrzx * $vec3::Y);
             assert_approx_eq!(-$vec3::X, mrzx.mul_vec3($vec3::Y));
         }
+
+        #[test]
+        fn test_angle_between() {
+            const TAU: $t = 2.0 * core::$t::consts::PI;
+            let eps = 10.0 * core::$t::EPSILON as f32;
+            let q1 = $quat::from_rotation_ypr(0.0, 0.0, 0.0);
+            let q2 = $quat::from_rotation_ypr(TAU * 0.25, 0.0, 0.0);
+            let q3 = $quat::from_rotation_ypr(TAU * 0.5, 0.0, 0.0);
+            let q4 = $quat::from_rotation_ypr(0.0, 0.0, TAU * 0.25);
+            let q5 = $quat::from_axis_angle($vec3::new(1.0, 2.0, 3.0).normalize(), TAU * 0.3718);
+            let q6 = $quat::from_axis_angle($vec3::new(-1.0, 5.0, 3.0).normalize(), TAU * 0.94);
+            assert_approx_eq!(q1.angle_between(q2), TAU * 0.25, eps);
+            assert_approx_eq!(q1.angle_between(q3), TAU * 0.5, eps);
+            assert_approx_eq!(q3.angle_between(q3), 0.0, eps);
+            assert_approx_eq!(q3.angle_between(-q3), 0.0, eps);
+            assert_approx_eq!((q4 * q2 * q2).angle_between(q4 * q2), TAU * 0.25, eps);
+            assert_approx_eq!(q1.angle_between(q5), TAU * 0.3718, eps);
+            assert_approx_eq!(
+                (q5 * q2 * q1).angle_between(q5 * q2 * q5),
+                TAU * 0.3718,
+                eps
+            );
+            assert_approx_eq!((q3 * q3).angle_between(q1), 0.0, eps);
+            assert_approx_eq!((q3 * q3 * q3).angle_between(q3), 0.0, eps);
+            assert_approx_eq!((q3 * q3 * q3 * q3).angle_between(q1), 0.0, eps);
+            assert_approx_eq!(q1.angle_between(q6), TAU - TAU * 0.94, eps);
+            assert_approx_eq!((q5 * q1).angle_between(q5 * q6), TAU - TAU * 0.94, eps);
+            assert_approx_eq!((q1 * q5).angle_between(q6 * q5), TAU - TAU * 0.94, eps);
+        }
+
         #[test]
         fn test_lerp() {
             let q0 = $quat::from_rotation_y(deg(0.0));

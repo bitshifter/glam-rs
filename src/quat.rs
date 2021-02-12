@@ -252,6 +252,16 @@ macro_rules! impl_quat_methods {
             self.0.is_near_identity()
         }
 
+        /// Returns the angle (in radians) for the minimal rotation
+        /// for transforming this quaternion into another.
+        ///
+        /// Both quaternions must be normalized.
+        pub fn angle_between(self, other: Self) -> $t {
+            glam_assert!(self.is_normalized() && other.is_normalized());
+            use crate::core::traits::scalar::FloatEx;
+            self.dot(other).abs().acos_approx() * 2.0
+        }
+
         /// Returns true if the absolute difference of all elements between `self` and `other`
         /// is less than or equal to `max_abs_diff`.
         ///
