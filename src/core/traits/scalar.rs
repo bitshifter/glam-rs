@@ -164,6 +164,7 @@ pub trait NumEx:
 pub trait SignedEx: Signed + NumEx {}
 
 pub trait FloatEx: Float + FloatConstEx + SignedEx {
+    /// Returns a very close approximation of `self.clamp(-1.0, 1.0).acos()`.
     fn acos_approx(self) -> Self;
     fn from_f32(f: f32) -> Self;
     fn from_f64(f: f64) -> Self;
