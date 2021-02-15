@@ -214,7 +214,6 @@ impl<T: FloatEx> FloatMatrix3x3<T, XYZ<T>> for Vector3x3<XYZ<T>> {
         let mut res = self.x_axis.mul_scalar(other.x);
         res = self.y_axis.mul_scalar(other.y).add(res);
         res = self.z_axis.add(res);
-        res = res.mul_scalar(res.z.recip());
         res.into()
     }
 
