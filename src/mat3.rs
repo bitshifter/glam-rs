@@ -280,6 +280,8 @@ macro_rules! impl_mat3_methods {
         /// Transforms the given 2D vector as a point.
         ///
         /// This is the equivalent of multiplying `other` as a 3D vector where `z` is `1`.
+        ///
+        /// This method assumes that `self` contains a valid affine transform.
         #[inline(always)]
         pub fn transform_point2(&self, other: $vec2) -> $vec2 {
             self.transform_point2_as_vec3a(other)
@@ -288,6 +290,8 @@ macro_rules! impl_mat3_methods {
         /// Rotates the given 2D vector.
         ///
         /// This is the equivalent of multiplying `other` as a 3D vector where `z` is `0`.
+        ///
+        /// This method assumes that `self` contains a valid affine transform.
         #[inline(always)]
         pub fn transform_vector2(&self, other: $vec2) -> $vec2 {
             self.transform_vector2_as_vec3a(other)
