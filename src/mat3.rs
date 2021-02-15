@@ -454,16 +454,15 @@ impl Mat3 {
     }
 
     #[inline]
-    pub fn transform_point2_as_vec3a(&self, other: Vec2) -> Vec2 {
+    fn transform_point2_as_vec3a(&self, other: Vec2) -> Vec2 {
         let mut res = Vec3A::from(self.x_axis).mul(Vec3A::splat(other.x));
         res = Vec3A::from(self.y_axis).mul_add(Vec3A::splat(other.y), res);
         res = Vec3A::from(self.z_axis).add(res);
-        res = res.mul(res.zzz().recip());
         res.xy()
     }
 
     #[inline]
-    pub fn transform_vector2_as_vec3a(&self, other: Vec2) -> Vec2 {
+    fn transform_vector2_as_vec3a(&self, other: Vec2) -> Vec2 {
         let mut res = Vec3A::from(self.x_axis).mul(Vec3A::splat(other.x));
         res = Vec3A::from(self.y_axis).mul_add(Vec3A::splat(other.y), res);
         res.xy()
@@ -499,17 +498,17 @@ impl DMat3 {
     impl_mat3_methods!(f64, DVec3, DVec2, DQuat, InnerF64);
 
     #[inline(always)]
-    pub fn mul_vec3_as_vec3a(&self, other: DVec3) -> DVec3 {
+    fn mul_vec3_as_vec3a(&self, other: DVec3) -> DVec3 {
         DVec3(self.0.mul_vector(other.0))
     }
 
     #[inline(always)]
-    pub fn transform_point2_as_vec3a(&self, other: DVec2) -> DVec2 {
+    fn transform_point2_as_vec3a(&self, other: DVec2) -> DVec2 {
         DVec2(self.0.transform_point2(other.0))
     }
 
     #[inline(always)]
-    pub fn transform_vector2_as_vec3a(&self, other: DVec2) -> DVec2 {
+    fn transform_vector2_as_vec3a(&self, other: DVec2) -> DVec2 {
         DVec2(self.0.transform_vector2(other.0))
     }
 
