@@ -7,29 +7,43 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
+### Breaking Changes
+
+* The 3x3 matrix `from_scale()` method was changed to
+  create a affine transform containing a 2-dimensional non-uniform scale to be
+  consistent with the 4x4 matrix version. The
+  `from_diagonal()` method can be used to create a 3x3 scale matrix.
+* The 3x3 matrix methods `transform_point2_as_vec3a`,
+  `transform_vector2_as_vec3a` and `mul_vec3_as_vec3a` were unintentionally
+  `pub` and are no longer publicly accessible.
+
 ### Added
 
-* Added `Vec2::X`, `Vec4::W` etc as a shorter versions of `unit_x()` and
-  friends.
-* Added `Vec2::ONE`, `Vec3::ONE` and `Vec4::ONE`.
+* Added `Vec2::X`, `Vec4::W` etc constants as a shorter versions of `unit_x()`
+  and friends.
+* Added `ONE` constants for vectors.
 * Added `IDENTITY` constants for `Mat2`, `Mat3`, `Mat4` and `Quat`.
 * Added `ZERO` constant for vectors and matrices.
 * Added `clamp_length()`, `clamp_length_max()`, and `clamp_length_min` methods
-  for `Vec2`, `Vec3`, and `Vec4` for `f32` and `f64`.
+  for `f32` and `f64` vector types.
 * Added `try_normalize()` and `normalize_or_zero()` for all real vector types.
-* Added `from_diagonal` methods to all matrix types for creating diagonal
-  matrices.
-* Added `Quat::angle_between`, `Quat::from_rotation_arc` and `Quat::from_rotation_arc_colinear`.
+* Added `from_diagonal()` methods to all matrix types for creating diagonal
+  matrices from a vector.
+* Added `angle_between()`, `from_rotation_arc()` and
+  `from_rotation_arc_colinear()` to quaternion types.
 
 ### Changed
 
 * Deprecated `::unit_x/y/z()`, `::zero()`, `::one()`, `::identity()` functions
   in favor of constants.
-* The 3x3 matrix `from_scale` method was changed to create a affine transform
-  containing a 2-dimentional non-uniform scale. The `from_diagoanl` method may
-  be used to create a 3x3 scale matrix.
 
 ## [0.12.0] - 2021-01-15
+
+### Breaking Changes
+
+* `Vec2Mask`, `Vec3Mask` and `Vec4Mask` have been replaced by `BVec2`, `BVec3`,
+  `BVec3A`, `BVec4` and `BVec4A`. These types are used by some vector methods
+  and are not typically referenced directly.
 
 ### Added
 
@@ -43,12 +57,6 @@ The format is based on [Keep a Changelog], and this project adheres to
   * vectors: `UVec2`, `UVec3` and `UVec4`
 * Added `bool` primitive type support
   * vectors: `BVec2`, `BVec3` and `BVec4`
-
-### Changed
-
-* `Vec2Mask`, `Vec3Mask` and `Vec4Mask` have been replaced by `BVec2`, `BVec3`,
-  `BVec3A`, `BVec4` and `BVec4A`. These types ar used by some vector methods
-  and are not typically referenced directly. This is a breaking change.
 
 ### Removed
 
@@ -91,7 +99,7 @@ The format is based on [Keep a Changelog], and this project adheres to
   and to be consistent with the same methods on the `f32` and `f64` primitive
   types.
 * Renamed `is_nan` which returns a vector mask to `is_nan_mask`.
-* Don't use the `cfg` definitions added by `build.rs` for definining structs as
+* Don't use the `cfg` definitions added by `build.rs` for defining structs as
   `rust-analyzer` is not aware of them.
 
 ### Removed
@@ -116,10 +124,10 @@ The format is based on [Keep a Changelog], and this project adheres to
 ### Changed
 
 * `Vec2` and `Vec3` types were changed to use public named fields for `.x`,
-  `.y`, and `.z` intead of accessors.
+  `.y`, and `.z` instead of accessors.
 * `Quat`, `Vec3A` and `Vec4` implement `Deref` and `DerefMut` for the new `XYZ`
   and `XYZW` structs to emulate public named field access.
-* `Mat3` and `Mat4` had their axis members made pubic intead of needing
+* `Mat3` and `Mat4` had their axis members made pubic instead of needing
   accessors.
 * `Mat2` implements `Deref` and `DerefMut` for the new `XYAxes` struct to
   emulate public named field access.
@@ -133,6 +141,10 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Adding `glam` as a `no_std` dependency should now work as expected.
 
 ## [0.10.0] - 2020-10-31
+
+### Breaking Changes
+
+* Changed the return type of `Vec4::truncate` from `Vec3A` to `Vec3`.
 
 ### Added
 
@@ -152,11 +164,6 @@ The format is based on [Keep a Changelog], and this project adheres to
   feature and adding the `libm` feature.
 * Added `distance` and `distance_squared` methods to `Vec2`, `Vec3`, `Vec3A`
   and `Vec4`.
-
-### Changed
-
-* Changed the return type of `Vec4::truncate` from `Vec3A` to `Vec3`. This is a
-  breaking change.
 
 ## [0.9.5] - 2020-10-10
 
