@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Added `try_normalize()` and `normalize_or_zero()` for all real vector types.
 * Added `from_diagonal` methods to all matrix types for creating diagonal
   matrices.
+* Added `Quat::angle_between`, `Quat::from_rotation_arc` and `Quat::from_rotation_arc_colinear`.
 
 ### Changed
 
