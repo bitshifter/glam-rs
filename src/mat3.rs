@@ -13,6 +13,33 @@ use core::{
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
 
+macro_rules! define_mat3_struct {
+    ($mat3:ident, $inner:ident) => {
+        /// A 3x3 column major matrix.
+        ///
+        /// The 3x3 matrix types has convenience methods for linear and affine transformations.
+        ///
+        /// Linear transformations for transforming 3D vectors can be created using methods such as
+        /// [`Self::from_diagonal()`], [`Self::from_quat()`], [`Self::from_axis_angle()`],
+        /// [`Self::from_rotation_x()`], [`Self::from_rotation_y()`], or
+        /// [`Self::from_rotation_z()`].
+        ///
+        /// The resulting matrices can be use to transform 3D vectors using regular vector
+        /// multiplication.
+        ///
+        /// Affine transformations for transforming 2D vectors can be created using methods such as
+        /// [`Self::from_scale`] and [`Self::from_scale_angle_translation`].
+        ///
+        /// The [`Self::transform_point2()`] and [`Self::transform_vector2()`] convenience methods
+        /// are provided for performing affine transforms on 2D vectors and points. These multiply
+        /// 2D inputs as 3D vectors with an implicit `z` value of `1` for points and `0` for
+        /// vectors respectively. These methods assume that `Self` is a valid affine transform.
+        #[derive(Clone, Copy)]
+        #[cfg_attr(not(target_arch = "spirv"), repr(C))]
+        pub struct $mat3(pub(crate) $inner);
+    }
+}
+
 macro_rules! impl_mat3_methods {
     ($t:ty, $vec3: ident, $vec2:ident, $quat:ident, $inner:ident) => {
         /// A 3x3 matrix with all elements set to `0.0`.
@@ -73,12 +100,52 @@ macro_rules! impl_mat3_methods {
 
         /// Creates a 3x3 matrix with its diagonal set to `diagonal` and all other entries set to 0.
         /// The resulting matrix is a 3D scale transfom.
+        #[cfg_attr(docsrs, doc(alias = "scale"))]
         #[inline(always)]
         pub fn from_diagonal(diagonal: $vec3) -> Self {
             Self($inner::from_diagonal(diagonal.0))
         }
 
-        /// Creates a 2D affine transformation matrix from the given `scale`, rotation `angle` (in
+        #[inline(always)]
+        /// Creates a 3D rotation matrix from the given quaternion.
+        pub fn from_quat(rotation: $quat) -> Self {
+            // TODO: SIMD?
+            Self($inner::from_quaternion(rotation.0.into()))
+        }
+
+        /// Creates a 3D rotation matrix from a normalized rotation `axis` and `angle` (in
+        /// radians).
+        #[inline(always)]
+        pub fn from_axis_angle(axis: $vec3, angle: $t) -> Self {
+            Self(FloatMatrix3x3::from_axis_angle(axis.0, angle))
+        }
+
+        /// Creates a 3D rotation matrix from the given Euler angles (in radians).
+        #[inline(always)]
+        pub fn from_rotation_ypr(yaw: $t, pitch: $t, roll: $t) -> Self {
+            let quat = $quat::from_rotation_ypr(yaw, pitch, roll);
+            Self::from_quat(quat)
+        }
+
+        /// Creates a 3D rotation matrix from `angle` (in radians) around the x axis.
+        #[inline(always)]
+        pub fn from_rotation_x(angle: $t) -> Self {
+            Self($inner::from_rotation_x(angle))
+        }
+
+        /// Creates a 3D rotation matrix from `angle` (in radians) around the y axis.
+        #[inline(always)]
+        pub fn from_rotation_y(angle: $t) -> Self {
+            Self($inner::from_rotation_y(angle))
+        }
+
+        /// Creates a 3D rotation matrix from `angle` (in radians) around the z axis.
+        #[inline(always)]
+        pub fn from_rotation_z(angle: $t) -> Self {
+            Self($inner::from_rotation_z(angle))
+        }
+
+        /// Creates an affine transformation matrix from the given `scale`, rotation `angle` (in
         /// radians) and `translation`.
         ///
         /// The resulting matrix can be used to transform 2D points and vectors. See
@@ -92,52 +159,13 @@ macro_rules! impl_mat3_methods {
             ))
         }
 
-        /// Creates a 2D affine transformation matrix from the given non-uniform `scale`.
+        /// Creates an affine transformation matrix from the given non-uniform `scale`.
         ///
         /// The resulting matrix can be used to transform 2D points and vectors. See
         /// [`Self::transform_point2()`] and [`Self::transform_vector2()`].
         #[inline(always)]
         pub fn from_scale(scale: $vec2) -> Self {
             Self(Matrix3x3::from_scale(scale.0))
-        }
-
-        #[inline(always)]
-        /// Creates a 3x3 rotation matrix from the given quaternion.
-        pub fn from_quat(rotation: $quat) -> Self {
-            // TODO: SIMD?
-            Self($inner::from_quaternion(rotation.0.into()))
-        }
-
-        /// Creates a 3x3 rotation matrix from a normalized rotation `axis` and
-        /// `angle` (in radians).
-        #[inline(always)]
-        pub fn from_axis_angle(axis: $vec3, angle: $t) -> Self {
-            Self(FloatMatrix3x3::from_axis_angle(axis.0, angle))
-        }
-
-        /// Creates a 3x3 rotation matrix from the given Euler angles (in radians).
-        #[inline(always)]
-        pub fn from_rotation_ypr(yaw: $t, pitch: $t, roll: $t) -> Self {
-            let quat = $quat::from_rotation_ypr(yaw, pitch, roll);
-            Self::from_quat(quat)
-        }
-
-        /// Creates a 3x3 rotation matrix from `angle` (in radians) around the x axis.
-        #[inline(always)]
-        pub fn from_rotation_x(angle: $t) -> Self {
-            Self($inner::from_rotation_x(angle))
-        }
-
-        /// Creates a 3x3 rotation matrix from `angle` (in radians) around the y axis.
-        #[inline(always)]
-        pub fn from_rotation_y(angle: $t) -> Self {
-            Self($inner::from_rotation_y(angle))
-        }
-
-        /// Creates a 3x3 rotation matrix from `angle` (in radians) around the z axis.
-        #[inline(always)]
-        pub fn from_rotation_z(angle: $t) -> Self {
-            Self($inner::from_rotation_z(angle))
         }
 
         // #[inline]
@@ -250,16 +278,16 @@ macro_rules! impl_mat3_methods {
         }
 
         /// Transforms the given 2D vector as a point.
-        /// This is the equivalent of multiplying the 2D vector as a 3D vector where `z`
-        /// is `1.0`.
+        ///
+        /// This is the equivalent of multiplying `other` as a 3D vector where `z` is `1`.
         #[inline(always)]
         pub fn transform_point2(&self, other: $vec2) -> $vec2 {
             self.transform_point2_as_vec3a(other)
         }
 
         /// Rotates the given 2D vector.
-        /// This is the equivalent of multiplying the 2D vector as a 3D vector where `z`
-        /// is `0.0`.
+        ///
+        /// This is the equivalent of multiplying `other` as a 3D vector where `z` is `0`.
         #[inline(always)]
         pub fn transform_vector2(&self, other: $vec2) -> $vec2 {
             self.transform_vector2_as_vec3a(other)
@@ -429,11 +457,7 @@ macro_rules! impl_mat3_traits {
 }
 
 type InnerF32 = Vector3x3<XYZ<f32>>;
-
-/// A 3x3 column major matrix.
-#[derive(Clone, Copy)]
-#[cfg_attr(not(target_arch = "spirv"), repr(C))]
-pub struct Mat3(pub(crate) InnerF32);
+define_mat3_struct!(Mat3, InnerF32);
 
 impl Mat3 {
     impl_mat3_methods!(f32, Vec3, Vec2, Quat, InnerF32);
@@ -488,11 +512,7 @@ impl Mul<Vec3A> for Mat3 {
 }
 
 type InnerF64 = Vector3x3<XYZ<f64>>;
-
-/// A 3x3 column major matrix.
-#[derive(Clone, Copy)]
-#[cfg_attr(not(target_arch = "spirv"), repr(C))]
-pub struct DMat3(pub(crate) InnerF64);
+define_mat3_struct!(DMat3, InnerF64);
 
 impl DMat3 {
     impl_mat3_methods!(f64, DVec3, DVec2, DQuat, InnerF64);
