@@ -19,21 +19,22 @@ macro_rules! define_mat3_struct {
         ///
         /// The 3x3 matrix types has convenience methods for linear and affine transformations.
         ///
-        /// Linear transformations for transforming 3D vectors can be created using methods such as
-        /// [`Self::from_diagonal()`], [`Self::from_quat()`], [`Self::from_axis_angle()`],
+        /// Linear transformations including 3D rotation and scale can be created using methods
+        /// such as [`Self::from_diagonal()`], [`Self::from_quat()`], [`Self::from_axis_angle()`],
         /// [`Self::from_rotation_x()`], [`Self::from_rotation_y()`], or
         /// [`Self::from_rotation_z()`].
         ///
         /// The resulting matrices can be use to transform 3D vectors using regular vector
         /// multiplication.
         ///
-        /// Affine transformations for transforming 2D vectors can be created using methods such as
-        /// [`Self::from_scale`] and [`Self::from_scale_angle_translation`].
+        /// Affine transformations including 2D translation, rotation and scale can be created
+        /// using methods such as [`Self::from_scale`] and [`Self::from_scale_angle_translation`].
         ///
         /// The [`Self::transform_point2()`] and [`Self::transform_vector2()`] convenience methods
         /// are provided for performing affine transforms on 2D vectors and points. These multiply
         /// 2D inputs as 3D vectors with an implicit `z` value of `1` for points and `0` for
-        /// vectors respectively. These methods assume that `Self` is a valid affine transform.
+        /// vectors respectively. These methods assume that `Self` contains a valid affine
+        /// transform.
         #[derive(Clone, Copy)]
         #[cfg_attr(not(target_arch = "spirv"), repr(C))]
         pub struct $mat3(pub(crate) $inner);
@@ -45,7 +46,8 @@ macro_rules! impl_mat3_methods {
         /// A 3x3 matrix with all elements set to `0.0`.
         pub const ZERO: Self = Self($inner::ZERO);
 
-        /// A 3x3 identity matrix, where all diagonal elements are `1`, and all off-diagonal elements are `0`.
+        /// A 3x3 identity matrix, where all diagonal elements are `1`, and all off-diagonal
+        /// elements are `0`.
         pub const IDENTITY: Self = Self($inner::IDENTITY);
 
         /// Creates a 3x3 matrix with all elements set to `0.0`.
@@ -145,7 +147,7 @@ macro_rules! impl_mat3_methods {
             Self($inner::from_rotation_z(angle))
         }
 
-        /// Creates an affine transformation matrix from the given `scale`, rotation `angle` (in
+        /// Creates an affine transformation matrix from the given 2D `scale`, rotation `angle` (in
         /// radians) and `translation`.
         ///
         /// The resulting matrix can be used to transform 2D points and vectors. See
@@ -159,7 +161,7 @@ macro_rules! impl_mat3_methods {
             ))
         }
 
-        /// Creates an affine transformation matrix from the given non-uniform `scale`.
+        /// Creates an affine transformation matrix from the given non-uniform 2D `scale`.
         ///
         /// The resulting matrix can be used to transform 2D points and vectors. See
         /// [`Self::transform_point2()`] and [`Self::transform_vector2()`].
