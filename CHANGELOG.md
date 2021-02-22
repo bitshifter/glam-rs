@@ -31,6 +31,8 @@ The format is based on [Keep a Changelog], and this project adheres to
   matrices from a vector.
 * Added `angle_between()`, `from_rotation_arc()` and
   `from_rotation_arc_colinear()` to quaternion types.
+* Added quaternion `inverse()` which assumes the quaternion is already
+  normalized and returns the conjugate.
 
 ### Changed
 

@@ -111,6 +111,12 @@ macro_rules! impl_quat_tests {
             // use the conjugate of z0 to remove the rotation from yxz0
             let yx2 = yxz0 * z0.conjugate();
             assert_approx_eq!(yx0, yx2);
+            assert!((yxz0 * yxz0.conjugate()).is_near_identity());
+
+            // test inverse does the same
+            let yx2 = yxz0 * z0.inverse();
+            assert_approx_eq!(yx0, yx2);
+            assert!((yxz0 * yxz0.inverse()).is_near_identity());
 
             let yxz2 = $quat::from_rotation_mat4(&$mat4::from_quat(yxz0));
             assert_approx_eq!(yxz0, yxz2);

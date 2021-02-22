@@ -189,6 +189,17 @@ macro_rules! impl_quat_methods {
             Self(self.0.conjugate())
         }
 
+        /// Returns the inverse of a normalized quaternion.
+        ///
+        /// Typically quaternion inverse returns the conjugate of a normalized quaternion.
+        /// Because `self` is assumed to already be unit length this method *does not* normalize
+        /// before returning the conjugate.
+        #[inline(always)]
+        pub fn inverse(self) -> Self {
+            glam_assert!(self.is_normalized());
+            self.conjugate()
+        }
+
         /// Computes the dot product of `self` and `other`. The dot product is
         /// equal to the the cosine of the angle between two quaterion rotations.
         #[inline(always)]
