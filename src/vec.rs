@@ -608,8 +608,8 @@ macro_rules! impl_vecn_eq_hash_traits {
     ($t:ty, $size:literal, $vecn:ident) => {
         impl Eq for $vecn {}
 
-        impl std::hash::Hash for $vecn {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl core::hash::Hash for $vecn {
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                 let inner: &[$t; $size] = self.as_ref();
                 inner.hash(state);
             }
