@@ -271,6 +271,7 @@ impl IVec4 {
     impl_vecn_as_u32!(UVec4, x, y, z, w);
 }
 impl_vec4_signed_traits!(i32, ivec4, IVec2, IVec3, IVec4, BVec4, XYZWI32);
+impl_vecn_eq_hash_traits!(i32, 4, IVec4);
 
 type XYZWU32 = XYZW<u32>;
 
@@ -286,6 +287,7 @@ impl UVec4 {
     impl_vecn_as_i32!(IVec4, x, y, z, w);
 }
 impl_vec4_common_traits!(u32, uvec4, UVec2, UVec3, UVec4, BVec4, XYZWU32);
+impl_vecn_eq_hash_traits!(u32, 4, UVec4);
 
 #[test]
 fn test_vec4_private() {

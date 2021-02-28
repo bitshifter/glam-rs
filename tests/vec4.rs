@@ -504,6 +504,38 @@ macro_rules! impl_vec4_signed_tests {
     };
 }
 
+macro_rules! impl_vec4_eq_hash_tests {
+    ($t:ident, $new:ident) => {
+        #[test]
+        fn test_ve2_hash() {
+            use std::collections::hash_map::DefaultHasher;
+            use std::hash::Hash;
+            use std::hash::Hasher;
+
+            let a = $new(1 as $t, 2 as $t, 3 as $t, 4 as $t);
+            let b = $new(1 as $t, 2 as $t, 3 as $t, 4 as $t);
+            let c = $new(3 as $t, 2 as $t, 1 as $t, 4 as $t);
+
+            let mut hasher = DefaultHasher::new();
+            a.hash(&mut hasher);
+            let a_hashed = hasher.finish();
+
+            let mut hasher = DefaultHasher::new();
+            b.hash(&mut hasher);
+            let b_hashed = hasher.finish();
+
+            let mut hasher = DefaultHasher::new();
+            c.hash(&mut hasher);
+            let c_hashed = hasher.finish();
+
+            assert_eq!(a, b);
+            assert_eq!(a_hashed, b_hashed);
+            assert_ne!(a, c);
+            assert_ne!(a_hashed, c_hashed);
+        }
+    };
+}
+
 macro_rules! impl_vec4_float_tests {
     ($t:ident, $const_new:ident, $new:ident, $vec4:ident, $mask:ident) => {
         impl_vec4_signed_tests!($t, $const_new, $new, $vec4, $mask);
@@ -856,6 +888,7 @@ mod ivec4 {
     }
 
     impl_vec4_signed_tests!(i32, const_ivec4, ivec4, IVec4, BVec4);
+    impl_vec4_eq_hash_tests!(i32, ivec4);
 }
 
 mod uvec4 {
@@ -871,4 +904,5 @@ mod uvec4 {
     }
 
     impl_vec4_tests!(u32, const_uvec4, uvec4, UVec4, BVec4);
+    impl_vec4_eq_hash_tests!(u32, uvec4);
 }

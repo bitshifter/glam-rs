@@ -201,6 +201,7 @@ impl IVec2 {
     impl_vecn_as_u32!(UVec2, x, y);
 }
 impl_vec2_signed_traits!(i32, ivec2, IVec2, IVec3, BVec2, XYI32);
+impl_vecn_eq_hash_traits!(i32, 2, IVec2);
 
 type XYU32 = XY<u32>;
 
@@ -216,3 +217,4 @@ impl UVec2 {
     impl_vecn_as_i32!(IVec2, x, y);
 }
 impl_vec2_unsigned_traits!(u32, uvec2, UVec2, UVec3, BVec2, XYU32);
+impl_vecn_eq_hash_traits!(u32, 2, UVec2);
