@@ -28,7 +28,8 @@ macro_rules! define_mat3_struct {
         /// multiplication.
         ///
         /// Affine transformations including 2D translation, rotation and scale can be created
-        /// using methods such as [`Self::from_scale`] and [`Self::from_scale_angle_translation`].
+        /// using methods such as [`Self::from_translation()`], [`Self::from_angle()`],
+        /// [`Self::from_scale()`] and [`Self::from_scale_angle_translation()`].
         ///
         /// The [`Self::transform_point2()`] and [`Self::transform_vector2()`] convenience methods
         /// are provided for performing affine transforms on 2D vectors and points. These multiply
@@ -38,7 +39,7 @@ macro_rules! define_mat3_struct {
         #[derive(Clone, Copy)]
         #[cfg_attr(not(target_arch = "spirv"), repr(C))]
         pub struct $mat3(pub(crate) $inner);
-    }
+    };
 }
 
 macro_rules! impl_mat3_methods {
@@ -145,6 +146,25 @@ macro_rules! impl_mat3_methods {
         #[inline(always)]
         pub fn from_rotation_z(angle: $t) -> Self {
             Self($inner::from_rotation_z(angle))
+        }
+
+        /// Creates an affine transformation matrix from the given 2D `translation`.
+        ///
+        /// The resulting matrix can be used to transform 2D points and vectors. See
+        /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+        #[inline(always)]
+        pub fn from_translation(translation: $vec2) -> Self {
+            Self(Matrix3x3::from_translation(translation.0))
+        }
+
+        /// Creates an affine transformation matrix from the given 2D rotation `angle` (in
+        /// radians).
+        ///
+        /// The resulting matrix can be used to transform 2D points and vectors. See
+        /// [`Self::transform_point2()`] and [`Self::transform_vector2()`].
+        #[inline(always)]
+        pub fn from_angle(angle: $t) -> Self {
+            Self(FloatMatrix3x3::from_angle(angle))
         }
 
         /// Creates an affine transformation matrix from the given 2D `scale`, rotation `angle` (in

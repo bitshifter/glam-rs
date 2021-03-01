@@ -33,6 +33,7 @@ The format is based on [Keep a Changelog], and this project adheres to
   `from_rotation_arc_colinear()` to quaternion types.
 * Added quaternion `inverse()` which assumes the quaternion is already
   normalized and returns the conjugate.
+* Added `from_translation()` and `from_angle()` methods to 3x3 matrix types.
 
 ### Changed
 

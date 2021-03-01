@@ -107,24 +107,33 @@ macro_rules! impl_mat3_tests {
 
         #[test]
         fn test_mat3_transform2d() {
-            let mat_a = $mat3::from_scale($vec2::new(2.0, 4.0));
-            assert_eq!($vec2::new(2.0, 0.0), mat_a.transform_vector2($vec2::X));
-            assert_eq!($vec2::new(0.0, 4.0), mat_a.transform_vector2($vec2::Y));
-            assert_eq!($vec2::new(2.0, 0.0), mat_a.transform_point2($vec2::X));
-            assert_eq!($vec2::new(0.0, 4.0), mat_a.transform_point2($vec2::Y));
+            let m = $mat3::from_translation($vec2::new(2.0, 4.0));
+            assert_eq!($vec2::ZERO, m.transform_vector2($vec2::ZERO));
+            assert_eq!($vec2::new(2.0, 4.0), m.transform_point2($vec2::ZERO));
+            assert_eq!($vec2::ZERO, m.transform_point2($vec2::new(-2.0, -4.0)));
 
-            let mat_b = $mat3::from_scale_angle_translation(
+            let m = $mat3::from_angle($t::to_radians(90.0));
+            assert_approx_eq!($vec2::Y, m.transform_vector2($vec2::X), 1e-7);
+            assert_approx_eq!($vec2::Y, m.transform_point2($vec2::X), 1e-7);
+
+            let m = $mat3::from_scale($vec2::new(2.0, 4.0));
+            assert_eq!($vec2::new(2.0, 0.0), m.transform_vector2($vec2::X));
+            assert_eq!($vec2::new(0.0, 4.0), m.transform_vector2($vec2::Y));
+            assert_eq!($vec2::new(2.0, 0.0), m.transform_point2($vec2::X));
+            assert_eq!($vec2::new(0.0, 4.0), m.transform_point2($vec2::Y));
+
+            let m = $mat3::from_scale_angle_translation(
                 $vec2::new(0.5, 1.5),
                 $t::to_radians(90.0),
                 $vec2::new(1.0, 2.0),
             );
-            let result2 = mat_b.transform_vector2($vec2::Y);
+            let result2 = m.transform_vector2($vec2::Y);
             assert_approx_eq!($vec2::new(-1.5, 0.0), result2, 1.0e-6);
-            assert_approx_eq!(result2, (mat_b * $vec2::Y.extend(0.0)).truncate());
+            assert_approx_eq!(result2, (m * $vec2::Y.extend(0.0)).truncate());
 
-            let result2 = mat_b.transform_point2($vec2::Y);
+            let result2 = m.transform_point2($vec2::Y);
             assert_approx_eq!($vec2::new(-0.5, 2.0), result2, 1.0e-6);
-            assert_approx_eq!(result2, (mat_b * $vec2::Y.extend(1.0)).truncate());
+            assert_approx_eq!(result2, (m * $vec2::Y.extend(1.0)).truncate());
         }
 
         #[test]

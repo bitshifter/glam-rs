@@ -197,6 +197,11 @@ pub trait Matrix3x3<T: NumEx, V3: Vector3<T>>: Matrix<T> {
         )
     }
 
+    #[inline(always)]
+    fn from_translation(translation: XY<T>) -> Self {
+        Self::from_cols(V3::X, V3::Y, V3::new(translation.x, translation.y, T::ONE))
+    }
+
     fn determinant(&self) -> T;
     fn transpose(&self) -> Self;
     fn mul_vector(&self, other: V3) -> V3;
@@ -217,17 +222,25 @@ pub trait FloatMatrix3x3<T: FloatEx, V3: FloatVector3<T>>: Matrix3x3<T, V3> {
             && self.z_axis().abs_diff_eq(*other.z_axis(), max_abs_diff)
     }
 
-    #[rustfmt::skip]
+    #[inline]
+    fn from_angle(angle: T) -> Self {
+        let (sin, cos) = angle.sin_cos();
+        Self::from_cols(
+            V3::new(cos, sin, T::ZERO),
+            V3::new(-sin, cos, T::ZERO),
+            V3::Z,
+        )
+    }
     #[inline]
     fn from_scale_angle_translation(scale: XY<T>, angle: T, translation: XY<T>) -> Self {
         let (sin, cos) = angle.sin_cos();
-        Self::new(
-            cos * scale.x, sin * scale.x, T::ZERO,
-            -sin * scale.y, cos * scale.y, T::ZERO,
-            translation.x, translation.y, T::ONE)
+        Self::from_cols(
+            V3::new(cos * scale.x, sin * scale.x, T::ZERO),
+            V3::new(-sin * scale.y, cos * scale.y, T::ZERO),
+            V3::new(translation.x, translation.y, T::ONE),
+        )
     }
 
-    #[rustfmt::skip]
     #[inline]
     fn from_axis_angle(axis: V3, angle: T) -> Self {
         glam_assert!(axis.is_normalized());
@@ -239,14 +252,13 @@ pub trait FloatMatrix3x3<T: FloatEx, V3: FloatVector3<T>>: Matrix3x3<T, V3> {
         let xyomc = x * y * omc;
         let xzomc = x * z * omc;
         let yzomc = y * z * omc;
-        Self::new(
-            x2 * omc + cos, xyomc + zsin, xzomc - ysin,
-            xyomc - zsin, y2 * omc + cos, yzomc + xsin,
-            xzomc + ysin, yzomc - xsin, z2 * omc + cos,
+        Self::from_cols(
+            V3::new(x2 * omc + cos, xyomc + zsin, xzomc - ysin),
+            V3::new(xyomc - zsin, y2 * omc + cos, yzomc + xsin),
+            V3::new(xzomc + ysin, yzomc - xsin, z2 * omc + cos),
         )
     }
 
-    #[rustfmt::skip]
     #[inline]
     fn from_quaternion(rotation: XYZW<T>) -> Self {
         glam_assert!(rotation.is_normalized());
@@ -263,40 +275,41 @@ pub trait FloatMatrix3x3<T: FloatEx, V3: FloatVector3<T>>: Matrix3x3<T, V3> {
         let wy = rotation.w * y2;
         let wz = rotation.w * z2;
 
-        Self::new(
-            T::ONE - (yy + zz), xy + wz, xz - wy,
-            xy - wz, T::ONE - (xx + zz), yz + wx,
-            xz + wy, yz - wx, T::ONE - (xx + yy))
+        Self::from_cols(
+            V3::new(T::ONE - (yy + zz), xy + wz, xz - wy),
+            V3::new(xy - wz, T::ONE - (xx + zz), yz + wx),
+            V3::new(xz + wy, yz - wx, T::ONE - (xx + yy)),
+        )
     }
 
-    #[rustfmt::skip]
     #[inline]
     fn from_rotation_x(angle: T) -> Self {
         let (sina, cosa) = angle.sin_cos();
-        Self::new(
-            T::ONE, T::ZERO, T::ZERO,
-            T::ZERO, cosa, sina,
-            T::ZERO, -sina, cosa)
+        Self::from_cols(
+            V3::X,
+            V3::new(T::ZERO, cosa, sina),
+            V3::new(T::ZERO, -sina, cosa),
+        )
     }
 
-    #[rustfmt::skip]
     #[inline]
     fn from_rotation_y(angle: T) -> Self {
         let (sina, cosa) = angle.sin_cos();
-        Self::new(
-            cosa, T::ZERO, -sina,
-            T::ZERO, T::ONE, T::ZERO,
-            sina, T::ZERO, cosa)
+        Self::from_cols(
+            V3::new(cosa, T::ZERO, -sina),
+            V3::Y,
+            V3::new(sina, T::ZERO, cosa),
+        )
     }
 
-    #[rustfmt::skip]
     #[inline]
     fn from_rotation_z(angle: T) -> Self {
         let (sina, cosa) = angle.sin_cos();
-        Self::new(
-            cosa, sina, T::ZERO,
-            -sina, cosa, T::ZERO,
-            T::ZERO, T::ZERO, T::ONE)
+        Self::from_cols(
+            V3::new(cosa, sina, T::ZERO),
+            V3::new(-sina, cosa, T::ZERO),
+            V3::Z,
+        )
     }
 
     fn transform_point2(&self, other: XY<T>) -> XY<T>;
