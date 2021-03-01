@@ -156,26 +156,37 @@ macro_rules! impl_mat4_tests {
 
         #[test]
         fn test_mat4_mul() {
-            let mat_a = $mat4::from_axis_angle($vec3::Z, deg(90.0));
-            let result3 = mat_a.transform_vector3($vec3::Y);
+            let m = $mat4::from_axis_angle($vec3::Z, deg(90.0));
+            let result3 = m.transform_vector3($vec3::Y);
             assert_approx_eq!($newvec3(-1.0, 0.0, 0.0), result3);
-            assert_approx_eq!(result3, (mat_a * $vec3::Y.extend(0.0)).truncate().into());
-            let result4 = mat_a * $vec4::Y;
+            assert_approx_eq!(result3, (m * $vec3::Y.extend(0.0)).truncate().into());
+            let result4 = m * $vec4::Y;
             assert_approx_eq!($newvec4(-1.0, 0.0, 0.0, 0.0), result4);
-            assert_approx_eq!(result4, mat_a * $vec4::Y);
+            assert_approx_eq!(result4, m * $vec4::Y);
 
-            let mat_b = $mat4::from_scale_rotation_translation(
+            let m = $mat4::from_scale_rotation_translation(
                 $vec3::new(0.5, 1.5, 2.0),
                 $quat::from_rotation_x(deg(90.0)),
                 $vec3::new(1.0, 2.0, 3.0),
             );
-            let result3 = mat_b.transform_vector3($vec3::Y);
+            let result3 = m.transform_vector3($vec3::Y);
             assert_approx_eq!($newvec3(0.0, 0.0, 1.5), result3, 1.0e-6);
-            assert_approx_eq!(result3, (mat_b * $vec3::Y.extend(0.0)).truncate().into());
+            assert_approx_eq!(result3, (m * $vec3::Y.extend(0.0)).truncate().into());
 
-            let result3 = mat_b.transform_point3($vec3::Y);
+            let result3 = m.transform_point3($vec3::Y);
             assert_approx_eq!($newvec3(1.0, 2.0, 4.5), result3, 1.0e-6);
-            assert_approx_eq!(result3, (mat_b * $vec3::Y.extend(1.0)).truncate().into());
+            assert_approx_eq!(result3, (m * $vec3::Y.extend(1.0)).truncate().into());
+
+            let m = $mat4::from_cols(
+                $newvec4(8.0, 0.0, 0.0, 0.0),
+                $newvec4(0.0, 4.0, 0.0, 0.0),
+                $newvec4(0.0, 0.0, 2.0, 2.0),
+                $newvec4(0.0, 0.0, 0.0, 0.0),
+            );
+            assert_approx_eq!(
+                $newvec3(4.0, 2.0, 1.0),
+                m.project_point3($newvec3(2.0, 2.0, 2.0))
+            );
         }
 
         #[test]

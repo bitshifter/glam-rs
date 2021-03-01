@@ -409,7 +409,6 @@ impl FloatMatrix4x4<f32, __m128> for Vector4x4<__m128> {
         res = self.y_axis.mul_add(other.splat_y(), res);
         res = self.z_axis.mul_add(other.splat_z(), res);
         res = self.w_axis.add(res);
-        res = res.mul(res.splat_w().recip());
         res
     }
 
@@ -418,6 +417,16 @@ impl FloatMatrix4x4<f32, __m128> for Vector4x4<__m128> {
         let mut res = self.x_axis.mul(other.splat_x());
         res = self.y_axis.mul_add(other.splat_y(), res);
         res = self.z_axis.mul_add(other.splat_z(), res);
+        res
+    }
+
+    #[inline]
+    fn project_float4_as_point3(&self, other: __m128) -> __m128 {
+        let mut res = self.x_axis.mul(other.splat_x());
+        res = self.y_axis.mul_add(other.splat_y(), res);
+        res = self.z_axis.mul_add(other.splat_z(), res);
+        res = self.w_axis.add(res);
+        res = res.mul(res.splat_w().recip());
         res
     }
 }

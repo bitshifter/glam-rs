@@ -17,7 +17,8 @@ macro_rules! define_mat3_struct {
     ($mat3:ident, $inner:ident) => {
         /// A 3x3 column major matrix.
         ///
-        /// The 3x3 matrix types has convenience methods for linear and affine transformations.
+        /// This 3x3 matrix type features convenience methods for creating and using linear and
+        /// affine transformations.
         ///
         /// Linear transformations including 3D rotation and scale can be created using methods
         /// such as [`Self::from_diagonal()`], [`Self::from_quat()`], [`Self::from_axis_angle()`],

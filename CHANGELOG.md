@@ -9,6 +9,11 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ### Breaking Changes
 
+* The behavior of the 4x4 matrix method `transform_point3()` was changed to not
+  perform the perspective divide. This is an optimization for use with affine
+  transforms where perspective correction is not required. The
+  `project_point3()` method was added for transforming points by perspective
+  projections.
 * The 3x3 matrix `from_scale()` method was changed to
   create a affine transform containing a 2-dimensional non-uniform scale to be
   consistent with the 4x4 matrix version. The
@@ -34,6 +39,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Added quaternion `inverse()` which assumes the quaternion is already
   normalized and returns the conjugate.
 * Added `from_translation()` and `from_angle()` methods to 3x3 matrix types.
+* Added `project_point3()` method to 4x4 matrics types. This method is for
+  transforming 3D vectors by perspective projection transforms.
 
 ### Changed
 

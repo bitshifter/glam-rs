@@ -30,6 +30,41 @@ use core::{
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
 
+macro_rules! define_mat4_struct {
+    ($mat4:ident, $inner:ident) => {
+        /// A 4x4 column major matrix.
+        ///
+        /// This 4x4 matrix type features convenience methods for creating and using affine
+        /// transforms and perspective projections.
+        ///
+        /// Affine transformations including 3D translation, rotation and scale can be created
+        /// using methods such as [`Self::from_translation()`], [`Self::from_quat()`],
+        /// [`Self::from_scale()`] and [`Self::from_scale_rotation_translation()`].
+        ///
+        /// Othographic projections can be created using the methods [`Self::orthgraphic_lh()`] for
+        /// right-handed coordinate systems and [`Self::orthographic_rh()`] for left-handed
+        /// systems. The resulting matrix is also an affine transformation.
+        ///
+        /// The [`Self::transform_point2()`] and [`Self::transform_vector2()`] convenience methods
+        /// are provided for performing affine transformations on 3D vectors and points. These
+        /// multiply 3D inputs as 4D vectors with an implicit `w` value of `1` for points and `0`
+        /// for vectors respectively. These methods assume that `Self` contains a valid affine
+        /// transform.
+        ///
+        /// Perspective projections can be created using methods such as
+        /// [`Self::perspective_lh()`], [`Self::perspective_infinite_lh()`] and
+        /// [`Self::perspective_infinite_reverse_lh()`] for left-handed co-ordinate systems and
+        /// [`Self::perspective_rh()`], [`Self::perspective_infinite_rh()`] and
+        /// [`Self::perspective_infinite_reverse_rh()`] for right-handed co-ordinate systems.
+        ///
+        /// The resulting perspective project can be use to transform 3D vectors as points with
+        /// perspective correction using the [`Self::project_point3()`] convenience method.
+        #[derive(Clone, Copy)]
+        #[repr(transparent)]
+        pub struct $mat4(pub(crate) $inner);
+    };
+}
+
 macro_rules! impl_mat4_methods {
     ($t:ty, $vec4:ident, $vec3:ident, $quat:ident, $inner:ident) => {
         /// A 4x4 matrix with all elements set to `0.0`.
@@ -95,7 +130,7 @@ macro_rules! impl_mat4_methods {
             Self($inner::from_diagonal(diagonal.0))
         }
 
-        /// Creates a 3D affine transformation matrix from the given `scale`, `rotation` and
+        /// Creates an affine transformation matrix from the given 3D `scale`, `rotation` and
         /// `translation`.
         ///
         /// The resulting matrix can be used to transform 3D points and vectors. See
@@ -113,7 +148,7 @@ macro_rules! impl_mat4_methods {
             ))
         }
 
-        /// Creates a 3D affine transformation matrix from the given `translation`.
+        /// Creates an affine transformation matrix from the given 3D `translation`.
         ///
         /// The resulting matrix can be used to transform 3D points and vectors. See
         /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
@@ -133,7 +168,7 @@ macro_rules! impl_mat4_methods {
             ($vec3(scale), $quat(rotation), $vec3(translation))
         }
 
-        /// Creates a 3D affine transformation matrix from the given `rotation` quaternion.
+        /// Creates an affine transformation matrix from the given `rotation` quaternion.
         ///
         /// The resulting matrix can be used to transform 3D points and vectors. See
         /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
@@ -142,7 +177,7 @@ macro_rules! impl_mat4_methods {
             Self($inner::from_quaternion(rotation.0))
         }
 
-        /// Creates a 3D affine transformation matrix from the given `translation`.
+        /// Creates an affine transformation matrix from the given 3D `translation`.
         ///
         /// The resulting matrix can be used to transform 3D points and vectors. See
         /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
@@ -151,7 +186,7 @@ macro_rules! impl_mat4_methods {
             Self($inner::from_translation(translation.0))
         }
 
-        /// Creates a 3D affine transformation matrix containing a rotation around a normalized
+        /// Creates an affine transformation matrix containing a 3D rotation around a normalized
         /// rotation `axis` of `angle` (in radians).
         ///
         /// The resulting matrix can be used to transform 3D points and vectors. See
@@ -161,7 +196,7 @@ macro_rules! impl_mat4_methods {
             Self($inner::from_axis_angle(axis.0, angle))
         }
 
-        /// Creates a 3D affine transformation matrix containing a rotation around the given Euler
+        /// Creates a affine transformation matrix containing a rotation around the given Euler
         /// angles (in radians).
         ///
         /// The resulting matrix can be used to transform 3D points and vectors. See
@@ -172,7 +207,7 @@ macro_rules! impl_mat4_methods {
             Self::from_quat(quat)
         }
 
-        /// Creates a 3D affine transformation matrix containing a rotation around the x axis of
+        /// Creates an affine transformation matrix containing a 3D rotation around the x axis of
         /// `angle` (in radians).
         ///
         /// The resulting matrix can be used to transform 3D points and vectors. See
@@ -182,7 +217,7 @@ macro_rules! impl_mat4_methods {
             Self($inner::from_rotation_x(angle))
         }
 
-        /// Creates a 3D affine transformation matrix containing a rotation around the y axis of
+        /// Creates an affine transformation matrix containing a 3D rotation around the y axis of
         /// `angle` (in radians).
         ///
         /// The resulting matrix can be used to transform 3D points and vectors. See
@@ -192,7 +227,7 @@ macro_rules! impl_mat4_methods {
             Self($inner::from_rotation_y(angle))
         }
 
-        /// Creates a 3D affine transformation matrix containing a rotation around the z axis of
+        /// Creates an affine transformation matrix containing a 3D rotation around the z axis of
         /// `angle` (in radians).
         ///
         /// The resulting matrix can be used to transform 3D points and vectors. See
@@ -202,7 +237,7 @@ macro_rules! impl_mat4_methods {
             Self($inner::from_rotation_z(angle))
         }
 
-        /// Creates a 3D affine transformation matrix containing the given non-uniform `scale`.
+        /// Creates an affine transformation matrix containing the given 3D non-uniform `scale`.
         ///
         /// The resulting matrix can be used to transform 3D points and vectors. See
         /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
@@ -456,13 +491,33 @@ macro_rules! impl_mat4_methods {
             Self(self.0.mul_scalar(other))
         }
 
+        /// Transforms the given 3D vector as a point, applying perspective correction.
+        ///
+        /// This is the equivalent of multiplying the 3D vector as a 4D vector where `w` is `1.0`.
+        /// The perspective divide is performed meaning the resulting 3D vector is divided by `w`.
+        ///
+        /// This method assumes that `self` contains a projective transform.
+        #[inline]
+        pub fn project_point3(&self, other: $vec3) -> $vec3 {
+            $vec3(self.0.project_point3(other.0))
+        }
+
         /// Transforms the given 3D vector as a point.
         ///
         /// This is the equivalent of multiplying the 3D vector as a 4D vector where `w` is
-        /// `1.0`. Perspective correction is performed meaning the resulting `x`, `y` and `z`
-        /// values are divided by `w`.
+        /// `1.0`.
+        ///
+        /// This method assumes that `self` contains a valid affine transform. It does not perform
+        /// a persective divide, if `self` contains a perspective transform, or if you are unsure,
+        /// the [`Self::project_point3()`] method should be used instead.
         #[inline]
         pub fn transform_point3(&self, other: $vec3) -> $vec3 {
+            glam_assert!(
+                self.x_axis.w == 0.0
+                    && self.y_axis.w == 0.0
+                    && self.z_axis.w == 0.0
+                    && self.w_axis.w == 1.0
+            );
             $vec3(self.0.transform_point3(other.0))
         }
 
@@ -470,8 +525,16 @@ macro_rules! impl_mat4_methods {
         ///
         /// This is the equivalent of multiplying the 3D vector as a 4D vector where `w` is
         /// `0.0`.
+        ///
+        /// This method assumes that `self` contains a valid affine transform.
         #[inline]
         pub fn transform_vector3(&self, other: $vec3) -> $vec3 {
+            glam_assert!(
+                self.x_axis.w == 0.0
+                    && self.y_axis.w == 0.0
+                    && self.z_axis.w == 0.0
+                    && self.w_axis.w == 1.0
+            );
             $vec3(self.0.transform_vector3(other.0))
         }
 
@@ -647,12 +710,7 @@ type InnerF32 = Vector4x4<__m128>;
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
 type InnerF32 = Vector4x4<XYZW<f32>>;
 
-/// A 4x4 column major matrix.
-///
-/// This type is 16 byte aligned if SIMD is available.
-#[derive(Clone, Copy)]
-#[repr(transparent)]
-pub struct Mat4(pub(crate) InnerF32);
+define_mat4_struct!(Mat4, InnerF32);
 
 impl Mat4 {
     impl_mat4_methods!(f32, Vec4, Vec3, Quat, InnerF32);
@@ -687,10 +745,7 @@ impl_mat4_traits!(f32, mat4, Mat4, Vec4);
 
 type InnerF64 = Vector4x4<XYZW<f64>>;
 
-/// A 4x4 column major matrix.
-#[derive(Clone, Copy)]
-#[repr(transparent)]
-pub struct DMat4(pub(crate) InnerF64);
+define_mat4_struct!(DMat4, InnerF64);
 
 impl DMat4 {
     impl_mat4_methods!(f64, DVec4, DVec3, DQuat, InnerF64);

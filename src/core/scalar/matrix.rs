@@ -328,6 +328,11 @@ impl<T: FloatEx> FloatMatrix4x4<T, XYZW<T>> for Vector4x4<XYZW<T>> {
         self.transform_vector3(other)
     }
 
+    #[inline(always)]
+    fn project_float4_as_point3(&self, other: XYZ<T>) -> XYZ<T> {
+        self.project_point3(other)
+    }
+
     fn inverse(&self) -> Self {
         let (m00, m01, m02, m03) = self.x_axis.into_tuple();
         let (m10, m11, m12, m13) = self.y_axis.into_tuple();

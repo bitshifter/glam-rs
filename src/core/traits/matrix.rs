@@ -678,7 +678,6 @@ pub trait FloatMatrix4x4<T: FloatEx, V4: FloatVector4<T> + Quaternion<T>>:
         res = self.y_axis().mul_scalar(other.y).add(res);
         res = self.z_axis().mul_scalar(other.z).add(res);
         res = self.w_axis().add(res);
-        res = res.mul(res.splat_w().recip());
         res.into_xyz()
     }
 
@@ -690,8 +689,19 @@ pub trait FloatMatrix4x4<T: FloatEx, V4: FloatVector4<T> + Quaternion<T>>:
         res.into_xyz()
     }
 
+    #[inline]
+    fn project_point3(&self, other: XYZ<T>) -> XYZ<T> {
+        let mut res = self.x_axis().mul_scalar(other.x);
+        res = self.y_axis().mul_scalar(other.y).add(res);
+        res = self.z_axis().mul_scalar(other.z).add(res);
+        res = self.w_axis().add(res);
+        res = res.mul(res.splat_w().recip());
+        res.into_xyz()
+    }
+
     fn transform_float4_as_point3(&self, other: Self::SIMDVector3) -> Self::SIMDVector3;
     fn transform_float4_as_vector3(&self, other: Self::SIMDVector3) -> Self::SIMDVector3;
+    fn project_float4_as_point3(&self, other: Self::SIMDVector3) -> Self::SIMDVector3;
 
     fn inverse(&self) -> Self;
 }
