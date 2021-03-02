@@ -121,8 +121,7 @@ and left handed conventions.
 The design of this library is guided by a desire for simplicity and good
 performance.
 
-* No traits or generics in the public API for simplicity of implementation and
-  usage
+* No generics and minimal traits in the public API for simplicity of usage
 * All dependencies are optional (e.g. `mint`, `rand` and `serde`)
 * Follows the [Rust API Guidelines] where possible
 * Aiming for 100% test [coverage]
