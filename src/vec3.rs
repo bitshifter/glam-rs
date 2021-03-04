@@ -187,8 +187,7 @@ macro_rules! impl_vec3_float_methods {
 
         /// Returns the angle between two vectors, in radians.
         ///
-        /// The vectors do not need to be unit length, but this function does
-        /// perform a `sqrt`.
+        /// The input vectors do not need to be unit length however they must be non-zero.
         #[inline(always)]
         pub fn angle_between(self, other: Self) -> $t {
             self.0.angle_between(other.0)
