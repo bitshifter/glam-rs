@@ -208,6 +208,7 @@ macro_rules! impl_quat_methods {
         }
 
         /// Computes the length of `self`.
+        #[cfg_attr(docsrs, doc(alias = "magnitude"))]
         #[inline(always)]
         pub fn length(self) -> $t {
             FloatVector4::length(self.0)
@@ -217,6 +218,7 @@ macro_rules! impl_quat_methods {
         ///
         /// This is generally faster than `length()` as it avoids a square
         /// root operation.
+        #[cfg_attr(docsrs, doc(alias = "magnitude2"))]
         #[inline(always)]
         pub fn length_squared(self) -> $t {
             FloatVector4::length_squared(self.0)
@@ -293,6 +295,7 @@ macro_rules! impl_quat_methods {
         /// When `s` is `0.0`, the result will be equal to `self`.  When `s`
         /// is `1.0`, the result will be equal to `other`.
         #[inline(always)]
+        #[cfg_attr(docsrs, doc(alias = "mix"))]
         pub fn lerp(self, end: Self, s: $t) -> Self {
             Self(self.0.lerp(end.0, s))
         }

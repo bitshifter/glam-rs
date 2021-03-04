@@ -211,6 +211,7 @@ macro_rules! impl_vecn_float_methods {
         }
 
         /// Computes the length of `self`.
+        #[cfg_attr(docsrs, doc(alias = "magnitude"))]
         #[inline(always)]
         pub fn length(self) -> $t {
             $flttrait::length(self.0)
@@ -219,6 +220,7 @@ macro_rules! impl_vecn_float_methods {
         /// Computes the squared length of `self`.
         ///
         /// This is faster than `length()` as it avoids a square root operation.
+        #[cfg_attr(docsrs, doc(alias = "magnitude2"))]
         #[inline(always)]
         pub fn length_squared(self) -> $t {
             $flttrait::length_squared(self.0)
@@ -338,6 +340,7 @@ macro_rules! impl_vecn_float_methods {
         ///
         /// When `s` is `0.0`, the result will be equal to `self`.  When `s` is `1.0`, the result
         /// will be equal to `other`.
+        #[cfg_attr(docsrs, doc(alias = "mix"))]
         #[inline]
         pub fn lerp(self, other: Self, s: $t) -> Self {
             self + ((other - self) * s)
