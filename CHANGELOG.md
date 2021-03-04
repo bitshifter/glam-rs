@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
-## [Unreleased]
+## [0.13.0] - 2021-03-04
 
 ### Breaking Changes
 
@@ -41,6 +41,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Added `from_translation()` and `from_angle()` methods to 3x3 matrix types.
 * Added `project_point3()` method to 4x4 matrics types. This method is for
   transforming 3D vectors by perspective projection transforms.
+* Added `Eq` and `Hash` impls for integer vector types.
 
 ### Changed
 
@@ -465,7 +466,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.12.0...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.13.0...HEAD
+[0.13.0]: https://github.com/bitshifter/glam-rs/compare/0.12.0...0.13.0
 [0.12.0]: https://github.com/bitshifter/glam-rs/compare/0.11.3...0.12.0
 [0.11.3]: https://github.com/bitshifter/glam-rs/compare/0.11.2...0.11.3
 [0.11.2]: https://github.com/bitshifter/glam-rs/compare/0.11.1...0.11.2

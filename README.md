@@ -49,7 +49,7 @@ defined in `std`. For example:
 
 ```toml
 [dependencies]
-glam = { version = "0.12.0", default-features = false, features = ["libm"] }
+glam = { version = "0.13.0", default-features = false, features = ["libm"] }
 ```
 
 To support both `std` and `no_std` builds in project, you can use the following
@@ -63,7 +63,7 @@ std = ["glam/std"]
 libm = ["glam/libm"]
 
 [dependencies]
-glam = { version = "0.12.0", default-features = false }
+glam = { version = "0.13.0", default-features = false }
 ```
 
 ### Optional features
