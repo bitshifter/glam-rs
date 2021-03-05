@@ -45,7 +45,7 @@ macro_rules! define_mat4_struct {
         /// left-handed coordinate systems and [`Self::orthographic_rh()`] for right-handed
         /// systems. The resulting matrix is also an affine transformation.
         ///
-        /// The [`Self::transform_point2()`] and [`Self::transform_vector2()`] convenience methods
+        /// The [`Self::transform_point3()`] and [`Self::transform_vector3()`] convenience methods
         /// are provided for performing affine transformations on 3D vectors and points. These
         /// multiply 3D inputs as 4D vectors with an implicit `w` value of `1` for points and `0`
         /// for vectors respectively. These methods assume that `Self` contains a valid affine
