@@ -42,7 +42,7 @@ macro_rules! define_mat4_struct {
         /// [`Self::from_scale()`] and [`Self::from_scale_rotation_translation()`].
         ///
         /// Othographic projections can be created using the methods [`Self::orthgraphic_lh()`] for
-        /// right-handed coordinate systems and [`Self::orthographic_rh()`] for left-handed
+        /// left-handed coordinate systems and [`Self::orthographic_rh()`] for right-handed
         /// systems. The resulting matrix is also an affine transformation.
         ///
         /// The [`Self::transform_point2()`] and [`Self::transform_vector2()`] convenience methods
