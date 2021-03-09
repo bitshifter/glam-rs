@@ -27,7 +27,7 @@ jobs:
     name: Test
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu, macos, windows]
         rust: [1.36.0, stable, beta, nightly]
     runs-on: ${{ matrix.os }}-latest
     steps:
