@@ -185,7 +185,7 @@ macro_rules! impl_vec3_float_methods {
         impl_vec3_signed_methods!($t, $vec2, $vec3, $vec4, $mask, $inner);
         impl_vecn_float_methods!($t, $vec3, $mask, $inner, FloatVector3);
 
-        /// Returns the angle between two vectors, in radians.
+        /// Returns the angle (in radians) between two vectors.
         ///
         /// The input vectors do not need to be unit length however they must be non-zero.
         #[inline(always)]

@@ -77,26 +77,26 @@ macro_rules! impl_quat_methods {
             Vector4::write_to_slice_unaligned(self.0, slice)
         }
 
-        /// Create a quaterion for a normalized rotation axis and angle (in radians).
+        /// Create a quaternion for a normalized rotation `axis` and `angle` (in radians).
         /// The axis must be normalized (unit-length).
         #[inline(always)]
         pub fn from_axis_angle(axis: $vec3, angle: $t) -> Self {
             Self($inner::from_axis_angle(axis.0, angle))
         }
 
-        /// Creates a quaternion from the angle (in radians) around the x axis.
+        /// Creates a quaternion from the `angle` (in radians) around the x axis.
         #[inline(always)]
         pub fn from_rotation_x(angle: $t) -> Self {
             Self($inner::from_rotation_x(angle))
         }
 
-        /// Creates a quaternion from the angle (in radians) around the y axis.
+        /// Creates a quaternion from the `angle` (in radians) around the y axis.
         #[inline(always)]
         pub fn from_rotation_y(angle: $t) -> Self {
             Self($inner::from_rotation_y(angle))
         }
 
-        /// Creates a quaternion from the angle (in radians) around the z axis.
+        /// Creates a quaternion from the `angle` (in radians) around the z axis.
         #[inline(always)]
         pub fn from_rotation_z(angle: $t) -> Self {
             Self($inner::from_rotation_z(angle))
@@ -175,7 +175,7 @@ macro_rules! impl_quat_methods {
             }
         }
 
-        /// Returns the rotation axis and angle of `self`.
+        /// Returns the rotation axis and angle (in radians) of `self`.
         #[inline(always)]
         pub fn to_axis_angle(self) -> ($vec3, $t) {
             let (axis, angle) = self.0.to_axis_angle();
@@ -201,7 +201,7 @@ macro_rules! impl_quat_methods {
         }
 
         /// Computes the dot product of `self` and `other`. The dot product is
-        /// equal to the the cosine of the angle between two quaterion rotations.
+        /// equal to the the cosine of the angle between two quaternion rotations.
         #[inline(always)]
         pub fn dot(self, other: Self) -> $t {
             Vector4::dot(self.0, other.0)

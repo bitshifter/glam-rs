@@ -30,6 +30,9 @@ assert_eq!(v, x);
 
 Matrices are stored in memory in column-major order.
 
+All angles are in radians. Rust provides the `to_radians()` method which can be
+used to convert from degrees.
+
 ## Direct element access
 
 Because some types may internally be implemeted using SIMD types, direct access to vector elements
