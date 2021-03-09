@@ -71,8 +71,8 @@ fn test_align16() {
     let mut a = Align16::<f32>(1.0);
     assert_eq!(mem::align_of_val(&a), 16);
     unsafe {
-        assert_eq!(ptr::read(a.as_ptr()), 1.0);
+        assert_eq!(ptr::read(a.as_ptr()).to_bits(), f32::to_bits(1.0));
         ptr::write(a.as_mut_ptr(), -1.0);
     }
-    assert_eq!(a.0, -1.0);
+    assert_eq!(a.0.to_bits(), f32::to_bits(-1.0));
 }

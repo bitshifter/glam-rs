@@ -66,7 +66,7 @@ macro_rules! define_mat4_struct {
 }
 
 macro_rules! impl_mat4_methods {
-    ($t:ty, $vec4:ident, $vec3:ident, $quat:ident, $inner:ident) => {
+    ($t:ident, $vec4:ident, $vec3:ident, $quat:ident, $inner:ident) => {
         /// A 4x4 matrix with all elements set to `0.0`.
         pub const ZERO: Self = Self($inner::ZERO);
 
@@ -513,10 +513,10 @@ macro_rules! impl_mat4_methods {
         #[inline]
         pub fn transform_point3(&self, other: $vec3) -> $vec3 {
             glam_assert!(
-                self.x_axis.w == 0.0
-                    && self.y_axis.w == 0.0
-                    && self.z_axis.w == 0.0
-                    && self.w_axis.w == 1.0
+                self.x_axis.w.to_bits() == $t::to_bits(0.0)
+                    && self.y_axis.w.to_bits() == $t::to_bits(0.0)
+                    && self.z_axis.w.to_bits() == $t::to_bits(0.0)
+                    && self.w_axis.w.to_bits() == $t::to_bits(1.0)
             );
             $vec3(self.0.transform_point3(other.0))
         }
@@ -530,10 +530,10 @@ macro_rules! impl_mat4_methods {
         #[inline]
         pub fn transform_vector3(&self, other: $vec3) -> $vec3 {
             glam_assert!(
-                self.x_axis.w == 0.0
-                    && self.y_axis.w == 0.0
-                    && self.z_axis.w == 0.0
-                    && self.w_axis.w == 1.0
+                self.x_axis.w.to_bits() == $t::to_bits(0.0)
+                    && self.y_axis.w.to_bits() == $t::to_bits(0.0)
+                    && self.z_axis.w.to_bits() == $t::to_bits(0.0)
+                    && self.w_axis.w.to_bits() == $t::to_bits(1.0)
             );
             $vec3(self.0.transform_vector3(other.0))
         }

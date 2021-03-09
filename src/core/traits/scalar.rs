@@ -368,13 +368,10 @@ fn test_scalar_acos() {
     const PTVE_ONE: u32 = 0x3f_80_00_00; // 1.0_f32.to_bits();
     const NGVE_ONE: u32 = SIGN | PTVE_ONE;
     const STEP_SIZE: usize = (PTVE_ONE / MAX_TESTS) as usize;
-    for f in (SIGN..=NGVE_ONE)
-        .step_by(STEP_SIZE)
-        .map(|i| f32::from_bits(i))
-    {
+    for f in (SIGN..=NGVE_ONE).step_by(STEP_SIZE).map(f32::from_bits) {
         test_scalar_acos_angle(f);
     }
-    for f in (0..=PTVE_ONE).step_by(STEP_SIZE).map(|i| f32::from_bits(i)) {
+    for f in (0..=PTVE_ONE).step_by(STEP_SIZE).map(f32::from_bits) {
         test_scalar_acos_angle(f);
     }
 

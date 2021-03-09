@@ -69,7 +69,6 @@ mod test {
         DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, IVec2, IVec3, IVec4, Mat2, Mat3, Mat4,
         Quat, UVec2, UVec3, UVec4, Vec2, Vec3, Vec4,
     };
-    use bytemuck;
     use core::mem;
 
     macro_rules! test_t {

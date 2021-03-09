@@ -138,16 +138,22 @@ impl<T: NumEx> Matrix3x3<T, XYZ<T>> for Vector3x3<XYZ<T>> {
 
     #[inline(always)]
     fn transpose(&self) -> Self {
-        Self::new(
-            self.x_axis.x,
-            self.y_axis.x,
-            self.z_axis.x,
-            self.x_axis.y,
-            self.y_axis.y,
-            self.z_axis.y,
-            self.x_axis.z,
-            self.y_axis.z,
-            self.z_axis.z,
+        Self::from_cols(
+            XYZ {
+                x: self.x_axis.x,
+                y: self.y_axis.x,
+                z: self.z_axis.x,
+            },
+            XYZ {
+                x: self.x_axis.y,
+                y: self.y_axis.y,
+                z: self.z_axis.y,
+            },
+            XYZ {
+                x: self.x_axis.z,
+                y: self.y_axis.z,
+                z: self.z_axis.z,
+            },
         )
     }
 

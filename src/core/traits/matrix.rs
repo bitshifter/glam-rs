@@ -108,15 +108,6 @@ pub trait Matrix3x3<T: NumEx, V3: Vector3<T>>: Matrix<T> {
     fn from_cols(x_axis: V3, y_axis: V3, z_axis: V3) -> Self;
 
     #[inline(always)]
-    fn new(m00: T, m01: T, m02: T, m10: T, m11: T, m12: T, m20: T, m21: T, m22: T) -> Self {
-        Self::from_cols(
-            V3::new(m00, m01, m02),
-            V3::new(m10, m11, m12),
-            V3::new(m20, m21, m22),
-        )
-    }
-
-    #[inline(always)]
     fn x_axis(&self) -> &V3 {
         &self.as_ref_vector3x3().x_axis
     }
@@ -137,10 +128,10 @@ pub trait Matrix3x3<T: NumEx, V3: Vector3<T>>: Matrix<T> {
     #[rustfmt::skip]
     #[inline(always)]
     fn from_cols_array(m: &[T; 9]) -> Self {
-        Self::new(
-            m[0], m[1], m[2],
-            m[3], m[4], m[5],
-            m[6], m[7], m[8])
+        Self::from_cols(
+            V3::new(m[0], m[1], m[2]),
+            V3::new(m[3], m[4], m[5]),
+            V3::new(m[6], m[7], m[8]))
     }
 
     #[rustfmt::skip]
@@ -179,10 +170,10 @@ pub trait Matrix3x3<T: NumEx, V3: Vector3<T>>: Matrix<T> {
     fn from_diagonal(diagonal: V3) -> Self {
         // glam_assert!(MaskVector3::any(scale.cmpne(V3::ZERO)));
         let (x, y, z) = diagonal.into_tuple();
-        Self::new(
-            x, T::ZERO, T::ZERO,
-            T::ZERO, y, T::ZERO,
-            T::ZERO, T::ZERO, z,
+        Self::from_cols(
+            V3::new(x, T::ZERO, T::ZERO),
+            V3::new(T::ZERO, y, T::ZERO),
+            V3::new(T::ZERO, T::ZERO, z),
         )
     }
 
@@ -319,22 +310,6 @@ pub trait FloatMatrix3x3<T: FloatEx, V3: FloatVector3<T>>: Matrix3x3<T, V3> {
 }
 
 pub trait Matrix4x4<T: NumEx, V4: Vector4<T>>: Matrix<T> {
-    #[rustfmt::skip]
-    #[inline(always)]
-    fn new(
-        m00: T, m01: T, m02: T, m03: T,
-        m10: T, m11: T, m12: T, m13: T,
-        m20: T, m21: T, m22: T, m23: T,
-        m30: T, m31: T, m32: T, m33: T,
-        ) -> Self {
-        Self::from_cols(
-            V4::new(m00, m01, m02, m03),
-            V4::new(m10, m11, m12, m13),
-            V4::new(m20, m21, m22, m23),
-            V4::new(m30, m31, m32, m33),
-        )
-    }
-
     fn from_cols(x_axis: V4, y_axis: V4, z_axis: V4, w_axis: V4) -> Self;
 
     fn x_axis(&self) -> &V4;
@@ -348,11 +323,11 @@ pub trait Matrix4x4<T: NumEx, V4: Vector4<T>>: Matrix<T> {
     #[rustfmt::skip]
     #[inline(always)]
     fn from_cols_array(m: &[T; 16]) -> Self {
-        Self::new(
-             m[0],  m[1],  m[2],  m[3],
-             m[4],  m[5],  m[6],  m[7],
-             m[8],  m[9], m[10], m[11],
-            m[12], m[13], m[14], m[15])
+        Self::from_cols(
+            V4::new( m[0],  m[1],  m[2],  m[3]),
+            V4::new( m[4],  m[5],  m[6],  m[7]),
+            V4::new( m[8],  m[9], m[10], m[11]),
+            V4::new(m[12], m[13], m[14], m[15]))
     }
 
     #[rustfmt::skip]
@@ -393,23 +368,11 @@ pub trait Matrix4x4<T: NumEx, V4: Vector4<T>>: Matrix<T> {
     #[inline(always)]
     fn from_diagonal(diagonal: V4) -> Self {
         let (x, y, z, w) = diagonal.into_tuple();
-        Self::new(
-            x,
-            T::ZERO,
-            T::ZERO,
-            T::ZERO,
-            T::ZERO,
-            y,
-            T::ZERO,
-            T::ZERO,
-            T::ZERO,
-            T::ZERO,
-            z,
-            T::ZERO,
-            T::ZERO,
-            T::ZERO,
-            T::ZERO,
-            w,
+        Self::from_cols(
+            V4::new(x, T::ZERO, T::ZERO, T::ZERO),
+            V4::new(T::ZERO, y, T::ZERO, T::ZERO),
+            V4::new(T::ZERO, T::ZERO, z, T::ZERO),
+            V4::new(T::ZERO, T::ZERO, T::ZERO, w),
         )
     }
 
