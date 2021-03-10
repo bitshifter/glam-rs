@@ -261,6 +261,11 @@ impl Vector<f32> for __m128 {
     fn max(self, other: Self) -> Self {
         unsafe { _mm_max_ps(self, other) }
     }
+
+    #[inline(always)]
+    fn clamp(self, min: Self, max: Self) -> Self {
+        self.max(min).min(max)
+    }
 }
 
 impl Vector3<f32> for __m128 {

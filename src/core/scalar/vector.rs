@@ -232,6 +232,16 @@ impl<T: NumEx> Vector<T> for XY<T> {
             y: self.y.max(other.y),
         }
     }
+
+    #[inline]
+    fn clamp(self, min: Self, max: Self) -> Self {
+        glam_assert!(min.x <= max.x);
+        glam_assert!(min.y <= max.y);
+        Self {
+            x: self.x.max(min.x).min(max.x), // TODO: use std::f32::clamp when we update the minimal required rustc version to >= 1.50
+            y: self.y.max(min.y).min(max.y), // TODO: use std::f32::clamp when we update the minimal required rustc version to >= 1.50
+        }
+    }
 }
 
 impl<T: NumEx> Vector<T> for XYZ<T> {
@@ -383,6 +393,18 @@ impl<T: NumEx> Vector<T> for XYZ<T> {
             x: self.x.max(other.x),
             y: self.y.max(other.y),
             z: self.z.max(other.z),
+        }
+    }
+
+    #[inline]
+    fn clamp(self, min: Self, max: Self) -> Self {
+        glam_assert!(min.x <= max.x);
+        glam_assert!(min.y <= max.y);
+        glam_assert!(min.z <= max.z);
+        Self {
+            x: self.x.max(min.x).min(max.x), // TODO: use std::f32::clamp when we update the minimal required rustc version to >= 1.50
+            y: self.y.max(min.y).min(max.y), // TODO: use std::f32::clamp when we update the minimal required rustc version to >= 1.50
+            z: self.z.max(min.z).min(max.z), // TODO: use std::f32::clamp when we update the minimal required rustc version to >= 1.50
         }
     }
 }
@@ -557,6 +579,20 @@ impl<T: NumEx> Vector<T> for XYZW<T> {
             y: self.y.max(other.y),
             z: self.z.max(other.z),
             w: self.w.max(other.w),
+        }
+    }
+
+    #[inline]
+    fn clamp(self, min: Self, max: Self) -> Self {
+        glam_assert!(min.x <= max.x);
+        glam_assert!(min.y <= max.y);
+        glam_assert!(min.z <= max.z);
+        glam_assert!(min.w <= max.w);
+        Self {
+            x: self.x.max(min.x).min(max.x), // TODO: use std::f32::clamp when we update the minimal required rustc version to >= 1.50
+            y: self.y.max(min.y).min(max.y), // TODO: use std::f32::clamp when we update the minimal required rustc version to >= 1.50
+            z: self.z.max(min.z).min(max.z), // TODO: use std::f32::clamp when we update the minimal required rustc version to >= 1.50
+            w: self.w.max(min.w).min(max.w), // TODO: use std::f32::clamp when we update the minimal required rustc version to >= 1.50
         }
     }
 }

@@ -90,6 +90,7 @@ pub trait Vector<T>: Sized + Copy + Clone {
 
     fn min(self, other: Self) -> Self;
     fn max(self, other: Self) -> Self;
+    fn clamp(self, min: Self, max: Self) -> Self;
 }
 
 pub trait Vector2<T>: Vector<T> + Vector2Const {

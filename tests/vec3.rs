@@ -138,6 +138,21 @@ macro_rules! impl_vec3_tests {
         }
 
         #[test]
+        fn test_clamp() {
+            fn vec(x: i32, y: i32, z: i32) -> $vec3 {
+                $vec3::new(x as $t, y as $t, z as $t)
+            }
+            let min = vec(1, 3, 3);
+            let max = vec(6, 8, 8);
+            assert_eq!(vec(0, 0, 0).clamp(min, max), vec(1, 3, 3));
+            assert_eq!(vec(2, 2, 2).clamp(min, max), vec(2, 3, 3));
+            assert_eq!(vec(4, 5, 5).clamp(min, max), vec(4, 5, 5));
+            assert_eq!(vec(6, 6, 6).clamp(min, max), vec(6, 6, 6));
+            assert_eq!(vec(7, 7, 7).clamp(min, max), vec(6, 7, 7));
+            assert_eq!(vec(9, 9, 9).clamp(min, max), vec(6, 8, 8));
+        }
+
+        #[test]
         fn test_hmin_hmax() {
             let a = $new(2 as $t, 3 as $t, 1 as $t);
             assert_eq!(1 as $t, a.min_element());
