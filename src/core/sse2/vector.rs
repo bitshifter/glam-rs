@@ -264,6 +264,7 @@ impl Vector<f32> for __m128 {
 
     #[inline(always)]
     fn clamp(self, min: Self, max: Self) -> Self {
+        glam_assert!(min.cmple(max).all(), "clamp: expected min <= max");
         self.max(min).min(max)
     }
 }
