@@ -56,6 +56,11 @@ _ps_const_ty!(PS_TWO_PI, f32x4, core::f32::consts::PI * 2.0);
 _ps_const_ty!(PS_RECIPROCAL_TWO_PI, f32x4, 0.159154943);
 
 #[inline]
+pub(crate) unsafe fn m128_neg_part(v: __m128, m: __m128) -> __m128 {
+    _mm_xor_ps(v, _mm_and_ps(PS_NEGATIVE_ZERO.m128, m))
+}
+
+#[inline]
 pub(crate) unsafe fn m128_abs(v: __m128) -> __m128 {
     _mm_and_ps(v, _mm_castsi128_ps(_mm_set1_epi32(0x7f_ff_ff_ff)))
 }

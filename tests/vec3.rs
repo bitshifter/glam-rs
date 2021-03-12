@@ -437,6 +437,13 @@ macro_rules! impl_vec3_signed_tests {
         }
 
         #[test]
+        fn test_neg_part() {
+            let a = $new(1 as $t, 2 as $t, 3 as $t);
+            let m = $mask::new(true, false, true);
+            assert_eq!((-1 as $t, 2 as $t, -3 as $t), a.neg_part(m).into());
+        }
+
+        #[test]
         fn test_dot_signed() {
             let x = $new(1 as $t, 0 as $t, 0 as $t);
             let y = $new(0 as $t, 1 as $t, 0 as $t);

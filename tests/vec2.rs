@@ -387,18 +387,25 @@ macro_rules! impl_vec2_signed_tests {
         impl_vec2_tests!($t, $const_new, $new, $vec2, $vec3, $mask);
 
         #[test]
+        fn test_neg() {
+            let a = $new(1 as $t, 2 as $t);
+            assert_eq!($new(-1 as $t, -2 as $t), (-a));
+        }
+
+        #[test]
+        fn test_neg_part() {
+            let a = $new(1 as $t, 2 as $t);
+            let m = $mask::new(true, false);
+            assert_eq!((-1 as $t, 2 as $t), a.neg_part(m).into());
+        }
+
+        #[test]
         fn test_dot_signed() {
             let x = $new(1 as $t, 0 as $t);
             let y = $new(0 as $t, 1 as $t);
             assert_eq!(1 as $t, x.dot(x));
             assert_eq!(0 as $t, x.dot(y));
             assert_eq!(-1 as $t, x.dot(-x));
-        }
-
-        #[test]
-        fn test_neg() {
-            let a = $new(1 as $t, 2 as $t);
-            assert_eq!($new(-1 as $t, -2 as $t), (-a));
         }
     };
 }

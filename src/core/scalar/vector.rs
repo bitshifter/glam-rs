@@ -887,6 +887,14 @@ impl<T: SignedEx> SignedVector<T> for XY<T> {
             y: self.y.neg(),
         }
     }
+
+    #[inline]
+    fn neg_part(self, mask: Self::Mask) -> Self {
+        Self {
+            x: if mask.x { self.x.neg() } else { self.x },
+            y: if mask.y { self.y.neg() } else { self.y },
+        }
+    }
 }
 
 impl<T: SignedEx> SignedVector2<T> for XY<T> {
@@ -929,6 +937,15 @@ impl<T: SignedEx> SignedVector<T> for XYZ<T> {
             z: self.z.neg(),
         }
     }
+
+    #[inline]
+    fn neg_part(self, mask: Self::Mask) -> Self {
+        Self {
+            x: if mask.x { self.x.neg() } else { self.x },
+            y: if mask.y { self.y.neg() } else { self.y },
+            z: if mask.z { self.z.neg() } else { self.z },
+        }
+    }
 }
 
 impl<T: SignedEx> SignedVector3<T> for XYZ<T> {
@@ -959,6 +976,16 @@ impl<T: SignedEx> SignedVector<T> for XYZW<T> {
             y: self.y.neg(),
             z: self.z.neg(),
             w: self.w.neg(),
+        }
+    }
+
+    #[inline]
+    fn neg_part(self, mask: Self::Mask) -> Self {
+        Self {
+            x: if mask.x { self.x.neg() } else { self.x },
+            y: if mask.y { self.y.neg() } else { self.y },
+            z: if mask.z { self.z.neg() } else { self.z },
+            w: if mask.w { self.w.neg() } else { self.w },
         }
     }
 }

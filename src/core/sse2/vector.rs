@@ -540,6 +540,11 @@ impl SignedVector<f32> for __m128 {
     fn neg(self) -> Self {
         unsafe { _mm_sub_ps(Self::ZERO, self) }
     }
+
+    #[inline(always)]
+    fn neg_part(self, mask: Self::Mask) -> Self {
+        unsafe { m128_neg_part(self, mask) }
+    }
 }
 
 impl SignedVector3<f32> for __m128 {

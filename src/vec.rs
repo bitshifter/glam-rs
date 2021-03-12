@@ -165,6 +165,14 @@ macro_rules! impl_vecn_signed_methods {
     ($t:ty, $vecn:ident, $mask:ident, $inner:ident, $sgntrait:ident) => {
         // impl_vecn_common_methods!($t, $vecn, $mask, $inner, $vectrait);
 
+        /// Partially negates elements of the vector according to the given `mask`.
+        ///
+        /// A true element in the mask negates the corresponding element of `self`.
+        #[inline(always)]
+        pub fn neg_part(self, mask: $mask) -> Self {
+            Self(self.0.neg_part(mask.0))
+        }
+
         /// Returns a vector containing the absolute value of each element of `self`.
         #[inline(always)]
         pub fn abs(self) -> Self {

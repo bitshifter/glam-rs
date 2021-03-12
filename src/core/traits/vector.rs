@@ -200,6 +200,7 @@ pub trait Vector4<T>: Vector<T> + Vector4Const {
 
 pub trait SignedVector<T: SignedEx>: Vector<T> {
     fn neg(self) -> Self;
+    fn neg_part(self, mask: Self::Mask) -> Self;
 }
 
 pub trait SignedVector2<T: SignedEx>: SignedVector<T> + Vector2<T> {
