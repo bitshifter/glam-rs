@@ -79,38 +79,32 @@ impl Quaternion<f32> for __m128 {
     #[inline]
     fn mul_quaternion(self, other: Self) -> Self {
         unsafe {
-            // Based on https://github.com/nfrechette/rtm `rtm::quat_mul`
             let lhs = self;
             let rhs = other;
 
-            const CONTROL_WZYX: __m128 = const_m128!([1.0, -1.0, 1.0, -1.0]);
-            const CONTROL_ZWXY: __m128 = const_m128!([1.0, 1.0, -1.0, -1.0]);
-            const CONTROL_YXWZ: __m128 = const_m128!([-1.0, 1.0, 1.0, -1.0]);
+            const MASK_PNPN: __m128 = const_m128!([0.0, -0.0, 0.0, -0.0]);
+            const MASK_PPNN: __m128 = const_m128!([0.0, 0.0, -0.0, -0.0]);
+            const MASK_NPPN: __m128 = const_m128!([-0.0, 0.0, 0.0, -0.0]);
 
-            let r_xxxx = _mm_shuffle_ps(lhs, lhs, 0b00_00_00_00);
-            let r_yyyy = _mm_shuffle_ps(lhs, lhs, 0b01_01_01_01);
-            let r_zzzz = _mm_shuffle_ps(lhs, lhs, 0b10_10_10_10);
-            let r_wwww = _mm_shuffle_ps(lhs, lhs, 0b11_11_11_11);
+            let lhs_xxxx = _mm_shuffle_ps(lhs, lhs, 0b00_00_00_00);
+            let lhs_yyyy = _mm_shuffle_ps(lhs, lhs, 0b01_01_01_01);
+            let lhs_zzzz = _mm_shuffle_ps(lhs, lhs, 0b10_10_10_10);
+            let lhs_wwww = _mm_shuffle_ps(lhs, lhs, 0b11_11_11_11);
+            let rhs_wzyx = _mm_shuffle_ps(rhs, rhs, 0b00_01_10_11);
+            let rhs_zwxy = _mm_shuffle_ps(rhs, rhs, 0b01_00_11_10);
+            let rhs_yxwz = _mm_shuffle_ps(rhs, rhs, 0b10_11_00_01);
+            let wwww_xyzw = _mm_mul_ps(lhs_wwww, rhs);
+            let xxxx_wzyx = _mm_mul_ps(lhs_xxxx, rhs_wzyx);
+            let yyyy_zwxy = _mm_mul_ps(lhs_yyyy, rhs_zwxy);
+            let zzzz_yxwz = _mm_mul_ps(lhs_zzzz, rhs_yxwz);
+            let xxxx_wnzynx = _mm_xor_ps(xxxx_wzyx, MASK_PNPN);
+            let yyyy_zwnxny = _mm_xor_ps(yyyy_zwxy, MASK_PPNN);
+            let zzzz_nyxwnz = _mm_xor_ps(zzzz_yxwz, MASK_NPPN);
 
-            let lxrw_lyrw_lzrw_lwrw = _mm_mul_ps(r_wwww, rhs);
-            let l_wzyx = _mm_shuffle_ps(rhs, rhs, 0b00_01_10_11);
-
-            let lwrx_lzrx_lyrx_lxrx = _mm_mul_ps(r_xxxx, l_wzyx);
-            let l_zwxy = _mm_shuffle_ps(l_wzyx, l_wzyx, 0b10_11_00_01);
-
-            let lwrx_nlzrx_lyrx_nlxrx = _mm_mul_ps(lwrx_lzrx_lyrx_lxrx, CONTROL_WZYX);
-
-            let lzry_lwry_lxry_lyry = _mm_mul_ps(r_yyyy, l_zwxy);
-            let l_yxwz = _mm_shuffle_ps(l_zwxy, l_zwxy, 0b00_01_10_11);
-
-            let lzry_lwry_nlxry_nlyry = _mm_mul_ps(lzry_lwry_lxry_lyry, CONTROL_ZWXY);
-
-            let lyrz_lxrz_lwrz_lzrz = _mm_mul_ps(r_zzzz, l_yxwz);
-            let result0 = _mm_add_ps(lxrw_lyrw_lzrw_lwrw, lwrx_nlzrx_lyrx_nlxrx);
-
-            let nlyrz_lxrz_lwrz_wlzrz = _mm_mul_ps(lyrz_lxrz_lwrz_lzrz, CONTROL_YXWZ);
-            let result1 = _mm_add_ps(lzry_lwry_nlxry_nlyry, nlyrz_lxrz_lwrz_wlzrz);
-            _mm_add_ps(result0, result1)
+            _mm_add_ps(
+                _mm_add_ps(wwww_xyzw, xxxx_wnzynx),
+                _mm_add_ps(yyyy_zwnxny, zzzz_nyxwnz),
+            )
         }
     }
 
