@@ -232,6 +232,18 @@ impl<T: NumEx> Vector<T> for XY<T> {
             y: self.y.max(other.y),
         }
     }
+
+    #[inline]
+    fn clamp(self, min: Self, max: Self) -> Self {
+        glam_assert!(min.x <= max.x);
+        glam_assert!(min.y <= max.y);
+        // we intentionally do not use `f32::clamp` because we don't
+        // want panics unless `glam-assert` feature is on.
+        Self {
+            x: self.x.max(min.x).min(max.x),
+            y: self.y.max(min.y).min(max.y),
+        }
+    }
 }
 
 impl<T: NumEx> Vector<T> for XYZ<T> {
@@ -383,6 +395,20 @@ impl<T: NumEx> Vector<T> for XYZ<T> {
             x: self.x.max(other.x),
             y: self.y.max(other.y),
             z: self.z.max(other.z),
+        }
+    }
+
+    #[inline]
+    fn clamp(self, min: Self, max: Self) -> Self {
+        glam_assert!(min.x <= max.x);
+        glam_assert!(min.y <= max.y);
+        glam_assert!(min.z <= max.z);
+        // we intentionally do not use `f32::clamp` because we don't
+        // want panics unless `glam-assert` feature is on.
+        Self {
+            x: self.x.max(min.x).min(max.x),
+            y: self.y.max(min.y).min(max.y),
+            z: self.z.max(min.z).min(max.z),
         }
     }
 }
@@ -557,6 +583,22 @@ impl<T: NumEx> Vector<T> for XYZW<T> {
             y: self.y.max(other.y),
             z: self.z.max(other.z),
             w: self.w.max(other.w),
+        }
+    }
+
+    #[inline]
+    fn clamp(self, min: Self, max: Self) -> Self {
+        glam_assert!(min.x <= max.x);
+        glam_assert!(min.y <= max.y);
+        glam_assert!(min.z <= max.z);
+        glam_assert!(min.w <= max.w);
+        // we intentionally do not use `f32::clamp` because we don't
+        // want panics unless `glam-assert` feature is on.
+        Self {
+            x: self.x.max(min.x).min(max.x),
+            y: self.y.max(min.y).min(max.y),
+            z: self.z.max(min.z).min(max.z),
+            w: self.w.max(min.w).min(max.w),
         }
     }
 }

@@ -261,6 +261,15 @@ impl Vector<f32> for __m128 {
     fn max(self, other: Self) -> Self {
         unsafe { _mm_max_ps(self, other) }
     }
+
+    #[inline(always)]
+    fn clamp(self, min: Self, max: Self) -> Self {
+        glam_assert!(
+            MaskVector3::all(min.cmple(max)), // TODO: also check .w for Vec4
+            "clamp: expected min <= max"
+        );
+        self.max(min).min(max)
+    }
 }
 
 impl Vector3<f32> for __m128 {

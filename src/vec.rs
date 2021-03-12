@@ -54,6 +54,16 @@ macro_rules! impl_vecn_common_methods {
             Self(self.0.max(other.0))
         }
 
+        /// Component-wise clamping of values, similar to [`std::f32::clamp`].
+        ///
+        /// Each element in `min` must be less-or-equal to the corresponing element in `max`.
+        /// If the `glam-assert` feature is enabled, the function will panic if the contract is not met,
+        /// otherwise the behavior is undefined.
+        #[inline(always)]
+        pub fn clamp(self, min: Self, max: Self) -> Self {
+            Self(self.0.clamp(min.0, max.0))
+        }
+
         /// Returns the horizontal minimum of `self`.
         ///
         /// In other words this computes `min(x, y, ..)`.
