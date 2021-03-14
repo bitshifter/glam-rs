@@ -196,8 +196,8 @@ macro_rules! impl_mat4_methods {
             Self($inner::from_axis_angle(axis.0, angle))
         }
 
-        /// Creates a affine transformation matrix containing a rotation around the given Euler
-        /// angles (in radians).
+        /// Creates a affine transformation matrix containing a rotation from the given yaw
+        /// (around y), pitch (around x) and roll (around z) in radians.
         ///
         /// The resulting matrix can be used to transform 3D points and vectors. See
         /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].

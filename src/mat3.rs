@@ -124,7 +124,8 @@ macro_rules! impl_mat3_methods {
             Self(FloatMatrix3x3::from_axis_angle(axis.0, angle))
         }
 
-        /// Creates a 3D rotation matrix from the given Euler angles (in radians).
+        /// Creates a 3D rotation matrix from the given yaw (around y), pitch (around x) and roll
+        /// (around z) in radians.
         #[inline(always)]
         pub fn from_rotation_ypr(yaw: $t, pitch: $t, roll: $t) -> Self {
             let quat = $quat::from_rotation_ypr(yaw, pitch, roll);
