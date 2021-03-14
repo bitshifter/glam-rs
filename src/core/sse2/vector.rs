@@ -261,15 +261,6 @@ impl Vector<f32> for __m128 {
     fn max(self, other: Self) -> Self {
         unsafe { _mm_max_ps(self, other) }
     }
-
-    #[inline(always)]
-    fn clamp(self, min: Self, max: Self) -> Self {
-        glam_assert!(
-            MaskVector3::all(min.cmple(max)), // TODO: also check .w for Vec4
-            "clamp: expected min <= max"
-        );
-        self.max(min).min(max)
-    }
 }
 
 impl Vector3<f32> for __m128 {
@@ -412,6 +403,15 @@ impl Vector3<f32> for __m128 {
             _mm_shuffle_ps(sub, sub, 0b01_01_00_10)
         }
     }
+
+    #[inline]
+    fn clamp(self, min: Self, max: Self) -> Self {
+        glam_assert!(
+            MaskVector3::all(min.cmple(max)),
+            "clamp: expected min <= max"
+        );
+        self.max(min).min(max)
+    }
 }
 
 impl Vector4<f32> for __m128 {
@@ -541,6 +541,15 @@ impl Vector4<f32> for __m128 {
             let dot_in_x = dot4_in_x(self, other);
             _mm_shuffle_ps(dot_in_x, dot_in_x, 0b00_00_00_00)
         }
+    }
+
+    #[inline]
+    fn clamp(self, min: Self, max: Self) -> Self {
+        glam_assert!(
+            MaskVector4::all(min.cmple(max)),
+            "clamp: expected min <= max"
+        );
+        self.max(min).min(max)
     }
 }
 

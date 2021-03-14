@@ -90,7 +90,6 @@ pub trait Vector<T>: Sized + Copy + Clone {
 
     fn min(self, other: Self) -> Self;
     fn max(self, other: Self) -> Self;
-    fn clamp(self, min: Self, max: Self) -> Self;
 }
 
 pub trait Vector2<T>: Vector<T> + Vector2Const {
@@ -110,6 +109,8 @@ pub trait Vector2<T>: Vector<T> + Vector2Const {
 
     fn min_element(self) -> T;
     fn max_element(self) -> T;
+
+    fn clamp(self, min: Self, max: Self) -> Self;
 
     fn dot(self, other: Self) -> T;
 
@@ -149,6 +150,8 @@ pub trait Vector3<T>: Vector<T> + Vector3Const {
 
     fn min_element(self) -> T;
     fn max_element(self) -> T;
+
+    fn clamp(self, min: Self, max: Self) -> Self;
 
     fn dot(self, other: Self) -> T;
 
@@ -190,6 +193,8 @@ pub trait Vector4<T>: Vector<T> + Vector4Const {
 
     fn min_element(self) -> T;
     fn max_element(self) -> T;
+
+    fn clamp(self, min: Self, max: Self) -> Self;
 
     fn dot(self, other: Self) -> T;
 
