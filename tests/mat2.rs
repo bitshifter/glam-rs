@@ -40,6 +40,12 @@ macro_rules! impl_mat2_tests {
             assert_eq!($mat2::from_cols_array_2d(&MATRIX), m);
             assert_eq!($vec2::new(1.0, 2.0), m.x_axis);
             assert_eq!($vec2::new(3.0, 4.0), m.y_axis);
+
+            assert_eq!($vec2::new(1.0, 2.0), m.col(0));
+            assert_eq!($vec2::new(3.0, 4.0), m.col(1));
+
+            assert_eq!($newvec2(1.0, 3.0), m.row(0));
+            assert_eq!($newvec2(2.0, 4.0), m.row(1));
         }
 
         #[test]
@@ -87,8 +93,8 @@ macro_rules! impl_mat2_tests {
         fn test_mat2_transpose() {
             let m = $newmat2($newvec2(1.0, 2.0), $newvec2(3.0, 4.0));
             let mt = m.transpose();
-            assert_eq!(mt.x_axis, $newvec2(1.0, 3.0));
-            assert_eq!(mt.y_axis, $newvec2(2.0, 4.0));
+            assert_eq!($newvec2(1.0, 3.0), mt.x_axis);
+            assert_eq!($newvec2(2.0, 4.0), mt.y_axis);
         }
 
         #[test]

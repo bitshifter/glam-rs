@@ -246,19 +246,43 @@ macro_rules! impl_mat4_methods {
             Self($inner::from_scale(scale.0))
         }
 
-        // #[inline]
-        // pub(crate) fn col(&self, index: usize) -> $vec4 {
-        //     match index {
-        //         0 => self.x_axis,
-        //         1 => self.y_axis,
-        //         2 => self.z_axis,
-        //         3 => self.w_axis,
-        //         _ => panic!(
-        //             "index out of bounds: the len is 4 but the index is {}",
-        //             index
-        //         ),
-        //     }
-        // }
+        /// Returns the matrix column for the given `index`.
+        ///
+        /// # Panics
+        ///
+        /// Panics if `index` is greater than 3.
+        #[inline]
+        pub fn col(&self, index: usize) -> $vec4 {
+            match index {
+                0 => self.x_axis,
+                1 => self.y_axis,
+                2 => self.z_axis,
+                3 => self.w_axis,
+                _ => panic!(
+                    "index out of bounds: the len is 4 but the index is {}",
+                    index
+                ),
+            }
+        }
+
+        /// Returns the matrix row for the given `index`.
+        ///
+        /// # Panics
+        ///
+        /// Panics if `index` is greater than 3.
+        #[inline]
+        pub fn row(&self, index: usize) -> $vec4 {
+            match index {
+                0 => $vec4::new(self.x_axis.x, self.y_axis.x, self.z_axis.x, self.w_axis.x),
+                1 => $vec4::new(self.x_axis.y, self.y_axis.y, self.z_axis.y, self.w_axis.y),
+                2 => $vec4::new(self.x_axis.z, self.y_axis.z, self.z_axis.z, self.w_axis.z),
+                3 => $vec4::new(self.x_axis.w, self.y_axis.w, self.z_axis.w, self.w_axis.w),
+                _ => panic!(
+                    "index out of bounds: the len is 3 but the index is {}",
+                    index
+                ),
+            }
+        }
 
         // #[inline]
         // pub(crate) fn col_mut(&mut self, index: usize) -> &mut $vec4 {
@@ -512,12 +536,7 @@ macro_rules! impl_mat4_methods {
         /// the [`Self::project_point3()`] method should be used instead.
         #[inline]
         pub fn transform_point3(&self, other: $vec3) -> $vec3 {
-            glam_assert!(
-                self.x_axis.w.to_bits() == $t::to_bits(0.0)
-                    && self.y_axis.w.to_bits() == $t::to_bits(0.0)
-                    && self.z_axis.w.to_bits() == $t::to_bits(0.0)
-                    && self.w_axis.w.to_bits() == $t::to_bits(1.0)
-            );
+            glam_assert!(self.row(3) == $vec4::W);
             $vec3(self.0.transform_point3(other.0))
         }
 
@@ -529,12 +548,7 @@ macro_rules! impl_mat4_methods {
         /// This method assumes that `self` contains a valid affine transform.
         #[inline]
         pub fn transform_vector3(&self, other: $vec3) -> $vec3 {
-            glam_assert!(
-                self.x_axis.w.to_bits() == $t::to_bits(0.0)
-                    && self.y_axis.w.to_bits() == $t::to_bits(0.0)
-                    && self.z_axis.w.to_bits() == $t::to_bits(0.0)
-                    && self.w_axis.w.to_bits() == $t::to_bits(1.0)
-            );
+            glam_assert!(self.row(3) == $vec4::W);
             $vec3(self.0.transform_vector3(other.0))
         }
 

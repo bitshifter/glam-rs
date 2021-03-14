@@ -110,17 +110,39 @@ macro_rules! impl_mat2_methods {
             Self($inner::from_diagonal(scale.0))
         }
 
-        // #[inline]
-        // pub(crate) fn col(&self, index: usize) -> $vec2 {
-        //     match index {
-        //         0 => self.x_axis(),
-        //         1 => self.y_axis(),
-        //         _ => panic!(
-        //             "index out of bounds: the len is 2 but the index is {}",
-        //             index
-        //         ),
-        //     }
-        // }
+        /// Returns the matrix column for the given `index`.
+        ///
+        /// # Panics
+        ///
+        /// Panics if `index` is greater than 1.
+        #[inline]
+        pub fn col(&self, index: usize) -> $vec2 {
+            match index {
+                0 => self.x_axis,
+                1 => self.y_axis,
+                _ => panic!(
+                    "index out of bounds: the len is 2 but the index is {}",
+                    index
+                ),
+            }
+        }
+
+        /// Returns the matrix row for the given `index`.
+        ///
+        /// # Panics
+        ///
+        /// Panics if `index` is greater than 1.
+        #[inline]
+        pub fn row(&self, index: usize) -> $vec2 {
+            match index {
+                0 => $vec2::new(self.x_axis.x, self.y_axis.x),
+                1 => $vec2::new(self.x_axis.y, self.y_axis.y),
+                _ => panic!(
+                    "index out of bounds: the len is 2 but the index is {}",
+                    index
+                ),
+            }
+        }
 
         // #[inline]
         // pub(crate) fn col_mut(&mut self, index: usize) -> &mut $vec2 {

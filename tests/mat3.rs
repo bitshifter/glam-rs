@@ -62,6 +62,14 @@ macro_rules! impl_mat3_tests {
             assert_eq!($vec3::new(1.0, 2.0, 3.0), m.x_axis);
             assert_eq!($vec3::new(4.0, 5.0, 6.0), m.y_axis);
             assert_eq!($vec3::new(7.0, 8.0, 9.0), m.z_axis);
+
+            assert_eq!($vec3::new(1.0, 2.0, 3.0), m.col(0));
+            assert_eq!($vec3::new(4.0, 5.0, 6.0), m.col(1));
+            assert_eq!($vec3::new(7.0, 8.0, 9.0), m.col(2));
+
+            assert_eq!($newvec3(1.0, 4.0, 7.0), m.row(0));
+            assert_eq!($newvec3(2.0, 5.0, 8.0), m.row(1));
+            assert_eq!($newvec3(3.0, 6.0, 9.0), m.row(2));
         }
 
         #[test]
@@ -180,9 +188,9 @@ macro_rules! impl_mat3_tests {
                 $newvec3(7.0, 8.0, 9.0),
             );
             let mt = m.transpose();
-            assert_eq!(mt.x_axis, $newvec3(1.0, 4.0, 7.0));
-            assert_eq!(mt.y_axis, $newvec3(2.0, 5.0, 8.0));
-            assert_eq!(mt.z_axis, $newvec3(3.0, 6.0, 9.0));
+            assert_eq!($newvec3(1.0, 4.0, 7.0), mt.x_axis);
+            assert_eq!($newvec3(2.0, 5.0, 8.0), mt.y_axis);
+            assert_eq!($newvec3(3.0, 6.0, 9.0), mt.z_axis);
         }
 
         #[test]

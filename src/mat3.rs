@@ -191,18 +191,41 @@ macro_rules! impl_mat3_methods {
             Self(Matrix3x3::from_scale(scale.0))
         }
 
-        // #[inline]
-        // pub(crate) fn col(&self, index: usize) -> $vec3 {
-        //     match index {
-        //         0 => self.x_axis,
-        //         1 => self.y_axis,
-        //         2 => self.z_axis,
-        //         _ => panic!(
-        //             "index out of bounds: the len is 3 but the index is {}",
-        //             index
-        //         ),
-        //     }
-        // }
+        /// Returns the matrix column for the given `index`.
+        ///
+        /// # Panics
+        ///
+        /// Panics if `index` is greater than 2.
+        #[inline]
+        pub fn col(&self, index: usize) -> $vec3 {
+            match index {
+                0 => self.x_axis,
+                1 => self.y_axis,
+                2 => self.z_axis,
+                _ => panic!(
+                    "index out of bounds: the len is 3 but the index is {}",
+                    index
+                ),
+            }
+        }
+
+        /// Returns the matrix row for the given `index`.
+        ///
+        /// # Panics
+        ///
+        /// Panics if `index` is greater than 2.
+        #[inline]
+        pub fn row(&self, index: usize) -> $vec3 {
+            match index {
+                0 => $vec3::new(self.x_axis.x, self.y_axis.x, self.z_axis.x),
+                1 => $vec3::new(self.x_axis.y, self.y_axis.y, self.z_axis.y),
+                2 => $vec3::new(self.x_axis.z, self.y_axis.z, self.z_axis.z),
+                _ => panic!(
+                    "index out of bounds: the len is 3 but the index is {}",
+                    index
+                ),
+            }
+        }
 
         // #[inline]
         // pub(crate) fn col_mut(&mut self, index: usize) -> &mut $vec3 {

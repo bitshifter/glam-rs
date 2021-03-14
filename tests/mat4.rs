@@ -97,6 +97,16 @@ macro_rules! impl_mat4_tests {
             assert_eq!($vec4::new(5.0, 6.0, 7.0, 8.0), m.y_axis);
             assert_eq!($vec4::new(9.0, 10.0, 11.0, 12.0), m.z_axis);
             assert_eq!($vec4::new(13.0, 14.0, 15.0, 16.0), m.w_axis);
+
+            assert_eq!($vec4::new(1.0, 2.0, 3.0, 4.0), m.col(0));
+            assert_eq!($vec4::new(5.0, 6.0, 7.0, 8.0), m.col(1));
+            assert_eq!($vec4::new(9.0, 10.0, 11.0, 12.0), m.col(2));
+            assert_eq!($vec4::new(13.0, 14.0, 15.0, 16.0), m.col(3));
+
+            assert_eq!($newvec4(1.0, 5.0, 9.0, 13.0), m.row(0));
+            assert_eq!($newvec4(2.0, 6.0, 10.0, 14.0), m.row(1));
+            assert_eq!($newvec4(3.0, 7.0, 11.0, 15.0), m.row(2));
+            assert_eq!($newvec4(4.0, 8.0, 12.0, 16.0), m.row(3));
         }
 
         #[test]
@@ -238,10 +248,10 @@ macro_rules! impl_mat4_tests {
                 $newvec4(13.0, 14.0, 15.0, 16.0),
             );
             let mt = m.transpose();
-            assert_eq!(mt.x_axis, $newvec4(1.0, 5.0, 9.0, 13.0));
-            assert_eq!(mt.y_axis, $newvec4(2.0, 6.0, 10.0, 14.0));
-            assert_eq!(mt.z_axis, $newvec4(3.0, 7.0, 11.0, 15.0));
-            assert_eq!(mt.w_axis, $newvec4(4.0, 8.0, 12.0, 16.0));
+            assert_eq!($newvec4(1.0, 5.0, 9.0, 13.0), mt.x_axis);
+            assert_eq!($newvec4(2.0, 6.0, 10.0, 14.0), mt.y_axis);
+            assert_eq!($newvec4(3.0, 7.0, 11.0, 15.0), mt.z_axis);
+            assert_eq!($newvec4(4.0, 8.0, 12.0, 16.0), mt.w_axis);
         }
 
         #[test]
