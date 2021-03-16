@@ -181,25 +181,7 @@ The minimum supported version of Rust for `glam` is `1.36.0`.
 */
 #![doc(html_root_url = "https://docs.rs/glam/0.13.0")]
 #![cfg_attr(not(feature = "std"), no_std)]
-#![cfg_attr(target_arch = "spirv", feature(register_attr, repr_simd))]
-
-#[cfg(all(target_arch = "spirv", feature = "std"))]
-compile_error!("`std` feature is not supported when building for SPIRV");
-
-#[cfg(all(target_arch = "spirv", feature = "glam-assert"))]
-compile_error!("`glam-assert` feature is not supported when building for SPIRV");
-
-#[cfg(all(target_arch = "spirv", feature = "debug-glam-assert"))]
-compile_error!("`debug-glam-assert` feature is not supported when building for SPIRV");
-
-#[cfg(all(target_arch = "spirv", feature = "serde"))]
-compile_error!("`serde` feature is not supported when building for SPIRV");
-
-#[cfg(all(target_arch = "spirv", feature = "rand"))]
-compile_error!("`rand` feature is not supported when building for SPIRV");
-
-#[cfg(all(target_arch = "spirv", feature = "bytemuck"))]
-compile_error!("`bytemuck` feature is not supported when building for SPIRV");
+#![cfg_attr(target_arch = "spirv", feature(asm, register_attr, repr_simd))]
 
 #[macro_use]
 mod macros;
@@ -220,6 +202,9 @@ mod vec4;
 mod vec_mask;
 
 mod features;
+
+#[cfg(target_arch = "spirv")]
+mod spirv;
 
 #[cfg(feature = "transform-types")]
 mod transform;

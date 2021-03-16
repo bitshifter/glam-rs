@@ -6,6 +6,9 @@ use crate::{BVec3, DVec2, DVec4, IVec2, IVec4, UVec2, UVec4, Vec2, Vec4, XYZ};
 use core::fmt;
 use core::{cmp::Ordering, f32, ops::*};
 
+#[cfg(not(feature = "std"))]
+use num_traits::Float;
+
 #[cfg(all(
     target_arch = "x86",
     target_feature = "sse2",
@@ -200,6 +203,7 @@ macro_rules! impl_vec3_float_methods {
         /// The output vector is not necessarily unit-length.
         /// For that use [`Self::any_orthonormal_vector`] instead.
         #[inline]
+        #[cfg(feature = "std")]
         pub fn any_orthogonal_vector(&self) -> Self {
             // This can probably be optimized
             if self.x.abs() > self.y.abs() {
@@ -212,6 +216,7 @@ macro_rules! impl_vec3_float_methods {
         /// Returns any unit-length vector that is orthogonal to the given one.
         /// The input vector must be finite and non-zero.
         #[inline]
+        #[cfg(feature = "std")]
         pub fn any_orthonormal_vector(&self) -> Self {
             glam_assert!(self.is_normalized());
             // From https://graphics.pixar.com/library/OrthonormalB/paper.pdf
@@ -224,6 +229,7 @@ macro_rules! impl_vec3_float_methods {
         /// Given a unit-length vector return two other vectors that together form an orthonormal basis.
         /// That is, all three vectors are orthogonal to each other and are normalized.
         #[inline]
+        #[cfg(feature = "std")]
         pub fn any_orthonormal_pair(&self) -> (Self, Self) {
             glam_assert!(self.is_normalized());
             // From https://graphics.pixar.com/library/OrthonormalB/paper.pdf

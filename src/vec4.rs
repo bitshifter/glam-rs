@@ -7,6 +7,9 @@ use crate::{BVec4, DVec2, DVec3, IVec2, IVec3, UVec2, UVec3, Vec2, Vec3, Vec3A, 
 use core::fmt;
 use core::ops::*;
 
+#[cfg(all(feature = "libm", not(feature = "std")))]
+use num_traits::Float;
+
 #[cfg(all(
     target_arch = "x86",
     target_feature = "sse2",
