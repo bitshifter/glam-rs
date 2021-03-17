@@ -20,4 +20,4 @@ do
    cargo test --no-default-features --features="$features"
 done
 
-pushd test_no_std && exe cargo check
+pushd test_no_std && cargo check
