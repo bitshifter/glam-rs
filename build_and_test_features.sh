@@ -15,7 +15,9 @@ FEATURE_SETS=(
 
 for features in "${FEATURE_SETS[@]}"
 do
-   : 
+   :
    cargo build --tests --no-default-features --features="$features"
    cargo test --no-default-features --features="$features"
 done
+
+pushd test_no_std && exe cargo check
