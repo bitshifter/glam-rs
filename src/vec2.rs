@@ -4,6 +4,9 @@ use crate::{BVec2, DVec3, IVec3, UVec3, Vec3, XY};
 use core::fmt;
 use core::{cmp::Ordering, f32, ops::*};
 
+#[cfg(not(feature = "std"))]
+use num_traits::Float;
+
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
 

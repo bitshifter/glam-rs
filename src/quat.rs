@@ -5,6 +5,9 @@ use crate::core::traits::{
 use crate::{DMat3, DMat4, DVec3, DVec4};
 use crate::{Mat3, Mat4, Vec3, Vec3A, Vec4};
 
+#[cfg(not(feature = "std"))]
+use num_traits::Float;
+
 #[cfg(all(
     target_arch = "x86",
     target_feature = "sse2",
@@ -139,6 +142,7 @@ macro_rules! impl_quat_methods {
         ///
         /// For near-singular cases (from≈to and from≈-to) the current implementation
         /// is only accurate to about 0.001 (for `f32`).
+        #[cfg(feature = "std")]
         pub fn from_rotation_arc(from: $vec3, to: $vec3) -> Self {
             glam_assert!(from.is_normalized());
             glam_assert!(to.is_normalized());
@@ -167,6 +171,7 @@ macro_rules! impl_quat_methods {
         /// The input vectors must be normalized (unit-length).
         ///
         /// `to.dot(from_rotation_arc_colinear(from, to) * from).abs() ≈ 1`.
+        #[cfg(feature = "std")]
         pub fn from_rotation_arc_colinear(from: $vec3, to: $vec3) -> Self {
             if from.dot(to) < 0.0 {
                 Self::from_rotation_arc(from, -to)

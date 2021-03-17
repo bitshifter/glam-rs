@@ -718,6 +718,7 @@ macro_rules! impl_vec3_float_tests {
         }
 
         #[test]
+        #[cfg(feature = "std")]
         fn test_any_ortho() {
             let eps = 2.0 * core::$t::EPSILON;
 

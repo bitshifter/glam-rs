@@ -355,6 +355,7 @@ macro_rules! impl_quat_tests {
         }
 
         #[test]
+        #[cfg(feature = "std")]
         fn test_rotation_arc() {
             let eps = 2.0 * core::$t::EPSILON.sqrt();
 
