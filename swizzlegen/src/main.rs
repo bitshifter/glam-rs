@@ -78,7 +78,7 @@ fn write_swizzle_trait(
         _ => unreachable!(),
     };
 
-    writeln!(out, r#"pub trait {}Swizzles {{"#, t)?;
+    writeln!(out, r#"pub trait {}Swizzles: Sized + Copy + Clone {{"#, t)?;
 
     if size != 2 {
         writeln!(out, r#"    type Vec2;"#)?;
@@ -90,6 +90,34 @@ fn write_swizzle_trait(
 
     if size != 4 {
         writeln!(out, r#"    type Vec4;"#)?;
+    }
+
+    match size {
+        4 => {
+            writeln!(
+                out,
+                r#"
+    #[inline]
+    fn xyzw(self) -> Self {{ self }}"#,
+            )?;
+        }
+        3 => {
+            writeln!(
+                out,
+                r#"
+    #[inline]
+    fn xyz(self) -> Self {{ self }}"#,
+            )?;
+        }
+        2 => {
+            writeln!(
+                out,
+                r#"
+    #[inline]
+    fn xy(self) -> Self {{ self }}"#,
+            )?;
+        }
+        _ => unreachable!(),
     }
 
     write_loops(
@@ -623,6 +651,8 @@ fn test_{}_swizzles() {{
         vec4t, vec4t, t, t, t, t,
     )?;
 
+    writeln!(out, "    assert_eq!(v, v.xyzw());")?;
+
     write_test_loops(out, SIZE, t, vec4t, vec3t, vec2t)?;
 
     writeln!(out, "}}")?;
@@ -649,6 +679,8 @@ fn test_{}_swizzles() {{
         vec3t, vec3t, t, t, t,
     )?;
 
+    writeln!(out, "    assert_eq!(v, v.xyz());")?;
+
     write_test_loops(out, SIZE, t, vec4t, vec3t, vec2t)?;
 
     writeln!(out, "}}")?;
@@ -674,6 +706,8 @@ fn test_{}_swizzles() {{
 "#,
         vec2t, vec2t, t, t,
     )?;
+
+    writeln!(out, "    assert_eq!(v, v.xy());")?;
 
     write_test_loops(out, SIZE, t, vec4t, vec3t, vec2t)?;
 
