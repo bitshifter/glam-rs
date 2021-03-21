@@ -146,6 +146,20 @@ macro_rules! impl_vec4_common_traits {
             }
         }
 
+        impl From<($vec2, $t, $t)> for $vec4 {
+            #[inline(always)]
+            fn from((v, z, w): ($vec2, $t, $t)) -> Self {
+                Self::new(v.x, v.y, z, w)
+            }
+        }
+
+        impl From<($vec2, $vec2)> for $vec4 {
+            #[inline(always)]
+            fn from((v, u): ($vec2, $vec2)) -> Self {
+                Self::new(v.x, v.y, u.x, u.y)
+            }
+        }
+
         impl From<$vec4> for $vec3 {
             /// Creates a 3D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
             #[inline(always)]
