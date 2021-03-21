@@ -98,7 +98,9 @@ fn write_swizzle_trait(
                 out,
                 r#"
     #[inline]
-    fn xyzw(self) -> Self {{ self }}"#,
+    fn xyzw(self) -> Self {{
+        self
+    }}"#,
             )?;
         }
         3 => {
@@ -106,7 +108,9 @@ fn write_swizzle_trait(
                 out,
                 r#"
     #[inline]
-    fn xyz(self) -> Self {{ self }}"#,
+    fn xyz(self) -> Self {{
+        self
+    }}"#,
             )?;
         }
         2 => {
@@ -114,7 +118,9 @@ fn write_swizzle_trait(
                 out,
                 r#"
     #[inline]
-    fn xy(self) -> Self {{ self }}"#,
+    fn xy(self) -> Self {{
+        self
+    }}"#,
             )?;
         }
         _ => unreachable!(),

@@ -5,7 +5,9 @@ pub trait Vec2Swizzles: Sized + Copy + Clone {
     type Vec4;
 
     #[inline]
-    fn xy(self) -> Self { self }
+    fn xy(self) -> Self {
+        self
+    }
 
     fn xxxx(self) -> Self::Vec4;
     fn xxxy(self) -> Self::Vec4;
@@ -41,7 +43,9 @@ pub trait Vec3Swizzles: Sized + Copy + Clone {
     type Vec4;
 
     #[inline]
-    fn xyz(self) -> Self { self }
+    fn xyz(self) -> Self {
+        self
+    }
 
     fn xxxx(self) -> Self::Vec4;
     fn xxxy(self) -> Self::Vec4;
@@ -166,7 +170,9 @@ pub trait Vec4Swizzles: Sized + Copy + Clone {
     type Vec3;
 
     #[inline]
-    fn xyzw(self) -> Self { self }
+    fn xyzw(self) -> Self {
+        self
+    }
 
     fn xxxx(self) -> Self;
     fn xxxy(self) -> Self;
