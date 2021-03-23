@@ -2,7 +2,7 @@
 mod support;
 
 macro_rules! impl_mat3_tests {
-    ($t:ident, $const_new:ident, $newmat3:ident, $mat3:ident, $newvec3:ident, $vec3:ident, $vec2:ident) => {
+    ($t:ident, $const_new:ident, $newmat3:ident, $mat3:ident, $mat4:ident, $newvec3:ident, $vec3:ident, $vec2:ident) => {
         use core::$t::INFINITY;
         use core::$t::NAN;
         use core::$t::NEG_INFINITY;
@@ -181,6 +181,21 @@ macro_rules! impl_mat3_tests {
         }
 
         #[test]
+        fn test_from_mat4() {
+            let m4 = $mat4::from_cols_array_2d(&[
+                [1.0, 2.0, 3.0, 4.0],
+                [5.0, 6.0, 7.0, 8.0],
+                [9.0, 10.0, 11.0, 12.0],
+                [13.0, 14.0, 15.0, 16.0],
+            ]);
+            let m3 = $mat3::from(m4);
+            assert_eq!(
+                $mat3::from_cols_array_2d(&[[1.0, 2.0, 3.0], [5.0, 6.0, 7.0], [9.0, 10.0, 11.0]]),
+                m3
+            );
+        }
+
+        #[test]
         fn test_mat3_transpose() {
             let m = $newmat3(
                 $newvec3(1.0, 2.0, 3.0),
@@ -284,7 +299,7 @@ macro_rules! impl_mat3_tests {
 
 mod mat3 {
     use super::support::deg;
-    use glam::{const_mat3, mat3, vec3, vec3a, Mat3, Vec2, Vec3, Vec3A};
+    use glam::{const_mat3, mat3, vec3, vec3a, Mat3, Mat4, Vec2, Vec3, Vec3A};
 
     #[test]
     fn test_align() {
@@ -313,12 +328,12 @@ mod mat3 {
         );
     }
 
-    impl_mat3_tests!(f32, const_mat3, mat3, Mat3, vec3, Vec3, Vec2);
+    impl_mat3_tests!(f32, const_mat3, mat3, Mat3, Mat4, vec3, Vec3, Vec2);
 }
 
 mod dmat3 {
     use super::support::deg;
-    use glam::{const_dmat3, dmat3, dvec3, DMat3, DVec2, DVec3};
+    use glam::{const_dmat3, dmat3, dvec3, DMat3, DMat4, DVec2, DVec3};
 
     #[test]
     fn test_align() {
@@ -327,5 +342,5 @@ mod dmat3 {
         assert_eq!(8, mem::align_of::<DMat3>());
     }
 
-    impl_mat3_tests!(f64, const_dmat3, dmat3, DMat3, dvec3, DVec3, DVec2);
+    impl_mat3_tests!(f64, const_dmat3, dmat3, DMat3, DMat4, dvec3, DVec3, DVec2);
 }

@@ -2,7 +2,7 @@ use crate::core::{
     storage::{Vector3x3, XYZ},
     traits::matrix::{FloatMatrix3x3, Matrix3x3, MatrixConst},
 };
-use crate::{DQuat, DVec2, DVec3, Quat, Vec2, Vec3, Vec3A, Vec3Swizzles};
+use crate::{DMat4, DQuat, DVec2, DVec3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec3Swizzles};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::{
@@ -361,7 +361,7 @@ macro_rules! impl_mat3_methods {
 }
 
 macro_rules! impl_mat3_traits {
-    ($t:ty, $new:ident, $mat3:ident, $vec3: ident) => {
+    ($t:ty, $new:ident, $mat3:ident, $mat4:ident, $vec3: ident) => {
         /// Creates a 3x3 matrix from three column vectors.
         #[inline(always)]
         pub fn $new(x_axis: $vec3, y_axis: $vec3, z_axis: $vec3) -> $mat3 {
@@ -485,6 +485,13 @@ macro_rules! impl_mat3_traits {
             }
         }
 
+        impl From<$mat4> for $mat3 {
+            /// Creates a 3x3 matrix from the top left submatrix of the given 4x4 matrix.
+            fn from(m: $mat4) -> $mat3 {
+                $mat3::from_cols(m.x_axis.into(), m.y_axis.into(), m.z_axis.into())
+            }
+        }
+
         #[cfg(feature = "std")]
         impl<'a> Sum<&'a Self> for $mat3 {
             fn sum<I>(iter: I) -> Self
@@ -552,7 +559,7 @@ impl Mat3 {
         )
     }
 }
-impl_mat3_traits!(f32, mat3, Mat3, Vec3);
+impl_mat3_traits!(f32, mat3, Mat3, Mat4, Vec3);
 
 impl Mul<Vec3A> for Mat3 {
     type Output = Vec3A;
@@ -592,4 +599,4 @@ impl DMat3 {
         )
     }
 }
-impl_mat3_traits!(f64, dmat3, DMat3, DVec3);
+impl_mat3_traits!(f64, dmat3, DMat3, DMat4, DVec3);

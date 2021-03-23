@@ -2,7 +2,7 @@
 mod support;
 
 macro_rules! impl_mat2_tests {
-    ($t:ident, $const_new:ident, $newmat2:ident, $mat2:ident, $newvec2:ident, $vec2:ident) => {
+    ($t:ident, $const_new:ident, $newmat2:ident, $mat2:ident, $mat3:ident, $newvec2:ident, $vec2:ident) => {
         const IDENTITY: [[$t; 2]; 2] = [[1.0, 0.0], [0.0, 1.0]];
 
         const MATRIX: [[$t; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
@@ -87,6 +87,14 @@ macro_rules! impl_mat2_tests {
             assert_approx_eq!(m * $vec2::new(1.0, 1.0), $vec2::new(2.0, 4.0));
             assert_approx_eq!($vec2::X * 2.0, m.x_axis);
             assert_approx_eq!($vec2::Y * 4.0, m.y_axis);
+        }
+
+        #[test]
+        fn test_from_mat3() {
+            let m3 =
+                $mat3::from_cols_array_2d(&[[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]]);
+            let m2 = $mat2::from(m3);
+            assert_eq!($mat2::from_cols_array_2d(&[[1.0, 2.0], [4.0, 5.0]]), m2);
         }
 
         #[test]
@@ -197,7 +205,7 @@ macro_rules! impl_mat2_tests {
 
 mod mat2 {
     use super::support::deg;
-    use glam::{const_mat2, mat2, vec2, Mat2, Vec2};
+    use glam::{const_mat2, mat2, vec2, Mat2, Mat3, Vec2};
 
     #[test]
     fn test_align() {
@@ -223,12 +231,12 @@ mod mat2 {
         );
     }
 
-    impl_mat2_tests!(f32, const_mat2, mat2, Mat2, vec2, Vec2);
+    impl_mat2_tests!(f32, const_mat2, mat2, Mat2, Mat3, vec2, Vec2);
 }
 
 mod dmat2 {
     use super::support::deg;
-    use glam::{const_dmat2, dmat2, dvec2, DMat2, DVec2};
+    use glam::{const_dmat2, dmat2, dvec2, DMat2, DMat3, DVec2};
 
     #[test]
     fn test_align() {
@@ -237,5 +245,5 @@ mod dmat2 {
         assert_eq!(8, mem::align_of::<DMat2>());
     }
 
-    impl_mat2_tests!(f64, const_dmat2, dmat2, DMat2, dvec2, DVec2);
+    impl_mat2_tests!(f64, const_dmat2, dmat2, DMat2, DMat3, dvec2, DVec2);
 }

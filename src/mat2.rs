@@ -2,7 +2,7 @@ use crate::core::{
     storage::{Vector2x2, XY},
     traits::matrix::{FloatMatrix2x2, Matrix2x2, MatrixConst},
 };
-use crate::{DVec2, Vec2};
+use crate::{DMat3, DVec2, Mat3, Vec2};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::{
@@ -237,7 +237,7 @@ macro_rules! impl_mat2_methods {
 }
 
 macro_rules! impl_mat2_traits {
-    ($t:ty, $new:ident, $mat2:ident, $vec2:ident) => {
+    ($t:ty, $new:ident, $mat2:ident, $mat3:ident, $vec2:ident) => {
         /// Creates a 2x2 matrix from two column vectors.
         #[inline(always)]
         pub fn $new(x_axis: $vec2, y_axis: $vec2) -> $mat2 {
@@ -342,6 +342,13 @@ macro_rules! impl_mat2_traits {
             }
         }
 
+        impl From<$mat3> for $mat2 {
+            /// Creates a 2x2 matrix from the top left submatrix of the given 3x3 matrix.
+            fn from(m: $mat3) -> $mat2 {
+                $mat2::from_cols(m.x_axis.into(), m.y_axis.into())
+            }
+        }
+
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Debug for $mat2 {
             fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -400,7 +407,7 @@ impl Mat2 {
         DMat2::from_cols(self.x_axis.as_f64(), self.y_axis.as_f64())
     }
 }
-impl_mat2_traits!(f32, mat2, Mat2, Vec2);
+impl_mat2_traits!(f32, mat2, Mat2, Mat3, Vec2);
 
 type InnerF64 = crate::core::storage::Vector2x2<XY<f64>>;
 
@@ -417,4 +424,4 @@ impl DMat2 {
         Mat2::from_cols(self.x_axis.as_f32(), self.y_axis.as_f32())
     }
 }
-impl_mat2_traits!(f64, dmat2, DMat2, DVec2);
+impl_mat2_traits!(f64, dmat2, DMat2, DMat3, DVec2);
