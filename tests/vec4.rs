@@ -2,7 +2,7 @@
 mod support;
 
 macro_rules! impl_vec4_tests {
-    ($t:ident, $const_new:ident, $new:ident, $vec4:ident, $mask:ident) => {
+    ($t:ident, $const_new:ident, $new:ident, $vec4:ident, $vec3:ident, $vec2:ident, $mask:ident) => {
         #[test]
         fn test_const() {
             const V: $vec4 = $const_new!([1 as $t, 2 as $t, 3 as $t, 4 as $t]);
@@ -44,6 +44,20 @@ macro_rules! impl_vec4_tests {
             assert_eq!($vec4::new(0 as $t, 1 as $t, 0 as $t, 0 as $t), $vec4::Y);
             assert_eq!($vec4::new(0 as $t, 0 as $t, 1 as $t, 0 as $t), $vec4::Z);
             assert_eq!($vec4::new(0 as $t, 0 as $t, 0 as $t, 1 as $t), $vec4::W);
+
+            assert_eq!(
+                v,
+                $vec4::from(($vec3::new(1 as $t, 2 as $t, 3 as $t), 4 as $t))
+            );
+
+            assert_eq!(
+                v,
+                $vec4::from(($vec2::new(1 as $t, 2 as $t), 3 as $t, 4 as $t))
+            );
+            assert_eq!(
+                v,
+                $vec4::from(($vec2::new(1 as $t, 2 as $t), $vec2::new(3 as $t, 4 as $t)))
+            );
         }
 
         #[test]
@@ -496,8 +510,8 @@ macro_rules! impl_vec4_tests {
 }
 
 macro_rules! impl_vec4_signed_tests {
-    ($t:ident, $const_new:ident, $new:ident, $vec4:ident, $mask:ident) => {
-        impl_vec4_tests!($t, $const_new, $new, $vec4, $mask);
+    ($t:ident, $const_new:ident, $new:ident, $vec4:ident, $vec3:ident, $vec2:ident, $mask:ident) => {
+        impl_vec4_tests!($t, $const_new, $new, $vec4, $vec3, $vec2, $mask);
 
         #[test]
         fn test_neg() {
@@ -552,8 +566,8 @@ macro_rules! impl_vec4_eq_hash_tests {
 }
 
 macro_rules! impl_vec4_float_tests {
-    ($t:ident, $const_new:ident, $new:ident, $vec4:ident, $mask:ident) => {
-        impl_vec4_signed_tests!($t, $const_new, $new, $vec4, $mask);
+    ($t:ident, $const_new:ident, $new:ident, $vec4:ident, $vec3:ident, $vec2:ident, $mask:ident) => {
+        impl_vec4_signed_tests!($t, $const_new, $new, $vec4, $vec3, $vec2, $mask);
         impl_vec_float_normalize_tests!($t, $vec4);
 
         use core::$t::INFINITY;
@@ -766,7 +780,7 @@ macro_rules! impl_vec4_float_tests {
 }
 
 mod vec4 {
-    use glam::{const_vec4, vec4, Vec4};
+    use glam::{const_vec4, vec4, Vec2, Vec3, Vec4};
 
     #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
     type Vec4Mask = glam::BVec4A;
@@ -872,11 +886,11 @@ mod vec4 {
         );
     }
 
-    impl_vec4_float_tests!(f32, const_vec4, vec4, Vec4, Vec4Mask);
+    impl_vec4_float_tests!(f32, const_vec4, vec4, Vec4, Vec3, Vec2, Vec4Mask);
 }
 
 mod dvec4 {
-    use glam::{const_dvec4, dvec4, BVec4, DVec4};
+    use glam::{const_dvec4, dvec4, BVec4, DVec2, DVec3, DVec4};
 
     #[test]
     fn test_align() {
@@ -887,11 +901,11 @@ mod dvec4 {
         assert_eq!(1, mem::align_of::<BVec4>());
     }
 
-    impl_vec4_float_tests!(f64, const_dvec4, dvec4, DVec4, BVec4);
+    impl_vec4_float_tests!(f64, const_dvec4, dvec4, DVec4, DVec3, DVec2, BVec4);
 }
 
 mod ivec4 {
-    use glam::{const_ivec4, ivec4, BVec4, IVec4};
+    use glam::{const_ivec4, ivec4, BVec4, IVec2, IVec3, IVec4};
 
     #[test]
     fn test_align() {
@@ -902,12 +916,12 @@ mod ivec4 {
         assert_eq!(1, mem::align_of::<BVec4>());
     }
 
-    impl_vec4_signed_tests!(i32, const_ivec4, ivec4, IVec4, BVec4);
+    impl_vec4_signed_tests!(i32, const_ivec4, ivec4, IVec4, IVec3, IVec2, BVec4);
     impl_vec4_eq_hash_tests!(i32, ivec4);
 }
 
 mod uvec4 {
-    use glam::{const_uvec4, uvec4, BVec4, UVec4};
+    use glam::{const_uvec4, uvec4, BVec4, UVec2, UVec3, UVec4};
 
     #[test]
     fn test_align() {
@@ -918,6 +932,6 @@ mod uvec4 {
         assert_eq!(1, mem::align_of::<BVec4>());
     }
 
-    impl_vec4_tests!(u32, const_uvec4, uvec4, UVec4, BVec4);
+    impl_vec4_tests!(u32, const_uvec4, uvec4, UVec4, UVec3, UVec2, BVec4);
     impl_vec4_eq_hash_tests!(u32, uvec4);
 }

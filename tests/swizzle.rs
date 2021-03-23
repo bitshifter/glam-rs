@@ -7,6 +7,7 @@ use glam::{
 #[test]
 fn test_vec4_swizzles() {
     let v = vec4(1_f32, 2_f32, 3_f32, 4_f32);
+    assert_eq!(v, v.xyzw());
     assert_eq!(v.xxxx(), vec4(1_f32, 1_f32, 1_f32, 1_f32));
     assert_eq!(v.xxxy(), vec4(1_f32, 1_f32, 1_f32, 2_f32));
     assert_eq!(v.xxxz(), vec4(1_f32, 1_f32, 1_f32, 3_f32));
@@ -347,6 +348,7 @@ fn test_vec4_swizzles() {
 #[test]
 fn test_vec3a_swizzles() {
     let v = vec3a(1_f32, 2_f32, 3_f32);
+    assert_eq!(v, v.xyz());
     assert_eq!(v.xxxx(), vec4(1_f32, 1_f32, 1_f32, 1_f32));
     assert_eq!(v.xxxy(), vec4(1_f32, 1_f32, 1_f32, 2_f32));
     assert_eq!(v.xxxz(), vec4(1_f32, 1_f32, 1_f32, 3_f32));
@@ -468,6 +470,7 @@ fn test_vec3a_swizzles() {
 #[test]
 fn test_vec3_swizzles() {
     let v = vec3(1_f32, 2_f32, 3_f32);
+    assert_eq!(v, v.xyz());
     assert_eq!(v.xxxx(), vec4(1_f32, 1_f32, 1_f32, 1_f32));
     assert_eq!(v.xxxy(), vec4(1_f32, 1_f32, 1_f32, 2_f32));
     assert_eq!(v.xxxz(), vec4(1_f32, 1_f32, 1_f32, 3_f32));
@@ -589,6 +592,7 @@ fn test_vec3_swizzles() {
 #[test]
 fn test_vec2_swizzles() {
     let v = vec2(1_f32, 2_f32);
+    assert_eq!(v, v.xy());
     assert_eq!(v.xxxx(), vec4(1_f32, 1_f32, 1_f32, 1_f32));
     assert_eq!(v.xxxy(), vec4(1_f32, 1_f32, 1_f32, 2_f32));
     assert_eq!(v.xxyx(), vec4(1_f32, 1_f32, 2_f32, 1_f32));
@@ -621,6 +625,7 @@ fn test_vec2_swizzles() {
 #[test]
 fn test_dvec4_swizzles() {
     let v = dvec4(1_f64, 2_f64, 3_f64, 4_f64);
+    assert_eq!(v, v.xyzw());
     assert_eq!(v.xxxx(), dvec4(1_f64, 1_f64, 1_f64, 1_f64));
     assert_eq!(v.xxxy(), dvec4(1_f64, 1_f64, 1_f64, 2_f64));
     assert_eq!(v.xxxz(), dvec4(1_f64, 1_f64, 1_f64, 3_f64));
@@ -961,6 +966,7 @@ fn test_dvec4_swizzles() {
 #[test]
 fn test_dvec3_swizzles() {
     let v = dvec3(1_f64, 2_f64, 3_f64);
+    assert_eq!(v, v.xyz());
     assert_eq!(v.xxxx(), dvec4(1_f64, 1_f64, 1_f64, 1_f64));
     assert_eq!(v.xxxy(), dvec4(1_f64, 1_f64, 1_f64, 2_f64));
     assert_eq!(v.xxxz(), dvec4(1_f64, 1_f64, 1_f64, 3_f64));
@@ -1082,6 +1088,7 @@ fn test_dvec3_swizzles() {
 #[test]
 fn test_dvec2_swizzles() {
     let v = dvec2(1_f64, 2_f64);
+    assert_eq!(v, v.xy());
     assert_eq!(v.xxxx(), dvec4(1_f64, 1_f64, 1_f64, 1_f64));
     assert_eq!(v.xxxy(), dvec4(1_f64, 1_f64, 1_f64, 2_f64));
     assert_eq!(v.xxyx(), dvec4(1_f64, 1_f64, 2_f64, 1_f64));
@@ -1114,6 +1121,7 @@ fn test_dvec2_swizzles() {
 #[test]
 fn test_ivec4_swizzles() {
     let v = ivec4(1_i32, 2_i32, 3_i32, 4_i32);
+    assert_eq!(v, v.xyzw());
     assert_eq!(v.xxxx(), ivec4(1_i32, 1_i32, 1_i32, 1_i32));
     assert_eq!(v.xxxy(), ivec4(1_i32, 1_i32, 1_i32, 2_i32));
     assert_eq!(v.xxxz(), ivec4(1_i32, 1_i32, 1_i32, 3_i32));
@@ -1454,6 +1462,7 @@ fn test_ivec4_swizzles() {
 #[test]
 fn test_ivec3_swizzles() {
     let v = ivec3(1_i32, 2_i32, 3_i32);
+    assert_eq!(v, v.xyz());
     assert_eq!(v.xxxx(), ivec4(1_i32, 1_i32, 1_i32, 1_i32));
     assert_eq!(v.xxxy(), ivec4(1_i32, 1_i32, 1_i32, 2_i32));
     assert_eq!(v.xxxz(), ivec4(1_i32, 1_i32, 1_i32, 3_i32));
@@ -1575,6 +1584,7 @@ fn test_ivec3_swizzles() {
 #[test]
 fn test_ivec2_swizzles() {
     let v = ivec2(1_i32, 2_i32);
+    assert_eq!(v, v.xy());
     assert_eq!(v.xxxx(), ivec4(1_i32, 1_i32, 1_i32, 1_i32));
     assert_eq!(v.xxxy(), ivec4(1_i32, 1_i32, 1_i32, 2_i32));
     assert_eq!(v.xxyx(), ivec4(1_i32, 1_i32, 2_i32, 1_i32));
@@ -1607,6 +1617,7 @@ fn test_ivec2_swizzles() {
 #[test]
 fn test_uvec4_swizzles() {
     let v = uvec4(1_u32, 2_u32, 3_u32, 4_u32);
+    assert_eq!(v, v.xyzw());
     assert_eq!(v.xxxx(), uvec4(1_u32, 1_u32, 1_u32, 1_u32));
     assert_eq!(v.xxxy(), uvec4(1_u32, 1_u32, 1_u32, 2_u32));
     assert_eq!(v.xxxz(), uvec4(1_u32, 1_u32, 1_u32, 3_u32));
@@ -1947,6 +1958,7 @@ fn test_uvec4_swizzles() {
 #[test]
 fn test_uvec3_swizzles() {
     let v = uvec3(1_u32, 2_u32, 3_u32);
+    assert_eq!(v, v.xyz());
     assert_eq!(v.xxxx(), uvec4(1_u32, 1_u32, 1_u32, 1_u32));
     assert_eq!(v.xxxy(), uvec4(1_u32, 1_u32, 1_u32, 2_u32));
     assert_eq!(v.xxxz(), uvec4(1_u32, 1_u32, 1_u32, 3_u32));
@@ -2068,6 +2080,7 @@ fn test_uvec3_swizzles() {
 #[test]
 fn test_uvec2_swizzles() {
     let v = uvec2(1_u32, 2_u32);
+    assert_eq!(v, v.xy());
     assert_eq!(v.xxxx(), uvec4(1_u32, 1_u32, 1_u32, 1_u32));
     assert_eq!(v.xxxy(), uvec4(1_u32, 1_u32, 1_u32, 2_u32));
     assert_eq!(v.xxyx(), uvec4(1_u32, 1_u32, 2_u32, 1_u32));
