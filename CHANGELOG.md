@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [0.13.1] - 2021-03-24
+
+### Added
+
+* Added vector `clamp()` functions.
+* Addd matrix column and row accessor methods, `col()` and `row()`.
+* Added SPIR-V module and depenency on `spriv-std` for the SPIR-V target.
+* Added matrix truncation from 4x4 to 3x3 and 3x3 to 2x2 via `From` impls.
+
+### Changed
+
+* Documentation corrections and improvements.
+
 ## [0.13.0] - 2021-03-04
 
 ### Breaking Changes
@@ -466,7 +479,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.13.0...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.13.1...HEAD
+[0.13.1]: https://github.com/bitshifter/glam-rs/compare/0.13.0...0.13.1
 [0.13.0]: https://github.com/bitshifter/glam-rs/compare/0.12.0...0.13.0
 [0.12.0]: https://github.com/bitshifter/glam-rs/compare/0.11.3...0.12.0
 [0.11.3]: https://github.com/bitshifter/glam-rs/compare/0.11.2...0.11.3
