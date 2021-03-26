@@ -1,3 +1,4 @@
+#[cfg(target_arch = "spirv")]
 macro_rules! unsupported_features {
     ($($feature:literal),+ $(,)?) => {
         $(
@@ -14,6 +15,7 @@ macro_rules! unsupported_features {
     }
 }
 
+#[cfg(target_arch = "spirv")]
 unsupported_features! {
     "bytemuck",
     "debug-glam-assert",
@@ -34,9 +36,9 @@ unsafe impl Vector<f32, 3> for crate::Vec3 {}
 unsafe impl Vector<f32, 3> for crate::Vec3A {}
 unsafe impl Vector<f32, 4> for crate::Vec4 {}
 
-unsafe impl Vector<f32, 2> for crate::DVec2 {}
-unsafe impl Vector<f32, 3> for crate::DVec3 {}
-unsafe impl Vector<f32, 4> for crate::DVec4 {}
+unsafe impl Vector<f64, 2> for crate::DVec2 {}
+unsafe impl Vector<f64, 3> for crate::DVec3 {}
+unsafe impl Vector<f64, 4> for crate::DVec4 {}
 
 unsafe impl Vector<u32, 2> for crate::UVec2 {}
 unsafe impl Vector<u32, 3> for crate::UVec3 {}
