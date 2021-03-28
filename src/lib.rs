@@ -186,6 +186,9 @@ The minimum supported version of Rust for `glam` is `1.36.0`.
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(target_arch = "spirv", feature(asm, register_attr, repr_simd))]
 
+// This would require renaming a lot of stuff, disabling for now.
+#![allow(clippy::upper_case_acronyms)]
+
 #[macro_use]
 mod macros;
 #[macro_use]
