@@ -5,12 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## Unreleased
+
+### Added
+
+* Added `Vec2::AXES, Vec3::AXES, Vec4::AXES`.
+
 ## [0.13.1] - 2021-03-24
 
 ### Added
 
 * Added vector `clamp()` functions.
-* Addd matrix column and row accessor methods, `col()` and `row()`.
+* Added matrix column and row accessor methods, `col()` and `row()`.
 * Added SPIR-V module and depenency on `spriv-std` for the SPIR-V target.
 * Added matrix truncation from 4x4 to 3x3 and 3x3 to 2x2 via `From` impls.
 

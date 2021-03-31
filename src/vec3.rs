@@ -42,6 +42,9 @@ macro_rules! impl_vec3_common_methods {
         /// `[0, 0, 1]`: a unit-length vector pointing along the positive Z axis.
         pub const Z: Self = Self(Vector3Const::Z);
 
+        /// The unit axes.
+        pub const AXES: [Self; 3] = [Self::X, Self::Y, Self::Z];
+
         /// Creates a new 3D vector.
         #[inline(always)]
         pub fn new(x: $t, y: $t, z: $t) -> Self {
