@@ -128,6 +128,33 @@ macro_rules! impl_quat_tests {
         }
 
         #[test]
+        fn test_from_scaled_axis() {
+            assert_eq!($quat::from_scaled_axis($vec3::ZERO), $quat::IDENTITY);
+            assert_eq!(
+                $quat::from_scaled_axis($vec3::Y * 1e-10),
+                $quat::from_axis_angle($vec3::Y, 1e-10)
+            );
+            assert_eq!(
+                $quat::from_scaled_axis($vec3::X * 1.0),
+                $quat::from_axis_angle($vec3::X, 1.0)
+            );
+            assert_eq!(
+                $quat::from_scaled_axis($vec3::Z * 2.0),
+                $quat::from_axis_angle($vec3::Z, 2.0)
+            );
+
+            assert_eq!(
+                $quat::from_scaled_axis($vec3::ZERO).to_scaled_axis(),
+                $vec3::ZERO
+            );
+            for &v in &vec3_float_test_vectors!($vec3) {
+                if v.length() < core::$t::consts::PI {
+                    assert!(($quat::from_scaled_axis(v).to_scaled_axis() - v).length() < 1e-6,);
+                }
+            }
+        }
+
+        #[test]
         fn test_mul_vec3() {
             let qrz = $quat::from_rotation_z(deg(90.0));
             assert_approx_eq!($vec3::Y, qrz * $vec3::X);

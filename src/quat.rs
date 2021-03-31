@@ -87,6 +87,20 @@ macro_rules! impl_quat_methods {
             Self($inner::from_axis_angle(axis.0, angle))
         }
 
+        /// Create a quaternion that rotates `v.length()` radians around `v.normalize()`.
+        ///
+        /// `from_scaled_axis(Vec3::ZERO)` results in the identity quaternion.
+        #[inline(always)]
+        pub fn from_scaled_axis(v: $vec3) -> Self {
+            // Self($inner::from_scaled_axis(v.0))
+            let length = v.length();
+            if length == 0.0 {
+                Self::IDENTITY
+            } else {
+                Self::from_axis_angle(v / length, length)
+            }
+        }
+
         /// Creates a quaternion from the `angle` (in radians) around the x axis.
         #[inline(always)]
         pub fn from_rotation_x(angle: $t) -> Self {
@@ -185,6 +199,13 @@ macro_rules! impl_quat_methods {
         pub fn to_axis_angle(self) -> ($vec3, $t) {
             let (axis, angle) = self.0.to_axis_angle();
             ($vec3(axis), angle)
+        }
+
+        /// Returns the rotation axis scaled by the rotation in radians.
+        #[inline(always)]
+        pub fn to_scaled_axis(self) -> $vec3 {
+            let (axis, angle) = self.0.to_axis_angle();
+            $vec3(axis) * angle
         }
 
         /// Returns the quaternion conjugate of `self`. For a unit quaternion the
