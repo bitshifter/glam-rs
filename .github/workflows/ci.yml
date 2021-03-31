@@ -12,7 +12,6 @@ jobs:
         with:
           toolchain: stable
           components: rustfmt, clippy
-          override: true
 
       # make sure all code has been formatted with rustfmt and linted with clippy
       - name: rustfmt
@@ -32,6 +31,7 @@ jobs:
     runs-on: ${{ matrix.os }}-latest
     steps:
       - uses: actions/checkout@v2
+      - run: rustup update --no-self-update ${{ matrix.rust }}
       - run: rustup default ${{ matrix.rust }}
       - run: ./build_and_test_features.sh
         shell: bash
