@@ -1,9 +1,9 @@
 use crate::core::{
-    storage::{Vector2x2, Vector3x3, Vector4x4, XY, XYZ, XYZW},
+    storage::{Vector2x2, Vector3x3, Vector3x4, Vector4x4, XY, XYZ, XYZW},
     traits::{
         matrix::{
-            FloatMatrix2x2, FloatMatrix3x3, FloatMatrix4x4, Matrix, Matrix2x2, Matrix3x3,
-            Matrix4x4, MatrixConst,
+            FloatMatrix2x2, FloatMatrix3x3, FloatMatrix3x4, FloatMatrix4x4, Matrix, Matrix2x2,
+            Matrix3x3, Matrix3x4, Matrix4x4, MatrixConst,
         },
         projection::ProjectionMatrix,
         scalar::{FloatEx, NumEx},
@@ -230,6 +230,112 @@ impl<T: FloatEx> FloatMatrix3x3<T, XYZ<T>> for Vector3x3<XYZ<T>> {
         res.into()
     }
 }
+
+// ----------------------------------------------------------------------------
+// 3x4
+
+impl<T: NumEx> MatrixConst for Vector3x4<XYZW<T>> {
+    const ZERO: Self = Self {
+        x_row: XYZW::ZERO,
+        y_row: XYZW::ZERO,
+        z_row: XYZW::ZERO,
+    };
+    const IDENTITY: Self = Self {
+        x_row: XYZW::X,
+        y_row: XYZW::Y,
+        z_row: XYZW::Z,
+    };
+}
+
+impl<T: NumEx> Matrix<T> for Vector3x4<XYZW<T>> {}
+
+impl<T: NumEx> Matrix3x4<T, XYZ<T>, XYZW<T>> for Vector3x4<XYZW<T>> {
+    #[rustfmt::skip]
+    #[inline(always)]
+    fn from_rows(x_row: XYZW<T>, y_row: XYZW<T>, z_row: XYZW<T>) -> Self {
+        Self { x_row, y_row, z_row }
+    }
+
+    #[inline(always)]
+    fn x_row(&self) -> &XYZW<T> {
+        &self.x_row
+    }
+
+    #[inline(always)]
+    fn y_row(&self) -> &XYZW<T> {
+        &self.y_row
+    }
+
+    #[inline(always)]
+    fn z_row(&self) -> &XYZW<T> {
+        &self.z_row
+    }
+
+    #[inline(always)]
+    fn as_ref_vector3x4(&self) -> &Vector3x4<XYZW<T>> {
+        self
+    }
+
+    #[inline(always)]
+    fn as_mut_vector3x4(&mut self) -> &mut Vector3x4<XYZW<T>> {
+        self
+    }
+
+    /// As if the last row was `[0, 0, 0, 1]`.
+    #[inline]
+    fn determinant(&self) -> T {
+        let (a, b, c, _d) = self.x_row.into_tuple();
+        let (e, f, g, _h) = self.y_row.into_tuple();
+        let (i, j, k, _l) = self.z_row.into_tuple();
+
+        a * f * k - a * g * j - b * e * k + b * g * i + c * e * j - c * f * i
+    }
+}
+
+impl<T: FloatEx> FloatMatrix3x4<T, XYZ<T>, XYZW<T>> for Vector3x4<XYZW<T>> {
+    type SIMDVector3 = XYZ<T>;
+
+    #[inline(always)]
+    fn transform_float4_as_point3(&self, other: XYZ<T>) -> XYZ<T> {
+        self.transform_point3(other)
+    }
+
+    #[inline(always)]
+    fn transform_float4_as_vector3(&self, other: XYZ<T>) -> XYZ<T> {
+        self.transform_vector3(other)
+    }
+
+    /// As if the last row was `[0, 0, 0, 1]`.
+    fn inverse(&self) -> Self {
+        let (a, b, c, d) = self.x_row.into_tuple();
+        let (e, f, g, h) = self.y_row.into_tuple();
+        let (i, j, k, l) = self.z_row.into_tuple();
+
+        let x_row = XYZW {
+            x: f * k - g * j,
+            y: c * j - b * k,
+            z: b * g - c * f,
+            w: -b * g * l + b * h * k + c * f * l - c * h * j - d * f * k + d * g * j,
+        };
+        let y_row = XYZW {
+            x: g * i - e * k,
+            y: a * k - c * i,
+            z: c * e - a * g,
+            w: a * g * l - a * h * k - c * e * l + c * h * i + d * e * k - d * g * i,
+        };
+        let z_row = XYZW {
+            x: e * j - f * i,
+            y: b * i - a * j,
+            z: a * f - b * e,
+            w: -a * f * l + a * h * j + b * e * l - b * h * i - d * e * j + d * f * i,
+        };
+
+        Self::from_rows(x_row, y_row, z_row).mul_scalar(self.determinant().recip())
+    }
+}
+
+// ----------------------------------------------------------------------------
+// 4x4
 
 impl<T: NumEx> MatrixConst for Vector4x4<XYZW<T>> {
     const ZERO: Self = Self {

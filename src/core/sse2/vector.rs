@@ -316,6 +316,13 @@ impl Vector3<f32> for __m128 {
         }
     }
 
+    #[inline(always)]
+    fn into_xyz(self) -> XYZ<f32> {
+        // TODO: optimize
+        let [x, y, z, _] = Vector4::into_array(self);
+        XYZ { x, y, z }
+    }
+
     #[inline]
     fn into_xyzw(self, w: f32) -> XYZW<f32> {
         unsafe {
@@ -418,6 +425,23 @@ impl Vector4<f32> for __m128 {
     #[inline(always)]
     fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
         unsafe { _mm_set_ps(w, z, y, x) }
+    }
+
+    #[inline(always)]
+    fn x(self) -> f32 {
+        Vector4::into_array(self)[0] // TODO: optimize
+    }
+    #[inline(always)]
+    fn y(self) -> f32 {
+        Vector4::into_array(self)[1] // TODO: optimize
+    }
+    #[inline(always)]
+    fn z(self) -> f32 {
+        Vector4::into_array(self)[2] // TODO: optimize
+    }
+    #[inline(always)]
+    fn w(self) -> f32 {
+        Vector4::into_array(self)[3] // TODO: optimize
     }
 
     #[inline(always)]

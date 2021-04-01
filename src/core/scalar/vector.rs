@@ -721,6 +721,15 @@ impl<T: NumEx> Vector3<T> for XYZ<T> {
     }
 
     #[inline(always)]
+    fn into_xyz(self) -> XYZ<T> {
+        XYZ {
+            x: self.x,
+            y: self.y,
+            z: self.z,
+        }
+    }
+
+    #[inline(always)]
     fn into_xyzw(self, w: T) -> XYZW<T> {
         XYZW {
             x: self.x,
@@ -797,6 +806,26 @@ impl<T: NumEx> Vector4<T> for XYZW<T> {
     #[inline(always)]
     fn new(x: T, y: T, z: T, w: T) -> Self {
         Self { x, y, z, w }
+    }
+
+    #[inline(always)]
+    fn x(self) -> T {
+        self.x
+    }
+
+    #[inline(always)]
+    fn y(self) -> T {
+        self.y
+    }
+
+    #[inline(always)]
+    fn z(self) -> T {
+        self.z
+    }
+
+    #[inline(always)]
+    fn w(self) -> T {
+        self.w
     }
 
     #[inline(always)]

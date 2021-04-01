@@ -8,9 +8,12 @@ use core::mem::MaybeUninit;
 use crate::{
     const_m128,
     core::{
-        storage::{Align16, Vector2x2, Vector4x4, XY, XYZ},
+        storage::{Align16, Vector2x2, Vector3x4, Vector4x4, XY, XYZ},
         traits::{
-            matrix::{FloatMatrix2x2, FloatMatrix4x4, Matrix, Matrix2x2, Matrix4x4, MatrixConst},
+            matrix::{
+                FloatMatrix2x2, FloatMatrix3x4, FloatMatrix4x4, Matrix, Matrix2x2, Matrix3x4,
+                Matrix4x4, MatrixConst,
+            },
             projection::ProjectionMatrix,
             vector::{FloatVector4, Vector, Vector4, Vector4Const},
         },
@@ -131,6 +134,83 @@ impl FloatMatrix2x2<f32, XY<f32>> for __m128 {
         }
     }
 }
+
+// ----------------------------------------------------------------------------
+
+impl MatrixConst for Vector3x4<__m128> {
+    const ZERO: Self = Self {
+        x_row: __m128::ZERO,
+        y_row: __m128::ZERO,
+        z_row: __m128::ZERO,
+    };
+    const IDENTITY: Self = Self {
+        x_row: __m128::X,
+        y_row: __m128::Y,
+        z_row: __m128::Z,
+    };
+}
+
+impl Matrix<f32> for Vector3x4<__m128> {}
+
+impl Matrix3x4<f32, crate::core::storage::XYZ<f32>, __m128> for Vector3x4<__m128> {
+    #[rustfmt::skip]
+    #[inline(always)]
+    fn from_rows(x_row: __m128, y_row: __m128, z_row: __m128) -> Self {
+        Self { x_row, y_row, z_row }
+    }
+
+    #[inline(always)]
+    fn x_row(&self) -> &__m128 {
+        &self.x_row
+    }
+
+    #[inline(always)]
+    fn y_row(&self) -> &__m128 {
+        &self.y_row
+    }
+
+    #[inline(always)]
+    fn z_row(&self) -> &__m128 {
+        &self.z_row
+    }
+
+    #[inline(always)]
+    fn as_ref_vector3x4(&self) -> &Vector3x4<__m128> {
+        unsafe { &*(self as *const Self as *const Vector3x4<__m128>) }
+    }
+
+    #[inline(always)]
+    fn as_mut_vector3x4(&mut self) -> &mut Vector3x4<__m128> {
+        unsafe { &mut *(self as *mut Self as *mut Vector3x4<__m128>) }
+    }
+
+    /// As if the last row was `[0, 0, 0, 1]`.
+    #[inline]
+    fn determinant(&self) -> f32 {
+        todo!()
+    }
+}
+
+impl FloatMatrix3x4<f32, crate::core::storage::XYZ<f32>, __m128> for Vector3x4<__m128> {
+    type SIMDVector3 = __m128;
+
+    #[inline(always)]
+    fn transform_float4_as_point3(&self, other: __m128) -> __m128 {
+        todo!() // self.transform_point3(other)
+    }
+
+    #[inline(always)]
+    fn transform_float4_as_vector3(&self, other: __m128) -> __m128 {
+        todo!() // self.transform_vector3(other)
+    }
+
+    /// As if the last row was `[0, 0, 0, 1]`.
+    fn inverse(&self) -> Self {
+        todo!()
+    }
+}
+
+// ----------------------------------------------------------------------------
 
 impl MatrixConst for Vector4x4<__m128> {
     const ZERO: Vector4x4<__m128> = Vector4x4 {

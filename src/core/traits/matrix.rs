@@ -1,5 +1,5 @@
 use crate::core::{
-    storage::{Vector2x2, Vector3x3, Vector4x4, XY, XYZ, XYZW},
+    storage::{Vector2x2, Vector3x3, Vector3x4, Vector4x4, XY, XYZ, XYZW},
     traits::{
         quaternion::Quaternion,
         scalar::{FloatEx, NumEx},
@@ -305,6 +305,397 @@ pub trait FloatMatrix3x3<T: FloatEx, V3: FloatVector3<T>>: Matrix3x3<T, V3> {
 
     fn transform_point2(&self, other: XY<T>) -> XY<T>;
     fn transform_vector2(&self, other: XY<T>) -> XY<T>;
+
+    fn inverse(&self) -> Self;
+}
+
+/// A 3x4 matrix, i.e. three rows and four columns.
+/// Can represent affine transformations in 3D: translation, rotation, scaling and shear.
+/// For the purposes of transformations this can be thought of as a 4x4 matrix with an implicit last row of `[0, 0, 0, 1]`.
+pub trait Matrix3x4<T: NumEx, V3: Vector3<T>, V4: Vector4<T>>: Matrix<T> {
+    /// The last element in each row contains the translaiton.
+    fn from_rows(x: V4, y: V4, z: V4) -> Self;
+
+    fn x_row(&self) -> &V4;
+    fn y_row(&self) -> &V4;
+    fn z_row(&self) -> &V4;
+
+    /// extended with a zero
+    #[inline(always)]
+    fn x_col_extended_0(&self) -> V4 {
+        V4::new(
+            self.x_row().x(),
+            self.y_row().x(),
+            self.z_row().x(),
+            T::ZERO,
+        )
+    }
+
+    /// extended with a zero
+    #[inline(always)]
+    fn y_col_extended_0(&self) -> V4 {
+        V4::new(
+            self.x_row().y(),
+            self.y_row().y(),
+            self.z_row().y(),
+            T::ZERO,
+        )
+    }
+
+    /// extended with a zero
+    #[inline(always)]
+    fn z_col_extended_0(&self) -> V4 {
+        V4::new(
+            self.x_row().z(),
+            self.y_row().z(),
+            self.z_row().z(),
+            T::ZERO,
+        )
+    }
+
+    /// extended with a 1
+    #[inline(always)]
+    fn w_col_extended_1(&self) -> V4 {
+        V4::new(self.x_row().w(), self.y_row().w(), self.z_row().w(), T::ONE)
+    }
+
+    fn as_ref_vector3x4(&self) -> &Vector3x4<V4>;
+    fn as_mut_vector3x4(&mut self) -> &mut Vector3x4<V4>;
+
+    #[rustfmt::skip]
+    #[inline(always)]
+    fn from_rows_array(m: &[T; 12]) -> Self {
+        Self::from_rows(
+            V4::new( m[0],  m[1],  m[2],  m[3]),
+            V4::new( m[4],  m[5],  m[6],  m[7]),
+            V4::new( m[8],  m[9], m[10], m[11]))
+    }
+
+    #[rustfmt::skip]
+    #[inline(always)]
+    fn to_rows_array(&self) -> [T; 12] {
+        let x_row = self.x_row().as_ref_xyzw();
+        let y_row = self.y_row().as_ref_xyzw();
+        let z_row = self.z_row().as_ref_xyzw();
+        [
+            x_row.x, x_row.y, x_row.z, x_row.w,
+            y_row.x, y_row.y, y_row.z, y_row.w,
+            z_row.x, z_row.y, z_row.z, z_row.w,
+        ]
+    }
+
+    #[inline(always)]
+    fn from_rows_array_2d(m: &[[T; 4]; 3]) -> Self {
+        Self::from_rows(
+            Vector4::from_array(m[0]),
+            Vector4::from_array(m[1]),
+            Vector4::from_array(m[2]),
+        )
+    }
+
+    #[inline(always)]
+    fn to_rows_array_2d(&self) -> [[T; 4]; 3] {
+        [
+            self.x_row().into_array(),
+            self.y_row().into_array(),
+            self.z_row().into_array(),
+        ]
+    }
+
+    #[inline(always)]
+    fn from_diagonal(diagonal: V3) -> Self {
+        let (x, y, z) = diagonal.into_tuple();
+        Self::from_rows(
+            V4::new(x, T::ZERO, T::ZERO, T::ZERO),
+            V4::new(T::ZERO, y, T::ZERO, T::ZERO),
+            V4::new(T::ZERO, T::ZERO, z, T::ZERO),
+        )
+    }
+
+    #[inline(always)]
+    fn from_scale(scale: XYZ<T>) -> Self {
+        // Do not panic as long as any component is non-zero
+        glam_assert!(scale.cmpne(XYZ::<T>::ZERO).any());
+        Self::from_rows(
+            V4::new(scale.x, T::ZERO, T::ZERO, T::ZERO),
+            V4::new(T::ZERO, scale.y, T::ZERO, T::ZERO),
+            V4::new(T::ZERO, T::ZERO, scale.z, T::ZERO),
+        )
+    }
+
+    #[inline(always)]
+    fn from_translation(translation: XYZ<T>) -> Self {
+        Self::from_rows(
+            V4::new(T::ONE, T::ZERO, T::ZERO, translation.x),
+            V4::new(T::ZERO, T::ONE, T::ZERO, translation.y),
+            V4::new(T::ZERO, T::ZERO, T::ONE, translation.z),
+        )
+    }
+
+    /// As if the last row was `[0, 0, 0, 1]`.
+    fn determinant(&self) -> T;
+
+    /// Multiply with a column vector (`m * v`)
+    #[inline]
+    fn mul_vector4(&self, rhs: &V4) -> V3 {
+        V3::new(
+            self.x_row().dot(*rhs),
+            self.y_row().dot(*rhs),
+            self.z_row().dot(*rhs),
+        )
+    }
+
+    /// Multiply with a row vector (`x * m`)
+    /// as if we were a 4x4 matrix (implict `[0, 0, 0, 1]` last row)
+    #[inline]
+    fn mul_row_vec4_from_left(&self, lhs: &V4) -> V4 {
+        V4::new(
+            self.x_col_extended_0().dot(*lhs),
+            self.y_col_extended_0().dot(*lhs),
+            self.z_col_extended_0().dot(*lhs),
+            self.w_col_extended_1().dot(*lhs),
+        )
+    }
+
+    #[inline]
+    fn mul_matrix(&self, rhs: &Self) -> Self {
+        Self::from_rows(
+            rhs.mul_row_vec4_from_left(self.x_row()),
+            rhs.mul_row_vec4_from_left(self.y_row()),
+            rhs.mul_row_vec4_from_left(self.z_row()),
+        )
+    }
+
+    #[inline]
+    fn mul_scalar(&self, other: T) -> Self {
+        Self::from_rows(
+            self.x_row().mul_scalar(other),
+            self.y_row().mul_scalar(other),
+            self.z_row().mul_scalar(other),
+        )
+    }
+
+    #[inline]
+    fn add_matrix(&self, other: &Self) -> Self {
+        // TODO: Make Vector4::add take a ref?
+        Self::from_rows(
+            self.x_row().add(*other.x_row()),
+            self.y_row().add(*other.y_row()),
+            self.z_row().add(*other.z_row()),
+        )
+    }
+
+    #[inline]
+    fn sub_matrix(&self, other: &Self) -> Self {
+        // TODO: Make Vector4::sub take a ref?
+        Self::from_rows(
+            self.x_row().sub(*other.x_row()),
+            self.y_row().sub(*other.y_row()),
+            self.z_row().sub(*other.z_row()),
+        )
+    }
+}
+
+pub trait FloatMatrix3x4<T: FloatEx, V3: FloatVector3<T>, V4: FloatVector4<T> + Quaternion<T>>:
+    Matrix3x4<T, V3, V4>
+{
+    // Vector3 represented by a SIMD type if available
+    type SIMDVector3;
+
+    #[inline]
+    fn abs_diff_eq(&self, other: &Self, max_abs_diff: T) -> bool
+    where
+        <V4 as Vector<T>>::Mask: MaskVector4,
+    {
+        self.x_row().abs_diff_eq(*other.x_row(), max_abs_diff)
+            && self.y_row().abs_diff_eq(*other.y_row(), max_abs_diff)
+            && self.z_row().abs_diff_eq(*other.z_row(), max_abs_diff)
+    }
+
+    #[inline]
+    fn quaternion_to_rows(rotation: V4) -> (V4, V4, V4) {
+        glam_assert!(rotation.is_normalized());
+        let (x, y, z, w) = rotation.into_tuple();
+        let x2 = x + x;
+        let y2 = y + y;
+        let z2 = z + z;
+        let xx = x * x2;
+        let xy = x * y2;
+        let xz = x * z2;
+        let yy = y * y2;
+        let yz = y * z2;
+        let zz = z * z2;
+        let wx = w * x2;
+        let wy = w * y2;
+        let wz = w * z2;
+
+        let x_row = V4::new(T::ONE - (yy + zz), xy - wz, xz + wy, T::ZERO);
+        let y_row = V4::new(xy + wz, T::ONE - (xx + zz), yz - wx, T::ZERO);
+        let z_row = V4::new(xz - wy, yz + wx, T::ONE - (xx + yy), T::ZERO);
+        (x_row, y_row, z_row)
+    }
+
+    #[inline]
+    fn from_quaternion(rotation: V4) -> Self {
+        glam_assert!(rotation.is_normalized());
+        let (x_row, y_row, z_row) = Self::quaternion_to_rows(rotation);
+        Self::from_rows(x_row, y_row, z_row)
+    }
+
+    // fn to_scale_quaternion_translation(&self) -> (XYZ<T>, V4, XYZ<T>) {
+    //     let det = self.determinant();
+    //     glam_assert!(det != T::ZERO);
+
+    //     let scale: XYZ<T> = Vector3::new(
+    //         self.x_col().length() * det.signum(),
+    //         self.y_col().length(),
+    //         self.z_col().length(),
+    //     );
+
+    //     glam_assert!(scale.cmpne(XYZ::<T>::ZERO).all());
+
+    //     let inv_scale = scale.recip();
+
+    //     let rotation = Quaternion::from_rotation_axes(
+    //         self.x_col().mul_scalar(inv_scale.x).into_xyz(),
+    //         self.y_col().mul_scalar(inv_scale.y).into_xyz(),
+    //         self.z_col().mul_scalar(inv_scale.z).into_xyz(),
+    //     );
+
+    //     let translation = self.w_col().into_xyz();
+
+    //     (scale, rotation, translation)
+    // }
+
+    // #[inline]
+    // fn from_scale_quaternion_translation(scale: XYZ<T>, rotation: V4, translation: XYZ<T>) -> Self {
+    //     glam_assert!(rotation.is_normalized());
+    //     let (mut x_row, mut y_row, mut z_row) = Self::quaternion_to_rows(rotation);
+    //     x_row.w = translation.x;
+    //     y_row.w = translation.y;
+    //     z_row.w = translation.z;
+    //     Self::from_rows(
+    //         x_row.mul_scalar(scale.x),
+    //         y_row.mul_scalar(scale.y),
+    //         z_row.mul_scalar(scale.z),
+    //     )
+    // }
+
+    // #[inline]
+    // fn from_quaternion_translation(rotation: V4, translation: XYZ<T>) -> Self {
+    //     glam_assert!(rotation.is_normalized());
+    //     let (mut x_row, mut y_row, mut z_row) = Self::quaternion_to_rows(rotation);
+    //     x_row.w = translation.x;
+    //     y_row.w = translation.y;
+    //     z_row.w = translation.z;
+    //     Self::from_rows(x_row, y_row, z_row)
+    // }
+
+    // #[inline]
+    // fn from_col_angle(axis: XYZ<T>, angle: T) -> Self {
+    //     glam_assert!(axis.is_normalized());
+    //     let (sin, cos) = angle.sin_cos();
+    //     let axis_sin = axis.mul_scalar(sin);
+    //     let axis_sq = axis.mul(axis);
+    //     let omc = T::ONE - cos;
+    //     let xyomc = axis.x * axis.y * omc;
+    //     let xzomc = axis.x * axis.z * omc;
+    //     let yzomc = axis.y * axis.z * omc;
+    //     Self::from_cols(
+    //         V4::new(
+    //             axis_sq.x * omc + cos,
+    //             xyomc + axis_sin.z,
+    //             xzomc - axis_sin.y,
+    //             T::ZERO,
+    //         ),
+    //         V4::new(
+    //             xyomc - axis_sin.z,
+    //             axis_sq.y * omc + cos,
+    //             yzomc + axis_sin.x,
+    //             T::ZERO,
+    //         ),
+    //         V4::new(
+    //             xzomc + axis_sin.y,
+    //             yzomc - axis_sin.x,
+    //             axis_sq.z * omc + cos,
+    //             T::ZERO,
+    //         ),
+    //         V4::W,
+    //     )
+    // }
+
+    // #[inline]
+    // fn from_rotation_x(angle: T) -> Self {
+    //     let (sina, cosa) = angle.sin_cos();
+    //     Self::from_cols(
+    //         V4::X,
+    //         V4::new(T::ZERO, cosa, sina, T::ZERO),
+    //         V4::new(T::ZERO, -sina, cosa, T::ZERO),
+    //         V4::W,
+    //     )
+    // }
+
+    // #[inline]
+    // fn from_rotation_y(angle: T) -> Self {
+    //     let (sina, cosa) = angle.sin_cos();
+    //     Self::from_cols(
+    //         V4::new(cosa, T::ZERO, -sina, T::ZERO),
+    //         V4::Y,
+    //         V4::new(sina, T::ZERO, cosa, T::ZERO),
+    //         V4::W,
+    //     )
+    // }
+
+    // #[inline]
+    // fn from_rotation_z(angle: T) -> Self {
+    //     let (sina, cosa) = angle.sin_cos();
+    //     Self::from_cols(
+    //         V4::new(cosa, sina, T::ZERO, T::ZERO),
+    //         V4::new(-sina, cosa, T::ZERO, T::ZERO),
+    //         V4::Z,
+    //         V4::W,
+    //     )
+    // }
+
+    // #[inline]
+    // fn look_to_lh(eye: XYZ<T>, dir: XYZ<T>, up: XYZ<T>) -> Self {
+    //     let f = dir.normalize();
+    //     let s = up.cross(f).normalize();
+    //     let u = f.cross(s);
+    //     Self::from_cols(
+    //         V4::new(s.x, u.x, f.x, T::ZERO),
+    //         V4::new(s.y, u.y, f.y, T::ZERO),
+    //         V4::new(s.z, u.z, f.z, T::ZERO),
+    //         V4::new(-s.dot(eye), -u.dot(eye), -f.dot(eye), T::ONE),
+    //     )
+    // }
+
+    // #[inline]
+    // fn look_at_lh(eye: XYZ<T>, center: XYZ<T>, up: XYZ<T>) -> Self {
+    //     glam_assert!(up.is_normalized());
+    //     Self::look_to_lh(eye, center.sub(eye), up)
+    // }
+
+    // #[inline]
+    // fn look_at_rh(eye: XYZ<T>, center: XYZ<T>, up: XYZ<T>) -> Self {
+    //     glam_assert!(up.is_normalized());
+    //     Self::look_to_lh(eye, eye.sub(center), up)
+    // }
+
+    #[inline]
+    fn transform_point3(&self, other: XYZ<T>) -> XYZ<T> {
+        self.mul_vector4(&V4::new(other.x, other.y, other.z, T::ONE))
+            .into_xyz()
+    }
+
+    #[inline]
+    fn transform_vector3(&self, other: XYZ<T>) -> XYZ<T> {
+        self.mul_vector4(&V4::new(other.x, other.y, other.z, T::ZERO))
+            .into_xyz()
+    }
+
+    fn transform_float4_as_point3(&self, other: Self::SIMDVector3) -> Self::SIMDVector3;
+    fn transform_float4_as_vector3(&self, other: Self::SIMDVector3) -> Self::SIMDVector3;
 
     fn inverse(&self) -> Self;
 }

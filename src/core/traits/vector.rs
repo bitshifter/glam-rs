@@ -141,7 +141,7 @@ pub trait Vector3<T>: Vector<T> + Vector3Const {
     }
 
     fn into_xy(self) -> XY<T>;
-
+    fn into_xyz(self) -> XYZ<T>;
     fn into_xyzw(self, w: T) -> XYZW<T>;
     fn from_array(a: [T; 3]) -> Self;
     fn into_array(self) -> [T; 3];
@@ -165,6 +165,10 @@ pub trait Vector3<T>: Vector<T> + Vector3Const {
 
 pub trait Vector4<T>: Vector<T> + Vector4Const {
     fn new(x: T, y: T, z: T, w: T) -> Self;
+    fn x(self) -> T;
+    fn y(self) -> T;
+    fn z(self) -> T;
+    fn w(self) -> T;
     fn splat_x(self) -> Self;
     fn splat_y(self) -> Self;
     fn splat_z(self) -> Self;

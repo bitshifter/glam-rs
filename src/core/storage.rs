@@ -40,6 +40,7 @@ pub struct Vector3x3<V3> {
     pub z_axis: V3,
 }
 
+/// Column-major storage of a 4x4 matrix.
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd)]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 pub struct Vector4x4<V4> {
@@ -47,6 +48,15 @@ pub struct Vector4x4<V4> {
     pub y_axis: V4,
     pub z_axis: V4,
     pub w_axis: V4,
+}
+
+/// Row-major storage of a 3x4 matrix.
+#[derive(Clone, Copy, Default, PartialEq, PartialOrd)]
+#[cfg_attr(not(target_arch = "spirv"), repr(C))]
+pub struct Vector3x4<V4> {
+    pub x_row: V4,
+    pub y_row: V4,
+    pub z_row: V4,
 }
 
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd)]
