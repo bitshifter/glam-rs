@@ -24,6 +24,9 @@ macro_rules! impl_vec2_common_methods {
         /// `[0, 1]`: a unit-length vector pointing along the positive Y axis.
         pub const Y: Self = Self($inner::Y);
 
+        /// The unit axes.
+        pub const AXES: [Self; 2] = [Self::X, Self::Y];
+
         /// Creates a new vector.
         #[inline(always)]
         pub fn new(x: $t, y: $t) -> $vec2 {

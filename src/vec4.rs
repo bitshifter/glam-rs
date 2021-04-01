@@ -48,6 +48,9 @@ macro_rules! impl_vec4_common_methods {
         /// `[0, 0, 0, 1]`: a unit-length vector pointing along the positive W axis.
         pub const W: Self = Self(Vector4Const::W);
 
+        /// The unit axes.
+        pub const AXES: [Self; 4] = [Self::X, Self::Y, Self::Z, Self::W];
+
         /// Creates a new 4D vector.
         #[inline(always)]
         pub fn new(x: $t, y: $t, z: $t, w: $t) -> Self {
