@@ -3,9 +3,17 @@ use crate::{Mat4, Quat, Vec3, Vec4};
 #[cfg(not(feature = "std"))]
 use num_traits::Float;
 
-#[cfg(target_arch = "x86")]
+#[cfg(all(
+    target_feature = "sse2",
+    not(feature = "scalar-math"),
+    target_arch = "x86"
+))]
 use core::arch::x86::*;
-#[cfg(target_arch = "x86_64")]
+#[cfg(all(
+    target_feature = "sse2",
+    not(feature = "scalar-math"),
+    target_arch = "x86_64"
+))]
 use core::arch::x86_64::*;
 
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
@@ -872,10 +880,54 @@ impl core::ops::Mul<Vec4> for Mat3x4 {
 impl core::ops::Mul for Mat3x4 {
     type Output = Mat3x4;
 
-    #[cfg(any(
-        target_arch = "spirv",
-        all(target_feature = "sse2", not(feature = "scalar-math"))
-    ))]
+    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+    #[inline(always)]
+    fn mul(self, rhs: Mat3x4) -> Self::Output {
+        use crate::core::traits::vector::Vector4;
+        #[cfg(target_arch = "x86")]
+        use core::arch::x86::*;
+        #[cfg(target_arch = "x86_64")]
+        use core::arch::x86_64::*;
+
+        unsafe {
+            let lhs_x_row = m128_from_vec4(self.x_row);
+            let lhs_y_row = m128_from_vec4(self.y_row);
+            let lhs_z_row = m128_from_vec4(self.z_row);
+
+            let rhs_x_row = m128_from_vec4(rhs.x_row);
+            let rhs_y_row = m128_from_vec4(rhs.y_row);
+            let rhs_z_row = m128_from_vec4(rhs.z_row);
+            let rhs_w_row = _mm_set_ps(1.0, 0.0, 0.0, 0.0); // TODO: optimize based on this being `[0, 0, 0, 1]`.
+
+            // Based on https://github.com/microsoft/DirectXMath XMMatrixMultiply
+
+            let v_x = _mm_mul_ps(lhs_x_row.splat_x(), rhs_x_row);
+            let v_y = _mm_mul_ps(lhs_x_row.splat_y(), rhs_y_row);
+            let v_z = _mm_mul_ps(lhs_x_row.splat_z(), rhs_z_row);
+            let v_w = _mm_mul_ps(lhs_x_row.splat_w(), rhs_w_row);
+            let out_x_row = _mm_add_ps(_mm_add_ps(v_x, v_z), _mm_add_ps(v_y, v_w));
+
+            let v_x = _mm_mul_ps(lhs_y_row.splat_x(), rhs_x_row);
+            let v_y = _mm_mul_ps(lhs_y_row.splat_y(), rhs_y_row);
+            let v_z = _mm_mul_ps(lhs_y_row.splat_z(), rhs_z_row);
+            let v_w = _mm_mul_ps(lhs_y_row.splat_w(), rhs_w_row);
+            let out_y_row = _mm_add_ps(_mm_add_ps(v_x, v_z), _mm_add_ps(v_y, v_w));
+
+            let v_x = _mm_mul_ps(lhs_z_row.splat_x(), rhs_x_row);
+            let v_y = _mm_mul_ps(lhs_z_row.splat_y(), rhs_y_row);
+            let v_z = _mm_mul_ps(lhs_z_row.splat_z(), rhs_z_row);
+            let v_w = _mm_mul_ps(lhs_z_row.splat_w(), rhs_w_row);
+            let out_z_row = _mm_add_ps(_mm_add_ps(v_x, v_z), _mm_add_ps(v_y, v_w));
+
+            Self {
+                x_row: vec4_from_m128(out_x_row),
+                y_row: vec4_from_m128(out_y_row),
+                z_row: vec4_from_m128(out_z_row),
+            }
+        }
+    }
+
+    #[cfg(target_arch = "spirv")]
     #[inline(always)]
     fn mul(self, rhs: Mat3x4) -> Self::Output {
         Mat3x4::from_mat4(Mat4::from(self) * Mat4::from(rhs))
