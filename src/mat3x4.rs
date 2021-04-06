@@ -547,8 +547,8 @@ impl Mat3x4 {
     /// This is the equivalent of multiplying the 3D vector as a 4D vector where `w` is
     /// `1.0`.
     #[inline]
-    pub fn transform_point3(&self, other: Vec3) -> Vec3 {
-        self.mul_vector4(other.extend(1.0))
+    pub fn transform_point3(&self, point: Vec3) -> Vec3 {
+        self.mul_vector4(point.extend(1.0))
     }
 
     /// Transforms the give 3D vector as a direction.
@@ -556,8 +556,29 @@ impl Mat3x4 {
     /// This is the equivalent of multiplying the 3D vector as a 4D vector where `w` is
     /// `0.0`.
     #[inline]
-    pub fn transform_vector3(&self, other: Vec3) -> Vec3 {
-        self.mul_vector4(other.extend(0.0))
+    #[cfg(any(
+        target_arch = "spirv",
+        all(target_feature = "sse2", not(feature = "scalar-math"))
+    ))]
+    pub fn transform_vector3(&self, vec: Vec3) -> Vec3 {
+        self.mul_vector4(vec.extend(0.0))
+    }
+
+    /// Transforms the give 3D vector as a direction.
+    ///
+    /// This is the equivalent of multiplying the 3D vector as a 4D vector where `w` is
+    /// `0.0`.
+    #[inline]
+    #[cfg(not(any(
+        target_arch = "spirv",
+        all(target_feature = "sse2", not(feature = "scalar-math"))
+    )))]
+    pub fn transform_vector3(&self, vec: Vec3) -> Vec3 {
+        Vec3::new(
+            Vec3::from(self.x_row).dot(vec),
+            Vec3::from(self.y_row).dot(vec),
+            Vec3::from(self.z_row).dot(vec),
+        )
     }
 }
 
