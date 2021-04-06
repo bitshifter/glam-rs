@@ -2,8 +2,8 @@
 mod macros;
 
 use glam::{
-    DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A,
-    Vec4,
+    DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, Mat2, Mat3, Mat3x4, Mat4, Quat, Vec2, Vec3,
+    Vec3A, Vec4,
 };
 
 #[cfg(feature = "transform-types")]
@@ -141,6 +141,21 @@ impl FloatCompare for DMat4 {
             (self.y_axis - other.y_axis).abs(),
             (self.z_axis - other.z_axis).abs(),
             (self.w_axis - other.w_axis).abs(),
+        )
+    }
+}
+
+impl FloatCompare for Mat3x4 {
+    #[inline]
+    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
+        self.abs_diff_eq(*other, max_abs_diff)
+    }
+    #[inline]
+    fn abs_diff(&self, other: &Self) -> Self {
+        Self::from_rows(
+            (self.x_row() - other.x_row()).abs(),
+            (self.y_row() - other.y_row()).abs(),
+            (self.z_row() - other.z_row()).abs(),
         )
     }
 }

@@ -199,6 +199,7 @@ pub mod cast;
 mod core;
 mod mat2;
 mod mat3;
+mod mat3x4;
 mod mat4;
 mod quat;
 mod vec2;
@@ -226,6 +227,7 @@ pub use self::bool::*;
 pub mod f32 {
     pub use super::mat2::{mat2, Mat2};
     pub use super::mat3::{mat3, Mat3};
+    pub use super::mat3x4::Mat3x4;
     pub use super::mat4::{mat4, Mat4};
     pub use super::quat::{quat, Quat};
     pub use super::vec2::{vec2, Vec2};

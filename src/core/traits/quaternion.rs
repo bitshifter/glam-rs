@@ -55,6 +55,7 @@ pub trait Quaternion<T: FloatEx>: FloatVector4<T> {
         Self::new(T::ZERO, T::ZERO, s, c)
     }
 
+    /// From the columns of a 3x3 rotation matrix.
     #[inline]
     fn from_rotation_axes(x_axis: XYZ<T>, y_axis: XYZ<T>, z_axis: XYZ<T>) -> Self {
         // Based on https://github.com/microsoft/DirectXMath `XM$quaternionRotationMatrix`

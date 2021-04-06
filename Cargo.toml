@@ -62,6 +62,10 @@ name = "mat3"
 harness = false
 
 [[bench]]
+name = "mat3x4"
+harness = false
+
+[[bench]]
 name = "mat4"
 harness = false
 
