@@ -53,6 +53,12 @@ macro_rules! impl_vec2_common_methods {
             $vec3::new(self.x, self.y, z)
         }
 
+        /// `[x, y]`
+        #[inline(always)]
+        pub fn to_array(&self) -> [$t; 2] {
+            [self.x, self.y]
+        }
+
         impl_vecn_common_methods!($t, $vec2, $mask, $inner, Vector2);
     };
 }
