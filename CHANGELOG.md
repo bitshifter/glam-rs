@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## Unreleased
 
+### Breaking changes
+
+* Minimum Supported Version of Rust bumped to 1.45.0
+
 ### Added
 
 * Added `Vec2::AXES, Vec3::AXES, Vec4::AXES`.

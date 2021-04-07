@@ -95,7 +95,7 @@ glam = { version = "0.13.0", default-features = false }
 
 ### Minimum Supported Version of Rust (MSVR)
 
-The minimum supported version of Rust for `glam` is `1.36.0`.
+The minimum supported version of Rust for `glam` is `1.45.0`.
 
 ## Conventions
 
