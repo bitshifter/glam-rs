@@ -304,16 +304,19 @@ impl Mat3x4 {
     }
 
     /// Firs first row.
+    #[inline(always)]
     pub fn x_row(&self) -> Vec4 {
         self.x_row
     }
 
     /// The second row.
+    #[inline(always)]
     pub fn y_row(&self) -> Vec4 {
         self.y_row
     }
 
     /// The third row.
+    #[inline(always)]
     pub fn z_row(&self) -> Vec4 {
         self.z_row
     }
