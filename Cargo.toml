@@ -37,17 +37,17 @@ transform-types = []
 libm = ["num-traits/libm"]
 
 [dependencies]
-bytemuck = { version = "1.4", optional = true, default-features = false }
+bytemuck = { version = "1.5", optional = true, default-features = false }
 mint = { version = "0.5", optional = true, default-features = false }
 num-traits = { version = "0.2.14", optional = true, default-features = false }
-rand = { version = "0.7", optional = true, default-features = false }
+rand = { version = "0.8", optional = true, default-features = false }
 serde = { version = "1.0", optional = true, features = ["derive"] }
 spirv-std = { version = "0.4.0-alpha.3", optional = true }
 
 [dev-dependencies]
 criterion = "0.3"
 # rand_xoshiro is required for tests if rand is enabled
-rand_xoshiro = "0.4"
+rand_xoshiro = "0.6"
 serde_json = "1.0"
 
 [lib]
