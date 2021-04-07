@@ -16,18 +16,6 @@ use core::arch::x86::*;
 ))]
 use core::arch::x86_64::*;
 
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-#[inline(always)]
-unsafe fn m128_from_vec4(vec4: Vec4) -> __m128 {
-    *(&vec4 as *const Vec4 as *const __m128)
-}
-
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-#[inline(always)]
-unsafe fn vec4_from_m128(vec4: __m128) -> Vec4 {
-    *(&vec4 as *const __m128 as *const Vec4)
-}
-
 /// A 3x4 matrix, i.e. three rows and four columns.
 ///
 /// Can represent affine transformations in 3D: translation, rotation, scaling and shear.
@@ -626,9 +614,9 @@ impl Mat3x4 {
     pub fn inverse(&self) -> Self {
         use crate::core::traits::vector::Vector4;
         unsafe {
-            let x_row = m128_from_vec4(self.x_row);
-            let y_row = m128_from_vec4(self.y_row);
-            let z_row = m128_from_vec4(self.z_row);
+            let x_row: __m128 = self.x_row.into();
+            let y_row: __m128 = self.y_row.into();
+            let z_row: __m128 = self.z_row.into();
             let w_row = _mm_set_ps(1.0, 0.0, 0.0, 0.0); // TODO: optimize based on this being `[0, 0, 0, 1]`.
 
             // Based on https://github.com/g-truc/glm `glm_mat4_inverse`
@@ -767,9 +755,9 @@ impl Mat3x4 {
             let z_row = _mm_mul_ps(inv2, rcp0);
 
             Self {
-                x_row: vec4_from_m128(x_row),
-                y_row: vec4_from_m128(y_row),
-                z_row: vec4_from_m128(z_row),
+                x_row: x_row.into(),
+                y_row: y_row.into(),
+                z_row: z_row.into(),
             }
         }
     }
@@ -890,13 +878,13 @@ impl core::ops::Mul for Mat3x4 {
         use core::arch::x86_64::*;
 
         unsafe {
-            let lhs_x_row = m128_from_vec4(self.x_row);
-            let lhs_y_row = m128_from_vec4(self.y_row);
-            let lhs_z_row = m128_from_vec4(self.z_row);
+            let lhs_x_row: __m128 = self.x_row.into();
+            let lhs_y_row: __m128 = self.y_row.into();
+            let lhs_z_row: __m128 = self.z_row.into();
 
-            let rhs_x_row = m128_from_vec4(rhs.x_row);
-            let rhs_y_row = m128_from_vec4(rhs.y_row);
-            let rhs_z_row = m128_from_vec4(rhs.z_row);
+            let rhs_x_row: __m128 = rhs.x_row.into();
+            let rhs_y_row: __m128 = rhs.y_row.into();
+            let rhs_z_row: __m128 = rhs.z_row.into();
             let rhs_w_row = _mm_set_ps(1.0, 0.0, 0.0, 0.0); // TODO: optimize based on this being `[0, 0, 0, 1]`.
 
             // Based on https://github.com/microsoft/DirectXMath XMMatrixMultiply
@@ -920,9 +908,9 @@ impl core::ops::Mul for Mat3x4 {
             let out_z_row = _mm_add_ps(_mm_add_ps(v_x, v_z), _mm_add_ps(v_y, v_w));
 
             Self {
-                x_row: vec4_from_m128(out_x_row),
-                y_row: vec4_from_m128(out_y_row),
-                z_row: vec4_from_m128(out_z_row),
+                x_row: out_x_row.into(),
+                y_row: out_y_row.into(),
+                z_row: out_z_row.into(),
             }
         }
     }
