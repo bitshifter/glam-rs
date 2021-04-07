@@ -16,34 +16,34 @@ use core::arch::x86::*;
 ))]
 use core::arch::x86_64::*;
 
-/// A 3x4 matrix, i.e. three rows and four columns.
-///
-/// Can represent affine transformations in 3D: translation, rotation, scaling and shear.
-/// For the purposes of transformations this can be thought of as
-/// a 4x4 matrix with an implicit last row of `[0, 0, 0, 1]`
+/// An affine transform, which can represent translation, rotation, scaling and shear.
 #[derive(Copy, Clone, PartialEq)]
-pub struct Mat3x4 {
+pub struct Affine3D {
+    // TODO: explore different representations, such as 4x Vec3A or Mat3 + Vec3.
     x_row: Vec4,
     y_row: Vec4,
     z_row: Vec4,
 }
 
-impl Default for Mat3x4 {
+impl Default for Affine3D {
     #[inline(always)]
     fn default() -> Self {
         Self::IDENTITY
     }
 }
 
-impl Mat3x4 {
-    /// The zero matrix.
+impl Affine3D {
+    /// The degenerate zero transform.
+    ///
+    /// This transforms any finite vector and point to zero.
+    /// The zero transform is non-invertible.
     pub const ZERO: Self = Self {
         x_row: Vec4::ZERO,
         y_row: Vec4::ZERO,
         z_row: Vec4::ZERO,
     };
 
-    /// The identity matrix.
+    /// The identity transform.
     ///
     /// Multiplying a vector with this returns the same vector.
     pub const IDENTITY: Self = Self {
@@ -54,7 +54,7 @@ impl Mat3x4 {
 
     /// Construct a matrix from its three rows.
     #[inline(always)]
-    pub fn from_rows(x_row: Vec4, y_row: Vec4, z_row: Vec4) -> Self {
+    fn from_rows(x_row: Vec4, y_row: Vec4, z_row: Vec4) -> Self {
         Self {
             x_row,
             y_row,
@@ -64,7 +64,7 @@ impl Mat3x4 {
 
     /// Construct a matrix from its four columns.
     #[inline(always)]
-    pub fn from_cols(x_col: Vec3, y_col: Vec3, z_col: Vec3, w_col: Vec3) -> Self {
+    fn from_cols(x_col: Vec3, y_col: Vec3, z_col: Vec3, w_col: Vec3) -> Self {
         Self {
             x_row: Vec4::new(x_col.x, y_col.x, z_col.x, w_col.x),
             y_row: Vec4::new(x_col.y, y_col.y, z_col.y, w_col.y),
@@ -72,53 +72,10 @@ impl Mat3x4 {
         }
     }
 
-    /// Create a matrix from data in row-major order.
-    #[inline]
-    pub fn from_rows_array(v: &[f32; 12]) -> Self {
-        Self::from_rows(
-            Vec4::new(v[0], v[1], v[2], v[3]),
-            Vec4::new(v[4], v[5], v[6], v[7]),
-            Vec4::new(v[8], v[9], v[10], v[11]),
-        )
-    }
-
-    /// Create a matrix from data in row-major order.
-    #[inline]
-    pub fn from_rows_array_2d(v: &[[f32; 4]; 3]) -> Self {
-        Self::from_rows(
-            Vec4::new(v[0][0], v[0][1], v[0][2], v[0][3]),
-            Vec4::new(v[1][0], v[1][1], v[1][2], v[1][3]),
-            Vec4::new(v[2][0], v[2][1], v[2][2], v[2][3]),
-        )
-    }
-
-    /// Create a matrix from data in column-major order.
-    #[inline]
-    pub fn from_cols_array(v: &[f32; 12]) -> Self {
-        Self::from_rows(
-            Vec4::new(v[0], v[3], v[6], v[9]),
-            Vec4::new(v[1], v[4], v[7], v[10]),
-            Vec4::new(v[2], v[5], v[8], v[11]),
-        )
-    }
-
-    /// Creates a matrix with its diagonal set to `diagonal` and all other entries set to 0.
-    #[inline(always)]
-    pub fn from_diagonal(diagonal: Vec3) -> Self {
-        let [x, y, z] = diagonal.to_array();
-        Self::from_rows(
-            Vec4::new(x, 0.0, 0.0, 0.0),
-            Vec4::new(0.0, y, 0.0, 0.0),
-            Vec4::new(0.0, 0.0, z, 0.0),
-        )
-    }
-
     /// Creates a transformation matrix that changes scale.
-    /// Will `glam_assert` on a zero-entry.
+    /// Note that if any scale is zero the transform will be non-invertible.
     #[inline(always)]
     pub fn from_scale(scale: Vec3) -> Self {
-        // Do not panic as long as any component is non-zero
-        glam_assert!(scale.cmpne(Vec3::ZERO).any());
         let [x, y, z] = scale.to_array();
         Self::from_rows(
             Vec4::new(x, 0.0, 0.0, 0.0),
@@ -260,7 +217,7 @@ impl Mat3x4 {
     /// Creates an affine transformation matrix from the given 3D `scale`, `rotation` and
     /// `translation`.
     ///
-    /// Equivalent to `Mat4::from_translation(translation) * Mat4::from_quat(rotation) * Mat4::from_scale(scale)`
+    /// Equivalent to `Affine3D::from_translation(translation) * Affine3D::from_quat(rotation) * Affine3D::from_scale(scale)`
     ///
     /// The resulting matrix can be used to transform 3D points and vectors. See
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
@@ -279,7 +236,7 @@ impl Mat3x4 {
 
     /// Creates an affine transformation matrix from the given 3D `translation`.
     ///
-    /// Equivalent to `Mat4::from_translation(translation) * Mat4::from_quat(rotation)`
+    /// Equivalent to `Affine3D::from_translation(translation) * Affine3D::from_quat(rotation)`
     ///
     /// The resulting matrix can be used to transform 3D points and vectors. See
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
@@ -292,7 +249,8 @@ impl Mat3x4 {
         m
     }
 
-    /// Ignores the last row of `Mat4`.
+    /// The given `Mat4` must be an affine transform,
+    /// i.e. contain no persepctive transform.
     #[inline]
     pub fn from_mat4(m: Mat4) -> Self {
         Self::from_cols(
@@ -303,81 +261,73 @@ impl Mat3x4 {
         )
     }
 
-    /// Firs first row.
-    #[inline(always)]
-    pub fn x_row(&self) -> Vec4 {
-        self.x_row
-    }
-
-    /// The second row.
-    #[inline(always)]
-    pub fn y_row(&self) -> Vec4 {
-        self.y_row
-    }
-
-    /// The third row.
-    #[inline(always)]
-    pub fn z_row(&self) -> Vec4 {
-        self.z_row
-    }
-
     /// The first column.
     #[inline(always)]
-    pub fn x_col(&self) -> Vec3 {
+    fn x_col(&self) -> Vec3 {
         Vec3::new(self.x_row.x, self.y_row.x, self.z_row.x)
     }
 
     /// The second column.
     #[inline(always)]
-    pub fn y_col(&self) -> Vec3 {
+    fn y_col(&self) -> Vec3 {
         Vec3::new(self.x_row.y, self.y_row.y, self.z_row.y)
     }
 
     /// The thirs column.
     #[inline(always)]
-    pub fn z_col(&self) -> Vec3 {
+    fn z_col(&self) -> Vec3 {
         Vec3::new(self.x_row.z, self.y_row.z, self.z_row.z)
     }
 
     /// The fourth column.
     #[inline(always)]
-    pub fn w_col(&self) -> Vec3 {
+    fn w_col(&self) -> Vec3 {
         Vec3::new(self.x_row.w, self.y_row.w, self.z_row.w)
     }
 
-    /// The translation part of this transformation matrix.
-    /// Same as [`Self::w_col`].
+    /// The translation expressed by this transform.
+    /// The translation is applied last, so is separatable from scale, shear and rotation.
     #[inline(always)]
     pub fn translation(&self) -> Vec3 {
         Vec3::new(self.x_row.w, self.y_row.w, self.z_row.w)
     }
 
+    /// Set the translation part of this transform.
+    /// The translation is applied last, so is separatable from scale, shear and rotation.
+    #[inline(always)]
+    pub fn set_translation(&mut self, translation: Vec3) {
+        self.x_row.w = translation.x;
+        self.y_row.w = translation.y;
+        self.z_row.w = translation.z;
+    }
+
     /// The first column extended with `0`.
     #[inline(always)]
-    pub fn x_col_extended_0(&self) -> Vec4 {
+    fn x_col_extended_0(&self) -> Vec4 {
         Vec4::new(self.x_row.x, self.y_row.x, self.z_row.x, 0.0)
     }
 
     /// The second column extended with `0`.
     #[inline(always)]
-    pub fn y_col_extended_0(&self) -> Vec4 {
+    fn y_col_extended_0(&self) -> Vec4 {
         Vec4::new(self.x_row.y, self.y_row.y, self.z_row.y, 0.0)
     }
 
     /// The thirs column extended with `0`.
     #[inline(always)]
-    pub fn z_col_extended_0(&self) -> Vec4 {
+    fn z_col_extended_0(&self) -> Vec4 {
         Vec4::new(self.x_row.z, self.y_row.z, self.z_row.z, 0.0)
     }
 
     /// The fourth column extended with `1`.
     #[inline(always)]
-    pub fn w_col_extended_1(&self) -> Vec4 {
+    fn w_col_extended_1(&self) -> Vec4 {
         Vec4::new(self.x_row.w, self.y_row.w, self.z_row.w, 1.0)
     }
 
-    /// Extracts `scale`, `rotation` and `translation` from `self`. The input matrix is
-    /// expected to be non-zero and without shearing, or the output will be invalid.
+    /// Extracts `scale`, `rotation` and `translation` from `self`.
+    ///
+    /// The transform is expected to be non-degenerate and without shearing, or the output will be invalid.
     #[inline(always)]
     pub fn to_scale_rotation_translation(&self) -> (Vec3, Quat, Vec3) {
         let det = self.determinant();
@@ -403,51 +353,13 @@ impl Mat3x4 {
             z_col * inv_scale.z,
         );
 
-        let translation = self.w_col();
-
-        (scale, rotation, translation)
+        (scale, rotation, self.translation())
     }
 
-    /// Returns the matrix column for the given `index`.
-    ///
-    /// # Panics
-    ///
-    /// Panics if `index` is greater than 3.
+    /// If this is zero, or close to zero, it is a singular transform (zero-scale on at least one axis).
     #[inline]
-    pub fn col(&self, index: usize) -> Vec3 {
-        match index {
-            0 => Vec3::new(self.x_row.x, self.y_row.x, self.z_row.x),
-            1 => Vec3::new(self.x_row.y, self.y_row.y, self.z_row.y),
-            2 => Vec3::new(self.x_row.z, self.y_row.z, self.z_row.z),
-            3 => Vec3::new(self.x_row.w, self.y_row.w, self.z_row.w),
-            _ => panic!(
-                "index out of bounds: tried to access column {} on a 3x4 matrix which only has four columns",
-                index
-            ),
-        }
-    }
-
-    /// Returns the matrix row for the given `index`.
-    ///
-    /// # Panics
-    ///
-    /// Panics if `index` is greater than 2.
-    #[inline]
-    pub fn row(&self, index: usize) -> Vec4 {
-        match index {
-            0 => self.x_row,
-            1 => self.y_row,
-            2 => self.z_row,
-            _ => panic!(
-                "index out of bounds: tried to access row {} on a 3x4 matrix which only has three rows",
-                index
-            ),
-        }
-    }
-
-    /// As if the last row was `[0, 0, 0, 1]`.
-    #[inline]
-    pub fn determinant(&self) -> f32 {
+    fn determinant(&self) -> f32 {
+        // As if the last row was `[0, 0, 0, 1]`.
         let [m00, m01, m02, _] = self.x_row.to_array();
         let [m10, m11, m12, _] = self.y_row.to_array();
         let [m20, m21, m22, _] = self.z_row.to_array();
@@ -456,8 +368,8 @@ impl Mat3x4 {
             - m02 * m11 * m20
     }
 
-    /// As if the last row was `[0, 0, 0, 1]`.
-    pub fn adjoint(&self) -> Self {
+    fn adjoint(&self) -> Self {
+        // As if the last row was `[0, 0, 0, 1]`.
         let [m00, m01, m02, m03] = self.x_row.to_array();
         let [m10, m11, m12, m13] = self.y_row.to_array();
         let [m20, m21, m22, m23] = self.z_row.to_array();
@@ -525,35 +437,33 @@ impl Mat3x4 {
         )
     }
 
-    /// Creates a left-handed view matrix using a camera position, an up direction, and a focal
+    /// Creates a left-handed view transform using a camera position, an up direction, and a focal
     /// point.
+    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
     #[inline]
     pub fn look_at_lh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
         glam_assert!(up.is_normalized());
         Self::look_to_lh(eye, center - eye, up)
     }
 
-    /// Creates a right-handed view matrix using a camera position, an up direction, and a focal
+    /// Creates a right-handed view transform using a camera position, an up direction, and a focal
     /// point.
+    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
     #[inline]
     pub fn look_at_rh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
         glam_assert!(up.is_normalized());
         Self::look_to_lh(eye, eye - center, up)
     }
 
-    /// Transforms the given 3D vector as a point.
-    ///
-    /// This is the equivalent of multiplying the 3D vector as a 4D vector where `w` is
-    /// `1.0`.
+    /// Transforms the given 3D points, applying shear, scale, rotation and translatio.
     #[inline]
     pub fn transform_point3(&self, point: Vec3) -> Vec3 {
         self.mul_vector4(point.extend(1.0))
     }
 
-    /// Transforms the give 3D vector as a direction.
+    /// Transforms the give 3D vector, applying shear, scale and rotation (but NOT translation).
     ///
-    /// This is the equivalent of multiplying the 3D vector as a 4D vector where `w` is
-    /// `0.0`.
+    /// To also apply translation, use [`Self::transform_point3`] instead.
     #[inline]
     #[cfg(any(
         target_arch = "spirv",
@@ -563,10 +473,9 @@ impl Mat3x4 {
         self.mul_vector4(vec.extend(0.0))
     }
 
-    /// Transforms the give 3D vector as a direction.
+    /// Transforms the give 3D vector, applying shear, scale and rotation (but NOT translation).
     ///
-    /// This is the equivalent of multiplying the 3D vector as a 4D vector where `w` is
-    /// `0.0`.
+    /// To also apply translation, use [`Self::transform_point3`] instead.
     #[inline]
     #[cfg(not(any(
         target_arch = "spirv",
@@ -582,7 +491,7 @@ impl Mat3x4 {
 }
 
 // Float matrix impl
-impl Mat3x4 {
+impl Affine3D {
     /// Returns `true` if, and only if, all elements are finite.
     /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
     #[inline]
@@ -594,6 +503,14 @@ impl Mat3x4 {
     #[inline]
     pub fn is_nan(&self) -> bool {
         self.x_row.is_nan() || self.y_row.is_nan() || self.z_row.is_nan()
+    }
+
+    /// Returns `true` if all elements are finite and
+    /// this is NOT a degenerate transform (i.e. a transform with a zero scale).
+    #[inline]
+    pub fn is_invertible(&self) -> bool {
+        let det = self.determinant();
+        det.is_finite() && det.abs() > 8.0 * f32::EPSILON // TODO: pick a good epsilon
     }
 
     /// Returns true if the absolute difference of all elements between `self` and `other`
@@ -612,7 +529,9 @@ impl Mat3x4 {
             && self.z_row.abs_diff_eq(other.z_row, max_abs_diff)
     }
 
-    /// As if the last row was `[0, 0, 0, 1]`.
+    /// Return the inverse of this transform.
+    ///
+    /// The result of this is only valid if [`Self::is_invertible`] is true.
     #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
     pub fn inverse(&self) -> Self {
         use crate::core::traits::vector::Vector4;
@@ -749,7 +668,6 @@ impl Mat3x4 {
             let row2 = _mm_shuffle_ps(row0, row1, 0b10_00_10_00);
 
             let dot0 = x_row.dot(row2);
-            glam_assert!(dot0 != 0.0);
 
             let rcp0 = _mm_set1_ps(dot0.recip());
 
@@ -765,13 +683,17 @@ impl Mat3x4 {
         }
     }
 
-    /// As if the last row was `[0, 0, 0, 1]`.
+    /// Return the inverse of this transform.
+    ///
+    /// The result of this is only valid if [`Self::is_invertible`] is true.
     #[cfg(target_arch = "spirv")]
     pub fn inverse(&self) -> Self {
         Self::from_mat4(Mat4::from(*self).inverse())
     }
 
-    /// As if the last row was `[0, 0, 0, 1]`.
+    /// Return the inverse of this transform.
+    ///
+    /// The result of this is only valid if [`Self::is_invertible`] is true.
     #[cfg(not(any(
         target_arch = "spirv",
         all(target_feature = "sse2", not(feature = "scalar-math"))
@@ -779,15 +701,18 @@ impl Mat3x4 {
     pub fn inverse(&self) -> Self {
         // scalar path
         let det_recip = self.determinant().recip();
-        glam_assert!(det_recip.is_finite());
-        self.adjoint() * det_recip
+        let mut adj = self.adjoint();
+        adj.x_row *= det_recip;
+        adj.y_row *= det_recip;
+        adj.z_row *= det_recip;
+        adj
     }
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl core::fmt::Debug for Mat3x4 {
+impl core::fmt::Debug for Affine3D {
     fn fmt(&self, fmt: &mut core::fmt::Formatter) -> core::fmt::Result {
-        fmt.debug_struct(stringify!($mat3x4))
+        fmt.debug_struct(stringify!($affine3d))
             .field("x_row", &self.x_row)
             .field("y_row", &self.y_row)
             .field("z_row", &self.z_row)
@@ -795,9 +720,9 @@ impl core::fmt::Debug for Mat3x4 {
     }
 }
 
-impl From<Mat3x4> for Mat4 {
+impl From<Affine3D> for Mat4 {
     #[inline]
-    fn from(m: Mat3x4) -> Mat4 {
+    fn from(m: Affine3D) -> Mat4 {
         Mat4::from_cols(
             m.x_col_extended_0(),
             m.y_col_extended_0(),
@@ -807,73 +732,12 @@ impl From<Mat3x4> for Mat4 {
     }
 }
 
-impl core::ops::Add for Mat3x4 {
-    type Output = Self;
-
-    #[inline(always)]
-    fn add(self, rhs: Self) -> Self {
-        Self {
-            x_row: self.x_row + rhs.x_row,
-            y_row: self.y_row + rhs.y_row,
-            z_row: self.z_row + rhs.z_row,
-        }
-    }
-}
-
-impl core::ops::Sub for Mat3x4 {
-    type Output = Self;
-
-    #[inline(always)]
-    fn sub(self, rhs: Self) -> Self {
-        Self {
-            x_row: self.x_row - rhs.x_row,
-            y_row: self.y_row - rhs.y_row,
-            z_row: self.z_row - rhs.z_row,
-        }
-    }
-}
-
-impl core::ops::Mul<f32> for Mat3x4 {
-    type Output = Mat3x4;
-
-    #[inline(always)]
-    fn mul(self, rhs: f32) -> Self::Output {
-        Self {
-            x_row: self.x_row * rhs,
-            y_row: self.y_row * rhs,
-            z_row: self.z_row * rhs,
-        }
-    }
-}
-
-impl core::ops::Mul<Mat3x4> for f32 {
-    type Output = Mat3x4;
-
-    #[inline(always)]
-    fn mul(self, rhs: Mat3x4) -> Self::Output {
-        Mat3x4 {
-            x_row: self * rhs.x_row,
-            y_row: self * rhs.y_row,
-            z_row: self * rhs.z_row,
-        }
-    }
-}
-
-impl core::ops::Mul<Vec4> for Mat3x4 {
-    type Output = Vec3;
-
-    #[inline(always)]
-    fn mul(self, rhs: Vec4) -> Self::Output {
-        self.mul_vector4(rhs)
-    }
-}
-
-impl core::ops::Mul for Mat3x4 {
-    type Output = Mat3x4;
+impl core::ops::Mul for Affine3D {
+    type Output = Affine3D;
 
     #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
     #[inline(always)]
-    fn mul(self, rhs: Mat3x4) -> Self::Output {
+    fn mul(self, rhs: Affine3D) -> Self::Output {
         use crate::core::traits::vector::Vector4;
         #[cfg(target_arch = "x86")]
         use core::arch::x86::*;
@@ -920,8 +784,8 @@ impl core::ops::Mul for Mat3x4 {
 
     #[cfg(target_arch = "spirv")]
     #[inline(always)]
-    fn mul(self, rhs: Mat3x4) -> Self::Output {
-        Mat3x4::from_mat4(Mat4::from(self) * Mat4::from(rhs))
+    fn mul(self, rhs: Affine3D) -> Self::Output {
+        Affine3D::from_mat4(Mat4::from(self) * Mat4::from(rhs))
     }
 
     #[cfg(not(any(
@@ -929,7 +793,7 @@ impl core::ops::Mul for Mat3x4 {
         all(target_feature = "sse2", not(feature = "scalar-math"))
     )))]
     #[inline(always)]
-    fn mul(self, rhs: Mat3x4) -> Self::Output {
+    fn mul(self, rhs: Affine3D) -> Self::Output {
         Self {
             x_row: rhs.mul_row_vec4_from_left(self.x_row),
             y_row: rhs.mul_row_vec4_from_left(self.y_row),
@@ -938,7 +802,7 @@ impl core::ops::Mul for Mat3x4 {
     }
 }
 
-impl core::ops::Mul<Mat4> for Mat3x4 {
+impl core::ops::Mul<Mat4> for Affine3D {
     type Output = Mat4;
 
     #[inline(always)]
@@ -947,25 +811,16 @@ impl core::ops::Mul<Mat4> for Mat3x4 {
     }
 }
 
-impl core::ops::Mul<Mat3x4> for Mat4 {
+impl core::ops::Mul<Affine3D> for Mat4 {
     type Output = Mat4;
 
     #[inline(always)]
-    fn mul(self, rhs: Mat3x4) -> Self::Output {
+    fn mul(self, rhs: Affine3D) -> Self::Output {
         self * Into::<Mat4>::into(rhs)
     }
 }
 
-impl<'a> core::iter::Sum<&'a Self> for Mat3x4 {
-    fn sum<I>(iter: I) -> Self
-    where
-        I: Iterator<Item = &'a Self>,
-    {
-        iter.fold(Self::ZERO, |a, &b| a + b)
-    }
-}
-
-impl<'a> core::iter::Product<&'a Self> for Mat3x4 {
+impl<'a> core::iter::Product<&'a Self> for Affine3D {
     fn product<I>(iter: I) -> Self
     where
         I: Iterator<Item = &'a Self>,

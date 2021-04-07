@@ -62,7 +62,7 @@ name = "mat3"
 harness = false
 
 [[bench]]
-name = "mat3x4"
+name = "affine3d"
 harness = false
 
 [[bench]]

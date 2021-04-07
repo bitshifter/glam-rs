@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 use core::f32;
-use glam::{Mat2, Mat3, Mat3x4, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
+use glam::{Affine3D, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
 
 pub struct PCG32 {
     state: u64,
@@ -108,8 +108,8 @@ pub fn random_srt_mat3(rng: &mut PCG32) -> Mat3 {
     )
 }
 
-pub fn random_srt_mat3x4(rng: &mut PCG32) -> Mat3x4 {
-    Mat3x4::from_scale_rotation_translation(
+pub fn random_srt_affine3d(rng: &mut PCG32) -> Affine3D {
+    Affine3D::from_scale_rotation_translation(
         random_nonzero_vec3(rng),
         random_quat(rng),
         random_vec3(rng),

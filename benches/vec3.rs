@@ -6,7 +6,7 @@ mod support;
 use criterion::{criterion_group, criterion_main, Criterion};
 use glam::Vec3;
 use std::ops::{Add, Mul};
-use support::{random_mat3, random_quat, random_srt_mat3x4, random_srt_mat4, random_vec3};
+use support::{random_mat3, random_quat, random_srt_affine3d, random_srt_mat4, random_vec3};
 
 bench_binop!(
     vec3_add_vec3,
@@ -33,18 +33,18 @@ bench_binop!(
 );
 
 bench_binop!(
-    mat3x4_transform_point3,
-    "mat3x4 transform point3",
+    affine3d_transform_point3,
+    "affine3d transform point3",
     op => transform_point3,
-    from1 => random_srt_mat3x4,
+    from1 => random_srt_affine3d,
     from2 => random_vec3
 );
 
 bench_binop!(
-    mat3x4_transform_vector3,
-    "mat3x4 transform vector3",
+    affine3d_transform_vector3,
+    "affine3d transform vector3",
     op => transform_vector3,
-    from1 => random_srt_mat3x4,
+    from1 => random_srt_affine3d,
     from2 => random_vec3
 );
 
@@ -200,8 +200,8 @@ bench_select!(
 criterion_group!(
     benches,
     mat3_mul_vec3,
-    mat3x4_transform_point3,
-    mat3x4_transform_vector3,
+    affine3d_transform_point3,
+    affine3d_transform_vector3,
     mat4_transform_point3,
     mat4_transform_vector3,
     quat_mul_vec3,

@@ -339,6 +339,7 @@ macro_rules! impl_mat4_methods {
 
         /// Creates a left-handed view matrix using a camera position, an up direction, and a focal
         /// point.
+        /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
         #[inline(always)]
         pub fn look_at_lh(eye: $vec3, center: $vec3, up: $vec3) -> Self {
             Self($inner::look_at_lh(eye.0, center.0, up.0))
@@ -346,6 +347,7 @@ macro_rules! impl_mat4_methods {
 
         /// Creates a right-handed view matrix using a camera position, an up direction, and a focal
         /// point.
+        /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
         #[inline(always)]
         pub fn look_at_rh(eye: $vec3, center: $vec3, up: $vec3) -> Self {
             Self($inner::look_at_rh(eye.0, center.0, up.0))
