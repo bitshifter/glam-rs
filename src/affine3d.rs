@@ -279,12 +279,6 @@ impl Affine3D {
         Vec3::new(self.x_row.z, self.y_row.z, self.z_row.z)
     }
 
-    /// The fourth column.
-    #[inline(always)]
-    fn w_col(&self) -> Vec3 {
-        Vec3::new(self.x_row.w, self.y_row.w, self.z_row.w)
-    }
-
     /// The translation expressed by this transform.
     /// The translation is applied last, so is separatable from scale, shear and rotation.
     #[inline(always)]
