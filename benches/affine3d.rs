@@ -8,14 +8,22 @@ use glam::Affine3D;
 use std::ops::Mul;
 use support::*;
 
-bench_unop!(
-    affine3d_determinant,
-    "affine3d determinant",
-    op => determinant,
-    from => random_srt_affine3d
-);
 bench_unop!(affine3d_inverse, "affine3d inverse", op => inverse, from => random_srt_affine3d);
-bench_binop!(affine3d_mul_vec4, "affine3d mul vec4", op => mul, from1 => random_srt_affine3d, from2 => random_vec4);
+bench_binop!(
+    affine3d_transform_point3,
+    "affine3d transform point3",
+    op => transform_point3,
+    from1 => random_srt_affine3d,
+    from2 => random_vec3
+);
+
+bench_binop!(
+    affine3d_transform_vector3,
+    "affine3d transform vector3",
+    op => transform_vector3,
+    from1 => random_srt_affine3d,
+    from2 => random_vec3
+);
 bench_binop!(affine3d_mul_affine3d, "affine3d mul affine3d", op => mul, from => random_srt_affine3d);
 bench_binop!(affine3d_mul_mat4, "affine3d mul mat4", op => mul, from1 => random_srt_affine3d, from2 => random_srt_mat4);
 bench_binop!(mat4_mul_affine3d, "mat4 mul affine3d", op => mul, from1 => random_srt_mat4, from2 => random_srt_affine3d);
@@ -51,9 +59,9 @@ pub fn affine3d_from_srt(c: &mut Criterion) {
 
 criterion_group!(
     benches,
-    affine3d_determinant,
     affine3d_inverse,
-    affine3d_mul_vec4,
+    affine3d_transform_point3,
+    affine3d_transform_vector3,
     affine3d_mul_affine3d,
     affine3d_mul_mat4,
     mat4_mul_affine3d,
