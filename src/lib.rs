@@ -224,9 +224,6 @@ pub use self::bool::*;
 
 /** `f32` vector, quaternion and matrix types. */
 pub mod f32 {
-    // pub use super::cast::{
-    //     F32x16Cast, F32x9Cast, Mat2Cast, Mat3Cast, Mat4Cast, Vec2Cast, Vec3Cast, Vec4Cast,
-    // };
     pub use super::mat2::{mat2, Mat2};
     pub use super::mat3::{mat3, Mat3};
     pub use super::mat4::{mat4, Mat4};
@@ -242,9 +239,6 @@ pub use self::f32::*;
 
 /** `f64` vector, quaternion and matrix types. */
 pub mod f64 {
-    // pub use super::cast::{
-    //     DMat2Cast, DMat3Cast, DMat4Cast, DVec2Cast, DVec3Cast, DVec4Cast, F64x16Cast, F64x9Cast,
-    // };
     pub use super::mat2::{dmat2, DMat2};
     pub use super::mat3::{dmat3, DMat3};
     pub use super::mat4::{dmat4, DMat4};
@@ -257,9 +251,6 @@ pub use self::f64::*;
 
 /** `i32` vector types. */
 pub mod i32 {
-    // pub use super::cast::{
-    //     IVec2Cast, IVec3Cast, IVec4Cast,
-    // };
     pub use super::vec2::{ivec2, IVec2};
     pub use super::vec3::{ivec3, IVec3};
     pub use super::vec4::{ivec4, IVec4};
@@ -268,9 +259,6 @@ pub use self::i32::*;
 
 /** `u32` vector types. */
 pub mod u32 {
-    // pub use super::cast::{
-    //     UVec2Cast, UVec3Cast, UVec4Cast,
-    // };
     pub use super::vec2::{uvec2, UVec2};
     pub use super::vec3::{uvec3, UVec3};
     pub use super::vec4::{uvec4, UVec4};
