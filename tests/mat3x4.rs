@@ -152,6 +152,16 @@ macro_rules! impl_mat3x4_tests {
             assert_approx_eq!($mat3x4::IDENTITY, m * m_inv, 1.0e-5);
             assert_approx_eq!($mat3x4::IDENTITY, m_inv * m, 1.0e-5);
             assert_approx_eq!(m_inv, trans_inv * rotz_inv * scale_inv, 1.0e-6);
+
+            // Make sure we can invert a "random" matrix:
+            let m = $mat3x4::from_rows(
+                $vec4::new(1.0, -0.3, 1.0, 1.0),
+                $vec4::new(0.5, 0.6, 0.7, 0.8),
+                $vec4::new(-0.9, -0.3, 0.0, 12.0),
+            );
+            let m_inv = m.inverse();
+            assert_approx_eq!($mat3x4::IDENTITY, m * m_inv, 1.0e-5);
+            assert_approx_eq!($mat3x4::IDENTITY, m_inv * m, 1.0e-5);
         }
 
         #[test]
