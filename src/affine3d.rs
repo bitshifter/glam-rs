@@ -364,7 +364,7 @@ impl Affine3D {
 
     /// Multiply with a column vector (`m * v`)
     #[inline(always)]
-    fn mul_vector4(&self, rhs: Vec4) -> Vec3 {
+    fn mul_vec4(&self, rhs: Vec4) -> Vec3 {
         Vec3::new(
             self.x_row.dot(rhs),
             self.y_row.dot(rhs),
@@ -417,7 +417,7 @@ impl Affine3D {
     /// Transforms the given 3D points, applying shear, scale, rotation and translatio.
     #[inline]
     pub fn transform_point3(&self, point: Vec3) -> Vec3 {
-        self.mul_vector4(point.extend(1.0))
+        self.mul_vec4(point.extend(1.0))
     }
 
     /// Transforms the give 3D vector, applying shear, scale and rotation (but NOT translation).
@@ -429,7 +429,7 @@ impl Affine3D {
         all(target_feature = "sse2", not(feature = "scalar-math"))
     ))]
     pub fn transform_vector3(&self, vec: Vec3) -> Vec3 {
-        self.mul_vector4(vec.extend(0.0))
+        self.mul_vec4(vec.extend(0.0))
     }
 
     /// Transforms the give 3D vector, applying shear, scale and rotation (but NOT translation).
