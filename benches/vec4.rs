@@ -5,7 +5,6 @@ mod support;
 
 use criterion::{criterion_group, criterion_main, Criterion};
 use glam::Vec4;
-use std::ops::Mul;
 use support::random_vec4;
 
 bench_select!(
@@ -16,6 +15,6 @@ bench_select!(
     from => random_vec4
 );
 
-criterion_group!(benches, vec4_mul_mat4, vec4_select,);
+criterion_group!(benches, vec4_select);
 
 criterion_main!(benches);
