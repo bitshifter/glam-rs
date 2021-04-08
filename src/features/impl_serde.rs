@@ -659,7 +659,7 @@ mod affine3d {
                     V: SeqAccess<'de>,
                 {
                     let mut f = { [0.0; 12] };
-                    for v in &mut f {
+                    for (i, v) in f.iter_mut().enumerate() {
                         *v = seq
                             .next_element()?
                             .ok_or_else(|| de::Error::invalid_length(i, &self))?;
