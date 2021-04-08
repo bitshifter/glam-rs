@@ -573,8 +573,8 @@ impl Mat3 {
 
     #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
     #[inline(always)]
-    fn from_simd(m: Self) -> Self {
-        m
+    fn from_simd(m: InnerF32) -> Self {
+        Self(m)
     }
 }
 impl_mat3_traits!(f32, mat3, Mat3, Mat4, Vec3);

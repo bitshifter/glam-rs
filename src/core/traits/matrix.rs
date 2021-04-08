@@ -350,12 +350,15 @@ pub trait FloatMatrix3x3<T: FloatEx, V3: FloatVector3<T>>: Matrix3x3<T, V3> {
     fn transform_vector2(&self, other: XY<T>) -> XY<T>;
 
     #[inline]
-    fn inverse(&self) -> Self {
+    fn inverse(&self) -> Self
+    where
+        <V3 as Vector<T>>::Mask: MaskVector3,
+    {
         let tmp0 = self.y_axis().cross(*self.z_axis());
         let tmp1 = self.z_axis().cross(*self.x_axis());
         let tmp2 = self.x_axis().cross(*self.y_axis());
         let det = self.z_axis().dot_into_vec(tmp2);
-        glam_assert!(det.cmpne(XYZ::ZERO).all());
+        glam_assert!(det.cmpne(V3::ZERO).all());
         let inv_det = det.recip();
         // TODO: Work out if it's possible to get rid of the transpose
         Self::from_cols(tmp0.mul(inv_det), tmp1.mul(inv_det), tmp2.mul(inv_det)).transpose()

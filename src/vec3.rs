@@ -284,14 +284,14 @@ macro_rules! impl_f32_vec3 {
 
             #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
             #[inline(always)]
-            pub(crate) fn into_simd(&self) -> InnerF32 {
+            pub(crate) fn into_simd(&self) -> $inner {
                 self.0
             }
 
             #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
             #[inline(always)]
-            pub(crate) fn from_simd(v: Self) -> Self {
-                v
+            pub(crate) fn from_simd(v: $inner) -> Self {
+                Self(v)
             }
         }
         impl_vec3_float_traits!(f32, $new, $vec2, $vec3, $vec4, $mask, $inner);
