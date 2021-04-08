@@ -607,3 +607,110 @@ mod u32 {
 
     impl_serde_vec_types!(u32, UVec2, UVec3, UVec4);
 }
+
+mod affine3d {
+    use crate::{Affine3D, Mat4};
+    use core::fmt;
+    use serde::{
+        de::{self, Deserialize, Deserializer, SeqAccess, Visitor},
+        ser::{Serialize, SerializeTupleStruct, Serializer},
+    };
+
+    impl Serialize for Affine3D {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            // Serialize column-wise as 3x4 matrix:
+            let mat4: Mat4 = (*self).into();
+            let mut state = serializer.serialize_tuple_struct("Affine3D", 12)?;
+            state.serialize_field(&mat4.x_axis.x)?;
+            state.serialize_field(&mat4.x_axis.y)?;
+            state.serialize_field(&mat4.x_axis.z)?;
+            state.serialize_field(&mat4.y_axis.x)?;
+            state.serialize_field(&mat4.y_axis.y)?;
+            state.serialize_field(&mat4.y_axis.z)?;
+            state.serialize_field(&mat4.z_axis.x)?;
+            state.serialize_field(&mat4.z_axis.y)?;
+            state.serialize_field(&mat4.z_axis.z)?;
+            state.serialize_field(&mat4.w_axis.x)?;
+            state.serialize_field(&mat4.w_axis.y)?;
+            state.serialize_field(&mat4.w_axis.z)?;
+            state.end()
+        }
+    }
+
+    impl<'de> Deserialize<'de> for Affine3D {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            struct Affine3DVisitor;
+
+            impl<'de> Visitor<'de> for Affine3DVisitor {
+                type Value = Affine3D;
+
+                fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                    formatter.write_str("struct Affine3D")
+                }
+
+                fn visit_seq<V>(self, mut seq: V) -> Result<Affine3D, V::Error>
+                where
+                    V: SeqAccess<'de>,
+                {
+                    let mut f = { [0.0; 12] };
+                    for v in &mut f {
+                        *v = seq
+                            .next_element()?
+                            .ok_or_else(|| de::Error::invalid_length(i, &self))?;
+                    }
+                    let m = Mat4::from_cols_array(&[
+                        f[0], f[1], f[2], 0.0, //
+                        f[3], f[4], f[5], 0.0, //
+                        f[6], f[7], f[8], 0.0, //
+                        f[9], f[10], f[11], 1.0, //
+                    ]);
+                    Ok(Affine3D::from_mat4(m))
+                }
+            }
+
+            deserializer.deserialize_tuple_struct("Affine3D", 12, Affine3DVisitor)
+        }
+    }
+
+    #[test]
+    fn test_affine3d_serde() {
+        use crate::{Quat, Vec3};
+
+        let a = Affine3D::from_scale_rotation_translation(
+            Vec3::new(1.0, 2.0, 3.0),
+            Quat::IDENTITY,
+            Vec3::new(4.0, 5.0, 6.0),
+        );
+        let serialized = serde_json::to_string(&a).unwrap();
+        assert_eq!(
+            serialized,
+            "[1.0,0.0,0.0,0.0,2.0,0.0,0.0,0.0,3.0,4.0,5.0,6.0]"
+        );
+        let deserialized = serde_json::from_str(&serialized).unwrap();
+        assert_eq!(a, deserialized);
+
+        let deserialized = serde_json::from_str::<Affine3D>("[]");
+        assert!(deserialized.is_err());
+        let deserialized = serde_json::from_str::<Affine3D>("[1.0]");
+        assert!(deserialized.is_err());
+        let deserialized = serde_json::from_str::<Affine3D>("[1.0,2.0]");
+        assert!(deserialized.is_err());
+        let deserialized = serde_json::from_str::<Affine3D>("[1.0,2.0,3.0]");
+        assert!(deserialized.is_err());
+        let deserialized = serde_json::from_str::<Affine3D>("[1.0,2.0,3.0,4.0,5.0]");
+        assert!(deserialized.is_err());
+        let deserialized =
+            serde_json::from_str::<Affine3D>("[[1.0,2.0,3.0],[4.0,5.0,6.0],[7.0,8.0,9.0]]");
+        assert!(deserialized.is_err());
+        let deserialized = serde_json::from_str::<Affine3D>(
+            "[[1.0,2.0,3.0,4.0],[5.0,6.0,7.0,8.0],[9.0,10.0,11.0,12.0][13.0,14.0,15.0,16.0]]",
+        );
+        assert!(deserialized.is_err());
+    }
+}
