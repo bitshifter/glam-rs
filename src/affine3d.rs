@@ -613,7 +613,7 @@ impl core::ops::Mul<Mat4> for Affine3D {
 
     #[inline(always)]
     fn mul(self, rhs: Mat4) -> Self::Output {
-        Into::<Mat4>::into(self) * rhs
+        Mat4::from(self) * rhs
     }
 }
 
@@ -622,7 +622,7 @@ impl core::ops::Mul<Affine3D> for Mat4 {
 
     #[inline(always)]
     fn mul(self, rhs: Affine3D) -> Self::Output {
-        self * Into::<Mat4>::into(rhs)
+        self * Mat4::from(rhs)
     }
 }
 
