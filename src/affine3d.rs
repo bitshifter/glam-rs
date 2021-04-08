@@ -1,4 +1,4 @@
-use crate::{Mat4, Quat, Vec3, Vec4};
+use crate::{Mat3, Mat4, Quat, Vec3, Vec4};
 
 #[cfg(not(feature = "std"))]
 use num_traits::Float;
@@ -86,8 +86,8 @@ impl Affine3D {
 
     /// Creates an affine transformation matrix from the given `rotation` quaternion.
     ///
-    /// The resulting matrix can be used to transform 3D points and vectors. See
-    /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+    /// The result can be used to transform 3D points and vectors.
+    /// See [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
     pub fn from_quat(rotation: Quat) -> Self {
         glam_assert!(rotation.is_normalized());
@@ -122,8 +122,8 @@ impl Affine3D {
     /// Creates an affine transformation matrix containing a 3D rotation around a normalized
     /// rotation `axis` of `angle` (in radians).
     ///
-    /// The resulting matrix can be used to transform 3D points and vectors. See
-    /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+    /// The result can be used to transform 3D points and vectors.
+    /// See [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
     pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
         glam_assert!(axis.is_normalized());
@@ -159,8 +159,8 @@ impl Affine3D {
     /// Creates an affine transformation matrix containing a 3D rotation around the x axis of
     /// `angle` (in radians).
     ///
-    /// The resulting matrix can be used to transform 3D points and vectors. See
-    /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+    /// The result can be used to transform 3D points and vectors.
+    /// See [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
     pub fn from_rotation_x(angle: f32) -> Self {
         let (sina, cosa) = angle.sin_cos();
@@ -174,8 +174,8 @@ impl Affine3D {
     /// Creates an affine transformation matrix containing a 3D rotation around the y axis of
     /// `angle` (in radians).
     ///
-    /// The resulting matrix can be used to transform 3D points and vectors. See
-    /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+    /// The result can be used to transform 3D points and vectors.
+    /// See [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
     pub fn from_rotation_y(angle: f32) -> Self {
         let (sina, cosa) = angle.sin_cos();
@@ -189,8 +189,8 @@ impl Affine3D {
     /// Creates an affine transformation matrix containing a 3D rotation around the z axis of
     /// `angle` (in radians).
     ///
-    /// The resulting matrix can be used to transform 3D points and vectors. See
-    /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+    /// The result can be used to transform 3D points and vectors.
+    /// See [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
     pub fn from_rotation_z(angle: f32) -> Self {
         let (sina, cosa) = angle.sin_cos();
@@ -201,10 +201,10 @@ impl Affine3D {
         )
     }
 
-    /// Creates an affine transformation matrix from the given 3D `translation`.
+    /// Creates an affine transformation from the given 3D `translation`.
     ///
-    /// The resulting matrix can be used to transform 3D points and vectors. See
-    /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+    /// The result can be used to transform 3D points and vectors.
+    /// See [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline(always)]
     pub fn from_translation(translation: Vec3) -> Self {
         Self::from_rows(
@@ -214,13 +214,41 @@ impl Affine3D {
         )
     }
 
-    /// Creates an affine transformation matrix from the given 3D `scale`, `rotation` and
+    /// Creates an affine transformation from a `Mat3` (expressing scale, shear and rotation)
+    #[inline(always)]
+    pub fn from_mat3(mat3: Mat3) -> Self {
+        let t = mat3.transpose();
+        Self {
+            x_row: t.x_axis.extend(0.0),
+            y_row: t.y_axis.extend(0.0),
+            z_row: t.z_axis.extend(0.0),
+        }
+    }
+
+    /// Creates an affine transformation from a `Mat3` (expressing scale, shear and rotation)
+    /// and a translation vector.
+    ///
+    /// Equivalent to `Affine3D::from_translation(translation) * Affine3D::from_mat3(mat3)`
+    ///
+    /// The result can be used to transform 3D points and vectors.
+    /// See [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+    #[inline(always)]
+    pub fn from_mat3_translation(mat3: Mat3, translation: Vec3) -> Self {
+        let t = mat3.transpose();
+        Self {
+            x_row: t.x_axis.extend(translation.x),
+            y_row: t.y_axis.extend(translation.y),
+            z_row: t.z_axis.extend(translation.z),
+        }
+    }
+
+    /// Creates an affine transformation from the given 3D `scale`, `rotation` and
     /// `translation`.
     ///
     /// Equivalent to `Affine3D::from_translation(translation) * Affine3D::from_quat(rotation) * Affine3D::from_scale(scale)`
     ///
-    /// The resulting matrix can be used to transform 3D points and vectors. See
-    /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+    /// The result can be used to transform 3D points and vectors.
+    /// See [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline(always)]
     pub fn from_scale_rotation_translation(scale: Vec3, rotation: Quat, translation: Vec3) -> Self {
         let scale4 = scale.extend(0.0);
@@ -234,12 +262,12 @@ impl Affine3D {
         m
     }
 
-    /// Creates an affine transformation matrix from the given 3D `translation`.
+    /// Creates an affine transformation from the given 3D `rotation` and `translation`.
     ///
     /// Equivalent to `Affine3D::from_translation(translation) * Affine3D::from_quat(rotation)`
     ///
-    /// The resulting matrix can be used to transform 3D points and vectors. See
-    /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+    /// The result can be used to transform 3D points and vectors.
+    /// See [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline(always)]
     pub fn from_rotation_translation(rotation: Quat, translation: Vec3) -> Self {
         let mut m = Self::from_quat(rotation);
@@ -293,6 +321,26 @@ impl Affine3D {
         self.x_row.w = translation.x;
         self.y_row.w = translation.y;
         self.z_row.w = translation.z;
+    }
+
+    /// The scale, shear and rotation expressed by this transform.
+    #[inline(always)]
+    pub fn mat3(&self) -> Mat3 {
+        Mat3::from_cols(
+            self.x_row.truncate(),
+            self.y_row.truncate(),
+            self.z_row.truncate(),
+        )
+        .transpose()
+    }
+
+    /// Set the scale, shear and rotation expressed by this transform.
+    #[inline(always)]
+    pub fn set_mat3(&mut self, mat3: Mat3) {
+        let t = mat3.transpose();
+        self.x_row = t.x_axis.extend(self.x_row.w);
+        self.y_row = t.y_axis.extend(self.y_row.w);
+        self.z_row = t.z_axis.extend(self.z_row.w);
     }
 
     /// The first column extended with `0`.

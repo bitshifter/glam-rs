@@ -609,7 +609,7 @@ mod u32 {
 }
 
 mod affine3d {
-    use crate::{Affine3D, Mat4};
+    use crate::{Affine3D, Mat3, Vec3};
     use core::fmt;
     use serde::{
         de::{self, Deserialize, Deserializer, SeqAccess, Visitor},
@@ -622,20 +622,21 @@ mod affine3d {
             S: Serializer,
         {
             // Serialize column-wise as 3x4 matrix:
-            let mat4: Mat4 = (*self).into();
+            let mat3 = self.mat3();
+            let w_axis = self.translation();
             let mut state = serializer.serialize_tuple_struct("Affine3D", 12)?;
-            state.serialize_field(&mat4.x_axis.x)?;
-            state.serialize_field(&mat4.x_axis.y)?;
-            state.serialize_field(&mat4.x_axis.z)?;
-            state.serialize_field(&mat4.y_axis.x)?;
-            state.serialize_field(&mat4.y_axis.y)?;
-            state.serialize_field(&mat4.y_axis.z)?;
-            state.serialize_field(&mat4.z_axis.x)?;
-            state.serialize_field(&mat4.z_axis.y)?;
-            state.serialize_field(&mat4.z_axis.z)?;
-            state.serialize_field(&mat4.w_axis.x)?;
-            state.serialize_field(&mat4.w_axis.y)?;
-            state.serialize_field(&mat4.w_axis.z)?;
+            state.serialize_field(&mat3.x_axis.x)?;
+            state.serialize_field(&mat3.x_axis.y)?;
+            state.serialize_field(&mat3.x_axis.z)?;
+            state.serialize_field(&mat3.y_axis.x)?;
+            state.serialize_field(&mat3.y_axis.y)?;
+            state.serialize_field(&mat3.y_axis.z)?;
+            state.serialize_field(&mat3.z_axis.x)?;
+            state.serialize_field(&mat3.z_axis.y)?;
+            state.serialize_field(&mat3.z_axis.z)?;
+            state.serialize_field(&w_axis.x)?;
+            state.serialize_field(&w_axis.y)?;
+            state.serialize_field(&w_axis.z)?;
             state.end()
         }
     }
@@ -664,13 +665,13 @@ mod affine3d {
                             .next_element()?
                             .ok_or_else(|| de::Error::invalid_length(i, &self))?;
                     }
-                    let m = Mat4::from_cols_array(&[
-                        f[0], f[1], f[2], 0.0, //
-                        f[3], f[4], f[5], 0.0, //
-                        f[6], f[7], f[8], 0.0, //
-                        f[9], f[10], f[11], 1.0, //
+                    let m = Mat3::from_cols_array(&[
+                        f[0], f[1], f[2], //
+                        f[3], f[4], f[5], //
+                        f[6], f[7], f[8], //
                     ]);
-                    Ok(Affine3D::from_mat4(m))
+                    let t = Vec3::new(f[9], f[10], f[11]);
+                    Ok(Affine3D::from_mat3_translation(m, t))
                 }
             }
 

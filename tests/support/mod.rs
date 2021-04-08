@@ -152,7 +152,10 @@ impl FloatCompare for Affine3D {
     }
     #[inline]
     fn abs_diff(&self, other: &Self) -> Self {
-        self.inverse() * *other // TODO: this is not the abs_diff
+        Self::from_mat3_translation(
+            self.mat3().abs_diff(&other.mat3()),
+            self.translation().abs_diff(&other.translation()),
+        )
     }
 }
 
