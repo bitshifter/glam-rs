@@ -269,6 +269,30 @@ macro_rules! impl_f32_vec3 {
             impl_vecn_as_f64!(DVec3, x, y, z);
             impl_vecn_as_i32!(IVec3, x, y, z);
             impl_vecn_as_u32!(UVec3, x, y, z);
+
+            #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+            #[inline(always)]
+            pub(crate) fn into_simd(&self) -> __m128 {
+                self.0.into()
+            }
+
+            #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+            #[inline(always)]
+            pub(crate) fn from_simd(v: __m128) -> Self {
+                Self(v.into())
+            }
+
+            #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+            #[inline(always)]
+            pub(crate) fn into_simd(&self) -> InnerF32 {
+                self.0
+            }
+
+            #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+            #[inline(always)]
+            pub(crate) fn from_simd(v: Self) -> Self {
+                v
+            }
         }
         impl_vec3_float_traits!(f32, $new, $vec2, $vec3, $vec4, $mask, $inner);
     };
@@ -338,6 +362,16 @@ impl DVec3 {
     impl_vecn_as_f32!(Vec3, x, y, z);
     impl_vecn_as_i32!(IVec3, x, y, z);
     impl_vecn_as_u32!(UVec3, x, y, z);
+
+    #[inline(always)]
+    pub(crate) fn into_simd(&self) -> XYZF64 {
+        self.0
+    }
+
+    #[inline(always)]
+    pub(crate) fn from_simd(inner: XYZF64) -> Self {
+        Self(inner)
+    }
 }
 impl_vec3_float_traits!(f64, dvec3, DVec2, DVec3, DVec4, BVec3, XYZF64);
 

@@ -131,11 +131,6 @@ impl<T: NumEx> Matrix3x3<T, XYZ<T>> for Vector3x3<XYZ<T>> {
         self
     }
 
-    #[inline]
-    fn determinant(&self) -> T {
-        self.z_axis.dot(self.x_axis.cross(self.y_axis))
-    }
-
     #[inline(always)]
     fn transpose(&self) -> Self {
         Self::from_cols(
@@ -159,46 +154,11 @@ impl<T: NumEx> Matrix3x3<T, XYZ<T>> for Vector3x3<XYZ<T>> {
 
     #[inline]
     fn mul_vector(&self, other: XYZ<T>) -> XYZ<T> {
+        // default implementation uses splat_x etc, which might not be optimial. Need to check.
         let mut res = self.x_axis.mul_scalar(other.x);
         res = self.y_axis.mul_scalar(other.y).add(res);
         res = self.z_axis.mul_scalar(other.z).add(res);
         res
-    }
-
-    #[inline]
-    fn mul_matrix(&self, other: &Self) -> Self {
-        Self::from_cols(
-            self.mul_vector(other.x_axis),
-            self.mul_vector(other.y_axis),
-            self.mul_vector(other.z_axis),
-        )
-    }
-
-    #[inline]
-    fn mul_scalar(&self, other: T) -> Self {
-        Self::from_cols(
-            self.x_axis.mul_scalar(other),
-            self.y_axis.mul_scalar(other),
-            self.z_axis.mul_scalar(other),
-        )
-    }
-
-    #[inline]
-    fn add_matrix(&self, other: &Self) -> Self {
-        Self::from_cols(
-            self.x_axis.add(other.x_axis),
-            self.y_axis.add(other.y_axis),
-            self.z_axis.add(other.z_axis),
-        )
-    }
-
-    #[inline]
-    fn sub_matrix(&self, other: &Self) -> Self {
-        Self::from_cols(
-            self.x_axis.sub(other.x_axis),
-            self.y_axis.sub(other.y_axis),
-            self.z_axis.sub(other.z_axis),
-        )
     }
 }
 

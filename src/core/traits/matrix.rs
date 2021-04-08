@@ -193,13 +193,56 @@ pub trait Matrix3x3<T: NumEx, V3: Vector3<T>>: Matrix<T> {
         Self::from_cols(V3::X, V3::Y, V3::new(translation.x, translation.y, T::ONE))
     }
 
-    fn determinant(&self) -> T;
+    #[inline]
+    fn determinant(&self) -> T {
+        self.z_axis().dot(self.x_axis().cross(*self.y_axis()))
+    }
+
     fn transpose(&self) -> Self;
-    fn mul_vector(&self, other: V3) -> V3;
-    fn mul_matrix(&self, other: &Self) -> Self;
-    fn mul_scalar(&self, other: T) -> Self;
-    fn add_matrix(&self, other: &Self) -> Self;
-    fn sub_matrix(&self, other: &Self) -> Self;
+
+    #[inline]
+    fn mul_vector(&self, other: V3) -> V3 {
+        let mut res = self.x_axis().mul(other.splat_x());
+        res = self.y_axis().mul_add(other.splat_y(), res);
+        res = self.z_axis().mul_add(other.splat_z(), res);
+        res
+    }
+
+    #[inline]
+    fn mul_matrix(&self, other: &Self) -> Self {
+        Self::from_cols(
+            self.mul_vector(*other.x_axis()),
+            self.mul_vector(*other.y_axis()),
+            self.mul_vector(*other.z_axis()),
+        )
+    }
+
+    #[inline]
+    fn mul_scalar(&self, other: T) -> Self {
+        Self::from_cols(
+            self.x_axis().mul_scalar(other),
+            self.y_axis().mul_scalar(other),
+            self.z_axis().mul_scalar(other),
+        )
+    }
+
+    #[inline]
+    fn add_matrix(&self, other: &Self) -> Self {
+        Self::from_cols(
+            self.x_axis().add(*other.x_axis()),
+            self.y_axis().add(*other.y_axis()),
+            self.z_axis().add(*other.z_axis()),
+        )
+    }
+
+    #[inline]
+    fn sub_matrix(&self, other: &Self) -> Self {
+        Self::from_cols(
+            self.x_axis().sub(*other.x_axis()),
+            self.y_axis().sub(*other.y_axis()),
+            self.z_axis().sub(*other.z_axis()),
+        )
+    }
 }
 
 pub trait FloatMatrix3x3<T: FloatEx, V3: FloatVector3<T>>: Matrix3x3<T, V3> {
@@ -306,7 +349,17 @@ pub trait FloatMatrix3x3<T: FloatEx, V3: FloatVector3<T>>: Matrix3x3<T, V3> {
     fn transform_point2(&self, other: XY<T>) -> XY<T>;
     fn transform_vector2(&self, other: XY<T>) -> XY<T>;
 
-    fn inverse(&self) -> Self;
+    #[inline]
+    fn inverse(&self) -> Self {
+        let tmp0 = self.y_axis().cross(*self.z_axis());
+        let tmp1 = self.z_axis().cross(*self.x_axis());
+        let tmp2 = self.x_axis().cross(*self.y_axis());
+        let det = self.z_axis().dot_into_vec(tmp2);
+        glam_assert!(det.cmpne(XYZ::ZERO).all());
+        let inv_det = det.recip();
+        // TODO: Work out if it's possible to get rid of the transpose
+        Self::from_cols(tmp0.mul(inv_det), tmp1.mul(inv_det), tmp2.mul(inv_det)).transpose()
+    }
 }
 
 pub trait Matrix4x4<T: NumEx, V4: Vector4<T>>: Matrix<T> {

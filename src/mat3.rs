@@ -2,13 +2,26 @@ use crate::core::{
     storage::{Vector3x3, XYZ},
     traits::matrix::{FloatMatrix3x3, Matrix3x3, MatrixConst},
 };
-use crate::{DMat2, DMat4, DQuat, DVec2, DVec3, Mat2, Mat4, Quat, Vec2, Vec3, Vec3A, Vec3Swizzles};
+use crate::{DMat2, DMat4, DQuat, DVec2, DVec3, Mat2, Mat4, Quat, Vec2, Vec3, Vec3A};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::{
     cmp::Ordering,
     ops::{Add, Deref, DerefMut, Mul, Sub},
 };
+
+#[cfg(all(
+    target_arch = "x86",
+    target_feature = "sse2",
+    not(feature = "scalar-math")
+))]
+use core::arch::x86::*;
+#[cfg(all(
+    target_arch = "x86_64",
+    target_feature = "sse2",
+    not(feature = "scalar-math")
+))]
+use core::arch::x86_64::*;
 
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
@@ -293,7 +306,7 @@ macro_rules! impl_mat3_methods {
         /// Transforms a 3D vector.
         #[inline(always)]
         pub fn mul_vec3(&self, other: $vec3) -> $vec3 {
-            self.mul_vec3_as_vec3a(other)
+            $vec3::from_simd(self.into_simd().mul_vector(other.into_simd()))
         }
 
         /// Multiplies two 3x3 matrices.
@@ -523,16 +536,7 @@ impl Mat3 {
     /// Transforms a `Vec3A`.
     #[inline]
     pub fn mul_vec3a(&self, other: Vec3A) -> Vec3A {
-        let mut res = Vec3A::from(self.x_axis) * other.xxx();
-        res = Vec3A::from(self.y_axis).mul_add(other.yyy(), res);
-        res = Vec3A::from(self.z_axis).mul_add(other.zzz(), res);
-        res
-    }
-
-    /// Transforms a `Vec3`.
-    #[inline(always)]
-    fn mul_vec3_as_vec3a(&self, other: Vec3) -> Vec3 {
-        Vec3::from(self.mul_vec3a(Vec3A::from(other)))
+        Vec3A::from_simd(self.into_simd().mul_vector(other.into_simd()))
     }
 
     #[inline(always)]
@@ -542,6 +546,39 @@ impl Mat3 {
             self.y_axis.as_f64(),
             self.z_axis.as_f64(),
         )
+    }
+
+    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+    #[inline(always)]
+    fn into_simd(&self) -> Vector3x3<__m128> {
+        Vector3x3 {
+            x_axis: self.x_axis.0.into(),
+            y_axis: self.y_axis.0.into(),
+            z_axis: self.z_axis.0.into(),
+        }
+    }
+
+    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+    #[allow(dead_code)]
+    #[inline(always)]
+    fn from_simd(m: Vector3x3<__m128>) -> Self {
+        Self(Matrix3x3::from_cols(
+            m.x_axis.into(),
+            m.y_axis.into(),
+            m.z_axis.into(),
+        ))
+    }
+
+    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+    #[inline(always)]
+    fn into_simd(&self) -> InnerF32 {
+        self.0
+    }
+
+    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+    #[inline(always)]
+    fn from_simd(m: Self) -> Self {
+        m
     }
 }
 impl_mat3_traits!(f32, mat3, Mat3, Mat4, Vec3);
@@ -561,17 +598,23 @@ impl DMat3 {
     impl_mat3_methods!(f64, DVec3, DVec2, DQuat, DMat2, InnerF64);
 
     #[inline(always)]
-    fn mul_vec3_as_vec3a(&self, other: DVec3) -> DVec3 {
-        DVec3(self.0.mul_vector(other.0))
-    }
-
-    #[inline(always)]
     pub fn as_f32(&self) -> Mat3 {
         Mat3::from_cols(
             self.x_axis.as_f32(),
             self.y_axis.as_f32(),
             self.z_axis.as_f32(),
         )
+    }
+
+    #[inline(always)]
+    fn into_simd(&self) -> InnerF64 {
+        self.0
+    }
+
+    #[allow(dead_code)]
+    #[inline(always)]
+    fn from_simd(inner: InnerF64) -> Self {
+        Self(inner)
     }
 }
 impl_mat3_traits!(f64, dmat3, DMat3, DMat4, DVec3);

@@ -180,6 +180,18 @@ impl Vec2 {
     impl_vecn_as_f64!(DVec2, x, y);
     impl_vecn_as_i32!(IVec2, x, y);
     impl_vecn_as_u32!(UVec2, x, y);
+
+    #[allow(dead_code)]
+    #[inline(always)]
+    pub(crate) fn into_simd(&self) -> XYF32 {
+        self.0
+    }
+
+    #[allow(dead_code)]
+    #[inline(always)]
+    pub(crate) fn from_simd(inner: XYF32) -> Self {
+        Self(inner)
+    }
 }
 impl_vec2_signed_traits!(f32, vec2, Vec2, Vec3, BVec2, XYF32);
 
@@ -195,6 +207,18 @@ impl DVec2 {
     impl_vecn_as_f32!(Vec2, x, y);
     impl_vecn_as_i32!(IVec2, x, y);
     impl_vecn_as_u32!(UVec2, x, y);
+
+    #[allow(dead_code)]
+    #[inline(always)]
+    pub(crate) fn into_simd(&self) -> XYF64 {
+        self.0
+    }
+
+    #[allow(dead_code)]
+    #[inline(always)]
+    pub(crate) fn from_simd(inner: XYF64) -> Self {
+        Self(inner)
+    }
 }
 impl_vec2_signed_traits!(f64, dvec2, DVec2, DVec3, BVec2, XYF64);
 

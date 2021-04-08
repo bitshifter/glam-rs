@@ -8,9 +8,12 @@ use core::mem::MaybeUninit;
 use crate::{
     const_m128,
     core::{
-        storage::{Align16, Vector2x2, Vector4x4, XY, XYZ},
+        storage::{Align16, Vector2x2, Vector3x3, Vector4x4, XY, XYZ},
         traits::{
-            matrix::{FloatMatrix2x2, FloatMatrix4x4, Matrix, Matrix2x2, Matrix4x4, MatrixConst},
+            matrix::{
+                FloatMatrix2x2, FloatMatrix3x3, FloatMatrix4x4, Matrix, Matrix2x2, Matrix3x3,
+                Matrix4x4, MatrixConst,
+            },
             projection::ProjectionMatrix,
             vector::{FloatVector4, Vector, Vector4, Vector4Const},
         },
@@ -132,6 +135,88 @@ impl FloatMatrix2x2<f32, XY<f32>> for __m128 {
     }
 }
 
+impl MatrixConst for Vector3x3<__m128> {
+    const ZERO: Vector3x3<__m128> = Vector3x3 {
+        x_axis: __m128::ZERO,
+        y_axis: __m128::ZERO,
+        z_axis: __m128::ZERO,
+    };
+    const IDENTITY: Vector3x3<__m128> = Vector3x3 {
+        x_axis: __m128::X,
+        y_axis: __m128::Y,
+        z_axis: __m128::Z,
+    };
+}
+
+impl Matrix<f32> for Vector3x3<__m128> {}
+
+impl Matrix3x3<f32, __m128> for Vector3x3<__m128> {
+    #[inline(always)]
+    fn from_cols(x_axis: __m128, y_axis: __m128, z_axis: __m128) -> Self {
+        Self {
+            x_axis,
+            y_axis,
+            z_axis,
+        }
+    }
+
+    #[inline(always)]
+    fn x_axis(&self) -> &__m128 {
+        &self.x_axis
+    }
+
+    #[inline(always)]
+    fn y_axis(&self) -> &__m128 {
+        &self.y_axis
+    }
+
+    #[inline(always)]
+    fn z_axis(&self) -> &__m128 {
+        &self.z_axis
+    }
+
+    #[inline(always)]
+    fn as_ref_vector3x3(&self) -> &Vector3x3<__m128> {
+        self
+    }
+
+    #[inline(always)]
+    fn as_mut_vector3x3(&mut self) -> &mut Vector3x3<__m128> {
+        self
+    }
+
+    #[inline]
+    fn transpose(&self) -> Self {
+        unsafe {
+            let tmp0 = _mm_shuffle_ps(self.x_axis, self.y_axis, 0b01_00_01_00);
+            let tmp1 = _mm_shuffle_ps(self.x_axis, self.y_axis, 0b11_10_11_10);
+
+            Self {
+                x_axis: _mm_shuffle_ps(tmp0, self.z_axis, 0b00_00_10_00),
+                y_axis: _mm_shuffle_ps(tmp0, self.z_axis, 0b01_01_11_01),
+                z_axis: _mm_shuffle_ps(tmp1, self.z_axis, 0b10_10_10_00),
+            }
+        }
+    }
+}
+
+impl FloatMatrix3x3<f32, __m128> for Vector3x3<__m128> {
+    #[inline]
+    fn transform_point2(&self, other: XY<f32>) -> XY<f32> {
+        let mut res = self.x_axis.mul_scalar(other.x);
+        res = self.y_axis.mul_scalar(other.y).add(res);
+        res = self.z_axis.add(res);
+        res.into()
+    }
+
+    #[inline]
+    fn transform_vector2(&self, other: XY<f32>) -> XY<f32> {
+        let mut res = self.x_axis.mul_scalar(other.x);
+        res = self.y_axis.mul_scalar(other.y).add(res);
+        res.into()
+    }
+}
+
 impl MatrixConst for Vector4x4<__m128> {
     const ZERO: Vector4x4<__m128> = Vector4x4 {
         x_axis: __m128::ZERO,
@@ -182,12 +267,12 @@ impl Matrix4x4<f32, __m128> for Vector4x4<__m128> {
 
     #[inline(always)]
     fn as_ref_vector4x4(&self) -> &Vector4x4<__m128> {
-        unsafe { &*(self as *const Self as *const Vector4x4<__m128>) }
+        self
     }
 
     #[inline(always)]
     fn as_mut_vector4x4(&mut self) -> &mut Vector4x4<__m128> {
-        unsafe { &mut *(self as *mut Self as *mut Vector4x4<__m128>) }
+        self
     }
 
     #[inline]
@@ -225,7 +310,7 @@ impl Matrix4x4<f32, __m128> for Vector4x4<__m128> {
             let addres = _mm_add_ps(subres, mulfacc);
             let detcof = _mm_mul_ps(addres, _mm_setr_ps(1.0, -1.0, 1.0, -1.0));
 
-            self.x_axis.dot(detcof)
+            Vector4::dot(self.x_axis, detcof)
         }
     }
 
@@ -379,7 +464,7 @@ impl FloatMatrix4x4<f32, __m128> for Vector4x4<__m128> {
             let row1 = _mm_shuffle_ps(inv2, inv3, 0b00_00_00_00);
             let row2 = _mm_shuffle_ps(row0, row1, 0b10_00_10_00);
 
-            let dot0 = self.x_axis.dot(row2);
+            let dot0 = Vector4::dot(self.x_axis, row2);
             glam_assert!(dot0 != 0.0);
 
             let rcp0 = _mm_set1_ps(dot0.recip());
@@ -414,26 +499,26 @@ impl FloatMatrix4x4<f32, __m128> for Vector4x4<__m128> {
 
     #[inline]
     fn transform_float4_as_point3(&self, other: __m128) -> __m128 {
-        let mut res = self.x_axis.mul(other.splat_x());
-        res = self.y_axis.mul_add(other.splat_y(), res);
-        res = self.z_axis.mul_add(other.splat_z(), res);
+        let mut res = self.x_axis.mul(Vector4::splat_x(other));
+        res = self.y_axis.mul_add(Vector4::splat_y(other), res);
+        res = self.z_axis.mul_add(Vector4::splat_z(other), res);
         res = self.w_axis.add(res);
         res
     }
 
     #[inline]
     fn transform_float4_as_vector3(&self, other: __m128) -> __m128 {
-        let mut res = self.x_axis.mul(other.splat_x());
-        res = self.y_axis.mul_add(other.splat_y(), res);
-        res = self.z_axis.mul_add(other.splat_z(), res);
+        let mut res = self.x_axis.mul(Vector4::splat_x(other));
+        res = self.y_axis.mul_add(Vector4::splat_y(other), res);
+        res = self.z_axis.mul_add(Vector4::splat_z(other), res);
         res
     }
 
     #[inline]
     fn project_float4_as_point3(&self, other: __m128) -> __m128 {
-        let mut res = self.x_axis.mul(other.splat_x());
-        res = self.y_axis.mul_add(other.splat_y(), res);
-        res = self.z_axis.mul_add(other.splat_z(), res);
+        let mut res = self.x_axis.mul(Vector4::splat_x(other));
+        res = self.y_axis.mul_add(Vector4::splat_y(other), res);
+        res = self.z_axis.mul_add(Vector4::splat_z(other), res);
         res = self.w_axis.add(res);
         res = res.mul(res.splat_w().recip());
         res
