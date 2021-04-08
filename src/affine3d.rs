@@ -447,10 +447,7 @@ impl Affine3D {
             Vec3::from(self.z_row).dot(vec),
         )
     }
-}
 
-// Float matrix impl
-impl Affine3D {
     /// Returns `true` if, and only if, all elements are finite.
     /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
     #[inline]
