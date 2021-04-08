@@ -312,11 +312,7 @@ macro_rules! impl_mat3_methods {
         /// Multiplies two 3x3 matrices.
         #[inline]
         pub fn mul_mat3(&self, other: &Self) -> Self {
-            Self::from_cols(
-                self.mul_vec3(other.x_axis),
-                self.mul_vec3(other.y_axis),
-                self.mul_vec3(other.z_axis),
-            )
+            Self::from_simd(self.into_simd().mul_matrix(&other.into_simd()))
         }
 
         /// Adds two 3x3 matrices.
