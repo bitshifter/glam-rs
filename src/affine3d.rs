@@ -362,41 +362,6 @@ impl Affine3D {
             - m02 * m11 * m20
     }
 
-    fn adjoint(&self) -> Self {
-        // As if the last row was `[0, 0, 0, 1]`.
-        let [m00, m01, m02, m03] = self.x_row.to_array();
-        let [m10, m11, m12, m13] = self.y_row.to_array();
-        let [m20, m21, m22, m23] = self.z_row.to_array();
-
-        let x_row = Vec4::new(
-            m11 * m22 - m12 * m21,
-            m02 * m21 - m01 * m22,
-            m01 * m12 - m02 * m11,
-            -m01 * m12 * m23 + m01 * m13 * m22 + m02 * m11 * m23
-                - m02 * m13 * m21
-                - m03 * m11 * m22
-                + m03 * m12 * m21,
-        );
-        let y_row = Vec4::new(
-            m12 * m20 - m10 * m22,
-            m00 * m22 - m02 * m20,
-            m02 * m10 - m00 * m12,
-            m00 * m12 * m23 - m00 * m13 * m22 - m02 * m10 * m23 + m02 * m13 * m20 + m03 * m10 * m22
-                - m03 * m12 * m20,
-        );
-        let z_row = Vec4::new(
-            m10 * m21 - m11 * m20,
-            m01 * m20 - m00 * m21,
-            m00 * m11 - m01 * m10,
-            -m00 * m11 * m23 + m00 * m13 * m21 + m01 * m10 * m23
-                - m01 * m13 * m20
-                - m03 * m10 * m21
-                + m03 * m11 * m20,
-        );
-
-        Self::from_rows(x_row, y_row, z_row)
-    }
-
     /// Multiply with a column vector (`m * v`)
     #[inline(always)]
     fn mul_vector4(&self, rhs: Vec4) -> Vec3 {
@@ -526,180 +491,30 @@ impl Affine3D {
     /// Return the inverse of this transform.
     ///
     /// The result of this is only valid if [`Self::is_invertible`] is true.
-    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
     pub fn inverse(&self) -> Self {
-        use crate::core::traits::vector::Vector4;
-        unsafe {
-            let x_row: __m128 = self.x_row.into();
-            let y_row: __m128 = self.y_row.into();
-            let z_row: __m128 = self.z_row.into();
-            let w_row = _mm_set_ps(1.0, 0.0, 0.0, 0.0); // TODO: optimize based on this being `[0, 0, 0, 1]`.
+        // invert 3x3 matrix:
+        use crate::Vec3A;
+        let x_row3: Vec3A = self.x_row.into();
+        let y_row3: Vec3A = self.y_row.into();
+        let z_row3: Vec3A = self.z_row.into();
 
-            // Based on https://github.com/g-truc/glm `glm_mat4_inverse`
-            let fac0 = {
-                let swp0a = _mm_shuffle_ps(w_row, z_row, 0b11_11_11_11);
-                let swp0b = _mm_shuffle_ps(w_row, z_row, 0b10_10_10_10);
+        let x_col = y_row3.cross(z_row3);
+        let y_col = z_row3.cross(x_row3);
+        let z_col = x_row3.cross(y_row3);
+        let det = z_row3.dot(z_col);
+        let inv_det = det.recip();
+        let x_col = x_col * inv_det;
+        let y_col = y_col * inv_det;
+        let z_col = z_col * inv_det;
 
-                let swp00 = _mm_shuffle_ps(z_row, y_row, 0b10_10_10_10);
-                let swp01 = _mm_shuffle_ps(swp0a, swp0a, 0b10_00_00_00);
-                let swp02 = _mm_shuffle_ps(swp0b, swp0b, 0b10_00_00_00);
-                let swp03 = _mm_shuffle_ps(z_row, y_row, 0b11_11_11_11);
+        // transform negative translation by the 3x3 inverse:
+        let w_col = -(x_col * self.x_row.w + y_col * self.y_row.w + z_col * self.z_row.w);
 
-                let mul00 = _mm_mul_ps(swp00, swp01);
-                let mul01 = _mm_mul_ps(swp02, swp03);
-                _mm_sub_ps(mul00, mul01)
-            };
-            let fac1 = {
-                let swp0a = _mm_shuffle_ps(w_row, z_row, 0b11_11_11_11);
-                let swp0b = _mm_shuffle_ps(w_row, z_row, 0b01_01_01_01);
-
-                let swp00 = _mm_shuffle_ps(z_row, y_row, 0b01_01_01_01);
-                let swp01 = _mm_shuffle_ps(swp0a, swp0a, 0b10_00_00_00);
-                let swp02 = _mm_shuffle_ps(swp0b, swp0b, 0b10_00_00_00);
-                let swp03 = _mm_shuffle_ps(z_row, y_row, 0b11_11_11_11);
-
-                let mul00 = _mm_mul_ps(swp00, swp01);
-                let mul01 = _mm_mul_ps(swp02, swp03);
-                _mm_sub_ps(mul00, mul01)
-            };
-            let fac2 = {
-                let swp0a = _mm_shuffle_ps(w_row, z_row, 0b10_10_10_10);
-                let swp0b = _mm_shuffle_ps(w_row, z_row, 0b01_01_01_01);
-
-                let swp00 = _mm_shuffle_ps(z_row, y_row, 0b01_01_01_01);
-                let swp01 = _mm_shuffle_ps(swp0a, swp0a, 0b10_00_00_00);
-                let swp02 = _mm_shuffle_ps(swp0b, swp0b, 0b10_00_00_00);
-                let swp03 = _mm_shuffle_ps(z_row, y_row, 0b10_10_10_10);
-
-                let mul00 = _mm_mul_ps(swp00, swp01);
-                let mul01 = _mm_mul_ps(swp02, swp03);
-                _mm_sub_ps(mul00, mul01)
-            };
-            let fac3 = {
-                let swp0a = _mm_shuffle_ps(w_row, z_row, 0b11_11_11_11);
-                let swp0b = _mm_shuffle_ps(w_row, z_row, 0b00_00_00_00);
-
-                let swp00 = _mm_shuffle_ps(z_row, y_row, 0b00_00_00_00);
-                let swp01 = _mm_shuffle_ps(swp0a, swp0a, 0b10_00_00_00);
-                let swp02 = _mm_shuffle_ps(swp0b, swp0b, 0b10_00_00_00);
-                let swp03 = _mm_shuffle_ps(z_row, y_row, 0b11_11_11_11);
-
-                let mul00 = _mm_mul_ps(swp00, swp01);
-                let mul01 = _mm_mul_ps(swp02, swp03);
-                _mm_sub_ps(mul00, mul01)
-            };
-            let fac4 = {
-                let swp0a = _mm_shuffle_ps(w_row, z_row, 0b10_10_10_10);
-                let swp0b = _mm_shuffle_ps(w_row, z_row, 0b00_00_00_00);
-
-                let swp00 = _mm_shuffle_ps(z_row, y_row, 0b00_00_00_00);
-                let swp01 = _mm_shuffle_ps(swp0a, swp0a, 0b10_00_00_00);
-                let swp02 = _mm_shuffle_ps(swp0b, swp0b, 0b10_00_00_00);
-                let swp03 = _mm_shuffle_ps(z_row, y_row, 0b10_10_10_10);
-
-                let mul00 = _mm_mul_ps(swp00, swp01);
-                let mul01 = _mm_mul_ps(swp02, swp03);
-                _mm_sub_ps(mul00, mul01)
-            };
-            let fac5 = {
-                let swp0a = _mm_shuffle_ps(w_row, z_row, 0b01_01_01_01);
-                let swp0b = _mm_shuffle_ps(w_row, z_row, 0b00_00_00_00);
-
-                let swp00 = _mm_shuffle_ps(z_row, y_row, 0b00_00_00_00);
-                let swp01 = _mm_shuffle_ps(swp0a, swp0a, 0b10_00_00_00);
-                let swp02 = _mm_shuffle_ps(swp0b, swp0b, 0b10_00_00_00);
-                let swp03 = _mm_shuffle_ps(z_row, y_row, 0b01_01_01_01);
-
-                let mul00 = _mm_mul_ps(swp00, swp01);
-                let mul01 = _mm_mul_ps(swp02, swp03);
-                _mm_sub_ps(mul00, mul01)
-            };
-            let sign_a = _mm_set_ps(1.0, -1.0, 1.0, -1.0);
-            let sign_b = _mm_set_ps(-1.0, 1.0, -1.0, 1.0);
-
-            let temp0 = _mm_shuffle_ps(y_row, x_row, 0b00_00_00_00);
-            let vec0 = _mm_shuffle_ps(temp0, temp0, 0b10_10_10_00);
-
-            let temp1 = _mm_shuffle_ps(y_row, x_row, 0b01_01_01_01);
-            let vec1 = _mm_shuffle_ps(temp1, temp1, 0b10_10_10_00);
-
-            let temp2 = _mm_shuffle_ps(y_row, x_row, 0b10_10_10_10);
-            let vec2 = _mm_shuffle_ps(temp2, temp2, 0b10_10_10_00);
-
-            let temp3 = _mm_shuffle_ps(y_row, x_row, 0b11_11_11_11);
-            let vec3 = _mm_shuffle_ps(temp3, temp3, 0b10_10_10_00);
-
-            let mul00 = _mm_mul_ps(vec1, fac0);
-            let mul01 = _mm_mul_ps(vec2, fac1);
-            let mul02 = _mm_mul_ps(vec3, fac2);
-            let sub00 = _mm_sub_ps(mul00, mul01);
-            let add00 = _mm_add_ps(sub00, mul02);
-            let inv0 = _mm_mul_ps(sign_b, add00);
-
-            let mul03 = _mm_mul_ps(vec0, fac0);
-            let mul04 = _mm_mul_ps(vec2, fac3);
-            let mul05 = _mm_mul_ps(vec3, fac4);
-            let sub01 = _mm_sub_ps(mul03, mul04);
-            let add01 = _mm_add_ps(sub01, mul05);
-            let inv1 = _mm_mul_ps(sign_a, add01);
-
-            let mul06 = _mm_mul_ps(vec0, fac1);
-            let mul07 = _mm_mul_ps(vec1, fac3);
-            let mul08 = _mm_mul_ps(vec3, fac5);
-            let sub02 = _mm_sub_ps(mul06, mul07);
-            let add02 = _mm_add_ps(sub02, mul08);
-            let inv2 = _mm_mul_ps(sign_b, add02);
-
-            let mul09 = _mm_mul_ps(vec0, fac2);
-            let mul10 = _mm_mul_ps(vec1, fac4);
-            let mul11 = _mm_mul_ps(vec2, fac5);
-            let sub03 = _mm_sub_ps(mul09, mul10);
-            let add03 = _mm_add_ps(sub03, mul11);
-            let inv3 = _mm_mul_ps(sign_a, add03);
-
-            let row0 = _mm_shuffle_ps(inv0, inv1, 0b00_00_00_00);
-            let row1 = _mm_shuffle_ps(inv2, inv3, 0b00_00_00_00);
-            let row2 = _mm_shuffle_ps(row0, row1, 0b10_00_10_00);
-
-            let dot0 = x_row.dot(row2);
-
-            let rcp0 = _mm_set1_ps(dot0.recip());
-
-            let x_row = _mm_mul_ps(inv0, rcp0);
-            let y_row = _mm_mul_ps(inv1, rcp0);
-            let z_row = _mm_mul_ps(inv2, rcp0);
-
-            Self {
-                x_row: x_row.into(),
-                y_row: y_row.into(),
-                z_row: z_row.into(),
-            }
+        Self {
+            x_row: Vec4::new(x_col.x, y_col.x, z_col.x, w_col.x),
+            y_row: Vec4::new(x_col.y, y_col.y, z_col.y, w_col.y),
+            z_row: Vec4::new(x_col.z, y_col.z, z_col.z, w_col.z),
         }
-    }
-
-    /// Return the inverse of this transform.
-    ///
-    /// The result of this is only valid if [`Self::is_invertible`] is true.
-    #[cfg(target_arch = "spirv")]
-    pub fn inverse(&self) -> Self {
-        Self::from_mat4(Mat4::from(*self).inverse())
-    }
-
-    /// Return the inverse of this transform.
-    ///
-    /// The result of this is only valid if [`Self::is_invertible`] is true.
-    #[cfg(not(any(
-        target_arch = "spirv",
-        all(target_feature = "sse2", not(feature = "scalar-math"))
-    )))]
-    pub fn inverse(&self) -> Self {
-        // scalar path
-        let det_recip = self.determinant().recip();
-        let mut adj = self.adjoint();
-        adj.x_row *= det_recip;
-        adj.y_row *= det_recip;
-        adj.z_row *= det_recip;
-        adj
     }
 }
 
