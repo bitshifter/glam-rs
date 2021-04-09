@@ -362,16 +362,7 @@ impl DVec3 {
     impl_vecn_as_f32!(Vec3, x, y, z);
     impl_vecn_as_i32!(IVec3, x, y, z);
     impl_vecn_as_u32!(UVec3, x, y, z);
-
-    #[inline(always)]
-    pub(crate) fn to_simd(&self) -> XYZF64 {
-        self.0
-    }
-
-    #[inline(always)]
-    pub(crate) fn from_simd(inner: XYZF64) -> Self {
-        Self(inner)
-    }
+    impl_vecn_to_simd_noop!(XYZF64);
 }
 impl_vec3_float_traits!(f64, dvec3, DVec2, DVec3, DVec4, BVec3, XYZF64);
 
@@ -388,6 +379,7 @@ impl IVec3 {
     impl_vecn_as_f32!(Vec3, x, y, z);
     impl_vecn_as_f64!(DVec3, x, y, z);
     impl_vecn_as_u32!(UVec3, x, y, z);
+    impl_vecn_to_simd_noop!(XYZI32);
 }
 impl_vec3_common_traits!(i32, ivec3, IVec2, IVec3, IVec4, BVec3, XYZI32);
 impl_vecn_signed_traits!(i32, 3, IVec3, XYZI32, SignedVector3);
@@ -405,6 +397,7 @@ impl UVec3 {
     impl_vecn_as_f32!(Vec3, x, y, z);
     impl_vecn_as_f64!(DVec3, x, y, z);
     impl_vecn_as_i32!(IVec3, x, y, z);
+    impl_vecn_to_simd_noop!(XYZU32);
 }
 impl_vec3_common_traits!(u32, uvec3, UVec2, UVec3, UVec4, BVec3, XYZU32);
 impl_vecn_eq_hash_traits!(u32, 3, UVec3);
