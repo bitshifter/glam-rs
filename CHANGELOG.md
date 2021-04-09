@@ -5,15 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
-## Unreleased
+## [0.14.0] - 2021-04-09
 
 ### Breaking changes
 
-* Minimum Supported Version of Rust bumped to 1.45.0
+* Minimum Supported Version of Rust bumped to 1.45.0 for the `spriv-std`
+  dependency.
 
 ### Added
 
-* Added `Vec2::AXES, Vec3::AXES, Vec4::AXES`.
+* Added `AXES[]` constants to all vector types. These are arrays containing the
+  unit vector for each axis.
+* Added quaternion `from_scaled_axis` and `to_scaled_axis` methods.
+
+### Changed
+
+* Updated dependency versions of `bytemuck` to 1.5, `rand` to 0.8, 
+  `rand_xoshiro` to 0.6 and `spriv-std` to 0.4.0-alpha4.
 
 ## [0.13.1] - 2021-03-24
 

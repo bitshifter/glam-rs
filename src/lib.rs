@@ -179,10 +179,10 @@ and benchmarks.
 
 ## Minimum Supported Version or Rust (MSVR)
 
-The minimum supported version of Rust for `glam` is `1.36.0`.
+The minimum supported version of Rust for `glam` is `1.45.0`.
 
 */
-#![doc(html_root_url = "https://docs.rs/glam/0.13.1")]
+#![doc(html_root_url = "https://docs.rs/glam/0.14.0")]
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(target_arch = "spirv", feature(asm, register_attr, repr_simd))]
 // This would require renaming a lot of stuff, disabling for now.
