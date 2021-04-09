@@ -17,7 +17,6 @@ macro_rules! impl_affine3d_tests {
 
         #[test]
         fn test_affine3d_zero() {
-            assert!(!$affine3d::ZERO.is_invertible());
             assert_eq!(
                 $affine3d::ZERO.transform_point3($vec3::new(1., 2., 3.)),
                 $vec3::ZERO
@@ -226,16 +225,10 @@ macro_rules! impl_affine3d_tests {
 
         #[test]
         fn test_affine3d_is_finite() {
-            assert!($affine3d::from_scale($vec3::new(1.0, 1.0, 1.0)).is_invertible());
-            assert!(!$affine3d::from_scale($vec3::new(1.0, 0.0, 1.0)).is_invertible());
-        }
-
-        #[test]
-        fn test_affine3d_is_invertible() {
-            assert!($affine3d::from_scale($vec3::new(1.0, 1.0, 1.0)).is_invertible());
-            assert!(!$affine3d::from_scale($vec3::new(0.0, 1.0, 1.0)).is_invertible());
-            assert!(!$affine3d::from_scale($vec3::new(1.0, NAN, 1.0)).is_invertible());
-            assert!(!$affine3d::from_scale($vec3::new(1.0, 1.0, NEG_INFINITY)).is_invertible());
+            assert!($affine3d::from_scale($vec3::new(1.0, 1.0, 1.0)).is_finite());
+            assert!($affine3d::from_scale($vec3::new(0.0, 1.0, 1.0)).is_finite());
+            assert!(!$affine3d::from_scale($vec3::new(1.0, NAN, 1.0)).is_finite());
+            assert!(!$affine3d::from_scale($vec3::new(1.0, 1.0, NEG_INFINITY)).is_finite());
         }
     };
 }

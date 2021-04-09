@@ -509,14 +509,6 @@ impl Affine3D {
         self.x_row.is_nan() || self.y_row.is_nan() || self.z_row.is_nan()
     }
 
-    /// Returns `true` if all elements are finite and
-    /// this is NOT a degenerate transform (i.e. a transform with a zero scale).
-    #[inline]
-    pub fn is_invertible(&self) -> bool {
-        let det = self.determinant();
-        det.is_finite() && det.abs() > 8.0 * f32::EPSILON // TODO: pick a good epsilon
-    }
-
     /// Returns true if the absolute difference of all elements between `self` and `other`
     /// is less than or equal to `max_abs_diff`.
     ///
