@@ -5,6 +5,7 @@ mod support;
 
 use criterion::{criterion_group, criterion_main, Criterion};
 use glam::Vec2;
+use std::ops::Mul;
 use support::*;
 
 euler!(
@@ -14,6 +15,14 @@ euler!(
     storage => Vec2,
     zero => Vec2::ZERO,
     rand => random_vec2);
+
+bench_binop!(
+    vec2_mul_vec2,
+    "vec2 mul vec2",
+    op => mul,
+    from1 => random_vec2,
+    from2 => random_vec2
+);
 
 bench_binop!(
     vec2_angle_between,
@@ -31,6 +40,12 @@ bench_select!(
     from => random_vec2
 );
 
-criterion_group!(benches, vec2_euler, vec2_select, vec2_angle_between);
+criterion_group!(
+    benches,
+    vec2_mul_vec2,
+    vec2_euler,
+    vec2_select,
+    vec2_angle_between
+);
 
 criterion_main!(benches);
