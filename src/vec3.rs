@@ -272,7 +272,7 @@ macro_rules! impl_f32_vec3 {
 
             #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
             #[inline(always)]
-            pub(crate) fn into_simd(&self) -> __m128 {
+            pub(crate) fn to_simd(&self) -> __m128 {
                 self.0.into()
             }
 
@@ -284,7 +284,7 @@ macro_rules! impl_f32_vec3 {
 
             #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
             #[inline(always)]
-            pub(crate) fn into_simd(&self) -> $inner {
+            pub(crate) fn to_simd(&self) -> $inner {
                 self.0
             }
 
@@ -364,7 +364,7 @@ impl DVec3 {
     impl_vecn_as_u32!(UVec3, x, y, z);
 
     #[inline(always)]
-    pub(crate) fn into_simd(&self) -> XYZF64 {
+    pub(crate) fn to_simd(&self) -> XYZF64 {
         self.0
     }
 

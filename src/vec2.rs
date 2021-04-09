@@ -183,7 +183,7 @@ impl Vec2 {
 
     #[allow(dead_code)]
     #[inline(always)]
-    pub(crate) fn into_simd(&self) -> XYF32 {
+    pub(crate) fn to_simd(&self) -> XYF32 {
         self.0
     }
 
@@ -210,7 +210,7 @@ impl DVec2 {
 
     #[allow(dead_code)]
     #[inline(always)]
-    pub(crate) fn into_simd(&self) -> XYF64 {
+    pub(crate) fn to_simd(&self) -> XYF64 {
         self.0
     }
 

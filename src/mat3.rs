@@ -306,13 +306,13 @@ macro_rules! impl_mat3_methods {
         /// Transforms a 3D vector.
         #[inline(always)]
         pub fn mul_vec3(&self, other: $vec3) -> $vec3 {
-            $vec3::from_simd(self.into_simd().mul_vector(other.into_simd()))
+            $vec3::from_simd(self.to_simd().mul_vector(other.to_simd()))
         }
 
         /// Multiplies two 3x3 matrices.
         #[inline]
         pub fn mul_mat3(&self, other: &Self) -> Self {
-            Self::from_simd(self.into_simd().mul_matrix(&other.into_simd()))
+            Self::from_simd(self.to_simd().mul_matrix(&other.to_simd()))
         }
 
         /// Adds two 3x3 matrices.
@@ -532,7 +532,7 @@ impl Mat3 {
     /// Transforms a `Vec3A`.
     #[inline]
     pub fn mul_vec3a(&self, other: Vec3A) -> Vec3A {
-        Vec3A::from_simd(self.into_simd().mul_vector(other.into_simd()))
+        Vec3A::from_simd(self.to_simd().mul_vector(other.to_simd()))
     }
 
     #[inline(always)]
@@ -546,7 +546,7 @@ impl Mat3 {
 
     #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
     #[inline(always)]
-    fn into_simd(&self) -> Vector3x3<__m128> {
+    fn to_simd(&self) -> Vector3x3<__m128> {
         Vector3x3 {
             x_axis: self.x_axis.0.into(),
             y_axis: self.y_axis.0.into(),
@@ -567,7 +567,7 @@ impl Mat3 {
 
     #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
     #[inline(always)]
-    fn into_simd(&self) -> InnerF32 {
+    fn to_simd(&self) -> InnerF32 {
         self.0
     }
 
@@ -603,11 +603,10 @@ impl DMat3 {
     }
 
     #[inline(always)]
-    fn into_simd(&self) -> InnerF64 {
+    fn to_simd(&self) -> InnerF64 {
         self.0
     }
 
-    #[allow(dead_code)]
     #[inline(always)]
     fn from_simd(inner: InnerF64) -> Self {
         Self(inner)
