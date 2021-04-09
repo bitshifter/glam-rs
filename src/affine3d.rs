@@ -389,11 +389,11 @@ impl Affine3D {
 
         let inv_scale = scale.recip();
 
-        let rotation = Quat::from_rotation_axes(
+        let rotation = Quat::from_rotation_mat3(&Mat3::from_cols(
             x_col * inv_scale.x,
             y_col * inv_scale.y,
             z_col * inv_scale.z,
-        );
+        ));
 
         (scale, rotation, self.translation())
     }

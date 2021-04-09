@@ -136,12 +136,6 @@ macro_rules! impl_quat_methods {
             ))
         }
 
-        /// From the columns of a 3x3 rotation matrix.
-        #[inline]
-        pub(crate) fn from_rotation_axes(x_axis: $vec3, y_axis: $vec3, z_axis: $vec3) -> Self {
-            Self(Quaternion::from_rotation_axes(x_axis.0, y_axis.0, z_axis.0))
-        }
-
         /// Creates a quaternion from a 3x3 rotation matrix inside a homogeneous 4x4 matrix.
         #[inline]
         pub fn from_rotation_mat4(mat: &$mat4) -> Self {
