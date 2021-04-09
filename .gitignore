@@ -1,4 +1,5 @@
 **/target
+*.json
 *.swp
 **/*.rs.bk
 Cargo.lock
