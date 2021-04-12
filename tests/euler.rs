@@ -206,6 +206,37 @@ macro_rules! impl_all_quat_tests_two_axis {
     };
 }
 
+macro_rules! impl_ypr_test {
+    ($t:ty, $quat:ident, $euler:path) => {
+        #[test]
+        fn test_ypr() {
+            let euler = $euler;
+            for u in -179..=179 {
+                if u % 2 != 0 {
+                    continue;
+                }
+                for v in -89..=89 {
+                    if v % 2 != 0 {
+                        continue;
+                    }
+                    for w in -179..=179 {
+                        if w % 2 != 0 {
+                            continue;
+                        }
+                        let u1 = (u as $t).to_radians();
+                        let v1 = (v as $t).to_radians();
+                        let w1 = (w as $t).to_radians();
+
+                        let q1: $quat = $quat::from_euler(euler, u1, v1, w1);
+                        let q2: $quat = $quat::from_rotation_ypr(u1, v1, w1);
+                        assert_approx_eq!(q1, q2, 1e-5);
+                    }
+                }
+            }
+        }
+    };
+}
+
 mod euler {
     use super::AngleDiff;
     use glam::*;
@@ -217,12 +248,17 @@ mod euler {
         impl_all_quat_tests_three_axis!(f32, Quat, Vec3);
 
         impl_all_quat_tests_two_axis!(f32, Quat, Vec3);
+
+        impl_ypr_test!(f32, Quat, ER::YXZi);
     }
 
     mod dquat {
         use super::*;
 
         impl_all_quat_tests_three_axis!(f64, DQuat, DVec3);
+
         impl_all_quat_tests_two_axis!(f64, DQuat, DVec3);
+
+        impl_ypr_test!(f64, DQuat, ER::YXZi);
     }
 }
