@@ -100,6 +100,12 @@ macro_rules! impl_vec3_common_methods {
             Self(self.0.cross(other.0))
         }
 
+        /// `[x, y, z]`
+        #[inline(always)]
+        pub fn to_array(&self) -> [$t; 3] {
+            [self.x, self.y, self.z]
+        }
+
         impl_vecn_common_methods!($t, $vec3, $mask, $inner, Vector3);
     };
 }

@@ -95,6 +95,12 @@ macro_rules! impl_vec4_common_methods {
             $vec3::new(self.x, self.y, self.z)
         }
 
+        /// `[x, y, z, w]`
+        #[inline(always)]
+        pub fn to_array(&self) -> [$t; 4] {
+            [self.x, self.y, self.z, self.w]
+        }
+
         impl_vecn_common_methods!($t, $vec4, $mask, $inner, Vector4);
     };
 }
