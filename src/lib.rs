@@ -197,6 +197,7 @@ mod vec;
 pub mod cast;
 
 mod core;
+mod euler;
 mod mat2;
 mod mat3;
 mod mat4;
@@ -205,7 +206,6 @@ mod vec2;
 mod vec3;
 mod vec4;
 mod vec_mask;
-mod euler;
 
 mod features;
 #[cfg(feature = "spirv-std")]
@@ -272,4 +272,4 @@ pub mod swizzles;
 pub use self::swizzles::{Vec2Swizzles, Vec3Swizzles, Vec4Swizzles};
 
 /** Rotation Helper */
-pub use euler::{EulerRot, EulerFromQuaternion, EulerToQuaternion};
+pub use euler::{EulerFromQuaternion, EulerRot, EulerToQuaternion};
