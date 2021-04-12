@@ -240,12 +240,8 @@ mod affine3d {
     #[test]
     fn test_align() {
         use std::mem;
-        assert_eq!(48, mem::size_of::<Affine3D>());
-        if cfg!(feature = "scalar-math") {
-            assert_eq!(4, mem::align_of::<Affine3D>());
-        } else {
-            assert_eq!(16, mem::align_of::<Affine3D>());
-        }
+        assert_eq!(64, mem::size_of::<Affine3D>());
+        assert_eq!(16, mem::align_of::<Affine3D>());
     }
 
     impl_affine3d_tests!(f32, Affine3D, Quat, Vec4, Vec3);
