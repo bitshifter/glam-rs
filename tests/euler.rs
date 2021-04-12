@@ -83,7 +83,7 @@ impl_eq_approx!(f32, Quat, std::f32::consts::PI);
 impl_eq_approx!(f64, DQuat, std::f64::consts::PI);
 
 #[macro_export]
-macro_rules! impl_three_axis_test {
+macro_rules! impl_3axis_test {
     ($name:ident, $t:ty, $quat:ident, $euler:path, $U:path, $V:path, $W:path, $vec:ident) => {
         #[test]
         fn $name() {
@@ -133,7 +133,7 @@ macro_rules! impl_three_axis_test {
 }
 
 #[macro_export]
-macro_rules! impl_two_axis_test {
+macro_rules! impl_2axis_test {
     ($name:ident, $t:ty, $quat:ident, $euler:path, $U:path, $V:path, $W:path, $vec:ident) => {
         #[test]
         fn $name() {
@@ -186,41 +186,43 @@ macro_rules! impl_two_axis_test {
 
 macro_rules! impl_all_quat_tests_three_axis {
     ($t:ty, $q:ident, $v:ident) => {
-        impl_three_axis_test!(test_zyx, $t, $q, EulerRot::ZYXi, $v::Z, $v::Y, $v::X, $v);
-        impl_three_axis_test!(test_zxy, $t, $q, EulerRot::ZXYi, $v::Z, $v::X, $v::Y, $v);
-        impl_three_axis_test!(test_yxz, $t, $q, EulerRot::YXZi, $v::Y, $v::X, $v::Z, $v);
-        impl_three_axis_test!(test_yzx, $t, $q, EulerRot::YZXi, $v::Y, $v::Z, $v::X, $v);
-        impl_three_axis_test!(test_xyz, $t, $q, EulerRot::XYZi, $v::X, $v::Y, $v::Z, $v);
-        impl_three_axis_test!(test_xzy, $t, $q, EulerRot::XZYi, $v::X, $v::Z, $v::Y, $v);
+        impl_3axis_test!(test_euler_zyx, $t, $q, ER::ZYXi, $v::Z, $v::Y, $v::X, $v);
+        impl_3axis_test!(test_euler_zxy, $t, $q, ER::ZXYi, $v::Z, $v::X, $v::Y, $v);
+        impl_3axis_test!(test_euler_yxz, $t, $q, ER::YXZi, $v::Y, $v::X, $v::Z, $v);
+        impl_3axis_test!(test_euler_yzx, $t, $q, ER::YZXi, $v::Y, $v::Z, $v::X, $v);
+        impl_3axis_test!(test_euler_xyz, $t, $q, ER::XYZi, $v::X, $v::Y, $v::Z, $v);
+        impl_3axis_test!(test_euler_xzy, $t, $q, ER::XZYi, $v::X, $v::Z, $v::Y, $v);
     };
 }
 
 macro_rules! impl_all_quat_tests_two_axis {
     ($t:ty, $q:ident, $v:ident) => {
-        impl_two_axis_test!(test_zyz, $t, $q, EulerRot::ZYZi, $v::Z, $v::Y, $v::Z, $v);
-        impl_two_axis_test!(test_zxz, $t, $q, EulerRot::ZXZi, $v::Z, $v::X, $v::Z, $v);
-        impl_two_axis_test!(test_yxy, $t, $q, EulerRot::YXYi, $v::Y, $v::X, $v::Y, $v);
-        impl_two_axis_test!(test_yzy, $t, $q, EulerRot::YZYi, $v::Y, $v::Z, $v::Y, $v);
-        impl_two_axis_test!(test_xyx, $t, $q, EulerRot::XYXi, $v::X, $v::Y, $v::X, $v);
-        impl_two_axis_test!(test_xzx, $t, $q, EulerRot::XZXi, $v::X, $v::Z, $v::X, $v);
+        impl_2axis_test!(test_euler_zyz, $t, $q, ER::ZYZi, $v::Z, $v::Y, $v::Z, $v);
+        impl_2axis_test!(test_euler_zxz, $t, $q, ER::ZXZi, $v::Z, $v::X, $v::Z, $v);
+        impl_2axis_test!(test_euler_yxy, $t, $q, ER::YXYi, $v::Y, $v::X, $v::Y, $v);
+        impl_2axis_test!(test_euler_yzy, $t, $q, ER::YZYi, $v::Y, $v::Z, $v::Y, $v);
+        impl_2axis_test!(test_euler_xyx, $t, $q, ER::XYXi, $v::X, $v::Y, $v::X, $v);
+        impl_2axis_test!(test_euler_xzx, $t, $q, ER::XZXi, $v::X, $v::Z, $v::X, $v);
     };
 }
 
-#[cfg(test)]
-mod quat {
+mod euler {
     use super::AngleDiff;
     use glam::*;
+    type ER = EulerRot;
 
-    impl_all_quat_tests_three_axis!(f32, Quat, Vec3);
+    mod quat {
+        use super::*;
 
-    impl_all_quat_tests_two_axis!(f32, Quat, Vec3);
-}
+        impl_all_quat_tests_three_axis!(f32, Quat, Vec3);
 
-#[cfg(test)]
-mod dquat {
-    use super::AngleDiff;
-    use glam::*;
+        impl_all_quat_tests_two_axis!(f32, Quat, Vec3);
+    }
 
-    impl_all_quat_tests_three_axis!(f64, DQuat, DVec3);
-    impl_all_quat_tests_two_axis!(f64, DQuat, DVec3);
+    mod dquat {
+        use super::*;
+
+        impl_all_quat_tests_three_axis!(f64, DQuat, DVec3);
+        impl_all_quat_tests_two_axis!(f64, DQuat, DVec3);
+    }
 }
