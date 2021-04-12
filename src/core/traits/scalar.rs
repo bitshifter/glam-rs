@@ -19,6 +19,7 @@ pub trait Signed: Sized + Num + core::ops::Neg<Output = Self> {
 
 #[cfg(not(feature = "libm"))]
 pub trait Float: Num + Copy + core::ops::Neg<Output = Self> {
+    fn asin(self) -> Self;
     fn acos(self) -> Self;
     fn ceil(self) -> Self;
     fn exp(self) -> Self;
@@ -65,6 +66,10 @@ macro_rules! impl_float_trait {
         impl_signed_trait!($t);
 
         impl Float for $t {
+            #[inline(always)]
+            fn asin(self) -> Self {
+                $t::asin(self)
+            }
             #[inline(always)]
             fn acos(self) -> Self {
                 $t::acos(self)
