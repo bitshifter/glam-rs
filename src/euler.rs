@@ -74,7 +74,7 @@ pub trait EulerFromQuaternion<Q: Copy>: Sized + Copy {
 }
 
 /// Conversion from euler angles to quaternion.
-pub trait EulerToQuaternion<T> {
+pub trait EulerToQuaternion<T>: Copy {
     type Output;
     /// Create the rotation quaternion for the three angles of this euler rotation sequence.
     fn to_quat(self, u: T, v: T, w: T) -> Self::Output;
