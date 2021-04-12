@@ -68,7 +68,7 @@ pub trait EulerFromQuaternion<Q: Copy>: Sized + Copy {
     fn third(self, q: Q) -> Self::Output;
 
     /// Compute all angles of a rotation in the notation order
-    fn from_quat(self, q: Q) -> (Self::Output, Self::Output, Self::Output) {
+    fn convert_quat(self, q: Q) -> (Self::Output, Self::Output, Self::Output) {
         (self.first(q), self.second(q), self.third(q))
     }
 }
@@ -77,7 +77,7 @@ pub trait EulerFromQuaternion<Q: Copy>: Sized + Copy {
 pub trait EulerToQuaternion<T>: Copy {
     type Output;
     /// Create the rotation quaternion for the three angles of this euler rotation sequence.
-    fn to_quat(self, u: T, v: T, w: T) -> Self::Output;
+    fn new_quat(self, u: T, v: T, w: T) -> Self::Output;
 }
 
 /// Helper, until std::f32::clamp is stable.
@@ -224,7 +224,7 @@ macro_rules! impl_to_quat {
         impl EulerToQuaternion<$t> for EulerRot {
             type Output = $quat;
             #[inline(always)]
-            fn to_quat(self, u: $t, v: $t, w: $t) -> $quat {
+            fn new_quat(self, u: $t, v: $t, w: $t) -> $quat {
                 use EulerRot::*;
                 #[inline(always)]
                 fn rot_x(a: $t) -> $quat {

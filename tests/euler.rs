@@ -111,12 +111,12 @@ macro_rules! impl_three_axis_test {
                         .normalize();
 
                         // Test if the rotation is the expected
-                        let q2: $quat = euler.to_quat(u1, v1, w1).normalize();
+                        let q2: $quat = $quat::from_euler(euler, u1, v1, w1).normalize();
                         assert_approx_eq!(q1, q2, 1e-5);
 
                         // Test angle reconstruction
-                        let (u2, v2, w2) = euler.from_quat(q1);
-                        let q3 = euler.to_quat(u2, v2, w2).normalize();
+                        let (u2, v2, w2) = q1.to_euler(euler);
+                        let q3 = euler.new_quat(u2, v2, w2).normalize();
 
                         assert_approx_angle!(u1, u2, 1e-4 as $t);
                         assert_approx_angle!(v1, v2, 1e-4 as $t);
@@ -162,15 +162,14 @@ macro_rules! impl_two_axis_test {
                         .normalize();
 
                         // Test if the rotation is the expected
-                        let q2: $quat = euler.to_quat(u1, v1, w1).normalize();
+                        let q2 = $quat::from_euler(euler, u1, v1, w1).normalize();
                         assert_approx_eq!(q1, q2, 1e-5);
 
                         // Test angle reconstruction
-                        let (u2, v2, w2) = euler.from_quat(q1);
-                        let _q3 = euler.to_quat(u2, v2, w2).normalize();
+                        let (u2, v2, w2) = q1.to_euler(euler);
+                        let _q3 = euler.new_quat(u2, v2, w2).normalize();
 
-                        //
-
+                        // Disabled tests, since no generic tests for ambiguous results in the two-axis results...
                         // assert_approx_angle!(u1, u2, 1e-4 as $t);
                         // assert_approx_angle!(v1, v2, 1e-4 as $t);
                         // assert_approx_angle!(w1, w2, 1e-4 as $t);

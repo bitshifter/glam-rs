@@ -3,6 +3,7 @@ use crate::core::traits::{
     vector::{FloatVector4, MaskVector4, Vector, Vector4, Vector4Const},
 };
 use crate::{DMat3, DMat4, DVec3, DVec4};
+use crate::{EulerFromQuaternion, EulerRot, EulerToQuaternion};
 use crate::{Mat3, Mat4, Vec3, Vec3A, Vec4};
 
 #[cfg(not(feature = "std"))]
@@ -126,6 +127,12 @@ macro_rules! impl_quat_methods {
             Self($inner::from_rotation_ypr(yaw, pitch, roll))
         }
 
+        #[inline(always)]
+        /// Create a quaternion from the given euler rotation sequence and the angles in radians.
+        pub fn from_euler(euler: EulerRot, a: $t, b: $t, c: $t) -> Self {
+            euler.new_quat(a, b, c)
+        }
+
         /// Creates a quaternion from a 3x3 rotation matrix.
         #[inline]
         pub fn from_rotation_mat3(mat: &$mat3) -> Self {
@@ -206,6 +213,12 @@ macro_rules! impl_quat_methods {
         pub fn to_scaled_axis(self) -> $vec3 {
             let (axis, angle) = self.0.to_axis_angle();
             $vec3(axis) * angle
+        }
+
+        /// Returns the rotation angles for the given euler rotation sequence.
+        #[inline(always)]
+        pub fn to_euler(self, euler: EulerRot) -> ($t, $t, $t) {
+            euler.convert_quat(self)
         }
 
         /// Returns the quaternion conjugate of `self`. For a unit quaternion the
