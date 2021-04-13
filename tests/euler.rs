@@ -116,7 +116,7 @@ macro_rules! impl_3axis_test {
 
                         // Test angle reconstruction
                         let (u2, v2, w2) = q1.to_euler(euler);
-                        let q3 = euler.new_quat(u2, v2, w2).normalize();
+                        let q3 = $quat::from_euler(euler, u2, v2, w2).normalize();
 
                         assert_approx_angle!(u1, u2, 1e-4 as $t);
                         assert_approx_angle!(v1, v2, 1e-4 as $t);
@@ -167,7 +167,7 @@ macro_rules! impl_2axis_test {
 
                         // Test angle reconstruction
                         let (u2, v2, w2) = q1.to_euler(euler);
-                        let _q3 = euler.new_quat(u2, v2, w2).normalize();
+                        let _q3 = $quat::from_euler(euler, u2, v2, w2).normalize();
 
                         // Disabled tests, since no generic tests for ambiguous results in the two-axis results...
                         // assert_approx_angle!(u1, u2, 1e-4 as $t);

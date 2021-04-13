@@ -272,4 +272,4 @@ pub mod swizzles;
 pub use self::swizzles::{Vec2Swizzles, Vec3Swizzles, Vec4Swizzles};
 
 /** Rotation Helper */
-pub use euler::{EulerFromQuaternion, EulerRot, EulerToQuaternion};
+pub use euler::EulerRot;
