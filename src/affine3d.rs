@@ -423,8 +423,6 @@ impl Affine3D {
     }
 
     /// Return the inverse of this transform.
-    ///
-    /// The result of this is only valid if [`Self::is_invertible`] is true.
     pub fn inverse(&self) -> Self {
         // invert 3x3 matrix:
         let x_row = self.y_col.cross(self.z_col);

@@ -2,7 +2,7 @@
 mod support;
 
 macro_rules! impl_affine3d_tests {
-    ($t:ident, $affine3d:ident, $quat:ident, $vec4:ident, $vec3:ident) => {
+    ($t:ident, $affine3d:ident, $quat:ident, $vec3:ident) => {
         use core::$t::NAN;
         use core::$t::NEG_INFINITY;
 
@@ -235,7 +235,7 @@ macro_rules! impl_affine3d_tests {
 
 mod affine3d {
     use super::support::deg;
-    use glam::{Affine3D, Quat, Vec3, Vec4};
+    use glam::{Affine3D, Quat, Vec3};
 
     #[test]
     fn test_align() {
@@ -244,5 +244,5 @@ mod affine3d {
         assert_eq!(16, mem::align_of::<Affine3D>());
     }
 
-    impl_affine3d_tests!(f32, Affine3D, Quat, Vec4, Vec3);
+    impl_affine3d_tests!(f32, Affine3D, Quat, Vec3);
 }
