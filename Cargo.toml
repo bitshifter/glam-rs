@@ -45,7 +45,7 @@ serde = { version = "1.0", optional = true, features = ["derive"] }
 spirv-std = { version = "0.4.0-alpha.4", optional = true }
 
 [dev-dependencies]
-criterion = "0.3"
+criterion = { version = "0.3", features = ["html_reports"] }
 # rand_xoshiro is required for tests if rand is enabled
 rand_xoshiro = "0.6"
 serde_json = "1.0"
