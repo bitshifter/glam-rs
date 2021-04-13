@@ -2,7 +2,7 @@ use crate::core::{
     storage::{Vector3x3, XYZ},
     traits::matrix::{FloatMatrix3x3, Matrix3x3, MatrixConst},
 };
-use crate::{DMat4, DQuat, DVec2, DVec3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec3Swizzles};
+use crate::{DMat2, DMat4, DQuat, DVec2, DVec3, Mat2, Mat4, Quat, Vec2, Vec3, Vec3A, Vec3Swizzles};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::{
@@ -44,7 +44,7 @@ macro_rules! define_mat3_struct {
 }
 
 macro_rules! impl_mat3_methods {
-    ($t:ty, $vec3: ident, $vec2:ident, $quat:ident, $inner:ident) => {
+    ($t:ty, $vec3: ident, $vec2:ident, $quat:ident, $mat2:ident, $inner:ident) => {
         /// A 3x3 matrix with all elements set to `0.0`.
         pub const ZERO: Self = Self($inner::ZERO);
 
@@ -331,7 +331,7 @@ macro_rules! impl_mat3_methods {
         /// This method assumes that `self` contains a valid affine transform.
         #[inline(always)]
         pub fn transform_point2(&self, other: $vec2) -> $vec2 {
-            self.transform_point2_as_vec3a(other)
+            $mat2::from_cols(self.x_axis.into(), self.y_axis.into()) * other + self.z_axis.into()
         }
 
         /// Rotates the given 2D vector.
@@ -341,7 +341,7 @@ macro_rules! impl_mat3_methods {
         /// This method assumes that `self` contains a valid affine transform.
         #[inline(always)]
         pub fn transform_vector2(&self, other: $vec2) -> $vec2 {
-            self.transform_vector2_as_vec3a(other)
+            $mat2::from_cols(self.x_axis.into(), self.y_axis.into()) * other
         }
 
         /// Returns true if the absolute difference of all elements between `self` and `other`
@@ -518,7 +518,7 @@ type InnerF32 = Vector3x3<XYZ<f32>>;
 define_mat3_struct!(Mat3, InnerF32);
 
 impl Mat3 {
-    impl_mat3_methods!(f32, Vec3, Vec2, Quat, InnerF32);
+    impl_mat3_methods!(f32, Vec3, Vec2, Quat, Mat2, InnerF32);
 
     /// Transforms a `Vec3A`.
     #[inline]
@@ -533,21 +533,6 @@ impl Mat3 {
     #[inline(always)]
     fn mul_vec3_as_vec3a(&self, other: Vec3) -> Vec3 {
         Vec3::from(self.mul_vec3a(Vec3A::from(other)))
-    }
-
-    #[inline]
-    fn transform_point2_as_vec3a(&self, other: Vec2) -> Vec2 {
-        let mut res = Vec3A::from(self.x_axis).mul(Vec3A::splat(other.x));
-        res = Vec3A::from(self.y_axis).mul_add(Vec3A::splat(other.y), res);
-        res = Vec3A::from(self.z_axis).add(res);
-        res.xy()
-    }
-
-    #[inline]
-    fn transform_vector2_as_vec3a(&self, other: Vec2) -> Vec2 {
-        let mut res = Vec3A::from(self.x_axis).mul(Vec3A::splat(other.x));
-        res = Vec3A::from(self.y_axis).mul_add(Vec3A::splat(other.y), res);
-        res.xy()
     }
 
     #[inline(always)]
@@ -573,21 +558,11 @@ type InnerF64 = Vector3x3<XYZ<f64>>;
 define_mat3_struct!(DMat3, InnerF64);
 
 impl DMat3 {
-    impl_mat3_methods!(f64, DVec3, DVec2, DQuat, InnerF64);
+    impl_mat3_methods!(f64, DVec3, DVec2, DQuat, DMat2, InnerF64);
 
     #[inline(always)]
     fn mul_vec3_as_vec3a(&self, other: DVec3) -> DVec3 {
         DVec3(self.0.mul_vector(other.0))
-    }
-
-    #[inline(always)]
-    fn transform_point2_as_vec3a(&self, other: DVec2) -> DVec2 {
-        DVec2(self.0.transform_point2(other.0))
-    }
-
-    #[inline(always)]
-    fn transform_vector2_as_vec3a(&self, other: DVec2) -> DVec2 {
-        DVec2(self.0.transform_vector2(other.0))
     }
 
     #[inline(always)]
