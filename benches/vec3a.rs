@@ -6,21 +6,13 @@ mod support;
 use criterion::{criterion_group, criterion_main, Criterion};
 use glam::{Vec3, Vec3A};
 use std::ops::Mul;
-use support::{random_mat3, random_quat, random_vec3a};
+use support::*;
 
 bench_binop!(
-    quat_mul_vec3a,
-    "quat mul vec3a",
+    vec3a_mul_vec3a,
+    "vec3a mul vec3a",
     op => mul,
-    from1 => random_quat,
-    from2 => random_vec3a
-);
-
-bench_binop!(
-    mat3_mul_vec3a,
-    "mat3 mul vec3a",
-    op => mul,
-    from1 => random_mat3,
+    from1 => random_vec3a,
     from2 => random_vec3a
 );
 
@@ -105,8 +97,7 @@ bench_select!(
 
 criterion_group!(
     benches,
-    mat3_mul_vec3a,
-    quat_mul_vec3a,
+    vec3a_mul_vec3a,
     vec3a_angle_between,
     vec3a_euler,
     vec3a_select,

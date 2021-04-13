@@ -6,13 +6,29 @@ mod support;
 use criterion::{criterion_group, criterion_main, Criterion};
 use glam::Quat;
 use std::ops::Mul;
-use support::{random_f32, random_quat, random_radians};
+use support::*;
 
 bench_unop!(
     quat_conjugate,
     "quat conjugate",
     op => conjugate,
     from => random_quat
+);
+
+bench_binop!(
+    quat_mul_vec3,
+    "quat mul vec3",
+    op => mul,
+    from1 => random_quat,
+    from2 => random_vec3
+);
+
+bench_binop!(
+    quat_mul_vec3a,
+    "quat mul vec3a",
+    op => mul,
+    from1 => random_quat,
+    from2 => random_vec3a
 );
 
 bench_binop!(
@@ -56,6 +72,8 @@ criterion_group!(
     quat_lerp,
     quat_slerp,
     quat_mul_quat,
+    quat_mul_vec3,
+    quat_mul_vec3a,
     quat_from_ypr
 );
 
