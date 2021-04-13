@@ -395,12 +395,21 @@ impl FloatMatrix4x4<f32, __m128> for Vector4x4<__m128> {
 
     #[inline(always)]
     fn transform_point3(&self, other: XYZ<f32>) -> XYZ<f32> {
-        self.transform_float4_as_point3(other.into()).into()
+        self.x_axis
+            .mul_scalar(other.x)
+            .add(self.y_axis.mul_scalar(other.y))
+            .add(self.z_axis.mul_scalar(other.z))
+            .add(self.w_axis)
+            .into()
     }
 
     #[inline(always)]
     fn transform_vector3(&self, other: XYZ<f32>) -> XYZ<f32> {
-        self.transform_float4_as_vector3(other.into()).into()
+        self.x_axis
+            .mul_scalar(other.x)
+            .add(self.y_axis.mul_scalar(other.y))
+            .add(self.z_axis.mul_scalar(other.z))
+            .into()
     }
 
     #[inline]
