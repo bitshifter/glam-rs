@@ -2,8 +2,8 @@ use crate::core::traits::{
     quaternion::Quaternion,
     vector::{FloatVector4, MaskVector4, Vector, Vector4, Vector4Const},
 };
-use crate::{DMat3, DMat4, DVec3, DVec4};
 use crate::euler::{EulerFromQuaternion, EulerRot, EulerToQuaternion};
+use crate::{DMat3, DMat4, DVec3, DVec4};
 use crate::{Mat3, Mat4, Vec3, Vec3A, Vec4};
 
 #[cfg(not(feature = "std"))]
