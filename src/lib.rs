@@ -198,6 +198,7 @@ pub mod cast;
 
 mod affine3d;
 mod core;
+mod euler;
 mod mat2;
 mod mat3;
 mod mat4;
@@ -271,3 +272,6 @@ pub use self::u32::*;
 pub mod swizzles;
 
 pub use self::swizzles::{Vec2Swizzles, Vec3Swizzles, Vec4Swizzles};
+
+/** Rotation Helper */
+pub use euler::EulerRot;
