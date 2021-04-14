@@ -35,9 +35,12 @@ transform-types = []
 
 # libm is required when building no_std
 libm = ["num-traits/libm"]
+#
+crevice_traits = ["crevice", "bytemuck"]
 
 [dependencies]
 bytemuck = { version = "1.5", optional = true, default-features = false }
+crevice = { version = "0.6", optional = true, path = "../crevice" }
 mint = { version = "0.5", optional = true, default-features = false }
 num-traits = { version = "0.2.14", optional = true, default-features = false }
 rand = { version = "0.8", optional = true, default-features = false }
