@@ -177,17 +177,16 @@ impl<T: FloatEx> FloatMatrix3x3<T, XYZ<T>> for Vector3x3<XYZ<T>> {
 
     #[inline]
     fn transform_point2(&self, other: XY<T>) -> XY<T> {
-        let mut res = self.x_axis.mul_scalar(other.x);
-        res = self.y_axis.mul_scalar(other.y).add(res);
-        res = self.z_axis.add(res);
-        res.into()
+        // TODO: This is untested, probably slower than the high level code that uses a SIMD mat2
+        Vector2x2::from_cols(self.x_axis.into(), self.y_axis.into())
+            .mul_vector(other)
+            .add(self.z_axis.into())
     }
 
     #[inline]
     fn transform_vector2(&self, other: XY<T>) -> XY<T> {
-        let mut res = self.x_axis.mul_scalar(other.x);
-        res = self.y_axis.mul_scalar(other.y).add(res);
-        res.into()
+        // TODO: This is untested, probably slower than the high level code that uses a SIMD mat2
+        Vector2x2::from_cols(self.x_axis.into(), self.y_axis.into()).mul_vector(other)
     }
 }
 
