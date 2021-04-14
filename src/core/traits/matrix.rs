@@ -61,11 +61,10 @@ pub trait Matrix2x2<T: NumEx, V2: Vector2<T>>: Matrix<T> {
 
     #[rustfmt::skip]
     #[inline(always)]
-    fn from_diagonal(diagonal: V2) -> Self {
-        let (x, y) = diagonal.into_tuple();
+    fn from_diagonal(diagonal: XY<T>) -> Self {
         Self::new(
-            x, T::ZERO,
-            T::ZERO, y)
+            diagonal.x, T::ZERO,
+            T::ZERO, diagonal.y)
     }
 
     fn determinant(&self) -> T;
@@ -167,13 +166,11 @@ pub trait Matrix3x3<T: NumEx, V3: Vector3<T>>: Matrix<T> {
 
     #[rustfmt::skip]
     #[inline(always)]
-    fn from_diagonal(diagonal: V3) -> Self {
-        // glam_assert!(MaskVector3::any(scale.cmpne(V3::ZERO)));
-        let (x, y, z) = diagonal.into_tuple();
+    fn from_diagonal(diagonal: XYZ<T>) -> Self {
         Self::from_cols(
-            V3::new(x, T::ZERO, T::ZERO),
-            V3::new(T::ZERO, y, T::ZERO),
-            V3::new(T::ZERO, T::ZERO, z),
+            V3::new(diagonal.x, T::ZERO, T::ZERO),
+            V3::new(T::ZERO, diagonal.y, T::ZERO),
+            V3::new(T::ZERO, T::ZERO, diagonal.z),
         )
     }
 
@@ -276,7 +273,7 @@ pub trait FloatMatrix3x3<T: FloatEx, V3: FloatVector3<T>>: Matrix3x3<T, V3> {
     }
 
     #[inline]
-    fn from_axis_angle(axis: V3, angle: T) -> Self {
+    fn from_axis_angle(axis: XYZ<T>, angle: T) -> Self {
         glam_assert!(axis.is_normalized());
         let (sin, cos) = angle.sin_cos();
         let (xsin, ysin, zsin) = axis.mul_scalar(sin).into_tuple();
@@ -363,6 +360,16 @@ pub trait FloatMatrix3x3<T: FloatEx, V3: FloatVector3<T>>: Matrix3x3<T, V3> {
         // TODO: Work out if it's possible to get rid of the transpose
         Self::from_cols(tmp0.mul(inv_det), tmp1.mul(inv_det), tmp2.mul(inv_det)).transpose()
     }
+
+    #[inline]
+    fn is_finite(&self) -> bool {
+        self.x_axis().is_finite() && self.y_axis().is_finite() && self.z_axis().is_finite()
+    }
+
+    #[inline]
+    fn is_nan(&self) -> bool {
+        self.x_axis().is_nan() || self.y_axis().is_nan() || self.z_axis().is_nan()
+    }
 }
 
 pub trait Matrix4x4<T: NumEx, V4: Vector4<T>>: Matrix<T> {
@@ -422,13 +429,12 @@ pub trait Matrix4x4<T: NumEx, V4: Vector4<T>>: Matrix<T> {
     }
 
     #[inline(always)]
-    fn from_diagonal(diagonal: V4) -> Self {
-        let (x, y, z, w) = diagonal.into_tuple();
+    fn from_diagonal(diagonal: XYZW<T>) -> Self {
         Self::from_cols(
-            V4::new(x, T::ZERO, T::ZERO, T::ZERO),
-            V4::new(T::ZERO, y, T::ZERO, T::ZERO),
-            V4::new(T::ZERO, T::ZERO, z, T::ZERO),
-            V4::new(T::ZERO, T::ZERO, T::ZERO, w),
+            V4::new(diagonal.x, T::ZERO, T::ZERO, T::ZERO),
+            V4::new(T::ZERO, diagonal.y, T::ZERO, T::ZERO),
+            V4::new(T::ZERO, T::ZERO, diagonal.z, T::ZERO),
+            V4::new(T::ZERO, T::ZERO, T::ZERO, diagonal.w),
         )
     }
 

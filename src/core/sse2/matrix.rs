@@ -525,4 +525,24 @@ impl FloatMatrix4x4<f32, __m128> for Columns4<__m128> {
     }
 }
 
-impl ProjectionMatrix<f32, __m128> for Columns4<__m128> {}
+impl ProjectionMatrix<f32, __m128> for Columns3<__m128> {}
+
+impl From<Columns3<XYZ<f32>>> for Columns3<__m128> {
+    fn from(v: Columns3<XYZ<f32>>) -> Columns3<__m128> {
+        Self {
+            x_axis: v.x_axis.into(),
+            y_axis: v.y_axis.into(),
+            z_axis: v.z_axis.into(),
+        }
+    }
+}
+
+impl From<Columns3<__m128>> for Columns3<XYZ<f32>> {
+    fn from(v: Columns3<__m128>) -> Columns3<XYZ<f32>> {
+        Self {
+            x_axis: v.x_axis.into(),
+            y_axis: v.y_axis.into(),
+            z_axis: v.z_axis.into(),
+        }
+    }
+}

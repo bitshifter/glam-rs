@@ -226,7 +226,7 @@ pub use self::bool::*;
 
 /** `f32` vector, quaternion and matrix types. */
 pub mod f32 {
-    pub use super::affine3d::Affine3D;
+    pub use super::affine3d::Affine3;
     pub use super::mat2::{mat2, Mat2};
     pub use super::mat3::{mat3, Mat3};
     pub use super::mat4::{mat4, Mat4};

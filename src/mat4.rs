@@ -127,7 +127,7 @@ macro_rules! impl_mat4_methods {
         #[cfg_attr(docsrs, doc(alias = "scale"))]
         #[inline(always)]
         pub fn from_diagonal(diagonal: $vec4) -> Self {
-            Self($inner::from_diagonal(diagonal.0))
+            Self($inner::from_diagonal(diagonal.0.into()))
         }
 
         /// Creates an affine transformation matrix from the given 3D `scale`, `rotation` and
