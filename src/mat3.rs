@@ -271,22 +271,6 @@ macro_rules! impl_mat3_methods {
         #[inline(always)]
         pub fn transpose(&self) -> Self {
             Self(self.0.transpose())
-            // {
-            //     #[cfg(target_arch = "x86")]
-            //     use core::arch::x86::*;
-            //     #[cfg(target_arch = "x86_64")]
-            //     use core::arch::x86_64::*;
-            //     unsafe {
-            //         let tmp0 = _mm_shuffle_ps(self.x_axis.0, self.y_axis.0, 0b01_00_01_00);
-            //         let tmp1 = _mm_shuffle_ps(self.x_axis.0, self.y_axis.0, 0b11_10_11_10);
-
-            //         Self {
-            //             x_axis: _mm_shuffle_ps(tmp0, self.z_axis.0, 0b00_00_10_00).into(),
-            //             y_axis: _mm_shuffle_ps(tmp0, self.z_axis.0, 0b01_01_11_01).into(),
-            //             z_axis: _mm_shuffle_ps(tmp1, self.z_axis.0, 0b10_10_10_00).into(),
-            //         }
-            //     }
-            // }
         }
 
         /// Returns the determinant of `self`.
