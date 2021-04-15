@@ -1,5 +1,5 @@
 use crate::core::{
-    storage::{Vector2x2, Vector3x3, Vector4x4, XY, XYZ, XYZW},
+    storage::{Columns2, Columns3, Columns4, XY, XYZ, XYZW},
     traits::{
         matrix::{
             FloatMatrix2x2, FloatMatrix3x3, FloatMatrix4x4, Matrix, Matrix2x2, Matrix3x3,
@@ -11,7 +11,7 @@ use crate::core::{
     },
 };
 
-impl<T: NumEx> MatrixConst for Vector2x2<XY<T>> {
+impl<T: NumEx> MatrixConst for Columns2<XY<T>> {
     const ZERO: Self = Self {
         x_axis: XY::ZERO,
         y_axis: XY::ZERO,
@@ -22,21 +22,21 @@ impl<T: NumEx> MatrixConst for Vector2x2<XY<T>> {
     };
 }
 
-impl<T: NumEx> Matrix<T> for Vector2x2<XY<T>> {}
+impl<T: NumEx> Matrix<T> for Columns2<XY<T>> {}
 
-impl<T: NumEx> Matrix2x2<T, XY<T>> for Vector2x2<XY<T>> {
+impl<T: NumEx> Matrix2x2<T, XY<T>> for Columns2<XY<T>> {
     #[inline(always)]
     fn from_cols(x_axis: XY<T>, y_axis: XY<T>) -> Self {
         Self { x_axis, y_axis }
     }
 
     #[inline(always)]
-    fn as_ref_vector2x2(&self) -> &Vector2x2<XY<T>> {
+    fn as_ref_vector2x2(&self) -> &Columns2<XY<T>> {
         self
     }
 
     #[inline(always)]
-    fn as_mut_vector2x2(&mut self) -> &mut Vector2x2<XY<T>> {
+    fn as_mut_vector2x2(&mut self) -> &mut Columns2<XY<T>> {
         self
     }
 
@@ -79,7 +79,7 @@ impl<T: NumEx> Matrix2x2<T, XY<T>> for Vector2x2<XY<T>> {
     }
 }
 
-impl<T: FloatEx> FloatMatrix2x2<T, XY<T>> for Vector2x2<XY<T>> {
+impl<T: FloatEx> FloatMatrix2x2<T, XY<T>> for Columns2<XY<T>> {
     #[inline]
     fn inverse(&self) -> Self {
         let inv_det = {
@@ -96,7 +96,7 @@ impl<T: FloatEx> FloatMatrix2x2<T, XY<T>> for Vector2x2<XY<T>> {
     }
 }
 
-impl<T: NumEx> MatrixConst for Vector3x3<XYZ<T>> {
+impl<T: NumEx> MatrixConst for Columns3<XYZ<T>> {
     const ZERO: Self = Self {
         x_axis: XYZ::ZERO,
         y_axis: XYZ::ZERO,
@@ -109,9 +109,9 @@ impl<T: NumEx> MatrixConst for Vector3x3<XYZ<T>> {
     };
 }
 
-impl<T: NumEx> Matrix<T> for Vector3x3<XYZ<T>> {}
+impl<T: NumEx> Matrix<T> for Columns3<XYZ<T>> {}
 
-impl<T: NumEx> Matrix3x3<T, XYZ<T>> for Vector3x3<XYZ<T>> {
+impl<T: NumEx> Matrix3x3<T, XYZ<T>> for Columns3<XYZ<T>> {
     #[inline(always)]
     fn from_cols(x_axis: XYZ<T>, y_axis: XYZ<T>, z_axis: XYZ<T>) -> Self {
         Self {
@@ -122,12 +122,12 @@ impl<T: NumEx> Matrix3x3<T, XYZ<T>> for Vector3x3<XYZ<T>> {
     }
 
     #[inline(always)]
-    fn as_ref_vector3x3(&self) -> &Vector3x3<XYZ<T>> {
+    fn as_ref_vector3x3(&self) -> &Columns3<XYZ<T>> {
         self
     }
 
     #[inline(always)]
-    fn as_mut_vector3x3(&mut self) -> &mut Vector3x3<XYZ<T>> {
+    fn as_mut_vector3x3(&mut self) -> &mut Columns3<XYZ<T>> {
         self
     }
 
@@ -162,7 +162,7 @@ impl<T: NumEx> Matrix3x3<T, XYZ<T>> for Vector3x3<XYZ<T>> {
     }
 }
 
-impl<T: FloatEx> FloatMatrix3x3<T, XYZ<T>> for Vector3x3<XYZ<T>> {
+impl<T: FloatEx> FloatMatrix3x3<T, XYZ<T>> for Columns3<XYZ<T>> {
     #[inline]
     fn inverse(&self) -> Self {
         let tmp0 = self.y_axis.cross(self.z_axis);
@@ -178,7 +178,7 @@ impl<T: FloatEx> FloatMatrix3x3<T, XYZ<T>> for Vector3x3<XYZ<T>> {
     #[inline]
     fn transform_point2(&self, other: XY<T>) -> XY<T> {
         // TODO: This is untested, probably slower than the high level code that uses a SIMD mat2
-        Vector2x2::from_cols(self.x_axis.into(), self.y_axis.into())
+        Columns2::from_cols(self.x_axis.into(), self.y_axis.into())
             .mul_vector(other)
             .add(self.z_axis.into())
     }
@@ -186,11 +186,11 @@ impl<T: FloatEx> FloatMatrix3x3<T, XYZ<T>> for Vector3x3<XYZ<T>> {
     #[inline]
     fn transform_vector2(&self, other: XY<T>) -> XY<T> {
         // TODO: This is untested, probably slower than the high level code that uses a SIMD mat2
-        Vector2x2::from_cols(self.x_axis.into(), self.y_axis.into()).mul_vector(other)
+        Columns2::from_cols(self.x_axis.into(), self.y_axis.into()).mul_vector(other)
     }
 }
 
-impl<T: NumEx> MatrixConst for Vector4x4<XYZW<T>> {
+impl<T: NumEx> MatrixConst for Columns4<XYZW<T>> {
     const ZERO: Self = Self {
         x_axis: XYZW::ZERO,
         y_axis: XYZW::ZERO,
@@ -205,9 +205,9 @@ impl<T: NumEx> MatrixConst for Vector4x4<XYZW<T>> {
     };
 }
 
-impl<T: NumEx> Matrix<T> for Vector4x4<XYZW<T>> {}
+impl<T: NumEx> Matrix<T> for Columns4<XYZW<T>> {}
 
-impl<T: NumEx> Matrix4x4<T, XYZW<T>> for Vector4x4<XYZW<T>> {
+impl<T: NumEx> Matrix4x4<T, XYZW<T>> for Columns4<XYZW<T>> {
     #[rustfmt::skip]
     #[inline(always)]
     fn from_cols(x_axis: XYZW<T>, y_axis: XYZW<T>, z_axis: XYZW<T>, w_axis: XYZW<T>) -> Self {
@@ -235,12 +235,12 @@ impl<T: NumEx> Matrix4x4<T, XYZW<T>> for Vector4x4<XYZW<T>> {
     }
 
     #[inline(always)]
-    fn as_ref_vector4x4(&self) -> &Vector4x4<XYZW<T>> {
+    fn as_ref_vector4x4(&self) -> &Columns4<XYZW<T>> {
         self
     }
 
     #[inline(always)]
-    fn as_mut_vector4x4(&mut self) -> &mut Vector4x4<XYZW<T>> {
+    fn as_mut_vector4x4(&mut self) -> &mut Columns4<XYZW<T>> {
         self
     }
 
@@ -280,7 +280,7 @@ impl<T: NumEx> Matrix4x4<T, XYZW<T>> for Vector4x4<XYZW<T>> {
     }
 }
 
-impl<T: FloatEx> FloatMatrix4x4<T, XYZW<T>> for Vector4x4<XYZW<T>> {
+impl<T: FloatEx> FloatMatrix4x4<T, XYZW<T>> for Columns4<XYZW<T>> {
     type SIMDVector3 = XYZ<T>;
 
     #[inline(always)]
@@ -372,4 +372,4 @@ impl<T: FloatEx> FloatMatrix4x4<T, XYZW<T>> for Vector4x4<XYZW<T>> {
     }
 }
 
-impl<T: FloatEx> ProjectionMatrix<T, XYZW<T>> for Vector4x4<XYZW<T>> {}
+impl<T: FloatEx> ProjectionMatrix<T, XYZW<T>> for Columns4<XYZW<T>> {}

@@ -8,7 +8,7 @@ use core::mem::MaybeUninit;
 use crate::{
     const_m128,
     core::{
-        storage::{Align16, Vector2x2, Vector3x3, Vector4x4, XY, XYZ},
+        storage::{Align16, Columns2, Columns3, Columns4, XY, XYZ},
         traits::{
             matrix::{
                 FloatMatrix2x2, FloatMatrix3x3, FloatMatrix4x4, Matrix, Matrix2x2, Matrix3x3,
@@ -40,13 +40,13 @@ impl Matrix2x2<f32, XY<f32>> for __m128 {
     }
 
     #[inline(always)]
-    fn as_ref_vector2x2(&self) -> &Vector2x2<XY<f32>> {
-        unsafe { &*(self as *const Self as *const Vector2x2<XY<f32>>) }
+    fn as_ref_vector2x2(&self) -> &Columns2<XY<f32>> {
+        unsafe { &*(self as *const Self as *const Columns2<XY<f32>>) }
     }
 
     #[inline(always)]
-    fn as_mut_vector2x2(&mut self) -> &mut Vector2x2<XY<f32>> {
-        unsafe { &mut *(self as *mut Self as *mut Vector2x2<XY<f32>>) }
+    fn as_mut_vector2x2(&mut self) -> &mut Columns2<XY<f32>> {
+        unsafe { &mut *(self as *mut Self as *mut Columns2<XY<f32>>) }
     }
 
     #[inline]
@@ -135,22 +135,22 @@ impl FloatMatrix2x2<f32, XY<f32>> for __m128 {
     }
 }
 
-impl MatrixConst for Vector3x3<__m128> {
-    const ZERO: Vector3x3<__m128> = Vector3x3 {
+impl MatrixConst for Columns3<__m128> {
+    const ZERO: Columns3<__m128> = Columns3 {
         x_axis: __m128::ZERO,
         y_axis: __m128::ZERO,
         z_axis: __m128::ZERO,
     };
-    const IDENTITY: Vector3x3<__m128> = Vector3x3 {
+    const IDENTITY: Columns3<__m128> = Columns3 {
         x_axis: __m128::X,
         y_axis: __m128::Y,
         z_axis: __m128::Z,
     };
 }
 
-impl Matrix<f32> for Vector3x3<__m128> {}
+impl Matrix<f32> for Columns3<__m128> {}
 
-impl Matrix3x3<f32, __m128> for Vector3x3<__m128> {
+impl Matrix3x3<f32, __m128> for Columns3<__m128> {
     #[inline(always)]
     fn from_cols(x_axis: __m128, y_axis: __m128, z_axis: __m128) -> Self {
         Self {
@@ -176,12 +176,12 @@ impl Matrix3x3<f32, __m128> for Vector3x3<__m128> {
     }
 
     #[inline(always)]
-    fn as_ref_vector3x3(&self) -> &Vector3x3<__m128> {
+    fn as_ref_vector3x3(&self) -> &Columns3<__m128> {
         self
     }
 
     #[inline(always)]
-    fn as_mut_vector3x3(&mut self) -> &mut Vector3x3<__m128> {
+    fn as_mut_vector3x3(&mut self) -> &mut Columns3<__m128> {
         self
     }
 
@@ -200,7 +200,7 @@ impl Matrix3x3<f32, __m128> for Vector3x3<__m128> {
     }
 }
 
-impl FloatMatrix3x3<f32, __m128> for Vector3x3<__m128> {
+impl FloatMatrix3x3<f32, __m128> for Columns3<__m128> {
     #[inline]
     fn transform_point2(&self, other: XY<f32>) -> XY<f32> {
         let mut res = self.x_axis.mul_scalar(other.x);
@@ -217,14 +217,14 @@ impl FloatMatrix3x3<f32, __m128> for Vector3x3<__m128> {
     }
 }
 
-impl MatrixConst for Vector4x4<__m128> {
-    const ZERO: Vector4x4<__m128> = Vector4x4 {
+impl MatrixConst for Columns4<__m128> {
+    const ZERO: Columns4<__m128> = Columns4 {
         x_axis: __m128::ZERO,
         y_axis: __m128::ZERO,
         z_axis: __m128::ZERO,
         w_axis: __m128::ZERO,
     };
-    const IDENTITY: Vector4x4<__m128> = Vector4x4 {
+    const IDENTITY: Columns4<__m128> = Columns4 {
         x_axis: __m128::X,
         y_axis: __m128::Y,
         z_axis: __m128::Z,
@@ -232,9 +232,9 @@ impl MatrixConst for Vector4x4<__m128> {
     };
 }
 
-impl Matrix<f32> for Vector4x4<__m128> {}
+impl Matrix<f32> for Columns4<__m128> {}
 
-impl Matrix4x4<f32, __m128> for Vector4x4<__m128> {
+impl Matrix4x4<f32, __m128> for Columns4<__m128> {
     #[inline(always)]
     fn from_cols(x_axis: __m128, y_axis: __m128, z_axis: __m128, w_axis: __m128) -> Self {
         Self {
@@ -266,12 +266,12 @@ impl Matrix4x4<f32, __m128> for Vector4x4<__m128> {
     }
 
     #[inline(always)]
-    fn as_ref_vector4x4(&self) -> &Vector4x4<__m128> {
+    fn as_ref_vector4x4(&self) -> &Columns4<__m128> {
         self
     }
 
     #[inline(always)]
-    fn as_mut_vector4x4(&mut self) -> &mut Vector4x4<__m128> {
+    fn as_mut_vector4x4(&mut self) -> &mut Columns4<__m128> {
         self
     }
 
@@ -333,7 +333,7 @@ impl Matrix4x4<f32, __m128> for Vector4x4<__m128> {
     }
 }
 
-impl FloatMatrix4x4<f32, __m128> for Vector4x4<__m128> {
+impl FloatMatrix4x4<f32, __m128> for Columns4<__m128> {
     type SIMDVector3 = __m128;
 
     fn inverse(&self) -> Self {
@@ -525,4 +525,4 @@ impl FloatMatrix4x4<f32, __m128> for Vector4x4<__m128> {
     }
 }
 
-impl ProjectionMatrix<f32, __m128> for Vector4x4<__m128> {}
+impl ProjectionMatrix<f32, __m128> for Columns4<__m128> {}

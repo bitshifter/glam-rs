@@ -1,5 +1,5 @@
 use crate::core::{
-    storage::{Vector2x2, XY},
+    storage::{Columns2, XY},
     traits::matrix::{FloatMatrix2x2, Matrix2x2, MatrixConst},
 };
 use crate::{DMat3, DVec2, Mat3, Vec2};
@@ -328,7 +328,7 @@ macro_rules! impl_mat2_traits {
         }
 
         impl Deref for $mat2 {
-            type Target = Vector2x2<$vec2>;
+            type Target = Columns2<$vec2>;
             #[inline(always)]
             fn deref(&self) -> &Self::Target {
                 unsafe { &*(self as *const Self as *const Self::Target) }
@@ -409,7 +409,7 @@ impl Mat2 {
 }
 impl_mat2_traits!(f32, mat2, Mat2, Mat3, Vec2);
 
-type InnerF64 = crate::core::storage::Vector2x2<XY<f64>>;
+type InnerF64 = crate::core::storage::Columns2<XY<f64>>;
 
 /// A 2x2 column major matrix.
 #[derive(Clone, Copy)]

@@ -1,5 +1,5 @@
 use crate::core::{
-    storage::{Vector3x3, XYZ},
+    storage::{Columns3, XYZ},
     traits::matrix::{FloatMatrix3x3, Matrix3x3, MatrixConst},
 };
 use crate::{DMat2, DMat4, DQuat, DVec2, DVec3, Mat2, Mat4, Quat, Vec2, Vec3, Vec3A};
@@ -385,7 +385,7 @@ macro_rules! impl_mat3_traits {
         }
 
         impl Deref for $mat3 {
-            type Target = Vector3x3<$vec3>;
+            type Target = Columns3<$vec3>;
             #[inline(always)]
             fn deref(&self) -> &Self::Target {
                 unsafe { &*(self as *const Self as *const Self::Target) }
@@ -507,7 +507,7 @@ macro_rules! impl_mat3_traits {
     };
 }
 
-type InnerF32 = Vector3x3<XYZ<f32>>;
+type InnerF32 = Columns3<XYZ<f32>>;
 define_mat3_struct!(Mat3, InnerF32);
 
 impl Mat3 {
@@ -530,8 +530,8 @@ impl Mat3 {
 
     #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
     #[inline(always)]
-    fn to_simd(&self) -> Vector3x3<__m128> {
-        Vector3x3 {
+    fn to_simd(&self) -> Columns3<__m128> {
+        Columns3 {
             x_axis: self.x_axis.0.into(),
             y_axis: self.y_axis.0.into(),
             z_axis: self.z_axis.0.into(),
@@ -541,7 +541,7 @@ impl Mat3 {
     #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
     #[allow(dead_code)]
     #[inline(always)]
-    fn from_simd(m: Vector3x3<__m128>) -> Self {
+    fn from_simd(m: Columns3<__m128>) -> Self {
         Self(Matrix3x3::from_cols(
             m.x_axis.into(),
             m.y_axis.into(),
@@ -571,7 +571,7 @@ impl Mul<Vec3A> for Mat3 {
     }
 }
 
-type InnerF64 = Vector3x3<XYZ<f64>>;
+type InnerF64 = Columns3<XYZ<f64>>;
 define_mat3_struct!(DMat3, InnerF64);
 
 impl DMat3 {

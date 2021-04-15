@@ -1,5 +1,5 @@
 use crate::core::{
-    storage::{Vector2x2, Vector3x3, Vector4x4, XY, XYZ, XYZW},
+    storage::{Columns2, Columns3, Columns4, XY, XYZ, XYZW},
     traits::{
         quaternion::Quaternion,
         scalar::{FloatEx, NumEx},
@@ -32,8 +32,8 @@ pub trait Matrix2x2<T: NumEx, V2: Vector2<T>>: Matrix<T> {
         &self.as_ref_vector2x2().y_axis
     }
 
-    fn as_ref_vector2x2(&self) -> &Vector2x2<V2>;
-    fn as_mut_vector2x2(&mut self) -> &mut Vector2x2<V2>;
+    fn as_ref_vector2x2(&self) -> &Columns2<V2>;
+    fn as_mut_vector2x2(&mut self) -> &mut Columns2<V2>;
 
     #[inline(always)]
     fn from_cols_array(m: &[T; 4]) -> Self {
@@ -122,8 +122,8 @@ pub trait Matrix3x3<T: NumEx, V3: Vector3<T>>: Matrix<T> {
         &self.as_ref_vector3x3().z_axis
     }
 
-    fn as_ref_vector3x3(&self) -> &Vector3x3<V3>;
-    fn as_mut_vector3x3(&mut self) -> &mut Vector3x3<V3>;
+    fn as_ref_vector3x3(&self) -> &Columns3<V3>;
+    fn as_mut_vector3x3(&mut self) -> &mut Columns3<V3>;
 
     #[rustfmt::skip]
     #[inline(always)]
@@ -373,8 +373,8 @@ pub trait Matrix4x4<T: NumEx, V4: Vector4<T>>: Matrix<T> {
     fn z_axis(&self) -> &V4;
     fn w_axis(&self) -> &V4;
 
-    fn as_ref_vector4x4(&self) -> &Vector4x4<V4>;
-    fn as_mut_vector4x4(&mut self) -> &mut Vector4x4<V4>;
+    fn as_ref_vector4x4(&self) -> &Columns4<V4>;
+    fn as_mut_vector4x4(&mut self) -> &mut Columns4<V4>;
 
     #[rustfmt::skip]
     #[inline(always)]
