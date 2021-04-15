@@ -380,11 +380,19 @@ macro_rules! impl_affine3_methods {
 }
 
 macro_rules! impl_affine3_traits {
-    ($t:ty, $mat3:ident, $mat4:ident, $vec3:ident, $vec4:ident, $affine3:ident, $transform:ident, $translate:ident) => {
+    ($t:ty, $mat3:ident, $mat4:ident, $vec3:ident, $vec4:ident, $affine3:ident, $transform:ident, $translate:ident, $deref:ident) => {
         impl Default for $affine3 {
             #[inline(always)]
             fn default() -> Self {
                 Self::IDENTITY
+            }
+        }
+
+        impl Deref for $affine3 {
+            type Target = $deref;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                unsafe { &*(self as *const Self as *const Self::Target) }
             }
         }
 
@@ -471,8 +479,19 @@ macro_rules! impl_affine3_traits {
     };
 }
 
+#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 type TransformF32 = Columns3<__m128>;
+#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 type TranslateF32 = __m128;
+#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+type DerefTargetF32 = Columns4<Vec3A>;
+
+#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+type TransformF32 = Columns3<XYZ<f32>>;
+#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+type TranslateF32 = XYZ<f32>;
+#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+type DerefTargetF32 = Columns4<Vec3>;
 
 define_affine3_struct!(Affine3, TransformF32, TranslateF32);
 impl_affine3_methods!(
@@ -493,19 +512,13 @@ impl_affine3_traits!(
     Vec4,
     Affine3,
     TransformF32,
-    TranslateF32
+    TranslateF32,
+    DerefTargetF32
 );
-
-impl Deref for Affine3 {
-    type Target = Columns4<Vec3A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        unsafe { &*(self as *const Self as *const Self::Target) }
-    }
-}
 
 type TransformF64 = Columns3<XYZ<f64>>;
 type TranslateF64 = XYZ<f64>;
+type DerefTargetF64 = Columns4<DVec3>;
 
 define_affine3_struct!(DAffine3, TransformF64, TranslateF64);
 impl_affine3_methods!(
@@ -526,13 +539,6 @@ impl_affine3_traits!(
     DVec4,
     DAffine3,
     TransformF64,
-    TranslateF64
+    TranslateF64,
+    DerefTargetF64
 );
-
-impl Deref for DAffine3 {
-    type Target = Columns4<DVec3>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        unsafe { &*(self as *const Self as *const Self::Target) }
-    }
-}

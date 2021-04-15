@@ -724,7 +724,7 @@ macro_rules! impl_mat4_traits {
 type InnerF32 = Columns4<__m128>;
 
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-type InnerF32 = Vector4x4<XYZW<f32>>;
+type InnerF32 = Columns4<XYZW<f32>>;
 
 define_mat4_struct!(Mat4, InnerF32);
 

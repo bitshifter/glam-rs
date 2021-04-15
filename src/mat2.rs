@@ -392,7 +392,7 @@ macro_rules! impl_mat2_traits {
 type InnerF32 = __m128;
 
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-type InnerF32 = crate::core::storage::Vector2x2<XY<f32>>;
+type InnerF32 = crate::core::storage::Columns2<XY<f32>>;
 
 /// A 2x2 column major matrix.
 #[derive(Clone, Copy)]
