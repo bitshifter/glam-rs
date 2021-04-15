@@ -525,7 +525,7 @@ impl FloatMatrix4x4<f32, __m128> for Columns4<__m128> {
     }
 }
 
-impl ProjectionMatrix<f32, __m128> for Columns3<__m128> {}
+impl ProjectionMatrix<f32, __m128> for Columns4<__m128> {}
 
 impl From<Columns3<XYZ<f32>>> for Columns3<__m128> {
     fn from(v: Columns3<XYZ<f32>>) -> Columns3<__m128> {

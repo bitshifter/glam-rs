@@ -1,11 +1,12 @@
 use crate::core::{
-    storage::Vector3x3,
+    storage::{Columns3, Columns4, XYZ},
     traits::{
         matrix::{FloatMatrix3x3, Matrix3x3, MatrixConst},
-        vector::{FloatVector3, SignedVector, Vector},
+        vector::{FloatVector3, SignedVector, Vector, VectorConst},
     },
 };
-use crate::{Mat3, Mat4, Quat, Vec3};
+use crate::{DMat3, DMat4, DQuat, DVec3, Mat3, Mat4, Quat, Vec3, Vec3A};
+use core::ops::{Deref, DerefMut};
 
 #[cfg(all(
     target_arch = "x86",
@@ -43,7 +44,7 @@ macro_rules! impl_affine3_methods {
             /// The zero transform is non-invertible.
             pub const ZERO: Self = Self {
                 transform: $transform::ZERO,
-                translate: $translate::ZERO,
+                translate: VectorConst::ZERO,
             };
 
             /// The identity transform.
@@ -51,7 +52,7 @@ macro_rules! impl_affine3_methods {
             /// Multiplying a vector with this returns the same vector.
             pub const IDENTITY: Self = Self {
                 transform: $transform::IDENTITY,
-                translate: $translate::ZERO,
+                translate: VectorConst::ZERO,
             };
 
             /// Creates a transformation matrix that changes scale.
@@ -60,7 +61,7 @@ macro_rules! impl_affine3_methods {
             pub fn from_scale(scale: $vec3) -> Self {
                 Self {
                     transform: $transform::from_diagonal(scale.0),
-                    translate: $translate::ZERO,
+                    translate: VectorConst::ZERO,
                 }
             }
 
@@ -69,11 +70,11 @@ macro_rules! impl_affine3_methods {
             /// The result can be used to transform 3D points and vectors.
             /// See [`Self::transform_point3()`] and [`Self::transform_vector3()`].
             #[inline(always)]
-            pub fn from_quat(rotation: Quat) -> Self {
+            pub fn from_quat(rotation: $quat) -> Self {
                 Self {
                     // TODO: unnecessary into
                     transform: $transform::from_quaternion(rotation.0.into()),
-                    translate: $translate::ZERO,
+                    translate: VectorConst::ZERO,
                 }
             }
 
@@ -83,10 +84,10 @@ macro_rules! impl_affine3_methods {
             /// The result can be used to transform 3D points and vectors.
             /// See [`Self::transform_point3()`] and [`Self::transform_vector3()`].
             #[inline(always)]
-            pub fn from_axis_angle(axis: $vec3, angle: f32) -> Self {
+            pub fn from_axis_angle(axis: $vec3, angle: $t) -> Self {
                 Self {
                     transform: $transform::from_axis_angle(axis.0, angle),
-                    translate: $translate::ZERO,
+                    translate: VectorConst::ZERO,
                 }
             }
 
@@ -96,10 +97,10 @@ macro_rules! impl_affine3_methods {
             /// The result can be used to transform 3D points and vectors.
             /// See [`Self::transform_point3()`] and [`Self::transform_vector3()`].
             #[inline(always)]
-            pub fn from_rotation_x(angle: f32) -> Self {
+            pub fn from_rotation_x(angle: $t) -> Self {
                 Self {
                     transform: $transform::from_rotation_x(angle),
-                    translate: $translate::ZERO,
+                    translate: VectorConst::ZERO,
                 }
             }
 
@@ -109,10 +110,10 @@ macro_rules! impl_affine3_methods {
             /// The result can be used to transform 3D points and vectors.
             /// See [`Self::transform_point3()`] and [`Self::transform_vector3()`].
             #[inline]
-            pub fn from_rotation_y(angle: f32) -> Self {
+            pub fn from_rotation_y(angle: $t) -> Self {
                 Self {
                     transform: $transform::from_rotation_y(angle),
-                    translate: $translate::ZERO,
+                    translate: VectorConst::ZERO,
                 }
             }
 
@@ -122,10 +123,10 @@ macro_rules! impl_affine3_methods {
             /// The result can be used to transform 3D points and vectors.
             /// See [`Self::transform_point3()`] and [`Self::transform_vector3()`].
             #[inline]
-            pub fn from_rotation_z(angle: f32) -> Self {
+            pub fn from_rotation_z(angle: $t) -> Self {
                 Self {
                     transform: $transform::from_rotation_z(angle),
-                    translate: $translate::ZERO,
+                    translate: VectorConst::ZERO,
                 }
             }
 
@@ -146,7 +147,7 @@ macro_rules! impl_affine3_methods {
             pub fn from_mat3(mat3: $mat3) -> Self {
                 Self {
                     transform: mat3.0.into(),
-                    translate: $translate::ZERO,
+                    translate: VectorConst::ZERO,
                 }
             }
 
@@ -197,13 +198,8 @@ macro_rules! impl_affine3_methods {
             /// See [`Self::transform_point3()`] and [`Self::transform_vector3()`].
             #[inline(always)]
             pub fn from_rotation_translation(rotation: $quat, translation: $vec3) -> Self {
-                let rotation = $transform::from_quaternion(rotation.0.into());
                 Self {
-                    transform: $transform::from_cols(
-                        rotation.x_axis,
-                        rotation.y_axis,
-                        rotation.z_axis,
-                    ),
+                    transform: $transform::from_quaternion(rotation.0.into()),
                     translate: translation.0.into(),
                 }
             }
@@ -220,24 +216,6 @@ macro_rules! impl_affine3_methods {
                     ),
                     translate: m.w_axis.0.into(),
                 }
-            }
-
-            /// The first column.
-            #[inline(always)]
-            fn x_col(&self) -> $vec3 {
-                $vec3(self.transform.x_axis.into())
-            }
-
-            /// The second column.
-            #[inline(always)]
-            fn y_col(&self) -> $vec3 {
-                $vec3(self.transform.y_axis.into())
-            }
-
-            /// The third column.
-            #[inline(always)]
-            fn z_col(&self) -> $vec3 {
-                $vec3(self.transform.z_axis.into())
             }
 
             /// The translation expressed by this transform.
@@ -272,7 +250,7 @@ macro_rules! impl_affine3_methods {
             #[inline(always)]
             pub fn to_scale_rotation_translation(&self) -> ($vec3, $quat, $vec3) {
                 // TODO: migrate to core module
-                let det = self.determinant();
+                let det = self.transform.determinant();
                 glam_assert!(det != 0.0);
 
                 let scale = $vec3::new(
@@ -292,12 +270,6 @@ macro_rules! impl_affine3_methods {
                 ));
 
                 (scale, rotation, self.translation())
-            }
-
-            /// If this is zero, or close to zero, it is a singular transform (zero-scale on at least one axis).
-            #[inline]
-            fn determinant(&self) -> f32 {
-                self.transform.determinant()
             }
 
             #[inline]
@@ -387,27 +359,13 @@ macro_rules! impl_affine3_methods {
             /// For more see
             /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
             #[inline]
-            pub fn abs_diff_eq(&self, other: Self, max_abs_diff: f32) -> bool {
+            pub fn abs_diff_eq(&self, other: Self, max_abs_diff: $t) -> bool {
                 self.transform.abs_diff_eq(&other.transform, max_abs_diff)
                     && self.translate.abs_diff_eq(other.translate, max_abs_diff)
             }
 
             /// Return the inverse of this transform.
             pub fn inverse(&self) -> Self {
-                // // invert 3x3 matrix:
-                // let x_row = self.y_col.cross(self.z_col);
-                // let y_row = self.z_col.cross(self.x_col);
-                // let z_row = self.x_col.cross(self.y_col);
-                // let det = self.z_col.dot(z_row);
-                // let inv_det = det.recip();
-                // let x_row = x_row * inv_det;
-                // let y_row = y_row * inv_det;
-                // let z_row = z_row * inv_det;
-
-                // let x_col = Vec3A::new(x_row.x, y_row.x, z_row.x);
-                // let y_col = Vec3A::new(x_row.y, y_row.y, z_row.y);
-                // let z_col = Vec3A::new(x_row.z, y_row.z, z_row.z);
-
                 let transform = self.transform.inverse();
                 // transform negative translation by the 3x3 inverse:
                 let translate = transform.mul_vector(self.translate).neg();
@@ -422,11 +380,28 @@ macro_rules! impl_affine3_methods {
 }
 
 macro_rules! impl_affine3_traits {
-    ($t:ty, $mat3:ident, $mat4:ident, $vec3:ident, $affine3:ident, $transform:ident, $translate:ident) => {
+    ($t:ty, $mat3:ident, $mat4:ident, $vec3:ident, $vec4:ident, $affine3:ident, $transform:ident, $translate:ident) => {
         impl Default for $affine3 {
             #[inline(always)]
             fn default() -> Self {
                 Self::IDENTITY
+            }
+        }
+
+        impl DerefMut for $affine3 {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                unsafe { &mut *(self as *mut Self as *mut Self::Target) }
+            }
+        }
+
+        impl PartialEq for $affine3 {
+            #[inline]
+            fn eq(&self, other: &Self) -> bool {
+                self.x_axis.eq(&other.x_axis)
+                    && self.y_axis.eq(&other.y_axis)
+                    && self.z_axis.eq(&other.z_axis)
+                    && self.w_axis.eq(&other.w_axis)
             }
         }
 
@@ -440,77 +415,29 @@ macro_rules! impl_affine3_traits {
             }
         }
 
-        // impl From<$affine3> for $mat4 {
-        //     #[inline]
-        //     fn from(m: $affine3) -> $mat4 {
-        //         $mat4::from_cols(
-        //             m.transform.x_axis.extend(0.0),
-        //             m.transform.y_axis.extend(0.0),
-        //             m.transform.z_axis.extend(0.0),
-        //             m.translate.extend(1.0),
-        //         )
-        //     }
-        // }
+        impl From<$affine3> for $mat4 {
+            #[inline]
+            fn from(m: $affine3) -> $mat4 {
+                $mat4::from_cols(
+                    m.x_axis.extend(0.0),
+                    m.y_axis.extend(0.0),
+                    m.z_axis.extend(0.0),
+                    m.w_axis.extend(1.0),
+                )
+            }
+        }
 
         impl core::ops::Mul for $affine3 {
             type Output = $affine3;
 
-            #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
             #[inline(always)]
-            fn mul(self, rhs: $affine3) -> Self::Output {
-                use crate::core::traits::vector::Vector4;
-                #[cfg(target_arch = "x86")]
-                use core::arch::x86::*;
-                #[cfg(target_arch = "x86_64")]
-                use core::arch::x86_64::*;
-
-                unsafe {
-                    // TODO: optimize
-                    let lhs_x_col: __m128 = self.transform.x_axis;
-                    let lhs_y_col: __m128 = self.transform.y_axis;
-                    let lhs_z_col: __m128 = self.transform.z_axis;
-                    let lhs_w_col: __m128 = self.translate;
-
-                    let rhs_x_col: __m128 = rhs.transform.x_axis;
-                    let rhs_y_col: __m128 = rhs.transform.y_axis;
-                    let rhs_z_col: __m128 = rhs.transform.z_axis;
-                    let rhs_w_col: __m128 = rhs.translate;
-
-                    // Based on https://github.com/microsoft/DirectXMath XMMatrixMultiply
-
-                    let v_x = _mm_mul_ps(rhs_x_col.splat_x(), lhs_x_col);
-                    let v_y = _mm_mul_ps(rhs_x_col.splat_y(), lhs_y_col);
-                    let v_z = _mm_mul_ps(rhs_x_col.splat_z(), lhs_z_col);
-                    let out_x_col = _mm_add_ps(_mm_add_ps(v_x, v_z), v_y);
-
-                    let v_x = _mm_mul_ps(rhs_y_col.splat_x(), lhs_x_col);
-                    let v_y = _mm_mul_ps(rhs_y_col.splat_y(), lhs_y_col);
-                    let v_z = _mm_mul_ps(rhs_y_col.splat_z(), lhs_z_col);
-                    let out_y_col = _mm_add_ps(_mm_add_ps(v_x, v_z), v_y);
-
-                    let v_x = _mm_mul_ps(rhs_z_col.splat_x(), lhs_x_col);
-                    let v_y = _mm_mul_ps(rhs_z_col.splat_y(), lhs_y_col);
-                    let v_z = _mm_mul_ps(rhs_z_col.splat_z(), lhs_z_col);
-                    let out_z_col = _mm_add_ps(_mm_add_ps(v_x, v_z), v_y);
-
-                    let v_x = _mm_mul_ps(rhs_w_col.splat_x(), lhs_x_col);
-                    let v_y = _mm_mul_ps(rhs_w_col.splat_y(), lhs_y_col);
-                    let v_z = _mm_mul_ps(rhs_w_col.splat_z(), lhs_z_col);
-                    let out_w_col = _mm_add_ps(_mm_add_ps(v_x, v_z), _mm_add_ps(v_y, lhs_w_col));
-
-                    Self {
-                        transform: $transform::from_cols(out_x_col, out_y_col, out_z_col),
-                        translate: out_w_col,
-                    }
-                }
-            }
-
-            #[cfg(not(all(target_feature = "sse2", not(feature = "scalar-math"))))]
-            #[inline(always)]
-            fn mul(self, rhs: $affine3) -> Self::Output {
+            fn mul(self, other: $affine3) -> Self::Output {
                 Self {
-                    transform: $transform::mul(rhs.transform),
-                    translate: self.transform_point3(rhs.translate.into()).into(),
+                    transform: self.transform.mul_matrix(&other.transform),
+                    translate: self
+                        .transform
+                        .mul_vector(other.translate)
+                        .add(self.translate),
                 }
             }
         }
@@ -544,7 +471,7 @@ macro_rules! impl_affine3_traits {
     };
 }
 
-type TransformF32 = Vector3x3<__m128>;
+type TransformF32 = Columns3<__m128>;
 type TranslateF32 = __m128;
 
 define_affine3_struct!(Affine3, TransformF32, TranslateF32);
@@ -558,4 +485,54 @@ impl_affine3_methods!(
     TransformF32,
     TranslateF32
 );
-impl_affine3_traits!(f32, Mat3, Mat4, Vec3, Affine3, TransformF32, TranslateF32);
+impl_affine3_traits!(
+    f32,
+    Mat3,
+    Mat4,
+    Vec3,
+    Vec4,
+    Affine3,
+    TransformF32,
+    TranslateF32
+);
+
+impl Deref for Affine3 {
+    type Target = Columns4<Vec3A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        unsafe { &*(self as *const Self as *const Self::Target) }
+    }
+}
+
+type TransformF64 = Columns3<XYZ<f64>>;
+type TranslateF64 = XYZ<f64>;
+
+define_affine3_struct!(DAffine3, TransformF64, TranslateF64);
+impl_affine3_methods!(
+    f64,
+    DMat3,
+    DMat4,
+    DQuat,
+    DVec3,
+    DAffine3,
+    TransformF64,
+    TranslateF64
+);
+impl_affine3_traits!(
+    f64,
+    DMat3,
+    DMat4,
+    DVec3,
+    DVec4,
+    DAffine3,
+    TransformF64,
+    TranslateF64
+);
+
+impl Deref for DAffine3 {
+    type Target = Columns4<DVec3>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        unsafe { &*(self as *const Self as *const Self::Target) }
+    }
+}
