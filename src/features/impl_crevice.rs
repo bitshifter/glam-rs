@@ -59,7 +59,7 @@ macro_rules! matrices {
                         fn as_std140(&self) -> Self::Std140Type {
                             crevice::std140::$std_name {
                                 $(
-                                    $field: self.row($index).as_std140(),
+                                    $field: self.col($index).as_std140(),
                                 )*
                                 ..Zeroable::zeroed()
                             }
@@ -72,7 +72,7 @@ macro_rules! matrices {
                         fn as_std430(&self) -> Self::Std430Type {
                             crevice::std430::$std_name {
                                 $(
-                                    $field: self.row($index).as_std430(),
+                                    $field: self.col($index).as_std430(),
                                 )*
                                 ..Zeroable::zeroed()
                             }
