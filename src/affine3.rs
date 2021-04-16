@@ -55,7 +55,7 @@ macro_rules! impl_affine3_methods {
                 translate: VectorConst::ZERO,
             };
 
-            /// Creates a transformation matrix that changes scale.
+            /// Creates an affine transform that changes scale.
             /// Note that if any scale is zero the transform will be non-invertible.
             #[inline(always)]
             pub fn from_scale(scale: $vec3) -> Self {
@@ -65,10 +65,7 @@ macro_rules! impl_affine3_methods {
                 }
             }
 
-            /// Creates an affine transformation matrix from the given `rotation` quaternion.
-            ///
-            /// The result can be used to transform 3D points and vectors.
-            /// See [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+            /// Creates an affine transform from the given `rotation` quaternion.
             #[inline(always)]
             pub fn from_quat(rotation: $quat) -> Self {
                 Self {
@@ -78,11 +75,8 @@ macro_rules! impl_affine3_methods {
                 }
             }
 
-            /// Creates an affine transformation matrix containing a 3D rotation around a normalized
+            /// Creates an affine transform containing a 3D rotation around a normalized
             /// rotation `axis` of `angle` (in radians).
-            ///
-            /// The result can be used to transform 3D points and vectors.
-            /// See [`Self::transform_point3()`] and [`Self::transform_vector3()`].
             #[inline(always)]
             pub fn from_axis_angle(axis: $vec3, angle: $t) -> Self {
                 Self {
@@ -91,11 +85,8 @@ macro_rules! impl_affine3_methods {
                 }
             }
 
-            /// Creates an affine transformation matrix containing a 3D rotation around the x axis of
+            /// Creates an affine transform containing a 3D rotation around the x axis of
             /// `angle` (in radians).
-            ///
-            /// The result can be used to transform 3D points and vectors.
-            /// See [`Self::transform_point3()`] and [`Self::transform_vector3()`].
             #[inline(always)]
             pub fn from_rotation_x(angle: $t) -> Self {
                 Self {
@@ -104,11 +95,8 @@ macro_rules! impl_affine3_methods {
                 }
             }
 
-            /// Creates an affine transformation matrix containing a 3D rotation around the y axis of
+            /// Creates an affine transform containing a 3D rotation around the y axis of
             /// `angle` (in radians).
-            ///
-            /// The result can be used to transform 3D points and vectors.
-            /// See [`Self::transform_point3()`] and [`Self::transform_vector3()`].
             #[inline]
             pub fn from_rotation_y(angle: $t) -> Self {
                 Self {
@@ -117,11 +105,8 @@ macro_rules! impl_affine3_methods {
                 }
             }
 
-            /// Creates an affine transformation matrix containing a 3D rotation around the z axis of
+            /// Creates an affine transform containing a 3D rotation around the z axis of
             /// `angle` (in radians).
-            ///
-            /// The result can be used to transform 3D points and vectors.
-            /// See [`Self::transform_point3()`] and [`Self::transform_vector3()`].
             #[inline]
             pub fn from_rotation_z(angle: $t) -> Self {
                 Self {
@@ -131,9 +116,6 @@ macro_rules! impl_affine3_methods {
             }
 
             /// Creates an affine transformation from the given 3D `translation`.
-            ///
-            /// The result can be used to transform 3D points and vectors.
-            /// See [`Self::transform_point3()`] and [`Self::transform_vector3()`].
             #[inline(always)]
             pub fn from_translation(translation: $vec3) -> Self {
                 Self {
@@ -142,7 +124,8 @@ macro_rules! impl_affine3_methods {
                 }
             }
 
-            /// Creates an affine transformation from a 3x3 matrix (expressing scale, shear and rotation)
+            /// Creates an affine transform from a 3x3 matrix (expressing scale, shear and
+            /// rotation)
             #[inline(always)]
             pub fn from_mat3(mat3: $mat3) -> Self {
                 Self {
@@ -151,13 +134,10 @@ macro_rules! impl_affine3_methods {
                 }
             }
 
-            /// Creates an affine transformation from a 3x3 matrix (expressing scale, shear and rotation)
+            /// Creates an affine transform from a 3x3 matrix (expressing scale, shear and rotation)
             /// and a translation vector.
             ///
-            /// Equivalent to `Affine3D::from_translation(translation) * Affine3D::from_mat3(mat3)`
-            ///
-            /// The result can be used to transform 3D points and vectors.
-            /// See [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+            /// Equivalent to `Affine3::from_translation(translation) * Affine3::from_mat3(mat3)`
             #[inline(always)]
             pub fn from_mat3_translation(mat3: $mat3, translation: $vec3) -> Self {
                 Self {
@@ -166,13 +146,11 @@ macro_rules! impl_affine3_methods {
                 }
             }
 
-            /// Creates an affine transformation from the given 3D `scale`, `rotation` and
+            /// Creates an affine transform from the given 3D `scale`, `rotation` and
             /// `translation`.
             ///
-            /// Equivalent to `Affine3D::from_translation(translation) * Affine3D::from_quat(rotation) * Affine3D::from_scale(scale)`
-            ///
-            /// The result can be used to transform 3D points and vectors.
-            /// See [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+            /// Equivalent to `Affine3::from_translation(translation) *
+            /// Affine3::from_quat(rotation) * Affine3::from_scale(scale)`
             #[inline(always)]
             pub fn from_scale_rotation_translation(
                 scale: $vec3,
@@ -190,12 +168,9 @@ macro_rules! impl_affine3_methods {
                 }
             }
 
-            /// Creates an affine transformation from the given 3D `rotation` and `translation`.
+            /// Creates an affine transform from the given 3D `rotation` and `translation`.
             ///
-            /// Equivalent to `Affine3D::from_translation(translation) * Affine3D::from_quat(rotation)`
-            ///
-            /// The result can be used to transform 3D points and vectors.
-            /// See [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+            /// Equivalent to `Affine3::from_translation(translation) * Affine3::from_quat(rotation)`
             #[inline(always)]
             pub fn from_rotation_translation(rotation: $quat, translation: $vec3) -> Self {
                 Self {
@@ -246,7 +221,8 @@ macro_rules! impl_affine3_methods {
 
             /// Extracts `scale`, `rotation` and `translation` from `self`.
             ///
-            /// The transform is expected to be non-degenerate and without shearing, or the output will be invalid.
+            /// The transform is expected to be non-degenerate and without shearing, or the output
+            /// will be invalid.
             #[inline(always)]
             pub fn to_scale_rotation_translation(&self) -> ($vec3, $quat, $vec3) {
                 // TODO: migrate to core module
@@ -287,8 +263,9 @@ macro_rules! impl_affine3_methods {
                 }
             }
 
-            /// Creates a left-handed view transform using a camera position, an up direction, and a focal
-            /// point.
+            /// Creates a left-handed view transform using a camera position, an up direction, and
+            /// a focal point.
+            ///
             /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
             #[inline]
             pub fn look_at_lh(eye: $vec3, center: $vec3, up: $vec3) -> Self {
@@ -296,8 +273,9 @@ macro_rules! impl_affine3_methods {
                 Self::look_to_lh(eye, center - eye, up)
             }
 
-            /// Creates a right-handed view transform using a camera position, an up direction, and a focal
-            /// point.
+            /// Creates a right-handed view transform using a camera position, an up direction, and
+            /// a focal point.
+            ///
             /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
             #[inline]
             pub fn look_at_rh(eye: $vec3, center: $vec3, up: $vec3) -> Self {
@@ -305,7 +283,7 @@ macro_rules! impl_affine3_methods {
                 Self::look_to_lh(eye, eye - center, up)
             }
 
-            /// Transforms the given 3D points, applying shear, scale, rotation and translatio.
+            /// Transforms the given 3D points, applying shear, scale, rotation and translation.
             #[inline(always)]
             pub fn transform_point3(&self, other: $vec3) -> $vec3 {
                 $vec3(
@@ -320,7 +298,8 @@ macro_rules! impl_affine3_methods {
                 )
             }
 
-            /// Transforms the give 3D vector, applying shear, scale and rotation (but NOT translation).
+            /// Transforms the give 3D vector, applying shear, scale and rotation (but NOT
+            /// translation).
             ///
             /// To also apply translation, use [`Self::transform_point3`] instead.
             #[inline(always)]
@@ -337,7 +316,9 @@ macro_rules! impl_affine3_methods {
             }
 
             /// Returns `true` if, and only if, all elements are finite.
-            /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
+            ///
+            /// If any element is either `NaN`, positive or negative infinity, this will return
+            /// `false`.
             #[inline]
             pub fn is_finite(&self) -> bool {
                 self.transform.is_finite() && self.translate.is_finite()
@@ -365,6 +346,8 @@ macro_rules! impl_affine3_methods {
             }
 
             /// Return the inverse of this transform.
+            ///
+            /// Note that if the transform is not invertible the result will be invalid.
             pub fn inverse(&self) -> Self {
                 let transform = self.transform.inverse();
                 // transform negative translation by the 3x3 inverse:
