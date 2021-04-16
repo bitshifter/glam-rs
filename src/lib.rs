@@ -228,7 +228,7 @@ pub use self::bool::*;
 pub mod f32 {
     pub use super::affine3::Affine3;
     pub use super::mat2::{mat2, Mat2};
-    pub use super::mat3::{mat3, Mat3};
+    pub use super::mat3::{mat3, mat3a, Mat3, Mat3A};
     pub use super::mat4::{mat4, Mat4};
     pub use super::quat::{quat, Quat};
     pub use super::vec2::{vec2, Vec2};

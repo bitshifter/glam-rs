@@ -57,7 +57,7 @@ macro_rules! define_mat3_struct {
 }
 
 macro_rules! impl_mat3_methods {
-    ($t:ty, $vec3: ident, $vec2:ident, $quat:ident, $mat2:ident, $inner:ident) => {
+    ($t:ty, $vec3:ident, $vec3a:ident, $vec2:ident, $quat:ident, $mat2:ident, $inner:ident) => {
         /// A 3x3 matrix with all elements set to `0.0`.
         pub const ZERO: Self = Self($inner::ZERO);
 
@@ -81,7 +81,7 @@ macro_rules! impl_mat3_methods {
 
         /// Creates a 3x3 matrix from three column vectors.
         #[inline(always)]
-        pub fn from_cols(x_axis: $vec3, y_axis: $vec3, z_axis: $vec3) -> Self {
+        pub fn from_cols(x_axis: $vec3a, y_axis: $vec3a, z_axis: $vec3a) -> Self {
             Self(Matrix3x3::from_cols(x_axis.0, y_axis.0, z_axis.0))
         }
 
@@ -211,7 +211,7 @@ macro_rules! impl_mat3_methods {
         ///
         /// Panics if `index` is greater than 2.
         #[inline]
-        pub fn col(&self, index: usize) -> $vec3 {
+        pub fn col(&self, index: usize) -> $vec3a {
             match index {
                 0 => self.x_axis,
                 1 => self.y_axis,
@@ -229,11 +229,11 @@ macro_rules! impl_mat3_methods {
         ///
         /// Panics if `index` is greater than 2.
         #[inline]
-        pub fn row(&self, index: usize) -> $vec3 {
+        pub fn row(&self, index: usize) -> $vec3a {
             match index {
-                0 => $vec3::new(self.x_axis.x, self.y_axis.x, self.z_axis.x),
-                1 => $vec3::new(self.x_axis.y, self.y_axis.y, self.z_axis.y),
-                2 => $vec3::new(self.x_axis.z, self.y_axis.z, self.z_axis.z),
+                0 => $vec3a::new(self.x_axis.x, self.y_axis.x, self.z_axis.x),
+                1 => $vec3a::new(self.x_axis.y, self.y_axis.y, self.z_axis.y),
+                2 => $vec3a::new(self.x_axis.z, self.y_axis.z, self.z_axis.z),
                 _ => panic!(
                     "index out of bounds: the len is 3 but the index is {}",
                     index
@@ -354,10 +354,10 @@ macro_rules! impl_mat3_methods {
 }
 
 macro_rules! impl_mat3_traits {
-    ($t:ty, $new:ident, $mat3:ident, $mat4:ident, $vec3: ident) => {
+    ($t:ty, $new:ident, $mat3:ident, $mat4:ident, $vec3:ident, $vec3a:ident) => {
         /// Creates a 3x3 matrix from three column vectors.
         #[inline(always)]
-        pub fn $new(x_axis: $vec3, y_axis: $vec3, z_axis: $vec3) -> $mat3 {
+        pub fn $new(x_axis: $vec3a, y_axis: $vec3a, z_axis: $vec3a) -> $mat3 {
             $mat3::from_cols(x_axis, y_axis, z_axis)
         }
 
@@ -377,15 +377,8 @@ macro_rules! impl_mat3_traits {
             }
         }
 
-        impl PartialOrd for $mat3 {
-            #[inline]
-            fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-                self.as_ref().partial_cmp(other.as_ref())
-            }
-        }
-
         impl Deref for $mat3 {
-            type Target = Columns3<$vec3>;
+            type Target = Columns3<$vec3a>;
             #[inline(always)]
             fn deref(&self) -> &Self::Target {
                 unsafe { &*(self as *const Self as *const Self::Target) }
@@ -414,19 +407,6 @@ macro_rules! impl_mat3_traits {
                     .field("y_axis", &self.y_axis)
                     .field("z_axis", &self.z_axis)
                     .finish()
-            }
-        }
-        impl AsRef<[$t; 9]> for $mat3 {
-            #[inline(always)]
-            fn as_ref(&self) -> &[$t; 9] {
-                unsafe { &*(self as *const Self as *const [$t; 9]) }
-            }
-        }
-
-        impl AsMut<[$t; 9]> for $mat3 {
-            #[inline(always)]
-            fn as_mut(&mut self) -> &mut [$t; 9] {
-                unsafe { &mut *(self as *mut Self as *mut [$t; 9]) }
             }
         }
 
@@ -507,11 +487,36 @@ macro_rules! impl_mat3_traits {
     };
 }
 
+macro_rules! impl_mat3_traits_unsafe {
+    ($t:ty, $mat3:ident) => {
+        impl AsRef<[$t; 9]> for $mat3 {
+            #[inline(always)]
+            fn as_ref(&self) -> &[$t; 9] {
+                unsafe { &*(self as *const Self as *const [$t; 9]) }
+            }
+        }
+
+        impl AsMut<[$t; 9]> for $mat3 {
+            #[inline(always)]
+            fn as_mut(&mut self) -> &mut [$t; 9] {
+                unsafe { &mut *(self as *mut Self as *mut [$t; 9]) }
+            }
+        }
+
+        impl PartialOrd for $mat3 {
+            #[inline]
+            fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+                self.as_ref().partial_cmp(other.as_ref())
+            }
+        }
+    };
+}
+
 type InnerF32 = Columns3<XYZ<f32>>;
 define_mat3_struct!(Mat3, InnerF32);
 
 impl Mat3 {
-    impl_mat3_methods!(f32, Vec3, Vec2, Quat, Mat2, InnerF32);
+    impl_mat3_methods!(f32, Vec3, Vec3, Vec2, Quat, Mat2, InnerF32);
 
     /// Transforms a `Vec3A`.
     #[inline]
@@ -539,7 +544,6 @@ impl Mat3 {
     }
 
     #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-    #[allow(dead_code)]
     #[inline(always)]
     fn from_simd(m: Columns3<__m128>) -> Self {
         Self(Matrix3x3::from_cols(
@@ -561,9 +565,51 @@ impl Mat3 {
         Self(m)
     }
 }
-impl_mat3_traits!(f32, mat3, Mat3, Mat4, Vec3);
+impl_mat3_traits!(f32, mat3, Mat3, Mat4, Vec3, Vec3);
+impl_mat3_traits_unsafe!(f32, Mat3);
 
 impl Mul<Vec3A> for Mat3 {
+    type Output = Vec3A;
+    #[inline(always)]
+    fn mul(self, other: Vec3A) -> Vec3A {
+        self.mul_vec3a(other)
+    }
+}
+
+type InnerF32A = Columns3<__m128>;
+define_mat3_struct!(Mat3A, InnerF32A);
+
+impl Mat3A {
+    impl_mat3_methods!(f32, Vec3, Vec3A, Vec2, Quat, Mat2, InnerF32A);
+
+    /// Transforms a `Vec3A`.
+    #[inline]
+    pub fn mul_vec3a(&self, other: Vec3A) -> Vec3A {
+        Vec3A(self.0.mul_vector(other.0))
+    }
+
+    #[inline(always)]
+    pub fn as_f64(&self) -> DMat3 {
+        DMat3::from_cols(
+            self.x_axis.as_f64(),
+            self.y_axis.as_f64(),
+            self.z_axis.as_f64(),
+        )
+    }
+
+    #[inline(always)]
+    fn to_simd(&self) -> Columns3<__m128> {
+        self.0
+    }
+
+    #[inline(always)]
+    fn from_simd(m: Columns3<__m128>) -> Self {
+        Self(m)
+    }
+}
+impl_mat3_traits!(f32, mat3a, Mat3A, Mat4, Vec3, Vec3A);
+
+impl Mul<Vec3A> for Mat3A {
     type Output = Vec3A;
     #[inline(always)]
     fn mul(self, other: Vec3A) -> Vec3A {
@@ -575,7 +621,7 @@ type InnerF64 = Columns3<XYZ<f64>>;
 define_mat3_struct!(DMat3, InnerF64);
 
 impl DMat3 {
-    impl_mat3_methods!(f64, DVec3, DVec2, DQuat, DMat2, InnerF64);
+    impl_mat3_methods!(f64, DVec3, DVec3, DVec2, DQuat, DMat2, InnerF64);
 
     #[inline(always)]
     pub fn as_f32(&self) -> Mat3 {
@@ -596,4 +642,5 @@ impl DMat3 {
         Self(inner)
     }
 }
-impl_mat3_traits!(f64, dmat3, DMat3, DMat4, DVec3);
+impl_mat3_traits!(f64, dmat3, DMat3, DMat4, DVec3, DVec3);
+impl_mat3_traits_unsafe!(f64, DMat3);
