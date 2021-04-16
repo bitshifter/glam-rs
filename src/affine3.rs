@@ -5,7 +5,7 @@ use crate::core::{
         vector::{FloatVector3, SignedVector, Vector, VectorConst},
     },
 };
-use crate::{DMat3, DMat4, DQuat, DVec3, Mat3, Mat4, Quat, Vec3, Vec3A};
+use crate::{DMat3, DMat4, DQuat, DVec3, Mat3, Mat4, Quat, Vec3};
 use core::ops::{Deref, DerefMut};
 
 #[cfg(all(
@@ -484,7 +484,7 @@ type TransformF32 = Columns3<__m128>;
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 type TranslateF32 = __m128;
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-type DerefTargetF32 = Columns4<Vec3A>;
+type DerefTargetF32 = Columns4<crate::Vec3A>;
 
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
 type TransformF32 = Columns3<XYZ<f32>>;
