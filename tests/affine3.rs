@@ -26,7 +26,7 @@ macro_rules! impl_affine3d_tests {
         #[test]
         fn test_affine3d_translation() {
             let translate = $affine3d::from_translation($vec3::new(1.0, 2.0, 3.0));
-            assert_eq!(translate.translation(), $vec3::new(1.0, 2.0, 3.0));
+            assert_eq!(translate.translation, $vec3::new(1.0, 2.0, 3.0).into());
             assert_eq!(
                 translate.transform_point3($vec3::new(2.0, 3.0, 4.0)),
                 $vec3::new(3.0, 5.0, 7.0),

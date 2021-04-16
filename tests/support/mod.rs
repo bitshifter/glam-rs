@@ -167,10 +167,10 @@ impl FloatCompare for Affine3 {
     }
     #[inline]
     fn abs_diff(&self, other: &Self) -> Self {
-        Self::from_mat3_translation(
-            self.mat3().abs_diff(&other.mat3()),
-            self.translation().abs_diff(&other.translation()),
-        )
+        Self {
+            matrix3: self.matrix3.abs_diff(&other.matrix3),
+            translation: self.translation.abs_diff(&other.translation),
+        }
     }
 }
 
@@ -181,10 +181,10 @@ impl FloatCompare for DAffine3 {
     }
     #[inline]
     fn abs_diff(&self, other: &Self) -> Self {
-        Self::from_mat3_translation(
-            self.mat3().abs_diff(&other.mat3()),
-            self.translation().abs_diff(&other.translation()),
-        )
+        Self {
+            matrix3: self.matrix3.abs_diff(&other.matrix3),
+            translation: self.translation.abs_diff(&other.translation),
+        }
     }
 }
 
