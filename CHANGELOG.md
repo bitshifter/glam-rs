@@ -9,7 +9,9 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ### Added
 
-* Added `Affine3D`: an affine 3D transform.
+* Added 3D affine transform types `Affine3` and `DAffine3`. These are more
+  efficient than using `Mat4` and `DMat4` respectively when working with affine
+  transforms.
 
 ## [0.14.0] - 2021-04-09
 

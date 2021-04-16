@@ -196,7 +196,7 @@ mod vec;
 #[doc(hidden)]
 pub mod cast;
 
-mod affine3d;
+mod affine3;
 mod core;
 mod euler;
 mod mat2;
@@ -226,7 +226,7 @@ pub use self::bool::*;
 
 /** `f32` vector, quaternion and matrix types. */
 pub mod f32 {
-    pub use super::affine3d::Affine3D;
+    pub use super::affine3::Affine3;
     pub use super::mat2::{mat2, Mat2};
     pub use super::mat3::{mat3, Mat3};
     pub use super::mat4::{mat4, Mat4};
@@ -242,6 +242,7 @@ pub use self::f32::*;
 
 /** `f64` vector, quaternion and matrix types. */
 pub mod f64 {
+    pub use super::affine3::DAffine3;
     pub use super::mat2::{dmat2, DMat2};
     pub use super::mat3::{dmat3, DMat3};
     pub use super::mat4::{dmat4, DMat4};

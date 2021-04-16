@@ -1,5 +1,5 @@
 use crate::core::{
-    storage::{Vector4x4, XYZW},
+    storage::{Columns4, XYZW},
     traits::{
         matrix::{FloatMatrix4x4, Matrix4x4, MatrixConst},
         projection::ProjectionMatrix,
@@ -127,7 +127,7 @@ macro_rules! impl_mat4_methods {
         #[cfg_attr(docsrs, doc(alias = "scale"))]
         #[inline(always)]
         pub fn from_diagonal(diagonal: $vec4) -> Self {
-            Self($inner::from_diagonal(diagonal.0))
+            Self($inner::from_diagonal(diagonal.0.into()))
         }
 
         /// Creates an affine transformation matrix from the given 3D `scale`, `rotation` and
@@ -661,7 +661,7 @@ macro_rules! impl_mat4_traits {
         }
 
         impl Deref for $mat4 {
-            type Target = Vector4x4<$vec4>;
+            type Target = Columns4<$vec4>;
             #[inline(always)]
             fn deref(&self) -> &Self::Target {
                 unsafe { &*(self as *const Self as *const Self::Target) }
@@ -721,10 +721,10 @@ macro_rules! impl_mat4_traits {
 }
 
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-type InnerF32 = Vector4x4<__m128>;
+type InnerF32 = Columns4<__m128>;
 
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-type InnerF32 = Vector4x4<XYZW<f32>>;
+type InnerF32 = Columns4<XYZW<f32>>;
 
 define_mat4_struct!(Mat4, InnerF32);
 
@@ -759,7 +759,7 @@ impl Mat4 {
 }
 impl_mat4_traits!(f32, mat4, Mat4, Vec4);
 
-type InnerF64 = Vector4x4<XYZW<f64>>;
+type InnerF64 = Columns4<XYZW<f64>>;
 
 define_mat4_struct!(DMat4, InnerF64);
 

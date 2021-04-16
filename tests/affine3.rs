@@ -233,16 +233,38 @@ macro_rules! impl_affine3d_tests {
     };
 }
 
-mod affine3d {
+mod affine3 {
     use super::support::deg;
-    use glam::{Affine3D, Quat, Vec3};
+    use glam::{Affine3, Quat, Vec3};
 
     #[test]
     fn test_align() {
         use std::mem;
-        assert_eq!(64, mem::size_of::<Affine3D>());
-        assert_eq!(16, mem::align_of::<Affine3D>());
+        #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+        assert_eq!(64, mem::size_of::<Affine3>());
+        #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+        assert_eq!(16, mem::align_of::<Affine3>());
+
+        // TODO: should we force alignment and size to be the same here?
+        #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+        assert_eq!(48, mem::size_of::<Affine3>());
+        #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+        assert_eq!(4, mem::align_of::<Affine3>());
     }
 
-    impl_affine3d_tests!(f32, Affine3D, Quat, Vec3);
+    impl_affine3d_tests!(f32, Affine3, Quat, Vec3);
+}
+
+mod daffine3 {
+    use super::support::deg;
+    use glam::{DAffine3, DQuat, DVec3};
+
+    #[test]
+    fn test_align() {
+        use std::mem;
+        assert_eq!(96, mem::size_of::<DAffine3>());
+        assert_eq!(8, mem::align_of::<DAffine3>());
+    }
+
+    impl_affine3d_tests!(f64, DAffine3, DQuat, DVec3);
 }

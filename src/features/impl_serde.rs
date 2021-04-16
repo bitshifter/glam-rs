@@ -608,54 +608,52 @@ mod u32 {
     impl_serde_vec_types!(u32, UVec2, UVec3, UVec4);
 }
 
-mod affine3d {
-    use crate::{Affine3D, Mat3, Vec3};
+mod affine3 {
+    use crate::{Affine3, Mat3, Vec3};
     use core::fmt;
     use serde::{
         de::{self, Deserialize, Deserializer, SeqAccess, Visitor},
         ser::{Serialize, SerializeTupleStruct, Serializer},
     };
 
-    impl Serialize for Affine3D {
+    impl Serialize for Affine3 {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
         where
             S: Serializer,
         {
             // Serialize column-wise as 3x4 matrix:
-            let mat3 = self.mat3();
-            let w_axis = self.translation();
-            let mut state = serializer.serialize_tuple_struct("Affine3D", 12)?;
-            state.serialize_field(&mat3.x_axis.x)?;
-            state.serialize_field(&mat3.x_axis.y)?;
-            state.serialize_field(&mat3.x_axis.z)?;
-            state.serialize_field(&mat3.y_axis.x)?;
-            state.serialize_field(&mat3.y_axis.y)?;
-            state.serialize_field(&mat3.y_axis.z)?;
-            state.serialize_field(&mat3.z_axis.x)?;
-            state.serialize_field(&mat3.z_axis.y)?;
-            state.serialize_field(&mat3.z_axis.z)?;
-            state.serialize_field(&w_axis.x)?;
-            state.serialize_field(&w_axis.y)?;
-            state.serialize_field(&w_axis.z)?;
+            let mut state = serializer.serialize_tuple_struct("Affine3", 12)?;
+            state.serialize_field(&self.x_axis.x)?;
+            state.serialize_field(&self.x_axis.y)?;
+            state.serialize_field(&self.x_axis.z)?;
+            state.serialize_field(&self.y_axis.x)?;
+            state.serialize_field(&self.y_axis.y)?;
+            state.serialize_field(&self.y_axis.z)?;
+            state.serialize_field(&self.z_axis.x)?;
+            state.serialize_field(&self.z_axis.y)?;
+            state.serialize_field(&self.z_axis.z)?;
+            state.serialize_field(&self.w_axis.x)?;
+            state.serialize_field(&self.w_axis.y)?;
+            state.serialize_field(&self.w_axis.z)?;
             state.end()
         }
     }
 
-    impl<'de> Deserialize<'de> for Affine3D {
+    impl<'de> Deserialize<'de> for Affine3 {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
             D: Deserializer<'de>,
         {
-            struct Affine3DVisitor;
+            struct Affine3Visitor;
 
-            impl<'de> Visitor<'de> for Affine3DVisitor {
-                type Value = Affine3D;
+            impl<'de> Visitor<'de> for Affine3Visitor {
+                type Value = Affine3;
 
                 fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-                    formatter.write_str("struct Affine3D")
+                    formatter.write_str("struct Affine3")
                 }
 
-                fn visit_seq<V>(self, mut seq: V) -> Result<Affine3D, V::Error>
+                fn visit_seq<V>(self, mut seq: V) -> Result<Affine3, V::Error>
                 where
                     V: SeqAccess<'de>,
                 {
@@ -671,19 +669,19 @@ mod affine3d {
                         f[6], f[7], f[8], //
                     ]);
                     let t = Vec3::new(f[9], f[10], f[11]);
-                    Ok(Affine3D::from_mat3_translation(m, t))
+                    Ok(Affine3::from_mat3_translation(m, t))
                 }
             }
 
-            deserializer.deserialize_tuple_struct("Affine3D", 12, Affine3DVisitor)
+            deserializer.deserialize_tuple_struct("Affine3", 12, Affine3Visitor)
         }
     }
 
     #[test]
-    fn test_affine3d_serde() {
+    fn test_affine3_serde() {
         use crate::{Quat, Vec3};
 
-        let a = Affine3D::from_scale_rotation_translation(
+        let a = Affine3::from_scale_rotation_translation(
             Vec3::new(1.0, 2.0, 3.0),
             Quat::IDENTITY,
             Vec3::new(4.0, 5.0, 6.0),
@@ -696,20 +694,20 @@ mod affine3d {
         let deserialized = serde_json::from_str(&serialized).unwrap();
         assert_eq!(a, deserialized);
 
-        let deserialized = serde_json::from_str::<Affine3D>("[]");
+        let deserialized = serde_json::from_str::<Affine3>("[]");
         assert!(deserialized.is_err());
-        let deserialized = serde_json::from_str::<Affine3D>("[1.0]");
+        let deserialized = serde_json::from_str::<Affine3>("[1.0]");
         assert!(deserialized.is_err());
-        let deserialized = serde_json::from_str::<Affine3D>("[1.0,2.0]");
+        let deserialized = serde_json::from_str::<Affine3>("[1.0,2.0]");
         assert!(deserialized.is_err());
-        let deserialized = serde_json::from_str::<Affine3D>("[1.0,2.0,3.0]");
+        let deserialized = serde_json::from_str::<Affine3>("[1.0,2.0,3.0]");
         assert!(deserialized.is_err());
-        let deserialized = serde_json::from_str::<Affine3D>("[1.0,2.0,3.0,4.0,5.0]");
+        let deserialized = serde_json::from_str::<Affine3>("[1.0,2.0,3.0,4.0,5.0]");
         assert!(deserialized.is_err());
         let deserialized =
-            serde_json::from_str::<Affine3D>("[[1.0,2.0,3.0],[4.0,5.0,6.0],[7.0,8.0,9.0]]");
+            serde_json::from_str::<Affine3>("[[1.0,2.0,3.0],[4.0,5.0,6.0],[7.0,8.0,9.0]]");
         assert!(deserialized.is_err());
-        let deserialized = serde_json::from_str::<Affine3D>(
+        let deserialized = serde_json::from_str::<Affine3>(
             "[[1.0,2.0,3.0,4.0],[5.0,6.0,7.0,8.0],[9.0,10.0,11.0,12.0][13.0,14.0,15.0,16.0]]",
         );
         assert!(deserialized.is_err());

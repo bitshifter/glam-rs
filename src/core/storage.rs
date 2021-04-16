@@ -27,26 +27,26 @@ pub struct XYZW<T> {
 
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd)]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
-pub struct Vector2x2<V2> {
-    pub x_axis: V2,
-    pub y_axis: V2,
+pub struct Columns2<V> {
+    pub x_axis: V,
+    pub y_axis: V,
 }
 
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd)]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
-pub struct Vector3x3<V3> {
-    pub x_axis: V3,
-    pub y_axis: V3,
-    pub z_axis: V3,
+pub struct Columns3<V> {
+    pub x_axis: V,
+    pub y_axis: V,
+    pub z_axis: V,
 }
 
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd)]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
-pub struct Vector4x4<V4> {
-    pub x_axis: V4,
-    pub y_axis: V4,
-    pub z_axis: V4,
-    pub w_axis: V4,
+pub struct Columns4<V> {
+    pub x_axis: V,
+    pub y_axis: V,
+    pub z_axis: V,
+    pub w_axis: V,
 }
 
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd)]
