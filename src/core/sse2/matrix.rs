@@ -40,13 +40,13 @@ impl Matrix2x2<f32, XY<f32>> for __m128 {
     }
 
     #[inline(always)]
-    fn as_ref_vector2x2(&self) -> &Columns2<XY<f32>> {
-        unsafe { &*(self as *const Self as *const Columns2<XY<f32>>) }
+    fn x_axis(&self) -> &XY<f32> {
+        unsafe { &(&*(self as *const Self as *const Columns2<XY<f32>>)).x_axis }
     }
 
     #[inline(always)]
-    fn as_mut_vector2x2(&mut self) -> &mut Columns2<XY<f32>> {
-        unsafe { &mut *(self as *mut Self as *mut Columns2<XY<f32>>) }
+    fn y_axis(&self) -> &XY<f32> {
+        unsafe { &(&*(self as *const Self as *const Columns2<XY<f32>>)).y_axis }
     }
 
     #[inline]
@@ -253,16 +253,6 @@ impl Matrix4x4<f32, __m128> for Columns4<__m128> {
     #[inline(always)]
     fn w_axis(&self) -> &__m128 {
         &self.w_axis
-    }
-
-    #[inline(always)]
-    fn as_ref_vector4x4(&self) -> &Columns4<__m128> {
-        self
-    }
-
-    #[inline(always)]
-    fn as_mut_vector4x4(&mut self) -> &mut Columns4<__m128> {
-        self
     }
 
     #[inline]

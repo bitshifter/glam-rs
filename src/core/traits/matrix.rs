@@ -1,5 +1,5 @@
 use crate::core::{
-    storage::{Columns2, Columns4, XY, XYZ, XYZW},
+    storage::{XY, XYZ, XYZW},
     traits::{
         quaternion::Quaternion,
         scalar::{FloatEx, NumEx},
@@ -12,8 +12,10 @@ pub trait MatrixConst {
     const IDENTITY: Self;
 }
 
+/// Base matrix trait that sets up trait bounds
 pub trait Matrix<T: NumEx>: Sized + Copy + Clone {}
 
+/// 2x2 Matrix trait for all types of T
 pub trait Matrix2x2<T: NumEx, V2: Vector2<T>>: Matrix<T> {
     #[inline(always)]
     fn new(m00: T, m01: T, m10: T, m11: T) -> Self {
@@ -22,18 +24,8 @@ pub trait Matrix2x2<T: NumEx, V2: Vector2<T>>: Matrix<T> {
 
     fn from_cols(x_axis: V2, y_axis: V2) -> Self;
 
-    #[inline(always)]
-    fn x_axis(&self) -> &V2 {
-        &self.as_ref_vector2x2().x_axis
-    }
-
-    #[inline(always)]
-    fn y_axis(&self) -> &V2 {
-        &self.as_ref_vector2x2().y_axis
-    }
-
-    fn as_ref_vector2x2(&self) -> &Columns2<V2>;
-    fn as_mut_vector2x2(&mut self) -> &mut Columns2<V2>;
+    fn x_axis(&self) -> &V2;
+    fn y_axis(&self) -> &V2;
 
     #[inline(always)]
     fn from_cols_array(m: &[T; 4]) -> Self {
@@ -67,15 +59,63 @@ pub trait Matrix2x2<T: NumEx, V2: Vector2<T>>: Matrix<T> {
             T::ZERO, diagonal.y)
     }
 
-    fn determinant(&self) -> T;
-    fn transpose(&self) -> Self;
-    fn mul_vector(&self, other: V2) -> V2;
-    fn mul_matrix(&self, other: &Self) -> Self;
-    fn mul_scalar(&self, other: T) -> Self;
-    fn add_matrix(&self, other: &Self) -> Self;
-    fn sub_matrix(&self, other: &Self) -> Self;
+    #[inline]
+    fn determinant(&self) -> T {
+        self.x_axis().x() * self.y_axis().y() - self.x_axis().y() * self.y_axis().x()
+    }
+
+    #[inline(always)]
+    fn transpose(&self) -> Self {
+        Self::new(
+            self.x_axis().x(),
+            self.y_axis().x(),
+            self.x_axis().y(),
+            self.y_axis().y(),
+        )
+    }
+
+    #[inline]
+    fn mul_vector(&self, other: V2) -> V2 {
+        V2::new(
+            (self.x_axis().x() * other.x()) + (self.y_axis().x() * other.y()),
+            (self.x_axis().y() * other.x()) + (self.y_axis().y() * other.y()),
+        )
+    }
+
+    #[inline]
+    fn mul_matrix(&self, other: &Self) -> Self {
+        Self::from_cols(
+            self.mul_vector(*other.x_axis()),
+            self.mul_vector(*other.y_axis()),
+        )
+    }
+
+    #[inline]
+    fn mul_scalar(&self, other: T) -> Self {
+        Self::from_cols(
+            self.x_axis().mul_scalar(other),
+            self.y_axis().mul_scalar(other),
+        )
+    }
+
+    #[inline]
+    fn add_matrix(&self, other: &Self) -> Self {
+        Self::from_cols(
+            self.x_axis().add(*other.x_axis()),
+            self.y_axis().add(*other.y_axis()),
+        )
+    }
+
+    #[inline]
+    fn sub_matrix(&self, other: &Self) -> Self {
+        Self::from_cols(
+            self.x_axis().sub(*other.x_axis()),
+            self.y_axis().sub(*other.y_axis()),
+        )
+    }
 }
 
+/// 2x2 matrix trait for float types of T
 pub trait FloatMatrix2x2<T: FloatEx, V2: FloatVector2<T>>: Matrix2x2<T, V2> {
     #[inline]
     fn abs_diff_eq(&self, other: &Self, max_abs_diff: T) -> bool
@@ -99,8 +139,20 @@ pub trait FloatMatrix2x2<T: FloatEx, V2: FloatVector2<T>>: Matrix2x2<T, V2> {
         Self::new(cos, sin, -sin, cos)
     }
 
-    fn inverse(&self) -> Self;
-    // fn is_finite(&self) -> bool;
+    #[inline]
+    fn inverse(&self) -> Self {
+        let inv_det = {
+            let det = self.determinant();
+            glam_assert!(det != T::ZERO);
+            det.recip()
+        };
+        Self::new(
+            self.y_axis().y() * inv_det,
+            self.x_axis().y() * -inv_det,
+            self.y_axis().x() * -inv_det,
+            self.x_axis().x() * inv_det,
+        )
+    }
 }
 
 pub trait Matrix3x3<T: NumEx, V3: Vector3<T>>: Matrix<T> {
@@ -373,9 +425,6 @@ pub trait Matrix4x4<T: NumEx, V4: Vector4<T>>: Matrix<T> {
     fn z_axis(&self) -> &V4;
     fn w_axis(&self) -> &V4;
 
-    fn as_ref_vector4x4(&self) -> &Columns4<V4>;
-    fn as_mut_vector4x4(&mut self) -> &mut Columns4<V4>;
-
     #[rustfmt::skip]
     #[inline(always)]
     fn from_cols_array(m: &[T; 16]) -> Self {
@@ -453,8 +502,40 @@ pub trait Matrix4x4<T: NumEx, V4: Vector4<T>>: Matrix<T> {
         )
     }
 
-    fn determinant(&self) -> T;
-    fn transpose(&self) -> Self;
+    #[inline]
+    fn determinant(&self) -> T {
+        let (m00, m01, m02, m03) = self.x_axis().into_tuple();
+        let (m10, m11, m12, m13) = self.y_axis().into_tuple();
+        let (m20, m21, m22, m23) = self.z_axis().into_tuple();
+        let (m30, m31, m32, m33) = self.w_axis().into_tuple();
+
+        let a2323 = m22 * m33 - m23 * m32;
+        let a1323 = m21 * m33 - m23 * m31;
+        let a1223 = m21 * m32 - m22 * m31;
+        let a0323 = m20 * m33 - m23 * m30;
+        let a0223 = m20 * m32 - m22 * m30;
+        let a0123 = m20 * m31 - m21 * m30;
+
+        m00 * (m11 * a2323 - m12 * a1323 + m13 * a1223)
+            - m01 * (m10 * a2323 - m12 * a0323 + m13 * a0223)
+            + m02 * (m10 * a1323 - m11 * a0323 + m13 * a0123)
+            - m03 * (m10 * a1223 - m11 * a0223 + m12 * a0123)
+    }
+
+    #[inline]
+    fn transpose(&self) -> Self {
+        let (m00, m01, m02, m03) = self.x_axis().into_tuple();
+        let (m10, m11, m12, m13) = self.y_axis().into_tuple();
+        let (m20, m21, m22, m23) = self.z_axis().into_tuple();
+        let (m30, m31, m32, m33) = self.w_axis().into_tuple();
+
+        Self::from_cols(
+            V4::new(m00, m10, m20, m30),
+            V4::new(m01, m11, m21, m31),
+            V4::new(m02, m12, m22, m32),
+            V4::new(m03, m13, m23, m33),
+        )
+    }
 
     #[inline]
     fn mul_vector(&self, other: &V4) -> V4 {
@@ -721,5 +802,76 @@ pub trait FloatMatrix4x4<T: FloatEx, V4: FloatVector4<T> + Quaternion<T>>:
     fn transform_float4_as_vector3(&self, other: Self::SIMDVector3) -> Self::SIMDVector3;
     fn project_float4_as_point3(&self, other: Self::SIMDVector3) -> Self::SIMDVector3;
 
-    fn inverse(&self) -> Self;
+    fn inverse(&self) -> Self {
+        let (m00, m01, m02, m03) = self.x_axis().into_tuple();
+        let (m10, m11, m12, m13) = self.y_axis().into_tuple();
+        let (m20, m21, m22, m23) = self.z_axis().into_tuple();
+        let (m30, m31, m32, m33) = self.w_axis().into_tuple();
+
+        let coef00 = m22 * m33 - m32 * m23;
+        let coef02 = m12 * m33 - m32 * m13;
+        let coef03 = m12 * m23 - m22 * m13;
+
+        let coef04 = m21 * m33 - m31 * m23;
+        let coef06 = m11 * m33 - m31 * m13;
+        let coef07 = m11 * m23 - m21 * m13;
+
+        let coef08 = m21 * m32 - m31 * m22;
+        let coef10 = m11 * m32 - m31 * m12;
+        let coef11 = m11 * m22 - m21 * m12;
+
+        let coef12 = m20 * m33 - m30 * m23;
+        let coef14 = m10 * m33 - m30 * m13;
+        let coef15 = m10 * m23 - m20 * m13;
+
+        let coef16 = m20 * m32 - m30 * m22;
+        let coef18 = m10 * m32 - m30 * m12;
+        let coef19 = m10 * m22 - m20 * m12;
+
+        let coef20 = m20 * m31 - m30 * m21;
+        let coef22 = m10 * m31 - m30 * m11;
+        let coef23 = m10 * m21 - m20 * m11;
+
+        let fac0 = V4::new(coef00, coef00, coef02, coef03);
+        let fac1 = V4::new(coef04, coef04, coef06, coef07);
+        let fac2 = V4::new(coef08, coef08, coef10, coef11);
+        let fac3 = V4::new(coef12, coef12, coef14, coef15);
+        let fac4 = V4::new(coef16, coef16, coef18, coef19);
+        let fac5 = V4::new(coef20, coef20, coef22, coef23);
+
+        let vec0 = V4::new(m10, m00, m00, m00);
+        let vec1 = V4::new(m11, m01, m01, m01);
+        let vec2 = V4::new(m12, m02, m02, m02);
+        let vec3 = V4::new(m13, m03, m03, m03);
+
+        let inv0 = vec1.mul(fac0).sub(vec2.mul(fac1)).add(vec3.mul(fac2));
+        let inv1 = vec0.mul(fac0).sub(vec2.mul(fac3)).add(vec3.mul(fac4));
+        let inv2 = vec0.mul(fac1).sub(vec1.mul(fac3)).add(vec3.mul(fac5));
+        let inv3 = vec0.mul(fac2).sub(vec1.mul(fac4)).add(vec2.mul(fac5));
+
+        let sign_a = Vector4::new(T::ONE, -T::ONE, T::ONE, -T::ONE);
+        let sign_b = Vector4::new(-T::ONE, T::ONE, -T::ONE, T::ONE);
+
+        let inverse = Self::from_cols(
+            inv0.mul(sign_a),
+            inv1.mul(sign_b),
+            inv2.mul(sign_a),
+            inv3.mul(sign_b),
+        );
+
+        let col0 = V4::new(
+            inverse.x_axis().x(),
+            inverse.y_axis().x(),
+            inverse.z_axis().x(),
+            inverse.w_axis().x(),
+        );
+
+        let dot0 = self.x_axis().mul(col0);
+        let dot1 = dot0.x() + dot0.y() + dot0.z() + dot0.w();
+
+        glam_assert!(dot1 != T::ZERO);
+
+        let rcp_det = dot1.recip();
+        inverse.mul_scalar(rcp_det)
+    }
 }
