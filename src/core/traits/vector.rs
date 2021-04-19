@@ -1,5 +1,6 @@
 use super::scalar::{FloatEx, SignedEx};
 use crate::core::storage::{XY, XYZ, XYZW};
+use core::ops::{Add, Mul, Sub};
 
 pub trait MaskVectorConst: Sized {
     const FALSE: Self;
@@ -94,6 +95,8 @@ pub trait Vector<T>: Sized + Copy + Clone {
 
 pub trait Vector2<T>: Vector<T> + Vector2Const {
     fn new(x: T, y: T) -> Self;
+    fn x(self) -> T;
+    fn y(self) -> T;
     fn splat_x(self) -> Self;
     fn splat_y(self) -> Self;
     fn from_slice_unaligned(slice: &[T]) -> Self;
@@ -120,13 +123,42 @@ pub trait Vector2<T>: Vector<T> + Vector2Const {
     }
 }
 
-pub trait Vector3<T>: Vector<T> + Vector3Const {
+pub trait Vector3<T>: Vector<T> + Vector3Const
+where
+    T: Copy + Mul<Output = T> + Sub<Output = T> + Add<Output = T>,
+{
     fn new(x: T, y: T, z: T) -> Self;
-    fn splat_x(self) -> Self;
-    fn splat_y(self) -> Self;
-    fn splat_z(self) -> Self;
-    fn from_slice_unaligned(slice: &[T]) -> Self;
-    fn write_to_slice_unaligned(self, slice: &mut [T]);
+    fn x(self) -> T;
+    fn y(self) -> T;
+    fn z(self) -> T;
+
+    #[inline(always)]
+    fn splat_x(self) -> Self {
+        Self::splat(self.x())
+    }
+
+    #[inline(always)]
+    fn splat_y(self) -> Self {
+        Self::splat(self.y())
+    }
+
+    #[inline(always)]
+    fn splat_z(self) -> Self {
+        Self::splat(self.z())
+    }
+
+    #[inline(always)]
+    fn from_slice_unaligned(slice: &[T]) -> Self {
+        Self::new(slice[0], slice[1], slice[2])
+    }
+
+    #[inline(always)]
+    fn write_to_slice_unaligned(self, slice: &mut [T]) {
+        slice[0] = self.x();
+        slice[1] = self.y();
+        slice[2] = self.z();
+    }
+
     fn as_ref_xyz(&self) -> &XYZ<T>;
     fn as_mut_xyz(&mut self) -> &mut XYZ<T>;
 
@@ -140,31 +172,75 @@ pub trait Vector3<T>: Vector<T> + Vector3Const {
         Self::new(v4.x, v4.y, v4.z)
     }
 
-    fn into_xy(self) -> XY<T>;
+    #[inline(always)]
+    fn into_xy(self) -> XY<T> {
+        XY {
+            x: self.x(),
+            y: self.y(),
+        }
+    }
 
-    fn into_xyzw(self, w: T) -> XYZW<T>;
-    fn from_array(a: [T; 3]) -> Self;
-    fn into_array(self) -> [T; 3];
-    fn from_tuple(t: (T, T, T)) -> Self;
-    fn into_tuple(self) -> (T, T, T);
+    #[inline(always)]
+    fn into_xyzw(self, w: T) -> XYZW<T> {
+        XYZW {
+            x: self.x(),
+            y: self.y(),
+            z: self.z(),
+            w,
+        }
+    }
+
+    #[inline(always)]
+    fn from_array(a: [T; 3]) -> Self {
+        Self::new(a[0], a[1], a[2])
+    }
+
+    #[inline(always)]
+    fn into_array(self) -> [T; 3] {
+        [self.x(), self.y(), self.z()]
+    }
+
+    #[inline(always)]
+    fn from_tuple(t: (T, T, T)) -> Self {
+        Self::new(t.0, t.1, t.2)
+    }
+
+    #[inline(always)]
+    fn into_tuple(self) -> (T, T, T) {
+        (self.x(), self.y(), self.z())
+    }
 
     fn min_element(self) -> T;
     fn max_element(self) -> T;
 
     fn clamp(self, min: Self, max: Self) -> Self;
 
-    fn dot(self, other: Self) -> T;
+    #[inline]
+    fn dot(self, other: Self) -> T {
+        (self.x() * other.x()) + (self.y() * other.y()) + (self.z() * other.z())
+    }
 
     #[inline(always)]
     fn dot_into_vec(self, other: Self) -> Self {
         Self::splat(self.dot(other))
     }
 
-    fn cross(self, other: Self) -> Self;
+    #[inline]
+    fn cross(self, other: Self) -> Self {
+        Self::new(
+            self.y() * other.z() - other.y() * self.z(),
+            self.z() * other.x() - other.z() * self.x(),
+            self.x() * other.y() - other.x() * self.y(),
+        )
+    }
 }
 
 pub trait Vector4<T>: Vector<T> + Vector4Const {
     fn new(x: T, y: T, z: T, w: T) -> Self;
+    fn x(self) -> T;
+    fn y(self) -> T;
+    fn z(self) -> T;
+    fn w(self) -> T;
     fn splat_x(self) -> Self;
     fn splat_y(self) -> Self;
     fn splat_z(self) -> Self;
@@ -216,8 +292,15 @@ pub trait SignedVector2<T: SignedEx>: SignedVector<T> + Vector2<T> {
 }
 
 pub trait SignedVector3<T: SignedEx>: SignedVector<T> + Vector3<T> {
-    fn abs(self) -> Self;
-    fn signum(self) -> Self;
+    #[inline]
+    fn abs(self) -> Self {
+        Self::new(self.x().abs(), self.y().abs(), self.z().abs())
+    }
+
+    #[inline]
+    fn signum(self) -> Self {
+        Self::new(self.x().signum(), self.y().signum(), self.z().signum())
+    }
 }
 
 pub trait SignedVector4<T: SignedEx>: SignedVector<T> + Vector4<T> {
@@ -284,15 +367,53 @@ pub trait FloatVector2<T: FloatEx>: SignedVector2<T> {
 }
 
 pub trait FloatVector3<T: FloatEx>: SignedVector3<T> {
-    fn ceil(self) -> Self;
-    fn floor(self) -> Self;
-    fn recip(self) -> Self;
-    fn round(self) -> Self;
-    fn exp(self) -> Self;
-    fn powf(self, n: T) -> Self;
-    fn is_finite(self) -> bool;
-    fn is_nan(self) -> bool;
-    fn is_nan_mask(self) -> Self::Mask;
+    #[inline]
+    fn floor(self) -> Self {
+        Self::new(self.x().floor(), self.y().floor(), self.z().floor())
+    }
+
+    #[inline]
+    fn ceil(self) -> Self {
+        Self::new(self.x().ceil(), self.y().ceil(), self.z().ceil())
+    }
+
+    #[inline]
+    fn round(self) -> Self {
+        Self::new(self.x().round(), self.y().round(), self.z().round())
+    }
+
+    #[inline]
+    fn recip(self) -> Self {
+        Self::new(self.x().recip(), self.y().recip(), self.z().recip())
+    }
+
+    #[inline]
+    fn exp(self) -> Self {
+        Self::new(self.x().exp(), self.y().exp(), self.z().exp())
+    }
+
+    #[inline]
+    fn powf(self, n: T) -> Self {
+        Self::new(self.x().powf(n), self.y().powf(n), self.z().powf(n))
+    }
+
+    #[inline]
+    fn is_finite(self) -> bool {
+        self.x().is_finite() && self.y().is_finite() && self.z().is_finite()
+    }
+
+    #[inline]
+    fn is_nan(self) -> bool {
+        self.x().is_nan() || self.y().is_nan() || self.z().is_nan()
+    }
+
+    #[inline]
+    fn is_nan_mask(self) -> Self::Mask
+    where
+        <Self as Vector<T>>::Mask: MaskVector3,
+    {
+        Self::Mask::new(self.x().is_nan(), self.y().is_nan(), self.z().is_nan())
+    }
 
     #[inline]
     fn length(self) -> T {

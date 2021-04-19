@@ -175,16 +175,6 @@ impl Matrix3x3<f32, __m128> for Columns3<__m128> {
         &self.z_axis
     }
 
-    #[inline(always)]
-    fn as_ref_vector3x3(&self) -> &Columns3<__m128> {
-        self
-    }
-
-    #[inline(always)]
-    fn as_mut_vector3x3(&mut self) -> &mut Columns3<__m128> {
-        self
-    }
-
     #[inline]
     fn transpose(&self) -> Self {
         unsafe {

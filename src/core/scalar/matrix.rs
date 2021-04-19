@@ -1,5 +1,5 @@
 use crate::core::{
-    storage::{Columns2, Columns3, Columns4, XY, XYZ, XYZW},
+    storage::{Columns2, Columns3, Columns4, XY, XYZ, XYZF32A16, XYZW},
     traits::{
         matrix::{
             FloatMatrix2x2, FloatMatrix3x3, FloatMatrix4x4, Matrix, Matrix2x2, Matrix3x3,
@@ -122,34 +122,18 @@ impl<T: NumEx> Matrix3x3<T, XYZ<T>> for Columns3<XYZ<T>> {
     }
 
     #[inline(always)]
-    fn as_ref_vector3x3(&self) -> &Columns3<XYZ<T>> {
-        self
+    fn x_axis(&self) -> &XYZ<T> {
+        &self.x_axis
     }
 
     #[inline(always)]
-    fn as_mut_vector3x3(&mut self) -> &mut Columns3<XYZ<T>> {
-        self
+    fn y_axis(&self) -> &XYZ<T> {
+        &self.y_axis
     }
 
     #[inline(always)]
-    fn transpose(&self) -> Self {
-        Self::from_cols(
-            XYZ {
-                x: self.x_axis.x,
-                y: self.y_axis.x,
-                z: self.z_axis.x,
-            },
-            XYZ {
-                x: self.x_axis.y,
-                y: self.y_axis.y,
-                z: self.z_axis.y,
-            },
-            XYZ {
-                x: self.x_axis.z,
-                y: self.y_axis.z,
-                z: self.z_axis.z,
-            },
-        )
+    fn z_axis(&self) -> &XYZ<T> {
+        &self.z_axis
     }
 
     #[inline]
@@ -164,18 +148,6 @@ impl<T: NumEx> Matrix3x3<T, XYZ<T>> for Columns3<XYZ<T>> {
 
 impl<T: FloatEx> FloatMatrix3x3<T, XYZ<T>> for Columns3<XYZ<T>> {
     #[inline]
-    fn inverse(&self) -> Self {
-        let tmp0 = self.y_axis.cross(self.z_axis);
-        let tmp1 = self.z_axis.cross(self.x_axis);
-        let tmp2 = self.x_axis.cross(self.y_axis);
-        let det = self.z_axis.dot_into_vec(tmp2);
-        glam_assert!(det.cmpne(XYZ::ZERO).all());
-        let inv_det = det.recip();
-        // TODO: Work out if it's possible to get rid of the transpose
-        Self::from_cols(tmp0.mul(inv_det), tmp1.mul(inv_det), tmp2.mul(inv_det)).transpose()
-    }
-
-    #[inline]
     fn transform_point2(&self, other: XY<T>) -> XY<T> {
         // TODO: This is untested, probably slower than the high level code that uses a SIMD mat2
         Columns2::from_cols(self.x_axis.into(), self.y_axis.into())
@@ -185,6 +157,63 @@ impl<T: FloatEx> FloatMatrix3x3<T, XYZ<T>> for Columns3<XYZ<T>> {
 
     #[inline]
     fn transform_vector2(&self, other: XY<T>) -> XY<T> {
+        // TODO: This is untested, probably slower than the high level code that uses a SIMD mat2
+        Columns2::from_cols(self.x_axis.into(), self.y_axis.into()).mul_vector(other)
+    }
+}
+
+impl MatrixConst for Columns3<XYZF32A16> {
+    const ZERO: Self = Self {
+        x_axis: XYZF32A16::ZERO,
+        y_axis: XYZF32A16::ZERO,
+        z_axis: XYZF32A16::ZERO,
+    };
+    const IDENTITY: Self = Self {
+        x_axis: XYZF32A16::X,
+        y_axis: XYZF32A16::Y,
+        z_axis: XYZF32A16::Z,
+    };
+}
+
+impl Matrix<f32> for Columns3<XYZF32A16> {}
+
+impl Matrix3x3<f32, XYZF32A16> for Columns3<XYZF32A16> {
+    #[inline(always)]
+    fn from_cols(x_axis: XYZF32A16, y_axis: XYZF32A16, z_axis: XYZF32A16) -> Self {
+        Self {
+            x_axis,
+            y_axis,
+            z_axis,
+        }
+    }
+
+    #[inline(always)]
+    fn x_axis(&self) -> &XYZF32A16 {
+        &self.x_axis
+    }
+
+    #[inline(always)]
+    fn y_axis(&self) -> &XYZF32A16 {
+        &self.y_axis
+    }
+
+    #[inline(always)]
+    fn z_axis(&self) -> &XYZF32A16 {
+        &self.z_axis
+    }
+}
+
+impl FloatMatrix3x3<f32, XYZF32A16> for Columns3<XYZF32A16> {
+    #[inline]
+    fn transform_point2(&self, other: XY<f32>) -> XY<f32> {
+        // TODO: This is untested, probably slower than the high level code that uses a SIMD mat2
+        Columns2::from_cols(self.x_axis.into(), self.y_axis.into())
+            .mul_vector(other)
+            .add(self.z_axis.into())
+    }
+
+    #[inline]
+    fn transform_vector2(&self, other: XY<f32>) -> XY<f32> {
         // TODO: This is untested, probably slower than the high level code that uses a SIMD mat2
         Columns2::from_cols(self.x_axis.into(), self.y_axis.into()).mul_vector(other)
     }
@@ -373,3 +402,23 @@ impl<T: FloatEx> FloatMatrix4x4<T, XYZW<T>> for Columns4<XYZW<T>> {
 }
 
 impl<T: FloatEx> ProjectionMatrix<T, XYZW<T>> for Columns4<XYZW<T>> {}
+
+impl From<Columns3<XYZ<f32>>> for Columns3<XYZF32A16> {
+    fn from(v: Columns3<XYZ<f32>>) -> Columns3<XYZF32A16> {
+        Self {
+            x_axis: v.x_axis.into(),
+            y_axis: v.y_axis.into(),
+            z_axis: v.z_axis.into(),
+        }
+    }
+}
+
+impl From<Columns3<XYZF32A16>> for Columns3<XYZ<f32>> {
+    fn from(v: Columns3<XYZF32A16>) -> Columns3<XYZ<f32>> {
+        Self {
+            x_axis: v.x_axis.into(),
+            y_axis: v.y_axis.into(),
+            z_axis: v.z_axis.into(),
+        }
+    }
+}

@@ -240,16 +240,8 @@ mod affine3 {
     #[test]
     fn test_align() {
         use std::mem;
-        #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
         assert_eq!(64, mem::size_of::<Affine3>());
-        #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
         assert_eq!(16, mem::align_of::<Affine3>());
-
-        // TODO: should we force alignment and size to be the same here?
-        #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-        assert_eq!(48, mem::size_of::<Affine3>());
-        #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-        assert_eq!(4, mem::align_of::<Affine3>());
     }
 
     impl_affine3d_tests!(f32, Affine3, Quat, Vec3);

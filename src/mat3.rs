@@ -290,7 +290,7 @@ macro_rules! impl_mat3_methods {
         /// Transforms a 3D vector.
         #[inline(always)]
         pub fn mul_vec3(&self, other: $vec3) -> $vec3 {
-            $vec3::from_simd(self.to_simd().mul_vector(other.to_simd()))
+            $vec3::from_simd(self.to_simd().mul_vector(other.to_simd().into()).into())
         }
 
         /// Multiplies two 3x3 matrices.
@@ -521,7 +521,7 @@ impl Mat3 {
     /// Transforms a `Vec3A`.
     #[inline]
     pub fn mul_vec3a(&self, other: Vec3A) -> Vec3A {
-        Vec3A::from_simd(self.to_simd().mul_vector(other.to_simd()))
+        Vec3A::from_simd(self.to_simd().mul_vector(other.to_simd().into()).into())
     }
 
     #[inline(always)]
@@ -576,7 +576,10 @@ impl Mul<Vec3A> for Mat3 {
     }
 }
 
+#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 type InnerF32A = Columns3<__m128>;
+#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+type InnerF32A = Columns3<crate::core::storage::XYZF32A16>;
 define_mat3_struct!(Mat3A, InnerF32A);
 
 impl Mat3A {
@@ -598,12 +601,12 @@ impl Mat3A {
     }
 
     #[inline(always)]
-    fn to_simd(&self) -> Columns3<__m128> {
+    fn to_simd(&self) -> InnerF32A {
         self.0
     }
 
     #[inline(always)]
-    fn from_simd(m: Columns3<__m128>) -> Self {
+    fn from_simd(m: InnerF32A) -> Self {
         Self(m)
     }
 }

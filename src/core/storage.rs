@@ -49,6 +49,56 @@ pub struct Columns4<V> {
     pub w_axis: V,
 }
 
+/// Ths XYZF32A16 is used for the Vec3A type, that is a 16 btye aligned XYZ<f32> type.
+#[derive(Clone, Copy, Debug, Default, PartialEq, PartialOrd)]
+#[cfg_attr(target_arch = "spirv", repr(simd))]
+#[cfg_attr(not(target_arch = "spirv"), repr(align(16), C))]
+pub struct XYZF32A16 {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+}
+
+impl From<XYZW<f32>> for XYZF32A16 {
+    #[inline(always)]
+    fn from(v: XYZW<f32>) -> Self {
+        Self {
+            x: v.x,
+            y: v.y,
+            z: v.z,
+        }
+    }
+}
+
+impl From<XYZ<f32>> for XYZF32A16 {
+    #[inline(always)]
+    fn from(v: XYZ<f32>) -> Self {
+        Self {
+            x: v.x,
+            y: v.y,
+            z: v.z,
+        }
+    }
+}
+
+impl From<XYZF32A16> for XYZ<f32> {
+    #[inline(always)]
+    fn from(v: XYZF32A16) -> Self {
+        Self {
+            x: v.x,
+            y: v.y,
+            z: v.z,
+        }
+    }
+}
+
+impl From<XYZF32A16> for XY<f32> {
+    #[inline(always)]
+    fn from(v: XYZF32A16) -> Self {
+        Self { x: v.x, y: v.y }
+    }
+}
+
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd)]
 #[repr(align(16))]
 pub(crate) struct Align16<T>(pub T);

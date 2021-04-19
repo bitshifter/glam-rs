@@ -1,5 +1,5 @@
 use crate::core::{
-    storage::{Columns2, Columns3, Columns4, XY, XYZ, XYZW},
+    storage::{Columns2, Columns4, XY, XYZ, XYZW},
     traits::{
         quaternion::Quaternion,
         scalar::{FloatEx, NumEx},
@@ -106,23 +106,9 @@ pub trait FloatMatrix2x2<T: FloatEx, V2: FloatVector2<T>>: Matrix2x2<T, V2> {
 pub trait Matrix3x3<T: NumEx, V3: Vector3<T>>: Matrix<T> {
     fn from_cols(x_axis: V3, y_axis: V3, z_axis: V3) -> Self;
 
-    #[inline(always)]
-    fn x_axis(&self) -> &V3 {
-        &self.as_ref_vector3x3().x_axis
-    }
-
-    #[inline(always)]
-    fn y_axis(&self) -> &V3 {
-        &self.as_ref_vector3x3().y_axis
-    }
-
-    #[inline(always)]
-    fn z_axis(&self) -> &V3 {
-        &self.as_ref_vector3x3().z_axis
-    }
-
-    fn as_ref_vector3x3(&self) -> &Columns3<V3>;
-    fn as_mut_vector3x3(&mut self) -> &mut Columns3<V3>;
+    fn x_axis(&self) -> &V3;
+    fn y_axis(&self) -> &V3;
+    fn z_axis(&self) -> &V3;
 
     #[rustfmt::skip]
     #[inline(always)]
@@ -195,7 +181,14 @@ pub trait Matrix3x3<T: NumEx, V3: Vector3<T>>: Matrix<T> {
         self.z_axis().dot(self.x_axis().cross(*self.y_axis()))
     }
 
-    fn transpose(&self) -> Self;
+    #[inline]
+    fn transpose(&self) -> Self {
+        Self::from_cols(
+            V3::new(self.x_axis().x(), self.y_axis().x(), self.z_axis().x()),
+            V3::new(self.x_axis().y(), self.y_axis().y(), self.z_axis().y()),
+            V3::new(self.x_axis().z(), self.y_axis().z(), self.z_axis().z()),
+        )
+    }
 
     #[inline]
     fn mul_vector(&self, other: V3) -> V3 {
