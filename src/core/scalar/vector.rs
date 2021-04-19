@@ -428,7 +428,7 @@ impl Vector<f32> for XYZF32A16 {
 
     #[inline]
     fn select(mask: Self::Mask, if_true: Self, if_false: Self) -> Self {
-        XYZ::select(mask.into(), if_true.into(), if_false.into()).into()
+        XYZ::select(mask, if_true.into(), if_false.into()).into()
     }
 
     #[inline]
@@ -488,12 +488,12 @@ impl Vector<f32> for XYZF32A16 {
 
     #[inline]
     fn mul_scalar(self, other: f32) -> Self {
-        XYZ::mul_scalar(self.into(), other.into()).into()
+        XYZ::mul_scalar(self.into(), other).into()
     }
 
     #[inline]
     fn div_scalar(self, other: f32) -> Self {
-        XYZ::div_scalar(self.into(), other.into()).into()
+        XYZ::div_scalar(self.into(), other).into()
     }
 
     #[inline]
