@@ -50,7 +50,6 @@ macro_rules! impl_affine3_methods {
             #[inline(always)]
             pub fn from_quat(rotation: $quat) -> Self {
                 Self {
-                    // TODO: unnecessary into
                     matrix3: $transform::from_quat(rotation),
                     translation: $translate::ZERO,
                 }
