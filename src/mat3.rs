@@ -623,7 +623,6 @@ impl Mul<Vec3A> for Mat3A {
 impl From<Mat3> for Mat3A {
     #[inline(always)]
     fn from(m: Mat3) -> Self {
-        #[allow(clippy::useless_conversion)]
         Self(m.0.into())
     }
 }
@@ -631,7 +630,6 @@ impl From<Mat3> for Mat3A {
 impl From<Mat3A> for Mat3 {
     #[inline(always)]
     fn from(m: Mat3A) -> Self {
-        #[allow(clippy::useless_conversion)]
         Self(m.0.into())
     }
 }

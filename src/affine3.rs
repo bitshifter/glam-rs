@@ -247,7 +247,7 @@ macro_rules! impl_affine3_methods {
                     .into()
             }
 
-            /// Transforms the give 3D vector, applying shear, scale and rotation (but NOT
+            /// Transforms the given 3D vector, applying shear, scale and rotation (but NOT
             /// translation).
             ///
             /// To also apply translation, use [`Self::transform_point3`] instead.
@@ -433,6 +433,23 @@ impl_affine3_traits!(
     TranslateF32,
     DerefTargetF32
 );
+
+impl Affine3 {
+    /// Transforms the given `Vec3A`, applying shear, scale, rotation and translation.
+    #[inline(always)]
+    pub fn transform_point3a(&self, other: Vec3A) -> Vec3A {
+        self.matrix3 * other + self.translation
+    }
+
+    /// Transforms the given `Vec3A`, applying shear, scale and rotation (but NOT
+    /// translation).
+    ///
+    /// To also apply translation, use [`Self::transform_point3`] instead.
+    #[inline(always)]
+    pub fn transform_vector3a(&self, other: Vec3A) -> Vec3A {
+        self.matrix3 * other
+    }
+}
 
 type TransformF64 = DMat3;
 type TranslateF64 = DVec3;

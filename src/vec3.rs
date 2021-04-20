@@ -331,7 +331,6 @@ impl_f32_vec3!(vec3a, Vec2, Vec3A, Vec4, BVec3, XYZF32A);
 impl From<Vec3> for Vec3A {
     #[inline(always)]
     fn from(v: Vec3) -> Self {
-        #[allow(clippy::useless_conversion)]
         Self(v.0.into())
     }
 }
@@ -339,7 +338,6 @@ impl From<Vec3> for Vec3A {
 impl From<Vec3A> for Vec3 {
     #[inline(always)]
     fn from(v: Vec3A) -> Self {
-        #[allow(clippy::useless_conversion)]
         Self(v.0.into())
     }
 }
