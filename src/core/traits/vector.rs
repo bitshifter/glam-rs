@@ -2,16 +2,19 @@ use super::scalar::{FloatEx, SignedEx};
 use crate::core::storage::{XY, XYZ, XYZW};
 use core::ops::{Add, Mul, Sub};
 
+/// Mask vector constants that are independent of vector length
 pub trait MaskVectorConst: Sized {
     const FALSE: Self;
 }
 
+/// Mask vector methods that are independent of vector dimension.
 pub trait MaskVector: MaskVectorConst {
     fn bitand(self, other: Self) -> Self;
     fn bitor(self, other: Self) -> Self;
     fn not(self) -> Self;
 }
 
+/// Mask vector methods specific to 2D vectors.
 pub trait MaskVector2: MaskVector {
     fn new(x: bool, y: bool) -> Self;
     fn bitmask(self) -> u32;
@@ -21,6 +24,7 @@ pub trait MaskVector2: MaskVector {
     fn into_u32_array(self) -> [u32; 2];
 }
 
+/// Mask vector methods specific to 3D vectors.
 pub trait MaskVector3: MaskVector {
     fn new(x: bool, y: bool, z: bool) -> Self;
     fn bitmask(self) -> u32;
@@ -30,6 +34,7 @@ pub trait MaskVector3: MaskVector {
     fn into_u32_array(self) -> [u32; 3];
 }
 
+/// Mask vector methods specific to 4D vectors.
 pub trait MaskVector4: MaskVector {
     fn new(x: bool, y: bool, z: bool, w: bool) -> Self;
     fn bitmask(self) -> u32;
@@ -39,22 +44,26 @@ pub trait MaskVector4: MaskVector {
     fn into_u32_array(self) -> [u32; 4];
 }
 
+/// Vector constants that are independent of vector dimension.
 pub trait VectorConst {
     const ZERO: Self;
     const ONE: Self;
 }
 
+/// Vector constants specific to 2D vectors.
 pub trait Vector2Const: VectorConst {
     const X: Self;
     const Y: Self;
 }
 
+/// Vector constants specific to 3D vectors.
 pub trait Vector3Const: VectorConst {
     const X: Self;
     const Y: Self;
     const Z: Self;
 }
 
+/// Vector constants specific to 4D vectors.
 pub trait Vector4Const: VectorConst {
     const X: Self;
     const Y: Self;
@@ -62,6 +71,10 @@ pub trait Vector4Const: VectorConst {
     const W: Self;
 }
 
+/// Vector methods that are independent of vector dimension.
+///
+/// These methods typically need to be implemented for each type as while the method signature does
+/// not imply any dimensionality, the implemtation does.
 pub trait Vector<T>: Sized + Copy + Clone {
     type Mask;
 
@@ -93,29 +106,88 @@ pub trait Vector<T>: Sized + Copy + Clone {
     fn max(self, other: Self) -> Self;
 }
 
-pub trait Vector2<T>: Vector<T> + Vector2Const {
+/// Vector methods specific to 2D vectors.
+pub trait Vector2<T>: Vector<T> + Vector2Const
+where
+    T: Copy + Mul<Output = T> + Sub<Output = T> + Add<Output = T>,
+{
     fn new(x: T, y: T) -> Self;
     fn x(self) -> T;
     fn y(self) -> T;
-    fn splat_x(self) -> Self;
-    fn splat_y(self) -> Self;
-    fn from_slice_unaligned(slice: &[T]) -> Self;
-    fn write_to_slice_unaligned(self, slice: &mut [T]);
+
     fn as_ref_xy(&self) -> &XY<T>;
     fn as_mut_xy(&mut self) -> &mut XY<T>;
-    fn into_xyz(self, z: T) -> XYZ<T>;
-    fn into_xyzw(self, z: T, w: T) -> XYZW<T>;
-    fn from_array(a: [T; 2]) -> Self;
-    fn into_array(self) -> [T; 2];
-    fn from_tuple(t: (T, T)) -> Self;
-    fn into_tuple(self) -> (T, T);
 
+    // min and max behave differently for float and integer types in Rust, so we can't have a
+    // default implementation here.
     fn min_element(self) -> T;
     fn max_element(self) -> T;
-
     fn clamp(self, min: Self, max: Self) -> Self;
 
-    fn dot(self, other: Self) -> T;
+    #[inline(always)]
+    fn splat_x(self) -> Self {
+        Self::splat(self.x())
+    }
+
+    #[inline(always)]
+    fn splat_y(self) -> Self {
+        Self::splat(self.y())
+    }
+
+    #[inline(always)]
+    fn from_slice_unaligned(slice: &[T]) -> Self {
+        Self::new(slice[0], slice[1])
+    }
+
+    #[inline(always)]
+    fn write_to_slice_unaligned(self, slice: &mut [T]) {
+        slice[0] = self.x();
+        slice[1] = self.y();
+    }
+
+    #[inline(always)]
+    fn into_xyz(self, z: T) -> XYZ<T> {
+        XYZ {
+            x: self.x(),
+            y: self.y(),
+            z,
+        }
+    }
+
+    #[inline(always)]
+    fn into_xyzw(self, z: T, w: T) -> XYZW<T> {
+        XYZW {
+            x: self.x(),
+            y: self.y(),
+            z,
+            w,
+        }
+    }
+
+    #[inline(always)]
+    fn from_array(a: [T; 2]) -> Self {
+        Self::new(a[0], a[1])
+    }
+
+    #[inline(always)]
+    fn into_array(self) -> [T; 2] {
+        [self.x(), self.y()]
+    }
+
+    #[inline(always)]
+    fn from_tuple(t: (T, T)) -> Self {
+        Self::new(t.0, t.1)
+    }
+
+    #[inline(always)]
+    fn into_tuple(self) -> (T, T) {
+        (self.x(), self.y())
+    }
+
+    #[inline]
+    fn dot(self, other: Self) -> T {
+        (self.x() * other.x()) + (self.y() * other.y())
+    }
 
     #[inline(always)]
     fn dot_into_vec(self, other: Self) -> Self {
@@ -123,6 +195,7 @@ pub trait Vector2<T>: Vector<T> + Vector2Const {
     }
 }
 
+/// Vector methods specific to 3D vectors.
 pub trait Vector3<T>: Vector<T> + Vector3Const
 where
     T: Copy + Mul<Output = T> + Sub<Output = T> + Add<Output = T>,
@@ -131,6 +204,13 @@ where
     fn x(self) -> T;
     fn y(self) -> T;
     fn z(self) -> T;
+
+    fn as_ref_xyz(&self) -> &XYZ<T>;
+    fn as_mut_xyz(&mut self) -> &mut XYZ<T>;
+
+    fn min_element(self) -> T;
+    fn max_element(self) -> T;
+    fn clamp(self, min: Self, max: Self) -> Self;
 
     #[inline(always)]
     fn splat_x(self) -> Self {
@@ -158,9 +238,6 @@ where
         slice[1] = self.y();
         slice[2] = self.z();
     }
-
-    fn as_ref_xyz(&self) -> &XYZ<T>;
-    fn as_mut_xyz(&mut self) -> &mut XYZ<T>;
 
     #[inline(always)]
     fn from_xy(v2: XY<T>, z: T) -> Self {
@@ -210,11 +287,6 @@ where
         (self.x(), self.y(), self.z())
     }
 
-    fn min_element(self) -> T;
-    fn max_element(self) -> T;
-
-    fn clamp(self, min: Self, max: Self) -> Self;
-
     #[inline]
     fn dot(self, other: Self) -> T {
         (self.x() * other.x()) + (self.y() * other.y()) + (self.z() * other.z())
@@ -235,20 +307,57 @@ where
     }
 }
 
-pub trait Vector4<T>: Vector<T> + Vector4Const {
+/// Vector methods specific to 3D vectors.
+pub trait Vector4<T>: Vector<T> + Vector4Const
+where
+    T: Copy + Mul<Output = T> + Sub<Output = T> + Add<Output = T>,
+{
     fn new(x: T, y: T, z: T, w: T) -> Self;
+
     fn x(self) -> T;
     fn y(self) -> T;
     fn z(self) -> T;
     fn w(self) -> T;
-    fn splat_x(self) -> Self;
-    fn splat_y(self) -> Self;
-    fn splat_z(self) -> Self;
-    fn splat_w(self) -> Self;
-    fn from_slice_unaligned(slice: &[T]) -> Self;
-    fn write_to_slice_unaligned(self, slice: &mut [T]);
+
     fn as_ref_xyzw(&self) -> &XYZW<T>;
     fn as_mut_xyzw(&mut self) -> &mut XYZW<T>;
+
+    fn min_element(self) -> T;
+    fn max_element(self) -> T;
+    fn clamp(self, min: Self, max: Self) -> Self;
+
+    #[inline(always)]
+    fn splat_x(self) -> Self {
+        Self::splat(self.x())
+    }
+
+    #[inline(always)]
+    fn splat_y(self) -> Self {
+        Self::splat(self.y())
+    }
+
+    #[inline(always)]
+    fn splat_z(self) -> Self {
+        Self::splat(self.z())
+    }
+
+    #[inline(always)]
+    fn splat_w(self) -> Self {
+        Self::splat(self.w())
+    }
+
+    #[inline(always)]
+    fn from_slice_unaligned(slice: &[T]) -> Self {
+        Self::new(slice[0], slice[1], slice[2], slice[3])
+    }
+
+    #[inline(always)]
+    fn write_to_slice_unaligned(self, slice: &mut [T]) {
+        slice[0] = self.x();
+        slice[1] = self.y();
+        slice[2] = self.z();
+        slice[3] = self.w();
+    }
 
     #[inline(always)]
     fn from_xy(v2: XY<T>, z: T, w: T) -> Self {
@@ -260,19 +369,50 @@ pub trait Vector4<T>: Vector<T> + Vector4Const {
         Self::new(v3.x, v3.y, v3.z, w)
     }
 
-    fn into_xy(self) -> XY<T>;
-    fn into_xyz(self) -> XYZ<T>;
-    fn from_array(a: [T; 4]) -> Self;
-    fn into_array(self) -> [T; 4];
-    fn from_tuple(t: (T, T, T, T)) -> Self;
-    fn into_tuple(self) -> (T, T, T, T);
+    #[inline(always)]
+    fn into_xy(self) -> XY<T> {
+        XY {
+            x: self.x(),
+            y: self.y(),
+        }
+    }
 
-    fn min_element(self) -> T;
-    fn max_element(self) -> T;
+    #[inline(always)]
+    fn into_xyz(self) -> XYZ<T> {
+        XYZ {
+            x: self.x(),
+            y: self.y(),
+            z: self.z(),
+        }
+    }
 
-    fn clamp(self, min: Self, max: Self) -> Self;
+    #[inline(always)]
+    fn from_array(a: [T; 4]) -> Self {
+        Self::new(a[0], a[1], a[2], a[3])
+    }
 
-    fn dot(self, other: Self) -> T;
+    #[inline(always)]
+    fn into_array(self) -> [T; 4] {
+        [self.x(), self.y(), self.z(), self.w()]
+    }
+
+    #[inline(always)]
+    fn from_tuple(t: (T, T, T, T)) -> Self {
+        Self::new(t.0, t.1, t.2, t.3)
+    }
+
+    #[inline(always)]
+    fn into_tuple(self) -> (T, T, T, T) {
+        (self.x(), self.y(), self.z(), self.w())
+    }
+
+    #[inline]
+    fn dot(self, other: Self) -> T {
+        (self.x() * other.x())
+            + (self.y() * other.y())
+            + (self.z() * other.z())
+            + (self.w() * other.w())
+    }
 
     #[inline(always)]
     fn dot_into_vec(self, other: Self) -> Self {
@@ -280,17 +420,38 @@ pub trait Vector4<T>: Vector<T> + Vector4Const {
     }
 }
 
+/// Vector methods for vectors of signed types that are independent of vector dimension.
+///
+/// These methods typically need to be implemented for each type as while the method signature does
+/// not imply any dimensionality, the implemtation does.
 pub trait SignedVector<T: SignedEx>: Vector<T> {
     fn neg(self) -> Self;
 }
 
+/// Vector methods specific to 2D vectors of signed types.
 pub trait SignedVector2<T: SignedEx>: SignedVector<T> + Vector2<T> {
-    fn abs(self) -> Self;
-    fn signum(self) -> Self;
-    fn perp(self) -> Self;
-    fn perp_dot(self, other: Self) -> T;
+    #[inline]
+    fn abs(self) -> Self {
+        Self::new(self.x().abs(), self.y().abs())
+    }
+
+    #[inline]
+    fn signum(self) -> Self {
+        Self::new(self.x().signum(), self.y().signum())
+    }
+
+    #[inline]
+    fn perp(self) -> Self {
+        Self::new(-self.y(), self.x())
+    }
+
+    #[inline]
+    fn perp_dot(self, other: Self) -> T {
+        (self.x() * other.y()) - (self.y() * other.x())
+    }
 }
 
+/// Vector methods specific to 3D vectors of signed types.
 pub trait SignedVector3<T: SignedEx>: SignedVector<T> + Vector3<T> {
     #[inline]
     fn abs(self) -> Self {
@@ -304,20 +465,75 @@ pub trait SignedVector3<T: SignedEx>: SignedVector<T> + Vector3<T> {
 }
 
 pub trait SignedVector4<T: SignedEx>: SignedVector<T> + Vector4<T> {
-    fn abs(self) -> Self;
-    fn signum(self) -> Self;
+    #[inline]
+    fn abs(self) -> Self {
+        Self::new(
+            self.x().abs(),
+            self.y().abs(),
+            self.z().abs(),
+            self.w().abs(),
+        )
+    }
+
+    #[inline]
+    fn signum(self) -> Self {
+        Self::new(
+            self.x().signum(),
+            self.y().signum(),
+            self.z().signum(),
+            self.w().signum(),
+        )
+    }
 }
 
 pub trait FloatVector2<T: FloatEx>: SignedVector2<T> {
-    fn ceil(self) -> Self;
-    fn floor(self) -> Self;
-    fn recip(self) -> Self;
-    fn round(self) -> Self;
-    fn exp(self) -> Self;
-    fn powf(self, n: T) -> Self;
-    fn is_finite(self) -> bool;
-    fn is_nan(self) -> bool;
-    fn is_nan_mask(self) -> Self::Mask;
+    #[inline]
+    fn floor(self) -> Self {
+        Self::new(self.x().floor(), self.y().floor())
+    }
+
+    #[inline]
+    fn ceil(self) -> Self {
+        Self::new(self.x().ceil(), self.y().ceil())
+    }
+
+    #[inline]
+    fn round(self) -> Self {
+        Self::new(self.x().round(), self.y().round())
+    }
+
+    #[inline]
+    fn recip(self) -> Self {
+        Self::new(self.x().recip(), self.y().recip())
+    }
+
+    #[inline]
+    fn exp(self) -> Self {
+        Self::new(self.x().exp(), self.y().exp())
+    }
+
+    #[inline]
+    fn powf(self, n: T) -> Self {
+        Self::new(self.x().powf(n), self.y().powf(n))
+    }
+
+    #[inline]
+    fn is_finite(self) -> bool {
+        self.x().is_finite() && self.y().is_finite()
+    }
+
+    #[inline]
+    fn is_nan(self) -> bool {
+        self.x().is_nan() || self.y().is_nan()
+    }
+
+    #[inline]
+    fn is_nan_mask(self) -> Self::Mask
+    where
+        <Self as Vector<T>>::Mask: MaskVector2,
+    {
+        Self::Mask::new(self.x().is_nan(), self.y().is_nan())
+    }
 
     #[inline]
     fn length(self) -> T {
@@ -457,15 +673,88 @@ pub trait FloatVector3<T: FloatEx>: SignedVector3<T> {
 }
 
 pub trait FloatVector4<T: FloatEx>: SignedVector4<T> {
-    fn ceil(self) -> Self;
-    fn floor(self) -> Self;
-    fn recip(self) -> Self;
-    fn round(self) -> Self;
-    fn exp(self) -> Self;
-    fn powf(self, n: T) -> Self;
-    fn is_finite(self) -> bool;
-    fn is_nan(self) -> bool;
-    fn is_nan_mask(self) -> Self::Mask;
+    #[inline]
+    fn floor(self) -> Self {
+        Self::new(
+            self.x().floor(),
+            self.y().floor(),
+            self.z().floor(),
+            self.w().floor(),
+        )
+    }
+
+    #[inline]
+    fn ceil(self) -> Self {
+        Self::new(
+            self.x().ceil(),
+            self.y().ceil(),
+            self.z().ceil(),
+            self.w().ceil(),
+        )
+    }
+
+    #[inline]
+    fn round(self) -> Self {
+        Self::new(
+            self.x().round(),
+            self.y().round(),
+            self.z().round(),
+            self.w().round(),
+        )
+    }
+
+    #[inline]
+    fn recip(self) -> Self {
+        Self::new(
+            self.x().recip(),
+            self.y().recip(),
+            self.z().recip(),
+            self.w().recip(),
+        )
+    }
+
+    #[inline]
+    fn exp(self) -> Self {
+        Self::new(
+            self.x().exp(),
+            self.y().exp(),
+            self.z().exp(),
+            self.w().exp(),
+        )
+    }
+
+    #[inline]
+    fn powf(self, n: T) -> Self {
+        Self::new(
+            self.x().powf(n),
+            self.y().powf(n),
+            self.z().powf(n),
+            self.w().powf(n),
+        )
+    }
+
+    #[inline]
+    fn is_finite(self) -> bool {
+        self.x().is_finite() && self.y().is_finite() && self.z().is_finite() && self.w().is_finite()
+    }
+
+    #[inline]
+    fn is_nan(self) -> bool {
+        self.x().is_nan() || self.y().is_nan() || self.z().is_nan() || self.w().is_nan()
+    }
+
+    #[inline]
+    fn is_nan_mask(self) -> Self::Mask
+    where
+        <Self as Vector<T>>::Mask: MaskVector4,
+    {
+        Self::Mask::new(
+            self.x().is_nan(),
+            self.y().is_nan(),
+            self.z().is_nan(),
+            self.w().is_nan(),
+        )
+    }
 
     #[inline]
     fn length(self) -> T {

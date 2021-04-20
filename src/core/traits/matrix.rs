@@ -35,10 +35,10 @@ pub trait Matrix2x2<T: NumEx, V2: Vector2<T>>: Matrix<T> {
     #[rustfmt::skip]
     #[inline(always)]
     fn to_cols_array(&self) -> [T; 4] {
-        let x_axis = self.x_axis().as_ref_xy();
-        let y_axis = self.y_axis().as_ref_xy();
-        [x_axis.x, x_axis.y,
-         y_axis.x, y_axis.y]
+        let x_axis = self.x_axis();
+        let y_axis = self.y_axis();
+        [x_axis.x(), x_axis.y(),
+         y_axis.x(), y_axis.y()]
     }
 
     #[inline(always)]
@@ -61,24 +61,25 @@ pub trait Matrix2x2<T: NumEx, V2: Vector2<T>>: Matrix<T> {
 
     #[inline]
     fn determinant(&self) -> T {
-        self.x_axis().x() * self.y_axis().y() - self.x_axis().y() * self.y_axis().x()
+        let x_axis = self.x_axis();
+        let y_axis = self.y_axis();
+        x_axis.x() * y_axis.y() - x_axis.y() * y_axis.x()
     }
 
     #[inline(always)]
     fn transpose(&self) -> Self {
-        Self::new(
-            self.x_axis().x(),
-            self.y_axis().x(),
-            self.x_axis().y(),
-            self.y_axis().y(),
-        )
+        let x_axis = self.x_axis();
+        let y_axis = self.y_axis();
+        Self::new(x_axis.x(), y_axis.x(), x_axis.y(), y_axis.y())
     }
 
     #[inline]
     fn mul_vector(&self, other: V2) -> V2 {
+        let x_axis = self.x_axis();
+        let y_axis = self.y_axis();
         V2::new(
-            (self.x_axis().x() * other.x()) + (self.y_axis().x() * other.y()),
-            (self.x_axis().y() * other.x()) + (self.y_axis().y() * other.y()),
+            (x_axis.x() * other.x()) + (y_axis.x() * other.y()),
+            (x_axis.y() * other.x()) + (y_axis.y() * other.y()),
         )
     }
 
@@ -146,11 +147,13 @@ pub trait FloatMatrix2x2<T: FloatEx, V2: FloatVector2<T>>: Matrix2x2<T, V2> {
             glam_assert!(det != T::ZERO);
             det.recip()
         };
+        let x_axis = self.x_axis();
+        let y_axis = self.y_axis();
         Self::new(
-            self.y_axis().y() * inv_det,
-            self.x_axis().y() * -inv_det,
-            self.y_axis().x() * -inv_det,
-            self.x_axis().x() * inv_det,
+            y_axis.y() * inv_det,
+            x_axis.y() * -inv_det,
+            y_axis.x() * -inv_det,
+            x_axis.x() * inv_det,
         )
     }
 }
@@ -174,13 +177,13 @@ pub trait Matrix3x3<T: NumEx, V3: Vector3<T>>: Matrix<T> {
     #[rustfmt::skip]
     #[inline(always)]
     fn to_cols_array(&self) -> [T; 9] {
-        let x_axis = self.x_axis().as_ref_xyz();
-        let y_axis = self.y_axis().as_ref_xyz();
-        let z_axis = self.z_axis().as_ref_xyz();
+        let x_axis = self.x_axis();
+        let y_axis = self.y_axis();
+        let z_axis = self.z_axis();
         [
-            x_axis.x, x_axis.y, x_axis.z,
-            y_axis.x, y_axis.y, y_axis.z,
-            z_axis.x, z_axis.y, z_axis.z,
+            x_axis.x(), x_axis.y(), x_axis.z(),
+            y_axis.x(), y_axis.y(), y_axis.z(),
+            z_axis.x(), z_axis.y(), z_axis.z(),
         ]
     }
 
@@ -235,10 +238,13 @@ pub trait Matrix3x3<T: NumEx, V3: Vector3<T>>: Matrix<T> {
 
     #[inline]
     fn transpose(&self) -> Self {
+        let x_axis = self.x_axis();
+        let y_axis = self.y_axis();
+        let z_axis = self.z_axis();
         Self::from_cols(
-            V3::new(self.x_axis().x(), self.y_axis().x(), self.z_axis().x()),
-            V3::new(self.x_axis().y(), self.y_axis().y(), self.z_axis().y()),
-            V3::new(self.x_axis().z(), self.y_axis().z(), self.z_axis().z()),
+            V3::new(x_axis.x(), y_axis.x(), z_axis.x()),
+            V3::new(x_axis.y(), y_axis.y(), z_axis.y()),
+            V3::new(x_axis.z(), y_axis.z(), z_axis.z()),
         )
     }
 
@@ -396,10 +402,13 @@ pub trait FloatMatrix3x3<T: FloatEx, V3: FloatVector3<T>>: Matrix3x3<T, V3> {
     where
         <V3 as Vector<T>>::Mask: MaskVector3,
     {
-        let tmp0 = self.y_axis().cross(*self.z_axis());
-        let tmp1 = self.z_axis().cross(*self.x_axis());
-        let tmp2 = self.x_axis().cross(*self.y_axis());
-        let det = self.z_axis().dot_into_vec(tmp2);
+        let x_axis = self.x_axis();
+        let y_axis = self.y_axis();
+        let z_axis = self.z_axis();
+        let tmp0 = y_axis.cross(*z_axis);
+        let tmp1 = z_axis.cross(*x_axis);
+        let tmp2 = x_axis.cross(*y_axis);
+        let det = z_axis.dot_into_vec(tmp2);
         glam_assert!(det.cmpne(V3::ZERO).all());
         let inv_det = det.recip();
         // TODO: Work out if it's possible to get rid of the transpose
@@ -438,15 +447,15 @@ pub trait Matrix4x4<T: NumEx, V4: Vector4<T>>: Matrix<T> {
     #[rustfmt::skip]
     #[inline(always)]
     fn to_cols_array(&self) -> [T; 16] {
-        let x_axis = self.x_axis().as_ref_xyzw();
-        let y_axis = self.y_axis().as_ref_xyzw();
-        let z_axis = self.z_axis().as_ref_xyzw();
-        let w_axis = self.w_axis().as_ref_xyzw();
+        let x_axis = self.x_axis();
+        let y_axis = self.y_axis();
+        let z_axis = self.z_axis();
+        let w_axis = self.w_axis();
         [
-            x_axis.x, x_axis.y, x_axis.z, x_axis.w,
-            y_axis.x, y_axis.y, y_axis.z, y_axis.w,
-            z_axis.x, z_axis.y, z_axis.z, z_axis.w,
-            w_axis.x, w_axis.y, w_axis.z, w_axis.w,
+            x_axis.x(), x_axis.y(), x_axis.z(), x_axis.w(),
+            y_axis.x(), y_axis.y(), y_axis.z(), y_axis.w(),
+            z_axis.x(), z_axis.y(), z_axis.z(), z_axis.w(),
+            w_axis.x(), w_axis.y(), w_axis.z(), w_axis.w(),
         ]
     }
 
