@@ -77,6 +77,7 @@ pub trait Matrix2x2<T: NumEx, V2: Vector2<T>>: Matrix<T> {
     fn mul_vector(&self, other: V2) -> V2 {
         let x_axis = self.x_axis();
         let y_axis = self.y_axis();
+        #[allow(clippy::suspicious_operation_groupings)]
         V2::new(
             (x_axis.x() * other.x()) + (y_axis.x() * other.y()),
             (x_axis.y() * other.x()) + (y_axis.y() * other.y()),
