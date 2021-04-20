@@ -1,6 +1,6 @@
 use crate::{DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
 use crate::{IVec2, IVec3, IVec4};
-use crate::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
+use crate::{Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
 use crate::{UVec2, UVec3, UVec4};
 #[cfg(target_arch = "x86")]
 use core::arch::x86::*;
@@ -52,6 +52,12 @@ pub union Mat4Cast {
 pub union Mat3Cast {
     pub v3x3: [Vec3; 3],
     pub m3: Mat3,
+}
+
+#[repr(C)]
+pub union Mat3ACast {
+    pub v3x3: [Vec3A; 3],
+    pub m3: Mat3A,
 }
 
 #[repr(C)]

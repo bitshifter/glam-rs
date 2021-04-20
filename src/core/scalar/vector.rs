@@ -1,5 +1,5 @@
 use crate::core::{
-    storage::{XY, XYZ, XYZW},
+    storage::{XY, XYZ, XYZF32A16, XYZW},
     traits::{scalar::*, vector::*},
 };
 
@@ -568,24 +568,13 @@ impl<T: NumEx> Vector2<T> for XY<T> {
     }
 
     #[inline(always)]
-    fn splat_x(self) -> Self {
-        Self::splat(self.x)
+    fn x(self) -> T {
+        self.x
     }
 
     #[inline(always)]
-    fn splat_y(self) -> Self {
-        Self::splat(self.y)
-    }
-
-    #[inline(always)]
-    fn from_slice_unaligned(slice: &[T]) -> Self {
-        Self::new(slice[0], slice[1])
-    }
-
-    #[inline(always)]
-    fn write_to_slice_unaligned(self, slice: &mut [T]) {
-        slice[0] = self.x;
-        slice[1] = self.y;
+    fn y(self) -> T {
+        self.y
     }
 
     #[inline(always)]
@@ -598,45 +587,6 @@ impl<T: NumEx> Vector2<T> for XY<T> {
         self
     }
 
-    #[inline(always)]
-    fn into_xyz(self, z: T) -> XYZ<T> {
-        XYZ {
-            x: self.x,
-            y: self.y,
-            z,
-        }
-    }
-
-    #[inline(always)]
-    fn into_xyzw(self, z: T, w: T) -> XYZW<T> {
-        XYZW {
-            x: self.x,
-            y: self.y,
-            z,
-            w,
-        }
-    }
-
-    #[inline(always)]
-    fn from_array(a: [T; 2]) -> Self {
-        Self { x: a[0], y: a[1] }
-    }
-
-    #[inline(always)]
-    fn into_array(self) -> [T; 2] {
-        [self.x, self.y]
-    }
-
-    #[inline(always)]
-    fn from_tuple(t: (T, T)) -> Self {
-        Self::new(t.0, t.1)
-    }
-
-    #[inline(always)]
-    fn into_tuple(self) -> (T, T) {
-        (self.x, self.y)
-    }
-
     #[inline]
     fn min_element(self) -> T {
         self.x.min(self.y)
@@ -645,11 +595,6 @@ impl<T: NumEx> Vector2<T> for XY<T> {
     #[inline]
     fn max_element(self) -> T {
         self.x.max(self.y)
-    }
-
-    #[inline]
-    fn dot(self, other: Self) -> T {
-        (self.x * other.x) + (self.y * other.y)
     }
 
     #[inline]
@@ -672,34 +617,18 @@ impl<T: NumEx> Vector3<T> for XYZ<T> {
     }
 
     #[inline(always)]
-    fn splat_x(self) -> Self {
-        Self::splat(self.x)
+    fn x(self) -> T {
+        self.x
     }
 
     #[inline(always)]
-    fn splat_y(self) -> Self {
-        Self::splat(self.y)
+    fn y(self) -> T {
+        self.y
     }
 
     #[inline(always)]
-    fn splat_z(self) -> Self {
-        Self::splat(self.z)
-    }
-
-    #[inline(always)]
-    fn from_slice_unaligned(slice: &[T]) -> Self {
-        Self {
-            x: slice[0],
-            y: slice[1],
-            z: slice[2],
-        }
-    }
-
-    #[inline(always)]
-    fn write_to_slice_unaligned(self, slice: &mut [T]) {
-        slice[0] = self.x;
-        slice[1] = self.y;
-        slice[2] = self.z;
+    fn z(self) -> T {
+        self.z
     }
 
     #[inline(always)]
@@ -710,48 +639,6 @@ impl<T: NumEx> Vector3<T> for XYZ<T> {
     #[inline(always)]
     fn as_mut_xyz(&mut self) -> &mut XYZ<T> {
         self
-    }
-
-    #[inline(always)]
-    fn into_xy(self) -> XY<T> {
-        XY {
-            x: self.x,
-            y: self.y,
-        }
-    }
-
-    #[inline(always)]
-    fn into_xyzw(self, w: T) -> XYZW<T> {
-        XYZW {
-            x: self.x,
-            y: self.y,
-            z: self.z,
-            w,
-        }
-    }
-
-    #[inline(always)]
-    fn from_array(a: [T; 3]) -> Self {
-        Self {
-            x: a[0],
-            y: a[1],
-            z: a[2],
-        }
-    }
-
-    #[inline(always)]
-    fn into_array(self) -> [T; 3] {
-        [self.x, self.y, self.z]
-    }
-
-    #[inline(always)]
-    fn from_tuple(t: (T, T, T)) -> Self {
-        Self::new(t.0, t.1, t.2)
-    }
-
-    #[inline(always)]
-    fn into_tuple(self) -> (T, T, T) {
-        (self.x, self.y, self.z)
     }
 
     #[inline]
@@ -765,31 +652,17 @@ impl<T: NumEx> Vector3<T> for XYZ<T> {
     }
 
     #[inline]
-    fn dot(self, other: Self) -> T {
-        (self.x * other.x) + (self.y * other.y) + (self.z * other.z)
-    }
-
-    #[inline]
-    fn cross(self, other: Self) -> Self {
-        Self {
-            x: self.y * other.z - other.y * self.z,
-            y: self.z * other.x - other.z * self.x,
-            z: self.x * other.y - other.x * self.y,
-        }
-    }
-
-    #[inline]
     fn clamp(self, min: Self, max: Self) -> Self {
         glam_assert!(min.x <= max.x);
         glam_assert!(min.y <= max.y);
         glam_assert!(min.z <= max.z);
         // we intentionally do not use `f32::clamp` because we don't
         // want panics unless `glam-assert` feature is on.
-        Self {
-            x: self.x.max(min.x).min(max.x),
-            y: self.y.max(min.y).min(max.y),
-            z: self.z.max(min.z).min(max.z),
-        }
+        Self::new(
+            self.x.max(min.x).min(max.x),
+            self.y.max(min.y).min(max.y),
+            self.z.max(min.z).min(max.z),
+        )
     }
 }
 
@@ -800,41 +673,23 @@ impl<T: NumEx> Vector4<T> for XYZW<T> {
     }
 
     #[inline(always)]
-    fn splat_x(self) -> Self {
-        Self::splat(self.x)
+    fn x(self) -> T {
+        self.x
     }
 
     #[inline(always)]
-    fn splat_y(self) -> Self {
-        Self::splat(self.y)
+    fn y(self) -> T {
+        self.y
     }
 
     #[inline(always)]
-    fn splat_z(self) -> Self {
-        Self::splat(self.z)
+    fn z(self) -> T {
+        self.z
     }
 
     #[inline(always)]
-    fn splat_w(self) -> Self {
-        Self::splat(self.w)
-    }
-
-    #[inline(always)]
-    fn from_slice_unaligned(slice: &[T]) -> Self {
-        Self {
-            x: slice[0],
-            y: slice[1],
-            z: slice[2],
-            w: slice[3],
-        }
-    }
-
-    #[inline(always)]
-    fn write_to_slice_unaligned(self, slice: &mut [T]) {
-        slice[0] = self.x;
-        slice[1] = self.y;
-        slice[2] = self.z;
-        slice[3] = self.w;
+    fn w(self) -> T {
+        self.w
     }
 
     #[inline(always)]
@@ -847,48 +702,6 @@ impl<T: NumEx> Vector4<T> for XYZW<T> {
         self
     }
 
-    #[inline(always)]
-    fn into_xy(self) -> XY<T> {
-        XY {
-            x: self.x,
-            y: self.y,
-        }
-    }
-
-    #[inline(always)]
-    fn into_xyz(self) -> XYZ<T> {
-        XYZ {
-            x: self.x,
-            y: self.y,
-            z: self.z,
-        }
-    }
-
-    #[inline(always)]
-    fn from_array(a: [T; 4]) -> Self {
-        Self {
-            x: a[0],
-            y: a[1],
-            z: a[2],
-            w: a[3],
-        }
-    }
-
-    #[inline(always)]
-    fn into_array(self) -> [T; 4] {
-        [self.x, self.y, self.z, self.w]
-    }
-
-    #[inline(always)]
-    fn from_tuple(t: (T, T, T, T)) -> Self {
-        Self::new(t.0, t.1, t.2, t.3)
-    }
-
-    #[inline(always)]
-    fn into_tuple(self) -> (T, T, T, T) {
-        (self.x, self.y, self.z, self.w)
-    }
-
     #[inline]
     fn min_element(self) -> T {
         self.x.min(self.y.min(self.z.min(self.w)))
@@ -897,11 +710,6 @@ impl<T: NumEx> Vector4<T> for XYZW<T> {
     #[inline]
     fn max_element(self) -> T {
         self.x.max(self.y.max(self.z.min(self.w)))
-    }
-
-    #[inline]
-    fn dot(self, other: Self) -> T {
-        (self.x * other.x) + (self.y * other.y) + (self.z * other.z) + (self.w * other.w)
     }
 
     #[inline]
@@ -931,36 +739,7 @@ impl<T: SignedEx> SignedVector<T> for XY<T> {
     }
 }
 
-impl<T: SignedEx> SignedVector2<T> for XY<T> {
-    #[inline]
-    fn abs(self) -> Self {
-        Self {
-            x: self.x.abs(),
-            y: self.y.abs(),
-        }
-    }
-
-    #[inline]
-    fn signum(self) -> Self {
-        Self {
-            x: self.x.signum(),
-            y: self.y.signum(),
-        }
-    }
-
-    #[inline]
-    fn perp(self) -> Self {
-        Self {
-            x: -self.y,
-            y: self.x,
-        }
-    }
-
-    #[inline]
-    fn perp_dot(self, other: Self) -> T {
-        (self.x * other.y) - (self.y * other.x)
-    }
-}
+impl<T: SignedEx> SignedVector2<T> for XY<T> {}
 
 impl<T: SignedEx> SignedVector<T> for XYZ<T> {
     #[inline]
@@ -969,26 +748,6 @@ impl<T: SignedEx> SignedVector<T> for XYZ<T> {
             x: self.x.neg(),
             y: self.y.neg(),
             z: self.z.neg(),
-        }
-    }
-}
-
-impl<T: SignedEx> SignedVector3<T> for XYZ<T> {
-    #[inline]
-    fn abs(self) -> Self {
-        Self {
-            x: self.x.abs(),
-            y: self.y.abs(),
-            z: self.z.abs(),
-        }
-    }
-
-    #[inline]
-    fn signum(self) -> Self {
-        Self {
-            x: self.x.signum(),
-            y: self.y.signum(),
-            z: self.z.signum(),
         }
     }
 }
@@ -1005,250 +764,24 @@ impl<T: SignedEx> SignedVector<T> for XYZW<T> {
     }
 }
 
-impl<T: SignedEx> SignedVector4<T> for XYZW<T> {
-    #[inline]
-    fn abs(self) -> Self {
-        Self {
-            x: self.x.abs(),
-            y: self.y.abs(),
-            z: self.z.abs(),
-            w: self.w.abs(),
-        }
-    }
+impl<T: SignedEx> SignedVector3<T> for XYZ<T> {}
+impl<T: SignedEx> SignedVector4<T> for XYZW<T> {}
 
-    #[inline]
-    fn signum(self) -> Self {
-        Self {
-            x: self.x.signum(),
-            y: self.y.signum(),
-            z: self.z.signum(),
-            w: self.w.signum(),
-        }
+impl<T: FloatEx> FloatVector2<T> for XY<T> {}
+impl<T: FloatEx> FloatVector3<T> for XYZ<T> {}
+impl<T: FloatEx> FloatVector4<T> for XYZW<T> {}
+
+impl<T> From<XYZ<T>> for XY<T> {
+    #[inline(always)]
+    fn from(v: XYZ<T>) -> Self {
+        Self { x: v.x, y: v.y }
     }
 }
 
-impl<T: FloatEx> FloatVector2<T> for XY<T> {
-    #[inline]
-    fn floor(self) -> Self {
-        Self {
-            x: self.x.floor(),
-            y: self.y.floor(),
-        }
-    }
-
-    #[inline]
-    fn ceil(self) -> Self {
-        Self {
-            x: self.x.ceil(),
-            y: self.y.ceil(),
-        }
-    }
-
-    #[inline]
-    fn round(self) -> Self {
-        Self {
-            x: self.x.round(),
-            y: self.y.round(),
-        }
-    }
-
-    #[inline]
-    fn recip(self) -> Self {
-        Self {
-            x: self.x.recip(),
-            y: self.y.recip(),
-        }
-    }
-
-    #[inline]
-    fn exp(self) -> Self {
-        Self {
-            x: self.x.exp(),
-            y: self.y.exp(),
-        }
-    }
-
-    #[inline]
-    fn powf(self, n: T) -> Self {
-        Self {
-            x: self.x.powf(n),
-            y: self.y.powf(n),
-        }
-    }
-
-    #[inline]
-    fn is_finite(self) -> bool {
-        self.x.is_finite() && self.y.is_finite()
-    }
-
-    #[inline]
-    fn is_nan(self) -> bool {
-        self.x.is_nan() || self.y.is_nan()
-    }
-
-    #[inline]
-    fn is_nan_mask(self) -> Self::Mask {
-        Self::Mask {
-            x: self.x.is_nan(),
-            y: self.y.is_nan(),
-        }
-    }
-}
-
-impl<T: FloatEx> FloatVector3<T> for XYZ<T> {
-    #[inline]
-    fn floor(self) -> Self {
-        Self {
-            x: self.x.floor(),
-            y: self.y.floor(),
-            z: self.z.floor(),
-        }
-    }
-
-    #[inline]
-    fn ceil(self) -> Self {
-        Self {
-            x: self.x.ceil(),
-            y: self.y.ceil(),
-            z: self.z.ceil(),
-        }
-    }
-
-    #[inline]
-    fn round(self) -> Self {
-        Self {
-            x: self.x.round(),
-            y: self.y.round(),
-            z: self.z.round(),
-        }
-    }
-
-    #[inline]
-    fn recip(self) -> Self {
-        Self {
-            x: self.x.recip(),
-            y: self.y.recip(),
-            z: self.z.recip(),
-        }
-    }
-
-    #[inline]
-    fn exp(self) -> Self {
-        Self {
-            x: self.x.exp(),
-            y: self.y.exp(),
-            z: self.z.exp(),
-        }
-    }
-
-    #[inline]
-    fn powf(self, n: T) -> Self {
-        Self {
-            x: self.x.powf(n),
-            y: self.y.powf(n),
-            z: self.z.powf(n),
-        }
-    }
-
-    #[inline]
-    fn is_finite(self) -> bool {
-        self.x.is_finite() && self.y.is_finite() && self.z.is_finite()
-    }
-
-    #[inline]
-    fn is_nan(self) -> bool {
-        self.x.is_nan() || self.y.is_nan() || self.z.is_nan()
-    }
-
-    #[inline]
-    fn is_nan_mask(self) -> Self::Mask {
-        Self::Mask {
-            x: self.x.is_nan(),
-            y: self.y.is_nan(),
-            z: self.z.is_nan(),
-        }
-    }
-}
-
-impl<T: FloatEx> FloatVector4<T> for XYZW<T> {
-    #[inline]
-    fn floor(self) -> Self {
-        Self {
-            x: self.x.floor(),
-            y: self.y.floor(),
-            z: self.z.floor(),
-            w: self.w.floor(),
-        }
-    }
-
-    #[inline]
-    fn ceil(self) -> Self {
-        Self {
-            x: self.x.ceil(),
-            y: self.y.ceil(),
-            z: self.z.ceil(),
-            w: self.w.ceil(),
-        }
-    }
-
-    #[inline]
-    fn round(self) -> Self {
-        Self {
-            x: self.x.round(),
-            y: self.y.round(),
-            z: self.z.round(),
-            w: self.w.round(),
-        }
-    }
-
-    #[inline]
-    fn recip(self) -> Self {
-        Self {
-            x: self.x.recip(),
-            y: self.y.recip(),
-            z: self.z.recip(),
-            w: self.w.recip(),
-        }
-    }
-
-    #[inline]
-    fn exp(self) -> Self {
-        Self {
-            x: self.x.exp(),
-            y: self.y.exp(),
-            z: self.z.exp(),
-            w: self.w.exp(),
-        }
-    }
-
-    #[inline]
-    fn powf(self, n: T) -> Self {
-        Self {
-            x: self.x.powf(n),
-            y: self.y.powf(n),
-            z: self.z.powf(n),
-            w: self.w.powf(n),
-        }
-    }
-
-    #[inline]
-    fn is_finite(self) -> bool {
-        self.x.is_finite() && self.y.is_finite() && self.z.is_finite() && self.w.is_finite()
-    }
-
-    #[inline]
-    fn is_nan(self) -> bool {
-        self.x.is_nan() || self.y.is_nan() || self.z.is_nan() || self.w.is_nan()
-    }
-
-    #[inline]
-    fn is_nan_mask(self) -> Self::Mask {
-        Self::Mask {
-            x: self.x.is_nan(),
-            y: self.y.is_nan(),
-            z: self.z.is_nan(),
-            w: self.w.is_nan(),
-        }
+impl<T> From<XYZW<T>> for XY<T> {
+    #[inline(always)]
+    fn from(v: XYZW<T>) -> Self {
+        Self { x: v.x, y: v.y }
     }
 }
 
@@ -1263,16 +796,179 @@ impl<T> From<XYZW<T>> for XYZ<T> {
     }
 }
 
-impl<T> From<XYZW<T>> for XY<T> {
-    #[inline(always)]
-    fn from(v: XYZW<T>) -> Self {
-        Self { x: v.x, y: v.y }
+impl VectorConst for XYZF32A16 {
+    const ZERO: Self = Self {
+        x: 0.0,
+        y: 0.0,
+        z: 0.0,
+    };
+    const ONE: Self = Self {
+        x: 1.0,
+        y: 1.0,
+        z: 1.0,
+    };
+}
+
+impl Vector3Const for XYZF32A16 {
+    const X: Self = Self {
+        x: 1.0,
+        y: 0.0,
+        z: 0.0,
+    };
+    const Y: Self = Self {
+        x: 0.0,
+        y: 1.0,
+        z: 0.0,
+    };
+    const Z: Self = Self {
+        x: 0.0,
+        y: 0.0,
+        z: 1.0,
+    };
+}
+
+impl Vector<f32> for XYZF32A16 {
+    type Mask = XYZ<bool>;
+
+    #[inline]
+    fn splat(s: f32) -> Self {
+        Self { x: s, y: s, z: s }
+    }
+
+    #[inline]
+    fn select(mask: Self::Mask, if_true: Self, if_false: Self) -> Self {
+        XYZ::select(mask, if_true.into(), if_false.into()).into()
+    }
+
+    #[inline]
+    fn cmpeq(self, other: Self) -> Self::Mask {
+        XYZ::cmpeq(self.into(), other.into())
+    }
+
+    #[inline]
+    fn cmpne(self, other: Self) -> Self::Mask {
+        XYZ::cmpne(self.into(), other.into())
+    }
+
+    #[inline]
+    fn cmpge(self, other: Self) -> Self::Mask {
+        XYZ::cmpge(self.into(), other.into())
+    }
+
+    #[inline]
+    fn cmpgt(self, other: Self) -> Self::Mask {
+        XYZ::cmpgt(self.into(), other.into())
+    }
+
+    #[inline]
+    fn cmple(self, other: Self) -> Self::Mask {
+        XYZ::cmple(self.into(), other.into())
+    }
+
+    #[inline]
+    fn cmplt(self, other: Self) -> Self::Mask {
+        XYZ::cmplt(self.into(), other.into())
+    }
+
+    #[inline]
+    fn add(self, other: Self) -> Self {
+        XYZ::add(self.into(), other.into()).into()
+    }
+
+    #[inline]
+    fn div(self, other: Self) -> Self {
+        XYZ::div(self.into(), other.into()).into()
+    }
+
+    #[inline]
+    fn mul(self, other: Self) -> Self {
+        XYZ::mul(self.into(), other.into()).into()
+    }
+
+    #[inline]
+    fn mul_add(self, b: Self, c: Self) -> Self {
+        XYZ::mul_add(self.into(), b.into(), c.into()).into()
+    }
+
+    #[inline]
+    fn sub(self, other: Self) -> Self {
+        XYZ::sub(self.into(), other.into()).into()
+    }
+
+    #[inline]
+    fn mul_scalar(self, other: f32) -> Self {
+        XYZ::mul_scalar(self.into(), other).into()
+    }
+
+    #[inline]
+    fn div_scalar(self, other: f32) -> Self {
+        XYZ::div_scalar(self.into(), other).into()
+    }
+
+    #[inline]
+    fn min(self, other: Self) -> Self {
+        XYZ::min(self.into(), other.into()).into()
+    }
+
+    #[inline]
+    fn max(self, other: Self) -> Self {
+        XYZ::max(self.into(), other.into()).into()
     }
 }
 
-impl<T> From<XYZ<T>> for XY<T> {
+impl Vector3<f32> for XYZF32A16 {
     #[inline(always)]
-    fn from(v: XYZ<T>) -> Self {
-        Self { x: v.x, y: v.y }
+    fn new(x: f32, y: f32, z: f32) -> Self {
+        XYZF32A16 { x, y, z }
+    }
+
+    #[inline(always)]
+    fn x(self) -> f32 {
+        self.x
+    }
+
+    #[inline(always)]
+    fn y(self) -> f32 {
+        self.y
+    }
+
+    #[inline(always)]
+    fn z(self) -> f32 {
+        self.z
+    }
+
+    #[inline(always)]
+    fn as_ref_xyz(&self) -> &XYZ<f32> {
+        unsafe { &*(self as *const Self as *const XYZ<f32>) }
+    }
+
+    #[inline(always)]
+    fn as_mut_xyz(&mut self) -> &mut XYZ<f32> {
+        unsafe { &mut *(self as *mut Self as *mut XYZ<f32>) }
+    }
+
+    #[inline(always)]
+    fn min_element(self) -> f32 {
+        XYZ::min_element(self.into())
+    }
+
+    #[inline(always)]
+    fn max_element(self) -> f32 {
+        XYZ::max_element(self.into())
+    }
+
+    #[inline(always)]
+    fn clamp(self, min: Self, max: Self) -> Self {
+        XYZ::clamp(self.into(), min.into(), max.into()).into()
     }
 }
+
+impl SignedVector<f32> for XYZF32A16 {
+    #[inline(always)]
+    fn neg(self) -> Self {
+        XYZ::neg(self.into()).into()
+    }
+}
+
+impl SignedVector3<f32> for XYZF32A16 {}
+impl FloatVector3<f32> for XYZF32A16 {}

@@ -137,6 +137,35 @@ macro_rules! const_mat3 {
     };
 }
 
+/// Creates a `Mat3A` from three column vectors that can be used to initialize a constant value.
+///
+/// ```
+/// use glam::{const_mat3a, Mat3A};
+/// const ZERO: Mat3A = const_mat3a!([0.0; 9]);
+/// const IDENTITY: Mat3A = const_mat3a!([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
+/// ```
+#[macro_export]
+macro_rules! const_mat3a {
+    ($col0:expr, $col1:expr, $col2:expr) => {
+        unsafe {
+            $crate::cast::Mat3ACast {
+                v3x3: [
+                    $crate::const_vec3a!($col0),
+                    $crate::const_vec3a!($col1),
+                    $crate::const_vec3a!($col2),
+                ],
+            }
+            .m3
+        }
+    };
+    ($fx9:expr) => {
+        $crate::const_mat3a!(
+            $crate::cast::F32x9Cast { fx9: $fx9 }.fx3x3[0],
+            $crate::cast::F32x9Cast { fx9: $fx9 }.fx3x3[1],
+            $crate::cast::F32x9Cast { fx9: $fx9 }.fx3x3[2]
+        )
+    };
+}
 /// Creates a `Mat4` from four column vectors that can be used to initialize a constant value.
 ///
 /// ```

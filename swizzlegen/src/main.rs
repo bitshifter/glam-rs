@@ -187,7 +187,7 @@ fn write_vec4_impl_scalar(
         out,
         r#"
 use super::Vec4Swizzles;
-use crate::{{{}, {}, {}, XY, XYZ, XYZW}};
+use crate::{{{}, {}, {}}};
 "#,
         vec2t, vec3t, vec4t,
     )?;
@@ -211,12 +211,7 @@ impl Vec4Swizzles for {} {{
                 r#"
     #[inline]
     fn {}{}{}{}(self) -> {} {{
-        {}(XYZW {{
-            x: self.{},
-            y: self.{},
-            z: self.{},
-            w: self.{},
-        }})
+        {}::new(self.{}, self.{}, self.{}, self.{})
     }}"#,
                 E[e0], E[e1], E[e2], E[e3], vec4t, vec4t, E[e0], E[e1], E[e2], E[e3],
             )
@@ -227,11 +222,7 @@ impl Vec4Swizzles for {} {{
                 r#"
     #[inline]
     fn {}{}{}(self) -> {} {{
-        {}(XYZ {{
-            x: self.{},
-            y: self.{},
-            z: self.{},
-        }})
+        {}::new(self.{}, self.{}, self.{})
     }}"#,
                 E[e0], E[e1], E[e2], vec3t, vec3t, E[e0], E[e1], E[e2]
             )
@@ -242,10 +233,7 @@ impl Vec4Swizzles for {} {{
                 r#"
     #[inline]
     fn {}{}(self) -> {} {{
-        {}(XY {{
-            x: self.{},
-            y: self.{},
-        }})
+        {}::new(self.{}, self.{})
     }}"#,
                 E[e0], E[e1], vec2t, vec2t, E[e0], E[e1]
             )
@@ -411,7 +399,7 @@ fn write_vec3_impl_scalar(
         out,
         r#"
 use super::Vec3Swizzles;
-use crate::{{{}, {}, {}, XY, XYZ}};
+use crate::{{{}, {}, {}}};
 "#,
         vec2t, vec3t, vec4t
     )?;
@@ -446,11 +434,7 @@ impl Vec3Swizzles for {} {{
                 r#"
     #[inline]
     fn {}{}{}(self) -> Self {{
-        Self(XYZ {{
-            x: self.{},
-            y: self.{},
-            z: self.{},
-        }})
+        Self::new(self.{}, self.{}, self.{})
     }}"#,
                 E[e0], E[e1], E[e2], E[e0], E[e1], E[e2]
             )
@@ -461,10 +445,7 @@ impl Vec3Swizzles for {} {{
                 r#"
     #[inline]
     fn {}{}(self) -> {} {{
-        {}(XY {{
-            x: self.{},
-            y: self.{},
-        }})
+        {}::new(self.{}, self.{})
     }}"#,
                 E[e0], E[e1], vec2t, vec2t, E[e0], E[e1]
             )
@@ -490,7 +471,7 @@ fn write_vec2_impl_scalar(
         out,
         r#"
 use super::Vec2Swizzles;
-use crate::{{{}, {}, {}, XY, XYZ}};
+use crate::{{{}, {}, {}}};
 "#,
         vec2t, vec3t, vec4t,
     )?;
@@ -525,11 +506,7 @@ impl Vec2Swizzles for {} {{
                 r#"
     #[inline]
     fn {}{}{}(self) -> {} {{
-        {}(XYZ {{
-            x: self.{},
-            y: self.{},
-            z: self.{},
-        }})
+        {}::new(self.{}, self.{}, self.{})
     }}"#,
                 E[e0], E[e1], E[e2], vec3t, vec3t, E[e0], E[e1], E[e2]
             )
@@ -540,10 +517,7 @@ impl Vec2Swizzles for {} {{
                 r#"
     #[inline]
     fn {}{}(self) -> Self {{
-        Self(XY {{
-            x: self.{},
-            y: self.{},
-        }})
+        Self::new(self.{}, self.{})
     }}"#,
                 E[e0], E[e1], E[e0], E[e1]
             )

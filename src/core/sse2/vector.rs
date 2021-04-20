@@ -270,6 +270,21 @@ impl Vector3<f32> for __m128 {
     }
 
     #[inline(always)]
+    fn x(self) -> f32 {
+        unsafe { _mm_cvtss_f32(self) }
+    }
+
+    #[inline(always)]
+    fn y(self) -> f32 {
+        unsafe { _mm_cvtss_f32(_mm_shuffle_ps(self, self, 0b01_01_01_01)) }
+    }
+
+    #[inline(always)]
+    fn z(self) -> f32 {
+        unsafe { _mm_cvtss_f32(_mm_shuffle_ps(self, self, 0b10_10_10_10)) }
+    }
+
+    #[inline(always)]
     fn splat_x(self) -> Self {
         unsafe { _mm_shuffle_ps(self, self, 0b00_00_00_00) }
     }
@@ -418,6 +433,26 @@ impl Vector4<f32> for __m128 {
     #[inline(always)]
     fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
         unsafe { _mm_set_ps(w, z, y, x) }
+    }
+
+    #[inline(always)]
+    fn x(self) -> f32 {
+        unsafe { _mm_cvtss_f32(self) }
+    }
+
+    #[inline(always)]
+    fn y(self) -> f32 {
+        unsafe { _mm_cvtss_f32(_mm_shuffle_ps(self, self, 0b01_01_01_01)) }
+    }
+
+    #[inline(always)]
+    fn z(self) -> f32 {
+        unsafe { _mm_cvtss_f32(_mm_shuffle_ps(self, self, 0b10_10_10_10)) }
+    }
+
+    #[inline(always)]
+    fn w(self) -> f32 {
+        unsafe { _mm_cvtss_f32(_mm_shuffle_ps(self, self, 0b11_11_11_11)) }
     }
 
     #[inline(always)]

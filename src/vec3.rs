@@ -306,38 +306,31 @@ type XYZF32 = XYZ<f32>;
 pub struct Vec3(pub(crate) XYZF32);
 impl_f32_vec3!(vec3, Vec2, Vec3, Vec4, BVec3, XYZF32);
 
+#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+type XYZF32A = __m128;
+
+#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+type XYZF32A = crate::core::storage::XYZF32A16;
+
 /// A 3-dimensional vector with SIMD support.
 ///
 /// This type is 16 byte aligned. A SIMD vector type is used for storage on supported platforms for
 /// better performance than the `Vec3` type.
 ///
 /// It is possible to convert between `Vec3` and `Vec3A` types using `From` trait implementations.
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 #[derive(Clone, Copy)]
 #[repr(transparent)]
-pub struct Vec3A(pub(crate) __m128);
-
-/// A 3-dimensional vector.
-///
-/// This type is 16 byte aligned.
-///
-/// It is possible to convert between `Vec3` and `Vec3A` types using `From` trait implementations.
-#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-#[derive(Clone, Copy)]
-#[cfg_attr(not(target_arch = "spirv"), repr(align(16), C))]
-#[cfg_attr(target_arch = "spirv", repr(transparent))]
-pub struct Vec3A(pub(crate) XYZF32);
+pub struct Vec3A(pub(crate) XYZF32A);
 
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-impl_f32_vec3!(vec3a, Vec2, Vec3A, Vec4, BVec3A, __m128);
+impl_f32_vec3!(vec3a, Vec2, Vec3A, Vec4, BVec3A, XYZF32A);
 
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-impl_f32_vec3!(vec3a, Vec2, Vec3A, Vec4, BVec3, XYZF32);
+impl_f32_vec3!(vec3a, Vec2, Vec3A, Vec4, BVec3, XYZF32A);
 
 impl From<Vec3> for Vec3A {
     #[inline(always)]
     fn from(v: Vec3) -> Self {
-        #[allow(clippy::useless_conversion)]
         Self(v.0.into())
     }
 }
@@ -345,7 +338,6 @@ impl From<Vec3> for Vec3A {
 impl From<Vec3A> for Vec3 {
     #[inline(always)]
     fn from(v: Vec3A) -> Self {
-        #[allow(clippy::useless_conversion)]
         Self(v.0.into())
     }
 }

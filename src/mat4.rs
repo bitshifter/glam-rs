@@ -736,7 +736,7 @@ impl Mat4 {
     /// This is the equivalent of multiplying the `Vec3A` as a 4D vector where `w` is `1.0`.
     #[inline(always)]
     pub fn transform_point3a(&self, other: Vec3A) -> Vec3A {
-        Vec3A(self.0.transform_float4_as_point3(other.0))
+        Vec3A(self.0.transform_float4_as_point3(other.0.into()).into())
     }
 
     /// Transforms the give `Vec3A` as 3D vector.
@@ -744,7 +744,7 @@ impl Mat4 {
     /// This is the equivalent of multiplying the `Vec3A` as a 4D vector where `w` is `0.0`.
     #[inline(always)]
     pub fn transform_vector3a(&self, other: Vec3A) -> Vec3A {
-        Vec3A(self.0.transform_float4_as_vector3(other.0))
+        Vec3A(self.0.transform_float4_as_vector3(other.0.into()).into())
     }
 
     #[inline(always)]
