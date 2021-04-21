@@ -119,8 +119,14 @@ mod affine2 {
     #[test]
     fn test_align() {
         use std::mem;
-        assert_eq!(32, mem::size_of::<Affine2>());
-        assert_eq!(16, mem::align_of::<Affine2>());
+        // TODO: With SSE2 Mat2/Affine2 is 16 byte aligned. Should this be true when no SSE2?
+        if cfg!(all(target_feature = "sse2", not(feature = "scalar-math"))) {
+            assert_eq!(32, mem::size_of::<Affine2>());
+            assert_eq!(16, mem::align_of::<Affine2>());
+        } else {
+            assert_eq!(24, mem::size_of::<Affine2>());
+            assert_eq!(4, mem::align_of::<Affine2>());
+        }
     }
 
     impl_affine2_tests!(f32, Affine2, Vec2);
