@@ -2,8 +2,8 @@
 mod macros;
 
 use glam::{
-    Affine3, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, Mat2, Mat3, Mat3A, Mat4,
-    Quat, Vec2, Vec3, Vec3A, Vec4,
+    Affine2, Affine3, DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, Mat2,
+    Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4,
 };
 
 #[cfg(feature = "transform-types")]
@@ -157,6 +157,34 @@ impl FloatCompare for DMat4 {
             (self.z_axis - other.z_axis).abs(),
             (self.w_axis - other.w_axis).abs(),
         )
+    }
+}
+
+impl FloatCompare for Affine2 {
+    #[inline]
+    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
+        self.abs_diff_eq(*other, max_abs_diff)
+    }
+    #[inline]
+    fn abs_diff(&self, other: &Self) -> Self {
+        Self {
+            matrix2: self.matrix2.abs_diff(&other.matrix2),
+            translation: self.translation.abs_diff(&other.translation),
+        }
+    }
+}
+
+impl FloatCompare for DAffine2 {
+    #[inline]
+    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
+        self.abs_diff_eq(*other, max_abs_diff as f64)
+    }
+    #[inline]
+    fn abs_diff(&self, other: &Self) -> Self {
+        Self {
+            matrix2: self.matrix2.abs_diff(&other.matrix2),
+            translation: self.translation.abs_diff(&other.translation),
+        }
     }
 }
 
