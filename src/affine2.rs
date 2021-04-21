@@ -60,7 +60,7 @@ macro_rules! impl_affine2_methods {
             pub fn from_translation(translation: $vec2) -> Self {
                 Self {
                     matrix2: $transform::IDENTITY,
-                    translation: translation.into(),
+                    translation,
                 }
             }
 
@@ -103,7 +103,7 @@ macro_rules! impl_affine2_methods {
                         rotation.x_axis * scale.x,
                         rotation.y_axis * scale.y,
                     ),
-                    translation: translation,
+                    translation,
                 }
             }
 
@@ -115,7 +115,7 @@ macro_rules! impl_affine2_methods {
             pub fn from_angle_translation(angle: $t, translation: $vec2) -> Self {
                 Self {
                     matrix2: $transform::from_angle(angle),
-                    translation: translation,
+                    translation,
                 }
             }
 
