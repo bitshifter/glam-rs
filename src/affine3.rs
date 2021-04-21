@@ -160,7 +160,7 @@ macro_rules! impl_affine3_methods {
             }
 
             /// The given `Mat4` must be an affine transform,
-            /// i.e. contain no persepctive transform.
+            /// i.e. contain no perspective transform.
             #[inline]
             pub fn from_mat4(m: $mat4) -> Self {
                 Self {
@@ -335,21 +335,16 @@ macro_rules! impl_affine3_traits {
         impl PartialEq for $affine3 {
             #[inline]
             fn eq(&self, other: &Self) -> bool {
-                self.x_axis.eq(&other.x_axis)
-                    && self.y_axis.eq(&other.y_axis)
-                    && self.z_axis.eq(&other.z_axis)
-                    && self.w_axis.eq(&other.w_axis)
+                self.matrix3.eq(&other.matrix3) && self.translation.eq(&other.translation)
             }
         }
 
         #[cfg(not(target_arch = "spirv"))]
         impl core::fmt::Debug for $affine3 {
             fn fmt(&self, fmt: &mut core::fmt::Formatter) -> core::fmt::Result {
-                fmt.debug_struct(stringify!($affine3d))
-                    .field("x_axis", &self.x_axis)
-                    .field("y_axis", &self.y_axis)
-                    .field("z_axis", &self.z_axis)
-                    .field("w_axis", &self.w_axis)
+                fmt.debug_struct(stringify!($affine3))
+                    .field("matrix3", &self.matrix3)
+                    .field("translation", &self.translation)
                     .finish()
             }
         }
@@ -358,10 +353,10 @@ macro_rules! impl_affine3_traits {
             #[inline]
             fn from(m: $affine3) -> $mat4 {
                 $mat4::from_cols(
-                    m.x_axis.extend(0.0),
-                    m.y_axis.extend(0.0),
-                    m.z_axis.extend(0.0),
-                    m.w_axis.extend(1.0),
+                    m.matrix3.x_axis.extend(0.0),
+                    m.matrix3.y_axis.extend(0.0),
+                    m.matrix3.z_axis.extend(0.0),
+                    m.translation.extend(1.0),
                 )
             }
         }
