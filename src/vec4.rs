@@ -57,34 +57,6 @@ macro_rules! impl_vec4_common_methods {
             Self(Vector4::new(x, y, z, w))
         }
 
-        /// Creates a 4D vector with values `[x: 1.0, y: 0.0, z: 0.0, w: 0.0]`.
-        #[deprecated = "Use Vec4::X instead"]
-        #[inline(always)]
-        pub const fn unit_x() -> Self {
-            Self(Vector4Const::X)
-        }
-
-        /// Creates a 4D vector with values `[x: 0.0, y: 1.0, z: 0.0, w: 0.0]`.
-        #[deprecated = "Use Vec4::Y instead"]
-        #[inline(always)]
-        pub const fn unit_y() -> Self {
-            Self(Vector4Const::Y)
-        }
-
-        /// Creates a 4D vector with values `[x: 0.0, y: 0.0, z: 1.0, w: 0.0]`.
-        #[deprecated = "Use Vec4::Z instead"]
-        #[inline(always)]
-        pub const fn unit_z() -> Self {
-            Self(Vector4Const::Z)
-        }
-
-        /// Creates a 4D vector with values `[x: 0.0, y: 0.0, z: 0.0, w: 1.0]`.
-        #[deprecated = "Use Vec4::W instead"]
-        #[inline(always)]
-        pub const fn unit_w() -> Self {
-            Self(Vector4Const::W)
-        }
-
         /// Creates a `Vec3` from the `x`, `y` and `z` elements of `self`, discarding `w`.
         ///
         /// Truncation to `Vec3` may also be performed by using `self.xyz()` or `Vec3::from()`.

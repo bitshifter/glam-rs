@@ -69,12 +69,6 @@ impl TransformSRT {
         }
     }
 
-    #[deprecated = "use TransformSRT::IDENTITY instead"]
-    #[inline]
-    pub const fn identity() -> Self {
-        Self::IDENTITY
-    }
-
     #[inline]
     pub fn inverse(&self) -> Self {
         let scale = self.scale.recip();
@@ -193,12 +187,6 @@ impl TransformRT {
             rotation,
             translation,
         }
-    }
-
-    #[deprecated = "use TransformRT::IDENTITY instead"]
-    #[inline]
-    pub const fn identity() -> Self {
-        Self::IDENTITY
     }
 
     /// Returns `true` if, and only if, all elements are finite.

@@ -51,27 +51,6 @@ macro_rules! impl_vec3_common_methods {
             Self(Vector3::new(x, y, z))
         }
 
-        /// Creates a vector with values `[x: 1.0, y: 0.0, z: 0.0]`.
-        #[deprecated = "Use Vec3::X instead"]
-        #[inline(always)]
-        pub const fn unit_x() -> Self {
-            Self(Vector3Const::X)
-        }
-
-        /// Creates a vector with values `[x: 0.0, y: 1.0, z: 0.0]`.
-        #[inline(always)]
-        #[deprecated = "Use Vec3::Y instead"]
-        pub const fn unit_y() -> Self {
-            Self(Vector3Const::Y)
-        }
-
-        /// Creates a vector with values `[x: 0.0, y: 0.0, z: 1.0]`.
-        #[inline(always)]
-        #[deprecated = "Use Vec3::Z instead"]
-        pub const fn unit_z() -> Self {
-            Self(Vector3Const::Z)
-        }
-
         /// Creates a 4D vector from `self` and the given `w` value.
         #[inline(always)]
         pub fn extend(self, w: $t) -> $vec4 {

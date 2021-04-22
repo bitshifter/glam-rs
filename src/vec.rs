@@ -2,20 +2,6 @@
 // The methods here should be supported for all types of $t and all sizes of vector.
 macro_rules! impl_vecn_common_methods {
     ($t:ty, $vecn:ident, $mask:ident, $inner:ident, $vectrait:ident) => {
-        /// Creates a vector with all elements set to `0.0`.
-        #[deprecated = "use ZERO constant instead"]
-        #[inline(always)]
-        pub const fn zero() -> Self {
-            Self::ZERO
-        }
-
-        /// Creates a vector with all elements set to `1.0`.
-        #[deprecated = "use ONE constant instead"]
-        #[inline(always)]
-        pub const fn one() -> Self {
-            Self::ONE
-        }
-
         /// Creates a vector with all elements set to `v`.
         #[inline(always)]
         pub fn splat(v: $t) -> Self {

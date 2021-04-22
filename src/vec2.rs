@@ -33,20 +33,6 @@ macro_rules! impl_vec2_common_methods {
             Self(Vector2::new(x, y))
         }
 
-        /// Creates a vector with values `[x: 1.0, y: 0.0]`.
-        #[deprecated = "Use Vec2::X instead"]
-        #[inline(always)]
-        pub const fn unit_x() -> $vec2 {
-            Self($inner::X)
-        }
-
-        /// Creates a vector with values `[x: 0.0, y: 1.0]`.
-        #[deprecated = "Use Vec2::Y instead"]
-        #[inline(always)]
-        pub const fn unit_y() -> $vec2 {
-            Self($inner::Y)
-        }
-
         /// Creates a 3D vector from `self` and the given `z` value.
         #[inline(always)]
         pub fn extend(self, z: $t) -> $vec3 {

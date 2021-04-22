@@ -65,20 +65,6 @@ macro_rules! impl_mat3_methods {
         /// elements are `0`.
         pub const IDENTITY: Self = Self($inner::IDENTITY);
 
-        /// Creates a 3x3 matrix with all elements set to `0.0`.
-        #[deprecated = "use Mat3::ZERO instead"]
-        #[inline(always)]
-        pub const fn zero() -> Self {
-            Self::ZERO
-        }
-
-        /// Creates a 3x3 identity matrix.
-        #[deprecated = "use Mat3::IDENTITY instead"]
-        #[inline(always)]
-        pub const fn identity() -> Self {
-            Self::IDENTITY
-        }
-
         /// Creates a 3x3 matrix from three column vectors.
         #[inline(always)]
         pub fn from_cols(x_axis: $vec3a, y_axis: $vec3a, z_axis: $vec3a) -> Self {

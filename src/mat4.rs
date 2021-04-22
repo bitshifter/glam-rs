@@ -73,20 +73,6 @@ macro_rules! impl_mat4_methods {
         /// A 4x4 identity matrix, where all diagonal elements are `1`, and all off-diagonal elements are `0`.
         pub const IDENTITY: Self = Self($inner::IDENTITY);
 
-        /// Creates a 4x4 matrix with all elements set to `0.0`.
-        #[deprecated = "use Mat4::ZERO instead"]
-        #[inline(always)]
-        pub const fn zero() -> Self {
-            Self::ZERO
-        }
-
-        /// Creates a 4x4 identity matrix.
-        #[deprecated = "use Mat4::IDENTITY instead"]
-        #[inline(always)]
-        pub const fn identity() -> Self {
-            Self::IDENTITY
-        }
-
         /// Creates a 4x4 matrix from four column vectors.
         #[inline(always)]
         pub fn from_cols(x_axis: $vec4, y_axis: $vec4, z_axis: $vec4, w_axis: $vec4) -> Self {

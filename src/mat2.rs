@@ -34,20 +34,6 @@ macro_rules! impl_mat2_methods {
         /// A 2x2 identity matrix, where all diagonal elements are `1`, and all off-diagonal elements are `0`.
         pub const IDENTITY: Self = Self($inner::IDENTITY);
 
-        /// Creates a 2x2 matrix with all elements set to `0.0`.
-        #[deprecated = "use Mat2::ZERO instead"]
-        #[inline(always)]
-        pub const fn zero() -> Self {
-            Self::ZERO
-        }
-
-        /// Creates a 2x2 identity matrix.
-        #[deprecated = "use Mat2::IDENTITY instead"]
-        #[inline(always)]
-        pub const fn identity() -> Self {
-            Self::IDENTITY
-        }
-
         /// Creates a 2x2 matrix from two column vectors.
         #[inline(always)]
         pub fn from_cols(x_axis: $vec2, y_axis: $vec2) -> Self {
@@ -102,12 +88,6 @@ macro_rules! impl_mat2_methods {
         #[inline(always)]
         pub fn from_angle(angle: $t) -> Self {
             Self($inner::from_angle(angle))
-        }
-
-        #[deprecated = "Use from_diagonal() instead"]
-        #[inline(always)]
-        pub fn from_scale(scale: $vec2) -> Self {
-            Self($inner::from_diagonal(scale.0))
         }
 
         /// Returns the matrix column for the given `index`.

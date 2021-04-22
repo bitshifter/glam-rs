@@ -48,12 +48,6 @@ macro_rules! impl_quat_methods {
             Self(Vector4::new(x, y, z, w))
         }
 
-        #[deprecated = "use Quat::IDENTITY instead"]
-        #[inline(always)]
-        pub const fn identity() -> Self {
-            Self::IDENTITY
-        }
-
         /// Creates a rotation quaternion from an unaligned slice.
         ///
         /// # Preconditions
