@@ -12,48 +12,48 @@ use crate::core::traits::scalar::*;
 /// The angles are applied starting from the right.
 /// E.g. XYZ will first apply the z-axis rotation.
 ///
-/// YXZ can be used for yaw (y-axis), pitch (x-axis), role (z-axis).
+/// YXZ can be used for yaw (y-axis), pitch (x-axis), roll (z-axis).
 ///
 /// The two-axis rotations (e.g. ZYZ) are not fully tested and have to be treated with caution.
 #[derive(Debug, Clone, Copy)]
 pub enum EulerRot {
     /// Intrinsic three-axis rotation ZYX
-    ZYXi,
+    ZYX,
     /// Intrinsic three-axis rotation ZXY
-    ZXYi,
+    ZXY,
     /// Intrinsic three-axis rotation YXZ
-    YXZi,
+    YXZ,
     /// Intrinsic three-axis rotation YZX
-    YZXi,
+    YZX,
     /// Intrinsic three-axis rotation XYZ
-    XYZi,
+    XYZ,
     /// Intrinsic three-axis rotation XZY
-    XZYi,
+    XZY,
 
     /// Intrinsic two-axis rotation ZYZ
     #[deprecated(note = "Untested! Use at own risk!")]
-    ZYZi,
+    ZYZ,
     /// Intrinsic two-axis rotation ZXZ
     #[deprecated(note = "Untested! Use at own risk!")]
-    ZXZi,
+    ZXZ,
     /// Intrinsic two-axis rotation YXY
     #[deprecated(note = "Untested! Use at own risk!")]
-    YXYi,
+    YXY,
     /// Intrinsic two-axis rotation YZY
     #[deprecated(note = "Untested! Use at own risk!")]
-    YZYi,
+    YZY,
     /// Intrinsic two-axis rotation XYX
     #[deprecated(note = "Untested! Use at own risk!")]
-    XYXi,
+    XYX,
     /// Intrinsic two-axis rotation XZX
     #[deprecated(note = "Untested! Use at own risk!")]
-    XZXi,
+    XZX,
 }
 
 impl Default for EulerRot {
-    /// Default YXZi as yaw (y-axis), pitch (x-axis), role (z-axis).
+    /// Default YXZi as yaw (y-axis), pitch (x-axis), roll (z-axis).
     fn default() -> Self {
-        Self::YXZi
+        Self::YXZ
     }
 }
 
@@ -115,35 +115,35 @@ macro_rules! impl_from_quat {
             fn first(self, q: $quat) -> $t {
                 use EulerRot::*;
                 match self {
-                    ZYXi => (Self::Output::TWO * (q.x * q.y + q.w * q.z))
+                    ZYX => (Self::Output::TWO * (q.x * q.y + q.w * q.z))
                         .atan2(q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z),
-                    ZXYi => (-Self::Output::TWO * (q.x * q.y - q.w * q.z))
+                    ZXY => (-Self::Output::TWO * (q.x * q.y - q.w * q.z))
                         .atan2(q.w * q.w - q.x * q.x + q.y * q.y - q.z * q.z),
-                    YXZi => (Self::Output::TWO * (q.x * q.z + q.w * q.y))
+                    YXZ => (Self::Output::TWO * (q.x * q.z + q.w * q.y))
                         .atan2(q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z),
-                    YZXi => (-Self::Output::TWO * (q.x * q.z - q.w * q.y))
+                    YZX => (-Self::Output::TWO * (q.x * q.z - q.w * q.y))
                         .atan2(q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z),
-                    XYZi => (-Self::Output::TWO * (q.y * q.z - q.w * q.x))
+                    XYZ => (-Self::Output::TWO * (q.y * q.z - q.w * q.x))
                         .atan2(q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z),
-                    XZYi => (Self::Output::TWO * (q.y * q.z + q.w * q.x))
+                    XZY => (Self::Output::TWO * (q.y * q.z + q.w * q.x))
                         .atan2(q.w * q.w - q.x * q.x + q.y * q.y - q.z * q.z),
                     #[allow(deprecated)]
-                    ZYZi => (Self::Output::TWO * (q.y * q.z + q.w * q.x))
+                    ZYZ => (Self::Output::TWO * (q.y * q.z + q.w * q.x))
                         .atan2_fixed(-Self::Output::TWO * (q.x * q.z - q.w * q.y)),
                     #[allow(deprecated)]
-                    ZXZi => (Self::Output::TWO * (q.x * q.z - q.w * q.y))
+                    ZXZ => (Self::Output::TWO * (q.x * q.z - q.w * q.y))
                         .atan2_fixed(Self::Output::TWO * (q.y * q.z + q.w * q.x)),
                     #[allow(deprecated)]
-                    YXYi => (Self::Output::TWO * (q.x * q.y + q.w * q.z))
+                    YXY => (Self::Output::TWO * (q.x * q.y + q.w * q.z))
                         .atan2_fixed(-Self::Output::TWO * (q.y * q.z - q.w * q.x)),
                     #[allow(deprecated)]
-                    YZYi => (Self::Output::TWO * (q.y * q.z - q.w * q.x))
+                    YZY => (Self::Output::TWO * (q.y * q.z - q.w * q.x))
                         .atan2_fixed(Self::Output::TWO * (q.x * q.y + q.w * q.z)),
                     #[allow(deprecated)]
-                    XYXi => (Self::Output::TWO * (q.x * q.y - q.w * q.z))
+                    XYX => (Self::Output::TWO * (q.x * q.y - q.w * q.z))
                         .atan2_fixed(Self::Output::TWO * (q.x * q.z + q.w * q.y)),
                     #[allow(deprecated)]
-                    XZXi => (Self::Output::TWO * (q.x * q.z + q.w * q.y))
+                    XZX => (Self::Output::TWO * (q.x * q.z + q.w * q.y))
                         .atan2_fixed(-Self::Output::TWO * (q.x * q.y - q.w * q.z)),
                 }
             }
@@ -157,24 +157,24 @@ macro_rules! impl_from_quat {
                     clamp(val, T::NEG_ONE, T::ONE)
                 }
                 match self {
-                    ZYXi => arc_clamp(-Self::Output::TWO * (q.x * q.z - q.w * q.y)).asin(),
-                    ZXYi => arc_clamp(Self::Output::TWO * (q.y * q.z + q.w * q.x)).asin(),
-                    YXZi => arc_clamp(-Self::Output::TWO * (q.y * q.z - q.w * q.x)).asin(),
-                    YZXi => arc_clamp(Self::Output::TWO * (q.x * q.y + q.w * q.z)).asin(),
-                    XYZi => arc_clamp(Self::Output::TWO * (q.x * q.z + q.w * q.y)).asin(),
-                    XZYi => arc_clamp(-Self::Output::TWO * (q.x * q.y - q.w * q.z)).asin(),
+                    ZYX => arc_clamp(-Self::Output::TWO * (q.x * q.z - q.w * q.y)).asin(),
+                    ZXY => arc_clamp(Self::Output::TWO * (q.y * q.z + q.w * q.x)).asin(),
+                    YXZ => arc_clamp(-Self::Output::TWO * (q.y * q.z - q.w * q.x)).asin(),
+                    YZX => arc_clamp(Self::Output::TWO * (q.x * q.y + q.w * q.z)).asin(),
+                    XYZ => arc_clamp(Self::Output::TWO * (q.x * q.z + q.w * q.y)).asin(),
+                    XZY => arc_clamp(-Self::Output::TWO * (q.x * q.y - q.w * q.z)).asin(),
                     #[allow(deprecated)]
-                    ZYZi => arc_clamp(q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z).acos(),
+                    ZYZ => arc_clamp(q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z).acos(),
                     #[allow(deprecated)]
-                    ZXZi => arc_clamp(q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z).acos(),
+                    ZXZ => arc_clamp(q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z).acos(),
                     #[allow(deprecated)]
-                    YXYi => arc_clamp(q.w * q.w - q.x * q.x + q.y * q.y - q.z * q.z).acos(),
+                    YXY => arc_clamp(q.w * q.w - q.x * q.x + q.y * q.y - q.z * q.z).acos(),
                     #[allow(deprecated)]
-                    YZYi => arc_clamp(q.w * q.w - q.x * q.x + q.y * q.y - q.z * q.z).acos(),
+                    YZY => arc_clamp(q.w * q.w - q.x * q.x + q.y * q.y - q.z * q.z).acos(),
                     #[allow(deprecated)]
-                    XYXi => arc_clamp(q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z).acos(),
+                    XYX => arc_clamp(q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z).acos(),
                     #[allow(deprecated)]
-                    XZXi => arc_clamp(q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z).acos(),
+                    XZX => arc_clamp(q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z).acos(),
                 }
             }
 
@@ -182,35 +182,35 @@ macro_rules! impl_from_quat {
                 use EulerRot::*;
                 #[allow(deprecated)]
                 match self {
-                    ZYXi => (Self::Output::TWO * (q.y * q.z + q.w * q.x))
+                    ZYX => (Self::Output::TWO * (q.y * q.z + q.w * q.x))
                         .atan2(q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z),
-                    ZXYi => (-Self::Output::TWO * (q.x * q.z - q.w * q.y))
+                    ZXY => (-Self::Output::TWO * (q.x * q.z - q.w * q.y))
                         .atan2(q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z),
-                    YXZi => (Self::Output::TWO * (q.x * q.y + q.w * q.z))
+                    YXZ => (Self::Output::TWO * (q.x * q.y + q.w * q.z))
                         .atan2(q.w * q.w - q.x * q.x + q.y * q.y - q.z * q.z),
-                    YZXi => (-Self::Output::TWO * (q.y * q.z - q.w * q.x))
+                    YZX => (-Self::Output::TWO * (q.y * q.z - q.w * q.x))
                         .atan2(q.w * q.w - q.x * q.x + q.y * q.y - q.z * q.z),
-                    XYZi => (-Self::Output::TWO * (q.x * q.y - q.w * q.z))
+                    XYZ => (-Self::Output::TWO * (q.x * q.y - q.w * q.z))
                         .atan2(q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z),
-                    XZYi => (Self::Output::TWO * (q.x * q.z + q.w * q.y))
+                    XZY => (Self::Output::TWO * (q.x * q.z + q.w * q.y))
                         .atan2(q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z),
                     #[allow(deprecated)]
-                    ZYZi => (Self::Output::TWO * (q.y * q.z - q.w * q.x))
+                    ZYZ => (Self::Output::TWO * (q.y * q.z - q.w * q.x))
                         .atan2_fixed(Self::Output::TWO * (q.x * q.z + q.w * q.y)),
                     #[allow(deprecated)]
-                    ZXZi => (Self::Output::TWO * (q.x * q.z + q.w * q.y))
+                    ZXZ => (Self::Output::TWO * (q.x * q.z + q.w * q.y))
                         .atan2_fixed(-Self::Output::TWO * (q.y * q.z - q.w * q.x)),
                     #[allow(deprecated)]
-                    YXYi => (Self::Output::TWO * (q.x * q.y - q.w * q.z))
+                    YXY => (Self::Output::TWO * (q.x * q.y - q.w * q.z))
                         .atan2_fixed(Self::Output::TWO * (q.y * q.z + q.w * q.x)),
                     #[allow(deprecated)]
-                    YZYi => (Self::Output::TWO * (q.y * q.z + q.w * q.x))
+                    YZY => (Self::Output::TWO * (q.y * q.z + q.w * q.x))
                         .atan2_fixed(-Self::Output::TWO * (q.x * q.y - q.w * q.z)),
                     #[allow(deprecated)]
-                    XYXi => (Self::Output::TWO * (q.x * q.y + q.w * q.z))
+                    XYX => (Self::Output::TWO * (q.x * q.y + q.w * q.z))
                         .atan2_fixed(-Self::Output::TWO * (q.x * q.z - q.w * q.y)),
                     #[allow(deprecated)]
-                    XZXi => (Self::Output::TWO * (q.x * q.z - q.w * q.y))
+                    XZX => (Self::Output::TWO * (q.x * q.z - q.w * q.y))
                         .atan2_fixed(Self::Output::TWO * (q.x * q.y + q.w * q.z)),
                 }
             }
@@ -239,24 +239,24 @@ macro_rules! impl_to_quat {
                     $quat::from_rotation_z(a)
                 }
                 match self {
-                    ZYXi => rot_z(u) * rot_y(v) * rot_x(w),
-                    ZXYi => rot_z(u) * rot_x(v) * rot_y(w),
-                    YXZi => rot_y(u) * rot_x(v) * rot_z(w),
-                    YZXi => rot_y(u) * rot_z(v) * rot_x(w),
-                    XYZi => rot_x(u) * rot_y(v) * rot_z(w),
-                    XZYi => rot_x(u) * rot_z(v) * rot_y(w),
+                    ZYX => rot_z(u) * rot_y(v) * rot_x(w),
+                    ZXY => rot_z(u) * rot_x(v) * rot_y(w),
+                    YXZ => rot_y(u) * rot_x(v) * rot_z(w),
+                    YZX => rot_y(u) * rot_z(v) * rot_x(w),
+                    XYZ => rot_x(u) * rot_y(v) * rot_z(w),
+                    XZY => rot_x(u) * rot_z(v) * rot_y(w),
                     #[allow(deprecated)]
-                    ZYZi => rot_z(u) * rot_y(v) * rot_z(w),
+                    ZYZ => rot_z(u) * rot_y(v) * rot_z(w),
                     #[allow(deprecated)]
-                    ZXZi => rot_z(u) * rot_x(v) * rot_z(w),
+                    ZXZ => rot_z(u) * rot_x(v) * rot_z(w),
                     #[allow(deprecated)]
-                    YXYi => rot_y(u) * rot_x(v) * rot_y(w),
+                    YXY => rot_y(u) * rot_x(v) * rot_y(w),
                     #[allow(deprecated)]
-                    YZYi => rot_y(u) * rot_z(v) * rot_y(w),
+                    YZY => rot_y(u) * rot_z(v) * rot_y(w),
                     #[allow(deprecated)]
-                    XYXi => rot_x(u) * rot_y(v) * rot_x(w),
+                    XYX => rot_x(u) * rot_y(v) * rot_x(w),
                     #[allow(deprecated)]
-                    XZXi => rot_x(u) * rot_z(v) * rot_x(w),
+                    XZX => rot_x(u) * rot_z(v) * rot_x(w),
                 }
                 .normalize()
             }

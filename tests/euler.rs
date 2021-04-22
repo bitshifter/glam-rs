@@ -89,18 +89,9 @@ macro_rules! impl_3axis_test {
         fn $name() {
             let euler = $euler;
             assert!($U != $W); // First and last axis must be different for three axis
-            for u in -179..=179 {
-                if u % 2 != 0 {
-                    continue;
-                }
-                for v in -89..=89 {
-                    if v % 2 != 0 {
-                        continue;
-                    }
-                    for w in -179..=179 {
-                        if w % 2 != 0 {
-                            continue;
-                        }
+            for u in (-176..=176).step_by(44) {
+                for v in (-88..=88).step_by(44) {
+                    for w in (-176..=176).step_by(44) {
                         let u1 = (u as $t).to_radians();
                         let v1 = (v as $t).to_radians();
                         let w1 = (w as $t).to_radians();
@@ -140,18 +131,9 @@ macro_rules! impl_2axis_test {
             #[allow(deprecated)]
             let euler = $euler;
             assert!($U == $W); // First and last axis must be different for three axis
-            for u in -179..=179 {
-                if u % 2 != 0 {
-                    continue;
-                }
-                for v in -89..=89 {
-                    if v % 2 != 0 {
-                        continue;
-                    }
-                    for w in -179..=179 {
-                        if w % 2 != 0 {
-                            continue;
-                        }
+            for u in (-176..=176).step_by(44) {
+                for v in (-176..=176).step_by(44) {
+                    for w in (-176..=176).step_by(44) {
                         let u1 = (u as $t).to_radians();
                         let v1 = (v as $t).to_radians();
                         let w1 = (w as $t).to_radians();
@@ -186,23 +168,23 @@ macro_rules! impl_2axis_test {
 
 macro_rules! impl_all_quat_tests_three_axis {
     ($t:ty, $q:ident, $v:ident) => {
-        impl_3axis_test!(test_euler_zyx, $t, $q, ER::ZYXi, $v::Z, $v::Y, $v::X, $v);
-        impl_3axis_test!(test_euler_zxy, $t, $q, ER::ZXYi, $v::Z, $v::X, $v::Y, $v);
-        impl_3axis_test!(test_euler_yxz, $t, $q, ER::YXZi, $v::Y, $v::X, $v::Z, $v);
-        impl_3axis_test!(test_euler_yzx, $t, $q, ER::YZXi, $v::Y, $v::Z, $v::X, $v);
-        impl_3axis_test!(test_euler_xyz, $t, $q, ER::XYZi, $v::X, $v::Y, $v::Z, $v);
-        impl_3axis_test!(test_euler_xzy, $t, $q, ER::XZYi, $v::X, $v::Z, $v::Y, $v);
+        impl_3axis_test!(test_euler_zyx, $t, $q, ER::ZYX, $v::Z, $v::Y, $v::X, $v);
+        impl_3axis_test!(test_euler_zxy, $t, $q, ER::ZXY, $v::Z, $v::X, $v::Y, $v);
+        impl_3axis_test!(test_euler_yxz, $t, $q, ER::YXZ, $v::Y, $v::X, $v::Z, $v);
+        impl_3axis_test!(test_euler_yzx, $t, $q, ER::YZX, $v::Y, $v::Z, $v::X, $v);
+        impl_3axis_test!(test_euler_xyz, $t, $q, ER::XYZ, $v::X, $v::Y, $v::Z, $v);
+        impl_3axis_test!(test_euler_xzy, $t, $q, ER::XZY, $v::X, $v::Z, $v::Y, $v);
     };
 }
 
 macro_rules! impl_all_quat_tests_two_axis {
     ($t:ty, $q:ident, $v:ident) => {
-        impl_2axis_test!(test_euler_zyz, $t, $q, ER::ZYZi, $v::Z, $v::Y, $v::Z, $v);
-        impl_2axis_test!(test_euler_zxz, $t, $q, ER::ZXZi, $v::Z, $v::X, $v::Z, $v);
-        impl_2axis_test!(test_euler_yxy, $t, $q, ER::YXYi, $v::Y, $v::X, $v::Y, $v);
-        impl_2axis_test!(test_euler_yzy, $t, $q, ER::YZYi, $v::Y, $v::Z, $v::Y, $v);
-        impl_2axis_test!(test_euler_xyx, $t, $q, ER::XYXi, $v::X, $v::Y, $v::X, $v);
-        impl_2axis_test!(test_euler_xzx, $t, $q, ER::XZXi, $v::X, $v::Z, $v::X, $v);
+        impl_2axis_test!(test_euler_zyz, $t, $q, ER::ZYZ, $v::Z, $v::Y, $v::Z, $v);
+        impl_2axis_test!(test_euler_zxz, $t, $q, ER::ZXZ, $v::Z, $v::X, $v::Z, $v);
+        impl_2axis_test!(test_euler_yxy, $t, $q, ER::YXY, $v::Y, $v::X, $v::Y, $v);
+        impl_2axis_test!(test_euler_yzy, $t, $q, ER::YZY, $v::Y, $v::Z, $v::Y, $v);
+        impl_2axis_test!(test_euler_xyx, $t, $q, ER::XYX, $v::X, $v::Y, $v::X, $v);
+        impl_2axis_test!(test_euler_xzx, $t, $q, ER::XZX, $v::X, $v::Z, $v::X, $v);
     };
 }
 
@@ -211,18 +193,9 @@ macro_rules! impl_ypr_test {
         #[test]
         fn test_ypr() {
             let euler = $euler;
-            for u in -179..=179 {
-                if u % 2 != 0 {
-                    continue;
-                }
-                for v in -89..=89 {
-                    if v % 2 != 0 {
-                        continue;
-                    }
-                    for w in -179..=179 {
-                        if w % 2 != 0 {
-                            continue;
-                        }
+            for u in (-176..=176).step_by(44) {
+                for v in (-176..=176).step_by(44) {
+                    for w in (-176..=176).step_by(44) {
                         let u1 = (u as $t).to_radians();
                         let v1 = (v as $t).to_radians();
                         let w1 = (w as $t).to_radians();
@@ -249,7 +222,7 @@ mod euler {
 
         impl_all_quat_tests_two_axis!(f32, Quat, Vec3);
 
-        impl_ypr_test!(f32, Quat, ER::YXZi);
+        impl_ypr_test!(f32, Quat, ER::YXZ);
     }
 
     mod dquat {
@@ -259,6 +232,6 @@ mod euler {
 
         impl_all_quat_tests_two_axis!(f64, DQuat, DVec3);
 
-        impl_ypr_test!(f64, DQuat, ER::YXZi);
+        impl_ypr_test!(f64, DQuat, ER::YXZ);
     }
 }
