@@ -118,7 +118,8 @@ macro_rules! impl_affine3_tests {
             // no scale
             let in_scale = $vec3::ONE;
             let in_translation = $vec3::new(-2.0, 4.0, -0.125);
-            let in_rotation = $quat::from_rotation_ypr(
+            let in_rotation = $quat::from_euler(
+                glam::EulerRot::YXZ,
                 $t::to_radians(-45.0),
                 $t::to_radians(180.0),
                 $t::to_radians(270.0),

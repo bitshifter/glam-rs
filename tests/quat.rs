@@ -34,7 +34,7 @@ macro_rules! impl_quat_tests {
 
         #[test]
         fn test_funcs() {
-            let q0 = $quat::from_rotation_ypr(deg(45.0), deg(180.0), deg(90.0));
+            let q0 = $quat::from_euler(EulerRot::YXZ, deg(45.0), deg(180.0), deg(90.0));
             assert!(q0.is_normalized());
             assert_approx_eq!(q0.length_squared(), 1.0);
             assert_approx_eq!(q0.length(), 1.0);
@@ -64,7 +64,7 @@ macro_rules! impl_quat_tests {
             let (axis, angle) = y0.to_axis_angle();
             assert_approx_eq!(axis, $vec3::Y, 1.0e-6);
             assert_approx_eq!(angle, yaw);
-            let y1 = $quat::from_rotation_ypr(yaw, zero, zero);
+            let y1 = $quat::from_euler(EulerRot::YXZ, yaw, zero, zero);
             assert_approx_eq!(y0, y1);
             let y2 = $quat::from_axis_angle($vec3::Y, yaw);
             assert_approx_eq!(y0, y2);
@@ -78,7 +78,7 @@ macro_rules! impl_quat_tests {
             let (axis, angle) = x0.to_axis_angle();
             assert_approx_eq!(axis, $vec3::X);
             assert_approx_eq!(angle, pitch);
-            let x1 = $quat::from_rotation_ypr(zero, pitch, zero);
+            let x1 = $quat::from_euler(EulerRot::YXZ, zero, pitch, zero);
             assert_approx_eq!(x0, x1);
             let x2 = $quat::from_axis_angle($vec3::X, pitch);
             assert_approx_eq!(x0, x2);
@@ -91,7 +91,7 @@ macro_rules! impl_quat_tests {
             let (axis, angle) = z0.to_axis_angle();
             assert_approx_eq!(axis, $vec3::Z);
             assert_approx_eq!(angle, roll);
-            let z1 = $quat::from_rotation_ypr(zero, zero, roll);
+            let z1 = $quat::from_euler(EulerRot::YXZ, zero, zero, roll);
             assert_approx_eq!(z0, z1);
             let z2 = $quat::from_axis_angle($vec3::Z, roll);
             assert_approx_eq!(z0, z2);
@@ -100,12 +100,12 @@ macro_rules! impl_quat_tests {
 
             let yx0 = y0 * x0;
             assert!(yx0.is_normalized());
-            let yx1 = $quat::from_rotation_ypr(yaw, pitch, zero);
+            let yx1 = $quat::from_euler(EulerRot::YXZ, yaw, pitch, zero);
             assert_approx_eq!(yx0, yx1);
 
             let yxz0 = y0 * x0 * z0;
             assert!(yxz0.is_normalized());
-            let yxz1 = $quat::from_rotation_ypr(yaw, pitch, roll);
+            let yxz1 = $quat::from_euler(EulerRot::YXZ, yaw, pitch, roll);
             assert_approx_eq!(yxz0, yxz1);
 
             // use the conjugate of z0 to remove the rotation from yxz0
@@ -220,10 +220,10 @@ macro_rules! impl_quat_tests {
         fn test_angle_between() {
             const TAU: $t = 2.0 * core::$t::consts::PI;
             let eps = 10.0 * core::$t::EPSILON as f32;
-            let q1 = $quat::from_rotation_ypr(0.0, 0.0, 0.0);
-            let q2 = $quat::from_rotation_ypr(TAU * 0.25, 0.0, 0.0);
-            let q3 = $quat::from_rotation_ypr(TAU * 0.5, 0.0, 0.0);
-            let q4 = $quat::from_rotation_ypr(0.0, 0.0, TAU * 0.25);
+            let q1 = $quat::from_euler(EulerRot::YXZ, 0.0, 0.0, 0.0);
+            let q2 = $quat::from_euler(EulerRot::YXZ, TAU * 0.25, 0.0, 0.0);
+            let q3 = $quat::from_euler(EulerRot::YXZ, TAU * 0.5, 0.0, 0.0);
+            let q4 = $quat::from_euler(EulerRot::YXZ, 0.0, 0.0, TAU * 0.25);
             let q5 = $quat::from_axis_angle($vec3::new(1.0, 2.0, 3.0).normalize(), TAU * 0.3718);
             let q6 = $quat::from_axis_angle($vec3::new(-1.0, 5.0, 3.0).normalize(), TAU * 0.94);
             assert_approx_eq!(q1.angle_between(q2), TAU * 0.25, eps);
@@ -300,7 +300,7 @@ macro_rules! impl_quat_tests {
             assert!(identity.is_normalized());
             assert_eq!(identity, $quat::from_xyzw(0.0, 0.0, 0.0, 1.0));
             assert_eq!(identity, identity * identity);
-            let q = $quat::from_rotation_ypr(deg(10.0), deg(-10.0), deg(45.0));
+            let q = $quat::from_euler(EulerRot::YXZ, deg(10.0), deg(-10.0), deg(45.0));
             assert_eq!(q, q * identity);
             assert_eq!(q, identity * q);
             assert_eq!(identity, $quat::default());
@@ -308,7 +308,8 @@ macro_rules! impl_quat_tests {
 
         #[test]
         fn test_slice() {
-            let a: [$t; 4] = $quat::from_rotation_ypr(deg(30.0), deg(60.0), deg(90.0)).into();
+            let a: [$t; 4] =
+                $quat::from_euler(EulerRot::YXZ, deg(30.0), deg(60.0), deg(90.0)).into();
             let b = $quat::from_slice_unaligned(&a);
             let c: [$t; 4] = b.into();
             assert_eq!(a, c);
@@ -434,7 +435,7 @@ macro_rules! impl_quat_tests {
 mod quat {
     use crate::support::{deg, rad};
     use core::ops::Neg;
-    use glam::{const_quat, quat, Mat3, Mat4, Quat, Vec3, Vec3A, Vec4};
+    use glam::{const_quat, quat, EulerRot, Mat3, Mat4, Quat, Vec3, Vec3A, Vec4};
 
     #[test]
     fn test_align() {
@@ -513,12 +514,12 @@ mod quat {
     fn test_as() {
         use glam::DQuat;
         assert_approx_eq!(
-            DQuat::from_rotation_ypr(1.0, 2.0, 3.0),
-            Quat::from_rotation_ypr(1.0, 2.0, 3.0).as_f64()
+            DQuat::from_euler(EulerRot::YXZ, 1.0, 2.0, 3.0),
+            Quat::from_euler(EulerRot::YXZ, 1.0, 2.0, 3.0).as_f64()
         );
         assert_approx_eq!(
-            Quat::from_rotation_ypr(1.0, 2.0, 3.0),
-            DQuat::from_rotation_ypr(1.0, 2.0, 3.0).as_f32()
+            Quat::from_euler(EulerRot::YXZ, 1.0, 2.0, 3.0),
+            DQuat::from_euler(EulerRot::YXZ, 1.0, 2.0, 3.0).as_f32()
         );
     }
 
@@ -528,7 +529,7 @@ mod quat {
 mod dquat {
     use crate::support::{deg, rad};
     use core::ops::Neg;
-    use glam::{const_dquat, dquat, DMat3, DMat4, DQuat, DVec3, DVec4};
+    use glam::{const_dquat, dquat, DMat3, DMat4, DQuat, DVec3, DVec4, EulerRot};
 
     #[test]
     fn test_align() {

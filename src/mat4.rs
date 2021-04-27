@@ -5,7 +5,7 @@ use crate::core::{
         projection::ProjectionMatrix,
     },
 };
-use crate::{DQuat, DVec3, DVec4, Quat, Vec3, Vec3A, Vec4};
+use crate::{DQuat, DVec3, DVec4, EulerRot, Quat, Vec3, Vec3A, Vec4};
 
 #[cfg(all(
     target_feature = "sse2",
@@ -182,14 +182,23 @@ macro_rules! impl_mat4_methods {
             Self($inner::from_axis_angle(axis.0, angle))
         }
 
-        /// Creates a affine transformation matrix containing a rotation from the given yaw
-        /// (around y), pitch (around x) and roll (around z) in radians.
+        #[deprecated(
+            since = "0.15.0",
+            note = "Please use `from_euler(EulerRot::YXZ, yaw, pitch, roll)` instead"
+        )]
+        #[inline(always)]
+        pub fn from_rotation_ypr(yaw: $t, pitch: $t, roll: $t) -> Self {
+            Self::from_euler(EulerRot::YXZ, yaw, pitch, roll)
+        }
+
+        #[inline(always)]
+        /// Creates a affine transformation matrix containing a rotation from the given euler
+        /// rotation sequence and angles (in radians).
         ///
         /// The resulting matrix can be used to transform 3D points and vectors. See
         /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
-        #[inline(always)]
-        pub fn from_rotation_ypr(yaw: $t, pitch: $t, roll: $t) -> Self {
-            let quat = $quat::from_rotation_ypr(yaw, pitch, roll);
+        pub fn from_euler(order: EulerRot, a: $t, b: $t, c: $t) -> Self {
+            let quat = $quat::from_euler(order, a, b, c);
             Self::from_quat(quat)
         }
 

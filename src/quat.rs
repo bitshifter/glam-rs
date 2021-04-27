@@ -114,15 +114,17 @@ macro_rules! impl_quat_methods {
             Self($inner::from_rotation_z(angle))
         }
 
+        #[deprecated(
+            since = "0.15.0",
+            note = "Please use `from_euler(EulerRot::YXZ, yaw, pitch, roll)` instead"
+        )]
         #[inline(always)]
-        /// Create a quaternion from the given yaw (around y), pitch (around x) and roll (around z)
-        /// in radians.
         pub fn from_rotation_ypr(yaw: $t, pitch: $t, roll: $t) -> Self {
-            Self($inner::from_rotation_ypr(yaw, pitch, roll))
+            Self::from_euler(EulerRot::YXZ, yaw, pitch, roll)
         }
 
         #[inline(always)]
-        /// Create a quaternion from the given euler rotation sequence and the angles in radians.
+        /// Creates a quaternion from the given euler rotation sequence and the angles (in radians).
         pub fn from_euler(euler: EulerRot, a: $t, b: $t, c: $t) -> Self {
             euler.new_quat(a, b, c)
         }

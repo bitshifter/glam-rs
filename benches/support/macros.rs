@@ -161,7 +161,7 @@ macro_rules! bench_from_ypr {
                     unsafe {
                         let data = inputs.get_unchecked(i);
                         *outputs.get_unchecked_mut(i) =
-                            <$ty>::from_rotation_ypr(data.0, data.1, data.2)
+                            <$ty>::from_euler(glam::EulerRot::YXZ, data.0, data.1, data.2)
                     }
                 })
             });

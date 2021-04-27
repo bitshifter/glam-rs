@@ -2,7 +2,7 @@ use crate::core::{
     storage::{Columns3, XYZ},
     traits::matrix::{FloatMatrix3x3, Matrix3x3, MatrixConst},
 };
-use crate::{DMat2, DMat4, DQuat, DVec2, DVec3, Mat2, Mat4, Quat, Vec2, Vec3, Vec3A};
+use crate::{DMat2, DMat4, DQuat, DVec2, DVec3, EulerRot, Mat2, Mat4, Quat, Vec2, Vec3, Vec3A};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::{
@@ -123,11 +123,20 @@ macro_rules! impl_mat3_methods {
             Self(FloatMatrix3x3::from_axis_angle(axis.0, angle))
         }
 
-        /// Creates a 3D rotation matrix from the given yaw (around y), pitch (around x) and roll
-        /// (around z) in radians.
+        #[deprecated(
+            since = "0.15.0",
+            note = "Please use `from_euler(EulerRot::YXZ, yaw, pitch, roll)` instead"
+        )]
         #[inline(always)]
         pub fn from_rotation_ypr(yaw: $t, pitch: $t, roll: $t) -> Self {
-            let quat = $quat::from_rotation_ypr(yaw, pitch, roll);
+            Self::from_euler(EulerRot::YXZ, yaw, pitch, roll)
+        }
+
+        #[inline(always)]
+        /// Creates a 3D rotation matrix from the given euler rotation sequence and the angles (in
+        /// radians).
+        pub fn from_euler(order: EulerRot, a: $t, b: $t, c: $t) -> Self {
+            let quat = $quat::from_euler(order, a, b, c);
             Self::from_quat(quat)
         }
 

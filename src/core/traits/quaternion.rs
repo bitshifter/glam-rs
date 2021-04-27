@@ -18,26 +18,6 @@ pub trait Quaternion<T: FloatEx>: FloatVector4<T> {
     }
 
     #[inline]
-    fn from_rotation_ypr(yaw: T, pitch: T, roll: T) -> Self {
-        // Self::from_rotation_y(yaw) * Self::from_rotation_x(pitch) * Self::from_rotation_z(roll)
-        let (y0, w0) = (yaw * T::HALF).sin_cos();
-        let (x1, w1) = (pitch * T::HALF).sin_cos();
-        let (z2, w2) = (roll * T::HALF).sin_cos();
-
-        let x3 = w0 * x1;
-        let y3 = y0 * w1;
-        let z3 = -y0 * x1;
-        let w3 = w0 * w1;
-
-        let x4 = x3 * w2 + y3 * z2;
-        let y4 = -x3 * z2 + y3 * w2;
-        let z4 = w3 * z2 + z3 * w2;
-        let w4 = w3 * w2 - z3 * z2;
-
-        Self::new(x4, y4, z4, w4)
-    }
-
-    #[inline]
     fn from_rotation_x(angle: T) -> Self {
         let (s, c) = (angle * T::HALF).sin_cos();
         Self::new(s, T::ZERO, T::ZERO, c)

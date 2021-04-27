@@ -201,28 +201,29 @@ macro_rules! impl_mat4_tests {
 
         #[test]
         fn test_from_ypr() {
+            use glam::EulerRot;
             let zero = deg(0.0);
             let yaw = deg(30.0);
             let pitch = deg(60.0);
             let roll = deg(90.0);
             let y0 = $mat4::from_rotation_y(yaw);
-            let y1 = $mat4::from_rotation_ypr(yaw, zero, zero);
+            let y1 = $mat4::from_euler(EulerRot::YXZ, yaw, zero, zero);
             assert_approx_eq!(y0, y1);
 
             let x0 = $mat4::from_rotation_x(pitch);
-            let x1 = $mat4::from_rotation_ypr(zero, pitch, zero);
+            let x1 = $mat4::from_euler(EulerRot::YXZ, zero, pitch, zero);
             assert_approx_eq!(x0, x1);
 
             let z0 = $mat4::from_rotation_z(roll);
-            let z1 = $mat4::from_rotation_ypr(zero, zero, roll);
+            let z1 = $mat4::from_euler(EulerRot::YXZ, zero, zero, roll);
             assert_approx_eq!(z0, z1);
 
             let yx0 = y0 * x0;
-            let yx1 = $mat4::from_rotation_ypr(yaw, pitch, zero);
+            let yx1 = $mat4::from_euler(EulerRot::YXZ, yaw, pitch, zero);
             assert_approx_eq!(yx0, yx1);
 
             let yxz0 = y0 * x0 * z0;
-            let yxz1 = $mat4::from_rotation_ypr(yaw, pitch, roll);
+            let yxz1 = $mat4::from_euler(EulerRot::YXZ, yaw, pitch, roll);
             assert_approx_eq!(yxz0, yxz1, 1e-6);
         }
 
@@ -327,7 +328,8 @@ macro_rules! impl_mat4_tests {
             // no scale
             let in_scale = $vec3::ONE;
             let in_translation = $vec3::new(-2.0, 4.0, -0.125);
-            let in_rotation = $quat::from_rotation_ypr(
+            let in_rotation = $quat::from_euler(
+                glam::EulerRot::YXZ,
                 $t::to_radians(-45.0),
                 $t::to_radians(180.0),
                 $t::to_radians(270.0),

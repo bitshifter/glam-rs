@@ -87,7 +87,7 @@ macro_rules! impl_float_types {
                 let yaw = -PI + rng.gen::<$t>() * 2.0 * PI;
                 let pitch = -PI + rng.gen::<$t>() * 2.0 * PI;
                 let roll = -PI + rng.gen::<$t>() * 2.0 * PI;
-                $quat::from_rotation_ypr(yaw, pitch, roll)
+                $quat::from_euler(crate::EulerRot::YXZ, yaw, pitch, roll)
             }
         }
 

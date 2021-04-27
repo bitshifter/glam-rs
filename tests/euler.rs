@@ -201,6 +201,7 @@ macro_rules! impl_ypr_test {
                         let w1 = (w as $t).to_radians();
 
                         let q1: $quat = $quat::from_euler(euler, u1, v1, w1);
+                        #[allow(deprecated)]
                         let q2: $quat = $quat::from_rotation_ypr(u1, v1, w1);
                         assert_approx_eq!(q1, q2, 1e-5);
                     }
