@@ -671,16 +671,16 @@ macro_rules! impl_vecn_as_u32 {
     };
 }
 
-macro_rules! impl_vecn_to_simd_noop {
-    ($inner:ident) => {
-        #[inline(always)]
-        pub(crate) fn to_simd(&self) -> $inner {
-            self.0
-        }
+// macro_rules! impl_vecn_to_simd_noop {
+//     ($inner:ident) => {
+//         #[inline(always)]
+//         pub(crate) fn to_simd(&self) -> $inner {
+//             self.0
+//         }
 
-        #[inline(always)]
-        pub(crate) fn from_simd(inner: $inner) -> Self {
-            Self(inner)
-        }
-    };
-}
+//         #[inline(always)]
+//         pub(crate) fn from_simd(inner: $inner) -> Self {
+//             Self(inner)
+//         }
+//     };
+// }

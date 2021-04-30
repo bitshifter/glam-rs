@@ -285,13 +285,13 @@ macro_rules! impl_mat3_methods {
         /// Transforms a 3D vector.
         #[inline(always)]
         pub fn mul_vec3(&self, other: $vec3) -> $vec3 {
-            $vec3::from_simd(self.to_simd().mul_vector(other.to_simd().into()).into())
+            $vec3(self.0.mul_vector(other.0.into()).into())
         }
 
         /// Multiplies two 3x3 matrices.
         #[inline]
         pub fn mul_mat3(&self, other: &Self) -> Self {
-            Self::from_simd(self.to_simd().mul_matrix(&other.to_simd()))
+            Self(self.0.mul_matrix(&other.0))
         }
 
         /// Adds two 3x3 matrices.
@@ -516,7 +516,7 @@ impl Mat3 {
     /// Transforms a `Vec3A`.
     #[inline]
     pub fn mul_vec3a(&self, other: Vec3A) -> Vec3A {
-        Vec3A::from_simd(self.to_simd().mul_vector(other.to_simd().into()).into())
+        Vec3A(self.0.mul_vector(other.0.into()).into())
     }
 
     #[inline(always)]
@@ -526,38 +526,6 @@ impl Mat3 {
             self.y_axis.as_f64(),
             self.z_axis.as_f64(),
         )
-    }
-
-    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-    #[inline(always)]
-    fn to_simd(&self) -> Columns3<__m128> {
-        Columns3 {
-            x_axis: self.x_axis.0.into(),
-            y_axis: self.y_axis.0.into(),
-            z_axis: self.z_axis.0.into(),
-        }
-    }
-
-    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-    #[inline(always)]
-    fn from_simd(m: Columns3<__m128>) -> Self {
-        Self(Matrix3x3::from_cols(
-            m.x_axis.into(),
-            m.y_axis.into(),
-            m.z_axis.into(),
-        ))
-    }
-
-    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-    #[inline(always)]
-    fn to_simd(&self) -> InnerF32 {
-        self.0
-    }
-
-    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-    #[inline(always)]
-    fn from_simd(m: InnerF32) -> Self {
-        Self(m)
     }
 }
 impl_mat3_traits!(f32, mat3, Mat3, Mat4, Vec3, Vec3);
@@ -593,16 +561,6 @@ impl Mat3A {
             self.y_axis.as_f64(),
             self.z_axis.as_f64(),
         )
-    }
-
-    #[inline(always)]
-    fn to_simd(&self) -> InnerF32A {
-        self.0
-    }
-
-    #[inline(always)]
-    fn from_simd(m: InnerF32A) -> Self {
-        Self(m)
     }
 }
 impl_mat3_traits!(f32, mat3a, Mat3A, Mat4, Vec3, Vec3A);
@@ -642,16 +600,6 @@ impl DMat3 {
             self.y_axis.as_f32(),
             self.z_axis.as_f32(),
         )
-    }
-
-    #[inline(always)]
-    fn to_simd(&self) -> InnerF64 {
-        self.0
-    }
-
-    #[inline(always)]
-    fn from_simd(inner: InnerF64) -> Self {
-        Self(inner)
     }
 }
 impl_mat3_traits!(f64, dmat3, DMat3, DMat4, DVec3, DVec3);
