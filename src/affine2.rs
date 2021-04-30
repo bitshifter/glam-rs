@@ -249,9 +249,11 @@ macro_rules! impl_affine2_traits {
 
             #[inline(always)]
             fn mul(self, other: $affine2) -> Self::Output {
+                use crate::core::traits::matrix::Matrix2x2;
+                let matrix2 = self.matrix2.to_simd();
                 Self {
-                    matrix2: self.matrix2 * other.matrix2,
-                    translation: self.matrix2 * other.translation + self.translation,
+                    matrix2: $mat2::from_simd(matrix2.mul_matrix(&other.matrix2.to_simd())),
+                    translation: $vec2(matrix2.mul_vector(other.translation.0)) + self.translation,
                 }
             }
         }

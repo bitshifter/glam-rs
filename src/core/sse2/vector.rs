@@ -777,12 +777,12 @@ impl FloatVector4<f32> for __m128 {
     }
 }
 
-impl From<XYZW<f32>> for __m128 {
-    #[inline(always)]
-    fn from(v: XYZW<f32>) -> __m128 {
-        unsafe { _mm_set_ps(v.w, v.z, v.y, v.x) }
-    }
-}
+// impl From<XYZW<f32>> for __m128 {
+//     #[inline(always)]
+//     fn from(v: XYZW<f32>) -> __m128 {
+//         unsafe { _mm_loadu_ps(&v as *const XYZW<f32> as *const f32) }
+//     }
+// }
 
 impl From<XYZ<f32>> for __m128 {
     #[inline(always)]
@@ -801,10 +801,10 @@ impl From<XY<f32>> for __m128 {
 impl From<__m128> for XYZW<f32> {
     #[inline(always)]
     fn from(v: __m128) -> XYZW<f32> {
-        let mut out: MaybeUninit<Align16<XYZW<f32>>> = MaybeUninit::uninit();
+        let mut out = MaybeUninit::<Self>::uninit();
         unsafe {
-            _mm_store_ps(out.as_mut_ptr() as *mut f32, v);
-            out.assume_init().0
+            _mm_storeu_ps(out.as_mut_ptr() as *mut f32, v);
+            out.assume_init()
         }
     }
 }
@@ -812,7 +812,7 @@ impl From<__m128> for XYZW<f32> {
 impl From<__m128> for XYZ<f32> {
     #[inline(always)]
     fn from(v: __m128) -> XYZ<f32> {
-        let mut out: MaybeUninit<Align16<XYZ<f32>>> = MaybeUninit::uninit();
+        let mut out = MaybeUninit::<Align16<Self>>::uninit();
         unsafe {
             _mm_store_ps(out.as_mut_ptr() as *mut f32, v);
             out.assume_init().0
@@ -823,7 +823,7 @@ impl From<__m128> for XYZ<f32> {
 impl From<__m128> for XY<f32> {
     #[inline(always)]
     fn from(v: __m128) -> XY<f32> {
-        let mut out: MaybeUninit<Align16<XY<f32>>> = MaybeUninit::uninit();
+        let mut out = MaybeUninit::<Align16<Self>>::uninit();
         unsafe {
             _mm_store_ps(out.as_mut_ptr() as *mut f32, v);
             out.assume_init().0

@@ -507,7 +507,26 @@ impl FloatMatrix4x4<f32, __m128> for Columns4<__m128> {
 
 impl ProjectionMatrix<f32, __m128> for Columns4<__m128> {}
 
+impl From<Columns2<XY<f32>>> for __m128 {
+    #[inline(always)]
+    fn from(v: Columns2<XY<f32>>) -> __m128 {
+        unsafe { _mm_loadu_ps(&v as *const Columns2<XY<f32>> as *const f32) }
+    }
+}
+
+impl From<__m128> for Columns2<XY<f32>> {
+    #[inline(always)]
+    fn from(v: __m128) -> Columns2<XY<f32>> {
+        let mut out = MaybeUninit::<Self>::uninit();
+        unsafe {
+            _mm_storeu_ps(out.as_mut_ptr() as *mut f32, v);
+            out.assume_init()
+        }
+    }
+}
+
 impl From<Columns3<XYZ<f32>>> for Columns3<__m128> {
+    #[inline(always)]
     fn from(v: Columns3<XYZ<f32>>) -> Columns3<__m128> {
         Self {
             x_axis: v.x_axis.into(),
@@ -518,6 +537,7 @@ impl From<Columns3<XYZ<f32>>> for Columns3<__m128> {
 }
 
 impl From<Columns3<__m128>> for Columns3<XYZ<f32>> {
+    #[inline(always)]
     fn from(v: Columns3<__m128>) -> Columns3<XYZ<f32>> {
         Self {
             x_axis: v.x_axis.into(),

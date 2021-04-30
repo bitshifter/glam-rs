@@ -153,13 +153,13 @@ macro_rules! impl_mat2_methods {
         /// Returns the transpose of `self`.
         #[inline(always)]
         pub fn transpose(&self) -> Self {
-            Self(self.0.transpose())
+            Self::from_simd(self.to_simd().transpose())
         }
 
         /// Returns the determinant of `self`.
         #[inline(always)]
         pub fn determinant(&self) -> $t {
-            self.0.determinant()
+            self.to_simd().determinant()
         }
 
         /// Returns the inverse of `self`.
@@ -167,37 +167,37 @@ macro_rules! impl_mat2_methods {
         /// If the matrix is not invertible the returned matrix will be invalid.
         #[inline(always)]
         pub fn inverse(&self) -> Self {
-            Self(self.0.inverse())
+            Self::from_simd(self.to_simd().inverse())
         }
 
         /// Transforms a 2D vector.
         #[inline(always)]
         pub fn mul_vec2(&self, other: $vec2) -> $vec2 {
-            $vec2(self.0.mul_vector(other.0))
+            $vec2(self.to_simd().mul_vector(other.0))
         }
 
         /// Multiplies two 2x2 matrices.
         #[inline(always)]
         pub fn mul_mat2(&self, other: &Self) -> Self {
-            Self(self.0.mul_matrix(&other.0))
+            Self::from_simd(self.to_simd().mul_matrix(&other.to_simd()))
         }
 
         /// Adds two 2x2 matrices.
         #[inline(always)]
         pub fn add_mat2(&self, other: &Self) -> Self {
-            Self(self.0.add_matrix(&other.0))
+            Self::from_simd(self.to_simd().add_matrix(&other.to_simd()))
         }
 
         /// Subtracts two 2x2 matrices.
         #[inline(always)]
         pub fn sub_mat2(&self, other: &Self) -> Self {
-            Self(self.0.sub_matrix(&other.0))
+            Self::from_simd(self.to_simd().sub_matrix(&other.to_simd()))
         }
 
         /// Multiplies a 2x2 matrix by a scalar.
         #[inline(always)]
         pub fn mul_scalar(&self, other: $t) -> Self {
-            Self(self.0.mul_scalar(other))
+            Self::from_simd(self.to_simd().mul_scalar(other))
         }
 
         /// Returns true if the absolute difference of all elements between `self` and `other`
@@ -368,10 +368,6 @@ macro_rules! impl_mat2_traits {
     };
 }
 
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-type InnerF32 = __m128;
-
-#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
 type InnerF32 = crate::core::storage::Columns2<XY<f32>>;
 
 /// A 2x2 column major matrix.
@@ -385,6 +381,30 @@ impl Mat2 {
     #[inline(always)]
     pub fn as_f64(&self) -> DMat2 {
         DMat2::from_cols(self.x_axis.as_f64(), self.y_axis.as_f64())
+    }
+
+    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+    #[inline(always)]
+    pub(crate) fn to_simd(&self) -> __m128 {
+        self.0.into()
+    }
+
+    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+    #[inline(always)]
+    pub(crate) fn from_simd(m: __m128) -> Self {
+        Self(m.into())
+    }
+
+    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+    #[inline(always)]
+    pub(crate) fn to_simd(&self) -> InnerF32 {
+        self.0
+    }
+
+    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+    #[inline(always)]
+    pub(crate) fn from_simd(m: InnerF32) -> Self {
+        Self(m)
     }
 }
 impl_mat2_traits!(f32, mat2, Mat2, Mat3, Vec2);
@@ -402,6 +422,16 @@ impl DMat2 {
     #[inline(always)]
     pub fn as_f32(&self) -> Mat2 {
         Mat2::from_cols(self.x_axis.as_f32(), self.y_axis.as_f32())
+    }
+
+    #[inline(always)]
+    pub(crate) fn to_simd(&self) -> InnerF64 {
+        self.0
+    }
+
+    #[inline(always)]
+    pub(crate) fn from_simd(m: InnerF64) -> Self {
+        Self(m)
     }
 }
 impl_mat2_traits!(f64, dmat2, DMat2, DMat3, DVec2);

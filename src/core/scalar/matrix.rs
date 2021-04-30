@@ -233,6 +233,7 @@ impl<T: FloatEx> FloatMatrix4x4<T, XYZW<T>> for Columns4<XYZW<T>> {
 impl<T: FloatEx> ProjectionMatrix<T, XYZW<T>> for Columns4<XYZW<T>> {}
 
 impl From<Columns3<XYZ<f32>>> for Columns3<XYZF32A16> {
+    #[inline(always)]
     fn from(v: Columns3<XYZ<f32>>) -> Columns3<XYZF32A16> {
         Self {
             x_axis: v.x_axis.into(),
@@ -243,6 +244,7 @@ impl From<Columns3<XYZ<f32>>> for Columns3<XYZF32A16> {
 }
 
 impl From<Columns3<XYZF32A16>> for Columns3<XYZ<f32>> {
+    #[inline(always)]
     fn from(v: Columns3<XYZF32A16>) -> Columns3<XYZ<f32>> {
         Self {
             x_axis: v.x_axis.into(),
