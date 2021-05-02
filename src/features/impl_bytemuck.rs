@@ -3,7 +3,7 @@ use crate::{
     UVec2, UVec3, UVec4, Vec2, Vec3, Vec4,
 };
 #[cfg(feature = "transform-types")]
-use crate::{TransformRT, TransformSRT};
+use crate::{TransformRt, TransformSrt};
 use bytemuck::{Pod, Zeroable};
 
 unsafe impl Pod for Mat2 {}
@@ -55,13 +55,13 @@ unsafe impl Pod for UVec4 {}
 unsafe impl Zeroable for UVec4 {}
 
 #[cfg(feature = "transform-types")]
-unsafe impl Pod for TransformRT {}
+unsafe impl Pod for TransformRt {}
 #[cfg(feature = "transform-types")]
-unsafe impl Zeroable for TransformRT {}
+unsafe impl Zeroable for TransformRt {}
 #[cfg(feature = "transform-types")]
-unsafe impl Pod for TransformSRT {}
+unsafe impl Pod for TransformSrt {}
 #[cfg(feature = "transform-types")]
-unsafe impl Zeroable for TransformSRT {}
+unsafe impl Zeroable for TransformSrt {}
 
 #[cfg(test)]
 mod test {

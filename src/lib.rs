@@ -238,7 +238,7 @@ pub mod f32 {
     pub use super::vec4::{vec4, Vec4};
 
     #[cfg(feature = "transform-types")]
-    pub use super::transform::{TransformRT, TransformSRT};
+    pub use super::transform::{TransformRt, TransformSrt};
 }
 pub use self::f32::*;
 
