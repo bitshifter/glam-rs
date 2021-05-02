@@ -51,12 +51,12 @@ bench_binop!(
 //     from => TransformRt
 // );
 
- // bench_unop!(
- //     rt_inverse,
- //     "transform_rt inverse",
- //     op => inverse,
- //     ty => TransformRt
- // );
+// bench_unop!(
+//     rt_inverse,
+//     "transform_rt inverse",
+//     op => inverse,
+//     ty => TransformRt
+// );
 
 bench_binop!(
     srt_mul_srt,
