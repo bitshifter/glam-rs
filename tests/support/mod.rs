@@ -7,7 +7,7 @@ use glam::{
 };
 
 #[cfg(feature = "transform-types")]
-use glam::{TransformRT, TransformSRT};
+use glam::{TransformRt, TransformSrt};
 
 pub trait Deg {
     fn to_radians(self) -> Self;
@@ -336,7 +336,7 @@ impl FloatCompare for DVec4 {
 }
 
 #[cfg(feature = "transform-types")]
-impl FloatCompare for TransformSRT {
+impl FloatCompare for TransformSrt {
     #[inline]
     fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
         self.abs_diff_eq(*other, max_abs_diff)
@@ -353,7 +353,7 @@ impl FloatCompare for TransformSRT {
 }
 
 #[cfg(feature = "transform-types")]
-impl FloatCompare for TransformRT {
+impl FloatCompare for TransformRt {
     #[inline]
     fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
         self.abs_diff_eq(*other, max_abs_diff)

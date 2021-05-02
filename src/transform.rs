@@ -9,13 +9,13 @@ use rand::{
 
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[repr(C)]
-pub struct TransformSRT {
+pub struct TransformSrt {
     pub scale: Vec3,
     pub rotation: Quat,
     pub translation: Vec3,
 }
 
-impl Default for TransformSRT {
+impl Default for TransformSrt {
     #[inline]
     fn default() -> Self {
         Self {
@@ -28,12 +28,12 @@ impl Default for TransformSRT {
 
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[repr(C)]
-pub struct TransformRT {
+pub struct TransformRt {
     pub rotation: Quat,
     pub translation: Vec3,
 }
 
-impl Default for TransformRT {
+impl Default for TransformRt {
     #[inline]
     fn default() -> Self {
         Self {
@@ -43,7 +43,7 @@ impl Default for TransformRT {
     }
 }
 
-impl TransformSRT {
+impl TransformSrt {
     /// The identity transforms that does nothing.
     pub const IDENTITY: Self = Self {
         scale: Vec3::ONE,
@@ -61,7 +61,7 @@ impl TransformSRT {
     }
 
     #[inline]
-    pub fn from_transform_rt(scale: Vec3, rt: &TransformRT) -> Self {
+    pub fn from_transform_rt(scale: Vec3, rt: &TransformRt) -> Self {
         Self {
             scale,
             rotation: rt.rotation,
@@ -96,9 +96,23 @@ impl TransformSRT {
         mul_srt_srt(self, other)
     }
 
+    #[deprecated(
+        since = "0.15.0",
+        note = "Please use `transform_point3(other)` instead"
+    )]
     #[inline]
-    pub fn transform_vec3(self, other: Vec3) -> Vec3 {
+    pub fn transform_vec3(&self, other: Vec3) -> Vec3 {
+        self.transform_point3(other)
+    }
+
+    #[inline]
+    pub fn transform_point3(&self, other: Vec3) -> Vec3 {
         (self.rotation * (other * self.scale)) + self.translation
+    }
+
+    #[inline]
+    pub fn transform_vector3(&self, other: Vec3) -> Vec3 {
+        self.rotation * (other * self.scale)
     }
 
     /// Returns true if the absolute difference of all elements between `self`
@@ -121,7 +135,7 @@ impl TransformSRT {
 }
 
 #[inline]
-fn mul_srt_srt(lhs: &TransformSRT, rhs: &TransformSRT) -> TransformSRT {
+fn mul_srt_srt(lhs: &TransformSrt, rhs: &TransformSrt) -> TransformSrt {
     // Based on https://github.com/nfrechette/rtm `rtm::qvv_mul`
     let lhs_scale = Vec3A::from(lhs.scale);
     let rhs_scale = Vec3A::from(rhs.scale);
@@ -144,7 +158,7 @@ fn mul_srt_srt(lhs: &TransformSRT, rhs: &TransformSRT) -> TransformSRT {
         let scale = Vec3::from(scale);
         let rotation = Quat::from_rotation_mat4(&result_mtx);
         let translation = result_mtx.w_axis.xyz();
-        TransformSRT {
+        TransformSrt {
             scale,
             rotation,
             translation,
@@ -156,7 +170,7 @@ fn mul_srt_srt(lhs: &TransformSRT, rhs: &TransformSRT) -> TransformSRT {
             (rhs.rotation * (Vec3A::from(lhs.translation) * rhs_scale))
                 + Vec3A::from(rhs.translation),
         );
-        TransformSRT {
+        TransformSrt {
             scale,
             rotation,
             translation,
@@ -165,16 +179,16 @@ fn mul_srt_srt(lhs: &TransformSRT, rhs: &TransformSRT) -> TransformSRT {
 }
 
 #[inline]
-fn mul_rt_rt(lhs: &TransformRT, rhs: &TransformRT) -> TransformRT {
+fn mul_rt_rt(lhs: &TransformRt, rhs: &TransformRt) -> TransformRt {
     let rotation = lhs.rotation * rhs.rotation;
     let translation = (rhs.rotation * lhs.translation) + rhs.translation;
-    TransformRT {
+    TransformRt {
         rotation,
         translation,
     }
 }
 
-impl TransformRT {
+impl TransformRt {
     /// The identity transforms that does nothing.
     pub const IDENTITY: Self = Self {
         rotation: Quat::IDENTITY,
@@ -225,9 +239,23 @@ impl TransformRT {
         mul_rt_rt(self, other)
     }
 
+    #[deprecated(
+        since = "0.15.0",
+        note = "Please use `transform_point3(other)` instead"
+    )]
     #[inline]
     pub fn transform_vec3(self, other: Vec3) -> Vec3 {
+        self.transform_point3(other)
+    }
+
+    #[inline]
+    pub fn transform_point3(&self, other: Vec3) -> Vec3 {
         (self.rotation * other) + self.translation
+    }
+
+    #[inline]
+    pub fn transform_vector3(&self, other: Vec3) -> Vec3 {
+        self.rotation * other
     }
 
     /// Returns true if the absolute difference of all elements between `self`
@@ -248,45 +276,31 @@ impl TransformRT {
     }
 }
 
-impl AsRef<TransformRT> for TransformSRT {
-    #[inline]
-    fn as_ref(&self) -> &TransformRT {
-        unsafe { &*(self as *const Self as *const TransformRT) }
-    }
-}
-
-impl AsMut<TransformRT> for TransformSRT {
-    #[inline]
-    fn as_mut(&mut self) -> &mut TransformRT {
-        unsafe { &mut *(self as *mut Self as *mut TransformRT) }
-    }
-}
-
-impl Mul<Vec3> for TransformRT {
+impl Mul<Vec3> for TransformRt {
     type Output = Vec3;
     #[inline]
     fn mul(self, other: Vec3) -> Vec3 {
-        self.transform_vec3(other)
+        self.transform_point3(other)
     }
 }
 
-impl Mul<Vec3> for TransformSRT {
+impl Mul<Vec3> for TransformSrt {
     type Output = Vec3;
     #[inline]
     fn mul(self, other: Vec3) -> Vec3 {
-        self.transform_vec3(other)
+        self.transform_point3(other)
     }
 }
 
-impl Mul<TransformRT> for TransformRT {
-    type Output = TransformRT;
+impl Mul<TransformRt> for TransformRt {
+    type Output = TransformRt;
     #[inline]
-    fn mul(self, other: TransformRT) -> TransformRT {
+    fn mul(self, other: TransformRt) -> TransformRt {
         mul_rt_rt(&self, &other)
     }
 }
 
-impl Mul<TransformSRT> for TransformSRT {
+impl Mul<TransformSrt> for TransformSrt {
     type Output = Self;
     #[inline]
     fn mul(self, other: Self) -> Self::Output {
@@ -294,25 +308,25 @@ impl Mul<TransformSRT> for TransformSRT {
     }
 }
 
-impl Mul<TransformRT> for TransformSRT {
-    type Output = TransformSRT;
+impl Mul<TransformRt> for TransformSrt {
+    type Output = TransformSrt;
     #[inline]
-    fn mul(self, other: TransformRT) -> Self::Output {
+    fn mul(self, other: TransformRt) -> Self::Output {
         mul_srt_srt(&self, &other.into())
     }
 }
 
-impl Mul<TransformSRT> for TransformRT {
-    type Output = TransformSRT;
+impl Mul<TransformSrt> for TransformRt {
+    type Output = TransformSrt;
     #[inline]
-    fn mul(self, other: TransformSRT) -> Self::Output {
+    fn mul(self, other: TransformSrt) -> Self::Output {
         mul_srt_srt(&self.into(), &other)
     }
 }
 
-impl From<TransformRT> for TransformSRT {
+impl From<TransformRt> for TransformSrt {
     #[inline]
-    fn from(tr: TransformRT) -> Self {
+    fn from(tr: TransformRt) -> Self {
         Self {
             translation: tr.translation,
             rotation: tr.rotation,
@@ -322,10 +336,10 @@ impl From<TransformRT> for TransformSRT {
 }
 
 #[cfg(feature = "rand")]
-impl Distribution<TransformRT> for Standard {
+impl Distribution<TransformRt> for Standard {
     #[inline]
-    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> TransformRT {
-        TransformRT::from_rotation_translation(
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> TransformRt {
+        TransformRt::from_rotation_translation(
             rng.gen::<Quat>(),
             Vec3::new(
                 rng.gen_range(core::f32::MIN..=core::f32::MAX),
@@ -337,16 +351,16 @@ impl Distribution<TransformRT> for Standard {
 }
 
 #[cfg(feature = "rand")]
-impl Distribution<TransformSRT> for Standard {
+impl Distribution<TransformSrt> for Standard {
     #[inline]
-    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> TransformSRT {
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> TransformSrt {
         let mut gen_non_zero = || loop {
             let f: f32 = rng.gen_range(core::f32::MIN..=core::f32::MAX);
             if f.abs() > core::f32::MIN_POSITIVE {
                 return f;
             }
         };
-        TransformSRT::from_scale_rotation_translation(
+        TransformSrt::from_scale_rotation_translation(
             Vec3::new(gen_non_zero(), gen_non_zero(), gen_non_zero()),
             rng.gen::<Quat>(),
             Vec3::new(
@@ -358,16 +372,16 @@ impl Distribution<TransformSRT> for Standard {
     }
 }
 
-impl From<TransformSRT> for Mat4 {
+impl From<TransformSrt> for Mat4 {
     #[inline]
-    fn from(srt: TransformSRT) -> Self {
+    fn from(srt: TransformSrt) -> Self {
         Mat4::from_scale_rotation_translation(srt.scale, srt.rotation, srt.translation)
     }
 }
 
-impl From<TransformRT> for Mat4 {
+impl From<TransformRt> for Mat4 {
     #[inline]
-    fn from(rt: TransformRT) -> Self {
+    fn from(rt: TransformRt) -> Self {
         Mat4::from_rotation_translation(rt.rotation, rt.translation)
     }
 }
