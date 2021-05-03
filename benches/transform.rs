@@ -51,6 +51,22 @@ bench_binop!(
 );
 
 bench_binop!(
+    isometry3a_transform_vector3,
+    "isometry3a transform vector3",
+    op => transform_vector3,
+    from1 => random_isometry3a,
+    from2 => random_vec3
+);
+
+bench_binop!(
+    isometry3a_transform_vector3a,
+    "isometry3a transform vector3a",
+    op => transform_vector3a,
+    from1 => random_isometry3a,
+    from2 => random_vec3a
+);
+
+bench_binop!(
     transform3a_transform_point3,
     "transform3a transform point3",
     op => transform_point3,
@@ -66,6 +82,21 @@ bench_binop!(
     from2 => random_vec3a
 );
 
+bench_binop!(
+    transform3a_transform_vector3,
+    "transform3a transform vector3",
+    op => transform_vector3,
+    from1 => random_transform3a,
+    from2 => random_vec3
+);
+
+bench_binop!(
+    transform3a_transform_vector3a,
+    "transform3a transform vector3a",
+    op => transform_vector3a,
+    from1 => random_transform3a,
+    from2 => random_vec3a
+);
 bench_binop!(
     transform3a_mul_transform3a,
     "transform3a mul transform3a",
@@ -86,10 +117,14 @@ criterion_group!(
     isometry3a_mul_isometry3a,
     isometry3a_transform_point3,
     isometry3a_transform_point3a,
+    isometry3a_transform_vector3,
+    isometry3a_transform_vector3a,
     transform3a_inverse,
     transform3a_mul_transform3a,
     transform3a_transform_point3,
     transform3a_transform_point3a,
+    transform3a_transform_vector3,
+    transform3a_transform_vector3a,
 );
 
 criterion_main!(benches);
