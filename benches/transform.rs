@@ -4,20 +4,20 @@ mod macros;
 mod support;
 
 use criterion::{criterion_group, criterion_main, Criterion};
-use glam::{TransformRt, TransformSrt};
+use glam::{Isometry3A, Transform3A};
 use std::ops::Mul;
 use support::*;
 
-fn random_transform_srt(rng: &mut PCG32) -> TransformSrt {
-    TransformSrt::from_scale_rotation_translation(
+fn random_transform_srt(rng: &mut PCG32) -> Transform3A {
+    Transform3A::from_scale_rotation_translation(
         random_nonzero_vec3(rng),
         random_quat(rng),
         random_vec3(rng),
     )
 }
 
-fn random_transform_rt(rng: &mut PCG32) -> TransformRt {
-    TransformRt::from_rotation_translation(random_quat(rng), random_vec3(rng))
+fn random_transform_rt(rng: &mut PCG32) -> Isometry3A {
+    Isometry3A::from_rotation_translation(random_quat(rng), random_vec3(rng))
 }
 
 bench_unop!(

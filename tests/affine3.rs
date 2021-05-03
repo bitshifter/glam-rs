@@ -215,24 +215,24 @@ macro_rules! impl_affine3_tests {
     };
 }
 
-mod affine3 {
+mod affine3a {
     use super::support::deg;
-    use glam::{Affine3, Quat, Vec3, Vec3A};
+    use glam::{Affine3A, Quat, Vec3, Vec3A};
 
     #[test]
     fn test_align() {
         use std::mem;
-        assert_eq!(64, mem::size_of::<Affine3>());
-        assert_eq!(16, mem::align_of::<Affine3>());
+        assert_eq!(64, mem::size_of::<Affine3A>());
+        assert_eq!(16, mem::align_of::<Affine3A>());
     }
 
     #[test]
     fn test_affine3_mul_vec3a() {
-        let m = Affine3::from_axis_angle(Vec3::Z, deg(90.0));
+        let m = Affine3A::from_axis_angle(Vec3::Z, deg(90.0));
         let result3 = m.transform_vector3a(Vec3A::Y);
         assert_approx_eq!(Vec3A::new(-1.0, 0.0, 0.0), result3);
 
-        let m = Affine3::from_scale_rotation_translation(
+        let m = Affine3A::from_scale_rotation_translation(
             Vec3::new(0.5, 1.5, 2.0),
             Quat::from_rotation_x(deg(90.0)),
             Vec3::new(1.0, 2.0, 3.0),
@@ -244,7 +244,7 @@ mod affine3 {
         assert_approx_eq!(Vec3A::new(1.0, 2.0, 4.5), result3, 1.0e-6);
     }
 
-    impl_affine3_tests!(f32, Affine3, Quat, Vec3);
+    impl_affine3_tests!(f32, Affine3A, Quat, Vec3);
 }
 
 mod daffine3 {

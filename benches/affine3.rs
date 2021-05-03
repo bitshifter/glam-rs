@@ -4,7 +4,7 @@ mod macros;
 mod support;
 
 use criterion::{criterion_group, criterion_main, Criterion};
-use glam::Affine3;
+use glam::Affine3A;
 use std::ops::Mul;
 use support::*;
 
@@ -43,7 +43,7 @@ pub fn affine3_from_srt(c: &mut Criterion) {
             })
             .collect::<Vec<(Vec3, Quat, Vec3)>>(),
     );
-    let mut outputs = vec![Affine3::default(); SIZE];
+    let mut outputs = vec![Affine3A::IDENTITY; SIZE];
     let mut i = 0;
     c.bench_function("affine3 from srt", |b| {
         b.iter(|| {
@@ -51,7 +51,7 @@ pub fn affine3_from_srt(c: &mut Criterion) {
             unsafe {
                 let data = inputs.get_unchecked(i);
                 *outputs.get_unchecked_mut(i) =
-                    Affine3::from_scale_rotation_translation(data.0, data.1, data.2)
+                    Affine3A::from_scale_rotation_translation(data.0, data.1, data.2)
             }
         })
     });

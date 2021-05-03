@@ -2,12 +2,12 @@
 mod macros;
 
 use glam::{
-    Affine2, Affine3, DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, Mat2,
+    Affine2, Affine3A, DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, Mat2,
     Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4,
 };
 
 #[cfg(feature = "transform-types")]
-use glam::{TransformRt, TransformSrt};
+use glam::{Isometry3A, Transform3A};
 
 pub trait Deg {
     fn to_radians(self) -> Self;
@@ -188,7 +188,7 @@ impl FloatCompare for DAffine2 {
     }
 }
 
-impl FloatCompare for Affine3 {
+impl FloatCompare for Affine3A {
     #[inline]
     fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
         self.abs_diff_eq(*other, max_abs_diff)
@@ -336,7 +336,7 @@ impl FloatCompare for DVec4 {
 }
 
 #[cfg(feature = "transform-types")]
-impl FloatCompare for TransformSrt {
+impl FloatCompare for Transform3A {
     #[inline]
     fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
         self.abs_diff_eq(*other, max_abs_diff)
@@ -345,15 +345,15 @@ impl FloatCompare for TransformSrt {
     #[inline]
     fn abs_diff(&self, other: &Self) -> Self {
         Self::from_scale_rotation_translation(
-            self.scale.abs_diff(&other.scale),
+            self.scale.abs_diff(&other.scale).into(),
             self.rotation.abs_diff(&other.rotation),
-            self.translation.abs_diff(&other.translation),
+            self.translation.abs_diff(&other.translation).into(),
         )
     }
 }
 
 #[cfg(feature = "transform-types")]
-impl FloatCompare for TransformRt {
+impl FloatCompare for Isometry3A {
     #[inline]
     fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
         self.abs_diff_eq(*other, max_abs_diff)
@@ -363,7 +363,7 @@ impl FloatCompare for TransformRt {
     fn abs_diff(&self, other: &Self) -> Self {
         Self::from_rotation_translation(
             self.rotation.abs_diff(&other.rotation),
-            self.translation.abs_diff(&other.translation),
+            self.translation.abs_diff(&other.translation).into(),
         )
     }
 }
