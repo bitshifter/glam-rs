@@ -116,7 +116,7 @@ pub fn random_srt_affine2(rng: &mut PCG32) -> Affine2 {
     )
 }
 
-pub fn random_srt_affine3(rng: &mut PCG32) -> Affine3A {
+pub fn random_srt_affine3a(rng: &mut PCG32) -> Affine3A {
     Affine3A::from_scale_rotation_translation(
         random_nonzero_vec3(rng),
         random_quat(rng),
