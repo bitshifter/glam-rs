@@ -60,9 +60,9 @@ bench_binop!(
 
 bench_binop!(
     transform3a_transform_point3a,
-    "isometry3a transform point3a",
+    "transform3a transform point3a",
     op => transform_point3a,
-    from1 => random_isometry3a,
+    from1 => random_transform3a,
     from2 => random_vec3a
 );
 
