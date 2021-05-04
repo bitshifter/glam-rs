@@ -608,6 +608,7 @@ mod u32 {
     impl_serde_vec_types!(u32, UVec2, UVec3, UVec4);
 }
 
+#[cfg(feature = "transform-types")]
 mod affine3a {
     use crate::{Affine3A, Mat3, Vec3};
     use core::fmt;

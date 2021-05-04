@@ -62,12 +62,18 @@ name = "mat3"
 harness = false
 
 [[bench]]
+name = "mat3a"
+harness = false
+
+[[bench]]
 name = "affine2"
 harness = false
+required-features = ["transform-types"]
 
 [[bench]]
 name = "affine3"
 harness = false
+required-features = ["transform-types"]
 
 [[bench]]
 name = "mat4"

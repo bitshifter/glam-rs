@@ -3,8 +3,8 @@ use crate::core::traits::{
     vector::{FloatVector4, MaskVector4, Vector, Vector4, Vector4Const},
 };
 use crate::euler::{EulerFromQuaternion, EulerRot, EulerToQuaternion};
-use crate::{Affine3A, Mat3, Mat4, Vec3, Vec3A, Vec4};
-use crate::{DAffine3, DMat3, DMat4, DVec3, DVec4};
+use crate::{DMat3, DMat4, DVec3, DVec4};
+use crate::{Mat3, Mat4, Vec3, Vec3A, Vec4};
 
 #[cfg(not(feature = "std"))]
 use num_traits::Float;
@@ -33,7 +33,7 @@ use core::{
 use std::iter::{Product, Sum};
 
 macro_rules! impl_quat_methods {
-    ($t:ident, $quat:ident, $vec3:ident, $mat3:ident, $mat4:ident, $affine3:ident, $inner:ident) => {
+    ($t:ident, $quat:ident, $vec3:ident, $mat3:ident, $mat4:ident, $inner:ident) => {
         /// The identity quaternion. Corresponds to no rotation.
         pub const IDENTITY: Self = Self($inner::W);
 
@@ -152,16 +152,6 @@ macro_rules! impl_quat_methods {
         /// Creates a quaternion from a 3x3 rotation matrix inside a homogeneous 4x4 matrix.
         #[inline]
         pub fn from_mat4(mat: &$mat4) -> Self {
-            Self(Quaternion::from_rotation_axes(
-                mat.x_axis.0.into(),
-                mat.y_axis.0.into(),
-                mat.z_axis.0.into(),
-            ))
-        }
-
-        /// Creates a quaternion from a 3x3 rotation matrix inside a 3D affine transform.
-        #[inline]
-        pub fn from_affine3(mat: &$affine3) -> Self {
             Self(Quaternion::from_rotation_axes(
                 mat.x_axis.0.into(),
                 mat.y_axis.0.into(),
@@ -633,7 +623,7 @@ type InnerF32 = crate::XYZW<f32>;
 pub struct Quat(pub(crate) InnerF32);
 
 impl Quat {
-    impl_quat_methods!(f32, Quat, Vec3, Mat3, Mat4, Affine3A, InnerF32);
+    impl_quat_methods!(f32, Quat, Vec3, Mat3, Mat4, InnerF32);
 
     #[inline(always)]
     /// Multiplies a quaternion and a 3D vector, returning the rotated vector.
@@ -644,6 +634,17 @@ impl Quat {
     #[inline(always)]
     pub fn as_f64(self) -> DQuat {
         DQuat::from_xyzw(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
+    }
+
+    /// Creates a quaternion from a 3x3 rotation matrix inside a 3D affine transform.
+    #[cfg(feature = "transform-types")]
+    #[inline]
+    pub fn from_affine3(mat: &crate::Affine3A) -> Self {
+        Self(Quaternion::from_rotation_axes(
+            mat.x_axis.0.into(),
+            mat.y_axis.0.into(),
+            mat.z_axis.0.into(),
+        ))
     }
 }
 impl_quat_traits!(f32, quat, Quat, Vec3, Vec4, InnerF32);
@@ -668,11 +669,22 @@ type InnerF64 = crate::XYZW<f64>;
 pub struct DQuat(pub(crate) InnerF64);
 
 impl DQuat {
-    impl_quat_methods!(f64, DQuat, DVec3, DMat3, DMat4, DAffine3, InnerF64);
+    impl_quat_methods!(f64, DQuat, DVec3, DMat3, DMat4, InnerF64);
 
     #[inline(always)]
     pub fn as_f32(self) -> Quat {
         Quat::from_xyzw(self.x as f32, self.y as f32, self.z as f32, self.w as f32)
+    }
+
+    /// Creates a quaternion from a 3x3 rotation matrix inside a 3D affine transform.
+    #[cfg(feature = "transform-types")]
+    #[inline]
+    pub fn from_affine3(mat: &crate::DAffine3) -> Self {
+        Self(Quaternion::from_rotation_axes(
+            mat.x_axis.0.into(),
+            mat.y_axis.0.into(),
+            mat.z_axis.0.into(),
+        ))
     }
 }
 impl_quat_traits!(f64, dquat, DQuat, DVec3, DVec4, InnerF64);

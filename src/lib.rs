@@ -196,8 +196,6 @@ mod vec;
 #[doc(hidden)]
 pub mod cast;
 
-mod affine2;
-mod affine3;
 mod core;
 mod euler;
 mod mat2;
@@ -214,6 +212,10 @@ mod features;
 mod spirv;
 
 #[cfg(feature = "transform-types")]
+mod affine2;
+#[cfg(feature = "transform-types")]
+mod affine3;
+#[cfg(feature = "transform-types")]
 mod transform;
 
 #[doc(hidden)]
@@ -227,7 +229,9 @@ pub use self::bool::*;
 
 /** `f32` vector, quaternion and matrix types. */
 pub mod f32 {
+    #[cfg(feature = "transform-types")]
     pub use super::affine2::Affine2;
+    #[cfg(feature = "transform-types")]
     pub use super::affine3::Affine3A;
     pub use super::mat2::{mat2, Mat2};
     pub use super::mat3::{mat3, mat3a, Mat3, Mat3A};
@@ -244,7 +248,9 @@ pub use self::f32::*;
 
 /** `f64` vector, quaternion and matrix types. */
 pub mod f64 {
+    #[cfg(feature = "transform-types")]
     pub use super::affine2::DAffine2;
+    #[cfg(feature = "transform-types")]
     pub use super::affine3::DAffine3;
     pub use super::mat2::{dmat2, DMat2};
     pub use super::mat3::{dmat3, DMat3};
