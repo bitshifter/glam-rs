@@ -161,7 +161,7 @@ macro_rules! impl_mat3_methods {
         /// Creates an affine transformation matrix from the given 2D `translation`.
         ///
         /// The resulting matrix can be used to transform 2D points and vectors. See
-        /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+        /// [`Self::transform_point2()`] and [`Self::transform_vector2()`].
         #[inline(always)]
         pub fn from_translation(translation: $vec2) -> Self {
             Self(Matrix3x3::from_translation(translation.0))

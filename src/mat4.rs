@@ -366,7 +366,7 @@ macro_rules! impl_mat4_methods {
             ))
         }
 
-        /// Creates a left-handed perspective projection matrix with [0,1] depth range.
+        /// Creates a left-handed perspective projection matrix with `[0,1]` depth range.
         #[inline(always)]
         pub fn perspective_lh(fov_y_radians: $t, aspect_ratio: $t, z_near: $t, z_far: $t) -> Self {
             Self($inner::perspective_lh(
@@ -377,7 +377,7 @@ macro_rules! impl_mat4_methods {
             ))
         }
 
-        /// Creates a right-handed perspective projection matrix with [0,1] depth range.
+        /// Creates a right-handed perspective projection matrix with `[0,1]` depth range.
         #[inline(always)]
         pub fn perspective_rh(fov_y_radians: $t, aspect_ratio: $t, z_near: $t, z_far: $t) -> Self {
             Self($inner::perspective_rh(
@@ -388,7 +388,7 @@ macro_rules! impl_mat4_methods {
             ))
         }
 
-        /// Creates an infinite left-handed perspective projection matrix with [0,1] depth range.
+        /// Creates an infinite left-handed perspective projection matrix with `[0,1]` depth range.
         #[inline(always)]
         pub fn perspective_infinite_lh(fov_y_radians: $t, aspect_ratio: $t, z_near: $t) -> Self {
             Self($inner::perspective_infinite_lh(
@@ -398,7 +398,7 @@ macro_rules! impl_mat4_methods {
             ))
         }
 
-        /// Creates an infinite left-handed perspective projection matrix with [0,1] depth range.
+        /// Creates an infinite left-handed perspective projection matrix with `[0,1]` depth range.
         #[inline(always)]
         pub fn perspective_infinite_reverse_lh(
             fov_y_radians: $t,
@@ -413,7 +413,7 @@ macro_rules! impl_mat4_methods {
         }
 
         /// Creates an infinite right-handed perspective projection matrix with
-        /// [0,1] depth range.
+        /// `[0,1]` depth range.
         #[inline(always)]
         pub fn perspective_infinite_rh(fov_y_radians: $t, aspect_ratio: $t, z_near: $t) -> Self {
             Self($inner::perspective_infinite_rh(
@@ -424,7 +424,7 @@ macro_rules! impl_mat4_methods {
         }
 
         /// Creates an infinite reverse right-handed perspective projection matrix
-        /// with [0,1] depth range.
+        /// with `[0,1]` depth range.
         #[inline(always)]
         pub fn perspective_infinite_reverse_rh(
             fov_y_radians: $t,
@@ -438,7 +438,7 @@ macro_rules! impl_mat4_methods {
             ))
         }
 
-        /// Creates a right-handed orthographic projection matrix with [-1,1] depth
+        /// Creates a right-handed orthographic projection matrix with `[-1,1]` depth
         /// range.  This is the same as the OpenGL `glOrtho` function in OpenGL.
         /// See
         /// https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml
@@ -456,7 +456,7 @@ macro_rules! impl_mat4_methods {
             ))
         }
 
-        /// Creates a left-handed orthographic projection matrix with [0,1] depth range.
+        /// Creates a left-handed orthographic projection matrix with `[0,1]` depth range.
         #[inline(always)]
         pub fn orthographic_lh(
             left: $t,
@@ -469,7 +469,7 @@ macro_rules! impl_mat4_methods {
             Self($inner::orthographic_lh(left, right, bottom, top, near, far))
         }
 
-        /// Creates a right-handed orthographic projection matrix with [0,1] depth range.
+        /// Creates a right-handed orthographic projection matrix with `[0,1]` depth range.
         #[inline(always)]
         pub fn orthographic_rh(
             left: $t,

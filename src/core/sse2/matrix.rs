@@ -41,12 +41,12 @@ impl Matrix2x2<f32, XY<f32>> for __m128 {
 
     #[inline(always)]
     fn x_axis(&self) -> &XY<f32> {
-        unsafe { &(&*(self as *const Self as *const Columns2<XY<f32>>)).x_axis }
+        unsafe { &(*(self as *const Self as *const Columns2<XY<f32>>)).x_axis }
     }
 
     #[inline(always)]
     fn y_axis(&self) -> &XY<f32> {
-        unsafe { &(&*(self as *const Self as *const Columns2<XY<f32>>)).y_axis }
+        unsafe { &(*(self as *const Self as *const Columns2<XY<f32>>)).y_axis }
     }
 
     #[inline]
