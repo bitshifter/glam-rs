@@ -2,12 +2,12 @@
 mod macros;
 
 use glam::{
-    Affine2, Affine3A, DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, Mat2,
-    Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4,
+    DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3,
+    Vec3A, Vec4,
 };
 
 #[cfg(feature = "transform-types")]
-use glam::{Isometry3A, Transform3A};
+use glam::{Affine2, Affine3A, DAffine2, DAffine3, Isometry3A, Transform3A};
 
 pub trait Deg {
     fn to_radians(self) -> Self;
@@ -160,6 +160,7 @@ impl FloatCompare for DMat4 {
     }
 }
 
+#[cfg(feature = "transform-types")]
 impl FloatCompare for Affine2 {
     #[inline]
     fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
@@ -174,6 +175,7 @@ impl FloatCompare for Affine2 {
     }
 }
 
+#[cfg(feature = "transform-types")]
 impl FloatCompare for DAffine2 {
     #[inline]
     fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
@@ -188,6 +190,7 @@ impl FloatCompare for DAffine2 {
     }
 }
 
+#[cfg(feature = "transform-types")]
 impl FloatCompare for Affine3A {
     #[inline]
     fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
@@ -202,6 +205,7 @@ impl FloatCompare for Affine3A {
     }
 }
 
+#[cfg(feature = "transform-types")]
 impl FloatCompare for DAffine3 {
     #[inline]
     fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {

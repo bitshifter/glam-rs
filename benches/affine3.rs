@@ -8,6 +8,14 @@ use glam::Affine3A;
 use std::ops::Mul;
 use support::*;
 
+pub fn random_srt_affine3a(rng: &mut PCG32) -> Affine3A {
+    Affine3A::from_scale_rotation_translation(
+        random_nonzero_vec3(rng),
+        random_quat(rng),
+        random_vec3(rng),
+    )
+}
+
 bench_unop!(affine3a_inverse, "affine3a inverse", op => inverse, from => random_srt_affine3a);
 
 bench_binop!(

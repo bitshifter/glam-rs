@@ -1,6 +1,8 @@
+#[cfg(feature = "transform-types")]
 #[macro_use]
 mod support;
 
+#[cfg(feature = "transform-types")]
 macro_rules! impl_affine2_tests {
     ($t:ident, $affine2:ident, $vec2:ident) => {
         use core::$t::NAN;
@@ -112,6 +114,7 @@ macro_rules! impl_affine2_tests {
     };
 }
 
+#[cfg(feature = "transform-types")]
 mod affine2 {
     use super::support::deg;
     use glam::{Affine2, Vec2};
@@ -132,6 +135,7 @@ mod affine2 {
     impl_affine2_tests!(f32, Affine2, Vec2);
 }
 
+#[cfg(feature = "transform-types")]
 mod daffine2 {
     use super::support::deg;
     use glam::{DAffine2, DVec2};
