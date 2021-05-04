@@ -129,9 +129,14 @@ macro_rules! impl_quat_methods {
             euler.new_quat(a, b, c)
         }
 
+        #[deprecated(since = "0.15.0", note = "Please use `from_mat3` instead")]
+        pub fn from_rotation_mat3(mat: &$mat3) -> Self {
+            Self::from_mat3(mat)
+        }
+
         /// Creates a quaternion from a 3x3 rotation matrix.
         #[inline]
-        pub fn from_rotation_mat3(mat: &$mat3) -> Self {
+        pub fn from_mat3(mat: &$mat3) -> Self {
             Self(Quaternion::from_rotation_axes(
                 mat.x_axis.0,
                 mat.y_axis.0,
@@ -139,9 +144,14 @@ macro_rules! impl_quat_methods {
             ))
         }
 
+        #[deprecated(since = "0.15.0", note = "Please use `from_mat4` instead")]
+        pub fn from_rotation_mat4(mat: &$mat4) -> Self {
+            Self::from_mat4(mat)
+        }
+
         /// Creates a quaternion from a 3x3 rotation matrix inside a homogeneous 4x4 matrix.
         #[inline]
-        pub fn from_rotation_mat4(mat: &$mat4) -> Self {
+        pub fn from_mat4(mat: &$mat4) -> Self {
             Self(Quaternion::from_rotation_axes(
                 mat.x_axis.0.into(),
                 mat.y_axis.0.into(),
@@ -625,6 +635,17 @@ impl Quat {
     pub fn as_f64(self) -> DQuat {
         DQuat::from_xyzw(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
     }
+
+    /// Creates a quaternion from a 3x3 rotation matrix inside a 3D affine transform.
+    #[cfg(feature = "transform-types")]
+    #[inline]
+    pub fn from_affine3(mat: &crate::Affine3A) -> Self {
+        Self(Quaternion::from_rotation_axes(
+            mat.x_axis.0.into(),
+            mat.y_axis.0.into(),
+            mat.z_axis.0.into(),
+        ))
+    }
 }
 impl_quat_traits!(f32, quat, Quat, Vec3, Vec4, InnerF32);
 
@@ -653,6 +674,17 @@ impl DQuat {
     #[inline(always)]
     pub fn as_f32(self) -> Quat {
         Quat::from_xyzw(self.x as f32, self.y as f32, self.z as f32, self.w as f32)
+    }
+
+    /// Creates a quaternion from a 3x3 rotation matrix inside a 3D affine transform.
+    #[cfg(feature = "transform-types")]
+    #[inline]
+    pub fn from_affine3(mat: &crate::DAffine3) -> Self {
+        Self(Quaternion::from_rotation_axes(
+            mat.x_axis.0,
+            mat.y_axis.0,
+            mat.z_axis.0,
+        ))
     }
 }
 impl_quat_traits!(f64, dquat, DQuat, DVec3, DVec4, InnerF64);

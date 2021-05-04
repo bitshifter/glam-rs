@@ -41,12 +41,12 @@ impl Matrix2x2<f32, XY<f32>> for __m128 {
 
     #[inline(always)]
     fn x_axis(&self) -> &XY<f32> {
-        unsafe { &(&*(self as *const Self as *const Columns2<XY<f32>>)).x_axis }
+        unsafe { &(*(self as *const Self as *const Columns2<XY<f32>>)).x_axis }
     }
 
     #[inline(always)]
     fn y_axis(&self) -> &XY<f32> {
-        unsafe { &(&*(self as *const Self as *const Columns2<XY<f32>>)).y_axis }
+        unsafe { &(*(self as *const Self as *const Columns2<XY<f32>>)).y_axis }
     }
 
     #[inline]
@@ -508,6 +508,7 @@ impl FloatMatrix4x4<f32, __m128> for Columns4<__m128> {
 impl ProjectionMatrix<f32, __m128> for Columns4<__m128> {}
 
 impl From<Columns3<XYZ<f32>>> for Columns3<__m128> {
+    #[inline(always)]
     fn from(v: Columns3<XYZ<f32>>) -> Columns3<__m128> {
         Self {
             x_axis: v.x_axis.into(),
@@ -518,6 +519,7 @@ impl From<Columns3<XYZ<f32>>> for Columns3<__m128> {
 }
 
 impl From<Columns3<__m128>> for Columns3<XYZ<f32>> {
+    #[inline(always)]
     fn from(v: Columns3<__m128>) -> Columns3<XYZ<f32>> {
         Self {
             x_axis: v.x_axis.into(),
