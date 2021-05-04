@@ -681,9 +681,9 @@ impl DQuat {
     #[inline]
     pub fn from_affine3(mat: &crate::DAffine3) -> Self {
         Self(Quaternion::from_rotation_axes(
-            mat.x_axis.0.into(),
-            mat.y_axis.0.into(),
-            mat.z_axis.0.into(),
+            mat.x_axis.0,
+            mat.y_axis.0,
+            mat.z_axis.0,
         ))
     }
 }
