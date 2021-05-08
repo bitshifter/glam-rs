@@ -33,11 +33,14 @@ use core::{
 use std::iter::{Product, Sum};
 
 macro_rules! impl_quat_methods {
-    ($t:ident, $quat:ident, $vec3:ident, $mat3:ident, $mat4:ident, $inner:ident) => {
+    ($t:ident, $quat:ident, $vec3:ident, $vec4:ident, $mat3:ident, $mat4:ident, $inner:ident) => {
         /// The identity quaternion. Corresponds to no rotation.
         pub const IDENTITY: Self = Self($inner::W);
 
         /// Creates a new rotation quaternion.
+        ///
+        /// This function does not check if the input is normalized, it is up to the user to
+        /// provide normalized input or to normalized the resulting quaternion.
         ///
         /// This should generally not be called manually unless you know what you are doing.
         /// Use one of the other constructors instead such as `identity` or `from_axis_angle`.
@@ -46,6 +49,17 @@ macro_rules! impl_quat_methods {
         #[inline(always)]
         pub fn from_xyzw(x: $t, y: $t, z: $t, w: $t) -> Self {
             Self(Vector4::new(x, y, z, w))
+        }
+
+        /// Creates a new rotation quaternion from a 4D vector.
+        ///
+        /// This function does not check if the input is normalized, it is up to the user to
+        /// provide normalized input or to normalized the resulting quaternion.
+        ///
+        /// The resulting quaternion is expected to be of unit length.
+        #[inline(always)]
+        pub fn from_vec4(v: $vec4) -> Self {
+            Self(v.0)
         }
 
         /// Creates a rotation quaternion from an unaligned slice.
@@ -517,13 +531,6 @@ macro_rules! impl_quat_traits {
             }
         }
 
-        impl From<$vec4> for $quat {
-            #[inline(always)]
-            fn from(v: $vec4) -> Self {
-                Self(v.0)
-            }
-        }
-
         impl From<$quat> for $vec4 {
             #[inline(always)]
             fn from(q: $quat) -> Self {
@@ -531,24 +538,10 @@ macro_rules! impl_quat_traits {
             }
         }
 
-        impl From<($t, $t, $t, $t)> for $quat {
-            #[inline(always)]
-            fn from(t: ($t, $t, $t, $t)) -> Self {
-                Self(Vector4::from_tuple(t))
-            }
-        }
-
         impl From<$quat> for ($t, $t, $t, $t) {
             #[inline(always)]
             fn from(q: $quat) -> Self {
                 Vector4::into_tuple(q.0)
-            }
-        }
-
-        impl From<[$t; 4]> for $quat {
-            #[inline(always)]
-            fn from(a: [$t; 4]) -> Self {
-                Self(Vector4::from_array(a))
             }
         }
 
@@ -564,13 +557,6 @@ macro_rules! impl_quat_traits {
             #[inline(always)]
             fn from(q: $quat) -> Self {
                 q.0
-            }
-        }
-
-        impl From<$inner> for $quat {
-            #[inline(always)]
-            fn from(inner: $inner) -> Self {
-                Self(inner)
             }
         }
 
@@ -623,7 +609,7 @@ type InnerF32 = crate::XYZW<f32>;
 pub struct Quat(pub(crate) InnerF32);
 
 impl Quat {
-    impl_quat_methods!(f32, Quat, Vec3, Mat3, Mat4, InnerF32);
+    impl_quat_methods!(f32, Quat, Vec3, Vec4, Mat3, Mat4, InnerF32);
 
     #[inline(always)]
     /// Multiplies a quaternion and a 3D vector, returning the rotated vector.
@@ -669,7 +655,7 @@ type InnerF64 = crate::XYZW<f64>;
 pub struct DQuat(pub(crate) InnerF64);
 
 impl DQuat {
-    impl_quat_methods!(f64, DQuat, DVec3, DMat3, DMat4, InnerF64);
+    impl_quat_methods!(f64, DQuat, DVec3, DVec4, DMat3, DMat4, InnerF64);
 
     #[inline(always)]
     pub fn as_f32(self) -> Quat {

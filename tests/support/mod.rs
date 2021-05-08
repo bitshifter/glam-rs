@@ -182,7 +182,7 @@ impl FloatCompare for Quat {
     fn abs_diff(&self, other: &Self) -> Self {
         let a: Vec4 = (*self).into();
         let b: Vec4 = (*other).into();
-        (a - b).abs().into()
+        Quat::from_vec4((a - b).abs())
     }
 }
 
@@ -239,7 +239,7 @@ impl FloatCompare for DQuat {
     fn abs_diff(&self, other: &Self) -> Self {
         let a: DVec4 = (*self).into();
         let b: DVec4 = (*other).into();
-        (a - b).abs().into()
+        DQuat::from_vec4((a - b).abs())
     }
 }
 
