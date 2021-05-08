@@ -190,14 +190,18 @@ The minimum supported version of Rust for `glam` is `1.45.0`.
 
 #[macro_use]
 mod macros;
+
 #[macro_use]
 mod vec;
 
 #[doc(hidden)]
 pub mod cast;
 
+mod affine2;
+mod affine3;
 mod core;
 mod euler;
+mod features;
 mod mat2;
 mod mat3;
 mod mat4;
@@ -207,14 +211,9 @@ mod vec3;
 mod vec4;
 mod vec_mask;
 
-mod features;
 #[cfg(feature = "spirv-std")]
 mod spirv;
 
-#[cfg(feature = "transform-types")]
-mod affine2;
-#[cfg(feature = "transform-types")]
-mod affine3;
 #[cfg(feature = "transform-types")]
 mod transform;
 
@@ -229,9 +228,7 @@ pub use self::bool::*;
 
 /** `f32` vector, quaternion and matrix types. */
 pub mod f32 {
-    #[cfg(feature = "transform-types")]
     pub use super::affine2::Affine2;
-    #[cfg(feature = "transform-types")]
     pub use super::affine3::Affine3A;
     pub use super::mat2::{mat2, Mat2};
     pub use super::mat3::{mat3, mat3a, Mat3, Mat3A};
@@ -242,15 +239,14 @@ pub mod f32 {
     pub use super::vec4::{vec4, Vec4};
 
     #[cfg(feature = "transform-types")]
-    pub use super::transform::{Isometry3A, Transform3A};
+    #[allow(deprecated)]
+    pub use super::transform::{TransformRT, TransformSRT};
 }
 pub use self::f32::*;
 
 /** `f64` vector, quaternion and matrix types. */
 pub mod f64 {
-    #[cfg(feature = "transform-types")]
     pub use super::affine2::DAffine2;
-    #[cfg(feature = "transform-types")]
     pub use super::affine3::DAffine3;
     pub use super::mat2::{dmat2, DMat2};
     pub use super::mat3::{dmat3, DMat3};

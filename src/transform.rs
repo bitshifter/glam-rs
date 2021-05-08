@@ -1,3 +1,5 @@
+#![allow(deprecated)]
+
 use crate::{Affine3A, Mat4, Quat, Vec3, Vec3A, Vec3Swizzles};
 use core::ops::Mul;
 
@@ -14,13 +16,17 @@ use rand::{
  */
 #[derive(Clone, Copy, PartialEq, Debug)]
 #[repr(C)]
-pub struct Transform3A {
-    pub translation: Vec3A,
+#[deprecated(
+    since = "0.15.0",
+    note = "Moving to a separate crate, see https://github.com/bitshifter/glam-rs/issues/175"
+)]
+pub struct TransformSRT {
     pub rotation: Quat,
-    pub scale: Vec3A,
+    pub translation: Vec3,
+    pub scale: Vec3,
 }
 
-impl Default for Transform3A {
+impl Default for TransformSRT {
     #[inline]
     fn default() -> Self {
         Self::IDENTITY
@@ -34,39 +40,43 @@ impl Default for Transform3A {
  */
 #[derive(Clone, Copy, PartialEq, Debug)]
 #[repr(C)]
-pub struct Isometry3A {
-    pub translation: Vec3A,
+#[deprecated(
+    since = "0.15.0",
+    note = "Moving to a separate crate, see https://github.com/bitshifter/glam-rs/issues/175"
+)]
+pub struct TransformRT {
     pub rotation: Quat,
+    pub translation: Vec3,
 }
 
-impl Default for Isometry3A {
+impl Default for TransformRT {
     #[inline]
     fn default() -> Self {
         Self::IDENTITY
     }
 }
 
-impl Transform3A {
+impl TransformSRT {
     /// The identity transforms that does nothing.
     pub const IDENTITY: Self = Self {
-        scale: Vec3A::ONE,
+        scale: Vec3::ONE,
         rotation: Quat::IDENTITY,
-        translation: Vec3A::ZERO,
+        translation: Vec3::ZERO,
     };
 
     #[inline]
     pub fn from_scale_rotation_translation(scale: Vec3, rotation: Quat, translation: Vec3) -> Self {
         Self {
-            scale: scale.into(),
+            scale: scale,
             rotation,
-            translation: translation.into(),
+            translation: translation,
         }
     }
 
     #[inline]
-    pub fn from_scale_isometry(scale: Vec3, rt: &Isometry3A) -> Self {
+    pub fn from_scale_isometry(scale: Vec3, rt: &TransformRT) -> Self {
         Self {
-            scale: scale.into(),
+            scale: scale,
             rotation: rt.rotation,
             translation: rt.translation,
         }
@@ -120,12 +130,12 @@ impl Transform3A {
 
     #[inline]
     pub fn transform_point3a(&self, other: Vec3A) -> Vec3A {
-        (self.rotation * (other * self.scale)) + self.translation
+        (self.rotation * (other * Vec3A::from(self.scale))) + Vec3A::from(self.translation)
     }
 
     #[inline]
     pub fn transform_vector3a(&self, other: Vec3A) -> Vec3A {
-        self.rotation * (other * self.scale)
+        self.rotation * (other * Vec3A::from(self.scale))
     }
 
     /// Returns true if the absolute difference of all elements between `self`
@@ -148,23 +158,19 @@ impl Transform3A {
 }
 
 #[inline]
-fn mul_srt_srt(lhs: &Transform3A, rhs: &Transform3A) -> Transform3A {
+fn mul_srt_srt(lhs: &TransformSRT, rhs: &TransformSRT) -> TransformSRT {
     // Based on https://github.com/nfrechette/rtm `rtm::qvv_mul`
-    let min_scale = lhs.scale.min(rhs.scale);
-    let scale = lhs.scale * rhs.scale;
+    let lhs_scale = Vec3A::from(lhs.scale);
+    let rhs_scale = Vec3A::from(rhs.scale);
+    let min_scale = lhs_scale.min(rhs_scale);
+    let scale = lhs_scale * rhs_scale;
 
     if min_scale.cmplt(Vec3A::ZERO).any() {
         // If negative scale, we go through a matrix
-        let lhs_mtx = Affine3A::from_scale_rotation_translation(
-            lhs.scale.into(),
-            lhs.rotation,
-            lhs.translation.into(),
-        );
-        let rhs_mtx = Affine3A::from_scale_rotation_translation(
-            rhs.scale.into(),
-            rhs.rotation,
-            rhs.translation.into(),
-        );
+        let lhs_mtx =
+            Affine3A::from_scale_rotation_translation(lhs.scale, lhs.rotation, lhs.translation);
+        let rhs_mtx =
+            Affine3A::from_scale_rotation_translation(rhs.scale, rhs.rotation, rhs.translation);
         let mut result_mtx = lhs_mtx * rhs_mtx;
 
         let sign = scale.signum();
@@ -172,10 +178,10 @@ fn mul_srt_srt(lhs: &Transform3A, rhs: &Transform3A) -> Transform3A {
         result_mtx.y_axis = result_mtx.y_axis.normalize() * sign.yyy();
         result_mtx.z_axis = result_mtx.z_axis.normalize() * sign.zzz();
 
-        let scale = scale;
+        let scale = Vec3::from(scale);
         let rotation = Quat::from_affine3(&result_mtx);
-        let translation = result_mtx.w_axis.xyz();
-        Transform3A {
+        let translation = Vec3::from(result_mtx.translation);
+        TransformSRT {
             scale,
             rotation,
             translation,
@@ -183,8 +189,8 @@ fn mul_srt_srt(lhs: &Transform3A, rhs: &Transform3A) -> Transform3A {
     } else {
         let rotation = lhs.rotation * rhs.rotation;
         let translation = (rhs.rotation * (lhs.translation * rhs.scale)) + rhs.translation;
-        Transform3A {
-            scale,
+        TransformSRT {
+            scale: scale.into(),
             rotation,
             translation,
         }
@@ -192,27 +198,27 @@ fn mul_srt_srt(lhs: &Transform3A, rhs: &Transform3A) -> Transform3A {
 }
 
 #[inline]
-fn mul_rt_rt(lhs: &Isometry3A, rhs: &Isometry3A) -> Isometry3A {
+fn mul_rt_rt(lhs: &TransformRT, rhs: &TransformRT) -> TransformRT {
     let rotation = lhs.rotation * rhs.rotation;
     let translation = (rhs.rotation * lhs.translation) + rhs.translation;
-    Isometry3A {
+    TransformRT {
         rotation,
         translation,
     }
 }
 
-impl Isometry3A {
+impl TransformRT {
     /// The identity transforms that does nothing.
     pub const IDENTITY: Self = Self {
         rotation: Quat::IDENTITY,
-        translation: Vec3A::ZERO,
+        translation: Vec3::ZERO,
     };
 
     #[inline]
     pub fn from_rotation_translation(rotation: Quat, translation: Vec3) -> Self {
         Self {
             rotation,
-            translation: translation.into(),
+            translation: translation,
         }
     }
 
@@ -273,7 +279,7 @@ impl Isometry3A {
 
     #[inline]
     pub fn transform_point3a(&self, other: Vec3A) -> Vec3A {
-        (self.rotation * other) + self.translation
+        (self.rotation * other) + Vec3A::from(self.translation)
     }
 
     #[inline]
@@ -299,15 +305,15 @@ impl Isometry3A {
     }
 }
 
-impl Mul<Isometry3A> for Isometry3A {
-    type Output = Isometry3A;
+impl Mul<TransformRT> for TransformRT {
+    type Output = TransformRT;
     #[inline]
-    fn mul(self, other: Isometry3A) -> Isometry3A {
+    fn mul(self, other: TransformRT) -> TransformRT {
         mul_rt_rt(&self, &other)
     }
 }
 
-impl Mul<Transform3A> for Transform3A {
+impl Mul<TransformSRT> for TransformSRT {
     type Output = Self;
     #[inline]
     fn mul(self, other: Self) -> Self::Output {
@@ -315,38 +321,38 @@ impl Mul<Transform3A> for Transform3A {
     }
 }
 
-impl Mul<Isometry3A> for Transform3A {
-    type Output = Transform3A;
+impl Mul<TransformRT> for TransformSRT {
+    type Output = TransformSRT;
     #[inline]
-    fn mul(self, other: Isometry3A) -> Self::Output {
+    fn mul(self, other: TransformRT) -> Self::Output {
         mul_srt_srt(&self, &other.into())
     }
 }
 
-impl Mul<Transform3A> for Isometry3A {
-    type Output = Transform3A;
+impl Mul<TransformSRT> for TransformRT {
+    type Output = TransformSRT;
     #[inline]
-    fn mul(self, other: Transform3A) -> Self::Output {
+    fn mul(self, other: TransformSRT) -> Self::Output {
         mul_srt_srt(&self.into(), &other)
     }
 }
 
-impl From<Isometry3A> for Transform3A {
+impl From<TransformRT> for TransformSRT {
     #[inline]
-    fn from(tr: Isometry3A) -> Self {
+    fn from(tr: TransformRT) -> Self {
         Self {
             translation: tr.translation,
             rotation: tr.rotation,
-            scale: Vec3A::ONE,
+            scale: Vec3::ONE,
         }
     }
 }
 
 #[cfg(feature = "rand")]
-impl Distribution<Isometry3A> for Standard {
+impl Distribution<TransformRT> for Standard {
     #[inline]
-    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Isometry3A {
-        Isometry3A::from_rotation_translation(
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> TransformRT {
+        TransformRT::from_rotation_translation(
             rng.gen::<Quat>(),
             Vec3::new(
                 rng.gen_range(core::f32::MIN..=core::f32::MAX),
@@ -358,16 +364,16 @@ impl Distribution<Isometry3A> for Standard {
 }
 
 #[cfg(feature = "rand")]
-impl Distribution<Transform3A> for Standard {
+impl Distribution<TransformSRT> for Standard {
     #[inline]
-    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Transform3A {
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> TransformSRT {
         let mut gen_non_zero = || loop {
             let f: f32 = rng.gen_range(core::f32::MIN..=core::f32::MAX);
             if f.abs() > core::f32::MIN_POSITIVE {
                 return f;
             }
         };
-        Transform3A::from_scale_rotation_translation(
+        TransformSRT::from_scale_rotation_translation(
             Vec3::new(gen_non_zero(), gen_non_zero(), gen_non_zero()),
             rng.gen::<Quat>(),
             Vec3::new(
@@ -379,9 +385,9 @@ impl Distribution<Transform3A> for Standard {
     }
 }
 
-impl From<Transform3A> for Mat4 {
+impl From<TransformSRT> for Mat4 {
     #[inline]
-    fn from(srt: Transform3A) -> Self {
+    fn from(srt: TransformSRT) -> Self {
         Self::from_scale_rotation_translation(
             srt.scale.into(),
             srt.rotation,
@@ -390,16 +396,16 @@ impl From<Transform3A> for Mat4 {
     }
 }
 
-impl From<Isometry3A> for Mat4 {
+impl From<TransformRT> for Mat4 {
     #[inline]
-    fn from(rt: Isometry3A) -> Self {
+    fn from(rt: TransformRT) -> Self {
         Self::from_rotation_translation(rt.rotation, rt.translation.into())
     }
 }
 
-impl From<Transform3A> for Affine3A {
+impl From<TransformSRT> for Affine3A {
     #[inline]
-    fn from(srt: Transform3A) -> Self {
+    fn from(srt: TransformSRT) -> Self {
         Self::from_scale_rotation_translation(
             srt.scale.into(),
             srt.rotation,
@@ -408,9 +414,9 @@ impl From<Transform3A> for Affine3A {
     }
 }
 
-impl From<Isometry3A> for Affine3A {
+impl From<TransformRT> for Affine3A {
     #[inline]
-    fn from(rt: Isometry3A) -> Self {
+    fn from(rt: TransformRT) -> Self {
         Self::from_rotation_translation(rt.rotation, rt.translation.into())
     }
 }

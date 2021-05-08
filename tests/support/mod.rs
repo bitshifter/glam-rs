@@ -6,9 +6,6 @@ use glam::{
     Vec3A, Vec4,
 };
 
-#[cfg(feature = "transform-types")]
-use glam::{Affine2, Affine3A, DAffine2, DAffine3, Isometry3A, Transform3A};
-
 pub trait Deg {
     fn to_radians(self) -> Self;
 }
@@ -160,66 +157,6 @@ impl FloatCompare for DMat4 {
     }
 }
 
-#[cfg(feature = "transform-types")]
-impl FloatCompare for Affine2 {
-    #[inline]
-    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
-        self.abs_diff_eq(*other, max_abs_diff)
-    }
-    #[inline]
-    fn abs_diff(&self, other: &Self) -> Self {
-        Self {
-            matrix2: self.matrix2.abs_diff(&other.matrix2),
-            translation: self.translation.abs_diff(&other.translation),
-        }
-    }
-}
-
-#[cfg(feature = "transform-types")]
-impl FloatCompare for DAffine2 {
-    #[inline]
-    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
-        self.abs_diff_eq(*other, max_abs_diff as f64)
-    }
-    #[inline]
-    fn abs_diff(&self, other: &Self) -> Self {
-        Self {
-            matrix2: self.matrix2.abs_diff(&other.matrix2),
-            translation: self.translation.abs_diff(&other.translation),
-        }
-    }
-}
-
-#[cfg(feature = "transform-types")]
-impl FloatCompare for Affine3A {
-    #[inline]
-    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
-        self.abs_diff_eq(*other, max_abs_diff)
-    }
-    #[inline]
-    fn abs_diff(&self, other: &Self) -> Self {
-        Self {
-            matrix3: self.matrix3.abs_diff(&other.matrix3),
-            translation: self.translation.abs_diff(&other.translation),
-        }
-    }
-}
-
-#[cfg(feature = "transform-types")]
-impl FloatCompare for DAffine3 {
-    #[inline]
-    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
-        self.abs_diff_eq(*other, max_abs_diff as f64)
-    }
-    #[inline]
-    fn abs_diff(&self, other: &Self) -> Self {
-        Self {
-            matrix3: self.matrix3.abs_diff(&other.matrix3),
-            translation: self.translation.abs_diff(&other.translation),
-        }
-    }
-}
-
 impl FloatCompare for Mat4 {
     #[inline]
     fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
@@ -336,38 +273,5 @@ impl FloatCompare for DVec4 {
     #[inline]
     fn abs_diff(&self, other: &Self) -> Self {
         (*self - *other).abs()
-    }
-}
-
-#[cfg(feature = "transform-types")]
-impl FloatCompare for Transform3A {
-    #[inline]
-    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
-        self.abs_diff_eq(*other, max_abs_diff)
-    }
-
-    #[inline]
-    fn abs_diff(&self, other: &Self) -> Self {
-        Self::from_scale_rotation_translation(
-            self.scale.abs_diff(&other.scale).into(),
-            self.rotation.abs_diff(&other.rotation),
-            self.translation.abs_diff(&other.translation).into(),
-        )
-    }
-}
-
-#[cfg(feature = "transform-types")]
-impl FloatCompare for Isometry3A {
-    #[inline]
-    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
-        self.abs_diff_eq(*other, max_abs_diff)
-    }
-
-    #[inline]
-    fn abs_diff(&self, other: &Self) -> Self {
-        Self::from_rotation_translation(
-            self.rotation.abs_diff(&other.rotation),
-            self.translation.abs_diff(&other.translation).into(),
-        )
     }
 }
