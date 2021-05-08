@@ -5,10 +5,7 @@ use crate::core::{
 use crate::{DMat3, DVec2, Mat3, Vec2};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
-use core::{
-    cmp::Ordering,
-    ops::{Add, Deref, DerefMut, Mul, Sub},
-};
+use core::ops::{Add, Deref, DerefMut, Mul, Sub};
 
 #[cfg(all(
     target_arch = "x86",
@@ -235,13 +232,6 @@ macro_rules! impl_mat2_traits {
             #[inline]
             fn eq(&self, other: &Self) -> bool {
                 self.x_axis.eq(&other.x_axis) && self.y_axis.eq(&other.y_axis)
-            }
-        }
-
-        impl PartialOrd for $mat2 {
-            #[inline]
-            fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-                self.as_ref().partial_cmp(other.as_ref())
             }
         }
 

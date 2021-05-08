@@ -4,7 +4,7 @@ use crate::BVec3A;
 use crate::{BVec3, DVec2, DVec4, IVec2, IVec4, UVec2, UVec4, Vec2, Vec4, XYZ};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
-use core::{cmp::Ordering, f32, ops::*};
+use core::{f32, ops::*};
 
 #[cfg(not(feature = "std"))]
 use num_traits::Float;

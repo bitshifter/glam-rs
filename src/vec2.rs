@@ -2,7 +2,7 @@ use crate::core::traits::vector::*;
 use crate::{BVec2, DVec3, IVec3, UVec3, Vec3, XY};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
-use core::{cmp::Ordering, f32, ops::*};
+use core::{f32, ops::*};
 
 #[cfg(not(feature = "std"))]
 use num_traits::Float;

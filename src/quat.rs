@@ -24,10 +24,7 @@ use core::arch::x86_64::*;
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
-use core::{
-    cmp::Ordering,
-    ops::{Add, Deref, Div, Mul, MulAssign, Neg, Sub},
-};
+use core::ops::{Add, Deref, Div, Mul, MulAssign, Neg, Sub};
 
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
@@ -507,13 +504,6 @@ macro_rules! impl_quat_traits {
             #[inline]
             fn eq(&self, other: &Self) -> bool {
                 MaskVector4::all(self.0.cmpeq(other.0))
-            }
-        }
-
-        impl PartialOrd for $quat {
-            #[inline]
-            fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-                self.as_ref().partial_cmp(other.as_ref())
             }
         }
 

@@ -248,8 +248,6 @@ macro_rules! impl_vec4_tests {
             assert!(a.cmpne(b).all());
             assert!(a.cmpne(c).any());
             assert!(a == a);
-            assert!(a < b);
-            assert!(b > a);
         }
 
         #[test]
@@ -452,9 +450,6 @@ macro_rules! impl_vec4_tests {
             assert_eq!(b, a);
             assert_ne!(a, c);
             assert_ne!(b, c);
-
-            assert!(a > c);
-            assert!(c < a);
         }
 
         #[test]

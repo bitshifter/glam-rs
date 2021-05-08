@@ -22,10 +22,7 @@ use core::arch::x86_64::*;
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
-use core::{
-    cmp::Ordering,
-    ops::{Add, Deref, DerefMut, Mul, Sub},
-};
+use core::ops::{Add, Deref, DerefMut, Mul, Sub};
 
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
@@ -587,12 +584,6 @@ macro_rules! impl_mat4_traits {
             }
         }
 
-        impl PartialOrd for $mat4 {
-            #[inline]
-            fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-                self.as_ref().partial_cmp(other.as_ref())
-            }
-        }
         impl AsRef<[$t; 16]> for $mat4 {
             #[inline]
             fn as_ref(&self) -> &[$t; 16] {

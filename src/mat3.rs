@@ -5,10 +5,7 @@ use crate::core::{
 use crate::{DMat2, DMat4, DQuat, DVec2, DVec3, EulerRot, Mat2, Mat4, Quat, Vec2, Vec3, Vec3A};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
-use core::{
-    cmp::Ordering,
-    ops::{Add, Deref, DerefMut, Mul, Sub},
-};
+use core::ops::{Add, Deref, DerefMut, Mul, Sub};
 
 #[cfg(all(
     target_arch = "x86",
@@ -495,13 +492,6 @@ macro_rules! impl_mat3_traits_unsafe {
             #[inline(always)]
             fn as_mut(&mut self) -> &mut [$t; 9] {
                 unsafe { &mut *(self as *mut Self as *mut [$t; 9]) }
-            }
-        }
-
-        impl PartialOrd for $mat3 {
-            #[inline]
-            fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-                self.as_ref().partial_cmp(other.as_ref())
             }
         }
     };
