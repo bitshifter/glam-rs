@@ -74,15 +74,6 @@ impl TransformSRT {
     }
 
     #[inline]
-    pub fn from_scale_isometry(scale: Vec3, rt: &TransformRT) -> Self {
-        Self {
-            scale,
-            rotation: rt.rotation,
-            translation: rt.translation,
-        }
-    }
-
-    #[inline]
     pub fn inverse(&self) -> Self {
         let scale = self.scale.recip();
         let rotation = self.rotation.conjugate();

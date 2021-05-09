@@ -18,9 +18,9 @@ mod transform {
         #[inline]
         fn abs_diff(&self, other: &Self) -> Self {
             Self::from_scale_rotation_translation(
-                self.scale.abs_diff(&other.scale).into(),
+                self.scale.abs_diff(&other.scale),
                 self.rotation.abs_diff(&other.rotation),
-                self.translation.abs_diff(&other.translation).into(),
+                self.translation.abs_diff(&other.translation),
             )
         }
     }
@@ -35,7 +35,7 @@ mod transform {
         fn abs_diff(&self, other: &Self) -> Self {
             Self::from_rotation_translation(
                 self.rotation.abs_diff(&other.rotation),
-                self.translation.abs_diff(&other.translation).into(),
+                self.translation.abs_diff(&other.translation),
             )
         }
     }
@@ -65,16 +65,15 @@ mod transform {
 
         let tr = TransformRT::from_rotation_translation(r, t);
         assert_eq!(tr.rotation, r);
-        assert_eq!(tr.translation, t.into());
+        assert_eq!(tr.translation, t);
 
         let srt = TransformSRT::from_scale_rotation_translation(s, r, t);
-        assert_eq!(srt.scale, s.into());
+        assert_eq!(srt.scale, s);
         assert_eq!(srt.rotation, r);
-        assert_eq!(srt.translation, t.into());
+        assert_eq!(srt.translation, t);
 
         assert_eq!(tr, tr);
         assert_eq!(srt, srt);
-        assert_eq!(srt, TransformSRT::from_scale_isometry(s, &tr));
     }
 
     #[test]
