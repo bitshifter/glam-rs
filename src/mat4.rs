@@ -88,7 +88,7 @@ macro_rules! impl_mat4_methods {
         /// If you require data in row major order `transpose` the matrix first.
         #[inline(always)]
         pub fn to_cols_array(&self) -> [$t; 16] {
-            *self.as_ref()
+            self.0.to_cols_array()
         }
 
         /// Creates a 4x4 matrix from a `[[S; 4]; 4]` 2D array stored in column major order.
@@ -580,7 +580,10 @@ macro_rules! impl_mat4_traits {
         impl PartialEq for $mat4 {
             #[inline]
             fn eq(&self, other: &Self) -> bool {
-                self.as_ref().eq(other.as_ref())
+                self.x_axis.eq(&other.x_axis)
+                    && self.y_axis.eq(&other.y_axis)
+                    && self.z_axis.eq(&other.z_axis)
+                    && self.w_axis.eq(&other.w_axis)
             }
         }
 

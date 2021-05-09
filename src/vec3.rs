@@ -100,11 +100,10 @@ macro_rules! impl_vec3_common_traits {
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Debug for $vec3 {
             fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-                let a = self.as_ref();
                 fmt.debug_tuple(stringify!($vec3))
-                    .field(&a[0])
-                    .field(&a[1])
-                    .field(&a[2])
+                    .field(&self.x)
+                    .field(&self.y)
+                    .field(&self.z)
                     .finish()
             }
         }
