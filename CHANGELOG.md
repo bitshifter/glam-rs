@@ -48,6 +48,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Deprecated `TransformSRT` and `TransformRT` which are under the
   `transform-types` feature. These will be moved to a separate experimental
   crate.
+* Updated `spriv-std` dependency version to `0.4.0-alpha7`.
 
 ## [0.14.0] - 2021-04-09
 
@@ -64,8 +65,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ### Changed
 
-* Updated dependency versions of `bytemuck` to 1.5, `rand` to 0.8,
-  `rand_xoshiro` to 0.6 and `spriv-std` to 0.4.0-alpha4.
+* Updated dependency versions of `bytemuck` to `1.5`, `rand` to `0.8`,
+  `rand_xoshiro` to `0.6` and `spriv-std` to `0.4.0-alpha4`.
 
 ## [0.13.1] - 2021-03-24
 
