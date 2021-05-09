@@ -67,16 +67,16 @@ impl TransformSRT {
     #[inline]
     pub fn from_scale_rotation_translation(scale: Vec3, rotation: Quat, translation: Vec3) -> Self {
         Self {
-            scale: scale,
             rotation,
-            translation: translation,
+            translation,
+            scale,
         }
     }
 
     #[inline]
     pub fn from_scale_isometry(scale: Vec3, rt: &TransformRT) -> Self {
         Self {
-            scale: scale,
+            scale,
             rotation: rt.rotation,
             translation: rt.translation,
         }
@@ -88,9 +88,9 @@ impl TransformSRT {
         let rotation = self.rotation.conjugate();
         let translation = -(rotation * (self.translation * scale));
         Self {
-            scale,
             rotation,
             translation,
+            scale,
         }
     }
 
@@ -182,17 +182,17 @@ fn mul_srt_srt(lhs: &TransformSRT, rhs: &TransformSRT) -> TransformSRT {
         let rotation = Quat::from_affine3(&result_mtx);
         let translation = Vec3::from(result_mtx.translation);
         TransformSRT {
-            scale,
             rotation,
             translation,
+            scale,
         }
     } else {
         let rotation = lhs.rotation * rhs.rotation;
         let translation = (rhs.rotation * (lhs.translation * rhs.scale)) + rhs.translation;
         TransformSRT {
-            scale: scale.into(),
             rotation,
             translation,
+            scale: scale.into(),
         }
     }
 }
@@ -218,7 +218,7 @@ impl TransformRT {
     pub fn from_rotation_translation(rotation: Quat, translation: Vec3) -> Self {
         Self {
             rotation,
-            translation: translation,
+            translation,
         }
     }
 
@@ -389,9 +389,9 @@ impl From<TransformSRT> for Mat4 {
     #[inline]
     fn from(srt: TransformSRT) -> Self {
         Self::from_scale_rotation_translation(
-            srt.scale.into(),
+            srt.scale,
             srt.rotation,
-            srt.translation.into(),
+            srt.translation,
         )
     }
 }
@@ -399,7 +399,7 @@ impl From<TransformSRT> for Mat4 {
 impl From<TransformRT> for Mat4 {
     #[inline]
     fn from(rt: TransformRT) -> Self {
-        Self::from_rotation_translation(rt.rotation, rt.translation.into())
+        Self::from_rotation_translation(rt.rotation, rt.translation)
     }
 }
 
@@ -407,9 +407,9 @@ impl From<TransformSRT> for Affine3A {
     #[inline]
     fn from(srt: TransformSRT) -> Self {
         Self::from_scale_rotation_translation(
-            srt.scale.into(),
+            srt.scale,
             srt.rotation,
-            srt.translation.into(),
+            srt.translation,
         )
     }
 }
@@ -417,6 +417,6 @@ impl From<TransformSRT> for Affine3A {
 impl From<TransformRT> for Affine3A {
     #[inline]
     fn from(rt: TransformRT) -> Self {
-        Self::from_rotation_translation(rt.rotation, rt.translation.into())
+        Self::from_rotation_translation(rt.rotation, rt.translation)
     }
 }

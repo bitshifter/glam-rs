@@ -604,6 +604,7 @@ impl Quat {
     #[inline(always)]
     /// Multiplies a quaternion and a 3D vector, returning the rotated vector.
     pub fn mul_vec3a(self, other: Vec3A) -> Vec3A {
+        #[allow(clippy::useless_conversion)]
         Vec3A(self.0.mul_float4_as_vector3(other.0.into()).into())
     }
 

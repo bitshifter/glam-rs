@@ -236,6 +236,7 @@ impl From<Vec4> for Vec3A {
     /// On architectures where SIMD is supported such as SSE2 on x86_64 this conversion is a noop.
     #[inline(always)]
     fn from(v: Vec4) -> Self {
+        #[allow(clippy::useless_conversion)]
         Self(v.0.into())
     }
 }
