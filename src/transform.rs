@@ -388,11 +388,7 @@ impl Distribution<TransformSRT> for Standard {
 impl From<TransformSRT> for Mat4 {
     #[inline]
     fn from(srt: TransformSRT) -> Self {
-        Self::from_scale_rotation_translation(
-            srt.scale,
-            srt.rotation,
-            srt.translation,
-        )
+        Self::from_scale_rotation_translation(srt.scale, srt.rotation, srt.translation)
     }
 }
 
@@ -406,11 +402,7 @@ impl From<TransformRT> for Mat4 {
 impl From<TransformSRT> for Affine3A {
     #[inline]
     fn from(srt: TransformSRT) -> Self {
-        Self::from_scale_rotation_translation(
-            srt.scale,
-            srt.rotation,
-            srt.translation,
-        )
+        Self::from_scale_rotation_translation(srt.scale, srt.rotation, srt.translation)
     }
 }
 
