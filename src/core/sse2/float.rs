@@ -39,21 +39,21 @@ _ps_const_ty!(
     PS_SIN_COEFFICIENTS0,
     f32x4,
     -0.16666667,
-    0.0083333310,
+    0.008_333_331,
     -0.00019840874,
-    2.7525562e-06
+    2.752_556_2e-6
 );
 _ps_const_ty!(
     PS_SIN_COEFFICIENTS1,
     f32x4,
-    -2.3889859e-08,
-    -0.16665852,    /*Est1*/
-    0.0083139502,   /*Est2*/
-    -0.00018524670  /*Est3*/
+    -2.388_985_9e-8,
+    -0.16665852,      /*Est1*/
+    0.008_313_95,     /*Est2*/
+    -0.000_185_246_7  /*Est3*/
 );
 _ps_const_ty!(PS_ONE, f32x4, 1.0);
 _ps_const_ty!(PS_TWO_PI, f32x4, core::f32::consts::PI * 2.0);
-_ps_const_ty!(PS_RECIPROCAL_TWO_PI, f32x4, 0.159154943);
+_ps_const_ty!(PS_RECIPROCAL_TWO_PI, f32x4, 0.159_154_94);
 
 #[inline]
 pub(crate) unsafe fn m128_abs(v: __m128) -> __m128 {

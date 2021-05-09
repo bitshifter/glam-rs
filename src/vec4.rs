@@ -26,7 +26,7 @@ use core::arch::x86_64::*;
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
 
-use core::{cmp::Ordering, f32};
+use core::f32;
 
 macro_rules! impl_vec4_common_methods {
     ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
@@ -236,6 +236,7 @@ impl From<Vec4> for Vec3A {
     /// On architectures where SIMD is supported such as SSE2 on x86_64 this conversion is a noop.
     #[inline(always)]
     fn from(v: Vec4) -> Self {
+        #[allow(clippy::useless_conversion)]
         Self(v.0.into())
     }
 }

@@ -9,9 +9,18 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ### Added
 
-* Added 3D affine transform types `Affine3` and `DAffine3`. These are more
-  efficient than using `Mat4` and `DMat4` respectively when working with affine
-  transforms.
+* Added 3D affine transform types `Affine3A` and `DAffine3`. These are more
+  efficient than using `Mat4` and `DMat4` respectively when working with 3D
+  affine transforms.
+* Added 2D affine transform types `Affine2` and `DAffine2`. These are more
+  efficient than using `Mat3` and `DMat3` respectively when working with 2D
+  affine transforms.
+
+### Changed
+
+* Deprecated `TransformSRT` and `TransformRT` which are under the
+  `transform-types` feature. These will be moved to a separate experimental
+  crate.
 
 ## [0.14.0] - 2021-04-09
 
@@ -505,7 +514,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.13.1...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.14.0...HEAD
+[0.14.0]: https://github.com/bitshifter/glam-rs/compare/0.13.1...0.14.0
 [0.13.1]: https://github.com/bitshifter/glam-rs/compare/0.13.0...0.13.1
 [0.13.0]: https://github.com/bitshifter/glam-rs/compare/0.12.0...0.13.0
 [0.12.0]: https://github.com/bitshifter/glam-rs/compare/0.11.3...0.12.0

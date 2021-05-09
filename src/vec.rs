@@ -410,13 +410,6 @@ macro_rules! impl_vecn_common_traits {
             }
         }
 
-        impl PartialOrd for $vecn {
-            #[inline]
-            fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-                self.as_ref().partial_cmp(other.as_ref())
-            }
-        }
-
         impl From<$vecn> for $inner {
             #[inline(always)]
             fn from(t: $vecn) -> Self {

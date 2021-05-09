@@ -1,8 +1,6 @@
-#[cfg(feature = "transform-types")]
 #[macro_use]
 mod support;
 
-#[cfg(feature = "transform-types")]
 macro_rules! impl_affine2_tests {
     ($t:ident, $affine2:ident, $vec2:ident) => {
         use core::$t::NAN;
@@ -114,10 +112,23 @@ macro_rules! impl_affine2_tests {
     };
 }
 
-#[cfg(feature = "transform-types")]
 mod affine2 {
-    use super::support::deg;
+    use super::support::{deg, FloatCompare};
     use glam::{Affine2, Vec2};
+
+    impl FloatCompare for Affine2 {
+        #[inline]
+        fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
+            self.abs_diff_eq(*other, max_abs_diff)
+        }
+        #[inline]
+        fn abs_diff(&self, other: &Self) -> Self {
+            Self {
+                matrix2: self.matrix2.abs_diff(&other.matrix2),
+                translation: self.translation.abs_diff(&other.translation),
+            }
+        }
+    }
 
     #[test]
     fn test_align() {
@@ -135,10 +146,23 @@ mod affine2 {
     impl_affine2_tests!(f32, Affine2, Vec2);
 }
 
-#[cfg(feature = "transform-types")]
 mod daffine2 {
-    use super::support::deg;
+    use super::support::{deg, FloatCompare};
     use glam::{DAffine2, DVec2};
+
+    impl FloatCompare for DAffine2 {
+        #[inline]
+        fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
+            self.abs_diff_eq(*other, max_abs_diff as f64)
+        }
+        #[inline]
+        fn abs_diff(&self, other: &Self) -> Self {
+            Self {
+                matrix2: self.matrix2.abs_diff(&other.matrix2),
+                translation: self.translation.abs_diff(&other.translation),
+            }
+        }
+    }
 
     #[test]
     fn test_align() {

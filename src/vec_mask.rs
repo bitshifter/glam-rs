@@ -3,7 +3,7 @@ use crate::core::traits::vector::{
 };
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
-use core::{cmp::Ordering, hash, ops::*};
+use core::{hash, ops::*};
 
 #[cfg(all(
     target_arch = "x86",
@@ -62,20 +62,6 @@ macro_rules! impl_vecnmask_traits {
         }
 
         impl Eq for $vecnmask {}
-
-        impl Ord for $vecnmask {
-            #[inline]
-            fn cmp(&self, other: &Self) -> Ordering {
-                self.as_ref().cmp(other.as_ref())
-            }
-        }
-
-        impl PartialOrd for $vecnmask {
-            #[inline]
-            fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-                Some(self.cmp(other))
-            }
-        }
 
         impl hash::Hash for $vecnmask {
             #[inline]

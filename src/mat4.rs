@@ -22,10 +22,7 @@ use core::arch::x86_64::*;
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
-use core::{
-    cmp::Ordering,
-    ops::{Add, Deref, DerefMut, Mul, Sub},
-};
+use core::ops::{Add, Deref, DerefMut, Mul, Sub};
 
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
@@ -587,12 +584,6 @@ macro_rules! impl_mat4_traits {
             }
         }
 
-        impl PartialOrd for $mat4 {
-            #[inline]
-            fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-                self.as_ref().partial_cmp(other.as_ref())
-            }
-        }
         impl AsRef<[$t; 16]> for $mat4 {
             #[inline]
             fn as_ref(&self) -> &[$t; 16] {
@@ -731,6 +722,7 @@ impl Mat4 {
     /// This is the equivalent of multiplying the `Vec3A` as a 4D vector where `w` is `1.0`.
     #[inline(always)]
     pub fn transform_point3a(&self, other: Vec3A) -> Vec3A {
+        #[allow(clippy::useless_conversion)]
         Vec3A(self.0.transform_float4_as_point3(other.0.into()).into())
     }
 
@@ -739,6 +731,7 @@ impl Mat4 {
     /// This is the equivalent of multiplying the `Vec3A` as a 4D vector where `w` is `0.0`.
     #[inline(always)]
     pub fn transform_vector3a(&self, other: Vec3A) -> Vec3A {
+        #[allow(clippy::useless_conversion)]
         Vec3A(self.0.transform_float4_as_vector3(other.0.into()).into())
     }
 
