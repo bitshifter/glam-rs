@@ -24,21 +24,21 @@ fn random_transformrt(rng: &mut PCG32) -> TransformRT {
 
 bench_unop!(
     transformrt_inverse,
-    "TransformRT inverse",
+    "transform_rt inverse",
     op => inverse,
     from => random_transformrt
 );
 
 bench_unop!(
     transformsrt_inverse,
-    "TransformSRT inverse",
+    "transform_srt inverse",
     op => inverse,
     from => random_transformsrt
 );
 
 bench_binop!(
     transformrt_transform_point3,
-    "TransformRT transform point3",
+    "transform_rt transform point3",
     op => transform_point3,
     from1 => random_transformrt,
     from2 => random_vec3
@@ -46,7 +46,7 @@ bench_binop!(
 
 bench_binop!(
     transformrt_transform_point3a,
-    "TransformRT transform point3a",
+    "transform_rt transform point3a",
     op => transform_point3a,
     from1 => random_transformrt,
     from2 => random_vec3a
@@ -54,7 +54,7 @@ bench_binop!(
 
 bench_binop!(
     transformrt_transform_vector3,
-    "TransformRT transform vector3",
+    "transform_rt transform vector3",
     op => transform_vector3,
     from1 => random_transformrt,
     from2 => random_vec3
@@ -62,7 +62,7 @@ bench_binop!(
 
 bench_binop!(
     transformrt_transform_vector3a,
-    "TransformRT transform vector3a",
+    "transform_rt transform vector3a",
     op => transform_vector3a,
     from1 => random_transformrt,
     from2 => random_vec3a
@@ -70,7 +70,7 @@ bench_binop!(
 
 bench_binop!(
     transformsrt_transform_point3,
-    "TransformSRT transform point3",
+    "transform_srt transform point3",
     op => transform_point3,
     from1 => random_transformsrt,
     from2 => random_vec3
@@ -78,7 +78,7 @@ bench_binop!(
 
 bench_binop!(
     transformsrt_transform_point3a,
-    "TransformSRT transform point3a",
+    "transform_srt transform point3a",
     op => transform_point3a,
     from1 => random_transformsrt,
     from2 => random_vec3a
@@ -86,7 +86,7 @@ bench_binop!(
 
 bench_binop!(
     transformsrt_transform_vector3,
-    "TransformSRT transform vector3",
+    "transform_srt transform vector3",
     op => transform_vector3,
     from1 => random_transformsrt,
     from2 => random_vec3
@@ -94,21 +94,21 @@ bench_binop!(
 
 bench_binop!(
     transformsrt_transform_vector3a,
-    "TransformSRT transform vector3a",
+    "transform_srt transform vector3a",
     op => transform_vector3a,
     from1 => random_transformsrt,
     from2 => random_vec3a
 );
 bench_binop!(
     transformsrt_mul_transformsrt,
-    "TransformSRT mul TransformSRT",
+    "transform_srt mul transform_srt",
     op => mul,
     from => random_transformsrt
 );
 
 bench_binop!(
     transformrt_mul_transformrt,
-    "TransformRT mul TransformRT",
+    "transform_rt mul transform_rt",
     op => mul,
     from => random_transformrt
 );
