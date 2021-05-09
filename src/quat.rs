@@ -614,7 +614,6 @@ impl Quat {
     }
 
     /// Creates a quaternion from a 3x3 rotation matrix inside a 3D affine transform.
-    #[cfg(feature = "transform-types")]
     #[inline]
     pub fn from_affine3(mat: &crate::Affine3A) -> Self {
         Self(Quaternion::from_rotation_axes(
@@ -654,7 +653,6 @@ impl DQuat {
     }
 
     /// Creates a quaternion from a 3x3 rotation matrix inside a 3D affine transform.
-    #[cfg(feature = "transform-types")]
     #[inline]
     pub fn from_affine3(mat: &crate::DAffine3) -> Self {
         Self(Quaternion::from_rotation_axes(
