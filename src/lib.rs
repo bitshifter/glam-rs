@@ -5,15 +5,31 @@
 
 ## Features
 
-`glam` is built with SIMD in mind. Currently only SSE2 on x86/x86_64 is
-supported as this is what stable Rust supports.
+* [`f32`](mod@f32) types
+  * vectors: [`Vec2`], [`Vec3`], [`Vec3A`] and [`Vec4`]
+  * square matrices: [`Mat2`], [`Mat3`], [`Mat3A`] and [`Mat4`]
+  * a quaternion type: [`Quat`]
+  * affine transfomation types: [`Affine2`] and [`Affine3A`]
+* [`f64`](mod@f64) types
+  * vectors: [`DVec2`], [`DVec3`] and [`DVec4`]
+  * square matrices: [`DMat2`], [`DMat3`] and [`DMat4`]
+  * a quaternion type: [`DQuat`]
+  * affine transfomation types: [`DAffine2`] and [`DAffine3`]
+* [`i32`](mod@i32) types
+  * vectors: [`IVec2`], [`IVec3`] and [`IVec4`]
+* [`u32`](mod@u32) types
+  * vectors: [`UVec2`], [`UVec3`] and [`UVec4`]
+* [`bool`](mod@bool) types
+  * vectors: [`BVec2`], [`BVec3`] and [`BVec4`]
 
-* Vector, quaternion and matrix types support for [`f32`](mod@f32) and [`f64`](mod@f64)
-* Vector types supported for [`i32`](mod@i32), [`u32`](mod@u32) and [`bool`](mod@bool)
-* SSE2 storage and optimization for many [`f32`](mod@f32) types, including [`Mat2`], [`Mat4`],
-  [`Quat`], [`Vec3A`] and [`Vec4`]
-* Scalar math fallback implementations exist when SSE2 is not available
-* Most functionality includes unit tests and benchmarks
+## SIMD
+
+`glam` is built with SIMD in mind. Many `f32` types use 128-bit SIMD vector types for storage
+and/or impelementation. The use of SIMD generally enables better performance than using regular
+`f32` math.
+
+Currently only SSE2 on x86/x86_64 is supported as this is what stable Rust supports. There are
+scalar math fallback implementations exist when SSE2 is not available.
 
 ## Linear algebra conventions
 
@@ -30,8 +46,8 @@ assert_eq!(v, x);
 
 Matrices are stored in memory in column-major order.
 
-All angles are in radians. Rust provides the `to_radians()` method which can be
-used to convert from degrees.
+All angles are in radians. Rust provides the `f32::to_radians()` and `f64::to_radians()` methods to
+convert from degrees.
 
 ## Direct element access
 
@@ -52,7 +68,8 @@ assert_eq!(4.0, v.z);
 ## Size and alignment of types
 
 Some `glam` types use SIMD for storage meaning they are 16 byte aligned, these
-types include [`Mat2`], [`Mat4`], [`Quat`], [`Vec3A`] and [`Vec4`].
+types include [`Mat2`], `[Mat3A`], [`Mat4`], [`Quat`], [`Vec3A`], [`Vec4`], [`Affine2`] and
+[`Affine3A`].
 
 When SSE2 is not available on the target architecture this type will still be 16
 byte aligned so that object sizes and layouts will not change between

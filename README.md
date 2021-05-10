@@ -14,12 +14,14 @@ and feel of the API has solidified.
 
 * `f32` types
   * vectors: `Vec2`, `Vec3`, `Vec3A` and `Vec4`
-  * square matrices: `Mat2`, `Mat3` and `Mat4`
+  * square matrices: `Mat2`, `Mat3`, `Mat3A` and `Mat4`
   * a quaternion type: `Quat`
+  * affine transfomation types: `Affine2` and `Affine3A`
 * `f64` types
   * vectors: `DVec2`, `DVec3` and `DVec4`
   * square matrices: `DMat2`, `DMat3` and `DMat4`
   * a quaternion type: `DQuat`
+  * affine transfomation types: `DAffine2` and `DAffine3`
 * `i32` types
   * vectors: `IVec2`, `IVec3` and `IVec4`
 * `u32` types
@@ -29,12 +31,13 @@ and feel of the API has solidified.
 
 ### SIMD
 
-The `Vec3A`, `Vec4` and `Quat` types use SSE2 on x86/x86_64 architectures.
-`Mat2`, `Mat3` and `Mat4` also use SSE2 for some functionality. Not everything
-has a SIMD implementation yet.
-
-Note that this does result in some wasted space in the case of `Vec3A` as the
-SIMD vector type is 16 bytes large and 16 byte aligned.
+The `Vec3A`, `Vec4`, `Quat`, `Mat2`, `Mat3A`, `Mat4`, `Affine2` and `Affine3A`
+types use 128-bit wide SIMD vector types for storage on x86/x86_64
+architectures.  As a result, these types are all 16 byte aligned and depending
+on the size of the type or the type's members, they may contain internal
+padding.  This results in some wasted space in the cases of `Vec3A`, `Mat3A`,
+`Affine2` and `Affine3A`.  However the use of SIMD generally results in better
+performance than scalar math.
 
 `glam` outperforms similar Rust libraries for common operations as tested by the
 [`mathbench`][mathbench] project.
