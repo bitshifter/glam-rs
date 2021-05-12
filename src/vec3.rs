@@ -352,3 +352,28 @@ fn test_vec3_private() {
         vec3a(-0.5, 1.0, -5.0)
     );
 }
+
+mod const_test_vec3 {
+    const_assert_eq!(4, core::mem::align_of::<super::Vec3>());
+    const_assert_eq!(12, core::mem::size_of::<super::Vec3>());
+} 
+
+mod const_test_vec3a {
+    const_assert_eq!(16, core::mem::align_of::<super::Vec3A>());
+    const_assert_eq!(16, core::mem::size_of::<super::Vec3A>());
+} 
+
+mod const_test_dvec3 {
+    const_assert_eq!(8, core::mem::align_of::<super::DVec3>());
+    const_assert_eq!(24, core::mem::size_of::<super::DVec3>());
+}
+
+mod const_test_ivec3 {
+    const_assert_eq!(4, core::mem::align_of::<super::IVec3>());
+    const_assert_eq!(12, core::mem::size_of::<super::IVec3>());
+} 
+
+mod const_test_uvec3 {
+    const_assert_eq!(4, core::mem::align_of::<super::UVec3>());
+    const_assert_eq!(12, core::mem::size_of::<super::UVec3>());
+} 

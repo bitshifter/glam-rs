@@ -215,3 +215,23 @@ impl UVec2 {
 }
 impl_vec2_unsigned_traits!(u32, uvec2, UVec2, UVec3, BVec2, XYU32);
 impl_vecn_eq_hash_traits!(u32, 2, UVec2);
+
+mod const_test_vec2 {
+    const_assert_eq!(4, core::mem::align_of::<super::Vec2>());
+    const_assert_eq!(8, core::mem::size_of::<super::Vec2>());
+} 
+
+mod const_test_dvec2 {
+    const_assert_eq!(8, core::mem::align_of::<super::DVec2>());
+    const_assert_eq!(16, core::mem::size_of::<super::DVec2>());
+}
+
+mod const_test_ivec2 {
+    const_assert_eq!(4, core::mem::align_of::<super::IVec2>());
+    const_assert_eq!(8, core::mem::size_of::<super::IVec2>());
+} 
+
+mod const_test_uvec2 {
+    const_assert_eq!(4, core::mem::align_of::<super::UVec2>());
+    const_assert_eq!(8, core::mem::size_of::<super::UVec2>());
+} 

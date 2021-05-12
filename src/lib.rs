@@ -25,15 +25,71 @@
 ## SIMD
 
 `glam` is built with SIMD in mind. Many `f32` types use 128-bit SIMD vector types for storage
-and/or impelementation. The use of SIMD generally enables better performance than using regular
-`f32` math.
+and/or impelementation. The use of SIMD generally enables better performance than using primitive
+numeric types such as `f32`.
+
+Some `glam` types use SIMD for storage meaning they are 16 byte aligned, these types include
+[`Mat2`], `[Mat3A`], [`Mat4`], [`Quat`], [`Vec3A`], [`Vec4`], [`Affine2`] and [`Affine3A`].
+
+When SIMD is not available on the target architecture the types with an `A` suffix will maintain 16
+byte alignment and internal padding so that object sizes and layouts will not change between
+architectures.
+
+All the main `glam` types are `#[repr(C)]`, so they are possible to expose as struct members to C
+interfaces if desired. However be mindful of internal padding of `A` suffix types.
 
 Currently only SSE2 on x86/x86_64 is supported as this is what stable Rust supports. There are
 scalar math fallback implementations exist when SSE2 is not available.
 
+## `Vec3A` and `Mat3A`
+
+[`Vec3A`] is a SIMD optimized version of the [`Vec3`] type, which due to 16 byte alignment results
+in [`Vec3A`] containing 4 bytes of padding making it 16 bytes in size in total. `Mat3A` is composed
+of 3 `Vec3A` columns.
+
+| Type       | `f32` bytes | Align bytes | Size bytes | Padding |
+|:-----------|------------:|------------:|-----------:|--------:|
+|[`Vec3`]    |           12|            4|          12|        0|
+|[`Vec3A`]   |           12|           16|          16|        4|
+|[`Mat3`]    |           36|            4|          36|        0|
+|[`Mat3A`]   |           36|           16|          48|       12|
+
+Despite this wasted space the SIMD version tend to outperform `f32` implementations in
+[**mathbench**](https://github.com/bitshifter/mathbench-rs) benchmarks.
+
+`glam` treats [`Vec3`] as the default vector 3 type and [`Vec3A`] a special case for optimization.
+When methods need to return a vector 3 type they will generally return [`Vec3`].
+
+There are [`From`] trait implementations for converting from [`Vec4`] to a [`Vec3A`] and between
+[`Vec3`] and [`Vec3A`] (and vice versa).
+
+```
+use glam::{Vec3, Vec3A, Vec4};
+
+let v4 = Vec4::new(1.0, 2.0, 3.0, 4.0);
+
+// Convert from `Vec4` to `Vec3A`, this is a no-op if SIMD is supported.
+let v3a = Vec3A::from(v4);
+assert_eq!(Vec3A::new(1.0, 2.0, 3.0), v3a);
+
+// Convert from `Vec3A` to `Vec3`.
+let v3 = Vec3::from(v3a);
+assert_eq!(Vec3::new(1.0, 2.0, 3.0), v3);
+
+// Convert from `Vec3` to `Vec3A`.
+let v3a = Vec3A::from(v3);
+assert_eq!(Vec3A::new(1.0, 2.0, 3.0), v3a);
+```
+
+## Affine2 and Affine3A
+
+Affine2 and Affine3A are composed of a linear transform matrix and a vector translation. The
+specialised affine types perform better than the equivalent transform in a 3x3 or 4x4 matrix,
+especially in the 2D case.
+
 ## Linear algebra conventions
 
-`glam` interprets vectors as column matrices (also known as "column vectors")
+`glam` interprets vectors as column matrices (also known as *column vectors*)
 meaning when transforming a vector with a matrix the matrix goes on the left.
 
 ```
@@ -64,63 +120,6 @@ assert_eq!(4.0, v.z);
 
 [`Deref`]: https://doc.rust-lang.org/std/ops/trait.Deref.html
 [`DerefMut`]: https://doc.rust-lang.org/std/ops/trait.DerefMut.html
-
-## Size and alignment of types
-
-Some `glam` types use SIMD for storage meaning they are 16 byte aligned, these
-types include [`Mat2`], `[Mat3A`], [`Mat4`], [`Quat`], [`Vec3A`], [`Vec4`], [`Affine2`] and
-[`Affine3A`].
-
-When SSE2 is not available on the target architecture this type will still be 16
-byte aligned so that object sizes and layouts will not change between
-architectures.
-
-SIMD support can be disabled entirely using the `scalar-math` feature. This
-feature will also disable SIMD alignment meaning most types will use native
-`f32` alignment of 4 bytes.
-
-All the main `glam` types are `#[repr(C)]`, so they are possible to expose as
-struct members to C interfaces if desired. Be mindful of Vec3A's extra padding
-though.
-
-## Vec3A
-
-[`Vec3A`] is a SIMD optimized version of the [`Vec3`] type, which due to 16 byte
-alignment results in [`Vec3A`] containing 4 bytes of padding making it 16 bytes
-in size in total.
-
-| Type    | `f32` bytes | Align bytes | Padding | Size bytes |
-|:--------|------------:|------------:|--------:|-----------:|
-|[`Vec3`] |           12|            4|        0|          12|
-|[`Vec3A`]|           12|           16|        4|          16|
-
-Despite this wasted space the SIMD version tends to outperform the `f32`
-implementation in [**mathbench**](https://github.com/bitshifter/mathbench-rs)
-benchmarks.
-
-`glam` treats [`Vec3`] as the default vector 3 type and [`Vec3A`] a special case for
-optimization. When methods need to return a vector 3 type they will generally
-return [`Vec3`].
-
-There are [`From`] trait implementations for converting from [`Vec4`] to a [`Vec3A`]
-and between [`Vec3`] and [`Vec3A`] (and vice versa).
-```
-use glam::{Vec3, Vec3A, Vec4};
-
-let v4 = Vec4::new(1.0, 2.0, 3.0, 4.0);
-
-// Convert from `Vec4` to `Vec3A`, this is a no-op if SIMD is supported.
-let v3a = Vec3A::from(v4);
-assert_eq!(Vec3A::new(1.0, 2.0, 3.0), v3a);
-
-// Convert from `Vec3A` to `Vec3`.
-let v3 = Vec3::from(v3a);
-assert_eq!(Vec3::new(1.0, 2.0, 3.0), v3);
-
-// Convert from `Vec3` to `Vec3A`.
-let v3a = Vec3A::from(v3);
-assert_eq!(Vec3A::new(1.0, 2.0, 3.0), v3a);
-```
 
 ## Vector swizzles
 

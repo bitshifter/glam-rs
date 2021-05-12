@@ -595,7 +595,8 @@ type InnerF32 = crate::XYZW<f32>;
 ///
 /// This type is 16 byte aligned.
 #[derive(Clone, Copy)]
-#[repr(transparent)]
+#[cfg_attr(not(any(feature = "scalar-math", target_arch = "spriv")), repr(align(16)))]
+#[cfg_attr(any(feature = "scalar-math", target_arch = "spriv"), repr(transparent))]
 pub struct Quat(pub(crate) InnerF32);
 
 impl Quat {
@@ -663,3 +664,21 @@ impl DQuat {
     }
 }
 impl_quat_traits!(f64, dquat, DQuat, DVec3, DVec4, InnerF64);
+
+#[cfg(any(feature = "scalar-math", target_arch = "spriv"))]
+mod const_test_quat {
+    const_assert_eq!(4, core::mem::align_of::<super::Quat>());
+    const_assert_eq!(16, core::mem::size_of::<super::Quat>());
+} 
+
+#[cfg(not(any(feature = "scalar-math", target_arch = "spriv")))]
+mod const_test_quat {
+    const_assert_eq!(16, core::mem::align_of::<super::Quat>());
+    const_assert_eq!(16, core::mem::size_of::<super::Quat>());
+} 
+
+mod const_test_dquat {
+    const_assert_eq!(8, core::mem::align_of::<super::DQuat>());
+    const_assert_eq!(32, core::mem::size_of::<super::DQuat>());
+}
+
