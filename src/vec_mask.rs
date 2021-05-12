@@ -406,11 +406,10 @@ mod const_test_bvec3a {
 mod const_test_bvec4 {
     const_assert_eq!(1, core::mem::align_of::<super::BVec4>());
     const_assert_eq!(4, core::mem::size_of::<super::BVec4>());
-} 
+}
 
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 mod const_test_bvec4a {
     const_assert_eq!(16, core::mem::align_of::<super::BVec4A>());
     const_assert_eq!(16, core::mem::size_of::<super::BVec4A>());
 }
-

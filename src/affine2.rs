@@ -332,13 +332,13 @@ impl_affine2_traits!(
 mod const_test_affine2 {
     const_assert_eq!(4, core::mem::align_of::<super::Affine2>());
     const_assert_eq!(24, core::mem::size_of::<super::Affine2>());
-} 
+}
 
 #[cfg(not(any(feature = "scalar-math", target_arch = "spriv")))]
 mod const_test_affine2 {
     const_assert_eq!(16, core::mem::align_of::<super::Affine2>());
     const_assert_eq!(32, core::mem::size_of::<super::Affine2>());
-} 
+}
 
 mod const_test_daffine2 {
     const_assert_eq!(8, core::mem::align_of::<super::DAffine2>());

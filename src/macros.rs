@@ -16,7 +16,10 @@ macro_rules! glam_assert {
 macro_rules! const_assert {
     ($x:expr $(,)?) => {
         #[allow(unknown_lints, eq_op)]
-        const _: [(); 0 - !{ const ASSERT: bool = $x; ASSERT } as usize] = [];
+        const _: [(); 0 - !{
+            const ASSERT: bool = $x;
+            ASSERT
+        } as usize] = [];
     };
 }
 
@@ -33,7 +36,6 @@ macro_rules! const_m128 {
         unsafe { $crate::cast::Vec4Cast { fx4: $fx4 }.m128 }
     };
 }
-
 
 /// Creates a `Vec2` that can be used to initialize a constant value.
 ///

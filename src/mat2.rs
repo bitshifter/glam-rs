@@ -366,7 +366,10 @@ type InnerF32 = crate::core::storage::Columns2<XY<f32>>;
 
 /// A 2x2 column major matrix.
 #[derive(Clone, Copy)]
-#[cfg_attr(not(any(feature = "scalar-math", target_arch = "spriv")), repr(align(16)))]
+#[cfg_attr(
+    not(any(feature = "scalar-math", target_arch = "spriv")),
+    repr(align(16))
+)]
 #[cfg_attr(any(feature = "scalar-math", target_arch = "spriv"), repr(transparent))]
 pub struct Mat2(pub(crate) InnerF32);
 
@@ -401,13 +404,13 @@ impl_mat2_traits!(f64, dmat2, DMat2, DMat3, DVec2);
 mod const_test_mat2 {
     const_assert_eq!(4, core::mem::align_of::<super::Mat2>());
     const_assert_eq!(16, core::mem::size_of::<super::Mat2>());
-} 
+}
 
 #[cfg(not(any(feature = "scalar-math", target_arch = "spriv")))]
 mod const_test_mat2 {
     const_assert_eq!(16, core::mem::align_of::<super::Mat2>());
     const_assert_eq!(16, core::mem::size_of::<super::Mat2>());
-} 
+}
 
 mod const_test_dmat2 {
     const_assert_eq!(8, core::mem::align_of::<super::DMat2>());

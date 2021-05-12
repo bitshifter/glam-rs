@@ -743,7 +743,10 @@ type InnerF32 = Columns4<XYZW<f32>>;
 /// The resulting perspective project can be use to transform 3D vectors as points with
 /// perspective correction using the [`Self::project_point3()`] convenience method.
 #[derive(Clone, Copy)]
-#[cfg_attr(not(any(feature = "scalar-math", target_arch = "spriv")), repr(align(16)))]
+#[cfg_attr(
+    not(any(feature = "scalar-math", target_arch = "spriv")),
+    repr(align(16))
+)]
 #[cfg_attr(any(feature = "scalar-math", target_arch = "spriv"), repr(transparent))]
 pub struct Mat4(pub(crate) InnerF32);
 // define_mat4_struct!(Mat4, InnerF32);
@@ -834,13 +837,13 @@ impl_mat4_traits!(f64, dmat4, DMat4, DVec4);
 mod const_test_mat4 {
     const_assert_eq!(4, core::mem::align_of::<super::Mat4>());
     const_assert_eq!(64, core::mem::size_of::<super::Mat4>());
-} 
+}
 
 #[cfg(not(any(feature = "scalar-math", target_arch = "spriv")))]
 mod const_test_mat4 {
     const_assert_eq!(16, core::mem::align_of::<super::Mat4>());
     const_assert_eq!(64, core::mem::size_of::<super::Mat4>());
-} 
+}
 
 mod const_test_dmat4 {
     const_assert_eq!(8, core::mem::align_of::<super::DMat4>());

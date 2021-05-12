@@ -219,7 +219,10 @@ type XYZWF32 = __m128;
 ///
 /// This type uses 16 byte aligned SIMD vector type for storage on supported platforms.
 #[derive(Clone, Copy)]
-#[cfg_attr(not(any(feature = "scalar-math", target_arch = "spriv")), repr(align(16)))]
+#[cfg_attr(
+    not(any(feature = "scalar-math", target_arch = "spriv")),
+    repr(align(16))
+)]
 #[cfg_attr(any(feature = "scalar-math", target_arch = "spriv"), repr(transparent))]
 pub struct Vec4(pub(crate) XYZWF32);
 
@@ -312,13 +315,13 @@ mod tests {
 mod const_test_vec4 {
     const_assert_eq!(4, core::mem::align_of::<super::Vec4>());
     const_assert_eq!(16, core::mem::size_of::<super::Vec4>());
-} 
+}
 
 #[cfg(not(any(feature = "scalar-math", target_arch = "spriv")))]
 mod const_test_vec4 {
     const_assert_eq!(16, core::mem::align_of::<super::Vec4>());
     const_assert_eq!(16, core::mem::size_of::<super::Vec4>());
-} 
+}
 
 mod const_test_dvec4 {
     const_assert_eq!(8, core::mem::align_of::<super::DVec4>());
@@ -328,9 +331,9 @@ mod const_test_dvec4 {
 mod const_test_ivec4 {
     const_assert_eq!(4, core::mem::align_of::<super::IVec4>());
     const_assert_eq!(16, core::mem::size_of::<super::IVec4>());
-} 
+}
 
 mod const_test_uvec4 {
     const_assert_eq!(4, core::mem::align_of::<super::UVec4>());
     const_assert_eq!(16, core::mem::size_of::<super::UVec4>());
-} 
+}
