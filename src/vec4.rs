@@ -26,7 +26,7 @@ use core::arch::x86_64::*;
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
 
-use core::{cmp::Ordering, f32};
+use core::f32;
 
 macro_rules! impl_vec4_common_methods {
     ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
@@ -88,12 +88,11 @@ macro_rules! impl_vec4_common_traits {
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Debug for $vec4 {
             fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-                let a = self.as_ref();
                 fmt.debug_tuple(stringify!($vec4))
-                    .field(&a[0])
-                    .field(&a[1])
-                    .field(&a[2])
-                    .field(&a[3])
+                    .field(&self.x)
+                    .field(&self.y)
+                    .field(&self.z)
+                    .field(&self.w)
                     .finish()
             }
         }
@@ -101,8 +100,7 @@ macro_rules! impl_vec4_common_traits {
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Display for $vec4 {
             fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-                let a = self.as_ref();
-                write!(fmt, "[{}, {}, {}, {}]", a[0], a[1], a[2], a[3])
+                write!(fmt, "[{}, {}, {}, {}]", self.x, self.y, self.z, self.w)
             }
         }
 
@@ -236,6 +234,7 @@ impl From<Vec4> for Vec3A {
     /// On architectures where SIMD is supported such as SSE2 on x86_64 this conversion is a noop.
     #[inline(always)]
     fn from(v: Vec4) -> Self {
+        #[allow(clippy::useless_conversion)]
         Self(v.0.into())
     }
 }

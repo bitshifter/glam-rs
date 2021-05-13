@@ -326,7 +326,7 @@ mod test {
                     s: 4.0,
                 };
                 let g = $quat::from(m);
-                assert_eq!(g, $quat::from((1.0, 2.0, 3.0, 4.0)));
+                assert_eq!(g, $quat::from_xyzw(1.0, 2.0, 3.0, 4.0));
                 assert_eq!(m, g.into());
             }
 

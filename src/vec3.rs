@@ -4,7 +4,7 @@ use crate::BVec3A;
 use crate::{BVec3, DVec2, DVec4, IVec2, IVec4, UVec2, UVec4, Vec2, Vec4, XYZ};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
-use core::{cmp::Ordering, f32, ops::*};
+use core::{f32, ops::*};
 
 #[cfg(not(feature = "std"))]
 use num_traits::Float;
@@ -100,11 +100,10 @@ macro_rules! impl_vec3_common_traits {
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Debug for $vec3 {
             fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-                let a = self.as_ref();
                 fmt.debug_tuple(stringify!($vec3))
-                    .field(&a[0])
-                    .field(&a[1])
-                    .field(&a[2])
+                    .field(&self.x)
+                    .field(&self.y)
+                    .field(&self.z)
                     .finish()
             }
         }
@@ -248,30 +247,6 @@ macro_rules! impl_f32_vec3 {
             impl_vecn_as_f64!(DVec3, x, y, z);
             impl_vecn_as_i32!(IVec3, x, y, z);
             impl_vecn_as_u32!(UVec3, x, y, z);
-
-            #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-            #[inline(always)]
-            pub(crate) fn to_simd(&self) -> __m128 {
-                self.0.into()
-            }
-
-            #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-            #[inline(always)]
-            pub(crate) fn from_simd(v: __m128) -> Self {
-                Self(v.into())
-            }
-
-            #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-            #[inline(always)]
-            pub(crate) fn to_simd(&self) -> $inner {
-                self.0
-            }
-
-            #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-            #[inline(always)]
-            pub(crate) fn from_simd(v: $inner) -> Self {
-                Self(v)
-            }
         }
         impl_vec3_float_traits!(f32, $new, $vec2, $vec3, $vec4, $mask, $inner);
     };
@@ -333,7 +308,6 @@ impl DVec3 {
     impl_vecn_as_f32!(Vec3, x, y, z);
     impl_vecn_as_i32!(IVec3, x, y, z);
     impl_vecn_as_u32!(UVec3, x, y, z);
-    impl_vecn_to_simd_noop!(XYZF64);
 }
 impl_vec3_float_traits!(f64, dvec3, DVec2, DVec3, DVec4, BVec3, XYZF64);
 

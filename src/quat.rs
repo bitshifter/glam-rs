@@ -24,20 +24,20 @@ use core::arch::x86_64::*;
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
-use core::{
-    cmp::Ordering,
-    ops::{Add, Deref, Div, Mul, MulAssign, Neg, Sub},
-};
+use core::ops::{Add, Deref, Div, Mul, MulAssign, Neg, Sub};
 
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
 
 macro_rules! impl_quat_methods {
-    ($t:ident, $quat:ident, $vec3:ident, $mat3:ident, $mat4:ident, $inner:ident) => {
+    ($t:ident, $quat:ident, $vec3:ident, $vec4:ident, $mat3:ident, $mat4:ident, $inner:ident) => {
         /// The identity quaternion. Corresponds to no rotation.
         pub const IDENTITY: Self = Self($inner::W);
 
         /// Creates a new rotation quaternion.
+        ///
+        /// This function does not check if the input is normalized, it is up to the user to
+        /// provide normalized input or to normalized the resulting quaternion.
         ///
         /// This should generally not be called manually unless you know what you are doing.
         /// Use one of the other constructors instead such as `identity` or `from_axis_angle`.
@@ -46,6 +46,17 @@ macro_rules! impl_quat_methods {
         #[inline(always)]
         pub fn from_xyzw(x: $t, y: $t, z: $t, w: $t) -> Self {
             Self(Vector4::new(x, y, z, w))
+        }
+
+        /// Creates a new rotation quaternion from a 4D vector.
+        ///
+        /// This function does not check if the input is normalized, it is up to the user to
+        /// provide normalized input or to normalized the resulting quaternion.
+        ///
+        /// The resulting quaternion is expected to be of unit length.
+        #[inline(always)]
+        pub fn from_vec4(v: $vec4) -> Self {
+            Self(v.0)
         }
 
         /// Creates a rotation quaternion from an unaligned slice.
@@ -129,9 +140,14 @@ macro_rules! impl_quat_methods {
             euler.new_quat(a, b, c)
         }
 
+        #[deprecated(since = "0.15.0", note = "Please use `from_mat3` instead")]
+        pub fn from_rotation_mat3(mat: &$mat3) -> Self {
+            Self::from_mat3(mat)
+        }
+
         /// Creates a quaternion from a 3x3 rotation matrix.
         #[inline]
-        pub fn from_rotation_mat3(mat: &$mat3) -> Self {
+        pub fn from_mat3(mat: &$mat3) -> Self {
             Self(Quaternion::from_rotation_axes(
                 mat.x_axis.0,
                 mat.y_axis.0,
@@ -139,9 +155,14 @@ macro_rules! impl_quat_methods {
             ))
         }
 
+        #[deprecated(since = "0.15.0", note = "Please use `from_mat4` instead")]
+        pub fn from_rotation_mat4(mat: &$mat4) -> Self {
+            Self::from_mat4(mat)
+        }
+
         /// Creates a quaternion from a 3x3 rotation matrix inside a homogeneous 4x4 matrix.
         #[inline]
-        pub fn from_rotation_mat4(mat: &$mat4) -> Self {
+        pub fn from_mat4(mat: &$mat4) -> Self {
             Self(Quaternion::from_rotation_axes(
                 mat.x_axis.0.into(),
                 mat.y_axis.0.into(),
@@ -486,13 +507,6 @@ macro_rules! impl_quat_traits {
             }
         }
 
-        impl PartialOrd for $quat {
-            #[inline]
-            fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-                self.as_ref().partial_cmp(other.as_ref())
-            }
-        }
-
         impl AsRef<[$t; 4]> for $quat {
             #[inline(always)]
             fn as_ref(&self) -> &[$t; 4] {
@@ -507,13 +521,6 @@ macro_rules! impl_quat_traits {
             }
         }
 
-        impl From<$vec4> for $quat {
-            #[inline(always)]
-            fn from(v: $vec4) -> Self {
-                Self(v.0)
-            }
-        }
-
         impl From<$quat> for $vec4 {
             #[inline(always)]
             fn from(q: $quat) -> Self {
@@ -521,24 +528,10 @@ macro_rules! impl_quat_traits {
             }
         }
 
-        impl From<($t, $t, $t, $t)> for $quat {
-            #[inline(always)]
-            fn from(t: ($t, $t, $t, $t)) -> Self {
-                Self(Vector4::from_tuple(t))
-            }
-        }
-
         impl From<$quat> for ($t, $t, $t, $t) {
             #[inline(always)]
             fn from(q: $quat) -> Self {
                 Vector4::into_tuple(q.0)
-            }
-        }
-
-        impl From<[$t; 4]> for $quat {
-            #[inline(always)]
-            fn from(a: [$t; 4]) -> Self {
-                Self(Vector4::from_array(a))
             }
         }
 
@@ -554,13 +547,6 @@ macro_rules! impl_quat_traits {
             #[inline(always)]
             fn from(q: $quat) -> Self {
                 q.0
-            }
-        }
-
-        impl From<$inner> for $quat {
-            #[inline(always)]
-            fn from(inner: $inner) -> Self {
-                Self(inner)
             }
         }
 
@@ -613,17 +599,28 @@ type InnerF32 = crate::XYZW<f32>;
 pub struct Quat(pub(crate) InnerF32);
 
 impl Quat {
-    impl_quat_methods!(f32, Quat, Vec3, Mat3, Mat4, InnerF32);
+    impl_quat_methods!(f32, Quat, Vec3, Vec4, Mat3, Mat4, InnerF32);
 
     #[inline(always)]
     /// Multiplies a quaternion and a 3D vector, returning the rotated vector.
     pub fn mul_vec3a(self, other: Vec3A) -> Vec3A {
+        #[allow(clippy::useless_conversion)]
         Vec3A(self.0.mul_float4_as_vector3(other.0.into()).into())
     }
 
     #[inline(always)]
     pub fn as_f64(self) -> DQuat {
         DQuat::from_xyzw(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
+    }
+
+    /// Creates a quaternion from a 3x3 rotation matrix inside a 3D affine transform.
+    #[inline]
+    pub fn from_affine3(mat: &crate::Affine3A) -> Self {
+        Self(Quaternion::from_rotation_axes(
+            mat.x_axis.0.into(),
+            mat.y_axis.0.into(),
+            mat.z_axis.0.into(),
+        ))
     }
 }
 impl_quat_traits!(f32, quat, Quat, Vec3, Vec4, InnerF32);
@@ -648,11 +645,21 @@ type InnerF64 = crate::XYZW<f64>;
 pub struct DQuat(pub(crate) InnerF64);
 
 impl DQuat {
-    impl_quat_methods!(f64, DQuat, DVec3, DMat3, DMat4, InnerF64);
+    impl_quat_methods!(f64, DQuat, DVec3, DVec4, DMat3, DMat4, InnerF64);
 
     #[inline(always)]
     pub fn as_f32(self) -> Quat {
         Quat::from_xyzw(self.x as f32, self.y as f32, self.z as f32, self.w as f32)
+    }
+
+    /// Creates a quaternion from a 3x3 rotation matrix inside a 3D affine transform.
+    #[inline]
+    pub fn from_affine3(mat: &crate::DAffine3) -> Self {
+        Self(Quaternion::from_rotation_axes(
+            mat.x_axis.0,
+            mat.y_axis.0,
+            mat.z_axis.0,
+        ))
     }
 }
 impl_quat_traits!(f64, dquat, DQuat, DVec3, DVec4, InnerF64);

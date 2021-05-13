@@ -29,8 +29,7 @@ glam-assert = []
 # this is primarily for testing the fallback implementation
 scalar-math = []
 
-# trying out transform types instead of matrices but they are generally slower
-# at everything except for inverse. They are 16 bytes smaller than a Mat4.
+# deprecated and will move to a separate crate
 transform-types = []
 
 # libm is required when building no_std
@@ -59,6 +58,10 @@ harness = false
 
 [[bench]]
 name = "mat3"
+harness = false
+
+[[bench]]
+name = "mat3a"
 harness = false
 
 [[bench]]

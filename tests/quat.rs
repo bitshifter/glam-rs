@@ -18,18 +18,15 @@ macro_rules! impl_quat_tests {
             let ytheta = deg(45.0);
             let q0 = $quat::from_rotation_y(ytheta);
 
-            let t1 = (0.0, (ytheta * 0.5).sin(), 0.0, (ytheta * 0.5).cos());
-            assert_eq!(q0, t1.into());
-            let q1 = $quat::from(t1);
-            assert_eq!(t1, q1.into());
+            let v1 = $vec4::new(0.0, (ytheta * 0.5).sin(), 0.0, (ytheta * 0.5).cos());
+            assert_eq!(q0, $quat::from_vec4(v1));
+            let q1 = $quat::from_vec4(v1);
+            assert_eq!(v1, q1.into());
 
-            assert_eq!(q0, $new(t1.0, t1.1, t1.2, t1.3));
+            assert_eq!(q0, $new(v1.x, v1.y, v1.z, v1.w));
 
-            let a1 = [0.0, (ytheta * 0.5).sin(), 0.0, (ytheta * 0.5).cos()];
-            assert_eq!(q0, a1.into());
-            let q1 = $quat::from(a1);
-            let a2: [$t; 4] = q1.into();
-            assert_eq!(a1, a2);
+            let a1: [$t; 4] = q1.into();
+            assert_eq!([v1.x, v1.y, v1.z, v1.w], a1);
         }
 
         #[test]
@@ -44,7 +41,7 @@ macro_rules! impl_quat_tests {
             assert_approx_eq!(q0.dot(q0), 1.0);
             assert_approx_eq!(q0.dot(q0), 1.0);
 
-            let q1 = $quat::from($vec4::from(q0) * 2.0);
+            let q1 = $quat::from_vec4($vec4::from(q0) * 2.0);
             assert!(!q1.is_normalized());
             assert_approx_eq!(q1.length_squared(), 4.0, 1.0e-6);
             assert_approx_eq!(q1.length(), 2.0);
@@ -68,9 +65,9 @@ macro_rules! impl_quat_tests {
             assert_approx_eq!(y0, y1);
             let y2 = $quat::from_axis_angle($vec3::Y, yaw);
             assert_approx_eq!(y0, y2);
-            let y3 = $quat::from_rotation_mat3(&$mat3::from_rotation_y(yaw));
+            let y3 = $quat::from_mat3(&$mat3::from_rotation_y(yaw));
             assert_approx_eq!(y0, y3);
-            let y4 = $quat::from_rotation_mat3(&$mat3::from_quat(y0));
+            let y4 = $quat::from_mat3(&$mat3::from_quat(y0));
             assert_approx_eq!(y0, y4);
 
             let x0 = $quat::from_rotation_x(pitch);
@@ -82,7 +79,7 @@ macro_rules! impl_quat_tests {
             assert_approx_eq!(x0, x1);
             let x2 = $quat::from_axis_angle($vec3::X, pitch);
             assert_approx_eq!(x0, x2);
-            let x3 = $quat::from_rotation_mat4(&$mat4::from_rotation_x(deg(180.0)));
+            let x3 = $quat::from_mat4(&$mat4::from_rotation_x(deg(180.0)));
             assert!(x3.is_normalized());
             assert_approx_eq!($quat::from_rotation_x(deg(180.0)), x3);
 
@@ -95,7 +92,7 @@ macro_rules! impl_quat_tests {
             assert_approx_eq!(z0, z1);
             let z2 = $quat::from_axis_angle($vec3::Z, roll);
             assert_approx_eq!(z0, z2);
-            let z3 = $quat::from_rotation_mat4(&$mat4::from_rotation_z(roll));
+            let z3 = $quat::from_mat4(&$mat4::from_rotation_z(roll));
             assert_approx_eq!(z0, z3);
 
             let yx0 = y0 * x0;
@@ -118,7 +115,7 @@ macro_rules! impl_quat_tests {
             assert_approx_eq!(yx0, yx2);
             assert!((yxz0 * yxz0.inverse()).is_near_identity());
 
-            let yxz2 = $quat::from_rotation_mat4(&$mat4::from_quat(yxz0));
+            let yxz2 = $quat::from_mat4(&$mat4::from_quat(yxz0));
             assert_approx_eq!(yxz0, yxz2);
 
             // if near identity, just returns x axis and 0 rotation

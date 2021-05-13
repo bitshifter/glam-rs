@@ -22,10 +22,7 @@ use core::arch::x86_64::*;
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
-use core::{
-    cmp::Ordering,
-    ops::{Add, Deref, DerefMut, Mul, Sub},
-};
+use core::ops::{Add, Deref, DerefMut, Mul, Sub};
 
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
@@ -91,7 +88,7 @@ macro_rules! impl_mat4_methods {
         /// If you require data in row major order `transpose` the matrix first.
         #[inline(always)]
         pub fn to_cols_array(&self) -> [$t; 16] {
-            *self.as_ref()
+            self.0.to_cols_array()
         }
 
         /// Creates a 4x4 matrix from a `[[S; 4]; 4]` 2D array stored in column major order.
@@ -366,7 +363,7 @@ macro_rules! impl_mat4_methods {
             ))
         }
 
-        /// Creates a left-handed perspective projection matrix with [0,1] depth range.
+        /// Creates a left-handed perspective projection matrix with `[0,1]` depth range.
         #[inline(always)]
         pub fn perspective_lh(fov_y_radians: $t, aspect_ratio: $t, z_near: $t, z_far: $t) -> Self {
             Self($inner::perspective_lh(
@@ -377,7 +374,7 @@ macro_rules! impl_mat4_methods {
             ))
         }
 
-        /// Creates a right-handed perspective projection matrix with [0,1] depth range.
+        /// Creates a right-handed perspective projection matrix with `[0,1]` depth range.
         #[inline(always)]
         pub fn perspective_rh(fov_y_radians: $t, aspect_ratio: $t, z_near: $t, z_far: $t) -> Self {
             Self($inner::perspective_rh(
@@ -388,7 +385,7 @@ macro_rules! impl_mat4_methods {
             ))
         }
 
-        /// Creates an infinite left-handed perspective projection matrix with [0,1] depth range.
+        /// Creates an infinite left-handed perspective projection matrix with `[0,1]` depth range.
         #[inline(always)]
         pub fn perspective_infinite_lh(fov_y_radians: $t, aspect_ratio: $t, z_near: $t) -> Self {
             Self($inner::perspective_infinite_lh(
@@ -398,7 +395,7 @@ macro_rules! impl_mat4_methods {
             ))
         }
 
-        /// Creates an infinite left-handed perspective projection matrix with [0,1] depth range.
+        /// Creates an infinite left-handed perspective projection matrix with `[0,1]` depth range.
         #[inline(always)]
         pub fn perspective_infinite_reverse_lh(
             fov_y_radians: $t,
@@ -413,7 +410,7 @@ macro_rules! impl_mat4_methods {
         }
 
         /// Creates an infinite right-handed perspective projection matrix with
-        /// [0,1] depth range.
+        /// `[0,1]` depth range.
         #[inline(always)]
         pub fn perspective_infinite_rh(fov_y_radians: $t, aspect_ratio: $t, z_near: $t) -> Self {
             Self($inner::perspective_infinite_rh(
@@ -424,7 +421,7 @@ macro_rules! impl_mat4_methods {
         }
 
         /// Creates an infinite reverse right-handed perspective projection matrix
-        /// with [0,1] depth range.
+        /// with `[0,1]` depth range.
         #[inline(always)]
         pub fn perspective_infinite_reverse_rh(
             fov_y_radians: $t,
@@ -438,7 +435,7 @@ macro_rules! impl_mat4_methods {
             ))
         }
 
-        /// Creates a right-handed orthographic projection matrix with [-1,1] depth
+        /// Creates a right-handed orthographic projection matrix with `[-1,1]` depth
         /// range.  This is the same as the OpenGL `glOrtho` function in OpenGL.
         /// See
         /// https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml
@@ -456,7 +453,7 @@ macro_rules! impl_mat4_methods {
             ))
         }
 
-        /// Creates a left-handed orthographic projection matrix with [0,1] depth range.
+        /// Creates a left-handed orthographic projection matrix with `[0,1]` depth range.
         #[inline(always)]
         pub fn orthographic_lh(
             left: $t,
@@ -469,7 +466,7 @@ macro_rules! impl_mat4_methods {
             Self($inner::orthographic_lh(left, right, bottom, top, near, far))
         }
 
-        /// Creates a right-handed orthographic projection matrix with [0,1] depth range.
+        /// Creates a right-handed orthographic projection matrix with `[0,1]` depth range.
         #[inline(always)]
         pub fn orthographic_rh(
             left: $t,
@@ -583,16 +580,13 @@ macro_rules! impl_mat4_traits {
         impl PartialEq for $mat4 {
             #[inline]
             fn eq(&self, other: &Self) -> bool {
-                self.as_ref().eq(other.as_ref())
+                self.x_axis.eq(&other.x_axis)
+                    && self.y_axis.eq(&other.y_axis)
+                    && self.z_axis.eq(&other.z_axis)
+                    && self.w_axis.eq(&other.w_axis)
             }
         }
 
-        impl PartialOrd for $mat4 {
-            #[inline]
-            fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-                self.as_ref().partial_cmp(other.as_ref())
-            }
-        }
         impl AsRef<[$t; 16]> for $mat4 {
             #[inline]
             fn as_ref(&self) -> &[$t; 16] {
@@ -731,6 +725,7 @@ impl Mat4 {
     /// This is the equivalent of multiplying the `Vec3A` as a 4D vector where `w` is `1.0`.
     #[inline(always)]
     pub fn transform_point3a(&self, other: Vec3A) -> Vec3A {
+        #[allow(clippy::useless_conversion)]
         Vec3A(self.0.transform_float4_as_point3(other.0.into()).into())
     }
 
@@ -739,6 +734,7 @@ impl Mat4 {
     /// This is the equivalent of multiplying the `Vec3A` as a 4D vector where `w` is `0.0`.
     #[inline(always)]
     pub fn transform_vector3a(&self, other: Vec3A) -> Vec3A {
+        #[allow(clippy::useless_conversion)]
         Vec3A(self.0.transform_float4_as_vector3(other.0.into()).into())
     }
 

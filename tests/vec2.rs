@@ -179,8 +179,6 @@ macro_rules! impl_vec2_tests {
             assert!(c.cmple(c).all());
             assert!(c.cmpge(c).all());
             assert!(a == a);
-            assert!(a < b);
-            assert!(b > a);
         }
 
         #[test]
@@ -340,9 +338,6 @@ macro_rules! impl_vec2_tests {
             assert_eq!(b, a);
             assert_ne!(a, c);
             assert_ne!(b, c);
-
-            assert!(a > c);
-            assert!(c < a);
         }
 
         #[test]

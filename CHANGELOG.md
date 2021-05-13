@@ -5,13 +5,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
-## Unreleased
+## [Unreleased]
+
+### Breaking changes
+
+* Removed `PartialOrd` and `Ord` trait implementations for all `glam` types.
+* Removed deprecated `zero()`, `one()`, `unit_x()`, `unit_y()`, `unit_z()`,
+  `unit_w()`, `identity()` and `Mat2::scale()` methods.
+* Remove problematic `Quat` `From` trait conversions which would allow creating
+  a non-uniform quaternion without necessarily realising, including from
+  `Vec4`, `(x, y, z, w)` and `[f32; 4]`.
 
 ### Added
 
-* Added 3D affine transform types `Affine3` and `DAffine3`. These are more
-  efficient than using `Mat4` and `DMat4` respectively when working with affine
-  transforms.
+* Added `EulerRot` enum for specifying Euler rotation order and
+  `Quat::from_euler()`, `Mat3::from_euler()` and `Mat4::from_euler()` which
+  support specifying a rotation order and angles of rotation.
+* Added `Quat::to_euler()` method for extracting Euler angles.
+* Added `Quat::from_vec4()` which is an explicit method for creating a
+  quaternion from a 4D vector. The method does not normalize the resulting
+  quaternion.
+* Added `Mat3A` type which uses `Vec3A` columns. It is 16 byte aligned and
+  contains internal padding but it generally faster than `Mat3` for most
+  operations if SIMD is available.
+* Added 3D affine transform types `Affine3A` and `DAffine3`. These are more
+  efficient than using `Mat4` and `DMat4` respectively when working with 3D
+  affine transforms.
+* Added 2D affine transform types `Affine2` and `DAffine2`. These are more
+  efficient than using `Mat3` and `DMat3` respectively when working with 2D
+  affine transforms.
+* Aded `Quat::from_affine3` to create a quaternion from an affine transform
+  rotation.
+* Added explicit `to_array` method to vector types to better match the matrix
+  methods.
+
+### Changed
+
+* Deprecated `Quat::from_rotation_ypr()`, `Mat3::from_rotation_ypr()` and
+  `Mat4::from_rotation_ypr()` in favor of new `from_euler()` methods.
+* Deprecated `Quat::from_rotation_mat3()` and `Quat::from_rotation_mat4()` in
+  favor of new `from_mat3` and `from_mat4` methods.
+* Deprecated `TransformSRT` and `TransformRT` which are under the
+  `transform-types` feature. These will be moved to a separate experimental
+  crate.
+* Updated `spriv-std` dependency version to `0.4.0-alpha7`.
 
 ## [0.14.0] - 2021-04-09
 
@@ -28,8 +65,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ### Changed
 
-* Updated dependency versions of `bytemuck` to 1.5, `rand` to 0.8,
-  `rand_xoshiro` to 0.6 and `spriv-std` to 0.4.0-alpha4.
+* Updated dependency versions of `bytemuck` to `1.5`, `rand` to `0.8`,
+  `rand_xoshiro` to `0.6` and `spriv-std` to `0.4.0-alpha4`.
 
 ## [0.13.1] - 2021-03-24
 
@@ -505,7 +542,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.13.1...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.14.0...HEAD
+[0.14.0]: https://github.com/bitshifter/glam-rs/compare/0.13.1...0.14.0
 [0.13.1]: https://github.com/bitshifter/glam-rs/compare/0.13.0...0.13.1
 [0.13.0]: https://github.com/bitshifter/glam-rs/compare/0.12.0...0.13.0
 [0.12.0]: https://github.com/bitshifter/glam-rs/compare/0.11.3...0.12.0

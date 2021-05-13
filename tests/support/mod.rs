@@ -2,12 +2,9 @@
 mod macros;
 
 use glam::{
-    Affine2, Affine3, DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, Mat2,
-    Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4,
+    DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3,
+    Vec3A, Vec4,
 };
-
-#[cfg(feature = "transform-types")]
-use glam::{TransformRt, TransformSrt};
 
 pub trait Deg {
     fn to_radians(self) -> Self;
@@ -160,62 +157,6 @@ impl FloatCompare for DMat4 {
     }
 }
 
-impl FloatCompare for Affine2 {
-    #[inline]
-    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
-        self.abs_diff_eq(*other, max_abs_diff)
-    }
-    #[inline]
-    fn abs_diff(&self, other: &Self) -> Self {
-        Self {
-            matrix2: self.matrix2.abs_diff(&other.matrix2),
-            translation: self.translation.abs_diff(&other.translation),
-        }
-    }
-}
-
-impl FloatCompare for DAffine2 {
-    #[inline]
-    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
-        self.abs_diff_eq(*other, max_abs_diff as f64)
-    }
-    #[inline]
-    fn abs_diff(&self, other: &Self) -> Self {
-        Self {
-            matrix2: self.matrix2.abs_diff(&other.matrix2),
-            translation: self.translation.abs_diff(&other.translation),
-        }
-    }
-}
-
-impl FloatCompare for Affine3 {
-    #[inline]
-    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
-        self.abs_diff_eq(*other, max_abs_diff)
-    }
-    #[inline]
-    fn abs_diff(&self, other: &Self) -> Self {
-        Self {
-            matrix3: self.matrix3.abs_diff(&other.matrix3),
-            translation: self.translation.abs_diff(&other.translation),
-        }
-    }
-}
-
-impl FloatCompare for DAffine3 {
-    #[inline]
-    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
-        self.abs_diff_eq(*other, max_abs_diff as f64)
-    }
-    #[inline]
-    fn abs_diff(&self, other: &Self) -> Self {
-        Self {
-            matrix3: self.matrix3.abs_diff(&other.matrix3),
-            translation: self.translation.abs_diff(&other.translation),
-        }
-    }
-}
-
 impl FloatCompare for Mat4 {
     #[inline]
     fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
@@ -241,7 +182,7 @@ impl FloatCompare for Quat {
     fn abs_diff(&self, other: &Self) -> Self {
         let a: Vec4 = (*self).into();
         let b: Vec4 = (*other).into();
-        (a - b).abs().into()
+        Quat::from_vec4((a - b).abs())
     }
 }
 
@@ -298,7 +239,7 @@ impl FloatCompare for DQuat {
     fn abs_diff(&self, other: &Self) -> Self {
         let a: DVec4 = (*self).into();
         let b: DVec4 = (*other).into();
-        (a - b).abs().into()
+        DQuat::from_vec4((a - b).abs())
     }
 }
 
@@ -332,38 +273,5 @@ impl FloatCompare for DVec4 {
     #[inline]
     fn abs_diff(&self, other: &Self) -> Self {
         (*self - *other).abs()
-    }
-}
-
-#[cfg(feature = "transform-types")]
-impl FloatCompare for TransformSrt {
-    #[inline]
-    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
-        self.abs_diff_eq(*other, max_abs_diff)
-    }
-
-    #[inline]
-    fn abs_diff(&self, other: &Self) -> Self {
-        Self::from_scale_rotation_translation(
-            self.scale.abs_diff(&other.scale),
-            self.rotation.abs_diff(&other.rotation),
-            self.translation.abs_diff(&other.translation),
-        )
-    }
-}
-
-#[cfg(feature = "transform-types")]
-impl FloatCompare for TransformRt {
-    #[inline]
-    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
-        self.abs_diff_eq(*other, max_abs_diff)
-    }
-
-    #[inline]
-    fn abs_diff(&self, other: &Self) -> Self {
-        Self::from_rotation_translation(
-            self.rotation.abs_diff(&other.rotation),
-            self.translation.abs_diff(&other.translation),
-        )
     }
 }

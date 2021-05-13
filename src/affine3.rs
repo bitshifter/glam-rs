@@ -193,7 +193,7 @@ macro_rules! impl_affine3_methods {
 
                 let inv_scale = scale.recip();
 
-                let rotation = $quat::from_rotation_mat3(&$mat3::from_cols(
+                let rotation = $quat::from_mat3(&$mat3::from_cols(
                     (self.matrix3.x_axis * inv_scale.x).into(),
                     (self.matrix3.y_axis * inv_scale.y).into(),
                     (self.matrix3.z_axis * inv_scale.z).into(),
@@ -406,14 +406,14 @@ type TransformF32 = Mat3A;
 type TranslateF32 = Vec3A;
 type DerefTargetF32 = Columns4<crate::Vec3A>;
 
-define_affine3_struct!(Affine3, TransformF32, TranslateF32);
+define_affine3_struct!(Affine3A, TransformF32, TranslateF32);
 impl_affine3_methods!(
     f32,
     Mat3,
     Mat4,
     Quat,
     Vec3,
-    Affine3,
+    Affine3A,
     TransformF32,
     TranslateF32
 );
@@ -423,13 +423,13 @@ impl_affine3_traits!(
     Mat4,
     Vec3,
     Vec4,
-    Affine3,
+    Affine3A,
     TransformF32,
     TranslateF32,
     DerefTargetF32
 );
 
-impl Affine3 {
+impl Affine3A {
     /// Transforms the given `Vec3A`, applying shear, scale, rotation and translation.
     #[inline(always)]
     pub fn transform_point3a(&self, other: Vec3A) -> Vec3A {

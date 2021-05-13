@@ -8,6 +8,14 @@ use glam::Affine2;
 use std::ops::Mul;
 use support::*;
 
+pub fn random_srt_affine2(rng: &mut PCG32) -> Affine2 {
+    Affine2::from_scale_angle_translation(
+        random_nonzero_vec2(rng),
+        random_radians(rng),
+        random_vec2(rng),
+    )
+}
+
 bench_unop!(affine2_inverse, "affine2 inverse", op => inverse, from => random_srt_affine2);
 bench_binop!(
     affine2_transform_point2,

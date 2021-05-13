@@ -40,7 +40,7 @@ macro_rules! impl_vecn_common_methods {
             Self(self.0.max(other.0))
         }
 
-        /// Component-wise clamping of values, similar to [`std::f32::clamp`].
+        /// Component-wise clamping of values, similar to [`f32::clamp`].
         ///
         /// Each element in `min` must be less-or-equal to the corresponing element in `max`.
         ///
@@ -410,13 +410,6 @@ macro_rules! impl_vecn_common_traits {
             }
         }
 
-        impl PartialOrd for $vecn {
-            #[inline]
-            fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-                self.as_ref().partial_cmp(other.as_ref())
-            }
-        }
-
         impl From<$vecn> for $inner {
             #[inline(always)]
             fn from(t: $vecn) -> Self {
@@ -667,20 +660,6 @@ macro_rules! impl_vecn_as_u32 {
         #[inline(always)]
         pub fn as_u32(&self) -> $ret {
             $ret::new($(self.$e as u32),+)
-        }
-    };
-}
-
-macro_rules! impl_vecn_to_simd_noop {
-    ($inner:ident) => {
-        #[inline(always)]
-        pub(crate) fn to_simd(&self) -> $inner {
-            self.0
-        }
-
-        #[inline(always)]
-        pub(crate) fn from_simd(inner: $inner) -> Self {
-            Self(inner)
         }
     };
 }
