@@ -27,40 +27,40 @@ use core::ops::{Add, Deref, DerefMut, Mul, Sub};
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
 
-macro_rules! define_mat4_struct {
-    ($mat4:ident, $inner:ident) => {
-        /// A 4x4 column major matrix.
-        ///
-        /// This 4x4 matrix type features convenience methods for creating and using affine
-        /// transforms and perspective projections.
-        ///
-        /// Affine transformations including 3D translation, rotation and scale can be created
-        /// using methods such as [`Self::from_translation()`], [`Self::from_quat()`],
-        /// [`Self::from_scale()`] and [`Self::from_scale_rotation_translation()`].
-        ///
-        /// Othographic projections can be created using the methods [`Self::orthographic_lh()`] for
-        /// left-handed coordinate systems and [`Self::orthographic_rh()`] for right-handed
-        /// systems. The resulting matrix is also an affine transformation.
-        ///
-        /// The [`Self::transform_point3()`] and [`Self::transform_vector3()`] convenience methods
-        /// are provided for performing affine transformations on 3D vectors and points. These
-        /// multiply 3D inputs as 4D vectors with an implicit `w` value of `1` for points and `0`
-        /// for vectors respectively. These methods assume that `Self` contains a valid affine
-        /// transform.
-        ///
-        /// Perspective projections can be created using methods such as
-        /// [`Self::perspective_lh()`], [`Self::perspective_infinite_lh()`] and
-        /// [`Self::perspective_infinite_reverse_lh()`] for left-handed co-ordinate systems and
-        /// [`Self::perspective_rh()`], [`Self::perspective_infinite_rh()`] and
-        /// [`Self::perspective_infinite_reverse_rh()`] for right-handed co-ordinate systems.
-        ///
-        /// The resulting perspective project can be use to transform 3D vectors as points with
-        /// perspective correction using the [`Self::project_point3()`] convenience method.
-        #[derive(Clone, Copy)]
-        #[repr(transparent)]
-        pub struct $mat4(pub(crate) $inner);
-    };
-}
+//macro_rules! define_mat4_struct {
+//    ($mat4:ident, $inner:ident) => {
+//        /// A 4x4 column major matrix.
+//        ///
+//        /// This 4x4 matrix type features convenience methods for creating and using affine
+//        /// transforms and perspective projections.
+//        ///
+//        /// Affine transformations including 3D translation, rotation and scale can be created
+//        /// using methods such as [`Self::from_translation()`], [`Self::from_quat()`],
+//        /// [`Self::from_scale()`] and [`Self::from_scale_rotation_translation()`].
+//        ///
+//        /// Othographic projections can be created using the methods [`Self::orthographic_lh()`] for
+//        /// left-handed coordinate systems and [`Self::orthographic_rh()`] for right-handed
+//        /// systems. The resulting matrix is also an affine transformation.
+//        ///
+//        /// The [`Self::transform_point3()`] and [`Self::transform_vector3()`] convenience methods
+//        /// are provided for performing affine transformations on 3D vectors and points. These
+//        /// multiply 3D inputs as 4D vectors with an implicit `w` value of `1` for points and `0`
+//        /// for vectors respectively. These methods assume that `Self` contains a valid affine
+//        /// transform.
+//        ///
+//        /// Perspective projections can be created using methods such as
+//        /// [`Self::perspective_lh()`], [`Self::perspective_infinite_lh()`] and
+//        /// [`Self::perspective_infinite_reverse_lh()`] for left-handed co-ordinate systems and
+//        /// [`Self::perspective_rh()`], [`Self::perspective_infinite_rh()`] and
+//        /// [`Self::perspective_infinite_reverse_rh()`] for right-handed co-ordinate systems.
+//        ///
+//        /// The resulting perspective project can be use to transform 3D vectors as points with
+//        /// perspective correction using the [`Self::project_point3()`] convenience method.
+//        #[derive(Clone, Copy)]
+//        #[repr(transparent)]
+//        pub struct $mat4(pub(crate) $inner);
+//    };
+//}
 
 macro_rules! impl_mat4_methods {
     ($t:ident, $vec4:ident, $vec3:ident, $quat:ident, $inner:ident) => {
@@ -715,7 +715,41 @@ type InnerF32 = Columns4<__m128>;
 #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
 type InnerF32 = Columns4<XYZW<f32>>;
 
-define_mat4_struct!(Mat4, InnerF32);
+/// A 4x4 column major matrix.
+///
+/// This 4x4 matrix type features convenience methods for creating and using affine
+/// transforms and perspective projections.
+///
+/// Affine transformations including 3D translation, rotation and scale can be created
+/// using methods such as [`Self::from_translation()`], [`Self::from_quat()`],
+/// [`Self::from_scale()`] and [`Self::from_scale_rotation_translation()`].
+///
+/// Othographic projections can be created using the methods [`Self::orthographic_lh()`] for
+/// left-handed coordinate systems and [`Self::orthographic_rh()`] for right-handed
+/// systems. The resulting matrix is also an affine transformation.
+///
+/// The [`Self::transform_point3()`] and [`Self::transform_vector3()`] convenience methods
+/// are provided for performing affine transformations on 3D vectors and points. These
+/// multiply 3D inputs as 4D vectors with an implicit `w` value of `1` for points and `0`
+/// for vectors respectively. These methods assume that `Self` contains a valid affine
+/// transform.
+///
+/// Perspective projections can be created using methods such as
+/// [`Self::perspective_lh()`], [`Self::perspective_infinite_lh()`] and
+/// [`Self::perspective_infinite_reverse_lh()`] for left-handed co-ordinate systems and
+/// [`Self::perspective_rh()`], [`Self::perspective_infinite_rh()`] and
+/// [`Self::perspective_infinite_reverse_rh()`] for right-handed co-ordinate systems.
+///
+/// The resulting perspective project can be use to transform 3D vectors as points with
+/// perspective correction using the [`Self::project_point3()`] convenience method.
+#[derive(Clone, Copy)]
+#[cfg_attr(
+    not(any(feature = "scalar-math", target_arch = "spriv")),
+    repr(align(16))
+)]
+#[cfg_attr(any(feature = "scalar-math", target_arch = "spriv"), repr(transparent))]
+pub struct Mat4(pub(crate) InnerF32);
+// define_mat4_struct!(Mat4, InnerF32);
 
 impl Mat4 {
     impl_mat4_methods!(f32, Vec4, Vec3, Quat, InnerF32);
@@ -752,7 +786,37 @@ impl_mat4_traits!(f32, mat4, Mat4, Vec4);
 
 type InnerF64 = Columns4<XYZW<f64>>;
 
-define_mat4_struct!(DMat4, InnerF64);
+/// A 4x4 column major matrix.
+///
+/// This 4x4 matrix type features convenience methods for creating and using affine
+/// transforms and perspective projections.
+///
+/// Affine transformations including 3D translation, rotation and scale can be created
+/// using methods such as [`Self::from_translation()`], [`Self::from_quat()`],
+/// [`Self::from_scale()`] and [`Self::from_scale_rotation_translation()`].
+///
+/// Othographic projections can be created using the methods [`Self::orthographic_lh()`] for
+/// left-handed coordinate systems and [`Self::orthographic_rh()`] for right-handed
+/// systems. The resulting matrix is also an affine transformation.
+///
+/// The [`Self::transform_point3()`] and [`Self::transform_vector3()`] convenience methods
+/// are provided for performing affine transformations on 3D vectors and points. These
+/// multiply 3D inputs as 4D vectors with an implicit `w` value of `1` for points and `0`
+/// for vectors respectively. These methods assume that `Self` contains a valid affine
+/// transform.
+///
+/// Perspective projections can be created using methods such as
+/// [`Self::perspective_lh()`], [`Self::perspective_infinite_lh()`] and
+/// [`Self::perspective_infinite_reverse_lh()`] for left-handed co-ordinate systems and
+/// [`Self::perspective_rh()`], [`Self::perspective_infinite_rh()`] and
+/// [`Self::perspective_infinite_reverse_rh()`] for right-handed co-ordinate systems.
+///
+/// The resulting perspective project can be use to transform 3D vectors as points with
+/// perspective correction using the [`Self::project_point3()`] convenience method.
+#[derive(Clone, Copy)]
+#[repr(transparent)]
+pub struct DMat4(pub(crate) InnerF64);
+// define_mat4_struct!(DMat4, InnerF64);
 
 impl DMat4 {
     impl_mat4_methods!(f64, DVec4, DVec3, DQuat, InnerF64);
@@ -768,3 +832,20 @@ impl DMat4 {
     }
 }
 impl_mat4_traits!(f64, dmat4, DMat4, DVec4);
+
+#[cfg(any(feature = "scalar-math", target_arch = "spriv"))]
+mod const_test_mat4 {
+    const_assert_eq!(4, core::mem::align_of::<super::Mat4>());
+    const_assert_eq!(64, core::mem::size_of::<super::Mat4>());
+}
+
+#[cfg(not(any(feature = "scalar-math", target_arch = "spriv")))]
+mod const_test_mat4 {
+    const_assert_eq!(16, core::mem::align_of::<super::Mat4>());
+    const_assert_eq!(64, core::mem::size_of::<super::Mat4>());
+}
+
+mod const_test_dmat4 {
+    const_assert_eq!(8, core::mem::align_of::<super::DMat4>());
+    const_assert_eq!(128, core::mem::size_of::<super::DMat4>());
+}

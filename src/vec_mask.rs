@@ -386,3 +386,30 @@ type XYZWBool = crate::XYZW<bool>;
 #[repr(transparent)]
 pub struct BVec4(pub(crate) XYZWBool);
 impl_vec4mask!(BVec4, bool, XYZWBool);
+
+mod const_test_bvec2 {
+    const_assert_eq!(1, core::mem::align_of::<super::BVec2>());
+    const_assert_eq!(2, core::mem::size_of::<super::BVec2>());
+}
+
+mod const_test_bvec3 {
+    const_assert_eq!(1, core::mem::align_of::<super::BVec3>());
+    const_assert_eq!(3, core::mem::size_of::<super::BVec3>());
+}
+
+#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+mod const_test_bvec3a {
+    const_assert_eq!(16, core::mem::align_of::<super::BVec3A>());
+    const_assert_eq!(16, core::mem::size_of::<super::BVec3A>());
+}
+
+mod const_test_bvec4 {
+    const_assert_eq!(1, core::mem::align_of::<super::BVec4>());
+    const_assert_eq!(4, core::mem::size_of::<super::BVec4>());
+}
+
+#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+mod const_test_bvec4a {
+    const_assert_eq!(16, core::mem::align_of::<super::BVec4A>());
+    const_assert_eq!(16, core::mem::size_of::<super::BVec4A>());
+}

@@ -26,13 +26,33 @@ jobs:
     name: Test
     strategy:
       matrix:
-        os: [ubuntu, macos, windows]
-        rust: [1.45.0, stable, beta, nightly]
-    runs-on: ${{ matrix.os }}-latest
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        toolchain: [1.45.0, stable, beta, nightly]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - run: rustup update --no-self-update ${{ matrix.rust }}
-      - run: rustup default ${{ matrix.rust }}
+      - run: rustup update --no-self-update ${{ matrix.toolchain }}
+      - run: rustup default ${{ matrix.toolchain }}
       - run: ./build_and_test_features.sh
         shell: bash
 
+  build-wasm:
+    strategy:
+      matrix:
+        toolchain: [stable, nightly]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.toolchain }}
+          target: wasm32-unknown-unknown
+          override: true
+
+      - name: Check wasm
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+          args: --target wasm32-unknown-unknown

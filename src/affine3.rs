@@ -8,6 +8,9 @@ use num_traits::Float;
 macro_rules! define_affine3_struct {
     ($affine3:ident, $transform:ident, $translate:ident) => {
         /// A 3D affine transform, which can represent translation, rotation, scaling and shear.
+        ///
+        /// The type is composed of a 3x3 matrix containing a linear transformation (e.g. scale,
+        /// rotation, shear, reflection) and a 3D vector translation.
         #[derive(Copy, Clone)]
         pub struct $affine3 {
             pub matrix3: $transform,
@@ -472,3 +475,13 @@ impl_affine3_traits!(
     TranslateF64,
     DerefTargetF64
 );
+
+mod const_test_affine3a {
+    const_assert_eq!(16, core::mem::align_of::<super::Affine3A>());
+    const_assert_eq!(64, core::mem::size_of::<super::Affine3A>());
+}
+
+mod const_test_daffine3 {
+    const_assert_eq!(8, core::mem::align_of::<super::DAffine3>());
+    const_assert_eq!(96, core::mem::size_of::<super::DAffine3>());
+}

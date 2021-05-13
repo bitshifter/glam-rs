@@ -13,6 +13,22 @@ macro_rules! glam_assert {
     ($($arg:tt)*) => {};
 }
 
+macro_rules! const_assert {
+    ($x:expr $(,)?) => {
+        #[allow(unknown_lints, clippy::eq_op)]
+        const _: [(); 0 - !{
+            const ASSERT: bool = $x;
+            ASSERT
+        } as usize] = [];
+    };
+}
+
+macro_rules! const_assert_eq {
+    ($x:expr, $y:expr $(,)?) => {
+        const_assert!($x == $y);
+    };
+}
+
 #[macro_export]
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 macro_rules! const_m128 {
@@ -166,6 +182,7 @@ macro_rules! const_mat3a {
         )
     };
 }
+
 /// Creates a `Mat4` from four column vectors that can be used to initialize a constant value.
 ///
 /// ```

@@ -5,88 +5,63 @@
 
 ## Features
 
-`glam` is built with SIMD in mind. Currently only SSE2 on x86/x86_64 is
-supported as this is what stable Rust supports.
+* [`f32`](mod@f32) types
+  * vectors: [`Vec2`], [`Vec3`], [`Vec3A`] and [`Vec4`]
+  * square matrices: [`Mat2`], [`Mat3`], [`Mat3A`] and [`Mat4`]
+  * a quaternion type: [`Quat`]
+  * affine transformation types: [`Affine2`] and [`Affine3A`]
+* [`f64`](mod@f64) types
+  * vectors: [`DVec2`], [`DVec3`] and [`DVec4`]
+  * square matrices: [`DMat2`], [`DMat3`] and [`DMat4`]
+  * a quaternion type: [`DQuat`]
+  * affine transformation types: [`DAffine2`] and [`DAffine3`]
+* [`i32`](mod@i32) types
+  * vectors: [`IVec2`], [`IVec3`] and [`IVec4`]
+* [`u32`](mod@u32) types
+  * vectors: [`UVec2`], [`UVec3`] and [`UVec4`]
+* [`bool`](mod@bool) types
+  * vectors: [`BVec2`], [`BVec3`] and [`BVec4`]
 
-* Vector, quaternion and matrix types support for [`f32`](mod@f32) and [`f64`](mod@f64)
-* Vector types supported for [`i32`](mod@i32), [`u32`](mod@u32) and [`bool`](mod@bool)
-* SSE2 storage and optimization for many [`f32`](mod@f32) types, including [`Mat2`], [`Mat4`],
-  [`Quat`], [`Vec3A`] and [`Vec4`]
-* Scalar math fallback implementations exist when SSE2 is not available
-* Most functionality includes unit tests and benchmarks
+## SIMD
 
-## Linear algebra conventions
+`glam` is built with SIMD in mind. Many `f32` types use 128-bit SIMD vector types for storage
+and/or implementation. The use of SIMD generally enables better performance than using primitive
+numeric types such as `f32`.
 
-`glam` interprets vectors as column matrices (also known as "column vectors")
-meaning when transforming a vector with a matrix the matrix goes on the left.
+Some `glam` types use SIMD for storage meaning they are 16 byte aligned, these types include
+`Mat2`, `Mat3A`, `Mat4`, `Quat`, `Vec3A`, `Vec4`, `Affine2` an `Affine3A`. Types
+with an `A` suffix are a SIMD alternative to a scalar type, e.g. `Vec3` uses `f32` storage and
+`Vec3A` uses SIMD storage.
 
-```
-use glam::{Mat3, Vec3};
-let m = Mat3::IDENTITY;
-let x = Vec3::X;
-let v = m * x;
-assert_eq!(v, x);
-```
+When SIMD is not available on the target architecture the types will maintain 16 byte alignment and
+internal padding so that object sizes and layouts will not change between architectures.
 
-Matrices are stored in memory in column-major order.
+Currently only SSE2 on x86/x86_64 is supported as this is what stable Rust supports. There are
+scalar math fallback implementations exist when SSE2 is not available. It is intended to add support
+for other SIMD architectures once they appear in stable Rust.
 
-All angles are in radians. Rust provides the `to_radians()` method which can be
-used to convert from degrees.
+## `Vec3A` and `Mat3A`
 
-## Direct element access
+`Vec3A` is a SIMD optimized version of the `Vec3` type, which due to 16 byte alignment results
+in `Vec3A` containing 4 bytes of padding making it 16 bytes in size in total. `Mat3A` is composed
+of 3 `Vec3A` columns.
 
-Because some types may internally be implemeted using SIMD types, direct access to vector elements
-is supported by implementing the [`Deref`] and [`DerefMut`] traits.
+| Type       | `f32` bytes | Align bytes | Size bytes | Padding |
+|:-----------|------------:|------------:|-----------:|--------:|
+|[`Vec3`]    |           12|            4|          12|        0|
+|[`Vec3A`]   |           12|           16|          16|        4|
+|[`Mat3`]    |           36|            4|          36|        0|
+|[`Mat3A`]   |           36|           16|          48|       12|
 
-```
-use glam::Vec3A;
-let mut v = Vec3A::new(1.0, 2.0, 3.0);
-assert_eq!(3.0, v.z);
-v.z += 1.0;
-assert_eq!(4.0, v.z);
-```
+Despite this wasted space the SIMD version tend to outperform `f32` implementations in
+[**mathbench**](https://github.com/bitshifter/mathbench-rs) benchmarks.
 
-[`Deref`]: https://doc.rust-lang.org/std/ops/trait.Deref.html
-[`DerefMut`]: https://doc.rust-lang.org/std/ops/trait.DerefMut.html
+`glam` treats [`Vec3`] as the default vector 3 type and [`Vec3A`] a special case for optimization.
+When methods need to return a vector 3 type they will generally return [`Vec3`].
 
-## Size and alignment of types
+There are [`From`] trait implementations for converting from [`Vec4`] to a [`Vec3A`] and between
+[`Vec3`] and [`Vec3A`] (and vice versa).
 
-Some `glam` types use SIMD for storage meaning they are 16 byte aligned, these
-types include [`Mat2`], [`Mat4`], [`Quat`], [`Vec3A`] and [`Vec4`].
-
-When SSE2 is not available on the target architecture this type will still be 16
-byte aligned so that object sizes and layouts will not change between
-architectures.
-
-SIMD support can be disabled entirely using the `scalar-math` feature. This
-feature will also disable SIMD alignment meaning most types will use native
-`f32` alignment of 4 bytes.
-
-All the main `glam` types are `#[repr(C)]`, so they are possible to expose as
-struct members to C interfaces if desired. Be mindful of Vec3A's extra padding
-though.
-
-## Vec3A
-
-[`Vec3A`] is a SIMD optimized version of the [`Vec3`] type, which due to 16 byte
-alignment results in [`Vec3A`] containing 4 bytes of padding making it 16 bytes
-in size in total.
-
-| Type    | `f32` bytes | Align bytes | Padding | Size bytes |
-|:--------|------------:|------------:|--------:|-----------:|
-|[`Vec3`] |           12|            4|        0|          12|
-|[`Vec3A`]|           12|           16|        4|          16|
-
-Despite this wasted space the SIMD version tends to outperform the `f32`
-implementation in [**mathbench**](https://github.com/bitshifter/mathbench-rs)
-benchmarks.
-
-`glam` treats [`Vec3`] as the default vector 3 type and [`Vec3A`] a special case for
-optimization. When methods need to return a vector 3 type they will generally
-return [`Vec3`].
-
-There are [`From`] trait implementations for converting from [`Vec4`] to a [`Vec3A`]
-and between [`Vec3`] and [`Vec3A`] (and vice versa).
 ```
 use glam::{Vec3, Vec3A, Vec4};
 
@@ -105,18 +80,79 @@ let v3a = Vec3A::from(v3);
 assert_eq!(Vec3A::new(1.0, 2.0, 3.0), v3a);
 ```
 
+## `Affine2` and `Affine3A`
+
+`Affine2` and `Affine3A` are composed of a linear transform matrix and a vector translation. The
+represent 2D and 3D affine transformations which are commonly used in games.
+
+The table below shows the performance advantage of `Affine2` over `Mat3A` and `Mat3A` over `Mat3`.
+
+| operation          | `Mat3`      | `Mat3A`    | `Affine2`  |
+|--------------------|-------------|------------|------------|
+| inverse            | 11.4±0.09ns | 7.1±0.09ns | 5.4±0.06ns |
+| mul self           | 10.5±0.04ns | 5.2±0.05ns | 4.0±0.05ns |
+| transform point2   |  2.7±0.02ns | 2.7±0.03ns | 2.8±0.04ns |
+| transform vector2  |  2.6±0.01ns | 2.6±0.03ns | 2.3±0.02ns |
+
+Performance is much closer between `Mat4` and `Affine3A` with the affine type being faster to invert.
+
+| operation          | `Mat4`      | `Affine3A`  |
+|--------------------|-------------|-------------|
+| inverse            | 15.9±0.11ns | 10.8±0.06ns |
+| mul self           |  7.3±0.05ns |  7.0±0.06ns |
+| transform point3   |  3.6±0.02ns |  4.3±0.04ns |
+| transform point3a  |  3.0±0.02ns |  3.0±0.04ns |
+| transform vector3  |  4.1±0.02ns |  3.9±0.04ns |
+| transform vector3a |  2.8±0.02ns |  2.8±0.02ns |
+
+Benchmarks were taken on an Intel Core i7-4710HQ.
+
+## Linear algebra conventions
+
+`glam` interprets vectors as column matrices (also known as column vectors) meaning when
+transforming a vector with a matrix the matrix goes on the left.
+
+```
+use glam::{Mat3, Vec3};
+let m = Mat3::IDENTITY;
+let x = Vec3::X;
+let v = m * x;
+assert_eq!(v, x);
+```
+
+Matrices are stored in memory in column-major order.
+
+All angles are in radians. Rust provides the `f32::to_radians()` and `f64::to_radians()` methods to
+convert from degrees.
+
+## Direct element access
+
+Because some types may internally be implemented using SIMD types, direct access to vector elements
+is supported by implementing the [`Deref`] and [`DerefMut`] traits.
+
+```
+use glam::Vec3A;
+let mut v = Vec3A::new(1.0, 2.0, 3.0);
+assert_eq!(3.0, v.z);
+v.z += 1.0;
+assert_eq!(4.0, v.z);
+```
+
+[`Deref`]: https://doc.rust-lang.org/std/ops/trait.Deref.html
+[`DerefMut`]: https://doc.rust-lang.org/std/ops/trait.DerefMut.html
+
 ## Vector swizzles
 
-`glam` vector types have functions allowing elements of vectors to be reordered,
-this includes creating a vector of a different size from the vectors elements.
+`glam` vector types have functions allowing elements of vectors to be reordered, this includes
+creating a vector of a different size from the vectors elements.
 
-The swizzle functions are implemented using traits to add them to each vector
-type. This is primarily because there are a lot of swizzle functions which can
-obfuscate the other vector functions in documentation and so on. The traits are
-[`Vec2Swizzles`], [`Vec3Swizzles`] and [`Vec4Swizzles`].
+The swizzle functions are implemented using traits to add them to each vector type. This is
+primarily because there are a lot of swizzle functions which can obfuscate the other vector
+functions in documentation and so on. The traits are [`Vec2Swizzles`], [`Vec3Swizzles`] and
+[`Vec4Swizzles`].
 
-Note that the [`Vec3Swizzles`] implementation for [`Vec3A`] will return a [`Vec3A`]
-for 3 element swizzles, all other implementations will return [`Vec3`].
+Note that the [`Vec3Swizzles`] implementation for [`Vec3A`] will return a [`Vec3A`] for 3 element
+swizzles, all other implementations will return [`Vec3`].
 
 ```
 use glam::{swizzles::*, Vec2, Vec3, Vec3A, Vec4};
@@ -170,12 +206,11 @@ and benchmarks.
 * `rand` - used to generate random values. Used in benchmarks.
 * `serde` - used for serialization and deserialization of types.
 * `mint` - used for interoperating with other linear algebra libraries.
-* `scalar-math` - disables SIMD support and uses native alignment for all
-  types.
-* `debug-glam-assert` - adds assertions in debug builds which check the validity
-  of parameters passed to `glam` to help catch runtime errors.
-* `glam-assert` - adds assertions to all builds which check the validity of
-  parameters passed to `glam` to help catch runtime errors.
+* `scalar-math` - disables SIMD support and uses native alignment for all types.
+* `debug-glam-assert` - adds assertions in debug builds which check the validity of parameters
+  passed to `glam` to help catch runtime errors.
+* `glam-assert` - adds assertions to all builds which check the validity of parameters passed to
+  `glam` to help catch runtime errors.
 
 ## Minimum Supported Version or Rust (MSVR)
 
