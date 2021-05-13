@@ -154,15 +154,15 @@ impl FloatMatrix3x3<f32, XYZF32A16> for Columns3<XYZF32A16> {
     #[inline]
     fn transform_point2(&self, other: XY<f32>) -> XY<f32> {
         // TODO: This is untested, probably slower than the high level code that uses a SIMD mat2
-        Columns2::from_cols(self.x_axis.into(), self.y_axis.into())
+        Columns2::from_cols(self.x_axis.into_xy(), self.y_axis.into_xy())
             .mul_vector(other)
-            .add(self.z_axis.into())
+            .add(self.z_axis.into_xy())
     }
 
     #[inline]
     fn transform_vector2(&self, other: XY<f32>) -> XY<f32> {
         // TODO: This is untested, probably slower than the high level code that uses a SIMD mat2
-        Columns2::from_cols(self.x_axis.into(), self.y_axis.into()).mul_vector(other)
+        Columns2::from_cols(self.x_axis.into_xy(), self.y_axis.into_xy()).mul_vector(other)
     }
 }
 
