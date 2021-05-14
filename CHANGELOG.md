@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [0.15.1] - 2021-05-14
+
+### Changed
+
+* Disable `const_assert_eq` size and alignment checks for SPIR-V targets.
+
 ## [0.15.0] - 2021-05-14
 
 ### Breaking changes
