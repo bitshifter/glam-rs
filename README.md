@@ -1,7 +1,8 @@
 # glam
 
-[![Build Status]][travis-ci] [![Coverage Status]][coveralls.io]
+[![Build Status]][github-ci] [![Coverage Status]][coveralls.io]
 [![Latest Version]][crates.io] [![docs]][docs.rs]
+[![Minimum Supported Rust Version]][Rust 1.45]
 
 A simple and fast 3D math library for games and graphics.
 
@@ -16,12 +17,12 @@ and feel of the API has solidified.
   * vectors: `Vec2`, `Vec3`, `Vec3A` and `Vec4`
   * square matrices: `Mat2`, `Mat3`, `Mat3A` and `Mat4`
   * a quaternion type: `Quat`
-  * affine transfomation types: `Affine2` and `Affine3A`
+  * affine transformation types: `Affine2` and `Affine3A`
 * `f64` types
   * vectors: `DVec2`, `DVec3` and `DVec4`
   * square matrices: `DMat2`, `DMat3` and `DMat4`
   * a quaternion type: `DQuat`
-  * affine transfomation types: `DAffine2` and `DAffine3`
+  * affine transformation types: `DAffine2` and `DAffine3`
 * `i32` types
   * vectors: `IVec2`, `IVec3` and `IVec4`
 * `u32` types
@@ -96,7 +97,7 @@ glam = { version = "0.13.0", default-features = false }
   of parameters passed to `glam` to help catch runtime errors
 * `glam-assert` - adds validation assertions to all builds
 
-### Minimum Supported Version of Rust (MSVR)
+### Minimum Supported Rust Version (MSRV)
 
 The minimum supported version of Rust for `glam` is `1.45.0`.
 
@@ -208,11 +209,13 @@ See [ATTRIBUTION.md] for details.
 
 [ATTRIBUTION.md]: ATTRIBUTION.md
 
-[Build Status]: https://travis-ci.org/bitshifter/glam-rs.svg?branch=master
-[travis-ci]: https://travis-ci.org/bitshifter/glam-rs
+[Build Status]: https://github.com/bitshifter/glam-rs/actions/workflows/ci.yml/badge.svg
+[github-ci]: https://github.com/bitshifter/glam-rs/actions/workflows/ci.yml
 [Coverage Status]: https://coveralls.io/repos/github/bitshifter/glam-rs/badge.svg?branch=master
 [coveralls.io]: https://coveralls.io/github/bitshifter/glam-rs?branch=master
 [Latest Version]: https://img.shields.io/crates/v/glam.svg
 [crates.io]: https://crates.io/crates/glam/
 [docs]: https://docs.rs/glam/badge.svg
 [docs.rs]: https://docs.rs/glam/
+[Minimum Supported Rust Version]: https://img.shields.io/badge/Rust-1.45.0-blue?color=fc8d62&logo=rust
+[Rust 1.45]: https://blog.rust-lang.org/2020/07/16/Rust-1.45.0.html

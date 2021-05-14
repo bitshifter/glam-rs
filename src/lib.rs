@@ -212,12 +212,12 @@ and benchmarks.
 * `glam-assert` - adds assertions to all builds which check the validity of parameters passed to
   `glam` to help catch runtime errors.
 
-## Minimum Supported Version or Rust (MSVR)
+## Minimum Supported Rust Version (MSRV)
 
-The minimum supported version of Rust for `glam` is `1.45.0`.
+The minimum supported Rust version is `1.45.0`.
 
 */
-#![doc(html_root_url = "https://docs.rs/glam/0.14.0")]
+#![doc(html_root_url = "https://docs.rs/glam/0.15.0")]
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(target_arch = "spirv", feature(asm, register_attr, repr_simd))]
 // This would require renaming a lot of stuff, disabling for now.
