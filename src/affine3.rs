@@ -1,6 +1,6 @@
 use crate::core::storage::Columns4;
 use crate::{DMat3, DMat4, DQuat, DVec3, Mat3, Mat3A, Mat4, Quat, Vec3, Vec3A};
-use core::ops::{Deref, DerefMut};
+use core::ops::{Add, Deref, DerefMut, Mul, Sub};
 
 #[cfg(not(feature = "std"))]
 use num_traits::Float;
@@ -364,7 +364,7 @@ macro_rules! impl_affine3_traits {
             }
         }
 
-        impl core::ops::Mul for $affine3 {
+        impl Mul for $affine3 {
             type Output = $affine3;
 
             #[inline(always)]
@@ -376,7 +376,51 @@ macro_rules! impl_affine3_traits {
             }
         }
 
-        impl core::ops::Mul<$mat4> for $affine3 {
+        impl Mul<$affine3> for $t {
+            type Output = $affine3;
+            #[inline(always)]
+            fn mul(self, other: $affine3) -> Self::Output {
+                $affine3 {
+                    matrix3: self * other.matrix3,
+                    translation: self * other.translation,
+                }
+            }
+        }
+
+        impl Mul<$t> for $affine3 {
+            type Output = Self;
+            #[inline(always)]
+            fn mul(self, other: $t) -> Self::Output {
+                Self {
+                    matrix3: self.matrix3 * other,
+                    translation: self.translation * other,
+                }
+            }
+        }
+
+        impl Add<$affine3> for $affine3 {
+            type Output = Self;
+            #[inline(always)]
+            fn add(self, other: Self) -> Self::Output {
+                Self {
+                    matrix3: self.matrix3 + other.matrix3,
+                    translation: self.translation + other.translation,
+                }
+            }
+        }
+
+        impl Sub<$affine3> for $affine3 {
+            type Output = Self;
+            #[inline(always)]
+            fn sub(self, other: Self) -> Self::Output {
+                Self {
+                    matrix3: self.matrix3 - other.matrix3,
+                    translation: self.translation - other.translation,
+                }
+            }
+        }
+
+        impl Mul<$mat4> for $affine3 {
             type Output = $mat4;
 
             #[inline(always)]
@@ -385,7 +429,7 @@ macro_rules! impl_affine3_traits {
             }
         }
 
-        impl core::ops::Mul<$affine3> for $mat4 {
+        impl Mul<$affine3> for $mat4 {
             type Output = $mat4;
 
             #[inline(always)]

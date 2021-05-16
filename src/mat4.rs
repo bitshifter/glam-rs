@@ -604,7 +604,7 @@ macro_rules! impl_mat4_traits {
         impl Add<$mat4> for $mat4 {
             type Output = Self;
             #[inline(always)]
-            fn add(self, other: Self) -> Self {
+            fn add(self, other: Self) -> Self::Output {
                 self.add_mat4(&other)
             }
         }
@@ -612,7 +612,7 @@ macro_rules! impl_mat4_traits {
         impl Sub<$mat4> for $mat4 {
             type Output = Self;
             #[inline(always)]
-            fn sub(self, other: Self) -> Self {
+            fn sub(self, other: Self) -> Self::Output {
                 self.sub_mat4(&other)
             }
         }
@@ -620,7 +620,7 @@ macro_rules! impl_mat4_traits {
         impl Mul<$mat4> for $mat4 {
             type Output = Self;
             #[inline(always)]
-            fn mul(self, other: Self) -> Self {
+            fn mul(self, other: Self) -> Self::Output {
                 self.mul_mat4(&other)
             }
         }
@@ -628,7 +628,7 @@ macro_rules! impl_mat4_traits {
         impl Mul<$vec4> for $mat4 {
             type Output = $vec4;
             #[inline(always)]
-            fn mul(self, other: $vec4) -> $vec4 {
+            fn mul(self, other: $vec4) -> Self::Output {
                 self.mul_vec4(other)
             }
         }
@@ -636,7 +636,7 @@ macro_rules! impl_mat4_traits {
         impl Mul<$mat4> for $t {
             type Output = $mat4;
             #[inline(always)]
-            fn mul(self, other: $mat4) -> $mat4 {
+            fn mul(self, other: $mat4) -> Self::Output {
                 other.mul_scalar(self)
             }
         }
@@ -644,7 +644,7 @@ macro_rules! impl_mat4_traits {
         impl Mul<$t> for $mat4 {
             type Output = Self;
             #[inline(always)]
-            fn mul(self, other: $t) -> Self {
+            fn mul(self, other: $t) -> Self::Output {
                 self.mul_scalar(other)
             }
         }

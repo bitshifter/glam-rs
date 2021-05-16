@@ -1,6 +1,6 @@
 use crate::core::storage::Columns3;
-use crate::{DMat2, DMat3, DVec2, Mat2, Mat3, Vec2};
-use core::ops::{Deref, DerefMut};
+use crate::{DMat2, DMat3, DVec2, Mat2, Mat3, Mat3A, Vec2, Vec3A};
+use core::ops::{Add, Deref, DerefMut, Mul, Sub};
 
 #[cfg(not(feature = "std"))]
 use num_traits::Float;
@@ -245,7 +245,7 @@ macro_rules! impl_affine2_traits {
             }
         }
 
-        impl core::ops::Mul for $affine2 {
+        impl Mul for $affine2 {
             type Output = $affine2;
 
             #[inline(always)]
@@ -257,7 +257,51 @@ macro_rules! impl_affine2_traits {
             }
         }
 
-        impl core::ops::Mul<$mat3> for $affine2 {
+        impl Mul<$affine2> for $t {
+            type Output = $affine2;
+            #[inline(always)]
+            fn mul(self, other: $affine2) -> Self::Output {
+                $affine2 {
+                    matrix2: self * other.matrix2,
+                    translation: self * other.translation,
+                }
+            }
+        }
+
+        impl Mul<$t> for $affine2 {
+            type Output = Self;
+            #[inline(always)]
+            fn mul(self, other: $t) -> Self::Output {
+                Self {
+                    matrix2: self.matrix2 * other,
+                    translation: self.translation * other,
+                }
+            }
+        }
+
+        impl Add<$affine2> for $affine2 {
+            type Output = Self;
+            #[inline(always)]
+            fn add(self, other: Self) -> Self::Output {
+                Self {
+                    matrix2: self.matrix2 + other.matrix2,
+                    translation: self.translation + other.translation,
+                }
+            }
+        }
+
+        impl Sub<$affine2> for $affine2 {
+            type Output = Self;
+            #[inline(always)]
+            fn sub(self, other: Self) -> Self::Output {
+                Self {
+                    matrix2: self.matrix2 - other.matrix2,
+                    translation: self.translation - other.translation,
+                }
+            }
+        }
+
+        impl Mul<$mat3> for $affine2 {
             type Output = $mat3;
 
             #[inline(always)]
@@ -266,7 +310,7 @@ macro_rules! impl_affine2_traits {
             }
         }
 
-        impl core::ops::Mul<$affine2> for $mat3 {
+        impl Mul<$affine2> for $mat3 {
             type Output = $mat3;
 
             #[inline(always)]
@@ -302,6 +346,35 @@ impl_affine2_traits!(
     TranslateF32,
     DerefTargetF32
 );
+
+impl From<Affine2> for Mat3A {
+    #[inline]
+    fn from(m: Affine2) -> Mat3A {
+        Self::from_cols(
+            Vec3A::from((m.matrix2.x_axis, 0.0)),
+            Vec3A::from((m.matrix2.y_axis, 0.0)),
+            Vec3A::from((m.translation, 1.0)),
+        )
+    }
+}
+
+impl Mul<Mat3A> for Affine2 {
+    type Output = Mat3A;
+
+    #[inline(always)]
+    fn mul(self, other: Mat3A) -> Self::Output {
+        Mat3A::from(self) * other
+    }
+}
+
+impl Mul<Affine2> for Mat3A {
+    type Output = Mat3A;
+
+    #[inline(always)]
+    fn mul(self, other: Affine2) -> Self::Output {
+        self * Mat3A::from(other)
+    }
+}
 
 type TransformF64 = DMat2;
 type TranslateF64 = DVec2;
