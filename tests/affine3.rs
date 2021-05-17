@@ -3,7 +3,7 @@ mod support;
 
 macro_rules! impl_affine3_tests {
     ($t:ident, $affine3:ident, $quat:ident, $vec3:ident) => {
-        const MATRIX: [[$t; 3]; 4] = [
+        const MATRIX2D: [[$t; 3]; 4] = [
             [1.0, 2.0, 3.0],
             [4.0, 5.0, 6.0],
             [7.0, 8.0, 9.0],
@@ -204,7 +204,7 @@ macro_rules! impl_affine3_tests {
 
         #[test]
         fn test_affine3_ops() {
-            let m0 = $affine3::from_cols_array_2d(&MATRIX);
+            let m0 = $affine3::from_cols_array_2d(&MATRIX2D);
             let m0x2 = $affine3::from_cols_array_2d(&[
                 [2.0, 4.0, 6.0],
                 [8.0, 10.0, 12.0],
@@ -221,7 +221,7 @@ macro_rules! impl_affine3_tests {
 
         #[test]
         fn test_affine3_fmt() {
-            let a = $affine3::from_cols_array_2d(&MATRIX);
+            let a = $affine3::from_cols_array_2d(&MATRIX2D);
             assert_eq!(
                 format!("{}", a),
                 "[[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]]"
@@ -235,9 +235,20 @@ macro_rules! impl_affine3_tests {
             ];
             let m = $affine3::from_cols_slice(&MATRIX1D);
             assert_eq!($affine3::from_cols_array(&MATRIX1D), m);
+            assert_eq!(MATRIX1D, m.to_cols_array());
+            assert_eq!(MATRIX2D, m.to_cols_array_2d());
             let mut out: [$t; 12] = Default::default();
             m.write_cols_to_slice(&mut out);
             assert_eq!(MATRIX1D, out);
+            assert_eq!(
+                m,
+                $affine3::from_cols(
+                    MATRIX2D[0].into(),
+                    MATRIX2D[1].into(),
+                    MATRIX2D[2].into(),
+                    MATRIX2D[3].into()
+                )
+            );
         }
 
         #[cfg(feature = "std")]
