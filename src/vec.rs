@@ -127,14 +127,26 @@ macro_rules! impl_vecn_common_methods {
             $mask(self.0.cmplt(other.0))
         }
 
+        #[deprecated(since = "0.15.2", note = "Please use `from_slice()` instead")]
+        #[inline(always)]
+        pub fn from_slice_unaligned(slice: &[$t]) -> Self {
+            Self::from_slice(slice)
+        }
+
         /// Creates a vector from the first N values in `slice`.
         ///
         /// # Panics
         ///
         /// Panics if `slice` is less than N elements long.
         #[inline(always)]
-        pub fn from_slice_unaligned(slice: &[$t]) -> Self {
+        pub fn from_slice(slice: &[$t]) -> Self {
             Self($vectrait::from_slice_unaligned(slice))
+        }
+
+        #[deprecated(since = "0.15.2", note = "Please use `write_to_slice()` instead")]
+        #[inline(always)]
+        pub fn write_to_slice_unaligned(self, slice: &mut [$t]) {
+            self.write_to_slice(slice)
         }
 
         /// Writes the elements of `self` to the first N elements in `slice`.
@@ -143,7 +155,7 @@ macro_rules! impl_vecn_common_methods {
         ///
         /// Panics if `slice` is less than N elements long.
         #[inline(always)]
-        pub fn write_to_slice_unaligned(self, slice: &mut [$t]) {
+        pub fn write_to_slice(self, slice: &mut [$t]) {
             $vectrait::write_to_slice_unaligned(self.0, slice)
         }
 

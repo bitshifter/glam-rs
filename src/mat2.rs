@@ -87,6 +87,26 @@ macro_rules! impl_mat2_methods {
             Self($inner::from_angle(angle))
         }
 
+        /// Creates a 2x2 matrix from the first 4 values in `slice`.
+        ///
+        /// # Panics
+        ///
+        /// Panics if `slice` is less than 4 elements long.
+        #[inline(always)]
+        pub fn from_cols_slice(slice: &[$t]) -> Self {
+            Self(Matrix2x2::from_cols_slice(slice))
+        }
+
+        /// Writes the columns of `self` to the first 4 elements in `slice`.
+        ///
+        /// # Panics
+        ///
+        /// Panics if `slice` is less than 4 elements long.
+        #[inline(always)]
+        pub fn write_cols_to_slice(self, slice: &mut [$t]) {
+            Matrix2x2::write_cols_to_slice(&self.0, slice)
+        }
+
         /// Returns the matrix column for the given `index`.
         ///
         /// # Panics

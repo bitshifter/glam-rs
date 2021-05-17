@@ -554,6 +554,19 @@ macro_rules! impl_mat4_tests {
             );
         }
 
+        #[test]
+        fn test_mat4_to_from_slice() {
+            const MATRIX1D: [$t; 16] = [
+                1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0,
+                16.0,
+            ];
+            let m = $mat4::from_cols_slice(&MATRIX1D);
+            assert_eq!($mat4::from_cols_array(&MATRIX1D), m);
+            let mut out: [$t; 16] = Default::default();
+            m.write_cols_to_slice(&mut out);
+            assert_eq!(MATRIX1D, out);
+        }
+
         #[cfg(feature = "std")]
         #[test]
         fn test_sum() {

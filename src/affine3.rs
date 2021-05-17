@@ -1,51 +1,134 @@
 use crate::core::storage::Columns4;
 use crate::{DMat3, DMat4, DQuat, DVec3, Mat3, Mat3A, Mat4, Quat, Vec3, Vec3A};
-use core::ops::{Deref, DerefMut};
+use core::ops::{Add, Deref, DerefMut, Mul, Sub};
 
 #[cfg(not(feature = "std"))]
 use num_traits::Float;
 
 macro_rules! define_affine3_struct {
-    ($affine3:ident, $transform:ident, $translate:ident) => {
+    ($affine3:ident, $matrix:ident, $column:ident) => {
         /// A 3D affine transform, which can represent translation, rotation, scaling and shear.
         ///
         /// The type is composed of a 3x3 matrix containing a linear transformation (e.g. scale,
         /// rotation, shear, reflection) and a 3D vector translation.
         #[derive(Copy, Clone)]
         pub struct $affine3 {
-            pub matrix3: $transform,
-            pub translation: $translate,
+            pub matrix3: $matrix,
+            pub translation: $column,
         }
     };
 }
 
 macro_rules! impl_affine3_methods {
-    ($t:ty, $mat3:ident, $mat4:ident, $quat:ident, $vec3:ident, $affine3:ident, $transform:ident, $translate:ident) => {
+    ($t:ty, $mat3:ident, $mat4:ident, $quat:ident, $vec3:ident, $affine3:ident, $matrix:ident, $column:ident) => {
         impl $affine3 {
             /// The degenerate zero transform.
             ///
             /// This transforms any finite vector and point to zero.
             /// The zero transform is non-invertible.
             pub const ZERO: Self = Self {
-                matrix3: $transform::ZERO,
-                translation: $translate::ZERO,
+                matrix3: $matrix::ZERO,
+                translation: $column::ZERO,
             };
 
             /// The identity transform.
             ///
             /// Multiplying a vector with this returns the same vector.
             pub const IDENTITY: Self = Self {
-                matrix3: $transform::IDENTITY,
-                translation: $translate::ZERO,
+                matrix3: $matrix::IDENTITY,
+                translation: $column::ZERO,
             };
+
+            /// Creates an affine transform from four column vectors.
+            #[inline(always)]
+            pub fn from_cols(
+                x_axis: $column,
+                y_axis: $column,
+                z_axis: $column,
+                w_axis: $column,
+            ) -> Self {
+                Self {
+                    matrix3: $matrix::from_cols(x_axis, y_axis, z_axis),
+                    translation: w_axis,
+                }
+            }
+
+            /// Creates an affine transform from a `[S; 12]` array stored in column major order.
+            /// If your data is stored in row major you will need to `transpose` the returned
+            /// matrix.
+            #[inline(always)]
+            pub fn from_cols_array(m: &[$t; 12]) -> Self {
+                Self {
+                    matrix3: $matrix::from_cols_slice(&m[0..9]),
+                    translation: $column::from_slice(&m[9..12]),
+                }
+            }
+
+            /// Creates a `[S; 12]` array storing data in column major order.
+            /// If you require data in row major order `transpose` the matrix first.
+            #[inline(always)]
+            pub fn to_cols_array(&self) -> [$t; 12] {
+                let x = &self.matrix3.x_axis;
+                let y = &self.matrix3.y_axis;
+                let z = &self.matrix3.z_axis;
+                let w = &self.translation;
+                [x.x, x.y, x.z, y.x, y.y, y.z, z.x, z.y, z.z, w.x, w.y, w.z]
+            }
+
+            /// Creates an affine transform from a `[[S; 3]; 4]` 2D array stored in column major order.
+            /// If your data is in row major order you will need to `transpose` the returned
+            /// matrix.
+            #[inline(always)]
+            pub fn from_cols_array_2d(m: &[[$t; 3]; 4]) -> Self {
+                Self {
+                    matrix3: $matrix::from_cols(m[0].into(), m[1].into(), m[2].into()),
+                    translation: m[3].into(),
+                }
+            }
+
+            /// Creates a `[[S; 3]; 4]` 2D array storing data in column major order.
+            /// If you require data in row major order `transpose` the matrix first.
+            #[inline(always)]
+            pub fn to_cols_array_2d(&self) -> [[$t; 3]; 4] {
+                [
+                    self.matrix3.x_axis.into(),
+                    self.matrix3.y_axis.into(),
+                    self.matrix3.z_axis.into(),
+                    self.translation.into(),
+                ]
+            }
+
+            /// Creates an affine transform from the first 12 values in `slice`.
+            ///
+            /// # Panics
+            ///
+            /// Panics if `slice` is less than 12 elements long.
+            #[inline(always)]
+            pub fn from_cols_slice(slice: &[$t]) -> Self {
+                Self {
+                    matrix3: $matrix::from_cols_slice(&slice[0..9]),
+                    translation: $column::from_slice(&slice[9..12]),
+                }
+            }
+
+            /// Writes the columns of `self` to the first 12 elements in `slice`.
+            ///
+            /// # Panics
+            ///
+            /// Panics if `slice` is less than 12 elements long.
+            #[inline(always)]
+            pub fn write_cols_to_slice(self, slice: &mut [$t]) {
+                self.matrix3.write_cols_to_slice(&mut slice[0..9]);
+                self.translation.write_to_slice(&mut slice[9..12]);
+            }
 
             /// Creates an affine transform that changes scale.
             /// Note that if any scale is zero the transform will be non-invertible.
             #[inline(always)]
             pub fn from_scale(scale: $vec3) -> Self {
                 Self {
-                    matrix3: $transform::from_diagonal(scale),
-                    translation: $translate::ZERO,
+                    matrix3: $matrix::from_diagonal(scale),
+                    translation: $column::ZERO,
                 }
             }
 
@@ -53,8 +136,8 @@ macro_rules! impl_affine3_methods {
             #[inline(always)]
             pub fn from_quat(rotation: $quat) -> Self {
                 Self {
-                    matrix3: $transform::from_quat(rotation),
-                    translation: $translate::ZERO,
+                    matrix3: $matrix::from_quat(rotation),
+                    translation: $column::ZERO,
                 }
             }
 
@@ -63,8 +146,8 @@ macro_rules! impl_affine3_methods {
             #[inline(always)]
             pub fn from_axis_angle(axis: $vec3, angle: $t) -> Self {
                 Self {
-                    matrix3: $transform::from_axis_angle(axis, angle),
-                    translation: $translate::ZERO,
+                    matrix3: $matrix::from_axis_angle(axis, angle),
+                    translation: $column::ZERO,
                 }
             }
 
@@ -73,8 +156,8 @@ macro_rules! impl_affine3_methods {
             #[inline(always)]
             pub fn from_rotation_x(angle: $t) -> Self {
                 Self {
-                    matrix3: $transform::from_rotation_x(angle),
-                    translation: $translate::ZERO,
+                    matrix3: $matrix::from_rotation_x(angle),
+                    translation: $column::ZERO,
                 }
             }
 
@@ -83,8 +166,8 @@ macro_rules! impl_affine3_methods {
             #[inline]
             pub fn from_rotation_y(angle: $t) -> Self {
                 Self {
-                    matrix3: $transform::from_rotation_y(angle),
-                    translation: $translate::ZERO,
+                    matrix3: $matrix::from_rotation_y(angle),
+                    translation: $column::ZERO,
                 }
             }
 
@@ -93,8 +176,8 @@ macro_rules! impl_affine3_methods {
             #[inline]
             pub fn from_rotation_z(angle: $t) -> Self {
                 Self {
-                    matrix3: $transform::from_rotation_z(angle),
-                    translation: $translate::ZERO,
+                    matrix3: $matrix::from_rotation_z(angle),
+                    translation: $column::ZERO,
                 }
             }
 
@@ -102,7 +185,7 @@ macro_rules! impl_affine3_methods {
             #[inline(always)]
             pub fn from_translation(translation: $vec3) -> Self {
                 Self {
-                    matrix3: $transform::IDENTITY,
+                    matrix3: $matrix::IDENTITY,
                     translation: translation.into(),
                 }
             }
@@ -113,7 +196,7 @@ macro_rules! impl_affine3_methods {
             pub fn from_mat3(mat3: $mat3) -> Self {
                 Self {
                     matrix3: mat3.into(),
-                    translation: $translate::ZERO,
+                    translation: $column::ZERO,
                 }
             }
 
@@ -140,9 +223,9 @@ macro_rules! impl_affine3_methods {
                 rotation: $quat,
                 translation: $vec3,
             ) -> Self {
-                let rotation = $transform::from_quat(rotation);
+                let rotation = $matrix::from_quat(rotation);
                 Self {
-                    matrix3: $transform::from_cols(
+                    matrix3: $matrix::from_cols(
                         rotation.x_axis * scale.x,
                         rotation.y_axis * scale.y,
                         rotation.z_axis * scale.z,
@@ -157,7 +240,7 @@ macro_rules! impl_affine3_methods {
             #[inline(always)]
             pub fn from_rotation_translation(rotation: $quat, translation: $vec3) -> Self {
                 Self {
-                    matrix3: $transform::from_quat(rotation.into()),
+                    matrix3: $matrix::from_quat(rotation.into()),
                     translation: translation.into(),
                 }
             }
@@ -167,11 +250,7 @@ macro_rules! impl_affine3_methods {
             #[inline]
             pub fn from_mat4(m: $mat4) -> Self {
                 Self {
-                    matrix3: $transform::from_cols(
-                        m.x_axis.into(),
-                        m.y_axis.into(),
-                        m.z_axis.into(),
-                    ),
+                    matrix3: $matrix::from_cols(m.x_axis.into(), m.y_axis.into(), m.z_axis.into()),
                     translation: m.w_axis.into(),
                 }
             }
@@ -211,12 +290,12 @@ macro_rules! impl_affine3_methods {
                 let s = up.cross(f).normalize();
                 let u = f.cross(s);
                 Self {
-                    matrix3: $transform::from_cols(
+                    matrix3: $matrix::from_cols(
                         $vec3::new(s.x, u.x, f.x).into(),
                         $vec3::new(s.y, u.y, f.y).into(),
                         $vec3::new(s.z, u.z, f.z).into(),
                     ),
-                    translation: $translate::new(-s.dot(eye), -u.dot(eye), -f.dot(eye)),
+                    translation: $column::new(-s.dot(eye), -u.dot(eye), -f.dot(eye)),
                 }
             }
 
@@ -312,7 +391,7 @@ macro_rules! impl_affine3_methods {
 }
 
 macro_rules! impl_affine3_traits {
-    ($t:ty, $mat3:ident, $mat4:ident, $vec3:ident, $vec4:ident, $affine3:ident, $transform:ident, $translate:ident, $deref:ident) => {
+    ($t:ty, $mat3:ident, $mat4:ident, $vec3:ident, $vec4:ident, $affine3:ident, $matrix:ident, $column:ident, $deref:ident) => {
         impl Default for $affine3 {
             #[inline(always)]
             fn default() -> Self {
@@ -352,6 +431,17 @@ macro_rules! impl_affine3_traits {
             }
         }
 
+        #[cfg(not(target_arch = "spirv"))]
+        impl core::fmt::Display for $affine3 {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+                write!(
+                    f,
+                    "[{}, {}, {}, {}]",
+                    self.x_axis, self.y_axis, self.z_axis, self.w_axis
+                )
+            }
+        }
+
         impl From<$affine3> for $mat4 {
             #[inline]
             fn from(m: $affine3) -> $mat4 {
@@ -364,7 +454,7 @@ macro_rules! impl_affine3_traits {
             }
         }
 
-        impl core::ops::Mul for $affine3 {
+        impl Mul for $affine3 {
             type Output = $affine3;
 
             #[inline(always)]
@@ -376,7 +466,51 @@ macro_rules! impl_affine3_traits {
             }
         }
 
-        impl core::ops::Mul<$mat4> for $affine3 {
+        impl Mul<$affine3> for $t {
+            type Output = $affine3;
+            #[inline(always)]
+            fn mul(self, other: $affine3) -> Self::Output {
+                $affine3 {
+                    matrix3: self * other.matrix3,
+                    translation: self * other.translation,
+                }
+            }
+        }
+
+        impl Mul<$t> for $affine3 {
+            type Output = Self;
+            #[inline(always)]
+            fn mul(self, other: $t) -> Self::Output {
+                Self {
+                    matrix3: self.matrix3 * other,
+                    translation: self.translation * other,
+                }
+            }
+        }
+
+        impl Add<$affine3> for $affine3 {
+            type Output = Self;
+            #[inline(always)]
+            fn add(self, other: Self) -> Self::Output {
+                Self {
+                    matrix3: self.matrix3 + other.matrix3,
+                    translation: self.translation + other.translation,
+                }
+            }
+        }
+
+        impl Sub<$affine3> for $affine3 {
+            type Output = Self;
+            #[inline(always)]
+            fn sub(self, other: Self) -> Self::Output {
+                Self {
+                    matrix3: self.matrix3 - other.matrix3,
+                    translation: self.translation - other.translation,
+                }
+            }
+        }
+
+        impl Mul<$mat4> for $affine3 {
             type Output = $mat4;
 
             #[inline(always)]
@@ -385,7 +519,7 @@ macro_rules! impl_affine3_traits {
             }
         }
 
-        impl core::ops::Mul<$affine3> for $mat4 {
+        impl Mul<$affine3> for $mat4 {
             type Output = $mat4;
 
             #[inline(always)]

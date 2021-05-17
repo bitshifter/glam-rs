@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+### Added
+
+* Added `from_cols` methods to affine types.
+* Added methods for reading and writing affine types from and to arrays and
+  slices, including `from_cols_array`, `to_cols_array`, `from_cols_array_2d`,
+  `to_cols_array_2d`, `from_cols_slice` and `write_cols_to_slice`.
+* Added `core::fmt::Display` trait implementations for affine types.
+* Added `core::ops::Add`, `core::ops::Mul` scalar and `core::ops::Sub` trait
+  implementations for affine types.
+
+### Changed
+
+* Renamed vector `from_slice_unaligned` and `write_to_slice_unaligned` methods
+  to `from_slice` and `write_to_slice`.
+
 ## [0.15.1] - 2021-05-14
 
 ### Changed
@@ -40,7 +57,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Added 2D affine transform types `Affine2` and `DAffine2`. These are more
   efficient than using `Mat3` and `DMat3` respectively when working with 2D
   affine transforms.
-* Aded `Quat::from_affine3` to create a quaternion from an affine transform
+* Added `Quat::from_affine3` to create a quaternion from an affine transform
   rotation.
 * Added explicit `to_array` method to vector types to better match the matrix
   methods.
@@ -80,7 +97,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 * Added vector `clamp()` functions.
 * Added matrix column and row accessor methods, `col()` and `row()`.
-* Added SPIR-V module and depenency on `spriv-std` for the SPIR-V target.
+* Added SPIR-V module and dependency on `spriv-std` for the SPIR-V target.
 * Added matrix truncation from 4x4 to 3x3 and 3x3 to 2x2 via `From` impls.
 
 ### Changed
@@ -121,7 +138,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Added quaternion `inverse()` which assumes the quaternion is already
   normalized and returns the conjugate.
 * Added `from_translation()` and `from_angle()` methods to 3x3 matrix types.
-* Added `project_point3()` method to 4x4 matrics types. This method is for
+* Added `project_point3()` method to 4x4 matrix types. This method is for
   transforming 3D vectors by perspective projection transforms.
 * Added `Eq` and `Hash` impls for integer vector types.
 

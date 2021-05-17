@@ -1,48 +1,124 @@
 use crate::core::storage::Columns3;
-use crate::{DMat2, DMat3, DVec2, Mat2, Mat3, Vec2};
-use core::ops::{Deref, DerefMut};
+use crate::{DMat2, DMat3, DVec2, Mat2, Mat3, Mat3A, Vec2, Vec3A};
+use core::ops::{Add, Deref, DerefMut, Mul, Sub};
 
 #[cfg(not(feature = "std"))]
 use num_traits::Float;
 
 macro_rules! define_affine2_struct {
-    ($affine2:ident, $transform:ident, $translate:ident) => {
+    ($affine2:ident, $matrix:ident, $column:ident) => {
         /// A 2D affine transform, which can represent translation, rotation, scaling and shear.
         #[derive(Copy, Clone)]
         pub struct $affine2 {
-            pub matrix2: $transform,
-            pub translation: $translate,
+            pub matrix2: $matrix,
+            pub translation: $column,
         }
     };
 }
 
 macro_rules! impl_affine2_methods {
-    ($t:ty, $mat2:ident, $mat3:ident, $vec2:ident, $affine2:ident, $transform:ident, $translate:ident) => {
+    ($t:ty, $mat2:ident, $mat3:ident, $vec2:ident, $affine2:ident, $matrix:ident, $column:ident) => {
         impl $affine2 {
             /// The degenerate zero transform.
             ///
             /// This transforms any finite vector and point to zero.
             /// The zero transform is non-invertible.
             pub const ZERO: Self = Self {
-                matrix2: $transform::ZERO,
-                translation: $translate::ZERO,
+                matrix2: $matrix::ZERO,
+                translation: $column::ZERO,
             };
 
             /// The identity transform.
             ///
             /// Multiplying a vector with this returns the same vector.
             pub const IDENTITY: Self = Self {
-                matrix2: $transform::IDENTITY,
-                translation: $translate::ZERO,
+                matrix2: $matrix::IDENTITY,
+                translation: $column::ZERO,
             };
+
+            /// Creates an affine transform from three column vectors.
+            #[inline(always)]
+            pub fn from_cols(x_axis: $column, y_axis: $column, z_axis: $column) -> Self {
+                Self {
+                    matrix2: $matrix::from_cols(x_axis, y_axis),
+                    translation: z_axis,
+                }
+            }
+
+            /// Creates an affine transform from a `[S; 6]` array stored in column major order.
+            /// If your data is stored in row major you will need to `transpose` the returned
+            /// matrix.
+            #[inline(always)]
+            pub fn from_cols_array(m: &[$t; 6]) -> Self {
+                Self {
+                    matrix2: $matrix::from_cols_slice(&m[0..4]),
+                    translation: $column::from_slice(&m[4..6]),
+                }
+            }
+
+            /// Creates a `[S; 6]` array storing data in column major order.
+            /// If you require data in row major order `transpose` the matrix first.
+            #[inline(always)]
+            pub fn to_cols_array(&self) -> [$t; 6] {
+                let x = &self.matrix2.x_axis;
+                let y = &self.matrix2.y_axis;
+                let z = &self.translation;
+                [x.x, x.y, y.x, y.y, z.x, z.y]
+            }
+
+            /// Creates an affine transform from a `[[S; 2]; 3]` 2D array stored in column major order.
+            /// If your data is in row major order you will need to `transpose` the returned
+            /// matrix.
+            #[inline(always)]
+            pub fn from_cols_array_2d(m: &[[$t; 2]; 3]) -> Self {
+                Self {
+                    matrix2: $matrix::from_cols(m[0].into(), m[1].into()),
+                    translation: m[2].into(),
+                }
+            }
+
+            /// Creates a `[[S; 2]; 3]` 2D array storing data in column major order.
+            /// If you require data in row major order `transpose` the matrix first.
+            #[inline(always)]
+            pub fn to_cols_array_2d(&self) -> [[$t; 2]; 3] {
+                [
+                    self.matrix2.x_axis.into(),
+                    self.matrix2.y_axis.into(),
+                    self.translation.into(),
+                ]
+            }
+
+            /// Creates an affine transform from the first 6 values in `slice`.
+            ///
+            /// # Panics
+            ///
+            /// Panics if `slice` is less than 6 elements long.
+            #[inline(always)]
+            pub fn from_cols_slice(slice: &[$t]) -> Self {
+                Self {
+                    matrix2: $matrix::from_cols_slice(&slice[0..4]),
+                    translation: $column::from_slice(&slice[4..6]),
+                }
+            }
+
+            /// Writes the columns of `self` to the first 12 elements in `slice`.
+            ///
+            /// # Panics
+            ///
+            /// Panics if `slice` is less than 12 elements long.
+            #[inline(always)]
+            pub fn write_cols_to_slice(self, slice: &mut [$t]) {
+                self.matrix2.write_cols_to_slice(&mut slice[0..4]);
+                self.translation.write_to_slice(&mut slice[4..6]);
+            }
 
             /// Creates an affine transform that changes scale.
             /// Note that if any scale is zero the transform will be non-invertible.
             #[inline(always)]
             pub fn from_scale(scale: $vec2) -> Self {
                 Self {
-                    matrix2: $transform::from_diagonal(scale),
-                    translation: $translate::ZERO,
+                    matrix2: $matrix::from_diagonal(scale),
+                    translation: $column::ZERO,
                 }
             }
 
@@ -50,8 +126,8 @@ macro_rules! impl_affine2_methods {
             #[inline(always)]
             pub fn from_angle(angle: $t) -> Self {
                 Self {
-                    matrix2: $transform::from_angle(angle),
-                    translation: $translate::ZERO,
+                    matrix2: $matrix::from_angle(angle),
+                    translation: $column::ZERO,
                 }
             }
 
@@ -59,7 +135,7 @@ macro_rules! impl_affine2_methods {
             #[inline(always)]
             pub fn from_translation(translation: $vec2) -> Self {
                 Self {
-                    matrix2: $transform::IDENTITY,
+                    matrix2: $matrix::IDENTITY,
                     translation,
                 }
             }
@@ -70,7 +146,7 @@ macro_rules! impl_affine2_methods {
             pub fn from_mat2(matrix2: $mat2) -> Self {
                 Self {
                     matrix2,
-                    translation: $translate::ZERO,
+                    translation: $column::ZERO,
                 }
             }
 
@@ -97,9 +173,9 @@ macro_rules! impl_affine2_methods {
                 angle: $t,
                 translation: $vec2,
             ) -> Self {
-                let rotation = $transform::from_angle(angle);
+                let rotation = $matrix::from_angle(angle);
                 Self {
-                    matrix2: $transform::from_cols(
+                    matrix2: $matrix::from_cols(
                         rotation.x_axis * scale.x,
                         rotation.y_axis * scale.y,
                     ),
@@ -114,7 +190,7 @@ macro_rules! impl_affine2_methods {
             #[inline(always)]
             pub fn from_angle_translation(angle: $t, translation: $vec2) -> Self {
                 Self {
-                    matrix2: $transform::from_angle(angle),
+                    matrix2: $matrix::from_angle(angle),
                     translation,
                 }
             }
@@ -123,7 +199,7 @@ macro_rules! impl_affine2_methods {
             #[inline]
             pub fn from_mat3(m: $mat3) -> Self {
                 Self {
-                    matrix2: $transform::from_cols(m.x_axis.into(), m.y_axis.into()),
+                    matrix2: $matrix::from_cols(m.x_axis.into(), m.y_axis.into()),
                     translation: m.z_axis.into(),
                 }
             }
@@ -194,7 +270,7 @@ macro_rules! impl_affine2_methods {
 }
 
 macro_rules! impl_affine2_traits {
-    ($t:ty, $mat2:ident, $mat3:ident, $vec2:ident, $affine2:ident, $transform:ident, $translate:ident, $deref:ident) => {
+    ($t:ty, $mat2:ident, $mat3:ident, $vec2:ident, $affine2:ident, $matrix:ident, $column:ident, $deref:ident) => {
         impl Default for $affine2 {
             #[inline(always)]
             fn default() -> Self {
@@ -234,6 +310,13 @@ macro_rules! impl_affine2_traits {
             }
         }
 
+        #[cfg(not(target_arch = "spirv"))]
+        impl core::fmt::Display for $affine2 {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+                write!(f, "[{}, {}, {}]", self.x_axis, self.y_axis, self.z_axis)
+            }
+        }
+
         impl From<$affine2> for $mat3 {
             #[inline]
             fn from(m: $affine2) -> $mat3 {
@@ -245,7 +328,7 @@ macro_rules! impl_affine2_traits {
             }
         }
 
-        impl core::ops::Mul for $affine2 {
+        impl Mul for $affine2 {
             type Output = $affine2;
 
             #[inline(always)]
@@ -257,7 +340,51 @@ macro_rules! impl_affine2_traits {
             }
         }
 
-        impl core::ops::Mul<$mat3> for $affine2 {
+        impl Mul<$affine2> for $t {
+            type Output = $affine2;
+            #[inline(always)]
+            fn mul(self, other: $affine2) -> Self::Output {
+                $affine2 {
+                    matrix2: self * other.matrix2,
+                    translation: self * other.translation,
+                }
+            }
+        }
+
+        impl Mul<$t> for $affine2 {
+            type Output = Self;
+            #[inline(always)]
+            fn mul(self, other: $t) -> Self::Output {
+                Self {
+                    matrix2: self.matrix2 * other,
+                    translation: self.translation * other,
+                }
+            }
+        }
+
+        impl Add<$affine2> for $affine2 {
+            type Output = Self;
+            #[inline(always)]
+            fn add(self, other: Self) -> Self::Output {
+                Self {
+                    matrix2: self.matrix2 + other.matrix2,
+                    translation: self.translation + other.translation,
+                }
+            }
+        }
+
+        impl Sub<$affine2> for $affine2 {
+            type Output = Self;
+            #[inline(always)]
+            fn sub(self, other: Self) -> Self::Output {
+                Self {
+                    matrix2: self.matrix2 - other.matrix2,
+                    translation: self.translation - other.translation,
+                }
+            }
+        }
+
+        impl Mul<$mat3> for $affine2 {
             type Output = $mat3;
 
             #[inline(always)]
@@ -266,7 +393,7 @@ macro_rules! impl_affine2_traits {
             }
         }
 
-        impl core::ops::Mul<$affine2> for $mat3 {
+        impl Mul<$affine2> for $mat3 {
             type Output = $mat3;
 
             #[inline(always)]
@@ -302,6 +429,35 @@ impl_affine2_traits!(
     TranslateF32,
     DerefTargetF32
 );
+
+impl From<Affine2> for Mat3A {
+    #[inline]
+    fn from(m: Affine2) -> Mat3A {
+        Self::from_cols(
+            Vec3A::from((m.matrix2.x_axis, 0.0)),
+            Vec3A::from((m.matrix2.y_axis, 0.0)),
+            Vec3A::from((m.translation, 1.0)),
+        )
+    }
+}
+
+impl Mul<Mat3A> for Affine2 {
+    type Output = Mat3A;
+
+    #[inline(always)]
+    fn mul(self, other: Mat3A) -> Self::Output {
+        Mat3A::from(self) * other
+    }
+}
+
+impl Mul<Affine2> for Mat3A {
+    type Output = Mat3A;
+
+    #[inline(always)]
+    fn mul(self, other: Affine2) -> Self::Output {
+        self * Mat3A::from(other)
+    }
+}
 
 type TransformF64 = DMat2;
 type TranslateF64 = DVec2;

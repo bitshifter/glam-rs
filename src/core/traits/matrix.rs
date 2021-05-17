@@ -51,6 +51,21 @@ pub trait Matrix2x2<T: NumEx, V2: Vector2<T>>: Matrix<T> {
         [self.x_axis().into_array(), self.y_axis().into_array()]
     }
 
+    #[inline(always)]
+    fn from_cols_slice(m: &[T]) -> Self {
+        Self::new(m[0], m[1], m[2], m[3])
+    }
+
+    #[inline(always)]
+    fn write_cols_to_slice(&self, slice: &mut [T]) {
+        let x_axis = self.x_axis();
+        let y_axis = self.y_axis();
+        slice[0] = x_axis.x();
+        slice[1] = x_axis.y();
+        slice[2] = y_axis.x();
+        slice[3] = y_axis.y();
+    }
+
     #[rustfmt::skip]
     #[inline(always)]
     fn from_diagonal(diagonal: XY<T>) -> Self {
@@ -204,6 +219,31 @@ pub trait Matrix3x3<T: NumEx, V3: Vector3<T>>: Matrix<T> {
             self.y_axis().into_array(),
             self.z_axis().into_array(),
         ]
+    }
+
+    #[inline(always)]
+    fn from_cols_slice(m: &[T]) -> Self {
+        Self::from_cols(
+            V3::new(m[0], m[1], m[2]),
+            V3::new(m[3], m[4], m[5]),
+            V3::new(m[6], m[7], m[8]),
+        )
+    }
+
+    #[inline(always)]
+    fn write_cols_to_slice(&self, slice: &mut [T]) {
+        let x_axis = self.x_axis();
+        let y_axis = self.y_axis();
+        let z_axis = self.z_axis();
+        slice[0] = x_axis.x();
+        slice[1] = x_axis.y();
+        slice[2] = x_axis.z();
+        slice[3] = y_axis.x();
+        slice[4] = y_axis.y();
+        slice[5] = y_axis.z();
+        slice[6] = z_axis.x();
+        slice[7] = z_axis.y();
+        slice[8] = z_axis.z();
     }
 
     #[rustfmt::skip]
@@ -478,6 +518,43 @@ pub trait Matrix4x4<T: NumEx, V4: Vector4<T>>: Matrix<T> {
             self.z_axis().into_array(),
             self.w_axis().into_array(),
         ]
+    }
+
+    #[rustfmt::skip]
+    #[inline(always)]
+    fn from_cols_slice(m: &[T]) -> Self {
+        Self::from_cols(
+            V4::new( m[0],  m[1],  m[2],  m[3]),
+            V4::new( m[4],  m[5],  m[6],  m[7]),
+            V4::new( m[8],  m[9], m[10], m[11]),
+            V4::new(m[12], m[13], m[14], m[15]))
+    }
+
+    #[inline(always)]
+    fn write_cols_to_slice(&self, slice: &mut [T]) {
+        let x_axis = self.x_axis();
+        let y_axis = self.y_axis();
+        let z_axis = self.z_axis();
+        let w_axis = self.w_axis();
+        slice[0] = x_axis.x();
+        slice[1] = x_axis.y();
+        slice[2] = x_axis.z();
+        slice[3] = x_axis.w();
+
+        slice[4] = y_axis.x();
+        slice[5] = y_axis.y();
+        slice[6] = y_axis.z();
+        slice[7] = y_axis.w();
+
+        slice[8] = z_axis.x();
+        slice[9] = z_axis.y();
+        slice[10] = z_axis.z();
+        slice[11] = z_axis.w();
+
+        slice[12] = w_axis.x();
+        slice[13] = w_axis.y();
+        slice[14] = w_axis.z();
+        slice[15] = w_axis.w();
     }
 
     #[inline(always)]
