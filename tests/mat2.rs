@@ -176,6 +176,16 @@ macro_rules! impl_mat2_tests {
             assert_eq!(format!("{}", a), "[[1, 2], [3, 4]]");
         }
 
+        #[test]
+        fn test_mat2_to_from_slice() {
+            const MATRIX1D: [$t; 4] = [1.0, 2.0, 3.0, 4.0];
+            let m = $mat2::from_cols_slice(&MATRIX1D);
+            assert_eq!($mat2::from_cols_array(&MATRIX1D), m);
+            let mut out: [$t; 4] = Default::default();
+            m.write_cols_to_slice(&mut out);
+            assert_eq!(MATRIX1D, out);
+        }
+
         #[cfg(feature = "std")]
         #[test]
         fn test_sum() {

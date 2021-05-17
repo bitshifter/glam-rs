@@ -3,6 +3,13 @@ mod support;
 
 macro_rules! impl_affine3_tests {
     ($t:ident, $affine3:ident, $quat:ident, $vec3:ident) => {
+        const MATRIX: [[$t; 3]; 4] = [
+            [1.0, 2.0, 3.0],
+            [4.0, 5.0, 6.0],
+            [7.0, 8.0, 9.0],
+            [10.0, 11.0, 12.0],
+        ];
+
         use core::$t::NAN;
         use core::$t::NEG_INFINITY;
 
@@ -193,6 +200,44 @@ macro_rules! impl_affine3_tests {
             let point = $vec3::new(1.0, 0.0, 0.0);
             assert_approx_eq!(lh.transform_point3(point), $vec3::new(0.0, 1.0, 5.0));
             assert_approx_eq!(rh.transform_point3(point), $vec3::new(0.0, 1.0, -5.0));
+        }
+
+        #[test]
+        fn test_affine3_ops() {
+            let m0 = $affine3::from_cols_array_2d(&MATRIX);
+            let m0x2 = $affine3::from_cols_array_2d(&[
+                [2.0, 4.0, 6.0],
+                [8.0, 10.0, 12.0],
+                [14.0, 16.0, 18.0],
+                [20.0, 22.0, 24.0],
+            ]);
+            assert_eq!(m0x2, m0 * 2.0);
+            assert_eq!(m0x2, 2.0 * m0);
+            assert_eq!(m0x2, m0 + m0);
+            assert_eq!($affine3::ZERO, m0 - m0);
+            assert_approx_eq!(m0, m0 * $affine3::IDENTITY);
+            assert_approx_eq!(m0, $affine3::IDENTITY * m0);
+        }
+
+        #[test]
+        fn test_affine3_fmt() {
+            let a = $affine3::from_cols_array_2d(&MATRIX);
+            assert_eq!(
+                format!("{}", a),
+                "[[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]]"
+            );
+        }
+
+        #[test]
+        fn test_affine3_to_from_slice() {
+            const MATRIX1D: [$t; 12] = [
+                1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0,
+            ];
+            let m = $affine3::from_cols_slice(&MATRIX1D);
+            assert_eq!($affine3::from_cols_array(&MATRIX1D), m);
+            let mut out: [$t; 12] = Default::default();
+            m.write_cols_to_slice(&mut out);
+            assert_eq!(MATRIX1D, out);
         }
 
         #[cfg(feature = "std")]

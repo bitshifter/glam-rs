@@ -59,6 +59,12 @@ macro_rules! impl_quat_methods {
             Self(v.0)
         }
 
+        #[deprecated(since = "0.15.2", note = "Please use `from_slice()` instead")]
+        #[inline(always)]
+        pub fn from_slice_unaligned(slice: &[$t]) -> Self {
+            Self::from_slice(slice)
+        }
+
         /// Creates a rotation quaternion from an unaligned slice.
         ///
         /// # Preconditions
@@ -69,11 +75,17 @@ macro_rules! impl_quat_methods {
         ///
         /// Panics if `slice` length is less than 4.
         #[inline(always)]
-        pub fn from_slice_unaligned(slice: &[$t]) -> Self {
+        pub fn from_slice(slice: &[$t]) -> Self {
             #[allow(clippy::let_and_return)]
             let q = Vector4::from_slice_unaligned(slice);
             glam_assert!(FloatVector4::is_normalized(q));
             Self(q)
+        }
+
+        #[deprecated(since = "0.15.2", note = "Please use `write_to_slice()` instead")]
+        #[inline(always)]
+        pub fn write_to_slice_unaligned(self, slice: &mut [$t]) {
+            self.write_to_slice(slice)
         }
 
         /// Writes the quaternion to an unaligned slice.
@@ -82,7 +94,7 @@ macro_rules! impl_quat_methods {
         ///
         /// Panics if `slice` length is less than 4.
         #[inline(always)]
-        pub fn write_to_slice_unaligned(self, slice: &mut [$t]) {
+        pub fn write_to_slice(self, slice: &mut [$t]) {
             Vector4::write_to_slice_unaligned(self.0, slice)
         }
 

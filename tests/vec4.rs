@@ -253,11 +253,11 @@ macro_rules! impl_vec4_tests {
         #[test]
         fn test_slice() {
             let a = [1 as $t, 2 as $t, 3 as $t, 4 as $t];
-            let b = $vec4::from_slice_unaligned(&a);
+            let b = $vec4::from_slice(&a);
             let c: [$t; 4] = b.into();
             assert_eq!(a, c);
             let mut d = [0 as $t, 0 as $t, 0 as $t, 0 as $t];
-            b.write_to_slice_unaligned(&mut d[..]);
+            b.write_to_slice(&mut d[..]);
             assert_eq!(a, d);
         }
 
@@ -484,8 +484,8 @@ macro_rules! impl_vec4_tests {
         fn test_to_from_slice() {
             let v = $vec4::new(1 as $t, 2 as $t, 3 as $t, 4 as $t);
             let mut a = [0 as $t, 0 as $t, 0 as $t, 0 as $t];
-            v.write_to_slice_unaligned(&mut a);
-            assert_eq!(v, $vec4::from_slice_unaligned(&a));
+            v.write_to_slice(&mut a);
+            assert_eq!(v, $vec4::from_slice(&a));
         }
 
         #[cfg(feature = "std")]

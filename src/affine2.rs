@@ -36,6 +36,72 @@ macro_rules! impl_affine2_methods {
                 translation: $translate::ZERO,
             };
 
+            /// Creates an affine transform from a `[S; 6]` array stored in column major order.
+            /// If your data is stored in row major you will need to `transpose` the returned
+            /// matrix.
+            #[inline(always)]
+            pub fn from_cols_array(m: &[$t; 6]) -> Self {
+                Self {
+                    matrix2: $transform::from_cols_slice(&m[0..4]),
+                    translation: $translate::from_slice(&m[4..6]),
+                }
+            }
+
+            /// Creates a `[S; 6]` array storing data in column major order.
+            /// If you require data in row major order `transpose` the matrix first.
+            #[inline(always)]
+            pub fn to_cols_array(&self) -> [$t; 6] {
+                let x = &self.matrix2.x_axis;
+                let y = &self.matrix2.y_axis;
+                let z = &self.translation;
+                [x.x, x.y, y.x, y.y, z.x, z.y]
+            }
+
+            /// Creates an affine transform from a `[[S; 2]; 3]` 2D array stored in column major order.
+            /// If your data is in row major order you will need to `transpose` the returned
+            /// matrix.
+            #[inline(always)]
+            pub fn from_cols_array_2d(m: &[[$t; 2]; 3]) -> Self {
+                Self {
+                    matrix2: $transform::from_cols(m[0].into(), m[1].into()),
+                    translation: m[2].into(),
+                }
+            }
+
+            /// Creates a `[[S; 2]; 3]` 2D array storing data in column major order.
+            /// If you require data in row major order `transpose` the matrix first.
+            #[inline(always)]
+            pub fn to_cols_array_2d(&self) -> [[$t; 2]; 3] {
+                let x = &self.matrix2.x_axis;
+                let y = &self.matrix2.y_axis;
+                let z = &self.translation;
+                [[x.x, x.y], [y.x, y.y], [z.x, z.y]]
+            }
+
+            /// Creates an affine transform from the first 6 values in `slice`.
+            ///
+            /// # Panics
+            ///
+            /// Panics if `slice` is less than 6 elements long.
+            #[inline(always)]
+            pub fn from_cols_slice(slice: &[$t]) -> Self {
+                Self {
+                    matrix2: $transform::from_cols_slice(&slice[0..4]),
+                    translation: $translate::from_slice(&slice[4..6]),
+                }
+            }
+
+            /// Writes the columns of `self` to the first 12 elements in `slice`.
+            ///
+            /// # Panics
+            ///
+            /// Panics if `slice` is less than 12 elements long.
+            #[inline(always)]
+            pub fn write_cols_to_slice(self, slice: &mut [$t]) {
+                self.matrix2.write_cols_to_slice(&mut slice[0..4]);
+                self.translation.write_to_slice(&mut slice[4..6]);
+            }
+
             /// Creates an affine transform that changes scale.
             /// Note that if any scale is zero the transform will be non-invertible.
             #[inline(always)]
@@ -231,6 +297,13 @@ macro_rules! impl_affine2_traits {
                     .field("matrix2", &self.matrix2)
                     .field("translation", &self.translation)
                     .finish()
+            }
+        }
+
+        #[cfg(not(target_arch = "spirv"))]
+        impl core::fmt::Display for $affine2 {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+                write!(f, "[{}, {}, {}]", self.x_axis, self.y_axis, self.z_axis)
             }
         }
 

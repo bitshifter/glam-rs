@@ -39,6 +39,79 @@ macro_rules! impl_affine3_methods {
                 translation: $translate::ZERO,
             };
 
+            /// Creates an affine transform from a `[S; 12]` array stored in column major order.
+            /// If your data is stored in row major you will need to `transpose` the returned
+            /// matrix.
+            #[inline(always)]
+            pub fn from_cols_array(m: &[$t; 12]) -> Self {
+                Self {
+                    matrix3: $transform::from_cols_slice(&m[0..9]),
+                    translation: $translate::from_slice(&m[9..12]),
+                }
+            }
+
+            /// Creates a `[S; 12]` array storing data in column major order.
+            /// If you require data in row major order `transpose` the matrix first.
+            #[inline(always)]
+            pub fn to_cols_array(&self) -> [$t; 12] {
+                let x = &self.matrix3.x_axis;
+                let y = &self.matrix3.y_axis;
+                let z = &self.matrix3.z_axis;
+                let w = &self.translation;
+                [x.x, x.y, x.z, y.x, y.y, y.z, z.x, z.y, z.z, w.x, w.y, w.z]
+            }
+
+            /// Creates an affine transform from a `[[S; 3]; 4]` 2D array stored in column major order.
+            /// If your data is in row major order you will need to `transpose` the returned
+            /// matrix.
+            #[inline(always)]
+            pub fn from_cols_array_2d(m: &[[$t; 3]; 4]) -> Self {
+                Self {
+                    matrix3: $transform::from_cols(m[0].into(), m[1].into(), m[2].into()),
+                    translation: m[3].into(),
+                }
+            }
+
+            /// Creates a `[[S; 3]; 4]` 2D array storing data in column major order.
+            /// If you require data in row major order `transpose` the matrix first.
+            #[inline(always)]
+            pub fn to_cols_array_2d(&self) -> [[$t; 3]; 4] {
+                let x = &self.matrix3.x_axis;
+                let y = &self.matrix3.y_axis;
+                let z = &self.matrix3.z_axis;
+                let w = &self.translation;
+                [
+                    [x.x, x.y, x.z],
+                    [y.x, y.y, y.z],
+                    [z.x, z.y, z.z],
+                    [w.x, w.y, w.z],
+                ]
+            }
+
+            /// Creates an affine transform from the first 12 values in `slice`.
+            ///
+            /// # Panics
+            ///
+            /// Panics if `slice` is less than 12 elements long.
+            #[inline(always)]
+            pub fn from_cols_slice(slice: &[$t]) -> Self {
+                Self {
+                    matrix3: $transform::from_cols_slice(&slice[0..9]),
+                    translation: $translate::from_slice(&slice[9..12]),
+                }
+            }
+
+            /// Writes the columns of `self` to the first 12 elements in `slice`.
+            ///
+            /// # Panics
+            ///
+            /// Panics if `slice` is less than 12 elements long.
+            #[inline(always)]
+            pub fn write_cols_to_slice(self, slice: &mut [$t]) {
+                self.matrix3.write_cols_to_slice(&mut slice[0..9]);
+                self.translation.write_to_slice(&mut slice[9..12]);
+            }
+
             /// Creates an affine transform that changes scale.
             /// Note that if any scale is zero the transform will be non-invertible.
             #[inline(always)]
@@ -349,6 +422,17 @@ macro_rules! impl_affine3_traits {
                     .field("matrix3", &self.matrix3)
                     .field("translation", &self.translation)
                     .finish()
+            }
+        }
+
+        #[cfg(not(target_arch = "spirv"))]
+        impl core::fmt::Display for $affine3 {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+                write!(
+                    f,
+                    "[{}, {}, {}, {}]",
+                    self.x_axis, self.y_axis, self.z_axis, self.w_axis
+                )
             }
         }
 

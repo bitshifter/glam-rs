@@ -372,8 +372,8 @@ macro_rules! impl_vec2_tests {
         fn test_to_from_slice() {
             let v = $vec2::new(1 as $t, 2 as $t);
             let mut a = [0 as $t, 0 as $t];
-            v.write_to_slice_unaligned(&mut a);
-            assert_eq!(v, $vec2::from_slice_unaligned(&a));
+            v.write_to_slice(&mut a);
+            assert_eq!(v, $vec2::from_slice(&a));
         }
 
         #[cfg(feature = "std")]

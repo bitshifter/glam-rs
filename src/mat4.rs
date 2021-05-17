@@ -238,6 +238,26 @@ macro_rules! impl_mat4_methods {
             Self($inner::from_scale(scale.0))
         }
 
+        /// Creates a 4x4 matrix from the first 16 values in `slice`.
+        ///
+        /// # Panics
+        ///
+        /// Panics if `slice` is less than 16 elements long.
+        #[inline(always)]
+        pub fn from_cols_slice(slice: &[$t]) -> Self {
+            Self(Matrix4x4::from_cols_slice(slice))
+        }
+
+        /// Writes the columns of `self` to the first 16 elements in `slice`.
+        ///
+        /// # Panics
+        ///
+        /// Panics if `slice` is less than 16 elements long.
+        #[inline(always)]
+        pub fn write_cols_to_slice(self, slice: &mut [$t]) {
+            Matrix4x4::write_cols_to_slice(&self.0, slice)
+        }
+
         /// Returns the matrix column for the given `index`.
         ///
         /// # Panics

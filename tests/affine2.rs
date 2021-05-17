@@ -3,6 +3,8 @@ mod support;
 
 macro_rules! impl_affine2_tests {
     ($t:ident, $affine2:ident, $vec2:ident) => {
+        const MATRIX: [[$t; 2]; 3] = [[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]];
+
         use core::$t::NAN;
         use core::$t::NEG_INFINITY;
 
@@ -90,6 +92,34 @@ macro_rules! impl_affine2_tests {
             let m_inv = m.inverse();
             assert_approx_eq!($affine2::IDENTITY, m * m_inv, 1.0e-5);
             assert_approx_eq!($affine2::IDENTITY, m_inv * m, 1.0e-5);
+        }
+
+        #[test]
+        fn test_affine2_ops() {
+            let m0 = $affine2::from_cols_array_2d(&MATRIX);
+            let m0x2 = $affine2::from_cols_array_2d(&[[2.0, 4.0], [6.0, 8.0], [10.0, 12.0]]);
+            assert_eq!(m0x2, m0 * 2.0);
+            assert_eq!(m0x2, 2.0 * m0);
+            assert_eq!(m0x2, m0 + m0);
+            assert_eq!($affine2::ZERO, m0 - m0);
+            assert_approx_eq!(m0, m0 * $affine2::IDENTITY);
+            assert_approx_eq!(m0, $affine2::IDENTITY * m0);
+        }
+
+        #[test]
+        fn test_affine2_fmt() {
+            let a = $affine2::from_cols_array_2d(&MATRIX);
+            assert_eq!(format!("{}", a), "[[1, 2], [3, 4], [5, 6]]");
+        }
+
+        #[test]
+        fn test_affine2_to_from_slice() {
+            const MATRIX1D: [$t; 6] = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0];
+            let m = $affine2::from_cols_slice(&MATRIX1D);
+            assert_eq!($affine2::from_cols_array(&MATRIX1D), m);
+            let mut out: [$t; 6] = Default::default();
+            m.write_cols_to_slice(&mut out);
+            assert_eq!(MATRIX1D, out);
         }
 
         #[cfg(feature = "std")]

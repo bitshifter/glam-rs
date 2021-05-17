@@ -307,11 +307,11 @@ macro_rules! impl_quat_tests {
         fn test_slice() {
             let a: [$t; 4] =
                 $quat::from_euler(EulerRot::YXZ, deg(30.0), deg(60.0), deg(90.0)).into();
-            let b = $quat::from_slice_unaligned(&a);
+            let b = $quat::from_slice(&a);
             let c: [$t; 4] = b.into();
             assert_eq!(a, c);
             let mut d = [0.0, 0.0, 0.0, 0.0];
-            b.write_to_slice_unaligned(&mut d[..]);
+            b.write_to_slice(&mut d[..]);
             assert_eq!(a, d);
         }
 
