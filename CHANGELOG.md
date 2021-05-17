@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
-## [Unreleased]
+## [0.15.2] - 2021-05-18
 
 ### Added
 
@@ -568,7 +568,9 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.15.0...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.15.2...HEAD
+[0.15.2]: https://github.com/bitshifter/glam-rs/compare/0.15.1...0.15.2
+[0.15.1]: https://github.com/bitshifter/glam-rs/compare/0.15.0...0.15.1
 [0.15.0]: https://github.com/bitshifter/glam-rs/compare/0.14.0...0.15.0
 [0.14.0]: https://github.com/bitshifter/glam-rs/compare/0.13.1...0.14.0
 [0.13.1]: https://github.com/bitshifter/glam-rs/compare/0.13.0...0.13.1
