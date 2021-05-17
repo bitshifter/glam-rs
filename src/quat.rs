@@ -36,24 +36,38 @@ macro_rules! impl_quat_methods {
 
         /// Creates a new rotation quaternion.
         ///
-        /// This function does not check if the input is normalized, it is up to the user to
-        /// provide normalized input or to normalized the resulting quaternion.
-        ///
         /// This should generally not be called manually unless you know what you are doing.
         /// Use one of the other constructors instead such as `identity` or `from_axis_angle`.
         ///
         /// `from_xyzw` is mostly used by unit tests and `serde` deserialization.
+        ///
+        /// # Preconditions
+        ///
+        /// This function does not check if the input is normalized, it is up to the user to
+        /// provide normalized input or to normalized the resulting quaternion.
         #[inline(always)]
         pub fn from_xyzw(x: $t, y: $t, z: $t, w: $t) -> Self {
             Self(Vector4::new(x, y, z, w))
         }
 
-        /// Creates a new rotation quaternion from a 4D vector.
+        /// Creates a rotation quaternion from an array.
+        ///
+        /// # Preconditions
         ///
         /// This function does not check if the input is normalized, it is up to the user to
         /// provide normalized input or to normalized the resulting quaternion.
+        #[inline(always)]
+        pub fn from_array(a: [$t; 4]) -> Self {
+            let q = Vector4::from_array(a);
+            Self(q)
+        }
+
+        /// Creates a new rotation quaternion from a 4D vector.
         ///
-        /// The resulting quaternion is expected to be of unit length.
+        /// # Preconditions
+        ///
+        /// This function does not check if the input is normalized, it is up to the user to
+        /// provide normalized input or to normalized the resulting quaternion.
         #[inline(always)]
         pub fn from_vec4(v: $vec4) -> Self {
             Self(v.0)
@@ -65,11 +79,12 @@ macro_rules! impl_quat_methods {
             Self::from_slice(slice)
         }
 
-        /// Creates a rotation quaternion from an unaligned slice.
+        /// Creates a rotation quaternion from a slice.
         ///
         /// # Preconditions
         ///
-        /// The resulting quaternion is expected to be of unit length.
+        /// This function does not check if the input is normalized, it is up to the user to
+        /// provide normalized input or to normalized the resulting quaternion.
         ///
         /// # Panics
         ///
@@ -78,7 +93,6 @@ macro_rules! impl_quat_methods {
         pub fn from_slice(slice: &[$t]) -> Self {
             #[allow(clippy::let_and_return)]
             let q = Vector4::from_slice_unaligned(slice);
-            glam_assert!(FloatVector4::is_normalized(q));
             Self(q)
         }
 

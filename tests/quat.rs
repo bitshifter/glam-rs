@@ -27,6 +27,8 @@ macro_rules! impl_quat_tests {
 
             let a1: [$t; 4] = q1.into();
             assert_eq!([v1.x, v1.y, v1.z, v1.w], a1);
+
+            assert_eq!(q1, $quat::from_array(a1));
         }
 
         #[test]

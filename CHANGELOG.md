@@ -9,24 +9,27 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ### Added
 
-* Added `from_cols` methods to affine types.
+* Added `from_cols()` methods to affine types.
 * Added methods for reading and writing affine types from and to arrays and
-  slices, including `from_cols_array`, `to_cols_array`, `from_cols_array_2d`,
-  `to_cols_array_2d`, `from_cols_slice` and `write_cols_to_slice`.
+  slices, including `from_cols_array()`, `to_cols_array()`,
+  `from_cols_array_2d()`, `to_cols_array_2d()`, `from_cols_slice()` and
+  `write_cols_to_slice()`.
 * Added `core::fmt::Display` trait implementations for affine types.
 * Added `core::ops::Add`, `core::ops::Mul` scalar and `core::ops::Sub` trait
   implementations for affine types.
+* Added `from_array()` methods to quaternion types.
 
 ### Changed
 
-* Renamed vector `from_slice_unaligned` and `write_to_slice_unaligned` methods
-  to `from_slice` and `write_to_slice`.
+* Renamed vector and quaternion `from_slice_unaligned()` and
+  `write_to_slice_unaligned()` methods to `from_slice()` and
+  `write_to_slice()`.
 
 ## [0.15.1] - 2021-05-14
 
 ### Changed
 
-* Disable `const_assert_eq` size and alignment checks for SPIR-V targets.
+* Disable `const_assert_eq!` size and alignment checks for SPIR-V targets.
 
 ## [0.15.0] - 2021-05-14
 
@@ -57,9 +60,9 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Added 2D affine transform types `Affine2` and `DAffine2`. These are more
   efficient than using `Mat3` and `DMat3` respectively when working with 2D
   affine transforms.
-* Added `Quat::from_affine3` to create a quaternion from an affine transform
+* Added `Quat::from_affine3()` to create a quaternion from an affine transform
   rotation.
-* Added explicit `to_array` method to vector types to better match the matrix
+* Added explicit `to_array()` method to vector types to better match the matrix
   methods.
 
 ### Changed
