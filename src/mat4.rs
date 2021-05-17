@@ -737,8 +737,9 @@ type InnerF32 = Columns4<XYZW<f32>>;
 
 /// A 4x4 column major matrix.
 ///
-/// This 4x4 matrix type features convenience methods for creating and using affine
-/// transforms and perspective projections.
+/// This 4x4 matrix type features convenience methods for creating and using affine transforms and
+/// perspective projections. If you are primarily dealing with 3D affine transformations
+/// condidering using [`Affine3A`] which is faster tha a 4x4 matrix for some affine operations.
 ///
 /// Affine transformations including 3D translation, rotation and scale can be created
 /// using methods such as [`Self::from_translation()`], [`Self::from_quat()`],
@@ -808,8 +809,9 @@ type InnerF64 = Columns4<XYZW<f64>>;
 
 /// A 4x4 column major matrix.
 ///
-/// This 4x4 matrix type features convenience methods for creating and using affine
-/// transforms and perspective projections.
+/// This 4x4 matrix type features convenience methods for creating and using affine transforms and
+/// perspective projections. If you are primarily dealing with 3D affine transformations
+/// condidering using [`DAffine3`] which is faster tha a 4x4 matrix for some affine operations.
 ///
 /// Affine transformations including 3D translation, rotation and scale can be created
 /// using methods such as [`Self::from_translation()`], [`Self::from_quat()`],

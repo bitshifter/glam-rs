@@ -33,18 +33,18 @@ Some `glam` types use SIMD for storage meaning they are 16 byte aligned, these t
 with an `A` suffix are a SIMD alternative to a scalar type, e.g. `Vec3` uses `f32` storage and
 `Vec3A` uses SIMD storage.
 
-When SIMD is not available on the target architecture the types will maintain 16 byte alignment and
-internal padding so that object sizes and layouts will not change between architectures.
+When SIMD is not available on the target the types will maintain 16 byte alignment and internal
+padding so that object sizes and layouts will not change between architectures. There are scalar
+math fallback implementations exist when SIMD is not available. It is intended to add support for
+other SIMD architectures once they appear in stable Rust.
 
-Currently only SSE2 on x86/x86_64 is supported as this is what stable Rust supports. There are
-scalar math fallback implementations exist when SSE2 is not available. It is intended to add support
-for other SIMD architectures once they appear in stable Rust.
+Currently only SSE2 on x86/x86_64 is supported as this is what stable Rust supports.
 
-## `Vec3A` and `Mat3A`
+## Vec3A and Mat3A
 
 `Vec3A` is a SIMD optimized version of the `Vec3` type, which due to 16 byte alignment results
 in `Vec3A` containing 4 bytes of padding making it 16 bytes in size in total. `Mat3A` is composed
-of 3 `Vec3A` columns.
+of three `Vec3A` columns.
 
 | Type       | `f32` bytes | Align bytes | Size bytes | Padding |
 |:-----------|------------:|------------:|-----------:|--------:|
@@ -53,11 +53,11 @@ of 3 `Vec3A` columns.
 |[`Mat3`]    |           36|            4|          36|        0|
 |[`Mat3A`]   |           36|           16|          48|       12|
 
-Despite this wasted space the SIMD version tend to outperform `f32` implementations in
+Despite this wasted space the SIMD implementations tend to outperform `f32` implementations in
 [**mathbench**](https://github.com/bitshifter/mathbench-rs) benchmarks.
 
-`glam` treats [`Vec3`] as the default vector 3 type and [`Vec3A`] a special case for optimization.
-When methods need to return a vector 3 type they will generally return [`Vec3`].
+`glam` treats [`Vec3`] as the default 3D vector type and [`Vec3A`] a special case for optimization.
+When methods need to return a 3D vector they will generally return [`Vec3`].
 
 There are [`From`] trait implementations for converting from [`Vec4`] to a [`Vec3A`] and between
 [`Vec3`] and [`Vec3A`] (and vice versa).
@@ -80,7 +80,7 @@ let v3a = Vec3A::from(v3);
 assert_eq!(Vec3A::new(1.0, 2.0, 3.0), v3a);
 ```
 
-## `Affine2` and `Affine3A`
+## Affine2 and Affine3A
 
 `Affine2` and `Affine3A` are composed of a linear transform matrix and a vector translation. The
 represent 2D and 3D affine transformations which are commonly used in games.
@@ -94,7 +94,8 @@ The table below shows the performance advantage of `Affine2` over `Mat3A` and `M
 | transform point2   |  2.7±0.02ns | 2.7±0.03ns | 2.8±0.04ns |
 | transform vector2  |  2.6±0.01ns | 2.6±0.03ns | 2.3±0.02ns |
 
-Performance is much closer between `Mat4` and `Affine3A` with the affine type being faster to invert.
+Performance is much closer between `Mat4` and `Affine3A` with the affine type being faster to
+invert.
 
 | operation          | `Mat4`      | `Affine3A`  |
 |--------------------|-------------|-------------|
