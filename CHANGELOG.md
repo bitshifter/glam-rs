@@ -24,6 +24,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Renamed vector and quaternion `from_slice_unaligned()` and
   `write_to_slice_unaligned()` methods to `from_slice()` and
   `write_to_slice()`.
+* Removed usage of `_mm_rcp_ps` from SSE2 implementation of `Quat::slerp` as
+  this instruction is not deterministic between Intel and AMD chips.
 
 ## [0.15.1] - 2021-05-14
 

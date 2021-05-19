@@ -69,9 +69,7 @@ impl Quaternion<f32> for __m128 {
                 let scale2 = _mm_shuffle_ps(tmp, tmp, 0b01_01_01_01);
                 let theta_sin = _mm_shuffle_ps(tmp, tmp, 0b10_10_10_10);
 
-                let theta_sin_recip = _mm_rcp_ps(theta_sin);
-
-                self.mul(scale1).add(end.mul(scale2)).mul(theta_sin_recip)
+                self.mul(scale1).add(end.mul(scale2)).div(theta_sin)
             }
         }
     }
