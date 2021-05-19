@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
-## [Unreleased]
+## [0.15.2] - 2021-05-20
 
 ### Added
 
@@ -24,6 +24,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Renamed vector and quaternion `from_slice_unaligned()` and
   `write_to_slice_unaligned()` methods to `from_slice()` and
   `write_to_slice()`.
+* Removed usage of `_mm_rcp_ps` from SSE2 implementation of `Quat::slerp` as
+  this instruction is not deterministic between Intel and AMD chips.
 
 ## [0.15.1] - 2021-05-14
 
@@ -568,7 +570,9 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.15.0...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.15.2...HEAD
+[0.15.2]: https://github.com/bitshifter/glam-rs/compare/0.15.1...0.15.2
+[0.15.1]: https://github.com/bitshifter/glam-rs/compare/0.15.0...0.15.1
 [0.15.0]: https://github.com/bitshifter/glam-rs/compare/0.14.0...0.15.0
 [0.14.0]: https://github.com/bitshifter/glam-rs/compare/0.13.1...0.14.0
 [0.13.1]: https://github.com/bitshifter/glam-rs/compare/0.13.0...0.13.1

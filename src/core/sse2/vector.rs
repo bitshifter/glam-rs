@@ -674,7 +674,6 @@ impl FloatVector3<f32> for __m128 {
     fn length_recip(self) -> f32 {
         unsafe {
             let dot = dot3_in_x(self, self);
-            // _mm_rsqrt_ps is lower precision
             _mm_cvtss_f32(_mm_div_ps(Self::ONE, _mm_sqrt_ps(dot)))
         }
     }
@@ -765,7 +764,6 @@ impl FloatVector4<f32> for __m128 {
     fn length_recip(self) -> f32 {
         unsafe {
             let dot = dot4_in_x(self, self);
-            // _mm_rsqrt_ps is lower precision
             _mm_cvtss_f32(_mm_div_ps(Self::ONE, _mm_sqrt_ps(dot)))
         }
     }
