@@ -78,8 +78,7 @@ glam = { version = "0.15.2", default-features = false }
 * [`mint`] - for interoperating with other 3D math libraries
 * [`num-traits`] - required to compile `no_std`, will be included when enabling
   the `libm` feature
-* [`rand`] - implementations of `Distribution` trait for all `glam` types. This
-  is primarily used for unit testing
+* [`rand`] - implementations of `Distribution` trait for all `glam` types.
 * [`serde`] - implementations of `Serialize` and `Deserialize` for all `glam`
   types. Note that serialization should work between builds of `glam` with and
   without SIMD enabled
