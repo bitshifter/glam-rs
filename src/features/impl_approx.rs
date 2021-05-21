@@ -156,8 +156,8 @@ impl_approx_as_ref!(f64, DVec4);
 
 #[cfg(test)]
 mod test {
-    use approx::*;
     use crate::*;
+    use approx::*;
 
     macro_rules! impl_approx_test {
         ($prim:ident, $type:ident, $ones:expr) => {
