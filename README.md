@@ -72,6 +72,7 @@ glam = { version = "0.15.2", default-features = false }
 
 ### Optional features
 
+* [`approx`] - traits and macros for approximate float comparisons
 * [`bytemuck`] - for casting into slices of bytes
 * [`libm`] - required to compile with `no_std`
 * [`mint`] - for interoperating with other 3D math libraries

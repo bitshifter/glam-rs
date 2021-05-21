@@ -1,3 +1,6 @@
+#[cfg(feature = "approx")]
+pub mod impl_approx;
+
 #[cfg(feature = "bytemuck")]
 pub mod impl_bytemuck;
 
