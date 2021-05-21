@@ -204,9 +204,15 @@ All `glam` dependencies are optional, however some are required for tests
 and benchmarks.
 
 * `std` - the default feature, has no dependencies.
-* `rand` - used to generate random values. Used in benchmarks.
-* `serde` - used for serialization and deserialization of types.
-* `mint` - used for interoperating with other linear algebra libraries.
+* `approx` - traits and macros for approximate float comparisons
+* `bytemuck` - for casting into slices of bytes
+* `libm` - required to compile with `no_std`
+* `mint` - for interoperating with other 3D math libraries
+* `num-traits` - required to compile `no_std`, will be included when enabling
+  the `libm` feature
+* `rand` - implementations of `Distribution` trait for all `glam` types.
+* `serde` - implementations of `Serialize` and `Deserialize` for all `glam`
+  types. Note that serialization should work between builds of `glam` with and without SIMD enabled
 * `scalar-math` - disables SIMD support and uses native alignment for all types.
 * `debug-glam-assert` - adds assertions in debug builds which check the validity of parameters
   passed to `glam` to help catch runtime errors.

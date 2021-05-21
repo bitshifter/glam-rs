@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+### Added
+
+* Added optional support for the `approx` crate. Note that all glam types
+  implement their own `abs_diff_eq()` method without requiring the `approx`
+  dependency.
+
 ## [0.15.2] - 2021-05-20
 
 ### Added
