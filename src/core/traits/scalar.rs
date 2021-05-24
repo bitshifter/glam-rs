@@ -278,7 +278,7 @@ impl FloatEx for f64 {
     }
     #[inline(always)]
     fn acos_approx(self) -> Self {
-        f64::acos(self.clamp(-1.0, 1.0))
+        f64::acos(self.max(-1.0).min(1.0))
     }
 }
 
