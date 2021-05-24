@@ -29,7 +29,8 @@ macro_rules! define_mat3_struct {
         ///
         /// This 3x3 matrix type features convenience methods for creating and using linear and
         /// affine transformations. If you are primarily dealing with 2D affine transformations the
-        /// [`Affine2`] type is much faster and more space efficient than using a 3x3 matrix.
+        /// [`Affine2`][crate::Affine2] type is much faster and more space efficient than using a
+        /// 3x3 matrix.
         ///
         /// Linear transformations including 3D rotation and scale can be created using methods
         /// such as [`Self::from_diagonal()`], [`Self::from_quat()`], [`Self::from_axis_angle()`],
