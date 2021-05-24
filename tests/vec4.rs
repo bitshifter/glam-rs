@@ -669,6 +669,19 @@ macro_rules! impl_vec4_float_tests {
         }
 
         #[test]
+        fn test_fract() {
+            assert_approx_eq!(
+                $vec4::new(1.35, 1.5, -1.5, 1.999).fract(),
+                $vec4::new(0.35, 0.5, 0.5, 0.999)
+            );
+            assert_approx_eq!(
+                $vec4::new(-0.0, -200000.123, 1000000.123, 1000.9).fract(),
+                $vec4::new(0.0, 0.877, 0.123, 0.9),
+                0.002
+            );
+        }
+
+        #[test]
         fn test_ceil() {
             assert_eq!(
                 $vec4::new(1.35, 1.5, -1.5, 1234.1234).ceil(),

@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ### Added
 
+* Added `fract()` method to float vector types which return a vector containing
+  `self - self.floor()`.
 * Added optional support for the `approx` crate. Note that all glam types
   implement their own `abs_diff_eq()` method without requiring the `approx`
   dependency.

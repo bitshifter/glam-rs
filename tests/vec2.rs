@@ -558,6 +558,16 @@ macro_rules! impl_vec2_float_tests {
         }
 
         #[test]
+        fn test_fract() {
+            assert_approx_eq!($vec2::new(1.35, -1.5).fract(), $vec2::new(0.35, 0.5));
+            assert_approx_eq!(
+                $vec2::new(-2000000.123, 1000000.123).fract(),
+                $vec2::new(0.877, 0.123),
+                0.002
+            );
+        }
+
+        #[test]
         fn test_ceil() {
             assert_eq!($vec2::new(1.35, -1.5).ceil(), $vec2::new(2.0, -1.0));
             assert_eq!(
