@@ -266,6 +266,7 @@ macro_rules! impl_quat_methods {
 
         /// Returns the quaternion conjugate of `self`. For a unit quaternion the
         /// conjugate is also the inverse.
+        #[must_use]
         #[inline(always)]
         pub fn conjugate(self) -> Self {
             Self(self.0.conjugate())
@@ -276,6 +277,7 @@ macro_rules! impl_quat_methods {
         /// Typically quaternion inverse returns the conjugate of a normalized quaternion.
         /// Because `self` is assumed to already be unit length this method *does not* normalize
         /// before returning the conjugate.
+        #[must_use]
         #[inline(always)]
         pub fn inverse(self) -> Self {
             glam_assert!(self.is_normalized());
@@ -317,6 +319,7 @@ macro_rules! impl_quat_methods {
         /// Returns `self` normalized to length 1.0.
         ///
         /// For valid results, `self` must _not_ be of length zero.
+        #[must_use]
         #[inline(always)]
         pub fn normalize(self) -> Self {
             Self(FloatVector4::normalize(self.0))
@@ -399,16 +402,16 @@ macro_rules! impl_quat_methods {
             Self(self.0.slerp(end.0, s))
         }
 
-        #[inline(always)]
         /// Multiplies a quaternion and a 3D vector, returning the rotated vector.
+        #[inline(always)]
         pub fn mul_vec3(self, other: $vec3) -> $vec3 {
             $vec3(self.0.mul_vector3(other.0))
         }
 
-        #[inline(always)]
         /// Multiplies two quaternions.
         /// If they each represent a rotation, the result will represent the combined rotation.
         /// Note that due to floating point rounding the result may not be perfectly normalized.
+        #[inline(always)]
         pub fn mul_quat(self, other: Self) -> Self {
             Self(self.0.mul_quaternion(other.0))
         }
@@ -447,12 +450,12 @@ macro_rules! impl_quat_traits {
 
         impl Add<$quat> for $quat {
             type Output = Self;
-            #[inline]
             /// Adds two quaternions.
             /// The sum is not guaranteed to be normalized.
             ///
             /// NB: Addition is not the same as combining the rotations represented by the two quaternions!
             /// That corresponds to multiplication.
+            #[inline]
             fn add(self, other: Self) -> Self {
                 Self(self.0.add(other.0))
             }
@@ -460,9 +463,9 @@ macro_rules! impl_quat_traits {
 
         impl Sub<$quat> for $quat {
             type Output = Self;
-            #[inline]
             /// Subtracts the other quaternion from self.
             /// The difference is not guaranteed to be normalized.
+            #[inline]
             fn sub(self, other: Self) -> Self {
                 Self(self.0.sub(other.0))
             }
@@ -470,9 +473,9 @@ macro_rules! impl_quat_traits {
 
         impl Mul<$t> for $quat {
             type Output = Self;
-            #[inline]
             /// Multiplies a quaternion by a scalar value.
             /// The product is not guaranteed to be normalized.
+            #[inline]
             fn mul(self, other: $t) -> Self {
                 Self(self.0.scale(other))
             }
@@ -480,9 +483,9 @@ macro_rules! impl_quat_traits {
 
         impl Div<$t> for $quat {
             type Output = Self;
-            #[inline]
             /// Divides a quaternion by a scalar value.
             /// The quotient is not guaranteed to be normalized.
+            #[inline]
             fn div(self, other: $t) -> Self {
                 Self(self.0.scale(other.recip()))
             }
@@ -631,8 +634,8 @@ pub struct Quat(pub(crate) InnerF32);
 impl Quat {
     impl_quat_methods!(f32, Quat, Vec3, Vec4, Mat3, Mat4, InnerF32);
 
-    #[inline(always)]
     /// Multiplies a quaternion and a 3D vector, returning the rotated vector.
+    #[inline(always)]
     pub fn mul_vec3a(self, other: Vec3A) -> Vec3A {
         #[allow(clippy::useless_conversion)]
         Vec3A(self.0.mul_float4_as_vector3(other.0.into()).into())

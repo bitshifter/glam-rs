@@ -260,6 +260,7 @@ macro_rules! impl_vecn_float_methods {
         /// For valid results, `self` must _not_ be of length zero, nor very close to zero.
         ///
         /// See also [`Self::try_normalize`] and [`Self::normalize_or_zero`].
+        #[must_use]
         #[inline(always)]
         pub fn normalize(self) -> Self {
             Self($flttrait::normalize(self.0))
@@ -271,6 +272,7 @@ macro_rules! impl_vecn_float_methods {
         /// the result of this operation will be `None`.
         ///
         /// See also [`Self::normalize_or_zero`].
+        #[must_use]
         #[inline]
         pub fn try_normalize(self) -> Option<Self> {
             let rcp = self.length_recip();
@@ -287,6 +289,7 @@ macro_rules! impl_vecn_float_methods {
         /// the result of this operation will be zero.
         ///
         /// See also [`Self::try_normalize`].
+        #[must_use]
         #[inline]
         pub fn normalize_or_zero(self) -> Self {
             let rcp = self.length_recip();

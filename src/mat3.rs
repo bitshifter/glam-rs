@@ -281,6 +281,7 @@ macro_rules! impl_mat3_methods {
         }
 
         /// Returns the transpose of `self`.
+        #[must_use]
         #[inline(always)]
         pub fn transpose(&self) -> Self {
             Self(self.0.transpose())
@@ -295,6 +296,7 @@ macro_rules! impl_mat3_methods {
         /// Returns the inverse of `self`.
         ///
         /// If the matrix is not invertible the returned matrix will be invalid.
+        #[must_use]
         #[inline(always)]
         pub fn inverse(&self) -> Self {
             Self(self.0.inverse())

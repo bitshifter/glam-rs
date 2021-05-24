@@ -376,6 +376,8 @@ macro_rules! impl_affine3_methods {
             /// Return the inverse of this transform.
             ///
             /// Note that if the transform is not invertible the result will be invalid.
+            #[must_use]
+            #[inline]
             pub fn inverse(&self) -> Self {
                 let matrix3 = self.matrix3.inverse();
                 // transform negative translation by the 3x3 inverse:
