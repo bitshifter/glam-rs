@@ -329,6 +329,15 @@ macro_rules! impl_vecn_float_methods {
             Self($flttrait::ceil(self.0))
         }
 
+        /// Returns a vector containing the fractional part of the vector, e.g. `self -
+        /// self.floor()`.
+        ///
+        /// Note that this is fast but not precise for large numbers.
+        #[inline(always)]
+        pub fn fract(self) -> Self {
+            self - self.floor()
+        }
+
         /// Returns a vector containing `e^self` (the exponential function) for each element of
         /// `self`.
         #[inline(always)]
