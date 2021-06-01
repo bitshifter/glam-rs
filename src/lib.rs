@@ -253,7 +253,7 @@ mod vec3;
 mod vec4;
 mod vec_mask;
 
-#[cfg(feature = "spirv-std")]
+#[cfg(target_arch = "spirv")]
 mod spirv;
 
 #[cfg(feature = "transform-types")]
