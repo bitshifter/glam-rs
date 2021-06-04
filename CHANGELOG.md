@@ -7,6 +7,13 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
+### Breaking changes
+
+* `sprirv-std` dependency was removed, rust-gpu depends on glam internally
+  again for now.
+* Added `must_use` attribute to all `inverse`, `normalize`, `try_normalize`,
+  `transpose` and `conjugate` methods.
+
 ### Added
 
 * Added `fract()` method to float vector types which return a vector containing
