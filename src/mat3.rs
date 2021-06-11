@@ -5,7 +5,7 @@ use crate::core::{
 use crate::{DMat2, DMat4, DQuat, DVec2, DVec3, EulerRot, Mat2, Mat4, Quat, Vec2, Vec3, Vec3A};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
-use core::ops::{Add, Deref, DerefMut, Mul, Sub};
+use core::ops::{Add, AddAssign, Deref, DerefMut, Mul, MulAssign, Sub, SubAssign};
 
 #[cfg(all(
     target_arch = "x86",
@@ -237,6 +237,24 @@ macro_rules! impl_mat3_methods {
             }
         }
 
+        /// Returns a mutable reference to the matrix column for the given `index`.
+        ///
+        /// # Panics
+        ///
+        /// Panics if `index` is greater than 2.
+        #[inline]
+        pub fn col_mut(&mut self, index: usize) -> &mut $vec3a {
+            match index {
+                0 => &mut self.x_axis,
+                1 => &mut self.y_axis,
+                2 => &mut self.z_axis,
+                _ => panic!(
+                    "index out of bounds: the len is 3 but the index is {}",
+                    index
+                ),
+            }
+        }
+
         /// Returns the matrix row for the given `index`.
         ///
         /// # Panics
@@ -254,19 +272,6 @@ macro_rules! impl_mat3_methods {
                 ),
             }
         }
-
-        // #[inline]
-        // pub(crate) fn col_mut(&mut self, index: usize) -> &mut $vec3 {
-        //     match index {
-        //         0 => &mut self.x_axis,
-        //         1 => &mut self.y_axis,
-        //         2 => &mut self.z_axis,
-        //         _ => panic!(
-        //             "index out of bounds: the len is 3 but the index is {}",
-        //             index
-        //         ),
-        //     }
-        // }
 
         /// Returns `true` if, and only if, all elements are finite.
         /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
@@ -377,12 +382,7 @@ macro_rules! impl_mat3_traits {
             $mat3::from_cols(x_axis, y_axis, z_axis)
         }
 
-        impl Default for $mat3 {
-            #[inline(always)]
-            fn default() -> Self {
-                Self::IDENTITY
-            }
-        }
+        impl_matn_common_traits!($t, $mat3, $vec3a);
 
         impl PartialEq for $mat3 {
             #[inline]
@@ -426,78 +426,10 @@ macro_rules! impl_mat3_traits {
             }
         }
 
-        impl Add<$mat3> for $mat3 {
-            type Output = Self;
-            #[inline(always)]
-            fn add(self, other: Self) -> Self {
-                self.add_mat3(&other)
-            }
-        }
-
-        impl Sub<$mat3> for $mat3 {
-            type Output = Self;
-            #[inline(always)]
-            fn sub(self, other: Self) -> Self {
-                self.sub_mat3(&other)
-            }
-        }
-
-        impl Mul<$mat3> for $mat3 {
-            type Output = Self;
-            #[inline(always)]
-            fn mul(self, other: Self) -> Self {
-                self.mul_mat3(&other)
-            }
-        }
-
-        impl Mul<$vec3> for $mat3 {
-            type Output = $vec3;
-            #[inline(always)]
-            fn mul(self, other: $vec3) -> $vec3 {
-                self.mul_vec3(other)
-            }
-        }
-
-        impl Mul<$mat3> for $t {
-            type Output = $mat3;
-            #[inline(always)]
-            fn mul(self, other: $mat3) -> $mat3 {
-                other.mul_scalar(self)
-            }
-        }
-
-        impl Mul<$t> for $mat3 {
-            type Output = Self;
-            #[inline(always)]
-            fn mul(self, other: $t) -> Self {
-                self.mul_scalar(other)
-            }
-        }
-
         impl From<$mat4> for $mat3 {
             /// Creates a 3x3 matrix from the top left submatrix of the given 4x4 matrix.
             fn from(m: $mat4) -> $mat3 {
                 $mat3::from_cols(m.x_axis.into(), m.y_axis.into(), m.z_axis.into())
-            }
-        }
-
-        #[cfg(feature = "std")]
-        impl<'a> Sum<&'a Self> for $mat3 {
-            fn sum<I>(iter: I) -> Self
-            where
-                I: Iterator<Item = &'a Self>,
-            {
-                iter.fold($mat3::ZERO, |a, &b| Self::add(a, b))
-            }
-        }
-
-        #[cfg(feature = "std")]
-        impl<'a> Product<&'a Self> for $mat3 {
-            fn product<I>(iter: I) -> Self
-            where
-                I: Iterator<Item = &'a Self>,
-            {
-                iter.fold($mat3::IDENTITY, |a, &b| Self::mul(a, b))
             }
         }
     };
@@ -579,11 +511,11 @@ impl Mat3A {
 }
 impl_mat3_traits!(f32, mat3a, Mat3A, Mat4, Vec3, Vec3A);
 
-impl Mul<Vec3A> for Mat3A {
-    type Output = Vec3A;
+impl Mul<Vec3> for Mat3A {
+    type Output = Vec3;
     #[inline(always)]
-    fn mul(self, other: Vec3A) -> Vec3A {
-        self.mul_vec3a(other)
+    fn mul(self, other: Vec3) -> Vec3 {
+        self.mul_vec3(other)
     }
 }
 

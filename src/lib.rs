@@ -234,6 +234,9 @@ The minimum supported Rust version is `1.45.0`.
 mod macros;
 
 #[macro_use]
+mod mat;
+
+#[macro_use]
 mod vec;
 
 #[doc(hidden)]
