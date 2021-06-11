@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+### Added
+
+* Added `col_mut()` method which returns a mutable reference to a matrix column
+  to all matrix types.
+* Added `AddAssign`, `MulAssign` and `SubAssign` implementations for all matrix
+  types.
+
 ## [0.16.0] - 2021-06-06
 
 ### Breaking changes

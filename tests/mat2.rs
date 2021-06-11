@@ -46,6 +46,11 @@ macro_rules! impl_mat2_tests {
 
             assert_eq!($newvec2(1.0, 3.0), m.row(0));
             assert_eq!($newvec2(2.0, 4.0), m.row(1));
+
+            *m.col_mut(0) = m.col(0).yx();
+            *m.col_mut(1) = m.col(1).yx();
+            assert_eq!($vec2::new(2.0, 1.0), m.col(0));
+            assert_eq!($vec2::new(4.0, 3.0), m.col(1));
         }
 
         #[test]
@@ -147,27 +152,29 @@ macro_rules! impl_mat2_tests {
         #[test]
         fn test_mat2_ops() {
             let m0 = $mat2::from_cols_array_2d(&MATRIX);
-            assert_eq!(
-                $mat2::from_cols_array_2d(&[[2.0, 4.0], [6.0, 8.0]]),
-                m0 * 2.0
-            );
-            assert_eq!(
-                $mat2::from_cols_array_2d(&[[2.0, 4.0], [6.0, 8.0]]),
-                2.0 * m0
-            );
-            assert_eq!(
-                $mat2::from_cols_array_2d(&[[2.0, 4.0], [6.0, 8.0]]),
-                m0 + m0
-            );
+            let m0x2 = $mat2::from_cols_array_2d(&[[2.0, 4.0], [6.0, 8.0]]);
+            assert_eq!(m0x2, m0 * 2.0);
+            assert_eq!(m0x2, 2.0 * m0);
+            assert_eq!(m0x2, m0 + m0);
             assert_eq!($mat2::ZERO, m0 - m0);
-            assert_approx_eq!(
-                $mat2::from_cols_array_2d(&[[1.0, 2.0], [3.0, 4.0]]),
-                m0 * $mat2::IDENTITY
-            );
-            assert_approx_eq!(
-                $mat2::from_cols_array_2d(&[[1.0, 2.0], [3.0, 4.0]]),
-                $mat2::IDENTITY * m0
-            );
+            assert_approx_eq!(m0, m0 * $mat2::IDENTITY);
+            assert_approx_eq!(m0, $mat2::IDENTITY * m0);
+
+            let mut m1 = m0;
+            m1 *= 2.0;
+            assert_eq!(m0x2, m1);
+
+            let mut m1 = m0;
+            m1 += m0;
+            assert_eq!(m0x2, m1);
+
+            let mut m1 = m0;
+            m1 -= m0;
+            assert_eq!($mat2::ZERO, m1);
+
+            let mut m1 = $mat2::IDENTITY;
+            m1 *= m0;
+            assert_approx_eq!(m0, m1);
         }
 
         #[test]
@@ -215,7 +222,7 @@ macro_rules! impl_mat2_tests {
 
 mod mat2 {
     use super::support::deg;
-    use glam::{const_mat2, mat2, vec2, Mat2, Mat3, Vec2};
+    use glam::{const_mat2, mat2, swizzles::*, vec2, Mat2, Mat3, Vec2};
 
     #[test]
     fn test_align() {
@@ -246,7 +253,7 @@ mod mat2 {
 
 mod dmat2 {
     use super::support::deg;
-    use glam::{const_dmat2, dmat2, dvec2, DMat2, DMat3, DVec2};
+    use glam::{const_dmat2, dmat2, dvec2, swizzles::*, DMat2, DMat3, DVec2};
 
     #[test]
     fn test_align() {

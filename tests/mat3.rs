@@ -70,6 +70,13 @@ macro_rules! impl_mat3_tests {
             assert_eq!($newvec3(1.0, 4.0, 7.0), m.row(0));
             assert_eq!($newvec3(2.0, 5.0, 8.0), m.row(1));
             assert_eq!($newvec3(3.0, 6.0, 9.0), m.row(2));
+
+            *m.col_mut(0) = m.col(0).zyx();
+            *m.col_mut(1) = m.col(1).zyx();
+            *m.col_mut(2) = m.col(2).zyx();
+            assert_eq!($newvec3(3.0, 2.0, 1.0), m.col(0));
+            assert_eq!($newvec3(6.0, 5.0, 4.0), m.col(1));
+            assert_eq!($newvec3(9.0, 8.0, 7.0), m.col(2));
         }
 
         #[test]
@@ -269,6 +276,22 @@ macro_rules! impl_mat3_tests {
             assert_eq!($mat3::ZERO, m0 - m0);
             assert_approx_eq!(m0, m0 * $mat3::IDENTITY);
             assert_approx_eq!(m0, $mat3::IDENTITY * m0);
+
+            let mut m1 = m0;
+            m1 *= 2.0;
+            assert_eq!(m0x2, m1);
+
+            let mut m1 = m0;
+            m1 += m0;
+            assert_eq!(m0x2, m1);
+
+            let mut m1 = m0;
+            m1 -= m0;
+            assert_eq!($mat3::ZERO, m1);
+
+            let mut m1 = $mat3::IDENTITY;
+            m1 *= m0;
+            assert_approx_eq!(m0, m1);
         }
 
         #[test]
@@ -313,7 +336,7 @@ macro_rules! impl_mat3_tests {
 
 mod mat3 {
     use super::support::deg;
-    use glam::{const_mat3, mat3, vec3, vec3a, Mat3, Mat4, Vec2, Vec3, Vec3A};
+    use glam::{const_mat3, mat3, swizzles::*, vec3, vec3a, Mat3, Mat4, Vec2, Vec3, Vec3A};
 
     #[test]
     fn test_align() {
@@ -347,7 +370,7 @@ mod mat3 {
 
 mod mat3a {
     use super::support::deg;
-    use glam::{const_mat3a, mat3a, vec3a, Mat3A, Mat4, Vec2, Vec3, Vec3A};
+    use glam::{const_mat3a, mat3a, swizzles::*, vec3a, Mat3A, Mat4, Vec2, Vec3, Vec3A};
 
     #[test]
     fn test_align() {
@@ -377,7 +400,7 @@ mod mat3a {
 
 mod dmat3 {
     use super::support::deg;
-    use glam::{const_dmat3, dmat3, dvec3, DMat3, DMat4, DVec2, DVec3};
+    use glam::{const_dmat3, dmat3, dvec3, swizzles::*, DMat3, DMat4, DVec2, DVec3};
 
     #[test]
     fn test_align() {

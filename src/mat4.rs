@@ -22,7 +22,7 @@ use core::arch::x86_64::*;
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
-use core::ops::{Add, Deref, DerefMut, Mul, Sub};
+use core::ops::{Add, AddAssign, Deref, DerefMut, Mul, MulAssign, Sub, SubAssign};
 
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
@@ -277,6 +277,25 @@ macro_rules! impl_mat4_methods {
             }
         }
 
+        /// Returns a mutable reference to the matrix column for the given `index`.
+        ///
+        /// # Panics
+        ///
+        /// Panics if `index` is greater than 3.
+        #[inline]
+        pub fn col_mut(&mut self, index: usize) -> &mut $vec4 {
+            match index {
+                0 => &mut self.x_axis,
+                1 => &mut self.y_axis,
+                2 => &mut self.z_axis,
+                3 => &mut self.w_axis,
+                _ => panic!(
+                    "index out of bounds: the len is 4 but the index is {}",
+                    index
+                ),
+            }
+        }
+
         /// Returns the matrix row for the given `index`.
         ///
         /// # Panics
@@ -295,20 +314,6 @@ macro_rules! impl_mat4_methods {
                 ),
             }
         }
-
-        // #[inline]
-        // pub(crate) fn col_mut(&mut self, index: usize) -> &mut $vec4 {
-        //     match index {
-        //         0 => &mut self.x_axis,
-        //         1 => &mut self.y_axis,
-        //         2 => &mut self.z_axis,
-        //         3 => &mut self.w_axis,
-        //         _ => panic!(
-        //             "index out of bounds: the len is 4 but the index is {}",
-        //             index
-        //         ),
-        //     }
-        // }
 
         /// Returns `true` if, and only if, all elements are finite.
         /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
@@ -504,7 +509,7 @@ macro_rules! impl_mat4_methods {
         /// Transforms a 4D vector.
         #[inline(always)]
         pub fn mul_vec4(&self, other: $vec4) -> $vec4 {
-            $vec4(self.0.mul_vector(&other.0))
+            $vec4(self.0.mul_vector(other.0))
         }
 
         /// Multiplies two 4x4 matrices.
@@ -592,10 +597,20 @@ macro_rules! impl_mat4_traits {
             $mat4::from_cols(x_axis, y_axis, z_axis, w_axis)
         }
 
-        impl Default for $mat4 {
+        impl_matn_common_traits!($t, $mat4, $vec4);
+
+        impl Deref for $mat4 {
+            type Target = Columns4<$vec4>;
             #[inline(always)]
-            fn default() -> Self {
-                Self::IDENTITY
+            fn deref(&self) -> &Self::Target {
+                unsafe { &*(self as *const Self as *const Self::Target) }
+            }
+        }
+
+        impl DerefMut for $mat4 {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                unsafe { &mut *(self as *mut Self as *mut Self::Target) }
             }
         }
 
@@ -623,69 +638,6 @@ macro_rules! impl_mat4_traits {
             }
         }
 
-        impl Add<$mat4> for $mat4 {
-            type Output = Self;
-            #[inline(always)]
-            fn add(self, other: Self) -> Self::Output {
-                self.add_mat4(&other)
-            }
-        }
-
-        impl Sub<$mat4> for $mat4 {
-            type Output = Self;
-            #[inline(always)]
-            fn sub(self, other: Self) -> Self::Output {
-                self.sub_mat4(&other)
-            }
-        }
-
-        impl Mul<$mat4> for $mat4 {
-            type Output = Self;
-            #[inline(always)]
-            fn mul(self, other: Self) -> Self::Output {
-                self.mul_mat4(&other)
-            }
-        }
-
-        impl Mul<$vec4> for $mat4 {
-            type Output = $vec4;
-            #[inline(always)]
-            fn mul(self, other: $vec4) -> Self::Output {
-                self.mul_vec4(other)
-            }
-        }
-
-        impl Mul<$mat4> for $t {
-            type Output = $mat4;
-            #[inline(always)]
-            fn mul(self, other: $mat4) -> Self::Output {
-                other.mul_scalar(self)
-            }
-        }
-
-        impl Mul<$t> for $mat4 {
-            type Output = Self;
-            #[inline(always)]
-            fn mul(self, other: $t) -> Self::Output {
-                self.mul_scalar(other)
-            }
-        }
-
-        impl Deref for $mat4 {
-            type Target = Columns4<$vec4>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                unsafe { &*(self as *const Self as *const Self::Target) }
-            }
-        }
-
-        impl DerefMut for $mat4 {
-            #[inline(always)]
-            fn deref_mut(&mut self) -> &mut Self::Target {
-                unsafe { &mut *(self as *mut Self as *mut Self::Target) }
-            }
-        }
-
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Debug for $mat4 {
             fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -706,26 +658,6 @@ macro_rules! impl_mat4_traits {
                     "[{}, {}, {}, {}]",
                     self.x_axis, self.y_axis, self.z_axis, self.w_axis
                 )
-            }
-        }
-
-        #[cfg(feature = "std")]
-        impl<'a> Sum<&'a Self> for $mat4 {
-            fn sum<I>(iter: I) -> Self
-            where
-                I: Iterator<Item = &'a Self>,
-            {
-                iter.fold(Self::ZERO, |a, &b| Self::add(a, b))
-            }
-        }
-
-        #[cfg(feature = "std")]
-        impl<'a> Product<&'a Self> for $mat4 {
-            fn product<I>(iter: I) -> Self
-            where
-                I: Iterator<Item = &'a Self>,
-            {
-                iter.fold(Self::IDENTITY, |a, &b| Self::mul(a, b))
             }
         }
     };

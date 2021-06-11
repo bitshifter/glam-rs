@@ -5,7 +5,7 @@ use crate::core::{
 use crate::{DMat3, DVec2, Mat3, Vec2};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
-use core::ops::{Add, Deref, DerefMut, Mul, Sub};
+use core::ops::{Add, AddAssign, Deref, DerefMut, Mul, MulAssign, Sub, SubAssign};
 
 #[cfg(all(
     target_arch = "x86",
@@ -124,6 +124,23 @@ macro_rules! impl_mat2_methods {
             }
         }
 
+        /// Returns a mutable reference to the matrix column for the given `index`.
+        ///
+        /// # Panics
+        ///
+        /// Panics if `index` is greater than 1.
+        #[inline]
+        pub fn col_mut(&mut self, index: usize) -> &mut $vec2 {
+            match index {
+                0 => &mut self.x_axis,
+                1 => &mut self.y_axis,
+                _ => panic!(
+                    "index out of bounds: the len is 2 but the index is {}",
+                    index
+                ),
+            }
+        }
+
         /// Returns the matrix row for the given `index`.
         ///
         /// # Panics
@@ -140,18 +157,6 @@ macro_rules! impl_mat2_methods {
                 ),
             }
         }
-
-        // #[inline]
-        // pub(crate) fn col_mut(&mut self, index: usize) -> &mut $vec2 {
-        //     match index {
-        //         0 => unsafe { &mut *(self.0.as_mut().as_mut_ptr() as *mut $vec2) },
-        //         1 => unsafe { &mut *(self.0.as_mut()[2..].as_mut_ptr() as *mut $vec2) },
-        //         _ => panic!(
-        //             "index out of bounds: the len is 2 but the index is {}",
-        //             index
-        //         ),
-        //     }
-        // }
 
         /// Returns `true` if, and only if, all elements are finite.
         /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
@@ -243,12 +248,7 @@ macro_rules! impl_mat2_traits {
             $mat2::from_cols(x_axis, y_axis)
         }
 
-        impl Default for $mat2 {
-            #[inline(always)]
-            fn default() -> Self {
-                Self::IDENTITY
-            }
-        }
+        impl_matn_common_traits!($t, $mat2, $vec2);
 
         impl PartialEq for $mat2 {
             #[inline]
@@ -268,54 +268,6 @@ macro_rules! impl_mat2_traits {
             #[inline(always)]
             fn as_mut(&mut self) -> &mut [$t; 4] {
                 unsafe { &mut *(self as *mut Self as *mut [$t; 4]) }
-            }
-        }
-
-        impl Add<$mat2> for $mat2 {
-            type Output = Self;
-            #[inline(always)]
-            fn add(self, other: Self) -> Self {
-                Self(self.0.add_matrix(&other.0))
-            }
-        }
-
-        impl Sub<$mat2> for $mat2 {
-            type Output = Self;
-            #[inline(always)]
-            fn sub(self, other: Self) -> Self {
-                Self(self.0.sub_matrix(&other.0))
-            }
-        }
-
-        impl Mul<$mat2> for $mat2 {
-            type Output = Self;
-            #[inline(always)]
-            fn mul(self, other: Self) -> Self {
-                Self(self.0.mul_matrix(&other.0))
-            }
-        }
-
-        impl Mul<$vec2> for $mat2 {
-            type Output = $vec2;
-            #[inline(always)]
-            fn mul(self, other: $vec2) -> $vec2 {
-                $vec2(self.0.mul_vector(other.0))
-            }
-        }
-
-        impl Mul<$mat2> for $t {
-            type Output = $mat2;
-            #[inline(always)]
-            fn mul(self, other: $mat2) -> $mat2 {
-                $mat2(other.0.mul_scalar(self))
-            }
-        }
-
-        impl Mul<$t> for $mat2 {
-            type Output = Self;
-            #[inline(always)]
-            fn mul(self, other: $t) -> Self {
-                Self(self.0.mul_scalar(other))
             }
         }
 
@@ -355,26 +307,6 @@ macro_rules! impl_mat2_traits {
         impl fmt::Display for $mat2 {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 write!(f, "[{}, {}]", self.x_axis, self.y_axis)
-            }
-        }
-
-        #[cfg(feature = "std")]
-        impl<'a> Sum<&'a Self> for $mat2 {
-            fn sum<I>(iter: I) -> Self
-            where
-                I: Iterator<Item = &'a Self>,
-            {
-                iter.fold(Self::ZERO, |a, &b| Self::add(a, b))
-            }
-        }
-
-        #[cfg(feature = "std")]
-        impl<'a> Product<&'a Self> for $mat2 {
-            fn product<I>(iter: I) -> Self
-            where
-                I: Iterator<Item = &'a Self>,
-            {
-                iter.fold(Self::IDENTITY, |a, &b| Self::mul(a, b))
             }
         }
     };

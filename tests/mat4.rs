@@ -107,6 +107,15 @@ macro_rules! impl_mat4_tests {
             assert_eq!($newvec4(2.0, 6.0, 10.0, 14.0), m.row(1));
             assert_eq!($newvec4(3.0, 7.0, 11.0, 15.0), m.row(2));
             assert_eq!($newvec4(4.0, 8.0, 12.0, 16.0), m.row(3));
+
+            *m.col_mut(0) = m.col(0).wzyx();
+            *m.col_mut(1) = m.col(1).wzyx();
+            *m.col_mut(2) = m.col(2).wzyx();
+            *m.col_mut(3) = m.col(3).wzyx();
+            assert_eq!($newvec4(4.0, 3.0, 2.0, 1.0), m.col(0));
+            assert_eq!($newvec4(8.0, 7.0, 6.0, 5.0), m.col(1));
+            assert_eq!($newvec4(12.0, 11.0, 10.0, 9.0), m.col(2));
+            assert_eq!($newvec4(16.0, 15.0, 14.0, 13.0), m.col(3));
         }
 
         #[test]
@@ -543,6 +552,22 @@ macro_rules! impl_mat4_tests {
             assert_eq!($mat4::ZERO, m0 - m0);
             assert_approx_eq!(m0, m0 * $mat4::IDENTITY);
             assert_approx_eq!(m0, $mat4::IDENTITY * m0);
+
+            let mut m1 = m0;
+            m1 *= 2.0;
+            assert_eq!(m0x2, m1);
+
+            let mut m1 = m0;
+            m1 += m0;
+            assert_eq!(m0x2, m1);
+
+            let mut m1 = m0;
+            m1 -= m0;
+            assert_eq!($mat4::ZERO, m1);
+
+            let mut m1 = $mat4::IDENTITY;
+            m1 *= m0;
+            assert_approx_eq!(m0, m1);
         }
 
         #[test]
@@ -593,7 +618,7 @@ macro_rules! impl_mat4_tests {
 
 mod mat4 {
     use super::support::deg;
-    use glam::{const_mat4, mat4, vec3, vec4, Mat4, Quat, Vec3, Vec4};
+    use glam::{const_mat4, mat4, swizzles::*, vec3, vec4, Mat4, Quat, Vec3, Vec4};
 
     #[test]
     fn test_align() {
@@ -646,7 +671,7 @@ mod mat4 {
 
 mod dmat4 {
     use super::support::deg;
-    use glam::{const_dmat4, dmat4, dvec3, dvec4, DMat4, DQuat, DVec3, DVec4};
+    use glam::{const_dmat4, dmat4, dvec3, dvec4, swizzles::*, DMat4, DQuat, DVec3, DVec4};
 
     #[test]
     fn test_align() {
