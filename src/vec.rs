@@ -524,22 +524,45 @@ macro_rules! impl_vecn_common_traits {
             }
         }
 
-        impl Add for $vecn {
+        impl Add<$vecn> for $vecn {
             type Output = Self;
             #[inline(always)]
-            fn add(self, other: Self) -> Self {
+            fn add(self, other: $vecn) -> Self {
                 Self(self.0.add(other.0))
             }
         }
 
-        impl AddAssign for $vecn {
+        impl AddAssign<$vecn> for $vecn {
             #[inline(always)]
-            fn add_assign(&mut self, other: Self) {
+            fn add_assign(&mut self, other: $vecn) {
                 self.0 = self.0.add(other.0)
             }
         }
 
-        impl Sub for $vecn {
+        impl Add<$t> for $vecn {
+            type Output = Self;
+            #[inline(always)]
+            fn add(self, other: $t) -> Self {
+                Self(self.0.add_scalar(other))
+            }
+        }
+
+        impl AddAssign<$t> for $vecn {
+            #[inline(always)]
+            fn add_assign(&mut self, other: $t) {
+                self.0 = self.0.add_scalar(other)
+            }
+        }
+
+        impl Add<$vecn> for $t {
+            type Output = $vecn;
+            #[inline(always)]
+            fn add(self, other: $vecn) -> $vecn {
+                $vecn($inner::splat(self).add(other.0))
+            }
+        }
+
+        impl Sub<$vecn> for $vecn {
             type Output = Self;
             #[inline(always)]
             fn sub(self, other: $vecn) -> Self {
@@ -547,10 +570,33 @@ macro_rules! impl_vecn_common_traits {
             }
         }
 
-        impl SubAssign for $vecn {
+        impl SubAssign<$vecn> for $vecn {
             #[inline(always)]
             fn sub_assign(&mut self, other: $vecn) {
                 self.0 = self.0.sub(other.0)
+            }
+        }
+
+        impl Sub<$t> for $vecn {
+            type Output = Self;
+            #[inline(always)]
+            fn sub(self, other: $t) -> Self {
+                Self(self.0.sub_scalar(other))
+            }
+        }
+
+        impl SubAssign<$t> for $vecn {
+            #[inline(always)]
+            fn sub_assign(&mut self, other: $t) {
+                self.0 = self.0.sub_scalar(other)
+            }
+        }
+
+        impl Sub<$vecn> for $t {
+            type Output = $vecn;
+            #[inline(always)]
+            fn sub(self, other: $vecn) -> $vecn {
+                $vecn($inner::splat(self).sub(other.0))
             }
         }
 

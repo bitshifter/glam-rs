@@ -244,6 +244,14 @@ impl Vector<f32> for __m128 {
         unsafe { _mm_sub_ps(self, other) }
     }
 
+    fn add_scalar(self, other: f32) -> Self {
+        unsafe { _mm_add_ps(self, _mm_set_ps1(other)) }
+    }
+
+    fn sub_scalar(self, other: f32) -> Self {
+        unsafe { _mm_sub_ps(self, _mm_set_ps1(other)) }
+    }
+
     #[inline(always)]
     fn mul_scalar(self, other: f32) -> Self {
         unsafe { _mm_mul_ps(self, _mm_set_ps1(other)) }
