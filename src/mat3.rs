@@ -345,7 +345,7 @@ macro_rules! impl_mat3_methods {
         /// This method assumes that `self` contains a valid affine transform.
         #[inline(always)]
         pub fn transform_point2(&self, other: $vec2) -> $vec2 {
-            $mat2::from_cols(self.x_axis.into(), self.y_axis.into()) * other + self.z_axis.into()
+            $mat2::from_cols(self.x_axis.into(), self.y_axis.into()) * other + $vec2::from(self.z_axis)
         }
 
         /// Rotates the given 2D vector.

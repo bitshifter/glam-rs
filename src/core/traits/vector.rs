@@ -99,6 +99,8 @@ pub trait Vector<T>: Sized + Copy + Clone {
         self.mul_scalar(other)
     }
 
+    fn add_scalar(self, other: T) -> Self;
+    fn sub_scalar(self, other: T) -> Self;
     fn mul_scalar(self, other: T) -> Self;
     fn div_scalar(self, other: T) -> Self;
 

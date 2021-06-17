@@ -202,6 +202,22 @@ impl<T: NumEx> Vector<T> for XY<T> {
     }
 
     #[inline]
+    fn add_scalar(self, other: T) -> Self {
+        Self {
+            x: self.x + other,
+            y: self.y + other,
+        }
+    }
+
+    #[inline]
+    fn sub_scalar(self, other: T) -> Self {
+        Self {
+            x: self.x - other,
+            y: self.y - other,
+        }
+    }
+
+    #[inline]
     fn mul_scalar(self, other: T) -> Self {
         Self {
             x: self.x * other,
@@ -347,6 +363,22 @@ impl<T: NumEx> Vector<T> for XYZ<T> {
             x: self.x - other.x,
             y: self.y - other.y,
             z: self.z - other.z,
+        }
+    }
+
+    fn add_scalar(self, other: T) -> Self {
+        Self {
+            x: self.x + other,
+            y: self.y + other,
+            z: self.z + other,
+        }
+    }
+
+    fn sub_scalar(self, other: T) -> Self {
+        Self {
+            x: self.x - other,
+            y: self.y - other,
+            z: self.z - other,
         }
     }
 
@@ -517,6 +549,24 @@ impl<T: NumEx> Vector<T> for XYZW<T> {
             y: self.y - other.y,
             z: self.z - other.z,
             w: self.w - other.w,
+        }
+    }
+
+    fn add_scalar(self, other: T) -> Self {
+        Self {
+            x: self.x + other,
+            y: self.y + other,
+            z: self.z + other,
+            w: self.w + other,
+        }
+    }
+
+    fn sub_scalar(self, other: T) -> Self {
+        Self {
+            x: self.x - other,
+            y: self.y - other,
+            z: self.z - other,
+            w: self.w - other,
         }
     }
 
@@ -893,6 +943,16 @@ impl Vector<f32> for XYZF32A16 {
     #[inline]
     fn sub(self, other: Self) -> Self {
         XYZ::sub(self.into(), other.into()).into()
+    }
+
+    #[inline]
+    fn add_scalar(self, other: f32) -> Self {
+        XYZ::add_scalar(self.into(), other).into()
+    }
+
+    #[inline]
+    fn sub_scalar(self, other: f32) -> Self {
+        XYZ::sub_scalar(self.into(), other).into()
     }
 
     #[inline]
