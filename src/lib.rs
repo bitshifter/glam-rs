@@ -229,6 +229,8 @@ The minimum supported Rust version is `1.45.0`.
 #![cfg_attr(target_arch = "spirv", feature(asm, register_attr, repr_simd))]
 // This would require renaming a lot of stuff, disabling for now.
 #![allow(clippy::upper_case_acronyms)]
+// clippy doesn't like `to_array(&self)`
+#![allow(clippy::wrong_self_convention)]
 
 #[macro_use]
 mod macros;
