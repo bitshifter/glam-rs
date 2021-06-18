@@ -793,7 +793,10 @@ impl_mat4_traits!(f64, dmat4, DMat4, DVec4);
 
 #[cfg(any(feature = "scalar-math", target_arch = "spriv"))]
 mod const_test_mat4 {
-    const_assert_eq!(4, core::mem::align_of::<super::Mat4>());
+    const_assert_eq!(
+        core::mem::align_of::<f32>(),
+        core::mem::align_of::<super::Mat4>()
+    );
     const_assert_eq!(64, core::mem::size_of::<super::Mat4>());
 }
 
@@ -804,6 +807,9 @@ mod const_test_mat4 {
 }
 
 mod const_test_dmat4 {
-    const_assert_eq!(8, core::mem::align_of::<super::DMat4>());
+    const_assert_eq!(
+        core::mem::align_of::<f64>(),
+        core::mem::align_of::<super::DMat4>()
+    );
     const_assert_eq!(128, core::mem::size_of::<super::DMat4>());
 }

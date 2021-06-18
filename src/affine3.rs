@@ -618,6 +618,9 @@ mod const_test_affine3a {
 }
 
 mod const_test_daffine3 {
-    const_assert_eq!(8, core::mem::align_of::<super::DAffine3>());
+    const_assert_eq!(
+        core::mem::align_of::<f64>(),
+        core::mem::align_of::<super::DAffine3>()
+    );
     const_assert_eq!(96, core::mem::size_of::<super::DAffine3>());
 }

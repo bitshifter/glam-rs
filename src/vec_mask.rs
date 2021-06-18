@@ -388,12 +388,18 @@ pub struct BVec4(pub(crate) XYZWBool);
 impl_vec4mask!(BVec4, bool, XYZWBool);
 
 mod const_test_bvec2 {
-    const_assert_eq!(1, core::mem::align_of::<super::BVec2>());
+    const_assert_eq!(
+        core::mem::align_of::<bool>(),
+        core::mem::align_of::<super::BVec2>()
+    );
     const_assert_eq!(2, core::mem::size_of::<super::BVec2>());
 }
 
 mod const_test_bvec3 {
-    const_assert_eq!(1, core::mem::align_of::<super::BVec3>());
+    const_assert_eq!(
+        core::mem::align_of::<bool>(),
+        core::mem::align_of::<super::BVec3>()
+    );
     const_assert_eq!(3, core::mem::size_of::<super::BVec3>());
 }
 
@@ -404,7 +410,10 @@ mod const_test_bvec3a {
 }
 
 mod const_test_bvec4 {
-    const_assert_eq!(1, core::mem::align_of::<super::BVec4>());
+    const_assert_eq!(
+        core::mem::align_of::<bool>(),
+        core::mem::align_of::<super::BVec4>()
+    );
     const_assert_eq!(4, core::mem::size_of::<super::BVec4>());
 }
 

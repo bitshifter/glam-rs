@@ -553,7 +553,10 @@ impl_mat3_traits!(f64, dmat3, DMat3, DMat4, DVec3, DVec3);
 impl_mat3_traits_unsafe!(f64, DMat3);
 
 mod const_test_mat3 {
-    const_assert_eq!(4, core::mem::align_of::<super::Mat3>());
+    const_assert_eq!(
+        core::mem::align_of::<f32>(),
+        core::mem::align_of::<super::Mat3>()
+    );
     const_assert_eq!(36, core::mem::size_of::<super::Mat3>());
 }
 
@@ -563,6 +566,9 @@ mod const_test_mat3a {
 }
 
 mod const_test_dmat3 {
-    const_assert_eq!(8, core::mem::align_of::<super::DMat3>());
+    const_assert_eq!(
+        core::mem::align_of::<f64>(),
+        core::mem::align_of::<super::DMat3>()
+    );
     const_assert_eq!(72, core::mem::size_of::<super::DMat3>());
 }
