@@ -92,6 +92,8 @@ macro_rules! impl_affine2_tests {
             let m_inv = m.inverse();
             assert_approx_eq!($affine2::IDENTITY, m * m_inv, 1.0e-5);
             assert_approx_eq!($affine2::IDENTITY, m_inv * m, 1.0e-5);
+
+            should_glam_assert!({ $affine2::ZERO.inverse() });
         }
 
         #[test]
@@ -126,6 +128,9 @@ macro_rules! impl_affine2_tests {
                 m,
                 $affine2::from_cols(MATRIX2D[0].into(), MATRIX2D[1].into(), MATRIX2D[2].into())
             );
+
+            should_panic!({ $affine2::from_cols_slice(&[0.0; 5]) });
+            should_panic!({ $affine2::IDENTITY.write_cols_to_slice(&mut [0.0; 5]) });
         }
 
         #[cfg(feature = "std")]
