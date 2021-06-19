@@ -83,6 +83,7 @@ pub trait ProjectionMatrix<T: FloatEx, V4: FloatVector4<T> + Quaternion<T>>:
     /// Creates an infinite right-handed perspective projection matrix with
     /// [0,1] depth range.
     fn perspective_infinite_rh(fov_y_radians: T, aspect_ratio: T, z_near: T) -> Self {
+        glam_assert!(z_near > T::ZERO);
         let f = T::ONE / (T::HALF * fov_y_radians).tan();
         Self::from_cols(
             V4::new(f / aspect_ratio, T::ZERO, T::ZERO, T::ZERO),
@@ -95,6 +96,7 @@ pub trait ProjectionMatrix<T: FloatEx, V4: FloatVector4<T> + Quaternion<T>>:
     /// Creates an infinite reverse right-handed perspective projection matrix
     /// with [0,1] depth range.
     fn perspective_infinite_reverse_rh(fov_y_radians: T, aspect_ratio: T, z_near: T) -> Self {
+        glam_assert!(z_near > T::ZERO);
         let f = T::ONE / (T::HALF * fov_y_radians).tan();
         Self::from_cols(
             V4::new(f / aspect_ratio, T::ZERO, T::ZERO, T::ZERO),

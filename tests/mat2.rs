@@ -201,8 +201,8 @@ macro_rules! impl_mat2_tests {
             m.write_cols_to_slice(&mut out);
             assert_eq!(MATRIX1D, out);
 
-            should_panic!({ $mat2::from_cols_slice(&[0.0]) });
-            should_panic!({ $mat2::IDENTITY.write_cols_to_slice(&mut [0.0]) });
+            should_panic!({ $mat2::from_cols_slice(&[0.0; 3]) });
+            should_panic!({ $mat2::IDENTITY.write_cols_to_slice(&mut [0.0; 3]) });
         }
 
         #[cfg(feature = "std")]

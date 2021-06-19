@@ -327,12 +327,12 @@ macro_rules! impl_mat3_tests {
             const MATRIX1D: [$t; 9] = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0];
             let m = $mat3::from_cols_slice(&MATRIX1D);
             assert_eq!($mat3::from_cols_array(&MATRIX1D), m);
-            let mut out: [$t; 9] = Default::default();
-            m.write_cols_to_slice(&mut out);
+            let mut out: [$t; 9] = Default::default();3
+            m.write_cols_to_slice(&mut out);          3
             assert_eq!(MATRIX1D, out);
 
-            should_panic!({ $mat3::from_cols_slice(&[0.0]) });
-            should_panic!({ $mat3::IDENTITY.write_cols_to_slice(&mut [0.0]) });
+            should_panic!({ $mat3::from_cols_slice(&[0.0; 8]) });
+            should_panic!({ $mat3::IDENTITY.write_cols_to_slice(&mut [0.0; 8]) });
         }
 
         #[cfg(feature = "std")]
