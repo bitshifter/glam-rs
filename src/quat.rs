@@ -114,6 +114,10 @@ macro_rules! impl_quat_methods {
 
         /// Create a quaternion for a normalized rotation `axis` and `angle` (in radians).
         /// The axis must be normalized (unit-length).
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
         #[inline(always)]
         pub fn from_axis_angle(axis: $vec3, angle: $t) -> Self {
             Self($inner::from_axis_angle(axis.0, angle))
@@ -206,6 +210,10 @@ macro_rules! impl_quat_methods {
         ///
         /// For near-singular cases (from≈to and from≈-to) the current implementation
         /// is only accurate to about 0.001 (for `f32`).
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `from` or `to` are not normalized when `glam_assert` is enabled.
         #[cfg(feature = "std")]
         pub fn from_rotation_arc(from: $vec3, to: $vec3) -> Self {
             glam_assert!(from.is_normalized());
@@ -277,6 +285,10 @@ macro_rules! impl_quat_methods {
         /// Typically quaternion inverse returns the conjugate of a normalized quaternion.
         /// Because `self` is assumed to already be unit length this method *does not* normalize
         /// before returning the conjugate.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `self` is not normalized when `glam_assert` is enabled.
         #[must_use]
         #[inline(always)]
         pub fn inverse(self) -> Self {
@@ -354,6 +366,10 @@ macro_rules! impl_quat_methods {
         /// for transforming this quaternion into another.
         ///
         /// Both quaternions must be normalized.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `self` or `other` are not normalized when `glam_assert` is enabled.
         pub fn angle_between(self, other: Self) -> $t {
             glam_assert!(self.is_normalized() && other.is_normalized());
             use crate::core::traits::scalar::FloatEx;

@@ -188,6 +188,10 @@ macro_rules! impl_mat2_methods {
         /// Returns the inverse of `self`.
         ///
         /// If the matrix is not invertible the returned matrix will be invalid.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
         #[must_use]
         #[inline(always)]
         pub fn inverse(&self) -> Self {

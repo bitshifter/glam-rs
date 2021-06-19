@@ -718,7 +718,6 @@ pub trait FloatMatrix4x4<T: FloatEx, V4: FloatVector4<T> + Quaternion<T>>:
 
     #[inline]
     fn from_quaternion(rotation: V4) -> Self {
-        glam_assert!(rotation.is_normalized());
         let (x_axis, y_axis, z_axis) = Self::quaternion_to_axes(rotation);
         Self::from_cols(x_axis, y_axis, z_axis, V4::W)
     }
@@ -750,7 +749,6 @@ pub trait FloatMatrix4x4<T: FloatEx, V4: FloatVector4<T> + Quaternion<T>>:
 
     #[inline]
     fn from_scale_quaternion_translation(scale: XYZ<T>, rotation: V4, translation: XYZ<T>) -> Self {
-        glam_assert!(rotation.is_normalized());
         let (x_axis, y_axis, z_axis) = Self::quaternion_to_axes(rotation);
         Self::from_cols(
             x_axis.mul_scalar(scale.x),
@@ -762,7 +760,6 @@ pub trait FloatMatrix4x4<T: FloatEx, V4: FloatVector4<T> + Quaternion<T>>:
 
     #[inline]
     fn from_quaternion_translation(rotation: V4, translation: XYZ<T>) -> Self {
-        glam_assert!(rotation.is_normalized());
         let (x_axis, y_axis, z_axis) = Self::quaternion_to_axes(rotation);
         Self::from_cols(x_axis, y_axis, z_axis, V4::from_xyz(translation, T::ONE))
     }

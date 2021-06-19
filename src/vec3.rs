@@ -202,6 +202,10 @@ macro_rules! impl_vec3_float_methods {
 
         /// Returns any unit-length vector that is orthogonal to the given one.
         /// The input vector must be finite and non-zero.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `self` is not normalized when `glam_assert` is enabled.
         #[inline]
         #[cfg(feature = "std")]
         pub fn any_orthonormal_vector(&self) -> Self {
@@ -215,6 +219,10 @@ macro_rules! impl_vec3_float_methods {
 
         /// Given a unit-length vector return two other vectors that together form an orthonormal basis.
         /// That is, all three vectors are orthogonal to each other and are normalized.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `self` is not normalized when `glam_assert` is enabled.
         #[inline]
         #[cfg(feature = "std")]
         pub fn any_orthonormal_pair(&self) -> (Self, Self) {

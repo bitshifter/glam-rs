@@ -259,6 +259,11 @@ macro_rules! impl_affine3_methods {
             ///
             /// The transform is expected to be non-degenerate and without shearing, or the output
             /// will be invalid.
+            ///
+            /// # Panics
+            ///
+            /// Will panic if the determinant `self.matrix3` is zero or if the resulting scale
+            /// vector containts any zero elements when `glam_assert` is enabled.
             #[inline(always)]
             pub fn to_scale_rotation_translation(&self) -> ($vec3, $quat, $vec3) {
                 // TODO: migrate to core module
@@ -303,6 +308,10 @@ macro_rules! impl_affine3_methods {
             /// a focal point.
             ///
             /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
+            ///
+            /// # Panics
+            ///
+            /// Will panic if `up` is not normalized when `glam_assert` is enabled.
             #[inline]
             pub fn look_at_lh(eye: $vec3, center: $vec3, up: $vec3) -> Self {
                 glam_assert!(up.is_normalized());
@@ -313,6 +322,10 @@ macro_rules! impl_affine3_methods {
             /// a focal point.
             ///
             /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
+            ///
+            /// # Panics
+            ///
+            /// Will panic if `up` is not normalized when `glam_assert` is enabled.
             #[inline]
             pub fn look_at_rh(eye: $vec3, center: $vec3, up: $vec3) -> Self {
                 glam_assert!(up.is_normalized());
