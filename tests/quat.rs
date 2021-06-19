@@ -50,6 +50,8 @@ macro_rules! impl_quat_tests {
             assert_approx_eq!(q1.length_recip(), 0.5);
             assert_approx_eq!(q0, q1.normalize());
             assert_approx_eq!(q0.dot(q1), 2.0, 1.0e-6);
+
+            should_glam_assert!({ ($quat::IDENTITY * 0.0).normalize() });
         }
 
         #[test]
@@ -124,6 +126,9 @@ macro_rules! impl_quat_tests {
             let (axis, angle) = $quat::IDENTITY.to_axis_angle();
             assert_eq!(axis, $vec3::X);
             assert_eq!(angle, rad(0.0));
+
+            should_glam_assert!({ ($quat::IDENTITY * 2.0).inverse() });
+            should_glam_assert!({ $quat::from_axis_angle($vec3::ZERO, 0.0) });
         }
 
         #[test]
@@ -213,6 +218,11 @@ macro_rules! impl_quat_tests {
             assert_approx_eq!($vec3::Z, mrzx.mul_vec3($vec3::X));
             assert_approx_eq!(-$vec3::X, mrzx * $vec3::Y);
             assert_approx_eq!(-$vec3::X, mrzx.mul_vec3($vec3::Y));
+
+            should_glam_assert!({ ($quat::IDENTITY * 0.5).mul_vec3($vec3::X) });
+            should_glam_assert!({ ($quat::IDENTITY * 0.5) * $vec3::X });
+            should_glam_assert!({ ($quat::IDENTITY * 0.5).mul_quat($quat::IDENTITY) });
+            should_glam_assert!({ ($quat::IDENTITY * 0.5) * $quat::IDENTITY });
         }
 
         #[test]
@@ -251,6 +261,9 @@ macro_rules! impl_quat_tests {
             assert_approx_eq!(q0, q0.lerp(q1, 0.0));
             assert_approx_eq!(q1, q0.lerp(q1, 1.0));
             assert_approx_eq!($quat::from_rotation_y(deg(45.0)), q0.lerp(q1, 0.5));
+
+            should_glam_assert!({ $quat::lerp($quat::IDENTITY * 2.0, $quat::IDENTITY, 1.0) });
+            should_glam_assert!({ $quat::lerp($quat::IDENTITY, $quat::IDENTITY * 0.5, 1.0) });
         }
 
         #[test]
@@ -260,6 +273,9 @@ macro_rules! impl_quat_tests {
             assert_approx_eq!(q0, q0.slerp(q1, 0.0), 1.0e-3);
             assert_approx_eq!(q1, q0.slerp(q1, 1.0), 1.0e-3);
             assert_approx_eq!($quat::from_rotation_y(deg(45.0)), q0.slerp(q1, 0.5), 1.0e-3);
+
+            should_glam_assert!({ $quat::lerp($quat::IDENTITY * 2.0, $quat::IDENTITY, 1.0) });
+            should_glam_assert!({ $quat::lerp($quat::IDENTITY, $quat::IDENTITY * 0.5, 1.0) });
         }
 
         #[test]
@@ -315,6 +331,9 @@ macro_rules! impl_quat_tests {
             let mut d = [0.0, 0.0, 0.0, 0.0];
             b.write_to_slice(&mut d[..]);
             assert_eq!(a, d);
+
+            should_panic!({ $quat::IDENTITY.write_to_slice(&mut [0 as $t; 3]) });
+            should_panic!({ $quat::from_slice(&[0 as $t; 3]) });
         }
 
         #[test]
@@ -427,6 +446,11 @@ macro_rules! impl_quat_tests {
                     );
                 }
             }
+
+            should_glam_assert!({ $quat::from_rotation_arc($vec3::ZERO, $vec3::X) });
+            should_glam_assert!({ $quat::from_rotation_arc($vec3::X, $vec3::ZERO) });
+            should_glam_assert!({ $quat::from_rotation_arc_colinear($vec3::ZERO, $vec3::X) });
+            should_glam_assert!({ $quat::from_rotation_arc_colinear($vec3::X, $vec3::ZERO) });
         }
     };
 }

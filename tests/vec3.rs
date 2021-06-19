@@ -150,6 +150,8 @@ macro_rules! impl_vec3_tests {
             assert_eq!(vec(6, 6, 6).clamp(min, max), vec(6, 6, 6));
             assert_eq!(vec(7, 7, 7).clamp(min, max), vec(6, 7, 7));
             assert_eq!(vec(9, 9, 9).clamp(min, max), vec(6, 8, 8));
+
+            should_glam_assert!({ $vec3::clamp($vec3::ZERO, $vec3::ONE, $vec3::ZERO) });
         }
 
         #[test]
@@ -418,6 +420,9 @@ macro_rules! impl_vec3_tests {
             let mut a = [0 as $t, 0 as $t, 0 as $t];
             v.write_to_slice(&mut a);
             assert_eq!(v, $vec3::from_slice(&a));
+
+            should_panic!({ $vec3::ONE.write_to_slice(&mut [0 as $t; 2]) });
+            should_panic!({ $vec3::from_slice(&[0 as $t; 2]) });
         }
 
         #[cfg(feature = "std")]

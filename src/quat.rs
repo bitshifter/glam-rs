@@ -200,9 +200,8 @@ macro_rules! impl_quat_methods {
             ))
         }
 
-        /// Gets the minimal rotation for transforming `from` to `to`.
-        /// The rotation is in the plane spanned by the two vectors.
-        /// Will rotate at most 180 degrees.
+        /// Gets the minimal rotation for transforming `from` to `to`.  The rotation is in the
+        /// plane spanned by the two vectors.  Will rotate at most 180 degrees.
         ///
         /// The input vectors must be normalized (unit-length).
         ///
@@ -234,15 +233,19 @@ macro_rules! impl_quat_methods {
             }
         }
 
-        /// Gets the minimal rotation for transforming `from` to either `to` or `-to`.
-        /// This means that the resulting quaternion will rotate `from` so that it is colinear with `to`.
+        /// Gets the minimal rotation for transforming `from` to either `to` or `-to`.  This means
+        /// that the resulting quaternion will rotate `from` so that it is colinear with `to`.
         ///
-        /// The rotation is in the plane spanned by the two vectors.
-        /// Will rotate at most 90 degrees.
+        /// The rotation is in the plane spanned by the two vectors.  Will rotate at most 90
+        /// degrees.
         ///
         /// The input vectors must be normalized (unit-length).
         ///
         /// `to.dot(from_rotation_arc_colinear(from, to) * from).abs() ≈ 1`.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `from` or `to` are not normalized when `glam_assert` is enabled.
         #[cfg(feature = "std")]
         pub fn from_rotation_arc_colinear(from: $vec3, to: $vec3) -> Self {
             if from.dot(to) < 0.0 {
