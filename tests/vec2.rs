@@ -135,6 +135,8 @@ macro_rules! impl_vec2_tests {
             assert_eq!(vec(6, 6).clamp(min, max), vec(6, 6));
             assert_eq!(vec(7, 7).clamp(min, max), vec(6, 7));
             assert_eq!(vec(9, 9).clamp(min, max), vec(6, 8));
+
+            should_glam_assert!({ $vec2::clamp($vec2::ZERO, $vec2::ONE, $vec2::ZERO) });
         }
 
         #[test]
@@ -374,6 +376,9 @@ macro_rules! impl_vec2_tests {
             let mut a = [0 as $t, 0 as $t];
             v.write_to_slice(&mut a);
             assert_eq!(v, $vec2::from_slice(&a));
+
+            should_panic!({ $vec2::ONE.write_to_slice(&mut [0 as $t]) });
+            should_panic!({ $vec2::from_slice(&[0 as $t]) });
         }
 
         #[cfg(feature = "std")]
@@ -670,6 +675,14 @@ macro_rules! impl_vec2_float_tests {
                 $vec2::new(0.6, 0.8).clamp_length_min(10.0),
                 $vec2::new(6.0, 8.0) // lengthened to length 10.0
             );
+        }
+
+        #[cfg(any(feature = "glam-assert", feature = "debug-glam-assert"))]
+        #[test]
+        fn test_float_glam_assert() {
+            use std::panic::catch_unwind;
+
+            assert!(catch_unwind(|| $vec2::ZERO.normalize()).is_err());
         }
     };
 }

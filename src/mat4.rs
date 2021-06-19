@@ -375,6 +375,10 @@ macro_rules! impl_mat4_methods {
         /// Returns the inverse of `self`.
         ///
         /// If the matrix is not invertible the returned matrix will be invalid.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
         #[must_use]
         #[inline(always)]
         pub fn inverse(&self) -> Self {
@@ -384,6 +388,10 @@ macro_rules! impl_mat4_methods {
         /// Creates a left-handed view matrix using a camera position, an up direction, and a focal
         /// point.
         /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `up` is not normalized when `glam_assert` is enabled.
         #[inline(always)]
         pub fn look_at_lh(eye: $vec3, center: $vec3, up: $vec3) -> Self {
             Self($inner::look_at_lh(eye.0, center.0, up.0))
@@ -392,6 +400,10 @@ macro_rules! impl_mat4_methods {
         /// Creates a right-handed view matrix using a camera position, an up direction, and a focal
         /// point.
         /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `up` is not normalized when `glam_assert` is enabled.
         #[inline(always)]
         pub fn look_at_rh(eye: $vec3, center: $vec3, up: $vec3) -> Self {
             Self($inner::look_at_rh(eye.0, center.0, up.0))
@@ -399,7 +411,7 @@ macro_rules! impl_mat4_methods {
 
         /// Creates a right-handed perspective projection matrix with [-1,1] depth range.
         /// This is the same as the OpenGL `gluPerspective` function.
-        /// See https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
+        /// See <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml>
         #[inline(always)]
         pub fn perspective_rh_gl(
             fov_y_radians: $t,
@@ -508,7 +520,7 @@ macro_rules! impl_mat4_methods {
         /// Creates a right-handed orthographic projection matrix with `[-1,1]` depth
         /// range.  This is the same as the OpenGL `glOrtho` function in OpenGL.
         /// See
-        /// https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml
+        /// <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml>
         #[inline(always)]
         pub fn orthographic_rh_gl(
             left: $t,

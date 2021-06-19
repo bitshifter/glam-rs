@@ -261,6 +261,10 @@ macro_rules! impl_vecn_float_methods {
         /// For valid results, `self` must _not_ be of length zero, nor very close to zero.
         ///
         /// See also [`Self::try_normalize`] and [`Self::normalize_or_zero`].
+        ///
+        /// Panics
+        ///
+        /// Will panic if `self` is zero length when `glam_assert` is enabled.
         #[must_use]
         #[inline(always)]
         pub fn normalize(self) -> Self {

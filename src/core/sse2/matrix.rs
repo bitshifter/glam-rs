@@ -129,6 +129,7 @@ impl FloatMatrix2x2<f32, XY<f32>> for __m128 {
             let sub = _mm_sub_ps(prod, _mm_shuffle_ps(prod, prod, 0b01_01_01_01));
             let det = _mm_shuffle_ps(sub, sub, 0b00_00_00_00);
             let tmp = _mm_div_ps(SIGN, det);
+            glam_assert!(tmp.is_finite());
             let dbca = _mm_shuffle_ps(abcd, abcd, 0b00_10_01_11);
             _mm_mul_ps(dbca, tmp)
         }

@@ -331,6 +331,10 @@ macro_rules! impl_quat_methods {
         /// Returns `self` normalized to length 1.0.
         ///
         /// For valid results, `self` must _not_ be of length zero.
+        ///
+        /// Panics
+        ///
+        /// Will panic if `self` is zero length when `glam_assert` is enabled.
         #[must_use]
         #[inline(always)]
         pub fn normalize(self) -> Self {
@@ -395,6 +399,10 @@ macro_rules! impl_quat_methods {
         ///
         /// When `s` is `0.0`, the result will be equal to `self`.  When `s`
         /// is `1.0`, the result will be equal to `other`.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `self` or `end` are not normalized when `glam_assert` is enabled.
         #[inline(always)]
         #[cfg_attr(docsrs, doc(alias = "mix"))]
         pub fn lerp(self, end: Self, s: $t) -> Self {
@@ -413,20 +421,33 @@ macro_rules! impl_quat_methods {
         /// one will take the short way. In order to correct for this, the `dot`
         /// product between `self` and `end` should be positive. If the `dot`
         /// product is negative, slerp between `-self` and `end`.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `self` or `end` are not normalized when `glam_assert` is enabled.
         #[inline(always)]
         pub fn slerp(self, end: Self, s: $t) -> Self {
             Self(self.0.slerp(end.0, s))
         }
 
         /// Multiplies a quaternion and a 3D vector, returning the rotated vector.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `self` is not normalized when `glam_assert` is enabled.
         #[inline(always)]
         pub fn mul_vec3(self, other: $vec3) -> $vec3 {
             $vec3(self.0.mul_vector3(other.0))
         }
 
-        /// Multiplies two quaternions.
-        /// If they each represent a rotation, the result will represent the combined rotation.
+        /// Multiplies two quaternions. If they each represent a rotation, the result will
+        /// represent the combined rotation.
+        ///
         /// Note that due to floating point rounding the result may not be perfectly normalized.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `self` or `other` are not normalized when `glam_assert` is enabled.
         #[inline(always)]
         pub fn mul_quat(self, other: Self) -> Self {
             Self(self.0.mul_quaternion(other.0))
@@ -467,10 +488,11 @@ macro_rules! impl_quat_traits {
         impl Add<$quat> for $quat {
             type Output = Self;
             /// Adds two quaternions.
+            ///
             /// The sum is not guaranteed to be normalized.
             ///
-            /// NB: Addition is not the same as combining the rotations represented by the two quaternions!
-            /// That corresponds to multiplication.
+            /// Note that addition is not the same as combining the rotations represented by the
+            /// two quaternions! That corresponds to multiplication.
             #[inline]
             fn add(self, other: Self) -> Self {
                 Self(self.0.add(other.0))
@@ -480,6 +502,7 @@ macro_rules! impl_quat_traits {
         impl Sub<$quat> for $quat {
             type Output = Self;
             /// Subtracts the other quaternion from self.
+            ///
             /// The difference is not guaranteed to be normalized.
             #[inline]
             fn sub(self, other: Self) -> Self {
@@ -490,6 +513,7 @@ macro_rules! impl_quat_traits {
         impl Mul<$t> for $quat {
             type Output = Self;
             /// Multiplies a quaternion by a scalar value.
+            ///
             /// The product is not guaranteed to be normalized.
             #[inline]
             fn mul(self, other: $t) -> Self {
@@ -509,6 +533,15 @@ macro_rules! impl_quat_traits {
 
         impl Mul<$quat> for $quat {
             type Output = Self;
+            /// Multiplies two quaternions. If they each represent a rotation, the result will
+            /// represent the combined rotation.
+            ///
+            /// Note that due to floating point rounding the result may not be perfectly
+            /// normalized.
+            ///
+            /// # Panics
+            ///
+            /// Will panic if `self` or `other` are not normalized when `glam_assert` is enabled.
             #[inline]
             fn mul(self, other: Self) -> Self {
                 Self(self.0.mul_quaternion(other.0))
@@ -516,6 +549,15 @@ macro_rules! impl_quat_traits {
         }
 
         impl MulAssign<$quat> for $quat {
+            /// Multiplies two quaternions. If they each represent a rotation, the result will
+            /// represent the combined rotation.
+            ///
+            /// Note that due to floating point rounding the result may not be perfectly
+            /// normalized.
+            ///
+            /// # Panics
+            ///
+            /// Will panic if `self` or `other` are not normalized when `glam_assert` is enabled.
             #[inline]
             fn mul_assign(&mut self, other: Self) {
                 self.0 = self.0.mul_quaternion(other.0);
@@ -524,6 +566,11 @@ macro_rules! impl_quat_traits {
 
         impl Mul<$vec3> for $quat {
             type Output = $vec3;
+            /// Multiplies a quaternion and a 3D vector, returning the rotated vector.
+            ///
+            /// # Panics
+            ///
+            /// Will panic if `self` is not normalized when `glam_assert` is enabled.
             #[inline]
             fn mul(self, other: $vec3) -> Self::Output {
                 $vec3(self.0.mul_vector3(other.0))
