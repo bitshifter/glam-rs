@@ -1,6 +1,7 @@
 #[macro_export]
 macro_rules! should_panic {
     ($block:block) => {{
+        #[cfg(feature = "std")]
         assert!(std::panic::catch_unwind(|| $block).is_err());
     }};
 }

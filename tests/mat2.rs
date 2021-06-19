@@ -52,16 +52,12 @@ macro_rules! impl_mat2_tests {
             assert_eq!($vec2::new(2.0, 1.0), m.col(0));
             assert_eq!($vec2::new(4.0, 3.0), m.col(1));
 
-            should_panic!({
-                $mat2::ZERO.col(2);
-            });
+            should_panic!({ $mat2::ZERO.col(2) });
             should_panic!({
                 let mut m = $mat2::ZERO;
                 m.col_mut(2);
             });
-            should_panic!({
-                $mat2::ZERO.row(2);
-            });
+            should_panic!({ $mat2::ZERO.row(2) });
         }
 
         #[test]
