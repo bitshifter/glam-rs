@@ -135,12 +135,6 @@ performance.
 [coverage]: coveralls.io
 [Criterion.rs]: https://bheisler.github.io/criterion.rs/book/index.html
 
-## Future work
-
-* Experiment with a using a 4x3 matrix as a 3D transform type that can be more
-  efficient than `Mat4` for certain operations like inverse and multiplies
-* `wasm` support
-
 ## Inspirations
 
 There were many inspirations for the interface and internals of glam from the

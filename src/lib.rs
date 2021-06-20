@@ -142,6 +142,14 @@ assert_eq!(4.0, v.z);
 [`Deref`]: https://doc.rust-lang.org/std/ops/trait.Deref.html
 [`DerefMut`]: https://doc.rust-lang.org/std/ops/trait.DerefMut.html
 
+## glam assertions
+
+`glam` does not enforce validiity checks on method parameters at runtime. For example methods that
+require normalized vectors as input such as `Quat::from_axis_angle(axis, angle)` will not check
+that axis is a valid normalized vector. To help catch unintended misuse of `glam` the
+`debug-glam-assert` or `glam-assert` features can be enabled which will add assert checks ensure
+inputs to are valid.
+
 ## Vector swizzles
 
 `glam` vector types have functions allowing elements of vectors to be reordered, this includes
