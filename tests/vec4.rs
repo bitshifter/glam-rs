@@ -185,6 +185,8 @@ macro_rules! impl_vec4_tests {
             assert_eq!(vec(6, 6, 6, 6).clamp(min, max), vec(6, 6, 6, 6));
             assert_eq!(vec(7, 7, 7, 7).clamp(min, max), vec(6, 6, 7, 7));
             assert_eq!(vec(9, 9, 9, 9).clamp(min, max), vec(6, 6, 8, 8));
+
+            should_glam_assert!({ $vec4::clamp($vec4::ZERO, $vec4::ONE, $vec4::ZERO) });
         }
 
         #[test]
@@ -259,6 +261,9 @@ macro_rules! impl_vec4_tests {
             let mut d = [0 as $t, 0 as $t, 0 as $t, 0 as $t];
             b.write_to_slice(&mut d[..]);
             assert_eq!(a, d);
+
+            should_panic!({ $vec4::ONE.write_to_slice(&mut [0 as $t; 3]) });
+            should_panic!({ $vec4::from_slice(&[0 as $t; 3]) });
         }
 
         // #[test]

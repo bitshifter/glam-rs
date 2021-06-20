@@ -51,6 +51,13 @@ macro_rules! impl_mat2_tests {
             *m.col_mut(1) = m.col(1).yx();
             assert_eq!($vec2::new(2.0, 1.0), m.col(0));
             assert_eq!($vec2::new(4.0, 3.0), m.col(1));
+
+            should_panic!({ $mat2::ZERO.col(2) });
+            should_panic!({
+                let mut m = $mat2::ZERO;
+                m.col_mut(2);
+            });
+            should_panic!({ $mat2::ZERO.row(2) });
         }
 
         #[test]
@@ -147,6 +154,8 @@ macro_rules! impl_mat2_tests {
             assert_approx_eq!($mat2::IDENTITY, m * m_inv);
             assert_approx_eq!($mat2::IDENTITY, m_inv * m);
             assert_approx_eq!(m_inv, rot_inv * scale_inv);
+
+            should_glam_assert!({ $mat2::ZERO.inverse() });
         }
 
         #[test]
@@ -191,6 +200,9 @@ macro_rules! impl_mat2_tests {
             let mut out: [$t; 4] = Default::default();
             m.write_cols_to_slice(&mut out);
             assert_eq!(MATRIX1D, out);
+
+            should_panic!({ $mat2::from_cols_slice(&[0.0; 3]) });
+            should_panic!({ $mat2::IDENTITY.write_cols_to_slice(&mut [0.0; 3]) });
         }
 
         #[cfg(feature = "std")]

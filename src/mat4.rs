@@ -118,6 +118,10 @@ macro_rules! impl_mat4_methods {
         ///
         /// The resulting matrix can be used to transform 3D points and vectors. See
         /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
         #[inline(always)]
         pub fn from_scale_rotation_translation(
             scale: $vec3,
@@ -135,6 +139,10 @@ macro_rules! impl_mat4_methods {
         ///
         /// The resulting matrix can be used to transform 3D points and vectors. See
         /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
         #[inline(always)]
         pub fn from_rotation_translation(rotation: $quat, translation: $vec3) -> Self {
             Self($inner::from_quaternion_translation(
@@ -145,6 +153,11 @@ macro_rules! impl_mat4_methods {
 
         /// Extracts `scale`, `rotation` and `translation` from `self`. The input matrix is
         /// expected to be a 3D affine transformation matrix otherwise the output will be invalid.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if the determinant of `self` is zero or if the resulting scale vector
+        /// contains any zero elements when `glam_assert` is enabled.
         #[inline(always)]
         pub fn to_scale_rotation_translation(&self) -> ($vec3, $quat, $vec3) {
             let (scale, rotation, translation) = self.0.to_scale_quaternion_translation();
@@ -155,6 +168,10 @@ macro_rules! impl_mat4_methods {
         ///
         /// The resulting matrix can be used to transform 3D points and vectors. See
         /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
         #[inline(always)]
         pub fn from_quat(rotation: $quat) -> Self {
             Self($inner::from_quaternion(rotation.0))
@@ -174,6 +191,10 @@ macro_rules! impl_mat4_methods {
         ///
         /// The resulting matrix can be used to transform 3D points and vectors. See
         /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
         #[inline(always)]
         pub fn from_axis_angle(axis: $vec3, angle: $t) -> Self {
             Self($inner::from_axis_angle(axis.0, angle))
@@ -233,6 +254,10 @@ macro_rules! impl_mat4_methods {
         ///
         /// The resulting matrix can be used to transform 3D points and vectors. See
         /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+        ///
+        /// # Panics
+        ///
+        /// Will panic if all elements of `scale` are zero when `glam_assert` is enabled.
         #[inline(always)]
         pub fn from_scale(scale: $vec3) -> Self {
             Self($inner::from_scale(scale.0))
@@ -350,6 +375,10 @@ macro_rules! impl_mat4_methods {
         /// Returns the inverse of `self`.
         ///
         /// If the matrix is not invertible the returned matrix will be invalid.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
         #[must_use]
         #[inline(always)]
         pub fn inverse(&self) -> Self {
@@ -359,6 +388,10 @@ macro_rules! impl_mat4_methods {
         /// Creates a left-handed view matrix using a camera position, an up direction, and a focal
         /// point.
         /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `up` is not normalized when `glam_assert` is enabled.
         #[inline(always)]
         pub fn look_at_lh(eye: $vec3, center: $vec3, up: $vec3) -> Self {
             Self($inner::look_at_lh(eye.0, center.0, up.0))
@@ -367,6 +400,10 @@ macro_rules! impl_mat4_methods {
         /// Creates a right-handed view matrix using a camera position, an up direction, and a focal
         /// point.
         /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `up` is not normalized when `glam_assert` is enabled.
         #[inline(always)]
         pub fn look_at_rh(eye: $vec3, center: $vec3, up: $vec3) -> Self {
             Self($inner::look_at_rh(eye.0, center.0, up.0))
@@ -374,7 +411,7 @@ macro_rules! impl_mat4_methods {
 
         /// Creates a right-handed perspective projection matrix with [-1,1] depth range.
         /// This is the same as the OpenGL `gluPerspective` function.
-        /// See https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
+        /// See <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml>
         #[inline(always)]
         pub fn perspective_rh_gl(
             fov_y_radians: $t,
@@ -391,6 +428,11 @@ macro_rules! impl_mat4_methods {
         }
 
         /// Creates a left-handed perspective projection matrix with `[0,1]` depth range.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
+        /// enabled.
         #[inline(always)]
         pub fn perspective_lh(fov_y_radians: $t, aspect_ratio: $t, z_near: $t, z_far: $t) -> Self {
             Self($inner::perspective_lh(
@@ -402,6 +444,11 @@ macro_rules! impl_mat4_methods {
         }
 
         /// Creates a right-handed perspective projection matrix with `[0,1]` depth range.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
+        /// enabled.
         #[inline(always)]
         pub fn perspective_rh(fov_y_radians: $t, aspect_ratio: $t, z_near: $t, z_far: $t) -> Self {
             Self($inner::perspective_rh(
@@ -413,6 +460,10 @@ macro_rules! impl_mat4_methods {
         }
 
         /// Creates an infinite left-handed perspective projection matrix with `[0,1]` depth range.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
         #[inline(always)]
         pub fn perspective_infinite_lh(fov_y_radians: $t, aspect_ratio: $t, z_near: $t) -> Self {
             Self($inner::perspective_infinite_lh(
@@ -423,6 +474,10 @@ macro_rules! impl_mat4_methods {
         }
 
         /// Creates an infinite left-handed perspective projection matrix with `[0,1]` depth range.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
         #[inline(always)]
         pub fn perspective_infinite_reverse_lh(
             fov_y_radians: $t,
@@ -465,7 +520,7 @@ macro_rules! impl_mat4_methods {
         /// Creates a right-handed orthographic projection matrix with `[-1,1]` depth
         /// range.  This is the same as the OpenGL `glOrtho` function in OpenGL.
         /// See
-        /// https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml
+        /// <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml>
         #[inline(always)]
         pub fn orthographic_rh_gl(
             left: $t,
@@ -555,6 +610,10 @@ macro_rules! impl_mat4_methods {
         /// This method assumes that `self` contains a valid affine transform. It does not perform
         /// a persective divide, if `self` contains a perspective transform, or if you are unsure,
         /// the [`Self::project_point3()`] method should be used instead.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if the 3rd row of `self` is not `(0, 0, 0, 1)` when `glam_assert` is enabled.
         #[inline]
         pub fn transform_point3(&self, other: $vec3) -> $vec3 {
             glam_assert!(self.row(3) == $vec4::W);
@@ -567,6 +626,10 @@ macro_rules! impl_mat4_methods {
         /// `0.0`.
         ///
         /// This method assumes that `self` contains a valid affine transform.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if the 3rd row of `self` is not `(0, 0, 0, 1)` when `glam_assert` is enabled.
         #[inline]
         pub fn transform_vector3(&self, other: $vec3) -> $vec3 {
             glam_assert!(self.row(3) == $vec4::W);

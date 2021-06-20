@@ -1,4 +1,20 @@
 #[macro_export]
+macro_rules! should_panic {
+    ($block:block) => {{
+        #[cfg(feature = "std")]
+        assert!(std::panic::catch_unwind(|| $block).is_err());
+    }};
+}
+
+#[macro_export]
+macro_rules! should_glam_assert {
+    ($block:block) => {{
+        #[cfg(any(feature = "glam-assert", feature = "debug-glam-assert"))]
+        should_panic!($block);
+    }};
+}
+
+#[macro_export]
 macro_rules! assert_approx_eq {
     ($a:expr, $b:expr) => {{
         #[allow(unused_imports)]
@@ -52,6 +68,18 @@ macro_rules! impl_vec_float_normalize_tests {
             assert_eq!(from_x_y(MAX.sqrt(), 0.0).normalize(), from_x_y(1.0, 0.0));
             // assert_eq!(from_x_y(MAX, 0.0).normalize(), from_x_y(1.0, 0.0)); // normalize fails for huge vectors and returns zero
 
+            // We expect not to be able to normalize small numbers:
+            should_glam_assert!({ from_x_y(0.0, 0.0).normalize() });
+            should_glam_assert!({ from_x_y(MIN_POSITIVE, 0.0).normalize() });
+
+            // We expect not to be able to normalize non-finite vectors:
+            should_glam_assert!({ from_x_y(INFINITY, 0.0).normalize() });
+            should_glam_assert!({ from_x_y(NAN, 0.0).normalize() });
+        }
+
+        #[cfg(not(any(feature = "debug-glam-assert", feature = "glam-assert")))]
+        #[test]
+        fn test_normalize_no_glam_assert() {
             // We expect not to be able to normalize small numbers:
             assert!(!from_x_y(0.0, 0.0).normalize().is_finite());
             assert!(!from_x_y(MIN_POSITIVE, 0.0).normalize().is_finite());

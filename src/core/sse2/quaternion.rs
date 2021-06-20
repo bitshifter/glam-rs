@@ -76,6 +76,8 @@ impl Quaternion<f32> for __m128 {
 
     #[inline]
     fn mul_quaternion(self, other: Self) -> Self {
+        glam_assert!(FloatVector4::is_normalized(self));
+        glam_assert!(FloatVector4::is_normalized(other));
         unsafe {
             // Based on https://github.com/nfrechette/rtm `rtm::quat_mul`
             let lhs = self;

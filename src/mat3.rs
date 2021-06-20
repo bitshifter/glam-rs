@@ -110,6 +110,10 @@ macro_rules! impl_mat3_methods {
 
         #[inline(always)]
         /// Creates a 3D rotation matrix from the given quaternion.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
         pub fn from_quat(rotation: $quat) -> Self {
             // TODO: SIMD?
             Self($inner::from_quaternion(rotation.0.into()))
@@ -117,6 +121,10 @@ macro_rules! impl_mat3_methods {
 
         /// Creates a 3D rotation matrix from a normalized rotation `axis` and `angle` (in
         /// radians).
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
         #[inline(always)]
         pub fn from_axis_angle(axis: $vec3, angle: $t) -> Self {
             Self(FloatMatrix3x3::from_axis_angle(axis.0, angle))
@@ -194,6 +202,10 @@ macro_rules! impl_mat3_methods {
         ///
         /// The resulting matrix can be used to transform 2D points and vectors. See
         /// [`Self::transform_point2()`] and [`Self::transform_vector2()`].
+        ///
+        /// # Panics
+        ///
+        /// Will panic if all elements of `scale` are zero when `glam_assert` is enabled.
         #[inline(always)]
         pub fn from_scale(scale: $vec2) -> Self {
             Self(Matrix3x3::from_scale(scale.0))
@@ -302,6 +314,10 @@ macro_rules! impl_mat3_methods {
         /// Returns the inverse of `self`.
         ///
         /// If the matrix is not invertible the returned matrix will be invalid.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
         #[must_use]
         #[inline(always)]
         pub fn inverse(&self) -> Self {

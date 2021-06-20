@@ -2,7 +2,7 @@
 mod support;
 
 macro_rules! impl_mat3_tests {
-    ($t:ident, $const_new:ident, $newmat3:ident, $mat3:ident, $mat4:ident, $newvec3:ident, $vec3:ident, $vec2:ident) => {
+    ($t:ident, $const_new:ident, $newmat3:ident, $mat3:ident, $mat4:ident, $quat:ident, $newvec3:ident, $vec3:ident, $vec2:ident) => {
         use core::$t::INFINITY;
         use core::$t::NAN;
         use core::$t::NEG_INFINITY;
@@ -77,6 +77,13 @@ macro_rules! impl_mat3_tests {
             assert_eq!($newvec3(3.0, 2.0, 1.0), m.col(0));
             assert_eq!($newvec3(6.0, 5.0, 4.0), m.col(1));
             assert_eq!($newvec3(9.0, 8.0, 7.0), m.col(2));
+
+            should_panic!({ $mat3::ZERO.col(3) });
+            should_panic!({
+                let mut m = $mat3::ZERO;
+                m.col_mut(3);
+            });
+            should_panic!({ $mat3::ZERO.row(3) });
         }
 
         #[test]
@@ -105,12 +112,23 @@ macro_rules! impl_mat3_tests {
             let rot_x1 = $mat3::from_rotation_x(deg(180.0));
             let rot_x2 = $mat3::from_axis_angle($vec3::X, deg(180.0));
             assert_approx_eq!(rot_x1, rot_x2);
+            let rot_x3 = $mat3::from_quat($quat::from_rotation_x(deg(180.0)));
+            assert_approx_eq!(rot_x1, rot_x3);
+
             let rot_y1 = $mat3::from_rotation_y(deg(180.0));
             let rot_y2 = $mat3::from_axis_angle($vec3::Y, deg(180.0));
             assert_approx_eq!(rot_y1, rot_y2);
+            let rot_y3 = $mat3::from_quat($quat::from_rotation_y(deg(180.0)));
+            assert_approx_eq!(rot_y1, rot_y3);
+
             let rot_z1 = $mat3::from_rotation_z(deg(180.0));
             let rot_z2 = $mat3::from_axis_angle($vec3::Z, deg(180.0));
             assert_approx_eq!(rot_z1, rot_z2);
+            let rot_z3 = $mat3::from_quat($quat::from_rotation_z(deg(180.0)));
+            assert_approx_eq!(rot_z1, rot_z3);
+
+            should_glam_assert!({ $mat3::from_axis_angle($vec3::ZERO, 0.0) });
+            should_glam_assert!({ $mat3::from_quat($quat::from_xyzw(0.0, 0.0, 0.0, 0.0)) });
         }
 
         #[test]
@@ -139,6 +157,8 @@ macro_rules! impl_mat3_tests {
             assert_eq!($vec2::new(0.0, 4.0), m.transform_vector2($vec2::Y));
             assert_eq!($vec2::new(2.0, 0.0), m.transform_point2($vec2::X));
             assert_eq!($vec2::new(0.0, 4.0), m.transform_point2($vec2::Y));
+
+            should_glam_assert!({ $mat3::from_scale($vec2::ZERO) });
 
             let m = $mat3::from_scale_angle_translation(
                 $vec2::new(0.5, 1.5),
@@ -260,6 +280,8 @@ macro_rules! impl_mat3_tests {
             assert_approx_eq!($mat3::IDENTITY, m * m_inv);
             assert_approx_eq!($mat3::IDENTITY, m_inv * m);
             assert_approx_eq!(m_inv, rotz_inv * scale_inv);
+
+            should_glam_assert!({ $mat3::ZERO.inverse() });
         }
 
         #[test]
@@ -308,6 +330,9 @@ macro_rules! impl_mat3_tests {
             let mut out: [$t; 9] = Default::default();
             m.write_cols_to_slice(&mut out);
             assert_eq!(MATRIX1D, out);
+
+            should_panic!({ $mat3::from_cols_slice(&[0.0; 8]) });
+            should_panic!({ $mat3::IDENTITY.write_cols_to_slice(&mut [0.0; 8]) });
         }
 
         #[cfg(feature = "std")]
@@ -336,7 +361,7 @@ macro_rules! impl_mat3_tests {
 
 mod mat3 {
     use super::support::deg;
-    use glam::{const_mat3, mat3, swizzles::*, vec3, vec3a, Mat3, Mat4, Vec2, Vec3, Vec3A};
+    use glam::{const_mat3, mat3, swizzles::*, vec3, vec3a, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A};
 
     #[test]
     fn test_align() {
@@ -365,12 +390,12 @@ mod mat3 {
         );
     }
 
-    impl_mat3_tests!(f32, const_mat3, mat3, Mat3, Mat4, vec3, Vec3, Vec2);
+    impl_mat3_tests!(f32, const_mat3, mat3, Mat3, Mat4, Quat, vec3, Vec3, Vec2);
 }
 
 mod mat3a {
     use super::support::deg;
-    use glam::{const_mat3a, mat3a, swizzles::*, vec3a, Mat3A, Mat4, Vec2, Vec3, Vec3A};
+    use glam::{const_mat3a, mat3a, swizzles::*, vec3a, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A};
 
     #[test]
     fn test_align() {
@@ -395,12 +420,22 @@ mod mat3a {
         );
     }
 
-    impl_mat3_tests!(f32, const_mat3a, mat3a, Mat3A, Mat4, vec3a, Vec3, Vec2);
+    impl_mat3_tests!(
+        f32,
+        const_mat3a,
+        mat3a,
+        Mat3A,
+        Mat4,
+        Quat,
+        vec3a,
+        Vec3,
+        Vec2
+    );
 }
 
 mod dmat3 {
     use super::support::deg;
-    use glam::{const_dmat3, dmat3, dvec3, swizzles::*, DMat3, DMat4, DVec2, DVec3};
+    use glam::{const_dmat3, dmat3, dvec3, swizzles::*, DMat3, DMat4, DQuat, DVec2, DVec3};
 
     #[test]
     fn test_align() {
@@ -409,5 +444,15 @@ mod dmat3 {
         assert_eq!(8, mem::align_of::<DMat3>());
     }
 
-    impl_mat3_tests!(f64, const_dmat3, dmat3, DMat3, DMat4, dvec3, DVec3, DVec2);
+    impl_mat3_tests!(
+        f64,
+        const_dmat3,
+        dmat3,
+        DMat3,
+        DMat4,
+        DQuat,
+        dvec3,
+        DVec3,
+        DVec2
+    );
 }

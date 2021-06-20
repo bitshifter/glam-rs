@@ -44,8 +44,9 @@ macro_rules! impl_vecn_common_methods {
         ///
         /// Each element in `min` must be less-or-equal to the corresponing element in `max`.
         ///
-        /// If the `glam-assert` feature is enabled, the function will panic if the contract is not
-        /// met, otherwise the behavior is undefined.
+        /// # Panics
+        ///
+        /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
         #[inline(always)]
         pub fn clamp(self, min: Self, max: Self) -> Self {
             Self($vectrait::clamp(self.0, min.0, max.0))
@@ -260,6 +261,10 @@ macro_rules! impl_vecn_float_methods {
         /// For valid results, `self` must _not_ be of length zero, nor very close to zero.
         ///
         /// See also [`Self::try_normalize`] and [`Self::normalize_or_zero`].
+        ///
+        /// Panics
+        ///
+        /// Will panic if `self` is zero length when `glam_assert` is enabled.
         #[must_use]
         #[inline(always)]
         pub fn normalize(self) -> Self {

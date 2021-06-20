@@ -49,6 +49,9 @@ macro_rules! impl_affine3_tests {
             let rot_z1 = $affine3::from_rotation_z(deg(180.0));
             let rot_z2 = $affine3::from_axis_angle($vec3::Z, deg(180.0));
             assert_approx_eq!(rot_z1, rot_z2, eps);
+
+            should_glam_assert!({ $affine3::from_axis_angle($vec3::ZERO, 0.0) });
+            should_glam_assert!({ $affine3::from_quat($quat::IDENTITY * 2.0) });
         }
 
         #[test]
@@ -111,6 +114,8 @@ macro_rules! impl_affine3_tests {
             let m_inv = m.inverse();
             assert_approx_eq!($affine3::IDENTITY, m * m_inv, 1.0e-5);
             assert_approx_eq!($affine3::IDENTITY, m_inv * m, 1.0e-5);
+
+            should_glam_assert!({ $affine3::ZERO.inverse() });
         }
 
         #[test]
@@ -200,6 +205,9 @@ macro_rules! impl_affine3_tests {
             let point = $vec3::new(1.0, 0.0, 0.0);
             assert_approx_eq!(lh.transform_point3(point), $vec3::new(0.0, 1.0, 5.0));
             assert_approx_eq!(rh.transform_point3(point), $vec3::new(0.0, 1.0, -5.0));
+
+            should_glam_assert!({ $affine3::look_at_lh($vec3::ONE, $vec3::ZERO, $vec3::ZERO) });
+            should_glam_assert!({ $affine3::look_at_rh($vec3::ONE, $vec3::ZERO, $vec3::ZERO) });
         }
 
         #[test]
@@ -249,6 +257,9 @@ macro_rules! impl_affine3_tests {
                     MATRIX2D[3].into()
                 )
             );
+
+            should_panic!({ $affine3::from_cols_slice(&[0.0; 11]) });
+            should_panic!({ $affine3::IDENTITY.write_cols_to_slice(&mut [0.0; 11]) });
         }
 
         #[cfg(feature = "std")]
