@@ -511,10 +511,10 @@ macro_rules! impl_vec2_float_tests {
                 $new(1.0, 0.0),
                 $new(1.0, 1.0).reject_from_normalized($new(0.0, 1.0))
             );
-            should_glam_assert!({ $vec2::ONE.project_onto(Vec2::ZERO) });
-            should_glam_assert!({ $vec3::ONE.reject_from(Vec2::ZERO) });
-            should_glam_assert!({ $vec3::ONE.project_onto_normalized(Vec2::ONE) });
-            should_glam_assert!({ $vec3::ONE.reject_from_normalized(Vec2::ONE) });
+            should_glam_assert!({ $vec2::ONE.project_onto($vec2::ZERO) });
+            should_glam_assert!({ $vec2::ONE.reject_from($vec2::ZERO) });
+            should_glam_assert!({ $vec2::ONE.project_onto_normalized($vec2::ONE) });
+            should_glam_assert!({ $vec2::ONE.reject_from_normalized($vec2::ONE) });
         }
         #[test]
         fn test_perp() {
@@ -664,7 +664,7 @@ macro_rules! impl_vec2_float_tests {
                 $vec2::new(0.6, 0.8).clamp_length(10.0, 20.0),
                 $vec2::new(6.0, 8.0) // lengthened to length 10.0
             );
-            should_glam_assert!({ $vec2::ONE.clamp_length($vec2::ONE, $vec2::ZERO) });
+            should_glam_assert!({ $vec2::ONE.clamp_length(1.0, 0.0) });
         }
 
         #[test]

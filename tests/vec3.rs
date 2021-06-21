@@ -574,10 +574,10 @@ macro_rules! impl_vec3_float_tests {
                 $new(1.0, 0.0, 0.0),
                 $new(1.0, 0.0, 1.0).reject_from_normalized($new(0.0, 0.0, 1.0))
             );
-            should_glam_assert!({ $vec3::ONE.project_onto(Vec3::ZERO) });
-            should_glam_assert!({ $vec3::ONE.reject_from(Vec3::ZERO) });
-            should_glam_assert!({ $vec3::ONE.project_onto_normalized(Vec3::ONE) });
-            should_glam_assert!({ $vec3::ONE.reject_from_normalized(Vec3::ONE) });
+            should_glam_assert!({ $vec3::ONE.project_onto($vec3::ZERO) });
+            should_glam_assert!({ $vec3::ONE.reject_from($vec3::ZERO) });
+            should_glam_assert!({ $vec3::ONE.project_onto_normalized($vec3::ONE) });
+            should_glam_assert!({ $vec3::ONE.reject_from_normalized($vec3::ONE) });
         }
 
         #[test]
@@ -723,7 +723,7 @@ macro_rules! impl_vec3_float_tests {
                 $vec3::new(0.6, 0.8, 0.0).clamp_length(10.0, 20.0),
                 $vec3::new(6.0, 8.0, 0.0) // lengthened to length 10.0
             );
-            should_glam_assert!({ $vec3::ONE.clamp_length($vec3::ONE, $vec3::ZERO) });
+            should_glam_assert!({ $vec3::ONE.clamp_length(1.0, 0.0) });
         }
 
         #[test]
