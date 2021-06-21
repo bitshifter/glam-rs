@@ -557,6 +557,30 @@ macro_rules! impl_vec3_float_tests {
         }
 
         #[test]
+        fn test_project_reject() {
+            assert_eq!(
+                $new(0.0, 0.0, 1.0),
+                $new(1.0, 0.0, 1.0).project_onto($new(0.0, 0.0, 2.0))
+            );
+            assert_eq!(
+                $new(1.0, 0.0, 0.0),
+                $new(1.0, 0.0, 1.0).reject_from($new(0.0, 0.0, 2.0))
+            );
+            assert_eq!(
+                $new(0.0, 0.0, 1.0),
+                $new(1.0, 0.0, 1.0).project_onto_normalized($new(0.0, 0.0, 1.0))
+            );
+            assert_eq!(
+                $new(1.0, 0.0, 0.0),
+                $new(1.0, 0.0, 1.0).reject_from_normalized($new(0.0, 0.0, 1.0))
+            );
+            should_glam_assert!({ $vec3::ONE.project_onto(Vec3::ZERO) });
+            should_glam_assert!({ $vec3::ONE.reject_from(Vec3::ZERO) });
+            should_glam_assert!({ $vec3::ONE.project_onto_normalized(Vec3::ONE) });
+            should_glam_assert!({ $vec3::ONE.reject_from_normalized(Vec3::ONE) });
+        }
+
+        #[test]
         fn test_signum() {
             assert_eq!($vec3::ZERO.signum(), $vec3::ONE);
             assert_eq!(-$vec3::ZERO.signum(), -$vec3::ONE);
@@ -730,8 +754,8 @@ macro_rules! impl_vec3_float_tests {
             );
         }
 
-        #[test]
         #[cfg(feature = "std")]
+        #[test]
         fn test_any_ortho() {
             let eps = 2.0 * core::$t::EPSILON;
 
