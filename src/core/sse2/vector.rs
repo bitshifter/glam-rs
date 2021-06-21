@@ -690,6 +690,7 @@ impl FloatVector3<f32> for __m128 {
     fn normalize(self) -> Self {
         unsafe {
             let length = _mm_sqrt_ps(Vector3::dot_into_vec(self, self));
+            #[allow(clippy::let_and_return)]
             let normalized = _mm_div_ps(self, length);
             glam_assert!(FloatVector3::is_finite(normalized));
             normalized
@@ -782,6 +783,7 @@ impl FloatVector4<f32> for __m128 {
     fn normalize(self) -> Self {
         unsafe {
             let dot = Vector4::dot_into_vec(self, self);
+            #[allow(clippy::let_and_return)]
             let normalized = _mm_div_ps(self, _mm_sqrt_ps(dot));
             glam_assert!(FloatVector4::is_finite(normalized));
             normalized

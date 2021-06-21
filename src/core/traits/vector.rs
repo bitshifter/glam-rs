@@ -549,6 +549,7 @@ pub trait FloatVector2<T: FloatEx>: SignedVector2<T> {
 
     #[inline]
     fn normalize(self) -> Self {
+        #[allow(clippy::let_and_return)]
         let normalized = self.mul_scalar(self.length_recip());
         glam_assert!(normalized.is_finite());
         normalized
@@ -647,6 +648,7 @@ pub trait FloatVector3<T: FloatEx>: SignedVector3<T> {
 
     #[inline]
     fn normalize(self) -> Self {
+        #[allow(clippy::let_and_return)]
         let normalized = self.mul_scalar(self.length_recip());
         glam_assert!(normalized.is_finite());
         normalized
@@ -774,6 +776,7 @@ pub trait FloatVector4<T: FloatEx>: SignedVector4<T> {
 
     #[inline]
     fn normalize(self) -> Self {
+        #[allow(clippy::let_and_return)]
         let normalized = self.mul_scalar(self.length_recip());
         glam_assert!(normalized.is_finite());
         normalized

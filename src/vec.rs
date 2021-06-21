@@ -313,6 +313,67 @@ macro_rules! impl_vecn_float_methods {
             $flttrait::is_normalized(self.0)
         }
 
+        /// Returns the vector projection of `self` onto `other`.
+        ///
+        /// `other` must be of non-zero length.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `other` is zero length when `glam_assert` is enabled.
+        #[must_use]
+        #[inline]
+        pub fn project_onto(self, other: Self) -> Self {
+            let other_len_sq_rcp = other.dot(other).recip();
+            glam_assert!(other_len_sq_rcp.is_finite());
+            other * self.dot(other) * other_len_sq_rcp
+        }
+
+        /// Returns the vector rejection of `self` from `other`.
+        ///
+        /// The vector rejection is the vector perpendicular to the projection of `self` onto
+        /// `other`, in other words the result of `self - self.project_onto(other)`.
+        ///
+        /// `other` must be of non-zero length.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `other` has a length of zero when `glam_assert` is enabled.
+        #[must_use]
+        #[inline]
+        pub fn reject_from(self, other: Self) -> Self {
+            self - self.project_onto(other)
+        }
+
+        /// Returns the vector projection of `self` onto `other`.
+        ///
+        /// `other` must be normalized.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `other` is not normalized when `glam_assert` is enabled.
+        #[must_use]
+        #[inline]
+        pub fn project_onto_normalized(self, other: Self) -> Self {
+            glam_assert!(other.is_normalized());
+            other * self.dot(other)
+        }
+
+        /// Returns the vector rejection of `self` from `other`.
+        ///
+        /// The vector rejection is the vector perpendicular to the projection of `self` onto
+        /// `other`, in other words the result of `self - self.project_onto(other)`.
+        ///
+        /// `other` must be normalized.
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `other` is not normalized when `glam_assert` is enabled.
+        #[must_use]
+        #[inline]
+        pub fn reject_from_normalized(self, other: Self) -> Self {
+            self - self.project_onto_normalized(other)
+        }
+
         /// Returns a vector containing the nearest integer to a number for each element of `self`.
         /// Round half-way cases away from 0.0.
         #[inline(always)]

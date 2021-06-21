@@ -217,8 +217,8 @@ macro_rules! impl_vec3_float_methods {
             Self::new(b, sign + self.y * self.y * a, -self.y)
         }
 
-        /// Given a unit-length vector return two other vectors that together form an orthonormal basis.
-        /// That is, all three vectors are orthogonal to each other and are normalized.
+        /// Given a unit-length vector return two other vectors that together form an orthonormal
+        /// basis.  That is, all three vectors are orthogonal to each other and are normalized.
         ///
         /// # Panics
         ///
