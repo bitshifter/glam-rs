@@ -147,8 +147,8 @@ assert_eq!(4.0, v.z);
 `glam` does not enforce validiity checks on method parameters at runtime. For example methods that
 require normalized vectors as input such as `Quat::from_axis_angle(axis, angle)` will not check
 that axis is a valid normalized vector. To help catch unintended misuse of `glam` the
-`debug-glam-assert` or `glam-assert` features can be enabled which will add assert checks ensure
-inputs to are valid.
+`debug-glam-assert` or `glam-assert` features can be enabled to add checks ensure that inputs to
+are valid.
 
 ## Vector swizzles
 

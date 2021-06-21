@@ -699,6 +699,7 @@ macro_rules! impl_vec3_float_tests {
                 $vec3::new(0.6, 0.8, 0.0).clamp_length(10.0, 20.0),
                 $vec3::new(6.0, 8.0, 0.0) // lengthened to length 10.0
             );
+            should_glam_assert!({ $vec3::ONE.clamp_length($vec3::ONE, $vec3::ZERO) });
         }
 
         #[test]

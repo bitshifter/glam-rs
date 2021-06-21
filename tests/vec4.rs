@@ -760,6 +760,7 @@ macro_rules! impl_vec4_float_tests {
                 $vec4::new(0.6, 0.8, 0.0, 0.0).clamp_length(10.0, 20.0),
                 $vec4::new(6.0, 8.0, 0.0, 0.0) // lengthened to length 10.0
             );
+            should_glam_assert!({ $vec4::ONE.clamp_length($vec4::ONE, $vec4::ZERO) });
         }
 
         #[test]

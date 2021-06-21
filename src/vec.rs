@@ -387,8 +387,13 @@ macro_rules! impl_vecn_float_methods {
         }
 
         /// Returns a vector with a length no less than `min` and no more than `max`
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
         #[inline]
         pub fn clamp_length(self, min: $t, max: $t) -> Self {
+            glam_assert!(min <= max);
             let length_sq = self.length_squared();
             if length_sq < min * min {
                 self * (length_sq.sqrt().recip() * min)
