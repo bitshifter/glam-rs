@@ -7,12 +7,25 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
+### Breaking changes
+
+* The addition of `Add` and `Sub` implementations of scalar values for vector
+  types may create ambiguities with existing calls to `add` and `sub`.
+
 ### Added
 
 * Added `col_mut()` method which returns a mutable reference to a matrix column
   to all matrix types.
 * Added `AddAssign`, `MulAssign` and `SubAssign` implementations for all matrix
   types.
+* Added `Add` and `Sub` implementations of scalar values for vector types.
+* Added more `glam_assert` checks and documented methods where they are used.
+* Added vector projection and rejection methods `project_onto()`,
+  `project_onto_normalized()`, `reject_from()` and `reject_from_normalized()`.
+
+### Fixed
+
+* Fixed compile time alignment checks failing on i686 targets.
 
 ## [0.16.0] - 2021-06-06
 
