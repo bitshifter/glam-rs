@@ -18,7 +18,6 @@ use core::arch::x86::*;
 ))]
 use core::arch::x86_64::*;
 
-#[macro_use]
 macro_rules! impl_vecnmask_methods {
     ($vecnmask:ident, $trait:ident) => {
         /// Returns a bitmask with the lowest two bits set from the elements of `self`.
@@ -44,7 +43,6 @@ macro_rules! impl_vecnmask_methods {
     };
 }
 
-#[macro_use]
 macro_rules! impl_vecnmask_traits {
     ($vecnmask:ident, $inner:ident) => {
         impl Default for $vecnmask {
@@ -117,7 +115,6 @@ macro_rules! impl_vecnmask_traits {
     };
 }
 
-#[macro_use]
 macro_rules! impl_vec2mask {
     ($vec2mask:ident, $t:ty, $inner:ident) => {
         impl $vec2mask {
@@ -171,7 +168,6 @@ macro_rules! impl_vec2mask {
     };
 }
 
-#[macro_use]
 macro_rules! impl_vec3mask {
     ($vec3mask:ident, $t:ty, $inner:ident) => {
         impl $vec3mask {
@@ -232,7 +228,6 @@ macro_rules! impl_vec3mask {
     };
 }
 
-#[macro_use]
 macro_rules! impl_vec4mask {
     ($vec4mask:ident, $t:ty, $inner:ident) => {
         impl $vec4mask {
