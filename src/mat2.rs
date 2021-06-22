@@ -117,10 +117,7 @@ macro_rules! impl_mat2_methods {
             match index {
                 0 => self.x_axis,
                 1 => self.y_axis,
-                _ => panic!(
-                    "index out of bounds: the len is 2 but the index is {}",
-                    index
-                ),
+                _ => panic!("index out of bounds"),
             }
         }
 
@@ -134,10 +131,7 @@ macro_rules! impl_mat2_methods {
             match index {
                 0 => &mut self.x_axis,
                 1 => &mut self.y_axis,
-                _ => panic!(
-                    "index out of bounds: the len is 2 but the index is {}",
-                    index
-                ),
+                _ => panic!("index out of bounds"),
             }
         }
 
@@ -151,10 +145,7 @@ macro_rules! impl_mat2_methods {
             match index {
                 0 => $vec2::new(self.x_axis.x, self.y_axis.x),
                 1 => $vec2::new(self.x_axis.y, self.y_axis.y),
-                _ => panic!(
-                    "index out of bounds: the len is 2 but the index is {}",
-                    index
-                ),
+                _ => panic!("index out of bounds"),
             }
         }
 
@@ -261,6 +252,7 @@ macro_rules! impl_mat2_traits {
             }
         }
 
+        #[cfg(not(target_arch = "spriv"))]
         impl AsRef<[$t; 4]> for $mat2 {
             #[inline(always)]
             fn as_ref(&self) -> &[$t; 4] {
@@ -268,6 +260,7 @@ macro_rules! impl_mat2_traits {
             }
         }
 
+        #[cfg(not(target_arch = "spriv"))]
         impl AsMut<[$t; 4]> for $mat2 {
             #[inline(always)]
             fn as_mut(&mut self) -> &mut [$t; 4] {

@@ -55,7 +55,7 @@ macro_rules! impl_vecnmask_traits {
         impl PartialEq for $vecnmask {
             #[inline]
             fn eq(&self, other: &Self) -> bool {
-                self.as_ref().eq(other.as_ref())
+                self.bitmask().eq(&other.bitmask())
             }
         }
 
@@ -64,7 +64,7 @@ macro_rules! impl_vecnmask_traits {
         impl hash::Hash for $vecnmask {
             #[inline]
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.as_ref().hash(state);
+                self.bitmask().hash(state);
             }
         }
 
@@ -159,6 +159,7 @@ macro_rules! impl_vec2mask {
             }
         }
 
+        #[cfg(not(target_arch = "spriv"))]
         impl AsRef<[$t; 2]> for $vec2mask {
             #[inline]
             fn as_ref(&self) -> &[$t; 2] {
@@ -219,6 +220,7 @@ macro_rules! impl_vec3mask {
             }
         }
 
+        #[cfg(not(target_arch = "spriv"))]
         impl AsRef<[$t; 3]> for $vec3mask {
             #[inline]
             fn as_ref(&self) -> &[$t; 3] {
@@ -280,6 +282,7 @@ macro_rules! impl_vec4mask {
             }
         }
 
+        #[cfg(not(target_arch = "spriv"))]
         impl AsRef<[$t; 4]> for $vec4mask {
             #[inline]
             fn as_ref(&self) -> &[$t; 4] {

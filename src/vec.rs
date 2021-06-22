@@ -671,10 +671,19 @@ macro_rules! impl_vecn_common_traits {
             }
         }
 
+        #[cfg(not(target_arch = "spriv"))]
         impl AsRef<[$t; $size]> for $vecn {
             #[inline(always)]
             fn as_ref(&self) -> &[$t; $size] {
                 unsafe { &*(self as *const $vecn as *const [$t; $size]) }
+            }
+        }
+
+        #[cfg(not(target_arch = "spriv"))]
+        impl AsMut<[$t; $size]> for $vecn {
+            #[inline(always)]
+            fn as_mut(&mut self) -> &mut [$t; $size] {
+                unsafe { &mut *(self as *mut $vecn as *mut [$t; $size]) }
             }
         }
 
@@ -685,32 +694,10 @@ macro_rules! impl_vecn_common_traits {
             }
         }
 
-        impl AsMut<[$t; $size]> for $vecn {
-            #[inline(always)]
-            fn as_mut(&mut self) -> &mut [$t; $size] {
-                unsafe { &mut *(self as *mut $vecn as *mut [$t; $size]) }
-            }
-        }
-
         impl From<$vecn> for [$t; $size] {
             #[inline(always)]
             fn from(v: $vecn) -> Self {
                 v.into_array()
-            }
-        }
-
-        impl Index<usize> for $vecn {
-            type Output = $t;
-            #[inline(always)]
-            fn index(&self, index: usize) -> &Self::Output {
-                &self.as_ref()[index]
-            }
-        }
-
-        impl IndexMut<usize> for $vecn {
-            #[inline(always)]
-            fn index_mut(&mut self, index: usize) -> &mut Self::Output {
-                &mut self.as_mut()[index]
             }
         }
 
@@ -742,6 +729,7 @@ macro_rules! impl_vecn_eq_hash_traits {
     ($t:ty, $size:literal, $vecn:ident) => {
         impl Eq for $vecn {}
 
+        #[cfg(not(target_arch = "spriv"))]
         impl core::hash::Hash for $vecn {
             fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                 let inner: &[$t; $size] = self.as_ref();

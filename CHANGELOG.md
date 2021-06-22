@@ -23,6 +23,12 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Added vector projection and rejection methods `project_onto()`,
   `project_onto_normalized()`, `reject_from()` and `reject_from_normalized()`.
 
+### Changed
+
+* Don't support `AsRef` and `AsMut` on SPIR-V targets. Also removed SPIR-V
+  support for some methods that used `as_ref`, including `hash`. Not a breaking
+  change as these methods would not have worked anyway.
+
 ### Fixed
 
 * Fixed compile time alignment checks failing on i686 targets.
@@ -237,7 +243,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 ### Added
 
 * Added support for the [Rust GPU](https://github.com/EmbarkStudios/rust-gpu)
-  SPIRV target architecture.
+  SPIR-V target architecture.
 
 ## [0.11.0] - 2020-11-26
 
