@@ -602,6 +602,7 @@ macro_rules! impl_quat_traits {
             }
         }
 
+        #[cfg(not(target_arch = "spriv"))]
         impl AsRef<[$t; 4]> for $quat {
             #[inline(always)]
             fn as_ref(&self) -> &[$t; 4] {
@@ -609,6 +610,7 @@ macro_rules! impl_quat_traits {
             }
         }
 
+        #[cfg(not(target_arch = "spriv"))]
         impl AsMut<[$t; 4]> for $quat {
             #[inline(always)]
             fn as_mut(&mut self) -> &mut [$t; 4] {

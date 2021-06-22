@@ -98,6 +98,28 @@ macro_rules! impl_vec2_common_traits {
             $vec2::new(x, y)
         }
 
+        impl Index<usize> for $vec2 {
+            type Output = $t;
+            #[inline(always)]
+            fn index(&self, index: usize) -> &Self::Output {
+                match index {
+                    0 => &self.x,
+                    1 => &self.y,
+                    _ => panic!("index out of bounds"),
+                }
+            }
+        }
+
+        impl IndexMut<usize> for $vec2 {
+            #[inline(always)]
+            fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+                match index {
+                    0 => &mut self.x,
+                    1 => &mut self.y,
+                    _ => panic!("index out of bounds"),
+                }
+            }
+        }
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Display for $vec2 {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

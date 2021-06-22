@@ -295,10 +295,7 @@ macro_rules! impl_mat4_methods {
                 1 => self.y_axis,
                 2 => self.z_axis,
                 3 => self.w_axis,
-                _ => panic!(
-                    "index out of bounds: the len is 4 but the index is {}",
-                    index
-                ),
+                _ => panic!("index out of bounds"),
             }
         }
 
@@ -314,10 +311,7 @@ macro_rules! impl_mat4_methods {
                 1 => &mut self.y_axis,
                 2 => &mut self.z_axis,
                 3 => &mut self.w_axis,
-                _ => panic!(
-                    "index out of bounds: the len is 4 but the index is {}",
-                    index
-                ),
+                _ => panic!("index out of bounds"),
             }
         }
 
@@ -333,10 +327,7 @@ macro_rules! impl_mat4_methods {
                 1 => $vec4::new(self.x_axis.y, self.y_axis.y, self.z_axis.y, self.w_axis.y),
                 2 => $vec4::new(self.x_axis.z, self.y_axis.z, self.z_axis.z, self.w_axis.z),
                 3 => $vec4::new(self.x_axis.w, self.y_axis.w, self.z_axis.w, self.w_axis.w),
-                _ => panic!(
-                    "index out of bounds: the len is 3 but the index is {}",
-                    index
-                ),
+                _ => panic!("index out of bounds"),
             }
         }
 
@@ -687,6 +678,7 @@ macro_rules! impl_mat4_traits {
             }
         }
 
+        #[cfg(not(target_arch = "spriv"))]
         impl AsRef<[$t; 16]> for $mat4 {
             #[inline]
             fn as_ref(&self) -> &[$t; 16] {
@@ -694,6 +686,7 @@ macro_rules! impl_mat4_traits {
             }
         }
 
+        #[cfg(not(target_arch = "spriv"))]
         impl AsMut<[$t; 16]> for $mat4 {
             #[inline]
             fn as_mut(&mut self) -> &mut [$t; 16] {

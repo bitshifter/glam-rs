@@ -85,6 +85,33 @@ macro_rules! impl_vec4_common_traits {
             $vec4::new(x, y, z, w)
         }
 
+        impl Index<usize> for $vec4 {
+            type Output = $t;
+            #[inline(always)]
+            fn index(&self, index: usize) -> &Self::Output {
+                match index {
+                    0 => &self.x,
+                    1 => &self.y,
+                    2 => &self.z,
+                    3 => &self.w,
+                    _ => panic!("index out of bounds"),
+                }
+            }
+        }
+
+        impl IndexMut<usize> for $vec4 {
+            #[inline(always)]
+            fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+                match index {
+                    0 => &mut self.x,
+                    1 => &mut self.y,
+                    2 => &mut self.z,
+                    3 => &mut self.w,
+                    _ => panic!("index out of bounds"),
+                }
+            }
+        }
+
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Debug for $vec4 {
             fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
