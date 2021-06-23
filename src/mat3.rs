@@ -110,7 +110,11 @@ macro_rules! impl_mat3_methods {
 
         /// Creates a 3x3 matrix from a 4x4 matrix, discarding the 3rd row and column.
         pub fn from_mat4(m: $mat4) -> Self {
-            Self::from_cols(m.x_axis.into(), m.y_axis.into(), m.z_axis.into())
+            Self::from_cols(
+                $vec3a::from_vec4(m.x_axis),
+                $vec3a::from_vec4(m.y_axis),
+                $vec3a::from_vec4(m.z_axis),
+            )
         }
 
         /// Creates a 3D rotation matrix from the given quaternion.
@@ -224,6 +228,11 @@ macro_rules! impl_mat3_methods {
         #[inline(always)]
         pub fn from_cols_slice(slice: &[$t]) -> Self {
             Self(Matrix3x3::from_cols_slice(slice))
+        }
+
+        #[inline(always)]
+        pub fn from_mat2(m: $mat2) -> Self {
+            Self::from_cols((m.x_axis, 0.0).into(), (m.y_axis, 0.0).into(), $vec3a::Z)
         }
 
         /// Writes the columns of `self` to the first 9 elements in `slice`.
@@ -357,8 +366,8 @@ macro_rules! impl_mat3_methods {
         /// This method assumes that `self` contains a valid affine transform.
         #[inline(always)]
         pub fn transform_point2(&self, other: $vec2) -> $vec2 {
-            $mat2::from_cols(self.x_axis.into(), self.y_axis.into()) * other
-                + $vec2::from(self.z_axis)
+            $mat2::from_cols(self.x_axis.truncate(), self.y_axis.truncate()) * other
+                + self.z_axis.truncate()
         }
 
         /// Rotates the given 2D vector.
@@ -368,7 +377,7 @@ macro_rules! impl_mat3_methods {
         /// This method assumes that `self` contains a valid affine transform.
         #[inline(always)]
         pub fn transform_vector2(&self, other: $vec2) -> $vec2 {
-            $mat2::from_cols(self.x_axis.into(), self.y_axis.into()) * other
+            $mat2::from_cols(self.x_axis.truncate(), self.y_axis.truncate()) * other
         }
 
         /// Returns true if the absolute difference of all elements between `self` and `other`

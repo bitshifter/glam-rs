@@ -1,5 +1,5 @@
 use crate::core::traits::vector::*;
-use crate::{BVec2, DVec3, IVec3, UVec3, Vec3, XY};
+use crate::{BVec2, DVec3, DVec4, IVec3, IVec4, UVec3, UVec4, Vec3, Vec4, XY};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::{f32, ops::*};
@@ -11,7 +11,7 @@ use num_traits::Float;
 use std::iter::{Product, Sum};
 
 macro_rules! impl_vec2_common_methods {
-    ($t:ty, $vec2:ident, $vec3:ident, $mask:ident, $inner:ident) => {
+    ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
         /// All zeroes.
         pub const ZERO: Self = Self($inner::ZERO);
 
@@ -33,6 +33,16 @@ macro_rules! impl_vec2_common_methods {
             Self(Vector2::new(x, y))
         }
 
+        #[inline(always)]
+        pub fn from_vec3(v: $vec3) -> Self {
+            Self(Vector2::new(v.x, v.y))
+        }
+
+        #[inline(always)]
+        pub fn from_vec4(v: $vec4) -> Self {
+            Self(Vector2::new(v.x, v.y))
+        }
+
         /// Creates a 3D vector from `self` and the given `z` value.
         #[inline(always)]
         pub fn extend(self, z: $t) -> $vec3 {
@@ -50,8 +60,8 @@ macro_rules! impl_vec2_common_methods {
 }
 
 macro_rules! impl_vec2_signed_methods {
-    ($t:ty, $vec2:ident, $vec3:ident, $mask:ident, $inner:ident) => {
-        impl_vec2_common_methods!($t, $vec2, $vec3, $mask, $inner);
+    ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
+        impl_vec2_common_methods!($t, $vec2, $vec3, $vec4, $mask, $inner);
         impl_vecn_signed_methods!($t, $vec2, $mask, $inner, SignedVector2);
 
         /// Returns a vector that is equal to `self` rotated by 90 degrees.
@@ -76,8 +86,8 @@ macro_rules! impl_vec2_signed_methods {
 }
 
 macro_rules! impl_vec2_float_methods {
-    ($t:ty, $vec2:ident, $vec3:ident, $mask:ident, $inner:ident) => {
-        impl_vec2_signed_methods!($t, $vec2, $vec3, $mask, $inner);
+    ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
+        impl_vec2_signed_methods!($t, $vec2, $vec3, $vec4, $mask, $inner);
         impl_vecn_float_methods!($t, $vec2, $mask, $inner, FloatVector2);
 
         /// Returns the angle (in radians) between `self` and `other`.
@@ -191,7 +201,7 @@ type XYF32 = XY<f32>;
 pub struct Vec2(pub(crate) XYF32);
 
 impl Vec2 {
-    impl_vec2_float_methods!(f32, Vec2, Vec3, BVec2, XYF32);
+    impl_vec2_float_methods!(f32, Vec2, Vec3, Vec4, BVec2, XYF32);
     impl_vecn_as_f64!(DVec2, x, y);
     impl_vecn_as_i32!(IVec2, x, y);
     impl_vecn_as_u32!(UVec2, x, y);
@@ -206,7 +216,7 @@ type XYF64 = XY<f64>;
 pub struct DVec2(pub(crate) XYF64);
 
 impl DVec2 {
-    impl_vec2_float_methods!(f64, DVec2, DVec3, BVec2, XYF64);
+    impl_vec2_float_methods!(f64, DVec2, DVec3, DVec4, BVec2, XYF64);
     impl_vecn_as_f32!(Vec2, x, y);
     impl_vecn_as_i32!(IVec2, x, y);
     impl_vecn_as_u32!(UVec2, x, y);
@@ -221,7 +231,7 @@ type XYI32 = XY<i32>;
 pub struct IVec2(pub(crate) XYI32);
 
 impl IVec2 {
-    impl_vec2_signed_methods!(i32, IVec2, IVec3, BVec2, XYI32);
+    impl_vec2_signed_methods!(i32, IVec2, IVec3, IVec4, BVec2, XYI32);
     impl_vecn_as_f32!(Vec2, x, y);
     impl_vecn_as_f64!(DVec2, x, y);
     impl_vecn_as_u32!(UVec2, x, y);
@@ -237,7 +247,7 @@ type XYU32 = XY<u32>;
 pub struct UVec2(pub(crate) XYU32);
 
 impl UVec2 {
-    impl_vec2_common_methods!(u32, UVec2, UVec3, BVec2, XYU32);
+    impl_vec2_common_methods!(u32, UVec2, UVec3, UVec4, BVec2, XYU32);
     impl_vecn_as_f32!(Vec2, x, y);
     impl_vecn_as_f64!(DVec2, x, y);
     impl_vecn_as_i32!(IVec2, x, y);

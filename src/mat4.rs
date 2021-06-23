@@ -289,6 +289,16 @@ macro_rules! impl_mat4_methods {
             Matrix4x4::write_cols_to_slice(&self.0, slice)
         }
 
+        #[inline(always)]
+        pub fn from_mat3(m: $mat3) -> Self {
+            Self::from_cols(
+                $vec4::from((m.x_axis, 0.0)),
+                $vec4::from((m.y_axis, 0.0)),
+                $vec4::from((m.z_axis, 0.0)),
+                $vec4::W,
+            )
+        }
+
         /// Returns the matrix column for the given `index`.
         ///
         /// # Panics

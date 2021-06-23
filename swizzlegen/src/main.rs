@@ -292,7 +292,7 @@ impl Vec4Swizzles for Vec4 {{
                 r#"
     #[inline]
     fn {}{}{}(self) -> Vec3 {{
-        unsafe {{ Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_{}_{}_{}))) }}
+        unsafe {{ Vec3::from_vec4(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_{}_{}_{}))) }}
     }}"#,
                 E[e0], E[e1], E[e2], B[e2], B[e1], B[e0],
             )
@@ -303,7 +303,7 @@ impl Vec4Swizzles for Vec4 {{
                 r#"
     #[inline]
     fn {}{}(self) -> Vec2 {{
-        unsafe {{ Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_{}_{}))) }}
+        unsafe {{ Vec2::from_vec4(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_{}_{}))) }}
     }}"#,
                 E[e0], E[e1], B[e1], B[e0],
             )
@@ -373,7 +373,7 @@ impl Vec3Swizzles for Vec3A {{
                 r#"
     #[inline]
     fn {}{}(self) -> Vec2 {{
-        unsafe {{ Vec2::from(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_{}_{}))) }}
+        unsafe {{ Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_{}_{})).to_vec2() }}
     }}"#,
                 E[e0], E[e1], B[e1], B[e0],
             )

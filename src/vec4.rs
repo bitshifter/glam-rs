@@ -59,12 +59,10 @@ macro_rules! impl_vec4_common_methods {
 
         /// Creates a `Vec3` from the `x`, `y` and `z` elements of `self`, discarding `w`.
         ///
-        /// Truncation to `Vec3` may also be performed by using `self.xyz()` or `Vec3::from()`.
-        ///
-        /// To truncate to `Vec3A` use `Vec3A::from()`.
+        /// Truncation to `Vec3` may also be performed by using `self.xyz()` or `self.to_vec3()`.
         #[inline(always)]
         pub fn truncate(self) -> $vec3 {
-            $vec3::new(self.x, self.y, self.z)
+            $vec3::from_vec4(self)
         }
 
         /// `[x, y, z, w]`
@@ -163,23 +161,6 @@ macro_rules! impl_vec4_common_traits {
             #[inline(always)]
             fn from((v, u): ($vec2, $vec2)) -> Self {
                 Self::new(v.x, v.y, u.x, u.y)
-            }
-        }
-
-        impl From<$vec4> for $vec3 {
-            /// Creates a 3D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
-            #[inline(always)]
-            fn from(v: $vec4) -> Self {
-                Self(v.into_xyz())
-            }
-        }
-
-        impl From<$vec4> for $vec2 {
-            /// Creates a 2D vector from the `x` and `y` elements of `self`, discarding `z` and
-            /// `w`.
-            #[inline(always)]
-            fn from(v: $vec4) -> Self {
-                Self(v.into_xy())
             }
         }
 

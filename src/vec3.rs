@@ -58,12 +58,23 @@ macro_rules! impl_vec3_common_methods {
             $vec4(Vector4::new(self.x, self.y, self.z, w))
         }
 
+        pub fn from_vec4(v: $vec4) -> Self {
+            // TODO: Vec3A version
+            Self(Vector3::new(v.x, v.y, v.z))
+        }
+
         /// Creates a `Vec2` from the `x` and `y` elements of `self`, discarding `z`.
         ///
-        /// Truncation may also be performed by using `self.xy()` or `Vec2::from()`.
+        /// Truncation may also be performed by using `self.xy()` or `self.to_vec2()`.
         #[inline(always)]
         pub fn truncate(self) -> $vec2 {
-            $vec2(Vector3::into_xy(self.0))
+            self.to_vec2()
+        }
+
+        /// Creates a `Vec2` from the `x` and `y` elements of `self`, discarding `z`.
+        #[inline(always)]
+        pub fn to_vec2(self) -> $vec2 {
+            $vec2::new(self.x, self.y)
         }
 
         /// Returns the dot product result in all elements of the vector
@@ -158,14 +169,6 @@ macro_rules! impl_vec3_common_traits {
             #[inline(always)]
             fn from(v: $vec3) -> Self {
                 v.into_tuple()
-            }
-        }
-
-        impl From<$vec3> for $vec2 {
-            /// Creates a `Vec2` from the `x` and `y` elements of `self`, discarding `z`.
-            #[inline(always)]
-            fn from(v: $vec3) -> Self {
-                Self(v.into_xy())
             }
         }
 
