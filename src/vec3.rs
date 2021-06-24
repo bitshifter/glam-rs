@@ -315,7 +315,14 @@ impl Vec3A {
 
     /// Creates a 3D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
     pub fn from_vec4(v: Vec4) -> Self {
-        Self(v.0)
+        #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+        {
+            Self(v.0)
+        }
+        #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+        {
+            Self::new(v.x, v.y, v.z)
+        }
     }
 }
 impl_vec3_float_traits!(f32, vec3a, Vec2, Vec3A, Vec4, XYZF32A);
