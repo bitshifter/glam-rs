@@ -442,38 +442,38 @@ impl Vec3Swizzles for Vec3A {
     }
     #[inline]
     fn xx(self) -> Vec2 {
-        unsafe { Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_00)).to_vec2() }
+        unsafe { Vec2::from_vec3a(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_00))) }
     }
     #[inline]
     fn xy(self) -> Vec2 {
-        unsafe { Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_00)).to_vec2() }
+        unsafe { Vec2::from_vec3a(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_00))) }
     }
     #[inline]
     fn xz(self) -> Vec2 {
-        unsafe { Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_00)).to_vec2() }
+        unsafe { Vec2::from_vec3a(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_00))) }
     }
     #[inline]
     fn yx(self) -> Vec2 {
-        unsafe { Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_01)).to_vec2() }
+        unsafe { Vec2::from_vec3a(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_01))) }
     }
     #[inline]
     fn yy(self) -> Vec2 {
-        unsafe { Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_01)).to_vec2() }
+        unsafe { Vec2::from_vec3a(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_01))) }
     }
     #[inline]
     fn yz(self) -> Vec2 {
-        unsafe { Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_01)).to_vec2() }
+        unsafe { Vec2::from_vec3a(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_01))) }
     }
     #[inline]
     fn zx(self) -> Vec2 {
-        unsafe { Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_10)).to_vec2() }
+        unsafe { Vec2::from_vec3a(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_00_10))) }
     }
     #[inline]
     fn zy(self) -> Vec2 {
-        unsafe { Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_10)).to_vec2() }
+        unsafe { Vec2::from_vec3a(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_01_10))) }
     }
     #[inline]
     fn zz(self) -> Vec2 {
-        unsafe { Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_10)).to_vec2() }
+        unsafe { Vec2::from_vec3a(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_10_10))) }
     }
 }

@@ -58,22 +58,11 @@ macro_rules! impl_vec3_common_methods {
             $vec4(Vector4::new(self.x, self.y, self.z, w))
         }
 
-        pub fn from_vec4(v: $vec4) -> Self {
-            // TODO: Vec3A version
-            Self(Vector3::new(v.x, v.y, v.z))
-        }
-
-        /// Creates a `Vec2` from the `x` and `y` elements of `self`, discarding `z`.
+        /// Creates a 2D vector from the `x` and `y` elements of `self`, discarding `z`.
         ///
-        /// Truncation may also be performed by using `self.xy()` or `self.to_vec2()`.
+        /// Truncation may also be performed by using `self.xy()` or `Vec2::from_vec3()`.
         #[inline(always)]
         pub fn truncate(self) -> $vec2 {
-            self.to_vec2()
-        }
-
-        /// Creates a `Vec2` from the `x` and `y` elements of `self`, discarding `z`.
-        #[inline(always)]
-        pub fn to_vec2(self) -> $vec2 {
             $vec2::new(self.x, self.y)
         }
 
@@ -275,16 +264,13 @@ macro_rules! impl_vec3_float_traits {
     };
 }
 
-// implements f32 functionality common between `Vec3` and `Vec3A` types.
-macro_rules! impl_f32_vec3 {
-    ($new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
-        impl $vec3 {
-            impl_vec3_float_methods!(f32, $vec2, $vec3, $vec4, $mask, $inner);
-            impl_vecn_as_f64!(DVec3, x, y, z);
-            impl_vecn_as_i32!(IVec3, x, y, z);
-            impl_vecn_as_u32!(UVec3, x, y, z);
+// implement from_vec4
+macro_rules! impl_from_vec4 {
+    ($vec4:ident) => {
+        /// Creates a 3D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
+        pub fn from_vec4(v: $vec4) -> Self {
+            Self(Vector3::new(v.x, v.y, v.z))
         }
-        impl_vec3_float_traits!(f32, $new, $vec2, $vec3, $vec4, $inner);
     };
 }
 
@@ -294,7 +280,14 @@ type XYZF32 = XYZ<f32>;
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct Vec3(pub(crate) XYZF32);
-impl_f32_vec3!(vec3, Vec2, Vec3, Vec4, BVec3, XYZF32);
+impl Vec3 {
+    impl_vec3_float_methods!(f32, Vec2, Vec3, Vec4, BVec3, XYZF32);
+    impl_vecn_as_f64!(DVec3, x, y, z);
+    impl_vecn_as_i32!(IVec3, x, y, z);
+    impl_vecn_as_u32!(UVec3, x, y, z);
+    impl_from_vec4!(Vec4);
+}
+impl_vec3_float_traits!(f32, vec3, Vec2, Vec3, Vec4, XYZF32);
 
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 type XYZF32A = __m128;
@@ -311,12 +304,21 @@ type XYZF32A = crate::core::storage::XYZF32A16;
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct Vec3A(pub(crate) XYZF32A);
+impl Vec3A {
+    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+    impl_vec3_float_methods!(f32, Vec2, Vec3A, Vec4, BVec3A, XYZF32A);
+    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+    impl_vec3_float_methods!(f32, Vec2, Vec3A, Vec4, BVec3, XYZF32A);
+    impl_vecn_as_f64!(DVec3, x, y, z);
+    impl_vecn_as_i32!(IVec3, x, y, z);
+    impl_vecn_as_u32!(UVec3, x, y, z);
 
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-impl_f32_vec3!(vec3a, Vec2, Vec3A, Vec4, BVec3A, XYZF32A);
-
-#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-impl_f32_vec3!(vec3a, Vec2, Vec3A, Vec4, BVec3, XYZF32A);
+    /// Creates a 3D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
+    pub fn from_vec4(v: Vec4) -> Self {
+        Self(v.0)
+    }
+}
+impl_vec3_float_traits!(f32, vec3a, Vec2, Vec3A, Vec4, XYZF32A);
 
 impl From<Vec3> for Vec3A {
     #[inline(always)]
@@ -344,6 +346,7 @@ impl DVec3 {
     impl_vecn_as_f32!(Vec3, x, y, z);
     impl_vecn_as_i32!(IVec3, x, y, z);
     impl_vecn_as_u32!(UVec3, x, y, z);
+    impl_from_vec4!(DVec4);
 }
 impl_vec3_float_traits!(f64, dvec3, DVec2, DVec3, DVec4, XYZF64);
 
@@ -360,6 +363,7 @@ impl IVec3 {
     impl_vecn_as_f32!(Vec3, x, y, z);
     impl_vecn_as_f64!(DVec3, x, y, z);
     impl_vecn_as_u32!(UVec3, x, y, z);
+    impl_from_vec4!(IVec4);
 }
 impl_vec3_common_traits!(i32, ivec3, IVec2, IVec3, IVec4, XYZI32);
 impl_vecn_signed_traits!(i32, 3, IVec3, XYZI32, SignedVector3);
@@ -377,6 +381,7 @@ impl UVec3 {
     impl_vecn_as_f32!(Vec3, x, y, z);
     impl_vecn_as_f64!(DVec3, x, y, z);
     impl_vecn_as_i32!(IVec3, x, y, z);
+    impl_from_vec4!(UVec4);
 }
 impl_vec3_common_traits!(u32, uvec3, UVec2, UVec3, UVec4, XYZU32);
 impl_vecn_eq_hash_traits!(u32, 3, UVec3);

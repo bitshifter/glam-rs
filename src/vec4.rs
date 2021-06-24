@@ -57,9 +57,10 @@ macro_rules! impl_vec4_common_methods {
             Self(Vector4::new(x, y, z, w))
         }
 
-        /// Creates a `Vec3` from the `x`, `y` and `z` elements of `self`, discarding `w`.
+        /// Creates a 3D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
         ///
-        /// Truncation to `Vec3` may also be performed by using `self.xyz()` or `self.to_vec3()`.
+        /// Truncation to a 3D vector may also be performed by using `self.xyz()` or
+        /// `Vec3::from_vec4()`.
         #[inline(always)]
         pub fn truncate(self) -> $vec3 {
             $vec3::from_vec4(self)

@@ -1,5 +1,5 @@
 use crate::core::traits::vector::*;
-use crate::{BVec2, DVec3, DVec4, IVec3, IVec4, UVec3, UVec4, Vec3, Vec4, XY};
+use crate::{BVec2, DVec3, DVec4, IVec3, IVec4, UVec3, UVec4, Vec3, Vec3A, Vec4, XY};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::{f32, ops::*};
@@ -205,6 +205,11 @@ impl Vec2 {
     impl_vecn_as_f64!(DVec2, x, y);
     impl_vecn_as_i32!(IVec2, x, y);
     impl_vecn_as_u32!(UVec2, x, y);
+
+    #[inline(always)]
+    pub fn from_vec3a(v: Vec3A) -> Self {
+        Self(Vector2::new(v.x, v.y))
+    }
 }
 impl_vec2_signed_traits!(f32, vec2, Vec2, Vec3, BVec2, XYF32);
 

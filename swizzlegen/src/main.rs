@@ -373,7 +373,7 @@ impl Vec3Swizzles for Vec3A {{
                 r#"
     #[inline]
     fn {}{}(self) -> Vec2 {{
-        unsafe {{ Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_{}_{})).to_vec2() }}
+        unsafe {{ Vec2::from_vec3a(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_{}_{}))) }}
     }}"#,
                 E[e0], E[e1], B[e1], B[e0],
             )
