@@ -388,7 +388,7 @@ macro_rules! impl_mat3_methods {
 }
 
 macro_rules! impl_mat3_traits {
-    ($t:ty, $new:ident, $mat3:ident, $mat4:ident, $vec3:ident, $vec3a:ident) => {
+    ($t:ty, $new:ident, $mat3:ident, $vec3:ident, $vec3a:ident) => {
         /// Creates a 3x3 matrix from three column vectors.
         #[inline(always)]
         pub fn $new(x_axis: $vec3a, y_axis: $vec3a, z_axis: $vec3a) -> $mat3 {
@@ -482,7 +482,7 @@ impl Mat3 {
         )
     }
 }
-impl_mat3_traits!(f32, mat3, Mat3, Mat4, Vec3, Vec3);
+impl_mat3_traits!(f32, mat3, Mat3, Vec3, Vec3);
 impl_mat3_traits_unsafe!(f32, Mat3);
 
 impl Mul<Vec3A> for Mat3 {
@@ -517,7 +517,7 @@ impl Mat3A {
         )
     }
 }
-impl_mat3_traits!(f32, mat3a, Mat3A, Mat4, Vec3, Vec3A);
+impl_mat3_traits!(f32, mat3a, Mat3A, Vec3, Vec3A);
 
 impl Mul<Vec3> for Mat3A {
     type Output = Vec3;
@@ -556,7 +556,7 @@ impl DMat3 {
         )
     }
 }
-impl_mat3_traits!(f64, dmat3, DMat3, DMat4, DVec3, DVec3);
+impl_mat3_traits!(f64, dmat3, DMat3, DVec3, DVec3);
 impl_mat3_traits_unsafe!(f64, DMat3);
 
 mod const_test_mat3 {
