@@ -56,7 +56,7 @@ macro_rules! define_mat3_struct {
 }
 
 macro_rules! impl_mat3_methods {
-    ($t:ty, $vec3:ident, $vec3a:ident, $vec2:ident, $quat:ident, $mat2:ident, $inner:ident) => {
+    ($t:ty, $vec3:ident, $vec3a:ident, $vec2:ident, $quat:ident, $mat2:ident, $mat4:ident, $inner:ident) => {
         /// A 3x3 matrix with all elements set to `0.0`.
         pub const ZERO: Self = Self($inner::ZERO);
 
@@ -108,12 +108,17 @@ macro_rules! impl_mat3_methods {
             Self($inner::from_diagonal(diagonal.0))
         }
 
-        #[inline(always)]
+        /// Creates a 3x3 matrix from a 4x4 matrix, discarding the 3rd row and column.
+        pub fn from_mat4(m: $mat4) -> Self {
+            Self::from_cols(m.x_axis.into(), m.y_axis.into(), m.z_axis.into())
+        }
+
         /// Creates a 3D rotation matrix from the given quaternion.
         ///
         /// # Panics
         ///
         /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
+        #[inline(always)]
         pub fn from_quat(rotation: $quat) -> Self {
             // TODO: SIMD?
             Self($inner::from_quaternion(rotation.0.into()))
@@ -128,15 +133,6 @@ macro_rules! impl_mat3_methods {
         #[inline(always)]
         pub fn from_axis_angle(axis: $vec3, angle: $t) -> Self {
             Self(FloatMatrix3x3::from_axis_angle(axis.0, angle))
-        }
-
-        #[deprecated(
-            since = "0.15.0",
-            note = "Please use `from_euler(EulerRot::YXZ, yaw, pitch, roll)` instead"
-        )]
-        #[inline(always)]
-        pub fn from_rotation_ypr(yaw: $t, pitch: $t, roll: $t) -> Self {
-            Self::from_euler(EulerRot::YXZ, yaw, pitch, roll)
         }
 
         #[inline(always)]
@@ -209,6 +205,15 @@ macro_rules! impl_mat3_methods {
         #[inline(always)]
         pub fn from_scale(scale: $vec2) -> Self {
             Self(Matrix3x3::from_scale(scale.0))
+        }
+
+        /// Creates an affine transformation matrix from the given 2x2 matrix.
+        ///
+        /// The resulting matrix can be used to transform 2D points and vectors. See
+        /// [`Self::transform_point2()`] and [`Self::transform_vector2()`].
+        #[inline(always)]
+        pub fn from_mat2(m: $mat2) -> Self {
+            Self::from_cols((m.x_axis, 0.0).into(), (m.y_axis, 0.0).into(), $vec3a::Z)
         }
 
         /// Creates a 3x3 matrix from the first 9 values in `slice`.
@@ -383,7 +388,7 @@ macro_rules! impl_mat3_methods {
 }
 
 macro_rules! impl_mat3_traits {
-    ($t:ty, $new:ident, $mat3:ident, $mat4:ident, $vec3:ident, $vec3a:ident) => {
+    ($t:ty, $new:ident, $mat3:ident, $vec3:ident, $vec3a:ident) => {
         /// Creates a 3x3 matrix from three column vectors.
         #[inline(always)]
         pub fn $new(x_axis: $vec3a, y_axis: $vec3a, z_axis: $vec3a) -> $mat3 {
@@ -433,13 +438,6 @@ macro_rules! impl_mat3_traits {
                     .finish()
             }
         }
-
-        impl From<$mat4> for $mat3 {
-            /// Creates a 3x3 matrix from the top left submatrix of the given 4x4 matrix.
-            fn from(m: $mat4) -> $mat3 {
-                $mat3::from_cols(m.x_axis.into(), m.y_axis.into(), m.z_axis.into())
-            }
-        }
     };
 }
 
@@ -467,7 +465,7 @@ type InnerF32 = Columns3<XYZ<f32>>;
 define_mat3_struct!(Mat3, InnerF32);
 
 impl Mat3 {
-    impl_mat3_methods!(f32, Vec3, Vec3, Vec2, Quat, Mat2, InnerF32);
+    impl_mat3_methods!(f32, Vec3, Vec3, Vec2, Quat, Mat2, Mat4, InnerF32);
 
     /// Transforms a `Vec3A`.
     #[inline]
@@ -484,7 +482,7 @@ impl Mat3 {
         )
     }
 }
-impl_mat3_traits!(f32, mat3, Mat3, Mat4, Vec3, Vec3);
+impl_mat3_traits!(f32, mat3, Mat3, Vec3, Vec3);
 impl_mat3_traits_unsafe!(f32, Mat3);
 
 impl Mul<Vec3A> for Mat3 {
@@ -502,7 +500,7 @@ type InnerF32A = Columns3<crate::core::storage::XYZF32A16>;
 define_mat3_struct!(Mat3A, InnerF32A);
 
 impl Mat3A {
-    impl_mat3_methods!(f32, Vec3, Vec3A, Vec2, Quat, Mat2, InnerF32A);
+    impl_mat3_methods!(f32, Vec3, Vec3A, Vec2, Quat, Mat2, Mat4, InnerF32A);
 
     /// Transforms a `Vec3A`.
     #[inline]
@@ -519,7 +517,7 @@ impl Mat3A {
         )
     }
 }
-impl_mat3_traits!(f32, mat3a, Mat3A, Mat4, Vec3, Vec3A);
+impl_mat3_traits!(f32, mat3a, Mat3A, Vec3, Vec3A);
 
 impl Mul<Vec3> for Mat3A {
     type Output = Vec3;
@@ -547,7 +545,7 @@ type InnerF64 = Columns3<XYZ<f64>>;
 define_mat3_struct!(DMat3, InnerF64);
 
 impl DMat3 {
-    impl_mat3_methods!(f64, DVec3, DVec3, DVec2, DQuat, DMat2, InnerF64);
+    impl_mat3_methods!(f64, DVec3, DVec3, DVec2, DQuat, DMat2, DMat4, InnerF64);
 
     #[inline(always)]
     pub fn as_f32(&self) -> Mat3 {
@@ -558,7 +556,7 @@ impl DMat3 {
         )
     }
 }
-impl_mat3_traits!(f64, dmat3, DMat3, DMat4, DVec3, DVec3);
+impl_mat3_traits!(f64, dmat3, DMat3, DVec3, DVec3);
 impl_mat3_traits_unsafe!(f64, DMat3);
 
 mod const_test_mat3 {
