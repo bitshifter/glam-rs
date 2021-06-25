@@ -90,7 +90,7 @@ macro_rules! impl_vec3_common_methods {
 }
 
 macro_rules! impl_vec3_common_traits {
-    ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
+    ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $inner:ident) => {
         /// Creates a 3-dimensional vector.
         #[inline(always)]
         pub fn $new(x: $t, y: $t, z: $t) -> $vec3 {
@@ -266,8 +266,8 @@ macro_rules! impl_vec3_float_methods {
 
 // implements traits that are common between `Vec3`, `Vec3A` and `Vec4` types.
 macro_rules! impl_vec3_float_traits {
-    ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {
-        impl_vec3_common_traits!($t, $new, $vec2, $vec3, $vec4, $mask, $inner);
+    ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $vec4:ident, $inner:ident) => {
+        impl_vec3_common_traits!($t, $new, $vec2, $vec3, $vec4, $inner);
         impl_vecn_signed_traits!($t, 3, $vec3, $inner, SignedVector3);
     };
 }
@@ -281,7 +281,7 @@ macro_rules! impl_f32_vec3 {
             impl_vecn_as_i32!(IVec3, x, y, z);
             impl_vecn_as_u32!(UVec3, x, y, z);
         }
-        impl_vec3_float_traits!(f32, $new, $vec2, $vec3, $vec4, $mask, $inner);
+        impl_vec3_float_traits!(f32, $new, $vec2, $vec3, $vec4, $inner);
     };
 }
 
@@ -342,7 +342,7 @@ impl DVec3 {
     impl_vecn_as_i32!(IVec3, x, y, z);
     impl_vecn_as_u32!(UVec3, x, y, z);
 }
-impl_vec3_float_traits!(f64, dvec3, DVec2, DVec3, DVec4, BVec3, XYZF64);
+impl_vec3_float_traits!(f64, dvec3, DVec2, DVec3, DVec4, XYZF64);
 
 type XYZI32 = XYZ<i32>;
 
@@ -358,7 +358,7 @@ impl IVec3 {
     impl_vecn_as_f64!(DVec3, x, y, z);
     impl_vecn_as_u32!(UVec3, x, y, z);
 }
-impl_vec3_common_traits!(i32, ivec3, IVec2, IVec3, IVec4, BVec3, XYZI32);
+impl_vec3_common_traits!(i32, ivec3, IVec2, IVec3, IVec4, XYZI32);
 impl_vecn_signed_traits!(i32, 3, IVec3, XYZI32, SignedVector3);
 impl_vecn_eq_hash_traits!(i32, 3, IVec3);
 
@@ -375,7 +375,7 @@ impl UVec3 {
     impl_vecn_as_f64!(DVec3, x, y, z);
     impl_vecn_as_i32!(IVec3, x, y, z);
 }
-impl_vec3_common_traits!(u32, uvec3, UVec2, UVec3, UVec4, BVec3, XYZU32);
+impl_vec3_common_traits!(u32, uvec3, UVec2, UVec3, UVec4, XYZU32);
 impl_vecn_eq_hash_traits!(u32, 3, UVec3);
 
 #[test]
