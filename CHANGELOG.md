@@ -11,6 +11,12 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 * The addition of `Add` and `Sub` implementations of scalar values for vector
   types may create ambiguities with existing calls to `add` and `sub`.
+* Removed `From<Mat3>` implementation for `Mat2` and `From<DMat3>` for `DMat2`.
+  These have been replaced by `Mat2::from_mat3()` and `DMat2::from_mat3()`.
+* Removed `From<Mat4>` implementation for `Mat3` and `From<DMat4>` for `DMat3`.
+  These have been replaced by `Mat3::from_mat4()` and `DMat3::from_mat4()`.
+* Removed deprecated `from_slice_unaligned()`, `write_to_slice_unaligned()`,
+  `from_rotation_mat4` and `from_rotation_ypr()` methods.
 
 ### Added
 
@@ -19,15 +25,21 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Added `AddAssign`, `MulAssign` and `SubAssign` implementations for all matrix
   types.
 * Added `Add` and `Sub` implementations of scalar values for vector types.
-* Added more `glam_assert` checks and documented methods where they are used.
+* Added more `glam_assert!` checks and documented methods where they are used.
 * Added vector projection and rejection methods `project_onto()`,
   `project_onto_normalized()`, `reject_from()` and `reject_from_normalized()`.
+* Added `Mat2::from_mat3()`, `DMat2::from_mat3()`, `Mat3::from_mat4()`,
+  `DMat3::from_mat4()` which create a smaller matrix from a larger one,
+  discarding a final row and column of the input matrix.
+* Added `Mat3::from_mat2()`, `DMat3::from_mat2()`, `Mat4::from_mat3()` and
+  `DMat4::from_mat3()` which create an affine transform from a smaller linear
+  transform matrix.
 
 ### Changed
 
 * Don't support `AsRef` and `AsMut` on SPIR-V targets. Also removed SPIR-V
-  support for some methods that used `as_ref`, including `hash`. Not a breaking
-  change as these methods would not have worked anyway.
+  support for some methods that used `as_ref()`, including `hash()`. Not a
+  breaking change as these methods would not have worked anyway.
 
 ### Fixed
 
@@ -39,8 +51,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 * `sprirv-std` dependency was removed, rust-gpu depends on glam internally
   again for now.
-* Added `must_use` attribute to all `inverse`, `normalize`, `try_normalize`,
-  `transpose` and `conjugate` methods.
+* Added `must_use` attribute to all `inverse()`, `normalize()`,
+  `try_normalize()`, `transpose()` and `conjugate()` methods.
 
 ### Added
 

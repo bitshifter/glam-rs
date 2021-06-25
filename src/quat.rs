@@ -73,12 +73,6 @@ macro_rules! impl_quat_methods {
             Self(v.0)
         }
 
-        #[deprecated(since = "0.15.2", note = "Please use `from_slice()` instead")]
-        #[inline(always)]
-        pub fn from_slice_unaligned(slice: &[$t]) -> Self {
-            Self::from_slice(slice)
-        }
-
         /// Creates a rotation quaternion from a slice.
         ///
         /// # Preconditions
@@ -94,12 +88,6 @@ macro_rules! impl_quat_methods {
             #[allow(clippy::let_and_return)]
             let q = Vector4::from_slice_unaligned(slice);
             Self(q)
-        }
-
-        #[deprecated(since = "0.15.2", note = "Please use `write_to_slice()` instead")]
-        #[inline(always)]
-        pub fn write_to_slice_unaligned(self, slice: &mut [$t]) {
-            self.write_to_slice(slice)
         }
 
         /// Writes the quaternion to an unaligned slice.
@@ -155,24 +143,10 @@ macro_rules! impl_quat_methods {
             Self($inner::from_rotation_z(angle))
         }
 
-        #[deprecated(
-            since = "0.15.0",
-            note = "Please use `from_euler(EulerRot::YXZ, yaw, pitch, roll)` instead"
-        )]
-        #[inline(always)]
-        pub fn from_rotation_ypr(yaw: $t, pitch: $t, roll: $t) -> Self {
-            Self::from_euler(EulerRot::YXZ, yaw, pitch, roll)
-        }
-
         #[inline(always)]
         /// Creates a quaternion from the given euler rotation sequence and the angles (in radians).
         pub fn from_euler(euler: EulerRot, a: $t, b: $t, c: $t) -> Self {
             euler.new_quat(a, b, c)
-        }
-
-        #[deprecated(since = "0.15.0", note = "Please use `from_mat3` instead")]
-        pub fn from_rotation_mat3(mat: &$mat3) -> Self {
-            Self::from_mat3(mat)
         }
 
         /// Creates a quaternion from a 3x3 rotation matrix.
@@ -183,11 +157,6 @@ macro_rules! impl_quat_methods {
                 mat.y_axis.0,
                 mat.z_axis.0,
             ))
-        }
-
-        #[deprecated(since = "0.15.0", note = "Please use `from_mat4` instead")]
-        pub fn from_rotation_mat4(mat: &$mat4) -> Self {
-            Self::from_mat4(mat)
         }
 
         /// Creates a quaternion from a 3x3 rotation matrix inside a homogeneous 4x4 matrix.

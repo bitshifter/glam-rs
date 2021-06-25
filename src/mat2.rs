@@ -24,7 +24,7 @@ use core::arch::x86_64::*;
 use std::iter::{Product, Sum};
 
 macro_rules! impl_mat2_methods {
-    ($t:ty, $vec2:ident, $inner:ident) => {
+    ($t:ty, $vec2:ident, $mat3:ident, $inner:ident) => {
         /// A 2x2 matrix with all elements set to `0.0`.
         pub const ZERO: Self = Self($inner::ZERO);
 
@@ -85,6 +85,12 @@ macro_rules! impl_mat2_methods {
         #[inline(always)]
         pub fn from_angle(angle: $t) -> Self {
             Self($inner::from_angle(angle))
+        }
+
+        /// Creates a 2x2 matrix from a 3x3 matrix, discarding the 2nd row and column.
+        #[inline(always)]
+        pub fn from_mat3(m: $mat3) -> Self {
+            Self::from_cols(m.x_axis.into(), m.y_axis.into())
         }
 
         /// Creates a 2x2 matrix from the first 4 values in `slice`.
@@ -283,13 +289,6 @@ macro_rules! impl_mat2_traits {
             }
         }
 
-        impl From<$mat3> for $mat2 {
-            /// Creates a 2x2 matrix from the top left submatrix of the given 3x3 matrix.
-            fn from(m: $mat3) -> $mat2 {
-                $mat2::from_cols(m.x_axis.into(), m.y_axis.into())
-            }
-        }
-
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Debug for $mat2 {
             fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -325,7 +324,7 @@ type InnerF32 = crate::core::storage::Columns2<XY<f32>>;
 pub struct Mat2(pub(crate) InnerF32);
 
 impl Mat2 {
-    impl_mat2_methods!(f32, Vec2, InnerF32);
+    impl_mat2_methods!(f32, Vec2, Mat3, InnerF32);
 
     #[inline(always)]
     pub fn as_f64(&self) -> DMat2 {
@@ -342,7 +341,7 @@ type InnerF64 = crate::core::storage::Columns2<XY<f64>>;
 pub struct DMat2(pub(crate) InnerF64);
 
 impl DMat2 {
-    impl_mat2_methods!(f64, DVec2, InnerF64);
+    impl_mat2_methods!(f64, DVec2, DMat3, InnerF64);
 
     #[inline(always)]
     pub fn as_f32(&self) -> Mat2 {

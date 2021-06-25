@@ -2,7 +2,7 @@
 mod support;
 
 macro_rules! impl_mat4_tests {
-    ($t:ident, $const_new:ident, $newmat4:ident, $newvec4:ident, $newvec3:ident, $mat4:ident, $quat:ident, $vec4:ident, $vec3:ident) => {
+    ($t:ident, $const_new:ident, $newmat4:ident, $newvec4:ident, $newvec3:ident, $mat4:ident, $mat3:ident, $quat:ident, $vec4:ident, $vec3:ident) => {
         use core::$t::INFINITY;
         use core::$t::NAN;
         use core::$t::NEG_INFINITY;
@@ -183,6 +183,22 @@ macro_rules! impl_mat4_tests {
 
             should_glam_assert!({ $mat4::from_axis_angle($vec3::ZERO, 0.0) });
             should_glam_assert!({ $mat4::from_quat($quat::from_xyzw(0.0, 0.0, 0.0, 0.0)) });
+        }
+
+        #[test]
+        fn test_from_mat3() {
+            let m3 =
+                $mat3::from_cols_array_2d(&[[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]]);
+            let m4 = $mat4::from_mat3(m3);
+            assert_eq!(
+                $mat4::from_cols_array_2d(&[
+                    [1.0, 2.0, 3.0, 0.0],
+                    [4.0, 5.0, 6.0, 0.0],
+                    [7.0, 8.0, 9.0, 0.0],
+                    [0.0, 0.0, 0.0, 1.0]
+                ]),
+                m4
+            );
         }
 
         #[test]
@@ -671,7 +687,7 @@ macro_rules! impl_mat4_tests {
 
 mod mat4 {
     use super::support::deg;
-    use glam::{const_mat4, mat4, swizzles::*, vec3, vec4, Mat4, Quat, Vec3, Vec4};
+    use glam::{const_mat4, mat4, swizzles::*, vec3, vec4, Mat3, Mat4, Quat, Vec3, Vec4};
 
     #[test]
     fn test_align() {
@@ -719,12 +735,12 @@ mod mat4 {
         );
     }
 
-    impl_mat4_tests!(f32, const_mat4, mat4, vec4, vec3, Mat4, Quat, Vec4, Vec3);
+    impl_mat4_tests!(f32, const_mat4, mat4, vec4, vec3, Mat4, Mat3, Quat, Vec4, Vec3);
 }
 
 mod dmat4 {
     use super::support::deg;
-    use glam::{const_dmat4, dmat4, dvec3, dvec4, swizzles::*, DMat4, DQuat, DVec3, DVec4};
+    use glam::{const_dmat4, dmat4, dvec3, dvec4, swizzles::*, DMat3, DMat4, DQuat, DVec3, DVec4};
 
     #[test]
     fn test_align() {
@@ -740,6 +756,7 @@ mod dmat4 {
         dvec4,
         dvec3,
         DMat4,
+        DMat3,
         DQuat,
         DVec4,
         DVec3

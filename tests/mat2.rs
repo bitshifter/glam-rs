@@ -105,7 +105,7 @@ macro_rules! impl_mat2_tests {
         fn test_from_mat3() {
             let m3 =
                 $mat3::from_cols_array_2d(&[[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]]);
-            let m2 = $mat2::from(m3);
+            let m2 = $mat2::from_mat3(m3);
             assert_eq!($mat2::from_cols_array_2d(&[[1.0, 2.0], [4.0, 5.0]]), m2);
         }
 

@@ -5,7 +5,7 @@ use crate::core::{
         projection::ProjectionMatrix,
     },
 };
-use crate::{DQuat, DVec3, DVec4, EulerRot, Quat, Vec3, Vec3A, Vec4};
+use crate::{DMat3, DQuat, DVec3, DVec4, EulerRot, Mat3, Quat, Vec3, Vec3A, Vec4};
 
 #[cfg(all(
     target_feature = "sse2",
@@ -63,7 +63,7 @@ use std::iter::{Product, Sum};
 //}
 
 macro_rules! impl_mat4_methods {
-    ($t:ident, $vec4:ident, $vec3:ident, $quat:ident, $inner:ident) => {
+    ($t:ident, $vec4:ident, $vec3:ident, $mat3:ident, $quat:ident, $inner:ident) => {
         /// A 4x4 matrix with all elements set to `0.0`.
         pub const ZERO: Self = Self($inner::ZERO);
 
@@ -177,6 +177,21 @@ macro_rules! impl_mat4_methods {
             Self($inner::from_quaternion(rotation.0))
         }
 
+        /// Creates an affine transformation matrix from the given 3x3 linear transformation
+        /// matrix.
+        ///
+        /// The resulting matrix can be used to transform 3D points and vectors. See
+        /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+        #[inline(always)]
+        pub fn from_mat3(m: $mat3) -> Self {
+            Self::from_cols(
+                (m.x_axis, 0.0).into(),
+                (m.y_axis, 0.0).into(),
+                (m.z_axis, 0.0).into(),
+                $vec4::W,
+            )
+        }
+
         /// Creates an affine transformation matrix from the given 3D `translation`.
         ///
         /// The resulting matrix can be used to transform 3D points and vectors. See
@@ -198,15 +213,6 @@ macro_rules! impl_mat4_methods {
         #[inline(always)]
         pub fn from_axis_angle(axis: $vec3, angle: $t) -> Self {
             Self($inner::from_axis_angle(axis.0, angle))
-        }
-
-        #[deprecated(
-            since = "0.15.0",
-            note = "Please use `from_euler(EulerRot::YXZ, yaw, pitch, roll)` instead"
-        )]
-        #[inline(always)]
-        pub fn from_rotation_ypr(yaw: $t, pitch: $t, roll: $t) -> Self {
-            Self::from_euler(EulerRot::YXZ, yaw, pitch, roll)
         }
 
         #[inline(always)]
@@ -764,7 +770,7 @@ pub struct Mat4(pub(crate) InnerF32);
 // define_mat4_struct!(Mat4, InnerF32);
 
 impl Mat4 {
-    impl_mat4_methods!(f32, Vec4, Vec3, Quat, InnerF32);
+    impl_mat4_methods!(f32, Vec4, Vec3, Mat3, Quat, InnerF32);
 
     /// Transforms the given `Vec3A` as 3D point.
     ///
@@ -833,7 +839,7 @@ pub struct DMat4(pub(crate) InnerF64);
 // define_mat4_struct!(DMat4, InnerF64);
 
 impl DMat4 {
-    impl_mat4_methods!(f64, DVec4, DVec3, DQuat, InnerF64);
+    impl_mat4_methods!(f64, DVec4, DVec3, DMat3, DQuat, InnerF64);
 
     #[inline(always)]
     pub fn as_f32(&self) -> Mat4 {
