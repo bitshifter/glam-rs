@@ -83,6 +83,7 @@ glam = { version = "0.17.0", default-features = false }
   types. Note that serialization should work between builds of `glam` with and
   without SIMD enabled
 
+[`approx`]: https://docs.rs/approx
 [`bytemuck`]: https://docs.rs/bytemuck
 [`libm`]: https://github.com/rust-lang/libm
 [`mint`]: https://github.com/kvark/mint
