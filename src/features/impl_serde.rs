@@ -357,6 +357,9 @@ macro_rules! impl_serde_mat2 {
 
 macro_rules! impl_serde_mat3 {
     ($t:ty, $mat3:ident) => {
+        impl_serde_mat3!($t, $mat3, test_mat3_serde);
+    };
+    ($t:ty, $mat3:ident, $test_name:ident) => {
         impl Serialize for $mat3 {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -413,7 +416,7 @@ macro_rules! impl_serde_mat3 {
         }
 
         #[test]
-        fn test_mat3_serde() {
+        fn $test_name() {
             let a = $mat3::from_cols_array(&[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]);
             let serialized = serde_json::to_string(&a).unwrap();
             assert_eq!(serialized, "[1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0]");
@@ -517,6 +520,176 @@ macro_rules! impl_serde_mat4 {
     };
 }
 
+macro_rules! impl_serde_affine2 {
+    ($t:ty, $affine2:ident) => {
+        impl Serialize for $affine2 {
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            where
+                S: Serializer,
+            {
+                // Serialize column-wise as 3x4 matrix:
+                let mut state = serializer.serialize_tuple_struct(stringify!($affine2), 6)?;
+                state.serialize_field(&self.x_axis.x)?;
+                state.serialize_field(&self.x_axis.y)?;
+                state.serialize_field(&self.y_axis.x)?;
+                state.serialize_field(&self.y_axis.y)?;
+                state.serialize_field(&self.z_axis.x)?;
+                state.serialize_field(&self.z_axis.y)?;
+                state.end()
+            }
+        }
+
+        impl<'de> Deserialize<'de> for $affine2 {
+            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+            where
+                D: Deserializer<'de>,
+            {
+                struct Affine2Visitor;
+
+                impl<'de> Visitor<'de> for Affine2Visitor {
+                    type Value = $affine2;
+
+                    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                        formatter.write_str("struct $affine2")
+                    }
+
+                    fn visit_seq<V>(self, mut seq: V) -> Result<$affine2, V::Error>
+                    where
+                        V: SeqAccess<'de>,
+                    {
+                        let mut f = [0.0; 6];
+                        for (i, v) in f.iter_mut().enumerate() {
+                            *v = seq
+                                .next_element()?
+                                .ok_or_else(|| de::Error::invalid_length(i, &self))?;
+                        }
+                        Ok($affine2::from_cols_array(&f))
+                    }
+                }
+
+                deserializer.deserialize_tuple_struct(stringify!($affine2), 6, Affine2Visitor)
+            }
+        }
+
+        #[test]
+        fn test_affine2_serde() {
+            let a = $affine2::from_cols_array(&[1.0, 0.0, 2.0, 0.0, 3.0, 4.0]);
+            let serialized = serde_json::to_string(&a).unwrap();
+            assert_eq!(serialized, "[1.0,0.0,2.0,0.0,3.0,4.0]");
+            let deserialized = serde_json::from_str(&serialized).unwrap();
+            assert_eq!(a, deserialized);
+
+            let deserialized = serde_json::from_str::<$affine2>("[]");
+            assert!(deserialized.is_err());
+            let deserialized = serde_json::from_str::<$affine2>("[1.0]");
+            assert!(deserialized.is_err());
+            let deserialized = serde_json::from_str::<$affine2>("[1.0,2.0]");
+            assert!(deserialized.is_err());
+            let deserialized = serde_json::from_str::<$affine2>("[1.0,2.0,3.0]");
+            assert!(deserialized.is_err());
+            let deserialized = serde_json::from_str::<$affine2>("[1.0,2.0,3.0,4.0,5.0]");
+            assert!(deserialized.is_err());
+            let deserialized = serde_json::from_str::<$affine2>("[[1.0,2.0],[3.0,4.0],[5.0,6.0]]");
+            assert!(deserialized.is_err());
+            let deserialized = serde_json::from_str::<$affine2>(
+                "[[1.0,2.0,3.0,4.0],[5.0,6.0,7.0,8.0],[9.0,10.0,11.0,12.0][13.0,14.0,15.0,16.0]]",
+            );
+            assert!(deserialized.is_err());
+        }
+    };
+}
+
+macro_rules! impl_serde_affine3 {
+    ($t:ty, $affine3:ident) => {
+        impl Serialize for $affine3 {
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            where
+                S: Serializer,
+            {
+                // Serialize column-wise as 3x4 matrix:
+                let mut state = serializer.serialize_tuple_struct(stringify!($affine3), 12)?;
+                state.serialize_field(&self.x_axis.x)?;
+                state.serialize_field(&self.x_axis.y)?;
+                state.serialize_field(&self.x_axis.z)?;
+                state.serialize_field(&self.y_axis.x)?;
+                state.serialize_field(&self.y_axis.y)?;
+                state.serialize_field(&self.y_axis.z)?;
+                state.serialize_field(&self.z_axis.x)?;
+                state.serialize_field(&self.z_axis.y)?;
+                state.serialize_field(&self.z_axis.z)?;
+                state.serialize_field(&self.w_axis.x)?;
+                state.serialize_field(&self.w_axis.y)?;
+                state.serialize_field(&self.w_axis.z)?;
+                state.end()
+            }
+        }
+
+        impl<'de> Deserialize<'de> for $affine3 {
+            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+            where
+                D: Deserializer<'de>,
+            {
+                struct Affine3Visitor;
+
+                impl<'de> Visitor<'de> for Affine3Visitor {
+                    type Value = $affine3;
+
+                    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                        formatter.write_str("struct $affine3")
+                    }
+
+                    fn visit_seq<V>(self, mut seq: V) -> Result<$affine3, V::Error>
+                    where
+                        V: SeqAccess<'de>,
+                    {
+                        let mut f = [0.0; 12];
+                        for (i, v) in f.iter_mut().enumerate() {
+                            *v = seq
+                                .next_element()?
+                                .ok_or_else(|| de::Error::invalid_length(i, &self))?;
+                        }
+                        Ok($affine3::from_cols_array(&f))
+                    }
+                }
+
+                deserializer.deserialize_tuple_struct(stringify!($affine3), 12, Affine3Visitor)
+            }
+        }
+
+        #[test]
+        fn test_affine3_serde() {
+            let a = $affine3::from_cols_array(&[
+                1.0, 0.0, 0.0, 0.0, 2.0, 0.0, 0.0, 0.0, 3.0, 4.0, 5.0, 6.0,
+            ]);
+            let serialized = serde_json::to_string(&a).unwrap();
+            assert_eq!(
+                serialized,
+                "[1.0,0.0,0.0,0.0,2.0,0.0,0.0,0.0,3.0,4.0,5.0,6.0]"
+            );
+            let deserialized = serde_json::from_str(&serialized).unwrap();
+            assert_eq!(a, deserialized);
+
+            let deserialized = serde_json::from_str::<$affine3>("[]");
+            assert!(deserialized.is_err());
+            let deserialized = serde_json::from_str::<$affine3>("[1.0]");
+            assert!(deserialized.is_err());
+            let deserialized = serde_json::from_str::<$affine3>("[1.0,2.0]");
+            assert!(deserialized.is_err());
+            let deserialized = serde_json::from_str::<$affine3>("[1.0,2.0,3.0]");
+            assert!(deserialized.is_err());
+            let deserialized = serde_json::from_str::<$affine3>("[1.0,2.0,3.0,4.0,5.0]");
+            assert!(deserialized.is_err());
+            let deserialized =
+                serde_json::from_str::<$affine3>("[[1.0,2.0,3.0],[4.0,5.0,6.0],[7.0,8.0,9.0]]");
+            assert!(deserialized.is_err());
+            let deserialized = serde_json::from_str::<$affine3>(
+                "[[1.0,2.0,3.0,4.0],[5.0,6.0,7.0,8.0],[9.0,10.0,11.0,12.0][13.0,14.0,15.0,16.0]]",
+            );
+            assert!(deserialized.is_err());
+        }
+    };
+}
+
 macro_rules! impl_serde_vec_types {
     ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident) => {
         impl_serde_vec2!($t, $vec2);
@@ -526,7 +699,9 @@ macro_rules! impl_serde_vec_types {
 }
 
 macro_rules! impl_serde_float_types {
-    ($t:ty, $mat2:ident, $mat3:ident, $mat4:ident, $quat:ident, $vec2:ident, $vec3:ident, $vec4:ident) => {
+    ($t:ty, $affine2:ident, $affine3:ident, $mat2:ident, $mat3:ident, $mat4:ident, $quat:ident, $vec2:ident, $vec3:ident, $vec4:ident) => {
+        impl_serde_affine2!($t, $affine2);
+        impl_serde_affine3!($t, $affine3);
         impl_serde_mat2!($t, $mat2);
         impl_serde_mat3!($t, $mat3);
         impl_serde_mat4!($t, $mat4);
@@ -558,28 +733,31 @@ mod test_int {
 mod f32 {
     #[cfg(test)]
     use super::test_float::*;
-    use crate::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
+    use crate::{Affine2, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
     use core::fmt;
     use serde::{
         de::{self, Deserialize, Deserializer, SeqAccess, Visitor},
         ser::{Serialize, SerializeTupleStruct, Serializer},
     };
 
-    impl_serde_float_types!(f32, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4);
+    impl_serde_float_types!(f32, Affine2, Affine3A, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4);
+    impl_serde_mat3!(f32, Mat3A, test_mat3a_serde);
     impl_serde_vec3!(f32, Vec3A, test_vec3a_serde);
 }
 
 mod f64 {
     #[cfg(test)]
     use super::test_float::*;
-    use crate::{DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
+    use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
     use core::fmt;
     use serde::{
         de::{self, Deserialize, Deserializer, SeqAccess, Visitor},
         ser::{Serialize, SerializeTupleStruct, Serializer},
     };
 
-    impl_serde_float_types!(f64, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4);
+    impl_serde_float_types!(
+        f64, DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4
+    );
 }
 
 mod i32 {
@@ -606,110 +784,4 @@ mod u32 {
     };
 
     impl_serde_vec_types!(u32, UVec2, UVec3, UVec4);
-}
-
-mod affine3a {
-    use crate::{Affine3A, Mat3, Vec3};
-    use core::fmt;
-    use serde::{
-        de::{self, Deserialize, Deserializer, SeqAccess, Visitor},
-        ser::{Serialize, SerializeTupleStruct, Serializer},
-    };
-
-    impl Serialize for Affine3A {
-        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
-        {
-            // Serialize column-wise as 3x4 matrix:
-            let mut state = serializer.serialize_tuple_struct("Affine3A", 12)?;
-            state.serialize_field(&self.x_axis.x)?;
-            state.serialize_field(&self.x_axis.y)?;
-            state.serialize_field(&self.x_axis.z)?;
-            state.serialize_field(&self.y_axis.x)?;
-            state.serialize_field(&self.y_axis.y)?;
-            state.serialize_field(&self.y_axis.z)?;
-            state.serialize_field(&self.z_axis.x)?;
-            state.serialize_field(&self.z_axis.y)?;
-            state.serialize_field(&self.z_axis.z)?;
-            state.serialize_field(&self.w_axis.x)?;
-            state.serialize_field(&self.w_axis.y)?;
-            state.serialize_field(&self.w_axis.z)?;
-            state.end()
-        }
-    }
-
-    impl<'de> Deserialize<'de> for Affine3A {
-        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-        where
-            D: Deserializer<'de>,
-        {
-            struct Affine3Visitor;
-
-            impl<'de> Visitor<'de> for Affine3Visitor {
-                type Value = Affine3A;
-
-                fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-                    formatter.write_str("struct Affine3A")
-                }
-
-                fn visit_seq<V>(self, mut seq: V) -> Result<Affine3A, V::Error>
-                where
-                    V: SeqAccess<'de>,
-                {
-                    let mut f = { [0.0; 12] };
-                    for (i, v) in f.iter_mut().enumerate() {
-                        *v = seq
-                            .next_element()?
-                            .ok_or_else(|| de::Error::invalid_length(i, &self))?;
-                    }
-                    let m = Mat3::from_cols_array(&[
-                        f[0], f[1], f[2], //
-                        f[3], f[4], f[5], //
-                        f[6], f[7], f[8], //
-                    ]);
-                    let t = Vec3::new(f[9], f[10], f[11]);
-                    Ok(Affine3A::from_mat3_translation(m, t))
-                }
-            }
-
-            deserializer.deserialize_tuple_struct("Affine3A", 12, Affine3Visitor)
-        }
-    }
-
-    #[test]
-    fn test_affine3_serde() {
-        use crate::{Quat, Vec3};
-
-        let a = Affine3A::from_scale_rotation_translation(
-            Vec3::new(1.0, 2.0, 3.0),
-            Quat::IDENTITY,
-            Vec3::new(4.0, 5.0, 6.0),
-        );
-        let serialized = serde_json::to_string(&a).unwrap();
-        assert_eq!(
-            serialized,
-            "[1.0,0.0,0.0,0.0,2.0,0.0,0.0,0.0,3.0,4.0,5.0,6.0]"
-        );
-        let deserialized = serde_json::from_str(&serialized).unwrap();
-        assert_eq!(a, deserialized);
-
-        let deserialized = serde_json::from_str::<Affine3A>("[]");
-        assert!(deserialized.is_err());
-        let deserialized = serde_json::from_str::<Affine3A>("[1.0]");
-        assert!(deserialized.is_err());
-        let deserialized = serde_json::from_str::<Affine3A>("[1.0,2.0]");
-        assert!(deserialized.is_err());
-        let deserialized = serde_json::from_str::<Affine3A>("[1.0,2.0,3.0]");
-        assert!(deserialized.is_err());
-        let deserialized = serde_json::from_str::<Affine3A>("[1.0,2.0,3.0,4.0,5.0]");
-        assert!(deserialized.is_err());
-        let deserialized =
-            serde_json::from_str::<Affine3A>("[[1.0,2.0,3.0],[4.0,5.0,6.0],[7.0,8.0,9.0]]");
-        assert!(deserialized.is_err());
-        let deserialized = serde_json::from_str::<Affine3A>(
-            "[[1.0,2.0,3.0,4.0],[5.0,6.0,7.0,8.0],[9.0,10.0,11.0,12.0][13.0,14.0,15.0,16.0]]",
-        );
-        assert!(deserialized.is_err());
-    }
 }
