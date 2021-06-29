@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [0.17.1] - 2021-06-29
+
+### Added
+
+* Added `serde` support for `Affine2`, `DAffine2`, `Affine3A` and `DAffine3`.
+
 ## [0.17.0] - 2021-06-26
 
 ### Breaking changes
@@ -627,7 +633,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.17.0...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.17.1...HEAD
+[0.17.1]: https://github.com/bitshifter/glam-rs/compare/0.17.0...0.17.1
 [0.17.0]: https://github.com/bitshifter/glam-rs/compare/0.16.0...0.17.0
 [0.16.0]: https://github.com/bitshifter/glam-rs/compare/0.15.2...0.16.0
 [0.15.2]: https://github.com/bitshifter/glam-rs/compare/0.15.1...0.15.2
