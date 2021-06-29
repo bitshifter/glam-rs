@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [0.17.1] - 2021-06-29
+
+### Added
+
+* Added `serde` support for `Affine2`, `DAffine2`, `Affine3A` and `DAffine3`.
+
 ## [0.17.0] - 2021-06-26
 
 ### Breaking changes
