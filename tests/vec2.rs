@@ -747,7 +747,7 @@ mod dvec2 {
     fn test_align() {
         use core::mem;
         assert_eq!(16, mem::size_of::<DVec2>());
-        assert_eq!(8, mem::align_of::<DVec2>());
+        assert_eq!(mem::align_of::<f64>(), mem::align_of::<DVec2>());
         assert_eq!(2, mem::size_of::<BVec2>());
         assert_eq!(1, mem::align_of::<BVec2>());
     }

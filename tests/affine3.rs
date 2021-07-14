@@ -350,7 +350,7 @@ mod daffine3 {
     fn test_align() {
         use std::mem;
         assert_eq!(96, mem::size_of::<DAffine3>());
-        assert_eq!(8, mem::align_of::<DAffine3>());
+        assert_eq!(mem::align_of::<f64>(), mem::align_of::<DAffine3>());
     }
 
     impl_affine3_tests!(f64, DAffine3, DQuat, DVec3);

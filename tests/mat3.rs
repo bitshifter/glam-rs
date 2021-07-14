@@ -455,7 +455,7 @@ mod dmat3 {
     fn test_align() {
         use std::mem;
         assert_eq!(72, mem::size_of::<DMat3>());
-        assert_eq!(8, mem::align_of::<DMat3>());
+        assert_eq!(mem::align_of::<f64>(), mem::align_of::<DMat3>());
     }
 
     impl_mat3_tests!(

@@ -558,7 +558,7 @@ mod dquat {
     fn test_align() {
         use std::mem;
         assert_eq!(32, mem::size_of::<DQuat>());
-        assert_eq!(8, mem::align_of::<DQuat>());
+        assert_eq!(mem::align_of::<f64>(), mem::align_of::<DQuat>());
     }
 
     impl_quat_tests!(f64, const_dquat, dquat, DMat3, DMat4, DQuat, DVec3, DVec4);
