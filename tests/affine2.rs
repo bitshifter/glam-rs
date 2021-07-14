@@ -209,7 +209,7 @@ mod daffine2 {
     fn test_align() {
         use std::mem;
         assert_eq!(48, mem::size_of::<DAffine2>());
-        assert_eq!(8, mem::align_of::<DAffine2>());
+        assert_eq!(mem::align_of::<f64>(), mem::align_of::<DAffine2>());
     }
 
     impl_affine2_tests!(f64, DAffine2, DVec2);

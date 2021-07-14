@@ -917,7 +917,7 @@ mod dvec3 {
     fn test_align() {
         use std::mem;
         assert_eq!(24, mem::size_of::<DVec3>());
-        assert_eq!(8, mem::align_of::<DVec3>());
+        assert_eq!(mem::align_of::<f64>(), mem::align_of::<DVec3>());
         assert_eq!(3, mem::size_of::<BVec3>());
         assert_eq!(1, mem::align_of::<BVec3>());
     }
