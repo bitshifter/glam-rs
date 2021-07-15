@@ -830,14 +830,17 @@ mod vec4 {
     fn test_align() {
         use std::mem;
         assert_eq!(16, mem::size_of::<Vec4>());
-        if cfg!(any(not(target_feature = "sse2"), feature = "scalar-math")) {
-            assert_eq!(4, mem::align_of::<Vec4>());
-            assert_eq!(4, mem::size_of::<Vec4Mask>());
-            assert_eq!(1, mem::align_of::<Vec4Mask>());
-        } else {
+        if cfg!(not(feature = "scalar-math")) {
             assert_eq!(16, mem::align_of::<Vec4>());
+        } else {
+            assert_eq!(4, mem::align_of::<Vec4>());
+        }
+        if cfg!(all(target_feature = "sse2", not(feature = "scalar-math"))) {
             assert_eq!(16, mem::size_of::<Vec4Mask>());
             assert_eq!(16, mem::align_of::<Vec4Mask>());
+        } else {
+            assert_eq!(4, mem::size_of::<Vec4Mask>());
+            assert_eq!(1, mem::align_of::<Vec4Mask>());
         }
     }
 
