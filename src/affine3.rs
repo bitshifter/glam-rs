@@ -250,8 +250,8 @@ macro_rules! impl_affine3_methods {
             #[inline]
             pub fn from_mat4(m: $mat4) -> Self {
                 Self {
-                    matrix3: $matrix::from_cols(m.x_axis.into(), m.y_axis.into(), m.z_axis.into()),
-                    translation: m.w_axis.into(),
+                    matrix3: $matrix::from_mat4(m),
+                    translation: $column::from_vec4(m.w_axis),
                 }
             }
 
