@@ -93,6 +93,7 @@ pub trait Vector<T>: Sized + Copy + Clone {
     fn div(self, other: Self) -> Self;
     fn mul(self, other: Self) -> Self;
     fn mul_add(self, a: Self, b: Self) -> Self;
+    fn rem(self, rhs: Self) -> Self;
     fn sub(self, other: Self) -> Self;
 
     fn scale(self, other: T) -> Self {
@@ -103,6 +104,7 @@ pub trait Vector<T>: Sized + Copy + Clone {
     fn sub_scalar(self, other: T) -> Self;
     fn mul_scalar(self, other: T) -> Self;
     fn div_scalar(self, other: T) -> Self;
+    fn rem_scalar(self, rhs: T) -> Self;
 
     fn min(self, other: Self) -> Self;
     fn max(self, other: Self) -> Self;
