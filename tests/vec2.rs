@@ -96,6 +96,7 @@ macro_rules! impl_vec2_tests {
             assert_eq!($new(0 as $t, 1 as $t), a % (a - 1 as $t));
             assert_eq!($new(0 as $t, 0 as $t), a % 1 as $t);
             assert_eq!($new(2 as $t, 1 as $t), a % 3 as $t);
+            assert_eq!($new(1 as $t, 1 as $t), 17 as $t % a);
             assert_eq!($new(2 as $t, 4 as $t), a % 8 as $t);
         }
 

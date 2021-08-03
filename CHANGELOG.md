@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+### Added
+
+* Added `Rem` and `RemAssign` implementations for all vector types.
+
 ## [0.17.3] - 2021-07-18
 
 ### Fixed
