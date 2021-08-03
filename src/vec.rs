@@ -659,6 +659,44 @@ macro_rules! impl_vecn_common_traits {
             }
         }
 
+        impl Rem<$vecn> for $vecn {
+            type Output = Self;
+            #[inline(always)]
+            fn rem(self, other: $vecn) -> Self {
+                Self(self.0.rem(other.0))
+            }
+        }
+
+        impl RemAssign<$vecn> for $vecn {
+            #[inline(always)]
+            fn rem_assign(&mut self, other: $vecn) {
+                self.0 = self.0.rem(other.0)
+            }
+        }
+
+        impl Rem<$t> for $vecn {
+            type Output = Self;
+            #[inline(always)]
+            fn rem(self, other: $t) -> Self {
+                Self(self.0.rem_scalar(other))
+            }
+        }
+
+        impl RemAssign<$t> for $vecn {
+            #[inline(always)]
+            fn rem_assign(&mut self, other: $t) {
+                self.0 = self.0.rem_scalar(other)
+            }
+        }
+
+        impl Rem<$vecn> for $t {
+            type Output = $vecn;
+            #[inline(always)]
+            fn rem(self, other: $vecn) -> $vecn {
+                $vecn($inner::splat(self).rem(other.0))
+            }
+        }
+
         #[cfg(not(target_arch = "spriv"))]
         impl AsRef<[$t; $size]> for $vecn {
             #[inline(always)]

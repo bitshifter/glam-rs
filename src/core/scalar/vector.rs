@@ -234,6 +234,22 @@ impl<T: NumEx> Vector<T> for XY<T> {
     }
 
     #[inline]
+    fn rem(self, other: Self) -> Self {
+        Self {
+            x: self.x % other.x,
+            y: self.y % other.y,
+        }
+    }
+
+    #[inline]
+    fn rem_scalar(self, other: T) -> Self {
+        Self {
+            x: self.x % other,
+            y: self.y % other,
+        }
+    }
+
+    #[inline]
     fn min(self, other: Self) -> Self {
         Self {
             x: self.x.min(other.x),
@@ -397,6 +413,24 @@ impl<T: NumEx> Vector<T> for XYZ<T> {
             x: self.x / other,
             y: self.y / other,
             z: self.z / other,
+        }
+    }
+
+    #[inline]
+    fn rem(self, other: Self) -> Self {
+        Self {
+            x: self.x % other.x,
+            y: self.y % other.y,
+            z: self.z % other.z,
+        }
+    }
+
+    #[inline]
+    fn rem_scalar(self, other: T) -> Self {
+        Self {
+            x: self.x % other,
+            y: self.y % other,
+            z: self.z % other,
         }
     }
 
@@ -587,6 +621,26 @@ impl<T: NumEx> Vector<T> for XYZW<T> {
             y: self.y / other,
             z: self.z / other,
             w: self.w / other,
+        }
+    }
+
+    #[inline]
+    fn rem(self, other: Self) -> Self {
+        Self {
+            x: self.x % other.x,
+            y: self.y % other.y,
+            z: self.z % other.z,
+            w: self.w % other.w,
+        }
+    }
+
+    #[inline]
+    fn rem_scalar(self, other: T) -> Self {
+        Self {
+            x: self.x % other,
+            y: self.y % other,
+            z: self.z % other,
+            w: self.w % other,
         }
     }
 
@@ -941,6 +995,11 @@ impl Vector<f32> for XYZF32A16 {
     }
 
     #[inline]
+    fn rem(self, other: Self) -> Self {
+        XYZ::rem(self.into(), other.into()).into()
+    }
+
+    #[inline]
     fn sub(self, other: Self) -> Self {
         XYZ::sub(self.into(), other.into()).into()
     }
@@ -963,6 +1022,11 @@ impl Vector<f32> for XYZF32A16 {
     #[inline]
     fn div_scalar(self, other: f32) -> Self {
         XYZ::div_scalar(self.into(), other).into()
+    }
+
+    #[inline]
+    fn rem_scalar(self, other: f32) -> Self {
+        XYZ::rem_scalar(self.into(), other).into()
     }
 
     #[inline]

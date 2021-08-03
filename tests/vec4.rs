@@ -134,14 +134,20 @@ macro_rules! impl_vec4_tests {
         #[test]
         fn test_ops() {
             let a = $new(2 as $t, 4 as $t, 8 as $t, 16 as $t);
-            assert_eq!((4 as $t, 8 as $t, 16 as $t, 32 as $t), (a + a).into());
-            assert_eq!((0 as $t, 0 as $t, 0 as $t, 0 as $t), (a - a).into());
-            assert_eq!((4 as $t, 16 as $t, 64 as $t, 256 as $t), (a * a).into());
-            assert_eq!((4 as $t, 8 as $t, 16 as $t, 32 as $t), (a * 2 as $t).into());
-            assert_eq!((4 as $t, 8 as $t, 16 as $t, 32 as $t), (2 as $t * a).into());
-            assert_eq!((1 as $t, 1 as $t, 1 as $t, 1 as $t), (a / a).into());
-            assert_eq!((1 as $t, 2 as $t, 4 as $t, 8 as $t), (a / 2 as $t).into());
-            assert_eq!((8 as $t, 4 as $t, 2 as $t, 1 as $t), (16 as $t / a).into());
+            assert_eq!($new(4 as $t, 8 as $t, 16 as $t, 32 as $t), a + a);
+            assert_eq!($new(0 as $t, 0 as $t, 0 as $t, 0 as $t), a - a);
+            assert_eq!($new(4 as $t, 16 as $t, 64 as $t, 256 as $t), a * a);
+            assert_eq!($new(4 as $t, 8 as $t, 16 as $t, 32 as $t), a * 2 as $t);
+            assert_eq!($new(4 as $t, 8 as $t, 16 as $t, 32 as $t), 2 as $t * a);
+            assert_eq!($new(1 as $t, 1 as $t, 1 as $t, 1 as $t), a / a);
+            assert_eq!($new(1 as $t, 2 as $t, 4 as $t, 8 as $t), a / 2 as $t);
+            assert_eq!($new(8 as $t, 4 as $t, 2 as $t, 1 as $t), 16 as $t / a);
+            assert_eq!($new(0 as $t, 0 as $t, 0 as $t, 0 as $t), a % a);
+            assert_eq!($new(0 as $t, 1 as $t, 1 as $t, 1 as $t), a % (a - 1 as $t));
+            assert_eq!($new(0 as $t, 0 as $t, 0 as $t, 0 as $t), a % 1 as $t);
+            assert_eq!($new(2 as $t, 1 as $t, 2 as $t, 1 as $t), a % 3 as $t);
+            assert_eq!($new(1 as $t, 1 as $t, 1 as $t, 1 as $t), 17 as $t % a);
+            assert_eq!($new(2 as $t, 4 as $t, 0 as $t, 0 as $t), a % 8 as $t);
         }
 
         #[test]
@@ -149,17 +155,21 @@ macro_rules! impl_vec4_tests {
             let a = $new(1 as $t, 2 as $t, 3 as $t, 4 as $t);
             let mut b = a;
             b += a;
-            assert_eq!((2 as $t, 4 as $t, 6 as $t, 8 as $t), b.into());
+            assert_eq!($new(2 as $t, 4 as $t, 6 as $t, 8 as $t), b);
             b -= a;
-            assert_eq!((1 as $t, 2 as $t, 3 as $t, 4 as $t), b.into());
+            assert_eq!($new(1 as $t, 2 as $t, 3 as $t, 4 as $t), b);
             b *= a;
-            assert_eq!((1 as $t, 4 as $t, 9 as $t, 16 as $t), b.into());
+            assert_eq!($new(1 as $t, 4 as $t, 9 as $t, 16 as $t), b);
             b /= a;
-            assert_eq!((1 as $t, 2 as $t, 3 as $t, 4 as $t), b.into());
+            assert_eq!($new(1 as $t, 2 as $t, 3 as $t, 4 as $t), b);
             b *= 2 as $t;
-            assert_eq!((2 as $t, 4 as $t, 6 as $t, 8 as $t), b.into());
+            assert_eq!($new(2 as $t, 4 as $t, 6 as $t, 8 as $t), b);
             b /= 2 as $t;
-            assert_eq!((1 as $t, 2 as $t, 3 as $t, 4 as $t), b.into());
+            assert_eq!($new(1 as $t, 2 as $t, 3 as $t, 4 as $t), b);
+            b %= (b + 1 as $t);
+            assert_eq!($new(1 as $t, 2 as $t, 3 as $t, 4 as $t), b);
+            b %= b;
+            assert_eq!($new(0 as $t, 0 as $t, 0 as $t, 0 as $t), b);
         }
 
         #[test]

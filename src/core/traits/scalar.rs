@@ -4,7 +4,7 @@ pub use num_traits::{Float, Num, Signed};
 
 use core::{
     marker::Sized,
-    ops::{Add, Div, Mul, Sub},
+    ops::{Add, Div, Mul, Rem, Sub},
 };
 
 // Stub the necessary parts of num traits
@@ -161,6 +161,7 @@ pub trait NumEx:
     + Div<Output = Self>
     + Mul<Output = Self>
     + Sub<Output = Self>
+    + Rem<Output = Self>
 {
     fn min(self, other: Self) -> Self;
     fn max(self, other: Self) -> Self;

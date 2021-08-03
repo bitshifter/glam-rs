@@ -263,6 +263,19 @@ impl Vector<f32> for __m128 {
     }
 
     #[inline(always)]
+    fn rem(self, other: Self) -> Self {
+        unsafe {
+            let n = m128_floor(_mm_div_ps(self, other));
+            _mm_sub_ps(self, _mm_mul_ps(n, other))
+        }
+    }
+
+    #[inline(always)]
+    fn rem_scalar(self, other: f32) -> Self {
+        unsafe { self.rem(_mm_set1_ps(other)) }
+    }
+
+    #[inline(always)]
     fn min(self, other: Self) -> Self {
         unsafe { _mm_min_ps(self, other) }
     }
