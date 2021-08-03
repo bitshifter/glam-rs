@@ -264,12 +264,15 @@ impl Vector<f32> for __m128 {
 
     #[inline(always)]
     fn rem(self, other: Self) -> Self {
-        unsafe { _mm_sub_ps(self, m128_floor(_mm_div_ps(self, other))) }
+        unsafe {
+            let n = m128_floor(_mm_div_ps(self, other));
+            _mm_sub_ps(self, _mm_mul_ps(n, other))
+        }
     }
 
     #[inline(always)]
     fn rem_scalar(self, other: f32) -> Self {
-        unsafe { _mm_sub_ps(self, m128_floor(_mm_div_ps(self, _mm_set1_ps(other)))) }
+        unsafe { self.rem(_mm_set1_ps(other)) }
     }
 
     #[inline(always)]
