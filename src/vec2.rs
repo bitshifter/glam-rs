@@ -192,9 +192,9 @@ pub struct Vec2(pub(crate) XYF32);
 
 impl Vec2 {
     impl_vec2_float_methods!(f32, Vec2, Vec3, BVec2, XYF32);
-    impl_vecn_as_f64!(DVec2, x, y);
-    impl_vecn_as_i32!(IVec2, x, y);
-    impl_vecn_as_u32!(UVec2, x, y);
+    impl_as_dvec2!();
+    impl_as_ivec2!();
+    impl_as_uvec2!();
 }
 impl_vec2_signed_traits!(f32, vec2, Vec2, Vec3, BVec2, XYF32);
 
@@ -207,9 +207,9 @@ pub struct DVec2(pub(crate) XYF64);
 
 impl DVec2 {
     impl_vec2_float_methods!(f64, DVec2, DVec3, BVec2, XYF64);
-    impl_vecn_as_f32!(Vec2, x, y);
-    impl_vecn_as_i32!(IVec2, x, y);
-    impl_vecn_as_u32!(UVec2, x, y);
+    impl_as_vec2!();
+    impl_as_ivec2!();
+    impl_as_uvec2!();
 }
 impl_vec2_signed_traits!(f64, dvec2, DVec2, DVec3, BVec2, XYF64);
 
@@ -222,9 +222,9 @@ pub struct IVec2(pub(crate) XYI32);
 
 impl IVec2 {
     impl_vec2_signed_methods!(i32, IVec2, IVec3, BVec2, XYI32);
-    impl_vecn_as_f32!(Vec2, x, y);
-    impl_vecn_as_f64!(DVec2, x, y);
-    impl_vecn_as_u32!(UVec2, x, y);
+    impl_as_vec2!();
+    impl_as_dvec2!();
+    impl_as_uvec2!();
 }
 impl_vec2_signed_traits!(i32, ivec2, IVec2, IVec3, BVec2, XYI32);
 impl_vecn_eq_hash_traits!(i32, 2, IVec2);
@@ -238,9 +238,9 @@ pub struct UVec2(pub(crate) XYU32);
 
 impl UVec2 {
     impl_vec2_common_methods!(u32, UVec2, UVec3, BVec2, XYU32);
-    impl_vecn_as_f32!(Vec2, x, y);
-    impl_vecn_as_f64!(DVec2, x, y);
-    impl_vecn_as_i32!(IVec2, x, y);
+    impl_as_vec2!();
+    impl_as_dvec2!();
+    impl_as_ivec2!();
 }
 impl_vec2_unsigned_traits!(u32, uvec2, UVec2, UVec3, BVec2, XYU32);
 impl_vecn_eq_hash_traits!(u32, 2, UVec2);

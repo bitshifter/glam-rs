@@ -805,41 +805,47 @@ mod vec3 {
         use glam::{DVec3, IVec3, UVec3, Vec3A};
         assert_eq!(
             DVec3::new(-1.0, -2.0, -3.0),
-            Vec3::new(-1.0, -2.0, -3.0).as_f64()
+            Vec3::new(-1.0, -2.0, -3.0).as_dvec3()
         );
-        assert_eq!(IVec3::new(-1, -2, -3), Vec3::new(-1.0, -2.0, -3.0).as_i32());
-        assert_eq!(UVec3::new(1, 2, 3), Vec3::new(1.0, 2.0, 3.0).as_u32());
+        assert_eq!(
+            IVec3::new(-1, -2, -3),
+            Vec3::new(-1.0, -2.0, -3.0).as_ivec3()
+        );
+        assert_eq!(UVec3::new(1, 2, 3), Vec3::new(1.0, 2.0, 3.0).as_uvec3());
 
         assert_eq!(
             DVec3::new(-1.0, -2.0, -3.0),
-            Vec3A::new(-1.0, -2.0, -3.0).as_f64()
+            Vec3A::new(-1.0, -2.0, -3.0).as_dvec3()
         );
         assert_eq!(
             IVec3::new(-1, -2, -3),
-            Vec3A::new(-1.0, -2.0, -3.0).as_i32()
+            Vec3A::new(-1.0, -2.0, -3.0).as_ivec3()
         );
-        assert_eq!(UVec3::new(1, 2, 3), Vec3A::new(1.0, 2.0, 3.0).as_u32());
+        assert_eq!(UVec3::new(1, 2, 3), Vec3A::new(1.0, 2.0, 3.0).as_uvec3());
 
         assert_eq!(
             IVec3::new(-1, -2, -3),
-            DVec3::new(-1.0, -2.0, -3.0).as_i32()
+            DVec3::new(-1.0, -2.0, -3.0).as_ivec3()
         );
-        assert_eq!(UVec3::new(1, 2, 3), DVec3::new(1.0, 2.0, 3.0).as_u32());
+        assert_eq!(UVec3::new(1, 2, 3), DVec3::new(1.0, 2.0, 3.0).as_uvec3());
         assert_eq!(
             Vec3::new(-1.0, -2.0, -3.0),
-            DVec3::new(-1.0, -2.0, -3.0).as_f32()
+            DVec3::new(-1.0, -2.0, -3.0).as_vec3()
         );
 
         assert_eq!(
             DVec3::new(-1.0, -2.0, -3.0),
-            IVec3::new(-1, -2, -3).as_f64()
+            IVec3::new(-1, -2, -3).as_dvec3()
         );
-        assert_eq!(UVec3::new(1, 2, 3), IVec3::new(1, 2, 3).as_u32());
-        assert_eq!(Vec3::new(-1.0, -2.0, -3.0), IVec3::new(-1, -2, -3).as_f32());
+        assert_eq!(UVec3::new(1, 2, 3), IVec3::new(1, 2, 3).as_uvec3());
+        assert_eq!(
+            Vec3::new(-1.0, -2.0, -3.0),
+            IVec3::new(-1, -2, -3).as_vec3()
+        );
 
-        assert_eq!(DVec3::new(1.0, 2.0, 3.0), UVec3::new(1, 2, 3).as_f64());
-        assert_eq!(IVec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_i32());
-        assert_eq!(Vec3::new(1.0, 2.0, 3.0), UVec3::new(1, 2, 3).as_f32());
+        assert_eq!(DVec3::new(1.0, 2.0, 3.0), UVec3::new(1, 2, 3).as_dvec3());
+        assert_eq!(IVec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_ivec3());
+        assert_eq!(Vec3::new(1.0, 2.0, 3.0), UVec3::new(1, 2, 3).as_vec3());
     }
 
     impl_vec3_float_tests!(f32, const_vec3, vec3, Vec3, BVec3);

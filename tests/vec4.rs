@@ -897,48 +897,48 @@ mod vec4 {
         use glam::{DVec4, IVec4, UVec4};
         assert_eq!(
             DVec4::new(-1.0, -2.0, -3.0, -4.0),
-            Vec4::new(-1.0, -2.0, -3.0, -4.0).as_f64()
+            Vec4::new(-1.0, -2.0, -3.0, -4.0).as_dvec4()
         );
         assert_eq!(
             IVec4::new(-1, -2, -3, -4),
-            Vec4::new(-1.0, -2.0, -3.0, -4.0).as_i32()
+            Vec4::new(-1.0, -2.0, -3.0, -4.0).as_ivec4()
         );
         assert_eq!(
             UVec4::new(1, 2, 3, 4),
-            Vec4::new(1.0, 2.0, 3.0, 4.0).as_u32()
+            Vec4::new(1.0, 2.0, 3.0, 4.0).as_uvec4()
         );
 
         assert_eq!(
             IVec4::new(-1, -2, -3, -4),
-            DVec4::new(-1.0, -2.0, -3.0, -4.0).as_i32()
+            DVec4::new(-1.0, -2.0, -3.0, -4.0).as_ivec4()
         );
         assert_eq!(
             UVec4::new(1, 2, 3, 4),
-            DVec4::new(1.0, 2.0, 3.0, 4.0).as_u32()
+            DVec4::new(1.0, 2.0, 3.0, 4.0).as_uvec4()
         );
         assert_eq!(
             Vec4::new(-1.0, -2.0, -3.0, -4.0),
-            DVec4::new(-1.0, -2.0, -3.0, -4.0).as_f32()
+            DVec4::new(-1.0, -2.0, -3.0, -4.0).as_vec4()
         );
 
         assert_eq!(
             DVec4::new(-1.0, -2.0, -3.0, -4.0),
-            IVec4::new(-1, -2, -3, -4).as_f64()
+            IVec4::new(-1, -2, -3, -4).as_dvec4()
         );
-        assert_eq!(UVec4::new(1, 2, 3, 4), IVec4::new(1, 2, 3, 4).as_u32());
+        assert_eq!(UVec4::new(1, 2, 3, 4), IVec4::new(1, 2, 3, 4).as_uvec4());
         assert_eq!(
             Vec4::new(-1.0, -2.0, -3.0, -4.0),
-            IVec4::new(-1, -2, -3, -4).as_f32()
+            IVec4::new(-1, -2, -3, -4).as_vec4()
         );
 
         assert_eq!(
             DVec4::new(1.0, 2.0, 3.0, 4.0),
-            UVec4::new(1, 2, 3, 4).as_f64()
+            UVec4::new(1, 2, 3, 4).as_dvec4()
         );
-        assert_eq!(IVec4::new(1, 2, 3, 4), UVec4::new(1, 2, 3, 4).as_i32());
+        assert_eq!(IVec4::new(1, 2, 3, 4), UVec4::new(1, 2, 3, 4).as_ivec4());
         assert_eq!(
             Vec4::new(1.0, 2.0, 3.0, 4.0),
-            UVec4::new(1, 2, 3, 4).as_f32()
+            UVec4::new(1, 2, 3, 4).as_vec4()
         );
     }
 

@@ -779,42 +779,194 @@ macro_rules! impl_vecn_signed_traits {
     };
 }
 
-macro_rules! impl_vecn_as_f32 {
-    ($ret:ident, $($e:ident),+) => {
+macro_rules! impl_as_vec2 {
+    () => {
+        #[deprecated(since = "0.18.0", note = "please use `as_vec2()` instead")]
+        #[inline(always)]
+        pub fn as_f32(&self) -> Vec2 {
+            self.as_vec2()
+        }
+
         /// Casts all elements of `self` to `f32`.
         #[inline(always)]
-        pub fn as_f32(&self) -> $ret {
-            $ret::new($(self.$e as f32),+)
+        pub fn as_vec2(&self) -> Vec2 {
+            Vec2::new(self.x as f32, self.y as f32)
         }
     };
 }
 
-macro_rules! impl_vecn_as_f64 {
-    ($ret:ident, $($e:ident),+) => {
+macro_rules! impl_as_vec3 {
+    () => {
+        #[deprecated(since = "0.18.0", note = "please use `as_vec3()` instead")]
+        #[inline(always)]
+        pub fn as_f32(&self) -> Vec3 {
+            self.as_vec3()
+        }
+
+        /// Casts all elements of `self` to `f32`.
+        #[inline(always)]
+        pub fn as_vec3(&self) -> Vec3 {
+            Vec3::new(self.x as f32, self.y as f32, self.z as f32)
+        }
+    };
+}
+
+macro_rules! impl_as_vec4 {
+    () => {
+        #[deprecated(since = "0.18.0", note = "please use `as_vec4()` instead")]
+        #[inline(always)]
+        pub fn as_f32(&self) -> Vec4 {
+            self.as_vec4()
+        }
+
+        /// Casts all elements of `self` to `f32`.
+        #[inline(always)]
+        pub fn as_vec4(&self) -> Vec4 {
+            Vec4::new(self.x as f32, self.y as f32, self.z as f32, self.w as f32)
+        }
+    };
+}
+
+macro_rules! impl_as_dvec2 {
+    () => {
+        #[deprecated(since = "0.18.0", note = "please use `as_dvec2()` instead")]
+        #[inline(always)]
+        pub fn as_f64(&self) -> DVec2 {
+            self.as_dvec2()
+        }
+
         /// Casts all elements of `self` to `f64`.
         #[inline(always)]
-        pub fn as_f64(&self) -> $ret {
-            $ret::new($(self.$e as f64),+)
+        pub fn as_dvec2(&self) -> DVec2 {
+            DVec2::new(self.x as f64, self.y as f64)
         }
     };
 }
 
-macro_rules! impl_vecn_as_i32 {
-    ($ret:ident, $($e:ident),+) => {
+macro_rules! impl_as_dvec3 {
+    () => {
+        #[deprecated(since = "0.18.0", note = "please use `as_dvec3()` instead")]
+        #[inline(always)]
+        pub fn as_f64(&self) -> DVec3 {
+            self.as_dvec3()
+        }
+
+        /// Casts all elements of `self` to `f64`.
+        #[inline(always)]
+        pub fn as_dvec3(&self) -> DVec3 {
+            DVec3::new(self.x as f64, self.y as f64, self.z as f64)
+        }
+    };
+}
+
+macro_rules! impl_as_dvec4 {
+    () => {
+        #[deprecated(since = "0.18.0", note = "please use `as_dvec4()` instead")]
+        #[inline(always)]
+        pub fn as_f64(&self) -> DVec4 {
+            self.as_dvec4()
+        }
+
+        /// Casts all elements of `self` to `f64`.
+        #[inline(always)]
+        pub fn as_dvec4(&self) -> DVec4 {
+            DVec4::new(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
+        }
+    };
+}
+
+macro_rules! impl_as_ivec2 {
+    () => {
+        #[deprecated(since = "0.18.0", note = "please use `as_ivec2()` instead")]
+        #[inline(always)]
+        pub fn as_i32(&self) -> IVec2 {
+            self.as_ivec2()
+        }
+
         /// Casts all elements of `self` to `i32`.
         #[inline(always)]
-        pub fn as_i32(&self) -> $ret {
-            $ret::new($(self.$e as i32),+)
+        pub fn as_ivec2(&self) -> IVec2 {
+            IVec2::new(self.x as i32, self.y as i32)
         }
     };
 }
 
-macro_rules! impl_vecn_as_u32 {
-    ($ret:ident, $($e:ident),+) => {
+macro_rules! impl_as_ivec3 {
+    () => {
+        #[deprecated(since = "0.18.0", note = "please use `as_ivec3()` instead")]
+        #[inline(always)]
+        pub fn as_i32(&self) -> IVec3 {
+            self.as_ivec3()
+        }
+
+        /// Casts all elements of `self` to `i32`.
+        #[inline(always)]
+        pub fn as_ivec3(&self) -> IVec3 {
+            IVec3::new(self.x as i32, self.y as i32, self.z as i32)
+        }
+    };
+}
+
+macro_rules! impl_as_ivec4 {
+    () => {
+        #[deprecated(since = "0.18.0", note = "please use `as_ivec4()` instead")]
+        #[inline(always)]
+        pub fn as_i32(&self) -> IVec4 {
+            self.as_ivec4()
+        }
+
+        /// Casts all elements of `self` to `i32`.
+        #[inline(always)]
+        pub fn as_ivec4(&self) -> IVec4 {
+            IVec4::new(self.x as i32, self.y as i32, self.z as i32, self.w as i32)
+        }
+    };
+}
+
+macro_rules! impl_as_uvec2 {
+    () => {
+        #[deprecated(since = "0.18.0", note = "please use `as_uvec2()` instead")]
+        #[inline(always)]
+        pub fn as_u32(&self) -> UVec2 {
+            self.as_uvec2()
+        }
+
         /// Casts all elements of `self` to `u32`.
         #[inline(always)]
-        pub fn as_u32(&self) -> $ret {
-            $ret::new($(self.$e as u32),+)
+        pub fn as_uvec2(&self) -> UVec2 {
+            UVec2::new(self.x as u32, self.y as u32)
+        }
+    };
+}
+
+macro_rules! impl_as_uvec3 {
+    () => {
+        #[deprecated(since = "0.18.0", note = "please use `as_uvec3()` instead")]
+        #[inline(always)]
+        pub fn as_u32(&self) -> UVec3 {
+            self.as_uvec3()
+        }
+
+        /// Casts all elements of `self` to `u32`.
+        #[inline(always)]
+        pub fn as_uvec3(&self) -> UVec3 {
+            UVec3::new(self.x as u32, self.y as u32, self.z as u32)
+        }
+    };
+}
+
+macro_rules! impl_as_uvec4 {
+    () => {
+        #[deprecated(since = "0.18.0", note = "please use `as_uvec4()` instead")]
+        #[inline(always)]
+        pub fn as_u32(&self) -> UVec4 {
+            self.as_uvec4()
+        }
+
+        /// Casts all elements of `self` to `u32`.
+        #[inline(always)]
+        pub fn as_uvec4(&self) -> UVec4 {
+            UVec4::new(self.x as u32, self.y as u32, self.z as u32, self.w as u32)
         }
     };
 }

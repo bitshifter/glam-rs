@@ -730,21 +730,21 @@ mod vec2 {
     #[test]
     fn test_as() {
         use glam::{DVec2, IVec2, UVec2};
-        assert_eq!(DVec2::new(-1.0, -2.0), Vec2::new(-1.0, -2.0).as_f64());
-        assert_eq!(IVec2::new(-1, -2), Vec2::new(-1.0, -2.0).as_i32());
-        assert_eq!(UVec2::new(1, 2), Vec2::new(1.0, 2.0).as_u32());
+        assert_eq!(DVec2::new(-1.0, -2.0), Vec2::new(-1.0, -2.0).as_dvec2());
+        assert_eq!(IVec2::new(-1, -2), Vec2::new(-1.0, -2.0).as_ivec2());
+        assert_eq!(UVec2::new(1, 2), Vec2::new(1.0, 2.0).as_uvec2());
 
-        assert_eq!(IVec2::new(-1, -2), DVec2::new(-1.0, -2.0).as_i32());
-        assert_eq!(UVec2::new(1, 2), DVec2::new(1.0, 2.0).as_u32());
-        assert_eq!(Vec2::new(-1.0, -2.0), DVec2::new(-1.0, -2.0).as_f32());
+        assert_eq!(IVec2::new(-1, -2), DVec2::new(-1.0, -2.0).as_ivec2());
+        assert_eq!(UVec2::new(1, 2), DVec2::new(1.0, 2.0).as_uvec2());
+        assert_eq!(Vec2::new(-1.0, -2.0), DVec2::new(-1.0, -2.0).as_vec2());
 
-        assert_eq!(DVec2::new(-1.0, -2.0), IVec2::new(-1, -2).as_f64());
-        assert_eq!(UVec2::new(1, 2), IVec2::new(1, 2).as_u32());
-        assert_eq!(Vec2::new(-1.0, -2.0), IVec2::new(-1, -2).as_f32());
+        assert_eq!(DVec2::new(-1.0, -2.0), IVec2::new(-1, -2).as_dvec2());
+        assert_eq!(UVec2::new(1, 2), IVec2::new(1, 2).as_uvec2());
+        assert_eq!(Vec2::new(-1.0, -2.0), IVec2::new(-1, -2).as_vec2());
 
-        assert_eq!(DVec2::new(1.0, 2.0), UVec2::new(1, 2).as_f64());
-        assert_eq!(IVec2::new(1, 2), UVec2::new(1, 2).as_i32());
-        assert_eq!(Vec2::new(1.0, 2.0), UVec2::new(1, 2).as_f32());
+        assert_eq!(DVec2::new(1.0, 2.0), UVec2::new(1, 2).as_dvec2());
+        assert_eq!(IVec2::new(1, 2), UVec2::new(1, 2).as_ivec2());
+        assert_eq!(Vec2::new(1.0, 2.0), UVec2::new(1, 2).as_vec2());
     }
 
     impl_vec2_float_tests!(f32, const_vec2, vec2, Vec2, Vec3, BVec2, Mat2);

@@ -14,6 +14,12 @@ The format is based on [Keep a Changelog], and this project adheres to
   quaternion.
 * Added `From((Scalar, Vector3))` for 4D vector types.
 
+### Changed
+
+* Deprecated `as_f32()`, `as_f64()`, `as_i32()` and `as_u32()` methods in favor
+  of more specifc methods such as `as_vec2()`, `as_dvec2()`, `as_ivec2()` and
+  `as_uvec2()` and so on.
+
 ## [0.17.3] - 2021-07-18
 
 ### Fixed

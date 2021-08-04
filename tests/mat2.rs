@@ -252,11 +252,11 @@ mod mat2 {
         use glam::DMat2;
         assert_eq!(
             DMat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]),
-            Mat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]).as_f64()
+            Mat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]).as_dmat2()
         );
         assert_eq!(
             Mat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]),
-            DMat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]).as_f32()
+            DMat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]).as_mat2()
         );
     }
 
