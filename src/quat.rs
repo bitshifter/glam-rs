@@ -244,6 +244,12 @@ macro_rules! impl_quat_methods {
             euler.convert_quat(self)
         }
 
+        /// Returns the vector part of the quaternion.
+        #[inline(always)]
+        pub fn xyz(self) -> $vec3 {
+            $vec3::new(self.x, self.y, self.z)
+        }
+
         /// Returns the quaternion conjugate of `self`. For a unit quaternion the
         /// conjugate is also the inverse.
         #[must_use]

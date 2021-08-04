@@ -348,6 +348,8 @@ macro_rules! impl_quat_tests {
             assert!(a.y == y);
             assert!(a.z == z);
             assert!(a.w == w);
+
+            assert_eq!($vec3::new(1.0, 2.0, 3.0), a.xyz());
         }
 
         #[test]

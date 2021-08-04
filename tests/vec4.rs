@@ -52,6 +52,11 @@ macro_rules! impl_vec4_tests {
 
             assert_eq!(
                 v,
+                $vec4::from((1 as $t, $vec3::new(2 as $t, 3 as $t, 4 as $t)))
+            );
+
+            assert_eq!(
+                v,
                 $vec4::from(($vec2::new(1 as $t, 2 as $t), 3 as $t, 4 as $t))
             );
             assert_eq!(
@@ -934,6 +939,19 @@ mod vec4 {
         assert_eq!(
             Vec4::new(1.0, 2.0, 3.0, 4.0),
             UVec4::new(1, 2, 3, 4).as_f32()
+        );
+    }
+
+    #[test]
+    fn test_vec3a() {
+        use glam::Vec3A;
+        assert_eq!(
+            Vec4::new(1.0, 2.0, 3.0, 4.0),
+            Vec4::from((Vec3A::new(1.0, 2.0, 3.0), 4.0))
+        );
+        assert_eq!(
+            Vec4::new(1.0, 2.0, 3.0, 4.0),
+            Vec4::from((1.0, Vec3A::new(2.0, 3.0, 4.0)))
         );
     }
 

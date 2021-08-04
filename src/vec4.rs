@@ -152,6 +152,13 @@ macro_rules! impl_vec4_common_traits {
             }
         }
 
+        impl From<($t, $vec3)> for $vec4 {
+            #[inline(always)]
+            fn from((x, v): ($t, $vec3)) -> Self {
+                Self::new(x, v.x, v.y, v.z)
+            }
+        }
+
         impl From<($vec2, $t, $t)> for $vec4 {
             #[inline(always)]
             fn from((v, z, w): ($vec2, $t, $t)) -> Self {
@@ -267,6 +274,20 @@ impl From<Vec4> for Vec3A {
     fn from(v: Vec4) -> Self {
         #[allow(clippy::useless_conversion)]
         Self(v.0.into())
+    }
+}
+
+impl From<(Vec3A, f32)> for Vec4 {
+    #[inline(always)]
+    fn from((v, w): (Vec3A, f32)) -> Self {
+        v.extend(w)
+    }
+}
+
+impl From<(f32, Vec3A)> for Vec4 {
+    #[inline(always)]
+    fn from((x, v): (f32, Vec3A)) -> Self {
+        Self::new(x, v.x, v.y, v.z)
     }
 }
 
