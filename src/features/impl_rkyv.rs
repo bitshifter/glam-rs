@@ -116,3 +116,82 @@ mod u32 {
     impl_rkyv!(UVec3);
     impl_rkyv!(UVec4);
 }
+
+#[cfg(test)]
+mod test {
+    pub type DefaultSerializer = rkyv::ser::serializers::CoreSerializer<256, 256>;
+    pub type DefaultDeserializer = rkyv::Infallible;
+    use rkyv::ser::Serializer;
+    use rkyv::*;
+    pub fn test_archive<T>(value: &T)
+    where
+        T: core::fmt::Debug + PartialEq + rkyv::Serialize<DefaultSerializer>,
+        T::Archived: core::fmt::Debug + PartialEq<T> + rkyv::Deserialize<T, DefaultDeserializer>,
+    {
+        let mut serializer = DefaultSerializer::default();
+        serializer
+            .serialize_value(value)
+            .expect("failed to archive value");
+        let len = serializer.pos();
+        let buffer = serializer.into_serializer().into_inner();
+
+        let archived_value = unsafe { rkyv::archived_root::<T>(&buffer[0..len]) };
+        assert_eq!(archived_value, value);
+        let mut deserializer = DefaultDeserializer::default();
+        assert_eq!(
+            &archived_value.deserialize(&mut deserializer).unwrap(),
+            value
+        );
+    }
+
+    #[test]
+    fn test_rkyv() {
+        use crate::{Affine2, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
+        test_archive(&Affine2::from_cols_array(&[1.0, 0.0, 2.0, 0.0, 3.0, 4.0]));
+        test_archive(&Affine3A::from_cols_array(&[
+            1.0, 0.0, 0.0, 0.0, 2.0, 0.0, 0.0, 0.0, 3.0, 4.0, 5.0, 6.0,
+        ]));
+        test_archive(&Mat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]));
+        test_archive(&Mat3::from_cols_array(&[
+            1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0,
+        ]));
+        test_archive(&Mat3A::from_cols_array(&[
+            1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0,
+        ]));
+        test_archive(&Mat4::from_cols_array(&[
+            1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0,
+        ]));
+        test_archive(&Quat::from_xyzw(1.0, 2.0, 3.0, 4.0));
+        test_archive(&Vec2::new(1.0, 2.0));
+        test_archive(&Vec3::new(1.0, 2.0, 3.0));
+        test_archive(&Vec3A::new(1.0, 2.0, 3.0));
+        test_archive(&Vec4::new(1.0, 2.0, 3.0, 4.0));
+
+        use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
+        test_archive(&DAffine2::from_cols_array(&[1.0, 0.0, 2.0, 0.0, 3.0, 4.0]));
+        test_archive(&DAffine3::from_cols_array(&[
+            1.0, 0.0, 0.0, 0.0, 2.0, 0.0, 0.0, 0.0, 3.0, 4.0, 5.0, 6.0,
+        ]));
+        test_archive(&DMat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]));
+        test_archive(&DMat3::from_cols_array(&[
+            1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0,
+        ]));
+        test_archive(&DMat4::from_cols_array(&[
+            1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0,
+        ]));
+        test_archive(&DQuat::from_xyzw(1.0, 2.0, 3.0, 4.0));
+        test_archive(&DVec2::new(1.0, 2.0));
+        test_archive(&DVec3::new(1.0, 2.0, 3.0));
+        test_archive(&DVec4::new(1.0, 2.0, 3.0, 4.0));
+
+        use crate::{IVec2, IVec3, IVec4};
+        test_archive(&IVec2::new(-1, 2));
+        test_archive(&IVec3::new(-1, 2, 3));
+        test_archive(&IVec4::new(-1, 2, 3, 4));
+
+        use crate::{UVec2, UVec3, UVec4};
+        test_archive(&UVec2::new(1, 2));
+        test_archive(&UVec3::new(1, 2, 3));
+        test_archive(&UVec4::new(1, 2, 3, 4));
+    }
+}
