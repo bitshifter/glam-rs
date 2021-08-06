@@ -82,6 +82,10 @@ glam = { version = "0.17.0", default-features = false }
 * [`serde`] - implementations of `Serialize` and `Deserialize` for all `glam`
   types. Note that serialization should work between builds of `glam` with and
   without SIMD enabled
+* [`rkyv`] - implementations of `Archive`, `Serialize` and `Deserialize` for all
+  `glam` types. Note that serialization is not interoperable with and without the
+  `scalar-math` feature. It should work between all other builds of `glam`
+* [`bytecheck`] - to perform archive validation when using the rkyv feature
 
 [`approx`]: https://docs.rs/approx
 [`bytemuck`]: https://docs.rs/bytemuck
@@ -90,6 +94,8 @@ glam = { version = "0.17.0", default-features = false }
 [`num-traits`]: https://github.com/rust-num/num-traits
 [`rand`]: https://github.com/rust-random/rand
 [`serde`]: https://serde.rs
+[`rkyv`]: https://github.com/rkyv/rkyv
+[`bytecheck`]: https://github.com/rkyv/bytecheck
 
 ### Feature gates
 
