@@ -41,12 +41,7 @@ macro_rules! impl_rkyv_derive {
 
     (@archive_deserialize $type:ty) => {
         const _: () = {
-            #[cfg(not(any(feature = "archive_le", feature = "archive_be")))]
             type Archived = $type;
-            #[cfg(feature = "archive_le")]
-            type Archived = rend::LittleEndian<$type>;
-            #[cfg(feature = "archive_be")]
-            type Archived = rend::BigEndian<$type>;
 
             impl Archive for $type {
                 type Archived = Archived;

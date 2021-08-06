@@ -84,7 +84,8 @@ glam = { version = "0.17.0", default-features = false }
   without SIMD enabled
 * [`rkyv`] - implementations of `Archive`, `Serialize` and `Deserialize` for all
   `glam` types. Note that serialization is not interoperable with and without the
-  `scalar-math` feature. It should work between all other builds of `glam`
+  `scalar-math` feature. It should work between all other builds of `glam`.
+  Endian conversion is currently not supported
 * [`bytecheck`] - to perform archive validation when using the rkyv feature
 
 [`approx`]: https://docs.rs/approx
