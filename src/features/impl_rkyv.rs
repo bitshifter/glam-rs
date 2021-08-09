@@ -40,26 +40,22 @@ macro_rules! impl_rkyv_derive {
     };
 
     (@archive_deserialize $type:ty) => {
-        const _: () = {
+        impl Archive for $type {
             type Archived = $type;
+            type Resolver = ();
 
-            impl Archive for $type {
-                type Archived = Archived;
-                type Resolver = ();
-
-                #[inline]
-                unsafe fn resolve(&self, _: usize, _: Self::Resolver, out: *mut Self::Archived) {
-                    out.write(to_archived!(*self as Self));
-                }
+            #[inline]
+            unsafe fn resolve(&self, _: usize, _: Self::Resolver, out: *mut Self::Archived) {
+                out.write(to_archived!(*self as Self));
             }
+        }
 
-            impl<D: Fallible + ?Sized> Deserialize<$type, D> for Archived {
-                #[inline]
-                fn deserialize(&self, _: &mut D) -> Result<$type, D::Error> {
-                    Ok(from_archived!(*self))
-                }
+        impl<D: Fallible + ?Sized> Deserialize<$type, D> for $type {
+            #[inline]
+            fn deserialize(&self, _: &mut D) -> Result<$type, D::Error> {
+                Ok(from_archived!(*self))
             }
-        };
+        }
     };
 }
 
