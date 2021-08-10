@@ -114,7 +114,7 @@ macro_rules! impl_vec4_common_traits {
 
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Debug for $vec4 {
-            fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+            fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
                 fmt.debug_tuple(stringify!($vec4))
                     .field(&self.x)
                     .field(&self.y)
@@ -126,7 +126,7 @@ macro_rules! impl_vec4_common_traits {
 
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Display for $vec4 {
-            fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+            fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
                 write!(fmt, "[{}, {}, {}, {}]", self.x, self.y, self.z, self.w)
             }
         }

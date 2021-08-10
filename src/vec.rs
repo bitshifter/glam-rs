@@ -24,7 +24,7 @@ macro_rules! impl_vecn_common_methods {
             $vectrait::dot(self.0, other.0)
         }
 
-        /// Returns a vector containing the mininum values for each element of `self` and `other`.
+        /// Returns a vector containing the minimum values for each element of `self` and `other`.
         ///
         /// In other words this computes `[self.x.max(other.x), self.y.max(other.y), ..]`.
         #[inline(always)]
@@ -42,7 +42,7 @@ macro_rules! impl_vecn_common_methods {
 
         /// Component-wise clamping of values, similar to [`f32::clamp`].
         ///
-        /// Each element in `min` must be less-or-equal to the corresponing element in `max`.
+        /// Each element in `min` must be less-or-equal to the corresponding element in `max`.
         ///
         /// # Panics
         ///

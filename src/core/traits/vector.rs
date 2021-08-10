@@ -74,7 +74,7 @@ pub trait Vector4Const: VectorConst {
 /// Vector methods that are independent of vector dimension.
 ///
 /// These methods typically need to be implemented for each type as while the method signature does
-/// not imply any dimensionality, the implemtation does.
+/// not imply any dimensionality, the implementation does.
 pub trait Vector<T>: Sized + Copy + Clone {
     type Mask;
 
@@ -427,7 +427,7 @@ where
 /// Vector methods for vectors of signed types that are independent of vector dimension.
 ///
 /// These methods typically need to be implemented for each type as while the method signature does
-/// not imply any dimensionality, the implemtation does.
+/// not imply any dimensionality, the implementation does.
 pub trait SignedVector<T: SignedEx>: Vector<T> {
     fn neg(self) -> Self;
 }

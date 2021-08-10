@@ -702,7 +702,7 @@ macro_rules! impl_mat4_traits {
 
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Debug for $mat4 {
-            fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+            fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
                 fmt.debug_struct(stringify!($mat4))
                     .field("x_axis", &self.x_axis)
                     .field("y_axis", &self.y_axis)
@@ -714,7 +714,7 @@ macro_rules! impl_mat4_traits {
 
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Display for $mat4 {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
                 write!(
                     f,
                     "[{}, {}, {}, {}]",
@@ -735,7 +735,7 @@ type InnerF32 = Columns4<XYZW<f32>>;
 ///
 /// This 4x4 matrix type features convenience methods for creating and using affine transforms and
 /// perspective projections. If you are primarily dealing with 3D affine transformations
-/// condidering using [`Affine3A`][crate::Affine3A] which is faster tha a 4x4 matrix for some
+/// considering using [`Affine3A`][crate::Affine3A] which is faster tha a 4x4 matrix for some
 /// affine operations.
 ///
 /// Affine transformations including 3D translation, rotation and scale can be created
@@ -814,7 +814,7 @@ type InnerF64 = Columns4<XYZW<f64>>;
 ///
 /// This 4x4 matrix type features convenience methods for creating and using affine transforms and
 /// perspective projections. If you are primarily dealing with 3D affine transformations
-/// condidering using [`DAffine3`][crate::DAffine3] which is faster tha a 4x4 matrix for some
+/// considering using [`DAffine3`][crate::DAffine3] which is faster tha a 4x4 matrix for some
 /// affine operations.
 ///
 /// Affine transformations including 3D translation, rotation and scale can be created

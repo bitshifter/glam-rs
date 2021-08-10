@@ -37,7 +37,7 @@ types use 128-bit wide SIMD vector types for storage on x86/x86_64
 architectures.  As a result, these types are all 16 byte aligned and depending
 on the size of the type or the type's members, they may contain internal
 padding.  This results in some wasted space in the cases of `Vec3A`, `Mat3A`,
-`Affine2` and `Affine3A`.  However the use of SIMD generally results in better
+`Affine2` and `Affine3A`.  However, the use of SIMD generally results in better
 performance than scalar math.
 
 `glam` outperforms similar Rust libraries for common operations as tested by the
@@ -125,8 +125,8 @@ contiguous memory.
 
 ### Co-ordinate system
 
-`glam` is co-ordinate system agnostic and intends to support both right handed
-and left handed conventions.
+`glam` is co-ordinate system agnostic and intends to support both right-handed
+and left-handed conventions.
 
 ## Design Philosophy
 
@@ -188,7 +188,7 @@ Thank you to all of the `glam` [contributors]!
 ## Support
 
 If you are interested in contributing or have a request or suggestion
-[start a discussion] on github. See [CONTRIBUTING.md] for more information for
+[start a discussion] on GitHub. See [CONTRIBUTING.md] for more information for
 contributors.
 
 The [Game Development in Rust Discord] and [Bevy Engine Discord] servers can are

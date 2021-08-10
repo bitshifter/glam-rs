@@ -144,7 +144,7 @@ assert_eq!(4.0, v.z);
 
 ## glam assertions
 
-`glam` does not enforce validiity checks on method parameters at runtime. For example methods that
+`glam` does not enforce validity checks on method parameters at runtime. For example methods that
 require normalized vectors as input such as `Quat::from_axis_angle(axis, angle)` will not check
 that axis is a valid normalized vector. To help catch unintended misuse of `glam` the
 `debug-glam-assert` or `glam-assert` features can be enabled to add checks ensure that inputs to
@@ -235,6 +235,12 @@ The minimum supported Rust version is `1.45.0`.
 #![doc(html_root_url = "https://docs.rs/glam/0.17.3")]
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(target_arch = "spirv", feature(asm, register_attr, repr_simd))]
+#![deny(
+    rust_2018_compatibility,
+    rust_2018_idioms,
+    future_incompatible,
+    nonstandard_style
+)]
 // This would require renaming a lot of stuff, disabling for now.
 #![allow(clippy::upper_case_acronyms)]
 // clippy doesn't like `to_array(&self)`

@@ -1,4 +1,4 @@
-Thanks for contributing to `glam`! These guidelines will try make the process
+Thanks for contributing to `glam`! These guidelines will try to make the process
 painless and efficient.
 
 The short guide to contributing is [open a github issue]. Pull requests are
@@ -29,7 +29,7 @@ please ensure any new functionality also has a test.
 
 If you feel some functionality could be optimized please [open a github issue]
 or submit a pull request. Any optimization pull request should include a
-benchmark if there isn't one already so I can confirm the performance
+benchmark if there isn't one already, so I can confirm the performance
 improvement.
 
 # Documentation

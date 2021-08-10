@@ -1,3 +1,6 @@
+// Wait until this bug is fix and float cmp to zero don't report a warning.
+// https://github.com/rust-lang/rust-clippy/issues/3804
+#![allow(clippy::float_cmp)]
 // num_traits is optional as it adds 70% to compile times. It is needed by no_std builds
 #[cfg(feature = "libm")]
 pub use num_traits::{Float, Num, Signed};
@@ -386,5 +389,5 @@ fn test_scalar_acos() {
 
     // input is clamped to -1.0..1.0
     assert_eq!(2.0_f64.acos_approx(), 0.0);
-    assert_eq!((-2.0_f64).acos_approx(), core::f64::consts::PI);
+    assert!(((-2.0_f64).acos_approx() - core::f64::consts::PI).abs() < f64::EPSILON);
 }
