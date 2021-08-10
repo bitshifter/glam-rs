@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
+### Breaking changes
+
+* Minimum Supported Rust Version (MSRV) bumpted to 1.53.0 for the optional
+  `rkyv` dependency and  Cargo feature resolver 2 support.
+
 ### Added
 
 * Added `Rem` and `RemAssign` implementations for all vector types.

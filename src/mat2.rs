@@ -68,7 +68,7 @@ macro_rules! impl_mat2_methods {
         }
 
         /// Creates a 2x2 matrix with its diagonal set to `diagonal` and all other entries set to 0.
-        #[cfg_attr(docsrs, doc(alias = "scale"))]
+        #[doc(alias = "scale")]
         #[inline(always)]
         pub fn from_diagonal(diagonal: $vec2) -> Self {
             Self($inner::from_diagonal(diagonal.0))

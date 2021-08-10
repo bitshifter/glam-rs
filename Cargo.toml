@@ -2,6 +2,7 @@
 name = "glam"
 version = "0.17.3" # remember to update html_root_url
 edition = "2018"
+resolver = "2"
 authors = ["Cameron Hart <cameron.hart@gmail.com>"]
 description = "A simple and fast 3D math library for games and graphics"
 repository = "https://github.com/bitshifter/glam-rs"
@@ -40,13 +41,14 @@ mint = { version = "0.5", optional = true, default-features = false }
 num-traits = { version = "0.2.14", optional = true, default-features = false }
 rand = { version = "0.8", optional = true, default-features = false }
 serde = { version = "1.0", optional = true, features = ["derive"] }
-rkyv = { version = "0.7", optional = true }
+rkyv = { version = "0.7", optional = true, default-features = false }
 bytecheck = { version = "0.6", optional = true, default-features = false}
 
 [dev-dependencies]
 criterion = { version = "0.3", features = ["html_reports"] }
-# rand_xoshiro is required for tests if rand is enabled
+rand = { version = "0.8", default-features = false }
 rand_xoshiro = "0.6"
+rkyv = "0.7" 
 serde_json = "1.0"
 
 [lib]
