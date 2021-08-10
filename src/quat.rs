@@ -446,7 +446,7 @@ macro_rules! impl_quat_traits {
 
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Debug for $quat {
-            fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+            fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
                 fmt.debug_tuple(stringify!($quat))
                     .field(&self.x)
                     .field(&self.y)
@@ -458,7 +458,7 @@ macro_rules! impl_quat_traits {
 
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Display for $quat {
-            fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+            fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
                 write!(fmt, "[{}, {}, {}, {}]", self.x, self.y, self.z, self.w)
             }
         }

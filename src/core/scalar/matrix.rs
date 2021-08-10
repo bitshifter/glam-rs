@@ -85,7 +85,7 @@ impl<T: NumEx> Matrix3x3<T, XYZ<T>> for Columns3<XYZ<T>> {
 
     #[inline]
     fn mul_vector(&self, other: XYZ<T>) -> XYZ<T> {
-        // default implementation uses splat_x etc, which might not be optimial. Need to check.
+        // default implementation uses splat_x etc, which might not be optimal. Need to check.
         let mut res = self.x_axis.mul_scalar(other.x);
         res = self.y_axis.mul_scalar(other.y).add(res);
         res = self.z_axis.mul_scalar(other.z).add(res);

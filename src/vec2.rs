@@ -122,14 +122,14 @@ macro_rules! impl_vec2_common_traits {
         }
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Display for $vec2 {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
                 write!(f, "[{}, {}]", self.x, self.y)
             }
         }
 
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Debug for $vec2 {
-            fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+            fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
                 fmt.debug_tuple(stringify!($vec2))
                     .field(&self.x)
                     .field(&self.y)

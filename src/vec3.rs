@@ -124,7 +124,7 @@ macro_rules! impl_vec3_common_traits {
 
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Debug for $vec3 {
-            fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+            fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
                 fmt.debug_tuple(stringify!($vec3))
                     .field(&self.x)
                     .field(&self.y)
@@ -135,7 +135,7 @@ macro_rules! impl_vec3_common_traits {
 
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Display for $vec3 {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
                 write!(f, "[{}, {}, {}]", self.x, self.y, self.z)
             }
         }
@@ -208,7 +208,7 @@ macro_rules! impl_vec3_float_methods {
             self.0.angle_between(other.0)
         }
 
-        /// Returns somes vector that is orthogonal to the given one.
+        /// Returns some vector that is orthogonal to the given one.
         ///
         /// The input vector must be finite and non-zero.
         ///

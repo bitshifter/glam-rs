@@ -263,7 +263,7 @@ macro_rules! impl_affine3_methods {
             /// # Panics
             ///
             /// Will panic if the determinant `self.matrix3` is zero or if the resulting scale
-            /// vector containts any zero elements when `glam_assert` is enabled.
+            /// vector contains any zero elements when `glam_assert` is enabled.
             #[inline(always)]
             pub fn to_scale_rotation_translation(&self) -> ($vec3, $quat, $vec3) {
                 // TODO: migrate to core module
@@ -438,7 +438,7 @@ macro_rules! impl_affine3_traits {
 
         #[cfg(not(target_arch = "spirv"))]
         impl core::fmt::Debug for $affine3 {
-            fn fmt(&self, fmt: &mut core::fmt::Formatter) -> core::fmt::Result {
+            fn fmt(&self, fmt: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
                 fmt.debug_struct(stringify!($affine3))
                     .field("matrix3", &self.matrix3)
                     .field("translation", &self.translation)
@@ -448,7 +448,7 @@ macro_rules! impl_affine3_traits {
 
         #[cfg(not(target_arch = "spirv"))]
         impl core::fmt::Display for $affine3 {
-            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
                 write!(
                     f,
                     "[{}, {}, {}, {}]",

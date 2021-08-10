@@ -303,7 +303,7 @@ macro_rules! impl_affine2_traits {
 
         #[cfg(not(target_arch = "spirv"))]
         impl core::fmt::Debug for $affine2 {
-            fn fmt(&self, fmt: &mut core::fmt::Formatter) -> core::fmt::Result {
+            fn fmt(&self, fmt: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
                 fmt.debug_struct(stringify!($affine2))
                     .field("matrix2", &self.matrix2)
                     .field("translation", &self.translation)
@@ -313,7 +313,7 @@ macro_rules! impl_affine2_traits {
 
         #[cfg(not(target_arch = "spirv"))]
         impl core::fmt::Display for $affine2 {
-            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
                 write!(f, "[{}, {}, {}]", self.x_axis, self.y_axis, self.z_axis)
             }
         }

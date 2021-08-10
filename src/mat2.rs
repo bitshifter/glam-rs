@@ -291,7 +291,7 @@ macro_rules! impl_mat2_traits {
 
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Debug for $mat2 {
-            fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+            fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
                 fmt.debug_struct(stringify!($mat2))
                     .field("x_axis", &self.x_axis)
                     .field("y_axis", &self.y_axis)
@@ -301,7 +301,7 @@ macro_rules! impl_mat2_traits {
 
         #[cfg(not(target_arch = "spirv"))]
         impl fmt::Display for $mat2 {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
                 write!(f, "[{}, {}]", self.x_axis, self.y_axis)
             }
         }

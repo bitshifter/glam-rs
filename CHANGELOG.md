@@ -17,7 +17,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 ### Changed
 
 * Deprecated `as_f32()`, `as_f64()`, `as_i32()` and `as_u32()` methods in favor
-  of more specifc methods such as `as_vec2()`, `as_dvec2()`, `as_ivec2()` and
+  of more specific methods such as `as_vec2()`, `as_dvec2()`, `as_ivec2()` and
   `as_uvec2()` and so on.
 
 ## [0.17.3] - 2021-07-18
@@ -332,7 +332,7 @@ The format is based on [Keep a Changelog], and this project adheres to
   `.y`, and `.z` instead of accessors.
 * `Quat`, `Vec3A` and `Vec4` implement `Deref` and `DerefMut` for the new `XYZ`
   and `XYZW` structs to emulate public named field access.
-* `Mat3` and `Mat4` had their axis members made pubic instead of needing
+* `Mat3` and `Mat4` had their axis members made public instead of needing
   accessors.
 * `Mat2` implements `Deref` and `DerefMut` for the new `XYAxes` struct to
   emulate public named field access.

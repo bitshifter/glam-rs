@@ -22,7 +22,7 @@ macro_rules! impl_serde_vec2 {
                 impl<'de> Visitor<'de> for Vec2Visitor {
                     type Value = $vec2;
 
-                    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                    fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
                         formatter.write_str(concat!("struct ", stringify!($vec2)))
                     }
 
@@ -89,7 +89,7 @@ macro_rules! impl_serde_vec3 {
                 impl<'de> Visitor<'de> for Vec3Visitor {
                     type Value = $vec3;
 
-                    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                    fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
                         formatter.write_str(concat!("struct ", stringify!($vec3)))
                     }
 
@@ -159,7 +159,7 @@ macro_rules! impl_serde_vec4 {
                 impl<'de> Visitor<'de> for Vec4Visitor {
                     type Value = $vec4;
 
-                    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                    fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
                         formatter.write_str(concat!("struct ", stringify!($vec4)))
                     }
 
@@ -234,7 +234,7 @@ macro_rules! impl_serde_quat {
                 impl<'de> Visitor<'de> for QuatVisitor {
                     type Value = $quat;
 
-                    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                    fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
                         formatter.write_str(concat!("struct ", stringify!($quat)))
                     }
 
@@ -310,7 +310,7 @@ macro_rules! impl_serde_mat2 {
                 impl<'de> Visitor<'de> for Mat2Visitor {
                     type Value = $mat2;
 
-                    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                    fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
                         formatter.write_str(concat!("struct ", stringify!($mat2)))
                     }
 
@@ -393,7 +393,7 @@ macro_rules! impl_serde_mat3 {
                 impl<'de> Visitor<'de> for Mat3Visitor {
                     type Value = $mat3;
 
-                    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                    fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
                         formatter.write_str(concat!("struct ", stringify!($mat3)))
                     }
 
@@ -464,7 +464,7 @@ macro_rules! impl_serde_mat4 {
                 impl<'de> Visitor<'de> for Mat4Visitor {
                     type Value = $mat4;
 
-                    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                    fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
                         formatter.write_str(concat!("struct ", stringify!($mat4)))
                     }
 
@@ -549,7 +549,7 @@ macro_rules! impl_serde_affine2 {
                 impl<'de> Visitor<'de> for Affine2Visitor {
                     type Value = $affine2;
 
-                    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                    fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
                         formatter.write_str("struct $affine2")
                     }
 
@@ -634,7 +634,7 @@ macro_rules! impl_serde_affine3 {
                 impl<'de> Visitor<'de> for Affine3Visitor {
                     type Value = $affine3;
 
-                    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                    fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
                         formatter.write_str("struct $affine3")
                     }
 
