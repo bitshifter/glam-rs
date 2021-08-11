@@ -565,7 +565,7 @@ pub trait FloatVector2<T: FloatEx>: SignedVector2<T> {
     #[inline]
     fn is_normalized(self) -> bool {
         // TODO: do something with epsilon
-        (self.length_squared() - T::ONE).abs() <= T::from_f64(1e-6)
+        (self.length_squared() - T::ONE).abs() <= T::from_f64(1e-4)
     }
 
     #[inline]
@@ -664,7 +664,7 @@ pub trait FloatVector3<T: FloatEx>: SignedVector3<T> {
     #[inline]
     fn is_normalized(self) -> bool {
         // TODO: do something with epsilon
-        (self.length_squared() - T::ONE).abs() <= T::from_f64(1e-6)
+        (self.length_squared() - T::ONE).abs() <= T::from_f64(1e-4)
     }
 
     #[inline]
@@ -792,7 +792,7 @@ pub trait FloatVector4<T: FloatEx>: SignedVector4<T> {
     #[inline]
     fn is_normalized(self) -> bool {
         // TODO: do something with epsilon
-        (self.length_squared() - T::ONE).abs() <= T::from_f64(1e-6)
+        (self.length_squared() - T::ONE).abs() <= T::from_f64(1e-4)
     }
 
     #[inline]
