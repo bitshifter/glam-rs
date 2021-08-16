@@ -4,6 +4,7 @@ use glam::{
     vec4,
 };
 
+#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn test_vec4_swizzles() {
     let v = vec4(1_f32, 2_f32, 3_f32, 4_f32);
@@ -345,6 +346,7 @@ fn test_vec4_swizzles() {
     assert_eq!(v.ww(), vec2(4_f32, 4_f32));
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn test_vec3a_swizzles() {
     let v = vec3a(1_f32, 2_f32, 3_f32);
@@ -467,6 +469,7 @@ fn test_vec3a_swizzles() {
     assert_eq!(v.zz(), vec2(3_f32, 3_f32));
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn test_vec3_swizzles() {
     let v = vec3(1_f32, 2_f32, 3_f32);
@@ -589,6 +592,7 @@ fn test_vec3_swizzles() {
     assert_eq!(v.zz(), vec2(3_f32, 3_f32));
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn test_vec2_swizzles() {
     let v = vec2(1_f32, 2_f32);
@@ -622,6 +626,7 @@ fn test_vec2_swizzles() {
     assert_eq!(v.yy(), vec2(2_f32, 2_f32));
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn test_dvec4_swizzles() {
     let v = dvec4(1_f64, 2_f64, 3_f64, 4_f64);
@@ -963,6 +968,7 @@ fn test_dvec4_swizzles() {
     assert_eq!(v.ww(), dvec2(4_f64, 4_f64));
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn test_dvec3_swizzles() {
     let v = dvec3(1_f64, 2_f64, 3_f64);
@@ -1085,6 +1091,7 @@ fn test_dvec3_swizzles() {
     assert_eq!(v.zz(), dvec2(3_f64, 3_f64));
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn test_dvec2_swizzles() {
     let v = dvec2(1_f64, 2_f64);
@@ -1118,6 +1125,7 @@ fn test_dvec2_swizzles() {
     assert_eq!(v.yy(), dvec2(2_f64, 2_f64));
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn test_ivec4_swizzles() {
     let v = ivec4(1_i32, 2_i32, 3_i32, 4_i32);
@@ -1459,6 +1467,7 @@ fn test_ivec4_swizzles() {
     assert_eq!(v.ww(), ivec2(4_i32, 4_i32));
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn test_ivec3_swizzles() {
     let v = ivec3(1_i32, 2_i32, 3_i32);
@@ -1581,6 +1590,7 @@ fn test_ivec3_swizzles() {
     assert_eq!(v.zz(), ivec2(3_i32, 3_i32));
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn test_ivec2_swizzles() {
     let v = ivec2(1_i32, 2_i32);
@@ -1614,6 +1624,7 @@ fn test_ivec2_swizzles() {
     assert_eq!(v.yy(), ivec2(2_i32, 2_i32));
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn test_uvec4_swizzles() {
     let v = uvec4(1_u32, 2_u32, 3_u32, 4_u32);
@@ -1955,6 +1966,7 @@ fn test_uvec4_swizzles() {
     assert_eq!(v.ww(), uvec2(4_u32, 4_u32));
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn test_uvec3_swizzles() {
     let v = uvec3(1_u32, 2_u32, 3_u32);
@@ -2077,6 +2089,7 @@ fn test_uvec3_swizzles() {
     assert_eq!(v.zz(), uvec2(3_u32, 3_u32));
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn test_uvec2_swizzles() {
     let v = uvec2(1_u32, 2_u32);
