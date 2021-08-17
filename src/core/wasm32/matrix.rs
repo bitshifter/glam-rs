@@ -84,3 +84,25 @@ impl FloatMatrix3x3<f32, v128> for Columns3<v128> {
         res.into()
     }
 }
+
+impl From<Columns3<XYZ<f32>>> for Columns3<v128> {
+    #[inline(always)]
+    fn from(v: Columns3<XYZ<f32>>) -> Columns3<v128> {
+        Self {
+            x_axis: v.x_axis.into(),
+            y_axis: v.y_axis.into(),
+            z_axis: v.z_axis.into(),
+        }
+    }
+}
+
+impl From<Columns3<v128>> for Columns3<XYZ<f32>> {
+    #[inline(always)]
+    fn from(v: Columns3<v128>) -> Columns3<XYZ<f32>> {
+        Self {
+            x_axis: v.x_axis.into(),
+            y_axis: v.y_axis.into(),
+            z_axis: v.z_axis.into(),
+        }
+    }
+}

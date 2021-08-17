@@ -5,6 +5,11 @@ use crate::core::{
 use core::arch::wasm32::*;
 use core::mem::MaybeUninit;
 
+#[inline(always)]
+fn f32x4_isnan(v: v128) -> v128 {
+    f32x4_ne(v, v)
+}
+
 impl MaskVectorConst for v128 {
     const FALSE: v128 = const_v128!([0.0; 4]);
 }
@@ -409,14 +414,11 @@ impl SignedVector3<f32> for v128 {
 
     #[inline]
     fn signum(self) -> Self {
-        // TODO: optimize
-        let (x, y, z) = Vector3::into_tuple(self);
-        Vector3::new(x.signum(), y.signum(), z.signum())
-        // const NEG_ONE: v128 = const_v128!([-1.0; 4]);
-        // let mask = self.cmpge(Self::ZERO);
-        // let result = Self::select(mask, Self::ONE, NEG_ONE);
-        // let mask = unsafe { _mm_cmpunord_ps(self, self) };
-        // Self::select(mask, self, result)
+        const NEG_ONE: v128 = const_v128!([-1.0; 4]);
+        let mask = self.cmpge(Self::ZERO);
+        let result = Self::select(mask, Self::ONE, NEG_ONE);
+        let mask = f32x4_isnan(self);
+        Self::select(mask, self, result)
     }
 }
 
@@ -434,7 +436,7 @@ impl FloatVector3<f32> for v128 {
 
     #[inline(always)]
     fn is_nan_mask(self) -> Self::Mask {
-        unsafe { _mm_cmpunord_ps(self, self) }
+        f32x4_isnan(self)
     }
 
     #[inline]
@@ -482,13 +484,11 @@ impl FloatVector3<f32> for v128 {
 
     #[inline]
     fn normalize(self) -> Self {
-        unsafe {
-            let length = self.length();
-            #[allow(clippy::let_and_return)]
-            let normalized = f32x4_div(self, f32x4_splat(length));
-            glam_assert!(FloatVector3::is_finite(normalized));
-            normalized
-        }
+        let length = self.length();
+        #[allow(clippy::let_and_return)]
+        let normalized = f32x4_div(self, f32x4_splat(length));
+        glam_assert!(FloatVector3::is_finite(normalized));
+        normalized
     }
 }
 
