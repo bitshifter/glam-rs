@@ -306,18 +306,30 @@ type Mask128 = v128;
 ///
 /// This type is 16 byte aligned and is backed by a SIMD vector. If SIMD is not available `BVec3A`
 /// will be a type alias for `BVec3`.
-#[cfg(all(any(target_feature = "sse2", target_feature = "simd128"), not(feature = "scalar-math")))]
+#[cfg(all(
+    any(target_feature = "sse2", target_feature = "simd128"),
+    not(feature = "scalar-math")
+))]
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct BVec3A(pub(crate) Mask128);
 
-#[cfg(all(any(target_feature = "sse2", target_feature = "simd128"), not(feature = "scalar-math")))]
+#[cfg(all(
+    any(target_feature = "sse2", target_feature = "simd128"),
+    not(feature = "scalar-math")
+))]
 impl_vec3mask!(BVec3A, u32, Mask128);
 
-#[cfg(any(not(any(target_feature = "sse2", target_feature = "simd128")), feature = "scalar-math"))]
+#[cfg(any(
+    not(any(target_feature = "sse2", target_feature = "simd128")),
+    feature = "scalar-math"
+))]
 pub type BVec3A = BVec3;
 
-#[cfg(all(any(target_feature = "sse2", target_feature = "simd128"), not(feature = "scalar-math")))]
+#[cfg(all(
+    any(target_feature = "sse2", target_feature = "simd128"),
+    not(feature = "scalar-math")
+))]
 impl From<BVec3> for BVec3A {
     #[inline]
     fn from(b: BVec3) -> Self {
@@ -325,7 +337,10 @@ impl From<BVec3> for BVec3A {
     }
 }
 
-#[cfg(all(any(target_feature = "sse2", target_feature = "simd128"), not(feature = "scalar-math")))]
+#[cfg(all(
+    any(target_feature = "sse2", target_feature = "simd128"),
+    not(feature = "scalar-math")
+))]
 impl From<BVec3A> for BVec3 {
     #[inline]
     fn from(b: BVec3A) -> Self {
@@ -340,18 +355,30 @@ impl From<BVec3A> for BVec3 {
 ///
 /// This type is 16 byte aligned and is backed by a SIMD vector. If SIMD is not available `BVec4A`
 /// will be a type alias for `BVec4`.
-#[cfg(all(any(target_feature = "sse2", target_feature = "simd128"), not(feature = "scalar-math")))]
+#[cfg(all(
+    any(target_feature = "sse2", target_feature = "simd128"),
+    not(feature = "scalar-math")
+))]
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct BVec4A(pub(crate) Mask128);
 
-#[cfg(all(any(target_feature = "sse2", target_feature = "simd128"), not(feature = "scalar-math")))]
+#[cfg(all(
+    any(target_feature = "sse2", target_feature = "simd128"),
+    not(feature = "scalar-math")
+))]
 impl_vec4mask!(BVec4A, u32, Mask128);
 
-#[cfg(any(not(any(target_feature = "sse2", target_feature = "simd128")), feature = "scalar-math"))]
+#[cfg(any(
+    not(any(target_feature = "sse2", target_feature = "simd128")),
+    feature = "scalar-math"
+))]
 pub type BVec4A = BVec4;
 
-#[cfg(all(any(target_feature = "sse2", target_feature = "simd128"), not(feature = "scalar-math")))]
+#[cfg(all(
+    any(target_feature = "sse2", target_feature = "simd128"),
+    not(feature = "scalar-math")
+))]
 impl From<BVec4> for BVec4A {
     #[inline]
     fn from(b: BVec4) -> Self {
@@ -359,7 +386,10 @@ impl From<BVec4> for BVec4A {
     }
 }
 
-#[cfg(all(any(target_feature = "sse2", target_feature = "simd128"), not(feature = "scalar-math")))]
+#[cfg(all(
+    any(target_feature = "sse2", target_feature = "simd128"),
+    not(feature = "scalar-math")
+))]
 impl From<BVec4A> for BVec4 {
     #[inline]
     fn from(b: BVec4A) -> Self {

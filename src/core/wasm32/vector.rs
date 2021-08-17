@@ -1,8 +1,8 @@
-use core::arch::wasm32::*;
 use crate::core::{
     storage::{XY, XYZ, XYZW},
     traits::{scalar::*, vector::*},
 };
+use core::arch::wasm32::*;
 use core::mem::MaybeUninit;
 
 impl MaskVectorConst for v128 {
@@ -391,6 +391,104 @@ impl Vector3<f32> for v128 {
             "clamp: expected min <= max"
         );
         self.max(min).min(max)
+    }
+}
+
+impl SignedVector<f32> for v128 {
+    #[inline(always)]
+    fn neg(self) -> Self {
+        f32x4_neg(self)
+    }
+}
+
+impl SignedVector3<f32> for v128 {
+    #[inline]
+    fn abs(self) -> Self {
+        f32x4_abs(self)
+    }
+
+    #[inline]
+    fn signum(self) -> Self {
+        // TODO: optimize
+        let (x, y, z) = Vector3::into_tuple(self);
+        Vector3::new(x.signum(), y.signum(), z.signum())
+        // const NEG_ONE: v128 = const_v128!([-1.0; 4]);
+        // let mask = self.cmpge(Self::ZERO);
+        // let result = Self::select(mask, Self::ONE, NEG_ONE);
+        // let mask = unsafe { _mm_cmpunord_ps(self, self) };
+        // Self::select(mask, self, result)
+    }
+}
+
+impl FloatVector3<f32> for v128 {
+    #[inline]
+    fn is_finite(self) -> bool {
+        let (x, y, z) = Vector3::into_tuple(self);
+        x.is_finite() && y.is_finite() && z.is_finite()
+    }
+
+    #[inline]
+    fn is_nan(self) -> bool {
+        MaskVector3::any(FloatVector3::is_nan_mask(self))
+    }
+
+    #[inline(always)]
+    fn is_nan_mask(self) -> Self::Mask {
+        unsafe { _mm_cmpunord_ps(self, self) }
+    }
+
+    #[inline]
+    fn floor(self) -> Self {
+        f32x4_floor(self)
+    }
+
+    #[inline]
+    fn ceil(self) -> Self {
+        f32x4_ceil(self)
+    }
+
+    #[inline]
+    fn round(self) -> Self {
+        // TODO: might differ to m128_round
+        f32x4_nearest(self)
+    }
+
+    #[inline(always)]
+    fn recip(self) -> Self {
+        f32x4_div(Self::ONE, self)
+    }
+
+    #[inline]
+    fn exp(self) -> Self {
+        let (x, y, z) = Vector3::into_tuple(self);
+        Vector3::new(x.exp(), y.exp(), z.exp())
+    }
+
+    #[inline]
+    fn powf(self, n: f32) -> Self {
+        let (x, y, z) = Vector3::into_tuple(self);
+        Vector3::new(x.powf(n), y.powf(n), z.powf(n))
+    }
+
+    #[inline]
+    fn length(self) -> f32 {
+        self.dot(self).sqrt()
+    }
+
+    #[inline]
+    fn length_recip(self) -> f32 {
+        self.length().recip()
+    }
+
+    #[inline]
+    fn normalize(self) -> Self {
+        unsafe {
+            let length = self.length();
+            #[allow(clippy::let_and_return)]
+            let normalized = f32x4_div(self, f32x4_splat(length));
+            glam_assert!(FloatVector3::is_finite(normalized));
+            normalized
+        }
     }
 }
 
