@@ -1,7 +1,7 @@
-use glam::{DQuat, Quat};
-
 #[macro_use]
 mod support;
+
+use glam::{DQuat, Quat};
 
 /// Helper to calculate the inner angle in the range [0, 2*PI)
 trait AngleDiff {
@@ -85,8 +85,7 @@ impl_eq_approx!(f64, DQuat, std::f64::consts::PI);
 #[macro_export]
 macro_rules! impl_3axis_test {
     ($name:ident, $t:ty, $quat:ident, $euler:path, $U:path, $V:path, $W:path, $vec:ident) => {
-        #[test]
-        fn $name() {
+        glam_test!($name, {
             let euler = $euler;
             assert!($U != $W); // First and last axis must be different for three axis
             for u in (-176..=176).step_by(44) {
@@ -119,15 +118,14 @@ macro_rules! impl_3axis_test {
                     }
                 }
             }
-        }
+        });
     };
 }
 
 #[macro_export]
 macro_rules! impl_2axis_test {
     ($name:ident, $t:ty, $quat:ident, $euler:path, $U:path, $V:path, $W:path, $vec:ident) => {
-        #[test]
-        fn $name() {
+        glam_test!($name, {
             #[allow(deprecated)]
             let euler = $euler;
             assert!($U == $W); // First and last axis must be different for three axis
@@ -162,7 +160,7 @@ macro_rules! impl_2axis_test {
                     }
                 }
             }
-        }
+        });
     };
 }
 

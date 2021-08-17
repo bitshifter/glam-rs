@@ -7,14 +7,12 @@ macro_rules! impl_quat_tests {
         use core::$t::NAN;
         use core::$t::NEG_INFINITY;
 
-        #[test]
-        fn test_const() {
+        glam_test!(test_const, {
             const Q: $quat = $const_new!([1.0, 2.0, 3.0, 4.0]);
             assert_eq!($quat::from_xyzw(1.0, 2.0, 3.0, 4.0), Q);
-        }
+        });
 
-        #[test]
-        fn test_new() {
+        glam_test!(test_new, {
             let ytheta = deg(45.0);
             let q0 = $quat::from_rotation_y(ytheta);
 
@@ -29,10 +27,9 @@ macro_rules! impl_quat_tests {
             assert_eq!([v1.x, v1.y, v1.z, v1.w], a1);
 
             assert_eq!(q1, $quat::from_array(a1));
-        }
+        });
 
-        #[test]
-        fn test_funcs() {
+        glam_test!(test_funcs, {
             let q0 = $quat::from_euler(EulerRot::YXZ, deg(45.0), deg(180.0), deg(90.0));
             assert!(q0.is_normalized());
             assert_approx_eq!(q0.length_squared(), 1.0);
@@ -52,10 +49,9 @@ macro_rules! impl_quat_tests {
             assert_approx_eq!(q0.dot(q1), 2.0, 1.0e-6);
 
             should_glam_assert!({ ($quat::IDENTITY * 0.0).normalize() });
-        }
+        });
 
-        #[test]
-        fn test_rotation() {
+        glam_test!(test_rotation, {
             let zero = deg(0.0);
             let yaw = deg(30.0);
             let pitch = deg(60.0);
@@ -129,10 +125,9 @@ macro_rules! impl_quat_tests {
 
             should_glam_assert!({ ($quat::IDENTITY * 2.0).inverse() });
             should_glam_assert!({ $quat::from_axis_angle($vec3::ZERO, 0.0) });
-        }
+        });
 
-        #[test]
-        fn test_from_scaled_axis() {
+        glam_test!(test_from_scaled_axis, {
             assert_eq!($quat::from_scaled_axis($vec3::ZERO), $quat::IDENTITY);
             assert_eq!(
                 $quat::from_scaled_axis($vec3::Y * 1e-10),
@@ -156,10 +151,9 @@ macro_rules! impl_quat_tests {
                     assert!(($quat::from_scaled_axis(v).to_scaled_axis() - v).length() < 1e-6,);
                 }
             }
-        }
+        });
 
-        #[test]
-        fn test_mul_vec3() {
+        glam_test!(test_mul_vec3, {
             let qrz = $quat::from_rotation_z(deg(90.0));
             assert_approx_eq!($vec3::Y, qrz * $vec3::X);
             assert_approx_eq!($vec3::Y, qrz.mul_vec3($vec3::X));
@@ -223,10 +217,9 @@ macro_rules! impl_quat_tests {
             should_glam_assert!({ ($quat::IDENTITY * 0.5) * $vec3::X });
             should_glam_assert!({ ($quat::IDENTITY * 0.5).mul_quat($quat::IDENTITY) });
             should_glam_assert!({ ($quat::IDENTITY * 0.5) * $quat::IDENTITY });
-        }
+        });
 
-        #[test]
-        fn test_angle_between() {
+        glam_test!(test_angle_between, {
             const TAU: $t = 2.0 * core::$t::consts::PI;
             let eps = 10.0 * core::$t::EPSILON as f32;
             let q1 = $quat::from_euler(EulerRot::YXZ, 0.0, 0.0, 0.0);
@@ -252,10 +245,9 @@ macro_rules! impl_quat_tests {
             assert_approx_eq!(q1.angle_between(q6), TAU - TAU * 0.94, eps);
             assert_approx_eq!((q5 * q1).angle_between(q5 * q6), TAU - TAU * 0.94, eps);
             assert_approx_eq!((q1 * q5).angle_between(q6 * q5), TAU - TAU * 0.94, eps);
-        }
+        });
 
-        #[test]
-        fn test_lerp() {
+        glam_test!(test_lerp, {
             let q0 = $quat::from_rotation_y(deg(0.0));
             let q1 = $quat::from_rotation_y(deg(90.0));
             assert_approx_eq!(q0, q0.lerp(q1, 0.0));
@@ -264,10 +256,9 @@ macro_rules! impl_quat_tests {
 
             should_glam_assert!({ $quat::lerp($quat::IDENTITY * 2.0, $quat::IDENTITY, 1.0) });
             should_glam_assert!({ $quat::lerp($quat::IDENTITY, $quat::IDENTITY * 0.5, 1.0) });
-        }
+        });
 
-        #[test]
-        fn test_slerp() {
+        glam_test!(test_slerp, {
             let q0 = $quat::from_rotation_y(deg(0.0));
             let q1 = $quat::from_rotation_y(deg(90.0));
             assert_approx_eq!(q0, q0.slerp(q1, 0.0), 1.0e-3);
@@ -276,10 +267,9 @@ macro_rules! impl_quat_tests {
 
             should_glam_assert!({ $quat::lerp($quat::IDENTITY * 2.0, $quat::IDENTITY, 1.0) });
             should_glam_assert!({ $quat::lerp($quat::IDENTITY, $quat::IDENTITY * 0.5, 1.0) });
-        }
+        });
 
-        #[test]
-        fn test_slerp_constant_speed() {
+        glam_test!(test_slerp_constant_speed, {
             let step = 0.01;
             let mut s = 0.0;
             while s <= 1.0 {
@@ -292,10 +282,9 @@ macro_rules! impl_quat_tests {
                 );
                 s += step;
             }
-        }
+        });
 
-        #[test]
-        fn test_fmt() {
+        glam_test!(test_fmt, {
             let a = $quat::IDENTITY;
             assert_eq!(
                 format!("{:?}", a),
@@ -306,10 +295,9 @@ macro_rules! impl_quat_tests {
             //     "$quat(\n    1.0,\n    2.0,\n    3.0,\n    4.0\n)"
             // );
             assert_eq!(format!("{}", a), "[0, 0, 0, 1]");
-        }
+        });
 
-        #[test]
-        fn test_identity() {
+        glam_test!(test_identity, {
             let identity = $quat::IDENTITY;
             assert!(identity.is_near_identity());
             assert!(identity.is_normalized());
@@ -319,10 +307,9 @@ macro_rules! impl_quat_tests {
             assert_eq!(q, q * identity);
             assert_eq!(q, identity * q);
             assert_eq!(identity, $quat::default());
-        }
+        });
 
-        #[test]
-        fn test_slice() {
+        glam_test!(test_slice, {
             let a: [$t; 4] =
                 $quat::from_euler(EulerRot::YXZ, deg(30.0), deg(60.0), deg(90.0)).into();
             let b = $quat::from_slice(&a);
@@ -334,10 +321,9 @@ macro_rules! impl_quat_tests {
 
             should_panic!({ $quat::IDENTITY.write_to_slice(&mut [0 as $t; 3]) });
             should_panic!({ $quat::from_slice(&[0 as $t; 3]) });
-        }
+        });
 
-        #[test]
-        fn test_elements() {
+        glam_test!(test_elements, {
             let x = 1.0;
             let y = 2.0;
             let z = 3.0;
@@ -350,61 +336,53 @@ macro_rules! impl_quat_tests {
             assert!(a.w == w);
 
             assert_eq!($vec3::new(1.0, 2.0, 3.0), a.xyz());
-        }
+        });
 
-        #[test]
-        fn test_addition() {
+        glam_test!(test_addition, {
             let a = $quat::from_xyzw(1.0, 2.0, 3.0, 4.0);
             let b = $quat::from_xyzw(5.0, 6.0, 7.0, -9.0);
             assert_eq!(a + b, $quat::from_xyzw(6.0, 8.0, 10.0, -5.0));
-        }
+        });
 
-        #[test]
-        fn test_subtraction() {
+        glam_test!(test_subtraction, {
             let a = $quat::from_xyzw(6.0, 8.0, 10.0, -5.0);
             let b = $quat::from_xyzw(5.0, 6.0, 7.0, -9.0);
             assert_eq!(a - b, $quat::from_xyzw(1.0, 2.0, 3.0, 4.0));
-        }
+        });
 
-        #[test]
-        fn test_scalar_multiplication() {
+        glam_test!(test_scalar_multiplication, {
             let a = $quat::from_xyzw(1.0, 2.0, 3.0, 4.0);
             assert_eq!(a * 2.0, $quat::from_xyzw(2.0, 4.0, 6.0, 8.0));
-        }
+        });
 
-        #[test]
-        fn test_scalar_division() {
+        glam_test!(test_scalar_division, {
             let a = $quat::from_xyzw(2.0, 4.0, 6.0, 8.0);
             assert_eq!(a / 2.0, $quat::from_xyzw(1.0, 2.0, 3.0, 4.0));
-        }
+        });
 
         #[cfg(feature = "std")]
-        #[test]
-        fn test_sum() {
+        glam_test!(test_sum, {
             let two = $new(2.0, 2.0, 2.0, 2.0);
             assert_eq!(vec![two, two].iter().sum::<$quat>(), two + two);
-        }
+        });
 
         #[cfg(feature = "std")]
-        #[test]
-        fn test_product() {
+        glam_test!(test_product, {
             let two = $new(2.0, 2.0, 2.0, 2.0).normalize();
             assert_eq!(vec![two, two].iter().product::<$quat>(), two * two);
-        }
+        });
 
-        #[test]
-        fn test_is_finite() {
+        glam_test!(test_is_finite, {
             assert!($quat::from_xyzw(0.0, 0.0, 0.0, 0.0).is_finite());
             assert!($quat::from_xyzw(-1e-10, 1.0, 1e10, 42.0).is_finite());
             assert!(!$quat::from_xyzw(INFINITY, 0.0, 0.0, 0.0).is_finite());
             assert!(!$quat::from_xyzw(0.0, NAN, 0.0, 0.0).is_finite());
             assert!(!$quat::from_xyzw(0.0, 0.0, NEG_INFINITY, 0.0).is_finite());
             assert!(!$quat::from_xyzw(0.0, 0.0, 0.0, NAN).is_finite());
-        }
+        });
 
-        #[test]
         #[cfg(feature = "std")]
-        fn test_rotation_arc() {
+        glam_test!(test_rotation_arc, {
             let eps = 2.0 * core::$t::EPSILON.sqrt();
 
             for &from in &vec3_float_test_vectors!($vec3) {
@@ -453,7 +431,7 @@ macro_rules! impl_quat_tests {
             should_glam_assert!({ $quat::from_rotation_arc($vec3::X, $vec3::ZERO) });
             should_glam_assert!({ $quat::from_rotation_arc_colinear($vec3::ZERO, $vec3::X) });
             should_glam_assert!({ $quat::from_rotation_arc_colinear($vec3::X, $vec3::ZERO) });
-        }
+        });
     };
 }
 
@@ -462,8 +440,7 @@ mod quat {
     use core::ops::Neg;
     use glam::{const_quat, quat, EulerRot, Mat3, Mat4, Quat, Vec3, Vec3A, Vec4};
 
-    #[test]
-    fn test_align() {
+    glam_test!(test_align, {
         use std::mem;
         assert_eq!(16, mem::size_of::<Quat>());
         if cfg!(feature = "scalar-math") {
@@ -471,10 +448,9 @@ mod quat {
         } else {
             assert_eq!(16, mem::align_of::<Quat>());
         }
-    }
+    });
 
-    #[test]
-    fn test_mul_vec3a() {
+    glam_test!(test_mul_vec3a, {
         let qrz = Quat::from_rotation_z(deg(90.0));
         assert_approx_eq!(Vec3A::Y, qrz * Vec3A::X);
         assert_approx_eq!(Vec3A::Y, qrz.mul_vec3a(Vec3A::X));
@@ -533,10 +509,9 @@ mod quat {
         assert_approx_eq!(Vec3A::Z, mrzx.mul_vec3a(Vec3A::X));
         assert_approx_eq!(-Vec3A::X, mrzx * Vec3A::Y);
         assert_approx_eq!(-Vec3A::X, mrzx.mul_vec3a(Vec3A::Y));
-    }
+    });
 
-    #[test]
-    fn test_as() {
+    glam_test!(test_as, {
         use glam::DQuat;
         assert_approx_eq!(
             DQuat::from_euler(EulerRot::YXZ, 1.0, 2.0, 3.0),
@@ -546,7 +521,7 @@ mod quat {
             Quat::from_euler(EulerRot::YXZ, 1.0, 2.0, 3.0),
             DQuat::from_euler(EulerRot::YXZ, 1.0, 2.0, 3.0).as_f32()
         );
-    }
+    });
 
     impl_quat_tests!(f32, const_quat, quat, Mat3, Mat4, Quat, Vec3, Vec4);
 }
@@ -556,12 +531,11 @@ mod dquat {
     use core::ops::Neg;
     use glam::{const_dquat, dquat, DMat3, DMat4, DQuat, DVec3, DVec4, EulerRot};
 
-    #[test]
-    fn test_align() {
+    glam_test!(test_align, {
         use std::mem;
         assert_eq!(32, mem::size_of::<DQuat>());
         assert_eq!(mem::align_of::<f64>(), mem::align_of::<DQuat>());
-    }
+    });
 
     impl_quat_tests!(f64, const_dquat, dquat, DMat3, DMat4, DQuat, DVec3, DVec4);
 }

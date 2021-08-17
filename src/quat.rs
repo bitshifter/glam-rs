@@ -85,9 +85,7 @@ macro_rules! impl_quat_methods {
         /// Panics if `slice` length is less than 4.
         #[inline(always)]
         pub fn from_slice(slice: &[$t]) -> Self {
-            #[allow(clippy::let_and_return)]
-            let q = Vector4::from_slice_unaligned(slice);
-            Self(q)
+            Self(Vector4::from_slice_unaligned(slice))
         }
 
         /// Writes the quaternion to an unaligned slice.

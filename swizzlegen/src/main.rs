@@ -624,6 +624,7 @@ fn write_test_vec4(
     write!(
         out,
         r#"
+#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn test_{}_swizzles() {{
     let v = {}(1_{}, 2_{}, 3_{}, 4_{});
@@ -652,6 +653,7 @@ fn write_test_vec3(
     write!(
         out,
         r#"
+#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn test_{}_swizzles() {{
     let v = {}(1_{}, 2_{}, 3_{});
@@ -680,6 +682,7 @@ fn write_test_vec2(
     write!(
         out,
         r#"
+#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn test_{}_swizzles() {{
     let v = {}(1_{}, 2_{});

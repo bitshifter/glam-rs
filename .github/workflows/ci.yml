@@ -27,7 +27,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        toolchain: [1.45.0, stable, beta, nightly]
+        toolchain: [1.51.0, stable, beta, nightly]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -36,7 +36,7 @@ jobs:
       - run: ./build_and_test_features.sh
         shell: bash
 
-  build-wasm:
+  test-wasm:
     strategy:
       matrix:
         toolchain: [stable, nightly]
@@ -45,14 +45,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ matrix.toolchain }}
-          target: wasm32-unknown-unknown
-          override: true
+      - name: Install
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
-      - name: Check wasm
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
-          args: --target wasm32-unknown-unknown
+      - run: wasm-pack test --headless --chrome
+      - run: wasm-pack test --headless --firefox
