@@ -394,3 +394,56 @@ impl Vector3<f32> for v128 {
     }
 }
 
+impl From<XYZW<f32>> for v128 {
+    #[inline(always)]
+    fn from(v: XYZW<f32>) -> v128 {
+        f32x4(v.x, v.y, v.z, v.w)
+    }
+}
+
+impl From<XYZ<f32>> for v128 {
+    #[inline(always)]
+    fn from(v: XYZ<f32>) -> v128 {
+        f32x4(v.x, v.y, v.z, v.z)
+    }
+}
+
+impl From<XY<f32>> for v128 {
+    #[inline(always)]
+    fn from(v: XY<f32>) -> v128 {
+        f32x4(v.x, v.y, v.y, v.y)
+    }
+}
+
+impl From<v128> for XYZW<f32> {
+    #[inline(always)]
+    fn from(v: v128) -> XYZW<f32> {
+        let mut out: MaybeUninit<v128> = MaybeUninit::uninit();
+        unsafe {
+            v128_store(out.as_mut_ptr(), v);
+            *(&out.assume_init() as *const v128 as *const XYZW<f32>)
+        }
+    }
+}
+
+impl From<v128> for XYZ<f32> {
+    #[inline(always)]
+    fn from(v: v128) -> XYZ<f32> {
+        let mut out: MaybeUninit<v128> = MaybeUninit::uninit();
+        unsafe {
+            v128_store(out.as_mut_ptr(), v);
+            *(&out.assume_init() as *const v128 as *const XYZ<f32>)
+        }
+    }
+}
+
+impl From<v128> for XY<f32> {
+    #[inline(always)]
+    fn from(v: v128) -> XY<f32> {
+        let mut out: MaybeUninit<v128> = MaybeUninit::uninit();
+        unsafe {
+            v128_store(out.as_mut_ptr(), v);
+            *(&out.assume_init() as *const v128 as *const XY<f32>)
+        }
+    }
+}
