@@ -39,6 +39,14 @@ macro_rules! const_m128 {
     };
 }
 
+#[macro_export]
+#[cfg(target_feature = "simd128")]
+macro_rules! const_v128 {
+    ($fx4:expr) => {
+        unsafe { $crate::cast::Vec4Cast { fx4: $fx4 }.v128 }
+    };
+}
+
 /// Creates a `Vec2` that can be used to initialize a constant value.
 ///
 /// ```
