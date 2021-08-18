@@ -787,10 +787,16 @@ macro_rules! impl_vec4_float_tests {
 mod vec4 {
     use glam::{const_vec4, vec4, Vec2, Vec3, Vec4};
 
-    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+    #[cfg(all(
+        any(target_feature = "sse2", target_feature = "simd128"),
+        not(feature = "scalar-math")
+    ))]
     type Vec4Mask = glam::BVec4A;
 
-    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+    #[cfg(any(
+        not(any(target_feature = "sse2", target_feature = "simd128")),
+        feature = "scalar-math"
+    ))]
     type Vec4Mask = glam::BVec4;
 
     glam_test!(test_align, {
@@ -801,7 +807,10 @@ mod vec4 {
         } else {
             assert_eq!(4, mem::align_of::<Vec4>());
         }
-        if cfg!(all(target_feature = "sse2", not(feature = "scalar-math"))) {
+        if cfg!(all(
+            any(target_feature = "sse2", target_feature = "simd128"),
+            not(feature = "scalar-math")
+        )) {
             assert_eq!(16, mem::size_of::<Vec4Mask>());
             assert_eq!(16, mem::align_of::<Vec4Mask>());
         } else {

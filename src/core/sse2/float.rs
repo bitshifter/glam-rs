@@ -3,57 +3,23 @@ use core::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use core::arch::x86_64::*;
 
-#[repr(C)]
-union UnionCast {
-    pub m128: __m128,
-    pub m128i: __m128i,
-    pub f32x4: [f32; 4],
-    pub i32x4: [i32; 4],
-    pub u32x4: [u32; 4],
-}
-
-macro_rules! _ps_const_ty {
-    ($name:ident, $field:ident, $x:expr) => {
-        #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-        const $name: UnionCast = UnionCast {
-            $field: [$x, $x, $x, $x],
-        };
-    };
-
-    ($name:ident, $field:ident, $x:expr, $y:expr, $z:expr, $w:expr) => {
-        #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-        const $name: UnionCast = UnionCast {
-            $field: [$x, $y, $z, $w],
-        };
-    };
-}
-
-_ps_const_ty!(PS_INV_SIGN_MASK, u32x4, !0x8000_0000);
-_ps_const_ty!(PS_SIGN_MASK, u32x4, 0x8000_0000);
-_ps_const_ty!(PS_NO_FRACTION, f32x4, 8388608.0);
-
-_ps_const_ty!(PS_NEGATIVE_ZERO, u32x4, 0x80000000);
-_ps_const_ty!(PS_PI, f32x4, core::f32::consts::PI);
-_ps_const_ty!(PS_HALF_PI, f32x4, core::f32::consts::FRAC_PI_2);
-_ps_const_ty!(
-    PS_SIN_COEFFICIENTS0,
-    f32x4,
-    -0.16666667,
-    0.008_333_331,
-    -0.00019840874,
-    2.752_556_2e-6
-);
-_ps_const_ty!(
-    PS_SIN_COEFFICIENTS1,
-    f32x4,
+const PS_INV_SIGN_MASK: __m128 = const_u32x4!([!0x8000_0000; 4]);
+const PS_SIGN_MASK: __m128 = const_u32x4!([0x8000_0000; 4]);
+const PS_NO_FRACTION: __m128 = const_f32x4!([8388608.0; 4]);
+const PS_NEGATIVE_ZERO: __m128 = const_u32x4!([0x8000_0000; 4]);
+const PS_PI: __m128 = const_f32x4!([core::f32::consts::PI; 4]);
+const PS_HALF_PI: __m128 = const_f32x4!([core::f32::consts::FRAC_PI_2; 4]);
+const PS_SIN_COEFFICIENTS0: __m128 =
+    const_f32x4!([-0.16666667, 0.008_333_331, -0.00019840874, 2.752_556_2e-6]);
+const PS_SIN_COEFFICIENTS1: __m128 = const_f32x4!([
     -2.388_985_9e-8,
     -0.16665852,      /*Est1*/
     0.008_313_95,     /*Est2*/
     -0.000_185_246_7  /*Est3*/
-);
-_ps_const_ty!(PS_ONE, f32x4, 1.0);
-_ps_const_ty!(PS_TWO_PI, f32x4, core::f32::consts::PI * 2.0);
-_ps_const_ty!(PS_RECIPROCAL_TWO_PI, f32x4, 0.159_154_94);
+]);
+const PS_ONE: __m128 = const_f32x4!([1.0; 4]);
+const PS_TWO_PI: __m128 = const_f32x4!([core::f32::consts::TAU; 4]);
+const PS_RECIPROCAL_TWO_PI: __m128 = const_f32x4!([0.159_154_94; 4]);
 
 #[inline]
 pub(crate) unsafe fn m128_abs(v: __m128) -> __m128 {
@@ -63,12 +29,12 @@ pub(crate) unsafe fn m128_abs(v: __m128) -> __m128 {
 #[inline]
 pub(crate) unsafe fn m128_round(v: __m128) -> __m128 {
     // Based on https://github.com/microsoft/DirectXMath `XMVectorRound`
-    let sign = _mm_and_ps(v, PS_SIGN_MASK.m128);
-    let s_magic = _mm_or_ps(PS_NO_FRACTION.m128, sign);
+    let sign = _mm_and_ps(v, PS_SIGN_MASK);
+    let s_magic = _mm_or_ps(PS_NO_FRACTION, sign);
     let r1 = _mm_add_ps(v, s_magic);
     let r1 = _mm_sub_ps(r1, s_magic);
-    let r2 = _mm_and_ps(v, PS_INV_SIGN_MASK.m128);
-    let mask = _mm_cmple_ps(r2, PS_NO_FRACTION.m128);
+    let r2 = _mm_and_ps(v, PS_INV_SIGN_MASK);
+    let mask = _mm_cmple_ps(r2, PS_NO_FRACTION);
     let r2 = _mm_andnot_ps(mask, v);
     let r1 = _mm_and_ps(r1, mask);
     _mm_xor_ps(r1, r2)
@@ -78,8 +44,8 @@ pub(crate) unsafe fn m128_round(v: __m128) -> __m128 {
 pub(crate) unsafe fn m128_floor(v: __m128) -> __m128 {
     // Based on https://github.com/microsoft/DirectXMath `XMVectorFloor`
     // To handle NAN, INF and numbers greater than 8388608, use masking
-    let test = _mm_and_si128(_mm_castps_si128(v), PS_INV_SIGN_MASK.m128i);
-    let test = _mm_cmplt_epi32(test, PS_NO_FRACTION.m128i);
+    let test = _mm_and_si128(_mm_castps_si128(v), _mm_castps_si128(PS_INV_SIGN_MASK));
+    let test = _mm_cmplt_epi32(test, _mm_castps_si128(PS_NO_FRACTION));
     // Truncate
     let vint = _mm_cvttps_epi32(v);
     let result = _mm_cvtepi32_ps(vint);
@@ -98,8 +64,8 @@ pub(crate) unsafe fn m128_floor(v: __m128) -> __m128 {
 pub(crate) unsafe fn m128_ceil(v: __m128) -> __m128 {
     // Based on https://github.com/microsoft/DirectXMath `XMVectorCeil`
     // To handle NAN, INF and numbers greater than 8388608, use masking
-    let test = _mm_and_si128(_mm_castps_si128(v), PS_INV_SIGN_MASK.m128i);
-    let test = _mm_cmplt_epi32(test, PS_NO_FRACTION.m128i);
+    let test = _mm_and_si128(_mm_castps_si128(v), _mm_castps_si128(PS_INV_SIGN_MASK));
+    let test = _mm_cmplt_epi32(test, _mm_castps_si128(PS_NO_FRACTION));
     // Truncate
     let vint = _mm_cvttps_epi32(v);
     let result = _mm_cvtepi32_ps(vint);
@@ -136,9 +102,9 @@ pub(crate) unsafe fn m128_neg_mul_sub(a: __m128, b: __m128, c: __m128) -> __m128
 #[inline]
 pub(crate) unsafe fn m128_mod_angles(angles: __m128) -> __m128 {
     // Based on https://github.com/microsoft/DirectXMath `XMVectorModAngles`
-    let v = _mm_mul_ps(angles, PS_RECIPROCAL_TWO_PI.m128);
+    let v = _mm_mul_ps(angles, PS_RECIPROCAL_TWO_PI);
     let v = m128_round(v);
-    m128_neg_mul_sub(PS_TWO_PI.m128, v, angles)
+    m128_neg_mul_sub(PS_TWO_PI, v, angles)
 }
 
 /// Computes the sine of the angle in each lane of `v`. Values outside
@@ -154,13 +120,13 @@ pub(crate) unsafe fn m128_sin(v: __m128) -> __m128 {
     let mut x = m128_mod_angles(v);
 
     // Map in [-pi/2,pi/2] with sin(y) = sin(x).
-    let sign = _mm_and_ps(x, PS_NEGATIVE_ZERO.m128);
+    let sign = _mm_and_ps(x, PS_NEGATIVE_ZERO);
     // pi when x >= 0, -pi when x < 0
-    let c = _mm_or_ps(PS_PI.m128, sign);
+    let c = _mm_or_ps(PS_PI, sign);
     // |x|
     let absx = _mm_andnot_ps(sign, x);
     let rflx = _mm_sub_ps(c, x);
-    let comp = _mm_cmple_ps(absx, PS_HALF_PI.m128);
+    let comp = _mm_cmple_ps(absx, PS_HALF_PI);
     let select0 = _mm_and_ps(comp, x);
     let select1 = _mm_andnot_ps(comp, rflx);
     x = _mm_or_ps(select0, select1);
@@ -168,10 +134,10 @@ pub(crate) unsafe fn m128_sin(v: __m128) -> __m128 {
     let x2 = _mm_mul_ps(x, x);
 
     // Compute polynomial approximation
-    const SC1: __m128 = unsafe { PS_SIN_COEFFICIENTS1.m128 };
+    const SC1: __m128 = PS_SIN_COEFFICIENTS1;
     let v_constants_b = _mm_shuffle_ps(SC1, SC1, 0b00_00_00_00);
 
-    const SC0: __m128 = unsafe { PS_SIN_COEFFICIENTS0.m128 };
+    const SC0: __m128 = PS_SIN_COEFFICIENTS0;
     let mut v_constants = _mm_shuffle_ps(SC0, SC0, 0b11_11_11_11);
     let mut result = m128_mul_add(v_constants_b, x2, v_constants);
 
@@ -184,7 +150,7 @@ pub(crate) unsafe fn m128_sin(v: __m128) -> __m128 {
     v_constants = _mm_shuffle_ps(SC0, SC0, 0b00_00_00_00);
     result = m128_mul_add(result, x2, v_constants);
 
-    result = m128_mul_add(result, x2, PS_ONE.m128);
+    result = m128_mul_add(result, x2, PS_ONE);
     result = _mm_mul_ps(result, x);
 
     result

@@ -481,7 +481,7 @@ impl Vector4<f32> for v128 {
         slice[0] = xyzw.x;
         slice[1] = xyzw.y;
         slice[2] = xyzw.z;
-        slice[4] = xyzw.w;
+        slice[3] = xyzw.w;
     }
 
     #[inline(always)]

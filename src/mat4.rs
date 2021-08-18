@@ -20,6 +20,9 @@ use core::arch::x86::*;
 ))]
 use core::arch::x86_64::*;
 
+#[cfg(target_feature = "simd128")]
+use core::arch::wasm32::v128;
+
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::ops::{Add, AddAssign, Deref, DerefMut, Mul, MulAssign, Sub, SubAssign};
@@ -728,7 +731,13 @@ macro_rules! impl_mat4_traits {
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 type InnerF32 = Columns4<__m128>;
 
-#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+#[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
+type InnerF32 = Columns4<v128>;
+
+#[cfg(any(
+    not(any(target_feature = "sse2", target_feature = "simd128")),
+    feature = "scalar-math"
+))]
 type InnerF32 = Columns4<XYZW<f32>>;
 
 /// A 4x4 column major matrix.

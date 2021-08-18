@@ -1,6 +1,9 @@
 use crate::core::traits::vector::*;
 
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+#[cfg(all(
+    any(target_feature = "sse2", target_feature = "simd128"),
+    not(feature = "scalar-math")
+))]
 use crate::BVec4A;
 use crate::{BVec4, DVec2, DVec3, IVec2, IVec3, UVec2, UVec3, Vec2, Vec3, Vec3A, XYZW};
 #[cfg(not(target_arch = "spirv"))]
@@ -22,6 +25,9 @@ use core::arch::x86::*;
     not(feature = "scalar-math")
 ))]
 use core::arch::x86_64::*;
+
+#[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
+use core::arch::wasm32::v128;
 
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
@@ -243,11 +249,17 @@ macro_rules! impl_f32_vec4 {
     };
 }
 
-#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+#[cfg(any(
+    not(any(target_feature = "sse2", target_feature = "simd128")),
+    feature = "scalar-math"
+))]
 type XYZWF32 = XYZW<f32>;
 
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 type XYZWF32 = __m128;
+
+#[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
+type XYZWF32 = v128;
 
 /// A 4-dimensional vector.
 ///
@@ -260,11 +272,17 @@ type XYZWF32 = __m128;
 #[cfg_attr(any(feature = "scalar-math", target_arch = "spriv"), repr(transparent))]
 pub struct Vec4(pub(crate) XYZWF32);
 
-#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+#[cfg(any(
+    not(any(target_feature = "sse2", target_feature = "simd128")),
+    feature = "scalar-math"
+))]
 impl_f32_vec4!(vec4, Vec2, Vec3, Vec4, BVec4, XYZWF32);
 
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-impl_f32_vec4!(vec4, Vec2, Vec3, Vec4, BVec4A, __m128);
+#[cfg(all(
+    any(target_feature = "sse2", target_feature = "simd128"),
+    not(feature = "scalar-math")
+))]
+impl_f32_vec4!(vec4, Vec2, Vec3, Vec4, BVec4A, XYZWF32);
 
 impl From<Vec4> for Vec3A {
     /// Creates a `Vec3A` from the `x`, `y` and `z` elements of `self` discarding `w`.

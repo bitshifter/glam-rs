@@ -146,7 +146,7 @@ pub union IVec2Cast {
 #[repr(C)]
 pub union UVec4Cast {
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-    pub m128: __m128i,
+    pub m128: __m128,
     #[cfg(target_feature = "simd128")]
     pub v128: v128,
     pub ux4: [u32; 4],
