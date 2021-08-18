@@ -1,6 +1,6 @@
 use core::arch::wasm32::*;
 
-use super::float::*;
+// use super::float::*;
 use crate::core::{
     storage::XYZ,
     traits::{quaternion::Quaternion, scalar::*, vector::*},
@@ -51,12 +51,11 @@ impl Quaternion<f32> for v128 {
             // assumes scalar_acos clamps the input to [-1.0, 1.0]
             let theta = dot.acos_approx();
 
-            let x = 1.0 - s;
-            let y = s;
-            let z = 1.0;
-            let w = 0.0;
-
             // TODO: v128_sin is broken
+            // let x = 1.0 - s;
+            // let y = s;
+            // let z = 1.0;
+            // let w = 0.0;
             // let tmp = f32x4_mul(f32x4_splat(theta), f32x4(x, y, z, w));
             // let tmp = v128_sin(tmp);
             let x = (theta * (1.0 - s)).sin();

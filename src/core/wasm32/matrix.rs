@@ -1,7 +1,7 @@
 use core::arch::wasm32::*;
 
 use crate::core::{
-    storage::{Align16, Columns2, Columns3, Columns4, XY, XYZ},
+    storage::{Columns2, Columns3, Columns4, XY, XYZ},
     traits::{
         matrix::{
             FloatMatrix2x2, FloatMatrix3x3, FloatMatrix4x4, Matrix, Matrix2x2, Matrix3x3,
