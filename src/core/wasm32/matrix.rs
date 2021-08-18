@@ -57,13 +57,13 @@ impl Matrix3x3<f32, v128> for Columns3<v128> {
 
     #[inline]
     fn transpose(&self) -> Self {
-        let tmp0 = i32x4_shuffle::<0, 1, 0, 1>(self.x_axis, self.y_axis);
-        let tmp1 = i32x4_shuffle::<2, 3, 2, 3>(self.x_axis, self.y_axis);
+        let tmp0 = i32x4_shuffle::<0, 1, 4, 5>(self.x_axis, self.y_axis);
+        let tmp1 = i32x4_shuffle::<2, 3, 6, 7>(self.x_axis, self.y_axis);
 
         Self {
-            x_axis: i32x4_shuffle::<0, 2, 0, 0>(tmp0, self.z_axis),
-            y_axis: i32x4_shuffle::<1, 3, 1, 1>(tmp0, self.z_axis),
-            z_axis: i32x4_shuffle::<0, 2, 2, 2>(tmp1, self.z_axis),
+            x_axis: i32x4_shuffle::<0, 2, 4, 4>(tmp0, self.z_axis),
+            y_axis: i32x4_shuffle::<1, 3, 5, 5>(tmp0, self.z_axis),
+            z_axis: i32x4_shuffle::<0, 2, 6, 6>(tmp1, self.z_axis),
         }
     }
 }
