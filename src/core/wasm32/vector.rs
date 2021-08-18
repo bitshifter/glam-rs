@@ -10,6 +10,26 @@ fn f32x4_isnan(v: v128) -> v128 {
     f32x4_ne(v, v)
 }
 
+/// Calculates the vector 3 dot product and returns answer in x lane of __m128.
+#[inline(always)]
+fn dot3_in_x(lhs: v128, rhs: v128) -> v128 {
+    let x2_y2_z2_w2 = f32x4_mul(lhs, rhs);
+    let y2_0_0_0 = i32x4_shuffle::<1, 0, 0, 0>(x2_y2_z2_w2, x2_y2_z2_w2);
+    let z2_0_0_0 = i32x4_shuffle::<2, 0, 0, 0>(x2_y2_z2_w2, x2_y2_z2_w2);
+    let x2y2_0_0_0 = f32x4_add(x2_y2_z2_w2, y2_0_0_0);
+    f32x4_add(x2y2_0_0_0, z2_0_0_0)
+}
+
+/// Calculates the vector 4 dot product and returns answer in x lane of __m128.
+#[inline(always)]
+fn dot4_in_x(lhs: v128, rhs: v128) -> v128 {
+    let x2_y2_z2_w2 = f32x4_mul(lhs, rhs);
+    let z2_w2_0_0 = i32x4_shuffle::<2, 3, 0, 0>(x2_y2_z2_w2, x2_y2_z2_w2);
+    let x2z2_y2w2_0_0 = f32x4_add(x2_y2_z2_w2, z2_w2_0_0);
+    let y2w2_0_0_0 = i32x4_shuffle::<1, 0, 0, 0>(x2z2_y2w2_0_0, x2z2_y2w2_0_0);
+    f32x4_add(x2z2_y2w2_0_0, y2w2_0_0_0)
+}
+
 impl MaskVectorConst for v128 {
     const FALSE: v128 = const_v128!([0.0; 4]);
 }
@@ -370,8 +390,13 @@ impl Vector3<f32> for v128 {
 
     #[inline]
     fn dot(self, other: Self) -> f32 {
-        let v = f32x4_mul(self, other);
-        f32x4_extract_lane::<0>(v) + f32x4_extract_lane::<1>(v) + f32x4_extract_lane::<2>(v)
+        f32x4_extract_lane::<0>(dot3_in_x(self, other))
+    }
+
+    #[inline]
+    fn dot_into_vec(self, other: Self) -> Self {
+        let dot_in_x = dot3_in_x(self, other);
+        i32x4_shuffle::<0, 0, 0, 0>(dot_in_x, dot_in_x)
     }
 
     #[inline]
@@ -399,6 +424,158 @@ impl Vector3<f32> for v128 {
     }
 }
 
+impl Vector4<f32> for v128 {
+    #[inline(always)]
+    fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
+        f32x4(x, y, z, w)
+    }
+
+    #[inline(always)]
+    fn x(self) -> f32 {
+        f32x4_extract_lane::<0>(self)
+    }
+
+    #[inline(always)]
+    fn y(self) -> f32 {
+        f32x4_extract_lane::<1>(self)
+    }
+
+    #[inline(always)]
+    fn z(self) -> f32 {
+        f32x4_extract_lane::<2>(self)
+    }
+
+    #[inline(always)]
+    fn w(self) -> f32 {
+        f32x4_extract_lane::<3>(self)
+    }
+
+    #[inline(always)]
+    fn splat_x(self) -> Self {
+        i32x4_shuffle::<0, 0, 0, 0>(self, self)
+    }
+
+    #[inline(always)]
+    fn splat_y(self) -> Self {
+        i32x4_shuffle::<1, 1, 1, 1>(self, self)
+    }
+
+    #[inline(always)]
+    fn splat_z(self) -> Self {
+        i32x4_shuffle::<2, 2, 2, 2>(self, self)
+    }
+
+    #[inline(always)]
+    fn splat_w(self) -> Self {
+        i32x4_shuffle::<3, 3, 3, 3>(self, self)
+    }
+
+    #[inline(always)]
+    fn from_slice_unaligned(slice: &[f32]) -> Self {
+        f32x4(slice[0], slice[1], slice[2], slice[3])
+    }
+
+    #[inline(always)]
+    fn write_to_slice_unaligned(self, slice: &mut [f32]) {
+        let xyzw = self.as_ref_xyzw();
+        slice[0] = xyzw.x;
+        slice[1] = xyzw.y;
+        slice[2] = xyzw.z;
+        slice[4] = xyzw.w;
+    }
+
+    #[inline(always)]
+    fn as_ref_xyzw(&self) -> &XYZW<f32> {
+        unsafe { &*(self as *const Self as *const XYZW<f32>) }
+    }
+
+    #[inline(always)]
+    fn as_mut_xyzw(&mut self) -> &mut XYZW<f32> {
+        unsafe { &mut *(self as *mut Self as *mut XYZW<f32>) }
+    }
+
+    #[inline(always)]
+    fn into_xy(self) -> XY<f32> {
+        XY {
+            x: f32x4_extract_lane::<0>(self),
+            y: f32x4_extract_lane::<1>(self),
+        }
+    }
+
+    #[inline(always)]
+    fn into_xyz(self) -> XYZ<f32> {
+        XYZ {
+            x: f32x4_extract_lane::<0>(self),
+            y: f32x4_extract_lane::<1>(self),
+            z: f32x4_extract_lane::<2>(self),
+        }
+    }
+
+    #[inline(always)]
+    fn from_array(a: [f32; 4]) -> Self {
+        Vector4::new(a[0], a[1], a[2], a[3])
+    }
+
+    #[inline(always)]
+    fn into_array(self) -> [f32; 4] {
+        let mut out: MaybeUninit<v128> = MaybeUninit::uninit();
+        unsafe {
+            v128_store(out.as_mut_ptr(), self);
+            *(&out.assume_init() as *const v128 as *const [f32; 4])
+        }
+    }
+
+    #[inline(always)]
+    fn from_tuple(t: (f32, f32, f32, f32)) -> Self {
+        Vector4::new(t.0, t.1, t.2, t.3)
+    }
+
+    #[inline(always)]
+    fn into_tuple(self) -> (f32, f32, f32, f32) {
+        let mut out: MaybeUninit<v128> = MaybeUninit::uninit();
+        unsafe {
+            v128_store(out.as_mut_ptr(), self);
+            *(&out.assume_init() as *const v128 as *const (f32, f32, f32, f32))
+        }
+    }
+
+    #[inline]
+    fn min_element(self) -> f32 {
+        let v = self;
+        let v = f32x4_pmin(v, i32x4_shuffle::<2, 3, 0, 0>(v, v));
+        let v = f32x4_pmin(v, i32x4_shuffle::<1, 0, 0, 0>(v, v));
+        f32x4_extract_lane::<0>(v)
+    }
+
+    #[inline]
+    fn max_element(self) -> f32 {
+        let v = self;
+        let v = f32x4_pmax(v, i32x4_shuffle::<2, 3, 0, 0>(v, v));
+        let v = f32x4_pmax(v, i32x4_shuffle::<1, 0, 0, 0>(v, v));
+        f32x4_extract_lane::<0>(v)
+    }
+
+    #[inline]
+    fn dot(self, other: Self) -> f32 {
+        f32x4_extract_lane::<0>(dot4_in_x(self, other))
+    }
+
+    #[inline]
+    fn dot_into_vec(self, other: Self) -> Self {
+        let dot_in_x = dot4_in_x(self, other);
+        i32x4_shuffle::<0, 0, 0, 0>(dot_in_x, dot_in_x)
+    }
+
+    #[inline]
+    fn clamp(self, min: Self, max: Self) -> Self {
+        glam_assert!(
+            MaskVector4::all(min.cmple(max)),
+            "clamp: expected min <= max"
+        );
+        self.max(min).min(max)
+    }
+}
+
 impl SignedVector<f32> for v128 {
     #[inline(always)]
     fn neg(self) -> Self {
@@ -407,6 +584,22 @@ impl SignedVector<f32> for v128 {
 }
 
 impl SignedVector3<f32> for v128 {
+    #[inline]
+    fn abs(self) -> Self {
+        f32x4_abs(self)
+    }
+
+    #[inline]
+    fn signum(self) -> Self {
+        const NEG_ONE: v128 = const_v128!([-1.0; 4]);
+        let mask = self.cmpge(Self::ZERO);
+        let result = Self::select(mask, Self::ONE, NEG_ONE);
+        let mask = f32x4_isnan(self);
+        Self::select(mask, self, result)
+    }
+}
+
+impl SignedVector4<f32> for v128 {
     #[inline]
     fn abs(self) -> Self {
         f32x4_abs(self)
@@ -474,20 +667,93 @@ impl FloatVector3<f32> for v128 {
 
     #[inline]
     fn length(self) -> f32 {
-        self.dot(self).sqrt()
+        let dot = dot3_in_x(self, self);
+        f32x4_extract_lane::<0>(f32x4_sqrt(dot))
     }
 
     #[inline]
     fn length_recip(self) -> f32 {
-        self.length().recip()
+        let dot = dot3_in_x(self, self);
+        f32x4_extract_lane::<0>(f32x4_div(Self::ONE, f32x4_sqrt(dot)))
     }
 
     #[inline]
     fn normalize(self) -> Self {
-        let length = self.length();
+        let length = f32x4_sqrt(Vector3::dot_into_vec(self, self));
         #[allow(clippy::let_and_return)]
-        let normalized = f32x4_div(self, f32x4_splat(length));
+        let normalized = f32x4_div(self, length);
         glam_assert!(FloatVector3::is_finite(normalized));
+        normalized
+    }
+}
+
+impl FloatVector4<f32> for v128 {
+    #[inline]
+    fn is_finite(self) -> bool {
+        let (x, y, z, w) = Vector4::into_tuple(self);
+        x.is_finite() && y.is_finite() && z.is_finite() && w.is_finite()
+    }
+
+    #[inline]
+    fn is_nan(self) -> bool {
+        MaskVector4::any(FloatVector4::is_nan_mask(self))
+    }
+
+    #[inline(always)]
+    fn is_nan_mask(self) -> Self::Mask {
+        f32x4_isnan(self)
+    }
+
+    #[inline]
+    fn floor(self) -> Self {
+        f32x4_floor(self)
+    }
+
+    #[inline]
+    fn ceil(self) -> Self {
+        f32x4_ceil(self)
+    }
+
+    #[inline]
+    fn round(self) -> Self {
+        f32x4_nearest(self)
+    }
+
+    #[inline(always)]
+    fn recip(self) -> Self {
+        f32x4_div(Self::ONE, self)
+    }
+
+    #[inline]
+    fn exp(self) -> Self {
+        let (x, y, z, w) = Vector4::into_tuple(self);
+        f32x4(x.exp(), y.exp(), z.exp(), w.exp())
+    }
+
+    #[inline]
+    fn powf(self, n: f32) -> Self {
+        let (x, y, z, w) = Vector4::into_tuple(self);
+        f32x4(x.powf(n), y.powf(n), z.powf(n), w.powf(n))
+    }
+
+    #[inline]
+    fn length(self) -> f32 {
+        let dot = dot4_in_x(self, self);
+        f32x4_extract_lane::<0>(f32x4_sqrt(dot))
+    }
+
+    #[inline]
+    fn length_recip(self) -> f32 {
+        let dot = dot4_in_x(self, self);
+        f32x4_extract_lane::<0>(f32x4_div(Self::ONE, f32x4_sqrt(dot)))
+    }
+
+    #[inline]
+    fn normalize(self) -> Self {
+        let dot = Vector4::dot_into_vec(self, self);
+        #[allow(clippy::let_and_return)]
+        let normalized = f32x4_div(self, f32x4_sqrt(dot));
+        glam_assert!(FloatVector4::is_finite(normalized));
         normalized
     }
 }
