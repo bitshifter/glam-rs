@@ -806,7 +806,10 @@ mod vec3a {
         use std::mem;
         assert_eq!(16, mem::size_of::<Vec3A>());
         assert_eq!(16, mem::align_of::<Vec3A>());
-        if cfg!(all(target_feature = "sse2", not(feature = "scalar-math"))) {
+        if cfg!(all(
+            any(target_feature = "sse2", target_feature = "simd128"),
+            not(feature = "scalar-math")
+        )) {
             assert_eq!(16, mem::size_of::<BVec3A>());
             assert_eq!(16, mem::align_of::<BVec3A>());
         } else {
