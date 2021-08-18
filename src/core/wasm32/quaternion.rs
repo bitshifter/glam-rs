@@ -54,9 +54,16 @@ impl Quaternion<f32> for v128 {
             let x = 1.0 - s;
             let y = s;
             let z = 1.0;
+            let w = 0.0;
 
-            let tmp = f32x4_mul(f32x4_splat(theta), f32x4(x, y, z, 0.0));
-            let tmp = v128_sin(tmp);
+            // TODO: v128_sin is broken
+            // let tmp = f32x4_mul(f32x4_splat(theta), f32x4(x, y, z, w));
+            // let tmp = v128_sin(tmp);
+            let x = (theta * (1.0 - s)).sin();
+            let y = (theta * s).sin();
+            let z = theta.sin();
+            let w = 0.0;
+            let tmp = f32x4(x, y, z, w);
 
             let scale1 = i32x4_shuffle::<0, 0, 4, 4>(tmp, tmp);
             let scale2 = i32x4_shuffle::<1, 1, 5, 5>(tmp, tmp);
