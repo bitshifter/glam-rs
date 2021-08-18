@@ -27,7 +27,7 @@ impl Quaternion<f32> for v128 {
         // Calculate the bias, if the dot product is positive or zero, there is no bias
         // but if it is negative, we want to flip the 'end' rotation XYZW components
         let bias = v128_and(dot, NEG_ZERO);
-        let interpolated = v128_and(
+        let interpolated = f32x4_add(
             f32x4_mul(f32x4_sub(v128_xor(end, bias), start), f32x4_splat(s)),
             start,
         );
