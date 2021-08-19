@@ -3,6 +3,12 @@ use core::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use core::arch::x86_64::*;
 
+macro_rules! const_u32x4 {
+    ($ux4:expr) => {
+        unsafe { $crate::cast::UVec4Cast { ux4: $ux4 }.m128 }
+    };
+}
+
 const PS_INV_SIGN_MASK: __m128 = const_u32x4!([!0x8000_0000; 4]);
 const PS_SIGN_MASK: __m128 = const_u32x4!([0x8000_0000; 4]);
 const PS_NO_FRACTION: __m128 = const_f32x4!([8388608.0; 4]);

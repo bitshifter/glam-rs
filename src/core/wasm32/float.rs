@@ -1,5 +1,11 @@
 use core::arch::wasm32::*;
 
+macro_rules! const_u32x4 {
+    ($ux4:expr) => {
+        unsafe { $crate::cast::UVec4Cast { ux4: $ux4 }.v128 }
+    };
+}
+
 const PS_NEGATIVE_ZERO: v128 = const_u32x4!([0x8000_0000; 4]);
 const PS_PI: v128 = const_f32x4!([core::f32::consts::PI; 4]);
 const PS_HALF_PI: v128 = const_f32x4!([core::f32::consts::FRAC_PI_2; 4]);

@@ -1,4 +1,4 @@
-use core::arch::wasm32::*;
+use core::{arch::wasm32::*, mem::MaybeUninit};
 
 use crate::core::{
     storage::{Columns2, Columns3, Columns4, XY, XYZ},
@@ -12,11 +12,121 @@ use crate::core::{
     },
 };
 
+// v128 as a Matrix2x2
+impl MatrixConst for v128 {
+    const ZERO: v128 = const_f32x4!([0.0, 0.0, 0.0, 0.0]);
+    const IDENTITY: v128 = const_f32x4!([1.0, 0.0, 0.0, 1.0]);
+}
+
+impl Matrix<f32> for v128 {}
+
+impl Matrix2x2<f32, XY<f32>> for v128 {
+    #[inline(always)]
+    fn new(m00: f32, m01: f32, m10: f32, m11: f32) -> Self {
+        f32x4(m00, m01, m10, m11)
+    }
+
+    #[inline(always)]
+    fn from_cols(x_axis: XY<f32>, y_axis: XY<f32>) -> Self {
+        Matrix2x2::new(x_axis.x, x_axis.y, y_axis.x, y_axis.y)
+    }
+
+    #[inline(always)]
+    fn x_axis(&self) -> &XY<f32> {
+        unsafe { &(*(self as *const Self as *const Columns2<XY<f32>>)).x_axis }
+    }
+
+    #[inline(always)]
+    fn y_axis(&self) -> &XY<f32> {
+        unsafe { &(*(self as *const Self as *const Columns2<XY<f32>>)).y_axis }
+    }
+
+    #[inline]
+    fn determinant(&self) -> f32 {
+        // self.x_axis.x * self.y_axis.y - self.x_axis.y * self.y_axis.x
+        let abcd = *self;
+        let dcba = i32x4_shuffle::<3, 2, 5, 4>(abcd, abcd);
+        let prod = f32x4_mul(abcd, dcba);
+        let det = f32x4_sub(prod, i32x4_shuffle::<1, 1, 5, 5>(prod, prod));
+        f32x4_extract_lane::<0>(det)
+    }
+
+    #[inline(always)]
+    fn transpose(&self) -> Self {
+        i32x4_shuffle::<0, 2, 5, 7>(*self, *self)
+    }
+
+    #[inline]
+    fn mul_vector(&self, other: XY<f32>) -> XY<f32> {
+        let abcd = *self;
+        let xxyy = f32x4(other.x, other.x, other.y, other.y);
+        let axbxcydy = f32x4_mul(abcd, xxyy);
+        let cydyaxbx = i32x4_shuffle::<2, 3, 4, 5>(axbxcydy, axbxcydy);
+        let result = f32x4_add(axbxcydy, cydyaxbx);
+        let mut out: MaybeUninit<v128> = MaybeUninit::uninit();
+        unsafe {
+            v128_store(out.as_mut_ptr(), result);
+            *(&out.assume_init() as *const v128 as *const XY<f32>)
+        }
+    }
+
+    #[inline]
+    fn mul_matrix(&self, other: &Self) -> Self {
+        let abcd = *self;
+        let other = *other;
+        let xxyy0 = i32x4_shuffle::<0, 0, 5, 5>(other, other);
+        let xxyy1 = i32x4_shuffle::<2, 2, 7, 7>(other, other);
+        let axbxcydy0 = f32x4_mul(abcd, xxyy0);
+        let axbxcydy1 = f32x4_mul(abcd, xxyy1);
+        let cydyaxbx0 = i32x4_shuffle::<2, 3, 4, 5>(axbxcydy0, axbxcydy0);
+        let cydyaxbx1 = i32x4_shuffle::<2, 3, 4, 5>(axbxcydy1, axbxcydy1);
+        let result0 = f32x4_add(axbxcydy0, cydyaxbx0);
+        let result1 = f32x4_add(axbxcydy1, cydyaxbx1);
+        i32x4_shuffle::<0, 1, 4, 5>(result0, result1)
+    }
+
+    #[inline]
+    fn mul_scalar(&self, other: f32) -> Self {
+        f32x4_mul(*self, f32x4_splat(other))
+    }
+
+    #[inline]
+    fn add_matrix(&self, other: &Self) -> Self {
+        f32x4_add(*self, *other)
+    }
+
+    #[inline]
+    fn sub_matrix(&self, other: &Self) -> Self {
+        f32x4_sub(*self, *other)
+    }
+}
+
+impl FloatMatrix2x2<f32, XY<f32>> for v128 {
+    #[inline]
+    fn abs_diff_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
+        FloatVector4::abs_diff_eq(*self, *other, max_abs_diff)
+    }
+
+    #[inline]
+    fn inverse(&self) -> Self {
+        const SIGN: v128 = const_f32x4!([1.0, -1.0, -1.0, 1.0]);
+        let abcd = *self;
+        let dcba = i32x4_shuffle::<3, 2, 5, 4>(abcd, abcd);
+        let prod = f32x4_mul(abcd, dcba);
+        let sub = f32x4_sub(prod, i32x4_shuffle::<1, 1, 5, 5>(prod, prod));
+        let det = i32x4_shuffle::<0, 0, 4, 4>(sub, sub);
+        let tmp = f32x4_div(SIGN, det);
+        glam_assert!(tmp.is_finite());
+        let dbca = i32x4_shuffle::<3, 1, 6, 4>(abcd, abcd);
+        f32x4_mul(dbca, tmp)
+    }
+}
+
 impl MatrixConst for Columns3<v128> {
     const ZERO: Columns3<v128> = Columns3 {
-        x_axis: v128::ZERO,
-        y_axis: v128::ZERO,
-        z_axis: v128::ZERO,
+        x_axis: VectorConst::ZERO,
+        y_axis: VectorConst::ZERO,
+        z_axis: VectorConst::ZERO,
     };
     const IDENTITY: Columns3<v128> = Columns3 {
         x_axis: v128::X,
@@ -84,10 +194,10 @@ impl FloatMatrix3x3<f32, v128> for Columns3<v128> {
 
 impl MatrixConst for Columns4<v128> {
     const ZERO: Columns4<v128> = Columns4 {
-        x_axis: v128::ZERO,
-        y_axis: v128::ZERO,
-        z_axis: v128::ZERO,
-        w_axis: v128::ZERO,
+        x_axis: VectorConst::ZERO,
+        y_axis: VectorConst::ZERO,
+        z_axis: VectorConst::ZERO,
+        w_axis: VectorConst::ZERO,
     };
     const IDENTITY: Columns4<v128> = Columns4 {
         x_axis: v128::X,

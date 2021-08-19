@@ -46,13 +46,6 @@ macro_rules! const_f32x4 {
     };
 }
 
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-macro_rules! const_u32x4 {
-    ($ux4:expr) => {
-        unsafe { $crate::cast::UVec4Cast { ux4: $ux4 }.m128 }
-    };
-}
-
 #[cfg(target_feature = "simd128")]
 macro_rules! const_v128 {
     ($fx4:expr) => {
@@ -67,12 +60,6 @@ macro_rules! const_f32x4 {
     };
 }
 
-#[cfg(target_feature = "simd128")]
-macro_rules! const_u32x4 {
-    ($ux4:expr) => {
-        unsafe { $crate::cast::UVec4Cast { ux4: $ux4 }.v128 }
-    };
-}
 /// Creates a `Vec2` that can be used to initialize a constant value.
 ///
 /// ```
