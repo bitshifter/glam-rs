@@ -624,9 +624,7 @@ fn write_test_vec4(
     write!(
         out,
         r#"
-#[cfg(not(target_arch = "wasm32"))]
-#[test]
-fn test_{}_swizzles() {{
+glam_test!(test_{}_swizzles, {{
     let v = {}(1_{}, 2_{}, 3_{}, 4_{});
 "#,
         vec4t, vec4t, t, t, t, t,
@@ -636,7 +634,7 @@ fn test_{}_swizzles() {{
 
     write_test_loops(out, SIZE, t, vec4t, vec3t, vec2t)?;
 
-    writeln!(out, "}}")?;
+    writeln!(out, "}});")?;
 
     Ok(())
 }
@@ -653,9 +651,7 @@ fn write_test_vec3(
     write!(
         out,
         r#"
-#[cfg(not(target_arch = "wasm32"))]
-#[test]
-fn test_{}_swizzles() {{
+glam_test!(test_{}_swizzles, {{
     let v = {}(1_{}, 2_{}, 3_{});
 "#,
         vec3t, vec3t, t, t, t,
@@ -665,7 +661,7 @@ fn test_{}_swizzles() {{
 
     write_test_loops(out, SIZE, t, vec4t, vec3t, vec2t)?;
 
-    writeln!(out, "}}")?;
+    writeln!(out, "}});")?;
 
     Ok(())
 }
@@ -682,9 +678,7 @@ fn write_test_vec2(
     write!(
         out,
         r#"
-#[cfg(not(target_arch = "wasm32"))]
-#[test]
-fn test_{}_swizzles() {{
+glam_test!(test_{}_swizzles, {{
     let v = {}(1_{}, 2_{});
 "#,
         vec2t, vec2t, t, t,
@@ -694,7 +688,7 @@ fn test_{}_swizzles() {{
 
     write_test_loops(out, SIZE, t, vec4t, vec3t, vec2t)?;
 
-    writeln!(out, "}}")?;
+    writeln!(out, "}});")?;
 
     Ok(())
 }
@@ -734,32 +728,49 @@ fn write_test_loops(
     )
 }
 
-fn write_swizzle_tests() -> Result<()> {
-    let mut out = File::create("../tests/swizzle.rs")?;
+fn begin_write_swizzle_test(filename: &str) -> Result<impl Write> {
+    let mut out = File::create(filename)?;
     write_swizzle_head(&mut out)?;
     writeln!(
         &mut out,
-        r#"use glam::{{
-    dvec2, dvec3, dvec4, ivec2, ivec3, ivec4, swizzles::*, uvec2, uvec3, uvec4, vec2, vec3, vec3a,
-    vec4,
-}};"#
+        r#"#[macro_use]
+mod support;
+use glam::*;
+"#
     )?;
-    write_test_vec4(&mut out, "f32", "vec4", "vec3", "vec2")?;
-    write_test_vec3(&mut out, "f32", "vec4", "vec3a", "vec2")?;
-    write_test_vec3(&mut out, "f32", "vec4", "vec3", "vec2")?;
-    write_test_vec2(&mut out, "f32", "vec4", "vec3", "vec2")?;
+    Ok(out)
+}
 
-    write_test_vec4(&mut out, "f64", "dvec4", "dvec3", "dvec2")?;
-    write_test_vec3(&mut out, "f64", "dvec4", "dvec3", "dvec2")?;
-    write_test_vec2(&mut out, "f64", "dvec4", "dvec3", "dvec2")?;
+fn write_swizzle_tests() -> Result<()> {
+    {
+        let mut out = begin_write_swizzle_test("../tests/swizzles_f32.rs")?;
+        write_test_vec4(&mut out, "f32", "vec4", "vec3", "vec2")?;
+        write_test_vec3(&mut out, "f32", "vec4", "vec3a", "vec2")?;
+        write_test_vec3(&mut out, "f32", "vec4", "vec3", "vec2")?;
+        write_test_vec2(&mut out, "f32", "vec4", "vec3", "vec2")?;
+    }
 
-    write_test_vec4(&mut out, "i32", "ivec4", "ivec3", "ivec2")?;
-    write_test_vec3(&mut out, "i32", "ivec4", "ivec3", "ivec2")?;
-    write_test_vec2(&mut out, "i32", "ivec4", "ivec3", "ivec2")?;
+    {
+        let mut out = begin_write_swizzle_test("../tests/swizzles_f64.rs")?;
+        write_test_vec4(&mut out, "f64", "dvec4", "dvec3", "dvec2")?;
+        write_test_vec3(&mut out, "f64", "dvec4", "dvec3", "dvec2")?;
+        write_test_vec2(&mut out, "f64", "dvec4", "dvec3", "dvec2")?;
+    }
 
-    write_test_vec4(&mut out, "u32", "uvec4", "uvec3", "uvec2")?;
-    write_test_vec3(&mut out, "u32", "uvec4", "uvec3", "uvec2")?;
-    write_test_vec2(&mut out, "u32", "uvec4", "uvec3", "uvec2")?;
+    {
+        let mut out = begin_write_swizzle_test("../tests/swizzles_i32.rs")?;
+        write_test_vec4(&mut out, "i32", "ivec4", "ivec3", "ivec2")?;
+        write_test_vec3(&mut out, "i32", "ivec4", "ivec3", "ivec2")?;
+        write_test_vec2(&mut out, "i32", "ivec4", "ivec3", "ivec2")?;
+    }
+
+    {
+        let mut out = begin_write_swizzle_test("../tests/swizzles_u32.rs")?;
+        write_test_vec4(&mut out, "u32", "uvec4", "uvec3", "uvec2")?;
+        write_test_vec3(&mut out, "u32", "uvec4", "uvec3", "uvec2")?;
+        write_test_vec2(&mut out, "u32", "uvec4", "uvec3", "uvec2")?;
+    }
+
     Ok(())
 }
 
