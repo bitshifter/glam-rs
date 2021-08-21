@@ -31,7 +31,7 @@ fn dot4_in_x(lhs: v128, rhs: v128) -> v128 {
 }
 
 impl MaskVectorConst for v128 {
-    const FALSE: v128 = const_v128!([0.0; 4]);
+    const FALSE: v128 = const_f32x4!([0.0; 4]);
 }
 
 impl MaskVector for v128 {
@@ -144,21 +144,21 @@ impl MaskVector4 for v128 {
 }
 
 impl VectorConst for v128 {
-    const ZERO: v128 = const_v128!([0.0; 4]);
-    const ONE: v128 = const_v128!([1.0; 4]);
+    const ZERO: v128 = const_f32x4!([0.0; 4]);
+    const ONE: v128 = const_f32x4!([1.0; 4]);
 }
 
 impl Vector3Const for v128 {
-    const X: v128 = const_v128!([1.0, 0.0, 0.0, 0.0]);
-    const Y: v128 = const_v128!([0.0, 1.0, 0.0, 0.0]);
-    const Z: v128 = const_v128!([0.0, 0.0, 1.0, 0.0]);
+    const X: v128 = const_f32x4!([1.0, 0.0, 0.0, 0.0]);
+    const Y: v128 = const_f32x4!([0.0, 1.0, 0.0, 0.0]);
+    const Z: v128 = const_f32x4!([0.0, 0.0, 1.0, 0.0]);
 }
 
 impl Vector4Const for v128 {
-    const X: v128 = const_v128!([1.0, 0.0, 0.0, 0.0]);
-    const Y: v128 = const_v128!([0.0, 1.0, 0.0, 0.0]);
-    const Z: v128 = const_v128!([0.0, 0.0, 1.0, 0.0]);
-    const W: v128 = const_v128!([0.0, 0.0, 0.0, 1.0]);
+    const X: v128 = const_f32x4!([1.0, 0.0, 0.0, 0.0]);
+    const Y: v128 = const_f32x4!([0.0, 1.0, 0.0, 0.0]);
+    const Z: v128 = const_f32x4!([0.0, 0.0, 1.0, 0.0]);
+    const W: v128 = const_f32x4!([0.0, 0.0, 0.0, 1.0]);
 }
 
 impl Vector<f32> for v128 {
@@ -591,7 +591,7 @@ impl SignedVector3<f32> for v128 {
 
     #[inline]
     fn signum(self) -> Self {
-        const NEG_ONE: v128 = const_v128!([-1.0; 4]);
+        const NEG_ONE: v128 = const_f32x4!([-1.0; 4]);
         let mask = self.cmpge(Self::ZERO);
         let result = Self::select(mask, Self::ONE, NEG_ONE);
         let mask = f32x4_isnan(self);
@@ -607,7 +607,7 @@ impl SignedVector4<f32> for v128 {
 
     #[inline]
     fn signum(self) -> Self {
-        const NEG_ONE: v128 = const_v128!([-1.0; 4]);
+        const NEG_ONE: v128 = const_f32x4!([-1.0; 4]);
         let mask = self.cmpge(Self::ZERO);
         let result = Self::select(mask, Self::ONE, NEG_ONE);
         let mask = f32x4_isnan(self);
