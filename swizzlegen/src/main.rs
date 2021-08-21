@@ -15,18 +15,10 @@ fn write_swizzle_head(out: &mut impl Write) -> Result<()> {
     Ok(())
 }
 
-fn write_loops<W, F4, F3, F2>(
-    out: &mut W,
-    size: usize,
-    vec4fn: F4,
-    vec3fn: F3,
-    vec2fn: F2,
-) -> Result<()>
+fn write_loops_vec4<W, F4>(out: &mut W, size: usize, vec4fn: F4) -> Result<()>
 where
     W: Write,
     F4: Fn(&mut W, usize, usize, usize, usize) -> Result<()>,
-    F3: Fn(&mut W, usize, usize, usize) -> Result<()>,
-    F2: Fn(&mut W, usize, usize) -> Result<()>,
 {
     for e0 in 0..size {
         for e1 in 0..size {
@@ -40,7 +32,14 @@ where
             }
         }
     }
+    Ok(())
+}
 
+fn write_loops_vec3<W, F3>(out: &mut W, size: usize, vec3fn: F3) -> Result<()>
+where
+    W: Write,
+    F3: Fn(&mut W, usize, usize, usize) -> Result<()>,
+{
     for e0 in 0..size {
         for e1 in 0..size {
             for e2 in 0..size {
@@ -51,7 +50,14 @@ where
             }
         }
     }
+    Ok(())
+}
 
+fn write_loops_vec2<W, F2>(out: &mut W, size: usize, vec2fn: F2) -> Result<()>
+where
+    W: Write,
+    F2: Fn(&mut W, usize, usize) -> Result<()>,
+{
     for e0 in 0..size {
         for e1 in 0..size {
             if size == 2 && e0 == 0 && e1 == 1 {
@@ -60,7 +66,25 @@ where
             vec2fn(out, e0, e1)?;
         }
     }
+    Ok(())
+}
 
+fn write_loops<W, F4, F3, F2>(
+    out: &mut W,
+    size: usize,
+    vec4fn: F4,
+    vec3fn: F3,
+    vec2fn: F2,
+) -> Result<()>
+where
+    W: Write,
+    F4: Fn(&mut W, usize, usize, usize, usize) -> Result<()>,
+    F3: Fn(&mut W, usize, usize, usize) -> Result<()>,
+    F2: Fn(&mut W, usize, usize) -> Result<()>,
+{
+    write_loops_vec4(out, size, vec4fn)?;
+    write_loops_vec3(out, size, vec3fn)?;
+    write_loops_vec2(out, size, vec2fn)?;
     Ok(())
 }
 
@@ -701,7 +725,7 @@ fn write_test_loops(
     vec3t: &str,
     vec2t: &str,
 ) -> Result<()> {
-    write_loops(
+    write_loops_vec4(
         out,
         size,
         |out, e0, e1, e2, e3| {
@@ -710,22 +734,28 @@ fn write_test_loops(
                 "    assert_eq!(v.{}{}{}{}(), {}({}_{}, {}_{}, {}_{}, {}_{}));",
                 E[e0], E[e1], E[e2], E[e3], vec4t, V[e0], t, V[e1], t, V[e2], t, V[e3], t
             )
-        },
+        })?;
+    write_loops_vec3(
+        out,
+        size,
         |out, e0, e1, e2| {
             writeln!(
                 out,
                 "    assert_eq!(v.{}{}{}(), {}({}_{}, {}_{}, {}_{}));",
                 E[e0], E[e1], E[e2], vec3t, V[e0], t, V[e1], t, V[e2], t,
             )
-        },
+        })?;
+    write_loops_vec2(
+        out,
+        size,
         |out, e0, e1| {
             writeln!(
                 out,
                 "    assert_eq!(v.{}{}(), {}({}_{}, {}_{}));",
                 E[e0], E[e1], vec2t, V[e0], t, V[e1], t,
             )
-        },
-    )
+        })?;
+    Ok(())
 }
 
 fn begin_write_swizzle_test(filename: &str) -> Result<impl Write> {
@@ -750,6 +780,7 @@ fn write_swizzle_tests() -> Result<()> {
         write_test_vec2(&mut out, "f32", "vec4", "vec3", "vec2")?;
     }
 
+    // split f64 swizzle tests up so they don't exceed some wasm code size
     {
         let mut out = begin_write_swizzle_test("../tests/swizzles_f64.rs")?;
         write_test_vec4(&mut out, "f64", "dvec4", "dvec3", "dvec2")?;
