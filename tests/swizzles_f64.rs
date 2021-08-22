@@ -3,7 +3,6 @@
 mod support;
 use glam::*;
 
-
 glam_test!(test_dvec4_swizzles, {
     let v = dvec4(1_f64, 2_f64, 3_f64, 4_f64);
     assert_eq!(v, v.xyzw());

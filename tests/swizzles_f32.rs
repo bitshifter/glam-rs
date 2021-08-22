@@ -3,7 +3,6 @@
 mod support;
 use glam::*;
 
-
 glam_test!(test_vec4_swizzles, {
     let v = vec4(1_f32, 2_f32, 3_f32, 4_f32);
     assert_eq!(v, v.xyzw());
