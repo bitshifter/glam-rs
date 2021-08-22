@@ -3,7 +3,9 @@ use std::io::{Result, Write};
 
 const E: [char; 4] = ['x', 'y', 'z', 'w']; // element name
 const B: [&str; 4] = ["00", "01", "10", "11"]; // shuffle bits
-const V: [&str; 4] = ["1", "2", "3", "4"]; //element value
+const V: [&str; 4] = ["1", "2", "3", "4"]; // element value
+const L: [&str; 4] = ["0", "1", "2", "3"]; // low index
+const H: [&str; 4] = ["4", "5", "6", "7"]; // high index
 
 // const VEC4: &str = "Vec4";
 // const VEC3A: &str = "Vec3A";
@@ -409,6 +411,140 @@ impl Vec3Swizzles for Vec3A {{
     Ok(())
 }
 
+fn write_vec4_impl_wasm32(out: &mut impl Write) -> Result<()> {
+    const SIZE: usize = 4;
+
+    write_swizzle_head(out)?;
+
+    write!(
+        out,
+        r#"
+use super::Vec4Swizzles;
+use crate::{{Vec2, Vec3, Vec4}};
+
+use core::arch::wasm32::*;
+"#
+    )?;
+
+    write!(
+        out,
+        r#"
+impl Vec4Swizzles for Vec4 {{
+    type Vec2 = Vec2;
+    type Vec3 = Vec3;
+"#,
+    )?;
+
+    write_loops(
+        out,
+        SIZE,
+        |out, e0, e1, e2, e3| {
+            write!(
+                out,
+                r#"
+    #[inline]
+    fn {}{}{}{}(self) -> Vec4 {{
+        Vec4(i32x4_shuffle::<{}, {}, {}, {}>(self.0, self.0))
+    }}"#,
+                E[e0], E[e1], E[e2], E[e3], L[e0], L[e1], H[e2], H[e3],
+            )
+        },
+        |out, e0, e1, e2| {
+            write!(
+                out,
+                r#"
+    #[inline]
+    fn {}{}{}(self) -> Vec3 {{
+        Vec3::from(Vec4(i32x4_shuffle::<{}, {}, {}, {}>(self.0, self.0)))
+    }}"#,
+                E[e0], E[e1], E[e2], L[e0], L[e1], H[e2], H[0],
+            )
+        },
+        |out, e0, e1| {
+            write!(
+                out,
+                r#"
+    #[inline]
+    fn {}{}(self) -> Vec2 {{
+        Vec2::from(Vec4(i32x4_shuffle::<{}, {}, {}, {}>(self.0, self.0)))
+    }}"#,
+                E[e0], E[e1], L[e0], L[e1], H[0], H[0],
+            )
+        },
+    )?;
+
+    write!(out, "\n}}\n")?;
+
+    Ok(())
+}
+
+fn write_vec3a_impl_wasm32(out: &mut impl Write) -> Result<()> {
+    const SIZE: usize = 3;
+
+    write_swizzle_head(out)?;
+
+    write!(
+        out,
+        r#"
+use super::Vec3Swizzles;
+use crate::{{Vec2, Vec3A, Vec4}};
+
+use core::arch::wasm32::*;
+"#
+    )?;
+
+    write!(
+        out,
+        r#"
+impl Vec3Swizzles for Vec3A {{
+    type Vec2 = Vec2;
+    type Vec4 = Vec4;
+"#
+    )?;
+
+    write_loops(
+        out,
+        SIZE,
+        |out, e0, e1, e2, e3| {
+            write!(
+                out,
+                r#"
+    #[inline]
+    fn {}{}{}{}(self) -> Vec4 {{
+        Vec4(i32x4_shuffle::<{}, {}, {}, {}>(self.0, self.0))
+    }}"#,
+                E[e0], E[e1], E[e2], E[e3], L[e0], L[e1], H[e2], H[e3],
+            )
+        },
+        |out, e0, e1, e2| {
+            write!(
+                out,
+                r#"
+    #[inline]
+    fn {}{}{}(self) -> Self {{
+        Self(i32x4_shuffle::<{}, {}, {}, {}>(self.0, self.0))
+    }}"#,
+                E[e0], E[e1], E[e2], L[e0], L[e1], H[e2], H[0],
+            )
+        },
+        |out, e0, e1| {
+            write!(
+                out,
+                r#"
+    #[inline]
+    fn {}{}(self) -> Vec2 {{
+        Vec2::from(Vec3A(i32x4_shuffle::<{}, {}, {}, {}>(self.0, self.0)))
+    }}"#,
+                E[e0], E[e1], L[e0], L[e1], H[0], H[0],
+            )
+        },
+    )?;
+
+    write!(out, "\n}}\n")?;
+
+    Ok(())
+}
+
 fn write_vec3_impl_scalar(
     out: &mut impl Write,
     vec4t: &str,
@@ -594,6 +730,11 @@ fn write_swizzle_impls_f32() -> Result<()> {
     let mut out = File::create("../src/swizzles/vec3a_impl_sse2.rs")?;
     write_vec3a_impl_sse2(&mut out)?;
 
+    let mut out = File::create("../src/swizzles/vec4_impl_wasm32.rs")?;
+    write_vec4_impl_wasm32(&mut out)?;
+
+    let mut out = File::create("../src/swizzles/vec3a_impl_wasm32.rs")?;
+    write_vec3a_impl_wasm32(&mut out)?;
     Ok(())
 }
 
@@ -725,40 +866,31 @@ fn write_test_loops(
     vec3t: &str,
     vec2t: &str,
 ) -> Result<()> {
-    write_loops_vec4(
-        out,
-        size,
-        |out, e0, e1, e2, e3| {
-            writeln!(
-                out,
-                "    assert_eq!(v.{}{}{}{}(), {}({}_{}, {}_{}, {}_{}, {}_{}));",
-                E[e0], E[e1], E[e2], E[e3], vec4t, V[e0], t, V[e1], t, V[e2], t, V[e3], t
-            )
-        })?;
-    write_loops_vec3(
-        out,
-        size,
-        |out, e0, e1, e2| {
-            writeln!(
-                out,
-                "    assert_eq!(v.{}{}{}(), {}({}_{}, {}_{}, {}_{}));",
-                E[e0], E[e1], E[e2], vec3t, V[e0], t, V[e1], t, V[e2], t,
-            )
-        })?;
-    write_loops_vec2(
-        out,
-        size,
-        |out, e0, e1| {
-            writeln!(
-                out,
-                "    assert_eq!(v.{}{}(), {}({}_{}, {}_{}));",
-                E[e0], E[e1], vec2t, V[e0], t, V[e1], t,
-            )
-        })?;
+    write_loops_vec4(out, size, |out, e0, e1, e2, e3| {
+        writeln!(
+            out,
+            "    assert_eq!(v.{}{}{}{}(), {}({}_{}, {}_{}, {}_{}, {}_{}));",
+            E[e0], E[e1], E[e2], E[e3], vec4t, V[e0], t, V[e1], t, V[e2], t, V[e3], t
+        )
+    })?;
+    write_loops_vec3(out, size, |out, e0, e1, e2| {
+        writeln!(
+            out,
+            "    assert_eq!(v.{}{}{}(), {}({}_{}, {}_{}, {}_{}));",
+            E[e0], E[e1], E[e2], vec3t, V[e0], t, V[e1], t, V[e2], t,
+        )
+    })?;
+    write_loops_vec2(out, size, |out, e0, e1| {
+        writeln!(
+            out,
+            "    assert_eq!(v.{}{}(), {}({}_{}, {}_{}));",
+            E[e0], E[e1], vec2t, V[e0], t, V[e1], t,
+        )
+    })?;
     Ok(())
 }
 
-fn begin_write_swizzle_test(filename: &str) -> Result<impl Write> {
+fn write_swizzle_tests_preamble(filename: &str) -> Result<impl Write> {
     let mut out = File::create(filename)?;
     write_swizzle_head(&mut out)?;
     writeln!(
@@ -773,7 +905,7 @@ use glam::*;
 
 fn write_swizzle_tests() -> Result<()> {
     {
-        let mut out = begin_write_swizzle_test("../tests/swizzles_f32.rs")?;
+        let mut out = write_swizzle_tests_preamble("../tests/swizzles_f32.rs")?;
         write_test_vec4(&mut out, "f32", "vec4", "vec3", "vec2")?;
         write_test_vec3(&mut out, "f32", "vec4", "vec3a", "vec2")?;
         write_test_vec3(&mut out, "f32", "vec4", "vec3", "vec2")?;
@@ -782,21 +914,21 @@ fn write_swizzle_tests() -> Result<()> {
 
     // split f64 swizzle tests up so they don't exceed some wasm code size
     {
-        let mut out = begin_write_swizzle_test("../tests/swizzles_f64.rs")?;
+        let mut out = write_swizzle_tests_preamble("../tests/swizzles_f64.rs")?;
         write_test_vec4(&mut out, "f64", "dvec4", "dvec3", "dvec2")?;
         write_test_vec3(&mut out, "f64", "dvec4", "dvec3", "dvec2")?;
         write_test_vec2(&mut out, "f64", "dvec4", "dvec3", "dvec2")?;
     }
 
     {
-        let mut out = begin_write_swizzle_test("../tests/swizzles_i32.rs")?;
+        let mut out = write_swizzle_tests_preamble("../tests/swizzles_i32.rs")?;
         write_test_vec4(&mut out, "i32", "ivec4", "ivec3", "ivec2")?;
         write_test_vec3(&mut out, "i32", "ivec4", "ivec3", "ivec2")?;
         write_test_vec2(&mut out, "i32", "ivec4", "ivec3", "ivec2")?;
     }
 
     {
-        let mut out = begin_write_swizzle_test("../tests/swizzles_u32.rs")?;
+        let mut out = write_swizzle_tests_preamble("../tests/swizzles_u32.rs")?;
         write_test_vec4(&mut out, "u32", "uvec4", "uvec3", "uvec2")?;
         write_test_vec3(&mut out, "u32", "uvec4", "uvec3", "uvec2")?;
         write_test_vec2(&mut out, "u32", "uvec4", "uvec3", "uvec2")?;

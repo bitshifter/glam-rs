@@ -39,7 +39,7 @@ jobs:
   test-wasm:
     strategy:
       matrix:
-        toolchain: [stable, nightly]
+        toolchain: [stable]
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
@@ -48,5 +48,5 @@ jobs:
       - name: Install
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
-      - run: wasm-pack test --headless --chrome
-      - run: wasm-pack test --headless --firefox
+      - run: ./build_and_test_wasm32_firefox.sh
+      - run: ./build_and_test_wasm32_chrome.sh

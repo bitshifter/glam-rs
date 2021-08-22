@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ### Added
 
+* Added `wasm32` SIMD intrinsics support.
 * Added optional support for the `rkyv` serialization crate.
 * Added `Rem` and `RemAssign` implementations for all vector types.
 * Added quaternion `xyz()` method for returning the vector part of the
