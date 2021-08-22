@@ -14,3 +14,5 @@ pub mod traits;
 mod scalar;
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 mod sse2;
+#[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
+mod wasm32;

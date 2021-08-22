@@ -6,7 +6,6 @@ use core::arch::x86::*;
 use core::arch::x86_64::*;
 
 use super::float::*;
-use crate::const_m128;
 use crate::core::{
     storage::{Align16, XY, XYZ, XYZW},
     traits::{scalar::*, vector::*},
@@ -14,7 +13,7 @@ use crate::core::{
 use core::mem::MaybeUninit;
 
 impl MaskVectorConst for __m128 {
-    const FALSE: __m128 = const_m128!([0.0; 4]);
+    const FALSE: __m128 = const_f32x4!([0.0; 4]);
 }
 
 impl MaskVector for __m128 {
@@ -159,21 +158,21 @@ unsafe fn dot4_in_x(lhs: __m128, rhs: __m128) -> __m128 {
 }
 
 impl VectorConst for __m128 {
-    const ZERO: __m128 = const_m128!([0.0; 4]);
-    const ONE: __m128 = const_m128!([1.0; 4]);
+    const ZERO: __m128 = const_f32x4!([0.0; 4]);
+    const ONE: __m128 = const_f32x4!([1.0; 4]);
 }
 
 impl Vector3Const for __m128 {
-    const X: __m128 = const_m128!([1.0, 0.0, 0.0, 0.0]);
-    const Y: __m128 = const_m128!([0.0, 1.0, 0.0, 0.0]);
-    const Z: __m128 = const_m128!([0.0, 0.0, 1.0, 0.0]);
+    const X: __m128 = const_f32x4!([1.0, 0.0, 0.0, 0.0]);
+    const Y: __m128 = const_f32x4!([0.0, 1.0, 0.0, 0.0]);
+    const Z: __m128 = const_f32x4!([0.0, 0.0, 1.0, 0.0]);
 }
 
 impl Vector4Const for __m128 {
-    const X: __m128 = const_m128!([1.0, 0.0, 0.0, 0.0]);
-    const Y: __m128 = const_m128!([0.0, 1.0, 0.0, 0.0]);
-    const Z: __m128 = const_m128!([0.0, 0.0, 1.0, 0.0]);
-    const W: __m128 = const_m128!([0.0, 0.0, 0.0, 1.0]);
+    const X: __m128 = const_f32x4!([1.0, 0.0, 0.0, 0.0]);
+    const Y: __m128 = const_f32x4!([0.0, 1.0, 0.0, 0.0]);
+    const Z: __m128 = const_f32x4!([0.0, 0.0, 1.0, 0.0]);
+    const W: __m128 = const_f32x4!([0.0, 0.0, 0.0, 1.0]);
 }
 
 impl Vector<f32> for __m128 {
@@ -244,10 +243,12 @@ impl Vector<f32> for __m128 {
         unsafe { _mm_sub_ps(self, other) }
     }
 
+    #[inline(always)]
     fn add_scalar(self, other: f32) -> Self {
         unsafe { _mm_add_ps(self, _mm_set_ps1(other)) }
     }
 
+    #[inline(always)]
     fn sub_scalar(self, other: f32) -> Self {
         unsafe { _mm_sub_ps(self, _mm_set_ps1(other)) }
     }
@@ -626,7 +627,7 @@ impl SignedVector3<f32> for __m128 {
 
     #[inline]
     fn signum(self) -> Self {
-        const NEG_ONE: __m128 = const_m128!([-1.0; 4]);
+        const NEG_ONE: __m128 = const_f32x4!([-1.0; 4]);
         let mask = self.cmpge(Self::ZERO);
         let result = Self::select(mask, Self::ONE, NEG_ONE);
         let mask = unsafe { _mm_cmpunord_ps(self, self) };
@@ -719,7 +720,7 @@ impl SignedVector4<f32> for __m128 {
 
     #[inline]
     fn signum(self) -> Self {
-        const NEG_ONE: __m128 = const_m128!([-1.0; 4]);
+        const NEG_ONE: __m128 = const_f32x4!([-1.0; 4]);
         let mask = self.cmpge(Self::ZERO);
         let result = Self::select(mask, Self::ONE, NEG_ONE);
         let mask = unsafe { _mm_cmpunord_ps(self, self) };

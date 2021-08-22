@@ -1,5 +1,8 @@
 use crate::core::traits::vector::*;
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+#[cfg(all(
+    any(target_feature = "sse2", target_feature = "simd128"),
+    not(feature = "scalar-math")
+))]
 use crate::BVec3A;
 use crate::{BVec3, DVec2, DVec4, IVec2, IVec4, UVec2, UVec4, Vec2, Vec4, XYZ};
 #[cfg(not(target_arch = "spirv"))]
@@ -21,6 +24,9 @@ use core::arch::x86::*;
     not(feature = "scalar-math")
 ))]
 use core::arch::x86_64::*;
+
+#[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
+use core::arch::wasm32::v128;
 
 #[cfg(feature = "std")]
 use std::iter::{Product, Sum};
@@ -295,8 +301,13 @@ impl_f32_vec3!(vec3, Vec2, Vec3, Vec4, BVec3, XYZF32);
 
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 type XYZF32A = __m128;
+#[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
+type XYZF32A = v128;
 
-#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+#[cfg(any(
+    not(any(target_feature = "sse2", target_feature = "simd128")),
+    feature = "scalar-math"
+))]
 type XYZF32A = crate::core::storage::XYZF32A16;
 
 /// A 3-dimensional vector with SIMD support.
@@ -309,10 +320,16 @@ type XYZF32A = crate::core::storage::XYZF32A16;
 #[repr(transparent)]
 pub struct Vec3A(pub(crate) XYZF32A);
 
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+#[cfg(all(
+    any(target_feature = "sse2", target_feature = "simd128"),
+    not(feature = "scalar-math")
+))]
 impl_f32_vec3!(vec3a, Vec2, Vec3A, Vec4, BVec3A, XYZF32A);
 
-#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+#[cfg(any(
+    not(any(target_feature = "sse2", target_feature = "simd128")),
+    feature = "scalar-math"
+))]
 impl_f32_vec3!(vec3a, Vec2, Vec3A, Vec4, BVec3, XYZF32A);
 
 impl From<Vec3> for Vec3A {

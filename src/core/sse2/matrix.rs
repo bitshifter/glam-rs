@@ -5,25 +5,22 @@ use core::arch::x86_64::*;
 
 use core::mem::MaybeUninit;
 
-use crate::{
-    const_m128,
-    core::{
-        storage::{Align16, Columns2, Columns3, Columns4, XY, XYZ},
-        traits::{
-            matrix::{
-                FloatMatrix2x2, FloatMatrix3x3, FloatMatrix4x4, Matrix, Matrix2x2, Matrix3x3,
-                Matrix4x4, MatrixConst,
-            },
-            projection::ProjectionMatrix,
-            vector::{FloatVector4, Vector, Vector4, Vector4Const},
+use crate::core::{
+    storage::{Align16, Columns2, Columns3, Columns4, XY, XYZ},
+    traits::{
+        matrix::{
+            FloatMatrix2x2, FloatMatrix3x3, FloatMatrix4x4, Matrix, Matrix2x2, Matrix3x3,
+            Matrix4x4, MatrixConst,
         },
+        projection::ProjectionMatrix,
+        vector::{FloatVector4, Vector, Vector4, Vector4Const},
     },
 };
 
 // __m128 as a Matrix2x2
 impl MatrixConst for __m128 {
-    const ZERO: __m128 = const_m128!([0.0, 0.0, 0.0, 0.0]);
-    const IDENTITY: __m128 = const_m128!([1.0, 0.0, 0.0, 1.0]);
+    const ZERO: __m128 = const_f32x4!([0.0, 0.0, 0.0, 0.0]);
+    const IDENTITY: __m128 = const_f32x4!([1.0, 0.0, 0.0, 1.0]);
 }
 
 impl Matrix<f32> for __m128 {}
@@ -122,7 +119,7 @@ impl FloatMatrix2x2<f32, XY<f32>> for __m128 {
     #[inline]
     fn inverse(&self) -> Self {
         unsafe {
-            const SIGN: __m128 = const_m128!([1.0, -1.0, -1.0, 1.0]);
+            const SIGN: __m128 = const_f32x4!([1.0, -1.0, -1.0, 1.0]);
             let abcd = *self;
             let dcba = _mm_shuffle_ps(abcd, abcd, 0b00_01_10_11);
             let prod = _mm_mul_ps(abcd, dcba);

@@ -33,17 +33,27 @@ and feel of the API has solidified.
 ### SIMD
 
 The `Vec3A`, `Vec4`, `Quat`, `Mat2`, `Mat3A`, `Mat4`, `Affine2` and `Affine3A`
-types use 128-bit wide SIMD vector types for storage on x86/x86_64
-architectures.  As a result, these types are all 16 byte aligned and depending
-on the size of the type or the type's members, they may contain internal
-padding.  This results in some wasted space in the cases of `Vec3A`, `Mat3A`,
-`Affine2` and `Affine3A`.  However, the use of SIMD generally results in better
-performance than scalar math.
+types use 128-bit wide SIMD vector types for storage on `x86`, `x86_64` and
+`wasm32` architectures.  As a result, these types are all 16 byte aligned and
+depending on the size of the type or the type's members, they may contain
+internal padding.  This results in some wasted space in the cases of `Vec3A`,
+`Mat3A`, `Affine2` and `Affine3A`.  However, the use of SIMD generally results
+in better performance than scalar math.
 
 `glam` outperforms similar Rust libraries for common operations as tested by the
 [`mathbench`][mathbench] project.
 
 [mathbench]: https://github.com/bitshifter/mathbench-rs
+
+### Enabling SIMD
+
+SIMD is supported on `x86`, `x86_64` and `wasm32` targets.
+
+* `SSE2` is enabled by default on `x86_64` targets.
+* To enable `SSE2` on `x86` targets add `-C target-feature=+sse2` to
+  `RUSTCFLAGS`.
+* To enable `simd128` on `wasm32` targets add `-C target-feature=+simd128` to
+  `RUSTFLAGS`.
 
 ### `no_std` support
 
@@ -86,7 +96,7 @@ glam = { version = "0.17.0", default-features = false }
   `glam` types. Note that serialization is not interoperable with and without the
   `scalar-math` feature. It should work between all other builds of `glam`.
   Endian conversion is currently not supported
-* [`bytecheck`] - to perform archive validation when using the rkyv feature
+* [`bytecheck`] - to perform archive validation when using the `rkyv` feature
 
 [`approx`]: https://docs.rs/approx
 [`bytemuck`]: https://docs.rs/bytemuck
@@ -108,6 +118,8 @@ glam = { version = "0.17.0", default-features = false }
 ### Minimum Supported Rust Version (MSRV)
 
 The minimum supported version of Rust for `glam` is `1.51.0`.
+
+`wasm32` SIMD intrinsics require Rust `1.54.0`.
 
 ## Conventions
 

@@ -22,6 +22,9 @@ use core::arch::x86::*;
 ))]
 use core::arch::x86_64::*;
 
+#[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
+use core::arch::wasm32::v128;
+
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::ops::{Add, Deref, Div, Mul, MulAssign, Neg, Sub};
@@ -654,7 +657,13 @@ macro_rules! impl_quat_traits {
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 type InnerF32 = __m128;
 
-#[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
+#[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
+type InnerF32 = v128;
+
+#[cfg(any(
+    not(any(target_feature = "sse2", target_feature = "simd128")),
+    feature = "scalar-math"
+))]
 type InnerF32 = crate::XYZW<f32>;
 
 /// A quaternion representing an orientation.

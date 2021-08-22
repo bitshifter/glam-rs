@@ -4,7 +4,6 @@ use core::arch::x86::*;
 use core::arch::x86_64::*;
 
 use super::float::*;
-use crate::const_m128;
 use crate::core::{
     storage::XYZ,
     traits::{quaternion::Quaternion, scalar::*, vector::*},
@@ -15,7 +14,7 @@ impl Quaternion<f32> for __m128 {
 
     #[inline(always)]
     fn conjugate(self) -> Self {
-        const SIGN: __m128 = const_m128!([-0.0, -0.0, -0.0, 0.0]);
+        const SIGN: __m128 = const_f32x4!([-0.0, -0.0, -0.0, 0.0]);
         unsafe { _mm_xor_ps(self, SIGN) }
     }
 
@@ -25,7 +24,7 @@ impl Quaternion<f32> for __m128 {
         glam_assert!(FloatVector4::is_normalized(end));
 
         unsafe {
-            const NEG_ZERO: __m128 = const_m128!([-0.0; 4]);
+            const NEG_ZERO: __m128 = const_f32x4!([-0.0; 4]);
             let start = self;
             let end = end;
             let dot = Vector4::dot_into_vec(start, end);
@@ -83,9 +82,9 @@ impl Quaternion<f32> for __m128 {
             let lhs = self;
             let rhs = other;
 
-            const CONTROL_WZYX: __m128 = const_m128!([1.0, -1.0, 1.0, -1.0]);
-            const CONTROL_ZWXY: __m128 = const_m128!([1.0, 1.0, -1.0, -1.0]);
-            const CONTROL_YXWZ: __m128 = const_m128!([-1.0, 1.0, 1.0, -1.0]);
+            const CONTROL_WZYX: __m128 = const_f32x4!([1.0, -1.0, 1.0, -1.0]);
+            const CONTROL_ZWXY: __m128 = const_f32x4!([1.0, 1.0, -1.0, -1.0]);
+            const CONTROL_YXWZ: __m128 = const_f32x4!([-1.0, 1.0, 1.0, -1.0]);
 
             let r_xxxx = _mm_shuffle_ps(lhs, lhs, 0b00_00_00_00);
             let r_yyyy = _mm_shuffle_ps(lhs, lhs, 0b01_01_01_01);
@@ -123,7 +122,7 @@ impl Quaternion<f32> for __m128 {
     fn mul_float4_as_vector3(self, other: __m128) -> __m128 {
         glam_assert!(FloatVector4::is_normalized(self));
         unsafe {
-            const TWO: __m128 = const_m128!([2.0; 4]);
+            const TWO: __m128 = const_f32x4!([2.0; 4]);
             let w = _mm_shuffle_ps(self, self, 0b11_11_11_11);
             let b = self;
             let b2 = Vector3::dot_into_vec(b, b);

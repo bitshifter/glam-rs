@@ -2,6 +2,8 @@ use crate::{DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
 use crate::{IVec2, IVec3, IVec4};
 use crate::{Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
 use crate::{UVec2, UVec3, UVec4};
+#[cfg(target_feature = "simd128")]
+use core::arch::wasm32::v128;
 #[cfg(target_arch = "x86")]
 use core::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
@@ -11,6 +13,8 @@ use core::arch::x86_64::*;
 pub union Vec4Cast {
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
     pub m128: __m128,
+    #[cfg(target_feature = "simd128")]
+    pub v128: v128,
     pub fx4: [f32; 4],
     pub fx2x2: [[f32; 2]; 2],
     pub v4: Vec4,
@@ -120,6 +124,8 @@ pub union DMat2Cast {
 pub union IVec4Cast {
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
     pub m128: __m128i,
+    #[cfg(target_feature = "simd128")]
+    pub v128: v128,
     pub ix4: [i32; 4],
     pub ix2x2: [[i32; 2]; 2],
     pub v4: IVec4,
@@ -140,7 +146,9 @@ pub union IVec2Cast {
 #[repr(C)]
 pub union UVec4Cast {
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-    pub m128: __m128i,
+    pub m128: __m128,
+    #[cfg(target_feature = "simd128")]
+    pub v128: v128,
     pub ux4: [u32; 4],
     pub ux2x2: [[u32; 2]; 2],
     pub v4: UVec4,
