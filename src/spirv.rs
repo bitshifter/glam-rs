@@ -18,7 +18,6 @@ macro_rules! unsupported_features {
 #[cfg(target_arch = "spirv")]
 unsupported_features! {
     "approx",
-    "bytemuck",
     "debug-glam-assert",
     "glam-assert",
     "rand",
