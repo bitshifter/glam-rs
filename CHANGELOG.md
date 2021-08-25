@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
+### Breaking changes
+
+* Minimum Supported Version of Rust bumped to 1.51.0 for `wasm-bindgen-test`.
+
 ### Added
 
 * Added `wasm32` SIMD intrinsics support.

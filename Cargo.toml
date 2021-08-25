@@ -44,10 +44,14 @@ rkyv = { version = "0.7", optional = true }
 bytecheck = { version = "0.6", optional = true, default-features = false}
 
 [dev-dependencies]
-criterion = { version = "0.3", features = ["html_reports"] }
 # rand_xoshiro is required for tests if rand is enabled
 rand_xoshiro = "0.6"
 serde_json = "1.0"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
+criterion = { version = "0.3", features = ["html_reports"] }
+
+[target.'cfg(target_arch = "wasm32")'.dev-dependencies]
 wasm-bindgen-test = "0.3.0"
 
 [lib]

@@ -55,6 +55,9 @@ SIMD is supported on `x86`, `x86_64` and `wasm32` targets.
 * To enable `simd128` on `wasm32` targets add `-C target-feature=+simd128` to
   `RUSTFLAGS`.
 
+Note that SIMD on `wasm32` passes tests but has not been benchmarked,
+performance may or may not be better than scalar math.
+
 ### `no_std` support
 
 `no_std` support can be enabled by compiling with `--no-default-features` to
