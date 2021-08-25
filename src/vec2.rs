@@ -62,13 +62,10 @@ macro_rules! impl_vec2_signed_methods {
 
         /// The perpendicular dot product of `self` and `other`.
         /// Also known as the wedge product, 2d cross product, and determinant.
+        #[doc(alias = "wedge")]
+        #[doc(alias = "cross")]
+        #[doc(alias = "determinant")]
         #[inline(always)]
-        #[cfg_attr(
-            docsrs,
-            doc(alias = "wedge"),
-            doc(alias = "cross"),
-            doc(alias = "determinant")
-        )]
         pub fn perp_dot(self, other: $vec2) -> $t {
             self.0.perp_dot(other.0)
         }

@@ -9,7 +9,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ### Breaking changes
 
-* Minimum Supported Version of Rust bumped to 1.51.0 for `wasm-bindgen-test`.
+* Minimum Supported Version of Rust bumped to 1.51.0 for `wasm-bindgen-test`
+  and `rustdoc` `alias` support.
 
 ### Added
 

@@ -105,7 +105,7 @@ macro_rules! impl_mat3_methods {
 
         /// Creates a 3x3 matrix with its diagonal set to `diagonal` and all other entries set to 0.
         /// The resulting matrix is a 3D scale transfom.
-        #[cfg_attr(docsrs, doc(alias = "scale"))]
+        #[doc(alias = "scale")]
         #[inline(always)]
         pub fn from_diagonal(diagonal: $vec3) -> Self {
             Self($inner::from_diagonal(diagonal.0))
