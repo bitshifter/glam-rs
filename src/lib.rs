@@ -232,7 +232,7 @@ and benchmarks.
 The minimum supported Rust version is `1.51.0`.
 
 */
-#![doc(html_root_url = "https://docs.rs/glam/0.17.3")]
+#![doc(html_root_url = "https://docs.rs/glam/0.18.0")]
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(target_arch = "spirv", feature(asm, register_attr, repr_simd))]
 #![deny(
