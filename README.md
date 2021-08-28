@@ -228,8 +228,8 @@ See [ATTRIBUTION.md] for details.
 
 [Build Status]: https://github.com/bitshifter/glam-rs/actions/workflows/ci.yml/badge.svg
 [github-ci]: https://github.com/bitshifter/glam-rs/actions/workflows/ci.yml
-[Coverage Status]: https://coveralls.io/repos/github/bitshifter/glam-rs/badge.svg?branch=master
-[coveralls.io]: https://coveralls.io/github/bitshifter/glam-rs?branch=master
+[Coverage Status]: https://coveralls.io/repos/github/bitshifter/glam-rs/badge.svg?branch=main
+[coveralls.io]: https://coveralls.io/github/bitshifter/glam-rs?branch=main
 [Latest Version]: https://img.shields.io/crates/v/glam.svg
 [crates.io]: https://crates.io/crates/glam/
 [docs]: https://docs.rs/glam/badge.svg
