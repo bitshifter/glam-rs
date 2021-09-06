@@ -5,6 +5,7 @@ use crate::core::{
 use crate::{DMat3, DVec2, Mat3, Vec2};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
+use core::iter::{Product, Sum};
 use core::ops::{Add, AddAssign, Deref, DerefMut, Mul, MulAssign, Sub, SubAssign};
 
 #[cfg(all(
@@ -22,9 +23,6 @@ use core::arch::x86_64::*;
 
 #[cfg(target_feature = "simd128")]
 use core::arch::wasm32::v128;
-
-#[cfg(feature = "std")]
-use std::iter::{Product, Sum};
 
 macro_rules! impl_mat2_methods {
     ($t:ty, $vec2:ident, $mat3:ident, $inner:ident) => {

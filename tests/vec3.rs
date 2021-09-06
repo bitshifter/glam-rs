@@ -406,13 +406,11 @@ macro_rules! impl_vec3_tests {
             should_panic!({ $vec3::from_slice(&[0 as $t; 2]) });
         });
 
-        #[cfg(feature = "std")]
         glam_test!(test_sum, {
             let one = $vec3::ONE;
             assert_eq!(vec![one, one].iter().sum::<$vec3>(), one + one);
         });
 
-        #[cfg(feature = "std")]
         glam_test!(test_product, {
             let two = $vec3::new(2 as $t, 2 as $t, 2 as $t);
             assert_eq!(vec![two, two].iter().product::<$vec3>(), two * two);

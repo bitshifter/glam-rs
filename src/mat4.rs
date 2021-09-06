@@ -25,10 +25,8 @@ use core::arch::wasm32::v128;
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
+use core::iter::{Product, Sum};
 use core::ops::{Add, AddAssign, Deref, DerefMut, Mul, MulAssign, Sub, SubAssign};
-
-#[cfg(feature = "std")]
-use std::iter::{Product, Sum};
 
 //macro_rules! define_mat4_struct {
 //    ($mat4:ident, $inner:ident) => {

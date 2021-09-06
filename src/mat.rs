@@ -85,7 +85,6 @@ macro_rules! impl_matn_common_traits {
             }
         }
 
-        #[cfg(feature = "std")]
         impl<'a> Sum<&'a Self> for $matn {
             fn sum<I>(iter: I) -> Self
             where
@@ -95,7 +94,6 @@ macro_rules! impl_matn_common_traits {
             }
         }
 
-        #[cfg(feature = "std")]
         impl<'a> Product<&'a Self> for $matn {
             fn product<I>(iter: I) -> Self
             where

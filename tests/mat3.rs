@@ -327,13 +327,11 @@ macro_rules! impl_mat3_tests {
             should_panic!({ $mat3::IDENTITY.write_cols_to_slice(&mut [0.0; 8]) });
         });
 
-        #[cfg(feature = "std")]
         glam_test!(test_sum, {
             let id = $mat3::IDENTITY;
             assert_eq!(vec![id, id].iter().sum::<$mat3>(), id + id);
         });
 
-        #[cfg(feature = "std")]
         glam_test!(test_product, {
             let two = $mat3::IDENTITY + $mat3::IDENTITY;
             assert_eq!(vec![two, two].iter().product::<$mat3>(), two * two);

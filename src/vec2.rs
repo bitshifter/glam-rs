@@ -2,13 +2,11 @@ use crate::core::traits::vector::*;
 use crate::{BVec2, DVec3, IVec3, UVec3, Vec3, XY};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
+use core::iter::{Product, Sum};
 use core::{f32, ops::*};
 
 #[cfg(not(feature = "std"))]
 use num_traits::Float;
-
-#[cfg(feature = "std")]
-use std::iter::{Product, Sum};
 
 macro_rules! impl_vec2_common_methods {
     ($t:ty, $vec2:ident, $vec3:ident, $mask:ident, $inner:ident) => {

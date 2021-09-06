@@ -480,13 +480,11 @@ macro_rules! impl_vec4_tests {
             assert_eq!(v, $vec4::from_slice(&a));
         });
 
-        #[cfg(feature = "std")]
         glam_test!(test_sum, {
             let one = $vec4::ONE;
             assert_eq!(vec![one, one].iter().sum::<$vec4>(), one + one);
         });
 
-        #[cfg(feature = "std")]
         glam_test!(test_product, {
             let two = $vec4::new(2 as $t, 2 as $t, 2 as $t, 2 as $t);
             assert_eq!(vec![two, two].iter().product::<$vec4>(), two * two);

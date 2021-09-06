@@ -250,7 +250,6 @@ macro_rules! impl_affine3_tests {
             should_panic!({ $affine3::IDENTITY.write_cols_to_slice(&mut [0.0; 11]) });
         });
 
-        #[cfg(feature = "std")]
         glam_test!(test_product, {
             let ident = $affine3::IDENTITY;
             assert_eq!(

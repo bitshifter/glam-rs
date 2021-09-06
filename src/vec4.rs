@@ -6,8 +6,10 @@ use crate::core::traits::vector::*;
 ))]
 use crate::BVec4A;
 use crate::{BVec4, DVec2, DVec3, IVec2, IVec3, UVec2, UVec3, Vec2, Vec3, Vec3A, XYZW};
+use core::f32;
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
+use core::iter::{Product, Sum};
 use core::ops::*;
 
 #[cfg(not(feature = "std"))]
@@ -28,11 +30,6 @@ use core::arch::x86_64::*;
 
 #[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
 use core::arch::wasm32::v128;
-
-#[cfg(feature = "std")]
-use std::iter::{Product, Sum};
-
-use core::f32;
 
 macro_rules! impl_vec4_common_methods {
     ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident, $mask:ident, $inner:ident) => {

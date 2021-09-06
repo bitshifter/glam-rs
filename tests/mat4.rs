@@ -632,13 +632,11 @@ macro_rules! impl_mat4_tests {
             should_panic!({ $mat4::IDENTITY.write_cols_to_slice(&mut [0.0; 15]) });
         });
 
-        #[cfg(feature = "std")]
         glam_test!(test_sum, {
             let id = $mat4::IDENTITY;
             assert_eq!(vec![id, id].iter().sum::<$mat4>(), id + id);
         });
 
-        #[cfg(feature = "std")]
         glam_test!(test_product, {
             let two = $mat4::IDENTITY + $mat4::IDENTITY;
             assert_eq!(vec![two, two].iter().product::<$mat4>(), two * two);

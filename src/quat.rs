@@ -27,10 +27,8 @@ use core::arch::wasm32::v128;
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
+use core::iter::{Product, Sum};
 use core::ops::{Add, Deref, Div, Mul, MulAssign, Neg, Sub};
-
-#[cfg(feature = "std")]
-use std::iter::{Product, Sum};
 
 macro_rules! impl_quat_methods {
     ($t:ident, $quat:ident, $vec3:ident, $vec4:ident, $mat3:ident, $mat4:ident, $inner:ident) => {
@@ -631,7 +629,6 @@ macro_rules! impl_quat_traits {
             }
         }
 
-        #[cfg(feature = "std")]
         impl<'a> Sum<&'a Self> for $quat {
             fn sum<I>(iter: I) -> Self
             where
@@ -642,7 +639,6 @@ macro_rules! impl_quat_traits {
             }
         }
 
-        #[cfg(feature = "std")]
         impl<'a> Product<&'a Self> for $quat {
             fn product<I>(iter: I) -> Self
             where

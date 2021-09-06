@@ -727,7 +727,6 @@ macro_rules! impl_vecn_common_traits {
             }
         }
 
-        #[cfg(feature = "std")]
         impl<'a> Sum<&'a Self> for $vecn {
             #[inline]
             fn sum<I>(iter: I) -> Self
@@ -738,7 +737,6 @@ macro_rules! impl_vecn_common_traits {
             }
         }
 
-        #[cfg(feature = "std")]
         impl<'a> Product<&'a Self> for $vecn {
             #[inline]
             fn product<I>(iter: I) -> Self

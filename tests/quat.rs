@@ -360,13 +360,11 @@ macro_rules! impl_quat_tests {
             assert_eq!(a / 2.0, $quat::from_xyzw(1.0, 2.0, 3.0, 4.0));
         });
 
-        #[cfg(feature = "std")]
         glam_test!(test_sum, {
             let two = $new(2.0, 2.0, 2.0, 2.0);
             assert_eq!(vec![two, two].iter().sum::<$quat>(), two + two);
         });
 
-        #[cfg(feature = "std")]
         glam_test!(test_product, {
             let two = $new(2.0, 2.0, 2.0, 2.0).normalize();
             assert_eq!(vec![two, two].iter().product::<$quat>(), two * two);
