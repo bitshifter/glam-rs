@@ -704,7 +704,7 @@ fn write_swizzle_traits() -> Result<()> {
     write_swizzle_trait(&mut out, 3, "Vec4", "Vec3", "Vec2")?;
     writeln!(
         out,
-        r#"/** Swizzle methods for 3-dimensional vector types. */"#
+        r#"/** Swizzle methods for 4-dimensional vector types. */"#
     )?;
     write_swizzle_trait(&mut out, 4, "Vec4", "Vec3", "Vec2")?;
 

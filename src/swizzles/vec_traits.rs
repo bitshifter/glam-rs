@@ -164,7 +164,7 @@ pub trait Vec3Swizzles: Sized + Copy + Clone {
     fn zy(self) -> Self::Vec2;
     fn zz(self) -> Self::Vec2;
 }
-/** Swizzle methods for 3-dimensional vector types. */
+/** Swizzle methods for 4-dimensional vector types. */
 pub trait Vec4Swizzles: Sized + Copy + Clone {
     type Vec2;
     type Vec3;
