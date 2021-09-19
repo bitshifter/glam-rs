@@ -7,7 +7,7 @@ pub use num_traits::{Float, Num, Signed};
 
 use core::{
     marker::Sized,
-    ops::{Add, Div, Mul, Rem, Sub},
+    ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Not, Rem, Shl, Shr, Sub},
 };
 
 // Stub the necessary parts of num traits

@@ -75,14 +75,14 @@ macro_rules! impl_vecnmask_traits {
             type Output = Self;
             #[inline]
             fn bitand(self, other: Self) -> Self {
-                Self(self.0.bitand(other.0))
+                Self(MaskVector::bitand(self.0, other.0))
             }
         }
 
         impl BitAndAssign for $vecnmask {
             #[inline]
             fn bitand_assign(&mut self, other: Self) {
-                self.0 = self.0.bitand(other.0);
+                self.0 = MaskVector::bitand(self.0, other.0);
             }
         }
 
@@ -90,14 +90,14 @@ macro_rules! impl_vecnmask_traits {
             type Output = Self;
             #[inline]
             fn bitor(self, other: Self) -> Self {
-                Self(self.0.bitor(other.0))
+                Self(MaskVector::bitor(self.0, other.0))
             }
         }
 
         impl BitOrAssign for $vecnmask {
             #[inline]
             fn bitor_assign(&mut self, other: Self) {
-                self.0 = self.0.bitor(other.0);
+                self.0 = MaskVector::bitor(self.0, other.0);
             }
         }
 
@@ -105,7 +105,7 @@ macro_rules! impl_vecnmask_traits {
             type Output = Self;
             #[inline]
             fn not(self) -> Self {
-                Self(self.0.not())
+                Self(MaskVector::not(self.0))
             }
         }
 
