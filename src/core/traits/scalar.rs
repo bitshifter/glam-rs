@@ -320,16 +320,26 @@ impl NumEx for u32 {
     }
 }
 
+pub trait IntegerShiftOps<Rhs>: Sized + Shl<Rhs, Output = Self> + Shr<Rhs, Output = Self> {}
+
 pub trait IntegerBitOps:
-    Sized
-    + Not<Output = Self>
-    + Shl<Output = Self>
-    + Shr<Output = Self>
-    + BitAnd<Output = Self>
-    + BitOr<Output = Self>
-    + BitXor<Output = Self>
+    Sized + Not<Output = Self> + BitAnd<Output = Self> + BitOr<Output = Self> + BitXor<Output = Self>
 {
 }
+
+impl IntegerShiftOps<i8> for i32 {}
+impl IntegerShiftOps<i16> for i32 {}
+impl IntegerShiftOps<i32> for i32 {}
+impl IntegerShiftOps<u8> for i32 {}
+impl IntegerShiftOps<u16> for i32 {}
+impl IntegerShiftOps<u32> for i32 {}
+
+impl IntegerShiftOps<i8> for u32 {}
+impl IntegerShiftOps<i16> for u32 {}
+impl IntegerShiftOps<i32> for u32 {}
+impl IntegerShiftOps<u8> for u32 {}
+impl IntegerShiftOps<u16> for u32 {}
+impl IntegerShiftOps<u32> for u32 {}
 
 impl IntegerBitOps for i32 {}
 impl IntegerBitOps for u32 {}

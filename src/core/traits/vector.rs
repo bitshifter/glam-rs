@@ -804,16 +804,25 @@ pub trait FloatVector4<T: FloatEx>: SignedVector4<T> {
     }
 }
 
-pub trait VectorBitOps<T> {
+pub trait ScalarShiftOps<Rhs> {
+    fn scalar_shl(self, rhs: Rhs) -> Self;
+    fn scalar_shr(self, rhs: Rhs) -> Self;
+}
+
+pub trait VectorShiftOps<Rhs> {
+    fn vector_shl(self, rhs: Rhs) -> Self;
+    fn vector_shr(self, rhs: Rhs) -> Self;
+}
+
+pub trait ScalarBitOps<Rhs> {
+    fn scalar_bitand(self, rhs: Rhs) -> Self;
+    fn scalar_bitor(self, rhs: Rhs) -> Self;
+    fn scalar_bitxor(self, rhs: Rhs) -> Self;
+}
+
+pub trait VectorBitOps<Rhs> {
     fn not(self) -> Self;
-    fn vector_shl(self, rhs: Self) -> Self;
-    fn scalar_shl(self, rhs: T) -> Self;
-    fn vector_shr(self, rhs: Self) -> Self;
-    fn scalar_shr(self, rhs: T) -> Self;
-    fn vector_bitand(self, rhs: Self) -> Self;
-    fn scalar_bitand(self, rhs: T) -> Self;
-    fn vector_bitor(self, rhs: Self) -> Self;
-    fn scalar_bitor(self, rhs: T) -> Self;
-    fn vector_bitxor(self, rhs: Self) -> Self;
-    fn scalar_bitxor(self, rhs: T) -> Self;
+    fn vector_bitand(self, rhs: Rhs) -> Self;
+    fn vector_bitor(self, rhs: Rhs) -> Self;
+    fn vector_bitxor(self, rhs: Rhs) -> Self;
 }

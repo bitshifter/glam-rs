@@ -736,28 +736,132 @@ macro_rules! impl_vec3_float_tests {
     };
 }
 
-macro_rules! impl_vec3_bit_op_tests {
-    ($t:ident, $vec3:ident, $t_min:literal, $t_max:literal) => {
-        glam_test!(test_not, {
+macro_rules! impl_vec3_scalar_shift_op_test {
+    ($vec3:ident, $t_min:literal, $t_max:literal, $rhs_min:literal, $rhs_max:literal) => {
+        glam_test!(test_vec3_scalar_shift_ops, {
+            for x in $t_min..$t_max {
+                for y in $t_min..$t_max {
+                    for z in $t_min..$t_max {
+                        for rhs in $rhs_min..$rhs_max {
+                            assert_eq!(
+                                $vec3::new(x, y, z) << rhs,
+                                $vec3::new(x << rhs, y << rhs, z << rhs)
+                            );
+                            assert_eq!(
+                                $vec3::new(x, y, z) >> rhs,
+                                $vec3::new(x >> rhs, y >> rhs, z >> rhs)
+                            );
+                        }
+                    }
+                }
+            }
+        });
+    };
+}
+
+macro_rules! impl_vec3_scalar_shift_op_tests {
+    ($vec3:ident, $t_min:literal, $t_max:literal) => {
+        mod shift_by_i8 {
+            use glam::$vec3;
+            impl_vec3_scalar_shift_op_test!($vec3, $t_min, $t_max, 0i8, 2);
+        }
+        mod shift_by_i16 {
+            use glam::$vec3;
+            impl_vec3_scalar_shift_op_test!($vec3, $t_min, $t_max, 0i16, 2);
+        }
+        mod shift_by_i32 {
+            use glam::$vec3;
+            impl_vec3_scalar_shift_op_test!($vec3, $t_min, $t_max, 0i32, 2);
+        }
+        mod shift_by_u8 {
+            use glam::$vec3;
+            impl_vec3_scalar_shift_op_test!($vec3, $t_min, $t_max, 0u8, 2);
+        }
+        mod shift_by_u16 {
+            use glam::$vec3;
+            impl_vec3_scalar_shift_op_test!($vec3, $t_min, $t_max, 0u16, 2);
+        }
+        mod shift_by_u32 {
+            use glam::$vec3;
+            impl_vec3_scalar_shift_op_test!($vec3, $t_min, $t_max, 0u32, 2);
+        }
+    };
+}
+
+macro_rules! impl_vec3_shift_op_test {
+    ($vec3:ident, $rhs:ident, $t_min:literal, $t_max:literal) => {
+        glam_test!(test_vec3_shift_ops, {
             for x1 in $t_min..$t_max {
                 for y1 in $t_min..$t_max {
                     for z1 in $t_min..$t_max {
-                        assert_eq!(!$vec3::new(x1, y1, z1), $vec3::new(!x1, !y1, !z1));
-
-                        for x2 in $t_min.max(0)..$t_max {
-                            for y2 in $t_min.max(0)..$t_max {
-                                for z2 in $t_min.max(0)..$t_max {
+                        for x2 in $t_min..$t_max {
+                            for y2 in $t_min..$t_max {
+                                for z2 in $t_min..$t_max {
                                     assert_eq!(
-                                        $vec3::new(x1, y1, z1) << $vec3::new(x2, y2, z2),
+                                        $vec3::new(x1, y1, z1) << $rhs::new(x2, y2, z2),
                                         $vec3::new(x1 << x2, y1 << y2, z1 << z2)
                                     );
                                     assert_eq!(
-                                        $vec3::new(x1, y1, z1) >> $vec3::new(x2, y2, z2),
+                                        $vec3::new(x1, y1, z1) >> $rhs::new(x2, y2, z2),
                                         $vec3::new(x1 >> x2, y1 >> y2, z1 >> z2)
                                     );
                                 }
                             }
                         }
+                    }
+                }
+            }
+        });
+    };
+}
+
+macro_rules! impl_vec3_shift_op_tests {
+    ($vec3:ident) => {
+        mod shift_ivec3_by_ivec3 {
+            use super::*;
+            impl_vec3_shift_op_test!($vec3, IVec3, 0, 2);
+        }
+        mod shift_ivec3_by_uvec3 {
+            use super::*;
+            impl_vec3_shift_op_test!($vec3, UVec3, 0, 2);
+        }
+    };
+}
+
+macro_rules! impl_vec3_scalar_bit_op_tests {
+    ($vec3:ident, $t_min:literal, $t_max:literal) => {
+        glam_test!(test_vec3_scalar_bit_ops, {
+            for x in $t_min..$t_max {
+                for y in $t_min..$t_max {
+                    for z in $t_min..$t_max {
+                        for rhs in $t_min..$t_max {
+                            assert_eq!(
+                                $vec3::new(x, y, z) & rhs,
+                                $vec3::new(x & rhs, y & rhs, z & rhs)
+                            );
+                            assert_eq!(
+                                $vec3::new(x, y, z) | rhs,
+                                $vec3::new(x | rhs, y | rhs, z | rhs)
+                            );
+                            assert_eq!(
+                                $vec3::new(x, y, z) ^ rhs,
+                                $vec3::new(x ^ rhs, y ^ rhs, z ^ rhs)
+                            );
+                        }
+                    }
+                }
+            }
+        });
+    };
+}
+
+macro_rules! impl_vec3_bit_op_tests {
+    ($vec3:ident, $t_min:literal, $t_max:literal) => {
+        glam_test!(test_vec3_bit_ops, {
+            for x1 in $t_min..$t_max {
+                for y1 in $t_min..$t_max {
+                    for z1 in $t_min..$t_max {
+                        assert_eq!(!$vec3::new(x1, y1, z1), $vec3::new(!x1, !y1, !z1));
 
                         for x2 in $t_min..$t_max {
                             for y2 in $t_min..$t_max {
@@ -935,7 +1039,7 @@ mod dvec3 {
 }
 
 mod ivec3 {
-    use glam::{const_ivec3, ivec3, BVec3, IVec3};
+    use glam::{const_ivec3, ivec3, BVec3, IVec3, UVec3};
 
     glam_test!(test_align, {
         use std::mem;
@@ -947,11 +1051,16 @@ mod ivec3 {
 
     impl_vec3_signed_tests!(i32, const_ivec3, ivec3, IVec3, BVec3);
     impl_vec3_eq_hash_tests!(i32, ivec3);
-    impl_vec3_bit_op_tests!(i32, IVec3, -2, 2);
+
+    impl_vec3_scalar_shift_op_tests!(IVec3, -2, 2);
+    impl_vec3_shift_op_tests!(IVec3);
+
+    impl_vec3_scalar_bit_op_tests!(IVec3, -2, 2);
+    impl_vec3_bit_op_tests!(IVec3, -2, 2);
 }
 
 mod uvec3 {
-    use glam::{const_uvec3, uvec3, BVec3, UVec3};
+    use glam::{const_uvec3, uvec3, BVec3, IVec3, UVec3};
 
     glam_test!(test_align, {
         use std::mem;
@@ -963,5 +1072,10 @@ mod uvec3 {
 
     impl_vec3_tests!(u32, const_uvec3, uvec3, UVec3, BVec3);
     impl_vec3_eq_hash_tests!(u32, uvec3);
-    impl_vec3_bit_op_tests!(u32, UVec3, 0, 2);
+
+    impl_vec3_scalar_shift_op_tests!(UVec3, 0, 2);
+    impl_vec3_shift_op_tests!(UVec3);
+
+    impl_vec3_scalar_bit_op_tests!(UVec3, 0, 2);
+    impl_vec3_bit_op_tests!(UVec3, 0, 2);
 }
