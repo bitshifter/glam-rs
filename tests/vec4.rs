@@ -782,6 +782,65 @@ macro_rules! impl_vec4_float_tests {
     };
 }
 
+macro_rules! impl_vec4_bit_op_tests {
+    ($t:ident, $vec4:ident, $t_min:literal, $t_max:literal) => {
+        glam_test!(test_not, {
+            for x1 in $t_min..$t_max {
+                for y1 in $t_min..$t_max {
+                    for z1 in $t_min..$t_max {
+                        for w1 in $t_min..$t_max {
+                            assert_eq!(!$vec4::new(x1, y1, z1, w1), $vec4::new(!x1, !y1, !z1, !w1));
+
+                            for x2 in $t_min.max(0)..$t_max {
+                                for y2 in $t_min.max(0)..$t_max {
+                                    for z2 in $t_min.max(0)..$t_max {
+                                        for w2 in $t_min.max(0)..$t_max {
+                                            assert_eq!(
+                                                $vec4::new(x1, y1, z1, w1)
+                                                    << $vec4::new(x2, y2, z2, w2),
+                                                $vec4::new(x1 << x2, y1 << y2, z1 << z2, w1 << w2)
+                                            );
+                                            assert_eq!(
+                                                $vec4::new(x1, y1, z1, w1)
+                                                    >> $vec4::new(x2, y2, z2, w2),
+                                                $vec4::new(x1 >> x2, y1 >> y2, z1 >> z2, w1 >> w2)
+                                            );
+                                        }
+                                    }
+                                }
+                            }
+
+                            for x2 in $t_min..$t_max {
+                                for y2 in $t_min..$t_max {
+                                    for z2 in $t_min..$t_max {
+                                        for w2 in $t_min..$t_max {
+                                            assert_eq!(
+                                                $vec4::new(x1, y1, z1, w1)
+                                                    & $vec4::new(x2, y2, z2, w2),
+                                                $vec4::new(x1 & x2, y1 & y2, z1 & z2, w1 & w2)
+                                            );
+                                            assert_eq!(
+                                                $vec4::new(x1, y1, z1, w1)
+                                                    | $vec4::new(x2, y2, z2, w2),
+                                                $vec4::new(x1 | x2, y1 | y2, z1 | z2, w1 | w2)
+                                            );
+                                            assert_eq!(
+                                                $vec4::new(x1, y1, z1, w1)
+                                                    ^ $vec4::new(x2, y2, z2, w2),
+                                                $vec4::new(x1 ^ x2, y1 ^ y2, z1 ^ z2, w1 ^ w2)
+                                            );
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    };
+}
+
 mod vec4 {
     use glam::{const_vec4, vec4, Vec2, Vec3, Vec4};
 
@@ -941,6 +1000,7 @@ mod ivec4 {
 
     impl_vec4_signed_tests!(i32, const_ivec4, ivec4, IVec4, IVec3, IVec2, BVec4);
     impl_vec4_eq_hash_tests!(i32, ivec4);
+    impl_vec4_bit_op_tests!(i32, IVec4, -2, 2);
 }
 
 mod uvec4 {
@@ -956,4 +1016,5 @@ mod uvec4 {
 
     impl_vec4_tests!(u32, const_uvec4, uvec4, UVec4, UVec3, UVec2, BVec4);
     impl_vec4_eq_hash_tests!(u32, uvec4);
+    impl_vec4_bit_op_tests!(u32, UVec4, 0, 2);
 }

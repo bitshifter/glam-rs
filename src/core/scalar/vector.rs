@@ -3,8 +3,6 @@ use crate::core::{
     traits::{scalar::*, vector::*},
 };
 
-use core::ops::{BitAnd, BitOr, BitXor, Not, Shl, Shr};
-
 impl<T: NumEx> VectorConst for XY<T> {
     const ZERO: Self = Self {
         x: <T as NumConstEx>::ZERO,
@@ -1099,164 +1097,92 @@ impl SignedVector<f32> for XYZF32A16 {
 impl SignedVector3<f32> for XYZF32A16 {}
 impl FloatVector3<f32> for XYZF32A16 {}
 
-impl<T> Not for XY<T>
+impl<T> VectorBitOps<T> for XY<T>
 where
-    T: Not<Output = T>,
+    T: Copy + IntegerBitOps,
 {
-    type Output = Self;
-
     #[inline(always)]
-    fn not(self) -> Self::Output {
+    fn not(self) -> Self {
         Self {
             x: !self.x,
             y: !self.y,
         }
     }
-}
-
-impl<T> Shl for XY<T>
-where
-    T: Shl<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn shl(self, rhs: Self) -> Self::Output {
+    fn vector_shl(self, rhs: Self) -> Self {
         Self {
             x: self.x << rhs.x,
             y: self.y << rhs.y,
         }
     }
-}
-
-impl<T> Shl<T> for XY<T>
-where
-    T: Copy + Shl<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn shl(self, rhs: T) -> Self::Output {
+    fn scalar_shl(self, rhs: T) -> Self {
         Self {
             x: self.x << rhs,
             y: self.y << rhs,
         }
     }
-}
-
-impl<T> Shr for XY<T>
-where
-    T: Shr<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn shr(self, rhs: Self) -> Self::Output {
+    fn vector_shr(self, rhs: Self) -> Self {
         Self {
             x: self.x >> rhs.x,
             y: self.y >> rhs.y,
         }
     }
-}
-
-impl<T> Shr<T> for XY<T>
-where
-    T: Copy + Shr<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn shr(self, rhs: T) -> Self::Output {
+    fn scalar_shr(self, rhs: T) -> Self {
         Self {
             x: self.x >> rhs,
             y: self.y >> rhs,
         }
     }
-}
-
-impl<T> BitAnd for XY<T>
-where
-    T: BitAnd<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn bitand(self, rhs: Self) -> Self::Output {
+    fn vector_bitand(self, rhs: Self) -> Self {
         Self {
             x: self.x & rhs.x,
             y: self.y & rhs.y,
         }
     }
-}
-
-impl<T> BitAnd<T> for XY<T>
-where
-    T: Copy + BitAnd<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn bitand(self, rhs: T) -> Self::Output {
+    fn scalar_bitand(self, rhs: T) -> Self {
         Self {
             x: self.x & rhs,
             y: self.y & rhs,
         }
     }
-}
-
-impl<T> BitOr for XY<T>
-where
-    T: BitOr<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn bitor(self, rhs: Self) -> Self::Output {
+    fn vector_bitor(self, rhs: Self) -> Self {
         Self {
             x: self.x | rhs.x,
             y: self.y | rhs.y,
         }
     }
-}
-
-impl<T> BitOr<T> for XY<T>
-where
-    T: Copy + BitOr<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn bitor(self, rhs: T) -> Self::Output {
+    fn scalar_bitor(self, rhs: T) -> Self {
         Self {
             x: self.x | rhs,
             y: self.y | rhs,
         }
     }
-}
-
-impl<T> BitXor for XY<T>
-where
-    T: BitXor<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn bitxor(self, rhs: Self) -> Self::Output {
+    fn vector_bitxor(self, rhs: Self) -> Self {
         Self {
             x: self.x ^ rhs.x,
             y: self.y ^ rhs.y,
         }
     }
-}
-
-impl<T> BitXor<T> for XY<T>
-where
-    T: Copy + BitXor<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn bitxor(self, rhs: T) -> Self::Output {
+    fn scalar_bitxor(self, rhs: T) -> Self {
         Self {
             x: self.x ^ rhs,
             y: self.y ^ rhs,
@@ -1264,174 +1190,102 @@ where
     }
 }
 
-impl<T> Not for XYZ<T>
+impl<T> VectorBitOps<T> for XYZ<T>
 where
-    T: Not<Output = T>,
+    T: Copy + IntegerBitOps,
 {
-    type Output = Self;
-
     #[inline(always)]
-    fn not(self) -> Self::Output {
+    fn not(self) -> Self {
         Self {
             x: !self.x,
             y: !self.y,
             z: !self.z,
         }
     }
-}
-
-impl<T> Shl for XYZ<T>
-where
-    T: Shl<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn shl(self, rhs: Self) -> Self::Output {
+    fn vector_shl(self, rhs: Self) -> Self {
         Self {
             x: self.x << rhs.x,
             y: self.y << rhs.y,
             z: self.z << rhs.z,
         }
     }
-}
-
-impl<T> Shl<T> for XYZ<T>
-where
-    T: Copy + Shl<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn shl(self, rhs: T) -> Self::Output {
+    fn scalar_shl(self, rhs: T) -> Self {
         Self {
             x: self.x << rhs,
             y: self.y << rhs,
             z: self.z << rhs,
         }
     }
-}
-
-impl<T> Shr for XYZ<T>
-where
-    T: Shr<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn shr(self, rhs: Self) -> Self::Output {
+    fn vector_shr(self, rhs: Self) -> Self {
         Self {
             x: self.x >> rhs.x,
             y: self.y >> rhs.y,
             z: self.z >> rhs.z,
         }
     }
-}
-
-impl<T> Shr<T> for XYZ<T>
-where
-    T: Copy + Shr<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn shr(self, rhs: T) -> Self::Output {
+    fn scalar_shr(self, rhs: T) -> Self {
         Self {
             x: self.x >> rhs,
             y: self.y >> rhs,
             z: self.z >> rhs,
         }
     }
-}
-
-impl<T> BitAnd for XYZ<T>
-where
-    T: BitAnd<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn bitand(self, rhs: Self) -> Self::Output {
+    fn vector_bitand(self, rhs: Self) -> Self {
         Self {
             x: self.x & rhs.x,
             y: self.y & rhs.y,
             z: self.z & rhs.z,
         }
     }
-}
-
-impl<T> BitAnd<T> for XYZ<T>
-where
-    T: Copy + BitAnd<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn bitand(self, rhs: T) -> Self::Output {
+    fn scalar_bitand(self, rhs: T) -> Self {
         Self {
             x: self.x & rhs,
             y: self.y & rhs,
             z: self.z & rhs,
         }
     }
-}
-
-impl<T> BitOr for XYZ<T>
-where
-    T: BitOr<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn bitor(self, rhs: Self) -> Self::Output {
+    fn vector_bitor(self, rhs: Self) -> Self {
         Self {
             x: self.x | rhs.x,
             y: self.y | rhs.y,
             z: self.z | rhs.z,
         }
     }
-}
-
-impl<T> BitOr<T> for XYZ<T>
-where
-    T: Copy + BitOr<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn bitor(self, rhs: T) -> Self::Output {
+    fn scalar_bitor(self, rhs: T) -> Self {
         Self {
             x: self.x | rhs,
             y: self.y | rhs,
             z: self.z | rhs,
         }
     }
-}
-
-impl<T> BitXor for XYZ<T>
-where
-    T: BitXor<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn bitxor(self, rhs: Self) -> Self::Output {
+    fn vector_bitxor(self, rhs: Self) -> Self {
         Self {
             x: self.x ^ rhs.x,
             y: self.y ^ rhs.y,
             z: self.z ^ rhs.z,
         }
     }
-}
-
-impl<T> BitXor<T> for XYZ<T>
-where
-    T: Copy + BitXor<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn bitxor(self, rhs: T) -> Self::Output {
+    fn scalar_bitxor(self, rhs: T) -> Self {
         Self {
             x: self.x ^ rhs,
             y: self.y ^ rhs,
@@ -1440,15 +1294,12 @@ where
     }
 }
 
-
-impl<T> Not for XYZW<T>
+impl<T> VectorBitOps<T> for XYZW<T>
 where
-    T: Not<Output = T>,
+    T: Copy + IntegerBitOps,
 {
-    type Output = Self;
-
     #[inline(always)]
-    fn not(self) -> Self::Output {
+    fn not(self) -> Self {
         Self {
             x: !self.x,
             y: !self.y,
@@ -1456,16 +1307,9 @@ where
             w: !self.w,
         }
     }
-}
-
-impl<T> Shl for XYZW<T>
-where
-    T: Shl<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn shl(self, rhs: Self) -> Self::Output {
+    fn vector_shl(self, rhs: Self) -> Self {
         Self {
             x: self.x << rhs.x,
             y: self.y << rhs.y,
@@ -1473,16 +1317,9 @@ where
             w: self.w << rhs.w,
         }
     }
-}
-
-impl<T> Shl<T> for XYZW<T>
-where
-    T: Copy + Shl<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn shl(self, rhs: T) -> Self::Output {
+    fn scalar_shl(self, rhs: T) -> Self {
         Self {
             x: self.x << rhs,
             y: self.y << rhs,
@@ -1490,16 +1327,9 @@ where
             w: self.w << rhs,
         }
     }
-}
-
-impl<T> Shr for XYZW<T>
-where
-    T: Shr<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn shr(self, rhs: Self) -> Self::Output {
+    fn vector_shr(self, rhs: Self) -> Self {
         Self {
             x: self.x >> rhs.x,
             y: self.y >> rhs.y,
@@ -1507,16 +1337,9 @@ where
             w: self.w >> rhs.w,
         }
     }
-}
-
-impl<T> Shr<T> for XYZW<T>
-where
-    T: Copy + Shr<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn shr(self, rhs: T) -> Self::Output {
+    fn scalar_shr(self, rhs: T) -> Self {
         Self {
             x: self.x >> rhs,
             y: self.y >> rhs,
@@ -1524,16 +1347,9 @@ where
             w: self.w >> rhs,
         }
     }
-}
-
-impl<T> BitAnd for XYZW<T>
-where
-    T: BitAnd<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn bitand(self, rhs: Self) -> Self::Output {
+    fn vector_bitand(self, rhs: Self) -> Self {
         Self {
             x: self.x & rhs.x,
             y: self.y & rhs.y,
@@ -1541,16 +1357,9 @@ where
             w: self.w & rhs.w,
         }
     }
-}
-
-impl<T> BitAnd<T> for XYZW<T>
-where
-    T: Copy + BitAnd<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn bitand(self, rhs: T) -> Self::Output {
+    fn scalar_bitand(self, rhs: T) -> Self {
         Self {
             x: self.x & rhs,
             y: self.y & rhs,
@@ -1558,16 +1367,9 @@ where
             w: self.w & rhs,
         }
     }
-}
-
-impl<T> BitOr for XYZW<T>
-where
-    T: BitOr<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn bitor(self, rhs: Self) -> Self::Output {
+    fn vector_bitor(self, rhs: Self) -> Self {
         Self {
             x: self.x | rhs.x,
             y: self.y | rhs.y,
@@ -1575,16 +1377,9 @@ where
             w: self.w | rhs.w,
         }
     }
-}
-
-impl<T> BitOr<T> for XYZW<T>
-where
-    T: Copy + BitOr<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn bitor(self, rhs: T) -> Self::Output {
+    fn scalar_bitor(self, rhs: T) -> Self {
         Self {
             x: self.x | rhs,
             y: self.y | rhs,
@@ -1592,16 +1387,9 @@ where
             w: self.w | rhs,
         }
     }
-}
-
-impl<T> BitXor for XYZW<T>
-where
-    T: BitXor<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn bitxor(self, rhs: Self) -> Self::Output {
+    fn vector_bitxor(self, rhs: Self) -> Self {
         Self {
             x: self.x ^ rhs.x,
             y: self.y ^ rhs.y,
@@ -1609,16 +1397,9 @@ where
             w: self.w ^ rhs.w,
         }
     }
-}
-
-impl<T> BitXor<T> for XYZW<T>
-where
-    T: Copy + BitXor<Output = T>,
-{
-    type Output = Self;
 
     #[inline(always)]
-    fn bitxor(self, rhs: T) -> Self::Output {
+    fn scalar_bitxor(self, rhs: T) -> Self {
         Self {
             x: self.x ^ rhs,
             y: self.y ^ rhs,

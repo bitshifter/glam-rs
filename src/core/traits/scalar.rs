@@ -320,6 +320,20 @@ impl NumEx for u32 {
     }
 }
 
+pub trait IntegerBitOps:
+    Sized
+    + Not<Output = Self>
+    + Shl<Output = Self>
+    + Shr<Output = Self>
+    + BitAnd<Output = Self>
+    + BitOr<Output = Self>
+    + BitXor<Output = Self>
+{
+}
+
+impl IntegerBitOps for i32 {}
+impl IntegerBitOps for u32 {}
+
 #[cfg(test)]
 macro_rules! assert_approx_eq {
     ($a:expr, $b:expr) => {{

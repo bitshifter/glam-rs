@@ -736,6 +736,54 @@ macro_rules! impl_vec3_float_tests {
     };
 }
 
+macro_rules! impl_vec3_bit_op_tests {
+    ($t:ident, $vec3:ident, $t_min:literal, $t_max:literal) => {
+        glam_test!(test_not, {
+            for x1 in $t_min..$t_max {
+                for y1 in $t_min..$t_max {
+                    for z1 in $t_min..$t_max {
+                        assert_eq!(!$vec3::new(x1, y1, z1), $vec3::new(!x1, !y1, !z1));
+
+                        for x2 in $t_min.max(0)..$t_max {
+                            for y2 in $t_min.max(0)..$t_max {
+                                for z2 in $t_min.max(0)..$t_max {
+                                    assert_eq!(
+                                        $vec3::new(x1, y1, z1) << $vec3::new(x2, y2, z2),
+                                        $vec3::new(x1 << x2, y1 << y2, z1 << z2)
+                                    );
+                                    assert_eq!(
+                                        $vec3::new(x1, y1, z1) >> $vec3::new(x2, y2, z2),
+                                        $vec3::new(x1 >> x2, y1 >> y2, z1 >> z2)
+                                    );
+                                }
+                            }
+                        }
+
+                        for x2 in $t_min..$t_max {
+                            for y2 in $t_min..$t_max {
+                                for z2 in $t_min..$t_max {
+                                    assert_eq!(
+                                        $vec3::new(x1, y1, z1) & $vec3::new(x2, y2, z2),
+                                        $vec3::new(x1 & x2, y1 & y2, z1 & z2)
+                                    );
+                                    assert_eq!(
+                                        $vec3::new(x1, y1, z1) | $vec3::new(x2, y2, z2),
+                                        $vec3::new(x1 | x2, y1 | y2, z1 | z2)
+                                    );
+                                    assert_eq!(
+                                        $vec3::new(x1, y1, z1) ^ $vec3::new(x2, y2, z2),
+                                        $vec3::new(x1 ^ x2, y1 ^ y2, z1 ^ z2)
+                                    );
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    };
+}
+
 mod vec3 {
     use glam::{const_vec3, vec3, BVec3, Vec3};
 
@@ -899,6 +947,7 @@ mod ivec3 {
 
     impl_vec3_signed_tests!(i32, const_ivec3, ivec3, IVec3, BVec3);
     impl_vec3_eq_hash_tests!(i32, ivec3);
+    impl_vec3_bit_op_tests!(i32, IVec3, -2, 2);
 }
 
 mod uvec3 {
@@ -914,4 +963,5 @@ mod uvec3 {
 
     impl_vec3_tests!(u32, const_uvec3, uvec3, UVec3, BVec3);
     impl_vec3_eq_hash_tests!(u32, uvec3);
+    impl_vec3_bit_op_tests!(u32, UVec3, 0, 2);
 }

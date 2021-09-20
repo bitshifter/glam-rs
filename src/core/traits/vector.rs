@@ -803,3 +803,17 @@ pub trait FloatVector4<T: FloatEx>: SignedVector4<T> {
         self.sub(other).abs().cmple(Self::splat(max_abs_diff)).all()
     }
 }
+
+pub trait VectorBitOps<T> {
+    fn not(self) -> Self;
+    fn vector_shl(self, rhs: Self) -> Self;
+    fn scalar_shl(self, rhs: T) -> Self;
+    fn vector_shr(self, rhs: Self) -> Self;
+    fn scalar_shr(self, rhs: T) -> Self;
+    fn vector_bitand(self, rhs: Self) -> Self;
+    fn scalar_bitand(self, rhs: T) -> Self;
+    fn vector_bitor(self, rhs: Self) -> Self;
+    fn scalar_bitor(self, rhs: T) -> Self;
+    fn vector_bitxor(self, rhs: Self) -> Self;
+    fn scalar_bitxor(self, rhs: T) -> Self;
+}

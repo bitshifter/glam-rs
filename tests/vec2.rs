@@ -662,6 +662,48 @@ macro_rules! impl_vec2_float_tests {
     };
 }
 
+macro_rules! impl_vec2_bit_op_tests {
+    ($t:ident, $vec2:ident, $t_min:literal, $t_max:literal) => {
+        glam_test!(test_vec2_bit_ops, {
+            for x1 in $t_min..$t_max {
+                for y1 in $t_min..$t_max {
+                    assert_eq!(!$vec2::new(x1, y1), $vec2::new(!x1, !y1));
+
+                    for x2 in $t_min.max(0)..$t_max {
+                        for y2 in $t_min.max(0)..$t_max {
+                            assert_eq!(
+                                $vec2::new(x1, y1) << $vec2::new(x2, y2),
+                                $vec2::new(x1 << x2, y1 << y2)
+                            );
+                            assert_eq!(
+                                $vec2::new(x1, y1) >> $vec2::new(x2, y2),
+                                $vec2::new(x1 >> x2, y1 >> y2)
+                            );
+                        }
+                    }
+
+                    for x2 in $t_min..$t_max {
+                        for y2 in $t_min..$t_max {
+                            assert_eq!(
+                                $vec2::new(x1, y1) & $vec2::new(x2, y2),
+                                $vec2::new(x1 & x2, y1 & y2)
+                            );
+                            assert_eq!(
+                                $vec2::new(x1, y1) | $vec2::new(x2, y2),
+                                $vec2::new(x1 | x2, y1 | y2)
+                            );
+                            assert_eq!(
+                                $vec2::new(x1, y1) ^ $vec2::new(x2, y2),
+                                $vec2::new(x1 ^ x2, y1 ^ y2)
+                            );
+                        }
+                    }
+                }
+            }
+        });
+    };
+}
+
 mod vec2 {
     use glam::{const_vec2, vec2, BVec2, Mat2, Vec2, Vec3};
 
@@ -722,6 +764,7 @@ mod ivec2 {
 
     impl_vec2_signed_tests!(i32, const_ivec2, ivec2, IVec2, IVec3, BVec2);
     impl_vec2_eq_hash_tests!(i32, ivec2);
+    impl_vec2_bit_op_tests!(i32, IVec2, -2, 2);
 }
 
 mod uvec2 {
@@ -737,4 +780,5 @@ mod uvec2 {
 
     impl_vec2_tests!(u32, const_uvec2, uvec2, UVec2, UVec3, BVec2);
     impl_vec2_eq_hash_tests!(u32, uvec2);
+    impl_vec2_bit_op_tests!(u32, UVec2, 0, 2);
 }
