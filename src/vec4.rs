@@ -337,6 +337,20 @@ impl IVec4 {
 impl_vec4_signed_traits!(i32, ivec4, IVec2, IVec3, IVec4, BVec4, XYZWI32);
 impl_vecn_eq_hash_traits!(i32, 4, IVec4);
 
+impl_vecn_scalar_shift_op_traits!(IVec4, i8, XYZWI32);
+impl_vecn_scalar_shift_op_traits!(IVec4, i16, XYZWI32);
+impl_vecn_scalar_shift_op_traits!(IVec4, i32, XYZWI32);
+impl_vecn_scalar_shift_op_traits!(IVec4, u8, XYZWI32);
+impl_vecn_scalar_shift_op_traits!(IVec4, u16, XYZWI32);
+impl_vecn_scalar_shift_op_traits!(IVec4, u32, XYZWI32);
+
+impl_vecn_shift_op_traits!(IVec4, IVec4, XYZWI32);
+impl_vecn_shift_op_traits!(IVec4, UVec4, XYZWI32);
+
+impl_vecn_scalar_bit_op_traits!(IVec4, i32, XYZWI32);
+
+impl_vecn_bit_op_traits!(IVec4, XYZWI32);
+
 type XYZWU32 = XYZW<u32>;
 
 /// A 4-dimensional vector.
@@ -352,6 +366,20 @@ impl UVec4 {
 }
 impl_vec4_common_traits!(u32, uvec4, UVec2, UVec3, UVec4, BVec4, XYZWU32);
 impl_vecn_eq_hash_traits!(u32, 4, UVec4);
+
+impl_vecn_scalar_shift_op_traits!(UVec4, i8, XYZWU32);
+impl_vecn_scalar_shift_op_traits!(UVec4, i16, XYZWU32);
+impl_vecn_scalar_shift_op_traits!(UVec4, i32, XYZWU32);
+impl_vecn_scalar_shift_op_traits!(UVec4, u8, XYZWU32);
+impl_vecn_scalar_shift_op_traits!(UVec4, u16, XYZWU32);
+impl_vecn_scalar_shift_op_traits!(UVec4, u32, XYZWU32);
+
+impl_vecn_shift_op_traits!(UVec4, IVec4, XYZWU32);
+impl_vecn_shift_op_traits!(UVec4, UVec4, XYZWU32);
+
+impl_vecn_scalar_bit_op_traits!(UVec4, u32, XYZWU32);
+
+impl_vecn_bit_op_traits!(UVec4, XYZWU32);
 
 #[test]
 fn test_vec4_private() {

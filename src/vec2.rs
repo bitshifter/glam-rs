@@ -224,6 +224,20 @@ impl IVec2 {
 impl_vec2_signed_traits!(i32, ivec2, IVec2, IVec3, BVec2, XYI32);
 impl_vecn_eq_hash_traits!(i32, 2, IVec2);
 
+impl_vecn_scalar_shift_op_traits!(IVec2, i8, XYI32);
+impl_vecn_scalar_shift_op_traits!(IVec2, i16, XYI32);
+impl_vecn_scalar_shift_op_traits!(IVec2, i32, XYI32);
+impl_vecn_scalar_shift_op_traits!(IVec2, u8, XYI32);
+impl_vecn_scalar_shift_op_traits!(IVec2, u16, XYI32);
+impl_vecn_scalar_shift_op_traits!(IVec2, u32, XYI32);
+
+impl_vecn_shift_op_traits!(IVec2, IVec2, XYI32);
+impl_vecn_shift_op_traits!(IVec2, UVec2, XYI32);
+
+impl_vecn_scalar_bit_op_traits!(IVec2, i32, XYI32);
+
+impl_vecn_bit_op_traits!(IVec2, XYI32);
+
 type XYU32 = XY<u32>;
 
 /// A 2-dimensional vector.
@@ -239,6 +253,20 @@ impl UVec2 {
 }
 impl_vec2_unsigned_traits!(u32, uvec2, UVec2, UVec3, BVec2, XYU32);
 impl_vecn_eq_hash_traits!(u32, 2, UVec2);
+
+impl_vecn_scalar_shift_op_traits!(UVec2, i8, XYU32);
+impl_vecn_scalar_shift_op_traits!(UVec2, i16, XYU32);
+impl_vecn_scalar_shift_op_traits!(UVec2, i32, XYU32);
+impl_vecn_scalar_shift_op_traits!(UVec2, u8, XYU32);
+impl_vecn_scalar_shift_op_traits!(UVec2, u16, XYU32);
+impl_vecn_scalar_shift_op_traits!(UVec2, u32, XYU32);
+
+impl_vecn_shift_op_traits!(UVec2, IVec2, XYU32);
+impl_vecn_shift_op_traits!(UVec2, UVec2, XYU32);
+
+impl_vecn_scalar_bit_op_traits!(UVec2, u32, XYU32);
+
+impl_vecn_bit_op_traits!(UVec2, XYU32);
 
 mod const_test_vec2 {
     const_assert_eq!(

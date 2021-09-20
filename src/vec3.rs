@@ -377,6 +377,20 @@ impl_vec3_common_traits!(i32, ivec3, IVec2, IVec3, IVec4, XYZI32);
 impl_vecn_signed_traits!(i32, 3, IVec3, XYZI32, SignedVector3);
 impl_vecn_eq_hash_traits!(i32, 3, IVec3);
 
+impl_vecn_scalar_shift_op_traits!(IVec3, i8, XYZI32);
+impl_vecn_scalar_shift_op_traits!(IVec3, i16, XYZI32);
+impl_vecn_scalar_shift_op_traits!(IVec3, i32, XYZI32);
+impl_vecn_scalar_shift_op_traits!(IVec3, u8, XYZI32);
+impl_vecn_scalar_shift_op_traits!(IVec3, u16, XYZI32);
+impl_vecn_scalar_shift_op_traits!(IVec3, u32, XYZI32);
+
+impl_vecn_shift_op_traits!(IVec3, IVec3, XYZI32);
+impl_vecn_shift_op_traits!(IVec3, UVec3, XYZI32);
+
+impl_vecn_scalar_bit_op_traits!(IVec3, i32, XYZI32);
+
+impl_vecn_bit_op_traits!(IVec3, XYZI32);
+
 type XYZU32 = XYZ<u32>;
 
 /// A 3-dimensional vector.
@@ -392,6 +406,20 @@ impl UVec3 {
 }
 impl_vec3_common_traits!(u32, uvec3, UVec2, UVec3, UVec4, XYZU32);
 impl_vecn_eq_hash_traits!(u32, 3, UVec3);
+
+impl_vecn_scalar_shift_op_traits!(UVec3, i8, XYZU32);
+impl_vecn_scalar_shift_op_traits!(UVec3, i16, XYZU32);
+impl_vecn_scalar_shift_op_traits!(UVec3, i32, XYZU32);
+impl_vecn_scalar_shift_op_traits!(UVec3, u8, XYZU32);
+impl_vecn_scalar_shift_op_traits!(UVec3, u16, XYZU32);
+impl_vecn_scalar_shift_op_traits!(UVec3, u32, XYZU32);
+
+impl_vecn_shift_op_traits!(UVec3, IVec3, XYZU32);
+impl_vecn_shift_op_traits!(UVec3, UVec3, XYZU32);
+
+impl_vecn_scalar_bit_op_traits!(UVec3, u32, XYZU32);
+
+impl_vecn_bit_op_traits!(UVec3, XYZU32);
 
 #[test]
 fn test_vec3_private() {

@@ -1096,3 +1096,369 @@ impl SignedVector<f32> for XYZF32A16 {
 
 impl SignedVector3<f32> for XYZF32A16 {}
 impl FloatVector3<f32> for XYZF32A16 {}
+
+// 2D bitwise and shifting
+
+impl<T, Rhs> ScalarShiftOps<Rhs> for XY<T>
+where
+    T: IntegerShiftOps<Rhs>,
+    Rhs: Copy,
+{
+    #[inline(always)]
+    fn scalar_shl(self, rhs: Rhs) -> Self {
+        Self {
+            x: self.x << rhs,
+            y: self.y << rhs,
+        }
+    }
+
+    #[inline(always)]
+    fn scalar_shr(self, rhs: Rhs) -> Self {
+        Self {
+            x: self.x >> rhs,
+            y: self.y >> rhs,
+        }
+    }
+}
+
+impl<T> ScalarBitOps<T> for XY<T>
+where
+    T: Copy + IntegerBitOps,
+{
+    #[inline(always)]
+    fn scalar_bitand(self, rhs: T) -> Self {
+        Self {
+            x: self.x & rhs,
+            y: self.y & rhs,
+        }
+    }
+
+    #[inline(always)]
+    fn scalar_bitor(self, rhs: T) -> Self {
+        Self {
+            x: self.x | rhs,
+            y: self.y | rhs,
+        }
+    }
+
+    #[inline(always)]
+    fn scalar_bitxor(self, rhs: T) -> Self {
+        Self {
+            x: self.x ^ rhs,
+            y: self.y ^ rhs,
+        }
+    }
+}
+
+impl<T, Rhs> VectorShiftOps<XY<Rhs>> for XY<T>
+where
+    T: Copy + IntegerShiftOps<Rhs>,
+{
+    #[inline(always)]
+    fn vector_shl(self, rhs: XY<Rhs>) -> Self {
+        Self {
+            x: self.x << rhs.x,
+            y: self.y << rhs.y,
+        }
+    }
+
+    #[inline(always)]
+    fn vector_shr(self, rhs: XY<Rhs>) -> Self {
+        Self {
+            x: self.x >> rhs.x,
+            y: self.y >> rhs.y,
+        }
+    }
+}
+
+impl<T> VectorBitOps<XY<T>> for XY<T>
+where
+    T: Copy + IntegerBitOps,
+{
+    #[inline(always)]
+    fn not(self) -> Self {
+        Self {
+            x: !self.x,
+            y: !self.y,
+        }
+    }
+
+    #[inline(always)]
+    fn vector_bitand(self, rhs: Self) -> Self {
+        Self {
+            x: self.x & rhs.x,
+            y: self.y & rhs.y,
+        }
+    }
+
+    #[inline(always)]
+    fn vector_bitor(self, rhs: Self) -> Self {
+        Self {
+            x: self.x | rhs.x,
+            y: self.y | rhs.y,
+        }
+    }
+
+    #[inline(always)]
+    fn vector_bitxor(self, rhs: Self) -> Self {
+        Self {
+            x: self.x ^ rhs.x,
+            y: self.y ^ rhs.y,
+        }
+    }
+}
+
+// 3D bitwise and shifting
+
+impl<T, Rhs> ScalarShiftOps<Rhs> for XYZ<T>
+where
+    T: IntegerShiftOps<Rhs>,
+    Rhs: Copy,
+{
+    #[inline(always)]
+    fn scalar_shl(self, rhs: Rhs) -> Self {
+        Self {
+            x: self.x << rhs,
+            y: self.y << rhs,
+            z: self.z << rhs,
+        }
+    }
+
+    #[inline(always)]
+    fn scalar_shr(self, rhs: Rhs) -> Self {
+        Self {
+            x: self.x >> rhs,
+            y: self.y >> rhs,
+            z: self.z >> rhs,
+        }
+    }
+}
+
+impl<T> ScalarBitOps<T> for XYZ<T>
+where
+    T: Copy + IntegerBitOps,
+{
+    #[inline(always)]
+    fn scalar_bitand(self, rhs: T) -> Self {
+        Self {
+            x: self.x & rhs,
+            y: self.y & rhs,
+            z: self.z & rhs,
+        }
+    }
+
+    #[inline(always)]
+    fn scalar_bitor(self, rhs: T) -> Self {
+        Self {
+            x: self.x | rhs,
+            y: self.y | rhs,
+            z: self.z | rhs,
+        }
+    }
+
+    #[inline(always)]
+    fn scalar_bitxor(self, rhs: T) -> Self {
+        Self {
+            x: self.x ^ rhs,
+            y: self.y ^ rhs,
+            z: self.z ^ rhs,
+        }
+    }
+}
+
+impl<T, Rhs> VectorShiftOps<XYZ<Rhs>> for XYZ<T>
+where
+    T: Copy + IntegerShiftOps<Rhs>,
+{
+    #[inline(always)]
+    fn vector_shl(self, rhs: XYZ<Rhs>) -> Self {
+        Self {
+            x: self.x << rhs.x,
+            y: self.y << rhs.y,
+            z: self.z << rhs.z,
+        }
+    }
+
+    #[inline(always)]
+    fn vector_shr(self, rhs: XYZ<Rhs>) -> Self {
+        Self {
+            x: self.x >> rhs.x,
+            y: self.y >> rhs.y,
+            z: self.z >> rhs.z,
+        }
+    }
+}
+
+impl<T> VectorBitOps<XYZ<T>> for XYZ<T>
+where
+    T: Copy + IntegerBitOps,
+{
+    #[inline(always)]
+    fn not(self) -> Self {
+        Self {
+            x: !self.x,
+            y: !self.y,
+            z: !self.z,
+        }
+    }
+
+    #[inline(always)]
+    fn vector_bitand(self, rhs: Self) -> Self {
+        Self {
+            x: self.x & rhs.x,
+            y: self.y & rhs.y,
+            z: self.z & rhs.z,
+        }
+    }
+
+    #[inline(always)]
+    fn vector_bitor(self, rhs: Self) -> Self {
+        Self {
+            x: self.x | rhs.x,
+            y: self.y | rhs.y,
+            z: self.z | rhs.z,
+        }
+    }
+
+    #[inline(always)]
+    fn vector_bitxor(self, rhs: Self) -> Self {
+        Self {
+            x: self.x ^ rhs.x,
+            y: self.y ^ rhs.y,
+            z: self.z ^ rhs.z,
+        }
+    }
+}
+
+// 4D bitwise and shifting
+
+impl<T, Rhs> ScalarShiftOps<Rhs> for XYZW<T>
+where
+    T: IntegerShiftOps<Rhs>,
+    Rhs: Copy,
+{
+    #[inline(always)]
+    fn scalar_shl(self, rhs: Rhs) -> Self {
+        Self {
+            x: self.x << rhs,
+            y: self.y << rhs,
+            z: self.z << rhs,
+            w: self.w << rhs,
+        }
+    }
+
+    #[inline(always)]
+    fn scalar_shr(self, rhs: Rhs) -> Self {
+        Self {
+            x: self.x >> rhs,
+            y: self.y >> rhs,
+            z: self.z >> rhs,
+            w: self.w >> rhs,
+        }
+    }
+}
+
+impl<T> ScalarBitOps<T> for XYZW<T>
+where
+    T: Copy + IntegerBitOps,
+{
+    #[inline(always)]
+    fn scalar_bitand(self, rhs: T) -> Self {
+        Self {
+            x: self.x & rhs,
+            y: self.y & rhs,
+            z: self.z & rhs,
+            w: self.w & rhs,
+        }
+    }
+
+    #[inline(always)]
+    fn scalar_bitor(self, rhs: T) -> Self {
+        Self {
+            x: self.x | rhs,
+            y: self.y | rhs,
+            z: self.z | rhs,
+            w: self.w | rhs,
+        }
+    }
+
+    #[inline(always)]
+    fn scalar_bitxor(self, rhs: T) -> Self {
+        Self {
+            x: self.x ^ rhs,
+            y: self.y ^ rhs,
+            z: self.z ^ rhs,
+            w: self.w ^ rhs,
+        }
+    }
+}
+
+impl<T, Rhs> VectorShiftOps<XYZW<Rhs>> for XYZW<T>
+where
+    T: Copy + IntegerShiftOps<Rhs>,
+{
+    #[inline(always)]
+    fn vector_shl(self, rhs: XYZW<Rhs>) -> Self {
+        Self {
+            x: self.x << rhs.x,
+            y: self.y << rhs.y,
+            z: self.z << rhs.z,
+            w: self.w << rhs.w,
+        }
+    }
+
+    #[inline(always)]
+    fn vector_shr(self, rhs: XYZW<Rhs>) -> Self {
+        Self {
+            x: self.x >> rhs.x,
+            y: self.y >> rhs.y,
+            z: self.z >> rhs.z,
+            w: self.w >> rhs.w,
+        }
+    }
+}
+
+impl<T> VectorBitOps<XYZW<T>> for XYZW<T>
+where
+    T: Copy + IntegerBitOps,
+{
+    #[inline(always)]
+    fn not(self) -> Self {
+        Self {
+            x: !self.x,
+            y: !self.y,
+            z: !self.z,
+            w: !self.w,
+        }
+    }
+
+    #[inline(always)]
+    fn vector_bitand(self, rhs: Self) -> Self {
+        Self {
+            x: self.x & rhs.x,
+            y: self.y & rhs.y,
+            z: self.z & rhs.z,
+            w: self.w & rhs.w,
+        }
+    }
+
+    #[inline(always)]
+    fn vector_bitor(self, rhs: Self) -> Self {
+        Self {
+            x: self.x | rhs.x,
+            y: self.y | rhs.y,
+            z: self.z | rhs.z,
+            w: self.w | rhs.w,
+        }
+    }
+
+    #[inline(always)]
+    fn vector_bitxor(self, rhs: Self) -> Self {
+        Self {
+            x: self.x ^ rhs.x,
+            y: self.y ^ rhs.y,
+            z: self.z ^ rhs.z,
+            w: self.w ^ rhs.w,
+        }
+    }
+}

@@ -777,6 +777,121 @@ macro_rules! impl_vecn_signed_traits {
     };
 }
 
+macro_rules! impl_vecn_shift_op_traits {
+    ($vecn:ident, $rhs:ty, $inner:ident) => {
+        impl Shl<$rhs> for $vecn {
+            type Output = Self;
+
+            #[inline(always)]
+            fn shl(self, rhs: $rhs) -> Self::Output {
+                $vecn($inner::vector_shl(self.0, rhs.0))
+            }
+        }
+
+        impl Shr<$rhs> for $vecn {
+            type Output = Self;
+
+            #[inline(always)]
+            fn shr(self, rhs: $rhs) -> Self::Output {
+                $vecn($inner::vector_shr(self.0, rhs.0))
+            }
+        }
+    };
+}
+
+macro_rules! impl_vecn_scalar_shift_op_traits {
+    ($vecn:ident, $rhs:ty, $inner:ident) => {
+        impl Shl<$rhs> for $vecn {
+            type Output = Self;
+
+            #[inline(always)]
+            fn shl(self, rhs: $rhs) -> Self::Output {
+                $vecn($inner::scalar_shl(self.0, rhs))
+            }
+        }
+
+        impl Shr<$rhs> for $vecn {
+            type Output = Self;
+
+            #[inline(always)]
+            fn shr(self, rhs: $rhs) -> Self::Output {
+                $vecn($inner::scalar_shr(self.0, rhs))
+            }
+        }
+    };
+}
+
+macro_rules! impl_vecn_bit_op_traits {
+    ($vecn:ident, $inner:ident) => {
+        impl Not for $vecn {
+            type Output = Self;
+
+            #[inline(always)]
+            fn not(self) -> Self::Output {
+                $vecn($inner::not(self.0))
+            }
+        }
+
+        impl BitAnd for $vecn {
+            type Output = Self;
+
+            #[inline(always)]
+            fn bitand(self, rhs: Self) -> Self::Output {
+                $vecn($inner::vector_bitand(self.0, rhs.0))
+            }
+        }
+
+        impl BitOr for $vecn {
+            type Output = Self;
+
+            #[inline(always)]
+            fn bitor(self, rhs: Self) -> Self::Output {
+                $vecn($inner::vector_bitor(self.0, rhs.0))
+            }
+        }
+
+        impl BitXor for $vecn {
+            type Output = Self;
+
+            #[inline(always)]
+            fn bitxor(self, rhs: Self) -> Self::Output {
+                $vecn($inner::vector_bitxor(self.0, rhs.0))
+            }
+        }
+    };
+}
+
+macro_rules! impl_vecn_scalar_bit_op_traits {
+    ($vecn:ident, $rhs:ty, $inner:ident) => {
+        impl BitAnd<$rhs> for $vecn {
+            type Output = Self;
+
+            #[inline(always)]
+            fn bitand(self, rhs: $rhs) -> Self::Output {
+                $vecn($inner::scalar_bitand(self.0, rhs))
+            }
+        }
+
+        impl BitOr<$rhs> for $vecn {
+            type Output = Self;
+
+            #[inline(always)]
+            fn bitor(self, rhs: $rhs) -> Self::Output {
+                $vecn($inner::scalar_bitor(self.0, rhs))
+            }
+        }
+
+        impl BitXor<$rhs> for $vecn {
+            type Output = Self;
+
+            #[inline(always)]
+            fn bitxor(self, rhs: $rhs) -> Self::Output {
+                $vecn($inner::scalar_bitxor(self.0, rhs))
+            }
+        }
+    };
+}
+
 macro_rules! impl_as_vec2 {
     () => {
         #[deprecated(since = "0.18.0", note = "please use `as_vec2()` instead")]

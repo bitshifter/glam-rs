@@ -662,6 +662,131 @@ macro_rules! impl_vec2_float_tests {
     };
 }
 
+macro_rules! impl_vec2_scalar_shift_op_test {
+    ($vec2:ident, $t_min:literal, $t_max:literal, $rhs_min:literal, $rhs_max:literal) => {
+        glam_test!(test_vec2_scalar_shift_ops, {
+            for x in $t_min..$t_max {
+                for y in $t_min..$t_max {
+                    for rhs in $rhs_min..$rhs_max {
+                        assert_eq!($vec2::new(x, y) << rhs, $vec2::new(x << rhs, y << rhs));
+                        assert_eq!($vec2::new(x, y) >> rhs, $vec2::new(x >> rhs, y >> rhs));
+                    }
+                }
+            }
+        });
+    };
+}
+
+macro_rules! impl_vec2_scalar_shift_op_tests {
+    ($vec2:ident, $t_min:literal, $t_max:literal) => {
+        mod shift_by_i8 {
+            use glam::$vec2;
+            impl_vec2_scalar_shift_op_test!($vec2, $t_min, $t_max, 0i8, 2);
+        }
+        mod shift_by_i16 {
+            use glam::$vec2;
+            impl_vec2_scalar_shift_op_test!($vec2, $t_min, $t_max, 0i16, 2);
+        }
+        mod shift_by_i32 {
+            use glam::$vec2;
+            impl_vec2_scalar_shift_op_test!($vec2, $t_min, $t_max, 0i32, 2);
+        }
+        mod shift_by_u8 {
+            use glam::$vec2;
+            impl_vec2_scalar_shift_op_test!($vec2, $t_min, $t_max, 0u8, 2);
+        }
+        mod shift_by_u16 {
+            use glam::$vec2;
+            impl_vec2_scalar_shift_op_test!($vec2, $t_min, $t_max, 0u16, 2);
+        }
+        mod shift_by_u32 {
+            use glam::$vec2;
+            impl_vec2_scalar_shift_op_test!($vec2, $t_min, $t_max, 0u32, 2);
+        }
+    };
+}
+
+macro_rules! impl_vec2_shift_op_test {
+    ($vec2:ident, $rhs:ident, $t_min:literal, $t_max:literal) => {
+        glam_test!(test_vec2_shift_ops, {
+            for x1 in $t_min..$t_max {
+                for y1 in $t_min..$t_max {
+                    for x2 in $t_min..$t_max {
+                        for y2 in $t_min..$t_max {
+                            assert_eq!(
+                                $vec2::new(x1, y1) << $rhs::new(x2, y2),
+                                $vec2::new(x1 << x2, y1 << y2)
+                            );
+                            assert_eq!(
+                                $vec2::new(x1, y1) >> $rhs::new(x2, y2),
+                                $vec2::new(x1 >> x2, y1 >> y2)
+                            );
+                        }
+                    }
+                }
+            }
+        });
+    };
+}
+
+macro_rules! impl_vec2_shift_op_tests {
+    ($vec2:ident) => {
+        mod shift_ivec2_by_ivec2 {
+            use super::*;
+            impl_vec2_shift_op_test!($vec2, IVec2, 0, 2);
+        }
+        mod shift_ivec2_by_uvec2 {
+            use super::*;
+            impl_vec2_shift_op_test!($vec2, UVec2, 0, 2);
+        }
+    };
+}
+
+macro_rules! impl_vec2_scalar_bit_op_tests {
+    ($vec2:ident, $t_min:literal, $t_max:literal) => {
+        glam_test!(test_vec2_scalar_bit_ops, {
+            for x in $t_min..$t_max {
+                for y in $t_min..$t_max {
+                    for rhs in $t_min..$t_max {
+                        assert_eq!($vec2::new(x, y) & rhs, $vec2::new(x & rhs, y & rhs));
+                        assert_eq!($vec2::new(x, y) | rhs, $vec2::new(x | rhs, y | rhs));
+                        assert_eq!($vec2::new(x, y) ^ rhs, $vec2::new(x ^ rhs, y ^ rhs));
+                    }
+                }
+            }
+        });
+    };
+}
+
+macro_rules! impl_vec2_bit_op_tests {
+    ($vec2:ident, $t_min:literal, $t_max:literal) => {
+        glam_test!(test_vec2_bit_ops, {
+            for x1 in $t_min..$t_max {
+                for y1 in $t_min..$t_max {
+                    assert_eq!(!$vec2::new(x1, y1), $vec2::new(!x1, !y1));
+
+                    for x2 in $t_min..$t_max {
+                        for y2 in $t_min..$t_max {
+                            assert_eq!(
+                                $vec2::new(x1, y1) & $vec2::new(x2, y2),
+                                $vec2::new(x1 & x2, y1 & y2)
+                            );
+                            assert_eq!(
+                                $vec2::new(x1, y1) | $vec2::new(x2, y2),
+                                $vec2::new(x1 | x2, y1 | y2)
+                            );
+                            assert_eq!(
+                                $vec2::new(x1, y1) ^ $vec2::new(x2, y2),
+                                $vec2::new(x1 ^ x2, y1 ^ y2)
+                            );
+                        }
+                    }
+                }
+            }
+        });
+    };
+}
+
 mod vec2 {
     use glam::{const_vec2, vec2, BVec2, Mat2, Vec2, Vec3};
 
@@ -710,7 +835,7 @@ mod dvec2 {
 }
 
 mod ivec2 {
-    use glam::{const_ivec2, ivec2, BVec2, IVec2, IVec3};
+    use glam::{const_ivec2, ivec2, BVec2, IVec2, IVec3, UVec2};
 
     glam_test!(test_align, {
         use core::mem;
@@ -722,10 +847,16 @@ mod ivec2 {
 
     impl_vec2_signed_tests!(i32, const_ivec2, ivec2, IVec2, IVec3, BVec2);
     impl_vec2_eq_hash_tests!(i32, ivec2);
+
+    impl_vec2_scalar_shift_op_tests!(IVec2, -2, 2);
+    impl_vec2_shift_op_tests!(IVec2);
+
+    impl_vec2_scalar_bit_op_tests!(IVec2, -2, 2);
+    impl_vec2_bit_op_tests!(IVec2, -2, 2);
 }
 
 mod uvec2 {
-    use glam::{const_uvec2, uvec2, BVec2, UVec2, UVec3};
+    use glam::{const_uvec2, uvec2, BVec2, IVec2, UVec2, UVec3};
 
     glam_test!(test_align, {
         use core::mem;
@@ -737,4 +868,10 @@ mod uvec2 {
 
     impl_vec2_tests!(u32, const_uvec2, uvec2, UVec2, UVec3, BVec2);
     impl_vec2_eq_hash_tests!(u32, uvec2);
+
+    impl_vec2_scalar_shift_op_tests!(UVec2, 0, 2);
+    impl_vec2_shift_op_tests!(UVec2);
+
+    impl_vec2_scalar_bit_op_tests!(UVec2, 0, 2);
+    impl_vec2_bit_op_tests!(UVec2, 0, 2);
 }

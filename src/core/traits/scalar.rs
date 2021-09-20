@@ -7,7 +7,7 @@ pub use num_traits::{Float, Num, Signed};
 
 use core::{
     marker::Sized,
-    ops::{Add, Div, Mul, Rem, Sub},
+    ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Not, Rem, Shl, Shr, Sub},
 };
 
 // Stub the necessary parts of num traits
@@ -319,6 +319,30 @@ impl NumEx for u32 {
         core::cmp::max(self, other)
     }
 }
+
+pub trait IntegerShiftOps<Rhs>: Sized + Shl<Rhs, Output = Self> + Shr<Rhs, Output = Self> {}
+
+pub trait IntegerBitOps:
+    Sized + Not<Output = Self> + BitAnd<Output = Self> + BitOr<Output = Self> + BitXor<Output = Self>
+{
+}
+
+impl IntegerShiftOps<i8> for i32 {}
+impl IntegerShiftOps<i16> for i32 {}
+impl IntegerShiftOps<i32> for i32 {}
+impl IntegerShiftOps<u8> for i32 {}
+impl IntegerShiftOps<u16> for i32 {}
+impl IntegerShiftOps<u32> for i32 {}
+
+impl IntegerShiftOps<i8> for u32 {}
+impl IntegerShiftOps<i16> for u32 {}
+impl IntegerShiftOps<i32> for u32 {}
+impl IntegerShiftOps<u8> for u32 {}
+impl IntegerShiftOps<u16> for u32 {}
+impl IntegerShiftOps<u32> for u32 {}
+
+impl IntegerBitOps for i32 {}
+impl IntegerBitOps for u32 {}
 
 #[cfg(test)]
 macro_rules! assert_approx_eq {
