@@ -64,6 +64,31 @@ like `f64`, `i32` and `u32`. Because `glam` avoids using `generics` adding
 support for other primitive types without a lot of code duplication required
 some additional complexity in implementation.
 
-## Outer and inner types
+## High level structure
+
+`glam` supports a number of permutations of vector, quaternion and matrix types
+for `f32`, `f64`, `i32` and `u32` primitives, with SSE2 or wasm32 for some `f32`
+types and scalar fallbacks if SIMD is not available.
+
+This is done with a combination of Rust macros for generating the public facing
+types and documentation, e.g. `Vec4` and inner storage types which have a number
+of traits implemeted for different kinds of storage.
+
+### Inner types and traits
+
+Many `glam` types may use SIMD storage where available, e.g. `Vec4` might use
+`__m128` for storage if available or an inner storage struct `XYZW<f32>` for
+the scalar implementation.
+
+There are a number of internal traits defined in `core::traits` for scalar,
+vector, matrix and quaternion functionality that glam needs. These traits are
+implemented for the different storage types, e.g.
+`core::traits::vector::Vector4` has an implementations for `__m128`, `simd128`
+and the `XYZW` struct.
+
+The traits will provide default definitions where possible so not every trait
+method needs to be implemented for every storage type.
+
+### Public types and macros
 
 TODO
