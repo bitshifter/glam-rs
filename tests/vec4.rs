@@ -554,6 +554,11 @@ macro_rules! impl_vec4_float_tests {
         use core::$t::NAN;
         use core::$t::NEG_INFINITY;
 
+        glam_test!(test_vec4_nan, {
+            assert!($vec4::NAN.is_nan());
+            assert!(!$vec4::NAN.is_finite());
+        });
+
         glam_test!(test_funcs, {
             let x = $new(1.0, 0.0, 0.0, 0.0);
             let y = $new(0.0, 1.0, 0.0, 0.0);

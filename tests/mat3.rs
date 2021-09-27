@@ -49,6 +49,11 @@ macro_rules! impl_mat3_tests {
             );
         });
 
+        glam_test!(test_mat3_nan, {
+            assert!($mat3::NAN.is_nan());
+            assert!(!$mat3::NAN.is_finite());
+        });
+
         glam_test!(test_mat3_accessors, {
             let mut m = $mat3::ZERO;
             m.x_axis = $newvec3(1.0, 2.0, 3.0);

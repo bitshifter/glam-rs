@@ -32,6 +32,9 @@ macro_rules! impl_mat2_methods {
         /// A 2x2 identity matrix, where all diagonal elements are `1`, and all off-diagonal elements are `0`.
         pub const IDENTITY: Self = Self($inner::IDENTITY);
 
+        /// All NAN:s.
+        pub const NAN: Self = Self(<$inner as crate::core::traits::scalar::NanConstEx>::NAN);
+
         /// Creates a 2x2 matrix from two column vectors.
         #[inline(always)]
         pub fn from_cols(x_axis: $vec2, y_axis: $vec2) -> Self {

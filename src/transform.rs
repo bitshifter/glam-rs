@@ -64,6 +64,13 @@ impl TransformSRT {
         translation: Vec3::ZERO,
     };
 
+    /// All NaN:s.
+    pub const NAN: Self = Self {
+        scale: Vec3::NAN,
+        rotation: Quat::NAN,
+        translation: Vec3::NAN,
+    };
+
     #[inline]
     pub fn from_scale_rotation_translation(scale: Vec3, rotation: Quat, translation: Vec3) -> Self {
         Self {
@@ -71,6 +78,19 @@ impl TransformSRT {
             translation,
             scale,
         }
+    }
+
+    /// Returns `true` if, and only if, all elements are finite.
+    /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
+    #[inline]
+    pub fn is_finite(&self) -> bool {
+        self.rotation.is_finite() && self.translation.is_finite()
+    }
+
+    /// Returns `true` if, and only if, any element is `NaN`.
+    #[inline]
+    pub fn is_nan(&self) -> bool {
+        self.rotation.is_nan() || self.translation.is_nan()
     }
 
     #[inline]
@@ -205,6 +225,12 @@ impl TransformRT {
         translation: Vec3::ZERO,
     };
 
+    /// All NaN:s.
+    pub const NAN: Self = Self {
+        rotation: Quat::NAN,
+        translation: Vec3::NAN,
+    };
+
     #[inline]
     pub fn from_rotation_translation(rotation: Quat, translation: Vec3) -> Self {
         Self {
@@ -220,6 +246,7 @@ impl TransformRT {
         self.rotation.is_finite() && self.translation.is_finite()
     }
 
+    /// Returns `true` if, and only if, any element is `NaN`.
     #[inline]
     pub fn is_nan(&self) -> bool {
         self.rotation.is_nan() || self.translation.is_nan()

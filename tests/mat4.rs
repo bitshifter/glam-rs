@@ -82,6 +82,11 @@ macro_rules! impl_mat4_tests {
             );
         });
 
+        glam_test!(test_mat4_nan, {
+            assert!($mat4::NAN.is_nan());
+            assert!(!$mat4::NAN.is_finite());
+        });
+
         glam_test!(test_mat4_accessors, {
             let mut m = $mat4::ZERO;
             m.x_axis = $vec4::new(1.0, 2.0, 3.0, 4.0);

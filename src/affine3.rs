@@ -39,6 +39,12 @@ macro_rules! impl_affine3_methods {
                 translation: $column::ZERO,
             };
 
+            /// All NAN.
+            pub const NAN: Self = Self {
+                matrix3: $matrix::NAN,
+                translation: $column::NAN,
+            };
+
             /// Creates an affine transform from four column vectors.
             #[inline(always)]
             pub fn from_cols(

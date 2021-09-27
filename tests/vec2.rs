@@ -441,6 +441,11 @@ macro_rules! impl_vec2_float_tests {
             assert_eq!($vec2::Y, $new(0 as $t, 1 as $t));
         });
 
+        glam_test!(test_vec2_nan, {
+            assert!($vec2::NAN.is_nan());
+            assert!(!$vec2::NAN.is_finite());
+        });
+
         glam_test!(test_length, {
             let x = $new(1.0, 0.0);
             let y = $new(0.0, 1.0);

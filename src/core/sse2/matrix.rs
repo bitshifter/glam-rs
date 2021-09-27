@@ -13,6 +13,7 @@ use crate::core::{
             Matrix4x4, MatrixConst,
         },
         projection::ProjectionMatrix,
+        scalar::NanConstEx,
         vector::{FloatVector4, Vector, Vector4, Vector4Const},
     },
 };
@@ -21,6 +22,10 @@ use crate::core::{
 impl MatrixConst for __m128 {
     const ZERO: __m128 = const_f32x4!([0.0, 0.0, 0.0, 0.0]);
     const IDENTITY: __m128 = const_f32x4!([1.0, 0.0, 0.0, 1.0]);
+}
+
+impl NanConstEx for __m128 {
+    const NAN: __m128 = const_f32x4!([f32::NAN; 4]);
 }
 
 impl Matrix<f32> for __m128 {}
@@ -146,6 +151,14 @@ impl MatrixConst for Columns3<__m128> {
     };
 }
 
+impl NanConstEx for Columns3<__m128> {
+    const NAN: Columns3<__m128> = Columns3 {
+        x_axis: __m128::NAN,
+        y_axis: __m128::NAN,
+        z_axis: __m128::NAN,
+    };
+}
+
 impl Matrix<f32> for Columns3<__m128> {}
 
 impl Matrix3x3<f32, __m128> for Columns3<__m128> {
@@ -217,6 +230,15 @@ impl MatrixConst for Columns4<__m128> {
         y_axis: __m128::Y,
         z_axis: __m128::Z,
         w_axis: __m128::W,
+    };
+}
+
+impl NanConstEx for Columns4<__m128> {
+    const NAN: Columns4<__m128> = Columns4 {
+        x_axis: __m128::NAN,
+        y_axis: __m128::NAN,
+        z_axis: __m128::NAN,
+        w_axis: __m128::NAN,
     };
 }
 

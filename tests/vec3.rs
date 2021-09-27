@@ -478,6 +478,11 @@ macro_rules! impl_vec3_float_tests {
         use core::$t::NAN;
         use core::$t::NEG_INFINITY;
 
+        glam_test!(test_nan, {
+            assert!($vec3::NAN.is_nan());
+            assert!(!$vec3::NAN.is_finite());
+        });
+
         glam_test!(test_vec3_consts, {
             assert_eq!($vec3::ZERO, $new(0 as $t, 0 as $t, 0 as $t));
             assert_eq!($vec3::ONE, $new(1 as $t, 1 as $t, 1 as $t));

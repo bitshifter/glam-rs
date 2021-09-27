@@ -35,6 +35,9 @@ macro_rules! impl_quat_methods {
         /// The identity quaternion. Corresponds to no rotation.
         pub const IDENTITY: Self = Self($inner::W);
 
+        /// All NAN:s.
+        pub const NAN: Self = Self(<$inner as crate::core::traits::scalar::NanConstEx>::NAN);
+
         /// Creates a new rotation quaternion.
         ///
         /// This should generally not be called manually unless you know what you are doing.

@@ -14,6 +14,13 @@ impl<T: NumEx> VectorConst for XY<T> {
     };
 }
 
+impl<T: NanConstEx> NanConstEx for XY<T> {
+    const NAN: Self = Self {
+        x: <T as NanConstEx>::NAN,
+        y: <T as NanConstEx>::NAN,
+    };
+}
+
 impl<T: NumEx> Vector2Const for XY<T> {
     const X: Self = Self {
         x: <T as NumConstEx>::ONE,
@@ -35,6 +42,14 @@ impl<T: NumEx> VectorConst for XYZ<T> {
         x: <T as NumConstEx>::ONE,
         y: <T as NumConstEx>::ONE,
         z: <T as NumConstEx>::ONE,
+    };
+}
+
+impl<T: NanConstEx> NanConstEx for XYZ<T> {
+    const NAN: Self = Self {
+        x: <T as NanConstEx>::NAN,
+        y: <T as NanConstEx>::NAN,
+        z: <T as NanConstEx>::NAN,
     };
 }
 
@@ -70,6 +85,16 @@ impl<T: NumEx> VectorConst for XYZW<T> {
         w: <T as NumConstEx>::ONE,
     };
 }
+
+impl<T: NanConstEx> NanConstEx for XYZW<T> {
+    const NAN: Self = Self {
+        x: <T as NanConstEx>::NAN,
+        y: <T as NanConstEx>::NAN,
+        z: <T as NanConstEx>::NAN,
+        w: <T as NanConstEx>::NAN,
+    };
+}
+
 impl<T: NumEx> Vector4Const for XYZW<T> {
     const X: Self = Self {
         x: <T as NumConstEx>::ONE,
@@ -910,6 +935,14 @@ impl VectorConst for XYZF32A16 {
         x: 1.0,
         y: 1.0,
         z: 1.0,
+    };
+}
+
+impl NanConstEx for XYZF32A16 {
+    const NAN: Self = Self {
+        x: f32::NAN,
+        y: f32::NAN,
+        z: f32::NAN,
     };
 }
 

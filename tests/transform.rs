@@ -58,6 +58,15 @@ mod transform {
     }
 
     #[test]
+    fn test_nan() {
+        assert!(TransformRT::NAN.is_nan());
+        assert!(!TransformRT::NAN.is_finite());
+
+        assert!(TransformSRT::NAN.is_nan());
+        assert!(!TransformSRT::NAN.is_finite());
+    }
+
+    #[test]
     fn test_new() {
         let t = Vec3::new(1.0, 2.0, 3.0);
         let r = Quat::from_rotation_y(90.0_f32.to_radians());
