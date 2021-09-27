@@ -12,6 +12,11 @@ macro_rules! impl_quat_tests {
             assert_eq!($quat::from_xyzw(1.0, 2.0, 3.0, 4.0), Q);
         });
 
+        glam_test!(test_nan, {
+            assert!($quat::NAN.is_nan());
+            assert!(!$quat::NAN.is_finite());
+        });
+
         glam_test!(test_new, {
             let ytheta = deg(45.0);
             let q0 = $quat::from_rotation_y(ytheta);

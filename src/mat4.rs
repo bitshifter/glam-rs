@@ -71,6 +71,9 @@ macro_rules! impl_mat4_methods {
         /// A 4x4 identity matrix, where all diagonal elements are `1`, and all off-diagonal elements are `0`.
         pub const IDENTITY: Self = Self($inner::IDENTITY);
 
+        /// All NAN:s.
+        pub const NAN: Self = Self(<$inner as crate::core::traits::scalar::NanConstEx>::NAN);
+
         /// Creates a 4x4 matrix from four column vectors.
         #[inline(always)]
         pub fn from_cols(x_axis: $vec4, y_axis: $vec4, z_axis: $vec4, w_axis: $vec4) -> Self {

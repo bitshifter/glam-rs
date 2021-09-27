@@ -6,7 +6,7 @@ use crate::core::{
             Matrix4x4, MatrixConst,
         },
         projection::ProjectionMatrix,
-        scalar::{FloatEx, NumEx},
+        scalar::{FloatEx, NanConstEx, NumEx},
         vector::*,
     },
 };
@@ -19,6 +19,13 @@ impl<T: NumEx> MatrixConst for Columns2<XY<T>> {
     const IDENTITY: Self = Self {
         x_axis: XY::X,
         y_axis: XY::Y,
+    };
+}
+
+impl<T: NanConstEx> NanConstEx for Columns2<XY<T>> {
+    const NAN: Self = Self {
+        x_axis: XY::NAN,
+        y_axis: XY::NAN,
     };
 }
 
@@ -53,6 +60,14 @@ impl<T: NumEx> MatrixConst for Columns3<XYZ<T>> {
         x_axis: XYZ::X,
         y_axis: XYZ::Y,
         z_axis: XYZ::Z,
+    };
+}
+
+impl<T: NanConstEx> NanConstEx for Columns3<XYZ<T>> {
+    const NAN: Self = Self {
+        x_axis: XYZ::NAN,
+        y_axis: XYZ::NAN,
+        z_axis: XYZ::NAN,
     };
 }
 
@@ -122,6 +137,14 @@ impl MatrixConst for Columns3<XYZF32A16> {
     };
 }
 
+impl NanConstEx for Columns3<XYZF32A16> {
+    const NAN: Self = Self {
+        x_axis: XYZF32A16::NAN,
+        y_axis: XYZF32A16::NAN,
+        z_axis: XYZF32A16::NAN,
+    };
+}
+
 impl Matrix<f32> for Columns3<XYZF32A16> {}
 
 impl Matrix3x3<f32, XYZF32A16> for Columns3<XYZF32A16> {
@@ -178,6 +201,15 @@ impl<T: NumEx> MatrixConst for Columns4<XYZW<T>> {
         y_axis: XYZW::Y,
         z_axis: XYZW::Z,
         w_axis: XYZW::W,
+    };
+}
+
+impl<T: NanConstEx> NanConstEx for Columns4<XYZW<T>> {
+    const NAN: Self = Self {
+        x_axis: XYZW::NAN,
+        y_axis: XYZW::NAN,
+        z_axis: XYZW::NAN,
+        w_axis: XYZW::NAN,
     };
 }
 

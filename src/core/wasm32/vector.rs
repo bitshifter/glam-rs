@@ -148,6 +148,10 @@ impl VectorConst for v128 {
     const ONE: v128 = const_f32x4!([1.0; 4]);
 }
 
+impl NanConstEx for v128 {
+    const NAN: v128 = const_f32x4!([f32::NAN; 4]);
+}
+
 impl Vector3Const for v128 {
     const X: v128 = const_f32x4!([1.0, 0.0, 0.0, 0.0]);
     const Y: v128 = const_f32x4!([0.0, 1.0, 0.0, 0.0]);

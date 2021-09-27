@@ -153,6 +153,10 @@ pub trait FloatConstEx: Sized {
     const HALF: Self;
 }
 
+pub trait NanConstEx: Sized {
+    const NAN: Self;
+}
+
 pub trait NumEx:
     Num
     + NumConstEx
@@ -172,7 +176,7 @@ pub trait NumEx:
 
 pub trait SignedEx: Signed + NumEx {}
 
-pub trait FloatEx: Float + FloatConstEx + SignedEx {
+pub trait FloatEx: Float + FloatConstEx + SignedEx + NanConstEx {
     /// Returns a very close approximation of `self.clamp(-1.0, 1.0).acos()`.
     fn acos_approx(self) -> Self;
     fn from_f32(f: f32) -> Self;
@@ -182,6 +186,10 @@ pub trait FloatEx: Float + FloatConstEx + SignedEx {
 impl NumConstEx for f32 {
     const ZERO: Self = 0.0;
     const ONE: Self = 1.0;
+}
+
+impl NanConstEx for f32 {
+    const NAN: Self = f32::NAN;
 }
 
 impl FloatConstEx for f32 {
@@ -250,6 +258,10 @@ impl FloatEx for f32 {
 impl NumConstEx for f64 {
     const ZERO: Self = 0.0;
     const ONE: Self = 1.0;
+}
+
+impl NanConstEx for f64 {
+    const NAN: Self = f64::NAN;
 }
 
 impl FloatConstEx for f64 {

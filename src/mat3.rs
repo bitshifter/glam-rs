@@ -65,6 +65,9 @@ macro_rules! impl_mat3_methods {
         /// elements are `0`.
         pub const IDENTITY: Self = Self($inner::IDENTITY);
 
+        /// All NAN:s.
+        pub const NAN: Self = Self(<$inner as crate::core::traits::scalar::NanConstEx>::NAN);
+
         /// Creates a 3x3 matrix from three column vectors.
         #[inline(always)]
         pub fn from_cols(x_axis: $vec3a, y_axis: $vec3a, z_axis: $vec3a) -> Self {

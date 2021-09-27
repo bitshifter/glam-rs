@@ -15,6 +15,7 @@ use crate::core::{
 // v128 as a Matrix2x2
 impl MatrixConst for v128 {
     const ZERO: v128 = const_f32x4!([0.0, 0.0, 0.0, 0.0]);
+    const NAN: v128 = const_f32x4!([f32::NAN; 4]);
     const IDENTITY: v128 = const_f32x4!([1.0, 0.0, 0.0, 1.0]);
 }
 
@@ -128,6 +129,11 @@ impl MatrixConst for Columns3<v128> {
         y_axis: VectorConst::ZERO,
         z_axis: VectorConst::ZERO,
     };
+    const NAN: Columns3<v128> = Columns3 {
+        x_axis: VectorConst::NAN,
+        y_axis: VectorConst::NAN,
+        z_axis: VectorConst::NAN,
+    };
     const IDENTITY: Columns3<v128> = Columns3 {
         x_axis: v128::X,
         y_axis: v128::Y,
@@ -198,6 +204,12 @@ impl MatrixConst for Columns4<v128> {
         y_axis: VectorConst::ZERO,
         z_axis: VectorConst::ZERO,
         w_axis: VectorConst::ZERO,
+    };
+    const NAN: Columns4<v128> = Columns4 {
+        x_axis: VectorConst::NAN,
+        y_axis: VectorConst::NAN,
+        z_axis: VectorConst::NAN,
+        w_axis: VectorConst::NAN,
     };
     const IDENTITY: Columns4<v128> = Columns4 {
         x_axis: v128::X,

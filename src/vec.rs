@@ -1,4 +1,5 @@
 // Adds common vector methods to an impl.
+
 // The methods here should be supported for all types of $t and all sizes of vector.
 macro_rules! impl_vecn_common_methods {
     ($t:ty, $vecn:ident, $mask:ident, $inner:ident, $vectrait:ident) => {
@@ -186,6 +187,9 @@ macro_rules! impl_vecn_signed_methods {
 macro_rules! impl_vecn_float_methods {
     ($t:ty, $vecn:ident, $mask:ident, $inner:ident, $flttrait:ident) => {
         // impl_vecn_signed_methods!($t, $vecn, $mask, $inner, $sgntrait, $vectrait);
+
+        /// All NAN.
+        pub const NAN: Self = Self(<$inner as crate::core::traits::scalar::NanConstEx>::NAN);
 
         /// Returns `true` if, and only if, all elements are finite.  If any element is either
         /// `NaN`, positive or negative infinity, this will return `false`.

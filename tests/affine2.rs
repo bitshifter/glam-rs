@@ -20,6 +20,11 @@ macro_rules! impl_affine2_tests {
             );
         });
 
+        glam_test!(test_affine2_nan, {
+            assert!($affine2::NAN.is_nan());
+            assert!(!$affine2::NAN.is_finite());
+        });
+
         glam_test!(test_affine2_translation, {
             let translate = $affine2::from_translation($vec2::new(1.0, 2.0));
             assert_eq!(translate.translation, $vec2::new(1.0, 2.0).into());

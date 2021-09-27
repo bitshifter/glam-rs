@@ -29,6 +29,11 @@ macro_rules! impl_mat2_tests {
             assert_eq!($mat2::ZERO, $mat2::from_cols_array(&[0., 0., 0., 0.]));
         });
 
+        glam_test!(test_mat2_nan, {
+            assert!($mat2::NAN.is_nan());
+            assert!(!$mat2::NAN.is_finite());
+        });
+
         glam_test!(test_mat2_accessors, {
             let mut m = $mat2::ZERO;
             m.x_axis = $vec2::new(1.0, 2.0);
