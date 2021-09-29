@@ -94,7 +94,7 @@ macro_rules! impl_mat2_methods {
         /// Creates a 2x2 matrix from a 3x3 matrix, discarding the 2nd row and column.
         #[inline(always)]
         pub fn from_mat3(m: $mat3) -> Self {
-            Self::from_cols(m.x_axis.into(), m.y_axis.into())
+            Self::from_cols($vec2(m.x_axis.0.into()), $vec2(m.y_axis.0.into()))
         }
 
         /// Creates a 2x2 matrix from the first 4 values in `slice`.

@@ -165,14 +165,6 @@ macro_rules! impl_vec3_common_traits {
             }
         }
 
-        impl From<$vec3> for $vec2 {
-            /// Creates a `Vec2` from the `x` and `y` elements of `self`, discarding `z`.
-            #[inline(always)]
-            fn from(v: $vec3) -> Self {
-                Self(v.into_xy())
-            }
-        }
-
         impl Deref for $vec3 {
             type Target = XYZ<$t>;
             #[inline(always)]
