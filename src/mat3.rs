@@ -114,7 +114,11 @@ macro_rules! impl_mat3_methods {
 
         /// Creates a 3x3 matrix from a 4x4 matrix, discarding the 3rd row and column.
         pub fn from_mat4(m: $mat4) -> Self {
-            Self::from_cols(m.x_axis.into(), m.y_axis.into(), m.z_axis.into())
+            Self::from_cols(
+                $vec3a(m.x_axis.0.into()),
+                $vec3a(m.y_axis.0.into()),
+                $vec3a(m.z_axis.0.into()),
+            )
         }
 
         /// Creates a 3D rotation matrix from the given quaternion.
