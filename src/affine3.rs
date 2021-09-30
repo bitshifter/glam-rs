@@ -256,8 +256,12 @@ macro_rules! impl_affine3_methods {
             #[inline]
             pub fn from_mat4(m: $mat4) -> Self {
                 Self {
-                    matrix3: $matrix::from_cols(m.x_axis.into(), m.y_axis.into(), m.z_axis.into()),
-                    translation: m.w_axis.into(),
+                    matrix3: $matrix::from_cols(
+                        $column(m.x_axis.0.into()),
+                        $column(m.y_axis.0.into()),
+                        $column(m.z_axis.0.into()),
+                    ),
+                    translation: $column(m.w_axis.0.into()),
                 }
             }
 
@@ -560,21 +564,10 @@ macro_rules! impl_affine3_traits {
     };
 }
 
-type TransformF32 = Mat3A;
-type TranslateF32 = Vec3A;
 type DerefTargetF32 = Columns4<crate::Vec3A>;
 
-define_affine3_struct!(Affine3A, TransformF32, TranslateF32);
-impl_affine3_methods!(
-    f32,
-    Mat3,
-    Mat4,
-    Quat,
-    Vec3,
-    Affine3A,
-    TransformF32,
-    TranslateF32
-);
+define_affine3_struct!(Affine3A, Mat3A, Vec3A);
+impl_affine3_methods!(f32, Mat3, Mat4, Quat, Vec3, Affine3A, Mat3A, Vec3A);
 impl_affine3_traits!(
     f32,
     Mat3,
@@ -582,8 +575,8 @@ impl_affine3_traits!(
     Vec3,
     Vec4,
     Affine3A,
-    TransformF32,
-    TranslateF32,
+    Mat3A,
+    Vec3A,
     DerefTargetF32
 );
 
@@ -604,21 +597,10 @@ impl Affine3A {
     }
 }
 
-type TransformF64 = DMat3;
-type TranslateF64 = DVec3;
 type DerefTargetF64 = Columns4<DVec3>;
 
-define_affine3_struct!(DAffine3, TransformF64, TranslateF64);
-impl_affine3_methods!(
-    f64,
-    DMat3,
-    DMat4,
-    DQuat,
-    DVec3,
-    DAffine3,
-    TransformF64,
-    TranslateF64
-);
+define_affine3_struct!(DAffine3, DMat3, DVec3);
+impl_affine3_methods!(f64, DMat3, DMat4, DQuat, DVec3, DAffine3, DMat3, DVec3);
 impl_affine3_traits!(
     f64,
     DMat3,
@@ -626,8 +608,8 @@ impl_affine3_traits!(
     DVec3,
     DVec4,
     DAffine3,
-    TransformF64,
-    TranslateF64,
+    DMat3,
+    DVec3,
     DerefTargetF64
 );
 

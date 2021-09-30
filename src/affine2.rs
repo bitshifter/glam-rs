@@ -205,8 +205,8 @@ macro_rules! impl_affine2_methods {
             #[inline]
             pub fn from_mat3(m: $mat3) -> Self {
                 Self {
-                    matrix2: $matrix::from_cols(m.x_axis.into(), m.y_axis.into()),
-                    translation: m.z_axis.into(),
+                    matrix2: $matrix::from_cols($vec2(m.x_axis.0.into()), $vec2(m.y_axis.0.into())),
+                    translation: $vec2(m.z_axis.0.into()),
                 }
             }
 

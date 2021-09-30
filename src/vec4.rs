@@ -176,23 +176,6 @@ macro_rules! impl_vec4_common_traits {
             }
         }
 
-        impl From<$vec4> for $vec3 {
-            /// Creates a 3D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
-            #[inline(always)]
-            fn from(v: $vec4) -> Self {
-                Self(v.into_xyz())
-            }
-        }
-
-        impl From<$vec4> for $vec2 {
-            /// Creates a 2D vector from the `x` and `y` elements of `self`, discarding `z` and
-            /// `w`.
-            #[inline(always)]
-            fn from(v: $vec4) -> Self {
-                Self(v.into_xy())
-            }
-        }
-
         impl Deref for $vec4 {
             type Target = XYZW<$t>;
             #[inline(always)]

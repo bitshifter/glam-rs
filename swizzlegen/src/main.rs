@@ -280,7 +280,7 @@ fn write_vec4_impl_sse2(out: &mut impl Write) -> Result<()> {
         out,
         r#"
 use super::Vec4Swizzles;
-use crate::{{Vec2, Vec3, Vec4}};
+use crate::{{Vec2, Vec3, Vec4, XY, XYZ}};
 
 #[cfg(target_arch = "x86")]
 use core::arch::x86::*;
@@ -318,7 +318,7 @@ impl Vec4Swizzles for Vec4 {{
                 r#"
     #[inline]
     fn {}{}{}(self) -> Vec3 {{
-        unsafe {{ Vec3::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_{}_{}_{}))) }}
+        unsafe {{ Vec3(XYZ::from(_mm_shuffle_ps(self.0, self.0, 0b00_{}_{}_{}))) }}
     }}"#,
                 E[e0], E[e1], E[e2], B[e2], B[e1], B[e0],
             )
@@ -329,7 +329,7 @@ impl Vec4Swizzles for Vec4 {{
                 r#"
     #[inline]
     fn {}{}(self) -> Vec2 {{
-        unsafe {{ Vec2::from(Vec4(_mm_shuffle_ps(self.0, self.0, 0b00_00_{}_{}))) }}
+        unsafe {{ Vec2(XY::from(_mm_shuffle_ps(self.0, self.0, 0b00_00_{}_{}))) }}
     }}"#,
                 E[e0], E[e1], B[e1], B[e0],
             )
@@ -350,7 +350,7 @@ fn write_vec3a_impl_sse2(out: &mut impl Write) -> Result<()> {
         out,
         r#"
 use super::Vec3Swizzles;
-use crate::{{Vec2, Vec3A, Vec4}};
+use crate::{{Vec2, Vec3A, Vec4, XY}};
 
 #[cfg(target_arch = "x86")]
 use core::arch::x86::*;
@@ -399,7 +399,7 @@ impl Vec3Swizzles for Vec3A {{
                 r#"
     #[inline]
     fn {}{}(self) -> Vec2 {{
-        unsafe {{ Vec2::from(Vec3A(_mm_shuffle_ps(self.0, self.0, 0b00_00_{}_{}))) }}
+        unsafe {{ Vec2(XY::from(_mm_shuffle_ps(self.0, self.0, 0b00_00_{}_{}))) }}
     }}"#,
                 E[e0], E[e1], B[e1], B[e0],
             )
@@ -420,7 +420,7 @@ fn write_vec4_impl_wasm32(out: &mut impl Write) -> Result<()> {
         out,
         r#"
 use super::Vec4Swizzles;
-use crate::{{Vec2, Vec3, Vec4}};
+use crate::{{Vec2, Vec3, Vec4, XY, XYZ}};
 
 use core::arch::wasm32::*;
 "#
@@ -455,7 +455,7 @@ impl Vec4Swizzles for Vec4 {{
                 r#"
     #[inline]
     fn {}{}{}(self) -> Vec3 {{
-        Vec3::from(Vec4(i32x4_shuffle::<{}, {}, {}, {}>(self.0, self.0)))
+        Vec3(XYZ::from(i32x4_shuffle::<{}, {}, {}, {}>(self.0, self.0)))
     }}"#,
                 E[e0], E[e1], E[e2], L[e0], L[e1], H[e2], H[0],
             )
@@ -466,7 +466,7 @@ impl Vec4Swizzles for Vec4 {{
                 r#"
     #[inline]
     fn {}{}(self) -> Vec2 {{
-        Vec2::from(Vec4(i32x4_shuffle::<{}, {}, {}, {}>(self.0, self.0)))
+        Vec2(XY::from(i32x4_shuffle::<{}, {}, {}, {}>(self.0, self.0)))
     }}"#,
                 E[e0], E[e1], L[e0], L[e1], H[0], H[0],
             )
@@ -487,7 +487,7 @@ fn write_vec3a_impl_wasm32(out: &mut impl Write) -> Result<()> {
         out,
         r#"
 use super::Vec3Swizzles;
-use crate::{{Vec2, Vec3A, Vec4}};
+use crate::{{Vec2, Vec3A, Vec4, XY}};
 
 use core::arch::wasm32::*;
 "#
@@ -533,7 +533,7 @@ impl Vec3Swizzles for Vec3A {{
                 r#"
     #[inline]
     fn {}{}(self) -> Vec2 {{
-        Vec2::from(Vec3A(i32x4_shuffle::<{}, {}, {}, {}>(self.0, self.0)))
+        Vec2(XY::from(i32x4_shuffle::<{}, {}, {}, {}>(self.0, self.0)))
     }}"#,
                 E[e0], E[e1], L[e0], L[e1], H[0], H[0],
             )
