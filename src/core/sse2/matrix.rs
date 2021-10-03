@@ -24,10 +24,6 @@ impl MatrixConst for __m128 {
     const IDENTITY: __m128 = const_f32x4!([1.0, 0.0, 0.0, 1.0]);
 }
 
-impl NanConstEx for __m128 {
-    const NAN: __m128 = const_f32x4!([f32::NAN; 4]);
-}
-
 impl Matrix<f32> for __m128 {}
 
 impl Matrix2x2<f32, XY<f32>> for __m128 {
