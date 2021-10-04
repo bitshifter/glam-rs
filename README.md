@@ -158,6 +158,10 @@ performance.
 [coverage]: coveralls.io
 [Criterion.rs]: https://bheisler.github.io/criterion.rs/book/index.html
 
+## Architecture
+
+See [ARCHITECTURE.md] for details on `glam`'s internals.
+
 ## Inspirations
 
 There were many inspirations for the interface and internals of glam from the
