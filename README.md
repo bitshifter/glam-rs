@@ -162,6 +162,8 @@ performance.
 
 See [ARCHITECTURE.md] for details on `glam`'s internals.
 
+[ARCHITECTURE.md]: ARCHITECTURE.md
+
 ## Inspirations
 
 There were many inspirations for the interface and internals of glam from the
