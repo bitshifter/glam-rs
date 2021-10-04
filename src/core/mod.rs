@@ -14,5 +14,15 @@ pub mod traits;
 mod scalar;
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 mod sse2;
-#[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
+#[cfg(all(
+    target_feature = "simd128",
+    feature = "glam-simd128",
+    not(feature = "scalar-math")
+))]
 mod wasm32;
+#[cfg(all(
+    feature = "glam-simd128",
+    not(feature = "scalar-math"),
+    not(target_feature = "simd128")
+))]
+compile_error!("The `simd128` target feature must be enabled to use the `glam-simd128` feature.");

@@ -21,7 +21,7 @@ use core::arch::x86::*;
 ))]
 use core::arch::x86_64::*;
 
-#[cfg(target_feature = "simd128")]
+#[cfg(all(target_feature = "simd128", feature = "glam-simd128"))]
 use core::arch::wasm32::v128;
 
 macro_rules! define_mat3_struct {
@@ -510,11 +510,18 @@ impl Mul<Vec3A> for Mat3 {
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 type InnerF32A = Columns3<__m128>;
 
-#[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
+#[cfg(all(
+    target_feature = "simd128",
+    feature = "glam-simd128",
+    not(feature = "scalar-math")
+))]
 type InnerF32A = Columns3<v128>;
 
 #[cfg(any(
-    not(any(target_feature = "sse2", target_feature = "simd128")),
+    not(any(
+        target_feature = "sse2",
+        all(target_feature = "simd128", feature = "glam-simd128")
+    )),
     feature = "scalar-math"
 ))]
 type InnerF32A = Columns3<crate::core::storage::XYZF32A16>;

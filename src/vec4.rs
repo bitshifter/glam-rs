@@ -1,7 +1,10 @@
 use crate::core::traits::vector::*;
 
 #[cfg(all(
-    any(target_feature = "sse2", target_feature = "simd128"),
+    any(
+        target_feature = "sse2",
+        all(target_feature = "simd128", feature = "glam-simd128")
+    ),
     not(feature = "scalar-math")
 ))]
 use crate::BVec4A;
@@ -28,7 +31,11 @@ use core::arch::x86::*;
 ))]
 use core::arch::x86_64::*;
 
-#[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
+#[cfg(all(
+    target_feature = "simd128",
+    feature = "glam-simd128",
+    not(feature = "scalar-math")
+))]
 use core::arch::wasm32::v128;
 
 macro_rules! impl_vec4_common_methods {
@@ -230,7 +237,10 @@ macro_rules! impl_f32_vec4 {
 }
 
 #[cfg(any(
-    not(any(target_feature = "sse2", target_feature = "simd128")),
+    not(any(
+        target_feature = "sse2",
+        all(target_feature = "simd128", feature = "glam-simd128")
+    )),
     feature = "scalar-math"
 ))]
 type XYZWF32 = XYZW<f32>;
@@ -238,7 +248,11 @@ type XYZWF32 = XYZW<f32>;
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 type XYZWF32 = __m128;
 
-#[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
+#[cfg(all(
+    target_feature = "simd128",
+    feature = "glam-simd128",
+    not(feature = "scalar-math")
+))]
 type XYZWF32 = v128;
 
 /// A 4-dimensional vector.
@@ -253,13 +267,19 @@ type XYZWF32 = v128;
 pub struct Vec4(pub(crate) XYZWF32);
 
 #[cfg(any(
-    not(any(target_feature = "sse2", target_feature = "simd128")),
+    not(any(
+        target_feature = "sse2",
+        all(target_feature = "simd128", feature = "glam-simd128")
+    )),
     feature = "scalar-math"
 ))]
 impl_f32_vec4!(vec4, Vec2, Vec3, Vec4, BVec4, XYZWF32);
 
 #[cfg(all(
-    any(target_feature = "sse2", target_feature = "simd128"),
+    any(
+        target_feature = "sse2",
+        all(target_feature = "simd128", feature = "glam-simd128")
+    ),
     not(feature = "scalar-math")
 ))]
 impl_f32_vec4!(vec4, Vec2, Vec3, Vec4, BVec4A, XYZWF32);

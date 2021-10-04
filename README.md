@@ -53,7 +53,7 @@ SIMD is supported on `x86`, `x86_64` and `wasm32` targets.
 * To enable `SSE2` on `x86` targets add `-C target-feature=+sse2` to
   `RUSTCFLAGS`.
 * To enable `simd128` on `wasm32` targets add `-C target-feature=+simd128` to
-  `RUSTFLAGS`.
+  `RUSTFLAGS` and enable the experimental `glam-simd128` feature.
 
 Note that SIMD on `wasm32` passes tests but has not been benchmarked,
 performance may or may not be better than scalar math.
@@ -117,6 +117,7 @@ glam = { version = "0.17.0", default-features = false }
 * `debug-glam-assert` - adds assertions in debug builds which check the validity
   of parameters passed to `glam` to help catch runtime errors
 * `glam-assert` - adds validation assertions to all builds
+* `glam-simd128` - enables experimental `simd128` support on wasm targets
 
 ### Minimum Supported Rust Version (MSRV)
 

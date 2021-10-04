@@ -18,7 +18,11 @@ use core::arch::x86::*;
 ))]
 use core::arch::x86_64::*;
 
-#[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
+#[cfg(all(
+    target_feature = "simd128",
+    feature = "glam-simd128",
+    not(feature = "scalar-math")
+))]
 use core::arch::wasm32::v128;
 
 macro_rules! impl_vecnmask_methods {
@@ -299,7 +303,11 @@ macro_rules! impl_vec4mask {
 
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 type Mask128 = __m128;
-#[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
+#[cfg(all(
+    target_feature = "simd128",
+    feature = "glam-simd128",
+    not(feature = "scalar-math")
+))]
 type Mask128 = v128;
 
 /// A 3-dimensional SIMD vector mask.
@@ -307,7 +315,10 @@ type Mask128 = v128;
 /// This type is 16 byte aligned and is backed by a SIMD vector. If SIMD is not available `BVec3A`
 /// will be a type alias for `BVec3`.
 #[cfg(all(
-    any(target_feature = "sse2", target_feature = "simd128"),
+    any(
+        target_feature = "sse2",
+        all(target_feature = "simd128", feature = "glam-simd128")
+    ),
     not(feature = "scalar-math")
 ))]
 #[derive(Clone, Copy)]
@@ -315,19 +326,28 @@ type Mask128 = v128;
 pub struct BVec3A(pub(crate) Mask128);
 
 #[cfg(all(
-    any(target_feature = "sse2", target_feature = "simd128"),
+    any(
+        target_feature = "sse2",
+        all(target_feature = "simd128", feature = "glam-simd128")
+    ),
     not(feature = "scalar-math")
 ))]
 impl_vec3mask!(BVec3A, u32, Mask128);
 
 #[cfg(any(
-    not(any(target_feature = "sse2", target_feature = "simd128")),
+    not(any(
+        target_feature = "sse2",
+        all(target_feature = "simd128", feature = "glam-simd128")
+    )),
     feature = "scalar-math"
 ))]
 pub type BVec3A = BVec3;
 
 #[cfg(all(
-    any(target_feature = "sse2", target_feature = "simd128"),
+    any(
+        target_feature = "sse2",
+        all(target_feature = "simd128", feature = "glam-simd128")
+    ),
     not(feature = "scalar-math")
 ))]
 impl From<BVec3> for BVec3A {
@@ -338,7 +358,10 @@ impl From<BVec3> for BVec3A {
 }
 
 #[cfg(all(
-    any(target_feature = "sse2", target_feature = "simd128"),
+    any(
+        target_feature = "sse2",
+        all(target_feature = "simd128", feature = "glam-simd128")
+    ),
     not(feature = "scalar-math")
 ))]
 impl From<BVec3A> for BVec3 {
@@ -356,7 +379,10 @@ impl From<BVec3A> for BVec3 {
 /// This type is 16 byte aligned and is backed by a SIMD vector. If SIMD is not available `BVec4A`
 /// will be a type alias for `BVec4`.
 #[cfg(all(
-    any(target_feature = "sse2", target_feature = "simd128"),
+    any(
+        target_feature = "sse2",
+        all(target_feature = "simd128", feature = "glam-simd128")
+    ),
     not(feature = "scalar-math")
 ))]
 #[derive(Clone, Copy)]
@@ -364,19 +390,28 @@ impl From<BVec3A> for BVec3 {
 pub struct BVec4A(pub(crate) Mask128);
 
 #[cfg(all(
-    any(target_feature = "sse2", target_feature = "simd128"),
+    any(
+        target_feature = "sse2",
+        all(target_feature = "simd128", feature = "glam-simd128")
+    ),
     not(feature = "scalar-math")
 ))]
 impl_vec4mask!(BVec4A, u32, Mask128);
 
 #[cfg(any(
-    not(any(target_feature = "sse2", target_feature = "simd128")),
+    not(any(
+        target_feature = "sse2",
+        all(target_feature = "simd128", feature = "glam-simd128")
+    )),
     feature = "scalar-math"
 ))]
 pub type BVec4A = BVec4;
 
 #[cfg(all(
-    any(target_feature = "sse2", target_feature = "simd128"),
+    any(
+        target_feature = "sse2",
+        all(target_feature = "simd128", feature = "glam-simd128")
+    ),
     not(feature = "scalar-math")
 ))]
 impl From<BVec4> for BVec4A {
@@ -387,7 +422,10 @@ impl From<BVec4> for BVec4A {
 }
 
 #[cfg(all(
-    any(target_feature = "sse2", target_feature = "simd128"),
+    any(
+        target_feature = "sse2",
+        all(target_feature = "simd128", feature = "glam-simd128")
+    ),
     not(feature = "scalar-math")
 ))]
 impl From<BVec4A> for BVec4 {

@@ -46,7 +46,11 @@ macro_rules! const_f32x4 {
     };
 }
 
-#[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
+#[cfg(all(
+    target_feature = "simd128",
+    feature = "glam-simd128",
+    not(feature = "scalar-math")
+))]
 macro_rules! const_f32x4 {
     ($fx4:expr) => {
         unsafe { $crate::cast::Vec4Cast { fx4: $fx4 }.v128 }
