@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+### Breaking changes
+
+* Removed truncating vector `From` implementations. Use `.truncate()` or swizzle
+  methods instead.
+
+### Added
+
+* Added `Not`, `Shl`, `Shr`, `BitAnd`, `BitOr` and `BitXor` implementations for
+  all `IVec` and `UVec` vector types.
+* Added `NAN` constant for all types.
+
+### Changed
+
+* `Sum` and `Product` traits are now implemented in `no_std` builds.
+
 ## [0.18.0] - 2021-08-26
 
 ### Breaking changes
