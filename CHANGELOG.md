@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
-## [Unreleased]
+## [0.19.0] - 2021-10-05
 
 ### Breaking changes
 
@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Added `Not`, `Shl`, `Shr`, `BitAnd`, `BitOr` and `BitXor` implementations for
   all `IVec` and `UVec` vector types.
 * Added `NAN` constant for all types.
+* Documented `glam`'s [architecture](ARCHITECTURE.md).
 
 ### Changed
 
@@ -684,7 +685,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.18.0...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.19.0...HEAD
+[0.19.0]: https://github.com/bitshifter/glam-rs/compare/0.18.0...0.19.0
 [0.18.0]: https://github.com/bitshifter/glam-rs/compare/0.17.3...0.18.0
 [0.17.3]: https://github.com/bitshifter/glam-rs/compare/0.17.2...0.17.3
 [0.17.2]: https://github.com/bitshifter/glam-rs/compare/0.17.1...0.17.2
