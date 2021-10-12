@@ -1,6 +1,6 @@
 use crate::{
-    DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, IVec2, IVec3, IVec4, Mat2, Mat3, Mat4, Quat,
-    UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
+    DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, IVec2, IVec3, IVec4, Mat2, Mat3, Mat3A, Mat4,
+    Quat, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
 };
 
 macro_rules! impl_vec_types {
@@ -232,6 +232,39 @@ impl From<Vec3A> for mint::Vector3<f32> {
             x: v.x,
             y: v.y,
             z: v.z,
+        }
+    }
+}
+
+impl From<mint::RowMatrix3<f32>> for Mat3A {
+    fn from(m: mint::RowMatrix3<f32>) -> Self {
+        Self::from_cols(m.x.into(), m.y.into(), m.z.into()).transpose()
+    }
+}
+
+impl From<Mat3A> for mint::RowMatrix3<f32> {
+    fn from(m: Mat3A) -> Self {
+        let mt = m.transpose();
+        Self {
+            x: mt.x_axis.into(),
+            y: mt.y_axis.into(),
+            z: mt.z_axis.into(),
+        }
+    }
+}
+
+impl From<mint::ColumnMatrix3<f32>> for Mat3A {
+    fn from(m: mint::ColumnMatrix3<f32>) -> Self {
+        Self::from_cols(m.x.into(), m.y.into(), m.z.into())
+    }
+}
+
+impl From<Mat3A> for mint::ColumnMatrix3<f32> {
+    fn from(m: Mat3A) -> Self {
+        Self {
+            x: m.x_axis.into(),
+            y: m.y_axis.into(),
+            z: m.z_axis.into(),
         }
     }
 }
