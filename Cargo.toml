@@ -10,6 +10,9 @@ license = "MIT OR Apache-2.0"
 keywords = ["gamedev", "math", "matrix", "vector", "quaternion"]
 categories = ["game-engines", "no-std"]
 
+[patch.crates-io]
+mint = { git = "https://github.com/LPGhatguy/mint", branch = "into-mint" }
+
 [badges]
 maintenance = { status = "actively-developed" }
 
