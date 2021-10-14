@@ -470,7 +470,7 @@ macro_rules! impl_vecn_float_methods {
         /// Returns a vector with a length no less than `min`
         pub fn clamp_length_min(self, min: $t) -> Self {
             let length_sq = self.length_squared();
-            if self.length_squared() < min * min {
+            if length_sq < min * min {
                 self * (length_sq.sqrt().recip() * min)
             } else {
                 self
