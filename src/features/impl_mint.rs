@@ -1,6 +1,6 @@
 use crate::{
-    DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, IVec2, IVec3, IVec4, Mat2, Mat3, Mat4, Quat,
-    UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
+    DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, IVec2, IVec3, IVec4, Mat2, Mat3, Mat3A, Mat4,
+    Quat, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
 };
 
 macro_rules! impl_vec_types {
@@ -236,6 +236,39 @@ impl From<Vec3A> for mint::Vector3<f32> {
     }
 }
 
+impl From<mint::RowMatrix3<f32>> for Mat3A {
+    fn from(m: mint::RowMatrix3<f32>) -> Self {
+        Self::from_cols(m.x.into(), m.y.into(), m.z.into()).transpose()
+    }
+}
+
+impl From<Mat3A> for mint::RowMatrix3<f32> {
+    fn from(m: Mat3A) -> Self {
+        let mt = m.transpose();
+        Self {
+            x: mt.x_axis.into(),
+            y: mt.y_axis.into(),
+            z: mt.z_axis.into(),
+        }
+    }
+}
+
+impl From<mint::ColumnMatrix3<f32>> for Mat3A {
+    fn from(m: mint::ColumnMatrix3<f32>) -> Self {
+        Self::from_cols(m.x.into(), m.y.into(), m.z.into())
+    }
+}
+
+impl From<Mat3A> for mint::ColumnMatrix3<f32> {
+    fn from(m: Mat3A) -> Self {
+        Self {
+            x: m.x_axis.into(),
+            y: m.y_axis.into(),
+            z: m.z_axis.into(),
+        }
+    }
+}
+
 impl_float_types!(f32, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4);
 impl_float_types!(f64, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4);
 impl_vec_types!(i32, IVec2, IVec3, IVec4);
@@ -406,6 +439,40 @@ mod test {
             let g = Vec3A::from(m);
             assert_eq!(g, Vec3A::new(1.0, 2.0, 3.0));
             assert_eq!(m, g.into());
+        }
+
+        #[test]
+        fn test_mat3a_col_major() {
+            use crate::Mat3A;
+            let m = mint::ColumnMatrix3 {
+                x: [0.0, 1.0, 2.0].into(),
+                y: [3.0, 4.0, 5.0].into(),
+                z: [6.0, 7.0, 8.0].into(),
+            };
+            let expected = Mat3A::from_cols(
+                [0.0, 1.0, 2.0].into(),
+                [3.0, 4.0, 5.0].into(),
+                [6.0, 7.0, 8.0].into(),
+            );
+            assert_eq!(expected, m.into());
+            assert_eq!(m, expected.into());
+        }
+
+        #[test]
+        fn test_mat3a_row_major() {
+            use crate::Mat3A;
+            let m = mint::RowMatrix3 {
+                x: [0.0, 1.0, 2.0].into(),
+                y: [3.0, 4.0, 5.0].into(),
+                z: [6.0, 7.0, 8.0].into(),
+            };
+            let expected = Mat3A::from_cols(
+                [0.0, 3.0, 6.0].into(),
+                [1.0, 4.0, 7.0].into(),
+                [2.0, 5.0, 8.0].into(),
+            );
+            assert_eq!(expected, m.into());
+            assert_eq!(m, expected.into());
         }
     }
 
