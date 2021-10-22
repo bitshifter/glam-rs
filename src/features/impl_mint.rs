@@ -266,6 +266,10 @@ impl From<Vec3A> for mint::Vector3<f32> {
     }
 }
 
+impl IntoMint for Vec3A {
+    type MintType = mint::Vector3<f32>;
+}
+
 impl From<mint::RowMatrix3<f32>> for Mat3A {
     fn from(m: mint::RowMatrix3<f32>) -> Self {
         Self::from_cols(m.x.into(), m.y.into(), m.z.into()).transpose()
