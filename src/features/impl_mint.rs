@@ -303,6 +303,10 @@ impl From<Mat3A> for mint::ColumnMatrix3<f32> {
     }
 }
 
+impl IntoMint for Mat3A {
+    type MintType = mint::ColumnMatrix3<f32>;
+}
+
 impl_float_types!(f32, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4);
 impl_float_types!(f64, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4);
 impl_vec_types!(i32, IVec2, IVec3, IVec4);
