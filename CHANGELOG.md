@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## Added
 
+* Added implementations for new `IntoMint` trait from the `mint` crate.
 * Added `mint` conversions for `Mat3A`.
 * Added `as_vec3a` cast methods to vector types.
 
