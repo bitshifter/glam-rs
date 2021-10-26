@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+### Breaking changes
+
+* Minimum Supported Version of Rust bumped to 1.52.1 for an update to the `mint`
+  crate.
+
+## Added
+
+* Added `mint` conversions for `Mat3A`.
+* Added `as_vec3a` cast methods to vector types.
+
 ## [0.19.0] - 2021-10-05
 
 ### Breaking changes
