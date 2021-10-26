@@ -342,19 +342,19 @@ impl Vector3<f32> for __m128 {
 
     #[inline(always)]
     fn as_ref_xyz(&self) -> &XYZ<f32> {
-        unsafe { &*(self as *const Self as *const XYZ<f32>) }
+        unsafe { &*(self as *const Self).cast() }
     }
 
     #[inline(always)]
     fn as_mut_xyz(&mut self) -> &mut XYZ<f32> {
-        unsafe { &mut *(self as *mut Self as *mut XYZ<f32>) }
+        unsafe { &mut *(self as *mut Self).cast() }
     }
 
     #[inline(always)]
     fn into_xy(self) -> XY<f32> {
         let mut out: MaybeUninit<Align16<XY<f32>>> = MaybeUninit::uninit();
         unsafe {
-            _mm_store_ps(out.as_mut_ptr() as *mut f32, self);
+            _mm_store_ps(out.as_mut_ptr().cast(), self);
             out.assume_init().0
         }
     }
@@ -378,7 +378,7 @@ impl Vector3<f32> for __m128 {
     fn into_array(self) -> [f32; 3] {
         let mut out: MaybeUninit<Align16<[f32; 3]>> = MaybeUninit::uninit();
         unsafe {
-            _mm_store_ps(out.as_mut_ptr() as *mut f32, self);
+            _mm_store_ps(out.as_mut_ptr().cast(), self);
             out.assume_init().0
         }
     }
@@ -392,7 +392,7 @@ impl Vector3<f32> for __m128 {
     fn into_tuple(self) -> (f32, f32, f32) {
         let mut out: MaybeUninit<Align16<(f32, f32, f32)>> = MaybeUninit::uninit();
         unsafe {
-            _mm_store_ps(out.as_mut_ptr() as *mut f32, self);
+            _mm_store_ps(out.as_mut_ptr().cast(), self);
             out.assume_init().0
         }
     }
@@ -519,19 +519,19 @@ impl Vector4<f32> for __m128 {
 
     #[inline(always)]
     fn as_ref_xyzw(&self) -> &XYZW<f32> {
-        unsafe { &*(self as *const Self as *const XYZW<f32>) }
+        unsafe { &*(self as *const Self).cast() }
     }
 
     #[inline(always)]
     fn as_mut_xyzw(&mut self) -> &mut XYZW<f32> {
-        unsafe { &mut *(self as *mut Self as *mut XYZW<f32>) }
+        unsafe { &mut *(self as *mut Self).cast() }
     }
 
     #[inline(always)]
     fn into_xy(self) -> XY<f32> {
         let mut out: MaybeUninit<Align16<XY<f32>>> = MaybeUninit::uninit();
         unsafe {
-            _mm_store_ps(out.as_mut_ptr() as *mut f32, self);
+            _mm_store_ps(out.as_mut_ptr().cast(), self);
             out.assume_init().0
         }
     }
@@ -540,7 +540,7 @@ impl Vector4<f32> for __m128 {
     fn into_xyz(self) -> XYZ<f32> {
         let mut out: MaybeUninit<Align16<XYZ<f32>>> = MaybeUninit::uninit();
         unsafe {
-            _mm_store_ps(out.as_mut_ptr() as *mut f32, self);
+            _mm_store_ps(out.as_mut_ptr().cast(), self);
             out.assume_init().0
         }
     }
@@ -554,7 +554,7 @@ impl Vector4<f32> for __m128 {
     fn into_array(self) -> [f32; 4] {
         let mut out: MaybeUninit<Align16<[f32; 4]>> = MaybeUninit::uninit();
         unsafe {
-            _mm_store_ps(out.as_mut_ptr() as *mut f32, self);
+            _mm_store_ps(out.as_mut_ptr().cast(), self);
             out.assume_init().0
         }
     }
@@ -568,7 +568,7 @@ impl Vector4<f32> for __m128 {
     fn into_tuple(self) -> (f32, f32, f32, f32) {
         let mut out: MaybeUninit<Align16<(f32, f32, f32, f32)>> = MaybeUninit::uninit();
         unsafe {
-            _mm_store_ps(out.as_mut_ptr() as *mut f32, self);
+            _mm_store_ps(out.as_mut_ptr().cast(), self);
             out.assume_init().0
         }
     }
@@ -835,7 +835,7 @@ impl From<__m128> for XYZW<f32> {
     fn from(v: __m128) -> XYZW<f32> {
         let mut out: MaybeUninit<Align16<XYZW<f32>>> = MaybeUninit::uninit();
         unsafe {
-            _mm_store_ps(out.as_mut_ptr() as *mut f32, v);
+            _mm_store_ps(out.as_mut_ptr().cast(), v);
             out.assume_init().0
         }
     }
@@ -846,7 +846,7 @@ impl From<__m128> for XYZ<f32> {
     fn from(v: __m128) -> XYZ<f32> {
         let mut out: MaybeUninit<Align16<XYZ<f32>>> = MaybeUninit::uninit();
         unsafe {
-            _mm_store_ps(out.as_mut_ptr() as *mut f32, v);
+            _mm_store_ps(out.as_mut_ptr().cast(), v);
             out.assume_init().0
         }
     }
@@ -857,7 +857,7 @@ impl From<__m128> for XY<f32> {
     fn from(v: __m128) -> XY<f32> {
         let mut out: MaybeUninit<Align16<XY<f32>>> = MaybeUninit::uninit();
         unsafe {
-            _mm_store_ps(out.as_mut_ptr() as *mut f32, v);
+            _mm_store_ps(out.as_mut_ptr().cast(), v);
             out.assume_init().0
         }
     }

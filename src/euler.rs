@@ -51,7 +51,7 @@ pub enum EulerRot {
 }
 
 impl Default for EulerRot {
-    /// Default YXZi as yaw (y-axis), pitch (x-axis), roll (z-axis).
+    /// Default `YXZ` as yaw (y-axis), pitch (x-axis), roll (z-axis).
     fn default() -> Self {
         Self::YXZ
     }
@@ -78,18 +78,6 @@ pub trait EulerToQuaternion<T>: Copy {
     type Output;
     /// Create the rotation quaternion for the three angles of this euler rotation sequence.
     fn new_quat(self, u: T, v: T, w: T) -> Self::Output;
-}
-
-/// Helper, until std::f32::clamp is stable.
-fn clamp<T: PartialOrd>(value: T, min: T, max: T) -> T {
-    assert!(min <= max);
-    if value < min {
-        min
-    } else if value > max {
-        max
-    } else {
-        value
-    }
 }
 
 /// Adds a atan2 that handles the negative zero case.
@@ -154,7 +142,7 @@ macro_rules! impl_from_quat {
                 /// Clamp number to range [-1,1](-1,1) for asin() and acos(), else NaN is possible.
                 #[inline(always)]
                 fn arc_clamp<T: FloatEx>(val: T) -> T {
-                    clamp(val, T::NEG_ONE, T::ONE)
+                    val.max(T::NEG_ONE).min(T::ONE)
                 }
                 match self {
                     ZYX => arc_clamp(-Self::Output::TWO * (q.x * q.z - q.w * q.y)).asin(),
