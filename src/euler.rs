@@ -85,6 +85,7 @@ pub trait EulerToQuaternion<T>: Copy {
 pub trait Atan2Fixed<T = Self> {
     fn atan2_fixed(self, other: T) -> T;
 }
+
 impl Atan2Fixed for f32 {
     fn atan2_fixed(self, other: f32) -> f32 {
         self.atan2(if other == 0.0f32 { 0.0f32 } else { other })
@@ -142,8 +143,9 @@ macro_rules! impl_from_quat {
                 /// Clamp number to range [-1,1](-1,1) for asin() and acos(), else NaN is possible.
                 #[inline(always)]
                 fn arc_clamp<T: FloatEx>(val: T) -> T {
-                    val.max(T::NEG_ONE).min(T::ONE)
+                    NumEx::min(NumEx::max(val, T::NEG_ONE), T::ONE)
                 }
+
                 match self {
                     ZYX => arc_clamp(-Self::Output::TWO * (q.x * q.z - q.w * q.y)).asin(),
                     ZXY => arc_clamp(Self::Output::TWO * (q.y * q.z + q.w * q.x)).asin(),
