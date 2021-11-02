@@ -14,7 +14,7 @@ categories = ["game-engines", "no-std"]
 maintenance = { status = "actively-developed" }
 
 [features]
-default = ["std"]
+default = ["std", "cuda"]
 
 # enable support for the standard library
 std = []
@@ -32,6 +32,9 @@ transform-types = []
 
 # libm is required when building no_std
 libm = ["num-traits/libm"]
+
+# align types to match CUDA requirements
+cuda = []
 
 [dependencies]
 approx = { version = "0.5", optional = true, default-features = false }

@@ -181,8 +181,14 @@ macro_rules! impl_vec2_signed_traits {
 type XYF32 = XY<f32>;
 
 /// A 2-dimensional vector.
+#[cfg(not(feature = "cuda"))]
 #[derive(Clone, Copy)]
 #[repr(transparent)]
+pub struct Vec2(pub(crate) XYF32);
+
+#[cfg(feature = "cuda")]
+#[derive(Clone, Copy)]
+#[repr(C, align(8))]
 pub struct Vec2(pub(crate) XYF32);
 
 impl Vec2 {
@@ -195,9 +201,16 @@ impl_vec2_signed_traits!(f32, vec2, Vec2, Vec3, BVec2, XYF32);
 
 type XYF64 = XY<f64>;
 
+#[cfg(not(feature = "cuda"))]
 /// A 2-dimensional vector.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
+pub struct DVec2(pub(crate) XYF64);
+
+#[cfg(feature = "cuda")]
+/// A 2-dimensional vector.
+#[derive(Clone, Copy)]
+#[repr(C, align(16))]
 pub struct DVec2(pub(crate) XYF64);
 
 impl DVec2 {
@@ -210,9 +223,16 @@ impl_vec2_signed_traits!(f64, dvec2, DVec2, DVec3, BVec2, XYF64);
 
 type XYI32 = XY<i32>;
 
+#[cfg(not(feature = "cuda"))]
 /// A 2-dimensional vector.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
+pub struct IVec2(pub(crate) XYI32);
+
+#[cfg(feature = "cuda")]
+/// A 2-dimensional vector.
+#[derive(Clone, Copy)]
+#[repr(C, align(8))]
 pub struct IVec2(pub(crate) XYI32);
 
 impl IVec2 {
@@ -240,9 +260,16 @@ impl_vecn_bit_op_traits!(IVec2, XYI32);
 
 type XYU32 = XY<u32>;
 
+#[cfg(not(feature = "cuda"))]
 /// A 2-dimensional vector.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
+pub struct UVec2(pub(crate) XYU32);
+
+#[cfg(feature = "cuda")]
+/// A 2-dimensional vector.
+#[derive(Clone, Copy)]
+#[repr(C, align(8))]
 pub struct UVec2(pub(crate) XYU32);
 
 impl UVec2 {
@@ -268,6 +295,7 @@ impl_vecn_scalar_bit_op_traits!(UVec2, u32, XYU32);
 
 impl_vecn_bit_op_traits!(UVec2, XYU32);
 
+#[cfg(not(feature = "cuda"))]
 mod const_test_vec2 {
     const_assert_eq!(
         core::mem::align_of::<f32>(),
@@ -276,6 +304,7 @@ mod const_test_vec2 {
     const_assert_eq!(8, core::mem::size_of::<super::Vec2>());
 }
 
+#[cfg(not(feature = "cuda"))]
 mod const_test_dvec2 {
     const_assert_eq!(
         core::mem::align_of::<f64>(),
@@ -284,6 +313,7 @@ mod const_test_dvec2 {
     const_assert_eq!(16, core::mem::size_of::<super::DVec2>());
 }
 
+#[cfg(not(feature = "cuda"))]
 mod const_test_ivec2 {
     const_assert_eq!(
         core::mem::align_of::<i32>(),
@@ -292,10 +322,35 @@ mod const_test_ivec2 {
     const_assert_eq!(8, core::mem::size_of::<super::IVec2>());
 }
 
+#[cfg(not(feature = "cuda"))]
 mod const_test_uvec2 {
     const_assert_eq!(
         core::mem::align_of::<u32>(),
         core::mem::align_of::<super::UVec2>()
     );
+    const_assert_eq!(8, core::mem::size_of::<super::UVec2>());
+}
+
+#[cfg(feature = "cuda")]
+mod const_test_vec2 {
+    const_assert_eq!(8, core::mem::align_of::<super::Vec2>());
+    const_assert_eq!(8, core::mem::size_of::<super::Vec2>());
+}
+
+#[cfg(feature = "cuda")]
+mod const_test_dvec2 {
+    const_assert_eq!(16, core::mem::align_of::<super::DVec2>());
+    const_assert_eq!(16, core::mem::size_of::<super::DVec2>());
+}
+
+#[cfg(feature = "cuda")]
+mod const_test_ivec2 {
+    const_assert_eq!(8, core::mem::align_of::<super::IVec2>());
+    const_assert_eq!(8, core::mem::size_of::<super::IVec2>());
+}
+
+#[cfg(feature = "cuda")]
+mod const_test_uvec2 {
+    const_assert_eq!(8, core::mem::align_of::<super::UVec2>());
     const_assert_eq!(8, core::mem::size_of::<super::UVec2>());
 }
