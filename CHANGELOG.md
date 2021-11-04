@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+## Addeed
+
+* Added the `from_rotation_arc_2d()` method to `Quat` and `DQuat` which will
+  return a rotation between two 2D vectors around the z axis.
+
+## Changed
+
+* The `Quat` and `DQuat` methods `from_rotation_arc()` and
+  `from_rotation_arc_colinear()` are now available in `no_std`.
+* The `Vec3` and `DVec3` methods `any_orthogonal_vector()`,
+  `any_orthonormal_vector()` and `any_orthonormal_pair()` are now available in
+  `no_std`.
+
 ## [0.20.0] - 2021-11-01
 
 ### Breaking changes
