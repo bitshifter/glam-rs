@@ -2,7 +2,7 @@
 mod support;
 
 macro_rules! impl_quat_tests {
-    ($t:ident, $const_new:ident, $new:ident, $mat3:ident, $mat4:ident, $quat:ident, $vec3:ident, $vec4:ident) => {
+    ($t:ident, $const_new:ident, $new:ident, $mat3:ident, $mat4:ident, $quat:ident, $vec2:ident, $vec3:ident, $vec4:ident) => {
         use core::$t::INFINITY;
         use core::$t::NAN;
         use core::$t::NEG_INFINITY;
@@ -429,10 +429,37 @@ macro_rules! impl_quat_tests {
                 }
             }
 
+            for &from in &vec2_float_test_vectors!($vec2) {
+                let from = from.normalize();
+
+                {
+                    let q = $quat::from_rotation_arc_2d(from, from);
+                    assert!(q.is_near_identity(), "from: {}, q: {}", from, q);
+                }
+
+                {
+                    let to = -from;
+                    let q = $quat::from_rotation_arc_2d(from, to);
+                    assert!(q.is_normalized());
+                    assert!((q * from.extend(0.0) - to.extend(0.0)).length() < eps);
+                }
+
+                for &to in &vec2_float_test_vectors!($vec2) {
+                    let to = to.normalize();
+
+                    let q = $quat::from_rotation_arc_2d(from, to);
+                    assert!(q.is_normalized());
+                    assert!((q * from.extend(0.0) - to.extend(0.0)).length() < eps);
+                }
+            }
+
             should_glam_assert!({ $quat::from_rotation_arc($vec3::ZERO, $vec3::X) });
             should_glam_assert!({ $quat::from_rotation_arc($vec3::X, $vec3::ZERO) });
             should_glam_assert!({ $quat::from_rotation_arc_colinear($vec3::ZERO, $vec3::X) });
             should_glam_assert!({ $quat::from_rotation_arc_colinear($vec3::X, $vec3::ZERO) });
+
+            should_glam_assert!({ $quat::from_rotation_arc_2d($vec2::ZERO, $vec2::X) });
+            should_glam_assert!({ $quat::from_rotation_arc_2d($vec2::X, $vec2::ZERO) });
         });
     };
 }
@@ -440,7 +467,7 @@ macro_rules! impl_quat_tests {
 mod quat {
     use crate::support::{deg, rad};
     use core::ops::Neg;
-    use glam::{const_quat, quat, EulerRot, Mat3, Mat4, Quat, Vec3, Vec3A, Vec4};
+    use glam::{const_quat, quat, EulerRot, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -525,13 +552,13 @@ mod quat {
         );
     });
 
-    impl_quat_tests!(f32, const_quat, quat, Mat3, Mat4, Quat, Vec3, Vec4);
+    impl_quat_tests!(f32, const_quat, quat, Mat3, Mat4, Quat, Vec2, Vec3, Vec4);
 }
 
 mod dquat {
     use crate::support::{deg, rad};
     use core::ops::Neg;
-    use glam::{const_dquat, dquat, DMat3, DMat4, DQuat, DVec3, DVec4, EulerRot};
+    use glam::{const_dquat, dquat, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, EulerRot};
 
     glam_test!(test_align, {
         use std::mem;
@@ -539,5 +566,15 @@ mod dquat {
         assert_eq!(mem::align_of::<f64>(), mem::align_of::<DQuat>());
     });
 
-    impl_quat_tests!(f64, const_dquat, dquat, DMat3, DMat4, DQuat, DVec3, DVec4);
+    impl_quat_tests!(
+        f64,
+        const_dquat,
+        dquat,
+        DMat3,
+        DMat4,
+        DQuat,
+        DVec2,
+        DVec3,
+        DVec4
+    );
 }

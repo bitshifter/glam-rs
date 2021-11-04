@@ -175,3 +175,30 @@ macro_rules! vec3_float_test_vectors {
         ]
     };
 }
+
+#[macro_export]
+macro_rules! vec2_float_test_vectors {
+    ($vec2:ident) => {
+        [
+            $vec2::X,
+            $vec2::Y,
+            -$vec2::X,
+            -$vec2::Y,
+            $vec2::new(1.0, 1e-3),
+            $vec2::new(1.0, 1e-4),
+            $vec2::new(1.0, 1e-5),
+            $vec2::new(1.0, 1e-6),
+            $vec2::new(1.0, 1e-7),
+            $vec2::new(1.0, 1e-14),
+            $vec2::new(1.0, 1e-15),
+            $vec2::new(1.0, 1e-16),
+            $vec2::new(0.1, 0.2),
+            $vec2::new(0.2, 0.3),
+            $vec2::new(4.0, -5.0),
+            $vec2::new(-2.0, 0.5),
+            // Pathalogical cases from <https://graphics.pixar.com/library/OrthonormalB/paper.pdf>:
+            $vec2::new(0.00038527316, 0.00038460016),
+            $vec2::new(-0.00019813581, -0.00008946839),
+        ]
+    };
+}

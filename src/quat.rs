@@ -3,8 +3,8 @@ use crate::core::traits::{
     vector::{FloatVector4, MaskVector4, Vector, Vector4, Vector4Const},
 };
 use crate::euler::{EulerFromQuaternion, EulerRot, EulerToQuaternion};
-use crate::{DMat3, DMat4, DVec3, DVec4};
-use crate::{Mat3, Mat4, Vec3, Vec3A, Vec4};
+use crate::{DMat3, DMat4, DVec2, DVec3, DVec4};
+use crate::{Mat3, Mat4, Vec2, Vec3, Vec3A, Vec4};
 
 #[cfg(not(feature = "std"))]
 use num_traits::Float;
@@ -31,7 +31,7 @@ use core::iter::{Product, Sum};
 use core::ops::{Add, Deref, Div, Mul, MulAssign, Neg, Sub};
 
 macro_rules! impl_quat_methods {
-    ($t:ident, $quat:ident, $vec3:ident, $vec4:ident, $mat3:ident, $mat4:ident, $inner:ident) => {
+    ($t:ident, $quat:ident, $vec2:ident, $vec3:ident, $vec4:ident, $mat3:ident, $mat4:ident, $inner:ident) => {
         /// The identity quaternion. Corresponds to no rotation.
         pub const IDENTITY: Self = Self($inner::W);
 
@@ -221,6 +221,44 @@ macro_rules! impl_quat_methods {
                 Self::from_rotation_arc(from, -to)
             } else {
                 Self::from_rotation_arc(from, to)
+            }
+        }
+
+        /// Gets the minimal rotation for transforming `from` to `to`.  The resulting rotation is
+        /// around the z axis. Will rotate at most 180 degrees.
+        ///
+        /// The input vectors must be normalized (unit-length).
+        ///
+        /// `from_rotation_arc_2d(from, to) * from ≈ to`.
+        ///
+        /// For near-singular cases (from≈to and from≈-to) the current implementation
+        /// is only accurate to about 0.001 (for `f32`).
+        ///
+        /// # Panics
+        ///
+        /// Will panic if `from` or `to` are not normalized when `glam_assert` is enabled.
+        pub fn from_rotation_arc_2d(from: $vec2, to: $vec2) -> Self {
+            glam_assert!(from.is_normalized());
+            glam_assert!(to.is_normalized());
+
+            const ONE_MINUS_EPSILON: $t = 1.0 - 2.0 * core::$t::EPSILON;
+            let dot = from.dot(to);
+            if dot > ONE_MINUS_EPSILON {
+                // 0° singulary: from ≈ to
+                Self::IDENTITY
+            } else if dot < -ONE_MINUS_EPSILON {
+                // 180° singulary: from ≈ -to
+                const COS_FRAC_PI_2: $t = 0.0;
+                const SIN_FRAC_PI_2: $t = 1.0;
+                // rotation around z by PI radians
+                Self::from_xyzw(0.0, 0.0, SIN_FRAC_PI_2, COS_FRAC_PI_2)
+            } else {
+                // vector3 cross where z=0
+                let z = from.x * to.y - to.x * from.y;
+                let w = 1.0 + dot;
+                // calculate length with x=0 and y=0 to normalize
+                let len_rcp = 1.0 / (z * z + w * w).sqrt();
+                Self::from_xyzw(0.0, 0.0, z * len_rcp, w * len_rcp)
             }
         }
 
@@ -679,7 +717,7 @@ type InnerF32 = crate::XYZW<f32>;
 pub struct Quat(pub(crate) InnerF32);
 
 impl Quat {
-    impl_quat_methods!(f32, Quat, Vec3, Vec4, Mat3, Mat4, InnerF32);
+    impl_quat_methods!(f32, Quat, Vec2, Vec3, Vec4, Mat3, Mat4, InnerF32);
 
     /// Multiplies a quaternion and a 3D vector, returning the rotated vector.
     #[inline(always)]
@@ -725,7 +763,7 @@ type InnerF64 = crate::XYZW<f64>;
 pub struct DQuat(pub(crate) InnerF64);
 
 impl DQuat {
-    impl_quat_methods!(f64, DQuat, DVec3, DVec4, DMat3, DMat4, InnerF64);
+    impl_quat_methods!(f64, DQuat, DVec2, DVec3, DVec4, DMat3, DMat4, InnerF64);
 
     #[inline(always)]
     pub fn as_f32(self) -> Quat {
