@@ -384,7 +384,6 @@ macro_rules! impl_quat_tests {
             assert!(!$quat::from_xyzw(0.0, 0.0, 0.0, NAN).is_finite());
         });
 
-        #[cfg(feature = "std")]
         glam_test!(test_rotation_arc, {
             let eps = 2.0 * core::$t::EPSILON.sqrt();
 

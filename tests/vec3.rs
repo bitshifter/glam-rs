@@ -718,7 +718,6 @@ macro_rules! impl_vec3_float_tests {
             );
         });
 
-        #[cfg(feature = "std")]
         glam_test!(test_any_ortho, {
             let eps = 2.0 * core::$t::EPSILON;
 
