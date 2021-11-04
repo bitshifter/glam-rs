@@ -230,10 +230,7 @@ macro_rules! impl_vec3_float_methods {
         pub fn any_orthonormal_vector(&self) -> Self {
             glam_assert!(self.is_normalized());
             // From https://graphics.pixar.com/library/OrthonormalB/paper.pdf
-            #[cfg(feature = "std")]
             let sign = (1.0 as $t).copysign(self.z);
-            #[cfg(not(feature = "std"))]
-            let sign = if self.z >= 0.0 { 1.0 } else { 0.0 };
             let a = -1.0 / (sign + self.z);
             let b = self.x * self.y * a;
             Self::new(b, sign + self.y * self.y * a, -self.y)
@@ -249,10 +246,7 @@ macro_rules! impl_vec3_float_methods {
         pub fn any_orthonormal_pair(&self) -> (Self, Self) {
             glam_assert!(self.is_normalized());
             // From https://graphics.pixar.com/library/OrthonormalB/paper.pdf
-            #[cfg(feature = "std")]
             let sign = (1.0 as $t).copysign(self.z);
-            #[cfg(not(feature = "std"))]
-            let sign = if self.z >= 0.0 { 1.0 } else { 0.0 };
             let a = -1.0 / (sign + self.z);
             let b = self.x * self.y * a;
             (
