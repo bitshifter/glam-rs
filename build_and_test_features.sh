@@ -13,10 +13,13 @@ FEATURE_SETS=(
   "libm scalar-math approx bytemuck mint rand serde debug-glam-assert transform-types"
 )
 
+rustc --version
+
 for features in "${FEATURE_SETS[@]}"
 do
    :
    cargo build --tests --no-default-features --features="$features"
+   echo cargo test --no-default-features --features=\"$features\"
    cargo test --no-default-features --features="$features"
 done
 

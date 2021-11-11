@@ -51,7 +51,7 @@ pub enum EulerRot {
 }
 
 impl Default for EulerRot {
-    /// Default YXZi as yaw (y-axis), pitch (x-axis), roll (z-axis).
+    /// Default `YXZ` as yaw (y-axis), pitch (x-axis), roll (z-axis).
     fn default() -> Self {
         Self::YXZ
     }
@@ -80,23 +80,12 @@ pub trait EulerToQuaternion<T>: Copy {
     fn new_quat(self, u: T, v: T, w: T) -> Self::Output;
 }
 
-/// Helper, until std::f32::clamp is stable.
-fn clamp<T: PartialOrd>(value: T, min: T, max: T) -> T {
-    assert!(min <= max);
-    if value < min {
-        min
-    } else if value > max {
-        max
-    } else {
-        value
-    }
-}
-
 /// Adds a atan2 that handles the negative zero case.
 /// Basically forces positive zero in the x-argument for atan2.
 pub trait Atan2Fixed<T = Self> {
     fn atan2_fixed(self, other: T) -> T;
 }
+
 impl Atan2Fixed for f32 {
     fn atan2_fixed(self, other: f32) -> f32 {
         self.atan2(if other == 0.0f32 { 0.0f32 } else { other })
@@ -154,8 +143,9 @@ macro_rules! impl_from_quat {
                 /// Clamp number to range [-1,1](-1,1) for asin() and acos(), else NaN is possible.
                 #[inline(always)]
                 fn arc_clamp<T: FloatEx>(val: T) -> T {
-                    clamp(val, T::NEG_ONE, T::ONE)
+                    NumEx::min(NumEx::max(val, T::NEG_ONE), T::ONE)
                 }
+
                 match self {
                     ZYX => arc_clamp(-Self::Output::TWO * (q.x * q.z - q.w * q.y)).asin(),
                     ZXY => arc_clamp(Self::Output::TWO * (q.y * q.z + q.w * q.x)).asin(),

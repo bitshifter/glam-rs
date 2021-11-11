@@ -274,7 +274,7 @@ impl_f32_vec4!(vec4, Vec2, Vec3, Vec4, BVec4A, XYZWF32);
 impl From<Vec4> for Vec3A {
     /// Creates a `Vec3A` from the `x`, `y` and `z` elements of `self` discarding `w`.
     ///
-    /// On architectures where SIMD is supported such as SSE2 on x86_64 this conversion is a noop.
+    /// On architectures where SIMD is supported such as SSE2 on `x86_64` this conversion is a noop.
     #[inline(always)]
     fn from(v: Vec4) -> Self {
         #[allow(clippy::useless_conversion)]

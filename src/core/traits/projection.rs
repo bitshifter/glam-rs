@@ -6,8 +6,8 @@ pub trait ProjectionMatrix<T: FloatEx, V4: FloatVector4<T> + Quaternion<T>>:
     FloatMatrix4x4<T, V4>
 {
     /// Creates a right-handed perspective projection matrix with [-1,1] depth range.
-    /// This is the same as the OpenGL `gluPerspective` function.
-    /// See https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
+    /// This is the same as the OpenGL [`gluPerspective`] function.
+    /// [`gluPerspective`]: <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml>
     fn perspective_rh_gl(fov_y_radians: T, aspect_ratio: T, z_near: T, z_far: T) -> Self {
         let inv_length = T::ONE / (z_near - z_far);
         let f = T::ONE / (T::HALF * fov_y_radians).tan();
@@ -107,9 +107,9 @@ pub trait ProjectionMatrix<T: FloatEx, V4: FloatVector4<T> + Quaternion<T>>:
     }
 
     /// Creates a right-handed orthographic projection matrix with [-1,1] depth
-    /// range.  This is the same as the OpenGL `glOrtho` function in OpenGL.
+    /// range.  This is the same as the OpenGL [`glOrtho`] function in OpenGL.
     /// See
-    /// https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml
+    /// [`glOrtho`]: <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml>
     fn orthographic_rh_gl(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Self {
         let a = T::TWO / (right - left);
         let b = T::TWO / (top - bottom);

@@ -229,10 +229,10 @@ and benchmarks.
 
 ## Minimum Supported Rust Version (MSRV)
 
-The minimum supported Rust version is `1.51.0`.
+The minimum supported Rust version is `1.52.1`.
 
 */
-#![doc(html_root_url = "https://docs.rs/glam/0.19.0")]
+#![doc(html_root_url = "https://docs.rs/glam/0.20.0")]
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(target_arch = "spirv", feature(asm, register_attr, repr_simd))]
 #![deny(

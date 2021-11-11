@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+## Addeed
+
+* Added the `from_rotation_arc_2d()` method to `Quat` and `DQuat` which will
+  return a rotation between two 2D vectors around the z axis.
+
+## Changed
+
+* The `Quat` and `DQuat` methods `from_rotation_arc()` and
+  `from_rotation_arc_colinear()` are now available in `no_std`.
+* The `Vec3` and `DVec3` methods `any_orthogonal_vector()`,
+  `any_orthonormal_vector()` and `any_orthonormal_pair()` are now available in
+  `no_std`.
+
+## [0.20.0] - 2021-11-01
+
+### Breaking changes
+
+* Minimum Supported Version of Rust bumped to 1.52.1 for an update to the `mint`
+  crate.
+
+## Added
+
+* Added implementations for new `IntoMint` trait from the `mint` crate.
+* Added `mint` conversions for `Mat3A`.
+* Added `as_vec3a` cast methods to vector types.
+
 ## [0.19.0] - 2021-10-05
 
 ### Breaking changes
@@ -685,7 +713,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.19.0...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.20.0...HEAD
+[0.20.0]: https://github.com/bitshifter/glam-rs/compare/0.19.0...0.20.0
 [0.19.0]: https://github.com/bitshifter/glam-rs/compare/0.18.0...0.19.0
 [0.18.0]: https://github.com/bitshifter/glam-rs/compare/0.17.3...0.18.0
 [0.17.3]: https://github.com/bitshifter/glam-rs/compare/0.17.2...0.17.3

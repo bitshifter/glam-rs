@@ -1096,12 +1096,12 @@ impl Vector3<f32> for XYZF32A16 {
 
     #[inline(always)]
     fn as_ref_xyz(&self) -> &XYZ<f32> {
-        unsafe { &*(self as *const Self as *const XYZ<f32>) }
+        unsafe { &*(self as *const Self).cast() }
     }
 
     #[inline(always)]
     fn as_mut_xyz(&mut self) -> &mut XYZ<f32> {
-        unsafe { &mut *(self as *mut Self as *mut XYZ<f32>) }
+        unsafe { &mut *(self as *mut Self).cast() }
     }
 
     #[inline(always)]

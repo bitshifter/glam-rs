@@ -2,7 +2,7 @@
 
 [![Build Status]][github-ci] [![Coverage Status]][coveralls.io]
 [![Latest Version]][crates.io] [![docs]][docs.rs]
-[![Minimum Supported Rust Version]][Rust 1.51]
+[![Minimum Supported Rust Version]][Rust 1.52]
 
 A simple and fast 3D math library for games and graphics.
 
@@ -66,7 +66,7 @@ defined in `std`. For example:
 
 ```toml
 [dependencies]
-glam = { version = "0.19.0", default-features = false, features = ["libm"] }
+glam = { version = "0.20.0", default-features = false, features = ["libm"] }
 ```
 
 To support both `std` and `no_std` builds in project, you can use the following
@@ -80,7 +80,7 @@ std = ["glam/std"]
 libm = ["glam/libm"]
 
 [dependencies]
-glam = { version = "0.19.0", default-features = false }
+glam = { version = "0.20.0", default-features = false }
 ```
 
 ### Optional features
@@ -120,7 +120,7 @@ glam = { version = "0.19.0", default-features = false }
 
 ### Minimum Supported Rust Version (MSRV)
 
-The minimum supported version of Rust for `glam` is `1.51.0`.
+The minimum supported version of Rust for `glam` is `1.52.1`.
 
 `wasm32` SIMD intrinsics require Rust `1.54.0`.
 
@@ -240,5 +240,5 @@ See [ATTRIBUTION.md] for details.
 [crates.io]: https://crates.io/crates/glam/
 [docs]: https://docs.rs/glam/badge.svg
 [docs.rs]: https://docs.rs/glam/
-[Minimum Supported Rust Version]: https://img.shields.io/badge/Rust-1.51.0-blue?color=fc8d62&logo=rust
-[Rust 1.51]: https://github.com/rust-lang/rust/blob/master/RELEASES.md#version-1510-2021-03-25
+[Minimum Supported Rust Version]: https://img.shields.io/badge/Rust-1.52.1-blue?color=fc8d62&logo=rust
+[Rust 1.52]: https://github.com/rust-lang/rust/blob/master/RELEASES.md#version-1521-2021-05-10

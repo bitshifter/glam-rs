@@ -925,6 +925,12 @@ macro_rules! impl_as_vec3 {
         pub fn as_vec3(&self) -> Vec3 {
             Vec3::new(self.x as f32, self.y as f32, self.z as f32)
         }
+
+        /// Casts all elements of `self` to `f32`.
+        #[inline(always)]
+        pub fn as_vec3a(&self) -> Vec3A {
+            Vec3A::new(self.x as f32, self.y as f32, self.z as f32)
+        }
     };
 }
 

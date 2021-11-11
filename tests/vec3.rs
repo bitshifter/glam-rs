@@ -718,7 +718,6 @@ macro_rules! impl_vec3_float_tests {
             );
         });
 
-        #[cfg(feature = "std")]
         glam_test!(test_any_ortho, {
             let eps = 2.0 * core::$t::EPSILON;
 
@@ -935,6 +934,10 @@ mod vec3 {
             Vec3::new(-1.0, -2.0, -3.0),
             DVec3::new(-1.0, -2.0, -3.0).as_vec3()
         );
+        assert_eq!(
+            Vec3A::new(-1.0, -2.0, -3.0),
+            DVec3::new(-1.0, -2.0, -3.0).as_vec3a()
+        );
 
         assert_eq!(
             DVec3::new(-1.0, -2.0, -3.0),
@@ -945,10 +948,15 @@ mod vec3 {
             Vec3::new(-1.0, -2.0, -3.0),
             IVec3::new(-1, -2, -3).as_vec3()
         );
+        assert_eq!(
+            Vec3A::new(-1.0, -2.0, -3.0),
+            IVec3::new(-1, -2, -3).as_vec3a()
+        );
 
         assert_eq!(DVec3::new(1.0, 2.0, 3.0), UVec3::new(1, 2, 3).as_dvec3());
         assert_eq!(IVec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_ivec3());
         assert_eq!(Vec3::new(1.0, 2.0, 3.0), UVec3::new(1, 2, 3).as_vec3());
+        assert_eq!(Vec3A::new(1.0, 2.0, 3.0), UVec3::new(1, 2, 3).as_vec3a());
     });
 
     impl_vec3_float_tests!(f32, const_vec3, vec3, Vec3, BVec3);

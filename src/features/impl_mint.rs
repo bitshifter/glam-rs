@@ -1,3 +1,5 @@
+use mint::IntoMint;
+
 use crate::{
     DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, IVec2, IVec3, IVec4, Mat2, Mat3, Mat3A, Mat4,
     Quat, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
@@ -27,6 +29,10 @@ macro_rules! impl_vec_types {
             fn from(v: $vec2) -> Self {
                 Self { x: v.x, y: v.y }
             }
+        }
+
+        impl IntoMint for $vec2 {
+            type MintType = mint::Vector2<$t>;
         }
 
         impl From<mint::Point3<$t>> for $vec3 {
@@ -61,6 +67,10 @@ macro_rules! impl_vec_types {
             }
         }
 
+        impl IntoMint for $vec3 {
+            type MintType = mint::Vector3<$t>;
+        }
+
         impl From<mint::Vector4<$t>> for $vec4 {
             fn from(v: mint::Vector4<$t>) -> Self {
                 Self::new(v.x, v.y, v.z, v.w)
@@ -76,6 +86,10 @@ macro_rules! impl_vec_types {
                     w: v.w,
                 }
             }
+        }
+
+        impl IntoMint for $vec4 {
+            type MintType = mint::Vector4<$t>;
         }
     };
 }
@@ -101,6 +115,10 @@ macro_rules! impl_float_types {
                     },
                 }
             }
+        }
+
+        impl IntoMint for $quat {
+            type MintType = mint::Quaternion<$t>;
         }
 
         impl From<mint::RowMatrix2<$t>> for $mat2 {
@@ -134,6 +152,10 @@ macro_rules! impl_float_types {
             }
         }
 
+        impl IntoMint for $mat2 {
+            type MintType = mint::ColumnMatrix2<$t>;
+        }
+
         impl From<mint::RowMatrix3<$t>> for $mat3 {
             fn from(m: mint::RowMatrix3<$t>) -> Self {
                 Self::from_cols(m.x.into(), m.y.into(), m.z.into()).transpose()
@@ -165,6 +187,10 @@ macro_rules! impl_float_types {
                     z: m.z_axis.into(),
                 }
             }
+        }
+
+        impl IntoMint for $mat3 {
+            type MintType = mint::ColumnMatrix3<$t>;
         }
 
         impl From<mint::RowMatrix4<$t>> for $mat4 {
@@ -201,6 +227,10 @@ macro_rules! impl_float_types {
                 }
             }
         }
+
+        impl IntoMint for $mat4 {
+            type MintType = mint::ColumnMatrix4<$t>;
+        }
     };
 }
 
@@ -236,6 +266,10 @@ impl From<Vec3A> for mint::Vector3<f32> {
     }
 }
 
+impl IntoMint for Vec3A {
+    type MintType = mint::Vector3<f32>;
+}
+
 impl From<mint::RowMatrix3<f32>> for Mat3A {
     fn from(m: mint::RowMatrix3<f32>) -> Self {
         Self::from_cols(m.x.into(), m.y.into(), m.z.into()).transpose()
@@ -267,6 +301,10 @@ impl From<Mat3A> for mint::ColumnMatrix3<f32> {
             z: m.z_axis.into(),
         }
     }
+}
+
+impl IntoMint for Mat3A {
+    type MintType = mint::ColumnMatrix3<f32>;
 }
 
 impl_float_types!(f32, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4);

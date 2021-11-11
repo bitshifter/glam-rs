@@ -39,12 +39,12 @@ impl Matrix2x2<f32, XY<f32>> for __m128 {
 
     #[inline(always)]
     fn x_axis(&self) -> &XY<f32> {
-        unsafe { &(*(self as *const Self as *const Columns2<XY<f32>>)).x_axis }
+        unsafe { &(*(self as *const Self).cast::<Columns2<XY<f32>>>()).x_axis }
     }
 
     #[inline(always)]
     fn y_axis(&self) -> &XY<f32> {
-        unsafe { &(*(self as *const Self as *const Columns2<XY<f32>>)).y_axis }
+        unsafe { &(*(self as *const Self).cast::<Columns2<XY<f32>>>()).y_axis }
     }
 
     #[inline]
@@ -73,7 +73,7 @@ impl Matrix2x2<f32, XY<f32>> for __m128 {
             let cydyaxbx = _mm_shuffle_ps(axbxcydy, axbxcydy, 0b01_00_11_10);
             let result = _mm_add_ps(axbxcydy, cydyaxbx);
             let mut out: MaybeUninit<Align16<XY<f32>>> = MaybeUninit::uninit();
-            _mm_store_ps(out.as_mut_ptr() as *mut f32, result);
+            _mm_store_ps(out.as_mut_ptr().cast(), result);
             out.assume_init().0
         }
     }
