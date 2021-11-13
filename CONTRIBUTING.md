@@ -51,8 +51,8 @@ PR.
 
 Also run `cargo fmt` and `cargo clippy` on any new code.
 
-[start a discussion]: https://github.com/bitshifter/glam-rs/discussions
-[open an issue]: https://GitHub.com/bitshifter/glam-rs/issues
-[ask a question]: https://GitHub.com/bitshifter/glam-rs/discussions/categories/q-a
-[suggest a new feature]: https://GitHub.com/bitshifter/glam-rs/discussions/categories/ideas
+[start a discussion]: https://github.com/bitshifter/glam-rs/discussions/new
+[open an issue]: https://GitHub.com/bitshifter/glam-rs/issues/new
+[ask a question]: https://github.com/bitshifter/glam-rs/discussions/new?category=q-a
+[suggest a new feature]: https://github.com/bitshifter/glam-rs/discussions/new?category=ideas
 [ARCHITECTURE]: ARCHITECTURE.md
