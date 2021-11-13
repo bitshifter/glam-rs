@@ -506,7 +506,7 @@ mod const_test_affine2 {
     const_assert_eq!(32, core::mem::size_of::<super::Affine2>());
 }
 
-/*
+#[cfg(not(feature = "cuda"))]
 mod const_test_daffine2 {
     const_assert_eq!(
         core::mem::align_of::<f64>(),
@@ -514,4 +514,9 @@ mod const_test_daffine2 {
     );
     const_assert_eq!(48, core::mem::size_of::<super::DAffine2>());
 }
-*/
+
+#[cfg(feature = "cuda")]
+mod const_test_daffine2 {
+    const_assert_eq!(16, core::mem::align_of::<super::DAffine2>());
+    const_assert_eq!(48, core::mem::size_of::<super::DAffine2>());
+}
