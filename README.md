@@ -212,8 +212,9 @@ If you are interested in contributing or have a request or suggestion
 [start a discussion] on GitHub. See [CONTRIBUTING.md] for more information for
 contributors.
 
-The [Game Development in Rust Discord] and [Bevy Engine Discord] servers can are
-also good places to ask for help with `glam`.
+The [Game Development in Rust Discord] and [Bevy Engine Discord] servers are
+not official support channels but can be good places to ask for help with
+`glam`.
 
 [start a discussion]: https://github.com/bitshifter/glam-rs/discussions
 [CONTRIBUTING.md]: CONTRIBUTING.md

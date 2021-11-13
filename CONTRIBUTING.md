@@ -1,42 +1,58 @@
 # Contributing to glam
 
-Thanks for contributing to `glam`! These guidelines will try to make the process
-painless and efficient.
+Thanks for contributing to `glam`! These guidelines will try to make the
+process painless and efficient.
 
-The short guide to contributing is [open a github issue]. Pull requests are
-welcome for bug fixes, documentation improvements and optimizations. For
-anything else it would be best to discuss it first.
+The short guide to contributing is [start a discussion] on GitHub.  Pull
+requests are welcome for bug fixes, documentation improvements and
+optimizations. For anything else it would be best to discuss it first.
 
 ## Questions
 
-If you have a question about the usage of this library please
-[open a github issue]. That's the easiest way to get support right now.
+If you have a question about the usage of this library please [ask a question]
+with GitHub Discussions. That's the easiest way to get support right now.
 
 ## Bugs
 
-If you find a bug please [open a github issue] or submit a pull request. A unit
-test for any bug that slipped through existing coverage would also be greatly
-appreciated.
+If you find a bug please [open an issue] on GitHub or submit a pull request. A
+unit test for any bug that slipped through existing coverage would also be
+greatly appreciated.
 
 ## New functions and methods
 
-If `glam` is missing functionality on existing types, [open a github issue]
-describing what feature you would like added and ideally what your use case is
-for it just so I have a better understanding of the feature. I'd like to keep
-`glam` reasonably light functionality wise initially but commonly used
-functionality that is missing is very welcome. If you do submit a pull request
-please ensure any new functionality also has a test.
+If `glam` is missing functionality on existing types, [suggest a new feature]
+with GitHub Discussions describing what feature you would like added and
+ideally what your use case is for it just so I have a better understanding of
+the feature. I'd like to keep `glam` reasonably light functionality wise
+initially but commonly used functionality that is missing is very welcome. If
+you do submit a pull request please ensure any new functionality also has a
+test.
 
 ## Optimizations
 
-If you feel some functionality could be optimized please [open a github issue]
-or submit a pull request. Any optimization pull request should include a
+If you feel some functionality could be optimized please [open an issue] on
+GitHub or submit a pull request. Any optimization pull request should include a
 benchmark if there isn't one already, so I can confirm the performance
 improvement.
 
 ## Documentation
 
 If you feel any documentation could be added or improved please
-[open a github issue] or submit a pull request.
+[open a GitHub issue] or submit a pull request.
 
-[open a github issue]: https://github.com/bitshifter/glam-rs/issues
+## Code contributions
+
+Depending on the complexity of the change, it might be worth reading about
+`glam`'s [ARCHITECTURE].
+
+You can run some of `glam`'s test suite locally by running the
+`build_and_test_features.sh` script. It's worth running that before creating a
+PR.
+
+Also run `cargo fmt` and `cargo clippy` on any new code.
+
+[start a discussion]: https://github.com/bitshifter/glam-rs/discussions
+[open an issue]: https://GitHub.com/bitshifter/glam-rs/issues
+[ask a question]: https://GitHub.com/bitshifter/glam-rs/discussions/categories/q-a
+[suggest a new feature]: https://GitHub.com/bitshifter/glam-rs/discussions/categories/ideas
+[ARCHITECTURE]: ARCHITECTURE.md
