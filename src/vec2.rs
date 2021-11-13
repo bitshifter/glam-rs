@@ -181,14 +181,9 @@ macro_rules! impl_vec2_signed_traits {
 type XYF32 = XY<f32>;
 
 /// A 2-dimensional vector.
-#[cfg(not(feature = "cuda"))]
 #[derive(Clone, Copy)]
-#[repr(transparent)]
-pub struct Vec2(pub(crate) XYF32);
-
-#[cfg(feature = "cuda")]
-#[derive(Clone, Copy)]
-#[repr(C, align(8))]
+#[cfg_attr(feature = "cuda", repr(C, align(8)))]
+#[cfg_attr(not(feature = "cuda"), repr(transparent))]
 pub struct Vec2(pub(crate) XYF32);
 
 impl Vec2 {
@@ -201,16 +196,10 @@ impl_vec2_signed_traits!(f32, vec2, Vec2, Vec3, BVec2, XYF32);
 
 type XYF64 = XY<f64>;
 
-#[cfg(not(feature = "cuda"))]
 /// A 2-dimensional vector.
 #[derive(Clone, Copy)]
-#[repr(transparent)]
-pub struct DVec2(pub(crate) XYF64);
-
-#[cfg(feature = "cuda")]
-/// A 2-dimensional vector.
-#[derive(Clone, Copy)]
-#[repr(C, align(16))]
+#[cfg_attr(feature = "cuda", repr(C, align(16)))]
+#[cfg_attr(not(feature = "cuda"), repr(transparent))]
 pub struct DVec2(pub(crate) XYF64);
 
 impl DVec2 {
@@ -223,16 +212,10 @@ impl_vec2_signed_traits!(f64, dvec2, DVec2, DVec3, BVec2, XYF64);
 
 type XYI32 = XY<i32>;
 
-#[cfg(not(feature = "cuda"))]
 /// A 2-dimensional vector.
 #[derive(Clone, Copy)]
-#[repr(transparent)]
-pub struct IVec2(pub(crate) XYI32);
-
-#[cfg(feature = "cuda")]
-/// A 2-dimensional vector.
-#[derive(Clone, Copy)]
-#[repr(C, align(8))]
+#[cfg_attr(feature = "cuda", repr(C, align(8)))]
+#[cfg_attr(not(feature = "cuda"), repr(transparent))]
 pub struct IVec2(pub(crate) XYI32);
 
 impl IVec2 {
@@ -260,16 +243,10 @@ impl_vecn_bit_op_traits!(IVec2, XYI32);
 
 type XYU32 = XY<u32>;
 
-#[cfg(not(feature = "cuda"))]
 /// A 2-dimensional vector.
 #[derive(Clone, Copy)]
-#[repr(transparent)]
-pub struct UVec2(pub(crate) XYU32);
-
-#[cfg(feature = "cuda")]
-/// A 2-dimensional vector.
-#[derive(Clone, Copy)]
-#[repr(C, align(8))]
+#[cfg_attr(feature = "cuda", repr(C, align(8)))]
+#[cfg_attr(not(feature = "cuda"), repr(transparent))]
 pub struct UVec2(pub(crate) XYU32);
 
 impl UVec2 {
