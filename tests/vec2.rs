@@ -798,7 +798,10 @@ mod vec2 {
     glam_test!(test_align, {
         use core::mem;
         assert_eq!(8, mem::size_of::<Vec2>());
+        #[cfg(not(feature = "cuda"))]
         assert_eq!(4, mem::align_of::<Vec2>());
+        #[cfg(feature = "cuda")]
+        assert_eq!(8, mem::align_of::<Vec2>());
         assert_eq!(2, mem::size_of::<BVec2>());
         assert_eq!(1, mem::align_of::<BVec2>());
     });
@@ -831,7 +834,10 @@ mod dvec2 {
     glam_test!(test_align, {
         use core::mem;
         assert_eq!(16, mem::size_of::<DVec2>());
+        #[cfg(not(feature = "cuda"))]
         assert_eq!(mem::align_of::<f64>(), mem::align_of::<DVec2>());
+        #[cfg(feature = "cuda")]
+        assert_eq!(16, mem::align_of::<DVec2>());
         assert_eq!(2, mem::size_of::<BVec2>());
         assert_eq!(1, mem::align_of::<BVec2>());
     });
@@ -845,7 +851,10 @@ mod ivec2 {
     glam_test!(test_align, {
         use core::mem;
         assert_eq!(8, mem::size_of::<IVec2>());
+        #[cfg(not(feature = "cuda"))]
         assert_eq!(4, mem::align_of::<IVec2>());
+        #[cfg(feature = "cuda")]
+        assert_eq!(8, mem::align_of::<IVec2>());
         assert_eq!(2, mem::size_of::<BVec2>());
         assert_eq!(1, mem::align_of::<BVec2>());
     });
@@ -866,7 +875,10 @@ mod uvec2 {
     glam_test!(test_align, {
         use core::mem;
         assert_eq!(8, mem::size_of::<UVec2>());
+        #[cfg(not(feature = "cuda"))]
         assert_eq!(4, mem::align_of::<UVec2>());
+        #[cfg(feature = "cuda")]
+        assert_eq!(8, mem::align_of::<UVec2>());
         assert_eq!(2, mem::size_of::<BVec2>());
         assert_eq!(1, mem::align_of::<BVec2>());
     });
