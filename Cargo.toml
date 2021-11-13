@@ -14,7 +14,7 @@ categories = ["game-engines", "no-std"]
 maintenance = { status = "actively-developed" }
 
 [features]
-default = ["std", "cuda"]
+default = ["std"]
 
 # enable support for the standard library
 std = []
