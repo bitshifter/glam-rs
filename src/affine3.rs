@@ -12,6 +12,7 @@ macro_rules! define_affine3_struct {
         /// The type is composed of a 3x3 matrix containing a linear transformation (e.g. scale,
         /// rotation, shear, reflection) and a 3D vector translation.
         #[derive(Copy, Clone)]
+        #[repr(C)]
         pub struct $affine3 {
             pub matrix3: $matrix,
             pub translation: $column,

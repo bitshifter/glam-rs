@@ -9,6 +9,7 @@ macro_rules! define_affine2_struct {
     ($affine2:ident, $matrix:ident, $column:ident) => {
         /// A 2D affine transform, which can represent translation, rotation, scaling and shear.
         #[derive(Copy, Clone)]
+        #[repr(C)]
         pub struct $affine2 {
             pub matrix2: $matrix,
             pub translation: $column,
