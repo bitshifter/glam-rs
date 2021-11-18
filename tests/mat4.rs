@@ -663,7 +663,7 @@ mod mat4 {
     glam_test!(test_align, {
         use std::mem;
         assert_eq!(64, mem::size_of::<Mat4>());
-        if cfg!(feature = "scalar-math") {
+        if cfg!(all(feature = "scalar-math", not(feature = "cuda"))) {
             assert_eq!(4, mem::align_of::<Mat4>());
         } else {
             assert_eq!(16, mem::align_of::<Mat4>());

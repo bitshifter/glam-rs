@@ -330,7 +330,13 @@ type InnerF32 = crate::core::storage::Columns2<XY<f32>>;
     not(any(feature = "scalar-math", target_arch = "spriv")),
     repr(align(16))
 )]
-#[cfg_attr(any(feature = "scalar-math", target_arch = "spriv"), repr(transparent))]
+#[cfg_attr(
+    all(
+        not(feature = "cuda"),
+        any(feature = "scalar-math", target_arch = "spriv")
+    ),
+    repr(transparent)
+)]
 pub struct Mat2(pub(crate) InnerF32);
 
 impl Mat2 {

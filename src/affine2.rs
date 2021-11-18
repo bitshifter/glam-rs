@@ -492,7 +492,10 @@ impl_affine2_traits!(
     DerefTargetF64
 );
 
-#[cfg(any(feature = "scalar-math", target_arch = "spriv"))]
+#[cfg(all(
+    not(feature = "cuda"),
+    any(feature = "scalar-math", target_arch = "spriv")
+))]
 mod const_test_affine2 {
     const_assert_eq!(
         core::mem::align_of::<f32>(),

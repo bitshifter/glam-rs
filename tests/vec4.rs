@@ -972,7 +972,7 @@ mod vec4 {
     glam_test!(test_align, {
         use std::mem;
         assert_eq!(16, mem::size_of::<Vec4>());
-        if cfg!(not(feature = "scalar-math")) {
+        if cfg!(any(not(feature = "scalar-math"), feature = "cuda")) {
             assert_eq!(16, mem::align_of::<Vec4>());
         } else {
             assert_eq!(4, mem::align_of::<Vec4>());
