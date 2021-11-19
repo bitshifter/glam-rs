@@ -972,7 +972,7 @@ mod vec4 {
     glam_test!(test_align, {
         use std::mem;
         assert_eq!(16, mem::size_of::<Vec4>());
-        if cfg!(not(feature = "scalar-math")) {
+        if cfg!(any(not(feature = "scalar-math"), feature = "cuda")) {
             assert_eq!(16, mem::align_of::<Vec4>());
         } else {
             assert_eq!(4, mem::align_of::<Vec4>());
@@ -1092,7 +1092,10 @@ mod dvec4 {
     glam_test!(test_align, {
         use std::mem;
         assert_eq!(32, mem::size_of::<DVec4>());
+        #[cfg(not(feature = "cuda"))]
         assert_eq!(mem::align_of::<f64>(), mem::align_of::<DVec4>());
+        #[cfg(feature = "cuda")]
+        assert_eq!(16, mem::align_of::<DVec4>());
         assert_eq!(4, mem::size_of::<BVec4>());
         assert_eq!(1, mem::align_of::<BVec4>());
     });
@@ -1106,7 +1109,10 @@ mod ivec4 {
     glam_test!(test_align, {
         use std::mem;
         assert_eq!(16, mem::size_of::<IVec4>());
+        #[cfg(not(feature = "cuda"))]
         assert_eq!(4, mem::align_of::<IVec4>());
+        #[cfg(feature = "cuda")]
+        assert_eq!(16, mem::align_of::<IVec4>());
         assert_eq!(4, mem::size_of::<BVec4>());
         assert_eq!(1, mem::align_of::<BVec4>());
     });
@@ -1127,7 +1133,10 @@ mod uvec4 {
     glam_test!(test_align, {
         use std::mem;
         assert_eq!(16, mem::size_of::<UVec4>());
+        #[cfg(not(feature = "cuda"))]
         assert_eq!(4, mem::align_of::<UVec4>());
+        #[cfg(feature = "cuda")]
+        assert_eq!(16, mem::align_of::<UVec4>());
         assert_eq!(4, mem::size_of::<BVec4>());
         assert_eq!(1, mem::align_of::<BVec4>());
     });

@@ -330,7 +330,13 @@ type InnerF32 = crate::core::storage::Columns2<XY<f32>>;
     not(any(feature = "scalar-math", target_arch = "spriv")),
     repr(align(16))
 )]
-#[cfg_attr(any(feature = "scalar-math", target_arch = "spriv"), repr(transparent))]
+#[cfg_attr(
+    all(
+        not(feature = "cuda"),
+        any(feature = "scalar-math", target_arch = "spriv")
+    ),
+    repr(transparent)
+)]
 pub struct Mat2(pub(crate) InnerF32);
 
 impl Mat2 {
@@ -353,7 +359,8 @@ type InnerF64 = crate::core::storage::Columns2<XY<f64>>;
 
 /// A 2x2 column major matrix.
 #[derive(Clone, Copy)]
-#[repr(transparent)]
+#[cfg_attr(feature = "cuda", repr(align(16)))]
+#[cfg_attr(not(feature = "cuda"), repr(transparent))]
 pub struct DMat2(pub(crate) InnerF64);
 
 impl DMat2 {
@@ -387,9 +394,19 @@ mod const_test_mat2 {
     const_assert_eq!(16, core::mem::size_of::<super::Mat2>());
 }
 
+#[cfg(not(feature = "cuda"))]
 mod const_test_dmat2 {
     const_assert_eq!(
         core::mem::align_of::<f64>(),
+        core::mem::align_of::<super::DMat2>()
+    );
+    const_assert_eq!(32, core::mem::size_of::<super::DMat2>());
+}
+
+#[cfg(feature = "cuda")]
+mod const_test_dmat2 {
+    const_assert_eq!(
+        core::mem::align_of::<super::DVec2>(),
         core::mem::align_of::<super::DMat2>()
     );
     const_assert_eq!(32, core::mem::size_of::<super::DMat2>());

@@ -775,7 +775,14 @@ type InnerF32 = Columns4<XYZW<f32>>;
     not(any(feature = "scalar-math", target_arch = "spriv")),
     repr(align(16))
 )]
-#[cfg_attr(any(feature = "scalar-math", target_arch = "spriv"), repr(transparent))]
+#[cfg_attr(feature = "cuda", repr(align(16)))]
+#[cfg_attr(
+    all(
+        not(feature = "cuda"),
+        any(feature = "scalar-math", target_arch = "spriv")
+    ),
+    repr(transparent)
+)]
 pub struct Mat4(pub(crate) InnerF32);
 // define_mat4_struct!(Mat4, InnerF32);
 
@@ -875,7 +882,10 @@ impl DMat4 {
 }
 impl_mat4_traits!(f64, dmat4, DMat4, DVec4);
 
-#[cfg(any(feature = "scalar-math", target_arch = "spriv"))]
+#[cfg(all(
+    not(feature = "cuda"),
+    any(feature = "scalar-math", target_arch = "spriv")
+))]
 mod const_test_mat4 {
     const_assert_eq!(
         core::mem::align_of::<f32>(),
@@ -884,7 +894,13 @@ mod const_test_mat4 {
     const_assert_eq!(64, core::mem::size_of::<super::Mat4>());
 }
 
-#[cfg(not(any(feature = "scalar-math", target_arch = "spriv")))]
+#[cfg(feature = "cuda")]
+mod const_test_mat4 {
+    const_assert_eq!(16, core::mem::align_of::<super::Mat4>());
+    const_assert_eq!(64, core::mem::size_of::<super::Mat4>());
+}
+
+#[cfg(not(any(feature = "scalar-math", target_arch = "spriv", feature = "cuda")))]
 mod const_test_mat4 {
     const_assert_eq!(16, core::mem::align_of::<super::Mat4>());
     const_assert_eq!(64, core::mem::size_of::<super::Mat4>());

@@ -169,6 +169,9 @@ mod affine2 {
         if cfg!(not(feature = "scalar-math")) {
             assert_eq!(32, mem::size_of::<Affine2>());
             assert_eq!(16, mem::align_of::<Affine2>());
+        } else if cfg!(feature = "cuda") {
+            assert_eq!(24, mem::size_of::<Affine2>());
+            assert_eq!(8, mem::align_of::<Affine2>());
         } else {
             assert_eq!(24, mem::size_of::<Affine2>());
             assert_eq!(4, mem::align_of::<Affine2>());
@@ -196,10 +199,18 @@ mod daffine2 {
         }
     }
 
+    #[cfg(not(feature = "cuda"))]
     glam_test!(test_align, {
         use std::mem;
         assert_eq!(48, mem::size_of::<DAffine2>());
         assert_eq!(mem::align_of::<f64>(), mem::align_of::<DAffine2>());
+    });
+
+    #[cfg(feature = "cuda")]
+    glam_test!(test_align, {
+        use std::mem;
+        assert_eq!(48, mem::size_of::<DAffine2>());
+        assert_eq!(16, mem::align_of::<DAffine2>());
     });
 
     impl_affine2_tests!(f64, DAffine2, DVec2);
