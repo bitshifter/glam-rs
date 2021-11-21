@@ -8,6 +8,8 @@ FEATURE_SETS=(
   "std"
   "std approx bytemuck mint rand serde debug-glam-assert transform-types"
   "std scalar-math approx bytemuck mint rand serde debug-glam-assert transform-types"
+  "std cuda"
+  "std scalar-math cuda"
   # no_std
   "libm"
   "libm scalar-math approx bytemuck mint rand serde debug-glam-assert transform-types"
