@@ -662,12 +662,8 @@ mod mat4 {
 
     glam_test!(test_align, {
         use std::mem;
+        assert_eq!(mem::align_of::<Vec4>(), mem::align_of::<Mat4>());
         assert_eq!(64, mem::size_of::<Mat4>());
-        if cfg!(all(feature = "scalar-math", not(feature = "cuda"))) {
-            assert_eq!(4, mem::align_of::<Mat4>());
-        } else {
-            assert_eq!(16, mem::align_of::<Mat4>());
-        }
     });
 
     glam_test!(test_as, {
@@ -713,8 +709,8 @@ mod dmat4 {
 
     glam_test!(test_align, {
         use std::mem;
+        assert_eq!(mem::align_of::<DVec4>(), mem::align_of::<DMat4>());
         assert_eq!(128, mem::size_of::<DMat4>());
-        assert_eq!(mem::align_of::<f64>(), mem::align_of::<DMat4>());
     });
 
     impl_mat4_tests!(

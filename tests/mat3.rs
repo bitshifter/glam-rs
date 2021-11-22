@@ -360,7 +360,7 @@ mod mat3 {
     glam_test!(test_align, {
         use std::mem;
         assert_eq!(36, mem::size_of::<Mat3>());
-        assert_eq!(4, mem::align_of::<Mat3>());
+        assert_eq!(mem::align_of::<Vec3>(), mem::align_of::<Mat3>());
     });
 
     glam_test!(test_mul_vec3a, {
@@ -393,7 +393,7 @@ mod mat3a {
     glam_test!(test_align, {
         use std::mem;
         assert_eq!(48, mem::size_of::<Mat3A>());
-        assert_eq!(16, mem::align_of::<Mat3A>());
+        assert_eq!(mem::align_of::<Vec3A>(), mem::align_of::<Mat3A>());
     });
 
     glam_test!(test_mul_vec3a, {
@@ -431,7 +431,7 @@ mod dmat3 {
     glam_test!(test_align, {
         use std::mem;
         assert_eq!(72, mem::size_of::<DMat3>());
-        assert_eq!(mem::align_of::<f64>(), mem::align_of::<DMat3>());
+        assert_eq!(mem::align_of::<DVec3>(), mem::align_of::<DMat3>());
     });
 
     impl_mat3_tests!(

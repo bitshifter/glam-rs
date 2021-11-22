@@ -272,62 +272,46 @@ impl_vecn_scalar_bit_op_traits!(UVec2, u32, XYU32);
 
 impl_vecn_bit_op_traits!(UVec2, XYU32);
 
-#[cfg(not(feature = "cuda"))]
 mod const_test_vec2 {
+    #[cfg(not(feature = "cuda"))]
     const_assert_eq!(
         core::mem::align_of::<f32>(),
         core::mem::align_of::<super::Vec2>()
     );
-    const_assert_eq!(8, core::mem::size_of::<super::Vec2>());
-}
-
-#[cfg(not(feature = "cuda"))]
-mod const_test_dvec2 {
-    const_assert_eq!(
-        core::mem::align_of::<f64>(),
-        core::mem::align_of::<super::DVec2>()
-    );
-    const_assert_eq!(16, core::mem::size_of::<super::DVec2>());
-}
-
-#[cfg(not(feature = "cuda"))]
-mod const_test_ivec2 {
-    const_assert_eq!(
-        core::mem::align_of::<i32>(),
-        core::mem::align_of::<super::IVec2>()
-    );
-    const_assert_eq!(8, core::mem::size_of::<super::IVec2>());
-}
-
-#[cfg(not(feature = "cuda"))]
-mod const_test_uvec2 {
-    const_assert_eq!(
-        core::mem::align_of::<u32>(),
-        core::mem::align_of::<super::UVec2>()
-    );
-    const_assert_eq!(8, core::mem::size_of::<super::UVec2>());
-}
-
-#[cfg(feature = "cuda")]
-mod const_test_vec2 {
+    #[cfg(feature = "cuda")]
     const_assert_eq!(8, core::mem::align_of::<super::Vec2>());
     const_assert_eq!(8, core::mem::size_of::<super::Vec2>());
 }
 
-#[cfg(feature = "cuda")]
 mod const_test_dvec2 {
+    #[cfg(not(feature = "cuda"))]
+    const_assert_eq!(
+        core::mem::align_of::<f64>(),
+        core::mem::align_of::<super::DVec2>()
+    );
+    #[cfg(feature = "cuda")]
     const_assert_eq!(16, core::mem::align_of::<super::DVec2>());
     const_assert_eq!(16, core::mem::size_of::<super::DVec2>());
 }
 
-#[cfg(feature = "cuda")]
 mod const_test_ivec2 {
+    #[cfg(not(feature = "cuda"))]
+    const_assert_eq!(
+        core::mem::align_of::<i32>(),
+        core::mem::align_of::<super::IVec2>()
+    );
+    #[cfg(feature = "cuda")]
     const_assert_eq!(8, core::mem::align_of::<super::IVec2>());
     const_assert_eq!(8, core::mem::size_of::<super::IVec2>());
 }
 
-#[cfg(feature = "cuda")]
 mod const_test_uvec2 {
+    #[cfg(not(feature = "cuda"))]
+    const_assert_eq!(
+        core::mem::align_of::<u32>(),
+        core::mem::align_of::<super::UVec2>()
+    );
+    #[cfg(feature = "cuda")]
     const_assert_eq!(8, core::mem::align_of::<super::UVec2>());
     const_assert_eq!(8, core::mem::size_of::<super::UVec2>());
 }

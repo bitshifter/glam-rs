@@ -246,17 +246,29 @@ type XYZWF32 = v128;
 /// This type uses 16 byte aligned SIMD vector type for storage on supported platforms.
 #[derive(Clone, Copy)]
 #[cfg_attr(
-    not(any(feature = "scalar-math", target_arch = "spriv", feature = "cuda")),
-    repr(align(16))
+    any(
+        not(any(
+            feature = "scalar-math",
+            target_arch = "spriv",
+            target_feature = "sse2",
+            target_feature = "simd128"
+        )),
+        feature = "cuda"
+    ),
+    repr(C, align(16))
 )]
 #[cfg_attr(
     all(
-        any(feature = "scalar-math", target_arch = "spriv"),
+        any(
+            feature = "scalar-math",
+            target_arch = "spriv",
+            target_feature = "sse2",
+            target_feature = "simd128"
+        ),
         not(feature = "cuda")
     ),
     repr(transparent)
 )]
-#[cfg_attr(feature = "cuda", repr(C, align(16)))]
 pub struct Vec4(pub(crate) XYZWF32);
 
 #[cfg(any(
@@ -395,68 +407,49 @@ mod tests {
     }
 }
 
-#[cfg(all(
-    any(feature = "scalar-math", target_arch = "spriv"),
-    not(feature = "cuda")
-))]
 mod const_test_vec4 {
+    #[cfg(all(
+        any(feature = "scalar-math", target_arch = "spriv"),
+        not(feature = "cuda")
+    ))]
     const_assert_eq!(
         core::mem::align_of::<f32>(),
         core::mem::align_of::<super::Vec4>()
     );
-    const_assert_eq!(16, core::mem::size_of::<super::Vec4>());
-}
-
-#[cfg(any(
-    not(any(feature = "scalar-math", target_arch = "spriv")),
-    feature = "cuda"
-))]
-mod const_test_vec4 {
+    #[cfg(not(any(feature = "scalar-math", target_arch = "spriv")))]
     const_assert_eq!(16, core::mem::align_of::<super::Vec4>());
     const_assert_eq!(16, core::mem::size_of::<super::Vec4>());
 }
 
-#[cfg(not(feature = "cuda"))]
 mod const_test_dvec4 {
+    #[cfg(not(feature = "cuda"))]
     const_assert_eq!(
         core::mem::align_of::<f64>(),
         core::mem::align_of::<super::DVec4>()
     );
-    const_assert_eq!(32, core::mem::size_of::<super::DVec4>());
-}
-
-#[cfg(not(feature = "cuda"))]
-mod const_test_ivec4 {
-    const_assert_eq!(
-        core::mem::align_of::<i32>(),
-        core::mem::align_of::<super::IVec4>()
-    );
-    const_assert_eq!(16, core::mem::size_of::<super::IVec4>());
-}
-
-#[cfg(not(feature = "cuda"))]
-mod const_test_uvec4 {
-    const_assert_eq!(
-        core::mem::align_of::<u32>(),
-        core::mem::align_of::<super::UVec4>()
-    );
-    const_assert_eq!(16, core::mem::size_of::<super::UVec4>());
-}
-
-#[cfg(feature = "cuda")]
-mod const_test_dvec4 {
+    #[cfg(feature = "cuda")]
     const_assert_eq!(16, core::mem::align_of::<super::DVec4>());
     const_assert_eq!(32, core::mem::size_of::<super::DVec4>());
 }
 
-#[cfg(feature = "cuda")]
 mod const_test_ivec4 {
+    #[cfg(not(feature = "cuda"))]
+    const_assert_eq!(
+        core::mem::align_of::<i32>(),
+        core::mem::align_of::<super::IVec4>()
+    );
+    #[cfg(feature = "cuda")]
     const_assert_eq!(16, core::mem::align_of::<super::IVec4>());
     const_assert_eq!(16, core::mem::size_of::<super::IVec4>());
 }
 
-#[cfg(feature = "cuda")]
 mod const_test_uvec4 {
+    #[cfg(not(feature = "cuda"))]
+    const_assert_eq!(
+        core::mem::align_of::<u32>(),
+        core::mem::align_of::<super::UVec4>()
+    );
+    #[cfg(feature = "cuda")]
     const_assert_eq!(16, core::mem::align_of::<super::UVec4>());
     const_assert_eq!(16, core::mem::size_of::<super::UVec4>());
 }

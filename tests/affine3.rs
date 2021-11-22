@@ -293,7 +293,7 @@ mod affine3a {
     glam_test!(test_align, {
         use std::mem;
         assert_eq!(64, mem::size_of::<Affine3A>());
-        assert_eq!(16, mem::align_of::<Affine3A>());
+        assert_eq!(mem::align_of::<Vec3A>(), mem::align_of::<Affine3A>());
     });
 
     glam_test!(test_affine3_mul_vec3a, {
