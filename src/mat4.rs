@@ -886,16 +886,10 @@ impl DMat4 {
 impl_mat4_traits!(f64, dmat4, DMat4, DVec4);
 
 mod const_test_mat4 {
-    #[cfg(all(
-        any(feature = "scalar-math", target_arch = "spriv"),
-        not(feature = "cuda")
-    ))]
     const_assert_eq!(
         core::mem::align_of::<super::Vec4>(),
         core::mem::align_of::<super::Mat4>()
     );
-    #[cfg(not(any(feature = "scalar-math", target_arch = "spriv")))]
-    const_assert_eq!(16, core::mem::align_of::<super::Mat4>());
     const_assert_eq!(64, core::mem::size_of::<super::Mat4>());
 }
 
