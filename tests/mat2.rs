@@ -246,21 +246,6 @@ mod mat2 {
     impl_mat2_tests!(f32, const_mat2, mat2, Mat2, Mat3, vec2, Vec2);
 }
 
-#[cfg(not(feature = "cuda"))]
-mod dmat2 {
-    use super::support::deg;
-    use glam::{const_dmat2, dmat2, dvec2, swizzles::*, DMat2, DMat3, DVec2};
-
-    glam_test!(test_align, {
-        use std::mem;
-        assert_eq!(32, mem::size_of::<DMat2>());
-        assert_eq!(mem::align_of::<f64>(), mem::align_of::<DMat2>());
-    });
-
-    impl_mat2_tests!(f64, const_dmat2, dmat2, DMat2, DMat3, dvec2, DVec2);
-}
-
-#[cfg(feature = "cuda")]
 mod dmat2 {
     use super::support::deg;
     use glam::{const_dmat2, dmat2, dvec2, swizzles::*, DMat2, DMat3, DVec2};
