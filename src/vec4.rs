@@ -246,15 +246,17 @@ type XYZWF32 = v128;
 /// This type uses 16 byte aligned SIMD vector type for storage on supported platforms.
 #[derive(Clone, Copy)]
 #[cfg_attr(
-    not(any(
-        feature = "scalar-math",
-        target_arch = "spriv",
-        target_feature = "sse2",
-        target_feature = "simd128"
-    )),
+    any(
+        not(any(
+            feature = "scalar-math",
+            target_arch = "spriv",
+            target_feature = "sse2",
+            target_feature = "simd128"
+        )),
+        feature = "cuda"
+    ),
     repr(C, align(16))
 )]
-#[cfg_attr(feature = "cuda", repr(C, align(16)))]
 #[cfg_attr(
     all(
         any(
