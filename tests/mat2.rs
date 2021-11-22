@@ -225,7 +225,7 @@ mod mat2 {
         use std::mem;
         assert_eq!(16, mem::size_of::<Mat2>());
         if cfg!(feature = "scalar-math") {
-            assert_eq!(4, mem::align_of::<Mat2>());
+            assert_eq!(mem::align_of::<Vec2>(), mem::align_of::<Mat2>());
         } else {
             assert_eq!(16, mem::align_of::<Mat2>());
         }

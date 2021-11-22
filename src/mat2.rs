@@ -327,13 +327,24 @@ type InnerF32 = crate::core::storage::Columns2<XY<f32>>;
 /// A 2x2 column major matrix.
 #[derive(Clone, Copy)]
 #[cfg_attr(
-    not(any(feature = "scalar-math", target_arch = "spriv")),
-    repr(align(16))
+    not(any(
+        feature = "scalar-math",
+        target_arch = "spriv",
+        target_feature = "sse2",
+        target_feature = "simd128"
+    )),
+    repr(C, align(16))
 )]
+#[cfg_attr(feature = "cuda", repr(C, align(8)))]
 #[cfg_attr(
     all(
+        any(
+            feature = "scalar-math",
+            target_arch = "spriv",
+            target_feature = "sse2",
+            target_feature = "simd128"
+        ),
         not(feature = "cuda"),
-        any(feature = "scalar-math", target_arch = "spriv")
     ),
     repr(transparent)
 )]
@@ -359,7 +370,7 @@ type InnerF64 = crate::core::storage::Columns2<XY<f64>>;
 
 /// A 2x2 column major matrix.
 #[derive(Clone, Copy)]
-#[cfg_attr(feature = "cuda", repr(align(16)))]
+#[cfg_attr(feature = "cuda", repr(C, align(16)))]
 #[cfg_attr(not(feature = "cuda"), repr(transparent))]
 pub struct DMat2(pub(crate) InnerF64);
 
@@ -379,31 +390,17 @@ impl DMat2 {
 }
 impl_mat2_traits!(f64, dmat2, DMat2, DVec2);
 
-#[cfg(any(feature = "scalar-math", target_arch = "spriv"))]
 mod const_test_mat2 {
+    #[cfg(any(feature = "scalar-math", target_arch = "spriv"))]
     const_assert_eq!(
-        core::mem::align_of::<f32>(),
+        core::mem::align_of::<super::Vec2>(),
         core::mem::align_of::<super::Mat2>()
     );
-    const_assert_eq!(16, core::mem::size_of::<super::Mat2>());
-}
-
-#[cfg(not(any(feature = "scalar-math", target_arch = "spriv")))]
-mod const_test_mat2 {
+    #[cfg(not(any(feature = "scalar-math", target_arch = "spriv")))]
     const_assert_eq!(16, core::mem::align_of::<super::Mat2>());
     const_assert_eq!(16, core::mem::size_of::<super::Mat2>());
 }
 
-#[cfg(not(feature = "cuda"))]
-mod const_test_dmat2 {
-    const_assert_eq!(
-        core::mem::align_of::<f64>(),
-        core::mem::align_of::<super::DMat2>()
-    );
-    const_assert_eq!(32, core::mem::size_of::<super::DMat2>());
-}
-
-#[cfg(feature = "cuda")]
 mod const_test_dmat2 {
     const_assert_eq!(
         core::mem::align_of::<super::DVec2>(),

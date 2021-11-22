@@ -615,13 +615,16 @@ impl_affine3_traits!(
 );
 
 mod const_test_affine3a {
-    const_assert_eq!(16, core::mem::align_of::<super::Affine3A>());
+    const_assert_eq!(
+        core::mem::align_of::<super::Vec3A>(),
+        core::mem::align_of::<super::Affine3A>()
+    );
     const_assert_eq!(64, core::mem::size_of::<super::Affine3A>());
 }
 
 mod const_test_daffine3 {
     const_assert_eq!(
-        core::mem::align_of::<f64>(),
+        core::mem::align_of::<super::DVec3>(),
         core::mem::align_of::<super::DAffine3>()
     );
     const_assert_eq!(96, core::mem::size_of::<super::DAffine3>());

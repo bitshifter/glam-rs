@@ -713,8 +713,12 @@ mod dmat4 {
 
     glam_test!(test_align, {
         use std::mem;
+        if cfg!(not(feature = "cuda")) {
+            assert_eq!(mem::align_of::<f64>(), mem::align_of::<DMat4>());
+        } else {
+            assert_eq!(16, mem::align_of::<DMat4>());
+        }
         assert_eq!(128, mem::size_of::<DMat4>());
-        assert_eq!(mem::align_of::<f64>(), mem::align_of::<DMat4>());
     });
 
     impl_mat4_tests!(

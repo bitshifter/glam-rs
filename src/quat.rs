@@ -710,10 +710,23 @@ type InnerF32 = crate::XYZW<f32>;
 /// This type is 16 byte aligned.
 #[derive(Clone, Copy)]
 #[cfg_attr(
-    not(any(feature = "scalar-math", target_arch = "spriv")),
-    repr(align(16))
+    not(any(
+        feature = "scalar-math",
+        target_arch = "spriv",
+        target_feature = "sse2",
+        target_feature = "simd128"
+    )),
+    repr(C, align(16))
 )]
-#[cfg_attr(any(feature = "scalar-math", target_arch = "spriv"), repr(transparent))]
+#[cfg_attr(
+    any(
+        feature = "scalar-math",
+        target_arch = "spriv",
+        target_feature = "sse2",
+        target_feature = "simd128"
+    ),
+    repr(transparent)
+)]
 pub struct Quat(pub(crate) InnerF32);
 
 impl Quat {

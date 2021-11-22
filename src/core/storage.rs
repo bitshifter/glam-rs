@@ -52,7 +52,7 @@ pub struct Columns4<V> {
 /// The `XYZF32A16` is used for the `Vec3A` type, that is a 16 btye aligned `XYZ<f32>` type.
 #[derive(Clone, Copy, Debug, Default, PartialEq, PartialOrd)]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
-#[cfg_attr(not(target_arch = "spirv"), repr(align(16), C))]
+#[cfg_attr(not(target_arch = "spirv"), repr(C, align(16)))]
 pub struct XYZF32A16 {
     pub x: f32,
     pub y: f32,
@@ -100,7 +100,7 @@ impl From<XYZF32A16> for XY<f32> {
 }
 
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd)]
-#[repr(align(16))]
+#[repr(C, align(16))]
 pub(crate) struct Align16<T>(pub T);
 
 impl<T> Align16<T> {

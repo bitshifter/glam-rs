@@ -772,14 +772,16 @@ type InnerF32 = Columns4<XYZW<f32>>;
 /// perspective correction using the [`Self::project_point3()`] convenience method.
 #[derive(Clone, Copy)]
 #[cfg_attr(
-    not(any(feature = "scalar-math", target_arch = "spriv")),
-    repr(align(16))
+    any(
+        not(any(feature = "scalar-math", target_arch = "spriv")),
+        feature = "cuda"
+    ),
+    repr(C, align(16))
 )]
-#[cfg_attr(feature = "cuda", repr(align(16)))]
 #[cfg_attr(
     all(
+        any(feature = "scalar-math", target_arch = "spriv"),
         not(feature = "cuda"),
-        any(feature = "scalar-math", target_arch = "spriv")
     ),
     repr(transparent)
 )]
@@ -857,7 +859,8 @@ type InnerF64 = Columns4<XYZW<f64>>;
 /// The resulting perspective project can be use to transform 3D vectors as points with
 /// perspective correction using the [`Self::project_point3()`] convenience method.
 #[derive(Clone, Copy)]
-#[repr(transparent)]
+#[cfg_attr(not(feature = "cuda"), repr(transparent))]
+#[cfg_attr(feature = "cuda", repr(C, align(16)))]
 pub struct DMat4(pub(crate) InnerF64);
 // define_mat4_struct!(DMat4, InnerF64);
 
@@ -882,33 +885,23 @@ impl DMat4 {
 }
 impl_mat4_traits!(f64, dmat4, DMat4, DVec4);
 
-#[cfg(all(
-    not(feature = "cuda"),
-    any(feature = "scalar-math", target_arch = "spriv")
-))]
 mod const_test_mat4 {
+    #[cfg(all(
+        any(feature = "scalar-math", target_arch = "spriv"),
+        not(feature = "cuda")
+    ))]
     const_assert_eq!(
-        core::mem::align_of::<f32>(),
+        core::mem::align_of::<super::Vec4>(),
         core::mem::align_of::<super::Mat4>()
     );
-    const_assert_eq!(64, core::mem::size_of::<super::Mat4>());
-}
-
-#[cfg(feature = "cuda")]
-mod const_test_mat4 {
-    const_assert_eq!(16, core::mem::align_of::<super::Mat4>());
-    const_assert_eq!(64, core::mem::size_of::<super::Mat4>());
-}
-
-#[cfg(not(any(feature = "scalar-math", target_arch = "spriv", feature = "cuda")))]
-mod const_test_mat4 {
+    #[cfg(not(any(feature = "scalar-math", target_arch = "spriv")))]
     const_assert_eq!(16, core::mem::align_of::<super::Mat4>());
     const_assert_eq!(64, core::mem::size_of::<super::Mat4>());
 }
 
 mod const_test_dmat4 {
     const_assert_eq!(
-        core::mem::align_of::<f64>(),
+        core::mem::align_of::<super::DVec4>(),
         core::mem::align_of::<super::DMat4>()
     );
     const_assert_eq!(128, core::mem::size_of::<super::DMat4>());
