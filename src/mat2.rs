@@ -353,12 +353,6 @@ pub struct Mat2(pub(crate) InnerF32);
 impl Mat2 {
     impl_mat2_methods!(f32, Vec2, Mat3, InnerF32);
 
-    #[deprecated(since = "0.18.0", note = "please use `as_dmat2()` instead")]
-    #[inline(always)]
-    pub fn as_f64(&self) -> DMat2 {
-        self.as_dmat2()
-    }
-
     #[inline(always)]
     pub fn as_dmat2(&self) -> DMat2 {
         DMat2::from_cols(self.x_axis.as_dvec2(), self.y_axis.as_dvec2())
@@ -376,12 +370,6 @@ pub struct DMat2(pub(crate) InnerF64);
 
 impl DMat2 {
     impl_mat2_methods!(f64, DVec2, DMat3, InnerF64);
-
-    #[deprecated(since = "0.18.0", note = "please use `as_mat2()` instead")]
-    #[inline(always)]
-    pub fn as_f64(&self) -> Mat2 {
-        self.as_mat2()
-    }
 
     #[inline(always)]
     pub fn as_mat2(&self) -> Mat2 {

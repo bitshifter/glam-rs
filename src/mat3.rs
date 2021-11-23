@@ -481,12 +481,6 @@ impl Mat3 {
         self.mul_vec3(other.into()).into()
     }
 
-    #[deprecated(since = "0.18.0", note = "please use `as_dmat3()` instead")]
-    #[inline(always)]
-    pub fn as_f64(&self) -> DMat3 {
-        self.as_dmat3()
-    }
-
     #[inline(always)]
     pub fn as_dmat3(&self) -> DMat3 {
         DMat3::from_cols(
@@ -529,12 +523,6 @@ impl Mat3A {
         Vec3A(self.0.mul_vector(other.0))
     }
 
-    #[deprecated(since = "0.18.0", note = "please use `as_dmat3()` instead")]
-    #[inline(always)]
-    pub fn as_f64(&self) -> DMat3 {
-        self.as_dmat3()
-    }
-
     #[inline(always)]
     pub fn as_dmat3(&self) -> DMat3 {
         DMat3::from_cols(
@@ -573,12 +561,6 @@ define_mat3_struct!(DMat3, InnerF64);
 
 impl DMat3 {
     impl_mat3_methods!(f64, DVec3, DVec3, DVec2, DQuat, DMat2, DMat4, InnerF64);
-
-    #[deprecated(since = "0.18.0", note = "please use `as_mat3()` instead")]
-    #[inline(always)]
-    pub fn as_f32(&self) -> Mat3 {
-        self.as_mat3()
-    }
 
     #[inline(always)]
     pub fn as_mat3(&self) -> Mat3 {

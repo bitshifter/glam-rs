@@ -809,12 +809,6 @@ impl Mat4 {
         Vec3A(self.0.transform_float4_as_vector3(other.0.into()).into())
     }
 
-    #[deprecated(since = "0.18.0", note = "please use `as_dmat4()` instead")]
-    #[inline(always)]
-    pub fn as_f64(&self) -> DMat4 {
-        self.as_dmat4()
-    }
-
     #[inline(always)]
     pub fn as_dmat4(&self) -> DMat4 {
         DMat4::from_cols(
@@ -866,12 +860,6 @@ pub struct DMat4(pub(crate) InnerF64);
 
 impl DMat4 {
     impl_mat4_methods!(f64, DVec4, DVec3, DMat3, DQuat, InnerF64);
-
-    #[deprecated(since = "0.18.0", note = "please use `as_mat4()` instead")]
-    #[inline(always)]
-    pub fn as_f32(&self) -> Mat4 {
-        self.as_mat4()
-    }
 
     #[inline(always)]
     pub fn as_mat4(&self) -> Mat4 {

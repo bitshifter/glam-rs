@@ -66,7 +66,7 @@ defined in `std`. For example:
 
 ```toml
 [dependencies]
-glam = { version = "0.20.0", default-features = false, features = ["libm"] }
+glam = { version = "0.20.1", default-features = false, features = ["libm"] }
 ```
 
 To support both `std` and `no_std` builds in project, you can use the following
@@ -80,7 +80,7 @@ std = ["glam/std"]
 libm = ["glam/libm"]
 
 [dependencies]
-glam = { version = "0.20.0", default-features = false }
+glam = { version = "0.20.1", default-features = false }
 ```
 
 ### Optional features
@@ -117,6 +117,9 @@ glam = { version = "0.20.0", default-features = false }
 * `debug-glam-assert` - adds assertions in debug builds which check the validity
   of parameters passed to `glam` to help catch runtime errors
 * `glam-assert` - adds validation assertions to all builds
+* `cuda` - forces `glam` types to match expected [cuda alignment]
+
+[cuda alignment]: https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#built-in-vector-types
 
 ### Minimum Supported Rust Version (MSRV)
 
