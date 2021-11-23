@@ -898,12 +898,6 @@ macro_rules! impl_vecn_scalar_bit_op_traits {
 
 macro_rules! impl_as_vec2 {
     () => {
-        #[deprecated(since = "0.18.0", note = "please use `as_vec2()` instead")]
-        #[inline(always)]
-        pub fn as_f32(&self) -> Vec2 {
-            self.as_vec2()
-        }
-
         /// Casts all elements of `self` to `f32`.
         #[inline(always)]
         pub fn as_vec2(&self) -> Vec2 {
@@ -914,12 +908,6 @@ macro_rules! impl_as_vec2 {
 
 macro_rules! impl_as_vec3 {
     () => {
-        #[deprecated(since = "0.18.0", note = "please use `as_vec3()` instead")]
-        #[inline(always)]
-        pub fn as_f32(&self) -> Vec3 {
-            self.as_vec3()
-        }
-
         /// Casts all elements of `self` to `f32`.
         #[inline(always)]
         pub fn as_vec3(&self) -> Vec3 {
@@ -936,12 +924,6 @@ macro_rules! impl_as_vec3 {
 
 macro_rules! impl_as_vec4 {
     () => {
-        #[deprecated(since = "0.18.0", note = "please use `as_vec4()` instead")]
-        #[inline(always)]
-        pub fn as_f32(&self) -> Vec4 {
-            self.as_vec4()
-        }
-
         /// Casts all elements of `self` to `f32`.
         #[inline(always)]
         pub fn as_vec4(&self) -> Vec4 {
@@ -952,12 +934,6 @@ macro_rules! impl_as_vec4 {
 
 macro_rules! impl_as_dvec2 {
     () => {
-        #[deprecated(since = "0.18.0", note = "please use `as_dvec2()` instead")]
-        #[inline(always)]
-        pub fn as_f64(&self) -> DVec2 {
-            self.as_dvec2()
-        }
-
         /// Casts all elements of `self` to `f64`.
         #[inline(always)]
         pub fn as_dvec2(&self) -> DVec2 {
@@ -968,12 +944,6 @@ macro_rules! impl_as_dvec2 {
 
 macro_rules! impl_as_dvec3 {
     () => {
-        #[deprecated(since = "0.18.0", note = "please use `as_dvec3()` instead")]
-        #[inline(always)]
-        pub fn as_f64(&self) -> DVec3 {
-            self.as_dvec3()
-        }
-
         /// Casts all elements of `self` to `f64`.
         #[inline(always)]
         pub fn as_dvec3(&self) -> DVec3 {
@@ -984,12 +954,6 @@ macro_rules! impl_as_dvec3 {
 
 macro_rules! impl_as_dvec4 {
     () => {
-        #[deprecated(since = "0.18.0", note = "please use `as_dvec4()` instead")]
-        #[inline(always)]
-        pub fn as_f64(&self) -> DVec4 {
-            self.as_dvec4()
-        }
-
         /// Casts all elements of `self` to `f64`.
         #[inline(always)]
         pub fn as_dvec4(&self) -> DVec4 {
@@ -1000,12 +964,6 @@ macro_rules! impl_as_dvec4 {
 
 macro_rules! impl_as_ivec2 {
     () => {
-        #[deprecated(since = "0.18.0", note = "please use `as_ivec2()` instead")]
-        #[inline(always)]
-        pub fn as_i32(&self) -> IVec2 {
-            self.as_ivec2()
-        }
-
         /// Casts all elements of `self` to `i32`.
         #[inline(always)]
         pub fn as_ivec2(&self) -> IVec2 {
@@ -1016,12 +974,6 @@ macro_rules! impl_as_ivec2 {
 
 macro_rules! impl_as_ivec3 {
     () => {
-        #[deprecated(since = "0.18.0", note = "please use `as_ivec3()` instead")]
-        #[inline(always)]
-        pub fn as_i32(&self) -> IVec3 {
-            self.as_ivec3()
-        }
-
         /// Casts all elements of `self` to `i32`.
         #[inline(always)]
         pub fn as_ivec3(&self) -> IVec3 {
@@ -1032,12 +984,6 @@ macro_rules! impl_as_ivec3 {
 
 macro_rules! impl_as_ivec4 {
     () => {
-        #[deprecated(since = "0.18.0", note = "please use `as_ivec4()` instead")]
-        #[inline(always)]
-        pub fn as_i32(&self) -> IVec4 {
-            self.as_ivec4()
-        }
-
         /// Casts all elements of `self` to `i32`.
         #[inline(always)]
         pub fn as_ivec4(&self) -> IVec4 {
@@ -1048,12 +994,6 @@ macro_rules! impl_as_ivec4 {
 
 macro_rules! impl_as_uvec2 {
     () => {
-        #[deprecated(since = "0.18.0", note = "please use `as_uvec2()` instead")]
-        #[inline(always)]
-        pub fn as_u32(&self) -> UVec2 {
-            self.as_uvec2()
-        }
-
         /// Casts all elements of `self` to `u32`.
         #[inline(always)]
         pub fn as_uvec2(&self) -> UVec2 {
@@ -1064,12 +1004,6 @@ macro_rules! impl_as_uvec2 {
 
 macro_rules! impl_as_uvec3 {
     () => {
-        #[deprecated(since = "0.18.0", note = "please use `as_uvec3()` instead")]
-        #[inline(always)]
-        pub fn as_u32(&self) -> UVec3 {
-            self.as_uvec3()
-        }
-
         /// Casts all elements of `self` to `u32`.
         #[inline(always)]
         pub fn as_uvec3(&self) -> UVec3 {
@@ -1080,12 +1014,6 @@ macro_rules! impl_as_uvec3 {
 
 macro_rules! impl_as_uvec4 {
     () => {
-        #[deprecated(since = "0.18.0", note = "please use `as_uvec4()` instead")]
-        #[inline(always)]
-        pub fn as_u32(&self) -> UVec4 {
-            self.as_uvec4()
-        }
-
         /// Casts all elements of `self` to `u32`.
         #[inline(always)]
         pub fn as_uvec4(&self) -> UVec4 {
