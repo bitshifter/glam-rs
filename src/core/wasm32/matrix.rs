@@ -109,6 +109,11 @@ impl FloatMatrix2x2<f32, XY<f32>> for v128 {
     }
 
     #[inline]
+    fn neg_matrix(&self) -> Self {
+        f32x4_neg(*self)
+    }
+
+    #[inline]
     fn inverse(&self) -> Self {
         const SIGN: v128 = const_f32x4!([1.0, -1.0, -1.0, 1.0]);
         let abcd = *self;

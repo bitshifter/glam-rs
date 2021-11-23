@@ -291,10 +291,16 @@ macro_rules! impl_mat3_tests {
                 [8.0, 10.0, 12.0],
                 [14.0, 16.0, 18.0],
             ]);
+            let m0_neg = $mat3::from_cols_array_2d(&[
+                [-1.0, -2.0, -3.0],
+                [-4.0, -5.0, -6.0],
+                [-7.0, -8.0, -9.0],
+            ]);
             assert_eq!(m0x2, m0 * 2.0);
             assert_eq!(m0x2, 2.0 * m0);
             assert_eq!(m0x2, m0 + m0);
             assert_eq!($mat3::ZERO, m0 - m0);
+            assert_eq!(m0_neg, -m0);
             assert_approx_eq!(m0, m0 * $mat3::IDENTITY);
             assert_approx_eq!(m0, $mat3::IDENTITY * m0);
 
