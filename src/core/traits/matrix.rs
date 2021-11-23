@@ -144,6 +144,11 @@ pub trait FloatMatrix2x2<T: FloatEx, V2: FloatVector2<T>>: Matrix2x2<T, V2> {
     }
 
     #[inline]
+    fn neg_matrix(&self) -> Self {
+        Self::from_cols(self.x_axis().neg(), self.y_axis().neg())
+    }
+
+    #[inline]
     fn from_scale_angle(scale: V2, angle: T) -> Self {
         let (sin, cos) = angle.sin_cos();
         let (scale_x, scale_y) = scale.into_tuple();
@@ -343,6 +348,15 @@ pub trait FloatMatrix3x3<T: FloatEx, V3: FloatVector3<T>>: Matrix3x3<T, V3> {
         self.x_axis().abs_diff_eq(*other.x_axis(), max_abs_diff)
             && self.y_axis().abs_diff_eq(*other.y_axis(), max_abs_diff)
             && self.z_axis().abs_diff_eq(*other.z_axis(), max_abs_diff)
+    }
+
+    #[inline]
+    fn neg_matrix(&self) -> Self {
+        Self::from_cols(
+            self.x_axis().neg(),
+            self.y_axis().neg(),
+            self.z_axis().neg(),
+        )
     }
 
     #[inline]
@@ -691,6 +705,16 @@ pub trait FloatMatrix4x4<T: FloatEx, V4: FloatVector4<T> + Quaternion<T>>:
             && self.y_axis().abs_diff_eq(*other.y_axis(), max_abs_diff)
             && self.z_axis().abs_diff_eq(*other.z_axis(), max_abs_diff)
             && self.w_axis().abs_diff_eq(*other.w_axis(), max_abs_diff)
+    }
+
+    #[inline]
+    fn neg_matrix(&self) -> Self {
+        Self::from_cols(
+            self.x_axis().neg(),
+            self.y_axis().neg(),
+            self.z_axis().neg(),
+            self.w_axis().neg(),
+        )
     }
 
     #[inline]

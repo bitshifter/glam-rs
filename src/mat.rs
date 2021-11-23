@@ -39,6 +39,14 @@ macro_rules! impl_matn_common_traits {
             }
         }
 
+        impl Neg for $matn {
+            type Output = Self;
+            #[inline(always)]
+            fn neg(self) -> Self::Output {
+                Self(self.0.neg_matrix())
+            }
+        }
+
         impl Mul<$matn> for $matn {
             type Output = Self;
             #[inline(always)]

@@ -154,10 +154,12 @@ macro_rules! impl_mat2_tests {
         glam_test!(test_mat2_ops, {
             let m0 = $mat2::from_cols_array_2d(&MATRIX);
             let m0x2 = $mat2::from_cols_array_2d(&[[2.0, 4.0], [6.0, 8.0]]);
+            let m0_neg = $mat2::from_cols_array_2d(&[[-1.0, -2.0], [-3.0, -4.0]]);
             assert_eq!(m0x2, m0 * 2.0);
             assert_eq!(m0x2, 2.0 * m0);
             assert_eq!(m0x2, m0 + m0);
             assert_eq!($mat2::ZERO, m0 - m0);
+            assert_eq!(m0_neg, -m0);
             assert_approx_eq!(m0, m0 * $mat2::IDENTITY);
             assert_approx_eq!(m0, $mat2::IDENTITY * m0);
 

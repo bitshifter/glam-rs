@@ -132,6 +132,11 @@ impl FloatMatrix2x2<f32, XY<f32>> for __m128 {
             _mm_mul_ps(dbca, tmp)
         }
     }
+
+    #[inline]
+    fn neg_matrix(&self) -> Self {
+        unsafe { _mm_xor_ps(*self, _mm_set1_ps(-0.0)) }
+    }
 }
 
 impl MatrixConst for Columns3<__m128> {
