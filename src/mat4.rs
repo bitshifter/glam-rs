@@ -745,7 +745,7 @@ type InnerF32 = Columns4<XYZW<f32>>;
 ///
 /// This 4x4 matrix type features convenience methods for creating and using affine transforms and
 /// perspective projections. If you are primarily dealing with 3D affine transformations
-/// considering using [`Affine3A`](crate::Affine3A) which is faster tha a 4x4 matrix for some
+/// considering using [`Affine3A`](crate::Affine3A) which is faster than a 4x4 matrix for some
 /// affine operations.
 ///
 /// Affine transformations including 3D translation, rotation and scale can be created
@@ -827,7 +827,7 @@ type InnerF64 = Columns4<XYZW<f64>>;
 ///
 /// This 4x4 matrix type features convenience methods for creating and using affine transforms and
 /// perspective projections. If you are primarily dealing with 3D affine transformations
-/// considering using [`DAffine3`](crate::DAffine3) which is faster tha a 4x4 matrix for some
+/// considering using [`DAffine3`](crate::DAffine3) which is faster than a 4x4 matrix for some
 /// affine operations.
 ///
 /// Affine transformations including 3D translation, rotation and scale can be created
