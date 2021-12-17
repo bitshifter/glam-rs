@@ -494,7 +494,7 @@ impl_affine2_traits!(
 
 #[cfg(all(
     not(feature = "cuda"),
-    any(feature = "scalar-math", target_arch = "spriv")
+    any(feature = "scalar-math", target_arch = "spirv")
 ))]
 mod const_test_affine2 {
     const_assert_eq!(
@@ -504,7 +504,7 @@ mod const_test_affine2 {
     const_assert_eq!(24, core::mem::size_of::<super::Affine2>());
 }
 
-#[cfg(not(any(feature = "scalar-math", target_arch = "spriv")))]
+#[cfg(not(any(feature = "scalar-math", target_arch = "spirv")))]
 mod const_test_affine2 {
     const_assert_eq!(16, core::mem::align_of::<super::Affine2>());
     const_assert_eq!(32, core::mem::size_of::<super::Affine2>());

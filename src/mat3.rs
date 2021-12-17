@@ -451,7 +451,7 @@ macro_rules! impl_mat3_traits {
 
 macro_rules! impl_mat3_traits_unsafe {
     ($t:ty, $mat3:ident) => {
-        #[cfg(not(target_arch = "spriv"))]
+        #[cfg(not(target_arch = "spirv"))]
         impl AsRef<[$t; 9]> for $mat3 {
             #[inline(always)]
             fn as_ref(&self) -> &[$t; 9] {
@@ -459,7 +459,7 @@ macro_rules! impl_mat3_traits_unsafe {
             }
         }
 
-        #[cfg(not(target_arch = "spriv"))]
+        #[cfg(not(target_arch = "spirv"))]
         impl AsMut<[$t; 9]> for $mat3 {
             #[inline(always)]
             fn as_mut(&mut self) -> &mut [$t; 9] {
