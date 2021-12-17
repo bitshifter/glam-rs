@@ -262,7 +262,7 @@ macro_rules! impl_mat2_traits {
             }
         }
 
-        #[cfg(not(target_arch = "spriv"))]
+        #[cfg(not(target_arch = "spirv"))]
         impl AsRef<[$t; 4]> for $mat2 {
             #[inline(always)]
             fn as_ref(&self) -> &[$t; 4] {
@@ -270,7 +270,7 @@ macro_rules! impl_mat2_traits {
             }
         }
 
-        #[cfg(not(target_arch = "spriv"))]
+        #[cfg(not(target_arch = "spirv"))]
         impl AsMut<[$t; 4]> for $mat2 {
             #[inline(always)]
             fn as_mut(&mut self) -> &mut [$t; 4] {
@@ -329,7 +329,7 @@ type InnerF32 = crate::core::storage::Columns2<XY<f32>>;
 #[cfg_attr(
     not(any(
         feature = "scalar-math",
-        target_arch = "spriv",
+        target_arch = "spirv",
         target_feature = "sse2",
         target_feature = "simd128"
     )),
@@ -340,7 +340,7 @@ type InnerF32 = crate::core::storage::Columns2<XY<f32>>;
     all(
         any(
             feature = "scalar-math",
-            target_arch = "spriv",
+            target_arch = "spirv",
             target_feature = "sse2",
             target_feature = "simd128"
         ),
@@ -379,12 +379,12 @@ impl DMat2 {
 impl_mat2_traits!(f64, dmat2, DMat2, DVec2);
 
 mod const_test_mat2 {
-    #[cfg(any(feature = "scalar-math", target_arch = "spriv"))]
+    #[cfg(any(feature = "scalar-math", target_arch = "spirv"))]
     const_assert_eq!(
         core::mem::align_of::<super::Vec2>(),
         core::mem::align_of::<super::Mat2>()
     );
-    #[cfg(not(any(feature = "scalar-math", target_arch = "spriv")))]
+    #[cfg(not(any(feature = "scalar-math", target_arch = "spirv")))]
     const_assert_eq!(16, core::mem::align_of::<super::Mat2>());
     const_assert_eq!(16, core::mem::size_of::<super::Mat2>());
 }

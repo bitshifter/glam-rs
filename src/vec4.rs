@@ -249,7 +249,7 @@ type XYZWF32 = v128;
     any(
         not(any(
             feature = "scalar-math",
-            target_arch = "spriv",
+            target_arch = "spirv",
             target_feature = "sse2",
             target_feature = "simd128"
         )),
@@ -261,7 +261,7 @@ type XYZWF32 = v128;
     all(
         any(
             feature = "scalar-math",
-            target_arch = "spriv",
+            target_arch = "spirv",
             target_feature = "sse2",
             target_feature = "simd128"
         ),
@@ -409,14 +409,14 @@ mod tests {
 
 mod const_test_vec4 {
     #[cfg(all(
-        any(feature = "scalar-math", target_arch = "spriv"),
+        any(feature = "scalar-math", target_arch = "spirv"),
         not(feature = "cuda")
     ))]
     const_assert_eq!(
         core::mem::align_of::<f32>(),
         core::mem::align_of::<super::Vec4>()
     );
-    #[cfg(not(any(feature = "scalar-math", target_arch = "spriv")))]
+    #[cfg(not(any(feature = "scalar-math", target_arch = "spirv")))]
     const_assert_eq!(16, core::mem::align_of::<super::Vec4>());
     const_assert_eq!(16, core::mem::size_of::<super::Vec4>());
 }

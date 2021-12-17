@@ -615,7 +615,7 @@ macro_rules! impl_quat_traits {
             }
         }
 
-        #[cfg(not(target_arch = "spriv"))]
+        #[cfg(not(target_arch = "spirv"))]
         impl AsRef<[$t; 4]> for $quat {
             #[inline(always)]
             fn as_ref(&self) -> &[$t; 4] {
@@ -623,7 +623,7 @@ macro_rules! impl_quat_traits {
             }
         }
 
-        #[cfg(not(target_arch = "spriv"))]
+        #[cfg(not(target_arch = "spirv"))]
         impl AsMut<[$t; 4]> for $quat {
             #[inline(always)]
             fn as_mut(&mut self) -> &mut [$t; 4] {
@@ -712,7 +712,7 @@ type InnerF32 = crate::XYZW<f32>;
 #[cfg_attr(
     not(any(
         feature = "scalar-math",
-        target_arch = "spriv",
+        target_arch = "spirv",
         target_feature = "sse2",
         target_feature = "simd128"
     )),
@@ -721,7 +721,7 @@ type InnerF32 = crate::XYZW<f32>;
 #[cfg_attr(
     any(
         feature = "scalar-math",
-        target_arch = "spriv",
+        target_arch = "spirv",
         target_feature = "sse2",
         target_feature = "simd128"
     ),
@@ -795,7 +795,7 @@ impl DQuat {
 }
 impl_quat_traits!(f64, dquat, DQuat, DVec3, DVec4, InnerF64);
 
-#[cfg(any(feature = "scalar-math", target_arch = "spriv"))]
+#[cfg(any(feature = "scalar-math", target_arch = "spirv"))]
 mod const_test_quat {
     const_assert_eq!(
         core::mem::align_of::<f32>(),
@@ -804,7 +804,7 @@ mod const_test_quat {
     const_assert_eq!(16, core::mem::size_of::<super::Quat>());
 }
 
-#[cfg(not(any(feature = "scalar-math", target_arch = "spriv")))]
+#[cfg(not(any(feature = "scalar-math", target_arch = "spirv")))]
 mod const_test_quat {
     const_assert_eq!(16, core::mem::align_of::<super::Quat>());
     const_assert_eq!(16, core::mem::size_of::<super::Quat>());

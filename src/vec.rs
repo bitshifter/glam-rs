@@ -701,7 +701,7 @@ macro_rules! impl_vecn_common_traits {
             }
         }
 
-        #[cfg(not(target_arch = "spriv"))]
+        #[cfg(not(target_arch = "spirv"))]
         impl AsRef<[$t; $size]> for $vecn {
             #[inline(always)]
             fn as_ref(&self) -> &[$t; $size] {
@@ -709,7 +709,7 @@ macro_rules! impl_vecn_common_traits {
             }
         }
 
-        #[cfg(not(target_arch = "spriv"))]
+        #[cfg(not(target_arch = "spirv"))]
         impl AsMut<[$t; $size]> for $vecn {
             #[inline(always)]
             fn as_mut(&mut self) -> &mut [$t; $size] {
@@ -757,7 +757,7 @@ macro_rules! impl_vecn_eq_hash_traits {
     ($t:ty, $size:literal, $vecn:ident) => {
         impl Eq for $vecn {}
 
-        #[cfg(not(target_arch = "spriv"))]
+        #[cfg(not(target_arch = "spirv"))]
         impl core::hash::Hash for $vecn {
             fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                 let inner: &[$t; $size] = self.as_ref();

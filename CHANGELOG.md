@@ -227,13 +227,13 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Deprecated `TransformSRT` and `TransformRT` which are under the
   `transform-types` feature. These will be moved to a separate experimental
   crate.
-* Updated `spriv-std` dependency version to `0.4.0-alpha7`.
+* Updated `spirv-std` dependency version to `0.4.0-alpha7`.
 
 ## [0.14.0] - 2021-04-09
 
 ### Breaking changes
 
-* Minimum Supported Version of Rust bumped to 1.45.0 for the `spriv-std`
+* Minimum Supported Version of Rust bumped to 1.45.0 for the `spirv-std`
   dependency.
 
 ### Added
@@ -245,7 +245,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 ### Changed
 
 * Updated dependency versions of `bytemuck` to `1.5`, `rand` to `0.8`,
-  `rand_xoshiro` to `0.6` and `spriv-std` to `0.4.0-alpha4`.
+  `rand_xoshiro` to `0.6` and `spirv-std` to `0.4.0-alpha4`.
 
 ## [0.13.1] - 2021-03-24
 
@@ -253,7 +253,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 * Added vector `clamp()` functions.
 * Added matrix column and row accessor methods, `col()` and `row()`.
-* Added SPIR-V module and dependency on `spriv-std` for the SPIR-V target.
+* Added SPIR-V module and dependency on `spirv-std` for the SPIR-V target.
 * Added matrix truncation from 4x4 to 3x3 and 3x3 to 2x2 via `From` impls.
 
 ### Changed
@@ -332,7 +332,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ### Changed
 
-* Made `Vec3` `repr(simd)` for `spriv` targets.
+* Made `Vec3` `repr(simd)` for `spirv` targets.
 
 ### Added
 

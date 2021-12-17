@@ -688,7 +688,7 @@ macro_rules! impl_mat4_traits {
             }
         }
 
-        #[cfg(not(target_arch = "spriv"))]
+        #[cfg(not(target_arch = "spirv"))]
         impl AsRef<[$t; 16]> for $mat4 {
             #[inline]
             fn as_ref(&self) -> &[$t; 16] {
@@ -696,7 +696,7 @@ macro_rules! impl_mat4_traits {
             }
         }
 
-        #[cfg(not(target_arch = "spriv"))]
+        #[cfg(not(target_arch = "spirv"))]
         impl AsMut<[$t; 16]> for $mat4 {
             #[inline]
             fn as_mut(&mut self) -> &mut [$t; 16] {
@@ -773,14 +773,14 @@ type InnerF32 = Columns4<XYZW<f32>>;
 #[derive(Clone, Copy)]
 #[cfg_attr(
     any(
-        not(any(feature = "scalar-math", target_arch = "spriv")),
+        not(any(feature = "scalar-math", target_arch = "spirv")),
         feature = "cuda"
     ),
     repr(C, align(16))
 )]
 #[cfg_attr(
     all(
-        any(feature = "scalar-math", target_arch = "spriv"),
+        any(feature = "scalar-math", target_arch = "spirv"),
         not(feature = "cuda"),
     ),
     repr(transparent)

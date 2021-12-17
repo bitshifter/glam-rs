@@ -162,7 +162,7 @@ macro_rules! impl_vec2mask {
             }
         }
 
-        #[cfg(not(target_arch = "spriv"))]
+        #[cfg(not(target_arch = "spirv"))]
         impl AsRef<[$t; 2]> for $vec2mask {
             #[inline]
             fn as_ref(&self) -> &[$t; 2] {
@@ -223,7 +223,7 @@ macro_rules! impl_vec3mask {
             }
         }
 
-        #[cfg(not(target_arch = "spriv"))]
+        #[cfg(not(target_arch = "spirv"))]
         impl AsRef<[$t; 3]> for $vec3mask {
             #[inline]
             fn as_ref(&self) -> &[$t; 3] {
@@ -285,7 +285,7 @@ macro_rules! impl_vec4mask {
             }
         }
 
-        #[cfg(not(target_arch = "spriv"))]
+        #[cfg(not(target_arch = "spirv"))]
         impl AsRef<[$t; 4]> for $vec4mask {
             #[inline]
             fn as_ref(&self) -> &[$t; 4] {
