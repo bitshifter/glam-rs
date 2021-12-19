@@ -1,6 +1,6 @@
 [package]
 name = "glam"
-version = "0.20.1" # remember to update html_root_url
+version = "0.20.2" # remember to update html_root_url
 edition = "2018"
 authors = ["Cameron Hart <cameron.hart@gmail.com>"]
 description = "A simple and fast 3D math library for games and graphics"
