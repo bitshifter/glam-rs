@@ -172,6 +172,7 @@ pub trait NumEx:
 {
     fn min(self, other: Self) -> Self;
     fn max(self, other: Self) -> Self;
+    fn mul_add(self, b: Self, c: Self) -> Self;
 }
 
 pub trait SignedEx: Signed + NumEx {}
@@ -206,6 +207,10 @@ impl NumEx for f32 {
     #[inline(always)]
     fn max(self, other: Self) -> Self {
         f32::max(self, other)
+    }
+    #[inline(always)]
+    fn mul_add(self, b: Self, c: Self) -> Self {
+        self.mul_add(b, c)
     }
 }
 
@@ -279,6 +284,10 @@ impl NumEx for f64 {
     fn max(self, other: Self) -> Self {
         f64::max(self, other)
     }
+    #[inline(always)]
+    fn mul_add(self, b: Self, c: Self) -> Self {
+        self.mul_add(b, c)
+    }
 }
 
 impl SignedEx for f64 {}
@@ -312,6 +321,10 @@ impl NumEx for i32 {
     fn max(self, other: Self) -> Self {
         core::cmp::max(self, other)
     }
+    #[inline(always)]
+    fn mul_add(self, b: Self, c: Self) -> Self {
+        self * b + c
+    }
 }
 
 impl SignedEx for i32 {}
@@ -329,6 +342,10 @@ impl NumEx for u32 {
     #[inline(always)]
     fn max(self, other: Self) -> Self {
         core::cmp::max(self, other)
+    }
+    #[inline(always)]
+    fn mul_add(self, b: Self, c: Self) -> Self {
+        self * b + c
     }
 }
 
