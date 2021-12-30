@@ -151,8 +151,7 @@ macro_rules! impl_vecn_common_methods {
 
         /// Per element multiplication/addition of the three inputs: b + (self * a)
         #[inline(always)]
-        #[allow(dead_code)]
-        pub(crate) fn mul_add(self, a: Self, b: Self) -> Self {
+        pub fn mul_add(self, a: Self, b: Self) -> Self {
             Self(self.0.mul_add(a.0, b.0))
         }
     };
