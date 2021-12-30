@@ -210,7 +210,7 @@ impl NumEx for f32 {
     }
     #[inline(always)]
     fn mul_add(self, b: Self, c: Self) -> Self {
-        self.mul_add(b, c)
+        f32::mul_add(self, b, c)
     }
 }
 
@@ -286,7 +286,7 @@ impl NumEx for f64 {
     }
     #[inline(always)]
     fn mul_add(self, b: Self, c: Self) -> Self {
-        self.mul_add(b, c)
+        f64::mul_add(self, b, c)
     }
 }
 
