@@ -461,6 +461,10 @@ macro_rules! impl_quat_tests {
             should_glam_assert!({ $quat::from_rotation_arc_2d($vec2::ZERO, $vec2::X) });
             should_glam_assert!({ $quat::from_rotation_arc_2d($vec2::X, $vec2::ZERO) });
         });
+
+        glam_test!(test_to_array, {
+            assert!($new(1.0, 2.0, 3.0, 4.0).to_array() == [1.0, 2.0, 3.0, 4.0]);
+        });
     };
 }
 
