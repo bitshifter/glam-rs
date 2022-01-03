@@ -282,6 +282,12 @@ macro_rules! impl_quat_methods {
             euler.convert_quat(self)
         }
 
+        /// `[x, y, z, w]`
+        #[inline(always)]
+        pub fn to_array(&self) -> [$t; 4] {
+            [self.x, self.y, self.z, self.w]
+        }
+
         /// Returns the vector part of the quaternion.
         #[inline(always)]
         pub fn xyz(self) -> $vec3 {
