@@ -418,7 +418,8 @@ macro_rules! impl_vecn_float_methods {
         /// Performs a linear interpolation between `self` and `other` based on the value `s`.
         ///
         /// When `s` is `0.0`, the result will be equal to `self`.  When `s` is `1.0`, the result
-        /// will be equal to `other`.
+        /// will be equal to `other`. When `s` is outside of range [0,1], the result is linearly
+        /// extrapolated.
         #[doc(alias = "mix")]
         #[inline]
         pub fn lerp(self, other: Self, s: $t) -> Self {
