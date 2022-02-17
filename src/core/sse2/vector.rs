@@ -239,7 +239,21 @@ impl Vector<f32> for __m128 {
 
     #[inline(always)]
     fn mul_add(self, a: Self, b: Self) -> Self {
-        unsafe { m128_mul_add(self, a, b) }
+        // By default, uses two different instructions as to produce a deterministic result
+        // consistent with other platforms (see the equivalent implementation for WASM).
+        //
+        // To use the faster/more accurate intrinsic instruction, enable the break-determinism
+        // feature flag.
+        unsafe {
+            #[cfg(feature = "break-determinism")]
+            {
+                m128_mul_add(self, a, b)
+            }
+            #[cfg(not(feature = "break-determinism"))]
+            {
+                _mm_add_ps(_mm_mul_ps(self, a), b)
+            }
+        }
     }
 
     #[inline(always)]
