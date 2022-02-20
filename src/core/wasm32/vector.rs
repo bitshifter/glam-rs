@@ -225,7 +225,18 @@ impl Vector<f32> for v128 {
 
     #[inline(always)]
     fn mul_add(self, b: Self, c: Self) -> Self {
-        f32x4_add(f32x4_mul(self, b), c)
+        unsafe {
+            let a = std::mem::transmute::<[f32; 4]>(self);
+            let b = std::mem::transmute::<[f32; 4]>(b);
+            let c = std::mem::transmute::<[f32; 4]>(c);
+
+            f32x4(
+                a[0].mul_add(b[0], c[0]),
+                a[1].mul_add(b[1], c[1]),
+                a[2].mul_add(b[2], c[2]),
+                a[3].mul_add(b[3], c[3]),
+            )
+        }
     }
 
     #[inline(always)]

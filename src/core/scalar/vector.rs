@@ -213,8 +213,8 @@ impl<T: NumEx> Vector<T> for XY<T> {
     #[inline]
     fn mul_add(self, b: Self, c: Self) -> Self {
         Self {
-            x: self.x * b.x + c.x,
-            y: self.y * b.y + c.y,
+            x: self.x.mul_add(b.x, c.x),
+            y: self.y.mul_add(b.y, c.y),
         }
     }
 
@@ -392,9 +392,9 @@ impl<T: NumEx> Vector<T> for XYZ<T> {
     #[inline]
     fn mul_add(self, b: Self, c: Self) -> Self {
         Self {
-            x: self.x * b.x + c.x,
-            y: self.y * b.y + c.y,
-            z: self.z * b.z + c.z,
+            x: self.x.mul_add(b.x, c.x),
+            y: self.y.mul_add(b.y, c.y),
+            z: self.z.mul_add(b.z, c.z),
         }
     }
 
@@ -594,10 +594,10 @@ impl<T: NumEx> Vector<T> for XYZW<T> {
     #[inline]
     fn mul_add(self, b: Self, c: Self) -> Self {
         Self {
-            x: self.x * b.x + c.x,
-            y: self.y * b.y + c.y,
-            z: self.z * b.z + c.z,
-            w: self.w * b.w + c.w,
+            x: self.x.mul_add(b.x, c.x),
+            y: self.y.mul_add(b.y, c.y),
+            z: self.z.mul_add(b.z, c.z),
+            w: self.w.mul_add(b.w, c.w),
         }
     }
 

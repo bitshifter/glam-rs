@@ -88,12 +88,14 @@ pub(crate) unsafe fn m128_ceil(v: __m128) -> __m128 {
 
 #[inline(always)]
 pub(crate) unsafe fn m128_mul_add(a: __m128, b: __m128, c: __m128) -> __m128 {
-    #[cfg(target_feature = "fma")]
+    // Only enable fused multiply-adds here if "fast-math" is enabled and the
+    // platform supports it. Otherwise this may break cross-platform determinism.
+    #[cfg(all(feature = "fast-math", target_feature = "fma"))]
     {
         _mm_fmadd_ps(a, b, c)
     }
 
-    #[cfg(not(target_feature = "fma"))]
+    #[cfg(any(not(feature = "fast-math"), not(target_feature = "fma")))]
     {
         _mm_add_ps(_mm_mul_ps(a, b), c)
     }
