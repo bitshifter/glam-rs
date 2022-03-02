@@ -235,7 +235,7 @@ impl Vector<f32> for v128 {
                 <f32 as Float>::mul_add(a[3], b[3], c[3]),
                 <f32 as Float>::mul_add(a[2], b[2], c[2]),
                 <f32 as Float>::mul_add(a[1], b[1], c[1]),
-                <f32 as Float>::mul_add(a[0], b[0], c[0),
+                <f32 as Float>::mul_add(a[0], b[0], c[0]),
             )
         }
     }

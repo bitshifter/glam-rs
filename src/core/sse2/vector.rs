@@ -246,7 +246,7 @@ impl Vector<f32> for __m128 {
 
         #[cfg(not(target_feature = "fma"))]
         {
-            unsafe { 
+            unsafe {
                 let a = core::mem::transmute::<Self, [f32; 4]>(self);
                 let b = core::mem::transmute::<Self, [f32; 4]>(b);
                 let c = core::mem::transmute::<Self, [f32; 4]>(c);
