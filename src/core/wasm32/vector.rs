@@ -224,23 +224,6 @@ impl Vector<f32> for v128 {
     }
 
     #[inline(always)]
-    fn mul_add(self, b: Self, c: Self) -> Self {
-        unsafe {
-            let a = core::mem::transmute::<Self, [f32; 4]>(self);
-            let b = core::mem::transmute::<Self, [f32; 4]>(b);
-            let c = core::mem::transmute::<Self, [f32; 4]>(c);
-
-            // wasm targets are *always* little endian
-            f32x4(
-                <f32 as Float>::mul_add(a[3], b[3], c[3]),
-                <f32 as Float>::mul_add(a[2], b[2], c[2]),
-                <f32 as Float>::mul_add(a[1], b[1], c[1]),
-                <f32 as Float>::mul_add(a[0], b[0], c[0]),
-            )
-        }
-    }
-
-    #[inline(always)]
     fn sub(self, other: Self) -> Self {
         f32x4_sub(self, other)
     }
