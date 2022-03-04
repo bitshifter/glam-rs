@@ -224,11 +224,6 @@ impl Vector<f32> for v128 {
     }
 
     #[inline(always)]
-    fn mul_add(self, b: Self, c: Self) -> Self {
-        f32x4_add(f32x4_mul(self, b), c)
-    }
-
-    #[inline(always)]
     fn sub(self, other: Self) -> Self {
         f32x4_sub(self, other)
     }

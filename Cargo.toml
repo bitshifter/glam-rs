@@ -36,6 +36,13 @@ libm = ["num-traits/libm"]
 # align types to match CUDA requirements
 cuda = []
 
+# Enables platform specific optimizations that might speed-up certain operations.
+# This will cause APIs to output different results depending on the platform used
+# and will likely break cross-platform determinism.
+# This should NOT be enabled by intermediate libraries, deferring the decision to
+# the end binary build instead.
+fast-math = []
+
 [dependencies]
 approx = { version = "0.5", optional = true, default-features = false }
 bytemuck = { version = "1.5", optional = true, default-features = false }

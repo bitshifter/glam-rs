@@ -482,8 +482,8 @@ impl FloatMatrix4x4<f32, v128> for Columns4<v128> {
     #[inline]
     fn transform_float4_as_point3(&self, other: v128) -> v128 {
         let mut res = self.x_axis.mul(Vector4::splat_x(other));
-        res = self.y_axis.mul_add(Vector4::splat_y(other), res);
-        res = self.z_axis.mul_add(Vector4::splat_z(other), res);
+        res = res.add(self.y_axis.mul(Vector4::splat_y(other)));
+        res = res.add(self.z_axis.mul(Vector4::splat_z(other)));
         res = self.w_axis.add(res);
         res
     }
@@ -491,16 +491,16 @@ impl FloatMatrix4x4<f32, v128> for Columns4<v128> {
     #[inline]
     fn transform_float4_as_vector3(&self, other: v128) -> v128 {
         let mut res = self.x_axis.mul(Vector4::splat_x(other));
-        res = self.y_axis.mul_add(Vector4::splat_y(other), res);
-        res = self.z_axis.mul_add(Vector4::splat_z(other), res);
+        res = res.add(self.y_axis.mul(Vector4::splat_y(other)));
+        res = res.add(self.z_axis.mul(Vector4::splat_z(other)));
         res
     }
 
     #[inline]
     fn project_float4_as_point3(&self, other: v128) -> v128 {
         let mut res = self.x_axis.mul(Vector4::splat_x(other));
-        res = self.y_axis.mul_add(Vector4::splat_y(other), res);
-        res = self.z_axis.mul_add(Vector4::splat_z(other), res);
+        res = res.add(self.y_axis.mul(Vector4::splat_y(other)));
+        res = res.add(self.z_axis.mul(Vector4::splat_z(other)));
         res = self.w_axis.add(res);
         res = res.mul(res.splat_w().recip());
         res

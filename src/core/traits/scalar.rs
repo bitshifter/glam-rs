@@ -29,6 +29,7 @@ pub trait Float: Num + Copy + core::ops::Neg<Output = Self> {
     fn floor(self) -> Self;
     fn is_finite(self) -> bool;
     fn is_nan(self) -> bool;
+    fn mul_add(self, b: Self, c: Self) -> Self;
     fn powf(self, n: Self) -> Self;
     fn recip(self) -> Self;
     fn round(self) -> Self;
@@ -96,6 +97,10 @@ macro_rules! impl_float_trait {
             #[inline(always)]
             fn is_nan(self) -> bool {
                 $t::is_nan(self)
+            }
+            #[inline(always)]
+            fn mul_add(self, b: Self, c: Self) -> Self {
+                $t::mul_add(self, b, c)
             }
             #[inline(always)]
             fn powf(self, n: Self) -> Self {

@@ -211,14 +211,6 @@ impl<T: NumEx> Vector<T> for XY<T> {
     }
 
     #[inline]
-    fn mul_add(self, b: Self, c: Self) -> Self {
-        Self {
-            x: self.x * b.x + c.x,
-            y: self.y * b.y + c.y,
-        }
-    }
-
-    #[inline]
     fn sub(self, other: Self) -> Self {
         Self {
             x: self.x - other.x,
@@ -386,15 +378,6 @@ impl<T: NumEx> Vector<T> for XYZ<T> {
             x: self.x * other.x,
             y: self.y * other.y,
             z: self.z * other.z,
-        }
-    }
-
-    #[inline]
-    fn mul_add(self, b: Self, c: Self) -> Self {
-        Self {
-            x: self.x * b.x + c.x,
-            y: self.y * b.y + c.y,
-            z: self.z * b.z + c.z,
         }
     }
 
@@ -588,16 +571,6 @@ impl<T: NumEx> Vector<T> for XYZW<T> {
             y: self.y * other.y,
             z: self.z * other.z,
             w: self.w * other.w,
-        }
-    }
-
-    #[inline]
-    fn mul_add(self, b: Self, c: Self) -> Self {
-        Self {
-            x: self.x * b.x + c.x,
-            y: self.y * b.y + c.y,
-            z: self.z * b.z + c.z,
-            w: self.w * b.w + c.w,
         }
     }
 
@@ -1020,11 +993,6 @@ impl Vector<f32> for XYZF32A16 {
     #[inline]
     fn mul(self, other: Self) -> Self {
         XYZ::mul(self.into(), other.into()).into()
-    }
-
-    #[inline]
-    fn mul_add(self, b: Self, c: Self) -> Self {
-        XYZ::mul_add(self.into(), b.into(), c.into()).into()
     }
 
     #[inline]

@@ -148,13 +148,6 @@ macro_rules! impl_vecn_common_methods {
         pub fn write_to_slice(self, slice: &mut [$t]) {
             $vectrait::write_to_slice_unaligned(self.0, slice)
         }
-
-        /// Per element multiplication/addition of the three inputs: b + (self * a)
-        #[inline(always)]
-        #[allow(dead_code)]
-        pub(crate) fn mul_add(self, a: Self, b: Self) -> Self {
-            Self(self.0.mul_add(a.0, b.0))
-        }
     };
 }
 
@@ -476,6 +469,18 @@ macro_rules! impl_vecn_float_methods {
             } else {
                 self
             }
+        }
+
+        /// Fused multiply-add. Computes `(self * a) + b` element-wise with only one rounding
+        /// error, yielding a more accurate result than an unfused multiply-add.
+        ///
+        /// Using `mul_add` *may* be more performant than an unfused multiply-add if the target
+        /// architecture has a dedicated fma CPU instruction. However, this is not always true,
+        /// and will be heavily dependant on designing algorithms with specific target hardware in
+        /// mind.
+        #[inline(always)]
+        pub fn mul_add(self, a: Self, b: Self) -> Self {
+            Self($flttrait::mul_add(self.0, a.0, b.0))
         }
     };
 }

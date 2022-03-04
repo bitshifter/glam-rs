@@ -238,11 +238,6 @@ impl Vector<f32> for __m128 {
     }
 
     #[inline(always)]
-    fn mul_add(self, a: Self, b: Self) -> Self {
-        unsafe { m128_mul_add(self, a, b) }
-    }
-
-    #[inline(always)]
     fn sub(self, other: Self) -> Self {
         unsafe { _mm_sub_ps(self, other) }
     }
@@ -656,6 +651,12 @@ impl FloatVector3<f32> for __m128 {
         unsafe { _mm_cmpunord_ps(self, self) }
     }
 
+    #[inline(always)]
+    #[cfg(target_feature = "fma")]
+    fn mul_add(self, b: Self, c: Self) -> Self {
+        unsafe { _mm_fmadd_ps(self, b, c) }
+    }
+
     #[inline]
     fn floor(self) -> Self {
         unsafe { m128_floor(self) }
@@ -747,6 +748,12 @@ impl FloatVector4<f32> for __m128 {
     #[inline(always)]
     fn is_nan_mask(self) -> Self::Mask {
         unsafe { _mm_cmpunord_ps(self, self) }
+    }
+
+    #[inline(always)]
+    #[cfg(target_feature = "fma")]
+    fn mul_add(self, b: Self, c: Self) -> Self {
+        unsafe { _mm_fmadd_ps(self, b, c) }
     }
 
     #[inline]

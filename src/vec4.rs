@@ -386,17 +386,18 @@ impl_vecn_scalar_bit_op_traits!(UVec4, u32, XYZWU32);
 
 impl_vecn_bit_op_traits!(UVec4, XYZWU32);
 
-#[test]
-fn test_vec4_private() {
-    assert_eq!(
-        vec4(1.0, 1.0, 1.0, 1.0).mul_add(vec4(0.5, 2.0, -4.0, 0.0), vec4(-1.0, -1.0, -1.0, -1.0)),
-        vec4(-0.5, 1.0, -5.0, -1.0)
-    );
-}
-
 #[cfg(test)]
 mod tests {
     use super::{vec4, Vec3};
+
+    #[test]
+    fn test_vec4_mul_add() {
+        assert_eq!(
+            vec4(1.0, 1.0, 1.0, 1.0)
+                .mul_add(vec4(0.5, 2.0, -4.0, 0.0), vec4(-1.0, -1.0, -1.0, -1.0)),
+            vec4(-0.5, 1.0, -5.0, -1.0)
+        );
+    }
 
     #[test]
     fn from_vec3() {

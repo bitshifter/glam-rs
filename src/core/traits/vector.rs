@@ -92,7 +92,6 @@ pub trait Vector<T>: Sized + Copy + Clone {
     fn add(self, other: Self) -> Self;
     fn div(self, other: Self) -> Self;
     fn mul(self, other: Self) -> Self;
-    fn mul_add(self, a: Self, b: Self) -> Self;
     fn rem(self, rhs: Self) -> Self;
     fn sub(self, other: Self) -> Self;
 
@@ -532,6 +531,14 @@ pub trait FloatVector2<T: FloatEx>: SignedVector2<T> {
     }
 
     #[inline]
+    fn mul_add(self, b: Self, c: Self) -> Self {
+        Self::new(
+            self.x().mul_add(b.x(), c.x()),
+            self.y().mul_add(b.y(), c.y()),
+        )
+    }
+
+    #[inline]
     fn is_nan_mask(self) -> Self::Mask
     where
         <Self as Vector<T>>::Mask: MaskVector2,
@@ -628,6 +635,15 @@ pub trait FloatVector3<T: FloatEx>: SignedVector3<T> {
     #[inline]
     fn is_nan(self) -> bool {
         self.x().is_nan() || self.y().is_nan() || self.z().is_nan()
+    }
+
+    #[inline]
+    fn mul_add(self, b: Self, c: Self) -> Self {
+        Self::new(
+            self.x().mul_add(b.x(), c.x()),
+            self.y().mul_add(b.y(), c.y()),
+            self.z().mul_add(b.z(), c.z()),
+        )
     }
 
     #[inline]
@@ -751,6 +767,16 @@ pub trait FloatVector4<T: FloatEx>: SignedVector4<T> {
     #[inline]
     fn is_nan(self) -> bool {
         self.x().is_nan() || self.y().is_nan() || self.z().is_nan() || self.w().is_nan()
+    }
+
+    #[inline]
+    fn mul_add(self, b: Self, c: Self) -> Self {
+        Self::new(
+            self.x().mul_add(b.x(), c.x()),
+            self.y().mul_add(b.y(), c.y()),
+            self.z().mul_add(b.z(), c.z()),
+            self.w().mul_add(b.w(), c.w()),
+        )
     }
 
     #[inline]

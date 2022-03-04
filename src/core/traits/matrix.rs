@@ -297,8 +297,8 @@ pub trait Matrix3x3<T: NumEx, V3: Vector3<T>>: Matrix<T> {
     #[inline]
     fn mul_vector(&self, other: V3) -> V3 {
         let mut res = self.x_axis().mul(other.splat_x());
-        res = self.y_axis().mul_add(other.splat_y(), res);
-        res = self.z_axis().mul_add(other.splat_z(), res);
+        res = res.add(self.y_axis().mul(other.splat_y()));
+        res = res.add(self.z_axis().mul(other.splat_z()));
         res
     }
 
@@ -641,9 +641,9 @@ pub trait Matrix4x4<T: NumEx, V4: Vector4<T>>: Matrix<T> {
     #[inline]
     fn mul_vector(&self, other: V4) -> V4 {
         let mut res = self.x_axis().mul(other.splat_x());
-        res = self.y_axis().mul_add(other.splat_y(), res);
-        res = self.z_axis().mul_add(other.splat_z(), res);
-        res = self.w_axis().mul_add(other.splat_w(), res);
+        res = res.add(self.y_axis().mul(other.splat_y()));
+        res = res.add(self.z_axis().mul(other.splat_z()));
+        res = res.add(self.w_axis().mul(other.splat_w()));
         res
     }
 
