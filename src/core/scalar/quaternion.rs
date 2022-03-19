@@ -26,13 +26,24 @@ impl<T: FloatEx> Quaternion<T> for XYZW<T> {
     }
 
     #[inline]
-    fn slerp(self, end: Self, s: T) -> Self {
+    fn slerp(self, mut end: Self, s: T) -> Self {
         // http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/
 
         glam_assert!(FloatVector4::is_normalized(self));
         glam_assert!(FloatVector4::is_normalized(end));
 
-        let dot = self.dot(end);
+        let mut dot = self.dot(end);
+
+        // Note that a rotation can be represented by two quaternions: `q` and
+        // `-q`. The slerp path between `q` and `end` will be different from the
+        // path between `-q` and `end`. One path will take the long way around and
+        // one will take the short way. In order to correct for this, the `dot`
+        // product between `self` and `end` should be positive. If the `dot`
+        // product is negative, slerp between `self` and `-end`.
+        if dot < T::ZERO {
+            end = end.mul_scalar(T::NEG_ONE);
+            dot = -dot;
+        }
 
         if dot > T::from_f32(0.9995) {
             // assumes lerp returns a normalized quaternion

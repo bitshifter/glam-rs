@@ -289,6 +289,34 @@ macro_rules! impl_quat_tests {
             }
         });
 
+        glam_test!(test_slerp_tau, {
+            let q1 = $quat::IDENTITY;
+            let q2 = $quat::from_rotation_x(core::$t::consts::TAU);
+            let s = q1.slerp(q2, 1.);
+            assert!(s.is_finite());
+        });
+
+        glam_test!(test_slerp_negative_tau, {
+            let q1 = $quat::IDENTITY;
+            let q2 = $quat::from_rotation_x(-core::$t::consts::TAU);
+            let s = q1.slerp(q2, 1.);
+            assert!(s.is_finite());
+        });
+
+        glam_test!(test_slerp_pi, {
+            let q1 = $quat::IDENTITY;
+            let q2 = $quat::from_rotation_x(core::$t::consts::PI);
+            let s = q1.slerp(q2, 1.);
+            assert!(s.is_finite());
+        });
+
+        glam_test!(test_slerp_negative_pi, {
+            let q1 = $quat::IDENTITY;
+            let q2 = $quat::from_rotation_x(-core::$t::consts::PI);
+            let s = q1.slerp(q2, 1.);
+            assert!(s.is_finite());
+        });
+
         glam_test!(test_fmt, {
             let a = $quat::IDENTITY;
             assert_eq!(

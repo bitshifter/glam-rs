@@ -40,14 +40,26 @@ impl Quaternion<f32> for __m128 {
     }
 
     #[inline]
-    fn slerp(self, end: Self, s: f32) -> Self {
+    fn slerp(self, mut end: Self, s: f32) -> Self {
         // http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/
         glam_assert!(FloatVector4::is_normalized(self));
         glam_assert!(FloatVector4::is_normalized(end));
 
         const DOT_THRESHOLD: f32 = 0.9995;
 
-        let dot = Vector4::dot(self, end);
+        let mut dot = Vector4::dot(self, end);
+
+        // Note that a rotation can be represented by two quaternions: `q` and
+        // `-q`. The slerp path between `q` and `end` will be different from the
+        // path between `-q` and `end`. One path will take the long way around and
+        // one will take the short way. In order to correct for this, the `dot`
+        // product between `self` and `end` should be positive. If the `dot`
+        // product is negative, slerp between `self` and `-end`.
+        if dot < 0.0 {
+            const PS_NEGATIVE_ONE: __m128 = const_f32x4!([-1.0; 4]);
+            end = unsafe { _mm_mul_ps(PS_NEGATIVE_ONE, end) };
+            dot = -dot;
+        }
 
         if dot > DOT_THRESHOLD {
             // assumes lerp returns a normalized quaternion
