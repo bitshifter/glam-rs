@@ -416,7 +416,7 @@ macro_rules! impl_vecn_float_methods {
         #[doc(alias = "mix")]
         #[inline]
         pub fn lerp(self, other: Self, s: $t) -> Self {
-            self + ((other - self) * s)
+            self * (1.0 - s) + other * s
         }
 
         /// Returns true if the absolute difference of all elements between `self` and `other` is
