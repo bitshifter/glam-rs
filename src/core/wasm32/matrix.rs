@@ -269,7 +269,7 @@ impl Matrix4x4<f32, v128> for Columns4<v128> {
         let swp2a = i32x4_shuffle::<2, 1, 1, 0>(self.z_axis, self.z_axis);
         let swp3a = i32x4_shuffle::<3, 3, 2, 3>(self.w_axis, self.w_axis);
         let swp2b = i32x4_shuffle::<3, 3, 2, 3>(self.z_axis, self.z_axis);
-        let swp3b = i32x4_shuffle::<2, 1, 2, 0>(self.w_axis, self.w_axis);
+        let swp3b = i32x4_shuffle::<2, 1, 1, 0>(self.w_axis, self.w_axis);
         let swp2c = i32x4_shuffle::<2, 1, 0, 0>(self.z_axis, self.z_axis);
         let swp3c = i32x4_shuffle::<0, 0, 2, 1>(self.w_axis, self.w_axis);
 
