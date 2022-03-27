@@ -283,7 +283,7 @@ impl Matrix4x4<f32, __m128> for Columns4<__m128> {
             let swp2a = _mm_shuffle_ps(self.z_axis, self.z_axis, 0b00_01_01_10);
             let swp3a = _mm_shuffle_ps(self.w_axis, self.w_axis, 0b11_10_11_11);
             let swp2b = _mm_shuffle_ps(self.z_axis, self.z_axis, 0b11_10_11_11);
-            let swp3b = _mm_shuffle_ps(self.w_axis, self.w_axis, 0b00_10_01_10);
+            let swp3b = _mm_shuffle_ps(self.w_axis, self.w_axis, 0b00_01_01_10);
             let swp2c = _mm_shuffle_ps(self.z_axis, self.z_axis, 0b00_00_01_10);
             let swp3c = _mm_shuffle_ps(self.w_axis, self.w_axis, 0b01_10_00_00);
 
