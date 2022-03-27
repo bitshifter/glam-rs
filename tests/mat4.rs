@@ -300,6 +300,16 @@ macro_rules! impl_mat4_tests {
                 2.0 * 2.0 * 2.0,
                 $mat4::from_scale($newvec3(2.0, 2.0, 2.0)).determinant()
             );
+            assert_eq!(
+                1.0,
+                $newmat4(
+                    $newvec4(0.0, 0.0, 0.0, 1.0),
+                    $newvec4(1.0, 0.0, 0.0, 0.0),
+                    $newvec4(0.0, 0.0, 1.0, 0.0),
+                    $newvec4(0.0, 1.0, 0.0, 0.0),
+                )
+                .determinant()
+            );
         });
 
         glam_test!(test_mat4_inverse, {

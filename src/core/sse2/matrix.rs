@@ -279,11 +279,18 @@ impl Matrix4x4<f32, __m128> for Columns4<__m128> {
     #[inline]
     fn determinant(&self) -> f32 {
         unsafe {
-            // Based on https://github.com/g-truc/glm `glm_mat4_determinant`
+            // SubFactor00 = m[2][2] * m[3][3] - m[3][2] * m[2][3];
+            // SubFactor01 = m[2][1] * m[3][3] - m[3][1] * m[2][3];
+            // SubFactor02 = m[2][1] * m[3][2] - m[3][1] * m[2][2];
+            // SubFactor03 = m[2][0] * m[3][3] - m[3][0] * m[2][3];
+            // SubFactor04 = m[2][0] * m[3][2] - m[3][0] * m[2][2];
+            // SubFactor05 = m[2][0] * m[3][1] - m[3][0] * m[2][1];
+
+            // Based on https://github.com/g-truc/glm `glm_mat4_determinant_lowp`
             let swp2a = _mm_shuffle_ps(self.z_axis, self.z_axis, 0b00_01_01_10);
             let swp3a = _mm_shuffle_ps(self.w_axis, self.w_axis, 0b11_10_11_11);
             let swp2b = _mm_shuffle_ps(self.z_axis, self.z_axis, 0b11_10_11_11);
-            let swp3b = _mm_shuffle_ps(self.w_axis, self.w_axis, 0b00_10_01_10);
+            let swp3b = _mm_shuffle_ps(self.w_axis, self.w_axis, 0b00_01_01_10);
             let swp2c = _mm_shuffle_ps(self.z_axis, self.z_axis, 0b00_00_01_10);
             let swp3c = _mm_shuffle_ps(self.w_axis, self.w_axis, 0b01_10_00_00);
 
