@@ -664,6 +664,13 @@ macro_rules! impl_vec2_float_tests {
 
             assert!(catch_unwind(|| $vec2::ZERO.normalize()).is_err());
         });
+
+        glam_test!(test_mul_add, {
+            assert_eq!(
+                $vec2::new(1.0, 1.0).mul_add($vec2::new(0.5, 2.0), $vec2::new(-1.0, -1.0)),
+                $vec2::new(-0.5, 1.0)
+            );
+        });
     };
 }
 

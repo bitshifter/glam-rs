@@ -737,6 +737,14 @@ macro_rules! impl_vec3_float_tests {
                 assert!(b.is_normalized() && n.dot(b).abs() < eps);
             }
         });
+
+        glam_test!(test_mul_add, {
+            assert_eq!(
+                $vec3::new(1.0, 1.0, 1.0)
+                    .mul_add($vec3::new(0.5, 2.0, -4.0), $vec3::new(-1.0, -1.0, -1.0)),
+                $vec3::new(-0.5, 1.0, -5.0)
+            );
+        });
     };
 }
 

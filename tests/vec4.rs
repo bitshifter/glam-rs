@@ -784,8 +784,19 @@ macro_rules! impl_vec4_float_tests {
                 $vec4::new(6.0, 8.0, 0.0, 0.0) // lengthened to length 10.0
             );
         });
+
+        glam_test!(test_mul_add, {
+            assert_eq!(
+                $vec4::new(1.0, 1.0, 1.0, 1.0).mul_add(
+                    $vec4::new(0.5, 2.0, -4.0, 0.0),
+                    $vec4::new(-1.0, -1.0, -1.0, -1.0)
+                ),
+                $vec4::new(-0.5, 1.0, -5.0, -1.0)
+            );
+        });
     };
 }
+
 macro_rules! impl_vec4_scalar_shift_op_test {
     ($vec4:ident, $t_min:literal, $t_max:literal, $rhs_min:literal, $rhs_max:literal) => {
         glam_test!(test_vec4_scalar_shift_ops, {

@@ -416,14 +416,6 @@ impl_vecn_scalar_bit_op_traits!(UVec3, u32, XYZU32);
 
 impl_vecn_bit_op_traits!(UVec3, XYZU32);
 
-#[test]
-fn test_vec3_mul_add() {
-    assert_eq!(
-        vec3a(1.0, 1.0, 1.0).mul_add(vec3a(0.5, 2.0, -4.0), vec3a(-1.0, -1.0, -1.0)),
-        vec3a(-0.5, 1.0, -5.0)
-    );
-}
-
 mod const_test_vec3 {
     const_assert_eq!(
         core::mem::align_of::<f32>(),
