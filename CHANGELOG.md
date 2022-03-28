@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+### Added
+
+* Added `to_array()` to `Quat` and `DQuat`.
+* Added `mul_add` method to all vector types - note that this will be slower
+  without hardware support enabled.
+* Added the `fast-math` flag which will sacrifice some float determinism for
+  speed.
+
+### Fixed
+
+* Fixed a bug in the `sse2` and `wasm32` implementations of
+  `Mat4::determinant()`.
+
 ## [0.20.2] - 2021-12-20
 
 ### Fixed
