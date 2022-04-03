@@ -27,7 +27,7 @@ macro_rules! impl_vecn_common_methods {
 
         /// Returns a vector containing the minimum values for each element of `self` and `other`.
         ///
-        /// In other words this computes `[self.x.max(other.x), self.y.max(other.y), ..]`.
+        /// In other words this computes `[self.x.min(other.x), self.y.min(other.y), ..]`.
         #[inline(always)]
         pub fn min(self, other: Self) -> Self {
             Self(self.0.min(other.0))
