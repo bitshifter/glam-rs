@@ -437,13 +437,6 @@ macro_rules! impl_quat_methods {
         /// When `s` is `0.0`, the result will be equal to `self`.  When `s`
         /// is `1.0`, the result will be equal to `end`.
         ///
-        /// Note that a rotation can be represented by two quaternions: `q` and
-        /// `-q`. The slerp path between `q` and `end` will be different from the
-        /// path between `-q` and `end`. One path will take the long way around and
-        /// one will take the short way. In order to correct for this, the `dot`
-        /// product between `self` and `end` should be positive. If the `dot`
-        /// product is negative, slerp between `-self` and `end`.
-        ///
         /// # Panics
         ///
         /// Will panic if `self` or `end` are not normalized when `glam_assert` is enabled.

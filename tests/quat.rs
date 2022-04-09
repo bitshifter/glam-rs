@@ -280,13 +280,43 @@ macro_rules! impl_quat_tests {
             while s <= 1.0 {
                 let q0 = $quat::from_rotation_y(deg(0.0));
                 let q1 = $quat::from_rotation_y(deg(90.0));
-                assert_approx_eq!(
-                    $quat::from_rotation_y(deg(s * 90.0)),
-                    q0.slerp(q1, s),
-                    1.0e-3
-                );
+                let result = q0.slerp(q1, s);
+                assert_approx_eq!($quat::from_rotation_y(deg(s * 90.0)), result, 1.0e-3);
+                assert!(result.is_normalized());
                 s += step;
             }
+        });
+
+        glam_test!(test_slerp_tau, {
+            let q1 = $quat::IDENTITY;
+            let q2 = $quat::from_rotation_x(core::$t::consts::TAU);
+            let s = q1.slerp(q2, 1.);
+            assert!(s.is_finite());
+            assert!(s.is_normalized());
+        });
+
+        glam_test!(test_slerp_negative_tau, {
+            let q1 = $quat::IDENTITY;
+            let q2 = $quat::from_rotation_x(-core::$t::consts::TAU);
+            let s = q1.slerp(q2, 1.);
+            assert!(s.is_finite());
+            assert!(s.is_normalized());
+        });
+
+        glam_test!(test_slerp_pi, {
+            let q1 = $quat::IDENTITY;
+            let q2 = $quat::from_rotation_x(core::$t::consts::PI);
+            let s = q1.slerp(q2, 1.);
+            assert!(s.is_finite());
+            assert!(s.is_normalized());
+        });
+
+        glam_test!(test_slerp_negative_pi, {
+            let q1 = $quat::IDENTITY;
+            let q2 = $quat::from_rotation_x(-core::$t::consts::PI);
+            let s = q1.slerp(q2, 1.);
+            assert!(s.is_finite());
+            assert!(s.is_normalized());
         });
 
         glam_test!(test_fmt, {
