@@ -193,14 +193,38 @@ macro_rules! impl_vec4_tests {
         });
 
         glam_test!(test_hmin_hmax, {
-            assert_eq!(1 as $t, $new(1 as $t, 2 as $t, 3 as $t, 4 as $t).min_element());
-            assert_eq!(1 as $t, $new(4 as $t, 1 as $t, 2 as $t, 3 as $t).min_element());
-            assert_eq!(1 as $t, $new(3 as $t, 4 as $t, 1 as $t, 2 as $t).min_element());
-            assert_eq!(1 as $t, $new(2 as $t, 3 as $t, 4 as $t, 1 as $t).min_element());
-            assert_eq!(4 as $t, $new(1 as $t, 2 as $t, 3 as $t, 4 as $t).max_element());
-            assert_eq!(4 as $t, $new(4 as $t, 1 as $t, 2 as $t, 3 as $t).max_element());
-            assert_eq!(4 as $t, $new(3 as $t, 4 as $t, 1 as $t, 2 as $t).max_element());
-            assert_eq!(4 as $t, $new(2 as $t, 3 as $t, 4 as $t, 1 as $t).max_element());
+            assert_eq!(
+                1 as $t,
+                $new(1 as $t, 2 as $t, 3 as $t, 4 as $t).min_element()
+            );
+            assert_eq!(
+                1 as $t,
+                $new(4 as $t, 1 as $t, 2 as $t, 3 as $t).min_element()
+            );
+            assert_eq!(
+                1 as $t,
+                $new(3 as $t, 4 as $t, 1 as $t, 2 as $t).min_element()
+            );
+            assert_eq!(
+                1 as $t,
+                $new(2 as $t, 3 as $t, 4 as $t, 1 as $t).min_element()
+            );
+            assert_eq!(
+                4 as $t,
+                $new(1 as $t, 2 as $t, 3 as $t, 4 as $t).max_element()
+            );
+            assert_eq!(
+                4 as $t,
+                $new(4 as $t, 1 as $t, 2 as $t, 3 as $t).max_element()
+            );
+            assert_eq!(
+                4 as $t,
+                $new(3 as $t, 4 as $t, 1 as $t, 2 as $t).max_element()
+            );
+            assert_eq!(
+                4 as $t,
+                $new(2 as $t, 3 as $t, 4 as $t, 1 as $t).max_element()
+            );
             assert_eq!(
                 3 as $t,
                 $new(1 as $t, 2 as $t, 3 as $t, 4 as $t)
