@@ -153,9 +153,12 @@ macro_rules! impl_vec3_tests {
         });
 
         glam_test!(test_hmin_hmax, {
-            let a = $new(2 as $t, 3 as $t, 1 as $t);
-            assert_eq!(1 as $t, a.min_element());
-            assert_eq!(3 as $t, a.max_element());
+            assert_eq!(1 as $t, $new(1 as $t, 2 as $t, 3 as $t).min_element());
+            assert_eq!(1 as $t, $new(3 as $t, 1 as $t, 2 as $t).min_element());
+            assert_eq!(1 as $t, $new(2 as $t, 3 as $t, 1 as $t).min_element());
+            assert_eq!(3 as $t, $new(1 as $t, 2 as $t, 3 as $t).max_element());
+            assert_eq!(3 as $t, $new(3 as $t, 1 as $t, 2 as $t).max_element());
+            assert_eq!(3 as $t, $new(2 as $t, 3 as $t, 1 as $t).max_element());
         });
 
         glam_test!(test_eq, {

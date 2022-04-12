@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+### Fixed
+
+* Fixed a bug in the scalar implemetation of 4D vector `max_element` method
+  where the `w` element check was incorrect.
+
 ## [0.20.4] - 2022-04-11
 
 ### Fixed

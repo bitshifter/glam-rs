@@ -811,7 +811,7 @@ impl<T: NumEx> Vector4<T> for XYZW<T> {
 
     #[inline]
     fn max_element(self) -> T {
-        self.x.max(self.y.max(self.z.min(self.w)))
+        self.x.max(self.y.max(self.z.max(self.w)))
     }
 
     #[inline]
