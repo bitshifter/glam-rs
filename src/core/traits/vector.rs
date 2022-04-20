@@ -588,11 +588,7 @@ pub trait FloatVector2<T: FloatEx>: SignedVector2<T> {
         let angle = (self.dot(other) / (self.length_squared() * other.length_squared()).sqrt())
             .acos_approx();
 
-        if self.perp_dot(other) < T::ZERO {
-            -angle
-        } else {
-            angle
-        }
+        angle * self.perp_dot(other).signum()
     }
 }
 
