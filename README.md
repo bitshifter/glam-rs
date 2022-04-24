@@ -100,11 +100,6 @@ glam = { version = "0.20.4", default-features = false }
   `scalar-math` feature. It should work between all other builds of `glam`.
   Endian conversion is currently not supported
 * [`bytecheck`] - to perform archive validation when using the `rkyv` feature
-* [`fast-math`] - By default, glam attempts to provide bit-for-bit identical 
-  results on all platforms. Using this feature will enable platform specific 
-  optimizations that may not be identical to other platforms. **Intermediate 
-  libraries should not use this feature and defer the decision to the final 
-  binary build**.
 
 [`approx`]: https://docs.rs/approx
 [`bytemuck`]: https://docs.rs/bytemuck
@@ -123,6 +118,11 @@ glam = { version = "0.20.4", default-features = false }
   of parameters passed to `glam` to help catch runtime errors
 * `glam-assert` - adds validation assertions to all builds
 * `cuda` - forces `glam` types to match expected [cuda alignment]
+* `fast-math` - By default, glam attempts to provide bit-for-bit identical
+  results on all platforms. Using this feature will enable platform specific
+  optimizations that may not be identical to other platforms. **Intermediate
+  libraries should not use this feature and defer the decision to the final
+  binary build**.
 
 [cuda alignment]: https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#built-in-vector-types
 
