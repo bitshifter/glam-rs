@@ -71,14 +71,9 @@ macro_rules! impl_vec2_signed_methods {
         /// Returns `other` rotated by the angle of `self`. If `self` is normalized,
         /// then this just rotation. This is what you usually want. Otherwise,
         /// it will be like a rotation with a multiplication by `self`'s length.
-        ///
-        /// # Panics
-        ///
-        /// Will panic if `other` is not normalized when `glam_assert` is enabled.
         #[must_use]
-        #[inline]
+        #[inline(always)]
         pub fn rotate(self, other: Self) -> Self {
-            glam_assert!(other.is_normalized());
             Self::new(self.x*other.x - self.y*other.y,  self.y*other.x + self.x*other.y)
         }
     };

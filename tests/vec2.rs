@@ -673,7 +673,6 @@ macro_rules! impl_vec2_float_tests {
             );
         });
         
-        #[cfg(any(feature = "glam-assert", feature = "debug-glam-assert"))]
         glam_test!(test_rotate, {
             assert_eq!(
                 $vec2::new(0.0,1.0).rotate($vec2::new(1.0, 1.0)),
