@@ -672,6 +672,13 @@ macro_rules! impl_vec2_float_tests {
                 $vec2::new(-0.5, 1.0)
             );
         });
+
+        glam_test!(test_rotate, {
+            assert_eq!(
+                $vec2::new(0.0, 1.0).rotate($vec2::new(1.0, 1.0)),
+                $vec2::new(-1.0, 1.0)
+            );
+        });
     };
 }
 

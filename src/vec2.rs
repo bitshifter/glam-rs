@@ -67,6 +67,18 @@ macro_rules! impl_vec2_signed_methods {
         pub fn perp_dot(self, other: $vec2) -> $t {
             self.0.perp_dot(other.0)
         }
+
+        /// Returns `other` rotated by the angle of `self`. If `self` is normalized,
+        /// then this just rotation. This is what you usually want. Otherwise,
+        /// it will be like a rotation with a multiplication by `self`'s length.
+        #[must_use]
+        #[inline(always)]
+        pub fn rotate(self, other: Self) -> Self {
+            Self::new(
+                self.x * other.x - self.y * other.y,
+                self.y * other.x + self.x * other.y,
+            )
+        }
     };
 }
 
