@@ -392,6 +392,24 @@ macro_rules! impl_vec2_signed_tests {
             let a = $new(1 as $t, 2 as $t);
             assert_eq!($new(-1 as $t, -2 as $t), (-a));
         });
+
+        glam_test!(test_perp, {
+            let v1 = $vec2::new(1 as $t, 2 as $t);
+            let v2 = $vec2::new(1 as $t, 1 as $t);
+            let v1_perp = $vec2::new(-2 as $t, 1 as $t);
+
+            assert_eq!(v1_perp, v1.perp());
+            assert_eq!(v1.perp().dot(v1), 0 as $t);
+            assert_eq!(v2.perp().dot(v2), 0 as $t);
+            assert_eq!(v1.perp().dot(v2), v1.perp_dot(v2));
+        });
+
+        glam_test!(test_rotate, {
+            assert_eq!(
+                $vec2::new(0 as $t, 1 as $t).rotate($vec2::new(1 as $t, 1 as $t)),
+                $vec2::new(-1 as $t, 1 as $t)
+            );
+        });
     };
 }
 
@@ -427,7 +445,7 @@ macro_rules! impl_vec2_eq_hash_tests {
 }
 
 macro_rules! impl_vec2_float_tests {
-    ($t:ident, $const_new:ident, $new:ident, $vec2:ident, $vec3:ident, $mask:ident, $mat2:ident) => {
+    ($t:ident, $const_new:ident, $new:ident, $vec2:ident, $vec3:ident, $mask:ident) => {
         impl_vec2_signed_tests!($t, $const_new, $new, $vec2, $vec3, $mask);
         impl_vec_float_normalize_tests!($t, $vec2);
 
@@ -493,20 +511,6 @@ macro_rules! impl_vec2_float_tests {
             should_glam_assert!({ $vec2::ONE.reject_from($vec2::ZERO) });
             should_glam_assert!({ $vec2::ONE.project_onto_normalized($vec2::ONE) });
             should_glam_assert!({ $vec2::ONE.reject_from_normalized($vec2::ONE) });
-        });
-
-        glam_test!(test_perp, {
-            let v1 = $vec2::new(1.0, 2.0);
-            let v2 = $vec2::new(1.0, 1.0);
-            let v1_perp = $vec2::new(-2.0, 1.0);
-            let rot90 = $mat2::from_angle($t::to_radians(90.0));
-
-            assert_eq!(v1_perp, v1.perp());
-            assert_eq!(v1.perp().dot(v1), 0.0);
-            assert_eq!(v2.perp().dot(v2), 0.0);
-            assert_eq!(v1.perp().dot(v2), v1.perp_dot(v2));
-
-            assert_approx_eq!(v1.perp(), rot90 * v1);
         });
 
         glam_test!(test_sign, {
@@ -673,10 +677,19 @@ macro_rules! impl_vec2_float_tests {
             );
         });
 
-        glam_test!(test_rotate, {
-            assert_eq!(
-                $vec2::new(0.0, 1.0).rotate($vec2::new(1.0, 1.0)),
-                $vec2::new(-1.0, 1.0)
+        glam_test!(test_from_angle, {
+            assert_approx_eq!($vec2::from_angle(0.0), $vec2::new(1.0, 0.0));
+            assert_approx_eq!(
+                $vec2::from_angle(core::$t::consts::FRAC_PI_2),
+                $vec2::new(0.0, 1.0)
+            );
+            assert_approx_eq!(
+                $vec2::from_angle(core::$t::consts::PI),
+                $vec2::new(-1.0, 0.0)
+            );
+            assert_approx_eq!(
+                $vec2::from_angle(-core::$t::consts::FRAC_PI_2),
+                $vec2::new(0.0, -1.0)
             );
         });
     };
@@ -808,7 +821,7 @@ macro_rules! impl_vec2_bit_op_tests {
 }
 
 mod vec2 {
-    use glam::{const_vec2, vec2, BVec2, Mat2, Vec2, Vec3};
+    use glam::{const_vec2, vec2, BVec2, Vec2, Vec3};
 
     glam_test!(test_align, {
         use core::mem;
@@ -840,11 +853,11 @@ mod vec2 {
         assert_eq!(Vec2::new(1.0, 2.0), UVec2::new(1, 2).as_vec2());
     });
 
-    impl_vec2_float_tests!(f32, const_vec2, vec2, Vec2, Vec3, BVec2, Mat2);
+    impl_vec2_float_tests!(f32, const_vec2, vec2, Vec2, Vec3, BVec2);
 }
 
 mod dvec2 {
-    use glam::{const_dvec2, dvec2, BVec2, DMat2, DVec2, DVec3};
+    use glam::{const_dvec2, dvec2, BVec2, DVec2, DVec3};
 
     glam_test!(test_align, {
         use core::mem;
@@ -857,7 +870,7 @@ mod dvec2 {
         assert_eq!(1, mem::align_of::<BVec2>());
     });
 
-    impl_vec2_float_tests!(f64, const_dvec2, dvec2, DVec2, DVec3, BVec2, DMat2);
+    impl_vec2_float_tests!(f64, const_dvec2, dvec2, DVec2, DVec3, BVec2);
 }
 
 mod ivec2 {

@@ -452,6 +452,14 @@ pub trait SignedVector2<T: SignedEx>: SignedVector<T> + Vector2<T> {
     fn perp_dot(self, other: Self) -> T {
         (self.x() * other.y()) - (self.y() * other.x())
     }
+
+    #[inline]
+    fn rotate(self, other: Self) -> Self {
+        Self::new(
+            self.x() * other.x() - self.y() * other.y(),
+            self.y() * other.x() + self.x() * other.y(),
+        )
+    }
 }
 
 /// Vector methods specific to 3D vectors of signed types.
@@ -490,6 +498,12 @@ pub trait SignedVector4<T: SignedEx>: SignedVector<T> + Vector4<T> {
 }
 
 pub trait FloatVector2<T: FloatEx>: SignedVector2<T> {
+    #[inline]
+    fn from_angle(angle: T) -> Self {
+        let (sin, cos) = angle.sin_cos();
+        Self::new(cos, sin)
+    }
+
     #[inline]
     fn floor(self) -> Self {
         Self::new(self.x().floor(), self.y().floor())

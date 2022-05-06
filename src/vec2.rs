@@ -74,10 +74,7 @@ macro_rules! impl_vec2_signed_methods {
         #[must_use]
         #[inline(always)]
         pub fn rotate(self, other: Self) -> Self {
-            Self::new(
-                self.x * other.x - self.y * other.y,
-                self.y * other.x + self.x * other.y,
-            )
+            Self(self.0.rotate(other.0))
         }
     };
 }
@@ -86,6 +83,14 @@ macro_rules! impl_vec2_float_methods {
     ($t:ty, $vec2:ident, $vec3:ident, $mask:ident, $inner:ident) => {
         impl_vec2_signed_methods!($t, $vec2, $vec3, $mask, $inner);
         impl_vecn_float_methods!($t, $vec2, $mask, $inner, FloatVector2);
+
+        /// Creates a 2D vector containing `[angle.cos(), angle.sin()]`. This can be used in
+        /// conjunction with the `rotate` method, e.g. `Vec2::from_angle(PI).rotate(Vec2::Y)` will
+        /// create the vector [-1, 0] and rotate `Vec2::Y` around it returning `-Vec2::Y`.
+        #[inline(always)]
+        pub fn from_angle(angle: $t) -> Self {
+            Self(FloatVector2::from_angle(angle))
+        }
 
         /// Returns the angle (in radians) between `self` and `other`.
         ///
