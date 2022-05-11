@@ -75,7 +75,7 @@ impl FloatCompare for f64 {
 impl FloatCompare for Mat2 {
     #[inline]
     fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
-        self.abs_diff_eq(other, max_abs_diff)
+        self.abs_diff_eq(*other, max_abs_diff)
     }
     #[inline]
     fn abs_diff(&self, other: &Self) -> Self {
@@ -89,7 +89,7 @@ impl FloatCompare for Mat2 {
 impl FloatCompare for DMat2 {
     #[inline]
     fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
-        self.abs_diff_eq(other, max_abs_diff as f64)
+        self.abs_diff_eq(*other, max_abs_diff as f64)
     }
     #[inline]
     fn abs_diff(&self, other: &Self) -> Self {

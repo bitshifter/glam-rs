@@ -27,9 +27,6 @@ glam-assert = []
 # this is primarily for testing the fallback implementation
 scalar-math = []
 
-# deprecated and will move to a separate crate
-transform-types = []
-
 # libm is required when building no_std
 libm = ["num-traits/libm"]
 
@@ -94,11 +91,6 @@ harness = false
 [[bench]]
 name = "quat"
 harness = false
-
-[[bench]]
-name = "transform"
-harness = false
-required-features = ["transform-types"]
 
 [[bench]]
 name = "vec2"

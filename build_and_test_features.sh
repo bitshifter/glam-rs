@@ -6,13 +6,13 @@ set -e
 FEATURE_SETS=(
   # std
   "std"
-  "std approx bytemuck mint rand serde debug-glam-assert transform-types"
-  "std scalar-math approx bytemuck mint rand serde debug-glam-assert transform-types"
+  "std approx bytemuck mint rand serde debug-glam-assert"
+  "std scalar-math approx bytemuck mint rand serde debug-glam-assert"
   "std cuda"
   "std scalar-math cuda"
   # no_std
   "libm"
-  "libm scalar-math approx bytemuck mint rand serde debug-glam-assert transform-types"
+  "libm scalar-math approx bytemuck mint rand serde debug-glam-assert"
 )
 
 rustc --version

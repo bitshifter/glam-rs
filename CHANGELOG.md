@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+### Breaking changes
+
+* Minimum Supported Version of Rust bumped to 1.57.0 to allow panicking in
+  constant evaluation.
+
+* The `abs_diff_eq` method on `Mat2` and `DMat2` now takes `other` by value
+  instead of reference. This is consistent with the other matrix types.
+
+### Changed
+
+* Source code is now largely generated. This largely removes the usage of macros
+  internally to improve readability. There should be no change in API or
+  behavior.
+
+### Removed
+
+* Deleted deprecated `TransformRT` and `TransformSRT` types.
+
 ## [0.20.5] - 2022-04-12
 
 ### Fixed

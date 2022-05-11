@@ -4,7 +4,7 @@ Conversion from quaternions to Euler rotation sequences.
 From: http://bediyap.com/programming/convert-quaternion-to-euler-rotations/
 */
 
-use super::quat::{DQuat, Quat};
+use super::{DQuat, Quat};
 use crate::core::traits::scalar::*;
 
 /// Euler rotation sequences.

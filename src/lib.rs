@@ -249,95 +249,41 @@ The minimum supported Rust version is `1.52.1`.
 #[macro_use]
 mod macros;
 
-#[macro_use]
-mod mat;
-
-#[macro_use]
-mod vec;
-
 #[doc(hidden)]
 pub mod cast;
 
-mod affine2;
-mod affine3;
 mod core;
 mod euler;
 mod features;
-mod mat2;
-mod mat3;
-mod mat4;
-mod quat;
-mod vec2;
-mod vec3;
-mod vec4;
-mod vec_mask;
 
 #[cfg(target_arch = "spirv")]
 mod spirv;
-
-#[cfg(feature = "transform-types")]
-mod transform;
 
 #[doc(hidden)]
 pub use self::core::storage::{XY, XYZ, XYZW};
 
 /** `bool` vector mask types. */
-pub mod bool {
-    pub use super::vec_mask::{BVec2, BVec3, BVec3A, BVec4, BVec4A};
-}
+pub mod bool;
 pub use self::bool::*;
 
 /** `f32` vector, quaternion and matrix types. */
-pub mod f32 {
-    pub use super::affine2::Affine2;
-    pub use super::affine3::Affine3A;
-    pub use super::mat2::{mat2, Mat2};
-    pub use super::mat3::{mat3, mat3a, Mat3, Mat3A};
-    pub use super::mat4::{mat4, Mat4};
-    pub use super::quat::{quat, Quat};
-    pub use super::vec2::{vec2, Vec2};
-    pub use super::vec3::{vec3, vec3a, Vec3, Vec3A};
-    pub use super::vec4::{vec4, Vec4};
-
-    #[cfg(feature = "transform-types")]
-    #[allow(deprecated)]
-    pub use super::transform::{TransformRT, TransformSRT};
-}
+pub mod f32;
 pub use self::f32::*;
 
 /** `f64` vector, quaternion and matrix types. */
-pub mod f64 {
-    pub use super::affine2::DAffine2;
-    pub use super::affine3::DAffine3;
-    pub use super::mat2::{dmat2, DMat2};
-    pub use super::mat3::{dmat3, DMat3};
-    pub use super::mat4::{dmat4, DMat4};
-    pub use super::quat::{dquat, DQuat};
-    pub use super::vec2::{dvec2, DVec2};
-    pub use super::vec3::{dvec3, DVec3};
-    pub use super::vec4::{dvec4, DVec4};
-}
+pub mod f64;
 pub use self::f64::*;
 
 /** `i32` vector types. */
-pub mod i32 {
-    pub use super::vec2::{ivec2, IVec2};
-    pub use super::vec3::{ivec3, IVec3};
-    pub use super::vec4::{ivec4, IVec4};
-}
+pub mod i32;
 pub use self::i32::*;
 
 /** `u32` vector types. */
-pub mod u32 {
-    pub use super::vec2::{uvec2, UVec2};
-    pub use super::vec3::{uvec3, UVec3};
-    pub use super::vec4::{uvec4, UVec4};
-}
+pub mod u32;
 pub use self::u32::*;
 
 /** Traits adding swizzle methods to all vector types. */
 pub mod swizzles;
-
 pub use self::swizzles::{Vec2Swizzles, Vec3Swizzles, Vec4Swizzles};
 
 /** Rotation Helper */
