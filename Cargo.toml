@@ -57,6 +57,7 @@ bytecheck = { version = "0.6", optional = true, default-features = false}
 # rand_xoshiro is required for tests if rand is enabled
 rand_xoshiro = "0.6"
 serde_json = "1.0"
+trybuild = "1.0"
 
 [target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
 criterion = { version = "0.3", features = ["html_reports"] }
