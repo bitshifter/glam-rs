@@ -34,23 +34,26 @@ macro_rules! const_assert_eq {
 #[macro_export]
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 macro_rules! const_m128 {
-    ($fx4:expr) => {
-        unsafe { $crate::cast::Vec4Cast { fx4: $fx4 }.m128 }
-    };
+    ($fx4:expr) => {{
+        let fx4 = $fx4;
+        unsafe { $crate::cast::Vec4Cast { fx4 }.m128 }
+    }};
 }
 
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 macro_rules! const_f32x4 {
-    ($fx4:expr) => {
-        unsafe { $crate::cast::Vec4Cast { fx4: $fx4 }.m128 }
-    };
+    ($fx4:expr) => {{
+        let fx4 = $fx4;
+        unsafe { $crate::cast::Vec4Cast { fx4 }.m128 }
+    }};
 }
 
 #[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
 macro_rules! const_f32x4 {
-    ($fx4:expr) => {
-        unsafe { $crate::cast::Vec4Cast { fx4: $fx4 }.v128 }
-    };
+    ($fx4:expr) => {{
+        let fx4 = $fx4;
+        unsafe { $crate::cast::Vec4Cast { fx4 }.v128 }
+    }};
 }
 
 /// Creates a `Vec2` that can be used to initialize a constant value.
@@ -62,9 +65,10 @@ macro_rules! const_f32x4 {
 /// ```
 #[macro_export]
 macro_rules! const_vec2 {
-    ($fx2:expr) => {
-        unsafe { $crate::cast::Vec2Cast { fx2: $fx2 }.v2 }
-    };
+    ($fx2:expr) => {{
+        let fx2 = $fx2;
+        unsafe { $crate::cast::Vec2Cast { fx2 }.v2 }
+    }};
 }
 
 /// Creates a `Vec3` that can be used to initialize a constant value.
@@ -76,9 +80,10 @@ macro_rules! const_vec2 {
 /// ```
 #[macro_export]
 macro_rules! const_vec3 {
-    ($fx3:expr) => {
-        unsafe { $crate::cast::Vec3Cast { fx3: $fx3 }.v3 }
-    };
+    ($fx3:expr) => {{
+        let fx3 = $fx3;
+        unsafe { $crate::cast::Vec3Cast { fx3 }.v3 }
+    }};
 }
 
 /// Creates a `Vec3A` that can be used to initialize a constant value.
@@ -90,14 +95,15 @@ macro_rules! const_vec3 {
 /// ```
 #[macro_export]
 macro_rules! const_vec3a {
-    ($fx3:expr) => {
+    ($fx3:expr) => {{
+        let fx3 = $fx3;
         unsafe {
             $crate::cast::Vec4Cast {
-                fx4: [$fx3[0], $fx3[1], $fx3[2], 0.0],
+                fx4: [fx3[0], fx3[1], fx3[2], 0.0],
             }
             .v3a
         }
-    };
+    }};
 }
 
 /// Creates a `Vec4` that can be used to initialize a constant value.
@@ -109,9 +115,10 @@ macro_rules! const_vec3a {
 /// ```
 #[macro_export]
 macro_rules! const_vec4 {
-    ($fx4:expr) => {
-        unsafe { $crate::cast::Vec4Cast { fx4: $fx4 }.v4 }
-    };
+    ($fx4:expr) => {{
+        let fx4 = $fx4;
+        unsafe { $crate::cast::Vec4Cast { fx4 }.v4 }
+    }};
 }
 
 /// Creates a `Mat2` from two column vectors that can be used to initialize a constant value.
@@ -123,20 +130,25 @@ macro_rules! const_vec4 {
 /// ```
 #[macro_export]
 macro_rules! const_mat2 {
-    ($col0:expr, $col1:expr) => {
+    ($col0:expr, $col1:expr) => {{
+        let col0 = $col0;
+        let col1 = $col1;
         unsafe {
             $crate::cast::Mat2Cast {
-                v2x2: [$crate::const_vec2!($col0), $crate::const_vec2!($col1)],
+                v2x2: [$crate::const_vec2!(col0), $crate::const_vec2!(col1)],
             }
             .m2
         }
-    };
-    ($fx4:expr) => {
-        $crate::const_mat2!(
-            $crate::cast::Vec4Cast { fx4: $fx4 }.fx2x2[0],
-            $crate::cast::Vec4Cast { fx4: $fx4 }.fx2x2[1]
-        )
-    };
+    }};
+    ($fx4:expr) => {{
+        let fx4 = $fx4;
+        unsafe {
+            $crate::const_mat2!(
+                $crate::cast::Vec4Cast { fx4 }.fx2x2[0],
+                $crate::cast::Vec4Cast { fx4 }.fx2x2[1]
+            )
+        }
+    }};
 }
 
 /// Creates a `Mat3` from three column vectors that can be used to initialize a constant value.
@@ -148,25 +160,31 @@ macro_rules! const_mat2 {
 /// ```
 #[macro_export]
 macro_rules! const_mat3 {
-    ($col0:expr, $col1:expr, $col2:expr) => {
+    ($col0:expr, $col1:expr, $col2:expr) => {{
+        let col0 = $col0;
+        let col1 = $col1;
+        let col2 = $col2;
         unsafe {
             $crate::cast::Mat3Cast {
                 v3x3: [
-                    $crate::const_vec3!($col0),
-                    $crate::const_vec3!($col1),
-                    $crate::const_vec3!($col2),
+                    $crate::const_vec3!(col0),
+                    $crate::const_vec3!(col1),
+                    $crate::const_vec3!(col2),
                 ],
             }
             .m3
         }
-    };
-    ($fx9:expr) => {
-        $crate::const_mat3!(
-            $crate::cast::F32x9Cast { fx9: $fx9 }.fx3x3[0],
-            $crate::cast::F32x9Cast { fx9: $fx9 }.fx3x3[1],
-            $crate::cast::F32x9Cast { fx9: $fx9 }.fx3x3[2]
-        )
-    };
+    }};
+    ($fx9:expr) => {{
+        let fx9 = $fx9;
+        unsafe {
+            $crate::const_mat3!(
+                $crate::cast::F32x9Cast { fx9 }.fx3x3[0],
+                $crate::cast::F32x9Cast { fx9 }.fx3x3[1],
+                $crate::cast::F32x9Cast { fx9 }.fx3x3[2]
+            )
+        }
+    }};
 }
 
 /// Creates a `Mat3A` from three column vectors that can be used to initialize a constant value.
@@ -178,25 +196,31 @@ macro_rules! const_mat3 {
 /// ```
 #[macro_export]
 macro_rules! const_mat3a {
-    ($col0:expr, $col1:expr, $col2:expr) => {
+    ($col0:expr, $col1:expr, $col2:expr) => {{
+        let col0 = $col0;
+        let col1 = $col1;
+        let col2 = $col2;
         unsafe {
             $crate::cast::Mat3ACast {
                 v3x3: [
-                    $crate::const_vec3a!($col0),
-                    $crate::const_vec3a!($col1),
-                    $crate::const_vec3a!($col2),
+                    $crate::const_vec3a!(col0),
+                    $crate::const_vec3a!(col1),
+                    $crate::const_vec3a!(col2),
                 ],
             }
             .m3
         }
-    };
-    ($fx9:expr) => {
-        $crate::const_mat3a!(
-            $crate::cast::F32x9Cast { fx9: $fx9 }.fx3x3[0],
-            $crate::cast::F32x9Cast { fx9: $fx9 }.fx3x3[1],
-            $crate::cast::F32x9Cast { fx9: $fx9 }.fx3x3[2]
-        )
-    };
+    }};
+    ($fx9:expr) => {{
+        let fx9 = $fx9;
+        unsafe {
+            $crate::const_mat3a!(
+                $crate::cast::F32x9Cast { fx9 }.fx3x3[0],
+                $crate::cast::F32x9Cast { fx9 }.fx3x3[1],
+                $crate::cast::F32x9Cast { fx9 }.fx3x3[2]
+            )
+        }
+    }};
 }
 
 /// Creates a `Mat4` from four column vectors that can be used to initialize a constant value.
@@ -213,27 +237,34 @@ macro_rules! const_mat3a {
 /// ```
 #[macro_export]
 macro_rules! const_mat4 {
-    ($col0:expr, $col1:expr, $col2:expr, $col3:expr) => {
+    ($col0:expr, $col1:expr, $col2:expr, $col3:expr) => {{
+        let col0 = $col0;
+        let col1 = $col1;
+        let col2 = $col2;
+        let col3 = $col3;
         unsafe {
             $crate::cast::Mat4Cast {
                 v4x4: [
-                    $crate::const_vec4!($col0),
-                    $crate::const_vec4!($col1),
-                    $crate::const_vec4!($col2),
-                    $crate::const_vec4!($col3),
+                    $crate::const_vec4!(col0),
+                    $crate::const_vec4!(col1),
+                    $crate::const_vec4!(col2),
+                    $crate::const_vec4!(col3),
                 ],
             }
             .m4
         }
-    };
-    ($fx16:expr) => {
-        $crate::const_mat4!(
-            $crate::cast::F32x16Cast { fx16: $fx16 }.fx4x4[0],
-            $crate::cast::F32x16Cast { fx16: $fx16 }.fx4x4[1],
-            $crate::cast::F32x16Cast { fx16: $fx16 }.fx4x4[2],
-            $crate::cast::F32x16Cast { fx16: $fx16 }.fx4x4[3]
-        )
-    };
+    }};
+    ($fx16:expr) => {{
+        let fx16 = $fx16;
+        unsafe {
+            $crate::const_mat4!(
+                $crate::cast::F32x16Cast { fx16 }.fx4x4[0],
+                $crate::cast::F32x16Cast { fx16 }.fx4x4[1],
+                $crate::cast::F32x16Cast { fx16 }.fx4x4[2],
+                $crate::cast::F32x16Cast { fx16 }.fx4x4[3]
+            )
+        }
+    }};
 }
 
 /// Creates a `Quat` from `x`, `y`, `z` and `w` values that can be used to initialize a constant
@@ -245,9 +276,10 @@ macro_rules! const_mat4 {
 /// ```
 #[macro_export]
 macro_rules! const_quat {
-    ($fx4:expr) => {
-        unsafe { $crate::cast::Vec4Cast { fx4: $fx4 }.q }
-    };
+    ($fx4:expr) => {{
+        let fx4 = $fx4;
+        unsafe { $crate::cast::Vec4Cast { fx4 }.q }
+    }};
 }
 
 /// Creates a `DVec2` that can be used to initialize a constant value.
@@ -259,9 +291,10 @@ macro_rules! const_quat {
 /// ```
 #[macro_export]
 macro_rules! const_dvec2 {
-    ($fx2:expr) => {
-        unsafe { $crate::cast::DVec2Cast { fx2: $fx2 }.v2 }
-    };
+    ($fx2:expr) => {{
+        let fx2 = $fx2;
+        unsafe { $crate::cast::DVec2Cast { fx2 }.v2 }
+    }};
 }
 
 /// Creates a `DVec3` that can be used to initialize a constant value.
@@ -273,9 +306,10 @@ macro_rules! const_dvec2 {
 /// ```
 #[macro_export]
 macro_rules! const_dvec3 {
-    ($fx3:expr) => {
-        unsafe { $crate::cast::DVec3Cast { fx3: $fx3 }.v3 }
-    };
+    ($fx3:expr) => {{
+        let fx3 = $fx3;
+        unsafe { $crate::cast::DVec3Cast { fx3 }.v3 }
+    }};
 }
 
 /// Creates a `DVec4` that can be used to initialize a constant value.
@@ -287,9 +321,10 @@ macro_rules! const_dvec3 {
 /// ```
 #[macro_export]
 macro_rules! const_dvec4 {
-    ($fx4:expr) => {
-        unsafe { $crate::cast::DVec4Cast { fx4: $fx4 }.v4 }
-    };
+    ($fx4:expr) => {{
+        let fx4 = $fx4;
+        unsafe { $crate::cast::DVec4Cast { fx4 }.v4 }
+    }};
 }
 
 /// Creates a `DMat2` from two column vectors that can be used to initialize a constant value.
@@ -301,20 +336,25 @@ macro_rules! const_dvec4 {
 /// ```
 #[macro_export]
 macro_rules! const_dmat2 {
-    ($col0:expr, $col1:expr) => {
+    ($col0:expr, $col1:expr) => {{
+        let col0 = $col0;
+        let col1 = $col1;
         unsafe {
             $crate::cast::DMat2Cast {
-                v2x2: [$crate::const_dvec2!($col0), $crate::const_dvec2!($col1)],
+                v2x2: [$crate::const_dvec2!(col0), $crate::const_dvec2!(col1)],
             }
             .m2
         }
-    };
-    ($fx4:expr) => {
-        $crate::const_dmat2!(
-            $crate::cast::DVec4Cast { fx4: $fx4 }.fx2x2[0],
-            $crate::cast::DVec4Cast { fx4: $fx4 }.fx2x2[1]
-        )
-    };
+    }};
+    ($fx4:expr) => {{
+        let fx4 = $fx4;
+        unsafe {
+            $crate::const_dmat2!(
+                $crate::cast::DVec4Cast { fx4 }.fx2x2[0],
+                $crate::cast::DVec4Cast { fx4 }.fx2x2[1]
+            )
+        }
+    }};
 }
 
 /// Creates a `DMat3` from three column vectors that can be used to initialize a constant value.
@@ -327,25 +367,31 @@ macro_rules! const_dmat2 {
 /// ```
 #[macro_export]
 macro_rules! const_dmat3 {
-    ($col0:expr, $col1:expr, $col2:expr) => {
+    ($col0:expr, $col1:expr, $col2:expr) => {{
+        let col0 = $col0;
+        let col1 = $col1;
+        let col2 = $col2;
         unsafe {
             $crate::cast::DMat3Cast {
                 v3x3: [
-                    $crate::const_dvec3!($col0),
-                    $crate::const_dvec3!($col1),
-                    $crate::const_dvec3!($col2),
+                    $crate::const_dvec3!(col0),
+                    $crate::const_dvec3!(col1),
+                    $crate::const_dvec3!(col2),
                 ],
             }
             .m3
         }
-    };
-    ($fx9:expr) => {
-        $crate::const_dmat3!(
-            $crate::cast::F64x9Cast { fx9: $fx9 }.fx3x3[0],
-            $crate::cast::F64x9Cast { fx9: $fx9 }.fx3x3[1],
-            $crate::cast::F64x9Cast { fx9: $fx9 }.fx3x3[2]
-        )
-    };
+    }};
+    ($fx9:expr) => {{
+        let fx9 = $fx9;
+        unsafe {
+            $crate::const_dmat3!(
+                $crate::cast::F64x9Cast { fx9 }.fx3x3[0],
+                $crate::cast::F64x9Cast { fx9 }.fx3x3[1],
+                $crate::cast::F64x9Cast { fx9 }.fx3x3[2]
+            )
+        }
+    }};
 }
 
 /// Creates a `DMat4` from four column vectors that can be used to initialize a constant value.
@@ -362,27 +408,34 @@ macro_rules! const_dmat3 {
 /// ```
 #[macro_export]
 macro_rules! const_dmat4 {
-    ($col0:expr, $col1:expr, $col2:expr, $col3:expr) => {
+    ($col0:expr, $col1:expr, $col2:expr, $col3:expr) => {{
+        let col0 = $col0;
+        let col1 = $col1;
+        let col2 = $col2;
+        let col3 = $col3;
         unsafe {
             $crate::cast::DMat4Cast {
                 v4x4: [
-                    $crate::const_dvec4!($col0),
-                    $crate::const_dvec4!($col1),
-                    $crate::const_dvec4!($col2),
-                    $crate::const_dvec4!($col3),
+                    $crate::const_dvec4!(col0),
+                    $crate::const_dvec4!(col1),
+                    $crate::const_dvec4!(col2),
+                    $crate::const_dvec4!(col3),
                 ],
             }
             .m4
         }
-    };
-    ($fx16:expr) => {
-        $crate::const_dmat4!(
-            $crate::cast::F64x16Cast { fx16: $fx16 }.fx4x4[0],
-            $crate::cast::F64x16Cast { fx16: $fx16 }.fx4x4[1],
-            $crate::cast::F64x16Cast { fx16: $fx16 }.fx4x4[2],
-            $crate::cast::F64x16Cast { fx16: $fx16 }.fx4x4[3]
-        )
-    };
+    }};
+    ($fx16:expr) => {{
+        let fx16 = $fx16;
+        unsafe {
+            $crate::const_dmat4!(
+                $crate::cast::F64x16Cast { fx16 }.fx4x4[0],
+                $crate::cast::F64x16Cast { fx16 }.fx4x4[1],
+                $crate::cast::F64x16Cast { fx16 }.fx4x4[2],
+                $crate::cast::F64x16Cast { fx16 }.fx4x4[3]
+            )
+        }
+    }};
 }
 
 /// Creates a `DQuat` from `x`, `y`, `z` and `w` values that can be used to initialize a constant
@@ -394,9 +447,10 @@ macro_rules! const_dmat4 {
 /// ```
 #[macro_export]
 macro_rules! const_dquat {
-    ($fx4:expr) => {
-        unsafe { $crate::cast::DVec4Cast { fx4: $fx4 }.q }
-    };
+    ($fx4:expr) => {{
+        let fx4 = $fx4;
+        unsafe { $crate::cast::DVec4Cast { fx4 }.q }
+    }};
 }
 
 /// Creates a `IVec2` that can be used to initialize a constant value.
@@ -408,9 +462,10 @@ macro_rules! const_dquat {
 /// ```
 #[macro_export]
 macro_rules! const_ivec2 {
-    ($ix2:expr) => {
-        unsafe { $crate::cast::IVec2Cast { ix2: $ix2 }.v2 }
-    };
+    ($ix2:expr) => {{
+        let ix2 = $ix2;
+        unsafe { $crate::cast::IVec2Cast { ix2 }.v2 }
+    }};
 }
 
 /// Creates a `IVec3` that can be used to initialize a constant value.
@@ -422,9 +477,10 @@ macro_rules! const_ivec2 {
 /// ```
 #[macro_export]
 macro_rules! const_ivec3 {
-    ($ix3:expr) => {
-        unsafe { $crate::cast::IVec3Cast { ix3: $ix3 }.v3 }
-    };
+    ($ix3:expr) => {{
+        let ix3 = $ix3;
+        unsafe { $crate::cast::IVec3Cast { ix3 }.v3 }
+    }};
 }
 
 /// Creates a `IVec4` that can be used to initialize a constant value.
@@ -436,9 +492,10 @@ macro_rules! const_ivec3 {
 /// ```
 #[macro_export]
 macro_rules! const_ivec4 {
-    ($ix4:expr) => {
-        unsafe { $crate::cast::IVec4Cast { ix4: $ix4 }.v4 }
-    };
+    ($ix4:expr) => {{
+        let ix4 = $ix4;
+        unsafe { $crate::cast::IVec4Cast { ix4 }.v4 }
+    }};
 }
 
 /// Creates a `UVec2` that can be used to initialize a constant value.
@@ -450,9 +507,10 @@ macro_rules! const_ivec4 {
 /// ```
 #[macro_export]
 macro_rules! const_uvec2 {
-    ($ux2:expr) => {
-        unsafe { $crate::cast::UVec2Cast { ux2: $ux2 }.v2 }
-    };
+    ($ux2:expr) => {{
+        let ux2 = $ux2;
+        unsafe { $crate::cast::UVec2Cast { ux2 }.v2 }
+    }};
 }
 
 /// Creates a `UVec3` that can be used to initialize a constant value.
@@ -464,9 +522,10 @@ macro_rules! const_uvec2 {
 /// ```
 #[macro_export]
 macro_rules! const_uvec3 {
-    ($ux3:expr) => {
-        unsafe { $crate::cast::UVec3Cast { ux3: $ux3 }.v3 }
-    };
+    ($ux3:expr) => {{
+        let ux3 = $ux3;
+        unsafe { $crate::cast::UVec3Cast { ux3 }.v3 }
+    }};
 }
 
 /// Creates a `UVec4` that can be used to initialize a constant value.
@@ -478,7 +537,8 @@ macro_rules! const_uvec3 {
 /// ```
 #[macro_export]
 macro_rules! const_uvec4 {
-    ($ux4:expr) => {
-        unsafe { $crate::cast::UVec4Cast { ux4: $ux4 }.v4 }
-    };
+    ($ux4:expr) => {{
+        let ux4 = $ux4;
+        unsafe { $crate::cast::UVec4Cast { ux4 }.v4 }
+    }};
 }
