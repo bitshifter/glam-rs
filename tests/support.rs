@@ -1,3 +1,4 @@
+#[path = "support/macros.rs"]
 #[macro_use]
 mod macros;
 
