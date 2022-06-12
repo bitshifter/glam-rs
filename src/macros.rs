@@ -18,10 +18,7 @@ macro_rules! const_assert {
         // FIXME: everything is align 16 on spirv - ignore for now
         #[cfg(not(target_arch = "spirv"))]
         #[allow(unknown_lints, clippy::eq_op)]
-        const _: [(); 0 - !{
-            const ASSERT: bool = $x;
-            ASSERT
-        } as usize] = [];
+        const _: () = assert!($x);
     };
 }
 
