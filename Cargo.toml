@@ -1,7 +1,7 @@
 [package]
 name = "glam"
 version = "0.20.5" # remember to update html_root_url
-edition = "2018"
+edition = "2021"
 authors = ["Cameron Hart <cameron.hart@gmail.com>"]
 description = "A simple and fast 3D math library for games and graphics"
 repository = "https://github.com/bitshifter/glam-rs"
@@ -9,6 +9,7 @@ readme = "README.md"
 license = "MIT OR Apache-2.0"
 keywords = ["gamedev", "math", "matrix", "vector", "quaternion"]
 categories = ["game-engines", "no-std"]
+rust-version = "1.57"
 
 [badges]
 maintenance = { status = "actively-developed" }
