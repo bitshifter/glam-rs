@@ -12,402 +12,706 @@ impl Vec4Swizzles for Vec4 {
 
     #[inline]
     fn xx(self) -> Vec2 {
-        Vec2::new(self.x, self.x)
+        Vec2 {
+            x: self.x,
+            y: self.x,
+        }
     }
 
     #[inline]
     fn xy(self) -> Vec2 {
-        Vec2::new(self.x, self.y)
+        Vec2 {
+            x: self.x,
+            y: self.y,
+        }
     }
 
     #[inline]
     fn xz(self) -> Vec2 {
-        Vec2::new(self.x, self.z)
+        Vec2 {
+            x: self.x,
+            y: self.z,
+        }
     }
 
     #[inline]
     fn xw(self) -> Vec2 {
-        Vec2::new(self.x, self.w)
+        Vec2 {
+            x: self.x,
+            y: self.w,
+        }
     }
 
     #[inline]
     fn yx(self) -> Vec2 {
-        Vec2::new(self.y, self.x)
+        Vec2 {
+            x: self.y,
+            y: self.x,
+        }
     }
 
     #[inline]
     fn yy(self) -> Vec2 {
-        Vec2::new(self.y, self.y)
+        Vec2 {
+            x: self.y,
+            y: self.y,
+        }
     }
 
     #[inline]
     fn yz(self) -> Vec2 {
-        Vec2::new(self.y, self.z)
+        Vec2 {
+            x: self.y,
+            y: self.z,
+        }
     }
 
     #[inline]
     fn yw(self) -> Vec2 {
-        Vec2::new(self.y, self.w)
+        Vec2 {
+            x: self.y,
+            y: self.w,
+        }
     }
 
     #[inline]
     fn zx(self) -> Vec2 {
-        Vec2::new(self.z, self.x)
+        Vec2 {
+            x: self.z,
+            y: self.x,
+        }
     }
 
     #[inline]
     fn zy(self) -> Vec2 {
-        Vec2::new(self.z, self.y)
+        Vec2 {
+            x: self.z,
+            y: self.y,
+        }
     }
 
     #[inline]
     fn zz(self) -> Vec2 {
-        Vec2::new(self.z, self.z)
+        Vec2 {
+            x: self.z,
+            y: self.z,
+        }
     }
 
     #[inline]
     fn zw(self) -> Vec2 {
-        Vec2::new(self.z, self.w)
+        Vec2 {
+            x: self.z,
+            y: self.w,
+        }
     }
 
     #[inline]
     fn wx(self) -> Vec2 {
-        Vec2::new(self.w, self.x)
+        Vec2 {
+            x: self.w,
+            y: self.x,
+        }
     }
 
     #[inline]
     fn wy(self) -> Vec2 {
-        Vec2::new(self.w, self.y)
+        Vec2 {
+            x: self.w,
+            y: self.y,
+        }
     }
 
     #[inline]
     fn wz(self) -> Vec2 {
-        Vec2::new(self.w, self.z)
+        Vec2 {
+            x: self.w,
+            y: self.z,
+        }
     }
 
     #[inline]
     fn ww(self) -> Vec2 {
-        Vec2::new(self.w, self.w)
+        Vec2 {
+            x: self.w,
+            y: self.w,
+        }
     }
 
     #[inline]
     fn xxx(self) -> Vec3 {
-        Vec3::new(self.x, self.x, self.x)
+        Vec3 {
+            x: self.x,
+            y: self.x,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn xxy(self) -> Vec3 {
-        Vec3::new(self.x, self.x, self.y)
+        Vec3 {
+            x: self.x,
+            y: self.x,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn xxz(self) -> Vec3 {
-        Vec3::new(self.x, self.x, self.z)
+        Vec3 {
+            x: self.x,
+            y: self.x,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn xxw(self) -> Vec3 {
-        Vec3::new(self.x, self.x, self.w)
+        Vec3 {
+            x: self.x,
+            y: self.x,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn xyx(self) -> Vec3 {
-        Vec3::new(self.x, self.y, self.x)
+        Vec3 {
+            x: self.x,
+            y: self.y,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn xyy(self) -> Vec3 {
-        Vec3::new(self.x, self.y, self.y)
+        Vec3 {
+            x: self.x,
+            y: self.y,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn xyz(self) -> Vec3 {
-        Vec3::new(self.x, self.y, self.z)
+        Vec3 {
+            x: self.x,
+            y: self.y,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn xyw(self) -> Vec3 {
-        Vec3::new(self.x, self.y, self.w)
+        Vec3 {
+            x: self.x,
+            y: self.y,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn xzx(self) -> Vec3 {
-        Vec3::new(self.x, self.z, self.x)
+        Vec3 {
+            x: self.x,
+            y: self.z,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn xzy(self) -> Vec3 {
-        Vec3::new(self.x, self.z, self.y)
+        Vec3 {
+            x: self.x,
+            y: self.z,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn xzz(self) -> Vec3 {
-        Vec3::new(self.x, self.z, self.z)
+        Vec3 {
+            x: self.x,
+            y: self.z,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn xzw(self) -> Vec3 {
-        Vec3::new(self.x, self.z, self.w)
+        Vec3 {
+            x: self.x,
+            y: self.z,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn xwx(self) -> Vec3 {
-        Vec3::new(self.x, self.w, self.x)
+        Vec3 {
+            x: self.x,
+            y: self.w,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn xwy(self) -> Vec3 {
-        Vec3::new(self.x, self.w, self.y)
+        Vec3 {
+            x: self.x,
+            y: self.w,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn xwz(self) -> Vec3 {
-        Vec3::new(self.x, self.w, self.z)
+        Vec3 {
+            x: self.x,
+            y: self.w,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn xww(self) -> Vec3 {
-        Vec3::new(self.x, self.w, self.w)
+        Vec3 {
+            x: self.x,
+            y: self.w,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn yxx(self) -> Vec3 {
-        Vec3::new(self.y, self.x, self.x)
+        Vec3 {
+            x: self.y,
+            y: self.x,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn yxy(self) -> Vec3 {
-        Vec3::new(self.y, self.x, self.y)
+        Vec3 {
+            x: self.y,
+            y: self.x,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn yxz(self) -> Vec3 {
-        Vec3::new(self.y, self.x, self.z)
+        Vec3 {
+            x: self.y,
+            y: self.x,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn yxw(self) -> Vec3 {
-        Vec3::new(self.y, self.x, self.w)
+        Vec3 {
+            x: self.y,
+            y: self.x,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn yyx(self) -> Vec3 {
-        Vec3::new(self.y, self.y, self.x)
+        Vec3 {
+            x: self.y,
+            y: self.y,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn yyy(self) -> Vec3 {
-        Vec3::new(self.y, self.y, self.y)
+        Vec3 {
+            x: self.y,
+            y: self.y,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn yyz(self) -> Vec3 {
-        Vec3::new(self.y, self.y, self.z)
+        Vec3 {
+            x: self.y,
+            y: self.y,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn yyw(self) -> Vec3 {
-        Vec3::new(self.y, self.y, self.w)
+        Vec3 {
+            x: self.y,
+            y: self.y,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn yzx(self) -> Vec3 {
-        Vec3::new(self.y, self.z, self.x)
+        Vec3 {
+            x: self.y,
+            y: self.z,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn yzy(self) -> Vec3 {
-        Vec3::new(self.y, self.z, self.y)
+        Vec3 {
+            x: self.y,
+            y: self.z,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn yzz(self) -> Vec3 {
-        Vec3::new(self.y, self.z, self.z)
+        Vec3 {
+            x: self.y,
+            y: self.z,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn yzw(self) -> Vec3 {
-        Vec3::new(self.y, self.z, self.w)
+        Vec3 {
+            x: self.y,
+            y: self.z,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn ywx(self) -> Vec3 {
-        Vec3::new(self.y, self.w, self.x)
+        Vec3 {
+            x: self.y,
+            y: self.w,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn ywy(self) -> Vec3 {
-        Vec3::new(self.y, self.w, self.y)
+        Vec3 {
+            x: self.y,
+            y: self.w,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn ywz(self) -> Vec3 {
-        Vec3::new(self.y, self.w, self.z)
+        Vec3 {
+            x: self.y,
+            y: self.w,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn yww(self) -> Vec3 {
-        Vec3::new(self.y, self.w, self.w)
+        Vec3 {
+            x: self.y,
+            y: self.w,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn zxx(self) -> Vec3 {
-        Vec3::new(self.z, self.x, self.x)
+        Vec3 {
+            x: self.z,
+            y: self.x,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn zxy(self) -> Vec3 {
-        Vec3::new(self.z, self.x, self.y)
+        Vec3 {
+            x: self.z,
+            y: self.x,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn zxz(self) -> Vec3 {
-        Vec3::new(self.z, self.x, self.z)
+        Vec3 {
+            x: self.z,
+            y: self.x,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn zxw(self) -> Vec3 {
-        Vec3::new(self.z, self.x, self.w)
+        Vec3 {
+            x: self.z,
+            y: self.x,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn zyx(self) -> Vec3 {
-        Vec3::new(self.z, self.y, self.x)
+        Vec3 {
+            x: self.z,
+            y: self.y,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn zyy(self) -> Vec3 {
-        Vec3::new(self.z, self.y, self.y)
+        Vec3 {
+            x: self.z,
+            y: self.y,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn zyz(self) -> Vec3 {
-        Vec3::new(self.z, self.y, self.z)
+        Vec3 {
+            x: self.z,
+            y: self.y,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn zyw(self) -> Vec3 {
-        Vec3::new(self.z, self.y, self.w)
+        Vec3 {
+            x: self.z,
+            y: self.y,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn zzx(self) -> Vec3 {
-        Vec3::new(self.z, self.z, self.x)
+        Vec3 {
+            x: self.z,
+            y: self.z,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn zzy(self) -> Vec3 {
-        Vec3::new(self.z, self.z, self.y)
+        Vec3 {
+            x: self.z,
+            y: self.z,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn zzz(self) -> Vec3 {
-        Vec3::new(self.z, self.z, self.z)
+        Vec3 {
+            x: self.z,
+            y: self.z,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn zzw(self) -> Vec3 {
-        Vec3::new(self.z, self.z, self.w)
+        Vec3 {
+            x: self.z,
+            y: self.z,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn zwx(self) -> Vec3 {
-        Vec3::new(self.z, self.w, self.x)
+        Vec3 {
+            x: self.z,
+            y: self.w,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn zwy(self) -> Vec3 {
-        Vec3::new(self.z, self.w, self.y)
+        Vec3 {
+            x: self.z,
+            y: self.w,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn zwz(self) -> Vec3 {
-        Vec3::new(self.z, self.w, self.z)
+        Vec3 {
+            x: self.z,
+            y: self.w,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn zww(self) -> Vec3 {
-        Vec3::new(self.z, self.w, self.w)
+        Vec3 {
+            x: self.z,
+            y: self.w,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn wxx(self) -> Vec3 {
-        Vec3::new(self.w, self.x, self.x)
+        Vec3 {
+            x: self.w,
+            y: self.x,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn wxy(self) -> Vec3 {
-        Vec3::new(self.w, self.x, self.y)
+        Vec3 {
+            x: self.w,
+            y: self.x,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn wxz(self) -> Vec3 {
-        Vec3::new(self.w, self.x, self.z)
+        Vec3 {
+            x: self.w,
+            y: self.x,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn wxw(self) -> Vec3 {
-        Vec3::new(self.w, self.x, self.w)
+        Vec3 {
+            x: self.w,
+            y: self.x,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn wyx(self) -> Vec3 {
-        Vec3::new(self.w, self.y, self.x)
+        Vec3 {
+            x: self.w,
+            y: self.y,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn wyy(self) -> Vec3 {
-        Vec3::new(self.w, self.y, self.y)
+        Vec3 {
+            x: self.w,
+            y: self.y,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn wyz(self) -> Vec3 {
-        Vec3::new(self.w, self.y, self.z)
+        Vec3 {
+            x: self.w,
+            y: self.y,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn wyw(self) -> Vec3 {
-        Vec3::new(self.w, self.y, self.w)
+        Vec3 {
+            x: self.w,
+            y: self.y,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn wzx(self) -> Vec3 {
-        Vec3::new(self.w, self.z, self.x)
+        Vec3 {
+            x: self.w,
+            y: self.z,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn wzy(self) -> Vec3 {
-        Vec3::new(self.w, self.z, self.y)
+        Vec3 {
+            x: self.w,
+            y: self.z,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn wzz(self) -> Vec3 {
-        Vec3::new(self.w, self.z, self.z)
+        Vec3 {
+            x: self.w,
+            y: self.z,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn wzw(self) -> Vec3 {
-        Vec3::new(self.w, self.z, self.w)
+        Vec3 {
+            x: self.w,
+            y: self.z,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn wwx(self) -> Vec3 {
-        Vec3::new(self.w, self.w, self.x)
+        Vec3 {
+            x: self.w,
+            y: self.w,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn wwy(self) -> Vec3 {
-        Vec3::new(self.w, self.w, self.y)
+        Vec3 {
+            x: self.w,
+            y: self.w,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn wwz(self) -> Vec3 {
-        Vec3::new(self.w, self.w, self.z)
+        Vec3 {
+            x: self.w,
+            y: self.w,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn www(self) -> Vec3 {
-        Vec3::new(self.w, self.w, self.w)
+        Vec3 {
+            x: self.w,
+            y: self.w,
+            z: self.w,
+        }
     }
 
     #[inline]

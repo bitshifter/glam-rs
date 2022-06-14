@@ -1,18 +1,15 @@
 // Generated from mat.rs template. Edit the template, not the generated file.
 
-use crate::{
-    core::{
-        storage::*,
-        traits::matrix::{FloatMatrix2x2, Matrix2x2, MatrixConst},
-    },
-    DMat2, Mat3, Vec2,
-};
+use crate::{swizzles::*, DMat2, Mat3, Vec2};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
-use core::ops::{Add, AddAssign, Deref, DerefMut, Mul, MulAssign, Neg, Sub, SubAssign};
+use core::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
 use core::arch::wasm32::*;
+
+#[cfg(not(feature = "std"))]
+use num_traits::Float;
 
 /// Creates a 2x2 matrix from column vectors.
 #[inline(always)]
@@ -27,75 +24,82 @@ pub struct Mat2(pub(crate) v128);
 
 impl Mat2 {
     /// A 2x2 matrix with all elements set to `0.0`.
-    pub const ZERO: Self = Self(v128::ZERO);
+    pub const ZERO: Self = Self(const_f32x4!([0.0; 4]));
 
     /// A 2x2 identity matrix, where all diagonal elements are `1`, and all off-diagonal elements are `0`.
-    pub const IDENTITY: Self = Self(v128::IDENTITY);
+    pub const IDENTITY: Self = Self(const_f32x4!([1.0, 0.0, 0.0, 1.0]));
 
     /// All NAN:s.
-    pub const NAN: Self = Self(<v128 as crate::core::traits::scalar::NanConstEx>::NAN);
+    pub const NAN: Self = Self(const_f32x4!([f32::NAN; 4]));
+
+    #[allow(clippy::too_many_arguments)]
+    #[inline(always)]
+    fn new(m00: f32, m01: f32, m10: f32, m11: f32) -> Self {
+        Self(f32x4(m00, m01, m10, m11))
+    }
 
     /// Creates a 2x2 matrix from two column vectors.
     #[inline(always)]
     pub fn from_cols(x_axis: Vec2, y_axis: Vec2) -> Self {
-        Self(v128::from_cols(x_axis.0, y_axis.0))
+        Self(f32x4(x_axis.x, x_axis.y, y_axis.x, y_axis.y))
     }
 
     /// Creates a 2x2 matrix from a `[f32; 4]` array stored in column major order.
     /// If your data is stored in row major you will need to `transpose` the returned
     /// matrix.
-    #[inline(always)]
+    #[inline]
     pub fn from_cols_array(m: &[f32; 4]) -> Self {
-        Self(v128::from_cols_array(m))
+        Self::new(m[0], m[1], m[2], m[3])
     }
 
     /// Creates a `[f32; 4]` array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
-    #[inline(always)]
+    #[inline]
     pub fn to_cols_array(&self) -> [f32; 4] {
-        self.0.to_cols_array()
+        [self.x_axis.x, self.x_axis.y, self.y_axis.x, self.y_axis.y]
     }
 
     /// Creates a 2x2 matrix from a `[[f32; 2]; 2]` 2D array stored in column major order.
     /// If your data is in row major order you will need to `transpose` the returned
     /// matrix.
-    #[inline(always)]
+    #[inline]
     pub fn from_cols_array_2d(m: &[[f32; 2]; 2]) -> Self {
-        Self(v128::from_cols_array_2d(m))
+        Self::from_cols(Vec2::from(m[0]), Vec2::from(m[1]))
     }
 
     /// Creates a `[[f32; 2]; 2]` 2D array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
-    #[inline(always)]
+    #[inline]
     pub fn to_cols_array_2d(&self) -> [[f32; 2]; 2] {
-        self.0.to_cols_array_2d()
+        [self.x_axis.into(), self.y_axis.into()]
     }
 
     /// Creates a 2x2 matrix with its diagonal set to `diagonal` and all other entries set to 0.
     #[doc(alias = "scale")]
-    #[inline(always)]
+    #[inline]
     pub fn from_diagonal(diagonal: Vec2) -> Self {
-        #[allow(clippy::useless_conversion)]
-        Self(v128::from_diagonal(diagonal.0.into()))
+        Self::new(diagonal.x, 0.0, 0.0, diagonal.y)
     }
 
     /// Creates a 2x2 matrix containing the combining non-uniform `scale` and rotation of
     /// `angle` (in radians).
-    #[inline(always)]
+    #[inline]
     pub fn from_scale_angle(scale: Vec2, angle: f32) -> Self {
-        Self(v128::from_scale_angle(scale.0, angle))
+        let (sin, cos) = angle.sin_cos();
+        Self::new(cos * scale.x, sin * scale.x, -sin * scale.y, cos * scale.y)
     }
 
     /// Creates a 2x2 matrix containing a rotation of `angle` (in radians).
-    #[inline(always)]
+    #[inline]
     pub fn from_angle(angle: f32) -> Self {
-        Self(v128::from_angle(angle))
+        let (sin, cos) = angle.sin_cos();
+        Self::new(cos, sin, -sin, cos)
     }
 
     /// Creates a 2x2 matrix from a 3x3 matrix, discarding the 2nd row and column.
-    #[inline(always)]
+    #[inline]
     pub fn from_mat3(m: Mat3) -> Self {
-        Self::from_cols(Vec2(m.x_axis.0.into()), Vec2(m.y_axis.0.into()))
+        Self::from_cols(m.x_axis.xy(), m.y_axis.xy())
     }
 
     /// Creates a 2x2 matrix from the first 4 values in `slice`.
@@ -103,9 +107,9 @@ impl Mat2 {
     /// # Panics
     ///
     /// Panics if `slice` is less than 4 elements long.
-    #[inline(always)]
+    #[inline]
     pub fn from_cols_slice(slice: &[f32]) -> Self {
-        Self(v128::from_cols_slice(slice))
+        Self::new(slice[0], slice[1], slice[2], slice[3])
     }
 
     /// Writes the columns of `self` to the first 4 elements in `slice`.
@@ -113,9 +117,12 @@ impl Mat2 {
     /// # Panics
     ///
     /// Panics if `slice` is less than 4 elements long.
-    #[inline(always)]
+    #[inline]
     pub fn write_cols_to_slice(self, slice: &mut [f32]) {
-        v128::write_cols_to_slice(&self.0, slice)
+        slice[0] = self.x_axis.x;
+        slice[1] = self.x_axis.y;
+        slice[2] = self.y_axis.x;
+        slice[3] = self.y_axis.y;
     }
 
     /// Returns the matrix column for the given `index`.
@@ -176,15 +183,19 @@ impl Mat2 {
 
     /// Returns the transpose of `self`.
     #[must_use]
-    #[inline(always)]
+    #[inline]
     pub fn transpose(&self) -> Self {
-        Self(self.0.transpose())
+        Self(i32x4_shuffle::<0, 2, 5, 7>(self.0, self.0))
     }
 
     /// Returns the determinant of `self`.
-    #[inline(always)]
+    #[inline]
     pub fn determinant(&self) -> f32 {
-        self.0.determinant()
+        let abcd = self.0;
+        let dcba = i32x4_shuffle::<3, 2, 5, 4>(abcd, abcd);
+        let prod = f32x4_mul(abcd, dcba);
+        let det = f32x4_sub(prod, i32x4_shuffle::<1, 1, 5, 5>(prod, prod));
+        f32x4_extract_lane::<0>(det)
     }
 
     /// Returns the inverse of `self`.
@@ -195,42 +206,70 @@ impl Mat2 {
     ///
     /// Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
     #[must_use]
-    #[inline(always)]
     pub fn inverse(&self) -> Self {
-        Self(self.0.inverse())
+        const SIGN: v128 = const_f32x4!([1.0, -1.0, -1.0, 1.0]);
+        let abcd = self.0;
+        let dcba = i32x4_shuffle::<3, 2, 5, 4>(abcd, abcd);
+        let prod = f32x4_mul(abcd, dcba);
+        let sub = f32x4_sub(prod, i32x4_shuffle::<1, 1, 5, 5>(prod, prod));
+        let det = i32x4_shuffle::<0, 0, 4, 4>(sub, sub);
+        let tmp = f32x4_div(SIGN, det);
+        glam_assert!(Mat2(tmp).is_finite());
+        let dbca = i32x4_shuffle::<3, 1, 6, 4>(abcd, abcd);
+        Self(f32x4_mul(dbca, tmp))
     }
 
     /// Transforms a 2D vector.
-    #[inline(always)]
-    pub fn mul_vec2(&self, other: Vec2) -> Vec2 {
-        Vec2(self.0.mul_vector(other.0))
+    #[inline]
+    pub fn mul_vec2(&self, rhs: Vec2) -> Vec2 {
+        use core::mem::MaybeUninit;
+        let abcd = self.0;
+        let xxyy = f32x4(rhs.x, rhs.x, rhs.y, rhs.y);
+        let axbxcydy = f32x4_mul(abcd, xxyy);
+        let cydyaxbx = i32x4_shuffle::<2, 3, 4, 5>(axbxcydy, axbxcydy);
+        let result = f32x4_add(axbxcydy, cydyaxbx);
+        let mut out: MaybeUninit<v128> = MaybeUninit::uninit();
+        unsafe {
+            v128_store(out.as_mut_ptr(), result);
+            *(&out.assume_init() as *const v128 as *const Vec2)
+        }
     }
 
     /// Multiplies two 2x2 matrices.
-    #[inline(always)]
-    pub fn mul_mat2(&self, other: &Self) -> Self {
-        Self(self.0.mul_matrix(&other.0))
+    #[inline]
+    pub fn mul_mat2(&self, rhs: &Self) -> Self {
+        let abcd = self.0;
+        let rhs = rhs.0;
+        let xxyy0 = i32x4_shuffle::<0, 0, 5, 5>(rhs, rhs);
+        let xxyy1 = i32x4_shuffle::<2, 2, 7, 7>(rhs, rhs);
+        let axbxcydy0 = f32x4_mul(abcd, xxyy0);
+        let axbxcydy1 = f32x4_mul(abcd, xxyy1);
+        let cydyaxbx0 = i32x4_shuffle::<2, 3, 4, 5>(axbxcydy0, axbxcydy0);
+        let cydyaxbx1 = i32x4_shuffle::<2, 3, 4, 5>(axbxcydy1, axbxcydy1);
+        let result0 = f32x4_add(axbxcydy0, cydyaxbx0);
+        let result1 = f32x4_add(axbxcydy1, cydyaxbx1);
+        Self(i32x4_shuffle::<0, 1, 4, 5>(result0, result1))
     }
 
     /// Adds two 2x2 matrices.
-    #[inline(always)]
-    pub fn add_mat2(&self, other: &Self) -> Self {
-        Self(self.0.add_matrix(&other.0))
+    #[inline]
+    pub fn add_mat2(&self, rhs: &Self) -> Self {
+        Self(f32x4_add(self.0, rhs.0))
     }
 
     /// Subtracts two 2x2 matrices.
-    #[inline(always)]
-    pub fn sub_mat2(&self, other: &Self) -> Self {
-        Self(self.0.sub_matrix(&other.0))
+    #[inline]
+    pub fn sub_mat2(&self, rhs: &Self) -> Self {
+        Self(f32x4_sub(self.0, rhs.0))
     }
 
     /// Multiplies a 2x2 matrix by a scalar.
-    #[inline(always)]
-    pub fn mul_scalar(&self, other: f32) -> Self {
-        Self(self.0.mul_scalar(other))
+    #[inline]
+    pub fn mul_scalar(&self, rhs: f32) -> Self {
+        Self(f32x4_mul(self.0, f32x4_splat(rhs)))
     }
 
-    /// Returns true if the absolute difference of all elements between `self` and `other`
+    /// Returns true if the absolute difference of all elements between `self` and `rhs`
     /// is less than or equal to `max_abs_diff`.
     ///
     /// This can be used to compare if two matrices contain similar elements. It works best
@@ -239,19 +278,20 @@ impl Mat2 {
     ///
     /// For more see
     /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
-    #[inline(always)]
-    pub fn abs_diff_eq(&self, other: Self, max_abs_diff: f32) -> bool {
-        self.0.abs_diff_eq(&other.0, max_abs_diff)
+    #[inline]
+    pub fn abs_diff_eq(&self, rhs: Self, max_abs_diff: f32) -> bool {
+        self.x_axis.abs_diff_eq(rhs.x_axis, max_abs_diff)
+            && self.y_axis.abs_diff_eq(rhs.y_axis, max_abs_diff)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn as_dmat2(&self) -> DMat2 {
         DMat2::from_cols(self.x_axis.as_dvec2(), self.y_axis.as_dvec2())
     }
 }
 
 impl Default for Mat2 {
-    #[inline(always)]
+    #[inline]
     fn default() -> Self {
         Self::IDENTITY
     }
@@ -259,85 +299,85 @@ impl Default for Mat2 {
 
 impl Add<Mat2> for Mat2 {
     type Output = Self;
-    #[inline(always)]
-    fn add(self, other: Self) -> Self::Output {
-        Self(self.0.add_matrix(&other.0))
+    #[inline]
+    fn add(self, rhs: Self) -> Self::Output {
+        self.add_mat2(&rhs)
     }
 }
 
 impl AddAssign<Mat2> for Mat2 {
-    #[inline(always)]
-    fn add_assign(&mut self, other: Self) {
-        self.0 = self.0.add_matrix(&other.0);
+    #[inline]
+    fn add_assign(&mut self, rhs: Self) {
+        *self = self.add_mat2(&rhs);
     }
 }
 
 impl Sub<Mat2> for Mat2 {
     type Output = Self;
-    #[inline(always)]
-    fn sub(self, other: Self) -> Self::Output {
-        Self(self.0.sub_matrix(&other.0))
+    #[inline]
+    fn sub(self, rhs: Self) -> Self::Output {
+        self.sub_mat2(&rhs)
     }
 }
 
 impl SubAssign<Mat2> for Mat2 {
-    #[inline(always)]
-    fn sub_assign(&mut self, other: Self) {
-        self.0 = self.0.sub_matrix(&other.0);
+    #[inline]
+    fn sub_assign(&mut self, rhs: Self) {
+        *self = self.sub_mat2(&rhs);
     }
 }
 
 impl Neg for Mat2 {
     type Output = Self;
-    #[inline(always)]
+    #[inline]
     fn neg(self) -> Self::Output {
-        Self(self.0.neg_matrix())
+        Self(f32x4_neg(self.0))
     }
 }
 
 impl Mul<Mat2> for Mat2 {
     type Output = Self;
-    #[inline(always)]
-    fn mul(self, other: Self) -> Self::Output {
-        Self(self.0.mul_matrix(&other.0))
+    #[inline]
+    fn mul(self, rhs: Self) -> Self::Output {
+        self.mul_mat2(&rhs)
     }
 }
 
 impl MulAssign<Mat2> for Mat2 {
-    #[inline(always)]
-    fn mul_assign(&mut self, other: Self) {
-        self.0 = self.0.mul_matrix(&other.0);
+    #[inline]
+    fn mul_assign(&mut self, rhs: Self) {
+        *self = self.mul_mat2(&rhs);
     }
 }
 
 impl Mul<Vec2> for Mat2 {
     type Output = Vec2;
-    #[inline(always)]
-    fn mul(self, other: Vec2) -> Self::Output {
-        Vec2(self.0.mul_vector(other.0))
+    #[inline]
+    fn mul(self, rhs: Vec2) -> Self::Output {
+        self.mul_vec2(rhs)
     }
 }
 
 impl Mul<Mat2> for f32 {
     type Output = Mat2;
-    #[inline(always)]
-    fn mul(self, other: Mat2) -> Self::Output {
-        Mat2(other.0.mul_scalar(self))
+    #[inline]
+    fn mul(self, rhs: Mat2) -> Self::Output {
+        rhs.mul_scalar(self)
     }
 }
 
 impl Mul<f32> for Mat2 {
     type Output = Self;
-    #[inline(always)]
-    fn mul(self, other: f32) -> Self::Output {
-        Self(self.0.mul_scalar(other))
+    #[inline]
+    fn mul(self, rhs: f32) -> Self::Output {
+        self.mul_scalar(rhs)
     }
 }
 
 impl MulAssign<f32> for Mat2 {
-    #[inline(always)]
-    fn mul_assign(&mut self, other: f32) {
-        self.0 = self.0.mul_scalar(other);
+    #[inline]
+    fn mul_assign(&mut self, rhs: f32) {
+        *self = self.mul_scalar(rhs);
     }
 }
 
@@ -361,14 +401,14 @@ impl<'a> Product<&'a Self> for Mat2 {
 
 impl PartialEq for Mat2 {
     #[inline]
-    fn eq(&self, other: &Self) -> bool {
-        self.x_axis.eq(&other.x_axis) && self.y_axis.eq(&other.y_axis)
+    fn eq(&self, rhs: &Self) -> bool {
+        self.x_axis.eq(&rhs.x_axis) && self.y_axis.eq(&rhs.y_axis)
     }
 }
 
 #[cfg(not(target_arch = "spirv"))]
 impl AsRef<[f32; 4]> for Mat2 {
-    #[inline(always)]
+    #[inline]
     fn as_ref(&self) -> &[f32; 4] {
         unsafe { &*(self as *const Self as *const [f32; 4]) }
     }
@@ -376,22 +416,22 @@ impl AsRef<[f32; 4]> for Mat2 {
 
 #[cfg(not(target_arch = "spirv"))]
 impl AsMut<[f32; 4]> for Mat2 {
-    #[inline(always)]
+    #[inline]
     fn as_mut(&mut self) -> &mut [f32; 4] {
         unsafe { &mut *(self as *mut Self as *mut [f32; 4]) }
     }
 }
 
-impl Deref for Mat2 {
-    type Target = Columns2<Vec2>;
-    #[inline(always)]
+impl core::ops::Deref for Mat2 {
+    type Target = crate::deref::Columns2<Vec2>;
+    #[inline]
     fn deref(&self) -> &Self::Target {
         unsafe { &*(self as *const Self as *const Self::Target) }
     }
 }
 
-impl DerefMut for Mat2 {
-    #[inline(always)]
+impl core::ops::DerefMut for Mat2 {
+    #[inline]
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe { &mut *(self as *mut Self as *mut Self::Target) }
     }

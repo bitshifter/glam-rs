@@ -23,6 +23,13 @@ macro_rules! impl_vec2_tests {
             let a1: [$t; 2] = v.into();
             assert_eq!(a, a1);
 
+            assert_eq!(a, v.to_array());
+            assert_eq!(a, *v.as_ref());
+
+            let mut v2 = $vec2::default();
+            *v2.as_mut() = a;
+            assert_eq!(a, v2.to_array());
+
             let v = $vec2::new(t.0, t.1);
             assert_eq!(t, v.into());
 
@@ -36,7 +43,15 @@ macro_rules! impl_vec2_tests {
                 format!("{:?}", a),
                 format!("{}({:?}, {:?})", stringify!($vec2), a.x, a.y)
             );
-            // assert_eq!(format!("{:#?}", a), "$vec2(\n    1.0,\n    2.0\n)");
+            assert_eq!(
+                format!("{:#?}", a),
+                format!(
+                    "{}(\n    {:#?},\n    {:#?},\n)",
+                    stringify!($vec2),
+                    a.x,
+                    a.y
+                )
+            );
             assert_eq!(format!("{}", a), "[1, 2]");
         });
 
@@ -77,7 +92,9 @@ macro_rules! impl_vec2_tests {
         glam_test!(test_ops, {
             let a = $new(2 as $t, 4 as $t);
             assert_eq!($new(4 as $t, 8 as $t), (a + a));
+            assert_eq!($new(2 as $t, 4 as $t), 0 as $t + a);
             assert_eq!($new(0 as $t, 0 as $t), (a - a));
+            assert_eq!($new(14 as $t, 12 as $t), 16 as $t - a);
             assert_eq!($new(4 as $t, 16 as $t), (a * a));
             assert_eq!($new(4 as $t, 8 as $t), (a * 2 as $t));
             assert_eq!($new(4 as $t, 8 as $t), (2 as $t * a));
@@ -95,6 +112,19 @@ macro_rules! impl_vec2_tests {
         glam_test!(test_assign_ops, {
             let a = $new(1 as $t, 2 as $t);
             let mut b = a;
+
+            b += 2 as $t;
+            assert_eq!($new(3 as $t, 4 as $t), b);
+            b -= 2 as $t;
+            assert_eq!($new(1 as $t, 2 as $t), b);
+            b *= 2 as $t;
+            assert_eq!($new(2 as $t, 4 as $t), b);
+            b /= 2 as $t;
+            assert_eq!($new(1 as $t, 2 as $t), b);
+            b %= 2 as $t;
+            assert_eq!($new(1 as $t, 0 as $t), b);
+
+            b = a;
             b += a;
             assert_eq!($new(2 as $t, 4 as $t), b);
             b -= a;
@@ -196,19 +226,30 @@ macro_rules! impl_vec2_tests {
             assert!(b.cmpeq($vec2::splat(1 as $t)).all());
         });
 
-        // #[test]
-        // fn test_mask_as_ref() {
-        //     assert_eq!($mask::new(false, false).as_ref(), &[0, 0]);
-        //     assert_eq!($mask::new(true, false).as_ref(), &[!0, 0]);
-        //     assert_eq!($mask::new(false, true).as_ref(), &[0, !0]);
-        //     assert_eq!($mask::new(true, true).as_ref(), &[!0, !0]);
-        // }
-
-        glam_test!(test_mask_from, {
+        glam_test!(test_mask_into_array_u32, {
             assert_eq!(Into::<[u32; 2]>::into($mask::new(false, false)), [0, 0]);
             assert_eq!(Into::<[u32; 2]>::into($mask::new(true, false)), [!0, 0]);
             assert_eq!(Into::<[u32; 2]>::into($mask::new(false, true)), [0, !0]);
             assert_eq!(Into::<[u32; 2]>::into($mask::new(true, true)), [!0, !0]);
+        });
+
+        glam_test!(test_mask_into_array_bool, {
+            assert_eq!(
+                Into::<[bool; 2]>::into($mask::new(false, false)),
+                [false, false]
+            );
+            assert_eq!(
+                Into::<[bool; 2]>::into($mask::new(true, false)),
+                [true, false]
+            );
+            assert_eq!(
+                Into::<[bool; 2]>::into($mask::new(false, true)),
+                [false, true]
+            );
+            assert_eq!(
+                Into::<[bool; 2]>::into($mask::new(true, true)),
+                [true, true]
+            );
         });
 
         glam_test!(test_mask_bitmask, {

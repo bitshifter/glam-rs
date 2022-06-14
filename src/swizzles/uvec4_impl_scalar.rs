@@ -12,402 +12,706 @@ impl Vec4Swizzles for UVec4 {
 
     #[inline]
     fn xx(self) -> UVec2 {
-        UVec2::new(self.x, self.x)
+        UVec2 {
+            x: self.x,
+            y: self.x,
+        }
     }
 
     #[inline]
     fn xy(self) -> UVec2 {
-        UVec2::new(self.x, self.y)
+        UVec2 {
+            x: self.x,
+            y: self.y,
+        }
     }
 
     #[inline]
     fn xz(self) -> UVec2 {
-        UVec2::new(self.x, self.z)
+        UVec2 {
+            x: self.x,
+            y: self.z,
+        }
     }
 
     #[inline]
     fn xw(self) -> UVec2 {
-        UVec2::new(self.x, self.w)
+        UVec2 {
+            x: self.x,
+            y: self.w,
+        }
     }
 
     #[inline]
     fn yx(self) -> UVec2 {
-        UVec2::new(self.y, self.x)
+        UVec2 {
+            x: self.y,
+            y: self.x,
+        }
     }
 
     #[inline]
     fn yy(self) -> UVec2 {
-        UVec2::new(self.y, self.y)
+        UVec2 {
+            x: self.y,
+            y: self.y,
+        }
     }
 
     #[inline]
     fn yz(self) -> UVec2 {
-        UVec2::new(self.y, self.z)
+        UVec2 {
+            x: self.y,
+            y: self.z,
+        }
     }
 
     #[inline]
     fn yw(self) -> UVec2 {
-        UVec2::new(self.y, self.w)
+        UVec2 {
+            x: self.y,
+            y: self.w,
+        }
     }
 
     #[inline]
     fn zx(self) -> UVec2 {
-        UVec2::new(self.z, self.x)
+        UVec2 {
+            x: self.z,
+            y: self.x,
+        }
     }
 
     #[inline]
     fn zy(self) -> UVec2 {
-        UVec2::new(self.z, self.y)
+        UVec2 {
+            x: self.z,
+            y: self.y,
+        }
     }
 
     #[inline]
     fn zz(self) -> UVec2 {
-        UVec2::new(self.z, self.z)
+        UVec2 {
+            x: self.z,
+            y: self.z,
+        }
     }
 
     #[inline]
     fn zw(self) -> UVec2 {
-        UVec2::new(self.z, self.w)
+        UVec2 {
+            x: self.z,
+            y: self.w,
+        }
     }
 
     #[inline]
     fn wx(self) -> UVec2 {
-        UVec2::new(self.w, self.x)
+        UVec2 {
+            x: self.w,
+            y: self.x,
+        }
     }
 
     #[inline]
     fn wy(self) -> UVec2 {
-        UVec2::new(self.w, self.y)
+        UVec2 {
+            x: self.w,
+            y: self.y,
+        }
     }
 
     #[inline]
     fn wz(self) -> UVec2 {
-        UVec2::new(self.w, self.z)
+        UVec2 {
+            x: self.w,
+            y: self.z,
+        }
     }
 
     #[inline]
     fn ww(self) -> UVec2 {
-        UVec2::new(self.w, self.w)
+        UVec2 {
+            x: self.w,
+            y: self.w,
+        }
     }
 
     #[inline]
     fn xxx(self) -> UVec3 {
-        UVec3::new(self.x, self.x, self.x)
+        UVec3 {
+            x: self.x,
+            y: self.x,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn xxy(self) -> UVec3 {
-        UVec3::new(self.x, self.x, self.y)
+        UVec3 {
+            x: self.x,
+            y: self.x,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn xxz(self) -> UVec3 {
-        UVec3::new(self.x, self.x, self.z)
+        UVec3 {
+            x: self.x,
+            y: self.x,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn xxw(self) -> UVec3 {
-        UVec3::new(self.x, self.x, self.w)
+        UVec3 {
+            x: self.x,
+            y: self.x,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn xyx(self) -> UVec3 {
-        UVec3::new(self.x, self.y, self.x)
+        UVec3 {
+            x: self.x,
+            y: self.y,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn xyy(self) -> UVec3 {
-        UVec3::new(self.x, self.y, self.y)
+        UVec3 {
+            x: self.x,
+            y: self.y,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn xyz(self) -> UVec3 {
-        UVec3::new(self.x, self.y, self.z)
+        UVec3 {
+            x: self.x,
+            y: self.y,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn xyw(self) -> UVec3 {
-        UVec3::new(self.x, self.y, self.w)
+        UVec3 {
+            x: self.x,
+            y: self.y,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn xzx(self) -> UVec3 {
-        UVec3::new(self.x, self.z, self.x)
+        UVec3 {
+            x: self.x,
+            y: self.z,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn xzy(self) -> UVec3 {
-        UVec3::new(self.x, self.z, self.y)
+        UVec3 {
+            x: self.x,
+            y: self.z,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn xzz(self) -> UVec3 {
-        UVec3::new(self.x, self.z, self.z)
+        UVec3 {
+            x: self.x,
+            y: self.z,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn xzw(self) -> UVec3 {
-        UVec3::new(self.x, self.z, self.w)
+        UVec3 {
+            x: self.x,
+            y: self.z,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn xwx(self) -> UVec3 {
-        UVec3::new(self.x, self.w, self.x)
+        UVec3 {
+            x: self.x,
+            y: self.w,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn xwy(self) -> UVec3 {
-        UVec3::new(self.x, self.w, self.y)
+        UVec3 {
+            x: self.x,
+            y: self.w,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn xwz(self) -> UVec3 {
-        UVec3::new(self.x, self.w, self.z)
+        UVec3 {
+            x: self.x,
+            y: self.w,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn xww(self) -> UVec3 {
-        UVec3::new(self.x, self.w, self.w)
+        UVec3 {
+            x: self.x,
+            y: self.w,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn yxx(self) -> UVec3 {
-        UVec3::new(self.y, self.x, self.x)
+        UVec3 {
+            x: self.y,
+            y: self.x,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn yxy(self) -> UVec3 {
-        UVec3::new(self.y, self.x, self.y)
+        UVec3 {
+            x: self.y,
+            y: self.x,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn yxz(self) -> UVec3 {
-        UVec3::new(self.y, self.x, self.z)
+        UVec3 {
+            x: self.y,
+            y: self.x,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn yxw(self) -> UVec3 {
-        UVec3::new(self.y, self.x, self.w)
+        UVec3 {
+            x: self.y,
+            y: self.x,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn yyx(self) -> UVec3 {
-        UVec3::new(self.y, self.y, self.x)
+        UVec3 {
+            x: self.y,
+            y: self.y,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn yyy(self) -> UVec3 {
-        UVec3::new(self.y, self.y, self.y)
+        UVec3 {
+            x: self.y,
+            y: self.y,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn yyz(self) -> UVec3 {
-        UVec3::new(self.y, self.y, self.z)
+        UVec3 {
+            x: self.y,
+            y: self.y,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn yyw(self) -> UVec3 {
-        UVec3::new(self.y, self.y, self.w)
+        UVec3 {
+            x: self.y,
+            y: self.y,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn yzx(self) -> UVec3 {
-        UVec3::new(self.y, self.z, self.x)
+        UVec3 {
+            x: self.y,
+            y: self.z,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn yzy(self) -> UVec3 {
-        UVec3::new(self.y, self.z, self.y)
+        UVec3 {
+            x: self.y,
+            y: self.z,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn yzz(self) -> UVec3 {
-        UVec3::new(self.y, self.z, self.z)
+        UVec3 {
+            x: self.y,
+            y: self.z,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn yzw(self) -> UVec3 {
-        UVec3::new(self.y, self.z, self.w)
+        UVec3 {
+            x: self.y,
+            y: self.z,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn ywx(self) -> UVec3 {
-        UVec3::new(self.y, self.w, self.x)
+        UVec3 {
+            x: self.y,
+            y: self.w,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn ywy(self) -> UVec3 {
-        UVec3::new(self.y, self.w, self.y)
+        UVec3 {
+            x: self.y,
+            y: self.w,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn ywz(self) -> UVec3 {
-        UVec3::new(self.y, self.w, self.z)
+        UVec3 {
+            x: self.y,
+            y: self.w,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn yww(self) -> UVec3 {
-        UVec3::new(self.y, self.w, self.w)
+        UVec3 {
+            x: self.y,
+            y: self.w,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn zxx(self) -> UVec3 {
-        UVec3::new(self.z, self.x, self.x)
+        UVec3 {
+            x: self.z,
+            y: self.x,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn zxy(self) -> UVec3 {
-        UVec3::new(self.z, self.x, self.y)
+        UVec3 {
+            x: self.z,
+            y: self.x,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn zxz(self) -> UVec3 {
-        UVec3::new(self.z, self.x, self.z)
+        UVec3 {
+            x: self.z,
+            y: self.x,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn zxw(self) -> UVec3 {
-        UVec3::new(self.z, self.x, self.w)
+        UVec3 {
+            x: self.z,
+            y: self.x,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn zyx(self) -> UVec3 {
-        UVec3::new(self.z, self.y, self.x)
+        UVec3 {
+            x: self.z,
+            y: self.y,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn zyy(self) -> UVec3 {
-        UVec3::new(self.z, self.y, self.y)
+        UVec3 {
+            x: self.z,
+            y: self.y,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn zyz(self) -> UVec3 {
-        UVec3::new(self.z, self.y, self.z)
+        UVec3 {
+            x: self.z,
+            y: self.y,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn zyw(self) -> UVec3 {
-        UVec3::new(self.z, self.y, self.w)
+        UVec3 {
+            x: self.z,
+            y: self.y,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn zzx(self) -> UVec3 {
-        UVec3::new(self.z, self.z, self.x)
+        UVec3 {
+            x: self.z,
+            y: self.z,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn zzy(self) -> UVec3 {
-        UVec3::new(self.z, self.z, self.y)
+        UVec3 {
+            x: self.z,
+            y: self.z,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn zzz(self) -> UVec3 {
-        UVec3::new(self.z, self.z, self.z)
+        UVec3 {
+            x: self.z,
+            y: self.z,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn zzw(self) -> UVec3 {
-        UVec3::new(self.z, self.z, self.w)
+        UVec3 {
+            x: self.z,
+            y: self.z,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn zwx(self) -> UVec3 {
-        UVec3::new(self.z, self.w, self.x)
+        UVec3 {
+            x: self.z,
+            y: self.w,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn zwy(self) -> UVec3 {
-        UVec3::new(self.z, self.w, self.y)
+        UVec3 {
+            x: self.z,
+            y: self.w,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn zwz(self) -> UVec3 {
-        UVec3::new(self.z, self.w, self.z)
+        UVec3 {
+            x: self.z,
+            y: self.w,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn zww(self) -> UVec3 {
-        UVec3::new(self.z, self.w, self.w)
+        UVec3 {
+            x: self.z,
+            y: self.w,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn wxx(self) -> UVec3 {
-        UVec3::new(self.w, self.x, self.x)
+        UVec3 {
+            x: self.w,
+            y: self.x,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn wxy(self) -> UVec3 {
-        UVec3::new(self.w, self.x, self.y)
+        UVec3 {
+            x: self.w,
+            y: self.x,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn wxz(self) -> UVec3 {
-        UVec3::new(self.w, self.x, self.z)
+        UVec3 {
+            x: self.w,
+            y: self.x,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn wxw(self) -> UVec3 {
-        UVec3::new(self.w, self.x, self.w)
+        UVec3 {
+            x: self.w,
+            y: self.x,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn wyx(self) -> UVec3 {
-        UVec3::new(self.w, self.y, self.x)
+        UVec3 {
+            x: self.w,
+            y: self.y,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn wyy(self) -> UVec3 {
-        UVec3::new(self.w, self.y, self.y)
+        UVec3 {
+            x: self.w,
+            y: self.y,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn wyz(self) -> UVec3 {
-        UVec3::new(self.w, self.y, self.z)
+        UVec3 {
+            x: self.w,
+            y: self.y,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn wyw(self) -> UVec3 {
-        UVec3::new(self.w, self.y, self.w)
+        UVec3 {
+            x: self.w,
+            y: self.y,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn wzx(self) -> UVec3 {
-        UVec3::new(self.w, self.z, self.x)
+        UVec3 {
+            x: self.w,
+            y: self.z,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn wzy(self) -> UVec3 {
-        UVec3::new(self.w, self.z, self.y)
+        UVec3 {
+            x: self.w,
+            y: self.z,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn wzz(self) -> UVec3 {
-        UVec3::new(self.w, self.z, self.z)
+        UVec3 {
+            x: self.w,
+            y: self.z,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn wzw(self) -> UVec3 {
-        UVec3::new(self.w, self.z, self.w)
+        UVec3 {
+            x: self.w,
+            y: self.z,
+            z: self.w,
+        }
     }
 
     #[inline]
     fn wwx(self) -> UVec3 {
-        UVec3::new(self.w, self.w, self.x)
+        UVec3 {
+            x: self.w,
+            y: self.w,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn wwy(self) -> UVec3 {
-        UVec3::new(self.w, self.w, self.y)
+        UVec3 {
+            x: self.w,
+            y: self.w,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn wwz(self) -> UVec3 {
-        UVec3::new(self.w, self.w, self.z)
+        UVec3 {
+            x: self.w,
+            y: self.w,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn www(self) -> UVec3 {
-        UVec3::new(self.w, self.w, self.w)
+        UVec3 {
+            x: self.w,
+            y: self.w,
+            z: self.w,
+        }
     }
 
     #[inline]

@@ -24,6 +24,13 @@ macro_rules! impl_vec3_tests {
             let a1: [$t; 3] = v.into();
             assert_eq!(a, a1);
 
+            assert_eq!(a, v.to_array());
+            assert_eq!(a, *v.as_ref());
+
+            let mut v2 = $vec3::default();
+            *v2.as_mut() = a;
+            assert_eq!(a, v2.to_array());
+
             let v = $vec3::new(t.0, t.1, t.2);
             assert_eq!(t, v.into());
 
@@ -38,7 +45,16 @@ macro_rules! impl_vec3_tests {
                 format!("{:?}", a),
                 format!("{}({:?}, {:?}, {:?})", stringify!($vec3), a.x, a.y, a.z)
             );
-            // assert_eq!(format!("{:#?}", a), "$vec3(\n    1.0,\n    2.0,\n    3.0\n)");
+            assert_eq!(
+                format!("{:#?}", a),
+                format!(
+                    "{}(\n    {:#?},\n    {:#?},\n    {:#?},\n)",
+                    stringify!($vec3),
+                    a.x,
+                    a.y,
+                    a.z
+                )
+            );
             assert_eq!(format!("{}", a), "[1, 2, 3]");
         });
 
@@ -91,7 +107,9 @@ macro_rules! impl_vec3_tests {
         glam_test!(test_ops, {
             let a = $new(2 as $t, 4 as $t, 8 as $t);
             assert_eq!($new(4 as $t, 8 as $t, 16 as $t), a + a);
+            assert_eq!($new(2 as $t, 4 as $t, 8 as $t), 0 as $t + a);
             assert_eq!($new(0 as $t, 0 as $t, 0 as $t), a - a);
+            assert_eq!($new(14 as $t, 12 as $t, 8 as $t), 16 as $t - a);
             assert_eq!($new(4 as $t, 16 as $t, 64 as $t), a * a);
             assert_eq!($new(4 as $t, 8 as $t, 16 as $t), a * 2 as $t);
             assert_eq!($new(4 as $t, 8 as $t, 16 as $t), 2 as $t * a);
@@ -109,6 +127,19 @@ macro_rules! impl_vec3_tests {
         glam_test!(test_assign_ops, {
             let a = $new(1 as $t, 2 as $t, 3 as $t);
             let mut b = a;
+
+            b += 2 as $t;
+            assert_eq!($new(3 as $t, 4 as $t, 5 as $t), b);
+            b -= 2 as $t;
+            assert_eq!($new(1 as $t, 2 as $t, 3 as $t), b);
+            b *= 2 as $t;
+            assert_eq!($new(2 as $t, 4 as $t, 6 as $t), b);
+            b /= 2 as $t;
+            assert_eq!($new(1 as $t, 2 as $t, 3 as $t), b);
+            b %= 2 as $t;
+            assert_eq!($new(1 as $t, 0 as $t, 1 as $t), b);
+
+            b = a;
             b += a;
             assert_eq!($new(2 as $t, 4 as $t, 6 as $t), b);
             b -= a;
@@ -214,17 +245,7 @@ macro_rules! impl_vec3_tests {
             assert!(a.cmpeq($vec3::ONE).all());
         });
 
-        // #[test]
-        // fn test_mask_as_ref() {
-        //     assert_eq!($mask::new(false, false, false).as_ref(), &[0, 0, 0]);
-        //     assert_eq!($mask::new(true, false, false).as_ref(), &[!0, 0, 0]);
-        //     assert_eq!($mask::new(false, true, true).as_ref(), &[0, !0, !0]);
-        //     assert_eq!($mask::new(false, true, false).as_ref(), &[0, !0, 0]);
-        //     assert_eq!($mask::new(true, false, true).as_ref(), &[!0, 0, !0]);
-        //     assert_eq!($mask::new(true, true, true).as_ref(), &[!0, !0, !0]);
-        // }
-
-        glam_test!(test_mask_from, {
+        glam_test!(test_mask_into_array_u32, {
             assert_eq!(
                 Into::<[u32; 3]>::into($mask::new(false, false, false)),
                 [0, 0, 0]
@@ -244,6 +265,33 @@ macro_rules! impl_vec3_tests {
             assert_eq!(
                 Into::<[u32; 3]>::into($mask::new(true, false, true)),
                 [!0, 0, !0]
+            );
+            assert_eq!(
+                Into::<[u32; 3]>::into($mask::new(true, true, true)),
+                [!0, !0, !0]
+            );
+        });
+
+        glam_test!(test_mask_into_array_bool, {
+            assert_eq!(
+                Into::<[bool; 3]>::into($mask::new(false, false, false)),
+                [false, false, false]
+            );
+            assert_eq!(
+                Into::<[bool; 3]>::into($mask::new(true, false, false)),
+                [true, false, false]
+            );
+            assert_eq!(
+                Into::<[bool; 3]>::into($mask::new(false, true, true)),
+                [false, true, true]
+            );
+            assert_eq!(
+                Into::<[bool; 3]>::into($mask::new(false, true, false)),
+                [false, true, false]
+            );
+            assert_eq!(
+                Into::<[bool; 3]>::into($mask::new(true, false, true)),
+                [true, false, true]
             );
             assert_eq!(
                 Into::<[u32; 3]>::into($mask::new(true, true, true)),
@@ -351,11 +399,11 @@ macro_rules! impl_vec3_tests {
         glam_test!(test_mask_fmt, {
             let a = $mask::new(true, false, false);
 
-            // // debug fmt
-            // assert_eq!(
-            //     format!("{:?}", a),
-            //     format!("{}(0xffffffff, 0x0, 0x0)", stringify!($mask))
-            // );
+            // debug fmt
+            assert_eq!(
+                format!("{:?}", a),
+                format!("{}(0xffffffff, 0x0, 0x0)", stringify!($mask))
+            );
 
             // display fmt
             assert_eq!(format!("{}", a), "[true, false, false]");
@@ -974,7 +1022,7 @@ mod vec3 {
 }
 
 mod vec3a {
-    use glam::{const_vec3a, vec3a, BVec3A, Vec3A, Vec4};
+    use glam::{const_vec3a, vec3a, BVec3, BVec3A, Vec3A, Vec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -988,8 +1036,8 @@ mod vec3a {
             assert_eq!(16, mem::align_of::<BVec3A>());
         } else {
             // BVec3A aliases BVec3
-            assert_eq!(3, mem::size_of::<BVec3A>());
-            assert_eq!(1, mem::align_of::<BVec3A>());
+            assert_eq!(3, mem::size_of::<BVec3>());
+            assert_eq!(1, mem::align_of::<BVec3>());
         }
     });
 
@@ -1045,7 +1093,17 @@ mod vec3a {
         assert_eq!(v2.min_element(), 2.0);
     });
 
+    #[cfg(all(
+        any(target_feature = "sse2", target_feature = "simd128"),
+        not(feature = "scalar-math")
+    ))]
     impl_vec3_float_tests!(f32, const_vec3a, vec3a, Vec3A, BVec3A);
+
+    #[cfg(any(
+        not(any(target_feature = "sse2", target_feature = "simd128")),
+        feature = "scalar-math"
+    ))]
+    impl_vec3_float_tests!(f32, const_vec3a, vec3a, Vec3A, BVec3);
 }
 
 mod dvec3 {

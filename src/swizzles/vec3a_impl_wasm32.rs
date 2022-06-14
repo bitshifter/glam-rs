@@ -14,47 +14,74 @@ impl Vec3Swizzles for Vec3A {
 
     #[inline]
     fn xx(self) -> Vec2 {
-        Vec2(i32x4_shuffle::<0, 0, 4, 4>(self.0, self.0).into())
+        Vec2 {
+            x: self.x,
+            y: self.x,
+        }
     }
 
     #[inline]
     fn xy(self) -> Vec2 {
-        Vec2(i32x4_shuffle::<0, 1, 4, 4>(self.0, self.0).into())
+        Vec2 {
+            x: self.x,
+            y: self.y,
+        }
     }
 
     #[inline]
     fn xz(self) -> Vec2 {
-        Vec2(i32x4_shuffle::<0, 2, 4, 4>(self.0, self.0).into())
+        Vec2 {
+            x: self.x,
+            y: self.z,
+        }
     }
 
     #[inline]
     fn yx(self) -> Vec2 {
-        Vec2(i32x4_shuffle::<1, 0, 4, 4>(self.0, self.0).into())
+        Vec2 {
+            x: self.y,
+            y: self.x,
+        }
     }
 
     #[inline]
     fn yy(self) -> Vec2 {
-        Vec2(i32x4_shuffle::<1, 1, 4, 4>(self.0, self.0).into())
+        Vec2 {
+            x: self.y,
+            y: self.y,
+        }
     }
 
     #[inline]
     fn yz(self) -> Vec2 {
-        Vec2(i32x4_shuffle::<1, 2, 4, 4>(self.0, self.0).into())
+        Vec2 {
+            x: self.y,
+            y: self.z,
+        }
     }
 
     #[inline]
     fn zx(self) -> Vec2 {
-        Vec2(i32x4_shuffle::<2, 0, 4, 4>(self.0, self.0).into())
+        Vec2 {
+            x: self.z,
+            y: self.x,
+        }
     }
 
     #[inline]
     fn zy(self) -> Vec2 {
-        Vec2(i32x4_shuffle::<2, 1, 4, 4>(self.0, self.0).into())
+        Vec2 {
+            x: self.z,
+            y: self.y,
+        }
     }
 
     #[inline]
     fn zz(self) -> Vec2 {
-        Vec2(i32x4_shuffle::<2, 2, 4, 4>(self.0, self.0).into())
+        Vec2 {
+            x: self.z,
+            y: self.z,
+        }
     }
 
     #[inline]

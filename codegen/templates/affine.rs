@@ -35,7 +35,6 @@
 {% set components = ["x", "y", "z", "w"] | slice(end = dim + 1) %}
 {% set axes = ["x_axis", "y_axis", "z_axis", "w_axis"] | slice(end = dim + 1) %}
 
-use crate::core::storage::Columns{{ dim + 1 }};
 use crate::{
 {% if self_t == "Affine2" %}
     Mat3A, Vec3A,
@@ -49,9 +48,6 @@ use crate::{
 {% endif %}
 };
 use core::ops::{Add, Deref, DerefMut, Mul, Sub};
-
-#[cfg(not(feature = "std"))]
-use num_traits::Float;
 
 /// A {{ dim }}D affine transform, which can represent translation, rotation, scaling and shear.
 #[derive(Copy, Clone)]
@@ -105,7 +101,7 @@ impl {{ self_t }} {
     /// Creates an affine transform from a `[{{ scalar_t }}; {{ size }}]` array stored in column major order.
     /// If your data is stored in row major you will need to `transpose` the returned
     /// matrix.
-    #[inline(always)]
+    #[inline]
     pub fn from_cols_array(m: &[{{ scalar_t }}; {{ size }}]) -> Self {
         Self {
             matrix{{ dim }}: {{ mat_t }}::from_cols_slice(&m[0..{{ dim * dim }}]),
@@ -115,7 +111,7 @@ impl {{ self_t }} {
 
     /// Creates a `[{{ scalar_t }}; {{ size }}]` array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
-    #[inline(always)]
+    #[inline]
     pub fn to_cols_array(&self) -> [{{ scalar_t }}; {{ size }}] {
         {% for i in range(end = dim) %}
             let {{ components[i] }} = &self.matrix{{ dim }}.{{ axes[i] }};
@@ -134,7 +130,7 @@ impl {{ self_t }} {
     /// {{ dim }}D array stored in column major order.
     /// If your data is in row major order you will need to `transpose` the returned
     /// matrix.
-    #[inline(always)]
+    #[inline]
     pub fn from_cols_array_2d(m: &[[{{ scalar_t }}; {{ dim }}]; {{ dim + 1 }}]) -> Self {
         Self {
             matrix{{ dim }}: {{ mat_t }}::from_cols(
@@ -149,7 +145,7 @@ impl {{ self_t }} {
     /// Creates a `[[{{ scalar_t }}; {{ dim }}]; {{ dim + 1 }}]` {{ dim }}D array storing data in
     /// column major order.
     /// If you require data in row major order `transpose` the matrix first.
-    #[inline(always)]
+    #[inline]
     pub fn to_cols_array_2d(&self) -> [[{{ scalar_t }}; {{ dim }}]; {{ dim + 1 }}] {
         [
             {% for i in range(end = dim) %}
@@ -164,7 +160,7 @@ impl {{ self_t }} {
     /// # Panics
     ///
     /// Panics if `slice` is less than {{ size }} elements long.
-    #[inline(always)]
+    #[inline]
     pub fn from_cols_slice(slice: &[{{ scalar_t }}]) -> Self {
         Self {
             matrix{{ dim }}: {{ mat_t }}::from_cols_slice(&slice[0..{{ dim * dim }}]),
@@ -177,7 +173,7 @@ impl {{ self_t }} {
     /// # Panics
     ///
     /// Panics if `slice` is less than {{ size }} elements long.
-    #[inline(always)]
+    #[inline]
     pub fn write_cols_to_slice(self, slice: &mut [{{ scalar_t }}]) {
         self.matrix{{ dim }}.write_cols_to_slice(&mut slice[0..{{ dim * dim }}]);
         self.translation.write_to_slice(&mut slice[{{ dim * dim }}..{{ size }}]);
@@ -186,7 +182,7 @@ impl {{ self_t }} {
 {% if dim == 2 %}
     /// Creates an affine transform that changes scale.
     /// Note that if any scale is zero the transform will be non-invertible.
-    #[inline(always)]
+    #[inline]
     pub fn from_scale(scale: {{ vec2_t }}) -> Self {
         Self {
             matrix{{ dim }}: {{ mat_t }}::from_diagonal(scale),
@@ -195,7 +191,7 @@ impl {{ self_t }} {
     }
 
     /// Creates an affine transform from the given rotation `angle`.
-    #[inline(always)]
+    #[inline]
     pub fn from_angle(angle: {{ scalar_t }}) -> Self {
         Self {
             matrix2: {{ mat_t }}::from_angle(angle),
@@ -204,7 +200,7 @@ impl {{ self_t }} {
     }
 
     /// Creates an affine transformation from the given 2D `translation`.
-    #[inline(always)]
+    #[inline]
     pub fn from_translation(translation: {{ vec2_t }}) -> Self {
         Self {
             matrix2: {{ mat_t }}::IDENTITY,
@@ -213,7 +209,7 @@ impl {{ self_t }} {
     }
 
     /// Creates an affine transform from a 2x2 matrix (expressing scale, shear and rotation)
-    #[inline(always)]
+    #[inline]
     pub fn from_mat2(matrix2: {{ mat_t }}) -> Self {
         Self {
             matrix2,
@@ -226,7 +222,7 @@ impl {{ self_t }} {
     ///
     /// Equivalent to
     /// `{{ self_t }}::from_translation(translation) * {{ self_t }}::from_mat{{ dim }}(mat{{ dim }})`
-    #[inline(always)]
+    #[inline]
     pub fn from_mat2_translation(matrix2: {{ mat_t }}, translation: {{ vec2_t }}) -> Self {
         Self {
             matrix2,
@@ -259,7 +255,7 @@ impl {{ self_t }} {
     /// `translation`.
     ///
     /// Equivalent to `{{ self_t }}::from_translation(translation) * {{ self_t }}::from_angle(angle)`
-    #[inline(always)]
+    #[inline]
     pub fn from_angle_translation(angle: {{ scalar_t }}, translation: {{ vec2_t }}) -> Self {
         Self {
             matrix2: {{ mat_t }}::from_angle(angle),
@@ -270,31 +266,32 @@ impl {{ self_t }} {
     /// The given `{{ mat3_t }}` must be an affine transform,
     #[inline]
     pub fn from_mat3(m: {{ mat3_t }}) -> Self {
+        use crate::swizzles::Vec3Swizzles;
         Self {
-            matrix2: {{ mat_t }}::from_cols({{ col_t }}(m.x_axis.0.into()), {{ col_t }}(m.y_axis.0.into())),
-            translation: {{ col_t }}(m.z_axis.0.into()),
+            matrix2: {{ mat_t }}::from_cols(m.x_axis.xy(), m.y_axis.xy()),
+            translation: m.z_axis.xy(),
         }
     }
 
     /// Transforms the given 2D point, applying shear, scale, rotation and translation.
-    #[inline(always)]
-    pub fn transform_point2(&self, other: {{ vec2_t }}) -> {{ vec2_t }} {
-        self.matrix2 * other + self.translation
+    #[inline]
+    pub fn transform_point2(&self, rhs: {{ vec2_t }}) -> {{ vec2_t }} {
+        self.matrix2 * rhs + self.translation
     }
 
     /// Transforms the given 2D vector, applying shear, scale and rotation (but NOT
     /// translation).
     ///
     /// To also apply translation, use [`Self::transform_point2`] instead.
-    #[inline(always)]
-    pub fn transform_vector2(&self, other: {{ vec2_t }}) -> {{ vec2_t }} {
-        self.matrix2 * other
+    #[inline]
+    pub fn transform_vector2(&self, rhs: {{ vec2_t }}) -> {{ vec2_t }} {
+        self.matrix2 * rhs
     }
 
 {% elif dim == 3 %}
     /// Creates an affine transform that changes scale.
     /// Note that if any scale is zero the transform will be non-invertible.
-    #[inline(always)]
+    #[inline]
     pub fn from_scale(scale: {{ vec3_t }}) -> Self {
         Self {
             matrix3: {{ mat_t }}::from_diagonal(scale),
@@ -302,7 +299,7 @@ impl {{ self_t }} {
         }
     }
     /// Creates an affine transform from the given `rotation` quaternion.
-    #[inline(always)]
+    #[inline]
     pub fn from_quat(rotation: {{ quat_t }}) -> Self {
         Self {
             matrix3: {{ mat_t }}::from_quat(rotation),
@@ -312,7 +309,7 @@ impl {{ self_t }} {
 
     /// Creates an affine transform containing a 3D rotation around a normalized
     /// rotation `axis` of `angle` (in radians).
-    #[inline(always)]
+    #[inline]
     pub fn from_axis_angle(axis: {{ vec3_t }}, angle: {{ scalar_t }}) -> Self {
         Self {
             matrix3: {{ mat_t }}::from_axis_angle(axis, angle),
@@ -322,7 +319,7 @@ impl {{ self_t }} {
 
     /// Creates an affine transform containing a 3D rotation around the x axis of
     /// `angle` (in radians).
-    #[inline(always)]
+    #[inline]
     pub fn from_rotation_x(angle: {{ scalar_t }}) -> Self {
         Self {
             matrix3: {{ mat_t }}::from_rotation_x(angle),
@@ -351,7 +348,7 @@ impl {{ self_t }} {
     }
 
     /// Creates an affine transformation from the given 3D `translation`.
-    #[inline(always)]
+    #[inline]
     pub fn from_translation(translation: {{ vec3_t }}) -> Self {
         #[allow(clippy::useless_conversion)]
         Self {
@@ -362,7 +359,7 @@ impl {{ self_t }} {
 
     /// Creates an affine transform from a 3x3 matrix (expressing scale, shear and
     /// rotation)
-    #[inline(always)]
+    #[inline]
     pub fn from_mat3(mat3: {{ mat3_t }}) -> Self {
         #[allow(clippy::useless_conversion)]
         Self {
@@ -375,7 +372,7 @@ impl {{ self_t }} {
     /// and a translation vector.
     ///
     /// Equivalent to `{{ self_t }}::from_translation(translation) * {{ self_t }}::from_mat3(mat3)`
-    #[inline(always)]
+    #[inline]
     pub fn from_mat3_translation(mat3: {{ mat3_t }}, translation: {{ vec3_t }}) -> Self {
         #[allow(clippy::useless_conversion)]
         Self {
@@ -389,7 +386,7 @@ impl {{ self_t }} {
     ///
     /// Equivalent to `{{ self_t }}::from_translation(translation) *
     /// {{ self_t }}::from_quat(rotation) * {{ self_t }}::from_scale(scale)`
-    #[inline(always)]
+    #[inline]
     pub fn from_scale_rotation_translation(
         scale: {{ vec3_t }},
         rotation: {{ quat_t }},
@@ -410,7 +407,7 @@ impl {{ self_t }} {
     /// Creates an affine transform from the given 3D `rotation` and `translation`.
     ///
     /// Equivalent to `{{ self_t }}::from_translation(translation) * {{ self_t }}::from_quat(rotation)`
-    #[inline(always)]
+    #[inline]
     pub fn from_rotation_translation(rotation: {{ quat_t }}, translation: {{ vec3_t }}) -> Self {
         #[allow(clippy::useless_conversion)]
         Self {
@@ -423,14 +420,13 @@ impl {{ self_t }} {
     /// i.e. contain no perspective transform.
     #[inline]
     pub fn from_mat4(m: {{ mat4_t }}) -> Self {
-        #[allow(clippy::useless_conversion)]
         Self {
             matrix3: {{ mat_t }}::from_cols(
-                 {{ col_t }}(m.x_axis.0.into()),
-                 {{ col_t }}(m.y_axis.0.into()),
-                 {{ col_t }}(m.z_axis.0.into()),
+                {{ col_t }}::from_vec4(m.x_axis),
+                {{ col_t }}::from_vec4(m.y_axis),
+                {{ col_t }}::from_vec4(m.z_axis),
             ),
-            translation: {{ col_t }}(m.w_axis.0.into()),
+            translation: {{ col_t }}::from_vec4(m.w_axis),
         }
     }
 
@@ -443,8 +439,11 @@ impl {{ self_t }} {
     ///
     /// Will panic if the determinant `self.matrix3` is zero or if the resulting scale
     /// vector contains any zero elements when `glam_assert` is enabled.
-    #[inline(always)]
+    #[inline]
     pub fn to_scale_rotation_translation(&self) -> ({{ vec3_t }}, {{ quat_t }}, {{ vec3_t }}) {
+        #[cfg(not(feature = "std"))]
+        use num_traits::Float;
+
         // TODO: migrate to core module
         let det = self.matrix3.determinant();
         glam_assert!(det != 0.0);
@@ -514,12 +513,12 @@ impl {{ self_t }} {
     }
 
     /// Transforms the given 3D points, applying shear, scale, rotation and translation.
-    #[inline(always)]
-    pub fn transform_point3(&self, other: {{ vec3_t }}) -> {{ vec3_t }} {
+    #[inline]
+    pub fn transform_point3(&self, rhs: {{ vec3_t }}) -> {{ vec3_t }} {
         #[allow(clippy::useless_conversion)]
-        ((self.matrix3.x_axis * other.x)
-            + (self.matrix3.y_axis * other.y)
-            + (self.matrix3.z_axis * other.z)
+        ((self.matrix3.x_axis * rhs.x)
+            + (self.matrix3.y_axis * rhs.y)
+            + (self.matrix3.z_axis * rhs.z)
             + self.translation)
             .into()
     }
@@ -528,30 +527,30 @@ impl {{ self_t }} {
     /// translation).
     ///
     /// To also apply translation, use [`Self::transform_point3`] instead.
-    #[inline(always)]
-    pub fn transform_vector3(&self, other: {{ vec3_t }}) -> {{ vec3_t }} {
+    #[inline]
+    pub fn transform_vector3(&self, rhs: {{ vec3_t }}) -> {{ vec3_t }} {
         #[allow(clippy::useless_conversion)]
-        ((self.matrix3.x_axis * other.x)
-            + (self.matrix3.y_axis * other.y)
-            + (self.matrix3.z_axis * other.z))
+        ((self.matrix3.x_axis * rhs.x)
+            + (self.matrix3.y_axis * rhs.y)
+            + (self.matrix3.z_axis * rhs.z))
             .into()
     }
 {% endif %}
 
 {% if self_t == "Affine3A" %}
     /// Transforms the given `Vec3A`, applying shear, scale, rotation and translation.
-    #[inline(always)]
-    pub fn transform_point3a(&self, other: Vec3A) -> Vec3A {
-        self.matrix3 * other + self.translation
+    #[inline]
+    pub fn transform_point3a(&self, rhs: Vec3A) -> Vec3A {
+        self.matrix3 * rhs + self.translation
     }
 
     /// Transforms the given `Vec3A`, applying shear, scale and rotation (but NOT
     /// translation).
     ///
     /// To also apply translation, use [`Self::transform_point3`] instead.
-    #[inline(always)]
-    pub fn transform_vector3a(&self, other: Vec3A) -> Vec3A {
-        self.matrix3 * other
+    #[inline]
+    pub fn transform_vector3a(&self, rhs: Vec3A) -> Vec3A {
+        self.matrix3 * rhs
     }
 {% endif %}
 
@@ -570,7 +569,7 @@ impl {{ self_t }} {
         self.matrix{{ dim }}.is_nan() || self.translation.is_nan()
     }
 
-    /// Returns true if the absolute difference of all elements between `self` and `other`
+    /// Returns true if the absolute difference of all elements between `self` and `rhs`
     /// is less than or equal to `max_abs_diff`.
     ///
     /// This can be used to compare if two 3x4 matrices contain similar elements. It works
@@ -580,11 +579,11 @@ impl {{ self_t }} {
     /// For more see
     /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
     #[inline]
-    pub fn abs_diff_eq(&self, other: Self, max_abs_diff: {{ scalar_t }}) -> bool {
-        self.matrix{{ dim }}.abs_diff_eq(other.matrix{{ dim }}, max_abs_diff)
+    pub fn abs_diff_eq(&self, rhs: Self, max_abs_diff: {{ scalar_t }}) -> bool {
+        self.matrix{{ dim }}.abs_diff_eq(rhs.matrix{{ dim }}, max_abs_diff)
             && self
             .translation
-            .abs_diff_eq(other.translation, max_abs_diff)
+            .abs_diff_eq(rhs.translation, max_abs_diff)
     }
 
     /// Return the inverse of this transform.
@@ -612,7 +611,7 @@ impl Default for {{ self_t }} {
 }
 
 impl Deref for {{ self_t }} {
-    type Target = Columns{{ dim + 1 }}<{{ col_t }}>;
+    type Target = crate::deref::Columns{{ dim + 1 }}<{{ col_t }}>;
     #[inline(always)]
     fn deref(&self) -> &Self::Target {
         unsafe { &*(self as *const Self as *const Self::Target) }
@@ -628,8 +627,8 @@ impl DerefMut for {{ self_t }} {
 
 impl PartialEq for {{ self_t }} {
     #[inline]
-    fn eq(&self, other: &Self) -> bool {
-        self.matrix{{ dim }}.eq(&other.matrix{{ dim }}) && self.translation.eq(&other.translation)
+    fn eq(&self, rhs: &Self) -> bool {
+        self.matrix{{ dim }}.eq(&rhs.matrix{{ dim }}) && self.translation.eq(&rhs.translation)
     }
 }
 
@@ -647,12 +646,12 @@ impl core::fmt::Debug for {{ self_t }} {
 impl core::fmt::Display for {{ self_t }} {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         {% if dim == 2 %}
-            write!(f, "[{}, {}, {}]", self.x_axis, self.y_axis, self.z_axis)
+            write!(f, "[{}, {}, {}]", self.matrix2.x_axis, self.matrix2.y_axis, self.translation)
         {% elif dim == 3 %}
             write!(
                 f,
                 "[{}, {}, {}, {}]",
-                self.x_axis, self.y_axis, self.z_axis, self.w_axis
+                self.matrix3.x_axis, self.matrix3.y_axis, self.matrix3.z_axis, self.translation
             )
         {% endif %}
     }
@@ -670,55 +669,55 @@ impl<'a> core::iter::Product<&'a Self> for {{ self_t }} {
 impl Mul for {{ self_t }} {
     type Output = {{ self_t }};
 
-    #[inline(always)]
-    fn mul(self, other: {{ self_t }}) -> Self::Output {
+    #[inline]
+    fn mul(self, rhs: {{ self_t }}) -> Self::Output {
         Self {
-            matrix{{ dim }}: self.matrix{{ dim }} * other.matrix{{ dim }},
-            translation: self.matrix{{ dim }} * other.translation + self.translation,
+            matrix{{ dim }}: self.matrix{{ dim }} * rhs.matrix{{ dim }},
+            translation: self.matrix{{ dim }} * rhs.translation + self.translation,
         }
     }
 }
 
 impl Mul<{{ self_t }}> for {{ scalar_t }} {
     type Output = {{ self_t }};
-    #[inline(always)]
-    fn mul(self, other: {{ self_t }}) -> Self::Output {
+    #[inline]
+    fn mul(self, rhs: {{ self_t }}) -> Self::Output {
         {{ self_t }} {
-            matrix{{ dim }}: self * other.matrix{{ dim }},
-            translation: self * other.translation,
+            matrix{{ dim }}: self * rhs.matrix{{ dim }},
+            translation: self * rhs.translation,
         }
     }
 }
 
 impl Mul<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
-    #[inline(always)]
-    fn mul(self, other: {{ scalar_t }}) -> Self::Output {
+    #[inline]
+    fn mul(self, rhs: {{ scalar_t }}) -> Self::Output {
         Self {
-            matrix{{ dim }}: self.matrix{{ dim }} * other,
-            translation: self.translation * other,
+            matrix{{ dim }}: self.matrix{{ dim }} * rhs,
+            translation: self.translation * rhs,
         }
     }
 }
 
 impl Add<{{ self_t }}> for {{ self_t }} {
     type Output = Self;
-    #[inline(always)]
-    fn add(self, other: Self) -> Self::Output {
+    #[inline]
+    fn add(self, rhs: Self) -> Self::Output {
         Self {
-            matrix{{ dim }}: self.matrix{{ dim }} + other.matrix{{ dim }},
-            translation: self.translation + other.translation,
+            matrix{{ dim }}: self.matrix{{ dim }} + rhs.matrix{{ dim }},
+            translation: self.translation + rhs.translation,
         }
     }
 }
 
 impl Sub<{{ self_t }}> for {{ self_t }} {
     type Output = Self;
-    #[inline(always)]
-    fn sub(self, other: Self) -> Self::Output {
+    #[inline]
+    fn sub(self, rhs: Self) -> Self::Output {
         Self {
-            matrix{{ dim }}: self.matrix{{ dim }} - other.matrix{{ dim }},
-            translation: self.translation - other.translation,
+            matrix{{ dim }}: self.matrix{{ dim }} - rhs.matrix{{ dim }},
+            translation: self.translation - rhs.translation,
         }
     }
 }
@@ -738,18 +737,18 @@ impl From<{{ self_t }}> for {{ mat3_t }} {
 impl Mul<{{ mat3_t }}> for {{ self_t }} {
     type Output = {{ mat3_t }};
 
-    #[inline(always)]
-    fn mul(self, other: {{ mat3_t }}) -> Self::Output {
-        {{ mat3_t }}::from(self) * other
+    #[inline]
+    fn mul(self, rhs: {{ mat3_t }}) -> Self::Output {
+        {{ mat3_t }}::from(self) * rhs
     }
 }
 
 impl Mul<{{ self_t }}> for {{ mat3_t }} {
     type Output = {{ mat3_t }};
 
-    #[inline(always)]
-    fn mul(self, other: {{ self_t }}) -> Self::Output {
-        self * {{ mat3_t }}::from(other)
+    #[inline]
+    fn mul(self, rhs: {{ self_t }}) -> Self::Output {
+        self * {{ mat3_t }}::from(rhs)
     }
 }
 {% elif dim == 3 %}
@@ -768,7 +767,7 @@ impl From<{{ self_t }}> for {{ mat4_t }} {
 impl Mul<{{ mat4_t }}> for {{ self_t }} {
     type Output = {{ mat4_t }};
 
-    #[inline(always)]
+    #[inline]
     fn mul(self, rhs: {{ mat4_t }}) -> Self::Output {
         {{ mat4_t }}::from(self) * rhs
     }
@@ -777,7 +776,7 @@ impl Mul<{{ mat4_t }}> for {{ self_t }} {
 impl Mul<{{ self_t }}> for {{ mat4_t }} {
     type Output = {{ mat4_t }};
 
-    #[inline(always)]
+    #[inline]
     fn mul(self, rhs: {{ self_t }}) -> Self::Output {
         self * {{ mat4_t }}::from(rhs)
     }
@@ -799,18 +798,18 @@ impl From<Affine2> for Mat3A {
 impl Mul<Mat3A> for Affine2 {
     type Output = Mat3A;
 
-    #[inline(always)]
-    fn mul(self, other: Mat3A) -> Self::Output {
-        Mat3A::from(self) * other
+    #[inline]
+    fn mul(self, rhs: Mat3A) -> Self::Output {
+        Mat3A::from(self) * rhs
     }
 }
 
 impl Mul<Affine2> for Mat3A {
     type Output = Mat3A;
 
-    #[inline(always)]
-    fn mul(self, other: Affine2) -> Self::Output {
-        self * Mat3A::from(other)
+    #[inline]
+    fn mul(self, rhs: Affine2) -> Self::Output {
+        self * Mat3A::from(rhs)
     }
 }
 {% endif %}

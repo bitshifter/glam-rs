@@ -12,62 +12,106 @@ impl Vec2Swizzles for UVec2 {
 
     #[inline]
     fn xx(self) -> UVec2 {
-        UVec2::new(self.x, self.x)
+        UVec2 {
+            x: self.x,
+            y: self.x,
+        }
     }
 
     #[inline]
     fn xy(self) -> UVec2 {
-        UVec2::new(self.x, self.y)
+        UVec2 {
+            x: self.x,
+            y: self.y,
+        }
     }
 
     #[inline]
     fn yx(self) -> UVec2 {
-        UVec2::new(self.y, self.x)
+        UVec2 {
+            x: self.y,
+            y: self.x,
+        }
     }
 
     #[inline]
     fn yy(self) -> UVec2 {
-        UVec2::new(self.y, self.y)
+        UVec2 {
+            x: self.y,
+            y: self.y,
+        }
     }
 
     #[inline]
     fn xxx(self) -> UVec3 {
-        UVec3::new(self.x, self.x, self.x)
+        UVec3 {
+            x: self.x,
+            y: self.x,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn xxy(self) -> UVec3 {
-        UVec3::new(self.x, self.x, self.y)
+        UVec3 {
+            x: self.x,
+            y: self.x,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn xyx(self) -> UVec3 {
-        UVec3::new(self.x, self.y, self.x)
+        UVec3 {
+            x: self.x,
+            y: self.y,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn xyy(self) -> UVec3 {
-        UVec3::new(self.x, self.y, self.y)
+        UVec3 {
+            x: self.x,
+            y: self.y,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn yxx(self) -> UVec3 {
-        UVec3::new(self.y, self.x, self.x)
+        UVec3 {
+            x: self.y,
+            y: self.x,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn yxy(self) -> UVec3 {
-        UVec3::new(self.y, self.x, self.y)
+        UVec3 {
+            x: self.y,
+            y: self.x,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn yyx(self) -> UVec3 {
-        UVec3::new(self.y, self.y, self.x)
+        UVec3 {
+            x: self.y,
+            y: self.y,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn yyy(self) -> UVec3 {
-        UVec3::new(self.y, self.y, self.y)
+        UVec3 {
+            x: self.y,
+            y: self.y,
+            z: self.y,
+        }
     }
 
     #[inline]

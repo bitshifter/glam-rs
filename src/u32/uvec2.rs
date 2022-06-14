@@ -1,17 +1,11 @@
 // Generated from vec.rs template. Edit the template, not the generated file.
 
-use crate::{
-    core::{storage::*, traits::vector::*},
-    BVec2, UVec3,
-};
+use crate::{BVec2, UVec3};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::{f32, ops::*};
-
-#[cfg(not(feature = "std"))]
-use num_traits::Float;
 
 /// Creates a 2-dimensional vector.
 #[inline(always)]
@@ -22,21 +16,23 @@ pub fn uvec2(x: u32, y: u32) -> UVec2 {
 /// A 2-dimensional vector.
 #[derive(Clone, Copy)]
 #[cfg_attr(feature = "cuda", repr(C, align(8)))]
-#[cfg_attr(not(feature = "cuda"), repr(transparent))]
-pub struct UVec2(pub(crate) XY<u32>);
+pub struct UVec2 {
+    pub x: u32,
+    pub y: u32,
+}
 
 impl UVec2 {
     /// All zeroes.
-    pub const ZERO: Self = Self(XY::<u32>::ZERO);
+    pub const ZERO: Self = const_uvec2!([0; 2]);
 
     /// All ones.
-    pub const ONE: Self = Self(XY::<u32>::ONE);
+    pub const ONE: Self = const_uvec2!([1; 2]);
 
     /// `[1, 0]`: a unit-length vector pointing along the positive X axis.
-    pub const X: Self = Self(<XY<u32> as Vector2Const>::X);
+    pub const X: Self = const_uvec2!([1, 0]);
 
     /// `[0, 1]`: a unit-length vector pointing along the positive Y axis.
-    pub const Y: Self = Self(<XY<u32> as Vector2Const>::Y);
+    pub const Y: Self = const_uvec2!([0, 1]);
 
     /// The unit axes.
     pub const AXES: [Self; 2] = [Self::X, Self::Y];
@@ -44,25 +40,25 @@ impl UVec2 {
     /// Creates a new vector.
     #[inline(always)]
     pub fn new(x: u32, y: u32) -> Self {
-        Self(Vector2::new(x, y))
+        Self { x, y }
     }
 
     /// Creates a 3D vector from `self` and the given `z` value.
-    #[inline(always)]
+    #[inline]
     pub fn extend(self, z: u32) -> UVec3 {
         UVec3::new(self.x, self.y, z)
     }
 
     /// `[x, y]`
-    #[inline(always)]
+    #[inline]
     pub fn to_array(&self) -> [u32; 2] {
         [self.x, self.y]
     }
 
     /// Creates a vector with all elements set to `v`.
-    #[inline(always)]
+    #[inline]
     pub fn splat(v: u32) -> Self {
-        Self(XY::<u32>::splat(v))
+        Self { x: v, y: v }
     }
 
     /// Creates a vector from the elements in `if_true` and `if_false`, selecting which to use
@@ -70,31 +66,40 @@ impl UVec2 {
     ///
     /// A true element in the mask uses the corresponding element from `if_true`, and false
     /// uses the element from `if_false`.
-    #[inline(always)]
+    #[inline]
     pub fn select(mask: BVec2, if_true: Self, if_false: Self) -> Self {
-        Self(XY::<u32>::select(mask.0, if_true.0, if_false.0))
+        Self {
+            x: if mask.x { if_true.x } else { if_false.x },
+            y: if mask.y { if_true.y } else { if_false.y },
+        }
     }
 
-    /// Computes the dot product of `self` and `other`.
-    #[inline(always)]
-    pub fn dot(self, other: Self) -> u32 {
-        <XY<u32> as Vector2<u32>>::dot(self.0, other.0)
+    /// Computes the dot product of `self` and `rhs`.
+    #[inline]
+    pub fn dot(self, rhs: Self) -> u32 {
+        (self.x * rhs.x) + (self.y * rhs.y)
     }
 
-    /// Returns a vector containing the minimum values for each element of `self` and `other`.
+    /// Returns a vector containing the minimum values for each element of `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x.min(other.x), self.y.min(other.y), ..]`.
-    #[inline(always)]
-    pub fn min(self, other: Self) -> Self {
-        Self(self.0.min(other.0))
+    /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
+    #[inline]
+    pub fn min(self, rhs: Self) -> Self {
+        Self {
+            x: self.x.min(rhs.x),
+            y: self.y.min(rhs.y),
+        }
     }
 
-    /// Returns a vector containing the maximum values for each element of `self` and `other`.
+    /// Returns a vector containing the maximum values for each element of `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x.max(other.x), self.y.max(other.y), ..]`.
-    #[inline(always)]
-    pub fn max(self, other: Self) -> Self {
-        Self(self.0.max(other.0))
+    /// In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
+    #[inline]
+    pub fn max(self, rhs: Self) -> Self {
+        Self {
+            x: self.x.max(rhs.x),
+            y: self.y.max(rhs.y),
+        }
     }
 
     /// Component-wise clamping of values, similar to [`f32::clamp`].
@@ -104,85 +109,86 @@ impl UVec2 {
     /// # Panics
     ///
     /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
-    #[inline(always)]
+    #[inline]
     pub fn clamp(self, min: Self, max: Self) -> Self {
-        Self(<XY<u32> as Vector2<u32>>::clamp(self.0, min.0, max.0))
+        glam_assert!(min.cmple(max).all(), "clamp: expected min <= max");
+        self.max(min).min(max)
     }
 
     /// Returns the horizontal minimum of `self`.
     ///
     /// In other words this computes `min(x, y, ..)`.
-    #[inline(always)]
+    #[inline]
     pub fn min_element(self) -> u32 {
-        <XY<u32> as Vector2<u32>>::min_element(self.0)
+        self.x.min(self.y)
     }
 
     /// Returns the horizontal maximum of `self`.
     ///
     /// In other words this computes `max(x, y, ..)`.
-    #[inline(always)]
+    #[inline]
     pub fn max_element(self) -> u32 {
-        <XY<u32> as Vector2<u32>>::max_element(self.0)
+        self.x.max(self.y)
     }
 
     /// Returns a vector mask containing the result of a `==` comparison for each element of
-    /// `self` and `other`.
+    /// `self` and `rhs`.
     ///
-    /// In other words, this computes `[self.x == other.x, self.y == other.y, ..]` for all
+    /// In other words, this computes `[self.x == rhs.x, self.y == rhs.y, ..]` for all
     /// elements.
-    #[inline(always)]
-    pub fn cmpeq(self, other: Self) -> BVec2 {
-        BVec2(self.0.cmpeq(other.0))
+    #[inline]
+    pub fn cmpeq(self, rhs: Self) -> BVec2 {
+        BVec2::new(self.x.eq(&rhs.x), self.y.eq(&rhs.y))
     }
 
     /// Returns a vector mask containing the result of a `!=` comparison for each element of
-    /// `self` and `other`.
+    /// `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x != other.x, self.y != other.y, ..]` for all
+    /// In other words this computes `[self.x != rhs.x, self.y != rhs.y, ..]` for all
     /// elements.
-    #[inline(always)]
-    pub fn cmpne(self, other: Self) -> BVec2 {
-        BVec2(self.0.cmpne(other.0))
+    #[inline]
+    pub fn cmpne(self, rhs: Self) -> BVec2 {
+        BVec2::new(self.x.ne(&rhs.x), self.y.ne(&rhs.y))
     }
 
     /// Returns a vector mask containing the result of a `>=` comparison for each element of
-    /// `self` and `other`.
+    /// `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x >= other.x, self.y >= other.y, ..]` for all
+    /// In other words this computes `[self.x >= rhs.x, self.y >= rhs.y, ..]` for all
     /// elements.
-    #[inline(always)]
-    pub fn cmpge(self, other: Self) -> BVec2 {
-        BVec2(self.0.cmpge(other.0))
+    #[inline]
+    pub fn cmpge(self, rhs: Self) -> BVec2 {
+        BVec2::new(self.x.ge(&rhs.x), self.y.ge(&rhs.y))
     }
 
     /// Returns a vector mask containing the result of a `>` comparison for each element of
-    /// `self` and `other`.
+    /// `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x > other.x, self.y > other.y, ..]` for all
+    /// In other words this computes `[self.x > rhs.x, self.y > rhs.y, ..]` for all
     /// elements.
-    #[inline(always)]
-    pub fn cmpgt(self, other: Self) -> BVec2 {
-        BVec2(self.0.cmpgt(other.0))
+    #[inline]
+    pub fn cmpgt(self, rhs: Self) -> BVec2 {
+        BVec2::new(self.x.gt(&rhs.x), self.y.gt(&rhs.y))
     }
 
     /// Returns a vector mask containing the result of a `<=` comparison for each element of
-    /// `self` and `other`.
+    /// `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x <= other.x, self.y <= other.y, ..]` for all
+    /// In other words this computes `[self.x <= rhs.x, self.y <= rhs.y, ..]` for all
     /// elements.
-    #[inline(always)]
-    pub fn cmple(self, other: Self) -> BVec2 {
-        BVec2(self.0.cmple(other.0))
+    #[inline]
+    pub fn cmple(self, rhs: Self) -> BVec2 {
+        BVec2::new(self.x.le(&rhs.x), self.y.le(&rhs.y))
     }
 
     /// Returns a vector mask containing the result of a `<` comparison for each element of
-    /// `self` and `other`.
+    /// `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x < other.x, self.y < other.y, ..]` for all
+    /// In other words this computes `[self.x < rhs.x, self.y < rhs.y, ..]` for all
     /// elements.
-    #[inline(always)]
-    pub fn cmplt(self, other: Self) -> BVec2 {
-        BVec2(self.0.cmplt(other.0))
+    #[inline]
+    pub fn cmplt(self, rhs: Self) -> BVec2 {
+        BVec2::new(self.x.lt(&rhs.x), self.y.lt(&rhs.y))
     }
 
     /// Creates a vector from the first N values in `slice`.
@@ -190,9 +196,9 @@ impl UVec2 {
     /// # Panics
     ///
     /// Panics if `slice` is less than N elements long.
-    #[inline(always)]
+    #[inline]
     pub fn from_slice(slice: &[u32]) -> Self {
-        Self(<XY<u32> as Vector2<u32>>::from_slice_unaligned(slice))
+        Self::new(slice[0], slice[1])
     }
 
     /// Writes the elements of `self` to the first 2 elements in `slice`.
@@ -200,25 +206,26 @@ impl UVec2 {
     /// # Panics
     ///
     /// Panics if `slice` is less than N elements long.
-    #[inline(always)]
+    #[inline]
     pub fn write_to_slice(self, slice: &mut [u32]) {
-        <XY<u32> as Vector2<u32>>::write_to_slice_unaligned(self.0, slice)
+        slice[0] = self.x;
+        slice[1] = self.y;
     }
 
     /// Casts all elements of `self` to `f32`.
-    #[inline(always)]
+    #[inline]
     pub fn as_vec2(&self) -> crate::Vec2 {
         crate::Vec2::new(self.x as f32, self.y as f32)
     }
 
     /// Casts all elements of `self` to `f64`.
-    #[inline(always)]
+    #[inline]
     pub fn as_dvec2(&self) -> crate::DVec2 {
         crate::DVec2::new(self.x as f64, self.y as f64)
     }
 
     /// Casts all elements of `self` to `i32`.
-    #[inline(always)]
+    #[inline]
     pub fn as_ivec2(&self) -> crate::IVec2 {
         crate::IVec2::new(self.x as i32, self.y as i32)
     }
@@ -227,210 +234,265 @@ impl UVec2 {
 impl Default for UVec2 {
     #[inline(always)]
     fn default() -> Self {
-        Self(XY::<u32>::ZERO)
+        Self::ZERO
     }
 }
 
 impl PartialEq for UVec2 {
-    #[inline(always)]
-    fn eq(&self, other: &Self) -> bool {
-        self.cmpeq(*other).all()
+    #[inline]
+    fn eq(&self, rhs: &Self) -> bool {
+        self.cmpeq(*rhs).all()
     }
 }
 
 impl Div<UVec2> for UVec2 {
     type Output = Self;
-    #[inline(always)]
-    fn div(self, other: UVec2) -> Self {
-        Self(self.0.div(other.0))
+    #[inline]
+    fn div(self, rhs: Self) -> Self {
+        Self {
+            x: self.x.div(rhs.x),
+            y: self.y.div(rhs.y),
+        }
     }
 }
 
 impl DivAssign<UVec2> for UVec2 {
-    #[inline(always)]
-    fn div_assign(&mut self, other: UVec2) {
-        self.0 = self.0.div(other.0)
+    #[inline]
+    fn div_assign(&mut self, rhs: Self) {
+        self.x.div_assign(rhs.x);
+        self.y.div_assign(rhs.y);
     }
 }
 
 impl Div<u32> for UVec2 {
     type Output = Self;
-    #[inline(always)]
-    fn div(self, other: u32) -> Self {
-        Self(self.0.div_scalar(other))
+    #[inline]
+    fn div(self, rhs: u32) -> Self {
+        Self {
+            x: self.x.div(rhs),
+            y: self.y.div(rhs),
+        }
     }
 }
 
 impl DivAssign<u32> for UVec2 {
-    #[inline(always)]
-    fn div_assign(&mut self, other: u32) {
-        self.0 = self.0.div_scalar(other)
+    #[inline]
+    fn div_assign(&mut self, rhs: u32) {
+        self.x.div_assign(rhs);
+        self.y.div_assign(rhs);
     }
 }
 
 impl Div<UVec2> for u32 {
     type Output = UVec2;
-    #[inline(always)]
-    fn div(self, other: UVec2) -> UVec2 {
-        UVec2(XY::<u32>::splat(self).div(other.0))
+    #[inline]
+    fn div(self, rhs: UVec2) -> UVec2 {
+        UVec2 {
+            x: self.div(rhs.x),
+            y: self.div(rhs.y),
+        }
     }
 }
 
 impl Mul<UVec2> for UVec2 {
     type Output = Self;
-    #[inline(always)]
-    fn mul(self, other: UVec2) -> Self {
-        Self(self.0.mul(other.0))
+    #[inline]
+    fn mul(self, rhs: Self) -> Self {
+        Self {
+            x: self.x.mul(rhs.x),
+            y: self.y.mul(rhs.y),
+        }
     }
 }
 
 impl MulAssign<UVec2> for UVec2 {
-    #[inline(always)]
-    fn mul_assign(&mut self, other: UVec2) {
-        self.0 = self.0.mul(other.0)
+    #[inline]
+    fn mul_assign(&mut self, rhs: Self) {
+        self.x.mul_assign(rhs.x);
+        self.y.mul_assign(rhs.y);
     }
 }
 
 impl Mul<u32> for UVec2 {
     type Output = Self;
-    #[inline(always)]
-    fn mul(self, other: u32) -> Self {
-        Self(self.0.mul_scalar(other))
+    #[inline]
+    fn mul(self, rhs: u32) -> Self {
+        Self {
+            x: self.x.mul(rhs),
+            y: self.y.mul(rhs),
+        }
     }
 }
 
 impl MulAssign<u32> for UVec2 {
-    #[inline(always)]
-    fn mul_assign(&mut self, other: u32) {
-        self.0 = self.0.mul_scalar(other)
+    #[inline]
+    fn mul_assign(&mut self, rhs: u32) {
+        self.x.mul_assign(rhs);
+        self.y.mul_assign(rhs);
     }
 }
 
 impl Mul<UVec2> for u32 {
     type Output = UVec2;
-    #[inline(always)]
-    fn mul(self, other: UVec2) -> UVec2 {
-        UVec2(XY::<u32>::splat(self).mul(other.0))
+    #[inline]
+    fn mul(self, rhs: UVec2) -> UVec2 {
+        UVec2 {
+            x: self.mul(rhs.x),
+            y: self.mul(rhs.y),
+        }
     }
 }
 
 impl Add<UVec2> for UVec2 {
     type Output = Self;
-    #[inline(always)]
-    fn add(self, other: UVec2) -> Self {
-        Self(self.0.add(other.0))
+    #[inline]
+    fn add(self, rhs: Self) -> Self {
+        Self {
+            x: self.x.add(rhs.x),
+            y: self.y.add(rhs.y),
+        }
     }
 }
 
 impl AddAssign<UVec2> for UVec2 {
-    #[inline(always)]
-    fn add_assign(&mut self, other: UVec2) {
-        self.0 = self.0.add(other.0)
+    #[inline]
+    fn add_assign(&mut self, rhs: Self) {
+        self.x.add_assign(rhs.x);
+        self.y.add_assign(rhs.y);
     }
 }
 
 impl Add<u32> for UVec2 {
     type Output = Self;
-    #[inline(always)]
-    fn add(self, other: u32) -> Self {
-        Self(self.0.add_scalar(other))
+    #[inline]
+    fn add(self, rhs: u32) -> Self {
+        Self {
+            x: self.x.add(rhs),
+            y: self.y.add(rhs),
+        }
     }
 }
 
 impl AddAssign<u32> for UVec2 {
-    #[inline(always)]
-    fn add_assign(&mut self, other: u32) {
-        self.0 = self.0.add_scalar(other)
+    #[inline]
+    fn add_assign(&mut self, rhs: u32) {
+        self.x.add_assign(rhs);
+        self.y.add_assign(rhs);
     }
 }
 
 impl Add<UVec2> for u32 {
     type Output = UVec2;
-    #[inline(always)]
-    fn add(self, other: UVec2) -> UVec2 {
-        UVec2(XY::<u32>::splat(self).add(other.0))
+    #[inline]
+    fn add(self, rhs: UVec2) -> UVec2 {
+        UVec2 {
+            x: self.add(rhs.x),
+            y: self.add(rhs.y),
+        }
     }
 }
 
 impl Sub<UVec2> for UVec2 {
     type Output = Self;
-    #[inline(always)]
-    fn sub(self, other: UVec2) -> Self {
-        Self(self.0.sub(other.0))
+    #[inline]
+    fn sub(self, rhs: Self) -> Self {
+        Self {
+            x: self.x.sub(rhs.x),
+            y: self.y.sub(rhs.y),
+        }
     }
 }
 
 impl SubAssign<UVec2> for UVec2 {
-    #[inline(always)]
-    fn sub_assign(&mut self, other: UVec2) {
-        self.0 = self.0.sub(other.0)
+    #[inline]
+    fn sub_assign(&mut self, rhs: UVec2) {
+        self.x.sub_assign(rhs.x);
+        self.y.sub_assign(rhs.y);
     }
 }
 
 impl Sub<u32> for UVec2 {
     type Output = Self;
-    #[inline(always)]
-    fn sub(self, other: u32) -> Self {
-        Self(self.0.sub_scalar(other))
+    #[inline]
+    fn sub(self, rhs: u32) -> Self {
+        Self {
+            x: self.x.sub(rhs),
+            y: self.y.sub(rhs),
+        }
     }
 }
 
 impl SubAssign<u32> for UVec2 {
-    #[inline(always)]
-    fn sub_assign(&mut self, other: u32) {
-        self.0 = self.0.sub_scalar(other)
+    #[inline]
+    fn sub_assign(&mut self, rhs: u32) {
+        self.x.sub_assign(rhs);
+        self.y.sub_assign(rhs);
     }
 }
 
 impl Sub<UVec2> for u32 {
     type Output = UVec2;
-    #[inline(always)]
-    fn sub(self, other: UVec2) -> UVec2 {
-        UVec2(XY::<u32>::splat(self).sub(other.0))
+    #[inline]
+    fn sub(self, rhs: UVec2) -> UVec2 {
+        UVec2 {
+            x: self.sub(rhs.x),
+            y: self.sub(rhs.y),
+        }
     }
 }
 
 impl Rem<UVec2> for UVec2 {
     type Output = Self;
-    #[inline(always)]
-    fn rem(self, other: UVec2) -> Self {
-        Self(self.0.rem(other.0))
+    #[inline]
+    fn rem(self, rhs: Self) -> Self {
+        Self {
+            x: self.x.rem(rhs.x),
+            y: self.y.rem(rhs.y),
+        }
     }
 }
 
 impl RemAssign<UVec2> for UVec2 {
-    #[inline(always)]
-    fn rem_assign(&mut self, other: UVec2) {
-        self.0 = self.0.rem(other.0)
+    #[inline]
+    fn rem_assign(&mut self, rhs: Self) {
+        self.x.rem_assign(rhs.x);
+        self.y.rem_assign(rhs.y);
     }
 }
 
 impl Rem<u32> for UVec2 {
     type Output = Self;
-    #[inline(always)]
-    fn rem(self, other: u32) -> Self {
-        Self(self.0.rem_scalar(other))
+    #[inline]
+    fn rem(self, rhs: u32) -> Self {
+        Self {
+            x: self.x.rem(rhs),
+            y: self.y.rem(rhs),
+        }
     }
 }
 
 impl RemAssign<u32> for UVec2 {
-    #[inline(always)]
-    fn rem_assign(&mut self, other: u32) {
-        self.0 = self.0.rem_scalar(other)
+    #[inline]
+    fn rem_assign(&mut self, rhs: u32) {
+        self.x.rem_assign(rhs);
+        self.y.rem_assign(rhs);
     }
 }
 
 impl Rem<UVec2> for u32 {
     type Output = UVec2;
-    #[inline(always)]
-    fn rem(self, other: UVec2) -> UVec2 {
-        UVec2(XY::<u32>::splat(self).rem(other.0))
+    #[inline]
+    fn rem(self, rhs: UVec2) -> UVec2 {
+        UVec2 {
+            x: self.rem(rhs.x),
+            y: self.rem(rhs.y),
+        }
     }
 }
 
 #[cfg(not(target_arch = "spirv"))]
 impl AsRef<[u32; 2]> for UVec2 {
-    #[inline(always)]
+    #[inline]
     fn as_ref(&self) -> &[u32; 2] {
         unsafe { &*(self as *const UVec2 as *const [u32; 2]) }
     }
@@ -438,7 +500,7 @@ impl AsRef<[u32; 2]> for UVec2 {
 
 #[cfg(not(target_arch = "spirv"))]
 impl AsMut<[u32; 2]> for UVec2 {
-    #[inline(always)]
+    #[inline]
     fn as_mut(&mut self) -> &mut [u32; 2] {
         unsafe { &mut *(self as *mut UVec2 as *mut [u32; 2]) }
     }
@@ -476,233 +538,275 @@ impl core::hash::Hash for UVec2 {
 
 impl Not for UVec2 {
     type Output = Self;
-
-    #[inline(always)]
+    #[inline]
     fn not(self) -> Self::Output {
-        UVec2(XY::<u32>::not(self.0))
+        Self {
+            x: self.x.not(),
+            y: self.y.not(),
+        }
     }
 }
 
 impl BitAnd for UVec2 {
     type Output = Self;
-
-    #[inline(always)]
+    #[inline]
     fn bitand(self, rhs: Self) -> Self::Output {
-        UVec2(XY::<u32>::vector_bitand(self.0, rhs.0))
+        Self {
+            x: self.x.bitand(rhs.x),
+            y: self.y.bitand(rhs.y),
+        }
     }
 }
 
 impl BitOr for UVec2 {
     type Output = Self;
-
-    #[inline(always)]
+    #[inline]
     fn bitor(self, rhs: Self) -> Self::Output {
-        UVec2(XY::<u32>::vector_bitor(self.0, rhs.0))
+        Self {
+            x: self.x.bitor(rhs.x),
+            y: self.y.bitor(rhs.y),
+        }
     }
 }
 
 impl BitXor for UVec2 {
     type Output = Self;
-
-    #[inline(always)]
+    #[inline]
     fn bitxor(self, rhs: Self) -> Self::Output {
-        UVec2(XY::<u32>::vector_bitxor(self.0, rhs.0))
+        Self {
+            x: self.x.bitxor(rhs.x),
+            y: self.y.bitxor(rhs.y),
+        }
     }
 }
 
 impl BitAnd<u32> for UVec2 {
     type Output = Self;
-
-    #[inline(always)]
+    #[inline]
     fn bitand(self, rhs: u32) -> Self::Output {
-        UVec2(XY::<u32>::scalar_bitand(self.0, rhs))
+        Self {
+            x: self.x.bitand(rhs),
+            y: self.y.bitand(rhs),
+        }
     }
 }
 
 impl BitOr<u32> for UVec2 {
     type Output = Self;
-
-    #[inline(always)]
+    #[inline]
     fn bitor(self, rhs: u32) -> Self::Output {
-        UVec2(XY::<u32>::scalar_bitor(self.0, rhs))
+        Self {
+            x: self.x.bitor(rhs),
+            y: self.y.bitor(rhs),
+        }
     }
 }
 
 impl BitXor<u32> for UVec2 {
     type Output = Self;
-
-    #[inline(always)]
+    #[inline]
     fn bitxor(self, rhs: u32) -> Self::Output {
-        UVec2(XY::<u32>::scalar_bitxor(self.0, rhs))
+        Self {
+            x: self.x.bitxor(rhs),
+            y: self.y.bitxor(rhs),
+        }
     }
 }
 
 impl Shl<i8> for UVec2 {
     type Output = Self;
-
-    #[inline(always)]
+    #[inline]
     fn shl(self, rhs: i8) -> Self::Output {
-        UVec2(XY::<u32>::scalar_shl(self.0, rhs))
+        Self {
+            x: self.x.shl(rhs),
+            y: self.y.shl(rhs),
+        }
     }
 }
 
 impl Shr<i8> for UVec2 {
     type Output = Self;
-
-    #[inline(always)]
+    #[inline]
     fn shr(self, rhs: i8) -> Self::Output {
-        UVec2(XY::<u32>::scalar_shr(self.0, rhs))
+        Self {
+            x: self.x.shr(rhs),
+            y: self.y.shr(rhs),
+        }
     }
 }
 
 impl Shl<i16> for UVec2 {
     type Output = Self;
-
-    #[inline(always)]
+    #[inline]
     fn shl(self, rhs: i16) -> Self::Output {
-        UVec2(XY::<u32>::scalar_shl(self.0, rhs))
+        Self {
+            x: self.x.shl(rhs),
+            y: self.y.shl(rhs),
+        }
     }
 }
 
 impl Shr<i16> for UVec2 {
     type Output = Self;
-
-    #[inline(always)]
+    #[inline]
     fn shr(self, rhs: i16) -> Self::Output {
-        UVec2(XY::<u32>::scalar_shr(self.0, rhs))
+        Self {
+            x: self.x.shr(rhs),
+            y: self.y.shr(rhs),
+        }
     }
 }
 
 impl Shl<i32> for UVec2 {
     type Output = Self;
-
-    #[inline(always)]
+    #[inline]
     fn shl(self, rhs: i32) -> Self::Output {
-        UVec2(XY::<u32>::scalar_shl(self.0, rhs))
+        Self {
+            x: self.x.shl(rhs),
+            y: self.y.shl(rhs),
+        }
     }
 }
 
 impl Shr<i32> for UVec2 {
     type Output = Self;
-
-    #[inline(always)]
+    #[inline]
     fn shr(self, rhs: i32) -> Self::Output {
-        UVec2(XY::<u32>::scalar_shr(self.0, rhs))
+        Self {
+            x: self.x.shr(rhs),
+            y: self.y.shr(rhs),
+        }
     }
 }
 
 impl Shl<u8> for UVec2 {
     type Output = Self;
-
-    #[inline(always)]
+    #[inline]
     fn shl(self, rhs: u8) -> Self::Output {
-        UVec2(XY::<u32>::scalar_shl(self.0, rhs))
+        Self {
+            x: self.x.shl(rhs),
+            y: self.y.shl(rhs),
+        }
     }
 }
 
 impl Shr<u8> for UVec2 {
     type Output = Self;
-
-    #[inline(always)]
+    #[inline]
     fn shr(self, rhs: u8) -> Self::Output {
-        UVec2(XY::<u32>::scalar_shr(self.0, rhs))
+        Self {
+            x: self.x.shr(rhs),
+            y: self.y.shr(rhs),
+        }
     }
 }
 
 impl Shl<u16> for UVec2 {
     type Output = Self;
-
-    #[inline(always)]
+    #[inline]
     fn shl(self, rhs: u16) -> Self::Output {
-        UVec2(XY::<u32>::scalar_shl(self.0, rhs))
+        Self {
+            x: self.x.shl(rhs),
+            y: self.y.shl(rhs),
+        }
     }
 }
 
 impl Shr<u16> for UVec2 {
     type Output = Self;
-
-    #[inline(always)]
+    #[inline]
     fn shr(self, rhs: u16) -> Self::Output {
-        UVec2(XY::<u32>::scalar_shr(self.0, rhs))
+        Self {
+            x: self.x.shr(rhs),
+            y: self.y.shr(rhs),
+        }
     }
 }
 
 impl Shl<u32> for UVec2 {
     type Output = Self;
-
-    #[inline(always)]
+    #[inline]
     fn shl(self, rhs: u32) -> Self::Output {
-        UVec2(XY::<u32>::scalar_shl(self.0, rhs))
+        Self {
+            x: self.x.shl(rhs),
+            y: self.y.shl(rhs),
+        }
     }
 }
 
 impl Shr<u32> for UVec2 {
     type Output = Self;
-
-    #[inline(always)]
+    #[inline]
     fn shr(self, rhs: u32) -> Self::Output {
-        UVec2(XY::<u32>::scalar_shr(self.0, rhs))
+        Self {
+            x: self.x.shr(rhs),
+            y: self.y.shr(rhs),
+        }
     }
 }
 
 impl Shl<crate::IVec2> for UVec2 {
     type Output = Self;
-
-    #[inline(always)]
+    #[inline]
     fn shl(self, rhs: crate::IVec2) -> Self::Output {
-        UVec2(XY::<u32>::vector_shl(self.0, rhs.0))
+        Self {
+            x: self.x.shl(rhs.x),
+            y: self.y.shl(rhs.y),
+        }
     }
 }
 
 impl Shr<crate::IVec2> for UVec2 {
     type Output = Self;
-
-    #[inline(always)]
+    #[inline]
     fn shr(self, rhs: crate::IVec2) -> Self::Output {
-        UVec2(XY::<u32>::vector_shr(self.0, rhs.0))
+        Self {
+            x: self.x.shr(rhs.x),
+            y: self.y.shr(rhs.y),
+        }
     }
 }
 
 impl Shl<crate::UVec2> for UVec2 {
     type Output = Self;
-
-    #[inline(always)]
+    #[inline]
     fn shl(self, rhs: crate::UVec2) -> Self::Output {
-        UVec2(XY::<u32>::vector_shl(self.0, rhs.0))
+        Self {
+            x: self.x.shl(rhs.x),
+            y: self.y.shl(rhs.y),
+        }
     }
 }
 
 impl Shr<crate::UVec2> for UVec2 {
     type Output = Self;
-
-    #[inline(always)]
+    #[inline]
     fn shr(self, rhs: crate::UVec2) -> Self::Output {
-        UVec2(XY::<u32>::vector_shr(self.0, rhs.0))
+        Self {
+            x: self.x.shr(rhs.x),
+            y: self.y.shr(rhs.y),
+        }
     }
 }
 
 impl Index<usize> for UVec2 {
     type Output = u32;
-    #[inline(always)]
+    #[inline]
     fn index(&self, index: usize) -> &Self::Output {
         match index {
             0 => &self.x,
-
             1 => &self.y,
-
             _ => panic!("index out of bounds"),
         }
     }
 }
 
 impl IndexMut<usize> for UVec2 {
-    #[inline(always)]
+    #[inline]
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         match index {
             0 => &mut self.x,
-
             1 => &mut self.y,
-
             _ => panic!("index out of bounds"),
         }
     }
@@ -725,59 +829,30 @@ impl fmt::Debug for UVec2 {
     }
 }
 
-impl From<UVec2> for XY<u32> {
-    #[inline(always)]
-    fn from(t: UVec2) -> Self {
-        t.0
-    }
-}
-
-impl From<XY<u32>> for UVec2 {
-    #[inline(always)]
-    fn from(t: XY<u32>) -> Self {
-        Self(t)
-    }
-}
-
 impl From<[u32; 2]> for UVec2 {
-    #[inline(always)]
+    #[inline]
     fn from(a: [u32; 2]) -> Self {
-        Self(<XY<u32> as Vector2<u32>>::from_array(a))
+        Self::new(a[0], a[1])
     }
 }
 
 impl From<UVec2> for [u32; 2] {
-    #[inline(always)]
+    #[inline]
     fn from(v: UVec2) -> Self {
-        v.into_array()
+        [v.x, v.y]
     }
 }
 
 impl From<(u32, u32)> for UVec2 {
-    #[inline(always)]
+    #[inline]
     fn from(t: (u32, u32)) -> Self {
-        Self(<XY<u32> as Vector2<u32>>::from_tuple(t))
+        Self::new(t.0, t.1)
     }
 }
 
 impl From<UVec2> for (u32, u32) {
-    #[inline(always)]
+    #[inline]
     fn from(v: UVec2) -> Self {
-        Vector2::into_tuple(v.0)
-    }
-}
-
-impl Deref for UVec2 {
-    type Target = XY<u32>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        self.0.as_ref_xy()
-    }
-}
-
-impl DerefMut for UVec2 {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        self.0.as_mut_xy()
+        (v.x, v.y)
     }
 }

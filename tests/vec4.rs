@@ -34,6 +34,13 @@ macro_rules! impl_vec4_tests {
             let a1: [$t; 4] = v.into();
             assert_eq!(a, a1);
 
+            assert_eq!(a, v.to_array());
+            assert_eq!(a, *v.as_ref());
+
+            let mut v2 = $vec4::default();
+            *v2.as_mut() = a;
+            assert_eq!(a, v2.to_array());
+
             let v = $vec4::new(t.0, t.1, t.2, t.3);
             assert_eq!(t, v.into());
 
@@ -75,10 +82,17 @@ macro_rules! impl_vec4_tests {
                     a.w
                 )
             );
-            // assert_eq!(
-            //     format!("{:#?}", a),
-            //     "$vec4(\n    1.0,\n    2.0,\n    3.0,\n    4.0\n)"
-            // );
+            assert_eq!(
+                format!("{:#?}", a),
+                format!(
+                    "{}(\n    {:#?},\n    {:#?},\n    {:#?},\n    {:#?},\n)",
+                    stringify!($vec4),
+                    a.x,
+                    a.y,
+                    a.z,
+                    a.w
+                )
+            );
             assert_eq!(format!("{}", a), "[1, 2, 3, 4]");
         });
 
@@ -131,7 +145,9 @@ macro_rules! impl_vec4_tests {
         glam_test!(test_ops, {
             let a = $new(2 as $t, 4 as $t, 8 as $t, 16 as $t);
             assert_eq!($new(4 as $t, 8 as $t, 16 as $t, 32 as $t), a + a);
+            assert_eq!($new(2 as $t, 4 as $t, 8 as $t, 16 as $t), 0 as $t + a);
             assert_eq!($new(0 as $t, 0 as $t, 0 as $t, 0 as $t), a - a);
+            assert_eq!($new(14 as $t, 12 as $t, 8 as $t, 0 as $t), 16 as $t - a);
             assert_eq!($new(4 as $t, 16 as $t, 64 as $t, 256 as $t), a * a);
             assert_eq!($new(4 as $t, 8 as $t, 16 as $t, 32 as $t), a * 2 as $t);
             assert_eq!($new(4 as $t, 8 as $t, 16 as $t, 32 as $t), 2 as $t * a);
@@ -149,6 +165,19 @@ macro_rules! impl_vec4_tests {
         glam_test!(test_assign_ops, {
             let a = $new(1 as $t, 2 as $t, 3 as $t, 4 as $t);
             let mut b = a;
+
+            b += 2 as $t;
+            assert_eq!($new(3 as $t, 4 as $t, 5 as $t, 6 as $t), b);
+            b -= 2 as $t;
+            assert_eq!($new(1 as $t, 2 as $t, 3 as $t, 4 as $t), b);
+            b *= 2 as $t;
+            assert_eq!($new(2 as $t, 4 as $t, 6 as $t, 8 as $t), b);
+            b /= 2 as $t;
+            assert_eq!($new(1 as $t, 2 as $t, 3 as $t, 4 as $t), b);
+            b %= 2 as $t;
+            assert_eq!($new(1 as $t, 0 as $t, 1 as $t, 0 as $t), b);
+
+            b = a;
             b += a;
             assert_eq!($new(2 as $t, 4 as $t, 6 as $t, 8 as $t), b);
             b -= a;
@@ -294,35 +323,7 @@ macro_rules! impl_vec4_tests {
             should_panic!({ $vec4::from_slice(&[0 as $t; 3]) });
         });
 
-        // #[test]
-        // fn test_mask_as_ref() {
-        //     assert_eq!(
-        //         $mask::new(false, false, false, false).as_ref(),
-        //         &[0, 0, 0, 0]
-        //     );
-        //     assert_eq!(
-        //         $mask::new(false, false, true, true).as_ref(),
-        //         &[0, 0, !0, !0]
-        //     );
-        //     assert_eq!(
-        //         $mask::new(true, true, false, false).as_ref(),
-        //         &[!0, !0, 0, 0]
-        //     );
-        //     assert_eq!(
-        //         $mask::new(false, true, false, true).as_ref(),
-        //         &[0, !0, 0, !0]
-        //     );
-        //     assert_eq!(
-        //         $mask::new(true, false, true, false).as_ref(),
-        //         &[!0, 0, !0, 0]
-        //     );
-        //     assert_eq!(
-        //         $mask::new(true, true, true, true).as_ref(),
-        //         &[!0, !0, !0, !0]
-        //     );
-        // }
-
-        glam_test!(test_mask_from, {
+        glam_test!(test_mask_into_array_u32, {
             assert_eq!(
                 Into::<[u32; 4]>::into($mask::new(false, false, false, false)),
                 [0, 0, 0, 0]
@@ -346,6 +347,33 @@ macro_rules! impl_vec4_tests {
             assert_eq!(
                 Into::<[u32; 4]>::into($mask::new(true, true, true, true)),
                 [!0, !0, !0, !0]
+            );
+        });
+
+        glam_test!(test_mask_into_array_bool, {
+            assert_eq!(
+                Into::<[bool; 4]>::into($mask::new(false, false, false, false)),
+                [false, false, false, false]
+            );
+            assert_eq!(
+                Into::<[bool; 4]>::into($mask::new(false, false, true, true)),
+                [false, false, true, true]
+            );
+            assert_eq!(
+                Into::<[bool; 4]>::into($mask::new(true, true, false, false)),
+                [true, true, false, false]
+            );
+            assert_eq!(
+                Into::<[bool; 4]>::into($mask::new(false, true, false, true)),
+                [false, true, false, true]
+            );
+            assert_eq!(
+                Into::<[bool; 4]>::into($mask::new(true, false, true, false)),
+                [true, false, true, false]
+            );
+            assert_eq!(
+                Into::<[bool; 4]>::into($mask::new(true, true, true, true)),
+                [true, true, true, true]
             );
         });
 
@@ -458,10 +486,10 @@ macro_rules! impl_vec4_tests {
             let a = $mask::new(true, false, true, false);
 
             assert_eq!(format!("{}", a), "[true, false, true, false]");
-            // assert_eq!(
-            //     format!("{:?}", a),
-            //     format!("{}(0xffffffff, 0x0, 0xffffffff, 0x0)", stringify!($mask))
-            // );
+            assert_eq!(
+                format!("{:?}", a),
+                format!("{}(0xffffffff, 0x0, 0xffffffff, 0x0)", stringify!($mask))
+            );
         });
 
         glam_test!(test_mask_eq, {
@@ -995,19 +1023,7 @@ macro_rules! impl_vec4_bit_op_tests {
     };
 }
 mod vec4 {
-    use glam::{const_vec4, vec4, Vec2, Vec3, Vec4};
-
-    #[cfg(all(
-        any(target_feature = "sse2", target_feature = "simd128"),
-        not(feature = "scalar-math")
-    ))]
-    type Vec4Mask = glam::BVec4A;
-
-    #[cfg(any(
-        not(any(target_feature = "sse2", target_feature = "simd128")),
-        feature = "scalar-math"
-    ))]
-    type Vec4Mask = glam::BVec4;
+    use glam::{const_vec4, vec4, BVec4, BVec4A, Vec2, Vec3, Vec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1021,11 +1037,11 @@ mod vec4 {
             any(target_feature = "sse2", target_feature = "simd128"),
             not(feature = "scalar-math")
         )) {
-            assert_eq!(16, mem::size_of::<Vec4Mask>());
-            assert_eq!(16, mem::align_of::<Vec4Mask>());
+            assert_eq!(16, mem::size_of::<BVec4A>());
+            assert_eq!(16, mem::align_of::<BVec4A>());
         } else {
-            assert_eq!(4, mem::size_of::<Vec4Mask>());
-            assert_eq!(1, mem::align_of::<Vec4Mask>());
+            assert_eq!(4, mem::size_of::<BVec4>());
+            assert_eq!(1, mem::align_of::<BVec4>());
         }
     });
 
@@ -1053,7 +1069,7 @@ mod vec4 {
         #[repr(C, align(16))]
         struct U32x4_A16([u32; 4]);
 
-        let v0 = Vec4Mask::new(true, false, true, false);
+        let v0 = BVec4A::new(true, false, true, false);
         let m0: __m128 = v0.into();
         let mut a0 = U32x4_A16([1, 2, 3, 4]);
         unsafe {
@@ -1123,7 +1139,17 @@ mod vec4 {
         );
     });
 
-    impl_vec4_float_tests!(f32, const_vec4, vec4, Vec4, Vec3, Vec2, Vec4Mask);
+    #[cfg(all(
+        any(target_feature = "sse2", target_feature = "simd128"),
+        not(feature = "scalar-math")
+    ))]
+    impl_vec4_float_tests!(f32, const_vec4, vec4, Vec4, Vec3, Vec2, BVec4A);
+
+    #[cfg(any(
+        not(any(target_feature = "sse2", target_feature = "simd128")),
+        feature = "scalar-math"
+    ))]
+    impl_vec4_float_tests!(f32, const_vec4, vec4, Vec4, Vec3, Vec2, BVec4);
 }
 
 mod dvec4 {

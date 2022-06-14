@@ -252,15 +252,25 @@ mod macros;
 #[doc(hidden)]
 pub mod cast;
 
-mod core;
+mod align16;
+mod deref;
 mod euler;
 mod features;
+mod float_ex;
 
 #[cfg(target_arch = "spirv")]
 mod spirv;
 
-#[doc(hidden)]
-pub use self::core::storage::{XY, XYZ, XYZW};
+#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+mod sse2;
+
+#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+use align16::Align16;
+
+#[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
+mod wasm32;
+
+use float_ex::FloatEx;
 
 /** `bool` vector mask types. */
 pub mod bool;

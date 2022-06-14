@@ -1,8 +1,6 @@
 #[macro_use]
 mod support;
 
-use glam::{DQuat, Quat};
-
 /// Helper to calculate the inner angle in the range [0, 2*PI)
 trait AngleDiff {
     type Output;
@@ -46,41 +44,6 @@ macro_rules! assert_approx_angle {
         );
     }};
 }
-
-trait EqApprox {
-    type EPS;
-    fn eq_approx(self, other: Self, axis_eps: Self::EPS, rot_axis: Self::EPS) -> bool;
-}
-
-macro_rules! impl_eq_approx {
-    ($t:ty, $quat:ident, $pi:expr) => {
-        impl EqApprox for $quat {
-            type EPS = $t;
-            fn eq_approx(self, other: Self, axis_eps: Self::EPS, rot_axis: Self::EPS) -> bool {
-                let (s_axis, s_angle) = self.to_axis_angle();
-                let (o_axis, o_angle) = other.to_axis_angle();
-                if s_angle.abs() < rot_axis && o_angle.abs() < rot_axis {
-                    // No rotation
-                    true
-                } else {
-                    let a = s_axis.angle_between(o_axis);
-                    if a < axis_eps {
-                        // Same axes
-                        (s_angle - o_angle).abs() < rot_axis
-                    } else if ($pi - a).abs() < axis_eps {
-                        // Inverted axes (180°)
-                        (s_angle + o_angle).abs() < rot_axis
-                    } else {
-                        // Other
-                        false
-                    }
-                }
-            }
-        }
-    };
-}
-impl_eq_approx!(f32, Quat, std::f32::consts::PI);
-impl_eq_approx!(f64, DQuat, std::f64::consts::PI);
 
 #[macro_export]
 macro_rules! impl_3axis_test {

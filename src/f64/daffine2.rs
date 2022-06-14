@@ -1,11 +1,7 @@
 // Generated from affine.rs template. Edit the template, not the generated file.
 
-use crate::core::storage::Columns3;
 use crate::{DMat2, DMat3, DVec2};
 use core::ops::{Add, Deref, DerefMut, Mul, Sub};
-
-#[cfg(not(feature = "std"))]
-use num_traits::Float;
 
 /// A 2D affine transform, which can represent translation, rotation, scaling and shear.
 #[derive(Copy, Clone)]
@@ -51,7 +47,7 @@ impl DAffine2 {
     /// Creates an affine transform from a `[f64; 6]` array stored in column major order.
     /// If your data is stored in row major you will need to `transpose` the returned
     /// matrix.
-    #[inline(always)]
+    #[inline]
     pub fn from_cols_array(m: &[f64; 6]) -> Self {
         Self {
             matrix2: DMat2::from_cols_slice(&m[0..4]),
@@ -61,7 +57,7 @@ impl DAffine2 {
 
     /// Creates a `[f64; 6]` array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
-    #[inline(always)]
+    #[inline]
     pub fn to_cols_array(&self) -> [f64; 6] {
         let x = &self.matrix2.x_axis;
         let y = &self.matrix2.y_axis;
@@ -73,7 +69,7 @@ impl DAffine2 {
     /// 2D array stored in column major order.
     /// If your data is in row major order you will need to `transpose` the returned
     /// matrix.
-    #[inline(always)]
+    #[inline]
     pub fn from_cols_array_2d(m: &[[f64; 2]; 3]) -> Self {
         Self {
             matrix2: DMat2::from_cols(m[0].into(), m[1].into()),
@@ -84,7 +80,7 @@ impl DAffine2 {
     /// Creates a `[[f64; 2]; 3]` 2D array storing data in
     /// column major order.
     /// If you require data in row major order `transpose` the matrix first.
-    #[inline(always)]
+    #[inline]
     pub fn to_cols_array_2d(&self) -> [[f64; 2]; 3] {
         [
             self.matrix2.x_axis.into(),
@@ -98,7 +94,7 @@ impl DAffine2 {
     /// # Panics
     ///
     /// Panics if `slice` is less than 6 elements long.
-    #[inline(always)]
+    #[inline]
     pub fn from_cols_slice(slice: &[f64]) -> Self {
         Self {
             matrix2: DMat2::from_cols_slice(&slice[0..4]),
@@ -111,7 +107,7 @@ impl DAffine2 {
     /// # Panics
     ///
     /// Panics if `slice` is less than 6 elements long.
-    #[inline(always)]
+    #[inline]
     pub fn write_cols_to_slice(self, slice: &mut [f64]) {
         self.matrix2.write_cols_to_slice(&mut slice[0..4]);
         self.translation.write_to_slice(&mut slice[4..6]);
@@ -119,7 +115,7 @@ impl DAffine2 {
 
     /// Creates an affine transform that changes scale.
     /// Note that if any scale is zero the transform will be non-invertible.
-    #[inline(always)]
+    #[inline]
     pub fn from_scale(scale: DVec2) -> Self {
         Self {
             matrix2: DMat2::from_diagonal(scale),
@@ -128,7 +124,7 @@ impl DAffine2 {
     }
 
     /// Creates an affine transform from the given rotation `angle`.
-    #[inline(always)]
+    #[inline]
     pub fn from_angle(angle: f64) -> Self {
         Self {
             matrix2: DMat2::from_angle(angle),
@@ -137,7 +133,7 @@ impl DAffine2 {
     }
 
     /// Creates an affine transformation from the given 2D `translation`.
-    #[inline(always)]
+    #[inline]
     pub fn from_translation(translation: DVec2) -> Self {
         Self {
             matrix2: DMat2::IDENTITY,
@@ -146,7 +142,7 @@ impl DAffine2 {
     }
 
     /// Creates an affine transform from a 2x2 matrix (expressing scale, shear and rotation)
-    #[inline(always)]
+    #[inline]
     pub fn from_mat2(matrix2: DMat2) -> Self {
         Self {
             matrix2,
@@ -159,7 +155,7 @@ impl DAffine2 {
     ///
     /// Equivalent to
     /// `DAffine2::from_translation(translation) * DAffine2::from_mat2(mat2)`
-    #[inline(always)]
+    #[inline]
     pub fn from_mat2_translation(matrix2: DMat2, translation: DVec2) -> Self {
         Self {
             matrix2,
@@ -185,7 +181,7 @@ impl DAffine2 {
     /// `translation`.
     ///
     /// Equivalent to `DAffine2::from_translation(translation) * DAffine2::from_angle(angle)`
-    #[inline(always)]
+    #[inline]
     pub fn from_angle_translation(angle: f64, translation: DVec2) -> Self {
         Self {
             matrix2: DMat2::from_angle(angle),
@@ -196,25 +192,26 @@ impl DAffine2 {
     /// The given `DMat3` must be an affine transform,
     #[inline]
     pub fn from_mat3(m: DMat3) -> Self {
+        use crate::swizzles::Vec3Swizzles;
         Self {
-            matrix2: DMat2::from_cols(DVec2(m.x_axis.0.into()), DVec2(m.y_axis.0.into())),
-            translation: DVec2(m.z_axis.0.into()),
+            matrix2: DMat2::from_cols(m.x_axis.xy(), m.y_axis.xy()),
+            translation: m.z_axis.xy(),
         }
     }
 
     /// Transforms the given 2D point, applying shear, scale, rotation and translation.
-    #[inline(always)]
-    pub fn transform_point2(&self, other: DVec2) -> DVec2 {
-        self.matrix2 * other + self.translation
+    #[inline]
+    pub fn transform_point2(&self, rhs: DVec2) -> DVec2 {
+        self.matrix2 * rhs + self.translation
     }
 
     /// Transforms the given 2D vector, applying shear, scale and rotation (but NOT
     /// translation).
     ///
     /// To also apply translation, use [`Self::transform_point2`] instead.
-    #[inline(always)]
-    pub fn transform_vector2(&self, other: DVec2) -> DVec2 {
-        self.matrix2 * other
+    #[inline]
+    pub fn transform_vector2(&self, rhs: DVec2) -> DVec2 {
+        self.matrix2 * rhs
     }
 
     /// Returns `true` if, and only if, all elements are finite.
@@ -232,7 +229,7 @@ impl DAffine2 {
         self.matrix2.is_nan() || self.translation.is_nan()
     }
 
-    /// Returns true if the absolute difference of all elements between `self` and `other`
+    /// Returns true if the absolute difference of all elements between `self` and `rhs`
     /// is less than or equal to `max_abs_diff`.
     ///
     /// This can be used to compare if two 3x4 matrices contain similar elements. It works
@@ -242,11 +239,9 @@ impl DAffine2 {
     /// For more see
     /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
     #[inline]
-    pub fn abs_diff_eq(&self, other: Self, max_abs_diff: f64) -> bool {
-        self.matrix2.abs_diff_eq(other.matrix2, max_abs_diff)
-            && self
-                .translation
-                .abs_diff_eq(other.translation, max_abs_diff)
+    pub fn abs_diff_eq(&self, rhs: Self, max_abs_diff: f64) -> bool {
+        self.matrix2.abs_diff_eq(rhs.matrix2, max_abs_diff)
+            && self.translation.abs_diff_eq(rhs.translation, max_abs_diff)
     }
 
     /// Return the inverse of this transform.
@@ -274,7 +269,7 @@ impl Default for DAffine2 {
 }
 
 impl Deref for DAffine2 {
-    type Target = Columns3<DVec2>;
+    type Target = crate::deref::Columns3<DVec2>;
     #[inline(always)]
     fn deref(&self) -> &Self::Target {
         unsafe { &*(self as *const Self as *const Self::Target) }
@@ -290,8 +285,8 @@ impl DerefMut for DAffine2 {
 
 impl PartialEq for DAffine2 {
     #[inline]
-    fn eq(&self, other: &Self) -> bool {
-        self.matrix2.eq(&other.matrix2) && self.translation.eq(&other.translation)
+    fn eq(&self, rhs: &Self) -> bool {
+        self.matrix2.eq(&rhs.matrix2) && self.translation.eq(&rhs.translation)
     }
 }
 
@@ -308,7 +303,11 @@ impl core::fmt::Debug for DAffine2 {
 #[cfg(not(target_arch = "spirv"))]
 impl core::fmt::Display for DAffine2 {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "[{}, {}, {}]", self.x_axis, self.y_axis, self.z_axis)
+        write!(
+            f,
+            "[{}, {}, {}]",
+            self.matrix2.x_axis, self.matrix2.y_axis, self.translation
+        )
     }
 }
 
@@ -324,55 +323,55 @@ impl<'a> core::iter::Product<&'a Self> for DAffine2 {
 impl Mul for DAffine2 {
     type Output = DAffine2;
 
-    #[inline(always)]
-    fn mul(self, other: DAffine2) -> Self::Output {
+    #[inline]
+    fn mul(self, rhs: DAffine2) -> Self::Output {
         Self {
-            matrix2: self.matrix2 * other.matrix2,
-            translation: self.matrix2 * other.translation + self.translation,
+            matrix2: self.matrix2 * rhs.matrix2,
+            translation: self.matrix2 * rhs.translation + self.translation,
         }
     }
 }
 
 impl Mul<DAffine2> for f64 {
     type Output = DAffine2;
-    #[inline(always)]
-    fn mul(self, other: DAffine2) -> Self::Output {
+    #[inline]
+    fn mul(self, rhs: DAffine2) -> Self::Output {
         DAffine2 {
-            matrix2: self * other.matrix2,
-            translation: self * other.translation,
+            matrix2: self * rhs.matrix2,
+            translation: self * rhs.translation,
         }
     }
 }
 
 impl Mul<f64> for DAffine2 {
     type Output = Self;
-    #[inline(always)]
-    fn mul(self, other: f64) -> Self::Output {
+    #[inline]
+    fn mul(self, rhs: f64) -> Self::Output {
         Self {
-            matrix2: self.matrix2 * other,
-            translation: self.translation * other,
+            matrix2: self.matrix2 * rhs,
+            translation: self.translation * rhs,
         }
     }
 }
 
 impl Add<DAffine2> for DAffine2 {
     type Output = Self;
-    #[inline(always)]
-    fn add(self, other: Self) -> Self::Output {
+    #[inline]
+    fn add(self, rhs: Self) -> Self::Output {
         Self {
-            matrix2: self.matrix2 + other.matrix2,
-            translation: self.translation + other.translation,
+            matrix2: self.matrix2 + rhs.matrix2,
+            translation: self.translation + rhs.translation,
         }
     }
 }
 
 impl Sub<DAffine2> for DAffine2 {
     type Output = Self;
-    #[inline(always)]
-    fn sub(self, other: Self) -> Self::Output {
+    #[inline]
+    fn sub(self, rhs: Self) -> Self::Output {
         Self {
-            matrix2: self.matrix2 - other.matrix2,
-            translation: self.translation - other.translation,
+            matrix2: self.matrix2 - rhs.matrix2,
+            translation: self.translation - rhs.translation,
         }
     }
 }
@@ -391,17 +390,17 @@ impl From<DAffine2> for DMat3 {
 impl Mul<DMat3> for DAffine2 {
     type Output = DMat3;
 
-    #[inline(always)]
-    fn mul(self, other: DMat3) -> Self::Output {
-        DMat3::from(self) * other
+    #[inline]
+    fn mul(self, rhs: DMat3) -> Self::Output {
+        DMat3::from(self) * rhs
     }
 }
 
 impl Mul<DAffine2> for DMat3 {
     type Output = DMat3;
 
-    #[inline(always)]
-    fn mul(self, other: DAffine2) -> Self::Output {
-        self * DMat3::from(other)
+    #[inline]
+    fn mul(self, rhs: DAffine2) -> Self::Output {
+        self * DMat3::from(rhs)
     }
 }

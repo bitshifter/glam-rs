@@ -12,182 +12,317 @@ impl Vec3Swizzles for IVec3 {
 
     #[inline]
     fn xx(self) -> IVec2 {
-        IVec2::new(self.x, self.x)
+        IVec2 {
+            x: self.x,
+            y: self.x,
+        }
     }
 
     #[inline]
     fn xy(self) -> IVec2 {
-        IVec2::new(self.x, self.y)
+        IVec2 {
+            x: self.x,
+            y: self.y,
+        }
     }
 
     #[inline]
     fn xz(self) -> IVec2 {
-        IVec2::new(self.x, self.z)
+        IVec2 {
+            x: self.x,
+            y: self.z,
+        }
     }
 
     #[inline]
     fn yx(self) -> IVec2 {
-        IVec2::new(self.y, self.x)
+        IVec2 {
+            x: self.y,
+            y: self.x,
+        }
     }
 
     #[inline]
     fn yy(self) -> IVec2 {
-        IVec2::new(self.y, self.y)
+        IVec2 {
+            x: self.y,
+            y: self.y,
+        }
     }
 
     #[inline]
     fn yz(self) -> IVec2 {
-        IVec2::new(self.y, self.z)
+        IVec2 {
+            x: self.y,
+            y: self.z,
+        }
     }
 
     #[inline]
     fn zx(self) -> IVec2 {
-        IVec2::new(self.z, self.x)
+        IVec2 {
+            x: self.z,
+            y: self.x,
+        }
     }
 
     #[inline]
     fn zy(self) -> IVec2 {
-        IVec2::new(self.z, self.y)
+        IVec2 {
+            x: self.z,
+            y: self.y,
+        }
     }
 
     #[inline]
     fn zz(self) -> IVec2 {
-        IVec2::new(self.z, self.z)
+        IVec2 {
+            x: self.z,
+            y: self.z,
+        }
     }
 
     #[inline]
     fn xxx(self) -> IVec3 {
-        IVec3::new(self.x, self.x, self.x)
+        IVec3 {
+            x: self.x,
+            y: self.x,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn xxy(self) -> IVec3 {
-        IVec3::new(self.x, self.x, self.y)
+        IVec3 {
+            x: self.x,
+            y: self.x,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn xxz(self) -> IVec3 {
-        IVec3::new(self.x, self.x, self.z)
+        IVec3 {
+            x: self.x,
+            y: self.x,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn xyx(self) -> IVec3 {
-        IVec3::new(self.x, self.y, self.x)
+        IVec3 {
+            x: self.x,
+            y: self.y,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn xyy(self) -> IVec3 {
-        IVec3::new(self.x, self.y, self.y)
+        IVec3 {
+            x: self.x,
+            y: self.y,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn xyz(self) -> IVec3 {
-        IVec3::new(self.x, self.y, self.z)
+        IVec3 {
+            x: self.x,
+            y: self.y,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn xzx(self) -> IVec3 {
-        IVec3::new(self.x, self.z, self.x)
+        IVec3 {
+            x: self.x,
+            y: self.z,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn xzy(self) -> IVec3 {
-        IVec3::new(self.x, self.z, self.y)
+        IVec3 {
+            x: self.x,
+            y: self.z,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn xzz(self) -> IVec3 {
-        IVec3::new(self.x, self.z, self.z)
+        IVec3 {
+            x: self.x,
+            y: self.z,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn yxx(self) -> IVec3 {
-        IVec3::new(self.y, self.x, self.x)
+        IVec3 {
+            x: self.y,
+            y: self.x,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn yxy(self) -> IVec3 {
-        IVec3::new(self.y, self.x, self.y)
+        IVec3 {
+            x: self.y,
+            y: self.x,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn yxz(self) -> IVec3 {
-        IVec3::new(self.y, self.x, self.z)
+        IVec3 {
+            x: self.y,
+            y: self.x,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn yyx(self) -> IVec3 {
-        IVec3::new(self.y, self.y, self.x)
+        IVec3 {
+            x: self.y,
+            y: self.y,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn yyy(self) -> IVec3 {
-        IVec3::new(self.y, self.y, self.y)
+        IVec3 {
+            x: self.y,
+            y: self.y,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn yyz(self) -> IVec3 {
-        IVec3::new(self.y, self.y, self.z)
+        IVec3 {
+            x: self.y,
+            y: self.y,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn yzx(self) -> IVec3 {
-        IVec3::new(self.y, self.z, self.x)
+        IVec3 {
+            x: self.y,
+            y: self.z,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn yzy(self) -> IVec3 {
-        IVec3::new(self.y, self.z, self.y)
+        IVec3 {
+            x: self.y,
+            y: self.z,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn yzz(self) -> IVec3 {
-        IVec3::new(self.y, self.z, self.z)
+        IVec3 {
+            x: self.y,
+            y: self.z,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn zxx(self) -> IVec3 {
-        IVec3::new(self.z, self.x, self.x)
+        IVec3 {
+            x: self.z,
+            y: self.x,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn zxy(self) -> IVec3 {
-        IVec3::new(self.z, self.x, self.y)
+        IVec3 {
+            x: self.z,
+            y: self.x,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn zxz(self) -> IVec3 {
-        IVec3::new(self.z, self.x, self.z)
+        IVec3 {
+            x: self.z,
+            y: self.x,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn zyx(self) -> IVec3 {
-        IVec3::new(self.z, self.y, self.x)
+        IVec3 {
+            x: self.z,
+            y: self.y,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn zyy(self) -> IVec3 {
-        IVec3::new(self.z, self.y, self.y)
+        IVec3 {
+            x: self.z,
+            y: self.y,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn zyz(self) -> IVec3 {
-        IVec3::new(self.z, self.y, self.z)
+        IVec3 {
+            x: self.z,
+            y: self.y,
+            z: self.z,
+        }
     }
 
     #[inline]
     fn zzx(self) -> IVec3 {
-        IVec3::new(self.z, self.z, self.x)
+        IVec3 {
+            x: self.z,
+            y: self.z,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn zzy(self) -> IVec3 {
-        IVec3::new(self.z, self.z, self.y)
+        IVec3 {
+            x: self.z,
+            y: self.z,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn zzz(self) -> IVec3 {
-        IVec3::new(self.z, self.z, self.z)
+        IVec3 {
+            x: self.z,
+            y: self.z,
+            z: self.z,
+        }
     }
 
     #[inline]

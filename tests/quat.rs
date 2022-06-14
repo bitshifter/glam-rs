@@ -32,6 +32,8 @@ macro_rules! impl_quat_tests {
             assert_eq!([v1.x, v1.y, v1.z, v1.w], a1);
 
             assert_eq!(q1, $quat::from_array(a1));
+
+            assert_eq!(a1, *q0.as_ref());
         });
 
         glam_test!(test_funcs, {
@@ -127,6 +129,10 @@ macro_rules! impl_quat_tests {
             let (axis, angle) = $quat::IDENTITY.to_axis_angle();
             assert_eq!(axis, $vec3::X);
             assert_eq!(angle, rad(0.0));
+
+            let mut x0 = $quat::from_rotation_x(pitch);
+            x0 *= x0;
+            assert_approx_eq!(x0, $quat::from_rotation_x(pitch * 2.0));
 
             should_glam_assert!({ ($quat::IDENTITY * 2.0).inverse() });
             should_glam_assert!({ $quat::from_axis_angle($vec3::ZERO, 0.0) });

@@ -1,7 +1,5 @@
 // Generated from vec_mask.rs template. Edit the template, not the generated file.
 
-use crate::core::traits::vector::{MaskVector, MaskVector4, MaskVectorConst};
-
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::{hash, ops::*};
@@ -12,16 +10,24 @@ use core::arch::wasm32::*;
 ///
 /// This type is 16 byte aligned and is backed by a SIMD vector. If SIMD is not available
 /// `BVec4A` will be a type alias for `BVec4`.
-
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct BVec4A(pub(crate) v128);
+
+const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
+
+const FALSE: BVec4A = BVec4A(const_f32x4!([0.0; 4]));
 
 impl BVec4A {
     /// Creates a new vector mask.
     #[inline]
     pub fn new(x: bool, y: bool, z: bool, w: bool) -> Self {
-        Self(MaskVector4::new(x, y, z, w))
+        Self(u32x4(
+            MASK[x as usize],
+            MASK[y as usize],
+            MASK[z as usize],
+            MASK[w as usize],
+        ))
     }
 
     /// Returns a bitmask with the lowest two bits set from the elements of `self`.
@@ -30,33 +36,55 @@ impl BVec4A {
     /// into the first lowest bit, element `y` into the second, etc.
     #[inline]
     pub fn bitmask(self) -> u32 {
-        MaskVector4::bitmask(self.0)
+        u32x4_bitmask(self.0) as u32
     }
 
     /// Returns true if any of the elements are true, false otherwise.
     #[inline]
     pub fn any(self) -> bool {
-        MaskVector4::any(self.0)
+        u32x4_bitmask(self.0) != 0
     }
 
     /// Returns true if all the elements are true, false otherwise.
     #[inline]
     pub fn all(self) -> bool {
-        MaskVector4::all(self.0)
+        u32x4_bitmask(self.0) == 0xf
+    }
+
+    #[inline]
+    fn into_bool_array(self) -> [bool; 4] {
+        let bitmask = self.bitmask();
+        [
+            (bitmask & 1) != 0,
+            (bitmask & 2) != 0,
+            (bitmask & 4) != 0,
+            (bitmask & 8) != 0,
+        ]
+    }
+
+    #[inline]
+    fn into_u32_array(self) -> [u32; 4] {
+        let bitmask = self.bitmask();
+        [
+            MASK[(bitmask & 1) as usize],
+            MASK[((bitmask >> 1) & 1) as usize],
+            MASK[((bitmask >> 2) & 1) as usize],
+            MASK[((bitmask >> 3) & 1) as usize],
+        ]
     }
 }
 
 impl Default for BVec4A {
     #[inline]
     fn default() -> Self {
-        Self(v128::FALSE)
+        FALSE
     }
 }
 
 impl PartialEq for BVec4A {
     #[inline]
-    fn eq(&self, other: &Self) -> bool {
-        self.bitmask().eq(&other.bitmask())
+    fn eq(&self, rhs: &Self) -> bool {
+        self.bitmask().eq(&rhs.bitmask())
     }
 }
 
@@ -72,30 +100,30 @@ impl hash::Hash for BVec4A {
 impl BitAnd for BVec4A {
     type Output = Self;
     #[inline]
-    fn bitand(self, other: Self) -> Self {
-        Self(MaskVector::bitand(self.0, other.0))
+    fn bitand(self, rhs: Self) -> Self {
+        Self(v128_and(self.0, rhs.0))
     }
 }
 
 impl BitAndAssign for BVec4A {
     #[inline]
-    fn bitand_assign(&mut self, other: Self) {
-        self.0 = MaskVector::bitand(self.0, other.0);
+    fn bitand_assign(&mut self, rhs: Self) {
+        *self = self.bitand(rhs);
     }
 }
 
 impl BitOr for BVec4A {
     type Output = Self;
     #[inline]
-    fn bitor(self, other: Self) -> Self {
-        Self(MaskVector::bitor(self.0, other.0))
+    fn bitor(self, rhs: Self) -> Self {
+        Self(v128_or(self.0, rhs.0))
     }
 }
 
 impl BitOrAssign for BVec4A {
     #[inline]
-    fn bitor_assign(&mut self, other: Self) {
-        self.0 = MaskVector::bitor(self.0, other.0);
+    fn bitor_assign(&mut self, rhs: Self) {
+        *self = self.bitor(rhs);
     }
 }
 
@@ -103,7 +131,7 @@ impl Not for BVec4A {
     type Output = Self;
     #[inline]
     fn not(self) -> Self {
-        Self(MaskVector::not(self.0))
+        Self(v128_not(self.0))
     }
 }
 
@@ -117,11 +145,10 @@ impl From<BVec4A> for v128 {
 #[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for BVec4A {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let arr = self.0.into_u32_array();
-
+        let arr = self.into_u32_array();
         write!(
             f,
-            "{}({:#x}, {:#x}, {:#}, {:#})",
+            "{}({:#x}, {:#x}, {:#x}, {:#x})",
             stringify!(BVec4A),
             arr[0],
             arr[1],
@@ -134,8 +161,7 @@ impl fmt::Debug for BVec4A {
 #[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for BVec4A {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let arr = self.0.into_bool_array();
-
+        let arr = self.into_bool_array();
         write!(f, "[{}, {}, {}, {}]", arr[0], arr[1], arr[2], arr[3])
     }
 }
@@ -143,21 +169,13 @@ impl fmt::Display for BVec4A {
 impl From<BVec4A> for [bool; 4] {
     #[inline]
     fn from(mask: BVec4A) -> Self {
-        mask.0.into_bool_array()
+        mask.into_bool_array()
     }
 }
 
 impl From<BVec4A> for [u32; 4] {
     #[inline]
     fn from(mask: BVec4A) -> Self {
-        mask.0.into_u32_array()
-    }
-}
-
-#[cfg(not(target_arch = "spirv"))]
-impl AsRef<[u32; 4]> for BVec4A {
-    #[inline]
-    fn as_ref(&self) -> &[u32; 4] {
-        unsafe { &*(self as *const Self as *const [u32; 4]) }
+        mask.into_u32_array()
     }
 }

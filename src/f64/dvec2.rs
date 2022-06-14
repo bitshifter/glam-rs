@@ -1,9 +1,6 @@
 // Generated from vec.rs template. Edit the template, not the generated file.
 
-use crate::{
-    core::{storage::*, traits::vector::*},
-    BVec2, DVec3,
-};
+use crate::{BVec2, DVec3};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -22,24 +19,29 @@ pub fn dvec2(x: f64, y: f64) -> DVec2 {
 /// A 2-dimensional vector.
 #[derive(Clone, Copy)]
 #[cfg_attr(feature = "cuda", repr(C, align(16)))]
-#[cfg_attr(not(feature = "cuda"), repr(transparent))]
-pub struct DVec2(pub(crate) XY<f64>);
+pub struct DVec2 {
+    pub x: f64,
+    pub y: f64,
+}
 
 impl DVec2 {
     /// All zeroes.
-    pub const ZERO: Self = Self(XY::<f64>::ZERO);
+    pub const ZERO: Self = const_dvec2!([0.0; 2]);
 
     /// All ones.
-    pub const ONE: Self = Self(XY::<f64>::ONE);
+    pub const ONE: Self = const_dvec2!([1.0; 2]);
+
+    /// All negative ones.
+    pub const NEG_ONE: Self = const_dvec2!([-1.0; 2]);
 
     /// All NAN.
-    pub const NAN: Self = Self(<XY<f64> as crate::core::traits::scalar::NanConstEx>::NAN);
+    pub const NAN: Self = const_dvec2!([f64::NAN; 2]);
 
-    /// `[1, 0]`: a unit-length vector pointing along the positive X axis.
-    pub const X: Self = Self(<XY<f64> as Vector2Const>::X);
+    /// `[1.0, 0.0]`: a unit-length vector pointing along the positive X axis.
+    pub const X: Self = const_dvec2!([1.0, 0.0]);
 
-    /// `[0, 1]`: a unit-length vector pointing along the positive Y axis.
-    pub const Y: Self = Self(<XY<f64> as Vector2Const>::Y);
+    /// `[0.0, 1.0]`: a unit-length vector pointing along the positive Y axis.
+    pub const Y: Self = const_dvec2!([0.0, 1.0]);
 
     /// The unit axes.
     pub const AXES: [Self; 2] = [Self::X, Self::Y];
@@ -47,25 +49,25 @@ impl DVec2 {
     /// Creates a new vector.
     #[inline(always)]
     pub fn new(x: f64, y: f64) -> Self {
-        Self(Vector2::new(x, y))
+        Self { x, y }
     }
 
     /// Creates a 3D vector from `self` and the given `z` value.
-    #[inline(always)]
+    #[inline]
     pub fn extend(self, z: f64) -> DVec3 {
         DVec3::new(self.x, self.y, z)
     }
 
     /// `[x, y]`
-    #[inline(always)]
+    #[inline]
     pub fn to_array(&self) -> [f64; 2] {
         [self.x, self.y]
     }
 
     /// Creates a vector with all elements set to `v`.
-    #[inline(always)]
+    #[inline]
     pub fn splat(v: f64) -> Self {
-        Self(XY::<f64>::splat(v))
+        Self { x: v, y: v }
     }
 
     /// Creates a vector from the elements in `if_true` and `if_false`, selecting which to use
@@ -73,31 +75,40 @@ impl DVec2 {
     ///
     /// A true element in the mask uses the corresponding element from `if_true`, and false
     /// uses the element from `if_false`.
-    #[inline(always)]
+    #[inline]
     pub fn select(mask: BVec2, if_true: Self, if_false: Self) -> Self {
-        Self(XY::<f64>::select(mask.0, if_true.0, if_false.0))
+        Self {
+            x: if mask.x { if_true.x } else { if_false.x },
+            y: if mask.y { if_true.y } else { if_false.y },
+        }
     }
 
-    /// Computes the dot product of `self` and `other`.
-    #[inline(always)]
-    pub fn dot(self, other: Self) -> f64 {
-        <XY<f64> as Vector2<f64>>::dot(self.0, other.0)
+    /// Computes the dot product of `self` and `rhs`.
+    #[inline]
+    pub fn dot(self, rhs: Self) -> f64 {
+        (self.x * rhs.x) + (self.y * rhs.y)
     }
 
-    /// Returns a vector containing the minimum values for each element of `self` and `other`.
+    /// Returns a vector containing the minimum values for each element of `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x.min(other.x), self.y.min(other.y), ..]`.
-    #[inline(always)]
-    pub fn min(self, other: Self) -> Self {
-        Self(self.0.min(other.0))
+    /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
+    #[inline]
+    pub fn min(self, rhs: Self) -> Self {
+        Self {
+            x: self.x.min(rhs.x),
+            y: self.y.min(rhs.y),
+        }
     }
 
-    /// Returns a vector containing the maximum values for each element of `self` and `other`.
+    /// Returns a vector containing the maximum values for each element of `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x.max(other.x), self.y.max(other.y), ..]`.
-    #[inline(always)]
-    pub fn max(self, other: Self) -> Self {
-        Self(self.0.max(other.0))
+    /// In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
+    #[inline]
+    pub fn max(self, rhs: Self) -> Self {
+        Self {
+            x: self.x.max(rhs.x),
+            y: self.y.max(rhs.y),
+        }
     }
 
     /// Component-wise clamping of values, similar to [`f32::clamp`].
@@ -107,85 +118,86 @@ impl DVec2 {
     /// # Panics
     ///
     /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
-    #[inline(always)]
+    #[inline]
     pub fn clamp(self, min: Self, max: Self) -> Self {
-        Self(<XY<f64> as Vector2<f64>>::clamp(self.0, min.0, max.0))
+        glam_assert!(min.cmple(max).all(), "clamp: expected min <= max");
+        self.max(min).min(max)
     }
 
     /// Returns the horizontal minimum of `self`.
     ///
     /// In other words this computes `min(x, y, ..)`.
-    #[inline(always)]
+    #[inline]
     pub fn min_element(self) -> f64 {
-        <XY<f64> as Vector2<f64>>::min_element(self.0)
+        self.x.min(self.y)
     }
 
     /// Returns the horizontal maximum of `self`.
     ///
     /// In other words this computes `max(x, y, ..)`.
-    #[inline(always)]
+    #[inline]
     pub fn max_element(self) -> f64 {
-        <XY<f64> as Vector2<f64>>::max_element(self.0)
+        self.x.max(self.y)
     }
 
     /// Returns a vector mask containing the result of a `==` comparison for each element of
-    /// `self` and `other`.
+    /// `self` and `rhs`.
     ///
-    /// In other words, this computes `[self.x == other.x, self.y == other.y, ..]` for all
+    /// In other words, this computes `[self.x == rhs.x, self.y == rhs.y, ..]` for all
     /// elements.
-    #[inline(always)]
-    pub fn cmpeq(self, other: Self) -> BVec2 {
-        BVec2(self.0.cmpeq(other.0))
+    #[inline]
+    pub fn cmpeq(self, rhs: Self) -> BVec2 {
+        BVec2::new(self.x.eq(&rhs.x), self.y.eq(&rhs.y))
     }
 
     /// Returns a vector mask containing the result of a `!=` comparison for each element of
-    /// `self` and `other`.
+    /// `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x != other.x, self.y != other.y, ..]` for all
+    /// In other words this computes `[self.x != rhs.x, self.y != rhs.y, ..]` for all
     /// elements.
-    #[inline(always)]
-    pub fn cmpne(self, other: Self) -> BVec2 {
-        BVec2(self.0.cmpne(other.0))
+    #[inline]
+    pub fn cmpne(self, rhs: Self) -> BVec2 {
+        BVec2::new(self.x.ne(&rhs.x), self.y.ne(&rhs.y))
     }
 
     /// Returns a vector mask containing the result of a `>=` comparison for each element of
-    /// `self` and `other`.
+    /// `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x >= other.x, self.y >= other.y, ..]` for all
+    /// In other words this computes `[self.x >= rhs.x, self.y >= rhs.y, ..]` for all
     /// elements.
-    #[inline(always)]
-    pub fn cmpge(self, other: Self) -> BVec2 {
-        BVec2(self.0.cmpge(other.0))
+    #[inline]
+    pub fn cmpge(self, rhs: Self) -> BVec2 {
+        BVec2::new(self.x.ge(&rhs.x), self.y.ge(&rhs.y))
     }
 
     /// Returns a vector mask containing the result of a `>` comparison for each element of
-    /// `self` and `other`.
+    /// `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x > other.x, self.y > other.y, ..]` for all
+    /// In other words this computes `[self.x > rhs.x, self.y > rhs.y, ..]` for all
     /// elements.
-    #[inline(always)]
-    pub fn cmpgt(self, other: Self) -> BVec2 {
-        BVec2(self.0.cmpgt(other.0))
+    #[inline]
+    pub fn cmpgt(self, rhs: Self) -> BVec2 {
+        BVec2::new(self.x.gt(&rhs.x), self.y.gt(&rhs.y))
     }
 
     /// Returns a vector mask containing the result of a `<=` comparison for each element of
-    /// `self` and `other`.
+    /// `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x <= other.x, self.y <= other.y, ..]` for all
+    /// In other words this computes `[self.x <= rhs.x, self.y <= rhs.y, ..]` for all
     /// elements.
-    #[inline(always)]
-    pub fn cmple(self, other: Self) -> BVec2 {
-        BVec2(self.0.cmple(other.0))
+    #[inline]
+    pub fn cmple(self, rhs: Self) -> BVec2 {
+        BVec2::new(self.x.le(&rhs.x), self.y.le(&rhs.y))
     }
 
     /// Returns a vector mask containing the result of a `<` comparison for each element of
-    /// `self` and `other`.
+    /// `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x < other.x, self.y < other.y, ..]` for all
+    /// In other words this computes `[self.x < rhs.x, self.y < rhs.y, ..]` for all
     /// elements.
-    #[inline(always)]
-    pub fn cmplt(self, other: Self) -> BVec2 {
-        BVec2(self.0.cmplt(other.0))
+    #[inline]
+    pub fn cmplt(self, rhs: Self) -> BVec2 {
+        BVec2::new(self.x.lt(&rhs.x), self.y.lt(&rhs.y))
     }
 
     /// Creates a vector from the first N values in `slice`.
@@ -193,9 +205,9 @@ impl DVec2 {
     /// # Panics
     ///
     /// Panics if `slice` is less than N elements long.
-    #[inline(always)]
+    #[inline]
     pub fn from_slice(slice: &[f64]) -> Self {
-        Self(<XY<f64> as Vector2<f64>>::from_slice_unaligned(slice))
+        Self::new(slice[0], slice[1])
     }
 
     /// Writes the elements of `self` to the first 2 elements in `slice`.
@@ -203,15 +215,19 @@ impl DVec2 {
     /// # Panics
     ///
     /// Panics if `slice` is less than N elements long.
-    #[inline(always)]
+    #[inline]
     pub fn write_to_slice(self, slice: &mut [f64]) {
-        <XY<f64> as Vector2<f64>>::write_to_slice_unaligned(self.0, slice)
+        slice[0] = self.x;
+        slice[1] = self.y;
     }
 
     /// Returns a vector containing the absolute value of each element of `self`.
-    #[inline(always)]
+    #[inline]
     pub fn abs(self) -> Self {
-        Self(<XY<f64> as SignedVector2<f64>>::abs(self.0))
+        Self {
+            x: self.x.abs(),
+            y: self.y.abs(),
+        }
     }
 
     /// Returns a vector with elements representing the sign of `self`.
@@ -219,66 +235,69 @@ impl DVec2 {
     /// - `1.0` if the number is positive, `+0.0` or `INFINITY`
     /// - `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
     /// - `NAN` if the number is `NAN`
-    #[inline(always)]
+    #[inline]
     pub fn signum(self) -> Self {
-        Self(<XY<f64> as SignedVector2<f64>>::signum(self.0))
+        Self {
+            x: self.x.signum(),
+            y: self.y.signum(),
+        }
     }
 
     /// Returns `true` if, and only if, all elements are finite.  If any element is either
     /// `NaN`, positive or negative infinity, this will return `false`.
-    #[inline(always)]
+    #[inline]
     pub fn is_finite(self) -> bool {
-        FloatVector2::is_finite(self.0)
+        self.x.is_finite() && self.y.is_finite()
     }
 
     /// Returns `true` if any elements are `NaN`.
-    #[inline(always)]
+    #[inline]
     pub fn is_nan(self) -> bool {
-        FloatVector2::is_nan(self.0)
+        self.x.is_nan() || self.y.is_nan()
     }
 
     /// Performs `is_nan` on each element of self, returning a vector mask of the results.
     ///
     /// In other words, this computes `[x.is_nan(), y.is_nan(), z.is_nan(), w.is_nan()]`.
-    #[inline(always)]
+    #[inline]
     pub fn is_nan_mask(self) -> BVec2 {
-        BVec2(FloatVector2::is_nan_mask(self.0))
+        BVec2::new(self.x.is_nan(), self.y.is_nan())
     }
 
     /// Computes the length of `self`.
     #[doc(alias = "magnitude")]
-    #[inline(always)]
+    #[inline]
     pub fn length(self) -> f64 {
-        FloatVector2::length(self.0)
+        self.dot(self).sqrt()
     }
 
     /// Computes the squared length of `self`.
     ///
     /// This is faster than `length()` as it avoids a square root operation.
     #[doc(alias = "magnitude2")]
-    #[inline(always)]
+    #[inline]
     pub fn length_squared(self) -> f64 {
-        FloatVector2::length_squared(self.0)
+        self.dot(self)
     }
 
     /// Computes `1.0 / length()`.
     ///
     /// For valid results, `self` must _not_ be of length zero.
-    #[inline(always)]
+    #[inline]
     pub fn length_recip(self) -> f64 {
-        FloatVector2::length_recip(self.0)
+        self.length().recip()
     }
 
     /// Computes the Euclidean distance between two points in space.
     #[inline]
-    pub fn distance(self, other: Self) -> f64 {
-        (self - other).length()
+    pub fn distance(self, rhs: Self) -> f64 {
+        (self - rhs).length()
     }
 
     /// Compute the squared euclidean distance between two points in space.
     #[inline]
-    pub fn distance_squared(self, other: Self) -> f64 {
-        (self - other).length_squared()
+    pub fn distance_squared(self, rhs: Self) -> f64 {
+        (self - rhs).length_squared()
     }
 
     /// Returns `self` normalized to length 1.0.
@@ -291,9 +310,12 @@ impl DVec2 {
     ///
     /// Will panic if `self` is zero length when `glam_assert` is enabled.
     #[must_use]
-    #[inline(always)]
+    #[inline]
     pub fn normalize(self) -> Self {
-        Self(FloatVector2::normalize(self.0))
+        #[allow(clippy::let_and_return)]
+        let normalized = self.mul(self.length_recip());
+        glam_assert!(normalized.is_finite());
+        normalized
     }
 
     /// Returns `self` normalized to length 1.0 if possible, else returns `None`.
@@ -333,133 +355,146 @@ impl DVec2 {
     /// Returns whether `self` is length `1.0` or not.
     ///
     /// Uses a precision threshold of `1e-6`.
-    #[inline(always)]
+    #[inline]
     pub fn is_normalized(self) -> bool {
-        FloatVector2::is_normalized(self.0)
+        // TODO: do something with epsilon
+        (self.length_squared() - 1.0).abs() <= 1e-4
     }
 
-    /// Returns the vector projection of `self` onto `other`.
+    /// Returns the vector projection of `self` onto `rhs`.
     ///
-    /// `other` must be of non-zero length.
+    /// `rhs` must be of non-zero length.
     ///
     /// # Panics
     ///
-    /// Will panic if `other` is zero length when `glam_assert` is enabled.
+    /// Will panic if `rhs` is zero length when `glam_assert` is enabled.
     #[must_use]
     #[inline]
-    pub fn project_onto(self, other: Self) -> Self {
-        let other_len_sq_rcp = other.dot(other).recip();
+    pub fn project_onto(self, rhs: Self) -> Self {
+        let other_len_sq_rcp = rhs.dot(rhs).recip();
         glam_assert!(other_len_sq_rcp.is_finite());
-        other * self.dot(other) * other_len_sq_rcp
+        rhs * self.dot(rhs) * other_len_sq_rcp
     }
 
-    /// Returns the vector rejection of `self` from `other`.
+    /// Returns the vector rejection of `self` from `rhs`.
     ///
     /// The vector rejection is the vector perpendicular to the projection of `self` onto
-    /// `other`, in other words the result of `self - self.project_onto(other)`.
+    /// `rhs`, in rhs words the result of `self - self.project_onto(rhs)`.
     ///
-    /// `other` must be of non-zero length.
-    ///
-    /// # Panics
-    ///
-    /// Will panic if `other` has a length of zero when `glam_assert` is enabled.
-    #[must_use]
-    #[inline]
-    pub fn reject_from(self, other: Self) -> Self {
-        self - self.project_onto(other)
-    }
-
-    /// Returns the vector projection of `self` onto `other`.
-    ///
-    /// `other` must be normalized.
+    /// `rhs` must be of non-zero length.
     ///
     /// # Panics
     ///
-    /// Will panic if `other` is not normalized when `glam_assert` is enabled.
+    /// Will panic if `rhs` has a length of zero when `glam_assert` is enabled.
     #[must_use]
     #[inline]
-    pub fn project_onto_normalized(self, other: Self) -> Self {
-        glam_assert!(other.is_normalized());
-        other * self.dot(other)
+    pub fn reject_from(self, rhs: Self) -> Self {
+        self - self.project_onto(rhs)
     }
 
-    /// Returns the vector rejection of `self` from `other`.
+    /// Returns the vector projection of `self` onto `rhs`.
+    ///
+    /// `rhs` must be normalized.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `rhs` is not normalized when `glam_assert` is enabled.
+    #[must_use]
+    #[inline]
+    pub fn project_onto_normalized(self, rhs: Self) -> Self {
+        glam_assert!(rhs.is_normalized());
+        rhs * self.dot(rhs)
+    }
+
+    /// Returns the vector rejection of `self` from `rhs`.
     ///
     /// The vector rejection is the vector perpendicular to the projection of `self` onto
-    /// `other`, in other words the result of `self - self.project_onto(other)`.
+    /// `rhs`, in rhs words the result of `self - self.project_onto(rhs)`.
     ///
-    /// `other` must be normalized.
+    /// `rhs` must be normalized.
     ///
     /// # Panics
     ///
-    /// Will panic if `other` is not normalized when `glam_assert` is enabled.
+    /// Will panic if `rhs` is not normalized when `glam_assert` is enabled.
     #[must_use]
     #[inline]
-    pub fn reject_from_normalized(self, other: Self) -> Self {
-        self - self.project_onto_normalized(other)
+    pub fn reject_from_normalized(self, rhs: Self) -> Self {
+        self - self.project_onto_normalized(rhs)
     }
 
     /// Returns a vector containing the nearest integer to a number for each element of `self`.
     /// Round half-way cases away from 0.0.
-    #[inline(always)]
+    #[inline]
     pub fn round(self) -> Self {
-        Self(FloatVector2::round(self.0))
+        Self {
+            x: self.x.round(),
+            y: self.y.round(),
+        }
     }
 
     /// Returns a vector containing the largest integer less than or equal to a number for each
     /// element of `self`.
-    #[inline(always)]
+    #[inline]
     pub fn floor(self) -> Self {
-        Self(FloatVector2::floor(self.0))
+        Self {
+            x: self.x.floor(),
+            y: self.y.floor(),
+        }
     }
 
     /// Returns a vector containing the smallest integer greater than or equal to a number for
     /// each element of `self`.
-    #[inline(always)]
+    #[inline]
     pub fn ceil(self) -> Self {
-        Self(FloatVector2::ceil(self.0))
+        Self {
+            x: self.x.ceil(),
+            y: self.y.ceil(),
+        }
     }
 
     /// Returns a vector containing the fractional part of the vector, e.g. `self -
     /// self.floor()`.
     ///
     /// Note that this is fast but not precise for large numbers.
-    #[inline(always)]
+    #[inline]
     pub fn fract(self) -> Self {
         self - self.floor()
     }
 
     /// Returns a vector containing `e^self` (the exponential function) for each element of
     /// `self`.
-    #[inline(always)]
+    #[inline]
     pub fn exp(self) -> Self {
-        Self(FloatVector2::exp(self.0))
+        Self::new(self.x.exp(), self.y.exp())
     }
 
     /// Returns a vector containing each element of `self` raised to the power of `n`.
-    #[inline(always)]
+    #[inline]
     pub fn powf(self, n: f64) -> Self {
-        Self(FloatVector2::powf(self.0, n))
+        Self::new(self.x.powf(n), self.y.powf(n))
     }
 
     /// Returns a vector containing the reciprocal `1.0/n` of each element of `self`.
-    #[inline(always)]
+    #[inline]
     pub fn recip(self) -> Self {
-        Self(FloatVector2::recip(self.0))
+        Self {
+            x: self.x.recip(),
+            y: self.y.recip(),
+        }
     }
 
-    /// Performs a linear interpolation between `self` and `other` based on the value `s`.
+    /// Performs a linear interpolation between `self` and `rhs` based on the value `s`.
     ///
     /// When `s` is `0.0`, the result will be equal to `self`.  When `s` is `1.0`, the result
-    /// will be equal to `other`. When `s` is outside of range `[0, 1]`, the result is linearly
+    /// will be equal to `rhs`. When `s` is outside of range `[0, 1]`, the result is linearly
     /// extrapolated.
     #[doc(alias = "mix")]
     #[inline]
-    pub fn lerp(self, other: Self, s: f64) -> Self {
-        self + ((other - self) * s)
+    pub fn lerp(self, rhs: Self, s: f64) -> Self {
+        self + ((rhs - self) * s)
     }
 
-    /// Returns true if the absolute difference of all elements between `self` and `other` is
+    /// Returns true if the absolute difference of all elements between `self` and `rhs` is
     /// less than or equal to `max_abs_diff`.
     ///
     /// This can be used to compare if two vectors contain similar elements. It works best when
@@ -468,9 +503,9 @@ impl DVec2 {
     ///
     /// For more see
     /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
-    #[inline(always)]
-    pub fn abs_diff_eq(self, other: Self, max_abs_diff: f64) -> bool {
-        FloatVector2::abs_diff_eq(self.0, other.0, max_abs_diff)
+    #[inline]
+    pub fn abs_diff_eq(self, rhs: Self, max_abs_diff: f64) -> bool {
+        self.sub(rhs).abs().cmple(Self::splat(max_abs_diff)).all()
     }
 
     /// Returns a vector with a length no less than `min` and no more than `max`
@@ -518,66 +553,77 @@ impl DVec2 {
     /// architecture has a dedicated fma CPU instruction. However, this is not always true,
     /// and will be heavily dependant on designing algorithms with specific target hardware in
     /// mind.
-    #[inline(always)]
+    #[inline]
     pub fn mul_add(self, a: Self, b: Self) -> Self {
-        Self(FloatVector2::mul_add(self.0, a.0, b.0))
+        Self::new(self.x.mul_add(a.x, b.x), self.y.mul_add(a.y, b.y))
     }
 
     /// Creates a 2D vector containing `[angle.cos(), angle.sin()]`. This can be used in
     /// conjunction with the `rotate` method, e.g. `Vec2::from_angle(PI).rotate(Vec2::Y)` will
     /// create the vector [-1, 0] and rotate `Vec2::Y` around it returning `-Vec2::Y`.
-    #[inline(always)]
+    #[inline]
     pub fn from_angle(angle: f64) -> Self {
-        Self(FloatVector2::from_angle(angle))
+        let (sin, cos) = angle.sin_cos();
+        Self { x: cos, y: sin }
     }
 
-    /// Returns the angle (in radians) between `self` and `other`.
+    /// Returns the angle (in radians) between `self` and `rhs`.
     ///
     /// The input vectors do not need to be unit length however they must be non-zero.
-    #[inline(always)]
-    pub fn angle_between(self, other: Self) -> f64 {
-        self.0.angle_between(other.0)
+    #[inline]
+    pub fn angle_between(self, rhs: Self) -> f64 {
+        use crate::FloatEx;
+        let angle =
+            (self.dot(rhs) / (self.length_squared() * rhs.length_squared()).sqrt()).acos_approx();
+
+        angle * self.perp_dot(rhs).signum()
     }
 
     /// Returns a vector that is equal to `self` rotated by 90 degrees.
-    #[inline(always)]
+    #[inline]
     pub fn perp(self) -> Self {
-        Self(self.0.perp())
+        Self {
+            x: -self.y,
+            y: self.x,
+        }
     }
 
-    /// The perpendicular dot product of `self` and `other`.
+    /// The perpendicular dot product of `self` and `rhs`.
     /// Also known as the wedge product, 2D cross product, and determinant.
     #[doc(alias = "wedge")]
     #[doc(alias = "cross")]
     #[doc(alias = "determinant")]
-    #[inline(always)]
-    pub fn perp_dot(self, other: Self) -> f64 {
-        self.0.perp_dot(other.0)
+    #[inline]
+    pub fn perp_dot(self, rhs: Self) -> f64 {
+        (self.x * rhs.y) - (self.y * rhs.x)
     }
 
-    /// Returns `other` rotated by the angle of `self`. If `self` is normalized,
+    /// Returns `rhs` rotated by the angle of `self`. If `self` is normalized,
     /// then this just rotation. This is what you usually want. Otherwise,
     /// it will be like a rotation with a multiplication by `self`'s length.
     #[must_use]
-    #[inline(always)]
-    pub fn rotate(self, other: Self) -> Self {
-        Self(self.0.rotate(other.0))
+    #[inline]
+    pub fn rotate(self, rhs: Self) -> Self {
+        Self {
+            x: self.x * rhs.x - self.y * rhs.y,
+            y: self.y * rhs.x + self.x * rhs.y,
+        }
     }
 
     /// Casts all elements of `self` to `f32`.
-    #[inline(always)]
+    #[inline]
     pub fn as_vec2(&self) -> crate::Vec2 {
         crate::Vec2::new(self.x as f32, self.y as f32)
     }
 
     /// Casts all elements of `self` to `i32`.
-    #[inline(always)]
+    #[inline]
     pub fn as_ivec2(&self) -> crate::IVec2 {
         crate::IVec2::new(self.x as i32, self.y as i32)
     }
 
     /// Casts all elements of `self` to `u32`.
-    #[inline(always)]
+    #[inline]
     pub fn as_uvec2(&self) -> crate::UVec2 {
         crate::UVec2::new(self.x as u32, self.y as u32)
     }
@@ -586,210 +632,265 @@ impl DVec2 {
 impl Default for DVec2 {
     #[inline(always)]
     fn default() -> Self {
-        Self(XY::<f64>::ZERO)
+        Self::ZERO
     }
 }
 
 impl PartialEq for DVec2 {
-    #[inline(always)]
-    fn eq(&self, other: &Self) -> bool {
-        self.cmpeq(*other).all()
+    #[inline]
+    fn eq(&self, rhs: &Self) -> bool {
+        self.cmpeq(*rhs).all()
     }
 }
 
 impl Div<DVec2> for DVec2 {
     type Output = Self;
-    #[inline(always)]
-    fn div(self, other: DVec2) -> Self {
-        Self(self.0.div(other.0))
+    #[inline]
+    fn div(self, rhs: Self) -> Self {
+        Self {
+            x: self.x.div(rhs.x),
+            y: self.y.div(rhs.y),
+        }
     }
 }
 
 impl DivAssign<DVec2> for DVec2 {
-    #[inline(always)]
-    fn div_assign(&mut self, other: DVec2) {
-        self.0 = self.0.div(other.0)
+    #[inline]
+    fn div_assign(&mut self, rhs: Self) {
+        self.x.div_assign(rhs.x);
+        self.y.div_assign(rhs.y);
     }
 }
 
 impl Div<f64> for DVec2 {
     type Output = Self;
-    #[inline(always)]
-    fn div(self, other: f64) -> Self {
-        Self(self.0.div_scalar(other))
+    #[inline]
+    fn div(self, rhs: f64) -> Self {
+        Self {
+            x: self.x.div(rhs),
+            y: self.y.div(rhs),
+        }
     }
 }
 
 impl DivAssign<f64> for DVec2 {
-    #[inline(always)]
-    fn div_assign(&mut self, other: f64) {
-        self.0 = self.0.div_scalar(other)
+    #[inline]
+    fn div_assign(&mut self, rhs: f64) {
+        self.x.div_assign(rhs);
+        self.y.div_assign(rhs);
     }
 }
 
 impl Div<DVec2> for f64 {
     type Output = DVec2;
-    #[inline(always)]
-    fn div(self, other: DVec2) -> DVec2 {
-        DVec2(XY::<f64>::splat(self).div(other.0))
+    #[inline]
+    fn div(self, rhs: DVec2) -> DVec2 {
+        DVec2 {
+            x: self.div(rhs.x),
+            y: self.div(rhs.y),
+        }
     }
 }
 
 impl Mul<DVec2> for DVec2 {
     type Output = Self;
-    #[inline(always)]
-    fn mul(self, other: DVec2) -> Self {
-        Self(self.0.mul(other.0))
+    #[inline]
+    fn mul(self, rhs: Self) -> Self {
+        Self {
+            x: self.x.mul(rhs.x),
+            y: self.y.mul(rhs.y),
+        }
     }
 }
 
 impl MulAssign<DVec2> for DVec2 {
-    #[inline(always)]
-    fn mul_assign(&mut self, other: DVec2) {
-        self.0 = self.0.mul(other.0)
+    #[inline]
+    fn mul_assign(&mut self, rhs: Self) {
+        self.x.mul_assign(rhs.x);
+        self.y.mul_assign(rhs.y);
     }
 }
 
 impl Mul<f64> for DVec2 {
     type Output = Self;
-    #[inline(always)]
-    fn mul(self, other: f64) -> Self {
-        Self(self.0.mul_scalar(other))
+    #[inline]
+    fn mul(self, rhs: f64) -> Self {
+        Self {
+            x: self.x.mul(rhs),
+            y: self.y.mul(rhs),
+        }
     }
 }
 
 impl MulAssign<f64> for DVec2 {
-    #[inline(always)]
-    fn mul_assign(&mut self, other: f64) {
-        self.0 = self.0.mul_scalar(other)
+    #[inline]
+    fn mul_assign(&mut self, rhs: f64) {
+        self.x.mul_assign(rhs);
+        self.y.mul_assign(rhs);
     }
 }
 
 impl Mul<DVec2> for f64 {
     type Output = DVec2;
-    #[inline(always)]
-    fn mul(self, other: DVec2) -> DVec2 {
-        DVec2(XY::<f64>::splat(self).mul(other.0))
+    #[inline]
+    fn mul(self, rhs: DVec2) -> DVec2 {
+        DVec2 {
+            x: self.mul(rhs.x),
+            y: self.mul(rhs.y),
+        }
     }
 }
 
 impl Add<DVec2> for DVec2 {
     type Output = Self;
-    #[inline(always)]
-    fn add(self, other: DVec2) -> Self {
-        Self(self.0.add(other.0))
+    #[inline]
+    fn add(self, rhs: Self) -> Self {
+        Self {
+            x: self.x.add(rhs.x),
+            y: self.y.add(rhs.y),
+        }
     }
 }
 
 impl AddAssign<DVec2> for DVec2 {
-    #[inline(always)]
-    fn add_assign(&mut self, other: DVec2) {
-        self.0 = self.0.add(other.0)
+    #[inline]
+    fn add_assign(&mut self, rhs: Self) {
+        self.x.add_assign(rhs.x);
+        self.y.add_assign(rhs.y);
     }
 }
 
 impl Add<f64> for DVec2 {
     type Output = Self;
-    #[inline(always)]
-    fn add(self, other: f64) -> Self {
-        Self(self.0.add_scalar(other))
+    #[inline]
+    fn add(self, rhs: f64) -> Self {
+        Self {
+            x: self.x.add(rhs),
+            y: self.y.add(rhs),
+        }
     }
 }
 
 impl AddAssign<f64> for DVec2 {
-    #[inline(always)]
-    fn add_assign(&mut self, other: f64) {
-        self.0 = self.0.add_scalar(other)
+    #[inline]
+    fn add_assign(&mut self, rhs: f64) {
+        self.x.add_assign(rhs);
+        self.y.add_assign(rhs);
     }
 }
 
 impl Add<DVec2> for f64 {
     type Output = DVec2;
-    #[inline(always)]
-    fn add(self, other: DVec2) -> DVec2 {
-        DVec2(XY::<f64>::splat(self).add(other.0))
+    #[inline]
+    fn add(self, rhs: DVec2) -> DVec2 {
+        DVec2 {
+            x: self.add(rhs.x),
+            y: self.add(rhs.y),
+        }
     }
 }
 
 impl Sub<DVec2> for DVec2 {
     type Output = Self;
-    #[inline(always)]
-    fn sub(self, other: DVec2) -> Self {
-        Self(self.0.sub(other.0))
+    #[inline]
+    fn sub(self, rhs: Self) -> Self {
+        Self {
+            x: self.x.sub(rhs.x),
+            y: self.y.sub(rhs.y),
+        }
     }
 }
 
 impl SubAssign<DVec2> for DVec2 {
-    #[inline(always)]
-    fn sub_assign(&mut self, other: DVec2) {
-        self.0 = self.0.sub(other.0)
+    #[inline]
+    fn sub_assign(&mut self, rhs: DVec2) {
+        self.x.sub_assign(rhs.x);
+        self.y.sub_assign(rhs.y);
     }
 }
 
 impl Sub<f64> for DVec2 {
     type Output = Self;
-    #[inline(always)]
-    fn sub(self, other: f64) -> Self {
-        Self(self.0.sub_scalar(other))
+    #[inline]
+    fn sub(self, rhs: f64) -> Self {
+        Self {
+            x: self.x.sub(rhs),
+            y: self.y.sub(rhs),
+        }
     }
 }
 
 impl SubAssign<f64> for DVec2 {
-    #[inline(always)]
-    fn sub_assign(&mut self, other: f64) {
-        self.0 = self.0.sub_scalar(other)
+    #[inline]
+    fn sub_assign(&mut self, rhs: f64) {
+        self.x.sub_assign(rhs);
+        self.y.sub_assign(rhs);
     }
 }
 
 impl Sub<DVec2> for f64 {
     type Output = DVec2;
-    #[inline(always)]
-    fn sub(self, other: DVec2) -> DVec2 {
-        DVec2(XY::<f64>::splat(self).sub(other.0))
+    #[inline]
+    fn sub(self, rhs: DVec2) -> DVec2 {
+        DVec2 {
+            x: self.sub(rhs.x),
+            y: self.sub(rhs.y),
+        }
     }
 }
 
 impl Rem<DVec2> for DVec2 {
     type Output = Self;
-    #[inline(always)]
-    fn rem(self, other: DVec2) -> Self {
-        Self(self.0.rem(other.0))
+    #[inline]
+    fn rem(self, rhs: Self) -> Self {
+        Self {
+            x: self.x.rem(rhs.x),
+            y: self.y.rem(rhs.y),
+        }
     }
 }
 
 impl RemAssign<DVec2> for DVec2 {
-    #[inline(always)]
-    fn rem_assign(&mut self, other: DVec2) {
-        self.0 = self.0.rem(other.0)
+    #[inline]
+    fn rem_assign(&mut self, rhs: Self) {
+        self.x.rem_assign(rhs.x);
+        self.y.rem_assign(rhs.y);
     }
 }
 
 impl Rem<f64> for DVec2 {
     type Output = Self;
-    #[inline(always)]
-    fn rem(self, other: f64) -> Self {
-        Self(self.0.rem_scalar(other))
+    #[inline]
+    fn rem(self, rhs: f64) -> Self {
+        Self {
+            x: self.x.rem(rhs),
+            y: self.y.rem(rhs),
+        }
     }
 }
 
 impl RemAssign<f64> for DVec2 {
-    #[inline(always)]
-    fn rem_assign(&mut self, other: f64) {
-        self.0 = self.0.rem_scalar(other)
+    #[inline]
+    fn rem_assign(&mut self, rhs: f64) {
+        self.x.rem_assign(rhs);
+        self.y.rem_assign(rhs);
     }
 }
 
 impl Rem<DVec2> for f64 {
     type Output = DVec2;
-    #[inline(always)]
-    fn rem(self, other: DVec2) -> DVec2 {
-        DVec2(XY::<f64>::splat(self).rem(other.0))
+    #[inline]
+    fn rem(self, rhs: DVec2) -> DVec2 {
+        DVec2 {
+            x: self.rem(rhs.x),
+            y: self.rem(rhs.y),
+        }
     }
 }
 
 #[cfg(not(target_arch = "spirv"))]
 impl AsRef<[f64; 2]> for DVec2 {
-    #[inline(always)]
+    #[inline]
     fn as_ref(&self) -> &[f64; 2] {
         unsafe { &*(self as *const DVec2 as *const [f64; 2]) }
     }
@@ -797,7 +898,7 @@ impl AsRef<[f64; 2]> for DVec2 {
 
 #[cfg(not(target_arch = "spirv"))]
 impl AsMut<[f64; 2]> for DVec2 {
-    #[inline(always)]
+    #[inline]
     fn as_mut(&mut self) -> &mut [f64; 2] {
         unsafe { &mut *(self as *mut DVec2 as *mut [f64; 2]) }
     }
@@ -825,34 +926,33 @@ impl<'a> Product<&'a Self> for DVec2 {
 
 impl Neg for DVec2 {
     type Output = Self;
-    #[inline(always)]
+    #[inline]
     fn neg(self) -> Self {
-        Self(self.0.neg())
+        Self {
+            x: self.x.neg(),
+            y: self.y.neg(),
+        }
     }
 }
 
 impl Index<usize> for DVec2 {
     type Output = f64;
-    #[inline(always)]
+    #[inline]
     fn index(&self, index: usize) -> &Self::Output {
         match index {
             0 => &self.x,
-
             1 => &self.y,
-
             _ => panic!("index out of bounds"),
         }
     }
 }
 
 impl IndexMut<usize> for DVec2 {
-    #[inline(always)]
+    #[inline]
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         match index {
             0 => &mut self.x,
-
             1 => &mut self.y,
-
             _ => panic!("index out of bounds"),
         }
     }
@@ -875,59 +975,30 @@ impl fmt::Debug for DVec2 {
     }
 }
 
-impl From<DVec2> for XY<f64> {
-    #[inline(always)]
-    fn from(t: DVec2) -> Self {
-        t.0
-    }
-}
-
-impl From<XY<f64>> for DVec2 {
-    #[inline(always)]
-    fn from(t: XY<f64>) -> Self {
-        Self(t)
-    }
-}
-
 impl From<[f64; 2]> for DVec2 {
-    #[inline(always)]
+    #[inline]
     fn from(a: [f64; 2]) -> Self {
-        Self(<XY<f64> as Vector2<f64>>::from_array(a))
+        Self::new(a[0], a[1])
     }
 }
 
 impl From<DVec2> for [f64; 2] {
-    #[inline(always)]
+    #[inline]
     fn from(v: DVec2) -> Self {
-        v.into_array()
+        [v.x, v.y]
     }
 }
 
 impl From<(f64, f64)> for DVec2 {
-    #[inline(always)]
+    #[inline]
     fn from(t: (f64, f64)) -> Self {
-        Self(<XY<f64> as Vector2<f64>>::from_tuple(t))
+        Self::new(t.0, t.1)
     }
 }
 
 impl From<DVec2> for (f64, f64) {
-    #[inline(always)]
+    #[inline]
     fn from(v: DVec2) -> Self {
-        Vector2::into_tuple(v.0)
-    }
-}
-
-impl Deref for DVec2 {
-    type Target = XY<f64>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        self.0.as_ref_xy()
-    }
-}
-
-impl DerefMut for DVec2 {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        self.0.as_mut_xy()
+        (v.x, v.y)
     }
 }

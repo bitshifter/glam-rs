@@ -20,6 +20,10 @@ macro_rules! impl_mat4_tests {
             [13.0, 14.0, 15.0, 16.0],
         ];
 
+        const MATRIX1D: [$t; 16] = [
+            1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0,
+        ];
+
         glam_test!(test_const, {
             const M0: $mat4 = $const_new!([0.0; 16]);
             const M1: $mat4 = $const_new!([
@@ -68,6 +72,7 @@ macro_rules! impl_mat4_tests {
             assert_eq!($mat4::from_cols_array_2d(&IDENTITY), identity);
             assert_eq!(identity, identity * identity);
             assert_eq!(identity, $mat4::default());
+            assert_eq!(identity, $mat4::from_diagonal($vec4::ONE));
         });
 
         glam_test!(test_mat4_zero, {
@@ -640,10 +645,6 @@ macro_rules! impl_mat4_tests {
         });
 
         glam_test!(test_mat4_to_from_slice, {
-            const MATRIX1D: [$t; 16] = [
-                1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0,
-                16.0,
-            ];
             let m = $mat4::from_cols_slice(&MATRIX1D);
             assert_eq!($mat4::from_cols_array(&MATRIX1D), m);
             let mut out: [$t; 16] = Default::default();
@@ -669,6 +670,20 @@ macro_rules! impl_mat4_tests {
             assert!(!($mat4::IDENTITY * INFINITY).is_finite());
             assert!(!($mat4::IDENTITY * NEG_INFINITY).is_finite());
             assert!(!($mat4::IDENTITY * NAN).is_finite());
+        });
+    };
+}
+
+macro_rules! impl_as_ref_tests {
+    ($mat:ident) => {
+        glam_test!(test_as_ref, {
+            let m = $mat::from_cols_array_2d(&MATRIX);
+            assert_eq!(MATRIX1D, *m.as_ref());
+        });
+        glam_test!(test_as_mut, {
+            let mut m = $mat::ZERO;
+            *m.as_mut() = MATRIX1D;
+            assert_eq!($mat::from_cols_array_2d(&MATRIX), m);
         });
     };
 }
@@ -718,6 +733,7 @@ mod mat4 {
     });
 
     impl_mat4_tests!(f32, const_mat4, mat4, vec4, vec3, Mat4, Mat3, Quat, Vec4, Vec3);
+    impl_as_ref_tests!(Mat4);
 }
 
 mod dmat4 {
@@ -742,4 +758,5 @@ mod dmat4 {
         DVec4,
         DVec3
     );
+    impl_as_ref_tests!(DMat4);
 }

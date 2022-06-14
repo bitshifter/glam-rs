@@ -12,62 +12,106 @@ impl Vec2Swizzles for DVec2 {
 
     #[inline]
     fn xx(self) -> DVec2 {
-        DVec2::new(self.x, self.x)
+        DVec2 {
+            x: self.x,
+            y: self.x,
+        }
     }
 
     #[inline]
     fn xy(self) -> DVec2 {
-        DVec2::new(self.x, self.y)
+        DVec2 {
+            x: self.x,
+            y: self.y,
+        }
     }
 
     #[inline]
     fn yx(self) -> DVec2 {
-        DVec2::new(self.y, self.x)
+        DVec2 {
+            x: self.y,
+            y: self.x,
+        }
     }
 
     #[inline]
     fn yy(self) -> DVec2 {
-        DVec2::new(self.y, self.y)
+        DVec2 {
+            x: self.y,
+            y: self.y,
+        }
     }
 
     #[inline]
     fn xxx(self) -> DVec3 {
-        DVec3::new(self.x, self.x, self.x)
+        DVec3 {
+            x: self.x,
+            y: self.x,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn xxy(self) -> DVec3 {
-        DVec3::new(self.x, self.x, self.y)
+        DVec3 {
+            x: self.x,
+            y: self.x,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn xyx(self) -> DVec3 {
-        DVec3::new(self.x, self.y, self.x)
+        DVec3 {
+            x: self.x,
+            y: self.y,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn xyy(self) -> DVec3 {
-        DVec3::new(self.x, self.y, self.y)
+        DVec3 {
+            x: self.x,
+            y: self.y,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn yxx(self) -> DVec3 {
-        DVec3::new(self.y, self.x, self.x)
+        DVec3 {
+            x: self.y,
+            y: self.x,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn yxy(self) -> DVec3 {
-        DVec3::new(self.y, self.x, self.y)
+        DVec3 {
+            x: self.y,
+            y: self.x,
+            z: self.y,
+        }
     }
 
     #[inline]
     fn yyx(self) -> DVec3 {
-        DVec3::new(self.y, self.y, self.x)
+        DVec3 {
+            x: self.y,
+            y: self.y,
+            z: self.x,
+        }
     }
 
     #[inline]
     fn yyy(self) -> DVec3 {
-        DVec3::new(self.y, self.y, self.y)
+        DVec3 {
+            x: self.y,
+            y: self.y,
+            z: self.y,
+        }
     }
 
     #[inline]

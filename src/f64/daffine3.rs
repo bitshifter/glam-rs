@@ -1,11 +1,7 @@
 // Generated from affine.rs template. Edit the template, not the generated file.
 
-use crate::core::storage::Columns4;
 use crate::{DMat3, DMat4, DQuat, DVec3};
 use core::ops::{Add, Deref, DerefMut, Mul, Sub};
-
-#[cfg(not(feature = "std"))]
-use num_traits::Float;
 
 /// A 3D affine transform, which can represent translation, rotation, scaling and shear.
 #[derive(Copy, Clone)]
@@ -51,7 +47,7 @@ impl DAffine3 {
     /// Creates an affine transform from a `[f64; 12]` array stored in column major order.
     /// If your data is stored in row major you will need to `transpose` the returned
     /// matrix.
-    #[inline(always)]
+    #[inline]
     pub fn from_cols_array(m: &[f64; 12]) -> Self {
         Self {
             matrix3: DMat3::from_cols_slice(&m[0..9]),
@@ -61,7 +57,7 @@ impl DAffine3 {
 
     /// Creates a `[f64; 12]` array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
-    #[inline(always)]
+    #[inline]
     pub fn to_cols_array(&self) -> [f64; 12] {
         let x = &self.matrix3.x_axis;
         let y = &self.matrix3.y_axis;
@@ -74,7 +70,7 @@ impl DAffine3 {
     /// 3D array stored in column major order.
     /// If your data is in row major order you will need to `transpose` the returned
     /// matrix.
-    #[inline(always)]
+    #[inline]
     pub fn from_cols_array_2d(m: &[[f64; 3]; 4]) -> Self {
         Self {
             matrix3: DMat3::from_cols(m[0].into(), m[1].into(), m[2].into()),
@@ -85,7 +81,7 @@ impl DAffine3 {
     /// Creates a `[[f64; 3]; 4]` 3D array storing data in
     /// column major order.
     /// If you require data in row major order `transpose` the matrix first.
-    #[inline(always)]
+    #[inline]
     pub fn to_cols_array_2d(&self) -> [[f64; 3]; 4] {
         [
             self.matrix3.x_axis.into(),
@@ -100,7 +96,7 @@ impl DAffine3 {
     /// # Panics
     ///
     /// Panics if `slice` is less than 12 elements long.
-    #[inline(always)]
+    #[inline]
     pub fn from_cols_slice(slice: &[f64]) -> Self {
         Self {
             matrix3: DMat3::from_cols_slice(&slice[0..9]),
@@ -113,7 +109,7 @@ impl DAffine3 {
     /// # Panics
     ///
     /// Panics if `slice` is less than 12 elements long.
-    #[inline(always)]
+    #[inline]
     pub fn write_cols_to_slice(self, slice: &mut [f64]) {
         self.matrix3.write_cols_to_slice(&mut slice[0..9]);
         self.translation.write_to_slice(&mut slice[9..12]);
@@ -121,7 +117,7 @@ impl DAffine3 {
 
     /// Creates an affine transform that changes scale.
     /// Note that if any scale is zero the transform will be non-invertible.
-    #[inline(always)]
+    #[inline]
     pub fn from_scale(scale: DVec3) -> Self {
         Self {
             matrix3: DMat3::from_diagonal(scale),
@@ -129,7 +125,7 @@ impl DAffine3 {
         }
     }
     /// Creates an affine transform from the given `rotation` quaternion.
-    #[inline(always)]
+    #[inline]
     pub fn from_quat(rotation: DQuat) -> Self {
         Self {
             matrix3: DMat3::from_quat(rotation),
@@ -139,7 +135,7 @@ impl DAffine3 {
 
     /// Creates an affine transform containing a 3D rotation around a normalized
     /// rotation `axis` of `angle` (in radians).
-    #[inline(always)]
+    #[inline]
     pub fn from_axis_angle(axis: DVec3, angle: f64) -> Self {
         Self {
             matrix3: DMat3::from_axis_angle(axis, angle),
@@ -149,7 +145,7 @@ impl DAffine3 {
 
     /// Creates an affine transform containing a 3D rotation around the x axis of
     /// `angle` (in radians).
-    #[inline(always)]
+    #[inline]
     pub fn from_rotation_x(angle: f64) -> Self {
         Self {
             matrix3: DMat3::from_rotation_x(angle),
@@ -178,7 +174,7 @@ impl DAffine3 {
     }
 
     /// Creates an affine transformation from the given 3D `translation`.
-    #[inline(always)]
+    #[inline]
     pub fn from_translation(translation: DVec3) -> Self {
         #[allow(clippy::useless_conversion)]
         Self {
@@ -189,7 +185,7 @@ impl DAffine3 {
 
     /// Creates an affine transform from a 3x3 matrix (expressing scale, shear and
     /// rotation)
-    #[inline(always)]
+    #[inline]
     pub fn from_mat3(mat3: DMat3) -> Self {
         #[allow(clippy::useless_conversion)]
         Self {
@@ -202,7 +198,7 @@ impl DAffine3 {
     /// and a translation vector.
     ///
     /// Equivalent to `DAffine3::from_translation(translation) * DAffine3::from_mat3(mat3)`
-    #[inline(always)]
+    #[inline]
     pub fn from_mat3_translation(mat3: DMat3, translation: DVec3) -> Self {
         #[allow(clippy::useless_conversion)]
         Self {
@@ -216,7 +212,7 @@ impl DAffine3 {
     ///
     /// Equivalent to `DAffine3::from_translation(translation) *
     /// DAffine3::from_quat(rotation) * DAffine3::from_scale(scale)`
-    #[inline(always)]
+    #[inline]
     pub fn from_scale_rotation_translation(
         scale: DVec3,
         rotation: DQuat,
@@ -237,7 +233,7 @@ impl DAffine3 {
     /// Creates an affine transform from the given 3D `rotation` and `translation`.
     ///
     /// Equivalent to `DAffine3::from_translation(translation) * DAffine3::from_quat(rotation)`
-    #[inline(always)]
+    #[inline]
     pub fn from_rotation_translation(rotation: DQuat, translation: DVec3) -> Self {
         #[allow(clippy::useless_conversion)]
         Self {
@@ -250,14 +246,13 @@ impl DAffine3 {
     /// i.e. contain no perspective transform.
     #[inline]
     pub fn from_mat4(m: DMat4) -> Self {
-        #[allow(clippy::useless_conversion)]
         Self {
             matrix3: DMat3::from_cols(
-                DVec3(m.x_axis.0.into()),
-                DVec3(m.y_axis.0.into()),
-                DVec3(m.z_axis.0.into()),
+                DVec3::from_vec4(m.x_axis),
+                DVec3::from_vec4(m.y_axis),
+                DVec3::from_vec4(m.z_axis),
             ),
-            translation: DVec3(m.w_axis.0.into()),
+            translation: DVec3::from_vec4(m.w_axis),
         }
     }
 
@@ -270,8 +265,11 @@ impl DAffine3 {
     ///
     /// Will panic if the determinant `self.matrix3` is zero or if the resulting scale
     /// vector contains any zero elements when `glam_assert` is enabled.
-    #[inline(always)]
+    #[inline]
     pub fn to_scale_rotation_translation(&self) -> (DVec3, DQuat, DVec3) {
+        #[cfg(not(feature = "std"))]
+        use num_traits::Float;
+
         // TODO: migrate to core module
         let det = self.matrix3.determinant();
         glam_assert!(det != 0.0);
@@ -341,12 +339,12 @@ impl DAffine3 {
     }
 
     /// Transforms the given 3D points, applying shear, scale, rotation and translation.
-    #[inline(always)]
-    pub fn transform_point3(&self, other: DVec3) -> DVec3 {
+    #[inline]
+    pub fn transform_point3(&self, rhs: DVec3) -> DVec3 {
         #[allow(clippy::useless_conversion)]
-        ((self.matrix3.x_axis * other.x)
-            + (self.matrix3.y_axis * other.y)
-            + (self.matrix3.z_axis * other.z)
+        ((self.matrix3.x_axis * rhs.x)
+            + (self.matrix3.y_axis * rhs.y)
+            + (self.matrix3.z_axis * rhs.z)
             + self.translation)
             .into()
     }
@@ -355,12 +353,12 @@ impl DAffine3 {
     /// translation).
     ///
     /// To also apply translation, use [`Self::transform_point3`] instead.
-    #[inline(always)]
-    pub fn transform_vector3(&self, other: DVec3) -> DVec3 {
+    #[inline]
+    pub fn transform_vector3(&self, rhs: DVec3) -> DVec3 {
         #[allow(clippy::useless_conversion)]
-        ((self.matrix3.x_axis * other.x)
-            + (self.matrix3.y_axis * other.y)
-            + (self.matrix3.z_axis * other.z))
+        ((self.matrix3.x_axis * rhs.x)
+            + (self.matrix3.y_axis * rhs.y)
+            + (self.matrix3.z_axis * rhs.z))
             .into()
     }
 
@@ -379,7 +377,7 @@ impl DAffine3 {
         self.matrix3.is_nan() || self.translation.is_nan()
     }
 
-    /// Returns true if the absolute difference of all elements between `self` and `other`
+    /// Returns true if the absolute difference of all elements between `self` and `rhs`
     /// is less than or equal to `max_abs_diff`.
     ///
     /// This can be used to compare if two 3x4 matrices contain similar elements. It works
@@ -389,11 +387,9 @@ impl DAffine3 {
     /// For more see
     /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
     #[inline]
-    pub fn abs_diff_eq(&self, other: Self, max_abs_diff: f64) -> bool {
-        self.matrix3.abs_diff_eq(other.matrix3, max_abs_diff)
-            && self
-                .translation
-                .abs_diff_eq(other.translation, max_abs_diff)
+    pub fn abs_diff_eq(&self, rhs: Self, max_abs_diff: f64) -> bool {
+        self.matrix3.abs_diff_eq(rhs.matrix3, max_abs_diff)
+            && self.translation.abs_diff_eq(rhs.translation, max_abs_diff)
     }
 
     /// Return the inverse of this transform.
@@ -421,7 +417,7 @@ impl Default for DAffine3 {
 }
 
 impl Deref for DAffine3 {
-    type Target = Columns4<DVec3>;
+    type Target = crate::deref::Columns4<DVec3>;
     #[inline(always)]
     fn deref(&self) -> &Self::Target {
         unsafe { &*(self as *const Self as *const Self::Target) }
@@ -437,8 +433,8 @@ impl DerefMut for DAffine3 {
 
 impl PartialEq for DAffine3 {
     #[inline]
-    fn eq(&self, other: &Self) -> bool {
-        self.matrix3.eq(&other.matrix3) && self.translation.eq(&other.translation)
+    fn eq(&self, rhs: &Self) -> bool {
+        self.matrix3.eq(&rhs.matrix3) && self.translation.eq(&rhs.translation)
     }
 }
 
@@ -458,7 +454,7 @@ impl core::fmt::Display for DAffine3 {
         write!(
             f,
             "[{}, {}, {}, {}]",
-            self.x_axis, self.y_axis, self.z_axis, self.w_axis
+            self.matrix3.x_axis, self.matrix3.y_axis, self.matrix3.z_axis, self.translation
         )
     }
 }
@@ -475,55 +471,55 @@ impl<'a> core::iter::Product<&'a Self> for DAffine3 {
 impl Mul for DAffine3 {
     type Output = DAffine3;
 
-    #[inline(always)]
-    fn mul(self, other: DAffine3) -> Self::Output {
+    #[inline]
+    fn mul(self, rhs: DAffine3) -> Self::Output {
         Self {
-            matrix3: self.matrix3 * other.matrix3,
-            translation: self.matrix3 * other.translation + self.translation,
+            matrix3: self.matrix3 * rhs.matrix3,
+            translation: self.matrix3 * rhs.translation + self.translation,
         }
     }
 }
 
 impl Mul<DAffine3> for f64 {
     type Output = DAffine3;
-    #[inline(always)]
-    fn mul(self, other: DAffine3) -> Self::Output {
+    #[inline]
+    fn mul(self, rhs: DAffine3) -> Self::Output {
         DAffine3 {
-            matrix3: self * other.matrix3,
-            translation: self * other.translation,
+            matrix3: self * rhs.matrix3,
+            translation: self * rhs.translation,
         }
     }
 }
 
 impl Mul<f64> for DAffine3 {
     type Output = Self;
-    #[inline(always)]
-    fn mul(self, other: f64) -> Self::Output {
+    #[inline]
+    fn mul(self, rhs: f64) -> Self::Output {
         Self {
-            matrix3: self.matrix3 * other,
-            translation: self.translation * other,
+            matrix3: self.matrix3 * rhs,
+            translation: self.translation * rhs,
         }
     }
 }
 
 impl Add<DAffine3> for DAffine3 {
     type Output = Self;
-    #[inline(always)]
-    fn add(self, other: Self) -> Self::Output {
+    #[inline]
+    fn add(self, rhs: Self) -> Self::Output {
         Self {
-            matrix3: self.matrix3 + other.matrix3,
-            translation: self.translation + other.translation,
+            matrix3: self.matrix3 + rhs.matrix3,
+            translation: self.translation + rhs.translation,
         }
     }
 }
 
 impl Sub<DAffine3> for DAffine3 {
     type Output = Self;
-    #[inline(always)]
-    fn sub(self, other: Self) -> Self::Output {
+    #[inline]
+    fn sub(self, rhs: Self) -> Self::Output {
         Self {
-            matrix3: self.matrix3 - other.matrix3,
-            translation: self.translation - other.translation,
+            matrix3: self.matrix3 - rhs.matrix3,
+            translation: self.translation - rhs.translation,
         }
     }
 }
@@ -543,7 +539,7 @@ impl From<DAffine3> for DMat4 {
 impl Mul<DMat4> for DAffine3 {
     type Output = DMat4;
 
-    #[inline(always)]
+    #[inline]
     fn mul(self, rhs: DMat4) -> Self::Output {
         DMat4::from(self) * rhs
     }
@@ -552,7 +548,7 @@ impl Mul<DMat4> for DAffine3 {
 impl Mul<DAffine3> for DMat4 {
     type Output = DMat4;
 
-    #[inline(always)]
+    #[inline]
     fn mul(self, rhs: DAffine3) -> Self::Output {
         self * DMat4::from(rhs)
     }

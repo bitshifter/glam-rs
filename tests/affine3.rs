@@ -51,6 +51,16 @@ macro_rules! impl_affine3_tests {
             let rot_z2 = $affine3::from_axis_angle($vec3::Z, deg(180.0));
             assert_approx_eq!(rot_z1, rot_z2, eps);
 
+            assert_approx_eq!(
+                $affine3::from_rotation_x(deg(180.0)),
+                $affine3::from_quat($quat::from_rotation_x(deg(180.0)))
+            );
+
+            assert_approx_eq!(
+                $quat::from_affine3(&$affine3::from_rotation_x(deg(180.0))),
+                $quat::from_rotation_x(deg(180.0))
+            );
+
             should_glam_assert!({ $affine3::from_axis_angle($vec3::ZERO, 0.0) });
             should_glam_assert!({ $affine3::from_quat($quat::IDENTITY * 2.0) });
         });

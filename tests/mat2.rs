@@ -7,6 +7,8 @@ macro_rules! impl_mat2_tests {
 
         const MATRIX: [[$t; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
 
+        const MATRIX1D: [$t; 4] = [1.0, 2.0, 3.0, 4.0];
+
         glam_test!(test_const, {
             const M0: $mat2 = $const_new!([0.0; 4]);
             const M1: $mat2 = $const_new!([1.0, 2.0, 3.0, 4.0]);
@@ -23,6 +25,7 @@ macro_rules! impl_mat2_tests {
             assert_eq!($mat2::from_cols_array_2d(&IDENTITY), identity);
             assert_eq!(identity, identity * identity);
             assert_eq!(identity, $mat2::default());
+            assert_eq!(identity, $mat2::from_diagonal($vec2::ONE));
         });
 
         glam_test!(test_mat2_zero, {
@@ -186,7 +189,6 @@ macro_rules! impl_mat2_tests {
         });
 
         glam_test!(test_mat2_to_from_slice, {
-            const MATRIX1D: [$t; 4] = [1.0, 2.0, 3.0, 4.0];
             let m = $mat2::from_cols_slice(&MATRIX1D);
             assert_eq!($mat2::from_cols_array(&MATRIX1D), m);
             let mut out: [$t; 4] = Default::default();
@@ -219,6 +221,20 @@ macro_rules! impl_mat2_tests {
     };
 }
 
+macro_rules! impl_as_ref_tests {
+    ($mat:ident) => {
+        glam_test!(test_as_ref, {
+            let m = $mat::from_cols_array_2d(&MATRIX);
+            assert_eq!(MATRIX1D, *m.as_ref());
+        });
+        glam_test!(test_as_mut, {
+            let mut m = $mat::ZERO;
+            *m.as_mut() = MATRIX1D;
+            assert_eq!($mat::from_cols_array_2d(&MATRIX), m);
+        });
+    };
+}
+
 mod mat2 {
     use super::support::deg;
     use glam::{const_mat2, mat2, swizzles::*, vec2, Mat2, Mat3, Vec2};
@@ -246,6 +262,7 @@ mod mat2 {
     });
 
     impl_mat2_tests!(f32, const_mat2, mat2, Mat2, Mat3, vec2, Vec2);
+    impl_as_ref_tests!(Mat2);
 }
 
 mod dmat2 {
@@ -259,4 +276,5 @@ mod dmat2 {
     });
 
     impl_mat2_tests!(f64, const_dmat2, dmat2, DMat2, DMat3, dvec2, DVec2);
+    impl_as_ref_tests!(DMat2);
 }

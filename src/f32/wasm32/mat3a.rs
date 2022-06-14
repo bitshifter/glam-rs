@@ -1,18 +1,15 @@
 // Generated from mat.rs template. Edit the template, not the generated file.
 
-use crate::{
-    core::{
-        storage::*,
-        traits::matrix::{FloatMatrix3x3, Matrix3x3, MatrixConst},
-    },
-    DMat3, EulerRot, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A,
-};
+use crate::{swizzles::*, DMat3, EulerRot, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
-use core::ops::{Add, AddAssign, Deref, DerefMut, Mul, MulAssign, Neg, Sub, SubAssign};
+use core::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
 use core::arch::wasm32::*;
+
+#[cfg(not(feature = "std"))]
+use num_traits::Float;
 
 /// Creates a 3x3 matrix from column vectors.
 #[inline(always)]
@@ -45,71 +42,116 @@ pub fn mat3a(x_axis: Vec3A, y_axis: Vec3A, z_axis: Vec3A) -> Mat3A {
 /// vectors respectively. These methods assume that `Self` contains a valid affine
 /// transform.
 #[derive(Clone, Copy)]
-#[repr(transparent)]
-pub struct Mat3A(pub(crate) Columns3<v128>);
+pub struct Mat3A {
+    pub x_axis: Vec3A,
+    pub y_axis: Vec3A,
+    pub z_axis: Vec3A,
+}
 
 impl Mat3A {
     /// A 3x3 matrix with all elements set to `0.0`.
-    pub const ZERO: Self = Self(Columns3::<v128>::ZERO);
+    pub const ZERO: Self = Self {
+        x_axis: Vec3A::ZERO,
+        y_axis: Vec3A::ZERO,
+        z_axis: Vec3A::ZERO,
+    };
 
     /// A 3x3 identity matrix, where all diagonal elements are `1`, and all off-diagonal elements are `0`.
-    pub const IDENTITY: Self = Self(Columns3::<v128>::IDENTITY);
+    pub const IDENTITY: Self = Self {
+        x_axis: Vec3A::X,
+        y_axis: Vec3A::Y,
+        z_axis: Vec3A::Z,
+    };
 
     /// All NAN:s.
-    pub const NAN: Self = Self(<Columns3<v128> as crate::core::traits::scalar::NanConstEx>::NAN);
+    pub const NAN: Self = Self {
+        x_axis: Vec3A::NAN,
+        y_axis: Vec3A::NAN,
+        z_axis: Vec3A::NAN,
+    };
+
+    #[allow(clippy::too_many_arguments)]
+    #[inline(always)]
+    fn new(
+        m00: f32,
+        m01: f32,
+        m02: f32,
+        m10: f32,
+        m11: f32,
+        m12: f32,
+        m20: f32,
+        m21: f32,
+        m22: f32,
+    ) -> Self {
+        Self {
+            x_axis: Vec3A::new(m00, m01, m02),
+            y_axis: Vec3A::new(m10, m11, m12),
+            z_axis: Vec3A::new(m20, m21, m22),
+        }
+    }
 
     /// Creates a 3x3 matrix from two column vectors.
     #[inline(always)]
     pub fn from_cols(x_axis: Vec3A, y_axis: Vec3A, z_axis: Vec3A) -> Self {
-        Self(Columns3::<v128>::from_cols(x_axis.0, y_axis.0, z_axis.0))
+        Self {
+            x_axis,
+            y_axis,
+            z_axis,
+        }
     }
 
     /// Creates a 3x3 matrix from a `[f32; 9]` array stored in column major order.
     /// If your data is stored in row major you will need to `transpose` the returned
     /// matrix.
-    #[inline(always)]
+    #[inline]
     pub fn from_cols_array(m: &[f32; 9]) -> Self {
-        Self(Columns3::<v128>::from_cols_array(m))
+        Self::new(m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8])
     }
 
     /// Creates a `[f32; 9]` array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
-    #[inline(always)]
+    #[inline]
     pub fn to_cols_array(&self) -> [f32; 9] {
-        self.0.to_cols_array()
+        [
+            self.x_axis.x,
+            self.x_axis.y,
+            self.x_axis.z,
+            self.y_axis.x,
+            self.y_axis.y,
+            self.y_axis.z,
+            self.z_axis.x,
+            self.z_axis.y,
+            self.z_axis.z,
+        ]
     }
 
     /// Creates a 3x3 matrix from a `[[f32; 3]; 3]` 3D array stored in column major order.
     /// If your data is in row major order you will need to `transpose` the returned
     /// matrix.
-    #[inline(always)]
+    #[inline]
     pub fn from_cols_array_2d(m: &[[f32; 3]; 3]) -> Self {
-        Self(Columns3::<v128>::from_cols_array_2d(m))
+        Self::from_cols(Vec3A::from(m[0]), Vec3A::from(m[1]), Vec3A::from(m[2]))
     }
 
     /// Creates a `[[f32; 3]; 3]` 3D array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
-    #[inline(always)]
+    #[inline]
     pub fn to_cols_array_2d(&self) -> [[f32; 3]; 3] {
-        self.0.to_cols_array_2d()
+        [self.x_axis.into(), self.y_axis.into(), self.z_axis.into()]
     }
 
     /// Creates a 3x3 matrix with its diagonal set to `diagonal` and all other entries set to 0.
     #[doc(alias = "scale")]
-    #[inline(always)]
+    #[inline]
     pub fn from_diagonal(diagonal: Vec3) -> Self {
-        #[allow(clippy::useless_conversion)]
-        Self(Columns3::<v128>::from_diagonal(diagonal.0.into()))
+        Self::new(
+            diagonal.x, 0.0, 0.0, 0.0, diagonal.y, 0.0, 0.0, 0.0, diagonal.z,
+        )
     }
 
     /// Creates a 3x3 matrix from a 4x4 matrix, discarding the 3rd row and column.
     pub fn from_mat4(m: Mat4) -> Self {
-        #[allow(clippy::useless_conversion)]
-        Self::from_cols(
-            Vec3A(m.x_axis.0.into()),
-            Vec3A(m.y_axis.0.into()),
-            Vec3A(m.z_axis.0.into()),
-        )
+        Self::from_cols(m.x_axis.into(), m.y_axis.into(), m.z_axis.into())
     }
 
     /// Creates a 3D rotation matrix from the given quaternion.
@@ -117,11 +159,28 @@ impl Mat3A {
     /// # Panics
     ///
     /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
-    #[inline(always)]
+    #[inline]
     pub fn from_quat(rotation: Quat) -> Self {
-        // TODO: SIMD?
-        #[allow(clippy::useless_conversion)]
-        Self(Columns3::<v128>::from_quaternion(rotation.0.into()))
+        glam_assert!(rotation.is_normalized());
+
+        let x2 = rotation.x + rotation.x;
+        let y2 = rotation.y + rotation.y;
+        let z2 = rotation.z + rotation.z;
+        let xx = rotation.x * x2;
+        let xy = rotation.x * y2;
+        let xz = rotation.x * z2;
+        let yy = rotation.y * y2;
+        let yz = rotation.y * z2;
+        let zz = rotation.z * z2;
+        let wx = rotation.w * x2;
+        let wy = rotation.w * y2;
+        let wz = rotation.w * z2;
+
+        Self::from_cols(
+            Vec3A::new(1.0 - (yy + zz), xy + wz, xz - wy),
+            Vec3A::new(xy - wz, 1.0 - (xx + zz), yz + wx),
+            Vec3A::new(xz + wy, yz - wx, 1.0 - (xx + yy)),
+        )
     }
 
     /// Creates a 3D rotation matrix from a normalized rotation `axis` and `angle` (in
@@ -130,12 +189,26 @@ impl Mat3A {
     /// # Panics
     ///
     /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
-    #[inline(always)]
+    #[inline]
     pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
-        Self(FloatMatrix3x3::from_axis_angle(axis.0, angle))
+        glam_assert!(axis.is_normalized());
+
+        let (sin, cos) = angle.sin_cos();
+        let (xsin, ysin, zsin) = axis.mul(sin).into();
+        let (x, y, z) = axis.into();
+        let (x2, y2, z2) = axis.mul(axis).into();
+        let omc = 1.0 - cos;
+        let xyomc = x * y * omc;
+        let xzomc = x * z * omc;
+        let yzomc = y * z * omc;
+        Self::from_cols(
+            Vec3A::new(x2 * omc + cos, xyomc + zsin, xzomc - ysin),
+            Vec3A::new(xyomc - zsin, y2 * omc + cos, yzomc + xsin),
+            Vec3A::new(xzomc + ysin, yzomc - xsin, z2 * omc + cos),
+        )
     }
 
-    #[inline(always)]
+    #[inline]
     /// Creates a 3D rotation matrix from the given euler rotation sequence and the angles (in
     /// radians).
     pub fn from_euler(order: EulerRot, a: f32, b: f32, c: f32) -> Self {
@@ -144,30 +217,49 @@ impl Mat3A {
     }
 
     /// Creates a 3D rotation matrix from `angle` (in radians) around the x axis.
-    #[inline(always)]
+    #[inline]
     pub fn from_rotation_x(angle: f32) -> Self {
-        Self(Columns3::<v128>::from_rotation_x(angle))
+        let (sina, cosa) = angle.sin_cos();
+        Self::from_cols(
+            Vec3A::X,
+            Vec3A::new(0.0, cosa, sina),
+            Vec3A::new(0.0, -sina, cosa),
+        )
     }
 
     /// Creates a 3D rotation matrix from `angle` (in radians) around the y axis.
-    #[inline(always)]
+    #[inline]
     pub fn from_rotation_y(angle: f32) -> Self {
-        Self(Columns3::<v128>::from_rotation_y(angle))
+        let (sina, cosa) = angle.sin_cos();
+        Self::from_cols(
+            Vec3A::new(cosa, 0.0, -sina),
+            Vec3A::Y,
+            Vec3A::new(sina, 0.0, cosa),
+        )
     }
 
     /// Creates a 3D rotation matrix from `angle` (in radians) around the z axis.
-    #[inline(always)]
+    #[inline]
     pub fn from_rotation_z(angle: f32) -> Self {
-        Self(Columns3::<v128>::from_rotation_z(angle))
+        let (sina, cosa) = angle.sin_cos();
+        Self::from_cols(
+            Vec3A::new(cosa, sina, 0.0),
+            Vec3A::new(-sina, cosa, 0.0),
+            Vec3A::Z,
+        )
     }
 
     /// Creates an affine transformation matrix from the given 2D `translation`.
     ///
     /// The resulting matrix can be used to transform 2D points and vectors. See
     /// [`Self::transform_point2()`] and [`Self::transform_vector2()`].
-    #[inline(always)]
+    #[inline]
     pub fn from_translation(translation: Vec2) -> Self {
-        Self(Matrix3x3::from_translation(translation.0))
+        Self::from_cols(
+            Vec3A::X,
+            Vec3A::Y,
+            Vec3A::new(translation.x, translation.y, 1.0),
+        )
     }
 
     /// Creates an affine transformation matrix from the given 2D rotation `angle` (in
@@ -175,9 +267,14 @@ impl Mat3A {
     ///
     /// The resulting matrix can be used to transform 2D points and vectors. See
     /// [`Self::transform_point2()`] and [`Self::transform_vector2()`].
-    #[inline(always)]
+    #[inline]
     pub fn from_angle(angle: f32) -> Self {
-        Self(FloatMatrix3x3::from_angle(angle))
+        let (sin, cos) = angle.sin_cos();
+        Self::from_cols(
+            Vec3A::new(cos, sin, 0.0),
+            Vec3A::new(-sin, cos, 0.0),
+            Vec3A::Z,
+        )
     }
 
     /// Creates an affine transformation matrix from the given 2D `scale`, rotation `angle` (in
@@ -185,13 +282,14 @@ impl Mat3A {
     ///
     /// The resulting matrix can be used to transform 2D points and vectors. See
     /// [`Self::transform_point2()`] and [`Self::transform_vector2()`].
-    #[inline(always)]
+    #[inline]
     pub fn from_scale_angle_translation(scale: Vec2, angle: f32, translation: Vec2) -> Self {
-        Self(FloatMatrix3x3::from_scale_angle_translation(
-            scale.0,
-            angle,
-            translation.0,
-        ))
+        let (sin, cos) = angle.sin_cos();
+        Self::from_cols(
+            Vec3A::new(cos * scale.x, sin * scale.x, 0.0),
+            Vec3A::new(-sin * scale.y, cos * scale.y, 0.0),
+            Vec3A::new(translation.x, translation.y, 1.0),
+        )
     }
 
     /// Creates an affine transformation matrix from the given non-uniform 2D `scale`.
@@ -202,16 +300,23 @@ impl Mat3A {
     /// # Panics
     ///
     /// Will panic if all elements of `scale` are zero when `glam_assert` is enabled.
-    #[inline(always)]
+    #[inline]
     pub fn from_scale(scale: Vec2) -> Self {
-        Self(Matrix3x3::from_scale(scale.0))
+        // Do not panic as long as any component is non-zero
+        glam_assert!(scale.cmpne(Vec2::ZERO).any());
+
+        Self::from_cols(
+            Vec3A::new(scale.x, 0.0, 0.0),
+            Vec3A::new(0.0, scale.y, 0.0),
+            Vec3A::Z,
+        )
     }
 
     /// Creates an affine transformation matrix from the given 2x2 matrix.
     ///
     /// The resulting matrix can be used to transform 2D points and vectors. See
     /// [`Self::transform_point2()`] and [`Self::transform_vector2()`].
-    #[inline(always)]
+    #[inline]
     pub fn from_mat2(m: Mat2) -> Self {
         Self::from_cols((m.x_axis, 0.0).into(), (m.y_axis, 0.0).into(), Vec3A::Z)
     }
@@ -221,9 +326,12 @@ impl Mat3A {
     /// # Panics
     ///
     /// Panics if `slice` is less than 9 elements long.
-    #[inline(always)]
+    #[inline]
     pub fn from_cols_slice(slice: &[f32]) -> Self {
-        Self(Columns3::<v128>::from_cols_slice(slice))
+        Self::new(
+            slice[0], slice[1], slice[2], slice[3], slice[4], slice[5], slice[6], slice[7],
+            slice[8],
+        )
     }
 
     /// Writes the columns of `self` to the first 9 elements in `slice`.
@@ -231,9 +339,17 @@ impl Mat3A {
     /// # Panics
     ///
     /// Panics if `slice` is less than 9 elements long.
-    #[inline(always)]
+    #[inline]
     pub fn write_cols_to_slice(self, slice: &mut [f32]) {
-        Columns3::<v128>::write_cols_to_slice(&self.0, slice)
+        slice[0] = self.x_axis.x;
+        slice[1] = self.x_axis.y;
+        slice[2] = self.x_axis.z;
+        slice[3] = self.y_axis.x;
+        slice[4] = self.y_axis.y;
+        slice[5] = self.y_axis.z;
+        slice[6] = self.z_axis.x;
+        slice[7] = self.z_axis.y;
+        slice[8] = self.z_axis.z;
     }
 
     /// Returns the matrix column for the given `index`.
@@ -297,15 +413,21 @@ impl Mat3A {
 
     /// Returns the transpose of `self`.
     #[must_use]
-    #[inline(always)]
+    #[inline]
     pub fn transpose(&self) -> Self {
-        Self(self.0.transpose())
+        let tmp0 = i32x4_shuffle::<0, 1, 4, 5>(self.x_axis.0, self.y_axis.0);
+        let tmp1 = i32x4_shuffle::<2, 3, 6, 7>(self.x_axis.0, self.y_axis.0);
+
+        Self {
+            x_axis: Vec3A(i32x4_shuffle::<0, 2, 4, 4>(tmp0, self.z_axis.0)),
+            y_axis: Vec3A(i32x4_shuffle::<1, 3, 5, 5>(tmp0, self.z_axis.0)),
+            z_axis: Vec3A(i32x4_shuffle::<0, 2, 6, 6>(tmp1, self.z_axis.0)),
+        }
     }
 
     /// Returns the determinant of `self`.
-    #[inline(always)]
     pub fn determinant(&self) -> f32 {
-        self.0.determinant()
+        self.z_axis.dot(self.x_axis.cross(self.y_axis))
     }
 
     /// Returns the inverse of `self`.
@@ -316,69 +438,92 @@ impl Mat3A {
     ///
     /// Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
     #[must_use]
-    #[inline(always)]
     pub fn inverse(&self) -> Self {
-        Self(self.0.inverse())
+        let tmp0 = self.y_axis.cross(self.z_axis);
+        let tmp1 = self.z_axis.cross(self.x_axis);
+        let tmp2 = self.x_axis.cross(self.y_axis);
+        let det = self.z_axis.dot(tmp2);
+        glam_assert!(det != 0.0);
+        let inv_det = Vec3A::splat(det.recip());
+        Self::from_cols(tmp0.mul(inv_det), tmp1.mul(inv_det), tmp2.mul(inv_det)).transpose()
     }
 
     /// Transforms the given 2D vector as a point.
     ///
-    /// This is the equivalent of multiplying `other` as a 3D vector where `z` is `1`.
+    /// This is the equivalent of multiplying `rhs` as a 3D vector where `z` is `1`.
     ///
     /// This method assumes that `self` contains a valid affine transform.
-    #[inline(always)]
-    pub fn transform_point2(&self, other: Vec2) -> Vec2 {
-        Mat2::from_cols(Vec2(self.x_axis.0.into()), Vec2(self.y_axis.0.into())) * other
-            + Vec2(self.z_axis.0.into())
+    #[inline]
+    pub fn transform_point2(&self, rhs: Vec2) -> Vec2 {
+        Mat2::from_cols(self.x_axis.xy(), self.y_axis.xy()) * rhs + self.z_axis.xy()
     }
 
     /// Rotates the given 2D vector.
     ///
-    /// This is the equivalent of multiplying `other` as a 3D vector where `z` is `0`.
+    /// This is the equivalent of multiplying `rhs` as a 3D vector where `z` is `0`.
     ///
     /// This method assumes that `self` contains a valid affine transform.
-    #[inline(always)]
-    pub fn transform_vector2(&self, other: Vec2) -> Vec2 {
-        Mat2::from_cols(Vec2(self.x_axis.0.into()), Vec2(self.y_axis.0.into())) * other
+    #[inline]
+    pub fn transform_vector2(&self, rhs: Vec2) -> Vec2 {
+        Mat2::from_cols(self.x_axis.xy(), self.y_axis.xy()) * rhs
     }
 
-    /// Transforms a `Vec3`.
-    #[inline(always)]
-    pub fn mul_vec3(&self, other: Vec3) -> Vec3 {
-        Vec3(self.0.mul_vector(other.0.into()).into())
+    /// Transforms a 3D vector.
+    #[inline]
+    pub fn mul_vec3(&self, rhs: Vec3) -> Vec3 {
+        self.mul_vec3a(rhs.into()).into()
     }
 
     /// Transforms a `Vec3A`.
     #[inline]
-    pub fn mul_vec3a(&self, other: Vec3A) -> Vec3A {
-        Vec3A(self.0.mul_vector(other.0))
+    pub fn mul_vec3a(&self, rhs: Vec3A) -> Vec3A {
+        let mut res = self.x_axis.mul(rhs.xxx());
+        res = res.add(self.y_axis.mul(rhs.yyy()));
+        res = res.add(self.z_axis.mul(rhs.zzz()));
+        res
     }
 
     /// Multiplies two 3x3 matrices.
-    #[inline(always)]
-    pub fn mul_mat3(&self, other: &Self) -> Self {
-        Self(self.0.mul_matrix(&other.0))
+    #[inline]
+    pub fn mul_mat3(&self, rhs: &Self) -> Self {
+        Self::from_cols(
+            self.mul(rhs.x_axis),
+            self.mul(rhs.y_axis),
+            self.mul(rhs.z_axis),
+        )
     }
 
     /// Adds two 3x3 matrices.
-    #[inline(always)]
-    pub fn add_mat3(&self, other: &Self) -> Self {
-        Self(self.0.add_matrix(&other.0))
+    #[inline]
+    pub fn add_mat3(&self, rhs: &Self) -> Self {
+        Self::from_cols(
+            self.x_axis.add(rhs.x_axis),
+            self.y_axis.add(rhs.y_axis),
+            self.z_axis.add(rhs.z_axis),
+        )
     }
 
     /// Subtracts two 3x3 matrices.
-    #[inline(always)]
-    pub fn sub_mat3(&self, other: &Self) -> Self {
-        Self(self.0.sub_matrix(&other.0))
+    #[inline]
+    pub fn sub_mat3(&self, rhs: &Self) -> Self {
+        Self::from_cols(
+            self.x_axis.sub(rhs.x_axis),
+            self.y_axis.sub(rhs.y_axis),
+            self.z_axis.sub(rhs.z_axis),
+        )
     }
 
     /// Multiplies a 3x3 matrix by a scalar.
-    #[inline(always)]
-    pub fn mul_scalar(&self, other: f32) -> Self {
-        Self(self.0.mul_scalar(other))
+    #[inline]
+    pub fn mul_scalar(&self, rhs: f32) -> Self {
+        Self::from_cols(
+            self.x_axis.mul(rhs),
+            self.y_axis.mul(rhs),
+            self.z_axis.mul(rhs),
+        )
     }
 
-    /// Returns true if the absolute difference of all elements between `self` and `other`
+    /// Returns true if the absolute difference of all elements between `self` and `rhs`
     /// is less than or equal to `max_abs_diff`.
     ///
     /// This can be used to compare if two matrices contain similar elements. It works best
@@ -387,12 +532,14 @@ impl Mat3A {
     ///
     /// For more see
     /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
-    #[inline(always)]
-    pub fn abs_diff_eq(&self, other: Self, max_abs_diff: f32) -> bool {
-        self.0.abs_diff_eq(&other.0, max_abs_diff)
+    #[inline]
+    pub fn abs_diff_eq(&self, rhs: Self, max_abs_diff: f32) -> bool {
+        self.x_axis.abs_diff_eq(rhs.x_axis, max_abs_diff)
+            && self.y_axis.abs_diff_eq(rhs.y_axis, max_abs_diff)
+            && self.z_axis.abs_diff_eq(rhs.z_axis, max_abs_diff)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn as_dmat3(&self) -> DMat3 {
         DMat3::from_cols(
             self.x_axis.as_dvec3(),
@@ -403,7 +550,7 @@ impl Mat3A {
 }
 
 impl Default for Mat3A {
-    #[inline(always)]
+    #[inline]
     fn default() -> Self {
         Self::IDENTITY
     }
@@ -411,101 +558,104 @@ impl Default for Mat3A {
 
 impl Add<Mat3A> for Mat3A {
     type Output = Self;
-    #[inline(always)]
-    fn add(self, other: Self) -> Self::Output {
-        Self(self.0.add_matrix(&other.0))
+    #[inline]
+    fn add(self, rhs: Self) -> Self::Output {
+        self.add_mat3(&rhs)
     }
 }
 
 impl AddAssign<Mat3A> for Mat3A {
-    #[inline(always)]
-    fn add_assign(&mut self, other: Self) {
-        self.0 = self.0.add_matrix(&other.0);
+    #[inline]
+    fn add_assign(&mut self, rhs: Self) {
+        *self = self.add_mat3(&rhs);
     }
 }
 
 impl Sub<Mat3A> for Mat3A {
     type Output = Self;
-    #[inline(always)]
-    fn sub(self, other: Self) -> Self::Output {
-        Self(self.0.sub_matrix(&other.0))
+    #[inline]
+    fn sub(self, rhs: Self) -> Self::Output {
+        self.sub_mat3(&rhs)
     }
 }
 
 impl SubAssign<Mat3A> for Mat3A {
-    #[inline(always)]
-    fn sub_assign(&mut self, other: Self) {
-        self.0 = self.0.sub_matrix(&other.0);
+    #[inline]
+    fn sub_assign(&mut self, rhs: Self) {
+        *self = self.sub_mat3(&rhs);
     }
 }
 
 impl Neg for Mat3A {
     type Output = Self;
-    #[inline(always)]
+    #[inline]
     fn neg(self) -> Self::Output {
-        Self(self.0.neg_matrix())
+        Self::from_cols(self.x_axis.neg(), self.y_axis.neg(), self.z_axis.neg())
     }
 }
 
 impl Mul<Mat3A> for Mat3A {
     type Output = Self;
-    #[inline(always)]
-    fn mul(self, other: Self) -> Self::Output {
-        Self(self.0.mul_matrix(&other.0))
+    #[inline]
+    fn mul(self, rhs: Self) -> Self::Output {
+        self.mul_mat3(&rhs)
     }
 }
 
 impl MulAssign<Mat3A> for Mat3A {
-    #[inline(always)]
-    fn mul_assign(&mut self, other: Self) {
-        self.0 = self.0.mul_matrix(&other.0);
+    #[inline]
+    fn mul_assign(&mut self, rhs: Self) {
+        *self = self.mul_mat3(&rhs);
     }
 }
 
 impl Mul<Vec3A> for Mat3A {
     type Output = Vec3A;
-    #[inline(always)]
-    fn mul(self, other: Vec3A) -> Self::Output {
-        Vec3A(self.0.mul_vector(other.0))
+    #[inline]
+    fn mul(self, rhs: Vec3A) -> Self::Output {
+        self.mul_vec3a(rhs)
     }
 }
 
 impl Mul<Mat3A> for f32 {
     type Output = Mat3A;
-    #[inline(always)]
-    fn mul(self, other: Mat3A) -> Self::Output {
-        Mat3A(other.0.mul_scalar(self))
+    #[inline]
+    fn mul(self, rhs: Mat3A) -> Self::Output {
+        rhs.mul_scalar(self)
     }
 }
 
 impl Mul<f32> for Mat3A {
     type Output = Self;
-    #[inline(always)]
-    fn mul(self, other: f32) -> Self::Output {
-        Self(self.0.mul_scalar(other))
+    #[inline]
+    fn mul(self, rhs: f32) -> Self::Output {
+        self.mul_scalar(rhs)
     }
 }
 
 impl MulAssign<f32> for Mat3A {
-    #[inline(always)]
-    fn mul_assign(&mut self, other: f32) {
-        self.0 = self.0.mul_scalar(other);
+    #[inline]
+    fn mul_assign(&mut self, rhs: f32) {
+        *self = self.mul_scalar(rhs);
     }
 }
 
 impl Mul<Vec3> for Mat3A {
     type Output = Vec3;
-    #[inline(always)]
-    fn mul(self, other: Vec3) -> Vec3 {
-        #[allow(clippy::useless_conversion)]
-        self.mul_vec3(other.into()).into()
+    #[inline]
+    fn mul(self, rhs: Vec3) -> Vec3 {
+        self.mul_vec3a(rhs.into()).into()
     }
 }
 
 impl From<Mat3> for Mat3A {
-    #[inline(always)]
+    #[inline]
     fn from(m: Mat3) -> Self {
-        Self(m.0.into())
+        Self {
+            x_axis: m.x_axis.into(),
+            y_axis: m.y_axis.into(),
+            z_axis: m.z_axis.into(),
+        }
     }
 }
 
@@ -529,41 +679,8 @@ impl<'a> Product<&'a Self> for Mat3A {
 
 impl PartialEq for Mat3A {
     #[inline]
-    fn eq(&self, other: &Self) -> bool {
-        self.x_axis.eq(&other.x_axis)
-            && self.y_axis.eq(&other.y_axis)
-            && self.z_axis.eq(&other.z_axis)
-    }
-}
-
-#[cfg(not(target_arch = "spirv"))]
-impl AsRef<[f32; 9]> for Mat3A {
-    #[inline(always)]
-    fn as_ref(&self) -> &[f32; 9] {
-        unsafe { &*(self as *const Self as *const [f32; 9]) }
-    }
-}
-
-#[cfg(not(target_arch = "spirv"))]
-impl AsMut<[f32; 9]> for Mat3A {
-    #[inline(always)]
-    fn as_mut(&mut self) -> &mut [f32; 9] {
-        unsafe { &mut *(self as *mut Self as *mut [f32; 9]) }
-    }
-}
-
-impl Deref for Mat3A {
-    type Target = Columns3<Vec3A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        unsafe { &*(self as *const Self as *const Self::Target) }
-    }
-}
-
-impl DerefMut for Mat3A {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        unsafe { &mut *(self as *mut Self as *mut Self::Target) }
+    fn eq(&self, rhs: &Self) -> bool {
+        self.x_axis.eq(&rhs.x_axis) && self.y_axis.eq(&rhs.y_axis) && self.z_axis.eq(&rhs.z_axis)
     }
 }
 

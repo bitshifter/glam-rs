@@ -11,6 +11,8 @@ macro_rules! impl_mat3_tests {
 
         const MATRIX: [[$t; 3]; 3] = [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]];
 
+        const MATRIX1D: [$t; 9] = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0];
+
         glam_test!(test_const, {
             const M0: $mat3 = $const_new!([0.0; 9]);
             const M1: $mat3 = $const_new!([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]);
@@ -40,6 +42,7 @@ macro_rules! impl_mat3_tests {
             assert_eq!($mat3::from_cols_array_2d(&IDENTITY), identity);
             assert_eq!(identity, identity * identity);
             assert_eq!(identity, $mat3::default());
+            assert_eq!(identity, $mat3::from_diagonal($vec3::ONE));
         });
 
         glam_test!(test_mat3_zero, {
@@ -327,7 +330,6 @@ macro_rules! impl_mat3_tests {
         });
 
         glam_test!(test_mat3_to_from_slice, {
-            const MATRIX1D: [$t; 9] = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0];
             let m = $mat3::from_cols_slice(&MATRIX1D);
             assert_eq!($mat3::from_cols_array(&MATRIX1D), m);
             let mut out: [$t; 9] = Default::default();
@@ -353,6 +355,20 @@ macro_rules! impl_mat3_tests {
             assert!(!($mat3::IDENTITY * INFINITY).is_finite());
             assert!(!($mat3::IDENTITY * NEG_INFINITY).is_finite());
             assert!(!($mat3::IDENTITY * NAN).is_finite());
+        });
+    };
+}
+
+macro_rules! impl_as_ref_tests {
+    ($mat:ident) => {
+        glam_test!(test_as_ref, {
+            let m = $mat::from_cols_array_2d(&MATRIX);
+            assert_eq!(MATRIX1D, *m.as_ref());
+        });
+        glam_test!(test_as_mut, {
+            let mut m = $mat::ZERO;
+            *m.as_mut() = MATRIX1D;
+            assert_eq!($mat::from_cols_array_2d(&MATRIX), m);
         });
     };
 }
@@ -388,6 +404,7 @@ mod mat3 {
     });
 
     impl_mat3_tests!(f32, const_mat3, mat3, Mat3, Mat2, Mat4, Quat, vec3, Vec3, Vec2);
+    impl_as_ref_tests!(Mat3);
 }
 
 mod mat3a {
@@ -452,4 +469,5 @@ mod dmat3 {
         DVec3,
         DVec2
     );
+    impl_as_ref_tests!(DMat3);
 }

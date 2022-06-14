@@ -53,13 +53,7 @@ impl Vec{{ dim }}Swizzles for {{ self_t }} {
                     {% if not skip %}
     #[inline]
     fn {{ e[j0] }}{{ e[j1] }}(self) -> {{ vec2_t }} {
-            {% if is_sse2 %}
-                {{ vec2_t }}((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_{{ b[j1] }}_{{ b[j0] }}) }).into())
-            {% elif is_wasm32 %}
-                {{ vec2_t }}(i32x4_shuffle::<{{ l[j0] }}, {{ l[j1] }}, {{ h[0] }}, {{ h[0] }}>(self.0, self.0).into())
-            {% else %}
-                {{ vec2_t }}::new(self.{{ e[j0] }}, self.{{ e[j1] }})
-            {% endif %}
+            {{ vec2_t }} { x: self.{{ e[j0] }}, y: self.{{ e[j1] }} }
     }
                     {% endif %}
                 {% else %}
@@ -69,12 +63,12 @@ impl Vec{{ dim }}Swizzles for {{ self_t }} {
                             {% if not skip %}
     #[inline]
     fn {{ e[j0] }}{{ e[j1] }}{{ e[j2] }}(self) -> {{ vec3_t }} {
-            {% if is_sse2 %}
+            {% if vec3_t == "Vec3A" and is_sse2 %}
                 {{ vec3_t }}((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_{{ b[j2] }}_{{ b[j1] }}_{{ b[j0] }}) }).into())
-            {% elif is_wasm32 %}
+            {% elif vec3_t == "Vec3A" and is_wasm32 %}
                 {{ vec3_t }}(i32x4_shuffle::<{{ l[j0] }}, {{ l[j1] }}, {{ h[j2] }}, {{ h[0] }}>(self.0, self.0).into())
             {% else %}
-                {{ vec3_t }}::new(self.{{ e[j0] }}, self.{{ e[j1] }}, self.{{ e[j2] }})
+                {{ vec3_t }} { x: self.{{ e[j0] }}, y: self.{{ e[j1] }}, z: self.{{ e[j2] }} }
             {% endif %}
     }
                             {% endif %}
