@@ -2,7 +2,7 @@
 
 use crate::{
     euler::{EulerFromQuaternion, EulerRot, EulerToQuaternion},
-    DQuat, FloatEx, Mat3, Mat4, Vec2, Vec3, Vec3A, Vec4,
+    sse2, DQuat, FloatEx, Mat3, Mat4, Vec2, Vec3, Vec3A, Vec4,
 };
 
 #[cfg(not(feature = "std"))]
@@ -389,7 +389,7 @@ impl Quat {
     #[must_use]
     #[inline]
     pub fn conjugate(self) -> Self {
-        const SIGN: __m128 = const_f32x4!([-0.0, -0.0, -0.0, 0.0]);
+        const SIGN: __m128 = sse2::m128_from_f32x4([-0.0, -0.0, -0.0, 0.0]);
         Self(unsafe { _mm_xor_ps(self.0, SIGN) })
     }
 
@@ -538,7 +538,7 @@ impl Quat {
         glam_assert!(self.is_normalized());
         glam_assert!(end.is_normalized());
 
-        const NEG_ZERO: __m128 = const_f32x4!([-0.0; 4]);
+        const NEG_ZERO: __m128 = sse2::m128_from_f32x4([-0.0; 4]);
         let start = self.0;
         let end = end.0;
         unsafe {
@@ -595,7 +595,7 @@ impl Quat {
 
             unsafe {
                 let tmp = _mm_mul_ps(_mm_set_ps1(theta), _mm_set_ps(0.0, z, y, x));
-                let tmp = crate::sse2::m128_sin(tmp);
+                let tmp = sse2::m128_sin(tmp);
 
                 let scale1 = _mm_shuffle_ps(tmp, tmp, 0b00_00_00_00);
                 let scale2 = _mm_shuffle_ps(tmp, tmp, 0b01_01_01_01);
@@ -635,9 +635,9 @@ impl Quat {
         glam_assert!(rhs.is_normalized());
 
         // Based on https://github.com/nfrechette/rtm `rtm::quat_mul`
-        const CONTROL_WZYX: __m128 = const_f32x4!([1.0, -1.0, 1.0, -1.0]);
-        const CONTROL_ZWXY: __m128 = const_f32x4!([1.0, 1.0, -1.0, -1.0]);
-        const CONTROL_YXWZ: __m128 = const_f32x4!([-1.0, 1.0, 1.0, -1.0]);
+        const CONTROL_WZYX: __m128 = sse2::m128_from_f32x4([1.0, -1.0, 1.0, -1.0]);
+        const CONTROL_ZWXY: __m128 = sse2::m128_from_f32x4([1.0, 1.0, -1.0, -1.0]);
+        const CONTROL_YXWZ: __m128 = sse2::m128_from_f32x4([-1.0, 1.0, 1.0, -1.0]);
 
         let lhs = self.0;
         let rhs = rhs.0;
@@ -686,14 +686,14 @@ impl Quat {
     #[inline]
     pub fn mul_vec3a(self, rhs: Vec3A) -> Vec3A {
         unsafe {
-            const TWO: __m128 = const_f32x4!([2.0; 4]);
+            const TWO: __m128 = sse2::m128_from_f32x4([2.0; 4]);
             let w = _mm_shuffle_ps(self.0, self.0, 0b11_11_11_11);
             let b = self.0;
-            let b2 = crate::sse2::dot3_into_m128(b, b);
+            let b2 = sse2::dot3_into_m128(b, b);
             Vec3A(_mm_add_ps(
                 _mm_add_ps(
                     _mm_mul_ps(rhs.0, _mm_sub_ps(_mm_mul_ps(w, w), b2)),
-                    _mm_mul_ps(b, _mm_mul_ps(crate::sse2::dot3_into_m128(rhs.0, b), TWO)),
+                    _mm_mul_ps(b, _mm_mul_ps(sse2::dot3_into_m128(rhs.0, b), TWO)),
                 ),
                 _mm_mul_ps(Vec3A(b).cross(rhs).into(), _mm_mul_ps(w, TWO)),
             ))

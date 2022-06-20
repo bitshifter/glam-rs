@@ -28,28 +28,12 @@ macro_rules! const_assert_eq {
     };
 }
 
+#[deprecated(since = "0.21.0", note = "use sse2::m128_from_f32x4() instead.")]
 #[macro_export]
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 macro_rules! const_m128 {
     ($fx4:expr) => {{
-        let fx4 = $fx4;
-        unsafe { $crate::cast::Vec4Cast { fx4 }.m128 }
-    }};
-}
-
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-macro_rules! const_f32x4 {
-    ($fx4:expr) => {{
-        let fx4 = $fx4;
-        unsafe { $crate::cast::Vec4Cast { fx4 }.m128 }
-    }};
-}
-
-#[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
-macro_rules! const_f32x4 {
-    ($fx4:expr) => {{
-        let fx4 = $fx4;
-        unsafe { $crate::cast::Vec4Cast { fx4 }.v128 }
+        crate::sse2::m128_from_f32x4($fx4)
     }};
 }
 

@@ -227,7 +227,7 @@ impl Mat2 {
     #[must_use]
     pub fn inverse(&self) -> Self {
         unsafe {
-            const SIGN: __m128 = const_f32x4!([1.0, -1.0, -1.0, 1.0]);
+            const SIGN: __m128 = crate::sse2::m128_from_f32x4([1.0, -1.0, -1.0, 1.0]);
             let abcd = self.0;
             let dcba = _mm_shuffle_ps(abcd, abcd, 0b00_01_10_11);
             let prod = _mm_mul_ps(abcd, dcba);

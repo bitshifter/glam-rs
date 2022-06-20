@@ -1082,7 +1082,7 @@ impl {{ self_t }} {
     pub fn inverse(&self) -> Self {
         {% if self_t == "Mat2" and is_sse2 %}
             unsafe {
-                const SIGN: __m128 = const_f32x4!([1.0, -1.0, -1.0, 1.0]);
+                const SIGN: __m128 = crate::sse2::m128_from_f32x4([1.0, -1.0, -1.0, 1.0]);
                 let abcd = self.0;
                 let dcba = _mm_shuffle_ps(abcd, abcd, 0b00_01_10_11);
                 let prod = _mm_mul_ps(abcd, dcba);
@@ -1094,7 +1094,7 @@ impl {{ self_t }} {
                 Self(_mm_mul_ps(dbca, tmp))
             }
         {% elif self_t == "Mat2" and is_wasm32 %}
-            const SIGN: v128 = const_f32x4!([1.0, -1.0, -1.0, 1.0]);
+            const SIGN: v128 = crate::wasm32::v128_from_f32x4([1.0, -1.0, -1.0, 1.0]);
             let abcd = self.0;
             let dcba = i32x4_shuffle::<3, 2, 5, 4>(abcd, abcd);
             let prod = f32x4_mul(abcd, dcba);

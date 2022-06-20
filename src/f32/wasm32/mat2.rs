@@ -206,7 +206,7 @@ impl Mat2 {
     /// Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
     #[must_use]
     pub fn inverse(&self) -> Self {
-        const SIGN: v128 = const_f32x4!([1.0, -1.0, -1.0, 1.0]);
+        const SIGN: v128 = crate::wasm32::v128_from_f32x4([1.0, -1.0, -1.0, 1.0]);
         let abcd = self.0;
         let dcba = i32x4_shuffle::<3, 2, 5, 4>(abcd, abcd);
         let prod = f32x4_mul(abcd, dcba);

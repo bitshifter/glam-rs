@@ -35,6 +35,11 @@ use crate::{
     {% elif scalar_t == "f64" %}
         DMat3, DMat4, DVec2, DVec3, DVec4, Quat,
     {% endif %}
+    {% if is_sse2 %}
+        sse2,
+    {% elif is_wasm32 %}
+        wasm32,
+    {% endif %}
 };
 
 #[cfg(not(feature = "std"))]
@@ -466,10 +471,10 @@ impl {{ self_t }} {
         {% if is_scalar %}
             Self { x: -self.x, y: -self.y, z: -self.z, w: self.w }
         {% elif is_sse2 %}
-            const SIGN: __m128 = const_f32x4!([-0.0, -0.0, -0.0, 0.0]);
+            const SIGN: __m128 = sse2::m128_from_f32x4([-0.0, -0.0, -0.0, 0.0]);
             Self(unsafe { _mm_xor_ps(self.0, SIGN) })
         {% elif is_wasm32 %}
-            const SIGN: v128 = const_f32x4!([-1.0, -1.0, -1.0, 1.0]);
+            const SIGN: v128 = wasm32::v128_from_f32x4([-1.0, -1.0, -1.0, 1.0]);
             Self(f32x4_mul(self.0, SIGN))
         {% endif %}
     }
@@ -626,7 +631,7 @@ impl {{ self_t }} {
             let interpolated = start.add(end.mul(bias).sub(start).mul(s));
             interpolated.normalize()
         {% elif is_sse2 %}
-            const NEG_ZERO: __m128 = const_f32x4!([-0.0; 4]);
+            const NEG_ZERO: __m128 = sse2::m128_from_f32x4([-0.0; 4]);
             let start = self.0;
             let end = end.0;
             unsafe {
@@ -641,7 +646,7 @@ impl {{ self_t }} {
                 {{ self_t }}(interpolated).normalize()
             }
         {% elif is_wasm32 %}
-            const NEG_ZERO: v128 = const_f32x4!([-0.0; 4]);
+            const NEG_ZERO: v128 = wasm32::v128_from_f32x4([-0.0; 4]);
             let start = self.0;
             let end = end.0;
             let dot = crate::wasm32::dot4_into_v128(start, end);
@@ -705,7 +710,7 @@ impl {{ self_t }} {
 
                 unsafe {
                     let tmp = _mm_mul_ps(_mm_set_ps1(theta), _mm_set_ps(0.0, z, y, x));
-                    let tmp = crate::sse2::m128_sin(tmp);
+                    let tmp = sse2::m128_sin(tmp);
 
                     let scale1 = _mm_shuffle_ps(tmp, tmp, 0b00_00_00_00);
                     let scale2 = _mm_shuffle_ps(tmp, tmp, 0b01_01_01_01);
@@ -787,9 +792,9 @@ impl {{ self_t }} {
             )
         {% elif is_sse2 %}
             // Based on https://github.com/nfrechette/rtm `rtm::quat_mul`
-            const CONTROL_WZYX: __m128 = const_f32x4!([1.0, -1.0, 1.0, -1.0]);
-            const CONTROL_ZWXY: __m128 = const_f32x4!([1.0, 1.0, -1.0, -1.0]);
-            const CONTROL_YXWZ: __m128 = const_f32x4!([-1.0, 1.0, 1.0, -1.0]);
+            const CONTROL_WZYX: __m128 = sse2::m128_from_f32x4([1.0, -1.0, 1.0, -1.0]);
+            const CONTROL_ZWXY: __m128 = sse2::m128_from_f32x4([1.0, 1.0, -1.0, -1.0]);
+            const CONTROL_YXWZ: __m128 = sse2::m128_from_f32x4([-1.0, 1.0, 1.0, -1.0]);
 
             let lhs = self.0;
             let rhs = rhs.0;
@@ -825,9 +830,9 @@ impl {{ self_t }} {
             let lhs = self.0;
             let rhs = rhs.0;
 
-            const CONTROL_WZYX: v128 = const_f32x4!([1.0, -1.0, 1.0, -1.0]);
-            const CONTROL_ZWXY: v128 = const_f32x4!([1.0, 1.0, -1.0, -1.0]);
-            const CONTROL_YXWZ: v128 = const_f32x4!([-1.0, 1.0, 1.0, -1.0]);
+            const CONTROL_WZYX: v128 = wasm32::v128_from_f32x4([1.0, -1.0, 1.0, -1.0]);
+            const CONTROL_ZWXY: v128 = wasm32::v128_from_f32x4([1.0, 1.0, -1.0, -1.0]);
+            const CONTROL_YXWZ: v128 = wasm32::v128_from_f32x4([-1.0, 1.0, 1.0, -1.0]);
 
             let r_xxxx = i32x4_shuffle::<0, 0, 4, 4>(lhs, lhs);
             let r_yyyy = i32x4_shuffle::<1, 1, 5, 5>(lhs, lhs);
@@ -876,20 +881,20 @@ impl {{ self_t }} {
             self.mul_vec3(rhs.into()).into()
         {% elif is_sse2 %}
             unsafe {
-                const TWO: __m128 = const_f32x4!([2.0; 4]);
+                const TWO: __m128 = sse2::m128_from_f32x4([2.0; 4]);
                 let w = _mm_shuffle_ps(self.0, self.0, 0b11_11_11_11);
                 let b = self.0;
-                let b2 = crate::sse2::dot3_into_m128(b, b);
+                let b2 = sse2::dot3_into_m128(b, b);
                 Vec3A(_mm_add_ps(
                     _mm_add_ps(
                         _mm_mul_ps(rhs.0, _mm_sub_ps(_mm_mul_ps(w, w), b2)),
-                        _mm_mul_ps(b, _mm_mul_ps(crate::sse2::dot3_into_m128(rhs.0, b), TWO)),
+                        _mm_mul_ps(b, _mm_mul_ps(sse2::dot3_into_m128(rhs.0, b), TWO)),
                     ),
                     _mm_mul_ps(Vec3A(b).cross(rhs).into(), _mm_mul_ps(w, TWO)),
                 ))
             }
         {% elif is_wasm32 %}
-            const TWO: v128 = const_f32x4!([2.0; 4]);
+            const TWO: v128 = wasm32::v128_from_f32x4([2.0; 4]);
             let w = i32x4_shuffle::<3, 3, 7, 7>(self.0, self.0);
             let b = self.0;
             let b2 = crate::wasm32::dot3_into_v128(b, b);

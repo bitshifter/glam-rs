@@ -1,5 +1,9 @@
 use core::arch::wasm32::*;
 
+pub const fn v128_from_f32x4(a: [f32; 4]) -> v128 {
+    f32x4(a[0], a[1], a[2], a[3])
+}
+
 /// Calculates the vector 3 dot product and returns answer in x lane of v128.
 #[inline(always)]
 pub(crate) fn dot3_in_x(lhs: v128, rhs: v128) -> v128 {

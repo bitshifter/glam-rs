@@ -247,9 +247,6 @@ The minimum supported Rust version is `1.58.1`.
 #[macro_use]
 mod macros;
 
-#[doc(hidden)]
-pub mod cast;
-
 mod align16;
 mod deref;
 mod euler;
@@ -260,13 +257,13 @@ mod float_ex;
 mod spirv;
 
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-mod sse2;
+pub mod sse2;
 
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 use align16::Align16;
 
 #[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
-mod wasm32;
+pub mod wasm32;
 
 use float_ex::FloatEx;
 

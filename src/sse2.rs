@@ -3,29 +3,37 @@ use core::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use core::arch::x86_64::*;
 
-macro_rules! const_u32x4 {
-    ($ux4:expr) => {
-        unsafe { $crate::cast::UVec4Cast { ux4: $ux4 }.m128 }
-    };
+union UnionCast {
+    u32x4: [u32; 4],
+    f32x4: [f32; 4],
+    m128: __m128,
 }
 
-const PS_INV_SIGN_MASK: __m128 = const_u32x4!([!0x8000_0000; 4]);
-const PS_SIGN_MASK: __m128 = const_u32x4!([0x8000_0000; 4]);
-const PS_NO_FRACTION: __m128 = const_f32x4!([8388608.0; 4]);
-const PS_NEGATIVE_ZERO: __m128 = const_u32x4!([0x8000_0000; 4]);
-const PS_PI: __m128 = const_f32x4!([core::f32::consts::PI; 4]);
-const PS_HALF_PI: __m128 = const_f32x4!([core::f32::consts::FRAC_PI_2; 4]);
+pub const fn m128_from_f32x4(f32x4: [f32; 4]) -> __m128 {
+    unsafe { UnionCast { f32x4 }.m128 }
+}
+
+const fn m128_from_u32x4(u32x4: [u32; 4]) -> __m128 {
+    unsafe { UnionCast { u32x4 }.m128 }
+}
+
+const PS_INV_SIGN_MASK: __m128 = m128_from_u32x4([!0x8000_0000; 4]);
+const PS_SIGN_MASK: __m128 = m128_from_u32x4([0x8000_0000; 4]);
+const PS_NO_FRACTION: __m128 = m128_from_f32x4([8388608.0; 4]);
+const PS_NEGATIVE_ZERO: __m128 = m128_from_u32x4([0x8000_0000; 4]);
+const PS_PI: __m128 = m128_from_f32x4([core::f32::consts::PI; 4]);
+const PS_HALF_PI: __m128 = m128_from_f32x4([core::f32::consts::FRAC_PI_2; 4]);
 const PS_SIN_COEFFICIENTS0: __m128 =
-    const_f32x4!([-0.16666667, 0.008_333_331, -0.00019840874, 2.752_556_2e-6]);
-const PS_SIN_COEFFICIENTS1: __m128 = const_f32x4!([
+    m128_from_f32x4([-0.16666667, 0.008_333_331, -0.00019840874, 2.752_556_2e-6]);
+const PS_SIN_COEFFICIENTS1: __m128 = m128_from_f32x4([
     -2.388_985_9e-8,
     -0.16665852,      /*Est1*/
     0.008_313_95,     /*Est2*/
-    -0.000_185_246_7  /*Est3*/
+    -0.000_185_246_7, /*Est3*/
 ]);
-const PS_ONE: __m128 = const_f32x4!([1.0; 4]);
-const PS_TWO_PI: __m128 = const_f32x4!([core::f32::consts::TAU; 4]);
-const PS_RECIPROCAL_TWO_PI: __m128 = const_f32x4!([0.159_154_94; 4]);
+const PS_ONE: __m128 = m128_from_f32x4([1.0; 4]);
+const PS_TWO_PI: __m128 = m128_from_f32x4([core::f32::consts::TAU; 4]);
+const PS_RECIPROCAL_TWO_PI: __m128 = m128_from_f32x4([0.159_154_94; 4]);
 
 /// Calculates the vector 3 dot product and returns answer in x lane of __m128.
 #[inline(always)]
