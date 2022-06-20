@@ -9,8 +9,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ### Breaking changes
 
-* Minimum Supported Version of Rust bumped to 1.57.0 to allow panicking in
-  constant evaluation.
+* Minimum Supported Version of Rust bumped to 1.58.1 to allow const pointer
+  dereferences in constant evaluation.
 
 * The `abs_diff_eq` method on `Mat2` and `DMat2` now takes `other` by value
   instead of reference. This is consistent with the other matrix types.

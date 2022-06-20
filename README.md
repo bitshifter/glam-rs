@@ -2,7 +2,7 @@
 
 [![Build Status]][github-ci] [![Coverage Status]][coveralls.io]
 [![Latest Version]][crates.io] [![docs]][docs.rs]
-[![Minimum Supported Rust Version]][Rust 1.57]
+[![Minimum Supported Rust Version]][Rust 1.58.1]
 
 A simple and fast 3D math library for games and graphics.
 
@@ -128,7 +128,7 @@ glam = { version = "0.20.4", default-features = false }
 
 ### Minimum Supported Rust Version (MSRV)
 
-The minimum supported version of Rust for `glam` is `1.57.0`.
+The minimum supported version of Rust for `glam` is `1.58.1`.
 
 ## Conventions
 
@@ -247,5 +247,5 @@ See [ATTRIBUTION.md] for details.
 [crates.io]: https://crates.io/crates/glam/
 [docs]: https://docs.rs/glam/badge.svg
 [docs.rs]: https://docs.rs/glam/
-[Minimum Supported Rust Version]: https://img.shields.io/badge/Rust-1.57.0-blue?color=fc8d62&logo=rust
-[Rust 1.57]: https://github.com/rust-lang/rust/blob/master/RELEASES.md#version-1570-2021-12-02
+[Minimum Supported Rust Version]: https://img.shields.io/badge/Rust-1.58.1-blue?color=fc8d62&logo=rust
+[Rust 1.58.1]: https://github.com/rust-lang/rust/blob/master/RELEASES.md#version-1581-2022-01-19
