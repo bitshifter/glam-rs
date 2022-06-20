@@ -8,8 +8,13 @@ macro_rules! impl_quat_tests {
         use core::$t::NEG_INFINITY;
 
         glam_test!(test_const, {
-            const Q: $quat = $const_new!([1.0, 2.0, 3.0, 4.0]);
-            assert_eq!($quat::from_xyzw(1.0, 2.0, 3.0, 4.0), Q);
+            const Q0: $quat = $quat::from_xyzw(1.0, 2.0, 3.0, 4.0);
+            const Q1: $quat = $quat::from_array([1.0, 2.0, 3.0, 4.0]);
+            #[allow(deprecated)]
+            const Q2: $quat = $const_new!([1.0, 2.0, 3.0, 4.0]);
+            assert_eq!([1.0, 2.0, 3.0, 4.0], *Q0.as_ref());
+            assert_eq!([1.0, 2.0, 3.0, 4.0], *Q1.as_ref());
+            assert_eq!([1.0, 2.0, 3.0, 4.0], *Q2.as_ref());
         });
 
         glam_test!(test_nan, {
@@ -32,6 +37,8 @@ macro_rules! impl_quat_tests {
             assert_eq!([v1.x, v1.y, v1.z, v1.w], a1);
 
             assert_eq!(q1, $quat::from_array(a1));
+
+            assert_eq!(a1, *q0.as_ref());
         });
 
         glam_test!(test_funcs, {
@@ -127,6 +134,10 @@ macro_rules! impl_quat_tests {
             let (axis, angle) = $quat::IDENTITY.to_axis_angle();
             assert_eq!(axis, $vec3::X);
             assert_eq!(angle, rad(0.0));
+
+            let mut x0 = $quat::from_rotation_x(pitch);
+            x0 *= x0;
+            assert_approx_eq!(x0, $quat::from_rotation_x(pitch * 2.0));
 
             should_glam_assert!({ ($quat::IDENTITY * 2.0).inverse() });
             should_glam_assert!({ $quat::from_axis_angle($vec3::ZERO, 0.0) });
@@ -501,6 +512,7 @@ macro_rules! impl_quat_tests {
 mod quat {
     use crate::support::{deg, rad};
     use core::ops::Neg;
+    #[allow(deprecated)]
     use glam::{const_quat, quat, EulerRot, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
 
     glam_test!(test_align, {
@@ -592,6 +604,7 @@ mod quat {
 mod dquat {
     use crate::support::{deg, rad};
     use core::ops::Neg;
+    #[allow(deprecated)]
     use glam::{const_dquat, dquat, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, EulerRot};
 
     glam_test!(test_align, {

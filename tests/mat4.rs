@@ -20,12 +20,34 @@ macro_rules! impl_mat4_tests {
             [13.0, 14.0, 15.0, 16.0],
         ];
 
+        const MATRIX1D: [$t; 16] = [
+            1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0,
+        ];
+
         glam_test!(test_const, {
+            const M0: $mat4 = $mat4::from_cols(
+                $newvec4(1.0, 2.0, 3.0, 4.0),
+                $newvec4(5.0, 6.0, 7.0, 8.0),
+                $newvec4(9.0, 10.0, 11.0, 12.0),
+                $newvec4(13.0, 14.0, 15.0, 16.0),
+            );
+            const M1: $mat4 = $mat4::from_cols_array(&MATRIX1D);
+            const M2: $mat4 = $mat4::from_cols_array_2d(&MATRIX);
+
+            assert_eq!(MATRIX1D, M0.to_cols_array());
+            assert_eq!(MATRIX1D, M1.to_cols_array());
+            assert_eq!(MATRIX1D, M2.to_cols_array());
+        });
+
+        glam_test!(test_const_macros, {
+            #[allow(deprecated)]
             const M0: $mat4 = $const_new!([0.0; 16]);
+            #[allow(deprecated)]
             const M1: $mat4 = $const_new!([
                 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0,
                 16.0
             ]);
+            #[allow(deprecated)]
             const M2: $mat4 = $const_new!(
                 [1.0, 2.0, 3.0, 4.0],
                 [5.0, 6.0, 7.0, 8.0],
@@ -68,6 +90,7 @@ macro_rules! impl_mat4_tests {
             assert_eq!($mat4::from_cols_array_2d(&IDENTITY), identity);
             assert_eq!(identity, identity * identity);
             assert_eq!(identity, $mat4::default());
+            assert_eq!(identity, $mat4::from_diagonal($vec4::ONE));
         });
 
         glam_test!(test_mat4_zero, {
@@ -640,10 +663,6 @@ macro_rules! impl_mat4_tests {
         });
 
         glam_test!(test_mat4_to_from_slice, {
-            const MATRIX1D: [$t; 16] = [
-                1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0,
-                16.0,
-            ];
             let m = $mat4::from_cols_slice(&MATRIX1D);
             assert_eq!($mat4::from_cols_array(&MATRIX1D), m);
             let mut out: [$t; 16] = Default::default();
@@ -673,8 +692,23 @@ macro_rules! impl_mat4_tests {
     };
 }
 
+macro_rules! impl_as_ref_tests {
+    ($mat:ident) => {
+        glam_test!(test_as_ref, {
+            let m = $mat::from_cols_array_2d(&MATRIX);
+            assert_eq!(MATRIX1D, *m.as_ref());
+        });
+        glam_test!(test_as_mut, {
+            let mut m = $mat::ZERO;
+            *m.as_mut() = MATRIX1D;
+            assert_eq!($mat::from_cols_array_2d(&MATRIX), m);
+        });
+    };
+}
+
 mod mat4 {
     use super::support::deg;
+    #[allow(deprecated)]
     use glam::{const_mat4, mat4, swizzles::*, vec3, vec4, Mat3, Mat4, Quat, Vec3, Vec4};
 
     glam_test!(test_align, {
@@ -718,10 +752,12 @@ mod mat4 {
     });
 
     impl_mat4_tests!(f32, const_mat4, mat4, vec4, vec3, Mat4, Mat3, Quat, Vec4, Vec3);
+    impl_as_ref_tests!(Mat4);
 }
 
 mod dmat4 {
     use super::support::deg;
+    #[allow(deprecated)]
     use glam::{const_dmat4, dmat4, dvec3, dvec4, swizzles::*, DMat3, DMat4, DQuat, DVec3, DVec4};
 
     glam_test!(test_align, {
@@ -742,4 +778,5 @@ mod dmat4 {
         DVec4,
         DVec3
     );
+    impl_as_ref_tests!(DMat4);
 }

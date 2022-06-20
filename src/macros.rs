@@ -18,10 +18,7 @@ macro_rules! const_assert {
         // FIXME: everything is align 16 on spirv - ignore for now
         #[cfg(not(target_arch = "spirv"))]
         #[allow(unknown_lints, clippy::eq_op)]
-        const _: [(); 0 - !{
-            const ASSERT: bool = $x;
-            ASSERT
-        } as usize] = [];
+        const _: () = assert!($x);
     };
 }
 
@@ -63,11 +60,11 @@ macro_rules! const_f32x4 {
 /// const ONE: Vec2 = const_vec2!([1.0; 2]);
 /// const X: Vec2 = const_vec2!([1.0, 0.0]);
 /// ```
+#[deprecated(since = "0.21.0", note = "use Vec2::from_array() instead.")]
 #[macro_export]
 macro_rules! const_vec2 {
     ($fx2:expr) => {{
-        let fx2 = $fx2;
-        unsafe { $crate::cast::Vec2Cast { fx2 }.v2 }
+        Vec2::from_array($fx2)
     }};
 }
 
@@ -78,11 +75,11 @@ macro_rules! const_vec2 {
 /// const ONE: Vec3 = const_vec3!([1.0; 3]);
 /// const X: Vec3 = const_vec3!([1.0, 0.0, 0.0]);
 /// ```
+#[deprecated(since = "0.21.0", note = "use Vec3::from_array() instead.")]
 #[macro_export]
 macro_rules! const_vec3 {
     ($fx3:expr) => {{
-        let fx3 = $fx3;
-        unsafe { $crate::cast::Vec3Cast { fx3 }.v3 }
+        Vec3::from_array($fx3)
     }};
 }
 
@@ -93,16 +90,11 @@ macro_rules! const_vec3 {
 /// const ONE: Vec3A = const_vec3a!([1.0; 3]);
 /// const X: Vec3A = const_vec3a!([1.0, 0.0, 0.0]);
 /// ```
+#[deprecated(since = "0.21.0", note = "use Vec3A::from_array() instead.")]
 #[macro_export]
 macro_rules! const_vec3a {
     ($fx3:expr) => {{
-        let fx3 = $fx3;
-        unsafe {
-            $crate::cast::Vec4Cast {
-                fx4: [fx3[0], fx3[1], fx3[2], 0.0],
-            }
-            .v3a
-        }
+        Vec3A::from_array($fx3)
     }};
 }
 
@@ -113,11 +105,11 @@ macro_rules! const_vec3a {
 /// const ONE: Vec4 = const_vec4!([1.0; 4]);
 /// const X: Vec4 = const_vec4!([1.0, 0.0, 0.0, 0.0]);
 /// ```
+#[deprecated(since = "0.21.0", note = "use Vec4::from_array() instead.")]
 #[macro_export]
 macro_rules! const_vec4 {
     ($fx4:expr) => {{
-        let fx4 = $fx4;
-        unsafe { $crate::cast::Vec4Cast { fx4 }.v4 }
+        Vec4::from_array($fx4)
     }};
 }
 
@@ -128,26 +120,17 @@ macro_rules! const_vec4 {
 /// const ZERO: Mat2 = const_mat2!([0.0; 4]);
 /// const IDENTITY: Mat2 = const_mat2!([1.0, 0.0], [0.0, 1.0]);
 /// ```
+#[deprecated(
+    since = "0.21.0",
+    note = "use Mat2::from_cols(), Mat2::from_cols_array() or Mat2::from_cols_array_2d() instead."
+)]
 #[macro_export]
 macro_rules! const_mat2 {
     ($col0:expr, $col1:expr) => {{
-        let col0 = $col0;
-        let col1 = $col1;
-        unsafe {
-            $crate::cast::Mat2Cast {
-                v2x2: [$crate::const_vec2!(col0), $crate::const_vec2!(col1)],
-            }
-            .m2
-        }
+        Mat2::from_cols_array_2d(&[$col0, $col1])
     }};
     ($fx4:expr) => {{
-        let fx4 = $fx4;
-        unsafe {
-            $crate::const_mat2!(
-                $crate::cast::Vec4Cast { fx4 }.fx2x2[0],
-                $crate::cast::Vec4Cast { fx4 }.fx2x2[1]
-            )
-        }
+        Mat2::from_cols_array(&$fx4)
     }};
 }
 
@@ -158,32 +141,17 @@ macro_rules! const_mat2 {
 /// const ZERO: Mat3 = const_mat3!([0.0; 9]);
 /// const IDENTITY: Mat3 = const_mat3!([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
 /// ```
+#[deprecated(
+    since = "0.21.0",
+    note = "use Mat3::from_cols(), Mat3::from_cols_array() or Mat3::from_cols_array_2d() instead."
+)]
 #[macro_export]
 macro_rules! const_mat3 {
     ($col0:expr, $col1:expr, $col2:expr) => {{
-        let col0 = $col0;
-        let col1 = $col1;
-        let col2 = $col2;
-        unsafe {
-            $crate::cast::Mat3Cast {
-                v3x3: [
-                    $crate::const_vec3!(col0),
-                    $crate::const_vec3!(col1),
-                    $crate::const_vec3!(col2),
-                ],
-            }
-            .m3
-        }
+        Mat3::from_cols_array_2d(&[$col0, $col1, $col2])
     }};
     ($fx9:expr) => {{
-        let fx9 = $fx9;
-        unsafe {
-            $crate::const_mat3!(
-                $crate::cast::F32x9Cast { fx9 }.fx3x3[0],
-                $crate::cast::F32x9Cast { fx9 }.fx3x3[1],
-                $crate::cast::F32x9Cast { fx9 }.fx3x3[2]
-            )
-        }
+        Mat3::from_cols_array(&$fx9)
     }};
 }
 
@@ -194,32 +162,17 @@ macro_rules! const_mat3 {
 /// const ZERO: Mat3A = const_mat3a!([0.0; 9]);
 /// const IDENTITY: Mat3A = const_mat3a!([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
 /// ```
+#[deprecated(
+    since = "0.21.0",
+    note = "use Mat3A::from_cols(), Mat3A::from_cols_array() or Mat3A::from_cols_array_2d() instead."
+)]
 #[macro_export]
 macro_rules! const_mat3a {
     ($col0:expr, $col1:expr, $col2:expr) => {{
-        let col0 = $col0;
-        let col1 = $col1;
-        let col2 = $col2;
-        unsafe {
-            $crate::cast::Mat3ACast {
-                v3x3: [
-                    $crate::const_vec3a!(col0),
-                    $crate::const_vec3a!(col1),
-                    $crate::const_vec3a!(col2),
-                ],
-            }
-            .m3
-        }
+        Mat3A::from_cols_array_2d(&[$col0, $col1, $col2])
     }};
     ($fx9:expr) => {{
-        let fx9 = $fx9;
-        unsafe {
-            $crate::const_mat3a!(
-                $crate::cast::F32x9Cast { fx9 }.fx3x3[0],
-                $crate::cast::F32x9Cast { fx9 }.fx3x3[1],
-                $crate::cast::F32x9Cast { fx9 }.fx3x3[2]
-            )
-        }
+        Mat3A::from_cols_array(&$fx9)
     }};
 }
 
@@ -235,35 +188,17 @@ macro_rules! const_mat3a {
 ///     [0.0, 0.0, 0.0, 1.0]
 /// );
 /// ```
+#[deprecated(
+    since = "0.21.0",
+    note = "use Mat4::from_cols(), Mat4::from_cols_array() or Mat4::from_cols_array_2d() instead."
+)]
 #[macro_export]
 macro_rules! const_mat4 {
     ($col0:expr, $col1:expr, $col2:expr, $col3:expr) => {{
-        let col0 = $col0;
-        let col1 = $col1;
-        let col2 = $col2;
-        let col3 = $col3;
-        unsafe {
-            $crate::cast::Mat4Cast {
-                v4x4: [
-                    $crate::const_vec4!(col0),
-                    $crate::const_vec4!(col1),
-                    $crate::const_vec4!(col2),
-                    $crate::const_vec4!(col3),
-                ],
-            }
-            .m4
-        }
+        Mat4::from_cols_array_2d(&[$col0, $col1, $col2, $col3])
     }};
     ($fx16:expr) => {{
-        let fx16 = $fx16;
-        unsafe {
-            $crate::const_mat4!(
-                $crate::cast::F32x16Cast { fx16 }.fx4x4[0],
-                $crate::cast::F32x16Cast { fx16 }.fx4x4[1],
-                $crate::cast::F32x16Cast { fx16 }.fx4x4[2],
-                $crate::cast::F32x16Cast { fx16 }.fx4x4[3]
-            )
-        }
+        Mat4::from_cols_array(&$fx16)
     }};
 }
 
@@ -274,11 +209,14 @@ macro_rules! const_mat4 {
 /// use glam::{const_quat, Quat};
 /// const IDENTITY: Quat = const_quat!([0.0, 0.0, 0.0, 1.0]);
 /// ```
+#[deprecated(
+    since = "0.21.0",
+    note = "use Quat::from_xyzw() or Quat::from_array() instead."
+)]
 #[macro_export]
 macro_rules! const_quat {
     ($fx4:expr) => {{
-        let fx4 = $fx4;
-        unsafe { $crate::cast::Vec4Cast { fx4 }.q }
+        Quat::from_array($fx4)
     }};
 }
 
@@ -289,11 +227,11 @@ macro_rules! const_quat {
 /// const ONE: DVec2 = const_dvec2!([1.0; 2]);
 /// const X: DVec2 = const_dvec2!([1.0, 0.0]);
 /// ```
+#[deprecated(since = "0.21.0", note = "use DVec2::from_array() instead.")]
 #[macro_export]
 macro_rules! const_dvec2 {
     ($fx2:expr) => {{
-        let fx2 = $fx2;
-        unsafe { $crate::cast::DVec2Cast { fx2 }.v2 }
+        DVec2::from_array($fx2)
     }};
 }
 
@@ -304,11 +242,11 @@ macro_rules! const_dvec2 {
 /// const ONE: DVec3 = const_dvec3!([1.0; 3]);
 /// const X: DVec3 = const_dvec3!([1.0, 0.0, 0.0]);
 /// ```
+#[deprecated(since = "0.21.0", note = "use DVec3::from_array() instead.")]
 #[macro_export]
 macro_rules! const_dvec3 {
     ($fx3:expr) => {{
-        let fx3 = $fx3;
-        unsafe { $crate::cast::DVec3Cast { fx3 }.v3 }
+        DVec3::from_array($fx3)
     }};
 }
 
@@ -319,11 +257,11 @@ macro_rules! const_dvec3 {
 /// const ONE: DVec4 = const_dvec4!([1.0; 4]);
 /// const X: DVec4 = const_dvec4!([1.0, 0.0, 0.0, 0.0]);
 /// ```
+#[deprecated(since = "0.21.0", note = "use DVec4::from_array() instead.")]
 #[macro_export]
 macro_rules! const_dvec4 {
     ($fx4:expr) => {{
-        let fx4 = $fx4;
-        unsafe { $crate::cast::DVec4Cast { fx4 }.v4 }
+        DVec4::from_array($fx4)
     }};
 }
 
@@ -334,26 +272,17 @@ macro_rules! const_dvec4 {
 /// const ZERO: DMat2 = const_dmat2!([0.0; 4]);
 /// const IDENTITY: DMat2 = const_dmat2!([1.0, 0.0], [0.0, 1.0]);
 /// ```
+#[deprecated(
+    since = "0.21.0",
+    note = "use DMat2::from_cols(), DMat2::from_cols_array() or DMat2::from_cols_array_2d() instead."
+)]
 #[macro_export]
 macro_rules! const_dmat2 {
     ($col0:expr, $col1:expr) => {{
-        let col0 = $col0;
-        let col1 = $col1;
-        unsafe {
-            $crate::cast::DMat2Cast {
-                v2x2: [$crate::const_dvec2!(col0), $crate::const_dvec2!(col1)],
-            }
-            .m2
-        }
+        DMat2::from_cols_array_2d(&[$col0, $col1])
     }};
     ($fx4:expr) => {{
-        let fx4 = $fx4;
-        unsafe {
-            $crate::const_dmat2!(
-                $crate::cast::DVec4Cast { fx4 }.fx2x2[0],
-                $crate::cast::DVec4Cast { fx4 }.fx2x2[1]
-            )
-        }
+        DMat2::from_cols_array(&$fx4)
     }};
 }
 
@@ -365,32 +294,17 @@ macro_rules! const_dmat2 {
 /// const ZERO: DMat3 = const_dmat3!([0.0; 9]);
 /// const IDENTITY: DMat3 = const_dmat3!([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
 /// ```
+#[deprecated(
+    since = "0.21.0",
+    note = "use DMat3::from_cols(), DMat3::from_cols_array() or DMat3::from_cols_array_2d() instead."
+)]
 #[macro_export]
 macro_rules! const_dmat3 {
     ($col0:expr, $col1:expr, $col2:expr) => {{
-        let col0 = $col0;
-        let col1 = $col1;
-        let col2 = $col2;
-        unsafe {
-            $crate::cast::DMat3Cast {
-                v3x3: [
-                    $crate::const_dvec3!(col0),
-                    $crate::const_dvec3!(col1),
-                    $crate::const_dvec3!(col2),
-                ],
-            }
-            .m3
-        }
+        DMat3::from_cols_array_2d(&[$col0, $col1, $col2])
     }};
     ($fx9:expr) => {{
-        let fx9 = $fx9;
-        unsafe {
-            $crate::const_dmat3!(
-                $crate::cast::F64x9Cast { fx9 }.fx3x3[0],
-                $crate::cast::F64x9Cast { fx9 }.fx3x3[1],
-                $crate::cast::F64x9Cast { fx9 }.fx3x3[2]
-            )
-        }
+        DMat3::from_cols_array(&$fx9)
     }};
 }
 
@@ -406,35 +320,17 @@ macro_rules! const_dmat3 {
 ///     [0.0, 0.0, 0.0, 1.0]
 /// );
 /// ```
+#[deprecated(
+    since = "0.21.0",
+    note = "use DMat4::from_cols(), DMat4::from_cols_array() or DMat4::from_cols_array_2d() instead."
+)]
 #[macro_export]
 macro_rules! const_dmat4 {
     ($col0:expr, $col1:expr, $col2:expr, $col3:expr) => {{
-        let col0 = $col0;
-        let col1 = $col1;
-        let col2 = $col2;
-        let col3 = $col3;
-        unsafe {
-            $crate::cast::DMat4Cast {
-                v4x4: [
-                    $crate::const_dvec4!(col0),
-                    $crate::const_dvec4!(col1),
-                    $crate::const_dvec4!(col2),
-                    $crate::const_dvec4!(col3),
-                ],
-            }
-            .m4
-        }
+        DMat4::from_cols_array_2d(&[$col0, $col1, $col2, $col3])
     }};
     ($fx16:expr) => {{
-        let fx16 = $fx16;
-        unsafe {
-            $crate::const_dmat4!(
-                $crate::cast::F64x16Cast { fx16 }.fx4x4[0],
-                $crate::cast::F64x16Cast { fx16 }.fx4x4[1],
-                $crate::cast::F64x16Cast { fx16 }.fx4x4[2],
-                $crate::cast::F64x16Cast { fx16 }.fx4x4[3]
-            )
-        }
+        DMat4::from_cols_array(&$fx16)
     }};
 }
 
@@ -445,11 +341,14 @@ macro_rules! const_dmat4 {
 /// use glam::{const_dquat, DQuat};
 /// const IDENTITY: DQuat = const_dquat!([0.0, 0.0, 0.0, 1.0]);
 /// ```
+#[deprecated(
+    since = "0.21.0",
+    note = "use DQuat::from_xyzw() or DQuat::from_array() instead."
+)]
 #[macro_export]
 macro_rules! const_dquat {
     ($fx4:expr) => {{
-        let fx4 = $fx4;
-        unsafe { $crate::cast::DVec4Cast { fx4 }.q }
+        DQuat::from_array($fx4)
     }};
 }
 
@@ -460,11 +359,11 @@ macro_rules! const_dquat {
 /// const ONE: IVec2 = const_ivec2!([1; 2]);
 /// const X: IVec2 = const_ivec2!([1, 0]);
 /// ```
+#[deprecated(since = "0.21.0", note = "use IVec2::from_array() instead.")]
 #[macro_export]
 macro_rules! const_ivec2 {
     ($ix2:expr) => {{
-        let ix2 = $ix2;
-        unsafe { $crate::cast::IVec2Cast { ix2 }.v2 }
+        IVec2::from_array($ix2)
     }};
 }
 
@@ -475,11 +374,11 @@ macro_rules! const_ivec2 {
 /// const ONE: IVec3 = const_ivec3!([1; 3]);
 /// const X: IVec3 = const_ivec3!([1, 0, 0]);
 /// ```
+#[deprecated(since = "0.21.0", note = "use IVec3::from_array() instead.")]
 #[macro_export]
 macro_rules! const_ivec3 {
     ($ix3:expr) => {{
-        let ix3 = $ix3;
-        unsafe { $crate::cast::IVec3Cast { ix3 }.v3 }
+        IVec3::from_array($ix3)
     }};
 }
 
@@ -490,11 +389,11 @@ macro_rules! const_ivec3 {
 /// const ONE: IVec4 = const_ivec4!([1; 4]);
 /// const X: IVec4 = const_ivec4!([1, 0, 0, 0]);
 /// ```
+#[deprecated(since = "0.21.0", note = "use IVec4::from_array() instead.")]
 #[macro_export]
 macro_rules! const_ivec4 {
     ($ix4:expr) => {{
-        let ix4 = $ix4;
-        unsafe { $crate::cast::IVec4Cast { ix4 }.v4 }
+        IVec4::from_array($ix4)
     }};
 }
 
@@ -505,11 +404,11 @@ macro_rules! const_ivec4 {
 /// const ONE: UVec2 = const_uvec2!([1; 2]);
 /// const X: UVec2 = const_uvec2!([1, 0]);
 /// ```
+#[deprecated(since = "0.21.0", note = "use UVec2::from_array() instead.")]
 #[macro_export]
 macro_rules! const_uvec2 {
     ($ux2:expr) => {{
-        let ux2 = $ux2;
-        unsafe { $crate::cast::UVec2Cast { ux2 }.v2 }
+        UVec2::from_array($ux2)
     }};
 }
 
@@ -520,11 +419,11 @@ macro_rules! const_uvec2 {
 /// const ONE: UVec3 = const_uvec3!([1; 3]);
 /// const X: UVec3 = const_uvec3!([1, 0, 0]);
 /// ```
+#[deprecated(since = "0.21.0", note = "use UVec3::from_array() instead.")]
 #[macro_export]
 macro_rules! const_uvec3 {
     ($ux3:expr) => {{
-        let ux3 = $ux3;
-        unsafe { $crate::cast::UVec3Cast { ux3 }.v3 }
+        UVec3::from_array($ux3)
     }};
 }
 
@@ -535,10 +434,10 @@ macro_rules! const_uvec3 {
 /// const ONE: UVec4 = const_uvec4!([1; 4]);
 /// const X: UVec4 = const_uvec4!([1, 0, 0, 0]);
 /// ```
+#[deprecated(since = "0.21.0", note = "use UVec4::from_array() instead.")]
 #[macro_export]
 macro_rules! const_uvec4 {
     ($ux4:expr) => {{
-        let ux4 = $ux4;
-        unsafe { $crate::cast::UVec4Cast { ux4 }.v4 }
+        UVec4::from_array($ux4)
     }};
 }
