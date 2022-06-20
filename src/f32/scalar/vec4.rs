@@ -107,6 +107,29 @@ impl Vec4 {
         [self.x, self.y, self.z, self.w]
     }
 
+    /// Creates a vector from the first N values in `slice`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `slice` is less than N elements long.
+    #[inline]
+    pub const fn from_slice(slice: &[f32]) -> Self {
+        Self::new(slice[0], slice[1], slice[2], slice[3])
+    }
+
+    /// Writes the elements of `self` to the first 4 elements in `slice`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `slice` is less than N elements long.
+    #[inline]
+    pub fn write_to_slice(self, slice: &mut [f32]) {
+        slice[0] = self.x;
+        slice[1] = self.y;
+        slice[2] = self.z;
+        slice[3] = self.w;
+    }
+
     /// Creates a 2D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
     ///
     /// Truncation to `Vec3` may also be performed by using `self.xyz()` or `Vec3::from()`.
@@ -267,29 +290,6 @@ impl Vec4 {
             self.z.lt(&rhs.z),
             self.w.lt(&rhs.w),
         )
-    }
-
-    /// Creates a vector from the first N values in `slice`.
-    ///
-    /// # Panics
-    ///
-    /// Panics if `slice` is less than N elements long.
-    #[inline]
-    pub fn from_slice(slice: &[f32]) -> Self {
-        Self::new(slice[0], slice[1], slice[2], slice[3])
-    }
-
-    /// Writes the elements of `self` to the first 4 elements in `slice`.
-    ///
-    /// # Panics
-    ///
-    /// Panics if `slice` is less than N elements long.
-    #[inline]
-    pub fn write_to_slice(self, slice: &mut [f32]) {
-        slice[0] = self.x;
-        slice[1] = self.y;
-        slice[2] = self.z;
-        slice[3] = self.w;
     }
 
     /// Returns a vector containing the absolute value of each element of `self`.

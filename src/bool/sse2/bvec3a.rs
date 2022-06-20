@@ -9,6 +9,11 @@ use core::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use core::arch::x86_64::*;
 
+union UnionCast {
+    a: [u32; 4],
+    v: BVec3A,
+}
+
 /// A 3-dimensional SIMD vector mask.
 ///
 /// This type is 16 byte aligned and is backed by a SIMD vector. If SIMD is not available
@@ -19,20 +24,18 @@ pub struct BVec3A(pub(crate) __m128);
 
 const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
 
-const FALSE: BVec3A = BVec3A(const_f32x4!([0.0; 4]));
+const FALSE: BVec3A = BVec3A::new(false, false, false);
 
 impl BVec3A {
     /// Creates a new vector mask.
-    #[inline]
-    pub fn new(x: bool, y: bool, z: bool) -> Self {
-        Self(unsafe {
-            _mm_setr_ps(
-                f32::from_bits(MASK[x as usize]),
-                f32::from_bits(MASK[y as usize]),
-                f32::from_bits(MASK[z as usize]),
-                0.0,
-            )
-        })
+    #[inline(always)]
+    pub const fn new(x: bool, y: bool, z: bool) -> Self {
+        unsafe {
+            UnionCast {
+                a: [MASK[x as usize], MASK[y as usize], MASK[z as usize], 0],
+            }
+            .v
+        }
     }
 
     /// Returns a bitmask with the lowest two bits set from the elements of `self`.
@@ -66,7 +69,7 @@ impl BVec3A {
     fn into_u32_array(self) -> [u32; 3] {
         let bitmask = self.bitmask();
         [
-            MASK[(bitmask & 1) as usize],
+            MASK[((bitmask >> 0) & 1) as usize],
             MASK[((bitmask >> 1) & 1) as usize],
             MASK[((bitmask >> 2) & 1) as usize],
         ]

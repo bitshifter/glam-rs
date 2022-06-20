@@ -87,6 +87,28 @@ impl DVec3 {
         [self.x, self.y, self.z]
     }
 
+    /// Creates a vector from the first N values in `slice`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `slice` is less than N elements long.
+    #[inline]
+    pub const fn from_slice(slice: &[f64]) -> Self {
+        Self::new(slice[0], slice[1], slice[2])
+    }
+
+    /// Writes the elements of `self` to the first 3 elements in `slice`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `slice` is less than N elements long.
+    #[inline]
+    pub fn write_to_slice(self, slice: &mut [f64]) {
+        slice[0] = self.x;
+        slice[1] = self.y;
+        slice[2] = self.z;
+    }
+
     /// Internal method for creating a 3D vector from a 4D vector, discarding `w`.
     #[allow(dead_code)]
     #[inline]
@@ -240,28 +262,6 @@ impl DVec3 {
     #[inline]
     pub fn cmplt(self, rhs: Self) -> BVec3 {
         BVec3::new(self.x.lt(&rhs.x), self.y.lt(&rhs.y), self.z.lt(&rhs.z))
-    }
-
-    /// Creates a vector from the first N values in `slice`.
-    ///
-    /// # Panics
-    ///
-    /// Panics if `slice` is less than N elements long.
-    #[inline]
-    pub fn from_slice(slice: &[f64]) -> Self {
-        Self::new(slice[0], slice[1], slice[2])
-    }
-
-    /// Writes the elements of `self` to the first 3 elements in `slice`.
-    ///
-    /// # Panics
-    ///
-    /// Panics if `slice` is less than N elements long.
-    #[inline]
-    pub fn write_to_slice(self, slice: &mut [f64]) {
-        slice[0] = self.x;
-        slice[1] = self.y;
-        slice[2] = self.z;
     }
 
     /// Returns a vector containing the absolute value of each element of `self`.

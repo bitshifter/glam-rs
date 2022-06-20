@@ -2,7 +2,8 @@
 mod support;
 
 macro_rules! impl_affine2_tests {
-    ($t:ident, $affine2:ident, $vec2:ident) => {
+    ($t:ident, $affine2:ident, $vec2:ident, $mat2:ident, $mat3:ident) => {
+        const MATRIX1D: [$t; 6] = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0];
         const MATRIX2D: [[$t; 2]; 3] = [[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]];
 
         use core::$t::NAN;
@@ -25,6 +26,53 @@ macro_rules! impl_affine2_tests {
             assert!(!$affine2::NAN.is_finite());
         });
 
+        glam_test!(test_affine2_from_cols, {
+            let a = $affine2::from_cols(
+                $vec2::from_array(MATRIX2D[0]),
+                $vec2::from_array(MATRIX2D[1]),
+                $vec2::from_array(MATRIX2D[2]),
+            );
+            assert_eq!(MATRIX2D, a.to_cols_array_2d());
+
+            let a = $affine2::from_cols_array(&MATRIX1D);
+            assert_eq!(MATRIX1D, a.to_cols_array());
+
+            let a = $affine2::from_cols_array_2d(&MATRIX2D);
+            assert_eq!(MATRIX2D, a.to_cols_array_2d());
+        });
+
+        glam_test!(test_affine2_deref, {
+            let a = $affine2::from_cols_array_2d(&MATRIX2D);
+            assert_eq!(MATRIX2D[0], a.x_axis.to_array());
+            assert_eq!(MATRIX2D[1], a.y_axis.to_array());
+            assert_eq!(MATRIX2D[2], a.z_axis.to_array());
+
+            let mut b = a;
+            b.x_axis *= 2.0;
+            b.y_axis *= 2.0;
+            b.z_axis *= 2.0;
+            assert_eq!(a * 2.0, b);
+        });
+
+        glam_test!(test_affine2_from_mat2, {
+            let m = $mat2::from_cols_array_2d(&[MATRIX2D[0], MATRIX2D[1]]);
+            let a = $affine2::from_mat2(m);
+            assert_eq!(m, a.matrix2);
+            assert_eq!($vec2::ZERO, a.translation);
+
+            let t = $vec2::from_array(MATRIX2D[2]);
+            let a = $affine2::from_mat2_translation(m, t);
+            assert_eq!(MATRIX2D, a.to_cols_array_2d());
+        });
+
+        glam_test!(test_affine2_from_mat3, {
+            let m = $mat3::from_cols_array_2d(&[[1.0, 2.0, 0.0], [3.0, 4.0, 0.0], [5.0, 6.0, 1.0]]);
+            let a = $affine2::from_mat3(m);
+            assert_eq!(MATRIX2D, a.to_cols_array_2d());
+
+            assert_eq!(m, $mat3::from(a));
+        });
+
         glam_test!(test_affine2_translation, {
             let translate = $affine2::from_translation($vec2::new(1.0, 2.0));
             assert_eq!(translate.translation, $vec2::new(1.0, 2.0).into());
@@ -38,6 +86,10 @@ macro_rules! impl_affine2_tests {
             let m = $affine2::from_angle(deg(90.0));
             let result3 = m.transform_vector2($vec2::Y);
             assert_approx_eq!($vec2::new(-1.0, 0.0), result3);
+
+            let m = $affine2::from_angle_translation(deg(90.0), $vec2::new(1.0, 2.0));
+            let result3 = m.transform_vector2($vec2::Y);
+            assert_approx_eq!($vec2::new(-1.0, 0.0), result3, 1.0e-6);
 
             let m = $affine2::from_scale_angle_translation(
                 $vec2::new(0.5, 1.5),
@@ -104,6 +156,10 @@ macro_rules! impl_affine2_tests {
             assert_eq!($affine2::ZERO, m0 - m0);
             assert_approx_eq!(m0, m0 * $affine2::IDENTITY);
             assert_approx_eq!(m0, $affine2::IDENTITY * m0);
+
+            let mat3 = $mat3::from(m0);
+            assert_approx_eq!(mat3, $affine2::IDENTITY * mat3);
+            assert_approx_eq!(mat3, mat3 * $affine2::IDENTITY);
         });
 
         glam_test!(test_affine2_fmt, {
@@ -112,7 +168,6 @@ macro_rules! impl_affine2_tests {
         });
 
         glam_test!(test_affine2_to_from_slice, {
-            const MATRIX1D: [$t; 6] = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0];
             let m = $affine2::from_cols_slice(&MATRIX1D);
             assert_eq!($affine2::from_cols_array(&MATRIX1D), m);
             assert_eq!(MATRIX1D, m.to_cols_array());
@@ -148,7 +203,7 @@ macro_rules! impl_affine2_tests {
 
 mod affine2 {
     use super::support::{deg, FloatCompare};
-    use glam::{Affine2, Vec2};
+    use glam::{Affine2, Mat2, Mat3, Vec2};
 
     impl FloatCompare for Affine2 {
         #[inline]
@@ -178,12 +233,12 @@ mod affine2 {
         }
     });
 
-    impl_affine2_tests!(f32, Affine2, Vec2);
+    impl_affine2_tests!(f32, Affine2, Vec2, Mat2, Mat3);
 }
 
 mod daffine2 {
     use super::support::{deg, FloatCompare};
-    use glam::{DAffine2, DVec2};
+    use glam::{DAffine2, DMat2, DMat3, DVec2};
 
     impl FloatCompare for DAffine2 {
         #[inline]
@@ -213,5 +268,5 @@ mod daffine2 {
         assert_eq!(16, mem::align_of::<DAffine2>());
     });
 
-    impl_affine2_tests!(f64, DAffine2, DVec2);
+    impl_affine2_tests!(f64, DAffine2, DVec2, DMat2, DMat3);
 }

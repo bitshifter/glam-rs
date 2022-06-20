@@ -100,6 +100,29 @@ impl Vec4 {
         unsafe { *(self as *const Vec4 as *const [f32; 4]) }
     }
 
+    /// Creates a vector from the first N values in `slice`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `slice` is less than N elements long.
+    #[inline]
+    pub const fn from_slice(slice: &[f32]) -> Self {
+        Self::new(slice[0], slice[1], slice[2], slice[3])
+    }
+
+    /// Writes the elements of `self` to the first 4 elements in `slice`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `slice` is less than N elements long.
+    #[inline]
+    pub fn write_to_slice(self, slice: &mut [f32]) {
+        unsafe {
+            assert!(slice.len() >= 4);
+            _mm_storeu_ps(slice.as_mut_ptr(), self.0);
+        }
+    }
+
     /// Creates a 2D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
     ///
     /// Truncation to `Vec3` may also be performed by using `self.xyz()` or `Vec3::from()`.
@@ -230,30 +253,6 @@ impl Vec4 {
     #[inline]
     pub fn cmplt(self, rhs: Self) -> BVec4A {
         BVec4A(unsafe { _mm_cmplt_ps(self.0, rhs.0) })
-    }
-
-    /// Creates a vector from the first N values in `slice`.
-    ///
-    /// # Panics
-    ///
-    /// Panics if `slice` is less than N elements long.
-    #[inline]
-    pub fn from_slice(slice: &[f32]) -> Self {
-        assert!(slice.len() >= 4);
-        Self(unsafe { _mm_loadu_ps(slice.as_ptr()) })
-    }
-
-    /// Writes the elements of `self` to the first 4 elements in `slice`.
-    ///
-    /// # Panics
-    ///
-    /// Panics if `slice` is less than N elements long.
-    #[inline]
-    pub fn write_to_slice(self, slice: &mut [f32]) {
-        unsafe {
-            assert!(slice.len() >= 4);
-            _mm_storeu_ps(slice.as_mut_ptr(), self.0);
-        }
     }
 
     /// Returns a vector containing the absolute value of each element of `self`.

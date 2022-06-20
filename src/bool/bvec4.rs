@@ -5,9 +5,7 @@ use core::fmt;
 use core::{hash, ops::*};
 
 /// A 4-dimensional boolean vector.
-
 #[derive(Clone, Copy)]
-
 pub struct BVec4 {
     pub x: bool,
     pub y: bool,
@@ -17,17 +15,12 @@ pub struct BVec4 {
 
 const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
 
-const FALSE: BVec4 = BVec4 {
-    x: false,
-    y: false,
-    z: false,
-    w: false,
-};
+const FALSE: BVec4 = BVec4::new(false, false, false, false);
 
 impl BVec4 {
     /// Creates a new vector mask.
-    #[inline]
-    pub fn new(x: bool, y: bool, z: bool, w: bool) -> Self {
+    #[inline(always)]
+    pub const fn new(x: bool, y: bool, z: bool, w: bool) -> Self {
         Self { x, y, z, w }
     }
 
@@ -37,7 +30,7 @@ impl BVec4 {
     /// into the first lowest bit, element `y` into the second, etc.
     #[inline]
     pub fn bitmask(self) -> u32 {
-        (self.x as u32) | (self.y as u32) << 1 | (self.z as u32) << 2 | (self.w as u32) << 3
+        (self.x as u32) << 0 | (self.y as u32) << 1 | (self.z as u32) << 2 | (self.w as u32) << 3
     }
 
     /// Returns true if any of the elements are true, false otherwise.

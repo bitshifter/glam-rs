@@ -292,6 +292,39 @@ impl {{ self_t }} {
         {% endif %}
     }
 
+    /// Creates a vector from the first N values in `slice`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `slice` is less than N elements long.
+    #[inline]
+    pub const fn from_slice(slice: &[{{ scalar_t }}]) -> Self {
+        Self::new(
+            {% for c in components %}
+                slice[{{ loop.index0 }}],
+            {%- endfor %}
+        )
+    }
+
+    /// Writes the elements of `self` to the first {{ dim }} elements in `slice`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `slice` is less than N elements long.
+    #[inline]
+    pub fn write_to_slice(self, slice: &mut [{{ scalar_t }}]) {
+        {% if self_t == "Vec4" and is_sse2 %}
+            unsafe {
+                assert!(slice.len() >= 4);
+                _mm_storeu_ps(slice.as_mut_ptr(), self.0);
+            }
+        {% else %}
+            {% for c in components %}
+                slice[{{ loop.index0 }}] = self.{{ c }};
+            {%- endfor %}
+        {% endif %}
+    }
+
 {% if dim == 2 %}
     /// Creates a 3D vector from `self` and the given `z` value.
     #[inline]
@@ -642,44 +675,6 @@ impl {{ self_t }} {
             {{ mask_t }}(unsafe { _mm_cmplt_ps(self.0, rhs.0) })
         {% elif is_wasm32 %}
             {{ mask_t }}(f32x4_lt(self.0, rhs.0))
-        {% endif %}
-    }
-
-    /// Creates a vector from the first N values in `slice`.
-    ///
-    /// # Panics
-    ///
-    /// Panics if `slice` is less than N elements long.
-    #[inline]
-    pub fn from_slice(slice: &[{{ scalar_t }}]) -> Self {
-        {% if self_t == "Vec4" and is_sse2 %}
-            assert!(slice.len() >= 4);
-            Self(unsafe { _mm_loadu_ps(slice.as_ptr()) })
-        {% else %}
-            Self::new(
-                {% for c in components %}
-                    slice[{{ loop.index0 }}],
-                {%- endfor %}
-            )
-        {% endif %}
-    }
-
-    /// Writes the elements of `self` to the first {{ dim }} elements in `slice`.
-    ///
-    /// # Panics
-    ///
-    /// Panics if `slice` is less than N elements long.
-    #[inline]
-    pub fn write_to_slice(self, slice: &mut [{{ scalar_t }}]) {
-        {% if self_t == "Vec4" and is_sse2 %}
-            unsafe {
-                assert!(slice.len() >= 4);
-                _mm_storeu_ps(slice.as_mut_ptr(), self.0);
-            }
-        {% else %}
-            {% for c in components %}
-                slice[{{ loop.index0 }}] = self.{{ c }};
-            {%- endfor %}
         {% endif %}
     }
 

@@ -92,6 +92,29 @@ impl UVec4 {
         [self.x, self.y, self.z, self.w]
     }
 
+    /// Creates a vector from the first N values in `slice`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `slice` is less than N elements long.
+    #[inline]
+    pub const fn from_slice(slice: &[u32]) -> Self {
+        Self::new(slice[0], slice[1], slice[2], slice[3])
+    }
+
+    /// Writes the elements of `self` to the first 4 elements in `slice`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `slice` is less than N elements long.
+    #[inline]
+    pub fn write_to_slice(self, slice: &mut [u32]) {
+        slice[0] = self.x;
+        slice[1] = self.y;
+        slice[2] = self.z;
+        slice[3] = self.w;
+    }
+
     /// Creates a 2D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
     ///
     /// Truncation to `UVec3` may also be performed by using `self.xyz()` or `UVec3::from()`.
@@ -250,29 +273,6 @@ impl UVec4 {
             self.z.lt(&rhs.z),
             self.w.lt(&rhs.w),
         )
-    }
-
-    /// Creates a vector from the first N values in `slice`.
-    ///
-    /// # Panics
-    ///
-    /// Panics if `slice` is less than N elements long.
-    #[inline]
-    pub fn from_slice(slice: &[u32]) -> Self {
-        Self::new(slice[0], slice[1], slice[2], slice[3])
-    }
-
-    /// Writes the elements of `self` to the first 4 elements in `slice`.
-    ///
-    /// # Panics
-    ///
-    /// Panics if `slice` is less than N elements long.
-    #[inline]
-    pub fn write_to_slice(self, slice: &mut [u32]) {
-        slice[0] = self.x;
-        slice[1] = self.y;
-        slice[2] = self.z;
-        slice[3] = self.w;
     }
 
     /// Casts all elements of `self` to `f32`.

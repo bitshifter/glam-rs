@@ -16,12 +16,12 @@ pub struct BVec3A(pub(crate) v128);
 
 const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
 
-const FALSE: BVec3A = BVec3A(const_f32x4!([0.0; 4]));
+const FALSE: BVec3A = BVec3A::new(false, false, false);
 
 impl BVec3A {
     /// Creates a new vector mask.
-    #[inline]
-    pub fn new(x: bool, y: bool, z: bool) -> Self {
+    #[inline(always)]
+    pub const fn new(x: bool, y: bool, z: bool) -> Self {
         Self(u32x4(
             MASK[x as usize],
             MASK[y as usize],
@@ -61,7 +61,7 @@ impl BVec3A {
     fn into_u32_array(self) -> [u32; 3] {
         let bitmask = self.bitmask();
         [
-            MASK[(bitmask & 1) as usize],
+            MASK[((bitmask >> 0) & 1) as usize],
             MASK[((bitmask >> 1) & 1) as usize],
             MASK[((bitmask >> 2) & 1) as usize],
         ]

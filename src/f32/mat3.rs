@@ -317,7 +317,7 @@ impl Mat3 {
     ///
     /// Panics if `slice` is less than 9 elements long.
     #[inline]
-    pub fn from_cols_slice(slice: &[f32]) -> Self {
+    pub const fn from_cols_slice(slice: &[f32]) -> Self {
         Self::new(
             slice[0], slice[1], slice[2], slice[3], slice[4], slice[5], slice[6], slice[7],
             slice[8],
@@ -391,7 +391,6 @@ impl Mat3 {
     /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
     #[inline]
     pub fn is_finite(&self) -> bool {
-        // TODO
         self.x_axis.is_finite() && self.y_axis.is_finite() && self.z_axis.is_finite()
     }
 

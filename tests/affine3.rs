@@ -2,7 +2,10 @@
 mod support;
 
 macro_rules! impl_affine3_tests {
-    ($t:ident, $affine3:ident, $quat:ident, $vec3:ident) => {
+    ($t:ident, $affine3:ident, $quat:ident, $vec3:ident, $mat3:ident, $mat4:ident) => {
+        const MATRIX1D: [$t; 12] = [
+            1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0,
+        ];
         const MATRIX2D: [[$t; 3]; 4] = [
             [1.0, 2.0, 3.0],
             [4.0, 5.0, 6.0],
@@ -28,6 +31,61 @@ macro_rules! impl_affine3_tests {
         glam_test!(test_affine3_nan, {
             assert!($affine3::NAN.is_nan());
             assert!(!$affine3::NAN.is_finite());
+        });
+
+        glam_test!(test_affine3_from_cols, {
+            let a = $affine3::from_cols(
+                $vec3::from_array(MATRIX2D[0]).into(),
+                $vec3::from_array(MATRIX2D[1]).into(),
+                $vec3::from_array(MATRIX2D[2]).into(),
+                $vec3::from_array(MATRIX2D[3]).into(),
+            );
+            assert_eq!(MATRIX2D, a.to_cols_array_2d());
+
+            let a = $affine3::from_cols_array(&MATRIX1D);
+            assert_eq!(MATRIX1D, a.to_cols_array());
+
+            let a = $affine3::from_cols_array_2d(&MATRIX2D);
+            assert_eq!(MATRIX2D, a.to_cols_array_2d());
+        });
+
+        glam_test!(test_affine3_deref, {
+            let a = $affine3::from_cols_array_2d(&MATRIX2D);
+            assert_eq!(MATRIX2D[0], a.x_axis.to_array());
+            assert_eq!(MATRIX2D[1], a.y_axis.to_array());
+            assert_eq!(MATRIX2D[2], a.z_axis.to_array());
+            assert_eq!(MATRIX2D[3], a.w_axis.to_array());
+
+            let mut b = a;
+            b.x_axis *= 2.0;
+            b.y_axis *= 2.0;
+            b.z_axis *= 2.0;
+            b.w_axis *= 2.0;
+            assert_eq!(a * 2.0, b);
+        });
+
+        glam_test!(test_affine3_from_mat3, {
+            let m = $mat3::from_cols_array_2d(&[MATRIX2D[0], MATRIX2D[1], MATRIX2D[2]]);
+            let a = $affine3::from_mat3(m);
+            assert_eq!(m, a.matrix3.into());
+            assert_eq!($vec3::ZERO, a.translation.into());
+
+            let t = $vec3::from_array(MATRIX2D[3]);
+            let a = $affine3::from_mat3_translation(m, t);
+            assert_eq!(MATRIX2D, a.to_cols_array_2d());
+        });
+
+        glam_test!(test_affine2_from_mat4, {
+            let m = $mat4::from_cols_array_2d(&[
+                [1.0, 2.0, 3.0, 0.0],
+                [4.0, 5.0, 6.0, 0.0],
+                [7.0, 8.0, 9.0, 0.0],
+                [10.0, 11.0, 12.0, 1.0],
+            ]);
+            let a = $affine3::from_mat4(m);
+            assert_eq!(MATRIX2D, a.to_cols_array_2d());
+
+            assert_eq!(m, $mat4::from(a));
         });
 
         glam_test!(test_affine3_translation, {
@@ -60,6 +118,13 @@ macro_rules! impl_affine3_tests {
                 $quat::from_affine3(&$affine3::from_rotation_x(deg(180.0))),
                 $quat::from_rotation_x(deg(180.0))
             );
+
+            let m = $affine3::from_rotation_translation(
+                $quat::from_rotation_x(deg(90.0)),
+                $vec3::new(1.0, 2.0, 3.0),
+            );
+            let result3 = m.transform_vector3($vec3::Y);
+            assert_approx_eq!($vec3::new(0.0, 0.0, 1.0), result3, 1.0e-6);
 
             should_glam_assert!({ $affine3::from_axis_angle($vec3::ZERO, 0.0) });
             should_glam_assert!({ $affine3::from_quat($quat::IDENTITY * 2.0) });
@@ -230,6 +295,10 @@ macro_rules! impl_affine3_tests {
             assert_eq!($affine3::ZERO, m0 - m0);
             assert_approx_eq!(m0, m0 * $affine3::IDENTITY);
             assert_approx_eq!(m0, $affine3::IDENTITY * m0);
+
+            let mat4 = $mat4::from(m0);
+            assert_approx_eq!(mat4, $affine3::IDENTITY * mat4);
+            assert_approx_eq!(mat4, mat4 * $affine3::IDENTITY);
         });
 
         glam_test!(test_affine3_fmt, {
@@ -241,9 +310,6 @@ macro_rules! impl_affine3_tests {
         });
 
         glam_test!(test_affine3_to_from_slice, {
-            const MATRIX1D: [$t; 12] = [
-                1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0,
-            ];
             let m = $affine3::from_cols_slice(&MATRIX1D);
             assert_eq!($affine3::from_cols_array(&MATRIX1D), m);
             assert_eq!(MATRIX1D, m.to_cols_array());
@@ -284,7 +350,7 @@ macro_rules! impl_affine3_tests {
 
 mod affine3a {
     use super::support::{deg, FloatCompare};
-    use glam::{Affine3A, Quat, Vec3, Vec3A};
+    use glam::{Affine3A, Mat3, Mat4, Quat, Vec3, Vec3A};
 
     impl FloatCompare for Affine3A {
         #[inline]
@@ -323,12 +389,12 @@ mod affine3a {
         assert_approx_eq!(Vec3A::new(1.0, 2.0, 4.5), result3, 1.0e-6);
     });
 
-    impl_affine3_tests!(f32, Affine3A, Quat, Vec3);
+    impl_affine3_tests!(f32, Affine3A, Quat, Vec3, Mat3, Mat4);
 }
 
 mod daffine3 {
     use super::support::{deg, FloatCompare};
-    use glam::{DAffine3, DQuat, DVec3};
+    use glam::{DAffine3, DMat3, DMat4, DQuat, DVec3};
 
     impl FloatCompare for DAffine3 {
         #[inline]
@@ -350,5 +416,5 @@ mod daffine3 {
         assert_eq!(mem::align_of::<f64>(), mem::align_of::<DAffine3>());
     });
 
-    impl_affine3_tests!(f64, DAffine3, DQuat, DVec3);
+    impl_affine3_tests!(f64, DAffine3, DQuat, DVec3, DMat3, DMat4);
 }

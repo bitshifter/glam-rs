@@ -108,7 +108,7 @@ impl Mat2 {
     ///
     /// Panics if `slice` is less than 4 elements long.
     #[inline]
-    pub fn from_cols_slice(slice: &[f32]) -> Self {
+    pub const fn from_cols_slice(slice: &[f32]) -> Self {
         Self::new(slice[0], slice[1], slice[2], slice[3])
     }
 
@@ -171,7 +171,6 @@ impl Mat2 {
     /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
     #[inline]
     pub fn is_finite(&self) -> bool {
-        // TODO
         self.x_axis.is_finite() && self.y_axis.is_finite()
     }
 

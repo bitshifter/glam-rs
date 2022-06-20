@@ -100,6 +100,28 @@ impl Vec3A {
         unsafe { *(self as *const Vec3A as *const [f32; 3]) }
     }
 
+    /// Creates a vector from the first N values in `slice`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `slice` is less than N elements long.
+    #[inline]
+    pub const fn from_slice(slice: &[f32]) -> Self {
+        Self::new(slice[0], slice[1], slice[2])
+    }
+
+    /// Writes the elements of `self` to the first 3 elements in `slice`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `slice` is less than N elements long.
+    #[inline]
+    pub fn write_to_slice(self, slice: &mut [f32]) {
+        slice[0] = self.x;
+        slice[1] = self.y;
+        slice[2] = self.z;
+    }
+
     /// Internal method for creating a 3D vector from a 4D vector, discarding `w`.
     #[allow(dead_code)]
     #[inline]
@@ -259,28 +281,6 @@ impl Vec3A {
     #[inline]
     pub fn cmplt(self, rhs: Self) -> BVec3A {
         BVec3A(unsafe { _mm_cmplt_ps(self.0, rhs.0) })
-    }
-
-    /// Creates a vector from the first N values in `slice`.
-    ///
-    /// # Panics
-    ///
-    /// Panics if `slice` is less than N elements long.
-    #[inline]
-    pub fn from_slice(slice: &[f32]) -> Self {
-        Self::new(slice[0], slice[1], slice[2])
-    }
-
-    /// Writes the elements of `self` to the first 3 elements in `slice`.
-    ///
-    /// # Panics
-    ///
-    /// Panics if `slice` is less than N elements long.
-    #[inline]
-    pub fn write_to_slice(self, slice: &mut [f32]) {
-        slice[0] = self.x;
-        slice[1] = self.y;
-        slice[2] = self.z;
     }
 
     /// Returns a vector containing the absolute value of each element of `self`.

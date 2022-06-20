@@ -77,6 +77,27 @@ impl IVec2 {
         [self.x, self.y]
     }
 
+    /// Creates a vector from the first N values in `slice`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `slice` is less than N elements long.
+    #[inline]
+    pub const fn from_slice(slice: &[i32]) -> Self {
+        Self::new(slice[0], slice[1])
+    }
+
+    /// Writes the elements of `self` to the first 2 elements in `slice`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `slice` is less than N elements long.
+    #[inline]
+    pub fn write_to_slice(self, slice: &mut [i32]) {
+        slice[0] = self.x;
+        slice[1] = self.y;
+    }
+
     /// Creates a 3D vector from `self` and the given `z` value.
     #[inline]
     pub const fn extend(self, z: i32) -> IVec3 {
@@ -198,27 +219,6 @@ impl IVec2 {
     #[inline]
     pub fn cmplt(self, rhs: Self) -> BVec2 {
         BVec2::new(self.x.lt(&rhs.x), self.y.lt(&rhs.y))
-    }
-
-    /// Creates a vector from the first N values in `slice`.
-    ///
-    /// # Panics
-    ///
-    /// Panics if `slice` is less than N elements long.
-    #[inline]
-    pub fn from_slice(slice: &[i32]) -> Self {
-        Self::new(slice[0], slice[1])
-    }
-
-    /// Writes the elements of `self` to the first 2 elements in `slice`.
-    ///
-    /// # Panics
-    ///
-    /// Panics if `slice` is less than N elements long.
-    #[inline]
-    pub fn write_to_slice(self, slice: &mut [i32]) {
-        slice[0] = self.x;
-        slice[1] = self.y;
     }
 
     /// Returns a vector containing the absolute value of each element of `self`.

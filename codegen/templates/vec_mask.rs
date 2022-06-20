@@ -30,93 +30,83 @@ use core::arch::x86_64::*;
 use core::arch::wasm32::*;
 {% endif %}
 
+{% if is_sse2 %}
+union UnionCast {
+    a: [u32; 4],
+    v: {{ self_t }}
+}
+{% endif %}
+
 {% if is_scalar %}
 /// A {{ dim }}-dimensional boolean vector.
-{% else %}
+{%- else %}
 /// A {{ dim }}-dimensional SIMD vector mask.
 ///
 /// This type is {{ align }} byte aligned and is backed by a SIMD vector. If SIMD is not available
 /// `{{ self_t }}` will be a type alias for `BVec{{ dim }}`.
 {%- endif %}
 #[derive(Clone, Copy)]
-{% if is_scalar %}
+{%- if is_scalar %}
 pub struct {{ self_t }}
 {
 {% for c in components %}
     pub {{ c }}: bool,
 {%- endfor %}
 }
-{% else %}
+{%- else %}
 #[repr(transparent)]
 pub struct {{ self_t }}(pub(crate) {{ simd_t }});
 {% endif %}
 
 const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
 
-const FALSE: {{ self_t }} = {{ self_t }}
-{% if is_scalar %}
-    {
-        {% for c in components %}
-            {{ c }}: false,
-        {%- endfor %}
-    };
-{% else %}
-    (const_f32x4!([0.0; 4]));
-{% endif %}
+const FALSE: {{ self_t }} = {{ self_t }}::new(
+    {% for c in components %}
+        false,
+    {%- endfor %}
+);
 
 impl {{ self_t }} {
 
     /// Creates a new vector mask.
-    #[inline]
-{%- if dim == 2 %}
-    pub fn new(x: bool, y: bool) -> Self {
-        Self { x, y }
-    }
-{%- elif dim == 3 %}
-    pub fn new(x: bool, y: bool, z: bool) -> Self {
+    #[inline(always)]
+    pub const fn new(
+        {% for c in components %}
+            {{ c }}: bool,
+        {% endfor %}
+    ) -> Self {
         {% if is_scalar %}
-            Self { x, y, z }
+            Self {
+                {% for c in components %}
+                    {{ c }},
+                {%- endfor %}
+            }
         {% elif is_sse2 %}
-            Self(unsafe {
-                _mm_setr_ps(
-                    f32::from_bits(MASK[x as usize]),
-                    f32::from_bits(MASK[y as usize]),
-                    f32::from_bits(MASK[z as usize]),
-                    0.0,
-                )
-            })
+            unsafe {
+                UnionCast { a: [
+                    MASK[x as usize],
+                    MASK[y as usize],
+                    MASK[z as usize],
+                    {% if dim == 3 %}
+                        0,
+                    {% elif dim == 4 %}
+                        MASK[w as usize],
+                    {% endif %}
+                ] }.v
+            }
         {% elif is_wasm32 %}
             Self(u32x4(
                 MASK[x as usize],
                 MASK[y as usize],
                 MASK[z as usize],
-                0,
+                {% if dim == 3 %}
+                    0,
+                {% elif dim == 4 %}
+                    MASK[w as usize],
+                {% endif %}
             ))
         {% endif %}
     }
-{%- elif dim == 4 %}
-    pub fn new(x: bool, y: bool, z: bool, w: bool) -> Self {
-        {% if is_scalar %}
-            Self { x, y, z, w }
-        {% elif is_sse2 %}
-            Self(unsafe {
-                _mm_setr_ps(
-                    f32::from_bits(MASK[x as usize]),
-                    f32::from_bits(MASK[y as usize]),
-                    f32::from_bits(MASK[z as usize]),
-                    f32::from_bits(MASK[w as usize]),
-                )
-            })
-        {% elif is_wasm32 %}
-            Self(u32x4(
-                MASK[x as usize],
-                MASK[y as usize],
-                MASK[z as usize],
-                MASK[w as usize],
-            ))
-        {% endif %}
-    }
-{% endif %}
 
     /// Returns a bitmask with the lowest two bits set from the elements of `self`.
     ///
@@ -124,22 +114,20 @@ impl {{ self_t }} {
     /// into the first lowest bit, element `y` into the second, etc.
     #[inline]
     pub fn bitmask(self) -> u32 {
-        {% if dim == 2 %}
-            (self.x as u32) | (self.y as u32) << 1
-        {% elif dim == 3 %}
-            {% if is_scalar %}
-                (self.x as u32) | (self.y as u32) << 1 | (self.z as u32) << 2
-            {% elif is_sse2 %}
+        {% if is_scalar %}
+            {% for c in components %}
+                (self.{{ c }} as u32) << {{ loop.index0 }} {% if not loop.last %} | {% endif %}
+            {% endfor %}
+        {% elif is_sse2 %}
+            {% if dim == 3 %}
                 unsafe { (_mm_movemask_ps(self.0) as u32) & 0x7 }
-            {% elif is_wasm32 %}
-                (u32x4_bitmask(self.0) & 0x7) as u32
-            {% endif %}
-        {% elif dim == 4 %}
-            {% if is_scalar %}
-                (self.x as u32) | (self.y as u32) << 1 | (self.z as u32) << 2 | (self.w as u32) << 3
-            {% elif is_sse2 %}
+            {% elif dim == 4 %}
                 unsafe { _mm_movemask_ps(self.0) as u32 }
-            {% elif is_wasm32 %}
+            {% endif %}
+        {% elif is_wasm32 %}
+            {% if dim == 3 %}
+                (u32x4_bitmask(self.0) & 0x7) as u32
+            {% elif dim == 4 %}
                 u32x4_bitmask(self.0) as u32
             {% endif %}
         {% endif %}
@@ -148,22 +136,20 @@ impl {{ self_t }} {
     /// Returns true if any of the elements are true, false otherwise.
     #[inline]
     pub fn any(self) -> bool {
-        {% if dim == 2 %}
-            self.x || self.y
-        {% elif dim == 3 %}
-            {% if is_scalar %}
-                self.x || self.y || self.z
-            {% elif is_sse2 %}
+        {% if is_scalar %}
+            {% for c in components %}
+                self.{{ c }} {% if not loop.last %} || {% endif %}
+            {%- endfor %}
+        {% elif is_sse2 %}
+            {% if dim == 3 %}
                 unsafe { (_mm_movemask_ps(self.0) & 0x7) != 0 }
-            {% elif is_wasm32 %}
-                (u32x4_bitmask(self.0) & 0x7) != 0
-            {% endif %}
-        {% elif dim == 4 %}
-            {% if is_scalar %}
-                self.x || self.y || self.z || self.w
-            {% elif is_sse2 %}
+            {% elif dim == 4 %}
                 unsafe { _mm_movemask_ps(self.0) != 0 }
-            {% elif is_wasm32 %}
+            {% endif %}
+        {% elif is_wasm32 %}
+            {% if dim == 3 %}
+                (u32x4_bitmask(self.0) & 0x7) != 0
+            {% elif dim == 4 %}
                 u32x4_bitmask(self.0) != 0
             {% endif %}
         {% endif %}
@@ -172,22 +158,20 @@ impl {{ self_t }} {
     /// Returns true if all the elements are true, false otherwise.
     #[inline]
     pub fn all(self) -> bool {
-        {% if dim == 2 %}
-            self.x && self.y
-        {% elif dim == 3 %}
-            {% if is_scalar %}
-                self.x && self.y && self.z
-            {% elif is_sse2 %}
+        {% if is_scalar %}
+            {% for c in components %}
+                self.{{ c }} {% if not loop.last %} && {% endif %}
+            {%- endfor %}
+        {% elif is_sse2 %}
+            {% if dim == 3 %}
                 unsafe { (_mm_movemask_ps(self.0) & 0x7) == 0x7 }
-            {% elif is_wasm32 %}
-                (u32x4_bitmask(self.0) & 0x7) == 0x7
-            {% endif %}
-        {% elif dim == 4 %}
-            {% if is_scalar %}
-                self.x && self.y && self.z && self.w
-            {% elif is_sse2 %}
+            {% elif dim == 4 %}
                 unsafe { _mm_movemask_ps(self.0) == 0xf }
-            {% elif is_wasm32 %}
+            {% endif %}
+        {% elif is_wasm32 %}
+            {% if dim == 3 %}
+                (u32x4_bitmask(self.0) & 0x7) == 0x7
+            {% elif dim == 4 %}
                 u32x4_bitmask(self.0) == 0xf
             {% endif %}
         {% endif %}
@@ -202,14 +186,12 @@ impl {{ self_t }} {
                 {%- endfor %}
             ]
         {% else %}
+            {% set bits = [1, 2, 4, 8] | slice(end = dim) %}
             let bitmask = self.bitmask();
             [
-                (bitmask & 1) != 0,
-                (bitmask & 2) != 0,
-                (bitmask & 4) != 0,
-                {% if dim == 4 %}
-                    (bitmask & 8) != 0,
-                {% endif %}
+                {% for b in bits %}
+                    (bitmask & {{ b }}) != 0,
+                {%- endfor %}
             ]
         {% endif %}
     }
@@ -225,12 +207,9 @@ impl {{ self_t }} {
         {% else %}
             let bitmask = self.bitmask();
             [
-                MASK[(bitmask & 1) as usize],
-                MASK[((bitmask >> 1) & 1) as usize],
-                MASK[((bitmask >> 2) & 1) as usize],
-                {% if dim == 4 %}
-                    MASK[((bitmask >> 3) & 1) as usize],
-                {% endif %}
+                {% for c in components %}
+                    MASK[((bitmask >> {{ loop.index0 }}) & 1) as usize],
+                {%- endfor %}
             ]
         {% endif %}
     }

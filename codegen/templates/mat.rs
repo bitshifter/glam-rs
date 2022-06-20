@@ -801,7 +801,7 @@ impl {{ self_t }} {
     ///
     /// Panics if `slice` is less than {{ size }} elements long.
     #[inline]
-    pub fn from_cols_slice(slice: &[{{ scalar_t }}]) -> Self {
+    pub const fn from_cols_slice(slice: &[{{ scalar_t }}]) -> Self {
         Self::new(
             {% for i in range(end = size) %}
                 slice[{{ i }}],
@@ -876,19 +876,16 @@ impl {{ self_t }} {
     /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
     #[inline]
     pub fn is_finite(&self) -> bool {
-        // TODO
-        self.x_axis.is_finite() && self.y_axis.is_finite()
-        {% for axis in axes | slice(start=2) %}
-            && self.{{ axis }}.is_finite()
+        {% for axis in axes %}
+            self.{{ axis }}.is_finite() {% if not loop.last %} && {% endif %}
         {% endfor %}
     }
 
     /// Returns `true` if any elements are `NaN`.
     #[inline]
     pub fn is_nan(&self) -> bool {
-        self.x_axis.is_nan() || self.y_axis.is_nan()
-        {% for axis in axes | slice(start=2) %}
-            || self.{{ axis }}.is_nan()
+        {% for axis in axes %}
+            self.{{ axis }}.is_nan() {% if not loop.last %} || {% endif %}
         {% endfor %}
     }
 
