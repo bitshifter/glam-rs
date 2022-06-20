@@ -2,8 +2,7 @@
 
 #![allow(clippy::useless_conversion)]
 
-use super::Vec4Swizzles;
-use crate::{Vec2, Vec3, Vec4};
+use crate::{Vec2, Vec3, Vec4, Vec4Swizzles};
 
 #[cfg(target_arch = "x86")]
 use core::arch::x86::*;

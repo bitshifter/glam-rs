@@ -1,9 +1,6 @@
 // Generated from swizzle_impl.rs template. Edit the template, not the generated file.
 
-#![allow(clippy::useless_conversion)]
-
-use super::Vec3Swizzles;
-use crate::{DVec2, DVec3, DVec4};
+use crate::{DVec2, DVec3, DVec4, Vec3Swizzles};
 
 impl Vec3Swizzles for DVec3 {
     type Vec2 = DVec2;

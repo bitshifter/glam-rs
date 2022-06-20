@@ -330,79 +330,79 @@ fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
                 .build(),
         ),
         (
-            "src/swizzles/vec2_impl_scalar.rs",
+            "src/swizzles/vec2_impl.rs",
             ContextBuilder::new_vec2_swizzle_impl().build(),
         ),
         (
-            "src/swizzles/vec3_impl_scalar.rs",
+            "src/swizzles/vec3_impl.rs",
             ContextBuilder::new_vec3_swizzle_impl().build(),
         ),
         (
-            "src/swizzles/vec3a_impl_scalar.rs",
+            "src/swizzles/scalar/vec3a_impl.rs",
             ContextBuilder::new_vec3a_swizzle_impl().build(),
         ),
         (
-            "src/swizzles/vec3a_impl_sse2.rs",
+            "src/swizzles/sse2/vec3a_impl.rs",
             ContextBuilder::new_vec3a_swizzle_impl()
                 .target_sse2()
                 .build(),
         ),
         (
-            "src/swizzles/vec3a_impl_wasm32.rs",
+            "src/swizzles/wasm32/vec3a_impl.rs",
             ContextBuilder::new_vec3a_swizzle_impl()
                 .target_wasm32()
                 .build(),
         ),
         (
-            "src/swizzles/vec4_impl_scalar.rs",
+            "src/swizzles/scalar/vec4_impl.rs",
             ContextBuilder::new_vec4_swizzle_impl().build(),
         ),
         (
-            "src/swizzles/vec4_impl_sse2.rs",
+            "src/swizzles/sse2/vec4_impl.rs",
             ContextBuilder::new_vec4_swizzle_impl()
                 .target_sse2()
                 .build(),
         ),
         (
-            "src/swizzles/vec4_impl_wasm32.rs",
+            "src/swizzles/wasm32/vec4_impl.rs",
             ContextBuilder::new_vec4_swizzle_impl()
                 .target_wasm32()
                 .build(),
         ),
         (
-            "src/swizzles/dvec2_impl_scalar.rs",
+            "src/swizzles/dvec2_impl.rs",
             ContextBuilder::new_dvec2_swizzle_impl().build(),
         ),
         (
-            "src/swizzles/dvec3_impl_scalar.rs",
+            "src/swizzles/dvec3_impl.rs",
             ContextBuilder::new_dvec3_swizzle_impl().build(),
         ),
         (
-            "src/swizzles/dvec4_impl_scalar.rs",
+            "src/swizzles/dvec4_impl.rs",
             ContextBuilder::new_dvec4_swizzle_impl().build(),
         ),
         (
-            "src/swizzles/ivec2_impl_scalar.rs",
+            "src/swizzles/ivec2_impl.rs",
             ContextBuilder::new_ivec2_swizzle_impl().build(),
         ),
         (
-            "src/swizzles/ivec3_impl_scalar.rs",
+            "src/swizzles/ivec3_impl.rs",
             ContextBuilder::new_ivec3_swizzle_impl().build(),
         ),
         (
-            "src/swizzles/ivec4_impl_scalar.rs",
+            "src/swizzles/ivec4_impl.rs",
             ContextBuilder::new_ivec4_swizzle_impl().build(),
         ),
         (
-            "src/swizzles/uvec2_impl_scalar.rs",
+            "src/swizzles/uvec2_impl.rs",
             ContextBuilder::new_uvec2_swizzle_impl().build(),
         ),
         (
-            "src/swizzles/uvec3_impl_scalar.rs",
+            "src/swizzles/uvec3_impl.rs",
             ContextBuilder::new_uvec3_swizzle_impl().build(),
         ),
         (
-            "src/swizzles/uvec4_impl_scalar.rs",
+            "src/swizzles/uvec4_impl.rs",
             ContextBuilder::new_uvec4_swizzle_impl().build(),
         ),
         ("src/f32/affine2.rs", ContextBuilder::new_affine2().build()),

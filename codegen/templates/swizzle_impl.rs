@@ -1,6 +1,8 @@
 // Generated from {{template_path}} template. Edit the template, not the generated file.
 
+{% if not is_scalar %}
 #![allow(clippy::useless_conversion)]
+{% endif %}
 
 {# component indices #}
 {% set indices = [0, 1, 2, 3] %}
@@ -21,9 +23,9 @@
 {% set h = ["4", "5", "6", "7"] %}
 
 use crate::{
+    Vec{{ dim }}Swizzles,
     {{vec2_t}}, {{vec3_t}}, {{vec4_t}},
 };
-use super::Vec{{ dim }}Swizzles;
 
 {% if is_sse2 %}
 #[cfg(target_arch = "x86")]
