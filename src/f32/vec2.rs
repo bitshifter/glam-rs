@@ -12,7 +12,7 @@ use num_traits::Float;
 
 /// Creates a 2-dimensional vector.
 #[inline(always)]
-pub fn vec2(x: f32, y: f32) -> Vec2 {
+pub const fn vec2(x: f32, y: f32) -> Vec2 {
     Vec2::new(x, y)
 }
 
@@ -26,47 +26,35 @@ pub struct Vec2 {
 
 impl Vec2 {
     /// All zeroes.
-    pub const ZERO: Self = const_vec2!([0.0; 2]);
+    pub const ZERO: Self = Self::splat(0.0);
 
     /// All ones.
-    pub const ONE: Self = const_vec2!([1.0; 2]);
+    pub const ONE: Self = Self::splat(1.0);
 
     /// All negative ones.
-    pub const NEG_ONE: Self = const_vec2!([-1.0; 2]);
+    pub const NEG_ONE: Self = Self::splat(-1.0);
 
     /// All NAN.
-    pub const NAN: Self = const_vec2!([f32::NAN; 2]);
+    pub const NAN: Self = Self::splat(f32::NAN);
 
     /// `[1.0, 0.0]`: a unit-length vector pointing along the positive X axis.
-    pub const X: Self = const_vec2!([1.0, 0.0]);
+    pub const X: Self = Self::from_array([1.0, 0.0]);
 
     /// `[0.0, 1.0]`: a unit-length vector pointing along the positive Y axis.
-    pub const Y: Self = const_vec2!([0.0, 1.0]);
+    pub const Y: Self = Self::from_array([0.0, 1.0]);
 
     /// The unit axes.
     pub const AXES: [Self; 2] = [Self::X, Self::Y];
 
     /// Creates a new vector.
     #[inline(always)]
-    pub fn new(x: f32, y: f32) -> Self {
+    pub const fn new(x: f32, y: f32) -> Self {
         Self { x, y }
-    }
-
-    /// Creates a 3D vector from `self` and the given `z` value.
-    #[inline]
-    pub fn extend(self, z: f32) -> Vec3 {
-        Vec3::new(self.x, self.y, z)
-    }
-
-    /// `[x, y]`
-    #[inline]
-    pub fn to_array(&self) -> [f32; 2] {
-        [self.x, self.y]
     }
 
     /// Creates a vector with all elements set to `v`.
     #[inline]
-    pub fn splat(v: f32) -> Self {
+    pub const fn splat(v: f32) -> Self {
         Self { x: v, y: v }
     }
 
@@ -81,6 +69,24 @@ impl Vec2 {
             x: if mask.x { if_true.x } else { if_false.x },
             y: if mask.y { if_true.y } else { if_false.y },
         }
+    }
+
+    /// Creates a new vector from an array.
+    #[inline]
+    pub const fn from_array(a: [f32; 2]) -> Self {
+        Self::new(a[0], a[1])
+    }
+
+    /// `[x, y]`
+    #[inline]
+    pub const fn to_array(&self) -> [f32; 2] {
+        [self.x, self.y]
+    }
+
+    /// Creates a 3D vector from `self` and the given `z` value.
+    #[inline]
+    pub const fn extend(self, z: f32) -> Vec3 {
+        Vec3::new(self.x, self.y, z)
     }
 
     /// Computes the dot product of `self` and `rhs`.

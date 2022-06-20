@@ -11,7 +11,7 @@ use num_traits::Float;
 
 /// Creates a 2x2 matrix from column vectors.
 #[inline(always)]
-pub fn dmat2(x_axis: DVec2, y_axis: DVec2) -> DMat2 {
+pub const fn dmat2(x_axis: DVec2, y_axis: DVec2) -> DMat2 {
     DMat2::from_cols(x_axis, y_axis)
 }
 
@@ -25,26 +25,17 @@ pub struct DMat2 {
 
 impl DMat2 {
     /// A 2x2 matrix with all elements set to `0.0`.
-    pub const ZERO: Self = Self {
-        x_axis: DVec2::ZERO,
-        y_axis: DVec2::ZERO,
-    };
+    pub const ZERO: Self = Self::from_cols(DVec2::ZERO, DVec2::ZERO);
 
     /// A 2x2 identity matrix, where all diagonal elements are `1`, and all off-diagonal elements are `0`.
-    pub const IDENTITY: Self = Self {
-        x_axis: DVec2::X,
-        y_axis: DVec2::Y,
-    };
+    pub const IDENTITY: Self = Self::from_cols(DVec2::X, DVec2::Y);
 
     /// All NAN:s.
-    pub const NAN: Self = Self {
-        x_axis: DVec2::NAN,
-        y_axis: DVec2::NAN,
-    };
+    pub const NAN: Self = Self::from_cols(DVec2::NAN, DVec2::NAN);
 
     #[allow(clippy::too_many_arguments)]
     #[inline(always)]
-    fn new(m00: f64, m01: f64, m10: f64, m11: f64) -> Self {
+    const fn new(m00: f64, m01: f64, m10: f64, m11: f64) -> Self {
         Self {
             x_axis: DVec2::new(m00, m01),
             y_axis: DVec2::new(m10, m11),
@@ -53,7 +44,7 @@ impl DMat2 {
 
     /// Creates a 2x2 matrix from two column vectors.
     #[inline(always)]
-    pub fn from_cols(x_axis: DVec2, y_axis: DVec2) -> Self {
+    pub const fn from_cols(x_axis: DVec2, y_axis: DVec2) -> Self {
         Self { x_axis, y_axis }
     }
 
@@ -61,7 +52,7 @@ impl DMat2 {
     /// If your data is stored in row major you will need to `transpose` the returned
     /// matrix.
     #[inline]
-    pub fn from_cols_array(m: &[f64; 4]) -> Self {
+    pub const fn from_cols_array(m: &[f64; 4]) -> Self {
         Self::new(m[0], m[1], m[2], m[3])
     }
 
@@ -76,15 +67,15 @@ impl DMat2 {
     /// If your data is in row major order you will need to `transpose` the returned
     /// matrix.
     #[inline]
-    pub fn from_cols_array_2d(m: &[[f64; 2]; 2]) -> Self {
-        Self::from_cols(DVec2::from(m[0]), DVec2::from(m[1]))
+    pub const fn from_cols_array_2d(m: &[[f64; 2]; 2]) -> Self {
+        Self::from_cols(DVec2::from_array(m[0]), DVec2::from_array(m[1]))
     }
 
     /// Creates a `[[f64; 2]; 2]` 2D array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
     pub fn to_cols_array_2d(&self) -> [[f64; 2]; 2] {
-        [self.x_axis.into(), self.y_axis.into()]
+        [self.x_axis.to_array(), self.y_axis.to_array()]
     }
 
     /// Creates a 2x2 matrix with its diagonal set to `diagonal` and all other entries set to 0.

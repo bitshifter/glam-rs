@@ -94,9 +94,17 @@ use core::arch::wasm32::*;
 #[cfg(not(feature = "std"))]
 use num_traits::Float;
 
+
+{% if self_t == "Mat2" and is_sse2 %}
+union UnionCast {
+    a: [f32; 4],
+    v: {{ self_t }}
+}
+{% endif %}
+
 /// Creates a {{ nxn }} matrix from column vectors.
 #[inline(always)]
-pub fn {{ self_t | lower }}(
+pub const fn {{ self_t | lower }}(
     {% for axis in axes %}
         {{ axis }}: {{ col_t }},
     {% endfor %}
@@ -187,44 +195,29 @@ pub struct {{ self_t }}
 
 impl {{ self_t }} {
     /// A {{ nxn }} matrix with all elements set to `0.0`.
-    pub const ZERO: Self =
-        {% if self_t == "Mat2" and not is_scalar %}
-            Self(const_f32x4!([0.0; 4]));
-        {% else %}
-            Self {
-                {% for axis in axes %}
-                    {{ axis }}: {{ col_t }}::ZERO,
-                {%- endfor %}
-            };
-        {% endif %}
+    pub const ZERO: Self = Self::from_cols(
+        {% for axis in axes %}
+            {{ col_t }}::ZERO,
+        {%- endfor %}
+    );
 
     /// A {{ nxn }} identity matrix, where all diagonal elements are `1`, and all off-diagonal elements are `0`.
-    pub const IDENTITY: Self =
-        {% if self_t == "Mat2" and not is_scalar %}
-            Self(const_f32x4!([1.0, 0.0, 0.0, 1.0]));
-        {% else %}
-            Self {
-                {% for i in range(end = dim) %}
-                    {{ axes[i] }}: {{ col_t }}::{{ components[i] | upper }},
-                {%- endfor %}
-            };
-        {% endif %}
+    pub const IDENTITY: Self = Self::from_cols(
+        {% for i in range(end = dim) %}
+            {{ col_t }}::{{ components[i] | upper }},
+        {%- endfor %}
+    );
 
     /// All NAN:s.
-    pub const NAN: Self =
-        {% if self_t == "Mat2" and not is_scalar %}
-            Self(const_f32x4!([{{ scalar_t }}::NAN; 4]));
-        {% else %}
-            Self {
-                {% for axis in axes %}
-                    {{ axis }}: {{ col_t }}::NAN,
-                {%- endfor %}
-            };
-        {% endif %}
+    pub const NAN: Self = Self::from_cols(
+        {% for axis in axes %}
+            {{ col_t }}::NAN,
+        {%- endfor %}
+    );
 
     #[allow(clippy::too_many_arguments)]
     #[inline(always)]
-    fn new(
+    const fn new(
         {% for i in range(end = dim) %}
             {%- for j in range(end = dim) %}
                 m{{ i }}{{ j }}: {{ scalar_t }},
@@ -232,7 +225,7 @@ impl {{ self_t }} {
         {%- endfor %}
     ) -> Self {
         {% if self_t == "Mat2" and is_sse2 %}
-            Self(unsafe { _mm_setr_ps(m00, m01, m10, m11) })
+            unsafe { UnionCast { a: [m00, m01, m10, m11] }.v }
         {% elif self_t == "Mat2" and is_wasm32 %}
             Self(f32x4(m00, m01, m10, m11))
         {% else %}
@@ -250,13 +243,13 @@ impl {{ self_t }} {
 
     /// Creates a {{ nxn }} matrix from two column vectors.
     #[inline(always)]
-    pub fn from_cols(
+    pub const fn from_cols(
         {% for axis in axes %}
             {{ axis }}: {{ col_t }},
         {% endfor %}
     ) -> Self {
         {% if self_t == "Mat2" and is_sse2 %}
-            Self(unsafe { _mm_setr_ps(x_axis.x, x_axis.y, y_axis.x, y_axis.y) })
+            unsafe { UnionCast { a: [x_axis.x, x_axis.y, y_axis.x, y_axis.y] }.v }
         {% elif self_t == "Mat2" and is_wasm32 %}
             Self(f32x4(x_axis.x, x_axis.y, y_axis.x, y_axis.y))
         {% else %}
@@ -272,7 +265,7 @@ impl {{ self_t }} {
     /// If your data is stored in row major you will need to `transpose` the returned
     /// matrix.
     #[inline]
-    pub fn from_cols_array(m: &[{{ scalar_t }}; {{ size }}]) -> Self {
+    pub const fn from_cols_array(m: &[{{ scalar_t }}; {{ size }}]) -> Self {
         Self::new(
             {% for i in range(end = size) %}
                 m[{{ i }}],
@@ -297,10 +290,10 @@ impl {{ self_t }} {
     /// If your data is in row major order you will need to `transpose` the returned
     /// matrix.
     #[inline]
-    pub fn from_cols_array_2d(m: &[[{{ scalar_t }}; {{ dim }}]; {{ dim }}]) -> Self {
+    pub const fn from_cols_array_2d(m: &[[{{ scalar_t }}; {{ dim }}]; {{ dim }}]) -> Self {
         Self::from_cols(
             {% for i in range(end = dim) %}
-                {{ col_t }}::from(m[{{ i }}]),
+                {{ col_t }}::from_array(m[{{ i }}]),
             {%- endfor %}
         )
     }
@@ -311,7 +304,7 @@ impl {{ self_t }} {
     pub fn to_cols_array_2d(&self) -> [[{{ scalar_t }}; {{ dim }}]; {{ dim }}] {
         [
             {% for axis in axes %}
-                self.{{ axis }}.into(),
+                self.{{ axis }}.to_array(),
             {%- endfor %}
         ]
     }
@@ -358,17 +351,17 @@ impl {{ self_t }} {
     /// Creates a 3x3 matrix from a 4x4 matrix, discarding the 3rd row and column.
     pub fn from_mat4(m: {{ mat4_t }}) -> Self {
         {% if self_t == "Mat3A" %}
-        Self::from_cols(
-            m.x_axis.into(),
-            m.y_axis.into(),
-            m.z_axis.into(),
-        )
+            Self::from_cols(
+                m.x_axis.into(),
+                m.y_axis.into(),
+                m.z_axis.into(),
+            )
         {% else %}
-        Self::from_cols(
-            m.x_axis.xyz(),
-            m.y_axis.xyz(),
-            m.z_axis.xyz(),
-        )
+            Self::from_cols(
+                m.x_axis.xyz(),
+                m.y_axis.xyz(),
+                m.z_axis.xyz(),
+            )
         {% endif %}
     }
 

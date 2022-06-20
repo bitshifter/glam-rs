@@ -4,8 +4,15 @@ mod support;
 macro_rules! impl_vec2_tests {
     ($t:ty, $const_new:ident, $new:ident, $vec2:ident, $vec3:ident, $mask:ident) => {
         glam_test!(test_const, {
-            const V: $vec2 = $const_new!([1 as $t, 2 as $t]);
-            assert_eq!($vec2::new(1 as $t, 2 as $t), V);
+            const V0: $vec2 = $vec2::splat(1 as $t);
+            const V1: $vec2 = $vec2::new(1 as $t, 2 as $t);
+            const V2: $vec2 = $vec2::from_array([1 as $t, 2 as $t]);
+            #[allow(deprecated)]
+            const V3: $vec2 = $const_new!([1 as $t, 2 as $t]);
+            assert_eq!([1 as $t, 1 as $t], *V0.as_ref());
+            assert_eq!([1 as $t, 2 as $t], *V1.as_ref());
+            assert_eq!([1 as $t, 2 as $t], *V2.as_ref());
+            assert_eq!([1 as $t, 2 as $t], *V3.as_ref());
         });
 
         glam_test!(test_new, {
@@ -862,6 +869,7 @@ macro_rules! impl_vec2_bit_op_tests {
 }
 
 mod vec2 {
+    #[allow(deprecated)]
     use glam::{const_vec2, vec2, BVec2, Vec2, Vec3};
 
     glam_test!(test_align, {
@@ -898,6 +906,7 @@ mod vec2 {
 }
 
 mod dvec2 {
+    #[allow(deprecated)]
     use glam::{const_dvec2, dvec2, BVec2, DVec2, DVec3};
 
     glam_test!(test_align, {
@@ -915,6 +924,7 @@ mod dvec2 {
 }
 
 mod ivec2 {
+    #[allow(deprecated)]
     use glam::{const_ivec2, ivec2, BVec2, IVec2, IVec3, UVec2};
 
     glam_test!(test_align, {
@@ -939,6 +949,7 @@ mod ivec2 {
 }
 
 mod uvec2 {
+    #[allow(deprecated)]
     use glam::{const_uvec2, uvec2, BVec2, IVec2, UVec2, UVec3};
 
     glam_test!(test_align, {

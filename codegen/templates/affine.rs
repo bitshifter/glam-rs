@@ -83,7 +83,7 @@ impl {{ self_t }} {
 
     /// Creates an affine transform from three column vectors.
     #[inline(always)]
-    pub fn from_cols(
+    pub const fn from_cols(
             {% for axis in axes %}
                 {{ axis }}: {{ col_t }},
             {% endfor %}

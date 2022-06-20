@@ -12,7 +12,7 @@ use num_traits::Float;
 
 /// Creates a 3-dimensional vector.
 #[inline(always)]
-pub fn vec3(x: f32, y: f32, z: f32) -> Vec3 {
+pub const fn vec3(x: f32, y: f32, z: f32) -> Vec3 {
     Vec3::new(x, y, z)
 }
 
@@ -26,33 +26,65 @@ pub struct Vec3 {
 
 impl Vec3 {
     /// All zeroes.
-    pub const ZERO: Self = const_vec3!([0.0; 3]);
+    pub const ZERO: Self = Self::splat(0.0);
 
     /// All ones.
-    pub const ONE: Self = const_vec3!([1.0; 3]);
+    pub const ONE: Self = Self::splat(1.0);
 
     /// All negative ones.
-    pub const NEG_ONE: Self = const_vec3!([-1.0; 3]);
+    pub const NEG_ONE: Self = Self::splat(-1.0);
 
     /// All NAN.
-    pub const NAN: Self = const_vec3!([f32::NAN; 3]);
+    pub const NAN: Self = Self::splat(f32::NAN);
 
     /// `[1.0, 0.0, 0.0]`: a unit-length vector pointing along the positive X axis.
-    pub const X: Self = const_vec3!([1.0, 0.0, 0.0]);
+    pub const X: Self = Self::from_array([1.0, 0.0, 0.0]);
 
     /// `[0.0, 1.0, 0.0]`: a unit-length vector pointing along the positive Y axis.
-    pub const Y: Self = const_vec3!([0.0, 1.0, 0.0]);
+    pub const Y: Self = Self::from_array([0.0, 1.0, 0.0]);
 
     /// `[0.0, 0.0, 1.0]`: a unit-length vector pointing along the positive Z axis.
-    pub const Z: Self = const_vec3!([0.0, 0.0, 1.0]);
+    pub const Z: Self = Self::from_array([0.0, 0.0, 1.0]);
 
     /// The unit axes.
     pub const AXES: [Self; 3] = [Self::X, Self::Y, Self::Z];
 
     /// Creates a new vector.
     #[inline(always)]
-    pub fn new(x: f32, y: f32, z: f32) -> Self {
+    pub const fn new(x: f32, y: f32, z: f32) -> Self {
         Self { x, y, z }
+    }
+
+    /// Creates a vector with all elements set to `v`.
+    #[inline]
+    pub const fn splat(v: f32) -> Self {
+        Self { x: v, y: v, z: v }
+    }
+
+    /// Creates a vector from the elements in `if_true` and `if_false`, selecting which to use
+    /// for each element of `self`.
+    ///
+    /// A true element in the mask uses the corresponding element from `if_true`, and false
+    /// uses the element from `if_false`.
+    #[inline]
+    pub fn select(mask: BVec3, if_true: Self, if_false: Self) -> Self {
+        Self {
+            x: if mask.x { if_true.x } else { if_false.x },
+            y: if mask.y { if_true.y } else { if_false.y },
+            z: if mask.z { if_true.z } else { if_false.z },
+        }
+    }
+
+    /// Creates a new vector from an array.
+    #[inline]
+    pub const fn from_array(a: [f32; 3]) -> Self {
+        Self::new(a[0], a[1], a[2])
+    }
+
+    /// `[x, y, z]`
+    #[inline]
+    pub const fn to_array(&self) -> [f32; 3] {
+        [self.x, self.y, self.z]
     }
 
     /// Internal method for creating a 3D vector from a 4D vector, discarding `w`.
@@ -79,32 +111,6 @@ impl Vec3 {
     pub fn truncate(self) -> Vec2 {
         use crate::swizzles::Vec3Swizzles;
         self.xy()
-    }
-
-    /// `[x, y, z]`
-    #[inline]
-    pub fn to_array(&self) -> [f32; 3] {
-        [self.x, self.y, self.z]
-    }
-
-    /// Creates a vector with all elements set to `v`.
-    #[inline]
-    pub fn splat(v: f32) -> Self {
-        Self { x: v, y: v, z: v }
-    }
-
-    /// Creates a vector from the elements in `if_true` and `if_false`, selecting which to use
-    /// for each element of `self`.
-    ///
-    /// A true element in the mask uses the corresponding element from `if_true`, and false
-    /// uses the element from `if_false`.
-    #[inline]
-    pub fn select(mask: BVec3, if_true: Self, if_false: Self) -> Self {
-        Self {
-            x: if mask.x { if_true.x } else { if_false.x },
-            y: if mask.y { if_true.y } else { if_false.y },
-            z: if mask.z { if_true.z } else { if_false.z },
-        }
     }
 
     /// Computes the dot product of `self` and `rhs`.

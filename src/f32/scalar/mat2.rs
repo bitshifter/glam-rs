@@ -11,7 +11,7 @@ use num_traits::Float;
 
 /// Creates a 2x2 matrix from column vectors.
 #[inline(always)]
-pub fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
+pub const fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
     Mat2::from_cols(x_axis, y_axis)
 }
 
@@ -29,26 +29,17 @@ pub struct Mat2 {
 
 impl Mat2 {
     /// A 2x2 matrix with all elements set to `0.0`.
-    pub const ZERO: Self = Self {
-        x_axis: Vec2::ZERO,
-        y_axis: Vec2::ZERO,
-    };
+    pub const ZERO: Self = Self::from_cols(Vec2::ZERO, Vec2::ZERO);
 
     /// A 2x2 identity matrix, where all diagonal elements are `1`, and all off-diagonal elements are `0`.
-    pub const IDENTITY: Self = Self {
-        x_axis: Vec2::X,
-        y_axis: Vec2::Y,
-    };
+    pub const IDENTITY: Self = Self::from_cols(Vec2::X, Vec2::Y);
 
     /// All NAN:s.
-    pub const NAN: Self = Self {
-        x_axis: Vec2::NAN,
-        y_axis: Vec2::NAN,
-    };
+    pub const NAN: Self = Self::from_cols(Vec2::NAN, Vec2::NAN);
 
     #[allow(clippy::too_many_arguments)]
     #[inline(always)]
-    fn new(m00: f32, m01: f32, m10: f32, m11: f32) -> Self {
+    const fn new(m00: f32, m01: f32, m10: f32, m11: f32) -> Self {
         Self {
             x_axis: Vec2::new(m00, m01),
             y_axis: Vec2::new(m10, m11),
@@ -57,7 +48,7 @@ impl Mat2 {
 
     /// Creates a 2x2 matrix from two column vectors.
     #[inline(always)]
-    pub fn from_cols(x_axis: Vec2, y_axis: Vec2) -> Self {
+    pub const fn from_cols(x_axis: Vec2, y_axis: Vec2) -> Self {
         Self { x_axis, y_axis }
     }
 
@@ -65,7 +56,7 @@ impl Mat2 {
     /// If your data is stored in row major you will need to `transpose` the returned
     /// matrix.
     #[inline]
-    pub fn from_cols_array(m: &[f32; 4]) -> Self {
+    pub const fn from_cols_array(m: &[f32; 4]) -> Self {
         Self::new(m[0], m[1], m[2], m[3])
     }
 
@@ -80,15 +71,15 @@ impl Mat2 {
     /// If your data is in row major order you will need to `transpose` the returned
     /// matrix.
     #[inline]
-    pub fn from_cols_array_2d(m: &[[f32; 2]; 2]) -> Self {
-        Self::from_cols(Vec2::from(m[0]), Vec2::from(m[1]))
+    pub const fn from_cols_array_2d(m: &[[f32; 2]; 2]) -> Self {
+        Self::from_cols(Vec2::from_array(m[0]), Vec2::from_array(m[1]))
     }
 
     /// Creates a `[[f32; 2]; 2]` 2D array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
     pub fn to_cols_array_2d(&self) -> [[f32; 2]; 2] {
-        [self.x_axis.into(), self.y_axis.into()]
+        [self.x_axis.to_array(), self.y_axis.to_array()]
     }
 
     /// Creates a 2x2 matrix with its diagonal set to `diagonal` and all other entries set to 0.

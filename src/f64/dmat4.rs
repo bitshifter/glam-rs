@@ -11,7 +11,7 @@ use num_traits::Float;
 
 /// Creates a 4x4 matrix from column vectors.
 #[inline(always)]
-pub fn dmat4(x_axis: DVec4, y_axis: DVec4, z_axis: DVec4, w_axis: DVec4) -> DMat4 {
+pub const fn dmat4(x_axis: DVec4, y_axis: DVec4, z_axis: DVec4, w_axis: DVec4) -> DMat4 {
     DMat4::from_cols(x_axis, y_axis, z_axis, w_axis)
 }
 
@@ -55,32 +55,17 @@ pub struct DMat4 {
 
 impl DMat4 {
     /// A 4x4 matrix with all elements set to `0.0`.
-    pub const ZERO: Self = Self {
-        x_axis: DVec4::ZERO,
-        y_axis: DVec4::ZERO,
-        z_axis: DVec4::ZERO,
-        w_axis: DVec4::ZERO,
-    };
+    pub const ZERO: Self = Self::from_cols(DVec4::ZERO, DVec4::ZERO, DVec4::ZERO, DVec4::ZERO);
 
     /// A 4x4 identity matrix, where all diagonal elements are `1`, and all off-diagonal elements are `0`.
-    pub const IDENTITY: Self = Self {
-        x_axis: DVec4::X,
-        y_axis: DVec4::Y,
-        z_axis: DVec4::Z,
-        w_axis: DVec4::W,
-    };
+    pub const IDENTITY: Self = Self::from_cols(DVec4::X, DVec4::Y, DVec4::Z, DVec4::W);
 
     /// All NAN:s.
-    pub const NAN: Self = Self {
-        x_axis: DVec4::NAN,
-        y_axis: DVec4::NAN,
-        z_axis: DVec4::NAN,
-        w_axis: DVec4::NAN,
-    };
+    pub const NAN: Self = Self::from_cols(DVec4::NAN, DVec4::NAN, DVec4::NAN, DVec4::NAN);
 
     #[allow(clippy::too_many_arguments)]
     #[inline(always)]
-    fn new(
+    const fn new(
         m00: f64,
         m01: f64,
         m02: f64,
@@ -108,7 +93,7 @@ impl DMat4 {
 
     /// Creates a 4x4 matrix from two column vectors.
     #[inline(always)]
-    pub fn from_cols(x_axis: DVec4, y_axis: DVec4, z_axis: DVec4, w_axis: DVec4) -> Self {
+    pub const fn from_cols(x_axis: DVec4, y_axis: DVec4, z_axis: DVec4, w_axis: DVec4) -> Self {
         Self {
             x_axis,
             y_axis,
@@ -121,7 +106,7 @@ impl DMat4 {
     /// If your data is stored in row major you will need to `transpose` the returned
     /// matrix.
     #[inline]
-    pub fn from_cols_array(m: &[f64; 16]) -> Self {
+    pub const fn from_cols_array(m: &[f64; 16]) -> Self {
         Self::new(
             m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8], m[9], m[10], m[11], m[12], m[13],
             m[14], m[15],
@@ -156,12 +141,12 @@ impl DMat4 {
     /// If your data is in row major order you will need to `transpose` the returned
     /// matrix.
     #[inline]
-    pub fn from_cols_array_2d(m: &[[f64; 4]; 4]) -> Self {
+    pub const fn from_cols_array_2d(m: &[[f64; 4]; 4]) -> Self {
         Self::from_cols(
-            DVec4::from(m[0]),
-            DVec4::from(m[1]),
-            DVec4::from(m[2]),
-            DVec4::from(m[3]),
+            DVec4::from_array(m[0]),
+            DVec4::from_array(m[1]),
+            DVec4::from_array(m[2]),
+            DVec4::from_array(m[3]),
         )
     }
 
@@ -170,10 +155,10 @@ impl DMat4 {
     #[inline]
     pub fn to_cols_array_2d(&self) -> [[f64; 4]; 4] {
         [
-            self.x_axis.into(),
-            self.y_axis.into(),
-            self.z_axis.into(),
-            self.w_axis.into(),
+            self.x_axis.to_array(),
+            self.y_axis.to_array(),
+            self.z_axis.to_array(),
+            self.w_axis.to_array(),
         ]
     }
 

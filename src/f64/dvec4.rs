@@ -12,7 +12,7 @@ use num_traits::Float;
 
 /// Creates a 4-dimensional vector.
 #[inline(always)]
-pub fn dvec4(x: f64, y: f64, z: f64, w: f64) -> DVec4 {
+pub const fn dvec4(x: f64, y: f64, z: f64, w: f64) -> DVec4 {
     DVec4::new(x, y, z, w)
 }
 
@@ -28,56 +28,41 @@ pub struct DVec4 {
 
 impl DVec4 {
     /// All zeroes.
-    pub const ZERO: Self = const_dvec4!([0.0; 4]);
+    pub const ZERO: Self = Self::splat(0.0);
 
     /// All ones.
-    pub const ONE: Self = const_dvec4!([1.0; 4]);
+    pub const ONE: Self = Self::splat(1.0);
 
     /// All negative ones.
-    pub const NEG_ONE: Self = const_dvec4!([-1.0; 4]);
+    pub const NEG_ONE: Self = Self::splat(-1.0);
 
     /// All NAN.
-    pub const NAN: Self = const_dvec4!([f64::NAN; 4]);
+    pub const NAN: Self = Self::splat(f64::NAN);
 
     /// `[1.0, 0.0, 0.0, 0.0]`: a unit-length vector pointing along the positive X axis.
-    pub const X: Self = const_dvec4!([1.0, 0.0, 0.0, 0.0]);
+    pub const X: Self = Self::from_array([1.0, 0.0, 0.0, 0.0]);
 
     /// `[0.0, 1.0, 0.0, 0.0]`: a unit-length vector pointing along the positive Y axis.
-    pub const Y: Self = const_dvec4!([0.0, 1.0, 0.0, 0.0]);
+    pub const Y: Self = Self::from_array([0.0, 1.0, 0.0, 0.0]);
 
     /// `[0.0, 0.0, 1.0, 0.0]`: a unit-length vector pointing along the positive Z axis.
-    pub const Z: Self = const_dvec4!([0.0, 0.0, 1.0, 0.0]);
+    pub const Z: Self = Self::from_array([0.0, 0.0, 1.0, 0.0]);
 
     /// `[0.0, 0.0, 0.0, 1.0]`: a unit-length vector pointing along the positive W axis.
-    pub const W: Self = const_dvec4!([0.0, 0.0, 0.0, 1.0]);
+    pub const W: Self = Self::from_array([0.0, 0.0, 0.0, 1.0]);
 
     /// The unit axes.
     pub const AXES: [Self; 4] = [Self::X, Self::Y, Self::Z, Self::W];
 
     /// Creates a new vector.
     #[inline(always)]
-    pub fn new(x: f64, y: f64, z: f64, w: f64) -> Self {
+    pub const fn new(x: f64, y: f64, z: f64, w: f64) -> Self {
         Self { x, y, z, w }
-    }
-
-    /// Creates a 2D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
-    ///
-    /// Truncation to `DVec3` may also be performed by using `self.xyz()` or `DVec3::from()`.
-    #[inline]
-    pub fn truncate(self) -> DVec3 {
-        use crate::swizzles::Vec4Swizzles;
-        self.xyz()
-    }
-
-    /// `[x, y, z, w]`
-    #[inline]
-    pub fn to_array(&self) -> [f64; 4] {
-        [self.x, self.y, self.z, self.w]
     }
 
     /// Creates a vector with all elements set to `v`.
     #[inline]
-    pub fn splat(v: f64) -> Self {
+    pub const fn splat(v: f64) -> Self {
         Self {
             x: v,
 
@@ -102,6 +87,27 @@ impl DVec4 {
             z: if mask.z { if_true.z } else { if_false.z },
             w: if mask.w { if_true.w } else { if_false.w },
         }
+    }
+
+    /// Creates a new vector from an array.
+    #[inline]
+    pub const fn from_array(a: [f64; 4]) -> Self {
+        Self::new(a[0], a[1], a[2], a[3])
+    }
+
+    /// `[x, y, z, w]`
+    #[inline]
+    pub const fn to_array(&self) -> [f64; 4] {
+        [self.x, self.y, self.z, self.w]
+    }
+
+    /// Creates a 2D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
+    ///
+    /// Truncation to `DVec3` may also be performed by using `self.xyz()` or `DVec3::from()`.
+    #[inline]
+    pub fn truncate(self) -> DVec3 {
+        use crate::swizzles::Vec4Swizzles;
+        self.xyz()
     }
 
     /// Computes the dot product of `self` and `rhs`.

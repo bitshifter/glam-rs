@@ -54,12 +54,19 @@ use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, Deref, Div, Mul, MulAssign, Neg, Sub};
 
+{% if is_sse2 %}
+union UnionCast {
+    a: [f32; 4],
+    v: {{ self_t }}
+}
+{% endif %}
+
 /// Creates a quaternion from `x`, `y`, `z` and `w` values.
 ///
 /// This should generally not be called manually unless you know what you are doing. Use
 /// one of the other constructors instead such as `identity` or `from_axis_angle`.
 #[inline]
-pub fn {{ self_t | lower }}(x: {{ scalar_t }}, y: {{ scalar_t }}, z: {{ scalar_t }}, w: {{ scalar_t }}) -> {{ self_t }} {
+pub const fn {{ self_t | lower }}(x: {{ scalar_t }}, y: {{ scalar_t }}, z: {{ scalar_t }}, w: {{ scalar_t }}) -> {{ self_t }} {
     {{ self_t }}::from_xyzw(x, y, z, w)
 }
 
@@ -90,28 +97,13 @@ pub struct {{ self_t }}(pub(crate) {{ simd_t }});
 
 impl {{ self_t }} {
     /// All zeros.
-    const ZERO: Self = Self
-        {% if is_scalar %}
-            { x: 0.0, y: 0.0, z: 0.0, w: 0.0 };
-        {% else %}
-            (const_f32x4!([0.0; 4]));
-        {% endif %}
+    const ZERO: Self = Self::from_array([0.0; 4]);
 
     /// The identity quaternion. Corresponds to no rotation.
-    pub const IDENTITY: Self = Self
-        {% if is_scalar %}
-            { x: 0.0, y: 0.0, z: 0.0, w: 1.0 };
-        {% else %}
-            (const_f32x4!([0.0, 0.0, 0.0, 1.0]));
-        {% endif %}
+    pub const IDENTITY: Self = Self::from_xyzw(0.0, 0.0, 0.0, 1.0);
 
     /// All NANs.
-    pub const NAN: Self = Self
-        {% if is_scalar %}
-            { x: {{ scalar_t }}::NAN, y: {{ scalar_t }}::NAN, z: {{ scalar_t }}::NAN, w: {{ scalar_t }}::NAN, };
-        {% else %}
-            (const_f32x4!([{{ scalar_t }}::NAN; 4]));
-        {% endif %}
+    pub const NAN: Self = Self::from_array([{{ scalar_t }}::NAN; 4]);
 
     /// Creates a new rotation quaternion.
     ///
@@ -125,11 +117,11 @@ impl {{ self_t }} {
     /// This function does not check if the input is normalized, it is up to the user to
     /// provide normalized input or to normalized the resulting quaternion.
     #[inline(always)]
-    pub fn from_xyzw(x: {{ scalar_t }}, y: {{ scalar_t }}, z: {{ scalar_t }}, w: {{ scalar_t }}) -> Self {
+    pub const fn from_xyzw(x: {{ scalar_t }}, y: {{ scalar_t }}, z: {{ scalar_t }}, w: {{ scalar_t }}) -> Self {
         {% if is_scalar %}
             Self { x, y, z, w }
         {% elif is_sse2 %}
-            Self(unsafe { _mm_setr_ps(x, y, z, w) })
+            unsafe { UnionCast { a: [x, y, z, w] }.v }
         {% elif is_wasm32 %}
             Self(f32x4(x, y, z, w))
         {% endif %}
@@ -142,12 +134,8 @@ impl {{ self_t }} {
     /// This function does not check if the input is normalized, it is up to the user to
     /// provide normalized input or to normalized the resulting quaternion.
     #[inline]
-    pub fn from_array(a: [{{ scalar_t }}; 4]) -> Self {
-        {% if is_sse2 %}
-            Self(unsafe { _mm_loadu_ps(a.as_ptr()) })
-        {% else %}
-            Self::from_xyzw(a[0], a[1], a[2], a[3])
-        {% endif %}
+    pub const fn from_array(a: [{{ scalar_t }}; 4]) -> Self {
+        Self::from_xyzw(a[0], a[1], a[2], a[3])
     }
 
     /// Creates a new rotation quaternion from a 4D vector.

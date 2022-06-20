@@ -9,7 +9,7 @@ use core::{f32, ops::*};
 
 /// Creates a 2-dimensional vector.
 #[inline(always)]
-pub fn ivec2(x: i32, y: i32) -> IVec2 {
+pub const fn ivec2(x: i32, y: i32) -> IVec2 {
     IVec2::new(x, y)
 }
 
@@ -23,44 +23,32 @@ pub struct IVec2 {
 
 impl IVec2 {
     /// All zeroes.
-    pub const ZERO: Self = const_ivec2!([0; 2]);
+    pub const ZERO: Self = Self::splat(0);
 
     /// All ones.
-    pub const ONE: Self = const_ivec2!([1; 2]);
+    pub const ONE: Self = Self::splat(1);
 
     /// All negative ones.
-    pub const NEG_ONE: Self = const_ivec2!([-1; 2]);
+    pub const NEG_ONE: Self = Self::splat(-1);
 
     /// `[1, 0]`: a unit-length vector pointing along the positive X axis.
-    pub const X: Self = const_ivec2!([1, 0]);
+    pub const X: Self = Self::from_array([1, 0]);
 
     /// `[0, 1]`: a unit-length vector pointing along the positive Y axis.
-    pub const Y: Self = const_ivec2!([0, 1]);
+    pub const Y: Self = Self::from_array([0, 1]);
 
     /// The unit axes.
     pub const AXES: [Self; 2] = [Self::X, Self::Y];
 
     /// Creates a new vector.
     #[inline(always)]
-    pub fn new(x: i32, y: i32) -> Self {
+    pub const fn new(x: i32, y: i32) -> Self {
         Self { x, y }
-    }
-
-    /// Creates a 3D vector from `self` and the given `z` value.
-    #[inline]
-    pub fn extend(self, z: i32) -> IVec3 {
-        IVec3::new(self.x, self.y, z)
-    }
-
-    /// `[x, y]`
-    #[inline]
-    pub fn to_array(&self) -> [i32; 2] {
-        [self.x, self.y]
     }
 
     /// Creates a vector with all elements set to `v`.
     #[inline]
-    pub fn splat(v: i32) -> Self {
+    pub const fn splat(v: i32) -> Self {
         Self { x: v, y: v }
     }
 
@@ -75,6 +63,24 @@ impl IVec2 {
             x: if mask.x { if_true.x } else { if_false.x },
             y: if mask.y { if_true.y } else { if_false.y },
         }
+    }
+
+    /// Creates a new vector from an array.
+    #[inline]
+    pub const fn from_array(a: [i32; 2]) -> Self {
+        Self::new(a[0], a[1])
+    }
+
+    /// `[x, y]`
+    #[inline]
+    pub const fn to_array(&self) -> [i32; 2] {
+        [self.x, self.y]
+    }
+
+    /// Creates a 3D vector from `self` and the given `z` value.
+    #[inline]
+    pub const fn extend(self, z: i32) -> IVec3 {
+        IVec3::new(self.x, self.y, z)
     }
 
     /// Computes the dot product of `self` and `rhs`.

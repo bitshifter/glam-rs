@@ -37,7 +37,7 @@ impl DAffine3 {
 
     /// Creates an affine transform from three column vectors.
     #[inline(always)]
-    pub fn from_cols(x_axis: DVec3, y_axis: DVec3, z_axis: DVec3, w_axis: DVec3) -> Self {
+    pub const fn from_cols(x_axis: DVec3, y_axis: DVec3, z_axis: DVec3, w_axis: DVec3) -> Self {
         Self {
             matrix3: DMat3::from_cols(x_axis, y_axis, z_axis),
             translation: w_axis,

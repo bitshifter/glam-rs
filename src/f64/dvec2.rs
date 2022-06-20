@@ -12,7 +12,7 @@ use num_traits::Float;
 
 /// Creates a 2-dimensional vector.
 #[inline(always)]
-pub fn dvec2(x: f64, y: f64) -> DVec2 {
+pub const fn dvec2(x: f64, y: f64) -> DVec2 {
     DVec2::new(x, y)
 }
 
@@ -26,47 +26,35 @@ pub struct DVec2 {
 
 impl DVec2 {
     /// All zeroes.
-    pub const ZERO: Self = const_dvec2!([0.0; 2]);
+    pub const ZERO: Self = Self::splat(0.0);
 
     /// All ones.
-    pub const ONE: Self = const_dvec2!([1.0; 2]);
+    pub const ONE: Self = Self::splat(1.0);
 
     /// All negative ones.
-    pub const NEG_ONE: Self = const_dvec2!([-1.0; 2]);
+    pub const NEG_ONE: Self = Self::splat(-1.0);
 
     /// All NAN.
-    pub const NAN: Self = const_dvec2!([f64::NAN; 2]);
+    pub const NAN: Self = Self::splat(f64::NAN);
 
     /// `[1.0, 0.0]`: a unit-length vector pointing along the positive X axis.
-    pub const X: Self = const_dvec2!([1.0, 0.0]);
+    pub const X: Self = Self::from_array([1.0, 0.0]);
 
     /// `[0.0, 1.0]`: a unit-length vector pointing along the positive Y axis.
-    pub const Y: Self = const_dvec2!([0.0, 1.0]);
+    pub const Y: Self = Self::from_array([0.0, 1.0]);
 
     /// The unit axes.
     pub const AXES: [Self; 2] = [Self::X, Self::Y];
 
     /// Creates a new vector.
     #[inline(always)]
-    pub fn new(x: f64, y: f64) -> Self {
+    pub const fn new(x: f64, y: f64) -> Self {
         Self { x, y }
-    }
-
-    /// Creates a 3D vector from `self` and the given `z` value.
-    #[inline]
-    pub fn extend(self, z: f64) -> DVec3 {
-        DVec3::new(self.x, self.y, z)
-    }
-
-    /// `[x, y]`
-    #[inline]
-    pub fn to_array(&self) -> [f64; 2] {
-        [self.x, self.y]
     }
 
     /// Creates a vector with all elements set to `v`.
     #[inline]
-    pub fn splat(v: f64) -> Self {
+    pub const fn splat(v: f64) -> Self {
         Self { x: v, y: v }
     }
 
@@ -81,6 +69,24 @@ impl DVec2 {
             x: if mask.x { if_true.x } else { if_false.x },
             y: if mask.y { if_true.y } else { if_false.y },
         }
+    }
+
+    /// Creates a new vector from an array.
+    #[inline]
+    pub const fn from_array(a: [f64; 2]) -> Self {
+        Self::new(a[0], a[1])
+    }
+
+    /// `[x, y]`
+    #[inline]
+    pub const fn to_array(&self) -> [f64; 2] {
+        [self.x, self.y]
+    }
+
+    /// Creates a 3D vector from `self` and the given `z` value.
+    #[inline]
+    pub const fn extend(self, z: f64) -> DVec3 {
+        DVec3::new(self.x, self.y, z)
     }
 
     /// Computes the dot product of `self` and `rhs`.

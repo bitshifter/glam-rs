@@ -18,7 +18,7 @@ use core::ops::{Add, Deref, Div, Mul, MulAssign, Neg, Sub};
 /// This should generally not be called manually unless you know what you are doing. Use
 /// one of the other constructors instead such as `identity` or `from_axis_angle`.
 #[inline]
-pub fn dquat(x: f64, y: f64, z: f64, w: f64) -> DQuat {
+pub const fn dquat(x: f64, y: f64, z: f64, w: f64) -> DQuat {
     DQuat::from_xyzw(x, y, z, w)
 }
 
@@ -37,28 +37,13 @@ pub struct DQuat {
 
 impl DQuat {
     /// All zeros.
-    const ZERO: Self = Self {
-        x: 0.0,
-        y: 0.0,
-        z: 0.0,
-        w: 0.0,
-    };
+    const ZERO: Self = Self::from_array([0.0; 4]);
 
     /// The identity quaternion. Corresponds to no rotation.
-    pub const IDENTITY: Self = Self {
-        x: 0.0,
-        y: 0.0,
-        z: 0.0,
-        w: 1.0,
-    };
+    pub const IDENTITY: Self = Self::from_xyzw(0.0, 0.0, 0.0, 1.0);
 
     /// All NANs.
-    pub const NAN: Self = Self {
-        x: f64::NAN,
-        y: f64::NAN,
-        z: f64::NAN,
-        w: f64::NAN,
-    };
+    pub const NAN: Self = Self::from_array([f64::NAN; 4]);
 
     /// Creates a new rotation quaternion.
     ///
@@ -72,7 +57,7 @@ impl DQuat {
     /// This function does not check if the input is normalized, it is up to the user to
     /// provide normalized input or to normalized the resulting quaternion.
     #[inline(always)]
-    pub fn from_xyzw(x: f64, y: f64, z: f64, w: f64) -> Self {
+    pub const fn from_xyzw(x: f64, y: f64, z: f64, w: f64) -> Self {
         Self { x, y, z, w }
     }
 
@@ -83,7 +68,7 @@ impl DQuat {
     /// This function does not check if the input is normalized, it is up to the user to
     /// provide normalized input or to normalized the resulting quaternion.
     #[inline]
-    pub fn from_array(a: [f64; 4]) -> Self {
+    pub const fn from_array(a: [f64; 4]) -> Self {
         Self::from_xyzw(a[0], a[1], a[2], a[3])
     }
 

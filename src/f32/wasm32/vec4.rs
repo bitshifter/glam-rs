@@ -12,9 +12,14 @@ use core::arch::wasm32::*;
 #[cfg(not(feature = "std"))]
 use num_traits::Float;
 
+union UnionCast {
+    a: [f32; 4],
+    v: Vec4,
+}
+
 /// Creates a 4-dimensional vector.
 #[inline(always)]
-pub fn vec4(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
+pub const fn vec4(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
     Vec4::new(x, y, z, w)
 }
 
@@ -27,36 +32,64 @@ pub struct Vec4(pub(crate) v128);
 
 impl Vec4 {
     /// All zeroes.
-    pub const ZERO: Self = const_vec4!([0.0; 4]);
+    pub const ZERO: Self = Self::splat(0.0);
 
     /// All ones.
-    pub const ONE: Self = const_vec4!([1.0; 4]);
+    pub const ONE: Self = Self::splat(1.0);
 
     /// All negative ones.
-    pub const NEG_ONE: Self = const_vec4!([-1.0; 4]);
+    pub const NEG_ONE: Self = Self::splat(-1.0);
 
     /// All NAN.
-    pub const NAN: Self = const_vec4!([f32::NAN; 4]);
+    pub const NAN: Self = Self::splat(f32::NAN);
 
     /// `[1.0, 0.0, 0.0, 0.0]`: a unit-length vector pointing along the positive X axis.
-    pub const X: Self = const_vec4!([1.0, 0.0, 0.0, 0.0]);
+    pub const X: Self = Self::from_array([1.0, 0.0, 0.0, 0.0]);
 
     /// `[0.0, 1.0, 0.0, 0.0]`: a unit-length vector pointing along the positive Y axis.
-    pub const Y: Self = const_vec4!([0.0, 1.0, 0.0, 0.0]);
+    pub const Y: Self = Self::from_array([0.0, 1.0, 0.0, 0.0]);
 
     /// `[0.0, 0.0, 1.0, 0.0]`: a unit-length vector pointing along the positive Z axis.
-    pub const Z: Self = const_vec4!([0.0, 0.0, 1.0, 0.0]);
+    pub const Z: Self = Self::from_array([0.0, 0.0, 1.0, 0.0]);
 
     /// `[0.0, 0.0, 0.0, 1.0]`: a unit-length vector pointing along the positive W axis.
-    pub const W: Self = const_vec4!([0.0, 0.0, 0.0, 1.0]);
+    pub const W: Self = Self::from_array([0.0, 0.0, 0.0, 1.0]);
 
     /// The unit axes.
     pub const AXES: [Self; 4] = [Self::X, Self::Y, Self::Z, Self::W];
 
     /// Creates a new vector.
     #[inline(always)]
-    pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
+    pub const fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
         Self(f32x4(x, y, z, w))
+    }
+
+    /// Creates a vector with all elements set to `v`.
+    #[inline]
+    pub const fn splat(v: f32) -> Self {
+        unsafe { UnionCast { a: [v; 4] }.v }
+    }
+
+    /// Creates a vector from the elements in `if_true` and `if_false`, selecting which to use
+    /// for each element of `self`.
+    ///
+    /// A true element in the mask uses the corresponding element from `if_true`, and false
+    /// uses the element from `if_false`.
+    #[inline]
+    pub fn select(mask: BVec4A, if_true: Self, if_false: Self) -> Self {
+        Self(v128_bitselect(if_true.0, if_false.0, mask.0))
+    }
+
+    /// Creates a new vector from an array.
+    #[inline]
+    pub const fn from_array(a: [f32; 4]) -> Self {
+        Self::new(a[0], a[1], a[2], a[3])
+    }
+
+    /// `[x, y, z, w]`
+    #[inline]
+    pub const fn to_array(&self) -> [f32; 4] {
+        unsafe { *(self as *const Vec4 as *const [f32; 4]) }
     }
 
     /// Creates a 2D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
@@ -68,28 +101,6 @@ impl Vec4 {
     pub fn truncate(self) -> Vec3 {
         use crate::swizzles::Vec4Swizzles;
         self.xyz()
-    }
-
-    /// `[x, y, z, w]`
-    #[inline]
-    pub fn to_array(&self) -> [f32; 4] {
-        [self.x, self.y, self.z, self.w]
-    }
-
-    /// Creates a vector with all elements set to `v`.
-    #[inline]
-    pub fn splat(v: f32) -> Self {
-        Self(f32x4_splat(v))
-    }
-
-    /// Creates a vector from the elements in `if_true` and `if_false`, selecting which to use
-    /// for each element of `self`.
-    ///
-    /// A true element in the mask uses the corresponding element from `if_true`, and false
-    /// uses the element from `if_false`.
-    #[inline]
-    pub fn select(mask: BVec4A, if_true: Self, if_false: Self) -> Self {
-        Self(v128_bitselect(if_true.0, if_false.0, mask.0))
     }
 
     /// Computes the dot product of `self` and `rhs`.

@@ -18,7 +18,7 @@ use core::ops::{Add, Deref, Div, Mul, MulAssign, Neg, Sub};
 /// This should generally not be called manually unless you know what you are doing. Use
 /// one of the other constructors instead such as `identity` or `from_axis_angle`.
 #[inline]
-pub fn quat(x: f32, y: f32, z: f32, w: f32) -> Quat {
+pub const fn quat(x: f32, y: f32, z: f32, w: f32) -> Quat {
     Quat::from_xyzw(x, y, z, w)
 }
 
@@ -41,28 +41,13 @@ pub struct Quat {
 
 impl Quat {
     /// All zeros.
-    const ZERO: Self = Self {
-        x: 0.0,
-        y: 0.0,
-        z: 0.0,
-        w: 0.0,
-    };
+    const ZERO: Self = Self::from_array([0.0; 4]);
 
     /// The identity quaternion. Corresponds to no rotation.
-    pub const IDENTITY: Self = Self {
-        x: 0.0,
-        y: 0.0,
-        z: 0.0,
-        w: 1.0,
-    };
+    pub const IDENTITY: Self = Self::from_xyzw(0.0, 0.0, 0.0, 1.0);
 
     /// All NANs.
-    pub const NAN: Self = Self {
-        x: f32::NAN,
-        y: f32::NAN,
-        z: f32::NAN,
-        w: f32::NAN,
-    };
+    pub const NAN: Self = Self::from_array([f32::NAN; 4]);
 
     /// Creates a new rotation quaternion.
     ///
@@ -76,7 +61,7 @@ impl Quat {
     /// This function does not check if the input is normalized, it is up to the user to
     /// provide normalized input or to normalized the resulting quaternion.
     #[inline(always)]
-    pub fn from_xyzw(x: f32, y: f32, z: f32, w: f32) -> Self {
+    pub const fn from_xyzw(x: f32, y: f32, z: f32, w: f32) -> Self {
         Self { x, y, z, w }
     }
 
@@ -87,7 +72,7 @@ impl Quat {
     /// This function does not check if the input is normalized, it is up to the user to
     /// provide normalized input or to normalized the resulting quaternion.
     #[inline]
-    pub fn from_array(a: [f32; 4]) -> Self {
+    pub const fn from_array(a: [f32; 4]) -> Self {
         Self::from_xyzw(a[0], a[1], a[2], a[3])
     }
 

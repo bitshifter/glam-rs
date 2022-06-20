@@ -37,7 +37,7 @@ impl Affine2 {
 
     /// Creates an affine transform from three column vectors.
     #[inline(always)]
-    pub fn from_cols(x_axis: Vec2, y_axis: Vec2, z_axis: Vec2) -> Self {
+    pub const fn from_cols(x_axis: Vec2, y_axis: Vec2, z_axis: Vec2) -> Self {
         Self {
             matrix2: Mat2::from_cols(x_axis, y_axis),
             translation: z_axis,

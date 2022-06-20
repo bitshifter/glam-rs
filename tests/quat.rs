@@ -8,8 +8,13 @@ macro_rules! impl_quat_tests {
         use core::$t::NEG_INFINITY;
 
         glam_test!(test_const, {
-            const Q: $quat = $const_new!([1.0, 2.0, 3.0, 4.0]);
-            assert_eq!($quat::from_xyzw(1.0, 2.0, 3.0, 4.0), Q);
+            const Q0: $quat = $quat::from_xyzw(1.0, 2.0, 3.0, 4.0);
+            const Q1: $quat = $quat::from_array([1.0, 2.0, 3.0, 4.0]);
+            #[allow(deprecated)]
+            const Q2: $quat = $const_new!([1.0, 2.0, 3.0, 4.0]);
+            assert_eq!([1.0, 2.0, 3.0, 4.0], *Q0.as_ref());
+            assert_eq!([1.0, 2.0, 3.0, 4.0], *Q1.as_ref());
+            assert_eq!([1.0, 2.0, 3.0, 4.0], *Q2.as_ref());
         });
 
         glam_test!(test_nan, {
@@ -507,6 +512,7 @@ macro_rules! impl_quat_tests {
 mod quat {
     use crate::support::{deg, rad};
     use core::ops::Neg;
+    #[allow(deprecated)]
     use glam::{const_quat, quat, EulerRot, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
 
     glam_test!(test_align, {
@@ -598,6 +604,7 @@ mod quat {
 mod dquat {
     use crate::support::{deg, rad};
     use core::ops::Neg;
+    #[allow(deprecated)]
     use glam::{const_dquat, dquat, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, EulerRot};
 
     glam_test!(test_align, {

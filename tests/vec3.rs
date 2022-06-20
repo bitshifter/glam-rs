@@ -4,8 +4,15 @@ mod support;
 macro_rules! impl_vec3_tests {
     ($t:ident, $const_new:ident, $new:ident, $vec3:ident, $mask:ident) => {
         glam_test!(test_const, {
-            const V: $vec3 = $const_new!([1 as $t, 2 as $t, 3 as $t]);
-            assert_eq!($vec3::new(1 as $t, 2 as $t, 3 as $t), V);
+            const V0: $vec3 = $vec3::splat(1 as $t);
+            const V1: $vec3 = $vec3::new(1 as $t, 2 as $t, 3 as $t);
+            const V2: $vec3 = $vec3::from_array([1 as $t, 2 as $t, 3 as $t]);
+            #[allow(deprecated)]
+            const V3: $vec3 = $const_new!([1 as $t, 2 as $t, 3 as $t]);
+            assert_eq!([1 as $t, 1 as $t, 1 as $t], *V0.as_ref());
+            assert_eq!([1 as $t, 2 as $t, 3 as $t], *V1.as_ref());
+            assert_eq!([1 as $t, 2 as $t, 3 as $t], *V2.as_ref());
+            assert_eq!([1 as $t, 2 as $t, 3 as $t], *V3.as_ref());
         });
 
         glam_test!(test_new, {
@@ -952,6 +959,7 @@ macro_rules! impl_vec3_bit_op_tests {
 }
 
 mod vec3 {
+    #[allow(deprecated)]
     use glam::{const_vec3, vec3, BVec3, Vec3};
 
     glam_test!(test_align, {
@@ -1022,6 +1030,7 @@ mod vec3 {
 }
 
 mod vec3a {
+    #[allow(deprecated)]
     use glam::{const_vec3a, vec3a, BVec3, BVec3A, Vec3A, Vec4};
 
     glam_test!(test_align, {
@@ -1107,6 +1116,7 @@ mod vec3a {
 }
 
 mod dvec3 {
+    #[allow(deprecated)]
     use glam::{const_dvec3, dvec3, BVec3, DVec3};
 
     glam_test!(test_align, {
@@ -1121,6 +1131,7 @@ mod dvec3 {
 }
 
 mod ivec3 {
+    #[allow(deprecated)]
     use glam::{const_ivec3, ivec3, BVec3, IVec3, UVec3};
 
     glam_test!(test_align, {
@@ -1142,6 +1153,7 @@ mod ivec3 {
 }
 
 mod uvec3 {
+    #[allow(deprecated)]
     use glam::{const_uvec3, uvec3, BVec3, IVec3, UVec3};
 
     glam_test!(test_align, {

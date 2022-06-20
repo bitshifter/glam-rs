@@ -114,9 +114,16 @@ use core::arch::wasm32::*;
 use num_traits::Float;
 {% endif %}
 
+{% if is_simd %}
+union UnionCast {
+    a: [f32; 4],
+    v: {{ self_t }}
+}
+{% endif %}
+
 /// Creates a {{ dim }}-dimensional vector.
 #[inline(always)]
-pub fn {{ self_t | lower }}(
+pub const fn {{ self_t | lower }}(
     {% for c in components %}
         {{ c }}: {{ scalar_t }},
     {% endfor %}
@@ -165,25 +172,25 @@ pub struct {{ self_t }}(pub(crate) {{ simd_t }});
 
 impl {{ self_t }} {
     /// All zeroes.
-    pub const ZERO: Self = {{ const_new }}!([{{ zero }}; {{ dim }}]);
+    pub const ZERO: Self = Self::splat({{ zero }});
 
     /// All ones.
-    pub const ONE: Self = {{ const_new }}!([{{ one }}; {{ dim }}]);
+    pub const ONE: Self = Self::splat({{ one }});
 
 {% if is_signed %}
     /// All negative ones.
-    pub const NEG_ONE: Self = {{ const_new }}!([-{{ one }}; {{ dim }}]);
+    pub const NEG_ONE: Self = Self::splat(-{{ one }});
 {% endif %}
 
 {% if is_float %}
     /// All NAN.
-    pub const NAN: Self = {{ const_new }}!([{{ scalar_t }}::NAN; {{ dim }}]);
+    pub const NAN: Self = Self::splat({{ scalar_t }}::NAN);
 {% endif %}
 
 {% for i in range(end = dim) %}
     {% set C = components[i] | upper %}
     /// `[{{ identity[i] | slice(end = dim) | join(sep=", ") }}]`: a unit-length vector pointing along the positive {{ C }} axis.
-    pub const {{ C }}: Self = {{ const_new }}!({{ identity[i] | slice(end = dim) }});
+    pub const {{ C }}: Self = Self::from_array({{ identity[i] | slice(end = dim) }});
 {% endfor %}
 
     /// The unit axes.
@@ -195,7 +202,7 @@ impl {{ self_t }} {
 
     /// Creates a new vector.
     #[inline(always)]
-    pub fn new(
+    pub const fn new(
         {% for c in components %}
             {{ c }}: {{ scalar_t }},
         {% endfor %}
@@ -204,16 +211,18 @@ impl {{ self_t }} {
             Self {
                 {% for c in components %}
                     {{ c }},
-                {% endfor %}
+                {%- endfor %}
             }
         {% elif is_sse2 %}
-            Self(unsafe { _mm_setr_ps(
-                {% if dim == 3 %}
-                    x, y, z, z,
-                {% elif dim == 4 %}
-                    x, y, z, w,
-                {% endif %}
-            )})
+            unsafe {
+                UnionCast { a: [
+                    {% if dim == 3 %}
+                        x, y, z, z
+                    {% elif dim == 4 %}
+                        x, y, z, w
+                    {% endif %}
+                ] }.v
+            }
         {% elif is_wasm32 %}
             Self(f32x4(
                 {% if dim == 3 %}
@@ -225,10 +234,68 @@ impl {{ self_t }} {
         {% endif %}
     }
 
+    /// Creates a vector with all elements set to `v`.
+    #[inline]
+    pub const fn splat(v: {{ scalar_t }}) -> Self {
+        {% if is_scalar %}
+            Self {
+                {% for c in components %}
+                    {{ c }}: v,
+                {% endfor %}
+            }
+        {% else %}
+            unsafe { UnionCast { a: [v; 4] }.v }
+        {% endif %}
+    }
+
+    /// Creates a vector from the elements in `if_true` and `if_false`, selecting which to use
+    /// for each element of `self`.
+    ///
+    /// A true element in the mask uses the corresponding element from `if_true`, and false
+    /// uses the element from `if_false`.
+    #[inline]
+    pub fn select(mask: {{ mask_t }}, if_true: Self, if_false: Self) -> Self {
+        {% if is_scalar %}
+            Self {
+                {% for c in components %}
+                    {{ c  }}: if mask.{{ c }} { if_true.{{ c }} } else { if_false.{{ c }} },
+                {%- endfor %}
+            }
+        {% elif is_sse2 %}
+            Self(unsafe { _mm_or_ps(_mm_andnot_ps(mask.0, if_false.0), _mm_and_ps(if_true.0, mask.0)) })
+        {% elif is_wasm32 %}
+            Self(v128_bitselect(if_true.0, if_false.0, mask.0))
+        {% endif %}
+    }
+
+    /// Creates a new vector from an array.
+    #[inline]
+    pub const fn from_array(a: [{{ scalar_t }}; {{ dim }}]) -> Self {
+        Self::new(
+            {% for c in components %}
+                a[{{ loop.index0 }}],
+            {%- endfor %}
+        )
+    }
+
+    /// `[{{ components | join(sep=", ") }}]`
+    #[inline]
+    pub const fn to_array(&self) -> [{{ scalar_t }}; {{ dim }}] {
+        {% if is_scalar %}
+            [
+                {% for c in components %}
+                    self.{{ c }},
+                {% endfor %}
+            ]
+        {% else %}
+            unsafe { *(self as *const {{ self_t }} as *const [{{ scalar_t }}; {{ dim }}]) }
+        {% endif %}
+    }
+
 {% if dim == 2 %}
     /// Creates a 3D vector from `self` and the given `z` value.
     #[inline]
-    pub fn extend(self, z: {{ scalar_t }}) -> {{ vec3_t }} {
+    pub const fn extend(self, z: {{ scalar_t }}) -> {{ vec3_t }} {
         {{ vec3_t }}::new(self.x, self.y, z)
     }
 {% elif dim == 3 %}
@@ -271,52 +338,6 @@ impl {{ self_t }} {
         self.xyz()
     }
 {% endif %}
-
-    /// `[{{ components | join(sep=", ") }}]`
-    #[inline]
-    pub fn to_array(&self) -> [{{ scalar_t }}; {{ dim }}] {
-        [
-            {% for c in components %}
-                self.{{ c }},
-            {% endfor %}
-        ]
-    }
-
-    /// Creates a vector with all elements set to `v`.
-    #[inline]
-    pub fn splat(v: {{ scalar_t }}) -> Self {
-        {% if is_scalar %}
-        Self {
-            {% for c in components %}
-                {{ c }}: v,
-            {% endfor %}
-        }
-        {% elif is_sse2 %}
-            Self(unsafe { _mm_set1_ps(v) })
-        {% elif is_wasm32 %}
-            Self(f32x4_splat(v))
-        {% endif %}
-    }
-
-    /// Creates a vector from the elements in `if_true` and `if_false`, selecting which to use
-    /// for each element of `self`.
-    ///
-    /// A true element in the mask uses the corresponding element from `if_true`, and false
-    /// uses the element from `if_false`.
-    #[inline]
-    pub fn select(mask: {{ mask_t }}, if_true: Self, if_false: Self) -> Self {
-        {% if is_scalar %}
-            Self {
-                {% for c in components %}
-                    {{ c  }}: if mask.{{ c }} { if_true.{{ c }} } else { if_false.{{ c }} },
-                {%- endfor %}
-            }
-        {% elif is_sse2 %}
-            Self(unsafe { _mm_or_ps(_mm_andnot_ps(mask.0, if_false.0), _mm_and_ps(if_true.0, mask.0)) })
-        {% elif is_wasm32 %}
-            Self(v128_bitselect(if_true.0, if_false.0, mask.0))
-        {% endif %}
-    }
 
     /// Computes the dot product of `self` and `rhs`.
     #[inline]

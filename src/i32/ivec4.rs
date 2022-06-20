@@ -9,7 +9,7 @@ use core::{f32, ops::*};
 
 /// Creates a 4-dimensional vector.
 #[inline(always)]
-pub fn ivec4(x: i32, y: i32, z: i32, w: i32) -> IVec4 {
+pub const fn ivec4(x: i32, y: i32, z: i32, w: i32) -> IVec4 {
     IVec4::new(x, y, z, w)
 }
 
@@ -25,53 +25,38 @@ pub struct IVec4 {
 
 impl IVec4 {
     /// All zeroes.
-    pub const ZERO: Self = const_ivec4!([0; 4]);
+    pub const ZERO: Self = Self::splat(0);
 
     /// All ones.
-    pub const ONE: Self = const_ivec4!([1; 4]);
+    pub const ONE: Self = Self::splat(1);
 
     /// All negative ones.
-    pub const NEG_ONE: Self = const_ivec4!([-1; 4]);
+    pub const NEG_ONE: Self = Self::splat(-1);
 
     /// `[1, 0, 0, 0]`: a unit-length vector pointing along the positive X axis.
-    pub const X: Self = const_ivec4!([1, 0, 0, 0]);
+    pub const X: Self = Self::from_array([1, 0, 0, 0]);
 
     /// `[0, 1, 0, 0]`: a unit-length vector pointing along the positive Y axis.
-    pub const Y: Self = const_ivec4!([0, 1, 0, 0]);
+    pub const Y: Self = Self::from_array([0, 1, 0, 0]);
 
     /// `[0, 0, 1, 0]`: a unit-length vector pointing along the positive Z axis.
-    pub const Z: Self = const_ivec4!([0, 0, 1, 0]);
+    pub const Z: Self = Self::from_array([0, 0, 1, 0]);
 
     /// `[0, 0, 0, 1]`: a unit-length vector pointing along the positive W axis.
-    pub const W: Self = const_ivec4!([0, 0, 0, 1]);
+    pub const W: Self = Self::from_array([0, 0, 0, 1]);
 
     /// The unit axes.
     pub const AXES: [Self; 4] = [Self::X, Self::Y, Self::Z, Self::W];
 
     /// Creates a new vector.
     #[inline(always)]
-    pub fn new(x: i32, y: i32, z: i32, w: i32) -> Self {
+    pub const fn new(x: i32, y: i32, z: i32, w: i32) -> Self {
         Self { x, y, z, w }
-    }
-
-    /// Creates a 2D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
-    ///
-    /// Truncation to `IVec3` may also be performed by using `self.xyz()` or `IVec3::from()`.
-    #[inline]
-    pub fn truncate(self) -> IVec3 {
-        use crate::swizzles::Vec4Swizzles;
-        self.xyz()
-    }
-
-    /// `[x, y, z, w]`
-    #[inline]
-    pub fn to_array(&self) -> [i32; 4] {
-        [self.x, self.y, self.z, self.w]
     }
 
     /// Creates a vector with all elements set to `v`.
     #[inline]
-    pub fn splat(v: i32) -> Self {
+    pub const fn splat(v: i32) -> Self {
         Self {
             x: v,
 
@@ -96,6 +81,27 @@ impl IVec4 {
             z: if mask.z { if_true.z } else { if_false.z },
             w: if mask.w { if_true.w } else { if_false.w },
         }
+    }
+
+    /// Creates a new vector from an array.
+    #[inline]
+    pub const fn from_array(a: [i32; 4]) -> Self {
+        Self::new(a[0], a[1], a[2], a[3])
+    }
+
+    /// `[x, y, z, w]`
+    #[inline]
+    pub const fn to_array(&self) -> [i32; 4] {
+        [self.x, self.y, self.z, self.w]
+    }
+
+    /// Creates a 2D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
+    ///
+    /// Truncation to `IVec3` may also be performed by using `self.xyz()` or `IVec3::from()`.
+    #[inline]
+    pub fn truncate(self) -> IVec3 {
+        use crate::swizzles::Vec4Swizzles;
+        self.xyz()
     }
 
     /// Computes the dot product of `self` and `rhs`.

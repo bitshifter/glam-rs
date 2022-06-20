@@ -16,7 +16,7 @@ use num_traits::Float;
 
 /// Creates a 3x3 matrix from column vectors.
 #[inline(always)]
-pub fn mat3a(x_axis: Vec3A, y_axis: Vec3A, z_axis: Vec3A) -> Mat3A {
+pub const fn mat3a(x_axis: Vec3A, y_axis: Vec3A, z_axis: Vec3A) -> Mat3A {
     Mat3A::from_cols(x_axis, y_axis, z_axis)
 }
 
@@ -53,29 +53,17 @@ pub struct Mat3A {
 
 impl Mat3A {
     /// A 3x3 matrix with all elements set to `0.0`.
-    pub const ZERO: Self = Self {
-        x_axis: Vec3A::ZERO,
-        y_axis: Vec3A::ZERO,
-        z_axis: Vec3A::ZERO,
-    };
+    pub const ZERO: Self = Self::from_cols(Vec3A::ZERO, Vec3A::ZERO, Vec3A::ZERO);
 
     /// A 3x3 identity matrix, where all diagonal elements are `1`, and all off-diagonal elements are `0`.
-    pub const IDENTITY: Self = Self {
-        x_axis: Vec3A::X,
-        y_axis: Vec3A::Y,
-        z_axis: Vec3A::Z,
-    };
+    pub const IDENTITY: Self = Self::from_cols(Vec3A::X, Vec3A::Y, Vec3A::Z);
 
     /// All NAN:s.
-    pub const NAN: Self = Self {
-        x_axis: Vec3A::NAN,
-        y_axis: Vec3A::NAN,
-        z_axis: Vec3A::NAN,
-    };
+    pub const NAN: Self = Self::from_cols(Vec3A::NAN, Vec3A::NAN, Vec3A::NAN);
 
     #[allow(clippy::too_many_arguments)]
     #[inline(always)]
-    fn new(
+    const fn new(
         m00: f32,
         m01: f32,
         m02: f32,
@@ -95,7 +83,7 @@ impl Mat3A {
 
     /// Creates a 3x3 matrix from two column vectors.
     #[inline(always)]
-    pub fn from_cols(x_axis: Vec3A, y_axis: Vec3A, z_axis: Vec3A) -> Self {
+    pub const fn from_cols(x_axis: Vec3A, y_axis: Vec3A, z_axis: Vec3A) -> Self {
         Self {
             x_axis,
             y_axis,
@@ -107,7 +95,7 @@ impl Mat3A {
     /// If your data is stored in row major you will need to `transpose` the returned
     /// matrix.
     #[inline]
-    pub fn from_cols_array(m: &[f32; 9]) -> Self {
+    pub const fn from_cols_array(m: &[f32; 9]) -> Self {
         Self::new(m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8])
     }
 
@@ -132,15 +120,23 @@ impl Mat3A {
     /// If your data is in row major order you will need to `transpose` the returned
     /// matrix.
     #[inline]
-    pub fn from_cols_array_2d(m: &[[f32; 3]; 3]) -> Self {
-        Self::from_cols(Vec3A::from(m[0]), Vec3A::from(m[1]), Vec3A::from(m[2]))
+    pub const fn from_cols_array_2d(m: &[[f32; 3]; 3]) -> Self {
+        Self::from_cols(
+            Vec3A::from_array(m[0]),
+            Vec3A::from_array(m[1]),
+            Vec3A::from_array(m[2]),
+        )
     }
 
     /// Creates a `[[f32; 3]; 3]` 3D array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
     pub fn to_cols_array_2d(&self) -> [[f32; 3]; 3] {
-        [self.x_axis.into(), self.y_axis.into(), self.z_axis.into()]
+        [
+            self.x_axis.to_array(),
+            self.y_axis.to_array(),
+            self.z_axis.to_array(),
+        ]
     }
 
     /// Creates a 3x3 matrix with its diagonal set to `diagonal` and all other entries set to 0.
