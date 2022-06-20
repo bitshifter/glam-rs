@@ -266,7 +266,7 @@ impl Default for DAffine2 {
 }
 
 impl Deref for DAffine2 {
-    type Target = crate::deref::Columns3<DVec2>;
+    type Target = crate::deref::Cols3<DVec2>;
     #[inline(always)]
     fn deref(&self) -> &Self::Target {
         unsafe { &*(self as *const Self as *const Self::Target) }

@@ -1083,7 +1083,7 @@ impl From<(Vec2, f32)> for Vec3A {
 }
 
 impl Deref for Vec3A {
-    type Target = crate::deref::XYZ<f32>;
+    type Target = crate::deref::Vec3<f32>;
     #[inline]
     fn deref(&self) -> &Self::Target {
         unsafe { &*(self as *const Self).cast() }

@@ -1133,7 +1133,7 @@ impl From<{{ self_t }}> for {{ simd_t }} {
 {% endif %}
 
 impl Deref for {{ self_t }} {
-    type Target = crate::deref::XYZW<{{ scalar_t }}>;
+    type Target = crate::deref::Vec4<{{ scalar_t }}>;
     #[inline]
     fn deref(&self) -> &Self::Target {
         unsafe { &*(self as *const Self).cast() }

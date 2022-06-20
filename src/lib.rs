@@ -241,8 +241,6 @@ The minimum supported Rust version is `1.58.1`.
     future_incompatible,
     nonstandard_style
 )]
-// This would require renaming a lot of stuff, disabling for now.
-#![allow(clippy::upper_case_acronyms)]
 // clippy doesn't like `to_array(&self)`
 #![allow(clippy::wrong_self_convention)]
 

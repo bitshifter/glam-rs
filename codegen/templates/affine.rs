@@ -608,7 +608,7 @@ impl Default for {{ self_t }} {
 }
 
 impl Deref for {{ self_t }} {
-    type Target = crate::deref::Columns{{ dim + 1 }}<{{ col_t }}>;
+    type Target = crate::deref::Cols{{ dim + 1 }}<{{ col_t }}>;
     #[inline(always)]
     fn deref(&self) -> &Self::Target {
         unsafe { &*(self as *const Self as *const Self::Target) }

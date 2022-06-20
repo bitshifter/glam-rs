@@ -2241,7 +2241,7 @@ impl AsMut<[{{ scalar_t }}; {{ size }}]> for {{ self_t }} {
 
 {% if self_t == "Mat2" and not is_scalar %}
 impl core::ops::Deref for Mat2 {
-    type Target = crate::deref::Columns2<Vec2>;
+    type Target = crate::deref::Cols2<Vec2>;
     #[inline]
     fn deref(&self) -> &Self::Target {
         unsafe { &*(self as *const Self as *const Self::Target) }

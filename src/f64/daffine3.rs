@@ -414,7 +414,7 @@ impl Default for DAffine3 {
 }
 
 impl Deref for DAffine3 {
-    type Target = crate::deref::Columns4<DVec3>;
+    type Target = crate::deref::Cols4<DVec3>;
     #[inline(always)]
     fn deref(&self) -> &Self::Target {
         unsafe { &*(self as *const Self as *const Self::Target) }

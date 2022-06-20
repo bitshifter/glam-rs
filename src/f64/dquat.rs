@@ -828,7 +828,7 @@ impl From<DQuat> for [f64; 4] {
 }
 
 impl Deref for DQuat {
-    type Target = crate::deref::XYZW<f64>;
+    type Target = crate::deref::Vec4<f64>;
     #[inline]
     fn deref(&self) -> &Self::Target {
         unsafe { &*(self as *const Self).cast() }

@@ -2,14 +2,6 @@
 
 // Generated from {{template_path}} template. Edit the template, not the generated file.
 
-{% if dim == 2 %}
-    {% set deref_t = "XY::<" ~ scalar_t ~ ">" %}
-{% elif dim == 3 %}
-    {% set deref_t = "XYZ::<" ~ scalar_t ~ ">" %}
-{% elif dim == 4 %}
-    {% set deref_t = "XYZW::<" ~ scalar_t ~ ">" %}
-{% endif %}
-
 {% if is_scalar %}
     {% set mask_t = "BVec" ~ dim %}
 {% else %}
@@ -2226,7 +2218,7 @@ impl From<({{ vec2_t }}, {{ vec2_t }})> for {{ self_t }} {
 
 {% if not is_scalar %}
 impl Deref for {{ self_t }} {
-    type Target = crate::deref::{{ deref_t }};
+    type Target = crate::deref::Vec{{ dim }}<{{ scalar_t }}>;
     #[inline]
     fn deref(&self) -> &Self::Target {
         unsafe { &*(self as *const Self).cast() }

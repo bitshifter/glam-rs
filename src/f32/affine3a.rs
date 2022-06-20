@@ -425,7 +425,7 @@ impl Default for Affine3A {
 }
 
 impl Deref for Affine3A {
-    type Target = crate::deref::Columns4<Vec3A>;
+    type Target = crate::deref::Cols4<Vec3A>;
     #[inline(always)]
     fn deref(&self) -> &Self::Target {
         unsafe { &*(self as *const Self as *const Self::Target) }

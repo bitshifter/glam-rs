@@ -447,7 +447,7 @@ impl AsMut<[f32; 4]> for Mat2 {
 }
 
 impl core::ops::Deref for Mat2 {
-    type Target = crate::deref::Columns2<Vec2>;
+    type Target = crate::deref::Cols2<Vec2>;
     #[inline]
     fn deref(&self) -> &Self::Target {
         unsafe { &*(self as *const Self as *const Self::Target) }

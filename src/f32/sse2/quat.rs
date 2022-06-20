@@ -903,7 +903,7 @@ impl From<Quat> for __m128 {
 }
 
 impl Deref for Quat {
-    type Target = crate::deref::XYZW<f32>;
+    type Target = crate::deref::Vec4<f32>;
     #[inline]
     fn deref(&self) -> &Self::Target {
         unsafe { &*(self as *const Self).cast() }
