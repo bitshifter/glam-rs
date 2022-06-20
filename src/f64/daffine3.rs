@@ -45,8 +45,6 @@ impl DAffine3 {
     }
 
     /// Creates an affine transform from a `[f64; 12]` array stored in column major order.
-    /// If your data is stored in row major you will need to `transpose` the returned
-    /// matrix.
     #[inline]
     pub fn from_cols_array(m: &[f64; 12]) -> Self {
         Self {
@@ -56,7 +54,6 @@ impl DAffine3 {
     }
 
     /// Creates a `[f64; 12]` array storing data in column major order.
-    /// If you require data in row major order `transpose` the matrix first.
     #[inline]
     pub fn to_cols_array(&self) -> [f64; 12] {
         let x = &self.matrix3.x_axis;

@@ -99,8 +99,6 @@ impl {{ self_t }} {
     }
 
     /// Creates an affine transform from a `[{{ scalar_t }}; {{ size }}]` array stored in column major order.
-    /// If your data is stored in row major you will need to `transpose` the returned
-    /// matrix.
     #[inline]
     pub fn from_cols_array(m: &[{{ scalar_t }}; {{ size }}]) -> Self {
         Self {
@@ -110,7 +108,6 @@ impl {{ self_t }} {
     }
 
     /// Creates a `[{{ scalar_t }}; {{ size }}]` array storing data in column major order.
-    /// If you require data in row major order `transpose` the matrix first.
     #[inline]
     pub fn to_cols_array(&self) -> [{{ scalar_t }}; {{ size }}] {
         {% for i in range(end = dim) %}

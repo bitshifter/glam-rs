@@ -42,8 +42,8 @@ If you feel any documentation could be added or improved please
 
 ## Code contributions
 
-Depending on the complexity of the change, it might be worth reading about
-`glam`'s [ARCHITECTURE].
+Most of `glam`'s source code is generated. See the [codegen/README.md] on how
+to modify the code templates and generate new source code.
 
 You can run some of `glam`'s test suite locally by running the
 `build_and_test_features.sh` script. It's worth running that before creating a

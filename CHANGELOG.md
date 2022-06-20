@@ -9,17 +9,41 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ### Breaking changes
 
-* Minimum Supported Version of Rust bumped to 1.58.1 to allow const pointer
+* Minimum Supported Version of Rust bumped to 1.58.1 to allow `const` pointer
   dereferences in constant evaluation.
 
 * The `abs_diff_eq` method on `Mat2` and `DMat2` now takes `other` by value
   instead of reference. This is consistent with the other matrix types.
 
+* The `AsMut` trait implementation on `Quat` and `DQuat` was removed.
+
+* The `AsRef` trait implementations were removed from `BVec2`, `BVec3`,
+  `BVec3A`, `BVec4` and `BVec4A`.
+
+### Added
+
+* `NEG_ONE` constant was added to all vector types.
+
+* The `rotate` and `from_angle` methods were added to `Vec2` and `DVec2`.
+  `from_angle` returns a 2D vector containing `[angle.cos(), angle.sin()]` that
+  can be used to `rotate` another 2D vector.
+
+* The `from_array` `const` function was added to all vector types.
+
 ### Changed
 
-* Source code is now largely generated. This largely removes the usage of macros
+* Source code is now largely generated. This removes most usage of macros
   internally to improve readability. There should be no change in API or
-  behavior.
+  behavior other than what is documented here.
+
+* Many methods have been made `const fn`:
+  * `new`, `splat`, `from_slice`, `to_array` and `extend` on vector types
+  * `from_cols`, `from_cols_array`, `from_cols_array_2d`, `from_cols_slice` on
+    matrix types
+  * `from_xyzw` and `from_array` on quaternion types
+  * `from_cols` on affine types
+
+* The `const` new macros where deprecated.
 
 ### Removed
 
@@ -29,7 +53,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ### Fixed
 
-* Fixed a bug in the scalar implemetation of 4D vector `max_element` method
+* Fixed a bug in the scalar implementation of 4D vector `max_element` method
   where the `w` element check was incorrect.
 
 ## [0.20.4] - 2022-04-11
@@ -61,7 +85,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [0.20.1] - 2021-11-23
 
-### Addeed
+### Added
 
 * Added the `from_rotation_arc_2d()` method to `Quat` and `DQuat` which will
   return a rotation between two 2D vectors around the z axis.
