@@ -116,7 +116,11 @@ impl {{ self_t }} {
     pub fn bitmask(self) -> u32 {
         {% if is_scalar %}
             {% for c in components %}
-                (self.{{ c }} as u32) << {{ loop.index0 }} {% if not loop.last %} | {% endif %}
+                {% if loop.first %}
+                    (self.{{ c }} as u32) |
+                {% else %}
+                    (self.{{ c }} as u32) << {{ loop.index0 }} {% if not loop.last %} | {% endif %}
+                {% endif %}
             {% endfor %}
         {% elif is_sse2 %}
             {% if dim == 3 %}
@@ -208,7 +212,11 @@ impl {{ self_t }} {
             let bitmask = self.bitmask();
             [
                 {% for c in components %}
-                    MASK[((bitmask >> {{ loop.index0 }}) & 1) as usize],
+                    {% if loop.first %}
+                        MASK[(bitmask & 1) as usize],
+                    {% else %}
+                        MASK[((bitmask >> {{ loop.index0 }}) & 1) as usize],
+                    {% endif %}
                 {%- endfor %}
             ]
         {% endif %}

@@ -61,7 +61,7 @@ impl BVec3A {
     fn into_u32_array(self) -> [u32; 3] {
         let bitmask = self.bitmask();
         [
-            MASK[((bitmask >> 0) & 1) as usize],
+            MASK[(bitmask & 1) as usize],
             MASK[((bitmask >> 1) & 1) as usize],
             MASK[((bitmask >> 2) & 1) as usize],
         ]

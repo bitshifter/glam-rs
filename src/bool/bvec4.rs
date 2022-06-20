@@ -30,7 +30,7 @@ impl BVec4 {
     /// into the first lowest bit, element `y` into the second, etc.
     #[inline]
     pub fn bitmask(self) -> u32 {
-        (self.x as u32) << 0 | (self.y as u32) << 1 | (self.z as u32) << 2 | (self.w as u32) << 3
+        (self.x as u32) | (self.y as u32) << 1 | (self.z as u32) << 2 | (self.w as u32) << 3
     }
 
     /// Returns true if any of the elements are true, false otherwise.
