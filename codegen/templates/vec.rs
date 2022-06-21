@@ -60,16 +60,13 @@
 {% set components = ["x", "y", "z", "w"] | slice(end = dim) %}
 {% if is_float %}
     {% set one = "1.0" %}
+    {% set neg_one = "-1.0" %}
     {% set zero = "0.0" %}
 {% else %}
     {% set one = "1" %}
+    {% set neg_one = "-1" %}
     {% set zero = "0" %}
 {% endif %}
-{% set unit_x = [one, zero, zero, zero] %}
-{% set unit_y = [zero, one, zero, zero] %}
-{% set unit_z = [zero, zero, one, zero] %}
-{% set unit_w = [zero, zero, zero, one] %}
-{% set identity = [unit_x, unit_y, unit_z, unit_w] %}
 
 use crate::{
     {{ mask_t }},
@@ -184,9 +181,25 @@ impl {{ self_t }} {
 
 {% for i in range(end = dim) %}
     {% set C = components[i] | upper %}
-    /// `[{{ identity[i] | slice(end = dim) | join(sep=", ") }}]`: a unit-length vector pointing along the positive {{ C }} axis.
-    pub const {{ C }}: Self = Self::from_array({{ identity[i] | slice(end = dim) }});
+    /// A unit-length vector pointing along the positive {{ C }} axis.
+    pub const {{ C }}: Self = Self::new(
+        {% for j in range(end = dim) %}
+            {% if i == j %} {{ one }} {% else %} {{ zero }} {% endif %},
+        {%- endfor %}
+    );
 {% endfor %}
+
+{% if is_signed %}
+    {% for i in range(end = dim) %}
+        {% set C = components[i] | upper %}
+        /// A unit-length vector pointing along the negative {{ C }} axis.
+        pub const NEG_{{ C }}: Self = Self::new(
+            {% for j in range(end = dim) %}
+                {% if i == j %} {{ neg_one }} {% else %} {{ zero }} {% endif %},
+            {%- endfor %}
+        );
+    {% endfor %}
+{% endif %}
 
     /// The unit axes.
     pub const AXES: [Self; {{ dim }}] = [

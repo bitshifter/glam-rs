@@ -35,17 +35,29 @@ impl IVec4 {
     /// All negative ones.
     pub const NEG_ONE: Self = Self::splat(-1);
 
-    /// `[1, 0, 0, 0]`: a unit-length vector pointing along the positive X axis.
-    pub const X: Self = Self::from_array([1, 0, 0, 0]);
+    /// A unit-length vector pointing along the positive X axis.
+    pub const X: Self = Self::new(1, 0, 0, 0);
 
-    /// `[0, 1, 0, 0]`: a unit-length vector pointing along the positive Y axis.
-    pub const Y: Self = Self::from_array([0, 1, 0, 0]);
+    /// A unit-length vector pointing along the positive Y axis.
+    pub const Y: Self = Self::new(0, 1, 0, 0);
 
-    /// `[0, 0, 1, 0]`: a unit-length vector pointing along the positive Z axis.
-    pub const Z: Self = Self::from_array([0, 0, 1, 0]);
+    /// A unit-length vector pointing along the positive Z axis.
+    pub const Z: Self = Self::new(0, 0, 1, 0);
 
-    /// `[0, 0, 0, 1]`: a unit-length vector pointing along the positive W axis.
-    pub const W: Self = Self::from_array([0, 0, 0, 1]);
+    /// A unit-length vector pointing along the positive W axis.
+    pub const W: Self = Self::new(0, 0, 0, 1);
+
+    /// A unit-length vector pointing along the negative X axis.
+    pub const NEG_X: Self = Self::new(-1, 0, 0, 0);
+
+    /// A unit-length vector pointing along the negative Y axis.
+    pub const NEG_Y: Self = Self::new(0, -1, 0, 0);
+
+    /// A unit-length vector pointing along the negative Z axis.
+    pub const NEG_Z: Self = Self::new(0, 0, -1, 0);
+
+    /// A unit-length vector pointing along the negative W axis.
+    pub const NEG_W: Self = Self::new(0, 0, 0, -1);
 
     /// The unit axes.
     pub const AXES: [Self; 4] = [Self::X, Self::Y, Self::Z, Self::W];

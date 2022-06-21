@@ -40,11 +40,17 @@ impl Vec2 {
     /// All NAN.
     pub const NAN: Self = Self::splat(f32::NAN);
 
-    /// `[1.0, 0.0]`: a unit-length vector pointing along the positive X axis.
-    pub const X: Self = Self::from_array([1.0, 0.0]);
+    /// A unit-length vector pointing along the positive X axis.
+    pub const X: Self = Self::new(1.0, 0.0);
 
-    /// `[0.0, 1.0]`: a unit-length vector pointing along the positive Y axis.
-    pub const Y: Self = Self::from_array([0.0, 1.0]);
+    /// A unit-length vector pointing along the positive Y axis.
+    pub const Y: Self = Self::new(0.0, 1.0);
+
+    /// A unit-length vector pointing along the negative X axis.
+    pub const NEG_X: Self = Self::new(-1.0, 0.0);
+
+    /// A unit-length vector pointing along the negative Y axis.
+    pub const NEG_Y: Self = Self::new(0.0, -1.0);
 
     /// The unit axes.
     pub const AXES: [Self; 2] = [Self::X, Self::Y];
