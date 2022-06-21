@@ -15,8 +15,6 @@ macro_rules! glam_assert {
 
 macro_rules! const_assert {
     ($x:expr $(,)?) => {
-        // FIXME: everything is align 16 on spirv - ignore for now
-        #[cfg(not(target_arch = "spirv"))]
         #[allow(unknown_lints, clippy::eq_op)]
         const _: () = assert!($x);
     };

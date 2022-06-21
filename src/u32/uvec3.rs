@@ -15,6 +15,8 @@ pub const fn uvec3(x: u32, y: u32, z: u32) -> UVec3 {
 
 /// A 3-dimensional vector.
 #[derive(Clone, Copy)]
+#[cfg_attr(not(target_arch = "spirv"), repr(C))]
+#[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct UVec3 {
     pub x: u32,
     pub y: u32,

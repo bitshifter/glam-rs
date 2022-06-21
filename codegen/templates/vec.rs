@@ -140,8 +140,7 @@ pub const fn {{ self_t | lower }}(
 {%- endif %}
 #[derive(Clone, Copy)]
 {%- if self_t == "Vec3A" and is_scalar %}
-#[cfg_attr(not(target_arch = "spirv"), repr(C, align(16)))]
-#[cfg_attr(target_arch = "spirv", repr(simd))]
+#[cfg_attr(not(target_arch = "spirv"), repr(align(16)))]
 {%- elif self_t == "Vec4" and is_scalar %}
 #[cfg_attr(
     any(
@@ -149,14 +148,12 @@ pub const fn {{ self_t | lower }}(
         feature = "cuda"),
     repr(align(16))
 )]
-#[cfg_attr(not(target_arch = "spirv"), repr(C))]
-#[cfg_attr(target_arch = "spirv", repr(simd))]
 {%- elif dim != 3 and is_scalar %}
 #[cfg_attr(feature = "cuda", repr(align({{ cuda_align }})))]
-#[cfg_attr(not(target_arch = "spirv"), repr(C))]
-#[cfg_attr(target_arch = "spirv", repr(simd))]
 {%- endif %}
 {%- if is_scalar %}
+#[cfg_attr(not(target_arch = "spirv"), repr(C))]
+#[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct {{ self_t }}
 {
     {% for c in components %}
