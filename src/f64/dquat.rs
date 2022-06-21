@@ -177,7 +177,6 @@ impl DQuat {
     #[inline]
     pub(crate) fn from_rotation_axes(x_axis: DVec3, y_axis: DVec3, z_axis: DVec3) -> Self {
         // Based on https://github.com/microsoft/DirectXMath `XM$quaternionRotationMatrix`
-        // TODO: sse2 version
         let (m00, m01, m02) = x_axis.into();
         let (m10, m11, m12) = y_axis.into();
         let (m20, m21, m22) = z_axis.into();

@@ -262,7 +262,6 @@ impl {{ self_t }} {
     #[inline]
     pub(crate) fn from_rotation_axes(x_axis: {{ vec3_t }}, y_axis: {{ vec3_t }}, z_axis: {{ vec3_t }}) -> Self {
         // Based on https://github.com/microsoft/DirectXMath `XM$quaternionRotationMatrix`
-        // TODO: sse2 version
         let (m00, m01, m02) = x_axis.into();
         let (m10, m11, m12) = y_axis.into();
         let (m20, m21, m22) = z_axis.into();
@@ -1133,7 +1132,6 @@ impl From<{{ self_t }}> for [{{ scalar_t }}; 4] {
 
 {% if not is_scalar %}
 impl From<{{ self_t }}> for {{ simd_t }} {
-    // TODO: write test
     #[inline]
     fn from(q: {{ self_t }}) -> Self {
         {% if is_scalar %}

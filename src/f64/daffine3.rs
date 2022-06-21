@@ -268,7 +268,6 @@ impl DAffine3 {
         #[allow(unused_imports)]
         use num_traits::Float;
 
-        // TODO: migrate to core module
         let det = self.matrix3.determinant();
         glam_assert!(det != 0.0);
 
