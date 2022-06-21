@@ -15,7 +15,9 @@ pub const fn uvec2(x: u32, y: u32) -> UVec2 {
 
 /// A 2-dimensional vector.
 #[derive(Clone, Copy)]
-#[cfg_attr(feature = "cuda", repr(C, align(8)))]
+#[cfg_attr(feature = "cuda", repr(align(8)))]
+#[cfg_attr(not(target_arch = "spirv"), repr(C))]
+#[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct UVec2 {
     pub x: u32,
     pub y: u32,

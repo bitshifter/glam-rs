@@ -174,18 +174,19 @@ pub const fn {{ self_t | lower }}(
     any(
         not(any(feature = "scalar-math", target_arch = "spirv")),
         feature = "cuda"),
-    repr(C, align(16))
+    repr(align(16))
 )]
 {%- elif self_t == "Mat2" and is_scalar %}
-#[cfg_attr(not(any(feature = "scalar-math", target_arch = "spirv")), repr(C, align(16)))]
-#[cfg_attr(feature = "cuda", repr(C, align(8)))]
+#[cfg_attr(not(any(feature = "scalar-math", target_arch = "spirv")), repr(align(16)))]
+#[cfg_attr(feature = "cuda", repr(align(8)))]
 {%- elif self_t == "DMat2" or self_t == "DMat4" %}
 #[cfg_attr(feature = "cuda", repr(align(16)))]
 {%- endif %}
 {%- if self_t == "Mat2" and not is_scalar %}
 #[repr(transparent)]
 pub struct {{ self_t }}(pub(crate) {{ simd_t }});
-{% else %}
+{%- else %}
+#[repr(C)]
 pub struct {{ self_t }}
 {
     {% for axis in axes %}

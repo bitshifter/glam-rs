@@ -20,9 +20,10 @@ pub const fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
 #[derive(Clone, Copy)]
 #[cfg_attr(
     not(any(feature = "scalar-math", target_arch = "spirv")),
-    repr(C, align(16))
+    repr(align(16))
 )]
-#[cfg_attr(feature = "cuda", repr(C, align(8)))]
+#[cfg_attr(feature = "cuda", repr(align(8)))]
+#[repr(C)]
 pub struct Mat2 {
     pub x_axis: Vec2,
     pub y_axis: Vec2,

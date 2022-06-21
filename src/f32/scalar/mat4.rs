@@ -51,8 +51,9 @@ pub const fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat
         not(any(feature = "scalar-math", target_arch = "spirv")),
         feature = "cuda"
     ),
-    repr(C, align(16))
+    repr(align(16))
 )]
+#[repr(C)]
 pub struct Mat4 {
     pub x_axis: Vec4,
     pub y_axis: Vec4,

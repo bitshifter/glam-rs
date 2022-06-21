@@ -31,8 +31,10 @@ pub const fn quat(x: f32, y: f32, z: f32, w: f32) -> Quat {
 #[derive(Clone, Copy)]
 #[cfg_attr(
     not(any(feature = "scalar-math", target_arch = "spirv")),
-    repr(C, align(16))
+    repr(align(16))
 )]
+#[cfg_attr(not(target_arch = "spirv"), repr(C))]
+#[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct Quat {
     pub x: f32,
     pub y: f32,

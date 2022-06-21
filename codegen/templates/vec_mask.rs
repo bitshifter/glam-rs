@@ -47,6 +47,7 @@ union UnionCast {
 {%- endif %}
 #[derive(Clone, Copy)]
 {%- if is_scalar %}
+#[repr(C)]
 pub struct {{ self_t }}
 {
 {% for c in components %}

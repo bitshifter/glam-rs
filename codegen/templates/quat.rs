@@ -93,8 +93,10 @@ pub const fn {{ self_t | lower }}(x: {{ scalar_t }}, y: {{ scalar_t }}, z: {{ sc
 #[derive(Clone, Copy)]
 {%- if is_scalar %}
 {%- if scalar_t == "f32" %}
-#[cfg_attr(not(any(feature = "scalar-math", target_arch = "spirv")), repr(C, align(16)))]
+#[cfg_attr(not(any(feature = "scalar-math", target_arch = "spirv")), repr(align(16)))]
 {%- endif %}
+#[cfg_attr(not(target_arch = "spirv"), repr(C))]
+#[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct {{ self_t }}{
     pub x: {{ scalar_t }},
     pub y: {{ scalar_t }},

@@ -15,7 +15,9 @@ pub const fn ivec4(x: i32, y: i32, z: i32, w: i32) -> IVec4 {
 
 /// A 4-dimensional vector.
 #[derive(Clone, Copy)]
-#[cfg_attr(feature = "cuda", repr(C, align(16)))]
+#[cfg_attr(feature = "cuda", repr(align(16)))]
+#[cfg_attr(not(target_arch = "spirv"), repr(C))]
+#[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct IVec4 {
     pub x: i32,
     pub y: i32,

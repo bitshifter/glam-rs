@@ -24,8 +24,10 @@ pub const fn vec4(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
         not(any(feature = "scalar-math", target_arch = "spirv")),
         feature = "cuda"
     ),
-    repr(C, align(16))
+    repr(align(16))
 )]
+#[cfg_attr(not(target_arch = "spirv"), repr(C))]
+#[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct Vec4 {
     pub x: f32,
     pub y: f32,

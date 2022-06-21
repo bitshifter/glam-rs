@@ -6,6 +6,7 @@ use core::{hash, ops::*};
 
 /// A 2-dimensional boolean vector.
 #[derive(Clone, Copy)]
+#[repr(C)]
 pub struct BVec2 {
     pub x: bool,
     pub y: bool,

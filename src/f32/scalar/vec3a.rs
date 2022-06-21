@@ -24,7 +24,8 @@ pub const fn vec3a(x: f32, y: f32, z: f32) -> Vec3A {
 ///
 /// It is possible to convert between `Vec3` and `Vec3A` types using `From` trait implementations.
 #[derive(Clone, Copy)]
-#[repr(C, align(16))]
+#[cfg_attr(not(target_arch = "spirv"), repr(C, align(16)))]
+#[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct Vec3A {
     pub x: f32,
     pub y: f32,
