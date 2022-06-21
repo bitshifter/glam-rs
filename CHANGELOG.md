@@ -15,14 +15,18 @@ The format is based on [Keep a Changelog], and this project adheres to
 * The `abs_diff_eq` method on `Mat2` and `DMat2` now takes `other` by value
   instead of reference. This is consistent with the other matrix types.
 
-* The `AsMut` trait implementation on `Quat` and `DQuat` was removed.
+* The `AsMut` and `Deref` trait implementations on `Quat` and `DQuat` was
+  removed. Quaternion fields are now public.
 
 * The `AsRef` trait implementations were removed from `BVec2`, `BVec3`,
   `BVec3A`, `BVec4` and `BVec4A`.
 
 ### Added
 
-* `NEG_ONE` constant was added to all vector types.
+* `NEG_ONE` constant was added to all signed vector types.
+
+* `NEG_X`, `NEG_Y`, `NEG_Z` and `NEG_W` negative axis vectors were added to
+  signed vector types.
 
 * The `rotate` and `from_angle` methods were added to `Vec2` and `DVec2`.
   `from_angle` returns a 2D vector containing `[angle.cos(), angle.sin()]` that
