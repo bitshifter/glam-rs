@@ -5,7 +5,8 @@ use crate::{
     wasm32, DQuat, FloatEx, Mat3, Mat4, Vec2, Vec3, Vec3A, Vec4,
 };
 
-#[cfg(not(feature = "std"))]
+#[cfg(feature = "libm")]
+#[allow(unused_imports)]
 use num_traits::Float;
 
 use core::arch::wasm32::*;

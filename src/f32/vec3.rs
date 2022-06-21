@@ -7,7 +7,8 @@ use core::fmt;
 use core::iter::{Product, Sum};
 use core::{f32, ops::*};
 
-#[cfg(not(feature = "std"))]
+#[cfg(feature = "libm")]
+#[allow(unused_imports)]
 use num_traits::Float;
 
 /// Creates a 3-dimensional vector.

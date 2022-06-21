@@ -260,7 +260,8 @@ impl Affine3A {
     /// vector contains any zero elements when `glam_assert` is enabled.
     #[inline]
     pub fn to_scale_rotation_translation(&self) -> (Vec3, Quat, Vec3) {
-        #[cfg(not(feature = "std"))]
+        #[cfg(feature = "libm")]
+        #[allow(unused_imports)]
         use num_traits::Float;
 
         // TODO: migrate to core module

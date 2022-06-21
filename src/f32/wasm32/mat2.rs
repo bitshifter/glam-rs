@@ -8,7 +8,8 @@ use core::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
 use core::arch::wasm32::*;
 
-#[cfg(not(feature = "std"))]
+#[cfg(feature = "libm")]
+#[allow(unused_imports)]
 use num_traits::Float;
 
 /// Creates a 2x2 matrix from column vectors.

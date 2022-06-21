@@ -6,7 +6,8 @@ From: http://bediyap.com/programming/convert-quaternion-to-euler-rotations/
 
 use super::{DQuat, Quat};
 
-#[cfg(not(feature = "std"))]
+#[cfg(feature = "libm")]
+#[allow(unused_imports)]
 use num_traits::Float;
 
 /// Euler rotation sequences.

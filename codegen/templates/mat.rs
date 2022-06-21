@@ -91,7 +91,8 @@ use core::arch::x86_64::*;
 use core::arch::wasm32::*;
 {% endif %}
 
-#[cfg(not(feature = "std"))]
+#[cfg(feature = "libm")]
+#[allow(unused_imports)]
 use num_traits::Float;
 
 

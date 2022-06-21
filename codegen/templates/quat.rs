@@ -42,7 +42,8 @@ use crate::{
     {% endif %}
 };
 
-#[cfg(not(feature = "std"))]
+#[cfg(feature = "libm")]
+#[allow(unused_imports)]
 use num_traits::Float;
 
 {% if is_sse2 %}

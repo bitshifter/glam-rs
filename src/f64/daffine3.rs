@@ -264,7 +264,8 @@ impl DAffine3 {
     /// vector contains any zero elements when `glam_assert` is enabled.
     #[inline]
     pub fn to_scale_rotation_translation(&self) -> (DVec3, DQuat, DVec3) {
-        #[cfg(not(feature = "std"))]
+        #[cfg(feature = "libm")]
+        #[allow(unused_imports)]
         use num_traits::Float;
 
         // TODO: migrate to core module

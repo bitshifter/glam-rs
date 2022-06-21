@@ -102,7 +102,8 @@ use core::arch::wasm32::*;
 {% endif %}
 
 {% if is_float %}
-#[cfg(not(feature = "std"))]
+#[cfg(feature = "libm")]
+#[allow(unused_imports)]
 use num_traits::Float;
 {% endif %}
 

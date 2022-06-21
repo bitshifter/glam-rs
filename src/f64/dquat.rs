@@ -5,7 +5,8 @@ use crate::{
     DMat3, DMat4, DVec2, DVec3, DVec4, FloatEx, Quat,
 };
 
-#[cfg(not(feature = "std"))]
+#[cfg(feature = "libm")]
+#[allow(unused_imports)]
 use num_traits::Float;
 
 #[cfg(not(target_arch = "spirv"))]

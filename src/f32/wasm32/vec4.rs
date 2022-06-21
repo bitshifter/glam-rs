@@ -9,7 +9,8 @@ use core::{f32, ops::*};
 
 use core::arch::wasm32::*;
 
-#[cfg(not(feature = "std"))]
+#[cfg(feature = "libm")]
+#[allow(unused_imports)]
 use num_traits::Float;
 
 union UnionCast {

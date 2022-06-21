@@ -438,7 +438,8 @@ impl {{ self_t }} {
     /// vector contains any zero elements when `glam_assert` is enabled.
     #[inline]
     pub fn to_scale_rotation_translation(&self) -> ({{ vec3_t }}, {{ quat_t }}, {{ vec3_t }}) {
-        #[cfg(not(feature = "std"))]
+        #[cfg(feature = "libm")]
+        #[allow(unused_imports)]
         use num_traits::Float;
 
         // TODO: migrate to core module
