@@ -11,7 +11,7 @@ use num_traits::Float;
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
-use core::ops::{Add, Deref, Div, Mul, MulAssign, Neg, Sub};
+use core::ops::{Add, Div, Mul, MulAssign, Neg, Sub};
 
 /// Creates a quaternion from `x`, `y`, `z` and `w` values.
 ///
@@ -33,10 +33,10 @@ pub const fn quat(x: f32, y: f32, z: f32, w: f32) -> Quat {
     repr(C, align(16))
 )]
 pub struct Quat {
-    x: f32,
-    y: f32,
-    z: f32,
-    w: f32,
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+    pub w: f32,
 }
 
 impl Quat {
@@ -842,13 +842,5 @@ impl From<Quat> for [f32; 4] {
     #[inline]
     fn from(q: Quat) -> Self {
         [q.x, q.y, q.z, q.w]
-    }
-}
-
-impl Deref for Quat {
-    type Target = crate::deref::Vec4<f32>;
-    #[inline]
-    fn deref(&self) -> &Self::Target {
-        unsafe { &*(self as *const Self).cast() }
     }
 }

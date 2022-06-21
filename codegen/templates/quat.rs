@@ -57,7 +57,12 @@ use core::arch::wasm32::*;
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
-use core::ops::{Add, Deref, Div, Mul, MulAssign, Neg, Sub};
+use core::ops::{
+    {% if not is_scalar %}
+        Deref, DerefMut,
+    {% endif %}
+    Add, Div, Mul, MulAssign, Neg, Sub
+};
 
 {% if is_sse2 %}
 union UnionCast {
@@ -90,10 +95,10 @@ pub const fn {{ self_t | lower }}(x: {{ scalar_t }}, y: {{ scalar_t }}, z: {{ sc
 #[cfg_attr(not(any(feature = "scalar-math", target_arch = "spirv")), repr(C, align(16)))]
 {%- endif %}
 pub struct {{ self_t }}{
-    x: {{ scalar_t }},
-    y: {{ scalar_t }},
-    z: {{ scalar_t }},
-    w: {{ scalar_t }},
+    pub x: {{ scalar_t }},
+    pub y: {{ scalar_t }},
+    pub z: {{ scalar_t }},
+    pub w: {{ scalar_t }},
 }
 {%- else %}
 #[repr(transparent)]
@@ -1135,7 +1140,6 @@ impl From<{{ self_t }}> for {{ simd_t }} {
         {% endif %}
     }
 }
-{% endif %}
 
 impl Deref for {{ self_t }} {
     type Target = crate::deref::Vec4<{{ scalar_t }}>;
@@ -1145,3 +1149,10 @@ impl Deref for {{ self_t }} {
     }
 }
 
+impl DerefMut for {{ self_t }} {
+    #[inline]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        unsafe { &mut *(self as *mut Self).cast() }
+    }
+}
+{% endif %}

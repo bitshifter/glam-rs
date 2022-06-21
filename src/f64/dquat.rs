@@ -11,7 +11,7 @@ use num_traits::Float;
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
-use core::ops::{Add, Deref, Div, Mul, MulAssign, Neg, Sub};
+use core::ops::{Add, Div, Mul, MulAssign, Neg, Sub};
 
 /// Creates a quaternion from `x`, `y`, `z` and `w` values.
 ///
@@ -29,10 +29,10 @@ pub const fn dquat(x: f64, y: f64, z: f64, w: f64) -> DQuat {
 /// operations are applied.
 #[derive(Clone, Copy)]
 pub struct DQuat {
-    x: f64,
-    y: f64,
-    z: f64,
-    w: f64,
+    pub x: f64,
+    pub y: f64,
+    pub z: f64,
+    pub w: f64,
 }
 
 impl DQuat {
@@ -824,13 +824,5 @@ impl From<DQuat> for [f64; 4] {
     #[inline]
     fn from(q: DQuat) -> Self {
         [q.x, q.y, q.z, q.w]
-    }
-}
-
-impl Deref for DQuat {
-    type Target = crate::deref::Vec4<f64>;
-    #[inline]
-    fn deref(&self) -> &Self::Target {
-        unsafe { &*(self as *const Self).cast() }
     }
 }

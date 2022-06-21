@@ -16,7 +16,7 @@ use core::arch::x86_64::*;
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
-use core::ops::{Add, Deref, Div, Mul, MulAssign, Neg, Sub};
+use core::ops::{Add, Deref, DerefMut, Div, Mul, MulAssign, Neg, Sub};
 
 union UnionCast {
     a: [f32; 4],
@@ -907,5 +907,12 @@ impl Deref for Quat {
     #[inline]
     fn deref(&self) -> &Self::Target {
         unsafe { &*(self as *const Self).cast() }
+    }
+}
+
+impl DerefMut for Quat {
+    #[inline]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        unsafe { &mut *(self as *mut Self).cast() }
     }
 }
