@@ -20,7 +20,7 @@ jobs:
       # run clippy to verify we have no warnings
       - run: cargo fetch
       - name: cargo clippy
-        run: cargo clippy --all-features -- -D warnings
+        run: cargo clippy --workspace --all-features -- -D warnings
 
   test:
     name: Test

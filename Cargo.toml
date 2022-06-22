@@ -108,3 +108,9 @@ harness = false
 [[bench]]
 name = "vec4"
 harness = false
+
+[workspace]
+members = [
+    "codegen",
+    "test_no_std",
+]
