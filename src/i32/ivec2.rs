@@ -85,11 +85,11 @@ impl IVec2 {
         [self.x, self.y]
     }
 
-    /// Creates a vector from the first N values in `slice`.
+    /// Creates a vector from the first 2 values in `slice`.
     ///
     /// # Panics
     ///
-    /// Panics if `slice` is less than N elements long.
+    /// Panics if `slice` is less than 2 elements long.
     #[inline]
     pub const fn from_slice(slice: &[i32]) -> Self {
         Self::new(slice[0], slice[1])
@@ -99,7 +99,7 @@ impl IVec2 {
     ///
     /// # Panics
     ///
-    /// Panics if `slice` is less than N elements long.
+    /// Panics if `slice` is less than 2 elements long.
     #[inline]
     pub fn write_to_slice(self, slice: &mut [i32]) {
         slice[0] = self.x;
