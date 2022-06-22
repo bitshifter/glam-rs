@@ -1,3 +1,5 @@
+#![allow(clippy::excessive_precision)]
+
 #[macro_use]
 mod support;
 
