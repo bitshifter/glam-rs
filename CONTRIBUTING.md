@@ -42,7 +42,7 @@ If you feel any documentation could be added or improved please
 
 ## Code contributions
 
-Most of `glam`'s source code is generated. See the [codegen/README.md] on how
+Most of `glam`'s source code is generated. See the [codegen README] on how
 to modify the code templates and generate new source code.
 
 You can run some of `glam`'s test suite locally by running the
@@ -56,3 +56,4 @@ Also run `cargo fmt` and `cargo clippy` on any new code.
 [ask a question]: https://github.com/bitshifter/glam-rs/discussions/new?category=q-a
 [suggest a new feature]: https://github.com/bitshifter/glam-rs/discussions/new?category=ideas
 [ARCHITECTURE]: ARCHITECTURE.md
+[codegen README]: codegen/README.md
