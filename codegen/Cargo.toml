@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = { version = "1", default-features = false }
+anyhow = { version = "1" }
 clap = { version = "3", default-features = false, features = ["cargo", "std"] }
 git2 = { version = "0.14", default-features = false }
 globset = { version = "0.4", default-features = false }
