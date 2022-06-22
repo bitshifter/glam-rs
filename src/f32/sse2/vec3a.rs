@@ -623,7 +623,7 @@ impl Vec3A {
     pub fn mul_add(self, a: Self, b: Self) -> Self {
         #[cfg(target_feature = "fma")]
         unsafe {
-            _mm_fmadd_ps(self, b, c)
+            Self(_mm_fmadd_ps(self.0, a.0, b.0))
         }
         #[cfg(not(target_feature = "fma"))]
         Self::new(

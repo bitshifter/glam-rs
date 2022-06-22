@@ -1130,7 +1130,7 @@ impl {{ self_t }} {
     pub fn mul_add(self, a: Self, b: Self) -> Self {
         {% if is_sse2 %}
             #[cfg(target_feature = "fma")]
-            unsafe { _mm_fmadd_ps(self, b, c) }
+            unsafe { Self(_mm_fmadd_ps(self.0, a.0, b.0)) }
             #[cfg(not(target_feature = "fma"))]
         {% endif %}
         Self::new(
