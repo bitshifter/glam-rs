@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [0.21.1] - 2022-06-22
+
+### Fixed
+
+* Fix compilation when FMA support is enabled.
+
 ## [0.21.0] - 2022-06-22
 
 ### Breaking changes
@@ -803,7 +809,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.21.0...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.21.1...HEAD
+[0.21.1]: https://github.com/bitshifter/glam-rs/compare/0.21.0...0.21.1
 [0.21.0]: https://github.com/bitshifter/glam-rs/compare/0.20.5...0.21.0
 [0.20.5]: https://github.com/bitshifter/glam-rs/compare/0.20.4...0.20.5
 [0.20.4]: https://github.com/bitshifter/glam-rs/compare/0.20.3...0.20.4
