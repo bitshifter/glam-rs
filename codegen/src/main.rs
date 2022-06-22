@@ -12,14 +12,14 @@ const GLAM_ROOT: &str = "..";
 fn is_modified(repo: &git2::Repository, output_path: &str) -> anyhow::Result<bool> {
     match repo.status_file(Path::new(output_path)) {
         Ok(status) => {
-            return Ok(status.is_wt_modified());
+            Ok(status.is_wt_modified())
             // if status.is_wt_modified() {
             //     bail!("{} is already modified, revert or stash your changes.", output_path);
             // }
         }
         Err(e) => {
             if e.code() == git2::ErrorCode::NotFound {
-                return Ok(false);
+                Ok(false)
             } else {
                 bail!("git file status failed for {}: {}", output_path, e);
             }
@@ -32,7 +32,7 @@ fn generate_file(
     context: &tera::Context,
     template_path: &str,
 ) -> anyhow::Result<String> {
-    let buffer = match tera.render(template_path, &context) {
+    let buffer = match tera.render(template_path, context) {
         Ok(output) => output,
         Err(e) => {
             bail!("tera error encountered: {}", e);
@@ -584,7 +584,7 @@ fn main() -> anyhow::Result<()> {
             );
         }
 
-        let mut output_str = generate_file(&tera, &context, template_path)?;
+        let mut output_str = generate_file(&tera, context, template_path)?;
 
         if fmt_output {
             match rustfmt(&output_str) {
@@ -608,11 +608,8 @@ fn main() -> anyhow::Result<()> {
             }
         };
 
-        match write!(output_file, "{}", output_str) {
-            Err(e) => {
-                bail!("failed to write output: {}", e);
-            }
-            Ok(()) => (),
+        if let Err(e) = write!(output_file, "{}", output_str) {
+            bail!("failed to write output: {}", e);
         }
     }
 
