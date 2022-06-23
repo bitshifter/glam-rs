@@ -20,7 +20,13 @@ jobs:
       # run clippy to verify we have no warnings
       - run: cargo fetch
       - name: cargo clippy
-        run: cargo clippy --all-targets --all-features -- -D warnings
+        run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+
+      - name: codegen
+        run: cargo run
+        working-directory: codegen
+      - name: codegen introduced no changes or untracked files
+        run: test -z "$(git status --porcelain)" || (echo "::error::Generated files are different, please regenerate with cargo run -p codegen and add all files!"; git status; false)
 
   test:
     name: Test

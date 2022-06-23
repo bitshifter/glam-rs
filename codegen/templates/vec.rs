@@ -300,11 +300,11 @@ impl {{ self_t }} {
         {% endif %}
     }
 
-    /// Creates a vector from the first N values in `slice`.
+    /// Creates a vector from the first {{ dim }} values in `slice`.
     ///
     /// # Panics
     ///
-    /// Panics if `slice` is less than N elements long.
+    /// Panics if `slice` is less than {{ dim }} elements long.
     #[inline]
     pub const fn from_slice(slice: &[{{ scalar_t }}]) -> Self {
         Self::new(
@@ -318,7 +318,7 @@ impl {{ self_t }} {
     ///
     /// # Panics
     ///
-    /// Panics if `slice` is less than N elements long.
+    /// Panics if `slice` is less than {{ dim }} elements long.
     #[inline]
     pub fn write_to_slice(self, slice: &mut [{{ scalar_t }}]) {
         {% if self_t == "Vec4" and is_sse2 %}
