@@ -113,11 +113,11 @@ impl Vec4 {
         unsafe { *(self as *const Vec4 as *const [f32; 4]) }
     }
 
-    /// Creates a vector from the first N values in `slice`.
+    /// Creates a vector from the first 4 values in `slice`.
     ///
     /// # Panics
     ///
-    /// Panics if `slice` is less than N elements long.
+    /// Panics if `slice` is less than 4 elements long.
     #[inline]
     pub const fn from_slice(slice: &[f32]) -> Self {
         Self::new(slice[0], slice[1], slice[2], slice[3])
@@ -127,7 +127,7 @@ impl Vec4 {
     ///
     /// # Panics
     ///
-    /// Panics if `slice` is less than N elements long.
+    /// Panics if `slice` is less than 4 elements long.
     #[inline]
     pub fn write_to_slice(self, slice: &mut [f32]) {
         unsafe {

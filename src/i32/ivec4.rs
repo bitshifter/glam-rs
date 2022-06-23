@@ -109,11 +109,11 @@ impl IVec4 {
         [self.x, self.y, self.z, self.w]
     }
 
-    /// Creates a vector from the first N values in `slice`.
+    /// Creates a vector from the first 4 values in `slice`.
     ///
     /// # Panics
     ///
-    /// Panics if `slice` is less than N elements long.
+    /// Panics if `slice` is less than 4 elements long.
     #[inline]
     pub const fn from_slice(slice: &[i32]) -> Self {
         Self::new(slice[0], slice[1], slice[2], slice[3])
@@ -123,7 +123,7 @@ impl IVec4 {
     ///
     /// # Panics
     ///
-    /// Panics if `slice` is less than N elements long.
+    /// Panics if `slice` is less than 4 elements long.
     #[inline]
     pub fn write_to_slice(self, slice: &mut [i32]) {
         slice[0] = self.x;

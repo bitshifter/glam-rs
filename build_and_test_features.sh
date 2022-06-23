@@ -26,4 +26,4 @@ done
 
 RUSTFLAGS='-C target-feature=+fma' cargo check
 
-cargo check -p test_no_std
+cargo check -p glam-no_std

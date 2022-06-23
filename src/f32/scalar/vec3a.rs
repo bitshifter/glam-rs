@@ -105,11 +105,11 @@ impl Vec3A {
         [self.x, self.y, self.z]
     }
 
-    /// Creates a vector from the first N values in `slice`.
+    /// Creates a vector from the first 3 values in `slice`.
     ///
     /// # Panics
     ///
-    /// Panics if `slice` is less than N elements long.
+    /// Panics if `slice` is less than 3 elements long.
     #[inline]
     pub const fn from_slice(slice: &[f32]) -> Self {
         Self::new(slice[0], slice[1], slice[2])
@@ -119,7 +119,7 @@ impl Vec3A {
     ///
     /// # Panics
     ///
-    /// Panics if `slice` is less than N elements long.
+    /// Panics if `slice` is less than 3 elements long.
     #[inline]
     pub fn write_to_slice(self, slice: &mut [f32]) {
         slice[0] = self.x;
