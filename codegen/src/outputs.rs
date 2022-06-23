@@ -1,0 +1,476 @@
+use serde::ser::Serialize;
+use std::collections::HashMap;
+
+struct ContextBuilder(tera::Context);
+
+impl ContextBuilder {
+    pub fn new() -> Self {
+        Self(tera::Context::new())
+    }
+
+    fn new_tvecn_swizzle_impl(dim: u32, prefix: &str) -> Self {
+        ContextBuilder::new()
+            .with_template("swizzle_impl.rs")
+            .target_scalar()
+            .with_key_val("vec2_t", &format!("{}Vec2", prefix))
+            .with_key_val("vec3_t", &format!("{}Vec3", prefix))
+            .with_key_val("vec4_t", &format!("{}Vec4", prefix))
+            .with_self_t(&format!("{}Vec{}", prefix, dim))
+            .with_dimension(dim)
+    }
+
+    pub fn new_vec2_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(2, "")
+    }
+
+    pub fn new_vec3_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(3, "")
+    }
+
+    pub fn new_vec3a_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(3, "")
+            .with_key_val("vec3_t", "Vec3A")
+            .with_self_t("Vec3A")
+    }
+
+    pub fn new_vec4_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(4, "")
+    }
+
+    pub fn new_dvec2_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(2, "D")
+    }
+
+    pub fn new_dvec3_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(3, "D")
+    }
+
+    pub fn new_dvec4_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(4, "D")
+    }
+
+    pub fn new_ivec2_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(2, "I")
+    }
+
+    pub fn new_ivec3_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(3, "I")
+    }
+
+    pub fn new_ivec4_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(4, "I")
+    }
+
+    pub fn new_uvec2_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(2, "U")
+    }
+
+    pub fn new_uvec3_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(3, "U")
+    }
+
+    pub fn new_uvec4_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(4, "U")
+    }
+
+    fn new_taffinen(dim: u32, scalar_t: &str) -> Self {
+        ContextBuilder::new()
+            .with_template("affine.rs")
+            .target_scalar()
+            .with_scalar_t(scalar_t)
+            .with_dimension(dim)
+            .with_is_align(false)
+    }
+
+    pub fn new_affine2() -> Self {
+        Self::new_taffinen(2, "f32")
+    }
+
+    pub fn new_affine3a() -> Self {
+        Self::new_taffinen(3, "f32").with_is_align(true)
+    }
+
+    pub fn new_daffine2() -> Self {
+        Self::new_taffinen(2, "f64")
+    }
+
+    pub fn new_daffine3() -> Self {
+        Self::new_taffinen(3, "f64")
+    }
+
+    pub fn new_bvecn(dim: u32) -> Self {
+        ContextBuilder::new()
+            .with_template("vec_mask.rs")
+            .target_scalar()
+            .with_dimension(dim)
+    }
+
+    pub fn new_bvec2() -> Self {
+        Self::new_bvecn(2)
+    }
+
+    pub fn new_bvec3() -> Self {
+        Self::new_bvecn(3)
+    }
+
+    pub fn new_bvec4() -> Self {
+        Self::new_bvecn(4)
+    }
+
+    pub fn new_vecn(dim: u32) -> Self {
+        ContextBuilder::new()
+            .with_template("vec.rs")
+            .target_scalar()
+            .with_dimension(dim)
+            .with_is_align(false)
+    }
+
+    pub fn new_vec2() -> Self {
+        Self::new_vecn(2).with_scalar_t("f32")
+    }
+
+    pub fn new_vec3() -> Self {
+        Self::new_vecn(3).with_scalar_t("f32")
+    }
+
+    pub fn new_vec3a() -> Self {
+        Self::new_vecn(3).with_scalar_t("f32").with_is_align(true)
+    }
+
+    pub fn new_vec4() -> Self {
+        Self::new_vecn(4).with_scalar_t("f32")
+    }
+
+    pub fn new_dvec2() -> Self {
+        Self::new_vecn(2).with_scalar_t("f64")
+    }
+
+    pub fn new_dvec3() -> Self {
+        Self::new_vecn(3).with_scalar_t("f64")
+    }
+
+    pub fn new_dvec4() -> Self {
+        Self::new_vecn(4).with_scalar_t("f64")
+    }
+
+    pub fn new_ivec2() -> Self {
+        Self::new_vecn(2).with_scalar_t("i32")
+    }
+
+    pub fn new_ivec3() -> Self {
+        Self::new_vecn(3).with_scalar_t("i32")
+    }
+
+    pub fn new_ivec4() -> Self {
+        Self::new_vecn(4).with_scalar_t("i32")
+    }
+
+    pub fn new_uvec2() -> Self {
+        Self::new_vecn(2).with_scalar_t("u32")
+    }
+
+    pub fn new_uvec3() -> Self {
+        Self::new_vecn(3).with_scalar_t("u32")
+    }
+
+    pub fn new_uvec4() -> Self {
+        Self::new_vecn(4).with_scalar_t("u32")
+    }
+
+    pub fn new_quat() -> Self {
+        ContextBuilder::new()
+            .with_template("quat.rs")
+            .target_scalar()
+            .with_scalar_t("f32")
+    }
+
+    pub fn new_dquat() -> Self {
+        Self::new_quat().with_scalar_t("f64")
+    }
+
+    fn new_tmatn(dim: u32, scalar_t: &str) -> Self {
+        ContextBuilder::new()
+            .with_template("mat.rs")
+            .target_scalar()
+            .with_scalar_t(scalar_t)
+            .with_dimension(dim)
+    }
+
+    pub fn new_mat2() -> Self {
+        Self::new_tmatn(2, "f32")
+    }
+
+    pub fn new_dmat2() -> Self {
+        Self::new_tmatn(2, "f64")
+    }
+
+    pub fn new_mat3() -> Self {
+        Self::new_tmatn(3, "f32")
+    }
+
+    pub fn new_mat3a() -> Self {
+        Self::new_tmatn(3, "f32").with_is_align(true)
+    }
+
+    pub fn new_dmat3() -> Self {
+        Self::new_tmatn(3, "f64")
+    }
+
+    pub fn new_mat4() -> Self {
+        Self::new_tmatn(4, "f32")
+    }
+
+    pub fn new_dmat4() -> Self {
+        Self::new_tmatn(4, "f64")
+    }
+
+    pub fn with_template(mut self, template_path: &str) -> Self {
+        self.0.insert("template_path", template_path);
+        self
+    }
+
+    pub fn with_scalar_t(mut self, scalar_t: &str) -> Self {
+        self.0.insert("scalar_t", scalar_t);
+        self
+    }
+
+    pub fn target_sse2(mut self) -> Self {
+        self.0.insert("is_sse2", &true);
+        self.0.insert("is_wasm32", &false);
+        self.0.insert("is_scalar", &false);
+        self
+    }
+
+    pub fn target_wasm32(mut self) -> Self {
+        self.0.insert("is_sse2", &false);
+        self.0.insert("is_wasm32", &true);
+        self.0.insert("is_scalar", &false);
+        self
+    }
+
+    pub fn target_scalar(mut self) -> Self {
+        self.0.insert("is_sse2", &false);
+        self.0.insert("is_wasm32", &false);
+        self.0.insert("is_scalar", &true);
+        self
+    }
+
+    fn with_self_t(mut self, self_t: &str) -> Self {
+        self.0.insert("self_t", self_t);
+        self
+    }
+
+    fn with_dimension(mut self, dim: u32) -> Self {
+        self.0.insert("dim", &dim);
+        self
+    }
+
+    fn with_is_align(mut self, is_align: bool) -> Self {
+        self.0.insert("is_align", &is_align);
+        self
+    }
+
+    fn with_key_val<T: Serialize + ?Sized, S: Into<String>>(mut self, key: S, val: &T) -> Self {
+        self.0.insert(key, val);
+        self
+    }
+
+    pub fn build(self) -> tera::Context {
+        self.0
+    }
+}
+
+pub fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
+    HashMap::from([
+        (
+            "src/swizzles/vec_traits.rs",
+            ContextBuilder::new()
+                .with_template("swizzle_traits.rs")
+                .build(),
+        ),
+        (
+            "src/swizzles/vec2_impl.rs",
+            ContextBuilder::new_vec2_swizzle_impl().build(),
+        ),
+        (
+            "src/swizzles/vec3_impl.rs",
+            ContextBuilder::new_vec3_swizzle_impl().build(),
+        ),
+        (
+            "src/swizzles/scalar/vec3a_impl.rs",
+            ContextBuilder::new_vec3a_swizzle_impl().build(),
+        ),
+        (
+            "src/swizzles/sse2/vec3a_impl.rs",
+            ContextBuilder::new_vec3a_swizzle_impl()
+                .target_sse2()
+                .build(),
+        ),
+        (
+            "src/swizzles/wasm32/vec3a_impl.rs",
+            ContextBuilder::new_vec3a_swizzle_impl()
+                .target_wasm32()
+                .build(),
+        ),
+        (
+            "src/swizzles/scalar/vec4_impl.rs",
+            ContextBuilder::new_vec4_swizzle_impl().build(),
+        ),
+        (
+            "src/swizzles/sse2/vec4_impl.rs",
+            ContextBuilder::new_vec4_swizzle_impl()
+                .target_sse2()
+                .build(),
+        ),
+        (
+            "src/swizzles/wasm32/vec4_impl.rs",
+            ContextBuilder::new_vec4_swizzle_impl()
+                .target_wasm32()
+                .build(),
+        ),
+        (
+            "src/swizzles/dvec2_impl.rs",
+            ContextBuilder::new_dvec2_swizzle_impl().build(),
+        ),
+        (
+            "src/swizzles/dvec3_impl.rs",
+            ContextBuilder::new_dvec3_swizzle_impl().build(),
+        ),
+        (
+            "src/swizzles/dvec4_impl.rs",
+            ContextBuilder::new_dvec4_swizzle_impl().build(),
+        ),
+        (
+            "src/swizzles/ivec2_impl.rs",
+            ContextBuilder::new_ivec2_swizzle_impl().build(),
+        ),
+        (
+            "src/swizzles/ivec3_impl.rs",
+            ContextBuilder::new_ivec3_swizzle_impl().build(),
+        ),
+        (
+            "src/swizzles/ivec4_impl.rs",
+            ContextBuilder::new_ivec4_swizzle_impl().build(),
+        ),
+        (
+            "src/swizzles/uvec2_impl.rs",
+            ContextBuilder::new_uvec2_swizzle_impl().build(),
+        ),
+        (
+            "src/swizzles/uvec3_impl.rs",
+            ContextBuilder::new_uvec3_swizzle_impl().build(),
+        ),
+        (
+            "src/swizzles/uvec4_impl.rs",
+            ContextBuilder::new_uvec4_swizzle_impl().build(),
+        ),
+        ("src/f32/affine2.rs", ContextBuilder::new_affine2().build()),
+        (
+            "src/f32/affine3a.rs",
+            ContextBuilder::new_affine3a().build(),
+        ),
+        (
+            "src/f64/daffine2.rs",
+            ContextBuilder::new_daffine2().build(),
+        ),
+        (
+            "src/f64/daffine3.rs",
+            ContextBuilder::new_daffine3().build(),
+        ),
+        ("src/bool/bvec2.rs", ContextBuilder::new_bvec2().build()),
+        ("src/bool/bvec3.rs", ContextBuilder::new_bvec3().build()),
+        ("src/bool/bvec4.rs", ContextBuilder::new_bvec4().build()),
+        (
+            "src/bool/sse2/bvec3a.rs",
+            ContextBuilder::new_bvec3().target_sse2().build(),
+        ),
+        (
+            "src/bool/wasm32/bvec3a.rs",
+            ContextBuilder::new_bvec3().target_wasm32().build(),
+        ),
+        (
+            "src/bool/sse2/bvec4a.rs",
+            ContextBuilder::new_bvec4().target_sse2().build(),
+        ),
+        (
+            "src/bool/wasm32/bvec4a.rs",
+            ContextBuilder::new_bvec4().target_wasm32().build(),
+        ),
+        ("src/f32/vec2.rs", ContextBuilder::new_vec2().build()),
+        ("src/f32/vec3.rs", ContextBuilder::new_vec3().build()),
+        (
+            "src/f32/scalar/vec3a.rs",
+            ContextBuilder::new_vec3a().build(),
+        ),
+        (
+            "src/f32/sse2/vec3a.rs",
+            ContextBuilder::new_vec3a().target_sse2().build(),
+        ),
+        (
+            "src/f32/wasm32/vec3a.rs",
+            ContextBuilder::new_vec3a().target_wasm32().build(),
+        ),
+        ("src/f32/scalar/vec4.rs", ContextBuilder::new_vec4().build()),
+        (
+            "src/f32/sse2/vec4.rs",
+            ContextBuilder::new_vec4().target_sse2().build(),
+        ),
+        (
+            "src/f32/wasm32/vec4.rs",
+            ContextBuilder::new_vec4().target_wasm32().build(),
+        ),
+        ("src/f64/dvec2.rs", ContextBuilder::new_dvec2().build()),
+        ("src/f64/dvec3.rs", ContextBuilder::new_dvec3().build()),
+        ("src/f64/dvec4.rs", ContextBuilder::new_dvec4().build()),
+        ("src/i32/ivec2.rs", ContextBuilder::new_ivec2().build()),
+        ("src/i32/ivec3.rs", ContextBuilder::new_ivec3().build()),
+        ("src/i32/ivec4.rs", ContextBuilder::new_ivec4().build()),
+        ("src/u32/uvec2.rs", ContextBuilder::new_uvec2().build()),
+        ("src/u32/uvec3.rs", ContextBuilder::new_uvec3().build()),
+        ("src/u32/uvec4.rs", ContextBuilder::new_uvec4().build()),
+        ("src/f32/scalar/quat.rs", ContextBuilder::new_quat().build()),
+        (
+            "src/f32/sse2/quat.rs",
+            ContextBuilder::new_quat().target_sse2().build(),
+        ),
+        (
+            "src/f32/wasm32/quat.rs",
+            ContextBuilder::new_quat().target_wasm32().build(),
+        ),
+        ("src/f64/dquat.rs", ContextBuilder::new_dquat().build()),
+        ("src/f32/scalar/mat2.rs", ContextBuilder::new_mat2().build()),
+        (
+            "src/f32/sse2/mat2.rs",
+            ContextBuilder::new_mat2().target_sse2().build(),
+        ),
+        (
+            "src/f32/wasm32/mat2.rs",
+            ContextBuilder::new_mat2().target_wasm32().build(),
+        ),
+        ("src/f64/dmat2.rs", ContextBuilder::new_dmat2().build()),
+        ("src/f32/mat3.rs", ContextBuilder::new_mat3().build()),
+        (
+            "src/f32/scalar/mat3a.rs",
+            ContextBuilder::new_mat3a().build(),
+        ),
+        (
+            "src/f32/sse2/mat3a.rs",
+            ContextBuilder::new_mat3a().target_sse2().build(),
+        ),
+        (
+            "src/f32/wasm32/mat3a.rs",
+            ContextBuilder::new_mat3a().target_wasm32().build(),
+        ),
+        ("src/f32/scalar/mat4.rs", ContextBuilder::new_mat4().build()),
+        (
+            "src/f32/sse2/mat4.rs",
+            ContextBuilder::new_mat4().target_sse2().build(),
+        ),
+        (
+            "src/f32/wasm32/mat4.rs",
+            ContextBuilder::new_mat4().target_wasm32().build(),
+        ),
+        ("src/f64/dmat3.rs", ContextBuilder::new_dmat3().build()),
+        ("src/f64/dmat4.rs", ContextBuilder::new_dmat4().build()),
+    ])
+}

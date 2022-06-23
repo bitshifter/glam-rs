@@ -22,11 +22,9 @@ jobs:
       - name: cargo clippy
         run: cargo clippy --workspace --all-targets --all-features -- -D warnings
 
+      # check that codegen output matches committed source files
       - name: codegen
-        run: cargo run
-        working-directory: codegen
-      - name: codegen introduced no changes or untracked files
-        run: test -z "$(git status --porcelain)" || (echo "::error::Generated files are different, please regenerate with cargo run -p codegen and add all files!"; git status; false)
+        run: cargo run --release -p codegen -- --check
 
   test:
     name: Test
