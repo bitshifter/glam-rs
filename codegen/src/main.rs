@@ -517,6 +517,9 @@ fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
 }
 
 fn main() -> anyhow::Result<()> {
+    // Change into `./codegen` dir for convenience to the user
+    std::env::set_current_dir(env!("CARGO_MANIFEST_DIR"))?;
+
     let matches = command!()
         .arg(arg!([GLOB]))
         .arg(arg!(-f - -force))
