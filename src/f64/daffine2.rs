@@ -1,4 +1,4 @@
-// Generated from affine.rs template. Edit the template, not the generated file.
+// Generated from affine.rs.tera template. Edit the template, not the generated file.
 
 use crate::{DMat2, DMat3, DVec2};
 use core::ops::{Add, Deref, DerefMut, Mul, Sub};

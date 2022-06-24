@@ -1,4 +1,4 @@
-// Generated from vec_mask.rs template. Edit the template, not the generated file.
+// Generated from vec_mask.rs.tera template. Edit the template, not the generated file.
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;

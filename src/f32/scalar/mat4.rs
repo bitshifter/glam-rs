@@ -1,4 +1,4 @@
-// Generated from mat.rs template. Edit the template, not the generated file.
+// Generated from mat.rs.tera template. Edit the template, not the generated file.
 
 use crate::{swizzles::*, DMat4, EulerRot, Mat3, Quat, Vec3, Vec3A, Vec4};
 #[cfg(not(target_arch = "spirv"))]

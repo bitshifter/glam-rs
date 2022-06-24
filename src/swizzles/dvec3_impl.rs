@@ -1,4 +1,4 @@
-// Generated from swizzle_impl.rs template. Edit the template, not the generated file.
+// Generated from swizzle_impl.rs.tera template. Edit the template, not the generated file.
 
 use crate::{DVec2, DVec3, DVec4, Vec3Swizzles};
 

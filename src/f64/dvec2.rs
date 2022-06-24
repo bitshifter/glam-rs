@@ -1,4 +1,4 @@
-// Generated from vec.rs template. Edit the template, not the generated file.
+// Generated from vec.rs.tera template. Edit the template, not the generated file.
 
 use crate::{BVec2, DVec3};
 

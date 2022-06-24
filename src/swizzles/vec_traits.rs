@@ -1,4 +1,4 @@
-// Generated from swizzle_traits.rs template. Edit the template, not the generated file.
+// Generated from swizzle_traits.rs.tera template. Edit the template, not the generated file.
 
 pub trait Vec2Swizzles: Sized + Copy + Clone {
     type Vec3;

@@ -1,4 +1,4 @@
-// Generated from quat.rs template. Edit the template, not the generated file.
+// Generated from quat.rs.tera template. Edit the template, not the generated file.
 
 use crate::{
     euler::{EulerFromQuaternion, EulerRot, EulerToQuaternion},

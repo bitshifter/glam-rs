@@ -1,4 +1,4 @@
-{% import "macros.rs" as macros %}
+{% import "macros.rs.tera" as macros %}
 
 // Generated from {{template_path}} template. Edit the template, not the generated file.
 

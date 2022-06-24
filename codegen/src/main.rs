@@ -76,7 +76,7 @@ fn main() -> anyhow::Result<()> {
     } else {
         None
     };
-    let tera = match tera::Tera::new("templates/**/*.rs") {
+    let tera = match tera::Tera::new("templates/**/*.rs.tera") {
         Ok(t) => t,
         Err(e) => bail!("Parsing error(s): {}", e),
     };
@@ -116,11 +116,7 @@ fn main() -> anyhow::Result<()> {
         let context = output_pairs.get(output_path).unwrap();
         let template_path = context.get("template_path").unwrap().as_str().unwrap();
 
-        if !(force || stdout) && is_modified(&repo, output_path)? {
-            if check {
-                println!("'{output_path}' is different");
-                continue;
-            }
+        if !(check || force || stdout) && is_modified(&repo, output_path)? {
             bail!(
                 "{} is already modified, use  `-f` to force overwrite or revert local changes.",
                 output_path

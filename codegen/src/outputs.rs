@@ -10,7 +10,7 @@ impl ContextBuilder {
 
     fn new_tvecn_swizzle_impl(dim: u32, prefix: &str) -> Self {
         ContextBuilder::new()
-            .with_template("swizzle_impl.rs")
+            .with_template("swizzle_impl.rs.tera")
             .target_scalar()
             .with_key_val("vec2_t", &format!("{}Vec2", prefix))
             .with_key_val("vec3_t", &format!("{}Vec3", prefix))
@@ -75,7 +75,7 @@ impl ContextBuilder {
 
     fn new_taffinen(dim: u32, scalar_t: &str) -> Self {
         ContextBuilder::new()
-            .with_template("affine.rs")
+            .with_template("affine.rs.tera")
             .target_scalar()
             .with_scalar_t(scalar_t)
             .with_dimension(dim)
@@ -100,7 +100,7 @@ impl ContextBuilder {
 
     pub fn new_bvecn(dim: u32) -> Self {
         ContextBuilder::new()
-            .with_template("vec_mask.rs")
+            .with_template("vec_mask.rs.tera")
             .target_scalar()
             .with_dimension(dim)
     }
@@ -119,7 +119,7 @@ impl ContextBuilder {
 
     pub fn new_vecn(dim: u32) -> Self {
         ContextBuilder::new()
-            .with_template("vec.rs")
+            .with_template("vec.rs.tera")
             .target_scalar()
             .with_dimension(dim)
             .with_is_align(false)
@@ -179,7 +179,7 @@ impl ContextBuilder {
 
     pub fn new_quat() -> Self {
         ContextBuilder::new()
-            .with_template("quat.rs")
+            .with_template("quat.rs.tera")
             .target_scalar()
             .with_scalar_t("f32")
     }
@@ -190,7 +190,7 @@ impl ContextBuilder {
 
     fn new_tmatn(dim: u32, scalar_t: &str) -> Self {
         ContextBuilder::new()
-            .with_template("mat.rs")
+            .with_template("mat.rs.tera")
             .target_scalar()
             .with_scalar_t(scalar_t)
             .with_dimension(dim)
@@ -285,7 +285,7 @@ pub fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
         (
             "src/swizzles/vec_traits.rs",
             ContextBuilder::new()
-                .with_template("swizzle_traits.rs")
+                .with_template("swizzle_traits.rs.tera")
                 .build(),
         ),
         (
