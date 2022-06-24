@@ -1085,6 +1085,19 @@ impl From<Vec4> for Vec3A {
     }
 }
 
+impl From<Vec3A> for Vec3 {
+    #[inline]
+    fn from(v: Vec3A) -> Self {
+        use crate::Align16;
+        use core::mem::MaybeUninit;
+        let mut out: MaybeUninit<Align16<Self>> = MaybeUninit::uninit();
+        unsafe {
+            _mm_store_ps(out.as_mut_ptr().cast(), v.0);
+            out.assume_init().0
+        }
+    }
+}
+
 impl From<(Vec2, f32)> for Vec3A {
     #[inline]
     fn from((v, z): (Vec2, f32)) -> Self {

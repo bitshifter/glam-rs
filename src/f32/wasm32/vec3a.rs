@@ -1053,6 +1053,13 @@ impl From<Vec4> for Vec3A {
     }
 }
 
+impl From<Vec3A> for Vec3 {
+    #[inline]
+    fn from(v: Vec3A) -> Self {
+        unsafe { *(&v.0 as *const v128 as *const Self) }
+    }
+}
+
 impl From<(Vec2, f32)> for Vec3A {
     #[inline]
     fn from((v, z): (Vec2, f32)) -> Self {

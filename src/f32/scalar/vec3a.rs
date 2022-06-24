@@ -1140,6 +1140,17 @@ impl From<Vec4> for Vec3A {
     }
 }
 
+impl From<Vec3A> for Vec3 {
+    #[inline]
+    fn from(v: Vec3A) -> Self {
+        Self {
+            x: v.x,
+            y: v.y,
+            z: v.z,
+        }
+    }
+}
+
 impl From<(Vec2, f32)> for Vec3A {
     #[inline]
     fn from((v, z): (Vec2, f32)) -> Self {
