@@ -31,7 +31,7 @@ macro_rules! const_assert_eq {
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 macro_rules! const_m128 {
     ($fx4:expr) => {{
-        crate::sse2::m128_from_f32x4($fx4)
+        $crate::sse2::m128_from_f32x4($fx4)
     }};
 }
 
@@ -39,7 +39,7 @@ macro_rules! const_m128 {
 #[macro_export]
 macro_rules! const_vec2 {
     ($fx2:expr) => {{
-        Vec2::from_array($fx2)
+        $crate::Vec2::from_array($fx2)
     }};
 }
 
@@ -47,7 +47,7 @@ macro_rules! const_vec2 {
 #[macro_export]
 macro_rules! const_vec3 {
     ($fx3:expr) => {{
-        Vec3::from_array($fx3)
+        $crate::Vec3::from_array($fx3)
     }};
 }
 
@@ -55,7 +55,7 @@ macro_rules! const_vec3 {
 #[macro_export]
 macro_rules! const_vec3a {
     ($fx3:expr) => {{
-        Vec3A::from_array($fx3)
+        $crate::Vec3A::from_array($fx3)
     }};
 }
 
@@ -63,7 +63,7 @@ macro_rules! const_vec3a {
 #[macro_export]
 macro_rules! const_vec4 {
     ($fx4:expr) => {{
-        Vec4::from_array($fx4)
+        $crate::Vec4::from_array($fx4)
     }};
 }
 
@@ -74,10 +74,10 @@ macro_rules! const_vec4 {
 #[macro_export]
 macro_rules! const_mat2 {
     ($col0:expr, $col1:expr) => {{
-        Mat2::from_cols_array_2d(&[$col0, $col1])
+        $crate::Mat2::from_cols_array_2d(&[$col0, $col1])
     }};
     ($fx4:expr) => {{
-        Mat2::from_cols_array(&$fx4)
+        $crate::Mat2::from_cols_array(&$fx4)
     }};
 }
 
@@ -88,10 +88,10 @@ macro_rules! const_mat2 {
 #[macro_export]
 macro_rules! const_mat3 {
     ($col0:expr, $col1:expr, $col2:expr) => {{
-        Mat3::from_cols_array_2d(&[$col0, $col1, $col2])
+        $crate::Mat3::from_cols_array_2d(&[$col0, $col1, $col2])
     }};
     ($fx9:expr) => {{
-        Mat3::from_cols_array(&$fx9)
+        $crate::Mat3::from_cols_array(&$fx9)
     }};
 }
 
@@ -102,10 +102,10 @@ macro_rules! const_mat3 {
 #[macro_export]
 macro_rules! const_mat3a {
     ($col0:expr, $col1:expr, $col2:expr) => {{
-        Mat3A::from_cols_array_2d(&[$col0, $col1, $col2])
+        $crate::Mat3A::from_cols_array_2d(&[$col0, $col1, $col2])
     }};
     ($fx9:expr) => {{
-        Mat3A::from_cols_array(&$fx9)
+        $crate::Mat3A::from_cols_array(&$fx9)
     }};
 }
 
@@ -116,10 +116,10 @@ macro_rules! const_mat3a {
 #[macro_export]
 macro_rules! const_mat4 {
     ($col0:expr, $col1:expr, $col2:expr, $col3:expr) => {{
-        Mat4::from_cols_array_2d(&[$col0, $col1, $col2, $col3])
+        $crate::Mat4::from_cols_array_2d(&[$col0, $col1, $col2, $col3])
     }};
     ($fx16:expr) => {{
-        Mat4::from_cols_array(&$fx16)
+        $crate::Mat4::from_cols_array(&$fx16)
     }};
 }
 
@@ -130,7 +130,7 @@ macro_rules! const_mat4 {
 #[macro_export]
 macro_rules! const_quat {
     ($fx4:expr) => {{
-        Quat::from_array($fx4)
+        $crate::Quat::from_array($fx4)
     }};
 }
 
@@ -138,7 +138,7 @@ macro_rules! const_quat {
 #[macro_export]
 macro_rules! const_dvec2 {
     ($fx2:expr) => {{
-        DVec2::from_array($fx2)
+        $crate::DVec2::from_array($fx2)
     }};
 }
 
@@ -146,7 +146,7 @@ macro_rules! const_dvec2 {
 #[macro_export]
 macro_rules! const_dvec3 {
     ($fx3:expr) => {{
-        DVec3::from_array($fx3)
+        $crate::DVec3::from_array($fx3)
     }};
 }
 
@@ -154,7 +154,7 @@ macro_rules! const_dvec3 {
 #[macro_export]
 macro_rules! const_dvec4 {
     ($fx4:expr) => {{
-        DVec4::from_array($fx4)
+        $crate::DVec4::from_array($fx4)
     }};
 }
 
@@ -165,10 +165,10 @@ macro_rules! const_dvec4 {
 #[macro_export]
 macro_rules! const_dmat2 {
     ($col0:expr, $col1:expr) => {{
-        DMat2::from_cols_array_2d(&[$col0, $col1])
+        $crate::DMat2::from_cols_array_2d(&[$col0, $col1])
     }};
     ($fx4:expr) => {{
-        DMat2::from_cols_array(&$fx4)
+        $crate::DMat2::from_cols_array(&$fx4)
     }};
 }
 
@@ -179,10 +179,10 @@ macro_rules! const_dmat2 {
 #[macro_export]
 macro_rules! const_dmat3 {
     ($col0:expr, $col1:expr, $col2:expr) => {{
-        DMat3::from_cols_array_2d(&[$col0, $col1, $col2])
+        $crate::DMat3::from_cols_array_2d(&[$col0, $col1, $col2])
     }};
     ($fx9:expr) => {{
-        DMat3::from_cols_array(&$fx9)
+        $crate::DMat3::from_cols_array(&$fx9)
     }};
 }
 
@@ -193,10 +193,10 @@ macro_rules! const_dmat3 {
 #[macro_export]
 macro_rules! const_dmat4 {
     ($col0:expr, $col1:expr, $col2:expr, $col3:expr) => {{
-        DMat4::from_cols_array_2d(&[$col0, $col1, $col2, $col3])
+        $crate::DMat4::from_cols_array_2d(&[$col0, $col1, $col2, $col3])
     }};
     ($fx16:expr) => {{
-        DMat4::from_cols_array(&$fx16)
+        $crate::DMat4::from_cols_array(&$fx16)
     }};
 }
 
@@ -207,7 +207,7 @@ macro_rules! const_dmat4 {
 #[macro_export]
 macro_rules! const_dquat {
     ($fx4:expr) => {{
-        DQuat::from_array($fx4)
+        $crate::DQuat::from_array($fx4)
     }};
 }
 
@@ -215,7 +215,7 @@ macro_rules! const_dquat {
 #[macro_export]
 macro_rules! const_ivec2 {
     ($ix2:expr) => {{
-        IVec2::from_array($ix2)
+        $crate::IVec2::from_array($ix2)
     }};
 }
 
@@ -223,7 +223,7 @@ macro_rules! const_ivec2 {
 #[macro_export]
 macro_rules! const_ivec3 {
     ($ix3:expr) => {{
-        IVec3::from_array($ix3)
+        $crate::IVec3::from_array($ix3)
     }};
 }
 
@@ -231,7 +231,7 @@ macro_rules! const_ivec3 {
 #[macro_export]
 macro_rules! const_ivec4 {
     ($ix4:expr) => {{
-        IVec4::from_array($ix4)
+        $crate::IVec4::from_array($ix4)
     }};
 }
 
@@ -239,7 +239,7 @@ macro_rules! const_ivec4 {
 #[macro_export]
 macro_rules! const_uvec2 {
     ($ux2:expr) => {{
-        UVec2::from_array($ux2)
+        $crate::UVec2::from_array($ux2)
     }};
 }
 
@@ -247,7 +247,7 @@ macro_rules! const_uvec2 {
 #[macro_export]
 macro_rules! const_uvec3 {
     ($ux3:expr) => {{
-        UVec3::from_array($ux3)
+        $crate::UVec3::from_array($ux3)
     }};
 }
 
@@ -255,6 +255,6 @@ macro_rules! const_uvec3 {
 #[macro_export]
 macro_rules! const_uvec4 {
     ($ux4:expr) => {{
-        UVec4::from_array($ux4)
+        $crate::UVec4::from_array($ux4)
     }};
 }
