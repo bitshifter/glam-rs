@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+### Fixed
+
+* Fixed some performance regressions in affine and matrix determinant and
+  inverses due to lack of inlining.
+
+* Fixed some performance regressions in the SSE2 `Vec3A` to `Vec3` from
+  conversion.
+
 ## [0.21.1] - 2022-06-22
 
 ### Fixed
