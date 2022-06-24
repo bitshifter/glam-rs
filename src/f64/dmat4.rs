@@ -174,6 +174,7 @@ impl DMat4 {
         )
     }
 
+    #[inline]
     fn quat_to_axes(rotation: DQuat) -> (DVec4, DVec4, DVec4) {
         glam_assert!(rotation.is_normalized());
 

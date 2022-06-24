@@ -226,6 +226,7 @@ impl Mat2 {
     ///
     /// Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
     #[must_use]
+    #[inline]
     pub fn inverse(&self) -> Self {
         unsafe {
             const SIGN: __m128 = crate::sse2::m128_from_f32x4([1.0, -1.0, -1.0, 1.0]);

@@ -210,6 +210,7 @@ impl DMat2 {
     ///
     /// Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
     #[must_use]
+    #[inline]
     pub fn inverse(&self) -> Self {
         let inv_det = {
             let det = self.determinant();

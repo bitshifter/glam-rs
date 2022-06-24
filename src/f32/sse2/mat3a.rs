@@ -428,6 +428,7 @@ impl Mat3A {
     }
 
     /// Returns the determinant of `self`.
+    #[inline]
     pub fn determinant(&self) -> f32 {
         self.z_axis.dot(self.x_axis.cross(self.y_axis))
     }
@@ -440,6 +441,7 @@ impl Mat3A {
     ///
     /// Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
     #[must_use]
+    #[inline]
     pub fn inverse(&self) -> Self {
         let tmp0 = self.y_axis.cross(self.z_axis);
         let tmp1 = self.z_axis.cross(self.x_axis);

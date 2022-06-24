@@ -178,6 +178,7 @@ impl Mat4 {
         )
     }
 
+    #[inline]
     fn quat_to_axes(rotation: Quat) -> (Vec4, Vec4, Vec4) {
         glam_assert!(rotation.is_normalized());
 

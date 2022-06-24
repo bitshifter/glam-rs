@@ -418,6 +418,7 @@ impl DMat3 {
     }
 
     /// Returns the determinant of `self`.
+    #[inline]
     pub fn determinant(&self) -> f64 {
         self.z_axis.dot(self.x_axis.cross(self.y_axis))
     }
@@ -430,6 +431,7 @@ impl DMat3 {
     ///
     /// Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
     #[must_use]
+    #[inline]
     pub fn inverse(&self) -> Self {
         let tmp0 = self.y_axis.cross(self.z_axis);
         let tmp1 = self.z_axis.cross(self.x_axis);

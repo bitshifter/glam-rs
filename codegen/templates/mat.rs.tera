@@ -535,6 +535,7 @@ impl {{ self_t }} {
     }
 
 {% elif dim == 4 %}
+    #[inline]
     fn quat_to_axes(rotation: {{ quat_t }}) -> ({{ col_t }}, {{ col_t }}, {{ col_t }}) {
         glam_assert!(rotation.is_normalized());
 
@@ -961,7 +962,7 @@ impl {{ self_t }} {
     }
 
     /// Returns the determinant of `self`.
-    {%- if dim < 3 %}
+    {%- if dim < 4 %}
     #[inline]
     {%- endif %}
     pub fn determinant(&self) -> {{ scalar_t }} {
@@ -1081,6 +1082,9 @@ impl {{ self_t }} {
     ///
     /// Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
     #[must_use]
+    {%- if dim < 4 %}
+    #[inline]
+    {%- endif %}
     pub fn inverse(&self) -> Self {
         {% if self_t == "Mat2" and is_sse2 %}
             unsafe {
