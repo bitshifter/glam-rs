@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec4A, Vec2, Vec3, Vec3A};
+use crate::{wasm32::*, BVec4A, Vec2, Vec3, Vec3A};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -142,7 +142,7 @@ impl Vec4 {
     /// Computes the dot product of `self` and `rhs`.
     #[inline]
     pub fn dot(self, rhs: Self) -> f32 {
-        crate::wasm32::dot4(self.0, rhs.0)
+        dot4(self.0, rhs.0)
     }
 
     /// Returns a vector containing the minimum values for each element of `self` and `rhs`.
@@ -300,7 +300,7 @@ impl Vec4 {
     #[doc(alias = "magnitude")]
     #[inline]
     pub fn length(self) -> f32 {
-        let dot = crate::wasm32::dot4_in_x(self.0, self.0);
+        let dot = dot4_in_x(self.0, self.0);
         f32x4_extract_lane::<0>(f32x4_sqrt(dot))
     }
 
@@ -318,7 +318,7 @@ impl Vec4 {
     /// For valid results, `self` must _not_ be of length zero.
     #[inline]
     pub fn length_recip(self) -> f32 {
-        let dot = crate::wasm32::dot4_in_x(self.0, self.0);
+        let dot = dot4_in_x(self.0, self.0);
         f32x4_extract_lane::<0>(f32x4_div(Self::ONE.0, f32x4_sqrt(dot)))
     }
 
@@ -346,7 +346,7 @@ impl Vec4 {
     #[must_use]
     #[inline]
     pub fn normalize(self) -> Self {
-        let length = f32x4_sqrt(crate::wasm32::dot4_into_v128(self.0, self.0));
+        let length = f32x4_sqrt(dot4_into_v128(self.0, self.0));
         #[allow(clippy::let_and_return)]
         let normalized = Self(f32x4_div(self.0, length));
         glam_assert!(normalized.is_finite());
@@ -726,7 +726,7 @@ impl Add<f32> for Vec4 {
 impl AddAssign<f32> for Vec4 {
     #[inline]
     fn add_assign(&mut self, rhs: f32) {
-        self.0 = f32x4_add(self.0, f32x4_splat(rhs))
+        self.0 = f32x4_add(self.0, f32x4_splat(rhs));
     }
 }
 
@@ -929,7 +929,7 @@ impl From<[f32; 4]> for Vec4 {
 impl From<Vec4> for [f32; 4] {
     #[inline]
     fn from(v: Vec4) -> Self {
-        unsafe { *(&v.0 as *const v128 as *const [f32; 4]) }
+        unsafe { *(&v.0 as *const v128 as *const Self) }
     }
 }
 

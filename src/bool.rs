@@ -2,34 +2,68 @@ mod bvec2;
 mod bvec3;
 mod bvec4;
 
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+#[cfg(all(feature = "core-simd", not(feature = "scalar-math")))]
+mod coresimd;
+
+#[cfg(all(
+    target_feature = "sse2",
+    not(any(feature = "core-simd", feature = "scalar-math"))
+))]
 mod sse2;
 
-#[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
+#[cfg(all(
+    target_feature = "simd128",
+    not(any(feature = "core-simd", feature = "scalar-math"))
+))]
 mod wasm32;
 
 pub use bvec2::BVec2;
 pub use bvec3::BVec3;
 pub use bvec4::BVec4;
 
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+#[cfg(all(
+    target_feature = "sse2",
+    not(any(feature = "core-simd", feature = "scalar-math"))
+))]
 pub use sse2::bvec3a::BVec3A;
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+#[cfg(all(
+    target_feature = "sse2",
+    not(any(feature = "core-simd", feature = "scalar-math"))
+))]
 pub use sse2::bvec4a::BVec4A;
 
-#[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
+#[cfg(all(
+    target_feature = "simd128",
+    not(any(feature = "core-simd", feature = "scalar-math"))
+))]
 pub use wasm32::bvec3a::BVec3A;
-#[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
+#[cfg(all(
+    target_feature = "simd128",
+    not(any(feature = "core-simd", feature = "scalar-math"))
+))]
 pub use wasm32::bvec4a::BVec4A;
 
+#[cfg(all(feature = "core-simd", not(feature = "scalar-math")))]
+pub use coresimd::bvec3a::BVec3A;
+#[cfg(all(feature = "core-simd", not(feature = "scalar-math")))]
+pub use coresimd::bvec4a::BVec4A;
+
 #[cfg(any(
-    not(any(target_feature = "sse2", target_feature = "simd128")),
+    not(any(
+        feature = "core-simd",
+        target_feature = "sse2",
+        target_feature = "simd128"
+    )),
     feature = "scalar-math"
 ))]
 pub type BVec3A = BVec3;
 
 #[cfg(any(
-    not(any(target_feature = "sse2", target_feature = "simd128")),
+    not(any(
+        feature = "core-simd",
+        target_feature = "sse2",
+        target_feature = "simd128"
+    )),
     feature = "scalar-math"
 ))]
 pub type BVec4A = BVec4;

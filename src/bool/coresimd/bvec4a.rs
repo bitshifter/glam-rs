@@ -4,7 +4,12 @@
 use core::fmt;
 use core::{hash, ops::*};
 
-use core::arch::wasm32::*;
+use core::simd::*;
+
+union UnionCast {
+    a: [u32; 4],
+    v: BVec4A,
+}
 
 /// A 4-dimensional SIMD vector mask.
 ///
@@ -12,7 +17,7 @@ use core::arch::wasm32::*;
 /// `BVec4A` will be a type alias for `BVec4`.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
-pub struct BVec4A(pub(crate) v128);
+pub struct BVec4A(pub(crate) mask32x4);
 
 const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
 
@@ -22,12 +27,17 @@ impl BVec4A {
     /// Creates a new vector mask.
     #[inline(always)]
     pub const fn new(x: bool, y: bool, z: bool, w: bool) -> Self {
-        Self(u32x4(
-            MASK[x as usize],
-            MASK[y as usize],
-            MASK[z as usize],
-            MASK[w as usize],
-        ))
+        unsafe {
+            UnionCast {
+                a: [
+                    MASK[x as usize],
+                    MASK[y as usize],
+                    MASK[z as usize],
+                    MASK[w as usize],
+                ],
+            }
+            .v
+        }
     }
 
     /// Returns a bitmask with the lowest two bits set from the elements of `self`.
@@ -36,7 +46,7 @@ impl BVec4A {
     /// into the first lowest bit, element `y` into the second, etc.
     #[inline]
     pub fn bitmask(self) -> u32 {
-        u32x4_bitmask(self.0) as u32
+        self.0.to_bitmask() as u32
     }
 
     /// Returns true if any of the elements are true, false otherwise.
@@ -101,7 +111,7 @@ impl BitAnd for BVec4A {
     type Output = Self;
     #[inline]
     fn bitand(self, rhs: Self) -> Self {
-        Self(v128_and(self.0, rhs.0))
+        Self(self.0 & rhs.0)
     }
 }
 
@@ -116,7 +126,7 @@ impl BitOr for BVec4A {
     type Output = Self;
     #[inline]
     fn bitor(self, rhs: Self) -> Self {
-        Self(v128_or(self.0, rhs.0))
+        Self(self.0 | rhs.0)
     }
 }
 
@@ -131,7 +141,7 @@ impl BitXor for BVec4A {
     type Output = Self;
     #[inline]
     fn bitxor(self, rhs: Self) -> Self {
-        Self(v128_xor(self.0, rhs.0))
+        Self(self.0 ^ rhs.0)
     }
 }
 
@@ -146,11 +156,11 @@ impl Not for BVec4A {
     type Output = Self;
     #[inline]
     fn not(self) -> Self {
-        Self(v128_not(self.0))
+        Self(!self.0)
     }
 }
 
-impl From<BVec4A> for v128 {
+impl From<BVec4A> for mask32x4 {
     #[inline]
     fn from(t: BVec4A) -> Self {
         t.0

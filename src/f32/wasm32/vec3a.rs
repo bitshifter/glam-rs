@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec3A, Vec2, Vec3, Vec4};
+use crate::{wasm32::*, BVec3A, Vec2, Vec3, Vec4};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -149,7 +149,7 @@ impl Vec3A {
     /// Computes the dot product of `self` and `rhs`.
     #[inline]
     pub fn dot(self, rhs: Self) -> f32 {
-        crate::wasm32::dot3(self.0, rhs.0)
+        dot3(self.0, rhs.0)
     }
 
     /// Computes the cross product of `self` and `rhs`.
@@ -318,7 +318,7 @@ impl Vec3A {
     #[doc(alias = "magnitude")]
     #[inline]
     pub fn length(self) -> f32 {
-        let dot = crate::wasm32::dot3_in_x(self.0, self.0);
+        let dot = dot3_in_x(self.0, self.0);
         f32x4_extract_lane::<0>(f32x4_sqrt(dot))
     }
 
@@ -336,7 +336,7 @@ impl Vec3A {
     /// For valid results, `self` must _not_ be of length zero.
     #[inline]
     pub fn length_recip(self) -> f32 {
-        let dot = crate::wasm32::dot3_in_x(self.0, self.0);
+        let dot = dot3_in_x(self.0, self.0);
         f32x4_extract_lane::<0>(f32x4_div(Self::ONE.0, f32x4_sqrt(dot)))
     }
 
@@ -364,7 +364,7 @@ impl Vec3A {
     #[must_use]
     #[inline]
     pub fn normalize(self) -> Self {
-        let length = f32x4_sqrt(crate::wasm32::dot3_into_v128(self.0, self.0));
+        let length = f32x4_sqrt(dot3_into_v128(self.0, self.0));
         #[allow(clippy::let_and_return)]
         let normalized = Self(f32x4_div(self.0, length));
         glam_assert!(normalized.is_finite());
@@ -806,7 +806,7 @@ impl Add<f32> for Vec3A {
 impl AddAssign<f32> for Vec3A {
     #[inline]
     fn add_assign(&mut self, rhs: f32) {
-        self.0 = f32x4_add(self.0, f32x4_splat(rhs))
+        self.0 = f32x4_add(self.0, f32x4_splat(rhs));
     }
 }
 
@@ -1006,7 +1006,7 @@ impl From<[f32; 3]> for Vec3A {
 impl From<Vec3A> for [f32; 3] {
     #[inline]
     fn from(v: Vec3A) -> Self {
-        unsafe { *(&v.0 as *const v128 as *const [f32; 3]) }
+        unsafe { *(&v.0 as *const v128 as *const Self) }
     }
 }
 

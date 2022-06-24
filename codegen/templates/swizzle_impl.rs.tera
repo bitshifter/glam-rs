@@ -34,6 +34,8 @@ use core::arch::x86::*;
 use core::arch::x86_64::*;
 {% elif is_wasm32 %}
 use core::arch::wasm32::*;
+{% elif is_coresimd %}
+use core::simd::*;
 {% endif %}
 
 impl Vec{{ dim }}Swizzles for {{ self_t }} {
@@ -69,6 +71,8 @@ impl Vec{{ dim }}Swizzles for {{ self_t }} {
                 {{ vec3_t }}((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_{{ b[j2] }}_{{ b[j1] }}_{{ b[j0] }}) }).into())
             {% elif vec3_t == "Vec3A" and is_wasm32 %}
                 {{ vec3_t }}(i32x4_shuffle::<{{ l[j0] }}, {{ l[j1] }}, {{ h[j2] }}, {{ h[0] }}>(self.0, self.0).into())
+            {% elif vec3_t == "Vec3A" and is_coresimd %}
+                {{ vec3_t }}(simd_swizzle!(self.0, [{{ l[j0] }}, {{ l[j1] }}, {{ l[j2] }}, {{ l[0] }}]).into())
             {% else %}
                 {{ vec3_t }} { x: self.{{ e[j0] }}, y: self.{{ e[j1] }}, z: self.{{ e[j2] }} }
             {% endif %}
@@ -84,6 +88,8 @@ impl Vec{{ dim }}Swizzles for {{ self_t }} {
                 {{ vec4_t }}(unsafe { _mm_shuffle_ps(self.0, self.0, 0b{{ b[j3] }}_{{ b[j2] }}_{{ b[j1] }}_{{ b[j0] }}) })
             {% elif is_wasm32 %}
                 {{ vec4_t}}(i32x4_shuffle::<{{ l[j0] }}, {{ l[j1] }}, {{ h[j2] }}, {{ h[j3] }}>(self.0, self.0))
+            {% elif is_coresimd %}
+                {{ vec4_t}}(simd_swizzle!(self.0, [{{ l[j0] }}, {{ l[j1] }}, {{ l[j2] }}, {{ l[j3] }}]))
             {% else %}
                 {{ vec4_t }}::new(self.{{ e[j0] }}, self.{{ e[j1] }}, self.{{ e[j2] }}, self.{{ e[j3] }})
             {% endif %}

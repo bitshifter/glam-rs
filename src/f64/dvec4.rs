@@ -180,7 +180,7 @@ impl DVec4 {
         }
     }
 
-    /// Component-wise clamping of values, similar to [`f32::clamp`].
+    /// Component-wise clamping of values, similar to [`f64::clamp`].
     ///
     /// Each element in `min` must be less-or-equal to the corresponding element in `max`.
     ///
