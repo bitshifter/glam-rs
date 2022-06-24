@@ -929,13 +929,7 @@ impl From<[f32; 4]> for Vec4 {
 impl From<Vec4> for [f32; 4] {
     #[inline]
     fn from(v: Vec4) -> Self {
-        // TODO: can probably simplify this?
-        use core::mem::MaybeUninit;
-        let mut out: MaybeUninit<v128> = MaybeUninit::uninit();
-        unsafe {
-            v128_store(out.as_mut_ptr(), v.0);
-            *(&out.assume_init() as *const v128 as *const [f32; 4])
-        }
+        unsafe { *(&v.0 as *const v128 as *const [f32; 4]) }
     }
 }
 
@@ -949,13 +943,7 @@ impl From<(f32, f32, f32, f32)> for Vec4 {
 impl From<Vec4> for (f32, f32, f32, f32) {
     #[inline]
     fn from(v: Vec4) -> Self {
-        // TODO: can probably simplify this
-        use core::mem::MaybeUninit;
-        let mut out: MaybeUninit<v128> = MaybeUninit::uninit();
-        unsafe {
-            v128_store(out.as_mut_ptr(), v.0);
-            *(&out.assume_init() as *const v128 as *const Self)
-        }
+        unsafe { *(&v.0 as *const v128 as *const Self) }
     }
 }
 

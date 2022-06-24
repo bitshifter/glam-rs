@@ -2092,12 +2092,8 @@ impl From<{{ self_t }}> for [{{ scalar_t }}; {{ dim }}] {
                 out.assume_init().0
             }
         {% elif is_wasm32 %}
-            // TODO: can probably simplify this?
-            use core::mem::MaybeUninit;
-            let mut out: MaybeUninit<v128> = MaybeUninit::uninit();
             unsafe {
-                v128_store(out.as_mut_ptr(), v.0);
-                *(&out.assume_init() as *const v128 as *const [f32; {{ dim }}])
+                *(&v.0 as *const v128 as *const [f32; {{ dim }}])
             }
         {% endif %}
     }
@@ -2132,12 +2128,8 @@ impl From<{{ self_t }}> for {{ macros::make_tuple_t(t=scalar_t, n=dim) }} {
                 out.assume_init().0
             }
         {% elif is_wasm32 %}
-            // TODO: can probably simplify this
-            use core::mem::MaybeUninit;
-            let mut out: MaybeUninit<v128> = MaybeUninit::uninit();
             unsafe {
-                v128_store(out.as_mut_ptr(), v.0);
-                *(&out.assume_init() as *const v128 as *const Self)
+                *(&v.0 as *const v128 as *const Self)
             }
         {% endif %}
     }
