@@ -83,8 +83,8 @@ impl BitAnd for BVec2 {
     #[inline]
     fn bitand(self, rhs: Self) -> Self {
         Self {
-            x: self.x && rhs.x,
-            y: self.y && rhs.y,
+            x: self.x & rhs.x,
+            y: self.y & rhs.y,
         }
     }
 }
@@ -101,8 +101,8 @@ impl BitOr for BVec2 {
     #[inline]
     fn bitor(self, rhs: Self) -> Self {
         Self {
-            x: self.x || rhs.x,
-            y: self.y || rhs.y,
+            x: self.x | rhs.x,
+            y: self.y | rhs.y,
         }
     }
 }
@@ -114,6 +114,23 @@ impl BitOrAssign for BVec2 {
     }
 }
 
+impl BitXor for BVec2 {
+    type Output = Self;
+    #[inline]
+    fn bitxor(self, rhs: Self) -> Self {
+        Self {
+            x: self.x ^ rhs.x,
+            y: self.y ^ rhs.y,
+        }
+    }
+}
+
+impl BitXorAssign for BVec2 {
+    #[inline]
+    fn bitxor_assign(&mut self, rhs: Self) {
+        *self = self.bitxor(rhs);
+    }
+}
 impl Not for BVec2 {
     type Output = Self;
     #[inline]

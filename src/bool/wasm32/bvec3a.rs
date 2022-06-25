@@ -121,6 +121,20 @@ impl BitOrAssign for BVec3A {
     }
 }
 
+impl BitXor for BVec3A {
+    type Output = Self;
+    #[inline]
+    fn bitxor(self, rhs: Self) -> Self {
+        Self(v128_xor(self.0, rhs.0))
+    }
+}
+
+impl BitXorAssign for BVec3A {
+    #[inline]
+    fn bitxor_assign(&mut self, rhs: Self) {
+        *self = self.bitxor(rhs);
+    }
+}
 impl Not for BVec3A {
     type Output = Self;
     #[inline]

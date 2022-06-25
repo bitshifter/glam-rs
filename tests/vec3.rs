@@ -398,6 +398,29 @@ macro_rules! impl_vec3_tests {
             assert_eq!(mask.bitmask(), 0b011);
         });
 
+        glam_test!(test_mask_xor, {
+            assert_eq!(
+                ($mask::new(false, false, false) ^ $mask::new(false, false, false)).bitmask(),
+                0b000,
+            );
+            assert_eq!(
+                ($mask::new(true, true, true) ^ $mask::new(true, true, true)).bitmask(),
+                0b000,
+            );
+            assert_eq!(
+                ($mask::new(true, false, true) ^ $mask::new(false, true, false)).bitmask(),
+                0b111,
+            );
+            assert_eq!(
+                ($mask::new(true, false, true) ^ $mask::new(true, false, true)).bitmask(),
+                0b000,
+            );
+
+            let mut mask = $mask::new(true, true, false);
+            mask ^= $mask::new(true, false, false);
+            assert_eq!(mask.bitmask(), 0b010);
+        });
+
         glam_test!(test_mask_not, {
             assert_eq!((!$mask::new(false, false, false)).bitmask(), 0b111);
             assert_eq!((!$mask::new(true, true, true)).bitmask(), 0b000);

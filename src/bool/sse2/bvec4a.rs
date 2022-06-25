@@ -140,6 +140,20 @@ impl BitOrAssign for BVec4A {
     }
 }
 
+impl BitXor for BVec4A {
+    type Output = Self;
+    #[inline]
+    fn bitxor(self, rhs: Self) -> Self {
+        Self(unsafe { _mm_xor_ps(self.0, rhs.0) })
+    }
+}
+
+impl BitXorAssign for BVec4A {
+    #[inline]
+    fn bitxor_assign(&mut self, rhs: Self) {
+        *self = self.bitxor(rhs);
+    }
+}
 impl Not for BVec4A {
     type Output = Self;
     #[inline]

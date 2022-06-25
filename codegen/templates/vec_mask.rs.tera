@@ -255,7 +255,7 @@ impl BitAnd for {{ self_t }} {
         {% if is_scalar %}
             Self {
                 {% for c in components %}
-                    {{ c }}: self.{{ c }} && rhs.{{ c }},
+                    {{ c }}: self.{{ c }} & rhs.{{ c }},
                 {%- endfor %}
             }
         {% elif is_sse2 %}
@@ -280,7 +280,7 @@ impl BitOr for {{ self_t }} {
         {% if is_scalar %}
             Self {
                 {% for c in components %}
-                    {{ c }}: self.{{ c }} || rhs.{{ c }},
+                    {{ c }}: self.{{ c }} | rhs.{{ c }},
                 {%- endfor %}
             }
         {% elif is_sse2 %}
@@ -298,6 +298,30 @@ impl BitOrAssign for {{ self_t }} {
     }
 }
 
+impl BitXor for {{ self_t }} {
+    type Output = Self;
+    #[inline]
+    fn bitxor(self, rhs: Self) -> Self {
+        {% if is_scalar %}
+            Self {
+                {% for c in components %}
+                    {{ c }}: self.{{ c }} ^ rhs.{{ c }},
+                {%- endfor %}
+            }
+        {% elif is_sse2 %}
+            Self(unsafe { _mm_xor_ps(self.0, rhs.0) })
+        {% elif is_wasm32 %}
+            Self(v128_xor(self.0, rhs.0))
+        {% endif %}
+    }
+}
+
+impl BitXorAssign for {{ self_t }} {
+    #[inline]
+    fn bitxor_assign(&mut self, rhs: Self) {
+        *self = self.bitxor(rhs);
+    }
+}
 impl Not for {{ self_t }} {
     type Output = Self;
     #[inline]
