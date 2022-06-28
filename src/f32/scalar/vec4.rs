@@ -18,7 +18,7 @@ pub const fn vec4(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
 }
 
 /// A 4-dimensional vector.
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 #[cfg_attr(
     any(
         not(any(feature = "scalar-math", target_arch = "spirv")),
@@ -694,13 +694,6 @@ impl Default for Vec4 {
     #[inline(always)]
     fn default() -> Self {
         Self::ZERO
-    }
-}
-
-impl PartialEq for Vec4 {
-    #[inline]
-    fn eq(&self, rhs: &Self) -> bool {
-        self.cmpeq(*rhs).all()
     }
 }
 

@@ -14,7 +14,7 @@ pub const fn uvec4(x: u32, y: u32, z: u32, w: u32) -> UVec4 {
 }
 
 /// A 4-dimensional vector.
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 #[cfg_attr(feature = "cuda", repr(align(16)))]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
@@ -300,13 +300,6 @@ impl Default for UVec4 {
     #[inline(always)]
     fn default() -> Self {
         Self::ZERO
-    }
-}
-
-impl PartialEq for UVec4 {
-    #[inline]
-    fn eq(&self, rhs: &Self) -> bool {
-        self.cmpeq(*rhs).all()
     }
 }
 
@@ -640,8 +633,6 @@ impl<'a> Product<&'a Self> for UVec4 {
         iter.fold(Self::ONE, |a, &b| Self::mul(a, b))
     }
 }
-
-impl Eq for UVec4 {}
 
 #[cfg(not(target_arch = "spirv"))]
 impl core::hash::Hash for UVec4 {

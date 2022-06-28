@@ -18,7 +18,7 @@ pub const fn dvec3(x: f64, y: f64, z: f64) -> DVec3 {
 }
 
 /// A 3-dimensional vector.
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct DVec3 {
@@ -720,13 +720,6 @@ impl Default for DVec3 {
     #[inline(always)]
     fn default() -> Self {
         Self::ZERO
-    }
-}
-
-impl PartialEq for DVec3 {
-    #[inline]
-    fn eq(&self, rhs: &Self) -> bool {
-        self.cmpeq(*rhs).all()
     }
 }
 
