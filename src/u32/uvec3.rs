@@ -14,7 +14,8 @@ pub const fn uvec3(x: u32, y: u32, z: u32) -> UVec3 {
 }
 
 /// A 3-dimensional vector.
-#[derive(Clone, Copy)]
+#[cfg_attr(not(target_arch = "spirv"), derive(Hash))]
+#[derive(Clone, Copy, PartialEq, Eq)]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct UVec3 {
@@ -286,13 +287,6 @@ impl Default for UVec3 {
     #[inline(always)]
     fn default() -> Self {
         Self::ZERO
-    }
-}
-
-impl PartialEq for UVec3 {
-    #[inline]
-    fn eq(&self, rhs: &Self) -> bool {
-        self.cmpeq(*rhs).all()
     }
 }
 
@@ -599,16 +593,6 @@ impl<'a> Product<&'a Self> for UVec3 {
         I: Iterator<Item = &'a Self>,
     {
         iter.fold(Self::ONE, |a, &b| Self::mul(a, b))
-    }
-}
-
-impl Eq for UVec3 {}
-
-#[cfg(not(target_arch = "spirv"))]
-impl core::hash::Hash for UVec3 {
-    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-        let inner: &[u32; 3] = self.as_ref();
-        inner.hash(state);
     }
 }
 

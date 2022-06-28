@@ -134,8 +134,19 @@ pub const fn {{ self_t | lower }}(
 /// This type uses 16 byte aligned SIMD vector type for storage.
 {%- else %}
 /// A {{ dim }}-dimensional vector.
-{%- endif %}
-#[derive(Clone, Copy)]
+{%- endif %}{% if not is_float %}
+#[cfg_attr(not(target_arch = "spirv"), derive(Hash))]
+{% endif %}
+#[derive(
+    Clone,
+    Copy,
+    {% if is_scalar %}
+    PartialEq,
+    {% if not is_float %}
+    Eq,
+    {% endif %}
+    {% endif %}
+)]
 {%- if self_t == "Vec3A" and is_scalar %}
 #[cfg_attr(not(target_arch = "spirv"), repr(align(16)))]
 {%- elif self_t == "Vec4" and is_scalar %}
@@ -1367,12 +1378,14 @@ impl Default for {{ self_t }} {
     }
 }
 
+{% if not is_scalar %}
 impl PartialEq for {{ self_t }} {
     #[inline]
     fn eq(&self, rhs: &Self) -> bool {
         self.cmpeq(*rhs).all()
     }
 }
+{% endif %}
 
 impl Div<{{ self_t }}> for {{ self_t }} {
     type Output = Self;
@@ -1847,16 +1860,6 @@ impl Neg for {{ self_t }} {
 {% endif %}
 
 {% if not is_float %}
-impl Eq for {{ self_t }} {}
-
-#[cfg(not(target_arch = "spirv"))]
-impl core::hash::Hash for {{ self_t }} {
-    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-        let inner: &[{{ scalar_t }}; {{ dim }}] = self.as_ref();
-        inner.hash(state);
-    }
-}
-
 impl Not for {{ self_t }} {
     type Output = Self;
     #[inline]

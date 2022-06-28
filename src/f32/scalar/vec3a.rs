@@ -23,7 +23,7 @@ pub const fn vec3a(x: f32, y: f32, z: f32) -> Vec3A {
 /// better performance than the `Vec3` type.
 ///
 /// It is possible to convert between `Vec3` and `Vec3A` types using `From` trait implementations.
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 #[cfg_attr(not(target_arch = "spirv"), repr(align(16)))]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
@@ -720,13 +720,6 @@ impl Default for Vec3A {
     #[inline(always)]
     fn default() -> Self {
         Self::ZERO
-    }
-}
-
-impl PartialEq for Vec3A {
-    #[inline]
-    fn eq(&self, rhs: &Self) -> bool {
-        self.cmpeq(*rhs).all()
     }
 }
 

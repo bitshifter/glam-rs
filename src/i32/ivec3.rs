@@ -14,7 +14,8 @@ pub const fn ivec3(x: i32, y: i32, z: i32) -> IVec3 {
 }
 
 /// A 3-dimensional vector.
-#[derive(Clone, Copy)]
+#[cfg_attr(not(target_arch = "spirv"), derive(Hash))]
+#[derive(Clone, Copy, PartialEq, Eq)]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct IVec3 {
@@ -322,13 +323,6 @@ impl Default for IVec3 {
     #[inline(always)]
     fn default() -> Self {
         Self::ZERO
-    }
-}
-
-impl PartialEq for IVec3 {
-    #[inline]
-    fn eq(&self, rhs: &Self) -> bool {
-        self.cmpeq(*rhs).all()
     }
 }
 
@@ -647,16 +641,6 @@ impl Neg for IVec3 {
             y: self.y.neg(),
             z: self.z.neg(),
         }
-    }
-}
-
-impl Eq for IVec3 {}
-
-#[cfg(not(target_arch = "spirv"))]
-impl core::hash::Hash for IVec3 {
-    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-        let inner: &[i32; 3] = self.as_ref();
-        inner.hash(state);
     }
 }
 

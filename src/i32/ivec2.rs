@@ -14,7 +14,8 @@ pub const fn ivec2(x: i32, y: i32) -> IVec2 {
 }
 
 /// A 2-dimensional vector.
-#[derive(Clone, Copy)]
+#[cfg_attr(not(target_arch = "spirv"), derive(Hash))]
+#[derive(Clone, Copy, PartialEq, Eq)]
 #[cfg_attr(feature = "cuda", repr(align(8)))]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
@@ -308,13 +309,6 @@ impl Default for IVec2 {
     }
 }
 
-impl PartialEq for IVec2 {
-    #[inline]
-    fn eq(&self, rhs: &Self) -> bool {
-        self.cmpeq(*rhs).all()
-    }
-}
-
 impl Div<IVec2> for IVec2 {
     type Output = Self;
     #[inline]
@@ -604,16 +598,6 @@ impl Neg for IVec2 {
             x: self.x.neg(),
             y: self.y.neg(),
         }
-    }
-}
-
-impl Eq for IVec2 {}
-
-#[cfg(not(target_arch = "spirv"))]
-impl core::hash::Hash for IVec2 {
-    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-        let inner: &[i32; 2] = self.as_ref();
-        inner.hash(state);
     }
 }
 

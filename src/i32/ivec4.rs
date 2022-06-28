@@ -14,7 +14,8 @@ pub const fn ivec4(x: i32, y: i32, z: i32, w: i32) -> IVec4 {
 }
 
 /// A 4-dimensional vector.
-#[derive(Clone, Copy)]
+#[cfg_attr(not(target_arch = "spirv"), derive(Hash))]
+#[derive(Clone, Copy, PartialEq, Eq)]
 #[cfg_attr(feature = "cuda", repr(align(16)))]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
@@ -341,13 +342,6 @@ impl Default for IVec4 {
     #[inline(always)]
     fn default() -> Self {
         Self::ZERO
-    }
-}
-
-impl PartialEq for IVec4 {
-    #[inline]
-    fn eq(&self, rhs: &Self) -> bool {
-        self.cmpeq(*rhs).all()
     }
 }
 
@@ -692,16 +686,6 @@ impl Neg for IVec4 {
             z: self.z.neg(),
             w: self.w.neg(),
         }
-    }
-}
-
-impl Eq for IVec4 {}
-
-#[cfg(not(target_arch = "spirv"))]
-impl core::hash::Hash for IVec4 {
-    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-        let inner: &[i32; 4] = self.as_ref();
-        inner.hash(state);
     }
 }
 

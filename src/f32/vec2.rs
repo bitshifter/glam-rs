@@ -18,7 +18,7 @@ pub const fn vec2(x: f32, y: f32) -> Vec2 {
 }
 
 /// A 2-dimensional vector.
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 #[cfg_attr(feature = "cuda", repr(align(8)))]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
@@ -648,13 +648,6 @@ impl Default for Vec2 {
     #[inline(always)]
     fn default() -> Self {
         Self::ZERO
-    }
-}
-
-impl PartialEq for Vec2 {
-    #[inline]
-    fn eq(&self, rhs: &Self) -> bool {
-        self.cmpeq(*rhs).all()
     }
 }
 
