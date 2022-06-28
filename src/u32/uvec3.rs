@@ -14,6 +14,7 @@ pub const fn uvec3(x: u32, y: u32, z: u32) -> UVec3 {
 }
 
 /// A 3-dimensional vector.
+#[cfg_attr(not(target_arch = "spirv"), derive(Hash))]
 #[derive(Clone, Copy, PartialEq, Eq)]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
@@ -592,14 +593,6 @@ impl<'a> Product<&'a Self> for UVec3 {
         I: Iterator<Item = &'a Self>,
     {
         iter.fold(Self::ONE, |a, &b| Self::mul(a, b))
-    }
-}
-
-#[cfg(not(target_arch = "spirv"))]
-impl core::hash::Hash for UVec3 {
-    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-        let inner: &[u32; 3] = self.as_ref();
-        inner.hash(state);
     }
 }
 

@@ -14,6 +14,7 @@ pub const fn ivec4(x: i32, y: i32, z: i32, w: i32) -> IVec4 {
 }
 
 /// A 4-dimensional vector.
+#[cfg_attr(not(target_arch = "spirv"), derive(Hash))]
 #[derive(Clone, Copy, PartialEq, Eq)]
 #[cfg_attr(feature = "cuda", repr(align(16)))]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
@@ -685,14 +686,6 @@ impl Neg for IVec4 {
             z: self.z.neg(),
             w: self.w.neg(),
         }
-    }
-}
-
-#[cfg(not(target_arch = "spirv"))]
-impl core::hash::Hash for IVec4 {
-    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-        let inner: &[i32; 4] = self.as_ref();
-        inner.hash(state);
     }
 }
 

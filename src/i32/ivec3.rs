@@ -14,6 +14,7 @@ pub const fn ivec3(x: i32, y: i32, z: i32) -> IVec3 {
 }
 
 /// A 3-dimensional vector.
+#[cfg_attr(not(target_arch = "spirv"), derive(Hash))]
 #[derive(Clone, Copy, PartialEq, Eq)]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
@@ -640,14 +641,6 @@ impl Neg for IVec3 {
             y: self.y.neg(),
             z: self.z.neg(),
         }
-    }
-}
-
-#[cfg(not(target_arch = "spirv"))]
-impl core::hash::Hash for IVec3 {
-    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-        let inner: &[i32; 3] = self.as_ref();
-        inner.hash(state);
     }
 }
 

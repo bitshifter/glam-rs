@@ -134,13 +134,15 @@ pub const fn {{ self_t | lower }}(
 /// This type uses 16 byte aligned SIMD vector type for storage.
 {%- else %}
 /// A {{ dim }}-dimensional vector.
-{%- endif %}
+{%- endif %}{% if not is_float %}
+#[cfg_attr(not(target_arch = "spirv"), derive(Hash))]
+{% endif %}
 #[derive(
     Clone,
     Copy,
     {% if is_scalar %}
     PartialEq,
-    {% if not is_float%}
+    {% if not is_float %}
     Eq,
     {% endif %}
     {% endif %}
@@ -1858,14 +1860,6 @@ impl Neg for {{ self_t }} {
 {% endif %}
 
 {% if not is_float %}
-#[cfg(not(target_arch = "spirv"))]
-impl core::hash::Hash for {{ self_t }} {
-    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-        let inner: &[{{ scalar_t }}; {{ dim }}] = self.as_ref();
-        inner.hash(state);
-    }
-}
-
 impl Not for {{ self_t }} {
     type Output = Self;
     #[inline]
