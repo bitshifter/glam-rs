@@ -1488,8 +1488,13 @@ impl {{ self_t }} {
     /// This is the equivalent of multiplying `rhs` as a 3D vector where `z` is `1`.
     ///
     /// This method assumes that `self` contains a valid affine transform.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if the 2nd row of `self` is not `(0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
     pub fn transform_point2(&self, rhs: {{ vec2_t }}) -> {{ vec2_t }} {
+        glam_assert!(self.row(2).abs_diff_eq({{ col_t }}::Z, 1e-6));
         {{ mat2_t }}::from_cols(self.x_axis.xy(), self.y_axis.xy()) * rhs + self.z_axis.xy()
     }
 
@@ -1498,8 +1503,13 @@ impl {{ self_t }} {
     /// This is the equivalent of multiplying `rhs` as a 3D vector where `z` is `0`.
     ///
     /// This method assumes that `self` contains a valid affine transform.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if the 2nd row of `self` is not `(0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
     pub fn transform_vector2(&self, rhs: {{ vec2_t }}) -> {{ vec2_t }} {
+        glam_assert!(self.row(2).abs_diff_eq({{ col_t }}::Z, 1e-6));
         {{ mat2_t }}::from_cols(self.x_axis.xy(), self.y_axis.xy()) * rhs
     }
 
@@ -1792,7 +1802,7 @@ impl {{ self_t }} {
     /// Will panic if the 3rd row of `self` is not `(0, 0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
     pub fn transform_point3(&self, rhs: {{ vec3_t }}) -> {{ vec3_t }} {
-        glam_assert!(self.row(3) == {{ vec4_t }}::W);
+        glam_assert!(self.row(3).abs_diff_eq({{ vec4_t }}::W, 1e-6));
         let mut res = self.x_axis.mul(rhs.x);
         res = self.y_axis.mul(rhs.y).add(res);
         res = self.z_axis.mul(rhs.z).add(res);
@@ -1812,7 +1822,7 @@ impl {{ self_t }} {
     /// Will panic if the 3rd row of `self` is not `(0, 0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
     pub fn transform_vector3(&self, rhs: {{ vec3_t }}) -> {{ vec3_t }} {
-        glam_assert!(self.row(3) == {{ vec4_t }}::W);
+        glam_assert!(self.row(3).abs_diff_eq({{ vec4_t }}::W, 1e-6));
         let mut res = self.x_axis.mul(rhs.x);
         res = self.y_axis.mul(rhs.y).add(res);
         res = self.z_axis.mul(rhs.z).add(res);
@@ -1830,6 +1840,7 @@ impl {{ self_t }} {
         {% if is_scalar %}
             self.transform_point3(rhs.into()).into()
         {% else %}
+            glam_assert!(self.row(3).abs_diff_eq({{ vec4_t }}::W, 1e-6));
             let mut res = self.x_axis.mul(rhs.xxxx());
             res = self.y_axis.mul(rhs.yyyy()).add(res);
             res = self.z_axis.mul(rhs.zzzz()).add(res);
@@ -1846,6 +1857,7 @@ impl {{ self_t }} {
         {% if is_scalar %}
             self.transform_vector3(rhs.into()).into()
         {% else %}
+            glam_assert!(self.row(3).abs_diff_eq({{ vec4_t }}::W, 1e-6));
             let mut res = self.x_axis.mul(rhs.xxxx());
             res = self.y_axis.mul(rhs.yyyy()).add(res);
             res = self.z_axis.mul(rhs.zzzz()).add(res);

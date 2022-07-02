@@ -940,7 +940,7 @@ impl Mat4 {
     /// Will panic if the 3rd row of `self` is not `(0, 0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
     pub fn transform_point3(&self, rhs: Vec3) -> Vec3 {
-        glam_assert!(self.row(3) == Vec4::W);
+        glam_assert!(self.row(3).abs_diff_eq(Vec4::W, 1e-6));
         let mut res = self.x_axis.mul(rhs.x);
         res = self.y_axis.mul(rhs.y).add(res);
         res = self.z_axis.mul(rhs.z).add(res);
@@ -960,7 +960,7 @@ impl Mat4 {
     /// Will panic if the 3rd row of `self` is not `(0, 0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
     pub fn transform_vector3(&self, rhs: Vec3) -> Vec3 {
-        glam_assert!(self.row(3) == Vec4::W);
+        glam_assert!(self.row(3).abs_diff_eq(Vec4::W, 1e-6));
         let mut res = self.x_axis.mul(rhs.x);
         res = self.y_axis.mul(rhs.y).add(res);
         res = self.z_axis.mul(rhs.z).add(res);
