@@ -29,7 +29,7 @@ macro_rules! should_glam_assert {
 macro_rules! assert_approx_eq {
     ($a:expr, $b:expr) => {{
         #[allow(unused_imports)]
-        use crate::support::FloatCompare;
+        use $crate::support::FloatCompare;
         let eps = core::f32::EPSILON;
         let (a, b) = (&$a, &$b);
         assert!(
@@ -43,7 +43,7 @@ macro_rules! assert_approx_eq {
         );
     }};
     ($a:expr, $b:expr, $eps:expr) => {{
-        use crate::support::FloatCompare;
+        use $crate::support::FloatCompare;
         let (a, b) = (&$a, &$b);
         let eps = $eps;
         assert!(
