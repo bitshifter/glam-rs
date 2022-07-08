@@ -1,6 +1,6 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
-use crate::{swizzles::*, DMat4, EulerRot, Mat3, Quat, Vec3, Vec3A, Vec4};
+use crate::{sse2::*, swizzles::*, DMat4, EulerRot, Mat3, Quat, Vec3, Vec3A, Vec4};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -592,7 +592,7 @@ impl Mat4 {
             let addres = _mm_add_ps(subres, mulfacc);
             let detcof = _mm_mul_ps(addres, _mm_setr_ps(1.0, -1.0, 1.0, -1.0));
 
-            crate::sse2::dot4(self.x_axis.0, detcof)
+            dot4(self.x_axis.0, detcof)
         }
     }
 
@@ -732,7 +732,7 @@ impl Mat4 {
             let row1 = _mm_shuffle_ps(inv2, inv3, 0b00_00_00_00);
             let row2 = _mm_shuffle_ps(row0, row1, 0b10_00_10_00);
 
-            let dot0 = crate::sse2::dot4(self.x_axis.0, row2);
+            let dot0 = dot4(self.x_axis.0, row2);
             glam_assert!(dot0 != 0.0);
 
             let rcp0 = _mm_set1_ps(dot0.recip());

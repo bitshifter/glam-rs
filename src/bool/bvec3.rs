@@ -139,6 +139,7 @@ impl BitXorAssign for BVec3 {
         *self = self.bitxor(rhs);
     }
 }
+
 impl Not for BVec3 {
     type Output = Self;
     #[inline]

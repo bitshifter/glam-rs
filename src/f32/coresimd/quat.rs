@@ -1,8 +1,8 @@
 // Generated from quat.rs.tera template. Edit the template, not the generated file.
 
 use crate::{
+    coresimd::*,
     euler::{EulerFromQuaternion, EulerRot, EulerToQuaternion},
-    sse2::*,
     DQuat, FloatEx, Mat3, Mat4, Vec2, Vec3, Vec3A, Vec4,
 };
 
@@ -10,20 +10,12 @@ use crate::{
 #[allow(unused_imports)]
 use num_traits::Float;
 
-#[cfg(target_arch = "x86")]
-use core::arch::x86::*;
-#[cfg(target_arch = "x86_64")]
-use core::arch::x86_64::*;
+use core::simd::*;
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, Deref, DerefMut, Div, Mul, MulAssign, Neg, Sub};
-
-union UnionCast {
-    a: [f32; 4],
-    v: Quat,
-}
 
 /// Creates a quaternion from `x`, `y`, `z` and `w` values.
 ///
@@ -43,7 +35,7 @@ pub const fn quat(x: f32, y: f32, z: f32, w: f32) -> Quat {
 /// This type is 16 byte aligned.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
-pub struct Quat(pub(crate) __m128);
+pub struct Quat(pub(crate) f32x4);
 
 impl Quat {
     /// All zeros.
@@ -68,7 +60,7 @@ impl Quat {
     /// provide normalized input or to normalized the resulting quaternion.
     #[inline(always)]
     pub const fn from_xyzw(x: f32, y: f32, z: f32, w: f32) -> Self {
-        unsafe { UnionCast { a: [x, y, z, w] }.v }
+        Self(f32x4::from_array([x, y, z, w]))
     }
 
     /// Creates a rotation quaternion from an array.
@@ -79,7 +71,7 @@ impl Quat {
     /// provide normalized input or to normalized the resulting quaternion.
     #[inline]
     pub const fn from_array(a: [f32; 4]) -> Self {
-        Self::from_xyzw(a[0], a[1], a[2], a[3])
+        Self(f32x4::from_array(a))
     }
 
     /// Creates a new rotation quaternion from a 4D vector.
@@ -105,8 +97,7 @@ impl Quat {
     /// Panics if `slice` length is less than 4.
     #[inline]
     pub fn from_slice(slice: &[f32]) -> Self {
-        assert!(slice.len() >= 4);
-        Self(unsafe { _mm_loadu_ps(slice.as_ptr()) })
+        Self::from_xyzw(slice[0], slice[1], slice[2], slice[3])
     }
 
     /// Writes the quaternion to an unaligned slice.
@@ -116,8 +107,10 @@ impl Quat {
     /// Panics if `slice` length is less than 4.
     #[inline]
     pub fn write_to_slice(self, slice: &mut [f32]) {
-        assert!(slice.len() >= 4);
-        unsafe { _mm_storeu_ps(slice.as_mut_ptr(), self.0) }
+        slice[0] = self.x;
+        slice[1] = self.y;
+        slice[2] = self.z;
+        slice[3] = self.w;
     }
 
     /// Create a quaternion for a normalized rotation `axis` and `angle` (in radians).
@@ -390,8 +383,8 @@ impl Quat {
     #[must_use]
     #[inline]
     pub fn conjugate(self) -> Self {
-        const SIGN: __m128 = m128_from_f32x4([-0.0, -0.0, -0.0, 0.0]);
-        Self(unsafe { _mm_xor_ps(self.0, SIGN) })
+        const SIGN: f32x4 = f32x4::from_array([-1.0, -1.0, -1.0, 1.0]);
+        Self(self.0.mul(SIGN))
     }
 
     /// Returns the inverse of a normalized quaternion.
@@ -539,20 +532,15 @@ impl Quat {
         glam_assert!(self.is_normalized());
         glam_assert!(end.is_normalized());
 
-        const NEG_ZERO: __m128 = m128_from_f32x4([-0.0; 4]);
+        const NEG_ZERO: f32x4 = f32x4::from_array([-0.0; 4]);
         let start = self.0;
         let end = end.0;
-        unsafe {
-            let dot = dot4_into_m128(start, end);
-            // Calculate the bias, if the dot product is positive or zero, there is no bias
-            // but if it is negative, we want to flip the 'end' rotation XYZW components
-            let bias = _mm_and_ps(dot, NEG_ZERO);
-            let interpolated = _mm_add_ps(
-                _mm_mul_ps(_mm_sub_ps(_mm_xor_ps(end, bias), start), _mm_set_ps1(s)),
-                start,
-            );
-            Quat(interpolated).normalize()
-        }
+        let dot = dot4_into_f32x4(start, end);
+        // Calculate the bias, if the dot product is positive or zero, there is no bias
+        // but if it is negative, we want to flip the 'end' rotation XYZW components
+        let bias = f32x4_bitand(dot, NEG_ZERO);
+        let interpolated = start + ((f32x4_bitxor(end, bias) - start) * f32x4::splat(s));
+        Quat(interpolated).normalize()
     }
 
     /// Performs a spherical linear interpolation between `self` and `end`
@@ -590,23 +578,17 @@ impl Quat {
         } else {
             let theta = dot.acos_approx();
 
-            let x = 1.0 - s;
-            let y = s;
-            let z = 1.0;
+            let x = (theta * (1.0 - s)).sin();
+            let y = (theta * s).sin();
+            let z = theta.sin();
+            let w = 0.0;
+            let tmp = f32x4::from_array([x, y, z, w]);
 
-            unsafe {
-                let tmp = _mm_mul_ps(_mm_set_ps1(theta), _mm_set_ps(0.0, z, y, x));
-                let tmp = m128_sin(tmp);
+            let scale1 = simd_swizzle!(tmp, [0, 0, 0, 0]);
+            let scale2 = simd_swizzle!(tmp, [1, 1, 1, 1]);
+            let theta_sin = simd_swizzle!(tmp, [2, 2, 2, 2]);
 
-                let scale1 = _mm_shuffle_ps(tmp, tmp, 0b00_00_00_00);
-                let scale2 = _mm_shuffle_ps(tmp, tmp, 0b01_01_01_01);
-                let theta_sin = _mm_shuffle_ps(tmp, tmp, 0b10_10_10_10);
-
-                Self(_mm_div_ps(
-                    _mm_add_ps(_mm_mul_ps(self.0, scale1), _mm_mul_ps(end.0, scale2)),
-                    theta_sin,
-                ))
-            }
+            Self(self.0.mul(scale1).add(end.0.mul(scale2)).div(theta_sin))
         }
     }
 
@@ -635,41 +617,37 @@ impl Quat {
         glam_assert!(self.is_normalized());
         glam_assert!(rhs.is_normalized());
 
-        // Based on https://github.com/nfrechette/rtm `rtm::quat_mul`
-        const CONTROL_WZYX: __m128 = m128_from_f32x4([1.0, -1.0, 1.0, -1.0]);
-        const CONTROL_ZWXY: __m128 = m128_from_f32x4([1.0, 1.0, -1.0, -1.0]);
-        const CONTROL_YXWZ: __m128 = m128_from_f32x4([-1.0, 1.0, 1.0, -1.0]);
-
         let lhs = self.0;
         let rhs = rhs.0;
 
-        unsafe {
-            let r_xxxx = _mm_shuffle_ps(lhs, lhs, 0b00_00_00_00);
-            let r_yyyy = _mm_shuffle_ps(lhs, lhs, 0b01_01_01_01);
-            let r_zzzz = _mm_shuffle_ps(lhs, lhs, 0b10_10_10_10);
-            let r_wwww = _mm_shuffle_ps(lhs, lhs, 0b11_11_11_11);
+        const CONTROL_WZYX: f32x4 = f32x4::from_array([1.0, -1.0, 1.0, -1.0]);
+        const CONTROL_ZWXY: f32x4 = f32x4::from_array([1.0, 1.0, -1.0, -1.0]);
+        const CONTROL_YXWZ: f32x4 = f32x4::from_array([-1.0, 1.0, 1.0, -1.0]);
 
-            let lxrw_lyrw_lzrw_lwrw = _mm_mul_ps(r_wwww, rhs);
-            let l_wzyx = _mm_shuffle_ps(rhs, rhs, 0b00_01_10_11);
+        let r_xxxx = simd_swizzle!(lhs, [0, 0, 0, 0]);
+        let r_yyyy = simd_swizzle!(lhs, [1, 1, 1, 1]);
+        let r_zzzz = simd_swizzle!(lhs, [2, 2, 2, 2]);
+        let r_wwww = simd_swizzle!(lhs, [3, 3, 3, 3]);
 
-            let lwrx_lzrx_lyrx_lxrx = _mm_mul_ps(r_xxxx, l_wzyx);
-            let l_zwxy = _mm_shuffle_ps(l_wzyx, l_wzyx, 0b10_11_00_01);
+        let lxrw_lyrw_lzrw_lwrw = r_wwww * rhs;
+        let l_wzyx = simd_swizzle!(rhs, [3, 2, 1, 0]);
 
-            let lwrx_nlzrx_lyrx_nlxrx = _mm_mul_ps(lwrx_lzrx_lyrx_lxrx, CONTROL_WZYX);
+        let lwrx_lzrx_lyrx_lxrx = r_xxxx * l_wzyx;
+        let l_zwxy = simd_swizzle!(l_wzyx, [1, 0, 3, 2]);
 
-            let lzry_lwry_lxry_lyry = _mm_mul_ps(r_yyyy, l_zwxy);
-            let l_yxwz = _mm_shuffle_ps(l_zwxy, l_zwxy, 0b00_01_10_11);
+        let lwrx_nlzrx_lyrx_nlxrx = lwrx_lzrx_lyrx_lxrx * CONTROL_WZYX;
 
-            let lzry_lwry_nlxry_nlyry = _mm_mul_ps(lzry_lwry_lxry_lyry, CONTROL_ZWXY);
+        let lzry_lwry_lxry_lyry = r_yyyy * l_zwxy;
+        let l_yxwz = simd_swizzle!(l_zwxy, [3, 2, 1, 0]);
 
-            let lyrz_lxrz_lwrz_lzrz = _mm_mul_ps(r_zzzz, l_yxwz);
-            let result0 = _mm_add_ps(lxrw_lyrw_lzrw_lwrw, lwrx_nlzrx_lyrx_nlxrx);
+        let lzry_lwry_nlxry_nlyry = lzry_lwry_lxry_lyry * CONTROL_ZWXY;
 
-            let nlyrz_lxrz_lwrz_wlzrz = _mm_mul_ps(lyrz_lxrz_lwrz_lzrz, CONTROL_YXWZ);
-            let result1 = _mm_add_ps(lzry_lwry_nlxry_nlyry, nlyrz_lxrz_lwrz_wlzrz);
+        let lyrz_lxrz_lwrz_lzrz = r_zzzz * l_yxwz;
+        let result0 = lxrw_lyrw_lzrw_lwrw + lwrx_nlzrx_lyrx_nlxrx;
 
-            Self(_mm_add_ps(result0, result1))
-        }
+        let nlyrz_lxrz_lwrz_wlzrz = lyrz_lxrz_lwrz_lzrz * CONTROL_YXWZ;
+        let result1 = lzry_lwry_nlxry_nlyry + nlyrz_lxrz_lwrz_wlzrz;
+        Self(result0 + result1)
     }
 
     /// Creates a quaternion from a 3x3 rotation matrix inside a 3D affine transform.
@@ -686,19 +664,16 @@ impl Quat {
     /// Multiplies a quaternion and a 3D vector, returning the rotated vector.
     #[inline]
     pub fn mul_vec3a(self, rhs: Vec3A) -> Vec3A {
-        unsafe {
-            const TWO: __m128 = m128_from_f32x4([2.0; 4]);
-            let w = _mm_shuffle_ps(self.0, self.0, 0b11_11_11_11);
-            let b = self.0;
-            let b2 = dot3_into_m128(b, b);
-            Vec3A(_mm_add_ps(
-                _mm_add_ps(
-                    _mm_mul_ps(rhs.0, _mm_sub_ps(_mm_mul_ps(w, w), b2)),
-                    _mm_mul_ps(b, _mm_mul_ps(dot3_into_m128(rhs.0, b), TWO)),
-                ),
-                _mm_mul_ps(Vec3A(b).cross(rhs).into(), _mm_mul_ps(w, TWO)),
-            ))
-        }
+        const TWO: f32x4 = f32x4::from_array([2.0; 4]);
+        let w = simd_swizzle!(self.0, [3, 3, 3, 3]);
+        let b = self.0;
+        let b2 = dot3_into_f32x4(b, b);
+        Vec3A(
+            rhs.0
+                .mul(w.mul(w).sub(b2))
+                .add(b.mul(dot3_into_f32x4(rhs.0, b).mul(TWO)))
+                .add(Vec3A(b).cross(rhs).0.mul(w.mul(TWO))),
+        )
     }
 
     #[inline]
@@ -895,7 +870,7 @@ impl From<Quat> for [f32; 4] {
     }
 }
 
-impl From<Quat> for __m128 {
+impl From<Quat> for f32x4 {
     #[inline]
     fn from(q: Quat) -> Self {
         q.0

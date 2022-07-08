@@ -10,6 +10,8 @@
         {% set simd_t = "__m128" %}
     {% elif is_wasm32 %}
         {% set simd_t = "v128" %}
+    {% elif is_coresimd %}
+        {% set simd_t = "f32x4" %}
     {% endif %}
     {% set mask_t = "BVec" ~ dim ~ "A" %}
 {% endif %}
@@ -82,6 +84,13 @@ use crate::{
     {% if dim > 2 and self_t != vec4_t %}
         {{ vec4_t }},
     {% endif %}
+    {% if is_sse2 %}
+        sse2::*,
+    {% elif is_wasm32 %}
+        wasm32::*,
+    {% elif is_coresimd %}
+        coresimd::*,
+    {% endif %}
 };
 
 #[cfg(not(target_arch = "spirv"))]
@@ -96,6 +105,9 @@ use core::arch::x86::*;
 use core::arch::x86_64::*;
 {% elif is_wasm32 %}
 use core::arch::wasm32::*;
+{% elif is_coresimd %}
+use core::simd::*;
+use std::simd::StdFloat;
 {% endif %}
 
 {% if is_float %}
@@ -104,7 +116,7 @@ use core::arch::wasm32::*;
 use num_traits::Float;
 {% endif %}
 
-{% if is_simd %}
+{% if is_sse2 or is_wasm32 %}
 union UnionCast {
     a: [f32; 4],
     v: {{ self_t }}
@@ -250,6 +262,15 @@ impl {{ self_t }} {
                     x, y, z, w
                 {% endif %}
             ))
+        {% elif is_coresimd %}
+            Self(f32x4::from_array([
+                x, y, z,
+                {% if dim == 3 %}
+                    z
+                {% elif dim == 4 %}
+                    w
+                {% endif %}
+            ]))
         {% endif %}
     }
 
@@ -262,6 +283,8 @@ impl {{ self_t }} {
                     {{ c }}: v,
                 {% endfor %}
             }
+        {% elif is_coresimd %}
+            Self(f32x4::splat(v))
         {% else %}
             unsafe { UnionCast { a: [v; 4] }.v }
         {% endif %}
@@ -284,6 +307,8 @@ impl {{ self_t }} {
             Self(unsafe { _mm_or_ps(_mm_andnot_ps(mask.0, if_false.0), _mm_and_ps(if_true.0, mask.0)) })
         {% elif is_wasm32 %}
             Self(v128_bitselect(if_true.0, if_false.0, mask.0))
+        {% elif is_coresimd %}
+            Self(mask.0.select(if_true.0, if_false.0))
         {% endif %}
     }
 
@@ -399,9 +424,9 @@ impl {{ self_t }} {
                 (self.{{ c }} * rhs.{{ c }}) {% if not loop.last %} + {% endif %}
             {%- endfor %}
         {% elif is_sse2 %}
-            unsafe { crate::sse2::dot{{ dim }}(self.0, rhs.0) }
-        {% elif is_wasm32 %}
-            crate::wasm32::dot{{ dim }}(self.0, rhs.0)
+            unsafe { dot{{ dim }}(self.0, rhs.0) }
+        {% else %}
+            dot{{ dim }}(self.0, rhs.0)
         {% endif %}
     }
 
@@ -436,6 +461,13 @@ impl {{ self_t }} {
             let rhszxy_lhs = f32x4_mul(rhszxy, self.0);
             let sub = f32x4_sub(lhszxy_rhs, rhszxy_lhs);
             Self(i32x4_shuffle::<2, 0, 1, 1>(sub, sub))
+        {% elif is_coresimd %}
+            let lhszxy = simd_swizzle!(self.0, [2, 0, 1, 1]);
+            let rhszxy = simd_swizzle!(rhs.0, [2, 0, 1, 1]);
+            let lhszxy_rhs = lhszxy * rhs.0;
+            let rhszxy_lhs = rhszxy * self.0;
+            let sub = lhszxy_rhs - rhszxy_lhs;
+            Self(simd_swizzle!(sub, [2, 0, 1, 1]))
         {% endif %}
     }
 {% endif %}
@@ -455,6 +487,8 @@ impl {{ self_t }} {
             Self(unsafe { _mm_min_ps(self.0, rhs.0) })
         {% elif is_wasm32 %}
             Self(f32x4_pmin(self.0, rhs.0))
+        {% elif is_coresimd %}
+            Self(self.0.min(rhs.0))
         {% endif %}
     }
 
@@ -473,10 +507,12 @@ impl {{ self_t }} {
             Self(unsafe { _mm_max_ps(self.0, rhs.0) })
         {% elif is_wasm32 %}
             Self(f32x4_pmax(self.0, rhs.0))
+        {% elif is_coresimd %}
+            Self(self.0.max(rhs.0))
         {% endif %}
     }
 
-    /// Component-wise clamping of values, similar to [`f32::clamp`].
+    /// Component-wise clamping of values, similar to [`{{ scalar_t }}::clamp`].
     ///
     /// Each element in `min` must be less-or-equal to the corresponding element in `max`.
     ///
@@ -530,6 +566,15 @@ impl {{ self_t }} {
                 let v = f32x4_pmin(v, i32x4_shuffle::<1, 0, 0, 0>(v, v));
                 f32x4_extract_lane::<0>(v)
             {% endif %}
+        {% elif is_coresimd %}
+            {% if dim == 3 %}
+                let v = self.0;
+                let v = v.min(simd_swizzle!(v, [2, 2, 1, 1]));
+                let v = v.min(simd_swizzle!(v, [1, 0, 0, 0]));
+                v[0]
+            {% elif dim == 4 %}
+                self.0.reduce_min()
+            {% endif %}
         {% endif %}
     }
 
@@ -574,6 +619,15 @@ impl {{ self_t }} {
                 let v = f32x4_pmax(v, i32x4_shuffle::<1, 0, 0, 0>(v, v));
                 f32x4_extract_lane::<0>(v)
             {% endif %}
+        {% elif is_coresimd %}
+            {% if dim == 3 %}
+                let v = self.0;
+                let v = v.max(simd_swizzle!(v, [2, 2, 0, 0]));
+                let v = v.max(simd_swizzle!(v, [1, 0, 0, 0]));
+                v[0]
+            {% elif dim == 4 %}
+                self.0.reduce_max()
+            {% endif %}
         {% endif %}
     }
 
@@ -594,6 +648,8 @@ impl {{ self_t }} {
             {{ mask_t }}(unsafe { _mm_cmpeq_ps(self.0, rhs.0) })
         {% elif is_wasm32 %}
             {{ mask_t }}(f32x4_eq(self.0, rhs.0))
+        {% elif is_coresimd %}
+            {{ mask_t }}(f32x4::lanes_eq(self.0, rhs.0))
         {% endif %}
     }
 
@@ -614,6 +670,8 @@ impl {{ self_t }} {
             {{ mask_t }}(unsafe { _mm_cmpneq_ps(self.0, rhs.0) })
         {% elif is_wasm32 %}
             {{ mask_t }}(f32x4_ne(self.0, rhs.0))
+        {% elif is_coresimd %}
+            {{ mask_t }}(f32x4::lanes_ne(self.0, rhs.0))
         {% endif %}
     }
 
@@ -634,6 +692,8 @@ impl {{ self_t }} {
             {{ mask_t }}(unsafe { _mm_cmpge_ps(self.0, rhs.0) })
         {% elif is_wasm32 %}
             {{ mask_t }}(f32x4_ge(self.0, rhs.0))
+        {% elif is_coresimd %}
+            {{ mask_t }}(f32x4::lanes_ge(self.0, rhs.0))
         {% endif %}
     }
 
@@ -654,6 +714,8 @@ impl {{ self_t }} {
             {{ mask_t }}(unsafe { _mm_cmpgt_ps(self.0, rhs.0) })
         {% elif is_wasm32 %}
             {{ mask_t }}(f32x4_gt(self.0, rhs.0))
+        {% elif is_coresimd %}
+            {{ mask_t }}(f32x4::lanes_gt(self.0, rhs.0))
         {% endif %}
     }
 
@@ -674,6 +736,8 @@ impl {{ self_t }} {
             {{ mask_t }}(unsafe { _mm_cmple_ps(self.0, rhs.0) })
         {% elif is_wasm32 %}
             {{ mask_t }}(f32x4_le(self.0, rhs.0))
+        {% elif is_coresimd %}
+            {{ mask_t }}(f32x4::lanes_le(self.0, rhs.0))
         {% endif %}
     }
 
@@ -694,6 +758,8 @@ impl {{ self_t }} {
             {{ mask_t }}(unsafe { _mm_cmplt_ps(self.0, rhs.0) })
         {% elif is_wasm32 %}
             {{ mask_t }}(f32x4_lt(self.0, rhs.0))
+        {% elif is_coresimd %}
+            {{ mask_t }}(f32x4::lanes_lt(self.0, rhs.0))
         {% endif %}
     }
 
@@ -711,6 +777,8 @@ impl {{ self_t }} {
             Self(unsafe { crate::sse2::m128_abs(self.0) })
         {% elif is_wasm32 %}
             Self(f32x4_abs(self.0))
+        {% elif is_coresimd %}
+            Self(self.0.abs())
         {% endif %}
     }
 
@@ -727,6 +795,8 @@ impl {{ self_t }} {
                     {{ c }}: self.{{ c }}.signum(),
                 {%- endfor %}
             }
+        {% elif is_coresimd %}
+            Self(self.0.signum())
         {% else %}
             let mask = self.cmpge(Self::ZERO);
             let result = Self::select(mask, Self::ONE, Self::NEG_ONE);
@@ -741,9 +811,17 @@ impl {{ self_t }} {
     /// `NaN`, positive or negative infinity, this will return `false`.
     #[inline]
     pub fn is_finite(self) -> bool {
-        {% for c in components %}
-            self.{{ c }}.is_finite() {% if not loop.last %} && {% endif %}
-        {%- endfor %}
+        {% if is_coresimd %}
+            {% if dim == 3 %}
+                f32x4::is_finite(self.0).bitor(mask32x4::from_array([false, false, false, true])).all()
+            {% elif dim == 4 %}
+                f32x4::is_finite(self.0).all()
+            {% endif %}
+        {% else %}
+            {% for c in components %}
+                self.{{ c }}.is_finite() {% if not loop.last %} && {% endif %}
+            {%- endfor %}
+        {% endif %}
     }
 
     /// Returns `true` if any elements are `NaN`.
@@ -773,6 +851,8 @@ impl {{ self_t }} {
             {{ mask_t }}(unsafe { _mm_cmpunord_ps(self.0, self.0) })
         {% elif is_wasm32 %}
             {{ mask_t }}(f32x4_ne(self.0, self.0))
+        {% elif is_coresimd %}
+            {{ mask_t }}(f32x4::is_nan(self.0))
         {% endif %}
     }
 
@@ -784,12 +864,15 @@ impl {{ self_t }} {
             self.dot(self).sqrt()
         {% elif is_sse2 %}
             unsafe {
-                let dot = crate::sse2::dot{{ dim }}_in_x(self.0, self.0);
+                let dot = dot{{ dim }}_in_x(self.0, self.0);
                 _mm_cvtss_f32(_mm_sqrt_ps(dot))
             }
         {% elif is_wasm32 %}
-            let dot = crate::wasm32::dot{{ dim }}_in_x(self.0, self.0);
+            let dot = dot{{ dim }}_in_x(self.0, self.0);
             f32x4_extract_lane::<0>(f32x4_sqrt(dot))
+        {% elif is_coresimd %}
+            let dot = dot{{ dim }}_in_x(self.0, self.0);
+            dot.sqrt()[0]
         {% endif %}
     }
 
@@ -811,12 +894,15 @@ impl {{ self_t }} {
             self.length().recip()
         {% elif is_sse2 %}
             unsafe {
-                let dot = crate::sse2::dot{{ dim }}_in_x(self.0, self.0);
+                let dot = dot{{ dim }}_in_x(self.0, self.0);
                 _mm_cvtss_f32(_mm_div_ps(Self::ONE.0, _mm_sqrt_ps(dot)))
             }
         {% elif is_wasm32 %}
-            let dot = crate::wasm32::dot{{ dim }}_in_x(self.0, self.0);
+            let dot = dot{{ dim }}_in_x(self.0, self.0);
             f32x4_extract_lane::<0>(f32x4_div(Self::ONE.0, f32x4_sqrt(dot)))
+        {% elif is_coresimd %}
+            let dot = dot{{ dim }}_in_x(self.0, self.0);
+            dot.sqrt().recip()[0]
         {% endif %}
     }
 
@@ -851,16 +937,22 @@ impl {{ self_t }} {
             normalized
         {% elif is_sse2 %}
             unsafe {
-                let length = _mm_sqrt_ps(crate::sse2::dot{{ dim }}_into_m128(self.0, self.0));
+                let length = _mm_sqrt_ps(dot{{ dim }}_into_m128(self.0, self.0));
                 #[allow(clippy::let_and_return)]
                 let normalized = Self(_mm_div_ps(self.0, length));
                 glam_assert!(normalized.is_finite());
                 normalized
             }
         {% elif is_wasm32 %}
-            let length = f32x4_sqrt(crate::wasm32::dot{{ dim }}_into_v128(self.0, self.0));
+            let length = f32x4_sqrt(dot{{ dim }}_into_v128(self.0, self.0));
             #[allow(clippy::let_and_return)]
             let normalized = Self(f32x4_div(self.0, length));
+            glam_assert!(normalized.is_finite());
+            normalized
+        {% elif is_coresimd %}
+            let length = dot{{ dim }}_into_f32x4(self.0, self.0).sqrt();
+            #[allow(clippy::let_and_return)]
+            let normalized = Self(self.0 / length);
             glam_assert!(normalized.is_finite());
             normalized
         {% endif %}
@@ -981,9 +1073,11 @@ impl {{ self_t }} {
                 {%- endfor %}
             }
         {% elif is_sse2 %}
-            Self(unsafe { crate::sse2::m128_round(self.0) })
+            Self(unsafe { m128_round(self.0) })
         {% elif is_wasm32 %}
             Self(f32x4_nearest(self.0))
+        {% elif is_coresimd %}
+            Self(self.0.round())
         {% endif %}
     }
 
@@ -998,9 +1092,11 @@ impl {{ self_t }} {
                 {%- endfor %}
             }
         {% elif is_sse2 %}
-            Self(unsafe { crate::sse2::m128_floor(self.0) })
+            Self(unsafe { m128_floor(self.0) })
         {% elif is_wasm32 %}
             Self(f32x4_floor(self.0))
+        {% elif is_coresimd %}
+            Self(self.0.floor())
         {% endif %}
     }
 
@@ -1015,9 +1111,11 @@ impl {{ self_t }} {
                 {%- endfor %}
             }
         {% elif is_sse2 %}
-            Self(unsafe { crate::sse2::m128_ceil(self.0) })
+            Self(unsafe { m128_ceil(self.0) })
         {% elif is_wasm32 %}
             Self(f32x4_ceil(self.0))
+        {% elif is_coresimd %}
+            Self(self.0.ceil())
         {% endif %}
     }
 
@@ -1064,6 +1162,8 @@ impl {{ self_t }} {
             Self(unsafe { _mm_div_ps(Self::ONE.0, self.0) })
         {% elif is_wasm32 %}
             Self(f32x4_div(Self::ONE.0, self.0))
+        {% elif is_coresimd %}
+            Self(self.0.recip())
         {% endif %}
     }
 
@@ -1144,11 +1244,15 @@ impl {{ self_t }} {
             unsafe { Self(_mm_fmadd_ps(self.0, a.0, b.0)) }
             #[cfg(not(target_feature = "fma"))]
         {% endif %}
-        Self::new(
-            {% for c in components %}
-                self.{{ c }}.mul_add(a.{{ c }}, b.{{ c }}),
-            {%- endfor %}
-        )
+        {% if is_coresimd %}
+            Self(self.0.mul_add(a.0, b.0))
+        {% else %}
+            Self::new(
+                {% for c in components %}
+                    self.{{ c }}.mul_add(a.{{ c }}, b.{{ c }}),
+                {%- endfor %}
+            )
+        {% endif %}
     }
 
 {% if dim == 2 %}
@@ -1401,6 +1505,8 @@ impl Div<{{ self_t }}> for {{ self_t }} {
             Self(unsafe { _mm_div_ps(self.0, rhs.0) })
         {% elif is_wasm32 %}
             Self(f32x4_div(self.0, rhs.0))
+        {% elif is_coresimd %}
+            Self(self.0 / rhs.0)
         {% endif %}
     }
 }
@@ -1416,6 +1522,8 @@ impl DivAssign<{{ self_t }}> for {{ self_t }} {
             self.0 = unsafe { _mm_div_ps(self.0, rhs.0) };
         {% elif is_wasm32 %}
             self.0 = f32x4_div(self.0, rhs.0);
+        {% elif is_coresimd %}
+            self.0 /= rhs.0;
         {% endif %}
     }
 }
@@ -1434,6 +1542,8 @@ impl Div<{{ scalar_t }}> for {{ self_t }} {
             Self(unsafe { _mm_div_ps(self.0, _mm_set1_ps(rhs)) })
         {% elif is_wasm32 %}
             Self(f32x4_div(self.0, f32x4_splat(rhs)))
+        {% elif is_coresimd %}
+            Self(self.0 / f32x4::splat(rhs))
         {% endif %}
     }
 }
@@ -1449,6 +1559,8 @@ impl DivAssign<{{ scalar_t }}> for {{ self_t }} {
             self.0 = unsafe { _mm_div_ps(self.0, _mm_set1_ps(rhs)) };
         {% elif is_wasm32 %}
             self.0 = f32x4_div(self.0, f32x4_splat(rhs))
+        {% elif is_coresimd %}
+            self.0 /= f32x4::splat(rhs);
         {% endif %}
     }
 }
@@ -1467,6 +1579,8 @@ impl Div<{{ self_t }}> for {{ scalar_t }} {
             {{ self_t }}(unsafe { _mm_div_ps(_mm_set1_ps(self), rhs.0) })
         {% elif is_wasm32 %}
             {{ self_t }}(f32x4_div(f32x4_splat(self), rhs.0))
+        {% elif is_coresimd %}
+            {{ self_t }}(f32x4::splat(self) / rhs.0)
         {% endif %}
     }
 }
@@ -1485,6 +1599,8 @@ impl Mul<{{ self_t }}> for {{ self_t }} {
             Self(unsafe { _mm_mul_ps(self.0, rhs.0) })
         {% elif is_wasm32 %}
             Self(f32x4_mul(self.0, rhs.0))
+        {% elif is_coresimd %}
+            Self(self.0 * rhs.0)
         {% endif %}
     }
 }
@@ -1500,6 +1616,8 @@ impl MulAssign<{{ self_t }}> for {{ self_t }} {
             self.0 = unsafe { _mm_mul_ps(self.0, rhs.0) };
         {% elif is_wasm32 %}
             self.0 = f32x4_mul(self.0, rhs.0);
+        {% elif is_coresimd %}
+            self.0 *= rhs.0;
         {% endif %}
     }
 }
@@ -1518,6 +1636,8 @@ impl Mul<{{ scalar_t }}> for {{ self_t }} {
             Self(unsafe { _mm_mul_ps(self.0, _mm_set1_ps(rhs)) })
         {% elif is_wasm32 %}
             Self(f32x4_mul(self.0, f32x4_splat(rhs)))
+        {% elif is_coresimd %}
+            Self(self.0 * f32x4::splat(rhs))
         {% endif %}
     }
 }
@@ -1533,6 +1653,8 @@ impl MulAssign<{{ scalar_t }}> for {{ self_t }} {
             self.0 = unsafe { _mm_mul_ps(self.0, _mm_set1_ps(rhs)) };
         {% elif is_wasm32 %}
             self.0 = f32x4_mul(self.0, f32x4_splat(rhs))
+        {% elif is_coresimd %}
+            self.0 *= f32x4::splat(rhs);
         {% endif %}
     }
 }
@@ -1551,6 +1673,8 @@ impl Mul<{{ self_t }}> for {{ scalar_t }} {
             {{ self_t }}(unsafe { _mm_mul_ps(_mm_set1_ps(self), rhs.0) })
         {% elif is_wasm32 %}
             {{ self_t }}(f32x4_mul(f32x4_splat(self), rhs.0))
+        {% elif is_coresimd %}
+            {{ self_t }}(f32x4::splat(self) * rhs.0)
         {% endif %}
     }
 }
@@ -1569,6 +1693,8 @@ impl Add<{{ self_t }}> for {{ self_t }} {
             Self(unsafe { _mm_add_ps(self.0, rhs.0) })
         {% elif is_wasm32 %}
             Self(f32x4_add(self.0, rhs.0))
+        {% elif is_coresimd %}
+            Self(self.0 + rhs.0)
         {% endif %}
     }
 }
@@ -1584,6 +1710,8 @@ impl AddAssign<{{ self_t }}> for {{ self_t }} {
             self.0 = unsafe { _mm_add_ps(self.0, rhs.0) };
         {% elif is_wasm32 %}
             self.0 = f32x4_add(self.0, rhs.0);
+        {% elif is_coresimd %}
+            self.0 += rhs.0;
         {% endif %}
     }
 }
@@ -1602,6 +1730,8 @@ impl Add<{{ scalar_t }}> for {{ self_t }} {
             Self(unsafe { _mm_add_ps(self.0, _mm_set1_ps(rhs)) })
         {% elif is_wasm32 %}
             Self(f32x4_add(self.0, f32x4_splat(rhs)))
+        {% elif is_coresimd %}
+            Self(self.0 + f32x4::splat(rhs))
         {% endif %}
     }
 }
@@ -1616,7 +1746,9 @@ impl AddAssign<{{ scalar_t }}> for {{ self_t }} {
         {% elif is_sse2 %}
             self.0 = unsafe { _mm_add_ps(self.0, _mm_set1_ps(rhs)) };
         {% elif is_wasm32 %}
-            self.0 = f32x4_add(self.0, f32x4_splat(rhs))
+            self.0 = f32x4_add(self.0, f32x4_splat(rhs));
+        {% elif is_coresimd %}
+            self.0 += f32x4::splat(rhs);
         {% endif %}
     }
 }
@@ -1635,6 +1767,8 @@ impl Add<{{ self_t }}> for {{ scalar_t }} {
             {{ self_t }}(unsafe { _mm_add_ps(_mm_set1_ps(self), rhs.0) })
         {% elif is_wasm32 %}
             {{ self_t }}(f32x4_add(f32x4_splat(self), rhs.0))
+        {% elif is_coresimd %}
+            {{ self_t }}(f32x4::splat(self) + rhs.0)
         {% endif %}
     }
 }
@@ -1653,6 +1787,8 @@ impl Sub<{{ self_t }}> for {{ self_t }} {
             Self(unsafe { _mm_sub_ps(self.0, rhs.0) })
         {% elif is_wasm32 %}
             Self(f32x4_sub(self.0, rhs.0))
+        {% elif is_coresimd %}
+            Self(self.0 - rhs.0)
         {% endif %}
     }
 }
@@ -1668,6 +1804,8 @@ impl SubAssign<{{ self_t }}> for {{ self_t }} {
             self.0 = unsafe { _mm_sub_ps(self.0, rhs.0) };
         {% elif is_wasm32 %}
             self.0 = f32x4_sub(self.0, rhs.0);
+        {% elif is_coresimd %}
+            self.0 -= rhs.0;
         {% endif %}
     }
 }
@@ -1686,6 +1824,8 @@ impl Sub<{{ scalar_t }}> for {{ self_t }} {
             Self(unsafe { _mm_sub_ps(self.0, _mm_set1_ps(rhs)) })
         {% elif is_wasm32 %}
             Self(f32x4_sub(self.0, f32x4_splat(rhs)))
+        {% elif is_coresimd %}
+            Self(self.0 - f32x4::splat(rhs))
         {% endif %}
     }
 }
@@ -1701,6 +1841,8 @@ impl SubAssign<{{ scalar_t }}> for {{ self_t }} {
             self.0 = unsafe { _mm_sub_ps(self.0, _mm_set1_ps(rhs)) };
         {% elif is_wasm32 %}
             self.0 = f32x4_sub(self.0, f32x4_splat(rhs))
+        {% elif is_coresimd %}
+            self.0 -= f32x4::splat(rhs);
         {% endif %}
     }
 }
@@ -1719,6 +1861,8 @@ impl Sub<{{ self_t }}> for {{ scalar_t }} {
             {{ self_t }}(unsafe { _mm_sub_ps(_mm_set1_ps(self), rhs.0) })
         {% elif is_wasm32 %}
             {{ self_t }}(f32x4_sub(f32x4_splat(self), rhs.0))
+        {% elif is_coresimd %}
+            {{ self_t }}(f32x4::splat(self) - rhs.0)
         {% endif %}
     }
 }
@@ -1735,12 +1879,14 @@ impl Rem<{{ self_t }}> for {{ self_t }} {
             }
         {% elif is_sse2 %}
             unsafe {
-                let n = crate::sse2::m128_floor(_mm_div_ps(self.0, rhs.0));
+                let n = m128_floor(_mm_div_ps(self.0, rhs.0));
                 Self(_mm_sub_ps(self.0, _mm_mul_ps(n, rhs.0)))
             }
         {% elif is_wasm32 %}
             let n = f32x4_floor(f32x4_div(self.0, rhs.0));
             Self(f32x4_sub(self.0, f32x4_mul(n, rhs.0)))
+        {% elif is_coresimd %}
+            Self(self.0 % rhs.0)
         {% endif %}
     }
 }
@@ -1752,6 +1898,8 @@ impl RemAssign<{{ self_t }}> for {{ self_t }} {
             {% for c in components %}
                 self.{{ c }}.rem_assign(rhs.{{ c }});
             {%- endfor %}
+        {% elif is_coresimd %}
+            self.0 %= rhs.0;
         {% else %}
             *self = self.rem(rhs);
         {% endif %}
@@ -1781,6 +1929,8 @@ impl RemAssign<{{ scalar_t }}> for {{ self_t }} {
             {% for c in components %}
                 self.{{ c }}.rem_assign(rhs);
             {%- endfor %}
+        {% elif is_coresimd %}
+            self.0 %= f32x4::splat(rhs);
         {% else %}
             *self = self.rem(Self::splat(rhs));
         {% endif %}
@@ -1854,6 +2004,8 @@ impl Neg for {{ self_t }} {
             Self(unsafe { _mm_sub_ps(Self::ZERO.0, self.0) })
         {% elif is_wasm32 %}
             Self(f32x4_neg(self.0))
+        {% elif is_coresimd %}
+            Self(-self.0)
         {% endif %}
     }
 }
@@ -2001,24 +2153,32 @@ impl Index<usize> for {{ self_t }} {
     type Output = {{ scalar_t }};
     #[inline]
     fn index(&self, index: usize) -> &Self::Output {
-        match index {
-            {% for c in components %}
-                {{ loop.index0 }} => &self.{{ c }},
-            {%- endfor %}
-            _ => panic!("index out of bounds"),
-        }
+        {% if is_coresimd %}
+            &self.0[index]
+        {% else %}
+            match index {
+                {% for c in components %}
+                    {{ loop.index0 }} => &self.{{ c }},
+                {%- endfor %}
+                _ => panic!("index out of bounds"),
+            }
+        {% endif %}
     }
 }
 
 impl IndexMut<usize> for {{ self_t }} {
     #[inline]
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
-        match index {
-            {% for c in components %}
-                {{ loop.index0 }} => &mut self.{{ c }},
-            {%- endfor %}
-            _ => panic!("index out of bounds"),
-        }
+        {% if is_coresimd %}
+            &mut self.0[index]
+        {% else %}
+            match index {
+                {% for c in components %}
+                    {{ loop.index0 }} => &mut self.{{ c }},
+                {%- endfor %}
+                _ => panic!("index out of bounds"),
+            }
+        {% endif %}
     }
 }
 
@@ -2067,6 +2227,8 @@ impl From<[{{ scalar_t }}; {{ dim }}]> for {{ self_t }} {
     fn from(a: [{{ scalar_t }}; {{ dim }}]) -> Self {
         {% if self_t == "Vec4" and is_sse2 %}
             Self(unsafe { _mm_loadu_ps(a.as_ptr()) })
+        {% elif self_t == "Vec4" and is_coresimd %}
+            Self(f32x4::from_array(a))
         {% else %}
             Self::new(
                 {% for c in components %}
@@ -2089,15 +2251,23 @@ impl From<{{ self_t }}> for [{{ scalar_t }}; {{ dim }}] {
         {% elif is_sse2 %}
             use core::mem::MaybeUninit;
             use crate::Align16;
-            let mut out: MaybeUninit<Align16<[f32; {{ dim }}]>> = MaybeUninit::uninit();
+            let mut out: MaybeUninit<Align16<Self>> = MaybeUninit::uninit();
             unsafe {
                 _mm_store_ps(out.as_mut_ptr().cast(), v.0);
                 out.assume_init().0
             }
         {% elif is_wasm32 %}
             unsafe {
-                *(&v.0 as *const v128 as *const [f32; {{ dim }}])
+                *(&v.0 as *const v128 as *const Self)
             }
+        {% elif is_coresimd %}
+            {% if dim == 3 %}
+                unsafe {
+                    *(v.0.to_array().as_ptr() as *const Self)
+                }
+            {% elif dim == 4 %}
+                v.0.to_array()
+            {% endif %}
         {% endif %}
     }
 }
@@ -2133,6 +2303,10 @@ impl From<{{ self_t }}> for {{ macros::make_tuple_t(t=scalar_t, n=dim) }} {
         {% elif is_wasm32 %}
             unsafe {
                 *(&v.0 as *const v128 as *const Self)
+            }
+        {% elif is_coresimd %}
+            unsafe {
+                *(v.0.to_array().as_ptr() as *const Self)
             }
         {% endif %}
     }
@@ -2184,6 +2358,10 @@ impl From<Vec3A> for Vec3 {
         {% elif is_wasm32 %}
             unsafe {
                 *(&v.0 as *const v128 as *const Self)
+            }
+        {% elif is_coresimd %}
+            unsafe {
+                *(v.0.to_array().as_ptr() as *const Self)
             }
         {% endif %}
     }

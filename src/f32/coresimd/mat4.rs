@@ -1,12 +1,12 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
-use crate::{swizzles::*, wasm32::*, DMat4, EulerRot, Mat3, Quat, Vec3, Vec3A, Vec4};
+use crate::{coresimd::*, swizzles::*, DMat4, EulerRot, Mat3, Quat, Vec3, Vec3A, Vec4};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
-use core::arch::wasm32::*;
+use core::simd::{Which::*, *};
 
 #[cfg(feature = "libm")]
 #[allow(unused_imports)]
@@ -539,52 +539,84 @@ impl Mat4 {
     #[inline]
     pub fn transpose(&self) -> Self {
         // Based on https://github.com/microsoft/DirectXMath `XMMatrixTranspose`
-        let tmp0 = i32x4_shuffle::<0, 1, 4, 5>(self.x_axis.0, self.y_axis.0);
-        let tmp1 = i32x4_shuffle::<2, 3, 6, 7>(self.x_axis.0, self.y_axis.0);
-        let tmp2 = i32x4_shuffle::<0, 1, 4, 5>(self.z_axis.0, self.w_axis.0);
-        let tmp3 = i32x4_shuffle::<2, 3, 6, 7>(self.z_axis.0, self.w_axis.0);
+        let tmp0 = simd_swizzle!(
+            self.x_axis.0,
+            self.y_axis.0,
+            [First(0), First(1), Second(0), Second(1)]
+        );
+        let tmp1 = simd_swizzle!(
+            self.x_axis.0,
+            self.y_axis.0,
+            [First(2), First(3), Second(2), Second(3)]
+        );
+        let tmp2 = simd_swizzle!(
+            self.z_axis.0,
+            self.w_axis.0,
+            [First(0), First(1), Second(0), Second(1)]
+        );
+        let tmp3 = simd_swizzle!(
+            self.z_axis.0,
+            self.w_axis.0,
+            [First(2), First(3), Second(2), Second(3)]
+        );
 
         Self {
-            x_axis: Vec4(i32x4_shuffle::<0, 2, 4, 6>(tmp0, tmp2)),
-            y_axis: Vec4(i32x4_shuffle::<1, 3, 5, 7>(tmp0, tmp2)),
-            z_axis: Vec4(i32x4_shuffle::<0, 2, 4, 6>(tmp1, tmp3)),
-            w_axis: Vec4(i32x4_shuffle::<1, 3, 5, 7>(tmp1, tmp3)),
+            x_axis: Vec4(simd_swizzle!(
+                tmp0,
+                tmp2,
+                [First(0), First(2), Second(0), Second(2)]
+            )),
+            y_axis: Vec4(simd_swizzle!(
+                tmp0,
+                tmp2,
+                [First(1), First(3), Second(1), Second(3)]
+            )),
+            z_axis: Vec4(simd_swizzle!(
+                tmp1,
+                tmp3,
+                [First(0), First(2), Second(0), Second(2)]
+            )),
+            w_axis: Vec4(simd_swizzle!(
+                tmp1,
+                tmp3,
+                [First(1), First(3), Second(1), Second(3)]
+            )),
         }
     }
 
     /// Returns the determinant of `self`.
     pub fn determinant(&self) -> f32 {
         // Based on https://github.com/g-truc/glm `glm_mat4_determinant`
-        let swp2a = i32x4_shuffle::<2, 1, 1, 0>(self.z_axis.0, self.z_axis.0);
-        let swp3a = i32x4_shuffle::<3, 3, 2, 3>(self.w_axis.0, self.w_axis.0);
-        let swp2b = i32x4_shuffle::<3, 3, 2, 3>(self.z_axis.0, self.z_axis.0);
-        let swp3b = i32x4_shuffle::<2, 1, 1, 0>(self.w_axis.0, self.w_axis.0);
-        let swp2c = i32x4_shuffle::<2, 1, 0, 0>(self.z_axis.0, self.z_axis.0);
-        let swp3c = i32x4_shuffle::<0, 0, 2, 1>(self.w_axis.0, self.w_axis.0);
+        let swp2a = simd_swizzle!(self.z_axis.0, [2, 1, 1, 0]);
+        let swp3a = simd_swizzle!(self.w_axis.0, [3, 3, 2, 3]);
+        let swp2b = simd_swizzle!(self.z_axis.0, [3, 3, 2, 3]);
+        let swp3b = simd_swizzle!(self.w_axis.0, [2, 1, 1, 0]);
+        let swp2c = simd_swizzle!(self.z_axis.0, [2, 1, 0, 0]);
+        let swp3c = simd_swizzle!(self.w_axis.0, [0, 0, 2, 1]);
 
-        let mula = f32x4_mul(swp2a, swp3a);
-        let mulb = f32x4_mul(swp2b, swp3b);
-        let mulc = f32x4_mul(swp2c, swp3c);
-        let sube = f32x4_sub(mula, mulb);
-        let subf = f32x4_sub(i32x4_shuffle::<6, 7, 2, 3>(mulc, mulc), mulc);
+        let mula = swp2a * swp3a;
+        let mulb = swp2b * swp3b;
+        let mulc = swp2c * swp3c;
+        let sube = mula - mulb;
+        let subf = simd_swizzle!(mulc, [2, 3, 2, 3]) - mulc;
 
-        let subfaca = i32x4_shuffle::<0, 0, 1, 2>(sube, sube);
-        let swpfaca = i32x4_shuffle::<1, 0, 0, 0>(self.y_axis.0, self.y_axis.0);
-        let mulfaca = f32x4_mul(swpfaca, subfaca);
+        let subfaca = simd_swizzle!(sube, [0, 0, 1, 2]);
+        let swpfaca = simd_swizzle!(self.y_axis.0, [1, 0, 0, 0]);
+        let mulfaca = swpfaca * subfaca;
 
-        let subtmpb = i32x4_shuffle::<1, 3, 4, 4>(sube, subf);
-        let subfacb = i32x4_shuffle::<0, 1, 1, 3>(subtmpb, subtmpb);
-        let swpfacb = i32x4_shuffle::<2, 2, 1, 1>(self.y_axis.0, self.y_axis.0);
-        let mulfacb = f32x4_mul(swpfacb, subfacb);
+        let subtmpb = simd_swizzle!(sube, subf, [First(1), First(3), Second(0), Second(0)]);
+        let subfacb = simd_swizzle!(subtmpb, [0, 1, 1, 3]);
+        let swpfacb = simd_swizzle!(self.y_axis.0, [2, 2, 1, 1]);
+        let mulfacb = swpfacb * subfacb;
 
-        let subres = f32x4_sub(mulfaca, mulfacb);
-        let subtmpc = i32x4_shuffle::<2, 2, 4, 5>(sube, subf);
-        let subfacc = i32x4_shuffle::<0, 2, 3, 3>(subtmpc, subtmpc);
-        let swpfacc = i32x4_shuffle::<3, 3, 3, 2>(self.y_axis.0, self.y_axis.0);
-        let mulfacc = f32x4_mul(swpfacc, subfacc);
+        let subres = mulfaca - mulfacb;
+        let subtmpc = simd_swizzle!(sube, subf, [First(2), First(2), Second(0), Second(1)]);
+        let subfacc = simd_swizzle!(subtmpc, [0, 2, 3, 3]);
+        let swpfacc = simd_swizzle!(self.y_axis.0, [3, 3, 3, 2]);
+        let mulfacc = swpfacc * subfacc;
 
-        let addres = f32x4_add(subres, mulfacc);
-        let detcof = f32x4_mul(addres, f32x4(1.0, -1.0, 1.0, -1.0));
+        let addres = subres + mulfacc;
+        let detcof = addres * f32x4::from_array([1.0, -1.0, 1.0, -1.0]);
 
         dot4(self.x_axis.0, detcof)
     }
@@ -600,140 +632,252 @@ impl Mat4 {
     pub fn inverse(&self) -> Self {
         // Based on https://github.com/g-truc/glm `glm_mat4_inverse`
         let fac0 = {
-            let swp0a = i32x4_shuffle::<3, 3, 7, 7>(self.w_axis.0, self.z_axis.0);
-            let swp0b = i32x4_shuffle::<2, 2, 6, 6>(self.w_axis.0, self.z_axis.0);
+            let swp0a = simd_swizzle!(
+                self.w_axis.0,
+                self.z_axis.0,
+                [First(3), First(3), Second(3), Second(3)]
+            );
+            let swp0b = simd_swizzle!(
+                self.w_axis.0,
+                self.z_axis.0,
+                [First(2), First(2), Second(2), Second(2)]
+            );
 
-            let swp00 = i32x4_shuffle::<2, 2, 6, 6>(self.z_axis.0, self.y_axis.0);
-            let swp01 = i32x4_shuffle::<0, 0, 4, 6>(swp0a, swp0a);
-            let swp02 = i32x4_shuffle::<0, 0, 4, 6>(swp0b, swp0b);
-            let swp03 = i32x4_shuffle::<3, 3, 7, 7>(self.z_axis.0, self.y_axis.0);
+            let swp00 = simd_swizzle!(
+                self.z_axis.0,
+                self.y_axis.0,
+                [First(2), First(2), Second(2), Second(2)]
+            );
+            let swp01 = simd_swizzle!(swp0a, [0, 0, 0, 2]);
+            let swp02 = simd_swizzle!(swp0b, [0, 0, 0, 2]);
+            let swp03 = simd_swizzle!(
+                self.z_axis.0,
+                self.y_axis.0,
+                [First(3), First(3), Second(3), Second(3)]
+            );
 
-            let mul00 = f32x4_mul(swp00, swp01);
-            let mul01 = f32x4_mul(swp02, swp03);
-            f32x4_sub(mul00, mul01)
+            let mul00 = swp00 * swp01;
+            let mul01 = swp02 * swp03;
+            mul00 - mul01
         };
         let fac1 = {
-            let swp0a = i32x4_shuffle::<3, 3, 7, 7>(self.w_axis.0, self.z_axis.0);
-            let swp0b = i32x4_shuffle::<1, 1, 5, 5>(self.w_axis.0, self.z_axis.0);
+            let swp0a = simd_swizzle!(
+                self.w_axis.0,
+                self.z_axis.0,
+                [First(3), First(3), Second(3), Second(3)]
+            );
+            let swp0b = simd_swizzle!(
+                self.w_axis.0,
+                self.z_axis.0,
+                [First(1), First(1), Second(1), Second(1)]
+            );
 
-            let swp00 = i32x4_shuffle::<1, 1, 5, 5>(self.z_axis.0, self.y_axis.0);
-            let swp01 = i32x4_shuffle::<0, 0, 4, 6>(swp0a, swp0a);
-            let swp02 = i32x4_shuffle::<0, 0, 4, 6>(swp0b, swp0b);
-            let swp03 = i32x4_shuffle::<3, 3, 7, 7>(self.z_axis.0, self.y_axis.0);
+            let swp00 = simd_swizzle!(
+                self.z_axis.0,
+                self.y_axis.0,
+                [First(1), First(1), Second(1), Second(1)]
+            );
+            let swp01 = simd_swizzle!(swp0a, [0, 0, 0, 2]);
+            let swp02 = simd_swizzle!(swp0b, [0, 0, 0, 2]);
+            let swp03 = simd_swizzle!(
+                self.z_axis.0,
+                self.y_axis.0,
+                [First(3), First(3), Second(3), Second(3)]
+            );
 
-            let mul00 = f32x4_mul(swp00, swp01);
-            let mul01 = f32x4_mul(swp02, swp03);
-            f32x4_sub(mul00, mul01)
+            let mul00 = swp00 * swp01;
+            let mul01 = swp02 * swp03;
+            mul00 - mul01
         };
         let fac2 = {
-            let swp0a = i32x4_shuffle::<2, 2, 6, 6>(self.w_axis.0, self.z_axis.0);
-            let swp0b = i32x4_shuffle::<1, 1, 5, 5>(self.w_axis.0, self.z_axis.0);
+            let swp0a = simd_swizzle!(
+                self.w_axis.0,
+                self.z_axis.0,
+                [First(2), First(2), Second(2), Second(2)]
+            );
+            let swp0b = simd_swizzle!(
+                self.w_axis.0,
+                self.z_axis.0,
+                [First(1), First(1), Second(1), Second(1)]
+            );
 
-            let swp00 = i32x4_shuffle::<1, 1, 5, 5>(self.z_axis.0, self.y_axis.0);
-            let swp01 = i32x4_shuffle::<0, 0, 4, 6>(swp0a, swp0a);
-            let swp02 = i32x4_shuffle::<0, 0, 4, 6>(swp0b, swp0b);
-            let swp03 = i32x4_shuffle::<2, 2, 6, 6>(self.z_axis.0, self.y_axis.0);
+            let swp00 = simd_swizzle!(
+                self.z_axis.0,
+                self.y_axis.0,
+                [First(1), First(1), Second(1), Second(1)]
+            );
+            let swp01 = simd_swizzle!(swp0a, [0, 0, 0, 2]);
+            let swp02 = simd_swizzle!(swp0b, [0, 0, 0, 2]);
+            let swp03 = simd_swizzle!(
+                self.z_axis.0,
+                self.y_axis.0,
+                [First(2), First(2), Second(2), Second(2)]
+            );
 
-            let mul00 = f32x4_mul(swp00, swp01);
-            let mul01 = f32x4_mul(swp02, swp03);
-            f32x4_sub(mul00, mul01)
+            let mul00 = swp00 * swp01;
+            let mul01 = swp02 * swp03;
+            mul00 - mul01
         };
         let fac3 = {
-            let swp0a = i32x4_shuffle::<3, 3, 7, 7>(self.w_axis.0, self.z_axis.0);
-            let swp0b = i32x4_shuffle::<0, 0, 4, 4>(self.w_axis.0, self.z_axis.0);
+            let swp0a = simd_swizzle!(
+                self.w_axis.0,
+                self.z_axis.0,
+                [First(3), First(3), Second(3), Second(3)]
+            );
+            let swp0b = simd_swizzle!(
+                self.w_axis.0,
+                self.z_axis.0,
+                [First(0), First(0), Second(0), Second(0)]
+            );
 
-            let swp00 = i32x4_shuffle::<0, 0, 4, 4>(self.z_axis.0, self.y_axis.0);
-            let swp01 = i32x4_shuffle::<0, 0, 4, 6>(swp0a, swp0a);
-            let swp02 = i32x4_shuffle::<0, 0, 4, 6>(swp0b, swp0b);
-            let swp03 = i32x4_shuffle::<3, 3, 7, 7>(self.z_axis.0, self.y_axis.0);
+            let swp00 = simd_swizzle!(
+                self.z_axis.0,
+                self.y_axis.0,
+                [First(0), First(0), Second(0), Second(0)]
+            );
+            let swp01 = simd_swizzle!(swp0a, [0, 0, 0, 2]);
+            let swp02 = simd_swizzle!(swp0b, [0, 0, 0, 2]);
+            let swp03 = simd_swizzle!(
+                self.z_axis.0,
+                self.y_axis.0,
+                [First(3), First(3), Second(3), Second(3)]
+            );
 
-            let mul00 = f32x4_mul(swp00, swp01);
-            let mul01 = f32x4_mul(swp02, swp03);
-            f32x4_sub(mul00, mul01)
+            let mul00 = swp00 * swp01;
+            let mul01 = swp02 * swp03;
+            mul00 - mul01
         };
         let fac4 = {
-            let swp0a = i32x4_shuffle::<2, 2, 6, 6>(self.w_axis.0, self.z_axis.0);
-            let swp0b = i32x4_shuffle::<0, 0, 4, 4>(self.w_axis.0, self.z_axis.0);
+            let swp0a = simd_swizzle!(
+                self.w_axis.0,
+                self.z_axis.0,
+                [First(2), First(2), Second(2), Second(2)]
+            );
+            let swp0b = simd_swizzle!(
+                self.w_axis.0,
+                self.z_axis.0,
+                [First(0), First(0), Second(0), Second(0)]
+            );
 
-            let swp00 = i32x4_shuffle::<0, 0, 4, 4>(self.z_axis.0, self.y_axis.0);
-            let swp01 = i32x4_shuffle::<0, 0, 4, 6>(swp0a, swp0a);
-            let swp02 = i32x4_shuffle::<0, 0, 4, 6>(swp0b, swp0b);
-            let swp03 = i32x4_shuffle::<2, 2, 6, 6>(self.z_axis.0, self.y_axis.0);
+            let swp00 = simd_swizzle!(
+                self.z_axis.0,
+                self.y_axis.0,
+                [First(0), First(0), Second(0), Second(0)]
+            );
+            let swp01 = simd_swizzle!(swp0a, [0, 0, 0, 2]);
+            let swp02 = simd_swizzle!(swp0b, [0, 0, 0, 2]);
+            let swp03 = simd_swizzle!(
+                self.z_axis.0,
+                self.y_axis.0,
+                [First(2), First(2), Second(2), Second(2)]
+            );
 
-            let mul00 = f32x4_mul(swp00, swp01);
-            let mul01 = f32x4_mul(swp02, swp03);
-            f32x4_sub(mul00, mul01)
+            let mul00 = swp00 * swp01;
+            let mul01 = swp02 * swp03;
+            mul00 - mul01
         };
         let fac5 = {
-            let swp0a = i32x4_shuffle::<1, 1, 5, 5>(self.w_axis.0, self.z_axis.0);
-            let swp0b = i32x4_shuffle::<0, 0, 4, 4>(self.w_axis.0, self.z_axis.0);
+            let swp0a = simd_swizzle!(
+                self.w_axis.0,
+                self.z_axis.0,
+                [First(1), First(1), Second(1), Second(1)]
+            );
+            let swp0b = simd_swizzle!(
+                self.w_axis.0,
+                self.z_axis.0,
+                [First(0), First(0), Second(0), Second(0)]
+            );
 
-            let swp00 = i32x4_shuffle::<0, 0, 4, 4>(self.z_axis.0, self.y_axis.0);
-            let swp01 = i32x4_shuffle::<0, 0, 4, 6>(swp0a, swp0a);
-            let swp02 = i32x4_shuffle::<0, 0, 4, 6>(swp0b, swp0b);
-            let swp03 = i32x4_shuffle::<1, 1, 5, 5>(self.z_axis.0, self.y_axis.0);
+            let swp00 = simd_swizzle!(
+                self.z_axis.0,
+                self.y_axis.0,
+                [First(0), First(0), Second(0), Second(0)]
+            );
+            let swp01 = simd_swizzle!(swp0a, [0, 0, 0, 2]);
+            let swp02 = simd_swizzle!(swp0b, [0, 0, 0, 2]);
+            let swp03 = simd_swizzle!(
+                self.z_axis.0,
+                self.y_axis.0,
+                [First(1), First(1), Second(1), Second(1)]
+            );
 
-            let mul00 = f32x4_mul(swp00, swp01);
-            let mul01 = f32x4_mul(swp02, swp03);
-            f32x4_sub(mul00, mul01)
+            let mul00 = swp00 * swp01;
+            let mul01 = swp02 * swp03;
+            mul00 - mul01
         };
-        let sign_a = f32x4(-1.0, 1.0, -1.0, 1.0);
-        let sign_b = f32x4(1.0, -1.0, 1.0, -1.0);
+        let sign_a = f32x4::from_array([-1.0, 1.0, -1.0, 1.0]);
+        let sign_b = f32x4::from_array([1.0, -1.0, 1.0, -1.0]);
 
-        let temp0 = i32x4_shuffle::<0, 0, 4, 4>(self.y_axis.0, self.x_axis.0);
-        let vec0 = i32x4_shuffle::<0, 2, 6, 6>(temp0, temp0);
+        let temp0 = simd_swizzle!(
+            self.y_axis.0,
+            self.x_axis.0,
+            [First(0), First(0), Second(0), Second(0)]
+        );
+        let vec0 = simd_swizzle!(temp0, [0, 2, 2, 2]);
 
-        let temp1 = i32x4_shuffle::<1, 1, 5, 5>(self.y_axis.0, self.x_axis.0);
-        let vec1 = i32x4_shuffle::<0, 2, 6, 6>(temp1, temp1);
+        let temp1 = simd_swizzle!(
+            self.y_axis.0,
+            self.x_axis.0,
+            [First(1), First(1), Second(1), Second(1)]
+        );
+        let vec1 = simd_swizzle!(temp1, [0, 2, 2, 2]);
 
-        let temp2 = i32x4_shuffle::<2, 2, 6, 6>(self.y_axis.0, self.x_axis.0);
-        let vec2 = i32x4_shuffle::<0, 2, 6, 6>(temp2, temp2);
+        let temp2 = simd_swizzle!(
+            self.y_axis.0,
+            self.x_axis.0,
+            [First(2), First(2), Second(2), Second(2)]
+        );
+        let vec2 = simd_swizzle!(temp2, [0, 2, 2, 2]);
 
-        let temp3 = i32x4_shuffle::<3, 3, 7, 7>(self.y_axis.0, self.x_axis.0);
-        let vec3 = i32x4_shuffle::<0, 2, 6, 6>(temp3, temp3);
+        let temp3 = simd_swizzle!(
+            self.y_axis.0,
+            self.x_axis.0,
+            [First(3), First(3), Second(3), Second(3)]
+        );
+        let vec3 = simd_swizzle!(temp3, [0, 2, 2, 2]);
 
-        let mul00 = f32x4_mul(vec1, fac0);
-        let mul01 = f32x4_mul(vec2, fac1);
-        let mul02 = f32x4_mul(vec3, fac2);
-        let sub00 = f32x4_sub(mul00, mul01);
-        let add00 = f32x4_add(sub00, mul02);
-        let inv0 = f32x4_mul(sign_b, add00);
+        let mul00 = vec1 * fac0;
+        let mul01 = vec2 * fac1;
+        let mul02 = vec3 * fac2;
+        let sub00 = mul00 - mul01;
+        let add00 = sub00 + mul02;
+        let inv0 = sign_b * add00;
 
-        let mul03 = f32x4_mul(vec0, fac0);
-        let mul04 = f32x4_mul(vec2, fac3);
-        let mul05 = f32x4_mul(vec3, fac4);
-        let sub01 = f32x4_sub(mul03, mul04);
-        let add01 = f32x4_add(sub01, mul05);
-        let inv1 = f32x4_mul(sign_a, add01);
+        let mul03 = vec0 * fac0;
+        let mul04 = vec2 * fac3;
+        let mul05 = vec3 * fac4;
+        let sub01 = mul03 - mul04;
+        let add01 = sub01 + mul05;
+        let inv1 = sign_a * add01;
 
-        let mul06 = f32x4_mul(vec0, fac1);
-        let mul07 = f32x4_mul(vec1, fac3);
-        let mul08 = f32x4_mul(vec3, fac5);
-        let sub02 = f32x4_sub(mul06, mul07);
-        let add02 = f32x4_add(sub02, mul08);
-        let inv2 = f32x4_mul(sign_b, add02);
+        let mul06 = vec0 * fac1;
+        let mul07 = vec1 * fac3;
+        let mul08 = vec3 * fac5;
+        let sub02 = mul06 - mul07;
+        let add02 = sub02 + mul08;
+        let inv2 = sign_b * add02;
 
-        let mul09 = f32x4_mul(vec0, fac2);
-        let mul10 = f32x4_mul(vec1, fac4);
-        let mul11 = f32x4_mul(vec2, fac5);
-        let sub03 = f32x4_sub(mul09, mul10);
-        let add03 = f32x4_add(sub03, mul11);
-        let inv3 = f32x4_mul(sign_a, add03);
+        let mul09 = vec0 * fac2;
+        let mul10 = vec1 * fac4;
+        let mul11 = vec2 * fac5;
+        let sub03 = mul09 - mul10;
+        let add03 = sub03 + mul11;
+        let inv3 = sign_a * add03;
 
-        let row0 = i32x4_shuffle::<0, 0, 4, 4>(inv0, inv1);
-        let row1 = i32x4_shuffle::<0, 0, 4, 4>(inv2, inv3);
-        let row2 = i32x4_shuffle::<0, 2, 4, 6>(row0, row1);
+        let row0 = simd_swizzle!(inv0, inv1, [First(0), First(0), Second(0), Second(0)]);
+        let row1 = simd_swizzle!(inv2, inv3, [First(0), First(0), Second(0), Second(0)]);
+        let row2 = simd_swizzle!(row0, row1, [First(0), First(2), Second(0), Second(2)]);
 
         let dot0 = dot4(self.x_axis.0, row2);
         glam_assert!(dot0 != 0.0);
 
-        let rcp0 = f32x4_splat(dot0.recip());
+        let rcp0 = f32x4::splat(dot0.recip());
 
         Self {
-            x_axis: Vec4(f32x4_mul(inv0, rcp0)),
-            y_axis: Vec4(f32x4_mul(inv1, rcp0)),
-            z_axis: Vec4(f32x4_mul(inv2, rcp0)),
-            w_axis: Vec4(f32x4_mul(inv3, rcp0)),
+            x_axis: Vec4(inv0 * rcp0),
+            y_axis: Vec4(inv1 * rcp0),
+            z_axis: Vec4(inv2 * rcp0),
+            w_axis: Vec4(inv3 * rcp0),
         }
     }
 

@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec3A, Vec2, Vec3, Vec4};
+use crate::{sse2::*, BVec3A, Vec2, Vec3, Vec4};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -157,7 +157,7 @@ impl Vec3A {
     /// Computes the dot product of `self` and `rhs`.
     #[inline]
     pub fn dot(self, rhs: Self) -> f32 {
-        unsafe { crate::sse2::dot3(self.0, rhs.0) }
+        unsafe { dot3(self.0, rhs.0) }
     }
 
     /// Computes the cross product of `self` and `rhs`.
@@ -338,7 +338,7 @@ impl Vec3A {
     #[inline]
     pub fn length(self) -> f32 {
         unsafe {
-            let dot = crate::sse2::dot3_in_x(self.0, self.0);
+            let dot = dot3_in_x(self.0, self.0);
             _mm_cvtss_f32(_mm_sqrt_ps(dot))
         }
     }
@@ -358,7 +358,7 @@ impl Vec3A {
     #[inline]
     pub fn length_recip(self) -> f32 {
         unsafe {
-            let dot = crate::sse2::dot3_in_x(self.0, self.0);
+            let dot = dot3_in_x(self.0, self.0);
             _mm_cvtss_f32(_mm_div_ps(Self::ONE.0, _mm_sqrt_ps(dot)))
         }
     }
@@ -388,7 +388,7 @@ impl Vec3A {
     #[inline]
     pub fn normalize(self) -> Self {
         unsafe {
-            let length = _mm_sqrt_ps(crate::sse2::dot3_into_m128(self.0, self.0));
+            let length = _mm_sqrt_ps(dot3_into_m128(self.0, self.0));
             #[allow(clippy::let_and_return)]
             let normalized = Self(_mm_div_ps(self.0, length));
             glam_assert!(normalized.is_finite());
@@ -504,21 +504,21 @@ impl Vec3A {
     /// Round half-way cases away from 0.0.
     #[inline]
     pub fn round(self) -> Self {
-        Self(unsafe { crate::sse2::m128_round(self.0) })
+        Self(unsafe { m128_round(self.0) })
     }
 
     /// Returns a vector containing the largest integer less than or equal to a number for each
     /// element of `self`.
     #[inline]
     pub fn floor(self) -> Self {
-        Self(unsafe { crate::sse2::m128_floor(self.0) })
+        Self(unsafe { m128_floor(self.0) })
     }
 
     /// Returns a vector containing the smallest integer greater than or equal to a number for
     /// each element of `self`.
     #[inline]
     pub fn ceil(self) -> Self {
-        Self(unsafe { crate::sse2::m128_ceil(self.0) })
+        Self(unsafe { m128_ceil(self.0) })
     }
 
     /// Returns a vector containing the fractional part of the vector, e.g. `self -
@@ -891,7 +891,7 @@ impl Rem<Vec3A> for Vec3A {
     #[inline]
     fn rem(self, rhs: Self) -> Self {
         unsafe {
-            let n = crate::sse2::m128_floor(_mm_div_ps(self.0, rhs.0));
+            let n = m128_floor(_mm_div_ps(self.0, rhs.0));
             Self(_mm_sub_ps(self.0, _mm_mul_ps(n, rhs.0)))
         }
     }
@@ -1040,7 +1040,7 @@ impl From<Vec3A> for [f32; 3] {
     fn from(v: Vec3A) -> Self {
         use crate::Align16;
         use core::mem::MaybeUninit;
-        let mut out: MaybeUninit<Align16<[f32; 3]>> = MaybeUninit::uninit();
+        let mut out: MaybeUninit<Align16<Self>> = MaybeUninit::uninit();
         unsafe {
             _mm_store_ps(out.as_mut_ptr().cast(), v.0);
             out.assume_init().0

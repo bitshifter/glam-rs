@@ -42,13 +42,13 @@ impl BVec3A {
     /// Returns true if any of the elements are true, false otherwise.
     #[inline]
     pub fn any(self) -> bool {
-        (u32x4_bitmask(self.0) & 0x7) != 0
+        self.bitmask() != 0
     }
 
     /// Returns true if all the elements are true, false otherwise.
     #[inline]
     pub fn all(self) -> bool {
-        (u32x4_bitmask(self.0) & 0x7) == 0x7
+        self.bitmask() == 0x7
     }
 
     #[inline]
@@ -135,6 +135,7 @@ impl BitXorAssign for BVec3A {
         *self = self.bitxor(rhs);
     }
 }
+
 impl Not for BVec3A {
     type Output = Self;
     #[inline]

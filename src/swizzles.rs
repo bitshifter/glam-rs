@@ -14,16 +14,29 @@ mod vec2_impl;
 mod vec3_impl;
 
 #[cfg(any(
-    not(any(target_feature = "sse2", target_feature = "simd128")),
+    not(any(
+        feature = "core-simd",
+        target_feature = "sse2",
+        target_feature = "simd128"
+    )),
     feature = "scalar-math"
 ))]
 mod scalar;
 
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+#[cfg(all(
+    target_feature = "sse2",
+    not(any(feature = "core-simd", feature = "scalar-math"))
+))]
 mod sse2;
 
-#[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
+#[cfg(all(
+    target_feature = "simd128",
+    not(any(feature = "core-simd", feature = "scalar-math"))
+))]
 mod wasm32;
+
+#[cfg(all(feature = "core-simd", not(feature = "scalar-math")))]
+mod coresimd;
 
 mod vec_traits;
 pub use vec_traits::*;

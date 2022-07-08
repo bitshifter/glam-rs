@@ -2,7 +2,8 @@
 
 use crate::{
     euler::{EulerFromQuaternion, EulerRot, EulerToQuaternion},
-    wasm32, DQuat, FloatEx, Mat3, Mat4, Vec2, Vec3, Vec3A, Vec4,
+    wasm32::*,
+    DQuat, FloatEx, Mat3, Mat4, Vec2, Vec3, Vec3A, Vec4,
 };
 
 #[cfg(feature = "libm")]
@@ -382,7 +383,7 @@ impl Quat {
     #[must_use]
     #[inline]
     pub fn conjugate(self) -> Self {
-        const SIGN: v128 = wasm32::v128_from_f32x4([-1.0, -1.0, -1.0, 1.0]);
+        const SIGN: v128 = v128_from_f32x4([-1.0, -1.0, -1.0, 1.0]);
         Self(f32x4_mul(self.0, SIGN))
     }
 
@@ -531,10 +532,10 @@ impl Quat {
         glam_assert!(self.is_normalized());
         glam_assert!(end.is_normalized());
 
-        const NEG_ZERO: v128 = wasm32::v128_from_f32x4([-0.0; 4]);
+        const NEG_ZERO: v128 = v128_from_f32x4([-0.0; 4]);
         let start = self.0;
         let end = end.0;
-        let dot = crate::wasm32::dot4_into_v128(start, end);
+        let dot = dot4_into_v128(start, end);
         // Calculate the bias, if the dot product is positive or zero, there is no bias
         // but if it is negative, we want to flip the 'end' rotation XYZW components
         let bias = v128_and(dot, NEG_ZERO);
@@ -632,9 +633,9 @@ impl Quat {
         let lhs = self.0;
         let rhs = rhs.0;
 
-        const CONTROL_WZYX: v128 = wasm32::v128_from_f32x4([1.0, -1.0, 1.0, -1.0]);
-        const CONTROL_ZWXY: v128 = wasm32::v128_from_f32x4([1.0, 1.0, -1.0, -1.0]);
-        const CONTROL_YXWZ: v128 = wasm32::v128_from_f32x4([-1.0, 1.0, 1.0, -1.0]);
+        const CONTROL_WZYX: v128 = v128_from_f32x4([1.0, -1.0, 1.0, -1.0]);
+        const CONTROL_ZWXY: v128 = v128_from_f32x4([1.0, 1.0, -1.0, -1.0]);
+        const CONTROL_YXWZ: v128 = v128_from_f32x4([-1.0, 1.0, 1.0, -1.0]);
 
         let r_xxxx = i32x4_shuffle::<0, 0, 4, 4>(lhs, lhs);
         let r_yyyy = i32x4_shuffle::<1, 1, 5, 5>(lhs, lhs);
@@ -677,14 +678,14 @@ impl Quat {
     /// Multiplies a quaternion and a 3D vector, returning the rotated vector.
     #[inline]
     pub fn mul_vec3a(self, rhs: Vec3A) -> Vec3A {
-        const TWO: v128 = wasm32::v128_from_f32x4([2.0; 4]);
+        const TWO: v128 = v128_from_f32x4([2.0; 4]);
         let w = i32x4_shuffle::<3, 3, 7, 7>(self.0, self.0);
         let b = self.0;
-        let b2 = crate::wasm32::dot3_into_v128(b, b);
+        let b2 = dot3_into_v128(b, b);
         Vec3A(f32x4_add(
             f32x4_add(
                 f32x4_mul(rhs.0, f32x4_sub(f32x4_mul(w, w), b2)),
-                f32x4_mul(b, f32x4_mul(crate::wasm32::dot3_into_v128(rhs.0, b), TWO)),
+                f32x4_mul(b, f32x4_mul(dot3_into_v128(rhs.0, b), TWO)),
             ),
             f32x4_mul(Vec3A(b).cross(rhs).into(), f32x4_mul(w, TWO)),
         ))

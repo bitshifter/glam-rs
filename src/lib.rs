@@ -243,6 +243,10 @@ The minimum supported Rust version is `1.58.1`.
 )]
 // clippy doesn't like `to_array(&self)`
 #![allow(clippy::wrong_self_convention)]
+#![cfg_attr(
+    all(feature = "core-simd", not(feature = "scalar-math")),
+    feature(portable_simd)
+)]
 
 #[macro_use]
 mod macros;
@@ -256,14 +260,26 @@ mod float_ex;
 #[cfg(target_arch = "spirv")]
 mod spirv;
 
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-pub mod sse2;
+#[cfg(all(
+    target_feature = "sse2",
+    not(any(feature = "core-simd", feature = "scalar-math"))
+))]
+mod sse2;
 
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
+#[cfg(all(
+    target_feature = "simd128",
+    not(any(feature = "core-simd", feature = "scalar-math"))
+))]
+mod wasm32;
+
+#[cfg(all(feature = "core-simd", not(feature = "scalar-math")))]
+mod coresimd;
+
+#[cfg(all(
+    target_feature = "sse2",
+    not(any(feature = "core-simd", feature = "scalar-math"))
+))]
 use align16::Align16;
-
-#[cfg(all(target_feature = "simd128", not(feature = "scalar-math")))]
-pub mod wasm32;
 
 use float_ex::FloatEx;
 

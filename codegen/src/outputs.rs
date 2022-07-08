@@ -3,6 +3,14 @@ use std::collections::HashMap;
 
 struct ContextBuilder(tera::Context);
 
+#[derive(Copy, Clone, Debug, PartialEq)]
+enum Target {
+    Scalar,
+    Sse2,
+    Wasm32,
+    CoreSimd,
+}
+
 impl ContextBuilder {
     pub fn new() -> Self {
         Self(tera::Context::new())
@@ -234,25 +242,28 @@ impl ContextBuilder {
         self
     }
 
-    pub fn target_sse2(mut self) -> Self {
-        self.0.insert("is_sse2", &true);
-        self.0.insert("is_wasm32", &false);
-        self.0.insert("is_scalar", &false);
+    pub fn with_target(mut self, target: Target) -> Self {
+        self.0.insert("is_sse2", &(target == Target::Sse2));
+        self.0.insert("is_coresimd", &(target == Target::CoreSimd));
+        self.0.insert("is_wasm32", &(target == Target::Wasm32));
+        self.0.insert("is_scalar", &(target == Target::Scalar));
         self
     }
 
-    pub fn target_wasm32(mut self) -> Self {
-        self.0.insert("is_sse2", &false);
-        self.0.insert("is_wasm32", &true);
-        self.0.insert("is_scalar", &false);
-        self
+    pub fn target_sse2(self) -> Self {
+        self.with_target(Target::Sse2)
     }
 
-    pub fn target_scalar(mut self) -> Self {
-        self.0.insert("is_sse2", &false);
-        self.0.insert("is_wasm32", &false);
-        self.0.insert("is_scalar", &true);
-        self
+    pub fn target_wasm32(self) -> Self {
+        self.with_target(Target::Wasm32)
+    }
+
+    pub fn target_scalar(self) -> Self {
+        self.with_target(Target::Scalar)
+    }
+
+    pub fn target_coresimd(self) -> Self {
+        self.with_target(Target::CoreSimd)
     }
 
     fn with_self_t(mut self, self_t: &str) -> Self {
@@ -313,6 +324,12 @@ pub fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
                 .build(),
         ),
         (
+            "src/swizzles/coresimd/vec3a_impl.rs",
+            ContextBuilder::new_vec3a_swizzle_impl()
+                .target_coresimd()
+                .build(),
+        ),
+        (
             "src/swizzles/scalar/vec4_impl.rs",
             ContextBuilder::new_vec4_swizzle_impl().build(),
         ),
@@ -326,6 +343,12 @@ pub fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
             "src/swizzles/wasm32/vec4_impl.rs",
             ContextBuilder::new_vec4_swizzle_impl()
                 .target_wasm32()
+                .build(),
+        ),
+        (
+            "src/swizzles/coresimd/vec4_impl.rs",
+            ContextBuilder::new_vec4_swizzle_impl()
+                .target_coresimd()
                 .build(),
         ),
         (
@@ -389,12 +412,20 @@ pub fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
             ContextBuilder::new_bvec3().target_wasm32().build(),
         ),
         (
+            "src/bool/coresimd/bvec3a.rs",
+            ContextBuilder::new_bvec3().target_coresimd().build(),
+        ),
+        (
             "src/bool/sse2/bvec4a.rs",
             ContextBuilder::new_bvec4().target_sse2().build(),
         ),
         (
             "src/bool/wasm32/bvec4a.rs",
             ContextBuilder::new_bvec4().target_wasm32().build(),
+        ),
+        (
+            "src/bool/coresimd/bvec4a.rs",
+            ContextBuilder::new_bvec4().target_coresimd().build(),
         ),
         ("src/f32/vec2.rs", ContextBuilder::new_vec2().build()),
         ("src/f32/vec3.rs", ContextBuilder::new_vec3().build()),
@@ -410,6 +441,10 @@ pub fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
             "src/f32/wasm32/vec3a.rs",
             ContextBuilder::new_vec3a().target_wasm32().build(),
         ),
+        (
+            "src/f32/coresimd/vec3a.rs",
+            ContextBuilder::new_vec3a().target_coresimd().build(),
+        ),
         ("src/f32/scalar/vec4.rs", ContextBuilder::new_vec4().build()),
         (
             "src/f32/sse2/vec4.rs",
@@ -418,6 +453,10 @@ pub fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
         (
             "src/f32/wasm32/vec4.rs",
             ContextBuilder::new_vec4().target_wasm32().build(),
+        ),
+        (
+            "src/f32/coresimd/vec4.rs",
+            ContextBuilder::new_vec4().target_coresimd().build(),
         ),
         ("src/f64/dvec2.rs", ContextBuilder::new_dvec2().build()),
         ("src/f64/dvec3.rs", ContextBuilder::new_dvec3().build()),
@@ -437,6 +476,10 @@ pub fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
             "src/f32/wasm32/quat.rs",
             ContextBuilder::new_quat().target_wasm32().build(),
         ),
+        (
+            "src/f32/coresimd/quat.rs",
+            ContextBuilder::new_quat().target_coresimd().build(),
+        ),
         ("src/f64/dquat.rs", ContextBuilder::new_dquat().build()),
         ("src/f32/scalar/mat2.rs", ContextBuilder::new_mat2().build()),
         (
@@ -446,6 +489,10 @@ pub fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
         (
             "src/f32/wasm32/mat2.rs",
             ContextBuilder::new_mat2().target_wasm32().build(),
+        ),
+        (
+            "src/f32/coresimd/mat2.rs",
+            ContextBuilder::new_mat2().target_coresimd().build(),
         ),
         ("src/f64/dmat2.rs", ContextBuilder::new_dmat2().build()),
         ("src/f32/mat3.rs", ContextBuilder::new_mat3().build()),
@@ -461,6 +508,10 @@ pub fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
             "src/f32/wasm32/mat3a.rs",
             ContextBuilder::new_mat3a().target_wasm32().build(),
         ),
+        (
+            "src/f32/coresimd/mat3a.rs",
+            ContextBuilder::new_mat3a().target_coresimd().build(),
+        ),
         ("src/f32/scalar/mat4.rs", ContextBuilder::new_mat4().build()),
         (
             "src/f32/sse2/mat4.rs",
@@ -469,6 +520,10 @@ pub fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
         (
             "src/f32/wasm32/mat4.rs",
             ContextBuilder::new_mat4().target_wasm32().build(),
+        ),
+        (
+            "src/f32/coresimd/mat4.rs",
+            ContextBuilder::new_mat4().target_coresimd().build(),
         ),
         ("src/f64/dmat3.rs", ContextBuilder::new_dmat3().build()),
         ("src/f64/dmat4.rs", ContextBuilder::new_dmat4().build()),
