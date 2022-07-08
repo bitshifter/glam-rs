@@ -219,6 +219,11 @@ and benchmarks.
 * `num-traits` - required to compile `no_std`, will be included when enabling
   the `libm` feature
 * `rand` - implementations of `Distribution` trait for all `glam` types.
+* `rkyv` - implementations of `Archive`, `Serialize` and `Deserialize` for all
+  `glam` types. Note that serialization is not interoperable with and without the
+  `scalar-math` feature. It should work between all other builds of `glam`.
+  Endian conversion is currently not supported
+* `bytecheck` - to perform archive validation when using the `rkyv` feature
 * `serde` - implementations of `Serialize` and `Deserialize` for all `glam`
   types. Note that serialization should work between builds of `glam` with and without SIMD enabled
 * `scalar-math` - disables SIMD support and uses native alignment for all types.
@@ -226,6 +231,14 @@ and benchmarks.
   passed to `glam` to help catch runtime errors.
 * `glam-assert` - adds assertions to all builds which check the validity of parameters passed to
   `glam` to help catch runtime errors.
+* `cuda` - forces `glam` types to match expected cuda alignment
+* `fast-math` - By default, glam attempts to provide bit-for-bit identical
+  results on all platforms. Using this feature will enable platform specific
+  optimizations that may not be identical to other platforms. **Intermediate
+  libraries should not use this feature and defer the decision to the final
+  binary build**.
+* `core-simd` - enables SIMD support via the portable simd module. This is an
+  unstable feature which requires a nightly Rust toolchain and `std` support.
 
 ## Minimum Supported Rust Version (MSRV)
 

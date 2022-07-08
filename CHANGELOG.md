@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+### Fixed
+
+* Fixed `glam_assert` being too restrictive in matrix transform point and
+  transform vector methods.
+
+### Added
+
+* Added experimental `core-simd` feature which enables SIMD support via the
+  unstable `core::simd` module.
+
+### Changed
+
+* Derive from `PartialEq` and `Eq` instead of providing a trait implemtation for
+  all non SIMD types.
+
 ## [0.21.2] - 2022-06-25
 
 ### Fixed
