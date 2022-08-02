@@ -41,7 +41,8 @@ cuda = []
 # the end binary build instead.
 fast-math = []
 
-# experimental nightly portable-simd support
+# experimental nightly portable-simd support. This is currently broken due to
+# f32 min and max being removed on nightly
 core-simd = []
 
 [dependencies]

@@ -54,13 +54,9 @@ SIMD is supported on `x86`, `x86_64` and `wasm32` targets.
   `RUSTCFLAGS`.
 * To enable `simd128` on `wasm32` targets add `-C target-feature=+simd128` to
   `RUSTFLAGS`.
-* Experimental [portable simd] support can be enabled with the `core-simd`
-  feature. This requires the nightly compiler as it is still unstable in Rust.
 
 Note that SIMD on `wasm32` passes tests but has not been benchmarked,
 performance may or may not be better than scalar math.
-
-[portable simd]: https://doc.rust-lang.org/core/simd/index.html
 
 ### `no_std` support
 
@@ -127,8 +123,6 @@ glam = { version = "0.21", default-features = false }
   optimizations that may not be identical to other platforms. **Intermediate
   libraries should not use this feature and defer the decision to the final
   binary build**.
-* `core-simd` - enables SIMD support via the [portable simd] module. This is an
-  unstable feature which requires a nightly Rust toolchain and `std` support.
 
 [cuda alignment]: https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#built-in-vector-types
 
