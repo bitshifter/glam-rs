@@ -1,10 +1,10 @@
 [bans]
 multiple-versions = "deny"
 deny = []
-skip-tree = [
-    # ignore criterion dev-dependency that often have duplicate dependencies internally
-    { name = "criterion" },
-]
+# skip-tree = [
+#     # ignore criterion dev-dependency that often have duplicate dependencies internally
+#     { name = "criterion" },
+# ]
 
 [licenses]
 unlicensed = "deny"
