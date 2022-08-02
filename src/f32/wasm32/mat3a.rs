@@ -147,7 +147,7 @@ impl Mat3A {
         )
     }
 
-    /// Creates a 3x3 matrix from a 4x4 matrix, discarding the 3rd row and column.
+    /// Creates a 3x3 matrix from a 4x4 matrix, discarding the 4th row and column.
     pub fn from_mat4(m: Mat4) -> Self {
         Self::from_cols(m.x_axis.into(), m.y_axis.into(), m.z_axis.into())
     }

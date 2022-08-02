@@ -145,7 +145,7 @@ impl DMat3 {
         )
     }
 
-    /// Creates a 3x3 matrix from a 4x4 matrix, discarding the 3rd row and column.
+    /// Creates a 3x3 matrix from a 4x4 matrix, discarding the 4th row and column.
     pub fn from_mat4(m: DMat4) -> Self {
         Self::from_cols(m.x_axis.xyz(), m.y_axis.xyz(), m.z_axis.xyz())
     }
