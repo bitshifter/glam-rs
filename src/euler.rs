@@ -18,7 +18,7 @@ use num_traits::Float;
 /// YXZ can be used for yaw (y-axis), pitch (x-axis), roll (z-axis).
 ///
 /// The two-axis rotations (e.g. ZYZ) are not fully tested and have to be treated with caution.
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum EulerRot {
     /// Intrinsic three-axis rotation ZYX
     ZYX,
