@@ -233,7 +233,7 @@ macro_rules! impl_affine3_tests {
             assert_approx_eq!(
                 in_mat,
                 $affine3::from_scale_rotation_translation(out_scale, out_rotation, out_translation),
-                1e-6
+                1e-5
             );
 
             // negative scale

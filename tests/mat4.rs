@@ -426,7 +426,7 @@ macro_rules! impl_mat4_tests {
             assert_approx_eq!(
                 in_mat,
                 $mat4::from_scale_rotation_translation(out_scale, out_rotation, out_translation),
-                1e-6
+                1e-5
             );
 
             // negative scale

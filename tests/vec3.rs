@@ -739,7 +739,7 @@ macro_rules! impl_vec3_float_tests {
         });
 
         glam_test!(test_exp, {
-            assert_eq!(
+            assert_approx_eq!(
                 $vec3::new(1.0, 2.0, 3.0).exp(),
                 $vec3::new((1.0 as $t).exp(), (2.0 as $t).exp(), (3.0 as $t).exp())
             );

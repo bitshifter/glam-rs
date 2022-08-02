@@ -821,14 +821,15 @@ macro_rules! impl_vec4_float_tests {
         });
 
         glam_test!(test_exp, {
-            assert_eq!(
+            assert_approx_eq!(
                 $vec4::new(1.0, 2.0, 3.0, 4.0).exp(),
                 $vec4::new(
                     (1.0 as $t).exp(),
                     (2.0 as $t).exp(),
                     (3.0 as $t).exp(),
                     (4.0 as $t).exp()
-                )
+                ),
+                1e-5
             );
         });
 
