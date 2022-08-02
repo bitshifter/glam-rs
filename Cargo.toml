@@ -60,8 +60,10 @@ bytecheck = { version = "0.6", optional = true, default-features = false}
 rand_xoshiro = "0.6"
 serde_json = "1.0"
 
-[target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
-criterion = { version = "0.3", features = ["html_reports"] }
+# criterion is currently failing cargo-deny due to serde_cbor being unmaintained
+# uncomment if you need it
+# [target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
+# criterion = { version = "0.3", features = ["html_reports"] }
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
 wasm-bindgen-test = "0.3.0"
