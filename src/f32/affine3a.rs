@@ -364,7 +364,7 @@ impl Affine3A {
     /// Transforms the given `Vec3A`, applying shear, scale and rotation (but NOT
     /// translation).
     ///
-    /// To also apply translation, use [`Self::transform_point3`] instead.
+    /// To also apply translation, use [`Self::transform_point3a`] instead.
     #[inline]
     pub fn transform_vector3a(&self, rhs: Vec3A) -> Vec3A {
         self.matrix3 * rhs
