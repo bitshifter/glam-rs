@@ -4,9 +4,9 @@
 use core::fmt;
 use core::{hash, ops::*};
 
-/// A 3-dimensional boolean vector.
+/// A 3-dimensional `u32` vector mask.
 #[derive(Clone, Copy)]
-#[repr(C)]
+#[repr(C, align(16))]
 pub struct BVec3A {
     pub x: u32,
     pub y: u32,

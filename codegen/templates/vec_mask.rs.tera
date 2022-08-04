@@ -41,8 +41,10 @@ union UnionCast {
 }
 {% endif %}
 
-{% if is_scalar %}
-/// A {{ dim }}-dimensional boolean vector.
+{%- if is_scalar and is_bool %}
+/// A {{ dim }}-dimensional `bool` vector mask.
+{%- elif is_scalar and is_u32 %}
+/// A {{ dim }}-dimensional `u32` vector mask.
 {%- else %}
 /// A {{ dim }}-dimensional SIMD vector mask.
 ///
@@ -51,7 +53,7 @@ union UnionCast {
 {%- endif %}
 #[derive(Clone, Copy)]
 {%- if is_scalar %}
-#[repr(C)]
+#[repr(C, align({{ align }}))]
 pub struct {{ self_t }}
 {
 {% for c in components %}
