@@ -1059,7 +1059,10 @@ macro_rules! impl_vec4_bit_op_tests {
     };
 }
 mod vec4 {
-    #[cfg(feature = "scalar-math")]
+    #[cfg(any(
+        not(any(target_feature = "sse2", target_feature = "simd128")),
+        feature = "scalar-math"
+    ))]
     use glam::BVec4;
     #[cfg(not(feature = "scalar-math"))]
     use glam::BVec4A;

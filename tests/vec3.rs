@@ -1055,7 +1055,10 @@ mod vec3 {
 }
 
 mod vec3a {
-    #[cfg(feature = "scalar-math")]
+    #[cfg(any(
+        not(any(target_feature = "sse2", target_feature = "simd128")),
+        feature = "scalar-math"
+    ))]
     use glam::BVec3;
     #[cfg(not(feature = "scalar-math"))]
     use glam::BVec3A;
