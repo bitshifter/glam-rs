@@ -76,7 +76,7 @@ impl Vec4 {
     /// Creates a vector with all elements set to `v`.
     #[inline]
     pub const fn splat(v: f32) -> Self {
-        Self(f32x4::splat(v))
+        Self(Simd::from_array([v; 4]))
     }
 
     /// Creates a vector from the elements in `if_true` and `if_false`, selecting which to use
@@ -146,7 +146,7 @@ impl Vec4 {
     /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
     #[inline]
     pub fn min(self, rhs: Self) -> Self {
-        Self(self.0.min(rhs.0))
+        Self(self.0.simd_min(rhs.0))
     }
 
     /// Returns a vector containing the maximum values for each element of `self` and `rhs`.
@@ -154,7 +154,7 @@ impl Vec4 {
     /// In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
     #[inline]
     pub fn max(self, rhs: Self) -> Self {
-        Self(self.0.max(rhs.0))
+        Self(self.0.simd_max(rhs.0))
     }
 
     /// Component-wise clamping of values, similar to [`f32::clamp`].
@@ -193,7 +193,7 @@ impl Vec4 {
     /// elements.
     #[inline]
     pub fn cmpeq(self, rhs: Self) -> BVec4A {
-        BVec4A(f32x4::lanes_eq(self.0, rhs.0))
+        BVec4A(f32x4::simd_eq(self.0, rhs.0))
     }
 
     /// Returns a vector mask containing the result of a `!=` comparison for each element of
@@ -203,7 +203,7 @@ impl Vec4 {
     /// elements.
     #[inline]
     pub fn cmpne(self, rhs: Self) -> BVec4A {
-        BVec4A(f32x4::lanes_ne(self.0, rhs.0))
+        BVec4A(f32x4::simd_ne(self.0, rhs.0))
     }
 
     /// Returns a vector mask containing the result of a `>=` comparison for each element of
@@ -213,7 +213,7 @@ impl Vec4 {
     /// elements.
     #[inline]
     pub fn cmpge(self, rhs: Self) -> BVec4A {
-        BVec4A(f32x4::lanes_ge(self.0, rhs.0))
+        BVec4A(f32x4::simd_ge(self.0, rhs.0))
     }
 
     /// Returns a vector mask containing the result of a `>` comparison for each element of
@@ -223,7 +223,7 @@ impl Vec4 {
     /// elements.
     #[inline]
     pub fn cmpgt(self, rhs: Self) -> BVec4A {
-        BVec4A(f32x4::lanes_gt(self.0, rhs.0))
+        BVec4A(f32x4::simd_gt(self.0, rhs.0))
     }
 
     /// Returns a vector mask containing the result of a `<=` comparison for each element of
@@ -233,7 +233,7 @@ impl Vec4 {
     /// elements.
     #[inline]
     pub fn cmple(self, rhs: Self) -> BVec4A {
-        BVec4A(f32x4::lanes_le(self.0, rhs.0))
+        BVec4A(f32x4::simd_le(self.0, rhs.0))
     }
 
     /// Returns a vector mask containing the result of a `<` comparison for each element of
@@ -243,7 +243,7 @@ impl Vec4 {
     /// elements.
     #[inline]
     pub fn cmplt(self, rhs: Self) -> BVec4A {
-        BVec4A(f32x4::lanes_lt(self.0, rhs.0))
+        BVec4A(f32x4::simd_lt(self.0, rhs.0))
     }
 
     /// Returns a vector containing the absolute value of each element of `self`.

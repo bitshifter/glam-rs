@@ -15,7 +15,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 ### Added
 
 * Added experimental `core-simd` feature which enables SIMD support via the
-  unstable `core::simd` module. Already broken due to changes on nightly.
+  unstable `core::simd` module.
 
 ### Changed
 

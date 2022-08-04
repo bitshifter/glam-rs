@@ -284,7 +284,7 @@ impl {{ self_t }} {
                 {% endfor %}
             }
         {% elif is_coresimd %}
-            Self(f32x4::splat(v))
+            Self(Simd::from_array([v; 4]))
         {% else %}
             unsafe { UnionCast { a: [v; 4] }.v }
         {% endif %}
@@ -488,7 +488,7 @@ impl {{ self_t }} {
         {% elif is_wasm32 %}
             Self(f32x4_pmin(self.0, rhs.0))
         {% elif is_coresimd %}
-            Self(self.0.min(rhs.0))
+            Self(self.0.simd_min(rhs.0))
         {% endif %}
     }
 
@@ -508,7 +508,7 @@ impl {{ self_t }} {
         {% elif is_wasm32 %}
             Self(f32x4_pmax(self.0, rhs.0))
         {% elif is_coresimd %}
-            Self(self.0.max(rhs.0))
+            Self(self.0.simd_max(rhs.0))
         {% endif %}
     }
 
@@ -569,8 +569,8 @@ impl {{ self_t }} {
         {% elif is_coresimd %}
             {% if dim == 3 %}
                 let v = self.0;
-                let v = v.min(simd_swizzle!(v, [2, 2, 1, 1]));
-                let v = v.min(simd_swizzle!(v, [1, 0, 0, 0]));
+                let v = v.simd_min(simd_swizzle!(v, [2, 2, 1, 1]));
+                let v = v.simd_min(simd_swizzle!(v, [1, 0, 0, 0]));
                 v[0]
             {% elif dim == 4 %}
                 self.0.reduce_min()
@@ -622,8 +622,8 @@ impl {{ self_t }} {
         {% elif is_coresimd %}
             {% if dim == 3 %}
                 let v = self.0;
-                let v = v.max(simd_swizzle!(v, [2, 2, 0, 0]));
-                let v = v.max(simd_swizzle!(v, [1, 0, 0, 0]));
+                let v = v.simd_max(simd_swizzle!(v, [2, 2, 0, 0]));
+                let v = v.simd_max(simd_swizzle!(v, [1, 0, 0, 0]));
                 v[0]
             {% elif dim == 4 %}
                 self.0.reduce_max()
@@ -649,7 +649,7 @@ impl {{ self_t }} {
         {% elif is_wasm32 %}
             {{ mask_t }}(f32x4_eq(self.0, rhs.0))
         {% elif is_coresimd %}
-            {{ mask_t }}(f32x4::lanes_eq(self.0, rhs.0))
+            {{ mask_t }}(f32x4::simd_eq(self.0, rhs.0))
         {% endif %}
     }
 
@@ -671,7 +671,7 @@ impl {{ self_t }} {
         {% elif is_wasm32 %}
             {{ mask_t }}(f32x4_ne(self.0, rhs.0))
         {% elif is_coresimd %}
-            {{ mask_t }}(f32x4::lanes_ne(self.0, rhs.0))
+            {{ mask_t }}(f32x4::simd_ne(self.0, rhs.0))
         {% endif %}
     }
 
@@ -693,7 +693,7 @@ impl {{ self_t }} {
         {% elif is_wasm32 %}
             {{ mask_t }}(f32x4_ge(self.0, rhs.0))
         {% elif is_coresimd %}
-            {{ mask_t }}(f32x4::lanes_ge(self.0, rhs.0))
+            {{ mask_t }}(f32x4::simd_ge(self.0, rhs.0))
         {% endif %}
     }
 
@@ -715,7 +715,7 @@ impl {{ self_t }} {
         {% elif is_wasm32 %}
             {{ mask_t }}(f32x4_gt(self.0, rhs.0))
         {% elif is_coresimd %}
-            {{ mask_t }}(f32x4::lanes_gt(self.0, rhs.0))
+            {{ mask_t }}(f32x4::simd_gt(self.0, rhs.0))
         {% endif %}
     }
 
@@ -737,7 +737,7 @@ impl {{ self_t }} {
         {% elif is_wasm32 %}
             {{ mask_t }}(f32x4_le(self.0, rhs.0))
         {% elif is_coresimd %}
-            {{ mask_t }}(f32x4::lanes_le(self.0, rhs.0))
+            {{ mask_t }}(f32x4::simd_le(self.0, rhs.0))
         {% endif %}
     }
 
@@ -759,7 +759,7 @@ impl {{ self_t }} {
         {% elif is_wasm32 %}
             {{ mask_t }}(f32x4_lt(self.0, rhs.0))
         {% elif is_coresimd %}
-            {{ mask_t }}(f32x4::lanes_lt(self.0, rhs.0))
+            {{ mask_t }}(f32x4::simd_lt(self.0, rhs.0))
         {% endif %}
     }
 
