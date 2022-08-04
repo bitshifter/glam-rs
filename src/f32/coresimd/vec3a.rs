@@ -32,16 +32,16 @@ pub struct Vec3A(pub(crate) f32x4);
 
 impl Vec3A {
     /// All zeroes.
-    pub const ZERO: Self = Self(Simd::from_array([0.0; 4]));
+    pub const ZERO: Self = Self::splat(0.0);
 
     /// All ones.
-    pub const ONE: Self = Self(Simd::from_array([1.0; 4]));
+    pub const ONE: Self = Self::splat(1.0);
 
     /// All negative ones.
-    pub const NEG_ONE: Self = Self(Simd::from_array([-1.0; 4]));
+    pub const NEG_ONE: Self = Self::splat(-1.0);
 
     /// All NAN.
-    pub const NAN: Self = Self(Simd::from_array([f32::NAN; 4]));
+    pub const NAN: Self = Self::splat(f32::NAN);
 
     /// A unit-length vector pointing along the positive X axis.
     pub const X: Self = Self::new(1.0, 0.0, 0.0);
