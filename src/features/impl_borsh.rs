@@ -1,4 +1,4 @@
-macro_rules! glam_serialize {
+macro_rules! derive_borsh {
     ($type:ident) => {
         
         impl borsh::BorshSerialize for $type {
