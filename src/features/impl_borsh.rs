@@ -2,7 +2,7 @@
 macro_rules! impl_to_from_array {
     ($type:ident, $array_type:ty) => {
 
-        impl for $type {
+        impl $type {
             fn to_array(&self) -> $array_type {
                 self.to_cols_array()
             }
