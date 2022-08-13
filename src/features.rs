@@ -15,3 +15,6 @@ pub mod impl_serde;
 
 #[cfg(feature = "rkyv")]
 pub mod impl_rkyv;
+
+#[cfg(feature = "borsh")]
+pub mod impl_borsh;

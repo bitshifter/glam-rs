@@ -52,6 +52,7 @@ num-traits = { version = "0.2.14", optional = true, default-features = false }
 rand = { version = "0.8", optional = true, default-features = false }
 serde = { version = "1.0", optional = true, features = ["derive"] }
 rkyv = { version = "0.7", optional = true }
+borsh = { version = "0.9.3", optional = true }
 bytecheck = { version = "0.6", optional = true, default-features = false}
 
 [dev-dependencies]

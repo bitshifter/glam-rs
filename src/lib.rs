@@ -223,6 +223,7 @@ and benchmarks.
   `glam` types. Note that serialization is not interoperable with and without the
   `scalar-math` feature. It should work between all other builds of `glam`.
   Endian conversion is currently not supported
+* `borsh]` - implementations of `BorshSerialize`, `BorshDeserialize` for all `glam` types.
 * `bytecheck` - to perform archive validation when using the `rkyv` feature
 * `serde` - implementations of `Serialize` and `Deserialize` for all `glam`
   types. Note that serialization should work between builds of `glam` with and without SIMD enabled

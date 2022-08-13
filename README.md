@@ -103,6 +103,7 @@ glam = { version = "0.21", default-features = false }
   `glam` types. Note that serialization is not interoperable with and without the
   `scalar-math` feature. It should work between all other builds of `glam`.
   Endian conversion is currently not supported
+  [`borsh]`] - implementations of `BorshSerialize`, `BorshDeserialize` for all `glam` types.
 * [`bytecheck`] - to perform archive validation when using the `rkyv` feature
 
 [`approx`]: https://docs.rs/approx
@@ -113,6 +114,7 @@ glam = { version = "0.21", default-features = false }
 [`rand`]: https://github.com/rust-random/rand
 [`serde`]: https://serde.rs
 [`rkyv`]: https://github.com/rkyv/rkyv
+[`borsh`]: https://github.com/near/borsh-rs
 [`bytecheck`]: https://github.com/rkyv/bytecheck
 
 ### Feature gates
