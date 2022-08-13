@@ -7,7 +7,7 @@ macro_rules! impl_to_from_array {
                 self.to_cols_array()
             }
             fn from_array(array: $array_type) -> Self {
-                Self::from_cols_array(array)
+                Self::from_cols_array(&array)
             }
         }
     }
