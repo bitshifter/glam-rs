@@ -14,10 +14,9 @@ macro_rules! impl_borsh {
         impl borsh::BorshDeserialize for $type {
             fn deserialize(buf: &mut &[u8]) -> std::io::Result<Self> {
 
-                let d = Self::from_$function(<$serialized>::try_from_slice(buf)?);
-                let instance = Self(d);
+                let obj = Self::from_$function(<$serialized>::try_from_slice(buf)?);
 
-                Ok(instance)
+                Ok(obj)
             }
         }
     }
