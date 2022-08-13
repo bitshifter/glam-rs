@@ -1,4 +1,4 @@
-macro_rules! derive_borsh {
+macro_rules! impl_borsh {
     ($type:ident) => {
         
         impl borsh::BorshSerialize for $type {
@@ -27,45 +27,45 @@ macro_rules! derive_borsh {
 mod f32 {
     use crate::{Affine2, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
     
-    derive_borsh!(Affine2);
-    derive_borsh!(Affine3A);
-    derive_borsh!(Mat2);
-    derive_borsh!(Mat3);
-    derive_borsh!(Mat3A);
-    derive_borsh!(Mat4);
-    derive_borsh!(Quat);
-    derive_borsh!(Vec2);
-    derive_borsh!(Vec3);
-    derive_borsh!(Vec3A);
-    derive_borsh!(Vec4);
+    impl_borsh!(Affine2);
+    impl_borsh!(Affine3A);
+    impl_borsh!(Mat2);
+    impl_borsh!(Mat3);
+    impl_borsh!(Mat3A);
+    impl_borsh!(Mat4);
+    impl_borsh!(Quat);
+    impl_borsh!(Vec2);
+    impl_borsh!(Vec3);
+    impl_borsh!(Vec3A);
+    impl_borsh!(Vec4);
 }
 
 mod f64 {
     use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
 
-    derive_borsh!(DAffine2);
-    derive_borsh!(DAffine3);
-    derive_borsh!(DMat2);
-    derive_borsh!(DMat3);
-    derive_borsh!(DMat4);
-    derive_borsh!(DQuat);
-    derive_borsh!(DVec2);
-    derive_borsh!(DVec3);
-    derive_borsh!(DVec4);
+    impl_borsh!(DAffine2);
+    impl_borsh!(DAffine3);
+    impl_borsh!(DMat2);
+    impl_borsh!(DMat3);
+    impl_borsh!(DMat4);
+    impl_borsh!(DQuat);
+    impl_borsh!(DVec2);
+    impl_borsh!(DVec3);
+    impl_borsh!(DVec4);
 }
 
 mod i32 {
     use crate::{IVec2, IVec3, IVec4};
 
-    derive_borsh!(IVec2);
-    derive_borsh!(IVec3);
-    derive_borsh!(IVec4);
+    impl_borsh!(IVec2);
+    impl_borsh!(IVec3);
+    impl_borsh!(IVec4);
 }
 
 mod u32 {
     use crate::{UVec2, UVec3, UVec4};
 
-    derive_borsh!(UVec2);
-    derive_borsh!(UVec3);
-    derive_borsh!(UVec4);
+    impl_borsh!(UVec2);
+    impl_borsh!(UVec3);
+    impl_borsh!(UVec4);
 }
