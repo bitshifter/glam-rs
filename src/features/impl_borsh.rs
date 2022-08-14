@@ -30,7 +30,7 @@ macro_rules! impl_borsh {
         impl borsh::BorshDeserialize for $type {
             fn deserialize(buf: &mut &[u8]) -> std::io::Result<Self> {
 
-                let arr = <$array_type>::try_from_slice(buf)?;
+                let arr = <$array_type>::deserialize(buf)?;
                 let glam = Self::from_array(arr);
 
                 Ok(glam)
