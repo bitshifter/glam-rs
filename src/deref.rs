@@ -1,4 +1,4 @@
-#[derive(Clone, Copy, Debug, Default, PartialEq, PartialOrd)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, PartialOrd)]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 pub struct XY<T> {
@@ -6,7 +6,7 @@ pub struct XY<T> {
     pub y: T,
 }
 
-#[derive(Clone, Copy, Debug, Default, PartialEq, PartialOrd)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, PartialOrd)]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 pub struct Vec3<T> {
@@ -15,7 +15,7 @@ pub struct Vec3<T> {
     pub z: T,
 }
 
-#[derive(Clone, Copy, Debug, Default, PartialEq, PartialOrd)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, PartialOrd)]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 pub struct Vec4<T> {
@@ -25,14 +25,14 @@ pub struct Vec4<T> {
     pub w: T,
 }
 
-#[derive(Clone, Copy, Default, PartialEq, PartialOrd)]
+#[derive(Clone, Copy, Default, PartialEq, Eq, PartialOrd)]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 pub struct Cols2<V> {
     pub x_axis: V,
     pub y_axis: V,
 }
 
-#[derive(Clone, Copy, Default, PartialEq, PartialOrd)]
+#[derive(Clone, Copy, Default, PartialEq, Eq, PartialOrd)]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 pub struct Cols3<V> {
     pub x_axis: V,
@@ -40,7 +40,7 @@ pub struct Cols3<V> {
     pub z_axis: V,
 }
 
-#[derive(Clone, Copy, Default, PartialEq, PartialOrd)]
+#[derive(Clone, Copy, Default, PartialEq, Eq, PartialOrd)]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 pub struct Cols4<V> {
     pub x_axis: V,

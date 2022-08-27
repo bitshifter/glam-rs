@@ -1059,8 +1059,15 @@ macro_rules! impl_vec4_bit_op_tests {
     };
 }
 mod vec4 {
+    #[cfg(any(
+        not(any(target_feature = "sse2", target_feature = "simd128")),
+        feature = "scalar-math"
+    ))]
+    use glam::BVec4;
+    #[cfg(not(feature = "scalar-math"))]
+    use glam::BVec4A;
     #[allow(deprecated)]
-    use glam::{const_vec4, vec4, BVec4, BVec4A, Vec2, Vec3, Vec4};
+    use glam::{const_vec4, vec4, Vec2, Vec3, Vec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1070,13 +1077,13 @@ mod vec4 {
         } else {
             assert_eq!(4, mem::align_of::<Vec4>());
         }
-        if cfg!(all(
-            any(target_feature = "sse2", target_feature = "simd128"),
-            not(feature = "scalar-math")
-        )) {
+        #[cfg(not(feature = "scalar-math"))]
+        {
             assert_eq!(16, mem::size_of::<BVec4A>());
             assert_eq!(16, mem::align_of::<BVec4A>());
-        } else {
+        }
+        #[cfg(feature = "scalar-math")]
+        {
             assert_eq!(4, mem::size_of::<BVec4>());
             assert_eq!(1, mem::align_of::<BVec4>());
         }

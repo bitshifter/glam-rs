@@ -17,6 +17,14 @@ mod sse2;
 ))]
 mod wasm32;
 
+#[cfg(not(any(
+    feature = "scalar-math",
+    feature = "core-simd",
+    target_feature = "sse2",
+    target_feature = "simd128"
+),))]
+mod scalar;
+
 pub use bvec2::BVec2;
 pub use bvec3::BVec3;
 pub use bvec4::BVec4;
@@ -48,25 +56,21 @@ pub use coresimd::bvec3a::BVec3A;
 #[cfg(all(feature = "core-simd", not(feature = "scalar-math")))]
 pub use coresimd::bvec4a::BVec4A;
 
-#[cfg(any(
-    not(any(
-        feature = "core-simd",
-        target_feature = "sse2",
-        target_feature = "simd128"
-    )),
-    feature = "scalar-math"
-))]
-pub type BVec3A = BVec3;
+#[cfg(not(any(
+    feature = "scalar-math",
+    feature = "core-simd",
+    target_feature = "sse2",
+    target_feature = "simd128"
+),))]
+pub use scalar::bvec3a::BVec3A;
 
-#[cfg(any(
-    not(any(
-        feature = "core-simd",
-        target_feature = "sse2",
-        target_feature = "simd128"
-    )),
-    feature = "scalar-math"
-))]
-pub type BVec4A = BVec4;
+#[cfg(not(any(
+    feature = "scalar-math",
+    feature = "core-simd",
+    target_feature = "sse2",
+    target_feature = "simd128"
+),))]
+pub use scalar::bvec4a::BVec4A;
 
 mod const_test_bvec2 {
     const_assert_eq!(1, core::mem::align_of::<super::BVec2>());
@@ -83,19 +87,13 @@ mod const_test_bvec4 {
     const_assert_eq!(4, core::mem::size_of::<super::BVec4>());
 }
 
-#[cfg(all(
-    any(target_feature = "sse2", target_feature = "simd128"),
-    not(feature = "scalar-math")
-))]
+#[cfg(not(feature = "scalar-math"))]
 mod const_test_bvec3a {
     const_assert_eq!(16, core::mem::align_of::<super::BVec3A>());
     const_assert_eq!(16, core::mem::size_of::<super::BVec3A>());
 }
 
-#[cfg(all(
-    any(target_feature = "sse2", target_feature = "simd128"),
-    not(feature = "scalar-math")
-))]
+#[cfg(not(feature = "scalar-math"))]
 mod const_test_bvec4a {
     const_assert_eq!(16, core::mem::align_of::<super::BVec4A>());
     const_assert_eq!(16, core::mem::size_of::<super::BVec4A>());

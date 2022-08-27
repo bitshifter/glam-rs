@@ -1055,21 +1055,27 @@ mod vec3 {
 }
 
 mod vec3a {
+    #[cfg(any(
+        not(any(target_feature = "sse2", target_feature = "simd128")),
+        feature = "scalar-math"
+    ))]
+    use glam::BVec3;
+    #[cfg(not(feature = "scalar-math"))]
+    use glam::BVec3A;
     #[allow(deprecated)]
-    use glam::{const_vec3a, vec3a, BVec3, BVec3A, Vec3A, Vec4};
+    use glam::{const_vec3a, vec3a, Vec3A, Vec4};
 
     glam_test!(test_align, {
         use std::mem;
         assert_eq!(16, mem::size_of::<Vec3A>());
         assert_eq!(16, mem::align_of::<Vec3A>());
-        if cfg!(all(
-            any(target_feature = "sse2", target_feature = "simd128"),
-            not(feature = "scalar-math")
-        )) {
+        #[cfg(not(feature = "scalar-math"))]
+        {
             assert_eq!(16, mem::size_of::<BVec3A>());
             assert_eq!(16, mem::align_of::<BVec3A>());
-        } else {
-            // BVec3A aliases BVec3
+        }
+        #[cfg(feature = "scalar-math")]
+        {
             assert_eq!(3, mem::size_of::<BVec3>());
             assert_eq!(1, mem::align_of::<BVec3>());
         }

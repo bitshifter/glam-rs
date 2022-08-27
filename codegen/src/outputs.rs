@@ -106,23 +106,32 @@ impl ContextBuilder {
         Self::new_taffinen(3, "f64")
     }
 
-    pub fn new_bvecn(dim: u32) -> Self {
+    pub fn new_bvecn(dim: u32, scalar_t: &str) -> Self {
         ContextBuilder::new()
             .with_template("vec_mask.rs.tera")
+            .with_scalar_t(scalar_t)
             .target_scalar()
             .with_dimension(dim)
     }
 
     pub fn new_bvec2() -> Self {
-        Self::new_bvecn(2)
+        Self::new_bvecn(2, "bool")
     }
 
     pub fn new_bvec3() -> Self {
-        Self::new_bvecn(3)
+        Self::new_bvecn(3, "bool")
     }
 
     pub fn new_bvec4() -> Self {
-        Self::new_bvecn(4)
+        Self::new_bvecn(4, "bool")
+    }
+
+    pub fn new_bvec3a() -> Self {
+        Self::new_bvecn(3, "u32")
+    }
+
+    pub fn new_bvec4a() -> Self {
+        Self::new_bvecn(4, "u32")
     }
 
     pub fn new_vecn(dim: u32) -> Self {
@@ -404,28 +413,36 @@ pub fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
         ("src/bool/bvec3.rs", ContextBuilder::new_bvec3().build()),
         ("src/bool/bvec4.rs", ContextBuilder::new_bvec4().build()),
         (
+            "src/bool/scalar/bvec3a.rs",
+            ContextBuilder::new_bvec3a().build(),
+        ),
+        (
             "src/bool/sse2/bvec3a.rs",
-            ContextBuilder::new_bvec3().target_sse2().build(),
+            ContextBuilder::new_bvec3a().target_sse2().build(),
         ),
         (
             "src/bool/wasm32/bvec3a.rs",
-            ContextBuilder::new_bvec3().target_wasm32().build(),
+            ContextBuilder::new_bvec3a().target_wasm32().build(),
         ),
         (
             "src/bool/coresimd/bvec3a.rs",
-            ContextBuilder::new_bvec3().target_coresimd().build(),
+            ContextBuilder::new_bvec3a().target_coresimd().build(),
+        ),
+        (
+            "src/bool/scalar/bvec4a.rs",
+            ContextBuilder::new_bvec4a().build(),
         ),
         (
             "src/bool/sse2/bvec4a.rs",
-            ContextBuilder::new_bvec4().target_sse2().build(),
+            ContextBuilder::new_bvec4a().target_sse2().build(),
         ),
         (
             "src/bool/wasm32/bvec4a.rs",
-            ContextBuilder::new_bvec4().target_wasm32().build(),
+            ContextBuilder::new_bvec4a().target_wasm32().build(),
         ),
         (
             "src/bool/coresimd/bvec4a.rs",
-            ContextBuilder::new_bvec4().target_coresimd().build(),
+            ContextBuilder::new_bvec4a().target_coresimd().build(),
         ),
         ("src/f32/vec2.rs", ContextBuilder::new_vec2().build()),
         ("src/f32/vec3.rs", ContextBuilder::new_vec3().build()),
