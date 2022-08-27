@@ -3,7 +3,7 @@ on: [push]
 jobs:
   coverage:
     container:
-      image: xd009642/tarpaulin
+      image: xd009642/tarpaulin:develop-nightly
       options: --security-opt seccomp=unconfined
     runs-on: ubuntu-latest
     steps:
