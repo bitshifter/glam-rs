@@ -215,7 +215,7 @@ impl Mat2 {
         let sub = prod - simd_swizzle!(prod, [1, 1, 1, 1]);
         let det = simd_swizzle!(sub, [0, 0, 0, 0]);
         let tmp = SIGN / det;
-        glam_assert!(tmp.is_finite());
+        glam_assert!(Mat2(tmp).is_finite());
         let dbca = simd_swizzle!(abcd, [3, 1, 2, 0]);
         Self(dbca.mul(tmp))
     }
