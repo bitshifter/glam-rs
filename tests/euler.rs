@@ -6,7 +6,7 @@ trait AngleDiff {
     type Output;
     fn angle_diff(self, other: Self) -> Self::Output;
 }
-#[macro_export]
+
 macro_rules! impl_angle_diff {
     ($t:ty, $pi:expr) => {
         impl AngleDiff for $t {
@@ -27,7 +27,6 @@ macro_rules! impl_angle_diff {
 impl_angle_diff!(f32, std::f32::consts::PI);
 impl_angle_diff!(f64, std::f64::consts::PI);
 
-#[macro_export]
 macro_rules! assert_approx_angle {
     ($a:expr, $b:expr, $eps:expr) => {{
         let (a, b) = ($a, $b);
@@ -45,7 +44,6 @@ macro_rules! assert_approx_angle {
     }};
 }
 
-#[macro_export]
 macro_rules! impl_3axis_test {
     ($name:ident, $t:ty, $quat:ident, $euler:path, $U:path, $V:path, $W:path, $vec:ident) => {
         glam_test!($name, {
@@ -85,48 +83,6 @@ macro_rules! impl_3axis_test {
     };
 }
 
-#[macro_export]
-macro_rules! impl_2axis_test {
-    ($name:ident, $t:ty, $quat:ident, $euler:path, $U:path, $V:path, $W:path, $vec:ident) => {
-        glam_test!($name, {
-            #[allow(deprecated)]
-            let euler = $euler;
-            assert!($U == $W); // First and last axis must be different for three axis
-            for u in (-176..=176).step_by(44) {
-                for v in (-176..=176).step_by(44) {
-                    for w in (-176..=176).step_by(44) {
-                        let u1 = (u as $t).to_radians();
-                        let v1 = (v as $t).to_radians();
-                        let w1 = (w as $t).to_radians();
-
-                        let q1: $quat = ($quat::from_axis_angle($U, u1)
-                            * $quat::from_axis_angle($V, v1)
-                            * $quat::from_axis_angle($W, w1))
-                        .normalize();
-
-                        // Test if the rotation is the expected
-                        let q2 = $quat::from_euler(euler, u1, v1, w1).normalize();
-                        assert_approx_eq!(q1, q2, 1e-5);
-
-                        // Test angle reconstruction
-                        let (u2, v2, w2) = q1.to_euler(euler);
-                        let _q3 = $quat::from_euler(euler, u2, v2, w2).normalize();
-
-                        // Disabled tests, since no generic tests for ambiguous results in the two-axis results...
-                        // assert_approx_angle!(u1, u2, 1e-4 as $t);
-                        // assert_approx_angle!(v1, v2, 1e-4 as $t);
-                        // assert_approx_angle!(w1, w2, 1e-4 as $t);
-
-                        // assert_approx_eq!(q1 * $vec::X, q3 * $vec::X, 1e-4);
-                        // assert_approx_eq!(q1 * $vec::Y, q3 * $vec::Y, 1e-4);
-                        // assert_approx_eq!(q1 * $vec::Z, q3 * $vec::Z, 1e-4);
-                    }
-                }
-            }
-        });
-    };
-}
-
 macro_rules! impl_all_quat_tests_three_axis {
     ($t:ty, $q:ident, $v:ident) => {
         impl_3axis_test!(test_euler_zyx, $t, $q, ER::ZYX, $v::Z, $v::Y, $v::X, $v);
@@ -135,17 +91,6 @@ macro_rules! impl_all_quat_tests_three_axis {
         impl_3axis_test!(test_euler_yzx, $t, $q, ER::YZX, $v::Y, $v::Z, $v::X, $v);
         impl_3axis_test!(test_euler_xyz, $t, $q, ER::XYZ, $v::X, $v::Y, $v::Z, $v);
         impl_3axis_test!(test_euler_xzy, $t, $q, ER::XZY, $v::X, $v::Z, $v::Y, $v);
-    };
-}
-
-macro_rules! impl_all_quat_tests_two_axis {
-    ($t:ty, $q:ident, $v:ident) => {
-        impl_2axis_test!(test_euler_zyz, $t, $q, ER::ZYZ, $v::Z, $v::Y, $v::Z, $v);
-        impl_2axis_test!(test_euler_zxz, $t, $q, ER::ZXZ, $v::Z, $v::X, $v::Z, $v);
-        impl_2axis_test!(test_euler_yxy, $t, $q, ER::YXY, $v::Y, $v::X, $v::Y, $v);
-        impl_2axis_test!(test_euler_yzy, $t, $q, ER::YZY, $v::Y, $v::Z, $v::Y, $v);
-        impl_2axis_test!(test_euler_xyx, $t, $q, ER::XYX, $v::X, $v::Y, $v::X, $v);
-        impl_2axis_test!(test_euler_xzx, $t, $q, ER::XZX, $v::X, $v::Z, $v::X, $v);
     };
 }
 
@@ -158,15 +103,11 @@ mod euler {
         use super::*;
 
         impl_all_quat_tests_three_axis!(f32, Quat, Vec3);
-
-        impl_all_quat_tests_two_axis!(f32, Quat, Vec3);
     }
 
     mod dquat {
         use super::*;
 
         impl_all_quat_tests_three_axis!(f64, DQuat, DVec3);
-
-        impl_all_quat_tests_two_axis!(f64, DQuat, DVec3);
     }
 }
