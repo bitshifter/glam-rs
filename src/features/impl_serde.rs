@@ -46,7 +46,7 @@ macro_rules! impl_serde_vec2 {
 
         #[test]
         fn test_vec2_serde() {
-            let a = $vec2::new(1 as $t, 2 as $t);
+            let a = $vec2::new(V1, V2);
             let serialized = serde_json::to_string(&a).unwrap();
             assert_eq!(SX2, serialized);
             let deserialized = serde_json::from_str(&serialized).unwrap();
@@ -116,7 +116,7 @@ macro_rules! impl_serde_vec3 {
 
         #[test]
         fn $test_name() {
-            let a = $vec3::new(1 as $t, 2 as $t, 3 as $t);
+            let a = $vec3::new(V1, V2, V3);
             let serialized = serde_json::to_string(&a).unwrap();
             assert_eq!(SX3, serialized);
             let deserialized = serde_json::from_str(&serialized).unwrap();
@@ -189,7 +189,7 @@ macro_rules! impl_serde_vec4 {
 
         #[test]
         fn test_vec4_serde() {
-            let a = $vec4::new(1 as $t, 2 as $t, 3 as $t, 4 as $t);
+            let a = $vec4::new(V1, V2, V3, V4);
             let serialized = serde_json::to_string(&a).unwrap();
             assert_eq!(SX4, serialized);
             let deserialized = serde_json::from_str(&serialized).unwrap();
@@ -711,6 +711,38 @@ macro_rules! impl_serde_float_types {
 }
 
 #[cfg(test)]
+mod test_f32 {
+    pub const V1: f32 = 1.0;
+    pub const V2: f32 = 2.0;
+    pub const V3: f32 = 3.0;
+    pub const V4: f32 = 4.0;
+}
+
+#[cfg(test)]
+mod test_f64 {
+    pub const V1: f64 = 1.0;
+    pub const V2: f64 = 2.0;
+    pub const V3: f64 = 3.0;
+    pub const V4: f64 = 4.0;
+}
+
+#[cfg(test)]
+mod test_i32 {
+    pub const V1: i32 = 1;
+    pub const V2: i32 = 2;
+    pub const V3: i32 = 3;
+    pub const V4: i32 = 4;
+}
+
+#[cfg(test)]
+mod test_u32 {
+    pub const V1: u32 = 1;
+    pub const V2: u32 = 2;
+    pub const V3: u32 = 3;
+    pub const V4: u32 = 4;
+}
+
+#[cfg(test)]
 mod test_float {
     pub const SX0: &str = "[]";
     pub const SX1: &str = "[1.0]";
@@ -730,7 +762,38 @@ mod test_int {
     pub const SX5: &str = "[1,2,3,4,5]";
 }
 
+#[cfg(test)]
+mod test_bool_mask {
+    pub const SX0: &str = "[]";
+    pub const SX1: &str = "[true]";
+    pub const SX2: &str = "[true,true]";
+    pub const SX3: &str = "[true,true,true]";
+    pub const SX4: &str = "[true,true,true,true]";
+    pub const SX5: &str = "[true,true,true,true,true]";
+    pub const V1: bool = true;
+    pub const V2: bool = true;
+    pub const V3: bool = true;
+    pub const V4: bool = true;
+}
+
+mod bool {
+    #[cfg(test)]
+    use super::test_bool_mask::*;
+    use crate::{BVec2, BVec3, BVec4};
+    use core::fmt;
+    use serde::{
+        de::{self, Deserialize, Deserializer, SeqAccess, Visitor},
+        ser::{Serialize, SerializeTupleStruct, Serializer},
+    };
+
+    impl_serde_vec2!(bool, BVec2);
+    impl_serde_vec3!(bool, BVec3);
+    impl_serde_vec4!(bool, BVec4);
+}
+
 mod f32 {
+    #[cfg(test)]
+    use super::test_f32::*;
     #[cfg(test)]
     use super::test_float::*;
     use crate::{Affine2, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
@@ -747,6 +810,8 @@ mod f32 {
 
 mod f64 {
     #[cfg(test)]
+    use super::test_f64::*;
+    #[cfg(test)]
     use super::test_float::*;
     use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
     use core::fmt;
@@ -762,6 +827,8 @@ mod f64 {
 
 mod i32 {
     #[cfg(test)]
+    use super::test_i32::*;
+    #[cfg(test)]
     use super::test_int::*;
     use crate::{IVec2, IVec3, IVec4};
     use core::fmt;
@@ -776,6 +843,8 @@ mod i32 {
 mod u32 {
     #[cfg(test)]
     use super::test_int::*;
+    #[cfg(test)]
+    use super::test_u32::*;
     use crate::{UVec2, UVec3, UVec4};
     use core::fmt;
     use serde::{
