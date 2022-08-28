@@ -780,6 +780,8 @@ mod bool {
     #[cfg(test)]
     use super::test_bool_mask::*;
     use crate::{BVec2, BVec3, BVec4};
+    #[cfg(not(feature = "scalar-math"))]
+    use crate::{BVec3A, BVec4A};
     use core::fmt;
     use serde::{
         de::{self, Deserialize, Deserializer, SeqAccess, Visitor},
@@ -789,6 +791,150 @@ mod bool {
     impl_serde_vec2!(bool, BVec2);
     impl_serde_vec3!(bool, BVec3);
     impl_serde_vec4!(bool, BVec4);
+
+    #[cfg(not(feature = "scalar-math"))]
+    impl Serialize for BVec3A {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            let mut state = serializer.serialize_tuple_struct("BVec3A", 3)?;
+            let a: [bool; 3] = (*self).into();
+            state.serialize_field(&a[0])?;
+            state.serialize_field(&a[1])?;
+            state.serialize_field(&a[2])?;
+            state.end()
+        }
+    }
+
+    #[cfg(not(feature = "scalar-math"))]
+    impl<'de> Deserialize<'de> for BVec3A {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            struct Vec3Visitor;
+
+            impl<'de> Visitor<'de> for Vec3Visitor {
+                type Value = BVec3A;
+
+                fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+                    formatter.write_str("struct BVec3A")
+                }
+
+                fn visit_seq<V>(self, mut seq: V) -> Result<BVec3A, V::Error>
+                where
+                    V: SeqAccess<'de>,
+                {
+                    let x = seq
+                        .next_element()?
+                        .ok_or_else(|| de::Error::invalid_length(0, &self))?;
+                    let y = seq
+                        .next_element()?
+                        .ok_or_else(|| de::Error::invalid_length(1, &self))?;
+                    let z = seq
+                        .next_element()?
+                        .ok_or_else(|| de::Error::invalid_length(2, &self))?;
+                    Ok(BVec3A::new(x, y, z))
+                }
+            }
+
+            deserializer.deserialize_tuple_struct(stringify!($vec3), 3, Vec3Visitor)
+        }
+    }
+
+    #[cfg(not(feature = "scalar-math"))]
+    #[test]
+    fn test_bvec3a_serde() {
+        let a = BVec3A::new(V1, V2, V3);
+        let serialized = serde_json::to_string(&a).unwrap();
+        assert_eq!(SX3, serialized);
+        let deserialized = serde_json::from_str(&serialized).unwrap();
+        assert_eq!(a, deserialized);
+        let deserialized = serde_json::from_str::<BVec3A>(SX0);
+        assert!(deserialized.is_err());
+        let deserialized = serde_json::from_str::<BVec3A>(SX1);
+        assert!(deserialized.is_err());
+        let deserialized = serde_json::from_str::<BVec3A>(SX2);
+        assert!(deserialized.is_err());
+        let deserialized = serde_json::from_str::<BVec3A>(SX4);
+        assert!(deserialized.is_err());
+    }
+
+    #[cfg(not(feature = "scalar-math"))]
+    impl Serialize for BVec4A {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            let mut state = serializer.serialize_tuple_struct(stringify!(BVec4A), 4)?;
+            let a: [bool; 4] = (*self).into();
+            state.serialize_field(&a[0])?;
+            state.serialize_field(&a[1])?;
+            state.serialize_field(&a[2])?;
+            state.serialize_field(&a[2])?;
+            state.end()
+        }
+    }
+
+    #[cfg(not(feature = "scalar-math"))]
+    impl<'de> Deserialize<'de> for BVec4A {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            struct Vec4Visitor;
+
+            impl<'de> Visitor<'de> for Vec4Visitor {
+                type Value = BVec4A;
+
+                fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+                    formatter.write_str(concat!("struct ", stringify!(BVec4A)))
+                }
+
+                fn visit_seq<V>(self, mut seq: V) -> Result<BVec4A, V::Error>
+                where
+                    V: SeqAccess<'de>,
+                {
+                    let x = seq
+                        .next_element()?
+                        .ok_or_else(|| de::Error::invalid_length(0, &self))?;
+                    let y = seq
+                        .next_element()?
+                        .ok_or_else(|| de::Error::invalid_length(1, &self))?;
+                    let z = seq
+                        .next_element()?
+                        .ok_or_else(|| de::Error::invalid_length(2, &self))?;
+                    let w = seq
+                        .next_element()?
+                        .ok_or_else(|| de::Error::invalid_length(3, &self))?;
+                    Ok(BVec4A::new(x, y, z, w))
+                }
+            }
+
+            deserializer.deserialize_tuple_struct(stringify!(BVec4A), 4, Vec4Visitor)
+        }
+    }
+
+    #[cfg(not(feature = "scalar-math"))]
+    #[test]
+    fn test_bvec4a_serde() {
+        let a = BVec4A::new(V1, V2, V3, V4);
+        let serialized = serde_json::to_string(&a).unwrap();
+        assert_eq!(SX4, serialized);
+        let deserialized = serde_json::from_str(&serialized).unwrap();
+        assert_eq!(a, deserialized);
+        let deserialized = serde_json::from_str::<BVec4A>(SX0);
+        assert!(deserialized.is_err());
+        let deserialized = serde_json::from_str::<BVec4A>(SX1);
+        assert!(deserialized.is_err());
+        let deserialized = serde_json::from_str::<BVec4A>(SX2);
+        assert!(deserialized.is_err());
+        let deserialized = serde_json::from_str::<BVec4A>(SX3);
+        assert!(deserialized.is_err());
+        let deserialized = serde_json::from_str::<BVec4A>(SX5);
+        assert!(deserialized.is_err());
+    }
 }
 
 mod f32 {
