@@ -16,9 +16,8 @@ use num_traits::Float;
 /// E.g. XYZ will first apply the z-axis rotation.
 ///
 /// YXZ can be used for yaw (y-axis), pitch (x-axis), roll (z-axis).
-///
-/// The two-axis rotations (e.g. ZYZ) are not fully tested and have to be treated with caution.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Deserialize, serde::Serialize))]
 pub enum EulerRot {
     /// Intrinsic three-axis rotation ZYX
     ZYX,
@@ -32,25 +31,6 @@ pub enum EulerRot {
     XYZ,
     /// Intrinsic three-axis rotation XZY
     XZY,
-
-    /// Intrinsic two-axis rotation ZYZ
-    #[deprecated(note = "Untested! Use at own risk!")]
-    ZYZ,
-    /// Intrinsic two-axis rotation ZXZ
-    #[deprecated(note = "Untested! Use at own risk!")]
-    ZXZ,
-    /// Intrinsic two-axis rotation YXY
-    #[deprecated(note = "Untested! Use at own risk!")]
-    YXY,
-    /// Intrinsic two-axis rotation YZY
-    #[deprecated(note = "Untested! Use at own risk!")]
-    YZY,
-    /// Intrinsic two-axis rotation XYX
-    #[deprecated(note = "Untested! Use at own risk!")]
-    XYX,
-    /// Intrinsic two-axis rotation XZX
-    #[deprecated(note = "Untested! Use at own risk!")]
-    XZX,
 }
 
 impl Default for EulerRot {
@@ -119,30 +99,6 @@ macro_rules! impl_from_quat {
                         .atan2(q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z),
                     XZY => (2.0 * (q.y * q.z + q.w * q.x))
                         .atan2(q.w * q.w - q.x * q.x + q.y * q.y - q.z * q.z),
-                    #[allow(deprecated)]
-                    ZYZ => {
-                        (2.0 * (q.y * q.z + q.w * q.x)).atan2_fixed(-2.0 * (q.x * q.z - q.w * q.y))
-                    }
-                    #[allow(deprecated)]
-                    ZXZ => {
-                        (2.0 * (q.x * q.z - q.w * q.y)).atan2_fixed(2.0 * (q.y * q.z + q.w * q.x))
-                    }
-                    #[allow(deprecated)]
-                    YXY => {
-                        (2.0 * (q.x * q.y + q.w * q.z)).atan2_fixed(-2.0 * (q.y * q.z - q.w * q.x))
-                    }
-                    #[allow(deprecated)]
-                    YZY => {
-                        (2.0 * (q.y * q.z - q.w * q.x)).atan2_fixed(2.0 * (q.x * q.y + q.w * q.z))
-                    }
-                    #[allow(deprecated)]
-                    XYX => {
-                        (2.0 * (q.x * q.y - q.w * q.z)).atan2_fixed(2.0 * (q.x * q.z + q.w * q.y))
-                    }
-                    #[allow(deprecated)]
-                    XZX => {
-                        (2.0 * (q.x * q.z + q.w * q.y)).atan2_fixed(-2.0 * (q.x * q.y - q.w * q.z))
-                    }
                 }
             }
 
@@ -162,18 +118,6 @@ macro_rules! impl_from_quat {
                     YZX => arc_clamp(2.0 * (q.x * q.y + q.w * q.z)).asin(),
                     XYZ => arc_clamp(2.0 * (q.x * q.z + q.w * q.y)).asin(),
                     XZY => arc_clamp(-2.0 * (q.x * q.y - q.w * q.z)).asin(),
-                    #[allow(deprecated)]
-                    ZYZ => arc_clamp(q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z).acos(),
-                    #[allow(deprecated)]
-                    ZXZ => arc_clamp(q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z).acos(),
-                    #[allow(deprecated)]
-                    YXY => arc_clamp(q.w * q.w - q.x * q.x + q.y * q.y - q.z * q.z).acos(),
-                    #[allow(deprecated)]
-                    YZY => arc_clamp(q.w * q.w - q.x * q.x + q.y * q.y - q.z * q.z).acos(),
-                    #[allow(deprecated)]
-                    XYX => arc_clamp(q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z).acos(),
-                    #[allow(deprecated)]
-                    XZX => arc_clamp(q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z).acos(),
                 }
             }
 
@@ -193,30 +137,6 @@ macro_rules! impl_from_quat {
                         .atan2(q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z),
                     XZY => (2.0 * (q.x * q.z + q.w * q.y))
                         .atan2(q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z),
-                    #[allow(deprecated)]
-                    ZYZ => {
-                        (2.0 * (q.y * q.z - q.w * q.x)).atan2_fixed(2.0 * (q.x * q.z + q.w * q.y))
-                    }
-                    #[allow(deprecated)]
-                    ZXZ => {
-                        (2.0 * (q.x * q.z + q.w * q.y)).atan2_fixed(-2.0 * (q.y * q.z - q.w * q.x))
-                    }
-                    #[allow(deprecated)]
-                    YXY => {
-                        (2.0 * (q.x * q.y - q.w * q.z)).atan2_fixed(2.0 * (q.y * q.z + q.w * q.x))
-                    }
-                    #[allow(deprecated)]
-                    YZY => {
-                        (2.0 * (q.y * q.z + q.w * q.x)).atan2_fixed(-2.0 * (q.x * q.y - q.w * q.z))
-                    }
-                    #[allow(deprecated)]
-                    XYX => {
-                        (2.0 * (q.x * q.y + q.w * q.z)).atan2_fixed(-2.0 * (q.x * q.z - q.w * q.y))
-                    }
-                    #[allow(deprecated)]
-                    XZX => {
-                        (2.0 * (q.x * q.z - q.w * q.y)).atan2_fixed(2.0 * (q.x * q.y + q.w * q.z))
-                    }
                 }
             }
         }
@@ -250,18 +170,6 @@ macro_rules! impl_to_quat {
                     YZX => rot_y(u) * rot_z(v) * rot_x(w),
                     XYZ => rot_x(u) * rot_y(v) * rot_z(w),
                     XZY => rot_x(u) * rot_z(v) * rot_y(w),
-                    #[allow(deprecated)]
-                    ZYZ => rot_z(u) * rot_y(v) * rot_z(w),
-                    #[allow(deprecated)]
-                    ZXZ => rot_z(u) * rot_x(v) * rot_z(w),
-                    #[allow(deprecated)]
-                    YXY => rot_y(u) * rot_x(v) * rot_y(w),
-                    #[allow(deprecated)]
-                    YZY => rot_y(u) * rot_z(v) * rot_y(w),
-                    #[allow(deprecated)]
-                    XYX => rot_x(u) * rot_y(v) * rot_x(w),
-                    #[allow(deprecated)]
-                    XZX => rot_x(u) * rot_z(v) * rot_x(w),
                 }
                 .normalize()
             }
