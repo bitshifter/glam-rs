@@ -19,6 +19,7 @@ use num_traits::Float;
 ///
 /// The two-axis rotations (e.g. ZYZ) are not fully tested and have to be treated with caution.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Deserialize, serde::Serialize))]
 pub enum EulerRot {
     /// Intrinsic three-axis rotation ZYX
     ZYX,
