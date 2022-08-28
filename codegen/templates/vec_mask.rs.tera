@@ -21,7 +21,7 @@
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
-use core::{hash, ops::*};
+use core::ops::*;
 
 {% if is_sse2 %}
 #[cfg(target_arch = "x86")]
@@ -51,7 +51,11 @@ union UnionCast {
 /// This type is {{ align }} byte aligned and is backed by a SIMD vector. If SIMD is not available
 /// `{{ self_t }}` will be a type alias for `BVec{{ dim }}`.
 {%- endif %}
+{%- if is_scalar and is_bool %}
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+{%- else %}
 #[derive(Clone, Copy)]
+{%- endif %}
 {%- if is_scalar %}
 #[repr(C, align({{ align }}))]
 pub struct {{ self_t }}
@@ -266,6 +270,7 @@ impl Default for {{ self_t }} {
     }
 }
 
+{% if not is_scalar and not is_bool %}
 impl PartialEq for {{ self_t }} {
     #[inline]
     fn eq(&self, rhs: &Self) -> bool {
@@ -275,12 +280,13 @@ impl PartialEq for {{ self_t }} {
 
 impl Eq for {{ self_t }} {}
 
-impl hash::Hash for {{ self_t }} {
+impl core::hash::Hash for {{ self_t }} {
     #[inline]
-    fn hash<H: hash::Hasher>(&self, state: &mut H) {
+    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
         self.bitmask().hash(state);
     }
 }
+{%- endif %}
 
 impl BitAnd for {{ self_t }} {
     type Output = Self;

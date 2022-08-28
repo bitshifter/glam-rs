@@ -2,10 +2,10 @@
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
-use core::{hash, ops::*};
+use core::ops::*;
 
 /// A 2-dimensional `bool` vector mask.
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(C, align(1))]
 pub struct BVec2 {
     pub x: bool,
@@ -59,22 +59,6 @@ impl Default for BVec2 {
     #[inline]
     fn default() -> Self {
         FALSE
-    }
-}
-
-impl PartialEq for BVec2 {
-    #[inline]
-    fn eq(&self, rhs: &Self) -> bool {
-        self.bitmask().eq(&rhs.bitmask())
-    }
-}
-
-impl Eq for BVec2 {}
-
-impl hash::Hash for BVec2 {
-    #[inline]
-    fn hash<H: hash::Hasher>(&self, state: &mut H) {
-        self.bitmask().hash(state);
     }
 }
 

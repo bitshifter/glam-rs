@@ -2,7 +2,7 @@
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
-use core::{hash, ops::*};
+use core::ops::*;
 
 /// A 3-dimensional `u32` vector mask.
 #[derive(Clone, Copy)]
@@ -68,22 +68,6 @@ impl Default for BVec3A {
     #[inline]
     fn default() -> Self {
         FALSE
-    }
-}
-
-impl PartialEq for BVec3A {
-    #[inline]
-    fn eq(&self, rhs: &Self) -> bool {
-        self.bitmask().eq(&rhs.bitmask())
-    }
-}
-
-impl Eq for BVec3A {}
-
-impl hash::Hash for BVec3A {
-    #[inline]
-    fn hash<H: hash::Hasher>(&self, state: &mut H) {
-        self.bitmask().hash(state);
     }
 }
 

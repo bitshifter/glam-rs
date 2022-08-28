@@ -2,7 +2,7 @@
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
-use core::{hash, ops::*};
+use core::ops::*;
 
 #[cfg(target_arch = "x86")]
 use core::arch::x86::*;
@@ -92,9 +92,9 @@ impl PartialEq for BVec3A {
 
 impl Eq for BVec3A {}
 
-impl hash::Hash for BVec3A {
+impl core::hash::Hash for BVec3A {
     #[inline]
-    fn hash<H: hash::Hasher>(&self, state: &mut H) {
+    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
         self.bitmask().hash(state);
     }
 }
