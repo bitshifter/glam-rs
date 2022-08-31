@@ -91,271 +91,163 @@ impl Vec3Swizzles for I16Vec3 {
     #[inline]
     #[must_use]
     fn xxx(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.x,
-            y: self.x,
-            z: self.x,
-        }
+        I16Vec3::new(self.x, self.x, self.x)
     }
 
     #[inline]
     #[must_use]
     fn xxy(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.x,
-            y: self.x,
-            z: self.y,
-        }
+        I16Vec3::new(self.x, self.x, self.y)
     }
 
     #[inline]
     #[must_use]
     fn xxz(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.x,
-            y: self.x,
-            z: self.z,
-        }
+        I16Vec3::new(self.x, self.x, self.z)
     }
 
     #[inline]
     #[must_use]
     fn xyx(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.x,
-            y: self.y,
-            z: self.x,
-        }
+        I16Vec3::new(self.x, self.y, self.x)
     }
 
     #[inline]
     #[must_use]
     fn xyy(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.x,
-            y: self.y,
-            z: self.y,
-        }
+        I16Vec3::new(self.x, self.y, self.y)
     }
 
     #[inline]
     #[must_use]
     fn xyz(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.x,
-            y: self.y,
-            z: self.z,
-        }
+        I16Vec3::new(self.x, self.y, self.z)
     }
 
     #[inline]
     #[must_use]
     fn xzx(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.x,
-            y: self.z,
-            z: self.x,
-        }
+        I16Vec3::new(self.x, self.z, self.x)
     }
 
     #[inline]
     #[must_use]
     fn xzy(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.x,
-            y: self.z,
-            z: self.y,
-        }
+        I16Vec3::new(self.x, self.z, self.y)
     }
 
     #[inline]
     #[must_use]
     fn xzz(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.x,
-            y: self.z,
-            z: self.z,
-        }
+        I16Vec3::new(self.x, self.z, self.z)
     }
 
     #[inline]
     #[must_use]
     fn yxx(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.y,
-            y: self.x,
-            z: self.x,
-        }
+        I16Vec3::new(self.y, self.x, self.x)
     }
 
     #[inline]
     #[must_use]
     fn yxy(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.y,
-            y: self.x,
-            z: self.y,
-        }
+        I16Vec3::new(self.y, self.x, self.y)
     }
 
     #[inline]
     #[must_use]
     fn yxz(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.y,
-            y: self.x,
-            z: self.z,
-        }
+        I16Vec3::new(self.y, self.x, self.z)
     }
 
     #[inline]
     #[must_use]
     fn yyx(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.y,
-            y: self.y,
-            z: self.x,
-        }
+        I16Vec3::new(self.y, self.y, self.x)
     }
 
     #[inline]
     #[must_use]
     fn yyy(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.y,
-            y: self.y,
-            z: self.y,
-        }
+        I16Vec3::new(self.y, self.y, self.y)
     }
 
     #[inline]
     #[must_use]
     fn yyz(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.y,
-            y: self.y,
-            z: self.z,
-        }
+        I16Vec3::new(self.y, self.y, self.z)
     }
 
     #[inline]
     #[must_use]
     fn yzx(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.y,
-            y: self.z,
-            z: self.x,
-        }
+        I16Vec3::new(self.y, self.z, self.x)
     }
 
     #[inline]
     #[must_use]
     fn yzy(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.y,
-            y: self.z,
-            z: self.y,
-        }
+        I16Vec3::new(self.y, self.z, self.y)
     }
 
     #[inline]
     #[must_use]
     fn yzz(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.y,
-            y: self.z,
-            z: self.z,
-        }
+        I16Vec3::new(self.y, self.z, self.z)
     }
 
     #[inline]
     #[must_use]
     fn zxx(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.z,
-            y: self.x,
-            z: self.x,
-        }
+        I16Vec3::new(self.z, self.x, self.x)
     }
 
     #[inline]
     #[must_use]
     fn zxy(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.z,
-            y: self.x,
-            z: self.y,
-        }
+        I16Vec3::new(self.z, self.x, self.y)
     }
 
     #[inline]
     #[must_use]
     fn zxz(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.z,
-            y: self.x,
-            z: self.z,
-        }
+        I16Vec3::new(self.z, self.x, self.z)
     }
 
     #[inline]
     #[must_use]
     fn zyx(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.z,
-            y: self.y,
-            z: self.x,
-        }
+        I16Vec3::new(self.z, self.y, self.x)
     }
 
     #[inline]
     #[must_use]
     fn zyy(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.z,
-            y: self.y,
-            z: self.y,
-        }
+        I16Vec3::new(self.z, self.y, self.y)
     }
 
     #[inline]
     #[must_use]
     fn zyz(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.z,
-            y: self.y,
-            z: self.z,
-        }
+        I16Vec3::new(self.z, self.y, self.z)
     }
 
     #[inline]
     #[must_use]
     fn zzx(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.z,
-            y: self.z,
-            z: self.x,
-        }
+        I16Vec3::new(self.z, self.z, self.x)
     }
 
     #[inline]
     #[must_use]
     fn zzy(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.z,
-            y: self.z,
-            z: self.y,
-        }
+        I16Vec3::new(self.z, self.z, self.y)
     }
 
     #[inline]
     #[must_use]
     fn zzz(self) -> I16Vec3 {
-        I16Vec3 {
-            x: self.z,
-            y: self.z,
-            z: self.z,
-        }
+        I16Vec3::new(self.z, self.z, self.z)
     }
 
     #[inline]

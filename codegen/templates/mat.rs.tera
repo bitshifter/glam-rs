@@ -1,4 +1,5 @@
 {% import "coresimd.rs.tera" as coresimd %}
+{% import "neon.rs.tera" as neon %}
 {% import "sse2.rs.tera" as sse2 %}
 {% import "wasm32.rs.tera" as wasm32 %}
 
@@ -90,6 +91,8 @@ use crate::{
         wasm32::*,
     {% elif is_coresimd %}
         coresimd::*,
+    {% elif is_neon %}
+        neon::*,
     {% endif %}
 {% endif %}
     {{ scalar_t }}::math,
@@ -109,6 +112,8 @@ use core::arch::x86_64::*;
 use core::arch::wasm32::*;
 {% elif is_coresimd %}
 use core::simd::*;
+{% elif is_neon and self_t != "Mat2" %}
+use core::arch::aarch64::*;
 {% endif %}
 
 {% if self_t == "Mat2" and is_sse2 %}
@@ -1085,6 +1090,26 @@ impl {{ self_t }} {
                     [0, 2, 6, 6]
                 )),
             }
+        {% elif self_t == "Mat3A" and is_neon %}
+            let x = self.x_axis.0;
+            let y = self.y_axis.0;
+            let z = self.z_axis.0;
+            unsafe {
+                let tmp0 = vreinterpretq_f32_u64(vsetq_lane_u64(
+                    vgetq_lane_u64(vreinterpretq_u64_f32(y), 0),
+                    vreinterpretq_u64_f32(x),
+                    1,
+                ));
+                let tmp1 = vreinterpretq_f32_u64(vzip2q_u64(
+                    vreinterpretq_u64_f32(x),
+                    vreinterpretq_u64_f32(y),
+                ));
+                Mat3A::from_cols(
+                    Vec3A::from(vsetq_lane_f32(vgetq_lane_f32(z, 0), vuzp1q_f32(tmp0, z), 3)),
+                    Vec3A::from(vuzp2q_f32(tmp0, vdupq_laneq_f32(z, 1))),
+                    Vec3A::from(vsetq_lane_f32(vgetq_lane_f32(z, 2), vuzp1q_f32(tmp1, z), 2)),
+                )
+            }
         {% elif self_t == "Mat4" and is_sse2 %}
             unsafe {
                 // Based on https://github.com/microsoft/DirectXMath `XMMatrixTranspose`
@@ -1285,6 +1310,75 @@ impl {{ self_t }} {
             let detcof = addres * f32x4::from_array([1.0, -1.0, 1.0, -1.0]);
 
             dot4(self.x_axis.0, detcof)
+        {#
+        // neon implementation is slower than scalar
+        // {% elif self_t == "Mat4" and is_neon %}
+        //     unsafe {
+        //         let swizz2110 = |x| {
+        //             let x = vuzp1q_f32(x, vdupq_laneq_f32(x, 1));
+        //             vextq_f32(x, x, 1)
+        //         };
+        //         let swizz3323 = |x| {
+        //             let xy = vgetq_lane_f32(x, 3);
+        //             vsetq_lane_f32(xy, vsetq_lane_f32(xy, x, 0), 1)
+        //         };
+        //         let swizz2100 = |x| {
+        //             let y = vuzp1q_f32(x, x);
+        //             vuzp1q_f32(vextq_f32(x, y, 3), y)
+        //         };
+        //         let swizz0021 = |x| vtrn1q_f32(x, vzip1q_f32(x, x));
+        //         // let swizz6723 = |x, y| {
+        //         //     vsetq_lane_f64(vgetq_lane_f64(y, 1), 0)
+        //         // };
+        //         let swizz2323 = |x| vreinterpretq_f32_f64(vdupq_laneq_f64(vreinterpretq_f64_f32(x), 1));
+        //         let swizz0012 = |x| vzip1q_f32(x, vuzp1q_f32(x, x));
+        //         let swizz1000 = |x| vsetq_lane_f32(vgetq_lane_f32(x, 1), vdupq_laneq_f32(x, 0), 0);
+        //         let swizz1344 = |x, y| vuzp2q_f32(x, vdupq_laneq_f32(y, 0));
+        //         let swizz0113 = |x| vsetq_lane_f32(vgetq_lane_f32(x, 1), x, 2);
+        //         let swizz2211 = |x| {
+        //             let x = vsetq_lane_f32(vgetq_lane_f32(x, 1), x, 3);
+        //             vzip2q_f32(x, x)
+        //         };
+        //         let swizz2245 = |x, y| vextq_f32(vtrn1q_f32(x, x), y, 1);
+        //         let swizz0233 = |x| vuzp1q_f32(x, vdupq_laneq_f32(x, 3));
+        //         let swizz3332 = |x| vsetq_lane_f32(vgetq_lane_f32(x, 2), vdupq_laneq_f32(x, 3), 3);
+
+        //         // Based on https://github.com/g-truc/glm `glm_mat4_determinant`
+        //         let swp2a = swizz2110(self.z_axis.0);
+        //         let swp3a = swizz3323(self.w_axis.0);
+        //         let swp2b = swizz3323(self.z_axis.0);
+        //         let swp3b = swizz2110(self.w_axis.0);
+        //         let swp2c = swizz2100(self.z_axis.0);
+        //         let swp3c = swizz0021(self.w_axis.0);
+
+        //         let mula = vmulq_f32(swp2a, swp3a);
+        //         let mulb = vmulq_f32(swp2b, swp3b);
+        //         let mulc = vmulq_f32(swp2c, swp3c);
+        //         let sube = vsubq_f32(mula, mulb);
+        //         let subf = vsubq_f32(swizz2323(mulc), mulc);
+
+        //         let subfaca = swizz0012(sube);
+        //         let swpfaca = swizz1000(self.y_axis.0);
+        //         let mulfaca = vmulq_f32(swpfaca, subfaca);
+
+        //         let subtmpb = swizz1344(sube, subf);
+        //         let subfacb = swizz0113(subtmpb);
+        //         let swpfacb = swizz2211(self.y_axis.0);
+        //         let mulfacb = vmulq_f32(swpfacb, subfacb);
+
+        //         let subres = vsubq_f32(mulfaca, mulfacb);
+        //         let subtmpc = swizz2245(sube, subf);
+        //         let subfacc = swizz0233(subtmpc);
+        //         let swpfacc = swizz3332(self.y_axis.0);
+        //         let mulfacc = vmulq_f32(swpfacc, subfacc);
+
+        //         let addres = vaddq_f32(subres, mulfacc);
+        //         const COF: float32x4_t = Vec4::new(1.0, -1.0, 1.0, -1.0).0;
+        //         let detcof = vmulq_f32(addres, COF);
+
+        //         dot4(self.x_axis.0, detcof)
+        //     }
+        #}
         {% elif dim == 2 %}
             self.x_axis.x * self.y_axis.y - self.x_axis.y * self.y_axis.x
         {% elif dim == 3 %}
@@ -1362,6 +1456,8 @@ impl {{ self_t }} {
             {{ wasm32::impl_mat4_inverse() }}
         {% elif self_t == "Mat4" and is_coresimd %}
             {{ coresimd::impl_mat4_inverse() }}
+        {% elif self_t == "Mat4" and is_neon %}
+            {{ neon::impl_mat4_inverse() }}
         {% elif dim == 2 %}
             let inv_det = {
                 let det = self.determinant();

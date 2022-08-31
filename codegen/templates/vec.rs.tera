@@ -10,6 +10,8 @@
         {% set simd_t = "__m128" %}
     {% elif is_wasm32 %}
         {% set simd_t = "v128" %}
+    {% elif is_neon %}
+        {% set simd_t = "float32x4_t" %}
     {% elif is_coresimd %}
         {% set simd_t = "f32x4" %}
     {% else %}
@@ -166,6 +168,8 @@
         sse2::*,
     {% elif is_wasm32 %}
         wasm32::*,
+    {% elif is_neon %}
+        neon::*,
     {% elif is_coresimd %}
         coresimd::*,
     {% endif %}
@@ -202,9 +206,11 @@ use core::arch::wasm32::*;
 {% elif is_coresimd %}
 use core::simd::{cmp::SimdPartialEq, cmp::SimdPartialOrd, num::SimdFloat, *};
 use std::simd::StdFloat;
+{% elif is_neon %}
+use core::arch::aarch64::*;
 {% endif %}
 
-{% if is_sse2 or is_wasm32 %}
+{% if is_sse2 or is_wasm32 or is_neon %}
 #[repr(C)]
 union UnionCast {
     a: [f32; 4],
@@ -377,6 +383,12 @@ impl {{ self_t }} {
                     w
                 {% endif %}
             ]))
+        {% elif is_neon %}
+            {% if dim == 3 %}
+                unsafe { UnionCast { a: [x, y, z, z] }.v }
+            {% elif dim == 4 %}
+                unsafe { UnionCast { a: [x, y, z, w] }.v }
+            {% endif %}
         {% endif %}
     }
 
@@ -417,6 +429,8 @@ impl {{ self_t }} {
             Self(v128_bitselect(if_true.0, if_false.0, mask.0))
         {% elif is_coresimd %}
             Self(mask.0.select(if_true.0, if_false.0))
+        {% elif is_neon %}
+            Self(unsafe { vbslq_f32(mask.0, if_true.0, if_false.0) })
         {% endif %}
     }
 
@@ -469,10 +483,11 @@ impl {{ self_t }} {
     #[inline]
     pub fn write_to_slice(self, slice: &mut [{{ scalar_t }}]) {
         {% if self_t == "Vec4" and is_sse2 %}
-            unsafe {
-                assert!(slice.len() >= 4);
-                _mm_storeu_ps(slice.as_mut_ptr(), self.0);
-            }
+            assert!(slice.len() >= 4);
+            unsafe { _mm_storeu_ps(slice.as_mut_ptr(), self.0); }
+        {% elif self_t == "Vec4" and is_neon %}
+            assert!(slice.len() >= 4);
+            unsafe { vst1q_f32(slice.as_mut_ptr(), self.0); }
         {% else %}
             {% for c in components %}
                 slice[{{ loop.index0 }}] = self.{{ c }};
@@ -553,6 +568,15 @@ impl {{ self_t }} {
             {%- endfor %}
         {% elif is_sse2 %}
             unsafe { dot{{ dim }}(self.0, rhs.0) }
+        {% elif is_neon %}
+            {% if dim < 4 %}
+                // this was faster than intrinsics in testing
+                {%- for c in components %}
+                    (self.{{ c }} * rhs.{{ c }}) {% if not loop.last %} + {% endif %}
+                {%- endfor %}
+            {% else %}
+                unsafe { dot{{ dim }}(self.0, rhs.0) }
+            {% endif %}
         {% else %}
             dot{{ dim }}(self.0, rhs.0)
         {% endif %}
@@ -562,14 +586,18 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn dot_into_vec(self, rhs: Self) -> Self {
-        {% if is_sse2 %}
+        {% if is_scalar %}
+            Self::splat(self.dot(rhs))
+        {% elif is_sse2 %}
             Self(unsafe { dot{{ dim }}_into_m128(self.0, rhs.0) })
         {% elif is_wasm32 %}
             Self(dot{{ dim }}_into_v128(self.0, rhs.0))
         {% elif is_coresimd %}
             Self(dot{{ dim }}_into_f32x4(self.0, rhs.0))
+        {% elif is_neon %}
+            Self(unsafe { dot{{ dim }}_into_f32x4(self.0, rhs.0) })
         {% else %}
-            Self::splat(self.dot(rhs))
+            unimplemented!()
         {% endif %}
     }
 
@@ -612,6 +640,32 @@ impl {{ self_t }} {
             let rhszxy_lhs = rhszxy * self.0;
             let sub = lhszxy_rhs - rhszxy_lhs;
             Self(simd_swizzle!(sub, [2, 0, 1, 1]))
+        {% elif is_neon %}
+            unsafe {
+                // Implementation taken from Realtime Math
+                let lhs = self.0;
+                let rhs = rhs.0;
+                // cross(a, b) = (a.yzx * b.zxy) - (a.zxy * b.yzx)
+                let lhs_yzwx = vextq_f32(lhs, lhs, 1);
+                let rhs_wxyz = vextq_f32(rhs, rhs, 3);
+
+                let lhs_yzx = vsetq_lane_f32(vgetq_lane_f32(lhs, 0), lhs_yzwx, 2);
+                let rhs_zxy = vsetq_lane_f32(vgetq_lane_f32(rhs, 2), rhs_wxyz, 0);
+
+                // part_a = (a.yzx * b.zxy)
+                let part_a = vmulq_f32(lhs_yzx, rhs_zxy);
+
+                let lhs_wxyz = vextq_f32(lhs, lhs, 3);
+                let rhs_yzwx = vextq_f32(rhs, rhs, 1);
+                let lhs_zxy = vsetq_lane_f32(vgetq_lane_f32(lhs, 2), lhs_wxyz, 0);
+                let rhs_yzx = vsetq_lane_f32(vgetq_lane_f32(rhs, 0), rhs_yzwx, 2);
+
+                // result = part_a - (a.zxy * b.yzx)
+                let result = vmlsq_f32(part_a, lhs_zxy, rhs_yzx);
+                Self(result)
+            }
+        {% else %}
+             unimplemented!()
         {% endif %}
     }
 {% endif %}
@@ -634,6 +688,10 @@ impl {{ self_t }} {
             Self(f32x4_pmin(self.0, rhs.0))
         {% elif is_coresimd %}
             Self(self.0.simd_min(rhs.0))
+        {% elif is_neon %}
+            Self(unsafe { vminq_f32(self.0, rhs.0) })
+        {% else %}
+             unimplemented!()
         {% endif %}
     }
 
@@ -655,6 +713,10 @@ impl {{ self_t }} {
             Self(f32x4_pmax(self.0, rhs.0))
         {% elif is_coresimd %}
             Self(self.0.simd_max(rhs.0))
+        {% elif is_neon %}
+            Self(unsafe { vmaxq_f32(self.0, rhs.0) })
+        {% else %}
+             unimplemented!()
         {% endif %}
     }
 
@@ -723,6 +785,14 @@ impl {{ self_t }} {
             {% elif dim == 4 %}
                 self.0.reduce_min()
             {% endif %}
+        {% elif is_neon %}
+            {% if dim == 3 %}
+                self.x.min(self.y.min(self.z))
+            {% elif dim == 4 %}
+                unsafe { vminnmvq_f32(self.0) }
+            {% endif %}
+        {% else %}
+             unimplemented!()
         {% endif %}
     }
 
@@ -777,6 +847,14 @@ impl {{ self_t }} {
             {% elif dim == 4 %}
                 self.0.reduce_max()
             {% endif %}
+        {% elif is_neon %}
+            {% if dim == 3 %}
+                self.x.max(self.y.max(self.z))
+            {% elif dim == 4 %}
+                unsafe { vmaxnmvq_f32(self.0) }
+            {% endif %}
+        {% else %}
+             unimplemented!()
         {% endif %}
     }
 
@@ -824,6 +902,14 @@ impl {{ self_t }} {
             {% elif dim == 4 %}
                 self.0.reduce_sum()
             {% endif %}
+        {% elif is_neon %}
+            {% if dim == 3 %}
+                unsafe { vaddvq_f32(vsetq_lane_f32(0.0, self.0, 3)) }
+            {% elif dim == 4 %}
+                unsafe { vaddvq_f32(self.0) }
+            {% endif %}
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 
@@ -871,6 +957,21 @@ impl {{ self_t }} {
             {% elif dim == 4 %}
                 self.0.reduce_product()
             {% endif %}
+        {% elif is_neon %}
+            {% if dim == 3 %}
+                unsafe {
+                    let s = vmuls_laneq_f32(vgetq_lane_f32(self.0, 0), self.0, 1);
+                    vmuls_laneq_f32(s, self.0, 2)
+                }
+            {% elif dim == 4 %}
+                unsafe {
+                    let s = vmuls_laneq_f32(vgetq_lane_f32(self.0, 0), self.0, 1);
+                    let s = vmuls_laneq_f32(s, self.0, 2);
+                    vmuls_laneq_f32(s, self.0, 3)
+                }
+            {% endif %}
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 
@@ -894,6 +995,10 @@ impl {{ self_t }} {
             {{ mask_t }}(f32x4_eq(self.0, rhs.0))
         {% elif is_coresimd %}
             {{ mask_t }}(f32x4::simd_eq(self.0, rhs.0))
+        {% elif is_neon %}
+            {{ mask_t }}(unsafe { vceqq_f32(self.0, rhs.0) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 
@@ -917,6 +1022,10 @@ impl {{ self_t }} {
             {{ mask_t }}(f32x4_ne(self.0, rhs.0))
         {% elif is_coresimd %}
             {{ mask_t }}(f32x4::simd_ne(self.0, rhs.0))
+        {% elif is_neon %}
+            {{ mask_t }}(unsafe { vmvnq_u32(vceqq_f32(self.0, rhs.0)) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 
@@ -940,6 +1049,10 @@ impl {{ self_t }} {
             {{ mask_t }}(f32x4_ge(self.0, rhs.0))
         {% elif is_coresimd %}
             {{ mask_t }}(f32x4::simd_ge(self.0, rhs.0))
+        {% elif is_neon %}
+            {{ mask_t }}(unsafe { vcgeq_f32(self.0, rhs.0) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 
@@ -963,6 +1076,10 @@ impl {{ self_t }} {
             {{ mask_t }}(f32x4_gt(self.0, rhs.0))
         {% elif is_coresimd %}
             {{ mask_t }}(f32x4::simd_gt(self.0, rhs.0))
+        {% elif is_neon %}
+            {{ mask_t }}(unsafe { vcgtq_f32(self.0, rhs.0) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 
@@ -986,6 +1103,10 @@ impl {{ self_t }} {
             {{ mask_t }}(f32x4_le(self.0, rhs.0))
         {% elif is_coresimd %}
             {{ mask_t }}(f32x4::simd_le(self.0, rhs.0))
+        {% elif is_neon %}
+            {{ mask_t }}(unsafe { vcleq_f32(self.0, rhs.0) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 
@@ -1009,6 +1130,10 @@ impl {{ self_t }} {
             {{ mask_t }}(f32x4_lt(self.0, rhs.0))
         {% elif is_coresimd %}
             {{ mask_t }}(f32x4::simd_lt(self.0, rhs.0))
+        {% elif is_neon %}
+            {{ mask_t }}(unsafe { vcltq_f32(self.0, rhs.0) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 
@@ -1033,6 +1158,10 @@ impl {{ self_t }} {
             Self(f32x4_abs(self.0))
         {% elif is_coresimd %}
             Self(self.0.abs())
+        {% elif is_neon %}
+            Self(unsafe { vabsq_f32(self.0) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 
@@ -1063,17 +1192,26 @@ impl {{ self_t }} {
         {% elif is_coresimd %}
             Self(self.0.signum())
         {% elif is_sse2 %}
-            unsafe {
-                let result = Self(_mm_or_ps(_mm_and_ps(self.0, Self::NEG_ONE.0), Self::ONE.0));
-                let mask = self.is_nan_mask();
-                Self::select(mask, self, result)
-            }
+            let result = Self(unsafe { _mm_or_ps(_mm_and_ps(self.0, Self::NEG_ONE.0), Self::ONE.0) });
+            let mask = self.is_nan_mask();
+            Self::select(mask, self, result)
         {% elif is_wasm32 %}
-            unsafe {
-                let result = Self(v128_or(v128_and(self.0, Self::NEG_ONE.0), Self::ONE.0));
-                let mask = self.is_nan_mask();
-                Self::select(mask, self, result)
-            }
+            let result = Self(v128_or(v128_and(self.0, Self::NEG_ONE.0), Self::ONE.0));
+            let mask = self.is_nan_mask();
+            Self::select(mask, self, result)
+        {% elif is_neon %}
+            let result = Self(unsafe {
+                vreinterpretq_f32_u32(vorrq_u32(
+                    vandq_u32(
+                        vreinterpretq_u32_f32(self.0),
+                        vreinterpretq_u32_f32(Self::NEG_ONE.0)),
+                    vreinterpretq_u32_f32(Self::ONE.0),
+                ))
+            });
+            let mask = self.is_nan_mask();
+            Self::select(mask, self, result)
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 
@@ -1091,15 +1229,23 @@ impl {{ self_t }} {
         {% elif is_coresimd %}
             Self(self.0.copysign(rhs.0))
         {% elif is_sse2 %}
-            unsafe {
-                let mask = Self::splat(-0.0);
-                Self(_mm_or_ps(_mm_and_ps(rhs.0, mask.0), _mm_andnot_ps(mask.0, self.0)))
-            }
+            let mask = Self::splat(-0.0);
+            Self(unsafe { _mm_or_ps(_mm_and_ps(rhs.0, mask.0), _mm_andnot_ps(mask.0, self.0)) })
         {% elif is_wasm32 %}
-            unsafe {
-                let mask = Self::splat(-0.0);
-                Self(v128_or(v128_and(rhs.0, mask.0), v128_andnot(self.0, mask.0)))
-            }
+            let mask = Self::splat(-0.0);
+            Self(unsafe { v128_or(v128_and(rhs.0, mask.0), v128_andnot(self.0, mask.0)) })
+        {% elif is_neon %}
+            let mask = Self::splat(-0.0);
+            Self(unsafe {
+                vreinterpretq_f32_u32(vorrq_u32(
+                    vandq_u32(vreinterpretq_u32_f32(rhs.0), vreinterpretq_u32_f32(mask.0)),
+                    vandq_u32(
+                        vreinterpretq_u32_f32(self.0),
+                        vmvnq_u32(vreinterpretq_u32_f32(mask.0)))
+                ))
+            })
+        {% else %}
+            unimplemented!();
         {% endif %}
     }
     {% endif %}
@@ -1145,6 +1291,22 @@ impl {{ self_t }} {
             {% elif dim == 4 %}
                 self.0.is_sign_negative().to_bitmask() as u32
             {% endif %}
+        {% elif is_neon %}
+            unsafe {
+                let nmask = vreinterpretq_u32_f32(vdupq_n_f32(-0.0));
+                let m = vandq_u32(vreinterpretq_u32_f32(self.0), nmask);
+                let x = vgetq_lane_u32(m, 0) >> 31;
+                let y = vgetq_lane_u32(m, 1) >> 31;
+                let z = vgetq_lane_u32(m, 2) >> 31;
+                {% if dim == 3 %}
+                    x | y << 1 | z << 2
+                {% elif dim == 4 %}
+                    let w = vgetq_lane_u32(m, 3) >> 31;
+                    x | y << 1 | z << 2 | w << 3
+                {% endif %}
+            }
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 {% endif %}
@@ -1199,6 +1361,8 @@ impl {{ self_t }} {
             {{ mask_t }}(f32x4_ne(self.0, self.0))
         {% elif is_coresimd %}
             {{ mask_t }}(f32x4::is_nan(self.0))
+        {% elif is_neon %}
+            {{ mask_t }}(unsafe { vmvnq_u32(vceqq_f32(self.0, self.0)) })
         {% endif %}
     }
 
@@ -1207,7 +1371,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn length(self) -> {{ scalar_t }} {
-        {% if is_scalar %}
+        {% if is_scalar or is_neon %}
             math::sqrt(self.dot(self))
         {% elif is_sse2 %}
             unsafe {
@@ -1243,7 +1407,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn length_recip(self) -> {{ scalar_t }} {
-        {% if is_scalar %}
+        {% if is_scalar or is_neon %}
             self.length().recip()
         {% elif is_sse2 %}
             unsafe {
@@ -1331,7 +1495,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn normalize(self) -> Self {
-        {% if is_scalar %}
+        {% if is_scalar or is_neon %}
             #[allow(clippy::let_and_return)]
             let normalized = self.mul(self.length_recip());
             glam_assert!(normalized.is_finite());
@@ -1356,6 +1520,8 @@ impl {{ self_t }} {
             let normalized = Self(self.0 / length);
             glam_assert!(normalized.is_finite());
             normalized
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 
@@ -1493,6 +1659,10 @@ impl {{ self_t }} {
             Self(f32x4_nearest(self.0))
         {% elif is_coresimd %}
             Self(self.0.round())
+        {% elif is_neon %}
+            Self(unsafe { vrndnq_f32(self.0) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 
@@ -1513,6 +1683,10 @@ impl {{ self_t }} {
             Self(f32x4_floor(self.0))
         {% elif is_coresimd %}
             Self(self.0.floor())
+        {% elif is_neon %}
+            Self(unsafe { vrndmq_f32(self.0) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 
@@ -1533,6 +1707,10 @@ impl {{ self_t }} {
             Self(f32x4_ceil(self.0))
         {% elif is_coresimd %}
             Self(self.0.ceil())
+        {% elif is_neon %}
+            Self(unsafe { vrndpq_f32(self.0) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 
@@ -1553,6 +1731,10 @@ impl {{ self_t }} {
             Self(f32x4_trunc(self.0))
         {% elif is_coresimd %}
             Self(self.0.trunc())
+        {% elif is_neon %}
+            Self(unsafe { vrndq_f32(self.0) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 
@@ -1619,6 +1801,10 @@ impl {{ self_t }} {
             Self(f32x4_div(Self::ONE.0, self.0))
         {% elif is_coresimd %}
             Self(self.0.recip())
+        {% elif is_neon %}
+            Self(unsafe { vdivq_f32(Self::ONE.0, self.0) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 
@@ -1734,6 +1920,8 @@ impl {{ self_t }} {
         {% endif %}
         {% if is_coresimd %}
             Self(self.0.mul_add(a.0, b.0))
+        {% elif is_neon %}
+            Self(unsafe { vfmaq_f32(b.0, self.0, a.0) })
         {% else %}
             Self::new(
                 {% for c in components %}
@@ -2300,6 +2488,10 @@ impl Div<{{ self_t }}> for {{ self_t }} {
             Self(f32x4_div(self.0, rhs.0))
         {% elif is_coresimd %}
             Self(self.0 / rhs.0)
+        {% elif is_neon %}
+            Self(unsafe { vdivq_f32(self.0, rhs.0) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }
@@ -2317,6 +2509,10 @@ impl DivAssign<{{ self_t }}> for {{ self_t }} {
             self.0 = f32x4_div(self.0, rhs.0);
         {% elif is_coresimd %}
             self.0 /= rhs.0;
+        {% elif is_neon %}
+            self.0 = unsafe { vdivq_f32(self.0, rhs.0) };
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }
@@ -2337,6 +2533,10 @@ impl Div<{{ scalar_t }}> for {{ self_t }} {
             Self(f32x4_div(self.0, f32x4_splat(rhs)))
         {% elif is_coresimd %}
             Self(self.0 / f32x4::splat(rhs))
+        {% elif is_neon %}
+            Self(unsafe { vdivq_f32(self.0, vld1q_dup_f32(&rhs)) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }
@@ -2351,9 +2551,13 @@ impl DivAssign<{{ scalar_t }}> for {{ self_t }} {
         {% elif is_sse2 %}
             self.0 = unsafe { _mm_div_ps(self.0, _mm_set1_ps(rhs)) };
         {% elif is_wasm32 %}
-            self.0 = f32x4_div(self.0, f32x4_splat(rhs))
+            self.0 = f32x4_div(self.0, f32x4_splat(rhs));
         {% elif is_coresimd %}
             self.0 /= f32x4::splat(rhs);
+        {% elif is_neon %}
+            self.0 = unsafe { vdivq_f32(self.0, vld1q_dup_f32(&rhs)) };
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }
@@ -2374,6 +2578,10 @@ impl Div<{{ self_t }}> for {{ scalar_t }} {
             {{ self_t }}(f32x4_div(f32x4_splat(self), rhs.0))
         {% elif is_coresimd %}
             {{ self_t }}(f32x4::splat(self) / rhs.0)
+        {% elif is_neon %}
+            {{ self_t }}(unsafe { vdivq_f32(vld1q_dup_f32(&self), rhs.0) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }
@@ -2394,6 +2602,10 @@ impl Mul<{{ self_t }}> for {{ self_t }} {
             Self(f32x4_mul(self.0, rhs.0))
         {% elif is_coresimd %}
             Self(self.0 * rhs.0)
+        {% elif is_neon %}
+            Self(unsafe { vmulq_f32(self.0, rhs.0) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }
@@ -2411,6 +2623,10 @@ impl MulAssign<{{ self_t }}> for {{ self_t }} {
             self.0 = f32x4_mul(self.0, rhs.0);
         {% elif is_coresimd %}
             self.0 *= rhs.0;
+        {% elif is_neon %}
+            self.0 = unsafe { vmulq_f32(self.0, rhs.0) };
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }
@@ -2431,6 +2647,10 @@ impl Mul<{{ scalar_t }}> for {{ self_t }} {
             Self(f32x4_mul(self.0, f32x4_splat(rhs)))
         {% elif is_coresimd %}
             Self(self.0 * f32x4::splat(rhs))
+        {% elif is_neon %}
+            Self(unsafe { vmulq_n_f32(self.0, rhs) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }
@@ -2448,6 +2668,10 @@ impl MulAssign<{{ scalar_t }}> for {{ self_t }} {
             self.0 = f32x4_mul(self.0, f32x4_splat(rhs))
         {% elif is_coresimd %}
             self.0 *= f32x4::splat(rhs);
+        {% elif is_neon %}
+            self.0 = unsafe { vmulq_n_f32(self.0, rhs) };
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }
@@ -2468,6 +2692,10 @@ impl Mul<{{ self_t }}> for {{ scalar_t }} {
             {{ self_t }}(f32x4_mul(f32x4_splat(self), rhs.0))
         {% elif is_coresimd %}
             {{ self_t }}(f32x4::splat(self) * rhs.0)
+        {% elif is_neon %}
+            {{ self_t }}(unsafe { vmulq_n_f32(rhs.0, self) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }
@@ -2488,6 +2716,10 @@ impl Add<{{ self_t }}> for {{ self_t }} {
             Self(f32x4_add(self.0, rhs.0))
         {% elif is_coresimd %}
             Self(self.0 + rhs.0)
+        {% elif is_neon %}
+            Self(unsafe { vaddq_f32(self.0, rhs.0) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }
@@ -2505,6 +2737,10 @@ impl AddAssign<{{ self_t }}> for {{ self_t }} {
             self.0 = f32x4_add(self.0, rhs.0);
         {% elif is_coresimd %}
             self.0 += rhs.0;
+        {% elif is_neon %}
+            self.0 = unsafe { vaddq_f32(self.0, rhs.0) };
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }
@@ -2525,6 +2761,10 @@ impl Add<{{ scalar_t }}> for {{ self_t }} {
             Self(f32x4_add(self.0, f32x4_splat(rhs)))
         {% elif is_coresimd %}
             Self(self.0 + f32x4::splat(rhs))
+        {% elif is_neon %}
+            Self(unsafe { vaddq_f32(self.0, vld1q_dup_f32(&rhs)) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }
@@ -2542,6 +2782,10 @@ impl AddAssign<{{ scalar_t }}> for {{ self_t }} {
             self.0 = f32x4_add(self.0, f32x4_splat(rhs));
         {% elif is_coresimd %}
             self.0 += f32x4::splat(rhs);
+        {% elif is_neon %}
+            self.0 = unsafe { vaddq_f32(self.0, vld1q_dup_f32(&rhs)) };
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }
@@ -2562,6 +2806,10 @@ impl Add<{{ self_t }}> for {{ scalar_t }} {
             {{ self_t }}(f32x4_add(f32x4_splat(self), rhs.0))
         {% elif is_coresimd %}
             {{ self_t }}(f32x4::splat(self) + rhs.0)
+        {% elif is_neon %}
+            {{ self_t }}(unsafe { vaddq_f32(vld1q_dup_f32(&self), rhs.0) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }
@@ -2582,6 +2830,10 @@ impl Sub<{{ self_t }}> for {{ self_t }} {
             Self(f32x4_sub(self.0, rhs.0))
         {% elif is_coresimd %}
             Self(self.0 - rhs.0)
+        {% elif is_neon %}
+            Self(unsafe { vsubq_f32(self.0, rhs.0) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }
@@ -2599,6 +2851,10 @@ impl SubAssign<{{ self_t }}> for {{ self_t }} {
             self.0 = f32x4_sub(self.0, rhs.0);
         {% elif is_coresimd %}
             self.0 -= rhs.0;
+        {% elif is_neon %}
+            self.0 = unsafe { vsubq_f32(self.0, rhs.0) };
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }
@@ -2619,6 +2875,10 @@ impl Sub<{{ scalar_t }}> for {{ self_t }} {
             Self(f32x4_sub(self.0, f32x4_splat(rhs)))
         {% elif is_coresimd %}
             Self(self.0 - f32x4::splat(rhs))
+        {% elif is_neon %}
+            Self(unsafe { vsubq_f32(self.0, vld1q_dup_f32(&rhs)) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }
@@ -2636,6 +2896,10 @@ impl SubAssign<{{ scalar_t }}> for {{ self_t }} {
             self.0 = f32x4_sub(self.0, f32x4_splat(rhs))
         {% elif is_coresimd %}
             self.0 -= f32x4::splat(rhs);
+        {% elif is_neon %}
+            self.0 = unsafe { vsubq_f32(self.0, vld1q_dup_f32(&rhs)) };
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }
@@ -2656,6 +2920,10 @@ impl Sub<{{ self_t }}> for {{ scalar_t }} {
             {{ self_t }}(f32x4_sub(f32x4_splat(self), rhs.0))
         {% elif is_coresimd %}
             {{ self_t }}(f32x4::splat(self) - rhs.0)
+        {% elif is_neon %}
+            {{ self_t }}(unsafe { vsubq_f32(vld1q_dup_f32(&self), rhs.0) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }
@@ -2680,6 +2948,13 @@ impl Rem<{{ self_t }}> for {{ self_t }} {
             Self(f32x4_sub(self.0, f32x4_mul(n, rhs.0)))
         {% elif is_coresimd %}
             Self(self.0 % rhs.0)
+        {% elif is_neon %}
+            unsafe {
+                let n = vrndmq_f32(vdivq_f32(self.0, rhs.0));
+                Self(vsubq_f32(self.0, vmulq_f32(n, rhs.0)))
+            }
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }
@@ -2819,6 +3094,10 @@ impl Neg for {{ self_t }} {
             Self(f32x4_neg(self.0))
         {% elif is_coresimd %}
             Self(-self.0)
+        {% elif is_neon %}
+            Self(unsafe { vnegq_f32(self.0) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }
@@ -3035,14 +3314,14 @@ impl fmt::Debug for {{ self_t }} {
 
 {% if not is_scalar %}
 impl From<{{ self_t }}> for {{ simd_t }} {
-    #[inline]
+    #[inline(always)]
     fn from(t: {{ self_t }}) -> Self {
         t.0
     }
 }
 
 impl From<{{ simd_t }}> for {{ self_t }} {
-    #[inline]
+    #[inline(always)]
     fn from(t: {{ simd_t }}) -> Self {
         Self(t)
     }
@@ -3056,6 +3335,8 @@ impl From<[{{ scalar_t }}; {{ dim }}]> for {{ self_t }} {
             Self(unsafe { _mm_loadu_ps(a.as_ptr()) })
         {% elif self_t == "Vec4" and is_coresimd %}
             Self(f32x4::from_array(a))
+        {% elif self_t == "Vec4" and is_neon %}
+            Self(unsafe { vld1q_f32(a.as_ptr()) })
         {% else %}
             Self::new(
                 {% for c in components %}
@@ -3095,6 +3376,16 @@ impl From<{{ self_t }}> for [{{ scalar_t }}; {{ dim }}] {
             {% elif dim == 4 %}
                 v.0.to_array()
             {% endif %}
+        {% elif is_neon %}
+            use core::mem::MaybeUninit;
+            use crate::align16::Align16;
+            let mut out: MaybeUninit<Align16<Self>> = MaybeUninit::uninit();
+            unsafe {
+                vst1q_f32(out.as_mut_ptr().cast(), v.0);
+                out.assume_init().0
+            }
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }
@@ -3135,6 +3426,16 @@ impl From<{{ self_t }}> for {{ macros::make_tuple_t(t=scalar_t, n=dim) }} {
             unsafe {
                 *(v.0.to_array().as_ptr() as *const Self)
             }
+        {% elif is_neon %}
+            use core::mem::MaybeUninit;
+            use crate::align16::Align16;
+            let mut out: MaybeUninit<Align16<Self>> = MaybeUninit::uninit();
+            unsafe {
+                vst1q_f32(out.as_mut_ptr().cast(), v.0);
+                out.assume_init().0
+            }
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }
@@ -3190,6 +3491,16 @@ impl From<Vec3A> for Vec3 {
             unsafe {
                 *(v.0.to_array().as_ptr() as *const Self)
             }
+        {% elif is_neon %}
+            use core::mem::MaybeUninit;
+            use crate::align16::Align16;
+            let mut out: MaybeUninit<Align16<Self>> = MaybeUninit::uninit();
+            unsafe {
+                vst1q_f32(out.as_mut_ptr().cast(), v.0);
+                out.assume_init().0
+            }
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 }

@@ -91,271 +91,163 @@ impl Vec3Swizzles for U64Vec3 {
     #[inline]
     #[must_use]
     fn xxx(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.x,
-            y: self.x,
-            z: self.x,
-        }
+        U64Vec3::new(self.x, self.x, self.x)
     }
 
     #[inline]
     #[must_use]
     fn xxy(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.x,
-            y: self.x,
-            z: self.y,
-        }
+        U64Vec3::new(self.x, self.x, self.y)
     }
 
     #[inline]
     #[must_use]
     fn xxz(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.x,
-            y: self.x,
-            z: self.z,
-        }
+        U64Vec3::new(self.x, self.x, self.z)
     }
 
     #[inline]
     #[must_use]
     fn xyx(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.x,
-            y: self.y,
-            z: self.x,
-        }
+        U64Vec3::new(self.x, self.y, self.x)
     }
 
     #[inline]
     #[must_use]
     fn xyy(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.x,
-            y: self.y,
-            z: self.y,
-        }
+        U64Vec3::new(self.x, self.y, self.y)
     }
 
     #[inline]
     #[must_use]
     fn xyz(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.x,
-            y: self.y,
-            z: self.z,
-        }
+        U64Vec3::new(self.x, self.y, self.z)
     }
 
     #[inline]
     #[must_use]
     fn xzx(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.x,
-            y: self.z,
-            z: self.x,
-        }
+        U64Vec3::new(self.x, self.z, self.x)
     }
 
     #[inline]
     #[must_use]
     fn xzy(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.x,
-            y: self.z,
-            z: self.y,
-        }
+        U64Vec3::new(self.x, self.z, self.y)
     }
 
     #[inline]
     #[must_use]
     fn xzz(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.x,
-            y: self.z,
-            z: self.z,
-        }
+        U64Vec3::new(self.x, self.z, self.z)
     }
 
     #[inline]
     #[must_use]
     fn yxx(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.y,
-            y: self.x,
-            z: self.x,
-        }
+        U64Vec3::new(self.y, self.x, self.x)
     }
 
     #[inline]
     #[must_use]
     fn yxy(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.y,
-            y: self.x,
-            z: self.y,
-        }
+        U64Vec3::new(self.y, self.x, self.y)
     }
 
     #[inline]
     #[must_use]
     fn yxz(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.y,
-            y: self.x,
-            z: self.z,
-        }
+        U64Vec3::new(self.y, self.x, self.z)
     }
 
     #[inline]
     #[must_use]
     fn yyx(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.y,
-            y: self.y,
-            z: self.x,
-        }
+        U64Vec3::new(self.y, self.y, self.x)
     }
 
     #[inline]
     #[must_use]
     fn yyy(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.y,
-            y: self.y,
-            z: self.y,
-        }
+        U64Vec3::new(self.y, self.y, self.y)
     }
 
     #[inline]
     #[must_use]
     fn yyz(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.y,
-            y: self.y,
-            z: self.z,
-        }
+        U64Vec3::new(self.y, self.y, self.z)
     }
 
     #[inline]
     #[must_use]
     fn yzx(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.y,
-            y: self.z,
-            z: self.x,
-        }
+        U64Vec3::new(self.y, self.z, self.x)
     }
 
     #[inline]
     #[must_use]
     fn yzy(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.y,
-            y: self.z,
-            z: self.y,
-        }
+        U64Vec3::new(self.y, self.z, self.y)
     }
 
     #[inline]
     #[must_use]
     fn yzz(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.y,
-            y: self.z,
-            z: self.z,
-        }
+        U64Vec3::new(self.y, self.z, self.z)
     }
 
     #[inline]
     #[must_use]
     fn zxx(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.z,
-            y: self.x,
-            z: self.x,
-        }
+        U64Vec3::new(self.z, self.x, self.x)
     }
 
     #[inline]
     #[must_use]
     fn zxy(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.z,
-            y: self.x,
-            z: self.y,
-        }
+        U64Vec3::new(self.z, self.x, self.y)
     }
 
     #[inline]
     #[must_use]
     fn zxz(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.z,
-            y: self.x,
-            z: self.z,
-        }
+        U64Vec3::new(self.z, self.x, self.z)
     }
 
     #[inline]
     #[must_use]
     fn zyx(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.z,
-            y: self.y,
-            z: self.x,
-        }
+        U64Vec3::new(self.z, self.y, self.x)
     }
 
     #[inline]
     #[must_use]
     fn zyy(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.z,
-            y: self.y,
-            z: self.y,
-        }
+        U64Vec3::new(self.z, self.y, self.y)
     }
 
     #[inline]
     #[must_use]
     fn zyz(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.z,
-            y: self.y,
-            z: self.z,
-        }
+        U64Vec3::new(self.z, self.y, self.z)
     }
 
     #[inline]
     #[must_use]
     fn zzx(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.z,
-            y: self.z,
-            z: self.x,
-        }
+        U64Vec3::new(self.z, self.z, self.x)
     }
 
     #[inline]
     #[must_use]
     fn zzy(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.z,
-            y: self.z,
-            z: self.y,
-        }
+        U64Vec3::new(self.z, self.z, self.y)
     }
 
     #[inline]
     #[must_use]
     fn zzz(self) -> U64Vec3 {
-        U64Vec3 {
-            x: self.z,
-            y: self.z,
-            z: self.z,
-        }
+        U64Vec3::new(self.z, self.z, self.z)
     }
 
     #[inline]
