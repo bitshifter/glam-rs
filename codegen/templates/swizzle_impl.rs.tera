@@ -76,7 +76,7 @@ impl Vec{{ dim }}Swizzles for {{ self_t }} {
             {% elif vec3_t == "Vec3A" and is_coresimd %}
                 {{ vec3_t }}(simd_swizzle!(self.0, [{{ l[j0] }}, {{ l[j1] }}, {{ l[j2] }}, {{ l[0] }}]).into())
             {% else %}
-                {{ vec3_t }} { x: self.{{ e[j0] }}, y: self.{{ e[j1] }}, z: self.{{ e[j2] }} }
+                {{ vec3_t }}::new(self.{{ e[j0] }}, self.{{ e[j1] }}, self.{{ e[j2] }})
             {% endif %}
     }
                             {% endif %}

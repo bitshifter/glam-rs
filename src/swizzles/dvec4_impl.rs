@@ -154,641 +154,385 @@ impl Vec4Swizzles for DVec4 {
     #[inline]
     #[must_use]
     fn xxx(self) -> DVec3 {
-        DVec3 {
-            x: self.x,
-            y: self.x,
-            z: self.x,
-        }
+        DVec3::new(self.x, self.x, self.x)
     }
 
     #[inline]
     #[must_use]
     fn xxy(self) -> DVec3 {
-        DVec3 {
-            x: self.x,
-            y: self.x,
-            z: self.y,
-        }
+        DVec3::new(self.x, self.x, self.y)
     }
 
     #[inline]
     #[must_use]
     fn xxz(self) -> DVec3 {
-        DVec3 {
-            x: self.x,
-            y: self.x,
-            z: self.z,
-        }
+        DVec3::new(self.x, self.x, self.z)
     }
 
     #[inline]
     #[must_use]
     fn xxw(self) -> DVec3 {
-        DVec3 {
-            x: self.x,
-            y: self.x,
-            z: self.w,
-        }
+        DVec3::new(self.x, self.x, self.w)
     }
 
     #[inline]
     #[must_use]
     fn xyx(self) -> DVec3 {
-        DVec3 {
-            x: self.x,
-            y: self.y,
-            z: self.x,
-        }
+        DVec3::new(self.x, self.y, self.x)
     }
 
     #[inline]
     #[must_use]
     fn xyy(self) -> DVec3 {
-        DVec3 {
-            x: self.x,
-            y: self.y,
-            z: self.y,
-        }
+        DVec3::new(self.x, self.y, self.y)
     }
 
     #[inline]
     #[must_use]
     fn xyz(self) -> DVec3 {
-        DVec3 {
-            x: self.x,
-            y: self.y,
-            z: self.z,
-        }
+        DVec3::new(self.x, self.y, self.z)
     }
 
     #[inline]
     #[must_use]
     fn xyw(self) -> DVec3 {
-        DVec3 {
-            x: self.x,
-            y: self.y,
-            z: self.w,
-        }
+        DVec3::new(self.x, self.y, self.w)
     }
 
     #[inline]
     #[must_use]
     fn xzx(self) -> DVec3 {
-        DVec3 {
-            x: self.x,
-            y: self.z,
-            z: self.x,
-        }
+        DVec3::new(self.x, self.z, self.x)
     }
 
     #[inline]
     #[must_use]
     fn xzy(self) -> DVec3 {
-        DVec3 {
-            x: self.x,
-            y: self.z,
-            z: self.y,
-        }
+        DVec3::new(self.x, self.z, self.y)
     }
 
     #[inline]
     #[must_use]
     fn xzz(self) -> DVec3 {
-        DVec3 {
-            x: self.x,
-            y: self.z,
-            z: self.z,
-        }
+        DVec3::new(self.x, self.z, self.z)
     }
 
     #[inline]
     #[must_use]
     fn xzw(self) -> DVec3 {
-        DVec3 {
-            x: self.x,
-            y: self.z,
-            z: self.w,
-        }
+        DVec3::new(self.x, self.z, self.w)
     }
 
     #[inline]
     #[must_use]
     fn xwx(self) -> DVec3 {
-        DVec3 {
-            x: self.x,
-            y: self.w,
-            z: self.x,
-        }
+        DVec3::new(self.x, self.w, self.x)
     }
 
     #[inline]
     #[must_use]
     fn xwy(self) -> DVec3 {
-        DVec3 {
-            x: self.x,
-            y: self.w,
-            z: self.y,
-        }
+        DVec3::new(self.x, self.w, self.y)
     }
 
     #[inline]
     #[must_use]
     fn xwz(self) -> DVec3 {
-        DVec3 {
-            x: self.x,
-            y: self.w,
-            z: self.z,
-        }
+        DVec3::new(self.x, self.w, self.z)
     }
 
     #[inline]
     #[must_use]
     fn xww(self) -> DVec3 {
-        DVec3 {
-            x: self.x,
-            y: self.w,
-            z: self.w,
-        }
+        DVec3::new(self.x, self.w, self.w)
     }
 
     #[inline]
     #[must_use]
     fn yxx(self) -> DVec3 {
-        DVec3 {
-            x: self.y,
-            y: self.x,
-            z: self.x,
-        }
+        DVec3::new(self.y, self.x, self.x)
     }
 
     #[inline]
     #[must_use]
     fn yxy(self) -> DVec3 {
-        DVec3 {
-            x: self.y,
-            y: self.x,
-            z: self.y,
-        }
+        DVec3::new(self.y, self.x, self.y)
     }
 
     #[inline]
     #[must_use]
     fn yxz(self) -> DVec3 {
-        DVec3 {
-            x: self.y,
-            y: self.x,
-            z: self.z,
-        }
+        DVec3::new(self.y, self.x, self.z)
     }
 
     #[inline]
     #[must_use]
     fn yxw(self) -> DVec3 {
-        DVec3 {
-            x: self.y,
-            y: self.x,
-            z: self.w,
-        }
+        DVec3::new(self.y, self.x, self.w)
     }
 
     #[inline]
     #[must_use]
     fn yyx(self) -> DVec3 {
-        DVec3 {
-            x: self.y,
-            y: self.y,
-            z: self.x,
-        }
+        DVec3::new(self.y, self.y, self.x)
     }
 
     #[inline]
     #[must_use]
     fn yyy(self) -> DVec3 {
-        DVec3 {
-            x: self.y,
-            y: self.y,
-            z: self.y,
-        }
+        DVec3::new(self.y, self.y, self.y)
     }
 
     #[inline]
     #[must_use]
     fn yyz(self) -> DVec3 {
-        DVec3 {
-            x: self.y,
-            y: self.y,
-            z: self.z,
-        }
+        DVec3::new(self.y, self.y, self.z)
     }
 
     #[inline]
     #[must_use]
     fn yyw(self) -> DVec3 {
-        DVec3 {
-            x: self.y,
-            y: self.y,
-            z: self.w,
-        }
+        DVec3::new(self.y, self.y, self.w)
     }
 
     #[inline]
     #[must_use]
     fn yzx(self) -> DVec3 {
-        DVec3 {
-            x: self.y,
-            y: self.z,
-            z: self.x,
-        }
+        DVec3::new(self.y, self.z, self.x)
     }
 
     #[inline]
     #[must_use]
     fn yzy(self) -> DVec3 {
-        DVec3 {
-            x: self.y,
-            y: self.z,
-            z: self.y,
-        }
+        DVec3::new(self.y, self.z, self.y)
     }
 
     #[inline]
     #[must_use]
     fn yzz(self) -> DVec3 {
-        DVec3 {
-            x: self.y,
-            y: self.z,
-            z: self.z,
-        }
+        DVec3::new(self.y, self.z, self.z)
     }
 
     #[inline]
     #[must_use]
     fn yzw(self) -> DVec3 {
-        DVec3 {
-            x: self.y,
-            y: self.z,
-            z: self.w,
-        }
+        DVec3::new(self.y, self.z, self.w)
     }
 
     #[inline]
     #[must_use]
     fn ywx(self) -> DVec3 {
-        DVec3 {
-            x: self.y,
-            y: self.w,
-            z: self.x,
-        }
+        DVec3::new(self.y, self.w, self.x)
     }
 
     #[inline]
     #[must_use]
     fn ywy(self) -> DVec3 {
-        DVec3 {
-            x: self.y,
-            y: self.w,
-            z: self.y,
-        }
+        DVec3::new(self.y, self.w, self.y)
     }
 
     #[inline]
     #[must_use]
     fn ywz(self) -> DVec3 {
-        DVec3 {
-            x: self.y,
-            y: self.w,
-            z: self.z,
-        }
+        DVec3::new(self.y, self.w, self.z)
     }
 
     #[inline]
     #[must_use]
     fn yww(self) -> DVec3 {
-        DVec3 {
-            x: self.y,
-            y: self.w,
-            z: self.w,
-        }
+        DVec3::new(self.y, self.w, self.w)
     }
 
     #[inline]
     #[must_use]
     fn zxx(self) -> DVec3 {
-        DVec3 {
-            x: self.z,
-            y: self.x,
-            z: self.x,
-        }
+        DVec3::new(self.z, self.x, self.x)
     }
 
     #[inline]
     #[must_use]
     fn zxy(self) -> DVec3 {
-        DVec3 {
-            x: self.z,
-            y: self.x,
-            z: self.y,
-        }
+        DVec3::new(self.z, self.x, self.y)
     }
 
     #[inline]
     #[must_use]
     fn zxz(self) -> DVec3 {
-        DVec3 {
-            x: self.z,
-            y: self.x,
-            z: self.z,
-        }
+        DVec3::new(self.z, self.x, self.z)
     }
 
     #[inline]
     #[must_use]
     fn zxw(self) -> DVec3 {
-        DVec3 {
-            x: self.z,
-            y: self.x,
-            z: self.w,
-        }
+        DVec3::new(self.z, self.x, self.w)
     }
 
     #[inline]
     #[must_use]
     fn zyx(self) -> DVec3 {
-        DVec3 {
-            x: self.z,
-            y: self.y,
-            z: self.x,
-        }
+        DVec3::new(self.z, self.y, self.x)
     }
 
     #[inline]
     #[must_use]
     fn zyy(self) -> DVec3 {
-        DVec3 {
-            x: self.z,
-            y: self.y,
-            z: self.y,
-        }
+        DVec3::new(self.z, self.y, self.y)
     }
 
     #[inline]
     #[must_use]
     fn zyz(self) -> DVec3 {
-        DVec3 {
-            x: self.z,
-            y: self.y,
-            z: self.z,
-        }
+        DVec3::new(self.z, self.y, self.z)
     }
 
     #[inline]
     #[must_use]
     fn zyw(self) -> DVec3 {
-        DVec3 {
-            x: self.z,
-            y: self.y,
-            z: self.w,
-        }
+        DVec3::new(self.z, self.y, self.w)
     }
 
     #[inline]
     #[must_use]
     fn zzx(self) -> DVec3 {
-        DVec3 {
-            x: self.z,
-            y: self.z,
-            z: self.x,
-        }
+        DVec3::new(self.z, self.z, self.x)
     }
 
     #[inline]
     #[must_use]
     fn zzy(self) -> DVec3 {
-        DVec3 {
-            x: self.z,
-            y: self.z,
-            z: self.y,
-        }
+        DVec3::new(self.z, self.z, self.y)
     }
 
     #[inline]
     #[must_use]
     fn zzz(self) -> DVec3 {
-        DVec3 {
-            x: self.z,
-            y: self.z,
-            z: self.z,
-        }
+        DVec3::new(self.z, self.z, self.z)
     }
 
     #[inline]
     #[must_use]
     fn zzw(self) -> DVec3 {
-        DVec3 {
-            x: self.z,
-            y: self.z,
-            z: self.w,
-        }
+        DVec3::new(self.z, self.z, self.w)
     }
 
     #[inline]
     #[must_use]
     fn zwx(self) -> DVec3 {
-        DVec3 {
-            x: self.z,
-            y: self.w,
-            z: self.x,
-        }
+        DVec3::new(self.z, self.w, self.x)
     }
 
     #[inline]
     #[must_use]
     fn zwy(self) -> DVec3 {
-        DVec3 {
-            x: self.z,
-            y: self.w,
-            z: self.y,
-        }
+        DVec3::new(self.z, self.w, self.y)
     }
 
     #[inline]
     #[must_use]
     fn zwz(self) -> DVec3 {
-        DVec3 {
-            x: self.z,
-            y: self.w,
-            z: self.z,
-        }
+        DVec3::new(self.z, self.w, self.z)
     }
 
     #[inline]
     #[must_use]
     fn zww(self) -> DVec3 {
-        DVec3 {
-            x: self.z,
-            y: self.w,
-            z: self.w,
-        }
+        DVec3::new(self.z, self.w, self.w)
     }
 
     #[inline]
     #[must_use]
     fn wxx(self) -> DVec3 {
-        DVec3 {
-            x: self.w,
-            y: self.x,
-            z: self.x,
-        }
+        DVec3::new(self.w, self.x, self.x)
     }
 
     #[inline]
     #[must_use]
     fn wxy(self) -> DVec3 {
-        DVec3 {
-            x: self.w,
-            y: self.x,
-            z: self.y,
-        }
+        DVec3::new(self.w, self.x, self.y)
     }
 
     #[inline]
     #[must_use]
     fn wxz(self) -> DVec3 {
-        DVec3 {
-            x: self.w,
-            y: self.x,
-            z: self.z,
-        }
+        DVec3::new(self.w, self.x, self.z)
     }
 
     #[inline]
     #[must_use]
     fn wxw(self) -> DVec3 {
-        DVec3 {
-            x: self.w,
-            y: self.x,
-            z: self.w,
-        }
+        DVec3::new(self.w, self.x, self.w)
     }
 
     #[inline]
     #[must_use]
     fn wyx(self) -> DVec3 {
-        DVec3 {
-            x: self.w,
-            y: self.y,
-            z: self.x,
-        }
+        DVec3::new(self.w, self.y, self.x)
     }
 
     #[inline]
     #[must_use]
     fn wyy(self) -> DVec3 {
-        DVec3 {
-            x: self.w,
-            y: self.y,
-            z: self.y,
-        }
+        DVec3::new(self.w, self.y, self.y)
     }
 
     #[inline]
     #[must_use]
     fn wyz(self) -> DVec3 {
-        DVec3 {
-            x: self.w,
-            y: self.y,
-            z: self.z,
-        }
+        DVec3::new(self.w, self.y, self.z)
     }
 
     #[inline]
     #[must_use]
     fn wyw(self) -> DVec3 {
-        DVec3 {
-            x: self.w,
-            y: self.y,
-            z: self.w,
-        }
+        DVec3::new(self.w, self.y, self.w)
     }
 
     #[inline]
     #[must_use]
     fn wzx(self) -> DVec3 {
-        DVec3 {
-            x: self.w,
-            y: self.z,
-            z: self.x,
-        }
+        DVec3::new(self.w, self.z, self.x)
     }
 
     #[inline]
     #[must_use]
     fn wzy(self) -> DVec3 {
-        DVec3 {
-            x: self.w,
-            y: self.z,
-            z: self.y,
-        }
+        DVec3::new(self.w, self.z, self.y)
     }
 
     #[inline]
     #[must_use]
     fn wzz(self) -> DVec3 {
-        DVec3 {
-            x: self.w,
-            y: self.z,
-            z: self.z,
-        }
+        DVec3::new(self.w, self.z, self.z)
     }
 
     #[inline]
     #[must_use]
     fn wzw(self) -> DVec3 {
-        DVec3 {
-            x: self.w,
-            y: self.z,
-            z: self.w,
-        }
+        DVec3::new(self.w, self.z, self.w)
     }
 
     #[inline]
     #[must_use]
     fn wwx(self) -> DVec3 {
-        DVec3 {
-            x: self.w,
-            y: self.w,
-            z: self.x,
-        }
+        DVec3::new(self.w, self.w, self.x)
     }
 
     #[inline]
     #[must_use]
     fn wwy(self) -> DVec3 {
-        DVec3 {
-            x: self.w,
-            y: self.w,
-            z: self.y,
-        }
+        DVec3::new(self.w, self.w, self.y)
     }
 
     #[inline]
     #[must_use]
     fn wwz(self) -> DVec3 {
-        DVec3 {
-            x: self.w,
-            y: self.w,
-            z: self.z,
-        }
+        DVec3::new(self.w, self.w, self.z)
     }
 
     #[inline]
     #[must_use]
     fn www(self) -> DVec3 {
-        DVec3 {
-            x: self.w,
-            y: self.w,
-            z: self.w,
-        }
+        DVec3::new(self.w, self.w, self.w)
     }
 
     #[inline]
