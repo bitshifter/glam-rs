@@ -508,6 +508,16 @@ impl AsMut<[u32; 2]> for UVec2 {
     }
 }
 
+impl Sum for UVec2 {
+    #[inline]
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = Self>,
+    {
+        iter.fold(Self::ZERO, Self::add)
+    }
+}
+
 impl<'a> Sum<&'a Self> for UVec2 {
     #[inline]
     fn sum<I>(iter: I) -> Self
@@ -515,6 +525,16 @@ impl<'a> Sum<&'a Self> for UVec2 {
         I: Iterator<Item = &'a Self>,
     {
         iter.fold(Self::ZERO, |a, &b| Self::add(a, b))
+    }
+}
+
+impl Product for UVec2 {
+    #[inline]
+    fn product<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = Self>,
+    {
+        iter.fold(Self::ONE, Self::mul)
     }
 }
 
