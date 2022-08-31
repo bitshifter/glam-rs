@@ -505,11 +505,11 @@ macro_rules! impl_mat4_tests {
 
             let original = $vec3::new(5.0, 5.0, 15.0);
             let projected = projection * original.extend(1.0);
-            assert_approx_eq!($vec4::new(2.5, 5.0, 15.0, 15.0), projected);
+            assert_approx_eq!($vec4::new(2.5, 5.0, 15.0, 15.0), projected, 1e-6);
 
             let original = $vec3::new(5.0, 5.0, 5.0);
             let projected = projection * original.extend(1.0);
-            assert_approx_eq!($vec4::new(2.5, 5.0, 0.0, 5.0), projected);
+            assert_approx_eq!($vec4::new(2.5, 5.0, 0.0, 5.0), projected, 1e-6);
 
             should_glam_assert!({ $mat4::perspective_lh(0.0, 1.0, 1.0, 0.0) });
             should_glam_assert!({ $mat4::perspective_lh(0.0, 1.0, 0.0, 1.0) });
@@ -520,11 +520,11 @@ macro_rules! impl_mat4_tests {
 
             let original = $vec3::new(5.0, 5.0, 15.0);
             let projected = projection * original.extend(1.0);
-            assert_approx_eq!($vec4::new(2.5, 5.0, 10.0, 15.0), projected);
+            assert_approx_eq!($vec4::new(2.5, 5.0, 10.0, 15.0), projected, 1e-6);
 
             let original = $vec3::new(5.0, 5.0, 5.0);
             let projected = projection * original.extend(1.0);
-            assert_approx_eq!($vec4::new(2.5, 5.0, 0.0, 5.0), projected);
+            assert_approx_eq!($vec4::new(2.5, 5.0, 0.0, 5.0), projected, 1e-6);
 
             should_glam_assert!({ $mat4::perspective_infinite_lh(0.0, 1.0, 0.0) });
         });
@@ -534,11 +534,11 @@ macro_rules! impl_mat4_tests {
 
             let original = $vec3::new(5.0, 5.0, 15.0);
             let projected = projection * original.extend(1.0);
-            assert_approx_eq!($vec4::new(2.5, 5.0, 5.0, 15.0), projected);
+            assert_approx_eq!($vec4::new(2.5, 5.0, 5.0, 15.0), projected, 1e-6);
 
             let original = $vec3::new(5.0, 5.0, 5.0);
             let projected = projection * original.extend(1.0);
-            assert_approx_eq!($vec4::new(2.5, 5.0, 5.0, 5.0), projected);
+            assert_approx_eq!($vec4::new(2.5, 5.0, 5.0, 5.0), projected, 1e-6);
 
             should_glam_assert!({ $mat4::perspective_infinite_reverse_lh(0.0, 1.0, 0.0) });
         });
@@ -548,11 +548,11 @@ macro_rules! impl_mat4_tests {
 
             let original = $vec3::new(5.0, 5.0, 15.0);
             let projected = projection * original.extend(1.0);
-            assert_approx_eq!($vec4::new(2.5, 5.0, -30.0, -15.0), projected);
+            assert_approx_eq!($vec4::new(2.5, 5.0, -30.0, -15.0), projected, 1e-6);
 
             let original = $vec3::new(5.0, 5.0, 5.0);
             let projected = projection * original.extend(1.0);
-            assert_approx_eq!($vec4::new(2.5, 5.0, -15.0, -5.0), projected);
+            assert_approx_eq!($vec4::new(2.5, 5.0, -15.0, -5.0), projected, 1e-6);
 
             should_glam_assert!({ $mat4::perspective_rh(0.0, 1.0, 1.0, 0.0) });
             should_glam_assert!({ $mat4::perspective_rh(0.0, 1.0, 0.0, 1.0) });

@@ -88,7 +88,7 @@ macro_rules! impl_quat_tests {
             assert!(x0.is_normalized());
             let (axis, angle) = x0.to_axis_angle();
             assert_approx_eq!(axis, $vec3::X);
-            assert_approx_eq!(angle, pitch);
+            assert_approx_eq!(angle, pitch, 1e-6);
             let x1 = $quat::from_euler(EulerRot::YXZ, zero, pitch, zero);
             assert_approx_eq!(x0, x1);
             let x2 = $quat::from_axis_angle($vec3::X, pitch);
