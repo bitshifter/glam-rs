@@ -912,6 +912,16 @@ impl AsMut<[f32; 2]> for Vec2 {
     }
 }
 
+impl Sum for Vec2 {
+    #[inline]
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = Self>,
+    {
+        iter.fold(Self::ZERO, Self::add)
+    }
+}
+
 impl<'a> Sum<&'a Self> for Vec2 {
     #[inline]
     fn sum<I>(iter: I) -> Self
@@ -919,6 +929,16 @@ impl<'a> Sum<&'a Self> for Vec2 {
         I: Iterator<Item = &'a Self>,
     {
         iter.fold(Self::ZERO, |a, &b| Self::add(a, b))
+    }
+}
+
+impl Product for Vec2 {
+    #[inline]
+    fn product<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = Self>,
+    {
+        iter.fold(Self::ONE, Self::mul)
     }
 }
 

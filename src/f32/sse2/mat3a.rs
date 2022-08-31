@@ -673,12 +673,30 @@ impl From<Mat3> for Mat3A {
     }
 }
 
+impl Sum<Self> for Mat3A {
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = Self>,
+    {
+        iter.fold(Self::ZERO, Self::add)
+    }
+}
+
 impl<'a> Sum<&'a Self> for Mat3A {
     fn sum<I>(iter: I) -> Self
     where
         I: Iterator<Item = &'a Self>,
     {
         iter.fold(Self::ZERO, |a, &b| Self::add(a, b))
+    }
+}
+
+impl Product for Mat3A {
+    fn product<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = Self>,
+    {
+        iter.fold(Self::IDENTITY, Self::mul)
     }
 }
 

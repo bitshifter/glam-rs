@@ -1009,6 +1009,16 @@ impl AsMut<[f64; 3]> for DVec3 {
     }
 }
 
+impl Sum for DVec3 {
+    #[inline]
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = Self>,
+    {
+        iter.fold(Self::ZERO, Self::add)
+    }
+}
+
 impl<'a> Sum<&'a Self> for DVec3 {
     #[inline]
     fn sum<I>(iter: I) -> Self
@@ -1016,6 +1026,16 @@ impl<'a> Sum<&'a Self> for DVec3 {
         I: Iterator<Item = &'a Self>,
     {
         iter.fold(Self::ZERO, |a, &b| Self::add(a, b))
+    }
+}
+
+impl Product for DVec3 {
+    #[inline]
+    fn product<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = Self>,
+    {
+        iter.fold(Self::ONE, Self::mul)
     }
 }
 

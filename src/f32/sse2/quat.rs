@@ -848,12 +848,30 @@ impl AsRef<[f32; 4]> for Quat {
     }
 }
 
+impl Sum<Self> for Quat {
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = Self>,
+    {
+        iter.fold(Self::ZERO, Self::add)
+    }
+}
+
 impl<'a> Sum<&'a Self> for Quat {
     fn sum<I>(iter: I) -> Self
     where
         I: Iterator<Item = &'a Self>,
     {
         iter.fold(Self::ZERO, |a, &b| Self::add(a, b))
+    }
+}
+
+impl Product for Quat {
+    fn product<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = Self>,
+    {
+        iter.fold(Self::IDENTITY, Self::mul)
     }
 }
 
