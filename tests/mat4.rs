@@ -676,11 +676,13 @@ macro_rules! impl_mat4_tests {
         glam_test!(test_sum, {
             let id = $mat4::IDENTITY;
             assert_eq!(vec![id, id].iter().sum::<$mat4>(), id + id);
+            assert_eq!(vec![id, id].into_iter().sum::<$mat4>(), id + id);
         });
 
         glam_test!(test_product, {
             let two = $mat4::IDENTITY + $mat4::IDENTITY;
             assert_eq!(vec![two, two].iter().product::<$mat4>(), two * two);
+            assert_eq!(vec![two, two].into_iter().product::<$mat4>(), two * two);
         });
 
         glam_test!(test_mat4_is_finite, {
