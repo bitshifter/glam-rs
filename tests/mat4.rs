@@ -478,9 +478,17 @@ macro_rules! impl_mat4_tests {
             let eye = $vec3::new(0.0, 0.0, -5.0);
             let center = $vec3::new(0.0, 0.0, 0.0);
             let up = $vec3::new(1.0, 0.0, 0.0);
+
+            let point = $vec3::new(1.0, 0.0, 0.0);
+
             let lh = $mat4::look_at_lh(eye, center, up);
             let rh = $mat4::look_at_rh(eye, center, up);
-            let point = $vec3::new(1.0, 0.0, 0.0);
+            assert_approx_eq!(lh.transform_point3(point), $vec3::new(0.0, 1.0, 5.0));
+            assert_approx_eq!(rh.transform_point3(point), $vec3::new(0.0, 1.0, -5.0));
+
+            let dir = center - eye;
+            let lh = $mat4::look_to_lh(eye, dir, up);
+            let rh = $mat4::look_to_rh(eye, dir, up);
             assert_approx_eq!(lh.transform_point3(point), $vec3::new(0.0, 1.0, 5.0));
             assert_approx_eq!(rh.transform_point3(point), $vec3::new(0.0, 1.0, -5.0));
 

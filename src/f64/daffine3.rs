@@ -292,24 +292,37 @@ impl DAffine3 {
         (scale, rotation, self.translation.into())
     }
 
+    /// Creates a left-handed view transform using a camera position, an up direction, and a facing
+    /// direction.
+    ///
+    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
     #[inline]
-    fn look_to_lh(eye: DVec3, dir: DVec3, up: DVec3) -> Self {
+    pub fn look_to_lh(eye: DVec3, dir: DVec3, up: DVec3) -> Self {
+        Self::look_to_rh(eye, -dir, up)
+    }
+
+    /// Creates a right-handed view transform using a camera position, an up direction, and a facing
+    /// direction.
+    ///
+    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
+    #[inline]
+    pub fn look_to_rh(eye: DVec3, dir: DVec3, up: DVec3) -> Self {
         let f = dir.normalize();
-        let s = up.cross(f).normalize();
-        let u = f.cross(s);
+        let s = f.cross(up).normalize();
+        let u = s.cross(f);
+
         Self {
             matrix3: DMat3::from_cols(
-                DVec3::new(s.x, u.x, f.x),
-                DVec3::new(s.y, u.y, f.y),
-                DVec3::new(s.z, u.z, f.z),
+                DVec3::new(s.x, u.x, -f.x),
+                DVec3::new(s.y, u.y, -f.y),
+                DVec3::new(s.z, u.z, -f.z),
             ),
-            translation: DVec3::new(-s.dot(eye), -u.dot(eye), -f.dot(eye)),
+            translation: DVec3::new(-eye.dot(s), -eye.dot(u), eye.dot(f)),
         }
     }
 
-    /// Creates a left-handed view transform using a camera position, an up direction, and
-    /// a focal point.
-    ///
+    /// Creates a left-handed view transform using a camera position, an up direction, and a focal
+    /// point.
     /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
     ///
     /// # Panics
@@ -321,9 +334,8 @@ impl DAffine3 {
         Self::look_to_lh(eye, center - eye, up)
     }
 
-    /// Creates a right-handed view transform using a camera position, an up direction, and
-    /// a focal point.
-    ///
+    /// Creates a right-handed view transform using a camera position, an up direction, and a focal
+    /// point.
     /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
     ///
     /// # Panics
@@ -332,7 +344,7 @@ impl DAffine3 {
     #[inline]
     pub fn look_at_rh(eye: DVec3, center: DVec3, up: DVec3) -> Self {
         glam_assert!(up.is_normalized());
-        Self::look_to_lh(eye, eye - center, up)
+        Self::look_to_rh(eye, center - eye, up)
     }
 
     /// Transforms the given 3D points, applying shear, scale, rotation and translation.

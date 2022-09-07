@@ -288,24 +288,37 @@ impl Affine3A {
         (scale, rotation, self.translation.into())
     }
 
+    /// Creates a left-handed view transform using a camera position, an up direction, and a facing
+    /// direction.
+    ///
+    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
     #[inline]
-    fn look_to_lh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
+    pub fn look_to_lh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
+        Self::look_to_rh(eye, -dir, up)
+    }
+
+    /// Creates a right-handed view transform using a camera position, an up direction, and a facing
+    /// direction.
+    ///
+    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
+    #[inline]
+    pub fn look_to_rh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
         let f = dir.normalize();
-        let s = up.cross(f).normalize();
-        let u = f.cross(s);
+        let s = f.cross(up).normalize();
+        let u = s.cross(f);
+
         Self {
             matrix3: Mat3A::from_cols(
-                Vec3A::new(s.x, u.x, f.x),
-                Vec3A::new(s.y, u.y, f.y),
-                Vec3A::new(s.z, u.z, f.z),
+                Vec3A::new(s.x, u.x, -f.x),
+                Vec3A::new(s.y, u.y, -f.y),
+                Vec3A::new(s.z, u.z, -f.z),
             ),
-            translation: Vec3A::new(-s.dot(eye), -u.dot(eye), -f.dot(eye)),
+            translation: Vec3A::new(-eye.dot(s), -eye.dot(u), eye.dot(f)),
         }
     }
 
-    /// Creates a left-handed view transform using a camera position, an up direction, and
-    /// a focal point.
-    ///
+    /// Creates a left-handed view transform using a camera position, an up direction, and a focal
+    /// point.
     /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
     ///
     /// # Panics
@@ -317,9 +330,8 @@ impl Affine3A {
         Self::look_to_lh(eye, center - eye, up)
     }
 
-    /// Creates a right-handed view transform using a camera position, an up direction, and
-    /// a focal point.
-    ///
+    /// Creates a right-handed view transform using a camera position, an up direction, and a focal
+    /// point.
     /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
     ///
     /// # Panics
@@ -328,7 +340,7 @@ impl Affine3A {
     #[inline]
     pub fn look_at_rh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
         glam_assert!(up.is_normalized());
-        Self::look_to_lh(eye, eye - center, up)
+        Self::look_to_rh(eye, center - eye, up)
     }
 
     /// Transforms the given 3D points, applying shear, scale, rotation and translation.
