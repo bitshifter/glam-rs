@@ -17,6 +17,13 @@ macro_rules! impl_vec2_tests {
             assert_eq!([1 as $t, 2 as $t], *V3.as_ref());
         });
 
+        glam_test!(test_vec2_consts, {
+            assert_eq!($vec2::ZERO, $new(0 as $t, 0 as $t));
+            assert_eq!($vec2::ONE, $new(1 as $t, 1 as $t));
+            assert_eq!($vec2::X, $new(1 as $t, 0 as $t));
+            assert_eq!($vec2::Y, $new(0 as $t, 1 as $t));
+        });
+
         glam_test!(test_new, {
             let v = $new(1 as $t, 2 as $t);
 
@@ -527,13 +534,6 @@ macro_rules! impl_vec2_float_tests {
         use core::$t::INFINITY;
         use core::$t::NAN;
         use core::$t::NEG_INFINITY;
-
-        glam_test!(test_vec2_consts, {
-            assert_eq!($vec2::ZERO, $new(0 as $t, 0 as $t));
-            assert_eq!($vec2::ONE, $new(1 as $t, 1 as $t));
-            assert_eq!($vec2::X, $new(1 as $t, 0 as $t));
-            assert_eq!($vec2::Y, $new(0 as $t, 1 as $t));
-        });
 
         glam_test!(test_vec2_nan, {
             assert!($vec2::NAN.is_nan());
