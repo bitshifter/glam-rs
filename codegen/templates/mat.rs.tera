@@ -1377,16 +1377,30 @@ impl {{ self_t }} {
     }
 
 {% elif dim == 4 %}
+    /// Creates a left-handed view matrix using a camera position, an up direction, and a facing
+    /// direction.
+    ///
+    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
     #[inline]
-    fn look_to_lh(eye: {{ vec3_t }}, dir: {{ vec3_t }}, up: {{ vec3_t }}) -> Self {
+    pub fn look_to_lh(eye: {{ vec3_t }}, dir: {{ vec3_t }}, up: {{ vec3_t }}) -> Self {
+        Self::look_to_rh(eye, -dir, up)
+    }
+
+    /// Creates a right-handed view matrix using a camera position, an up direction, and a facing
+    /// direction.
+    ///
+    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
+    #[inline]
+    pub fn look_to_rh(eye: {{ vec3_t }}, dir: {{ vec3_t }}, up: {{ vec3_t }}) -> Self {
         let f = dir.normalize();
-        let s = up.cross(f).normalize();
-        let u = f.cross(s);
+        let s = f.cross(up).normalize();
+        let u = s.cross(f);
+
         Self::from_cols(
-            {{ col_t }}::new(s.x, u.x, f.x, 0.0),
-            {{ col_t }}::new(s.y, u.y, f.y, 0.0),
-            {{ col_t }}::new(s.z, u.z, f.z, 0.0),
-            {{ col_t }}::new(-s.dot(eye), -u.dot(eye), -f.dot(eye), 1.0),
+            {{ col_t }}::new(s.x, u.x, -f.x, 0.0),
+            {{ col_t }}::new(s.y, u.y, -f.y, 0.0),
+            {{ col_t }}::new(s.z, u.z, -f.z, 0.0),
+            {{ col_t }}::new(-eye.dot(s), -eye.dot(u), eye.dot(f), 1.0),
         )
     }
 
@@ -1413,7 +1427,7 @@ impl {{ self_t }} {
     #[inline]
     pub fn look_at_rh(eye: {{ vec3_t }}, center: {{ vec3_t }}, up: {{ vec3_t }}) -> Self {
         glam_assert!(up.is_normalized());
-        Self::look_to_lh(eye, eye.sub(center), up)
+        Self::look_to_rh(eye, center.sub(eye), up)
     }
 
     /// Creates a right-handed perspective projection matrix with [-1,1] depth range.

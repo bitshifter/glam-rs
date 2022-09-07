@@ -652,16 +652,30 @@ impl Mat4 {
         inverse.mul(rcp_det)
     }
 
+    /// Creates a left-handed view matrix using a camera position, an up direction, and a facing
+    /// direction.
+    ///
+    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
     #[inline]
-    fn look_to_lh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
+    pub fn look_to_lh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
+        Self::look_to_rh(eye, -dir, up)
+    }
+
+    /// Creates a right-handed view matrix using a camera position, an up direction, and a facing
+    /// direction.
+    ///
+    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
+    #[inline]
+    pub fn look_to_rh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
         let f = dir.normalize();
-        let s = up.cross(f).normalize();
-        let u = f.cross(s);
+        let s = f.cross(up).normalize();
+        let u = s.cross(f);
+
         Self::from_cols(
-            Vec4::new(s.x, u.x, f.x, 0.0),
-            Vec4::new(s.y, u.y, f.y, 0.0),
-            Vec4::new(s.z, u.z, f.z, 0.0),
-            Vec4::new(-s.dot(eye), -u.dot(eye), -f.dot(eye), 1.0),
+            Vec4::new(s.x, u.x, -f.x, 0.0),
+            Vec4::new(s.y, u.y, -f.y, 0.0),
+            Vec4::new(s.z, u.z, -f.z, 0.0),
+            Vec4::new(-eye.dot(s), -eye.dot(u), eye.dot(f), 1.0),
         )
     }
 
@@ -688,7 +702,7 @@ impl Mat4 {
     #[inline]
     pub fn look_at_rh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
         glam_assert!(up.is_normalized());
-        Self::look_to_lh(eye, eye.sub(center), up)
+        Self::look_to_rh(eye, center.sub(eye), up)
     }
 
     /// Creates a right-handed perspective projection matrix with [-1,1] depth range.
