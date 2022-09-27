@@ -168,7 +168,7 @@ impl Mat4 {
     /// Creates a 4x4 matrix with its diagonal set to `diagonal` and all other entries set to 0.
     #[doc(alias = "scale")]
     #[inline]
-    pub fn from_diagonal(diagonal: Vec4) -> Self {
+    pub const fn from_diagonal(diagonal: Vec4) -> Self {
         Self::new(
             diagonal.x, 0.0, 0.0, 0.0, 0.0, diagonal.y, 0.0, 0.0, 0.0, 0.0, diagonal.z, 0.0, 0.0,
             0.0, 0.0, diagonal.w,
