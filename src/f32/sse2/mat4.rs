@@ -175,8 +175,7 @@ impl Mat4 {
         // diagonal.x, diagonal.y etc can't be done in a const-context
         let [x, y, z, w] = diagonal.to_array();
         Self::new(
-            x, 0.0, 0.0, 0.0, 0.0, y, 0.0, 0.0, 0.0, 0.0, z, 0.0, 0.0,
-            0.0, 0.0, w,
+            x, 0.0, 0.0, 0.0, 0.0, y, 0.0, 0.0, 0.0, 0.0, z, 0.0, 0.0, 0.0, 0.0, w,
         )
     }
 
