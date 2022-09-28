@@ -83,7 +83,7 @@ impl DMat2 {
     /// Creates a 2x2 matrix with its diagonal set to `diagonal` and all other entries set to 0.
     #[doc(alias = "scale")]
     #[inline]
-    pub fn from_diagonal(diagonal: DVec2) -> Self {
+    pub const fn from_diagonal(diagonal: DVec2) -> Self {
         Self::new(diagonal.x, 0.0, 0.0, diagonal.y)
     }
 
