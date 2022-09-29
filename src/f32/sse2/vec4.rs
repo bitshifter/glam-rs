@@ -153,6 +153,12 @@ impl Vec4 {
         unsafe { dot4(self.0, rhs.0) }
     }
 
+    /// Returns a vector where every component is the dot product of `self` and `rhs`
+    #[inline]
+    pub fn dot_v(self, rhs: Self) -> Self {
+        Self(unsafe { dot4_into_m128(self.0, rhs.0) })
+    }
+
     /// Returns a vector containing the minimum values for each element of `self` and `rhs`.
     ///
     /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.

@@ -430,6 +430,20 @@ impl {{ self_t }} {
         {% endif %}
     }
 
+    /// Returns a vector where every component is the dot product of `self` and `rhs` 
+    #[inline]
+    pub fn dot_v(self, rhs: Self) -> Self {
+        {% if is_sse2 %}
+            Self(unsafe { dot{{ dim }}_into_m128(self.0, rhs.0) })
+        {% elif is_wasm32 %}
+            Self(unsafe { dot{{ dim }}_into_v128(self.0, rhs.0) })
+        {% elif is_coresimd %}
+            Self(unsafe { dot{{ dim }}_into_f32x4(self.0, rhs.0) })
+        {% else %}
+            Self::splat(self.dot(rhs))
+        {% endif %}
+    }
+
 {% if dim == 3 %}
     /// Computes the cross product of `self` and `rhs`.
     #[inline]

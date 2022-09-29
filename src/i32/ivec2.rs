@@ -119,6 +119,12 @@ impl IVec2 {
         (self.x * rhs.x) + (self.y * rhs.y)
     }
 
+    /// Returns a vector where every component is the dot product of `self` and `rhs`
+    #[inline]
+    pub fn dot_v(self, rhs: Self) -> Self {
+        Self::splat(self.dot(rhs))
+    }
+
     /// Returns a vector containing the minimum values for each element of `self` and `rhs`.
     ///
     /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
