@@ -372,7 +372,7 @@ impl {{ self_t }} {
 {% if dim == 2 %}
     /// Creates a 3D vector from `self` and the given `z` value.
     #[inline]
-    pub fn extend(self, z: {{ scalar_t }}) -> {{ vec3_t }} {
+    pub const fn extend(self, z: {{ scalar_t }}) -> {{ vec3_t }} {
         {{ vec3_t }}::new(self.x, self.y, z)
     }
 {% elif dim == 3 %}
