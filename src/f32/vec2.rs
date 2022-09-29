@@ -258,6 +258,15 @@ impl Vec2 {
         }
     }
 
+    /// Returns a bitmask with the lowest 2 bits set to the sign bits from the elements of `self`.
+    ///
+    /// A negative element results in a `1` bit and a positive element in a `0` bit.  Element `x` goes
+    /// into the first lowest bit, element `y` into the second, etc.
+    #[inline]
+    pub fn sign_bits(self) -> u32 {
+        (self.x.is_sign_negative() as u32) | (self.y.is_sign_negative() as u32) << 1
+    }
+
     /// Returns `true` if, and only if, all elements are finite.  If any element is either
     /// `NaN`, positive or negative infinity, this will return `false`.
     #[inline]

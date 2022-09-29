@@ -262,6 +262,15 @@ impl Vec4 {
         Self(self.0.signum())
     }
 
+    /// Returns a bitmask with the lowest 4 bits set to the sign bits from the elements of `self`.
+    ///
+    /// A negative element results in a `1` bit and a positive element in a `0` bit.  Element `x` goes
+    /// into the first lowest bit, element `y` into the second, etc.
+    #[inline]
+    pub fn sign_bits(self) -> u32 {
+        self.0.to_bitmask() as u32
+    }
+
     /// Returns `true` if, and only if, all elements are finite.  If any element is either
     /// `NaN`, positive or negative infinity, this will return `false`.
     #[inline]
