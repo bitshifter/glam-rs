@@ -287,10 +287,11 @@ impl Vec3A {
     /// - `NAN` if the number is `NAN`
     #[inline]
     pub fn signum(self) -> Self {
-        let mask = self.cmpge(Self::ZERO);
-        let result = Self::select(mask, Self::ONE, Self::NEG_ONE);
-        let mask = self.is_nan_mask();
-        Self::select(mask, self, result)
+        unsafe {
+            let result = Self(v128_or(v128_and(self.0, Self::NEG_ONE.0), Self::ONE.0));
+            let mask = self.is_nan_mask();
+            Self::select(mask, self, result)
+        }
     }
 
     /// Returns `true` if, and only if, all elements are finite.  If any element is either

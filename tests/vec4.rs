@@ -593,6 +593,8 @@ macro_rules! impl_vec4_signed_tests {
         glam_test!(test_neg, {
             let a = $new(1 as $t, 2 as $t, 3 as $t, 4 as $t);
             assert_eq!((-1 as $t, -2 as $t, -3 as $t, -4 as $t), (-a).into());
+            assert_eq!($new(-0.0 as $t, -0.0 as $t, -0.0 as $t, -0.0 as $t), -$new(0.0 as $t, 0.0 as $t, 0.0 as $t, 0.0 as $t));
+            assert_eq!($new(0.0 as $t, -0.0 as $t, -0.0 as $t, -0.0 as $t), -$new(-0.0 as $t, 0.0 as $t, 0.0 as $t, 0.0 as $t));
         });
 
         glam_test!(test_dot_signed, {
@@ -725,7 +727,7 @@ macro_rules! impl_vec4_float_tests {
 
         glam_test!(test_signum, {
             assert_eq!($vec4::ZERO.signum(), $vec4::ONE);
-            assert_eq!(-$vec4::ZERO.signum(), -$vec4::ONE);
+            assert_eq!((-$vec4::ZERO).signum(), -$vec4::ONE);
             assert_eq!($vec4::ONE.signum(), $vec4::ONE);
             assert_eq!((-$vec4::ONE).signum(), -$vec4::ONE);
             assert_eq!($vec4::splat(INFINITY).signum(), $vec4::ONE);

@@ -473,6 +473,8 @@ macro_rules! impl_vec2_signed_tests {
         glam_test!(test_neg, {
             let a = $new(1 as $t, 2 as $t);
             assert_eq!($new(-1 as $t, -2 as $t), (-a));
+            assert_eq!($new(-0.0 as $t, -0.0 as $t), -$new(0.0 as $t, 0.0 as $t));
+            assert_eq!($new(0.0 as $t, -0.0 as $t), -$new(-0.0 as $t, 0.0 as $t));
         });
 
         glam_test!(test_perp, {
@@ -590,7 +592,7 @@ macro_rules! impl_vec2_float_tests {
 
         glam_test!(test_sign, {
             assert_eq!($vec2::ZERO.signum(), $vec2::ONE);
-            assert_eq!(-$vec2::ZERO.signum(), -$vec2::ONE);
+            assert_eq!((-$vec2::ZERO).signum(), -$vec2::ONE);
             assert_eq!($vec2::ONE.signum(), $vec2::ONE);
             assert_eq!((-$vec2::ONE).signum(), -$vec2::ONE);
             assert_eq!($vec2::splat(INFINITY).signum(), $vec2::ONE);
