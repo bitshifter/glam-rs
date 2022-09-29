@@ -23,7 +23,13 @@ impl BVec2 {
         Self { x, y }
     }
 
-    /// Returns a bitmask with the lowest two bits set from the elements of `self`.
+    /// Creates a vector with all elements set to `v`.
+    #[inline]
+    pub const fn splat(v: bool) -> Self {
+        Self { x: v, y: v }
+    }
+
+    /// Returns a bitmask with the lowest 2 bits set from the elements of `self`.
     ///
     /// A true element results in a `1` bit and a false element in a `0` bit.  Element `x` goes
     /// into the first lowest bit, element `y` into the second, etc.

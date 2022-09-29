@@ -268,6 +268,11 @@ macro_rules! impl_vec2_tests {
             );
         });
 
+        glam_test!(test_mask_splat, {
+            assert_eq!($mask::splat(false), $mask::new(false, false));
+            assert_eq!($mask::splat(true), $mask::new(true, true));
+        });
+
         glam_test!(test_mask_bitmask, {
             assert_eq!($mask::new(false, false).bitmask(), 0b00);
             assert_eq!($mask::new(true, false).bitmask(), 0b01);

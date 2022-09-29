@@ -125,7 +125,49 @@ impl {{ self_t }} {
         {% endif %}
     }
 
-    /// Returns a bitmask with the lowest two bits set from the elements of `self`.
+    /// Creates a vector with all elements set to `v`.
+    #[inline]
+    pub const fn splat(v: bool) -> Self {
+        {% if is_scalar and is_bool %}
+            Self {
+                {% for c in components %}
+                    {{ c }}: v,
+                {%- endfor %}
+            }
+        {% elif is_scalar and is_u32 %}
+            Self {
+                {% for c in components %}
+                    {{ c }}: MASK[v as usize],
+                {%- endfor %}
+            }
+        {% elif is_sse2 or is_coresimd %}
+            unsafe {
+                UnionCast { a: [
+                    MASK[v as usize],
+                    MASK[v as usize],
+                    MASK[v as usize],
+                    {% if dim == 3 %}
+                        0,
+                    {% elif dim == 4 %}
+                        MASK[v as usize],
+                    {% endif %}
+                ] }.v
+            }
+        {% elif is_wasm32 %}
+            Self(u32x4(
+                MASK[v as usize],
+                MASK[v as usize],
+                MASK[v as usize],
+                {% if dim == 3 %}
+                    0,
+                {% elif dim == 4 %}
+                    MASK[v as usize],
+                {% endif %}
+            ))
+        {% endif %}
+    }
+
+    /// Returns a bitmask with the lowest {{ dim }} bits set from the elements of `self`.
     ///
     /// A true element results in a `1` bit and a false element in a `0` bit.  Element `x` goes
     /// into the first lowest bit, element `y` into the second, etc.
