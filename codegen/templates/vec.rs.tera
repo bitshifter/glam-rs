@@ -372,7 +372,7 @@ impl {{ self_t }} {
 {% if dim == 2 %}
     /// Creates a 3D vector from `self` and the given `z` value.
     #[inline]
-    pub const fn extend(self, z: {{ scalar_t }}) -> {{ vec3_t }} {
+    pub fn extend(self, z: {{ scalar_t }}) -> {{ vec3_t }} {
         {{ vec3_t }}::new(self.x, self.y, z)
     }
 {% elif dim == 3 %}
@@ -389,9 +389,8 @@ impl {{ self_t }} {
 
     /// Creates a 4D vector from `self` and the given `w` value.
     #[inline]
-    pub const fn extend(self, w: {{ scalar_t }}) -> {{ vec4_t }} {
-        let [x, y, z] = self.to_array();
-        {{ vec4_t }}::new(x, y, z, w)
+    pub fn extend(self, w: {{ scalar_t }}) -> {{ vec4_t }} {
+        {{ vec4_t }}::new(self.x, self.y, self.z, w)
     }
 
     /// Creates a 2D vector from the `x` and `y` elements of `self`, discarding `z`.

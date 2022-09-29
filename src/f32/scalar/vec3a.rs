@@ -140,9 +140,8 @@ impl Vec3A {
 
     /// Creates a 4D vector from `self` and the given `w` value.
     #[inline]
-    pub const fn extend(self, w: f32) -> Vec4 {
-        let [x, y, z] = self.to_array();
-        Vec4::new(x, y, z, w)
+    pub fn extend(self, w: f32) -> Vec4 {
+        Vec4::new(self.x, self.y, self.z, w)
     }
 
     /// Creates a 2D vector from the `x` and `y` elements of `self`, discarding `z`.

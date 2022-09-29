@@ -100,7 +100,7 @@ impl UVec2 {
 
     /// Creates a 3D vector from `self` and the given `z` value.
     #[inline]
-    pub const fn extend(self, z: u32) -> UVec3 {
+    pub fn extend(self, z: u32) -> UVec3 {
         UVec3::new(self.x, self.y, z)
     }
 

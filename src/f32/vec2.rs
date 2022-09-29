@@ -115,7 +115,7 @@ impl Vec2 {
 
     /// Creates a 3D vector from `self` and the given `z` value.
     #[inline]
-    pub const fn extend(self, z: f32) -> Vec3 {
+    pub fn extend(self, z: f32) -> Vec3 {
         Vec3::new(self.x, self.y, z)
     }
 
