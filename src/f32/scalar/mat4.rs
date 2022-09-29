@@ -124,7 +124,7 @@ impl Mat4 {
     /// Creates a `[f32; 16]` array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
-    pub fn to_cols_array(&self) -> [f32; 16] {
+    pub const fn to_cols_array(&self) -> [f32; 16] {
         [
             self.x_axis.x,
             self.x_axis.y,
@@ -174,10 +174,9 @@ impl Mat4 {
     #[doc(alias = "scale")]
     #[inline]
     pub const fn from_diagonal(diagonal: Vec4) -> Self {
-        // diagonal.x, diagonal.y etc can't be done in a const-context
-        let [x, y, z, w] = diagonal.to_array();
         Self::new(
-            x, 0.0, 0.0, 0.0, 0.0, y, 0.0, 0.0, 0.0, 0.0, z, 0.0, 0.0, 0.0, 0.0, w,
+            diagonal.x, 0.0, 0.0, 0.0, 0.0, diagonal.y, 0.0, 0.0, 0.0, 0.0, diagonal.z, 0.0, 0.0,
+            0.0, 0.0, diagonal.w,
         )
     }
 

@@ -99,7 +99,7 @@ impl Mat3 {
     /// Creates a `[f32; 9]` array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
-    pub fn to_cols_array(&self) -> [f32; 9] {
+    pub const fn to_cols_array(&self) -> [f32; 9] {
         [
             self.x_axis.x,
             self.x_axis.y,

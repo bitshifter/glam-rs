@@ -119,24 +119,15 @@ impl Mat4 {
     /// Creates a `[f32; 16]` array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
-    pub fn to_cols_array(&self) -> [f32; 16] {
+    pub const fn to_cols_array(&self) -> [f32; 16] {
+        let [x_axis_x, x_axis_y, x_axis_z, x_axis_w] = self.x_axis.to_array();
+        let [y_axis_x, y_axis_y, y_axis_z, y_axis_w] = self.y_axis.to_array();
+        let [z_axis_x, z_axis_y, z_axis_z, z_axis_w] = self.z_axis.to_array();
+        let [w_axis_x, w_axis_y, w_axis_z, w_axis_w] = self.w_axis.to_array();
+
         [
-            self.x_axis.x,
-            self.x_axis.y,
-            self.x_axis.z,
-            self.x_axis.w,
-            self.y_axis.x,
-            self.y_axis.y,
-            self.y_axis.z,
-            self.y_axis.w,
-            self.z_axis.x,
-            self.z_axis.y,
-            self.z_axis.z,
-            self.z_axis.w,
-            self.w_axis.x,
-            self.w_axis.y,
-            self.w_axis.z,
-            self.w_axis.w,
+            x_axis_x, x_axis_y, x_axis_z, x_axis_w, y_axis_x, y_axis_y, y_axis_z, y_axis_w,
+            z_axis_x, z_axis_y, z_axis_z, z_axis_w, w_axis_x, w_axis_y, w_axis_z, w_axis_w,
         ]
     }
 

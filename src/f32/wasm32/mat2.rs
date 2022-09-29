@@ -12,6 +12,11 @@ use core::arch::wasm32::*;
 #[allow(unused_imports)]
 use num_traits::Float;
 
+union UnionCast {
+    a: [f32; 4],
+    v: Mat2,
+}
+
 /// Creates a 2x2 matrix from column vectors.
 #[inline(always)]
 pub const fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
@@ -56,8 +61,8 @@ impl Mat2 {
     /// Creates a `[f32; 4]` array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
-    pub fn to_cols_array(&self) -> [f32; 4] {
-        [self.x_axis.x, self.x_axis.y, self.y_axis.x, self.y_axis.y]
+    pub const fn to_cols_array(&self) -> [f32; 4] {
+        unsafe { UnionCast { v: *self }.a }
     }
 
     /// Creates a 2x2 matrix from a `[[f32; 2]; 2]` 2D array stored in column major order.

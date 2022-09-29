@@ -134,8 +134,9 @@ impl DVec3 {
 
     /// Creates a 4D vector from `self` and the given `w` value.
     #[inline]
-    pub fn extend(self, w: f64) -> DVec4 {
-        DVec4::new(self.x, self.y, self.z, w)
+    pub const fn extend(self, w: f64) -> DVec4 {
+        let [x, y, z] = self.to_array();
+        DVec4::new(x, y, z, w)
     }
 
     /// Creates a 2D vector from the `x` and `y` elements of `self`, discarding `z`.

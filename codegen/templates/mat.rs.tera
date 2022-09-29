@@ -112,7 +112,7 @@ use core::simd::{Which::*, *};
 #[allow(unused_imports)]
 use num_traits::Float;
 
-{% if self_t == "Mat2" and is_sse2 %}
+{% if self_t == "Mat2" and not is_scalar %}
 union UnionCast {
     a: [f32; 4],
     v: {{ self_t }}
@@ -302,14 +302,30 @@ impl {{ self_t }} {
     /// Creates a `[{{ scalar_t }}; {{ size }}]` array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
-    pub fn to_cols_array(&self) -> [{{ scalar_t }}; {{ size }}] {
-        [
-            {% for axis in axes %}
-                {% for c in components %}
-                    self.{{ axis }}.{{ c }},
+    pub const fn to_cols_array(&self) -> [{{ scalar_t }}; {{ size }}] {
+        {% if self_t == "Mat2" and not is_scalar %}
+            unsafe {
+                UnionCast { v: *self }.a
+            }
+        {% else %}
+            {% if dim >= 2 and not is_scalar %}
+                {% for axis in axes %}
+                    let [{% for c in components %} {{ axis }}_{{ c }}, {% endfor %}] = self.{{ axis }}.to_array();
                 {%- endfor %}
-            {%- endfor %}
-        ]
+            {% endif %}
+
+            [
+                {% for axis in axes %}
+                    {% for c in components %}
+                        {% if dim >= 2 and not is_scalar %}
+                            {{ axis }}_{{ c }},
+                        {% else %}
+                            self.{{ axis }}.{{ c }},
+                        {% endif %}
+                    {%- endfor %}
+                {%- endfor %}
+            ]
+        {% endif %}
     }
 
     /// Creates a {{ nxn }} matrix from a `[[{{ scalar_t }}; {{ dim }}]; {{ dim }}]` {{ dim }}D array stored in column major order.
@@ -334,43 +350,39 @@ impl {{ self_t }} {
             {%- endfor %}
         ]
     }
-{% if dim == 4 and vecn_t != "DVec4" %}
+
     /// Creates a {{ nxn }} matrix with its diagonal set to `diagonal` and all other entries set to 0.
     #[doc(alias = "scale")]
     #[inline]
     pub const fn from_diagonal(diagonal: {{ vecn_t }}) -> Self {
-        // diagonal.x, diagonal.y etc can't be done in a const-context
-        let [x, y, z, w] = diagonal.to_array();
-        Self::new(
-            {% for i in range(end = dim) %}
-                {% for j in range(end = dim) %}
-                    {% if i == j %}
-                        {{ components[i] }},
-                    {% else %}
-                        0.0,
-                    {% endif %}
+        {% if self_t == "Mat4" and not is_scalar %}
+            // diagonal.x, diagonal.y etc can't be done in a const-context
+            let [x, y, z, w] = diagonal.to_array();
+            Self::new(
+                {% for i in range(end = dim) %}
+                    {% for j in range(end = dim) %}
+                        {% if i == j %}
+                            {{ components[i] }},
+                        {% else %}
+                            0.0,
+                        {% endif %}
+                    {%- endfor %}
                 {%- endfor %}
-            {%- endfor %}
-        )
-    }
-{% else %}
-    /// Creates a {{ nxn }} matrix with its diagonal set to `diagonal` and all other entries set to 0.
-    #[doc(alias = "scale")]
-    #[inline]
-    pub const fn from_diagonal(diagonal: {{ vecn_t }}) -> Self {
-        Self::new(
-            {% for i in range(end = dim) %}
-                {% for j in range(end = dim) %}
-                    {% if i == j %}
-                        diagonal.{{ components[i] }},
-                    {% else %}
-                        0.0,
-                    {% endif %}
+            )
+        {% else %}
+            Self::new(
+                {% for i in range(end = dim) %}
+                    {% for j in range(end = dim) %}
+                        {% if i == j %}
+                            diagonal.{{ components[i] }},
+                        {% else %}
+                            0.0,
+                        {% endif %}
+                    {%- endfor %}
                 {%- endfor %}
-            {%- endfor %}
-        )
+            )
+        {% endif %}
     }
-{% endif %}
 
 {% if dim == 2 %}
     /// Creates a {{ nxn }} matrix containing the combining non-uniform `scale` and rotation of
