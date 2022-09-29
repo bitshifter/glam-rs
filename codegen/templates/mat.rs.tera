@@ -343,12 +343,20 @@ impl {{ self_t }} {
     /// Creates a `[[{{ scalar_t }}; {{ dim }}]; {{ dim }}]` {{ dim }}D array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
-    pub fn to_cols_array_2d(&self) -> [[{{ scalar_t }}; {{ dim }}]; {{ dim }}] {
-        [
-            {% for axis in axes %}
+    pub const fn to_cols_array_2d(&self) -> [[{{ scalar_t }}; {{ dim }}]; {{ dim }}] {
+        {% if self_t == "Mat2" and not is_scalar %}
+            let self_ = unsafe { &*(self as *const Self as *const crate::deref::Cols2<Vec2>) };
+            [
+                self_.x_axis.to_array(),
+                self_.y_axis.to_array(),
+            ]
+        {% else %}
+            [
+                {% for axis in axes %}
                 self.{{ axis }}.to_array(),
-            {%- endfor %}
-        ]
+                {%- endfor %}
+            ]
+        {% endif %}
     }
 
     /// Creates a {{ nxn }} matrix with its diagonal set to `diagonal` and all other entries set to 0.

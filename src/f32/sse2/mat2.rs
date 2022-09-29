@@ -89,8 +89,9 @@ impl Mat2 {
     /// Creates a `[[f32; 2]; 2]` 2D array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
-    pub fn to_cols_array_2d(&self) -> [[f32; 2]; 2] {
-        [self.x_axis.to_array(), self.y_axis.to_array()]
+    pub const fn to_cols_array_2d(&self) -> [[f32; 2]; 2] {
+        let self_ = unsafe { &*(self as *const Self as *const crate::deref::Cols2<Vec2>) };
+        [self_.x_axis.to_array(), self_.y_axis.to_array()]
     }
 
     /// Creates a 2x2 matrix with its diagonal set to `diagonal` and all other entries set to 0.

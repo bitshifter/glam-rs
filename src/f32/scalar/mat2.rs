@@ -80,7 +80,7 @@ impl Mat2 {
     /// Creates a `[[f32; 2]; 2]` 2D array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
-    pub fn to_cols_array_2d(&self) -> [[f32; 2]; 2] {
+    pub const fn to_cols_array_2d(&self) -> [[f32; 2]; 2] {
         [self.x_axis.to_array(), self.y_axis.to_array()]
     }
 
