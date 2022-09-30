@@ -164,7 +164,7 @@ impl Vec4 {
 
     /// Returns a vector where every component is the dot product of `self` and `rhs`
     #[inline]
-    pub fn dot_v(self, rhs: Self) -> Self {
+    pub fn dot_into_vec(self, rhs: Self) -> Self {
         Self::splat(self.dot(rhs))
     }
 

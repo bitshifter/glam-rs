@@ -600,7 +600,7 @@ macro_rules! impl_vec3_float_tests {
             );
             assert_eq!(
                 $new(14.0, 14.0, 14.0),
-                $new(0.0, 4.0, 6.0).dot_v($new(3.0, 2.0, 1.0))
+                $new(0.0, 4.0, 6.0).dot_into_vec($new(3.0, 2.0, 1.0))
             );
             assert_eq!(
                 2.0 * 2.0 + 3.0 * 3.0 + 4.0 * 4.0,
