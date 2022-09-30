@@ -28,12 +28,7 @@ impl BVec4 {
     /// Creates a vector with all elements set to `v`.
     #[inline]
     pub const fn splat(v: bool) -> Self {
-        Self {
-            x: v,
-            y: v,
-            z: v,
-            w: v,
-        }
+        Self::new(v, v, v, v)
     }
 
     /// Returns a bitmask with the lowest 4 bits set from the elements of `self`.

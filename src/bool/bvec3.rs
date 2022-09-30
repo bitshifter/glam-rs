@@ -27,7 +27,7 @@ impl BVec3 {
     /// Creates a vector with all elements set to `v`.
     #[inline]
     pub const fn splat(v: bool) -> Self {
-        Self { x: v, y: v, z: v }
+        Self::new(v, v, v)
     }
 
     /// Returns a bitmask with the lowest 3 bits set from the elements of `self`.

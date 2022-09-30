@@ -26,7 +26,7 @@ impl BVec2 {
     /// Creates a vector with all elements set to `v`.
     #[inline]
     pub const fn splat(v: bool) -> Self {
-        Self { x: v, y: v }
+        Self::new(v, v)
     }
 
     /// Returns a bitmask with the lowest 2 bits set from the elements of `self`.

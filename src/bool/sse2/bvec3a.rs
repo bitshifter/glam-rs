@@ -41,12 +41,7 @@ impl BVec3A {
     /// Creates a vector with all elements set to `v`.
     #[inline]
     pub const fn splat(v: bool) -> Self {
-        unsafe {
-            UnionCast {
-                a: [MASK[v as usize], MASK[v as usize], MASK[v as usize], 0],
-            }
-            .v
-        }
+        Self::new(v, v, v)
     }
 
     /// Returns a bitmask with the lowest 3 bits set from the elements of `self`.

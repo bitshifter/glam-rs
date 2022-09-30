@@ -33,12 +33,7 @@ impl BVec4A {
     /// Creates a vector with all elements set to `v`.
     #[inline]
     pub const fn splat(v: bool) -> Self {
-        Self {
-            x: MASK[v as usize],
-            y: MASK[v as usize],
-            z: MASK[v as usize],
-            w: MASK[v as usize],
-        }
+        Self::new(v, v, v, v)
     }
 
     /// Returns a bitmask with the lowest 4 bits set from the elements of `self`.
