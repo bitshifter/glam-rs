@@ -386,6 +386,11 @@ macro_rules! impl_vec4_tests {
             );
         });
 
+        glam_test!(test_mask_splat, {
+            assert_eq!($mask::splat(false), $mask::new(false, false, false, false));
+            assert_eq!($mask::splat(true), $mask::new(true, true, true, true));
+        });
+
         glam_test!(test_mask_bitmask, {
             assert_eq!($mask::new(false, false, false, false).bitmask(), 0b0000);
             assert_eq!($mask::new(false, false, true, true).bitmask(), 0b1100);
@@ -593,8 +598,14 @@ macro_rules! impl_vec4_signed_tests {
         glam_test!(test_neg, {
             let a = $new(1 as $t, 2 as $t, 3 as $t, 4 as $t);
             assert_eq!((-1 as $t, -2 as $t, -3 as $t, -4 as $t), (-a).into());
-            assert_eq!($new(-0.0 as $t, -0.0 as $t, -0.0 as $t, -0.0 as $t), -$new(0.0 as $t, 0.0 as $t, 0.0 as $t, 0.0 as $t));
-            assert_eq!($new(0.0 as $t, -0.0 as $t, -0.0 as $t, -0.0 as $t), -$new(-0.0 as $t, 0.0 as $t, 0.0 as $t, 0.0 as $t));
+            assert_eq!(
+                $new(-0.0 as $t, -0.0 as $t, -0.0 as $t, -0.0 as $t),
+                -$new(0.0 as $t, 0.0 as $t, 0.0 as $t, 0.0 as $t)
+            );
+            assert_eq!(
+                $new(0.0 as $t, -0.0 as $t, -0.0 as $t, -0.0 as $t),
+                -$new(-0.0 as $t, 0.0 as $t, 0.0 as $t, 0.0 as $t)
+            );
         });
 
         glam_test!(test_dot_signed, {
@@ -677,6 +688,10 @@ macro_rules! impl_vec4_float_tests {
             assert_eq!(
                 1.0 * 5.0 + 2.0 * 6.0 + 3.0 * 7.0 + 4.0 * 8.0,
                 $new(1.0, 2.0, 3.0, 4.0).dot($new(5.0, 6.0, 7.0, 8.0))
+            );
+            assert_eq!(
+                $new(28.0, 28.0, 28.0, 28.0),
+                $new(0.0, 5.0, 3.0, 6.0).dot_into_vec($new(7.0, 2.0, 4.0, 1.0))
             );
             assert_eq!(
                 2.0 * 2.0 + 3.0 * 3.0 + 4.0 * 4.0 + 5.0 * 5.0,
