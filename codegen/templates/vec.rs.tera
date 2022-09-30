@@ -811,11 +811,18 @@ impl {{ self_t }} {
             }
         {% elif is_coresimd %}
             Self(self.0.signum())
-        {% else %}
-            let mask = self.cmpge(Self::ZERO);
-            let result = Self::select(mask, Self::ONE, Self::NEG_ONE);
-            let mask = self.is_nan_mask();
-            Self::select(mask, self, result)
+        {% elif is_sse2 %}
+            unsafe {
+                let result = Self(_mm_or_ps(_mm_and_ps(self.0, Self::NEG_ONE.0), Self::ONE.0));
+                let mask = self.is_nan_mask();
+                Self::select(mask, self, result)
+            }
+        {% elif is_wasm32 %}
+            unsafe {
+                let result = Self(v128_or(v128_and(self.0, Self::NEG_ONE.0), Self::ONE.0));
+                let mask = self.is_nan_mask();
+                Self::select(mask, self, result)
+            }
         {% endif %}
     }
 {% endif %}
@@ -2035,7 +2042,7 @@ impl Neg for {{ self_t }} {
                 {%- endfor %}
             }
         {% elif is_sse2 %}
-            Self(unsafe { _mm_sub_ps(Self::ZERO.0, self.0) })
+            Self(unsafe { _mm_xor_ps(_mm_set1_ps(-0.0), self.0) })
         {% elif is_wasm32 %}
             Self(f32x4_neg(self.0))
         {% elif is_coresimd %}

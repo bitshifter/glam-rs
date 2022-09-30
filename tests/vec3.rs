@@ -523,6 +523,14 @@ macro_rules! impl_vec3_signed_tests {
         glam_test!(test_neg, {
             let a = $new(1 as $t, 2 as $t, 3 as $t);
             assert_eq!((-1 as $t, -2 as $t, -3 as $t), (-a).into());
+            assert_eq!(
+                $new(-0.0 as $t, -0.0 as $t, -0.0 as $t),
+                -$new(0.0 as $t, 0.0 as $t, 0.0 as $t)
+            );
+            assert_eq!(
+                $new(0.0 as $t, -0.0 as $t, -0.0 as $t),
+                -$new(-0.0 as $t, 0.0 as $t, 0.0 as $t)
+            );
         });
 
         glam_test!(test_dot_signed, {
@@ -652,7 +660,7 @@ macro_rules! impl_vec3_float_tests {
 
         glam_test!(test_signum, {
             assert_eq!($vec3::ZERO.signum(), $vec3::ONE);
-            assert_eq!(-$vec3::ZERO.signum(), -$vec3::ONE);
+            assert_eq!((-$vec3::ZERO).signum(), -$vec3::ONE);
             assert_eq!($vec3::ONE.signum(), $vec3::ONE);
             assert_eq!((-$vec3::ONE).signum(), -$vec3::ONE);
             assert_eq!($vec3::splat(INFINITY).signum(), $vec3::ONE);
