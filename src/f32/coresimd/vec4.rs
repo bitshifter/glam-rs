@@ -274,7 +274,7 @@ impl Vec4 {
     /// into the first lowest bit, element `y` into the second, etc.
     #[inline]
     pub fn sign_bits(self) -> u32 {
-        self.0.to_bitmask() as u32
+        self.0.is_sign_negative().to_bitmask() as u32
     }
 
     /// Returns `true` if, and only if, all elements are finite.  If any element is either

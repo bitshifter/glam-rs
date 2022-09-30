@@ -862,9 +862,9 @@ impl {{ self_t }} {
             {% endif %}
         {% elif is_coresimd %}
             {% if dim == 3 %}
-                (self.0.to_bitmask() & 0x7) as u32
+                (self.0.is_sign_negative().to_bitmask() & 0x7) as u32
             {% elif dim == 4 %}
-                self.0.to_bitmask() as u32
+                self.0.is_sign_negative().to_bitmask() as u32
             {% endif %}
         {% endif %}
     }
