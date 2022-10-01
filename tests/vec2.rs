@@ -606,15 +606,15 @@ macro_rules! impl_vec2_float_tests {
             assert!($vec2::splat(NAN).signum().is_nan_mask().all());
         });
 
-        glam_test!(test_sign_bits, {
-            assert_eq!($vec2::ZERO.sign_bits(), 0b00);
-            assert_eq!((-$vec2::ZERO).sign_bits(), 0b11);
-            assert_eq!($vec2::ONE.sign_bits(), 0b00);
-            assert_eq!((-$vec2::ONE).sign_bits(), 0b11);
-            assert_eq!($vec2::new(-0.1, 0.2).sign_bits(), 0b01);
-            assert_eq!($vec2::new(0.8, 0.3).sign_bits(), 0b00);
-            assert_eq!($vec2::new(0.3, -0.4).sign_bits(), 0b10);
-            assert_eq!($vec2::new(-0.2, -0.6).sign_bits(), 0b11);
+        glam_test!(test_is_negative_bitmask, {
+            assert_eq!($vec2::ZERO.is_negative_bitmask(), 0b00);
+            assert_eq!((-$vec2::ZERO).is_negative_bitmask(), 0b11);
+            assert_eq!($vec2::ONE.is_negative_bitmask(), 0b00);
+            assert_eq!((-$vec2::ONE).is_negative_bitmask(), 0b11);
+            assert_eq!($vec2::new(-0.1, 0.2).is_negative_bitmask(), 0b01);
+            assert_eq!($vec2::new(0.8, 0.3).is_negative_bitmask(), 0b00);
+            assert_eq!($vec2::new(0.3, -0.4).is_negative_bitmask(), 0b10);
+            assert_eq!($vec2::new(-0.2, -0.6).is_negative_bitmask(), 0b11);
         });
 
         glam_test!(test_abs, {

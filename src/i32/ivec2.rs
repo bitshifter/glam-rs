@@ -263,7 +263,7 @@ impl IVec2 {
     /// A negative element results in a `1` bit and a positive element in a `0` bit.  Element `x` goes
     /// into the first lowest bit, element `y` into the second, etc.
     #[inline]
-    pub fn sign_bits(self) -> u32 {
+    pub fn is_negative_bitmask(self) -> u32 {
         (self.x.is_negative() as u32) | (self.y.is_negative() as u32) << 1
     }
 

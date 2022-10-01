@@ -831,7 +831,7 @@ impl {{ self_t }} {
     /// A negative element results in a `1` bit and a positive element in a `0` bit.  Element `x` goes
     /// into the first lowest bit, element `y` into the second, etc.
     #[inline]
-    pub fn sign_bits(self) -> u32 {
+    pub fn is_negative_bitmask(self) -> u32 {
         {% if is_scalar and is_float %}
             {% for c in components %}
                 {% if loop.first %}

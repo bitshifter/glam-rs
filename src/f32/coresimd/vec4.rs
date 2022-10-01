@@ -273,7 +273,7 @@ impl Vec4 {
     /// A negative element results in a `1` bit and a positive element in a `0` bit.  Element `x` goes
     /// into the first lowest bit, element `y` into the second, etc.
     #[inline]
-    pub fn sign_bits(self) -> u32 {
+    pub fn is_negative_bitmask(self) -> u32 {
         self.0.is_sign_negative().to_bitmask() as u32
     }
 

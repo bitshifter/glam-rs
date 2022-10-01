@@ -305,7 +305,7 @@ impl Vec3A {
     /// A negative element results in a `1` bit and a positive element in a `0` bit.  Element `x` goes
     /// into the first lowest bit, element `y` into the second, etc.
     #[inline]
-    pub fn sign_bits(self) -> u32 {
+    pub fn is_negative_bitmask(self) -> u32 {
         (u32x4_bitmask(self.0) & 0x7) as u32
     }
 
