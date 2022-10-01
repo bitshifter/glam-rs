@@ -668,6 +668,18 @@ macro_rules! impl_vec3_float_tests {
             assert!($vec3::splat(NAN).signum().is_nan_mask().all());
         });
 
+        glam_test!(test_is_negative_bitmask, {
+            assert_eq!($vec3::ZERO.is_negative_bitmask(), 0b000);
+            assert_eq!((-$vec3::ZERO).is_negative_bitmask(), 0b111);
+            assert_eq!($vec3::ONE.is_negative_bitmask(), 0b000);
+            assert_eq!((-$vec3::ONE).is_negative_bitmask(), 0b111);
+            assert_eq!($vec3::new(-0.1, 0.2, 0.3).is_negative_bitmask(), 0b001);
+            assert_eq!($vec3::new(0.8, 0.3, 0.1).is_negative_bitmask(), 0b000);
+            assert_eq!($vec3::new(0.1, 0.5, -0.3).is_negative_bitmask(), 0b100);
+            assert_eq!($vec3::new(0.3, -0.4, 0.1).is_negative_bitmask(), 0b010);
+            assert_eq!($vec3::new(-0.2, 0.6, -0.5).is_negative_bitmask(), 0b101);
+        });
+
         glam_test!(test_abs, {
             assert_eq!($vec3::ZERO.abs(), $vec3::ZERO);
             assert_eq!($vec3::ONE.abs(), $vec3::ONE);

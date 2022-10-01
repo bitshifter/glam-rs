@@ -825,6 +825,49 @@ impl {{ self_t }} {
             }
         {% endif %}
     }
+
+    /// Returns a bitmask with the lowest {{ dim }} bits set to the sign bits from the elements of `self`.
+    ///
+    /// A negative element results in a `1` bit and a positive element in a `0` bit.  Element `x` goes
+    /// into the first lowest bit, element `y` into the second, etc.
+    #[inline]
+    pub fn is_negative_bitmask(self) -> u32 {
+        {% if is_scalar and is_float %}
+            {% for c in components %}
+                {% if loop.first %}
+                    (self.{{ c }}.is_sign_negative() as u32) |
+                {% else %}
+                    (self.{{ c }}.is_sign_negative() as u32) << {{ loop.index0 }} {% if not loop.last %} | {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% elif is_scalar %}
+            {% for c in components %}
+                {% if loop.first %}
+                    (self.{{ c }}.is_negative() as u32) |
+                {% else %}
+                    (self.{{ c }}.is_negative() as u32) << {{ loop.index0 }} {% if not loop.last %} | {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% elif is_sse2 %}
+            {% if dim == 3 %}
+                unsafe { (_mm_movemask_ps(self.0) as u32) & 0x7 }
+            {% elif dim == 4 %}
+                unsafe { _mm_movemask_ps(self.0) as u32 }
+            {% endif %}
+        {% elif is_wasm32 %}
+            {% if dim == 3 %}
+                (u32x4_bitmask(self.0) & 0x7) as u32
+            {% elif dim == 4 %}
+                u32x4_bitmask(self.0) as u32
+            {% endif %}
+        {% elif is_coresimd %}
+            {% if dim == 3 %}
+                (self.0.is_sign_negative().to_bitmask() & 0x7) as u32
+            {% elif dim == 4 %}
+                self.0.is_sign_negative().to_bitmask() as u32
+            {% endif %}
+        {% endif %}
+    }
 {% endif %}
 
 {% if is_float %}
