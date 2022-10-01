@@ -16,9 +16,13 @@ pub struct BVec4 {
 
 const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
 
-const FALSE: BVec4 = BVec4::new(false, false, false, false);
-
 impl BVec4 {
+    /// All false.
+    pub const FALSE: Self = Self::splat(false);
+
+    /// All true.
+    pub const TRUE: Self = Self::splat(true);
+
     /// Creates a new vector mask.
     #[inline(always)]
     pub const fn new(x: bool, y: bool, z: bool, w: bool) -> Self {
@@ -71,7 +75,7 @@ impl BVec4 {
 impl Default for BVec4 {
     #[inline]
     fn default() -> Self {
-        FALSE
+        Self::FALSE
     }
 }
 

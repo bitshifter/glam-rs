@@ -71,13 +71,12 @@ pub struct {{ self_t }}(pub(crate) {{ simd_t }});
 
 const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
 
-const FALSE: {{ self_t }} = {{ self_t }}::new(
-    {% for c in components %}
-        false,
-    {%- endfor %}
-);
-
 impl {{ self_t }} {
+    /// All false.
+    pub const FALSE: Self = Self::splat(false);
+
+    /// All true.
+    pub const TRUE: Self = Self::splat(true);
 
     /// Creates a new vector mask.
     #[inline(always)]
@@ -276,7 +275,7 @@ impl {{ self_t }} {
 impl Default for {{ self_t }} {
     #[inline]
     fn default() -> Self {
-        FALSE
+        Self::FALSE
     }
 }
 
