@@ -61,7 +61,7 @@ impl DMat2 {
     /// Creates a `[f64; 4]` array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
-    pub fn to_cols_array(&self) -> [f64; 4] {
+    pub const fn to_cols_array(&self) -> [f64; 4] {
         [self.x_axis.x, self.x_axis.y, self.y_axis.x, self.y_axis.y]
     }
 
@@ -76,7 +76,7 @@ impl DMat2 {
     /// Creates a `[[f64; 2]; 2]` 2D array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
-    pub fn to_cols_array_2d(&self) -> [[f64; 2]; 2] {
+    pub const fn to_cols_array_2d(&self) -> [[f64; 2]; 2] {
         [self.x_axis.to_array(), self.y_axis.to_array()]
     }
 
