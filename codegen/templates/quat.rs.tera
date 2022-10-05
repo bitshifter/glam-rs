@@ -340,7 +340,7 @@ impl {{ self_t }} {
         )
     }
 
-{% if is_simd %}
+{% if scalar_t == "f32" %}
     /// Creates a quaternion from a 3x3 SIMD aligned rotation matrix.
     #[inline]
     pub fn from_mat3a(mat: &Mat3A) -> Self {

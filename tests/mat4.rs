@@ -729,8 +729,7 @@ mod mat4 {
 
     glam_test!(test_from_mat3a, {
         use glam::Mat3A;
-        let m3 =
-            Mat3A::from_cols_array_2d(&[[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]]);
+        let m3 = Mat3A::from_cols_array_2d(&[[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]]);
         let m4 = Mat4::from_mat3a(m3);
         assert_eq!(
             Mat4::from_cols_array_2d(&[

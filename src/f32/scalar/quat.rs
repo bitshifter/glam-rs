@@ -243,6 +243,12 @@ impl Quat {
         Self::from_rotation_axes(mat.x_axis, mat.y_axis, mat.z_axis)
     }
 
+    /// Creates a quaternion from a 3x3 SIMD aligned rotation matrix.
+    #[inline]
+    pub fn from_mat3a(mat: &Mat3A) -> Self {
+        Self::from_rotation_axes(mat.x_axis.into(), mat.y_axis.into(), mat.z_axis.into())
+    }
+
     /// Creates a quaternion from a 3x3 rotation matrix inside a homogeneous 4x4 matrix.
     #[inline]
     pub fn from_mat4(mat: &Mat4) -> Self {
