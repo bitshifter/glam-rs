@@ -1,6 +1,6 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
-use crate::{coresimd::*, swizzles::*, DMat4, EulerRot, Mat3, Quat, Vec3, Vec3A, Vec4};
+use crate::{coresimd::*, swizzles::*, DMat4, EulerRot, Mat3, Mat3A, Quat, Vec3, Vec3A, Vec4};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -279,6 +279,21 @@ impl Mat4 {
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
     pub fn from_mat3(m: Mat3) -> Self {
+        Self::from_cols(
+            Vec4::from((m.x_axis, 0.0)),
+            Vec4::from((m.y_axis, 0.0)),
+            Vec4::from((m.z_axis, 0.0)),
+            Vec4::W,
+        )
+    }
+
+    /// Creates an affine transformation matrix from the given 3x3 linear transformation
+    /// matrix.
+    ///
+    /// The resulting matrix can be used to transform 3D points and vectors. See
+    /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+    #[inline]
+    pub fn from_mat3a(m: Mat3A) -> Self {
         Self::from_cols(
             Vec4::from((m.x_axis, 0.0)),
             Vec4::from((m.y_axis, 0.0)),

@@ -233,6 +233,15 @@ mod affine2 {
         }
     });
 
+    glam_test!(test_affine2_from_mat3a, {
+        use glam::Mat3A;
+        let m = Mat3A::from_cols_array_2d(&[[1.0, 2.0, 0.0], [3.0, 4.0, 0.0], [5.0, 6.0, 1.0]]);
+        let a = Affine2::from_mat3a(m);
+        assert_eq!(MATRIX2D, a.to_cols_array_2d());
+
+        assert_eq!(m, Mat3A::from(a));
+    });
+
     impl_affine2_tests!(f32, Affine2, Vec2, Mat2, Mat3);
 }
 

@@ -1,6 +1,6 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
-use crate::{swizzles::*, DMat2, Mat3, Vec2};
+use crate::{swizzles::*, DMat2, Mat3, Mat3A, Vec2};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -100,6 +100,12 @@ impl Mat2 {
     /// Creates a 2x2 matrix from a 3x3 matrix, discarding the 2nd row and column.
     #[inline]
     pub fn from_mat3(m: Mat3) -> Self {
+        Self::from_cols(m.x_axis.xy(), m.y_axis.xy())
+    }
+
+    /// Creates a 2x2 matrix from a 3x3 matrix, discarding the 2nd row and column.
+    #[inline]
+    pub fn from_mat3a(m: Mat3A) -> Self {
         Self::from_cols(m.x_axis.xy(), m.y_axis.xy())
     }
 

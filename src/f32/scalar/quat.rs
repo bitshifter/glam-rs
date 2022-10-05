@@ -2,7 +2,7 @@
 
 use crate::{
     euler::{EulerFromQuaternion, EulerRot, EulerToQuaternion},
-    DQuat, FloatEx, Mat3, Mat4, Vec2, Vec3, Vec3A, Vec4,
+    DQuat, FloatEx, Mat3, Mat3A, Mat4, Vec2, Vec3, Vec3A, Vec4,
 };
 
 #[cfg(feature = "libm")]

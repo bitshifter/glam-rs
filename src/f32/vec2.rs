@@ -125,7 +125,7 @@ impl Vec2 {
         (self.x * rhs.x) + (self.y * rhs.y)
     }
 
-    /// Returns a vector where every component is the dot product of `self` and `rhs`
+    /// Returns a vector where every component is the dot product of `self` and `rhs`.
     #[inline]
     pub fn dot_into_vec(self, rhs: Self) -> Self {
         Self::splat(self.dot(rhs))
