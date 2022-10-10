@@ -265,6 +265,13 @@ mod mat2 {
         }
     });
 
+    glam_test!(test_from_mat3a, {
+        use glam::Mat3A;
+        let m3 = Mat3A::from_cols_array_2d(&[[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]]);
+        let m2 = Mat2::from_mat3a(m3);
+        assert_eq!(Mat2::from_cols_array_2d(&[[1.0, 2.0], [4.0, 5.0]]), m2);
+    });
+
     glam_test!(test_as, {
         use glam::DMat2;
         assert_eq!(

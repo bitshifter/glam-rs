@@ -590,6 +590,16 @@ mod quat {
         assert_approx_eq!(-Vec3A::X, mrzx.mul_vec3a(Vec3A::Y));
     });
 
+    glam_test!(test_from_mat3a, {
+        use glam::Mat3A;
+        let yaw = deg(30.0);
+        let y0 = Quat::from_rotation_y(yaw);
+        let y1 = Quat::from_mat3a(&Mat3A::from_rotation_y(yaw));
+        assert_approx_eq!(y0, y1);
+        let y2 = Quat::from_mat3a(&Mat3A::from_quat(y0));
+        assert_approx_eq!(y0, y2);
+    });
+
     glam_test!(test_as, {
         use glam::DQuat;
         assert_approx_eq!(

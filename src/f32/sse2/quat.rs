@@ -3,7 +3,7 @@
 use crate::{
     euler::{EulerFromQuaternion, EulerRot, EulerToQuaternion},
     sse2::*,
-    DQuat, FloatEx, Mat3, Mat4, Vec2, Vec3, Vec3A, Vec4,
+    DQuat, FloatEx, Mat3, Mat3A, Mat4, Vec2, Vec3, Vec3A, Vec4,
 };
 
 #[cfg(feature = "libm")]
@@ -238,6 +238,12 @@ impl Quat {
     #[inline]
     pub fn from_mat3(mat: &Mat3) -> Self {
         Self::from_rotation_axes(mat.x_axis, mat.y_axis, mat.z_axis)
+    }
+
+    /// Creates a quaternion from a 3x3 SIMD aligned rotation matrix.
+    #[inline]
+    pub fn from_mat3a(mat: &Mat3A) -> Self {
+        Self::from_rotation_axes(mat.x_axis.into(), mat.y_axis.into(), mat.z_axis.into())
     }
 
     /// Creates a quaternion from a 3x3 rotation matrix inside a homogeneous 4x4 matrix.
