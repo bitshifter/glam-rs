@@ -247,7 +247,7 @@ The minimum supported Rust version is `1.58.1`.
 */
 #![doc(html_root_url = "https://docs.rs/glam/0.21.3")]
 #![cfg_attr(not(feature = "std"), no_std)]
-#![cfg_attr(target_arch = "spirv", feature(register_attr, repr_simd))]
+#![cfg_attr(target_arch = "spirv", feature(repr_simd))]
 #![deny(
     rust_2018_compatibility,
     rust_2018_idioms,
