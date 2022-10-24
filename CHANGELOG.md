@@ -47,7 +47,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Disable `serde` default features.
 
 * Made `to_cols_array`, `to_cols_array_2d`, and `from_diagonal` methods
- `const fn`. 
+ `const fn`.
 
 ## [0.21.3] - 2022-08-02
 
