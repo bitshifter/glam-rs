@@ -47,7 +47,7 @@ use crate::{
     {{ mat_t }}, {{ col_t}}, {{ mat4_t }}, {{ quat_t }},
 {% endif %}
 };
-use core::ops::{Add, Deref, DerefMut, Mul, Sub};
+use core::ops::{Deref, DerefMut, Mul};
 
 /// A {{ dim }}D affine transform, which can represent translation, rotation, scaling and shear.
 #[derive(Copy, Clone)]
@@ -695,50 +695,6 @@ impl Mul for {{ self_t }} {
         Self {
             matrix{{ dim }}: self.matrix{{ dim }} * rhs.matrix{{ dim }},
             translation: self.matrix{{ dim }} * rhs.translation + self.translation,
-        }
-    }
-}
-
-impl Mul<{{ self_t }}> for {{ scalar_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn mul(self, rhs: {{ self_t }}) -> Self::Output {
-        {{ self_t }} {
-            matrix{{ dim }}: self * rhs.matrix{{ dim }},
-            translation: self * rhs.translation,
-        }
-    }
-}
-
-impl Mul<{{ scalar_t }}> for {{ self_t }} {
-    type Output = Self;
-    #[inline]
-    fn mul(self, rhs: {{ scalar_t }}) -> Self::Output {
-        Self {
-            matrix{{ dim }}: self.matrix{{ dim }} * rhs,
-            translation: self.translation * rhs,
-        }
-    }
-}
-
-impl Add<{{ self_t }}> for {{ self_t }} {
-    type Output = Self;
-    #[inline]
-    fn add(self, rhs: Self) -> Self::Output {
-        Self {
-            matrix{{ dim }}: self.matrix{{ dim }} + rhs.matrix{{ dim }},
-            translation: self.translation + rhs.translation,
-        }
-    }
-}
-
-impl Sub<{{ self_t }}> for {{ self_t }} {
-    type Output = Self;
-    #[inline]
-    fn sub(self, rhs: Self) -> Self::Output {
-        Self {
-            matrix{{ dim }}: self.matrix{{ dim }} - rhs.matrix{{ dim }},
-            translation: self.translation - rhs.translation,
         }
     }
 }

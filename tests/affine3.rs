@@ -57,11 +57,11 @@ macro_rules! impl_affine3_tests {
             assert_eq!(MATRIX2D[3], a.w_axis.to_array());
 
             let mut b = a;
-            b.x_axis *= 2.0;
-            b.y_axis *= 2.0;
-            b.z_axis *= 2.0;
-            b.w_axis *= 2.0;
-            assert_eq!(a * 2.0, b);
+            b.x_axis *= 0.0;
+            b.y_axis *= 0.0;
+            b.z_axis *= 0.0;
+            b.w_axis *= 0.0;
+            assert_eq!($affine3::ZERO, b);
         });
 
         glam_test!(test_affine3_from_mat3, {
@@ -291,16 +291,6 @@ macro_rules! impl_affine3_tests {
 
         glam_test!(test_affine3_ops, {
             let m0 = $affine3::from_cols_array_2d(&MATRIX2D);
-            let m0x2 = $affine3::from_cols_array_2d(&[
-                [2.0, 4.0, 6.0],
-                [8.0, 10.0, 12.0],
-                [14.0, 16.0, 18.0],
-                [20.0, 22.0, 24.0],
-            ]);
-            assert_eq!(m0x2, m0 * 2.0);
-            assert_eq!(m0x2, 2.0 * m0);
-            assert_eq!(m0x2, m0 + m0);
-            assert_eq!($affine3::ZERO, m0 - m0);
             assert_approx_eq!(m0, m0 * $affine3::IDENTITY);
             assert_approx_eq!(m0, $affine3::IDENTITY * m0);
 
