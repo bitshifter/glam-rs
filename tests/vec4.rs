@@ -4,17 +4,14 @@
 mod support;
 
 macro_rules! impl_vec4_tests {
-    ($t:ident, $const_new:ident, $new:ident, $vec4:ident, $vec3:ident, $vec2:ident, $mask:ident) => {
+    ($t:ident, $new:ident, $vec4:ident, $vec3:ident, $vec2:ident, $mask:ident) => {
         glam_test!(test_const, {
             const V0: $vec4 = $vec4::splat(1 as $t);
             const V1: $vec4 = $vec4::new(1 as $t, 2 as $t, 3 as $t, 4 as $t);
             const V2: $vec4 = $vec4::from_array([1 as $t, 2 as $t, 3 as $t, 4 as $t]);
-            #[allow(deprecated)]
-            const V3: $vec4 = $const_new!([1 as $t, 2 as $t, 3 as $t, 4 as $t]);
             assert_eq!([1 as $t, 1 as $t, 1 as $t, 1 as $t], *V0.as_ref());
             assert_eq!([1 as $t, 2 as $t, 3 as $t, 4 as $t], *V1.as_ref());
             assert_eq!([1 as $t, 2 as $t, 3 as $t, 4 as $t], *V2.as_ref());
-            assert_eq!([1 as $t, 2 as $t, 3 as $t, 4 as $t], *V3.as_ref());
         });
 
         glam_test!(test_vec4_consts, {
@@ -592,8 +589,8 @@ macro_rules! impl_vec4_tests {
 }
 
 macro_rules! impl_vec4_signed_tests {
-    ($t:ident, $const_new:ident, $new:ident, $vec4:ident, $vec3:ident, $vec2:ident, $mask:ident) => {
-        impl_vec4_tests!($t, $const_new, $new, $vec4, $vec3, $vec2, $mask);
+    ($t:ident, $new:ident, $vec4:ident, $vec3:ident, $vec2:ident, $mask:ident) => {
+        impl_vec4_tests!($t, $new, $vec4, $vec3, $vec2, $mask);
 
         glam_test!(test_neg, {
             let a = $new(1 as $t, 2 as $t, 3 as $t, 4 as $t);
@@ -653,8 +650,8 @@ macro_rules! impl_vec4_eq_hash_tests {
 }
 
 macro_rules! impl_vec4_float_tests {
-    ($t:ident, $const_new:ident, $new:ident, $vec4:ident, $vec3:ident, $vec2:ident, $mask:ident) => {
-        impl_vec4_signed_tests!($t, $const_new, $new, $vec4, $vec3, $vec2, $mask);
+    ($t:ident, $new:ident, $vec4:ident, $vec3:ident, $vec2:ident, $mask:ident) => {
+        impl_vec4_signed_tests!($t, $new, $vec4, $vec3, $vec2, $mask);
         impl_vec_float_normalize_tests!($t, $vec4);
 
         use core::$t::INFINITY;
@@ -1112,8 +1109,7 @@ mod vec4 {
     use glam::BVec4;
     #[cfg(not(feature = "scalar-math"))]
     use glam::BVec4A;
-    #[allow(deprecated)]
-    use glam::{const_vec4, vec4, Vec2, Vec3, Vec4};
+    use glam::{vec4, Vec2, Vec3, Vec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1236,18 +1232,17 @@ mod vec4 {
         any(target_feature = "sse2", target_feature = "simd128"),
         not(feature = "scalar-math")
     ))]
-    impl_vec4_float_tests!(f32, const_vec4, vec4, Vec4, Vec3, Vec2, BVec4A);
+    impl_vec4_float_tests!(f32, vec4, Vec4, Vec3, Vec2, BVec4A);
 
     #[cfg(any(
         not(any(target_feature = "sse2", target_feature = "simd128")),
         feature = "scalar-math"
     ))]
-    impl_vec4_float_tests!(f32, const_vec4, vec4, Vec4, Vec3, Vec2, BVec4);
+    impl_vec4_float_tests!(f32, vec4, Vec4, Vec3, Vec2, BVec4);
 }
 
 mod dvec4 {
-    #[allow(deprecated)]
-    use glam::{const_dvec4, dvec4, BVec4, DVec2, DVec3, DVec4};
+    use glam::{dvec4, BVec4, DVec2, DVec3, DVec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1260,12 +1255,11 @@ mod dvec4 {
         assert_eq!(1, mem::align_of::<BVec4>());
     });
 
-    impl_vec4_float_tests!(f64, const_dvec4, dvec4, DVec4, DVec3, DVec2, BVec4);
+    impl_vec4_float_tests!(f64, dvec4, DVec4, DVec3, DVec2, BVec4);
 }
 
 mod ivec4 {
-    #[allow(deprecated)]
-    use glam::{const_ivec4, ivec4, BVec4, IVec2, IVec3, IVec4, UVec4};
+    use glam::{ivec4, BVec4, IVec2, IVec3, IVec4, UVec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1278,7 +1272,7 @@ mod ivec4 {
         assert_eq!(1, mem::align_of::<BVec4>());
     });
 
-    impl_vec4_signed_tests!(i32, const_ivec4, ivec4, IVec4, IVec3, IVec2, BVec4);
+    impl_vec4_signed_tests!(i32, ivec4, IVec4, IVec3, IVec2, BVec4);
     impl_vec4_eq_hash_tests!(i32, ivec4);
 
     impl_vec4_scalar_shift_op_tests!(IVec4, -2, 2);
@@ -1289,8 +1283,7 @@ mod ivec4 {
 }
 
 mod uvec4 {
-    #[allow(deprecated)]
-    use glam::{const_uvec4, uvec4, BVec4, IVec4, UVec2, UVec3, UVec4};
+    use glam::{uvec4, BVec4, IVec4, UVec2, UVec3, UVec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1303,7 +1296,7 @@ mod uvec4 {
         assert_eq!(1, mem::align_of::<BVec4>());
     });
 
-    impl_vec4_tests!(u32, const_uvec4, uvec4, UVec4, UVec3, UVec2, BVec4);
+    impl_vec4_tests!(u32, uvec4, UVec4, UVec3, UVec2, BVec4);
     impl_vec4_eq_hash_tests!(u32, uvec4);
 
     impl_vec4_scalar_shift_op_tests!(UVec4, 0, 2);

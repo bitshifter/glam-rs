@@ -2,7 +2,7 @@
 mod support;
 
 macro_rules! impl_mat3_tests {
-    ($t:ident, $const_new:ident, $newmat3:ident, $mat3:ident, $mat2:ident, $mat4:ident, $quat:ident, $newvec3:ident, $vec3:ident, $vec2:ident) => {
+    ($t:ident, $newmat3:ident, $mat3:ident, $mat2:ident, $mat4:ident, $quat:ident, $newvec3:ident, $vec3:ident, $vec2:ident) => {
         use core::$t::INFINITY;
         use core::$t::NAN;
         use core::$t::NEG_INFINITY;
@@ -25,24 +25,6 @@ macro_rules! impl_mat3_tests {
             assert_eq!(MATRIX1D, M0.to_cols_array());
             assert_eq!(MATRIX1D, M1.to_cols_array());
             assert_eq!(MATRIX1D, M2.to_cols_array());
-        });
-
-        glam_test!(test_const_macros, {
-            #[allow(deprecated)]
-            const M0: $mat3 = $const_new!([0.0; 9]);
-            #[allow(deprecated)]
-            const M1: $mat3 = $const_new!([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]);
-            #[allow(deprecated)]
-            const M2: $mat3 = $const_new!([1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]);
-            assert_eq!($mat3::ZERO, M0);
-            assert_eq!(
-                $mat3::from_cols_array(&[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]),
-                M1
-            );
-            assert_eq!(
-                $mat3::from_cols_array(&[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]),
-                M2
-            );
         });
 
         glam_test!(test_mat3_identity, {
@@ -394,10 +376,7 @@ macro_rules! impl_as_ref_tests {
 
 mod mat3 {
     use super::support::deg;
-    #[allow(deprecated)]
-    use glam::{
-        const_mat3, mat3, swizzles::*, vec3, vec3a, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A,
-    };
+    use glam::{mat3, swizzles::*, vec3, vec3a, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A};
 
     glam_test!(test_align, {
         use std::mem;
@@ -423,16 +402,13 @@ mod mat3 {
         );
     });
 
-    impl_mat3_tests!(f32, const_mat3, mat3, Mat3, Mat2, Mat4, Quat, vec3, Vec3, Vec2);
+    impl_mat3_tests!(f32, mat3, Mat3, Mat2, Mat4, Quat, vec3, Vec3, Vec2);
     impl_as_ref_tests!(Mat3);
 }
 
 mod mat3a {
     use super::support::deg;
-    #[allow(deprecated)]
-    use glam::{
-        const_mat3a, mat3a, swizzles::*, vec3a, Mat2, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A,
-    };
+    use glam::{mat3a, swizzles::*, vec3a, Mat2, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A};
 
     glam_test!(test_align, {
         use std::mem;
@@ -454,24 +430,12 @@ mod mat3a {
         );
     });
 
-    impl_mat3_tests!(
-        f32,
-        const_mat3a,
-        mat3a,
-        Mat3A,
-        Mat2,
-        Mat4,
-        Quat,
-        vec3a,
-        Vec3,
-        Vec2
-    );
+    impl_mat3_tests!(f32, mat3a, Mat3A, Mat2, Mat4, Quat, vec3a, Vec3, Vec2);
 }
 
 mod dmat3 {
     use super::support::deg;
-    #[allow(deprecated)]
-    use glam::{const_dmat3, dmat3, dvec3, swizzles::*, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3};
+    use glam::{dmat3, dvec3, swizzles::*, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3};
 
     glam_test!(test_align, {
         use std::mem;
@@ -479,17 +443,6 @@ mod dmat3 {
         assert_eq!(mem::align_of::<DVec3>(), mem::align_of::<DMat3>());
     });
 
-    impl_mat3_tests!(
-        f64,
-        const_dmat3,
-        dmat3,
-        DMat3,
-        DMat2,
-        DMat4,
-        DQuat,
-        dvec3,
-        DVec3,
-        DVec2
-    );
+    impl_mat3_tests!(f64, dmat3, DMat3, DMat2, DMat4, DQuat, dvec3, DVec3, DVec2);
     impl_as_ref_tests!(DMat3);
 }

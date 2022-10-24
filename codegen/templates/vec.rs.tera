@@ -51,8 +51,6 @@
     {% set vec4_t = "UVec4" %}
 {% endif %}
 
-{% set const_new = "const_" ~ self_t | lower %}
-
 {% if scalar_t == "f64" or dim == 4 %}
     {% set cuda_align = 16 %}
 {% elif dim == 2 %}

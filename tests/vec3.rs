@@ -4,17 +4,14 @@
 mod support;
 
 macro_rules! impl_vec3_tests {
-    ($t:ident, $const_new:ident, $new:ident, $vec3:ident, $mask:ident) => {
+    ($t:ident, $new:ident, $vec3:ident, $mask:ident) => {
         glam_test!(test_const, {
             const V0: $vec3 = $vec3::splat(1 as $t);
             const V1: $vec3 = $vec3::new(1 as $t, 2 as $t, 3 as $t);
             const V2: $vec3 = $vec3::from_array([1 as $t, 2 as $t, 3 as $t]);
-            #[allow(deprecated)]
-            const V3: $vec3 = $const_new!([1 as $t, 2 as $t, 3 as $t]);
             assert_eq!([1 as $t, 1 as $t, 1 as $t], *V0.as_ref());
             assert_eq!([1 as $t, 2 as $t, 3 as $t], *V1.as_ref());
             assert_eq!([1 as $t, 2 as $t, 3 as $t], *V2.as_ref());
-            assert_eq!([1 as $t, 2 as $t, 3 as $t], *V3.as_ref());
         });
 
         glam_test!(test_vec3_consts, {
@@ -517,8 +514,8 @@ macro_rules! impl_vec3_tests {
 }
 
 macro_rules! impl_vec3_signed_tests {
-    ($t:ident, $const_new:ident, $new:ident, $vec3:ident, $mask:ident) => {
-        impl_vec3_tests!($t, $const_new, $new, $vec3, $mask);
+    ($t:ident, $new:ident, $vec3:ident, $mask:ident) => {
+        impl_vec3_tests!($t, $new, $vec3, $mask);
 
         glam_test!(test_neg, {
             let a = $new(1 as $t, 2 as $t, 3 as $t);
@@ -576,8 +573,8 @@ macro_rules! impl_vec3_eq_hash_tests {
 }
 
 macro_rules! impl_vec3_float_tests {
-    ($t:ident, $const_new:ident, $new:ident, $vec3:ident, $mask:ident) => {
-        impl_vec3_signed_tests!($t, $const_new, $new, $vec3, $mask);
+    ($t:ident, $new:ident, $vec3:ident, $mask:ident) => {
+        impl_vec3_signed_tests!($t, $new, $vec3, $mask);
         impl_vec_float_normalize_tests!($t, $vec3);
 
         use core::$t::INFINITY;
@@ -1015,8 +1012,7 @@ macro_rules! impl_vec3_bit_op_tests {
 }
 
 mod vec3 {
-    #[allow(deprecated)]
-    use glam::{const_vec3, vec3, BVec3, Vec3};
+    use glam::{vec3, BVec3, Vec3};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1082,7 +1078,7 @@ mod vec3 {
         assert_eq!(Vec3A::new(1.0, 2.0, 3.0), UVec3::new(1, 2, 3).as_vec3a());
     });
 
-    impl_vec3_float_tests!(f32, const_vec3, vec3, Vec3, BVec3);
+    impl_vec3_float_tests!(f32, vec3, Vec3, BVec3);
 }
 
 mod vec3a {
@@ -1093,8 +1089,7 @@ mod vec3a {
     use glam::BVec3;
     #[cfg(not(feature = "scalar-math"))]
     use glam::BVec3A;
-    #[allow(deprecated)]
-    use glam::{const_vec3a, vec3a, Vec3A, Vec4};
+    use glam::{vec3a, Vec3A, Vec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1171,18 +1166,17 @@ mod vec3a {
         any(target_feature = "sse2", target_feature = "simd128"),
         not(feature = "scalar-math")
     ))]
-    impl_vec3_float_tests!(f32, const_vec3a, vec3a, Vec3A, BVec3A);
+    impl_vec3_float_tests!(f32, vec3a, Vec3A, BVec3A);
 
     #[cfg(any(
         not(any(target_feature = "sse2", target_feature = "simd128")),
         feature = "scalar-math"
     ))]
-    impl_vec3_float_tests!(f32, const_vec3a, vec3a, Vec3A, BVec3);
+    impl_vec3_float_tests!(f32, vec3a, Vec3A, BVec3);
 }
 
 mod dvec3 {
-    #[allow(deprecated)]
-    use glam::{const_dvec3, dvec3, BVec3, DVec3};
+    use glam::{dvec3, BVec3, DVec3};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1192,12 +1186,11 @@ mod dvec3 {
         assert_eq!(1, mem::align_of::<BVec3>());
     });
 
-    impl_vec3_float_tests!(f64, const_dvec3, dvec3, DVec3, BVec3);
+    impl_vec3_float_tests!(f64, dvec3, DVec3, BVec3);
 }
 
 mod ivec3 {
-    #[allow(deprecated)]
-    use glam::{const_ivec3, ivec3, BVec3, IVec3, UVec3};
+    use glam::{ivec3, BVec3, IVec3, UVec3};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1207,7 +1200,7 @@ mod ivec3 {
         assert_eq!(1, mem::align_of::<BVec3>());
     });
 
-    impl_vec3_signed_tests!(i32, const_ivec3, ivec3, IVec3, BVec3);
+    impl_vec3_signed_tests!(i32, ivec3, IVec3, BVec3);
     impl_vec3_eq_hash_tests!(i32, ivec3);
 
     impl_vec3_scalar_shift_op_tests!(IVec3, -2, 2);
@@ -1218,8 +1211,7 @@ mod ivec3 {
 }
 
 mod uvec3 {
-    #[allow(deprecated)]
-    use glam::{const_uvec3, uvec3, BVec3, IVec3, UVec3};
+    use glam::{uvec3, BVec3, IVec3, UVec3};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1229,7 +1221,7 @@ mod uvec3 {
         assert_eq!(1, mem::align_of::<BVec3>());
     });
 
-    impl_vec3_tests!(u32, const_uvec3, uvec3, UVec3, BVec3);
+    impl_vec3_tests!(u32, uvec3, UVec3, BVec3);
     impl_vec3_eq_hash_tests!(u32, uvec3);
 
     impl_vec3_scalar_shift_op_tests!(UVec3, 0, 2);

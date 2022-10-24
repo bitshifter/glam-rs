@@ -123,7 +123,6 @@ macro_rules! impl_from_quat {
 
             fn third(self, q: $quat) -> $t {
                 use EulerRot::*;
-                #[allow(deprecated)]
                 match self {
                     ZYX => (2.0 * (q.y * q.z + q.w * q.x))
                         .atan2(q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z),

@@ -4,17 +4,14 @@
 mod support;
 
 macro_rules! impl_vec2_tests {
-    ($t:ty, $const_new:ident, $new:ident, $vec2:ident, $vec3:ident, $mask:ident) => {
+    ($t:ty, $new:ident, $vec2:ident, $vec3:ident, $mask:ident) => {
         glam_test!(test_const, {
             const V0: $vec2 = $vec2::splat(1 as $t);
             const V1: $vec2 = $vec2::new(1 as $t, 2 as $t);
             const V2: $vec2 = $vec2::from_array([1 as $t, 2 as $t]);
-            #[allow(deprecated)]
-            const V3: $vec2 = $const_new!([1 as $t, 2 as $t]);
             assert_eq!([1 as $t, 1 as $t], *V0.as_ref());
             assert_eq!([1 as $t, 2 as $t], *V1.as_ref());
             assert_eq!([1 as $t, 2 as $t], *V2.as_ref());
-            assert_eq!([1 as $t, 2 as $t], *V3.as_ref());
         });
 
         glam_test!(test_vec2_consts, {
@@ -464,8 +461,8 @@ macro_rules! impl_vec2_tests {
 }
 
 macro_rules! impl_vec2_signed_tests {
-    ($t:ident, $const_new:ident, $new:ident, $vec2:ident, $vec3:ident, $mask:ident) => {
-        impl_vec2_tests!($t, $const_new, $new, $vec2, $vec3, $mask);
+    ($t:ident, $new:ident, $vec2:ident, $vec3:ident, $mask:ident) => {
+        impl_vec2_tests!($t, $new, $vec2, $vec3, $mask);
 
         glam_test!(test_dot_signed, {
             let x = $new(1 as $t, 0 as $t);
@@ -534,8 +531,8 @@ macro_rules! impl_vec2_eq_hash_tests {
 }
 
 macro_rules! impl_vec2_float_tests {
-    ($t:ident, $const_new:ident, $new:ident, $vec2:ident, $vec3:ident, $mask:ident) => {
-        impl_vec2_signed_tests!($t, $const_new, $new, $vec2, $vec3, $mask);
+    ($t:ident, $new:ident, $vec2:ident, $vec3:ident, $mask:ident) => {
+        impl_vec2_signed_tests!($t, $new, $vec2, $vec3, $mask);
         impl_vec_float_normalize_tests!($t, $vec2);
 
         use core::$t::INFINITY;
@@ -915,8 +912,7 @@ macro_rules! impl_vec2_bit_op_tests {
 }
 
 mod vec2 {
-    #[allow(deprecated)]
-    use glam::{const_vec2, vec2, BVec2, Vec2, Vec3};
+    use glam::{vec2, BVec2, Vec2, Vec3};
 
     glam_test!(test_align, {
         use core::mem;
@@ -948,12 +944,11 @@ mod vec2 {
         assert_eq!(Vec2::new(1.0, 2.0), UVec2::new(1, 2).as_vec2());
     });
 
-    impl_vec2_float_tests!(f32, const_vec2, vec2, Vec2, Vec3, BVec2);
+    impl_vec2_float_tests!(f32, vec2, Vec2, Vec3, BVec2);
 }
 
 mod dvec2 {
-    #[allow(deprecated)]
-    use glam::{const_dvec2, dvec2, BVec2, DVec2, DVec3};
+    use glam::{dvec2, BVec2, DVec2, DVec3};
 
     glam_test!(test_align, {
         use core::mem;
@@ -966,12 +961,11 @@ mod dvec2 {
         assert_eq!(1, mem::align_of::<BVec2>());
     });
 
-    impl_vec2_float_tests!(f64, const_dvec2, dvec2, DVec2, DVec3, BVec2);
+    impl_vec2_float_tests!(f64, dvec2, DVec2, DVec3, BVec2);
 }
 
 mod ivec2 {
-    #[allow(deprecated)]
-    use glam::{const_ivec2, ivec2, BVec2, IVec2, IVec3, UVec2};
+    use glam::{ivec2, BVec2, IVec2, IVec3, UVec2};
 
     glam_test!(test_align, {
         use core::mem;
@@ -984,7 +978,7 @@ mod ivec2 {
         assert_eq!(1, mem::align_of::<BVec2>());
     });
 
-    impl_vec2_signed_tests!(i32, const_ivec2, ivec2, IVec2, IVec3, BVec2);
+    impl_vec2_signed_tests!(i32, ivec2, IVec2, IVec3, BVec2);
     impl_vec2_eq_hash_tests!(i32, ivec2);
 
     impl_vec2_scalar_shift_op_tests!(IVec2, -2, 2);
@@ -995,8 +989,7 @@ mod ivec2 {
 }
 
 mod uvec2 {
-    #[allow(deprecated)]
-    use glam::{const_uvec2, uvec2, BVec2, IVec2, UVec2, UVec3};
+    use glam::{uvec2, BVec2, IVec2, UVec2, UVec3};
 
     glam_test!(test_align, {
         use core::mem;
@@ -1009,7 +1002,7 @@ mod uvec2 {
         assert_eq!(1, mem::align_of::<BVec2>());
     });
 
-    impl_vec2_tests!(u32, const_uvec2, uvec2, UVec2, UVec3, BVec2);
+    impl_vec2_tests!(u32, uvec2, UVec2, UVec3, BVec2);
     impl_vec2_eq_hash_tests!(u32, uvec2);
 
     impl_vec2_scalar_shift_op_tests!(UVec2, 0, 2);
