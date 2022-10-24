@@ -4,7 +4,7 @@
 mod support;
 
 macro_rules! impl_quat_tests {
-    ($t:ident, $const_new:ident, $new:ident, $mat3:ident, $mat4:ident, $quat:ident, $vec2:ident, $vec3:ident, $vec4:ident) => {
+    ($t:ident, $new:ident, $mat3:ident, $mat4:ident, $quat:ident, $vec2:ident, $vec3:ident, $vec4:ident) => {
         use core::$t::INFINITY;
         use core::$t::NAN;
         use core::$t::NEG_INFINITY;
@@ -12,11 +12,8 @@ macro_rules! impl_quat_tests {
         glam_test!(test_const, {
             const Q0: $quat = $quat::from_xyzw(1.0, 2.0, 3.0, 4.0);
             const Q1: $quat = $quat::from_array([1.0, 2.0, 3.0, 4.0]);
-            #[allow(deprecated)]
-            const Q2: $quat = $const_new!([1.0, 2.0, 3.0, 4.0]);
             assert_eq!([1.0, 2.0, 3.0, 4.0], *Q0.as_ref());
             assert_eq!([1.0, 2.0, 3.0, 4.0], *Q1.as_ref());
-            assert_eq!([1.0, 2.0, 3.0, 4.0], *Q2.as_ref());
         });
 
         glam_test!(test_nan, {
@@ -516,8 +513,7 @@ macro_rules! impl_quat_tests {
 mod quat {
     use crate::support::{deg, rad};
     use core::ops::Neg;
-    #[allow(deprecated)]
-    use glam::{const_quat, quat, EulerRot, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
+    use glam::{quat, EulerRot, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -612,14 +608,13 @@ mod quat {
         );
     });
 
-    impl_quat_tests!(f32, const_quat, quat, Mat3, Mat4, Quat, Vec2, Vec3, Vec4);
+    impl_quat_tests!(f32, quat, Mat3, Mat4, Quat, Vec2, Vec3, Vec4);
 }
 
 mod dquat {
     use crate::support::{deg, rad};
     use core::ops::Neg;
-    #[allow(deprecated)]
-    use glam::{const_dquat, dquat, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, EulerRot};
+    use glam::{dquat, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, EulerRot};
 
     glam_test!(test_align, {
         use std::mem;
@@ -627,15 +622,5 @@ mod dquat {
         assert_eq!(mem::align_of::<f64>(), mem::align_of::<DQuat>());
     });
 
-    impl_quat_tests!(
-        f64,
-        const_dquat,
-        dquat,
-        DMat3,
-        DMat4,
-        DQuat,
-        DVec2,
-        DVec3,
-        DVec4
-    );
+    impl_quat_tests!(f64, dquat, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4);
 }

@@ -15,6 +15,9 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Removed `Add`, `Sub`, and scalar `Mul` implementations from affine types as
   they didn't make sense on these types.
 
+* Removed deprecated `const_*` macros. These have been replaced by `const fn`
+  methods.
+
 ### Fixed
 
 * Fixed `neg` and `signum` to consistently handle negative zero across multiple

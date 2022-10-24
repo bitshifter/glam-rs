@@ -2,7 +2,7 @@
 mod support;
 
 macro_rules! impl_mat4_tests {
-    ($t:ident, $const_new:ident, $newmat4:ident, $newvec4:ident, $newvec3:ident, $mat4:ident, $mat3:ident, $quat:ident, $vec4:ident, $vec3:ident) => {
+    ($t:ident, $newmat4:ident, $newvec4:ident, $newvec3:ident, $mat4:ident, $mat3:ident, $quat:ident, $vec4:ident, $vec3:ident) => {
         use core::$t::INFINITY;
         use core::$t::NAN;
         use core::$t::NEG_INFINITY;
@@ -37,42 +37,6 @@ macro_rules! impl_mat4_tests {
             assert_eq!(MATRIX1D, M0.to_cols_array());
             assert_eq!(MATRIX1D, M1.to_cols_array());
             assert_eq!(MATRIX1D, M2.to_cols_array());
-        });
-
-        glam_test!(test_const_macros, {
-            #[allow(deprecated)]
-            const M0: $mat4 = $const_new!([0.0; 16]);
-            #[allow(deprecated)]
-            const M1: $mat4 = $const_new!([
-                1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0,
-                16.0
-            ]);
-            #[allow(deprecated)]
-            const M2: $mat4 = $const_new!(
-                [1.0, 2.0, 3.0, 4.0],
-                [5.0, 6.0, 7.0, 8.0],
-                [9.0, 10.0, 11.0, 12.0],
-                [13.0, 14.0, 15.0, 16.0]
-            );
-            assert_eq!($mat4::ZERO, M0);
-            assert_eq!(
-                $mat4::from_cols_array_2d(&[
-                    [1.0, 2.0, 3.0, 4.0],
-                    [5.0, 6.0, 7.0, 8.0],
-                    [9.0, 10.0, 11.0, 12.0],
-                    [13.0, 14.0, 15.0, 16.0]
-                ]),
-                M1
-            );
-            assert_eq!(
-                $mat4::from_cols_array_2d(&[
-                    [1.0, 2.0, 3.0, 4.0],
-                    [5.0, 6.0, 7.0, 8.0],
-                    [9.0, 10.0, 11.0, 12.0],
-                    [13.0, 14.0, 15.0, 16.0]
-                ]),
-                M2
-            );
         });
 
         glam_test!(test_mat4_identity, {
@@ -718,8 +682,7 @@ macro_rules! impl_as_ref_tests {
 
 mod mat4 {
     use super::support::deg;
-    #[allow(deprecated)]
-    use glam::{const_mat4, mat4, swizzles::*, vec3, vec4, Mat3, Mat4, Quat, Vec3, Vec4};
+    use glam::{mat4, swizzles::*, vec3, vec4, Mat3, Mat4, Quat, Vec3, Vec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -776,14 +739,13 @@ mod mat4 {
         );
     });
 
-    impl_mat4_tests!(f32, const_mat4, mat4, vec4, vec3, Mat4, Mat3, Quat, Vec4, Vec3);
+    impl_mat4_tests!(f32, mat4, vec4, vec3, Mat4, Mat3, Quat, Vec4, Vec3);
     impl_as_ref_tests!(Mat4);
 }
 
 mod dmat4 {
     use super::support::deg;
-    #[allow(deprecated)]
-    use glam::{const_dmat4, dmat4, dvec3, dvec4, swizzles::*, DMat3, DMat4, DQuat, DVec3, DVec4};
+    use glam::{dmat4, dvec3, dvec4, swizzles::*, DMat3, DMat4, DQuat, DVec3, DVec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -791,17 +753,6 @@ mod dmat4 {
         assert_eq!(128, mem::size_of::<DMat4>());
     });
 
-    impl_mat4_tests!(
-        f64,
-        const_dmat4,
-        dmat4,
-        dvec4,
-        dvec3,
-        DMat4,
-        DMat3,
-        DQuat,
-        DVec4,
-        DVec3
-    );
+    impl_mat4_tests!(f64, dmat4, dvec4, dvec3, DMat4, DMat3, DQuat, DVec4, DVec3);
     impl_as_ref_tests!(DMat4);
 }
