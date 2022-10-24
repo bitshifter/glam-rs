@@ -5,6 +5,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+### Breaking changes
+
+* Added `u32` implementation of `BVec3A` and `BVec4` when SIMD is not available.
+  These are used instead of aliasing to the `bool` implementations.
+
+* Removed `Add`, `Sub`, and scalar `Mul` implementations from affine types as
+  they didn't make sense on these types.
+
+### Fixed
+
+* Fixed `neg` and `signum` to consistently handle negative zero across multiple
+  platforms.
+
+* Removed `register_attr` feature usage for SPIR-V targets.
+
+### Added
+
+* Added missing `Serialize`, `Deserialize` and `PartialEq` implementations.
+
+* Added `Sum<Self>` and `Product<Self>` implementations for all vector, matrix
+  and quaternion types.
+
+* Added 4x4 matrix methods `look_at_lh` and `look_at_rh`. These were previously
+  private.
+
+* Added `dot_into_vec` methods to vector which returns the result of the dot
+  product splatted to all vector lanes.
+
+* Added `is_negative_bitmask` to vector types which returns a `u32` of bits for
+  each negative vector lane.
+
+* Added `splat` method and `TRUE` and `FALSE` constants to all `BVec` types.
+
+* Added `from_mat3a` methods to `Affine2`, `Mat2`, `Mat4` and `Quat` types.
+
+### Changed
+
+* Disable `serde` default features.
+
+* Made `to_cols_array`, `to_cols_array_2d`, and `from_diagonal` methods
+ `const fn`. 
+
 ## [0.21.3] - 2022-08-02
 
 ### Fixed
@@ -19,8 +63,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ### Changed
 
-* Derive from `PartialEq` and `Eq` instead of providing a trait implemtation for
-  all non SIMD types.
+* Derive from `PartialEq` and `Eq` instead of providing a trait implementation
+  for all non SIMD types.
 
 ## [0.21.2] - 2022-06-25
 
