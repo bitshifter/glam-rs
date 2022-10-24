@@ -1,7 +1,7 @@
 // Generated from affine.rs.tera template. Edit the template, not the generated file.
 
 use crate::{Mat3, Mat3A, Mat4, Quat, Vec3, Vec3A};
-use core::ops::{Add, Deref, DerefMut, Mul, Sub};
+use core::ops::{Deref, DerefMut, Mul};
 
 /// A 3D affine transform, which can represent translation, rotation, scaling and shear.
 #[derive(Copy, Clone)]
@@ -496,50 +496,6 @@ impl Mul for Affine3A {
         Self {
             matrix3: self.matrix3 * rhs.matrix3,
             translation: self.matrix3 * rhs.translation + self.translation,
-        }
-    }
-}
-
-impl Mul<Affine3A> for f32 {
-    type Output = Affine3A;
-    #[inline]
-    fn mul(self, rhs: Affine3A) -> Self::Output {
-        Affine3A {
-            matrix3: self * rhs.matrix3,
-            translation: self * rhs.translation,
-        }
-    }
-}
-
-impl Mul<f32> for Affine3A {
-    type Output = Self;
-    #[inline]
-    fn mul(self, rhs: f32) -> Self::Output {
-        Self {
-            matrix3: self.matrix3 * rhs,
-            translation: self.translation * rhs,
-        }
-    }
-}
-
-impl Add<Affine3A> for Affine3A {
-    type Output = Self;
-    #[inline]
-    fn add(self, rhs: Self) -> Self::Output {
-        Self {
-            matrix3: self.matrix3 + rhs.matrix3,
-            translation: self.translation + rhs.translation,
-        }
-    }
-}
-
-impl Sub<Affine3A> for Affine3A {
-    type Output = Self;
-    #[inline]
-    fn sub(self, rhs: Self) -> Self::Output {
-        Self {
-            matrix3: self.matrix3 - rhs.matrix3,
-            translation: self.translation - rhs.translation,
         }
     }
 }
