@@ -32,7 +32,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Added `Sum<Self>` and `Product<Self>` implementations for all vector, matrix
   and quaternion types.
 
-* Added 4x4 matrix methods `look_at_lh` and `look_at_rh`. These were previously
+* Added 4x4 matrix methods `look_to_lh` and `look_to_rh`. These were previously
   private.
 
 * Added `dot_into_vec` methods to vector which returns the result of the dot
