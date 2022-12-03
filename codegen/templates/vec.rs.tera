@@ -22,6 +22,7 @@
     {% if scalar_t == "f32" %}
         {% if dim == 3 and is_simd or is_align %}
             {% set self_t = "Vec3A" %}
+            {% set mask_t = "BVec3A" %}
         {% else %}
             {% set self_t = "Vec" ~ dim %}
         {% endif %}
