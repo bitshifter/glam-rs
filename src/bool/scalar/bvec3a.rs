@@ -5,7 +5,7 @@ use core::fmt;
 use core::ops::*;
 
 /// A 3-dimensional `u32` vector mask.
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(C, align(16))]
 pub struct BVec3A {
     pub x: u32,

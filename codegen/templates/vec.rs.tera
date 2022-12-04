@@ -299,7 +299,11 @@ impl {{ self_t }} {
         {% if is_scalar %}
             Self {
                 {% for c in components %}
-                    {{ c  }}: if mask.{{ c }} { if_true.{{ c }} } else { if_false.{{ c }} },
+                    {% if is_align %}
+                        {{ c  }}: if mask.{{ c }} != 0 { if_true.{{ c }} } else { if_false.{{ c }} },
+                    {% else %}
+                        {{ c  }}: if mask.{{ c }} { if_true.{{ c }} } else { if_false.{{ c }} },
+                    {% endif %}
                 {%- endfor %}
             }
         {% elif is_sse2 %}
