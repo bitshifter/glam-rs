@@ -88,9 +88,7 @@ impl Vec3A {
     pub fn select(mask: BVec3A, if_true: Self, if_false: Self) -> Self {
         Self {
             x: if mask.x != 0 { if_true.x } else { if_false.x },
-
             y: if mask.y != 0 { if_true.y } else { if_false.y },
-
             z: if mask.z != 0 { if_true.z } else { if_false.z },
         }
     }
