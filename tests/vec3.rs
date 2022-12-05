@@ -1082,12 +1082,6 @@ mod vec3 {
 }
 
 mod vec3a {
-    #[cfg(any(
-        not(any(target_feature = "sse2", target_feature = "simd128")),
-        feature = "scalar-math"
-    ))]
-    use glam::BVec3;
-    #[cfg(not(feature = "scalar-math"))]
     use glam::BVec3A;
     use glam::{vec3a, Vec3A, Vec4};
 
@@ -1095,16 +1089,8 @@ mod vec3a {
         use std::mem;
         assert_eq!(16, mem::size_of::<Vec3A>());
         assert_eq!(16, mem::align_of::<Vec3A>());
-        #[cfg(not(feature = "scalar-math"))]
-        {
-            assert_eq!(16, mem::size_of::<BVec3A>());
-            assert_eq!(16, mem::align_of::<BVec3A>());
-        }
-        #[cfg(feature = "scalar-math")]
-        {
-            assert_eq!(3, mem::size_of::<BVec3>());
-            assert_eq!(1, mem::align_of::<BVec3>());
-        }
+        assert_eq!(16, mem::size_of::<BVec3A>());
+        assert_eq!(16, mem::align_of::<BVec3A>());
     });
 
     glam_test!(test_mask_align16, {
@@ -1162,17 +1148,7 @@ mod vec3a {
         assert_eq!(v2.min_element(), 2.0);
     });
 
-    #[cfg(all(
-        any(target_feature = "sse2", target_feature = "simd128"),
-        not(feature = "scalar-math")
-    ))]
     impl_vec3_float_tests!(f32, vec3a, Vec3A, BVec3A);
-
-    #[cfg(any(
-        not(any(target_feature = "sse2", target_feature = "simd128")),
-        feature = "scalar-math"
-    ))]
-    impl_vec3_float_tests!(f32, vec3a, Vec3A, BVec3);
 }
 
 mod dvec3 {

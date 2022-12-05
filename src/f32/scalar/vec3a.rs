@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec3, Vec2, Vec3, Vec4};
+use crate::{BVec3A, Vec2, Vec3, Vec4};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -85,11 +85,11 @@ impl Vec3A {
     /// A true element in the mask uses the corresponding element from `if_true`, and false
     /// uses the element from `if_false`.
     #[inline]
-    pub fn select(mask: BVec3, if_true: Self, if_false: Self) -> Self {
+    pub fn select(mask: BVec3A, if_true: Self, if_false: Self) -> Self {
         Self {
-            x: if mask.x { if_true.x } else { if_false.x },
-            y: if mask.y { if_true.y } else { if_false.y },
-            z: if mask.z { if_true.z } else { if_false.z },
+            x: if mask.x != 0 { if_true.x } else { if_false.x },
+            y: if mask.y != 0 { if_true.y } else { if_false.y },
+            z: if mask.z != 0 { if_true.z } else { if_false.z },
         }
     }
 
@@ -234,8 +234,8 @@ impl Vec3A {
     /// In other words, this computes `[self.x == rhs.x, self.y == rhs.y, ..]` for all
     /// elements.
     #[inline]
-    pub fn cmpeq(self, rhs: Self) -> BVec3 {
-        BVec3::new(self.x.eq(&rhs.x), self.y.eq(&rhs.y), self.z.eq(&rhs.z))
+    pub fn cmpeq(self, rhs: Self) -> BVec3A {
+        BVec3A::new(self.x.eq(&rhs.x), self.y.eq(&rhs.y), self.z.eq(&rhs.z))
     }
 
     /// Returns a vector mask containing the result of a `!=` comparison for each element of
@@ -244,8 +244,8 @@ impl Vec3A {
     /// In other words this computes `[self.x != rhs.x, self.y != rhs.y, ..]` for all
     /// elements.
     #[inline]
-    pub fn cmpne(self, rhs: Self) -> BVec3 {
-        BVec3::new(self.x.ne(&rhs.x), self.y.ne(&rhs.y), self.z.ne(&rhs.z))
+    pub fn cmpne(self, rhs: Self) -> BVec3A {
+        BVec3A::new(self.x.ne(&rhs.x), self.y.ne(&rhs.y), self.z.ne(&rhs.z))
     }
 
     /// Returns a vector mask containing the result of a `>=` comparison for each element of
@@ -254,8 +254,8 @@ impl Vec3A {
     /// In other words this computes `[self.x >= rhs.x, self.y >= rhs.y, ..]` for all
     /// elements.
     #[inline]
-    pub fn cmpge(self, rhs: Self) -> BVec3 {
-        BVec3::new(self.x.ge(&rhs.x), self.y.ge(&rhs.y), self.z.ge(&rhs.z))
+    pub fn cmpge(self, rhs: Self) -> BVec3A {
+        BVec3A::new(self.x.ge(&rhs.x), self.y.ge(&rhs.y), self.z.ge(&rhs.z))
     }
 
     /// Returns a vector mask containing the result of a `>` comparison for each element of
@@ -264,8 +264,8 @@ impl Vec3A {
     /// In other words this computes `[self.x > rhs.x, self.y > rhs.y, ..]` for all
     /// elements.
     #[inline]
-    pub fn cmpgt(self, rhs: Self) -> BVec3 {
-        BVec3::new(self.x.gt(&rhs.x), self.y.gt(&rhs.y), self.z.gt(&rhs.z))
+    pub fn cmpgt(self, rhs: Self) -> BVec3A {
+        BVec3A::new(self.x.gt(&rhs.x), self.y.gt(&rhs.y), self.z.gt(&rhs.z))
     }
 
     /// Returns a vector mask containing the result of a `<=` comparison for each element of
@@ -274,8 +274,8 @@ impl Vec3A {
     /// In other words this computes `[self.x <= rhs.x, self.y <= rhs.y, ..]` for all
     /// elements.
     #[inline]
-    pub fn cmple(self, rhs: Self) -> BVec3 {
-        BVec3::new(self.x.le(&rhs.x), self.y.le(&rhs.y), self.z.le(&rhs.z))
+    pub fn cmple(self, rhs: Self) -> BVec3A {
+        BVec3A::new(self.x.le(&rhs.x), self.y.le(&rhs.y), self.z.le(&rhs.z))
     }
 
     /// Returns a vector mask containing the result of a `<` comparison for each element of
@@ -284,8 +284,8 @@ impl Vec3A {
     /// In other words this computes `[self.x < rhs.x, self.y < rhs.y, ..]` for all
     /// elements.
     #[inline]
-    pub fn cmplt(self, rhs: Self) -> BVec3 {
-        BVec3::new(self.x.lt(&rhs.x), self.y.lt(&rhs.y), self.z.lt(&rhs.z))
+    pub fn cmplt(self, rhs: Self) -> BVec3A {
+        BVec3A::new(self.x.lt(&rhs.x), self.y.lt(&rhs.y), self.z.lt(&rhs.z))
     }
 
     /// Returns a vector containing the absolute value of each element of `self`.
@@ -340,8 +340,8 @@ impl Vec3A {
     ///
     /// In other words, this computes `[x.is_nan(), y.is_nan(), z.is_nan(), w.is_nan()]`.
     #[inline]
-    pub fn is_nan_mask(self) -> BVec3 {
-        BVec3::new(self.x.is_nan(), self.y.is_nan(), self.z.is_nan())
+    pub fn is_nan_mask(self) -> BVec3A {
+        BVec3A::new(self.x.is_nan(), self.y.is_nan(), self.z.is_nan())
     }
 
     /// Computes the length of `self`.

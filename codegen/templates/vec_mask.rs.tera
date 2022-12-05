@@ -51,7 +51,7 @@ union UnionCast {
 /// This type is {{ align }} byte aligned and is backed by a SIMD vector. If SIMD is not available
 /// `{{ self_t }}` will be a type alias for `BVec{{ dim }}`.
 {%- endif %}
-{%- if is_scalar and is_bool %}
+{%- if is_scalar or is_bool %}
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
 {%- else %}
 #[derive(Clone, Copy)]

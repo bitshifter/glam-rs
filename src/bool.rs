@@ -17,12 +17,14 @@ mod sse2;
 ))]
 mod wasm32;
 
-#[cfg(not(any(
-    feature = "scalar-math",
-    feature = "core-simd",
-    target_feature = "sse2",
-    target_feature = "simd128"
-),))]
+#[cfg(any(
+    not(any(
+        feature = "core-simd",
+        target_feature = "sse2",
+        target_feature = "simd128"
+    )),
+    feature = "scalar-math"
+))]
 mod scalar;
 
 pub use bvec2::BVec2;
@@ -56,12 +58,14 @@ pub use coresimd::bvec3a::BVec3A;
 #[cfg(all(feature = "core-simd", not(feature = "scalar-math")))]
 pub use coresimd::bvec4a::BVec4A;
 
-#[cfg(not(any(
-    feature = "scalar-math",
-    feature = "core-simd",
-    target_feature = "sse2",
-    target_feature = "simd128"
-),))]
+#[cfg(any(
+    not(any(
+        feature = "core-simd",
+        target_feature = "sse2",
+        target_feature = "simd128"
+    )),
+    feature = "scalar-math"
+))]
 pub use scalar::bvec3a::BVec3A;
 
 #[cfg(not(any(
