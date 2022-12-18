@@ -68,12 +68,14 @@ pub use coresimd::bvec4a::BVec4A;
 ))]
 pub use scalar::bvec3a::BVec3A;
 
-#[cfg(not(any(
-    feature = "scalar-math",
-    feature = "core-simd",
-    target_feature = "sse2",
-    target_feature = "simd128"
-),))]
+#[cfg(any(
+    not(any(
+        feature = "core-simd",
+        target_feature = "sse2",
+        target_feature = "simd128"
+    )),
+    feature = "scalar-math"
+))]
 pub use scalar::bvec4a::BVec4A;
 
 mod const_test_bvec2 {
