@@ -2,6 +2,8 @@ use crate::{
     DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, IVec2, IVec3, IVec4, Mat2, Mat3, Mat4, Quat,
     UVec2, UVec3, UVec4, Vec2, Vec3, Vec4,
 };
+#[cfg(any(target_feature = "sse2", target_feature = "simd128"))]
+use crate::{Vec3A};
 use bytemuck::{Pod, Zeroable};
 
 unsafe impl Pod for Mat2 {}
@@ -16,6 +18,11 @@ unsafe impl Zeroable for Quat {}
 
 unsafe impl Pod for Vec2 {}
 unsafe impl Zeroable for Vec2 {}
+
+#[cfg(any(target_feature = "sse2", target_feature = "simd128"))]
+unsafe impl Pod for Vec3A {}
+#[cfg(any(target_feature = "sse2", target_feature = "simd128"))]
+unsafe impl Zeroable for Vec3A {}
 unsafe impl Pod for Vec3 {}
 unsafe impl Zeroable for Vec3 {}
 unsafe impl Pod for Vec4 {}
