@@ -7,6 +7,12 @@ pub struct PCG32 {
     inc: u64,
 }
 
+impl Default for PCG32 {
+    fn default() -> Self {
+        PCG32::seed(0x853c49e6748fea9b, 0xda3e39cb94b95bdb)
+    }
+}
+
 impl PCG32 {
     pub fn seed(initstate: u64, initseq: u64) -> Self {
         let mut rng = PCG32 {
@@ -17,10 +23,6 @@ impl PCG32 {
         rng.state = rng.state.wrapping_add(initstate);
         rng.next_u32();
         rng
-    }
-
-    pub fn default() -> Self {
-        PCG32::seed(0x853c49e6748fea9b, 0xda3e39cb94b95bdb)
     }
 
     pub fn next_u32(&mut self) -> u32 {
