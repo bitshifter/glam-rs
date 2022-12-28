@@ -665,6 +665,43 @@ macro_rules! impl_vec3_float_tests {
             assert!($vec3::splat(NAN).signum().is_nan_mask().all());
         });
 
+        glam_test!(test_copysign, {
+            assert_eq!($vec3::ZERO.copysign(-$vec3::ZERO), -$vec3::ZERO);
+            assert_eq!((-$vec3::ZERO).copysign(-$vec3::ZERO), -$vec3::ZERO);
+            assert_eq!($vec3::ZERO.copysign($vec3::ZERO), $vec3::ZERO);
+            assert_eq!((-$vec3::ZERO).copysign($vec3::ZERO), $vec3::ZERO);
+            assert_eq!($vec3::ONE.copysign(-$vec3::ZERO), -$vec3::ONE);
+            assert_eq!((-$vec3::ONE).copysign(-$vec3::ZERO), -$vec3::ONE);
+            assert_eq!($vec3::ONE.copysign($vec3::ZERO), $vec3::ONE);
+            assert_eq!((-$vec3::ONE).copysign($vec3::ZERO), $vec3::ONE);
+            assert_eq!($vec3::ZERO.copysign(-$vec3::ONE), -$vec3::ZERO);
+            assert_eq!((-$vec3::ZERO).copysign(-$vec3::ONE), -$vec3::ZERO);
+            assert_eq!($vec3::ZERO.copysign($vec3::ONE), $vec3::ZERO);
+            assert_eq!((-$vec3::ZERO).copysign($vec3::ONE), $vec3::ZERO);
+            assert_eq!($vec3::ONE.copysign(-$vec3::ONE), -$vec3::ONE);
+            assert_eq!((-$vec3::ONE).copysign(-$vec3::ONE), -$vec3::ONE);
+            assert_eq!($vec3::ONE.copysign($vec3::ONE), $vec3::ONE);
+            assert_eq!((-$vec3::ONE).copysign($vec3::ONE), $vec3::ONE);
+            assert_eq!(
+                $vec3::splat(INFINITY).copysign($vec3::ONE),
+                $vec3::splat(INFINITY)
+            );
+            assert_eq!(
+                $vec3::splat(INFINITY).copysign(-$vec3::ONE),
+                $vec3::splat(NEG_INFINITY)
+            );
+            assert_eq!(
+                $vec3::splat(NEG_INFINITY).copysign($vec3::ONE),
+                $vec3::splat(INFINITY)
+            );
+            assert_eq!(
+                $vec3::splat(NEG_INFINITY).copysign(-$vec3::ONE),
+                $vec3::splat(NEG_INFINITY)
+            );
+            assert!($vec3::splat(NAN).copysign($vec3::ONE).is_nan_mask().all());
+            assert!($vec3::splat(NAN).copysign(-$vec3::ONE).is_nan_mask().all());
+        });
+
         glam_test!(test_is_negative_bitmask, {
             assert_eq!($vec3::ZERO.is_negative_bitmask(), 0b000);
             assert_eq!((-$vec3::ZERO).is_negative_bitmask(), 0b111);
