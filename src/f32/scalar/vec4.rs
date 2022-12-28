@@ -339,6 +339,17 @@ impl Vec4 {
         }
     }
 
+    /// Returns a vector with signs of `rhs` and the magnitudes of `self`.
+    #[inline]
+    pub fn copysign(self, rhs: Self) -> Self {
+        Self {
+            x: self.x.copysign(rhs.x),
+            y: self.y.copysign(rhs.y),
+            z: self.z.copysign(rhs.z),
+            w: self.w.copysign(rhs.w),
+        }
+    }
+
     /// Returns a bitmask with the lowest 4 bits set to the sign bits from the elements of `self`.
     ///
     /// A negative element results in a `1` bit and a positive element in a `0` bit.  Element `x` goes
