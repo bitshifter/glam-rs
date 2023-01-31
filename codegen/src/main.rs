@@ -13,7 +13,7 @@ fn is_modified(repo: &git2::Repository, output_path: &str) -> anyhow::Result<boo
     match repo.status_file(Path::new(output_path)) {
         Ok(status) => Ok(status.is_wt_modified()),
         Err(e) if e.code() == git2::ErrorCode::NotFound => Ok(false),
-        Err(e) => Err(e).with_context(|| format!("git file status failed for {}", output_path)),
+        Err(e) => Err(e).with_context(|| format!("git file status failed for {output_path}")),
     }
 }
 
@@ -88,7 +88,7 @@ fn main() -> anyhow::Result<()> {
     let mut output_differences = 0;
     for output_path in output_paths {
         if !check {
-            println!("generating {}", output_path);
+            println!("generating {output_path}");
         }
 
         let context = output_pairs.get(output_path).unwrap();
@@ -128,7 +128,7 @@ fn main() -> anyhow::Result<()> {
         }
 
         if stdout {
-            print!("{}", output_str);
+            print!("{output_str}");
             continue;
         }
 

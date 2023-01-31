@@ -20,10 +20,10 @@ impl ContextBuilder {
         ContextBuilder::new()
             .with_template("swizzle_impl.rs.tera")
             .target_scalar()
-            .with_key_val("vec2_t", &format!("{}Vec2", prefix))
-            .with_key_val("vec3_t", &format!("{}Vec3", prefix))
-            .with_key_val("vec4_t", &format!("{}Vec4", prefix))
-            .with_self_t(&format!("{}Vec{}", prefix, dim))
+            .with_key_val("vec2_t", &format!("{prefix}Vec2"))
+            .with_key_val("vec3_t", &format!("{prefix}Vec3"))
+            .with_key_val("vec4_t", &format!("{prefix}Vec4"))
+            .with_self_t(&format!("{prefix}Vec{dim}"))
             .with_dimension(dim)
     }
 
