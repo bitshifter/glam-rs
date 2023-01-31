@@ -1,6 +1,6 @@
 [package]
 name = "codegen"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -8,9 +8,9 @@ edition = "2021"
 [dependencies]
 anyhow = { version = "1" }
 clap = { version = "3", default-features = false, features = ["cargo", "std"] }
-git2 = { version = "0.14", default-features = false }
+git2 = { version = "0.16", default-features = false }
 globset = { version = "0.4", default-features = false }
-rustfmt-wrapper = { version = "0.1" }
+rustfmt-wrapper = { version = "0.2" }
 serde = { version = "1.0", default-features = false, features = ["std"] }
 serde_json = { version = "1.0", default-features = false, features = ["std"] }
 tera = { version = "1", default-features = false }
