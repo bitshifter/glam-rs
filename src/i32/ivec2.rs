@@ -247,9 +247,9 @@ impl IVec2 {
 
     /// Returns a vector with elements representing the sign of `self`.
     ///
-    /// - `1.0` if the number is positive, `+0.0` or `INFINITY`
-    /// - `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
-    /// - `NAN` if the number is `NAN`
+    ///  - `0` if the number is zero
+    ///  - `1` if the number is positive
+    ///  - `-1` if the number is negative
     #[inline]
     pub fn signum(self) -> Self {
         Self {

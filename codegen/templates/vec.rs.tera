@@ -801,9 +801,15 @@ impl {{ self_t }} {
 
     /// Returns a vector with elements representing the sign of `self`.
     ///
+    {% if is_float -%}
     /// - `1.0` if the number is positive, `+0.0` or `INFINITY`
     /// - `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
     /// - `NAN` if the number is `NAN`
+    {%- else -%}
+    ///  - `0` if the number is zero
+    ///  - `1` if the number is positive
+    ///  - `-1` if the number is negative
+    {%- endif %}
     #[inline]
     pub fn signum(self) -> Self {
         {% if is_scalar %}
