@@ -43,16 +43,30 @@
     {% set vec2_t = "IVec2" %}
     {% set vec3_t = "IVec3" %}
     {% set vec4_t = "IVec4" %}
-{% else %}
+{% elif scalar_t == "u32" %}
     {% set is_signed = false %}
     {% set is_float = false %}
     {% set self_t = "UVec" ~ dim %}
     {% set vec2_t = "UVec2" %}
     {% set vec3_t = "UVec3" %}
     {% set vec4_t = "UVec4" %}
+{% elif scalar_t == "i64" %}
+    {% set is_signed = true %}
+    {% set is_float = false %}
+    {% set self_t = "LVec" ~ dim %}
+    {% set vec2_t = "LVec2" %}
+    {% set vec3_t = "LVec3" %}
+    {% set vec4_t = "LVec4" %}
+{% else %}
+    {% set is_signed = false %}
+    {% set is_float = false %}
+    {% set self_t = "ULVec" ~ dim %}
+    {% set vec2_t = "ULVec2" %}
+    {% set vec3_t = "ULVec3" %}
+    {% set vec4_t = "ULVec4" %}
 {% endif %}
 
-{% if scalar_t == "f64" or dim == 4 %}
+{% if scalar_t == "f64" or scalar_t == "i64" or scalar_t == "u64" or dim == 4 %}
     {% set cuda_align = 16 %}
 {% elif dim == 2 %}
     {% set cuda_align = 8 %}
@@ -1572,6 +1586,48 @@ impl {{ self_t }} {
     }
     {% endif %}
 {% endif %}
+{% if scalar_t != "i64" %}
+    {% if dim == 2 %}
+    /// Casts all elements of `self` to `i64`.
+    #[inline]
+    pub fn as_lvec2(&self) -> crate::LVec2 {
+        crate::LVec2::new(self.x as i64, self.y as i64)
+    }
+    {% elif dim == 3 %}
+    /// Casts all elements of `self` to `i64`.
+    #[inline]
+    pub fn as_lvec3(&self) -> crate::LVec3 {
+        crate::LVec3::new(self.x as i64, self.y as i64, self.z as i64)
+    }
+    {% elif dim == 4 %}
+    /// Casts all elements of `self` to `i64`.
+    #[inline]
+    pub fn as_lvec4(&self) -> crate::LVec4 {
+        crate::LVec4::new(self.x as i64, self.y as i64, self.z as i64, self.w as i64)
+    }
+    {% endif %}
+{% endif %}
+{% if scalar_t != "u64" %}
+    {% if dim == 2 %}
+    /// Casts all elements of `self` to `u64`.
+    #[inline]
+    pub fn as_ulvec2(&self) -> crate::ULVec2 {
+        crate::ULVec2::new(self.x as u64, self.y as u64)
+    }
+    {% elif dim == 3 %}
+    /// Casts all elements of `self` to `u64`.
+    #[inline]
+    pub fn as_ulvec3(&self) -> crate::ULVec3 {
+        crate::ULVec3::new(self.x as u64, self.y as u64, self.z as u64)
+    }
+    {% elif dim == 4 %}
+    /// Casts all elements of `self` to `u64`.
+    #[inline]
+    pub fn as_ulvec4(&self) -> crate::ULVec4 {
+        crate::ULVec4::new(self.x as u64, self.y as u64, self.z as u64, self.w as u64)
+    }
+    {% endif %}
+{% endif %}
 }
 
 impl Default for {{ self_t }} {
@@ -2215,7 +2271,7 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-{% for rhs_t in ["i8", "i16", "i32", "u8", "u16", "u32"] %}
+{% for rhs_t in ["i8", "i16", "i32", "i64", "u8", "u16", "u32", "u64"] %}
     impl Shl<{{ rhs_t }}> for {{ self_t }} {
         type Output = Self;
         #[inline]

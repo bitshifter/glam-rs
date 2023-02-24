@@ -360,6 +360,18 @@ impl IVec4 {
     pub fn as_uvec4(&self) -> crate::UVec4 {
         crate::UVec4::new(self.x as u32, self.y as u32, self.z as u32, self.w as u32)
     }
+
+    /// Casts all elements of `self` to `i64`.
+    #[inline]
+    pub fn as_lvec4(&self) -> crate::LVec4 {
+        crate::LVec4::new(self.x as i64, self.y as i64, self.z as i64, self.w as i64)
+    }
+
+    /// Casts all elements of `self` to `u64`.
+    #[inline]
+    pub fn as_ulvec4(&self) -> crate::ULVec4 {
+        crate::ULVec4::new(self.x as u64, self.y as u64, self.z as u64, self.w as u64)
+    }
 }
 
 impl Default for IVec4 {
@@ -902,6 +914,32 @@ impl Shr<i32> for IVec4 {
     }
 }
 
+impl Shl<i64> for IVec4 {
+    type Output = Self;
+    #[inline]
+    fn shl(self, rhs: i64) -> Self::Output {
+        Self {
+            x: self.x.shl(rhs),
+            y: self.y.shl(rhs),
+            z: self.z.shl(rhs),
+            w: self.w.shl(rhs),
+        }
+    }
+}
+
+impl Shr<i64> for IVec4 {
+    type Output = Self;
+    #[inline]
+    fn shr(self, rhs: i64) -> Self::Output {
+        Self {
+            x: self.x.shr(rhs),
+            y: self.y.shr(rhs),
+            z: self.z.shr(rhs),
+            w: self.w.shr(rhs),
+        }
+    }
+}
+
 impl Shl<u8> for IVec4 {
     type Output = Self;
     #[inline]
@@ -971,6 +1009,32 @@ impl Shr<u32> for IVec4 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: u32) -> Self::Output {
+        Self {
+            x: self.x.shr(rhs),
+            y: self.y.shr(rhs),
+            z: self.z.shr(rhs),
+            w: self.w.shr(rhs),
+        }
+    }
+}
+
+impl Shl<u64> for IVec4 {
+    type Output = Self;
+    #[inline]
+    fn shl(self, rhs: u64) -> Self::Output {
+        Self {
+            x: self.x.shl(rhs),
+            y: self.y.shl(rhs),
+            z: self.z.shl(rhs),
+            w: self.w.shl(rhs),
+        }
+    }
+}
+
+impl Shr<u64> for IVec4 {
+    type Output = Self;
+    #[inline]
+    fn shr(self, rhs: u64) -> Self::Output {
         Self {
             x: self.x.shr(rhs),
             y: self.y.shr(rhs),

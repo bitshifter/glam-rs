@@ -1205,7 +1205,7 @@ mod vec4 {
     }
 
     glam_test!(test_as, {
-        use glam::{DVec4, IVec4, UVec4};
+        use glam::{DVec4, IVec4, LVec4, ULVec4, UVec4};
         assert_eq!(
             DVec4::new(-1.0, -2.0, -3.0, -4.0),
             Vec4::new(-1.0, -2.0, -3.0, -4.0).as_dvec4()
@@ -1217,6 +1217,14 @@ mod vec4 {
         assert_eq!(
             UVec4::new(1, 2, 3, 4),
             Vec4::new(1.0, 2.0, 3.0, 4.0).as_uvec4()
+        );
+        assert_eq!(
+            LVec4::new(1, 2, 3, 4),
+            Vec4::new(1.0, 2.0, 3.0, 4.0).as_lvec4()
+        );
+        assert_eq!(
+            ULVec4::new(1, 2, 3, 4),
+            Vec4::new(1.0, 2.0, 3.0, 4.0).as_ulvec4()
         );
 
         assert_eq!(
@@ -1231,6 +1239,14 @@ mod vec4 {
             Vec4::new(-1.0, -2.0, -3.0, -4.0),
             DVec4::new(-1.0, -2.0, -3.0, -4.0).as_vec4()
         );
+        assert_eq!(
+            LVec4::new(1, 2, 3, 4),
+            DVec4::new(1.0, 2.0, 3.0, 4.0).as_lvec4()
+        );
+        assert_eq!(
+            ULVec4::new(1, 2, 3, 4),
+            DVec4::new(1.0, 2.0, 3.0, 4.0).as_ulvec4()
+        );
 
         assert_eq!(
             DVec4::new(-1.0, -2.0, -3.0, -4.0),
@@ -1241,6 +1257,8 @@ mod vec4 {
             Vec4::new(-1.0, -2.0, -3.0, -4.0),
             IVec4::new(-1, -2, -3, -4).as_vec4()
         );
+        assert_eq!(LVec4::new(1, 2, 3, 4), IVec4::new(1, 2, 3, 4).as_lvec4());
+        assert_eq!(ULVec4::new(1, 2, 3, 4), IVec4::new(1, 2, 3, 4).as_ulvec4());
 
         assert_eq!(
             DVec4::new(1.0, 2.0, 3.0, 4.0),
@@ -1251,6 +1269,32 @@ mod vec4 {
             Vec4::new(1.0, 2.0, 3.0, 4.0),
             UVec4::new(1, 2, 3, 4).as_vec4()
         );
+        assert_eq!(LVec4::new(1, 2, 3, 4), UVec4::new(1, 2, 3, 4).as_lvec4());
+        assert_eq!(ULVec4::new(1, 2, 3, 4), UVec4::new(1, 2, 3, 4).as_ulvec4());
+
+        assert_eq!(
+            DVec4::new(-1.0, -2.0, -3.0, -4.0),
+            LVec4::new(-1, -2, -3, -4).as_dvec4()
+        );
+        assert_eq!(UVec4::new(1, 2, 3, 4), LVec4::new(1, 2, 3, 4).as_uvec4());
+        assert_eq!(
+            Vec4::new(-1.0, -2.0, -3.0, -4.0),
+            LVec4::new(-1, -2, -3, -4).as_vec4()
+        );
+        assert_eq!(IVec4::new(1, 2, 3, 4), LVec4::new(1, 2, 3, 4).as_ivec4());
+        assert_eq!(ULVec4::new(1, 2, 3, 4), LVec4::new(1, 2, 3, 4).as_ulvec4());
+
+        assert_eq!(
+            DVec4::new(1.0, 2.0, 3.0, 4.0),
+            ULVec4::new(1, 2, 3, 4).as_dvec4()
+        );
+        assert_eq!(IVec4::new(1, 2, 3, 4), ULVec4::new(1, 2, 3, 4).as_ivec4());
+        assert_eq!(
+            Vec4::new(1.0, 2.0, 3.0, 4.0),
+            ULVec4::new(1, 2, 3, 4).as_vec4()
+        );
+        assert_eq!(LVec4::new(1, 2, 3, 4), ULVec4::new(1, 2, 3, 4).as_lvec4());
+        assert_eq!(UVec4::new(1, 2, 3, 4), ULVec4::new(1, 2, 3, 4).as_uvec4());
     });
 
     glam_test!(test_vec3a, {
@@ -1341,4 +1385,52 @@ mod uvec4 {
 
     impl_vec4_scalar_bit_op_tests!(UVec4, 0, 2);
     impl_vec4_bit_op_tests!(UVec4, 0, 2);
+}
+
+mod lvec4 {
+    use glam::{lvec4, BVec4, IVec4, LVec2, LVec3, LVec4, UVec4};
+
+    glam_test!(test_align, {
+        use std::mem;
+        assert_eq!(32, mem::size_of::<LVec4>());
+        #[cfg(not(feature = "cuda"))]
+        assert_eq!(8, mem::align_of::<LVec4>());
+        #[cfg(feature = "cuda")]
+        assert_eq!(16, mem::align_of::<LVec4>());
+        assert_eq!(4, mem::size_of::<BVec4>());
+        assert_eq!(1, mem::align_of::<BVec4>());
+    });
+
+    impl_vec4_signed_tests!(i64, lvec4, LVec4, LVec3, LVec2, BVec4);
+    impl_vec4_eq_hash_tests!(i64, lvec4);
+
+    impl_vec4_scalar_shift_op_tests!(LVec4, -2, 2);
+    impl_vec4_shift_op_tests!(LVec4);
+
+    impl_vec4_scalar_bit_op_tests!(LVec4, -2, 2);
+    impl_vec4_bit_op_tests!(LVec4, -2, 2);
+}
+
+mod ulvec4 {
+    use glam::{ulvec4, BVec4, IVec4, ULVec2, ULVec3, ULVec4, UVec4};
+
+    glam_test!(test_align, {
+        use std::mem;
+        assert_eq!(32, mem::size_of::<ULVec4>());
+        #[cfg(not(feature = "cuda"))]
+        assert_eq!(8, mem::align_of::<ULVec4>());
+        #[cfg(feature = "cuda")]
+        assert_eq!(16, mem::align_of::<ULVec4>());
+        assert_eq!(4, mem::size_of::<BVec4>());
+        assert_eq!(1, mem::align_of::<BVec4>());
+    });
+
+    impl_vec4_tests!(u64, ulvec4, ULVec4, ULVec3, ULVec2, BVec4);
+    impl_vec4_eq_hash_tests!(u64, ulvec4);
+
+    impl_vec4_scalar_shift_op_tests!(ULVec4, 0, 2);
+    impl_vec4_shift_op_tests!(ULVec4);
+
+    impl_vec4_scalar_bit_op_tests!(ULVec4, 0, 2);
+    impl_vec4_bit_op_tests!(ULVec4, 0, 2);
 }

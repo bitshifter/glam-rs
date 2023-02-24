@@ -1,89 +1,77 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec4, Vec2, Vec3, Vec3A};
+use crate::{BVec4, LVec2, LVec3};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::{f32, ops::*};
 
-#[cfg(feature = "libm")]
-#[allow(unused_imports)]
-use num_traits::Float;
-
 /// Creates a 4-dimensional vector.
 #[inline(always)]
-pub const fn vec4(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
-    Vec4::new(x, y, z, w)
+pub const fn lvec4(x: i64, y: i64, z: i64, w: i64) -> LVec4 {
+    LVec4::new(x, y, z, w)
 }
 
 /// A 4-dimensional vector.
-#[derive(Clone, Copy, PartialEq)]
-#[cfg_attr(
-    any(
-        not(any(feature = "scalar-math", target_arch = "spirv")),
-        feature = "cuda"
-    ),
-    repr(align(16))
-)]
+#[cfg_attr(not(target_arch = "spirv"), derive(Hash))]
+#[derive(Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(feature = "cuda", repr(align(16)))]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
-pub struct Vec4 {
-    pub x: f32,
-    pub y: f32,
-    pub z: f32,
-    pub w: f32,
+pub struct LVec4 {
+    pub x: i64,
+    pub y: i64,
+    pub z: i64,
+    pub w: i64,
 }
 
-impl Vec4 {
+impl LVec4 {
     /// All zeroes.
-    pub const ZERO: Self = Self::splat(0.0);
+    pub const ZERO: Self = Self::splat(0);
 
     /// All ones.
-    pub const ONE: Self = Self::splat(1.0);
+    pub const ONE: Self = Self::splat(1);
 
     /// All negative ones.
-    pub const NEG_ONE: Self = Self::splat(-1.0);
-
-    /// All NAN.
-    pub const NAN: Self = Self::splat(f32::NAN);
+    pub const NEG_ONE: Self = Self::splat(-1);
 
     /// A unit-length vector pointing along the positive X axis.
-    pub const X: Self = Self::new(1.0, 0.0, 0.0, 0.0);
+    pub const X: Self = Self::new(1, 0, 0, 0);
 
     /// A unit-length vector pointing along the positive Y axis.
-    pub const Y: Self = Self::new(0.0, 1.0, 0.0, 0.0);
+    pub const Y: Self = Self::new(0, 1, 0, 0);
 
     /// A unit-length vector pointing along the positive Z axis.
-    pub const Z: Self = Self::new(0.0, 0.0, 1.0, 0.0);
+    pub const Z: Self = Self::new(0, 0, 1, 0);
 
     /// A unit-length vector pointing along the positive W axis.
-    pub const W: Self = Self::new(0.0, 0.0, 0.0, 1.0);
+    pub const W: Self = Self::new(0, 0, 0, 1);
 
     /// A unit-length vector pointing along the negative X axis.
-    pub const NEG_X: Self = Self::new(-1.0, 0.0, 0.0, 0.0);
+    pub const NEG_X: Self = Self::new(-1, 0, 0, 0);
 
     /// A unit-length vector pointing along the negative Y axis.
-    pub const NEG_Y: Self = Self::new(0.0, -1.0, 0.0, 0.0);
+    pub const NEG_Y: Self = Self::new(0, -1, 0, 0);
 
     /// A unit-length vector pointing along the negative Z axis.
-    pub const NEG_Z: Self = Self::new(0.0, 0.0, -1.0, 0.0);
+    pub const NEG_Z: Self = Self::new(0, 0, -1, 0);
 
     /// A unit-length vector pointing along the negative W axis.
-    pub const NEG_W: Self = Self::new(0.0, 0.0, 0.0, -1.0);
+    pub const NEG_W: Self = Self::new(0, 0, 0, -1);
 
     /// The unit axes.
     pub const AXES: [Self; 4] = [Self::X, Self::Y, Self::Z, Self::W];
 
     /// Creates a new vector.
     #[inline(always)]
-    pub const fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
+    pub const fn new(x: i64, y: i64, z: i64, w: i64) -> Self {
         Self { x, y, z, w }
     }
 
     /// Creates a vector with all elements set to `v`.
     #[inline]
-    pub const fn splat(v: f32) -> Self {
+    pub const fn splat(v: i64) -> Self {
         Self {
             x: v,
 
@@ -112,13 +100,13 @@ impl Vec4 {
 
     /// Creates a new vector from an array.
     #[inline]
-    pub const fn from_array(a: [f32; 4]) -> Self {
+    pub const fn from_array(a: [i64; 4]) -> Self {
         Self::new(a[0], a[1], a[2], a[3])
     }
 
     /// `[x, y, z, w]`
     #[inline]
-    pub const fn to_array(&self) -> [f32; 4] {
+    pub const fn to_array(&self) -> [i64; 4] {
         [self.x, self.y, self.z, self.w]
     }
 
@@ -128,7 +116,7 @@ impl Vec4 {
     ///
     /// Panics if `slice` is less than 4 elements long.
     #[inline]
-    pub const fn from_slice(slice: &[f32]) -> Self {
+    pub const fn from_slice(slice: &[i64]) -> Self {
         Self::new(slice[0], slice[1], slice[2], slice[3])
     }
 
@@ -138,7 +126,7 @@ impl Vec4 {
     ///
     /// Panics if `slice` is less than 4 elements long.
     #[inline]
-    pub fn write_to_slice(self, slice: &mut [f32]) {
+    pub fn write_to_slice(self, slice: &mut [i64]) {
         slice[0] = self.x;
         slice[1] = self.y;
         slice[2] = self.z;
@@ -147,18 +135,16 @@ impl Vec4 {
 
     /// Creates a 2D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
     ///
-    /// Truncation to `Vec3` may also be performed by using `self.xyz()` or `Vec3::from()`.
-    ///
-    /// To truncate to `Vec3A` use `Vec3A::from()`.
+    /// Truncation to `LVec3` may also be performed by using `self.xyz()` or `LVec3::from()`.
     #[inline]
-    pub fn truncate(self) -> Vec3 {
+    pub fn truncate(self) -> LVec3 {
         use crate::swizzles::Vec4Swizzles;
         self.xyz()
     }
 
     /// Computes the dot product of `self` and `rhs`.
     #[inline]
-    pub fn dot(self, rhs: Self) -> f32 {
+    pub fn dot(self, rhs: Self) -> i64 {
         (self.x * rhs.x) + (self.y * rhs.y) + (self.z * rhs.z) + (self.w * rhs.w)
     }
 
@@ -194,7 +180,7 @@ impl Vec4 {
         }
     }
 
-    /// Component-wise clamping of values, similar to [`f32::clamp`].
+    /// Component-wise clamping of values, similar to [`i64::clamp`].
     ///
     /// Each element in `min` must be less-or-equal to the corresponding element in `max`.
     ///
@@ -211,7 +197,7 @@ impl Vec4 {
     ///
     /// In other words this computes `min(x, y, ..)`.
     #[inline]
-    pub fn min_element(self) -> f32 {
+    pub fn min_element(self) -> i64 {
         self.x.min(self.y.min(self.z.min(self.w)))
     }
 
@@ -219,7 +205,7 @@ impl Vec4 {
     ///
     /// In other words this computes `max(x, y, ..)`.
     #[inline]
-    pub fn max_element(self) -> f32 {
+    pub fn max_element(self) -> i64 {
         self.x.max(self.y.max(self.z.max(self.w)))
     }
 
@@ -326,9 +312,9 @@ impl Vec4 {
 
     /// Returns a vector with elements representing the sign of `self`.
     ///
-    /// - `1.0` if the number is positive, `+0.0` or `INFINITY`
-    /// - `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
-    /// - `NAN` if the number is `NAN`
+    ///  - `0` if the number is zero
+    ///  - `1` if the number is positive
+    ///  - `-1` if the number is negative
     #[inline]
     pub fn signum(self) -> Self {
         Self {
@@ -342,12 +328,7 @@ impl Vec4 {
     /// Returns a vector with signs of `rhs` and the magnitudes of `self`.
     #[inline]
     pub fn copysign(self, rhs: Self) -> Self {
-        Self {
-            x: self.x.copysign(rhs.x),
-            y: self.y.copysign(rhs.y),
-            z: self.z.copysign(rhs.z),
-            w: self.w.copysign(rhs.w),
-        }
+        Self::select(rhs.cmpge(Self::ZERO), self, -self)
     }
 
     /// Returns a bitmask with the lowest 4 bits set to the sign bits from the elements of `self`.
@@ -356,348 +337,16 @@ impl Vec4 {
     /// into the first lowest bit, element `y` into the second, etc.
     #[inline]
     pub fn is_negative_bitmask(self) -> u32 {
-        (self.x.is_sign_negative() as u32)
-            | (self.y.is_sign_negative() as u32) << 1
-            | (self.z.is_sign_negative() as u32) << 2
-            | (self.w.is_sign_negative() as u32) << 3
+        (self.x.is_negative() as u32)
+            | (self.y.is_negative() as u32) << 1
+            | (self.z.is_negative() as u32) << 2
+            | (self.w.is_negative() as u32) << 3
     }
 
-    /// Returns `true` if, and only if, all elements are finite.  If any element is either
-    /// `NaN`, positive or negative infinity, this will return `false`.
+    /// Casts all elements of `self` to `f32`.
     #[inline]
-    pub fn is_finite(self) -> bool {
-        self.x.is_finite() && self.y.is_finite() && self.z.is_finite() && self.w.is_finite()
-    }
-
-    /// Returns `true` if any elements are `NaN`.
-    #[inline]
-    pub fn is_nan(self) -> bool {
-        self.x.is_nan() || self.y.is_nan() || self.z.is_nan() || self.w.is_nan()
-    }
-
-    /// Performs `is_nan` on each element of self, returning a vector mask of the results.
-    ///
-    /// In other words, this computes `[x.is_nan(), y.is_nan(), z.is_nan(), w.is_nan()]`.
-    #[inline]
-    pub fn is_nan_mask(self) -> BVec4 {
-        BVec4::new(
-            self.x.is_nan(),
-            self.y.is_nan(),
-            self.z.is_nan(),
-            self.w.is_nan(),
-        )
-    }
-
-    /// Computes the length of `self`.
-    #[doc(alias = "magnitude")]
-    #[inline]
-    pub fn length(self) -> f32 {
-        self.dot(self).sqrt()
-    }
-
-    /// Computes the squared length of `self`.
-    ///
-    /// This is faster than `length()` as it avoids a square root operation.
-    #[doc(alias = "magnitude2")]
-    #[inline]
-    pub fn length_squared(self) -> f32 {
-        self.dot(self)
-    }
-
-    /// Computes `1.0 / length()`.
-    ///
-    /// For valid results, `self` must _not_ be of length zero.
-    #[inline]
-    pub fn length_recip(self) -> f32 {
-        self.length().recip()
-    }
-
-    /// Computes the Euclidean distance between two points in space.
-    #[inline]
-    pub fn distance(self, rhs: Self) -> f32 {
-        (self - rhs).length()
-    }
-
-    /// Compute the squared euclidean distance between two points in space.
-    #[inline]
-    pub fn distance_squared(self, rhs: Self) -> f32 {
-        (self - rhs).length_squared()
-    }
-
-    /// Returns `self` normalized to length 1.0.
-    ///
-    /// For valid results, `self` must _not_ be of length zero, nor very close to zero.
-    ///
-    /// See also [`Self::try_normalize`] and [`Self::normalize_or_zero`].
-    ///
-    /// Panics
-    ///
-    /// Will panic if `self` is zero length when `glam_assert` is enabled.
-    #[must_use]
-    #[inline]
-    pub fn normalize(self) -> Self {
-        #[allow(clippy::let_and_return)]
-        let normalized = self.mul(self.length_recip());
-        glam_assert!(normalized.is_finite());
-        normalized
-    }
-
-    /// Returns `self` normalized to length 1.0 if possible, else returns `None`.
-    ///
-    /// In particular, if the input is zero (or very close to zero), or non-finite,
-    /// the result of this operation will be `None`.
-    ///
-    /// See also [`Self::normalize_or_zero`].
-    #[must_use]
-    #[inline]
-    pub fn try_normalize(self) -> Option<Self> {
-        let rcp = self.length_recip();
-        if rcp.is_finite() && rcp > 0.0 {
-            Some(self * rcp)
-        } else {
-            None
-        }
-    }
-
-    /// Returns `self` normalized to length 1.0 if possible, else returns zero.
-    ///
-    /// In particular, if the input is zero (or very close to zero), or non-finite,
-    /// the result of this operation will be zero.
-    ///
-    /// See also [`Self::try_normalize`].
-    #[must_use]
-    #[inline]
-    pub fn normalize_or_zero(self) -> Self {
-        let rcp = self.length_recip();
-        if rcp.is_finite() && rcp > 0.0 {
-            self * rcp
-        } else {
-            Self::ZERO
-        }
-    }
-
-    /// Returns whether `self` is length `1.0` or not.
-    ///
-    /// Uses a precision threshold of `1e-6`.
-    #[inline]
-    pub fn is_normalized(self) -> bool {
-        // TODO: do something with epsilon
-        (self.length_squared() - 1.0).abs() <= 1e-4
-    }
-
-    /// Returns the vector projection of `self` onto `rhs`.
-    ///
-    /// `rhs` must be of non-zero length.
-    ///
-    /// # Panics
-    ///
-    /// Will panic if `rhs` is zero length when `glam_assert` is enabled.
-    #[must_use]
-    #[inline]
-    pub fn project_onto(self, rhs: Self) -> Self {
-        let other_len_sq_rcp = rhs.dot(rhs).recip();
-        glam_assert!(other_len_sq_rcp.is_finite());
-        rhs * self.dot(rhs) * other_len_sq_rcp
-    }
-
-    /// Returns the vector rejection of `self` from `rhs`.
-    ///
-    /// The vector rejection is the vector perpendicular to the projection of `self` onto
-    /// `rhs`, in rhs words the result of `self - self.project_onto(rhs)`.
-    ///
-    /// `rhs` must be of non-zero length.
-    ///
-    /// # Panics
-    ///
-    /// Will panic if `rhs` has a length of zero when `glam_assert` is enabled.
-    #[must_use]
-    #[inline]
-    pub fn reject_from(self, rhs: Self) -> Self {
-        self - self.project_onto(rhs)
-    }
-
-    /// Returns the vector projection of `self` onto `rhs`.
-    ///
-    /// `rhs` must be normalized.
-    ///
-    /// # Panics
-    ///
-    /// Will panic if `rhs` is not normalized when `glam_assert` is enabled.
-    #[must_use]
-    #[inline]
-    pub fn project_onto_normalized(self, rhs: Self) -> Self {
-        glam_assert!(rhs.is_normalized());
-        rhs * self.dot(rhs)
-    }
-
-    /// Returns the vector rejection of `self` from `rhs`.
-    ///
-    /// The vector rejection is the vector perpendicular to the projection of `self` onto
-    /// `rhs`, in rhs words the result of `self - self.project_onto(rhs)`.
-    ///
-    /// `rhs` must be normalized.
-    ///
-    /// # Panics
-    ///
-    /// Will panic if `rhs` is not normalized when `glam_assert` is enabled.
-    #[must_use]
-    #[inline]
-    pub fn reject_from_normalized(self, rhs: Self) -> Self {
-        self - self.project_onto_normalized(rhs)
-    }
-
-    /// Returns a vector containing the nearest integer to a number for each element of `self`.
-    /// Round half-way cases away from 0.0.
-    #[inline]
-    pub fn round(self) -> Self {
-        Self {
-            x: self.x.round(),
-            y: self.y.round(),
-            z: self.z.round(),
-            w: self.w.round(),
-        }
-    }
-
-    /// Returns a vector containing the largest integer less than or equal to a number for each
-    /// element of `self`.
-    #[inline]
-    pub fn floor(self) -> Self {
-        Self {
-            x: self.x.floor(),
-            y: self.y.floor(),
-            z: self.z.floor(),
-            w: self.w.floor(),
-        }
-    }
-
-    /// Returns a vector containing the smallest integer greater than or equal to a number for
-    /// each element of `self`.
-    #[inline]
-    pub fn ceil(self) -> Self {
-        Self {
-            x: self.x.ceil(),
-            y: self.y.ceil(),
-            z: self.z.ceil(),
-            w: self.w.ceil(),
-        }
-    }
-
-    /// Returns a vector containing the fractional part of the vector, e.g. `self -
-    /// self.floor()`.
-    ///
-    /// Note that this is fast but not precise for large numbers.
-    #[inline]
-    pub fn fract(self) -> Self {
-        self - self.floor()
-    }
-
-    /// Returns a vector containing `e^self` (the exponential function) for each element of
-    /// `self`.
-    #[inline]
-    pub fn exp(self) -> Self {
-        Self::new(self.x.exp(), self.y.exp(), self.z.exp(), self.w.exp())
-    }
-
-    /// Returns a vector containing each element of `self` raised to the power of `n`.
-    #[inline]
-    pub fn powf(self, n: f32) -> Self {
-        Self::new(
-            self.x.powf(n),
-            self.y.powf(n),
-            self.z.powf(n),
-            self.w.powf(n),
-        )
-    }
-
-    /// Returns a vector containing the reciprocal `1.0/n` of each element of `self`.
-    #[inline]
-    pub fn recip(self) -> Self {
-        Self {
-            x: self.x.recip(),
-            y: self.y.recip(),
-            z: self.z.recip(),
-            w: self.w.recip(),
-        }
-    }
-
-    /// Performs a linear interpolation between `self` and `rhs` based on the value `s`.
-    ///
-    /// When `s` is `0.0`, the result will be equal to `self`.  When `s` is `1.0`, the result
-    /// will be equal to `rhs`. When `s` is outside of range `[0, 1]`, the result is linearly
-    /// extrapolated.
-    #[doc(alias = "mix")]
-    #[inline]
-    pub fn lerp(self, rhs: Self, s: f32) -> Self {
-        self + ((rhs - self) * s)
-    }
-
-    /// Returns true if the absolute difference of all elements between `self` and `rhs` is
-    /// less than or equal to `max_abs_diff`.
-    ///
-    /// This can be used to compare if two vectors contain similar elements. It works best when
-    /// comparing with a known value. The `max_abs_diff` that should be used used depends on
-    /// the values being compared against.
-    ///
-    /// For more see
-    /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
-    #[inline]
-    pub fn abs_diff_eq(self, rhs: Self, max_abs_diff: f32) -> bool {
-        self.sub(rhs).abs().cmple(Self::splat(max_abs_diff)).all()
-    }
-
-    /// Returns a vector with a length no less than `min` and no more than `max`
-    ///
-    /// # Panics
-    ///
-    /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
-    #[inline]
-    pub fn clamp_length(self, min: f32, max: f32) -> Self {
-        glam_assert!(min <= max);
-        let length_sq = self.length_squared();
-        if length_sq < min * min {
-            self * (length_sq.sqrt().recip() * min)
-        } else if length_sq > max * max {
-            self * (length_sq.sqrt().recip() * max)
-        } else {
-            self
-        }
-    }
-
-    /// Returns a vector with a length no more than `max`
-    pub fn clamp_length_max(self, max: f32) -> Self {
-        let length_sq = self.length_squared();
-        if length_sq > max * max {
-            self * (length_sq.sqrt().recip() * max)
-        } else {
-            self
-        }
-    }
-
-    /// Returns a vector with a length no less than `min`
-    pub fn clamp_length_min(self, min: f32) -> Self {
-        let length_sq = self.length_squared();
-        if length_sq < min * min {
-            self * (length_sq.sqrt().recip() * min)
-        } else {
-            self
-        }
-    }
-
-    /// Fused multiply-add. Computes `(self * a) + b` element-wise with only one rounding
-    /// error, yielding a more accurate result than an unfused multiply-add.
-    ///
-    /// Using `mul_add` *may* be more performant than an unfused multiply-add if the target
-    /// architecture has a dedicated fma CPU instruction. However, this is not always true,
-    /// and will be heavily dependant on designing algorithms with specific target hardware in
-    /// mind.
-    #[inline]
-    pub fn mul_add(self, a: Self, b: Self) -> Self {
-        Self::new(
-            self.x.mul_add(a.x, b.x),
-            self.y.mul_add(a.y, b.y),
-            self.z.mul_add(a.z, b.z),
-            self.w.mul_add(a.w, b.w),
-        )
+    pub fn as_vec4(&self) -> crate::Vec4 {
+        crate::Vec4::new(self.x as f32, self.y as f32, self.z as f32, self.w as f32)
     }
 
     /// Casts all elements of `self` to `f64`.
@@ -718,12 +367,6 @@ impl Vec4 {
         crate::UVec4::new(self.x as u32, self.y as u32, self.z as u32, self.w as u32)
     }
 
-    /// Casts all elements of `self` to `i64`.
-    #[inline]
-    pub fn as_lvec4(&self) -> crate::LVec4 {
-        crate::LVec4::new(self.x as i64, self.y as i64, self.z as i64, self.w as i64)
-    }
-
     /// Casts all elements of `self` to `u64`.
     #[inline]
     pub fn as_ulvec4(&self) -> crate::ULVec4 {
@@ -731,14 +374,14 @@ impl Vec4 {
     }
 }
 
-impl Default for Vec4 {
+impl Default for LVec4 {
     #[inline(always)]
     fn default() -> Self {
         Self::ZERO
     }
 }
 
-impl Div<Vec4> for Vec4 {
+impl Div<LVec4> for LVec4 {
     type Output = Self;
     #[inline]
     fn div(self, rhs: Self) -> Self {
@@ -751,7 +394,7 @@ impl Div<Vec4> for Vec4 {
     }
 }
 
-impl DivAssign<Vec4> for Vec4 {
+impl DivAssign<LVec4> for LVec4 {
     #[inline]
     fn div_assign(&mut self, rhs: Self) {
         self.x.div_assign(rhs.x);
@@ -761,10 +404,10 @@ impl DivAssign<Vec4> for Vec4 {
     }
 }
 
-impl Div<f32> for Vec4 {
+impl Div<i64> for LVec4 {
     type Output = Self;
     #[inline]
-    fn div(self, rhs: f32) -> Self {
+    fn div(self, rhs: i64) -> Self {
         Self {
             x: self.x.div(rhs),
             y: self.y.div(rhs),
@@ -774,9 +417,9 @@ impl Div<f32> for Vec4 {
     }
 }
 
-impl DivAssign<f32> for Vec4 {
+impl DivAssign<i64> for LVec4 {
     #[inline]
-    fn div_assign(&mut self, rhs: f32) {
+    fn div_assign(&mut self, rhs: i64) {
         self.x.div_assign(rhs);
         self.y.div_assign(rhs);
         self.z.div_assign(rhs);
@@ -784,11 +427,11 @@ impl DivAssign<f32> for Vec4 {
     }
 }
 
-impl Div<Vec4> for f32 {
-    type Output = Vec4;
+impl Div<LVec4> for i64 {
+    type Output = LVec4;
     #[inline]
-    fn div(self, rhs: Vec4) -> Vec4 {
-        Vec4 {
+    fn div(self, rhs: LVec4) -> LVec4 {
+        LVec4 {
             x: self.div(rhs.x),
             y: self.div(rhs.y),
             z: self.div(rhs.z),
@@ -797,7 +440,7 @@ impl Div<Vec4> for f32 {
     }
 }
 
-impl Mul<Vec4> for Vec4 {
+impl Mul<LVec4> for LVec4 {
     type Output = Self;
     #[inline]
     fn mul(self, rhs: Self) -> Self {
@@ -810,7 +453,7 @@ impl Mul<Vec4> for Vec4 {
     }
 }
 
-impl MulAssign<Vec4> for Vec4 {
+impl MulAssign<LVec4> for LVec4 {
     #[inline]
     fn mul_assign(&mut self, rhs: Self) {
         self.x.mul_assign(rhs.x);
@@ -820,10 +463,10 @@ impl MulAssign<Vec4> for Vec4 {
     }
 }
 
-impl Mul<f32> for Vec4 {
+impl Mul<i64> for LVec4 {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: f32) -> Self {
+    fn mul(self, rhs: i64) -> Self {
         Self {
             x: self.x.mul(rhs),
             y: self.y.mul(rhs),
@@ -833,9 +476,9 @@ impl Mul<f32> for Vec4 {
     }
 }
 
-impl MulAssign<f32> for Vec4 {
+impl MulAssign<i64> for LVec4 {
     #[inline]
-    fn mul_assign(&mut self, rhs: f32) {
+    fn mul_assign(&mut self, rhs: i64) {
         self.x.mul_assign(rhs);
         self.y.mul_assign(rhs);
         self.z.mul_assign(rhs);
@@ -843,11 +486,11 @@ impl MulAssign<f32> for Vec4 {
     }
 }
 
-impl Mul<Vec4> for f32 {
-    type Output = Vec4;
+impl Mul<LVec4> for i64 {
+    type Output = LVec4;
     #[inline]
-    fn mul(self, rhs: Vec4) -> Vec4 {
-        Vec4 {
+    fn mul(self, rhs: LVec4) -> LVec4 {
+        LVec4 {
             x: self.mul(rhs.x),
             y: self.mul(rhs.y),
             z: self.mul(rhs.z),
@@ -856,7 +499,7 @@ impl Mul<Vec4> for f32 {
     }
 }
 
-impl Add<Vec4> for Vec4 {
+impl Add<LVec4> for LVec4 {
     type Output = Self;
     #[inline]
     fn add(self, rhs: Self) -> Self {
@@ -869,7 +512,7 @@ impl Add<Vec4> for Vec4 {
     }
 }
 
-impl AddAssign<Vec4> for Vec4 {
+impl AddAssign<LVec4> for LVec4 {
     #[inline]
     fn add_assign(&mut self, rhs: Self) {
         self.x.add_assign(rhs.x);
@@ -879,10 +522,10 @@ impl AddAssign<Vec4> for Vec4 {
     }
 }
 
-impl Add<f32> for Vec4 {
+impl Add<i64> for LVec4 {
     type Output = Self;
     #[inline]
-    fn add(self, rhs: f32) -> Self {
+    fn add(self, rhs: i64) -> Self {
         Self {
             x: self.x.add(rhs),
             y: self.y.add(rhs),
@@ -892,9 +535,9 @@ impl Add<f32> for Vec4 {
     }
 }
 
-impl AddAssign<f32> for Vec4 {
+impl AddAssign<i64> for LVec4 {
     #[inline]
-    fn add_assign(&mut self, rhs: f32) {
+    fn add_assign(&mut self, rhs: i64) {
         self.x.add_assign(rhs);
         self.y.add_assign(rhs);
         self.z.add_assign(rhs);
@@ -902,11 +545,11 @@ impl AddAssign<f32> for Vec4 {
     }
 }
 
-impl Add<Vec4> for f32 {
-    type Output = Vec4;
+impl Add<LVec4> for i64 {
+    type Output = LVec4;
     #[inline]
-    fn add(self, rhs: Vec4) -> Vec4 {
-        Vec4 {
+    fn add(self, rhs: LVec4) -> LVec4 {
+        LVec4 {
             x: self.add(rhs.x),
             y: self.add(rhs.y),
             z: self.add(rhs.z),
@@ -915,7 +558,7 @@ impl Add<Vec4> for f32 {
     }
 }
 
-impl Sub<Vec4> for Vec4 {
+impl Sub<LVec4> for LVec4 {
     type Output = Self;
     #[inline]
     fn sub(self, rhs: Self) -> Self {
@@ -928,9 +571,9 @@ impl Sub<Vec4> for Vec4 {
     }
 }
 
-impl SubAssign<Vec4> for Vec4 {
+impl SubAssign<LVec4> for LVec4 {
     #[inline]
-    fn sub_assign(&mut self, rhs: Vec4) {
+    fn sub_assign(&mut self, rhs: LVec4) {
         self.x.sub_assign(rhs.x);
         self.y.sub_assign(rhs.y);
         self.z.sub_assign(rhs.z);
@@ -938,10 +581,10 @@ impl SubAssign<Vec4> for Vec4 {
     }
 }
 
-impl Sub<f32> for Vec4 {
+impl Sub<i64> for LVec4 {
     type Output = Self;
     #[inline]
-    fn sub(self, rhs: f32) -> Self {
+    fn sub(self, rhs: i64) -> Self {
         Self {
             x: self.x.sub(rhs),
             y: self.y.sub(rhs),
@@ -951,9 +594,9 @@ impl Sub<f32> for Vec4 {
     }
 }
 
-impl SubAssign<f32> for Vec4 {
+impl SubAssign<i64> for LVec4 {
     #[inline]
-    fn sub_assign(&mut self, rhs: f32) {
+    fn sub_assign(&mut self, rhs: i64) {
         self.x.sub_assign(rhs);
         self.y.sub_assign(rhs);
         self.z.sub_assign(rhs);
@@ -961,11 +604,11 @@ impl SubAssign<f32> for Vec4 {
     }
 }
 
-impl Sub<Vec4> for f32 {
-    type Output = Vec4;
+impl Sub<LVec4> for i64 {
+    type Output = LVec4;
     #[inline]
-    fn sub(self, rhs: Vec4) -> Vec4 {
-        Vec4 {
+    fn sub(self, rhs: LVec4) -> LVec4 {
+        LVec4 {
             x: self.sub(rhs.x),
             y: self.sub(rhs.y),
             z: self.sub(rhs.z),
@@ -974,7 +617,7 @@ impl Sub<Vec4> for f32 {
     }
 }
 
-impl Rem<Vec4> for Vec4 {
+impl Rem<LVec4> for LVec4 {
     type Output = Self;
     #[inline]
     fn rem(self, rhs: Self) -> Self {
@@ -987,7 +630,7 @@ impl Rem<Vec4> for Vec4 {
     }
 }
 
-impl RemAssign<Vec4> for Vec4 {
+impl RemAssign<LVec4> for LVec4 {
     #[inline]
     fn rem_assign(&mut self, rhs: Self) {
         self.x.rem_assign(rhs.x);
@@ -997,10 +640,10 @@ impl RemAssign<Vec4> for Vec4 {
     }
 }
 
-impl Rem<f32> for Vec4 {
+impl Rem<i64> for LVec4 {
     type Output = Self;
     #[inline]
-    fn rem(self, rhs: f32) -> Self {
+    fn rem(self, rhs: i64) -> Self {
         Self {
             x: self.x.rem(rhs),
             y: self.y.rem(rhs),
@@ -1010,9 +653,9 @@ impl Rem<f32> for Vec4 {
     }
 }
 
-impl RemAssign<f32> for Vec4 {
+impl RemAssign<i64> for LVec4 {
     #[inline]
-    fn rem_assign(&mut self, rhs: f32) {
+    fn rem_assign(&mut self, rhs: i64) {
         self.x.rem_assign(rhs);
         self.y.rem_assign(rhs);
         self.z.rem_assign(rhs);
@@ -1020,11 +663,11 @@ impl RemAssign<f32> for Vec4 {
     }
 }
 
-impl Rem<Vec4> for f32 {
-    type Output = Vec4;
+impl Rem<LVec4> for i64 {
+    type Output = LVec4;
     #[inline]
-    fn rem(self, rhs: Vec4) -> Vec4 {
-        Vec4 {
+    fn rem(self, rhs: LVec4) -> LVec4 {
+        LVec4 {
             x: self.rem(rhs.x),
             y: self.rem(rhs.y),
             z: self.rem(rhs.z),
@@ -1034,22 +677,22 @@ impl Rem<Vec4> for f32 {
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl AsRef<[f32; 4]> for Vec4 {
+impl AsRef<[i64; 4]> for LVec4 {
     #[inline]
-    fn as_ref(&self) -> &[f32; 4] {
-        unsafe { &*(self as *const Vec4 as *const [f32; 4]) }
+    fn as_ref(&self) -> &[i64; 4] {
+        unsafe { &*(self as *const LVec4 as *const [i64; 4]) }
     }
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl AsMut<[f32; 4]> for Vec4 {
+impl AsMut<[i64; 4]> for LVec4 {
     #[inline]
-    fn as_mut(&mut self) -> &mut [f32; 4] {
-        unsafe { &mut *(self as *mut Vec4 as *mut [f32; 4]) }
+    fn as_mut(&mut self) -> &mut [i64; 4] {
+        unsafe { &mut *(self as *mut LVec4 as *mut [i64; 4]) }
     }
 }
 
-impl Sum for Vec4 {
+impl Sum for LVec4 {
     #[inline]
     fn sum<I>(iter: I) -> Self
     where
@@ -1059,7 +702,7 @@ impl Sum for Vec4 {
     }
 }
 
-impl<'a> Sum<&'a Self> for Vec4 {
+impl<'a> Sum<&'a Self> for LVec4 {
     #[inline]
     fn sum<I>(iter: I) -> Self
     where
@@ -1069,7 +712,7 @@ impl<'a> Sum<&'a Self> for Vec4 {
     }
 }
 
-impl Product for Vec4 {
+impl Product for LVec4 {
     #[inline]
     fn product<I>(iter: I) -> Self
     where
@@ -1079,7 +722,7 @@ impl Product for Vec4 {
     }
 }
 
-impl<'a> Product<&'a Self> for Vec4 {
+impl<'a> Product<&'a Self> for LVec4 {
     #[inline]
     fn product<I>(iter: I) -> Self
     where
@@ -1089,7 +732,7 @@ impl<'a> Product<&'a Self> for Vec4 {
     }
 }
 
-impl Neg for Vec4 {
+impl Neg for LVec4 {
     type Output = Self;
     #[inline]
     fn neg(self) -> Self {
@@ -1102,8 +745,359 @@ impl Neg for Vec4 {
     }
 }
 
-impl Index<usize> for Vec4 {
-    type Output = f32;
+impl Not for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn not(self) -> Self::Output {
+        Self {
+            x: self.x.not(),
+            y: self.y.not(),
+            z: self.z.not(),
+            w: self.w.not(),
+        }
+    }
+}
+
+impl BitAnd for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn bitand(self, rhs: Self) -> Self::Output {
+        Self {
+            x: self.x.bitand(rhs.x),
+            y: self.y.bitand(rhs.y),
+            z: self.z.bitand(rhs.z),
+            w: self.w.bitand(rhs.w),
+        }
+    }
+}
+
+impl BitOr for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn bitor(self, rhs: Self) -> Self::Output {
+        Self {
+            x: self.x.bitor(rhs.x),
+            y: self.y.bitor(rhs.y),
+            z: self.z.bitor(rhs.z),
+            w: self.w.bitor(rhs.w),
+        }
+    }
+}
+
+impl BitXor for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn bitxor(self, rhs: Self) -> Self::Output {
+        Self {
+            x: self.x.bitxor(rhs.x),
+            y: self.y.bitxor(rhs.y),
+            z: self.z.bitxor(rhs.z),
+            w: self.w.bitxor(rhs.w),
+        }
+    }
+}
+
+impl BitAnd<i64> for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn bitand(self, rhs: i64) -> Self::Output {
+        Self {
+            x: self.x.bitand(rhs),
+            y: self.y.bitand(rhs),
+            z: self.z.bitand(rhs),
+            w: self.w.bitand(rhs),
+        }
+    }
+}
+
+impl BitOr<i64> for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn bitor(self, rhs: i64) -> Self::Output {
+        Self {
+            x: self.x.bitor(rhs),
+            y: self.y.bitor(rhs),
+            z: self.z.bitor(rhs),
+            w: self.w.bitor(rhs),
+        }
+    }
+}
+
+impl BitXor<i64> for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn bitxor(self, rhs: i64) -> Self::Output {
+        Self {
+            x: self.x.bitxor(rhs),
+            y: self.y.bitxor(rhs),
+            z: self.z.bitxor(rhs),
+            w: self.w.bitxor(rhs),
+        }
+    }
+}
+
+impl Shl<i8> for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn shl(self, rhs: i8) -> Self::Output {
+        Self {
+            x: self.x.shl(rhs),
+            y: self.y.shl(rhs),
+            z: self.z.shl(rhs),
+            w: self.w.shl(rhs),
+        }
+    }
+}
+
+impl Shr<i8> for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn shr(self, rhs: i8) -> Self::Output {
+        Self {
+            x: self.x.shr(rhs),
+            y: self.y.shr(rhs),
+            z: self.z.shr(rhs),
+            w: self.w.shr(rhs),
+        }
+    }
+}
+
+impl Shl<i16> for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn shl(self, rhs: i16) -> Self::Output {
+        Self {
+            x: self.x.shl(rhs),
+            y: self.y.shl(rhs),
+            z: self.z.shl(rhs),
+            w: self.w.shl(rhs),
+        }
+    }
+}
+
+impl Shr<i16> for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn shr(self, rhs: i16) -> Self::Output {
+        Self {
+            x: self.x.shr(rhs),
+            y: self.y.shr(rhs),
+            z: self.z.shr(rhs),
+            w: self.w.shr(rhs),
+        }
+    }
+}
+
+impl Shl<i32> for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn shl(self, rhs: i32) -> Self::Output {
+        Self {
+            x: self.x.shl(rhs),
+            y: self.y.shl(rhs),
+            z: self.z.shl(rhs),
+            w: self.w.shl(rhs),
+        }
+    }
+}
+
+impl Shr<i32> for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn shr(self, rhs: i32) -> Self::Output {
+        Self {
+            x: self.x.shr(rhs),
+            y: self.y.shr(rhs),
+            z: self.z.shr(rhs),
+            w: self.w.shr(rhs),
+        }
+    }
+}
+
+impl Shl<i64> for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn shl(self, rhs: i64) -> Self::Output {
+        Self {
+            x: self.x.shl(rhs),
+            y: self.y.shl(rhs),
+            z: self.z.shl(rhs),
+            w: self.w.shl(rhs),
+        }
+    }
+}
+
+impl Shr<i64> for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn shr(self, rhs: i64) -> Self::Output {
+        Self {
+            x: self.x.shr(rhs),
+            y: self.y.shr(rhs),
+            z: self.z.shr(rhs),
+            w: self.w.shr(rhs),
+        }
+    }
+}
+
+impl Shl<u8> for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn shl(self, rhs: u8) -> Self::Output {
+        Self {
+            x: self.x.shl(rhs),
+            y: self.y.shl(rhs),
+            z: self.z.shl(rhs),
+            w: self.w.shl(rhs),
+        }
+    }
+}
+
+impl Shr<u8> for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn shr(self, rhs: u8) -> Self::Output {
+        Self {
+            x: self.x.shr(rhs),
+            y: self.y.shr(rhs),
+            z: self.z.shr(rhs),
+            w: self.w.shr(rhs),
+        }
+    }
+}
+
+impl Shl<u16> for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn shl(self, rhs: u16) -> Self::Output {
+        Self {
+            x: self.x.shl(rhs),
+            y: self.y.shl(rhs),
+            z: self.z.shl(rhs),
+            w: self.w.shl(rhs),
+        }
+    }
+}
+
+impl Shr<u16> for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn shr(self, rhs: u16) -> Self::Output {
+        Self {
+            x: self.x.shr(rhs),
+            y: self.y.shr(rhs),
+            z: self.z.shr(rhs),
+            w: self.w.shr(rhs),
+        }
+    }
+}
+
+impl Shl<u32> for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn shl(self, rhs: u32) -> Self::Output {
+        Self {
+            x: self.x.shl(rhs),
+            y: self.y.shl(rhs),
+            z: self.z.shl(rhs),
+            w: self.w.shl(rhs),
+        }
+    }
+}
+
+impl Shr<u32> for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn shr(self, rhs: u32) -> Self::Output {
+        Self {
+            x: self.x.shr(rhs),
+            y: self.y.shr(rhs),
+            z: self.z.shr(rhs),
+            w: self.w.shr(rhs),
+        }
+    }
+}
+
+impl Shl<u64> for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn shl(self, rhs: u64) -> Self::Output {
+        Self {
+            x: self.x.shl(rhs),
+            y: self.y.shl(rhs),
+            z: self.z.shl(rhs),
+            w: self.w.shl(rhs),
+        }
+    }
+}
+
+impl Shr<u64> for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn shr(self, rhs: u64) -> Self::Output {
+        Self {
+            x: self.x.shr(rhs),
+            y: self.y.shr(rhs),
+            z: self.z.shr(rhs),
+            w: self.w.shr(rhs),
+        }
+    }
+}
+
+impl Shl<crate::IVec4> for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn shl(self, rhs: crate::IVec4) -> Self::Output {
+        Self {
+            x: self.x.shl(rhs.x),
+            y: self.y.shl(rhs.y),
+            z: self.z.shl(rhs.z),
+            w: self.w.shl(rhs.w),
+        }
+    }
+}
+
+impl Shr<crate::IVec4> for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn shr(self, rhs: crate::IVec4) -> Self::Output {
+        Self {
+            x: self.x.shr(rhs.x),
+            y: self.y.shr(rhs.y),
+            z: self.z.shr(rhs.z),
+            w: self.w.shr(rhs.w),
+        }
+    }
+}
+
+impl Shl<crate::UVec4> for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn shl(self, rhs: crate::UVec4) -> Self::Output {
+        Self {
+            x: self.x.shl(rhs.x),
+            y: self.y.shl(rhs.y),
+            z: self.z.shl(rhs.z),
+            w: self.w.shl(rhs.w),
+        }
+    }
+}
+
+impl Shr<crate::UVec4> for LVec4 {
+    type Output = Self;
+    #[inline]
+    fn shr(self, rhs: crate::UVec4) -> Self::Output {
+        Self {
+            x: self.x.shr(rhs.x),
+            y: self.y.shr(rhs.y),
+            z: self.z.shr(rhs.z),
+            w: self.w.shr(rhs.w),
+        }
+    }
+}
+
+impl Index<usize> for LVec4 {
+    type Output = i64;
     #[inline]
     fn index(&self, index: usize) -> &Self::Output {
         match index {
@@ -1116,7 +1110,7 @@ impl Index<usize> for Vec4 {
     }
 }
 
-impl IndexMut<usize> for Vec4 {
+impl IndexMut<usize> for LVec4 {
     #[inline]
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         match index {
@@ -1130,16 +1124,16 @@ impl IndexMut<usize> for Vec4 {
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl fmt::Display for Vec4 {
+impl fmt::Display for LVec4 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "[{}, {}, {}, {}]", self.x, self.y, self.z, self.w)
     }
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl fmt::Debug for Vec4 {
+impl fmt::Debug for LVec4 {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
-        fmt.debug_tuple(stringify!(Vec4))
+        fmt.debug_tuple(stringify!(LVec4))
             .field(&self.x)
             .field(&self.y)
             .field(&self.z)
@@ -1148,72 +1142,58 @@ impl fmt::Debug for Vec4 {
     }
 }
 
-impl From<[f32; 4]> for Vec4 {
+impl From<[i64; 4]> for LVec4 {
     #[inline]
-    fn from(a: [f32; 4]) -> Self {
+    fn from(a: [i64; 4]) -> Self {
         Self::new(a[0], a[1], a[2], a[3])
     }
 }
 
-impl From<Vec4> for [f32; 4] {
+impl From<LVec4> for [i64; 4] {
     #[inline]
-    fn from(v: Vec4) -> Self {
+    fn from(v: LVec4) -> Self {
         [v.x, v.y, v.z, v.w]
     }
 }
 
-impl From<(f32, f32, f32, f32)> for Vec4 {
+impl From<(i64, i64, i64, i64)> for LVec4 {
     #[inline]
-    fn from(t: (f32, f32, f32, f32)) -> Self {
+    fn from(t: (i64, i64, i64, i64)) -> Self {
         Self::new(t.0, t.1, t.2, t.3)
     }
 }
 
-impl From<Vec4> for (f32, f32, f32, f32) {
+impl From<LVec4> for (i64, i64, i64, i64) {
     #[inline]
-    fn from(v: Vec4) -> Self {
+    fn from(v: LVec4) -> Self {
         (v.x, v.y, v.z, v.w)
     }
 }
 
-impl From<(Vec3A, f32)> for Vec4 {
+impl From<(LVec3, i64)> for LVec4 {
     #[inline]
-    fn from((v, w): (Vec3A, f32)) -> Self {
-        v.extend(w)
-    }
-}
-
-impl From<(f32, Vec3A)> for Vec4 {
-    #[inline]
-    fn from((x, v): (f32, Vec3A)) -> Self {
-        Self::new(x, v.x, v.y, v.z)
-    }
-}
-
-impl From<(Vec3, f32)> for Vec4 {
-    #[inline]
-    fn from((v, w): (Vec3, f32)) -> Self {
+    fn from((v, w): (LVec3, i64)) -> Self {
         Self::new(v.x, v.y, v.z, w)
     }
 }
 
-impl From<(f32, Vec3)> for Vec4 {
+impl From<(i64, LVec3)> for LVec4 {
     #[inline]
-    fn from((x, v): (f32, Vec3)) -> Self {
+    fn from((x, v): (i64, LVec3)) -> Self {
         Self::new(x, v.x, v.y, v.z)
     }
 }
 
-impl From<(Vec2, f32, f32)> for Vec4 {
+impl From<(LVec2, i64, i64)> for LVec4 {
     #[inline]
-    fn from((v, z, w): (Vec2, f32, f32)) -> Self {
+    fn from((v, z, w): (LVec2, i64, i64)) -> Self {
         Self::new(v.x, v.y, z, w)
     }
 }
 
-impl From<(Vec2, Vec2)> for Vec4 {
+impl From<(LVec2, LVec2)> for LVec4 {
     #[inline]
-    fn from((v, u): (Vec2, Vec2)) -> Self {
+    fn from((v, u): (LVec2, LVec2)) -> Self {
         Self::new(v.x, v.y, u.x, u.y)
     }
 }

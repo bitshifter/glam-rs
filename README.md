@@ -27,6 +27,10 @@ and feel of the API has solidified.
   * vectors: `IVec2`, `IVec3` and `IVec4`
 * `u32` types
   * vectors: `UVec2`, `UVec3` and `UVec4`
+* `i64` types
+  * vectors: `LVec2`, `LVec3` and `LVec4`
+* `u64` types
+  * vectors: `ULVec2`, `ULVec3` and `ULVec4`
 * `bool` types
   * vectors: `BVec2`, `BVec3` and `BVec4`
 

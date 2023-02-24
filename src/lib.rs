@@ -19,6 +19,10 @@
   * vectors: [`IVec2`], [`IVec3`] and [`IVec4`]
 * [`u32`](mod@u32) types
   * vectors: [`UVec2`], [`UVec3`] and [`UVec4`]
+* [`i64`](mod@i32) types
+  * vectors: [`LVec2`], [`LVec3`] and [`LVec4`]
+* [`u64`](mod@u32) types
+  * vectors: [`ULVec2`], [`ULVec3`] and [`ULVec4`]
 * [`bool`](mod@bool) types
   * vectors: [`BVec2`], [`BVec3`] and [`BVec4`]
 
@@ -315,6 +319,14 @@ pub use self::i32::*;
 /** `u32` vector types. */
 pub mod u32;
 pub use self::u32::*;
+
+/** `i64` vector types. */
+pub mod i64;
+pub use self::i64::*;
+
+/** `u64` vector types. */
+pub mod u64;
+pub use self::u64::*;
 
 /** Traits adding swizzle methods to all vector types. */
 pub mod swizzles;

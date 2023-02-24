@@ -636,6 +636,18 @@ impl Vec4 {
     pub fn as_uvec4(&self) -> crate::UVec4 {
         crate::UVec4::new(self.x as u32, self.y as u32, self.z as u32, self.w as u32)
     }
+
+    /// Casts all elements of `self` to `i64`.
+    #[inline]
+    pub fn as_lvec4(&self) -> crate::LVec4 {
+        crate::LVec4::new(self.x as i64, self.y as i64, self.z as i64, self.w as i64)
+    }
+
+    /// Casts all elements of `self` to `u64`.
+    #[inline]
+    pub fn as_ulvec4(&self) -> crate::ULVec4 {
+        crate::ULVec4::new(self.x as u64, self.y as u64, self.z as u64, self.w as u64)
+    }
 }
 
 impl Default for Vec4 {

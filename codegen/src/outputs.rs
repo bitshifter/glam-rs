@@ -81,6 +81,30 @@ impl ContextBuilder {
         Self::new_tvecn_swizzle_impl(4, "U")
     }
 
+    pub fn new_lvec2_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(2, "L")
+    }
+
+    pub fn new_lvec3_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(3, "L")
+    }
+
+    pub fn new_lvec4_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(4, "L")
+    }
+
+    pub fn new_ulvec2_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(2, "UL")
+    }
+
+    pub fn new_ulvec3_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(3, "UL")
+    }
+
+    pub fn new_ulvec4_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(4, "UL")
+    }
+
     fn new_taffinen(dim: u32, scalar_t: &str) -> Self {
         ContextBuilder::new()
             .with_template("affine.rs.tera")
@@ -192,6 +216,30 @@ impl ContextBuilder {
 
     pub fn new_uvec4() -> Self {
         Self::new_vecn(4).with_scalar_t("u32")
+    }
+
+    pub fn new_lvec2() -> Self {
+        Self::new_vecn(2).with_scalar_t("i64")
+    }
+
+    pub fn new_lvec3() -> Self {
+        Self::new_vecn(3).with_scalar_t("i64")
+    }
+
+    pub fn new_lvec4() -> Self {
+        Self::new_vecn(4).with_scalar_t("i64")
+    }
+
+    pub fn new_ulvec2() -> Self {
+        Self::new_vecn(2).with_scalar_t("u64")
+    }
+
+    pub fn new_ulvec3() -> Self {
+        Self::new_vecn(3).with_scalar_t("u64")
+    }
+
+    pub fn new_ulvec4() -> Self {
+        Self::new_vecn(4).with_scalar_t("u64")
     }
 
     pub fn new_quat() -> Self {
@@ -396,6 +444,30 @@ pub fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
             "src/swizzles/uvec4_impl.rs",
             ContextBuilder::new_uvec4_swizzle_impl().build(),
         ),
+        (
+            "src/swizzles/lvec2_impl.rs",
+            ContextBuilder::new_lvec2_swizzle_impl().build(),
+        ),
+        (
+            "src/swizzles/lvec3_impl.rs",
+            ContextBuilder::new_lvec3_swizzle_impl().build(),
+        ),
+        (
+            "src/swizzles/lvec4_impl.rs",
+            ContextBuilder::new_lvec4_swizzle_impl().build(),
+        ),
+        (
+            "src/swizzles/ulvec2_impl.rs",
+            ContextBuilder::new_ulvec2_swizzle_impl().build(),
+        ),
+        (
+            "src/swizzles/ulvec3_impl.rs",
+            ContextBuilder::new_ulvec3_swizzle_impl().build(),
+        ),
+        (
+            "src/swizzles/ulvec4_impl.rs",
+            ContextBuilder::new_ulvec4_swizzle_impl().build(),
+        ),
         ("src/f32/affine2.rs", ContextBuilder::new_affine2().build()),
         (
             "src/f32/affine3a.rs",
@@ -484,6 +556,12 @@ pub fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
         ("src/u32/uvec2.rs", ContextBuilder::new_uvec2().build()),
         ("src/u32/uvec3.rs", ContextBuilder::new_uvec3().build()),
         ("src/u32/uvec4.rs", ContextBuilder::new_uvec4().build()),
+        ("src/i64/lvec2.rs", ContextBuilder::new_lvec2().build()),
+        ("src/i64/lvec3.rs", ContextBuilder::new_lvec3().build()),
+        ("src/i64/lvec4.rs", ContextBuilder::new_lvec4().build()),
+        ("src/u64/ulvec2.rs", ContextBuilder::new_ulvec2().build()),
+        ("src/u64/ulvec3.rs", ContextBuilder::new_ulvec3().build()),
+        ("src/u64/ulvec4.rs", ContextBuilder::new_ulvec4().build()),
         ("src/f32/scalar/quat.rs", ContextBuilder::new_quat().build()),
         (
             "src/f32/sse2/quat.rs",
