@@ -185,6 +185,12 @@ pub const fn {{ self_t | lower }}(
 /// The resulting perspective project can be use to transform 3D vectors as points with
 /// perspective correction using the [`Self::project_point3()`] convenience method.
 {%- endif %}
+{%- if is_simd %}
+///
+/// SIMD vector types are used for storage on supported platforms.
+///
+/// This type is 16 byte aligned.
+{%- endif %}
 #[derive(Clone, Copy)]
 {%- if self_t == "Mat4" and is_scalar %}
 #[cfg_attr(

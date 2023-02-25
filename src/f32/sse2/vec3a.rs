@@ -27,12 +27,15 @@ pub const fn vec3a(x: f32, y: f32, z: f32) -> Vec3A {
     Vec3A::new(x, y, z)
 }
 
-/// A 3-dimensional vector with SIMD support.
+/// A 3-dimensional vector.
 ///
-/// This type is 16 byte aligned. A SIMD vector type is used for storage on supported platforms for
-/// better performance than the `Vec3` type.
+/// SIMD vector types are used for storage on supported platforms for better
+/// performance than the `Vec3` type.
 ///
-/// It is possible to convert between `Vec3` and `Vec3A` types using `From` trait implementations.
+/// It is possible to convert between `Vec3` and `Vec3A` types using `From`
+/// trait implementations.
+///
+/// This type is 16 byte aligned.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct Vec3A(pub(crate) __m128);

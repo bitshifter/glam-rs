@@ -132,22 +132,25 @@ pub const fn {{ self_t | lower }}(
     {{ self_t }}::new({{ components | join(sep=",") }})
 }
 
-{% if self_t == "Vec3A" %}
-/// A 3-dimensional vector with SIMD support.
-///
-/// This type is 16 byte aligned. A SIMD vector type is used for storage on supported platforms for
-/// better performance than the `Vec3` type.
-///
-/// It is possible to convert between `Vec3` and `Vec3A` types using `From` trait implementations.
-{%- elif self_t == "Vec4" and is_simd %}
-/// A 4-dimensional vector with SIMD support.
-///
-/// This type uses 16 byte aligned SIMD vector type for storage.
-{%- else %}
 /// A {{ dim }}-dimensional vector.
-{%- endif %}{% if not is_float %}
+{%- if self_t == "Vec3A" %}
+///
+/// SIMD vector types are used for storage on supported platforms for better
+/// performance than the `Vec3` type.
+///
+/// It is possible to convert between `Vec3` and `Vec3A` types using `From`
+/// trait implementations.
+///
+/// This type is 16 byte aligned.
+{%- elif self_t == "Vec4" and is_simd %}
+///
+/// SIMD vector types are used for storage on supported platforms.
+///
+/// This type is 16 byte aligned.
+{%- endif %}
+{%- if not is_float %}
 #[cfg_attr(not(target_arch = "spirv"), derive(Hash))]
-{% endif %}
+{%- endif %}
 #[derive(
     Clone,
     Copy,

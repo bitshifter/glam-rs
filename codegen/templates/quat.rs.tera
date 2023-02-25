@@ -94,6 +94,8 @@ pub const fn {{ self_t | lower }}(x: {{ scalar_t }}, y: {{ scalar_t }}, z: {{ sc
 /// operations are applied.
 {%- if is_simd %}
 ///
+/// SIMD vector types are used for storage on supported platforms.
+///
 /// This type is 16 byte aligned.
 {%- endif %}
 #[derive(Clone, Copy)]

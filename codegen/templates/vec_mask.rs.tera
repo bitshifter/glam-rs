@@ -48,8 +48,7 @@ union UnionCast {
 {%- else %}
 /// A {{ dim }}-dimensional SIMD vector mask.
 ///
-/// This type is {{ align }} byte aligned and is backed by a SIMD vector. If SIMD is not available
-/// `{{ self_t }}` will be a type alias for `BVec{{ dim }}`.
+/// This type is {{ align }} byte aligned.
 {%- endif %}
 {%- if is_scalar or is_bool %}
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]

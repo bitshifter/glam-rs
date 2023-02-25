@@ -13,8 +13,7 @@ union UnionCast {
 
 /// A 4-dimensional SIMD vector mask.
 ///
-/// This type is 16 byte aligned and is backed by a SIMD vector. If SIMD is not available
-/// `BVec4A` will be a type alias for `BVec4`.
+/// This type is 16 byte aligned.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct BVec4A(pub(crate) mask32x4);

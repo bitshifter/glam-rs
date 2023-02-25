@@ -50,6 +50,10 @@ use crate::{
 use core::ops::{Deref, DerefMut, Mul};
 
 /// A {{ dim }}D affine transform, which can represent translation, rotation, scaling and shear.
+{%- if is_align %}
+///
+/// This type is 16 byte aligned.
+{%- endif %}
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct {{ self_t }} {

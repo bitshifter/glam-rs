@@ -32,6 +32,8 @@ pub const fn quat(x: f32, y: f32, z: f32, w: f32) -> Quat {
 /// floating point "error creep" which can occur when successive quaternion
 /// operations are applied.
 ///
+/// SIMD vector types are used for storage on supported platforms.
+///
 /// This type is 16 byte aligned.
 #[derive(Clone, Copy)]
 #[repr(transparent)]

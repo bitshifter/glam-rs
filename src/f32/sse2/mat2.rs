@@ -27,6 +27,10 @@ pub const fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
 }
 
 /// A 2x2 column major matrix.
+///
+/// SIMD vector types are used for storage on supported platforms.
+///
+/// This type is 16 byte aligned.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
 pub struct Mat2(pub(crate) __m128);
