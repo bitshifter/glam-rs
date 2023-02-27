@@ -53,17 +53,17 @@
 {% elif scalar_t == "i64" %}
     {% set is_signed = true %}
     {% set is_float = false %}
-    {% set self_t = "LVec" ~ dim %}
-    {% set vec2_t = "LVec2" %}
-    {% set vec3_t = "LVec3" %}
-    {% set vec4_t = "LVec4" %}
+    {% set self_t = "I64Vec" ~ dim %}
+    {% set vec2_t = "I64Vec2" %}
+    {% set vec3_t = "I64Vec3" %}
+    {% set vec4_t = "I64Vec4" %}
 {% else %}
     {% set is_signed = false %}
     {% set is_float = false %}
-    {% set self_t = "ULVec" ~ dim %}
-    {% set vec2_t = "ULVec2" %}
-    {% set vec3_t = "ULVec3" %}
-    {% set vec4_t = "ULVec4" %}
+    {% set self_t = "U64Vec" ~ dim %}
+    {% set vec2_t = "U64Vec2" %}
+    {% set vec3_t = "U64Vec3" %}
+    {% set vec4_t = "U64Vec4" %}
 {% endif %}
 
 {% if scalar_t == "f64" or scalar_t == "i64" or scalar_t == "u64" or dim == 4 %}
@@ -1590,20 +1590,20 @@ impl {{ self_t }} {
     {% if dim == 2 %}
     /// Casts all elements of `self` to `i64`.
     #[inline]
-    pub fn as_lvec2(&self) -> crate::LVec2 {
-        crate::LVec2::new(self.x as i64, self.y as i64)
+    pub fn as_i64vec2(&self) -> crate::I64Vec2 {
+        crate::I64Vec2::new(self.x as i64, self.y as i64)
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `i64`.
     #[inline]
-    pub fn as_lvec3(&self) -> crate::LVec3 {
-        crate::LVec3::new(self.x as i64, self.y as i64, self.z as i64)
+    pub fn as_i64vec3(&self) -> crate::I64Vec3 {
+        crate::I64Vec3::new(self.x as i64, self.y as i64, self.z as i64)
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `i64`.
     #[inline]
-    pub fn as_lvec4(&self) -> crate::LVec4 {
-        crate::LVec4::new(self.x as i64, self.y as i64, self.z as i64, self.w as i64)
+    pub fn as_i64vec4(&self) -> crate::I64Vec4 {
+        crate::I64Vec4::new(self.x as i64, self.y as i64, self.z as i64, self.w as i64)
     }
     {% endif %}
 {% endif %}
@@ -1611,20 +1611,20 @@ impl {{ self_t }} {
     {% if dim == 2 %}
     /// Casts all elements of `self` to `u64`.
     #[inline]
-    pub fn as_ulvec2(&self) -> crate::ULVec2 {
-        crate::ULVec2::new(self.x as u64, self.y as u64)
+    pub fn as_u64vec2(&self) -> crate::U64Vec2 {
+        crate::U64Vec2::new(self.x as u64, self.y as u64)
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `u64`.
     #[inline]
-    pub fn as_ulvec3(&self) -> crate::ULVec3 {
-        crate::ULVec3::new(self.x as u64, self.y as u64, self.z as u64)
+    pub fn as_u64vec3(&self) -> crate::U64Vec3 {
+        crate::U64Vec3::new(self.x as u64, self.y as u64, self.z as u64)
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `u64`.
     #[inline]
-    pub fn as_ulvec4(&self) -> crate::ULVec4 {
-        crate::ULVec4::new(self.x as u64, self.y as u64, self.z as u64, self.w as u64)
+    pub fn as_u64vec4(&self) -> crate::U64Vec4 {
+        crate::U64Vec4::new(self.x as u64, self.y as u64, self.z as u64, self.w as u64)
     }
     {% endif %}
 {% endif %}

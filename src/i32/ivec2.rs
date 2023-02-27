@@ -324,14 +324,14 @@ impl IVec2 {
 
     /// Casts all elements of `self` to `i64`.
     #[inline]
-    pub fn as_lvec2(&self) -> crate::LVec2 {
-        crate::LVec2::new(self.x as i64, self.y as i64)
+    pub fn as_i64vec2(&self) -> crate::I64Vec2 {
+        crate::I64Vec2::new(self.x as i64, self.y as i64)
     }
 
     /// Casts all elements of `self` to `u64`.
     #[inline]
-    pub fn as_ulvec2(&self) -> crate::ULVec2 {
-        crate::ULVec2::new(self.x as u64, self.y as u64)
+    pub fn as_u64vec2(&self) -> crate::U64Vec2 {
+        crate::U64Vec2::new(self.x as u64, self.y as u64)
     }
 }
 

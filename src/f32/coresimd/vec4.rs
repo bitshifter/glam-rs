@@ -614,14 +614,14 @@ impl Vec4 {
 
     /// Casts all elements of `self` to `i64`.
     #[inline]
-    pub fn as_lvec4(&self) -> crate::LVec4 {
-        crate::LVec4::new(self.x as i64, self.y as i64, self.z as i64, self.w as i64)
+    pub fn as_i64vec4(&self) -> crate::I64Vec4 {
+        crate::I64Vec4::new(self.x as i64, self.y as i64, self.z as i64, self.w as i64)
     }
 
     /// Casts all elements of `self` to `u64`.
     #[inline]
-    pub fn as_ulvec4(&self) -> crate::ULVec4 {
-        crate::ULVec4::new(self.x as u64, self.y as u64, self.z as u64, self.w as u64)
+    pub fn as_u64vec4(&self) -> crate::U64Vec4 {
+        crate::U64Vec4::new(self.x as u64, self.y as u64, self.z as u64, self.w as u64)
     }
 }
 

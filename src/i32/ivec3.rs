@@ -343,14 +343,14 @@ impl IVec3 {
 
     /// Casts all elements of `self` to `i64`.
     #[inline]
-    pub fn as_lvec3(&self) -> crate::LVec3 {
-        crate::LVec3::new(self.x as i64, self.y as i64, self.z as i64)
+    pub fn as_i64vec3(&self) -> crate::I64Vec3 {
+        crate::I64Vec3::new(self.x as i64, self.y as i64, self.z as i64)
     }
 
     /// Casts all elements of `self` to `u64`.
     #[inline]
-    pub fn as_ulvec3(&self) -> crate::ULVec3 {
-        crate::ULVec3::new(self.x as u64, self.y as u64, self.z as u64)
+    pub fn as_u64vec3(&self) -> crate::U64Vec3 {
+        crate::U64Vec3::new(self.x as u64, self.y as u64, self.z as u64)
     }
 }
 

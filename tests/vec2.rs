@@ -963,42 +963,42 @@ mod vec2 {
     });
 
     glam_test!(test_as, {
-        use glam::{DVec2, IVec2, LVec2, ULVec2, UVec2};
+        use glam::{DVec2, I64Vec2, IVec2, U64Vec2, UVec2};
         assert_eq!(DVec2::new(-1.0, -2.0), Vec2::new(-1.0, -2.0).as_dvec2());
         assert_eq!(IVec2::new(-1, -2), Vec2::new(-1.0, -2.0).as_ivec2());
         assert_eq!(UVec2::new(1, 2), Vec2::new(1.0, 2.0).as_uvec2());
-        assert_eq!(LVec2::new(-1, -2), Vec2::new(-1.0, -2.0).as_lvec2());
-        assert_eq!(ULVec2::new(1, 2), Vec2::new(1.0, 2.0).as_ulvec2());
+        assert_eq!(I64Vec2::new(-1, -2), Vec2::new(-1.0, -2.0).as_i64vec2());
+        assert_eq!(U64Vec2::new(1, 2), Vec2::new(1.0, 2.0).as_u64vec2());
 
         assert_eq!(IVec2::new(-1, -2), DVec2::new(-1.0, -2.0).as_ivec2());
         assert_eq!(UVec2::new(1, 2), DVec2::new(1.0, 2.0).as_uvec2());
         assert_eq!(Vec2::new(-1.0, -2.0), DVec2::new(-1.0, -2.0).as_vec2());
-        assert_eq!(LVec2::new(-1, -2), DVec2::new(-1.0, -2.0).as_lvec2());
-        assert_eq!(ULVec2::new(1, 2), DVec2::new(1.0, 2.0).as_ulvec2());
+        assert_eq!(I64Vec2::new(-1, -2), DVec2::new(-1.0, -2.0).as_i64vec2());
+        assert_eq!(U64Vec2::new(1, 2), DVec2::new(1.0, 2.0).as_u64vec2());
 
         assert_eq!(DVec2::new(-1.0, -2.0), IVec2::new(-1, -2).as_dvec2());
         assert_eq!(UVec2::new(1, 2), IVec2::new(1, 2).as_uvec2());
         assert_eq!(Vec2::new(-1.0, -2.0), IVec2::new(-1, -2).as_vec2());
-        assert_eq!(LVec2::new(-1, -2), IVec2::new(-1, -2).as_lvec2());
-        assert_eq!(ULVec2::new(1, 2), IVec2::new(1, 2).as_ulvec2());
+        assert_eq!(I64Vec2::new(-1, -2), IVec2::new(-1, -2).as_i64vec2());
+        assert_eq!(U64Vec2::new(1, 2), IVec2::new(1, 2).as_u64vec2());
 
         assert_eq!(DVec2::new(1.0, 2.0), UVec2::new(1, 2).as_dvec2());
         assert_eq!(IVec2::new(1, 2), UVec2::new(1, 2).as_ivec2());
         assert_eq!(Vec2::new(1.0, 2.0), UVec2::new(1, 2).as_vec2());
-        assert_eq!(LVec2::new(1, 2), UVec2::new(1, 2).as_lvec2());
-        assert_eq!(ULVec2::new(1, 2), UVec2::new(1, 2).as_ulvec2());
+        assert_eq!(I64Vec2::new(1, 2), UVec2::new(1, 2).as_i64vec2());
+        assert_eq!(U64Vec2::new(1, 2), UVec2::new(1, 2).as_u64vec2());
 
-        assert_eq!(DVec2::new(-1.0, -2.0), LVec2::new(-1, -2).as_dvec2());
-        assert_eq!(UVec2::new(1, 2), LVec2::new(1, 2).as_uvec2());
-        assert_eq!(Vec2::new(-1.0, -2.0), LVec2::new(-1, -2).as_vec2());
-        assert_eq!(IVec2::new(-1, -2), LVec2::new(-1, -2).as_ivec2());
-        assert_eq!(ULVec2::new(1, 2), LVec2::new(1, 2).as_ulvec2());
+        assert_eq!(DVec2::new(-1.0, -2.0), I64Vec2::new(-1, -2).as_dvec2());
+        assert_eq!(UVec2::new(1, 2), I64Vec2::new(1, 2).as_uvec2());
+        assert_eq!(Vec2::new(-1.0, -2.0), I64Vec2::new(-1, -2).as_vec2());
+        assert_eq!(IVec2::new(-1, -2), I64Vec2::new(-1, -2).as_ivec2());
+        assert_eq!(U64Vec2::new(1, 2), I64Vec2::new(1, 2).as_u64vec2());
 
-        assert_eq!(DVec2::new(1.0, 2.0), ULVec2::new(1, 2).as_dvec2());
-        assert_eq!(IVec2::new(1, 2), ULVec2::new(1, 2).as_ivec2());
-        assert_eq!(Vec2::new(1.0, 2.0), ULVec2::new(1, 2).as_vec2());
-        assert_eq!(LVec2::new(1, 2), ULVec2::new(1, 2).as_lvec2());
-        assert_eq!(UVec2::new(1, 2), ULVec2::new(1, 2).as_uvec2());
+        assert_eq!(DVec2::new(1.0, 2.0), U64Vec2::new(1, 2).as_dvec2());
+        assert_eq!(IVec2::new(1, 2), U64Vec2::new(1, 2).as_ivec2());
+        assert_eq!(Vec2::new(1.0, 2.0), U64Vec2::new(1, 2).as_vec2());
+        assert_eq!(I64Vec2::new(1, 2), U64Vec2::new(1, 2).as_i64vec2());
+        assert_eq!(UVec2::new(1, 2), U64Vec2::new(1, 2).as_uvec2());
     });
 
     impl_vec2_float_tests!(f32, vec2, Vec2, Vec3, BVec2);
@@ -1069,50 +1069,50 @@ mod uvec2 {
     impl_vec2_bit_op_tests!(UVec2, 0, 2);
 }
 
-mod lvec2 {
-    use glam::{lvec2, BVec2, IVec2, LVec2, LVec3, UVec2};
+mod i64vec2 {
+    use glam::{i64vec2, BVec2, I64Vec2, I64Vec3, IVec2, UVec2};
 
     glam_test!(test_align, {
         use core::mem;
-        assert_eq!(16, mem::size_of::<LVec2>());
+        assert_eq!(16, mem::size_of::<I64Vec2>());
         #[cfg(not(feature = "cuda"))]
-        assert_eq!(8, mem::align_of::<LVec2>());
+        assert_eq!(8, mem::align_of::<I64Vec2>());
         #[cfg(feature = "cuda")]
-        assert_eq!(16, mem::align_of::<LVec2>());
+        assert_eq!(16, mem::align_of::<I64Vec2>());
         assert_eq!(2, mem::size_of::<BVec2>());
         assert_eq!(1, mem::align_of::<BVec2>());
     });
 
-    impl_vec2_signed_tests!(i64, lvec2, LVec2, LVec3, BVec2);
-    impl_vec2_eq_hash_tests!(i64, lvec2);
+    impl_vec2_signed_tests!(i64, i64vec2, I64Vec2, I64Vec3, BVec2);
+    impl_vec2_eq_hash_tests!(i64, i64vec2);
 
-    impl_vec2_scalar_shift_op_tests!(LVec2, -2, 2);
-    impl_vec2_shift_op_tests!(LVec2);
+    impl_vec2_scalar_shift_op_tests!(I64Vec2, -2, 2);
+    impl_vec2_shift_op_tests!(I64Vec2);
 
-    impl_vec2_scalar_bit_op_tests!(LVec2, -2, 2);
-    impl_vec2_bit_op_tests!(LVec2, -2, 2);
+    impl_vec2_scalar_bit_op_tests!(I64Vec2, -2, 2);
+    impl_vec2_bit_op_tests!(I64Vec2, -2, 2);
 }
 
-mod ulvec2 {
-    use glam::{ulvec2, BVec2, IVec2, ULVec2, ULVec3, UVec2};
+mod u64vec2 {
+    use glam::{u64vec2, BVec2, IVec2, U64Vec2, U64Vec3, UVec2};
 
     glam_test!(test_align, {
         use core::mem;
-        assert_eq!(16, mem::size_of::<ULVec2>());
+        assert_eq!(16, mem::size_of::<U64Vec2>());
         #[cfg(not(feature = "cuda"))]
-        assert_eq!(8, mem::align_of::<ULVec2>());
+        assert_eq!(8, mem::align_of::<U64Vec2>());
         #[cfg(feature = "cuda")]
-        assert_eq!(16, mem::align_of::<ULVec2>());
+        assert_eq!(16, mem::align_of::<U64Vec2>());
         assert_eq!(2, mem::size_of::<BVec2>());
         assert_eq!(1, mem::align_of::<BVec2>());
     });
 
-    impl_vec2_tests!(u64, ulvec2, ULVec2, ULVec3, BVec2);
-    impl_vec2_eq_hash_tests!(u64, ulvec2);
+    impl_vec2_tests!(u64, u64vec2, U64Vec2, U64Vec3, BVec2);
+    impl_vec2_eq_hash_tests!(u64, u64vec2);
 
-    impl_vec2_scalar_shift_op_tests!(ULVec2, 0, 2);
-    impl_vec2_shift_op_tests!(ULVec2);
+    impl_vec2_scalar_shift_op_tests!(U64Vec2, 0, 2);
+    impl_vec2_shift_op_tests!(U64Vec2);
 
-    impl_vec2_scalar_bit_op_tests!(ULVec2, 0, 2);
-    impl_vec2_bit_op_tests!(ULVec2, 0, 2);
+    impl_vec2_scalar_bit_op_tests!(U64Vec2, 0, 2);
+    impl_vec2_bit_op_tests!(U64Vec2, 0, 2);
 }

@@ -6,13 +6,13 @@ mod ivec2_impl;
 mod ivec3_impl;
 mod ivec4_impl;
 
-mod lvec2_impl;
-mod lvec3_impl;
-mod lvec4_impl;
+mod i64vec2_impl;
+mod i64vec3_impl;
+mod i64vec4_impl;
 
-mod ulvec2_impl;
-mod ulvec3_impl;
-mod ulvec4_impl;
+mod u64vec2_impl;
+mod u64vec3_impl;
+mod u64vec4_impl;
 
 mod uvec2_impl;
 mod uvec3_impl;

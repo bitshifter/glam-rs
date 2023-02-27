@@ -1,41 +1,41 @@
-mod ulvec2;
-mod ulvec3;
-mod ulvec4;
+mod u64vec2;
+mod u64vec3;
+mod u64vec4;
 
-pub use ulvec2::{ulvec2, ULVec2};
-pub use ulvec3::{ulvec3, ULVec3};
-pub use ulvec4::{ulvec4, ULVec4};
+pub use u64vec2::{u64vec2, U64Vec2};
+pub use u64vec3::{u64vec3, U64Vec3};
+pub use u64vec4::{u64vec4, U64Vec4};
 
 #[cfg(not(target_arch = "spirv"))]
 mod test {
     use super::*;
-    mod const_test_ulvec2 {
+    mod const_test_u64vec2 {
         #[cfg(not(feature = "cuda"))]
         const_assert_eq!(
             core::mem::align_of::<u64>(),
-            core::mem::align_of::<super::ULVec2>()
+            core::mem::align_of::<super::U64Vec2>()
         );
         #[cfg(feature = "cuda")]
-        const_assert_eq!(16, core::mem::align_of::<super::ULVec2>());
-        const_assert_eq!(16, core::mem::size_of::<super::ULVec2>());
+        const_assert_eq!(16, core::mem::align_of::<super::U64Vec2>());
+        const_assert_eq!(16, core::mem::size_of::<super::U64Vec2>());
     }
 
-    mod const_test_ulvec3 {
+    mod const_test_u64vec3 {
         const_assert_eq!(
             core::mem::align_of::<u64>(),
-            core::mem::align_of::<super::ULVec3>()
+            core::mem::align_of::<super::U64Vec3>()
         );
-        const_assert_eq!(24, core::mem::size_of::<super::ULVec3>());
+        const_assert_eq!(24, core::mem::size_of::<super::U64Vec3>());
     }
 
-    mod const_test_ulvec4 {
+    mod const_test_u64vec4 {
         #[cfg(not(feature = "cuda"))]
         const_assert_eq!(
             core::mem::align_of::<u64>(),
-            core::mem::align_of::<super::ULVec4>()
+            core::mem::align_of::<super::U64Vec4>()
         );
         #[cfg(feature = "cuda")]
-        const_assert_eq!(16, core::mem::align_of::<super::ULVec4>());
-        const_assert_eq!(32, core::mem::size_of::<super::ULVec4>());
+        const_assert_eq!(16, core::mem::align_of::<super::U64Vec4>());
+        const_assert_eq!(32, core::mem::size_of::<super::U64Vec4>());
     }
 }
