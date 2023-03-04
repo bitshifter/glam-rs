@@ -30,7 +30,7 @@ and feel of the API has solidified.
 * `i64` types
   * vectors: `I64Vec2`, `I64Vec3` and `I64Vec4`
 * `u64` types
-  * vectors: `U64LVec2`, `U64Vec3` and `U64Vec4`
+  * vectors: `U64Vec2`, `U64Vec3` and `U64Vec4`
 * `bool` types
   * vectors: `BVec2`, `BVec3` and `BVec4`
 
