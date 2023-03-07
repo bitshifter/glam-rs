@@ -744,6 +744,18 @@ impl Vec3A {
     pub fn as_uvec3(&self) -> crate::UVec3 {
         crate::UVec3::new(self.x as u32, self.y as u32, self.z as u32)
     }
+
+    /// Casts all elements of `self` to `i64`.
+    #[inline]
+    pub fn as_i64vec3(&self) -> crate::I64Vec3 {
+        crate::I64Vec3::new(self.x as i64, self.y as i64, self.z as i64)
+    }
+
+    /// Casts all elements of `self` to `u64`.
+    #[inline]
+    pub fn as_u64vec3(&self) -> crate::U64Vec3 {
+        crate::U64Vec3::new(self.x as u64, self.y as u64, self.z as u64)
+    }
 }
 
 impl Default for Vec3A {

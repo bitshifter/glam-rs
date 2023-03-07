@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec3, IVec2, IVec4};
+use crate::{BVec3, U64Vec2, U64Vec4};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -9,8 +9,8 @@ use core::{f32, ops::*};
 
 /// Creates a 3-dimensional vector.
 #[inline(always)]
-pub const fn ivec3(x: i32, y: i32, z: i32) -> IVec3 {
-    IVec3::new(x, y, z)
+pub const fn u64vec3(x: u64, y: u64, z: u64) -> U64Vec3 {
+    U64Vec3::new(x, y, z)
 }
 
 /// A 3-dimensional vector.
@@ -18,21 +18,18 @@ pub const fn ivec3(x: i32, y: i32, z: i32) -> IVec3 {
 #[derive(Clone, Copy, PartialEq, Eq)]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
-pub struct IVec3 {
-    pub x: i32,
-    pub y: i32,
-    pub z: i32,
+pub struct U64Vec3 {
+    pub x: u64,
+    pub y: u64,
+    pub z: u64,
 }
 
-impl IVec3 {
+impl U64Vec3 {
     /// All zeroes.
     pub const ZERO: Self = Self::splat(0);
 
     /// All ones.
     pub const ONE: Self = Self::splat(1);
-
-    /// All negative ones.
-    pub const NEG_ONE: Self = Self::splat(-1);
 
     /// A unit-length vector pointing along the positive X axis.
     pub const X: Self = Self::new(1, 0, 0);
@@ -43,27 +40,18 @@ impl IVec3 {
     /// A unit-length vector pointing along the positive Z axis.
     pub const Z: Self = Self::new(0, 0, 1);
 
-    /// A unit-length vector pointing along the negative X axis.
-    pub const NEG_X: Self = Self::new(-1, 0, 0);
-
-    /// A unit-length vector pointing along the negative Y axis.
-    pub const NEG_Y: Self = Self::new(0, -1, 0);
-
-    /// A unit-length vector pointing along the negative Z axis.
-    pub const NEG_Z: Self = Self::new(0, 0, -1);
-
     /// The unit axes.
     pub const AXES: [Self; 3] = [Self::X, Self::Y, Self::Z];
 
     /// Creates a new vector.
     #[inline(always)]
-    pub const fn new(x: i32, y: i32, z: i32) -> Self {
+    pub const fn new(x: u64, y: u64, z: u64) -> Self {
         Self { x, y, z }
     }
 
     /// Creates a vector with all elements set to `v`.
     #[inline]
-    pub const fn splat(v: i32) -> Self {
+    pub const fn splat(v: u64) -> Self {
         Self { x: v, y: v, z: v }
     }
 
@@ -83,13 +71,13 @@ impl IVec3 {
 
     /// Creates a new vector from an array.
     #[inline]
-    pub const fn from_array(a: [i32; 3]) -> Self {
+    pub const fn from_array(a: [u64; 3]) -> Self {
         Self::new(a[0], a[1], a[2])
     }
 
     /// `[x, y, z]`
     #[inline]
-    pub const fn to_array(&self) -> [i32; 3] {
+    pub const fn to_array(&self) -> [u64; 3] {
         [self.x, self.y, self.z]
     }
 
@@ -99,7 +87,7 @@ impl IVec3 {
     ///
     /// Panics if `slice` is less than 3 elements long.
     #[inline]
-    pub const fn from_slice(slice: &[i32]) -> Self {
+    pub const fn from_slice(slice: &[u64]) -> Self {
         Self::new(slice[0], slice[1], slice[2])
     }
 
@@ -109,7 +97,7 @@ impl IVec3 {
     ///
     /// Panics if `slice` is less than 3 elements long.
     #[inline]
-    pub fn write_to_slice(self, slice: &mut [i32]) {
+    pub fn write_to_slice(self, slice: &mut [u64]) {
         slice[0] = self.x;
         slice[1] = self.y;
         slice[2] = self.z;
@@ -118,7 +106,7 @@ impl IVec3 {
     /// Internal method for creating a 3D vector from a 4D vector, discarding `w`.
     #[allow(dead_code)]
     #[inline]
-    pub(crate) fn from_vec4(v: IVec4) -> Self {
+    pub(crate) fn from_vec4(v: U64Vec4) -> Self {
         Self {
             x: v.x,
             y: v.y,
@@ -128,22 +116,22 @@ impl IVec3 {
 
     /// Creates a 4D vector from `self` and the given `w` value.
     #[inline]
-    pub fn extend(self, w: i32) -> IVec4 {
-        IVec4::new(self.x, self.y, self.z, w)
+    pub fn extend(self, w: u64) -> U64Vec4 {
+        U64Vec4::new(self.x, self.y, self.z, w)
     }
 
     /// Creates a 2D vector from the `x` and `y` elements of `self`, discarding `z`.
     ///
-    /// Truncation may also be performed by using `self.xy()` or `IVec2::from()`.
+    /// Truncation may also be performed by using `self.xy()` or `U64Vec2::from()`.
     #[inline]
-    pub fn truncate(self) -> IVec2 {
+    pub fn truncate(self) -> U64Vec2 {
         use crate::swizzles::Vec3Swizzles;
         self.xy()
     }
 
     /// Computes the dot product of `self` and `rhs`.
     #[inline]
-    pub fn dot(self, rhs: Self) -> i32 {
+    pub fn dot(self, rhs: Self) -> u64 {
         (self.x * rhs.x) + (self.y * rhs.y) + (self.z * rhs.z)
     }
 
@@ -187,7 +175,7 @@ impl IVec3 {
         }
     }
 
-    /// Component-wise clamping of values, similar to [`i32::clamp`].
+    /// Component-wise clamping of values, similar to [`u64::clamp`].
     ///
     /// Each element in `min` must be less-or-equal to the corresponding element in `max`.
     ///
@@ -204,7 +192,7 @@ impl IVec3 {
     ///
     /// In other words this computes `min(x, y, ..)`.
     #[inline]
-    pub fn min_element(self) -> i32 {
+    pub fn min_element(self) -> u64 {
         self.x.min(self.y.min(self.z))
     }
 
@@ -212,7 +200,7 @@ impl IVec3 {
     ///
     /// In other words this computes `max(x, y, ..)`.
     #[inline]
-    pub fn max_element(self) -> i32 {
+    pub fn max_element(self) -> u64 {
         self.x.max(self.y.max(self.z))
     }
 
@@ -276,47 +264,6 @@ impl IVec3 {
         BVec3::new(self.x.lt(&rhs.x), self.y.lt(&rhs.y), self.z.lt(&rhs.z))
     }
 
-    /// Returns a vector containing the absolute value of each element of `self`.
-    #[inline]
-    pub fn abs(self) -> Self {
-        Self {
-            x: self.x.abs(),
-            y: self.y.abs(),
-            z: self.z.abs(),
-        }
-    }
-
-    /// Returns a vector with elements representing the sign of `self`.
-    ///
-    ///  - `0` if the number is zero
-    ///  - `1` if the number is positive
-    ///  - `-1` if the number is negative
-    #[inline]
-    pub fn signum(self) -> Self {
-        Self {
-            x: self.x.signum(),
-            y: self.y.signum(),
-            z: self.z.signum(),
-        }
-    }
-
-    /// Returns a vector with signs of `rhs` and the magnitudes of `self`.
-    #[inline]
-    pub fn copysign(self, rhs: Self) -> Self {
-        Self::select(rhs.cmpge(Self::ZERO), self, -self)
-    }
-
-    /// Returns a bitmask with the lowest 3 bits set to the sign bits from the elements of `self`.
-    ///
-    /// A negative element results in a `1` bit and a positive element in a `0` bit.  Element `x` goes
-    /// into the first lowest bit, element `y` into the second, etc.
-    #[inline]
-    pub fn is_negative_bitmask(self) -> u32 {
-        (self.x.is_negative() as u32)
-            | (self.y.is_negative() as u32) << 1
-            | (self.z.is_negative() as u32) << 2
-    }
-
     /// Casts all elements of `self` to `f32`.
     #[inline]
     pub fn as_vec3(&self) -> crate::Vec3 {
@@ -335,6 +282,12 @@ impl IVec3 {
         crate::DVec3::new(self.x as f64, self.y as f64, self.z as f64)
     }
 
+    /// Casts all elements of `self` to `i32`.
+    #[inline]
+    pub fn as_ivec3(&self) -> crate::IVec3 {
+        crate::IVec3::new(self.x as i32, self.y as i32, self.z as i32)
+    }
+
     /// Casts all elements of `self` to `u32`.
     #[inline]
     pub fn as_uvec3(&self) -> crate::UVec3 {
@@ -346,22 +299,16 @@ impl IVec3 {
     pub fn as_i64vec3(&self) -> crate::I64Vec3 {
         crate::I64Vec3::new(self.x as i64, self.y as i64, self.z as i64)
     }
-
-    /// Casts all elements of `self` to `u64`.
-    #[inline]
-    pub fn as_u64vec3(&self) -> crate::U64Vec3 {
-        crate::U64Vec3::new(self.x as u64, self.y as u64, self.z as u64)
-    }
 }
 
-impl Default for IVec3 {
+impl Default for U64Vec3 {
     #[inline(always)]
     fn default() -> Self {
         Self::ZERO
     }
 }
 
-impl Div<IVec3> for IVec3 {
+impl Div<U64Vec3> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn div(self, rhs: Self) -> Self {
@@ -373,7 +320,7 @@ impl Div<IVec3> for IVec3 {
     }
 }
 
-impl DivAssign<IVec3> for IVec3 {
+impl DivAssign<U64Vec3> for U64Vec3 {
     #[inline]
     fn div_assign(&mut self, rhs: Self) {
         self.x.div_assign(rhs.x);
@@ -382,10 +329,10 @@ impl DivAssign<IVec3> for IVec3 {
     }
 }
 
-impl Div<i32> for IVec3 {
+impl Div<u64> for U64Vec3 {
     type Output = Self;
     #[inline]
-    fn div(self, rhs: i32) -> Self {
+    fn div(self, rhs: u64) -> Self {
         Self {
             x: self.x.div(rhs),
             y: self.y.div(rhs),
@@ -394,20 +341,20 @@ impl Div<i32> for IVec3 {
     }
 }
 
-impl DivAssign<i32> for IVec3 {
+impl DivAssign<u64> for U64Vec3 {
     #[inline]
-    fn div_assign(&mut self, rhs: i32) {
+    fn div_assign(&mut self, rhs: u64) {
         self.x.div_assign(rhs);
         self.y.div_assign(rhs);
         self.z.div_assign(rhs);
     }
 }
 
-impl Div<IVec3> for i32 {
-    type Output = IVec3;
+impl Div<U64Vec3> for u64 {
+    type Output = U64Vec3;
     #[inline]
-    fn div(self, rhs: IVec3) -> IVec3 {
-        IVec3 {
+    fn div(self, rhs: U64Vec3) -> U64Vec3 {
+        U64Vec3 {
             x: self.div(rhs.x),
             y: self.div(rhs.y),
             z: self.div(rhs.z),
@@ -415,7 +362,7 @@ impl Div<IVec3> for i32 {
     }
 }
 
-impl Mul<IVec3> for IVec3 {
+impl Mul<U64Vec3> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn mul(self, rhs: Self) -> Self {
@@ -427,7 +374,7 @@ impl Mul<IVec3> for IVec3 {
     }
 }
 
-impl MulAssign<IVec3> for IVec3 {
+impl MulAssign<U64Vec3> for U64Vec3 {
     #[inline]
     fn mul_assign(&mut self, rhs: Self) {
         self.x.mul_assign(rhs.x);
@@ -436,10 +383,10 @@ impl MulAssign<IVec3> for IVec3 {
     }
 }
 
-impl Mul<i32> for IVec3 {
+impl Mul<u64> for U64Vec3 {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: i32) -> Self {
+    fn mul(self, rhs: u64) -> Self {
         Self {
             x: self.x.mul(rhs),
             y: self.y.mul(rhs),
@@ -448,20 +395,20 @@ impl Mul<i32> for IVec3 {
     }
 }
 
-impl MulAssign<i32> for IVec3 {
+impl MulAssign<u64> for U64Vec3 {
     #[inline]
-    fn mul_assign(&mut self, rhs: i32) {
+    fn mul_assign(&mut self, rhs: u64) {
         self.x.mul_assign(rhs);
         self.y.mul_assign(rhs);
         self.z.mul_assign(rhs);
     }
 }
 
-impl Mul<IVec3> for i32 {
-    type Output = IVec3;
+impl Mul<U64Vec3> for u64 {
+    type Output = U64Vec3;
     #[inline]
-    fn mul(self, rhs: IVec3) -> IVec3 {
-        IVec3 {
+    fn mul(self, rhs: U64Vec3) -> U64Vec3 {
+        U64Vec3 {
             x: self.mul(rhs.x),
             y: self.mul(rhs.y),
             z: self.mul(rhs.z),
@@ -469,7 +416,7 @@ impl Mul<IVec3> for i32 {
     }
 }
 
-impl Add<IVec3> for IVec3 {
+impl Add<U64Vec3> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn add(self, rhs: Self) -> Self {
@@ -481,7 +428,7 @@ impl Add<IVec3> for IVec3 {
     }
 }
 
-impl AddAssign<IVec3> for IVec3 {
+impl AddAssign<U64Vec3> for U64Vec3 {
     #[inline]
     fn add_assign(&mut self, rhs: Self) {
         self.x.add_assign(rhs.x);
@@ -490,10 +437,10 @@ impl AddAssign<IVec3> for IVec3 {
     }
 }
 
-impl Add<i32> for IVec3 {
+impl Add<u64> for U64Vec3 {
     type Output = Self;
     #[inline]
-    fn add(self, rhs: i32) -> Self {
+    fn add(self, rhs: u64) -> Self {
         Self {
             x: self.x.add(rhs),
             y: self.y.add(rhs),
@@ -502,20 +449,20 @@ impl Add<i32> for IVec3 {
     }
 }
 
-impl AddAssign<i32> for IVec3 {
+impl AddAssign<u64> for U64Vec3 {
     #[inline]
-    fn add_assign(&mut self, rhs: i32) {
+    fn add_assign(&mut self, rhs: u64) {
         self.x.add_assign(rhs);
         self.y.add_assign(rhs);
         self.z.add_assign(rhs);
     }
 }
 
-impl Add<IVec3> for i32 {
-    type Output = IVec3;
+impl Add<U64Vec3> for u64 {
+    type Output = U64Vec3;
     #[inline]
-    fn add(self, rhs: IVec3) -> IVec3 {
-        IVec3 {
+    fn add(self, rhs: U64Vec3) -> U64Vec3 {
+        U64Vec3 {
             x: self.add(rhs.x),
             y: self.add(rhs.y),
             z: self.add(rhs.z),
@@ -523,7 +470,7 @@ impl Add<IVec3> for i32 {
     }
 }
 
-impl Sub<IVec3> for IVec3 {
+impl Sub<U64Vec3> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn sub(self, rhs: Self) -> Self {
@@ -535,19 +482,19 @@ impl Sub<IVec3> for IVec3 {
     }
 }
 
-impl SubAssign<IVec3> for IVec3 {
+impl SubAssign<U64Vec3> for U64Vec3 {
     #[inline]
-    fn sub_assign(&mut self, rhs: IVec3) {
+    fn sub_assign(&mut self, rhs: U64Vec3) {
         self.x.sub_assign(rhs.x);
         self.y.sub_assign(rhs.y);
         self.z.sub_assign(rhs.z);
     }
 }
 
-impl Sub<i32> for IVec3 {
+impl Sub<u64> for U64Vec3 {
     type Output = Self;
     #[inline]
-    fn sub(self, rhs: i32) -> Self {
+    fn sub(self, rhs: u64) -> Self {
         Self {
             x: self.x.sub(rhs),
             y: self.y.sub(rhs),
@@ -556,20 +503,20 @@ impl Sub<i32> for IVec3 {
     }
 }
 
-impl SubAssign<i32> for IVec3 {
+impl SubAssign<u64> for U64Vec3 {
     #[inline]
-    fn sub_assign(&mut self, rhs: i32) {
+    fn sub_assign(&mut self, rhs: u64) {
         self.x.sub_assign(rhs);
         self.y.sub_assign(rhs);
         self.z.sub_assign(rhs);
     }
 }
 
-impl Sub<IVec3> for i32 {
-    type Output = IVec3;
+impl Sub<U64Vec3> for u64 {
+    type Output = U64Vec3;
     #[inline]
-    fn sub(self, rhs: IVec3) -> IVec3 {
-        IVec3 {
+    fn sub(self, rhs: U64Vec3) -> U64Vec3 {
+        U64Vec3 {
             x: self.sub(rhs.x),
             y: self.sub(rhs.y),
             z: self.sub(rhs.z),
@@ -577,7 +524,7 @@ impl Sub<IVec3> for i32 {
     }
 }
 
-impl Rem<IVec3> for IVec3 {
+impl Rem<U64Vec3> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn rem(self, rhs: Self) -> Self {
@@ -589,7 +536,7 @@ impl Rem<IVec3> for IVec3 {
     }
 }
 
-impl RemAssign<IVec3> for IVec3 {
+impl RemAssign<U64Vec3> for U64Vec3 {
     #[inline]
     fn rem_assign(&mut self, rhs: Self) {
         self.x.rem_assign(rhs.x);
@@ -598,10 +545,10 @@ impl RemAssign<IVec3> for IVec3 {
     }
 }
 
-impl Rem<i32> for IVec3 {
+impl Rem<u64> for U64Vec3 {
     type Output = Self;
     #[inline]
-    fn rem(self, rhs: i32) -> Self {
+    fn rem(self, rhs: u64) -> Self {
         Self {
             x: self.x.rem(rhs),
             y: self.y.rem(rhs),
@@ -610,20 +557,20 @@ impl Rem<i32> for IVec3 {
     }
 }
 
-impl RemAssign<i32> for IVec3 {
+impl RemAssign<u64> for U64Vec3 {
     #[inline]
-    fn rem_assign(&mut self, rhs: i32) {
+    fn rem_assign(&mut self, rhs: u64) {
         self.x.rem_assign(rhs);
         self.y.rem_assign(rhs);
         self.z.rem_assign(rhs);
     }
 }
 
-impl Rem<IVec3> for i32 {
-    type Output = IVec3;
+impl Rem<U64Vec3> for u64 {
+    type Output = U64Vec3;
     #[inline]
-    fn rem(self, rhs: IVec3) -> IVec3 {
-        IVec3 {
+    fn rem(self, rhs: U64Vec3) -> U64Vec3 {
+        U64Vec3 {
             x: self.rem(rhs.x),
             y: self.rem(rhs.y),
             z: self.rem(rhs.z),
@@ -632,22 +579,22 @@ impl Rem<IVec3> for i32 {
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl AsRef<[i32; 3]> for IVec3 {
+impl AsRef<[u64; 3]> for U64Vec3 {
     #[inline]
-    fn as_ref(&self) -> &[i32; 3] {
-        unsafe { &*(self as *const IVec3 as *const [i32; 3]) }
+    fn as_ref(&self) -> &[u64; 3] {
+        unsafe { &*(self as *const U64Vec3 as *const [u64; 3]) }
     }
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl AsMut<[i32; 3]> for IVec3 {
+impl AsMut<[u64; 3]> for U64Vec3 {
     #[inline]
-    fn as_mut(&mut self) -> &mut [i32; 3] {
-        unsafe { &mut *(self as *mut IVec3 as *mut [i32; 3]) }
+    fn as_mut(&mut self) -> &mut [u64; 3] {
+        unsafe { &mut *(self as *mut U64Vec3 as *mut [u64; 3]) }
     }
 }
 
-impl Sum for IVec3 {
+impl Sum for U64Vec3 {
     #[inline]
     fn sum<I>(iter: I) -> Self
     where
@@ -657,7 +604,7 @@ impl Sum for IVec3 {
     }
 }
 
-impl<'a> Sum<&'a Self> for IVec3 {
+impl<'a> Sum<&'a Self> for U64Vec3 {
     #[inline]
     fn sum<I>(iter: I) -> Self
     where
@@ -667,7 +614,7 @@ impl<'a> Sum<&'a Self> for IVec3 {
     }
 }
 
-impl Product for IVec3 {
+impl Product for U64Vec3 {
     #[inline]
     fn product<I>(iter: I) -> Self
     where
@@ -677,7 +624,7 @@ impl Product for IVec3 {
     }
 }
 
-impl<'a> Product<&'a Self> for IVec3 {
+impl<'a> Product<&'a Self> for U64Vec3 {
     #[inline]
     fn product<I>(iter: I) -> Self
     where
@@ -687,19 +634,7 @@ impl<'a> Product<&'a Self> for IVec3 {
     }
 }
 
-impl Neg for IVec3 {
-    type Output = Self;
-    #[inline]
-    fn neg(self) -> Self {
-        Self {
-            x: self.x.neg(),
-            y: self.y.neg(),
-            z: self.z.neg(),
-        }
-    }
-}
-
-impl Not for IVec3 {
+impl Not for U64Vec3 {
     type Output = Self;
     #[inline]
     fn not(self) -> Self::Output {
@@ -711,7 +646,7 @@ impl Not for IVec3 {
     }
 }
 
-impl BitAnd for IVec3 {
+impl BitAnd for U64Vec3 {
     type Output = Self;
     #[inline]
     fn bitand(self, rhs: Self) -> Self::Output {
@@ -723,7 +658,7 @@ impl BitAnd for IVec3 {
     }
 }
 
-impl BitOr for IVec3 {
+impl BitOr for U64Vec3 {
     type Output = Self;
     #[inline]
     fn bitor(self, rhs: Self) -> Self::Output {
@@ -735,7 +670,7 @@ impl BitOr for IVec3 {
     }
 }
 
-impl BitXor for IVec3 {
+impl BitXor for U64Vec3 {
     type Output = Self;
     #[inline]
     fn bitxor(self, rhs: Self) -> Self::Output {
@@ -747,10 +682,10 @@ impl BitXor for IVec3 {
     }
 }
 
-impl BitAnd<i32> for IVec3 {
+impl BitAnd<u64> for U64Vec3 {
     type Output = Self;
     #[inline]
-    fn bitand(self, rhs: i32) -> Self::Output {
+    fn bitand(self, rhs: u64) -> Self::Output {
         Self {
             x: self.x.bitand(rhs),
             y: self.y.bitand(rhs),
@@ -759,10 +694,10 @@ impl BitAnd<i32> for IVec3 {
     }
 }
 
-impl BitOr<i32> for IVec3 {
+impl BitOr<u64> for U64Vec3 {
     type Output = Self;
     #[inline]
-    fn bitor(self, rhs: i32) -> Self::Output {
+    fn bitor(self, rhs: u64) -> Self::Output {
         Self {
             x: self.x.bitor(rhs),
             y: self.y.bitor(rhs),
@@ -771,10 +706,10 @@ impl BitOr<i32> for IVec3 {
     }
 }
 
-impl BitXor<i32> for IVec3 {
+impl BitXor<u64> for U64Vec3 {
     type Output = Self;
     #[inline]
-    fn bitxor(self, rhs: i32) -> Self::Output {
+    fn bitxor(self, rhs: u64) -> Self::Output {
         Self {
             x: self.x.bitxor(rhs),
             y: self.y.bitxor(rhs),
@@ -783,7 +718,7 @@ impl BitXor<i32> for IVec3 {
     }
 }
 
-impl Shl<i8> for IVec3 {
+impl Shl<i8> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: i8) -> Self::Output {
@@ -795,7 +730,7 @@ impl Shl<i8> for IVec3 {
     }
 }
 
-impl Shr<i8> for IVec3 {
+impl Shr<i8> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: i8) -> Self::Output {
@@ -807,7 +742,7 @@ impl Shr<i8> for IVec3 {
     }
 }
 
-impl Shl<i16> for IVec3 {
+impl Shl<i16> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: i16) -> Self::Output {
@@ -819,7 +754,7 @@ impl Shl<i16> for IVec3 {
     }
 }
 
-impl Shr<i16> for IVec3 {
+impl Shr<i16> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: i16) -> Self::Output {
@@ -831,7 +766,7 @@ impl Shr<i16> for IVec3 {
     }
 }
 
-impl Shl<i32> for IVec3 {
+impl Shl<i32> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: i32) -> Self::Output {
@@ -843,7 +778,7 @@ impl Shl<i32> for IVec3 {
     }
 }
 
-impl Shr<i32> for IVec3 {
+impl Shr<i32> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: i32) -> Self::Output {
@@ -855,7 +790,7 @@ impl Shr<i32> for IVec3 {
     }
 }
 
-impl Shl<i64> for IVec3 {
+impl Shl<i64> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: i64) -> Self::Output {
@@ -867,7 +802,7 @@ impl Shl<i64> for IVec3 {
     }
 }
 
-impl Shr<i64> for IVec3 {
+impl Shr<i64> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: i64) -> Self::Output {
@@ -879,7 +814,7 @@ impl Shr<i64> for IVec3 {
     }
 }
 
-impl Shl<u8> for IVec3 {
+impl Shl<u8> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: u8) -> Self::Output {
@@ -891,7 +826,7 @@ impl Shl<u8> for IVec3 {
     }
 }
 
-impl Shr<u8> for IVec3 {
+impl Shr<u8> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: u8) -> Self::Output {
@@ -903,7 +838,7 @@ impl Shr<u8> for IVec3 {
     }
 }
 
-impl Shl<u16> for IVec3 {
+impl Shl<u16> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: u16) -> Self::Output {
@@ -915,7 +850,7 @@ impl Shl<u16> for IVec3 {
     }
 }
 
-impl Shr<u16> for IVec3 {
+impl Shr<u16> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: u16) -> Self::Output {
@@ -927,7 +862,7 @@ impl Shr<u16> for IVec3 {
     }
 }
 
-impl Shl<u32> for IVec3 {
+impl Shl<u32> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: u32) -> Self::Output {
@@ -939,7 +874,7 @@ impl Shl<u32> for IVec3 {
     }
 }
 
-impl Shr<u32> for IVec3 {
+impl Shr<u32> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: u32) -> Self::Output {
@@ -951,7 +886,7 @@ impl Shr<u32> for IVec3 {
     }
 }
 
-impl Shl<u64> for IVec3 {
+impl Shl<u64> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: u64) -> Self::Output {
@@ -963,7 +898,7 @@ impl Shl<u64> for IVec3 {
     }
 }
 
-impl Shr<u64> for IVec3 {
+impl Shr<u64> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: u64) -> Self::Output {
@@ -975,7 +910,7 @@ impl Shr<u64> for IVec3 {
     }
 }
 
-impl Shl<crate::IVec3> for IVec3 {
+impl Shl<crate::IVec3> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: crate::IVec3) -> Self::Output {
@@ -987,7 +922,7 @@ impl Shl<crate::IVec3> for IVec3 {
     }
 }
 
-impl Shr<crate::IVec3> for IVec3 {
+impl Shr<crate::IVec3> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: crate::IVec3) -> Self::Output {
@@ -999,7 +934,7 @@ impl Shr<crate::IVec3> for IVec3 {
     }
 }
 
-impl Shl<crate::UVec3> for IVec3 {
+impl Shl<crate::UVec3> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: crate::UVec3) -> Self::Output {
@@ -1011,7 +946,7 @@ impl Shl<crate::UVec3> for IVec3 {
     }
 }
 
-impl Shr<crate::UVec3> for IVec3 {
+impl Shr<crate::UVec3> for U64Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: crate::UVec3) -> Self::Output {
@@ -1023,8 +958,8 @@ impl Shr<crate::UVec3> for IVec3 {
     }
 }
 
-impl Index<usize> for IVec3 {
-    type Output = i32;
+impl Index<usize> for U64Vec3 {
+    type Output = u64;
     #[inline]
     fn index(&self, index: usize) -> &Self::Output {
         match index {
@@ -1036,7 +971,7 @@ impl Index<usize> for IVec3 {
     }
 }
 
-impl IndexMut<usize> for IVec3 {
+impl IndexMut<usize> for U64Vec3 {
     #[inline]
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         match index {
@@ -1049,16 +984,16 @@ impl IndexMut<usize> for IVec3 {
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl fmt::Display for IVec3 {
+impl fmt::Display for U64Vec3 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "[{}, {}, {}]", self.x, self.y, self.z)
     }
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl fmt::Debug for IVec3 {
+impl fmt::Debug for U64Vec3 {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
-        fmt.debug_tuple(stringify!(IVec3))
+        fmt.debug_tuple(stringify!(U64Vec3))
             .field(&self.x)
             .field(&self.y)
             .field(&self.z)
@@ -1066,37 +1001,37 @@ impl fmt::Debug for IVec3 {
     }
 }
 
-impl From<[i32; 3]> for IVec3 {
+impl From<[u64; 3]> for U64Vec3 {
     #[inline]
-    fn from(a: [i32; 3]) -> Self {
+    fn from(a: [u64; 3]) -> Self {
         Self::new(a[0], a[1], a[2])
     }
 }
 
-impl From<IVec3> for [i32; 3] {
+impl From<U64Vec3> for [u64; 3] {
     #[inline]
-    fn from(v: IVec3) -> Self {
+    fn from(v: U64Vec3) -> Self {
         [v.x, v.y, v.z]
     }
 }
 
-impl From<(i32, i32, i32)> for IVec3 {
+impl From<(u64, u64, u64)> for U64Vec3 {
     #[inline]
-    fn from(t: (i32, i32, i32)) -> Self {
+    fn from(t: (u64, u64, u64)) -> Self {
         Self::new(t.0, t.1, t.2)
     }
 }
 
-impl From<IVec3> for (i32, i32, i32) {
+impl From<U64Vec3> for (u64, u64, u64) {
     #[inline]
-    fn from(v: IVec3) -> Self {
+    fn from(v: U64Vec3) -> Self {
         (v.x, v.y, v.z)
     }
 }
 
-impl From<(IVec2, i32)> for IVec3 {
+impl From<(U64Vec2, u64)> for U64Vec3 {
     #[inline]
-    fn from((v, z): (IVec2, i32)) -> Self {
+    fn from((v, z): (U64Vec2, u64)) -> Self {
         Self::new(v.x, v.y, z)
     }
 }

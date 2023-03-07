@@ -1205,7 +1205,7 @@ mod vec4 {
     }
 
     glam_test!(test_as, {
-        use glam::{DVec4, IVec4, UVec4};
+        use glam::{DVec4, I64Vec4, IVec4, U64Vec4, UVec4};
         assert_eq!(
             DVec4::new(-1.0, -2.0, -3.0, -4.0),
             Vec4::new(-1.0, -2.0, -3.0, -4.0).as_dvec4()
@@ -1217,6 +1217,14 @@ mod vec4 {
         assert_eq!(
             UVec4::new(1, 2, 3, 4),
             Vec4::new(1.0, 2.0, 3.0, 4.0).as_uvec4()
+        );
+        assert_eq!(
+            I64Vec4::new(1, 2, 3, 4),
+            Vec4::new(1.0, 2.0, 3.0, 4.0).as_i64vec4()
+        );
+        assert_eq!(
+            U64Vec4::new(1, 2, 3, 4),
+            Vec4::new(1.0, 2.0, 3.0, 4.0).as_u64vec4()
         );
 
         assert_eq!(
@@ -1231,6 +1239,14 @@ mod vec4 {
             Vec4::new(-1.0, -2.0, -3.0, -4.0),
             DVec4::new(-1.0, -2.0, -3.0, -4.0).as_vec4()
         );
+        assert_eq!(
+            I64Vec4::new(1, 2, 3, 4),
+            DVec4::new(1.0, 2.0, 3.0, 4.0).as_i64vec4()
+        );
+        assert_eq!(
+            U64Vec4::new(1, 2, 3, 4),
+            DVec4::new(1.0, 2.0, 3.0, 4.0).as_u64vec4()
+        );
 
         assert_eq!(
             DVec4::new(-1.0, -2.0, -3.0, -4.0),
@@ -1240,6 +1256,14 @@ mod vec4 {
         assert_eq!(
             Vec4::new(-1.0, -2.0, -3.0, -4.0),
             IVec4::new(-1, -2, -3, -4).as_vec4()
+        );
+        assert_eq!(
+            I64Vec4::new(1, 2, 3, 4),
+            IVec4::new(1, 2, 3, 4).as_i64vec4()
+        );
+        assert_eq!(
+            U64Vec4::new(1, 2, 3, 4),
+            IVec4::new(1, 2, 3, 4).as_u64vec4()
         );
 
         assert_eq!(
@@ -1251,6 +1275,44 @@ mod vec4 {
             Vec4::new(1.0, 2.0, 3.0, 4.0),
             UVec4::new(1, 2, 3, 4).as_vec4()
         );
+        assert_eq!(
+            I64Vec4::new(1, 2, 3, 4),
+            UVec4::new(1, 2, 3, 4).as_i64vec4()
+        );
+        assert_eq!(
+            U64Vec4::new(1, 2, 3, 4),
+            UVec4::new(1, 2, 3, 4).as_u64vec4()
+        );
+
+        assert_eq!(
+            DVec4::new(-1.0, -2.0, -3.0, -4.0),
+            I64Vec4::new(-1, -2, -3, -4).as_dvec4()
+        );
+        assert_eq!(UVec4::new(1, 2, 3, 4), I64Vec4::new(1, 2, 3, 4).as_uvec4());
+        assert_eq!(
+            Vec4::new(-1.0, -2.0, -3.0, -4.0),
+            I64Vec4::new(-1, -2, -3, -4).as_vec4()
+        );
+        assert_eq!(IVec4::new(1, 2, 3, 4), I64Vec4::new(1, 2, 3, 4).as_ivec4());
+        assert_eq!(
+            U64Vec4::new(1, 2, 3, 4),
+            I64Vec4::new(1, 2, 3, 4).as_u64vec4()
+        );
+
+        assert_eq!(
+            DVec4::new(1.0, 2.0, 3.0, 4.0),
+            U64Vec4::new(1, 2, 3, 4).as_dvec4()
+        );
+        assert_eq!(IVec4::new(1, 2, 3, 4), U64Vec4::new(1, 2, 3, 4).as_ivec4());
+        assert_eq!(
+            Vec4::new(1.0, 2.0, 3.0, 4.0),
+            U64Vec4::new(1, 2, 3, 4).as_vec4()
+        );
+        assert_eq!(
+            I64Vec4::new(1, 2, 3, 4),
+            U64Vec4::new(1, 2, 3, 4).as_i64vec4()
+        );
+        assert_eq!(UVec4::new(1, 2, 3, 4), U64Vec4::new(1, 2, 3, 4).as_uvec4());
     });
 
     glam_test!(test_vec3a, {
@@ -1341,4 +1403,52 @@ mod uvec4 {
 
     impl_vec4_scalar_bit_op_tests!(UVec4, 0, 2);
     impl_vec4_bit_op_tests!(UVec4, 0, 2);
+}
+
+mod i64vec4 {
+    use glam::{i64vec4, BVec4, I64Vec2, I64Vec3, I64Vec4, IVec4, UVec4};
+
+    glam_test!(test_align, {
+        use std::mem;
+        assert_eq!(32, mem::size_of::<I64Vec4>());
+        #[cfg(not(feature = "cuda"))]
+        assert_eq!(8, mem::align_of::<I64Vec4>());
+        #[cfg(feature = "cuda")]
+        assert_eq!(16, mem::align_of::<I64Vec4>());
+        assert_eq!(4, mem::size_of::<BVec4>());
+        assert_eq!(1, mem::align_of::<BVec4>());
+    });
+
+    impl_vec4_signed_tests!(i64, i64vec4, I64Vec4, I64Vec3, I64Vec2, BVec4);
+    impl_vec4_eq_hash_tests!(i64, i64vec4);
+
+    impl_vec4_scalar_shift_op_tests!(I64Vec4, -2, 2);
+    impl_vec4_shift_op_tests!(I64Vec4);
+
+    impl_vec4_scalar_bit_op_tests!(I64Vec4, -2, 2);
+    impl_vec4_bit_op_tests!(I64Vec4, -2, 2);
+}
+
+mod u64vec4 {
+    use glam::{u64vec4, BVec4, IVec4, U64Vec2, U64Vec3, U64Vec4, UVec4};
+
+    glam_test!(test_align, {
+        use std::mem;
+        assert_eq!(32, mem::size_of::<U64Vec4>());
+        #[cfg(not(feature = "cuda"))]
+        assert_eq!(8, mem::align_of::<U64Vec4>());
+        #[cfg(feature = "cuda")]
+        assert_eq!(16, mem::align_of::<U64Vec4>());
+        assert_eq!(4, mem::size_of::<BVec4>());
+        assert_eq!(1, mem::align_of::<BVec4>());
+    });
+
+    impl_vec4_tests!(u64, u64vec4, U64Vec4, U64Vec3, U64Vec2, BVec4);
+    impl_vec4_eq_hash_tests!(u64, u64vec4);
+
+    impl_vec4_scalar_shift_op_tests!(U64Vec4, 0, 2);
+    impl_vec4_shift_op_tests!(U64Vec4);
+
+    impl_vec4_scalar_bit_op_tests!(U64Vec4, 0, 2);
+    impl_vec4_bit_op_tests!(U64Vec4, 0, 2);
 }
