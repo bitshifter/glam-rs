@@ -227,6 +227,13 @@ impl U64Vec2 {
         BVec2::new(self.x.lt(&rhs.x), self.y.lt(&rhs.y))
     }
 
+    /// Computes the squared length of `self`.
+    #[doc(alias = "magnitude2")]
+    #[inline]
+    pub fn length_squared(self) -> u64 {
+        self.dot(self)
+    }
+
     /// Casts all elements of `self` to `f32`.
     #[inline]
     pub fn as_vec2(&self) -> crate::Vec2 {

@@ -273,6 +273,19 @@ impl I64Vec2 {
         (self.x.is_negative() as u32) | (self.y.is_negative() as u32) << 1
     }
 
+    /// Computes the squared length of `self`.
+    #[doc(alias = "magnitude2")]
+    #[inline]
+    pub fn length_squared(self) -> i64 {
+        self.dot(self)
+    }
+
+    /// Compute the squared euclidean distance between two points in space.
+    #[inline]
+    pub fn distance_squared(self, rhs: Self) -> i64 {
+        (self - rhs).length_squared()
+    }
+
     /// Returns a vector that is equal to `self` rotated by 90 degrees.
     #[inline]
     pub fn perp(self) -> Self {

@@ -110,6 +110,13 @@ macro_rules! impl_vec3_tests {
             assert_eq!(0 as $t, x.dot(y));
         });
 
+        glam_test!(test_length_squared_unsigned, {
+            let x = $new(1 as $t, 0 as $t, 0 as $t);
+            let z = $new(0 as $t, 0 as $t, 1 as $t);
+            assert_eq!(4 as $t, (2 as $t * x).length_squared());
+            assert_eq!(16 as $t, (4 as $t * z).length_squared());
+        });
+
         glam_test!(test_cross, {
             let x = $new(1 as $t, 0 as $t, 0 as $t);
             let y = $new(0 as $t, 1 as $t, 0 as $t);
@@ -538,6 +545,19 @@ macro_rules! impl_vec3_signed_tests {
             assert_eq!(0 as $t, x.dot(y));
             assert_eq!(-1 as $t, z.dot(-z));
         });
+
+        glam_test!(test_length_squared_signed, {
+            let x = $new(1 as $t, 0 as $t, 0 as $t);
+            let y = $new(0 as $t, 1 as $t, 0 as $t);
+            let z = $new(0 as $t, 0 as $t, 1 as $t);
+            assert_eq!(9 as $t, (-3 as $t * y).length_squared());
+            assert_eq!(
+                2 as $t * 2 as $t + 3 as $t * 3 as $t + 4 as $t * 4 as $t,
+                $new(2 as $t, 3 as $t, 4 as $t).length_squared()
+            );
+            assert_eq!(2 as $t, x.distance_squared(y));
+            assert_eq!(13 as $t, (2 as $t * x).distance_squared(-3 as $t * z));
+        });
     };
 }
 
@@ -592,14 +612,9 @@ macro_rules! impl_vec3_float_tests {
             let z = $new(0.0, 0.0, 1.0);
             assert_eq!(y, z.cross(x));
             assert_eq!(z, x.cross(y));
-            assert_eq!(4.0, (2.0 * x).length_squared());
-            assert_eq!(9.0, (-3.0 * y).length_squared());
-            assert_eq!(16.0, (4.0 * z).length_squared());
             assert_eq!(2.0, (-2.0 * x).length());
             assert_eq!(3.0, (3.0 * y).length());
             assert_eq!(4.0, (-4.0 * z).length());
-            assert_eq!(2.0, x.distance_squared(y));
-            assert_eq!(13.0, (2.0 * x).distance_squared(-3.0 * z));
             assert_eq!((2.0 as $t).sqrt(), x.distance(y));
             assert_eq!(5.0, (3.0 * x).distance(-4.0 * y));
             assert_eq!(13.0, (-5.0 * z).distance(12.0 * y));
@@ -611,10 +626,6 @@ macro_rules! impl_vec3_float_tests {
             assert_eq!(
                 $new(14.0, 14.0, 14.0),
                 $new(0.0, 4.0, 6.0).dot_into_vec($new(3.0, 2.0, 1.0))
-            );
-            assert_eq!(
-                2.0 * 2.0 + 3.0 * 3.0 + 4.0 * 4.0,
-                $new(2.0, 3.0, 4.0).length_squared()
             );
             assert_eq!(
                 (2.0 as $t * 2.0 + 3.0 * 3.0 + 4.0 * 4.0).sqrt(),
