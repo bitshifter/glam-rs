@@ -284,6 +284,13 @@ impl UVec4 {
         )
     }
 
+    /// Computes the squared length of `self`.
+    #[doc(alias = "magnitude2")]
+    #[inline]
+    pub fn length_squared(self) -> u32 {
+        self.dot(self)
+    }
+
     /// Casts all elements of `self` to `f32`.
     #[inline]
     pub fn as_vec4(&self) -> crate::Vec4 {

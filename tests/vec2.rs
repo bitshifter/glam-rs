@@ -102,6 +102,15 @@ macro_rules! impl_vec2_tests {
             assert_eq!(0 as $t, x.dot(y));
         });
 
+        glam_test!(test_length_squared_unsigned, {
+            let x = $new(1 as $t, 0 as $t);
+            assert_eq!(4 as $t, (2 as $t * x).length_squared());
+            assert_eq!(
+                2 as $t * 2 as $t + 3 as $t * 3 as $t,
+                $new(2 as $t, 3 as $t).length_squared()
+            );
+        });
+
         glam_test!(test_ops, {
             let a = $new(2 as $t, 4 as $t);
             assert_eq!($new(4 as $t, 8 as $t), (a + a));
@@ -472,6 +481,14 @@ macro_rules! impl_vec2_signed_tests {
             assert_eq!(-1 as $t, x.dot(-x));
         });
 
+        glam_test!(test_length_squared_signed, {
+            let x = $new(1 as $t, 0 as $t);
+            let y = $new(0 as $t, 1 as $t);
+            assert_eq!(9 as $t, (-3 as $t * y).length_squared());
+            assert_eq!(2 as $t, x.distance_squared(y));
+            assert_eq!(13 as $t, (2 as $t * x).distance_squared(-3 as $t * y));
+        });
+
         glam_test!(test_neg, {
             let a = $new(1 as $t, 2 as $t);
             assert_eq!($new(-1 as $t, -2 as $t), (-a));
@@ -547,19 +564,14 @@ macro_rules! impl_vec2_float_tests {
         glam_test!(test_length, {
             let x = $new(1.0, 0.0);
             let y = $new(0.0, 1.0);
-            assert_eq!(4.0, (2.0 * x).length_squared());
-            assert_eq!(9.0, (-3.0 * y).length_squared());
             assert_eq!(2.0, (-2.0 * x).length());
             assert_eq!(3.0, (3.0 * y).length());
-            assert_eq!(2.0, x.distance_squared(y));
-            assert_eq!(13.0, (2.0 * x).distance_squared(-3.0 * y));
             assert_eq!((2.0 as $t).sqrt(), x.distance(y));
             assert_eq!(5.0, (3.0 * x).distance(-4.0 * y));
             assert_eq!(13.0, (-5.0 * x).distance(12.0 * y));
             assert_eq!(x, (2.0 * x).normalize());
             assert_eq!(1.0 * 3.0 + 2.0 * 4.0, $new(1.0, 2.0).dot($new(3.0, 4.0)));
             assert_eq!($new(8.0, 8.0), $new(1.0, 2.0).dot_into_vec($new(4.0, 2.0)));
-            assert_eq!(2.0 * 2.0 + 3.0 * 3.0, $new(2.0, 3.0).length_squared());
             assert_eq!(
                 (2.0 as $t * 2.0 + 3.0 * 3.0).sqrt(),
                 $new(2.0, 3.0).length()

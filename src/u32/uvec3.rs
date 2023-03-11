@@ -264,6 +264,13 @@ impl UVec3 {
         BVec3::new(self.x.lt(&rhs.x), self.y.lt(&rhs.y), self.z.lt(&rhs.z))
     }
 
+    /// Computes the squared length of `self`.
+    #[doc(alias = "magnitude2")]
+    #[inline]
+    pub fn length_squared(self) -> u32 {
+        self.dot(self)
+    }
+
     /// Casts all elements of `self` to `f32`.
     #[inline]
     pub fn as_vec3(&self) -> crate::Vec3 {

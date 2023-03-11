@@ -148,6 +148,19 @@ macro_rules! impl_vec4_tests {
             assert_eq!(0 as $t, z.dot(w));
         });
 
+        glam_test!(test_length_squared_unsigned, {
+            let x = $new(1 as $t, 0 as $t, 0 as $t, 0 as $t);
+            let z = $new(0 as $t, 0 as $t, 1 as $t, 0 as $t);
+            let w = $new(0 as $t, 0 as $t, 0 as $t, 1 as $t);
+            assert_eq!(4 as $t, (2 as $t * x).length_squared());
+            assert_eq!(16 as $t, (4 as $t * z).length_squared());
+            assert_eq!(64 as $t, (8 as $t * w).length_squared());
+            assert_eq!(
+                2 as $t * 2 as $t + 3 as $t * 3 as $t + 4 as $t * 4 as $t + 5 as $t * 5 as $t,
+                $new(2 as $t, 3 as $t, 4 as $t, 5 as $t).length_squared()
+            );
+        });
+
         glam_test!(test_ops, {
             let a = $new(2 as $t, 4 as $t, 8 as $t, 16 as $t);
             assert_eq!($new(4 as $t, 8 as $t, 16 as $t, 32 as $t), a + a);
@@ -615,6 +628,23 @@ macro_rules! impl_vec4_signed_tests {
             assert_eq!(0 as $t, x.dot(-z));
             assert_eq!(-1 as $t, w.dot(-w));
         });
+
+        glam_test!(test_length_squared_signed, {
+            let x = $new(1 as $t, 0 as $t, 0 as $t, 0 as $t);
+            let y = $new(0 as $t, 1 as $t, 0 as $t, 0 as $t);
+            let z = $new(0 as $t, 0 as $t, 1 as $t, 0 as $t);
+            let w = $new(0 as $t, 0 as $t, 0 as $t, 1 as $t);
+            assert_eq!(4 as $t, (2 as $t * x).length_squared());
+            assert_eq!(9 as $t, (-3 as $t * y).length_squared());
+            assert_eq!(16 as $t, (4 as $t * z).length_squared());
+            assert_eq!(64 as $t, (8 as $t * w).length_squared());
+            assert_eq!(
+                2 as $t * 2 as $t + 3 as $t * 3 as $t + 4 as $t * 4 as $t + 5 as $t * 5 as $t,
+                $new(2 as $t, 3 as $t, 4 as $t, 5 as $t).length_squared()
+            );
+            assert_eq!(2 as $t, x.distance_squared(y));
+            assert_eq!(13 as $t, (2 as $t * x).distance_squared(-3 as $t * z));
+        });
     };
 }
 
@@ -668,16 +698,10 @@ macro_rules! impl_vec4_float_tests {
             let y = $new(0.0, 1.0, 0.0, 0.0);
             let z = $new(0.0, 0.0, 1.0, 0.0);
             let w = $new(0.0, 0.0, 0.0, 1.0);
-            assert_eq!(4.0, (2.0 * x).length_squared());
-            assert_eq!(9.0, (-3.0 * y).length_squared());
-            assert_eq!(16.0, (4.0 * z).length_squared());
-            assert_eq!(64.0, (8.0 * w).length_squared());
             assert_eq!(2.0, (-2.0 * x).length());
             assert_eq!(3.0, (3.0 * y).length());
             assert_eq!(4.0, (-4.0 * z).length());
             assert_eq!(5.0, (-5.0 * w).length());
-            assert_eq!(2.0, x.distance_squared(y));
-            assert_eq!(13.0, (2.0 * x).distance_squared(-3.0 * z));
             assert_eq!((2.0 as $t).sqrt(), w.distance(y));
             assert_eq!(5.0, (3.0 * x).distance(-4.0 * y));
             assert_eq!(13.0, (-5.0 * w).distance(12.0 * y));
@@ -689,10 +713,6 @@ macro_rules! impl_vec4_float_tests {
             assert_eq!(
                 $new(28.0, 28.0, 28.0, 28.0),
                 $new(0.0, 5.0, 3.0, 6.0).dot_into_vec($new(7.0, 2.0, 4.0, 1.0))
-            );
-            assert_eq!(
-                2.0 * 2.0 + 3.0 * 3.0 + 4.0 * 4.0 + 5.0 * 5.0,
-                $new(2.0, 3.0, 4.0, 5.0).length_squared()
             );
             assert_eq!(
                 (2.0 as $t * 2.0 + 3.0 * 3.0 + 4.0 * 4.0 + 5.0 * 5.0).sqrt(),

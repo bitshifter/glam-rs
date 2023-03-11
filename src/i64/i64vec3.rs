@@ -317,6 +317,19 @@ impl I64Vec3 {
             | (self.z.is_negative() as u32) << 2
     }
 
+    /// Computes the squared length of `self`.
+    #[doc(alias = "magnitude2")]
+    #[inline]
+    pub fn length_squared(self) -> i64 {
+        self.dot(self)
+    }
+
+    /// Compute the squared euclidean distance between two points in space.
+    #[inline]
+    pub fn distance_squared(self, rhs: Self) -> i64 {
+        (self - rhs).length_squared()
+    }
+
     /// Casts all elements of `self` to `f32`.
     #[inline]
     pub fn as_vec3(&self) -> crate::Vec3 {
