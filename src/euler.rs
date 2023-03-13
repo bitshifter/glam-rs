@@ -17,7 +17,6 @@ use num_traits::Float;
 ///
 /// YXZ can be used for yaw (y-axis), pitch (x-axis), roll (z-axis).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-#[cfg_attr(feature = "serde", derive(serde::Deserialize, serde::Serialize))]
 pub enum EulerRot {
     /// Intrinsic three-axis rotation ZYX
     ZYX,
@@ -31,6 +30,165 @@ pub enum EulerRot {
     XYZ,
     /// Intrinsic three-axis rotation XZY
     XZY,
+}
+
+#[cfg(feature = "serde")]
+impl serde::Serialize for EulerRot {
+    fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        match *self {
+            EulerRot::ZYX => {
+                serde::Serializer::serialize_unit_variant(serializer, "EulerRot", 0u32, "ZYX")
+            }
+            EulerRot::ZXY => {
+                serde::Serializer::serialize_unit_variant(serializer, "EulerRot", 1u32, "ZXY")
+            }
+            EulerRot::YXZ => {
+                serde::Serializer::serialize_unit_variant(serializer, "EulerRot", 2u32, "YXZ")
+            }
+            EulerRot::YZX => {
+                serde::Serializer::serialize_unit_variant(serializer, "EulerRot", 3u32, "YZX")
+            }
+            EulerRot::XYZ => {
+                serde::Serializer::serialize_unit_variant(serializer, "EulerRot", 4u32, "XYZ")
+            }
+            EulerRot::XZY => {
+                serde::Serializer::serialize_unit_variant(serializer, "EulerRot", 5u32, "XZY")
+            }
+        }
+    }
+}
+
+#[cfg(feature = "serde")]
+impl<'de> serde::Deserialize<'de> for EulerRot {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        enum Field {
+            ZYX,
+            ZXY,
+            YXZ,
+            YZX,
+            XYZ,
+            XZY,
+        }
+        struct FieldVisitor;
+
+        impl<'de> serde::de::Visitor<'de> for FieldVisitor {
+            type Value = Field;
+            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                std::fmt::Formatter::write_str(formatter, "variant identifier")
+            }
+            fn visit_u64<E>(self, value: u64) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                match value {
+                    0u64 => Ok(Field::ZYX),
+                    1u64 => Ok(Field::ZXY),
+                    2u64 => Ok(Field::YXZ),
+                    3u64 => Ok(Field::YZX),
+                    4u64 => Ok(Field::XYZ),
+                    5u64 => Ok(Field::XZY),
+                    _ => Err(serde::de::Error::invalid_value(
+                        serde::de::Unexpected::Unsigned(value),
+                        &"variant index 0 <= i < 6",
+                    )),
+                }
+            }
+            fn visit_str<E>(self, value: &str) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                match value {
+                    "ZYX" => Ok(Field::ZYX),
+                    "ZXY" => Ok(Field::ZXY),
+                    "YXZ" => Ok(Field::YXZ),
+                    "YZX" => Ok(Field::YZX),
+                    "XYZ" => Ok(Field::XYZ),
+                    "XZY" => Ok(Field::XZY),
+                    _ => Err(serde::de::Error::unknown_variant(value, VARIANTS)),
+                }
+            }
+            fn visit_bytes<E>(self, value: &[u8]) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                match value {
+                    b"ZYX" => Ok(Field::ZYX),
+                    b"ZXY" => Ok(Field::ZXY),
+                    b"YXZ" => Ok(Field::YXZ),
+                    b"YZX" => Ok(Field::YZX),
+                    b"XYZ" => Ok(Field::XYZ),
+                    b"XZY" => Ok(Field::XZY),
+                    _ => {
+                        let value = &String::from_utf8_lossy(value);
+                        Err(serde::de::Error::unknown_variant(value, VARIANTS))
+                    }
+                }
+            }
+        }
+        impl<'de> serde::Deserialize<'de> for Field {
+            #[inline]
+            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+            where
+                D: serde::Deserializer<'de>,
+            {
+                serde::Deserializer::deserialize_identifier(deserializer, FieldVisitor)
+            }
+        }
+        struct Visitor<'de> {
+            marker: std::marker::PhantomData<EulerRot>,
+            lifetime: std::marker::PhantomData<&'de ()>,
+        }
+        impl<'de> serde::de::Visitor<'de> for Visitor<'de> {
+            type Value = EulerRot;
+            fn expecting(&self, __formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                std::fmt::Formatter::write_str(__formatter, "enum EulerRot")
+            }
+            fn visit_enum<A>(self, data: A) -> Result<Self::Value, A::Error>
+            where
+                A: serde::de::EnumAccess<'de>,
+            {
+                match serde::de::EnumAccess::variant(data)? {
+                    (Field::ZYX, variant) => {
+                        serde::de::VariantAccess::unit_variant(variant)?;
+                        Ok(EulerRot::ZYX)
+                    }
+                    (Field::ZXY, variant) => {
+                        serde::de::VariantAccess::unit_variant(variant)?;
+                        Ok(EulerRot::ZXY)
+                    }
+                    (Field::YXZ, variant) => {
+                        serde::de::VariantAccess::unit_variant(variant)?;
+                        Ok(EulerRot::YXZ)
+                    }
+                    (Field::YZX, variant) => {
+                        serde::de::VariantAccess::unit_variant(variant)?;
+                        Ok(EulerRot::YZX)
+                    }
+                    (Field::XYZ, variant) => {
+                        serde::de::VariantAccess::unit_variant(variant)?;
+                        Ok(EulerRot::XYZ)
+                    }
+                    (Field::XZY, variant) => {
+                        serde::de::VariantAccess::unit_variant(variant)?;
+                        Ok(EulerRot::XZY)
+                    }
+                }
+            }
+        }
+        const VARIANTS: &'static [&'static str] = &["ZYX", "ZXY", "YXZ", "YZX", "XYZ", "XZY"];
+        serde::Deserializer::deserialize_enum(
+            deserializer,
+            "EulerRot",
+            VARIANTS,
+            Visitor {
+                marker: std::marker::PhantomData::<EulerRot>,
+                lifetime: std::marker::PhantomData,
+            },
+        )
+    }
 }
 
 impl Default for EulerRot {
