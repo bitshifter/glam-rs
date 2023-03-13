@@ -17,7 +17,10 @@ use num_traits::Float;
 ///
 /// YXZ can be used for yaw (y-axis), pitch (x-axis), roll (z-axis).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-#[cfg_attr(feature = "serde", derive(serde::Deserialize, serde::Serialize))]
+#[cfg_attr(
+    feature = "serde",
+    derive(serde_derive::Deserialize, serde_derive::Serialize)
+)]
 pub enum EulerRot {
     /// Intrinsic three-axis rotation ZYX
     ZYX,
