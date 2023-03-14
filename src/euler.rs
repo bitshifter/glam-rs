@@ -77,8 +77,8 @@ impl<'de> serde::Deserialize<'de> for EulerRot {
 
         impl<'de> serde::de::Visitor<'de> for FieldVisitor {
             type Value = Field;
-            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                std::fmt::Formatter::write_str(formatter, "variant identifier")
+            fn expecting(&self, formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+                core::fmt::Formatter::write_str(formatter, "variant identifier")
             }
             fn visit_u64<E>(self, value: u64) -> Result<Self::Value, E>
             where
@@ -139,13 +139,13 @@ impl<'de> serde::Deserialize<'de> for EulerRot {
             }
         }
         struct Visitor<'de> {
-            marker: std::marker::PhantomData<EulerRot>,
-            lifetime: std::marker::PhantomData<&'de ()>,
+            marker: core::marker::PhantomData<EulerRot>,
+            lifetime: core::marker::PhantomData<&'de ()>,
         }
         impl<'de> serde::de::Visitor<'de> for Visitor<'de> {
             type Value = EulerRot;
-            fn expecting(&self, __formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                std::fmt::Formatter::write_str(__formatter, "enum EulerRot")
+            fn expecting(&self, __formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+                core::fmt::Formatter::write_str(__formatter, "enum EulerRot")
             }
             fn visit_enum<A>(self, data: A) -> Result<Self::Value, A::Error>
             where
@@ -185,8 +185,8 @@ impl<'de> serde::Deserialize<'de> for EulerRot {
             "EulerRot",
             VARIANTS,
             Visitor {
-                marker: std::marker::PhantomData::<EulerRot>,
-                lifetime: std::marker::PhantomData,
+                marker: core::marker::PhantomData::<EulerRot>,
+                lifetime: core::marker::PhantomData,
             },
         )
     }
