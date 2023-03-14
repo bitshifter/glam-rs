@@ -123,7 +123,11 @@ impl<'de> serde::Deserialize<'de> for EulerRot {
                     b"XYZ" => Ok(Field::XYZ),
                     b"XZY" => Ok(Field::XZY),
                     _ => {
+                        #[cfg(feature = "std")]
                         let value = &String::from_utf8_lossy(value);
+                        #[cfg(not(feature = "std"))]
+                        let value =
+                            core::str::from_utf8(value).unwrap_or("\u{fffd}\u{fffd}\u{fffd}");
                         Err(serde::de::Error::unknown_variant(value, VARIANTS))
                     }
                 }
