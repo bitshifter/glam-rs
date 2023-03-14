@@ -64,6 +64,7 @@ impl<'de> serde::Deserialize<'de> for EulerRot {
     where
         D: serde::Deserializer<'de>,
     {
+        #[allow(clippy::upper_case_acronyms)]
         enum Field {
             ZYX,
             ZXY,
@@ -178,7 +179,7 @@ impl<'de> serde::Deserialize<'de> for EulerRot {
                 }
             }
         }
-        const VARIANTS: &'static [&'static str] = &["ZYX", "ZXY", "YXZ", "YZX", "XYZ", "XZY"];
+        const VARIANTS: &[&str] = &["ZYX", "ZXY", "YXZ", "YZX", "XYZ", "XZY"];
         serde::Deserializer::deserialize_enum(
             deserializer,
             "EulerRot",
