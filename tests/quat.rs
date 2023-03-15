@@ -507,6 +507,20 @@ macro_rules! impl_quat_tests {
         glam_test!(test_to_array, {
             assert!($new(1.0, 2.0, 3.0, 4.0).to_array() == [1.0, 2.0, 3.0, 4.0]);
         });
+
+        glam_test!(test_to_axis_angle, {
+            let q = $quat::from_xyzw(
+                5.28124762e-08,
+                -5.12559303e-03,
+                8.29266140e-08,
+                9.99986828e-01,
+            );
+            assert!(q.is_normalized());
+            let (axis, angle) = q.to_axis_angle();
+            assert!(axis.is_normalized());
+            let q2 = $quat::from_axis_angle(axis, angle);
+            assert!((q.dot(q2) - 1.0).abs() < 1e-6);
+        });
     };
 }
 
