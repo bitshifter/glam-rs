@@ -537,6 +537,16 @@ macro_rules! impl_quat_tests {
                 let q2 = $quat::from_axis_angle(axis, angle);
                 assert!((q.dot(q2) - 1.0).abs() < 1e-6);
             }
+            {
+                let axis = $vec3::Z;
+                let angle = core::$t::consts::PI * 0.25;
+                let q = $quat::from_axis_angle(axis, angle);
+                assert!(q.is_normalized());
+                let (axis2, angle2) = q.to_axis_angle();
+                assert!(axis.is_normalized());
+                assert_approx_eq!(axis, axis2);
+                assert_approx_eq!(angle, angle2);
+            }
         });
     };
 }
