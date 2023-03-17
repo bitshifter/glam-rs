@@ -1168,4 +1168,13 @@ mod euler {
             )
         }
     }
+
+    #[test]
+    fn test_euler_rot_serde() {
+        let a = EulerRot::XYZ;
+        let serialized = serde_json::to_string(&a).unwrap();
+        assert_eq!("\"XYZ\"", serialized);
+        let deserialized = serde_json::from_str(&serialized).unwrap();
+        assert_eq!(a, deserialized);
+    }
 }
