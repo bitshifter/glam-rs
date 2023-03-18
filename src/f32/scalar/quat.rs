@@ -351,21 +351,18 @@ impl Quat {
         }
     }
 
-    /// Returns the rotation axis and angle (in radians) of `self`.
+    /// Returns the rotation axis (normalized) and angle (in radians) of `self`.
     #[inline]
     pub fn to_axis_angle(self) -> (Vec3, f32) {
         const EPSILON: f32 = 1.0e-8;
-        const EPSILON_SQUARED: f32 = EPSILON * EPSILON;
-        let w = self.w;
-        let angle = w.acos_approx() * 2.0;
-        let scale_sq = f32::max(1.0 - w * w, 0.0);
-        if scale_sq >= EPSILON_SQUARED {
-            (
-                Vec3::new(self.x, self.y, self.z) * scale_sq.sqrt().recip(),
-                angle,
-            )
+        let v = Vec3::new(self.x, self.y, self.z);
+        let length = v.length();
+        if length >= EPSILON {
+            let angle = 2.0 * f32::atan2(length, self.w);
+            let axis = v / length;
+            (axis, angle)
         } else {
-            (Vec3::X, angle)
+            (Vec3::X, 0.0)
         }
     }
 

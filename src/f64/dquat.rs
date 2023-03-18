@@ -341,21 +341,18 @@ impl DQuat {
         }
     }
 
-    /// Returns the rotation axis and angle (in radians) of `self`.
+    /// Returns the rotation axis (normalized) and angle (in radians) of `self`.
     #[inline]
     pub fn to_axis_angle(self) -> (DVec3, f64) {
         const EPSILON: f64 = 1.0e-8;
-        const EPSILON_SQUARED: f64 = EPSILON * EPSILON;
-        let w = self.w;
-        let angle = w.acos_approx() * 2.0;
-        let scale_sq = f64::max(1.0 - w * w, 0.0);
-        if scale_sq >= EPSILON_SQUARED {
-            (
-                DVec3::new(self.x, self.y, self.z) * scale_sq.sqrt().recip(),
-                angle,
-            )
+        let v = DVec3::new(self.x, self.y, self.z);
+        let length = v.length();
+        if length >= EPSILON {
+            let angle = 2.0 * f64::atan2(length, self.w);
+            let axis = v / length;
+            (axis, angle)
         } else {
-            (DVec3::X, angle)
+            (DVec3::X, 0.0)
         }
     }
 
