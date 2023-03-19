@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+### Added
+
+* Added `i64` and `u64` vector types; `I64Vec2`, `I64Vec3`, `I64Vec4`,
+  `U64Vec2`, `U64Vec3` and `U64Vec4`.
+
+* Added `length_squared` method on signed and unsigned integer vector types.
+
+* Added `distance_squared` method on signed integer vector types.
+
+### Changed
+
+* Changed quaternion `to_axis_angle` for improved numerical stability.
+
+### Removed
+
+* Removed dependency on `serde_derive` for improved compile times when using
+  `serde`.
+
 ## [0.23.0] - 2023-02-22
 
 ### Breaking changes
