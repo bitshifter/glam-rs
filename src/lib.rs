@@ -272,7 +272,7 @@ mod align16;
 mod deref;
 mod euler;
 mod features;
-mod float_ex;
+mod math;
 
 #[cfg(target_arch = "spirv")]
 mod spirv;
@@ -297,8 +297,6 @@ mod coresimd;
     not(any(feature = "core-simd", feature = "scalar-math"))
 ))]
 use align16::Align16;
-
-use float_ex::FloatEx;
 
 /** `bool` vector mask types. */
 pub mod bool;

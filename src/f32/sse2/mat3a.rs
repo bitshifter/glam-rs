@@ -1,6 +1,6 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
-use crate::{swizzles::*, DMat3, EulerRot, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A};
+use crate::{math, swizzles::*, DMat3, EulerRot, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -10,10 +10,6 @@ use core::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 use core::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use core::arch::x86_64::*;
-
-#[cfg(feature = "libm")]
-#[allow(unused_imports)]
-use num_traits::Float;
 
 /// Creates a 3x3 matrix from column vectors.
 #[inline(always)]
@@ -191,7 +187,7 @@ impl Mat3A {
     pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
         glam_assert!(axis.is_normalized());
 
-        let (sin, cos) = angle.sin_cos();
+        let (sin, cos) = math::sin_cos(angle);
         let (xsin, ysin, zsin) = axis.mul(sin).into();
         let (x, y, z) = axis.into();
         let (x2, y2, z2) = axis.mul(axis).into();
@@ -217,7 +213,7 @@ impl Mat3A {
     /// Creates a 3D rotation matrix from `angle` (in radians) around the x axis.
     #[inline]
     pub fn from_rotation_x(angle: f32) -> Self {
-        let (sina, cosa) = angle.sin_cos();
+        let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
             Vec3A::X,
             Vec3A::new(0.0, cosa, sina),
@@ -228,7 +224,7 @@ impl Mat3A {
     /// Creates a 3D rotation matrix from `angle` (in radians) around the y axis.
     #[inline]
     pub fn from_rotation_y(angle: f32) -> Self {
-        let (sina, cosa) = angle.sin_cos();
+        let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
             Vec3A::new(cosa, 0.0, -sina),
             Vec3A::Y,
@@ -239,7 +235,7 @@ impl Mat3A {
     /// Creates a 3D rotation matrix from `angle` (in radians) around the z axis.
     #[inline]
     pub fn from_rotation_z(angle: f32) -> Self {
-        let (sina, cosa) = angle.sin_cos();
+        let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
             Vec3A::new(cosa, sina, 0.0),
             Vec3A::new(-sina, cosa, 0.0),
@@ -267,7 +263,7 @@ impl Mat3A {
     /// [`Self::transform_point2()`] and [`Self::transform_vector2()`].
     #[inline]
     pub fn from_angle(angle: f32) -> Self {
-        let (sin, cos) = angle.sin_cos();
+        let (sin, cos) = math::sin_cos(angle);
         Self::from_cols(
             Vec3A::new(cos, sin, 0.0),
             Vec3A::new(-sin, cos, 0.0),
@@ -282,7 +278,7 @@ impl Mat3A {
     /// [`Self::transform_point2()`] and [`Self::transform_vector2()`].
     #[inline]
     pub fn from_scale_angle_translation(scale: Vec2, angle: f32, translation: Vec2) -> Self {
-        let (sin, cos) = angle.sin_cos();
+        let (sin, cos) = math::sin_cos(angle);
         Self::from_cols(
             Vec3A::new(cos * scale.x, sin * scale.x, 0.0),
             Vec3A::new(-sin * scale.y, cos * scale.y, 0.0),

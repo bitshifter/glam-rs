@@ -1,14 +1,10 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
-use crate::{swizzles::*, DMat3, DQuat, DVec3, DVec4, EulerRot, Mat4};
+use crate::{math, swizzles::*, DMat3, DQuat, DVec3, DVec4, EulerRot, Mat4};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
-
-#[cfg(feature = "libm")]
-#[allow(unused_imports)]
-use num_traits::Float;
 
 /// Creates a 4x4 matrix from column vectors.
 #[inline(always)]
@@ -325,7 +321,7 @@ impl DMat4 {
     pub fn from_axis_angle(axis: DVec3, angle: f64) -> Self {
         glam_assert!(axis.is_normalized());
 
-        let (sin, cos) = angle.sin_cos();
+        let (sin, cos) = math::sin_cos(angle);
         let axis_sin = axis.mul(sin);
         let axis_sq = axis.mul(axis);
         let omc = 1.0 - cos;
@@ -373,7 +369,7 @@ impl DMat4 {
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
     pub fn from_rotation_x(angle: f64) -> Self {
-        let (sina, cosa) = angle.sin_cos();
+        let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
             DVec4::X,
             DVec4::new(0.0, cosa, sina, 0.0),
@@ -389,7 +385,7 @@ impl DMat4 {
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
     pub fn from_rotation_y(angle: f64) -> Self {
-        let (sina, cosa) = angle.sin_cos();
+        let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
             DVec4::new(cosa, 0.0, -sina, 0.0),
             DVec4::Y,
@@ -405,7 +401,7 @@ impl DMat4 {
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
     pub fn from_rotation_z(angle: f64) -> Self {
-        let (sina, cosa) = angle.sin_cos();
+        let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
             DVec4::new(cosa, sina, 0.0, 0.0),
             DVec4::new(-sina, cosa, 0.0, 0.0),
@@ -735,7 +731,7 @@ impl DMat4 {
     #[inline]
     pub fn perspective_lh(fov_y_radians: f64, aspect_ratio: f64, z_near: f64, z_far: f64) -> Self {
         glam_assert!(z_near > 0.0 && z_far > 0.0);
-        let (sin_fov, cos_fov) = (0.5 * fov_y_radians).sin_cos();
+        let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
         let w = h / aspect_ratio;
         let r = z_far / (z_far - z_near);
@@ -756,7 +752,7 @@ impl DMat4 {
     #[inline]
     pub fn perspective_rh(fov_y_radians: f64, aspect_ratio: f64, z_near: f64, z_far: f64) -> Self {
         glam_assert!(z_near > 0.0 && z_far > 0.0);
-        let (sin_fov, cos_fov) = (0.5 * fov_y_radians).sin_cos();
+        let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
         let w = h / aspect_ratio;
         let r = z_far / (z_near - z_far);
@@ -776,7 +772,7 @@ impl DMat4 {
     #[inline]
     pub fn perspective_infinite_lh(fov_y_radians: f64, aspect_ratio: f64, z_near: f64) -> Self {
         glam_assert!(z_near > 0.0);
-        let (sin_fov, cos_fov) = (0.5 * fov_y_radians).sin_cos();
+        let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
         let w = h / aspect_ratio;
         Self::from_cols(
@@ -799,7 +795,7 @@ impl DMat4 {
         z_near: f64,
     ) -> Self {
         glam_assert!(z_near > 0.0);
-        let (sin_fov, cos_fov) = (0.5 * fov_y_radians).sin_cos();
+        let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
         let w = h / aspect_ratio;
         Self::from_cols(

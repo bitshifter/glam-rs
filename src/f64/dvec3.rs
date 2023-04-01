@@ -1,15 +1,11 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec3, DVec2, DVec4};
+use crate::{math, BVec3, DVec2, DVec4};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::{f32, ops::*};
-
-#[cfg(feature = "libm")]
-#[allow(unused_imports)]
-use num_traits::Float;
 
 /// Creates a 3-dimensional vector.
 #[inline(always)]
@@ -286,9 +282,9 @@ impl DVec3 {
     #[inline]
     pub fn abs(self) -> Self {
         Self {
-            x: self.x.abs(),
-            y: self.y.abs(),
-            z: self.z.abs(),
+            x: math::abs(self.x),
+            y: math::abs(self.y),
+            z: math::abs(self.z),
         }
     }
 
@@ -300,9 +296,9 @@ impl DVec3 {
     #[inline]
     pub fn signum(self) -> Self {
         Self {
-            x: self.x.signum(),
-            y: self.y.signum(),
-            z: self.z.signum(),
+            x: math::signum(self.x),
+            y: math::signum(self.y),
+            z: math::signum(self.z),
         }
     }
 
@@ -310,9 +306,9 @@ impl DVec3 {
     #[inline]
     pub fn copysign(self, rhs: Self) -> Self {
         Self {
-            x: self.x.copysign(rhs.x),
-            y: self.y.copysign(rhs.y),
-            z: self.z.copysign(rhs.z),
+            x: math::copysign(self.x, rhs.x),
+            y: math::copysign(self.y, rhs.y),
+            z: math::copysign(self.z, rhs.z),
         }
     }
 
@@ -352,7 +348,7 @@ impl DVec3 {
     #[doc(alias = "magnitude")]
     #[inline]
     pub fn length(self) -> f64 {
-        self.dot(self).sqrt()
+        math::sqrt(self.dot(self))
     }
 
     /// Computes the squared length of `self`.
@@ -442,7 +438,7 @@ impl DVec3 {
     #[inline]
     pub fn is_normalized(self) -> bool {
         // TODO: do something with epsilon
-        (self.length_squared() - 1.0).abs() <= 1e-4
+        math::abs(self.length_squared() - 1.0) <= 1e-4
     }
 
     /// Returns the vector projection of `self` onto `rhs`.
@@ -593,7 +589,9 @@ impl DVec3 {
     /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
     #[inline]
     pub fn abs_diff_eq(self, rhs: Self, max_abs_diff: f64) -> bool {
-        self.sub(rhs).abs().cmple(Self::splat(max_abs_diff)).all()
+        math::abs(self.sub(rhs))
+            .cmple(Self::splat(max_abs_diff))
+            .all()
     }
 
     /// Returns a vector with a length no less than `min` and no more than `max`
@@ -606,9 +604,9 @@ impl DVec3 {
         glam_assert!(min <= max);
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            self * (length_sq.sqrt().recip() * min)
+            self * math::rsqrt(length_sq) * min
         } else if length_sq > max * max {
-            self * (length_sq.sqrt().recip() * max)
+            self * math::rsqrt(length_sq) * max
         } else {
             self
         }
@@ -618,7 +616,7 @@ impl DVec3 {
     pub fn clamp_length_max(self, max: f64) -> Self {
         let length_sq = self.length_squared();
         if length_sq > max * max {
-            self * (length_sq.sqrt().recip() * max)
+            self * math::rsqrt(length_sq) * max
         } else {
             self
         }
@@ -628,7 +626,7 @@ impl DVec3 {
     pub fn clamp_length_min(self, min: f64) -> Self {
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            self * (length_sq.sqrt().recip() * min)
+            self * math::rsqrt(length_sq) * min
         } else {
             self
         }
@@ -655,10 +653,10 @@ impl DVec3 {
     /// The input vectors do not need to be unit length however they must be non-zero.
     #[inline]
     pub fn angle_between(self, rhs: Self) -> f64 {
-        use crate::FloatEx;
-        self.dot(rhs)
-            .div(self.length_squared().mul(rhs.length_squared()).sqrt())
-            .acos_approx()
+        math::acos_approx(
+            self.dot(rhs)
+                .div(math::sqrt(self.length_squared().mul(rhs.length_squared()))),
+        )
     }
 
     /// Returns some vector that is orthogonal to the given one.
@@ -670,7 +668,7 @@ impl DVec3 {
     #[inline]
     pub fn any_orthogonal_vector(&self) -> Self {
         // This can probably be optimized
-        if self.x.abs() > self.y.abs() {
+        if math::abs(self.x) > math::abs(self.y) {
             Self::new(-self.z, 0.0, self.x) // self.cross(Self::Y)
         } else {
             Self::new(0.0, self.z, -self.y) // self.cross(Self::X)
@@ -687,10 +685,7 @@ impl DVec3 {
     pub fn any_orthonormal_vector(&self) -> Self {
         glam_assert!(self.is_normalized());
         // From https://graphics.pixar.com/library/OrthonormalB/paper.pdf
-        #[cfg(feature = "std")]
-        let sign = (1.0_f64).copysign(self.z);
-        #[cfg(not(feature = "std"))]
-        let sign = self.z.signum();
+        let sign = math::signum(self.z);
         let a = -1.0 / (sign + self.z);
         let b = self.x * self.y * a;
         Self::new(b, sign + self.y * self.y * a, -self.y)
@@ -706,10 +701,7 @@ impl DVec3 {
     pub fn any_orthonormal_pair(&self) -> (Self, Self) {
         glam_assert!(self.is_normalized());
         // From https://graphics.pixar.com/library/OrthonormalB/paper.pdf
-        #[cfg(feature = "std")]
-        let sign = (1.0_f64).copysign(self.z);
-        #[cfg(not(feature = "std"))]
-        let sign = self.z.signum();
+        let sign = math::signum(self.z);
         let a = -1.0 / (sign + self.z);
         let b = self.x * self.y * a;
         (

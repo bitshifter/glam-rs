@@ -1,15 +1,11 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec2, Vec3};
+use crate::{math, BVec2, Vec3};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::{f32, ops::*};
-
-#[cfg(feature = "libm")]
-#[allow(unused_imports)]
-use num_traits::Float;
 
 /// Creates a 2-dimensional vector.
 #[inline(always)]
@@ -246,8 +242,8 @@ impl Vec2 {
     #[inline]
     pub fn abs(self) -> Self {
         Self {
-            x: self.x.abs(),
-            y: self.y.abs(),
+            x: math::abs(self.x),
+            y: math::abs(self.y),
         }
     }
 
@@ -259,8 +255,8 @@ impl Vec2 {
     #[inline]
     pub fn signum(self) -> Self {
         Self {
-            x: self.x.signum(),
-            y: self.y.signum(),
+            x: math::signum(self.x),
+            y: math::signum(self.y),
         }
     }
 
@@ -268,8 +264,8 @@ impl Vec2 {
     #[inline]
     pub fn copysign(self, rhs: Self) -> Self {
         Self {
-            x: self.x.copysign(rhs.x),
-            y: self.y.copysign(rhs.y),
+            x: math::copysign(self.x, rhs.x),
+            y: math::copysign(self.y, rhs.y),
         }
     }
 
@@ -307,7 +303,7 @@ impl Vec2 {
     #[doc(alias = "magnitude")]
     #[inline]
     pub fn length(self) -> f32 {
-        self.dot(self).sqrt()
+        math::sqrt(self.dot(self))
     }
 
     /// Computes the squared length of `self`.
@@ -397,7 +393,7 @@ impl Vec2 {
     #[inline]
     pub fn is_normalized(self) -> bool {
         // TODO: do something with epsilon
-        (self.length_squared() - 1.0).abs() <= 1e-4
+        math::abs(self.length_squared() - 1.0) <= 1e-4
     }
 
     /// Returns the vector projection of `self` onto `rhs`.
@@ -544,7 +540,9 @@ impl Vec2 {
     /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
     #[inline]
     pub fn abs_diff_eq(self, rhs: Self, max_abs_diff: f32) -> bool {
-        self.sub(rhs).abs().cmple(Self::splat(max_abs_diff)).all()
+        math::abs(self.sub(rhs))
+            .cmple(Self::splat(max_abs_diff))
+            .all()
     }
 
     /// Returns a vector with a length no less than `min` and no more than `max`
@@ -557,9 +555,9 @@ impl Vec2 {
         glam_assert!(min <= max);
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            self * (length_sq.sqrt().recip() * min)
+            self * math::rsqrt(length_sq) * min
         } else if length_sq > max * max {
-            self * (length_sq.sqrt().recip() * max)
+            self * math::rsqrt(length_sq) * max
         } else {
             self
         }
@@ -569,7 +567,7 @@ impl Vec2 {
     pub fn clamp_length_max(self, max: f32) -> Self {
         let length_sq = self.length_squared();
         if length_sq > max * max {
-            self * (length_sq.sqrt().recip() * max)
+            self * math::rsqrt(length_sq) * max
         } else {
             self
         }
@@ -579,7 +577,7 @@ impl Vec2 {
     pub fn clamp_length_min(self, min: f32) -> Self {
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            self * (length_sq.sqrt().recip() * min)
+            self * math::rsqrt(length_sq) * min
         } else {
             self
         }
@@ -611,11 +609,11 @@ impl Vec2 {
     /// The input vectors do not need to be unit length however they must be non-zero.
     #[inline]
     pub fn angle_between(self, rhs: Self) -> f32 {
-        use crate::FloatEx;
-        let angle =
-            (self.dot(rhs) / (self.length_squared() * rhs.length_squared()).sqrt()).acos_approx();
+        let angle = math::acos_approx(
+            self.dot(rhs) / math::sqrt(self.length_squared() * rhs.length_squared()),
+        );
 
-        angle * self.perp_dot(rhs).signum()
+        angle * math::signum(self.perp_dot(rhs))
     }
 
     /// Returns a vector that is equal to `self` rotated by 90 degrees.

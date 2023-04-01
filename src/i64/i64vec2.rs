@@ -240,8 +240,8 @@ impl I64Vec2 {
     #[inline]
     pub fn abs(self) -> Self {
         Self {
-            x: self.x.abs(),
-            y: self.y.abs(),
+            x: math::abs(self.x),
+            y: math::abs(self.y),
         }
     }
 
@@ -253,8 +253,8 @@ impl I64Vec2 {
     #[inline]
     pub fn signum(self) -> Self {
         Self {
-            x: self.x.signum(),
-            y: self.y.signum(),
+            x: math::signum(self.x),
+            y: math::signum(self.y),
         }
     }
 

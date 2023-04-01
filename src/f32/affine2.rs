@@ -1,6 +1,6 @@
 // Generated from affine.rs.tera template. Edit the template, not the generated file.
 
-use crate::{Mat2, Mat3, Mat3A, Vec2, Vec3A};
+use crate::{math, Mat2, Mat3, Mat3A, Vec2, Vec3A};
 use core::ops::{Deref, DerefMut, Mul};
 
 /// A 2D affine transform, which can represent translation, rotation, scaling and shear.

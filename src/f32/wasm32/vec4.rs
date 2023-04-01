@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{wasm32::*, BVec4A, Vec2, Vec3, Vec3A};
+use crate::{math, wasm32::*, BVec4A, Vec2, Vec3, Vec3A};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -8,10 +8,6 @@ use core::iter::{Product, Sum};
 use core::{f32, ops::*};
 
 use core::arch::wasm32::*;
-
-#[cfg(feature = "libm")]
-#[allow(unused_imports)]
-use num_traits::Float;
 
 union UnionCast {
     a: [f32; 4],
@@ -423,7 +419,7 @@ impl Vec4 {
     #[inline]
     pub fn is_normalized(self) -> bool {
         // TODO: do something with epsilon
-        (self.length_squared() - 1.0).abs() <= 1e-4
+        math::abs(self.length_squared() - 1.0) <= 1e-4
     }
 
     /// Returns the vector projection of `self` onto `rhs`.
@@ -563,7 +559,9 @@ impl Vec4 {
     /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
     #[inline]
     pub fn abs_diff_eq(self, rhs: Self, max_abs_diff: f32) -> bool {
-        self.sub(rhs).abs().cmple(Self::splat(max_abs_diff)).all()
+        math::abs(self.sub(rhs))
+            .cmple(Self::splat(max_abs_diff))
+            .all()
     }
 
     /// Returns a vector with a length no less than `min` and no more than `max`
@@ -576,9 +574,9 @@ impl Vec4 {
         glam_assert!(min <= max);
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            self * (length_sq.sqrt().recip() * min)
+            self * math::rsqrt(length_sq) * min
         } else if length_sq > max * max {
-            self * (length_sq.sqrt().recip() * max)
+            self * math::rsqrt(length_sq) * max
         } else {
             self
         }
@@ -588,7 +586,7 @@ impl Vec4 {
     pub fn clamp_length_max(self, max: f32) -> Self {
         let length_sq = self.length_squared();
         if length_sq > max * max {
-            self * (length_sq.sqrt().recip() * max)
+            self * math::rsqrt(length_sq) * max
         } else {
             self
         }
@@ -598,7 +596,7 @@ impl Vec4 {
     pub fn clamp_length_min(self, min: f32) -> Self {
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            self * (length_sq.sqrt().recip() * min)
+            self * math::rsqrt(length_sq) * min
         } else {
             self
         }

@@ -36,6 +36,7 @@
 {% set axes = ["x_axis", "y_axis", "z_axis", "w_axis"] | slice(end = dim + 1) %}
 
 use crate::{
+    math,
 {% if self_t == "Affine2" %}
     Mat3A, Vec3A,
 {% elif self_t == "Affine3A" %}
@@ -454,15 +455,11 @@ impl {{ self_t }} {
     /// vector contains any zero elements when `glam_assert` is enabled.
     #[inline]
     pub fn to_scale_rotation_translation(&self) -> ({{ vec3_t }}, {{ quat_t }}, {{ vec3_t }}) {
-        #[cfg(feature = "libm")]
-        #[allow(unused_imports)]
-        use num_traits::Float;
-
         let det = self.matrix3.determinant();
         glam_assert!(det != 0.0);
 
         let scale = {{ vec3_t }}::new(
-            self.matrix3.x_axis.length() * det.signum(),
+            self.matrix3.x_axis.length() * math::signum(det),
             self.matrix3.y_axis.length(),
             self.matrix3.z_axis.length(),
         );

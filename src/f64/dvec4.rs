@@ -1,15 +1,11 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec4, DVec2, DVec3};
+use crate::{math, BVec4, DVec2, DVec3};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::{f32, ops::*};
-
-#[cfg(feature = "libm")]
-#[allow(unused_imports)]
-use num_traits::Float;
 
 /// Creates a 4-dimensional vector.
 #[inline(always)]
@@ -309,10 +305,10 @@ impl DVec4 {
     #[inline]
     pub fn abs(self) -> Self {
         Self {
-            x: self.x.abs(),
-            y: self.y.abs(),
-            z: self.z.abs(),
-            w: self.w.abs(),
+            x: math::abs(self.x),
+            y: math::abs(self.y),
+            z: math::abs(self.z),
+            w: math::abs(self.w),
         }
     }
 
@@ -324,10 +320,10 @@ impl DVec4 {
     #[inline]
     pub fn signum(self) -> Self {
         Self {
-            x: self.x.signum(),
-            y: self.y.signum(),
-            z: self.z.signum(),
-            w: self.w.signum(),
+            x: math::signum(self.x),
+            y: math::signum(self.y),
+            z: math::signum(self.z),
+            w: math::signum(self.w),
         }
     }
 
@@ -335,10 +331,10 @@ impl DVec4 {
     #[inline]
     pub fn copysign(self, rhs: Self) -> Self {
         Self {
-            x: self.x.copysign(rhs.x),
-            y: self.y.copysign(rhs.y),
-            z: self.z.copysign(rhs.z),
-            w: self.w.copysign(rhs.w),
+            x: math::copysign(self.x, rhs.x),
+            y: math::copysign(self.y, rhs.y),
+            z: math::copysign(self.z, rhs.z),
+            w: math::copysign(self.w, rhs.w),
         }
     }
 
@@ -384,7 +380,7 @@ impl DVec4 {
     #[doc(alias = "magnitude")]
     #[inline]
     pub fn length(self) -> f64 {
-        self.dot(self).sqrt()
+        math::sqrt(self.dot(self))
     }
 
     /// Computes the squared length of `self`.
@@ -474,7 +470,7 @@ impl DVec4 {
     #[inline]
     pub fn is_normalized(self) -> bool {
         // TODO: do something with epsilon
-        (self.length_squared() - 1.0).abs() <= 1e-4
+        math::abs(self.length_squared() - 1.0) <= 1e-4
     }
 
     /// Returns the vector projection of `self` onto `rhs`.
@@ -634,7 +630,9 @@ impl DVec4 {
     /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
     #[inline]
     pub fn abs_diff_eq(self, rhs: Self, max_abs_diff: f64) -> bool {
-        self.sub(rhs).abs().cmple(Self::splat(max_abs_diff)).all()
+        math::abs(self.sub(rhs))
+            .cmple(Self::splat(max_abs_diff))
+            .all()
     }
 
     /// Returns a vector with a length no less than `min` and no more than `max`
@@ -647,9 +645,9 @@ impl DVec4 {
         glam_assert!(min <= max);
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            self * (length_sq.sqrt().recip() * min)
+            self * math::rsqrt(length_sq) * min
         } else if length_sq > max * max {
-            self * (length_sq.sqrt().recip() * max)
+            self * math::rsqrt(length_sq) * max
         } else {
             self
         }
@@ -659,7 +657,7 @@ impl DVec4 {
     pub fn clamp_length_max(self, max: f64) -> Self {
         let length_sq = self.length_squared();
         if length_sq > max * max {
-            self * (length_sq.sqrt().recip() * max)
+            self * math::rsqrt(length_sq) * max
         } else {
             self
         }
@@ -669,7 +667,7 @@ impl DVec4 {
     pub fn clamp_length_min(self, min: f64) -> Self {
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            self * (length_sq.sqrt().recip() * min)
+            self * math::rsqrt(length_sq) * min
         } else {
             self
         }

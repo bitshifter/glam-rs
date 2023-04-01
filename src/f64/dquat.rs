@@ -2,12 +2,8 @@
 
 use crate::{
     euler::{EulerFromQuaternion, EulerRot, EulerToQuaternion},
-    DMat3, DMat4, DVec2, DVec3, DVec4, FloatEx, Quat,
+    math, DMat3, DMat4, DVec2, DVec3, DVec4, Quat,
 };
-
-#[cfg(feature = "libm")]
-#[allow(unused_imports)]
-use num_traits::Float;
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -492,7 +488,7 @@ impl DQuat {
         // If the quat.w is close to -1.0, the angle will be near 2*PI which is close to
         // a negative 0 rotation. By forcing quat.w to be positive, we'll end up with
         // the shortest path.
-        let positive_w_angle = self.w.abs().acos_approx() * 2.0;
+        let positive_w_angle = math::acos_approx(self.w.abs()) * 2.0;
         positive_w_angle < threshold_angle
     }
 
@@ -507,7 +503,7 @@ impl DQuat {
     #[inline]
     pub fn angle_between(self, rhs: Self) -> f64 {
         glam_assert!(self.is_normalized() && rhs.is_normalized());
-        self.dot(rhs).abs().acos_approx() * 2.0
+        math::acos_approx(self.dot(rhs).abs()) * 2.0
     }
 
     /// Returns true if the absolute difference of all elements between `self` and `rhs`
