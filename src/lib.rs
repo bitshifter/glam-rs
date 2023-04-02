@@ -272,7 +272,7 @@ mod align16;
 mod deref;
 mod euler;
 mod features;
-mod math;
+mod float;
 
 #[cfg(target_arch = "spirv")]
 mod spirv;

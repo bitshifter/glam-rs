@@ -4,7 +4,7 @@ Conversion from quaternions to Euler rotation sequences.
 From: http://bediyap.com/programming/convert-quaternion-to-euler-rotations/
 */
 
-use crate::{math, DQuat, Quat};
+use crate::{float, DQuat, Quat};
 
 /// Euler rotation sequences.
 ///
@@ -65,18 +65,30 @@ macro_rules! impl_from_quat {
             fn first(self, q: $quat) -> $t {
                 use EulerRot::*;
                 match self {
-                    ZYX => math::atan2(2.0 * (q.x * q.y + q.w * q.z),
-                        q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z),
-                    ZXY => math::atan2(-2.0 * (q.x * q.y - q.w * q.z),
-                        q.w * q.w - q.x * q.x + q.y * q.y - q.z * q.z),
-                    YXZ => math::atan2(2.0 * (q.x * q.z + q.w * q.y),
-                        q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z),
-                    YZX => math::atan2(-2.0 * (q.x * q.z - q.w * q.y),
-                        q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z),
-                    XYZ => math::atan2(-2.0 * (q.y * q.z - q.w * q.x),
-                        q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z),
-                    XZY => math::atan2(2.0 * (q.y * q.z + q.w * q.x),
-                        q.w * q.w - q.x * q.x + q.y * q.y - q.z * q.z),
+                    ZYX => float::atan2(
+                        2.0 * (q.x * q.y + q.w * q.z),
+                        q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z,
+                    ),
+                    ZXY => float::atan2(
+                        -2.0 * (q.x * q.y - q.w * q.z),
+                        q.w * q.w - q.x * q.x + q.y * q.y - q.z * q.z,
+                    ),
+                    YXZ => float::atan2(
+                        2.0 * (q.x * q.z + q.w * q.y),
+                        q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z,
+                    ),
+                    YZX => float::atan2(
+                        -2.0 * (q.x * q.z - q.w * q.y),
+                        q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z,
+                    ),
+                    XYZ => float::atan2(
+                        -2.0 * (q.y * q.z - q.w * q.x),
+                        q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z,
+                    ),
+                    XZY => float::atan2(
+                        2.0 * (q.y * q.z + q.w * q.x),
+                        q.w * q.w - q.x * q.x + q.y * q.y - q.z * q.z,
+                    ),
                 }
             }
 
@@ -90,30 +102,42 @@ macro_rules! impl_from_quat {
                 }
 
                 match self {
-                    ZYX => arc_clamp(math::asin(-2.0 * (q.x * q.z - q.w * q.y))),
-                    ZXY => arc_clamp(math::asin(2.0 * (q.y * q.z + q.w * q.x))),
-                    YXZ => arc_clamp(math::asin(-2.0 * (q.y * q.z - q.w * q.x))),
-                    YZX => arc_clamp(math::asin(2.0 * (q.x * q.y + q.w * q.z))),
-                    XYZ => arc_clamp(math::asin(2.0 * (q.x * q.z + q.w * q.y))),
-                    XZY => arc_clamp(math::asin(-2.0 * (q.x * q.y - q.w * q.z))),
+                    ZYX => arc_clamp(float::asin(-2.0 * (q.x * q.z - q.w * q.y))),
+                    ZXY => arc_clamp(float::asin(2.0 * (q.y * q.z + q.w * q.x))),
+                    YXZ => arc_clamp(float::asin(-2.0 * (q.y * q.z - q.w * q.x))),
+                    YZX => arc_clamp(float::asin(2.0 * (q.x * q.y + q.w * q.z))),
+                    XYZ => arc_clamp(float::asin(2.0 * (q.x * q.z + q.w * q.y))),
+                    XZY => arc_clamp(float::asin(-2.0 * (q.x * q.y - q.w * q.z))),
                 }
             }
 
             fn third(self, q: $quat) -> $t {
                 use EulerRot::*;
                 match self {
-                    ZYX => math::atan2(2.0 * (q.y * q.z + q.w * q.x),
-                        q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z),
-                    ZXY => math::atan2(-2.0 * (q.x * q.z - q.w * q.y),
-                        q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z),
-                    YXZ => math::atan2(2.0 * (q.x * q.y + q.w * q.z),
-                        q.w * q.w - q.x * q.x + q.y * q.y - q.z * q.z),
-                    YZX => math::atan2(-2.0 * (q.y * q.z - q.w * q.x),
-                        q.w * q.w - q.x * q.x + q.y * q.y - q.z * q.z),
-                    XYZ => math::atan2(-2.0 * (q.x * q.y - q.w * q.z),
-                        q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z),
-                    XZY => math::atan2(2.0 * (q.x * q.z + q.w * q.y),
-                        q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z),
+                    ZYX => float::atan2(
+                        2.0 * (q.y * q.z + q.w * q.x),
+                        q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z,
+                    ),
+                    ZXY => float::atan2(
+                        -2.0 * (q.x * q.z - q.w * q.y),
+                        q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z,
+                    ),
+                    YXZ => float::atan2(
+                        2.0 * (q.x * q.y + q.w * q.z),
+                        q.w * q.w - q.x * q.x + q.y * q.y - q.z * q.z,
+                    ),
+                    YZX => float::atan2(
+                        -2.0 * (q.y * q.z - q.w * q.x),
+                        q.w * q.w - q.x * q.x + q.y * q.y - q.z * q.z,
+                    ),
+                    XYZ => float::atan2(
+                        -2.0 * (q.x * q.y - q.w * q.z),
+                        q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z,
+                    ),
+                    XZY => float::atan2(
+                        2.0 * (q.x * q.z + q.w * q.y),
+                        q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z,
+                    ),
                 }
             }
         }

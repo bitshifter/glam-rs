@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{math, BVec4, DVec2, DVec3};
+use crate::{float, BVec4, DVec2, DVec3};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -305,10 +305,10 @@ impl DVec4 {
     #[inline]
     pub fn abs(self) -> Self {
         Self {
-            x: math::abs(self.x),
-            y: math::abs(self.y),
-            z: math::abs(self.z),
-            w: math::abs(self.w),
+            x: float::abs(self.x),
+            y: float::abs(self.y),
+            z: float::abs(self.z),
+            w: float::abs(self.w),
         }
     }
 
@@ -320,10 +320,10 @@ impl DVec4 {
     #[inline]
     pub fn signum(self) -> Self {
         Self {
-            x: math::signum(self.x),
-            y: math::signum(self.y),
-            z: math::signum(self.z),
-            w: math::signum(self.w),
+            x: float::signum(self.x),
+            y: float::signum(self.y),
+            z: float::signum(self.z),
+            w: float::signum(self.w),
         }
     }
 
@@ -331,10 +331,10 @@ impl DVec4 {
     #[inline]
     pub fn copysign(self, rhs: Self) -> Self {
         Self {
-            x: math::copysign(self.x, rhs.x),
-            y: math::copysign(self.y, rhs.y),
-            z: math::copysign(self.z, rhs.z),
-            w: math::copysign(self.w, rhs.w),
+            x: float::copysign(self.x, rhs.x),
+            y: float::copysign(self.y, rhs.y),
+            z: float::copysign(self.z, rhs.z),
+            w: float::copysign(self.w, rhs.w),
         }
     }
 
@@ -380,7 +380,7 @@ impl DVec4 {
     #[doc(alias = "magnitude")]
     #[inline]
     pub fn length(self) -> f64 {
-        math::sqrt(self.dot(self))
+        float::sqrt(self.dot(self))
     }
 
     /// Computes the squared length of `self`.
@@ -470,7 +470,7 @@ impl DVec4 {
     #[inline]
     pub fn is_normalized(self) -> bool {
         // TODO: do something with epsilon
-        math::abs(self.length_squared() - 1.0) <= 1e-4
+        float::abs(self.length_squared() - 1.0) <= 1e-4
     }
 
     /// Returns the vector projection of `self` onto `rhs`.
@@ -539,10 +539,10 @@ impl DVec4 {
     #[inline]
     pub fn round(self) -> Self {
         Self {
-            x: self.x.round(),
-            y: self.y.round(),
-            z: self.z.round(),
-            w: self.w.round(),
+            x: float::round(self.x),
+            y: float::round(self.y),
+            z: float::round(self.z),
+            w: float::round(self.w),
         }
     }
 
@@ -551,10 +551,10 @@ impl DVec4 {
     #[inline]
     pub fn floor(self) -> Self {
         Self {
-            x: self.x.floor(),
-            y: self.y.floor(),
-            z: self.z.floor(),
-            w: self.w.floor(),
+            x: float::floor(self.x),
+            y: float::floor(self.y),
+            z: float::floor(self.z),
+            w: float::floor(self.w),
         }
     }
 
@@ -563,10 +563,10 @@ impl DVec4 {
     #[inline]
     pub fn ceil(self) -> Self {
         Self {
-            x: self.x.ceil(),
-            y: self.y.ceil(),
-            z: self.z.ceil(),
-            w: self.w.ceil(),
+            x: float::ceil(self.x),
+            y: float::ceil(self.y),
+            z: float::ceil(self.z),
+            w: float::ceil(self.w),
         }
     }
 
@@ -583,17 +583,22 @@ impl DVec4 {
     /// `self`.
     #[inline]
     pub fn exp(self) -> Self {
-        Self::new(self.x.exp(), self.y.exp(), self.z.exp(), self.w.exp())
+        Self::new(
+            float::exp(self.x),
+            float::exp(self.y),
+            float::exp(self.z),
+            float::exp(self.w),
+        )
     }
 
     /// Returns a vector containing each element of `self` raised to the power of `n`.
     #[inline]
     pub fn powf(self, n: f64) -> Self {
         Self::new(
-            self.x.powf(n),
-            self.y.powf(n),
-            self.z.powf(n),
-            self.w.powf(n),
+            float::powf(self.x, n),
+            float::powf(self.y, n),
+            float::powf(self.z, n),
+            float::powf(self.w, n),
         )
     }
 
@@ -601,10 +606,10 @@ impl DVec4 {
     #[inline]
     pub fn recip(self) -> Self {
         Self {
-            x: self.x.recip(),
-            y: self.y.recip(),
-            z: self.z.recip(),
-            w: self.w.recip(),
+            x: 1.0 / self.x,
+            y: 1.0 / self.y,
+            z: 1.0 / self.z,
+            w: 1.0 / self.w,
         }
     }
 
@@ -630,9 +635,7 @@ impl DVec4 {
     /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
     #[inline]
     pub fn abs_diff_eq(self, rhs: Self, max_abs_diff: f64) -> bool {
-        math::abs(self.sub(rhs))
-            .cmple(Self::splat(max_abs_diff))
-            .all()
+        self.sub(rhs).abs().cmple(Self::splat(max_abs_diff)).all()
     }
 
     /// Returns a vector with a length no less than `min` and no more than `max`
@@ -645,9 +648,9 @@ impl DVec4 {
         glam_assert!(min <= max);
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            self * math::rsqrt(length_sq) * min
+            self * float::rsqrt(length_sq) * min
         } else if length_sq > max * max {
-            self * math::rsqrt(length_sq) * max
+            self * float::rsqrt(length_sq) * max
         } else {
             self
         }
@@ -657,7 +660,7 @@ impl DVec4 {
     pub fn clamp_length_max(self, max: f64) -> Self {
         let length_sq = self.length_squared();
         if length_sq > max * max {
-            self * math::rsqrt(length_sq) * max
+            self * float::rsqrt(length_sq) * max
         } else {
             self
         }
@@ -667,7 +670,7 @@ impl DVec4 {
     pub fn clamp_length_min(self, min: f64) -> Self {
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            self * math::rsqrt(length_sq) * min
+            self * float::rsqrt(length_sq) * min
         } else {
             self
         }
@@ -683,10 +686,10 @@ impl DVec4 {
     #[inline]
     pub fn mul_add(self, a: Self, b: Self) -> Self {
         Self::new(
-            self.x.mul_add(a.x, b.x),
-            self.y.mul_add(a.y, b.y),
-            self.z.mul_add(a.z, b.z),
-            self.w.mul_add(a.w, b.w),
+            float::mul_add(self.x, a.x, b.x),
+            float::mul_add(self.y, a.y, b.y),
+            float::mul_add(self.z, a.z, b.z),
+            float::mul_add(self.w, a.w, b.w),
         )
     }
 

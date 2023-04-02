@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{math, wasm32::*, BVec4A, Vec2, Vec3, Vec3A};
+use crate::{float, wasm32::*, BVec4A, Vec2, Vec3, Vec3A};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -419,7 +419,7 @@ impl Vec4 {
     #[inline]
     pub fn is_normalized(self) -> bool {
         // TODO: do something with epsilon
-        math::abs(self.length_squared() - 1.0) <= 1e-4
+        float::abs(self.length_squared() - 1.0) <= 1e-4
     }
 
     /// Returns the vector projection of `self` onto `rhs`.
@@ -517,17 +517,22 @@ impl Vec4 {
     /// `self`.
     #[inline]
     pub fn exp(self) -> Self {
-        Self::new(self.x.exp(), self.y.exp(), self.z.exp(), self.w.exp())
+        Self::new(
+            float::exp(self.x),
+            float::exp(self.y),
+            float::exp(self.z),
+            float::exp(self.w),
+        )
     }
 
     /// Returns a vector containing each element of `self` raised to the power of `n`.
     #[inline]
     pub fn powf(self, n: f32) -> Self {
         Self::new(
-            self.x.powf(n),
-            self.y.powf(n),
-            self.z.powf(n),
-            self.w.powf(n),
+            float::powf(self.x, n),
+            float::powf(self.y, n),
+            float::powf(self.z, n),
+            float::powf(self.w, n),
         )
     }
 
@@ -559,9 +564,7 @@ impl Vec4 {
     /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
     #[inline]
     pub fn abs_diff_eq(self, rhs: Self, max_abs_diff: f32) -> bool {
-        math::abs(self.sub(rhs))
-            .cmple(Self::splat(max_abs_diff))
-            .all()
+        self.sub(rhs).abs().cmple(Self::splat(max_abs_diff)).all()
     }
 
     /// Returns a vector with a length no less than `min` and no more than `max`
@@ -574,9 +577,9 @@ impl Vec4 {
         glam_assert!(min <= max);
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            self * math::rsqrt(length_sq) * min
+            self * float::rsqrt(length_sq) * min
         } else if length_sq > max * max {
-            self * math::rsqrt(length_sq) * max
+            self * float::rsqrt(length_sq) * max
         } else {
             self
         }
@@ -586,7 +589,7 @@ impl Vec4 {
     pub fn clamp_length_max(self, max: f32) -> Self {
         let length_sq = self.length_squared();
         if length_sq > max * max {
-            self * math::rsqrt(length_sq) * max
+            self * float::rsqrt(length_sq) * max
         } else {
             self
         }
@@ -596,7 +599,7 @@ impl Vec4 {
     pub fn clamp_length_min(self, min: f32) -> Self {
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            self * math::rsqrt(length_sq) * min
+            self * float::rsqrt(length_sq) * min
         } else {
             self
         }
@@ -612,10 +615,10 @@ impl Vec4 {
     #[inline]
     pub fn mul_add(self, a: Self, b: Self) -> Self {
         Self::new(
-            self.x.mul_add(a.x, b.x),
-            self.y.mul_add(a.y, b.y),
-            self.z.mul_add(a.z, b.z),
-            self.w.mul_add(a.w, b.w),
+            float::mul_add(self.x, a.x, b.x),
+            float::mul_add(self.y, a.y, b.y),
+            float::mul_add(self.z, a.z, b.z),
+            float::mul_add(self.w, a.w, b.w),
         )
     }
 

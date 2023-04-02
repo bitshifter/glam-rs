@@ -1,6 +1,6 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
-use crate::{math, swizzles::*, DMat2, DMat4, DQuat, DVec2, DVec3, EulerRot, Mat3};
+use crate::{float, swizzles::*, DMat2, DMat4, DQuat, DVec2, DVec3, EulerRot, Mat3};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -185,7 +185,7 @@ impl DMat3 {
     pub fn from_axis_angle(axis: DVec3, angle: f64) -> Self {
         glam_assert!(axis.is_normalized());
 
-        let (sin, cos) = math::sin_cos(angle);
+        let (sin, cos) = float::sin_cos(angle);
         let (xsin, ysin, zsin) = axis.mul(sin).into();
         let (x, y, z) = axis.into();
         let (x2, y2, z2) = axis.mul(axis).into();
@@ -211,7 +211,7 @@ impl DMat3 {
     /// Creates a 3D rotation matrix from `angle` (in radians) around the x axis.
     #[inline]
     pub fn from_rotation_x(angle: f64) -> Self {
-        let (sina, cosa) = math::sin_cos(angle);
+        let (sina, cosa) = float::sin_cos(angle);
         Self::from_cols(
             DVec3::X,
             DVec3::new(0.0, cosa, sina),
@@ -222,7 +222,7 @@ impl DMat3 {
     /// Creates a 3D rotation matrix from `angle` (in radians) around the y axis.
     #[inline]
     pub fn from_rotation_y(angle: f64) -> Self {
-        let (sina, cosa) = math::sin_cos(angle);
+        let (sina, cosa) = float::sin_cos(angle);
         Self::from_cols(
             DVec3::new(cosa, 0.0, -sina),
             DVec3::Y,
@@ -233,7 +233,7 @@ impl DMat3 {
     /// Creates a 3D rotation matrix from `angle` (in radians) around the z axis.
     #[inline]
     pub fn from_rotation_z(angle: f64) -> Self {
-        let (sina, cosa) = math::sin_cos(angle);
+        let (sina, cosa) = float::sin_cos(angle);
         Self::from_cols(
             DVec3::new(cosa, sina, 0.0),
             DVec3::new(-sina, cosa, 0.0),
@@ -261,7 +261,7 @@ impl DMat3 {
     /// [`Self::transform_point2()`] and [`Self::transform_vector2()`].
     #[inline]
     pub fn from_angle(angle: f64) -> Self {
-        let (sin, cos) = math::sin_cos(angle);
+        let (sin, cos) = float::sin_cos(angle);
         Self::from_cols(
             DVec3::new(cos, sin, 0.0),
             DVec3::new(-sin, cos, 0.0),
@@ -276,7 +276,7 @@ impl DMat3 {
     /// [`Self::transform_point2()`] and [`Self::transform_vector2()`].
     #[inline]
     pub fn from_scale_angle_translation(scale: DVec2, angle: f64, translation: DVec2) -> Self {
-        let (sin, cos) = math::sin_cos(angle);
+        let (sin, cos) = float::sin_cos(angle);
         Self::from_cols(
             DVec3::new(cos * scale.x, sin * scale.x, 0.0),
             DVec3::new(-sin * scale.y, cos * scale.y, 0.0),

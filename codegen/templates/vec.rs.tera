@@ -105,7 +105,7 @@ use crate::{
         coresimd::*,
     {% endif %}
     {% if is_float %}
-        math,
+        float,
     {% endif %}
 };
 
@@ -801,7 +801,11 @@ impl {{ self_t }} {
         {% if is_scalar %}
             Self {
                 {% for c in components %}
-                    {{ c }}: math::abs(self.{{ c }}),
+                    {%- if is_float %}
+                        {{ c }}: float::abs(self.{{ c }}),
+                    {%- else %}
+                        {{ c }}: self.{{ c }}.abs(),
+                    {%- endif %}
                 {%- endfor %}
             }
         {% elif is_sse2 %}
@@ -829,7 +833,11 @@ impl {{ self_t }} {
         {% if is_scalar %}
             Self {
                 {% for c in components %}
-                    {{ c }}: math::signum(self.{{ c }}),
+                    {%- if is_float %}
+                        {{ c }}: float::signum(self.{{ c }}),
+                    {%- else %}
+                        {{ c }}: self.{{ c }}.signum(),
+                    {%- endif %}
                 {%- endfor %}
             }
         {% elif is_coresimd %}
@@ -855,7 +863,7 @@ impl {{ self_t }} {
         {% if is_scalar and is_float %}
             Self {
                 {% for c in components %}
-                    {{ c }}: math::copysign(self.{{ c }}, rhs.{{ c }}),
+                    {{ c }}: float::copysign(self.{{ c }}, rhs.{{ c }}),
                 {%- endfor %}
             }
         {% elif is_scalar %}
@@ -974,7 +982,7 @@ impl {{ self_t }} {
     #[inline]
     pub fn length(self) -> {{ scalar_t }} {
         {% if is_scalar %}
-            math::sqrt(self.dot(self))
+            float::sqrt(self.dot(self))
         {% elif is_sse2 %}
             unsafe {
                 let dot = dot{{ dim }}_in_x(self.0, self.0);
@@ -1119,7 +1127,7 @@ impl {{ self_t }} {
     #[inline]
     pub fn is_normalized(self) -> bool {
         // TODO: do something with epsilon
-        math::abs(self.length_squared() - 1.0) <= 1e-4
+        float::abs(self.length_squared() - 1.0) <= 1e-4
     }
 
     /// Returns the vector projection of `self` onto `rhs`.
@@ -1190,7 +1198,7 @@ impl {{ self_t }} {
         {% if is_scalar %}
             Self {
                 {% for c in components %}
-                    {{ c }}: self.{{ c }}.round(),
+                    {{ c }}: float::round(self.{{ c }}),
                 {%- endfor %}
             }
         {% elif is_sse2 %}
@@ -1209,7 +1217,7 @@ impl {{ self_t }} {
         {% if is_scalar %}
             Self {
                 {% for c in components %}
-                    {{ c }}: self.{{ c }}.floor(),
+                    {{ c }}: float::floor(self.{{ c }}),
                 {%- endfor %}
             }
         {% elif is_sse2 %}
@@ -1228,7 +1236,7 @@ impl {{ self_t }} {
         {% if is_scalar %}
             Self {
                 {% for c in components %}
-                    {{ c }}: self.{{ c }}.ceil(),
+                    {{ c }}: float::ceil(self.{{ c }}),
                 {%- endfor %}
             }
         {% elif is_sse2 %}
@@ -1255,7 +1263,7 @@ impl {{ self_t }} {
     pub fn exp(self) -> Self {
         Self::new(
             {% for c in components %}
-                self.{{ c }}.exp(),
+                float::exp(self.{{ c }}),
             {%- endfor %}
         )
     }
@@ -1265,7 +1273,7 @@ impl {{ self_t }} {
     pub fn powf(self, n: {{ scalar_t }}) -> Self {
         Self::new(
             {% for c in components %}
-                self.{{ c }}.powf(n),
+                float::powf(self.{{ c }}, n),
             {%- endfor %}
         )
     }
@@ -1276,7 +1284,7 @@ impl {{ self_t }} {
         {% if is_scalar %}
             Self {
                 {% for c in components %}
-                    {{ c }}: self.{{ c }}.recip(),
+                    {{ c }}: 1.0 / self.{{ c }},
                 {%- endfor %}
             }
         {% elif is_sse2 %}
@@ -1310,7 +1318,7 @@ impl {{ self_t }} {
     /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
     #[inline]
     pub fn abs_diff_eq(self, rhs: Self, max_abs_diff: {{ scalar_t }}) -> bool {
-        math::abs(self.sub(rhs)).cmple(Self::splat(max_abs_diff)).all()
+        self.sub(rhs).abs().cmple(Self::splat(max_abs_diff)).all()
     }
 
     /// Returns a vector with a length no less than `min` and no more than `max`
@@ -1323,9 +1331,9 @@ impl {{ self_t }} {
         glam_assert!(min <= max);
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            self * math::rsqrt(length_sq) * min
+            self * float::rsqrt(length_sq) * min
         } else if length_sq > max * max {
-            self * math::rsqrt(length_sq) * max
+            self * float::rsqrt(length_sq) * max
         } else {
             self
         }
@@ -1335,7 +1343,7 @@ impl {{ self_t }} {
     pub fn clamp_length_max(self, max: {{ scalar_t }}) -> Self {
         let length_sq = self.length_squared();
         if length_sq > max * max {
-            self * math::rsqrt(length_sq) * max
+            self * float::rsqrt(length_sq) * max
         } else {
             self
         }
@@ -1345,7 +1353,7 @@ impl {{ self_t }} {
     pub fn clamp_length_min(self, min: {{ scalar_t }}) -> Self {
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            self * math::rsqrt(length_sq) * min
+            self * float::rsqrt(length_sq) * min
         } else {
             self
         }
@@ -1370,7 +1378,7 @@ impl {{ self_t }} {
         {% else %}
             Self::new(
                 {% for c in components %}
-                    self.{{ c }}.mul_add(a.{{ c }}, b.{{ c }}),
+                    float::mul_add(self.{{ c }}, a.{{ c }}, b.{{ c }}),
                 {%- endfor %}
             )
         {% endif %}
@@ -1382,7 +1390,7 @@ impl {{ self_t }} {
     /// create the vector [-1, 0] and rotate `Vec2::Y` around it returning `-Vec2::Y`.
     #[inline]
     pub fn from_angle(angle: {{ scalar_t }}) -> Self {
-        let (sin, cos) = angle.sin_cos();
+        let (sin, cos) = float::sin_cos(angle);
         Self {
             x: cos,
             y: sin,
@@ -1394,10 +1402,10 @@ impl {{ self_t }} {
     /// The input vectors do not need to be unit length however they must be non-zero.
     #[inline]
     pub fn angle_between(self, rhs: Self) -> {{ scalar_t }} {
-        let angle = math::acos_approx(
-            self.dot(rhs) / math::sqrt(self.length_squared() * rhs.length_squared()));
+        let angle = float::acos_approx(
+            self.dot(rhs) / float::sqrt(self.length_squared() * rhs.length_squared()));
 
-        angle * math::signum(self.perp_dot(rhs))
+        angle * float::signum(self.perp_dot(rhs))
     }
 {% elif dim == 3 %}
     /// Returns the angle (in radians) between two vectors.
@@ -1405,9 +1413,9 @@ impl {{ self_t }} {
     /// The input vectors do not need to be unit length however they must be non-zero.
     #[inline]
     pub fn angle_between(self, rhs: Self) -> {{ scalar_t }} {
-        math::acos_approx(
+        float::acos_approx(
             self.dot(rhs).div(
-                math::sqrt(self.length_squared().mul(rhs.length_squared()))))
+                float::sqrt(self.length_squared().mul(rhs.length_squared()))))
     }
 
     /// Returns some vector that is orthogonal to the given one.
@@ -1419,7 +1427,7 @@ impl {{ self_t }} {
     #[inline]
     pub fn any_orthogonal_vector(&self) -> Self {
         // This can probably be optimized
-        if math::abs(self.x) > math::abs(self.y) {
+        if float::abs(self.x) > float::abs(self.y) {
             Self::new(-self.z, 0.0, self.x) // self.cross(Self::Y)
         } else {
             Self::new(0.0, self.z, -self.y) // self.cross(Self::X)
@@ -1436,7 +1444,7 @@ impl {{ self_t }} {
     pub fn any_orthonormal_vector(&self) -> Self {
         glam_assert!(self.is_normalized());
         // From https://graphics.pixar.com/library/OrthonormalB/paper.pdf
-        let sign = math::signum(self.z);
+        let sign = float::signum(self.z);
         let a = -1.0 / (sign + self.z);
         let b = self.x * self.y * a;
         Self::new(b, sign + self.y * self.y * a, -self.y)
@@ -1452,7 +1460,7 @@ impl {{ self_t }} {
     pub fn any_orthonormal_pair(&self) -> (Self, Self) {
         glam_assert!(self.is_normalized());
         // From https://graphics.pixar.com/library/OrthonormalB/paper.pdf
-        let sign = math::signum(self.z);
+        let sign = float::signum(self.z);
         let a = -1.0 / (sign + self.z);
         let b = self.x * self.y * a;
         (

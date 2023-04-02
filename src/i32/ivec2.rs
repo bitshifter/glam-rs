@@ -240,8 +240,8 @@ impl IVec2 {
     #[inline]
     pub fn abs(self) -> Self {
         Self {
-            x: math::abs(self.x),
-            y: math::abs(self.y),
+            x: self.x.abs(),
+            y: self.y.abs(),
         }
     }
 
@@ -253,8 +253,8 @@ impl IVec2 {
     #[inline]
     pub fn signum(self) -> Self {
         Self {
-            x: math::signum(self.x),
-            y: math::signum(self.y),
+            x: self.x.signum(),
+            y: self.y.signum(),
         }
     }
 
