@@ -8,6 +8,7 @@ pub(crate) trait Float: Copy + PartialEq + Neg<Output = Self> + Div<Output = Sel
     const NAN: Self;
     #[inline]
     fn abs(self) -> Self {
+        // libm doesn't define abs, so proviae a default implementation here
         if self.is_sign_positive() {
             return self;
         }
@@ -17,22 +18,17 @@ pub(crate) trait Float: Copy + PartialEq + Neg<Output = Self> + Div<Output = Sel
         Self::NAN
     }
     fn acos_clamped(self) -> Self;
-    /// Returns a very close approximation of `self.clamp(-1.0, 1.0).acos()`.
     #[inline(always)]
     fn acos_approx(self) -> Self {
         Self::acos_clamped(self)
     }
-    fn asin(self) -> Self;
+    fn asin_clamped(self) -> Self;
     fn atan2(self, other: Self) -> Self;
     fn cos(self) -> Self;
     fn sin(self) -> Self;
     fn sin_cos(self) -> (Self, Self);
     fn tan(self) -> Self;
     fn mul_add(self, a: Self, b: Self) -> Self;
-    #[inline(always)]
-    fn rsqrt(self) -> Self {
-        Self::ONE / Self::sqrt(self)
-    }
     fn sqrt(self) -> Self;
     #[inline]
     fn is_nan(self) -> bool {
@@ -80,6 +76,7 @@ fn is_sign_positive_f64(v: f64) -> bool {
     bits >> 63 == 0
 }
 
+/// Returns a very close approximation of `self.clamp(-1.0, 1.0).acos()`.
 #[inline]
 fn acos_approx_f32(v: f32) -> f32 {
     // Based on https://github.com/microsoft/DirectXMath `XMScalarAcos`
@@ -154,8 +151,16 @@ impl Float for f32 {
         libm::fmaf(self, a, b)
     }
     #[inline(always)]
-    fn asin(self) -> Self {
-        libm::asinf(self)
+    fn acos_clamped(self) -> Self {
+        libm::acosf(self.clamp(-1.0, 1.0))
+    }
+    #[inline(always)]
+    fn acos_approx(self) -> Self {
+        acos_approx_f32(self)
+    }
+    #[inline(always)]
+    fn asin_clamped(self) -> Self {
+        libm::asinf(self.clamp(-1.0, 1.0))
     }
     #[inline(always)]
     fn atan2(self, other: Self) -> Self {
@@ -180,14 +185,6 @@ impl Float for f32 {
     #[inline(always)]
     fn sqrt(self) -> Self {
         libm::sqrtf(self)
-    }
-    #[inline(always)]
-    fn acos_clamped(self) -> Self {
-        libm::acosf(self.clamp(-1.0, 1.0))
-    }
-    #[inline(always)]
-    fn acos_approx(self) -> Self {
-        acos_approx_f32(self)
     }
 }
 
@@ -232,8 +229,12 @@ impl Float for f64 {
         libm::fma(self, a, b)
     }
     #[inline(always)]
-    fn asin(self) -> Self {
-        libm::asin(self)
+    fn acos_clamped(self) -> Self {
+        libm::acos(self.clamp(-1.0, 1.0))
+    }
+    #[inline(always)]
+    fn asin_clamped(self) -> Self {
+        libm::asin(self.clamp(-1.0, 1.0))
     }
     #[inline(always)]
     fn atan2(self, other: Self) -> Self {
@@ -258,10 +259,6 @@ impl Float for f64 {
     #[inline(always)]
     fn sqrt(self) -> Self {
         libm::sqrt(self)
-    }
-    #[inline(always)]
-    fn acos_clamped(self) -> Self {
-        libm::acos(self.clamp(-1.0, 1.0))
     }
 }
 
@@ -306,8 +303,16 @@ impl Float for f32 {
         f32::mul_add(self, a, b)
     }
     #[inline(always)]
-    fn asin(self) -> Self {
-        f32::asin(self)
+    fn acos_clamped(self) -> Self {
+        f32::acos(self.clamp(-1.0, 1.0))
+    }
+    #[inline(always)]
+    fn acos_approx(self) -> Self {
+        acos_approx_f32(self)
+    }
+    #[inline(always)]
+    fn asin_clamped(self) -> Self {
+        f32::asin(self.clamp(-1.0, 1.0))
     }
     #[inline(always)]
     fn atan2(self, other: Self) -> Self {
@@ -332,14 +337,6 @@ impl Float for f32 {
     #[inline(always)]
     fn sqrt(self) -> Self {
         f32::sqrt(self)
-    }
-    #[inline(always)]
-    fn acos_clamped(self) -> Self {
-        f32::acos(self.clamp(-1.0, 1.0))
-    }
-    #[inline(always)]
-    fn acos_approx(self) -> Self {
-        acos_approx_f32(self)
     }
 }
 
@@ -384,8 +381,8 @@ impl Float for f64 {
         f64::mul_add(self, a, b)
     }
     #[inline(always)]
-    fn asin(self) -> Self {
-        f64::asin(self)
+    fn asin_clamped(self) -> Self {
+        f64::asin(self.clamp(-1.0, 1.0))
     }
     #[inline(always)]
     fn atan2(self, other: Self) -> Self {
@@ -423,13 +420,18 @@ pub(crate) fn abs<T: Float>(f: T) -> T {
 }
 
 #[inline(always)]
-pub(crate) fn atan2<T: Float>(f: T, other: T) -> T {
-    Float::atan2(f, other)
+pub(crate) fn acos_approx<T: Float>(f: T) -> T {
+    Float::acos_approx(f)
 }
 
 #[inline(always)]
-pub(crate) fn asin<T: Float>(f: T) -> T {
-    Float::asin(f)
+pub(crate) fn asin_clamped<T: Float>(f: T) -> T {
+    Float::asin_clamped(f)
+}
+
+#[inline(always)]
+pub(crate) fn atan2<T: Float>(f: T, other: T) -> T {
+    Float::atan2(f, other)
 }
 
 #[inline(always)]
@@ -450,16 +452,6 @@ pub(crate) fn sin_cos<T: Float>(f: T) -> (T, T) {
 #[inline(always)]
 pub(crate) fn tan<T: Float>(f: T) -> T {
     Float::tan(f)
-}
-
-#[inline(always)]
-pub(crate) fn acos_approx<T: Float>(f: T) -> T {
-    Float::acos_approx(f)
-}
-
-#[inline(always)]
-pub(crate) fn rsqrt<T: Float>(f: T) -> T {
-    Float::rsqrt(f)
 }
 
 #[inline(always)]

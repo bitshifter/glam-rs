@@ -94,20 +94,13 @@ macro_rules! impl_from_quat {
 
             fn second(self, q: $quat) -> $t {
                 use EulerRot::*;
-
-                /// Clamp number to range [-1,1](-1,1) for asin() and acos(), else NaN is possible.
-                #[inline(always)]
-                fn arc_clamp(val: $t) -> $t {
-                    <$t>::min(<$t>::max(val, -1.0), 1.0)
-                }
-
                 match self {
-                    ZYX => arc_clamp(float::asin(-2.0 * (q.x * q.z - q.w * q.y))),
-                    ZXY => arc_clamp(float::asin(2.0 * (q.y * q.z + q.w * q.x))),
-                    YXZ => arc_clamp(float::asin(-2.0 * (q.y * q.z - q.w * q.x))),
-                    YZX => arc_clamp(float::asin(2.0 * (q.x * q.y + q.w * q.z))),
-                    XYZ => arc_clamp(float::asin(2.0 * (q.x * q.z + q.w * q.y))),
-                    XZY => arc_clamp(float::asin(-2.0 * (q.x * q.y - q.w * q.z))),
+                    ZYX => float::asin_clamped(-2.0 * (q.x * q.z - q.w * q.y)),
+                    ZXY => float::asin_clamped(2.0 * (q.y * q.z + q.w * q.x)),
+                    YXZ => float::asin_clamped(-2.0 * (q.y * q.z - q.w * q.x)),
+                    YZX => float::asin_clamped(2.0 * (q.x * q.y + q.w * q.z)),
+                    XYZ => float::asin_clamped(2.0 * (q.x * q.z + q.w * q.y)),
+                    XZY => float::asin_clamped(-2.0 * (q.x * q.y - q.w * q.z)),
                 }
             }
 

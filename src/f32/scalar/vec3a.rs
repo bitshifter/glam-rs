@@ -615,9 +615,9 @@ impl Vec3A {
         glam_assert!(min <= max);
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            self * float::rsqrt(length_sq) * min
+            min * (self / float::sqrt(length_sq))
         } else if length_sq > max * max {
-            self * float::rsqrt(length_sq) * max
+            max * (self / float::sqrt(length_sq))
         } else {
             self
         }
@@ -627,7 +627,7 @@ impl Vec3A {
     pub fn clamp_length_max(self, max: f32) -> Self {
         let length_sq = self.length_squared();
         if length_sq > max * max {
-            self * float::rsqrt(length_sq) * max
+            max * (self / float::sqrt(length_sq))
         } else {
             self
         }
@@ -637,7 +637,7 @@ impl Vec3A {
     pub fn clamp_length_min(self, min: f32) -> Self {
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            self * float::rsqrt(length_sq) * min
+            min * (self / float::sqrt(length_sq))
         } else {
             self
         }
