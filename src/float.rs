@@ -31,6 +31,7 @@ pub(crate) trait Float: Copy + PartialEq + Neg<Output = Self> + Div<Output = Sel
     fn mul_add(self, a: Self, b: Self) -> Self;
     fn sqrt(self) -> Self;
     #[inline]
+    #[deny(clippy::eq_op)]
     fn is_nan(self) -> bool {
         self != self
     }
