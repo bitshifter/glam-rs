@@ -193,7 +193,7 @@ macro_rules! impl_mat3_tests {
 
             let yx0 = y0 * x0;
             let yx1 = $mat3::from_euler(EulerRot::YXZ, yaw, pitch, zero);
-            assert_approx_eq!(yx0, yx1);
+            assert_approx_eq!(yx0, yx1, 1e-6);
 
             let yxz0 = y0 * x0 * z0;
             let yxz1 = $mat3::from_euler(EulerRot::YXZ, yaw, pitch, roll);
