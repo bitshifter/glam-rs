@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{float, BVec2, DVec3};
+use crate::{f64::math, BVec2, DVec3};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -242,8 +242,8 @@ impl DVec2 {
     #[inline]
     pub fn abs(self) -> Self {
         Self {
-            x: float::abs(self.x),
-            y: float::abs(self.y),
+            x: math::abs(self.x),
+            y: math::abs(self.y),
         }
     }
 
@@ -255,8 +255,8 @@ impl DVec2 {
     #[inline]
     pub fn signum(self) -> Self {
         Self {
-            x: float::signum(self.x),
-            y: float::signum(self.y),
+            x: math::signum(self.x),
+            y: math::signum(self.y),
         }
     }
 
@@ -264,8 +264,8 @@ impl DVec2 {
     #[inline]
     pub fn copysign(self, rhs: Self) -> Self {
         Self {
-            x: float::copysign(self.x, rhs.x),
-            y: float::copysign(self.y, rhs.y),
+            x: math::copysign(self.x, rhs.x),
+            y: math::copysign(self.y, rhs.y),
         }
     }
 
@@ -303,7 +303,7 @@ impl DVec2 {
     #[doc(alias = "magnitude")]
     #[inline]
     pub fn length(self) -> f64 {
-        float::sqrt(self.dot(self))
+        math::sqrt(self.dot(self))
     }
 
     /// Computes the squared length of `self`.
@@ -393,7 +393,7 @@ impl DVec2 {
     #[inline]
     pub fn is_normalized(self) -> bool {
         // TODO: do something with epsilon
-        float::abs(self.length_squared() - 1.0) <= 1e-4
+        math::abs(self.length_squared() - 1.0) <= 1e-4
     }
 
     /// Returns the vector projection of `self` onto `rhs`.
@@ -462,8 +462,8 @@ impl DVec2 {
     #[inline]
     pub fn round(self) -> Self {
         Self {
-            x: float::round(self.x),
-            y: float::round(self.y),
+            x: math::round(self.x),
+            y: math::round(self.y),
         }
     }
 
@@ -472,8 +472,8 @@ impl DVec2 {
     #[inline]
     pub fn floor(self) -> Self {
         Self {
-            x: float::floor(self.x),
-            y: float::floor(self.y),
+            x: math::floor(self.x),
+            y: math::floor(self.y),
         }
     }
 
@@ -482,8 +482,8 @@ impl DVec2 {
     #[inline]
     pub fn ceil(self) -> Self {
         Self {
-            x: float::ceil(self.x),
-            y: float::ceil(self.y),
+            x: math::ceil(self.x),
+            y: math::ceil(self.y),
         }
     }
 
@@ -500,13 +500,13 @@ impl DVec2 {
     /// `self`.
     #[inline]
     pub fn exp(self) -> Self {
-        Self::new(float::exp(self.x), float::exp(self.y))
+        Self::new(math::exp(self.x), math::exp(self.y))
     }
 
     /// Returns a vector containing each element of `self` raised to the power of `n`.
     #[inline]
     pub fn powf(self, n: f64) -> Self {
-        Self::new(float::powf(self.x, n), float::powf(self.y, n))
+        Self::new(math::powf(self.x, n), math::powf(self.y, n))
     }
 
     /// Returns a vector containing the reciprocal `1.0/n` of each element of `self`.
@@ -553,9 +553,9 @@ impl DVec2 {
         glam_assert!(min <= max);
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            min * (self / float::sqrt(length_sq))
+            min * (self / math::sqrt(length_sq))
         } else if length_sq > max * max {
-            max * (self / float::sqrt(length_sq))
+            max * (self / math::sqrt(length_sq))
         } else {
             self
         }
@@ -565,7 +565,7 @@ impl DVec2 {
     pub fn clamp_length_max(self, max: f64) -> Self {
         let length_sq = self.length_squared();
         if length_sq > max * max {
-            max * (self / float::sqrt(length_sq))
+            max * (self / math::sqrt(length_sq))
         } else {
             self
         }
@@ -575,7 +575,7 @@ impl DVec2 {
     pub fn clamp_length_min(self, min: f64) -> Self {
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            min * (self / float::sqrt(length_sq))
+            min * (self / math::sqrt(length_sq))
         } else {
             self
         }
@@ -591,8 +591,8 @@ impl DVec2 {
     #[inline]
     pub fn mul_add(self, a: Self, b: Self) -> Self {
         Self::new(
-            float::mul_add(self.x, a.x, b.x),
-            float::mul_add(self.y, a.y, b.y),
+            math::mul_add(self.x, a.x, b.x),
+            math::mul_add(self.y, a.y, b.y),
         )
     }
 
@@ -601,7 +601,7 @@ impl DVec2 {
     /// create the vector [-1, 0] and rotate `Vec2::Y` around it returning `-Vec2::Y`.
     #[inline]
     pub fn from_angle(angle: f64) -> Self {
-        let (sin, cos) = float::sin_cos(angle);
+        let (sin, cos) = math::sin_cos(angle);
         Self { x: cos, y: sin }
     }
 
@@ -610,11 +610,11 @@ impl DVec2 {
     /// The input vectors do not need to be unit length however they must be non-zero.
     #[inline]
     pub fn angle_between(self, rhs: Self) -> f64 {
-        let angle = float::acos_approx(
-            self.dot(rhs) / float::sqrt(self.length_squared() * rhs.length_squared()),
+        let angle = math::acos_approx(
+            self.dot(rhs) / math::sqrt(self.length_squared() * rhs.length_squared()),
         );
 
-        angle * float::signum(self.perp_dot(rhs))
+        angle * math::signum(self.perp_dot(rhs))
     }
 
     /// Returns a vector that is equal to `self` rotated by 90 degrees.

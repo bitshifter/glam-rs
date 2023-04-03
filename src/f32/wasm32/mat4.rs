@@ -1,6 +1,8 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
-use crate::{float, swizzles::*, wasm32::*, DMat4, EulerRot, Mat3, Mat3A, Quat, Vec3, Vec3A, Vec4};
+use crate::{
+    f32::math, swizzles::*, wasm32::*, DMat4, EulerRot, Mat3, Mat3A, Quat, Vec3, Vec3A, Vec4,
+};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -234,7 +236,7 @@ impl Mat4 {
         glam_assert!(det != 0.0);
 
         let scale = Vec3::new(
-            self.x_axis.length() * float::signum(det),
+            self.x_axis.length() * math::signum(det),
             self.y_axis.length(),
             self.z_axis.length(),
         );
@@ -325,7 +327,7 @@ impl Mat4 {
     pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
         glam_assert!(axis.is_normalized());
 
-        let (sin, cos) = float::sin_cos(angle);
+        let (sin, cos) = math::sin_cos(angle);
         let axis_sin = axis.mul(sin);
         let axis_sq = axis.mul(axis);
         let omc = 1.0 - cos;
@@ -373,7 +375,7 @@ impl Mat4 {
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
     pub fn from_rotation_x(angle: f32) -> Self {
-        let (sina, cosa) = float::sin_cos(angle);
+        let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
             Vec4::X,
             Vec4::new(0.0, cosa, sina, 0.0),
@@ -389,7 +391,7 @@ impl Mat4 {
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
     pub fn from_rotation_y(angle: f32) -> Self {
-        let (sina, cosa) = float::sin_cos(angle);
+        let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
             Vec4::new(cosa, 0.0, -sina, 0.0),
             Vec4::Y,
@@ -405,7 +407,7 @@ impl Mat4 {
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
     pub fn from_rotation_z(angle: f32) -> Self {
-        let (sina, cosa) = float::sin_cos(angle);
+        let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
             Vec4::new(cosa, sina, 0.0, 0.0),
             Vec4::new(-sina, cosa, 0.0, 0.0),
@@ -804,7 +806,7 @@ impl Mat4 {
         z_far: f32,
     ) -> Self {
         let inv_length = 1.0 / (z_near - z_far);
-        let f = 1.0 / float::tan(0.5 * fov_y_radians);
+        let f = 1.0 / math::tan(0.5 * fov_y_radians);
         let a = f / aspect_ratio;
         let b = (z_near + z_far) * inv_length;
         let c = (2.0 * z_near * z_far) * inv_length;
@@ -825,7 +827,7 @@ impl Mat4 {
     #[inline]
     pub fn perspective_lh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32, z_far: f32) -> Self {
         glam_assert!(z_near > 0.0 && z_far > 0.0);
-        let (sin_fov, cos_fov) = float::sin_cos(0.5 * fov_y_radians);
+        let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
         let w = h / aspect_ratio;
         let r = z_far / (z_far - z_near);
@@ -846,7 +848,7 @@ impl Mat4 {
     #[inline]
     pub fn perspective_rh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32, z_far: f32) -> Self {
         glam_assert!(z_near > 0.0 && z_far > 0.0);
-        let (sin_fov, cos_fov) = float::sin_cos(0.5 * fov_y_radians);
+        let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
         let w = h / aspect_ratio;
         let r = z_far / (z_near - z_far);
@@ -866,7 +868,7 @@ impl Mat4 {
     #[inline]
     pub fn perspective_infinite_lh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Self {
         glam_assert!(z_near > 0.0);
-        let (sin_fov, cos_fov) = float::sin_cos(0.5 * fov_y_radians);
+        let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
         let w = h / aspect_ratio;
         Self::from_cols(
@@ -889,7 +891,7 @@ impl Mat4 {
         z_near: f32,
     ) -> Self {
         glam_assert!(z_near > 0.0);
-        let (sin_fov, cos_fov) = float::sin_cos(0.5 * fov_y_radians);
+        let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
         let w = h / aspect_ratio;
         Self::from_cols(
@@ -905,7 +907,7 @@ impl Mat4 {
     #[inline]
     pub fn perspective_infinite_rh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Self {
         glam_assert!(z_near > 0.0);
-        let f = 1.0 / float::tan(0.5 * fov_y_radians);
+        let f = 1.0 / math::tan(0.5 * fov_y_radians);
         Self::from_cols(
             Vec4::new(f / aspect_ratio, 0.0, 0.0, 0.0),
             Vec4::new(0.0, f, 0.0, 0.0),
@@ -923,7 +925,7 @@ impl Mat4 {
         z_near: f32,
     ) -> Self {
         glam_assert!(z_near > 0.0);
-        let f = 1.0 / float::tan(0.5 * fov_y_radians);
+        let f = 1.0 / math::tan(0.5 * fov_y_radians);
         Self::from_cols(
             Vec4::new(f / aspect_ratio, 0.0, 0.0, 0.0),
             Vec4::new(0.0, f, 0.0, 0.0),

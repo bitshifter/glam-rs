@@ -2,7 +2,8 @@
 
 use crate::{
     euler::{EulerFromQuaternion, EulerRot, EulerToQuaternion},
-    float, DMat3, DMat4, DVec2, DVec3, DVec4, Quat,
+    f64::math,
+    DMat3, DMat4, DVec2, DVec3, DVec4, Quat,
 };
 
 #[cfg(not(target_arch = "spirv"))]
@@ -124,7 +125,7 @@ impl DQuat {
     #[inline]
     pub fn from_axis_angle(axis: DVec3, angle: f64) -> Self {
         glam_assert!(axis.is_normalized());
-        let (s, c) = float::sin_cos(angle * 0.5);
+        let (s, c) = math::sin_cos(angle * 0.5);
         let v = axis * s;
         Self::from_xyzw(v.x, v.y, v.z, c)
     }
@@ -145,21 +146,21 @@ impl DQuat {
     /// Creates a quaternion from the `angle` (in radians) around the x axis.
     #[inline]
     pub fn from_rotation_x(angle: f64) -> Self {
-        let (s, c) = float::sin_cos(angle * 0.5);
+        let (s, c) = math::sin_cos(angle * 0.5);
         Self::from_xyzw(s, 0.0, 0.0, c)
     }
 
     /// Creates a quaternion from the `angle` (in radians) around the y axis.
     #[inline]
     pub fn from_rotation_y(angle: f64) -> Self {
-        let (s, c) = float::sin_cos(angle * 0.5);
+        let (s, c) = math::sin_cos(angle * 0.5);
         Self::from_xyzw(0.0, s, 0.0, c)
     }
 
     /// Creates a quaternion from the `angle` (in radians) around the z axis.
     #[inline]
     pub fn from_rotation_z(angle: f64) -> Self {
-        let (s, c) = float::sin_cos(angle * 0.5);
+        let (s, c) = math::sin_cos(angle * 0.5);
         Self::from_xyzw(0.0, 0.0, s, c)
     }
 
@@ -183,7 +184,7 @@ impl DQuat {
             if dif10 <= 0.0 {
                 // x^2 >= y^2
                 let four_xsq = omm22 - dif10;
-                let inv4x = 0.5 / float::sqrt(four_xsq);
+                let inv4x = 0.5 / math::sqrt(four_xsq);
                 Self::from_xyzw(
                     four_xsq * inv4x,
                     (m01 + m10) * inv4x,
@@ -193,7 +194,7 @@ impl DQuat {
             } else {
                 // y^2 >= x^2
                 let four_ysq = omm22 + dif10;
-                let inv4y = 0.5 / float::sqrt(four_ysq);
+                let inv4y = 0.5 / math::sqrt(four_ysq);
                 Self::from_xyzw(
                     (m01 + m10) * inv4y,
                     four_ysq * inv4y,
@@ -208,7 +209,7 @@ impl DQuat {
             if sum10 <= 0.0 {
                 // z^2 >= w^2
                 let four_zsq = opm22 - sum10;
-                let inv4z = 0.5 / float::sqrt(four_zsq);
+                let inv4z = 0.5 / math::sqrt(four_zsq);
                 Self::from_xyzw(
                     (m02 + m20) * inv4z,
                     (m12 + m21) * inv4z,
@@ -218,7 +219,7 @@ impl DQuat {
             } else {
                 // w^2 >= z^2
                 let four_wsq = opm22 + sum10;
-                let inv4w = 0.5 / float::sqrt(four_wsq);
+                let inv4w = 0.5 / math::sqrt(four_wsq);
                 Self::from_xyzw(
                     (m12 - m21) * inv4w,
                     (m20 - m02) * inv4w,
@@ -332,7 +333,7 @@ impl DQuat {
             let z = from.x * to.y - to.x * from.y;
             let w = 1.0 + dot;
             // calculate length with x=0 and y=0 to normalize
-            let len_rcp = 1.0 / float::sqrt(z * z + w * w);
+            let len_rcp = 1.0 / math::sqrt(z * z + w * w);
             Self::from_xyzw(0.0, 0.0, z * len_rcp, w * len_rcp)
         }
     }
@@ -344,7 +345,7 @@ impl DQuat {
         let v = DVec3::new(self.x, self.y, self.z);
         let length = v.length();
         if length >= EPSILON {
-            let angle = 2.0 * float::atan2(length, self.w);
+            let angle = 2.0 * math::atan2(length, self.w);
             let axis = v / length;
             (axis, angle)
         } else {
@@ -488,7 +489,7 @@ impl DQuat {
         // If the quat.w is close to -1.0, the angle will be near 2*PI which is close to
         // a negative 0 rotation. By forcing quat.w to be positive, we'll end up with
         // the shortest path.
-        let positive_w_angle = float::acos_approx(float::abs(self.w)) * 2.0;
+        let positive_w_angle = math::acos_approx(math::abs(self.w)) * 2.0;
         positive_w_angle < threshold_angle
     }
 
@@ -503,7 +504,7 @@ impl DQuat {
     #[inline]
     pub fn angle_between(self, rhs: Self) -> f64 {
         glam_assert!(self.is_normalized() && rhs.is_normalized());
-        float::acos_approx(float::abs(self.dot(rhs))) * 2.0
+        math::acos_approx(math::abs(self.dot(rhs))) * 2.0
     }
 
     /// Returns true if the absolute difference of all elements between `self` and `rhs`
@@ -575,11 +576,11 @@ impl DQuat {
             // assumes lerp returns a normalized quaternion
             self.lerp(end, s)
         } else {
-            let theta = float::acos_approx(dot);
+            let theta = math::acos_approx(dot);
 
-            let scale1 = float::sin(theta * (1.0 - s));
-            let scale2 = float::sin(theta * s);
-            let theta_sin = float::sin(theta);
+            let scale1 = math::sin(theta * (1.0 - s));
+            let scale2 = math::sin(theta * s);
+            let theta_sin = math::sin(theta);
 
             self.mul(scale1).add(end.mul(scale2)).mul(1.0 / theta_sin)
         }

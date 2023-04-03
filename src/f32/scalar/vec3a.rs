@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{float, BVec3A, Vec2, Vec3, Vec4};
+use crate::{f32::math, BVec3A, Vec2, Vec3, Vec4};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -291,9 +291,9 @@ impl Vec3A {
     #[inline]
     pub fn abs(self) -> Self {
         Self {
-            x: float::abs(self.x),
-            y: float::abs(self.y),
-            z: float::abs(self.z),
+            x: math::abs(self.x),
+            y: math::abs(self.y),
+            z: math::abs(self.z),
         }
     }
 
@@ -305,9 +305,9 @@ impl Vec3A {
     #[inline]
     pub fn signum(self) -> Self {
         Self {
-            x: float::signum(self.x),
-            y: float::signum(self.y),
-            z: float::signum(self.z),
+            x: math::signum(self.x),
+            y: math::signum(self.y),
+            z: math::signum(self.z),
         }
     }
 
@@ -315,9 +315,9 @@ impl Vec3A {
     #[inline]
     pub fn copysign(self, rhs: Self) -> Self {
         Self {
-            x: float::copysign(self.x, rhs.x),
-            y: float::copysign(self.y, rhs.y),
-            z: float::copysign(self.z, rhs.z),
+            x: math::copysign(self.x, rhs.x),
+            y: math::copysign(self.y, rhs.y),
+            z: math::copysign(self.z, rhs.z),
         }
     }
 
@@ -357,7 +357,7 @@ impl Vec3A {
     #[doc(alias = "magnitude")]
     #[inline]
     pub fn length(self) -> f32 {
-        float::sqrt(self.dot(self))
+        math::sqrt(self.dot(self))
     }
 
     /// Computes the squared length of `self`.
@@ -447,7 +447,7 @@ impl Vec3A {
     #[inline]
     pub fn is_normalized(self) -> bool {
         // TODO: do something with epsilon
-        float::abs(self.length_squared() - 1.0) <= 1e-4
+        math::abs(self.length_squared() - 1.0) <= 1e-4
     }
 
     /// Returns the vector projection of `self` onto `rhs`.
@@ -516,9 +516,9 @@ impl Vec3A {
     #[inline]
     pub fn round(self) -> Self {
         Self {
-            x: float::round(self.x),
-            y: float::round(self.y),
-            z: float::round(self.z),
+            x: math::round(self.x),
+            y: math::round(self.y),
+            z: math::round(self.z),
         }
     }
 
@@ -527,9 +527,9 @@ impl Vec3A {
     #[inline]
     pub fn floor(self) -> Self {
         Self {
-            x: float::floor(self.x),
-            y: float::floor(self.y),
-            z: float::floor(self.z),
+            x: math::floor(self.x),
+            y: math::floor(self.y),
+            z: math::floor(self.z),
         }
     }
 
@@ -538,9 +538,9 @@ impl Vec3A {
     #[inline]
     pub fn ceil(self) -> Self {
         Self {
-            x: float::ceil(self.x),
-            y: float::ceil(self.y),
-            z: float::ceil(self.z),
+            x: math::ceil(self.x),
+            y: math::ceil(self.y),
+            z: math::ceil(self.z),
         }
     }
 
@@ -557,16 +557,16 @@ impl Vec3A {
     /// `self`.
     #[inline]
     pub fn exp(self) -> Self {
-        Self::new(float::exp(self.x), float::exp(self.y), float::exp(self.z))
+        Self::new(math::exp(self.x), math::exp(self.y), math::exp(self.z))
     }
 
     /// Returns a vector containing each element of `self` raised to the power of `n`.
     #[inline]
     pub fn powf(self, n: f32) -> Self {
         Self::new(
-            float::powf(self.x, n),
-            float::powf(self.y, n),
-            float::powf(self.z, n),
+            math::powf(self.x, n),
+            math::powf(self.y, n),
+            math::powf(self.z, n),
         )
     }
 
@@ -615,9 +615,9 @@ impl Vec3A {
         glam_assert!(min <= max);
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            min * (self / float::sqrt(length_sq))
+            min * (self / math::sqrt(length_sq))
         } else if length_sq > max * max {
-            max * (self / float::sqrt(length_sq))
+            max * (self / math::sqrt(length_sq))
         } else {
             self
         }
@@ -627,7 +627,7 @@ impl Vec3A {
     pub fn clamp_length_max(self, max: f32) -> Self {
         let length_sq = self.length_squared();
         if length_sq > max * max {
-            max * (self / float::sqrt(length_sq))
+            max * (self / math::sqrt(length_sq))
         } else {
             self
         }
@@ -637,7 +637,7 @@ impl Vec3A {
     pub fn clamp_length_min(self, min: f32) -> Self {
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            min * (self / float::sqrt(length_sq))
+            min * (self / math::sqrt(length_sq))
         } else {
             self
         }
@@ -653,9 +653,9 @@ impl Vec3A {
     #[inline]
     pub fn mul_add(self, a: Self, b: Self) -> Self {
         Self::new(
-            float::mul_add(self.x, a.x, b.x),
-            float::mul_add(self.y, a.y, b.y),
-            float::mul_add(self.z, a.z, b.z),
+            math::mul_add(self.x, a.x, b.x),
+            math::mul_add(self.y, a.y, b.y),
+            math::mul_add(self.z, a.z, b.z),
         )
     }
 
@@ -664,9 +664,9 @@ impl Vec3A {
     /// The input vectors do not need to be unit length however they must be non-zero.
     #[inline]
     pub fn angle_between(self, rhs: Self) -> f32 {
-        float::acos_approx(
+        math::acos_approx(
             self.dot(rhs)
-                .div(float::sqrt(self.length_squared().mul(rhs.length_squared()))),
+                .div(math::sqrt(self.length_squared().mul(rhs.length_squared()))),
         )
     }
 
@@ -679,7 +679,7 @@ impl Vec3A {
     #[inline]
     pub fn any_orthogonal_vector(&self) -> Self {
         // This can probably be optimized
-        if float::abs(self.x) > float::abs(self.y) {
+        if math::abs(self.x) > math::abs(self.y) {
             Self::new(-self.z, 0.0, self.x) // self.cross(Self::Y)
         } else {
             Self::new(0.0, self.z, -self.y) // self.cross(Self::X)
@@ -696,7 +696,7 @@ impl Vec3A {
     pub fn any_orthonormal_vector(&self) -> Self {
         glam_assert!(self.is_normalized());
         // From https://graphics.pixar.com/library/OrthonormalB/paper.pdf
-        let sign = float::signum(self.z);
+        let sign = math::signum(self.z);
         let a = -1.0 / (sign + self.z);
         let b = self.x * self.y * a;
         Self::new(b, sign + self.y * self.y * a, -self.y)
@@ -712,7 +712,7 @@ impl Vec3A {
     pub fn any_orthonormal_pair(&self) -> (Self, Self) {
         glam_assert!(self.is_normalized());
         // From https://graphics.pixar.com/library/OrthonormalB/paper.pdf
-        let sign = float::signum(self.z);
+        let sign = math::signum(self.z);
         let a = -1.0 / (sign + self.z);
         let b = self.x * self.y * a;
         (

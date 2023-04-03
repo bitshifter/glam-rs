@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{float, BVec4, Vec2, Vec3, Vec3A};
+use crate::{f32::math, BVec4, Vec2, Vec3, Vec3A};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -313,10 +313,10 @@ impl Vec4 {
     #[inline]
     pub fn abs(self) -> Self {
         Self {
-            x: float::abs(self.x),
-            y: float::abs(self.y),
-            z: float::abs(self.z),
-            w: float::abs(self.w),
+            x: math::abs(self.x),
+            y: math::abs(self.y),
+            z: math::abs(self.z),
+            w: math::abs(self.w),
         }
     }
 
@@ -328,10 +328,10 @@ impl Vec4 {
     #[inline]
     pub fn signum(self) -> Self {
         Self {
-            x: float::signum(self.x),
-            y: float::signum(self.y),
-            z: float::signum(self.z),
-            w: float::signum(self.w),
+            x: math::signum(self.x),
+            y: math::signum(self.y),
+            z: math::signum(self.z),
+            w: math::signum(self.w),
         }
     }
 
@@ -339,10 +339,10 @@ impl Vec4 {
     #[inline]
     pub fn copysign(self, rhs: Self) -> Self {
         Self {
-            x: float::copysign(self.x, rhs.x),
-            y: float::copysign(self.y, rhs.y),
-            z: float::copysign(self.z, rhs.z),
-            w: float::copysign(self.w, rhs.w),
+            x: math::copysign(self.x, rhs.x),
+            y: math::copysign(self.y, rhs.y),
+            z: math::copysign(self.z, rhs.z),
+            w: math::copysign(self.w, rhs.w),
         }
     }
 
@@ -388,7 +388,7 @@ impl Vec4 {
     #[doc(alias = "magnitude")]
     #[inline]
     pub fn length(self) -> f32 {
-        float::sqrt(self.dot(self))
+        math::sqrt(self.dot(self))
     }
 
     /// Computes the squared length of `self`.
@@ -478,7 +478,7 @@ impl Vec4 {
     #[inline]
     pub fn is_normalized(self) -> bool {
         // TODO: do something with epsilon
-        float::abs(self.length_squared() - 1.0) <= 1e-4
+        math::abs(self.length_squared() - 1.0) <= 1e-4
     }
 
     /// Returns the vector projection of `self` onto `rhs`.
@@ -547,10 +547,10 @@ impl Vec4 {
     #[inline]
     pub fn round(self) -> Self {
         Self {
-            x: float::round(self.x),
-            y: float::round(self.y),
-            z: float::round(self.z),
-            w: float::round(self.w),
+            x: math::round(self.x),
+            y: math::round(self.y),
+            z: math::round(self.z),
+            w: math::round(self.w),
         }
     }
 
@@ -559,10 +559,10 @@ impl Vec4 {
     #[inline]
     pub fn floor(self) -> Self {
         Self {
-            x: float::floor(self.x),
-            y: float::floor(self.y),
-            z: float::floor(self.z),
-            w: float::floor(self.w),
+            x: math::floor(self.x),
+            y: math::floor(self.y),
+            z: math::floor(self.z),
+            w: math::floor(self.w),
         }
     }
 
@@ -571,10 +571,10 @@ impl Vec4 {
     #[inline]
     pub fn ceil(self) -> Self {
         Self {
-            x: float::ceil(self.x),
-            y: float::ceil(self.y),
-            z: float::ceil(self.z),
-            w: float::ceil(self.w),
+            x: math::ceil(self.x),
+            y: math::ceil(self.y),
+            z: math::ceil(self.z),
+            w: math::ceil(self.w),
         }
     }
 
@@ -592,10 +592,10 @@ impl Vec4 {
     #[inline]
     pub fn exp(self) -> Self {
         Self::new(
-            float::exp(self.x),
-            float::exp(self.y),
-            float::exp(self.z),
-            float::exp(self.w),
+            math::exp(self.x),
+            math::exp(self.y),
+            math::exp(self.z),
+            math::exp(self.w),
         )
     }
 
@@ -603,10 +603,10 @@ impl Vec4 {
     #[inline]
     pub fn powf(self, n: f32) -> Self {
         Self::new(
-            float::powf(self.x, n),
-            float::powf(self.y, n),
-            float::powf(self.z, n),
-            float::powf(self.w, n),
+            math::powf(self.x, n),
+            math::powf(self.y, n),
+            math::powf(self.z, n),
+            math::powf(self.w, n),
         )
     }
 
@@ -656,9 +656,9 @@ impl Vec4 {
         glam_assert!(min <= max);
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            min * (self / float::sqrt(length_sq))
+            min * (self / math::sqrt(length_sq))
         } else if length_sq > max * max {
-            max * (self / float::sqrt(length_sq))
+            max * (self / math::sqrt(length_sq))
         } else {
             self
         }
@@ -668,7 +668,7 @@ impl Vec4 {
     pub fn clamp_length_max(self, max: f32) -> Self {
         let length_sq = self.length_squared();
         if length_sq > max * max {
-            max * (self / float::sqrt(length_sq))
+            max * (self / math::sqrt(length_sq))
         } else {
             self
         }
@@ -678,7 +678,7 @@ impl Vec4 {
     pub fn clamp_length_min(self, min: f32) -> Self {
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            min * (self / float::sqrt(length_sq))
+            min * (self / math::sqrt(length_sq))
         } else {
             self
         }
@@ -694,10 +694,10 @@ impl Vec4 {
     #[inline]
     pub fn mul_add(self, a: Self, b: Self) -> Self {
         Self::new(
-            float::mul_add(self.x, a.x, b.x),
-            float::mul_add(self.y, a.y, b.y),
-            float::mul_add(self.z, a.z, b.z),
-            float::mul_add(self.w, a.w, b.w),
+            math::mul_add(self.x, a.x, b.x),
+            math::mul_add(self.y, a.y, b.y),
+            math::mul_add(self.z, a.z, b.z),
+            math::mul_add(self.w, a.w, b.w),
         )
     }
 

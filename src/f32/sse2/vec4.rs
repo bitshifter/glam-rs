@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{float, sse2::*, BVec4A, Vec2, Vec3, Vec3A};
+use crate::{f32::math, sse2::*, BVec4A, Vec2, Vec3, Vec3A};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -437,7 +437,7 @@ impl Vec4 {
     #[inline]
     pub fn is_normalized(self) -> bool {
         // TODO: do something with epsilon
-        float::abs(self.length_squared() - 1.0) <= 1e-4
+        math::abs(self.length_squared() - 1.0) <= 1e-4
     }
 
     /// Returns the vector projection of `self` onto `rhs`.
@@ -536,10 +536,10 @@ impl Vec4 {
     #[inline]
     pub fn exp(self) -> Self {
         Self::new(
-            float::exp(self.x),
-            float::exp(self.y),
-            float::exp(self.z),
-            float::exp(self.w),
+            math::exp(self.x),
+            math::exp(self.y),
+            math::exp(self.z),
+            math::exp(self.w),
         )
     }
 
@@ -547,10 +547,10 @@ impl Vec4 {
     #[inline]
     pub fn powf(self, n: f32) -> Self {
         Self::new(
-            float::powf(self.x, n),
-            float::powf(self.y, n),
-            float::powf(self.z, n),
-            float::powf(self.w, n),
+            math::powf(self.x, n),
+            math::powf(self.y, n),
+            math::powf(self.z, n),
+            math::powf(self.w, n),
         )
     }
 
@@ -595,9 +595,9 @@ impl Vec4 {
         glam_assert!(min <= max);
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            min * (self / float::sqrt(length_sq))
+            min * (self / math::sqrt(length_sq))
         } else if length_sq > max * max {
-            max * (self / float::sqrt(length_sq))
+            max * (self / math::sqrt(length_sq))
         } else {
             self
         }
@@ -607,7 +607,7 @@ impl Vec4 {
     pub fn clamp_length_max(self, max: f32) -> Self {
         let length_sq = self.length_squared();
         if length_sq > max * max {
-            max * (self / float::sqrt(length_sq))
+            max * (self / math::sqrt(length_sq))
         } else {
             self
         }
@@ -617,7 +617,7 @@ impl Vec4 {
     pub fn clamp_length_min(self, min: f32) -> Self {
         let length_sq = self.length_squared();
         if length_sq < min * min {
-            min * (self / float::sqrt(length_sq))
+            min * (self / math::sqrt(length_sq))
         } else {
             self
         }
@@ -638,10 +638,10 @@ impl Vec4 {
         }
         #[cfg(not(target_feature = "fma"))]
         Self::new(
-            float::mul_add(self.x, a.x, b.x),
-            float::mul_add(self.y, a.y, b.y),
-            float::mul_add(self.z, a.z, b.z),
-            float::mul_add(self.w, a.w, b.w),
+            math::mul_add(self.x, a.x, b.x),
+            math::mul_add(self.y, a.y, b.y),
+            math::mul_add(self.z, a.z, b.z),
+            math::mul_add(self.w, a.w, b.w),
         )
     }
 
