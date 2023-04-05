@@ -262,15 +262,12 @@ impl Affine3A {
     /// vector contains any zero elements when `glam_assert` is enabled.
     #[inline]
     pub fn to_scale_rotation_translation(&self) -> (Vec3, Quat, Vec3) {
-        #[cfg(feature = "libm")]
-        #[allow(unused_imports)]
-        use num_traits::Float;
-
+        use crate::f32::math;
         let det = self.matrix3.determinant();
         glam_assert!(det != 0.0);
 
         let scale = Vec3::new(
-            self.matrix3.x_axis.length() * det.signum(),
+            self.matrix3.x_axis.length() * math::signum(det),
             self.matrix3.y_axis.length(),
             self.matrix3.z_axis.length(),
         );

@@ -1,6 +1,6 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
-use crate::{swizzles::*, DMat2, Mat3, Mat3A, Vec2};
+use crate::{f32::math, swizzles::*, DMat2, Mat3, Mat3A, Vec2};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -10,10 +10,6 @@ use core::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 use core::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use core::arch::x86_64::*;
-
-#[cfg(feature = "libm")]
-#[allow(unused_imports)]
-use num_traits::Float;
 
 union UnionCast {
     a: [f32; 4],
@@ -108,14 +104,14 @@ impl Mat2 {
     /// `angle` (in radians).
     #[inline]
     pub fn from_scale_angle(scale: Vec2, angle: f32) -> Self {
-        let (sin, cos) = angle.sin_cos();
+        let (sin, cos) = math::sin_cos(angle);
         Self::new(cos * scale.x, sin * scale.x, -sin * scale.y, cos * scale.y)
     }
 
     /// Creates a 2x2 matrix containing a rotation of `angle` (in radians).
     #[inline]
     pub fn from_angle(angle: f32) -> Self {
-        let (sin, cos) = angle.sin_cos();
+        let (sin, cos) = math::sin_cos(angle);
         Self::new(cos, sin, -sin, cos)
     }
 

@@ -10,6 +10,8 @@ FEATURE_SETS=(
   "std scalar-math approx bytemuck mint rand serde debug-glam-assert"
   "std cuda"
   "std scalar-math cuda"
+  "std libm"
+  "std scalar-math libm"
   # no_std
   "libm"
   "libm scalar-math approx bytemuck mint rand serde debug-glam-assert"

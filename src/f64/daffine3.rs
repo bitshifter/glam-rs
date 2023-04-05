@@ -264,15 +264,12 @@ impl DAffine3 {
     /// vector contains any zero elements when `glam_assert` is enabled.
     #[inline]
     pub fn to_scale_rotation_translation(&self) -> (DVec3, DQuat, DVec3) {
-        #[cfg(feature = "libm")]
-        #[allow(unused_imports)]
-        use num_traits::Float;
-
+        use crate::f64::math;
         let det = self.matrix3.determinant();
         glam_assert!(det != 0.0);
 
         let scale = DVec3::new(
-            self.matrix3.x_axis.length() * det.signum(),
+            self.matrix3.x_axis.length() * math::signum(det),
             self.matrix3.y_axis.length(),
             self.matrix3.z_axis.length(),
         );

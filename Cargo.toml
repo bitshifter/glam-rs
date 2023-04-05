@@ -28,9 +28,6 @@ glam-assert = []
 # this is primarily for testing the fallback implementation
 scalar-math = []
 
-# libm is required when building no_std
-libm = ["num-traits/libm"]
-
 # align types to match CUDA requirements
 cuda = []
 
@@ -48,11 +45,11 @@ core-simd = []
 approx = { version = "0.5", optional = true, default-features = false }
 bytemuck = { version = "1.5", optional = true, default-features = false }
 mint = { version = "0.5.8", optional = true, default-features = false }
-num-traits = { version = "0.2.14", optional = true, default-features = false }
 rand = { version = "0.8", optional = true, default-features = false }
 serde = { version = "1.0", optional = true, default-features = false }
 rkyv = { version = "0.7", optional = true }
 bytecheck = { version = "0.6", optional = true, default-features = false}
+libm = { version = "0.2", optional = true, default-features = false}
 
 [dev-dependencies]
 # rand_xoshiro is required for tests if rand is enabled
