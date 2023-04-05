@@ -28,9 +28,6 @@ glam-assert = []
 # this is primarily for testing the fallback implementation
 scalar-math = []
 
-# libm is required when building no_std
-#libm = ["num-traits/libm"]
-
 # align types to match CUDA requirements
 cuda = []
 

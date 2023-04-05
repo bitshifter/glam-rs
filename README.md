@@ -95,25 +95,23 @@ glam = { version = "0.23", default-features = false }
 
 * [`approx`] - traits and macros for approximate float comparisons
 * [`bytemuck`] - for casting into slices of bytes
-* [`libm`] - required to compile with `no_std`
+* [`libm`] - uses `libm` math functions instead of `std`, required to compile
+  with `no_std`
 * [`mint`] - for interoperating with other 3D math libraries
-* [`num-traits`] - required to compile `no_std`, will be included when enabling
-  the `libm` feature
 * [`rand`] - implementations of `Distribution` trait for all `glam` types.
 * [`serde`] - implementations of `Serialize` and `Deserialize` for all `glam`
   types. Note that serialization should work between builds of `glam` with and
   without SIMD enabled
-* [`rkyv`] - implementations of `Archive`, `Serialize` and `Deserialize` for all
-  `glam` types. Note that serialization is not interoperable with and without the
-  `scalar-math` feature. It should work between all other builds of `glam`.
-  Endian conversion is currently not supported
+* [`rkyv`] - implementations of `Archive`, `Serialize` and `Deserialize` for
+  all `glam` types. Note that serialization is not interoperable with and
+  without the `scalar-math` feature. It should work between all other builds of
+  `glam`.  Endian conversion is currently not supported
 * [`bytecheck`] - to perform archive validation when using the `rkyv` feature
 
 [`approx`]: https://docs.rs/approx
 [`bytemuck`]: https://docs.rs/bytemuck
 [`libm`]: https://github.com/rust-lang/libm
 [`mint`]: https://github.com/kvark/mint
-[`num-traits`]: https://github.com/rust-num/num-traits
 [`rand`]: https://github.com/rust-random/rand
 [`serde`]: https://serde.rs
 [`rkyv`]: https://github.com/rkyv/rkyv

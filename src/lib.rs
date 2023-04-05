@@ -218,10 +218,8 @@ and benchmarks.
 * `std` - the default feature, has no dependencies.
 * `approx` - traits and macros for approximate float comparisons
 * `bytemuck` - for casting into slices of bytes
-* `libm` - required to compile with `no_std`
+* `libm` - uses `libm` math functions instead of `std`, required to compile with `no_std`
 * `mint` - for interoperating with other 3D math libraries
-* `num-traits` - required to compile `no_std`, will be included when enabling
-  the `libm` feature
 * `rand` - implementations of `Distribution` trait for all `glam` types.
 * `rkyv` - implementations of `Archive`, `Serialize` and `Deserialize` for all
   `glam` types. Note that serialization is not interoperable with and without the
