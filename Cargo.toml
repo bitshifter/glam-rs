@@ -43,7 +43,7 @@ core-simd = []
 
 [dependencies]
 approx = { version = "0.5", optional = true, default-features = false }
-bytemuck = { version = "1.5", optional = true, default-features = false }
+bytemuck = { version = "1.9", optional = true, default-features = false }
 mint = { version = "0.5.8", optional = true, default-features = false }
 rand = { version = "0.8", optional = true, default-features = false }
 serde = { version = "1.0", optional = true, default-features = false }
