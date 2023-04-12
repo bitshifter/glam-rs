@@ -135,7 +135,7 @@ impl IVec4 {
 
     /// Creates a 2D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
     ///
-    /// Truncation to `IVec3` may also be performed by using `self.xyz()` or `IVec3::from()`.
+    /// Truncation to [`IVec3`] may also be performed by using [`self.xyz()`][crate::swizzles::Vec4Swizzles::xyz()].
     #[inline]
     pub fn truncate(self) -> IVec3 {
         use crate::swizzles::Vec4Swizzles;

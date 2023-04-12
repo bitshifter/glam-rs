@@ -19,10 +19,10 @@ pub const fn vec3a(x: f32, y: f32, z: f32) -> Vec3A {
 /// A 3-dimensional vector.
 ///
 /// SIMD vector types are used for storage on supported platforms for better
-/// performance than the `Vec3` type.
+/// performance than the [`Vec3`] type.
 ///
-/// It is possible to convert between `Vec3` and `Vec3A` types using `From`
-/// trait implementations.
+/// It is possible to convert between [`Vec3`] and [`Vec3A`] types using [`From`]
+/// or [`Into`] trait implementations.
 ///
 /// This type is 16 byte aligned.
 #[derive(Clone, Copy)]
@@ -134,7 +134,7 @@ impl Vec3A {
 
     /// Creates a 2D vector from the `x` and `y` elements of `self`, discarding `z`.
     ///
-    /// Truncation may also be performed by using `self.xy()` or `Vec2::from()`.
+    /// Truncation may also be performed by using [`self.xy()`][crate::swizzles::Vec3Swizzles::xy()].
     #[inline]
     pub fn truncate(self) -> Vec2 {
         use crate::swizzles::Vec3Swizzles;
@@ -371,7 +371,7 @@ impl Vec3A {
     ///
     /// For valid results, `self` must _not_ be of length zero, nor very close to zero.
     ///
-    /// See also [`Self::try_normalize`] and [`Self::normalize_or_zero`].
+    /// See also [`Self::try_normalize()`] and [`Self::normalize_or_zero()`].
     ///
     /// Panics
     ///
@@ -391,7 +391,7 @@ impl Vec3A {
     /// In particular, if the input is zero (or very close to zero), or non-finite,
     /// the result of this operation will be `None`.
     ///
-    /// See also [`Self::normalize_or_zero`].
+    /// See also [`Self::normalize_or_zero()`].
     #[must_use]
     #[inline]
     pub fn try_normalize(self) -> Option<Self> {
@@ -408,7 +408,7 @@ impl Vec3A {
     /// In particular, if the input is zero (or very close to zero), or non-finite,
     /// the result of this operation will be zero.
     ///
-    /// See also [`Self::try_normalize`].
+    /// See also [`Self::try_normalize()`].
     #[must_use]
     #[inline]
     pub fn normalize_or_zero(self) -> Self {
@@ -634,7 +634,7 @@ impl Vec3A {
     /// The input vector must be finite and non-zero.
     ///
     /// The output vector is not necessarily unit-length.
-    /// For that use [`Self::any_orthonormal_vector`] instead.
+    /// For that use [`Self::any_orthonormal_vector()`] instead.
     #[inline]
     pub fn any_orthogonal_vector(&self) -> Self {
         // This can probably be optimized
@@ -1062,7 +1062,7 @@ impl From<Vec3> for Vec3A {
 }
 
 impl From<Vec4> for Vec3A {
-    /// Creates a `Vec3A` from the `x`, `y` and `z` elements of `self` discarding `w`.
+    /// Creates a [`Vec3A`] from the `x`, `y` and `z` elements of `self` discarding `w`.
     ///
     /// On architectures where SIMD is supported such as SSE2 on `x86_64` this conversion is a noop.
     #[inline]

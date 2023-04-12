@@ -196,7 +196,7 @@ impl Affine2 {
         }
     }
 
-    /// The given `Mat3A` must be an affine transform,
+    /// The given [`Mat3A`] must be an affine transform,
     #[inline]
     pub fn from_mat3a(m: Mat3A) -> Self {
         use crate::swizzles::Vec3Swizzles;
@@ -215,7 +215,7 @@ impl Affine2 {
     /// Transforms the given 2D vector, applying shear, scale and rotation (but NOT
     /// translation).
     ///
-    /// To also apply translation, use [`Self::transform_point2`] instead.
+    /// To also apply translation, use [`Self::transform_point2()`] instead.
     #[inline]
     pub fn transform_vector2(&self, rhs: Vec2) -> Vec2 {
         self.matrix2 * rhs

@@ -356,7 +356,7 @@ impl Affine3A {
     /// Transforms the given 3D vector, applying shear, scale and rotation (but NOT
     /// translation).
     ///
-    /// To also apply translation, use [`Self::transform_point3`] instead.
+    /// To also apply translation, use [`Self::transform_point3()`] instead.
     #[inline]
     pub fn transform_vector3(&self, rhs: Vec3) -> Vec3 {
         #[allow(clippy::useless_conversion)]
@@ -366,16 +366,16 @@ impl Affine3A {
             .into()
     }
 
-    /// Transforms the given `Vec3A`, applying shear, scale, rotation and translation.
+    /// Transforms the given [`Vec3A`], applying shear, scale, rotation and translation.
     #[inline]
     pub fn transform_point3a(&self, rhs: Vec3A) -> Vec3A {
         self.matrix3 * rhs + self.translation
     }
 
-    /// Transforms the given `Vec3A`, applying shear, scale and rotation (but NOT
+    /// Transforms the given [`Vec3A`], applying shear, scale and rotation (but NOT
     /// translation).
     ///
-    /// To also apply translation, use [`Self::transform_point3a`] instead.
+    /// To also apply translation, use [`Self::transform_point3a()`] instead.
     #[inline]
     pub fn transform_vector3a(&self, rhs: Vec3A) -> Vec3A {
         self.matrix3 * rhs

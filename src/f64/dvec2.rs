@@ -339,7 +339,7 @@ impl DVec2 {
     ///
     /// For valid results, `self` must _not_ be of length zero, nor very close to zero.
     ///
-    /// See also [`Self::try_normalize`] and [`Self::normalize_or_zero`].
+    /// See also [`Self::try_normalize()`] and [`Self::normalize_or_zero()`].
     ///
     /// Panics
     ///
@@ -358,7 +358,7 @@ impl DVec2 {
     /// In particular, if the input is zero (or very close to zero), or non-finite,
     /// the result of this operation will be `None`.
     ///
-    /// See also [`Self::normalize_or_zero`].
+    /// See also [`Self::normalize_or_zero()`].
     #[must_use]
     #[inline]
     pub fn try_normalize(self) -> Option<Self> {
@@ -375,7 +375,7 @@ impl DVec2 {
     /// In particular, if the input is zero (or very close to zero), or non-finite,
     /// the result of this operation will be zero.
     ///
-    /// See also [`Self::try_normalize`].
+    /// See also [`Self::try_normalize()`].
     #[must_use]
     #[inline]
     pub fn normalize_or_zero(self) -> Self {
@@ -597,8 +597,9 @@ impl DVec2 {
     }
 
     /// Creates a 2D vector containing `[angle.cos(), angle.sin()]`. This can be used in
-    /// conjunction with the `rotate` method, e.g. `Vec2::from_angle(PI).rotate(Vec2::Y)` will
-    /// create the vector [-1, 0] and rotate `Vec2::Y` around it returning `-Vec2::Y`.
+    /// conjunction with the [`rotate()`][Self::rotate()] method, e.g.
+    /// `DVec2::from_angle(PI).rotate(DVec2::Y)` will create the vector `[-1, 0]`
+    /// and rotate [`DVec2::Y`] around it returning `-DVec2::Y`.
     #[inline]
     pub fn from_angle(angle: f64) -> Self {
         let (sin, cos) = math::sin_cos(angle);

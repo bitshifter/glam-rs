@@ -358,7 +358,7 @@ impl DAffine3 {
     /// Transforms the given 3D vector, applying shear, scale and rotation (but NOT
     /// translation).
     ///
-    /// To also apply translation, use [`Self::transform_point3`] instead.
+    /// To also apply translation, use [`Self::transform_point3()`] instead.
     #[inline]
     pub fn transform_vector3(&self, rhs: DVec3) -> DVec3 {
         #[allow(clippy::useless_conversion)]
