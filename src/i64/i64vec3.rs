@@ -134,7 +134,7 @@ impl I64Vec3 {
 
     /// Creates a 2D vector from the `x` and `y` elements of `self`, discarding `z`.
     ///
-    /// Truncation may also be performed by using `self.xy()` or `I64Vec2::from()`.
+    /// Truncation may also be performed by using [`self.xy()`][crate::swizzles::Vec3Swizzles::xy()].
     #[inline]
     pub fn truncate(self) -> I64Vec2 {
         use crate::swizzles::Vec3Swizzles;

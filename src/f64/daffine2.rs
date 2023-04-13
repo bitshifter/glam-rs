@@ -205,7 +205,7 @@ impl DAffine2 {
     /// Transforms the given 2D vector, applying shear, scale and rotation (but NOT
     /// translation).
     ///
-    /// To also apply translation, use [`Self::transform_point2`] instead.
+    /// To also apply translation, use [`Self::transform_point2()`] instead.
     #[inline]
     pub fn transform_vector2(&self, rhs: DVec2) -> DVec2 {
         self.matrix2 * rhs

@@ -473,7 +473,7 @@ impl Mat3 {
         res
     }
 
-    /// Transforms a `Vec3A`.
+    /// Transforms a [`Vec3A`].
     #[inline]
     pub fn mul_vec3a(&self, rhs: Vec3A) -> Vec3A {
         self.mul_vec3(rhs.into()).into()

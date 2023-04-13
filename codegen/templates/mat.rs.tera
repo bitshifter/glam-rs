@@ -1774,9 +1774,9 @@ impl {{ self_t }} {
 {% endif %}
 
 {% if self_t == "Mat4" %}
-    /// Transforms the given `Vec3A` as 3D point.
+    /// Transforms the given [`Vec3A`] as 3D point.
     ///
-    /// This is the equivalent of multiplying the `Vec3A` as a 4D vector where `w` is `1.0`.
+    /// This is the equivalent of multiplying the [`Vec3A`] as a 4D vector where `w` is `1.0`.
     #[inline]
     pub fn transform_point3a(&self, rhs: Vec3A) -> Vec3A {
         {% if is_scalar %}
@@ -1791,9 +1791,9 @@ impl {{ self_t }} {
         {% endif %}
     }
 
-    /// Transforms the give `Vec3A` as 3D vector.
+    /// Transforms the give [`Vec3A`] as 3D vector.
     ///
-    /// This is the equivalent of multiplying the `Vec3A` as a 4D vector where `w` is `0.0`.
+    /// This is the equivalent of multiplying the [`Vec3A`] as a 4D vector where `w` is `0.0`.
     #[inline]
     pub fn transform_vector3a(&self, rhs: Vec3A) -> Vec3A {
         {% if is_scalar %}
@@ -1876,13 +1876,13 @@ impl {{ self_t }} {
     }
 
 {% if self_t == "Mat3" %}
-    /// Transforms a `Vec3A`.
+    /// Transforms a [`Vec3A`].
     #[inline]
     pub fn mul_vec3a(&self, rhs: Vec3A) -> Vec3A {
         self.mul_vec3(rhs.into()).into()
     }
 {% elif self_t == "Mat3A" %}
-    /// Transforms a `Vec3A`.
+    /// Transforms a [`Vec3A`].
     #[inline]
     pub fn mul_vec3a(&self, rhs: Vec3A) -> Vec3A {
         let mut res = self.x_axis.mul(rhs.xxx());

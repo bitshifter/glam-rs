@@ -275,7 +275,7 @@ impl {{ self_t }} {
     }
 
 {% if scalar_t == "f32" %}
-    /// The given `Mat3A` must be an affine transform,
+    /// The given [`Mat3A`] must be an affine transform,
     #[inline]
     pub fn from_mat3a(m: Mat3A) -> Self {
         use crate::swizzles::Vec3Swizzles;
@@ -295,7 +295,7 @@ impl {{ self_t }} {
     /// Transforms the given 2D vector, applying shear, scale and rotation (but NOT
     /// translation).
     ///
-    /// To also apply translation, use [`Self::transform_point2`] instead.
+    /// To also apply translation, use [`Self::transform_point2()`] instead.
     #[inline]
     pub fn transform_vector2(&self, rhs: {{ vec2_t }}) -> {{ vec2_t }} {
         self.matrix2 * rhs
@@ -548,7 +548,7 @@ impl {{ self_t }} {
     /// Transforms the given 3D vector, applying shear, scale and rotation (but NOT
     /// translation).
     ///
-    /// To also apply translation, use [`Self::transform_point3`] instead.
+    /// To also apply translation, use [`Self::transform_point3()`] instead.
     #[inline]
     pub fn transform_vector3(&self, rhs: {{ vec3_t }}) -> {{ vec3_t }} {
         #[allow(clippy::useless_conversion)]
@@ -560,16 +560,16 @@ impl {{ self_t }} {
 {% endif %}
 
 {% if self_t == "Affine3A" %}
-    /// Transforms the given `Vec3A`, applying shear, scale, rotation and translation.
+    /// Transforms the given [`Vec3A`], applying shear, scale, rotation and translation.
     #[inline]
     pub fn transform_point3a(&self, rhs: Vec3A) -> Vec3A {
         self.matrix3 * rhs + self.translation
     }
 
-    /// Transforms the given `Vec3A`, applying shear, scale and rotation (but NOT
+    /// Transforms the given [`Vec3A`], applying shear, scale and rotation (but NOT
     /// translation).
     ///
-    /// To also apply translation, use [`Self::transform_point3a`] instead.
+    /// To also apply translation, use [`Self::transform_point3a()`] instead.
     #[inline]
     pub fn transform_vector3a(&self, rhs: Vec3A) -> Vec3A {
         self.matrix3 * rhs

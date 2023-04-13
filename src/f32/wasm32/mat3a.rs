@@ -476,7 +476,7 @@ impl Mat3A {
         self.mul_vec3a(rhs.into()).into()
     }
 
-    /// Transforms a `Vec3A`.
+    /// Transforms a [`Vec3A`].
     #[inline]
     pub fn mul_vec3a(&self, rhs: Vec3A) -> Vec3A {
         let mut res = self.x_axis.mul(rhs.xxx());

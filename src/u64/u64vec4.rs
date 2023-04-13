@@ -120,7 +120,7 @@ impl U64Vec4 {
 
     /// Creates a 2D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
     ///
-    /// Truncation to `U64Vec3` may also be performed by using `self.xyz()` or `U64Vec3::from()`.
+    /// Truncation to [`U64Vec3`] may also be performed by using [`self.xyz()`][crate::swizzles::Vec4Swizzles::xyz()].
     #[inline]
     pub fn truncate(self) -> U64Vec3 {
         use crate::swizzles::Vec4Swizzles;

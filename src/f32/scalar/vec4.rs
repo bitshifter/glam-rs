@@ -143,9 +143,9 @@ impl Vec4 {
 
     /// Creates a 2D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
     ///
-    /// Truncation to `Vec3` may also be performed by using `self.xyz()` or `Vec3::from()`.
+    /// Truncation to [`Vec3`] may also be performed by using [`self.xyz()`][crate::swizzles::Vec4Swizzles::xyz()].
     ///
-    /// To truncate to `Vec3A` use `Vec3A::from()`.
+    /// To truncate to [`Vec3A`] use [`Vec3A::from()`].
     #[inline]
     pub fn truncate(self) -> Vec3 {
         use crate::swizzles::Vec4Swizzles;
@@ -424,7 +424,7 @@ impl Vec4 {
     ///
     /// For valid results, `self` must _not_ be of length zero, nor very close to zero.
     ///
-    /// See also [`Self::try_normalize`] and [`Self::normalize_or_zero`].
+    /// See also [`Self::try_normalize()`] and [`Self::normalize_or_zero()`].
     ///
     /// Panics
     ///
@@ -443,7 +443,7 @@ impl Vec4 {
     /// In particular, if the input is zero (or very close to zero), or non-finite,
     /// the result of this operation will be `None`.
     ///
-    /// See also [`Self::normalize_or_zero`].
+    /// See also [`Self::normalize_or_zero()`].
     #[must_use]
     #[inline]
     pub fn try_normalize(self) -> Option<Self> {
@@ -460,7 +460,7 @@ impl Vec4 {
     /// In particular, if the input is zero (or very close to zero), or non-finite,
     /// the result of this operation will be zero.
     ///
-    /// See also [`Self::try_normalize`].
+    /// See also [`Self::try_normalize()`].
     #[must_use]
     #[inline]
     pub fn normalize_or_zero(self) -> Self {

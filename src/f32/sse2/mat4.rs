@@ -1080,9 +1080,9 @@ impl Mat4 {
         res.xyz()
     }
 
-    /// Transforms the given `Vec3A` as 3D point.
+    /// Transforms the given [`Vec3A`] as 3D point.
     ///
-    /// This is the equivalent of multiplying the `Vec3A` as a 4D vector where `w` is `1.0`.
+    /// This is the equivalent of multiplying the [`Vec3A`] as a 4D vector where `w` is `1.0`.
     #[inline]
     pub fn transform_point3a(&self, rhs: Vec3A) -> Vec3A {
         glam_assert!(self.row(3).abs_diff_eq(Vec4::W, 1e-6));
@@ -1093,9 +1093,9 @@ impl Mat4 {
         res.into()
     }
 
-    /// Transforms the give `Vec3A` as 3D vector.
+    /// Transforms the give [`Vec3A`] as 3D vector.
     ///
-    /// This is the equivalent of multiplying the `Vec3A` as a 4D vector where `w` is `0.0`.
+    /// This is the equivalent of multiplying the [`Vec3A`] as a 4D vector where `w` is `0.0`.
     #[inline]
     pub fn transform_vector3a(&self, rhs: Vec3A) -> Vec3A {
         glam_assert!(self.row(3).abs_diff_eq(Vec4::W, 1e-6));
