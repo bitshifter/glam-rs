@@ -26,6 +26,11 @@ jobs:
       - name: codegen
         run: cargo run --release -p codegen -- --check
 
+      - name: Build-test documentation
+        env:
+          RUSTDOCFLAGS: -Dwarnings
+        run: cargo doc --all --all-features --no-deps --document-private-items
+
   test:
     name: Test
     strategy:
