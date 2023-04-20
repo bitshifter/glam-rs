@@ -23,7 +23,7 @@ pub const fn dmat4(x_axis: DVec4, y_axis: DVec4, z_axis: DVec4, w_axis: DVec4) -
 /// using methods such as [`Self::from_translation()`], [`Self::from_quat()`],
 /// [`Self::from_scale()`] and [`Self::from_scale_rotation_translation()`].
 ///
-/// Othographic projections can be created using the methods [`Self::orthographic_lh()`] for
+/// Orthographic projections can be created using the methods [`Self::orthographic_lh()`] for
 /// left-handed coordinate systems and [`Self::orthographic_rh()`] for right-handed
 /// systems. The resulting matrix is also an affine transformation.
 ///
