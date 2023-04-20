@@ -30,7 +30,7 @@ pub const fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat
 /// using methods such as [`Self::from_translation()`], [`Self::from_quat()`],
 /// [`Self::from_scale()`] and [`Self::from_scale_rotation_translation()`].
 ///
-/// Othographic projections can be created using the methods [`Self::orthographic_lh()`] for
+/// Orthographic projections can be created using the methods [`Self::orthographic_lh()`] for
 /// left-handed coordinate systems and [`Self::orthographic_rh()`] for right-handed
 /// systems. The resulting matrix is also an affine transformation.
 ///
