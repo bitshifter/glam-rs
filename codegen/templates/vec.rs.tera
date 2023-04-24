@@ -127,6 +127,7 @@ use std::simd::StdFloat;
 {% endif %}
 
 {% if is_sse2 or is_wasm32 %}
+#[repr(C)]
 union UnionCast {
     a: [f32; 4],
     v: {{ self_t }}

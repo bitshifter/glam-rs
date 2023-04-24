@@ -17,6 +17,7 @@ use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, Deref, DerefMut, Div, Mul, MulAssign, Neg, Sub};
 
+#[repr(C)]
 union UnionCast {
     a: [f32; 4],
     v: Quat,

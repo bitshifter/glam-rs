@@ -9,6 +9,7 @@ use core::{f32, ops::*};
 
 use core::arch::wasm32::*;
 
+#[repr(C)]
 union UnionCast {
     a: [f32; 4],
     v: Vec4,

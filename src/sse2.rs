@@ -3,6 +3,7 @@ use core::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use core::arch::x86_64::*;
 
+#[repr(C)]
 union UnionCast {
     u32x4: [u32; 4],
     f32x4: [f32; 4],
