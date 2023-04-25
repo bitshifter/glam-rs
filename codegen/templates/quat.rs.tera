@@ -68,6 +68,7 @@ use core::ops::{
 };
 
 {% if is_sse2 %}
+#[repr(C)]
 union UnionCast {
     a: [f32; 4],
     v: {{ self_t }}

@@ -35,6 +35,7 @@ use core::simd::*;
 {% endif %}
 
 {% if is_sse2 or is_coresimd %}
+#[repr(C)]
 union UnionCast {
     a: [u32; 4],
     v: {{ self_t }}

@@ -6,6 +6,7 @@ use core::ops::*;
 
 use core::simd::*;
 
+#[repr(C)]
 union UnionCast {
     a: [u32; 4],
     v: BVec3A,
