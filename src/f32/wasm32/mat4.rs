@@ -10,7 +10,7 @@ use core::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
 use core::arch::wasm32::*;
 
-/// Creates a 4x4 matrix from column vectors.
+/// Creates a 4x4 matrix from four column vectors.
 #[inline(always)]
 pub const fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat4 {
     Mat4::from_cols(x_axis, y_axis, z_axis, w_axis)
@@ -92,7 +92,7 @@ impl Mat4 {
         }
     }
 
-    /// Creates a 4x4 matrix from two column vectors.
+    /// Creates a 4x4 matrix from four column vectors.
     #[inline(always)]
     pub const fn from_cols(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Self {
         Self {

@@ -17,7 +17,7 @@ union UnionCast {
     v: Mat2,
 }
 
-/// Creates a 2x2 matrix from column vectors.
+/// Creates a 2x2 matrix from two column vectors.
 #[inline(always)]
 pub const fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
     Mat2::from_cols(x_axis, y_axis)

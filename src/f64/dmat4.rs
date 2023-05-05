@@ -6,7 +6,7 @@ use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
-/// Creates a 4x4 matrix from column vectors.
+/// Creates a 4x4 matrix from four column vectors.
 #[inline(always)]
 pub const fn dmat4(x_axis: DVec4, y_axis: DVec4, z_axis: DVec4, w_axis: DVec4) -> DMat4 {
     DMat4::from_cols(x_axis, y_axis, z_axis, w_axis)
@@ -89,7 +89,7 @@ impl DMat4 {
         }
     }
 
-    /// Creates a 4x4 matrix from two column vectors.
+    /// Creates a 4x4 matrix from four column vectors.
     #[inline(always)]
     pub const fn from_cols(x_axis: DVec4, y_axis: DVec4, z_axis: DVec4, w_axis: DVec4) -> Self {
         Self {

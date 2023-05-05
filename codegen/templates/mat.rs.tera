@@ -55,6 +55,7 @@
 
 {% set components = ["x", "y", "z", "w"] | slice(end = dim) %}
 {% set axes = ["x_axis", "y_axis", "z_axis", "w_axis"] | slice(end = dim) %}
+{% set dimension_in_full = ["zero", "one", "two", "three", "four"] | nth(n = dim) %}
 
 use crate::{
 {% if scalar_t == "f32" %}
@@ -118,7 +119,7 @@ union UnionCast {
 }
 {% endif %}
 
-/// Creates a {{ nxn }} matrix from column vectors.
+/// Creates a {{ nxn }} matrix from {{ dimension_in_full }} column vectors.
 #[inline(always)]
 pub const fn {{ self_t | lower }}(
     {% for axis in axes %}
@@ -266,7 +267,7 @@ impl {{ self_t }} {
         {% endif %}
     }
 
-    /// Creates a {{ nxn }} matrix from two column vectors.
+    /// Creates a {{ nxn }} matrix from {{ dimension_in_full }} column vectors.
     #[inline(always)]
     pub const fn from_cols(
         {% for axis in axes %}
