@@ -6,7 +6,7 @@ use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
-/// Creates a 2x2 matrix from column vectors.
+/// Creates a 2x2 matrix from two column vectors.
 #[inline(always)]
 pub const fn dmat2(x_axis: DVec2, y_axis: DVec2) -> DMat2 {
     DMat2::from_cols(x_axis, y_axis)

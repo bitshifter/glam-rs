@@ -13,7 +13,7 @@ use core::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use core::arch::x86_64::*;
 
-/// Creates a 4x4 matrix from column vectors.
+/// Creates a 4x4 matrix from four column vectors.
 #[inline(always)]
 pub const fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat4 {
     Mat4::from_cols(x_axis, y_axis, z_axis, w_axis)
@@ -95,7 +95,7 @@ impl Mat4 {
         }
     }
 
-    /// Creates a 4x4 matrix from two column vectors.
+    /// Creates a 4x4 matrix from four column vectors.
     #[inline(always)]
     pub const fn from_cols(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Self {
         Self {

@@ -8,7 +8,7 @@ use core::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
 use core::arch::wasm32::*;
 
-/// Creates a 3x3 matrix from column vectors.
+/// Creates a 3x3 matrix from three column vectors.
 #[inline(always)]
 pub const fn mat3a(x_axis: Vec3A, y_axis: Vec3A, z_axis: Vec3A) -> Mat3A {
     Mat3A::from_cols(x_axis, y_axis, z_axis)
@@ -76,7 +76,7 @@ impl Mat3A {
         }
     }
 
-    /// Creates a 3x3 matrix from two column vectors.
+    /// Creates a 3x3 matrix from three column vectors.
     #[inline(always)]
     pub const fn from_cols(x_axis: Vec3A, y_axis: Vec3A, z_axis: Vec3A) -> Self {
         Self {

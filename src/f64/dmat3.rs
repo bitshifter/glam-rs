@@ -6,7 +6,7 @@ use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
-/// Creates a 3x3 matrix from column vectors.
+/// Creates a 3x3 matrix from three column vectors.
 #[inline(always)]
 pub const fn dmat3(x_axis: DVec3, y_axis: DVec3, z_axis: DVec3) -> DMat3 {
     DMat3::from_cols(x_axis, y_axis, z_axis)
@@ -74,7 +74,7 @@ impl DMat3 {
         }
     }
 
-    /// Creates a 3x3 matrix from two column vectors.
+    /// Creates a 3x3 matrix from three column vectors.
     #[inline(always)]
     pub const fn from_cols(x_axis: DVec3, y_axis: DVec3, z_axis: DVec3) -> Self {
         Self {
