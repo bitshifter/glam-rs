@@ -117,7 +117,8 @@ impl DQuat {
     }
 
     /// Create a quaternion for a normalized rotation `axis` and `angle` (in radians).
-    /// The axis must be normalized (unit-length).
+    ///
+    /// The axis must be a unit vector.
     ///
     /// # Panics
     ///
@@ -249,7 +250,7 @@ impl DQuat {
     /// Gets the minimal rotation for transforming `from` to `to`.  The rotation is in the
     /// plane spanned by the two vectors.  Will rotate at most 180 degrees.
     ///
-    /// The input vectors must be normalized (unit-length).
+    /// The inputs must be unit vectors.
     ///
     /// `from_rotation_arc(from, to) * from ≈ to`.
     ///
@@ -284,7 +285,7 @@ impl DQuat {
     /// The rotation is in the plane spanned by the two vectors.  Will rotate at most 90
     /// degrees.
     ///
-    /// The input vectors must be normalized (unit-length).
+    /// The inputs must be unit vectors.
     ///
     /// `to.dot(from_rotation_arc_colinear(from, to) * from).abs() ≈ 1`.
     ///
@@ -303,7 +304,7 @@ impl DQuat {
     /// Gets the minimal rotation for transforming `from` to `to`.  The resulting rotation is
     /// around the z axis. Will rotate at most 180 degrees.
     ///
-    /// The input vectors must be normalized (unit-length).
+    /// The inputs must be unit vectors.
     ///
     /// `from_rotation_arc_2d(from, to) * from ≈ to`.
     ///

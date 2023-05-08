@@ -31,10 +31,10 @@ impl U64Vec2 {
     /// All ones.
     pub const ONE: Self = Self::splat(1);
 
-    /// A unit-length vector pointing along the positive X axis.
+    /// A unit vector pointing along the positive X axis.
     pub const X: Self = Self::new(1, 0);
 
-    /// A unit-length vector pointing along the positive Y axis.
+    /// A unit vector pointing along the positive Y axis.
     pub const Y: Self = Self::new(0, 1);
 
     /// The unit axes.

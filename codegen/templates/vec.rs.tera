@@ -218,7 +218,7 @@ impl {{ self_t }} {
 
 {% for i in range(end = dim) %}
     {% set C = components[i] | upper %}
-    /// A unit-length vector pointing along the positive {{ C }} axis.
+    /// A unit vector pointing along the positive {{ C }} axis.
     pub const {{ C }}: Self = Self::new(
         {% for j in range(end = dim) %}
             {% if i == j %} {{ one }} {% else %} {{ zero }} {% endif %},
@@ -229,7 +229,7 @@ impl {{ self_t }} {
 {% if is_signed %}
     {% for i in range(end = dim) %}
         {% set C = components[i] | upper %}
-        /// A unit-length vector pointing along the negative {{ C }} axis.
+        /// A unit vector pointing along the negative {{ C }} axis.
         pub const NEG_{{ C }}: Self = Self::new(
             {% for j in range(end = dim) %}
                 {% if i == j %} {{ neg_one }} {% else %} {{ zero }} {% endif %},
@@ -1401,7 +1401,7 @@ impl {{ self_t }} {
 
     /// Returns the angle (in radians) between `self` and `rhs`.
     ///
-    /// The input vectors do not need to be unit length however they must be non-zero.
+    /// The inputs do not need to be unit vectors however they must be non-zero.
     #[inline]
     pub fn angle_between(self, rhs: Self) -> {{ scalar_t }} {
         let angle = math::acos_approx(
@@ -1412,7 +1412,7 @@ impl {{ self_t }} {
 {% elif dim == 3 %}
     /// Returns the angle (in radians) between two vectors.
     ///
-    /// The input vectors do not need to be unit length however they must be non-zero.
+    /// The inputs do not need to be unit vectors however they must be non-zero.
     #[inline]
     pub fn angle_between(self, rhs: Self) -> {{ scalar_t }} {
         math::acos_approx(
@@ -1424,8 +1424,8 @@ impl {{ self_t }} {
     ///
     /// The input vector must be finite and non-zero.
     ///
-    /// The output vector is not necessarily unit-length.
-    /// For that use [`Self::any_orthonormal_vector()`] instead.
+    /// The output vector is not necessarily unit length. For that use
+    /// [`Self::any_orthonormal_vector()`] instead.
     #[inline]
     pub fn any_orthogonal_vector(&self) -> Self {
         // This can probably be optimized
@@ -1436,8 +1436,9 @@ impl {{ self_t }} {
         }
     }
 
-    /// Returns any unit-length vector that is orthogonal to the given one.
-    /// The input vector must be finite and non-zero.
+    /// Returns any unit vector that is orthogonal to the given one.
+    ///
+    /// The input vector must be unit length.
     ///
     /// # Panics
     ///
@@ -1452,8 +1453,8 @@ impl {{ self_t }} {
         Self::new(b, sign + self.y * self.y * a, -self.y)
     }
 
-    /// Given a unit-length vector return two other vectors that together form an orthonormal
-    /// basis.  That is, all three vectors are orthogonal to each other and are normalized.
+    /// Given a unit vector return two other vectors that together form an orthonormal
+    /// basis. That is, all three vectors are orthogonal to each other and are normalized.
     ///
     /// # Panics
     ///

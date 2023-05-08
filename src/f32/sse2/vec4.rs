@@ -46,28 +46,28 @@ impl Vec4 {
     /// All NAN.
     pub const NAN: Self = Self::splat(f32::NAN);
 
-    /// A unit-length vector pointing along the positive X axis.
+    /// A unit vector pointing along the positive X axis.
     pub const X: Self = Self::new(1.0, 0.0, 0.0, 0.0);
 
-    /// A unit-length vector pointing along the positive Y axis.
+    /// A unit vector pointing along the positive Y axis.
     pub const Y: Self = Self::new(0.0, 1.0, 0.0, 0.0);
 
-    /// A unit-length vector pointing along the positive Z axis.
+    /// A unit vector pointing along the positive Z axis.
     pub const Z: Self = Self::new(0.0, 0.0, 1.0, 0.0);
 
-    /// A unit-length vector pointing along the positive W axis.
+    /// A unit vector pointing along the positive W axis.
     pub const W: Self = Self::new(0.0, 0.0, 0.0, 1.0);
 
-    /// A unit-length vector pointing along the negative X axis.
+    /// A unit vector pointing along the negative X axis.
     pub const NEG_X: Self = Self::new(-1.0, 0.0, 0.0, 0.0);
 
-    /// A unit-length vector pointing along the negative Y axis.
+    /// A unit vector pointing along the negative Y axis.
     pub const NEG_Y: Self = Self::new(0.0, -1.0, 0.0, 0.0);
 
-    /// A unit-length vector pointing along the negative Z axis.
+    /// A unit vector pointing along the negative Z axis.
     pub const NEG_Z: Self = Self::new(0.0, 0.0, -1.0, 0.0);
 
-    /// A unit-length vector pointing along the negative W axis.
+    /// A unit vector pointing along the negative W axis.
     pub const NEG_W: Self = Self::new(0.0, 0.0, 0.0, -1.0);
 
     /// The unit axes.

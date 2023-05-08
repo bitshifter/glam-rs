@@ -36,22 +36,22 @@ impl DVec3 {
     /// All NAN.
     pub const NAN: Self = Self::splat(f64::NAN);
 
-    /// A unit-length vector pointing along the positive X axis.
+    /// A unit vector pointing along the positive X axis.
     pub const X: Self = Self::new(1.0, 0.0, 0.0);
 
-    /// A unit-length vector pointing along the positive Y axis.
+    /// A unit vector pointing along the positive Y axis.
     pub const Y: Self = Self::new(0.0, 1.0, 0.0);
 
-    /// A unit-length vector pointing along the positive Z axis.
+    /// A unit vector pointing along the positive Z axis.
     pub const Z: Self = Self::new(0.0, 0.0, 1.0);
 
-    /// A unit-length vector pointing along the negative X axis.
+    /// A unit vector pointing along the negative X axis.
     pub const NEG_X: Self = Self::new(-1.0, 0.0, 0.0);
 
-    /// A unit-length vector pointing along the negative Y axis.
+    /// A unit vector pointing along the negative Y axis.
     pub const NEG_Y: Self = Self::new(0.0, -1.0, 0.0);
 
-    /// A unit-length vector pointing along the negative Z axis.
+    /// A unit vector pointing along the negative Z axis.
     pub const NEG_Z: Self = Self::new(0.0, 0.0, -1.0);
 
     /// The unit axes.
@@ -652,7 +652,7 @@ impl DVec3 {
 
     /// Returns the angle (in radians) between two vectors.
     ///
-    /// The input vectors do not need to be unit length however they must be non-zero.
+    /// The inputs do not need to be unit vectors however they must be non-zero.
     #[inline]
     pub fn angle_between(self, rhs: Self) -> f64 {
         math::acos_approx(
@@ -665,8 +665,8 @@ impl DVec3 {
     ///
     /// The input vector must be finite and non-zero.
     ///
-    /// The output vector is not necessarily unit-length.
-    /// For that use [`Self::any_orthonormal_vector()`] instead.
+    /// The output vector is not necessarily unit length. For that use
+    /// [`Self::any_orthonormal_vector()`] instead.
     #[inline]
     pub fn any_orthogonal_vector(&self) -> Self {
         // This can probably be optimized
@@ -677,8 +677,9 @@ impl DVec3 {
         }
     }
 
-    /// Returns any unit-length vector that is orthogonal to the given one.
-    /// The input vector must be finite and non-zero.
+    /// Returns any unit vector that is orthogonal to the given one.
+    ///
+    /// The input vector must be unit length.
     ///
     /// # Panics
     ///
@@ -693,8 +694,8 @@ impl DVec3 {
         Self::new(b, sign + self.y * self.y * a, -self.y)
     }
 
-    /// Given a unit-length vector return two other vectors that together form an orthonormal
-    /// basis.  That is, all three vectors are orthogonal to each other and are normalized.
+    /// Given a unit vector return two other vectors that together form an orthonormal
+    /// basis. That is, all three vectors are orthogonal to each other and are normalized.
     ///
     /// # Panics
     ///
