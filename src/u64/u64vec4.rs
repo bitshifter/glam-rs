@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec4, U64Vec2, U64Vec3};
+use crate::{BVec4, I64Vec4, U64Vec2, U64Vec3, UVec4};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -1130,5 +1130,31 @@ impl From<(U64Vec2, U64Vec2)> for U64Vec4 {
     #[inline]
     fn from((v, u): (U64Vec2, U64Vec2)) -> Self {
         Self::new(v.x, v.y, u.x, u.y)
+    }
+}
+
+impl From<UVec4> for U64Vec4 {
+    #[inline]
+    fn from(v: UVec4) -> Self {
+        Self::new(
+            u64::from(v.x),
+            u64::from(v.y),
+            u64::from(v.z),
+            u64::from(v.w),
+        )
+    }
+}
+
+impl TryFrom<I64Vec4> for U64Vec4 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: I64Vec4) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            u64::try_from(v.x)?,
+            u64::try_from(v.y)?,
+            u64::try_from(v.z)?,
+            u64::try_from(v.w)?,
+        ))
     }
 }
