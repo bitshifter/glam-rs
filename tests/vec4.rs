@@ -1378,7 +1378,7 @@ mod dvec4 {
 }
 
 mod ivec4 {
-    use glam::{ivec4, BVec4, IVec2, IVec3, IVec4, UVec4};
+    use glam::{ivec4, BVec4, I64Vec4, IVec2, IVec3, IVec4, U64Vec4, UVec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1391,6 +1391,34 @@ mod ivec4 {
         assert_eq!(1, mem::align_of::<BVec4>());
     });
 
+    glam_test!(test_try_from, {
+        assert_eq!(
+            IVec4::new(1, 2, 3, 4),
+            IVec4::try_from(UVec4::new(1, 2, 3, 4)).unwrap()
+        );
+        assert!(IVec4::try_from(UVec4::new(u32::MAX, 2, 3, 4)).is_err());
+        assert!(IVec4::try_from(UVec4::new(1, u32::MAX, 3, 4)).is_err());
+        assert!(IVec4::try_from(UVec4::new(1, 2, u32::MAX, 4)).is_err());
+        assert!(IVec4::try_from(UVec4::new(1, 2, 3, u32::MAX)).is_err());
+
+        assert_eq!(
+            IVec4::new(1, 2, 3, 4),
+            IVec4::try_from(I64Vec4::new(1, 2, 3, 4)).unwrap()
+        );
+        assert!(IVec4::try_from(I64Vec4::new(i64::MAX, 2, 3, 4)).is_err());
+        assert!(IVec4::try_from(I64Vec4::new(1, i64::MAX, 3, 4)).is_err());
+        assert!(IVec4::try_from(I64Vec4::new(1, 2, i64::MAX, 4)).is_err());
+        assert!(IVec4::try_from(I64Vec4::new(1, 2, 3, i64::MAX)).is_err());
+
+        assert_eq!(
+            IVec4::new(1, 2, 3, 4),
+            IVec4::try_from(U64Vec4::new(1, 2, 3, 4)).unwrap()
+        );
+        assert!(IVec4::try_from(U64Vec4::new(u64::MAX, 2, 3, 4)).is_err());
+        assert!(IVec4::try_from(U64Vec4::new(1, u64::MAX, 3, 4)).is_err());
+        assert!(IVec4::try_from(U64Vec4::new(1, 2, u64::MAX, 4)).is_err());
+        assert!(IVec4::try_from(U64Vec4::new(1, 2, 3, u64::MAX)).is_err());
+    });
     impl_vec4_signed_tests!(i32, ivec4, IVec4, IVec3, IVec2, BVec4);
     impl_vec4_eq_hash_tests!(i32, ivec4);
 
@@ -1402,7 +1430,7 @@ mod ivec4 {
 }
 
 mod uvec4 {
-    use glam::{uvec4, BVec4, IVec4, UVec2, UVec3, UVec4};
+    use glam::{uvec4, BVec4, I64Vec4, IVec4, U64Vec4, UVec2, UVec3, UVec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1413,6 +1441,40 @@ mod uvec4 {
         assert_eq!(16, mem::align_of::<UVec4>());
         assert_eq!(4, mem::size_of::<BVec4>());
         assert_eq!(1, mem::align_of::<BVec4>());
+    });
+
+    glam_test!(test_try_from, {
+        assert_eq!(
+            UVec4::new(1, 2, 3, 4),
+            UVec4::try_from(IVec4::new(1, 2, 3, 4)).unwrap()
+        );
+        assert!(UVec4::try_from(IVec4::new(-1, 2, 3, 4)).is_err());
+        assert!(UVec4::try_from(IVec4::new(1, -2, 3, 4)).is_err());
+        assert!(UVec4::try_from(IVec4::new(1, 2, -3, 4)).is_err());
+        assert!(UVec4::try_from(IVec4::new(1, 2, 3, -4)).is_err());
+
+        assert_eq!(
+            UVec4::new(1, 2, 3, 4),
+            UVec4::try_from(I64Vec4::new(1, 2, 3, 4)).unwrap()
+        );
+        assert!(UVec4::try_from(I64Vec4::new(-1, 2, 3, 4)).is_err());
+        assert!(UVec4::try_from(I64Vec4::new(1, -2, 3, 4)).is_err());
+        assert!(UVec4::try_from(I64Vec4::new(1, 2, -3, 4)).is_err());
+        assert!(UVec4::try_from(I64Vec4::new(1, 2, 3, -4)).is_err());
+
+        assert!(UVec4::try_from(I64Vec4::new(i64::MAX, 2, 3, 4)).is_err());
+        assert!(UVec4::try_from(I64Vec4::new(1, i64::MAX, 3, 4)).is_err());
+        assert!(UVec4::try_from(I64Vec4::new(1, 2, i64::MAX, 4)).is_err());
+        assert!(UVec4::try_from(I64Vec4::new(1, 2, 3, i64::MAX)).is_err());
+
+        assert_eq!(
+            UVec4::new(1, 2, 3, 4),
+            UVec4::try_from(U64Vec4::new(1, 2, 3, 4)).unwrap()
+        );
+        assert!(UVec4::try_from(U64Vec4::new(u64::MAX, 2, 3, 4)).is_err());
+        assert!(UVec4::try_from(U64Vec4::new(1, u64::MAX, 3, 4)).is_err());
+        assert!(UVec4::try_from(U64Vec4::new(1, 2, u64::MAX, 4)).is_err());
+        assert!(UVec4::try_from(U64Vec4::new(1, 2, 3, u64::MAX)).is_err());
     });
 
     impl_vec4_tests!(u32, uvec4, UVec4, UVec3, UVec2, BVec4);
@@ -1426,7 +1488,7 @@ mod uvec4 {
 }
 
 mod i64vec4 {
-    use glam::{i64vec4, BVec4, I64Vec2, I64Vec3, I64Vec4, IVec4, UVec4};
+    use glam::{i64vec4, BVec4, I64Vec2, I64Vec3, I64Vec4, IVec4, U64Vec4, UVec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1437,6 +1499,22 @@ mod i64vec4 {
         assert_eq!(16, mem::align_of::<I64Vec4>());
         assert_eq!(4, mem::size_of::<BVec4>());
         assert_eq!(1, mem::align_of::<BVec4>());
+    });
+
+    glam_test!(test_try_from, {
+        assert_eq!(
+            I64Vec4::new(1, 2, 3, 4),
+            I64Vec4::try_from(IVec4::new(1, 2, 3, 4)).unwrap()
+        );
+
+        assert_eq!(
+            I64Vec4::new(1, 2, 3, 4),
+            I64Vec4::try_from(U64Vec4::new(1, 2, 3, 4)).unwrap()
+        );
+        assert!(I64Vec4::try_from(U64Vec4::new(u64::MAX, 2, 3, 4)).is_err());
+        assert!(I64Vec4::try_from(U64Vec4::new(1, u64::MAX, 3, 4)).is_err());
+        assert!(I64Vec4::try_from(U64Vec4::new(1, 2, u64::MAX, 4)).is_err());
+        assert!(I64Vec4::try_from(U64Vec4::new(1, 2, 3, u64::MAX)).is_err());
     });
 
     impl_vec4_signed_tests!(i64, i64vec4, I64Vec4, I64Vec3, I64Vec2, BVec4);
@@ -1450,7 +1528,7 @@ mod i64vec4 {
 }
 
 mod u64vec4 {
-    use glam::{u64vec4, BVec4, IVec4, U64Vec2, U64Vec3, U64Vec4, UVec4};
+    use glam::{u64vec4, BVec4, I64Vec4, IVec4, U64Vec2, U64Vec3, U64Vec4, UVec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1461,6 +1539,22 @@ mod u64vec4 {
         assert_eq!(16, mem::align_of::<U64Vec4>());
         assert_eq!(4, mem::size_of::<BVec4>());
         assert_eq!(1, mem::align_of::<BVec4>());
+    });
+
+    glam_test!(test_try_from, {
+        assert_eq!(
+            U64Vec4::new(1, 2, 3, 4),
+            U64Vec4::try_from(UVec4::new(1, 2, 3, 4)).unwrap()
+        );
+
+        assert_eq!(
+            U64Vec4::new(1, 2, 3, 4),
+            U64Vec4::try_from(I64Vec4::new(1, 2, 3, 4)).unwrap()
+        );
+        assert!(U64Vec4::try_from(I64Vec4::new(-1, 2, 3, 4)).is_err());
+        assert!(U64Vec4::try_from(I64Vec4::new(1, -2, 3, 4)).is_err());
+        assert!(U64Vec4::try_from(I64Vec4::new(1, 2, -3, 4)).is_err());
+        assert!(U64Vec4::try_from(I64Vec4::new(1, 2, 3, -4)).is_err());
     });
 
     impl_vec4_tests!(u64, u64vec4, U64Vec4, U64Vec3, U64Vec2, BVec4);
