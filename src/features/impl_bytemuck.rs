@@ -1,6 +1,7 @@
 use crate::{
-    Affine2, Affine3A, DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, IVec2,
-    IVec3, IVec4, Mat2, Mat3, Mat3A, Mat4, Quat, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
+    Affine2, Affine3A, DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4,
+    I64Vec2, I64Vec3, I64Vec4, IVec2, IVec3, IVec4, Mat2, Mat3, Mat3A, Mat4, Quat, U64Vec2,
+    U64Vec3, U64Vec4, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
 };
 use bytemuck::{AnyBitPattern, Pod, Zeroable};
 
@@ -66,12 +67,26 @@ unsafe impl Zeroable for UVec3 {}
 unsafe impl Pod for UVec4 {}
 unsafe impl Zeroable for UVec4 {}
 
+unsafe impl Pod for I64Vec2 {}
+unsafe impl Zeroable for I64Vec2 {}
+unsafe impl Pod for I64Vec3 {}
+unsafe impl Zeroable for I64Vec3 {}
+unsafe impl Pod for I64Vec4 {}
+unsafe impl Zeroable for I64Vec4 {}
+
+unsafe impl Pod for U64Vec2 {}
+unsafe impl Zeroable for U64Vec2 {}
+unsafe impl Pod for U64Vec3 {}
+unsafe impl Zeroable for U64Vec3 {}
+unsafe impl Pod for U64Vec4 {}
+unsafe impl Zeroable for U64Vec4 {}
+
 #[cfg(test)]
 mod test {
     use crate::{
         Affine2, Affine3A, DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4,
-        IVec2, IVec3, IVec4, Mat2, Mat3, Mat3A, Mat4, Quat, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A,
-        Vec4,
+        I64Vec2, I64Vec3, I64Vec4, IVec2, IVec3, IVec4, Mat2, Mat3, Mat3A, Mat4, Quat, U64Vec2,
+        U64Vec3, U64Vec4, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
     };
     use core::mem;
 
@@ -132,4 +147,12 @@ mod test {
     test_pod_t!(uvec2, UVec2);
     test_pod_t!(uvec3, UVec3);
     test_pod_t!(uvec4, UVec4);
+
+    test_pod_t!(i64vec2, I64Vec2);
+    test_pod_t!(i64vec3, I64Vec3);
+    test_pod_t!(i64vec4, I64Vec4);
+
+    test_pod_t!(u64vec2, U64Vec2);
+    test_pod_t!(u64vec3, U64Vec3);
+    test_pod_t!(u64vec4, U64Vec4);
 }
