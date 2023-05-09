@@ -35,6 +35,7 @@
         {% set vec2_t = "DVec2" %}
         {% set vec3_t = "DVec3" %}
         {% set vec4_t = "DVec4" %}
+        {% set from_types = ["Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim] %}
     {% endif %}
 {% elif scalar_t == "i32" %}
     {% set is_signed = true %}
@@ -43,6 +44,7 @@
     {% set vec2_t = "IVec2" %}
     {% set vec3_t = "IVec3" %}
     {% set vec4_t = "IVec4" %}
+    {% set try_from_types = ["UVec" ~ dim, "U64Vec" ~ dim, "I64Vec" ~ dim] %}
 {% elif scalar_t == "u32" %}
     {% set is_signed = false %}
     {% set is_float = false %}
@@ -50,6 +52,7 @@
     {% set vec2_t = "UVec2" %}
     {% set vec3_t = "UVec3" %}
     {% set vec4_t = "UVec4" %}
+    {% set try_from_types = ["IVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim] %}
 {% elif scalar_t == "i64" %}
     {% set is_signed = true %}
     {% set is_float = false %}
@@ -57,13 +60,17 @@
     {% set vec2_t = "I64Vec2" %}
     {% set vec3_t = "I64Vec3" %}
     {% set vec4_t = "I64Vec4" %}
-{% else %}
+    {% set from_types = ["IVec" ~ dim] %}
+    {% set try_from_types = ["U64Vec" ~ dim] %}
+{% elif scalar_t == "u64" %}
     {% set is_signed = false %}
     {% set is_float = false %}
     {% set self_t = "U64Vec" ~ dim %}
     {% set vec2_t = "U64Vec2" %}
     {% set vec3_t = "U64Vec3" %}
     {% set vec4_t = "U64Vec4" %}
+    {% set from_types = ["UVec" ~ dim] %}
+    {% set try_from_types = ["I64Vec" ~ dim] %}
 {% endif %}
 
 {% if scalar_t == "f64" or scalar_t == "i64" or scalar_t == "u64" or dim == 4 %}
@@ -106,6 +113,16 @@ use crate::{
     {% endif %}
     {% if is_float %}
         {{ scalar_t }}::math,
+    {% endif %}
+    {% if from_types %}
+        {% for ty in from_types %}
+            {{ ty }},
+        {% endfor %}
+    {% endif %}
+    {% if try_from_types %}
+        {% for ty in try_from_types %}
+            {{ ty }},
+        {% endfor %}
     {% endif %}
 };
 
@@ -858,17 +875,16 @@ impl {{ self_t }} {
         {% endif %}
     }
 
+    {% if is_float %}
     /// Returns a vector with signs of `rhs` and the magnitudes of `self`.
     #[inline]
     pub fn copysign(self, rhs: Self) -> Self {
-        {% if is_scalar and is_float %}
+        {% if is_scalar %}
             Self {
                 {% for c in components %}
                     {{ c }}: math::copysign(self.{{ c }}, rhs.{{ c }}),
                 {%- endfor %}
             }
-        {% elif is_scalar %}
-            Self::select(rhs.cmpge(Self::ZERO), self, -self)
         {% elif is_coresimd %}
             Self(self.0.copysign(rhs.0))
         {% elif is_sse2 %}
@@ -883,6 +899,7 @@ impl {{ self_t }} {
             }
         {% endif %}
     }
+    {% endif %}
 
     /// Returns a bitmask with the lowest {{ dim }} bits set to the sign bits from the elements of `self`.
     ///
@@ -2620,4 +2637,36 @@ impl DerefMut for {{ self_t }} {
         unsafe { &mut *(self as *mut Self).cast() }
     }
 }
+{% endif %}
+
+{% if from_types %}
+    {% for ty in from_types %}
+    impl From<{{ ty }}> for {{ self_t }} {
+        #[inline]
+        fn from(v: {{ ty }}) -> Self {
+            Self::new(
+                {% for c in components %}
+                    {{ scalar_t }}::from(v.{{ c }}),
+                {% endfor %}
+            )
+        }
+    }
+    {% endfor %}
+{% endif %}
+
+{% if try_from_types %}
+    {% for ty in try_from_types %}
+    impl TryFrom<{{ ty }}> for {{ self_t }} {
+        type Error = core::num::TryFromIntError;
+
+        #[inline]
+        fn try_from(v: {{ ty }}) -> Result<Self, Self::Error> {
+            Ok(Self::new(
+                {% for c in components %}
+                    {{ scalar_t }}::try_from(v.{{ c }})?,
+                {% endfor %}
+            ))
+        }
+    }
+    {% endfor %}
 {% endif %}

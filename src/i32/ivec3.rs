@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec3, IVec2, IVec4};
+use crate::{BVec3, I64Vec3, IVec2, IVec4, U64Vec3, UVec3};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -298,12 +298,6 @@ impl IVec3 {
             y: self.y.signum(),
             z: self.z.signum(),
         }
-    }
-
-    /// Returns a vector with signs of `rhs` and the magnitudes of `self`.
-    #[inline]
-    pub fn copysign(self, rhs: Self) -> Self {
-        Self::select(rhs.cmpge(Self::ZERO), self, -self)
     }
 
     /// Returns a bitmask with the lowest 3 bits set to the sign bits from the elements of `self`.
@@ -1111,5 +1105,44 @@ impl From<(IVec2, i32)> for IVec3 {
     #[inline]
     fn from((v, z): (IVec2, i32)) -> Self {
         Self::new(v.x, v.y, z)
+    }
+}
+
+impl TryFrom<UVec3> for IVec3 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: UVec3) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            i32::try_from(v.x)?,
+            i32::try_from(v.y)?,
+            i32::try_from(v.z)?,
+        ))
+    }
+}
+
+impl TryFrom<U64Vec3> for IVec3 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: U64Vec3) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            i32::try_from(v.x)?,
+            i32::try_from(v.y)?,
+            i32::try_from(v.z)?,
+        ))
+    }
+}
+
+impl TryFrom<I64Vec3> for IVec3 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: I64Vec3) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            i32::try_from(v.x)?,
+            i32::try_from(v.y)?,
+            i32::try_from(v.z)?,
+        ))
     }
 }

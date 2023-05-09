@@ -146,6 +146,12 @@ macro_rules! impl_vec4_tests {
             assert_eq!(0 as $t, x.dot(y));
             assert_eq!(0 as $t, y.dot(z));
             assert_eq!(0 as $t, z.dot(w));
+
+            assert_eq!(
+                $new(28 as $t, 28 as $t, 28 as $t, 28 as $t),
+                $new(0 as $t, 5 as $t, 3 as $t, 6 as $t)
+                    .dot_into_vec($new(7 as $t, 2 as $t, 4 as $t, 1 as $t))
+            );
         });
 
         glam_test!(test_length_squared_unsigned, {
@@ -609,13 +615,41 @@ macro_rules! impl_vec4_signed_tests {
             let a = $new(1 as $t, 2 as $t, 3 as $t, 4 as $t);
             assert_eq!((-1 as $t, -2 as $t, -3 as $t, -4 as $t), (-a).into());
             assert_eq!(
-                $new(-0.0 as $t, -0.0 as $t, -0.0 as $t, -0.0 as $t),
-                -$new(0.0 as $t, 0.0 as $t, 0.0 as $t, 0.0 as $t)
+                $new(-0 as $t, -0 as $t, -0 as $t, -0 as $t),
+                -$new(0 as $t, 0 as $t, 0 as $t, 0 as $t)
             );
             assert_eq!(
-                $new(0.0 as $t, -0.0 as $t, -0.0 as $t, -0.0 as $t),
-                -$new(-0.0 as $t, 0.0 as $t, 0.0 as $t, 0.0 as $t)
+                $new(0 as $t, -0 as $t, -0 as $t, -0 as $t),
+                -$new(-0 as $t, 0 as $t, 0 as $t, 0 as $t)
             );
+        });
+
+        glam_test!(test_is_negative_bitmask, {
+            assert_eq!($vec4::ZERO.is_negative_bitmask(), 0b0000);
+            assert_eq!($vec4::ONE.is_negative_bitmask(), 0b0000);
+            assert_eq!((-$vec4::ONE).is_negative_bitmask(), 0b1111);
+            assert_eq!(
+                $vec4::new(-1 as $t, 2 as $t, 3 as $t, -4 as $t).is_negative_bitmask(),
+                0b1001
+            );
+            assert_eq!(
+                $vec4::new(1 as $t, 5 as $t, -3 as $t, 7 as $t).is_negative_bitmask(),
+                0b0100
+            );
+            assert_eq!(
+                $vec4::new(3 as $t, -4 as $t, 1 as $t, 6 as $t).is_negative_bitmask(),
+                0b0010
+            );
+            assert_eq!(
+                $vec4::new(2 as $t, -6 as $t, 5 as $t, -3 as $t).is_negative_bitmask(),
+                0b1010
+            );
+        });
+
+        glam_test!(test_abs, {
+            assert_eq!($vec4::ZERO.abs(), $vec4::ZERO);
+            assert_eq!($vec4::ONE.abs(), $vec4::ONE);
+            assert_eq!((-$vec4::ONE).abs(), $vec4::ONE);
         });
 
         glam_test!(test_dot_signed, {
@@ -644,6 +678,18 @@ macro_rules! impl_vec4_signed_tests {
             );
             assert_eq!(2 as $t, x.distance_squared(y));
             assert_eq!(13 as $t, (2 as $t * x).distance_squared(-3 as $t * z));
+        });
+    };
+}
+
+macro_rules! impl_vec4_signed_integer_tests {
+    ($t:ident, $new:ident, $vec4:ident, $vec3:ident, $vec2:ident, $mask:ident) => {
+        impl_vec4_signed_tests!($t, $new, $vec4, $vec3, $vec2, $mask);
+
+        glam_test!(test_signum, {
+            assert_eq!($vec4::ZERO.signum(), $vec4::ZERO);
+            assert_eq!($vec4::ONE.signum(), $vec4::ONE);
+            assert_eq!((-$vec4::ONE).signum(), -$vec4::ONE);
         });
     };
 }
@@ -709,10 +755,6 @@ macro_rules! impl_vec4_float_tests {
             assert_eq!(
                 1.0 * 5.0 + 2.0 * 6.0 + 3.0 * 7.0 + 4.0 * 8.0,
                 $new(1.0, 2.0, 3.0, 4.0).dot($new(5.0, 6.0, 7.0, 8.0))
-            );
-            assert_eq!(
-                $new(28.0, 28.0, 28.0, 28.0),
-                $new(0.0, 5.0, 3.0, 6.0).dot_into_vec($new(7.0, 2.0, 4.0, 1.0))
             );
             assert_eq!(
                 (2.0 as $t * 2.0 + 3.0 * 3.0 + 4.0 * 4.0 + 5.0 * 5.0).sqrt(),
@@ -804,37 +846,31 @@ macro_rules! impl_vec4_float_tests {
             assert!($vec4::splat(NAN).copysign(-$vec4::ONE).is_nan_mask().all());
         });
 
-        glam_test!(test_is_negative_bitmask, {
+        glam_test!(test_float_is_negative_bitmask, {
             assert_eq!($vec4::ZERO.is_negative_bitmask(), 0b0000);
             assert_eq!((-$vec4::ZERO).is_negative_bitmask(), 0b1111);
             assert_eq!($vec4::ONE.is_negative_bitmask(), 0b0000);
             assert_eq!((-$vec4::ONE).is_negative_bitmask(), 0b1111);
             assert_eq!(
-                $vec4::new(-0.1, 0.2, 0.3, -0.4).is_negative_bitmask(),
+                $vec4::new(-1.0, 2.0, 3.0, -4.0).is_negative_bitmask(),
                 0b1001
             );
             assert_eq!(
-                $vec4::new(0.8, 0.3, 0.1, -0.0).is_negative_bitmask(),
+                $vec4::new(8.0, 3.0, 1.0, -0.0).is_negative_bitmask(),
                 0b1000
             );
             assert_eq!(
-                $vec4::new(0.1, 0.5, -0.3, 0.7).is_negative_bitmask(),
+                $vec4::new(1.0, 5.0, -3.0, 7.0).is_negative_bitmask(),
                 0b0100
             );
             assert_eq!(
-                $vec4::new(0.3, -0.4, 0.1, 0.6).is_negative_bitmask(),
+                $vec4::new(3.0, -4.0, 1.0, 6.0).is_negative_bitmask(),
                 0b0010
             );
             assert_eq!(
-                $vec4::new(0.2, -0.6, 0.5, -0.3).is_negative_bitmask(),
+                $vec4::new(2.0, -6.0, 5.0, -3.0).is_negative_bitmask(),
                 0b1010
             );
-        });
-
-        glam_test!(test_abs, {
-            assert_eq!($vec4::ZERO.abs(), $vec4::ZERO);
-            assert_eq!($vec4::ONE.abs(), $vec4::ONE);
-            assert_eq!((-$vec4::ONE).abs(), $vec4::ONE);
         });
 
         glam_test!(test_round, {
@@ -1029,6 +1065,10 @@ macro_rules! impl_vec4_scalar_shift_op_tests {
             use glam::$vec4;
             impl_vec4_scalar_shift_op_test!($vec4, $t_min, $t_max, 0i32, 2);
         }
+        mod shift_by_i64 {
+            use glam::$vec4;
+            impl_vec4_scalar_shift_op_test!($vec4, $t_min, $t_max, 0i64, 2);
+        }
         mod shift_by_u8 {
             use glam::$vec4;
             impl_vec4_scalar_shift_op_test!($vec4, $t_min, $t_max, 0u8, 2);
@@ -1040,6 +1080,10 @@ macro_rules! impl_vec4_scalar_shift_op_tests {
         mod shift_by_u32 {
             use glam::$vec4;
             impl_vec4_scalar_shift_op_test!($vec4, $t_min, $t_max, 0u32, 2);
+        }
+        mod shift_by_u64 {
+            use glam::$vec4;
+            impl_vec4_scalar_shift_op_test!($vec4, $t_min, $t_max, 0u64, 2);
         }
     };
 }
@@ -1361,7 +1405,7 @@ mod vec4 {
 }
 
 mod dvec4 {
-    use glam::{dvec4, BVec4, DVec2, DVec3, DVec4};
+    use glam::{dvec4, BVec4, DVec2, DVec3, DVec4, IVec4, UVec4, Vec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1374,11 +1418,26 @@ mod dvec4 {
         assert_eq!(1, mem::align_of::<BVec4>());
     });
 
+    glam_test!(test_try_from, {
+        assert_eq!(
+            DVec4::new(1.0, 2.0, 3.0, 4.0),
+            DVec4::from(Vec4::new(1.0, 2.0, 3.0, 4.0))
+        );
+        assert_eq!(
+            DVec4::new(1.0, 2.0, 3.0, 4.0),
+            DVec4::from(IVec4::new(1, 2, 3, 4))
+        );
+        assert_eq!(
+            DVec4::new(1.0, 2.0, 3.0, 4.0),
+            DVec4::from(UVec4::new(1, 2, 3, 4))
+        );
+    });
+
     impl_vec4_float_tests!(f64, dvec4, DVec4, DVec3, DVec2, BVec4);
 }
 
 mod ivec4 {
-    use glam::{ivec4, BVec4, IVec2, IVec3, IVec4, UVec4};
+    use glam::{ivec4, BVec4, I64Vec4, IVec2, IVec3, IVec4, U64Vec4, UVec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1391,7 +1450,36 @@ mod ivec4 {
         assert_eq!(1, mem::align_of::<BVec4>());
     });
 
-    impl_vec4_signed_tests!(i32, ivec4, IVec4, IVec3, IVec2, BVec4);
+    glam_test!(test_try_from, {
+        assert_eq!(
+            IVec4::new(1, 2, 3, 4),
+            IVec4::try_from(UVec4::new(1, 2, 3, 4)).unwrap()
+        );
+        assert!(IVec4::try_from(UVec4::new(u32::MAX, 2, 3, 4)).is_err());
+        assert!(IVec4::try_from(UVec4::new(1, u32::MAX, 3, 4)).is_err());
+        assert!(IVec4::try_from(UVec4::new(1, 2, u32::MAX, 4)).is_err());
+        assert!(IVec4::try_from(UVec4::new(1, 2, 3, u32::MAX)).is_err());
+
+        assert_eq!(
+            IVec4::new(1, 2, 3, 4),
+            IVec4::try_from(I64Vec4::new(1, 2, 3, 4)).unwrap()
+        );
+        assert!(IVec4::try_from(I64Vec4::new(i64::MAX, 2, 3, 4)).is_err());
+        assert!(IVec4::try_from(I64Vec4::new(1, i64::MAX, 3, 4)).is_err());
+        assert!(IVec4::try_from(I64Vec4::new(1, 2, i64::MAX, 4)).is_err());
+        assert!(IVec4::try_from(I64Vec4::new(1, 2, 3, i64::MAX)).is_err());
+
+        assert_eq!(
+            IVec4::new(1, 2, 3, 4),
+            IVec4::try_from(U64Vec4::new(1, 2, 3, 4)).unwrap()
+        );
+        assert!(IVec4::try_from(U64Vec4::new(u64::MAX, 2, 3, 4)).is_err());
+        assert!(IVec4::try_from(U64Vec4::new(1, u64::MAX, 3, 4)).is_err());
+        assert!(IVec4::try_from(U64Vec4::new(1, 2, u64::MAX, 4)).is_err());
+        assert!(IVec4::try_from(U64Vec4::new(1, 2, 3, u64::MAX)).is_err());
+    });
+
+    impl_vec4_signed_integer_tests!(i32, ivec4, IVec4, IVec3, IVec2, BVec4);
     impl_vec4_eq_hash_tests!(i32, ivec4);
 
     impl_vec4_scalar_shift_op_tests!(IVec4, -2, 2);
@@ -1402,7 +1490,7 @@ mod ivec4 {
 }
 
 mod uvec4 {
-    use glam::{uvec4, BVec4, IVec4, UVec2, UVec3, UVec4};
+    use glam::{uvec4, BVec4, I64Vec4, IVec4, U64Vec4, UVec2, UVec3, UVec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1413,6 +1501,40 @@ mod uvec4 {
         assert_eq!(16, mem::align_of::<UVec4>());
         assert_eq!(4, mem::size_of::<BVec4>());
         assert_eq!(1, mem::align_of::<BVec4>());
+    });
+
+    glam_test!(test_try_from, {
+        assert_eq!(
+            UVec4::new(1, 2, 3, 4),
+            UVec4::try_from(IVec4::new(1, 2, 3, 4)).unwrap()
+        );
+        assert!(UVec4::try_from(IVec4::new(-1, 2, 3, 4)).is_err());
+        assert!(UVec4::try_from(IVec4::new(1, -2, 3, 4)).is_err());
+        assert!(UVec4::try_from(IVec4::new(1, 2, -3, 4)).is_err());
+        assert!(UVec4::try_from(IVec4::new(1, 2, 3, -4)).is_err());
+
+        assert_eq!(
+            UVec4::new(1, 2, 3, 4),
+            UVec4::try_from(I64Vec4::new(1, 2, 3, 4)).unwrap()
+        );
+        assert!(UVec4::try_from(I64Vec4::new(-1, 2, 3, 4)).is_err());
+        assert!(UVec4::try_from(I64Vec4::new(1, -2, 3, 4)).is_err());
+        assert!(UVec4::try_from(I64Vec4::new(1, 2, -3, 4)).is_err());
+        assert!(UVec4::try_from(I64Vec4::new(1, 2, 3, -4)).is_err());
+
+        assert!(UVec4::try_from(I64Vec4::new(i64::MAX, 2, 3, 4)).is_err());
+        assert!(UVec4::try_from(I64Vec4::new(1, i64::MAX, 3, 4)).is_err());
+        assert!(UVec4::try_from(I64Vec4::new(1, 2, i64::MAX, 4)).is_err());
+        assert!(UVec4::try_from(I64Vec4::new(1, 2, 3, i64::MAX)).is_err());
+
+        assert_eq!(
+            UVec4::new(1, 2, 3, 4),
+            UVec4::try_from(U64Vec4::new(1, 2, 3, 4)).unwrap()
+        );
+        assert!(UVec4::try_from(U64Vec4::new(u64::MAX, 2, 3, 4)).is_err());
+        assert!(UVec4::try_from(U64Vec4::new(1, u64::MAX, 3, 4)).is_err());
+        assert!(UVec4::try_from(U64Vec4::new(1, 2, u64::MAX, 4)).is_err());
+        assert!(UVec4::try_from(U64Vec4::new(1, 2, 3, u64::MAX)).is_err());
     });
 
     impl_vec4_tests!(u32, uvec4, UVec4, UVec3, UVec2, BVec4);
@@ -1426,7 +1548,7 @@ mod uvec4 {
 }
 
 mod i64vec4 {
-    use glam::{i64vec4, BVec4, I64Vec2, I64Vec3, I64Vec4, IVec4, UVec4};
+    use glam::{i64vec4, BVec4, I64Vec2, I64Vec3, I64Vec4, IVec4, U64Vec4, UVec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1439,7 +1561,23 @@ mod i64vec4 {
         assert_eq!(1, mem::align_of::<BVec4>());
     });
 
-    impl_vec4_signed_tests!(i64, i64vec4, I64Vec4, I64Vec3, I64Vec2, BVec4);
+    glam_test!(test_try_from, {
+        assert_eq!(
+            I64Vec4::new(1, 2, 3, 4),
+            I64Vec4::try_from(IVec4::new(1, 2, 3, 4)).unwrap()
+        );
+
+        assert_eq!(
+            I64Vec4::new(1, 2, 3, 4),
+            I64Vec4::try_from(U64Vec4::new(1, 2, 3, 4)).unwrap()
+        );
+        assert!(I64Vec4::try_from(U64Vec4::new(u64::MAX, 2, 3, 4)).is_err());
+        assert!(I64Vec4::try_from(U64Vec4::new(1, u64::MAX, 3, 4)).is_err());
+        assert!(I64Vec4::try_from(U64Vec4::new(1, 2, u64::MAX, 4)).is_err());
+        assert!(I64Vec4::try_from(U64Vec4::new(1, 2, 3, u64::MAX)).is_err());
+    });
+
+    impl_vec4_signed_integer_tests!(i64, i64vec4, I64Vec4, I64Vec3, I64Vec2, BVec4);
     impl_vec4_eq_hash_tests!(i64, i64vec4);
 
     impl_vec4_scalar_shift_op_tests!(I64Vec4, -2, 2);
@@ -1450,7 +1588,7 @@ mod i64vec4 {
 }
 
 mod u64vec4 {
-    use glam::{u64vec4, BVec4, IVec4, U64Vec2, U64Vec3, U64Vec4, UVec4};
+    use glam::{u64vec4, BVec4, I64Vec4, IVec4, U64Vec2, U64Vec3, U64Vec4, UVec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1461,6 +1599,22 @@ mod u64vec4 {
         assert_eq!(16, mem::align_of::<U64Vec4>());
         assert_eq!(4, mem::size_of::<BVec4>());
         assert_eq!(1, mem::align_of::<BVec4>());
+    });
+
+    glam_test!(test_try_from, {
+        assert_eq!(
+            U64Vec4::new(1, 2, 3, 4),
+            U64Vec4::try_from(UVec4::new(1, 2, 3, 4)).unwrap()
+        );
+
+        assert_eq!(
+            U64Vec4::new(1, 2, 3, 4),
+            U64Vec4::try_from(I64Vec4::new(1, 2, 3, 4)).unwrap()
+        );
+        assert!(U64Vec4::try_from(I64Vec4::new(-1, 2, 3, 4)).is_err());
+        assert!(U64Vec4::try_from(I64Vec4::new(1, -2, 3, 4)).is_err());
+        assert!(U64Vec4::try_from(I64Vec4::new(1, 2, -3, 4)).is_err());
+        assert!(U64Vec4::try_from(I64Vec4::new(1, 2, 3, -4)).is_err());
     });
 
     impl_vec4_tests!(u64, u64vec4, U64Vec4, U64Vec3, U64Vec2, BVec4);

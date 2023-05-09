@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec3, UVec2, UVec4};
+use crate::{BVec3, I64Vec3, IVec3, U64Vec3, UVec2, UVec4};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -1040,5 +1040,44 @@ impl From<(UVec2, u32)> for UVec3 {
     #[inline]
     fn from((v, z): (UVec2, u32)) -> Self {
         Self::new(v.x, v.y, z)
+    }
+}
+
+impl TryFrom<IVec3> for UVec3 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: IVec3) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            u32::try_from(v.x)?,
+            u32::try_from(v.y)?,
+            u32::try_from(v.z)?,
+        ))
+    }
+}
+
+impl TryFrom<I64Vec3> for UVec3 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: I64Vec3) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            u32::try_from(v.x)?,
+            u32::try_from(v.y)?,
+            u32::try_from(v.z)?,
+        ))
+    }
+}
+
+impl TryFrom<U64Vec3> for UVec3 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: U64Vec3) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            u32::try_from(v.x)?,
+            u32::try_from(v.y)?,
+            u32::try_from(v.z)?,
+        ))
     }
 }

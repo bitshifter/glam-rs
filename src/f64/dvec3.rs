@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{f64::math, BVec3, DVec2, DVec4};
+use crate::{f64::math, BVec3, DVec2, DVec4, IVec3, UVec3, Vec3};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -1170,5 +1170,26 @@ impl From<(DVec2, f64)> for DVec3 {
     #[inline]
     fn from((v, z): (DVec2, f64)) -> Self {
         Self::new(v.x, v.y, z)
+    }
+}
+
+impl From<Vec3> for DVec3 {
+    #[inline]
+    fn from(v: Vec3) -> Self {
+        Self::new(f64::from(v.x), f64::from(v.y), f64::from(v.z))
+    }
+}
+
+impl From<IVec3> for DVec3 {
+    #[inline]
+    fn from(v: IVec3) -> Self {
+        Self::new(f64::from(v.x), f64::from(v.y), f64::from(v.z))
+    }
+}
+
+impl From<UVec3> for DVec3 {
+    #[inline]
+    fn from(v: UVec3) -> Self {
+        Self::new(f64::from(v.x), f64::from(v.y), f64::from(v.z))
     }
 }

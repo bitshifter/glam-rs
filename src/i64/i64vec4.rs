@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec4, I64Vec2, I64Vec3};
+use crate::{BVec4, I64Vec2, I64Vec3, IVec4, U64Vec4};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -323,12 +323,6 @@ impl I64Vec4 {
             z: self.z.signum(),
             w: self.w.signum(),
         }
-    }
-
-    /// Returns a vector with signs of `rhs` and the magnitudes of `self`.
-    #[inline]
-    pub fn copysign(self, rhs: Self) -> Self {
-        Self::select(rhs.cmpge(Self::ZERO), self, -self)
     }
 
     /// Returns a bitmask with the lowest 4 bits set to the sign bits from the elements of `self`.
@@ -1208,5 +1202,31 @@ impl From<(I64Vec2, I64Vec2)> for I64Vec4 {
     #[inline]
     fn from((v, u): (I64Vec2, I64Vec2)) -> Self {
         Self::new(v.x, v.y, u.x, u.y)
+    }
+}
+
+impl From<IVec4> for I64Vec4 {
+    #[inline]
+    fn from(v: IVec4) -> Self {
+        Self::new(
+            i64::from(v.x),
+            i64::from(v.y),
+            i64::from(v.z),
+            i64::from(v.w),
+        )
+    }
+}
+
+impl TryFrom<U64Vec4> for I64Vec4 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: U64Vec4) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            i64::try_from(v.x)?,
+            i64::try_from(v.y)?,
+            i64::try_from(v.z)?,
+            i64::try_from(v.w)?,
+        ))
     }
 }
