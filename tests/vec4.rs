@@ -146,6 +146,12 @@ macro_rules! impl_vec4_tests {
             assert_eq!(0 as $t, x.dot(y));
             assert_eq!(0 as $t, y.dot(z));
             assert_eq!(0 as $t, z.dot(w));
+
+            assert_eq!(
+                $new(28 as $t, 28 as $t, 28 as $t, 28 as $t),
+                $new(0 as $t, 5 as $t, 3 as $t, 6 as $t).dot_into_vec(
+                    $new(7 as $t, 2 as $t, 4 as $t, 1 as $t))
+            );
         });
 
         glam_test!(test_length_squared_unsigned, {
@@ -709,10 +715,6 @@ macro_rules! impl_vec4_float_tests {
             assert_eq!(
                 1.0 * 5.0 + 2.0 * 6.0 + 3.0 * 7.0 + 4.0 * 8.0,
                 $new(1.0, 2.0, 3.0, 4.0).dot($new(5.0, 6.0, 7.0, 8.0))
-            );
-            assert_eq!(
-                $new(28.0, 28.0, 28.0, 28.0),
-                $new(0.0, 5.0, 3.0, 6.0).dot_into_vec($new(7.0, 2.0, 4.0, 1.0))
             );
             assert_eq!(
                 (2.0 as $t * 2.0 + 3.0 * 3.0 + 4.0 * 4.0 + 5.0 * 5.0).sqrt(),
