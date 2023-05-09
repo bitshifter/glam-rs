@@ -149,8 +149,8 @@ macro_rules! impl_vec4_tests {
 
             assert_eq!(
                 $new(28 as $t, 28 as $t, 28 as $t, 28 as $t),
-                $new(0 as $t, 5 as $t, 3 as $t, 6 as $t).dot_into_vec(
-                    $new(7 as $t, 2 as $t, 4 as $t, 1 as $t))
+                $new(0 as $t, 5 as $t, 3 as $t, 6 as $t)
+                    .dot_into_vec($new(7 as $t, 2 as $t, 4 as $t, 1 as $t))
             );
         });
 
@@ -1031,6 +1031,10 @@ macro_rules! impl_vec4_scalar_shift_op_tests {
             use glam::$vec4;
             impl_vec4_scalar_shift_op_test!($vec4, $t_min, $t_max, 0i32, 2);
         }
+        mod shift_by_i64 {
+            use glam::$vec4;
+            impl_vec4_scalar_shift_op_test!($vec4, $t_min, $t_max, 0i64, 2);
+        }
         mod shift_by_u8 {
             use glam::$vec4;
             impl_vec4_scalar_shift_op_test!($vec4, $t_min, $t_max, 0u8, 2);
@@ -1042,6 +1046,10 @@ macro_rules! impl_vec4_scalar_shift_op_tests {
         mod shift_by_u32 {
             use glam::$vec4;
             impl_vec4_scalar_shift_op_test!($vec4, $t_min, $t_max, 0u32, 2);
+        }
+        mod shift_by_u64 {
+            use glam::$vec4;
+            impl_vec4_scalar_shift_op_test!($vec4, $t_min, $t_max, 0u64, 2);
         }
     };
 }
@@ -1363,7 +1371,7 @@ mod vec4 {
 }
 
 mod dvec4 {
-    use glam::{dvec4, BVec4, DVec2, DVec3, DVec4};
+    use glam::{dvec4, BVec4, DVec2, DVec3, DVec4, IVec4, UVec4, Vec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1374,6 +1382,21 @@ mod dvec4 {
         assert_eq!(16, mem::align_of::<DVec4>());
         assert_eq!(4, mem::size_of::<BVec4>());
         assert_eq!(1, mem::align_of::<BVec4>());
+    });
+
+    glam_test!(test_try_from, {
+        assert_eq!(
+            DVec4::new(1.0, 2.0, 3.0, 4.0),
+            DVec4::from(Vec4::new(1.0, 2.0, 3.0, 4.0))
+        );
+        assert_eq!(
+            DVec4::new(1.0, 2.0, 3.0, 4.0),
+            DVec4::from(IVec4::new(1, 2, 3, 4))
+        );
+        assert_eq!(
+            DVec4::new(1.0, 2.0, 3.0, 4.0),
+            DVec4::from(UVec4::new(1, 2, 3, 4))
+        );
     });
 
     impl_vec4_float_tests!(f64, dvec4, DVec4, DVec3, DVec2, BVec4);
