@@ -875,17 +875,16 @@ impl {{ self_t }} {
         {% endif %}
     }
 
+    {% if is_float %}
     /// Returns a vector with signs of `rhs` and the magnitudes of `self`.
     #[inline]
     pub fn copysign(self, rhs: Self) -> Self {
-        {% if is_scalar and is_float %}
+        {% if is_scalar %}
             Self {
                 {% for c in components %}
                     {{ c }}: math::copysign(self.{{ c }}, rhs.{{ c }}),
                 {%- endfor %}
             }
-        {% elif is_scalar %}
-            Self::select(rhs.cmpge(Self::ZERO), self, -self)
         {% elif is_coresimd %}
             Self(self.0.copysign(rhs.0))
         {% elif is_sse2 %}
@@ -900,6 +899,7 @@ impl {{ self_t }} {
             }
         {% endif %}
     }
+    {% endif %}
 
     /// Returns a bitmask with the lowest {{ dim }} bits set to the sign bits from the elements of `self`.
     ///
