@@ -886,6 +886,10 @@ macro_rules! impl_vec2_scalar_shift_op_tests {
             use glam::$vec2;
             impl_vec2_scalar_shift_op_test!($vec2, $t_min, $t_max, 0i32, 2);
         }
+        mod shift_by_i64 {
+            use glam::$vec2;
+            impl_vec2_scalar_shift_op_test!($vec2, $t_min, $t_max, 0i64, 2);
+        }
         mod shift_by_u8 {
             use glam::$vec2;
             impl_vec2_scalar_shift_op_test!($vec2, $t_min, $t_max, 0u8, 2);
@@ -897,6 +901,10 @@ macro_rules! impl_vec2_scalar_shift_op_tests {
         mod shift_by_u32 {
             use glam::$vec2;
             impl_vec2_scalar_shift_op_test!($vec2, $t_min, $t_max, 0u32, 2);
+        }
+        mod shift_by_u64 {
+            use glam::$vec2;
+            impl_vec2_scalar_shift_op_test!($vec2, $t_min, $t_max, 0u64, 2);
         }
     };
 }
@@ -1039,7 +1047,7 @@ mod vec2 {
 }
 
 mod dvec2 {
-    use glam::{dvec2, BVec2, DVec2, DVec3};
+    use glam::{dvec2, BVec2, DVec2, DVec3, IVec2, UVec2, Vec2};
 
     glam_test!(test_align, {
         use core::mem;
@@ -1052,11 +1060,17 @@ mod dvec2 {
         assert_eq!(1, mem::align_of::<BVec2>());
     });
 
+    glam_test!(test_try_from, {
+        assert_eq!(DVec2::new(1.0, 2.0), DVec2::from(Vec2::new(1.0, 2.0)));
+        assert_eq!(DVec2::new(1.0, 2.0), DVec2::from(IVec2::new(1, 2)));
+        assert_eq!(DVec2::new(1.0, 2.0), DVec2::from(UVec2::new(1, 2)));
+    });
+
     impl_vec2_float_tests!(f64, dvec2, DVec2, DVec3, BVec2);
 }
 
 mod ivec2 {
-    use glam::{ivec2, BVec2, IVec2, IVec3, UVec2};
+    use glam::{ivec2, BVec2, I64Vec2, IVec2, IVec3, U64Vec2, UVec2};
 
     glam_test!(test_align, {
         use core::mem;
@@ -1067,6 +1081,26 @@ mod ivec2 {
         assert_eq!(8, mem::align_of::<IVec2>());
         assert_eq!(2, mem::size_of::<BVec2>());
         assert_eq!(1, mem::align_of::<BVec2>());
+    });
+
+    glam_test!(test_try_from, {
+        assert_eq!(IVec2::new(1, 2), IVec2::try_from(UVec2::new(1, 2)).unwrap());
+        assert!(IVec2::try_from(UVec2::new(u32::MAX, 2)).is_err());
+        assert!(IVec2::try_from(UVec2::new(1, u32::MAX)).is_err());
+
+        assert_eq!(
+            IVec2::new(1, 2),
+            IVec2::try_from(I64Vec2::new(1, 2)).unwrap()
+        );
+        assert!(IVec2::try_from(I64Vec2::new(i64::MAX, 2)).is_err());
+        assert!(IVec2::try_from(I64Vec2::new(1, i64::MAX)).is_err());
+
+        assert_eq!(
+            IVec2::new(1, 2),
+            IVec2::try_from(U64Vec2::new(1, 2)).unwrap()
+        );
+        assert!(IVec2::try_from(U64Vec2::new(u64::MAX, 2)).is_err());
+        assert!(IVec2::try_from(U64Vec2::new(1, u64::MAX)).is_err());
     });
 
     impl_vec2_signed_integer_tests!(i32, ivec2, IVec2, IVec3, BVec2);
@@ -1080,7 +1114,7 @@ mod ivec2 {
 }
 
 mod uvec2 {
-    use glam::{uvec2, BVec2, IVec2, UVec2, UVec3};
+    use glam::{uvec2, BVec2, I64Vec2, IVec2, U64Vec2, UVec2, UVec3};
 
     glam_test!(test_align, {
         use core::mem;
@@ -1091,6 +1125,29 @@ mod uvec2 {
         assert_eq!(8, mem::align_of::<UVec2>());
         assert_eq!(2, mem::size_of::<BVec2>());
         assert_eq!(1, mem::align_of::<BVec2>());
+    });
+
+    glam_test!(test_try_from, {
+        assert_eq!(UVec2::new(1, 2), UVec2::try_from(IVec2::new(1, 2)).unwrap());
+        assert!(UVec2::try_from(IVec2::new(-1, 2)).is_err());
+        assert!(UVec2::try_from(IVec2::new(1, -2)).is_err());
+
+        assert_eq!(
+            UVec2::new(1, 2),
+            UVec2::try_from(I64Vec2::new(1, 2)).unwrap()
+        );
+        assert!(UVec2::try_from(I64Vec2::new(-1, 2)).is_err());
+        assert!(UVec2::try_from(I64Vec2::new(1, -2)).is_err());
+
+        assert!(UVec2::try_from(I64Vec2::new(i64::MAX, 2)).is_err());
+        assert!(UVec2::try_from(I64Vec2::new(1, i64::MAX)).is_err());
+
+        assert_eq!(
+            UVec2::new(1, 2),
+            UVec2::try_from(U64Vec2::new(1, 2)).unwrap()
+        );
+        assert!(UVec2::try_from(U64Vec2::new(u64::MAX, 2)).is_err());
+        assert!(UVec2::try_from(U64Vec2::new(1, u64::MAX)).is_err());
     });
 
     impl_vec2_tests!(u32, uvec2, UVec2, UVec3, BVec2);
@@ -1104,7 +1161,7 @@ mod uvec2 {
 }
 
 mod i64vec2 {
-    use glam::{i64vec2, BVec2, I64Vec2, I64Vec3, IVec2, UVec2};
+    use glam::{i64vec2, BVec2, I64Vec2, I64Vec3, IVec2, U64Vec2, UVec2};
 
     glam_test!(test_align, {
         use core::mem;
@@ -1115,6 +1172,20 @@ mod i64vec2 {
         assert_eq!(16, mem::align_of::<I64Vec2>());
         assert_eq!(2, mem::size_of::<BVec2>());
         assert_eq!(1, mem::align_of::<BVec2>());
+    });
+
+    glam_test!(test_try_from, {
+        assert_eq!(
+            I64Vec2::new(1, 2),
+            I64Vec2::try_from(IVec2::new(1, 2)).unwrap()
+        );
+
+        assert_eq!(
+            I64Vec2::new(1, 2),
+            I64Vec2::try_from(U64Vec2::new(1, 2)).unwrap()
+        );
+        assert!(I64Vec2::try_from(U64Vec2::new(u64::MAX, 2)).is_err());
+        assert!(I64Vec2::try_from(U64Vec2::new(1, u64::MAX)).is_err());
     });
 
     impl_vec2_signed_integer_tests!(i64, i64vec2, I64Vec2, I64Vec3, BVec2);
@@ -1128,7 +1199,7 @@ mod i64vec2 {
 }
 
 mod u64vec2 {
-    use glam::{u64vec2, BVec2, IVec2, U64Vec2, U64Vec3, UVec2};
+    use glam::{u64vec2, BVec2, I64Vec2, IVec2, U64Vec2, U64Vec3, UVec2};
 
     glam_test!(test_align, {
         use core::mem;
@@ -1139,6 +1210,20 @@ mod u64vec2 {
         assert_eq!(16, mem::align_of::<U64Vec2>());
         assert_eq!(2, mem::size_of::<BVec2>());
         assert_eq!(1, mem::align_of::<BVec2>());
+    });
+
+    glam_test!(test_try_from, {
+        assert_eq!(
+            U64Vec2::new(1, 2),
+            U64Vec2::try_from(UVec2::new(1, 2)).unwrap()
+        );
+
+        assert_eq!(
+            U64Vec2::new(1, 2),
+            U64Vec2::try_from(I64Vec2::new(1, 2)).unwrap()
+        );
+        assert!(U64Vec2::try_from(I64Vec2::new(-1, 2)).is_err());
+        assert!(U64Vec2::try_from(I64Vec2::new(1, -2)).is_err());
     });
 
     impl_vec2_tests!(u64, u64vec2, U64Vec2, U64Vec3, BVec2);
