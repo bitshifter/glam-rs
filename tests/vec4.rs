@@ -799,7 +799,7 @@ macro_rules! impl_vec4_float_tests {
             should_glam_assert!({ $vec4::ONE.reject_from_normalized($vec4::ONE) });
         });
 
-        glam_test!(test_float_signum, {
+        glam_test!(test_signum, {
             assert_eq!($vec4::ZERO.signum(), $vec4::ONE);
             assert_eq!((-$vec4::ZERO).signum(), -$vec4::ONE);
             assert_eq!($vec4::ONE.signum(), $vec4::ONE);
