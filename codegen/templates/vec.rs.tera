@@ -228,9 +228,21 @@ impl {{ self_t }} {
     pub const NEG_ONE: Self = Self::splat(-{{ one }});
 {% endif %}
 
+    /// All `{{ scalar_t }}::MIN`.
+    pub const MIN: Self = Self::splat({{ scalar_t }}::MIN);
+
+    /// All `{{ scalar_t }}::MAX`.
+    pub const MAX: Self = Self::splat({{ scalar_t }}::MAX);
+
 {% if is_float %}
-    /// All NAN.
+    /// All `{{ scalar_t }}::NAN`.
     pub const NAN: Self = Self::splat({{ scalar_t }}::NAN);
+
+    /// All `{{ scalar_t }}::INFINITY`.
+    pub const INFINITY: Self = Self::splat({{ scalar_t }}::INFINITY);
+
+    /// All `{{ scalar_t }}::NEG_INFINITY`.
+    pub const NEG_INFINITY: Self = Self::splat({{ scalar_t }}::NEG_INFINITY);
 {% endif %}
 
 {% for i in range(end = dim) %}

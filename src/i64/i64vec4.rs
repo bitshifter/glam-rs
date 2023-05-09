@@ -36,6 +36,12 @@ impl I64Vec4 {
     /// All negative ones.
     pub const NEG_ONE: Self = Self::splat(-1);
 
+    /// All `i64::MIN`.
+    pub const MIN: Self = Self::splat(i64::MIN);
+
+    /// All `i64::MAX`.
+    pub const MAX: Self = Self::splat(i64::MAX);
+
     /// A unit vector pointing along the positive X axis.
     pub const X: Self = Self::new(1, 0, 0, 0);
 

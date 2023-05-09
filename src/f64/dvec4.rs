@@ -35,8 +35,20 @@ impl DVec4 {
     /// All negative ones.
     pub const NEG_ONE: Self = Self::splat(-1.0);
 
-    /// All NAN.
+    /// All `f64::MIN`.
+    pub const MIN: Self = Self::splat(f64::MIN);
+
+    /// All `f64::MAX`.
+    pub const MAX: Self = Self::splat(f64::MAX);
+
+    /// All `f64::NAN`.
     pub const NAN: Self = Self::splat(f64::NAN);
+
+    /// All `f64::INFINITY`.
+    pub const INFINITY: Self = Self::splat(f64::INFINITY);
+
+    /// All `f64::NEG_INFINITY`.
+    pub const NEG_INFINITY: Self = Self::splat(f64::NEG_INFINITY);
 
     /// A unit vector pointing along the positive X axis.
     pub const X: Self = Self::new(1.0, 0.0, 0.0, 0.0);

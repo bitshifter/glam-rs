@@ -34,6 +34,12 @@ impl IVec2 {
     /// All negative ones.
     pub const NEG_ONE: Self = Self::splat(-1);
 
+    /// All `i32::MIN`.
+    pub const MIN: Self = Self::splat(i32::MIN);
+
+    /// All `i32::MAX`.
+    pub const MAX: Self = Self::splat(i32::MAX);
+
     /// A unit vector pointing along the positive X axis.
     pub const X: Self = Self::new(1, 0);
 
