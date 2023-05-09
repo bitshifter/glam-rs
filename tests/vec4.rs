@@ -624,20 +624,6 @@ macro_rules! impl_vec4_signed_tests {
             );
         });
 
-        glam_test!(test_abs, {
-            assert_eq!($vec4::ZERO.abs(), $vec4::ZERO);
-            assert_eq!($vec4::ONE.abs(), $vec4::ONE);
-            assert_eq!((-$vec4::ONE).abs(), $vec4::ONE);
-        });
-
-        glam_test!(test_signum, {
-            // this test is run on float and int types but float and int signum work
-            // differently for zero.
-            // assert_eq!($vec4::ZERO.signum(), $vec4::ONE);
-            assert_eq!($vec4::ONE.signum(), $vec4::ONE);
-            assert_eq!((-$vec4::ONE).signum(), -$vec4::ONE);
-        });
-
         glam_test!(test_is_negative_bitmask, {
             assert_eq!($vec4::ZERO.is_negative_bitmask(), 0b0000);
             assert_eq!($vec4::ONE.is_negative_bitmask(), 0b0000);
@@ -658,6 +644,12 @@ macro_rules! impl_vec4_signed_tests {
                 $vec4::new(2 as $t, -6 as $t, 5 as $t, -3 as $t).is_negative_bitmask(),
                 0b1010
             );
+        });
+
+        glam_test!(test_abs, {
+            assert_eq!($vec4::ZERO.abs(), $vec4::ZERO);
+            assert_eq!($vec4::ONE.abs(), $vec4::ONE);
+            assert_eq!((-$vec4::ONE).abs(), $vec4::ONE);
         });
 
         glam_test!(test_dot_signed, {
@@ -686,6 +678,18 @@ macro_rules! impl_vec4_signed_tests {
             );
             assert_eq!(2 as $t, x.distance_squared(y));
             assert_eq!(13 as $t, (2 as $t * x).distance_squared(-3 as $t * z));
+        });
+    };
+}
+
+macro_rules! impl_vec4_signed_integer_tests {
+    ($t:ident, $new:ident, $vec4:ident, $vec3:ident, $vec2:ident, $mask:ident) => {
+        impl_vec4_signed_tests!($t, $new, $vec4, $vec3, $vec2, $mask);
+
+        glam_test!(test_signum, {
+            assert_eq!($vec4::ZERO.signum(), $vec4::ZERO);
+            assert_eq!($vec4::ONE.signum(), $vec4::ONE);
+            assert_eq!((-$vec4::ONE).signum(), -$vec4::ONE);
         });
     };
 }
@@ -1475,7 +1479,7 @@ mod ivec4 {
         assert!(IVec4::try_from(U64Vec4::new(1, 2, 3, u64::MAX)).is_err());
     });
 
-    impl_vec4_signed_tests!(i32, ivec4, IVec4, IVec3, IVec2, BVec4);
+    impl_vec4_signed_integer_tests!(i32, ivec4, IVec4, IVec3, IVec2, BVec4);
     impl_vec4_eq_hash_tests!(i32, ivec4);
 
     impl_vec4_scalar_shift_op_tests!(IVec4, -2, 2);
@@ -1573,7 +1577,7 @@ mod i64vec4 {
         assert!(I64Vec4::try_from(U64Vec4::new(1, 2, 3, u64::MAX)).is_err());
     });
 
-    impl_vec4_signed_tests!(i64, i64vec4, I64Vec4, I64Vec3, I64Vec2, BVec4);
+    impl_vec4_signed_integer_tests!(i64, i64vec4, I64Vec4, I64Vec3, I64Vec2, BVec4);
     impl_vec4_eq_hash_tests!(i64, i64vec4);
 
     impl_vec4_scalar_shift_op_tests!(I64Vec4, -2, 2);

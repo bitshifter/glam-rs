@@ -473,6 +473,22 @@ macro_rules! impl_vec2_signed_tests {
     ($t:ident, $new:ident, $vec2:ident, $vec3:ident, $mask:ident) => {
         impl_vec2_tests!($t, $new, $vec2, $vec3, $mask);
 
+        glam_test!(test_is_negative_bitmask, {
+            assert_eq!($vec2::ZERO.is_negative_bitmask(), 0b00);
+            assert_eq!($vec2::ONE.is_negative_bitmask(), 0b00);
+            assert_eq!((-$vec2::ONE).is_negative_bitmask(), 0b11);
+            assert_eq!($vec2::new(-1 as $t, 2 as $t).is_negative_bitmask(), 0b01);
+            assert_eq!($vec2::new(8 as $t, 3 as $t).is_negative_bitmask(), 0b00);
+            assert_eq!($vec2::new(3 as $t, -4 as $t).is_negative_bitmask(), 0b10);
+            assert_eq!($vec2::new(-2 as $t, -6 as $t).is_negative_bitmask(), 0b11);
+        });
+
+        glam_test!(test_abs, {
+            assert_eq!($vec2::ZERO.abs(), $vec2::ZERO);
+            assert_eq!($vec2::ONE.abs(), $vec2::ONE);
+            assert_eq!((-$vec2::ONE).abs(), $vec2::ONE);
+        });
+
         glam_test!(test_dot_signed, {
             let x = $new(1 as $t, 0 as $t);
             let y = $new(0 as $t, 1 as $t);
@@ -512,6 +528,18 @@ macro_rules! impl_vec2_signed_tests {
                 $vec2::new(0 as $t, 1 as $t).rotate($vec2::new(1 as $t, 1 as $t)),
                 $vec2::new(-1 as $t, 1 as $t)
             );
+        });
+    };
+}
+
+macro_rules! impl_vec2_signed_integer_tests {
+    ($t:ident, $new:ident, $vec2:ident, $vec3:ident, $mask:ident) => {
+        impl_vec2_signed_tests!($t, $new, $vec2, $vec3, $mask);
+
+        glam_test!(test_signum, {
+            assert_eq!($vec3::ZERO.signum(), $vec3::ZERO);
+            assert_eq!($vec3::ONE.signum(), $vec3::ONE);
+            assert_eq!((-$vec3::ONE).signum(), -$vec3::ONE);
         });
     };
 }
@@ -652,21 +680,15 @@ macro_rules! impl_vec2_float_tests {
             assert!($vec2::splat(NAN).copysign(-$vec2::ONE).is_nan_mask().all());
         });
 
-        glam_test!(test_is_negative_bitmask, {
+        glam_test!(test_float_is_negative_bitmask, {
             assert_eq!($vec2::ZERO.is_negative_bitmask(), 0b00);
             assert_eq!((-$vec2::ZERO).is_negative_bitmask(), 0b11);
             assert_eq!($vec2::ONE.is_negative_bitmask(), 0b00);
             assert_eq!((-$vec2::ONE).is_negative_bitmask(), 0b11);
-            assert_eq!($vec2::new(-0.1, 0.2).is_negative_bitmask(), 0b01);
-            assert_eq!($vec2::new(0.8, 0.3).is_negative_bitmask(), 0b00);
-            assert_eq!($vec2::new(0.3, -0.4).is_negative_bitmask(), 0b10);
-            assert_eq!($vec2::new(-0.2, -0.6).is_negative_bitmask(), 0b11);
-        });
-
-        glam_test!(test_abs, {
-            assert_eq!($vec2::ZERO.abs(), $vec2::ZERO);
-            assert_eq!($vec2::ONE.abs(), $vec2::ONE);
-            assert_eq!((-$vec2::ONE).abs(), $vec2::ONE);
+            assert_eq!($vec2::new(-1.0, 2.0).is_negative_bitmask(), 0b01);
+            assert_eq!($vec2::new(8.0, 3.0).is_negative_bitmask(), 0b00);
+            assert_eq!($vec2::new(3.0, -4.0).is_negative_bitmask(), 0b10);
+            assert_eq!($vec2::new(-2.0, -6.0).is_negative_bitmask(), 0b11);
         });
 
         glam_test!(test_round, {
@@ -1047,7 +1069,7 @@ mod ivec2 {
         assert_eq!(1, mem::align_of::<BVec2>());
     });
 
-    impl_vec2_signed_tests!(i32, ivec2, IVec2, IVec3, BVec2);
+    impl_vec2_signed_integer_tests!(i32, ivec2, IVec2, IVec3, BVec2);
     impl_vec2_eq_hash_tests!(i32, ivec2);
 
     impl_vec2_scalar_shift_op_tests!(IVec2, -2, 2);
@@ -1095,7 +1117,7 @@ mod i64vec2 {
         assert_eq!(1, mem::align_of::<BVec2>());
     });
 
-    impl_vec2_signed_tests!(i64, i64vec2, I64Vec2, I64Vec3, BVec2);
+    impl_vec2_signed_integer_tests!(i64, i64vec2, I64Vec2, I64Vec3, BVec2);
     impl_vec2_eq_hash_tests!(i64, i64vec2);
 
     impl_vec2_scalar_shift_op_tests!(I64Vec2, -2, 2);

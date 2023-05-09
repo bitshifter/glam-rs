@@ -542,6 +542,38 @@ macro_rules! impl_vec3_signed_tests {
             );
         });
 
+        glam_test!(test_is_negative_bitmask, {
+            assert_eq!($vec3::ZERO.is_negative_bitmask(), 0b000);
+            assert_eq!($vec3::ONE.is_negative_bitmask(), 0b000);
+            assert_eq!((-$vec3::ONE).is_negative_bitmask(), 0b111);
+            assert_eq!(
+                $vec3::new(-1 as $t, 2 as $t, 3 as $t).is_negative_bitmask(),
+                0b001
+            );
+            assert_eq!(
+                $vec3::new(8 as $t, 3 as $t, 1 as $t).is_negative_bitmask(),
+                0b000
+            );
+            assert_eq!(
+                $vec3::new(1 as $t, 5 as $t, -3 as $t).is_negative_bitmask(),
+                0b100
+            );
+            assert_eq!(
+                $vec3::new(3 as $t, -4 as $t, 1 as $t).is_negative_bitmask(),
+                0b010
+            );
+            assert_eq!(
+                $vec3::new(-2 as $t, 6 as $t, -5 as $t).is_negative_bitmask(),
+                0b101
+            );
+        });
+
+        glam_test!(test_abs, {
+            assert_eq!($vec3::ZERO.abs(), $vec3::ZERO);
+            assert_eq!($vec3::ONE.abs(), $vec3::ONE);
+            assert_eq!((-$vec3::ONE).abs(), $vec3::ONE);
+        });
+
         glam_test!(test_dot_signed, {
             let x = $new(1 as $t, 0 as $t, 0 as $t);
             let y = $new(0 as $t, 1 as $t, 0 as $t);
@@ -562,6 +594,18 @@ macro_rules! impl_vec3_signed_tests {
             );
             assert_eq!(2 as $t, x.distance_squared(y));
             assert_eq!(13 as $t, (2 as $t * x).distance_squared(-3 as $t * z));
+        });
+    };
+}
+
+macro_rules! impl_vec3_signed_integer_tests {
+    ($t:ident, $new:ident, $vec3:ident, $mask:ident) => {
+        impl_vec3_signed_tests!($t, $new, $vec3, $mask);
+
+        glam_test!(test_signum, {
+            assert_eq!($vec3::ZERO.signum(), $vec3::ZERO);
+            assert_eq!($vec3::ONE.signum(), $vec3::ONE);
+            assert_eq!((-$vec3::ONE).signum(), -$vec3::ONE);
         });
     };
 }
@@ -714,22 +758,16 @@ macro_rules! impl_vec3_float_tests {
             assert!($vec3::splat(NAN).copysign(-$vec3::ONE).is_nan_mask().all());
         });
 
-        glam_test!(test_is_negative_bitmask, {
+        glam_test!(test_float_is_negative_bitmask, {
             assert_eq!($vec3::ZERO.is_negative_bitmask(), 0b000);
             assert_eq!((-$vec3::ZERO).is_negative_bitmask(), 0b111);
             assert_eq!($vec3::ONE.is_negative_bitmask(), 0b000);
             assert_eq!((-$vec3::ONE).is_negative_bitmask(), 0b111);
-            assert_eq!($vec3::new(-0.1, 0.2, 0.3).is_negative_bitmask(), 0b001);
-            assert_eq!($vec3::new(0.8, 0.3, 0.1).is_negative_bitmask(), 0b000);
-            assert_eq!($vec3::new(0.1, 0.5, -0.3).is_negative_bitmask(), 0b100);
-            assert_eq!($vec3::new(0.3, -0.4, 0.1).is_negative_bitmask(), 0b010);
-            assert_eq!($vec3::new(-0.2, 0.6, -0.5).is_negative_bitmask(), 0b101);
-        });
-
-        glam_test!(test_abs, {
-            assert_eq!($vec3::ZERO.abs(), $vec3::ZERO);
-            assert_eq!($vec3::ONE.abs(), $vec3::ONE);
-            assert_eq!((-$vec3::ONE).abs(), $vec3::ONE);
+            assert_eq!($vec3::new(-1.0, 2.0, 3.0).is_negative_bitmask(), 0b001);
+            assert_eq!($vec3::new(8.0, 3.0, 1.0).is_negative_bitmask(), 0b000);
+            assert_eq!($vec3::new(1.0, 5.0, -3.0).is_negative_bitmask(), 0b100);
+            assert_eq!($vec3::new(3.0, -4.0, 1.0).is_negative_bitmask(), 0b010);
+            assert_eq!($vec3::new(-2.0, 6.0, -5.0).is_negative_bitmask(), 0b101);
         });
 
         glam_test!(test_round, {
@@ -1316,7 +1354,7 @@ mod ivec3 {
         assert!(IVec3::try_from(U64Vec3::new(1, 2, u64::MAX)).is_err());
     });
 
-    impl_vec3_signed_tests!(i32, ivec3, IVec3, BVec3);
+    impl_vec3_signed_integer_tests!(i32, ivec3, IVec3, BVec3);
     impl_vec3_eq_hash_tests!(i32, ivec3);
 
     impl_vec3_scalar_shift_op_tests!(IVec3, -2, 2);
@@ -1403,7 +1441,7 @@ mod i64vec3 {
         assert!(I64Vec3::try_from(U64Vec3::new(1, 2, u64::MAX)).is_err());
     });
 
-    impl_vec3_signed_tests!(i64, i64vec3, I64Vec3, BVec3);
+    impl_vec3_signed_integer_tests!(i64, i64vec3, I64Vec3, BVec3);
     impl_vec3_eq_hash_tests!(i64, i64vec3);
 
     impl_vec3_scalar_shift_op_tests!(I64Vec3, -2, 2);
