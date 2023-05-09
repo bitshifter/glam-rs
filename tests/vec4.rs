@@ -615,12 +615,48 @@ macro_rules! impl_vec4_signed_tests {
             let a = $new(1 as $t, 2 as $t, 3 as $t, 4 as $t);
             assert_eq!((-1 as $t, -2 as $t, -3 as $t, -4 as $t), (-a).into());
             assert_eq!(
-                $new(-0.0 as $t, -0.0 as $t, -0.0 as $t, -0.0 as $t),
-                -$new(0.0 as $t, 0.0 as $t, 0.0 as $t, 0.0 as $t)
+                $new(-0 as $t, -0 as $t, -0 as $t, -0 as $t),
+                -$new(0 as $t, 0 as $t, 0 as $t, 0 as $t)
             );
             assert_eq!(
-                $new(0.0 as $t, -0.0 as $t, -0.0 as $t, -0.0 as $t),
-                -$new(-0.0 as $t, 0.0 as $t, 0.0 as $t, 0.0 as $t)
+                $new(0 as $t, -0 as $t, -0 as $t, -0 as $t),
+                -$new(-0 as $t, 0 as $t, 0 as $t, 0 as $t)
+            );
+        });
+
+        glam_test!(test_abs, {
+            assert_eq!($vec4::ZERO.abs(), $vec4::ZERO);
+            assert_eq!($vec4::ONE.abs(), $vec4::ONE);
+            assert_eq!((-$vec4::ONE).abs(), $vec4::ONE);
+        });
+
+        glam_test!(test_signum, {
+            // this test is run on float and int types but float and int signum work
+            // differently for zero.
+            // assert_eq!($vec4::ZERO.signum(), $vec4::ONE);
+            assert_eq!($vec4::ONE.signum(), $vec4::ONE);
+            assert_eq!((-$vec4::ONE).signum(), -$vec4::ONE);
+        });
+
+        glam_test!(test_is_negative_bitmask, {
+            assert_eq!($vec4::ZERO.is_negative_bitmask(), 0b0000);
+            assert_eq!($vec4::ONE.is_negative_bitmask(), 0b0000);
+            assert_eq!((-$vec4::ONE).is_negative_bitmask(), 0b1111);
+            assert_eq!(
+                $vec4::new(-1 as $t, 2 as $t, 3 as $t, -4 as $t).is_negative_bitmask(),
+                0b1001
+            );
+            assert_eq!(
+                $vec4::new(1 as $t, 5 as $t, -3 as $t, 7 as $t).is_negative_bitmask(),
+                0b0100
+            );
+            assert_eq!(
+                $vec4::new(3 as $t, -4 as $t, 1 as $t, 6 as $t).is_negative_bitmask(),
+                0b0010
+            );
+            assert_eq!(
+                $vec4::new(2 as $t, -6 as $t, 5 as $t, -3 as $t).is_negative_bitmask(),
+                0b1010
             );
         });
 
@@ -759,7 +795,7 @@ macro_rules! impl_vec4_float_tests {
             should_glam_assert!({ $vec4::ONE.reject_from_normalized($vec4::ONE) });
         });
 
-        glam_test!(test_signum, {
+        glam_test!(test_float_signum, {
             assert_eq!($vec4::ZERO.signum(), $vec4::ONE);
             assert_eq!((-$vec4::ZERO).signum(), -$vec4::ONE);
             assert_eq!($vec4::ONE.signum(), $vec4::ONE);
@@ -806,37 +842,31 @@ macro_rules! impl_vec4_float_tests {
             assert!($vec4::splat(NAN).copysign(-$vec4::ONE).is_nan_mask().all());
         });
 
-        glam_test!(test_is_negative_bitmask, {
+        glam_test!(test_float_is_negative_bitmask, {
             assert_eq!($vec4::ZERO.is_negative_bitmask(), 0b0000);
             assert_eq!((-$vec4::ZERO).is_negative_bitmask(), 0b1111);
             assert_eq!($vec4::ONE.is_negative_bitmask(), 0b0000);
             assert_eq!((-$vec4::ONE).is_negative_bitmask(), 0b1111);
             assert_eq!(
-                $vec4::new(-0.1, 0.2, 0.3, -0.4).is_negative_bitmask(),
+                $vec4::new(-1.0, 2.0, 3.0, -4.0).is_negative_bitmask(),
                 0b1001
             );
             assert_eq!(
-                $vec4::new(0.8, 0.3, 0.1, -0.0).is_negative_bitmask(),
+                $vec4::new(8.0, 3.0, 1.0, -0.0).is_negative_bitmask(),
                 0b1000
             );
             assert_eq!(
-                $vec4::new(0.1, 0.5, -0.3, 0.7).is_negative_bitmask(),
+                $vec4::new(1.0, 5.0, -3.0, 7.0).is_negative_bitmask(),
                 0b0100
             );
             assert_eq!(
-                $vec4::new(0.3, -0.4, 0.1, 0.6).is_negative_bitmask(),
+                $vec4::new(3.0, -4.0, 1.0, 6.0).is_negative_bitmask(),
                 0b0010
             );
             assert_eq!(
-                $vec4::new(0.2, -0.6, 0.5, -0.3).is_negative_bitmask(),
+                $vec4::new(2.0, -6.0, 5.0, -3.0).is_negative_bitmask(),
                 0b1010
             );
-        });
-
-        glam_test!(test_abs, {
-            assert_eq!($vec4::ZERO.abs(), $vec4::ZERO);
-            assert_eq!($vec4::ONE.abs(), $vec4::ONE);
-            assert_eq!((-$vec4::ONE).abs(), $vec4::ONE);
         });
 
         glam_test!(test_round, {
