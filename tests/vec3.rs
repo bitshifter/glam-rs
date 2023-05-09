@@ -20,6 +20,8 @@ macro_rules! impl_vec3_tests {
             assert_eq!($vec3::X, $new(1 as $t, 0 as $t, 0 as $t));
             assert_eq!($vec3::Y, $new(0 as $t, 1 as $t, 0 as $t));
             assert_eq!($vec3::Z, $new(0 as $t, 0 as $t, 1 as $t));
+            assert_eq!($vec3::MIN, $new($t::MIN, $t::MIN, $t::MIN));
+            assert_eq!($vec3::MAX, $new($t::MAX, $t::MAX, $t::MAX));
         });
 
         glam_test!(test_new, {
@@ -716,9 +718,9 @@ macro_rules! impl_vec3_float_tests {
             assert_eq!((-$vec3::ZERO).signum(), -$vec3::ONE);
             assert_eq!($vec3::ONE.signum(), $vec3::ONE);
             assert_eq!((-$vec3::ONE).signum(), -$vec3::ONE);
-            assert_eq!($vec3::splat(INFINITY).signum(), $vec3::ONE);
-            assert_eq!($vec3::splat(NEG_INFINITY).signum(), -$vec3::ONE);
-            assert!($vec3::splat(NAN).signum().is_nan_mask().all());
+            assert_eq!($vec3::INFINITY.signum(), $vec3::ONE);
+            assert_eq!($vec3::NEG_INFINITY.signum(), -$vec3::ONE);
+            assert!($vec3::NAN.signum().is_nan_mask().all());
         });
 
         glam_test!(test_copysign, {
@@ -738,24 +740,15 @@ macro_rules! impl_vec3_float_tests {
             assert_eq!((-$vec3::ONE).copysign(-$vec3::ONE), -$vec3::ONE);
             assert_eq!($vec3::ONE.copysign($vec3::ONE), $vec3::ONE);
             assert_eq!((-$vec3::ONE).copysign($vec3::ONE), $vec3::ONE);
+            assert_eq!($vec3::INFINITY.copysign($vec3::ONE), $vec3::INFINITY);
+            assert_eq!($vec3::INFINITY.copysign(-$vec3::ONE), $vec3::NEG_INFINITY);
+            assert_eq!($vec3::NEG_INFINITY.copysign($vec3::ONE), $vec3::INFINITY);
             assert_eq!(
-                $vec3::splat(INFINITY).copysign($vec3::ONE),
-                $vec3::splat(INFINITY)
+                $vec3::NEG_INFINITY.copysign(-$vec3::ONE),
+                $vec3::NEG_INFINITY
             );
-            assert_eq!(
-                $vec3::splat(INFINITY).copysign(-$vec3::ONE),
-                $vec3::splat(NEG_INFINITY)
-            );
-            assert_eq!(
-                $vec3::splat(NEG_INFINITY).copysign($vec3::ONE),
-                $vec3::splat(INFINITY)
-            );
-            assert_eq!(
-                $vec3::splat(NEG_INFINITY).copysign(-$vec3::ONE),
-                $vec3::splat(NEG_INFINITY)
-            );
-            assert!($vec3::splat(NAN).copysign($vec3::ONE).is_nan_mask().all());
-            assert!($vec3::splat(NAN).copysign(-$vec3::ONE).is_nan_mask().all());
+            assert!($vec3::NAN.copysign($vec3::ONE).is_nan_mask().all());
+            assert!($vec3::NAN.copysign(-$vec3::ONE).is_nan_mask().all());
         });
 
         glam_test!(test_float_is_negative_bitmask, {
@@ -843,7 +836,9 @@ macro_rules! impl_vec3_float_tests {
             assert!(!$vec3::new(INFINITY, 0.0, 0.0).is_finite());
             assert!(!$vec3::new(0.0, NAN, 0.0).is_finite());
             assert!(!$vec3::new(0.0, 0.0, NEG_INFINITY).is_finite());
-            assert!(!$vec3::splat(NAN).is_finite());
+            assert!(!$vec3::NAN.is_finite());
+            assert!(!$vec3::INFINITY.is_finite());
+            assert!(!$vec3::NEG_INFINITY.is_finite());
         });
 
         glam_test!(test_powf, {

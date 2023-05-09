@@ -39,8 +39,20 @@ impl Vec3A {
     /// All negative ones.
     pub const NEG_ONE: Self = Self::splat(-1.0);
 
-    /// All NAN.
+    /// All `f32::MIN`.
+    pub const MIN: Self = Self::splat(f32::MIN);
+
+    /// All `f32::MAX`.
+    pub const MAX: Self = Self::splat(f32::MAX);
+
+    /// All `f32::NAN`.
     pub const NAN: Self = Self::splat(f32::NAN);
+
+    /// All `f32::INFINITY`.
+    pub const INFINITY: Self = Self::splat(f32::INFINITY);
+
+    /// All `f32::NEG_INFINITY`.
+    pub const NEG_INFINITY: Self = Self::splat(f32::NEG_INFINITY);
 
     /// A unit vector pointing along the positive X axis.
     pub const X: Self = Self::new(1.0, 0.0, 0.0);

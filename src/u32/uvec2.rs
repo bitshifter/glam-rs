@@ -31,6 +31,12 @@ impl UVec2 {
     /// All ones.
     pub const ONE: Self = Self::splat(1);
 
+    /// All `u32::MIN`.
+    pub const MIN: Self = Self::splat(u32::MIN);
+
+    /// All `u32::MAX`.
+    pub const MAX: Self = Self::splat(u32::MAX);
+
     /// A unit vector pointing along the positive X axis.
     pub const X: Self = Self::new(1, 0);
 

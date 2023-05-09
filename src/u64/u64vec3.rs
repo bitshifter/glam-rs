@@ -31,6 +31,12 @@ impl U64Vec3 {
     /// All ones.
     pub const ONE: Self = Self::splat(1);
 
+    /// All `u64::MIN`.
+    pub const MIN: Self = Self::splat(u64::MIN);
+
+    /// All `u64::MAX`.
+    pub const MAX: Self = Self::splat(u64::MAX);
+
     /// A unit vector pointing along the positive X axis.
     pub const X: Self = Self::new(1, 0, 0);
 
