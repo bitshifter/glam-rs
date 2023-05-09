@@ -1444,6 +1444,7 @@ mod ivec4 {
         assert!(IVec4::try_from(U64Vec4::new(1, 2, u64::MAX, 4)).is_err());
         assert!(IVec4::try_from(U64Vec4::new(1, 2, 3, u64::MAX)).is_err());
     });
+
     impl_vec4_signed_tests!(i32, ivec4, IVec4, IVec3, IVec2, BVec4);
     impl_vec4_eq_hash_tests!(i32, ivec4);
 
