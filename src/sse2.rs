@@ -18,6 +18,7 @@ const fn m128_from_u32x4(u32x4: [u32; 4]) -> __m128 {
     unsafe { UnionCast { u32x4 }.m128 }
 }
 
+const PS_ABS_MASK: __m128 = m128_from_u32x4([0x7fffffff; 4]);
 const PS_INV_SIGN_MASK: __m128 = m128_from_u32x4([!0x8000_0000; 4]);
 const PS_SIGN_MASK: __m128 = m128_from_u32x4([0x8000_0000; 4]);
 const PS_NO_FRACTION: __m128 = m128_from_f32x4([8388608.0; 4]);
@@ -155,6 +156,26 @@ pub(crate) unsafe fn m128_round(v: __m128) -> __m128 {
     let r2 = _mm_andnot_ps(mask, v);
     let r1 = _mm_and_ps(r1, mask);
     _mm_xor_ps(r1, r2)
+}
+
+#[inline]
+pub(crate) unsafe fn m128_trunc(v: __m128) -> __m128 {
+    // Based on https://github.com/microsoft/DirectXMath `XMVectorTruncate`
+    // To handle NAN, INF and numbers greater than 8388608, use masking
+    // Get the abs value
+    let mut vtest = _mm_and_si128(_mm_castps_si128(v), _mm_castps_si128(PS_ABS_MASK));
+    // Test for greater than 8388608 (All floats with NO fractionals, NAN and INF
+    vtest = _mm_cmplt_epi32(vtest, _mm_castps_si128(PS_NO_FRACTION));
+    // Convert to int and back to float for rounding with truncation
+    let vint = _mm_cvttps_epi32(v);
+    // Convert back to floats
+    let mut vresult = _mm_cvtepi32_ps(vint);
+    // All numbers less than 8388608 will use the round to int
+    vresult = _mm_and_ps(vresult, _mm_castsi128_ps(vtest));
+    // All others, use the ORIGINAL value
+    vtest = _mm_andnot_si128(vtest, _mm_castps_si128(v));
+    vresult = _mm_or_ps(vresult, _mm_castsi128_ps(vtest));
+    return vresult;
 }
 
 /// Returns a vector whose components are the corresponding components of Angles modulo 2PI.

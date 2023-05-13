@@ -66,6 +66,11 @@ mod libm_math {
     }
 
     #[inline(always)]
+    pub(crate) fn trunc(f: f64) -> f64 {
+        libm::trunc(f)
+    }
+
+    #[inline(always)]
     pub(crate) fn ceil(f: f64) -> f64 {
         libm::ceil(f)
     }
@@ -146,6 +151,11 @@ mod std_math {
     #[inline(always)]
     pub(crate) fn round(f: f64) -> f64 {
         f64::round(f)
+    }
+
+    #[inline(always)]
+    pub(crate) fn trunc(f: f64) -> f64 {
+        f64::trunc(f)
     }
 
     #[inline(always)]
