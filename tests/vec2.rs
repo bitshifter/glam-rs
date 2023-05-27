@@ -738,6 +738,19 @@ macro_rules! impl_vec2_float_tests {
             );
         });
 
+        glam_test!(test_trunc, {
+            assert_eq!($vec2::new(1.35, -1.5).trunc(), $vec2::new(1.0, -1.0));
+            assert_eq!(
+                $vec2::new(INFINITY, NEG_INFINITY).trunc(),
+                $vec2::new(INFINITY, NEG_INFINITY)
+            );
+            assert!($vec2::new(0.0, NAN).trunc().y.is_nan());
+            assert_eq!(
+                $vec2::new(-0.0, -2000000.123).trunc(),
+                $vec2::new(-0.0, -2000000.0)
+            );
+        });
+
         glam_test!(test_lerp, {
             let v0 = $vec2::new(-1.0, -1.0);
             let v1 = $vec2::new(1.0, 1.0);
