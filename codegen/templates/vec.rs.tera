@@ -1278,6 +1278,25 @@ impl {{ self_t }} {
         {% endif %}
     }
 
+    /// Returns a vector containing the integer part each element of `self`. This means numbers are
+    /// always truncated towards zero.
+    #[inline]
+    pub fn trunc(self) -> Self {
+        {% if is_scalar %}
+            Self {
+                {% for c in components %}
+                    {{ c }}: math::trunc(self.{{ c }}),
+                {%- endfor %}
+            }
+        {% elif is_sse2 %}
+            Self(unsafe { m128_trunc(self.0) })
+        {% elif is_wasm32 %}
+            Self(f32x4_trunc(self.0))
+        {% elif is_coresimd %}
+            Self(self.0.trunc())
+        {% endif %}
+    }
+
     /// Returns a vector containing the fractional part of the vector, e.g. `self -
     /// self.floor()`.
     ///

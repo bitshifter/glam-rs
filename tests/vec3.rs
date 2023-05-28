@@ -822,6 +822,22 @@ macro_rules! impl_vec3_float_tests {
             );
         });
 
+        glam_test!(test_trunc, {
+            assert_eq!(
+                $vec3::new(1.35, 1.5, -1.5).trunc(),
+                $vec3::new(1.0, 1.0, -1.0)
+            );
+            assert_eq!(
+                $vec3::new(INFINITY, NEG_INFINITY, 0.0).trunc(),
+                $vec3::new(INFINITY, NEG_INFINITY, 0.0)
+            );
+            assert!($vec3::new(0.0, NAN, 0.0).trunc().y.is_nan());
+            assert_eq!(
+                $vec3::new(-0.0, -2000000.123, 10000000.123).trunc(),
+                $vec3::new(-0.0, -2000000.0, 10000000.0)
+            );
+        });
+
         glam_test!(test_lerp, {
             let v0 = $vec3::new(-1.0, -1.0, -1.0);
             let v1 = $vec3::new(1.0, 1.0, 1.0);

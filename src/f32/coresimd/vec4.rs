@@ -496,6 +496,13 @@ impl Vec4 {
         Self(self.0.ceil())
     }
 
+    /// Returns a vector containing the integer part each element of `self`. This means numbers are
+    /// always truncated towards zero.
+    #[inline]
+    pub fn trunc(self) -> Self {
+        Self(self.0.trunc())
+    }
+
     /// Returns a vector containing the fractional part of the vector, e.g. `self -
     /// self.floor()`.
     ///
