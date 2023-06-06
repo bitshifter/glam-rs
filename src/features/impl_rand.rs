@@ -188,6 +188,16 @@ mod i32 {
     impl_vec_types!(i32, IVec2, IVec3, IVec4);
 }
 
+mod i64 {
+    use crate::{I64Vec2, I64Vec3, I64Vec4};
+    use rand::{
+        distributions::{Distribution, Standard},
+        Rng,
+    };
+
+    impl_vec_types!(i64, I64Vec2, I64Vec3, I64Vec4);
+}
+
 mod u32 {
     use crate::{UVec2, UVec3, UVec4};
     use rand::{
@@ -196,4 +206,14 @@ mod u32 {
     };
 
     impl_vec_types!(u32, UVec2, UVec3, UVec4);
+}
+
+mod u64 {
+    use crate::{U64Vec2, U64Vec3, U64Vec4};
+    use rand::{
+        distributions::{Distribution, Standard},
+        Rng,
+    };
+
+    impl_vec_types!(u64, U64Vec2, U64Vec3, U64Vec4);
 }

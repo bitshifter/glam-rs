@@ -99,6 +99,15 @@ mod i32 {
     impl_rkyv!(IVec4);
 }
 
+mod i64 {
+    use crate::{I64Vec2, I64Vec3, I64Vec4};
+    use rkyv::{from_archived, to_archived, Archive, Deserialize, Fallible, Serialize};
+
+    impl_rkyv!(I64Vec2);
+    impl_rkyv!(I64Vec3);
+    impl_rkyv!(I64Vec4);
+}
+
 mod u32 {
     use crate::{UVec2, UVec3, UVec4};
     use rkyv::{from_archived, to_archived, Archive, Deserialize, Fallible, Serialize};
@@ -106,6 +115,15 @@ mod u32 {
     impl_rkyv!(UVec2);
     impl_rkyv!(UVec3);
     impl_rkyv!(UVec4);
+}
+
+mod u64 {
+    use crate::{U64Vec2, U64Vec3, U64Vec4};
+    use rkyv::{from_archived, to_archived, Archive, Deserialize, Fallible, Serialize};
+
+    impl_rkyv!(U64Vec2);
+    impl_rkyv!(U64Vec3);
+    impl_rkyv!(U64Vec4);
 }
 
 #[cfg(test)]
@@ -180,9 +198,19 @@ mod test {
         test_archive(&IVec3::new(-1, 2, 3));
         test_archive(&IVec4::new(-1, 2, 3, 4));
 
+        use crate::{I64Vec2, I64Vec3, I64Vec4};
+        test_archive(&I64Vec2::new(-1, 2));
+        test_archive(&I64Vec3::new(-1, 2, 3));
+        test_archive(&I64Vec4::new(-1, 2, 3, 4));
+
         use crate::{UVec2, UVec3, UVec4};
         test_archive(&UVec2::new(1, 2));
         test_archive(&UVec3::new(1, 2, 3));
         test_archive(&UVec4::new(1, 2, 3, 4));
+
+        use crate::{U64Vec2, U64Vec3, U64Vec4};
+        test_archive(&U64Vec2::new(1, 2));
+        test_archive(&U64Vec3::new(1, 2, 3));
+        test_archive(&U64Vec4::new(1, 2, 3, 4));
     }
 }
