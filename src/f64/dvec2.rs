@@ -628,7 +628,7 @@ impl DVec2 {
         Self { x: cos, y: sin }
     }
 
-    /// Returns the angle (in radians) between `self` and `rhs`.
+    /// Returns the angle (in radians) between `self` and `rhs` in the range `[-π, +π]`.
     ///
     /// The inputs do not need to be unit vectors however they must be non-zero.
     #[inline]
