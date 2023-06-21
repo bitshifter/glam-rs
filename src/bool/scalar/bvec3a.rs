@@ -59,6 +59,19 @@ impl BVec3A {
         ((self.x & self.y & self.z) & 0x1) != 0
     }
 
+    /// Returns if the element at `index` is set or not.
+    ///
+    /// Panics if `index` is greater than 2.
+    #[inline]
+    pub fn get(&self, index: usize) -> bool {
+        match index {
+            0 => (self.x & 0x1) != 0,
+            1 => (self.y & 0x1) != 0,
+            2 => (self.z & 0x1) != 0,
+            _ => panic!("index out of bounds"),
+        }
+    }
+
     #[inline]
     fn into_bool_array(self) -> [bool; 3] {
         [

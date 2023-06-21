@@ -60,6 +60,19 @@ impl BVec3A {
         self.bitmask() == 0x7
     }
 
+    /// Returns if the element at `index` is set or not.
+    ///
+    /// Panics if `index` is greater than 2.
+    #[inline]
+    pub fn get(&self, index: usize) -> bool {
+        match index {
+            0 => (self.bitmask() & (1 << 0)) != 0,
+            1 => (self.bitmask() & (1 << 1)) != 0,
+            2 => (self.bitmask() & (1 << 2)) != 0,
+            _ => panic!("index out of bounds"),
+        }
+    }
+
     #[inline]
     fn into_bool_array(self) -> [bool; 3] {
         let bitmask = self.bitmask();
