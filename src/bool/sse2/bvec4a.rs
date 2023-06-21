@@ -88,6 +88,17 @@ impl BVec4A {
         }
     }
 
+    /// Sets the element at `index`.
+    ///
+    /// Panics if `index` is greater than 3.
+    #[inline]
+    pub fn set(&mut self, index: usize, value: bool) {
+        use crate::Vec4;
+        let mut v = Vec4(self.0);
+        v[index] = f32::from_bits(MASK[value as usize]);
+        *self = Self(v.0);
+    }
+
     #[inline]
     fn into_bool_array(self) -> [bool; 4] {
         let bitmask = self.bitmask();

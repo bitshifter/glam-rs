@@ -79,6 +79,17 @@ impl BVec3A {
         }
     }
 
+    /// Sets the element at `index`.
+    ///
+    /// Panics if `index` is greater than 2.
+    #[inline]
+    pub fn set(&mut self, index: usize, value: bool) {
+        use crate::Vec3A;
+        let mut v = Vec3A(self.0);
+        v[index] = f32::from_bits(MASK[value as usize]);
+        *self = Self(v.0);
+    }
+
     #[inline]
     fn into_bool_array(self) -> [bool; 3] {
         let bitmask = self.bitmask();

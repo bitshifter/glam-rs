@@ -488,6 +488,24 @@ macro_rules! impl_vec3_tests {
             assert_eq!(b.get(2), false);
         });
 
+        glam_test!(test_mask_set, {
+            let mut a = $mask::new(false, true, false);
+            a.set(0, true);
+            assert_eq!(a.get(0), true);
+            a.set(1, false);
+            assert_eq!(a.get(1), false);
+            a.set(2, true);
+            assert_eq!(a.get(2), true);
+
+            let mut b = $mask::new(true, false, true);
+            b.set(0, false);
+            assert_eq!(b.get(0), false);
+            b.set(1, true);
+            assert_eq!(b.get(1), true);
+            b.set(2, false);
+            assert_eq!(b.get(2), false);
+        });
+
         glam_test!(test_mask_hash, {
             use std::collections::hash_map::DefaultHasher;
             use std::hash::Hash;
