@@ -36,13 +36,7 @@ fn acos_approx_f32(v: f32) -> f32 {
 mod libm_math {
     #[inline(always)]
     pub(crate) fn abs(f: f32) -> f32 {
-        if f.is_sign_positive() {
-            return f;
-        }
-        if f.is_sign_negative() {
-            return -f;
-        }
-        f32::NAN
+        libm::fabsf(f)
     }
 
     #[inline(always)]
