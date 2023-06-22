@@ -2,13 +2,7 @@
 mod libm_math {
     #[inline(always)]
     pub(crate) fn abs(f: f64) -> f64 {
-        if f.is_sign_positive() {
-            return f;
-        }
-        if f.is_sign_negative() {
-            return -f;
-        }
-        f64::NAN
+        libm::fabs(f)
     }
 
     #[inline(always)]
