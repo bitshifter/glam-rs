@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+### Added
+
+* Implemented missing `bytemuck`, `mint`, `rand`, `rkyv` and `serde` traits for
+  `i64` and `u64` types.
+
+* Added missing safe `From` conversions from `f32` vectors to `f64` vectors.
+
+* Added `TryFrom` implemetations between different vector types.
+
+* Added `test` and `set` methods to `bool` vector types for testing and setting
+  individual mask elements.
+
+* Added `MIN`, `MAX`, `INFINITY` and `NEG_INFINITY` vector constants.
+
 ## [0.24.0] - 2023-04-24
 
 ### Breaking changes
