@@ -71,18 +71,12 @@ impl BVec4A {
         self.bitmask() == 0xf
     }
 
-    /// Returns if the element at `index` is set or not.
+    /// Tests the value at `index`.
     ///
     /// Panics if `index` is greater than 3.
     #[inline]
-    pub fn get(&self, index: usize) -> bool {
-        match index {
-            0 => (self.bitmask() & (1 << 0)) != 0,
-            1 => (self.bitmask() & (1 << 1)) != 0,
-            2 => (self.bitmask() & (1 << 2)) != 0,
-            3 => (self.bitmask() & (1 << 3)) != 0,
-            _ => panic!("index out of bounds"),
-        }
+    pub fn test(&self, index: usize) -> bool {
+        self.0.test(index)
     }
 
     /// Sets the element at `index`.
@@ -90,10 +84,7 @@ impl BVec4A {
     /// Panics if `index` is greater than 3.
     #[inline]
     pub fn set(&mut self, index: usize, value: bool) {
-        use crate::Vec4;
-        let mut v = Vec4(self.0);
-        v[index] = f32::from_bits(MASK[value as usize]);
-        *self = Self(v.0);
+        self.0.set(index, value)
     }
 
     #[inline]

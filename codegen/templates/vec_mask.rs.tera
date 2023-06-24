@@ -222,23 +222,27 @@ impl {{ self_t }} {
         {% endif %}
     }
 
-    /// Returns if the element at `index` is set or not.
+    /// Tests the value at `index`.
     ///
     /// Panics if `index` is greater than {{ dim  - 1 }}.
     #[inline]
-    pub fn get(&self, index: usize) -> bool {
-        match index {
-            {% for c in components %}
-                {%- if is_scalar and is_bool %}
-                    {{ loop.index0 }} => self.{{ c }},
-                {%- elif is_scalar and is_u32 %}
-                    {{ loop.index0 }} => (self.{{ c }} & 0x1) != 0,
-                {%- else %}
-                    {{ loop.index0 }} => (self.bitmask() & (1 << {{ loop.index0 }})) != 0,
-                {%- endif %}
-            {%- endfor %}
-            _ => panic!("index out of bounds")
-        }
+    pub fn test(&self, index: usize) -> bool {
+        {% if is_coresimd %}
+            self.0.test(index)
+        {% else %}
+            match index {
+                {% for c in components %}
+                    {%- if is_scalar and is_bool %}
+                        {{ loop.index0 }} => self.{{ c }},
+                    {%- elif is_scalar and is_u32 %}
+                        {{ loop.index0 }} => (self.{{ c }} & 0x1) != 0,
+                    {%- else %}
+                        {{ loop.index0 }} => (self.bitmask() & (1 << {{ loop.index0 }})) != 0,
+                    {%- endif %}
+                {%- endfor %}
+                _ => panic!("index out of bounds")
+            }
+        {% endif %}
     }
 
     /// Sets the element at `index`.
@@ -247,16 +251,18 @@ impl {{ self_t }} {
     #[inline]
     pub fn set(&mut self, index: usize, value: bool) {
         {% if is_scalar %}
-        match index {
-            {% for c in components %}
-                {%- if is_bool %}
-                    {{ loop.index0 }} => self.{{ c }} = value,
-                {%- elif is_u32 %}
-                    {{ loop.index0 }} => self.{{ c }} = MASK[value as usize],
-                {%- endif %}
-            {%- endfor %}
-            _ => panic!("index out of bounds")
-        }
+            match index {
+                {% for c in components %}
+                    {%- if is_bool %}
+                        {{ loop.index0 }} => self.{{ c }} = value,
+                    {%- elif is_u32 %}
+                        {{ loop.index0 }} => self.{{ c }} = MASK[value as usize],
+                    {%- endif %}
+                {%- endfor %}
+                _ => panic!("index out of bounds")
+            }
+        {% elif is_coresimd %}
+            self.0.set(index, value)
         {% else %}
             use crate::{{ vec_t }};
             let mut v = {{ vec_t }}(self.0);

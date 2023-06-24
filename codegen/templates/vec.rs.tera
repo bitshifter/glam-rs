@@ -485,7 +485,7 @@ impl {{ self_t }} {
         {% elif is_wasm32 %}
             Self(unsafe { dot{{ dim }}_into_v128(self.0, rhs.0) })
         {% elif is_coresimd %}
-            Self(unsafe { dot{{ dim }}_into_f32x4(self.0, rhs.0) })
+            Self(dot{{ dim }}_into_f32x4(self.0, rhs.0))
         {% else %}
             Self::splat(self.dot(rhs))
         {% endif %}

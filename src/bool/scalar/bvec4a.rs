@@ -61,11 +61,11 @@ impl BVec4A {
         ((self.x & self.y & self.z & self.w) & 0x1) != 0
     }
 
-    /// Returns if the element at `index` is set or not.
+    /// Tests the value at `index`.
     ///
     /// Panics if `index` is greater than 3.
     #[inline]
-    pub fn get(&self, index: usize) -> bool {
+    pub fn test(&self, index: usize) -> bool {
         match index {
             0 => (self.x & 0x1) != 0,
             1 => (self.y & 0x1) != 0,

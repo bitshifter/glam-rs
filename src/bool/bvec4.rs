@@ -56,11 +56,11 @@ impl BVec4 {
         self.x && self.y && self.z && self.w
     }
 
-    /// Returns if the element at `index` is set or not.
+    /// Tests the value at `index`.
     ///
     /// Panics if `index` is greater than 3.
     #[inline]
-    pub fn get(&self, index: usize) -> bool {
+    pub fn test(&self, index: usize) -> bool {
         match index {
             0 => self.x,
             1 => self.y,

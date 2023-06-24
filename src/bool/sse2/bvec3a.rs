@@ -69,11 +69,11 @@ impl BVec3A {
         self.bitmask() == 0x7
     }
 
-    /// Returns if the element at `index` is set or not.
+    /// Tests the value at `index`.
     ///
     /// Panics if `index` is greater than 2.
     #[inline]
-    pub fn get(&self, index: usize) -> bool {
+    pub fn test(&self, index: usize) -> bool {
         match index {
             0 => (self.bitmask() & (1 << 0)) != 0,
             1 => (self.bitmask() & (1 << 1)) != 0,
