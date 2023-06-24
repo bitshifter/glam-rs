@@ -54,6 +54,30 @@ impl BVec2 {
         self.x && self.y
     }
 
+    /// Tests the value at `index`.
+    ///
+    /// Panics if `index` is greater than 1.
+    #[inline]
+    pub fn test(&self, index: usize) -> bool {
+        match index {
+            0 => self.x,
+            1 => self.y,
+            _ => panic!("index out of bounds"),
+        }
+    }
+
+    /// Sets the element at `index`.
+    ///
+    /// Panics if `index` is greater than 1.
+    #[inline]
+    pub fn set(&mut self, index: usize, value: bool) {
+        match index {
+            0 => self.x = value,
+            1 => self.y = value,
+            _ => panic!("index out of bounds"),
+        }
+    }
+
     #[inline]
     fn into_bool_array(self) -> [bool; 2] {
         [self.x, self.y]

@@ -71,6 +71,22 @@ impl BVec4A {
         self.bitmask() == 0xf
     }
 
+    /// Tests the value at `index`.
+    ///
+    /// Panics if `index` is greater than 3.
+    #[inline]
+    pub fn test(&self, index: usize) -> bool {
+        self.0.test(index)
+    }
+
+    /// Sets the element at `index`.
+    ///
+    /// Panics if `index` is greater than 3.
+    #[inline]
+    pub fn set(&mut self, index: usize, value: bool) {
+        self.0.set(index, value)
+    }
+
     #[inline]
     fn into_bool_array(self) -> [bool; 4] {
         let bitmask = self.bitmask();

@@ -59,6 +59,32 @@ impl BVec3A {
         ((self.x & self.y & self.z) & 0x1) != 0
     }
 
+    /// Tests the value at `index`.
+    ///
+    /// Panics if `index` is greater than 2.
+    #[inline]
+    pub fn test(&self, index: usize) -> bool {
+        match index {
+            0 => (self.x & 0x1) != 0,
+            1 => (self.y & 0x1) != 0,
+            2 => (self.z & 0x1) != 0,
+            _ => panic!("index out of bounds"),
+        }
+    }
+
+    /// Sets the element at `index`.
+    ///
+    /// Panics if `index` is greater than 2.
+    #[inline]
+    pub fn set(&mut self, index: usize, value: bool) {
+        match index {
+            0 => self.x = MASK[value as usize],
+            1 => self.y = MASK[value as usize],
+            2 => self.z = MASK[value as usize],
+            _ => panic!("index out of bounds"),
+        }
+    }
+
     #[inline]
     fn into_bool_array(self) -> [bool; 3] {
         [
