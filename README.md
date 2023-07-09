@@ -215,23 +215,26 @@ Unless you explicitly state otherwise, any contribution intentionally submitted
 for inclusion in the work by you, as defined in the Apache-2.0 license, shall be
 dual licensed as above, without any additional terms or conditions.
 
-Thank you to all of the `glam` [contributors]!
-
-[Code of Conduct]: https://www.rust-lang.org/en-US/conduct.html
-[contributors]: https://github.com/bitshifter/glam-rs/graphs/contributors
-
-## Support
-
 If you are interested in contributing or have a request or suggestion
 [start a discussion] on GitHub. See [CONTRIBUTING.md] for more information for
 contributors.
+
+Most code in `glam` is generated, see the [codegen README] for details.
+
+Thank you to all of the `glam` [contributors]!
+
+[Code of Conduct]: https://www.rust-lang.org/en-US/conduct.html
+[start a discussion]: https://github.com/bitshifter/glam-rs/discussions
+[CONTRIBUTING.md]: CONTRIBUTING.md
+[codegen README]: codegen/README.md
+[contributors]: https://github.com/bitshifter/glam-rs/graphs/contributors
+
+## Support
 
 The [Game Development in Rust Discord] and [Bevy Engine Discord] servers are
 not official support channels but can be good places to ask for help with
 `glam`.
 
-[start a discussion]: https://github.com/bitshifter/glam-rs/discussions
-[CONTRIBUTING.md]: CONTRIBUTING.md
 [Game Development in Rust Discord]: https://discord.gg/yNtPTb2
 [Bevy Engine Discord]: https://discord.gg/gMUk5Ph
 

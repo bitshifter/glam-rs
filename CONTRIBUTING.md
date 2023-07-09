@@ -55,5 +55,4 @@ Also run `cargo fmt` and `cargo clippy` on any new code.
 [open an issue]: https://GitHub.com/bitshifter/glam-rs/issues/new
 [ask a question]: https://github.com/bitshifter/glam-rs/discussions/new?category=q-a
 [suggest a new feature]: https://github.com/bitshifter/glam-rs/discussions/new?category=ideas
-[ARCHITECTURE]: ARCHITECTURE.md
 [codegen README]: codegen/README.md
