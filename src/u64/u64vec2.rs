@@ -240,6 +240,21 @@ impl U64Vec2 {
         self.dot(self)
     }
 
+    /// Compute the L1 distance between two points in space.
+    #[inline]
+    pub fn ldistance(self, rhs: Self) -> u128 {
+        (self.x.abs_diff(rhs.x)) as u128 + (self.y.abs_diff(rhs.y) as u128)
+    }
+
+    /// Compute the Chebyshev distance between two points in space.
+    #[inline]
+    pub fn cdistance(&self, rhs: Self) -> u128 {
+        std::cmp::max(
+            (self.x.abs_diff(rhs.x)) as u128,
+            (self.y.abs_diff(rhs.y)) as u128,
+        )
+    }
+
     /// Casts all elements of `self` to `f32`.
     #[inline]
     pub fn as_vec2(&self) -> crate::Vec2 {

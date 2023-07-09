@@ -286,6 +286,22 @@ impl IVec2 {
         (self - rhs).length_squared()
     }
 
+    /// Compute the L1 distance between two points in space.
+    #[inline]
+    pub fn ldistance(self, rhs: Self) -> i64 {
+        (self.x.abs_diff(rhs.x)) as i64 + (self.y.abs_diff(rhs.y) as i64)
+    }
+
+    /// Compute the Chebyshev distance between two points in space.
+    #[inline]
+    pub fn cdistance(&self, rhs: Self) -> i64 {
+        std::cmp::max(
+            (self.x.abs_diff(rhs.x)) as i64,
+            (self.y.abs_diff(rhs.y)) as i64,
+        )
+    }
+
+
     /// Returns a vector that is equal to `self` rotated by 90 degrees.
     #[inline]
     pub fn perp(self) -> Self {
