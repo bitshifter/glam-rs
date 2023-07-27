@@ -286,6 +286,39 @@ impl I64Vec2 {
         (self - rhs).length_squared()
     }
 
+    /// Returns the element-wise quotient of [Euclidean division] of `self` by `rhs`.
+    ///
+
+    /// # Panics
+    /// This function will panic if any `rhs` element is 0 or the division results in overflow.
+
+    #[inline]
+    pub fn div_euclid(self, rhs: Self) -> Self {
+        let mut out = Self::default();
+        for i in 0..2 {
+            out[i] = self[i].div_euclid(rhs[i]);
+        }
+        out
+    }
+
+    /// Returns the element-wise remainder of [Euclidean division] of `self` by `rhs`.
+    ///
+
+    /// # Panics
+    /// This function will panic if any `rhs` element is 0 or the division results in overflow.
+
+    ///
+    /// [Euclidean division]: i64::rem_euclid
+
+    #[inline]
+    pub fn rem_euclid(self, rhs: Self) -> Self {
+        let mut out = Self::default();
+        for i in 0..2 {
+            out[i] = self[i].rem_euclid(rhs[i]);
+        }
+        out
+    }
+
     /// Returns a vector that is equal to `self` rotated by 90 degrees.
     #[inline]
     pub fn perp(self) -> Self {

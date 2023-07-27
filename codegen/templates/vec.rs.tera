@@ -1074,6 +1074,48 @@ impl {{ self_t }} {
     pub fn distance_squared(self, rhs: Self) -> {{ scalar_t }} {
         (self - rhs).length_squared()
     }
+
+    /// Returns the element-wise quotient of [Euclidean division] of `self` by `rhs`.
+    ///
+    {% if is_float%}
+    {% if not is_scalar %}
+    /// This is not SIMD-accelerated.
+    {% endif %}
+    {% else %}
+    /// # Panics
+    /// This function will panic if any `rhs` element is 0 or the division results in overflow.
+    {% endif %}
+    {% if is_float %} #[cfg(not(feature = "libm"))] {% endif %}
+    #[inline]
+    pub fn div_euclid(self, rhs: Self) -> Self {
+        let mut out = Self::default();
+        for i in 0..{{ dim }} {
+            out[i] = self[i].div_euclid(rhs[i]);
+        }
+        out
+    }
+
+    /// Returns the element-wise remainder of [Euclidean division] of `self` by `rhs`.
+    ///
+    {% if is_float %}
+    {% if not is_scalar %}
+    /// This is not SIMD-accelerated.
+    {% endif %}
+    {% else %}
+    /// # Panics
+    /// This function will panic if any `rhs` element is 0 or the division results in overflow.
+    {% endif %}
+    ///
+    /// [Euclidean division]: {{scalar_t}}::rem_euclid
+    {% if is_float %} #[cfg(not(feature = "libm"))] {% endif %}
+    #[inline]
+    pub fn rem_euclid(self, rhs: Self) -> Self {
+        let mut out = Self::default();
+        for i in 0..{{ dim }} {
+            out[i] = self[i].rem_euclid(rhs[i]);
+        }
+        out
+    }
 {% endif %}
 
 {% if is_float %}

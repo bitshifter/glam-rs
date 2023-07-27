@@ -424,6 +424,34 @@ impl DVec4 {
         (self - rhs).length_squared()
     }
 
+    /// Returns the element-wise quotient of [Euclidean division] of `self` by `rhs`.
+    ///
+
+    #[cfg(not(feature = "libm"))]
+    #[inline]
+    pub fn div_euclid(self, rhs: Self) -> Self {
+        let mut out = Self::default();
+        for i in 0..4 {
+            out[i] = self[i].div_euclid(rhs[i]);
+        }
+        out
+    }
+
+    /// Returns the element-wise remainder of [Euclidean division] of `self` by `rhs`.
+    ///
+
+    ///
+    /// [Euclidean division]: f64::rem_euclid
+    #[cfg(not(feature = "libm"))]
+    #[inline]
+    pub fn rem_euclid(self, rhs: Self) -> Self {
+        let mut out = Self::default();
+        for i in 0..4 {
+            out[i] = self[i].rem_euclid(rhs[i]);
+        }
+        out
+    }
+
     /// Returns `self` normalized to length 1.0.
     ///
     /// For valid results, `self` must _not_ be of length zero, nor very close to zero.
