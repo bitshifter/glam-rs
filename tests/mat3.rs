@@ -341,14 +341,14 @@ macro_rules! impl_mat3_tests {
 
         glam_test!(test_sum, {
             let id = $mat3::IDENTITY;
-            assert_eq!(vec![id, id].iter().sum::<$mat3>(), id + id);
-            assert_eq!(vec![id, id].into_iter().sum::<$mat3>(), id + id);
+            assert_eq!([id, id].iter().sum::<$mat3>(), id + id);
+            assert_eq!([id, id].into_iter().sum::<$mat3>(), id + id);
         });
 
         glam_test!(test_product, {
             let two = $mat3::IDENTITY + $mat3::IDENTITY;
-            assert_eq!(vec![two, two].iter().product::<$mat3>(), two * two);
-            assert_eq!(vec![two, two].into_iter().product::<$mat3>(), two * two);
+            assert_eq!([two, two].iter().product::<$mat3>(), two * two);
+            assert_eq!([two, two].into_iter().product::<$mat3>(), two * two);
         });
 
         glam_test!(test_mat3_is_finite, {

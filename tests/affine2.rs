@@ -181,10 +181,7 @@ macro_rules! impl_affine2_tests {
 
         glam_test!(test_product, {
             let ident = $affine2::IDENTITY;
-            assert_eq!(
-                vec![ident, ident].iter().product::<$affine2>(),
-                ident * ident
-            );
+            assert_eq!([ident, ident].iter().product::<$affine2>(), ident * ident);
         });
 
         glam_test!(test_affine2_is_finite, {
