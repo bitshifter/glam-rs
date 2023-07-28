@@ -174,8 +174,7 @@ pub(crate) unsafe fn m128_trunc(v: __m128) -> __m128 {
     vresult = _mm_and_ps(vresult, _mm_castsi128_ps(vtest));
     // All others, use the ORIGINAL value
     vtest = _mm_andnot_si128(vtest, _mm_castps_si128(v));
-    vresult = _mm_or_ps(vresult, _mm_castsi128_ps(vtest));
-    return vresult;
+    _mm_or_ps(vresult, _mm_castsi128_ps(vtest))
 }
 
 /// Returns a vector whose components are the corresponding components of Angles modulo 2PI.

@@ -545,14 +545,14 @@ macro_rules! impl_vec3_tests {
 
         glam_test!(test_sum, {
             let one = $vec3::ONE;
-            assert_eq!(vec![one, one].iter().sum::<$vec3>(), one + one);
-            assert_eq!(vec![one, one].into_iter().sum::<$vec3>(), one + one);
+            assert_eq!([one, one].iter().sum::<$vec3>(), one + one);
+            assert_eq!([one, one].into_iter().sum::<$vec3>(), one + one);
         });
 
         glam_test!(test_product, {
             let two = $vec3::new(2 as $t, 2 as $t, 2 as $t);
-            assert_eq!(vec![two, two].iter().product::<$vec3>(), two * two);
-            assert_eq!(vec![two, two].into_iter().product::<$vec3>(), two * two);
+            assert_eq!([two, two].iter().product::<$vec3>(), two * two);
+            assert_eq!([two, two].into_iter().product::<$vec3>(), two * two);
         });
     };
 }

@@ -331,10 +331,7 @@ macro_rules! impl_affine3_tests {
 
         glam_test!(test_product, {
             let ident = $affine3::IDENTITY;
-            assert_eq!(
-                vec![ident, ident].iter().product::<$affine3>(),
-                ident * ident
-            );
+            assert_eq!([ident, ident].iter().product::<$affine3>(), ident * ident);
         });
 
         glam_test!(test_affine3_is_finite, {
