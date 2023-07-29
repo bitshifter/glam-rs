@@ -561,7 +561,6 @@ macro_rules! impl_vec2_signed_tests {
             );
         });
 
-        #[cfg(not(feature = "libm"))]
         glam_test!(test_div_euclid, {
             let one = $vec2::ONE;
             let two = one + one;
@@ -572,7 +571,6 @@ macro_rules! impl_vec2_signed_tests {
             assert_eq!((-three).div_euclid(-two), two);
         });
 
-        #[cfg(not(feature = "libm"))]
         glam_test!(test_rem_euclid, {
             let one = $vec2::ONE;
             let two = one + one;

@@ -390,35 +390,27 @@ impl Vec4 {
     }
 
     /// Returns the element-wise quotient of [Euclidean division] of `self` by `rhs`.
-    ///
-
-    /// This is not SIMD-accelerated.
-
-    #[cfg(not(feature = "libm"))]
     #[inline]
     pub fn div_euclid(self, rhs: Self) -> Self {
-        let mut out = Self::default();
-        for i in 0..4 {
-            out[i] = self[i].div_euclid(rhs[i]);
-        }
-        out
+        Self::new(
+            math::div_euclid(self.x, rhs.x),
+            math::div_euclid(self.y, rhs.y),
+            math::div_euclid(self.z, rhs.z),
+            math::div_euclid(self.w, rhs.w),
+        )
     }
 
     /// Returns the element-wise remainder of [Euclidean division] of `self` by `rhs`.
     ///
-
-    /// This is not SIMD-accelerated.
-
-    ///
     /// [Euclidean division]: f32::rem_euclid
-    #[cfg(not(feature = "libm"))]
     #[inline]
     pub fn rem_euclid(self, rhs: Self) -> Self {
-        let mut out = Self::default();
-        for i in 0..4 {
-            out[i] = self[i].rem_euclid(rhs[i]);
-        }
-        out
+        Self::new(
+            math::rem_euclid(self.x, rhs.x),
+            math::rem_euclid(self.y, rhs.y),
+            math::rem_euclid(self.z, rhs.z),
+            math::rem_euclid(self.w, rhs.w),
+        )
     }
 
     /// Returns `self` normalized to length 1.0.

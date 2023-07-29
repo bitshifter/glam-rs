@@ -628,7 +628,6 @@ macro_rules! impl_vec3_signed_tests {
             assert_eq!(13 as $t, (2 as $t * x).distance_squared(-3 as $t * z));
         });
 
-        #[cfg(not(feature = "libm"))]
         glam_test!(test_div_euclid, {
             let one = $vec3::ONE;
             let two = one + one;
@@ -639,7 +638,6 @@ macro_rules! impl_vec3_signed_tests {
             assert_eq!((-three).div_euclid(-two), two);
         });
 
-        #[cfg(not(feature = "libm"))]
         glam_test!(test_rem_euclid, {
             let one = $vec3::ONE;
             let two = one + one;
