@@ -290,7 +290,6 @@ impl IVec2 {
     ///
     /// # Panics
     /// This function will panic if any `rhs` element is 0 or the division results in overflow.
-
     #[inline]
     pub fn div_euclid(self, rhs: Self) -> Self {
         Self::new(self.x.div_euclid(rhs.x), self.y.div_euclid(rhs.y))
@@ -300,7 +299,6 @@ impl IVec2 {
     ///
     /// # Panics
     /// This function will panic if any `rhs` element is 0 or the division results in overflow.
-
     ///
     /// [Euclidean division]: i32::rem_euclid
     #[inline]

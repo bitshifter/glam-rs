@@ -1080,7 +1080,7 @@ impl {{ self_t }} {
     ///
     /// # Panics
     /// This function will panic if any `rhs` element is 0 or the division results in overflow.
-    {% endif %}
+    {%- endif %}
     #[inline]
     pub fn div_euclid(self, rhs: Self) -> Self {
         Self::new(
@@ -1099,7 +1099,7 @@ impl {{ self_t }} {
     ///
     /// # Panics
     /// This function will panic if any `rhs` element is 0 or the division results in overflow.
-    {% endif %}
+    {%- endif %}
     ///
     /// [Euclidean division]: {{scalar_t}}::rem_euclid
     #[inline]
