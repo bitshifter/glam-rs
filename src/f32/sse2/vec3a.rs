@@ -415,6 +415,28 @@ impl Vec3A {
         (self - rhs).length_squared()
     }
 
+    /// Returns the element-wise quotient of [Euclidean division] of `self` by `rhs`.
+    #[inline]
+    pub fn div_euclid(self, rhs: Self) -> Self {
+        Self::new(
+            math::div_euclid(self.x, rhs.x),
+            math::div_euclid(self.y, rhs.y),
+            math::div_euclid(self.z, rhs.z),
+        )
+    }
+
+    /// Returns the element-wise remainder of [Euclidean division] of `self` by `rhs`.
+    ///
+    /// [Euclidean division]: f32::rem_euclid
+    #[inline]
+    pub fn rem_euclid(self, rhs: Self) -> Self {
+        Self::new(
+            math::rem_euclid(self.x, rhs.x),
+            math::rem_euclid(self.y, rhs.y),
+            math::rem_euclid(self.z, rhs.z),
+        )
+    }
+
     /// Returns `self` normalized to length 1.0.
     ///
     /// For valid results, `self` must _not_ be of length zero, nor very close to zero.

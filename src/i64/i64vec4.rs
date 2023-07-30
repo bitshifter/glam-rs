@@ -356,6 +356,36 @@ impl I64Vec4 {
         (self - rhs).length_squared()
     }
 
+    /// Returns the element-wise quotient of [Euclidean division] of `self` by `rhs`.
+    ///
+    /// # Panics
+    /// This function will panic if any `rhs` element is 0 or the division results in overflow.
+    #[inline]
+    pub fn div_euclid(self, rhs: Self) -> Self {
+        Self::new(
+            self.x.div_euclid(rhs.x),
+            self.y.div_euclid(rhs.y),
+            self.z.div_euclid(rhs.z),
+            self.w.div_euclid(rhs.w),
+        )
+    }
+
+    /// Returns the element-wise remainder of [Euclidean division] of `self` by `rhs`.
+    ///
+    /// # Panics
+    /// This function will panic if any `rhs` element is 0 or the division results in overflow.
+    ///
+    /// [Euclidean division]: i64::rem_euclid
+    #[inline]
+    pub fn rem_euclid(self, rhs: Self) -> Self {
+        Self::new(
+            self.x.rem_euclid(rhs.x),
+            self.y.rem_euclid(rhs.y),
+            self.z.rem_euclid(rhs.z),
+            self.w.rem_euclid(rhs.w),
+        )
+    }
+
     /// Casts all elements of `self` to `f32`.
     #[inline]
     pub fn as_vec4(&self) -> crate::Vec4 {

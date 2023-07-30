@@ -123,6 +123,26 @@ mod libm_math {
     pub(crate) fn mul_add(a: f32, b: f32, c: f32) -> f32 {
         libm::fmaf(a, b, c)
     }
+
+    #[inline]
+    pub fn div_euclid(a: f32, b: f32) -> f32 {
+        // Based on https://doc.rust-lang.org/src/std/f32.rs.html#293
+        let q = libm::truncf(a / b);
+        if a % b < 0.0 {
+            return if b > 0.0 { q - 1.0 } else { q + 1.0 };
+        }
+        q
+    }
+
+    #[inline]
+    pub fn rem_euclid(a: f32, b: f32) -> f32 {
+        let r = a % b;
+        if r < 0.0 {
+            r + abs(b)
+        } else {
+            r
+        }
+    }
 }
 
 #[cfg(not(feature = "libm"))]
@@ -211,6 +231,16 @@ mod std_math {
     #[inline(always)]
     pub(crate) fn mul_add(a: f32, b: f32, c: f32) -> f32 {
         f32::mul_add(a, b, c)
+    }
+
+    #[inline]
+    pub fn div_euclid(a: f32, b: f32) -> f32 {
+        f32::div_euclid(a, b)
+    }
+
+    #[inline]
+    pub fn rem_euclid(a: f32, b: f32) -> f32 {
+        f32::rem_euclid(a, b)
     }
 }
 

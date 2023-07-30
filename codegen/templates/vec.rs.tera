@@ -1074,6 +1074,46 @@ impl {{ self_t }} {
     pub fn distance_squared(self, rhs: Self) -> {{ scalar_t }} {
         (self - rhs).length_squared()
     }
+
+    /// Returns the element-wise quotient of [Euclidean division] of `self` by `rhs`.
+    {%- if not is_float%}
+    ///
+    /// # Panics
+    /// This function will panic if any `rhs` element is 0 or the division results in overflow.
+    {%- endif %}
+    #[inline]
+    pub fn div_euclid(self, rhs: Self) -> Self {
+        Self::new(
+            {% for c in components %}
+                {% if is_float %}
+                math::div_euclid(self.{{ c }}, rhs.{{ c }}),
+                {% else %}
+                self.{{ c }}.div_euclid(rhs.{{ c }}),
+                {% endif %}
+            {%- endfor %}
+        )
+    }
+
+    /// Returns the element-wise remainder of [Euclidean division] of `self` by `rhs`.
+    {%- if not is_float %}
+    ///
+    /// # Panics
+    /// This function will panic if any `rhs` element is 0 or the division results in overflow.
+    {%- endif %}
+    ///
+    /// [Euclidean division]: {{scalar_t}}::rem_euclid
+    #[inline]
+    pub fn rem_euclid(self, rhs: Self) -> Self {
+        Self::new(
+            {% for c in components %}
+                {% if is_float %}
+                math::rem_euclid(self.{{ c }}, rhs.{{ c }}),
+                {% else %}
+                self.{{ c }}.rem_euclid(rhs.{{ c }}),
+                {% endif %}
+            {%- endfor %}
+        )
+    }
 {% endif %}
 
 {% if is_float %}

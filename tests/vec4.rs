@@ -717,6 +717,27 @@ macro_rules! impl_vec4_signed_tests {
             assert_eq!(2 as $t, x.distance_squared(y));
             assert_eq!(13 as $t, (2 as $t * x).distance_squared(-3 as $t * z));
         });
+
+        glam_test!(test_div_euclid, {
+            let one = $vec4::ONE;
+            let two = one + one;
+            let three = two + one;
+            assert_eq!(three.div_euclid(two), one);
+            assert_eq!((-three).div_euclid(two), -two);
+            assert_eq!(three.div_euclid(-two), -one);
+            assert_eq!((-three).div_euclid(-two), two);
+        });
+
+        glam_test!(test_rem_euclid, {
+            let one = $vec4::ONE;
+            let two = one + one;
+            let three = two + one;
+            let four = three + one;
+            assert_eq!(four.rem_euclid(three), one);
+            assert_eq!((-four).rem_euclid(three), two);
+            assert_eq!(four.rem_euclid(-three), one);
+            assert_eq!((-four).rem_euclid(-three), two);
+        });
     };
 }
 
