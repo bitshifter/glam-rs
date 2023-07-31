@@ -518,7 +518,7 @@ impl Quat {
     /// is less than or equal to `max_abs_diff`.
     ///
     /// This can be used to compare if two quaternions contain similar elements. It works
-    /// best when comparing with a known value. The `max_abs_diff` that should be used used
+    /// best when comparing with a known value. The `max_abs_diff` that should be used
     /// depends on the values being compared against.
     ///
     /// For more see
