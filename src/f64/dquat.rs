@@ -1,7 +1,7 @@
 // Generated from quat.rs.tera template. Edit the template, not the generated file.
 
 use crate::{
-    euler::{EulerFromQuaternion, EulerRot, EulerToQuaternion},
+    euler::{EulerRot, EulerToQuaternion},
     f64::math,
     DMat3, DMat4, DVec2, DVec3, DVec4, Quat,
 };
@@ -361,10 +361,32 @@ impl DQuat {
         axis * angle
     }
 
-    /// Returns the rotation angles for the given euler rotation sequence.
+    /// Returns the rotation angles for the quaternion.
     #[inline]
-    pub fn to_euler(self, euler: EulerRot) -> (f64, f64, f64) {
-        euler.convert_quat(self)
+    pub fn to_euler(self) -> DVec3 {
+        use core::f64::consts::PI;
+        let q1 = self.normalize();
+        let test = q1.x * q1.y + q1.z * q1.w;
+        let mut output: DVec3 = DVec3::default();
+        if test > 0.499 {
+            // singularity at north pole
+            output.x = PI / 2.0;
+            output.y = 2.0 * q1.x.atan2(q1.w);
+            output.z = 0.0;
+        } else if test < -0.499 {
+            // singularity at south pole
+            output.y = -2.0 * q1.x.atan2(q1.w);
+            output.x = -PI / 2.0;
+            output.z = 0.0;
+        } else {
+            let sqx: f64 = q1.x * q1.x;
+            let sqy: f64 = q1.y * q1.y;
+            let sqz: f64 = q1.z * q1.z;
+            output.y = (2.0 * q1.y * q1.w - 2.0 * q1.x * q1.z).atan2(1.0 - 2.0 * sqy - 2.0 * sqz);
+            output.x = (2.0 * test).asin();
+            output.z = (2.0 * q1.x * q1.w - 2.0 * q1.y * q1.z).atan2(1.0 - 2.0 * sqx - 2.0 * sqz);
+        }
+        return output;
     }
 
     /// `[x, y, z, w]`
@@ -512,7 +534,7 @@ impl DQuat {
     /// is less than or equal to `max_abs_diff`.
     ///
     /// This can be used to compare if two quaternions contain similar elements. It works
-    /// best when comparing with a known value. The `max_abs_diff` that should be used used
+    /// best when comparing with a known value. The `max_abs_diff` that should be used
     /// depends on the values being compared against.
     ///
     /// For more see
