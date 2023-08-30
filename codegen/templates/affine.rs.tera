@@ -47,7 +47,7 @@ use crate::{
     {{ mat_t }}, {{ col_t}}, {{ mat4_t }}, {{ quat_t }},
 {% endif %}
 };
-use core::ops::{Deref, DerefMut, Mul};
+use core::ops::{Deref, DerefMut, Mul, MulAssign};
 
 /// A {{ dim }}D affine transform, which can represent translation, rotation, scaling and shear.
 {%- if is_align %}
@@ -697,6 +697,13 @@ impl Mul for {{ self_t }} {
             matrix{{ dim }}: self.matrix{{ dim }} * rhs.matrix{{ dim }},
             translation: self.matrix{{ dim }} * rhs.translation + self.translation,
         }
+    }
+}
+
+impl MulAssign for {{ self_t }} {
+    #[inline]
+    fn mul_assign(&mut self, rhs: {{ self_t }}) {
+        *self = self.mul(rhs);
     }
 }
 

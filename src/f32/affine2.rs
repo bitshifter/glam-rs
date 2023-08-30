@@ -1,7 +1,7 @@
 // Generated from affine.rs.tera template. Edit the template, not the generated file.
 
 use crate::{Mat2, Mat3, Mat3A, Vec2, Vec3A};
-use core::ops::{Deref, DerefMut, Mul};
+use core::ops::{Deref, DerefMut, Mul, MulAssign};
 
 /// A 2D affine transform, which can represent translation, rotation, scaling and shear.
 #[derive(Copy, Clone)]
@@ -336,6 +336,13 @@ impl Mul for Affine2 {
             matrix2: self.matrix2 * rhs.matrix2,
             translation: self.matrix2 * rhs.translation + self.translation,
         }
+    }
+}
+
+impl MulAssign for Affine2 {
+    #[inline]
+    fn mul_assign(&mut self, rhs: Affine2) {
+        *self = self.mul(rhs);
     }
 }
 
