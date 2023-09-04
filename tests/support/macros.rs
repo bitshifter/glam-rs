@@ -56,6 +56,22 @@ macro_rules! assert_approx_eq {
             a.abs_diff(b)
         );
     }};
+    ($a:expr, $b:expr, $eps:expr, $ctx:expr) => {{
+        use $crate::support::FloatCompare;
+        let (a, b) = (&$a, &$b);
+        let eps = $eps;
+        assert!(
+            a.approx_eq(b, $eps),
+            "assertion failed: `(left !== right)` \
+             (left: `{:?}`, right: `{:?}`, expect diff: `{:?}`, real diff: `{:?}`), \
+             additional context: {}",
+            *a,
+            *b,
+            eps,
+            a.abs_diff(b),
+            $ctx
+        );
+    }};
 }
 
 /// Test vector normalization for float vector
