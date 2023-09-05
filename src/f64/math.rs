@@ -11,8 +11,8 @@ mod libm_math {
     }
 
     #[inline(always)]
-    pub(crate) fn asin_clamped(f: f64) -> f64 {
-        libm::asin(f.clamp(-1.0, 1.0))
+    pub(crate) fn asin(f: f64) -> f64 {
+        libm::asin(f)
     }
 
     #[inline(always)]
@@ -123,8 +123,8 @@ mod std_math {
     }
 
     #[inline(always)]
-    pub(crate) fn asin_clamped(f: f64) -> f64 {
-        f64::asin(f64::clamp(f, -1.0, 1.0))
+    pub(crate) fn asin(f: f64) -> f64 {
+        f64::asin(f)
     }
 
     #[inline(always)]
