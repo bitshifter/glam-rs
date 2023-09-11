@@ -286,6 +286,33 @@ impl {{ self_t }} {
     }
 {% endif %}
 
+    /// Extracts `scale`, `angle` and `translation` from `self`.
+    ///
+    /// The transform is expected to be non-degenerate and without shearing, or the output
+    /// will be invalid.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if the determinant `self.matrix2` is zero or if the resulting scale
+    /// vector contains any zero elements when `glam_assert` is enabled.
+    #[inline]
+    pub fn to_scale_angle_translation(self) -> ({{ vec2_t }}, {{ scalar_t }}, {{ vec2_t }}) {
+        use crate::{{ scalar_t }}::math;
+        let det = self.matrix2.determinant();
+        glam_assert!(det != 0.0);
+
+        let scale = {{ col_t }}::new(
+            self.matrix2.x_axis.length() * math::signum(det),
+            self.matrix2.y_axis.length(),
+        );
+
+        glam_assert!(scale.cmpne({{ col_t }}::ZERO).all());
+
+        let angle = math::atan2(-self.matrix2.y_axis.x, self.matrix2.y_axis.y);
+
+        (scale, angle, self.translation)
+    }
+
     /// Transforms the given 2D point, applying shear, scale, rotation and translation.
     #[inline]
     pub fn transform_point2(&self, rhs: {{ vec2_t }}) -> {{ vec2_t }} {

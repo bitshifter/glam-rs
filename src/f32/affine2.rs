@@ -206,6 +206,33 @@ impl Affine2 {
         }
     }
 
+    /// Extracts `scale`, `angle` and `translation` from `self`.
+    ///
+    /// The transform is expected to be non-degenerate and without shearing, or the output
+    /// will be invalid.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if the determinant `self.matrix2` is zero or if the resulting scale
+    /// vector contains any zero elements when `glam_assert` is enabled.
+    #[inline]
+    pub fn to_scale_angle_translation(self) -> (Vec2, f32, Vec2) {
+        use crate::f32::math;
+        let det = self.matrix2.determinant();
+        glam_assert!(det != 0.0);
+
+        let scale = Vec2::new(
+            self.matrix2.x_axis.length() * math::signum(det),
+            self.matrix2.y_axis.length(),
+        );
+
+        glam_assert!(scale.cmpne(Vec2::ZERO).all());
+
+        let angle = math::atan2(-self.matrix2.y_axis.x, self.matrix2.y_axis.y);
+
+        (scale, angle, self.translation)
+    }
+
     /// Transforms the given 2D point, applying shear, scale, rotation and translation.
     #[inline]
     pub fn transform_point2(&self, rhs: Vec2) -> Vec2 {
