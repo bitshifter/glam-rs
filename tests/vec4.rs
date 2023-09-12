@@ -1270,6 +1270,7 @@ macro_rules! impl_vec4_bit_op_tests {
         });
     };
 }
+
 mod vec4 {
     #[cfg(any(
         not(any(target_feature = "sse2", target_feature = "simd128")),
@@ -1547,6 +1548,62 @@ mod ivec4 {
         assert!(IVec4::try_from(U64Vec4::new(1, 2, 3, u64::MAX)).is_err());
     });
 
+    glam_test!(test_wrapping_add, {
+        assert_eq!(
+            IVec4::new(i32::MAX, 5, i32::MIN, 0).wrapping_add(IVec4::new(1, 3, i32::MAX, 0)),
+            IVec4::new(i32::MIN, 8, -1, 0),
+        );
+    });
+
+    glam_test!(test_wrapping_sub, {
+        assert_eq!(
+            IVec4::new(i32::MAX, 5, i32::MIN, 0).wrapping_sub(IVec4::new(1, 3, i32::MAX, 0)),
+            IVec4::new(2147483646, 2, 1, 0)
+        );
+    });
+
+    glam_test!(test_wrapping_mul, {
+        assert_eq!(
+            IVec4::new(i32::MAX, 5, i32::MIN, 0).wrapping_mul(IVec4::new(3, 3, 5, 1)),
+            IVec4::new(2147483645, 15, -2147483648, 0)
+        );
+    });
+
+    glam_test!(test_wrapping_div, {
+        assert_eq!(
+            IVec4::new(i32::MAX, 5, i32::MIN, 0).wrapping_div(IVec4::new(3, 3, 5, 1)),
+            IVec4::new(715827882, 1, -429496729, 0)
+        );
+    });
+
+    glam_test!(test_saturating_add, {
+        assert_eq!(
+            IVec4::new(i32::MAX, i32::MIN, 0, 0).saturating_add(IVec4::new(1, -1, 2, 3)),
+            IVec4::new(i32::MAX, i32::MIN, 2, 3)
+        );
+    });
+
+    glam_test!(test_saturating_sub, {
+        assert_eq!(
+            IVec4::new(i32::MIN, i32::MAX, 0, 0).saturating_sub(IVec4::new(1, -1, 2, 3)),
+            IVec4::new(i32::MIN, i32::MAX, -2, -3)
+        );
+    });
+
+    glam_test!(test_saturating_mul, {
+        assert_eq!(
+            IVec4::new(i32::MAX, i32::MIN, 0, 0).saturating_mul(IVec4::new(2, 2, 0, 0)),
+            IVec4::new(i32::MAX, i32::MIN, 0, 0)
+        );
+    });
+
+    glam_test!(test_saturating_div, {
+        assert_eq!(
+            IVec4::new(i32::MAX, i32::MIN, 0, 0).saturating_div(IVec4::new(2, 2, 3, 4)),
+            IVec4::new(1073741823, -1073741824, 0, 0)
+        );
+    });
+
     impl_vec4_signed_integer_tests!(i32, ivec4, IVec4, IVec3, IVec2, BVec4);
     impl_vec4_eq_hash_tests!(i32, ivec4);
 
@@ -1603,6 +1660,62 @@ mod uvec4 {
         assert!(UVec4::try_from(U64Vec4::new(1, u64::MAX, 3, 4)).is_err());
         assert!(UVec4::try_from(U64Vec4::new(1, 2, u64::MAX, 4)).is_err());
         assert!(UVec4::try_from(U64Vec4::new(1, 2, 3, u64::MAX)).is_err());
+    });
+
+    glam_test!(test_wrapping_add, {
+        assert_eq!(
+            UVec4::new(u32::MAX, 5, u32::MAX, 0).wrapping_add(UVec4::new(1, 3, u32::MAX, 0)),
+            UVec4::new(0, 8, 4294967294, 0),
+        );
+    });
+
+    glam_test!(test_wrapping_sub, {
+        assert_eq!(
+            UVec4::new(u32::MAX, 5, u32::MAX - 1, 0).wrapping_sub(UVec4::new(1, 3, u32::MAX, 0)),
+            UVec4::new(4294967294, 2, 4294967295, 0)
+        );
+    });
+
+    glam_test!(test_wrapping_mul, {
+        assert_eq!(
+            UVec4::new(u32::MAX, 5, u32::MAX, 0).wrapping_mul(UVec4::new(3, 3, 5, 1)),
+            UVec4::new(4294967293, 15, 4294967291, 0)
+        );
+    });
+
+    glam_test!(test_wrapping_div, {
+        assert_eq!(
+            UVec4::new(u32::MAX, 5, u32::MAX, 0).wrapping_div(UVec4::new(3, 3, 5, 1)),
+            UVec4::new(1431655765, 1, 858993459, 0)
+        );
+    });
+
+    glam_test!(test_saturating_add, {
+        assert_eq!(
+            UVec4::new(u32::MAX, u32::MAX, 0, 0).saturating_add(UVec4::new(1, u32::MAX, 2, 3)),
+            UVec4::new(u32::MAX, u32::MAX, 2, 3)
+        );
+    });
+
+    glam_test!(test_saturating_sub, {
+        assert_eq!(
+            UVec4::new(0, u32::MAX, 0, 0).saturating_sub(UVec4::new(1, 1, 2, 3)),
+            UVec4::new(0, 4294967294, 0, 0)
+        );
+    });
+
+    glam_test!(test_saturating_mul, {
+        assert_eq!(
+            UVec4::new(u32::MAX, u32::MAX, 0, 0).saturating_mul(UVec4::new(2, u32::MAX, 0, 0)),
+            UVec4::new(u32::MAX, u32::MAX, 0, 0)
+        );
+    });
+
+    glam_test!(test_saturating_div, {
+        assert_eq!(
+            UVec4::new(u32::MAX, u32::MAX, 0, 0).saturating_div(UVec4::new(2, u32::MAX, 3, 4)),
+            UVec4::new(2147483647, 1, 0, 0)
+        );
     });
 
     impl_vec4_tests!(u32, uvec4, UVec4, UVec3, UVec2, BVec4);
