@@ -1416,6 +1416,62 @@ mod ivec3 {
         assert!(IVec3::try_from(U64Vec3::new(1, 2, u64::MAX)).is_err());
     });
 
+    glam_test!(test_wrapping_add, {
+        assert_eq!(
+            IVec3::new(i32::MAX, 5, i32::MIN).wrapping_add(IVec3::new(1, 3, i32::MAX)),
+            IVec3::new(i32::MIN, 8, -1),
+        );
+    });
+
+    glam_test!(test_wrapping_sub, {
+        assert_eq!(
+            IVec3::new(i32::MAX, 5, i32::MIN).wrapping_sub(IVec3::new(1, 3, i32::MAX)),
+            IVec3::new(2147483646, 2, 1),
+        );
+    });
+
+    glam_test!(test_wrapping_mul, {
+        assert_eq!(
+            IVec3::new(i32::MAX, 5, i32::MIN).wrapping_mul(IVec3::new(3, 3, 5)),
+            IVec3::new(2147483645, 15, -2147483648)
+        );
+    });
+
+    glam_test!(test_wrapping_div, {
+        assert_eq!(
+            IVec3::new(i32::MAX, 5, i32::MIN).wrapping_div(IVec3::new(3, 3, 5)),
+            IVec3::new(715827882, 1, -429496729)
+        );
+    });
+
+    glam_test!(test_saturating_add, {
+        assert_eq!(
+            IVec3::new(i32::MAX, i32::MIN, 0).saturating_add(IVec3::new(1, -1, 2)),
+            IVec3::new(i32::MAX, i32::MIN, 2)
+        );
+    });
+
+    glam_test!(test_saturating_sub, {
+        assert_eq!(
+            IVec3::new(i32::MIN, i32::MAX, 0).saturating_sub(IVec3::new(1, -1, 2)),
+            IVec3::new(i32::MIN, i32::MAX, -2)
+        );
+    });
+
+    glam_test!(test_saturating_mul, {
+        assert_eq!(
+            IVec3::new(i32::MAX, i32::MIN, 0).saturating_mul(IVec3::new(2, 2, 0)),
+            IVec3::new(i32::MAX, i32::MIN, 0)
+        );
+    });
+
+    glam_test!(test_saturating_div, {
+        assert_eq!(
+            IVec3::new(i32::MAX, i32::MIN, 0).saturating_div(IVec3::new(2, 2, 3)),
+            IVec3::new(1073741823, -1073741824, 0)
+        );
+    });
+
     impl_vec3_signed_integer_tests!(i32, ivec3, IVec3, BVec3);
     impl_vec3_eq_hash_tests!(i32, ivec3);
 
@@ -1465,6 +1521,62 @@ mod uvec3 {
         assert!(UVec3::try_from(U64Vec3::new(u64::MAX, 2, 3)).is_err());
         assert!(UVec3::try_from(U64Vec3::new(1, u64::MAX, 3)).is_err());
         assert!(UVec3::try_from(U64Vec3::new(1, 2, u64::MAX)).is_err());
+    });
+
+    glam_test!(test_wrapping_add, {
+        assert_eq!(
+            UVec3::new(u32::MAX, 5, u32::MAX).wrapping_add(UVec3::new(1, 3, u32::MAX)),
+            UVec3::new(0, 8, 4294967294),
+        );
+    });
+
+    glam_test!(test_wrapping_sub, {
+        assert_eq!(
+            UVec3::new(u32::MAX, 5, u32::MAX - 1).wrapping_sub(UVec3::new(1, 3, u32::MAX)),
+            UVec3::new(4294967294, 2, 4294967295)
+        );
+    });
+
+    glam_test!(test_wrapping_mul, {
+        assert_eq!(
+            UVec3::new(u32::MAX, 5, u32::MAX).wrapping_mul(UVec3::new(3, 3, 5)),
+            UVec3::new(4294967293, 15, 4294967291)
+        );
+    });
+
+    glam_test!(test_wrapping_div, {
+        assert_eq!(
+            UVec3::new(u32::MAX, 5, u32::MAX).wrapping_div(UVec3::new(3, 3, 5)),
+            UVec3::new(1431655765, 1, 858993459)
+        );
+    });
+
+    glam_test!(test_saturating_add, {
+        assert_eq!(
+            UVec3::new(u32::MAX, u32::MAX, 0).saturating_add(UVec3::new(1, u32::MAX, 2)),
+            UVec3::new(u32::MAX, u32::MAX, 2)
+        );
+    });
+
+    glam_test!(test_saturating_sub, {
+        assert_eq!(
+            UVec3::new(0, u32::MAX, 0).saturating_sub(UVec3::new(1, 1, 2)),
+            UVec3::new(0, 4294967294, 0)
+        );
+    });
+
+    glam_test!(test_saturating_mul, {
+        assert_eq!(
+            UVec3::new(u32::MAX, u32::MAX, 0).saturating_mul(UVec3::new(2, u32::MAX, 0)),
+            UVec3::new(u32::MAX, u32::MAX, 0)
+        );
+    });
+
+    glam_test!(test_saturating_div, {
+        assert_eq!(
+            UVec3::new(u32::MAX, u32::MAX, 0).saturating_div(UVec3::new(2, u32::MAX, 3)),
+            UVec3::new(2147483647, 1, 0)
+        );
     });
 
     impl_vec3_tests!(u32, uvec3, UVec3, BVec3);
