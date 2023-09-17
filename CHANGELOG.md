@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+### Fixed
+
+* Fixed singularities in `Quat::to_euler`.
+
+### Added
+
+* Added `div_euclid` and `rem_euclid` to integer vector types.
+
+* Added wrapping and saturating arithmetic operations to integer vector types.
+
+* Added `to_scale_angle_translation` to 2D affine types.
+
+### Changed
+
+* Disable default features on optional `rkyv` dependency.
+
 ## [0.24.1] - 2023-06-24
 
 ### Added
@@ -14,7 +32,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 * Added missing safe `From` conversions from `f32` vectors to `f64` vectors.
 
-* Added `TryFrom` implemetations between different vector types.
+* Added `TryFrom` implementations between different vector types.
 
 * Added `test` and `set` methods to `bool` vector types for testing and setting
   individual mask elements.
