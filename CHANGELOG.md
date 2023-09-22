@@ -19,6 +19,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 * Added `to_scale_angle_translation` to 2D affine types.
 
+* Added `mul_assign` ops to affine types.
+
 ### Changed
 
 * Disable default features on optional `rkyv` dependency.
