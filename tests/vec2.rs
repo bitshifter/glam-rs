@@ -911,6 +911,16 @@ macro_rules! impl_vec2_float_tests {
                 $vec2::new(0.0, -1.0)
             );
         });
+
+        glam_test!(test_to_angle, {
+            assert_approx_eq!($vec2::new(1.0, 0.0).to_angle(), 0.0);
+            assert_approx_eq!($vec2::new(0.0, 1.0).to_angle(), core::$t::consts::FRAC_PI_2);
+            assert_approx_eq!($vec2::new(-1.0, 0.0).to_angle(), core::$t::consts::PI);
+            assert_approx_eq!(
+                $vec2::new(0.0, -1.0).to_angle(),
+                -core::$t::consts::FRAC_PI_2
+            );
+        });
     };
 }
 

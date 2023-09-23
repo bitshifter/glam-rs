@@ -1487,6 +1487,14 @@ impl {{ self_t }} {
         }
     }
 
+    /// Returns the angle (in radians) of this vector.
+    ///
+    /// The input does not need to be a unit vector however it must be non-zero.
+    #[inline]
+    pub fn to_angle(self) -> {{ scalar_t }} {
+        math::atan2(self.y, self.x)
+    }
+
     /// Returns the angle (in radians) between `self` and `rhs` in the range `[-π, +π]`.
     ///
     /// The inputs do not need to be unit vectors however they must be non-zero.
