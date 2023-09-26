@@ -1,5 +1,6 @@
 mod affine2;
 mod affine3a;
+mod float;
 mod mat3;
 pub(crate) mod math;
 mod vec2;
