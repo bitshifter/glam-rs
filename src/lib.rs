@@ -330,6 +330,6 @@ pub use self::swizzles::{Vec2Swizzles, Vec3Swizzles, Vec4Swizzles};
 /** Rotation Helper */
 pub use euler::EulerRot;
 
-/** A trait for extending [`f32`] and [`f64`] with extra methods. */
+/** A trait for extending [`prim@f32`] and [`prim@f64`] with extra methods. */
 mod float;
 pub use float::Float;

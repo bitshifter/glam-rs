@@ -1,4 +1,4 @@
-/// A trait for extending [`f32`] and [`f64`] with extra methods.
+/// A trait for extending [`prim@f32`] and [`prim@f64`] with extra methods.
 pub trait Float {
     /// Performs a linear interpolation between `self` and `rhs` based on the value `t`.
     ///
