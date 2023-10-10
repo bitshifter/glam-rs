@@ -896,35 +896,27 @@ macro_rules! impl_vec2_float_tests {
             );
         });
 
-        glam_test!(test_from_angle, {
-            assert_approx_eq!($vec2::from_angle(0.0), $vec2::new(1.0, 0.0));
-            assert_approx_eq!(
-                $vec2::from_angle(core::$t::consts::FRAC_PI_2),
-                $vec2::new(0.0, 1.0)
-            );
-            assert_approx_eq!(
-                $vec2::from_angle(core::$t::consts::PI),
-                $vec2::new(-1.0, 0.0)
-            );
-            assert_approx_eq!(
-                $vec2::from_angle(-core::$t::consts::FRAC_PI_2),
-                $vec2::new(0.0, -1.0)
-            );
-        });
-
-        glam_test!(test_to_angle, {
-            assert_approx_eq!($vec2::new(1.0, 0.0).to_angle(), 0.0);
-            assert_approx_eq!(
-                $vec2::new(0.0, 1.0).to_angle(),
-                core::$t::consts::FRAC_PI_2,
-                1e-6
-            );
-            assert_approx_eq!($vec2::new(-1.0, 0.0).to_angle(), core::$t::consts::PI, 1e-6);
-            assert_approx_eq!(
-                $vec2::new(0.0, -1.0).to_angle(),
-                -core::$t::consts::FRAC_PI_2,
-                1e-6
-            );
+        glam_test!(test_angle_conversion, {
+            let angle = 0.;
+            let vec = $vec2::from_angle(angle);
+            assert_approx_eq!(vec, $vec2::new(1.0, 0.0));
+            assert_approx_eq!(vec.to_angle(), angle);
+        
+            let angle = core::$t::consts::FRAC_PI_2;
+            let vec = $vec2::from_angle(angle);
+            assert_approx_eq!(vec, $vec2::new(0.0, 1.0));
+            assert_approx_eq!(vec.to_angle(), angle);
+        
+            let angle = core::$t::consts::PI;
+            let vec = $vec2::from_angle(angle);
+            assert_approx_eq!(vec, $vec2::new(-1.0, 0.0));
+            // The sign of the angle PI gets flipped and is slightly less precise but correct
+            assert_approx_eq!(vec.to_angle().abs(), angle, 1e-6);
+        
+            let angle = -core::$t::consts::FRAC_PI_2;
+            let vec = $vec2::from_angle(angle);
+            assert_approx_eq!(vec, $vec2::new(0.0, -1.0));
+            assert_approx_eq!(vec.to_angle(), angle);
         });
     };
 }
