@@ -901,18 +901,18 @@ macro_rules! impl_vec2_float_tests {
             let vec = $vec2::from_angle(angle);
             assert_approx_eq!(vec, $vec2::new(1.0, 0.0));
             assert_approx_eq!(vec.to_angle(), angle);
-        
+
             let angle = core::$t::consts::FRAC_PI_2;
             let vec = $vec2::from_angle(angle);
             assert_approx_eq!(vec, $vec2::new(0.0, 1.0));
             assert_approx_eq!(vec.to_angle(), angle);
-        
+
             let angle = core::$t::consts::PI;
             let vec = $vec2::from_angle(angle);
             assert_approx_eq!(vec, $vec2::new(-1.0, 0.0));
             // The sign of the angle PI gets flipped and is slightly less precise but correct
             assert_approx_eq!(vec.to_angle().abs(), angle, 1e-6);
-        
+
             let angle = -core::$t::consts::FRAC_PI_2;
             let vec = $vec2::from_angle(angle);
             assert_approx_eq!(vec, $vec2::new(0.0, -1.0));
