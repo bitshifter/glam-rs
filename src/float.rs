@@ -1,5 +1,5 @@
 /// A trait for extending [`prim@f32`] and [`prim@f64`] with extra methods.
-pub trait Float {
+pub trait FloatExt {
     /// Performs a linear interpolation between `self` and `rhs` based on the value `t`.
     ///
     /// When `t` is `0`, the result will be `self`.  When `t` is `1`, the result

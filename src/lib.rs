@@ -332,4 +332,4 @@ pub use euler::EulerRot;
 
 /** A trait for extending [`prim@f32`] and [`prim@f64`] with extra methods. */
 mod float;
-pub use float::Float;
+pub use float::FloatExt;

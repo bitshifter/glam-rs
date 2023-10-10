@@ -36,13 +36,13 @@ macro_rules! impl_float_tests {
 }
 
 mod float32 {
-    use glam::Float;
+    use glam::FloatExt;
 
     impl_float_tests!(f32);
 }
 
 mod float64 {
-    use glam::Float;
+    use glam::FloatExt;
 
     impl_float_tests!(f64);
 }

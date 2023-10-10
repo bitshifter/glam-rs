@@ -1,8 +1,8 @@
 // Generated from float.rs.tera template. Edit the template, not the generated file.
 
-use crate::float::Float;
+use crate::float::FloatExt;
 
-impl Float for f32 {
+impl FloatExt for f32 {
     #[inline]
     fn lerp(self, rhs: f32, t: f32) -> f32 {
         self + (rhs - self) * t

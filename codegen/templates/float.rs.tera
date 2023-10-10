@@ -1,8 +1,8 @@
 // Generated from {{template_path}} template. Edit the template, not the generated file.
 
-use crate::float::Float;
+use crate::float::FloatExt;
 
-impl Float for {{ scalar_t }} {
+impl FloatExt for {{ scalar_t }} {
     #[inline]
     fn lerp(self, rhs: {{ scalar_t }}, t: {{ scalar_t }}) -> {{ scalar_t }} {
         self + (rhs - self) * t
