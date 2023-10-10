@@ -648,7 +648,7 @@ impl Vec2 {
         Self { x: cos, y: sin }
     }
 
-    /// Returns the angle (in radians) of this vector.
+    /// Returns the angle (in radians) of this vector in the range `[-π, +π]`.
     ///
     /// The input does not need to be a unit vector however it must be non-zero.
     #[inline]
