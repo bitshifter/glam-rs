@@ -648,6 +648,14 @@ impl DVec2 {
         Self { x: cos, y: sin }
     }
 
+    /// Returns the angle (in radians) of this vector in the range `[-π, +π]`.
+    ///
+    /// The input does not need to be a unit vector however it must be non-zero.
+    #[inline]
+    pub fn to_angle(self) -> f64 {
+        math::atan2(self.y, self.x)
+    }
+
     /// Returns the angle (in radians) between `self` and `rhs` in the range `[-π, +π]`.
     ///
     /// The inputs do not need to be unit vectors however they must be non-zero.
