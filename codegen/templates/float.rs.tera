@@ -1,0 +1,21 @@
+// Generated from {{template_path}} template. Edit the template, not the generated file.
+
+use crate::float::FloatExt;
+
+impl FloatExt for {{ scalar_t }} {
+    #[inline]
+    fn lerp(self, rhs: {{ scalar_t }}, t: {{ scalar_t }}) -> {{ scalar_t }} {
+        self + (rhs - self) * t
+    }
+
+    #[inline]
+    fn inverse_lerp(a: {{ scalar_t }}, b: {{ scalar_t }}, v: {{ scalar_t }}) -> {{ scalar_t }} {
+        (v - a) / (b - a)
+    }
+
+    #[inline]
+    fn remap(self, in_start: {{ scalar_t }}, in_end: {{ scalar_t }}, out_start: {{ scalar_t }}, out_end: {{ scalar_t }}) -> {{ scalar_t }} {
+        let t = {{ scalar_t }}::inverse_lerp(in_start, in_end, self);
+        {{ scalar_t }}::lerp(out_start, out_end, t)
+    }
+}

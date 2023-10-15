@@ -138,6 +138,12 @@ impl ContextBuilder {
             .with_dimension(dim)
     }
 
+    pub fn new_float(scalar_t: &str) -> Self {
+        ContextBuilder::new()
+            .with_template("float.rs.tera")
+            .with_scalar_t(scalar_t)
+    }
+
     pub fn new_bvec2() -> Self {
         Self::new_bvecn(2, "bool")
     }
@@ -622,5 +628,7 @@ pub fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
         ),
         ("src/f64/dmat3.rs", ContextBuilder::new_dmat3().build()),
         ("src/f64/dmat4.rs", ContextBuilder::new_dmat4().build()),
+        ("src/f32/float.rs", ContextBuilder::new_float("f32").build()),
+        ("src/f64/float.rs", ContextBuilder::new_float("f64").build()),
     ])
 }
