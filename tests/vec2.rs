@@ -1166,11 +1166,14 @@ mod i16vec2 {
 
     glam_test!(test_align, {
         use core::mem;
+        #[cfg(not(feature = "cuda"))]
+        assert_eq!(2, mem::align_of::<I16Vec2>());
+        #[cfg(not(feature = "cuda"))]
         assert_eq!(4, mem::size_of::<I16Vec2>());
-        // #[cfg(not(feature = "cuda"))]
-        // assert_eq!(4, mem::align_of::<I16Vec2>());
-        // #[cfg(feature = "cuda")]
-        // assert_eq!(8, mem::align_of::<I16Vec2>());
+        #[cfg(feature = "cuda")]
+        assert_eq!(8, mem::align_of::<I16Vec2>());
+        #[cfg(feature = "cuda")]
+        assert_eq!(8, mem::size_of::<I16Vec2>());
     });
 
     glam_test!(test_try_from, {
@@ -1281,11 +1284,14 @@ mod u16vec2 {
 
     glam_test!(test_align, {
         use core::mem;
-        assert_eq!(4, mem::size_of::<U16Vec2>());
         #[cfg(not(feature = "cuda"))]
         assert_eq!(2, mem::align_of::<U16Vec2>());
+        #[cfg(not(feature = "cuda"))]
+        assert_eq!(4, mem::size_of::<U16Vec2>());
         #[cfg(feature = "cuda")]
-        assert_eq!(4, mem::align_of::<U16Vec2>());
+        assert_eq!(8, mem::align_of::<U16Vec2>());
+        #[cfg(feature = "cuda")]
+        assert_eq!(8, mem::size_of::<U16Vec2>());
     });
 
     glam_test!(test_try_from, {

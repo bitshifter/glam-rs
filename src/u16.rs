@@ -16,9 +16,13 @@ mod test {
             core::mem::align_of::<u16>(),
             core::mem::align_of::<super::U16Vec2>()
         );
-        #[cfg(feature = "cuda")]
-        const_assert_eq!(4, core::mem::align_of::<super::U16Vec2>());
+        #[cfg(not(feature = "cuda"))]
         const_assert_eq!(4, core::mem::size_of::<super::U16Vec2>());
+        #[cfg(feature = "cuda")]
+
+        const_assert_eq!(8, core::mem::align_of::<super::U16Vec2>());
+        #[cfg(feature = "cuda")]
+        const_assert_eq!(8, core::mem::size_of::<super::U16Vec2>());
     }
 
     mod const_test_u16vec3 {
@@ -35,8 +39,12 @@ mod test {
             core::mem::align_of::<u16>(),
             core::mem::align_of::<super::U16Vec4>()
         );
-        #[cfg(feature = "cuda")]
-        const_assert_eq!(8, core::mem::align_of::<super::U16Vec4>());
+        #[cfg(not(feature = "cuda"))]
         const_assert_eq!(8, core::mem::size_of::<super::U16Vec4>());
+
+        #[cfg(feature = "cuda")]
+        const_assert_eq!(16, core::mem::align_of::<super::U16Vec4>());
+        #[cfg(feature = "cuda")]
+        const_assert_eq!(16, core::mem::size_of::<super::U16Vec4>());
     }
 }
