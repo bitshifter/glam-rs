@@ -727,6 +727,14 @@ mod test_f64 {
 }
 
 #[cfg(test)]
+mod test_i16 {
+    pub const V1: i16 = 1;
+    pub const V2: i16 = 2;
+    pub const V3: i16 = 3;
+    pub const V4: i16 = 4;
+}
+
+#[cfg(test)]
 mod test_i32 {
     pub const V1: i32 = 1;
     pub const V2: i32 = 2;
@@ -740,6 +748,14 @@ mod test_i64 {
     pub const V2: i64 = 2;
     pub const V3: i64 = 3;
     pub const V4: i64 = 4;
+}
+
+#[cfg(test)]
+mod test_u16 {
+    pub const V1: u16 = 1;
+    pub const V2: u16 = 2;
+    pub const V3: u16 = 3;
+    pub const V4: u16 = 4;
 }
 
 #[cfg(test)]
