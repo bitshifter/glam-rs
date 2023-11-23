@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec2, I64Vec2, IVec3, U64Vec2, UVec2};
+use crate::{BVec2, I16Vec2, I64Vec2, IVec3, U16Vec2, U64Vec2, UVec2};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -347,6 +347,18 @@ impl IVec2 {
     #[inline]
     pub fn as_dvec2(&self) -> crate::DVec2 {
         crate::DVec2::new(self.x as f64, self.y as f64)
+    }
+
+    /// Casts all elements of `self` to `i16`.
+    #[inline]
+    pub fn as_i16vec2(&self) -> crate::I16Vec2 {
+        crate::I16Vec2::new(self.x as i16, self.y as i16)
+    }
+
+    /// Casts all elements of `self` to `u16`.
+    #[inline]
+    pub fn as_u16vec2(&self) -> crate::U16Vec2 {
+        crate::U16Vec2::new(self.x as u16, self.y as u16)
     }
 
     /// Casts all elements of `self` to `u32`.
@@ -1148,6 +1160,20 @@ impl From<IVec2> for (i32, i32) {
     }
 }
 
+impl From<I16Vec2> for IVec2 {
+    #[inline]
+    fn from(v: I16Vec2) -> Self {
+        Self::new(i32::from(v.x), i32::from(v.y))
+    }
+}
+
+impl From<U16Vec2> for IVec2 {
+    #[inline]
+    fn from(v: U16Vec2) -> Self {
+        Self::new(i32::from(v.x), i32::from(v.y))
+    }
+}
+
 impl TryFrom<UVec2> for IVec2 {
     type Error = core::num::TryFromIntError;
 
@@ -1157,20 +1183,20 @@ impl TryFrom<UVec2> for IVec2 {
     }
 }
 
-impl TryFrom<U64Vec2> for IVec2 {
-    type Error = core::num::TryFromIntError;
-
-    #[inline]
-    fn try_from(v: U64Vec2) -> Result<Self, Self::Error> {
-        Ok(Self::new(i32::try_from(v.x)?, i32::try_from(v.y)?))
-    }
-}
-
 impl TryFrom<I64Vec2> for IVec2 {
     type Error = core::num::TryFromIntError;
 
     #[inline]
     fn try_from(v: I64Vec2) -> Result<Self, Self::Error> {
+        Ok(Self::new(i32::try_from(v.x)?, i32::try_from(v.y)?))
+    }
+}
+
+impl TryFrom<U64Vec2> for IVec2 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: U64Vec2) -> Result<Self, Self::Error> {
         Ok(Self::new(i32::try_from(v.x)?, i32::try_from(v.y)?))
     }
 }

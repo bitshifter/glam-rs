@@ -37,6 +37,22 @@
         {% set vec4_t = "DVec4" %}
         {% set from_types = ["Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim] %}
     {% endif %}
+{% elif scalar_t == "i16" %}
+    {% set is_signed = true %}
+    {% set is_float = false %}
+    {% set self_t = "I16Vec" ~ dim %}
+    {% set vec2_t = "I16Vec2" %}
+    {% set vec3_t = "I16Vec3" %}
+    {% set vec4_t = "I16Vec4" %}
+    {% set try_from_types = ["U16Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim] %}
+{% elif scalar_t == "u16" %}
+    {% set is_signed = false %}
+    {% set is_float = false %}
+    {% set self_t = "U16Vec" ~ dim %}
+    {% set vec2_t = "U16Vec2" %}
+    {% set vec3_t = "U16Vec3" %}
+    {% set vec4_t = "U16Vec4" %}
+    {% set try_from_types = ["I16Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim] %}
 {% elif scalar_t == "i32" %}
     {% set is_signed = true %}
     {% set is_float = false %}
@@ -44,7 +60,8 @@
     {% set vec2_t = "IVec2" %}
     {% set vec3_t = "IVec3" %}
     {% set vec4_t = "IVec4" %}
-    {% set try_from_types = ["UVec" ~ dim, "U64Vec" ~ dim, "I64Vec" ~ dim] %}
+    {% set from_types = ["I16Vec" ~ dim, "U16Vec" ~ dim] %}
+    {% set try_from_types = ["UVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim] %}
 {% elif scalar_t == "u32" %}
     {% set is_signed = false %}
     {% set is_float = false %}
@@ -52,7 +69,8 @@
     {% set vec2_t = "UVec2" %}
     {% set vec3_t = "UVec3" %}
     {% set vec4_t = "UVec4" %}
-    {% set try_from_types = ["IVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim] %}
+    {% set from_types = ["U16Vec" ~ dim] %}
+    {% set try_from_types = ["I16Vec" ~ dim, "IVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim] %}
 {% elif scalar_t == "i64" %}
     {% set is_signed = true %}
     {% set is_float = false %}
@@ -60,7 +78,7 @@
     {% set vec2_t = "I64Vec2" %}
     {% set vec3_t = "I64Vec3" %}
     {% set vec4_t = "I64Vec4" %}
-    {% set from_types = ["IVec" ~ dim] %}
+    {% set from_types = ["I16Vec" ~ dim, "U16Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim] %}
     {% set try_from_types = ["U64Vec" ~ dim] %}
 {% elif scalar_t == "u64" %}
     {% set is_signed = false %}
@@ -69,8 +87,8 @@
     {% set vec2_t = "U64Vec2" %}
     {% set vec3_t = "U64Vec3" %}
     {% set vec4_t = "U64Vec4" %}
-    {% set from_types = ["UVec" ~ dim] %}
-    {% set try_from_types = ["I64Vec" ~ dim] %}
+    {% set from_types = ["U16Vec" ~ dim, "UVec" ~ dim] %}
+    {% set try_from_types = ["I16Vec" ~ dim, "IVec" ~ dim, "I64Vec" ~ dim] %}
 {% endif %}
 
 {% if scalar_t == "f64" or scalar_t == "i64" or scalar_t == "u64" or dim == 4 %}
@@ -1648,6 +1666,48 @@ impl {{ self_t }} {
     #[inline]
     pub fn as_dvec4(&self) -> crate::DVec4 {
         crate::DVec4::new(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
+    }
+    {% endif %}
+{% endif %}
+{% if scalar_t != "i16" %}
+    {% if dim == 2 %}
+    /// Casts all elements of `self` to `i16`.
+    #[inline]
+    pub fn as_i16vec2(&self) -> crate::I16Vec2 {
+        crate::I16Vec2::new(self.x as i16, self.y as i16)
+    }
+    {% elif dim == 3 %}
+    /// Casts all elements of `self` to `i16`.
+    #[inline]
+    pub fn as_i16vec3(&self) -> crate::I16Vec3 {
+        crate::I16Vec3::new(self.x as i16, self.y as i16, self.z as i16)
+    }
+    {% elif dim == 4 %}
+    /// Casts all elements of `self` to `i16`.
+    #[inline]
+    pub fn as_i16vec4(&self) -> crate::I16Vec4 {
+        crate::I16Vec4::new(self.x as i16, self.y as i16, self.z as i16, self.w as i16)
+    }
+    {% endif %}
+{% endif %}
+{% if scalar_t != "u16" %}
+    {% if dim == 2 %}
+    /// Casts all elements of `self` to `u16`.
+    #[inline]
+    pub fn as_u16vec2(&self) -> crate::U16Vec2 {
+        crate::U16Vec2::new(self.x as u16, self.y as u16)
+    }
+    {% elif dim == 3 %}
+    /// Casts all elements of `self` to `u16`.
+    #[inline]
+    pub fn as_u16vec3(&self) -> crate::U16Vec3 {
+        crate::U16Vec3::new(self.x as u16, self.y as u16, self.z as u16)
+    }
+    {% elif dim == 4 %}
+    /// Casts all elements of `self` to `u16`.
+    #[inline]
+    pub fn as_u16vec4(&self) -> crate::U16Vec4 {
+        crate::U16Vec4::new(self.x as u16, self.y as u16, self.z as u16, self.w as u16)
     }
     {% endif %}
 {% endif %}

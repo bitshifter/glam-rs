@@ -1601,10 +1601,7 @@ mod i64vec3 {
     });
 
     glam_test!(test_try_from, {
-        assert_eq!(
-            I64Vec3::new(1, 2, 3),
-            I64Vec3::try_from(IVec3::new(1, 2, 3)).unwrap()
-        );
+        assert_eq!(I64Vec3::new(1, 2, 3), I64Vec3::from(IVec3::new(1, 2, 3)));
 
         assert_eq!(
             I64Vec3::new(1, 2, 3),
@@ -1637,10 +1634,7 @@ mod u64vec3 {
     });
 
     glam_test!(test_try_from, {
-        assert_eq!(
-            U64Vec3::new(1, 2, 3),
-            U64Vec3::try_from(UVec3::new(1, 2, 3)).unwrap()
-        );
+        assert_eq!(U64Vec3::new(1, 2, 3), U64Vec3::from(UVec3::new(1, 2, 3)));
 
         assert_eq!(
             U64Vec3::new(1, 2, 3),

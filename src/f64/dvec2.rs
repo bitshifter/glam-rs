@@ -705,6 +705,18 @@ impl DVec2 {
         crate::Vec2::new(self.x as f32, self.y as f32)
     }
 
+    /// Casts all elements of `self` to `i16`.
+    #[inline]
+    pub fn as_i16vec2(&self) -> crate::I16Vec2 {
+        crate::I16Vec2::new(self.x as i16, self.y as i16)
+    }
+
+    /// Casts all elements of `self` to `u16`.
+    #[inline]
+    pub fn as_u16vec2(&self) -> crate::U16Vec2 {
+        crate::U16Vec2::new(self.x as u16, self.y as u16)
+    }
+
     /// Casts all elements of `self` to `i32`.
     #[inline]
     pub fn as_ivec2(&self) -> crate::IVec2 {

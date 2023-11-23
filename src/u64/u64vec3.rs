@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec3, I64Vec3, U64Vec2, U64Vec4, UVec3};
+use crate::{BVec3, I16Vec3, I64Vec3, IVec3, U16Vec3, U64Vec2, U64Vec4, UVec3};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -293,6 +293,18 @@ impl U64Vec3 {
     #[inline]
     pub fn as_dvec3(&self) -> crate::DVec3 {
         crate::DVec3::new(self.x as f64, self.y as f64, self.z as f64)
+    }
+
+    /// Casts all elements of `self` to `i16`.
+    #[inline]
+    pub fn as_i16vec3(&self) -> crate::I16Vec3 {
+        crate::I16Vec3::new(self.x as i16, self.y as i16, self.z as i16)
+    }
+
+    /// Casts all elements of `self` to `u16`.
+    #[inline]
+    pub fn as_u16vec3(&self) -> crate::U16Vec3 {
+        crate::U16Vec3::new(self.x as u16, self.y as u16, self.z as u16)
     }
 
     /// Casts all elements of `self` to `i32`.
@@ -1153,10 +1165,43 @@ impl From<(U64Vec2, u64)> for U64Vec3 {
     }
 }
 
+impl From<U16Vec3> for U64Vec3 {
+    #[inline]
+    fn from(v: U16Vec3) -> Self {
+        Self::new(u64::from(v.x), u64::from(v.y), u64::from(v.z))
+    }
+}
+
 impl From<UVec3> for U64Vec3 {
     #[inline]
     fn from(v: UVec3) -> Self {
         Self::new(u64::from(v.x), u64::from(v.y), u64::from(v.z))
+    }
+}
+
+impl TryFrom<I16Vec3> for U64Vec3 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: I16Vec3) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            u64::try_from(v.x)?,
+            u64::try_from(v.y)?,
+            u64::try_from(v.z)?,
+        ))
+    }
+}
+
+impl TryFrom<IVec3> for U64Vec3 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: IVec3) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            u64::try_from(v.x)?,
+            u64::try_from(v.y)?,
+            u64::try_from(v.z)?,
+        ))
     }
 }
 
