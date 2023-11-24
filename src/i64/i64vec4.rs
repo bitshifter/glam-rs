@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec4, I64Vec2, I64Vec3, IVec4, U64Vec4};
+use crate::{BVec4, I16Vec4, I64Vec2, I64Vec3, IVec4, U16Vec4, U64Vec4, UVec4};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -396,6 +396,18 @@ impl I64Vec4 {
     #[inline]
     pub fn as_dvec4(&self) -> crate::DVec4 {
         crate::DVec4::new(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
+    }
+
+    /// Casts all elements of `self` to `i16`.
+    #[inline]
+    pub fn as_i16vec4(&self) -> crate::I16Vec4 {
+        crate::I16Vec4::new(self.x as i16, self.y as i16, self.z as i16, self.w as i16)
+    }
+
+    /// Casts all elements of `self` to `u16`.
+    #[inline]
+    pub fn as_u16vec4(&self) -> crate::U16Vec4 {
+        crate::U16Vec4::new(self.x as u16, self.y as u16, self.z as u16, self.w as u16)
     }
 
     /// Casts all elements of `self` to `i32`.
@@ -1353,9 +1365,45 @@ impl From<(I64Vec2, I64Vec2)> for I64Vec4 {
     }
 }
 
+impl From<I16Vec4> for I64Vec4 {
+    #[inline]
+    fn from(v: I16Vec4) -> Self {
+        Self::new(
+            i64::from(v.x),
+            i64::from(v.y),
+            i64::from(v.z),
+            i64::from(v.w),
+        )
+    }
+}
+
+impl From<U16Vec4> for I64Vec4 {
+    #[inline]
+    fn from(v: U16Vec4) -> Self {
+        Self::new(
+            i64::from(v.x),
+            i64::from(v.y),
+            i64::from(v.z),
+            i64::from(v.w),
+        )
+    }
+}
+
 impl From<IVec4> for I64Vec4 {
     #[inline]
     fn from(v: IVec4) -> Self {
+        Self::new(
+            i64::from(v.x),
+            i64::from(v.y),
+            i64::from(v.z),
+            i64::from(v.w),
+        )
+    }
+}
+
+impl From<UVec4> for I64Vec4 {
+    #[inline]
+    fn from(v: UVec4) -> Self {
         Self::new(
             i64::from(v.x),
             i64::from(v.y),

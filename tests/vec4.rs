@@ -1745,7 +1745,7 @@ mod i64vec4 {
     glam_test!(test_try_from, {
         assert_eq!(
             I64Vec4::new(1, 2, 3, 4),
-            I64Vec4::try_from(IVec4::new(1, 2, 3, 4)).unwrap()
+            I64Vec4::from(IVec4::new(1, 2, 3, 4))
         );
 
         assert_eq!(
@@ -1785,7 +1785,7 @@ mod u64vec4 {
     glam_test!(test_try_from, {
         assert_eq!(
             U64Vec4::new(1, 2, 3, 4),
-            U64Vec4::try_from(UVec4::new(1, 2, 3, 4)).unwrap()
+            U64Vec4::from(UVec4::new(1, 2, 3, 4))
         );
 
         assert_eq!(

@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec4, I64Vec4, U64Vec2, U64Vec3, UVec4};
+use crate::{BVec4, I16Vec4, I64Vec4, IVec4, U16Vec4, U64Vec2, U64Vec3, UVec4};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -307,6 +307,18 @@ impl U64Vec4 {
     #[inline]
     pub fn as_dvec4(&self) -> crate::DVec4 {
         crate::DVec4::new(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
+    }
+
+    /// Casts all elements of `self` to `i16`.
+    #[inline]
+    pub fn as_i16vec4(&self) -> crate::I16Vec4 {
+        crate::I16Vec4::new(self.x as i16, self.y as i16, self.z as i16, self.w as i16)
+    }
+
+    /// Casts all elements of `self` to `u16`.
+    #[inline]
+    pub fn as_u16vec4(&self) -> crate::U16Vec4 {
+        crate::U16Vec4::new(self.x as u16, self.y as u16, self.z as u16, self.w as u16)
     }
 
     /// Casts all elements of `self` to `i32`.
@@ -1251,6 +1263,18 @@ impl From<(U64Vec2, U64Vec2)> for U64Vec4 {
     }
 }
 
+impl From<U16Vec4> for U64Vec4 {
+    #[inline]
+    fn from(v: U16Vec4) -> Self {
+        Self::new(
+            u64::from(v.x),
+            u64::from(v.y),
+            u64::from(v.z),
+            u64::from(v.w),
+        )
+    }
+}
+
 impl From<UVec4> for U64Vec4 {
     #[inline]
     fn from(v: UVec4) -> Self {
@@ -1260,6 +1284,34 @@ impl From<UVec4> for U64Vec4 {
             u64::from(v.z),
             u64::from(v.w),
         )
+    }
+}
+
+impl TryFrom<I16Vec4> for U64Vec4 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: I16Vec4) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            u64::try_from(v.x)?,
+            u64::try_from(v.y)?,
+            u64::try_from(v.z)?,
+            u64::try_from(v.w)?,
+        ))
+    }
+}
+
+impl TryFrom<IVec4> for U64Vec4 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: IVec4) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            u64::try_from(v.x)?,
+            u64::try_from(v.y)?,
+            u64::try_from(v.z)?,
+            u64::try_from(v.w)?,
+        ))
     }
 }
 

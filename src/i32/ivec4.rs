@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec4, I64Vec4, IVec2, IVec3, U64Vec4, UVec4};
+use crate::{BVec4, I16Vec4, I64Vec4, IVec2, IVec3, U16Vec4, U64Vec4, UVec4};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -396,6 +396,18 @@ impl IVec4 {
     #[inline]
     pub fn as_dvec4(&self) -> crate::DVec4 {
         crate::DVec4::new(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
+    }
+
+    /// Casts all elements of `self` to `i16`.
+    #[inline]
+    pub fn as_i16vec4(&self) -> crate::I16Vec4 {
+        crate::I16Vec4::new(self.x as i16, self.y as i16, self.z as i16, self.w as i16)
+    }
+
+    /// Casts all elements of `self` to `u16`.
+    #[inline]
+    pub fn as_u16vec4(&self) -> crate::U16Vec4 {
+        crate::U16Vec4::new(self.x as u16, self.y as u16, self.z as u16, self.w as u16)
     }
 
     /// Casts all elements of `self` to `u32`.
@@ -1353,6 +1365,30 @@ impl From<(IVec2, IVec2)> for IVec4 {
     }
 }
 
+impl From<I16Vec4> for IVec4 {
+    #[inline]
+    fn from(v: I16Vec4) -> Self {
+        Self::new(
+            i32::from(v.x),
+            i32::from(v.y),
+            i32::from(v.z),
+            i32::from(v.w),
+        )
+    }
+}
+
+impl From<U16Vec4> for IVec4 {
+    #[inline]
+    fn from(v: U16Vec4) -> Self {
+        Self::new(
+            i32::from(v.x),
+            i32::from(v.y),
+            i32::from(v.z),
+            i32::from(v.w),
+        )
+    }
+}
+
 impl TryFrom<UVec4> for IVec4 {
     type Error = core::num::TryFromIntError;
 
@@ -1367,11 +1403,11 @@ impl TryFrom<UVec4> for IVec4 {
     }
 }
 
-impl TryFrom<U64Vec4> for IVec4 {
+impl TryFrom<I64Vec4> for IVec4 {
     type Error = core::num::TryFromIntError;
 
     #[inline]
-    fn try_from(v: U64Vec4) -> Result<Self, Self::Error> {
+    fn try_from(v: I64Vec4) -> Result<Self, Self::Error> {
         Ok(Self::new(
             i32::try_from(v.x)?,
             i32::try_from(v.y)?,
@@ -1381,11 +1417,11 @@ impl TryFrom<U64Vec4> for IVec4 {
     }
 }
 
-impl TryFrom<I64Vec4> for IVec4 {
+impl TryFrom<U64Vec4> for IVec4 {
     type Error = core::num::TryFromIntError;
 
     #[inline]
-    fn try_from(v: I64Vec4) -> Result<Self, Self::Error> {
+    fn try_from(v: U64Vec4) -> Result<Self, Self::Error> {
         Ok(Self::new(
             i32::try_from(v.x)?,
             i32::try_from(v.y)?,

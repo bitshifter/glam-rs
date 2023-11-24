@@ -6,6 +6,14 @@ mod ivec2_impl;
 mod ivec3_impl;
 mod ivec4_impl;
 
+mod i16vec2_impl;
+mod i16vec3_impl;
+mod i16vec4_impl;
+
+mod u16vec2_impl;
+mod u16vec3_impl;
+mod u16vec4_impl;
+
 mod i64vec2_impl;
 mod i64vec3_impl;
 mod i64vec4_impl;

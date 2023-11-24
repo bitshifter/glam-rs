@@ -1,9 +1,9 @@
 use mint::IntoMint;
 
 use crate::{
-    DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, I64Vec2, I64Vec3, I64Vec4, IVec2, IVec3,
-    IVec4, Mat2, Mat3, Mat3A, Mat4, Quat, U64Vec2, U64Vec3, U64Vec4, UVec2, UVec3, UVec4, Vec2,
-    Vec3, Vec3A, Vec4,
+    DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, I16Vec2, I16Vec3, I16Vec4, I64Vec2, I64Vec3,
+    I64Vec4, IVec2, IVec3, IVec4, Mat2, Mat3, Mat3A, Mat4, Quat, U16Vec2, U16Vec3, U16Vec4,
+    U64Vec2, U64Vec3, U64Vec4, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
 };
 
 macro_rules! impl_vec_types {
@@ -310,6 +310,8 @@ impl IntoMint for Mat3A {
 
 impl_float_types!(f32, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4);
 impl_float_types!(f64, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4);
+impl_vec_types!(i16, I16Vec2, I16Vec3, I16Vec4);
+impl_vec_types!(u16, U16Vec2, U16Vec3, U16Vec4);
 impl_vec_types!(i32, IVec2, IVec3, IVec4);
 impl_vec_types!(u32, UVec2, UVec3, UVec4);
 impl_vec_types!(i64, I64Vec2, I64Vec3, I64Vec4);

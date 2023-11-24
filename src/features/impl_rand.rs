@@ -178,6 +178,16 @@ mod f64 {
     impl_float_types!(f64, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4);
 }
 
+mod i16 {
+    use crate::{I16Vec2, I16Vec3, I16Vec4};
+    use rand::{
+        distributions::{Distribution, Standard},
+        Rng,
+    };
+
+    impl_vec_types!(i16, I16Vec2, I16Vec3, I16Vec4);
+}
+
 mod i32 {
     use crate::{IVec2, IVec3, IVec4};
     use rand::{
@@ -196,6 +206,16 @@ mod i64 {
     };
 
     impl_vec_types!(i64, I64Vec2, I64Vec3, I64Vec4);
+}
+
+mod u16 {
+    use crate::{U16Vec2, U16Vec3, U16Vec4};
+    use rand::{
+        distributions::{Distribution, Standard},
+        Rng,
+    };
+
+    impl_vec_types!(u16, U16Vec2, U16Vec3, U16Vec4);
 }
 
 mod u32 {

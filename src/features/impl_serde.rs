@@ -727,6 +727,14 @@ mod test_f64 {
 }
 
 #[cfg(test)]
+mod test_i16 {
+    pub const V1: i16 = 1;
+    pub const V2: i16 = 2;
+    pub const V3: i16 = 3;
+    pub const V4: i16 = 4;
+}
+
+#[cfg(test)]
 mod test_i32 {
     pub const V1: i32 = 1;
     pub const V2: i32 = 2;
@@ -740,6 +748,14 @@ mod test_i64 {
     pub const V2: i64 = 2;
     pub const V3: i64 = 3;
     pub const V4: i64 = 4;
+}
+
+#[cfg(test)]
+mod test_u16 {
+    pub const V1: u16 = 1;
+    pub const V2: u16 = 2;
+    pub const V3: u16 = 3;
+    pub const V4: u16 = 4;
 }
 
 #[cfg(test)]
@@ -987,6 +1003,21 @@ mod f64 {
     );
 }
 
+mod i16 {
+    #[cfg(test)]
+    use super::test_i16::*;
+    #[cfg(test)]
+    use super::test_int::*;
+    use crate::{I16Vec2, I16Vec3, I16Vec4};
+    use core::fmt;
+    use serde::{
+        de::{self, Deserialize, Deserializer, SeqAccess, Visitor},
+        ser::{Serialize, SerializeTupleStruct, Serializer},
+    };
+
+    impl_serde_vec_types!(i16, I16Vec2, I16Vec3, I16Vec4);
+}
+
 mod i32 {
     #[cfg(test)]
     use super::test_i32::*;
@@ -1015,6 +1046,21 @@ mod i64 {
     };
 
     impl_serde_vec_types!(i64, I64Vec2, I64Vec3, I64Vec4);
+}
+
+mod u16 {
+    #[cfg(test)]
+    use super::test_int::*;
+    #[cfg(test)]
+    use super::test_u16::*;
+    use crate::{U16Vec2, U16Vec3, U16Vec4};
+    use core::fmt;
+    use serde::{
+        de::{self, Deserialize, Deserializer, SeqAccess, Visitor},
+        ser::{Serialize, SerializeTupleStruct, Serializer},
+    };
+
+    impl_serde_vec_types!(u16, U16Vec2, U16Vec3, U16Vec4);
 }
 
 mod u32 {

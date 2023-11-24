@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec3, I64Vec3, IVec2, IVec4, U64Vec3, UVec3};
+use crate::{BVec3, I16Vec3, I64Vec3, IVec2, IVec4, U16Vec3, U64Vec3, UVec3};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -374,6 +374,18 @@ impl IVec3 {
     #[inline]
     pub fn as_dvec3(&self) -> crate::DVec3 {
         crate::DVec3::new(self.x as f64, self.y as f64, self.z as f64)
+    }
+
+    /// Casts all elements of `self` to `i16`.
+    #[inline]
+    pub fn as_i16vec3(&self) -> crate::I16Vec3 {
+        crate::I16Vec3::new(self.x as i16, self.y as i16, self.z as i16)
+    }
+
+    /// Casts all elements of `self` to `u16`.
+    #[inline]
+    pub fn as_u16vec3(&self) -> crate::U16Vec3 {
+        crate::U16Vec3::new(self.x as u16, self.y as u16, self.z as u16)
     }
 
     /// Casts all elements of `self` to `u32`.
@@ -1246,6 +1258,20 @@ impl From<(IVec2, i32)> for IVec3 {
     }
 }
 
+impl From<I16Vec3> for IVec3 {
+    #[inline]
+    fn from(v: I16Vec3) -> Self {
+        Self::new(i32::from(v.x), i32::from(v.y), i32::from(v.z))
+    }
+}
+
+impl From<U16Vec3> for IVec3 {
+    #[inline]
+    fn from(v: U16Vec3) -> Self {
+        Self::new(i32::from(v.x), i32::from(v.y), i32::from(v.z))
+    }
+}
+
 impl TryFrom<UVec3> for IVec3 {
     type Error = core::num::TryFromIntError;
 
@@ -1259,11 +1285,11 @@ impl TryFrom<UVec3> for IVec3 {
     }
 }
 
-impl TryFrom<U64Vec3> for IVec3 {
+impl TryFrom<I64Vec3> for IVec3 {
     type Error = core::num::TryFromIntError;
 
     #[inline]
-    fn try_from(v: U64Vec3) -> Result<Self, Self::Error> {
+    fn try_from(v: I64Vec3) -> Result<Self, Self::Error> {
         Ok(Self::new(
             i32::try_from(v.x)?,
             i32::try_from(v.y)?,
@@ -1272,11 +1298,11 @@ impl TryFrom<U64Vec3> for IVec3 {
     }
 }
 
-impl TryFrom<I64Vec3> for IVec3 {
+impl TryFrom<U64Vec3> for IVec3 {
     type Error = core::num::TryFromIntError;
 
     #[inline]
-    fn try_from(v: I64Vec3) -> Result<Self, Self::Error> {
+    fn try_from(v: U64Vec3) -> Result<Self, Self::Error> {
         Ok(Self::new(
             i32::try_from(v.x)?,
             i32::try_from(v.y)?,
