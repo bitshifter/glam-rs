@@ -6,7 +6,8 @@ use crate::{
 };
 use bytemuck::{AnyBitPattern, Pod, Zeroable};
 
-unsafe impl Pod for Affine2 {}
+// Affine2 contains internal padding due to Mat2 using SIMD
+unsafe impl AnyBitPattern for Affine2 {}
 unsafe impl Zeroable for Affine2 {}
 unsafe impl AnyBitPattern for Affine3A {}
 unsafe impl Zeroable for Affine3A {}
@@ -134,7 +135,7 @@ mod test {
         };
     }
 
-    test_pod_t!(affine2, Affine2);
+    test_any_bit_pattern_t!(affine2, Affine2);
     test_any_bit_pattern_t!(affine3a, Affine3A);
     test_pod_t!(mat2, Mat2);
     test_pod_t!(mat3, Mat3);
