@@ -91,10 +91,22 @@
     {% set try_from_types = ["I16Vec" ~ dim, "IVec" ~ dim, "I64Vec" ~ dim] %}
 {% endif %}
 
-{% if scalar_t == "f64" or scalar_t == "i64" or scalar_t == "u64" or dim == 4 %}
-    {% set cuda_align = 16 %}
-{% elif dim == 2 %}
-    {% set cuda_align = 8 %}
+{% if dim == 2 %}
+    {% if scalar_t == "i16" or scalar_t == "u16" %}
+        {% set cuda_align = 4 %}
+    {% elif scalar_t == "f32" or scalar_t == "i32" or scalar_t == "u32" %}
+        {% set cuda_align = 8 %}
+    {% elif scalar_t == "f64" or scalar_t == "i64" or scalar_t == "u64" %}
+        {% set cuda_align = 16 %}
+    {% endif %}
+{% elif dim == 4 %}
+    {% if scalar_t == "i16" or scalar_t == "u16" %}
+        {% set cuda_align = 8 %}
+    {% elif scalar_t == "f32" or scalar_t == "i32" or scalar_t == "u32" %}
+        {% set cuda_align = 16 %}
+    {% elif scalar_t == "f64" or scalar_t == "i64" or scalar_t == "u64" %}
+        {% set cuda_align = 16 %}
+    {% endif %}
 {% endif %}
 
 {% set components = ["x", "y", "z", "w"] | slice(end = dim) %}

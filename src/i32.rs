@@ -11,6 +11,8 @@ mod test {
     use super::*;
 
     mod const_test_ivec2 {
+        const_assert_eq!(8, core::mem::size_of::<super::IVec2>());
+
         #[cfg(not(feature = "cuda"))]
         const_assert_eq!(
             core::mem::align_of::<i32>(),
@@ -18,7 +20,6 @@ mod test {
         );
         #[cfg(feature = "cuda")]
         const_assert_eq!(8, core::mem::align_of::<super::IVec2>());
-        const_assert_eq!(8, core::mem::size_of::<super::IVec2>());
     }
 
     mod const_test_ivec3 {
@@ -30,6 +31,8 @@ mod test {
     }
 
     mod const_test_ivec4 {
+        const_assert_eq!(16, core::mem::size_of::<super::IVec4>());
+
         #[cfg(not(feature = "cuda"))]
         const_assert_eq!(
             core::mem::align_of::<i32>(),
@@ -37,6 +40,5 @@ mod test {
         );
         #[cfg(feature = "cuda")]
         const_assert_eq!(16, core::mem::align_of::<super::IVec4>());
-        const_assert_eq!(16, core::mem::size_of::<super::IVec4>());
     }
 }

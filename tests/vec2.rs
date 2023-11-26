@@ -1166,14 +1166,11 @@ mod i16vec2 {
 
     glam_test!(test_align, {
         use core::mem;
+        assert_eq!(4, mem::size_of::<I16Vec2>());
         #[cfg(not(feature = "cuda"))]
         assert_eq!(2, mem::align_of::<I16Vec2>());
-        #[cfg(not(feature = "cuda"))]
-        assert_eq!(4, mem::size_of::<I16Vec2>());
         #[cfg(feature = "cuda")]
-        assert_eq!(8, mem::align_of::<I16Vec2>());
-        #[cfg(feature = "cuda")]
-        assert_eq!(8, mem::size_of::<I16Vec2>());
+        assert_eq!(4, mem::align_of::<I16Vec2>());
     });
 
     glam_test!(test_try_from, {
@@ -1284,14 +1281,11 @@ mod u16vec2 {
 
     glam_test!(test_align, {
         use core::mem;
+        assert_eq!(4, mem::size_of::<U16Vec2>());
         #[cfg(not(feature = "cuda"))]
         assert_eq!(2, mem::align_of::<U16Vec2>());
-        #[cfg(not(feature = "cuda"))]
-        assert_eq!(4, mem::size_of::<U16Vec2>());
         #[cfg(feature = "cuda")]
-        assert_eq!(8, mem::align_of::<U16Vec2>());
-        #[cfg(feature = "cuda")]
-        assert_eq!(8, mem::size_of::<U16Vec2>());
+        assert_eq!(4, mem::align_of::<U16Vec2>());
     });
 
     glam_test!(test_try_from, {
@@ -1404,7 +1398,7 @@ mod u16vec2 {
 }
 
 mod ivec2 {
-    use glam::{ivec2, BVec2, I64Vec2, IVec2, IVec3, U64Vec2, UVec2};
+    use glam::{ivec2, BVec2, I16Vec2, I64Vec2, IVec2, IVec3, U16Vec2, U64Vec2, UVec2};
 
     glam_test!(test_align, {
         use core::mem;
@@ -1418,6 +1412,9 @@ mod ivec2 {
     });
 
     glam_test!(test_try_from, {
+        assert_eq!(IVec2::new(1, 2), IVec2::from(U16Vec2::new(1, 2)));
+        assert_eq!(IVec2::new(1, 2), IVec2::from(I16Vec2::new(1, 2)));
+
         assert_eq!(IVec2::new(1, 2), IVec2::try_from(UVec2::new(1, 2)).unwrap());
         assert!(IVec2::try_from(UVec2::new(u32::MAX, 2)).is_err());
         assert!(IVec2::try_from(UVec2::new(1, u32::MAX)).is_err());
@@ -1504,7 +1501,7 @@ mod ivec2 {
 }
 
 mod uvec2 {
-    use glam::{uvec2, BVec2, I16Vec2, I64Vec2, IVec2, U64Vec2, UVec2, UVec3};
+    use glam::{uvec2, BVec2, I16Vec2, I64Vec2, IVec2, U16Vec2, U64Vec2, UVec2, UVec3};
 
     glam_test!(test_align, {
         use core::mem;
@@ -1523,7 +1520,9 @@ mod uvec2 {
             UVec2::try_from(I16Vec2::new(1, 2)).unwrap()
         );
         assert!(UVec2::try_from(I16Vec2::new(-1, 2)).is_err());
-        assert!(UVec2::try_from(I16Vec2::new(1, -1)).is_err());
+        assert!(UVec2::try_from(I16Vec2::new(1, -2)).is_err());
+
+        assert_eq!(UVec2::new(1, 2), UVec2::from(U16Vec2::new(1, 2)));
 
         assert_eq!(UVec2::new(1, 2), UVec2::try_from(IVec2::new(1, 2)).unwrap());
         assert!(UVec2::try_from(IVec2::new(-1, 2)).is_err());
@@ -1614,7 +1613,7 @@ mod uvec2 {
 }
 
 mod i64vec2 {
-    use glam::{i64vec2, BVec2, I64Vec2, I64Vec3, IVec2, U64Vec2, UVec2};
+    use glam::{i64vec2, BVec2, I16Vec2, I64Vec2, I64Vec3, IVec2, U16Vec2, U64Vec2, UVec2};
 
     glam_test!(test_align, {
         use core::mem;
@@ -1628,7 +1627,10 @@ mod i64vec2 {
     });
 
     glam_test!(test_try_from, {
+        assert_eq!(I64Vec2::new(1, 2), I64Vec2::from(I16Vec2::new(1, 2)));
+        assert_eq!(I64Vec2::new(1, 2), I64Vec2::from(U16Vec2::new(1, 2)));
         assert_eq!(I64Vec2::new(1, 2), I64Vec2::from(IVec2::new(1, 2)));
+        assert_eq!(I64Vec2::new(1, 2), I64Vec2::from(UVec2::new(1, 2)));
 
         assert_eq!(
             I64Vec2::new(1, 2),
@@ -1649,7 +1651,7 @@ mod i64vec2 {
 }
 
 mod u64vec2 {
-    use glam::{u64vec2, BVec2, I16Vec2, I64Vec2, IVec2, U64Vec2, U64Vec3, UVec2};
+    use glam::{u64vec2, BVec2, I16Vec2, I64Vec2, IVec2, U16Vec2, U64Vec2, U64Vec3, UVec2};
 
     glam_test!(test_align, {
         use core::mem;
@@ -1669,6 +1671,8 @@ mod u64vec2 {
         );
         assert!(U64Vec2::try_from(I16Vec2::new(-1, 2)).is_err());
         assert!(U64Vec2::try_from(I16Vec2::new(1, -2)).is_err());
+
+        assert_eq!(U64Vec2::new(1, 2), U64Vec2::from(U16Vec2::new(1, 2)));
 
         assert_eq!(
             U64Vec2::new(1, 2),
