@@ -9,10 +9,10 @@ pub use ivec4::{ivec4, IVec4};
 #[cfg(not(target_arch = "spirv"))]
 mod test {
     use super::*;
-    
+
     mod const_test_ivec2 {
         const_assert_eq!(8, core::mem::size_of::<super::IVec2>());
-        
+
         #[cfg(not(feature = "cuda"))]
         const_assert_eq!(
             core::mem::align_of::<i32>(),

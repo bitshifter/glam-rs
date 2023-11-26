@@ -32,7 +32,7 @@ mod test {
 
     mod const_test_uvec4 {
         const_assert_eq!(16, core::mem::size_of::<super::UVec4>());
-        
+
         #[cfg(not(feature = "cuda"))]
         const_assert_eq!(
             core::mem::align_of::<u32>(),

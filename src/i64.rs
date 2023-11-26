@@ -12,7 +12,7 @@ mod test {
 
     mod const_test_i64vec2 {
         const_assert_eq!(16, core::mem::size_of::<super::I64Vec2>());
-        
+
         #[cfg(not(feature = "cuda"))]
         const_assert_eq!(
             core::mem::align_of::<i64>(),
