@@ -75,8 +75,8 @@ impl I16Vec2 {
     #[inline]
     pub fn select(mask: BVec2, if_true: Self, if_false: Self) -> Self {
         Self {
-            x: if mask.x { if_true.x } else { if_false.x },
-            y: if mask.y { if_true.y } else { if_false.y },
+            x: if mask.test(0) { if_true.x } else { if_false.x },
+            y: if mask.test(1) { if_true.y } else { if_false.y },
         }
     }
 

@@ -2,7 +2,7 @@
 
 // Generated from {{template_path}} template. Edit the template, not the generated file.
 
-{% if is_scalar %}
+{% if is_scalar and not is_align %}
     {% set mask_t = "BVec" ~ dim %}
 {% else %}
     {% set is_simd = true %}
@@ -12,6 +12,8 @@
         {% set simd_t = "v128" %}
     {% elif is_coresimd %}
         {% set simd_t = "f32x4" %}
+    {% else %}
+        {% set is_simd = false %}
     {% endif %}
     {% set mask_t = "BVec" ~ dim ~ "A" %}
 {% endif %}
@@ -20,7 +22,7 @@
     {% set is_signed = true %}
     {% set is_float = true %}
     {% if scalar_t == "f32" %}
-        {% if dim == 3 and is_simd or is_align %}
+        {% if dim == 3 and is_align %}
             {% set self_t = "Vec3A" %}
             {% set mask_t = "BVec3A" %}
         {% else %}
@@ -120,8 +122,16 @@
     {% set zero = "0" %}
 {% endif %}
 
-use crate::{
-    {{ mask_t }},
+{% if mask_t == "BVec4A" and scalar_t == "f32"  and is_scalar %}
+    #[cfg(feature = "scalar-math")]
+    use crate::BVec4 as BVec4A;
+    #[cfg(not(feature = "scalar-math"))]
+    use crate::BVec4A;
+    use crate::{
+{% else %}
+    use crate::{
+        {{ mask_t }},
+{% endif %}
     {% if self_t != vec2_t %}
         {{ vec2_t }},
     {% endif %}
@@ -373,11 +383,7 @@ impl {{ self_t }} {
         {% if is_scalar %}
             Self {
                 {% for c in components %}
-                    {%- if is_align %}
-                        {{ c  }}: if mask.{{ c }} != 0 { if_true.{{ c }} } else { if_false.{{ c }} },
-                    {%- else %}
-                        {{ c  }}: if mask.{{ c }} { if_true.{{ c }} } else { if_false.{{ c }} },
-                    {%- endif %}
+                    {{ c  }}: if mask.test({{ loop.index0 }}) { if_true.{{ c }} } else { if_false.{{ c }} },
                 {%- endfor %}
             }
         {% elif is_sse2 %}
@@ -513,7 +519,7 @@ impl {{ self_t }} {
         {% if is_sse2 %}
             Self(unsafe { dot{{ dim }}_into_m128(self.0, rhs.0) })
         {% elif is_wasm32 %}
-            Self(unsafe { dot{{ dim }}_into_v128(self.0, rhs.0) })
+            Self(dot{{ dim }}_into_v128(self.0, rhs.0))
         {% elif is_coresimd %}
             Self(dot{{ dim }}_into_f32x4(self.0, rhs.0))
         {% else %}

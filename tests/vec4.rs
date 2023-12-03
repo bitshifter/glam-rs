@@ -1560,16 +1560,10 @@ mod vec4 {
         );
     });
 
-    #[cfg(all(
-        any(target_feature = "sse2", target_feature = "simd128"),
-        not(feature = "scalar-math")
-    ))]
+    #[cfg(not(feature = "scalar-math"))]
     impl_vec4_float_tests!(f32, vec4, Vec4, Vec3, Vec2, BVec4A);
 
-    #[cfg(any(
-        not(any(target_feature = "sse2", target_feature = "simd128")),
-        feature = "scalar-math"
-    ))]
+    #[cfg(feature = "scalar-math")]
     impl_vec4_float_tests!(f32, vec4, Vec4, Vec3, Vec2, BVec4);
 }
 

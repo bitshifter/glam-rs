@@ -97,10 +97,10 @@ impl IVec4 {
     #[inline]
     pub fn select(mask: BVec4, if_true: Self, if_false: Self) -> Self {
         Self {
-            x: if mask.x { if_true.x } else { if_false.x },
-            y: if mask.y { if_true.y } else { if_false.y },
-            z: if mask.z { if_true.z } else { if_false.z },
-            w: if mask.w { if_true.w } else { if_false.w },
+            x: if mask.test(0) { if_true.x } else { if_false.x },
+            y: if mask.test(1) { if_true.y } else { if_false.y },
+            z: if mask.test(2) { if_true.z } else { if_false.z },
+            w: if mask.test(3) { if_true.w } else { if_false.w },
         }
     }
 

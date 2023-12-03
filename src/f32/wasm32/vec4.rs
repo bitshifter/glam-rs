@@ -159,7 +159,7 @@ impl Vec4 {
     /// Returns a vector where every component is the dot product of `self` and `rhs`.
     #[inline]
     pub fn dot_into_vec(self, rhs: Self) -> Self {
-        Self(unsafe { dot4_into_v128(self.0, rhs.0) })
+        Self(dot4_into_v128(self.0, rhs.0))
     }
 
     /// Returns a vector containing the minimum values for each element of `self` and `rhs`.
