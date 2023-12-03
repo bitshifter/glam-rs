@@ -209,7 +209,7 @@ impl ContextBuilder {
     }
 
     pub fn new_vec4() -> Self {
-        Self::new_vecn(4).with_scalar_t("f32")
+        Self::new_vecn(4).with_scalar_t("f32").with_is_align(true)
     }
 
     pub fn new_dvec2() -> Self {
