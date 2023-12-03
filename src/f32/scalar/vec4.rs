@@ -4,7 +4,6 @@
 use crate::BVec4 as BVec4A;
 #[cfg(not(feature = "scalar-math"))]
 use crate::BVec4A;
-
 use crate::{f32::math, Vec2, Vec3, Vec3A};
 
 #[cfg(not(target_arch = "spirv"))]

@@ -2,8 +2,9 @@
 
 // Generated from {{template_path}} template. Edit the template, not the generated file.
 
-{% set mask_t = "BVec" ~ dim ~ "A" %}
-{% if not is_scalar %}
+{% if is_scalar %}
+    {% set mask_t = "BVec" ~ dim %}
+{% else %}
     {% set is_simd = true %}
     {% if is_sse2 %}
         {% set simd_t = "__m128" %}
@@ -12,6 +13,11 @@
     {% elif is_coresimd %}
         {% set simd_t = "f32x4" %}
     {% endif %}
+    {% set mask_t = "BVec" ~ dim ~ "A" %}
+{% endif %}
+
+{% if scalar_t == "f32" and mask_t == "BVec4" %}
+    {% set mask_t = "BVec4A" %}
 {% endif %}
 
 {% if scalar_t == "f32" or scalar_t == "f64" %}
@@ -118,16 +124,16 @@
     {% set zero = "0" %}
 {% endif %}
 
-{% if mask_t == "BVec4A" and is_scalar %}
+{% if mask_t == "BVec4A" and scalar_t == "f32"  and is_scalar %}
     #[cfg(feature = "scalar-math")]
     use crate::BVec4 as BVec4A;
     #[cfg(not(feature = "scalar-math"))]
     use crate::BVec4A;
+    use crate::{
 {% else %}
-    use crate::{{ mask_t }};
+    use crate::{
+        {{ mask_t }},
 {% endif %}
-
-use crate::{
     {% if self_t != vec2_t %}
         {{ vec2_t }},
     {% endif %}
