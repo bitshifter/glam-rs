@@ -1,6 +1,8 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{coresimd::*, f32::math, BVec4A, Vec2, Vec3, Vec3A};
+use crate::BVec4A;
+
+use crate::{coresimd::*, f32::math, Vec2, Vec3, Vec3A};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
