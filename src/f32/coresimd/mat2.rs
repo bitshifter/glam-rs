@@ -6,7 +6,7 @@ use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
-use core::simd::{Which::*, *};
+use core::simd::*;
 
 /// Creates a 2x2 matrix from two column vectors.
 #[inline(always)]
@@ -249,11 +249,7 @@ impl Mat2 {
         let cydyaxbx1 = simd_swizzle!(axbxcydy1, [2, 3, 0, 1]);
         let result0 = axbxcydy0 + cydyaxbx0;
         let result1 = axbxcydy1 + cydyaxbx1;
-        Self(simd_swizzle!(
-            result0,
-            result1,
-            [First(0), First(1), Second(0), Second(1)]
-        ))
+        Self(simd_swizzle!(result0, result1, [0, 1, 4, 5]))
     }
 
     /// Adds two 2x2 matrices.

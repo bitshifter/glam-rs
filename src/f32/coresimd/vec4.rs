@@ -7,7 +7,7 @@ use core::fmt;
 use core::iter::{Product, Sum};
 use core::{f32, ops::*};
 
-use core::simd::*;
+use core::simd::{cmp::SimdPartialEq, cmp::SimdPartialOrd, num::SimdFloat, *};
 use std::simd::StdFloat;
 
 /// Creates a 4-dimensional vector.

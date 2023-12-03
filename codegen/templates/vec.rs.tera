@@ -169,7 +169,7 @@ use core::arch::x86_64::*;
 {% elif is_wasm32 %}
 use core::arch::wasm32::*;
 {% elif is_coresimd %}
-use core::simd::*;
+use core::simd::{cmp::SimdPartialEq, cmp::SimdPartialOrd, num::SimdFloat, *};
 use std::simd::StdFloat;
 {% endif %}
 

@@ -6,7 +6,7 @@ use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
-use core::simd::{Which::*, *};
+use core::simd::*;
 
 /// Creates a 3x3 matrix from three column vectors.
 #[inline(always)]
@@ -405,33 +405,13 @@ impl Mat3A {
     #[must_use]
     #[inline]
     pub fn transpose(&self) -> Self {
-        let tmp0 = simd_swizzle!(
-            self.x_axis.0,
-            self.y_axis.0,
-            [First(0), First(1), Second(0), Second(1)]
-        );
-        let tmp1 = simd_swizzle!(
-            self.x_axis.0,
-            self.y_axis.0,
-            [First(2), First(3), Second(2), Second(3)]
-        );
+        let tmp0 = simd_swizzle!(self.x_axis.0, self.y_axis.0, [0, 1, 4, 5]);
+        let tmp1 = simd_swizzle!(self.x_axis.0, self.y_axis.0, [2, 3, 6, 7]);
 
         Self {
-            x_axis: Vec3A(simd_swizzle!(
-                tmp0,
-                self.z_axis.0,
-                [First(0), First(2), Second(0), Second(0)]
-            )),
-            y_axis: Vec3A(simd_swizzle!(
-                tmp0,
-                self.z_axis.0,
-                [First(1), First(3), Second(1), Second(1)]
-            )),
-            z_axis: Vec3A(simd_swizzle!(
-                tmp1,
-                self.z_axis.0,
-                [First(0), First(2), Second(2), Second(2)]
-            )),
+            x_axis: Vec3A(simd_swizzle!(tmp0, self.z_axis.0, [0, 2, 4, 4])),
+            y_axis: Vec3A(simd_swizzle!(tmp0, self.z_axis.0, [1, 3, 5, 5])),
+            z_axis: Vec3A(simd_swizzle!(tmp1, self.z_axis.0, [0, 2, 6, 6])),
         }
     }
 

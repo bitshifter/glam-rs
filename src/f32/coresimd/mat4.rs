@@ -8,7 +8,7 @@ use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
-use core::simd::{Which::*, *};
+use core::simd::*;
 
 /// Creates a 4x4 matrix from four column vectors.
 #[inline(always)]
@@ -544,48 +544,16 @@ impl Mat4 {
     #[inline]
     pub fn transpose(&self) -> Self {
         // Based on https://github.com/microsoft/DirectXMath `XMMatrixTranspose`
-        let tmp0 = simd_swizzle!(
-            self.x_axis.0,
-            self.y_axis.0,
-            [First(0), First(1), Second(0), Second(1)]
-        );
-        let tmp1 = simd_swizzle!(
-            self.x_axis.0,
-            self.y_axis.0,
-            [First(2), First(3), Second(2), Second(3)]
-        );
-        let tmp2 = simd_swizzle!(
-            self.z_axis.0,
-            self.w_axis.0,
-            [First(0), First(1), Second(0), Second(1)]
-        );
-        let tmp3 = simd_swizzle!(
-            self.z_axis.0,
-            self.w_axis.0,
-            [First(2), First(3), Second(2), Second(3)]
-        );
+        let tmp0 = simd_swizzle!(self.x_axis.0, self.y_axis.0, [0, 1, 4, 5]);
+        let tmp1 = simd_swizzle!(self.x_axis.0, self.y_axis.0, [2, 3, 6, 7]);
+        let tmp2 = simd_swizzle!(self.z_axis.0, self.w_axis.0, [0, 1, 4, 5]);
+        let tmp3 = simd_swizzle!(self.z_axis.0, self.w_axis.0, [2, 3, 6, 7]);
 
         Self {
-            x_axis: Vec4(simd_swizzle!(
-                tmp0,
-                tmp2,
-                [First(0), First(2), Second(0), Second(2)]
-            )),
-            y_axis: Vec4(simd_swizzle!(
-                tmp0,
-                tmp2,
-                [First(1), First(3), Second(1), Second(3)]
-            )),
-            z_axis: Vec4(simd_swizzle!(
-                tmp1,
-                tmp3,
-                [First(0), First(2), Second(0), Second(2)]
-            )),
-            w_axis: Vec4(simd_swizzle!(
-                tmp1,
-                tmp3,
-                [First(1), First(3), Second(1), Second(3)]
-            )),
+            x_axis: Vec4(simd_swizzle!(tmp0, tmp2, [0, 2, 4, 6])),
+            y_axis: Vec4(simd_swizzle!(tmp0, tmp2, [1, 3, 5, 7])),
+            z_axis: Vec4(simd_swizzle!(tmp1, tmp3, [0, 2, 4, 6])),
+            w_axis: Vec4(simd_swizzle!(tmp1, tmp3, [1, 3, 5, 7])),
         }
     }
 
@@ -609,13 +577,13 @@ impl Mat4 {
         let swpfaca = simd_swizzle!(self.y_axis.0, [1, 0, 0, 0]);
         let mulfaca = swpfaca * subfaca;
 
-        let subtmpb = simd_swizzle!(sube, subf, [First(1), First(3), Second(0), Second(0)]);
+        let subtmpb = simd_swizzle!(sube, subf, [1, 3, 4, 4]);
         let subfacb = simd_swizzle!(subtmpb, [0, 1, 1, 3]);
         let swpfacb = simd_swizzle!(self.y_axis.0, [2, 2, 1, 1]);
         let mulfacb = swpfacb * subfacb;
 
         let subres = mulfaca - mulfacb;
-        let subtmpc = simd_swizzle!(sube, subf, [First(2), First(2), Second(0), Second(1)]);
+        let subtmpc = simd_swizzle!(sube, subf, [2, 2, 4, 5]);
         let subfacc = simd_swizzle!(subtmpc, [0, 2, 3, 3]);
         let swpfacc = simd_swizzle!(self.y_axis.0, [3, 3, 3, 2]);
         let mulfacc = swpfacc * subfacc;
@@ -637,174 +605,78 @@ impl Mat4 {
     pub fn inverse(&self) -> Self {
         // Based on https://github.com/g-truc/glm `glm_mat4_inverse`
         let fac0 = {
-            let swp0a = simd_swizzle!(
-                self.w_axis.0,
-                self.z_axis.0,
-                [First(3), First(3), Second(3), Second(3)]
-            );
-            let swp0b = simd_swizzle!(
-                self.w_axis.0,
-                self.z_axis.0,
-                [First(2), First(2), Second(2), Second(2)]
-            );
+            let swp0a = simd_swizzle!(self.w_axis.0, self.z_axis.0, [3, 3, 7, 7]);
+            let swp0b = simd_swizzle!(self.w_axis.0, self.z_axis.0, [2, 2, 6, 6]);
 
-            let swp00 = simd_swizzle!(
-                self.z_axis.0,
-                self.y_axis.0,
-                [First(2), First(2), Second(2), Second(2)]
-            );
+            let swp00 = simd_swizzle!(self.z_axis.0, self.y_axis.0, [2, 2, 6, 6]);
             let swp01 = simd_swizzle!(swp0a, [0, 0, 0, 2]);
             let swp02 = simd_swizzle!(swp0b, [0, 0, 0, 2]);
-            let swp03 = simd_swizzle!(
-                self.z_axis.0,
-                self.y_axis.0,
-                [First(3), First(3), Second(3), Second(3)]
-            );
+            let swp03 = simd_swizzle!(self.z_axis.0, self.y_axis.0, [3, 3, 7, 7]);
 
             let mul00 = swp00 * swp01;
             let mul01 = swp02 * swp03;
             mul00 - mul01
         };
         let fac1 = {
-            let swp0a = simd_swizzle!(
-                self.w_axis.0,
-                self.z_axis.0,
-                [First(3), First(3), Second(3), Second(3)]
-            );
-            let swp0b = simd_swizzle!(
-                self.w_axis.0,
-                self.z_axis.0,
-                [First(1), First(1), Second(1), Second(1)]
-            );
+            let swp0a = simd_swizzle!(self.w_axis.0, self.z_axis.0, [3, 3, 7, 7]);
+            let swp0b = simd_swizzle!(self.w_axis.0, self.z_axis.0, [1, 1, 5, 5]);
 
-            let swp00 = simd_swizzle!(
-                self.z_axis.0,
-                self.y_axis.0,
-                [First(1), First(1), Second(1), Second(1)]
-            );
+            let swp00 = simd_swizzle!(self.z_axis.0, self.y_axis.0, [1, 1, 5, 5]);
             let swp01 = simd_swizzle!(swp0a, [0, 0, 0, 2]);
             let swp02 = simd_swizzle!(swp0b, [0, 0, 0, 2]);
-            let swp03 = simd_swizzle!(
-                self.z_axis.0,
-                self.y_axis.0,
-                [First(3), First(3), Second(3), Second(3)]
-            );
+            let swp03 = simd_swizzle!(self.z_axis.0, self.y_axis.0, [3, 3, 7, 7]);
 
             let mul00 = swp00 * swp01;
             let mul01 = swp02 * swp03;
             mul00 - mul01
         };
         let fac2 = {
-            let swp0a = simd_swizzle!(
-                self.w_axis.0,
-                self.z_axis.0,
-                [First(2), First(2), Second(2), Second(2)]
-            );
-            let swp0b = simd_swizzle!(
-                self.w_axis.0,
-                self.z_axis.0,
-                [First(1), First(1), Second(1), Second(1)]
-            );
+            let swp0a = simd_swizzle!(self.w_axis.0, self.z_axis.0, [2, 2, 6, 6]);
+            let swp0b = simd_swizzle!(self.w_axis.0, self.z_axis.0, [1, 1, 5, 5]);
 
-            let swp00 = simd_swizzle!(
-                self.z_axis.0,
-                self.y_axis.0,
-                [First(1), First(1), Second(1), Second(1)]
-            );
+            let swp00 = simd_swizzle!(self.z_axis.0, self.y_axis.0, [1, 1, 5, 5]);
             let swp01 = simd_swizzle!(swp0a, [0, 0, 0, 2]);
             let swp02 = simd_swizzle!(swp0b, [0, 0, 0, 2]);
-            let swp03 = simd_swizzle!(
-                self.z_axis.0,
-                self.y_axis.0,
-                [First(2), First(2), Second(2), Second(2)]
-            );
+            let swp03 = simd_swizzle!(self.z_axis.0, self.y_axis.0, [2, 2, 6, 6]);
 
             let mul00 = swp00 * swp01;
             let mul01 = swp02 * swp03;
             mul00 - mul01
         };
         let fac3 = {
-            let swp0a = simd_swizzle!(
-                self.w_axis.0,
-                self.z_axis.0,
-                [First(3), First(3), Second(3), Second(3)]
-            );
-            let swp0b = simd_swizzle!(
-                self.w_axis.0,
-                self.z_axis.0,
-                [First(0), First(0), Second(0), Second(0)]
-            );
+            let swp0a = simd_swizzle!(self.w_axis.0, self.z_axis.0, [3, 3, 7, 7]);
+            let swp0b = simd_swizzle!(self.w_axis.0, self.z_axis.0, [0, 0, 4, 4]);
 
-            let swp00 = simd_swizzle!(
-                self.z_axis.0,
-                self.y_axis.0,
-                [First(0), First(0), Second(0), Second(0)]
-            );
+            let swp00 = simd_swizzle!(self.z_axis.0, self.y_axis.0, [0, 0, 4, 4]);
             let swp01 = simd_swizzle!(swp0a, [0, 0, 0, 2]);
             let swp02 = simd_swizzle!(swp0b, [0, 0, 0, 2]);
-            let swp03 = simd_swizzle!(
-                self.z_axis.0,
-                self.y_axis.0,
-                [First(3), First(3), Second(3), Second(3)]
-            );
+            let swp03 = simd_swizzle!(self.z_axis.0, self.y_axis.0, [3, 3, 7, 7]);
 
             let mul00 = swp00 * swp01;
             let mul01 = swp02 * swp03;
             mul00 - mul01
         };
         let fac4 = {
-            let swp0a = simd_swizzle!(
-                self.w_axis.0,
-                self.z_axis.0,
-                [First(2), First(2), Second(2), Second(2)]
-            );
-            let swp0b = simd_swizzle!(
-                self.w_axis.0,
-                self.z_axis.0,
-                [First(0), First(0), Second(0), Second(0)]
-            );
+            let swp0a = simd_swizzle!(self.w_axis.0, self.z_axis.0, [2, 2, 6, 6]);
+            let swp0b = simd_swizzle!(self.w_axis.0, self.z_axis.0, [0, 0, 4, 4]);
 
-            let swp00 = simd_swizzle!(
-                self.z_axis.0,
-                self.y_axis.0,
-                [First(0), First(0), Second(0), Second(0)]
-            );
+            let swp00 = simd_swizzle!(self.z_axis.0, self.y_axis.0, [0, 0, 4, 4]);
             let swp01 = simd_swizzle!(swp0a, [0, 0, 0, 2]);
             let swp02 = simd_swizzle!(swp0b, [0, 0, 0, 2]);
-            let swp03 = simd_swizzle!(
-                self.z_axis.0,
-                self.y_axis.0,
-                [First(2), First(2), Second(2), Second(2)]
-            );
+            let swp03 = simd_swizzle!(self.z_axis.0, self.y_axis.0, [2, 2, 6, 6]);
 
             let mul00 = swp00 * swp01;
             let mul01 = swp02 * swp03;
             mul00 - mul01
         };
         let fac5 = {
-            let swp0a = simd_swizzle!(
-                self.w_axis.0,
-                self.z_axis.0,
-                [First(1), First(1), Second(1), Second(1)]
-            );
-            let swp0b = simd_swizzle!(
-                self.w_axis.0,
-                self.z_axis.0,
-                [First(0), First(0), Second(0), Second(0)]
-            );
+            let swp0a = simd_swizzle!(self.w_axis.0, self.z_axis.0, [1, 1, 5, 5]);
+            let swp0b = simd_swizzle!(self.w_axis.0, self.z_axis.0, [0, 0, 4, 4]);
 
-            let swp00 = simd_swizzle!(
-                self.z_axis.0,
-                self.y_axis.0,
-                [First(0), First(0), Second(0), Second(0)]
-            );
+            let swp00 = simd_swizzle!(self.z_axis.0, self.y_axis.0, [0, 0, 4, 4]);
             let swp01 = simd_swizzle!(swp0a, [0, 0, 0, 2]);
             let swp02 = simd_swizzle!(swp0b, [0, 0, 0, 2]);
-            let swp03 = simd_swizzle!(
-                self.z_axis.0,
-                self.y_axis.0,
-                [First(1), First(1), Second(1), Second(1)]
-            );
+            let swp03 = simd_swizzle!(self.z_axis.0, self.y_axis.0, [1, 1, 5, 5]);
 
             let mul00 = swp00 * swp01;
             let mul01 = swp02 * swp03;
@@ -813,32 +685,16 @@ impl Mat4 {
         let sign_a = f32x4::from_array([-1.0, 1.0, -1.0, 1.0]);
         let sign_b = f32x4::from_array([1.0, -1.0, 1.0, -1.0]);
 
-        let temp0 = simd_swizzle!(
-            self.y_axis.0,
-            self.x_axis.0,
-            [First(0), First(0), Second(0), Second(0)]
-        );
+        let temp0 = simd_swizzle!(self.y_axis.0, self.x_axis.0, [0, 0, 4, 4]);
         let vec0 = simd_swizzle!(temp0, [0, 2, 2, 2]);
 
-        let temp1 = simd_swizzle!(
-            self.y_axis.0,
-            self.x_axis.0,
-            [First(1), First(1), Second(1), Second(1)]
-        );
+        let temp1 = simd_swizzle!(self.y_axis.0, self.x_axis.0, [1, 1, 5, 5]);
         let vec1 = simd_swizzle!(temp1, [0, 2, 2, 2]);
 
-        let temp2 = simd_swizzle!(
-            self.y_axis.0,
-            self.x_axis.0,
-            [First(2), First(2), Second(2), Second(2)]
-        );
+        let temp2 = simd_swizzle!(self.y_axis.0, self.x_axis.0, [2, 2, 6, 6]);
         let vec2 = simd_swizzle!(temp2, [0, 2, 2, 2]);
 
-        let temp3 = simd_swizzle!(
-            self.y_axis.0,
-            self.x_axis.0,
-            [First(3), First(3), Second(3), Second(3)]
-        );
+        let temp3 = simd_swizzle!(self.y_axis.0, self.x_axis.0, [3, 3, 7, 7]);
         let vec3 = simd_swizzle!(temp3, [0, 2, 2, 2]);
 
         let mul00 = vec1 * fac0;
@@ -869,9 +725,9 @@ impl Mat4 {
         let add03 = sub03 + mul11;
         let inv3 = sign_a * add03;
 
-        let row0 = simd_swizzle!(inv0, inv1, [First(0), First(0), Second(0), Second(0)]);
-        let row1 = simd_swizzle!(inv2, inv3, [First(0), First(0), Second(0), Second(0)]);
-        let row2 = simd_swizzle!(row0, row1, [First(0), First(2), Second(0), Second(2)]);
+        let row0 = simd_swizzle!(inv0, inv1, [0, 0, 4, 4]);
+        let row1 = simd_swizzle!(inv2, inv3, [0, 0, 4, 4]);
+        let row2 = simd_swizzle!(row0, row1, [0, 2, 4, 6]);
 
         let dot0 = dot4(self.x_axis.0, row2);
         glam_assert!(dot0 != 0.0);

@@ -1,4 +1,4 @@
-use core::simd::*;
+use core::simd::{num::SimdFloat, *};
 
 /// Calculates the vector 3 dot product and returns answer in x lane of f32x4.
 #[inline(always)]

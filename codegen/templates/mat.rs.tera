@@ -108,7 +108,7 @@ use core::arch::x86_64::*;
 {% elif is_wasm32 %}
 use core::arch::wasm32::*;
 {% elif is_coresimd %}
-use core::simd::{Which::*, *};
+use core::simd::*;
 {% endif %}
 
 {% if self_t == "Mat2" and is_sse2 %}
@@ -1017,29 +1017,29 @@ impl {{ self_t }} {
             let tmp0 = simd_swizzle!(
                 self.x_axis.0,
                 self.y_axis.0,
-                [First(0), First(1), Second(0), Second(1)]
+                [0, 1, 4, 5]
             );
             let tmp1 = simd_swizzle!(
                 self.x_axis.0,
                 self.y_axis.0,
-                [First(2), First(3), Second(2), Second(3)]
+                [2, 3, 6, 7]
             );
 
             Self {
                 x_axis: Vec3A(simd_swizzle!(
                     tmp0,
                     self.z_axis.0,
-                    [First(0), First(2), Second(0), Second(0)]
+                    [0, 2, 4, 4]
                 )),
                 y_axis: Vec3A(simd_swizzle!(
                     tmp0,
                     self.z_axis.0,
-                    [First(1), First(3), Second(1), Second(1)]
+                    [1, 3, 5, 5]
                 )),
                 z_axis: Vec3A(simd_swizzle!(
                     tmp1,
                     self.z_axis.0,
-                    [First(0), First(2), Second(2), Second(2)]
+                    [0, 2, 6, 6]
                 )),
             }
         {% elif self_t == "Mat4" and is_sse2 %}
@@ -1075,29 +1075,29 @@ impl {{ self_t }} {
             let tmp0 = simd_swizzle!(
                 self.x_axis.0,
                 self.y_axis.0,
-                [First(0), First(1), Second(0), Second(1)]
+                [0, 1, 4, 5]
             );
             let tmp1 = simd_swizzle!(
                 self.x_axis.0,
                 self.y_axis.0,
-                [First(2), First(3), Second(2), Second(3)]
+                [2, 3, 6, 7]
             );
             let tmp2 = simd_swizzle!(
                 self.z_axis.0,
                 self.w_axis.0,
-                [First(0), First(1), Second(0), Second(1)]
+                [0, 1, 4, 5]
             );
             let tmp3 = simd_swizzle!(
                 self.z_axis.0,
                 self.w_axis.0,
-                [First(2), First(3), Second(2), Second(3)]
+                [2, 3, 6, 7]
             );
 
             Self {
-                x_axis: Vec4(simd_swizzle!(tmp0, tmp2, [First(0), First(2), Second(0), Second(2)])),
-                y_axis: Vec4(simd_swizzle!(tmp0, tmp2, [First(1), First(3), Second(1), Second(3)])),
-                z_axis: Vec4(simd_swizzle!(tmp1, tmp3, [First(0), First(2), Second(0), Second(2)])),
-                w_axis: Vec4(simd_swizzle!(tmp1, tmp3, [First(1), First(3), Second(1), Second(3)])),
+                x_axis: Vec4(simd_swizzle!(tmp0, tmp2, [0, 2, 4, 6])),
+                y_axis: Vec4(simd_swizzle!(tmp0, tmp2, [1, 3, 5, 7])),
+                z_axis: Vec4(simd_swizzle!(tmp1, tmp3, [0, 2, 4, 6])),
+                w_axis: Vec4(simd_swizzle!(tmp1, tmp3, [1, 3, 5, 7])),
             }
         {% else %}
             Self {
@@ -1226,13 +1226,13 @@ impl {{ self_t }} {
             let swpfaca = simd_swizzle!(self.y_axis.0, [1, 0, 0, 0]);
             let mulfaca = swpfaca * subfaca;
 
-            let subtmpb = simd_swizzle!(sube, subf, [First(1), First(3), Second(0), Second(0)]);
+            let subtmpb = simd_swizzle!(sube, subf, [1, 3, 4, 4]);
             let subfacb = simd_swizzle!(subtmpb, [0, 1, 1, 3]);
             let swpfacb = simd_swizzle!(self.y_axis.0, [2, 2, 1, 1]);
             let mulfacb = swpfacb * subfacb;
 
             let subres = mulfaca - mulfacb;
-            let subtmpc = simd_swizzle!(sube, subf, [First(2), First(2), Second(0), Second(1)]);
+            let subtmpc = simd_swizzle!(sube, subf, [2, 2, 4, 5]);
             let subfacc = simd_swizzle!(subtmpc, [0, 2, 3, 3]);
             let swpfacc = simd_swizzle!(self.y_axis.0, [3, 3, 3, 2]);
             let mulfacc = swpfacc * subfacc;
@@ -1933,7 +1933,7 @@ impl {{ self_t }} {
             let cydyaxbx1 = simd_swizzle!(axbxcydy1, [2, 3, 0, 1]);
             let result0 = axbxcydy0 + cydyaxbx0;
             let result1 = axbxcydy1 + cydyaxbx1;
-            Self(simd_swizzle!(result0, result1, [First(0), First(1), Second(0), Second(1)]))
+            Self(simd_swizzle!(result0, result1, [0, 1, 4, 5]))
         {% else %}
             Self::from_cols(
                 {% for axis in axes %}
