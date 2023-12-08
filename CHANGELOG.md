@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+### Breaking changes
+
+* Changed `Vec4` to always used `BVec4A` as a mask type, regardless if the
+  target architecture has SIMD support in glam. Previously this was inconsistent
+  on different hardware like ARM. This will have a slight performance cost when
+  SIMD is not available. `Vec4` will continue to use `BVec4` as a mask type when
+  the `scalar-math` feature is used.
+
+### Fixed
+
+* Made `Affine2` implement the `bytemuck::AnyBitPattern` trait instead of
+  `bytemuck::Pod` as it contains internal padding due to `Mat2` being 16 byte
+  aligned.
+
+* Updated the `core-simd` implementation to build on latest nightly.
+
+### Added
+
+* Added `to_angle` method to 2D vectors.
+
+* Added `FloatExt` trait which adds `lerp`, `inverse_lerp` and `remap` methods
+  to `f32` and `f64` types.
+
+* Added `i16` and `u16` vector types, `I16Vec2`, `I16Vec3`, `I16Vec4`,
+  `U16Vec2`, `U16Vec3` and `U16Vec4`.
+
 ## [0.24.2] - 2023-09-23
 
 ### Fixed
@@ -46,7 +74,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 ### Breaking changes
 
 * Enabling `libm` in a `std` build now overrides the `std` math functions. This
-  is unlikely to break anything but it is a change in behaviour.
+  is unlikely to break anything but it is a change in behavior.
 
 ### Added
 
@@ -435,7 +463,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Removed deprecated `zero()`, `one()`, `unit_x()`, `unit_y()`, `unit_z()`,
   `unit_w()`, `identity()` and `Mat2::scale()` methods.
 * Remove problematic `Quat` `From` trait conversions which would allow creating
-  a non-uniform quaternion without necessarily realising, including from
+  a non-uniform quaternion without necessarily realizing, including from
   `Vec4`, `(x, y, z, w)` and `[f32; 4]`.
 
 ### Added
