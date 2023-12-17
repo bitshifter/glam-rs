@@ -695,8 +695,14 @@ impl Quat {
     }
 
     #[inline]
-    pub fn as_f64(self) -> DQuat {
+    pub fn as_dquat(self) -> DQuat {
         DQuat::from_xyzw(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
+    }
+
+    #[inline]
+    #[deprecated(since = "0.24.2", note = "Use as_dquat() instead")]
+    pub fn as_f64(self) -> DQuat {
+        self.as_dquat()
     }
 }
 

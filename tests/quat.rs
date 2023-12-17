@@ -641,11 +641,11 @@ mod quat {
         use glam::DQuat;
         assert_approx_eq!(
             DQuat::from_euler(EulerRot::YXZ, 1.0, 2.0, 3.0),
-            Quat::from_euler(EulerRot::YXZ, 1.0, 2.0, 3.0).as_f64()
+            Quat::from_euler(EulerRot::YXZ, 1.0, 2.0, 3.0).as_dquat()
         );
         assert_approx_eq!(
             Quat::from_euler(EulerRot::YXZ, 1.0, 2.0, 3.0),
-            DQuat::from_euler(EulerRot::YXZ, 1.0, 2.0, 3.0).as_f32()
+            DQuat::from_euler(EulerRot::YXZ, 1.0, 2.0, 3.0).as_quat()
         );
     });
 
