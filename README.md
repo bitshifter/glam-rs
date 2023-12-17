@@ -23,6 +23,10 @@ and feel of the API has solidified.
   * square matrices: `DMat2`, `DMat3` and `DMat4`
   * a quaternion type: `DQuat`
   * affine transformation types: `DAffine2` and `DAffine3`
+* `i16` types
+  * vectors: `I16Vec2`, `I16Vec3` and `I16Vec4`
+* `u16` types
+  * vectors: `U16Vec2`, `U16Vec3` and `U16Vec4`
 * `i32` types
   * vectors: `IVec2`, `IVec3` and `IVec4`
 * `u32` types
