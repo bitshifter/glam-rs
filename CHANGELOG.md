@@ -33,6 +33,12 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Added `i16` and `u16` vector types, `I16Vec2`, `I16Vec3`, `I16Vec4`,
   `U16Vec2`, `U16Vec3` and `U16Vec4`.
 
+### Changed
+
+* Renamed `Quat::as_f64()` to `Quat::as_dquat()` and `DQuat::as_f32()` to
+  `DQuat::as_quat()` to be consistent with other types. The old methods have
+  been deprecated.
+
 ## [0.24.2] - 2023-09-23
 
 ### Fixed
