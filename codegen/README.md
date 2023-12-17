@@ -94,6 +94,18 @@ inputs from the `codegen` program. Commonly used variables are:
 
 ## Running `codegen`
 
+The easiest way to run `codegen` is via `cargo`:
+
+```sh
+cargo run -p codegen
+```
+
+To pass additional parameters, e.g. `-h` for help:
+
+```sh
+cargo r -p codegen -- -h
+```
+
 `codegen` will generate all files by default or if a glob pattern is specified,
 only output files that match the glob.
 
