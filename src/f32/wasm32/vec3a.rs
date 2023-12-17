@@ -166,12 +166,14 @@ impl Vec3A {
 
     /// Returns a vector where every component is the dot product of `self` and `rhs`.
     #[inline]
+    #[must_use]
     pub fn dot_into_vec(self, rhs: Self) -> Self {
         Self(dot3_into_v128(self.0, rhs.0))
     }
 
     /// Computes the cross product of `self` and `rhs`.
     #[inline]
+    #[must_use]
     pub fn cross(self, rhs: Self) -> Self {
         let lhszxy = i32x4_shuffle::<2, 0, 1, 1>(self.0, self.0);
         let rhszxy = i32x4_shuffle::<2, 0, 1, 1>(rhs.0, rhs.0);
@@ -185,6 +187,7 @@ impl Vec3A {
     ///
     /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
     #[inline]
+    #[must_use]
     pub fn min(self, rhs: Self) -> Self {
         Self(f32x4_pmin(self.0, rhs.0))
     }
@@ -193,6 +196,7 @@ impl Vec3A {
     ///
     /// In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
     #[inline]
+    #[must_use]
     pub fn max(self, rhs: Self) -> Self {
         Self(f32x4_pmax(self.0, rhs.0))
     }
@@ -205,6 +209,7 @@ impl Vec3A {
     ///
     /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn clamp(self, min: Self, max: Self) -> Self {
         glam_assert!(min.cmple(max).all(), "clamp: expected min <= max");
         self.max(min).min(max)
@@ -294,6 +299,7 @@ impl Vec3A {
 
     /// Returns a vector containing the absolute value of each element of `self`.
     #[inline]
+    #[must_use]
     pub fn abs(self) -> Self {
         Self(f32x4_abs(self.0))
     }
@@ -304,6 +310,7 @@ impl Vec3A {
     /// - `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
     /// - `NAN` if the number is `NAN`
     #[inline]
+    #[must_use]
     pub fn signum(self) -> Self {
         unsafe {
             let result = Self(v128_or(v128_and(self.0, Self::NEG_ONE.0), Self::ONE.0));
@@ -314,6 +321,7 @@ impl Vec3A {
 
     /// Returns a vector with signs of `rhs` and the magnitudes of `self`.
     #[inline]
+    #[must_use]
     pub fn copysign(self, rhs: Self) -> Self {
         unsafe {
             let mask = Self::splat(-0.0);
@@ -393,6 +401,7 @@ impl Vec3A {
     }
 
     /// Returns the element-wise quotient of [Euclidean division] of `self` by `rhs`.
+    #[must_use]
     #[inline]
     pub fn div_euclid(self, rhs: Self) -> Self {
         Self::new(
@@ -406,6 +415,7 @@ impl Vec3A {
     ///
     /// [Euclidean division]: f32::rem_euclid
     #[inline]
+    #[must_use]
     pub fn rem_euclid(self, rhs: Self) -> Self {
         Self::new(
             math::rem_euclid(self.x, rhs.x),
@@ -539,6 +549,7 @@ impl Vec3A {
 
     /// Returns a vector containing the nearest integer to a number for each element of `self`.
     /// Round half-way cases away from 0.0.
+    #[must_use]
     #[inline]
     pub fn round(self) -> Self {
         Self(f32x4_nearest(self.0))
@@ -546,6 +557,7 @@ impl Vec3A {
 
     /// Returns a vector containing the largest integer less than or equal to a number for each
     /// element of `self`.
+    #[must_use]
     #[inline]
     pub fn floor(self) -> Self {
         Self(f32x4_floor(self.0))
@@ -553,6 +565,7 @@ impl Vec3A {
 
     /// Returns a vector containing the smallest integer greater than or equal to a number for
     /// each element of `self`.
+    #[must_use]
     #[inline]
     pub fn ceil(self) -> Self {
         Self(f32x4_ceil(self.0))
@@ -560,6 +573,7 @@ impl Vec3A {
 
     /// Returns a vector containing the integer part each element of `self`. This means numbers are
     /// always truncated towards zero.
+    #[must_use]
     #[inline]
     pub fn trunc(self) -> Self {
         Self(f32x4_trunc(self.0))
@@ -569,6 +583,7 @@ impl Vec3A {
     /// self.floor()`.
     ///
     /// Note that this is fast but not precise for large numbers.
+    #[must_use]
     #[inline]
     pub fn fract(self) -> Self {
         self - self.floor()
@@ -576,12 +591,14 @@ impl Vec3A {
 
     /// Returns a vector containing `e^self` (the exponential function) for each element of
     /// `self`.
+    #[must_use]
     #[inline]
     pub fn exp(self) -> Self {
         Self::new(math::exp(self.x), math::exp(self.y), math::exp(self.z))
     }
 
     /// Returns a vector containing each element of `self` raised to the power of `n`.
+    #[must_use]
     #[inline]
     pub fn powf(self, n: f32) -> Self {
         Self::new(
@@ -592,6 +609,7 @@ impl Vec3A {
     }
 
     /// Returns a vector containing the reciprocal `1.0/n` of each element of `self`.
+    #[must_use]
     #[inline]
     pub fn recip(self) -> Self {
         Self(f32x4_div(Self::ONE.0, self.0))
@@ -603,6 +621,7 @@ impl Vec3A {
     /// will be equal to `rhs`. When `s` is outside of range `[0, 1]`, the result is linearly
     /// extrapolated.
     #[doc(alias = "mix")]
+    #[must_use]
     #[inline]
     pub fn lerp(self, rhs: Self, s: f32) -> Self {
         self + ((rhs - self) * s)
@@ -627,6 +646,7 @@ impl Vec3A {
     /// # Panics
     ///
     /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
+    #[must_use]
     #[inline]
     pub fn clamp_length(self, min: f32, max: f32) -> Self {
         glam_assert!(min <= max);
@@ -641,6 +661,7 @@ impl Vec3A {
     }
 
     /// Returns a vector with a length no more than `max`
+    #[must_use]
     pub fn clamp_length_max(self, max: f32) -> Self {
         let length_sq = self.length_squared();
         if length_sq > max * max {
@@ -651,6 +672,7 @@ impl Vec3A {
     }
 
     /// Returns a vector with a length no less than `min`
+    #[must_use]
     pub fn clamp_length_min(self, min: f32) -> Self {
         let length_sq = self.length_squared();
         if length_sq < min * min {
@@ -667,6 +689,7 @@ impl Vec3A {
     /// architecture has a dedicated fma CPU instruction. However, this is not always true,
     /// and will be heavily dependant on designing algorithms with specific target hardware in
     /// mind.
+    #[must_use]
     #[inline]
     pub fn mul_add(self, a: Self, b: Self) -> Self {
         Self::new(
@@ -693,6 +716,7 @@ impl Vec3A {
     ///
     /// The output vector is not necessarily unit length. For that use
     /// [`Self::any_orthonormal_vector()`] instead.
+    #[must_use]
     #[inline]
     pub fn any_orthogonal_vector(&self) -> Self {
         // This can probably be optimized
@@ -710,6 +734,7 @@ impl Vec3A {
     /// # Panics
     ///
     /// Will panic if `self` is not normalized when `glam_assert` is enabled.
+    #[must_use]
     #[inline]
     pub fn any_orthonormal_vector(&self) -> Self {
         glam_assert!(self.is_normalized());

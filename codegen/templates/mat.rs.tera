@@ -1895,6 +1895,7 @@ impl {{ self_t }} {
 {% endif %}
 
     /// Multiplies two {{ nxn }} matrices.
+    #[must_use]
     #[inline]
     pub fn mul_mat{{ dim }}(&self, rhs: &Self) -> Self {
         {% if self_t == "Mat2" and is_sse2 %}
@@ -1944,6 +1945,7 @@ impl {{ self_t }} {
     }
 
     /// Adds two {{ nxn }} matrices.
+    #[must_use]
     #[inline]
     pub fn add_mat{{ dim }}(&self, rhs: &Self) -> Self {
         {% if self_t == "Mat2" and is_sse2 %}
@@ -1962,6 +1964,7 @@ impl {{ self_t }} {
     }
 
     /// Subtracts two {{ nxn }} matrices.
+    #[must_use]
     #[inline]
     pub fn sub_mat{{ dim }}(&self, rhs: &Self) -> Self {
         {% if self_t == "Mat2" and is_sse2 %}
@@ -1980,6 +1983,7 @@ impl {{ self_t }} {
     }
 
     /// Multiplies a {{ nxn }} matrix by a scalar.
+    #[must_use]
     #[inline]
     pub fn mul_scalar(&self, rhs: {{ scalar_t }}) -> Self {
         {% if self_t == "Mat2" and is_sse2 %}

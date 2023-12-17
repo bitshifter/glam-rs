@@ -143,12 +143,14 @@ impl U64Vec3 {
 
     /// Returns a vector where every component is the dot product of `self` and `rhs`.
     #[inline]
+    #[must_use]
     pub fn dot_into_vec(self, rhs: Self) -> Self {
         Self::splat(self.dot(rhs))
     }
 
     /// Computes the cross product of `self` and `rhs`.
     #[inline]
+    #[must_use]
     pub fn cross(self, rhs: Self) -> Self {
         Self {
             x: self.y * rhs.z - rhs.y * self.z,
@@ -161,6 +163,7 @@ impl U64Vec3 {
     ///
     /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
     #[inline]
+    #[must_use]
     pub fn min(self, rhs: Self) -> Self {
         Self {
             x: self.x.min(rhs.x),
@@ -173,6 +176,7 @@ impl U64Vec3 {
     ///
     /// In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
     #[inline]
+    #[must_use]
     pub fn max(self, rhs: Self) -> Self {
         Self {
             x: self.x.max(rhs.x),
@@ -189,6 +193,7 @@ impl U64Vec3 {
     ///
     /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn clamp(self, min: Self, max: Self) -> Self {
         glam_assert!(min.cmple(max).all(), "clamp: expected min <= max");
         self.max(min).min(max)

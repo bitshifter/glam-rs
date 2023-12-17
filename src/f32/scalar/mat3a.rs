@@ -484,6 +484,7 @@ impl Mat3A {
     }
 
     /// Multiplies two 3x3 matrices.
+    #[must_use]
     #[inline]
     pub fn mul_mat3(&self, rhs: &Self) -> Self {
         Self::from_cols(
@@ -494,6 +495,7 @@ impl Mat3A {
     }
 
     /// Adds two 3x3 matrices.
+    #[must_use]
     #[inline]
     pub fn add_mat3(&self, rhs: &Self) -> Self {
         Self::from_cols(
@@ -504,6 +506,7 @@ impl Mat3A {
     }
 
     /// Subtracts two 3x3 matrices.
+    #[must_use]
     #[inline]
     pub fn sub_mat3(&self, rhs: &Self) -> Self {
         Self::from_cols(
@@ -514,6 +517,7 @@ impl Mat3A {
     }
 
     /// Multiplies a 3x3 matrix by a scalar.
+    #[must_use]
     #[inline]
     pub fn mul_scalar(&self, rhs: f32) -> Self {
         Self::from_cols(

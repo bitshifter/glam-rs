@@ -3,16 +3,19 @@
 use crate::float::FloatExt;
 
 impl FloatExt for f64 {
+    #[must_use]
     #[inline]
     fn lerp(self, rhs: f64, t: f64) -> f64 {
         self + (rhs - self) * t
     }
 
+    #[must_use]
     #[inline]
     fn inverse_lerp(a: f64, b: f64, v: f64) -> f64 {
         (v - a) / (b - a)
     }
 
+    #[must_use]
     #[inline]
     fn remap(self, in_start: f64, in_end: f64, out_start: f64, out_end: f64) -> f64 {
         let t = f64::inverse_lerp(in_start, in_end, self);

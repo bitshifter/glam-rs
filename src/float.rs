@@ -5,6 +5,7 @@ pub trait FloatExt {
     /// When `t` is `0`, the result will be `self`.  When `t` is `1`, the result
     /// will be `rhs`. When `t` is outside of the range `[0, 1]`, the result is linearly
     /// extrapolated.
+    #[must_use]
     fn lerp(self, rhs: Self, s: Self) -> Self;
 
     /// Returns `v` normalized to the range `[a, b]`.
@@ -24,5 +25,6 @@ pub trait FloatExt {
     /// When `self` is outside of the range `[in_start, in_end]`, the result is linearly extrapolated.
     ///
     /// `in_start` and `in_end` must not be equal, otherwise the result will be either infinite or `NAN`.
+    #[must_use]
     fn remap(self, in_start: Self, in_end: Self, out_start: Self, out_end: Self) -> Self;
 }

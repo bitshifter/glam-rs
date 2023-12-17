@@ -541,6 +541,7 @@ impl Quat {
     /// # Panics
     ///
     /// Will panic if `self` or `end` are not normalized when `glam_assert` is enabled.
+    #[must_use]
     #[inline]
     #[doc(alias = "mix")]
     pub fn lerp(self, end: Self, s: f32) -> Self {
@@ -563,6 +564,7 @@ impl Quat {
     /// # Panics
     ///
     /// Will panic if `self` or `end` are not normalized when `glam_assert` is enabled.
+    #[must_use]
     #[inline]
     pub fn slerp(self, mut end: Self, s: f32) -> Self {
         // http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/
@@ -622,6 +624,7 @@ impl Quat {
     /// # Panics
     ///
     /// Will panic if `self` or `rhs` are not normalized when `glam_assert` is enabled.
+    #[must_use]
     #[inline]
     pub fn mul_quat(self, rhs: Self) -> Self {
         glam_assert!(self.is_normalized());

@@ -514,6 +514,7 @@ impl {{ self_t }} {
     }
 
     /// Returns a vector where every component is the dot product of `self` and `rhs`.
+    #[must_use]
     #[inline]
     pub fn dot_into_vec(self, rhs: Self) -> Self {
         {% if is_sse2 %}
@@ -529,6 +530,7 @@ impl {{ self_t }} {
 
 {% if dim == 3 %}
     /// Computes the cross product of `self` and `rhs`.
+    #[must_use]
     #[inline]
     pub fn cross(self, rhs: Self) -> Self {
         {% if is_scalar %}
@@ -572,6 +574,7 @@ impl {{ self_t }} {
     /// Returns a vector containing the minimum values for each element of `self` and `rhs`.
     ///
     /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
+    #[must_use]
     #[inline]
     pub fn min(self, rhs: Self) -> Self {
         {% if is_scalar %}
@@ -592,6 +595,7 @@ impl {{ self_t }} {
     /// Returns a vector containing the maximum values for each element of `self` and `rhs`.
     ///
     /// In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
+    #[must_use]
     #[inline]
     pub fn max(self, rhs: Self) -> Self {
         {% if is_scalar %}
@@ -616,6 +620,7 @@ impl {{ self_t }} {
     /// # Panics
     ///
     /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
+    #[must_use]
     #[inline]
     pub fn clamp(self, min: Self, max: Self) -> Self {
         glam_assert!(min.cmple(max).all(), "clamp: expected min <= max");
@@ -862,6 +867,7 @@ impl {{ self_t }} {
 
 {% if is_signed %}
     /// Returns a vector containing the absolute value of each element of `self`.
+    #[must_use]
     #[inline]
     pub fn abs(self) -> Self {
         {% if is_scalar %}
@@ -894,6 +900,7 @@ impl {{ self_t }} {
     ///  - `1` if the number is positive
     ///  - `-1` if the number is negative
     {%- endif %}
+    #[must_use]
     #[inline]
     pub fn signum(self) -> Self {
         {% if is_scalar %}
@@ -925,6 +932,7 @@ impl {{ self_t }} {
 
     {% if is_float %}
     /// Returns a vector with signs of `rhs` and the magnitudes of `self`.
+    #[must_use]
     #[inline]
     pub fn copysign(self, rhs: Self) -> Self {
         {% if is_scalar %}
@@ -1117,6 +1125,7 @@ impl {{ self_t }} {
     /// # Panics
     /// This function will panic if any `rhs` element is 0 or the division results in overflow.
     {%- endif %}
+    #[must_use]
     #[inline]
     pub fn div_euclid(self, rhs: Self) -> Self {
         Self::new(
@@ -1138,6 +1147,7 @@ impl {{ self_t }} {
     {%- endif %}
     ///
     /// [Euclidean division]: {{scalar_t}}::rem_euclid
+    #[must_use]
     #[inline]
     pub fn rem_euclid(self, rhs: Self) -> Self {
         Self::new(
@@ -1299,6 +1309,7 @@ impl {{ self_t }} {
 
     /// Returns a vector containing the nearest integer to a number for each element of `self`.
     /// Round half-way cases away from 0.0.
+    #[must_use]
     #[inline]
     pub fn round(self) -> Self {
         {% if is_scalar %}
@@ -1318,6 +1329,7 @@ impl {{ self_t }} {
 
     /// Returns a vector containing the largest integer less than or equal to a number for each
     /// element of `self`.
+    #[must_use]
     #[inline]
     pub fn floor(self) -> Self {
         {% if is_scalar %}
@@ -1337,6 +1349,7 @@ impl {{ self_t }} {
 
     /// Returns a vector containing the smallest integer greater than or equal to a number for
     /// each element of `self`.
+    #[must_use]
     #[inline]
     pub fn ceil(self) -> Self {
         {% if is_scalar %}
@@ -1356,6 +1369,7 @@ impl {{ self_t }} {
 
     /// Returns a vector containing the integer part each element of `self`. This means numbers are
     /// always truncated towards zero.
+    #[must_use]
     #[inline]
     pub fn trunc(self) -> Self {
         {% if is_scalar %}
@@ -1377,6 +1391,7 @@ impl {{ self_t }} {
     /// self.floor()`.
     ///
     /// Note that this is fast but not precise for large numbers.
+    #[must_use]
     #[inline]
     pub fn fract(self) -> Self {
         self - self.floor()
@@ -1384,6 +1399,7 @@ impl {{ self_t }} {
 
     /// Returns a vector containing `e^self` (the exponential function) for each element of
     /// `self`.
+    #[must_use]
     #[inline]
     pub fn exp(self) -> Self {
         Self::new(
@@ -1394,6 +1410,7 @@ impl {{ self_t }} {
     }
 
     /// Returns a vector containing each element of `self` raised to the power of `n`.
+    #[must_use]
     #[inline]
     pub fn powf(self, n: {{ scalar_t }}) -> Self {
         Self::new(
@@ -1404,6 +1421,7 @@ impl {{ self_t }} {
     }
 
     /// Returns a vector containing the reciprocal `1.0/n` of each element of `self`.
+    #[must_use]
     #[inline]
     pub fn recip(self) -> Self {
         {% if is_scalar %}
@@ -1427,6 +1445,7 @@ impl {{ self_t }} {
     /// will be equal to `rhs`. When `s` is outside of range `[0, 1]`, the result is linearly
     /// extrapolated.
     #[doc(alias = "mix")]
+    #[must_use]
     #[inline]
     pub fn lerp(self, rhs: Self, s: {{ scalar_t }}) -> Self {
         self + ((rhs - self) * s)
@@ -1451,6 +1470,7 @@ impl {{ self_t }} {
     /// # Panics
     ///
     /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
+    #[must_use]
     #[inline]
     pub fn clamp_length(self, min: {{ scalar_t }}, max: {{ scalar_t }}) -> Self {
         glam_assert!(min <= max);
@@ -1465,6 +1485,7 @@ impl {{ self_t }} {
     }
 
     /// Returns a vector with a length no more than `max`
+    #[must_use]
     pub fn clamp_length_max(self, max: {{ scalar_t }}) -> Self {
         let length_sq = self.length_squared();
         if length_sq > max * max {
@@ -1475,6 +1496,7 @@ impl {{ self_t }} {
     }
 
     /// Returns a vector with a length no less than `min`
+    #[must_use]
     pub fn clamp_length_min(self, min: {{ scalar_t }}) -> Self {
         let length_sq = self.length_squared();
         if length_sq < min * min {
@@ -1491,6 +1513,7 @@ impl {{ self_t }} {
     /// architecture has a dedicated fma CPU instruction. However, this is not always true,
     /// and will be heavily dependant on designing algorithms with specific target hardware in
     /// mind.
+    #[must_use]
     #[inline]
     pub fn mul_add(self, a: Self, b: Self) -> Self {
         {% if is_sse2 %}
@@ -1514,6 +1537,7 @@ impl {{ self_t }} {
     /// conjunction with the [`rotate()`][Self::rotate()] method, e.g.
     /// `{{ vec2_t }}::from_angle(PI).rotate({{ vec2_t }}::Y)` will create the vector `[-1, 0]`
     /// and rotate [`{{ vec2_t }}::Y`] around it returning `-{{ vec2_t }}::Y`.
+    #[must_use]
     #[inline]
     pub fn from_angle(angle: {{ scalar_t }}) -> Self {
         let (sin, cos) = math::sin_cos(angle);
@@ -1558,6 +1582,7 @@ impl {{ self_t }} {
     ///
     /// The output vector is not necessarily unit length. For that use
     /// [`Self::any_orthonormal_vector()`] instead.
+    #[must_use]
     #[inline]
     pub fn any_orthogonal_vector(&self) -> Self {
         // This can probably be optimized
@@ -1575,6 +1600,7 @@ impl {{ self_t }} {
     /// # Panics
     ///
     /// Will panic if `self` is not normalized when `glam_assert` is enabled.
+    #[must_use]
     #[inline]
     pub fn any_orthonormal_vector(&self) -> Self {
         glam_assert!(self.is_normalized());
@@ -1608,6 +1634,7 @@ impl {{ self_t }} {
 
 {% if is_signed and dim == 2 %}
     /// Returns a vector that is equal to `self` rotated by 90 degrees.
+    #[must_use]
     #[inline]
     pub fn perp(self) -> Self {
         Self {

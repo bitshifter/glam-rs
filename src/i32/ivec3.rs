@@ -155,12 +155,14 @@ impl IVec3 {
 
     /// Returns a vector where every component is the dot product of `self` and `rhs`.
     #[inline]
+    #[must_use]
     pub fn dot_into_vec(self, rhs: Self) -> Self {
         Self::splat(self.dot(rhs))
     }
 
     /// Computes the cross product of `self` and `rhs`.
     #[inline]
+    #[must_use]
     pub fn cross(self, rhs: Self) -> Self {
         Self {
             x: self.y * rhs.z - rhs.y * self.z,
@@ -173,6 +175,7 @@ impl IVec3 {
     ///
     /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
     #[inline]
+    #[must_use]
     pub fn min(self, rhs: Self) -> Self {
         Self {
             x: self.x.min(rhs.x),
@@ -185,6 +188,7 @@ impl IVec3 {
     ///
     /// In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
     #[inline]
+    #[must_use]
     pub fn max(self, rhs: Self) -> Self {
         Self {
             x: self.x.max(rhs.x),
@@ -201,6 +205,7 @@ impl IVec3 {
     ///
     /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn clamp(self, min: Self, max: Self) -> Self {
         glam_assert!(min.cmple(max).all(), "clamp: expected min <= max");
         self.max(min).min(max)
@@ -284,6 +289,7 @@ impl IVec3 {
 
     /// Returns a vector containing the absolute value of each element of `self`.
     #[inline]
+    #[must_use]
     pub fn abs(self) -> Self {
         Self {
             x: self.x.abs(),
@@ -298,6 +304,7 @@ impl IVec3 {
     ///  - `1` if the number is positive
     ///  - `-1` if the number is negative
     #[inline]
+    #[must_use]
     pub fn signum(self) -> Self {
         Self {
             x: self.x.signum(),
@@ -334,6 +341,7 @@ impl IVec3 {
     ///
     /// # Panics
     /// This function will panic if any `rhs` element is 0 or the division results in overflow.
+    #[must_use]
     #[inline]
     pub fn div_euclid(self, rhs: Self) -> Self {
         Self::new(
@@ -350,6 +358,7 @@ impl IVec3 {
     ///
     /// [Euclidean division]: i32::rem_euclid
     #[inline]
+    #[must_use]
     pub fn rem_euclid(self, rhs: Self) -> Self {
         Self::new(
             self.x.rem_euclid(rhs.x),

@@ -127,6 +127,7 @@ impl I16Vec2 {
 
     /// Returns a vector where every component is the dot product of `self` and `rhs`.
     #[inline]
+    #[must_use]
     pub fn dot_into_vec(self, rhs: Self) -> Self {
         Self::splat(self.dot(rhs))
     }
@@ -135,6 +136,7 @@ impl I16Vec2 {
     ///
     /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
     #[inline]
+    #[must_use]
     pub fn min(self, rhs: Self) -> Self {
         Self {
             x: self.x.min(rhs.x),
@@ -146,6 +148,7 @@ impl I16Vec2 {
     ///
     /// In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
     #[inline]
+    #[must_use]
     pub fn max(self, rhs: Self) -> Self {
         Self {
             x: self.x.max(rhs.x),
@@ -161,6 +164,7 @@ impl I16Vec2 {
     ///
     /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn clamp(self, min: Self, max: Self) -> Self {
         glam_assert!(min.cmple(max).all(), "clamp: expected min <= max");
         self.max(min).min(max)
@@ -244,6 +248,7 @@ impl I16Vec2 {
 
     /// Returns a vector containing the absolute value of each element of `self`.
     #[inline]
+    #[must_use]
     pub fn abs(self) -> Self {
         Self {
             x: self.x.abs(),
@@ -257,6 +262,7 @@ impl I16Vec2 {
     ///  - `1` if the number is positive
     ///  - `-1` if the number is negative
     #[inline]
+    #[must_use]
     pub fn signum(self) -> Self {
         Self {
             x: self.x.signum(),
@@ -290,6 +296,7 @@ impl I16Vec2 {
     ///
     /// # Panics
     /// This function will panic if any `rhs` element is 0 or the division results in overflow.
+    #[must_use]
     #[inline]
     pub fn div_euclid(self, rhs: Self) -> Self {
         Self::new(self.x.div_euclid(rhs.x), self.y.div_euclid(rhs.y))
@@ -302,11 +309,13 @@ impl I16Vec2 {
     ///
     /// [Euclidean division]: i16::rem_euclid
     #[inline]
+    #[must_use]
     pub fn rem_euclid(self, rhs: Self) -> Self {
         Self::new(self.x.rem_euclid(rhs.x), self.y.rem_euclid(rhs.y))
     }
 
     /// Returns a vector that is equal to `self` rotated by 90 degrees.
+    #[must_use]
     #[inline]
     pub fn perp(self) -> Self {
         Self {
