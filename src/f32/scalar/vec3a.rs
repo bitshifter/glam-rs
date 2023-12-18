@@ -171,15 +171,15 @@ impl Vec3A {
     }
 
     /// Returns a vector where every component is the dot product of `self` and `rhs`.
-    #[inline]
     #[must_use]
+    #[inline]
     pub fn dot_into_vec(self, rhs: Self) -> Self {
         Self::splat(self.dot(rhs))
     }
 
     /// Computes the cross product of `self` and `rhs`.
-    #[inline]
     #[must_use]
+    #[inline]
     pub fn cross(self, rhs: Self) -> Self {
         Self {
             x: self.y * rhs.z - rhs.y * self.z,
@@ -191,8 +191,8 @@ impl Vec3A {
     /// Returns a vector containing the minimum values for each element of `self` and `rhs`.
     ///
     /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
-    #[inline]
     #[must_use]
+    #[inline]
     pub fn min(self, rhs: Self) -> Self {
         Self {
             x: self.x.min(rhs.x),
@@ -204,8 +204,8 @@ impl Vec3A {
     /// Returns a vector containing the maximum values for each element of `self` and `rhs`.
     ///
     /// In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
-    #[inline]
     #[must_use]
+    #[inline]
     pub fn max(self, rhs: Self) -> Self {
         Self {
             x: self.x.max(rhs.x),
@@ -221,8 +221,8 @@ impl Vec3A {
     /// # Panics
     ///
     /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
-    #[inline]
     #[must_use]
+    #[inline]
     pub fn clamp(self, min: Self, max: Self) -> Self {
         glam_assert!(min.cmple(max).all(), "clamp: expected min <= max");
         self.max(min).min(max)
@@ -305,8 +305,8 @@ impl Vec3A {
     }
 
     /// Returns a vector containing the absolute value of each element of `self`.
-    #[inline]
     #[must_use]
+    #[inline]
     pub fn abs(self) -> Self {
         Self {
             x: math::abs(self.x),
@@ -320,8 +320,8 @@ impl Vec3A {
     /// - `1.0` if the number is positive, `+0.0` or `INFINITY`
     /// - `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
     /// - `NAN` if the number is `NAN`
-    #[inline]
     #[must_use]
+    #[inline]
     pub fn signum(self) -> Self {
         Self {
             x: math::signum(self.x),
@@ -331,8 +331,8 @@ impl Vec3A {
     }
 
     /// Returns a vector with signs of `rhs` and the magnitudes of `self`.
-    #[inline]
     #[must_use]
+    #[inline]
     pub fn copysign(self, rhs: Self) -> Self {
         Self {
             x: math::copysign(self.x, rhs.x),
@@ -423,8 +423,8 @@ impl Vec3A {
     /// Returns the element-wise remainder of [Euclidean division] of `self` by `rhs`.
     ///
     /// [Euclidean division]: f32::rem_euclid
-    #[inline]
     #[must_use]
+    #[inline]
     pub fn rem_euclid(self, rhs: Self) -> Self {
         Self::new(
             math::rem_euclid(self.x, rhs.x),

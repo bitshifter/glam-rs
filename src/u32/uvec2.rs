@@ -117,8 +117,8 @@ impl UVec2 {
     }
 
     /// Returns a vector where every component is the dot product of `self` and `rhs`.
-    #[inline]
     #[must_use]
+    #[inline]
     pub fn dot_into_vec(self, rhs: Self) -> Self {
         Self::splat(self.dot(rhs))
     }
@@ -126,8 +126,8 @@ impl UVec2 {
     /// Returns a vector containing the minimum values for each element of `self` and `rhs`.
     ///
     /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
-    #[inline]
     #[must_use]
+    #[inline]
     pub fn min(self, rhs: Self) -> Self {
         Self {
             x: self.x.min(rhs.x),
@@ -138,8 +138,8 @@ impl UVec2 {
     /// Returns a vector containing the maximum values for each element of `self` and `rhs`.
     ///
     /// In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
-    #[inline]
     #[must_use]
+    #[inline]
     pub fn max(self, rhs: Self) -> Self {
         Self {
             x: self.x.max(rhs.x),
@@ -154,8 +154,8 @@ impl UVec2 {
     /// # Panics
     ///
     /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
-    #[inline]
     #[must_use]
+    #[inline]
     pub fn clamp(self, min: Self, max: Self) -> Self {
         glam_assert!(min.cmple(max).all(), "clamp: expected min <= max");
         self.max(min).min(max)
