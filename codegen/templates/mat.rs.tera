@@ -121,6 +121,7 @@ union UnionCast {
 
 /// Creates a {{ nxn }} matrix from {{ dimension_in_full }} column vectors.
 #[inline(always)]
+#[must_use]
 pub const fn {{ self_t | lower }}(
     {% for axis in axes %}
         {{ axis }}: {{ col_t }},
@@ -241,6 +242,7 @@ impl {{ self_t }} {
 
     #[allow(clippy::too_many_arguments)]
     #[inline(always)]
+    #[must_use]
     const fn new(
         {% for i in range(end = dim) %}
             {%- for j in range(end = dim) %}
@@ -269,6 +271,7 @@ impl {{ self_t }} {
 
     /// Creates a {{ nxn }} matrix from {{ dimension_in_full }} column vectors.
     #[inline(always)]
+    #[must_use]
     pub const fn from_cols(
         {% for axis in axes %}
             {{ axis }}: {{ col_t }},
@@ -293,6 +296,7 @@ impl {{ self_t }} {
     /// If your data is stored in row major you will need to `transpose` the returned
     /// matrix.
     #[inline]
+    #[must_use]
     pub const fn from_cols_array(m: &[{{ scalar_t }}; {{ size }}]) -> Self {
         {% if self_t == "Mat2" and is_coresimd %}
             Self(f32x4::from_array(*m))
@@ -308,6 +312,7 @@ impl {{ self_t }} {
     /// Creates a `[{{ scalar_t }}; {{ size }}]` array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
+    #[must_use]
     pub const fn to_cols_array(&self) -> [{{ scalar_t }}; {{ size }}] {
         {% if self_t == "Mat2" and not is_scalar %}
             unsafe { *(self as *const Self as *const [f32; 4]) }
@@ -336,6 +341,7 @@ impl {{ self_t }} {
     /// If your data is in row major order you will need to `transpose` the returned
     /// matrix.
     #[inline]
+    #[must_use]
     pub const fn from_cols_array_2d(m: &[[{{ scalar_t }}; {{ dim }}]; {{ dim }}]) -> Self {
         Self::from_cols(
             {% for i in range(end = dim) %}
@@ -347,6 +353,7 @@ impl {{ self_t }} {
     /// Creates a `[[{{ scalar_t }}; {{ dim }}]; {{ dim }}]` {{ dim }}D array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
+    #[must_use]
     pub const fn to_cols_array_2d(&self) -> [[{{ scalar_t }}; {{ dim }}]; {{ dim }}] {
         {% if self_t == "Mat2" and not is_scalar %}
             unsafe { *(self as *const Self as *const [[f32; 2]; 2]) }
@@ -362,6 +369,7 @@ impl {{ self_t }} {
     /// Creates a {{ nxn }} matrix with its diagonal set to `diagonal` and all other entries set to 0.
     #[doc(alias = "scale")]
     #[inline]
+    #[must_use]
     pub const fn from_diagonal(diagonal: {{ vecn_t }}) -> Self {
         {% if self_t == "Mat4" and not is_scalar %}
             // diagonal.x, diagonal.y etc can't be done in a const-context
@@ -396,6 +404,7 @@ impl {{ self_t }} {
     /// Creates a {{ nxn }} matrix containing the combining non-uniform `scale` and rotation of
     /// `angle` (in radians).
     #[inline]
+    #[must_use]
     pub fn from_scale_angle(scale: {{ col_t }}, angle: {{ scalar_t }}) -> Self {
         let (sin, cos) = math::sin_cos(angle);
         Self::new(cos * scale.x, sin * scale.x, -sin * scale.y, cos * scale.y)
@@ -403,6 +412,7 @@ impl {{ self_t }} {
 
     /// Creates a {{ nxn }} matrix containing a rotation of `angle` (in radians).
     #[inline]
+    #[must_use]
     pub fn from_angle(angle: {{ scalar_t }}) -> Self {
         let (sin, cos) = math::sin_cos(angle);
         Self::new(cos, sin, -sin, cos)
@@ -410,6 +420,7 @@ impl {{ self_t }} {
 
     /// Creates a {{ nxn }} matrix from a 3x3 matrix, discarding the 2nd row and column.
     #[inline]
+    #[must_use]
     pub fn from_mat3(m: {{ mat3_t }}) -> Self {
         Self::from_cols(m.x_axis.xy(), m.y_axis.xy())
     }
@@ -417,6 +428,7 @@ impl {{ self_t }} {
 {% if scalar_t == "f32" %}
     /// Creates a {{ nxn }} matrix from a 3x3 matrix, discarding the 2nd row and column.
     #[inline]
+    #[must_use]
     pub fn from_mat3a(m: Mat3A) -> Self {
         {# TODO: SIMD optimise #}
         Self::from_cols(m.x_axis.xy(), m.y_axis.xy())
@@ -425,6 +437,8 @@ impl {{ self_t }} {
 
 {% elif dim == 3 %}
     /// Creates a 3x3 matrix from a 4x4 matrix, discarding the 4th row and column.
+    #[inline]
+    #[must_use]
     pub fn from_mat4(m: {{ mat4_t }}) -> Self {
         {% if self_t == "Mat3A" %}
             Self::from_cols(
@@ -447,6 +461,7 @@ impl {{ self_t }} {
     ///
     /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn from_quat(rotation: {{ quat_t }}) -> Self {
         glam_assert!(rotation.is_normalized());
 
@@ -477,6 +492,7 @@ impl {{ self_t }} {
     ///
     /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn from_axis_angle(axis: {{ vec3_t }}, angle: {{ scalar_t }}) -> Self {
         {# TODO: make common with dim == 4 #}
         glam_assert!(axis.is_normalized());
@@ -496,9 +512,10 @@ impl {{ self_t }} {
         )
     }
 
-    #[inline]
     /// Creates a 3D rotation matrix from the given euler rotation sequence and the angles (in
     /// radians).
+    #[inline]
+    #[must_use]
     pub fn from_euler(order: EulerRot, a: {{ scalar_t }}, b: {{ scalar_t }}, c: {{ scalar_t }}) -> Self {
         let quat = {{ quat_t }}::from_euler(order, a, b, c);
         Self::from_quat(quat)
@@ -506,6 +523,7 @@ impl {{ self_t }} {
 
     /// Creates a 3D rotation matrix from `angle` (in radians) around the x axis.
     #[inline]
+    #[must_use]
     pub fn from_rotation_x(angle: {{ scalar_t }}) -> Self {
         let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
@@ -517,6 +535,7 @@ impl {{ self_t }} {
 
     /// Creates a 3D rotation matrix from `angle` (in radians) around the y axis.
     #[inline]
+    #[must_use]
     pub fn from_rotation_y(angle: {{ scalar_t }}) -> Self {
         let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
@@ -528,6 +547,7 @@ impl {{ self_t }} {
 
     /// Creates a 3D rotation matrix from `angle` (in radians) around the z axis.
     #[inline]
+    #[must_use]
     pub fn from_rotation_z(angle: {{ scalar_t }}) -> Self {
         let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
@@ -542,6 +562,7 @@ impl {{ self_t }} {
     /// The resulting matrix can be used to transform 2D points and vectors. See
     /// [`Self::transform_point2()`] and [`Self::transform_vector2()`].
     #[inline]
+    #[must_use]
     pub fn from_translation(translation: {{ vec2_t }}) -> Self {
         Self::from_cols(
             {{ col_t }}::X,
@@ -555,6 +576,7 @@ impl {{ self_t }} {
     /// The resulting matrix can be used to transform 2D points and vectors. See
     /// [`Self::transform_point2()`] and [`Self::transform_vector2()`].
     #[inline]
+    #[must_use]
     pub fn from_angle(angle: {{ scalar_t }}) -> Self {
         let (sin, cos) = math::sin_cos(angle);
         Self::from_cols(
@@ -570,6 +592,7 @@ impl {{ self_t }} {
     /// The resulting matrix can be used to transform 2D points and vectors. See
     /// [`Self::transform_point2()`] and [`Self::transform_vector2()`].
     #[inline]
+    #[must_use]
     pub fn from_scale_angle_translation(scale: {{ vec2_t }}, angle: {{ scalar_t }}, translation: {{ vec2_t }}) -> Self {
         let (sin, cos) = math::sin_cos(angle);
         Self::from_cols(
@@ -588,6 +611,7 @@ impl {{ self_t }} {
     ///
     /// Will panic if all elements of `scale` are zero when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn from_scale(scale: {{ vec2_t }}) -> Self {
         // Do not panic as long as any component is non-zero
         glam_assert!(scale.cmpne({{ vec2_t }}::ZERO).any());
@@ -610,6 +634,7 @@ impl {{ self_t }} {
 
 {% elif dim == 4 %}
     #[inline]
+    #[must_use]
     fn quat_to_axes(rotation: {{ quat_t }}) -> ({{ col_t }}, {{ col_t }}, {{ col_t }}) {
         glam_assert!(rotation.is_normalized());
 
@@ -643,6 +668,7 @@ impl {{ self_t }} {
     ///
     /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn from_scale_rotation_translation(
         scale: {{ vec3_t }},
         rotation: {{ quat_t }},
@@ -666,6 +692,7 @@ impl {{ self_t }} {
     ///
     /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn from_rotation_translation(rotation: {{ quat_t }}, translation: {{ vec3_t }}) -> Self {
         let (x_axis, y_axis, z_axis) = Self::quat_to_axes(rotation);
         Self::from_cols(x_axis, y_axis, z_axis, {{ col_t }}::from((translation, 1.0)))
@@ -679,6 +706,7 @@ impl {{ self_t }} {
     /// Will panic if the determinant of `self` is zero or if the resulting scale vector
     /// contains any zero elements when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn to_scale_rotation_translation(&self) -> ({{ vec3_t }}, {{ quat_t }}, {{ vec3_t }}) {
         let det = self.determinant();
         glam_assert!(det != 0.0);
@@ -713,6 +741,7 @@ impl {{ self_t }} {
     ///
     /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn from_quat(rotation: {{ quat_t }}) -> Self {
         let (x_axis, y_axis, z_axis) = Self::quat_to_axes(rotation);
         Self::from_cols(x_axis, y_axis, z_axis, {{ col_t }}::W)
@@ -724,6 +753,7 @@ impl {{ self_t }} {
     /// The resulting matrix can be used to transform 3D points and vectors. See
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
+    #[must_use]
     pub fn from_mat3(m: {{ mat3_t }}) -> Self {
         Self::from_cols(
             {{ col_t }}::from((m.x_axis, 0.0)),
@@ -740,6 +770,7 @@ impl {{ self_t }} {
     /// The resulting matrix can be used to transform 3D points and vectors. See
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
+    #[must_use]
     pub fn from_mat3a(m: Mat3A) -> Self {
         Self::from_cols(
             Vec4::from((m.x_axis, 0.0)),
@@ -755,6 +786,7 @@ impl {{ self_t }} {
     /// The resulting matrix can be used to transform 3D points and vectors. See
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
+    #[must_use]
     pub fn from_translation(translation: {{ vec3_t }}) -> Self {
         Self::from_cols(
             {{ col_t }}::X,
@@ -774,6 +806,7 @@ impl {{ self_t }} {
     ///
     /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn from_axis_angle(axis: {{ vec3_t }}, angle: {{ scalar_t }}) -> Self {
         {# TODO: make common with dim == 3 #}
         glam_assert!(axis.is_normalized());
@@ -808,12 +841,13 @@ impl {{ self_t }} {
         )
     }
 
-    #[inline]
     /// Creates a affine transformation matrix containing a rotation from the given euler
     /// rotation sequence and angles (in radians).
     ///
     /// The resulting matrix can be used to transform 3D points and vectors. See
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+    #[inline]
+    #[must_use]
     pub fn from_euler(order: EulerRot, a: {{ scalar_t }}, b: {{ scalar_t }}, c: {{ scalar_t }}) -> Self {
         let quat = {{ quat_t }}::from_euler(order, a, b, c);
         Self::from_quat(quat)
@@ -825,6 +859,7 @@ impl {{ self_t }} {
     /// The resulting matrix can be used to transform 3D points and vectors. See
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
+    #[must_use]
     pub fn from_rotation_x(angle: {{ scalar_t }}) -> Self {
         let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
@@ -841,6 +876,7 @@ impl {{ self_t }} {
     /// The resulting matrix can be used to transform 3D points and vectors. See
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
+    #[must_use]
     pub fn from_rotation_y(angle: {{ scalar_t }}) -> Self {
         let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
@@ -857,6 +893,7 @@ impl {{ self_t }} {
     /// The resulting matrix can be used to transform 3D points and vectors. See
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
+    #[must_use]
     pub fn from_rotation_z(angle: {{ scalar_t }}) -> Self {
         let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
@@ -876,6 +913,7 @@ impl {{ self_t }} {
     ///
     /// Will panic if all elements of `scale` are zero when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn from_scale(scale: {{ vec3_t }}) -> Self {
         // Do not panic as long as any component is non-zero
         glam_assert!(scale.cmpne({{ vec3_t }}::ZERO).any());
@@ -895,6 +933,7 @@ impl {{ self_t }} {
     ///
     /// Panics if `slice` is less than {{ size }} elements long.
     #[inline]
+    #[must_use]
     pub const fn from_cols_slice(slice: &[{{ scalar_t }}]) -> Self {
         Self::new(
             {% for i in range(end = size) %}
@@ -923,6 +962,7 @@ impl {{ self_t }} {
     ///
     /// Panics if `index` is greater than {{ dim - 1 }}.
     #[inline]
+    #[must_use]
     pub fn col(&self, index: usize) -> {{ col_t }} {
         match index {
             {% for axis in axes %}
@@ -953,6 +993,7 @@ impl {{ self_t }} {
     ///
     /// Panics if `index` is greater than {{ dim - 1 }}.
     #[inline]
+    #[must_use]
     pub fn row(&self, index: usize) -> {{ col_t }} {
         match index {
             {% for i in range(end=dim) %}
@@ -969,6 +1010,7 @@ impl {{ self_t }} {
     /// Returns `true` if, and only if, all elements are finite.
     /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
     #[inline]
+    #[must_use]
     pub fn is_finite(&self) -> bool {
         {% for axis in axes %}
             self.{{ axis }}.is_finite() {% if not loop.last %} && {% endif %}
@@ -977,6 +1019,7 @@ impl {{ self_t }} {
 
     /// Returns `true` if any elements are `NaN`.
     #[inline]
+    #[must_use]
     pub fn is_nan(&self) -> bool {
         {% for axis in axes %}
             self.{{ axis }}.is_nan() {% if not loop.last %} || {% endif %}
@@ -984,8 +1027,8 @@ impl {{ self_t }} {
     }
 
     /// Returns the transpose of `self`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn transpose(&self) -> Self {
         {% if self_t == "Mat2" and is_sse2 %}
             Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_10_00) })
@@ -1116,6 +1159,7 @@ impl {{ self_t }} {
     {%- if dim < 4 %}
     #[inline]
     {%- endif %}
+    #[must_use]
     pub fn determinant(&self) -> {{ scalar_t }} {
         {% if self_t == "Mat2" and is_sse2 %}
             unsafe {
@@ -1272,10 +1316,10 @@ impl {{ self_t }} {
     /// # Panics
     ///
     /// Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
-    #[must_use]
     {%- if dim < 4 %}
     #[inline]
     {%- endif %}
+    #[must_use]
     pub fn inverse(&self) -> Self {
         {% if self_t == "Mat2" and is_sse2 %}
             unsafe {
@@ -1423,6 +1467,7 @@ impl {{ self_t }} {
     ///
     /// Will panic if the 2nd row of `self` is not `(0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn transform_point2(&self, rhs: {{ vec2_t }}) -> {{ vec2_t }} {
         glam_assert!(self.row(2).abs_diff_eq({{ col_t }}::Z, 1e-6));
         {{ mat2_t }}::from_cols(self.x_axis.xy(), self.y_axis.xy()) * rhs + self.z_axis.xy()
@@ -1438,6 +1483,7 @@ impl {{ self_t }} {
     ///
     /// Will panic if the 2nd row of `self` is not `(0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn transform_vector2(&self, rhs: {{ vec2_t }}) -> {{ vec2_t }} {
         glam_assert!(self.row(2).abs_diff_eq({{ col_t }}::Z, 1e-6));
         {{ mat2_t }}::from_cols(self.x_axis.xy(), self.y_axis.xy()) * rhs
@@ -1449,6 +1495,7 @@ impl {{ self_t }} {
     ///
     /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
     #[inline]
+    #[must_use]
     pub fn look_to_lh(eye: {{ vec3_t }}, dir: {{ vec3_t }}, up: {{ vec3_t }}) -> Self {
         Self::look_to_rh(eye, -dir, up)
     }
@@ -1458,6 +1505,7 @@ impl {{ self_t }} {
     ///
     /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
     #[inline]
+    #[must_use]
     pub fn look_to_rh(eye: {{ vec3_t }}, dir: {{ vec3_t }}, up: {{ vec3_t }}) -> Self {
         let f = dir.normalize();
         let s = f.cross(up).normalize();
@@ -1479,6 +1527,7 @@ impl {{ self_t }} {
     ///
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn look_at_lh(eye: {{ vec3_t }}, center: {{ vec3_t }}, up: {{ vec3_t }}) -> Self {
         glam_assert!(up.is_normalized());
         Self::look_to_lh(eye, center.sub(eye), up)
@@ -1501,6 +1550,7 @@ impl {{ self_t }} {
     /// This is the same as the OpenGL `gluPerspective` function.
     /// See <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml>
     #[inline]
+    #[must_use]
     pub fn perspective_rh_gl(
         fov_y_radians: {{ scalar_t }},
         aspect_ratio: {{ scalar_t }},
@@ -1527,6 +1577,7 @@ impl {{ self_t }} {
     /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
     /// enabled.
     #[inline]
+    #[must_use]
     pub fn perspective_lh(fov_y_radians: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, z_near: {{ scalar_t }}, z_far: {{ scalar_t }}) -> Self {
         glam_assert!(z_near > 0.0 && z_far > 0.0);
         let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
@@ -1548,6 +1599,7 @@ impl {{ self_t }} {
     /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
     /// enabled.
     #[inline]
+    #[must_use]
     pub fn perspective_rh(fov_y_radians: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, z_near: {{ scalar_t }}, z_far: {{ scalar_t }}) -> Self {
         glam_assert!(z_near > 0.0 && z_far > 0.0);
         let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
@@ -1568,6 +1620,7 @@ impl {{ self_t }} {
     ///
     /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn perspective_infinite_lh(fov_y_radians: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, z_near: {{ scalar_t }}) -> Self {
         glam_assert!(z_near > 0.0);
         let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
@@ -1587,6 +1640,7 @@ impl {{ self_t }} {
     ///
     /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn perspective_infinite_reverse_lh(
         fov_y_radians: {{ scalar_t }},
         aspect_ratio: {{ scalar_t }},
@@ -1607,6 +1661,7 @@ impl {{ self_t }} {
     /// Creates an infinite right-handed perspective projection matrix with
     /// `[0,1]` depth range.
     #[inline]
+    #[must_use]
     pub fn perspective_infinite_rh(fov_y_radians: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, z_near: {{ scalar_t }}) -> Self {
         glam_assert!(z_near > 0.0);
         let f = 1.0 / math::tan(0.5 * fov_y_radians);
@@ -1621,6 +1676,7 @@ impl {{ self_t }} {
     /// Creates an infinite reverse right-handed perspective projection matrix
     /// with `[0,1]` depth range.
     #[inline]
+    #[must_use]
     pub fn perspective_infinite_reverse_rh(
         fov_y_radians: {{ scalar_t }},
         aspect_ratio: {{ scalar_t }},
@@ -1641,6 +1697,7 @@ impl {{ self_t }} {
     /// See
     /// <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml>
     #[inline]
+    #[must_use]
     pub fn orthographic_rh_gl(
         left: {{ scalar_t }},
         right: {{ scalar_t }},
@@ -1666,6 +1723,7 @@ impl {{ self_t }} {
 
     /// Creates a left-handed orthographic projection matrix with `[0,1]` depth range.
     #[inline]
+    #[must_use]
     pub fn orthographic_lh(
         left: {{ scalar_t }},
         right: {{ scalar_t }},
@@ -1692,6 +1750,7 @@ impl {{ self_t }} {
 
     /// Creates a right-handed orthographic projection matrix with `[0,1]` depth range.
     #[inline]
+    #[must_use]
     pub fn orthographic_rh(
         left: {{ scalar_t }},
         right: {{ scalar_t }},
@@ -1723,6 +1782,7 @@ impl {{ self_t }} {
     ///
     /// This method assumes that `self` contains a projective transform.
     #[inline]
+    #[must_use]
     pub fn project_point3(&self, rhs: {{ vec3_t }}) -> {{ vec3_t }} {
         let mut res = self.x_axis.mul(rhs.x);
         res = self.y_axis.mul(rhs.y).add(res);
@@ -1745,6 +1805,7 @@ impl {{ self_t }} {
     ///
     /// Will panic if the 3rd row of `self` is not `(0, 0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn transform_point3(&self, rhs: {{ vec3_t }}) -> {{ vec3_t }} {
         glam_assert!(self.row(3).abs_diff_eq({{ vec4_t }}::W, 1e-6));
         let mut res = self.x_axis.mul(rhs.x);
@@ -1765,6 +1826,7 @@ impl {{ self_t }} {
     ///
     /// Will panic if the 3rd row of `self` is not `(0, 0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn transform_vector3(&self, rhs: {{ vec3_t }}) -> {{ vec3_t }} {
         glam_assert!(self.row(3).abs_diff_eq({{ vec4_t }}::W, 1e-6));
         let mut res = self.x_axis.mul(rhs.x);
@@ -1780,6 +1842,7 @@ impl {{ self_t }} {
     ///
     /// This is the equivalent of multiplying the [`Vec3A`] as a 4D vector where `w` is `1.0`.
     #[inline]
+    #[must_use]
     pub fn transform_point3a(&self, rhs: Vec3A) -> Vec3A {
         {% if is_scalar %}
             self.transform_point3(rhs.into()).into()
@@ -1797,6 +1860,7 @@ impl {{ self_t }} {
     ///
     /// This is the equivalent of multiplying the [`Vec3A`] as a 4D vector where `w` is `0.0`.
     #[inline]
+    #[must_use]
     pub fn transform_vector3a(&self, rhs: Vec3A) -> Vec3A {
         {% if is_scalar %}
             self.transform_vector3(rhs.into()).into()
@@ -1812,6 +1876,7 @@ impl {{ self_t }} {
 
     /// Transforms a {{ dim }}D vector.
     #[inline]
+    #[must_use]
     pub fn mul_vec{{ dim }}(&self, rhs: {{ vecn_t }}) -> {{ vecn_t }} {
         {% if self_t == "Mat2" and is_sse2 %}
             unsafe {
@@ -1880,12 +1945,14 @@ impl {{ self_t }} {
 {% if self_t == "Mat3" %}
     /// Transforms a [`Vec3A`].
     #[inline]
+    #[must_use]
     pub fn mul_vec3a(&self, rhs: Vec3A) -> Vec3A {
         self.mul_vec3(rhs.into()).into()
     }
 {% elif self_t == "Mat3A" %}
     /// Transforms a [`Vec3A`].
     #[inline]
+    #[must_use]
     pub fn mul_vec3a(&self, rhs: Vec3A) -> Vec3A {
         let mut res = self.x_axis.mul(rhs.xxx());
         res = res.add(self.y_axis.mul(rhs.yyy()));
@@ -1895,8 +1962,8 @@ impl {{ self_t }} {
 {% endif %}
 
     /// Multiplies two {{ nxn }} matrices.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn mul_mat{{ dim }}(&self, rhs: &Self) -> Self {
         {% if self_t == "Mat2" and is_sse2 %}
             unsafe {
@@ -1945,8 +2012,8 @@ impl {{ self_t }} {
     }
 
     /// Adds two {{ nxn }} matrices.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn add_mat{{ dim }}(&self, rhs: &Self) -> Self {
         {% if self_t == "Mat2" and is_sse2 %}
             Self(unsafe { _mm_add_ps(self.0, rhs.0) })
@@ -1964,8 +2031,8 @@ impl {{ self_t }} {
     }
 
     /// Subtracts two {{ nxn }} matrices.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn sub_mat{{ dim }}(&self, rhs: &Self) -> Self {
         {% if self_t == "Mat2" and is_sse2 %}
             Self(unsafe { _mm_sub_ps(self.0, rhs.0) })
@@ -1983,8 +2050,8 @@ impl {{ self_t }} {
     }
 
     /// Multiplies a {{ nxn }} matrix by a scalar.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn mul_scalar(&self, rhs: {{ scalar_t }}) -> Self {
         {% if self_t == "Mat2" and is_sse2 %}
             Self(unsafe { _mm_mul_ps(self.0, _mm_set_ps1(rhs)) })
@@ -2011,6 +2078,7 @@ impl {{ self_t }} {
     /// For more see
     /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
     #[inline]
+    #[must_use]
     pub fn abs_diff_eq(&self, rhs: Self, max_abs_diff: {{ scalar_t }}) -> bool {
         {% for axis in axes %}
             self.{{ axis }}.abs_diff_eq(rhs.{{ axis }}, max_abs_diff)

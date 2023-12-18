@@ -8,6 +8,7 @@ use core::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
 /// Creates a 3x3 matrix from three column vectors.
 #[inline(always)]
+#[must_use]
 pub const fn dmat3(x_axis: DVec3, y_axis: DVec3, z_axis: DVec3) -> DMat3 {
     DMat3::from_cols(x_axis, y_axis, z_axis)
 }
@@ -56,6 +57,7 @@ impl DMat3 {
 
     #[allow(clippy::too_many_arguments)]
     #[inline(always)]
+    #[must_use]
     const fn new(
         m00: f64,
         m01: f64,
@@ -76,6 +78,7 @@ impl DMat3 {
 
     /// Creates a 3x3 matrix from three column vectors.
     #[inline(always)]
+    #[must_use]
     pub const fn from_cols(x_axis: DVec3, y_axis: DVec3, z_axis: DVec3) -> Self {
         Self {
             x_axis,
@@ -88,6 +91,7 @@ impl DMat3 {
     /// If your data is stored in row major you will need to `transpose` the returned
     /// matrix.
     #[inline]
+    #[must_use]
     pub const fn from_cols_array(m: &[f64; 9]) -> Self {
         Self::new(m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8])
     }
@@ -95,6 +99,7 @@ impl DMat3 {
     /// Creates a `[f64; 9]` array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
+    #[must_use]
     pub const fn to_cols_array(&self) -> [f64; 9] {
         [
             self.x_axis.x,
@@ -113,6 +118,7 @@ impl DMat3 {
     /// If your data is in row major order you will need to `transpose` the returned
     /// matrix.
     #[inline]
+    #[must_use]
     pub const fn from_cols_array_2d(m: &[[f64; 3]; 3]) -> Self {
         Self::from_cols(
             DVec3::from_array(m[0]),
@@ -124,6 +130,7 @@ impl DMat3 {
     /// Creates a `[[f64; 3]; 3]` 3D array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
+    #[must_use]
     pub const fn to_cols_array_2d(&self) -> [[f64; 3]; 3] {
         [
             self.x_axis.to_array(),
@@ -135,6 +142,7 @@ impl DMat3 {
     /// Creates a 3x3 matrix with its diagonal set to `diagonal` and all other entries set to 0.
     #[doc(alias = "scale")]
     #[inline]
+    #[must_use]
     pub const fn from_diagonal(diagonal: DVec3) -> Self {
         Self::new(
             diagonal.x, 0.0, 0.0, 0.0, diagonal.y, 0.0, 0.0, 0.0, diagonal.z,
@@ -142,6 +150,8 @@ impl DMat3 {
     }
 
     /// Creates a 3x3 matrix from a 4x4 matrix, discarding the 4th row and column.
+    #[inline]
+    #[must_use]
     pub fn from_mat4(m: DMat4) -> Self {
         Self::from_cols(m.x_axis.xyz(), m.y_axis.xyz(), m.z_axis.xyz())
     }
@@ -152,6 +162,7 @@ impl DMat3 {
     ///
     /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn from_quat(rotation: DQuat) -> Self {
         glam_assert!(rotation.is_normalized());
 
@@ -182,6 +193,7 @@ impl DMat3 {
     ///
     /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn from_axis_angle(axis: DVec3, angle: f64) -> Self {
         glam_assert!(axis.is_normalized());
 
@@ -200,9 +212,10 @@ impl DMat3 {
         )
     }
 
-    #[inline]
     /// Creates a 3D rotation matrix from the given euler rotation sequence and the angles (in
     /// radians).
+    #[inline]
+    #[must_use]
     pub fn from_euler(order: EulerRot, a: f64, b: f64, c: f64) -> Self {
         let quat = DQuat::from_euler(order, a, b, c);
         Self::from_quat(quat)
@@ -210,6 +223,7 @@ impl DMat3 {
 
     /// Creates a 3D rotation matrix from `angle` (in radians) around the x axis.
     #[inline]
+    #[must_use]
     pub fn from_rotation_x(angle: f64) -> Self {
         let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
@@ -221,6 +235,7 @@ impl DMat3 {
 
     /// Creates a 3D rotation matrix from `angle` (in radians) around the y axis.
     #[inline]
+    #[must_use]
     pub fn from_rotation_y(angle: f64) -> Self {
         let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
@@ -232,6 +247,7 @@ impl DMat3 {
 
     /// Creates a 3D rotation matrix from `angle` (in radians) around the z axis.
     #[inline]
+    #[must_use]
     pub fn from_rotation_z(angle: f64) -> Self {
         let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
@@ -246,6 +262,7 @@ impl DMat3 {
     /// The resulting matrix can be used to transform 2D points and vectors. See
     /// [`Self::transform_point2()`] and [`Self::transform_vector2()`].
     #[inline]
+    #[must_use]
     pub fn from_translation(translation: DVec2) -> Self {
         Self::from_cols(
             DVec3::X,
@@ -260,6 +277,7 @@ impl DMat3 {
     /// The resulting matrix can be used to transform 2D points and vectors. See
     /// [`Self::transform_point2()`] and [`Self::transform_vector2()`].
     #[inline]
+    #[must_use]
     pub fn from_angle(angle: f64) -> Self {
         let (sin, cos) = math::sin_cos(angle);
         Self::from_cols(
@@ -275,6 +293,7 @@ impl DMat3 {
     /// The resulting matrix can be used to transform 2D points and vectors. See
     /// [`Self::transform_point2()`] and [`Self::transform_vector2()`].
     #[inline]
+    #[must_use]
     pub fn from_scale_angle_translation(scale: DVec2, angle: f64, translation: DVec2) -> Self {
         let (sin, cos) = math::sin_cos(angle);
         Self::from_cols(
@@ -293,6 +312,7 @@ impl DMat3 {
     ///
     /// Will panic if all elements of `scale` are zero when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn from_scale(scale: DVec2) -> Self {
         // Do not panic as long as any component is non-zero
         glam_assert!(scale.cmpne(DVec2::ZERO).any());
@@ -319,6 +339,7 @@ impl DMat3 {
     ///
     /// Panics if `slice` is less than 9 elements long.
     #[inline]
+    #[must_use]
     pub const fn from_cols_slice(slice: &[f64]) -> Self {
         Self::new(
             slice[0], slice[1], slice[2], slice[3], slice[4], slice[5], slice[6], slice[7],
@@ -350,6 +371,7 @@ impl DMat3 {
     ///
     /// Panics if `index` is greater than 2.
     #[inline]
+    #[must_use]
     pub fn col(&self, index: usize) -> DVec3 {
         match index {
             0 => self.x_axis,
@@ -380,6 +402,7 @@ impl DMat3 {
     ///
     /// Panics if `index` is greater than 2.
     #[inline]
+    #[must_use]
     pub fn row(&self, index: usize) -> DVec3 {
         match index {
             0 => DVec3::new(self.x_axis.x, self.y_axis.x, self.z_axis.x),
@@ -392,19 +415,21 @@ impl DMat3 {
     /// Returns `true` if, and only if, all elements are finite.
     /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
     #[inline]
+    #[must_use]
     pub fn is_finite(&self) -> bool {
         self.x_axis.is_finite() && self.y_axis.is_finite() && self.z_axis.is_finite()
     }
 
     /// Returns `true` if any elements are `NaN`.
     #[inline]
+    #[must_use]
     pub fn is_nan(&self) -> bool {
         self.x_axis.is_nan() || self.y_axis.is_nan() || self.z_axis.is_nan()
     }
 
     /// Returns the transpose of `self`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn transpose(&self) -> Self {
         Self {
             x_axis: DVec3::new(self.x_axis.x, self.y_axis.x, self.z_axis.x),
@@ -415,6 +440,7 @@ impl DMat3 {
 
     /// Returns the determinant of `self`.
     #[inline]
+    #[must_use]
     pub fn determinant(&self) -> f64 {
         self.z_axis.dot(self.x_axis.cross(self.y_axis))
     }
@@ -426,8 +452,8 @@ impl DMat3 {
     /// # Panics
     ///
     /// Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn inverse(&self) -> Self {
         let tmp0 = self.y_axis.cross(self.z_axis);
         let tmp1 = self.z_axis.cross(self.x_axis);
@@ -448,6 +474,7 @@ impl DMat3 {
     ///
     /// Will panic if the 2nd row of `self` is not `(0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn transform_point2(&self, rhs: DVec2) -> DVec2 {
         glam_assert!(self.row(2).abs_diff_eq(DVec3::Z, 1e-6));
         DMat2::from_cols(self.x_axis.xy(), self.y_axis.xy()) * rhs + self.z_axis.xy()
@@ -463,6 +490,7 @@ impl DMat3 {
     ///
     /// Will panic if the 2nd row of `self` is not `(0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn transform_vector2(&self, rhs: DVec2) -> DVec2 {
         glam_assert!(self.row(2).abs_diff_eq(DVec3::Z, 1e-6));
         DMat2::from_cols(self.x_axis.xy(), self.y_axis.xy()) * rhs
@@ -470,6 +498,7 @@ impl DMat3 {
 
     /// Transforms a 3D vector.
     #[inline]
+    #[must_use]
     pub fn mul_vec3(&self, rhs: DVec3) -> DVec3 {
         let mut res = self.x_axis.mul(rhs.x);
         res = res.add(self.y_axis.mul(rhs.y));
@@ -478,8 +507,8 @@ impl DMat3 {
     }
 
     /// Multiplies two 3x3 matrices.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn mul_mat3(&self, rhs: &Self) -> Self {
         Self::from_cols(
             self.mul(rhs.x_axis),
@@ -489,8 +518,8 @@ impl DMat3 {
     }
 
     /// Adds two 3x3 matrices.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn add_mat3(&self, rhs: &Self) -> Self {
         Self::from_cols(
             self.x_axis.add(rhs.x_axis),
@@ -500,8 +529,8 @@ impl DMat3 {
     }
 
     /// Subtracts two 3x3 matrices.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn sub_mat3(&self, rhs: &Self) -> Self {
         Self::from_cols(
             self.x_axis.sub(rhs.x_axis),
@@ -511,8 +540,8 @@ impl DMat3 {
     }
 
     /// Multiplies a 3x3 matrix by a scalar.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn mul_scalar(&self, rhs: f64) -> Self {
         Self::from_cols(
             self.x_axis.mul(rhs),
@@ -531,6 +560,7 @@ impl DMat3 {
     /// For more see
     /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
     #[inline]
+    #[must_use]
     pub fn abs_diff_eq(&self, rhs: Self, max_abs_diff: f64) -> bool {
         self.x_axis.abs_diff_eq(rhs.x_axis, max_abs_diff)
             && self.y_axis.abs_diff_eq(rhs.y_axis, max_abs_diff)

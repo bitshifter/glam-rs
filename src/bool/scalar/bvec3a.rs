@@ -24,6 +24,7 @@ impl BVec3A {
 
     /// Creates a new vector mask.
     #[inline(always)]
+    #[must_use]
     pub const fn new(x: bool, y: bool, z: bool) -> Self {
         Self {
             x: MASK[x as usize],
@@ -34,6 +35,7 @@ impl BVec3A {
 
     /// Creates a vector with all elements set to `v`.
     #[inline]
+    #[must_use]
     pub const fn splat(v: bool) -> Self {
         Self::new(v, v, v)
     }
@@ -43,18 +45,21 @@ impl BVec3A {
     /// A true element results in a `1` bit and a false element in a `0` bit.  Element `x` goes
     /// into the first lowest bit, element `y` into the second, etc.
     #[inline]
+    #[must_use]
     pub fn bitmask(self) -> u32 {
         (self.x & 0x1) | (self.y & 0x1) << 1 | (self.z & 0x1) << 2
     }
 
     /// Returns true if any of the elements are true, false otherwise.
     #[inline]
+    #[must_use]
     pub fn any(self) -> bool {
         ((self.x | self.y | self.z) & 0x1) != 0
     }
 
     /// Returns true if all the elements are true, false otherwise.
     #[inline]
+    #[must_use]
     pub fn all(self) -> bool {
         ((self.x & self.y & self.z) & 0x1) != 0
     }
@@ -63,6 +68,7 @@ impl BVec3A {
     ///
     /// Panics if `index` is greater than 2.
     #[inline]
+    #[must_use]
     pub fn test(&self, index: usize) -> bool {
         match index {
             0 => (self.x & 0x1) != 0,
@@ -86,6 +92,7 @@ impl BVec3A {
     }
 
     #[inline]
+    #[must_use]
     fn into_bool_array(self) -> [bool; 3] {
         [
             (self.x & 0x1) != 0,
@@ -95,6 +102,7 @@ impl BVec3A {
     }
 
     #[inline]
+    #[must_use]
     fn into_u32_array(self) -> [u32; 3] {
         [self.x, self.y, self.z]
     }

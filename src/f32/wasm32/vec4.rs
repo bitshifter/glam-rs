@@ -17,6 +17,7 @@ union UnionCast {
 
 /// Creates a 4-dimensional vector.
 #[inline(always)]
+#[must_use]
 pub const fn vec4(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
     Vec4::new(x, y, z, w)
 }
@@ -84,12 +85,14 @@ impl Vec4 {
 
     /// Creates a new vector.
     #[inline(always)]
+    #[must_use]
     pub const fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
         Self(f32x4(x, y, z, w))
     }
 
     /// Creates a vector with all elements set to `v`.
     #[inline]
+    #[must_use]
     pub const fn splat(v: f32) -> Self {
         unsafe { UnionCast { a: [v; 4] }.v }
     }
@@ -100,18 +103,21 @@ impl Vec4 {
     /// A true element in the mask uses the corresponding element from `if_true`, and false
     /// uses the element from `if_false`.
     #[inline]
+    #[must_use]
     pub fn select(mask: BVec4A, if_true: Self, if_false: Self) -> Self {
         Self(v128_bitselect(if_true.0, if_false.0, mask.0))
     }
 
     /// Creates a new vector from an array.
     #[inline]
+    #[must_use]
     pub const fn from_array(a: [f32; 4]) -> Self {
         Self::new(a[0], a[1], a[2], a[3])
     }
 
     /// `[x, y, z, w]`
     #[inline]
+    #[must_use]
     pub const fn to_array(&self) -> [f32; 4] {
         unsafe { *(self as *const Vec4 as *const [f32; 4]) }
     }
@@ -122,6 +128,7 @@ impl Vec4 {
     ///
     /// Panics if `slice` is less than 4 elements long.
     #[inline]
+    #[must_use]
     pub const fn from_slice(slice: &[f32]) -> Self {
         Self::new(slice[0], slice[1], slice[2], slice[3])
     }
@@ -145,6 +152,7 @@ impl Vec4 {
     ///
     /// To truncate to [`Vec3A`] use [`Vec3A::from()`].
     #[inline]
+    #[must_use]
     pub fn truncate(self) -> Vec3 {
         use crate::swizzles::Vec4Swizzles;
         self.xyz()
@@ -152,13 +160,14 @@ impl Vec4 {
 
     /// Computes the dot product of `self` and `rhs`.
     #[inline]
+    #[must_use]
     pub fn dot(self, rhs: Self) -> f32 {
         dot4(self.0, rhs.0)
     }
 
     /// Returns a vector where every component is the dot product of `self` and `rhs`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn dot_into_vec(self, rhs: Self) -> Self {
         Self(dot4_into_v128(self.0, rhs.0))
     }
@@ -166,8 +175,8 @@ impl Vec4 {
     /// Returns a vector containing the minimum values for each element of `self` and `rhs`.
     ///
     /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn min(self, rhs: Self) -> Self {
         Self(f32x4_pmin(self.0, rhs.0))
     }
@@ -175,8 +184,8 @@ impl Vec4 {
     /// Returns a vector containing the maximum values for each element of `self` and `rhs`.
     ///
     /// In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn max(self, rhs: Self) -> Self {
         Self(f32x4_pmax(self.0, rhs.0))
     }
@@ -188,8 +197,8 @@ impl Vec4 {
     /// # Panics
     ///
     /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn clamp(self, min: Self, max: Self) -> Self {
         glam_assert!(min.cmple(max).all(), "clamp: expected min <= max");
         self.max(min).min(max)
@@ -199,6 +208,7 @@ impl Vec4 {
     ///
     /// In other words this computes `min(x, y, ..)`.
     #[inline]
+    #[must_use]
     pub fn min_element(self) -> f32 {
         let v = self.0;
         let v = f32x4_pmin(v, i32x4_shuffle::<2, 3, 0, 0>(v, v));
@@ -210,6 +220,7 @@ impl Vec4 {
     ///
     /// In other words this computes `max(x, y, ..)`.
     #[inline]
+    #[must_use]
     pub fn max_element(self) -> f32 {
         let v = self.0;
         let v = f32x4_pmax(v, i32x4_shuffle::<2, 3, 0, 0>(v, v));
@@ -223,6 +234,7 @@ impl Vec4 {
     /// In other words, this computes `[self.x == rhs.x, self.y == rhs.y, ..]` for all
     /// elements.
     #[inline]
+    #[must_use]
     pub fn cmpeq(self, rhs: Self) -> BVec4A {
         BVec4A(f32x4_eq(self.0, rhs.0))
     }
@@ -233,6 +245,7 @@ impl Vec4 {
     /// In other words this computes `[self.x != rhs.x, self.y != rhs.y, ..]` for all
     /// elements.
     #[inline]
+    #[must_use]
     pub fn cmpne(self, rhs: Self) -> BVec4A {
         BVec4A(f32x4_ne(self.0, rhs.0))
     }
@@ -243,6 +256,7 @@ impl Vec4 {
     /// In other words this computes `[self.x >= rhs.x, self.y >= rhs.y, ..]` for all
     /// elements.
     #[inline]
+    #[must_use]
     pub fn cmpge(self, rhs: Self) -> BVec4A {
         BVec4A(f32x4_ge(self.0, rhs.0))
     }
@@ -253,6 +267,7 @@ impl Vec4 {
     /// In other words this computes `[self.x > rhs.x, self.y > rhs.y, ..]` for all
     /// elements.
     #[inline]
+    #[must_use]
     pub fn cmpgt(self, rhs: Self) -> BVec4A {
         BVec4A(f32x4_gt(self.0, rhs.0))
     }
@@ -263,6 +278,7 @@ impl Vec4 {
     /// In other words this computes `[self.x <= rhs.x, self.y <= rhs.y, ..]` for all
     /// elements.
     #[inline]
+    #[must_use]
     pub fn cmple(self, rhs: Self) -> BVec4A {
         BVec4A(f32x4_le(self.0, rhs.0))
     }
@@ -273,13 +289,14 @@ impl Vec4 {
     /// In other words this computes `[self.x < rhs.x, self.y < rhs.y, ..]` for all
     /// elements.
     #[inline]
+    #[must_use]
     pub fn cmplt(self, rhs: Self) -> BVec4A {
         BVec4A(f32x4_lt(self.0, rhs.0))
     }
 
     /// Returns a vector containing the absolute value of each element of `self`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn abs(self) -> Self {
         Self(f32x4_abs(self.0))
     }
@@ -289,8 +306,8 @@ impl Vec4 {
     /// - `1.0` if the number is positive, `+0.0` or `INFINITY`
     /// - `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
     /// - `NAN` if the number is `NAN`
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn signum(self) -> Self {
         unsafe {
             let result = Self(v128_or(v128_and(self.0, Self::NEG_ONE.0), Self::ONE.0));
@@ -300,8 +317,8 @@ impl Vec4 {
     }
 
     /// Returns a vector with signs of `rhs` and the magnitudes of `self`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn copysign(self, rhs: Self) -> Self {
         unsafe {
             let mask = Self::splat(-0.0);
@@ -317,6 +334,7 @@ impl Vec4 {
     /// A negative element results in a `1` bit and a positive element in a `0` bit.  Element `x` goes
     /// into the first lowest bit, element `y` into the second, etc.
     #[inline]
+    #[must_use]
     pub fn is_negative_bitmask(self) -> u32 {
         u32x4_bitmask(self.0) as u32
     }
@@ -324,12 +342,14 @@ impl Vec4 {
     /// Returns `true` if, and only if, all elements are finite.  If any element is either
     /// `NaN`, positive or negative infinity, this will return `false`.
     #[inline]
+    #[must_use]
     pub fn is_finite(self) -> bool {
         self.x.is_finite() && self.y.is_finite() && self.z.is_finite() && self.w.is_finite()
     }
 
     /// Returns `true` if any elements are `NaN`.
     #[inline]
+    #[must_use]
     pub fn is_nan(self) -> bool {
         self.is_nan_mask().any()
     }
@@ -338,6 +358,7 @@ impl Vec4 {
     ///
     /// In other words, this computes `[x.is_nan(), y.is_nan(), z.is_nan(), w.is_nan()]`.
     #[inline]
+    #[must_use]
     pub fn is_nan_mask(self) -> BVec4A {
         BVec4A(f32x4_ne(self.0, self.0))
     }
@@ -345,6 +366,7 @@ impl Vec4 {
     /// Computes the length of `self`.
     #[doc(alias = "magnitude")]
     #[inline]
+    #[must_use]
     pub fn length(self) -> f32 {
         let dot = dot4_in_x(self.0, self.0);
         f32x4_extract_lane::<0>(f32x4_sqrt(dot))
@@ -355,6 +377,7 @@ impl Vec4 {
     /// This is faster than `length()` as it avoids a square root operation.
     #[doc(alias = "magnitude2")]
     #[inline]
+    #[must_use]
     pub fn length_squared(self) -> f32 {
         self.dot(self)
     }
@@ -363,6 +386,7 @@ impl Vec4 {
     ///
     /// For valid results, `self` must _not_ be of length zero.
     #[inline]
+    #[must_use]
     pub fn length_recip(self) -> f32 {
         let dot = dot4_in_x(self.0, self.0);
         f32x4_extract_lane::<0>(f32x4_div(Self::ONE.0, f32x4_sqrt(dot)))
@@ -370,19 +394,21 @@ impl Vec4 {
 
     /// Computes the Euclidean distance between two points in space.
     #[inline]
+    #[must_use]
     pub fn distance(self, rhs: Self) -> f32 {
         (self - rhs).length()
     }
 
     /// Compute the squared euclidean distance between two points in space.
     #[inline]
+    #[must_use]
     pub fn distance_squared(self, rhs: Self) -> f32 {
         (self - rhs).length_squared()
     }
 
     /// Returns the element-wise quotient of [Euclidean division] of `self` by `rhs`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn div_euclid(self, rhs: Self) -> Self {
         Self::new(
             math::div_euclid(self.x, rhs.x),
@@ -395,8 +421,8 @@ impl Vec4 {
     /// Returns the element-wise remainder of [Euclidean division] of `self` by `rhs`.
     ///
     /// [Euclidean division]: f32::rem_euclid
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn rem_euclid(self, rhs: Self) -> Self {
         Self::new(
             math::rem_euclid(self.x, rhs.x),
@@ -415,8 +441,8 @@ impl Vec4 {
     /// Panics
     ///
     /// Will panic if `self` is zero length when `glam_assert` is enabled.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn normalize(self) -> Self {
         let length = f32x4_sqrt(dot4_into_v128(self.0, self.0));
         #[allow(clippy::let_and_return)]
@@ -431,8 +457,8 @@ impl Vec4 {
     /// the result of this operation will be `None`.
     ///
     /// See also [`Self::normalize_or_zero()`].
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn try_normalize(self) -> Option<Self> {
         let rcp = self.length_recip();
         if rcp.is_finite() && rcp > 0.0 {
@@ -448,8 +474,8 @@ impl Vec4 {
     /// the result of this operation will be zero.
     ///
     /// See also [`Self::try_normalize()`].
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn normalize_or_zero(self) -> Self {
         let rcp = self.length_recip();
         if rcp.is_finite() && rcp > 0.0 {
@@ -463,6 +489,7 @@ impl Vec4 {
     ///
     /// Uses a precision threshold of `1e-6`.
     #[inline]
+    #[must_use]
     pub fn is_normalized(self) -> bool {
         // TODO: do something with epsilon
         math::abs(self.length_squared() - 1.0) <= 1e-4
@@ -475,8 +502,8 @@ impl Vec4 {
     /// # Panics
     ///
     /// Will panic if `rhs` is zero length when `glam_assert` is enabled.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn project_onto(self, rhs: Self) -> Self {
         let other_len_sq_rcp = rhs.dot(rhs).recip();
         glam_assert!(other_len_sq_rcp.is_finite());
@@ -493,8 +520,8 @@ impl Vec4 {
     /// # Panics
     ///
     /// Will panic if `rhs` has a length of zero when `glam_assert` is enabled.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn reject_from(self, rhs: Self) -> Self {
         self - self.project_onto(rhs)
     }
@@ -506,8 +533,8 @@ impl Vec4 {
     /// # Panics
     ///
     /// Will panic if `rhs` is not normalized when `glam_assert` is enabled.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn project_onto_normalized(self, rhs: Self) -> Self {
         glam_assert!(rhs.is_normalized());
         rhs * self.dot(rhs)
@@ -523,40 +550,40 @@ impl Vec4 {
     /// # Panics
     ///
     /// Will panic if `rhs` is not normalized when `glam_assert` is enabled.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn reject_from_normalized(self, rhs: Self) -> Self {
         self - self.project_onto_normalized(rhs)
     }
 
     /// Returns a vector containing the nearest integer to a number for each element of `self`.
     /// Round half-way cases away from 0.0.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn round(self) -> Self {
         Self(f32x4_nearest(self.0))
     }
 
     /// Returns a vector containing the largest integer less than or equal to a number for each
     /// element of `self`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn floor(self) -> Self {
         Self(f32x4_floor(self.0))
     }
 
     /// Returns a vector containing the smallest integer greater than or equal to a number for
     /// each element of `self`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn ceil(self) -> Self {
         Self(f32x4_ceil(self.0))
     }
 
     /// Returns a vector containing the integer part each element of `self`. This means numbers are
     /// always truncated towards zero.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn trunc(self) -> Self {
         Self(f32x4_trunc(self.0))
     }
@@ -565,16 +592,16 @@ impl Vec4 {
     /// self.floor()`.
     ///
     /// Note that this is fast but not precise for large numbers.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn fract(self) -> Self {
         self - self.floor()
     }
 
     /// Returns a vector containing `e^self` (the exponential function) for each element of
     /// `self`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn exp(self) -> Self {
         Self::new(
             math::exp(self.x),
@@ -585,8 +612,8 @@ impl Vec4 {
     }
 
     /// Returns a vector containing each element of `self` raised to the power of `n`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn powf(self, n: f32) -> Self {
         Self::new(
             math::powf(self.x, n),
@@ -597,8 +624,8 @@ impl Vec4 {
     }
 
     /// Returns a vector containing the reciprocal `1.0/n` of each element of `self`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn recip(self) -> Self {
         Self(f32x4_div(Self::ONE.0, self.0))
     }
@@ -609,8 +636,8 @@ impl Vec4 {
     /// will be equal to `rhs`. When `s` is outside of range `[0, 1]`, the result is linearly
     /// extrapolated.
     #[doc(alias = "mix")]
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn lerp(self, rhs: Self, s: f32) -> Self {
         self + ((rhs - self) * s)
     }
@@ -625,6 +652,7 @@ impl Vec4 {
     /// For more see
     /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
     #[inline]
+    #[must_use]
     pub fn abs_diff_eq(self, rhs: Self, max_abs_diff: f32) -> bool {
         self.sub(rhs).abs().cmple(Self::splat(max_abs_diff)).all()
     }
@@ -634,8 +662,8 @@ impl Vec4 {
     /// # Panics
     ///
     /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn clamp_length(self, min: f32, max: f32) -> Self {
         glam_assert!(min <= max);
         let length_sq = self.length_squared();
@@ -649,6 +677,7 @@ impl Vec4 {
     }
 
     /// Returns a vector with a length no more than `max`
+    #[inline]
     #[must_use]
     pub fn clamp_length_max(self, max: f32) -> Self {
         let length_sq = self.length_squared();
@@ -660,6 +689,7 @@ impl Vec4 {
     }
 
     /// Returns a vector with a length no less than `min`
+    #[inline]
     #[must_use]
     pub fn clamp_length_min(self, min: f32) -> Self {
         let length_sq = self.length_squared();
@@ -677,8 +707,8 @@ impl Vec4 {
     /// architecture has a dedicated fma CPU instruction. However, this is not always true,
     /// and will be heavily dependant on designing algorithms with specific target hardware in
     /// mind.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn mul_add(self, a: Self, b: Self) -> Self {
         Self::new(
             math::mul_add(self.x, a.x, b.x),
@@ -690,42 +720,49 @@ impl Vec4 {
 
     /// Casts all elements of `self` to `f64`.
     #[inline]
+    #[must_use]
     pub fn as_dvec4(&self) -> crate::DVec4 {
         crate::DVec4::new(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
     }
 
     /// Casts all elements of `self` to `i16`.
     #[inline]
+    #[must_use]
     pub fn as_i16vec4(&self) -> crate::I16Vec4 {
         crate::I16Vec4::new(self.x as i16, self.y as i16, self.z as i16, self.w as i16)
     }
 
     /// Casts all elements of `self` to `u16`.
     #[inline]
+    #[must_use]
     pub fn as_u16vec4(&self) -> crate::U16Vec4 {
         crate::U16Vec4::new(self.x as u16, self.y as u16, self.z as u16, self.w as u16)
     }
 
     /// Casts all elements of `self` to `i32`.
     #[inline]
+    #[must_use]
     pub fn as_ivec4(&self) -> crate::IVec4 {
         crate::IVec4::new(self.x as i32, self.y as i32, self.z as i32, self.w as i32)
     }
 
     /// Casts all elements of `self` to `u32`.
     #[inline]
+    #[must_use]
     pub fn as_uvec4(&self) -> crate::UVec4 {
         crate::UVec4::new(self.x as u32, self.y as u32, self.z as u32, self.w as u32)
     }
 
     /// Casts all elements of `self` to `i64`.
     #[inline]
+    #[must_use]
     pub fn as_i64vec4(&self) -> crate::I64Vec4 {
         crate::I64Vec4::new(self.x as i64, self.y as i64, self.z as i64, self.w as i64)
     }
 
     /// Casts all elements of `self` to `u64`.
     #[inline]
+    #[must_use]
     pub fn as_u64vec4(&self) -> crate::U64Vec4 {
         crate::U64Vec4::new(self.x as u64, self.y as u64, self.z as u64, self.w as u64)
     }

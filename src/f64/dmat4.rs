@@ -8,6 +8,7 @@ use core::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
 /// Creates a 4x4 matrix from four column vectors.
 #[inline(always)]
+#[must_use]
 pub const fn dmat4(x_axis: DVec4, y_axis: DVec4, z_axis: DVec4, w_axis: DVec4) -> DMat4 {
     DMat4::from_cols(x_axis, y_axis, z_axis, w_axis)
 }
@@ -63,6 +64,7 @@ impl DMat4 {
 
     #[allow(clippy::too_many_arguments)]
     #[inline(always)]
+    #[must_use]
     const fn new(
         m00: f64,
         m01: f64,
@@ -91,6 +93,7 @@ impl DMat4 {
 
     /// Creates a 4x4 matrix from four column vectors.
     #[inline(always)]
+    #[must_use]
     pub const fn from_cols(x_axis: DVec4, y_axis: DVec4, z_axis: DVec4, w_axis: DVec4) -> Self {
         Self {
             x_axis,
@@ -104,6 +107,7 @@ impl DMat4 {
     /// If your data is stored in row major you will need to `transpose` the returned
     /// matrix.
     #[inline]
+    #[must_use]
     pub const fn from_cols_array(m: &[f64; 16]) -> Self {
         Self::new(
             m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8], m[9], m[10], m[11], m[12], m[13],
@@ -114,6 +118,7 @@ impl DMat4 {
     /// Creates a `[f64; 16]` array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
+    #[must_use]
     pub const fn to_cols_array(&self) -> [f64; 16] {
         [
             self.x_axis.x,
@@ -139,6 +144,7 @@ impl DMat4 {
     /// If your data is in row major order you will need to `transpose` the returned
     /// matrix.
     #[inline]
+    #[must_use]
     pub const fn from_cols_array_2d(m: &[[f64; 4]; 4]) -> Self {
         Self::from_cols(
             DVec4::from_array(m[0]),
@@ -151,6 +157,7 @@ impl DMat4 {
     /// Creates a `[[f64; 4]; 4]` 4D array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
+    #[must_use]
     pub const fn to_cols_array_2d(&self) -> [[f64; 4]; 4] {
         [
             self.x_axis.to_array(),
@@ -163,6 +170,7 @@ impl DMat4 {
     /// Creates a 4x4 matrix with its diagonal set to `diagonal` and all other entries set to 0.
     #[doc(alias = "scale")]
     #[inline]
+    #[must_use]
     pub const fn from_diagonal(diagonal: DVec4) -> Self {
         Self::new(
             diagonal.x, 0.0, 0.0, 0.0, 0.0, diagonal.y, 0.0, 0.0, 0.0, 0.0, diagonal.z, 0.0, 0.0,
@@ -171,6 +179,7 @@ impl DMat4 {
     }
 
     #[inline]
+    #[must_use]
     fn quat_to_axes(rotation: DQuat) -> (DVec4, DVec4, DVec4) {
         glam_assert!(rotation.is_normalized());
 
@@ -204,6 +213,7 @@ impl DMat4 {
     ///
     /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn from_scale_rotation_translation(
         scale: DVec3,
         rotation: DQuat,
@@ -227,6 +237,7 @@ impl DMat4 {
     ///
     /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn from_rotation_translation(rotation: DQuat, translation: DVec3) -> Self {
         let (x_axis, y_axis, z_axis) = Self::quat_to_axes(rotation);
         Self::from_cols(x_axis, y_axis, z_axis, DVec4::from((translation, 1.0)))
@@ -240,6 +251,7 @@ impl DMat4 {
     /// Will panic if the determinant of `self` is zero or if the resulting scale vector
     /// contains any zero elements when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn to_scale_rotation_translation(&self) -> (DVec3, DQuat, DVec3) {
         let det = self.determinant();
         glam_assert!(det != 0.0);
@@ -274,6 +286,7 @@ impl DMat4 {
     ///
     /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn from_quat(rotation: DQuat) -> Self {
         let (x_axis, y_axis, z_axis) = Self::quat_to_axes(rotation);
         Self::from_cols(x_axis, y_axis, z_axis, DVec4::W)
@@ -285,6 +298,7 @@ impl DMat4 {
     /// The resulting matrix can be used to transform 3D points and vectors. See
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
+    #[must_use]
     pub fn from_mat3(m: DMat3) -> Self {
         Self::from_cols(
             DVec4::from((m.x_axis, 0.0)),
@@ -299,6 +313,7 @@ impl DMat4 {
     /// The resulting matrix can be used to transform 3D points and vectors. See
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
+    #[must_use]
     pub fn from_translation(translation: DVec3) -> Self {
         Self::from_cols(
             DVec4::X,
@@ -318,6 +333,7 @@ impl DMat4 {
     ///
     /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn from_axis_angle(axis: DVec3, angle: f64) -> Self {
         glam_assert!(axis.is_normalized());
 
@@ -351,12 +367,13 @@ impl DMat4 {
         )
     }
 
-    #[inline]
     /// Creates a affine transformation matrix containing a rotation from the given euler
     /// rotation sequence and angles (in radians).
     ///
     /// The resulting matrix can be used to transform 3D points and vectors. See
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+    #[inline]
+    #[must_use]
     pub fn from_euler(order: EulerRot, a: f64, b: f64, c: f64) -> Self {
         let quat = DQuat::from_euler(order, a, b, c);
         Self::from_quat(quat)
@@ -368,6 +385,7 @@ impl DMat4 {
     /// The resulting matrix can be used to transform 3D points and vectors. See
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
+    #[must_use]
     pub fn from_rotation_x(angle: f64) -> Self {
         let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
@@ -384,6 +402,7 @@ impl DMat4 {
     /// The resulting matrix can be used to transform 3D points and vectors. See
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
+    #[must_use]
     pub fn from_rotation_y(angle: f64) -> Self {
         let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
@@ -400,6 +419,7 @@ impl DMat4 {
     /// The resulting matrix can be used to transform 3D points and vectors. See
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
+    #[must_use]
     pub fn from_rotation_z(angle: f64) -> Self {
         let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
@@ -419,6 +439,7 @@ impl DMat4 {
     ///
     /// Will panic if all elements of `scale` are zero when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn from_scale(scale: DVec3) -> Self {
         // Do not panic as long as any component is non-zero
         glam_assert!(scale.cmpne(DVec3::ZERO).any());
@@ -437,6 +458,7 @@ impl DMat4 {
     ///
     /// Panics if `slice` is less than 16 elements long.
     #[inline]
+    #[must_use]
     pub const fn from_cols_slice(slice: &[f64]) -> Self {
         Self::new(
             slice[0], slice[1], slice[2], slice[3], slice[4], slice[5], slice[6], slice[7],
@@ -475,6 +497,7 @@ impl DMat4 {
     ///
     /// Panics if `index` is greater than 3.
     #[inline]
+    #[must_use]
     pub fn col(&self, index: usize) -> DVec4 {
         match index {
             0 => self.x_axis,
@@ -507,6 +530,7 @@ impl DMat4 {
     ///
     /// Panics if `index` is greater than 3.
     #[inline]
+    #[must_use]
     pub fn row(&self, index: usize) -> DVec4 {
         match index {
             0 => DVec4::new(self.x_axis.x, self.y_axis.x, self.z_axis.x, self.w_axis.x),
@@ -520,6 +544,7 @@ impl DMat4 {
     /// Returns `true` if, and only if, all elements are finite.
     /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
     #[inline]
+    #[must_use]
     pub fn is_finite(&self) -> bool {
         self.x_axis.is_finite()
             && self.y_axis.is_finite()
@@ -529,13 +554,14 @@ impl DMat4 {
 
     /// Returns `true` if any elements are `NaN`.
     #[inline]
+    #[must_use]
     pub fn is_nan(&self) -> bool {
         self.x_axis.is_nan() || self.y_axis.is_nan() || self.z_axis.is_nan() || self.w_axis.is_nan()
     }
 
     /// Returns the transpose of `self`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn transpose(&self) -> Self {
         Self {
             x_axis: DVec4::new(self.x_axis.x, self.y_axis.x, self.z_axis.x, self.w_axis.x),
@@ -546,6 +572,7 @@ impl DMat4 {
     }
 
     /// Returns the determinant of `self`.
+    #[must_use]
     pub fn determinant(&self) -> f64 {
         let (m00, m01, m02, m03) = self.x_axis.into();
         let (m10, m11, m12, m13) = self.y_axis.into();
@@ -651,6 +678,7 @@ impl DMat4 {
     ///
     /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
     #[inline]
+    #[must_use]
     pub fn look_to_lh(eye: DVec3, dir: DVec3, up: DVec3) -> Self {
         Self::look_to_rh(eye, -dir, up)
     }
@@ -660,6 +688,7 @@ impl DMat4 {
     ///
     /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
     #[inline]
+    #[must_use]
     pub fn look_to_rh(eye: DVec3, dir: DVec3, up: DVec3) -> Self {
         let f = dir.normalize();
         let s = f.cross(up).normalize();
@@ -681,6 +710,7 @@ impl DMat4 {
     ///
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn look_at_lh(eye: DVec3, center: DVec3, up: DVec3) -> Self {
         glam_assert!(up.is_normalized());
         Self::look_to_lh(eye, center.sub(eye), up)
@@ -703,6 +733,7 @@ impl DMat4 {
     /// This is the same as the OpenGL `gluPerspective` function.
     /// See <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml>
     #[inline]
+    #[must_use]
     pub fn perspective_rh_gl(
         fov_y_radians: f64,
         aspect_ratio: f64,
@@ -729,6 +760,7 @@ impl DMat4 {
     /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
     /// enabled.
     #[inline]
+    #[must_use]
     pub fn perspective_lh(fov_y_radians: f64, aspect_ratio: f64, z_near: f64, z_far: f64) -> Self {
         glam_assert!(z_near > 0.0 && z_far > 0.0);
         let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
@@ -750,6 +782,7 @@ impl DMat4 {
     /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
     /// enabled.
     #[inline]
+    #[must_use]
     pub fn perspective_rh(fov_y_radians: f64, aspect_ratio: f64, z_near: f64, z_far: f64) -> Self {
         glam_assert!(z_near > 0.0 && z_far > 0.0);
         let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
@@ -770,6 +803,7 @@ impl DMat4 {
     ///
     /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn perspective_infinite_lh(fov_y_radians: f64, aspect_ratio: f64, z_near: f64) -> Self {
         glam_assert!(z_near > 0.0);
         let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
@@ -789,6 +823,7 @@ impl DMat4 {
     ///
     /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn perspective_infinite_reverse_lh(
         fov_y_radians: f64,
         aspect_ratio: f64,
@@ -809,6 +844,7 @@ impl DMat4 {
     /// Creates an infinite right-handed perspective projection matrix with
     /// `[0,1]` depth range.
     #[inline]
+    #[must_use]
     pub fn perspective_infinite_rh(fov_y_radians: f64, aspect_ratio: f64, z_near: f64) -> Self {
         glam_assert!(z_near > 0.0);
         let f = 1.0 / math::tan(0.5 * fov_y_radians);
@@ -823,6 +859,7 @@ impl DMat4 {
     /// Creates an infinite reverse right-handed perspective projection matrix
     /// with `[0,1]` depth range.
     #[inline]
+    #[must_use]
     pub fn perspective_infinite_reverse_rh(
         fov_y_radians: f64,
         aspect_ratio: f64,
@@ -843,6 +880,7 @@ impl DMat4 {
     /// See
     /// <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml>
     #[inline]
+    #[must_use]
     pub fn orthographic_rh_gl(
         left: f64,
         right: f64,
@@ -868,6 +906,7 @@ impl DMat4 {
 
     /// Creates a left-handed orthographic projection matrix with `[0,1]` depth range.
     #[inline]
+    #[must_use]
     pub fn orthographic_lh(
         left: f64,
         right: f64,
@@ -894,6 +933,7 @@ impl DMat4 {
 
     /// Creates a right-handed orthographic projection matrix with `[0,1]` depth range.
     #[inline]
+    #[must_use]
     pub fn orthographic_rh(
         left: f64,
         right: f64,
@@ -925,6 +965,7 @@ impl DMat4 {
     ///
     /// This method assumes that `self` contains a projective transform.
     #[inline]
+    #[must_use]
     pub fn project_point3(&self, rhs: DVec3) -> DVec3 {
         let mut res = self.x_axis.mul(rhs.x);
         res = self.y_axis.mul(rhs.y).add(res);
@@ -947,6 +988,7 @@ impl DMat4 {
     ///
     /// Will panic if the 3rd row of `self` is not `(0, 0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn transform_point3(&self, rhs: DVec3) -> DVec3 {
         glam_assert!(self.row(3).abs_diff_eq(DVec4::W, 1e-6));
         let mut res = self.x_axis.mul(rhs.x);
@@ -967,6 +1009,7 @@ impl DMat4 {
     ///
     /// Will panic if the 3rd row of `self` is not `(0, 0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn transform_vector3(&self, rhs: DVec3) -> DVec3 {
         glam_assert!(self.row(3).abs_diff_eq(DVec4::W, 1e-6));
         let mut res = self.x_axis.mul(rhs.x);
@@ -977,6 +1020,7 @@ impl DMat4 {
 
     /// Transforms a 4D vector.
     #[inline]
+    #[must_use]
     pub fn mul_vec4(&self, rhs: DVec4) -> DVec4 {
         let mut res = self.x_axis.mul(rhs.x);
         res = res.add(self.y_axis.mul(rhs.y));
@@ -986,8 +1030,8 @@ impl DMat4 {
     }
 
     /// Multiplies two 4x4 matrices.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn mul_mat4(&self, rhs: &Self) -> Self {
         Self::from_cols(
             self.mul(rhs.x_axis),
@@ -998,8 +1042,8 @@ impl DMat4 {
     }
 
     /// Adds two 4x4 matrices.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn add_mat4(&self, rhs: &Self) -> Self {
         Self::from_cols(
             self.x_axis.add(rhs.x_axis),
@@ -1010,8 +1054,8 @@ impl DMat4 {
     }
 
     /// Subtracts two 4x4 matrices.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn sub_mat4(&self, rhs: &Self) -> Self {
         Self::from_cols(
             self.x_axis.sub(rhs.x_axis),
@@ -1022,8 +1066,8 @@ impl DMat4 {
     }
 
     /// Multiplies a 4x4 matrix by a scalar.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn mul_scalar(&self, rhs: f64) -> Self {
         Self::from_cols(
             self.x_axis.mul(rhs),
@@ -1043,6 +1087,7 @@ impl DMat4 {
     /// For more see
     /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
     #[inline]
+    #[must_use]
     pub fn abs_diff_eq(&self, rhs: Self, max_abs_diff: f64) -> bool {
         self.x_axis.abs_diff_eq(rhs.x_axis, max_abs_diff)
             && self.y_axis.abs_diff_eq(rhs.y_axis, max_abs_diff)

@@ -9,6 +9,7 @@ use core::{f32, ops::*};
 
 /// Creates a 4-dimensional vector.
 #[inline(always)]
+#[must_use]
 pub const fn i64vec4(x: i64, y: i64, z: i64, w: i64) -> I64Vec4 {
     I64Vec4::new(x, y, z, w)
 }
@@ -71,12 +72,14 @@ impl I64Vec4 {
 
     /// Creates a new vector.
     #[inline(always)]
+    #[must_use]
     pub const fn new(x: i64, y: i64, z: i64, w: i64) -> Self {
         Self { x, y, z, w }
     }
 
     /// Creates a vector with all elements set to `v`.
     #[inline]
+    #[must_use]
     pub const fn splat(v: i64) -> Self {
         Self {
             x: v,
@@ -95,6 +98,7 @@ impl I64Vec4 {
     /// A true element in the mask uses the corresponding element from `if_true`, and false
     /// uses the element from `if_false`.
     #[inline]
+    #[must_use]
     pub fn select(mask: BVec4, if_true: Self, if_false: Self) -> Self {
         Self {
             x: if mask.test(0) { if_true.x } else { if_false.x },
@@ -106,12 +110,14 @@ impl I64Vec4 {
 
     /// Creates a new vector from an array.
     #[inline]
+    #[must_use]
     pub const fn from_array(a: [i64; 4]) -> Self {
         Self::new(a[0], a[1], a[2], a[3])
     }
 
     /// `[x, y, z, w]`
     #[inline]
+    #[must_use]
     pub const fn to_array(&self) -> [i64; 4] {
         [self.x, self.y, self.z, self.w]
     }
@@ -122,6 +128,7 @@ impl I64Vec4 {
     ///
     /// Panics if `slice` is less than 4 elements long.
     #[inline]
+    #[must_use]
     pub const fn from_slice(slice: &[i64]) -> Self {
         Self::new(slice[0], slice[1], slice[2], slice[3])
     }
@@ -143,6 +150,7 @@ impl I64Vec4 {
     ///
     /// Truncation to [`I64Vec3`] may also be performed by using [`self.xyz()`][crate::swizzles::Vec4Swizzles::xyz()].
     #[inline]
+    #[must_use]
     pub fn truncate(self) -> I64Vec3 {
         use crate::swizzles::Vec4Swizzles;
         self.xyz()
@@ -150,13 +158,14 @@ impl I64Vec4 {
 
     /// Computes the dot product of `self` and `rhs`.
     #[inline]
+    #[must_use]
     pub fn dot(self, rhs: Self) -> i64 {
         (self.x * rhs.x) + (self.y * rhs.y) + (self.z * rhs.z) + (self.w * rhs.w)
     }
 
     /// Returns a vector where every component is the dot product of `self` and `rhs`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn dot_into_vec(self, rhs: Self) -> Self {
         Self::splat(self.dot(rhs))
     }
@@ -164,8 +173,8 @@ impl I64Vec4 {
     /// Returns a vector containing the minimum values for each element of `self` and `rhs`.
     ///
     /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn min(self, rhs: Self) -> Self {
         Self {
             x: self.x.min(rhs.x),
@@ -178,8 +187,8 @@ impl I64Vec4 {
     /// Returns a vector containing the maximum values for each element of `self` and `rhs`.
     ///
     /// In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn max(self, rhs: Self) -> Self {
         Self {
             x: self.x.max(rhs.x),
@@ -196,8 +205,8 @@ impl I64Vec4 {
     /// # Panics
     ///
     /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn clamp(self, min: Self, max: Self) -> Self {
         glam_assert!(min.cmple(max).all(), "clamp: expected min <= max");
         self.max(min).min(max)
@@ -207,6 +216,7 @@ impl I64Vec4 {
     ///
     /// In other words this computes `min(x, y, ..)`.
     #[inline]
+    #[must_use]
     pub fn min_element(self) -> i64 {
         self.x.min(self.y.min(self.z.min(self.w)))
     }
@@ -215,6 +225,7 @@ impl I64Vec4 {
     ///
     /// In other words this computes `max(x, y, ..)`.
     #[inline]
+    #[must_use]
     pub fn max_element(self) -> i64 {
         self.x.max(self.y.max(self.z.max(self.w)))
     }
@@ -225,6 +236,7 @@ impl I64Vec4 {
     /// In other words, this computes `[self.x == rhs.x, self.y == rhs.y, ..]` for all
     /// elements.
     #[inline]
+    #[must_use]
     pub fn cmpeq(self, rhs: Self) -> BVec4 {
         BVec4::new(
             self.x.eq(&rhs.x),
@@ -240,6 +252,7 @@ impl I64Vec4 {
     /// In other words this computes `[self.x != rhs.x, self.y != rhs.y, ..]` for all
     /// elements.
     #[inline]
+    #[must_use]
     pub fn cmpne(self, rhs: Self) -> BVec4 {
         BVec4::new(
             self.x.ne(&rhs.x),
@@ -255,6 +268,7 @@ impl I64Vec4 {
     /// In other words this computes `[self.x >= rhs.x, self.y >= rhs.y, ..]` for all
     /// elements.
     #[inline]
+    #[must_use]
     pub fn cmpge(self, rhs: Self) -> BVec4 {
         BVec4::new(
             self.x.ge(&rhs.x),
@@ -270,6 +284,7 @@ impl I64Vec4 {
     /// In other words this computes `[self.x > rhs.x, self.y > rhs.y, ..]` for all
     /// elements.
     #[inline]
+    #[must_use]
     pub fn cmpgt(self, rhs: Self) -> BVec4 {
         BVec4::new(
             self.x.gt(&rhs.x),
@@ -285,6 +300,7 @@ impl I64Vec4 {
     /// In other words this computes `[self.x <= rhs.x, self.y <= rhs.y, ..]` for all
     /// elements.
     #[inline]
+    #[must_use]
     pub fn cmple(self, rhs: Self) -> BVec4 {
         BVec4::new(
             self.x.le(&rhs.x),
@@ -300,6 +316,7 @@ impl I64Vec4 {
     /// In other words this computes `[self.x < rhs.x, self.y < rhs.y, ..]` for all
     /// elements.
     #[inline]
+    #[must_use]
     pub fn cmplt(self, rhs: Self) -> BVec4 {
         BVec4::new(
             self.x.lt(&rhs.x),
@@ -310,8 +327,8 @@ impl I64Vec4 {
     }
 
     /// Returns a vector containing the absolute value of each element of `self`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn abs(self) -> Self {
         Self {
             x: self.x.abs(),
@@ -326,8 +343,8 @@ impl I64Vec4 {
     ///  - `0` if the number is zero
     ///  - `1` if the number is positive
     ///  - `-1` if the number is negative
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn signum(self) -> Self {
         Self {
             x: self.x.signum(),
@@ -342,6 +359,7 @@ impl I64Vec4 {
     /// A negative element results in a `1` bit and a positive element in a `0` bit.  Element `x` goes
     /// into the first lowest bit, element `y` into the second, etc.
     #[inline]
+    #[must_use]
     pub fn is_negative_bitmask(self) -> u32 {
         (self.x.is_negative() as u32)
             | (self.y.is_negative() as u32) << 1
@@ -352,12 +370,14 @@ impl I64Vec4 {
     /// Computes the squared length of `self`.
     #[doc(alias = "magnitude2")]
     #[inline]
+    #[must_use]
     pub fn length_squared(self) -> i64 {
         self.dot(self)
     }
 
     /// Compute the squared euclidean distance between two points in space.
     #[inline]
+    #[must_use]
     pub fn distance_squared(self, rhs: Self) -> i64 {
         (self - rhs).length_squared()
     }
@@ -366,8 +386,8 @@ impl I64Vec4 {
     ///
     /// # Panics
     /// This function will panic if any `rhs` element is 0 or the division results in overflow.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn div_euclid(self, rhs: Self) -> Self {
         Self::new(
             self.x.div_euclid(rhs.x),
@@ -383,8 +403,8 @@ impl I64Vec4 {
     /// This function will panic if any `rhs` element is 0 or the division results in overflow.
     ///
     /// [Euclidean division]: i64::rem_euclid
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn rem_euclid(self, rhs: Self) -> Self {
         Self::new(
             self.x.rem_euclid(rhs.x),
@@ -396,42 +416,49 @@ impl I64Vec4 {
 
     /// Casts all elements of `self` to `f32`.
     #[inline]
+    #[must_use]
     pub fn as_vec4(&self) -> crate::Vec4 {
         crate::Vec4::new(self.x as f32, self.y as f32, self.z as f32, self.w as f32)
     }
 
     /// Casts all elements of `self` to `f64`.
     #[inline]
+    #[must_use]
     pub fn as_dvec4(&self) -> crate::DVec4 {
         crate::DVec4::new(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
     }
 
     /// Casts all elements of `self` to `i16`.
     #[inline]
+    #[must_use]
     pub fn as_i16vec4(&self) -> crate::I16Vec4 {
         crate::I16Vec4::new(self.x as i16, self.y as i16, self.z as i16, self.w as i16)
     }
 
     /// Casts all elements of `self` to `u16`.
     #[inline]
+    #[must_use]
     pub fn as_u16vec4(&self) -> crate::U16Vec4 {
         crate::U16Vec4::new(self.x as u16, self.y as u16, self.z as u16, self.w as u16)
     }
 
     /// Casts all elements of `self` to `i32`.
     #[inline]
+    #[must_use]
     pub fn as_ivec4(&self) -> crate::IVec4 {
         crate::IVec4::new(self.x as i32, self.y as i32, self.z as i32, self.w as i32)
     }
 
     /// Casts all elements of `self` to `u32`.
     #[inline]
+    #[must_use]
     pub fn as_uvec4(&self) -> crate::UVec4 {
         crate::UVec4::new(self.x as u32, self.y as u32, self.z as u32, self.w as u32)
     }
 
     /// Casts all elements of `self` to `u64`.
     #[inline]
+    #[must_use]
     pub fn as_u64vec4(&self) -> crate::U64Vec4 {
         crate::U64Vec4::new(self.x as u64, self.y as u64, self.z as u64, self.w as u64)
     }
