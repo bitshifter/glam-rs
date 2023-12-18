@@ -243,6 +243,7 @@ impl Mat2 {
     }
 
     /// Multiplies two 2x2 matrices.
+    #[must_use]
     #[inline]
     pub fn mul_mat2(&self, rhs: &Self) -> Self {
         let abcd = self.0;
@@ -259,18 +260,21 @@ impl Mat2 {
     }
 
     /// Adds two 2x2 matrices.
+    #[must_use]
     #[inline]
     pub fn add_mat2(&self, rhs: &Self) -> Self {
         Self(f32x4_add(self.0, rhs.0))
     }
 
     /// Subtracts two 2x2 matrices.
+    #[must_use]
     #[inline]
     pub fn sub_mat2(&self, rhs: &Self) -> Self {
         Self(f32x4_sub(self.0, rhs.0))
     }
 
     /// Multiplies a 2x2 matrix by a scalar.
+    #[must_use]
     #[inline]
     pub fn mul_scalar(&self, rhs: f32) -> Self {
         Self(f32x4_mul(self.0, f32x4_splat(rhs)))

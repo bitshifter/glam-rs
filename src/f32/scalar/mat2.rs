@@ -242,24 +242,28 @@ impl Mat2 {
     }
 
     /// Multiplies two 2x2 matrices.
+    #[must_use]
     #[inline]
     pub fn mul_mat2(&self, rhs: &Self) -> Self {
         Self::from_cols(self.mul(rhs.x_axis), self.mul(rhs.y_axis))
     }
 
     /// Adds two 2x2 matrices.
+    #[must_use]
     #[inline]
     pub fn add_mat2(&self, rhs: &Self) -> Self {
         Self::from_cols(self.x_axis.add(rhs.x_axis), self.y_axis.add(rhs.y_axis))
     }
 
     /// Subtracts two 2x2 matrices.
+    #[must_use]
     #[inline]
     pub fn sub_mat2(&self, rhs: &Self) -> Self {
         Self::from_cols(self.x_axis.sub(rhs.x_axis), self.y_axis.sub(rhs.y_axis))
     }
 
     /// Multiplies a 2x2 matrix by a scalar.
+    #[must_use]
     #[inline]
     pub fn mul_scalar(&self, rhs: f32) -> Self {
         Self::from_cols(self.x_axis.mul(rhs), self.y_axis.mul(rhs))

@@ -154,12 +154,14 @@ impl IVec3 {
     }
 
     /// Returns a vector where every component is the dot product of `self` and `rhs`.
+    #[must_use]
     #[inline]
     pub fn dot_into_vec(self, rhs: Self) -> Self {
         Self::splat(self.dot(rhs))
     }
 
     /// Computes the cross product of `self` and `rhs`.
+    #[must_use]
     #[inline]
     pub fn cross(self, rhs: Self) -> Self {
         Self {
@@ -172,6 +174,7 @@ impl IVec3 {
     /// Returns a vector containing the minimum values for each element of `self` and `rhs`.
     ///
     /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
+    #[must_use]
     #[inline]
     pub fn min(self, rhs: Self) -> Self {
         Self {
@@ -184,6 +187,7 @@ impl IVec3 {
     /// Returns a vector containing the maximum values for each element of `self` and `rhs`.
     ///
     /// In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
+    #[must_use]
     #[inline]
     pub fn max(self, rhs: Self) -> Self {
         Self {
@@ -200,6 +204,7 @@ impl IVec3 {
     /// # Panics
     ///
     /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
+    #[must_use]
     #[inline]
     pub fn clamp(self, min: Self, max: Self) -> Self {
         glam_assert!(min.cmple(max).all(), "clamp: expected min <= max");
@@ -283,6 +288,7 @@ impl IVec3 {
     }
 
     /// Returns a vector containing the absolute value of each element of `self`.
+    #[must_use]
     #[inline]
     pub fn abs(self) -> Self {
         Self {
@@ -297,6 +303,7 @@ impl IVec3 {
     ///  - `0` if the number is zero
     ///  - `1` if the number is positive
     ///  - `-1` if the number is negative
+    #[must_use]
     #[inline]
     pub fn signum(self) -> Self {
         Self {
@@ -334,6 +341,7 @@ impl IVec3 {
     ///
     /// # Panics
     /// This function will panic if any `rhs` element is 0 or the division results in overflow.
+    #[must_use]
     #[inline]
     pub fn div_euclid(self, rhs: Self) -> Self {
         Self::new(
@@ -349,6 +357,7 @@ impl IVec3 {
     /// This function will panic if any `rhs` element is 0 or the division results in overflow.
     ///
     /// [Euclidean division]: i32::rem_euclid
+    #[must_use]
     #[inline]
     pub fn rem_euclid(self, rhs: Self) -> Self {
         Self::new(

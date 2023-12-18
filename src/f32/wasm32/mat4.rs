@@ -1107,6 +1107,7 @@ impl Mat4 {
     }
 
     /// Multiplies two 4x4 matrices.
+    #[must_use]
     #[inline]
     pub fn mul_mat4(&self, rhs: &Self) -> Self {
         Self::from_cols(
@@ -1118,6 +1119,7 @@ impl Mat4 {
     }
 
     /// Adds two 4x4 matrices.
+    #[must_use]
     #[inline]
     pub fn add_mat4(&self, rhs: &Self) -> Self {
         Self::from_cols(
@@ -1129,6 +1131,7 @@ impl Mat4 {
     }
 
     /// Subtracts two 4x4 matrices.
+    #[must_use]
     #[inline]
     pub fn sub_mat4(&self, rhs: &Self) -> Self {
         Self::from_cols(
@@ -1140,6 +1143,7 @@ impl Mat4 {
     }
 
     /// Multiplies a 4x4 matrix by a scalar.
+    #[must_use]
     #[inline]
     pub fn mul_scalar(&self, rhs: f32) -> Self {
         Self::from_cols(

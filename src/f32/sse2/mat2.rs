@@ -267,6 +267,7 @@ impl Mat2 {
     }
 
     /// Multiplies two 2x2 matrices.
+    #[must_use]
     #[inline]
     pub fn mul_mat2(&self, rhs: &Self) -> Self {
         unsafe {
@@ -285,18 +286,21 @@ impl Mat2 {
     }
 
     /// Adds two 2x2 matrices.
+    #[must_use]
     #[inline]
     pub fn add_mat2(&self, rhs: &Self) -> Self {
         Self(unsafe { _mm_add_ps(self.0, rhs.0) })
     }
 
     /// Subtracts two 2x2 matrices.
+    #[must_use]
     #[inline]
     pub fn sub_mat2(&self, rhs: &Self) -> Self {
         Self(unsafe { _mm_sub_ps(self.0, rhs.0) })
     }
 
     /// Multiplies a 2x2 matrix by a scalar.
+    #[must_use]
     #[inline]
     pub fn mul_scalar(&self, rhs: f32) -> Self {
         Self(unsafe { _mm_mul_ps(self.0, _mm_set_ps1(rhs)) })
