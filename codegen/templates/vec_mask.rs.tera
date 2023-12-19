@@ -85,6 +85,7 @@ impl {{ self_t }} {
 
     /// Creates a new vector mask.
     #[inline(always)]
+    #[must_use]
     pub const fn new(
         {% for c in components %}
             {{ c }}: bool,
@@ -131,6 +132,7 @@ impl {{ self_t }} {
 
     /// Creates a vector with all elements set to `v`.
     #[inline]
+    #[must_use]
     pub const fn splat(v: bool) -> Self {
         Self::new(
             {% for c in components %}
@@ -144,6 +146,7 @@ impl {{ self_t }} {
     /// A true element results in a `1` bit and a false element in a `0` bit.  Element `x` goes
     /// into the first lowest bit, element `y` into the second, etc.
     #[inline]
+    #[must_use]
     pub fn bitmask(self) -> u32 {
         {% if is_scalar and is_bool %}
             {% for c in components %}
@@ -184,6 +187,7 @@ impl {{ self_t }} {
 
     /// Returns true if any of the elements are true, false otherwise.
     #[inline]
+    #[must_use]
     pub fn any(self) -> bool {
         {% if is_scalar and is_bool %}
             {% for c in components %}
@@ -202,6 +206,7 @@ impl {{ self_t }} {
 
     /// Returns true if all the elements are true, false otherwise.
     #[inline]
+    #[must_use]
     pub fn all(self) -> bool {
         {% if is_scalar and is_bool %}
             {% for c in components %}
@@ -226,6 +231,7 @@ impl {{ self_t }} {
     ///
     /// Panics if `index` is greater than {{ dim  - 1 }}.
     #[inline]
+    #[must_use]
     pub fn test(&self, index: usize) -> bool {
         {% if is_coresimd %}
             self.0.test(index)
@@ -272,6 +278,7 @@ impl {{ self_t }} {
     }
 
     #[inline]
+    #[must_use]
     fn into_bool_array(self) -> [bool; {{ dim }}] {
         {% if is_scalar and is_bool %}
             [
@@ -297,6 +304,7 @@ impl {{ self_t }} {
     }
 
     #[inline]
+    #[must_use]
     fn into_u32_array(self) -> [u32; {{ dim }}] {
         {% if is_scalar and is_bool %}
             [

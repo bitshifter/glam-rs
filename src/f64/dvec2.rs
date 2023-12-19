@@ -9,6 +9,7 @@ use core::{f32, ops::*};
 
 /// Creates a 2-dimensional vector.
 #[inline(always)]
+#[must_use]
 pub const fn dvec2(x: f64, y: f64) -> DVec2 {
     DVec2::new(x, y)
 }
@@ -65,12 +66,14 @@ impl DVec2 {
 
     /// Creates a new vector.
     #[inline(always)]
+    #[must_use]
     pub const fn new(x: f64, y: f64) -> Self {
         Self { x, y }
     }
 
     /// Creates a vector with all elements set to `v`.
     #[inline]
+    #[must_use]
     pub const fn splat(v: f64) -> Self {
         Self { x: v, y: v }
     }
@@ -81,6 +84,7 @@ impl DVec2 {
     /// A true element in the mask uses the corresponding element from `if_true`, and false
     /// uses the element from `if_false`.
     #[inline]
+    #[must_use]
     pub fn select(mask: BVec2, if_true: Self, if_false: Self) -> Self {
         Self {
             x: if mask.test(0) { if_true.x } else { if_false.x },
@@ -90,12 +94,14 @@ impl DVec2 {
 
     /// Creates a new vector from an array.
     #[inline]
+    #[must_use]
     pub const fn from_array(a: [f64; 2]) -> Self {
         Self::new(a[0], a[1])
     }
 
     /// `[x, y]`
     #[inline]
+    #[must_use]
     pub const fn to_array(&self) -> [f64; 2] {
         [self.x, self.y]
     }
@@ -106,6 +112,7 @@ impl DVec2 {
     ///
     /// Panics if `slice` is less than 2 elements long.
     #[inline]
+    #[must_use]
     pub const fn from_slice(slice: &[f64]) -> Self {
         Self::new(slice[0], slice[1])
     }
@@ -123,19 +130,21 @@ impl DVec2 {
 
     /// Creates a 3D vector from `self` and the given `z` value.
     #[inline]
+    #[must_use]
     pub const fn extend(self, z: f64) -> DVec3 {
         DVec3::new(self.x, self.y, z)
     }
 
     /// Computes the dot product of `self` and `rhs`.
     #[inline]
+    #[must_use]
     pub fn dot(self, rhs: Self) -> f64 {
         (self.x * rhs.x) + (self.y * rhs.y)
     }
 
     /// Returns a vector where every component is the dot product of `self` and `rhs`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn dot_into_vec(self, rhs: Self) -> Self {
         Self::splat(self.dot(rhs))
     }
@@ -143,8 +152,8 @@ impl DVec2 {
     /// Returns a vector containing the minimum values for each element of `self` and `rhs`.
     ///
     /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn min(self, rhs: Self) -> Self {
         Self {
             x: self.x.min(rhs.x),
@@ -155,8 +164,8 @@ impl DVec2 {
     /// Returns a vector containing the maximum values for each element of `self` and `rhs`.
     ///
     /// In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn max(self, rhs: Self) -> Self {
         Self {
             x: self.x.max(rhs.x),
@@ -171,8 +180,8 @@ impl DVec2 {
     /// # Panics
     ///
     /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn clamp(self, min: Self, max: Self) -> Self {
         glam_assert!(min.cmple(max).all(), "clamp: expected min <= max");
         self.max(min).min(max)
@@ -182,6 +191,7 @@ impl DVec2 {
     ///
     /// In other words this computes `min(x, y, ..)`.
     #[inline]
+    #[must_use]
     pub fn min_element(self) -> f64 {
         self.x.min(self.y)
     }
@@ -190,6 +200,7 @@ impl DVec2 {
     ///
     /// In other words this computes `max(x, y, ..)`.
     #[inline]
+    #[must_use]
     pub fn max_element(self) -> f64 {
         self.x.max(self.y)
     }
@@ -200,6 +211,7 @@ impl DVec2 {
     /// In other words, this computes `[self.x == rhs.x, self.y == rhs.y, ..]` for all
     /// elements.
     #[inline]
+    #[must_use]
     pub fn cmpeq(self, rhs: Self) -> BVec2 {
         BVec2::new(self.x.eq(&rhs.x), self.y.eq(&rhs.y))
     }
@@ -210,6 +222,7 @@ impl DVec2 {
     /// In other words this computes `[self.x != rhs.x, self.y != rhs.y, ..]` for all
     /// elements.
     #[inline]
+    #[must_use]
     pub fn cmpne(self, rhs: Self) -> BVec2 {
         BVec2::new(self.x.ne(&rhs.x), self.y.ne(&rhs.y))
     }
@@ -220,6 +233,7 @@ impl DVec2 {
     /// In other words this computes `[self.x >= rhs.x, self.y >= rhs.y, ..]` for all
     /// elements.
     #[inline]
+    #[must_use]
     pub fn cmpge(self, rhs: Self) -> BVec2 {
         BVec2::new(self.x.ge(&rhs.x), self.y.ge(&rhs.y))
     }
@@ -230,6 +244,7 @@ impl DVec2 {
     /// In other words this computes `[self.x > rhs.x, self.y > rhs.y, ..]` for all
     /// elements.
     #[inline]
+    #[must_use]
     pub fn cmpgt(self, rhs: Self) -> BVec2 {
         BVec2::new(self.x.gt(&rhs.x), self.y.gt(&rhs.y))
     }
@@ -240,6 +255,7 @@ impl DVec2 {
     /// In other words this computes `[self.x <= rhs.x, self.y <= rhs.y, ..]` for all
     /// elements.
     #[inline]
+    #[must_use]
     pub fn cmple(self, rhs: Self) -> BVec2 {
         BVec2::new(self.x.le(&rhs.x), self.y.le(&rhs.y))
     }
@@ -250,13 +266,14 @@ impl DVec2 {
     /// In other words this computes `[self.x < rhs.x, self.y < rhs.y, ..]` for all
     /// elements.
     #[inline]
+    #[must_use]
     pub fn cmplt(self, rhs: Self) -> BVec2 {
         BVec2::new(self.x.lt(&rhs.x), self.y.lt(&rhs.y))
     }
 
     /// Returns a vector containing the absolute value of each element of `self`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn abs(self) -> Self {
         Self {
             x: math::abs(self.x),
@@ -269,8 +286,8 @@ impl DVec2 {
     /// - `1.0` if the number is positive, `+0.0` or `INFINITY`
     /// - `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
     /// - `NAN` if the number is `NAN`
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn signum(self) -> Self {
         Self {
             x: math::signum(self.x),
@@ -279,8 +296,8 @@ impl DVec2 {
     }
 
     /// Returns a vector with signs of `rhs` and the magnitudes of `self`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn copysign(self, rhs: Self) -> Self {
         Self {
             x: math::copysign(self.x, rhs.x),
@@ -293,6 +310,7 @@ impl DVec2 {
     /// A negative element results in a `1` bit and a positive element in a `0` bit.  Element `x` goes
     /// into the first lowest bit, element `y` into the second, etc.
     #[inline]
+    #[must_use]
     pub fn is_negative_bitmask(self) -> u32 {
         (self.x.is_sign_negative() as u32) | (self.y.is_sign_negative() as u32) << 1
     }
@@ -300,12 +318,14 @@ impl DVec2 {
     /// Returns `true` if, and only if, all elements are finite.  If any element is either
     /// `NaN`, positive or negative infinity, this will return `false`.
     #[inline]
+    #[must_use]
     pub fn is_finite(self) -> bool {
         self.x.is_finite() && self.y.is_finite()
     }
 
     /// Returns `true` if any elements are `NaN`.
     #[inline]
+    #[must_use]
     pub fn is_nan(self) -> bool {
         self.x.is_nan() || self.y.is_nan()
     }
@@ -314,6 +334,7 @@ impl DVec2 {
     ///
     /// In other words, this computes `[x.is_nan(), y.is_nan(), z.is_nan(), w.is_nan()]`.
     #[inline]
+    #[must_use]
     pub fn is_nan_mask(self) -> BVec2 {
         BVec2::new(self.x.is_nan(), self.y.is_nan())
     }
@@ -321,6 +342,7 @@ impl DVec2 {
     /// Computes the length of `self`.
     #[doc(alias = "magnitude")]
     #[inline]
+    #[must_use]
     pub fn length(self) -> f64 {
         math::sqrt(self.dot(self))
     }
@@ -330,6 +352,7 @@ impl DVec2 {
     /// This is faster than `length()` as it avoids a square root operation.
     #[doc(alias = "magnitude2")]
     #[inline]
+    #[must_use]
     pub fn length_squared(self) -> f64 {
         self.dot(self)
     }
@@ -338,25 +361,28 @@ impl DVec2 {
     ///
     /// For valid results, `self` must _not_ be of length zero.
     #[inline]
+    #[must_use]
     pub fn length_recip(self) -> f64 {
         self.length().recip()
     }
 
     /// Computes the Euclidean distance between two points in space.
     #[inline]
+    #[must_use]
     pub fn distance(self, rhs: Self) -> f64 {
         (self - rhs).length()
     }
 
     /// Compute the squared euclidean distance between two points in space.
     #[inline]
+    #[must_use]
     pub fn distance_squared(self, rhs: Self) -> f64 {
         (self - rhs).length_squared()
     }
 
     /// Returns the element-wise quotient of [Euclidean division] of `self` by `rhs`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn div_euclid(self, rhs: Self) -> Self {
         Self::new(
             math::div_euclid(self.x, rhs.x),
@@ -367,8 +393,8 @@ impl DVec2 {
     /// Returns the element-wise remainder of [Euclidean division] of `self` by `rhs`.
     ///
     /// [Euclidean division]: f64::rem_euclid
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn rem_euclid(self, rhs: Self) -> Self {
         Self::new(
             math::rem_euclid(self.x, rhs.x),
@@ -385,8 +411,8 @@ impl DVec2 {
     /// Panics
     ///
     /// Will panic if `self` is zero length when `glam_assert` is enabled.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn normalize(self) -> Self {
         #[allow(clippy::let_and_return)]
         let normalized = self.mul(self.length_recip());
@@ -400,8 +426,8 @@ impl DVec2 {
     /// the result of this operation will be `None`.
     ///
     /// See also [`Self::normalize_or_zero()`].
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn try_normalize(self) -> Option<Self> {
         let rcp = self.length_recip();
         if rcp.is_finite() && rcp > 0.0 {
@@ -417,8 +443,8 @@ impl DVec2 {
     /// the result of this operation will be zero.
     ///
     /// See also [`Self::try_normalize()`].
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn normalize_or_zero(self) -> Self {
         let rcp = self.length_recip();
         if rcp.is_finite() && rcp > 0.0 {
@@ -432,6 +458,7 @@ impl DVec2 {
     ///
     /// Uses a precision threshold of `1e-6`.
     #[inline]
+    #[must_use]
     pub fn is_normalized(self) -> bool {
         // TODO: do something with epsilon
         math::abs(self.length_squared() - 1.0) <= 1e-4
@@ -444,8 +471,8 @@ impl DVec2 {
     /// # Panics
     ///
     /// Will panic if `rhs` is zero length when `glam_assert` is enabled.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn project_onto(self, rhs: Self) -> Self {
         let other_len_sq_rcp = rhs.dot(rhs).recip();
         glam_assert!(other_len_sq_rcp.is_finite());
@@ -462,8 +489,8 @@ impl DVec2 {
     /// # Panics
     ///
     /// Will panic if `rhs` has a length of zero when `glam_assert` is enabled.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn reject_from(self, rhs: Self) -> Self {
         self - self.project_onto(rhs)
     }
@@ -475,8 +502,8 @@ impl DVec2 {
     /// # Panics
     ///
     /// Will panic if `rhs` is not normalized when `glam_assert` is enabled.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn project_onto_normalized(self, rhs: Self) -> Self {
         glam_assert!(rhs.is_normalized());
         rhs * self.dot(rhs)
@@ -492,16 +519,16 @@ impl DVec2 {
     /// # Panics
     ///
     /// Will panic if `rhs` is not normalized when `glam_assert` is enabled.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn reject_from_normalized(self, rhs: Self) -> Self {
         self - self.project_onto_normalized(rhs)
     }
 
     /// Returns a vector containing the nearest integer to a number for each element of `self`.
     /// Round half-way cases away from 0.0.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn round(self) -> Self {
         Self {
             x: math::round(self.x),
@@ -511,8 +538,8 @@ impl DVec2 {
 
     /// Returns a vector containing the largest integer less than or equal to a number for each
     /// element of `self`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn floor(self) -> Self {
         Self {
             x: math::floor(self.x),
@@ -522,8 +549,8 @@ impl DVec2 {
 
     /// Returns a vector containing the smallest integer greater than or equal to a number for
     /// each element of `self`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn ceil(self) -> Self {
         Self {
             x: math::ceil(self.x),
@@ -533,8 +560,8 @@ impl DVec2 {
 
     /// Returns a vector containing the integer part each element of `self`. This means numbers are
     /// always truncated towards zero.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn trunc(self) -> Self {
         Self {
             x: math::trunc(self.x),
@@ -546,30 +573,30 @@ impl DVec2 {
     /// self.floor()`.
     ///
     /// Note that this is fast but not precise for large numbers.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn fract(self) -> Self {
         self - self.floor()
     }
 
     /// Returns a vector containing `e^self` (the exponential function) for each element of
     /// `self`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn exp(self) -> Self {
         Self::new(math::exp(self.x), math::exp(self.y))
     }
 
     /// Returns a vector containing each element of `self` raised to the power of `n`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn powf(self, n: f64) -> Self {
         Self::new(math::powf(self.x, n), math::powf(self.y, n))
     }
 
     /// Returns a vector containing the reciprocal `1.0/n` of each element of `self`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn recip(self) -> Self {
         Self {
             x: 1.0 / self.x,
@@ -583,8 +610,8 @@ impl DVec2 {
     /// will be equal to `rhs`. When `s` is outside of range `[0, 1]`, the result is linearly
     /// extrapolated.
     #[doc(alias = "mix")]
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn lerp(self, rhs: Self, s: f64) -> Self {
         self + ((rhs - self) * s)
     }
@@ -599,6 +626,7 @@ impl DVec2 {
     /// For more see
     /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
     #[inline]
+    #[must_use]
     pub fn abs_diff_eq(self, rhs: Self, max_abs_diff: f64) -> bool {
         self.sub(rhs).abs().cmple(Self::splat(max_abs_diff)).all()
     }
@@ -608,8 +636,8 @@ impl DVec2 {
     /// # Panics
     ///
     /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn clamp_length(self, min: f64, max: f64) -> Self {
         glam_assert!(min <= max);
         let length_sq = self.length_squared();
@@ -623,6 +651,7 @@ impl DVec2 {
     }
 
     /// Returns a vector with a length no more than `max`
+    #[inline]
     #[must_use]
     pub fn clamp_length_max(self, max: f64) -> Self {
         let length_sq = self.length_squared();
@@ -634,6 +663,7 @@ impl DVec2 {
     }
 
     /// Returns a vector with a length no less than `min`
+    #[inline]
     #[must_use]
     pub fn clamp_length_min(self, min: f64) -> Self {
         let length_sq = self.length_squared();
@@ -651,8 +681,8 @@ impl DVec2 {
     /// architecture has a dedicated fma CPU instruction. However, this is not always true,
     /// and will be heavily dependant on designing algorithms with specific target hardware in
     /// mind.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn mul_add(self, a: Self, b: Self) -> Self {
         Self::new(
             math::mul_add(self.x, a.x, b.x),
@@ -664,8 +694,8 @@ impl DVec2 {
     /// conjunction with the [`rotate()`][Self::rotate()] method, e.g.
     /// `DVec2::from_angle(PI).rotate(DVec2::Y)` will create the vector `[-1, 0]`
     /// and rotate [`DVec2::Y`] around it returning `-DVec2::Y`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn from_angle(angle: f64) -> Self {
         let (sin, cos) = math::sin_cos(angle);
         Self { x: cos, y: sin }
@@ -675,6 +705,7 @@ impl DVec2 {
     ///
     /// The input does not need to be a unit vector however it must be non-zero.
     #[inline]
+    #[must_use]
     pub fn to_angle(self) -> f64 {
         math::atan2(self.y, self.x)
     }
@@ -683,6 +714,7 @@ impl DVec2 {
     ///
     /// The inputs do not need to be unit vectors however they must be non-zero.
     #[inline]
+    #[must_use]
     pub fn angle_between(self, rhs: Self) -> f64 {
         let angle = math::acos_approx(
             self.dot(rhs) / math::sqrt(self.length_squared() * rhs.length_squared()),
@@ -692,8 +724,8 @@ impl DVec2 {
     }
 
     /// Returns a vector that is equal to `self` rotated by 90 degrees.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn perp(self) -> Self {
         Self {
             x: -self.y,
@@ -707,6 +739,7 @@ impl DVec2 {
     #[doc(alias = "cross")]
     #[doc(alias = "determinant")]
     #[inline]
+    #[must_use]
     pub fn perp_dot(self, rhs: Self) -> f64 {
         (self.x * rhs.y) - (self.y * rhs.x)
     }
@@ -714,8 +747,8 @@ impl DVec2 {
     /// Returns `rhs` rotated by the angle of `self`. If `self` is normalized,
     /// then this just rotation. This is what you usually want. Otherwise,
     /// it will be like a rotation with a multiplication by `self`'s length.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn rotate(self, rhs: Self) -> Self {
         Self {
             x: self.x * rhs.x - self.y * rhs.y,
@@ -725,42 +758,49 @@ impl DVec2 {
 
     /// Casts all elements of `self` to `f32`.
     #[inline]
+    #[must_use]
     pub fn as_vec2(&self) -> crate::Vec2 {
         crate::Vec2::new(self.x as f32, self.y as f32)
     }
 
     /// Casts all elements of `self` to `i16`.
     #[inline]
+    #[must_use]
     pub fn as_i16vec2(&self) -> crate::I16Vec2 {
         crate::I16Vec2::new(self.x as i16, self.y as i16)
     }
 
     /// Casts all elements of `self` to `u16`.
     #[inline]
+    #[must_use]
     pub fn as_u16vec2(&self) -> crate::U16Vec2 {
         crate::U16Vec2::new(self.x as u16, self.y as u16)
     }
 
     /// Casts all elements of `self` to `i32`.
     #[inline]
+    #[must_use]
     pub fn as_ivec2(&self) -> crate::IVec2 {
         crate::IVec2::new(self.x as i32, self.y as i32)
     }
 
     /// Casts all elements of `self` to `u32`.
     #[inline]
+    #[must_use]
     pub fn as_uvec2(&self) -> crate::UVec2 {
         crate::UVec2::new(self.x as u32, self.y as u32)
     }
 
     /// Casts all elements of `self` to `i64`.
     #[inline]
+    #[must_use]
     pub fn as_i64vec2(&self) -> crate::I64Vec2 {
         crate::I64Vec2::new(self.x as i64, self.y as i64)
     }
 
     /// Casts all elements of `self` to `u64`.
     #[inline]
+    #[must_use]
     pub fn as_u64vec2(&self) -> crate::U64Vec2 {
         crate::U64Vec2::new(self.x as u64, self.y as u64)
     }

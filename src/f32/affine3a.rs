@@ -39,6 +39,7 @@ impl Affine3A {
 
     /// Creates an affine transform from three column vectors.
     #[inline(always)]
+    #[must_use]
     pub const fn from_cols(x_axis: Vec3A, y_axis: Vec3A, z_axis: Vec3A, w_axis: Vec3A) -> Self {
         Self {
             matrix3: Mat3A::from_cols(x_axis, y_axis, z_axis),
@@ -48,6 +49,7 @@ impl Affine3A {
 
     /// Creates an affine transform from a `[f32; 12]` array stored in column major order.
     #[inline]
+    #[must_use]
     pub fn from_cols_array(m: &[f32; 12]) -> Self {
         Self {
             matrix3: Mat3A::from_cols_slice(&m[0..9]),
@@ -57,6 +59,7 @@ impl Affine3A {
 
     /// Creates a `[f32; 12]` array storing data in column major order.
     #[inline]
+    #[must_use]
     pub fn to_cols_array(&self) -> [f32; 12] {
         let x = &self.matrix3.x_axis;
         let y = &self.matrix3.y_axis;
@@ -70,6 +73,7 @@ impl Affine3A {
     /// If your data is in row major order you will need to `transpose` the returned
     /// matrix.
     #[inline]
+    #[must_use]
     pub fn from_cols_array_2d(m: &[[f32; 3]; 4]) -> Self {
         Self {
             matrix3: Mat3A::from_cols(m[0].into(), m[1].into(), m[2].into()),
@@ -81,6 +85,7 @@ impl Affine3A {
     /// column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
+    #[must_use]
     pub fn to_cols_array_2d(&self) -> [[f32; 3]; 4] {
         [
             self.matrix3.x_axis.into(),
@@ -96,6 +101,7 @@ impl Affine3A {
     ///
     /// Panics if `slice` is less than 12 elements long.
     #[inline]
+    #[must_use]
     pub fn from_cols_slice(slice: &[f32]) -> Self {
         Self {
             matrix3: Mat3A::from_cols_slice(&slice[0..9]),
@@ -117,6 +123,7 @@ impl Affine3A {
     /// Creates an affine transform that changes scale.
     /// Note that if any scale is zero the transform will be non-invertible.
     #[inline]
+    #[must_use]
     pub fn from_scale(scale: Vec3) -> Self {
         Self {
             matrix3: Mat3A::from_diagonal(scale),
@@ -125,6 +132,7 @@ impl Affine3A {
     }
     /// Creates an affine transform from the given `rotation` quaternion.
     #[inline]
+    #[must_use]
     pub fn from_quat(rotation: Quat) -> Self {
         Self {
             matrix3: Mat3A::from_quat(rotation),
@@ -135,6 +143,7 @@ impl Affine3A {
     /// Creates an affine transform containing a 3D rotation around a normalized
     /// rotation `axis` of `angle` (in radians).
     #[inline]
+    #[must_use]
     pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
         Self {
             matrix3: Mat3A::from_axis_angle(axis, angle),
@@ -145,6 +154,7 @@ impl Affine3A {
     /// Creates an affine transform containing a 3D rotation around the x axis of
     /// `angle` (in radians).
     #[inline]
+    #[must_use]
     pub fn from_rotation_x(angle: f32) -> Self {
         Self {
             matrix3: Mat3A::from_rotation_x(angle),
@@ -155,6 +165,7 @@ impl Affine3A {
     /// Creates an affine transform containing a 3D rotation around the y axis of
     /// `angle` (in radians).
     #[inline]
+    #[must_use]
     pub fn from_rotation_y(angle: f32) -> Self {
         Self {
             matrix3: Mat3A::from_rotation_y(angle),
@@ -165,6 +176,7 @@ impl Affine3A {
     /// Creates an affine transform containing a 3D rotation around the z axis of
     /// `angle` (in radians).
     #[inline]
+    #[must_use]
     pub fn from_rotation_z(angle: f32) -> Self {
         Self {
             matrix3: Mat3A::from_rotation_z(angle),
@@ -174,6 +186,7 @@ impl Affine3A {
 
     /// Creates an affine transformation from the given 3D `translation`.
     #[inline]
+    #[must_use]
     pub fn from_translation(translation: Vec3) -> Self {
         #[allow(clippy::useless_conversion)]
         Self {
@@ -185,6 +198,7 @@ impl Affine3A {
     /// Creates an affine transform from a 3x3 matrix (expressing scale, shear and
     /// rotation)
     #[inline]
+    #[must_use]
     pub fn from_mat3(mat3: Mat3) -> Self {
         #[allow(clippy::useless_conversion)]
         Self {
@@ -198,6 +212,7 @@ impl Affine3A {
     ///
     /// Equivalent to `Affine3A::from_translation(translation) * Affine3A::from_mat3(mat3)`
     #[inline]
+    #[must_use]
     pub fn from_mat3_translation(mat3: Mat3, translation: Vec3) -> Self {
         #[allow(clippy::useless_conversion)]
         Self {
@@ -212,6 +227,7 @@ impl Affine3A {
     /// Equivalent to `Affine3A::from_translation(translation) *
     /// Affine3A::from_quat(rotation) * Affine3A::from_scale(scale)`
     #[inline]
+    #[must_use]
     pub fn from_scale_rotation_translation(scale: Vec3, rotation: Quat, translation: Vec3) -> Self {
         let rotation = Mat3A::from_quat(rotation);
         #[allow(clippy::useless_conversion)]
@@ -229,6 +245,7 @@ impl Affine3A {
     ///
     /// Equivalent to `Affine3A::from_translation(translation) * Affine3A::from_quat(rotation)`
     #[inline]
+    #[must_use]
     pub fn from_rotation_translation(rotation: Quat, translation: Vec3) -> Self {
         #[allow(clippy::useless_conversion)]
         Self {
@@ -240,6 +257,7 @@ impl Affine3A {
     /// The given `Mat4` must be an affine transform,
     /// i.e. contain no perspective transform.
     #[inline]
+    #[must_use]
     pub fn from_mat4(m: Mat4) -> Self {
         Self {
             matrix3: Mat3A::from_cols(
@@ -261,6 +279,7 @@ impl Affine3A {
     /// Will panic if the determinant `self.matrix3` is zero or if the resulting scale
     /// vector contains any zero elements when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn to_scale_rotation_translation(&self) -> (Vec3, Quat, Vec3) {
         use crate::f32::math;
         let det = self.matrix3.determinant();
@@ -292,6 +311,7 @@ impl Affine3A {
     ///
     /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
     #[inline]
+    #[must_use]
     pub fn look_to_lh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
         Self::look_to_rh(eye, -dir, up)
     }
@@ -301,6 +321,7 @@ impl Affine3A {
     ///
     /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
     #[inline]
+    #[must_use]
     pub fn look_to_rh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
         let f = dir.normalize();
         let s = f.cross(up).normalize();
@@ -324,6 +345,7 @@ impl Affine3A {
     ///
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn look_at_lh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
         glam_assert!(up.is_normalized());
         Self::look_to_lh(eye, center - eye, up)
@@ -337,6 +359,7 @@ impl Affine3A {
     ///
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn look_at_rh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
         glam_assert!(up.is_normalized());
         Self::look_to_rh(eye, center - eye, up)
@@ -358,6 +381,7 @@ impl Affine3A {
     ///
     /// To also apply translation, use [`Self::transform_point3()`] instead.
     #[inline]
+    #[must_use]
     pub fn transform_vector3(&self, rhs: Vec3) -> Vec3 {
         #[allow(clippy::useless_conversion)]
         ((self.matrix3.x_axis * rhs.x)
@@ -368,6 +392,7 @@ impl Affine3A {
 
     /// Transforms the given [`Vec3A`], applying shear, scale, rotation and translation.
     #[inline]
+    #[must_use]
     pub fn transform_point3a(&self, rhs: Vec3A) -> Vec3A {
         self.matrix3 * rhs + self.translation
     }
@@ -377,6 +402,7 @@ impl Affine3A {
     ///
     /// To also apply translation, use [`Self::transform_point3a()`] instead.
     #[inline]
+    #[must_use]
     pub fn transform_vector3a(&self, rhs: Vec3A) -> Vec3A {
         self.matrix3 * rhs
     }
@@ -386,12 +412,14 @@ impl Affine3A {
     /// If any element is either `NaN`, positive or negative infinity, this will return
     /// `false`.
     #[inline]
+    #[must_use]
     pub fn is_finite(&self) -> bool {
         self.matrix3.is_finite() && self.translation.is_finite()
     }
 
     /// Returns `true` if any elements are `NaN`.
     #[inline]
+    #[must_use]
     pub fn is_nan(&self) -> bool {
         self.matrix3.is_nan() || self.translation.is_nan()
     }
@@ -406,6 +434,7 @@ impl Affine3A {
     /// For more see
     /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
     #[inline]
+    #[must_use]
     pub fn abs_diff_eq(&self, rhs: Self, max_abs_diff: f32) -> bool {
         self.matrix3.abs_diff_eq(rhs.matrix3, max_abs_diff)
             && self.translation.abs_diff_eq(rhs.translation, max_abs_diff)
@@ -414,8 +443,8 @@ impl Affine3A {
     /// Return the inverse of this transform.
     ///
     /// Note that if the transform is not invertible the result will be invalid.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn inverse(&self) -> Self {
         let matrix3 = self.matrix3.inverse();
         // transform negative translation by the matrix inverse:

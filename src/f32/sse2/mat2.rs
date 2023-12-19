@@ -19,6 +19,7 @@ union UnionCast {
 
 /// Creates a 2x2 matrix from two column vectors.
 #[inline(always)]
+#[must_use]
 pub const fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
     Mat2::from_cols(x_axis, y_axis)
 }
@@ -44,6 +45,7 @@ impl Mat2 {
 
     #[allow(clippy::too_many_arguments)]
     #[inline(always)]
+    #[must_use]
     const fn new(m00: f32, m01: f32, m10: f32, m11: f32) -> Self {
         unsafe {
             UnionCast {
@@ -55,6 +57,7 @@ impl Mat2 {
 
     /// Creates a 2x2 matrix from two column vectors.
     #[inline(always)]
+    #[must_use]
     pub const fn from_cols(x_axis: Vec2, y_axis: Vec2) -> Self {
         unsafe {
             UnionCast {
@@ -68,6 +71,7 @@ impl Mat2 {
     /// If your data is stored in row major you will need to `transpose` the returned
     /// matrix.
     #[inline]
+    #[must_use]
     pub const fn from_cols_array(m: &[f32; 4]) -> Self {
         Self::new(m[0], m[1], m[2], m[3])
     }
@@ -75,6 +79,7 @@ impl Mat2 {
     /// Creates a `[f32; 4]` array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
+    #[must_use]
     pub const fn to_cols_array(&self) -> [f32; 4] {
         unsafe { *(self as *const Self as *const [f32; 4]) }
     }
@@ -83,6 +88,7 @@ impl Mat2 {
     /// If your data is in row major order you will need to `transpose` the returned
     /// matrix.
     #[inline]
+    #[must_use]
     pub const fn from_cols_array_2d(m: &[[f32; 2]; 2]) -> Self {
         Self::from_cols(Vec2::from_array(m[0]), Vec2::from_array(m[1]))
     }
@@ -90,6 +96,7 @@ impl Mat2 {
     /// Creates a `[[f32; 2]; 2]` 2D array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
+    #[must_use]
     pub const fn to_cols_array_2d(&self) -> [[f32; 2]; 2] {
         unsafe { *(self as *const Self as *const [[f32; 2]; 2]) }
     }
@@ -97,6 +104,7 @@ impl Mat2 {
     /// Creates a 2x2 matrix with its diagonal set to `diagonal` and all other entries set to 0.
     #[doc(alias = "scale")]
     #[inline]
+    #[must_use]
     pub const fn from_diagonal(diagonal: Vec2) -> Self {
         Self::new(diagonal.x, 0.0, 0.0, diagonal.y)
     }
@@ -104,6 +112,7 @@ impl Mat2 {
     /// Creates a 2x2 matrix containing the combining non-uniform `scale` and rotation of
     /// `angle` (in radians).
     #[inline]
+    #[must_use]
     pub fn from_scale_angle(scale: Vec2, angle: f32) -> Self {
         let (sin, cos) = math::sin_cos(angle);
         Self::new(cos * scale.x, sin * scale.x, -sin * scale.y, cos * scale.y)
@@ -111,6 +120,7 @@ impl Mat2 {
 
     /// Creates a 2x2 matrix containing a rotation of `angle` (in radians).
     #[inline]
+    #[must_use]
     pub fn from_angle(angle: f32) -> Self {
         let (sin, cos) = math::sin_cos(angle);
         Self::new(cos, sin, -sin, cos)
@@ -118,12 +128,14 @@ impl Mat2 {
 
     /// Creates a 2x2 matrix from a 3x3 matrix, discarding the 2nd row and column.
     #[inline]
+    #[must_use]
     pub fn from_mat3(m: Mat3) -> Self {
         Self::from_cols(m.x_axis.xy(), m.y_axis.xy())
     }
 
     /// Creates a 2x2 matrix from a 3x3 matrix, discarding the 2nd row and column.
     #[inline]
+    #[must_use]
     pub fn from_mat3a(m: Mat3A) -> Self {
         Self::from_cols(m.x_axis.xy(), m.y_axis.xy())
     }
@@ -134,6 +146,7 @@ impl Mat2 {
     ///
     /// Panics if `slice` is less than 4 elements long.
     #[inline]
+    #[must_use]
     pub const fn from_cols_slice(slice: &[f32]) -> Self {
         Self::new(slice[0], slice[1], slice[2], slice[3])
     }
@@ -157,6 +170,7 @@ impl Mat2 {
     ///
     /// Panics if `index` is greater than 1.
     #[inline]
+    #[must_use]
     pub fn col(&self, index: usize) -> Vec2 {
         match index {
             0 => self.x_axis,
@@ -185,6 +199,7 @@ impl Mat2 {
     ///
     /// Panics if `index` is greater than 1.
     #[inline]
+    #[must_use]
     pub fn row(&self, index: usize) -> Vec2 {
         match index {
             0 => Vec2::new(self.x_axis.x, self.y_axis.x),
@@ -196,25 +211,28 @@ impl Mat2 {
     /// Returns `true` if, and only if, all elements are finite.
     /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
     #[inline]
+    #[must_use]
     pub fn is_finite(&self) -> bool {
         self.x_axis.is_finite() && self.y_axis.is_finite()
     }
 
     /// Returns `true` if any elements are `NaN`.
     #[inline]
+    #[must_use]
     pub fn is_nan(&self) -> bool {
         self.x_axis.is_nan() || self.y_axis.is_nan()
     }
 
     /// Returns the transpose of `self`.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn transpose(&self) -> Self {
         Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_10_00) })
     }
 
     /// Returns the determinant of `self`.
     #[inline]
+    #[must_use]
     pub fn determinant(&self) -> f32 {
         unsafe {
             let abcd = self.0;
@@ -232,8 +250,8 @@ impl Mat2 {
     /// # Panics
     ///
     /// Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn inverse(&self) -> Self {
         unsafe {
             const SIGN: __m128 = crate::sse2::m128_from_f32x4([1.0, -1.0, -1.0, 1.0]);
@@ -251,6 +269,7 @@ impl Mat2 {
 
     /// Transforms a 2D vector.
     #[inline]
+    #[must_use]
     pub fn mul_vec2(&self, rhs: Vec2) -> Vec2 {
         unsafe {
             use crate::Align16;
@@ -267,8 +286,8 @@ impl Mat2 {
     }
 
     /// Multiplies two 2x2 matrices.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn mul_mat2(&self, rhs: &Self) -> Self {
         unsafe {
             let abcd = self.0;
@@ -286,22 +305,22 @@ impl Mat2 {
     }
 
     /// Adds two 2x2 matrices.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn add_mat2(&self, rhs: &Self) -> Self {
         Self(unsafe { _mm_add_ps(self.0, rhs.0) })
     }
 
     /// Subtracts two 2x2 matrices.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn sub_mat2(&self, rhs: &Self) -> Self {
         Self(unsafe { _mm_sub_ps(self.0, rhs.0) })
     }
 
     /// Multiplies a 2x2 matrix by a scalar.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn mul_scalar(&self, rhs: f32) -> Self {
         Self(unsafe { _mm_mul_ps(self.0, _mm_set_ps1(rhs)) })
     }
@@ -316,6 +335,7 @@ impl Mat2 {
     /// For more see
     /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
     #[inline]
+    #[must_use]
     pub fn abs_diff_eq(&self, rhs: Self, max_abs_diff: f32) -> bool {
         self.x_axis.abs_diff_eq(rhs.x_axis, max_abs_diff)
             && self.y_axis.abs_diff_eq(rhs.y_axis, max_abs_diff)

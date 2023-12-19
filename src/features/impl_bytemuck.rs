@@ -113,6 +113,10 @@ mod test {
             fn $name() {
                 let t = <$t>::default();
                 let b = bytemuck::bytes_of(&t);
+                // the below loop will fail in miri if we're doing something bad here.
+                for bi in b {
+                    assert_eq!(bi, bi);
+                }
                 // should be the same address
                 assert_eq!(&t as *const $t as usize, b.as_ptr() as usize);
                 // should be the same size

@@ -37,6 +37,7 @@ impl DAffine2 {
 
     /// Creates an affine transform from three column vectors.
     #[inline(always)]
+    #[must_use]
     pub const fn from_cols(x_axis: DVec2, y_axis: DVec2, z_axis: DVec2) -> Self {
         Self {
             matrix2: DMat2::from_cols(x_axis, y_axis),
@@ -46,6 +47,7 @@ impl DAffine2 {
 
     /// Creates an affine transform from a `[f64; 6]` array stored in column major order.
     #[inline]
+    #[must_use]
     pub fn from_cols_array(m: &[f64; 6]) -> Self {
         Self {
             matrix2: DMat2::from_cols_slice(&m[0..4]),
@@ -55,6 +57,7 @@ impl DAffine2 {
 
     /// Creates a `[f64; 6]` array storing data in column major order.
     #[inline]
+    #[must_use]
     pub fn to_cols_array(&self) -> [f64; 6] {
         let x = &self.matrix2.x_axis;
         let y = &self.matrix2.y_axis;
@@ -67,6 +70,7 @@ impl DAffine2 {
     /// If your data is in row major order you will need to `transpose` the returned
     /// matrix.
     #[inline]
+    #[must_use]
     pub fn from_cols_array_2d(m: &[[f64; 2]; 3]) -> Self {
         Self {
             matrix2: DMat2::from_cols(m[0].into(), m[1].into()),
@@ -78,6 +82,7 @@ impl DAffine2 {
     /// column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
+    #[must_use]
     pub fn to_cols_array_2d(&self) -> [[f64; 2]; 3] {
         [
             self.matrix2.x_axis.into(),
@@ -92,6 +97,7 @@ impl DAffine2 {
     ///
     /// Panics if `slice` is less than 6 elements long.
     #[inline]
+    #[must_use]
     pub fn from_cols_slice(slice: &[f64]) -> Self {
         Self {
             matrix2: DMat2::from_cols_slice(&slice[0..4]),
@@ -113,6 +119,7 @@ impl DAffine2 {
     /// Creates an affine transform that changes scale.
     /// Note that if any scale is zero the transform will be non-invertible.
     #[inline]
+    #[must_use]
     pub fn from_scale(scale: DVec2) -> Self {
         Self {
             matrix2: DMat2::from_diagonal(scale),
@@ -122,6 +129,7 @@ impl DAffine2 {
 
     /// Creates an affine transform from the given rotation `angle`.
     #[inline]
+    #[must_use]
     pub fn from_angle(angle: f64) -> Self {
         Self {
             matrix2: DMat2::from_angle(angle),
@@ -131,6 +139,7 @@ impl DAffine2 {
 
     /// Creates an affine transformation from the given 2D `translation`.
     #[inline]
+    #[must_use]
     pub fn from_translation(translation: DVec2) -> Self {
         Self {
             matrix2: DMat2::IDENTITY,
@@ -140,6 +149,7 @@ impl DAffine2 {
 
     /// Creates an affine transform from a 2x2 matrix (expressing scale, shear and rotation)
     #[inline]
+    #[must_use]
     pub fn from_mat2(matrix2: DMat2) -> Self {
         Self {
             matrix2,
@@ -153,6 +163,7 @@ impl DAffine2 {
     /// Equivalent to
     /// `DAffine2::from_translation(translation) * DAffine2::from_mat2(mat2)`
     #[inline]
+    #[must_use]
     pub fn from_mat2_translation(matrix2: DMat2, translation: DVec2) -> Self {
         Self {
             matrix2,
@@ -166,6 +177,7 @@ impl DAffine2 {
     /// Equivalent to `DAffine2::from_translation(translation) *
     /// DAffine2::from_angle(angle) * DAffine2::from_scale(scale)`
     #[inline]
+    #[must_use]
     pub fn from_scale_angle_translation(scale: DVec2, angle: f64, translation: DVec2) -> Self {
         let rotation = DMat2::from_angle(angle);
         Self {
@@ -179,6 +191,7 @@ impl DAffine2 {
     ///
     /// Equivalent to `DAffine2::from_translation(translation) * DAffine2::from_angle(angle)`
     #[inline]
+    #[must_use]
     pub fn from_angle_translation(angle: f64, translation: DVec2) -> Self {
         Self {
             matrix2: DMat2::from_angle(angle),
@@ -188,6 +201,7 @@ impl DAffine2 {
 
     /// The given `DMat3` must be an affine transform,
     #[inline]
+    #[must_use]
     pub fn from_mat3(m: DMat3) -> Self {
         use crate::swizzles::Vec3Swizzles;
         Self {
@@ -206,6 +220,7 @@ impl DAffine2 {
     /// Will panic if the determinant `self.matrix2` is zero or if the resulting scale
     /// vector contains any zero elements when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn to_scale_angle_translation(self) -> (DVec2, f64, DVec2) {
         use crate::f64::math;
         let det = self.matrix2.determinant();
@@ -225,6 +240,7 @@ impl DAffine2 {
 
     /// Transforms the given 2D point, applying shear, scale, rotation and translation.
     #[inline]
+    #[must_use]
     pub fn transform_point2(&self, rhs: DVec2) -> DVec2 {
         self.matrix2 * rhs + self.translation
     }
@@ -243,12 +259,14 @@ impl DAffine2 {
     /// If any element is either `NaN`, positive or negative infinity, this will return
     /// `false`.
     #[inline]
+    #[must_use]
     pub fn is_finite(&self) -> bool {
         self.matrix2.is_finite() && self.translation.is_finite()
     }
 
     /// Returns `true` if any elements are `NaN`.
     #[inline]
+    #[must_use]
     pub fn is_nan(&self) -> bool {
         self.matrix2.is_nan() || self.translation.is_nan()
     }
@@ -263,6 +281,7 @@ impl DAffine2 {
     /// For more see
     /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
     #[inline]
+    #[must_use]
     pub fn abs_diff_eq(&self, rhs: Self, max_abs_diff: f64) -> bool {
         self.matrix2.abs_diff_eq(rhs.matrix2, max_abs_diff)
             && self.translation.abs_diff_eq(rhs.translation, max_abs_diff)
@@ -271,8 +290,8 @@ impl DAffine2 {
     /// Return the inverse of this transform.
     ///
     /// Note that if the transform is not invertible the result will be invalid.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn inverse(&self) -> Self {
         let matrix2 = self.matrix2.inverse();
         // transform negative translation by the matrix inverse:

@@ -28,6 +28,7 @@ union UnionCast {
 /// This should generally not be called manually unless you know what you are doing. Use
 /// one of the other constructors instead such as `identity` or `from_axis_angle`.
 #[inline]
+#[must_use]
 pub const fn quat(x: f32, y: f32, z: f32, w: f32) -> Quat {
     Quat::from_xyzw(x, y, z, w)
 }
@@ -67,6 +68,7 @@ impl Quat {
     /// This function does not check if the input is normalized, it is up to the user to
     /// provide normalized input or to normalized the resulting quaternion.
     #[inline(always)]
+    #[must_use]
     pub const fn from_xyzw(x: f32, y: f32, z: f32, w: f32) -> Self {
         unsafe { UnionCast { a: [x, y, z, w] }.v }
     }
@@ -78,6 +80,7 @@ impl Quat {
     /// This function does not check if the input is normalized, it is up to the user to
     /// provide normalized input or to normalized the resulting quaternion.
     #[inline]
+    #[must_use]
     pub const fn from_array(a: [f32; 4]) -> Self {
         Self::from_xyzw(a[0], a[1], a[2], a[3])
     }
@@ -89,7 +92,8 @@ impl Quat {
     /// This function does not check if the input is normalized, it is up to the user to
     /// provide normalized input or to normalized the resulting quaternion.
     #[inline]
-    pub fn from_vec4(v: Vec4) -> Self {
+    #[must_use]
+    pub const fn from_vec4(v: Vec4) -> Self {
         Self(v.0)
     }
 
@@ -104,6 +108,7 @@ impl Quat {
     ///
     /// Panics if `slice` length is less than 4.
     #[inline]
+    #[must_use]
     pub fn from_slice(slice: &[f32]) -> Self {
         assert!(slice.len() >= 4);
         Self(unsafe { _mm_loadu_ps(slice.as_ptr()) })
@@ -128,6 +133,7 @@ impl Quat {
     ///
     /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
         glam_assert!(axis.is_normalized());
         let (s, c) = math::sin_cos(angle * 0.5);
@@ -139,6 +145,7 @@ impl Quat {
     ///
     /// `from_scaled_axis(Vec3::ZERO)` results in the identity quaternion.
     #[inline]
+    #[must_use]
     pub fn from_scaled_axis(v: Vec3) -> Self {
         let length = v.length();
         if length == 0.0 {
@@ -150,6 +157,7 @@ impl Quat {
 
     /// Creates a quaternion from the `angle` (in radians) around the x axis.
     #[inline]
+    #[must_use]
     pub fn from_rotation_x(angle: f32) -> Self {
         let (s, c) = math::sin_cos(angle * 0.5);
         Self::from_xyzw(s, 0.0, 0.0, c)
@@ -157,6 +165,7 @@ impl Quat {
 
     /// Creates a quaternion from the `angle` (in radians) around the y axis.
     #[inline]
+    #[must_use]
     pub fn from_rotation_y(angle: f32) -> Self {
         let (s, c) = math::sin_cos(angle * 0.5);
         Self::from_xyzw(0.0, s, 0.0, c)
@@ -164,19 +173,22 @@ impl Quat {
 
     /// Creates a quaternion from the `angle` (in radians) around the z axis.
     #[inline]
+    #[must_use]
     pub fn from_rotation_z(angle: f32) -> Self {
         let (s, c) = math::sin_cos(angle * 0.5);
         Self::from_xyzw(0.0, 0.0, s, c)
     }
 
-    #[inline]
     /// Creates a quaternion from the given Euler rotation sequence and the angles (in radians).
+    #[inline]
+    #[must_use]
     pub fn from_euler(euler: EulerRot, a: f32, b: f32, c: f32) -> Self {
         euler.new_quat(a, b, c)
     }
 
     /// From the columns of a 3x3 rotation matrix.
     #[inline]
+    #[must_use]
     pub(crate) fn from_rotation_axes(x_axis: Vec3, y_axis: Vec3, z_axis: Vec3) -> Self {
         // Based on https://github.com/microsoft/DirectXMath `XM$quaternionRotationMatrix`
         let (m00, m01, m02) = x_axis.into();
@@ -237,18 +249,21 @@ impl Quat {
 
     /// Creates a quaternion from a 3x3 rotation matrix.
     #[inline]
+    #[must_use]
     pub fn from_mat3(mat: &Mat3) -> Self {
         Self::from_rotation_axes(mat.x_axis, mat.y_axis, mat.z_axis)
     }
 
     /// Creates a quaternion from a 3x3 SIMD aligned rotation matrix.
     #[inline]
+    #[must_use]
     pub fn from_mat3a(mat: &Mat3A) -> Self {
         Self::from_rotation_axes(mat.x_axis.into(), mat.y_axis.into(), mat.z_axis.into())
     }
 
     /// Creates a quaternion from a 3x3 rotation matrix inside a homogeneous 4x4 matrix.
     #[inline]
+    #[must_use]
     pub fn from_mat4(mat: &Mat4) -> Self {
         Self::from_rotation_axes(
             mat.x_axis.truncate(),
@@ -270,6 +285,7 @@ impl Quat {
     /// # Panics
     ///
     /// Will panic if `from` or `to` are not normalized when `glam_assert` is enabled.
+    #[must_use]
     pub fn from_rotation_arc(from: Vec3, to: Vec3) -> Self {
         glam_assert!(from.is_normalized());
         glam_assert!(to.is_normalized());
@@ -303,6 +319,7 @@ impl Quat {
     ///
     /// Will panic if `from` or `to` are not normalized when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn from_rotation_arc_colinear(from: Vec3, to: Vec3) -> Self {
         if from.dot(to) < 0.0 {
             Self::from_rotation_arc(from, -to)
@@ -324,6 +341,7 @@ impl Quat {
     /// # Panics
     ///
     /// Will panic if `from` or `to` are not normalized when `glam_assert` is enabled.
+    #[must_use]
     pub fn from_rotation_arc_2d(from: Vec2, to: Vec2) -> Self {
         glam_assert!(from.is_normalized());
         glam_assert!(to.is_normalized());
@@ -351,6 +369,7 @@ impl Quat {
 
     /// Returns the rotation axis (normalized) and angle (in radians) of `self`.
     #[inline]
+    #[must_use]
     pub fn to_axis_angle(self) -> (Vec3, f32) {
         const EPSILON: f32 = 1.0e-8;
         let v = Vec3::new(self.x, self.y, self.z);
@@ -366,6 +385,7 @@ impl Quat {
 
     /// Returns the rotation axis scaled by the rotation in radians.
     #[inline]
+    #[must_use]
     pub fn to_scaled_axis(self) -> Vec3 {
         let (axis, angle) = self.to_axis_angle();
         axis * angle
@@ -373,26 +393,29 @@ impl Quat {
 
     /// Returns the rotation angles for the given euler rotation sequence.
     #[inline]
+    #[must_use]
     pub fn to_euler(self, euler: EulerRot) -> (f32, f32, f32) {
         euler.convert_quat(self)
     }
 
     /// `[x, y, z, w]`
     #[inline]
+    #[must_use]
     pub fn to_array(&self) -> [f32; 4] {
         [self.x, self.y, self.z, self.w]
     }
 
     /// Returns the vector part of the quaternion.
     #[inline]
+    #[must_use]
     pub fn xyz(self) -> Vec3 {
         Vec3::new(self.x, self.y, self.z)
     }
 
     /// Returns the quaternion conjugate of `self`. For a unit quaternion the
     /// conjugate is also the inverse.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn conjugate(self) -> Self {
         const SIGN: __m128 = m128_from_f32x4([-0.0, -0.0, -0.0, 0.0]);
         Self(unsafe { _mm_xor_ps(self.0, SIGN) })
@@ -407,8 +430,8 @@ impl Quat {
     /// # Panics
     ///
     /// Will panic if `self` is not normalized when `glam_assert` is enabled.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn inverse(self) -> Self {
         glam_assert!(self.is_normalized());
         self.conjugate()
@@ -417,6 +440,7 @@ impl Quat {
     /// Computes the dot product of `self` and `rhs`. The dot product is
     /// equal to the cosine of the angle between two quaternion rotations.
     #[inline]
+    #[must_use]
     pub fn dot(self, rhs: Self) -> f32 {
         Vec4::from(self).dot(Vec4::from(rhs))
     }
@@ -424,6 +448,7 @@ impl Quat {
     /// Computes the length of `self`.
     #[doc(alias = "magnitude")]
     #[inline]
+    #[must_use]
     pub fn length(self) -> f32 {
         Vec4::from(self).length()
     }
@@ -434,6 +459,7 @@ impl Quat {
     /// root operation.
     #[doc(alias = "magnitude2")]
     #[inline]
+    #[must_use]
     pub fn length_squared(self) -> f32 {
         Vec4::from(self).length_squared()
     }
@@ -442,6 +468,7 @@ impl Quat {
     ///
     /// For valid results, `self` must _not_ be of length zero.
     #[inline]
+    #[must_use]
     pub fn length_recip(self) -> f32 {
         Vec4::from(self).length_recip()
     }
@@ -453,8 +480,8 @@ impl Quat {
     /// Panics
     ///
     /// Will panic if `self` is zero length when `glam_assert` is enabled.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn normalize(self) -> Self {
         Self::from_vec4(Vec4::from(self).normalize())
     }
@@ -462,11 +489,13 @@ impl Quat {
     /// Returns `true` if, and only if, all elements are finite.
     /// If any element is either `NaN`, positive or negative infinity, this will return `false`.
     #[inline]
+    #[must_use]
     pub fn is_finite(self) -> bool {
         Vec4::from(self).is_finite()
     }
 
     #[inline]
+    #[must_use]
     pub fn is_nan(self) -> bool {
         Vec4::from(self).is_nan()
     }
@@ -475,11 +504,13 @@ impl Quat {
     ///
     /// Uses a precision threshold of `1e-6`.
     #[inline]
+    #[must_use]
     pub fn is_normalized(self) -> bool {
         Vec4::from(self).is_normalized()
     }
 
     #[inline]
+    #[must_use]
     pub fn is_near_identity(self) -> bool {
         // Based on https://github.com/nfrechette/rtm `rtm::quat_near_identity`
         let threshold_angle = 0.002_847_144_6;
@@ -509,6 +540,7 @@ impl Quat {
     ///
     /// Will panic if `self` or `rhs` are not normalized when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn angle_between(self, rhs: Self) -> f32 {
         glam_assert!(self.is_normalized() && rhs.is_normalized());
         math::acos_approx(math::abs(self.dot(rhs))) * 2.0
@@ -524,6 +556,7 @@ impl Quat {
     /// For more see
     /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
     #[inline]
+    #[must_use]
     pub fn abs_diff_eq(self, rhs: Self, max_abs_diff: f32) -> bool {
         Vec4::from(self).abs_diff_eq(Vec4::from(rhs), max_abs_diff)
     }
@@ -537,9 +570,9 @@ impl Quat {
     /// # Panics
     ///
     /// Will panic if `self` or `end` are not normalized when `glam_assert` is enabled.
-    #[must_use]
-    #[inline]
     #[doc(alias = "mix")]
+    #[inline]
+    #[must_use]
     pub fn lerp(self, end: Self, s: f32) -> Self {
         glam_assert!(self.is_normalized());
         glam_assert!(end.is_normalized());
@@ -569,8 +602,8 @@ impl Quat {
     /// # Panics
     ///
     /// Will panic if `self` or `end` are not normalized when `glam_assert` is enabled.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn slerp(self, mut end: Self, s: f32) -> Self {
         // http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/
         glam_assert!(self.is_normalized());
@@ -622,6 +655,7 @@ impl Quat {
     ///
     /// Will panic if `self` is not normalized when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn mul_vec3(self, rhs: Vec3) -> Vec3 {
         glam_assert!(self.is_normalized());
 
@@ -636,8 +670,8 @@ impl Quat {
     /// # Panics
     ///
     /// Will panic if `self` or `rhs` are not normalized when `glam_assert` is enabled.
-    #[must_use]
     #[inline]
+    #[must_use]
     pub fn mul_quat(self, rhs: Self) -> Self {
         glam_assert!(self.is_normalized());
         glam_assert!(rhs.is_normalized());
@@ -681,6 +715,7 @@ impl Quat {
 
     /// Creates a quaternion from a 3x3 rotation matrix inside a 3D affine transform.
     #[inline]
+    #[must_use]
     pub fn from_affine3(a: &crate::Affine3A) -> Self {
         #[allow(clippy::useless_conversion)]
         Self::from_rotation_axes(
@@ -692,6 +727,7 @@ impl Quat {
 
     /// Multiplies a quaternion and a 3D vector, returning the rotated vector.
     #[inline]
+    #[must_use]
     pub fn mul_vec3a(self, rhs: Vec3A) -> Vec3A {
         unsafe {
             const TWO: __m128 = m128_from_f32x4([2.0; 4]);
@@ -709,11 +745,13 @@ impl Quat {
     }
 
     #[inline]
+    #[must_use]
     pub fn as_dquat(self) -> DQuat {
         DQuat::from_xyzw(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
     }
 
     #[inline]
+    #[must_use]
     #[deprecated(since = "0.24.2", note = "Use as_dquat() instead")]
     pub fn as_f64(self) -> DQuat {
         self.as_dquat()
