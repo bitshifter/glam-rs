@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
-## [Unreleased]
+## [0.25.0] - 2023-12-19
 
 ### Breaking changes
 
@@ -38,6 +38,9 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Renamed `Quat::as_f64()` to `Quat::as_dquat()` and `DQuat::as_f32()` to
   `DQuat::as_quat()` to be consistent with other types. The old methods have
   been deprecated.
+
+* Added the `#[must_use]` attribute to all pure functions following the
+  guidelines for the Rust standard library.
 
 ## [0.24.2] - 2023-09-23
 
@@ -998,7 +1001,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.24.2...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.25.0...HEAD
+[0.25.0]: https://github.com/bitshifter/glam-rs/compare/0.24.2...0.25.0
 [0.24.2]: https://github.com/bitshifter/glam-rs/compare/0.24.1...0.24.2
 [0.24.1]: https://github.com/bitshifter/glam-rs/compare/0.24.0...0.24.1
 [0.24.0]: https://github.com/bitshifter/glam-rs/compare/0.23.0...0.24.0
