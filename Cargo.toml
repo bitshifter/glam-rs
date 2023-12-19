@@ -55,7 +55,7 @@ libm = { version = "0.2", optional = true, default-features = false}
 # rand_xoshiro is required for tests if rand is enabled
 rand_xoshiro = "0.6"
 # Set a size_xx feature so that this crate compiles properly with --all-targets --all-features
-rkyv = { version = "0.7", features = ["size_32"] }
+rkyv = { version = "0.7", default-features = false, features = ["size_32"] }
 serde_json = "1.0"
 
 [target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
