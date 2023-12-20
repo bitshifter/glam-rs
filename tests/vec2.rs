@@ -804,6 +804,14 @@ macro_rules! impl_vec2_float_tests {
             assert_approx_eq!($vec2::ZERO, v0.lerp(v1, 0.5));
         });
 
+        glam_test!(test_midpoint, {
+            let v0 = $vec2::new(-1.0, -1.0);
+            let v1 = $vec2::new(1.0, 1.0);
+            let v2 = $vec2::new(-1.5, 0.0);
+            assert_approx_eq!($vec2::ZERO, v0.midpoint(v1));
+            assert_approx_eq!($vec2::new(-0.25, 0.5), v1.midpoint(v2));
+        });
+
         glam_test!(test_is_finite, {
             assert!($vec2::new(0.0, 0.0).is_finite());
             assert!($vec2::new(-1e-10, 1e10).is_finite());
