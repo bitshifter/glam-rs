@@ -1006,6 +1006,14 @@ macro_rules! impl_vec4_float_tests {
             assert_approx_eq!($vec4::ZERO, v0.lerp(v1, 0.5));
         });
 
+        glam_test!(test_midpoint, {
+            let v0 = $vec4::new(-1.0, -1.0, -1.0, -1.0);
+            let v1 = $vec4::new(1.0, 1.0, 1.0, 1.0);
+            let v2 = $vec4::new(-1.5, 0.0, 1.0, 0.5);
+            assert_approx_eq!($vec4::ZERO, v0.midpoint(v1));
+            assert_approx_eq!($vec4::new(-0.25, 0.5, 1.0, 0.75), v1.midpoint(v2));
+        });
+
         glam_test!(test_is_finite, {
             assert!($vec4::new(0.0, 0.0, 0.0, 0.0).is_finite());
             assert!($vec4::new(-1e-10, 1.0, 1e10, 42.0).is_finite());
