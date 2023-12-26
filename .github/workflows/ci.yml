@@ -6,7 +6,7 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - uses: actions-rs/toolchain@v1
         with:
@@ -40,7 +40,7 @@ jobs:
         toolchain: [stable, beta, nightly]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - run: rustup update --no-self-update ${{ matrix.toolchain }}
       - run: rustup default ${{ matrix.toolchain }}
       - run: ./build_and_test_features.sh
@@ -54,7 +54,7 @@ jobs:
         toolchain: [nightly]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - run: rustup update --no-self-update ${{ matrix.toolchain }}
       - run: rustup default ${{ matrix.toolchain }}
       - run: cargo test --features core-simd
@@ -68,7 +68,7 @@ jobs:
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Install
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
