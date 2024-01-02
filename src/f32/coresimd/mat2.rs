@@ -37,7 +37,8 @@ impl Mat2 {
     #[allow(clippy::too_many_arguments)]
     #[inline(always)]
     #[must_use]
-    const fn new(m00: f32, m01: f32, m10: f32, m11: f32) -> Self {
+    /// Create a new 2x2 matrix from elements in column major order.
+    pub const fn new(m00: f32, m01: f32, m10: f32, m11: f32) -> Self {
         Self(f32x4::from_array([m00, m01, m10, m11]))
     }
 

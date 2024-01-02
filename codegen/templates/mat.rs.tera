@@ -243,7 +243,8 @@ impl {{ self_t }} {
     #[allow(clippy::too_many_arguments)]
     #[inline(always)]
     #[must_use]
-    const fn new(
+    /// Create a new {{ nxn }} matrix from elements in column major order.
+    pub const fn new(
         {% for i in range(end = dim) %}
             {%- for j in range(end = dim) %}
                 m{{ i }}{{ j }}: {{ scalar_t }},

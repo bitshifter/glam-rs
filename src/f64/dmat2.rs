@@ -35,7 +35,8 @@ impl DMat2 {
     #[allow(clippy::too_many_arguments)]
     #[inline(always)]
     #[must_use]
-    const fn new(m00: f64, m01: f64, m10: f64, m11: f64) -> Self {
+    /// Create a new 2x2 matrix from elements in column major order.
+    pub const fn new(m00: f64, m01: f64, m10: f64, m11: f64) -> Self {
         Self {
             x_axis: DVec2::new(m00, m01),
             y_axis: DVec2::new(m10, m11),

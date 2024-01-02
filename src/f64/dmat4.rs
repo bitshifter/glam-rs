@@ -65,7 +65,8 @@ impl DMat4 {
     #[allow(clippy::too_many_arguments)]
     #[inline(always)]
     #[must_use]
-    const fn new(
+    /// Create a new 4x4 matrix from elements in column major order.
+    pub const fn new(
         m00: f64,
         m01: f64,
         m02: f64,
