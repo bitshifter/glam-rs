@@ -505,7 +505,7 @@ impl Vec4 {
 
     /// Returns whether `self` is length `1.0` or not.
     ///
-    /// Uses a precision threshold of `1e-6`.
+    /// Uses a precision threshold of `1e-4`.
     #[inline]
     #[must_use]
     pub fn is_normalized(self) -> bool {
