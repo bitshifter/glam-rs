@@ -1274,6 +1274,34 @@ mod i16vec2 {
         );
     });
 
+    glam_test!(test_wrapping_add_unsigned, {
+        assert_eq!(
+            I16Vec2::new(i16::MAX, i16::MAX).wrapping_add_unsigned(U16Vec2::new(1, 1)),
+            I16Vec2::new(i16::MIN, i16::MIN)
+        );
+    });
+
+    glam_test!(test_wrapping_sub_unsigned, {
+        assert_eq!(
+            I16Vec2::new(i16::MIN, i16::MIN).wrapping_sub_unsigned(U16Vec2::new(1, 1)),
+            I16Vec2::new(i16::MAX, i16::MAX)
+        );
+    });
+
+    glam_test!(test_saturating_add_unsigned, {
+        assert_eq!(
+            I16Vec2::new(i16::MAX, i16::MAX).saturating_add_unsigned(U16Vec2::new(1, 1)),
+            I16Vec2::new(i16::MAX, i16::MAX)
+        );
+    });
+
+    glam_test!(test_saturating_sub_unsigned, {
+        assert_eq!(
+            I16Vec2::new(i16::MIN, i16::MIN).saturating_sub_unsigned(U16Vec2::new(1, 1)),
+            I16Vec2::new(i16::MIN, i16::MIN)
+        );
+    });
+
     impl_vec2_signed_integer_tests!(i16, i16vec2, I16Vec2, I16Vec3, BVec2);
     impl_vec2_eq_hash_tests!(i16, i16vec2);
 
@@ -1395,6 +1423,20 @@ mod u16vec2 {
         );
     });
 
+    glam_test!(test_wrapping_add_signed, {
+        assert_eq!(
+            U16Vec2::new(u16::MAX, u16::MAX).wrapping_add_signed(I16Vec2::new(1, 1)),
+            U16Vec2::new(u16::MIN, u16::MIN)
+        );
+    });
+
+    glam_test!(test_saturating_add_signed, {
+        assert_eq!(
+            U16Vec2::new(u16::MAX, u16::MAX).saturating_add_signed(I16Vec2::new(1, 1)),
+            U16Vec2::new(u16::MAX, u16::MAX)
+        );
+    });
+
     impl_vec2_tests!(u16, u16vec2, U16Vec2, U16Vec3, BVec2);
     impl_vec2_eq_hash_tests!(u16, u16vec2);
 
@@ -1495,6 +1537,34 @@ mod ivec2 {
         assert_eq!(
             IVec2::new(i32::MAX, i32::MIN).saturating_div(IVec2::new(2, 2)),
             IVec2::new(1073741823, -1073741824)
+        );
+    });
+
+    glam_test!(test_wrapping_add_unsigned, {
+        assert_eq!(
+            IVec2::new(i32::MAX, i32::MAX).wrapping_add_unsigned(UVec2::new(1, 1)),
+            IVec2::new(i32::MIN, i32::MIN)
+        );
+    });
+
+    glam_test!(test_wrapping_sub_unsigned, {
+        assert_eq!(
+            IVec2::new(i32::MIN, i32::MIN).wrapping_sub_unsigned(UVec2::new(1, 1)),
+            IVec2::new(i32::MAX, i32::MAX)
+        );
+    });
+
+    glam_test!(test_saturating_add_unsigned, {
+        assert_eq!(
+            IVec2::new(i32::MAX, i32::MAX).saturating_add_unsigned(UVec2::new(1, 1)),
+            IVec2::new(i32::MAX, i32::MAX)
+        );
+    });
+
+    glam_test!(test_saturating_sub_unsigned, {
+        assert_eq!(
+            IVec2::new(i32::MIN, i32::MIN).saturating_sub_unsigned(UVec2::new(1, 1)),
+            IVec2::new(i32::MIN, i32::MIN)
         );
     });
 
@@ -1610,6 +1680,20 @@ mod uvec2 {
         );
     });
 
+    glam_test!(test_wrapping_add_signed, {
+        assert_eq!(
+            UVec2::new(u32::MAX, u32::MAX).wrapping_add_signed(IVec2::new(1, 1)),
+            UVec2::new(u32::MIN, u32::MIN)
+        );
+    });
+
+    glam_test!(test_saturating_add_signed, {
+        assert_eq!(
+            UVec2::new(u32::MAX, u32::MAX).saturating_add_signed(IVec2::new(1, 1)),
+            UVec2::new(u32::MAX, u32::MAX)
+        );
+    });
+
     impl_vec2_tests!(u32, uvec2, UVec2, UVec3, BVec2);
     impl_vec2_eq_hash_tests!(u32, uvec2);
 
@@ -1646,6 +1730,34 @@ mod i64vec2 {
         );
         assert!(I64Vec2::try_from(U64Vec2::new(u64::MAX, 2)).is_err());
         assert!(I64Vec2::try_from(U64Vec2::new(1, u64::MAX)).is_err());
+    });
+
+    glam_test!(test_wrapping_add_unsigned, {
+        assert_eq!(
+            I64Vec2::new(i64::MAX, i64::MAX).wrapping_add_unsigned(U64Vec2::new(1, 1)),
+            I64Vec2::new(i64::MIN, i64::MIN)
+        );
+    });
+
+    glam_test!(test_wrapping_sub_unsigned, {
+        assert_eq!(
+            I64Vec2::new(i64::MIN, i64::MIN).wrapping_sub_unsigned(U64Vec2::new(1, 1)),
+            I64Vec2::new(i64::MAX, i64::MAX)
+        );
+    });
+
+    glam_test!(test_saturating_add_unsigned, {
+        assert_eq!(
+            I64Vec2::new(i64::MAX, i64::MAX).saturating_add_unsigned(U64Vec2::new(1, 1)),
+            I64Vec2::new(i64::MAX, i64::MAX)
+        );
+    });
+
+    glam_test!(test_saturating_sub_unsigned, {
+        assert_eq!(
+            I64Vec2::new(i64::MIN, i64::MIN).saturating_sub_unsigned(U64Vec2::new(1, 1)),
+            I64Vec2::new(i64::MIN, i64::MIN)
+        );
     });
 
     impl_vec2_signed_integer_tests!(i64, i64vec2, I64Vec2, I64Vec3, BVec2);
@@ -1697,6 +1809,20 @@ mod u64vec2 {
         );
         assert!(U64Vec2::try_from(I64Vec2::new(-1, 2)).is_err());
         assert!(U64Vec2::try_from(I64Vec2::new(1, -2)).is_err());
+    });
+
+    glam_test!(test_wrapping_add_signed, {
+        assert_eq!(
+            U64Vec2::new(u64::MAX, u64::MAX).wrapping_add_signed(I64Vec2::new(1, 1)),
+            U64Vec2::new(u64::MIN, u64::MIN)
+        );
+    });
+
+    glam_test!(test_saturating_add_signed, {
+        assert_eq!(
+            U64Vec2::new(u64::MAX, u64::MAX).saturating_add_signed(I64Vec2::new(1, 1)),
+            U64Vec2::new(u64::MAX, u64::MAX)
+        );
     });
 
     impl_vec2_tests!(u64, u64vec2, U64Vec2, U64Vec3, BVec2);
