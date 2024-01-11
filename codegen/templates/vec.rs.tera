@@ -43,6 +43,7 @@
     {% set is_signed = true %}
     {% set is_float = false %}
     {% set self_t = "I16Vec" ~ dim %}
+    {% set opposite_signedness_t = "U16Vec" ~ dim %}
     {% set vec2_t = "I16Vec2" %}
     {% set vec3_t = "I16Vec3" %}
     {% set vec4_t = "I16Vec4" %}
@@ -51,6 +52,7 @@
     {% set is_signed = false %}
     {% set is_float = false %}
     {% set self_t = "U16Vec" ~ dim %}
+    {% set opposite_signedness_t = "I16Vec" ~ dim %}
     {% set vec2_t = "U16Vec2" %}
     {% set vec3_t = "U16Vec3" %}
     {% set vec4_t = "U16Vec4" %}
@@ -59,6 +61,7 @@
     {% set is_signed = true %}
     {% set is_float = false %}
     {% set self_t = "IVec" ~ dim %}
+    {% set opposite_signedness_t = "UVec" ~ dim %}
     {% set vec2_t = "IVec2" %}
     {% set vec3_t = "IVec3" %}
     {% set vec4_t = "IVec4" %}
@@ -68,6 +71,7 @@
     {% set is_signed = false %}
     {% set is_float = false %}
     {% set self_t = "UVec" ~ dim %}
+    {% set opposite_signedness_t = "IVec" ~ dim %}
     {% set vec2_t = "UVec2" %}
     {% set vec3_t = "UVec3" %}
     {% set vec4_t = "UVec4" %}
@@ -77,6 +81,7 @@
     {% set is_signed = true %}
     {% set is_float = false %}
     {% set self_t = "I64Vec" ~ dim %}
+    {% set opposite_signedness_t = "U64Vec" ~ dim %}
     {% set vec2_t = "I64Vec2" %}
     {% set vec3_t = "I64Vec3" %}
     {% set vec4_t = "I64Vec4" %}
@@ -86,6 +91,7 @@
     {% set is_signed = false %}
     {% set is_float = false %}
     {% set self_t = "U64Vec" ~ dim %}
+    {% set opposite_signedness_t = "I64Vec" ~ dim %}
     {% set vec2_t = "U64Vec2" %}
     {% set vec3_t = "U64Vec3" %}
     {% set vec4_t = "U64Vec4" %}
@@ -2019,6 +2025,85 @@ impl {{ self_t }} {
             {%- endfor %}
         }
     }
+    {% if is_signed %}
+        /// Returns a vector containing the wrapping addition of `self` and unsigned vector `rhs`.
+        ///
+        /// In other words this computes `[self.x.wrapping_add_unsigned(rhs.x), self.y.wrapping_add_unsigned(rhs.y), ..]`.
+        #[inline]
+        #[must_use]
+        pub const fn wrapping_add_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Self {
+            Self {
+                {% for c in components %}
+                    {{ c }}: self.{{ c }}.wrapping_add_unsigned(rhs.{{ c }}),
+                {%- endfor %}
+            }
+        }
+
+        /// Returns a vector containing the wrapping subtraction of `self` and unsigned vector `rhs`.
+        ///
+        /// In other words this computes `[self.x.wrapping_sub_unsigned(rhs.x), self.y.wrapping_sub_unsigned(rhs.y), ..]`.
+        #[inline]
+        #[must_use]
+        pub const fn wrapping_sub_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Self {
+            Self {
+                {% for c in components %}
+                    {{ c }}: self.{{ c }}.wrapping_sub_unsigned(rhs.{{ c }}),
+                {%- endfor %}
+            }
+        }
+
+        // Returns a vector containing the saturating addition of `self` and unsigned vector `rhs`.
+        ///
+        /// In other words this computes `[self.x.saturating_add_unsigned(rhs.x), self.y.saturating_add_unsigned(rhs.y), ..]`.
+        #[inline]
+        #[must_use]
+        pub const fn saturating_add_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Self {
+            Self {
+                {% for c in components %}
+                    {{ c }}: self.{{ c }}.saturating_add_unsigned(rhs.{{ c }}),
+                {%- endfor %}
+            }
+        }
+
+        /// Returns a vector containing the saturating subtraction of `self` and unsigned vector `rhs`.
+        ///
+        /// In other words this computes `[self.x.saturating_sub_unsigned(rhs.x), self.y.saturating_sub_unsigned(rhs.y), ..]`.
+        #[inline]
+        #[must_use]
+        pub const fn saturating_sub_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Self {
+            Self {
+                {% for c in components %}
+                    {{ c }}: self.{{ c }}.saturating_sub_unsigned(rhs.{{ c }}),
+                {%- endfor %}
+            }
+        }
+    {% else %}
+        /// Returns a vector containing the wrapping addition of `self` and signed vector `rhs`.
+        ///
+        /// In other words this computes `[self.x.wrapping_add_signed(rhs.x), self.y.wrapping_add_signed(rhs.y), ..]`.
+        #[inline]
+        #[must_use]
+        pub const fn wrapping_add_signed(self, rhs: {{ opposite_signedness_t }}) -> Self {
+            Self {
+                {% for c in components %}
+                    {{ c }}: self.{{ c }}.wrapping_add_signed(rhs.{{ c }}),
+                {%- endfor %}
+            }
+        }
+
+        /// Returns a vector containing the saturating addition of `self` and signed vector `rhs`.
+        ///
+        /// In other words this computes `[self.x.saturating_add_signed(rhs.x), self.y.saturating_add_signed(rhs.y), ..]`.
+        #[inline]
+        #[must_use]
+        pub const fn saturating_add_signed(self, rhs: {{ opposite_signedness_t }}) -> Self {
+            Self {
+                {% for c in components %}
+                    {{ c }}: self.{{ c }}.saturating_add_signed(rhs.{{ c }}),
+                {%- endfor %}
+            }
+        }
+    {% endif %}
 {% endif %}
 }
 
