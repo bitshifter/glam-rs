@@ -322,49 +322,49 @@ impl U16Vec4 {
     /// Casts all elements of `self` to `f32`.
     #[inline]
     #[must_use]
-    pub fn as_vec4(&self) -> crate::Vec4 {
+    pub const fn as_vec4(&self) -> crate::Vec4 {
         crate::Vec4::new(self.x as f32, self.y as f32, self.z as f32, self.w as f32)
     }
 
     /// Casts all elements of `self` to `f64`.
     #[inline]
     #[must_use]
-    pub fn as_dvec4(&self) -> crate::DVec4 {
+    pub const fn as_dvec4(&self) -> crate::DVec4 {
         crate::DVec4::new(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
     }
 
     /// Casts all elements of `self` to `i16`.
     #[inline]
     #[must_use]
-    pub fn as_i16vec4(&self) -> crate::I16Vec4 {
+    pub const fn as_i16vec4(&self) -> crate::I16Vec4 {
         crate::I16Vec4::new(self.x as i16, self.y as i16, self.z as i16, self.w as i16)
     }
 
     /// Casts all elements of `self` to `i32`.
     #[inline]
     #[must_use]
-    pub fn as_ivec4(&self) -> crate::IVec4 {
+    pub const fn as_ivec4(&self) -> crate::IVec4 {
         crate::IVec4::new(self.x as i32, self.y as i32, self.z as i32, self.w as i32)
     }
 
     /// Casts all elements of `self` to `u32`.
     #[inline]
     #[must_use]
-    pub fn as_uvec4(&self) -> crate::UVec4 {
+    pub const fn as_uvec4(&self) -> crate::UVec4 {
         crate::UVec4::new(self.x as u32, self.y as u32, self.z as u32, self.w as u32)
     }
 
     /// Casts all elements of `self` to `i64`.
     #[inline]
     #[must_use]
-    pub fn as_i64vec4(&self) -> crate::I64Vec4 {
+    pub const fn as_i64vec4(&self) -> crate::I64Vec4 {
         crate::I64Vec4::new(self.x as i64, self.y as i64, self.z as i64, self.w as i64)
     }
 
     /// Casts all elements of `self` to `u64`.
     #[inline]
     #[must_use]
-    pub fn as_u64vec4(&self) -> crate::U64Vec4 {
+    pub const fn as_u64vec4(&self) -> crate::U64Vec4 {
         crate::U64Vec4::new(self.x as u64, self.y as u64, self.z as u64, self.w as u64)
     }
 

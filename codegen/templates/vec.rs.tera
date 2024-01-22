@@ -1726,28 +1726,28 @@ impl {{ self_t }} {
     /// Casts all elements of `self` to `f32`.
     #[inline]
     #[must_use]
-    pub fn as_vec2(&self) -> crate::Vec2 {
+    pub const fn as_vec2(&self) -> crate::Vec2 {
         crate::Vec2::new(self.x as f32, self.y as f32)
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `f32`.
     #[inline]
     #[must_use]
-    pub fn as_vec3(&self) -> crate::Vec3 {
+    pub const fn as_vec3(&self) -> crate::Vec3 {
         crate::Vec3::new(self.x as f32, self.y as f32, self.z as f32)
     }
 
     /// Casts all elements of `self` to `f32`.
     #[inline]
     #[must_use]
-    pub fn as_vec3a(&self) -> crate::Vec3A {
+    pub const fn as_vec3a(&self) -> crate::Vec3A {
         crate::Vec3A::new(self.x as f32, self.y as f32, self.z as f32)
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `f32`.
     #[inline]
     #[must_use]
-    pub fn as_vec4(&self) -> crate::Vec4 {
+    pub const fn as_vec4(&self) -> crate::Vec4 {
         crate::Vec4::new(self.x as f32, self.y as f32, self.z as f32, self.w as f32)
     }
     {% endif %}
@@ -1757,21 +1757,21 @@ impl {{ self_t }} {
     /// Casts all elements of `self` to `f64`.
     #[inline]
     #[must_use]
-    pub fn as_dvec2(&self) -> crate::DVec2 {
+    pub const fn as_dvec2(&self) -> crate::DVec2 {
         crate::DVec2::new(self.x as f64, self.y as f64)
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `f64`.
     #[inline]
     #[must_use]
-    pub fn as_dvec3(&self) -> crate::DVec3 {
+    pub const fn as_dvec3(&self) -> crate::DVec3 {
         crate::DVec3::new(self.x as f64, self.y as f64, self.z as f64)
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `f64`.
     #[inline]
     #[must_use]
-    pub fn as_dvec4(&self) -> crate::DVec4 {
+    pub const fn as_dvec4(&self) -> crate::DVec4 {
         crate::DVec4::new(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
     }
     {% endif %}
@@ -1781,21 +1781,21 @@ impl {{ self_t }} {
     /// Casts all elements of `self` to `i16`.
     #[inline]
     #[must_use]
-    pub fn as_i16vec2(&self) -> crate::I16Vec2 {
+    pub const fn as_i16vec2(&self) -> crate::I16Vec2 {
         crate::I16Vec2::new(self.x as i16, self.y as i16)
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `i16`.
     #[inline]
     #[must_use]
-    pub fn as_i16vec3(&self) -> crate::I16Vec3 {
+    pub const fn as_i16vec3(&self) -> crate::I16Vec3 {
         crate::I16Vec3::new(self.x as i16, self.y as i16, self.z as i16)
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `i16`.
     #[inline]
     #[must_use]
-    pub fn as_i16vec4(&self) -> crate::I16Vec4 {
+    pub const fn as_i16vec4(&self) -> crate::I16Vec4 {
         crate::I16Vec4::new(self.x as i16, self.y as i16, self.z as i16, self.w as i16)
     }
     {% endif %}
@@ -1805,21 +1805,21 @@ impl {{ self_t }} {
     /// Casts all elements of `self` to `u16`.
     #[inline]
     #[must_use]
-    pub fn as_u16vec2(&self) -> crate::U16Vec2 {
+    pub const fn as_u16vec2(&self) -> crate::U16Vec2 {
         crate::U16Vec2::new(self.x as u16, self.y as u16)
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `u16`.
     #[inline]
     #[must_use]
-    pub fn as_u16vec3(&self) -> crate::U16Vec3 {
+    pub const fn as_u16vec3(&self) -> crate::U16Vec3 {
         crate::U16Vec3::new(self.x as u16, self.y as u16, self.z as u16)
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `u16`.
     #[inline]
     #[must_use]
-    pub fn as_u16vec4(&self) -> crate::U16Vec4 {
+    pub const fn as_u16vec4(&self) -> crate::U16Vec4 {
         crate::U16Vec4::new(self.x as u16, self.y as u16, self.z as u16, self.w as u16)
     }
     {% endif %}
@@ -1829,21 +1829,21 @@ impl {{ self_t }} {
     /// Casts all elements of `self` to `i32`.
     #[inline]
     #[must_use]
-    pub fn as_ivec2(&self) -> crate::IVec2 {
+    pub const fn as_ivec2(&self) -> crate::IVec2 {
         crate::IVec2::new(self.x as i32, self.y as i32)
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `i32`.
     #[inline]
     #[must_use]
-    pub fn as_ivec3(&self) -> crate::IVec3 {
+    pub const fn as_ivec3(&self) -> crate::IVec3 {
         crate::IVec3::new(self.x as i32, self.y as i32, self.z as i32)
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `i32`.
     #[inline]
     #[must_use]
-    pub fn as_ivec4(&self) -> crate::IVec4 {
+    pub const fn as_ivec4(&self) -> crate::IVec4 {
         crate::IVec4::new(self.x as i32, self.y as i32, self.z as i32, self.w as i32)
     }
     {% endif %}
@@ -1853,21 +1853,21 @@ impl {{ self_t }} {
     /// Casts all elements of `self` to `u32`.
     #[inline]
     #[must_use]
-    pub fn as_uvec2(&self) -> crate::UVec2 {
+    pub const fn as_uvec2(&self) -> crate::UVec2 {
         crate::UVec2::new(self.x as u32, self.y as u32)
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `u32`.
     #[inline]
     #[must_use]
-    pub fn as_uvec3(&self) -> crate::UVec3 {
+    pub const fn as_uvec3(&self) -> crate::UVec3 {
         crate::UVec3::new(self.x as u32, self.y as u32, self.z as u32)
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `u32`.
     #[inline]
     #[must_use]
-    pub fn as_uvec4(&self) -> crate::UVec4 {
+    pub const fn as_uvec4(&self) -> crate::UVec4 {
         crate::UVec4::new(self.x as u32, self.y as u32, self.z as u32, self.w as u32)
     }
     {% endif %}
@@ -1877,21 +1877,21 @@ impl {{ self_t }} {
     /// Casts all elements of `self` to `i64`.
     #[inline]
     #[must_use]
-    pub fn as_i64vec2(&self) -> crate::I64Vec2 {
+    pub const fn as_i64vec2(&self) -> crate::I64Vec2 {
         crate::I64Vec2::new(self.x as i64, self.y as i64)
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `i64`.
     #[inline]
     #[must_use]
-    pub fn as_i64vec3(&self) -> crate::I64Vec3 {
+    pub const fn as_i64vec3(&self) -> crate::I64Vec3 {
         crate::I64Vec3::new(self.x as i64, self.y as i64, self.z as i64)
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `i64`.
     #[inline]
     #[must_use]
-    pub fn as_i64vec4(&self) -> crate::I64Vec4 {
+    pub const fn as_i64vec4(&self) -> crate::I64Vec4 {
         crate::I64Vec4::new(self.x as i64, self.y as i64, self.z as i64, self.w as i64)
     }
     {% endif %}
@@ -1901,21 +1901,21 @@ impl {{ self_t }} {
     /// Casts all elements of `self` to `u64`.
     #[inline]
     #[must_use]
-    pub fn as_u64vec2(&self) -> crate::U64Vec2 {
+    pub const fn as_u64vec2(&self) -> crate::U64Vec2 {
         crate::U64Vec2::new(self.x as u64, self.y as u64)
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `u64`.
     #[inline]
     #[must_use]
-    pub fn as_u64vec3(&self) -> crate::U64Vec3 {
+    pub const fn as_u64vec3(&self) -> crate::U64Vec3 {
         crate::U64Vec3::new(self.x as u64, self.y as u64, self.z as u64)
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `u64`.
     #[inline]
     #[must_use]
-    pub fn as_u64vec4(&self) -> crate::U64Vec4 {
+    pub const fn as_u64vec4(&self) -> crate::U64Vec4 {
         crate::U64Vec4::new(self.x as u64, self.y as u64, self.z as u64, self.w as u64)
     }
     {% endif %}

@@ -841,49 +841,49 @@ impl Vec3A {
     /// Casts all elements of `self` to `f64`.
     #[inline]
     #[must_use]
-    pub fn as_dvec3(&self) -> crate::DVec3 {
+    pub const fn as_dvec3(&self) -> crate::DVec3 {
         crate::DVec3::new(self.x as f64, self.y as f64, self.z as f64)
     }
 
     /// Casts all elements of `self` to `i16`.
     #[inline]
     #[must_use]
-    pub fn as_i16vec3(&self) -> crate::I16Vec3 {
+    pub const fn as_i16vec3(&self) -> crate::I16Vec3 {
         crate::I16Vec3::new(self.x as i16, self.y as i16, self.z as i16)
     }
 
     /// Casts all elements of `self` to `u16`.
     #[inline]
     #[must_use]
-    pub fn as_u16vec3(&self) -> crate::U16Vec3 {
+    pub const fn as_u16vec3(&self) -> crate::U16Vec3 {
         crate::U16Vec3::new(self.x as u16, self.y as u16, self.z as u16)
     }
 
     /// Casts all elements of `self` to `i32`.
     #[inline]
     #[must_use]
-    pub fn as_ivec3(&self) -> crate::IVec3 {
+    pub const fn as_ivec3(&self) -> crate::IVec3 {
         crate::IVec3::new(self.x as i32, self.y as i32, self.z as i32)
     }
 
     /// Casts all elements of `self` to `u32`.
     #[inline]
     #[must_use]
-    pub fn as_uvec3(&self) -> crate::UVec3 {
+    pub const fn as_uvec3(&self) -> crate::UVec3 {
         crate::UVec3::new(self.x as u32, self.y as u32, self.z as u32)
     }
 
     /// Casts all elements of `self` to `i64`.
     #[inline]
     #[must_use]
-    pub fn as_i64vec3(&self) -> crate::I64Vec3 {
+    pub const fn as_i64vec3(&self) -> crate::I64Vec3 {
         crate::I64Vec3::new(self.x as i64, self.y as i64, self.z as i64)
     }
 
     /// Casts all elements of `self` to `u64`.
     #[inline]
     #[must_use]
-    pub fn as_u64vec3(&self) -> crate::U64Vec3 {
+    pub const fn as_u64vec3(&self) -> crate::U64Vec3 {
         crate::U64Vec3::new(self.x as u64, self.y as u64, self.z as u64)
     }
 }
