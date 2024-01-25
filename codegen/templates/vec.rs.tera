@@ -754,6 +754,100 @@ impl {{ self_t }} {
         {% endif %}
     }
 
+    /// Returns the sum of all elements of `self`.
+    ///
+    /// In other words, this computes `self.x + self.y + ..`.
+    #[inline]
+    #[must_use]
+    pub fn element_sum(self) -> {{ scalar_t }} {
+        {% if is_scalar %}
+            {% for c in components %}
+                self.{{ c }} {% if not loop.last %} + {% endif %}
+            {%- endfor %}
+        {% elif is_sse2 %}
+            {% if dim == 3 %}
+                unsafe {
+                    let v = self.0;
+                    let v = _mm_add_ps(v, _mm_shuffle_ps(v, Self::ZERO.0, 0b00_11_00_01));
+                    let v = _mm_add_ps(v, _mm_shuffle_ps(v, v, 0b00_00_00_10));
+                    _mm_cvtss_f32(v)
+                }
+            {% elif dim == 4 %}
+                unsafe {
+                    let v = self.0;
+                    let v = _mm_add_ps(v, _mm_shuffle_ps(v, v, 0b00_11_00_01));
+                    let v = _mm_add_ps(v, _mm_shuffle_ps(v, v, 0b00_00_00_10));
+                    _mm_cvtss_f32(v)
+                }
+            {% endif %}
+        {% elif is_wasm32 %}
+            {% if dim == 3 %}
+                let v = self.0;
+                let v = f32x4_add(v, i32x4_shuffle::<1, 0, 4, 0>(v, Self::ZERO.0));
+                let v = f32x4_add(v, i32x4_shuffle::<2, 0, 0, 0>(v, v));
+                f32x4_extract_lane::<0>(v)
+            {% elif dim == 4 %}
+                let v = self.0;
+                let v = f32x4_add(v, i32x4_shuffle::<1, 0, 3, 0>(v, v));
+                let v = f32x4_add(v, i32x4_shuffle::<2, 0, 0, 0>(v, v));
+                f32x4_extract_lane::<0>(v)
+            {% endif %}
+        {% elif is_coresimd %}
+            {% if dim == 3 %}
+                simd_swizzle!(self.0, Self::ZERO.0, [0, 1, 2, 4]).reduce_sum()
+            {% elif dim == 4 %}
+                self.0.reduce_sum()
+            {% endif %}
+        {% endif %}
+    }
+
+    /// Returns the product of all elements of `self`.
+    ///
+    /// In other words, this computes `self.x * self.y * ..`.
+    #[inline]
+    #[must_use]
+    pub fn element_product(self) -> {{ scalar_t }} {
+        {% if is_scalar %}
+            {% for c in components %}
+                self.{{ c }} {% if not loop.last %} * {% endif %}
+            {%- endfor %}
+        {% elif is_sse2 %}
+            {% if dim == 3 %}
+                unsafe {
+                    let v = self.0;
+                    let v = _mm_mul_ps(v, _mm_shuffle_ps(v, Self::ONE.0, 0b00_11_00_01));
+                    let v = _mm_mul_ps(v, _mm_shuffle_ps(v, v, 0b00_00_00_10));
+                    _mm_cvtss_f32(v)
+                }
+            {% elif dim == 4 %}
+                unsafe {
+                    let v = self.0;
+                    let v = _mm_mul_ps(v, _mm_shuffle_ps(v, v, 0b00_11_00_01));
+                    let v = _mm_mul_ps(v, _mm_shuffle_ps(v, v, 0b00_00_00_10));
+                    _mm_cvtss_f32(v)
+                }
+            {% endif %}
+        {% elif is_wasm32 %}
+            {% if dim == 3 %}
+                let v = self.0;
+                let v = f32x4_mul(v, i32x4_shuffle::<1, 0, 4, 0>(v, Self::ONE.0));
+                let v = f32x4_mul(v, i32x4_shuffle::<2, 0, 0, 0>(v, v));
+                f32x4_extract_lane::<0>(v)
+            {% elif dim == 4 %}
+                let v = self.0;
+                let v = f32x4_mul(v, i32x4_shuffle::<1, 0, 3, 0>(v, v));
+                let v = f32x4_mul(v, i32x4_shuffle::<2, 0, 0, 0>(v, v));
+                f32x4_extract_lane::<0>(v)
+            {% endif %}
+        {% elif is_coresimd %}
+            {% if dim == 3 %}
+                simd_swizzle!(self.0, Self::ONE.0, [0, 1, 2, 4]).reduce_product()
+            {% elif dim == 4 %}
+                self.0.reduce_product()
+            {% endif %}
+        {% endif %}
+    }
+
     /// Returns a vector mask containing the result of a `==` comparison for each element of
     /// `self` and `rhs`.
     ///

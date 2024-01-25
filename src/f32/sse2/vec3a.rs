@@ -269,6 +269,34 @@ impl Vec3A {
         }
     }
 
+    /// Returns the sum of all elements of `self`.
+    ///
+    /// In other words, this computes `self.x + self.y + ..`.
+    #[inline]
+    #[must_use]
+    pub fn element_sum(self) -> f32 {
+        unsafe {
+            let v = self.0;
+            let v = _mm_add_ps(v, _mm_shuffle_ps(v, Self::ZERO.0, 0b00_11_00_01));
+            let v = _mm_add_ps(v, _mm_shuffle_ps(v, v, 0b00_00_00_10));
+            _mm_cvtss_f32(v)
+        }
+    }
+
+    /// Returns the product of all elements of `self`.
+    ///
+    /// In other words, this computes `self.x * self.y * ..`.
+    #[inline]
+    #[must_use]
+    pub fn element_product(self) -> f32 {
+        unsafe {
+            let v = self.0;
+            let v = _mm_mul_ps(v, _mm_shuffle_ps(v, Self::ONE.0, 0b00_11_00_01));
+            let v = _mm_mul_ps(v, _mm_shuffle_ps(v, v, 0b00_00_00_10));
+            _mm_cvtss_f32(v)
+        }
+    }
+
     /// Returns a vector mask containing the result of a `==` comparison for each element of
     /// `self` and `rhs`.
     ///
