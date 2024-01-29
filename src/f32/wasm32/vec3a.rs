@@ -250,6 +250,30 @@ impl Vec3A {
         f32x4_extract_lane::<0>(v)
     }
 
+    /// Returns the sum of all elements of `self`.
+    ///
+    /// In other words, this computes `self.x + self.y + ..`.
+    #[inline]
+    #[must_use]
+    pub fn element_sum(self) -> f32 {
+        let v = self.0;
+        let v = f32x4_add(v, i32x4_shuffle::<1, 0, 4, 0>(v, Self::ZERO.0));
+        let v = f32x4_add(v, i32x4_shuffle::<2, 0, 0, 0>(v, v));
+        f32x4_extract_lane::<0>(v)
+    }
+
+    /// Returns the product of all elements of `self`.
+    ///
+    /// In other words, this computes `self.x * self.y * ..`.
+    #[inline]
+    #[must_use]
+    pub fn element_product(self) -> f32 {
+        let v = self.0;
+        let v = f32x4_mul(v, i32x4_shuffle::<1, 0, 4, 0>(v, Self::ONE.0));
+        let v = f32x4_mul(v, i32x4_shuffle::<2, 0, 0, 0>(v, v));
+        f32x4_extract_lane::<0>(v)
+    }
+
     /// Returns a vector mask containing the result of a `==` comparison for each element of
     /// `self` and `rhs`.
     ///

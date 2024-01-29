@@ -228,6 +228,24 @@ impl U16Vec3 {
         self.x.max(self.y.max(self.z))
     }
 
+    /// Returns the sum of all elements of `self`.
+    ///
+    /// In other words, this computes `self.x + self.y + ..`.
+    #[inline]
+    #[must_use]
+    pub fn element_sum(self) -> u16 {
+        self.x + self.y + self.z
+    }
+
+    /// Returns the product of all elements of `self`.
+    ///
+    /// In other words, this computes `self.x * self.y * ..`.
+    #[inline]
+    #[must_use]
+    pub fn element_product(self) -> u16 {
+        self.x * self.y * self.z
+    }
+
     /// Returns a vector mask containing the result of a `==` comparison for each element of
     /// `self` and `rhs`.
     ///

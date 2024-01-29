@@ -295,6 +295,12 @@ macro_rules! impl_vec4_tests {
             );
         });
 
+        glam_test!(test_sum_product, {
+            let a = $new(2 as $t, 3 as $t, 5 as $t, 7 as $t);
+            assert_eq!(a.element_sum(), 17 as $t);
+            assert_eq!(a.element_product(), 210 as $t);
+        });
+
         glam_test!(test_eq, {
             let a = $new(1 as $t, 1 as $t, 1 as $t, 1 as $t);
             let b = $new(1 as $t, 2 as $t, 3 as $t, 4 as $t);

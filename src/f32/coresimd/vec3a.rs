@@ -245,6 +245,24 @@ impl Vec3A {
         v[0]
     }
 
+    /// Returns the sum of all elements of `self`.
+    ///
+    /// In other words, this computes `self.x + self.y + ..`.
+    #[inline]
+    #[must_use]
+    pub fn element_sum(self) -> f32 {
+        simd_swizzle!(self.0, Self::ZERO.0, [0, 1, 2, 4]).reduce_sum()
+    }
+
+    /// Returns the product of all elements of `self`.
+    ///
+    /// In other words, this computes `self.x * self.y * ..`.
+    #[inline]
+    #[must_use]
+    pub fn element_product(self) -> f32 {
+        simd_swizzle!(self.0, Self::ONE.0, [0, 1, 2, 4]).reduce_product()
+    }
+
     /// Returns a vector mask containing the result of a `==` comparison for each element of
     /// `self` and `rhs`.
     ///

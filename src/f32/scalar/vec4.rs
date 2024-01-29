@@ -250,6 +250,24 @@ impl Vec4 {
         self.x.max(self.y.max(self.z.max(self.w)))
     }
 
+    /// Returns the sum of all elements of `self`.
+    ///
+    /// In other words, this computes `self.x + self.y + ..`.
+    #[inline]
+    #[must_use]
+    pub fn element_sum(self) -> f32 {
+        self.x + self.y + self.z + self.w
+    }
+
+    /// Returns the product of all elements of `self`.
+    ///
+    /// In other words, this computes `self.x * self.y * ..`.
+    #[inline]
+    #[must_use]
+    pub fn element_product(self) -> f32 {
+        self.x * self.y * self.z * self.w
+    }
+
     /// Returns a vector mask containing the result of a `==` comparison for each element of
     /// `self` and `rhs`.
     ///

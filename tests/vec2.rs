@@ -181,6 +181,12 @@ macro_rules! impl_vec2_tests {
             assert_eq!($new(1 as $t, 2 as $t), b.max(a));
         });
 
+        glam_test!(test_sum_product, {
+            let a = $new(2 as $t, 3 as $t);
+            assert_eq!(a.element_sum(), 5 as $t);
+            assert_eq!(a.element_product(), 6 as $t);
+        });
+
         glam_test!(test_clamp, {
             fn vec(x: i32, y: i32) -> $vec2 {
                 $vec2::new(x as $t, y as $t)
