@@ -1,11 +1,11 @@
 // Generated from swizzle_impl.rs.tera template. Edit the template, not the generated file.
 
-use crate::{Vec2, Vec3A, Vec3Swizzles, Vec4};
+use crate::{Vec2, Vec3A, Vec3Swizzles, Vec4A};
 
 impl Vec3Swizzles for Vec3A {
     type Vec2 = Vec2;
 
-    type Vec4 = Vec4;
+    type Vec4 = Vec4A;
 
     #[inline]
     #[must_use]
@@ -360,487 +360,487 @@ impl Vec3Swizzles for Vec3A {
 
     #[inline]
     #[must_use]
-    fn xxxx(self) -> Vec4 {
-        Vec4::new(self.x, self.x, self.x, self.x)
+    fn xxxx(self) -> Vec4A {
+        Vec4A::new(self.x, self.x, self.x, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn xxxy(self) -> Vec4 {
-        Vec4::new(self.x, self.x, self.x, self.y)
+    fn xxxy(self) -> Vec4A {
+        Vec4A::new(self.x, self.x, self.x, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn xxxz(self) -> Vec4 {
-        Vec4::new(self.x, self.x, self.x, self.z)
+    fn xxxz(self) -> Vec4A {
+        Vec4A::new(self.x, self.x, self.x, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn xxyx(self) -> Vec4 {
-        Vec4::new(self.x, self.x, self.y, self.x)
+    fn xxyx(self) -> Vec4A {
+        Vec4A::new(self.x, self.x, self.y, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn xxyy(self) -> Vec4 {
-        Vec4::new(self.x, self.x, self.y, self.y)
+    fn xxyy(self) -> Vec4A {
+        Vec4A::new(self.x, self.x, self.y, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn xxyz(self) -> Vec4 {
-        Vec4::new(self.x, self.x, self.y, self.z)
+    fn xxyz(self) -> Vec4A {
+        Vec4A::new(self.x, self.x, self.y, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn xxzx(self) -> Vec4 {
-        Vec4::new(self.x, self.x, self.z, self.x)
+    fn xxzx(self) -> Vec4A {
+        Vec4A::new(self.x, self.x, self.z, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn xxzy(self) -> Vec4 {
-        Vec4::new(self.x, self.x, self.z, self.y)
+    fn xxzy(self) -> Vec4A {
+        Vec4A::new(self.x, self.x, self.z, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn xxzz(self) -> Vec4 {
-        Vec4::new(self.x, self.x, self.z, self.z)
+    fn xxzz(self) -> Vec4A {
+        Vec4A::new(self.x, self.x, self.z, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn xyxx(self) -> Vec4 {
-        Vec4::new(self.x, self.y, self.x, self.x)
+    fn xyxx(self) -> Vec4A {
+        Vec4A::new(self.x, self.y, self.x, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn xyxy(self) -> Vec4 {
-        Vec4::new(self.x, self.y, self.x, self.y)
+    fn xyxy(self) -> Vec4A {
+        Vec4A::new(self.x, self.y, self.x, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn xyxz(self) -> Vec4 {
-        Vec4::new(self.x, self.y, self.x, self.z)
+    fn xyxz(self) -> Vec4A {
+        Vec4A::new(self.x, self.y, self.x, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn xyyx(self) -> Vec4 {
-        Vec4::new(self.x, self.y, self.y, self.x)
+    fn xyyx(self) -> Vec4A {
+        Vec4A::new(self.x, self.y, self.y, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn xyyy(self) -> Vec4 {
-        Vec4::new(self.x, self.y, self.y, self.y)
+    fn xyyy(self) -> Vec4A {
+        Vec4A::new(self.x, self.y, self.y, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn xyyz(self) -> Vec4 {
-        Vec4::new(self.x, self.y, self.y, self.z)
+    fn xyyz(self) -> Vec4A {
+        Vec4A::new(self.x, self.y, self.y, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn xyzx(self) -> Vec4 {
-        Vec4::new(self.x, self.y, self.z, self.x)
+    fn xyzx(self) -> Vec4A {
+        Vec4A::new(self.x, self.y, self.z, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn xyzy(self) -> Vec4 {
-        Vec4::new(self.x, self.y, self.z, self.y)
+    fn xyzy(self) -> Vec4A {
+        Vec4A::new(self.x, self.y, self.z, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn xyzz(self) -> Vec4 {
-        Vec4::new(self.x, self.y, self.z, self.z)
+    fn xyzz(self) -> Vec4A {
+        Vec4A::new(self.x, self.y, self.z, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn xzxx(self) -> Vec4 {
-        Vec4::new(self.x, self.z, self.x, self.x)
+    fn xzxx(self) -> Vec4A {
+        Vec4A::new(self.x, self.z, self.x, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn xzxy(self) -> Vec4 {
-        Vec4::new(self.x, self.z, self.x, self.y)
+    fn xzxy(self) -> Vec4A {
+        Vec4A::new(self.x, self.z, self.x, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn xzxz(self) -> Vec4 {
-        Vec4::new(self.x, self.z, self.x, self.z)
+    fn xzxz(self) -> Vec4A {
+        Vec4A::new(self.x, self.z, self.x, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn xzyx(self) -> Vec4 {
-        Vec4::new(self.x, self.z, self.y, self.x)
+    fn xzyx(self) -> Vec4A {
+        Vec4A::new(self.x, self.z, self.y, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn xzyy(self) -> Vec4 {
-        Vec4::new(self.x, self.z, self.y, self.y)
+    fn xzyy(self) -> Vec4A {
+        Vec4A::new(self.x, self.z, self.y, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn xzyz(self) -> Vec4 {
-        Vec4::new(self.x, self.z, self.y, self.z)
+    fn xzyz(self) -> Vec4A {
+        Vec4A::new(self.x, self.z, self.y, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn xzzx(self) -> Vec4 {
-        Vec4::new(self.x, self.z, self.z, self.x)
+    fn xzzx(self) -> Vec4A {
+        Vec4A::new(self.x, self.z, self.z, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn xzzy(self) -> Vec4 {
-        Vec4::new(self.x, self.z, self.z, self.y)
+    fn xzzy(self) -> Vec4A {
+        Vec4A::new(self.x, self.z, self.z, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn xzzz(self) -> Vec4 {
-        Vec4::new(self.x, self.z, self.z, self.z)
+    fn xzzz(self) -> Vec4A {
+        Vec4A::new(self.x, self.z, self.z, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn yxxx(self) -> Vec4 {
-        Vec4::new(self.y, self.x, self.x, self.x)
+    fn yxxx(self) -> Vec4A {
+        Vec4A::new(self.y, self.x, self.x, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn yxxy(self) -> Vec4 {
-        Vec4::new(self.y, self.x, self.x, self.y)
+    fn yxxy(self) -> Vec4A {
+        Vec4A::new(self.y, self.x, self.x, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn yxxz(self) -> Vec4 {
-        Vec4::new(self.y, self.x, self.x, self.z)
+    fn yxxz(self) -> Vec4A {
+        Vec4A::new(self.y, self.x, self.x, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn yxyx(self) -> Vec4 {
-        Vec4::new(self.y, self.x, self.y, self.x)
+    fn yxyx(self) -> Vec4A {
+        Vec4A::new(self.y, self.x, self.y, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn yxyy(self) -> Vec4 {
-        Vec4::new(self.y, self.x, self.y, self.y)
+    fn yxyy(self) -> Vec4A {
+        Vec4A::new(self.y, self.x, self.y, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn yxyz(self) -> Vec4 {
-        Vec4::new(self.y, self.x, self.y, self.z)
+    fn yxyz(self) -> Vec4A {
+        Vec4A::new(self.y, self.x, self.y, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn yxzx(self) -> Vec4 {
-        Vec4::new(self.y, self.x, self.z, self.x)
+    fn yxzx(self) -> Vec4A {
+        Vec4A::new(self.y, self.x, self.z, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn yxzy(self) -> Vec4 {
-        Vec4::new(self.y, self.x, self.z, self.y)
+    fn yxzy(self) -> Vec4A {
+        Vec4A::new(self.y, self.x, self.z, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn yxzz(self) -> Vec4 {
-        Vec4::new(self.y, self.x, self.z, self.z)
+    fn yxzz(self) -> Vec4A {
+        Vec4A::new(self.y, self.x, self.z, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn yyxx(self) -> Vec4 {
-        Vec4::new(self.y, self.y, self.x, self.x)
+    fn yyxx(self) -> Vec4A {
+        Vec4A::new(self.y, self.y, self.x, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn yyxy(self) -> Vec4 {
-        Vec4::new(self.y, self.y, self.x, self.y)
+    fn yyxy(self) -> Vec4A {
+        Vec4A::new(self.y, self.y, self.x, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn yyxz(self) -> Vec4 {
-        Vec4::new(self.y, self.y, self.x, self.z)
+    fn yyxz(self) -> Vec4A {
+        Vec4A::new(self.y, self.y, self.x, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn yyyx(self) -> Vec4 {
-        Vec4::new(self.y, self.y, self.y, self.x)
+    fn yyyx(self) -> Vec4A {
+        Vec4A::new(self.y, self.y, self.y, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn yyyy(self) -> Vec4 {
-        Vec4::new(self.y, self.y, self.y, self.y)
+    fn yyyy(self) -> Vec4A {
+        Vec4A::new(self.y, self.y, self.y, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn yyyz(self) -> Vec4 {
-        Vec4::new(self.y, self.y, self.y, self.z)
+    fn yyyz(self) -> Vec4A {
+        Vec4A::new(self.y, self.y, self.y, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn yyzx(self) -> Vec4 {
-        Vec4::new(self.y, self.y, self.z, self.x)
+    fn yyzx(self) -> Vec4A {
+        Vec4A::new(self.y, self.y, self.z, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn yyzy(self) -> Vec4 {
-        Vec4::new(self.y, self.y, self.z, self.y)
+    fn yyzy(self) -> Vec4A {
+        Vec4A::new(self.y, self.y, self.z, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn yyzz(self) -> Vec4 {
-        Vec4::new(self.y, self.y, self.z, self.z)
+    fn yyzz(self) -> Vec4A {
+        Vec4A::new(self.y, self.y, self.z, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn yzxx(self) -> Vec4 {
-        Vec4::new(self.y, self.z, self.x, self.x)
+    fn yzxx(self) -> Vec4A {
+        Vec4A::new(self.y, self.z, self.x, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn yzxy(self) -> Vec4 {
-        Vec4::new(self.y, self.z, self.x, self.y)
+    fn yzxy(self) -> Vec4A {
+        Vec4A::new(self.y, self.z, self.x, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn yzxz(self) -> Vec4 {
-        Vec4::new(self.y, self.z, self.x, self.z)
+    fn yzxz(self) -> Vec4A {
+        Vec4A::new(self.y, self.z, self.x, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn yzyx(self) -> Vec4 {
-        Vec4::new(self.y, self.z, self.y, self.x)
+    fn yzyx(self) -> Vec4A {
+        Vec4A::new(self.y, self.z, self.y, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn yzyy(self) -> Vec4 {
-        Vec4::new(self.y, self.z, self.y, self.y)
+    fn yzyy(self) -> Vec4A {
+        Vec4A::new(self.y, self.z, self.y, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn yzyz(self) -> Vec4 {
-        Vec4::new(self.y, self.z, self.y, self.z)
+    fn yzyz(self) -> Vec4A {
+        Vec4A::new(self.y, self.z, self.y, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn yzzx(self) -> Vec4 {
-        Vec4::new(self.y, self.z, self.z, self.x)
+    fn yzzx(self) -> Vec4A {
+        Vec4A::new(self.y, self.z, self.z, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn yzzy(self) -> Vec4 {
-        Vec4::new(self.y, self.z, self.z, self.y)
+    fn yzzy(self) -> Vec4A {
+        Vec4A::new(self.y, self.z, self.z, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn yzzz(self) -> Vec4 {
-        Vec4::new(self.y, self.z, self.z, self.z)
+    fn yzzz(self) -> Vec4A {
+        Vec4A::new(self.y, self.z, self.z, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn zxxx(self) -> Vec4 {
-        Vec4::new(self.z, self.x, self.x, self.x)
+    fn zxxx(self) -> Vec4A {
+        Vec4A::new(self.z, self.x, self.x, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn zxxy(self) -> Vec4 {
-        Vec4::new(self.z, self.x, self.x, self.y)
+    fn zxxy(self) -> Vec4A {
+        Vec4A::new(self.z, self.x, self.x, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn zxxz(self) -> Vec4 {
-        Vec4::new(self.z, self.x, self.x, self.z)
+    fn zxxz(self) -> Vec4A {
+        Vec4A::new(self.z, self.x, self.x, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn zxyx(self) -> Vec4 {
-        Vec4::new(self.z, self.x, self.y, self.x)
+    fn zxyx(self) -> Vec4A {
+        Vec4A::new(self.z, self.x, self.y, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn zxyy(self) -> Vec4 {
-        Vec4::new(self.z, self.x, self.y, self.y)
+    fn zxyy(self) -> Vec4A {
+        Vec4A::new(self.z, self.x, self.y, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn zxyz(self) -> Vec4 {
-        Vec4::new(self.z, self.x, self.y, self.z)
+    fn zxyz(self) -> Vec4A {
+        Vec4A::new(self.z, self.x, self.y, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn zxzx(self) -> Vec4 {
-        Vec4::new(self.z, self.x, self.z, self.x)
+    fn zxzx(self) -> Vec4A {
+        Vec4A::new(self.z, self.x, self.z, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn zxzy(self) -> Vec4 {
-        Vec4::new(self.z, self.x, self.z, self.y)
+    fn zxzy(self) -> Vec4A {
+        Vec4A::new(self.z, self.x, self.z, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn zxzz(self) -> Vec4 {
-        Vec4::new(self.z, self.x, self.z, self.z)
+    fn zxzz(self) -> Vec4A {
+        Vec4A::new(self.z, self.x, self.z, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn zyxx(self) -> Vec4 {
-        Vec4::new(self.z, self.y, self.x, self.x)
+    fn zyxx(self) -> Vec4A {
+        Vec4A::new(self.z, self.y, self.x, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn zyxy(self) -> Vec4 {
-        Vec4::new(self.z, self.y, self.x, self.y)
+    fn zyxy(self) -> Vec4A {
+        Vec4A::new(self.z, self.y, self.x, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn zyxz(self) -> Vec4 {
-        Vec4::new(self.z, self.y, self.x, self.z)
+    fn zyxz(self) -> Vec4A {
+        Vec4A::new(self.z, self.y, self.x, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn zyyx(self) -> Vec4 {
-        Vec4::new(self.z, self.y, self.y, self.x)
+    fn zyyx(self) -> Vec4A {
+        Vec4A::new(self.z, self.y, self.y, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn zyyy(self) -> Vec4 {
-        Vec4::new(self.z, self.y, self.y, self.y)
+    fn zyyy(self) -> Vec4A {
+        Vec4A::new(self.z, self.y, self.y, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn zyyz(self) -> Vec4 {
-        Vec4::new(self.z, self.y, self.y, self.z)
+    fn zyyz(self) -> Vec4A {
+        Vec4A::new(self.z, self.y, self.y, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn zyzx(self) -> Vec4 {
-        Vec4::new(self.z, self.y, self.z, self.x)
+    fn zyzx(self) -> Vec4A {
+        Vec4A::new(self.z, self.y, self.z, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn zyzy(self) -> Vec4 {
-        Vec4::new(self.z, self.y, self.z, self.y)
+    fn zyzy(self) -> Vec4A {
+        Vec4A::new(self.z, self.y, self.z, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn zyzz(self) -> Vec4 {
-        Vec4::new(self.z, self.y, self.z, self.z)
+    fn zyzz(self) -> Vec4A {
+        Vec4A::new(self.z, self.y, self.z, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn zzxx(self) -> Vec4 {
-        Vec4::new(self.z, self.z, self.x, self.x)
+    fn zzxx(self) -> Vec4A {
+        Vec4A::new(self.z, self.z, self.x, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn zzxy(self) -> Vec4 {
-        Vec4::new(self.z, self.z, self.x, self.y)
+    fn zzxy(self) -> Vec4A {
+        Vec4A::new(self.z, self.z, self.x, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn zzxz(self) -> Vec4 {
-        Vec4::new(self.z, self.z, self.x, self.z)
+    fn zzxz(self) -> Vec4A {
+        Vec4A::new(self.z, self.z, self.x, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn zzyx(self) -> Vec4 {
-        Vec4::new(self.z, self.z, self.y, self.x)
+    fn zzyx(self) -> Vec4A {
+        Vec4A::new(self.z, self.z, self.y, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn zzyy(self) -> Vec4 {
-        Vec4::new(self.z, self.z, self.y, self.y)
+    fn zzyy(self) -> Vec4A {
+        Vec4A::new(self.z, self.z, self.y, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn zzyz(self) -> Vec4 {
-        Vec4::new(self.z, self.z, self.y, self.z)
+    fn zzyz(self) -> Vec4A {
+        Vec4A::new(self.z, self.z, self.y, self.z)
     }
 
     #[inline]
     #[must_use]
-    fn zzzx(self) -> Vec4 {
-        Vec4::new(self.z, self.z, self.z, self.x)
+    fn zzzx(self) -> Vec4A {
+        Vec4A::new(self.z, self.z, self.z, self.x)
     }
 
     #[inline]
     #[must_use]
-    fn zzzy(self) -> Vec4 {
-        Vec4::new(self.z, self.z, self.z, self.y)
+    fn zzzy(self) -> Vec4A {
+        Vec4A::new(self.z, self.z, self.z, self.y)
     }
 
     #[inline]
     #[must_use]
-    fn zzzz(self) -> Vec4 {
-        Vec4::new(self.z, self.z, self.z, self.z)
+    fn zzzz(self) -> Vec4A {
+        Vec4A::new(self.z, self.z, self.z, self.z)
     }
 }

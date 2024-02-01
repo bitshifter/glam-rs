@@ -135,6 +135,9 @@ macro_rules! impl_serde_vec3 {
 
 macro_rules! impl_serde_vec4 {
     ($t:ty, $vec4:ident) => {
+        impl_serde_vec4!($t, $vec4, test_vec4_serde);
+    };
+    ($t:ty, $vec4:ident, $test:ident) => {
         impl Serialize for $vec4 {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -188,7 +191,7 @@ macro_rules! impl_serde_vec4 {
         }
 
         #[test]
-        fn test_vec4_serde() {
+        fn $test() {
             let a = $vec4::new(V1, V2, V3, V4);
             let serialized = serde_json::to_string(&a).unwrap();
             assert_eq!(SX4, serialized);
@@ -210,6 +213,9 @@ macro_rules! impl_serde_vec4 {
 
 macro_rules! impl_serde_quat {
     ($t:ty, $quat:ident) => {
+        impl_serde_quat!($t, $quat, test_quat_serde);
+    };
+    ($t:ty, $quat:ident, $test:ident) => {
         impl Serialize for $quat {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -263,7 +269,7 @@ macro_rules! impl_serde_quat {
         }
 
         #[test]
-        fn test_quat_serde() {
+        fn $test() {
             let a = $quat::from_xyzw(1.0, 2.0, 3.0, 4.0);
             let serialized = serde_json::to_string(&a).unwrap();
             assert_eq!(serialized, "[1.0,2.0,3.0,4.0]");
@@ -285,6 +291,9 @@ macro_rules! impl_serde_quat {
 
 macro_rules! impl_serde_mat2 {
     ($t:ty, $mat2:ident) => {
+        impl_serde_mat2!($t, $mat2, test_mat2_serde);
+    };
+    ($t:ty, $mat2:ident, $test:ident) => {
         impl Serialize for $mat2 {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -333,7 +342,7 @@ macro_rules! impl_serde_mat2 {
         }
 
         #[test]
-        fn test_mat2_serde() {
+        fn $test() {
             let a = $mat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]);
             let serialized = serde_json::to_string(&a).unwrap();
             assert_eq!(serialized, "[1.0,2.0,3.0,4.0]");
@@ -441,6 +450,9 @@ macro_rules! impl_serde_mat3 {
 
 macro_rules! impl_serde_mat4 {
     ($t:ty, $mat4:ident) => {
+        impl_serde_mat4!($t, $mat4, test_mat4_serde);
+    };
+    ($t:ty, $mat4:ident, $test:ident) => {
         impl Serialize for $mat4 {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -487,7 +499,7 @@ macro_rules! impl_serde_mat4 {
         }
 
         #[test]
-        fn test_mat4_serde() {
+        fn $test() {
             let a = $mat4::from_cols_array(&[
                 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0,
                 16.0,
@@ -812,7 +824,6 @@ mod bool {
     #[cfg(test)]
     use super::test_bool_mask::*;
     use crate::{BVec2, BVec3, BVec4};
-    #[cfg(not(feature = "scalar-math"))]
     use crate::{BVec3A, BVec4A};
     use core::fmt;
     use serde::{
@@ -824,7 +835,6 @@ mod bool {
     impl_serde_vec3!(bool, BVec3);
     impl_serde_vec4!(bool, BVec4);
 
-    #[cfg(not(feature = "scalar-math"))]
     impl Serialize for BVec3A {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
         where
@@ -839,7 +849,6 @@ mod bool {
         }
     }
 
-    #[cfg(not(feature = "scalar-math"))]
     impl<'de> Deserialize<'de> for BVec3A {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
@@ -875,7 +884,6 @@ mod bool {
         }
     }
 
-    #[cfg(not(feature = "scalar-math"))]
     #[test]
     fn test_bvec3a_serde() {
         let a = BVec3A::new(V1, V2, V3);
@@ -893,7 +901,6 @@ mod bool {
         assert!(deserialized.is_err());
     }
 
-    #[cfg(not(feature = "scalar-math"))]
     impl Serialize for BVec4A {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
         where
@@ -909,7 +916,6 @@ mod bool {
         }
     }
 
-    #[cfg(not(feature = "scalar-math"))]
     impl<'de> Deserialize<'de> for BVec4A {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
@@ -948,7 +954,6 @@ mod bool {
         }
     }
 
-    #[cfg(not(feature = "scalar-math"))]
     #[test]
     fn test_bvec4a_serde() {
         let a = BVec4A::new(V1, V2, V3, V4);
@@ -974,7 +979,10 @@ mod f32 {
     use super::test_f32::*;
     #[cfg(test)]
     use super::test_float::*;
-    use crate::{Affine2, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
+    use crate::{
+        Affine2, Affine3A, Mat2, Mat2A, Mat3, Mat3A, Mat4, Mat4A, Quat, QuatA, Vec2, Vec3, Vec3A,
+        Vec4, Vec4A,
+    };
     use core::fmt;
     use serde::{
         de::{self, Deserialize, Deserializer, SeqAccess, Visitor},
@@ -982,8 +990,12 @@ mod f32 {
     };
 
     impl_serde_float_types!(f32, Affine2, Affine3A, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4);
+    impl_serde_mat2!(f32, Mat2A, test_mat2a_serde);
     impl_serde_mat3!(f32, Mat3A, test_mat3a_serde);
+    impl_serde_mat4!(f32, Mat4A, test_mat4a_serde);
+    impl_serde_quat!(f32, QuatA, test_quata_serde);
     impl_serde_vec3!(f32, Vec3A, test_vec3a_serde);
+    impl_serde_vec4!(f32, Vec4A, test_vec4a_serde);
 }
 
 mod f64 {

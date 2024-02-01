@@ -1,8 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-#[cfg(not(feature = "scalar-math"))]
-use crate::BVec4A;
-use crate::{BVec4, I16Vec4, I64Vec2, I64Vec3, IVec4, U16Vec4, U64Vec4, UVec4};
+use crate::{BVec4, BVec4A, I16Vec4, I64Vec2, I64Vec3, IVec4, U16Vec4, U64Vec4, UVec4};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -154,8 +152,7 @@ impl I64Vec4 {
     #[inline]
     #[must_use]
     pub fn truncate(self) -> I64Vec3 {
-        use crate::swizzles::Vec4Swizzles;
-        self.xyz()
+        I64Vec3::new(self.x, self.y, self.z)
     }
 
     /// Creates a 4D vector from `self` with the given value of `x`.
@@ -1581,8 +1578,6 @@ impl From<BVec4> for I64Vec4 {
         )
     }
 }
-
-#[cfg(not(feature = "scalar-math"))]
 
 impl From<BVec4A> for I64Vec4 {
     #[inline]

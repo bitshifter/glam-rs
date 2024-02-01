@@ -6,11 +6,7 @@
     {% set is_bool = true %}
 {% else %}
     {% set self_t = "BVec" ~ dim ~ "A" %}
-    {% if dim == 4 %}
-        {% set vec_t = "Vec4" %}
-    {% elif dim == 3 %}
-        {% set vec_t = "Vec3A" %}
-    {% endif %}
+    {% set vec_t = "Vec" ~ dim ~ "A" %}
     {% set align = 16 %}
     {% set is_u32 = true %}
     {% if is_sse2 %}

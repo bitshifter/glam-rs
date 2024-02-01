@@ -1,10 +1,14 @@
 mod affine2;
 mod affine3a;
 mod float;
+mod mat2;
 mod mat3;
+mod mat4;
 pub(crate) mod math;
+mod quat;
 mod vec2;
 mod vec3;
+mod vec4;
 
 #[cfg(all(feature = "core-simd", not(feature = "scalar-math")))]
 mod coresimd;
@@ -59,20 +63,23 @@ use coresimd::*;
 pub use affine2::Affine2;
 pub use affine3a::Affine3A;
 pub use mat2::{mat2, Mat2};
+pub use mat2a::{mat2a, Mat2A};
 pub use mat3::{mat3, Mat3};
 pub use mat3a::{mat3a, Mat3A};
 pub use mat4::{mat4, Mat4};
+pub use mat4a::{mat4a, Mat4A};
 pub use quat::{quat, Quat};
+pub use quata::{quata, QuatA};
 pub use vec2::{vec2, Vec2};
 pub use vec3::{vec3, Vec3};
 pub use vec3a::{vec3a, Vec3A};
 pub use vec4::{vec4, Vec4};
+pub use vec4a::{vec4a, Vec4A};
 
 #[cfg(not(target_arch = "spirv"))]
 mod test {
     use super::*;
 
-    #[cfg(all(not(feature = "cuda"), feature = "scalar-math"))]
     mod const_test_affine2 {
         const_assert_eq!(
             core::mem::align_of::<super::Vec2>(),
@@ -81,21 +88,16 @@ mod test {
         const_assert_eq!(24, core::mem::size_of::<super::Affine2>());
     }
 
-    #[cfg(not(feature = "scalar-math"))]
-    mod const_test_affine2 {
-        const_assert_eq!(16, core::mem::align_of::<super::Affine2>());
-        const_assert_eq!(32, core::mem::size_of::<super::Affine2>());
-    }
-
     mod const_test_mat2 {
-        #[cfg(feature = "scalar-math")]
         const_assert_eq!(
             core::mem::align_of::<super::Vec2>(),
             core::mem::align_of::<super::Mat2>()
         );
-        #[cfg(not(any(feature = "scalar-math", target_arch = "spirv")))]
-        const_assert_eq!(16, core::mem::align_of::<super::Mat2>());
-        const_assert_eq!(16, core::mem::size_of::<super::Mat2>());
+    }
+
+    mod const_test_mat2a {
+        const_assert_eq!(16, core::mem::align_of::<super::Mat2A>());
+        const_assert_eq!(16, core::mem::size_of::<super::Mat2A>());
     }
 
     mod const_test_mat3 {
@@ -119,15 +121,24 @@ mod test {
         const_assert_eq!(64, core::mem::size_of::<super::Mat4>());
     }
 
+    mod const_test_mat4a {
+        const_assert_eq!(
+            core::mem::align_of::<super::Vec4A>(),
+            core::mem::align_of::<super::Mat4A>()
+        );
+        const_assert_eq!(64, core::mem::size_of::<super::Mat4A>());
+    }
+
     mod const_test_quat {
-        #[cfg(feature = "scalar-math")]
         const_assert_eq!(
             core::mem::align_of::<f32>(),
             core::mem::align_of::<super::Quat>()
         );
-        #[cfg(not(any(feature = "scalar-math", target_arch = "spirv")))]
-        const_assert_eq!(16, core::mem::align_of::<super::Quat>());
-        const_assert_eq!(16, core::mem::size_of::<super::Quat>());
+    }
+
+    mod const_test_quata {
+        const_assert_eq!(16, core::mem::align_of::<super::QuatA>());
+        const_assert_eq!(16, core::mem::size_of::<super::QuatA>());
     }
 
     mod const_test_vec2 {
@@ -155,13 +166,18 @@ mod test {
     }
 
     mod const_test_vec4 {
-        #[cfg(all(feature = "scalar-math", not(feature = "cuda")))]
+        #[cfg(not(feature = "cuda"))]
         const_assert_eq!(
             core::mem::align_of::<f32>(),
             core::mem::align_of::<super::Vec4>()
         );
-        #[cfg(not(feature = "scalar-math"))]
+        #[cfg(feature = "cuda")]
         const_assert_eq!(16, core::mem::align_of::<super::Vec4>());
         const_assert_eq!(16, core::mem::size_of::<super::Vec4>());
+    }
+
+    mod const_test_vec4a {
+        const_assert_eq!(16, core::mem::align_of::<super::Vec4A>());
+        const_assert_eq!(16, core::mem::size_of::<super::Vec4A>());
     }
 }

@@ -243,9 +243,9 @@
     let rcp0 = f32x4::splat(dot0.recip());
 
     Self {
-        x_axis: Vec4(inv0 * rcp0),
-        y_axis: Vec4(inv1 * rcp0),
-        z_axis: Vec4(inv2 * rcp0),
-        w_axis: Vec4(inv3 * rcp0),
+        x_axis: Vec4A(inv0 * rcp0),
+        y_axis: Vec4A(inv1 * rcp0),
+        z_axis: Vec4A(inv2 * rcp0),
+        w_axis: Vec4A(inv3 * rcp0),
     }
 {% endmacro impl_mat4_inverse %}

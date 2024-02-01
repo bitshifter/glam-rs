@@ -132,10 +132,10 @@
         let rcp0 = _mm_set1_ps(dot0.recip());
 
         Self {
-            x_axis: Vec4(_mm_mul_ps(inv0, rcp0)),
-            y_axis: Vec4(_mm_mul_ps(inv1, rcp0)),
-            z_axis: Vec4(_mm_mul_ps(inv2, rcp0)),
-            w_axis: Vec4(_mm_mul_ps(inv3, rcp0)),
+            x_axis: Vec4A(_mm_mul_ps(inv0, rcp0)),
+            y_axis: Vec4A(_mm_mul_ps(inv1, rcp0)),
+            z_axis: Vec4A(_mm_mul_ps(inv2, rcp0)),
+            w_axis: Vec4A(_mm_mul_ps(inv3, rcp0)),
         }
     }
 {% endmacro impl_mat4_inverse %}

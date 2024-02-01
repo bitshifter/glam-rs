@@ -4,7 +4,7 @@ Conversion from quaternions to Euler rotation sequences.
 From: http://bediyap.com/programming/convert-quaternion-to-euler-rotations/
 */
 
-use crate::{DQuat, Quat};
+use crate::{DQuat, Quat, QuatA};
 
 /// Euler rotation sequences.
 ///
@@ -279,6 +279,7 @@ macro_rules! impl_to_quat {
 }
 
 impl_from_quat!(f32, Quat);
+impl_from_quat!(f32, QuatA);
 impl_from_quat!(f64, DQuat);
 impl_to_quat!(f32, Quat);
 impl_to_quat!(f64, DQuat);

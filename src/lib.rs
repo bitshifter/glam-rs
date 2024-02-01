@@ -71,9 +71,9 @@ There are [`From`] trait implementations for converting from [`Vec4`] to a [`Vec
 [`Vec3`] and [`Vec3A`] (and vice versa).
 
 ```
-use glam::{Vec3, Vec3A, Vec4};
+use glam::{Vec3, Vec3A, Vec4A};
 
-let v4 = Vec4::new(1.0, 2.0, 3.0, 4.0);
+let v4 = Vec4A::new(1.0, 2.0, 3.0, 4.0);
 
 // Convert from `Vec4` to `Vec3A`, this is a no-op if SIMD is supported.
 let v3a = Vec3A::from(v4);
@@ -172,17 +172,17 @@ Note that the [`Vec3Swizzles`] implementation for [`Vec3A`] will return a [`Vec3
 swizzles, all other implementations will return [`Vec3`].
 
 ```
-use glam::{swizzles::*, Vec2, Vec3, Vec3A, Vec4};
+use glam::{swizzles::*, Vec2, Vec3, Vec3A, Vec4, Vec4A};
 
-let v = Vec4::new(1.0, 2.0, 3.0, 4.0);
+let v = Vec4A::new(1.0, 2.0, 3.0, 4.0);
 
 // Reverse elements of `v`, if SIMD is supported this will use a vector shuffle.
 let wzyx = v.wzyx();
-assert_eq!(Vec4::new(4.0, 3.0, 2.0, 1.0), wzyx);
+assert_eq!(Vec4A::new(4.0, 3.0, 2.0, 1.0), wzyx);
 
 // Swizzle the yzw elements of `v` into a `Vec3`
 let yzw = v.yzw();
-assert_eq!(Vec3::new(2.0, 3.0, 4.0), yzw);
+assert_eq!(Vec3A::new(2.0, 3.0, 4.0), yzw);
 
 // To swizzle a `Vec4` into a `Vec3A` swizzle the `Vec4` first then convert to
 // `Vec3A`. If SIMD is supported this will use a vector shuffle. The last

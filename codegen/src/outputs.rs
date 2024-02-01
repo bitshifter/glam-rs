@@ -25,6 +25,7 @@ impl ContextBuilder {
             .with_key_val("vec4_t", &format!("{prefix}Vec4"))
             .with_self_t(&format!("{prefix}Vec{dim}"))
             .with_dimension(dim)
+            .with_is_align(false)
     }
 
     pub fn new_vec2_swizzle_impl() -> Self {
@@ -36,13 +37,23 @@ impl ContextBuilder {
     }
 
     pub fn new_vec3a_swizzle_impl() -> Self {
-        Self::new_tvecn_swizzle_impl(3, "")
+        Self::new_vec3_swizzle_impl()
             .with_key_val("vec3_t", "Vec3A")
+            .with_key_val("vec4_t", "Vec4A")
             .with_self_t("Vec3A")
+            .with_is_align(true)
     }
 
     pub fn new_vec4_swizzle_impl() -> Self {
         Self::new_tvecn_swizzle_impl(4, "")
+    }
+
+    pub fn new_vec4a_swizzle_impl() -> Self {
+        Self::new_vec4_swizzle_impl()
+            .with_key_val("vec3_t", "Vec3A")
+            .with_key_val("vec4_t", "Vec4A")
+            .with_self_t("Vec4A")
+            .with_is_align(true)
     }
 
     pub fn new_dvec2_swizzle_impl() -> Self {
@@ -205,11 +216,15 @@ impl ContextBuilder {
     }
 
     pub fn new_vec3a() -> Self {
-        Self::new_vecn(3).with_scalar_t("f32").with_is_align(true)
+        Self::new_vec3().with_is_align(true)
     }
 
     pub fn new_vec4() -> Self {
-        Self::new_vecn(4).with_scalar_t("f32").with_is_align(true)
+        Self::new_vecn(4).with_scalar_t("f32")
+    }
+
+    pub fn new_vec4a() -> Self {
+        Self::new_vec4().with_is_align(true)
     }
 
     pub fn new_dvec2() -> Self {
@@ -303,6 +318,10 @@ impl ContextBuilder {
             .with_scalar_t("f32")
     }
 
+    pub fn new_quata() -> Self {
+        Self::new_quat().with_is_align(true)
+    }
+
     pub fn new_dquat() -> Self {
         Self::new_quat().with_scalar_t("f64")
     }
@@ -319,6 +338,10 @@ impl ContextBuilder {
         Self::new_tmatn(2, "f32")
     }
 
+    pub fn new_mat2a() -> Self {
+        Self::new_mat2().with_is_align(true)
+    }
+
     pub fn new_dmat2() -> Self {
         Self::new_tmatn(2, "f64")
     }
@@ -328,7 +351,7 @@ impl ContextBuilder {
     }
 
     pub fn new_mat3a() -> Self {
-        Self::new_tmatn(3, "f32").with_is_align(true)
+        Self::new_mat3().with_is_align(true)
     }
 
     pub fn new_dmat3() -> Self {
@@ -337,6 +360,10 @@ impl ContextBuilder {
 
     pub fn new_mat4() -> Self {
         Self::new_tmatn(4, "f32")
+    }
+
+    pub fn new_mat4a() -> Self {
+        Self::new_mat4().with_is_align(true)
     }
 
     pub fn new_dmat4() -> Self {
@@ -441,24 +468,28 @@ pub fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
                 .build(),
         ),
         (
-            "src/swizzles/scalar/vec4_impl.rs",
+            "src/swizzles/vec4_impl.rs",
             ContextBuilder::new_vec4_swizzle_impl().build(),
         ),
         (
-            "src/swizzles/sse2/vec4_impl.rs",
-            ContextBuilder::new_vec4_swizzle_impl()
+            "src/swizzles/scalar/vec4a_impl.rs",
+            ContextBuilder::new_vec4a_swizzle_impl().build(),
+        ),
+        (
+            "src/swizzles/sse2/vec4a_impl.rs",
+            ContextBuilder::new_vec4a_swizzle_impl()
                 .target_sse2()
                 .build(),
         ),
         (
-            "src/swizzles/wasm32/vec4_impl.rs",
-            ContextBuilder::new_vec4_swizzle_impl()
+            "src/swizzles/wasm32/vec4a_impl.rs",
+            ContextBuilder::new_vec4a_swizzle_impl()
                 .target_wasm32()
                 .build(),
         ),
         (
-            "src/swizzles/coresimd/vec4_impl.rs",
-            ContextBuilder::new_vec4_swizzle_impl()
+            "src/swizzles/coresimd/vec4a_impl.rs",
+            ContextBuilder::new_vec4a_swizzle_impl()
                 .target_coresimd()
                 .build(),
         ),
@@ -612,18 +643,22 @@ pub fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
             "src/f32/coresimd/vec3a.rs",
             ContextBuilder::new_vec3a().target_coresimd().build(),
         ),
-        ("src/f32/scalar/vec4.rs", ContextBuilder::new_vec4().build()),
+        ("src/f32/vec4.rs", ContextBuilder::new_vec4().build()),
         (
-            "src/f32/sse2/vec4.rs",
-            ContextBuilder::new_vec4().target_sse2().build(),
+            "src/f32/scalar/vec4a.rs",
+            ContextBuilder::new_vec4a().build(),
         ),
         (
-            "src/f32/wasm32/vec4.rs",
-            ContextBuilder::new_vec4().target_wasm32().build(),
+            "src/f32/sse2/vec4a.rs",
+            ContextBuilder::new_vec4a().target_sse2().build(),
         ),
         (
-            "src/f32/coresimd/vec4.rs",
-            ContextBuilder::new_vec4().target_coresimd().build(),
+            "src/f32/wasm32/vec4a.rs",
+            ContextBuilder::new_vec4a().target_wasm32().build(),
+        ),
+        (
+            "src/f32/coresimd/vec4a.rs",
+            ContextBuilder::new_vec4a().target_coresimd().build(),
         ),
         ("src/f64/dvec2.rs", ContextBuilder::new_dvec2().build()),
         ("src/f64/dvec3.rs", ContextBuilder::new_dvec3().build()),
@@ -646,32 +681,40 @@ pub fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
         ("src/u64/u64vec2.rs", ContextBuilder::new_u64vec2().build()),
         ("src/u64/u64vec3.rs", ContextBuilder::new_u64vec3().build()),
         ("src/u64/u64vec4.rs", ContextBuilder::new_u64vec4().build()),
-        ("src/f32/scalar/quat.rs", ContextBuilder::new_quat().build()),
+        ("src/f32/quat.rs", ContextBuilder::new_quat().build()),
         (
-            "src/f32/sse2/quat.rs",
-            ContextBuilder::new_quat().target_sse2().build(),
+            "src/f32/scalar/quata.rs",
+            ContextBuilder::new_quata().build(),
         ),
         (
-            "src/f32/wasm32/quat.rs",
-            ContextBuilder::new_quat().target_wasm32().build(),
+            "src/f32/sse2/quata.rs",
+            ContextBuilder::new_quata().target_sse2().build(),
         ),
         (
-            "src/f32/coresimd/quat.rs",
-            ContextBuilder::new_quat().target_coresimd().build(),
+            "src/f32/wasm32/quata.rs",
+            ContextBuilder::new_quata().target_wasm32().build(),
+        ),
+        (
+            "src/f32/coresimd/quata.rs",
+            ContextBuilder::new_quata().target_coresimd().build(),
         ),
         ("src/f64/dquat.rs", ContextBuilder::new_dquat().build()),
-        ("src/f32/scalar/mat2.rs", ContextBuilder::new_mat2().build()),
+        ("src/f32/mat2.rs", ContextBuilder::new_mat2().build()),
         (
-            "src/f32/sse2/mat2.rs",
-            ContextBuilder::new_mat2().target_sse2().build(),
+            "src/f32/scalar/mat2a.rs",
+            ContextBuilder::new_mat2a().build(),
         ),
         (
-            "src/f32/wasm32/mat2.rs",
-            ContextBuilder::new_mat2().target_wasm32().build(),
+            "src/f32/sse2/mat2a.rs",
+            ContextBuilder::new_mat2a().target_sse2().build(),
         ),
         (
-            "src/f32/coresimd/mat2.rs",
-            ContextBuilder::new_mat2().target_coresimd().build(),
+            "src/f32/wasm32/mat2a.rs",
+            ContextBuilder::new_mat2a().target_wasm32().build(),
+        ),
+        (
+            "src/f32/coresimd/mat2a.rs",
+            ContextBuilder::new_mat2a().target_coresimd().build(),
         ),
         ("src/f64/dmat2.rs", ContextBuilder::new_dmat2().build()),
         ("src/f32/mat3.rs", ContextBuilder::new_mat3().build()),
@@ -691,18 +734,22 @@ pub fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
             "src/f32/coresimd/mat3a.rs",
             ContextBuilder::new_mat3a().target_coresimd().build(),
         ),
-        ("src/f32/scalar/mat4.rs", ContextBuilder::new_mat4().build()),
+        ("src/f32/mat4.rs", ContextBuilder::new_mat4().build()),
         (
-            "src/f32/sse2/mat4.rs",
-            ContextBuilder::new_mat4().target_sse2().build(),
+            "src/f32/scalar/mat4a.rs",
+            ContextBuilder::new_mat4a().build(),
         ),
         (
-            "src/f32/wasm32/mat4.rs",
-            ContextBuilder::new_mat4().target_wasm32().build(),
+            "src/f32/sse2/mat4a.rs",
+            ContextBuilder::new_mat4a().target_sse2().build(),
         ),
         (
-            "src/f32/coresimd/mat4.rs",
-            ContextBuilder::new_mat4().target_coresimd().build(),
+            "src/f32/wasm32/mat4a.rs",
+            ContextBuilder::new_mat4a().target_wasm32().build(),
+        ),
+        (
+            "src/f32/coresimd/mat4a.rs",
+            ContextBuilder::new_mat4a().target_coresimd().build(),
         ),
         ("src/f64/dmat3.rs", ContextBuilder::new_dmat3().build()),
         ("src/f64/dmat4.rs", ContextBuilder::new_dmat4().build()),

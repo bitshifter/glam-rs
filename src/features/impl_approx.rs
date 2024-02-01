@@ -1,6 +1,6 @@
 use crate::{
     Affine2, Affine3A, DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, Mat2,
-    Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4,
+    Mat2A, Mat3, Mat3A, Mat4, Mat4A, Quat, QuatA, Vec2, Vec3, Vec3A, Vec4, Vec4A,
 };
 use approx::{AbsDiffEq, RelativeEq, UlpsEq};
 
@@ -132,13 +132,17 @@ macro_rules! impl_approx_xzyw_axes {
 }
 
 impl_approx_as_ref!(f32, Mat2);
+impl_approx_as_ref!(f32, Mat2A);
 impl_approx_as_ref!(f32, Mat3);
 impl_approx_as_ref!(f32, Mat4);
+impl_approx_as_ref!(f32, Mat4A);
 impl_approx_as_ref!(f32, Quat);
+impl_approx_as_ref!(f32, QuatA);
 impl_approx_as_ref!(f32, Vec2);
 impl_approx_as_ref!(f32, Vec3);
-impl_approx_as_ref!(f32, Vec4);
 impl_approx_as_ref!(f32, Vec3A);
+impl_approx_as_ref!(f32, Vec4);
+impl_approx_as_ref!(f32, Vec4A);
 
 impl_approx_xzy_axes!(f32, Affine2);
 impl_approx_xzyw_axes!(f32, Affine3A);
@@ -194,11 +198,15 @@ mod test {
         impl_approx_test!(f32, Vec3);
         impl_approx_test!(f32, Vec3A);
         impl_approx_test!(f32, Vec4);
+        impl_approx_test!(f32, Vec4A);
         impl_approx_test!(f32, Quat, Quat::from_slice(&ONESF32));
+        impl_approx_test!(f32, QuatA, QuatA::from_slice(&ONESF32));
         impl_approx_test!(f32, Mat2, Mat2::from_cols_slice(&ONESF32));
+        impl_approx_test!(f32, Mat2A, Mat2A::from_cols_slice(&ONESF32));
         impl_approx_test!(f32, Mat3, Mat3::from_cols_slice(&ONESF32));
         impl_approx_test!(f32, Mat3A, Mat3A::from_cols_slice(&ONESF32));
         impl_approx_test!(f32, Mat4, Mat4::from_cols_slice(&ONESF32));
+        impl_approx_test!(f32, Mat4A, Mat4A::from_cols_slice(&ONESF32));
 
         const ONESF64: [f64; 16] = [1.0; 16];
         impl_approx_test!(f64, DVec2);

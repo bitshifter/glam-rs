@@ -1,6 +1,8 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
-use crate::{f32::math, swizzles::*, DMat4, EulerRot, Mat3, Mat3A, Quat, Vec3, Vec3A, Vec4};
+use crate::{
+    f32::math, swizzles::*, DMat4, EulerRot, Mat3, Mat3A, Mat4A, Quat, Vec3, Vec3A, Vec4, Vec4A,
+};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -43,13 +45,6 @@ pub const fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat
 /// The resulting perspective project can be use to transform 3D vectors as points with
 /// perspective correction using the [`Self::project_point3()`] convenience method.
 #[derive(Clone, Copy)]
-#[cfg_attr(
-    any(
-        not(any(feature = "scalar-math", target_arch = "spirv")),
-        feature = "cuda"
-    ),
-    repr(align(16))
-)]
 #[repr(C)]
 pub struct Mat4 {
     pub x_axis: Vec4,
@@ -274,7 +269,7 @@ impl Mat4 {
             self.z_axis.mul(inv_scale.z).xyz(),
         );
 
-        let translation = self.w_axis.xyz();
+        let translation = self.w_axis.truncate();
 
         (scale, rotation, translation)
     }
@@ -990,7 +985,7 @@ impl Mat4 {
         res = self.z_axis.mul(rhs.z).add(res);
         res = self.w_axis.add(res);
         res = res.mul(res.wwww().recip());
-        res.xyz()
+        res.truncate()
     }
 
     /// Transforms the given 3D vector as a point.
@@ -1013,7 +1008,7 @@ impl Mat4 {
         res = self.y_axis.mul(rhs.y).add(res);
         res = self.z_axis.mul(rhs.z).add(res);
         res = self.w_axis.add(res);
-        res.xyz()
+        res.truncate()
     }
 
     /// Transforms the give 3D vector as a direction.
@@ -1033,7 +1028,7 @@ impl Mat4 {
         let mut res = self.x_axis.mul(rhs.x);
         res = self.y_axis.mul(rhs.y).add(res);
         res = self.z_axis.mul(rhs.z).add(res);
-        res.xyz()
+        res.truncate()
     }
 
     /// Transforms the given [`Vec3A`] as 3D point.
@@ -1063,6 +1058,13 @@ impl Mat4 {
         res = res.add(self.z_axis.mul(rhs.z));
         res = res.add(self.w_axis.mul(rhs.w));
         res
+    }
+
+    /// Transforms a [`Vec4A`].
+    #[inline]
+    #[must_use]
+    pub fn mul_vec4a(&self, rhs: Vec4A) -> Vec4A {
+        self.mul_vec4(rhs.into()).into()
     }
 
     /// Multiplies two 4x4 matrices.
@@ -1283,6 +1285,26 @@ impl DivAssign<f32> for Mat4 {
     #[inline]
     fn div_assign(&mut self, rhs: f32) {
         *self = self.div_scalar(rhs);
+    }
+}
+
+impl Mul<Vec4A> for Mat4 {
+    type Output = Vec4A;
+    #[inline]
+    fn mul(self, rhs: Vec4A) -> Vec4A {
+        self.mul_vec4a(rhs)
+    }
+}
+
+impl From<Mat4A> for Mat4 {
+    #[inline]
+    fn from(m: Mat4A) -> Self {
+        Self {
+            x_axis: m.x_axis.into(),
+            y_axis: m.y_axis.into(),
+            z_axis: m.z_axis.into(),
+            w_axis: m.w_axis.into(),
+        }
     }
 }
 

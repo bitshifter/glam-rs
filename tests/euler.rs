@@ -38,12 +38,8 @@ trait EulerEpsilon {
 impl EulerEpsilon for f32 {
     const Q_EPS: f32 = 1e-5;
 
-    // The scalar-math and wasm paths seems to use a particularly bad implementation of the trig functions
-    #[cfg(any(feature = "scalar-math", target_arch = "wasm32"))]
+    // The scalar and wasm paths seems to use a particularly bad implementation of the trig functions
     const E_EPS: f32 = 2e-4;
-
-    #[cfg(not(any(feature = "scalar-math", target_arch = "wasm32")))]
-    const E_EPS: f32 = 1e-5;
 }
 impl EulerEpsilon for f64 {
     const Q_EPS: f32 = 1e-8;

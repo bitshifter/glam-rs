@@ -28,6 +28,7 @@ mod uvec4_impl;
 
 mod vec2_impl;
 mod vec3_impl;
+mod vec4_impl;
 
 #[cfg(any(
     not(any(

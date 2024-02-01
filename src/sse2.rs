@@ -237,15 +237,15 @@ pub(crate) unsafe fn m128_sin(v: __m128) -> __m128 {
 
 #[test]
 fn test_sse2_m128_sin() {
-    use crate::Vec4;
+    use crate::Vec4A;
     use core::f32::consts::PI;
 
     fn test_sse2_m128_sin_angle(a: f32) {
         let v = unsafe { m128_sin(_mm_set_ps1(a)) };
-        let v = Vec4(v);
+        let v = Vec4A(v);
         let a_sin = a.sin();
         // dbg!((a, a_sin, v));
-        assert!(v.abs_diff_eq(Vec4::splat(a_sin), 1e-6));
+        assert!(v.abs_diff_eq(Vec4A::splat(a_sin), 1e-6));
     }
 
     let mut a = -PI;

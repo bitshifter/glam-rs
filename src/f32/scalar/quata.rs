@@ -1,18 +1,15 @@
 // Generated from quat.rs.tera template. Edit the template, not the generated file.
 
 use crate::{
-    coresimd::*,
     euler::{EulerFromQuaternion, EulerRot, EulerToQuaternion},
     f32::math,
-    DQuat, Mat3, Mat3A, Mat4, Vec2, Vec3, Vec3A, Vec4,
+    DQuat, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4, Vec4A,
 };
-
-use core::simd::*;
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
-use core::ops::{Add, Deref, DerefMut, Div, Mul, MulAssign, Neg, Sub};
+use core::ops::{Add, Div, Mul, MulAssign, Neg, Sub};
 
 /// Creates a quaternion from `x`, `y`, `z` and `w` values.
 ///
@@ -20,8 +17,8 @@ use core::ops::{Add, Deref, DerefMut, Div, Mul, MulAssign, Neg, Sub};
 /// one of the other constructors instead such as `identity` or `from_axis_angle`.
 #[inline]
 #[must_use]
-pub const fn quat(x: f32, y: f32, z: f32, w: f32) -> Quat {
-    Quat::from_xyzw(x, y, z, w)
+pub const fn quata(x: f32, y: f32, z: f32, w: f32) -> QuatA {
+    QuatA::from_xyzw(x, y, z, w)
 }
 
 /// A quaternion representing an orientation.
@@ -29,15 +26,18 @@ pub const fn quat(x: f32, y: f32, z: f32, w: f32) -> Quat {
 /// This quaternion is intended to be of unit length but may denormalize due to
 /// floating point "error creep" which can occur when successive quaternion
 /// operations are applied.
-///
-/// SIMD vector types are used for storage on supported platforms.
-///
-/// This type is 16 byte aligned.
 #[derive(Clone, Copy)]
-#[repr(transparent)]
-pub struct Quat(pub(crate) f32x4);
+#[cfg_attr(not(target_arch = "spirv"), repr(align(16)))]
+#[cfg_attr(not(target_arch = "spirv"), repr(C))]
+#[cfg_attr(target_arch = "spirv", repr(simd))]
+pub struct QuatA {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+    pub w: f32,
+}
 
-impl Quat {
+impl QuatA {
     /// All zeros.
     const ZERO: Self = Self::from_array([0.0; 4]);
 
@@ -61,7 +61,7 @@ impl Quat {
     #[inline(always)]
     #[must_use]
     pub const fn from_xyzw(x: f32, y: f32, z: f32, w: f32) -> Self {
-        Self(f32x4::from_array([x, y, z, w]))
+        Self { x, y, z, w }
     }
 
     /// Creates a rotation quaternion from an array.
@@ -73,7 +73,7 @@ impl Quat {
     #[inline]
     #[must_use]
     pub const fn from_array(a: [f32; 4]) -> Self {
-        Self(f32x4::from_array(a))
+        Self::from_xyzw(a[0], a[1], a[2], a[3])
     }
 
     /// Creates a new rotation quaternion from a 4D vector.
@@ -85,7 +85,24 @@ impl Quat {
     #[inline]
     #[must_use]
     pub const fn from_vec4(v: Vec4) -> Self {
-        Self(v.0)
+        Self::from_xyzw(v.x, v.y, v.z, v.w)
+    }
+
+    /// Creates a new rotation quaternion from an aligned 4D vector.
+    ///
+    /// # Preconditions
+    ///
+    /// This function does not check if the input is normalized, it is up to the user to
+    /// provide normalized input or to normalized the resulting quaternion.
+    #[inline]
+    #[must_use]
+    pub const fn from_vec4a(v: Vec4A) -> Self {
+        Self {
+            x: v.x,
+            y: v.y,
+            z: v.z,
+            w: v.w,
+        }
     }
 
     /// Creates a rotation quaternion from a slice.
@@ -175,13 +192,17 @@ impl Quat {
     #[inline]
     #[must_use]
     pub fn from_euler(euler: EulerRot, a: f32, b: f32, c: f32) -> Self {
-        euler.new_quat(a, b, c)
+        euler.new_quat(a, b, c).into()
     }
 
     /// From the columns of a 3x3 rotation matrix.
     #[inline]
     #[must_use]
-    pub(crate) fn from_rotation_axes(x_axis: Vec3, y_axis: Vec3, z_axis: Vec3) -> Self {
+    pub(crate) fn from_rotation_axes<T: Into<(f32, f32, f32)>>(
+        x_axis: T,
+        y_axis: T,
+        z_axis: T,
+    ) -> Self {
         // Based on https://github.com/microsoft/DirectXMath `XM$quaternionRotationMatrix`
         let (m00, m01, m02) = x_axis.into();
         let (m10, m11, m12) = y_axis.into();
@@ -250,7 +271,7 @@ impl Quat {
     #[inline]
     #[must_use]
     pub fn from_mat3a(mat: &Mat3A) -> Self {
-        Self::from_rotation_axes(mat.x_axis.into(), mat.y_axis.into(), mat.z_axis.into())
+        Self::from_rotation_axes(mat.x_axis, mat.y_axis, mat.z_axis)
     }
 
     /// Creates a quaternion from a 3x3 rotation matrix inside a homogeneous 4x4 matrix.
@@ -409,8 +430,12 @@ impl Quat {
     #[inline]
     #[must_use]
     pub fn conjugate(self) -> Self {
-        const SIGN: f32x4 = f32x4::from_array([-1.0, -1.0, -1.0, 1.0]);
-        Self(self.0.mul(SIGN))
+        Self {
+            x: -self.x,
+            y: -self.y,
+            z: -self.z,
+            w: self.w,
+        }
     }
 
     /// Returns the inverse of a normalized quaternion.
@@ -569,15 +594,11 @@ impl Quat {
         glam_assert!(self.is_normalized());
         glam_assert!(end.is_normalized());
 
-        const NEG_ZERO: f32x4 = f32x4::from_array([-0.0; 4]);
-        let start = self.0;
-        let end = end.0;
-        let dot = dot4_into_f32x4(start, end);
-        // Calculate the bias, if the dot product is positive or zero, there is no bias
-        // but if it is negative, we want to flip the 'end' rotation XYZW components
-        let bias = f32x4_bitand(dot, NEG_ZERO);
-        let interpolated = start + ((f32x4_bitxor(end, bias) - start) * f32x4::splat(s));
-        Quat(interpolated).normalize()
+        let start = self;
+        let dot = start.dot(end);
+        let bias = if dot >= 0.0 { 1.0 } else { -1.0 };
+        let interpolated = start.add(end.mul(bias).sub(start).mul(s));
+        interpolated.normalize()
     }
 
     /// Performs a spherical linear interpolation between `self` and `end`
@@ -616,17 +637,11 @@ impl Quat {
         } else {
             let theta = math::acos_approx(dot);
 
-            let x = math::sin(theta * (1.0 - s));
-            let y = math::sin(theta * s);
-            let z = math::sin(theta);
-            let w = 0.0;
-            let tmp = f32x4::from_array([x, y, z, w]);
+            let scale1 = math::sin(theta * (1.0 - s));
+            let scale2 = math::sin(theta * s);
+            let theta_sin = math::sin(theta);
 
-            let scale1 = simd_swizzle!(tmp, [0, 0, 0, 0]);
-            let scale2 = simd_swizzle!(tmp, [1, 1, 1, 1]);
-            let theta_sin = simd_swizzle!(tmp, [2, 2, 2, 2]);
-
-            Self(self.0.mul(scale1).add(end.0.mul(scale2)).div(theta_sin))
+            self.mul(scale1).add(end.mul(scale2)).mul(1.0 / theta_sin)
         }
     }
 
@@ -640,7 +655,12 @@ impl Quat {
     pub fn mul_vec3(self, rhs: Vec3) -> Vec3 {
         glam_assert!(self.is_normalized());
 
-        self.mul_vec3a(rhs.into()).into()
+        let w = self.w;
+        let b = Vec3::new(self.x, self.y, self.z);
+        let b2 = b.dot(b);
+        rhs.mul(w * w - b2)
+            .add(b.mul(rhs.dot(b) * 2.0))
+            .add(b.cross(rhs).mul(w * 2.0))
     }
 
     /// Multiplies two quaternions. If they each represent a rotation, the result will
@@ -657,37 +677,14 @@ impl Quat {
         glam_assert!(self.is_normalized());
         glam_assert!(rhs.is_normalized());
 
-        let lhs = self.0;
-        let rhs = rhs.0;
-
-        const CONTROL_WZYX: f32x4 = f32x4::from_array([1.0, -1.0, 1.0, -1.0]);
-        const CONTROL_ZWXY: f32x4 = f32x4::from_array([1.0, 1.0, -1.0, -1.0]);
-        const CONTROL_YXWZ: f32x4 = f32x4::from_array([-1.0, 1.0, 1.0, -1.0]);
-
-        let r_xxxx = simd_swizzle!(lhs, [0, 0, 0, 0]);
-        let r_yyyy = simd_swizzle!(lhs, [1, 1, 1, 1]);
-        let r_zzzz = simd_swizzle!(lhs, [2, 2, 2, 2]);
-        let r_wwww = simd_swizzle!(lhs, [3, 3, 3, 3]);
-
-        let lxrw_lyrw_lzrw_lwrw = r_wwww * rhs;
-        let l_wzyx = simd_swizzle!(rhs, [3, 2, 1, 0]);
-
-        let lwrx_lzrx_lyrx_lxrx = r_xxxx * l_wzyx;
-        let l_zwxy = simd_swizzle!(l_wzyx, [1, 0, 3, 2]);
-
-        let lwrx_nlzrx_lyrx_nlxrx = lwrx_lzrx_lyrx_lxrx * CONTROL_WZYX;
-
-        let lzry_lwry_lxry_lyry = r_yyyy * l_zwxy;
-        let l_yxwz = simd_swizzle!(l_zwxy, [3, 2, 1, 0]);
-
-        let lzry_lwry_nlxry_nlyry = lzry_lwry_lxry_lyry * CONTROL_ZWXY;
-
-        let lyrz_lxrz_lwrz_lzrz = r_zzzz * l_yxwz;
-        let result0 = lxrw_lyrw_lzrw_lwrw + lwrx_nlzrx_lyrx_nlxrx;
-
-        let nlyrz_lxrz_lwrz_wlzrz = lyrz_lxrz_lwrz_lzrz * CONTROL_YXWZ;
-        let result1 = lzry_lwry_nlxry_nlyry + nlyrz_lxrz_lwrz_wlzrz;
-        Self(result0 + result1)
+        let (x0, y0, z0, w0) = self.into();
+        let (x1, y1, z1, w1) = rhs.into();
+        Self::from_xyzw(
+            w0 * x1 + x0 * w1 + y0 * z1 - z0 * y1,
+            w0 * y1 - x0 * z1 + y0 * w1 + z0 * x1,
+            w0 * z1 + x0 * y1 - y0 * x1 + z0 * w1,
+            w0 * w1 - x0 * x1 - y0 * y1 - z0 * z1,
+        )
     }
 
     /// Creates a quaternion from a 3x3 rotation matrix inside a 3D affine transform.
@@ -695,27 +692,14 @@ impl Quat {
     #[must_use]
     pub fn from_affine3(a: &crate::Affine3A) -> Self {
         #[allow(clippy::useless_conversion)]
-        Self::from_rotation_axes(
-            a.matrix3.x_axis.into(),
-            a.matrix3.y_axis.into(),
-            a.matrix3.z_axis.into(),
-        )
+        Self::from_rotation_axes(a.matrix3.x_axis, a.matrix3.y_axis, a.matrix3.z_axis)
     }
 
     /// Multiplies a quaternion and a 3D vector, returning the rotated vector.
     #[inline]
     #[must_use]
     pub fn mul_vec3a(self, rhs: Vec3A) -> Vec3A {
-        const TWO: f32x4 = f32x4::from_array([2.0; 4]);
-        let w = simd_swizzle!(self.0, [3, 3, 3, 3]);
-        let b = self.0;
-        let b2 = dot3_into_f32x4(b, b);
-        Vec3A(
-            rhs.0
-                .mul(w.mul(w).sub(b2))
-                .add(b.mul(dot3_into_f32x4(rhs.0, b).mul(TWO)))
-                .add(Vec3A(b).cross(rhs).0.mul(w.mul(TWO))),
-        )
+        self.mul_vec3(rhs.into()).into()
     }
 
     #[inline]
@@ -733,9 +717,9 @@ impl Quat {
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl fmt::Debug for Quat {
+impl fmt::Debug for QuatA {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
-        fmt.debug_tuple(stringify!(Quat))
+        fmt.debug_tuple(stringify!(QuatA))
             .field(&self.x)
             .field(&self.y)
             .field(&self.z)
@@ -745,7 +729,7 @@ impl fmt::Debug for Quat {
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl fmt::Display for Quat {
+impl fmt::Display for QuatA {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(p) = f.precision() {
             write!(
@@ -759,7 +743,7 @@ impl fmt::Display for Quat {
     }
 }
 
-impl Add<Quat> for Quat {
+impl Add<QuatA> for QuatA {
     type Output = Self;
     /// Adds two quaternions.
     ///
@@ -773,7 +757,7 @@ impl Add<Quat> for Quat {
     }
 }
 
-impl Sub<Quat> for Quat {
+impl Sub<QuatA> for QuatA {
     type Output = Self;
     /// Subtracts the `rhs` quaternion from `self`.
     ///
@@ -784,7 +768,7 @@ impl Sub<Quat> for Quat {
     }
 }
 
-impl Mul<f32> for Quat {
+impl Mul<f32> for QuatA {
     type Output = Self;
     /// Multiplies a quaternion by a scalar value.
     ///
@@ -795,7 +779,7 @@ impl Mul<f32> for Quat {
     }
 }
 
-impl Div<f32> for Quat {
+impl Div<f32> for QuatA {
     type Output = Self;
     /// Divides a quaternion by a scalar value.
     /// The quotient is not guaranteed to be normalized.
@@ -805,7 +789,7 @@ impl Div<f32> for Quat {
     }
 }
 
-impl Mul<Quat> for Quat {
+impl Mul<QuatA> for QuatA {
     type Output = Self;
     /// Multiplies two quaternions. If they each represent a rotation, the result will
     /// represent the combined rotation.
@@ -822,7 +806,7 @@ impl Mul<Quat> for Quat {
     }
 }
 
-impl MulAssign<Quat> for Quat {
+impl MulAssign<QuatA> for QuatA {
     /// Multiplies two quaternions. If they each represent a rotation, the result will
     /// represent the combined rotation.
     ///
@@ -838,7 +822,7 @@ impl MulAssign<Quat> for Quat {
     }
 }
 
-impl Mul<Vec3> for Quat {
+impl Mul<Vec3> for QuatA {
     type Output = Vec3;
     /// Multiplies a quaternion and a 3D vector, returning the rotated vector.
     ///
@@ -851,7 +835,7 @@ impl Mul<Vec3> for Quat {
     }
 }
 
-impl Neg for Quat {
+impl Neg for QuatA {
     type Output = Self;
     #[inline]
     fn neg(self) -> Self {
@@ -859,14 +843,14 @@ impl Neg for Quat {
     }
 }
 
-impl Default for Quat {
+impl Default for QuatA {
     #[inline]
     fn default() -> Self {
         Self::IDENTITY
     }
 }
 
-impl PartialEq for Quat {
+impl PartialEq for QuatA {
     #[inline]
     fn eq(&self, rhs: &Self) -> bool {
         Vec4::from(*self).eq(&Vec4::from(*rhs))
@@ -874,14 +858,14 @@ impl PartialEq for Quat {
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl AsRef<[f32; 4]> for Quat {
+impl AsRef<[f32; 4]> for QuatA {
     #[inline]
     fn as_ref(&self) -> &[f32; 4] {
         unsafe { &*(self as *const Self as *const [f32; 4]) }
     }
 }
 
-impl Sum<Self> for Quat {
+impl Sum<Self> for QuatA {
     fn sum<I>(iter: I) -> Self
     where
         I: Iterator<Item = Self>,
@@ -890,7 +874,7 @@ impl Sum<Self> for Quat {
     }
 }
 
-impl<'a> Sum<&'a Self> for Quat {
+impl<'a> Sum<&'a Self> for QuatA {
     fn sum<I>(iter: I) -> Self
     where
         I: Iterator<Item = &'a Self>,
@@ -899,7 +883,7 @@ impl<'a> Sum<&'a Self> for Quat {
     }
 }
 
-impl Product for Quat {
+impl Product for QuatA {
     fn product<I>(iter: I) -> Self
     where
         I: Iterator<Item = Self>,
@@ -908,7 +892,7 @@ impl Product for Quat {
     }
 }
 
-impl<'a> Product<&'a Self> for Quat {
+impl<'a> Product<&'a Self> for QuatA {
     fn product<I>(iter: I) -> Self
     where
         I: Iterator<Item = &'a Self>,
@@ -917,7 +901,7 @@ impl<'a> Product<&'a Self> for Quat {
     }
 }
 
-impl Mul<Vec3A> for Quat {
+impl Mul<Vec3A> for QuatA {
     type Output = Vec3A;
     #[inline]
     fn mul(self, rhs: Vec3A) -> Self::Output {
@@ -925,45 +909,37 @@ impl Mul<Vec3A> for Quat {
     }
 }
 
-impl From<Quat> for Vec4 {
+impl From<QuatA> for Vec4 {
+    #[inline]
+    fn from(q: QuatA) -> Self {
+        Self::new(q.x, q.y, q.z, q.w)
+    }
+}
+
+impl From<Quat> for QuatA {
     #[inline]
     fn from(q: Quat) -> Self {
-        Self(q.0)
+        Self::from_xyzw(q.x, q.y, q.z, q.w)
     }
 }
 
-impl From<Quat> for (f32, f32, f32, f32) {
+impl From<QuatA> for Vec4A {
     #[inline]
-    fn from(q: Quat) -> Self {
-        Vec4::from(q).into()
+    fn from(q: QuatA) -> Self {
+        Self::new(q.x, q.y, q.z, q.w)
     }
 }
 
-impl From<Quat> for [f32; 4] {
+impl From<QuatA> for (f32, f32, f32, f32) {
     #[inline]
-    fn from(q: Quat) -> Self {
-        Vec4::from(q).into()
+    fn from(q: QuatA) -> Self {
+        (q.x, q.y, q.z, q.w)
     }
 }
 
-impl From<Quat> for f32x4 {
+impl From<QuatA> for [f32; 4] {
     #[inline]
-    fn from(q: Quat) -> Self {
-        q.0
-    }
-}
-
-impl Deref for Quat {
-    type Target = crate::deref::Vec4<f32>;
-    #[inline]
-    fn deref(&self) -> &Self::Target {
-        unsafe { &*(self as *const Self).cast() }
-    }
-}
-
-impl DerefMut for Quat {
-    #[inline]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        unsafe { &mut *(self as *mut Self).cast() }
+    fn from(q: QuatA) -> Self {
+        [q.x, q.y, q.z, q.w]
     }
 }
