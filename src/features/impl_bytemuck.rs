@@ -1,28 +1,34 @@
 use crate::{
     Affine2, Affine3A, DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4,
-    I16Vec2, I16Vec3, I16Vec4, I64Vec2, I64Vec3, I64Vec4, IVec2, IVec3, IVec4, Mat2, Mat3, Mat3A,
-    Mat4, Quat, U16Vec2, U16Vec3, U16Vec4, U64Vec2, U64Vec3, U64Vec4, UVec2, UVec3, UVec4, Vec2,
-    Vec3, Vec3A, Vec4,
+    I16Vec2, I16Vec3, I16Vec4, I64Vec2, I64Vec3, I64Vec4, IVec2, IVec3, IVec4, Mat2, Mat2A, Mat3,
+    Mat3A, Mat4, Mat4A, Quat, QuatA, U16Vec2, U16Vec3, U16Vec4, U64Vec2, U64Vec3, U64Vec4, UVec2,
+    UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4, Vec4A,
 };
 use bytemuck::{AnyBitPattern, Pod, Zeroable};
 
 // Affine2 contains internal padding due to Mat2 using SIMD
-unsafe impl AnyBitPattern for Affine2 {}
+unsafe impl Pod for Affine2 {}
 unsafe impl Zeroable for Affine2 {}
-unsafe impl AnyBitPattern for Affine3A {}
+unsafe impl Pod for Affine3A {}
 unsafe impl Zeroable for Affine3A {}
 
 unsafe impl Pod for Mat2 {}
 unsafe impl Zeroable for Mat2 {}
+unsafe impl Pod for Mat2A {}
+unsafe impl Zeroable for Mat2A {}
 unsafe impl Pod for Mat3 {}
 unsafe impl Zeroable for Mat3 {}
 unsafe impl AnyBitPattern for Mat3A {}
 unsafe impl Zeroable for Mat3A {}
 unsafe impl Pod for Mat4 {}
 unsafe impl Zeroable for Mat4 {}
+unsafe impl Pod for Mat4A {}
+unsafe impl Zeroable for Mat4A {}
 
 unsafe impl Pod for Quat {}
 unsafe impl Zeroable for Quat {}
+unsafe impl Pod for QuatA {}
+unsafe impl Zeroable for QuatA {}
 
 unsafe impl Pod for Vec2 {}
 unsafe impl Zeroable for Vec2 {}
@@ -32,6 +38,8 @@ unsafe impl AnyBitPattern for Vec3A {}
 unsafe impl Zeroable for Vec3A {}
 unsafe impl Pod for Vec4 {}
 unsafe impl Zeroable for Vec4 {}
+unsafe impl Pod for Vec4A {}
+unsafe impl Zeroable for Vec4A {}
 
 unsafe impl Pod for DAffine2 {}
 unsafe impl Zeroable for DAffine2 {}
@@ -101,9 +109,9 @@ unsafe impl Zeroable for U64Vec4 {}
 mod test {
     use crate::{
         Affine2, Affine3A, DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4,
-        I16Vec2, I16Vec3, I16Vec4, I64Vec2, I64Vec3, I64Vec4, IVec2, IVec3, IVec4, Mat2, Mat3,
-        Mat3A, Mat4, Quat, U16Vec2, U16Vec3, U16Vec4, U64Vec2, U64Vec3, U64Vec4, UVec2, UVec3,
-        UVec4, Vec2, Vec3, Vec3A, Vec4,
+        I16Vec2, I16Vec3, I16Vec4, I64Vec2, I64Vec3, I64Vec4, IVec2, IVec3, IVec4, Mat2, Mat2A,
+        Mat3, Mat3A, Mat4, Mat4A, Quat, QuatA, U16Vec2, U16Vec3, U16Vec4, U64Vec2, U64Vec3,
+        U64Vec4, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4, Vec4A,
     };
     use core::mem;
 
@@ -142,14 +150,18 @@ mod test {
     test_any_bit_pattern_t!(affine2, Affine2);
     test_any_bit_pattern_t!(affine3a, Affine3A);
     test_pod_t!(mat2, Mat2);
+    test_pod_t!(mat2a, Mat2A);
     test_pod_t!(mat3, Mat3);
     test_any_bit_pattern_t!(mat3a, Mat3A);
     test_pod_t!(mat4, Mat4);
+    test_pod_t!(mat4a, Mat4A);
     test_pod_t!(quat, Quat);
+    test_pod_t!(quata, QuatA);
     test_pod_t!(vec2, Vec2);
     test_pod_t!(vec3, Vec3);
     test_any_bit_pattern_t!(vec3a, Vec3A);
     test_pod_t!(vec4, Vec4);
+    test_pod_t!(vec4a, Vec4A);
 
     test_pod_t!(daffine2, DAffine2);
     test_pod_t!(daffine3, DAffine3);

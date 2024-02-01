@@ -1,14 +1,12 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
 use crate::{
-    f32::math, swizzles::*, wasm32::*, DMat4, EulerRot, Mat3, Mat3A, Quat, Vec3, Vec3A, Vec4,
+    f32::math, swizzles::*, DMat4, EulerRot, Mat3, Mat3A, Mat4A, Quat, Vec3, Vec3A, Vec4, Vec4A,
 };
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
-
-use core::arch::wasm32::*;
 
 /// Creates a 4x4 matrix from four column vectors.
 #[inline(always)]
@@ -123,14 +121,23 @@ impl Mat4 {
     #[inline]
     #[must_use]
     pub const fn to_cols_array(&self) -> [f32; 16] {
-        let [x_axis_x, x_axis_y, x_axis_z, x_axis_w] = self.x_axis.to_array();
-        let [y_axis_x, y_axis_y, y_axis_z, y_axis_w] = self.y_axis.to_array();
-        let [z_axis_x, z_axis_y, z_axis_z, z_axis_w] = self.z_axis.to_array();
-        let [w_axis_x, w_axis_y, w_axis_z, w_axis_w] = self.w_axis.to_array();
-
         [
-            x_axis_x, x_axis_y, x_axis_z, x_axis_w, y_axis_x, y_axis_y, y_axis_z, y_axis_w,
-            z_axis_x, z_axis_y, z_axis_z, z_axis_w, w_axis_x, w_axis_y, w_axis_z, w_axis_w,
+            self.x_axis.x,
+            self.x_axis.y,
+            self.x_axis.z,
+            self.x_axis.w,
+            self.y_axis.x,
+            self.y_axis.y,
+            self.y_axis.z,
+            self.y_axis.w,
+            self.z_axis.x,
+            self.z_axis.y,
+            self.z_axis.z,
+            self.z_axis.w,
+            self.w_axis.x,
+            self.w_axis.y,
+            self.w_axis.z,
+            self.w_axis.w,
         ]
     }
 
@@ -166,10 +173,9 @@ impl Mat4 {
     #[inline]
     #[must_use]
     pub const fn from_diagonal(diagonal: Vec4) -> Self {
-        // diagonal.x, diagonal.y etc can't be done in a const-context
-        let [x, y, z, w] = diagonal.to_array();
         Self::new(
-            x, 0.0, 0.0, 0.0, 0.0, y, 0.0, 0.0, 0.0, 0.0, z, 0.0, 0.0, 0.0, 0.0, w,
+            diagonal.x, 0.0, 0.0, 0.0, 0.0, diagonal.y, 0.0, 0.0, 0.0, 0.0, diagonal.z, 0.0, 0.0,
+            0.0, 0.0, diagonal.w,
         )
     }
 
@@ -263,7 +269,7 @@ impl Mat4 {
             self.z_axis.mul(inv_scale.z).xyz(),
         );
 
-        let translation = self.w_axis.xyz();
+        let translation = self.w_axis.truncate();
 
         (scale, rotation, translation)
     }
@@ -570,56 +576,33 @@ impl Mat4 {
     #[inline]
     #[must_use]
     pub fn transpose(&self) -> Self {
-        // Based on https://github.com/microsoft/DirectXMath `XMMatrixTranspose`
-        let tmp0 = i32x4_shuffle::<0, 1, 4, 5>(self.x_axis.0, self.y_axis.0);
-        let tmp1 = i32x4_shuffle::<2, 3, 6, 7>(self.x_axis.0, self.y_axis.0);
-        let tmp2 = i32x4_shuffle::<0, 1, 4, 5>(self.z_axis.0, self.w_axis.0);
-        let tmp3 = i32x4_shuffle::<2, 3, 6, 7>(self.z_axis.0, self.w_axis.0);
-
         Self {
-            x_axis: Vec4(i32x4_shuffle::<0, 2, 4, 6>(tmp0, tmp2)),
-            y_axis: Vec4(i32x4_shuffle::<1, 3, 5, 7>(tmp0, tmp2)),
-            z_axis: Vec4(i32x4_shuffle::<0, 2, 4, 6>(tmp1, tmp3)),
-            w_axis: Vec4(i32x4_shuffle::<1, 3, 5, 7>(tmp1, tmp3)),
+            x_axis: Vec4::new(self.x_axis.x, self.y_axis.x, self.z_axis.x, self.w_axis.x),
+            y_axis: Vec4::new(self.x_axis.y, self.y_axis.y, self.z_axis.y, self.w_axis.y),
+            z_axis: Vec4::new(self.x_axis.z, self.y_axis.z, self.z_axis.z, self.w_axis.z),
+            w_axis: Vec4::new(self.x_axis.w, self.y_axis.w, self.z_axis.w, self.w_axis.w),
         }
     }
 
     /// Returns the determinant of `self`.
     #[must_use]
     pub fn determinant(&self) -> f32 {
-        // Based on https://github.com/g-truc/glm `glm_mat4_determinant`
-        let swp2a = i32x4_shuffle::<2, 1, 1, 0>(self.z_axis.0, self.z_axis.0);
-        let swp3a = i32x4_shuffle::<3, 3, 2, 3>(self.w_axis.0, self.w_axis.0);
-        let swp2b = i32x4_shuffle::<3, 3, 2, 3>(self.z_axis.0, self.z_axis.0);
-        let swp3b = i32x4_shuffle::<2, 1, 1, 0>(self.w_axis.0, self.w_axis.0);
-        let swp2c = i32x4_shuffle::<2, 1, 0, 0>(self.z_axis.0, self.z_axis.0);
-        let swp3c = i32x4_shuffle::<0, 0, 2, 1>(self.w_axis.0, self.w_axis.0);
+        let (m00, m01, m02, m03) = self.x_axis.into();
+        let (m10, m11, m12, m13) = self.y_axis.into();
+        let (m20, m21, m22, m23) = self.z_axis.into();
+        let (m30, m31, m32, m33) = self.w_axis.into();
 
-        let mula = f32x4_mul(swp2a, swp3a);
-        let mulb = f32x4_mul(swp2b, swp3b);
-        let mulc = f32x4_mul(swp2c, swp3c);
-        let sube = f32x4_sub(mula, mulb);
-        let subf = f32x4_sub(i32x4_shuffle::<6, 7, 2, 3>(mulc, mulc), mulc);
+        let a2323 = m22 * m33 - m23 * m32;
+        let a1323 = m21 * m33 - m23 * m31;
+        let a1223 = m21 * m32 - m22 * m31;
+        let a0323 = m20 * m33 - m23 * m30;
+        let a0223 = m20 * m32 - m22 * m30;
+        let a0123 = m20 * m31 - m21 * m30;
 
-        let subfaca = i32x4_shuffle::<0, 0, 1, 2>(sube, sube);
-        let swpfaca = i32x4_shuffle::<1, 0, 0, 0>(self.y_axis.0, self.y_axis.0);
-        let mulfaca = f32x4_mul(swpfaca, subfaca);
-
-        let subtmpb = i32x4_shuffle::<1, 3, 4, 4>(sube, subf);
-        let subfacb = i32x4_shuffle::<0, 1, 1, 3>(subtmpb, subtmpb);
-        let swpfacb = i32x4_shuffle::<2, 2, 1, 1>(self.y_axis.0, self.y_axis.0);
-        let mulfacb = f32x4_mul(swpfacb, subfacb);
-
-        let subres = f32x4_sub(mulfaca, mulfacb);
-        let subtmpc = i32x4_shuffle::<2, 2, 4, 5>(sube, subf);
-        let subfacc = i32x4_shuffle::<0, 2, 3, 3>(subtmpc, subtmpc);
-        let swpfacc = i32x4_shuffle::<3, 3, 3, 2>(self.y_axis.0, self.y_axis.0);
-        let mulfacc = f32x4_mul(swpfacc, subfacc);
-
-        let addres = f32x4_add(subres, mulfacc);
-        let detcof = f32x4_mul(addres, f32x4(1.0, -1.0, 1.0, -1.0));
-
-        dot4(self.x_axis.0, detcof)
+        m00 * (m11 * a2323 - m12 * a1323 + m13 * a1223)
+            - m01 * (m10 * a2323 - m12 * a0323 + m13 * a0223)
+            + m02 * (m10 * a1323 - m11 * a0323 + m13 * a0123)
+            - m03 * (m10 * a1223 - m11 * a0223 + m12 * a0123)
     }
 
     /// Returns the inverse of `self`.
@@ -631,143 +614,76 @@ impl Mat4 {
     /// Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
     #[must_use]
     pub fn inverse(&self) -> Self {
-        // Based on https://github.com/g-truc/glm `glm_mat4_inverse`
-        let fac0 = {
-            let swp0a = i32x4_shuffle::<3, 3, 7, 7>(self.w_axis.0, self.z_axis.0);
-            let swp0b = i32x4_shuffle::<2, 2, 6, 6>(self.w_axis.0, self.z_axis.0);
+        let (m00, m01, m02, m03) = self.x_axis.into();
+        let (m10, m11, m12, m13) = self.y_axis.into();
+        let (m20, m21, m22, m23) = self.z_axis.into();
+        let (m30, m31, m32, m33) = self.w_axis.into();
 
-            let swp00 = i32x4_shuffle::<2, 2, 6, 6>(self.z_axis.0, self.y_axis.0);
-            let swp01 = i32x4_shuffle::<0, 0, 4, 6>(swp0a, swp0a);
-            let swp02 = i32x4_shuffle::<0, 0, 4, 6>(swp0b, swp0b);
-            let swp03 = i32x4_shuffle::<3, 3, 7, 7>(self.z_axis.0, self.y_axis.0);
+        let coef00 = m22 * m33 - m32 * m23;
+        let coef02 = m12 * m33 - m32 * m13;
+        let coef03 = m12 * m23 - m22 * m13;
 
-            let mul00 = f32x4_mul(swp00, swp01);
-            let mul01 = f32x4_mul(swp02, swp03);
-            f32x4_sub(mul00, mul01)
-        };
-        let fac1 = {
-            let swp0a = i32x4_shuffle::<3, 3, 7, 7>(self.w_axis.0, self.z_axis.0);
-            let swp0b = i32x4_shuffle::<1, 1, 5, 5>(self.w_axis.0, self.z_axis.0);
+        let coef04 = m21 * m33 - m31 * m23;
+        let coef06 = m11 * m33 - m31 * m13;
+        let coef07 = m11 * m23 - m21 * m13;
 
-            let swp00 = i32x4_shuffle::<1, 1, 5, 5>(self.z_axis.0, self.y_axis.0);
-            let swp01 = i32x4_shuffle::<0, 0, 4, 6>(swp0a, swp0a);
-            let swp02 = i32x4_shuffle::<0, 0, 4, 6>(swp0b, swp0b);
-            let swp03 = i32x4_shuffle::<3, 3, 7, 7>(self.z_axis.0, self.y_axis.0);
+        let coef08 = m21 * m32 - m31 * m22;
+        let coef10 = m11 * m32 - m31 * m12;
+        let coef11 = m11 * m22 - m21 * m12;
 
-            let mul00 = f32x4_mul(swp00, swp01);
-            let mul01 = f32x4_mul(swp02, swp03);
-            f32x4_sub(mul00, mul01)
-        };
-        let fac2 = {
-            let swp0a = i32x4_shuffle::<2, 2, 6, 6>(self.w_axis.0, self.z_axis.0);
-            let swp0b = i32x4_shuffle::<1, 1, 5, 5>(self.w_axis.0, self.z_axis.0);
+        let coef12 = m20 * m33 - m30 * m23;
+        let coef14 = m10 * m33 - m30 * m13;
+        let coef15 = m10 * m23 - m20 * m13;
 
-            let swp00 = i32x4_shuffle::<1, 1, 5, 5>(self.z_axis.0, self.y_axis.0);
-            let swp01 = i32x4_shuffle::<0, 0, 4, 6>(swp0a, swp0a);
-            let swp02 = i32x4_shuffle::<0, 0, 4, 6>(swp0b, swp0b);
-            let swp03 = i32x4_shuffle::<2, 2, 6, 6>(self.z_axis.0, self.y_axis.0);
+        let coef16 = m20 * m32 - m30 * m22;
+        let coef18 = m10 * m32 - m30 * m12;
+        let coef19 = m10 * m22 - m20 * m12;
 
-            let mul00 = f32x4_mul(swp00, swp01);
-            let mul01 = f32x4_mul(swp02, swp03);
-            f32x4_sub(mul00, mul01)
-        };
-        let fac3 = {
-            let swp0a = i32x4_shuffle::<3, 3, 7, 7>(self.w_axis.0, self.z_axis.0);
-            let swp0b = i32x4_shuffle::<0, 0, 4, 4>(self.w_axis.0, self.z_axis.0);
+        let coef20 = m20 * m31 - m30 * m21;
+        let coef22 = m10 * m31 - m30 * m11;
+        let coef23 = m10 * m21 - m20 * m11;
 
-            let swp00 = i32x4_shuffle::<0, 0, 4, 4>(self.z_axis.0, self.y_axis.0);
-            let swp01 = i32x4_shuffle::<0, 0, 4, 6>(swp0a, swp0a);
-            let swp02 = i32x4_shuffle::<0, 0, 4, 6>(swp0b, swp0b);
-            let swp03 = i32x4_shuffle::<3, 3, 7, 7>(self.z_axis.0, self.y_axis.0);
+        let fac0 = Vec4::new(coef00, coef00, coef02, coef03);
+        let fac1 = Vec4::new(coef04, coef04, coef06, coef07);
+        let fac2 = Vec4::new(coef08, coef08, coef10, coef11);
+        let fac3 = Vec4::new(coef12, coef12, coef14, coef15);
+        let fac4 = Vec4::new(coef16, coef16, coef18, coef19);
+        let fac5 = Vec4::new(coef20, coef20, coef22, coef23);
 
-            let mul00 = f32x4_mul(swp00, swp01);
-            let mul01 = f32x4_mul(swp02, swp03);
-            f32x4_sub(mul00, mul01)
-        };
-        let fac4 = {
-            let swp0a = i32x4_shuffle::<2, 2, 6, 6>(self.w_axis.0, self.z_axis.0);
-            let swp0b = i32x4_shuffle::<0, 0, 4, 4>(self.w_axis.0, self.z_axis.0);
+        let vec0 = Vec4::new(m10, m00, m00, m00);
+        let vec1 = Vec4::new(m11, m01, m01, m01);
+        let vec2 = Vec4::new(m12, m02, m02, m02);
+        let vec3 = Vec4::new(m13, m03, m03, m03);
 
-            let swp00 = i32x4_shuffle::<0, 0, 4, 4>(self.z_axis.0, self.y_axis.0);
-            let swp01 = i32x4_shuffle::<0, 0, 4, 6>(swp0a, swp0a);
-            let swp02 = i32x4_shuffle::<0, 0, 4, 6>(swp0b, swp0b);
-            let swp03 = i32x4_shuffle::<2, 2, 6, 6>(self.z_axis.0, self.y_axis.0);
+        let inv0 = vec1.mul(fac0).sub(vec2.mul(fac1)).add(vec3.mul(fac2));
+        let inv1 = vec0.mul(fac0).sub(vec2.mul(fac3)).add(vec3.mul(fac4));
+        let inv2 = vec0.mul(fac1).sub(vec1.mul(fac3)).add(vec3.mul(fac5));
+        let inv3 = vec0.mul(fac2).sub(vec1.mul(fac4)).add(vec2.mul(fac5));
 
-            let mul00 = f32x4_mul(swp00, swp01);
-            let mul01 = f32x4_mul(swp02, swp03);
-            f32x4_sub(mul00, mul01)
-        };
-        let fac5 = {
-            let swp0a = i32x4_shuffle::<1, 1, 5, 5>(self.w_axis.0, self.z_axis.0);
-            let swp0b = i32x4_shuffle::<0, 0, 4, 4>(self.w_axis.0, self.z_axis.0);
+        let sign_a = Vec4::new(1.0, -1.0, 1.0, -1.0);
+        let sign_b = Vec4::new(-1.0, 1.0, -1.0, 1.0);
 
-            let swp00 = i32x4_shuffle::<0, 0, 4, 4>(self.z_axis.0, self.y_axis.0);
-            let swp01 = i32x4_shuffle::<0, 0, 4, 6>(swp0a, swp0a);
-            let swp02 = i32x4_shuffle::<0, 0, 4, 6>(swp0b, swp0b);
-            let swp03 = i32x4_shuffle::<1, 1, 5, 5>(self.z_axis.0, self.y_axis.0);
+        let inverse = Self::from_cols(
+            inv0.mul(sign_a),
+            inv1.mul(sign_b),
+            inv2.mul(sign_a),
+            inv3.mul(sign_b),
+        );
 
-            let mul00 = f32x4_mul(swp00, swp01);
-            let mul01 = f32x4_mul(swp02, swp03);
-            f32x4_sub(mul00, mul01)
-        };
-        let sign_a = f32x4(-1.0, 1.0, -1.0, 1.0);
-        let sign_b = f32x4(1.0, -1.0, 1.0, -1.0);
+        let col0 = Vec4::new(
+            inverse.x_axis.x,
+            inverse.y_axis.x,
+            inverse.z_axis.x,
+            inverse.w_axis.x,
+        );
 
-        let temp0 = i32x4_shuffle::<0, 0, 4, 4>(self.y_axis.0, self.x_axis.0);
-        let vec0 = i32x4_shuffle::<0, 2, 6, 6>(temp0, temp0);
+        let dot0 = self.x_axis.mul(col0);
+        let dot1 = dot0.x + dot0.y + dot0.z + dot0.w;
 
-        let temp1 = i32x4_shuffle::<1, 1, 5, 5>(self.y_axis.0, self.x_axis.0);
-        let vec1 = i32x4_shuffle::<0, 2, 6, 6>(temp1, temp1);
+        glam_assert!(dot1 != 0.0);
 
-        let temp2 = i32x4_shuffle::<2, 2, 6, 6>(self.y_axis.0, self.x_axis.0);
-        let vec2 = i32x4_shuffle::<0, 2, 6, 6>(temp2, temp2);
-
-        let temp3 = i32x4_shuffle::<3, 3, 7, 7>(self.y_axis.0, self.x_axis.0);
-        let vec3 = i32x4_shuffle::<0, 2, 6, 6>(temp3, temp3);
-
-        let mul00 = f32x4_mul(vec1, fac0);
-        let mul01 = f32x4_mul(vec2, fac1);
-        let mul02 = f32x4_mul(vec3, fac2);
-        let sub00 = f32x4_sub(mul00, mul01);
-        let add00 = f32x4_add(sub00, mul02);
-        let inv0 = f32x4_mul(sign_b, add00);
-
-        let mul03 = f32x4_mul(vec0, fac0);
-        let mul04 = f32x4_mul(vec2, fac3);
-        let mul05 = f32x4_mul(vec3, fac4);
-        let sub01 = f32x4_sub(mul03, mul04);
-        let add01 = f32x4_add(sub01, mul05);
-        let inv1 = f32x4_mul(sign_a, add01);
-
-        let mul06 = f32x4_mul(vec0, fac1);
-        let mul07 = f32x4_mul(vec1, fac3);
-        let mul08 = f32x4_mul(vec3, fac5);
-        let sub02 = f32x4_sub(mul06, mul07);
-        let add02 = f32x4_add(sub02, mul08);
-        let inv2 = f32x4_mul(sign_b, add02);
-
-        let mul09 = f32x4_mul(vec0, fac2);
-        let mul10 = f32x4_mul(vec1, fac4);
-        let mul11 = f32x4_mul(vec2, fac5);
-        let sub03 = f32x4_sub(mul09, mul10);
-        let add03 = f32x4_add(sub03, mul11);
-        let inv3 = f32x4_mul(sign_a, add03);
-
-        let row0 = i32x4_shuffle::<0, 0, 4, 4>(inv0, inv1);
-        let row1 = i32x4_shuffle::<0, 0, 4, 4>(inv2, inv3);
-        let row2 = i32x4_shuffle::<0, 2, 4, 6>(row0, row1);
-
-        let dot0 = dot4(self.x_axis.0, row2);
-        glam_assert!(dot0 != 0.0);
-
-        let rcp0 = f32x4_splat(dot0.recip());
-
-        Self {
-            x_axis: Vec4(f32x4_mul(inv0, rcp0)),
-            y_axis: Vec4(f32x4_mul(inv1, rcp0)),
-            z_axis: Vec4(f32x4_mul(inv2, rcp0)),
-            w_axis: Vec4(f32x4_mul(inv3, rcp0)),
-        }
+        let rcp_det = dot1.recip();
+        inverse.mul(rcp_det)
     }
 
     /// Creates a left-handed view matrix using a camera position, an up direction, and a facing
@@ -1069,7 +985,7 @@ impl Mat4 {
         res = self.z_axis.mul(rhs.z).add(res);
         res = self.w_axis.add(res);
         res = res.mul(res.wwww().recip());
-        res.xyz()
+        res.truncate()
     }
 
     /// Transforms the given 3D vector as a point.
@@ -1092,7 +1008,7 @@ impl Mat4 {
         res = self.y_axis.mul(rhs.y).add(res);
         res = self.z_axis.mul(rhs.z).add(res);
         res = self.w_axis.add(res);
-        res.xyz()
+        res.truncate()
     }
 
     /// Transforms the give 3D vector as a direction.
@@ -1112,7 +1028,7 @@ impl Mat4 {
         let mut res = self.x_axis.mul(rhs.x);
         res = self.y_axis.mul(rhs.y).add(res);
         res = self.z_axis.mul(rhs.z).add(res);
-        res.xyz()
+        res.truncate()
     }
 
     /// Transforms the given [`Vec3A`] as 3D point.
@@ -1121,12 +1037,7 @@ impl Mat4 {
     #[inline]
     #[must_use]
     pub fn transform_point3a(&self, rhs: Vec3A) -> Vec3A {
-        glam_assert!(self.row(3).abs_diff_eq(Vec4::W, 1e-6));
-        let mut res = self.x_axis.mul(rhs.xxxx());
-        res = self.y_axis.mul(rhs.yyyy()).add(res);
-        res = self.z_axis.mul(rhs.zzzz()).add(res);
-        res = self.w_axis.add(res);
-        res.into()
+        self.transform_point3(rhs.into()).into()
     }
 
     /// Transforms the give [`Vec3A`] as 3D vector.
@@ -1135,22 +1046,25 @@ impl Mat4 {
     #[inline]
     #[must_use]
     pub fn transform_vector3a(&self, rhs: Vec3A) -> Vec3A {
-        glam_assert!(self.row(3).abs_diff_eq(Vec4::W, 1e-6));
-        let mut res = self.x_axis.mul(rhs.xxxx());
-        res = self.y_axis.mul(rhs.yyyy()).add(res);
-        res = self.z_axis.mul(rhs.zzzz()).add(res);
-        res.into()
+        self.transform_vector3(rhs.into()).into()
     }
 
     /// Transforms a 4D vector.
     #[inline]
     #[must_use]
     pub fn mul_vec4(&self, rhs: Vec4) -> Vec4 {
-        let mut res = self.x_axis.mul(rhs.xxxx());
-        res = res.add(self.y_axis.mul(rhs.yyyy()));
-        res = res.add(self.z_axis.mul(rhs.zzzz()));
-        res = res.add(self.w_axis.mul(rhs.wwww()));
+        let mut res = self.x_axis.mul(rhs.x);
+        res = res.add(self.y_axis.mul(rhs.y));
+        res = res.add(self.z_axis.mul(rhs.z));
+        res = res.add(self.w_axis.mul(rhs.w));
         res
+    }
+
+    /// Transforms a [`Vec4A`].
+    #[inline]
+    #[must_use]
+    pub fn mul_vec4a(&self, rhs: Vec4A) -> Vec4A {
+        self.mul_vec4(rhs.into()).into()
     }
 
     /// Multiplies two 4x4 matrices.
@@ -1371,6 +1285,26 @@ impl DivAssign<f32> for Mat4 {
     #[inline]
     fn div_assign(&mut self, rhs: f32) {
         *self = self.div_scalar(rhs);
+    }
+}
+
+impl Mul<Vec4A> for Mat4 {
+    type Output = Vec4A;
+    #[inline]
+    fn mul(self, rhs: Vec4A) -> Vec4A {
+        self.mul_vec4a(rhs)
+    }
+}
+
+impl From<Mat4A> for Mat4 {
+    #[inline]
+    fn from(m: Mat4A) -> Self {
+        Self {
+            x_axis: m.x_axis.into(),
+            y_axis: m.y_axis.into(),
+            z_axis: m.z_axis.into(),
+            w_axis: m.w_axis.into(),
+        }
     }
 }
 

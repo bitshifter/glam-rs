@@ -1,6 +1,6 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
-use crate::{f32::math, swizzles::*, DMat2, Mat3, Mat3A, Vec2};
+use crate::{f32::math, swizzles::*, DMat2, Mat2, Mat3, Mat3A, Vec2};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -11,8 +11,8 @@ use core::arch::wasm32::*;
 /// Creates a 2x2 matrix from two column vectors.
 #[inline(always)]
 #[must_use]
-pub const fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
-    Mat2::from_cols(x_axis, y_axis)
+pub const fn mat2a(x_axis: Vec2, y_axis: Vec2) -> Mat2A {
+    Mat2A::from_cols(x_axis, y_axis)
 }
 
 /// A 2x2 column major matrix.
@@ -22,9 +22,9 @@ pub const fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
 /// This type is 16 byte aligned.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
-pub struct Mat2(pub(crate) v128);
+pub struct Mat2A(pub(crate) v128);
 
-impl Mat2 {
+impl Mat2A {
     /// A 2x2 matrix with all elements set to `0.0`.
     pub const ZERO: Self = Self::from_cols(Vec2::ZERO, Vec2::ZERO);
 
@@ -239,7 +239,7 @@ impl Mat2 {
         let sub = f32x4_sub(prod, i32x4_shuffle::<1, 1, 5, 5>(prod, prod));
         let det = i32x4_shuffle::<0, 0, 4, 4>(sub, sub);
         let tmp = f32x4_div(SIGN, det);
-        glam_assert!(Mat2(tmp).is_finite());
+        glam_assert!(Mat2A(tmp).is_finite());
         let dbca = i32x4_shuffle::<3, 1, 6, 4>(abcd, abcd);
         Self(f32x4_mul(dbca, tmp))
     }
@@ -303,7 +303,8 @@ impl Mat2 {
     #[inline]
     #[must_use]
     pub fn div_scalar(&self, rhs: f32) -> Self {
-        Self(f32x4_div(self.0, f32x4_splat(rhs)))
+        let rhs = Vec2::splat(rhs);
+        Self::from_cols(self.x_axis.div(rhs), self.y_axis.div(rhs))
     }
 
     /// Returns true if the absolute difference of all elements between `self` and `rhs`
@@ -335,14 +336,14 @@ impl Mat2 {
     }
 }
 
-impl Default for Mat2 {
+impl Default for Mat2A {
     #[inline]
     fn default() -> Self {
         Self::IDENTITY
     }
 }
 
-impl Add<Mat2> for Mat2 {
+impl Add<Mat2A> for Mat2A {
     type Output = Self;
     #[inline]
     fn add(self, rhs: Self) -> Self::Output {
@@ -350,14 +351,14 @@ impl Add<Mat2> for Mat2 {
     }
 }
 
-impl AddAssign<Mat2> for Mat2 {
+impl AddAssign<Mat2A> for Mat2A {
     #[inline]
     fn add_assign(&mut self, rhs: Self) {
         *self = self.add_mat2(&rhs);
     }
 }
 
-impl Sub<Mat2> for Mat2 {
+impl Sub<Mat2A> for Mat2A {
     type Output = Self;
     #[inline]
     fn sub(self, rhs: Self) -> Self::Output {
@@ -365,14 +366,14 @@ impl Sub<Mat2> for Mat2 {
     }
 }
 
-impl SubAssign<Mat2> for Mat2 {
+impl SubAssign<Mat2A> for Mat2A {
     #[inline]
     fn sub_assign(&mut self, rhs: Self) {
         *self = self.sub_mat2(&rhs);
     }
 }
 
-impl Neg for Mat2 {
+impl Neg for Mat2A {
     type Output = Self;
     #[inline]
     fn neg(self) -> Self::Output {
@@ -380,7 +381,7 @@ impl Neg for Mat2 {
     }
 }
 
-impl Mul<Mat2> for Mat2 {
+impl Mul<Mat2A> for Mat2A {
     type Output = Self;
     #[inline]
     fn mul(self, rhs: Self) -> Self::Output {
@@ -388,14 +389,14 @@ impl Mul<Mat2> for Mat2 {
     }
 }
 
-impl MulAssign<Mat2> for Mat2 {
+impl MulAssign<Mat2A> for Mat2A {
     #[inline]
     fn mul_assign(&mut self, rhs: Self) {
         *self = self.mul_mat2(&rhs);
     }
 }
 
-impl Mul<Vec2> for Mat2 {
+impl Mul<Vec2> for Mat2A {
     type Output = Vec2;
     #[inline]
     fn mul(self, rhs: Vec2) -> Self::Output {
@@ -403,15 +404,15 @@ impl Mul<Vec2> for Mat2 {
     }
 }
 
-impl Mul<Mat2> for f32 {
-    type Output = Mat2;
+impl Mul<Mat2A> for f32 {
+    type Output = Mat2A;
     #[inline]
-    fn mul(self, rhs: Mat2) -> Self::Output {
+    fn mul(self, rhs: Mat2A) -> Self::Output {
         rhs.mul_scalar(self)
     }
 }
 
-impl Mul<f32> for Mat2 {
+impl Mul<f32> for Mat2A {
     type Output = Self;
     #[inline]
     fn mul(self, rhs: f32) -> Self::Output {
@@ -419,22 +420,22 @@ impl Mul<f32> for Mat2 {
     }
 }
 
-impl MulAssign<f32> for Mat2 {
+impl MulAssign<f32> for Mat2A {
     #[inline]
     fn mul_assign(&mut self, rhs: f32) {
         *self = self.mul_scalar(rhs);
     }
 }
 
-impl Div<Mat2> for f32 {
-    type Output = Mat2;
+impl Div<Mat2A> for f32 {
+    type Output = Mat2A;
     #[inline]
-    fn div(self, rhs: Mat2) -> Self::Output {
+    fn div(self, rhs: Mat2A) -> Self::Output {
         rhs.div_scalar(self)
     }
 }
 
-impl Div<f32> for Mat2 {
+impl Div<f32> for Mat2A {
     type Output = Self;
     #[inline]
     fn div(self, rhs: f32) -> Self::Output {
@@ -442,14 +443,21 @@ impl Div<f32> for Mat2 {
     }
 }
 
-impl DivAssign<f32> for Mat2 {
+impl DivAssign<f32> for Mat2A {
     #[inline]
     fn div_assign(&mut self, rhs: f32) {
         *self = self.div_scalar(rhs);
     }
 }
 
-impl Sum<Self> for Mat2 {
+impl From<Mat2> for Mat2A {
+    #[inline]
+    fn from(m: Mat2) -> Self {
+        Self::from_cols(m.x_axis, m.y_axis)
+    }
+}
+
+impl Sum<Self> for Mat2A {
     fn sum<I>(iter: I) -> Self
     where
         I: Iterator<Item = Self>,
@@ -458,7 +466,7 @@ impl Sum<Self> for Mat2 {
     }
 }
 
-impl<'a> Sum<&'a Self> for Mat2 {
+impl<'a> Sum<&'a Self> for Mat2A {
     fn sum<I>(iter: I) -> Self
     where
         I: Iterator<Item = &'a Self>,
@@ -467,7 +475,7 @@ impl<'a> Sum<&'a Self> for Mat2 {
     }
 }
 
-impl Product for Mat2 {
+impl Product for Mat2A {
     fn product<I>(iter: I) -> Self
     where
         I: Iterator<Item = Self>,
@@ -476,7 +484,7 @@ impl Product for Mat2 {
     }
 }
 
-impl<'a> Product<&'a Self> for Mat2 {
+impl<'a> Product<&'a Self> for Mat2A {
     fn product<I>(iter: I) -> Self
     where
         I: Iterator<Item = &'a Self>,
@@ -485,7 +493,7 @@ impl<'a> Product<&'a Self> for Mat2 {
     }
 }
 
-impl PartialEq for Mat2 {
+impl PartialEq for Mat2A {
     #[inline]
     fn eq(&self, rhs: &Self) -> bool {
         self.x_axis.eq(&rhs.x_axis) && self.y_axis.eq(&rhs.y_axis)
@@ -493,7 +501,7 @@ impl PartialEq for Mat2 {
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl AsRef<[f32; 4]> for Mat2 {
+impl AsRef<[f32; 4]> for Mat2A {
     #[inline]
     fn as_ref(&self) -> &[f32; 4] {
         unsafe { &*(self as *const Self as *const [f32; 4]) }
@@ -501,14 +509,14 @@ impl AsRef<[f32; 4]> for Mat2 {
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl AsMut<[f32; 4]> for Mat2 {
+impl AsMut<[f32; 4]> for Mat2A {
     #[inline]
     fn as_mut(&mut self) -> &mut [f32; 4] {
         unsafe { &mut *(self as *mut Self as *mut [f32; 4]) }
     }
 }
 
-impl core::ops::Deref for Mat2 {
+impl core::ops::Deref for Mat2A {
     type Target = crate::deref::Cols2<Vec2>;
     #[inline]
     fn deref(&self) -> &Self::Target {
@@ -516,7 +524,7 @@ impl core::ops::Deref for Mat2 {
     }
 }
 
-impl core::ops::DerefMut for Mat2 {
+impl core::ops::DerefMut for Mat2A {
     #[inline]
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe { &mut *(self as *mut Self as *mut Self::Target) }
@@ -524,9 +532,9 @@ impl core::ops::DerefMut for Mat2 {
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl fmt::Debug for Mat2 {
+impl fmt::Debug for Mat2A {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
-        fmt.debug_struct(stringify!(Mat2))
+        fmt.debug_struct(stringify!(Mat2A))
             .field("x_axis", &self.x_axis)
             .field("y_axis", &self.y_axis)
             .finish()
@@ -534,7 +542,7 @@ impl fmt::Debug for Mat2 {
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl fmt::Display for Mat2 {
+impl fmt::Display for Mat2A {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(p) = f.precision() {
             write!(f, "[{:.*}, {:.*}]", p, self.x_axis, p, self.y_axis)

@@ -64,30 +64,27 @@ macro_rules! impl_vec4_tests {
                 $vec4::new(0 as $t, 0 as $t, 1 as $t, 0 as $t),
                 glam::BVec4::new(false, false, true, false).into()
             );
+            assert_eq!(
+                $vec4::new(0 as $t, 0 as $t, 0 as $t, 1 as $t),
+                glam::BVec4::new(false, false, false, true).into()
+            );
 
-            #[cfg(not(feature = "scalar-math"))]
-            {
-                assert_eq!(
-                    $vec4::new(0 as $t, 0 as $t, 0 as $t, 1 as $t),
-                    glam::BVec4::new(false, false, false, true).into()
-                );
-                assert_eq!(
-                    $vec4::new(1 as $t, 0 as $t, 0 as $t, 0 as $t),
-                    glam::BVec4A::new(true, false, false, false).into()
-                );
-                assert_eq!(
-                    $vec4::new(0 as $t, 1 as $t, 0 as $t, 0 as $t),
-                    glam::BVec4A::new(false, true, false, false).into()
-                );
-                assert_eq!(
-                    $vec4::new(0 as $t, 0 as $t, 1 as $t, 0 as $t),
-                    glam::BVec4A::new(false, false, true, false).into()
-                );
-                assert_eq!(
-                    $vec4::new(0 as $t, 0 as $t, 0 as $t, 1 as $t),
-                    glam::BVec4A::new(false, false, false, true).into()
-                );
-            }
+            assert_eq!(
+                $vec4::new(1 as $t, 0 as $t, 0 as $t, 0 as $t),
+                glam::BVec4A::new(true, false, false, false).into()
+            );
+            assert_eq!(
+                $vec4::new(0 as $t, 1 as $t, 0 as $t, 0 as $t),
+                glam::BVec4A::new(false, true, false, false).into()
+            );
+            assert_eq!(
+                $vec4::new(0 as $t, 0 as $t, 1 as $t, 0 as $t),
+                glam::BVec4A::new(false, false, true, false).into()
+            );
+            assert_eq!(
+                $vec4::new(0 as $t, 0 as $t, 0 as $t, 1 as $t),
+                glam::BVec4A::new(false, false, false, true).into()
+            );
 
             assert_eq!($vec4::new(1 as $t, 0 as $t, 0 as $t, 0 as $t), $vec4::X);
             assert_eq!($vec4::new(0 as $t, 1 as $t, 0 as $t, 0 as $t), $vec4::Y);
@@ -1377,67 +1374,18 @@ macro_rules! impl_vec4_bit_op_tests {
 }
 
 mod vec4 {
-    #[cfg(feature = "scalar-math")]
-    use glam::BVec4;
-    #[cfg(not(feature = "scalar-math"))]
-    use glam::BVec4A;
-    use glam::{vec4, Vec2, Vec3, Vec4};
+    use glam::{vec4, BVec4, Vec2, Vec3, Vec3A, Vec4, Vec4A};
 
     glam_test!(test_align, {
         use std::mem;
         assert_eq!(16, mem::size_of::<Vec4>());
-        if cfg!(any(not(feature = "scalar-math"), feature = "cuda")) {
-            assert_eq!(16, mem::align_of::<Vec4>());
-        } else {
-            assert_eq!(4, mem::align_of::<Vec4>());
-        }
-        #[cfg(not(feature = "scalar-math"))]
-        {
-            assert_eq!(16, mem::size_of::<BVec4A>());
-            assert_eq!(16, mem::align_of::<BVec4A>());
-        }
-        #[cfg(feature = "scalar-math")]
-        {
-            assert_eq!(4, mem::size_of::<BVec4>());
-            assert_eq!(1, mem::align_of::<BVec4>());
-        }
+        #[cfg(not(feature = "cuda"))]
+        assert_eq!(4, mem::align_of::<Vec4>());
+        #[cfg(feature = "cuda")]
+        assert_eq!(16, mem::align_of::<Vec4>());
+        assert_eq!(4, mem::size_of::<BVec4>());
+        assert_eq!(1, mem::align_of::<BVec4>());
     });
-
-    #[cfg(all(
-        target_feature = "sse2",
-        not(any(feature = "core-simd", feature = "scalar-math"))
-    ))]
-    #[test]
-    fn test_m128() {
-        #[cfg(target_arch = "x86")]
-        use core::arch::x86::*;
-        #[cfg(target_arch = "x86_64")]
-        use core::arch::x86_64::*;
-
-        #[repr(C, align(16))]
-        struct F32x4_A16([f32; 4]);
-
-        let v0 = Vec4::new(1.0, 2.0, 3.0, 4.0);
-        let m0: __m128 = v0.into();
-        let mut a0 = F32x4_A16([0.0, 0.0, 0.0, 0.0]);
-        unsafe {
-            _mm_store_ps(a0.0.as_mut_ptr(), m0);
-        }
-        assert_eq!([1.0, 2.0, 3.0, 4.0], a0.0);
-        let v1 = Vec4::from(m0);
-        assert_eq!(v0, v1);
-
-        #[repr(C, align(16))]
-        struct U32x4_A16([u32; 4]);
-
-        let v0 = BVec4A::new(true, false, true, false);
-        let m0: __m128 = v0.into();
-        let mut a0 = U32x4_A16([1, 2, 3, 4]);
-        unsafe {
-            _mm_store_ps(a0.0.as_mut_ptr() as *mut f32, m0);
-        }
-        assert_eq!([0xffffffff, 0, 0xffffffff, 0], a0.0);
-    }
 
     glam_test!(test_as, {
         use glam::{DVec4, I16Vec4, I64Vec4, IVec4, U16Vec4, U64Vec4, UVec4, Vec4};
@@ -1650,8 +1598,7 @@ mod vec4 {
         );
     });
 
-    glam_test!(test_vec3a, {
-        use glam::Vec3A;
+    glam_test!(test_from_vec3a, {
         assert_eq!(
             Vec4::new(1.0, 2.0, 3.0, 4.0),
             Vec4::from((Vec3A::new(1.0, 2.0, 3.0), 4.0))
@@ -1662,11 +1609,82 @@ mod vec4 {
         );
     });
 
-    #[cfg(not(feature = "scalar-math"))]
-    impl_vec4_float_tests!(f32, vec4, Vec4, Vec3, Vec2, BVec4A);
+    glam_test!(test_from_vec4a, {
+        assert_eq!(
+            Vec4::new(1.0, 2.0, 3.0, 4.0),
+            Vec4::from(Vec4A::new(1.0, 2.0, 3.0, 4.0))
+        );
+    });
 
-    #[cfg(feature = "scalar-math")]
     impl_vec4_float_tests!(f32, vec4, Vec4, Vec3, Vec2, BVec4);
+}
+
+mod vec4a {
+    use glam::{vec4a, BVec4A, Vec2, Vec3, Vec3A, Vec4, Vec4A};
+
+    glam_test!(test_align, {
+        use std::mem;
+        assert_eq!(16, mem::size_of::<Vec4A>());
+        assert_eq!(16, mem::align_of::<Vec4A>());
+        assert_eq!(16, mem::size_of::<BVec4A>());
+        assert_eq!(16, mem::align_of::<BVec4A>());
+    });
+
+    #[cfg(all(
+        target_feature = "sse2",
+        not(any(feature = "core-simd", feature = "scalar-math"))
+    ))]
+    #[test]
+    fn test_m128() {
+        #[cfg(target_arch = "x86")]
+        use core::arch::x86::*;
+        #[cfg(target_arch = "x86_64")]
+        use core::arch::x86_64::*;
+
+        #[repr(C, align(16))]
+        struct F32x4_A16([f32; 4]);
+
+        let v0 = Vec4A::new(1.0, 2.0, 3.0, 4.0);
+        let m0: __m128 = v0.into();
+        let mut a0 = F32x4_A16([0.0, 0.0, 0.0, 0.0]);
+        unsafe {
+            _mm_store_ps(a0.0.as_mut_ptr(), m0);
+        }
+        assert_eq!([1.0, 2.0, 3.0, 4.0], a0.0);
+        let v1 = Vec4A::from(m0);
+        assert_eq!(v0, v1);
+
+        #[repr(C, align(16))]
+        struct U32x4_A16([u32; 4]);
+
+        let v0 = BVec4A::new(true, false, true, false);
+        let m0: __m128 = v0.into();
+        let mut a0 = U32x4_A16([1, 2, 3, 4]);
+        unsafe {
+            _mm_store_ps(a0.0.as_mut_ptr() as *mut f32, m0);
+        }
+        assert_eq!([0xffffffff, 0, 0xffffffff, 0], a0.0);
+    }
+
+    glam_test!(test_from_vec3a, {
+        assert_eq!(
+            Vec4A::new(1.0, 2.0, 3.0, 4.0),
+            Vec4A::from((Vec3A::new(1.0, 2.0, 3.0), 4.0))
+        );
+        assert_eq!(
+            Vec4A::new(1.0, 2.0, 3.0, 4.0),
+            Vec4A::from((1.0, Vec3A::new(2.0, 3.0, 4.0)))
+        );
+    });
+
+    glam_test!(test_from_vec4, {
+        assert_eq!(
+            Vec4A::new(1.0, 2.0, 3.0, 4.0),
+            Vec4A::from(Vec4::new(1.0, 2.0, 3.0, 4.0))
+        );
+    });
+
+    impl_vec4_float_tests!(f32, vec4a, Vec4A, Vec3, Vec2, BVec4A);
 }
 
 mod dvec4 {

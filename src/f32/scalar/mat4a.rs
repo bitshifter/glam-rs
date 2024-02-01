@@ -1,6 +1,8 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
-use crate::{f32::math, swizzles::*, DMat4, EulerRot, Mat3, Mat3A, Quat, Vec3, Vec3A, Vec4};
+use crate::{
+    f32::math, swizzles::*, DMat4, EulerRot, Mat3, Mat3A, Mat4, Quat, Vec3, Vec3A, Vec4, Vec4A,
+};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -9,8 +11,8 @@ use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAss
 /// Creates a 4x4 matrix from four column vectors.
 #[inline(always)]
 #[must_use]
-pub const fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat4 {
-    Mat4::from_cols(x_axis, y_axis, z_axis, w_axis)
+pub const fn mat4a(x_axis: Vec4A, y_axis: Vec4A, z_axis: Vec4A, w_axis: Vec4A) -> Mat4A {
+    Mat4A::from_cols(x_axis, y_axis, z_axis, w_axis)
 }
 
 /// A 4x4 column major matrix.
@@ -43,30 +45,24 @@ pub const fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat
 /// The resulting perspective project can be use to transform 3D vectors as points with
 /// perspective correction using the [`Self::project_point3()`] convenience method.
 #[derive(Clone, Copy)]
-#[cfg_attr(
-    any(
-        not(any(feature = "scalar-math", target_arch = "spirv")),
-        feature = "cuda"
-    ),
-    repr(align(16))
-)]
+#[cfg_attr(any(not(target_arch = "spirv"), feature = "cuda"), repr(align(16)))]
 #[repr(C)]
-pub struct Mat4 {
-    pub x_axis: Vec4,
-    pub y_axis: Vec4,
-    pub z_axis: Vec4,
-    pub w_axis: Vec4,
+pub struct Mat4A {
+    pub x_axis: Vec4A,
+    pub y_axis: Vec4A,
+    pub z_axis: Vec4A,
+    pub w_axis: Vec4A,
 }
 
-impl Mat4 {
+impl Mat4A {
     /// A 4x4 matrix with all elements set to `0.0`.
-    pub const ZERO: Self = Self::from_cols(Vec4::ZERO, Vec4::ZERO, Vec4::ZERO, Vec4::ZERO);
+    pub const ZERO: Self = Self::from_cols(Vec4A::ZERO, Vec4A::ZERO, Vec4A::ZERO, Vec4A::ZERO);
 
     /// A 4x4 identity matrix, where all diagonal elements are `1`, and all off-diagonal elements are `0`.
-    pub const IDENTITY: Self = Self::from_cols(Vec4::X, Vec4::Y, Vec4::Z, Vec4::W);
+    pub const IDENTITY: Self = Self::from_cols(Vec4A::X, Vec4A::Y, Vec4A::Z, Vec4A::W);
 
     /// All NAN:s.
-    pub const NAN: Self = Self::from_cols(Vec4::NAN, Vec4::NAN, Vec4::NAN, Vec4::NAN);
+    pub const NAN: Self = Self::from_cols(Vec4A::NAN, Vec4A::NAN, Vec4A::NAN, Vec4A::NAN);
 
     #[allow(clippy::too_many_arguments)]
     #[inline(always)]
@@ -90,17 +86,17 @@ impl Mat4 {
         m33: f32,
     ) -> Self {
         Self {
-            x_axis: Vec4::new(m00, m01, m02, m03),
-            y_axis: Vec4::new(m10, m11, m12, m13),
-            z_axis: Vec4::new(m20, m21, m22, m23),
-            w_axis: Vec4::new(m30, m31, m32, m33),
+            x_axis: Vec4A::new(m00, m01, m02, m03),
+            y_axis: Vec4A::new(m10, m11, m12, m13),
+            z_axis: Vec4A::new(m20, m21, m22, m23),
+            w_axis: Vec4A::new(m30, m31, m32, m33),
         }
     }
 
     /// Creates a 4x4 matrix from four column vectors.
     #[inline(always)]
     #[must_use]
-    pub const fn from_cols(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Self {
+    pub const fn from_cols(x_axis: Vec4A, y_axis: Vec4A, z_axis: Vec4A, w_axis: Vec4A) -> Self {
         Self {
             x_axis,
             y_axis,
@@ -153,10 +149,10 @@ impl Mat4 {
     #[must_use]
     pub const fn from_cols_array_2d(m: &[[f32; 4]; 4]) -> Self {
         Self::from_cols(
-            Vec4::from_array(m[0]),
-            Vec4::from_array(m[1]),
-            Vec4::from_array(m[2]),
-            Vec4::from_array(m[3]),
+            Vec4A::from_array(m[0]),
+            Vec4A::from_array(m[1]),
+            Vec4A::from_array(m[2]),
+            Vec4A::from_array(m[3]),
         )
     }
 
@@ -186,7 +182,7 @@ impl Mat4 {
 
     #[inline]
     #[must_use]
-    fn quat_to_axes(rotation: Quat) -> (Vec4, Vec4, Vec4) {
+    fn quat_to_axes(rotation: Quat) -> (Vec4A, Vec4A, Vec4A) {
         glam_assert!(rotation.is_normalized());
 
         let (x, y, z, w) = rotation.into();
@@ -203,9 +199,9 @@ impl Mat4 {
         let wy = w * y2;
         let wz = w * z2;
 
-        let x_axis = Vec4::new(1.0 - (yy + zz), xy + wz, xz - wy, 0.0);
-        let y_axis = Vec4::new(xy - wz, 1.0 - (xx + zz), yz + wx, 0.0);
-        let z_axis = Vec4::new(xz + wy, yz - wx, 1.0 - (xx + yy), 0.0);
+        let x_axis = Vec4A::new(1.0 - (yy + zz), xy + wz, xz - wy, 0.0);
+        let y_axis = Vec4A::new(xy - wz, 1.0 - (xx + zz), yz + wx, 0.0);
+        let z_axis = Vec4A::new(xz + wy, yz - wx, 1.0 - (xx + yy), 0.0);
         (x_axis, y_axis, z_axis)
     }
 
@@ -226,7 +222,7 @@ impl Mat4 {
             x_axis.mul(scale.x),
             y_axis.mul(scale.y),
             z_axis.mul(scale.z),
-            Vec4::from((translation, 1.0)),
+            Vec4A::from((translation, 1.0)),
         )
     }
 
@@ -242,7 +238,7 @@ impl Mat4 {
     #[must_use]
     pub fn from_rotation_translation(rotation: Quat, translation: Vec3) -> Self {
         let (x_axis, y_axis, z_axis) = Self::quat_to_axes(rotation);
-        Self::from_cols(x_axis, y_axis, z_axis, Vec4::from((translation, 1.0)))
+        Self::from_cols(x_axis, y_axis, z_axis, Vec4A::from((translation, 1.0)))
     }
 
     /// Extracts `scale`, `rotation` and `translation` from `self`. The input matrix is
@@ -274,7 +270,7 @@ impl Mat4 {
             self.z_axis.mul(inv_scale.z).xyz(),
         );
 
-        let translation = self.w_axis.xyz();
+        let translation = self.w_axis.truncate();
 
         (scale, rotation, translation)
     }
@@ -291,7 +287,7 @@ impl Mat4 {
     #[must_use]
     pub fn from_quat(rotation: Quat) -> Self {
         let (x_axis, y_axis, z_axis) = Self::quat_to_axes(rotation);
-        Self::from_cols(x_axis, y_axis, z_axis, Vec4::W)
+        Self::from_cols(x_axis, y_axis, z_axis, Vec4A::W)
     }
 
     /// Creates an affine transformation matrix from the given 3x3 linear transformation
@@ -303,10 +299,10 @@ impl Mat4 {
     #[must_use]
     pub fn from_mat3(m: Mat3) -> Self {
         Self::from_cols(
-            Vec4::from((m.x_axis, 0.0)),
-            Vec4::from((m.y_axis, 0.0)),
-            Vec4::from((m.z_axis, 0.0)),
-            Vec4::W,
+            Vec4A::from((m.x_axis, 0.0)),
+            Vec4A::from((m.y_axis, 0.0)),
+            Vec4A::from((m.z_axis, 0.0)),
+            Vec4A::W,
         )
     }
 
@@ -319,10 +315,10 @@ impl Mat4 {
     #[must_use]
     pub fn from_mat3a(m: Mat3A) -> Self {
         Self::from_cols(
-            Vec4::from((m.x_axis, 0.0)),
-            Vec4::from((m.y_axis, 0.0)),
-            Vec4::from((m.z_axis, 0.0)),
-            Vec4::W,
+            Vec4A::from((m.x_axis, 0.0)),
+            Vec4A::from((m.y_axis, 0.0)),
+            Vec4A::from((m.z_axis, 0.0)),
+            Vec4A::W,
         )
     }
 
@@ -334,10 +330,10 @@ impl Mat4 {
     #[must_use]
     pub fn from_translation(translation: Vec3) -> Self {
         Self::from_cols(
-            Vec4::X,
-            Vec4::Y,
-            Vec4::Z,
-            Vec4::new(translation.x, translation.y, translation.z, 1.0),
+            Vec4A::X,
+            Vec4A::Y,
+            Vec4A::Z,
+            Vec4A::new(translation.x, translation.y, translation.z, 1.0),
         )
     }
 
@@ -363,25 +359,25 @@ impl Mat4 {
         let xzomc = axis.x * axis.z * omc;
         let yzomc = axis.y * axis.z * omc;
         Self::from_cols(
-            Vec4::new(
+            Vec4A::new(
                 axis_sq.x * omc + cos,
                 xyomc + axis_sin.z,
                 xzomc - axis_sin.y,
                 0.0,
             ),
-            Vec4::new(
+            Vec4A::new(
                 xyomc - axis_sin.z,
                 axis_sq.y * omc + cos,
                 yzomc + axis_sin.x,
                 0.0,
             ),
-            Vec4::new(
+            Vec4A::new(
                 xzomc + axis_sin.y,
                 yzomc - axis_sin.x,
                 axis_sq.z * omc + cos,
                 0.0,
             ),
-            Vec4::W,
+            Vec4A::W,
         )
     }
 
@@ -407,10 +403,10 @@ impl Mat4 {
     pub fn from_rotation_x(angle: f32) -> Self {
         let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
-            Vec4::X,
-            Vec4::new(0.0, cosa, sina, 0.0),
-            Vec4::new(0.0, -sina, cosa, 0.0),
-            Vec4::W,
+            Vec4A::X,
+            Vec4A::new(0.0, cosa, sina, 0.0),
+            Vec4A::new(0.0, -sina, cosa, 0.0),
+            Vec4A::W,
         )
     }
 
@@ -424,10 +420,10 @@ impl Mat4 {
     pub fn from_rotation_y(angle: f32) -> Self {
         let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
-            Vec4::new(cosa, 0.0, -sina, 0.0),
-            Vec4::Y,
-            Vec4::new(sina, 0.0, cosa, 0.0),
-            Vec4::W,
+            Vec4A::new(cosa, 0.0, -sina, 0.0),
+            Vec4A::Y,
+            Vec4A::new(sina, 0.0, cosa, 0.0),
+            Vec4A::W,
         )
     }
 
@@ -441,10 +437,10 @@ impl Mat4 {
     pub fn from_rotation_z(angle: f32) -> Self {
         let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
-            Vec4::new(cosa, sina, 0.0, 0.0),
-            Vec4::new(-sina, cosa, 0.0, 0.0),
-            Vec4::Z,
-            Vec4::W,
+            Vec4A::new(cosa, sina, 0.0, 0.0),
+            Vec4A::new(-sina, cosa, 0.0, 0.0),
+            Vec4A::Z,
+            Vec4A::W,
         )
     }
 
@@ -463,10 +459,10 @@ impl Mat4 {
         glam_assert!(scale.cmpne(Vec3::ZERO).any());
 
         Self::from_cols(
-            Vec4::new(scale.x, 0.0, 0.0, 0.0),
-            Vec4::new(0.0, scale.y, 0.0, 0.0),
-            Vec4::new(0.0, 0.0, scale.z, 0.0),
-            Vec4::W,
+            Vec4A::new(scale.x, 0.0, 0.0, 0.0),
+            Vec4A::new(0.0, scale.y, 0.0, 0.0),
+            Vec4A::new(0.0, 0.0, scale.z, 0.0),
+            Vec4A::W,
         )
     }
 
@@ -516,7 +512,7 @@ impl Mat4 {
     /// Panics if `index` is greater than 3.
     #[inline]
     #[must_use]
-    pub fn col(&self, index: usize) -> Vec4 {
+    pub fn col(&self, index: usize) -> Vec4A {
         match index {
             0 => self.x_axis,
             1 => self.y_axis,
@@ -532,7 +528,7 @@ impl Mat4 {
     ///
     /// Panics if `index` is greater than 3.
     #[inline]
-    pub fn col_mut(&mut self, index: usize) -> &mut Vec4 {
+    pub fn col_mut(&mut self, index: usize) -> &mut Vec4A {
         match index {
             0 => &mut self.x_axis,
             1 => &mut self.y_axis,
@@ -549,12 +545,12 @@ impl Mat4 {
     /// Panics if `index` is greater than 3.
     #[inline]
     #[must_use]
-    pub fn row(&self, index: usize) -> Vec4 {
+    pub fn row(&self, index: usize) -> Vec4A {
         match index {
-            0 => Vec4::new(self.x_axis.x, self.y_axis.x, self.z_axis.x, self.w_axis.x),
-            1 => Vec4::new(self.x_axis.y, self.y_axis.y, self.z_axis.y, self.w_axis.y),
-            2 => Vec4::new(self.x_axis.z, self.y_axis.z, self.z_axis.z, self.w_axis.z),
-            3 => Vec4::new(self.x_axis.w, self.y_axis.w, self.z_axis.w, self.w_axis.w),
+            0 => Vec4A::new(self.x_axis.x, self.y_axis.x, self.z_axis.x, self.w_axis.x),
+            1 => Vec4A::new(self.x_axis.y, self.y_axis.y, self.z_axis.y, self.w_axis.y),
+            2 => Vec4A::new(self.x_axis.z, self.y_axis.z, self.z_axis.z, self.w_axis.z),
+            3 => Vec4A::new(self.x_axis.w, self.y_axis.w, self.z_axis.w, self.w_axis.w),
             _ => panic!("index out of bounds"),
         }
     }
@@ -582,10 +578,10 @@ impl Mat4 {
     #[must_use]
     pub fn transpose(&self) -> Self {
         Self {
-            x_axis: Vec4::new(self.x_axis.x, self.y_axis.x, self.z_axis.x, self.w_axis.x),
-            y_axis: Vec4::new(self.x_axis.y, self.y_axis.y, self.z_axis.y, self.w_axis.y),
-            z_axis: Vec4::new(self.x_axis.z, self.y_axis.z, self.z_axis.z, self.w_axis.z),
-            w_axis: Vec4::new(self.x_axis.w, self.y_axis.w, self.z_axis.w, self.w_axis.w),
+            x_axis: Vec4A::new(self.x_axis.x, self.y_axis.x, self.z_axis.x, self.w_axis.x),
+            y_axis: Vec4A::new(self.x_axis.y, self.y_axis.y, self.z_axis.y, self.w_axis.y),
+            z_axis: Vec4A::new(self.x_axis.z, self.y_axis.z, self.z_axis.z, self.w_axis.z),
+            w_axis: Vec4A::new(self.x_axis.w, self.y_axis.w, self.z_axis.w, self.w_axis.w),
         }
     }
 
@@ -648,25 +644,25 @@ impl Mat4 {
         let coef22 = m10 * m31 - m30 * m11;
         let coef23 = m10 * m21 - m20 * m11;
 
-        let fac0 = Vec4::new(coef00, coef00, coef02, coef03);
-        let fac1 = Vec4::new(coef04, coef04, coef06, coef07);
-        let fac2 = Vec4::new(coef08, coef08, coef10, coef11);
-        let fac3 = Vec4::new(coef12, coef12, coef14, coef15);
-        let fac4 = Vec4::new(coef16, coef16, coef18, coef19);
-        let fac5 = Vec4::new(coef20, coef20, coef22, coef23);
+        let fac0 = Vec4A::new(coef00, coef00, coef02, coef03);
+        let fac1 = Vec4A::new(coef04, coef04, coef06, coef07);
+        let fac2 = Vec4A::new(coef08, coef08, coef10, coef11);
+        let fac3 = Vec4A::new(coef12, coef12, coef14, coef15);
+        let fac4 = Vec4A::new(coef16, coef16, coef18, coef19);
+        let fac5 = Vec4A::new(coef20, coef20, coef22, coef23);
 
-        let vec0 = Vec4::new(m10, m00, m00, m00);
-        let vec1 = Vec4::new(m11, m01, m01, m01);
-        let vec2 = Vec4::new(m12, m02, m02, m02);
-        let vec3 = Vec4::new(m13, m03, m03, m03);
+        let vec0 = Vec4A::new(m10, m00, m00, m00);
+        let vec1 = Vec4A::new(m11, m01, m01, m01);
+        let vec2 = Vec4A::new(m12, m02, m02, m02);
+        let vec3 = Vec4A::new(m13, m03, m03, m03);
 
         let inv0 = vec1.mul(fac0).sub(vec2.mul(fac1)).add(vec3.mul(fac2));
         let inv1 = vec0.mul(fac0).sub(vec2.mul(fac3)).add(vec3.mul(fac4));
         let inv2 = vec0.mul(fac1).sub(vec1.mul(fac3)).add(vec3.mul(fac5));
         let inv3 = vec0.mul(fac2).sub(vec1.mul(fac4)).add(vec2.mul(fac5));
 
-        let sign_a = Vec4::new(1.0, -1.0, 1.0, -1.0);
-        let sign_b = Vec4::new(-1.0, 1.0, -1.0, 1.0);
+        let sign_a = Vec4A::new(1.0, -1.0, 1.0, -1.0);
+        let sign_b = Vec4A::new(-1.0, 1.0, -1.0, 1.0);
 
         let inverse = Self::from_cols(
             inv0.mul(sign_a),
@@ -675,7 +671,7 @@ impl Mat4 {
             inv3.mul(sign_b),
         );
 
-        let col0 = Vec4::new(
+        let col0 = Vec4A::new(
             inverse.x_axis.x,
             inverse.y_axis.x,
             inverse.z_axis.x,
@@ -713,10 +709,10 @@ impl Mat4 {
         let u = s.cross(f);
 
         Self::from_cols(
-            Vec4::new(s.x, u.x, -f.x, 0.0),
-            Vec4::new(s.y, u.y, -f.y, 0.0),
-            Vec4::new(s.z, u.z, -f.z, 0.0),
-            Vec4::new(-eye.dot(s), -eye.dot(u), eye.dot(f), 1.0),
+            Vec4A::new(s.x, u.x, -f.x, 0.0),
+            Vec4A::new(s.y, u.y, -f.y, 0.0),
+            Vec4A::new(s.z, u.z, -f.z, 0.0),
+            Vec4A::new(-eye.dot(s), -eye.dot(u), eye.dot(f), 1.0),
         )
     }
 
@@ -764,10 +760,10 @@ impl Mat4 {
         let b = (z_near + z_far) * inv_length;
         let c = (2.0 * z_near * z_far) * inv_length;
         Self::from_cols(
-            Vec4::new(a, 0.0, 0.0, 0.0),
-            Vec4::new(0.0, f, 0.0, 0.0),
-            Vec4::new(0.0, 0.0, b, -1.0),
-            Vec4::new(0.0, 0.0, c, 0.0),
+            Vec4A::new(a, 0.0, 0.0, 0.0),
+            Vec4A::new(0.0, f, 0.0, 0.0),
+            Vec4A::new(0.0, 0.0, b, -1.0),
+            Vec4A::new(0.0, 0.0, c, 0.0),
         )
     }
 
@@ -786,10 +782,10 @@ impl Mat4 {
         let w = h / aspect_ratio;
         let r = z_far / (z_far - z_near);
         Self::from_cols(
-            Vec4::new(w, 0.0, 0.0, 0.0),
-            Vec4::new(0.0, h, 0.0, 0.0),
-            Vec4::new(0.0, 0.0, r, 1.0),
-            Vec4::new(0.0, 0.0, -r * z_near, 0.0),
+            Vec4A::new(w, 0.0, 0.0, 0.0),
+            Vec4A::new(0.0, h, 0.0, 0.0),
+            Vec4A::new(0.0, 0.0, r, 1.0),
+            Vec4A::new(0.0, 0.0, -r * z_near, 0.0),
         )
     }
 
@@ -808,10 +804,10 @@ impl Mat4 {
         let w = h / aspect_ratio;
         let r = z_far / (z_near - z_far);
         Self::from_cols(
-            Vec4::new(w, 0.0, 0.0, 0.0),
-            Vec4::new(0.0, h, 0.0, 0.0),
-            Vec4::new(0.0, 0.0, r, -1.0),
-            Vec4::new(0.0, 0.0, r * z_near, 0.0),
+            Vec4A::new(w, 0.0, 0.0, 0.0),
+            Vec4A::new(0.0, h, 0.0, 0.0),
+            Vec4A::new(0.0, 0.0, r, -1.0),
+            Vec4A::new(0.0, 0.0, r * z_near, 0.0),
         )
     }
 
@@ -828,10 +824,10 @@ impl Mat4 {
         let h = cos_fov / sin_fov;
         let w = h / aspect_ratio;
         Self::from_cols(
-            Vec4::new(w, 0.0, 0.0, 0.0),
-            Vec4::new(0.0, h, 0.0, 0.0),
-            Vec4::new(0.0, 0.0, 1.0, 1.0),
-            Vec4::new(0.0, 0.0, -z_near, 0.0),
+            Vec4A::new(w, 0.0, 0.0, 0.0),
+            Vec4A::new(0.0, h, 0.0, 0.0),
+            Vec4A::new(0.0, 0.0, 1.0, 1.0),
+            Vec4A::new(0.0, 0.0, -z_near, 0.0),
         )
     }
 
@@ -852,10 +848,10 @@ impl Mat4 {
         let h = cos_fov / sin_fov;
         let w = h / aspect_ratio;
         Self::from_cols(
-            Vec4::new(w, 0.0, 0.0, 0.0),
-            Vec4::new(0.0, h, 0.0, 0.0),
-            Vec4::new(0.0, 0.0, 0.0, 1.0),
-            Vec4::new(0.0, 0.0, z_near, 0.0),
+            Vec4A::new(w, 0.0, 0.0, 0.0),
+            Vec4A::new(0.0, h, 0.0, 0.0),
+            Vec4A::new(0.0, 0.0, 0.0, 1.0),
+            Vec4A::new(0.0, 0.0, z_near, 0.0),
         )
     }
 
@@ -867,10 +863,10 @@ impl Mat4 {
         glam_assert!(z_near > 0.0);
         let f = 1.0 / math::tan(0.5 * fov_y_radians);
         Self::from_cols(
-            Vec4::new(f / aspect_ratio, 0.0, 0.0, 0.0),
-            Vec4::new(0.0, f, 0.0, 0.0),
-            Vec4::new(0.0, 0.0, -1.0, -1.0),
-            Vec4::new(0.0, 0.0, -z_near, 0.0),
+            Vec4A::new(f / aspect_ratio, 0.0, 0.0, 0.0),
+            Vec4A::new(0.0, f, 0.0, 0.0),
+            Vec4A::new(0.0, 0.0, -1.0, -1.0),
+            Vec4A::new(0.0, 0.0, -z_near, 0.0),
         )
     }
 
@@ -886,10 +882,10 @@ impl Mat4 {
         glam_assert!(z_near > 0.0);
         let f = 1.0 / math::tan(0.5 * fov_y_radians);
         Self::from_cols(
-            Vec4::new(f / aspect_ratio, 0.0, 0.0, 0.0),
-            Vec4::new(0.0, f, 0.0, 0.0),
-            Vec4::new(0.0, 0.0, 0.0, -1.0),
-            Vec4::new(0.0, 0.0, z_near, 0.0),
+            Vec4A::new(f / aspect_ratio, 0.0, 0.0, 0.0),
+            Vec4A::new(0.0, f, 0.0, 0.0),
+            Vec4A::new(0.0, 0.0, 0.0, -1.0),
+            Vec4A::new(0.0, 0.0, z_near, 0.0),
         )
     }
 
@@ -915,10 +911,10 @@ impl Mat4 {
         let tz = -(far + near) / (far - near);
 
         Self::from_cols(
-            Vec4::new(a, 0.0, 0.0, 0.0),
-            Vec4::new(0.0, b, 0.0, 0.0),
-            Vec4::new(0.0, 0.0, c, 0.0),
-            Vec4::new(tx, ty, tz, 1.0),
+            Vec4A::new(a, 0.0, 0.0, 0.0),
+            Vec4A::new(0.0, b, 0.0, 0.0),
+            Vec4A::new(0.0, 0.0, c, 0.0),
+            Vec4A::new(tx, ty, tz, 1.0),
         )
     }
 
@@ -937,10 +933,10 @@ impl Mat4 {
         let rcp_height = 1.0 / (top - bottom);
         let r = 1.0 / (far - near);
         Self::from_cols(
-            Vec4::new(rcp_width + rcp_width, 0.0, 0.0, 0.0),
-            Vec4::new(0.0, rcp_height + rcp_height, 0.0, 0.0),
-            Vec4::new(0.0, 0.0, r, 0.0),
-            Vec4::new(
+            Vec4A::new(rcp_width + rcp_width, 0.0, 0.0, 0.0),
+            Vec4A::new(0.0, rcp_height + rcp_height, 0.0, 0.0),
+            Vec4A::new(0.0, 0.0, r, 0.0),
+            Vec4A::new(
                 -(left + right) * rcp_width,
                 -(top + bottom) * rcp_height,
                 -r * near,
@@ -964,10 +960,10 @@ impl Mat4 {
         let rcp_height = 1.0 / (top - bottom);
         let r = 1.0 / (near - far);
         Self::from_cols(
-            Vec4::new(rcp_width + rcp_width, 0.0, 0.0, 0.0),
-            Vec4::new(0.0, rcp_height + rcp_height, 0.0, 0.0),
-            Vec4::new(0.0, 0.0, r, 0.0),
-            Vec4::new(
+            Vec4A::new(rcp_width + rcp_width, 0.0, 0.0, 0.0),
+            Vec4A::new(0.0, rcp_height + rcp_height, 0.0, 0.0),
+            Vec4A::new(0.0, 0.0, r, 0.0),
+            Vec4A::new(
                 -(left + right) * rcp_width,
                 -(top + bottom) * rcp_height,
                 r * near,
@@ -990,7 +986,7 @@ impl Mat4 {
         res = self.z_axis.mul(rhs.z).add(res);
         res = self.w_axis.add(res);
         res = res.mul(res.wwww().recip());
-        res.xyz()
+        res.truncate()
     }
 
     /// Transforms the given 3D vector as a point.
@@ -1008,12 +1004,12 @@ impl Mat4 {
     #[inline]
     #[must_use]
     pub fn transform_point3(&self, rhs: Vec3) -> Vec3 {
-        glam_assert!(self.row(3).abs_diff_eq(Vec4::W, 1e-6));
+        glam_assert!(self.row(3).abs_diff_eq(Vec4A::W, 1e-6));
         let mut res = self.x_axis.mul(rhs.x);
         res = self.y_axis.mul(rhs.y).add(res);
         res = self.z_axis.mul(rhs.z).add(res);
         res = self.w_axis.add(res);
-        res.xyz()
+        res.truncate()
     }
 
     /// Transforms the give 3D vector as a direction.
@@ -1029,11 +1025,11 @@ impl Mat4 {
     #[inline]
     #[must_use]
     pub fn transform_vector3(&self, rhs: Vec3) -> Vec3 {
-        glam_assert!(self.row(3).abs_diff_eq(Vec4::W, 1e-6));
+        glam_assert!(self.row(3).abs_diff_eq(Vec4A::W, 1e-6));
         let mut res = self.x_axis.mul(rhs.x);
         res = self.y_axis.mul(rhs.y).add(res);
         res = self.z_axis.mul(rhs.z).add(res);
-        res.xyz()
+        res.truncate()
     }
 
     /// Transforms the given [`Vec3A`] as 3D point.
@@ -1058,10 +1054,17 @@ impl Mat4 {
     #[inline]
     #[must_use]
     pub fn mul_vec4(&self, rhs: Vec4) -> Vec4 {
-        let mut res = self.x_axis.mul(rhs.x);
-        res = res.add(self.y_axis.mul(rhs.y));
-        res = res.add(self.z_axis.mul(rhs.z));
-        res = res.add(self.w_axis.mul(rhs.w));
+        self.mul_vec4a(rhs.into()).into()
+    }
+
+    /// Transforms a [`Vec4A`].
+    #[inline]
+    #[must_use]
+    pub fn mul_vec4a(&self, rhs: Vec4A) -> Vec4A {
+        let mut res = self.x_axis.mul(rhs.xxxx());
+        res = res.add(self.y_axis.mul(rhs.yyyy()));
+        res = res.add(self.z_axis.mul(rhs.zzzz()));
+        res = res.add(self.w_axis.mul(rhs.wwww()));
         res
     }
 
@@ -1117,7 +1120,7 @@ impl Mat4 {
     #[inline]
     #[must_use]
     pub fn div_scalar(&self, rhs: f32) -> Self {
-        let rhs = Vec4::splat(rhs);
+        let rhs = Vec4A::splat(rhs);
         Self::from_cols(
             self.x_axis.div(rhs),
             self.y_axis.div(rhs),
@@ -1167,14 +1170,14 @@ impl Mat4 {
     }
 }
 
-impl Default for Mat4 {
+impl Default for Mat4A {
     #[inline]
     fn default() -> Self {
         Self::IDENTITY
     }
 }
 
-impl Add<Mat4> for Mat4 {
+impl Add<Mat4A> for Mat4A {
     type Output = Self;
     #[inline]
     fn add(self, rhs: Self) -> Self::Output {
@@ -1182,14 +1185,14 @@ impl Add<Mat4> for Mat4 {
     }
 }
 
-impl AddAssign<Mat4> for Mat4 {
+impl AddAssign<Mat4A> for Mat4A {
     #[inline]
     fn add_assign(&mut self, rhs: Self) {
         *self = self.add_mat4(&rhs);
     }
 }
 
-impl Sub<Mat4> for Mat4 {
+impl Sub<Mat4A> for Mat4A {
     type Output = Self;
     #[inline]
     fn sub(self, rhs: Self) -> Self::Output {
@@ -1197,14 +1200,14 @@ impl Sub<Mat4> for Mat4 {
     }
 }
 
-impl SubAssign<Mat4> for Mat4 {
+impl SubAssign<Mat4A> for Mat4A {
     #[inline]
     fn sub_assign(&mut self, rhs: Self) {
         *self = self.sub_mat4(&rhs);
     }
 }
 
-impl Neg for Mat4 {
+impl Neg for Mat4A {
     type Output = Self;
     #[inline]
     fn neg(self) -> Self::Output {
@@ -1217,7 +1220,7 @@ impl Neg for Mat4 {
     }
 }
 
-impl Mul<Mat4> for Mat4 {
+impl Mul<Mat4A> for Mat4A {
     type Output = Self;
     #[inline]
     fn mul(self, rhs: Self) -> Self::Output {
@@ -1225,30 +1228,30 @@ impl Mul<Mat4> for Mat4 {
     }
 }
 
-impl MulAssign<Mat4> for Mat4 {
+impl MulAssign<Mat4A> for Mat4A {
     #[inline]
     fn mul_assign(&mut self, rhs: Self) {
         *self = self.mul_mat4(&rhs);
     }
 }
 
-impl Mul<Vec4> for Mat4 {
-    type Output = Vec4;
+impl Mul<Vec4A> for Mat4A {
+    type Output = Vec4A;
     #[inline]
-    fn mul(self, rhs: Vec4) -> Self::Output {
-        self.mul_vec4(rhs)
+    fn mul(self, rhs: Vec4A) -> Self::Output {
+        self.mul_vec4a(rhs)
     }
 }
 
-impl Mul<Mat4> for f32 {
-    type Output = Mat4;
+impl Mul<Mat4A> for f32 {
+    type Output = Mat4A;
     #[inline]
-    fn mul(self, rhs: Mat4) -> Self::Output {
+    fn mul(self, rhs: Mat4A) -> Self::Output {
         rhs.mul_scalar(self)
     }
 }
 
-impl Mul<f32> for Mat4 {
+impl Mul<f32> for Mat4A {
     type Output = Self;
     #[inline]
     fn mul(self, rhs: f32) -> Self::Output {
@@ -1256,22 +1259,22 @@ impl Mul<f32> for Mat4 {
     }
 }
 
-impl MulAssign<f32> for Mat4 {
+impl MulAssign<f32> for Mat4A {
     #[inline]
     fn mul_assign(&mut self, rhs: f32) {
         *self = self.mul_scalar(rhs);
     }
 }
 
-impl Div<Mat4> for f32 {
-    type Output = Mat4;
+impl Div<Mat4A> for f32 {
+    type Output = Mat4A;
     #[inline]
-    fn div(self, rhs: Mat4) -> Self::Output {
+    fn div(self, rhs: Mat4A) -> Self::Output {
         rhs.div_scalar(self)
     }
 }
 
-impl Div<f32> for Mat4 {
+impl Div<f32> for Mat4A {
     type Output = Self;
     #[inline]
     fn div(self, rhs: f32) -> Self::Output {
@@ -1279,14 +1282,34 @@ impl Div<f32> for Mat4 {
     }
 }
 
-impl DivAssign<f32> for Mat4 {
+impl DivAssign<f32> for Mat4A {
     #[inline]
     fn div_assign(&mut self, rhs: f32) {
         *self = self.div_scalar(rhs);
     }
 }
 
-impl Sum<Self> for Mat4 {
+impl Mul<Vec4> for Mat4A {
+    type Output = Vec4;
+    #[inline]
+    fn mul(self, rhs: Vec4) -> Vec4 {
+        self.mul_vec4a(rhs.into()).into()
+    }
+}
+
+impl From<Mat4> for Mat4A {
+    #[inline]
+    fn from(m: Mat4) -> Self {
+        Self {
+            x_axis: m.x_axis.into(),
+            y_axis: m.y_axis.into(),
+            z_axis: m.z_axis.into(),
+            w_axis: m.w_axis.into(),
+        }
+    }
+}
+
+impl Sum<Self> for Mat4A {
     fn sum<I>(iter: I) -> Self
     where
         I: Iterator<Item = Self>,
@@ -1295,7 +1318,7 @@ impl Sum<Self> for Mat4 {
     }
 }
 
-impl<'a> Sum<&'a Self> for Mat4 {
+impl<'a> Sum<&'a Self> for Mat4A {
     fn sum<I>(iter: I) -> Self
     where
         I: Iterator<Item = &'a Self>,
@@ -1304,7 +1327,7 @@ impl<'a> Sum<&'a Self> for Mat4 {
     }
 }
 
-impl Product for Mat4 {
+impl Product for Mat4A {
     fn product<I>(iter: I) -> Self
     where
         I: Iterator<Item = Self>,
@@ -1313,7 +1336,7 @@ impl Product for Mat4 {
     }
 }
 
-impl<'a> Product<&'a Self> for Mat4 {
+impl<'a> Product<&'a Self> for Mat4A {
     fn product<I>(iter: I) -> Self
     where
         I: Iterator<Item = &'a Self>,
@@ -1322,7 +1345,7 @@ impl<'a> Product<&'a Self> for Mat4 {
     }
 }
 
-impl PartialEq for Mat4 {
+impl PartialEq for Mat4A {
     #[inline]
     fn eq(&self, rhs: &Self) -> bool {
         self.x_axis.eq(&rhs.x_axis)
@@ -1333,7 +1356,7 @@ impl PartialEq for Mat4 {
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl AsRef<[f32; 16]> for Mat4 {
+impl AsRef<[f32; 16]> for Mat4A {
     #[inline]
     fn as_ref(&self) -> &[f32; 16] {
         unsafe { &*(self as *const Self as *const [f32; 16]) }
@@ -1341,7 +1364,7 @@ impl AsRef<[f32; 16]> for Mat4 {
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl AsMut<[f32; 16]> for Mat4 {
+impl AsMut<[f32; 16]> for Mat4A {
     #[inline]
     fn as_mut(&mut self) -> &mut [f32; 16] {
         unsafe { &mut *(self as *mut Self as *mut [f32; 16]) }
@@ -1349,9 +1372,9 @@ impl AsMut<[f32; 16]> for Mat4 {
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl fmt::Debug for Mat4 {
+impl fmt::Debug for Mat4A {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
-        fmt.debug_struct(stringify!(Mat4))
+        fmt.debug_struct(stringify!(Mat4A))
             .field("x_axis", &self.x_axis)
             .field("y_axis", &self.y_axis)
             .field("z_axis", &self.z_axis)
@@ -1361,7 +1384,7 @@ impl fmt::Debug for Mat4 {
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl fmt::Display for Mat4 {
+impl fmt::Display for Mat4A {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(p) = f.precision() {
             write!(

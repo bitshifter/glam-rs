@@ -60,19 +60,26 @@ macro_rules! impl_rkyv_derive {
 }
 
 mod f32 {
-    use crate::{Affine2, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
+    use crate::{
+        Affine2, Affine3A, Mat2, Mat2A, Mat3, Mat3A, Mat4, Mat4A, Quat, QuatA, Vec2, Vec3, Vec3A,
+        Vec4, Vec4A,
+    };
     use rkyv::{from_archived, to_archived, Archive, Deserialize, Fallible, Serialize};
     impl_rkyv!(Affine2);
     impl_rkyv!(Affine3A);
     impl_rkyv!(Mat2);
+    impl_rkyv!(Mat2A);
     impl_rkyv!(Mat3);
     impl_rkyv!(Mat3A);
     impl_rkyv!(Mat4);
+    impl_rkyv!(Mat4A);
     impl_rkyv!(Quat);
+    impl_rkyv!(QuatA);
     impl_rkyv!(Vec2);
     impl_rkyv!(Vec3);
     impl_rkyv!(Vec3A);
     impl_rkyv!(Vec4);
+    impl_rkyv!(Vec4A);
 }
 
 mod f64 {
@@ -173,12 +180,16 @@ mod test {
 
     #[test]
     fn test_rkyv() {
-        use crate::{Affine2, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
+        use crate::{
+            Affine2, Affine3A, Mat2, Mat2A, Mat3, Mat3A, Mat4, Mat4A, Quat, QuatA, Vec2, Vec3,
+            Vec3A, Vec4, Vec4A,
+        };
         test_archive(&Affine2::from_cols_array(&[1.0, 0.0, 2.0, 0.0, 3.0, 4.0]));
         test_archive(&Affine3A::from_cols_array(&[
             1.0, 0.0, 0.0, 0.0, 2.0, 0.0, 0.0, 0.0, 3.0, 4.0, 5.0, 6.0,
         ]));
         test_archive(&Mat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]));
+        test_archive(&Mat2A::from_cols_array(&[1.0, 2.0, 3.0, 4.0]));
         test_archive(&Mat3::from_cols_array(&[
             1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0,
         ]));
@@ -188,11 +199,16 @@ mod test {
         test_archive(&Mat4::from_cols_array(&[
             1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0,
         ]));
+        test_archive(&Mat4A::from_cols_array(&[
+            1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0,
+        ]));
         test_archive(&Quat::from_xyzw(1.0, 2.0, 3.0, 4.0));
+        test_archive(&QuatA::from_xyzw(1.0, 2.0, 3.0, 4.0));
         test_archive(&Vec2::new(1.0, 2.0));
         test_archive(&Vec3::new(1.0, 2.0, 3.0));
         test_archive(&Vec3A::new(1.0, 2.0, 3.0));
         test_archive(&Vec4::new(1.0, 2.0, 3.0, 4.0));
+        test_archive(&Vec4A::new(1.0, 2.0, 3.0, 4.0));
 
         use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
         test_archive(&DAffine2::from_cols_array(&[1.0, 0.0, 2.0, 0.0, 3.0, 4.0]));

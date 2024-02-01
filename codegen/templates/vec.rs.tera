@@ -24,15 +24,14 @@
     {% set is_signed = true %}
     {% set is_float = true %}
     {% if scalar_t == "f32" %}
-        {% if dim == 3 and is_align %}
-            {% set self_t = "Vec3A" %}
-            {% set mask_t = "BVec3A" %}
+        {% if is_align %}
+            {% set self_t = "Vec" ~ dim ~ "A" %}
+            {% set mask_t = "BVec" ~ dim ~ "A" %}
         {% else %}
             {% set self_t = "Vec" ~ dim %}
         {% endif %}
         {% set vec2_t = "Vec2" %}
         {% set vec3_t = "Vec3" %}
-        {% set vec3a_t = "Vec3A" %}
         {% set vec4_t = "Vec4" %}
     {% elif scalar_t == "f64" %}
         {% set self_t = "DVec" ~ dim %}
@@ -134,32 +133,22 @@
     {% set zero = "0" %}
 {% endif %}
 
-{% if bveca_from_type and bveca_from_type == "BVec4A" and is_scalar %}
-    {% if scalar_t == "f32" %}
-        #[cfg(feature = "scalar-math")]
-        use crate::BVec4 as BVec4A;
+use crate::{
+    {{ mask_t }},
+    {% if bveca_from_type and bveca_from_type != mask_t %}
+        {{ bveca_from_type }},
     {% endif %}
-    #[cfg(not(feature = "scalar-math"))]
-    use crate::BVec4A;
-    use crate::{
-        {% if bveca_from_type and bveca_from_type != mask_t %}
-            {{ mask_t }},
-        {% endif %}
-{% else %}
-    use crate::{
-        {{ mask_t }},
-        {% if bveca_from_type and bveca_from_type != mask_t %}
-            {{ bveca_from_type }},
-        {% endif %}
-{% endif %}
     {% if self_t != vec2_t %}
         {{ vec2_t }},
     {% endif %}
     {% if self_t != vec3_t %}
         {{ vec3_t }},
     {% endif %}
-    {% if self_t == "Vec4" %}
-        {{ vec3a_t }},
+    {% if self_t == "Vec4A" or self_t == "Vec4" %}
+        Vec3A,
+    {% endif %}
+    {% if self_t == "Vec3A" or self_t == "Vec4" %}
+        Vec4A,
     {% endif %}
     {% if dim > 2 and self_t != vec4_t %}
         {{ vec4_t }},
@@ -230,18 +219,13 @@ pub const fn {{ self_t | lower }}(
 }
 
 /// A {{ dim }}-dimensional vector.
-{%- if self_t == "Vec3A" %}
+{%- if is_align %}
 ///
 /// SIMD vector types are used for storage on supported platforms for better
-/// performance than the [`Vec3`] type.
+/// performance than the [`Vec{{ dim }}`] type.
 ///
-/// It is possible to convert between [`Vec3`] and [`Vec3A`] types using [`From`]
+/// It is possible to convert between [`Vec{{ dim }}`] and [`Vec{{ dim }}A`] types using [`From`]
 /// or [`Into`] trait implementations.
-///
-/// This type is 16 byte aligned.
-{%- elif self_t == "Vec4" and is_simd %}
-///
-/// SIMD vector types are used for storage on supported platforms.
 ///
 /// This type is 16 byte aligned.
 {%- endif %}
@@ -260,13 +244,8 @@ pub const fn {{ self_t | lower }}(
 )]
 {%- if self_t == "Vec3A" and is_scalar %}
 #[cfg_attr(not(target_arch = "spirv"), repr(align(16)))]
-{%- elif self_t == "Vec4" and is_scalar %}
-#[cfg_attr(
-    any(
-        not(any(feature = "scalar-math", target_arch = "spirv")),
-        feature = "cuda"),
-    repr(align(16))
-)]
+{%- elif self_t == "Vec4A" and is_scalar %}
+#[cfg_attr(any(not(target_arch = "spirv"), feature = "cuda"), repr(align(16)))]
 {%- elif dim != 3 and is_scalar %}
 #[cfg_attr(feature = "cuda", repr(align({{ cuda_align }})))]
 {%- endif %}
@@ -482,10 +461,10 @@ impl {{ self_t }} {
     /// Panics if `slice` is less than {{ dim }} elements long.
     #[inline]
     pub fn write_to_slice(self, slice: &mut [{{ scalar_t }}]) {
-        {% if self_t == "Vec4" and is_sse2 %}
+        {% if self_t == "Vec4A" and is_sse2 %}
             assert!(slice.len() >= 4);
             unsafe { _mm_storeu_ps(slice.as_mut_ptr(), self.0); }
-        {% elif self_t == "Vec4" and is_neon %}
+        {% elif self_t == "Vec4A" and is_neon %}
             assert!(slice.len() >= 4);
             unsafe { vst1q_f32(slice.as_mut_ptr(), self.0); }
         {% else %}
@@ -508,11 +487,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub(crate) fn from_vec4(v: {{ vec4_t }}) -> Self {
-        {% if is_scalar %}
-            Self { x: v.x, y: v.y, z: v.z }
-        {% else %}
-            Self(v.0)
-        {% endif %}
+        Self::new(v.x, v.y, v.z)
     }
 
     /// Creates a 4D vector from `self` and the given `w` value.
@@ -542,8 +517,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn truncate(self) -> {{ vec3_t }} {
-        use crate::swizzles::Vec4Swizzles;
-        self.xyz()
+        {{ vec3_t }}::new(self.x, self.y, self.z)
     }
 {% endif %}
 
@@ -3331,9 +3305,9 @@ impl From<{{ simd_t }}> for {{ self_t }} {
 impl From<[{{ scalar_t }}; {{ dim }}]> for {{ self_t }} {
     #[inline]
     fn from(a: [{{ scalar_t }}; {{ dim }}]) -> Self {
-        {% if self_t == "Vec4" and is_sse2 %}
+        {% if self_t == "Vec4A" and is_sse2 %}
             Self(unsafe { _mm_loadu_ps(a.as_ptr()) })
-        {% elif self_t == "Vec4" and is_coresimd %}
+        {% elif self_t == "Vec4A" and is_coresimd %}
             Self(f32x4::from_array(a))
         {% elif self_t == "Vec4" and is_neon %}
             Self(unsafe { vld1q_f32(a.as_ptr()) })
@@ -3448,12 +3422,12 @@ impl From<Vec3> for Vec3A {
     }
 }
 
-impl From<Vec4> for Vec3A {
+impl From<Vec4A> for Vec3A {
     /// Creates a [`Vec3A`] from the `x`, `y` and `z` elements of `self` discarding `w`.
     ///
     /// On architectures where SIMD is supported such as SSE2 on `x86_64` this conversion is a noop.
     #[inline]
-    fn from(v: Vec4) -> Self {
+    fn from(v: Vec4A) -> Self {
         {% if is_scalar %}
             Self {
                 x: v.x,
@@ -3504,20 +3478,41 @@ impl From<Vec3A> for Vec3 {
         {% endif %}
     }
 }
-{% elif self_t == "Vec4" %}
-impl From<(Vec3A, f32)> for Vec4 {
+{% elif dim == 4 and scalar_t == "f32" %}
+impl From<(Vec3A, f32)> for {{ self_t }} {
     #[inline]
     fn from((v, w): (Vec3A, f32)) -> Self {
-        v.extend(w)
+        {% if is_simd %}
+            let mut v = Self(v.0);
+            v.w = w;
+            v
+        {% else %}
+            Self::new(v.x, v.y, v.z, w)
+        {% endif %}
     }
 }
 
-impl From<(f32, Vec3A)> for Vec4 {
+impl From<(f32, Vec3A)> for {{ self_t }} {
     #[inline]
     fn from((x, v): (f32, Vec3A)) -> Self {
         Self::new(x, v.x, v.y, v.z)
     }
 }
+{% if is_align %}
+impl From<Vec4> for Vec4A {
+    #[inline]
+    fn from(v: Vec4) -> Self {
+        Self::new(v.x, v.y, v.z, v.w)
+    }
+}
+{% else %}
+impl From<Vec4A> for Vec4 {
+    #[inline]
+    fn from(v: Vec4A) -> Self {
+        Self::new(v.x, v.y, v.z, v.w)
+    }
+}
+{% endif %}
 {% endif %}
 
 {% if dim == 3 %}
@@ -3618,9 +3613,6 @@ impl From<{{ bvec_from_type }}> for {{ self_t }} {
 }
 
 {% if bveca_from_type %}
-    {% if bveca_from_type == "BVec4A" %}
-    #[cfg(not(feature = "scalar-math"))]
-    {% endif %}
     impl From<{{ bveca_from_type }}> for {{ self_t }} {
         #[inline]
         fn from(v: {{ bveca_from_type }}) -> Self {

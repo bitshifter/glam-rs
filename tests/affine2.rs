@@ -283,10 +283,7 @@ mod affine2 {
 
     glam_test!(test_align, {
         use std::mem;
-        if cfg!(not(feature = "scalar-math")) {
-            assert_eq!(32, mem::size_of::<Affine2>());
-            assert_eq!(16, mem::align_of::<Affine2>());
-        } else if cfg!(feature = "cuda") {
+        if cfg!(feature = "cuda") {
             assert_eq!(24, mem::size_of::<Affine2>());
             assert_eq!(8, mem::align_of::<Affine2>());
         } else {

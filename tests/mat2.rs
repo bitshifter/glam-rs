@@ -249,11 +249,7 @@ mod mat2 {
     glam_test!(test_align, {
         use std::mem;
         assert_eq!(16, mem::size_of::<Mat2>());
-        if cfg!(feature = "scalar-math") {
-            assert_eq!(mem::align_of::<Vec2>(), mem::align_of::<Mat2>());
-        } else {
-            assert_eq!(16, mem::align_of::<Mat2>());
-        }
+        assert_eq!(mem::align_of::<Vec2>(), mem::align_of::<Mat2>());
     });
 
     glam_test!(test_from_mat3a, {
@@ -277,6 +273,44 @@ mod mat2 {
 
     impl_mat2_tests!(f32, mat2, Mat2, Mat3, vec2, Vec2);
     impl_as_ref_tests!(Mat2);
+}
+
+mod mat2a {
+    use super::support::deg;
+    use glam::{mat2a, swizzles::*, vec2, Mat2A, Mat3, Vec2};
+
+    glam_test!(test_align, {
+        use std::mem;
+        assert_eq!(16, mem::size_of::<Mat2A>());
+        assert_eq!(16, mem::align_of::<Mat2A>());
+    });
+
+    glam_test!(test_from_mat2, {
+        use glam::Mat2;
+        let m1 = Mat2::from_cols_array_2d(&MATRIX);
+        let m2: Mat2A = m1.into();
+        let m3: Mat2 = m2.into();
+        assert_eq!(Mat2A::from_cols_array_2d(&MATRIX), m2);
+        assert_eq!(Mat2::from_cols_array_2d(&MATRIX), m3);
+    });
+
+    glam_test!(test_from_mat3a, {
+        use glam::Mat3A;
+        let m3 = Mat3A::from_cols_array_2d(&[[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]]);
+        let m2 = Mat2A::from_mat3a(m3);
+        assert_eq!(Mat2A::from_cols_array_2d(&[[1.0, 2.0], [4.0, 5.0]]), m2);
+    });
+
+    glam_test!(test_as, {
+        use glam::DMat2;
+        assert_eq!(
+            DMat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]),
+            Mat2A::from_cols_array(&[1.0, 2.0, 3.0, 4.0]).as_dmat2()
+        );
+    });
+
+    impl_mat2_tests!(f32, mat2a, Mat2A, Mat3, vec2, Vec2);
+    impl_as_ref_tests!(Mat2A);
 }
 
 mod dmat2 {

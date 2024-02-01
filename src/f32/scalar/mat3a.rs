@@ -153,7 +153,11 @@ impl Mat3A {
     #[inline]
     #[must_use]
     pub fn from_mat4(m: Mat4) -> Self {
-        Self::from_cols(m.x_axis.into(), m.y_axis.into(), m.z_axis.into())
+        Self::from_cols(
+            m.x_axis.xyz().into(),
+            m.y_axis.xyz().into(),
+            m.z_axis.xyz().into(),
+        )
     }
 
     /// Creates a 3D rotation matrix from the given quaternion.

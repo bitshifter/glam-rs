@@ -2,8 +2,9 @@ use mint::IntoMint;
 
 use crate::{
     DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, I16Vec2, I16Vec3, I16Vec4, I64Vec2, I64Vec3,
-    I64Vec4, IVec2, IVec3, IVec4, Mat2, Mat3, Mat3A, Mat4, Quat, U16Vec2, U16Vec3, U16Vec4,
-    U64Vec2, U64Vec3, U64Vec4, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
+    I64Vec4, IVec2, IVec3, IVec4, Mat2, Mat2A, Mat3, Mat3A, Mat4, Mat4A, Quat, QuatA, U16Vec2,
+    U16Vec3, U16Vec4, U64Vec2, U64Vec3, U64Vec4, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
+    Vec4A,
 };
 
 macro_rules! impl_vec_types {
@@ -235,6 +236,41 @@ macro_rules! impl_float_types {
     };
 }
 
+impl From<mint::RowMatrix2<f32>> for Mat2A {
+    fn from(m: mint::RowMatrix2<f32>) -> Self {
+        Self::from_cols(m.x.into(), m.y.into()).transpose()
+    }
+}
+
+impl From<Mat2A> for mint::RowMatrix2<f32> {
+    fn from(m: Mat2A) -> Self {
+        let mt = m.transpose();
+        Self {
+            x: mt.x_axis.into(),
+            y: mt.y_axis.into(),
+        }
+    }
+}
+
+impl From<mint::ColumnMatrix2<f32>> for Mat2A {
+    fn from(m: mint::ColumnMatrix2<f32>) -> Self {
+        Self::from_cols(m.x.into(), m.y.into())
+    }
+}
+
+impl From<Mat2A> for mint::ColumnMatrix2<f32> {
+    fn from(m: Mat2A) -> Self {
+        Self {
+            x: m.x_axis.into(),
+            y: m.y_axis.into(),
+        }
+    }
+}
+
+impl IntoMint for Mat2A {
+    type MintType = mint::ColumnMatrix2<f32>;
+}
+
 impl From<mint::Point3<f32>> for Vec3A {
     fn from(v: mint::Point3<f32>) -> Self {
         Self::new(v.x, v.y, v.z)
@@ -306,6 +342,89 @@ impl From<Mat3A> for mint::ColumnMatrix3<f32> {
 
 impl IntoMint for Mat3A {
     type MintType = mint::ColumnMatrix3<f32>;
+}
+
+impl From<mint::Vector4<f32>> for Vec4A {
+    fn from(v: mint::Vector4<f32>) -> Self {
+        Self::new(v.x, v.y, v.z, v.w)
+    }
+}
+
+impl From<Vec4A> for mint::Vector4<f32> {
+    fn from(v: Vec4A) -> Self {
+        Self {
+            x: v.x,
+            y: v.y,
+            z: v.z,
+            w: v.w,
+        }
+    }
+}
+
+impl IntoMint for Vec4A {
+    type MintType = mint::Vector4<f32>;
+}
+
+impl From<mint::RowMatrix4<f32>> for Mat4A {
+    fn from(m: mint::RowMatrix4<f32>) -> Self {
+        Self::from_cols(m.x.into(), m.y.into(), m.z.into(), m.w.into()).transpose()
+    }
+}
+
+impl From<Mat4A> for mint::RowMatrix4<f32> {
+    fn from(m: Mat4A) -> Self {
+        let mt = m.transpose();
+        Self {
+            x: mt.x_axis.into(),
+            y: mt.y_axis.into(),
+            z: mt.z_axis.into(),
+            w: mt.w_axis.into(),
+        }
+    }
+}
+
+impl From<mint::ColumnMatrix4<f32>> for Mat4A {
+    fn from(m: mint::ColumnMatrix4<f32>) -> Self {
+        Self::from_cols(m.x.into(), m.y.into(), m.z.into(), m.w.into())
+    }
+}
+
+impl From<Mat4A> for mint::ColumnMatrix4<f32> {
+    fn from(m: Mat4A) -> Self {
+        Self {
+            x: m.x_axis.into(),
+            y: m.y_axis.into(),
+            z: m.z_axis.into(),
+            w: m.w_axis.into(),
+        }
+    }
+}
+
+impl IntoMint for Mat4A {
+    type MintType = mint::ColumnMatrix4<f32>;
+}
+
+impl From<mint::Quaternion<f32>> for QuatA {
+    fn from(q: mint::Quaternion<f32>) -> Self {
+        Self::from_xyzw(q.v.x, q.v.y, q.v.z, q.s)
+    }
+}
+
+impl From<QuatA> for mint::Quaternion<f32> {
+    fn from(q: QuatA) -> Self {
+        Self {
+            s: q.w,
+            v: mint::Vector3 {
+                x: q.x,
+                y: q.y,
+                z: q.z,
+            },
+        }
+    }
+}
+
+impl IntoMint for QuatA {
+    type MintType = mint::Quaternion<f32>;
 }
 
 impl_float_types!(f32, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4);

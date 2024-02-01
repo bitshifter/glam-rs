@@ -39,10 +39,7 @@ macro_rules! impl_mat4_tests {
             assert_eq!(
                 $mat4::IDENTITY,
                 $mat4::from_cols_array(&[
-                    1., 0., 0., 0., //
-                    0., 1., 0., 0., //
-                    0., 0., 1., 0., //
-                    0., 0., 0., 1., //
+                    1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1.,
                 ])
             );
             let identity = $mat4::IDENTITY;
@@ -50,17 +47,14 @@ macro_rules! impl_mat4_tests {
             assert_eq!($mat4::from_cols_array_2d(&IDENTITY), identity);
             assert_eq!(identity, identity * identity);
             assert_eq!(identity, $mat4::default());
-            assert_eq!(identity, $mat4::from_diagonal($vec4::ONE));
+            assert_eq!(identity, $mat4::from_diagonal($vec4::ONE.into()));
         });
 
         glam_test!(test_mat4_zero, {
             assert_eq!(
                 $mat4::ZERO,
                 $mat4::from_cols_array(&[
-                    0., 0., 0., 0., //
-                    0., 0., 0., 0., //
-                    0., 0., 0., 0., //
-                    0., 0., 0., 0., //
+                    0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
                 ])
             );
         });
@@ -110,12 +104,7 @@ macro_rules! impl_mat4_tests {
         });
 
         glam_test!(test_mat4_from_axes, {
-            let a = $mat4::from_cols_array_2d(&[
-                [1.0, 2.0, 3.0, 4.0],
-                [5.0, 6.0, 7.0, 8.0],
-                [9.0, 10.0, 11.0, 12.0],
-                [13.0, 14.0, 15.0, 16.0],
-            ]);
+            let a = $mat4::from_cols_array_2d(&MATRIX);
             assert_eq!(MATRIX, a.to_cols_array_2d());
             let b = $mat4::from_cols(
                 $newvec4(1.0, 2.0, 3.0, 4.0),
@@ -151,13 +140,13 @@ macro_rules! impl_mat4_tests {
 
         glam_test!(test_from_rotation, {
             let rot_x1 = $mat4::from_rotation_x(deg(180.0));
-            let rot_x2 = $mat4::from_axis_angle($vec3::X, deg(180.0));
+            let rot_x2 = $mat4::from_axis_angle($vec3::X.into(), deg(180.0));
             assert_approx_eq!(rot_x1, rot_x2);
             let rot_y1 = $mat4::from_rotation_y(deg(180.0));
-            let rot_y2 = $mat4::from_axis_angle($vec3::Y, deg(180.0));
+            let rot_y2 = $mat4::from_axis_angle($vec3::Y.into(), deg(180.0));
             assert_approx_eq!(rot_y1, rot_y2);
             let rot_z1 = $mat4::from_rotation_z(deg(180.0));
-            let rot_z2 = $mat4::from_axis_angle($vec3::Z, deg(180.0));
+            let rot_z2 = $mat4::from_axis_angle($vec3::Z.into(), deg(180.0));
             assert_approx_eq!(rot_z1, rot_z2);
 
             assert_approx_eq!($mat4::IDENTITY, $mat4::from_quat($quat::IDENTITY));
@@ -182,8 +171,8 @@ macro_rules! impl_mat4_tests {
         });
 
         glam_test!(test_mat4_mul, {
-            let m = $mat4::from_axis_angle($vec3::Z, deg(90.0));
-            let result3 = m.transform_vector3($vec3::Y);
+            let m = $mat4::from_axis_angle($vec3::Z.into(), deg(90.0));
+            let result3 = m.transform_vector3($vec3::Y.into());
             assert_approx_eq!($newvec3(-1.0, 0.0, 0.0), result3);
             assert_approx_eq!(result3, (m * $vec3::Y.extend(0.0)).truncate().into());
             let result4 = m * $vec4::Y;
@@ -195,11 +184,11 @@ macro_rules! impl_mat4_tests {
                 $quat::from_rotation_x(deg(90.0)),
                 $vec3::new(1.0, 2.0, 3.0),
             );
-            let result3 = m.transform_vector3($vec3::Y);
+            let result3 = m.transform_vector3($vec3::Y.into());
             assert_approx_eq!($newvec3(0.0, 0.0, 1.5), result3, 1.0e-6);
             assert_approx_eq!(result3, (m * $vec3::Y.extend(0.0)).truncate().into());
 
-            let result3 = m.transform_point3($vec3::Y);
+            let result3 = m.transform_point3($vec3::Y.into());
             assert_approx_eq!($newvec3(1.0, 2.0, 4.5), result3, 1.0e-6);
             assert_approx_eq!(result3, (m * $vec3::Y.extend(1.0)).truncate().into());
 
@@ -246,13 +235,13 @@ macro_rules! impl_mat4_tests {
         });
 
         glam_test!(test_from_scale, {
-            let m = $mat4::from_scale($vec3::new(2.0, 4.0, 8.0));
+            let m = $mat4::from_scale($vec3::new(2.0, 4.0, 8.0).into());
             assert_approx_eq!($vec4::X * 2.0, m.x_axis);
             assert_approx_eq!($vec4::Y * 4.0, m.y_axis);
             assert_approx_eq!($vec4::Z * 8.0, m.z_axis);
             assert_approx_eq!($vec4::W, m.w_axis);
             assert_approx_eq!(
-                m.transform_point3($vec3::new(1.0, 1.0, 1.0)),
+                m.transform_point3($vec3::ONE.into()),
                 $vec3::new(2.0, 4.0, 8.0)
             );
 
@@ -461,11 +450,11 @@ macro_rules! impl_mat4_tests {
 
             let original = $vec3::new(5.0, 5.0, -15.0);
             let projected = projection * original.extend(1.0);
-            assert_approx_eq!($vec4::new(2.5, 5.0, 15.0, 15.0), projected);
+            assert_approx_eq!($vec4::new(2.5, 5.0, 15.0, 15.0), projected.into());
 
             let original = $vec3::new(5.0, 5.0, -5.0);
             let projected = projection * original.extend(1.0);
-            assert_approx_eq!($vec4::new(2.5, 5.0, -5.0, 5.0), projected);
+            assert_approx_eq!($vec4::new(2.5, 5.0, -5.0, 5.0), projected.into());
         });
 
         glam_test!(test_mat4_perspective_lh, {
@@ -473,11 +462,11 @@ macro_rules! impl_mat4_tests {
 
             let original = $vec3::new(5.0, 5.0, 15.0);
             let projected = projection * original.extend(1.0);
-            assert_approx_eq!($vec4::new(2.5, 5.0, 15.0, 15.0), projected, 1e-6);
+            assert_approx_eq!($vec4::new(2.5, 5.0, 15.0, 15.0), projected.into(), 1e-6);
 
             let original = $vec3::new(5.0, 5.0, 5.0);
             let projected = projection * original.extend(1.0);
-            assert_approx_eq!($vec4::new(2.5, 5.0, 0.0, 5.0), projected, 1e-6);
+            assert_approx_eq!($vec4::new(2.5, 5.0, 0.0, 5.0), projected.into(), 1e-6);
 
             should_glam_assert!({ $mat4::perspective_lh(0.0, 1.0, 1.0, 0.0) });
             should_glam_assert!({ $mat4::perspective_lh(0.0, 1.0, 0.0, 1.0) });
@@ -488,11 +477,11 @@ macro_rules! impl_mat4_tests {
 
             let original = $vec3::new(5.0, 5.0, 15.0);
             let projected = projection * original.extend(1.0);
-            assert_approx_eq!($vec4::new(2.5, 5.0, 10.0, 15.0), projected, 1e-6);
+            assert_approx_eq!($vec4::new(2.5, 5.0, 10.0, 15.0), projected.into(), 1e-6);
 
             let original = $vec3::new(5.0, 5.0, 5.0);
             let projected = projection * original.extend(1.0);
-            assert_approx_eq!($vec4::new(2.5, 5.0, 0.0, 5.0), projected, 1e-6);
+            assert_approx_eq!($vec4::new(2.5, 5.0, 0.0, 5.0), projected.into(), 1e-6);
 
             should_glam_assert!({ $mat4::perspective_infinite_lh(0.0, 1.0, 0.0) });
         });
@@ -502,11 +491,11 @@ macro_rules! impl_mat4_tests {
 
             let original = $vec3::new(5.0, 5.0, 15.0);
             let projected = projection * original.extend(1.0);
-            assert_approx_eq!($vec4::new(2.5, 5.0, 5.0, 15.0), projected, 1e-6);
+            assert_approx_eq!($vec4::new(2.5, 5.0, 5.0, 15.0), projected.into(), 1e-6);
 
             let original = $vec3::new(5.0, 5.0, 5.0);
             let projected = projection * original.extend(1.0);
-            assert_approx_eq!($vec4::new(2.5, 5.0, 5.0, 5.0), projected, 1e-6);
+            assert_approx_eq!($vec4::new(2.5, 5.0, 5.0, 5.0), projected.into(), 1e-6);
 
             should_glam_assert!({ $mat4::perspective_infinite_reverse_lh(0.0, 1.0, 0.0) });
         });
@@ -516,11 +505,11 @@ macro_rules! impl_mat4_tests {
 
             let original = $vec3::new(5.0, 5.0, 15.0);
             let projected = projection * original.extend(1.0);
-            assert_approx_eq!($vec4::new(2.5, 5.0, -30.0, -15.0), projected, 1e-6);
+            assert_approx_eq!($vec4::new(2.5, 5.0, -30.0, -15.0), projected.into(), 1e-6);
 
             let original = $vec3::new(5.0, 5.0, 5.0);
             let projected = projection * original.extend(1.0);
-            assert_approx_eq!($vec4::new(2.5, 5.0, -15.0, -5.0), projected, 1e-6);
+            assert_approx_eq!($vec4::new(2.5, 5.0, -15.0, -5.0), projected.into(), 1e-6);
 
             should_glam_assert!({ $mat4::perspective_rh(0.0, 1.0, 1.0, 0.0) });
             should_glam_assert!({ $mat4::perspective_rh(0.0, 1.0, 0.0, 1.0) });
@@ -531,11 +520,11 @@ macro_rules! impl_mat4_tests {
 
             let original = $vec3::new(5.0, 5.0, 15.0);
             let projected = projection * original.extend(1.0);
-            assert_approx_eq!($vec4::new(2.5, 5.0, -20.0, -15.0), projected);
+            assert_approx_eq!($vec4::new(2.5, 5.0, -20.0, -15.0), projected.into());
 
             let original = $vec3::new(5.0, 5.0, 5.0);
             let projected = projection * original.extend(1.0);
-            assert_approx_eq!($vec4::new(2.5, 5.0, -10.0, -5.0), projected);
+            assert_approx_eq!($vec4::new(2.5, 5.0, -10.0, -5.0), projected.into());
 
             should_glam_assert!({ $mat4::perspective_infinite_rh(0.0, 1.0, 0.0) });
         });
@@ -545,11 +534,11 @@ macro_rules! impl_mat4_tests {
 
             let original = $vec3::new(5.0, 5.0, 15.0);
             let projected = projection * original.extend(1.0);
-            assert_approx_eq!($vec4::new(2.5, 5.0, 5.0, -15.0), projected);
+            assert_approx_eq!($vec4::new(2.5, 5.0, 5.0, -15.0), projected.into());
 
             let original = $vec3::new(5.0, 5.0, 5.0);
             let projected = projection * original.extend(1.0);
-            assert_approx_eq!($vec4::new(2.5, 5.0, 5.0, -5.0), projected);
+            assert_approx_eq!($vec4::new(2.5, 5.0, 5.0, -5.0), projected.into());
 
             should_glam_assert!({ $mat4::perspective_infinite_reverse_rh(0.0, 1.0, 0.0) });
         });
@@ -557,29 +546,29 @@ macro_rules! impl_mat4_tests {
         glam_test!(test_mat4_orthographic_gl_rh, {
             let projection = $mat4::orthographic_rh_gl(-10.0, 10.0, -5.0, 5.0, 0.0, -10.0);
             let original = $vec4::new(5.0, 5.0, -5.0, 1.0);
-            let projected = projection.mul_vec4(original);
+            let projected = projection * original;
             assert_approx_eq!(projected, $vec4::new(0.5, 1.0, -2.0, 1.0));
         });
 
         glam_test!(test_mat4_orthographic_rh, {
             let projection = $mat4::orthographic_rh(-10.0, 10.0, -5.0, 5.0, -10.0, 10.0);
             let original = $vec4::new(5.0, 5.0, -5.0, 1.0);
-            let projected = projection.mul_vec4(original);
+            let projected = projection * original;
             assert_approx_eq!(projected, $vec4::new(0.5, 1.0, 0.75, 1.0));
 
             let original = $vec4::new(5.0, 5.0, 5.0, 1.0);
-            let projected = projection.mul_vec4(original);
+            let projected = projection * original;
             assert_approx_eq!(projected, $vec4::new(0.5, 1.0, 0.25, 1.0));
         });
 
         glam_test!(test_mat4_orthographic_lh, {
             let projection = $mat4::orthographic_lh(-10.0, 10.0, -5.0, 5.0, -10.0, 10.0);
             let original = $vec4::new(5.0, 5.0, -5.0, 1.0);
-            let projected = projection.mul_vec4(original);
+            let projected = projection * original;
             assert_approx_eq!(projected, $vec4::new(0.5, 1.0, 0.25, 1.0));
 
             let original = $vec4::new(5.0, 5.0, 5.0, 1.0);
-            let projected = projection.mul_vec4(original);
+            let projected = projection * original;
             assert_approx_eq!(projected, $vec4::new(0.5, 1.0, 0.75, 1.0));
         });
 
@@ -742,21 +731,10 @@ mod mat4 {
                 [9.0, 10.0, 11.0, 12.0],
                 [13.0, 14.0, 15.0, 16.0]
             ]),
-            Mat4::from_cols_array_2d(&[
-                [1.0, 2.0, 3.0, 4.0],
-                [5.0, 6.0, 7.0, 8.0],
-                [9.0, 10.0, 11.0, 12.0],
-                [13.0, 14.0, 15.0, 16.0]
-            ])
-            .as_dmat4()
+            Mat4::from_cols_array_2d(&MATRIX).as_dmat4()
         );
         assert_eq!(
-            Mat4::from_cols_array_2d(&[
-                [1.0, 2.0, 3.0, 4.0],
-                [5.0, 6.0, 7.0, 8.0],
-                [9.0, 10.0, 11.0, 12.0],
-                [13.0, 14.0, 15.0, 16.0]
-            ]),
+            Mat4::from_cols_array_2d(&MATRIX),
             DMat4::from_cols_array_2d(&[
                 [1.0, 2.0, 3.0, 4.0],
                 [5.0, 6.0, 7.0, 8.0],
@@ -769,6 +747,57 @@ mod mat4 {
 
     impl_mat4_tests!(f32, mat4, vec4, vec3, Mat4, Mat3, Quat, Vec4, Vec3);
     impl_as_ref_tests!(Mat4);
+}
+
+mod mat4a {
+    use super::support::deg;
+    use glam::{mat4a, swizzles::*, vec3, vec4a, Mat3, Mat4A, Quat, Vec3, Vec4A};
+
+    glam_test!(test_align, {
+        use std::mem;
+        assert_eq!(mem::align_of::<Vec4A>(), mem::align_of::<Mat4A>());
+        assert_eq!(64, mem::size_of::<Mat4A>());
+    });
+
+    glam_test!(test_from_mat4, {
+        use glam::Mat4;
+        let m1 = Mat4::from_cols_array_2d(&MATRIX);
+        let m2: Mat4A = m1.into();
+        let m3: Mat4 = m2.into();
+        assert_eq!(Mat4A::from_cols_array_2d(&MATRIX), m2);
+        assert_eq!(Mat4::from_cols_array_2d(&MATRIX), m3);
+    });
+
+    glam_test!(test_from_mat3a, {
+        use glam::Mat3A;
+        let m3 = Mat3A::from_cols_array_2d(&[[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]]);
+        let m4 = Mat4A::from_mat3a(m3);
+        assert_eq!(
+            Mat4A::from_cols_array_2d(&[
+                [1.0, 2.0, 3.0, 0.0],
+                [4.0, 5.0, 6.0, 0.0],
+                [7.0, 8.0, 9.0, 0.0],
+                [0.0, 0.0, 0.0, 1.0]
+            ]),
+            m4
+        );
+    });
+
+    glam_test!(test_as, {
+        use glam::DMat4;
+        assert_eq!(
+            DMat4::from_cols_array_2d(&[
+                [1.0, 2.0, 3.0, 4.0],
+                [5.0, 6.0, 7.0, 8.0],
+                [9.0, 10.0, 11.0, 12.0],
+                [13.0, 14.0, 15.0, 16.0]
+            ]),
+            Mat4A::from_cols_array_2d(&MATRIX).as_dmat4()
+        );
+    });
+
+    impl_mat4_tests!(f32, mat4a, vec4a, vec3, Mat4A, Mat3, Quat, Vec4A, Vec3);
+    impl_as_ref_tests!(Mat4A);
 }
 
 mod dmat4 {

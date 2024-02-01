@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{f32::math, neon::*, BVec3, BVec3A, Vec2, Vec3, Vec4};
+use crate::{f32::math, neon::*, BVec3, BVec3A, Vec2, Vec3, Vec4, Vec4A};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -148,7 +148,7 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub(crate) fn from_vec4(v: Vec4) -> Self {
-        Self(v.0)
+        Self::new(v.x, v.y, v.z)
     }
 
     /// Creates a 4D vector from `self` and the given `w` value.
@@ -1345,12 +1345,12 @@ impl From<Vec3> for Vec3A {
     }
 }
 
-impl From<Vec4> for Vec3A {
+impl From<Vec4A> for Vec3A {
     /// Creates a [`Vec3A`] from the `x`, `y` and `z` elements of `self` discarding `w`.
     ///
     /// On architectures where SIMD is supported such as SSE2 on `x86_64` this conversion is a noop.
     #[inline]
-    fn from(v: Vec4) -> Self {
+    fn from(v: Vec4A) -> Self {
         Self(v.0)
     }
 }

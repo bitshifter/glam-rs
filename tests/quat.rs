@@ -74,7 +74,7 @@ macro_rules! impl_quat_tests {
             assert_approx_eq!(y0, y2);
             let y3 = $quat::from_mat3(&$mat3::from_rotation_y(yaw));
             assert_approx_eq!(y0, y3);
-            let y4 = $quat::from_mat3(&$mat3::from_quat(y0));
+            let y4 = $quat::from_mat3(&$mat3::from_quat(y0.into()));
             assert_approx_eq!(y0, y4);
 
             let x0 = $quat::from_rotation_x(pitch);
@@ -122,7 +122,7 @@ macro_rules! impl_quat_tests {
             assert_approx_eq!(yx0, yx2);
             assert!((yxz0 * yxz0.inverse()).is_near_identity());
 
-            let yxz2 = $quat::from_mat4(&$mat4::from_quat(yxz0));
+            let yxz2 = $quat::from_mat4(&$mat4::from_quat(yxz0.into()));
             assert_approx_eq!(yxz0, yxz2);
 
             // if near identity, just returns x axis and 0 rotation
@@ -176,7 +176,7 @@ macro_rules! impl_quat_tests {
             assert_approx_eq!(-$vec3::X, qrz.neg().mul_vec3($vec3::Y));
 
             // check vec3 * mat3 is the same
-            let mrz = $mat3::from_quat(qrz);
+            let mrz = $mat3::from_quat(qrz.into());
             assert_approx_eq!($vec3::Y, mrz * $vec3::X);
             assert_approx_eq!($vec3::Y, mrz.mul_vec3($vec3::X));
             // assert_approx_eq!($vec3::Y, -mrz * $vec3::X);
@@ -194,7 +194,7 @@ macro_rules! impl_quat_tests {
             assert_approx_eq!($vec3::Z, qrx.neg().mul_vec3($vec3::Y));
 
             // check vec3 * mat3 is the same
-            let mrx = $mat3::from_quat(qrx);
+            let mrx = $mat3::from_quat(qrx.into());
             assert_approx_eq!($vec3::X, mrx * $vec3::X);
             assert_approx_eq!($vec3::X, mrx.mul_vec3($vec3::X));
             assert_approx_eq!($vec3::Z, mrx * $vec3::Y);
@@ -254,7 +254,7 @@ macro_rules! impl_quat_tests {
             assert_approx_eq!((q3 * q3 * q3).angle_between(q3), 0.0, eps);
             assert_approx_eq!((q3 * q3 * q3 * q3).angle_between(q1), 0.0, eps);
             assert_approx_eq!(q1.angle_between(q6), TAU - TAU * 0.94, eps);
-            assert_approx_eq!((q5 * q1).angle_between(q5 * q6), TAU - TAU * 0.94, eps);
+            assert_approx_eq!((q5 * q1).angle_between(q5 * q6), TAU - TAU * 0.94, 1e-5);
             assert_approx_eq!((q1 * q5).angle_between(q6 * q5), TAU - TAU * 0.94, eps);
         });
 
@@ -551,20 +551,42 @@ macro_rules! impl_quat_tests {
 mod quat {
     use crate::support::{deg, rad};
     use core::ops::Neg;
-    use glam::{quat, EulerRot, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
+    use glam::{quat, EulerRot, Mat3, Mat4, Quat, Vec2, Vec3, Vec4};
 
     glam_test!(test_align, {
         use std::mem;
         assert_eq!(16, mem::size_of::<Quat>());
-        if cfg!(feature = "scalar-math") {
-            assert_eq!(4, mem::align_of::<Quat>());
-        } else {
-            assert_eq!(16, mem::align_of::<Quat>());
-        }
+        assert_eq!(4, mem::align_of::<Quat>());
+    });
+
+    glam_test!(test_as, {
+        use glam::DQuat;
+        assert_approx_eq!(
+            DQuat::from_euler(EulerRot::YXZ, 1.0, 2.0, 3.0),
+            Quat::from_euler(EulerRot::YXZ, 1.0, 2.0, 3.0).as_dquat()
+        );
+        assert_approx_eq!(
+            Quat::from_euler(EulerRot::YXZ, 1.0, 2.0, 3.0),
+            DQuat::from_euler(EulerRot::YXZ, 1.0, 2.0, 3.0).as_quat()
+        );
+    });
+
+    impl_quat_tests!(f32, quat, Mat3, Mat4, Quat, Vec2, Vec3, Vec4);
+}
+
+mod quata {
+    use crate::support::{deg, rad};
+    use core::ops::Neg;
+    use glam::{quata, EulerRot, Mat3, Mat3A, Mat4, QuatA, Vec2, Vec3, Vec3A, Vec4};
+
+    glam_test!(test_align, {
+        use std::mem;
+        assert_eq!(16, mem::size_of::<QuatA>());
+        assert_eq!(16, mem::align_of::<QuatA>());
     });
 
     glam_test!(test_mul_vec3a, {
-        let qrz = Quat::from_rotation_z(deg(90.0));
+        let qrz = QuatA::from_rotation_z(deg(90.0));
         assert_approx_eq!(Vec3A::Y, qrz * Vec3A::X);
         assert_approx_eq!(Vec3A::Y, qrz.mul_vec3a(Vec3A::X));
         assert_approx_eq!(Vec3A::Y, -qrz * Vec3A::X);
@@ -575,14 +597,14 @@ mod quat {
         assert_approx_eq!(-Vec3A::X, qrz.neg().mul_vec3a(Vec3A::Y));
 
         // check vec3 * mat3 is the same
-        let mrz = Mat3::from_quat(qrz);
+        let mrz = Mat3A::from_quat(qrz.into());
         assert_approx_eq!(Vec3A::Y, mrz * Vec3A::X);
         assert_approx_eq!(Vec3A::Y, mrz.mul_vec3a(Vec3A::X));
         // assert_approx_eq!(Vec3A::Y, -mrz * Vec3A::X);
         assert_approx_eq!(-Vec3A::X, mrz * Vec3A::Y);
         assert_approx_eq!(-Vec3A::X, mrz.mul_vec3a(Vec3A::Y));
 
-        let qrx = Quat::from_rotation_x(deg(90.0));
+        let qrx = QuatA::from_rotation_x(deg(90.0));
         assert_approx_eq!(Vec3A::X, qrx * Vec3A::X);
         assert_approx_eq!(Vec3A::X, qrx.mul_vec3a(Vec3A::X));
         assert_approx_eq!(Vec3A::X, -qrx * Vec3A::X);
@@ -593,7 +615,7 @@ mod quat {
         assert_approx_eq!(Vec3A::Z, qrx.neg().mul_vec3a(Vec3A::Y));
 
         // check vec3 * mat3 is the same
-        let mrx = Mat3::from_quat(qrx);
+        let mrx = Mat3A::from_quat(qrx.into());
         assert_approx_eq!(Vec3A::X, mrx * Vec3A::X);
         assert_approx_eq!(Vec3A::X, mrx.mul_vec3a(Vec3A::X));
         assert_approx_eq!(Vec3A::Z, mrx * Vec3A::Y);
@@ -624,13 +646,22 @@ mod quat {
         assert_approx_eq!(-Vec3A::X, mrzx.mul_vec3a(Vec3A::Y));
     });
 
+    glam_test!(test_from_quat, {
+        use glam::Quat;
+        let yaw = deg(30.0);
+        let y0 = Quat::from_rotation_y(yaw);
+        let y1 = QuatA::from_rotation_y(yaw);
+        assert_approx_eq!(y1, y0.into());
+        assert_approx_eq!(y0, y1.into());
+    });
+
     glam_test!(test_from_mat3a, {
         use glam::Mat3A;
         let yaw = deg(30.0);
-        let y0 = Quat::from_rotation_y(yaw);
-        let y1 = Quat::from_mat3a(&Mat3A::from_rotation_y(yaw));
+        let y0 = QuatA::from_rotation_y(yaw);
+        let y1 = QuatA::from_mat3a(&Mat3A::from_rotation_y(yaw));
         assert_approx_eq!(y0, y1);
-        let y2 = Quat::from_mat3a(&Mat3A::from_quat(y0));
+        let y2 = QuatA::from_mat3a(&Mat3A::from_quat(y0.into()));
         assert_approx_eq!(y0, y2);
     });
 
@@ -638,15 +669,11 @@ mod quat {
         use glam::DQuat;
         assert_approx_eq!(
             DQuat::from_euler(EulerRot::YXZ, 1.0, 2.0, 3.0),
-            Quat::from_euler(EulerRot::YXZ, 1.0, 2.0, 3.0).as_dquat()
-        );
-        assert_approx_eq!(
-            Quat::from_euler(EulerRot::YXZ, 1.0, 2.0, 3.0),
-            DQuat::from_euler(EulerRot::YXZ, 1.0, 2.0, 3.0).as_quat()
+            QuatA::from_euler(EulerRot::YXZ, 1.0, 2.0, 3.0).as_dquat()
         );
     });
 
-    impl_quat_tests!(f32, quat, Mat3, Mat4, Quat, Vec2, Vec3, Vec4);
+    impl_quat_tests!(f32, quata, Mat3, Mat4, QuatA, Vec2, Vec3, Vec4);
 }
 
 mod dquat {

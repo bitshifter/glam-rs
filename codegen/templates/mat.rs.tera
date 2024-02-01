@@ -7,9 +7,13 @@
 
 {% if scalar_t == "f32" %}
     {% set vecn_t = "Vec" ~ dim %}
-    {% if dim == 3 and is_align %}
-        {% set self_t = "Mat3A" %}
-        {% set col_t = "Vec3A" %}
+    {% if is_align %}
+        {% set self_t = "Mat" ~ dim ~ "A" %}
+        {% if dim == 2 %}
+            {% set col_t = "Vec2" %}
+        {% else %}
+            {% set col_t = "Vec" ~ dim ~ "A" %}
+        {% endif %}
     {% else %}
         {% set self_t = "Mat" ~ dim %}
         {% set col_t = vecn_t %}
@@ -38,7 +42,7 @@
     {% set mat4_t = "DMat4" %}
 {% endif %}
 
-{% if self_t == "Mat2" %}
+{% if self_t == "Mat2A" %}
     {% if not is_scalar %}
         {% set is_simd = true %}
         {% if is_sse2 %}
@@ -67,6 +71,11 @@ use crate::{
     Mat{{ dim }},
 {% endif %}
 {% if dim == 2 %}
+    {% if is_align %}
+        {{ mat2_t }},
+    {% elif scalar_t == "f32" %}
+        Mat2A,
+    {% endif %}
     {{ mat3_t }}, {{ vec2_t }},
     {% if scalar_t == "f32" %}
         Mat3A,
@@ -82,11 +91,16 @@ use crate::{
 {% elif dim == 4 %}
     EulerRot,
     {{ mat3_t }}, {{ quat_t }}, {{ vec3_t }}, {{ col_t }},
+    {% if is_align %}
+        {{ mat4_t }}, {{ vec4_t }},
+    {% elif scalar_t == "f32" %}
+        Mat4A, Vec4A,
+    {% endif %}
     {% if scalar_t == "f32" %}
         Mat3A, Vec3A,
     {% endif %}
 {% endif %}
-{% if self_t == "Mat4" %}
+{% if self_t == "Mat4A" %}
     {% if is_sse2 %}
         sse2::*,
     {% elif is_wasm32 %}
@@ -119,7 +133,7 @@ use core::arch::aarch64::*;
 {% endif %}
 
 {% set is_sse2_or_neon = is_sse2 or is_neon %}
-{% if self_t == "Mat2" and is_sse2_or_neon %}
+{% if self_t == "Mat2A" and is_sse2_or_neon %}
 #[repr(C)]
 union UnionCast {
     a: [f32; 4],
@@ -200,20 +214,20 @@ pub const fn {{ self_t | lower }}(
 /// This type is 16 byte aligned.
 {%- endif %}
 #[derive(Clone, Copy)]
-{%- if self_t == "Mat4" and is_scalar %}
+{%- if self_t == "Mat4A" and is_scalar %}
 #[cfg_attr(
     any(
-        not(any(feature = "scalar-math", target_arch = "spirv")),
+        not(target_arch = "spirv"),
         feature = "cuda"),
     repr(align(16))
 )]
-{%- elif self_t == "Mat2" and is_scalar %}
-#[cfg_attr(not(any(feature = "scalar-math", target_arch = "spirv")), repr(align(16)))]
+{%- elif self_t == "Mat2A" and is_scalar %}
+#[cfg_attr(not(target_arch = "spirv"), repr(align(16)))]
 #[cfg_attr(feature = "cuda", repr(align(8)))]
 {%- elif self_t == "DMat2" or self_t == "DMat4" %}
 #[cfg_attr(feature = "cuda", repr(align(16)))]
 {%- endif %}
-{%- if self_t == "Mat2" and not is_scalar %}
+{%- if self_t == "Mat2A" and not is_scalar %}
 #[repr(transparent)]
 pub struct {{ self_t }}(pub(crate) {{ simd_t }});
 {%- else %}
@@ -258,11 +272,11 @@ impl {{ self_t }} {
             {%- endfor %}
         {%- endfor %}
     ) -> Self {
-        {% if self_t == "Mat2" and is_sse2 %}
+        {% if self_t == "Mat2A" and is_sse2 %}
             unsafe { UnionCast { a: [m00, m01, m10, m11] }.v }
-        {% elif self_t == "Mat2" and is_wasm32 %}
+        {% elif self_t == "Mat2A" and is_wasm32 %}
             Self(f32x4(m00, m01, m10, m11))
-        {% elif self_t == "Mat2" and is_coresimd %}
+        {% elif self_t == "Mat2A" and is_coresimd %}
             Self(f32x4::from_array([m00, m01, m10, m11]))
         {% elif self_t == "Mat2" and is_neon %}
             unsafe { UnionCast { a: [m00, m01, m10, m11] }.v }
@@ -287,11 +301,11 @@ impl {{ self_t }} {
             {{ axis }}: {{ col_t }},
         {% endfor %}
     ) -> Self {
-        {% if self_t == "Mat2" and is_sse2 %}
+        {% if self_t == "Mat2A" and is_sse2 %}
             unsafe { UnionCast { a: [x_axis.x, x_axis.y, y_axis.x, y_axis.y] }.v }
-        {% elif self_t == "Mat2" and is_wasm32 %}
+        {% elif self_t == "Mat2A" and is_wasm32 %}
             Self(f32x4(x_axis.x, x_axis.y, y_axis.x, y_axis.y))
-        {% elif self_t == "Mat2" and is_coresimd %}
+        {% elif self_t == "Mat2A" and is_coresimd %}
             Self(f32x4::from_array([x_axis.x, x_axis.y, y_axis.x, y_axis.y]))
         {% elif self_t == "Mat2" and is_neon %}
             unsafe { UnionCast { a: [x_axis.x, x_axis.y, y_axis.x, y_axis.y] }.v }
@@ -310,7 +324,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub const fn from_cols_array(m: &[{{ scalar_t }}; {{ size }}]) -> Self {
-        {% if self_t == "Mat2" and is_coresimd %}
+        {% if self_t == "Mat2A" and is_coresimd %}
             Self(f32x4::from_array(*m))
         {% else %}
         Self::new(
@@ -326,7 +340,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub const fn to_cols_array(&self) -> [{{ scalar_t }}; {{ size }}] {
-        {% if self_t == "Mat2" and not is_scalar %}
+        {% if self_t == "Mat2A" and not is_scalar %}
             unsafe { *(self as *const Self as *const [f32; 4]) }
         {% else %}
             {% if dim >= 2 and not is_scalar %}
@@ -367,7 +381,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub const fn to_cols_array_2d(&self) -> [[{{ scalar_t }}; {{ dim }}]; {{ dim }}] {
-        {% if self_t == "Mat2" and not is_scalar %}
+        {% if self_t == "Mat2A" and not is_scalar %}
             unsafe { *(self as *const Self as *const [[f32; 2]; 2]) }
         {% else %}
             [
@@ -383,7 +397,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub const fn from_diagonal(diagonal: {{ vecn_t }}) -> Self {
-        {% if self_t == "Mat4" and not is_scalar %}
+        {% if self_t == "Mat4A" and not is_scalar %}
             // diagonal.x, diagonal.y etc can't be done in a const-context
             let [x, y, z, w] = diagonal.to_array();
             Self::new(
@@ -454,9 +468,9 @@ impl {{ self_t }} {
     pub fn from_mat4(m: {{ mat4_t }}) -> Self {
         {% if self_t == "Mat3A" %}
             Self::from_cols(
-                m.x_axis.into(),
-                m.y_axis.into(),
-                m.z_axis.into(),
+                m.x_axis.xyz().into(),
+                m.y_axis.xyz().into(),
+                m.z_axis.xyz().into(),
             )
         {% else %}
             Self::from_cols(
@@ -739,7 +753,7 @@ impl {{ self_t }} {
             self.z_axis.mul(inv_scale.z).xyz(),
         );
 
-        let translation = self.w_axis.xyz();
+        let translation = self.w_axis.truncate();
 
         (scale, rotation, translation)
     }
@@ -785,10 +799,10 @@ impl {{ self_t }} {
     #[must_use]
     pub fn from_mat3a(m: Mat3A) -> Self {
         Self::from_cols(
-            Vec4::from((m.x_axis, 0.0)),
-            Vec4::from((m.y_axis, 0.0)),
-            Vec4::from((m.z_axis, 0.0)),
-            Vec4::W,
+            {{ col_t }}::from((m.x_axis, 0.0)),
+            {{ col_t }}::from((m.y_axis, 0.0)),
+            {{ col_t }}::from((m.z_axis, 0.0)),
+            {{ col_t }}::W,
         )
     }
 {% endif %}
@@ -1042,11 +1056,11 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn transpose(&self) -> Self {
-        {% if self_t == "Mat2" and is_sse2 %}
+        {% if self_t == "Mat2A" and is_sse2 %}
             Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_10_00) })
-        {% elif self_t == "Mat2" and is_wasm32 %}
+        {% elif self_t == "Mat2A" and is_wasm32 %}
             Self(i32x4_shuffle::<0, 2, 5, 7>(self.0, self.0))
-        {% elif self_t == "Mat2" and is_coresimd %}
+        {% elif self_t == "Mat2A" and is_coresimd %}
             Self(simd_swizzle!(self.0, [0, 2, 1, 3]))
         {% elif self_t == "Mat2" and is_neon %}
             Self(unsafe {
@@ -1125,7 +1139,7 @@ impl {{ self_t }} {
                     Vec3A::from(vsetq_lane_f32(vgetq_lane_f32(z, 2), vuzp1q_f32(tmp1, z), 2)),
                 )
             }
-        {% elif self_t == "Mat4" and is_sse2 %}
+        {% elif self_t == "Mat4A" and is_sse2 %}
             unsafe {
                 // Based on https://github.com/microsoft/DirectXMath `XMMatrixTranspose`
                 let tmp0 = _mm_shuffle_ps(self.x_axis.0, self.y_axis.0, 0b01_00_01_00);
@@ -1134,13 +1148,13 @@ impl {{ self_t }} {
                 let tmp3 = _mm_shuffle_ps(self.z_axis.0, self.w_axis.0, 0b11_10_11_10);
 
                 Self {
-                    x_axis: Vec4(_mm_shuffle_ps(tmp0, tmp2, 0b10_00_10_00)),
-                    y_axis: Vec4(_mm_shuffle_ps(tmp0, tmp2, 0b11_01_11_01)),
-                    z_axis: Vec4(_mm_shuffle_ps(tmp1, tmp3, 0b10_00_10_00)),
-                    w_axis: Vec4(_mm_shuffle_ps(tmp1, tmp3, 0b11_01_11_01)),
+                    x_axis: Vec4A(_mm_shuffle_ps(tmp0, tmp2, 0b10_00_10_00)),
+                    y_axis: Vec4A(_mm_shuffle_ps(tmp0, tmp2, 0b11_01_11_01)),
+                    z_axis: Vec4A(_mm_shuffle_ps(tmp1, tmp3, 0b10_00_10_00)),
+                    w_axis: Vec4A(_mm_shuffle_ps(tmp1, tmp3, 0b11_01_11_01)),
                 }
             }
-        {% elif self_t == "Mat4" and is_wasm32 %}
+        {% elif self_t == "Mat4A" and is_wasm32 %}
             // Based on https://github.com/microsoft/DirectXMath `XMMatrixTranspose`
             let tmp0 = i32x4_shuffle::<0, 1, 4, 5>(self.x_axis.0, self.y_axis.0);
             let tmp1 = i32x4_shuffle::<2, 3, 6, 7>(self.x_axis.0, self.y_axis.0);
@@ -1148,12 +1162,12 @@ impl {{ self_t }} {
             let tmp3 = i32x4_shuffle::<2, 3, 6, 7>(self.z_axis.0, self.w_axis.0);
 
             Self {
-                x_axis: Vec4(i32x4_shuffle::<0, 2, 4, 6>(tmp0, tmp2)),
-                y_axis: Vec4(i32x4_shuffle::<1, 3, 5, 7>(tmp0, tmp2)),
-                z_axis: Vec4(i32x4_shuffle::<0, 2, 4, 6>(tmp1, tmp3)),
-                w_axis: Vec4(i32x4_shuffle::<1, 3, 5, 7>(tmp1, tmp3)),
+                x_axis: Vec4A(i32x4_shuffle::<0, 2, 4, 6>(tmp0, tmp2)),
+                y_axis: Vec4A(i32x4_shuffle::<1, 3, 5, 7>(tmp0, tmp2)),
+                z_axis: Vec4A(i32x4_shuffle::<0, 2, 4, 6>(tmp1, tmp3)),
+                w_axis: Vec4A(i32x4_shuffle::<1, 3, 5, 7>(tmp1, tmp3)),
             }
-        {% elif self_t == "Mat4" and is_coresimd %}
+        {% elif self_t == "Mat4A" and is_coresimd %}
             // Based on https://github.com/microsoft/DirectXMath `XMMatrixTranspose`
             let tmp0 = simd_swizzle!(
                 self.x_axis.0,
@@ -1177,10 +1191,10 @@ impl {{ self_t }} {
             );
 
             Self {
-                x_axis: Vec4(simd_swizzle!(tmp0, tmp2, [0, 2, 4, 6])),
-                y_axis: Vec4(simd_swizzle!(tmp0, tmp2, [1, 3, 5, 7])),
-                z_axis: Vec4(simd_swizzle!(tmp1, tmp3, [0, 2, 4, 6])),
-                w_axis: Vec4(simd_swizzle!(tmp1, tmp3, [1, 3, 5, 7])),
+                x_axis: Vec4A(simd_swizzle!(tmp0, tmp2, [0, 2, 4, 6])),
+                y_axis: Vec4A(simd_swizzle!(tmp0, tmp2, [1, 3, 5, 7])),
+                z_axis: Vec4A(simd_swizzle!(tmp1, tmp3, [0, 2, 4, 6])),
+                w_axis: Vec4A(simd_swizzle!(tmp1, tmp3, [1, 3, 5, 7])),
             }
         {% else %}
             Self {
@@ -1201,7 +1215,7 @@ impl {{ self_t }} {
     {%- endif %}
     #[must_use]
     pub fn determinant(&self) -> {{ scalar_t }} {
-        {% if self_t == "Mat2" and is_sse2 %}
+        {% if self_t == "Mat2A" and is_sse2 %}
             unsafe {
                 let abcd = self.0;
                 let dcba = _mm_shuffle_ps(abcd, abcd, 0b00_01_10_11);
@@ -1209,19 +1223,19 @@ impl {{ self_t }} {
                 let det = _mm_sub_ps(prod, _mm_shuffle_ps(prod, prod, 0b01_01_01_01));
                 _mm_cvtss_f32(det)
             }
-        {% elif self_t == "Mat2" and is_wasm32 %}
+        {% elif self_t == "Mat2A" and is_wasm32 %}
             let abcd = self.0;
             let dcba = i32x4_shuffle::<3, 2, 5, 4>(abcd, abcd);
             let prod = f32x4_mul(abcd, dcba);
             let det = f32x4_sub(prod, i32x4_shuffle::<1, 1, 5, 5>(prod, prod));
             f32x4_extract_lane::<0>(det)
-        {% elif self_t == "Mat2" and is_coresimd %}
+        {% elif self_t == "Mat2A" and is_coresimd %}
             let abcd = self.0;
             let dcba = simd_swizzle!(abcd, [3, 2, 1, 0]);
             let prod = abcd * dcba;
             let det = prod - simd_swizzle!(prod, [1, 1, 1, 1]);
             det[0]
-        {% elif self_t == "Mat2" and is_neon %}
+        {% elif self_t == "Mat2A" and is_neon %}
             unsafe {
                 let abcd = self.0;
                 let badc = vrev64q_f32(abcd);
@@ -1230,7 +1244,7 @@ impl {{ self_t }} {
                 let det = vsubq_f32(prod, vdupq_laneq_f32(prod, 1));
                 vgetq_lane_f32(det, 0)
             }
-        {% elif self_t == "Mat4" and is_sse2 %}
+        {% elif self_t == "Mat4A" and is_sse2 %}
             unsafe {
                 // Based on https://github.com/g-truc/glm `glm_mat4_determinant_lowp`
                 let swp2a = _mm_shuffle_ps(self.z_axis.0, self.z_axis.0, 0b00_01_01_10);
@@ -1266,7 +1280,7 @@ impl {{ self_t }} {
 
                 dot4(self.x_axis.0, detcof)
             }
-        {% elif self_t == "Mat4" and is_wasm32 %}
+        {% elif self_t == "Mat4A" and is_wasm32 %}
             // Based on https://github.com/g-truc/glm `glm_mat4_determinant`
             let swp2a = i32x4_shuffle::<2, 1, 1, 0>(self.z_axis.0, self.z_axis.0);
             let swp3a = i32x4_shuffle::<3, 3, 2, 3>(self.w_axis.0, self.w_axis.0);
@@ -1300,7 +1314,7 @@ impl {{ self_t }} {
             let detcof = f32x4_mul(addres, f32x4(1.0, -1.0, 1.0, -1.0));
 
             dot4(self.x_axis.0, detcof)
-        {% elif self_t == "Mat4" and is_coresimd %}
+        {% elif self_t == "Mat4A" and is_coresimd %}
             // Based on https://github.com/g-truc/glm `glm_mat4_determinant`
             let swp2a = simd_swizzle!(self.z_axis.0, [2, 1, 1, 0]);
             let swp3a = simd_swizzle!(self.w_axis.0, [3, 3, 2, 3]);
@@ -1439,7 +1453,7 @@ impl {{ self_t }} {
     {%- endif %}
     #[must_use]
     pub fn inverse(&self) -> Self {
-        {% if self_t == "Mat2" and is_sse2 %}
+        {% if self_t == "Mat2A" and is_sse2 %}
             unsafe {
                 const SIGN: __m128 = crate::sse2::m128_from_f32x4([1.0, -1.0, -1.0, 1.0]);
                 let abcd = self.0;
@@ -1448,11 +1462,11 @@ impl {{ self_t }} {
                 let sub = _mm_sub_ps(prod, _mm_shuffle_ps(prod, prod, 0b01_01_01_01));
                 let det = _mm_shuffle_ps(sub, sub, 0b00_00_00_00);
                 let tmp = _mm_div_ps(SIGN, det);
-                glam_assert!(Mat2(tmp).is_finite());
+                glam_assert!(Mat2A(tmp).is_finite());
                 let dbca = _mm_shuffle_ps(abcd, abcd, 0b00_10_01_11);
                 Self(_mm_mul_ps(dbca, tmp))
             }
-        {% elif self_t == "Mat2" and is_wasm32 %}
+        {% elif self_t == "Mat2A" and is_wasm32 %}
             const SIGN: v128 = crate::wasm32::v128_from_f32x4([1.0, -1.0, -1.0, 1.0]);
             let abcd = self.0;
             let dcba = i32x4_shuffle::<3, 2, 5, 4>(abcd, abcd);
@@ -1460,10 +1474,10 @@ impl {{ self_t }} {
             let sub = f32x4_sub(prod, i32x4_shuffle::<1, 1, 5, 5>(prod, prod));
             let det = i32x4_shuffle::<0, 0, 4, 4>(sub, sub);
             let tmp = f32x4_div(SIGN, det);
-            glam_assert!(Mat2(tmp).is_finite());
+            glam_assert!(Mat2A(tmp).is_finite());
             let dbca = i32x4_shuffle::<3, 1, 6, 4>(abcd, abcd);
             Self(f32x4_mul(dbca, tmp))
-        {% elif self_t == "Mat2" and is_coresimd %}
+        {% elif self_t == "Mat2A" and is_coresimd %}
             const SIGN: f32x4 = f32x4::from_array([1.0, -1.0, -1.0, 1.0]);
             let abcd = self.0;
             let dcba = simd_swizzle!(abcd, [3, 2, 1, 0]);
@@ -1471,10 +1485,10 @@ impl {{ self_t }} {
             let sub = prod - simd_swizzle!(prod, [1, 1, 1, 1]);
             let det = simd_swizzle!(sub, [0, 0, 0, 0]);
             let tmp = SIGN / det;
-            glam_assert!(Mat2(tmp).is_finite());
+            glam_assert!(Mat2A(tmp).is_finite());
             let dbca = simd_swizzle!(abcd, [3, 1, 2, 0]);
             Self(dbca.mul(tmp))
-        {% elif self_t == "Mat2" and is_neon %}
+        {% elif self_t == "Mat2A" and is_neon %}
             unsafe {
                 const SIGN: float32x4_t = crate::neon::f32x4_from_array([1.0, -1.0, -1.0, 1.0]);
                 let abcd = self.0;
@@ -1493,13 +1507,13 @@ impl {{ self_t }} {
                 );
                 Self(vmulq_f32(dbca, tmp))
             }
-        {% elif self_t == "Mat4" and is_sse2 %}
+        {% elif self_t == "Mat4A" and is_sse2 %}
             {{ sse2::impl_mat4_inverse() }}
-        {% elif self_t == "Mat4" and is_wasm32 %}
+        {% elif self_t == "Mat4A" and is_wasm32 %}
             {{ wasm32::impl_mat4_inverse() }}
-        {% elif self_t == "Mat4" and is_coresimd %}
+        {% elif self_t == "Mat4A" and is_coresimd %}
             {{ coresimd::impl_mat4_inverse() }}
-        {% elif self_t == "Mat4" and is_neon %}
+        {% elif self_t == "Mat4A" and is_neon %}
             {{ neon::impl_mat4_inverse() }}
         {% elif dim == 2 %}
             let inv_det = {
@@ -1928,7 +1942,7 @@ impl {{ self_t }} {
         res = self.z_axis.mul(rhs.z).add(res);
         res = self.w_axis.add(res);
         res = res.mul(res.wwww().recip());
-        res.xyz()
+        res.truncate()
     }
 
     /// Transforms the given 3D vector as a point.
@@ -1946,12 +1960,12 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn transform_point3(&self, rhs: {{ vec3_t }}) -> {{ vec3_t }} {
-        glam_assert!(self.row(3).abs_diff_eq({{ vec4_t }}::W, 1e-6));
+        glam_assert!(self.row(3).abs_diff_eq({{ col_t }}::W, 1e-6));
         let mut res = self.x_axis.mul(rhs.x);
         res = self.y_axis.mul(rhs.y).add(res);
         res = self.z_axis.mul(rhs.z).add(res);
         res = self.w_axis.add(res);
-        res.xyz()
+        res.truncate()
     }
 
     /// Transforms the give 3D vector as a direction.
@@ -1967,31 +1981,31 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn transform_vector3(&self, rhs: {{ vec3_t }}) -> {{ vec3_t }} {
-        glam_assert!(self.row(3).abs_diff_eq({{ vec4_t }}::W, 1e-6));
+        glam_assert!(self.row(3).abs_diff_eq({{ col_t }}::W, 1e-6));
         let mut res = self.x_axis.mul(rhs.x);
         res = self.y_axis.mul(rhs.y).add(res);
         res = self.z_axis.mul(rhs.z).add(res);
-        res.xyz()
+        res.truncate()
     }
 
 {% endif %}
 
-{% if self_t == "Mat4" %}
+{% if dim == 4 and scalar_t == 'f32' %}
     /// Transforms the given [`Vec3A`] as 3D point.
     ///
     /// This is the equivalent of multiplying the [`Vec3A`] as a 4D vector where `w` is `1.0`.
     #[inline]
     #[must_use]
     pub fn transform_point3a(&self, rhs: Vec3A) -> Vec3A {
-        {% if is_scalar %}
+        {% if is_scalar or not is_align %}
             self.transform_point3(rhs.into()).into()
         {% else %}
-            glam_assert!(self.row(3).abs_diff_eq({{ vec4_t }}::W, 1e-6));
+            glam_assert!(self.row(3).abs_diff_eq({{ col_t }}::W, 1e-6));
             let mut res = self.x_axis.mul(rhs.xxxx());
             res = self.y_axis.mul(rhs.yyyy()).add(res);
             res = self.z_axis.mul(rhs.zzzz()).add(res);
             res = self.w_axis.add(res);
-            res.into()
+            res.xyz()
         {% endif %}
     }
 
@@ -2001,14 +2015,14 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn transform_vector3a(&self, rhs: Vec3A) -> Vec3A {
-        {% if is_scalar %}
+        {% if is_scalar or not is_align %}
             self.transform_vector3(rhs.into()).into()
         {% else %}
-            glam_assert!(self.row(3).abs_diff_eq({{ vec4_t }}::W, 1e-6));
+            glam_assert!(self.row(3).abs_diff_eq({{ col_t }}::W, 1e-6));
             let mut res = self.x_axis.mul(rhs.xxxx());
             res = self.y_axis.mul(rhs.yyyy()).add(res);
             res = self.z_axis.mul(rhs.zzzz()).add(res);
-            res.into()
+            res.xyz()
         {% endif %}
     }
 {% endif %}
@@ -2017,7 +2031,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn mul_vec{{ dim }}(&self, rhs: {{ vecn_t }}) -> {{ vecn_t }} {
-        {% if self_t == "Mat2" and is_sse2 %}
+        {% if self_t == "Mat2A" and is_sse2 %}
             unsafe {
                 use core::mem::MaybeUninit;
                 use crate::Align16;
@@ -2030,7 +2044,7 @@ impl {{ self_t }} {
                 _mm_store_ps(out.as_mut_ptr().cast(), result);
                 out.assume_init().0
             }
-        {% elif self_t == "Mat2" and is_wasm32 %}
+        {% elif self_t == "Mat2A" and is_wasm32 %}
             use core::mem::MaybeUninit;
             let abcd = self.0;
             let xxyy = f32x4(rhs.x, rhs.x, rhs.y, rhs.y);
@@ -2042,7 +2056,7 @@ impl {{ self_t }} {
                 v128_store(out.as_mut_ptr(), result);
                 *(&out.assume_init() as *const v128 as *const Vec2)
             }
-        {% elif self_t == "Mat2" and is_coresimd %}
+        {% elif self_t == "Mat2A" and is_coresimd %}
             let abcd = self.0;
             let xxyy = f32x4::from_array([rhs.x, rhs.x, rhs.y, rhs.y]);
             let axbxcydy = abcd.mul(xxyy);
@@ -2073,21 +2087,15 @@ impl {{ self_t }} {
             res = res.add(self.y_axis.mul(rhs.y));
             res = res.add(self.z_axis.mul(rhs.z));
             res
+        {% elif self_t == "Mat4A" %}
+            {# use the Vec4A implementation #}
+            self.mul_vec4a(rhs.into()).into()
         {% elif dim == 4 %}
-            {% if is_scalar %}
-                let mut res = self.x_axis.mul(rhs.x);
-                res = res.add(self.y_axis.mul(rhs.y));
-                res = res.add(self.z_axis.mul(rhs.z));
-                res = res.add(self.w_axis.mul(rhs.w));
-                res
-            {% else %}
-                {# use swizzles if simd #}
-                let mut res = self.x_axis.mul(rhs.xxxx());
-                res = res.add(self.y_axis.mul(rhs.yyyy()));
-                res = res.add(self.z_axis.mul(rhs.zzzz()));
-                res = res.add(self.w_axis.mul(rhs.wwww()));
-                res
-            {% endif %}
+            let mut res = self.x_axis.mul(rhs.x);
+            res = res.add(self.y_axis.mul(rhs.y));
+            res = res.add(self.z_axis.mul(rhs.z));
+            res = res.add(self.w_axis.mul(rhs.w));
+            res
         {% endif %}
     }
 
@@ -2110,11 +2118,30 @@ impl {{ self_t }} {
     }
 {% endif %}
 
+{% if self_t == "Mat4" %}
+    /// Transforms a [`Vec4A`].
+    #[inline]
+    #[must_use]
+    pub fn mul_vec4a(&self, rhs: Vec4A) -> Vec4A {
+        self.mul_vec4(rhs.into()).into()
+    }
+{% elif self_t == "Mat4A" %}
+    /// Transforms a [`Vec4A`].
+    #[inline]
+    #[must_use]
+    pub fn mul_vec4a(&self, rhs: Vec4A) -> Vec4A {
+        let mut res = self.x_axis.mul(rhs.xxxx());
+        res = res.add(self.y_axis.mul(rhs.yyyy()));
+        res = res.add(self.z_axis.mul(rhs.zzzz()));
+        res = res.add(self.w_axis.mul(rhs.wwww()));
+        res
+    }
+{% endif %}
     /// Multiplies two {{ nxn }} matrices.
     #[inline]
     #[must_use]
     pub fn mul_mat{{ dim }}(&self, rhs: &Self) -> Self {
-        {% if self_t == "Mat2" and is_sse2 %}
+        {% if self_t == "Mat2A" and is_sse2 %}
             unsafe {
                 let abcd = self.0;
                 let rhs = rhs.0;
@@ -2128,7 +2155,7 @@ impl {{ self_t }} {
                 let result1 = _mm_add_ps(axbxcydy1, cydyaxbx1);
                 Self(_mm_shuffle_ps(result0, result1, 0b01_00_01_00))
             }
-        {% elif self_t == "Mat2" and is_wasm32 %}
+        {% elif self_t == "Mat2A" and is_wasm32 %}
             let abcd = self.0;
             let rhs = rhs.0;
             let xxyy0 = i32x4_shuffle::<0, 0, 5, 5>(rhs, rhs);
@@ -2140,7 +2167,7 @@ impl {{ self_t }} {
             let result0 = f32x4_add(axbxcydy0, cydyaxbx0);
             let result1 = f32x4_add(axbxcydy1, cydyaxbx1);
             Self(i32x4_shuffle::<0, 1, 4, 5>(result0, result1))
-        {% elif self_t == "Mat2" and is_coresimd %}
+        {% elif self_t == "Mat2A" and is_coresimd %}
             let abcd = self.0;
             let xxyy0 = simd_swizzle!(rhs.0, [0, 0, 1, 1]);
             let xxyy1 = simd_swizzle!(rhs.0, [2, 2, 3, 3]);
@@ -2179,11 +2206,11 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn add_mat{{ dim }}(&self, rhs: &Self) -> Self {
-        {% if self_t == "Mat2" and is_sse2 %}
+        {% if self_t == "Mat2A" and is_sse2 %}
             Self(unsafe { _mm_add_ps(self.0, rhs.0) })
-        {% elif self_t == "Mat2" and is_wasm32 %}
+        {% elif self_t == "Mat2A" and is_wasm32 %}
             Self(f32x4_add(self.0, rhs.0))
-        {% elif self_t == "Mat2" and is_coresimd %}
+        {% elif self_t == "Mat2A" and is_coresimd %}
             Self(self.0 + rhs.0)
         {% elif self_t == "Mat2" and is_neon %}
             Self(unsafe { vaddq_f32(self.0, rhs.0) })
@@ -2200,11 +2227,11 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn sub_mat{{ dim }}(&self, rhs: &Self) -> Self {
-        {% if self_t == "Mat2" and is_sse2 %}
+        {% if self_t == "Mat2A" and is_sse2 %}
             Self(unsafe { _mm_sub_ps(self.0, rhs.0) })
-        {% elif self_t == "Mat2" and is_wasm32 %}
+        {% elif self_t == "Mat2A" and is_wasm32 %}
             Self(f32x4_sub(self.0, rhs.0))
-        {% elif self_t == "Mat2" and is_coresimd %}
+        {% elif self_t == "Mat2A" and is_coresimd %}
             Self(self.0 - rhs.0)
         {% elif self_t == "Mat2" and is_neon %}
             Self(unsafe { vsubq_f32(self.0, rhs.0) })
@@ -2221,11 +2248,11 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn mul_scalar(&self, rhs: {{ scalar_t }}) -> Self {
-        {% if self_t == "Mat2" and is_sse2 %}
+        {% if self_t == "Mat2A" and is_sse2 %}
             Self(unsafe { _mm_mul_ps(self.0, _mm_set_ps1(rhs)) })
-        {% elif self_t == "Mat2" and is_wasm32 %}
+        {% elif self_t == "Mat2A" and is_wasm32 %}
             Self(f32x4_mul(self.0, f32x4_splat(rhs)))
-        {% elif self_t == "Mat2" and is_coresimd %}
+        {% elif self_t == "Mat2A" and is_coresimd %}
             Self(self.0 * f32x4::splat(rhs))
         {% elif self_t == "Mat2" and is_neon %}
             Self(unsafe { vmulq_f32(self.0, vld1q_dup_f32(&rhs)) })
@@ -2351,11 +2378,11 @@ impl Neg for {{ self_t }} {
     type Output = Self;
     #[inline]
     fn neg(self) -> Self::Output {
-        {% if self_t == "Mat2" and is_sse2 %}
+        {% if self_t == "Mat2A" and is_sse2 %}
             Self(unsafe { _mm_xor_ps(self.0, _mm_set1_ps(-0.0)) })
-        {% elif self_t == "Mat2" and is_wasm32 %}
+        {% elif self_t == "Mat2A" and is_wasm32 %}
             Self(f32x4_neg(self.0))
-        {% elif self_t == "Mat2" and is_coresimd %}
+        {% elif self_t == "Mat2A" and is_coresimd %}
             Self(-self.0)
         {% elif self_t == "Mat2" and is_neon %}
             Self(unsafe { vnegq_f32(self.0) })
@@ -2390,6 +2417,8 @@ impl Mul<{{ col_t }}> for {{ self_t }} {
     fn mul(self, rhs: {{ col_t }}) -> Self::Output {
         {% if self_t == "Mat3A" %}
             self.mul_vec3a(rhs)
+        {% elif self_t == "Mat4A" %}
+            self.mul_vec4a(rhs)
         {% else %}
             self.mul_vec{{ dim }}(rhs)
         {% endif %}
@@ -2442,6 +2471,22 @@ impl DivAssign<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
+{% if self_t == "Mat2" %}
+impl From<Mat2A> for Mat2 {
+    #[inline]
+    fn from(m: Mat2A) -> Self {
+        Self::from_cols(m.x_axis, m.y_axis)
+    }
+}
+{% elif self_t == "Mat2A" %}
+impl From<Mat2> for Mat2A {
+    #[inline]
+    fn from(m: Mat2) -> Self {
+        Self::from_cols(m.x_axis, m.y_axis)
+    }
+}
+{% endif %}
+
 {% if self_t == "Mat3" %}
 impl Mul<Vec3A> for Mat3 {
     type Output = Vec3A;
@@ -2477,6 +2522,48 @@ impl From<Mat3> for Mat3A {
             x_axis: m.x_axis.into(),
             y_axis: m.y_axis.into(),
             z_axis: m.z_axis.into(),
+        }
+    }
+}
+{% endif %}
+
+{% if self_t == "Mat4" %}
+impl Mul<Vec4A> for Mat4 {
+    type Output = Vec4A;
+    #[inline]
+    fn mul(self, rhs: Vec4A) -> Vec4A {
+        self.mul_vec4a(rhs)
+    }
+}
+
+impl From<Mat4A> for Mat4 {
+    #[inline]
+    fn from(m: Mat4A) -> Self {
+        Self {
+            x_axis: m.x_axis.into(),
+            y_axis: m.y_axis.into(),
+            z_axis: m.z_axis.into(),
+            w_axis: m.w_axis.into(),
+        }
+    }
+}
+{% elif self_t == "Mat4A" %}
+impl Mul<Vec4> for Mat4A {
+    type Output = Vec4;
+    #[inline]
+    fn mul(self, rhs: Vec4) -> Vec4 {
+        self.mul_vec4a(rhs.into()).into()
+    }
+}
+
+impl From<Mat4> for Mat4A {
+    #[inline]
+    fn from(m: Mat4) -> Self {
+        Self {
+            x_axis: m.x_axis.into(),
+            y_axis: m.y_axis.into(),
+            z_axis: m.z_axis.into(),
+            w_axis: m.w_axis.into(),
         }
     }
 }
@@ -2527,7 +2614,7 @@ impl PartialEq for {{ self_t }} {
     }
 }
 
-{% if not is_align %}
+{% if self_t != "Mat3A" %}
 #[cfg(not(target_arch = "spirv"))]
 impl AsRef<[{{ scalar_t }}; {{ size }}]> for {{ self_t }} {
     #[inline]
@@ -2545,8 +2632,8 @@ impl AsMut<[{{ scalar_t }}; {{ size }}]> for {{ self_t }} {
 }
 {% endif %}
 
-{% if self_t == "Mat2" and not is_scalar %}
-impl core::ops::Deref for Mat2 {
+{% if self_t == "Mat2A" and not is_scalar %}
+impl core::ops::Deref for Mat2A {
     type Target = crate::deref::Cols2<Vec2>;
     #[inline]
     fn deref(&self) -> &Self::Target {
@@ -2554,7 +2641,7 @@ impl core::ops::Deref for Mat2 {
     }
 }
 
-impl core::ops::DerefMut for Mat2 {
+impl core::ops::DerefMut for Mat2A {
     #[inline]
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe { &mut *(self as *mut Self as *mut Self::Target) }

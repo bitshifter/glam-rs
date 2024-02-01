@@ -400,10 +400,10 @@ mod mat3 {
         use glam::DMat3;
         assert_eq!(
             DMat3::from_cols_array(&[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]),
-            Mat3::from_cols_array(&[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]).as_dmat3()
+            Mat3::from_cols_array(&MATRIX1D).as_dmat3()
         );
         assert_eq!(
-            Mat3::from_cols_array(&[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]),
+            Mat3::from_cols_array(&MATRIX1D),
             DMat3::from_cols_array(&[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]).as_mat3()
         );
     });
@@ -422,6 +422,15 @@ mod mat3a {
         assert_eq!(mem::align_of::<Vec3A>(), mem::align_of::<Mat3A>());
     });
 
+    glam_test!(test_from_mat3, {
+        use glam::Mat3;
+        let m1 = Mat3::from_cols_array_2d(&MATRIX);
+        let m2: Mat3A = m1.into();
+        let m3: Mat3 = m2.into();
+        assert_eq!(Mat3A::from_cols_array_2d(&MATRIX), m2);
+        assert_eq!(Mat3::from_cols_array_2d(&MATRIX), m3);
+    });
+
     glam_test!(test_mul_vec3a, {
         let mat_a = Mat3A::from_axis_angle(Vec3::Z, deg(90.0));
         assert_approx_eq!(vec3a(-1.0, 0.0, 0.0), mat_a * Vec3A::Y);
@@ -432,7 +441,7 @@ mod mat3a {
         use glam::DMat3;
         assert_eq!(
             DMat3::from_cols_array(&[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]),
-            Mat3A::from_cols_array(&[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]).as_dmat3()
+            Mat3A::from_cols_array(&MATRIX1D).as_dmat3()
         );
     });
 

@@ -106,8 +106,8 @@ impl BVec4A {
     /// Panics if `index` is greater than 3.
     #[inline]
     pub fn set(&mut self, index: usize, value: bool) {
-        use crate::Vec4;
-        let mut v = Vec4(self.0);
+        use crate::Vec4A;
+        let mut v = Vec4A(self.0);
         v[index] = f32::from_bits(MASK[value as usize]);
         self.0 = v.0;
     }

@@ -133,11 +133,7 @@ impl I64Vec3 {
     #[inline]
     #[must_use]
     pub(crate) fn from_vec4(v: I64Vec4) -> Self {
-        Self {
-            x: v.x,
-            y: v.y,
-            z: v.z,
-        }
+        Self::new(v.x, v.y, v.z)
     }
 
     /// Creates a 4D vector from `self` and the given `w` value.

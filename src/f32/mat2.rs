@@ -1,12 +1,10 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
-use crate::{f32::math, swizzles::*, DMat2, Mat3, Mat3A, Vec2};
+use crate::{f32::math, swizzles::*, DMat2, Mat2A, Mat3, Mat3A, Vec2};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
-
-use core::simd::*;
 
 /// Creates a 2x2 matrix from two column vectors.
 #[inline(always)]
@@ -16,13 +14,12 @@ pub const fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
 }
 
 /// A 2x2 column major matrix.
-///
-/// SIMD vector types are used for storage on supported platforms.
-///
-/// This type is 16 byte aligned.
 #[derive(Clone, Copy)]
-#[repr(transparent)]
-pub struct Mat2(pub(crate) f32x4);
+#[repr(C)]
+pub struct Mat2 {
+    pub x_axis: Vec2,
+    pub y_axis: Vec2,
+}
 
 impl Mat2 {
     /// A 2x2 matrix with all elements set to `0.0`.
@@ -38,14 +35,17 @@ impl Mat2 {
     #[inline(always)]
     #[must_use]
     const fn new(m00: f32, m01: f32, m10: f32, m11: f32) -> Self {
-        Self(f32x4::from_array([m00, m01, m10, m11]))
+        Self {
+            x_axis: Vec2::new(m00, m01),
+            y_axis: Vec2::new(m10, m11),
+        }
     }
 
     /// Creates a 2x2 matrix from two column vectors.
     #[inline(always)]
     #[must_use]
     pub const fn from_cols(x_axis: Vec2, y_axis: Vec2) -> Self {
-        Self(f32x4::from_array([x_axis.x, x_axis.y, y_axis.x, y_axis.y]))
+        Self { x_axis, y_axis }
     }
 
     /// Creates a 2x2 matrix from a `[f32; 4]` array stored in column major order.
@@ -54,7 +54,7 @@ impl Mat2 {
     #[inline]
     #[must_use]
     pub const fn from_cols_array(m: &[f32; 4]) -> Self {
-        Self(f32x4::from_array(*m))
+        Self::new(m[0], m[1], m[2], m[3])
     }
 
     /// Creates a `[f32; 4]` array storing data in column major order.
@@ -62,7 +62,7 @@ impl Mat2 {
     #[inline]
     #[must_use]
     pub const fn to_cols_array(&self) -> [f32; 4] {
-        unsafe { *(self as *const Self as *const [f32; 4]) }
+        [self.x_axis.x, self.x_axis.y, self.y_axis.x, self.y_axis.y]
     }
 
     /// Creates a 2x2 matrix from a `[[f32; 2]; 2]` 2D array stored in column major order.
@@ -79,7 +79,7 @@ impl Mat2 {
     #[inline]
     #[must_use]
     pub const fn to_cols_array_2d(&self) -> [[f32; 2]; 2] {
-        unsafe { *(self as *const Self as *const [[f32; 2]; 2]) }
+        [self.x_axis.to_array(), self.y_axis.to_array()]
     }
 
     /// Creates a 2x2 matrix with its diagonal set to `diagonal` and all other entries set to 0.
@@ -208,18 +208,17 @@ impl Mat2 {
     #[inline]
     #[must_use]
     pub fn transpose(&self) -> Self {
-        Self(simd_swizzle!(self.0, [0, 2, 1, 3]))
+        Self {
+            x_axis: Vec2::new(self.x_axis.x, self.y_axis.x),
+            y_axis: Vec2::new(self.x_axis.y, self.y_axis.y),
+        }
     }
 
     /// Returns the determinant of `self`.
     #[inline]
     #[must_use]
     pub fn determinant(&self) -> f32 {
-        let abcd = self.0;
-        let dcba = simd_swizzle!(abcd, [3, 2, 1, 0]);
-        let prod = abcd * dcba;
-        let det = prod - simd_swizzle!(prod, [1, 1, 1, 1]);
-        det[0]
+        self.x_axis.x * self.y_axis.y - self.x_axis.y * self.y_axis.x
     }
 
     /// Returns the inverse of `self`.
@@ -232,72 +231,64 @@ impl Mat2 {
     #[inline]
     #[must_use]
     pub fn inverse(&self) -> Self {
-        const SIGN: f32x4 = f32x4::from_array([1.0, -1.0, -1.0, 1.0]);
-        let abcd = self.0;
-        let dcba = simd_swizzle!(abcd, [3, 2, 1, 0]);
-        let prod = abcd * dcba;
-        let sub = prod - simd_swizzle!(prod, [1, 1, 1, 1]);
-        let det = simd_swizzle!(sub, [0, 0, 0, 0]);
-        let tmp = SIGN / det;
-        glam_assert!(Mat2(tmp).is_finite());
-        let dbca = simd_swizzle!(abcd, [3, 1, 2, 0]);
-        Self(dbca.mul(tmp))
+        let inv_det = {
+            let det = self.determinant();
+            glam_assert!(det != 0.0);
+            det.recip()
+        };
+        Self::new(
+            self.y_axis.y * inv_det,
+            self.x_axis.y * -inv_det,
+            self.y_axis.x * -inv_det,
+            self.x_axis.x * inv_det,
+        )
     }
 
     /// Transforms a 2D vector.
     #[inline]
     #[must_use]
     pub fn mul_vec2(&self, rhs: Vec2) -> Vec2 {
-        let abcd = self.0;
-        let xxyy = f32x4::from_array([rhs.x, rhs.x, rhs.y, rhs.y]);
-        let axbxcydy = abcd.mul(xxyy);
-        let cydyaxbx = simd_swizzle!(axbxcydy, [2, 3, 0, 1]);
-        let result = axbxcydy.add(cydyaxbx);
-        unsafe { *(&result as *const f32x4 as *const Vec2) }
+        #[allow(clippy::suspicious_operation_groupings)]
+        Vec2::new(
+            (self.x_axis.x * rhs.x) + (self.y_axis.x * rhs.y),
+            (self.x_axis.y * rhs.x) + (self.y_axis.y * rhs.y),
+        )
     }
 
     /// Multiplies two 2x2 matrices.
     #[inline]
     #[must_use]
     pub fn mul_mat2(&self, rhs: &Self) -> Self {
-        let abcd = self.0;
-        let xxyy0 = simd_swizzle!(rhs.0, [0, 0, 1, 1]);
-        let xxyy1 = simd_swizzle!(rhs.0, [2, 2, 3, 3]);
-        let axbxcydy0 = abcd * xxyy0;
-        let axbxcydy1 = abcd * xxyy1;
-        let cydyaxbx0 = simd_swizzle!(axbxcydy0, [2, 3, 0, 1]);
-        let cydyaxbx1 = simd_swizzle!(axbxcydy1, [2, 3, 0, 1]);
-        let result0 = axbxcydy0 + cydyaxbx0;
-        let result1 = axbxcydy1 + cydyaxbx1;
-        Self(simd_swizzle!(result0, result1, [0, 1, 4, 5]))
+        Self::from_cols(self.mul(rhs.x_axis), self.mul(rhs.y_axis))
     }
 
     /// Adds two 2x2 matrices.
     #[inline]
     #[must_use]
     pub fn add_mat2(&self, rhs: &Self) -> Self {
-        Self(self.0 + rhs.0)
+        Self::from_cols(self.x_axis.add(rhs.x_axis), self.y_axis.add(rhs.y_axis))
     }
 
     /// Subtracts two 2x2 matrices.
     #[inline]
     #[must_use]
     pub fn sub_mat2(&self, rhs: &Self) -> Self {
-        Self(self.0 - rhs.0)
+        Self::from_cols(self.x_axis.sub(rhs.x_axis), self.y_axis.sub(rhs.y_axis))
     }
 
     /// Multiplies a 2x2 matrix by a scalar.
     #[inline]
     #[must_use]
     pub fn mul_scalar(&self, rhs: f32) -> Self {
-        Self(self.0 * f32x4::splat(rhs))
+        Self::from_cols(self.x_axis.mul(rhs), self.y_axis.mul(rhs))
     }
 
     /// Divides a 2x2 matrix by a scalar.
     #[inline]
     #[must_use]
     pub fn div_scalar(&self, rhs: f32) -> Self {
-        Self(self.0 / f32x4::splat(rhs))
+        let rhs = Vec2::splat(rhs);
+        Self::from_cols(self.x_axis.div(rhs), self.y_axis.div(rhs))
     }
 
     /// Returns true if the absolute difference of all elements between `self` and `rhs`
@@ -370,7 +361,7 @@ impl Neg for Mat2 {
     type Output = Self;
     #[inline]
     fn neg(self) -> Self::Output {
-        Self(-self.0)
+        Self::from_cols(self.x_axis.neg(), self.y_axis.neg())
     }
 }
 
@@ -443,6 +434,13 @@ impl DivAssign<f32> for Mat2 {
     }
 }
 
+impl From<Mat2A> for Mat2 {
+    #[inline]
+    fn from(m: Mat2A) -> Self {
+        Self::from_cols(m.x_axis, m.y_axis)
+    }
+}
+
 impl Sum<Self> for Mat2 {
     fn sum<I>(iter: I) -> Self
     where
@@ -499,21 +497,6 @@ impl AsMut<[f32; 4]> for Mat2 {
     #[inline]
     fn as_mut(&mut self) -> &mut [f32; 4] {
         unsafe { &mut *(self as *mut Self as *mut [f32; 4]) }
-    }
-}
-
-impl core::ops::Deref for Mat2 {
-    type Target = crate::deref::Cols2<Vec2>;
-    #[inline]
-    fn deref(&self) -> &Self::Target {
-        unsafe { &*(self as *const Self as *const Self::Target) }
-    }
-}
-
-impl core::ops::DerefMut for Mat2 {
-    #[inline]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        unsafe { &mut *(self as *mut Self as *mut Self::Target) }
     }
 }
 

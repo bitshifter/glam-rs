@@ -1,23 +1,31 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
-use crate::{f64::math, swizzles::*, DMat3, DQuat, DVec3, DVec4, EulerRot, Mat4};
+use crate::{
+    f32::math, sse2::*, swizzles::*, DMat4, EulerRot, Mat3, Mat3A, Mat4, Quat, Vec3, Vec3A, Vec4,
+    Vec4A,
+};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
+#[cfg(target_arch = "x86")]
+use core::arch::x86::*;
+#[cfg(target_arch = "x86_64")]
+use core::arch::x86_64::*;
+
 /// Creates a 4x4 matrix from four column vectors.
 #[inline(always)]
 #[must_use]
-pub const fn dmat4(x_axis: DVec4, y_axis: DVec4, z_axis: DVec4, w_axis: DVec4) -> DMat4 {
-    DMat4::from_cols(x_axis, y_axis, z_axis, w_axis)
+pub const fn mat4a(x_axis: Vec4A, y_axis: Vec4A, z_axis: Vec4A, w_axis: Vec4A) -> Mat4A {
+    Mat4A::from_cols(x_axis, y_axis, z_axis, w_axis)
 }
 
 /// A 4x4 column major matrix.
 ///
 /// This 4x4 matrix type features convenience methods for creating and using affine transforms and
 /// perspective projections. If you are primarily dealing with 3D affine transformations
-/// considering using [`DAffine3`](crate::DAffine3) which is faster than a 4x4 matrix
+/// considering using [`Affine3A`](crate::Affine3A) which is faster than a 4x4 matrix
 /// for some affine operations.
 ///
 /// Affine transformations including 3D translation, rotation and scale can be created
@@ -43,58 +51,57 @@ pub const fn dmat4(x_axis: DVec4, y_axis: DVec4, z_axis: DVec4, w_axis: DVec4) -
 /// The resulting perspective project can be use to transform 3D vectors as points with
 /// perspective correction using the [`Self::project_point3()`] convenience method.
 #[derive(Clone, Copy)]
-#[cfg_attr(feature = "cuda", repr(align(16)))]
 #[repr(C)]
-pub struct DMat4 {
-    pub x_axis: DVec4,
-    pub y_axis: DVec4,
-    pub z_axis: DVec4,
-    pub w_axis: DVec4,
+pub struct Mat4A {
+    pub x_axis: Vec4A,
+    pub y_axis: Vec4A,
+    pub z_axis: Vec4A,
+    pub w_axis: Vec4A,
 }
 
-impl DMat4 {
+impl Mat4A {
     /// A 4x4 matrix with all elements set to `0.0`.
-    pub const ZERO: Self = Self::from_cols(DVec4::ZERO, DVec4::ZERO, DVec4::ZERO, DVec4::ZERO);
+    pub const ZERO: Self = Self::from_cols(Vec4A::ZERO, Vec4A::ZERO, Vec4A::ZERO, Vec4A::ZERO);
 
     /// A 4x4 identity matrix, where all diagonal elements are `1`, and all off-diagonal elements are `0`.
-    pub const IDENTITY: Self = Self::from_cols(DVec4::X, DVec4::Y, DVec4::Z, DVec4::W);
+    pub const IDENTITY: Self = Self::from_cols(Vec4A::X, Vec4A::Y, Vec4A::Z, Vec4A::W);
 
     /// All NAN:s.
-    pub const NAN: Self = Self::from_cols(DVec4::NAN, DVec4::NAN, DVec4::NAN, DVec4::NAN);
+    pub const NAN: Self = Self::from_cols(Vec4A::NAN, Vec4A::NAN, Vec4A::NAN, Vec4A::NAN);
 
     #[allow(clippy::too_many_arguments)]
     #[inline(always)]
     #[must_use]
     const fn new(
-        m00: f64,
-        m01: f64,
-        m02: f64,
-        m03: f64,
-        m10: f64,
-        m11: f64,
-        m12: f64,
-        m13: f64,
-        m20: f64,
-        m21: f64,
-        m22: f64,
-        m23: f64,
-        m30: f64,
-        m31: f64,
-        m32: f64,
-        m33: f64,
+        m00: f32,
+        m01: f32,
+        m02: f32,
+        m03: f32,
+        m10: f32,
+        m11: f32,
+        m12: f32,
+        m13: f32,
+        m20: f32,
+        m21: f32,
+        m22: f32,
+        m23: f32,
+        m30: f32,
+        m31: f32,
+        m32: f32,
+        m33: f32,
     ) -> Self {
         Self {
-            x_axis: DVec4::new(m00, m01, m02, m03),
-            y_axis: DVec4::new(m10, m11, m12, m13),
-            z_axis: DVec4::new(m20, m21, m22, m23),
-            w_axis: DVec4::new(m30, m31, m32, m33),
+            x_axis: Vec4A::new(m00, m01, m02, m03),
+            y_axis: Vec4A::new(m10, m11, m12, m13),
+            z_axis: Vec4A::new(m20, m21, m22, m23),
+            w_axis: Vec4A::new(m30, m31, m32, m33),
         }
     }
 
     /// Creates a 4x4 matrix from four column vectors.
     #[inline(always)]
     #[must_use]
-    pub const fn from_cols(x_axis: DVec4, y_axis: DVec4, z_axis: DVec4, w_axis: DVec4) -> Self {
+    pub const fn from_cols(x_axis: Vec4A, y_axis: Vec4A, z_axis: Vec4A, w_axis: Vec4A) -> Self {
         Self {
             x_axis,
             y_axis,
@@ -103,62 +110,53 @@ impl DMat4 {
         }
     }
 
-    /// Creates a 4x4 matrix from a `[f64; 16]` array stored in column major order.
+    /// Creates a 4x4 matrix from a `[f32; 16]` array stored in column major order.
     /// If your data is stored in row major you will need to `transpose` the returned
     /// matrix.
     #[inline]
     #[must_use]
-    pub const fn from_cols_array(m: &[f64; 16]) -> Self {
+    pub const fn from_cols_array(m: &[f32; 16]) -> Self {
         Self::new(
             m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8], m[9], m[10], m[11], m[12], m[13],
             m[14], m[15],
         )
     }
 
-    /// Creates a `[f64; 16]` array storing data in column major order.
+    /// Creates a `[f32; 16]` array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
     #[must_use]
-    pub const fn to_cols_array(&self) -> [f64; 16] {
+    pub const fn to_cols_array(&self) -> [f32; 16] {
+        let [x_axis_x, x_axis_y, x_axis_z, x_axis_w] = self.x_axis.to_array();
+        let [y_axis_x, y_axis_y, y_axis_z, y_axis_w] = self.y_axis.to_array();
+        let [z_axis_x, z_axis_y, z_axis_z, z_axis_w] = self.z_axis.to_array();
+        let [w_axis_x, w_axis_y, w_axis_z, w_axis_w] = self.w_axis.to_array();
+
         [
-            self.x_axis.x,
-            self.x_axis.y,
-            self.x_axis.z,
-            self.x_axis.w,
-            self.y_axis.x,
-            self.y_axis.y,
-            self.y_axis.z,
-            self.y_axis.w,
-            self.z_axis.x,
-            self.z_axis.y,
-            self.z_axis.z,
-            self.z_axis.w,
-            self.w_axis.x,
-            self.w_axis.y,
-            self.w_axis.z,
-            self.w_axis.w,
+            x_axis_x, x_axis_y, x_axis_z, x_axis_w, y_axis_x, y_axis_y, y_axis_z, y_axis_w,
+            z_axis_x, z_axis_y, z_axis_z, z_axis_w, w_axis_x, w_axis_y, w_axis_z, w_axis_w,
         ]
     }
 
-    /// Creates a 4x4 matrix from a `[[f64; 4]; 4]` 4D array stored in column major order.
+    /// Creates a 4x4 matrix from a `[[f32; 4]; 4]` 4D array stored in column major order.
     /// If your data is in row major order you will need to `transpose` the returned
     /// matrix.
     #[inline]
     #[must_use]
-    pub const fn from_cols_array_2d(m: &[[f64; 4]; 4]) -> Self {
+    pub const fn from_cols_array_2d(m: &[[f32; 4]; 4]) -> Self {
         Self::from_cols(
-            DVec4::from_array(m[0]),
-            DVec4::from_array(m[1]),
-            DVec4::from_array(m[2]),
-            DVec4::from_array(m[3]),
+            Vec4A::from_array(m[0]),
+            Vec4A::from_array(m[1]),
+            Vec4A::from_array(m[2]),
+            Vec4A::from_array(m[3]),
         )
     }
 
-    /// Creates a `[[f64; 4]; 4]` 4D array storing data in column major order.
+    /// Creates a `[[f32; 4]; 4]` 4D array storing data in column major order.
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
     #[must_use]
-    pub const fn to_cols_array_2d(&self) -> [[f64; 4]; 4] {
+    pub const fn to_cols_array_2d(&self) -> [[f32; 4]; 4] {
         [
             self.x_axis.to_array(),
             self.y_axis.to_array(),
@@ -171,16 +169,17 @@ impl DMat4 {
     #[doc(alias = "scale")]
     #[inline]
     #[must_use]
-    pub const fn from_diagonal(diagonal: DVec4) -> Self {
+    pub const fn from_diagonal(diagonal: Vec4) -> Self {
+        // diagonal.x, diagonal.y etc can't be done in a const-context
+        let [x, y, z, w] = diagonal.to_array();
         Self::new(
-            diagonal.x, 0.0, 0.0, 0.0, 0.0, diagonal.y, 0.0, 0.0, 0.0, 0.0, diagonal.z, 0.0, 0.0,
-            0.0, 0.0, diagonal.w,
+            x, 0.0, 0.0, 0.0, 0.0, y, 0.0, 0.0, 0.0, 0.0, z, 0.0, 0.0, 0.0, 0.0, w,
         )
     }
 
     #[inline]
     #[must_use]
-    fn quat_to_axes(rotation: DQuat) -> (DVec4, DVec4, DVec4) {
+    fn quat_to_axes(rotation: Quat) -> (Vec4A, Vec4A, Vec4A) {
         glam_assert!(rotation.is_normalized());
 
         let (x, y, z, w) = rotation.into();
@@ -197,9 +196,9 @@ impl DMat4 {
         let wy = w * y2;
         let wz = w * z2;
 
-        let x_axis = DVec4::new(1.0 - (yy + zz), xy + wz, xz - wy, 0.0);
-        let y_axis = DVec4::new(xy - wz, 1.0 - (xx + zz), yz + wx, 0.0);
-        let z_axis = DVec4::new(xz + wy, yz - wx, 1.0 - (xx + yy), 0.0);
+        let x_axis = Vec4A::new(1.0 - (yy + zz), xy + wz, xz - wy, 0.0);
+        let y_axis = Vec4A::new(xy - wz, 1.0 - (xx + zz), yz + wx, 0.0);
+        let z_axis = Vec4A::new(xz + wy, yz - wx, 1.0 - (xx + yy), 0.0);
         (x_axis, y_axis, z_axis)
     }
 
@@ -214,17 +213,13 @@ impl DMat4 {
     /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn from_scale_rotation_translation(
-        scale: DVec3,
-        rotation: DQuat,
-        translation: DVec3,
-    ) -> Self {
+    pub fn from_scale_rotation_translation(scale: Vec3, rotation: Quat, translation: Vec3) -> Self {
         let (x_axis, y_axis, z_axis) = Self::quat_to_axes(rotation);
         Self::from_cols(
             x_axis.mul(scale.x),
             y_axis.mul(scale.y),
             z_axis.mul(scale.z),
-            DVec4::from((translation, 1.0)),
+            Vec4A::from((translation, 1.0)),
         )
     }
 
@@ -238,9 +233,9 @@ impl DMat4 {
     /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn from_rotation_translation(rotation: DQuat, translation: DVec3) -> Self {
+    pub fn from_rotation_translation(rotation: Quat, translation: Vec3) -> Self {
         let (x_axis, y_axis, z_axis) = Self::quat_to_axes(rotation);
-        Self::from_cols(x_axis, y_axis, z_axis, DVec4::from((translation, 1.0)))
+        Self::from_cols(x_axis, y_axis, z_axis, Vec4A::from((translation, 1.0)))
     }
 
     /// Extracts `scale`, `rotation` and `translation` from `self`. The input matrix is
@@ -252,21 +247,21 @@ impl DMat4 {
     /// contains any zero elements when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn to_scale_rotation_translation(&self) -> (DVec3, DQuat, DVec3) {
+    pub fn to_scale_rotation_translation(&self) -> (Vec3, Quat, Vec3) {
         let det = self.determinant();
         glam_assert!(det != 0.0);
 
-        let scale = DVec3::new(
+        let scale = Vec3::new(
             self.x_axis.length() * math::signum(det),
             self.y_axis.length(),
             self.z_axis.length(),
         );
 
-        glam_assert!(scale.cmpne(DVec3::ZERO).all());
+        glam_assert!(scale.cmpne(Vec3::ZERO).all());
 
         let inv_scale = scale.recip();
 
-        let rotation = DQuat::from_rotation_axes(
+        let rotation = Quat::from_rotation_axes(
             self.x_axis.mul(inv_scale.x).xyz(),
             self.y_axis.mul(inv_scale.y).xyz(),
             self.z_axis.mul(inv_scale.z).xyz(),
@@ -287,9 +282,9 @@ impl DMat4 {
     /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn from_quat(rotation: DQuat) -> Self {
+    pub fn from_quat(rotation: Quat) -> Self {
         let (x_axis, y_axis, z_axis) = Self::quat_to_axes(rotation);
-        Self::from_cols(x_axis, y_axis, z_axis, DVec4::W)
+        Self::from_cols(x_axis, y_axis, z_axis, Vec4A::W)
     }
 
     /// Creates an affine transformation matrix from the given 3x3 linear transformation
@@ -299,12 +294,28 @@ impl DMat4 {
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
     #[must_use]
-    pub fn from_mat3(m: DMat3) -> Self {
+    pub fn from_mat3(m: Mat3) -> Self {
         Self::from_cols(
-            DVec4::from((m.x_axis, 0.0)),
-            DVec4::from((m.y_axis, 0.0)),
-            DVec4::from((m.z_axis, 0.0)),
-            DVec4::W,
+            Vec4A::from((m.x_axis, 0.0)),
+            Vec4A::from((m.y_axis, 0.0)),
+            Vec4A::from((m.z_axis, 0.0)),
+            Vec4A::W,
+        )
+    }
+
+    /// Creates an affine transformation matrix from the given 3x3 linear transformation
+    /// matrix.
+    ///
+    /// The resulting matrix can be used to transform 3D points and vectors. See
+    /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
+    #[inline]
+    #[must_use]
+    pub fn from_mat3a(m: Mat3A) -> Self {
+        Self::from_cols(
+            Vec4A::from((m.x_axis, 0.0)),
+            Vec4A::from((m.y_axis, 0.0)),
+            Vec4A::from((m.z_axis, 0.0)),
+            Vec4A::W,
         )
     }
 
@@ -314,12 +325,12 @@ impl DMat4 {
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
     #[must_use]
-    pub fn from_translation(translation: DVec3) -> Self {
+    pub fn from_translation(translation: Vec3) -> Self {
         Self::from_cols(
-            DVec4::X,
-            DVec4::Y,
-            DVec4::Z,
-            DVec4::new(translation.x, translation.y, translation.z, 1.0),
+            Vec4A::X,
+            Vec4A::Y,
+            Vec4A::Z,
+            Vec4A::new(translation.x, translation.y, translation.z, 1.0),
         )
     }
 
@@ -334,7 +345,7 @@ impl DMat4 {
     /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn from_axis_angle(axis: DVec3, angle: f64) -> Self {
+    pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
         glam_assert!(axis.is_normalized());
 
         let (sin, cos) = math::sin_cos(angle);
@@ -345,25 +356,25 @@ impl DMat4 {
         let xzomc = axis.x * axis.z * omc;
         let yzomc = axis.y * axis.z * omc;
         Self::from_cols(
-            DVec4::new(
+            Vec4A::new(
                 axis_sq.x * omc + cos,
                 xyomc + axis_sin.z,
                 xzomc - axis_sin.y,
                 0.0,
             ),
-            DVec4::new(
+            Vec4A::new(
                 xyomc - axis_sin.z,
                 axis_sq.y * omc + cos,
                 yzomc + axis_sin.x,
                 0.0,
             ),
-            DVec4::new(
+            Vec4A::new(
                 xzomc + axis_sin.y,
                 yzomc - axis_sin.x,
                 axis_sq.z * omc + cos,
                 0.0,
             ),
-            DVec4::W,
+            Vec4A::W,
         )
     }
 
@@ -374,8 +385,8 @@ impl DMat4 {
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
     #[must_use]
-    pub fn from_euler(order: EulerRot, a: f64, b: f64, c: f64) -> Self {
-        let quat = DQuat::from_euler(order, a, b, c);
+    pub fn from_euler(order: EulerRot, a: f32, b: f32, c: f32) -> Self {
+        let quat = Quat::from_euler(order, a, b, c);
         Self::from_quat(quat)
     }
 
@@ -386,13 +397,13 @@ impl DMat4 {
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
     #[must_use]
-    pub fn from_rotation_x(angle: f64) -> Self {
+    pub fn from_rotation_x(angle: f32) -> Self {
         let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
-            DVec4::X,
-            DVec4::new(0.0, cosa, sina, 0.0),
-            DVec4::new(0.0, -sina, cosa, 0.0),
-            DVec4::W,
+            Vec4A::X,
+            Vec4A::new(0.0, cosa, sina, 0.0),
+            Vec4A::new(0.0, -sina, cosa, 0.0),
+            Vec4A::W,
         )
     }
 
@@ -403,13 +414,13 @@ impl DMat4 {
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
     #[must_use]
-    pub fn from_rotation_y(angle: f64) -> Self {
+    pub fn from_rotation_y(angle: f32) -> Self {
         let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
-            DVec4::new(cosa, 0.0, -sina, 0.0),
-            DVec4::Y,
-            DVec4::new(sina, 0.0, cosa, 0.0),
-            DVec4::W,
+            Vec4A::new(cosa, 0.0, -sina, 0.0),
+            Vec4A::Y,
+            Vec4A::new(sina, 0.0, cosa, 0.0),
+            Vec4A::W,
         )
     }
 
@@ -420,13 +431,13 @@ impl DMat4 {
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
     #[must_use]
-    pub fn from_rotation_z(angle: f64) -> Self {
+    pub fn from_rotation_z(angle: f32) -> Self {
         let (sina, cosa) = math::sin_cos(angle);
         Self::from_cols(
-            DVec4::new(cosa, sina, 0.0, 0.0),
-            DVec4::new(-sina, cosa, 0.0, 0.0),
-            DVec4::Z,
-            DVec4::W,
+            Vec4A::new(cosa, sina, 0.0, 0.0),
+            Vec4A::new(-sina, cosa, 0.0, 0.0),
+            Vec4A::Z,
+            Vec4A::W,
         )
     }
 
@@ -440,15 +451,15 @@ impl DMat4 {
     /// Will panic if all elements of `scale` are zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn from_scale(scale: DVec3) -> Self {
+    pub fn from_scale(scale: Vec3) -> Self {
         // Do not panic as long as any component is non-zero
-        glam_assert!(scale.cmpne(DVec3::ZERO).any());
+        glam_assert!(scale.cmpne(Vec3::ZERO).any());
 
         Self::from_cols(
-            DVec4::new(scale.x, 0.0, 0.0, 0.0),
-            DVec4::new(0.0, scale.y, 0.0, 0.0),
-            DVec4::new(0.0, 0.0, scale.z, 0.0),
-            DVec4::W,
+            Vec4A::new(scale.x, 0.0, 0.0, 0.0),
+            Vec4A::new(0.0, scale.y, 0.0, 0.0),
+            Vec4A::new(0.0, 0.0, scale.z, 0.0),
+            Vec4A::W,
         )
     }
 
@@ -459,7 +470,7 @@ impl DMat4 {
     /// Panics if `slice` is less than 16 elements long.
     #[inline]
     #[must_use]
-    pub const fn from_cols_slice(slice: &[f64]) -> Self {
+    pub const fn from_cols_slice(slice: &[f32]) -> Self {
         Self::new(
             slice[0], slice[1], slice[2], slice[3], slice[4], slice[5], slice[6], slice[7],
             slice[8], slice[9], slice[10], slice[11], slice[12], slice[13], slice[14], slice[15],
@@ -472,7 +483,7 @@ impl DMat4 {
     ///
     /// Panics if `slice` is less than 16 elements long.
     #[inline]
-    pub fn write_cols_to_slice(self, slice: &mut [f64]) {
+    pub fn write_cols_to_slice(self, slice: &mut [f32]) {
         slice[0] = self.x_axis.x;
         slice[1] = self.x_axis.y;
         slice[2] = self.x_axis.z;
@@ -498,7 +509,7 @@ impl DMat4 {
     /// Panics if `index` is greater than 3.
     #[inline]
     #[must_use]
-    pub fn col(&self, index: usize) -> DVec4 {
+    pub fn col(&self, index: usize) -> Vec4A {
         match index {
             0 => self.x_axis,
             1 => self.y_axis,
@@ -514,7 +525,7 @@ impl DMat4 {
     ///
     /// Panics if `index` is greater than 3.
     #[inline]
-    pub fn col_mut(&mut self, index: usize) -> &mut DVec4 {
+    pub fn col_mut(&mut self, index: usize) -> &mut Vec4A {
         match index {
             0 => &mut self.x_axis,
             1 => &mut self.y_axis,
@@ -531,12 +542,12 @@ impl DMat4 {
     /// Panics if `index` is greater than 3.
     #[inline]
     #[must_use]
-    pub fn row(&self, index: usize) -> DVec4 {
+    pub fn row(&self, index: usize) -> Vec4A {
         match index {
-            0 => DVec4::new(self.x_axis.x, self.y_axis.x, self.z_axis.x, self.w_axis.x),
-            1 => DVec4::new(self.x_axis.y, self.y_axis.y, self.z_axis.y, self.w_axis.y),
-            2 => DVec4::new(self.x_axis.z, self.y_axis.z, self.z_axis.z, self.w_axis.z),
-            3 => DVec4::new(self.x_axis.w, self.y_axis.w, self.z_axis.w, self.w_axis.w),
+            0 => Vec4A::new(self.x_axis.x, self.y_axis.x, self.z_axis.x, self.w_axis.x),
+            1 => Vec4A::new(self.x_axis.y, self.y_axis.y, self.z_axis.y, self.w_axis.y),
+            2 => Vec4A::new(self.x_axis.z, self.y_axis.z, self.z_axis.z, self.w_axis.z),
+            3 => Vec4A::new(self.x_axis.w, self.y_axis.w, self.z_axis.w, self.w_axis.w),
             _ => panic!("index out of bounds"),
         }
     }
@@ -563,33 +574,60 @@ impl DMat4 {
     #[inline]
     #[must_use]
     pub fn transpose(&self) -> Self {
-        Self {
-            x_axis: DVec4::new(self.x_axis.x, self.y_axis.x, self.z_axis.x, self.w_axis.x),
-            y_axis: DVec4::new(self.x_axis.y, self.y_axis.y, self.z_axis.y, self.w_axis.y),
-            z_axis: DVec4::new(self.x_axis.z, self.y_axis.z, self.z_axis.z, self.w_axis.z),
-            w_axis: DVec4::new(self.x_axis.w, self.y_axis.w, self.z_axis.w, self.w_axis.w),
+        unsafe {
+            // Based on https://github.com/microsoft/DirectXMath `XMMatrixTranspose`
+            let tmp0 = _mm_shuffle_ps(self.x_axis.0, self.y_axis.0, 0b01_00_01_00);
+            let tmp1 = _mm_shuffle_ps(self.x_axis.0, self.y_axis.0, 0b11_10_11_10);
+            let tmp2 = _mm_shuffle_ps(self.z_axis.0, self.w_axis.0, 0b01_00_01_00);
+            let tmp3 = _mm_shuffle_ps(self.z_axis.0, self.w_axis.0, 0b11_10_11_10);
+
+            Self {
+                x_axis: Vec4A(_mm_shuffle_ps(tmp0, tmp2, 0b10_00_10_00)),
+                y_axis: Vec4A(_mm_shuffle_ps(tmp0, tmp2, 0b11_01_11_01)),
+                z_axis: Vec4A(_mm_shuffle_ps(tmp1, tmp3, 0b10_00_10_00)),
+                w_axis: Vec4A(_mm_shuffle_ps(tmp1, tmp3, 0b11_01_11_01)),
+            }
         }
     }
 
     /// Returns the determinant of `self`.
     #[must_use]
-    pub fn determinant(&self) -> f64 {
-        let (m00, m01, m02, m03) = self.x_axis.into();
-        let (m10, m11, m12, m13) = self.y_axis.into();
-        let (m20, m21, m22, m23) = self.z_axis.into();
-        let (m30, m31, m32, m33) = self.w_axis.into();
+    pub fn determinant(&self) -> f32 {
+        unsafe {
+            // Based on https://github.com/g-truc/glm `glm_mat4_determinant_lowp`
+            let swp2a = _mm_shuffle_ps(self.z_axis.0, self.z_axis.0, 0b00_01_01_10);
+            let swp3a = _mm_shuffle_ps(self.w_axis.0, self.w_axis.0, 0b11_10_11_11);
+            let swp2b = _mm_shuffle_ps(self.z_axis.0, self.z_axis.0, 0b11_10_11_11);
+            let swp3b = _mm_shuffle_ps(self.w_axis.0, self.w_axis.0, 0b00_01_01_10);
+            let swp2c = _mm_shuffle_ps(self.z_axis.0, self.z_axis.0, 0b00_00_01_10);
+            let swp3c = _mm_shuffle_ps(self.w_axis.0, self.w_axis.0, 0b01_10_00_00);
 
-        let a2323 = m22 * m33 - m23 * m32;
-        let a1323 = m21 * m33 - m23 * m31;
-        let a1223 = m21 * m32 - m22 * m31;
-        let a0323 = m20 * m33 - m23 * m30;
-        let a0223 = m20 * m32 - m22 * m30;
-        let a0123 = m20 * m31 - m21 * m30;
+            let mula = _mm_mul_ps(swp2a, swp3a);
+            let mulb = _mm_mul_ps(swp2b, swp3b);
+            let mulc = _mm_mul_ps(swp2c, swp3c);
+            let sube = _mm_sub_ps(mula, mulb);
+            let subf = _mm_sub_ps(_mm_movehl_ps(mulc, mulc), mulc);
 
-        m00 * (m11 * a2323 - m12 * a1323 + m13 * a1223)
-            - m01 * (m10 * a2323 - m12 * a0323 + m13 * a0223)
-            + m02 * (m10 * a1323 - m11 * a0323 + m13 * a0123)
-            - m03 * (m10 * a1223 - m11 * a0223 + m12 * a0123)
+            let subfaca = _mm_shuffle_ps(sube, sube, 0b10_01_00_00);
+            let swpfaca = _mm_shuffle_ps(self.y_axis.0, self.y_axis.0, 0b00_00_00_01);
+            let mulfaca = _mm_mul_ps(swpfaca, subfaca);
+
+            let subtmpb = _mm_shuffle_ps(sube, subf, 0b00_00_11_01);
+            let subfacb = _mm_shuffle_ps(subtmpb, subtmpb, 0b11_01_01_00);
+            let swpfacb = _mm_shuffle_ps(self.y_axis.0, self.y_axis.0, 0b01_01_10_10);
+            let mulfacb = _mm_mul_ps(swpfacb, subfacb);
+
+            let subres = _mm_sub_ps(mulfaca, mulfacb);
+            let subtmpc = _mm_shuffle_ps(sube, subf, 0b01_00_10_10);
+            let subfacc = _mm_shuffle_ps(subtmpc, subtmpc, 0b11_11_10_00);
+            let swpfacc = _mm_shuffle_ps(self.y_axis.0, self.y_axis.0, 0b10_11_11_11);
+            let mulfacc = _mm_mul_ps(swpfacc, subfacc);
+
+            let addres = _mm_add_ps(subres, mulfacc);
+            let detcof = _mm_mul_ps(addres, _mm_setr_ps(1.0, -1.0, 1.0, -1.0));
+
+            dot4(self.x_axis.0, detcof)
+        }
     }
 
     /// Returns the inverse of `self`.
@@ -601,76 +639,145 @@ impl DMat4 {
     /// Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
     #[must_use]
     pub fn inverse(&self) -> Self {
-        let (m00, m01, m02, m03) = self.x_axis.into();
-        let (m10, m11, m12, m13) = self.y_axis.into();
-        let (m20, m21, m22, m23) = self.z_axis.into();
-        let (m30, m31, m32, m33) = self.w_axis.into();
+        unsafe {
+            // Based on https://github.com/g-truc/glm `glm_mat4_inverse`
+            let fac0 = {
+                let swp0a = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b11_11_11_11);
+                let swp0b = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b10_10_10_10);
 
-        let coef00 = m22 * m33 - m32 * m23;
-        let coef02 = m12 * m33 - m32 * m13;
-        let coef03 = m12 * m23 - m22 * m13;
+                let swp00 = _mm_shuffle_ps(self.z_axis.0, self.y_axis.0, 0b10_10_10_10);
+                let swp01 = _mm_shuffle_ps(swp0a, swp0a, 0b10_00_00_00);
+                let swp02 = _mm_shuffle_ps(swp0b, swp0b, 0b10_00_00_00);
+                let swp03 = _mm_shuffle_ps(self.z_axis.0, self.y_axis.0, 0b11_11_11_11);
 
-        let coef04 = m21 * m33 - m31 * m23;
-        let coef06 = m11 * m33 - m31 * m13;
-        let coef07 = m11 * m23 - m21 * m13;
+                let mul00 = _mm_mul_ps(swp00, swp01);
+                let mul01 = _mm_mul_ps(swp02, swp03);
+                _mm_sub_ps(mul00, mul01)
+            };
+            let fac1 = {
+                let swp0a = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b11_11_11_11);
+                let swp0b = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b01_01_01_01);
 
-        let coef08 = m21 * m32 - m31 * m22;
-        let coef10 = m11 * m32 - m31 * m12;
-        let coef11 = m11 * m22 - m21 * m12;
+                let swp00 = _mm_shuffle_ps(self.z_axis.0, self.y_axis.0, 0b01_01_01_01);
+                let swp01 = _mm_shuffle_ps(swp0a, swp0a, 0b10_00_00_00);
+                let swp02 = _mm_shuffle_ps(swp0b, swp0b, 0b10_00_00_00);
+                let swp03 = _mm_shuffle_ps(self.z_axis.0, self.y_axis.0, 0b11_11_11_11);
 
-        let coef12 = m20 * m33 - m30 * m23;
-        let coef14 = m10 * m33 - m30 * m13;
-        let coef15 = m10 * m23 - m20 * m13;
+                let mul00 = _mm_mul_ps(swp00, swp01);
+                let mul01 = _mm_mul_ps(swp02, swp03);
+                _mm_sub_ps(mul00, mul01)
+            };
+            let fac2 = {
+                let swp0a = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b10_10_10_10);
+                let swp0b = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b01_01_01_01);
 
-        let coef16 = m20 * m32 - m30 * m22;
-        let coef18 = m10 * m32 - m30 * m12;
-        let coef19 = m10 * m22 - m20 * m12;
+                let swp00 = _mm_shuffle_ps(self.z_axis.0, self.y_axis.0, 0b01_01_01_01);
+                let swp01 = _mm_shuffle_ps(swp0a, swp0a, 0b10_00_00_00);
+                let swp02 = _mm_shuffle_ps(swp0b, swp0b, 0b10_00_00_00);
+                let swp03 = _mm_shuffle_ps(self.z_axis.0, self.y_axis.0, 0b10_10_10_10);
 
-        let coef20 = m20 * m31 - m30 * m21;
-        let coef22 = m10 * m31 - m30 * m11;
-        let coef23 = m10 * m21 - m20 * m11;
+                let mul00 = _mm_mul_ps(swp00, swp01);
+                let mul01 = _mm_mul_ps(swp02, swp03);
+                _mm_sub_ps(mul00, mul01)
+            };
+            let fac3 = {
+                let swp0a = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b11_11_11_11);
+                let swp0b = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b00_00_00_00);
 
-        let fac0 = DVec4::new(coef00, coef00, coef02, coef03);
-        let fac1 = DVec4::new(coef04, coef04, coef06, coef07);
-        let fac2 = DVec4::new(coef08, coef08, coef10, coef11);
-        let fac3 = DVec4::new(coef12, coef12, coef14, coef15);
-        let fac4 = DVec4::new(coef16, coef16, coef18, coef19);
-        let fac5 = DVec4::new(coef20, coef20, coef22, coef23);
+                let swp00 = _mm_shuffle_ps(self.z_axis.0, self.y_axis.0, 0b00_00_00_00);
+                let swp01 = _mm_shuffle_ps(swp0a, swp0a, 0b10_00_00_00);
+                let swp02 = _mm_shuffle_ps(swp0b, swp0b, 0b10_00_00_00);
+                let swp03 = _mm_shuffle_ps(self.z_axis.0, self.y_axis.0, 0b11_11_11_11);
 
-        let vec0 = DVec4::new(m10, m00, m00, m00);
-        let vec1 = DVec4::new(m11, m01, m01, m01);
-        let vec2 = DVec4::new(m12, m02, m02, m02);
-        let vec3 = DVec4::new(m13, m03, m03, m03);
+                let mul00 = _mm_mul_ps(swp00, swp01);
+                let mul01 = _mm_mul_ps(swp02, swp03);
+                _mm_sub_ps(mul00, mul01)
+            };
+            let fac4 = {
+                let swp0a = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b10_10_10_10);
+                let swp0b = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b00_00_00_00);
 
-        let inv0 = vec1.mul(fac0).sub(vec2.mul(fac1)).add(vec3.mul(fac2));
-        let inv1 = vec0.mul(fac0).sub(vec2.mul(fac3)).add(vec3.mul(fac4));
-        let inv2 = vec0.mul(fac1).sub(vec1.mul(fac3)).add(vec3.mul(fac5));
-        let inv3 = vec0.mul(fac2).sub(vec1.mul(fac4)).add(vec2.mul(fac5));
+                let swp00 = _mm_shuffle_ps(self.z_axis.0, self.y_axis.0, 0b00_00_00_00);
+                let swp01 = _mm_shuffle_ps(swp0a, swp0a, 0b10_00_00_00);
+                let swp02 = _mm_shuffle_ps(swp0b, swp0b, 0b10_00_00_00);
+                let swp03 = _mm_shuffle_ps(self.z_axis.0, self.y_axis.0, 0b10_10_10_10);
 
-        let sign_a = DVec4::new(1.0, -1.0, 1.0, -1.0);
-        let sign_b = DVec4::new(-1.0, 1.0, -1.0, 1.0);
+                let mul00 = _mm_mul_ps(swp00, swp01);
+                let mul01 = _mm_mul_ps(swp02, swp03);
+                _mm_sub_ps(mul00, mul01)
+            };
+            let fac5 = {
+                let swp0a = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b01_01_01_01);
+                let swp0b = _mm_shuffle_ps(self.w_axis.0, self.z_axis.0, 0b00_00_00_00);
 
-        let inverse = Self::from_cols(
-            inv0.mul(sign_a),
-            inv1.mul(sign_b),
-            inv2.mul(sign_a),
-            inv3.mul(sign_b),
-        );
+                let swp00 = _mm_shuffle_ps(self.z_axis.0, self.y_axis.0, 0b00_00_00_00);
+                let swp01 = _mm_shuffle_ps(swp0a, swp0a, 0b10_00_00_00);
+                let swp02 = _mm_shuffle_ps(swp0b, swp0b, 0b10_00_00_00);
+                let swp03 = _mm_shuffle_ps(self.z_axis.0, self.y_axis.0, 0b01_01_01_01);
 
-        let col0 = DVec4::new(
-            inverse.x_axis.x,
-            inverse.y_axis.x,
-            inverse.z_axis.x,
-            inverse.w_axis.x,
-        );
+                let mul00 = _mm_mul_ps(swp00, swp01);
+                let mul01 = _mm_mul_ps(swp02, swp03);
+                _mm_sub_ps(mul00, mul01)
+            };
+            let sign_a = _mm_set_ps(1.0, -1.0, 1.0, -1.0);
+            let sign_b = _mm_set_ps(-1.0, 1.0, -1.0, 1.0);
 
-        let dot0 = self.x_axis.mul(col0);
-        let dot1 = dot0.x + dot0.y + dot0.z + dot0.w;
+            let temp0 = _mm_shuffle_ps(self.y_axis.0, self.x_axis.0, 0b00_00_00_00);
+            let vec0 = _mm_shuffle_ps(temp0, temp0, 0b10_10_10_00);
 
-        glam_assert!(dot1 != 0.0);
+            let temp1 = _mm_shuffle_ps(self.y_axis.0, self.x_axis.0, 0b01_01_01_01);
+            let vec1 = _mm_shuffle_ps(temp1, temp1, 0b10_10_10_00);
 
-        let rcp_det = dot1.recip();
-        inverse.mul(rcp_det)
+            let temp2 = _mm_shuffle_ps(self.y_axis.0, self.x_axis.0, 0b10_10_10_10);
+            let vec2 = _mm_shuffle_ps(temp2, temp2, 0b10_10_10_00);
+
+            let temp3 = _mm_shuffle_ps(self.y_axis.0, self.x_axis.0, 0b11_11_11_11);
+            let vec3 = _mm_shuffle_ps(temp3, temp3, 0b10_10_10_00);
+
+            let mul00 = _mm_mul_ps(vec1, fac0);
+            let mul01 = _mm_mul_ps(vec2, fac1);
+            let mul02 = _mm_mul_ps(vec3, fac2);
+            let sub00 = _mm_sub_ps(mul00, mul01);
+            let add00 = _mm_add_ps(sub00, mul02);
+            let inv0 = _mm_mul_ps(sign_b, add00);
+
+            let mul03 = _mm_mul_ps(vec0, fac0);
+            let mul04 = _mm_mul_ps(vec2, fac3);
+            let mul05 = _mm_mul_ps(vec3, fac4);
+            let sub01 = _mm_sub_ps(mul03, mul04);
+            let add01 = _mm_add_ps(sub01, mul05);
+            let inv1 = _mm_mul_ps(sign_a, add01);
+
+            let mul06 = _mm_mul_ps(vec0, fac1);
+            let mul07 = _mm_mul_ps(vec1, fac3);
+            let mul08 = _mm_mul_ps(vec3, fac5);
+            let sub02 = _mm_sub_ps(mul06, mul07);
+            let add02 = _mm_add_ps(sub02, mul08);
+            let inv2 = _mm_mul_ps(sign_b, add02);
+
+            let mul09 = _mm_mul_ps(vec0, fac2);
+            let mul10 = _mm_mul_ps(vec1, fac4);
+            let mul11 = _mm_mul_ps(vec2, fac5);
+            let sub03 = _mm_sub_ps(mul09, mul10);
+            let add03 = _mm_add_ps(sub03, mul11);
+            let inv3 = _mm_mul_ps(sign_a, add03);
+
+            let row0 = _mm_shuffle_ps(inv0, inv1, 0b00_00_00_00);
+            let row1 = _mm_shuffle_ps(inv2, inv3, 0b00_00_00_00);
+            let row2 = _mm_shuffle_ps(row0, row1, 0b10_00_10_00);
+
+            let dot0 = dot4(self.x_axis.0, row2);
+            glam_assert!(dot0 != 0.0);
+
+            let rcp0 = _mm_set1_ps(dot0.recip());
+
+            Self {
+                x_axis: Vec4A(_mm_mul_ps(inv0, rcp0)),
+                y_axis: Vec4A(_mm_mul_ps(inv1, rcp0)),
+                z_axis: Vec4A(_mm_mul_ps(inv2, rcp0)),
+                w_axis: Vec4A(_mm_mul_ps(inv3, rcp0)),
+            }
+        }
     }
 
     /// Creates a left-handed view matrix using a camera position, an up direction, and a facing
@@ -679,7 +786,7 @@ impl DMat4 {
     /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
     #[inline]
     #[must_use]
-    pub fn look_to_lh(eye: DVec3, dir: DVec3, up: DVec3) -> Self {
+    pub fn look_to_lh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
         Self::look_to_rh(eye, -dir, up)
     }
 
@@ -689,16 +796,16 @@ impl DMat4 {
     /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
     #[inline]
     #[must_use]
-    pub fn look_to_rh(eye: DVec3, dir: DVec3, up: DVec3) -> Self {
+    pub fn look_to_rh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
         let f = dir.normalize();
         let s = f.cross(up).normalize();
         let u = s.cross(f);
 
         Self::from_cols(
-            DVec4::new(s.x, u.x, -f.x, 0.0),
-            DVec4::new(s.y, u.y, -f.y, 0.0),
-            DVec4::new(s.z, u.z, -f.z, 0.0),
-            DVec4::new(-eye.dot(s), -eye.dot(u), eye.dot(f), 1.0),
+            Vec4A::new(s.x, u.x, -f.x, 0.0),
+            Vec4A::new(s.y, u.y, -f.y, 0.0),
+            Vec4A::new(s.z, u.z, -f.z, 0.0),
+            Vec4A::new(-eye.dot(s), -eye.dot(u), eye.dot(f), 1.0),
         )
     }
 
@@ -711,7 +818,7 @@ impl DMat4 {
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn look_at_lh(eye: DVec3, center: DVec3, up: DVec3) -> Self {
+    pub fn look_at_lh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
         glam_assert!(up.is_normalized());
         Self::look_to_lh(eye, center.sub(eye), up)
     }
@@ -724,7 +831,7 @@ impl DMat4 {
     ///
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
     #[inline]
-    pub fn look_at_rh(eye: DVec3, center: DVec3, up: DVec3) -> Self {
+    pub fn look_at_rh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
         glam_assert!(up.is_normalized());
         Self::look_to_rh(eye, center.sub(eye), up)
     }
@@ -735,10 +842,10 @@ impl DMat4 {
     #[inline]
     #[must_use]
     pub fn perspective_rh_gl(
-        fov_y_radians: f64,
-        aspect_ratio: f64,
-        z_near: f64,
-        z_far: f64,
+        fov_y_radians: f32,
+        aspect_ratio: f32,
+        z_near: f32,
+        z_far: f32,
     ) -> Self {
         let inv_length = 1.0 / (z_near - z_far);
         let f = 1.0 / math::tan(0.5 * fov_y_radians);
@@ -746,10 +853,10 @@ impl DMat4 {
         let b = (z_near + z_far) * inv_length;
         let c = (2.0 * z_near * z_far) * inv_length;
         Self::from_cols(
-            DVec4::new(a, 0.0, 0.0, 0.0),
-            DVec4::new(0.0, f, 0.0, 0.0),
-            DVec4::new(0.0, 0.0, b, -1.0),
-            DVec4::new(0.0, 0.0, c, 0.0),
+            Vec4A::new(a, 0.0, 0.0, 0.0),
+            Vec4A::new(0.0, f, 0.0, 0.0),
+            Vec4A::new(0.0, 0.0, b, -1.0),
+            Vec4A::new(0.0, 0.0, c, 0.0),
         )
     }
 
@@ -761,17 +868,17 @@ impl DMat4 {
     /// enabled.
     #[inline]
     #[must_use]
-    pub fn perspective_lh(fov_y_radians: f64, aspect_ratio: f64, z_near: f64, z_far: f64) -> Self {
+    pub fn perspective_lh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32, z_far: f32) -> Self {
         glam_assert!(z_near > 0.0 && z_far > 0.0);
         let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
         let w = h / aspect_ratio;
         let r = z_far / (z_far - z_near);
         Self::from_cols(
-            DVec4::new(w, 0.0, 0.0, 0.0),
-            DVec4::new(0.0, h, 0.0, 0.0),
-            DVec4::new(0.0, 0.0, r, 1.0),
-            DVec4::new(0.0, 0.0, -r * z_near, 0.0),
+            Vec4A::new(w, 0.0, 0.0, 0.0),
+            Vec4A::new(0.0, h, 0.0, 0.0),
+            Vec4A::new(0.0, 0.0, r, 1.0),
+            Vec4A::new(0.0, 0.0, -r * z_near, 0.0),
         )
     }
 
@@ -783,17 +890,17 @@ impl DMat4 {
     /// enabled.
     #[inline]
     #[must_use]
-    pub fn perspective_rh(fov_y_radians: f64, aspect_ratio: f64, z_near: f64, z_far: f64) -> Self {
+    pub fn perspective_rh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32, z_far: f32) -> Self {
         glam_assert!(z_near > 0.0 && z_far > 0.0);
         let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
         let w = h / aspect_ratio;
         let r = z_far / (z_near - z_far);
         Self::from_cols(
-            DVec4::new(w, 0.0, 0.0, 0.0),
-            DVec4::new(0.0, h, 0.0, 0.0),
-            DVec4::new(0.0, 0.0, r, -1.0),
-            DVec4::new(0.0, 0.0, r * z_near, 0.0),
+            Vec4A::new(w, 0.0, 0.0, 0.0),
+            Vec4A::new(0.0, h, 0.0, 0.0),
+            Vec4A::new(0.0, 0.0, r, -1.0),
+            Vec4A::new(0.0, 0.0, r * z_near, 0.0),
         )
     }
 
@@ -804,16 +911,16 @@ impl DMat4 {
     /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn perspective_infinite_lh(fov_y_radians: f64, aspect_ratio: f64, z_near: f64) -> Self {
+    pub fn perspective_infinite_lh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Self {
         glam_assert!(z_near > 0.0);
         let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
         let w = h / aspect_ratio;
         Self::from_cols(
-            DVec4::new(w, 0.0, 0.0, 0.0),
-            DVec4::new(0.0, h, 0.0, 0.0),
-            DVec4::new(0.0, 0.0, 1.0, 1.0),
-            DVec4::new(0.0, 0.0, -z_near, 0.0),
+            Vec4A::new(w, 0.0, 0.0, 0.0),
+            Vec4A::new(0.0, h, 0.0, 0.0),
+            Vec4A::new(0.0, 0.0, 1.0, 1.0),
+            Vec4A::new(0.0, 0.0, -z_near, 0.0),
         )
     }
 
@@ -825,19 +932,19 @@ impl DMat4 {
     #[inline]
     #[must_use]
     pub fn perspective_infinite_reverse_lh(
-        fov_y_radians: f64,
-        aspect_ratio: f64,
-        z_near: f64,
+        fov_y_radians: f32,
+        aspect_ratio: f32,
+        z_near: f32,
     ) -> Self {
         glam_assert!(z_near > 0.0);
         let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
         let w = h / aspect_ratio;
         Self::from_cols(
-            DVec4::new(w, 0.0, 0.0, 0.0),
-            DVec4::new(0.0, h, 0.0, 0.0),
-            DVec4::new(0.0, 0.0, 0.0, 1.0),
-            DVec4::new(0.0, 0.0, z_near, 0.0),
+            Vec4A::new(w, 0.0, 0.0, 0.0),
+            Vec4A::new(0.0, h, 0.0, 0.0),
+            Vec4A::new(0.0, 0.0, 0.0, 1.0),
+            Vec4A::new(0.0, 0.0, z_near, 0.0),
         )
     }
 
@@ -845,14 +952,14 @@ impl DMat4 {
     /// `[0,1]` depth range.
     #[inline]
     #[must_use]
-    pub fn perspective_infinite_rh(fov_y_radians: f64, aspect_ratio: f64, z_near: f64) -> Self {
+    pub fn perspective_infinite_rh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Self {
         glam_assert!(z_near > 0.0);
         let f = 1.0 / math::tan(0.5 * fov_y_radians);
         Self::from_cols(
-            DVec4::new(f / aspect_ratio, 0.0, 0.0, 0.0),
-            DVec4::new(0.0, f, 0.0, 0.0),
-            DVec4::new(0.0, 0.0, -1.0, -1.0),
-            DVec4::new(0.0, 0.0, -z_near, 0.0),
+            Vec4A::new(f / aspect_ratio, 0.0, 0.0, 0.0),
+            Vec4A::new(0.0, f, 0.0, 0.0),
+            Vec4A::new(0.0, 0.0, -1.0, -1.0),
+            Vec4A::new(0.0, 0.0, -z_near, 0.0),
         )
     }
 
@@ -861,17 +968,17 @@ impl DMat4 {
     #[inline]
     #[must_use]
     pub fn perspective_infinite_reverse_rh(
-        fov_y_radians: f64,
-        aspect_ratio: f64,
-        z_near: f64,
+        fov_y_radians: f32,
+        aspect_ratio: f32,
+        z_near: f32,
     ) -> Self {
         glam_assert!(z_near > 0.0);
         let f = 1.0 / math::tan(0.5 * fov_y_radians);
         Self::from_cols(
-            DVec4::new(f / aspect_ratio, 0.0, 0.0, 0.0),
-            DVec4::new(0.0, f, 0.0, 0.0),
-            DVec4::new(0.0, 0.0, 0.0, -1.0),
-            DVec4::new(0.0, 0.0, z_near, 0.0),
+            Vec4A::new(f / aspect_ratio, 0.0, 0.0, 0.0),
+            Vec4A::new(0.0, f, 0.0, 0.0),
+            Vec4A::new(0.0, 0.0, 0.0, -1.0),
+            Vec4A::new(0.0, 0.0, z_near, 0.0),
         )
     }
 
@@ -882,12 +989,12 @@ impl DMat4 {
     #[inline]
     #[must_use]
     pub fn orthographic_rh_gl(
-        left: f64,
-        right: f64,
-        bottom: f64,
-        top: f64,
-        near: f64,
-        far: f64,
+        left: f32,
+        right: f32,
+        bottom: f32,
+        top: f32,
+        near: f32,
+        far: f32,
     ) -> Self {
         let a = 2.0 / (right - left);
         let b = 2.0 / (top - bottom);
@@ -897,10 +1004,10 @@ impl DMat4 {
         let tz = -(far + near) / (far - near);
 
         Self::from_cols(
-            DVec4::new(a, 0.0, 0.0, 0.0),
-            DVec4::new(0.0, b, 0.0, 0.0),
-            DVec4::new(0.0, 0.0, c, 0.0),
-            DVec4::new(tx, ty, tz, 1.0),
+            Vec4A::new(a, 0.0, 0.0, 0.0),
+            Vec4A::new(0.0, b, 0.0, 0.0),
+            Vec4A::new(0.0, 0.0, c, 0.0),
+            Vec4A::new(tx, ty, tz, 1.0),
         )
     }
 
@@ -908,21 +1015,21 @@ impl DMat4 {
     #[inline]
     #[must_use]
     pub fn orthographic_lh(
-        left: f64,
-        right: f64,
-        bottom: f64,
-        top: f64,
-        near: f64,
-        far: f64,
+        left: f32,
+        right: f32,
+        bottom: f32,
+        top: f32,
+        near: f32,
+        far: f32,
     ) -> Self {
         let rcp_width = 1.0 / (right - left);
         let rcp_height = 1.0 / (top - bottom);
         let r = 1.0 / (far - near);
         Self::from_cols(
-            DVec4::new(rcp_width + rcp_width, 0.0, 0.0, 0.0),
-            DVec4::new(0.0, rcp_height + rcp_height, 0.0, 0.0),
-            DVec4::new(0.0, 0.0, r, 0.0),
-            DVec4::new(
+            Vec4A::new(rcp_width + rcp_width, 0.0, 0.0, 0.0),
+            Vec4A::new(0.0, rcp_height + rcp_height, 0.0, 0.0),
+            Vec4A::new(0.0, 0.0, r, 0.0),
+            Vec4A::new(
                 -(left + right) * rcp_width,
                 -(top + bottom) * rcp_height,
                 -r * near,
@@ -935,21 +1042,21 @@ impl DMat4 {
     #[inline]
     #[must_use]
     pub fn orthographic_rh(
-        left: f64,
-        right: f64,
-        bottom: f64,
-        top: f64,
-        near: f64,
-        far: f64,
+        left: f32,
+        right: f32,
+        bottom: f32,
+        top: f32,
+        near: f32,
+        far: f32,
     ) -> Self {
         let rcp_width = 1.0 / (right - left);
         let rcp_height = 1.0 / (top - bottom);
         let r = 1.0 / (near - far);
         Self::from_cols(
-            DVec4::new(rcp_width + rcp_width, 0.0, 0.0, 0.0),
-            DVec4::new(0.0, rcp_height + rcp_height, 0.0, 0.0),
-            DVec4::new(0.0, 0.0, r, 0.0),
-            DVec4::new(
+            Vec4A::new(rcp_width + rcp_width, 0.0, 0.0, 0.0),
+            Vec4A::new(0.0, rcp_height + rcp_height, 0.0, 0.0),
+            Vec4A::new(0.0, 0.0, r, 0.0),
+            Vec4A::new(
                 -(left + right) * rcp_width,
                 -(top + bottom) * rcp_height,
                 r * near,
@@ -966,7 +1073,7 @@ impl DMat4 {
     /// This method assumes that `self` contains a projective transform.
     #[inline]
     #[must_use]
-    pub fn project_point3(&self, rhs: DVec3) -> DVec3 {
+    pub fn project_point3(&self, rhs: Vec3) -> Vec3 {
         let mut res = self.x_axis.mul(rhs.x);
         res = self.y_axis.mul(rhs.y).add(res);
         res = self.z_axis.mul(rhs.z).add(res);
@@ -989,8 +1096,8 @@ impl DMat4 {
     /// Will panic if the 3rd row of `self` is not `(0, 0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn transform_point3(&self, rhs: DVec3) -> DVec3 {
-        glam_assert!(self.row(3).abs_diff_eq(DVec4::W, 1e-6));
+    pub fn transform_point3(&self, rhs: Vec3) -> Vec3 {
+        glam_assert!(self.row(3).abs_diff_eq(Vec4A::W, 1e-6));
         let mut res = self.x_axis.mul(rhs.x);
         res = self.y_axis.mul(rhs.y).add(res);
         res = self.z_axis.mul(rhs.z).add(res);
@@ -1010,22 +1117,56 @@ impl DMat4 {
     /// Will panic if the 3rd row of `self` is not `(0, 0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn transform_vector3(&self, rhs: DVec3) -> DVec3 {
-        glam_assert!(self.row(3).abs_diff_eq(DVec4::W, 1e-6));
+    pub fn transform_vector3(&self, rhs: Vec3) -> Vec3 {
+        glam_assert!(self.row(3).abs_diff_eq(Vec4A::W, 1e-6));
         let mut res = self.x_axis.mul(rhs.x);
         res = self.y_axis.mul(rhs.y).add(res);
         res = self.z_axis.mul(rhs.z).add(res);
         res.truncate()
     }
 
+    /// Transforms the given [`Vec3A`] as 3D point.
+    ///
+    /// This is the equivalent of multiplying the [`Vec3A`] as a 4D vector where `w` is `1.0`.
+    #[inline]
+    #[must_use]
+    pub fn transform_point3a(&self, rhs: Vec3A) -> Vec3A {
+        glam_assert!(self.row(3).abs_diff_eq(Vec4A::W, 1e-6));
+        let mut res = self.x_axis.mul(rhs.xxxx());
+        res = self.y_axis.mul(rhs.yyyy()).add(res);
+        res = self.z_axis.mul(rhs.zzzz()).add(res);
+        res = self.w_axis.add(res);
+        res.xyz()
+    }
+
+    /// Transforms the give [`Vec3A`] as 3D vector.
+    ///
+    /// This is the equivalent of multiplying the [`Vec3A`] as a 4D vector where `w` is `0.0`.
+    #[inline]
+    #[must_use]
+    pub fn transform_vector3a(&self, rhs: Vec3A) -> Vec3A {
+        glam_assert!(self.row(3).abs_diff_eq(Vec4A::W, 1e-6));
+        let mut res = self.x_axis.mul(rhs.xxxx());
+        res = self.y_axis.mul(rhs.yyyy()).add(res);
+        res = self.z_axis.mul(rhs.zzzz()).add(res);
+        res.xyz()
+    }
+
     /// Transforms a 4D vector.
     #[inline]
     #[must_use]
-    pub fn mul_vec4(&self, rhs: DVec4) -> DVec4 {
-        let mut res = self.x_axis.mul(rhs.x);
-        res = res.add(self.y_axis.mul(rhs.y));
-        res = res.add(self.z_axis.mul(rhs.z));
-        res = res.add(self.w_axis.mul(rhs.w));
+    pub fn mul_vec4(&self, rhs: Vec4) -> Vec4 {
+        self.mul_vec4a(rhs.into()).into()
+    }
+
+    /// Transforms a [`Vec4A`].
+    #[inline]
+    #[must_use]
+    pub fn mul_vec4a(&self, rhs: Vec4A) -> Vec4A {
+        let mut res = self.x_axis.mul(rhs.xxxx());
+        res = res.add(self.y_axis.mul(rhs.yyyy()));
+        res = res.add(self.z_axis.mul(rhs.zzzz()));
+        res = res.add(self.w_axis.mul(rhs.wwww()));
         res
     }
 
@@ -1068,7 +1209,7 @@ impl DMat4 {
     /// Multiplies a 4x4 matrix by a scalar.
     #[inline]
     #[must_use]
-    pub fn mul_scalar(&self, rhs: f64) -> Self {
+    pub fn mul_scalar(&self, rhs: f32) -> Self {
         Self::from_cols(
             self.x_axis.mul(rhs),
             self.y_axis.mul(rhs),
@@ -1080,8 +1221,8 @@ impl DMat4 {
     /// Divides a 4x4 matrix by a scalar.
     #[inline]
     #[must_use]
-    pub fn div_scalar(&self, rhs: f64) -> Self {
-        let rhs = DVec4::splat(rhs);
+    pub fn div_scalar(&self, rhs: f32) -> Self {
+        let rhs = Vec4A::splat(rhs);
         Self::from_cols(
             self.x_axis.div(rhs),
             self.y_axis.div(rhs),
@@ -1101,7 +1242,7 @@ impl DMat4 {
     /// [comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
     #[inline]
     #[must_use]
-    pub fn abs_diff_eq(&self, rhs: Self, max_abs_diff: f64) -> bool {
+    pub fn abs_diff_eq(&self, rhs: Self, max_abs_diff: f32) -> bool {
         self.x_axis.abs_diff_eq(rhs.x_axis, max_abs_diff)
             && self.y_axis.abs_diff_eq(rhs.y_axis, max_abs_diff)
             && self.z_axis.abs_diff_eq(rhs.z_axis, max_abs_diff)
@@ -1121,24 +1262,24 @@ impl DMat4 {
     }
 
     #[inline]
-    pub fn as_mat4(&self) -> Mat4 {
-        Mat4::from_cols(
-            self.x_axis.as_vec4(),
-            self.y_axis.as_vec4(),
-            self.z_axis.as_vec4(),
-            self.w_axis.as_vec4(),
+    pub fn as_dmat4(&self) -> DMat4 {
+        DMat4::from_cols(
+            self.x_axis.as_dvec4(),
+            self.y_axis.as_dvec4(),
+            self.z_axis.as_dvec4(),
+            self.w_axis.as_dvec4(),
         )
     }
 }
 
-impl Default for DMat4 {
+impl Default for Mat4A {
     #[inline]
     fn default() -> Self {
         Self::IDENTITY
     }
 }
 
-impl Add<DMat4> for DMat4 {
+impl Add<Mat4A> for Mat4A {
     type Output = Self;
     #[inline]
     fn add(self, rhs: Self) -> Self::Output {
@@ -1146,14 +1287,14 @@ impl Add<DMat4> for DMat4 {
     }
 }
 
-impl AddAssign<DMat4> for DMat4 {
+impl AddAssign<Mat4A> for Mat4A {
     #[inline]
     fn add_assign(&mut self, rhs: Self) {
         *self = self.add_mat4(&rhs);
     }
 }
 
-impl Sub<DMat4> for DMat4 {
+impl Sub<Mat4A> for Mat4A {
     type Output = Self;
     #[inline]
     fn sub(self, rhs: Self) -> Self::Output {
@@ -1161,14 +1302,14 @@ impl Sub<DMat4> for DMat4 {
     }
 }
 
-impl SubAssign<DMat4> for DMat4 {
+impl SubAssign<Mat4A> for Mat4A {
     #[inline]
     fn sub_assign(&mut self, rhs: Self) {
         *self = self.sub_mat4(&rhs);
     }
 }
 
-impl Neg for DMat4 {
+impl Neg for Mat4A {
     type Output = Self;
     #[inline]
     fn neg(self) -> Self::Output {
@@ -1181,7 +1322,7 @@ impl Neg for DMat4 {
     }
 }
 
-impl Mul<DMat4> for DMat4 {
+impl Mul<Mat4A> for Mat4A {
     type Output = Self;
     #[inline]
     fn mul(self, rhs: Self) -> Self::Output {
@@ -1189,68 +1330,88 @@ impl Mul<DMat4> for DMat4 {
     }
 }
 
-impl MulAssign<DMat4> for DMat4 {
+impl MulAssign<Mat4A> for Mat4A {
     #[inline]
     fn mul_assign(&mut self, rhs: Self) {
         *self = self.mul_mat4(&rhs);
     }
 }
 
-impl Mul<DVec4> for DMat4 {
-    type Output = DVec4;
+impl Mul<Vec4A> for Mat4A {
+    type Output = Vec4A;
     #[inline]
-    fn mul(self, rhs: DVec4) -> Self::Output {
-        self.mul_vec4(rhs)
+    fn mul(self, rhs: Vec4A) -> Self::Output {
+        self.mul_vec4a(rhs)
     }
 }
 
-impl Mul<DMat4> for f64 {
-    type Output = DMat4;
+impl Mul<Mat4A> for f32 {
+    type Output = Mat4A;
     #[inline]
-    fn mul(self, rhs: DMat4) -> Self::Output {
+    fn mul(self, rhs: Mat4A) -> Self::Output {
         rhs.mul_scalar(self)
     }
 }
 
-impl Mul<f64> for DMat4 {
+impl Mul<f32> for Mat4A {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: f64) -> Self::Output {
+    fn mul(self, rhs: f32) -> Self::Output {
         self.mul_scalar(rhs)
     }
 }
 
-impl MulAssign<f64> for DMat4 {
+impl MulAssign<f32> for Mat4A {
     #[inline]
-    fn mul_assign(&mut self, rhs: f64) {
+    fn mul_assign(&mut self, rhs: f32) {
         *self = self.mul_scalar(rhs);
     }
 }
 
-impl Div<DMat4> for f64 {
-    type Output = DMat4;
+impl Div<Mat4A> for f32 {
+    type Output = Mat4A;
     #[inline]
-    fn div(self, rhs: DMat4) -> Self::Output {
+    fn div(self, rhs: Mat4A) -> Self::Output {
         rhs.div_scalar(self)
     }
 }
 
-impl Div<f64> for DMat4 {
+impl Div<f32> for Mat4A {
     type Output = Self;
     #[inline]
-    fn div(self, rhs: f64) -> Self::Output {
+    fn div(self, rhs: f32) -> Self::Output {
         self.div_scalar(rhs)
     }
 }
 
-impl DivAssign<f64> for DMat4 {
+impl DivAssign<f32> for Mat4A {
     #[inline]
-    fn div_assign(&mut self, rhs: f64) {
+    fn div_assign(&mut self, rhs: f32) {
         *self = self.div_scalar(rhs);
     }
 }
 
-impl Sum<Self> for DMat4 {
+impl Mul<Vec4> for Mat4A {
+    type Output = Vec4;
+    #[inline]
+    fn mul(self, rhs: Vec4) -> Vec4 {
+        self.mul_vec4a(rhs.into()).into()
+    }
+}
+
+impl From<Mat4> for Mat4A {
+    #[inline]
+    fn from(m: Mat4) -> Self {
+        Self {
+            x_axis: m.x_axis.into(),
+            y_axis: m.y_axis.into(),
+            z_axis: m.z_axis.into(),
+            w_axis: m.w_axis.into(),
+        }
+    }
+}
+
+impl Sum<Self> for Mat4A {
     fn sum<I>(iter: I) -> Self
     where
         I: Iterator<Item = Self>,
@@ -1259,7 +1420,7 @@ impl Sum<Self> for DMat4 {
     }
 }
 
-impl<'a> Sum<&'a Self> for DMat4 {
+impl<'a> Sum<&'a Self> for Mat4A {
     fn sum<I>(iter: I) -> Self
     where
         I: Iterator<Item = &'a Self>,
@@ -1268,7 +1429,7 @@ impl<'a> Sum<&'a Self> for DMat4 {
     }
 }
 
-impl Product for DMat4 {
+impl Product for Mat4A {
     fn product<I>(iter: I) -> Self
     where
         I: Iterator<Item = Self>,
@@ -1277,7 +1438,7 @@ impl Product for DMat4 {
     }
 }
 
-impl<'a> Product<&'a Self> for DMat4 {
+impl<'a> Product<&'a Self> for Mat4A {
     fn product<I>(iter: I) -> Self
     where
         I: Iterator<Item = &'a Self>,
@@ -1286,7 +1447,7 @@ impl<'a> Product<&'a Self> for DMat4 {
     }
 }
 
-impl PartialEq for DMat4 {
+impl PartialEq for Mat4A {
     #[inline]
     fn eq(&self, rhs: &Self) -> bool {
         self.x_axis.eq(&rhs.x_axis)
@@ -1297,25 +1458,25 @@ impl PartialEq for DMat4 {
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl AsRef<[f64; 16]> for DMat4 {
+impl AsRef<[f32; 16]> for Mat4A {
     #[inline]
-    fn as_ref(&self) -> &[f64; 16] {
-        unsafe { &*(self as *const Self as *const [f64; 16]) }
+    fn as_ref(&self) -> &[f32; 16] {
+        unsafe { &*(self as *const Self as *const [f32; 16]) }
     }
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl AsMut<[f64; 16]> for DMat4 {
+impl AsMut<[f32; 16]> for Mat4A {
     #[inline]
-    fn as_mut(&mut self) -> &mut [f64; 16] {
-        unsafe { &mut *(self as *mut Self as *mut [f64; 16]) }
+    fn as_mut(&mut self) -> &mut [f32; 16] {
+        unsafe { &mut *(self as *mut Self as *mut [f32; 16]) }
     }
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl fmt::Debug for DMat4 {
+impl fmt::Debug for Mat4A {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
-        fmt.debug_struct(stringify!(DMat4))
+        fmt.debug_struct(stringify!(Mat4A))
             .field("x_axis", &self.x_axis)
             .field("y_axis", &self.y_axis)
             .field("z_axis", &self.z_axis)
@@ -1325,7 +1486,7 @@ impl fmt::Debug for DMat4 {
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl fmt::Display for DMat4 {
+impl fmt::Display for Mat4A {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(p) = f.precision() {
             write!(

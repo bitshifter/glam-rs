@@ -14,7 +14,11 @@
 {% endif %}
 
 {% if scalar_t == "f32" %}
-    {% set self_t = "Quat" %}
+    {% if is_align %}
+        {% set self_t = "QuatA" %}
+    {% else %}
+        {% set self_t = "Quat" %}
+    {% endif %}
     {% set affine3_t = "Affine3A" %}
     {% set vec2_t = "Vec2" %}
     {% set vec3_t = "Vec3" %}
@@ -35,7 +39,12 @@ use crate::{
     {{ scalar_t }}::math,
     euler::{EulerFromQuaternion, EulerRot, EulerToQuaternion},
     {% if scalar_t == "f32" %}
-        DQuat, Mat3, Mat3A, Mat4, Vec2, Vec3, Vec3A, Vec4,
+        DQuat, Mat3, Mat3A, Mat4, Vec2, Vec3, Vec3A, Vec4, Vec4A,
+        {% if self_t == "Quat" %}
+            QuatA,
+        {% elif self_t == "QuatA" %}
+            Quat,
+        {% endif %}
     {% elif scalar_t == "f64" %}
         DMat3, DMat4, DVec2, DVec3, DVec4, Quat,
     {% endif %}
@@ -104,8 +113,8 @@ pub const fn {{ self_t | lower }}(x: {{ scalar_t }}, y: {{ scalar_t }}, z: {{ sc
 {%- endif %}
 #[derive(Clone, Copy)]
 {%- if is_scalar %}
-{%- if scalar_t == "f32" %}
-#[cfg_attr(not(any(feature = "scalar-math", target_arch = "spirv")), repr(align(16)))]
+{%- if self_t == "QuatA" %}
+#[cfg_attr(not(target_arch = "spirv"), repr(align(16)))]
 {%- endif %}
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
@@ -184,12 +193,26 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub const fn from_vec4(v: {{ vec4_t }}) -> Self {
+        Self::from_xyzw(v.x, v.y, v.z, v.w)
+    }
+
+{% if is_align %}
+    /// Creates a new rotation quaternion from an aligned 4D vector.
+    ///
+    /// # Preconditions
+    ///
+    /// This function does not check if the input is normalized, it is up to the user to
+    /// provide normalized input or to normalized the resulting quaternion.
+    #[inline]
+    #[must_use]
+    pub const fn from_vec4a(v: Vec4A) -> Self {
         {% if is_scalar %}
             Self { x: v.x, y: v.y, z: v.z, w: v.w }
         {% else %}
             Self(v.0)
         {% endif %}
     }
+{% endif %}
 
     /// Creates a rotation quaternion from a slice.
     ///
@@ -295,12 +318,15 @@ impl {{ self_t }} {
     #[must_use]
     pub fn from_euler(euler: EulerRot, a: {{ scalar_t }}, b: {{ scalar_t }}, c: {{ scalar_t }}) -> Self {
         euler.new_quat(a, b, c)
+        {% if is_align %}
+            .into()
+        {% endif %}
     }
 
     /// From the columns of a 3x3 rotation matrix.
     #[inline]
     #[must_use]
-    pub(crate) fn from_rotation_axes(x_axis: {{ vec3_t }}, y_axis: {{ vec3_t }}, z_axis: {{ vec3_t }}) -> Self {
+    pub(crate) fn from_rotation_axes<T: Into<({{ scalar_t }}, {{ scalar_t }}, {{ scalar_t }})>>(x_axis: T, y_axis: T, z_axis: T) -> Self {
         // Based on https://github.com/microsoft/DirectXMath `XM$quaternionRotationMatrix`
         let (m00, m01, m02) = x_axis.into();
         let (m10, m11, m12) = y_axis.into();
@@ -375,9 +401,9 @@ impl {{ self_t }} {
     #[must_use]
     pub fn from_mat3a(mat: &Mat3A) -> Self {
         Self::from_rotation_axes(
-            mat.x_axis.into(),
-            mat.y_axis.into(),
-            mat.z_axis.into(),
+            mat.x_axis,
+            mat.y_axis,
+            mat.z_axis,
         )
     }
 {% endif %}
@@ -1095,9 +1121,9 @@ impl {{ self_t }} {
     pub fn from_affine3(a: &crate::{{ affine3_t }}) -> Self {
         #[allow(clippy::useless_conversion)]
         Self::from_rotation_axes(
-            a.matrix3.x_axis.into(),
-            a.matrix3.y_axis.into(),
-            a.matrix3.z_axis.into(),
+            a.matrix3.x_axis,
+            a.matrix3.y_axis,
+            a.matrix3.z_axis,
         )
     }
 
@@ -1374,7 +1400,7 @@ impl<'a> Product<&'a Self> for {{ self_t }} {
 }
 
 {% if scalar_t == "f32" %}
-impl Mul<Vec3A> for Quat {
+impl Mul<Vec3A> for {{ self_t }} {
     type Output = Vec3A;
     #[inline]
     fn mul(self, rhs: Vec3A) -> Self::Output {
@@ -1386,6 +1412,30 @@ impl Mul<Vec3A> for Quat {
 impl From<{{ self_t }}> for {{ vec4_t }} {
     #[inline]
     fn from(q: {{ self_t }}) -> Self {
+        Self::new(q.x, q.y, q.z, q.w)
+    }
+}
+
+{% if self_t == "Quat" %}
+impl From<QuatA> for {{ self_t }} {
+    #[inline]
+    fn from(q: QuatA) -> Self {
+        Self::from_xyzw(q.x, q.y, q.z, q.w)
+    }
+}
+{% elif self_t == "QuatA" %}
+impl From<Quat> for {{ self_t }} {
+    #[inline]
+    fn from(q: Quat) -> Self {
+        Self::from_xyzw(q.x, q.y, q.z, q.w)
+    }
+}
+{% endif %}
+
+{% if scalar_t == "f32" %}
+impl From<{{ self_t }}> for Vec4A {
+    #[inline]
+    fn from(q: {{ self_t }}) -> Self {
         {% if is_scalar %}
             Self::new(q.x, q.y, q.z, q.w)
         {% else %}
@@ -1393,6 +1443,7 @@ impl From<{{ self_t }}> for {{ vec4_t }} {
         {% endif %}
     }
 }
+{% endif %}
 
 impl From<{{ self_t }}> for ({{ scalar_t }}, {{ scalar_t }}, {{ scalar_t }}, {{ scalar_t }}) {
     #[inline]
