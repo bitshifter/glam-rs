@@ -185,7 +185,7 @@ macro_rules! vec3_float_test_vectors {
             $vec3::new(0.2, 0.3, 0.4),
             $vec3::new(4.0, -5.0, 6.0),
             $vec3::new(-2.0, 0.5, -1.0),
-            // Pathalogical cases from <https://graphics.pixar.com/library/OrthonormalB/paper.pdf>:
+            // Pathological cases from <https://graphics.pixar.com/library/OrthonormalB/paper.pdf>:
             $vec3::new(0.00038527316, 0.00038460016, -0.99999988079),
             $vec3::new(-0.00019813581, -0.00008946839, -0.99999988079),
         ]
@@ -212,7 +212,7 @@ macro_rules! vec2_float_test_vectors {
             $vec2::new(0.2, 0.3),
             $vec2::new(4.0, -5.0),
             $vec2::new(-2.0, 0.5),
-            // Pathalogical cases from <https://graphics.pixar.com/library/OrthonormalB/paper.pdf>:
+            // Pathological cases from <https://graphics.pixar.com/library/OrthonormalB/paper.pdf>:
             $vec2::new(0.00038527316, 0.00038460016),
             $vec2::new(-0.00019813581, -0.00008946839),
         ]
