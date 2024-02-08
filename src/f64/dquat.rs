@@ -282,10 +282,10 @@ impl DQuat {
         const ONE_MINUS_EPS: f64 = 1.0 - 2.0 * core::f64::EPSILON;
         let dot = from.dot(to);
         if dot > ONE_MINUS_EPS {
-            // 0° singulary: from ≈ to
+            // 0° singularity: from ≈ to
             Self::IDENTITY
         } else if dot < -ONE_MINUS_EPS {
-            // 180° singulary: from ≈ -to
+            // 180° singularity: from ≈ -to
             use core::f64::consts::PI; // half a turn = 𝛕/2 = 180°
             Self::from_axis_angle(from.any_orthonormal_vector(), PI)
         } else {
@@ -338,10 +338,10 @@ impl DQuat {
         const ONE_MINUS_EPSILON: f64 = 1.0 - 2.0 * core::f64::EPSILON;
         let dot = from.dot(to);
         if dot > ONE_MINUS_EPSILON {
-            // 0° singulary: from ≈ to
+            // 0° singularity: from ≈ to
             Self::IDENTITY
         } else if dot < -ONE_MINUS_EPSILON {
-            // 180° singulary: from ≈ -to
+            // 180° singularity: from ≈ -to
             const COS_FRAC_PI_2: f64 = 0.0;
             const SIN_FRAC_PI_2: f64 = 1.0;
             // rotation around z by PI radians

@@ -1087,7 +1087,7 @@ impl Mat4 {
     /// `1.0`.
     ///
     /// This method assumes that `self` contains a valid affine transform. It does not perform
-    /// a persective divide, if `self` contains a perspective transform, or if you are unsure,
+    /// a perspective divide, if `self` contains a perspective transform, or if you are unsure,
     /// the [`Self::project_point3()`] method should be used instead.
     ///
     /// # Panics
