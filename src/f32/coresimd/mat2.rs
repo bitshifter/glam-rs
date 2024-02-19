@@ -309,6 +309,13 @@ impl Mat2 {
             && self.y_axis.abs_diff_eq(rhs.y_axis, max_abs_diff)
     }
 
+    /// Takes the absolute value of each element in `self`
+    #[inline]
+    #[must_use]
+    pub fn abs(&self) -> Self {
+        Self::from_cols(self.x_axis.abs(), self.y_axis.abs())
+    }
+
     #[inline]
     pub fn as_dmat2(&self) -> DMat2 {
         DMat2::from_cols(self.x_axis.as_dvec2(), self.y_axis.as_dvec2())
