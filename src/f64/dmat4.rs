@@ -1095,6 +1095,18 @@ impl DMat4 {
             && self.w_axis.abs_diff_eq(rhs.w_axis, max_abs_diff)
     }
 
+    /// Takes the absolute value of each element in `self`
+    #[inline]
+    #[must_use]
+    pub fn abs(&self) -> Self {
+        Self::from_cols(
+            self.x_axis.abs(),
+            self.y_axis.abs(),
+            self.z_axis.abs(),
+            self.w_axis.abs(),
+        )
+    }
+
     #[inline]
     pub fn as_mat4(&self) -> Mat4 {
         Mat4::from_cols(

@@ -663,6 +663,28 @@ macro_rules! impl_mat4_tests {
             assert!(!($mat4::IDENTITY * NEG_INFINITY).is_finite());
             assert!(!($mat4::IDENTITY * NAN).is_finite());
         });
+
+        glam_test!(test_mat4_abs, {
+            let neg = $mat4::IDENTITY * -1.0;
+            assert_eq!(neg.abs(), $mat4::IDENTITY);
+
+            let partial_neg = $mat4::from_cols_array_2d(&[
+                [1.0, -2.0, 3.0, -4.0],
+                [-5.0, 6.0, -7.0, 8.0],
+                [-9.0, 10.0, 11.0, -12.0],
+                [13.0, -14.0, -15.0, 16.0],
+            ]);
+
+            assert_eq!(
+                partial_neg.abs(),
+                $mat4::from_cols_array_2d(&[
+                    [1.0, 2.0, 3.0, 4.0],
+                    [5.0, 6.0, 7.0, 8.0],
+                    [9.0, 10.0, 11.0, 12.0],
+                    [13.0, 14.0, 15.0, 16.0],
+                ])
+            );
+        });
     };
 }
 

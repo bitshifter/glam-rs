@@ -2086,6 +2086,17 @@ impl {{ self_t }} {
         {% endfor %}
     }
 
+    /// Takes the absolute value of each element in `self`
+    #[inline]
+    #[must_use]
+    pub fn abs(&self) -> Self {
+        Self::from_cols(
+        {% for axis in axes %}
+            self.{{ axis }}.abs(),
+        {% endfor %}
+        )
+    }
+
     {% if scalar_t == "f32" %}
         #[inline]
         pub fn as_dmat{{ dim }}(&self) -> DMat{{ dim }} {
