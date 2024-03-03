@@ -34,11 +34,18 @@ impl BVec4A {
         ))
     }
 
-    /// Creates a vector with all elements set to `v`.
+    /// Creates a vector mask with all elements set to `v`.
     #[inline]
     #[must_use]
     pub const fn splat(v: bool) -> Self {
         Self::new(v, v, v, v)
+    }
+
+    /// Creates a new vector mask from a bool array.
+    #[inline]
+    #[must_use]
+    pub const fn from_array(a: [bool; 4]) -> Self {
+        Self::new(a[0], a[1], a[2], a[3])
     }
 
     /// Returns a bitmask with the lowest 4 bits set from the elements of `self`.
@@ -220,6 +227,13 @@ impl fmt::Display for BVec4A {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let arr = self.into_bool_array();
         write!(f, "[{}, {}, {}, {}]", arr[0], arr[1], arr[2], arr[3])
+    }
+}
+
+impl From<[bool; 4]> for BVec4A {
+    #[inline]
+    fn from(a: [bool; 4]) -> Self {
+        Self::from_array(a)
     }
 }
 

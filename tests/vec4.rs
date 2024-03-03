@@ -356,6 +356,32 @@ macro_rules! impl_vec4_tests {
             should_panic!({ $vec4::from_slice(&[0 as $t; 3]) });
         });
 
+        glam_test!(test_mask_from_array_bool, {
+            assert_eq!(
+                $mask::new(false, false, false, false),
+                $mask::from([false, false, false, false])
+            );
+            assert_eq!(
+                $mask::new(false, false, true, true),
+                $mask::from([false, false, true, true])
+            );
+            assert_eq!(
+                $mask::new(true, true, false, false),
+                $mask::from([true, true, false, false])
+            );
+            assert_eq!(
+                $mask::new(false, true, false, true),
+                $mask::from([false, true, false, true])
+            );
+            assert_eq!(
+                $mask::new(true, false, true, false),
+                $mask::from([true, false, true, false])
+            );
+            assert_eq!(
+                $mask::new(true, true, true, true),
+                $mask::from([true, true, true, true])
+            );
+        });
         glam_test!(test_mask_into_array_u32, {
             assert_eq!(
                 Into::<[u32; 4]>::into($mask::new(false, false, false, false)),

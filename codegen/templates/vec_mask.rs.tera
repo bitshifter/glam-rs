@@ -130,13 +130,24 @@ impl {{ self_t }} {
         {% endif %}
     }
 
-    /// Creates a vector with all elements set to `v`.
+    /// Creates a vector mask with all elements set to `v`.
     #[inline]
     #[must_use]
     pub const fn splat(v: bool) -> Self {
         Self::new(
             {% for c in components %}
                 v,
+            {%- endfor %}
+        )
+    }
+
+    /// Creates a new vector mask from a bool array.
+    #[inline]
+    #[must_use]
+    pub const fn from_array(a: [bool; {{ dim }}]) -> Self {
+        Self::new(
+            {% for c in components %}
+                a[{{ loop.index0 }}],
             {%- endfor %}
         )
     }
@@ -496,6 +507,13 @@ impl fmt::Display for {{ self_t }} {
 {% elif dim == 4 %}
         write!(f, "[{}, {}, {}, {}]", arr[0], arr[1], arr[2], arr[3])
 {% endif %}
+    }
+}
+
+impl From<[bool; {{ dim }}]> for {{ self_t }} {
+    #[inline]
+    fn from(a: [bool; {{ dim }}]) -> Self {
+        Self::from_array(a)
     }
 }
 
