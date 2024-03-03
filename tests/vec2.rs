@@ -261,6 +261,13 @@ macro_rules! impl_vec2_tests {
             assert!(b.cmpeq($vec2::splat(1 as $t)).all());
         });
 
+        glam_test!(test_mask_from_array_bool, {
+            assert_eq!($mask::new(false, false), $mask::from([false, false]));
+            assert_eq!($mask::new(true, false), $mask::from([true, false]));
+            assert_eq!($mask::new(false, true), $mask::from([false, true]));
+            assert_eq!($mask::new(true, true), $mask::from([true, true]));
+        });
+
         glam_test!(test_mask_into_array_u32, {
             assert_eq!(Into::<[u32; 2]>::into($mask::new(false, false)), [0, 0]);
             assert_eq!(Into::<[u32; 2]>::into($mask::new(true, false)), [!0, 0]);

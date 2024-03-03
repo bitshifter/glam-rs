@@ -279,6 +279,33 @@ macro_rules! impl_vec3_tests {
             assert!(a.cmpeq($vec3::ONE).all());
         });
 
+        glam_test!(test_mask_from_array_bool, {
+            assert_eq!(
+                $mask::new(false, false, false),
+                $mask::from([false, false, false])
+            );
+            assert_eq!(
+                $mask::new(true, false, false),
+                $mask::from([true, false, false])
+            );
+            assert_eq!(
+                $mask::new(false, true, true),
+                $mask::from([false, true, true])
+            );
+            assert_eq!(
+                $mask::new(false, true, false),
+                $mask::from([false, true, false])
+            );
+            assert_eq!(
+                $mask::new(true, false, true),
+                $mask::from([true, false, true])
+            );
+            assert_eq!(
+                $mask::new(true, true, true),
+                $mask::from([true, true, true])
+            );
+        });
+
         glam_test!(test_mask_into_array_u32, {
             assert_eq!(
                 Into::<[u32; 3]>::into($mask::new(false, false, false)),
@@ -328,8 +355,8 @@ macro_rules! impl_vec3_tests {
                 [true, false, true]
             );
             assert_eq!(
-                Into::<[u32; 3]>::into($mask::new(true, true, true)),
-                [!0, !0, !0]
+                Into::<[bool; 3]>::into($mask::new(true, true, true)),
+                [true, true, true]
             );
         });
 
