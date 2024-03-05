@@ -136,6 +136,29 @@ macro_rules! impl_vec_float_normalize_tests {
             assert_eq!(from_x_y(MAX, 0.0).try_normalize(), None);
             assert_eq!(from_x_y(MAX, MAX).try_normalize(), None);
         });
+        
+        glam_test!(test_normalize_or, {
+            assert_eq!(
+                from_x_y(-42.0, 0.0).normalize_or($vec::Y),
+                from_x_y(-1.0, 0.0)
+            );
+            assert_eq!(
+                from_x_y(MAX.sqrt(), 0.0).normalize_or($vec::Y),
+                from_x_y(1.0, 0.0)
+            );
+
+            // We expect `normalize_or` to return the fallback value when inputs are very small:
+            assert_eq!(from_x_y(0.0, 0.0).normalize_or($vec::Y), $vec::Y);
+            assert_eq!(from_x_y(MIN_POSITIVE, 0.0).normalize_or($vec::Y), $vec::Y);
+
+            // We expect `normalize` to return zero when inputs are non-finite:
+            assert_eq!(from_x_y(INFINITY, 0.0).normalize_or($vec::Y), $vec::Y);
+            assert_eq!(from_x_y(NAN, 0.0).normalize_or($vec::Y), $vec::Y);
+
+            // We expect `normalize` to return zero when inputs are very large:
+            assert_eq!(from_x_y(MAX, 0.0).normalize_or($vec::Y), $vec::Y);
+            assert_eq!(from_x_y(MAX, MAX).normalize_or($vec::Y), $vec::Y);
+        });
 
         glam_test!(test_normalize_or_zero, {
             assert_eq!(

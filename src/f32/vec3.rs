@@ -505,6 +505,24 @@ impl Vec3 {
         }
     }
 
+    /// Returns `self` normalized to length 1.0 if possible, else returns a
+    /// fallback value.
+    ///
+    /// In particular, if the input is zero (or very close to zero), or non-finite,
+    /// the result of this operation will be the fallback value.
+    ///
+    /// See also [`Self::try_normalize()`].
+    #[inline]
+    #[must_use]
+    pub fn normalize_or(self, fallback: Self) -> Self {
+        let rcp = self.length_recip();
+        if rcp.is_finite() && rcp > 0.0 {
+            self * rcp
+        } else {
+            fallback
+        }
+    }
+
     /// Returns `self` normalized to length 1.0 if possible, else returns zero.
     ///
     /// In particular, if the input is zero (or very close to zero), or non-finite,
@@ -514,12 +532,7 @@ impl Vec3 {
     #[inline]
     #[must_use]
     pub fn normalize_or_zero(self) -> Self {
-        let rcp = self.length_recip();
-        if rcp.is_finite() && rcp > 0.0 {
-            self * rcp
-        } else {
-            Self::ZERO
-        }
+        self.normalize_or(Self::ZERO)
     }
 
     /// Returns whether `self` is length `1.0` or not.
