@@ -136,7 +136,7 @@ macro_rules! impl_vec_float_normalize_tests {
             assert_eq!(from_x_y(MAX, 0.0).try_normalize(), None);
             assert_eq!(from_x_y(MAX, MAX).try_normalize(), None);
         });
-        
+
         glam_test!(test_normalize_or, {
             assert_eq!(
                 from_x_y(-42.0, 0.0).normalize_or($vec::Y),
