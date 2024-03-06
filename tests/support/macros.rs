@@ -12,7 +12,7 @@ macro_rules! glam_test {
 #[macro_export]
 macro_rules! should_panic {
     ($block:block) => {{
-        #[cfg(all(feature = "std", not(target_arch = "wasm32")))]
+        #[cfg(all(feature = "std", panic = "unwind"))]
         assert!(std::panic::catch_unwind(|| $block).is_err());
     }};
 }
