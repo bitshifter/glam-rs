@@ -616,8 +616,8 @@ impl Mat4 {
         let swpfacc = i32x4_shuffle::<3, 3, 3, 2>(self.y_axis.0, self.y_axis.0);
         let mulfacc = f32x4_mul(swpfacc, subfacc);
 
-        let addres = f32x4_add(subres, mulfacc);
-        let detcof = f32x4_mul(addres, f32x4(1.0, -1.0, 1.0, -1.0));
+        let address = f32x4_add(subres, mulfacc);
+        let detcof = f32x4_mul(address, f32x4(1.0, -1.0, 1.0, -1.0));
 
         dot4(self.x_axis.0, detcof)
     }

@@ -622,8 +622,8 @@ impl Mat4 {
             let swpfacc = _mm_shuffle_ps(self.y_axis.0, self.y_axis.0, 0b10_11_11_11);
             let mulfacc = _mm_mul_ps(swpfacc, subfacc);
 
-            let addres = _mm_add_ps(subres, mulfacc);
-            let detcof = _mm_mul_ps(addres, _mm_setr_ps(1.0, -1.0, 1.0, -1.0));
+            let address = _mm_add_ps(subres, mulfacc);
+            let detcof = _mm_mul_ps(address, _mm_setr_ps(1.0, -1.0, 1.0, -1.0));
 
             dot4(self.x_axis.0, detcof)
         }

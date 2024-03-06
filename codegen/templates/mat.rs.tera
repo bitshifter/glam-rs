@@ -1212,8 +1212,8 @@ impl {{ self_t }} {
                 let swpfacc = _mm_shuffle_ps(self.y_axis.0, self.y_axis.0, 0b10_11_11_11);
                 let mulfacc = _mm_mul_ps(swpfacc, subfacc);
 
-                let addres = _mm_add_ps(subres, mulfacc);
-                let detcof = _mm_mul_ps(addres, _mm_setr_ps(1.0, -1.0, 1.0, -1.0));
+                let address = _mm_add_ps(subres, mulfacc);
+                let detcof = _mm_mul_ps(address, _mm_setr_ps(1.0, -1.0, 1.0, -1.0));
 
                 dot4(self.x_axis.0, detcof)
             }
@@ -1247,8 +1247,8 @@ impl {{ self_t }} {
             let swpfacc = i32x4_shuffle::<3, 3, 3, 2>(self.y_axis.0, self.y_axis.0);
             let mulfacc = f32x4_mul(swpfacc, subfacc);
 
-            let addres = f32x4_add(subres, mulfacc);
-            let detcof = f32x4_mul(addres, f32x4(1.0, -1.0, 1.0, -1.0));
+            let address = f32x4_add(subres, mulfacc);
+            let detcof = f32x4_mul(address, f32x4(1.0, -1.0, 1.0, -1.0));
 
             dot4(self.x_axis.0, detcof)
         {% elif self_t == "Mat4" and is_coresimd %}
@@ -1281,8 +1281,8 @@ impl {{ self_t }} {
             let swpfacc = simd_swizzle!(self.y_axis.0, [3, 3, 3, 2]);
             let mulfacc = swpfacc * subfacc;
 
-            let addres = subres + mulfacc;
-            let detcof = addres * f32x4::from_array([1.0, -1.0, 1.0, -1.0]);
+            let address = subres + mulfacc;
+            let detcof = address * f32x4::from_array([1.0, -1.0, 1.0, -1.0]);
 
             dot4(self.x_axis.0, detcof)
         {% elif dim == 2 %}
