@@ -80,6 +80,18 @@ bench_func!(
 );
 
 #[inline]
+fn vec3_normalize_or(v: Vec3) -> Vec3 {
+    v.normalize_or(Vec3::X)
+}
+
+bench_func!(
+    vec3_normalize_or_bench,
+    "vec3 normalize_or",
+    op => vec3_normalize_or,
+    from => random_vec3
+);
+
+#[inline]
 fn vec3_normalize_or_zero(v: Vec3) -> Vec3 {
     v.normalize_or_zero()
 }
@@ -154,6 +166,7 @@ criterion_group!(
     vec3_mul_vec3,
     vec3_angle_between,
     vec3_normalize_bench,
+    vec3_normalize_or_bench,
     vec3_normalize_or_zero_bench,
     vec3_any_orthogonal_vector_bench,
     vec3_any_orthonormal_vector_bench,
