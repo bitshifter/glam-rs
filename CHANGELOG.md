@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ### Breaking changes
 
-* Minimum Supported Version of Rust bumped to 1.60.0 for `panic = "abort"`
+* Minimum Supported Version of Rust bumped to 1.66.1 for `saturating_add_signed`
   support.
 
 ### Fixed
