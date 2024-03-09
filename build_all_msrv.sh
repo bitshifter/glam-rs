@@ -2,8 +2,7 @@
 
 set -e
 
-CARGO='rustup run 1.58.1 cargo'
-$CARGO test --features "bytemuck mint rand serde debug-glam-assert" && \
-$CARGO test --features "scalar-math bytemuck mint rand serde debug-glam-assert" && \
-$CARGO test --no-default-features --features "libm scalar-math bytemuck mint rand serde debug-glam-assert" && \
-$CARGO bench --no-run
+CARGO='rustup run 1.66.1 cargo'
+$CARGO check --features "bytemuck mint rand serde debug-glam-assert" && \
+$CARGO check --features "scalar-math bytemuck mint rand serde debug-glam-assert" && \
+$CARGO check --no-default-features --features "libm scalar-math bytemuck mint rand serde debug-glam-assert"

@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+### Breaking changes
+
+* Minimum Supported Version of Rust bumped to 1.66.1 for `saturating_add_signed`
+  support.
+
+### Fixed
+
+* Corrected precision documentation for vector `is_normalized` methods and
+  changed the internal check to use `2e-4` to better match the documented
+  precision value of `1e-4`.
+
+### Added
+
+ * Added `midpoint` method to vector types that returns the point between two
+   points.
+
+ * Added saturating add and sub methods for signed and unsigned integer vector
+   types.
+
+ * Added element wise sum and product methods for vector types.
+
+ * Added element wise absolute values method for matrix types.
+
+ * Added `from_array` method for boolean vector types.
+
+ * Added `normalize_or` method to vector types that returns the specified value
+   if normalization failed.
+
 ## [0.25.0] - 2023-12-19
 
 ### Breaking changes
