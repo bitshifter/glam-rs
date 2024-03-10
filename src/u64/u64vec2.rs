@@ -1163,3 +1163,10 @@ impl TryFrom<I64Vec2> for U64Vec2 {
         Ok(Self::new(u64::try_from(v.x)?, u64::try_from(v.y)?))
     }
 }
+
+impl From<BVec2> for U64Vec2 {
+    #[inline]
+    fn from(v: BVec2) -> Self {
+        Self::new(u64::from(v.x), u64::from(v.y))
+    }
+}

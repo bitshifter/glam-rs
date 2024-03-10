@@ -50,6 +50,31 @@ macro_rules! impl_vec3_tests {
             let v = $vec3::new(t.0, t.1, t.2);
             assert_eq!(t, v.into());
 
+            assert_eq!(
+                $vec3::new(1 as $t, 0 as $t, 0 as $t),
+                glam::BVec3::new(true, false, false).into()
+            );
+            assert_eq!(
+                $vec3::new(0 as $t, 1 as $t, 0 as $t),
+                glam::BVec3::new(false, true, false).into()
+            );
+            assert_eq!(
+                $vec3::new(0 as $t, 0 as $t, 1 as $t),
+                glam::BVec3::new(false, false, true).into()
+            );
+            assert_eq!(
+                $vec3::new(1 as $t, 0 as $t, 0 as $t),
+                glam::BVec3A::new(true, false, false).into()
+            );
+            assert_eq!(
+                $vec3::new(0 as $t, 1 as $t, 0 as $t),
+                glam::BVec3A::new(false, true, false).into()
+            );
+            assert_eq!(
+                $vec3::new(0 as $t, 0 as $t, 1 as $t),
+                glam::BVec3A::new(false, false, true).into()
+            );
+
             assert_eq!($vec3::new(1 as $t, 0 as $t, 0 as $t), $vec3::X);
             assert_eq!($vec3::new(0 as $t, 1 as $t, 0 as $t), $vec3::Y);
             assert_eq!($vec3::new(0 as $t, 0 as $t, 1 as $t), $vec3::Z);

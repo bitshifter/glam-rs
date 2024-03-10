@@ -1253,3 +1253,10 @@ impl From<UVec2> for DVec2 {
         Self::new(f64::from(v.x), f64::from(v.y))
     }
 }
+
+impl From<BVec2> for DVec2 {
+    #[inline]
+    fn from(v: BVec2) -> Self {
+        Self::new(f64::from(v.x), f64::from(v.y))
+    }
+}

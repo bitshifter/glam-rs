@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{f32::math, BVec3, Vec2, Vec4};
+use crate::{f32::math, BVec3, BVec3A, Vec2, Vec4};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -1327,5 +1327,24 @@ impl From<(Vec2, f32)> for Vec3 {
     #[inline]
     fn from((v, z): (Vec2, f32)) -> Self {
         Self::new(v.x, v.y, z)
+    }
+}
+
+impl From<BVec3> for Vec3 {
+    #[inline]
+    fn from(v: BVec3) -> Self {
+        Self::new(f32::from(v.x), f32::from(v.y), f32::from(v.z))
+    }
+}
+
+impl From<BVec3A> for Vec3 {
+    #[inline]
+    fn from(v: BVec3A) -> Self {
+        let bool_array: [bool; 3] = v.into();
+        Self::new(
+            f32::from(bool_array[0]),
+            f32::from(bool_array[1]),
+            f32::from(bool_array[2]),
+        )
     }
 }

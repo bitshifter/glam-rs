@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec4, I16Vec4, I64Vec4, IVec4, U16Vec4, U64Vec4, UVec2, UVec3};
+use crate::{BVec4, BVec4A, I16Vec4, I64Vec4, IVec4, U16Vec4, U64Vec4, UVec2, UVec3};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -1403,5 +1403,30 @@ impl TryFrom<U64Vec4> for UVec4 {
             u32::try_from(v.z)?,
             u32::try_from(v.w)?,
         ))
+    }
+}
+
+impl From<BVec4> for UVec4 {
+    #[inline]
+    fn from(v: BVec4) -> Self {
+        Self::new(
+            u32::from(v.x),
+            u32::from(v.y),
+            u32::from(v.z),
+            u32::from(v.w),
+        )
+    }
+}
+
+impl From<BVec4A> for UVec4 {
+    #[inline]
+    fn from(v: BVec4A) -> Self {
+        let bool_array: [bool; 4] = v.into();
+        Self::new(
+            u32::from(bool_array[0]),
+            u32::from(bool_array[1]),
+            u32::from(bool_array[2]),
+            u32::from(bool_array[3]),
+        )
     }
 }
