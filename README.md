@@ -263,4 +263,4 @@ See [ATTRIBUTION.md] for details.
 [docs]: https://docs.rs/glam/badge.svg
 [docs.rs]: https://docs.rs/glam/
 [Minimum Supported Rust Version]: https://img.shields.io/badge/Rust-1.68.2-blue?color=fc8d62&logo=rust
-[Rust 1.68.2]: https://github.com/rust-lang/rust/blob/master/RELEASES.md#version-1661-2023-01-10
+[Rust 1.68.2]: https://github.com/rust-lang/rust/blob/master/RELEASES.md#version-1682-2023-03-28
