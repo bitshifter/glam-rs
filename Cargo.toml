@@ -9,7 +9,7 @@ readme = "README.md"
 license = "MIT OR Apache-2.0"
 keywords = ["gamedev", "math", "matrix", "vector", "quaternion"]
 categories = ["game-engines", "no-std"]
-rust-version = "1.66.1"
+rust-version = "1.68.2"
 
 [badges]
 maintenance = { status = "actively-developed" }
