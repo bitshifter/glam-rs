@@ -1,6 +1,8 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{f64::math, BVec4, BVec4A, DVec2, DVec3, IVec4, UVec4, Vec4};
+#[cfg(not(feature = "scalar-math"))]
+use crate::BVec4A;
+use crate::{f64::math, BVec4, DVec2, DVec3, IVec4, UVec4, Vec4};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -1403,6 +1405,8 @@ impl From<BVec4> for DVec4 {
         )
     }
 }
+
+#[cfg(not(feature = "scalar-math"))]
 
 impl From<BVec4A> for DVec4 {
     #[inline]

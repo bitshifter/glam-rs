@@ -64,26 +64,30 @@ macro_rules! impl_vec4_tests {
                 $vec4::new(0 as $t, 0 as $t, 1 as $t, 0 as $t),
                 glam::BVec4::new(false, false, true, false).into()
             );
-            assert_eq!(
-                $vec4::new(0 as $t, 0 as $t, 0 as $t, 1 as $t),
-                glam::BVec4::new(false, false, false, true).into()
-            );
-            assert_eq!(
-                $vec4::new(1 as $t, 0 as $t, 0 as $t, 0 as $t),
-                glam::BVec4A::new(true, false, false, false).into()
-            );
-            assert_eq!(
-                $vec4::new(0 as $t, 1 as $t, 0 as $t, 0 as $t),
-                glam::BVec4A::new(false, true, false, false).into()
-            );
-            assert_eq!(
-                $vec4::new(0 as $t, 0 as $t, 1 as $t, 0 as $t),
-                glam::BVec4A::new(false, false, true, false).into()
-            );
-            assert_eq!(
-                $vec4::new(0 as $t, 0 as $t, 0 as $t, 1 as $t),
-                glam::BVec4A::new(false, false, false, true).into()
-            );
+
+            #[cfg(not(feature = "scalar-math"))]
+            {
+                assert_eq!(
+                    $vec4::new(0 as $t, 0 as $t, 0 as $t, 1 as $t),
+                    glam::BVec4::new(false, false, false, true).into()
+                );
+                assert_eq!(
+                    $vec4::new(1 as $t, 0 as $t, 0 as $t, 0 as $t),
+                    glam::BVec4A::new(true, false, false, false).into()
+                );
+                assert_eq!(
+                    $vec4::new(0 as $t, 1 as $t, 0 as $t, 0 as $t),
+                    glam::BVec4A::new(false, true, false, false).into()
+                );
+                assert_eq!(
+                    $vec4::new(0 as $t, 0 as $t, 1 as $t, 0 as $t),
+                    glam::BVec4A::new(false, false, true, false).into()
+                );
+                assert_eq!(
+                    $vec4::new(0 as $t, 0 as $t, 0 as $t, 1 as $t),
+                    glam::BVec4A::new(false, false, false, true).into()
+                );
+            }
 
             assert_eq!($vec4::new(1 as $t, 0 as $t, 0 as $t, 0 as $t), $vec4::X);
             assert_eq!($vec4::new(0 as $t, 1 as $t, 0 as $t, 0 as $t), $vec4::Y);

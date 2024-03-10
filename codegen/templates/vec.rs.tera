@@ -132,8 +132,24 @@
     {% set zero = "0" %}
 {% endif %}
 
-use crate::{
-    {{ mask_t }},
+{% if bveca_from_type and bveca_from_type == "BVec4A" and is_scalar %}
+    {% if scalar_t == "f32" %}
+        #[cfg(feature = "scalar-math")]
+        use crate::BVec4 as BVec4A;
+    {% endif %}
+    #[cfg(not(feature = "scalar-math"))]
+    use crate::BVec4A;
+    use crate::{
+        {% if bveca_from_type and bveca_from_type != mask_t %}
+            {{ mask_t }},
+        {% endif %}
+{% else %}
+    use crate::{
+        {{ mask_t }},
+        {% if bveca_from_type and bveca_from_type != mask_t %}
+            {{ bveca_from_type }},
+        {% endif %}
+{% endif %}
     {% if self_t != vec2_t %}
         {{ vec2_t }},
     {% endif %}
@@ -168,9 +184,6 @@ use crate::{
     {% endif %}
     {% if bvec_from_type != mask_t %}
         {{ bvec_from_type }},
-    {% endif %}
-    {% if bveca_from_type and bveca_from_type != mask_t %}
-        {{ bveca_from_type }},
     {% endif %}
 };
 
@@ -3240,6 +3253,9 @@ impl From<{{ bvec_from_type }}> for {{ self_t }} {
 }
 
 {% if bveca_from_type %}
+    {% if bveca_from_type == "BVec4A" %}
+    #[cfg(not(feature = "scalar-math"))]
+    {% endif %}
     impl From<{{ bveca_from_type }}> for {{ self_t }} {
         #[inline]
         fn from(v: {{ bveca_from_type }}) -> Self {
