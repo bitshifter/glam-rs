@@ -14,6 +14,9 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ### Fixed
 
+* Respect precision format specifier in Display implementations. Previously it
+  was ignored.
+
 * Corrected precision documentation for vector `is_normalized` methods and
   changed the internal check to use `2e-4` to better match the documented
   precision value of `1e-4`.
