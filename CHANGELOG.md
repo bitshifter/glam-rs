@@ -37,6 +37,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
  * Added `From<BVecN>` support for all vector types.
 
+ * Added `Div` and `DivAssign` by scalar implementations to matrix types.
+
 ## [0.25.0] - 2023-12-19
 
 ### Breaking changes
