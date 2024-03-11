@@ -1232,3 +1232,10 @@ impl From<Vec2> for (f32, f32) {
         (v.x, v.y)
     }
 }
+
+impl From<BVec2> for Vec2 {
+    #[inline]
+    fn from(v: BVec2) -> Self {
+        Self::new(f32::from(v.x), f32::from(v.y))
+    }
+}

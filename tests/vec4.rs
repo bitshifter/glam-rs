@@ -52,6 +52,43 @@ macro_rules! impl_vec4_tests {
             let v = $vec4::new(t.0, t.1, t.2, t.3);
             assert_eq!(t, v.into());
 
+            assert_eq!(
+                $vec4::new(1 as $t, 0 as $t, 0 as $t, 0 as $t),
+                glam::BVec4::new(true, false, false, false).into()
+            );
+            assert_eq!(
+                $vec4::new(0 as $t, 1 as $t, 0 as $t, 0 as $t),
+                glam::BVec4::new(false, true, false, false).into()
+            );
+            assert_eq!(
+                $vec4::new(0 as $t, 0 as $t, 1 as $t, 0 as $t),
+                glam::BVec4::new(false, false, true, false).into()
+            );
+
+            #[cfg(not(feature = "scalar-math"))]
+            {
+                assert_eq!(
+                    $vec4::new(0 as $t, 0 as $t, 0 as $t, 1 as $t),
+                    glam::BVec4::new(false, false, false, true).into()
+                );
+                assert_eq!(
+                    $vec4::new(1 as $t, 0 as $t, 0 as $t, 0 as $t),
+                    glam::BVec4A::new(true, false, false, false).into()
+                );
+                assert_eq!(
+                    $vec4::new(0 as $t, 1 as $t, 0 as $t, 0 as $t),
+                    glam::BVec4A::new(false, true, false, false).into()
+                );
+                assert_eq!(
+                    $vec4::new(0 as $t, 0 as $t, 1 as $t, 0 as $t),
+                    glam::BVec4A::new(false, false, true, false).into()
+                );
+                assert_eq!(
+                    $vec4::new(0 as $t, 0 as $t, 0 as $t, 1 as $t),
+                    glam::BVec4A::new(false, false, false, true).into()
+                );
+            }
+
             assert_eq!($vec4::new(1 as $t, 0 as $t, 0 as $t, 0 as $t), $vec4::X);
             assert_eq!($vec4::new(0 as $t, 1 as $t, 0 as $t, 0 as $t), $vec4::Y);
             assert_eq!($vec4::new(0 as $t, 0 as $t, 1 as $t, 0 as $t), $vec4::Z);

@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{f32::math, sse2::*, BVec4A, Vec2, Vec3, Vec3A};
+use crate::{f32::math, sse2::*, BVec4, BVec4A, Vec2, Vec3, Vec3A};
 
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -1266,5 +1266,32 @@ impl DerefMut for Vec4 {
     #[inline]
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe { &mut *(self as *mut Self).cast() }
+    }
+}
+
+impl From<BVec4> for Vec4 {
+    #[inline]
+    fn from(v: BVec4) -> Self {
+        Self::new(
+            f32::from(v.x),
+            f32::from(v.y),
+            f32::from(v.z),
+            f32::from(v.w),
+        )
+    }
+}
+
+#[cfg(not(feature = "scalar-math"))]
+
+impl From<BVec4A> for Vec4 {
+    #[inline]
+    fn from(v: BVec4A) -> Self {
+        let bool_array: [bool; 4] = v.into();
+        Self::new(
+            f32::from(bool_array[0]),
+            f32::from(bool_array[1]),
+            f32::from(bool_array[2]),
+            f32::from(bool_array[3]),
+        )
     }
 }

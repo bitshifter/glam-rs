@@ -9,8 +9,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ### Breaking changes
 
-* Minimum Supported Version of Rust bumped to 1.66.1 for `saturating_add_signed`
-  support.
+* Minimum Supported Rust Version bumped to 1.68.2 for
+ `impl From<bool> for {f32,f64}` support.
 
 ### Fixed
 
@@ -34,6 +34,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
  * Added `normalize_or` method to vector types that returns the specified value
    if normalization failed.
+
+ * Added `From<BVecN>` support for all vector types.
 
 ## [0.25.0] - 2023-12-19
 
