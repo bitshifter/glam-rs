@@ -4,7 +4,7 @@ use crate::{f32::math, swizzles::*, DMat2, Mat3, Mat3A, Vec2};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
-use core::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
+use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
 use core::simd::*;
 
@@ -293,6 +293,13 @@ impl Mat2 {
         Self(self.0 * f32x4::splat(rhs))
     }
 
+    /// Divides a 2x2 matrix by a scalar.
+    #[inline]
+    #[must_use]
+    pub fn div_scalar(&self, rhs: f32) -> Self {
+        Self(self.0 / f32x4::splat(rhs))
+    }
+
     /// Returns true if the absolute difference of all elements between `self` and `rhs`
     /// is less than or equal to `max_abs_diff`.
     ///
@@ -410,6 +417,29 @@ impl MulAssign<f32> for Mat2 {
     #[inline]
     fn mul_assign(&mut self, rhs: f32) {
         *self = self.mul_scalar(rhs);
+    }
+}
+
+impl Div<Mat2> for f32 {
+    type Output = Mat2;
+    #[inline]
+    fn div(self, rhs: Mat2) -> Self::Output {
+        rhs.div_scalar(self)
+    }
+}
+
+impl Div<f32> for Mat2 {
+    type Output = Self;
+    #[inline]
+    fn div(self, rhs: f32) -> Self::Output {
+        self.div_scalar(rhs)
+    }
+}
+
+impl DivAssign<f32> for Mat2 {
+    #[inline]
+    fn div_assign(&mut self, rhs: f32) {
+        *self = self.div_scalar(rhs);
     }
 }
 

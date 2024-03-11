@@ -98,7 +98,7 @@ use crate::{
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
-use core::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
+use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
 {% if is_sse2 %}
 #[cfg(target_arch = "x86")]
@@ -2068,6 +2068,26 @@ impl {{ self_t }} {
         {% endif %}
     }
 
+    /// Divides a {{ nxn }} matrix by a scalar.
+    #[inline]
+    #[must_use]
+    pub fn div_scalar(&self, rhs: {{ scalar_t }}) -> Self {
+        {% if self_t == "Mat2" and is_sse2 %}
+            Self(unsafe { _mm_div_ps(self.0, _mm_set_ps1(rhs)) })
+        {% elif self_t == "Mat2" and is_wasm32 %}
+            Self(f32x4_div(self.0, f32x4_splat(rhs)))
+        {% elif self_t == "Mat2" and is_coresimd %}
+            Self(self.0 / f32x4::splat(rhs))
+        {% else %}
+            let rhs = {{ col_t }}::splat(rhs);
+            Self::from_cols(
+                {% for axis in axes %}
+                    self.{{ axis }}.div(rhs),
+                {%- endfor %}
+            )
+        {% endif %}
+    }
+
     /// Returns true if the absolute difference of all elements between `self` and `rhs`
     /// is less than or equal to `max_abs_diff`.
     ///
@@ -2222,6 +2242,29 @@ impl MulAssign<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
     fn mul_assign(&mut self, rhs: {{ scalar_t }}) {
         *self = self.mul_scalar(rhs);
+    }
+}
+
+impl Div<{{ self_t }}> for {{ scalar_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn div(self, rhs: {{ self_t }}) -> Self::Output {
+        rhs.div_scalar(self)
+    }
+}
+
+impl Div<{{ scalar_t }}> for {{ self_t }} {
+    type Output = Self;
+    #[inline]
+    fn div(self, rhs: {{ scalar_t }}) -> Self::Output {
+        self.div_scalar(rhs)
+    }
+}
+
+impl DivAssign<{{ scalar_t }}> for {{ self_t }} {
+    #[inline]
+    fn div_assign(&mut self, rhs: {{ scalar_t }}) {
+        *self = self.div_scalar(rhs);
     }
 }
 

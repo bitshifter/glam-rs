@@ -4,7 +4,7 @@ use crate::{f64::math, swizzles::*, DMat3, DVec2, Mat2};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
-use core::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
+use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
 /// Creates a 2x2 matrix from two column vectors.
 #[inline(always)]
@@ -277,6 +277,14 @@ impl DMat2 {
         Self::from_cols(self.x_axis.mul(rhs), self.y_axis.mul(rhs))
     }
 
+    /// Divides a 2x2 matrix by a scalar.
+    #[inline]
+    #[must_use]
+    pub fn div_scalar(&self, rhs: f64) -> Self {
+        let rhs = DVec2::splat(rhs);
+        Self::from_cols(self.x_axis.div(rhs), self.y_axis.div(rhs))
+    }
+
     /// Returns true if the absolute difference of all elements between `self` and `rhs`
     /// is less than or equal to `max_abs_diff`.
     ///
@@ -394,6 +402,29 @@ impl MulAssign<f64> for DMat2 {
     #[inline]
     fn mul_assign(&mut self, rhs: f64) {
         *self = self.mul_scalar(rhs);
+    }
+}
+
+impl Div<DMat2> for f64 {
+    type Output = DMat2;
+    #[inline]
+    fn div(self, rhs: DMat2) -> Self::Output {
+        rhs.div_scalar(self)
+    }
+}
+
+impl Div<f64> for DMat2 {
+    type Output = Self;
+    #[inline]
+    fn div(self, rhs: f64) -> Self::Output {
+        self.div_scalar(rhs)
+    }
+}
+
+impl DivAssign<f64> for DMat2 {
+    #[inline]
+    fn div_assign(&mut self, rhs: f64) {
+        *self = self.div_scalar(rhs);
     }
 }
 
