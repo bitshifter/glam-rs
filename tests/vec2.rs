@@ -1171,6 +1171,8 @@ mod vec2 {
         assert_eq!(UVec2::new(1, 2), U64Vec2::new(1, 2).as_uvec2());
         assert_eq!(I64Vec2::new(1, 2), U64Vec2::new(1, 2).as_i64vec2());
     });
+
+    impl_vec2_float_tests!(f32, vec2, Vec2, Vec3, BVec2);
 }
 
 mod dvec2 {
