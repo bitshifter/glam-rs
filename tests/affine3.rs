@@ -309,6 +309,10 @@ macro_rules! impl_affine3_tests {
                 format!("{}", a),
                 "[[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]]"
             );
+            assert_eq!(
+                format!("{:.1}", a),
+                "[[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0], [10.0, 11.0, 12.0]]"
+            );
         });
 
         glam_test!(test_affine3_to_from_slice, {

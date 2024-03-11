@@ -1191,7 +1191,11 @@ impl IndexMut<usize> for DVec2 {
 #[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for DVec2 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "[{}, {}]", self.x, self.y)
+        if let Some(p) = f.precision() {
+            write!(f, "[{:.*}, {:.*}]", p, self.x, p, self.y)
+        } else {
+            write!(f, "[{}, {}]", self.x, self.y)
+        }
     }
 }
 

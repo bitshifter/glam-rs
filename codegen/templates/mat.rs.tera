@@ -2402,13 +2402,23 @@ impl fmt::Debug for {{ self_t }} {
 #[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for {{ self_t }} {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        {% if dim == 2 %}
-            write!(f, "[{}, {}]", self.x_axis, self.y_axis)
-        {% elif dim == 3 %}
-            write!(f, "[{}, {}, {}]", self.x_axis, self.y_axis, self.z_axis)
-        {% elif dim == 4 %}
-            write!(f, "[{}, {}, {}, {}]", self.x_axis, self.y_axis, self.z_axis, self.w_axis)
-        {% endif %}
+        if let Some(p) = f.precision() {
+            {% if dim == 2 %}
+                write!(f, "[{:.*}, {:.*}]", p, self.x_axis, p, self.y_axis)
+            {% elif dim == 3 %}
+                write!(f, "[{:.*}, {:.*}, {:.*}]", p, self.x_axis, p, self.y_axis, p, self.z_axis)
+            {% elif dim == 4 %}
+                write!(f, "[{:.*}, {:.*}, {:.*}, {:.*}]", p, self.x_axis, p, self.y_axis, p, self.z_axis, p, self.w_axis)
+            {% endif %}
+        } else {
+            {% if dim == 2 %}
+                write!(f, "[{}, {}]", self.x_axis, self.y_axis)
+            {% elif dim == 3 %}
+                write!(f, "[{}, {}, {}]", self.x_axis, self.y_axis, self.z_axis)
+            {% elif dim == 4 %}
+                write!(f, "[{}, {}, {}, {}]", self.x_axis, self.y_axis, self.z_axis, self.w_axis)
+            {% endif %}
+        }
     }
 }
 

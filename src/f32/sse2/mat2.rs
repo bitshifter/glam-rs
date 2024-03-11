@@ -562,6 +562,10 @@ impl fmt::Debug for Mat2 {
 #[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Mat2 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "[{}, {}]", self.x_axis, self.y_axis)
+        if let Some(p) = f.precision() {
+            write!(f, "[{:.*}, {:.*}]", p, self.x_axis, p, self.y_axis)
+        } else {
+            write!(f, "[{}, {}]", self.x_axis, self.y_axis)
+        }
     }
 }

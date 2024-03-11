@@ -2958,12 +2958,26 @@ impl IndexMut<usize> for {{ self_t }} {
 #[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for {{ self_t }} {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        {% if dim == 2 %}
-            write!(f, "[{}, {}]", self.x, self.y)
-        {% elif dim == 3 %}
-            write!(f, "[{}, {}, {}]", self.x, self.y, self.z)
-        {% elif dim == 4 %}
-            write!(f, "[{}, {}, {}, {}]", self.x, self.y, self.z, self.w)
+        {% if is_float %}
+        if let Some(p) = f.precision() {
+            {% if dim == 2 %}
+                write!(f, "[{:.*}, {:.*}]", p, self.x, p, self.y)
+            {% elif dim == 3 %}
+                write!(f, "[{:.*}, {:.*}, {:.*}]", p, self.x, p, self.y, p, self.z)
+            {% elif dim == 4 %}
+                write!(f, "[{:.*}, {:.*}, {:.*}, {:.*}]", p, self.x, p, self.y, p, self.z, p, self.w)
+            {% endif %}
+        } else {
+        {% endif %}
+            {% if dim == 2 %}
+                write!(f, "[{}, {}]", self.x, self.y)
+            {% elif dim == 3 %}
+                write!(f, "[{}, {}, {}]", self.x, self.y, self.z)
+            {% elif dim == 4 %}
+                write!(f, "[{}, {}, {}, {}]", self.x, self.y, self.z, self.w)
+            {% endif %}
+        {% if is_float %}
+        }
         {% endif %}
     }
 }

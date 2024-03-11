@@ -484,11 +484,26 @@ impl core::fmt::Debug for DAffine3 {
 #[cfg(not(target_arch = "spirv"))]
 impl core::fmt::Display for DAffine3 {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(
-            f,
-            "[{}, {}, {}, {}]",
-            self.matrix3.x_axis, self.matrix3.y_axis, self.matrix3.z_axis, self.translation
-        )
+        if let Some(p) = f.precision() {
+            write!(
+                f,
+                "[{:.*}, {:.*}, {:.*}, {:.*}]",
+                p,
+                self.matrix3.x_axis,
+                p,
+                self.matrix3.y_axis,
+                p,
+                self.matrix3.z_axis,
+                p,
+                self.translation
+            )
+        } else {
+            write!(
+                f,
+                "[{}, {}, {}, {}]",
+                self.matrix3.x_axis, self.matrix3.y_axis, self.matrix3.z_axis, self.translation
+            )
+        }
     }
 }
 

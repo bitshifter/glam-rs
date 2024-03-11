@@ -920,6 +920,11 @@ macro_rules! impl_vec2_float_tests {
             );
         });
 
+        glam_test!(test_fmt_float, {
+            let a = $vec2::new(1.0, 2.0);
+            assert_eq!(format!("{:.2}", a), "[1.00, 2.00]");
+        });
+
         glam_test!(test_angle_conversion, {
             let angle = 0.;
             let vec = $vec2::from_angle(angle);

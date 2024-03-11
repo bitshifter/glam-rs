@@ -232,6 +232,7 @@ macro_rules! impl_affine2_tests {
         glam_test!(test_affine2_fmt, {
             let a = $affine2::from_cols_array_2d(&MATRIX2D);
             assert_eq!(format!("{}", a), "[[1, 2], [3, 4], [5, 6]]");
+            assert_eq!(format!("{:.1}", a), "[[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]]");
         });
 
         glam_test!(test_affine2_to_from_slice, {
