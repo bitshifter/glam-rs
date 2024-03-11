@@ -955,6 +955,14 @@ macro_rules! impl_vec3_float_tests {
             assert_approx_eq!($vec3::ZERO, v0.lerp(v1, 0.5));
         });
 
+        glam_test!(test_towards, {
+            let v0 = $vec3::new(-1.0, -1.0, -1.0);
+            let v1 = $vec3::new(1.0, 1.0, 1.0);
+            assert_approx_eq!(v0, v0.towards(v1, 0.0));
+            assert_approx_eq!(v1, v0.towards(v1, v0.distance(v1)));
+            assert_approx_eq!(v1, v0.towards(v1, v0.distance(v1) + 1.0));
+        });
+
         glam_test!(test_midpoint, {
             let v0 = $vec3::new(-1.0, -1.0, -1.0);
             let v1 = $vec3::new(1.0, 1.0, 1.0);

@@ -692,6 +692,21 @@ impl Vec3A {
         self + ((rhs - self) * s)
     }
 
+    /// Moves towards `rhs` based on the value `d`.
+    ///
+    /// When `d` is `0.0`, the result will be equal to `self`. When `d` is equal to
+    /// `self.distance(rhs)`, the result will be equal to `rhs`. Will not go past `rhs`.
+    #[inline]
+    #[must_use]
+    pub fn towards(&self, rhs: Self, d: f32) -> Self {
+        let a = rhs - *self;
+        let len = a.length();
+        if len <= d || len <= 1e-4 {
+            return rhs;
+        }
+        *self + a / len * d
+    }
+
     /// Calculates the midpoint between `self` and `rhs`.
     ///
     /// The midpoint is the average of, or halfway point between, two vectors.
