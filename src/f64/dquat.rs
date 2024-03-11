@@ -703,8 +703,16 @@ impl fmt::Debug for DQuat {
 
 #[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for DQuat {
-    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(fmt, "[{}, {}, {}, {}]", self.x, self.y, self.z, self.w)
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if let Some(p) = f.precision() {
+            write!(
+                f,
+                "[{:.*}, {:.*}, {:.*}, {:.*}]",
+                p, self.x, p, self.y, p, self.z, p, self.w
+            )
+        } else {
+            write!(f, "[{}, {}, {}, {}]", self.x, self.y, self.z, self.w)
+        }
     }
 }
 

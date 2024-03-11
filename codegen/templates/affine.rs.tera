@@ -734,15 +734,27 @@ impl core::fmt::Debug for {{ self_t }} {
 #[cfg(not(target_arch = "spirv"))]
 impl core::fmt::Display for {{ self_t }} {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        {% if dim == 2 %}
-            write!(f, "[{}, {}, {}]", self.matrix2.x_axis, self.matrix2.y_axis, self.translation)
-        {% elif dim == 3 %}
-            write!(
-                f,
-                "[{}, {}, {}, {}]",
-                self.matrix3.x_axis, self.matrix3.y_axis, self.matrix3.z_axis, self.translation
-            )
-        {% endif %}
+        if let Some(p) = f.precision() {
+            {% if dim == 2 %}
+                write!(f,
+                       "[{:.*}, {:.*}, {:.*}]",
+                       p, self.matrix2.x_axis, p, self.matrix2.y_axis, p, self.translation)
+            {% elif dim == 3 %}
+                write!(f,
+                       "[{:.*}, {:.*}, {:.*}, {:.*}]",
+                       p, self.matrix3.x_axis, p, self.matrix3.y_axis, p, self.matrix3.z_axis, p, self.translation)
+            {% endif %}
+        } else {
+            {% if dim == 2 %}
+                write!(f, "[{}, {}, {}]", self.matrix2.x_axis, self.matrix2.y_axis, self.translation)
+            {% elif dim == 3 %}
+                write!(
+                    f,
+                    "[{}, {}, {}, {}]",
+                    self.matrix3.x_axis, self.matrix3.y_axis, self.matrix3.z_axis, self.translation
+                )
+            {% endif %}
+        }
     }
 }
 

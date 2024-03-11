@@ -357,11 +357,19 @@ impl core::fmt::Debug for Affine2 {
 #[cfg(not(target_arch = "spirv"))]
 impl core::fmt::Display for Affine2 {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(
-            f,
-            "[{}, {}, {}]",
-            self.matrix2.x_axis, self.matrix2.y_axis, self.translation
-        )
+        if let Some(p) = f.precision() {
+            write!(
+                f,
+                "[{:.*}, {:.*}, {:.*}]",
+                p, self.matrix2.x_axis, p, self.matrix2.y_axis, p, self.translation
+            )
+        } else {
+            write!(
+                f,
+                "[{}, {}, {}]",
+                self.matrix2.x_axis, self.matrix2.y_axis, self.translation
+            )
+        }
     }
 }
 

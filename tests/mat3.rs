@@ -332,6 +332,10 @@ macro_rules! impl_mat3_tests {
         glam_test!(test_mat3_fmt, {
             let a = $mat3::from_cols_array_2d(&MATRIX);
             assert_eq!(format!("{}", a), "[[1, 2, 3], [4, 5, 6], [7, 8, 9]]");
+            assert_eq!(
+                format!("{:.1}", a),
+                "[[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]]"
+            );
         });
 
         glam_test!(test_mat3_to_from_slice, {

@@ -1327,10 +1327,18 @@ impl fmt::Debug for DMat4 {
 #[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for DMat4 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "[{}, {}, {}, {}]",
-            self.x_axis, self.y_axis, self.z_axis, self.w_axis
-        )
+        if let Some(p) = f.precision() {
+            write!(
+                f,
+                "[{:.*}, {:.*}, {:.*}, {:.*}]",
+                p, self.x_axis, p, self.y_axis, p, self.z_axis, p, self.w_axis
+            )
+        } else {
+            write!(
+                f,
+                "[{}, {}, {}, {}]",
+                self.x_axis, self.y_axis, self.z_axis, self.w_axis
+            )
+        }
     }
 }

@@ -1317,7 +1317,11 @@ impl IndexMut<usize> for I64Vec3 {
 #[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for I64Vec3 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "[{}, {}, {}]", self.x, self.y, self.z)
+        if let Some(p) = f.precision() {
+            write!(f, "[{:.*}, {:.*}, {:.*}]", p, self.x, p, self.y, p, self.z)
+        } else {
+            write!(f, "[{}, {}, {}]", self.x, self.y, self.z)
+        }
     }
 }
 

@@ -1168,6 +1168,11 @@ macro_rules! impl_vec4_float_tests {
                 $vec4::new(-0.5, 1.0, -5.0, -1.0)
             );
         });
+
+        glam_test!(test_fmt_float, {
+            let a = $vec4::new(1.0, 2.0, 3.0, 4.0);
+            assert_eq!(format!("{:.2}", a), "[1.00, 2.00, 3.00, 4.00]");
+        });
     };
 }
 

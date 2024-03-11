@@ -193,6 +193,7 @@ macro_rules! impl_mat2_tests {
         glam_test!(test_mat2_fmt, {
             let a = $mat2::from_cols_array_2d(&MATRIX);
             assert_eq!(format!("{}", a), "[[1, 2], [3, 4]]");
+            assert_eq!(format!("{:.2}", a), "[[1.00, 2.00], [3.00, 4.00]]");
         });
 
         glam_test!(test_mat2_to_from_slice, {

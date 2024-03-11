@@ -340,6 +340,7 @@ macro_rules! impl_quat_tests {
             //     "$quat(\n    1.0,\n    2.0,\n    3.0,\n    4.0\n)"
             // );
             assert_eq!(format!("{}", a), "[0, 0, 0, 1]");
+            assert_eq!(format!("{:.2}", a), "[0.00, 0.00, 0.00, 1.00]");
         });
 
         glam_test!(test_identity, {
