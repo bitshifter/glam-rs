@@ -720,7 +720,7 @@ impl Vec3A {
     /// `self.distance(rhs)`, the result will be equal to `rhs`. Will not go past `rhs`.
     #[inline]
     #[must_use]
-    pub fn towards(&self, rhs: Self, d: f32) -> Self {
+    pub fn move_towards(&self, rhs: Self, d: f32) -> Self {
         let a = rhs - *self;
         let len = a.length();
         if len <= d || len <= 1e-4 {

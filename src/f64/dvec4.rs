@@ -755,7 +755,7 @@ impl DVec4 {
     /// `self.distance(rhs)`, the result will be equal to `rhs`. Will not go past `rhs`.
     #[inline]
     #[must_use]
-    pub fn towards(&self, rhs: Self, d: f64) -> Self {
+    pub fn move_towards(&self, rhs: Self, d: f64) -> Self {
         let a = rhs - *self;
         let len = a.length();
         if len <= d || len <= 1e-4 {
