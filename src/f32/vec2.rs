@@ -827,6 +827,24 @@ impl Vec2 {
         }
     }
 
+    /// Rotates towards `rhs` based on the value `d`.
+    ///
+    /// When `d` is `0.0`, the result will be equal to `self`. When `d` is equal to
+    /// `self.angle_between(rhs)`, the result will be equal to `rhs`. If `d` is negative,
+    /// rotates towards the exact opposite of `rhs`. Will not go past the target.
+    #[inline]
+    #[must_use]
+    pub fn rotate_towards(&self, rhs: Self, d: f32) -> Self {
+        let a = self.angle_between(rhs);
+        let abs_a = a.abs();
+        if abs_a <= 1e-4 {
+            return rhs;
+        }
+        // When `d < 0`, rotate no further than `PI` radians away
+        let angle = d.clamp(abs_a - core::f32::consts::PI, abs_a) * a.signum();
+        Self::from_angle(angle).rotate(*self)
+    }
+
     /// Casts all elements of `self` to `f64`.
     #[inline]
     #[must_use]

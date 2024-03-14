@@ -833,6 +833,35 @@ macro_rules! impl_vec2_float_tests {
             assert_approx_eq!(v1, v0.move_towards(v1, v0.distance(v1) + 1.0));
         });
 
+        glam_test!(test_rotate_towards, {
+            use core::$t::consts::{FRAC_PI_2, FRAC_PI_4};
+            let eps = 10.0 * core::$t::EPSILON as f32;
+
+            // Setup such that `v0` is `PI/2` and `-PI/2` radians away from `v1` and `v2` respectively.
+            let v0 = $vec2::new(1.0, 0.0);
+            let v1 = $vec2::new(0.0, -1.0);
+            let v2 = $vec2::new(0.0, 1.0);
+
+            // Positive delta
+            assert_approx_eq!(v0, v0.rotate_towards(v1, 0.0), eps);
+            assert_approx_eq!(
+                $vec2::new($t::sqrt(2.0) / 2.0, -$t::sqrt(2.0) / 2.0),
+                v0.rotate_towards(v1, FRAC_PI_4),
+                eps
+            );
+            assert_approx_eq!(v1, v0.rotate_towards(v1, FRAC_PI_2), eps);
+            assert_approx_eq!(v1, v0.rotate_towards(v1, FRAC_PI_2 * 1.5), eps);
+
+            // Negative delta
+            assert_approx_eq!(
+                $vec2::new($t::sqrt(2.0) / 2.0, $t::sqrt(2.0) / 2.0),
+                v0.rotate_towards(v1, -FRAC_PI_4),
+                eps
+            );
+            assert_approx_eq!(v2, v0.rotate_towards(v1, -FRAC_PI_2), eps);
+            assert_approx_eq!(v2, v0.rotate_towards(v1, -FRAC_PI_2 * 1.5), eps);
+        });
+
         glam_test!(test_midpoint, {
             let v0 = $vec2::new(-1.0, -1.0);
             let v1 = $vec2::new(1.0, 1.0);
