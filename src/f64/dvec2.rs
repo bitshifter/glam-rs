@@ -836,12 +836,12 @@ impl DVec2 {
     #[must_use]
     pub fn rotate_towards(&self, rhs: Self, d: f64) -> Self {
         let a = self.angle_between(rhs);
-        let abs_a = a.abs();
+        let abs_a = math::abs(a);
         if abs_a <= 1e-4 {
             return rhs;
         }
         // When `d < 0`, rotate no further than `PI` radians away
-        let angle = d.clamp(abs_a - core::f64::consts::PI, abs_a) * a.signum();
+        let angle = d.clamp(abs_a - core::f64::consts::PI, abs_a) * math::signum(a);
         Self::from_angle(angle).rotate(*self)
     }
 
