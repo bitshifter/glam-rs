@@ -152,6 +152,13 @@ macro_rules! impl_vec4_tests {
             assert_eq!($vec4::ONE, v);
         });
 
+        glam_test!(test_with, {
+            assert_eq!($vec4::X, $vec4::ZERO.with_x(1 as $t));
+            assert_eq!($vec4::Y, $vec4::ZERO.with_y(1 as $t));
+            assert_eq!($vec4::Z, $vec4::ZERO.with_z(1 as $t));
+            assert_eq!($vec4::W, $vec4::ZERO.with_w(1 as $t));
+        });
+
         glam_test!(test_accessors, {
             let mut a = $vec4::ZERO;
             a.x = 1 as $t;

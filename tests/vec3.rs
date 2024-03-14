@@ -110,6 +110,12 @@ macro_rules! impl_vec3_tests {
             assert_eq!($vec3::ONE, v);
         });
 
+        glam_test!(test_with, {
+            assert_eq!($vec3::X, $vec3::ZERO.with_x(1 as $t));
+            assert_eq!($vec3::Y, $vec3::ZERO.with_y(1 as $t));
+            assert_eq!($vec3::Z, $vec3::ZERO.with_z(1 as $t));
+        });
+
         glam_test!(test_accessors, {
             let mut a = $vec3::ZERO;
             a.x = 1 as $t;

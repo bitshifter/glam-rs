@@ -135,6 +135,22 @@ impl DVec2 {
         DVec3::new(self.x, self.y, z)
     }
 
+    /// Creates a 2D vector from `self` with the given value of `x`.
+    #[inline]
+    #[must_use]
+    pub fn with_x(mut self, x: f64) -> Self {
+        self.x = x;
+        self
+    }
+
+    /// Creates a 2D vector from `self` with the given value of `y`.
+    #[inline]
+    #[must_use]
+    pub fn with_y(mut self, y: f64) -> Self {
+        self.y = y;
+        self
+    }
+
     /// Computes the dot product of `self` and `rhs`.
     #[inline]
     #[must_use]

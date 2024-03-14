@@ -118,6 +118,22 @@ impl U16Vec2 {
         U16Vec3::new(self.x, self.y, z)
     }
 
+    /// Creates a 2D vector from `self` with the given value of `x`.
+    #[inline]
+    #[must_use]
+    pub fn with_x(mut self, x: u16) -> Self {
+        self.x = x;
+        self
+    }
+
+    /// Creates a 2D vector from `self` with the given value of `y`.
+    #[inline]
+    #[must_use]
+    pub fn with_y(mut self, y: u16) -> Self {
+        self.y = y;
+        self
+    }
+
     /// Computes the dot product of `self` and `rhs`.
     #[inline]
     #[must_use]

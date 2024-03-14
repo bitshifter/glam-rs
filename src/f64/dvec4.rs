@@ -166,6 +166,38 @@ impl DVec4 {
         self.xyz()
     }
 
+    /// Creates a 4D vector from `self` with the given value of `x`.
+    #[inline]
+    #[must_use]
+    pub fn with_x(mut self, x: f64) -> Self {
+        self.x = x;
+        self
+    }
+
+    /// Creates a 4D vector from `self` with the given value of `y`.
+    #[inline]
+    #[must_use]
+    pub fn with_y(mut self, y: f64) -> Self {
+        self.y = y;
+        self
+    }
+
+    /// Creates a 4D vector from `self` with the given value of `z`.
+    #[inline]
+    #[must_use]
+    pub fn with_z(mut self, z: f64) -> Self {
+        self.z = z;
+        self
+    }
+
+    /// Creates a 4D vector from `self` with the given value of `w`.
+    #[inline]
+    #[must_use]
+    pub fn with_w(mut self, w: f64) -> Self {
+        self.w = w;
+        self
+    }
+
     /// Computes the dot product of `self` and `rhs`.
     #[inline]
     #[must_use]
