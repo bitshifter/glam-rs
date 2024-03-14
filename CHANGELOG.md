@@ -23,7 +23,10 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ### Added
 
- * Added `midpoint` method to vector types that returns the point between two
+ * Added `with_x()`, `with_y()`, etc. to vector types which returns a copy of
+   the vector with the new component value.
+
+ * Added `midpoint()` method to vector types that returns the point between two
    points.
 
  * Added saturating add and sub methods for signed and unsigned integer vector
@@ -33,9 +36,9 @@ The format is based on [Keep a Changelog], and this project adheres to
 
  * Added element wise absolute values method for matrix types.
 
- * Added `from_array` method for boolean vector types.
+ * Added `from_array()` method for boolean vector types.
 
- * Added `normalize_or` method to vector types that returns the specified value
+ * Added `normalize_or()` method to vector types that returns the specified value
    if normalization failed.
 
  * Added `From<BVecN>` support for all vector types.

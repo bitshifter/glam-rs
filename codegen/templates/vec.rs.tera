@@ -532,6 +532,17 @@ impl {{ self_t }} {
     }
 {% endif %}
 
+
+{% for c in components %}
+    /// Creates a {{ dim }}D vector from `self` with the given value of `{{ c }}`.
+    #[inline]
+    #[must_use]
+    pub fn with_{{ c }}(mut self, {{ c }}: {{ scalar_t }}) -> Self {
+        self.{{ c }} = {{ c }};
+        self
+    }
+{% endfor %}
+
     /// Computes the dot product of `self` and `rhs`.
     #[inline]
     #[must_use]
