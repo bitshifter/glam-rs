@@ -270,7 +270,7 @@ impl Mat4A {
             self.z_axis.mul(inv_scale.z).xyz(),
         );
 
-        let translation = self.w_axis.truncate();
+        let translation = self.w_axis.truncate().into();
 
         (scale, rotation, translation)
     }
@@ -986,7 +986,7 @@ impl Mat4A {
         res = self.z_axis.mul(rhs.z).add(res);
         res = self.w_axis.add(res);
         res = res.mul(res.wwww().recip());
-        res.truncate()
+        res.truncate().into()
     }
 
     /// Transforms the given 3D vector as a point.
@@ -1009,7 +1009,7 @@ impl Mat4A {
         res = self.y_axis.mul(rhs.y).add(res);
         res = self.z_axis.mul(rhs.z).add(res);
         res = self.w_axis.add(res);
-        res.truncate()
+        res.truncate().into()
     }
 
     /// Transforms the give 3D vector as a direction.
@@ -1029,7 +1029,7 @@ impl Mat4A {
         let mut res = self.x_axis.mul(rhs.x);
         res = self.y_axis.mul(rhs.y).add(res);
         res = self.z_axis.mul(rhs.z).add(res);
-        res.truncate()
+        res.truncate().into()
     }
 
     /// Transforms the given [`Vec3A`] as 3D point.

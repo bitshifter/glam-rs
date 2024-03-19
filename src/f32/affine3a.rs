@@ -1,6 +1,6 @@
 // Generated from affine.rs.tera template. Edit the template, not the generated file.
 
-use crate::{Mat3, Mat3A, Mat4, Quat, Vec3, Vec3A};
+use crate::{Mat3, Mat3A, Mat4, Mat4A, Quat, Vec3, Vec3A};
 use core::ops::{Deref, DerefMut, Mul, MulAssign};
 
 /// A 3D affine transform, which can represent translation, rotation, scaling and shear.
@@ -266,6 +266,21 @@ impl Affine3A {
                 Vec3A::from_vec4(m.z_axis),
             ),
             translation: Vec3A::from_vec4(m.w_axis),
+        }
+    }
+
+    /// The given `Mat4A` must be an affine transform,
+    /// i.e. contain no perspective transform.
+    #[inline]
+    #[must_use]
+    pub fn from_mat4a(m: Mat4A) -> Self {
+        Self {
+            matrix3: Mat3A::from_cols(
+                Vec3A::from(m.x_axis),
+                Vec3A::from(m.y_axis),
+                Vec3A::from(m.z_axis),
+            ),
+            translation: Vec3A::from(m.w_axis),
         }
     }
 
@@ -550,14 +565,26 @@ impl MulAssign for Affine3A {
     }
 }
 
-impl From<Affine3A> for Mat4 {
+impl From<Affine3A> for Mat4A {
     #[inline]
-    fn from(m: Affine3A) -> Mat4 {
-        Mat4::from_cols(
+    fn from(m: Affine3A) -> Self {
+        Self::from_cols(
             m.matrix3.x_axis.extend(0.0),
             m.matrix3.y_axis.extend(0.0),
             m.matrix3.z_axis.extend(0.0),
             m.translation.extend(1.0),
+        )
+    }
+}
+
+impl From<Affine3A> for Mat4 {
+    #[inline]
+    fn from(m: Affine3A) -> Self {
+        Self::from_cols(
+            m.matrix3.x_axis.extend(0.0).into(),
+            m.matrix3.y_axis.extend(0.0).into(),
+            m.matrix3.z_axis.extend(0.0).into(),
+            m.translation.extend(1.0).into(),
         )
     }
 }

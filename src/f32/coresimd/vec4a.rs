@@ -152,8 +152,8 @@ impl Vec4A {
     /// To truncate to [`Vec3A`] use [`Vec3A::from()`].
     #[inline]
     #[must_use]
-    pub fn truncate(self) -> Vec3 {
-        Vec3::new(self.x, self.y, self.z)
+    pub fn truncate(self) -> Vec3A {
+        Vec3A::from(self)
     }
 
     /// Creates a 4D vector from `self` with the given value of `x`.

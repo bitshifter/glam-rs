@@ -27,6 +27,8 @@
         {% if is_align %}
             {% set self_t = "Vec" ~ dim ~ "A" %}
             {% set mask_t = "BVec" ~ dim ~ "A" %}
+            {% set vec3a_t = "Vec3A" %}
+            {% set vec4a_t = "Vec4A" %}
         {% else %}
             {% set self_t = "Vec" ~ dim %}
         {% endif %}
@@ -493,9 +495,15 @@ impl {{ self_t }} {
     /// Creates a 4D vector from `self` and the given `w` value.
     #[inline]
     #[must_use]
+    {%- if vec4a_t %}
+    pub fn extend(self, w: {{ scalar_t }}) -> {{ vec4a_t }} {
+        {{ vec4a_t }}::from((self, w))
+    }
+    {% else %}
     pub fn extend(self, w: {{ scalar_t }}) -> {{ vec4_t }} {
         {{ vec4_t }}::new(self.x, self.y, self.z, w)
     }
+    {% endif %}
 
     /// Creates a 2D vector from the `x` and `y` elements of `self`, discarding `z`.
     ///
@@ -516,9 +524,15 @@ impl {{ self_t }} {
 {%- endif %}
     #[inline]
     #[must_use]
+{%- if vec3a_t %}
+    pub fn truncate(self) -> {{ vec3a_t }} {
+        {{ vec3a_t }}::from(self)
+    }
+{%- else %}
     pub fn truncate(self) -> {{ vec3_t }} {
         {{ vec3_t }}::new(self.x, self.y, self.z)
     }
+{% endif %}
 {% endif %}
 
 
