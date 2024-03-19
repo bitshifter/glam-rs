@@ -39,7 +39,7 @@ use crate::{
 {% if self_t == "Affine2" %}
     Mat3A, Vec3A,
 {% elif self_t == "Affine3A" %}
-    Vec3, Mat3,
+    Vec3, Mat3, Mat4A,
 {% endif %}
 {% if dim == 2 %}
     {{ mat_t }}, {{ col_t }}, {{ mat3_t }},
@@ -499,6 +499,23 @@ impl {{ self_t }} {
         }
     }
 
+{% if scalar_t == "f32" %}
+    /// The given `Mat4A` must be an affine transform,
+    /// i.e. contain no perspective transform.
+    #[inline]
+    #[must_use]
+    pub fn from_mat4a(m: Mat4A) -> Self {
+        Self {
+            matrix3: {{ mat_t }}::from_cols(
+                {{ col_t }}::from(m.x_axis),
+                {{ col_t }}::from(m.y_axis),
+                {{ col_t }}::from(m.z_axis),
+            ),
+            translation: {{ col_t }}::from(m.w_axis),
+        }
+    }
+{% endif %}
+
     /// Extracts `scale`, `rotation` and `translation` from `self`.
     ///
     /// The transform is expected to be non-degenerate and without shearing, or the output
@@ -816,14 +833,29 @@ impl Mul<{{ self_t }}> for {{ mat3_t }} {
     }
 }
 {% elif dim == 3 %}
-impl From<{{ self_t }}> for {{ mat4_t }} {
+
+{% if scalar_t == "f32" %}
+impl From<{{ self_t }}> for Mat4A {
     #[inline]
-    fn from(m: {{ self_t }}) -> {{ mat4_t }} {
-        {{ mat4_t }}::from_cols(
+    fn from(m: {{ self_t }}) -> Self {
+        Self::from_cols(
             m.matrix3.x_axis.extend(0.0),
             m.matrix3.y_axis.extend(0.0),
             m.matrix3.z_axis.extend(0.0),
             m.translation.extend(1.0),
+        )
+    }
+}
+{% endif %}
+
+impl From<{{ self_t }}> for {{ mat4_t }} {
+    #[inline]
+    fn from(m: {{ self_t }}) -> Self {
+        Self::from_cols(
+            m.matrix3.x_axis.extend(0.0).into(),
+            m.matrix3.y_axis.extend(0.0).into(),
+            m.matrix3.z_axis.extend(0.0).into(),
+            m.translation.extend(1.0).into(),
         )
     }
 }

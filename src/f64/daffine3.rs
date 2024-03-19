@@ -537,12 +537,12 @@ impl MulAssign for DAffine3 {
 
 impl From<DAffine3> for DMat4 {
     #[inline]
-    fn from(m: DAffine3) -> DMat4 {
-        DMat4::from_cols(
-            m.matrix3.x_axis.extend(0.0),
-            m.matrix3.y_axis.extend(0.0),
-            m.matrix3.z_axis.extend(0.0),
-            m.translation.extend(1.0),
+    fn from(m: DAffine3) -> Self {
+        Self::from_cols(
+            m.matrix3.x_axis.extend(0.0).into(),
+            m.matrix3.y_axis.extend(0.0).into(),
+            m.matrix3.z_axis.extend(0.0).into(),
+            m.translation.extend(1.0).into(),
         )
     }
 }
