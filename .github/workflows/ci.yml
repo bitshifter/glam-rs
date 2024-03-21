@@ -8,10 +8,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          components: rustfmt, clippy
+      - run: rustup update --no-self-update stable
+      - run: rustup default stable
 
       # make sure all code has been formatted with rustfmt and linted with clippy
       - name: rustfmt
