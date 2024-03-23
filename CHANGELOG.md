@@ -13,6 +13,11 @@ The format is based on [Keep a Changelog], and this project adheres to
   implementation instead of the GLSL implementation, that is `self -
   self.trunc()` instead of `self - self.floor()`.
 
+### Added
+
+* Added vector `fract_gl` which uses the GLSL specification of fract,
+ `self - self.floor()`.
+
 ## [0.26.0] - 2024-03-18
 
 ### Breaking changes

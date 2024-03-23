@@ -1030,6 +1030,18 @@ macro_rules! impl_vec4_float_tests {
             );
         });
 
+        glam_test!(test_fract_gl, {
+            assert_approx_eq!(
+                $vec4::new(1.35, 1.5, -1.5, 1.999).fract_gl(),
+                $vec4::new(0.35, 0.5, 0.5, 0.999)
+            );
+            assert_approx_eq!(
+                $vec4::new(-0.0, -200000.123, 1000000.123, 1000.9).fract_gl(),
+                $vec4::new(0.0, 0.877, 0.123, 0.9),
+                0.002
+            );
+        });
+
         glam_test!(test_fract, {
             assert_approx_eq!(
                 $vec4::new(1.35, 1.5, -1.5, 1.999).fract(),
