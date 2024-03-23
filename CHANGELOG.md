@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [0.27.0] - 2024-03-23
+
+### Breaking changes
+
+* Changed implementation of vector `fract` method to match the Rust
+  implementation instead of the GLSL implementation, that is `self -
+  self.trunc()` instead of `self - self.floor()`.
+
 ## [0.26.0] - 2024-03-18
 
 ### Breaking changes
@@ -1043,7 +1051,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.26.0...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.27.0...HEAD
+[0.27.0]: https://github.com/bitshifter/glam-rs/compare/0.26.0...0.27.0
 [0.26.0]: https://github.com/bitshifter/glam-rs/compare/0.25.0...0.26.0
 [0.25.0]: https://github.com/bitshifter/glam-rs/compare/0.24.2...0.25.0
 [0.24.2]: https://github.com/bitshifter/glam-rs/compare/0.24.1...0.24.2
