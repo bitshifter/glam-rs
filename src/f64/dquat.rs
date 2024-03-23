@@ -539,6 +539,29 @@ impl DQuat {
         math::acos_approx(math::abs(self.dot(rhs))) * 2.0
     }
 
+    /// Rotates towards `rhs` based on the value `d`.
+    ///
+    /// When `d` is `0.0`, the result will be equal to `self`. When `d` is equal to
+    /// `self.angle_between(rhs)`, the result will be equal to `rhs`. If `d` is negative,
+    /// rotates towards the exact opposite of `rhs`. Will not go past the target.
+    ///
+    /// Both quaternions must be normalized.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `self` or `rhs` are not normalized when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn rotate_towards(&self, rhs: Self, d: f64) -> Self {
+        glam_assert!(self.is_normalized() && rhs.is_normalized());
+        let angle = self.angle_between(rhs);
+        if angle <= 1e-4 {
+            return *self;
+        }
+        let s = (d / angle).clamp(-1.0, 1.0);
+        self.slerp(rhs, s)
+    }
+
     /// Returns true if the absolute difference of all elements between `self` and `rhs`
     /// is less than or equal to `max_abs_diff`.
     ///
