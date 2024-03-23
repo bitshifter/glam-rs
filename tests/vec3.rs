@@ -912,11 +912,11 @@ macro_rules! impl_vec3_float_tests {
         glam_test!(test_fract, {
             assert_approx_eq!(
                 $vec3::new(1.35, 1.5, -1.5).fract(),
-                $vec3::new(0.35, 0.5, 0.5)
+                $vec3::new(0.35, 0.5, -0.5)
             );
             assert_approx_eq!(
                 $vec3::new(-200000.123, 1000000.123, 1000.9).fract(),
-                $vec3::new(0.877, 0.123, 0.9),
+                $vec3::new(-0.123, 0.123, 0.9),
                 0.002
             );
         });

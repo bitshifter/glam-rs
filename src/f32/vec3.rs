@@ -678,13 +678,15 @@ impl Vec3 {
     }
 
     /// Returns a vector containing the fractional part of the vector, e.g. `self -
-    /// self.floor()`.
+    /// self.trunc()`.
+    ///
+    /// Note that this differs from the GLSL specification which uses `self - self.floor()`.
     ///
     /// Note that this is fast but not precise for large numbers.
     #[inline]
     #[must_use]
     pub fn fract(self) -> Self {
-        self - self.floor()
+        self - self.trunc()
     }
 
     /// Returns a vector containing `e^self` (the exponential function) for each element of
