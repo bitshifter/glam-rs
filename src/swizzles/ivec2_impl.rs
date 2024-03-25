@@ -46,81 +46,49 @@ impl Vec2Swizzles for IVec2 {
     #[inline]
     #[must_use]
     fn xxx(self) -> IVec3 {
-        IVec3 {
-            x: self.x,
-            y: self.x,
-            z: self.x,
-        }
+        IVec3::new(self.x, self.x, self.x)
     }
 
     #[inline]
     #[must_use]
     fn xxy(self) -> IVec3 {
-        IVec3 {
-            x: self.x,
-            y: self.x,
-            z: self.y,
-        }
+        IVec3::new(self.x, self.x, self.y)
     }
 
     #[inline]
     #[must_use]
     fn xyx(self) -> IVec3 {
-        IVec3 {
-            x: self.x,
-            y: self.y,
-            z: self.x,
-        }
+        IVec3::new(self.x, self.y, self.x)
     }
 
     #[inline]
     #[must_use]
     fn xyy(self) -> IVec3 {
-        IVec3 {
-            x: self.x,
-            y: self.y,
-            z: self.y,
-        }
+        IVec3::new(self.x, self.y, self.y)
     }
 
     #[inline]
     #[must_use]
     fn yxx(self) -> IVec3 {
-        IVec3 {
-            x: self.y,
-            y: self.x,
-            z: self.x,
-        }
+        IVec3::new(self.y, self.x, self.x)
     }
 
     #[inline]
     #[must_use]
     fn yxy(self) -> IVec3 {
-        IVec3 {
-            x: self.y,
-            y: self.x,
-            z: self.y,
-        }
+        IVec3::new(self.y, self.x, self.y)
     }
 
     #[inline]
     #[must_use]
     fn yyx(self) -> IVec3 {
-        IVec3 {
-            x: self.y,
-            y: self.y,
-            z: self.x,
-        }
+        IVec3::new(self.y, self.y, self.x)
     }
 
     #[inline]
     #[must_use]
     fn yyy(self) -> IVec3 {
-        IVec3 {
-            x: self.y,
-            y: self.y,
-            z: self.y,
-        }
+        IVec3::new(self.y, self.y, self.y)
     }
 
     #[inline]

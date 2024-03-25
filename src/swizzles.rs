@@ -32,12 +32,19 @@ mod vec3_impl;
 #[cfg(any(
     not(any(
         feature = "core-simd",
+        target_arch = "aarch64",
         target_feature = "sse2",
         target_feature = "simd128"
     )),
     feature = "scalar-math"
 ))]
 mod scalar;
+
+#[cfg(all(
+    target_arch = "aarch64",
+    not(any(feature = "core-simd", feature = "scalar-math"))
+))]
+mod neon;
 
 #[cfg(all(
     target_feature = "sse2",

@@ -4,14 +4,20 @@
 use core::fmt;
 use core::ops::*;
 
-use core::arch::wasm32::*;
+use core::arch::aarch64::*;
+
+#[repr(C)]
+union UnionCast {
+    a: [u32; 4],
+    v: BVec3A,
+}
 
 /// A 3-dimensional SIMD vector mask.
 ///
 /// This type is 16 byte aligned.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
-pub struct BVec3A(pub(crate) v128);
+pub struct BVec3A(pub(crate) uint32x4_t);
 
 const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
 
@@ -26,12 +32,12 @@ impl BVec3A {
     #[inline(always)]
     #[must_use]
     pub const fn new(x: bool, y: bool, z: bool) -> Self {
-        Self(u32x4(
-            MASK[x as usize],
-            MASK[y as usize],
-            MASK[z as usize],
-            0,
-        ))
+        unsafe {
+            UnionCast {
+                a: [MASK[x as usize], MASK[y as usize], MASK[z as usize], 0],
+            }
+            .v
+        }
     }
 
     /// Creates a vector mask with all elements set to `v`.
@@ -55,7 +61,16 @@ impl BVec3A {
     #[inline]
     #[must_use]
     pub fn bitmask(self) -> u32 {
-        (u32x4_bitmask(self.0) & 0x7) as u32
+        let movemask = unsafe {
+            let mma = vandq_u32(self.0, vld1q_u32([1, 2, 4, 8].as_ptr())); // [0 1 2 3]
+            let mmb = vextq_u32(mma, mma, 2); // [2 3 0 1]
+            let mmc = vorrq_u32(mma, mmb); // [0+2 1+3 0+2 1+3]
+            let mmd = vextq_u32(mmc, mmc, 3); // [1+3 0+2 1+3 0+2]
+            let mme = vorrq_u32(mmc, mmd); // [0+1+2+3 ...]
+            vgetq_lane_u32(mme, 0)
+        };
+
+        movemask & 0x7
     }
 
     /// Returns true if any of the elements are true, false otherwise.
@@ -91,10 +106,12 @@ impl BVec3A {
     /// Panics if `index` is greater than 2.
     #[inline]
     pub fn set(&mut self, index: usize, value: bool) {
-        use crate::Vec3A;
-        let mut v = Vec3A(self.0);
-        v[index] = f32::from_bits(MASK[value as usize]);
-        self.0 = v.0;
+        self.0 = match index {
+            0 => unsafe { vsetq_lane_u32(MASK[value as usize], self.0, 0) },
+            1 => unsafe { vsetq_lane_u32(MASK[value as usize], self.0, 1) },
+            2 => unsafe { vsetq_lane_u32(MASK[value as usize], self.0, 2) },
+            _ => panic!("index out of bounds"),
+        }
     }
 
     #[inline]
@@ -143,7 +160,7 @@ impl BitAnd for BVec3A {
     type Output = Self;
     #[inline]
     fn bitand(self, rhs: Self) -> Self {
-        Self(v128_and(self.0, rhs.0))
+        Self(unsafe { vandq_u32(self.0, rhs.0) })
     }
 }
 
@@ -158,7 +175,7 @@ impl BitOr for BVec3A {
     type Output = Self;
     #[inline]
     fn bitor(self, rhs: Self) -> Self {
-        Self(v128_or(self.0, rhs.0))
+        Self(unsafe { vorrq_u32(self.0, rhs.0) })
     }
 }
 
@@ -173,7 +190,7 @@ impl BitXor for BVec3A {
     type Output = Self;
     #[inline]
     fn bitxor(self, rhs: Self) -> Self {
-        Self(v128_xor(self.0, rhs.0))
+        Self(unsafe { veorq_u32(self.0, rhs.0) })
     }
 }
 
@@ -188,11 +205,11 @@ impl Not for BVec3A {
     type Output = Self;
     #[inline]
     fn not(self) -> Self {
-        Self(v128_not(self.0))
+        Self(unsafe { vmvnq_u32(self.0) })
     }
 }
 
-impl From<BVec3A> for v128 {
+impl From<BVec3A> for uint32x4_t {
     #[inline]
     fn from(t: BVec3A) -> Self {
         t.0

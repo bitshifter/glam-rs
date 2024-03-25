@@ -402,24 +402,17 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn signum(self) -> Self {
-        unsafe {
-            let result = Self(_mm_or_ps(_mm_and_ps(self.0, Self::NEG_ONE.0), Self::ONE.0));
-            let mask = self.is_nan_mask();
-            Self::select(mask, self, result)
-        }
+        let result = Self(unsafe { _mm_or_ps(_mm_and_ps(self.0, Self::NEG_ONE.0), Self::ONE.0) });
+        let mask = self.is_nan_mask();
+        Self::select(mask, self, result)
     }
 
     /// Returns a vector with signs of `rhs` and the magnitudes of `self`.
     #[inline]
     #[must_use]
     pub fn copysign(self, rhs: Self) -> Self {
-        unsafe {
-            let mask = Self::splat(-0.0);
-            Self(_mm_or_ps(
-                _mm_and_ps(rhs.0, mask.0),
-                _mm_andnot_ps(mask.0, self.0),
-            ))
-        }
+        let mask = Self::splat(-0.0);
+        Self(unsafe { _mm_or_ps(_mm_and_ps(rhs.0, mask.0), _mm_andnot_ps(mask.0, self.0)) })
     }
 
     /// Returns a bitmask with the lowest 3 bits set to the sign bits from the elements of `self`.
@@ -1300,14 +1293,14 @@ impl fmt::Debug for Vec3A {
 }
 
 impl From<Vec3A> for __m128 {
-    #[inline]
+    #[inline(always)]
     fn from(t: Vec3A) -> Self {
         t.0
     }
 }
 
 impl From<__m128> for Vec3A {
-    #[inline]
+    #[inline(always)]
     fn from(t: __m128) -> Self {
         Self(t)
     }
