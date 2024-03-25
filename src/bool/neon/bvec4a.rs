@@ -112,10 +112,13 @@ impl BVec4A {
     /// Panics if `index` is greater than 3.
     #[inline]
     pub fn set(&mut self, index: usize, value: bool) {
-        use crate::Vec4;
-        let mut v = Vec4(self.0);
-        v[index] = f32::from_bits(MASK[value as usize]);
-        *self = Self(v.0);
+        self.0 = match index {
+            0 => unsafe { vsetq_lane_u32(MASK[value as usize], self.0, 0) },
+            1 => unsafe { vsetq_lane_u32(MASK[value as usize], self.0, 1) },
+            2 => unsafe { vsetq_lane_u32(MASK[value as usize], self.0, 2) },
+            3 => unsafe { vsetq_lane_u32(MASK[value as usize], self.0, 3) },
+            _ => panic!("index out of bounds"),
+        }
     }
 
     #[inline]

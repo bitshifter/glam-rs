@@ -823,7 +823,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn element_sum(self) -> {{ scalar_t }} {
-        {% if is_scalar %}
+        {% if is_scalar or is_neon %}
             {% for c in components %}
                 self.{{ c }} {% if not loop.last %} + {% endif %}
             {%- endfor %}
@@ -861,6 +861,8 @@ impl {{ self_t }} {
             {% elif dim == 4 %}
                 self.0.reduce_sum()
             {% endif %}
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 
@@ -870,7 +872,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn element_product(self) -> {{ scalar_t }} {
-        {% if is_scalar %}
+        {% if is_scalar or is_neon %}
             {% for c in components %}
                 self.{{ c }} {% if not loop.last %} * {% endif %}
             {%- endfor %}
@@ -908,6 +910,8 @@ impl {{ self_t }} {
             {% elif dim == 4 %}
                 self.0.reduce_product()
             {% endif %}
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 
@@ -1653,6 +1657,10 @@ impl {{ self_t }} {
             Self(f32x4_trunc(self.0))
         {% elif is_coresimd %}
             Self(self.0.trunc())
+        {% elif is_neon %}
+            Self(unsafe { vrndq_f32(self.0) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 

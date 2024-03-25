@@ -272,14 +272,18 @@ impl Vec3A {
     /// In other words, this computes `self.x + self.y + ..`.
     #[inline]
     #[must_use]
-    pub fn element_sum(self) -> f32 {}
+    pub fn element_sum(self) -> f32 {
+        self.x + self.y + self.z
+    }
 
     /// Returns the product of all elements of `self`.
     ///
     /// In other words, this computes `self.x * self.y * ..`.
     #[inline]
     #[must_use]
-    pub fn element_product(self) -> f32 {}
+    pub fn element_product(self) -> f32 {
+        self.x * self.y * self.z
+    }
 
     /// Returns a vector mask containing the result of a `==` comparison for each element of
     /// `self` and `rhs`.
@@ -664,7 +668,9 @@ impl Vec3A {
     /// always truncated towards zero.
     #[inline]
     #[must_use]
-    pub fn trunc(self) -> Self {}
+    pub fn trunc(self) -> Self {
+        Self(unsafe { vrndq_f32(self.0) })
+    }
 
     /// Returns a vector containing the fractional part of the vector as `self - self.trunc()`.
     ///

@@ -94,7 +94,7 @@ impl BVec3A {
         use crate::Vec3A;
         let mut v = Vec3A(self.0);
         v[index] = f32::from_bits(MASK[value as usize]);
-        *self = Self(v.0);
+        self.0 = v.0;
     }
 
     #[inline]
