@@ -96,6 +96,10 @@ name = "quat"
 harness = false
 
 [[bench]]
+name = "support"
+bench = false
+
+[[bench]]
 name = "vec2"
 harness = false
 
