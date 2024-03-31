@@ -139,7 +139,6 @@ bench_binop!(
     from2 => random_vec3a
 );
 
-
 bench_select!(
     vec3a_select,
     "vec3a select",
