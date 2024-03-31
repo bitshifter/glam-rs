@@ -153,6 +153,22 @@ bench_binop!(
     from2 => random_vec3
 );
 
+bench_binop!(
+    vec3_cross,
+    "vec3 cross",
+    op => cross,
+    from1 => random_vec3,
+    from2 => random_vec3
+);
+
+bench_binop!(
+    vec3_dot,
+    "vec3 dot",
+    op => dot,
+    from1 => random_vec3,
+    from2 => random_vec3
+);
+
 bench_select!(
     vec3_select,
     "vec3 select",
@@ -163,15 +179,17 @@ bench_select!(
 
 criterion_group!(
     benches,
-    vec3_mul_vec3,
     vec3_angle_between,
+    vec3_any_orthogonal_vector_bench,
+    vec3_any_orthonormal_pair_bench,
+    vec3_any_orthonormal_vector_bench,
+    vec3_cross,
+    vec3_dot,
+    vec3_euler,
+    vec3_mul_vec3,
     vec3_normalize_bench,
     vec3_normalize_or_bench,
     vec3_normalize_or_zero_bench,
-    vec3_any_orthogonal_vector_bench,
-    vec3_any_orthonormal_vector_bench,
-    vec3_any_orthonormal_pair_bench,
-    vec3_euler,
     vec3_select,
     vec3_to_array_fields,
     vec3_to_array_into,
