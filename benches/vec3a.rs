@@ -139,6 +139,13 @@ bench_binop!(
     from2 => random_vec3a
 );
 
+bench_unop!(
+    vec3a_length,
+    "vec3a length",
+    op => length,
+    from => random_vec3a
+);
+
 bench_select!(
     vec3a_select,
     "vec3a select",
@@ -155,6 +162,7 @@ criterion_group!(
     vec3a_angle_between,
     vec3a_cross,
     vec3a_dot,
+    vec3a_length,
     vec3a_euler,
     vec3a_mul_vec3a,
     vec3a_select,

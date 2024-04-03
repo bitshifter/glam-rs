@@ -169,6 +169,13 @@ bench_binop!(
     from2 => random_vec3
 );
 
+bench_unop!(
+    vec3_length,
+    "vec3 length",
+    op => length,
+    from => random_vec3
+);
+
 bench_select!(
     vec3_select,
     "vec3 select",
@@ -186,6 +193,7 @@ criterion_group!(
     vec3_cross,
     vec3_dot,
     vec3_euler,
+    vec3_length,
     vec3_mul_vec3,
     vec3_normalize_bench,
     vec3_normalize_or_bench,
