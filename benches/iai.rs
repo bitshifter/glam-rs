@@ -1,7 +1,8 @@
+#![allow(clippy::all)]
 use core::hint::black_box;
 use iai;
 
-use glam::{BVec3A, BVec4A, Mat4, Quat, Vec3A, Vec4};
+use glam::{BVec3A, Mat4, Quat, Vec3A, Vec4};
 
 #[inline]
 fn mat4() -> Mat4 {
@@ -85,9 +86,9 @@ fn iai_bench_vec4_normalize() -> Vec4 {
     black_box(vec4()).normalize()
 }
 
-fn iai_bench_vec4_select() -> Vec4 {
-    Vec4::select(black_box(BVec4A::TRUE), Vec4::ONE, Vec4::ZERO)
-}
+// fn iai_bench_vec4_select() -> Vec4 {
+//     Vec4::select(black_box(BVec4A::TRUE), Vec4::ONE, Vec4::ZERO)
+// }
 
 iai::main!(
     iai_bench_mat4_determinant,
@@ -105,5 +106,5 @@ iai::main!(
     iai_bench_vec4_dot,
     iai_bench_vec4_length,
     iai_bench_vec4_normalize,
-    iai_bench_vec4_select,
+    // iai_bench_vec4_select,
 );
