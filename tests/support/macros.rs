@@ -30,7 +30,7 @@ macro_rules! assert_approx_eq {
     ($a:expr, $b:expr) => {{
         #[allow(unused_imports)]
         use $crate::support::FloatCompare;
-        let eps = core::f32::EPSILON;
+        let eps = f32::EPSILON;
         let (a, b) = (&$a, &$b);
         assert!(
             a.approx_eq(b, eps),
@@ -78,9 +78,6 @@ macro_rules! assert_approx_eq {
 #[macro_export]
 macro_rules! impl_vec_float_normalize_tests {
     ($t:ident, $vec:ident) => {
-        use core::$t::MAX;
-        use core::$t::MIN_POSITIVE;
-
         /// Works for vec2, vec3, vec4
         fn from_x_y(x: $t, y: $t) -> $vec {
             let mut v = $vec::ZERO;
@@ -91,27 +88,30 @@ macro_rules! impl_vec_float_normalize_tests {
 
         glam_test!(test_normalize, {
             assert_eq!(from_x_y(-42.0, 0.0).normalize(), from_x_y(-1.0, 0.0));
-            assert_eq!(from_x_y(MAX.sqrt(), 0.0).normalize(), from_x_y(1.0, 0.0));
-            // assert_eq!(from_x_y(MAX, 0.0).normalize(), from_x_y(1.0, 0.0)); // normalize fails for huge vectors and returns zero
+            assert_eq!(
+                from_x_y($t::MAX.sqrt(), 0.0).normalize(),
+                from_x_y(1.0, 0.0)
+            );
+            // assert_eq!(from_x_y($t::MAX, 0.0).normalize(), from_x_y(1.0, 0.0)); // normalize fails for huge vectors and returns zero
 
             // We expect not to be able to normalize small numbers:
             should_glam_assert!({ from_x_y(0.0, 0.0).normalize() });
-            should_glam_assert!({ from_x_y(MIN_POSITIVE, 0.0).normalize() });
+            should_glam_assert!({ from_x_y($t::MIN_POSITIVE, 0.0).normalize() });
 
             // We expect not to be able to normalize non-finite vectors:
-            should_glam_assert!({ from_x_y(INFINITY, 0.0).normalize() });
-            should_glam_assert!({ from_x_y(NAN, 0.0).normalize() });
+            should_glam_assert!({ from_x_y($t::INFINITY, 0.0).normalize() });
+            should_glam_assert!({ from_x_y($t::NAN, 0.0).normalize() });
         });
 
         #[cfg(not(any(feature = "debug-glam-assert", feature = "glam-assert")))]
         glam_test!(test_normalize_no_glam_assert, {
             // We expect not to be able to normalize small numbers:
             assert!(!from_x_y(0.0, 0.0).normalize().is_finite());
-            assert!(!from_x_y(MIN_POSITIVE, 0.0).normalize().is_finite());
+            assert!(!from_x_y($t::MIN_POSITIVE, 0.0).normalize().is_finite());
 
             // We expect not to be able to normalize non-finite vectors:
-            assert!(!from_x_y(INFINITY, 0.0).normalize().is_finite());
-            assert!(!from_x_y(NAN, 0.0).normalize().is_finite());
+            assert!(!from_x_y($t::INFINITY, 0.0).normalize().is_finite());
+            assert!(!from_x_y($t::NAN, 0.0).normalize().is_finite());
         });
 
         glam_test!(test_try_normalize, {
@@ -120,21 +120,21 @@ macro_rules! impl_vec_float_normalize_tests {
                 Some(from_x_y(-1.0, 0.0))
             );
             assert_eq!(
-                from_x_y(MAX.sqrt(), 0.0).try_normalize(),
+                from_x_y($t::MAX.sqrt(), 0.0).try_normalize(),
                 Some(from_x_y(1.0, 0.0))
             );
 
             // We expect `try_normalize` to return None when inputs are very small:
             assert_eq!(from_x_y(0.0, 0.0).try_normalize(), None);
-            assert_eq!(from_x_y(MIN_POSITIVE, 0.0).try_normalize(), None);
+            assert_eq!(from_x_y($t::MIN_POSITIVE, 0.0).try_normalize(), None);
 
             // We expect `try_normalize` to return None when inputs are non-finite:
-            assert_eq!(from_x_y(INFINITY, 0.0).try_normalize(), None);
-            assert_eq!(from_x_y(NAN, 0.0).try_normalize(), None);
+            assert_eq!(from_x_y($t::INFINITY, 0.0).try_normalize(), None);
+            assert_eq!(from_x_y($t::NAN, 0.0).try_normalize(), None);
 
             // We expect `try_normalize` to return None when inputs are very large:
-            assert_eq!(from_x_y(MAX, 0.0).try_normalize(), None);
-            assert_eq!(from_x_y(MAX, MAX).try_normalize(), None);
+            assert_eq!(from_x_y($t::MAX, 0.0).try_normalize(), None);
+            assert_eq!(from_x_y($t::MAX, $t::MAX).try_normalize(), None);
         });
 
         glam_test!(test_normalize_or, {
@@ -143,21 +143,24 @@ macro_rules! impl_vec_float_normalize_tests {
                 from_x_y(-1.0, 0.0)
             );
             assert_eq!(
-                from_x_y(MAX.sqrt(), 0.0).normalize_or($vec::Y),
+                from_x_y($t::MAX.sqrt(), 0.0).normalize_or($vec::Y),
                 from_x_y(1.0, 0.0)
             );
 
             // We expect `normalize_or` to return the fallback value when inputs are very small:
             assert_eq!(from_x_y(0.0, 0.0).normalize_or($vec::Y), $vec::Y);
-            assert_eq!(from_x_y(MIN_POSITIVE, 0.0).normalize_or($vec::Y), $vec::Y);
+            assert_eq!(
+                from_x_y($t::MIN_POSITIVE, 0.0).normalize_or($vec::Y),
+                $vec::Y
+            );
 
             // We expect `normalize` to return zero when inputs are non-finite:
-            assert_eq!(from_x_y(INFINITY, 0.0).normalize_or($vec::Y), $vec::Y);
-            assert_eq!(from_x_y(NAN, 0.0).normalize_or($vec::Y), $vec::Y);
+            assert_eq!(from_x_y($t::INFINITY, 0.0).normalize_or($vec::Y), $vec::Y);
+            assert_eq!(from_x_y($t::NAN, 0.0).normalize_or($vec::Y), $vec::Y);
 
             // We expect `normalize` to return zero when inputs are very large:
-            assert_eq!(from_x_y(MAX, 0.0).normalize_or($vec::Y), $vec::Y);
-            assert_eq!(from_x_y(MAX, MAX).normalize_or($vec::Y), $vec::Y);
+            assert_eq!(from_x_y($t::MAX, 0.0).normalize_or($vec::Y), $vec::Y);
+            assert_eq!(from_x_y($t::MAX, $t::MAX).normalize_or($vec::Y), $vec::Y);
         });
 
         glam_test!(test_normalize_or_zero, {
@@ -166,21 +169,24 @@ macro_rules! impl_vec_float_normalize_tests {
                 from_x_y(-1.0, 0.0)
             );
             assert_eq!(
-                from_x_y(MAX.sqrt(), 0.0).normalize_or_zero(),
+                from_x_y($t::MAX.sqrt(), 0.0).normalize_or_zero(),
                 from_x_y(1.0, 0.0)
             );
 
             // We expect `normalize_or_zero` to return zero when inputs are very small:
             assert_eq!(from_x_y(0.0, 0.0).normalize_or_zero(), $vec::ZERO);
-            assert_eq!(from_x_y(MIN_POSITIVE, 0.0).normalize_or_zero(), $vec::ZERO);
+            assert_eq!(
+                from_x_y($t::MIN_POSITIVE, 0.0).normalize_or_zero(),
+                $vec::ZERO
+            );
 
             // We expect `normalize_or_zero` to return zero when inputs are non-finite:
-            assert_eq!(from_x_y(INFINITY, 0.0).normalize_or_zero(), $vec::ZERO);
-            assert_eq!(from_x_y(NAN, 0.0).normalize_or_zero(), $vec::ZERO);
+            assert_eq!(from_x_y($t::INFINITY, 0.0).normalize_or_zero(), $vec::ZERO);
+            assert_eq!(from_x_y($t::NAN, 0.0).normalize_or_zero(), $vec::ZERO);
 
             // We expect `normalize_or_zero` to return zero when inputs are very large:
-            assert_eq!(from_x_y(MAX, 0.0).normalize_or_zero(), $vec::ZERO);
-            assert_eq!(from_x_y(MAX, MAX).normalize_or_zero(), $vec::ZERO);
+            assert_eq!(from_x_y($t::MAX, 0.0).normalize_or_zero(), $vec::ZERO);
+            assert_eq!(from_x_y($t::MAX, $t::MAX).normalize_or_zero(), $vec::ZERO);
         });
     };
 }

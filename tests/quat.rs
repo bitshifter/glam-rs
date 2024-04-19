@@ -5,10 +5,6 @@ mod support;
 
 macro_rules! impl_quat_tests {
     ($t:ident, $new:ident, $mat3:ident, $mat4:ident, $quat:ident, $vec2:ident, $vec3:ident, $vec4:ident) => {
-        use core::$t::INFINITY;
-        use core::$t::NAN;
-        use core::$t::NEG_INFINITY;
-
         glam_test!(test_const, {
             const Q0: $quat = $quat::from_xyzw(1.0, 2.0, 3.0, 4.0);
             const Q1: $quat = $quat::from_array([1.0, 2.0, 3.0, 4.0]);
@@ -236,7 +232,7 @@ macro_rules! impl_quat_tests {
 
         glam_test!(test_angle_between, {
             const TAU: $t = 2.0 * core::$t::consts::PI;
-            let eps = 10.0 * core::$t::EPSILON as f32;
+            let eps = 10.0 * $t::EPSILON as f32;
             let q1 = $quat::from_euler(EulerRot::YXZ, 0.0, 0.0, 0.0);
             let q2 = $quat::from_euler(EulerRot::YXZ, TAU * 0.25, 0.0, 0.0);
             let q3 = $quat::from_euler(EulerRot::YXZ, TAU * 0.5, 0.0, 0.0);
@@ -421,14 +417,14 @@ macro_rules! impl_quat_tests {
         glam_test!(test_is_finite, {
             assert!($quat::from_xyzw(0.0, 0.0, 0.0, 0.0).is_finite());
             assert!($quat::from_xyzw(-1e-10, 1.0, 1e10, 42.0).is_finite());
-            assert!(!$quat::from_xyzw(INFINITY, 0.0, 0.0, 0.0).is_finite());
-            assert!(!$quat::from_xyzw(0.0, NAN, 0.0, 0.0).is_finite());
-            assert!(!$quat::from_xyzw(0.0, 0.0, NEG_INFINITY, 0.0).is_finite());
-            assert!(!$quat::from_xyzw(0.0, 0.0, 0.0, NAN).is_finite());
+            assert!(!$quat::from_xyzw($t::INFINITY, 0.0, 0.0, 0.0).is_finite());
+            assert!(!$quat::from_xyzw(0.0, $t::NAN, 0.0, 0.0).is_finite());
+            assert!(!$quat::from_xyzw(0.0, 0.0, $t::NEG_INFINITY, 0.0).is_finite());
+            assert!(!$quat::from_xyzw(0.0, 0.0, 0.0, $t::NAN).is_finite());
         });
 
         glam_test!(test_rotation_arc, {
-            let eps = 2.0 * core::$t::EPSILON.sqrt();
+            let eps = 2.0 * $t::EPSILON.sqrt();
 
             for &from in &vec3_float_test_vectors!($vec3) {
                 let from = from.normalize();

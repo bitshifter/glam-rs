@@ -653,10 +653,6 @@ macro_rules! impl_vec2_float_tests {
         impl_vec2_signed_tests!($t, $new, $vec2, $vec3, $mask);
         impl_vec_float_normalize_tests!($t, $vec2);
 
-        use core::$t::INFINITY;
-        use core::$t::NAN;
-        use core::$t::NEG_INFINITY;
-
         glam_test!(test_vec2_nan, {
             assert!($vec2::NAN.is_nan());
             assert!(!$vec2::NAN.is_finite());
@@ -763,19 +759,19 @@ macro_rules! impl_vec2_float_tests {
             assert_eq!($vec2::new(0.0, 11.123).round().y, 11.0);
             assert_eq!($vec2::new(0.0, 11.499).round().y, 11.0);
             assert_eq!(
-                $vec2::new(NEG_INFINITY, INFINITY).round(),
-                $vec2::new(NEG_INFINITY, INFINITY)
+                $vec2::new($t::NEG_INFINITY, $t::INFINITY).round(),
+                $vec2::new($t::NEG_INFINITY, $t::INFINITY)
             );
-            assert!($vec2::new(NAN, 0.0).round().x.is_nan());
+            assert!($vec2::new($t::NAN, 0.0).round().x.is_nan());
         });
 
         glam_test!(test_floor, {
             assert_eq!($vec2::new(1.35, -1.5).floor(), $vec2::new(1.0, -2.0));
             assert_eq!(
-                $vec2::new(INFINITY, NEG_INFINITY).floor(),
-                $vec2::new(INFINITY, NEG_INFINITY)
+                $vec2::new($t::INFINITY, $t::NEG_INFINITY).floor(),
+                $vec2::new($t::INFINITY, $t::NEG_INFINITY)
             );
-            assert!($vec2::new(NAN, 0.0).floor().x.is_nan());
+            assert!($vec2::new($t::NAN, 0.0).floor().x.is_nan());
             assert_eq!(
                 $vec2::new(-2000000.123, 10000000.123).floor(),
                 $vec2::new(-2000001.0, 10000000.0)
@@ -803,10 +799,10 @@ macro_rules! impl_vec2_float_tests {
         glam_test!(test_ceil, {
             assert_eq!($vec2::new(1.35, -1.5).ceil(), $vec2::new(2.0, -1.0));
             assert_eq!(
-                $vec2::new(INFINITY, NEG_INFINITY).ceil(),
-                $vec2::new(INFINITY, NEG_INFINITY)
+                $vec2::new($t::INFINITY, $t::NEG_INFINITY).ceil(),
+                $vec2::new($t::INFINITY, $t::NEG_INFINITY)
             );
-            assert!($vec2::new(NAN, 0.0).ceil().x.is_nan());
+            assert!($vec2::new($t::NAN, 0.0).ceil().x.is_nan());
             assert_eq!(
                 $vec2::new(-2000000.123, 1000000.123).ceil(),
                 $vec2::new(-2000000.0, 1000001.0)
@@ -816,10 +812,10 @@ macro_rules! impl_vec2_float_tests {
         glam_test!(test_trunc, {
             assert_eq!($vec2::new(1.35, -1.5).trunc(), $vec2::new(1.0, -1.0));
             assert_eq!(
-                $vec2::new(INFINITY, NEG_INFINITY).trunc(),
-                $vec2::new(INFINITY, NEG_INFINITY)
+                $vec2::new($t::INFINITY, $t::NEG_INFINITY).trunc(),
+                $vec2::new($t::INFINITY, $t::NEG_INFINITY)
             );
-            assert!($vec2::new(0.0, NAN).trunc().y.is_nan());
+            assert!($vec2::new(0.0, $t::NAN).trunc().y.is_nan());
             assert_eq!(
                 $vec2::new(-0.0, -2000000.123).trunc(),
                 $vec2::new(-0.0, -2000000.0)
@@ -853,10 +849,10 @@ macro_rules! impl_vec2_float_tests {
         glam_test!(test_is_finite, {
             assert!($vec2::new(0.0, 0.0).is_finite());
             assert!($vec2::new(-1e-10, 1e10).is_finite());
-            assert!(!$vec2::new(INFINITY, 0.0).is_finite());
-            assert!(!$vec2::new(0.0, NAN).is_finite());
-            assert!(!$vec2::new(0.0, NEG_INFINITY).is_finite());
-            assert!(!$vec2::new(INFINITY, NEG_INFINITY).is_finite());
+            assert!(!$vec2::new($t::INFINITY, 0.0).is_finite());
+            assert!(!$vec2::new(0.0, $t::NAN).is_finite());
+            assert!(!$vec2::new(0.0, $t::NEG_INFINITY).is_finite());
+            assert!(!$vec2::new($t::INFINITY, $t::NEG_INFINITY).is_finite());
             assert!(!$vec2::INFINITY.is_finite());
             assert!(!$vec2::NEG_INFINITY.is_finite());
         });

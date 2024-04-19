@@ -13,9 +13,6 @@ macro_rules! impl_affine3_tests {
             [10.0, 11.0, 12.0],
         ];
 
-        use core::$t::NAN;
-        use core::$t::NEG_INFINITY;
-
         glam_test!(test_affine3_identity, {
             assert_eq!($affine3::IDENTITY, $affine3::IDENTITY * $affine3::IDENTITY);
             assert_eq!($affine3::IDENTITY, $affine3::default());
@@ -98,7 +95,7 @@ macro_rules! impl_affine3_tests {
         });
 
         glam_test!(test_from_rotation, {
-            let eps = 2.0 * core::f32::EPSILON;
+            let eps = 2.0 * f32::EPSILON;
             let rot_x1 = $affine3::from_rotation_x(deg(180.0));
             let rot_x2 = $affine3::from_axis_angle($vec3::X, deg(180.0));
             assert_approx_eq!(rot_x1, rot_x2, eps);
@@ -345,8 +342,8 @@ macro_rules! impl_affine3_tests {
         glam_test!(test_affine3_is_finite, {
             assert!($affine3::from_scale($vec3::new(1.0, 1.0, 1.0)).is_finite());
             assert!($affine3::from_scale($vec3::new(0.0, 1.0, 1.0)).is_finite());
-            assert!(!$affine3::from_scale($vec3::new(1.0, NAN, 1.0)).is_finite());
-            assert!(!$affine3::from_scale($vec3::new(1.0, 1.0, NEG_INFINITY)).is_finite());
+            assert!(!$affine3::from_scale($vec3::new(1.0, $t::NAN, 1.0)).is_finite());
+            assert!(!$affine3::from_scale($vec3::new(1.0, 1.0, $t::NEG_INFINITY)).is_finite());
         });
     };
 }

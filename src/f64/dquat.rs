@@ -279,7 +279,7 @@ impl DQuat {
         glam_assert!(from.is_normalized());
         glam_assert!(to.is_normalized());
 
-        const ONE_MINUS_EPS: f64 = 1.0 - 2.0 * core::f64::EPSILON;
+        const ONE_MINUS_EPS: f64 = 1.0 - 2.0 * f64::EPSILON;
         let dot = from.dot(to);
         if dot > ONE_MINUS_EPS {
             // 0° singularity: from ≈ to
@@ -335,7 +335,7 @@ impl DQuat {
         glam_assert!(from.is_normalized());
         glam_assert!(to.is_normalized());
 
-        const ONE_MINUS_EPSILON: f64 = 1.0 - 2.0 * core::f64::EPSILON;
+        const ONE_MINUS_EPSILON: f64 = 1.0 - 2.0 * f64::EPSILON;
         let dot = from.dot(to);
         if dot > ONE_MINUS_EPSILON {
             // 0° singularity: from ≈ to

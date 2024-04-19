@@ -6,9 +6,6 @@ macro_rules! impl_affine2_tests {
         const MATRIX1D: [$t; 6] = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0];
         const MATRIX2D: [[$t; 2]; 3] = [[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]];
 
-        use core::$t::NAN;
-        use core::$t::NEG_INFINITY;
-
         glam_test!(test_affine2_identity, {
             assert_eq!($affine2::IDENTITY, $affine2::IDENTITY * $affine2::IDENTITY);
             assert_eq!($affine2::IDENTITY, $affine2::default());
@@ -260,8 +257,8 @@ macro_rules! impl_affine2_tests {
         glam_test!(test_affine2_is_finite, {
             assert!($affine2::from_scale($vec2::new(1.0, 1.0)).is_finite());
             assert!($affine2::from_scale($vec2::new(0.0, 1.0)).is_finite());
-            assert!(!$affine2::from_scale($vec2::new(1.0, NAN)).is_finite());
-            assert!(!$affine2::from_scale($vec2::new(1.0, NEG_INFINITY)).is_finite());
+            assert!(!$affine2::from_scale($vec2::new(1.0, $t::NAN)).is_finite());
+            assert!(!$affine2::from_scale($vec2::new(1.0, $t::NEG_INFINITY)).is_finite());
         });
     };
 }

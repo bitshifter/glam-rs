@@ -282,7 +282,7 @@ impl Quat {
         glam_assert!(from.is_normalized());
         glam_assert!(to.is_normalized());
 
-        const ONE_MINUS_EPS: f32 = 1.0 - 2.0 * core::f32::EPSILON;
+        const ONE_MINUS_EPS: f32 = 1.0 - 2.0 * f32::EPSILON;
         let dot = from.dot(to);
         if dot > ONE_MINUS_EPS {
             // 0° singularity: from ≈ to
@@ -338,7 +338,7 @@ impl Quat {
         glam_assert!(from.is_normalized());
         glam_assert!(to.is_normalized());
 
-        const ONE_MINUS_EPSILON: f32 = 1.0 - 2.0 * core::f32::EPSILON;
+        const ONE_MINUS_EPSILON: f32 = 1.0 - 2.0 * f32::EPSILON;
         let dot = from.dot(to);
         if dot > ONE_MINUS_EPSILON {
             // 0° singularity: from ≈ to
