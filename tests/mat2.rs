@@ -220,13 +220,10 @@ macro_rules! impl_mat2_tests {
         });
 
         glam_test!(test_mat2_is_finite, {
-            use std::$t::INFINITY;
-            use std::$t::NAN;
-            use std::$t::NEG_INFINITY;
             assert!($mat2::IDENTITY.is_finite());
-            assert!(!($mat2::IDENTITY * INFINITY).is_finite());
-            assert!(!($mat2::IDENTITY * NEG_INFINITY).is_finite());
-            assert!(!($mat2::IDENTITY * NAN).is_finite());
+            assert!(!($mat2::IDENTITY * $t::INFINITY).is_finite());
+            assert!(!($mat2::IDENTITY * $t::NEG_INFINITY).is_finite());
+            assert!(!($mat2::IDENTITY * $t::NAN).is_finite());
         });
     };
 }

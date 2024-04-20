@@ -3,10 +3,6 @@ mod support;
 
 macro_rules! impl_mat4_tests {
     ($t:ident, $newmat4:ident, $newvec4:ident, $newvec3:ident, $mat4:ident, $mat3:ident, $quat:ident, $vec4:ident, $vec3:ident) => {
-        use core::$t::INFINITY;
-        use core::$t::NAN;
-        use core::$t::NEG_INFINITY;
-
         const IDENTITY: [[$t; 4]; 4] = [
             [1.0, 0.0, 0.0, 0.0],
             [0.0, 1.0, 0.0, 0.0],
@@ -669,9 +665,9 @@ macro_rules! impl_mat4_tests {
 
         glam_test!(test_mat4_is_finite, {
             assert!($mat4::IDENTITY.is_finite());
-            assert!(!($mat4::IDENTITY * INFINITY).is_finite());
-            assert!(!($mat4::IDENTITY * NEG_INFINITY).is_finite());
-            assert!(!($mat4::IDENTITY * NAN).is_finite());
+            assert!(!($mat4::IDENTITY * $t::INFINITY).is_finite());
+            assert!(!($mat4::IDENTITY * $t::NEG_INFINITY).is_finite());
+            assert!(!($mat4::IDENTITY * $t::NAN).is_finite());
         });
 
         glam_test!(test_mat4_abs, {

@@ -763,10 +763,6 @@ macro_rules! impl_vec3_float_tests {
         impl_vec3_signed_tests!($t, $new, $vec3, $mask);
         impl_vec_float_normalize_tests!($t, $vec3);
 
-        use core::$t::INFINITY;
-        use core::$t::NAN;
-        use core::$t::NEG_INFINITY;
-
         glam_test!(test_nan, {
             assert!($vec3::NAN.is_nan());
             assert!(!$vec3::NAN.is_finite());
@@ -887,10 +883,10 @@ macro_rules! impl_vec3_float_tests {
             assert_eq!($vec3::new(0.0, 11.123, 0.0).round().y, 11.0);
             assert_eq!($vec3::new(0.0, 11.499, 0.0).round().y, 11.0);
             assert_eq!(
-                $vec3::new(NEG_INFINITY, INFINITY, 0.0).round(),
-                $vec3::new(NEG_INFINITY, INFINITY, 0.0)
+                $vec3::new($t::NEG_INFINITY, $t::INFINITY, 0.0).round(),
+                $vec3::new($t::NEG_INFINITY, $t::INFINITY, 0.0)
             );
-            assert!($vec3::new(NAN, 0.0, 0.0).round().x.is_nan());
+            assert!($vec3::new($t::NAN, 0.0, 0.0).round().x.is_nan());
         });
 
         glam_test!(test_floor, {
@@ -899,10 +895,10 @@ macro_rules! impl_vec3_float_tests {
                 $vec3::new(1.0, 1.0, -2.0)
             );
             assert_eq!(
-                $vec3::new(INFINITY, NEG_INFINITY, 0.0).floor(),
-                $vec3::new(INFINITY, NEG_INFINITY, 0.0)
+                $vec3::new($t::INFINITY, $t::NEG_INFINITY, 0.0).floor(),
+                $vec3::new($t::INFINITY, $t::NEG_INFINITY, 0.0)
             );
-            assert!($vec3::new(NAN, 0.0, 0.0).floor().x.is_nan());
+            assert!($vec3::new($t::NAN, 0.0, 0.0).floor().x.is_nan());
             assert_eq!(
                 $vec3::new(-2000000.123, 10000000.123, 1000.9).floor(),
                 $vec3::new(-2000001.0, 10000000.0, 1000.0)
@@ -939,10 +935,10 @@ macro_rules! impl_vec3_float_tests {
                 $vec3::new(2.0, 2.0, -1.0)
             );
             assert_eq!(
-                $vec3::new(INFINITY, NEG_INFINITY, 0.0).ceil(),
-                $vec3::new(INFINITY, NEG_INFINITY, 0.0)
+                $vec3::new($t::INFINITY, $t::NEG_INFINITY, 0.0).ceil(),
+                $vec3::new($t::INFINITY, $t::NEG_INFINITY, 0.0)
             );
-            assert!($vec3::new(NAN, 0.0, 0.0).ceil().x.is_nan());
+            assert!($vec3::new($t::NAN, 0.0, 0.0).ceil().x.is_nan());
             assert_eq!(
                 $vec3::new(-2000000.123, 1000000.123, 1000.9).ceil(),
                 $vec3::new(-2000000.0, 1000001.0, 1001.0)
@@ -955,10 +951,10 @@ macro_rules! impl_vec3_float_tests {
                 $vec3::new(1.0, 1.0, -1.0)
             );
             assert_eq!(
-                $vec3::new(INFINITY, NEG_INFINITY, 0.0).trunc(),
-                $vec3::new(INFINITY, NEG_INFINITY, 0.0)
+                $vec3::new($t::INFINITY, $t::NEG_INFINITY, 0.0).trunc(),
+                $vec3::new($t::INFINITY, $t::NEG_INFINITY, 0.0)
             );
-            assert!($vec3::new(0.0, NAN, 0.0).trunc().y.is_nan());
+            assert!($vec3::new(0.0, $t::NAN, 0.0).trunc().y.is_nan());
             assert_eq!(
                 $vec3::new(-0.0, -2000000.123, 10000000.123).trunc(),
                 $vec3::new(-0.0, -2000000.0, 10000000.0)
@@ -992,9 +988,9 @@ macro_rules! impl_vec3_float_tests {
         glam_test!(test_is_finite, {
             assert!($vec3::new(0.0, 0.0, 0.0).is_finite());
             assert!($vec3::new(-1e-10, 1.0, 1e10).is_finite());
-            assert!(!$vec3::new(INFINITY, 0.0, 0.0).is_finite());
-            assert!(!$vec3::new(0.0, NAN, 0.0).is_finite());
-            assert!(!$vec3::new(0.0, 0.0, NEG_INFINITY).is_finite());
+            assert!(!$vec3::new($t::INFINITY, 0.0, 0.0).is_finite());
+            assert!(!$vec3::new(0.0, $t::NAN, 0.0).is_finite());
+            assert!(!$vec3::new(0.0, 0.0, $t::NEG_INFINITY).is_finite());
             assert!(!$vec3::NAN.is_finite());
             assert!(!$vec3::INFINITY.is_finite());
             assert!(!$vec3::NEG_INFINITY.is_finite());
@@ -1071,7 +1067,7 @@ macro_rules! impl_vec3_float_tests {
         });
 
         glam_test!(test_any_ortho, {
-            let eps = 2.0 * core::$t::EPSILON;
+            let eps = 2.0 * $t::EPSILON;
 
             for &v in &vec3_float_test_vectors!($vec3) {
                 let orthogonal = v.any_orthogonal_vector();
