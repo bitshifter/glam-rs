@@ -1,6 +1,6 @@
 [package]
 name = "glam"
-version = "0.27.0" # remember to update html_root_url
+version = "0.27.0"                                                       # remember to update html_root_url
 edition = "2021"
 authors = ["Cameron Hart <cameron.hart@gmail.com>"]
 description = "A simple and fast 3D math library for games and graphics"
@@ -41,6 +41,9 @@ fast-math = []
 # experimental nightly portable-simd support
 core-simd = []
 
+# Unreal Engine ABI Compatibility, for interoperating with Rust
+unreal-abi-compat = []
+
 [dependencies]
 approx = { version = "0.5", optional = true, default-features = false }
 bytemuck = { version = "1.9", optional = true, default-features = false }
@@ -49,7 +52,7 @@ rand = { version = "0.8", optional = true, default-features = false }
 serde = { version = "1.0", optional = true, default-features = false }
 rkyv = { version = "0.7", optional = true, default-features = false }
 bytecheck = { version = "0.7", optional = true, default-features = false }
-libm = { version = "0.2", optional = true, default-features = false}
+libm = { version = "0.2", optional = true, default-features = false }
 
 [dev-dependencies]
 # rand_xoshiro is required for tests if rand is enabled
@@ -123,7 +126,4 @@ name = "iai"
 harness = false
 
 [workspace]
-members = [
-    "codegen",
-    "test_no_std",
-]
+members = ["codegen", "test_no_std"]

@@ -56,13 +56,15 @@ mod test {
     }
 
     mod const_test_dquat {
-        #[cfg(not(target_arch = "spirv"))]
+        #[cfg(all(not(target_arch = "spirv"), not(feature = "unreal-abi-compat")))]
         const_assert_eq!(
             core::mem::align_of::<f64>(),
             core::mem::align_of::<super::DQuat>()
         );
         #[cfg(target_arch = "spirv")]
         const_assert_eq!(32, core::mem::align_of::<super::DQuat>());
+        #[cfg(feature = "unreal-abi-compat")]
+        const_assert_eq!(16, core::mem::align_of::<super::DQuat>());
         const_assert_eq!(32, core::mem::size_of::<super::DQuat>());
     }
 
@@ -89,12 +91,14 @@ mod test {
     }
 
     mod const_test_dvec4 {
-        #[cfg(not(any(feature = "cuda", target_arch = "spirv")))]
+        #[cfg(not(any(feature = "cuda", target_arch = "spirv", feature = "unreal-abi-compat")))]
         const_assert_eq!(
             core::mem::align_of::<f64>(),
             core::mem::align_of::<super::DVec4>()
         );
         #[cfg(any(feature = "cuda", target_arch = "spirv"))]
+        const_assert_eq!(16, core::mem::align_of::<super::DVec4>());
+        #[cfg(feature = "unreal-abi-compat")]
         const_assert_eq!(16, core::mem::align_of::<super::DVec4>());
         const_assert_eq!(32, core::mem::size_of::<super::DVec4>());
     }
