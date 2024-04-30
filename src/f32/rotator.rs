@@ -25,6 +25,11 @@ impl Rotator {
         Self::new(f32::to_degrees(b), f32::to_degrees(c), f32::to_degrees(a))
     }
 
+    pub fn from_quat(q: Quat) -> Self {
+        let (a, b, c) = q.to_euler(UNREAL_EULER_ROT);
+        Self::new(a, b, c)
+    }
+
     pub fn to_euler(&self) -> (f32, f32, f32) {
         (
             f32::to_radians(self.roll),
@@ -32,18 +37,31 @@ impl Rotator {
             f32::to_radians(self.yaw),
         )
     }
+
+    pub fn to_quat(&self) -> Quat {
+        let (a, b, c) = self.to_euler();
+        Quat::from_euler(UNREAL_EULER_ROT, a, b, c)
+    }
 }
 
 impl From<Rotator> for Quat {
     fn from(r: Rotator) -> Self {
-        let (a, b, c) = r.to_euler();
-        Quat::from_euler(UNREAL_EULER_ROT, a, b, c)
+        r.to_quat()
     }
 }
 
 impl From<Quat> for Rotator {
     fn from(q: Quat) -> Self {
-        let euler = q.to_euler(UNREAL_EULER_ROT);
-        Rotator::from_euler(euler.0, euler.1, euler.2)
+        Self::from_quat(q)
+    }
+}
+
+impl Quat {
+    pub fn from_rotator(rot: Rotator) -> Self {
+        rot.to_quat()
+    }
+
+    pub fn to_rotator(&self) -> Rotator {
+        Rotator::from_quat(*self)
     }
 }
