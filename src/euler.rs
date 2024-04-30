@@ -28,6 +28,9 @@ pub enum EulerRot {
     XZY,
 }
 
+#[cfg(feature = "unreal-abi-compat")]
+pub const UNREAL_EULER_ROT: EulerRot = EulerRot::XYZ;
+
 impl Default for EulerRot {
     /// Default `YXZ` as yaw (y-axis), pitch (x-axis), roll (z-axis).
     fn default() -> Self {
