@@ -96,9 +96,7 @@ mod test {
             core::mem::align_of::<f64>(),
             core::mem::align_of::<super::DVec4>()
         );
-        #[cfg(any(feature = "cuda", target_arch = "spirv"))]
-        const_assert_eq!(16, core::mem::align_of::<super::DVec4>());
-        #[cfg(feature = "unreal-abi-compat")]
+        #[cfg(any(feature = "cuda", target_arch = "spirv", feature = "unreal-abi-compat"))]
         const_assert_eq!(16, core::mem::align_of::<super::DVec4>());
         const_assert_eq!(32, core::mem::size_of::<super::DVec4>());
     }
