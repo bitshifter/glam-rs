@@ -18,7 +18,8 @@ pub const fn dvec4(x: f64, y: f64, z: f64, w: f64) -> DVec4 {
 
 /// A 4-dimensional vector.
 #[derive(Clone, Copy, PartialEq)]
-#[cfg_attr(any(feature = "cuda", feature = "unreal-abi-compat"), repr(align(16)))]
+#[cfg_attr(feature = "cuda", repr(align(16)))]
+#[cfg_attr(feature = "unreal-abi-compat", repr(align(16)))]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct DVec4 {

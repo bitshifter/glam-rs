@@ -103,6 +103,9 @@ pub const fn {{ self_t | lower }}(x: {{ scalar_t }}, y: {{ scalar_t }}, z: {{ sc
 {%- endif %}
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
+{%- if scalar_t == "f64" %}
+#[cfg_attr(feature == "unreal-api-compat", repr(align(16)))]
+{%- endif %}
 pub struct {{ self_t }}{
     pub x: {{ scalar_t }},
     pub y: {{ scalar_t }},
