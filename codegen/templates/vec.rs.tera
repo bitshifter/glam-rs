@@ -263,9 +263,9 @@ pub const fn {{ self_t | lower }}(
 )]
 {%- elif dim != 3 and is_scalar %}
 #[cfg_attr(feature = "cuda", repr(align({{ cuda_align }})))]
-    {% if dim == 4 and scalar_t == "f64" %}
+{% if dim == 4 and scalar_t == "f64" %}
 #[cfg_attr(feature = "unreal-abi-compat", repr(align(16)))]
-    {% endif %}
+{% endif %}
 {%- endif %}
 {%- if is_scalar %}
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
