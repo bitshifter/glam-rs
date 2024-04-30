@@ -4,6 +4,7 @@ mod dmat2;
 mod dmat3;
 mod dmat4;
 mod dquat;
+mod drotator;
 mod dvec2;
 mod dvec3;
 mod dvec4;
@@ -16,6 +17,8 @@ pub use dmat2::{dmat2, DMat2};
 pub use dmat3::{dmat3, DMat3};
 pub use dmat4::{dmat4, DMat4};
 pub use dquat::{dquat, DQuat};
+#[cfg(feature = "unreal-abi-compat")]
+pub use drotator::{drotator, DRotator};
 pub use dvec2::{dvec2, DVec2};
 pub use dvec3::{dvec3, DVec3};
 pub use dvec4::{dvec4, DVec4};

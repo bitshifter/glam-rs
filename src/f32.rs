@@ -3,6 +3,7 @@ mod affine3a;
 mod float;
 mod mat3;
 pub(crate) mod math;
+mod rotator;
 mod vec2;
 mod vec3;
 
@@ -63,6 +64,8 @@ pub use mat3::{mat3, Mat3};
 pub use mat3a::{mat3a, Mat3A};
 pub use mat4::{mat4, Mat4};
 pub use quat::{quat, Quat};
+#[cfg(feature = "unreal-abi-compat")]
+pub use rotator::{rotator, Rotator};
 pub use vec2::{vec2, Vec2};
 pub use vec3::{vec3, Vec3};
 pub use vec3a::{vec3a, Vec3A};
