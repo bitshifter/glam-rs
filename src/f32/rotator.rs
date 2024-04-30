@@ -3,7 +3,7 @@
 use crate::{Quat, UNREAL_EULER_ROT};
 
 #[repr(C)]
-#[derive(Default, Debug, Clone, Copy)]
+#[derive(Default, Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct Rotator {
     pub pitch: f32,
     pub yaw: f32,
@@ -21,12 +21,16 @@ impl Rotator {
         rotator(pitch, yaw, roll)
     }
 
-    pub const fn from_euler(a: f32, b: f32, c: f32) -> Self {
-        Self::new(b, c, a)
+    pub fn from_euler(a: f32, b: f32, c: f32) -> Self {
+        Self::new(f32::to_degrees(b), f32::to_degrees(c), f32::to_degrees(a))
     }
 
-    pub const fn to_euler(&self) -> (f32, f32, f32) {
-        (self.roll, self.pitch, self.yaw)
+    pub fn to_euler(&self) -> (f32, f32, f32) {
+        (
+            f32::to_radians(self.roll),
+            f32::to_radians(self.pitch),
+            f32::to_radians(self.yaw),
+        )
     }
 }
 

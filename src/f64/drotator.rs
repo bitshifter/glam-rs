@@ -3,7 +3,7 @@
 use crate::{DQuat, UNREAL_EULER_ROT};
 
 #[repr(C)]
-#[derive(Default, Debug, Clone, Copy)]
+#[derive(Default, Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct DRotator {
     pub pitch: f64,
     pub yaw: f64,
@@ -21,12 +21,16 @@ impl DRotator {
         drotator(pitch, yaw, roll)
     }
 
-    pub const fn from_euler(a: f64, b: f64, c: f64) -> Self {
-        Self::new(b, c, a)
+    pub fn from_euler(a: f64, b: f64, c: f64) -> Self {
+        Self::new(f64::to_degrees(b), f64::to_degrees(c), f64::to_degrees(a))
     }
 
-    pub const fn to_euler(&self) -> (f64, f64, f64) {
-        (self.roll, self.pitch, self.yaw)
+    pub fn to_euler(&self) -> (f64, f64, f64) {
+        (
+            f64::to_radians(self.roll),
+            f64::to_radians(self.pitch),
+            f64::to_radians(self.yaw),
+        )
     }
 }
 
