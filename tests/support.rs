@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 #[path = "support/macros.rs"]
 #[macro_use]
 mod macros;
