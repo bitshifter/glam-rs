@@ -695,7 +695,10 @@ pub fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
         ),
         ("src/f64/dquat.rs", ContextBuilder::new_dquat().build()),
         ("src/f32/scalar/mat2.rs", ContextBuilder::new_mat2().build()),
-        ("src/f32/neon/mat2.rs", ContextBuilder::new_mat2().build()),
+        (
+            "src/f32/neon/mat2.rs",
+            ContextBuilder::new_mat2().target_neon().build(),
+        ),
         (
             "src/f32/sse2/mat2.rs",
             ContextBuilder::new_mat2().target_sse2().build(),

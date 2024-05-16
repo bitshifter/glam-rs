@@ -47,6 +47,8 @@
             {% set simd_t = "v128" %}
         {% elif is_coresimd %}
             {% set simd_t = "f32x4" %}
+        {% elfif is_neon %}
+            {% set simd_t = "float32x4_t" %}
         {% endif %}
     {% endif %}
 {% endif %}
@@ -112,11 +114,11 @@ use core::arch::x86_64::*;
 use core::arch::wasm32::*;
 {% elif is_coresimd %}
 use core::simd::*;
-{% elif is_neon and self_t != "Mat2" %}
+{% elif is_neon and  %}
 use core::arch::aarch64::*;
 {% endif %}
 
-{% if self_t == "Mat2" and is_sse2 %}
+{% if self_t == "Mat2" and is_sse2 or is_neon %}
 #[repr(C)]
 union UnionCast {
     a: [f32; 4],
@@ -255,7 +257,7 @@ impl {{ self_t }} {
             {%- endfor %}
         {%- endfor %}
     ) -> Self {
-        {% if self_t == "Mat2" and is_sse2 %}
+        {% if self_t == "Mat2" and is_sse2 or is_neon %}
             unsafe { UnionCast { a: [m00, m01, m10, m11] }.v }
         {% elif self_t == "Mat2" and is_wasm32 %}
             Self(f32x4(m00, m01, m10, m11))
@@ -282,7 +284,7 @@ impl {{ self_t }} {
             {{ axis }}: {{ col_t }},
         {% endfor %}
     ) -> Self {
-        {% if self_t == "Mat2" and is_sse2 %}
+        {% if self_t == "Mat2" and is_sse2 or is_neon %}
             unsafe { UnionCast { a: [x_axis.x, x_axis.y, y_axis.x, y_axis.y] }.v }
         {% elif self_t == "Mat2" and is_wasm32 %}
             Self(f32x4(x_axis.x, x_axis.y, y_axis.x, y_axis.y))
@@ -1041,6 +1043,12 @@ impl {{ self_t }} {
             Self(i32x4_shuffle::<0, 2, 5, 7>(self.0, self.0))
         {% elif self_t == "Mat2" and is_coresimd %}
             Self(simd_swizzle!(self.0, [0, 2, 1, 3]))
+        {% elif self_t == "Mat2" and is_neon %}
+            unsafe {
+                let mut out: MaybeUninit<[float32x4;2]> = MaybeUninit::uninit();
+                vst2q_f32(out.as_mut_ptr().cast(), float32x4x2_t(self.0, vextq_f32(self.0, self.0, 2)));
+                Self(out.assume_init()[0])
+            }
         {% elif self_t == "Mat3A" and is_sse2 %}
             unsafe {
                 let tmp0 = _mm_shuffle_ps(self.x_axis.0, self.y_axis.0, 0b01_00_01_00);
@@ -1206,6 +1214,15 @@ impl {{ self_t }} {
             let prod = abcd * dcba;
             let det = prod - simd_swizzle!(prod, [1, 1, 1, 1]);
             det[0]
+        {$ elif self_t == "Mat2" and is_neon %}
+            unsafe {
+                let abcd = self.0;
+                let badc = vrev64q_f32(abcd);
+                let dcba = vextq_f32(badc, badc, 2);
+                let prod = vmulq_f32(abcd, dcba);
+                let det = vsubq_f32(prod, vdupq_laneq_f32(prod, 1));
+                vgetq_lane_f32(det, 0)
+            }
         {% elif self_t == "Mat4" and is_sse2 %}
             unsafe {
                 // Based on https://github.com/g-truc/glm `glm_mat4_determinant_lowp`
@@ -1450,6 +1467,21 @@ impl {{ self_t }} {
             glam_assert!(Mat2(tmp).is_finite());
             let dbca = simd_swizzle!(abcd, [3, 1, 2, 0]);
             Self(dbca.mul(tmp))
+        {% elif self_t == "Mat2" and is_neon %}
+            unsafe {
+                const SIGN: float32x4_t = crate::neon::f32x4_from_array([1.0, -1.0, -1.0, 1.0]);
+                let abcd = self.0;
+                let badc = vrev64q_f32(abcd);
+                let dcba = vextq_f32(badc, badc, 2);
+                let prod = vmulq_f32(abcd, dcba);
+                let sub = vsubq_f32(prod, vdupq_laneq_f32(prod, 1));
+                let det = vdupq_laneq_f32(sub, 0);
+                let tmp = vdivq_f32(SIGN, det);
+                glam_assert!(Mat2(tmp).is_finite());
+                unimplemented!();
+                //let dbca = simd_swizzle!(abcd, [3, 1, 2, 0]);
+                Self(vmulq_f32(dbca, tmp))
+            }
         {% elif self_t == "Mat4" and is_sse2 %}
             {{ sse2::impl_mat4_inverse() }}
         {% elif self_t == "Mat4" and is_wasm32 %}
@@ -2006,6 +2038,8 @@ impl {{ self_t }} {
             let cydyaxbx = simd_swizzle!(axbxcydy, [2, 3, 0, 1]);
             let result = axbxcydy.add(cydyaxbx);
             unsafe { *(&result as *const f32x4 as *const Vec2) }
+        {% elif self_t == "Mat2" and is_neon %}
+            unimplemented!();
         {% elif dim == 2 %}
             #[allow(clippy::suspicious_operation_groupings)]
             {{ col_t }}::new(
@@ -2098,6 +2132,8 @@ impl {{ self_t }} {
             let result0 = axbxcydy0 + cydyaxbx0;
             let result1 = axbxcydy1 + cydyaxbx1;
             Self(simd_swizzle!(result0, result1, [0, 1, 4, 5]))
+        {% elif self_t == "Mat2" and is_neon %}
+            unimplemented!();
         {% else %}
             Self::from_cols(
                 {% for axis in axes %}
@@ -2117,6 +2153,8 @@ impl {{ self_t }} {
             Self(f32x4_add(self.0, rhs.0))
         {% elif self_t == "Mat2" and is_coresimd %}
             Self(self.0 + rhs.0)
+        {% elif self_t == "Mat2" and is_neon %}
+            Self(unsafe { vaddq_f32(self.0, rhs.0) })
         {% else %}
             Self::from_cols(
                 {% for axis in axes %}
@@ -2136,6 +2174,8 @@ impl {{ self_t }} {
             Self(f32x4_sub(self.0, rhs.0))
         {% elif self_t == "Mat2" and is_coresimd %}
             Self(self.0 - rhs.0)
+        {% elif self_t == "Mat2" and is_neon %}
+            Self(unsafe { vsubq_f32(self.0, rhs.0) })
         {% else %}
             Self::from_cols(
                 {% for axis in axes %}
@@ -2155,6 +2195,8 @@ impl {{ self_t }} {
             Self(f32x4_mul(self.0, f32x4_splat(rhs)))
         {% elif self_t == "Mat2" and is_coresimd %}
             Self(self.0 * f32x4::splat(rhs))
+        {% elif self_t == "Mat2" and is_neon %}
+            Self(unsafe { vmulq_f32(self.0, vld1q_dup_f32(&rhs)) })
         {% else %}
             Self::from_cols(
                 {% for axis in axes %}
@@ -2174,6 +2216,8 @@ impl {{ self_t }} {
             Self(f32x4_div(self.0, f32x4_splat(rhs)))
         {% elif self_t == "Mat2" and is_coresimd %}
             Self(self.0 / f32x4::splat(rhs))
+        {% elif self_t == "Mat2" and is_neon %}
+            Self(unsafe { vdivq_f32(self.0, vld1q_dup_f32(&rhs)) })
         {% else %}
             let rhs = {{ col_t }}::splat(rhs);
             Self::from_cols(
@@ -2281,6 +2325,8 @@ impl Neg for {{ self_t }} {
             Self(f32x4_neg(self.0))
         {% elif self_t == "Mat2" and is_coresimd %}
             Self(-self.0)
+        {% elif self_t == "Mat2" and is_neon %}
+            Self(unsafe { vnegq_f32(self.0) })
         {% else %}
             Self::from_cols(
                 {% for axis in axes %}
