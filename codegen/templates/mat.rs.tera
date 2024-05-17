@@ -47,7 +47,7 @@
             {% set simd_t = "v128" %}
         {% elif is_coresimd %}
             {% set simd_t = "f32x4" %}
-        {% elfif is_neon %}
+        {% elif is_neon %}
             {% set simd_t = "float32x4_t" %}
         {% endif %}
     {% endif %}
@@ -114,11 +114,12 @@ use core::arch::x86_64::*;
 use core::arch::wasm32::*;
 {% elif is_coresimd %}
 use core::simd::*;
-{% elif is_neon and  %}
+{% elif is_neon %}
 use core::arch::aarch64::*;
 {% endif %}
 
-{% if self_t == "Mat2" and is_sse2 or is_neon %}
+{% set is_sse2_or_neon = is_sse2 or is_neon %}
+{% if self_t == "Mat2" and is_sse2_or_neon %}
 #[repr(C)]
 union UnionCast {
     a: [f32; 4],
@@ -257,12 +258,14 @@ impl {{ self_t }} {
             {%- endfor %}
         {%- endfor %}
     ) -> Self {
-        {% if self_t == "Mat2" and is_sse2 or is_neon %}
+        {% if self_t == "Mat2" and is_sse2 %}
             unsafe { UnionCast { a: [m00, m01, m10, m11] }.v }
         {% elif self_t == "Mat2" and is_wasm32 %}
             Self(f32x4(m00, m01, m10, m11))
         {% elif self_t == "Mat2" and is_coresimd %}
             Self(f32x4::from_array([m00, m01, m10, m11]))
+        {% elif self_t == "Mat2" and is_neon %}
+            unsafe { UnionCast { a: [m00, m01, m10, m11] }.v }
         {% else %}
         Self {
             {% for i in range(end = dim) %}
@@ -284,12 +287,14 @@ impl {{ self_t }} {
             {{ axis }}: {{ col_t }},
         {% endfor %}
     ) -> Self {
-        {% if self_t == "Mat2" and is_sse2 or is_neon %}
+        {% if self_t == "Mat2" and is_sse2 %}
             unsafe { UnionCast { a: [x_axis.x, x_axis.y, y_axis.x, y_axis.y] }.v }
         {% elif self_t == "Mat2" and is_wasm32 %}
             Self(f32x4(x_axis.x, x_axis.y, y_axis.x, y_axis.y))
         {% elif self_t == "Mat2" and is_coresimd %}
             Self(f32x4::from_array([x_axis.x, x_axis.y, y_axis.x, y_axis.y]))
+        {% elif self_t == "Mat2" and is_neon %}
+            unsafe { UnionCast { a: [x_axis.x, x_axis.y, y_axis.x, y_axis.y] }.v }
         {% else %}
         Self {
             {% for axis in axes %}
@@ -1044,8 +1049,9 @@ impl {{ self_t }} {
         {% elif self_t == "Mat2" and is_coresimd %}
             Self(simd_swizzle!(self.0, [0, 2, 1, 3]))
         {% elif self_t == "Mat2" and is_neon %}
+            use core::mem::MaybeUninit;
             unsafe {
-                let mut out: MaybeUninit<[float32x4;2]> = MaybeUninit::uninit();
+                let mut out: MaybeUninit<[float32x4_t; 2]> = MaybeUninit::uninit();
                 vst2q_f32(out.as_mut_ptr().cast(), float32x4x2_t(self.0, vextq_f32(self.0, self.0, 2)));
                 Self(out.assume_init()[0])
             }
@@ -1214,7 +1220,7 @@ impl {{ self_t }} {
             let prod = abcd * dcba;
             let det = prod - simd_swizzle!(prod, [1, 1, 1, 1]);
             det[0]
-        {$ elif self_t == "Mat2" and is_neon %}
+        {% elif self_t == "Mat2" and is_neon %}
             unsafe {
                 let abcd = self.0;
                 let badc = vrev64q_f32(abcd);
@@ -1478,8 +1484,11 @@ impl {{ self_t }} {
                 let det = vdupq_laneq_f32(sub, 0);
                 let tmp = vdivq_f32(SIGN, det);
                 glam_assert!(Mat2(tmp).is_finite());
-                unimplemented!();
                 //let dbca = simd_swizzle!(abcd, [3, 1, 2, 0]);
+                let dbca = vsetq_lane_f32(
+                    vgetq_lane_f32(abcd, 0), 
+                    vsetq_lane_f32(
+                        vgetq_lane_f32(abcd, 3), abcd, 1), 3);
                 Self(vmulq_f32(dbca, tmp))
             }
         {% elif self_t == "Mat4" and is_sse2 %}
@@ -2039,7 +2048,15 @@ impl {{ self_t }} {
             let result = axbxcydy.add(cydyaxbx);
             unsafe { *(&result as *const f32x4 as *const Vec2) }
         {% elif self_t == "Mat2" and is_neon %}
-            unimplemented!();
+            unsafe {
+                let abcd = self.0;
+                let xxyy = vld1q_f32([rhs.x, rhs.x, rhs.y, rhs.y].as_ptr());
+                let axbxcydy = vmulq_f32(abcd, xxyy);
+                // let cydyaxbx = simd_swizzle!(axbxcydy, [2, 3, 0, 1]);
+                let cydyaxbx = vextq_f32(axbxcydy, axbxcydy, 2);
+                let result = vaddq_f32(axbxcydy, cydyaxbx);
+                *(&result as *const float32x4_t as *const Vec2)
+            }
         {% elif dim == 2 %}
             #[allow(clippy::suspicious_operation_groupings)]
             {{ col_t }}::new(
@@ -2133,7 +2150,20 @@ impl {{ self_t }} {
             let result1 = axbxcydy1 + cydyaxbx1;
             Self(simd_swizzle!(result0, result1, [0, 1, 4, 5]))
         {% elif self_t == "Mat2" and is_neon %}
-            unimplemented!();
+            unsafe {
+                let abcd = self.0;
+                let xxyy0 = vzip1q_f32(rhs.0, rhs.0);
+                let xxyy1 = vzip2q_f32(rhs.0, rhs.0);
+                let axbxcydy0 = vmulq_f32(abcd, xxyy0);
+                let axbxcydy1 = vmulq_f32(abcd, xxyy1);
+                let cydyaxbx0 = vextq_f32(axbxcydy0, axbxcydy0, 2);
+                let cydyaxbx1 = vextq_f32(axbxcydy1, axbxcydy1, 2);
+                let result0 = vmulq_f32(axbxcydy0, cydyaxbx0);
+                let result1 = vmulq_f32(axbxcydy1, cydyaxbx1);
+                Self(vreinterpretq_f32_u64(
+                        vsetq_lane_u64(vgetq_lane_u64(vreinterpretq_u64_f32(result1), 0),
+                        vreinterpretq_u64_f32(result0), 1)))
+            }
         {% else %}
             Self::from_cols(
                 {% for axis in axes %}
