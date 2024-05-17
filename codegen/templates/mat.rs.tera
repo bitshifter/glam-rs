@@ -2158,8 +2158,8 @@ impl {{ self_t }} {
                 let axbxcydy1 = vmulq_f32(abcd, xxyy1);
                 let cydyaxbx0 = vextq_f32(axbxcydy0, axbxcydy0, 2);
                 let cydyaxbx1 = vextq_f32(axbxcydy1, axbxcydy1, 2);
-                let result0 = vmulq_f32(axbxcydy0, cydyaxbx0);
-                let result1 = vmulq_f32(axbxcydy1, cydyaxbx1);
+                let result0 = vaddq_f32(axbxcydy0, cydyaxbx0);
+                let result1 = vaddq_f32(axbxcydy1, cydyaxbx1);
                 Self(vreinterpretq_f32_u64(
                         vsetq_lane_u64(vgetq_lane_u64(vreinterpretq_u64_f32(result1), 0),
                         vreinterpretq_u64_f32(result0), 1)))
