@@ -224,15 +224,13 @@ impl Mat2 {
     #[inline]
     #[must_use]
     pub fn transpose(&self) -> Self {
-        use core::mem::MaybeUninit;
-        unsafe {
-            let mut out: MaybeUninit<[float32x4_t; 2]> = MaybeUninit::uninit();
-            vst2q_f32(
-                out.as_mut_ptr().cast(),
-                float32x4x2_t(self.0, vextq_f32(self.0, self.0, 2)),
-            );
-            Self(out.assume_init()[0])
-        }
+        Self(unsafe {
+            vsetq_lane_f32(
+                vgetq_lane_f32(self.0, 2),
+                vsetq_lane_f32(vgetq_lane_f32(self.0, 1), self.0, 2),
+                1,
+            )
+        })
     }
 
     /// Returns the determinant of `self`.

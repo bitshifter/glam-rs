@@ -1049,12 +1049,13 @@ impl {{ self_t }} {
         {% elif self_t == "Mat2" and is_coresimd %}
             Self(simd_swizzle!(self.0, [0, 2, 1, 3]))
         {% elif self_t == "Mat2" and is_neon %}
-            use core::mem::MaybeUninit;
-            unsafe {
-                let mut out: MaybeUninit<[float32x4_t; 2]> = MaybeUninit::uninit();
-                vst2q_f32(out.as_mut_ptr().cast(), float32x4x2_t(self.0, vextq_f32(self.0, self.0, 2)));
-                Self(out.assume_init()[0])
-            }
+            Self(unsafe {
+                vsetq_lane_f32(
+                    vgetq_lane_f32(self.0, 2),
+                    vsetq_lane_f32(vgetq_lane_f32(self.0, 1), self.0, 2),
+                    1,
+                )
+            })
         {% elif self_t == "Mat3A" and is_sse2 %}
             unsafe {
                 let tmp0 = _mm_shuffle_ps(self.x_axis.0, self.y_axis.0, 0b01_00_01_00);
