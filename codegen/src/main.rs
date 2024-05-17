@@ -109,6 +109,9 @@ fn main() -> anyhow::Result<()> {
 
         let full_output_path = workdir.join(output_path);
 
+        let output_dir = full_output_path.parent().unwrap();
+        std::fs::create_dir_all(output_dir)?;
+
         if check {
             match std::fs::read_to_string(&full_output_path) {
                 Ok(original_str) => {

@@ -148,8 +148,8 @@ impl Vec4 {
     /// Panics if `slice` is less than 4 elements long.
     #[inline]
     pub fn write_to_slice(self, slice: &mut [f32]) {
+        assert!(slice.len() >= 4);
         unsafe {
-            assert!(slice.len() >= 4);
             _mm_storeu_ps(slice.as_mut_ptr(), self.0);
         }
     }
@@ -381,24 +381,17 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn signum(self) -> Self {
-        unsafe {
-            let result = Self(_mm_or_ps(_mm_and_ps(self.0, Self::NEG_ONE.0), Self::ONE.0));
-            let mask = self.is_nan_mask();
-            Self::select(mask, self, result)
-        }
+        let result = Self(unsafe { _mm_or_ps(_mm_and_ps(self.0, Self::NEG_ONE.0), Self::ONE.0) });
+        let mask = self.is_nan_mask();
+        Self::select(mask, self, result)
     }
 
     /// Returns a vector with signs of `rhs` and the magnitudes of `self`.
     #[inline]
     #[must_use]
     pub fn copysign(self, rhs: Self) -> Self {
-        unsafe {
-            let mask = Self::splat(-0.0);
-            Self(_mm_or_ps(
-                _mm_and_ps(rhs.0, mask.0),
-                _mm_andnot_ps(mask.0, self.0),
-            ))
-        }
+        let mask = Self::splat(-0.0);
+        Self(unsafe { _mm_or_ps(_mm_and_ps(rhs.0, mask.0), _mm_andnot_ps(mask.0, self.0)) })
     }
 
     /// Returns a bitmask with the lowest 4 bits set to the sign bits from the elements of `self`.
@@ -1228,14 +1221,14 @@ impl fmt::Debug for Vec4 {
 }
 
 impl From<Vec4> for __m128 {
-    #[inline]
+    #[inline(always)]
     fn from(t: Vec4) -> Self {
         t.0
     }
 }
 
 impl From<__m128> for Vec4 {
-    #[inline]
+    #[inline(always)]
     fn from(t: __m128) -> Self {
         Self(t)
     }

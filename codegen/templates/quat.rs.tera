@@ -8,6 +8,8 @@
         {% set simd_t = "v128" %}
     {% elif is_coresimd %}
         {% set simd_t = "f32x4" %}
+    {% elif is_neon %}
+        {% set simd_t = "float32x4_t" %}
     {% endif %}
 {% endif %}
 
@@ -43,6 +45,8 @@ use crate::{
         wasm32::*,
     {% elif is_coresimd %}
         coresimd::*,
+    {% elif is_neon %}
+        neon::*,
     {% endif %}
 };
 
@@ -55,6 +59,8 @@ use core::arch::x86_64::*;
 use core::arch::wasm32::*;
 {% elif is_coresimd %}
 use core::simd::*;
+{% elif is_neon %}
+use core::arch::aarch64::*;
 {% endif %}
 
 #[cfg(not(target_arch = "spirv"))]
@@ -67,7 +73,7 @@ use core::ops::{
     Add, Div, Mul, MulAssign, Neg, Sub
 };
 
-{% if is_sse2 %}
+{% if is_sse2 or is_neon %}
 #[repr(C)]
 union UnionCast {
     a: [f32; 4],
@@ -146,6 +152,10 @@ impl {{ self_t }} {
             Self(f32x4(x, y, z, w))
         {% elif is_coresimd %}
             Self(f32x4::from_array([x, y, z, w]))
+        {% elif is_neon %}
+            unsafe { UnionCast { a: [x, y, z, w] }.v }
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 
@@ -197,6 +207,9 @@ impl {{ self_t }} {
         {% if is_sse2 %}
             assert!(slice.len() >= 4);
             Self(unsafe { _mm_loadu_ps(slice.as_ptr()) })
+        {% elif is_neon %}
+            assert!(slice.len() >= 4);
+            Self(unsafe { vld1q_f32(slice.as_ptr()) })
         {% else %}
             Self::from_xyzw(slice[0], slice[1], slice[2], slice[3])
         {% endif %}
@@ -212,6 +225,9 @@ impl {{ self_t }} {
         {% if is_sse2 %}
             assert!(slice.len() >= 4);
             unsafe { _mm_storeu_ps(slice.as_mut_ptr(), self.0) }
+        {% elif is_neon %}
+            assert!(slice.len() >= 4);
+            unsafe { vst1q_f32(slice.as_mut_ptr(), self.0) }
         {% else %}
             slice[0] = self.x;
             slice[1] = self.y;
@@ -533,6 +549,11 @@ impl {{ self_t }} {
         {% elif is_coresimd %}
             const SIGN: f32x4 = f32x4::from_array([-1.0, -1.0, -1.0, 1.0]);
             Self(self.0.mul(SIGN))
+        {% elif is_neon %}
+            const SIGN: float32x4_t = f32x4_from_array([-1.0, -1.0, -1.0, 1.0]);
+            Self(unsafe { vmulq_f32(self.0, SIGN) })
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 
@@ -736,6 +757,29 @@ impl {{ self_t }} {
             let bias = f32x4_bitand(dot, NEG_ZERO);
             let interpolated = start + ((f32x4_bitxor(end, bias) - start) * f32x4::splat(s));
             {{ self_t }}(interpolated).normalize()
+        {% elif is_neon %}
+            const NEG_ZERO: float32x4_t = f32x4_from_array([-0.0; 4]);
+            let start = self.0;
+            let end = end.0;
+            unsafe {
+                let dot = dot4_into_f32x4(start, end);
+                // Calculate the bias, if the dot product is positive or zero, there is no bias
+                // but if it is negative, we want to flip the 'end' rotation XYZW components
+                let bias = vandq_u32(vreinterpretq_u32_f32(dot), vreinterpretq_u32_f32(NEG_ZERO));
+                let interpolated = vaddq_f32(
+                    vmulq_f32(
+                        vsubq_f32(
+                            vreinterpretq_f32_u32(veorq_u32(vreinterpretq_u32_f32(end), bias)),
+                            start,
+                        ),
+                        vld1q_dup_f32(&s),
+                    ),
+                    start,
+                );
+                {{ self_t }}(interpolated).normalize()
+            }
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 
@@ -834,6 +878,23 @@ impl {{ self_t }} {
                 let theta_sin = simd_swizzle!(tmp, [2, 2, 2, 2]);
 
                 Self(self.0.mul(scale1).add(end.0.mul(scale2)).div(theta_sin))
+            {% elif is_neon %}
+                let x = math::sin(theta * (1.0 - s));
+                let y = math::sin(theta * s);
+                let z = math::sin(theta);
+                let w = 0.0;
+                unsafe {
+                    let tmp = vld1q_f32([x, y, z, w].as_ptr());
+
+                    let scale1 = vdupq_laneq_f32(tmp, 0);
+                    let scale2 = vdupq_laneq_f32(tmp, 1);
+                    let theta_sin = vdupq_laneq_f32(tmp, 2);
+
+                    Self(vdivq_f32(
+                        vaddq_f32(vmulq_f32(self.0, scale1), vmulq_f32(end.0, scale2)),
+                        theta_sin,
+                    ))
+                }
             {% endif %}
         }
     }
@@ -984,6 +1045,47 @@ impl {{ self_t }} {
             let nlyrz_lxrz_lwrz_wlzrz = lyrz_lxrz_lwrz_lzrz * CONTROL_YXWZ;
             let result1 = lzry_lwry_nlxry_nlyry + nlyrz_lxrz_lwrz_wlzrz;
             Self(result0 + result1)
+        {% elif is_neon %}
+            unsafe {
+                let lhs = self.0;
+                let rhs = rhs.0;
+
+                const CONTROL_WZYX: float32x4_t = f32x4_from_array([1.0, -1.0, 1.0, -1.0]);
+                const CONTROL_ZWXY: float32x4_t = f32x4_from_array([1.0, 1.0, -1.0, -1.0]);
+                const CONTROL_YXWZ: float32x4_t = f32x4_from_array([-1.0, 1.0, 1.0, -1.0]);
+
+                let r_xxxx = vdupq_laneq_f32(lhs, 0);
+                let r_yyyy = vdupq_laneq_f32(lhs, 1);
+                let r_zzzz = vdupq_laneq_f32(lhs, 2);
+                let r_wwww = vdupq_laneq_f32(lhs, 3);
+
+                let lxrw_lyrw_lzrw_lwrw = vmulq_f32(r_wwww, rhs);
+                //let l_wzyx = simd_swizzle!(rhs, [3, 2, 1, 0]);
+                let l_wzyx = vrev64q_f32(rhs);
+                let l_wzyx = vextq_f32(l_wzyx, l_wzyx, 2);
+
+                let lwrx_lzrx_lyrx_lxrx = vmulq_f32(r_xxxx, l_wzyx);
+                //let l_zwxy = simd_swizzle!(l_wzyx, [1, 0, 3, 2]);
+                let l_zwxy = vrev64q_f32(l_wzyx);
+
+                let lwrx_nlzrx_lyrx_nlxrx = vmulq_f32(lwrx_lzrx_lyrx_lxrx, CONTROL_WZYX);
+
+                let lzry_lwry_lxry_lyry = vmulq_f32(r_yyyy, l_zwxy);
+                // let l_yxwz = simd_swizzle!(l_zwxy, [3, 2, 1, 0]);
+                let l_yxwz = vrev64q_f32(l_zwxy);
+                let l_yxwz = vextq_f32(l_yxwz, l_yxwz, 2);
+
+                let lzry_lwry_nlxry_nlyry = vmulq_f32(lzry_lwry_lxry_lyry, CONTROL_ZWXY);
+
+                let lyrz_lxrz_lwrz_lzrz = vmulq_f32(r_zzzz, l_yxwz);
+                let result0 = vaddq_f32(lxrw_lyrw_lzrw_lwrw, lwrx_nlzrx_lyrx_nlxrx);
+
+                let nlyrz_lxrz_lwrz_wlzrz = vmulq_f32(lyrz_lxrz_lwrz_lzrz, CONTROL_YXWZ);
+                let result1 = vaddq_f32(lzry_lwry_nlxry_nlyry, nlyrz_lxrz_lwrz_wlzrz);
+                Self(vaddq_f32(result0, result1))
+            }
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 
@@ -1043,6 +1145,21 @@ impl {{ self_t }} {
                     .add(b.mul(dot3_into_f32x4(rhs.0, b).mul(TWO)))
                     .add(Vec3A(b).cross(rhs).0.mul(w.mul(TWO))),
             )
+        {% elif is_neon %}
+            unsafe {
+                let w = self.w;
+                let b = Vec3A::from(self.0);
+                let b2 = b.length_squared();
+                Vec3A(vaddq_f32(
+                    vaddq_f32(
+                        vmulq_n_f32(rhs.0, (w * w) - b2),
+                        vmulq_n_f32(b.0, rhs.dot(b) * 2.0),
+                    ),
+                    vmulq_n_f32(b.cross(rhs).0, w * 2.0),
+                ))
+            }
+        {% else %}
+            unimplemented!()
         {% endif %}
     }
 

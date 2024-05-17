@@ -46,81 +46,49 @@ impl Vec2Swizzles for U16Vec2 {
     #[inline]
     #[must_use]
     fn xxx(self) -> U16Vec3 {
-        U16Vec3 {
-            x: self.x,
-            y: self.x,
-            z: self.x,
-        }
+        U16Vec3::new(self.x, self.x, self.x)
     }
 
     #[inline]
     #[must_use]
     fn xxy(self) -> U16Vec3 {
-        U16Vec3 {
-            x: self.x,
-            y: self.x,
-            z: self.y,
-        }
+        U16Vec3::new(self.x, self.x, self.y)
     }
 
     #[inline]
     #[must_use]
     fn xyx(self) -> U16Vec3 {
-        U16Vec3 {
-            x: self.x,
-            y: self.y,
-            z: self.x,
-        }
+        U16Vec3::new(self.x, self.y, self.x)
     }
 
     #[inline]
     #[must_use]
     fn xyy(self) -> U16Vec3 {
-        U16Vec3 {
-            x: self.x,
-            y: self.y,
-            z: self.y,
-        }
+        U16Vec3::new(self.x, self.y, self.y)
     }
 
     #[inline]
     #[must_use]
     fn yxx(self) -> U16Vec3 {
-        U16Vec3 {
-            x: self.y,
-            y: self.x,
-            z: self.x,
-        }
+        U16Vec3::new(self.y, self.x, self.x)
     }
 
     #[inline]
     #[must_use]
     fn yxy(self) -> U16Vec3 {
-        U16Vec3 {
-            x: self.y,
-            y: self.x,
-            z: self.y,
-        }
+        U16Vec3::new(self.y, self.x, self.y)
     }
 
     #[inline]
     #[must_use]
     fn yyx(self) -> U16Vec3 {
-        U16Vec3 {
-            x: self.y,
-            y: self.y,
-            z: self.x,
-        }
+        U16Vec3::new(self.y, self.y, self.x)
     }
 
     #[inline]
     #[must_use]
     fn yyy(self) -> U16Vec3 {
-        U16Vec3 {
-            x: self.y,
-            y: self.y,
-            z: self.y,
-        }
+        U16Vec3::new(self.y, self.y, self.y)
     }
 
     #[inline]
