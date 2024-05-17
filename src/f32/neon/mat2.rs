@@ -272,7 +272,7 @@ impl Mat2 {
             //let dbca = simd_swizzle!(abcd, [3, 1, 2, 0]);
             let dbca = vsetq_lane_f32(
                 vgetq_lane_f32(abcd, 0),
-                vsetq_lane_f32(vgetq_lane_f32(abcd, 3), abcd, 1),
+                vsetq_lane_f32(vgetq_lane_f32(abcd, 3), abcd, 0),
                 3,
             );
             Self(vmulq_f32(dbca, tmp))
