@@ -2,7 +2,17 @@
 use core::hint::black_box;
 use iai;
 
-use glam::{BVec3A, Mat4, Quat, Vec3A, Vec4};
+use glam::{BVec3A, Mat2, Mat3A, Mat4, Quat, Vec2, Vec3A, Vec4};
+
+#[inline]
+fn mat2() -> Mat2 {
+    Mat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0])
+}
+
+#[inline]
+fn mat3a() -> Mat3A {
+    Mat3A::from_cols_array(&[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0])
+}
 
 #[inline]
 fn mat4() -> Mat4 {
@@ -17,6 +27,11 @@ fn quat() -> Quat {
 }
 
 #[inline]
+fn vec2() -> Vec2 {
+    Vec2::new(1.0, 2.0)
+}
+
+#[inline]
 fn vec3a() -> Vec3A {
     Vec3A::new(1.0, 2.0, 3.0)
 }
@@ -24,6 +39,46 @@ fn vec3a() -> Vec3A {
 #[inline]
 fn vec4() -> Vec4 {
     Vec4::new(1.0, 2.0, 3.0, 4.0)
+}
+
+fn iai_bench_mat2_determinant() -> f32 {
+    black_box(mat2()).determinant()
+}
+
+fn iai_bench_mat2_inverse() -> Mat2 {
+    black_box(mat2()).inverse()
+}
+
+fn iai_bench_mat2_transpose() -> Mat2 {
+    black_box(mat2()).transpose()
+}
+
+fn iai_bench_mat2_mul_mat2() -> Mat2 {
+    black_box(mat2()) * black_box(mat2())
+}
+
+fn iai_bench_mat2_mul_vec2() -> Vec2 {
+    black_box(mat2()) * black_box(vec2())
+}
+
+fn iai_bench_mat3a_determinant() -> f32 {
+    black_box(mat3a()).determinant()
+}
+
+fn iai_bench_mat3a_inverse() -> Mat3A {
+    black_box(mat3a()).inverse()
+}
+
+fn iai_bench_mat3a_transpose() -> Mat3A {
+    black_box(mat3a()).transpose()
+}
+
+fn iai_bench_mat3a_mul_mat3a() -> Mat3A {
+    black_box(mat3a()) * black_box(mat3a())
+}
+
+fn iai_bench_mat3a_mul_vec3a() -> Vec3A {
+    black_box(mat3a()) * black_box(vec3a())
 }
 
 fn iai_bench_mat4_determinant() -> f32 {
@@ -91,6 +146,16 @@ fn iai_bench_vec4_normalize() -> Vec4 {
 // }
 
 iai::main!(
+    iai_bench_mat2_determinant,
+    iai_bench_mat2_inverse,
+    iai_bench_mat2_mul_mat2,
+    iai_bench_mat2_mul_vec2,
+    iai_bench_mat2_transpose,
+    iai_bench_mat3a_determinant,
+    iai_bench_mat3a_inverse,
+    iai_bench_mat3a_mul_mat3a,
+    iai_bench_mat3a_mul_vec3a,
+    iai_bench_mat3a_transpose,
     iai_bench_mat4_determinant,
     iai_bench_mat4_inverse,
     iai_bench_mat4_mul_mat4,
