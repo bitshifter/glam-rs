@@ -66,16 +66,14 @@ impl BVec4A {
     #[inline]
     #[must_use]
     pub fn bitmask(self) -> u32 {
-        let movemask = unsafe {
+        unsafe {
             let mma = vandq_u32(self.0, vld1q_u32([1, 2, 4, 8].as_ptr())); // [0 1 2 3]
             let mmb = vextq_u32(mma, mma, 2); // [2 3 0 1]
             let mmc = vorrq_u32(mma, mmb); // [0+2 1+3 0+2 1+3]
             let mmd = vextq_u32(mmc, mmc, 3); // [1+3 0+2 1+3 0+2]
             let mme = vorrq_u32(mmc, mmd); // [0+1+2+3 ...]
             vgetq_lane_u32(mme, 0)
-        };
-
-        movemask
+        }
     }
 
     /// Returns true if any of the elements are true, false otherwise.
