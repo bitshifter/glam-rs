@@ -457,7 +457,9 @@ pub fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
         ),
         (
             "src/swizzles/neon/vec3a_impl.rs",
-            ContextBuilder::new_vec3a_swizzle_impl().target_neon().build(),
+            ContextBuilder::new_vec3a_swizzle_impl()
+                .target_neon()
+                .build(),
         ),
         (
             "src/swizzles/sse2/vec3a_impl.rs",
