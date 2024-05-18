@@ -95,9 +95,9 @@ pub fn affine3a_from_srt(c: &mut Criterion) {
             unsafe {
                 let data = inputs.get_unchecked(i);
                 *outputs.get_unchecked_mut(i) =
-                    Affine3A::from_scale_rotation_translation(data.0, data.1, data.2)
+                    Affine3A::from_scale_rotation_translation(data.0, data.1, data.2);
             }
-        })
+        });
     });
 }
 

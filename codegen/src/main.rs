@@ -71,7 +71,7 @@ fn main() -> anyhow::Result<()> {
     if let Some(glob) = glob {
         for k in output_pairs.keys() {
             if glob.is_match(k) {
-                output_paths.push(k)
+                output_paths.push(k);
             }
         }
         if output_paths.is_empty() {
@@ -79,7 +79,7 @@ fn main() -> anyhow::Result<()> {
         };
     } else {
         for k in output_pairs.keys() {
-            output_paths.push(k)
+            output_paths.push(k);
         }
     };
 
