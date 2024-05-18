@@ -15,11 +15,6 @@ jobs:
       - name: rustfmt
         run: cargo fmt -- --check --color always
 
-      # run clippy to verify we have no warnings
-      - run: cargo fetch
-      - name: cargo clippy
-        run: cargo clippy --workspace --all-targets --all-features -- -D warnings
-
       # check that codegen output matches committed source files
       - name: codegen
         run: cargo run --release -p codegen -- --check
@@ -28,6 +23,21 @@ jobs:
         env:
           RUSTDOCFLAGS: -Dwarnings
         run: cargo doc --all --all-features --no-deps --document-private-items --features rkyv/size_32
+
+  clippy:
+    name: Clippy
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: rustup update --no-self-update stable
+      - run: rustup default stable
+
+      - run: cargo fetch
+      - run: cargo clippy --workspace --all-targets --all-features -- -D warnings
 
   test:
     name: Test
