@@ -841,21 +841,21 @@ impl DVec2 {
         }
     }
 
-    /// Rotates towards `rhs` based on the value `d`.
+    /// Rotates towards `rhs` up to `max_angle` (in radians).
     ///
-    /// When `d` is `0.0`, the result will be equal to `self`. When `d` is equal to
-    /// `self.angle_between(rhs)`, the result will be equal to `rhs`. If `d` is negative,
+    /// When `max_angle` is `0.0`, the result will be equal to `self`. When `max_angle` is equal to
+    /// `self.angle_between(rhs)`, the result will be equal to `rhs`. If `max_angle` is negative,
     /// rotates towards the exact opposite of `rhs`. Will not go past the target.
     #[inline]
     #[must_use]
-    pub fn rotate_towards(&self, rhs: Self, d: f64) -> Self {
+    pub fn rotate_towards(&self, rhs: Self, max_angle: f64) -> Self {
         let a = self.angle_between(rhs);
         let abs_a = math::abs(a);
         if abs_a <= 1e-4 {
             return rhs;
         }
-        // When `d < 0`, rotate no further than `PI` radians away
-        let angle = d.clamp(abs_a - core::f64::consts::PI, abs_a) * math::signum(a);
+        // When `max_angle < 0`, rotate no further than `PI` radians away
+        let angle = max_angle.clamp(abs_a - core::f64::consts::PI, abs_a) * math::signum(a);
         Self::from_angle(angle).rotate(*self)
     }
 
