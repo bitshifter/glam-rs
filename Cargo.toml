@@ -57,10 +57,10 @@ rand_xoshiro = "0.6"
 # Set a size_xx feature so that this crate compiles properly with --all-targets --all-features
 rkyv = { version = "0.7", default-features = false, features = ["size_32"] }
 serde_json = "1.0"
-iai = { version = "0.1" }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
 criterion = { version = "0.5", features = ["html_reports"] }
+iai-callgrind = "0.11.0"
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
 wasm-bindgen-test = "0.3.0"
