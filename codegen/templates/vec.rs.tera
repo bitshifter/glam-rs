@@ -210,7 +210,7 @@ use std::simd::StdFloat;
 use core::arch::aarch64::*;
 {% endif %}
 
-{% if is_sse2 or is_wasm32 or is_neon %}
+{% if is_sse2 or is_neon %}
 #[repr(C)]
 union UnionCast {
     a: [f32; 4],
@@ -402,6 +402,8 @@ impl {{ self_t }} {
                     {{ c }}: v,
                 {% endfor %}
             }
+        {% elif is_wasm32 %}
+            Self(f32x4(v, v, v, v))
         {% elif is_coresimd %}
             Self(Simd::from_array([v; 4]))
         {% else %}
@@ -1233,7 +1235,7 @@ impl {{ self_t }} {
             Self(unsafe { _mm_or_ps(_mm_and_ps(rhs.0, mask.0), _mm_andnot_ps(mask.0, self.0)) })
         {% elif is_wasm32 %}
             let mask = Self::splat(-0.0);
-            Self(unsafe { v128_or(v128_and(rhs.0, mask.0), v128_andnot(self.0, mask.0)) })
+            Self(v128_or(v128_and(rhs.0, mask.0), v128_andnot(self.0, mask.0)))
         {% elif is_neon %}
             let mask = Self::splat(-0.0);
             Self(unsafe {

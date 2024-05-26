@@ -9,12 +9,6 @@ use core::{f32, ops::*};
 
 use core::arch::wasm32::*;
 
-#[repr(C)]
-union UnionCast {
-    a: [f32; 4],
-    v: Vec3A,
-}
-
 /// Creates a 3-dimensional vector.
 #[inline(always)]
 #[must_use]
@@ -92,7 +86,7 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub const fn splat(v: f32) -> Self {
-        unsafe { UnionCast { a: [v; 4] }.v }
+        Self(f32x4(v, v, v, v))
     }
 
     /// Creates a vector from the elements in `if_true` and `if_false`, selecting which to use
@@ -389,7 +383,10 @@ impl Vec3A {
     #[must_use]
     pub fn copysign(self, rhs: Self) -> Self {
         let mask = Self::splat(-0.0);
-        Self(unsafe { v128_or(v128_and(rhs.0, mask.0), v128_andnot(self.0, mask.0)) })
+        Self(v128_or(
+            v128_and(rhs.0, mask.0),
+            v128_andnot(self.0, mask.0),
+        ))
     }
 
     /// Returns a bitmask with the lowest 3 bits set to the sign bits from the elements of `self`.
