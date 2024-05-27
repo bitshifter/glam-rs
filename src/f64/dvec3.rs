@@ -791,7 +791,7 @@ impl DVec3 {
     #[inline]
     #[must_use]
     pub fn clamp_length(self, min: f64, max: f64) -> Self {
-        glam_assert!(0 <= min);
+        glam_assert!(0 as f64 <= min);
         glam_assert!(min <= max);
         let length_sq = self.length_squared();
         if length_sq < min * min {
@@ -811,7 +811,7 @@ impl DVec3 {
     #[inline]
     #[must_use]
     pub fn clamp_length_max(self, max: f64) -> Self {
-        glam_assert!(0 <= max);
+        glam_assert!(0 as f64 <= max);
         let length_sq = self.length_squared();
         if length_sq > max * max {
             max * (self / math::sqrt(length_sq))
@@ -828,7 +828,7 @@ impl DVec3 {
     #[inline]
     #[must_use]
     pub fn clamp_length_min(self, min: f64) -> Self {
-        glam_assert!(0 <= min);
+        glam_assert!(0 as f64 <= min);
         let length_sq = self.length_squared();
         if length_sq < min * min {
             min * (self / math::sqrt(length_sq))

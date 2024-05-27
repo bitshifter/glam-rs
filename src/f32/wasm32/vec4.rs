@@ -762,7 +762,7 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn clamp_length(self, min: f32, max: f32) -> Self {
-        glam_assert!(0 <= min);
+        glam_assert!(0 as f32 <= min);
         glam_assert!(min <= max);
         let length_sq = self.length_squared();
         if length_sq < min * min {
@@ -782,7 +782,7 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn clamp_length_max(self, max: f32) -> Self {
-        glam_assert!(0 <= max);
+        glam_assert!(0 as f32 <= max);
         let length_sq = self.length_squared();
         if length_sq > max * max {
             max * (self / math::sqrt(length_sq))
@@ -799,7 +799,7 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn clamp_length_min(self, min: f32) -> Self {
-        glam_assert!(0 <= min);
+        glam_assert!(0 as f32 <= min);
         let length_sq = self.length_squared();
         if length_sq < min * min {
             min * (self / math::sqrt(length_sq))
