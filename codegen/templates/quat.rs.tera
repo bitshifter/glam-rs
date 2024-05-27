@@ -682,10 +682,10 @@ impl {{ self_t }} {
         math::acos_approx(math::abs(self.dot(rhs))) * 2.0
     }
     
-    /// Rotates towards `rhs` based on the value `d`.
+    /// Rotates towards `rhs` up to `max_angle` (in radians).
     ///
-    /// When `d` is `0.0`, the result will be equal to `self`. When `d` is equal to
-    /// `self.angle_between(rhs)`, the result will be equal to `rhs`. If `d` is negative,
+    /// When `max_angle` is `0.0`, the result will be equal to `self`. When `max_angle` is equal to
+    /// `self.angle_between(rhs)`, the result will be equal to `rhs`. If `max_angle` is negative,
     /// rotates towards the exact opposite of `rhs`. Will not go past the target.
     ///
     /// Both quaternions must be normalized.
@@ -695,13 +695,13 @@ impl {{ self_t }} {
     /// Will panic if `self` or `rhs` are not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn rotate_towards(&self, rhs: Self, d: {{ scalar_t }}) -> Self {
+    pub fn rotate_towards(&self, rhs: Self, max_angle: {{ scalar_t }}) -> Self {
         glam_assert!(self.is_normalized() && rhs.is_normalized());
         let angle = self.angle_between(rhs);
         if angle <= 1e-4 {
             return *self;
         }
-        let s = (d / angle).clamp(-1.0, 1.0);
+        let s = (max_angle / angle).clamp(-1.0, 1.0);
         self.slerp(rhs, s)
     }
 

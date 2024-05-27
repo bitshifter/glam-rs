@@ -210,7 +210,7 @@ use std::simd::StdFloat;
 use core::arch::aarch64::*;
 {% endif %}
 
-{% if is_sse2 or is_wasm32 or is_neon %}
+{% if is_sse2 or is_neon %}
 #[repr(C)]
 union UnionCast {
     a: [f32; 4],
@@ -402,6 +402,8 @@ impl {{ self_t }} {
                     {{ c }}: v,
                 {% endfor %}
             }
+        {% elif is_wasm32 %}
+            Self(f32x4(v, v, v, v))
         {% elif is_coresimd %}
             Self(Simd::from_array([v; 4]))
         {% else %}
@@ -1233,7 +1235,7 @@ impl {{ self_t }} {
             Self(unsafe { _mm_or_ps(_mm_and_ps(rhs.0, mask.0), _mm_andnot_ps(mask.0, self.0)) })
         {% elif is_wasm32 %}
             let mask = Self::splat(-0.0);
-            Self(unsafe { v128_or(v128_and(rhs.0, mask.0), v128_andnot(self.0, mask.0)) })
+            Self(v128_or(v128_and(rhs.0, mask.0), v128_andnot(self.0, mask.0)))
         {% elif is_neon %}
             let mask = Self::splat(-0.0);
             Self(unsafe {
@@ -2082,21 +2084,21 @@ impl {{ self_t }} {
 {% endif %}
 
 {% if is_signed and is_float and dim == 2 %}
-    /// Rotates towards `rhs` based on the value `d`.
+    /// Rotates towards `rhs` up to `max_angle` (in radians).
     ///
-    /// When `d` is `0.0`, the result will be equal to `self`. When `d` is equal to
-    /// `self.angle_between(rhs)`, the result will be equal to `rhs`. If `d` is negative,
+    /// When `max_angle` is `0.0`, the result will be equal to `self`. When `max_angle` is equal to
+    /// `self.angle_between(rhs)`, the result will be equal to `rhs`. If `max_angle` is negative,
     /// rotates towards the exact opposite of `rhs`. Will not go past the target.
     #[inline]
     #[must_use]
-    pub fn rotate_towards(&self, rhs: Self, d: {{ scalar_t }}) -> Self {
+    pub fn rotate_towards(&self, rhs: Self, max_angle: {{ scalar_t }}) -> Self {
         let a = self.angle_between(rhs);
         let abs_a = math::abs(a);
         if abs_a <= 1e-4 {
             return rhs;
         }
-        // When `d < 0`, rotate no further than `PI` radians away
-        let angle = d.clamp(abs_a - core::{{ scalar_t }}::consts::PI, abs_a) * math::signum(a);
+        // When `max_angle < 0`, rotate no further than `PI` radians away
+        let angle = max_angle.clamp(abs_a - core::{{ scalar_t }}::consts::PI, abs_a) * math::signum(a);
         Self::from_angle(angle).rotate(*self)
     }
 {% endif %}
