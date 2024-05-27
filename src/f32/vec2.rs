@@ -725,11 +725,11 @@ impl Vec2 {
     #[must_use]
     pub fn clamp_length(self, min: f32, max: f32) -> Self {
         glam_assert!(min <= max);
-        let length_sq = self.length_squared();
-        if length_sq < min * min {
-            min * (self / math::sqrt(length_sq))
-        } else if length_sq > max * max {
-            max * (self / math::sqrt(length_sq))
+        let length = self.length();
+        if length < min {
+            self * (min / length)
+        } else if length > max {
+            self * (max / length)
         } else {
             self
         }
