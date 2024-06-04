@@ -861,7 +861,7 @@ impl Vec3A {
         Self(unsafe { vfmaq_f32(b.0, self.0, a.0) })
     }
 
-    /// Returns the angle (in radians) between two vectors.
+    /// Returns the angle (in radians) between two vectors in the range `[0, +π]`.
     ///
     /// The inputs do not need to be unit vectors however they must be non-zero.
     #[inline]

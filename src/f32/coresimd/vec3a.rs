@@ -819,7 +819,7 @@ impl Vec3A {
         Self(self.0.mul_add(a.0, b.0))
     }
 
-    /// Returns the angle (in radians) between two vectors.
+    /// Returns the angle (in radians) between two vectors in the range `[0, +π]`.
     ///
     /// The inputs do not need to be unit vectors however they must be non-zero.
     #[inline]
