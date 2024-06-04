@@ -452,19 +452,11 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn from_mat4(m: {{ mat4_t }}) -> Self {
-        {% if self_t == "Mat3A" %}
-            Self::from_cols(
-                m.x_axis.into(),
-                m.y_axis.into(),
-                m.z_axis.into(),
-            )
-        {% else %}
-            Self::from_cols(
-                m.x_axis.xyz(),
-                m.y_axis.xyz(),
-                m.z_axis.xyz(),
-            )
-        {% endif %}
+        Self::from_cols(
+            {{ col_t }}::from_vec4(m.x_axis),
+            {{ col_t }}::from_vec4(m.y_axis),
+            {{ col_t }}::from_vec4(m.z_axis),
+        )
     }
 
     /// Creates a 3D rotation matrix from the given quaternion.
@@ -1991,7 +1983,7 @@ impl {{ self_t }} {
             res = self.y_axis.mul(rhs.yyyy()).add(res);
             res = self.z_axis.mul(rhs.zzzz()).add(res);
             res = self.w_axis.add(res);
-            res.into()
+            Vec3A::from_vec4(res)
         {% endif %}
     }
 
@@ -2008,7 +2000,7 @@ impl {{ self_t }} {
             let mut res = self.x_axis.mul(rhs.xxxx());
             res = self.y_axis.mul(rhs.yyyy()).add(res);
             res = self.z_axis.mul(rhs.zzzz()).add(res);
-            res.into()
+            Vec3A::from_vec4(res)
         {% endif %}
     }
 {% endif %}
