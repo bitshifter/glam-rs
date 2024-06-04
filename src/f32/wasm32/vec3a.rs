@@ -137,11 +137,12 @@ impl Vec3A {
         slice[2] = self.z;
     }
 
-    /// Internal method for creating a 3D vector from a 4D vector, discarding `w`.
-    #[allow(dead_code)]
+    /// Creates a [`Vec3A`] from the `x`, `y` and `z` elements of `self` discarding `w`.
+    ///
+    /// On architectures where SIMD is supported such as SSE2 on `x86_64` this conversion is a noop.
     #[inline]
     #[must_use]
-    pub(crate) fn from_vec4(v: Vec4) -> Self {
+    pub fn from_vec4(v: Vec4) -> Self {
         Self(v.0)
     }
 
@@ -1310,16 +1311,6 @@ impl From<Vec3> for Vec3A {
     #[inline]
     fn from(v: Vec3) -> Self {
         Self::new(v.x, v.y, v.z)
-    }
-}
-
-impl From<Vec4> for Vec3A {
-    /// Creates a [`Vec3A`] from the `x`, `y` and `z` elements of `self` discarding `w`.
-    ///
-    /// On architectures where SIMD is supported such as SSE2 on `x86_64` this conversion is a noop.
-    #[inline]
-    fn from(v: Vec4) -> Self {
-        Self(v.0)
     }
 }
 

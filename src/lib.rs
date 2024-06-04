@@ -76,7 +76,8 @@ use glam::{Vec3, Vec3A, Vec4};
 let v4 = Vec4::new(1.0, 2.0, 3.0, 4.0);
 
 // Convert from `Vec4` to `Vec3A`, this is a no-op if SIMD is supported.
-let v3a = Vec3A::from(v4);
+// We use an explicit method here instead of a From impl as data is lost in the conversion.
+let v3a = Vec3A::from_vec4(v4);
 assert_eq!(Vec3A::new(1.0, 2.0, 3.0), v3a);
 
 // Convert from `Vec3A` to `Vec3`.
@@ -187,7 +188,7 @@ assert_eq!(Vec3::new(2.0, 3.0, 4.0), yzw);
 // To swizzle a `Vec4` into a `Vec3A` swizzle the `Vec4` first then convert to
 // `Vec3A`. If SIMD is supported this will use a vector shuffle. The last
 // element of the shuffled `Vec4` is ignored by the `Vec3A`.
-let yzw = Vec3A::from(v.yzwx());
+let yzw = Vec3A::from_vec4(v.yzwx());
 assert_eq!(Vec3A::new(2.0, 3.0, 4.0), yzw);
 
 // You can swizzle from a `Vec4` to a `Vec2`

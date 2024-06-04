@@ -1135,7 +1135,7 @@ impl Mat4 {
         res = self.y_axis.mul(rhs.yyyy()).add(res);
         res = self.z_axis.mul(rhs.zzzz()).add(res);
         res = self.w_axis.add(res);
-        res.into()
+        Vec3A::from_vec4(res)
     }
 
     /// Transforms the give [`Vec3A`] as 3D vector.
@@ -1148,7 +1148,7 @@ impl Mat4 {
         let mut res = self.x_axis.mul(rhs.xxxx());
         res = self.y_axis.mul(rhs.yyyy()).add(res);
         res = self.z_axis.mul(rhs.zzzz()).add(res);
-        res.into()
+        Vec3A::from_vec4(res)
     }
 
     /// Transforms a 4D vector.

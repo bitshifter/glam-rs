@@ -505,6 +505,20 @@ impl {{ self_t }} {
         {{ vec3_t }}::new(self.x, self.y, z)
     }
 {% elif dim == 3 %}
+    {% if self_t == "Vec3A" %}
+    /// Creates a [`Vec3A`] from the `x`, `y` and `z` elements of `self` discarding `w`.
+    ///
+    /// On architectures where SIMD is supported such as SSE2 on `x86_64` this conversion is a noop.
+    #[inline]
+    #[must_use]
+    pub fn from_vec4(v: Vec4) -> Self {
+        {% if is_scalar %}
+            Self { x: v.x, y: v.y, z: v.z }
+        {% else %}
+            Self(v.0)
+        {% endif %}
+    }
+    {% else %}
     /// Internal method for creating a 3D vector from a 4D vector, discarding `w`.
     #[allow(dead_code)]
     #[inline]
@@ -516,6 +530,7 @@ impl {{ self_t }} {
             Self(v.0)
         {% endif %}
     }
+    {% endif %}
 
     /// Creates a 4D vector from `self` and the given `w` value.
     #[inline]
@@ -3478,24 +3493,6 @@ impl From<Vec3> for Vec3A {
     #[inline]
     fn from(v: Vec3) -> Self {
         Self::new(v.x, v.y, v.z)
-    }
-}
-
-impl From<Vec4> for Vec3A {
-    /// Creates a [`Vec3A`] from the `x`, `y` and `z` elements of `self` discarding `w`.
-    ///
-    /// On architectures where SIMD is supported such as SSE2 on `x86_64` this conversion is a noop.
-    #[inline]
-    fn from(v: Vec4) -> Self {
-        {% if is_scalar %}
-            Self {
-                x: v.x,
-                y: v.y,
-                z: v.z,
-            }
-        {% else %}
-            Self(v.0)
-        {% endif %}
     }
 }
 
