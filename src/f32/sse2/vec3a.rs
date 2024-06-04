@@ -869,7 +869,7 @@ impl Vec3A {
         )
     }
 
-    /// Returns the angle (in radians) between two vectors.
+    /// Returns the angle (in radians) between two vectors in the range `[0, +π]`.
     ///
     /// The inputs do not need to be unit vectors however they must be non-zero.
     #[inline]
