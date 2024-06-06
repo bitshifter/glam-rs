@@ -806,12 +806,23 @@ impl Vec2 {
         math::atan2(self.y, self.x)
     }
 
-    /// Returns the angle (in radians) between `self` and `rhs` in the range `[-π, +π]`.
+    #[inline]
+    #[must_use]
+    #[deprecated(
+        since = "0.27.0",
+        note = "Use angle_towards() instead, the semantics of angle_between will change in the future."
+    )]
+    pub fn angle_between(self, rhs: Self) -> f32 {
+        self.angle_towards(rhs)
+    }
+
+    /// Returns the angle or rotation (in radians) from `self` towards `rhs` in the range
+    /// `[-π, +π]`.
     ///
     /// The inputs do not need to be unit vectors however they must be non-zero.
     #[inline]
     #[must_use]
-    pub fn angle_between(self, rhs: Self) -> f32 {
+    pub fn angle_towards(self, rhs: Self) -> f32 {
         let angle = math::acos_approx(
             self.dot(rhs) / math::sqrt(self.length_squared() * rhs.length_squared()),
         );
@@ -860,7 +871,7 @@ impl Vec2 {
     #[inline]
     #[must_use]
     pub fn rotate_towards(&self, rhs: Self, max_angle: f32) -> Self {
-        let a = self.angle_between(rhs);
+        let a = self.angle_towards(rhs);
         let abs_a = math::abs(a);
         if abs_a <= 1e-4 {
             return rhs;

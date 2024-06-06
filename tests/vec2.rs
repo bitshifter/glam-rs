@@ -897,15 +897,22 @@ macro_rules! impl_vec2_float_tests {
             );
         });
 
-        glam_test!(test_angle_between, {
-            let angle = $vec2::new(1.0, 0.0).angle_between($vec2::new(0.0, 1.0));
+        glam_test!(test_angle_towards, {
+            let angle = $vec2::new(1.0, 0.0).angle_towards($vec2::new(0.0, 1.0));
             assert_approx_eq!(core::$t::consts::FRAC_PI_2, angle, 1e-6);
 
-            let angle = $vec2::new(10.0, 0.0).angle_between($vec2::new(0.0, 5.0));
+            let angle = $vec2::new(10.0, 0.0).angle_towards($vec2::new(0.0, 5.0));
             assert_approx_eq!(core::$t::consts::FRAC_PI_2, angle, 1e-6);
 
-            let angle = $vec2::new(-1.0, 0.0).angle_between($vec2::new(0.0, 1.0));
+            let angle = $vec2::new(-1.0, 0.0).angle_towards($vec2::new(0.0, 1.0));
             assert_approx_eq!(-core::$t::consts::FRAC_PI_2, angle, 1e-6);
+
+            // the angle returned by angle_towards should rotate the input vector to the
+            // destination vector
+            assert_approx_eq!(
+                $vec2::from_angle($vec2::X.angle_towards($vec2::Y)).rotate($vec2::X),
+                $vec2::Y
+            );
         });
 
         glam_test!(test_clamp_length, {
