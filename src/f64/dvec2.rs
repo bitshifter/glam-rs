@@ -810,19 +810,18 @@ impl DVec2 {
     #[must_use]
     #[deprecated(
         since = "0.27.0",
-        note = "Use angle_towards() instead, the semantics of angle_between will change in the future."
+        note = "Use angle_to() instead, the semantics of angle_between will change in the future."
     )]
     pub fn angle_between(self, rhs: Self) -> f64 {
-        self.angle_towards(rhs)
+        self.angle_to(rhs)
     }
 
-    /// Returns the angle or rotation (in radians) from `self` towards `rhs` in the range
-    /// `[-π, +π]`.
+    /// Returns the angle of rotation (in radians) from `self` to `rhs` in the range `[-π, +π]`.
     ///
     /// The inputs do not need to be unit vectors however they must be non-zero.
     #[inline]
     #[must_use]
-    pub fn angle_towards(self, rhs: Self) -> f64 {
+    pub fn angle_to(self, rhs: Self) -> f64 {
         let angle = math::acos_approx(
             self.dot(rhs) / math::sqrt(self.length_squared() * rhs.length_squared()),
         );
@@ -871,7 +870,7 @@ impl DVec2 {
     #[inline]
     #[must_use]
     pub fn rotate_towards(&self, rhs: Self, max_angle: f64) -> Self {
-        let a = self.angle_towards(rhs);
+        let a = self.angle_to(rhs);
         let abs_a = math::abs(a);
         if abs_a <= 1e-4 {
             return rhs;
