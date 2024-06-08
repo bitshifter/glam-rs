@@ -1191,26 +1191,11 @@ impl {{ self_t }} {
     pub fn as_dquat(self) -> DQuat {
         DQuat::from_xyzw(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
     }
-
-    #[inline]
-    #[must_use]
-    #[deprecated(since="0.24.2", note="Use as_dquat() instead")]
-    pub fn as_f64(self) -> DQuat {
-        self.as_dquat()
-    }
-
 {% elif scalar_t == "f64" %}
     #[inline]
     #[must_use]
     pub fn as_quat(self) -> Quat {
         Quat::from_xyzw(self.x as f32, self.y as f32, self.z as f32, self.w as f32)
-    }
-
-    #[inline]
-    #[must_use]
-    #[deprecated(since="0.24.2", note="Use as_quat() instead")]
-    pub fn as_f32(self) -> Quat {
-        self.as_quat()
     }
 {% endif %}
 }
