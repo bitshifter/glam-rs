@@ -7,9 +7,28 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
+### Breaking changes
+
+* Removed derives from `glam::deref` types used by `Deref` on SIMD vector
+  types.  These unintentionally added support for traits like `PartialOrd` to
+  SIMD vector types. This may break existing code that was depending on this.
+  Please use `cmple().all()` etc. instead of `PartialOrd` methods.
+
+* Removed `impl From<Vec4> for Vec3A` as this violated the `From` trait
+  contract that conversions should be lossless. Please use the explicit
+  `Vec3A::from_vec4` method instead.
+
+* Renamed 2D vector `angle_between` to `angle_to` to differentiate from the 3D
+  `angle_between` which has different semantics to the 2D version.
+
 ### Added
 
 * Added aarch64 neon support.
+
+* Added `rotate_towards` methods for 2D vectors and quaternions.
+
+* Added `Vec3A::from_vec4` method which can perform a no-op conversion when
+  SIMD is used. This replaces the `impl From<Vec4> for Vec3A` implementation.
 
 ## [0.27.0] - 2024-03-23
 
