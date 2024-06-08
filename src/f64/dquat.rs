@@ -703,13 +703,6 @@ impl DQuat {
     pub fn as_quat(self) -> Quat {
         Quat::from_xyzw(self.x as f32, self.y as f32, self.z as f32, self.w as f32)
     }
-
-    #[inline]
-    #[must_use]
-    #[deprecated(since = "0.24.2", note = "Use as_quat() instead")]
-    pub fn as_f32(self) -> Quat {
-        self.as_quat()
-    }
 }
 
 #[cfg(not(target_arch = "spirv"))]
