@@ -327,7 +327,7 @@ macro_rules! impl_quat_tests {
 
         glam_test!(test_rotate_towards, {
             use core::$t::consts::{FRAC_PI_2, FRAC_PI_4};
-            let eps = 10.0 * core::$t::EPSILON as f32;
+            let eps = 10.0 * $t::EPSILON as f32;
 
             // Setup such that `q0` is `PI/2` and `-PI/2` radians away from `q1` and `q2` respectively.
             let q0 = $quat::from_euler(EulerRot::YXZ, 0.0, 0.0, 0.0);
