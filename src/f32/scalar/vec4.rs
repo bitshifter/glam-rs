@@ -458,6 +458,18 @@ impl Vec4 {
         self.x.is_finite() && self.y.is_finite() && self.z.is_finite() && self.w.is_finite()
     }
 
+    /// Performs `is_finite` on each element of self, returning a vector mask of the results.
+    ///
+    /// In other words, this computes `[x.is_finite(), y.is_finite(), ...]`.
+    pub fn is_finite_mask(self) -> BVec4A {
+        BVec4A::new(
+            self.x.is_finite(),
+            self.y.is_finite(),
+            self.z.is_finite(),
+            self.w.is_finite(),
+        )
+    }
+
     /// Returns `true` if any elements are `NaN`.
     #[inline]
     #[must_use]
@@ -467,7 +479,7 @@ impl Vec4 {
 
     /// Performs `is_nan` on each element of self, returning a vector mask of the results.
     ///
-    /// In other words, this computes `[x.is_nan(), y.is_nan(), z.is_nan(), w.is_nan()]`.
+    /// In other words, this computes `[x.is_nan(), y.is_nan(), ...]`.
     #[inline]
     #[must_use]
     pub fn is_nan_mask(self) -> BVec4A {
@@ -548,13 +560,13 @@ impl Vec4 {
 
     /// Returns `self` normalized to length 1.0.
     ///
-    /// For valid results, `self` must _not_ be of length zero, nor very close to zero.
+    /// For valid results, `self` must be finite and _not_ of length zero, nor very close to zero.
     ///
     /// See also [`Self::try_normalize()`] and [`Self::normalize_or_zero()`].
     ///
     /// Panics
     ///
-    /// Will panic if `self` is zero length when `glam_assert` is enabled.
+    /// Will panic if the resulting normalized vector is not finite when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     pub fn normalize(self) -> Self {
