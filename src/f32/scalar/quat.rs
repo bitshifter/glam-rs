@@ -1,7 +1,8 @@
 // Generated from quat.rs.tera template. Edit the template, not the generated file.
 
 use crate::{
-    euler::{EulerFromQuaternion, EulerRot, EulerToQuaternion},
+    // euler::{EulerFromQuaternion, EulerRot, EulerToQuaternion},
+    euler2::{QuatToEuler, QuatFromEuler, EulerRot},
     f32::math,
     DQuat, Mat3, Mat3A, Mat4, Vec2, Vec3, Vec3A, Vec4,
 };
@@ -183,7 +184,8 @@ impl Quat {
     #[inline]
     #[must_use]
     pub fn from_euler(euler: EulerRot, a: f32, b: f32, c: f32) -> Self {
-        euler.new_quat(a, b, c)
+        Self::from_euler_angles(euler, a, b, c)
+        // euler.new_quat(a, b, c)
     }
 
     /// From the columns of a 3x3 rotation matrix.
@@ -395,7 +397,8 @@ impl Quat {
     #[inline]
     #[must_use]
     pub fn to_euler(self, euler: EulerRot) -> (f32, f32, f32) {
-        euler.convert_quat(self)
+        // euler.convert_quat(self)
+        self.extract_angles(euler)
     }
 
     /// `[x, y, z, w]`

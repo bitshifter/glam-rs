@@ -34,6 +34,22 @@ pub enum EulerRot {
     ZXZr,
 }
 
+/// Conversion from quaternion to euler angles.
+pub(crate) trait QuatToEuler {
+    type Scalar;
+
+    /// Compute all angles of a rotation in the notation order
+    fn extract_angles(self, order: EulerRot) -> (Self::Scalar, Self::Scalar, Self::Scalar);
+}
+
+/// Conversion from euler angles to quaternion.
+pub(crate) trait QuatFromEuler {
+    type Scalar;
+
+    /// Create the rotation quaternion for the three angles of this euler rotation sequence.
+    fn from_euler_angles(order: EulerRot, u: Self::Scalar, v: Self::Scalar, w: Self::Scalar) -> Self;
+}
+
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 enum Axis {
     X = 0,
@@ -261,4 +277,18 @@ pub fn mat3_to_euler(m: Mat3, euler: EulerRot) -> (f32, f32, f32) {
     }
 
     (x, y, z)
+}
+
+impl QuatToEuler for Quat {
+    type Scalar = f32;
+    fn extract_angles(self, order: EulerRot) -> (f32, f32, f32) {
+        quat_to_euler(self, order)
+    }
+}
+
+impl QuatFromEuler for Quat {
+    type Scalar = f32;
+    fn from_euler_angles(order: EulerRot, i: f32, j: f32, k: f32) -> Self {
+        euler_to_quat(order, i, j, k)
+    }
 }
