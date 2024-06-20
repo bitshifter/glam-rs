@@ -1,7 +1,8 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
 use crate::{
-    f32::math, swizzles::*, wasm32::*, DMat4, EulerRot, Mat3, Mat3A, Quat, Vec3, Vec3A, Vec4,
+    euler::FromEuler, f32::math, swizzles::*, wasm32::*, DMat4, EulerRot, Mat3, Mat3A, Quat, Vec3,
+    Vec3A, Vec4,
 };
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -382,8 +383,7 @@ impl Mat4 {
     #[inline]
     #[must_use]
     pub fn from_euler(order: EulerRot, a: f32, b: f32, c: f32) -> Self {
-        let quat = Quat::from_euler(order, a, b, c);
-        Self::from_quat(quat)
+        Self::from_euler_angles(order, a, b, c)
     }
 
     /// Creates an affine transformation matrix containing a 3D rotation around the x axis of

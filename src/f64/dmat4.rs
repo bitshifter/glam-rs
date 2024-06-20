@@ -1,6 +1,6 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
-use crate::{f64::math, swizzles::*, DMat3, DQuat, DVec3, DVec4, EulerRot, Mat4};
+use crate::{euler::FromEuler, f64::math, swizzles::*, DMat3, DQuat, DVec3, DVec4, EulerRot, Mat4};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -375,8 +375,7 @@ impl DMat4 {
     #[inline]
     #[must_use]
     pub fn from_euler(order: EulerRot, a: f64, b: f64, c: f64) -> Self {
-        let quat = DQuat::from_euler(order, a, b, c);
-        Self::from_quat(quat)
+        Self::from_euler_angles(order, a, b, c)
     }
 
     /// Creates an affine transformation matrix containing a 3D rotation around the x axis of

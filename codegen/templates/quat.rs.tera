@@ -33,7 +33,7 @@
 
 use crate::{
     {{ scalar_t }}::math,
-    euler::{EulerFromQuaternion, EulerRot, EulerToQuaternion},
+    euler::{EulerRot, FromEuler, ToEuler},
     {% if scalar_t == "f32" %}
         DQuat, Mat3, Mat3A, Mat4, Vec2, Vec3, Vec3A, Vec4,
     {% elif scalar_t == "f64" %}
@@ -294,7 +294,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn from_euler(euler: EulerRot, a: {{ scalar_t }}, b: {{ scalar_t }}, c: {{ scalar_t }}) -> Self {
-        euler.new_quat(a, b, c)
+        Self::from_euler_angles(euler, a, b, c)
     }
 
     /// From the columns of a 3x3 rotation matrix.
@@ -515,8 +515,8 @@ impl {{ self_t }} {
     /// Returns the rotation angles for the given euler rotation sequence.
     #[inline]
     #[must_use]
-    pub fn to_euler(self, euler: EulerRot) -> ({{ scalar_t }}, {{ scalar_t }}, {{ scalar_t }}) {
-        euler.convert_quat(self)
+    pub fn to_euler(self, order: EulerRot) -> ({{ scalar_t }}, {{ scalar_t }}, {{ scalar_t }}) {
+        self.to_euler_angles(order)
     }
 
     /// `[x, y, z, w]`

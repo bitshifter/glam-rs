@@ -1,7 +1,7 @@
 // Generated from quat.rs.tera template. Edit the template, not the generated file.
 
 use crate::{
-    euler::{EulerFromQuaternion, EulerRot, EulerToQuaternion},
+    euler::{EulerRot, FromEuler, ToEuler},
     f64::math,
     DMat3, DMat4, DVec2, DVec3, DVec4, Quat,
 };
@@ -179,7 +179,7 @@ impl DQuat {
     #[inline]
     #[must_use]
     pub fn from_euler(euler: EulerRot, a: f64, b: f64, c: f64) -> Self {
-        euler.new_quat(a, b, c)
+        Self::from_euler_angles(euler, a, b, c)
     }
 
     /// From the columns of a 3x3 rotation matrix.
@@ -383,8 +383,8 @@ impl DQuat {
     /// Returns the rotation angles for the given euler rotation sequence.
     #[inline]
     #[must_use]
-    pub fn to_euler(self, euler: EulerRot) -> (f64, f64, f64) {
-        euler.convert_quat(self)
+    pub fn to_euler(self, order: EulerRot) -> (f64, f64, f64) {
+        self.to_euler_angles(order)
     }
 
     /// `[x, y, z, w]`

@@ -45,11 +45,6 @@ mod libm_math {
     }
 
     #[inline(always)]
-    pub(crate) fn asin(f: f32) -> f32 {
-        libm::asinf(f)
-    }
-
-    #[inline(always)]
     pub(crate) fn atan2(f: f32, other: f32) -> f32 {
         libm::atan2f(f, other)
     }
@@ -155,11 +150,6 @@ mod std_math {
     #[inline(always)]
     pub(crate) fn acos_approx(f: f32) -> f32 {
         super::acos_approx_f32(f)
-    }
-
-    #[inline(always)]
-    pub(crate) fn asin(f: f32) -> f32 {
-        f32::asin(f)
     }
 
     #[inline(always)]

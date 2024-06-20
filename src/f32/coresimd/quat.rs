@@ -2,7 +2,7 @@
 
 use crate::{
     coresimd::*,
-    euler::{EulerFromQuaternion, EulerRot, EulerToQuaternion},
+    euler::{EulerRot, FromEuler, ToEuler},
     f32::math,
     DQuat, Mat3, Mat3A, Mat4, Vec2, Vec3, Vec3A, Vec4,
 };
@@ -175,7 +175,7 @@ impl Quat {
     #[inline]
     #[must_use]
     pub fn from_euler(euler: EulerRot, a: f32, b: f32, c: f32) -> Self {
-        euler.new_quat(a, b, c)
+        Self::from_euler_angles(euler, a, b, c)
     }
 
     /// From the columns of a 3x3 rotation matrix.
@@ -386,8 +386,8 @@ impl Quat {
     /// Returns the rotation angles for the given euler rotation sequence.
     #[inline]
     #[must_use]
-    pub fn to_euler(self, euler: EulerRot) -> (f32, f32, f32) {
-        euler.convert_quat(self)
+    pub fn to_euler(self, order: EulerRot) -> (f32, f32, f32) {
+        self.to_euler_angles(order)
     }
 
     /// `[x, y, z, w]`

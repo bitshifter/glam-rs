@@ -274,7 +274,6 @@ mod macros;
 mod align16;
 mod deref;
 mod euler;
-mod euler2;
 mod features;
 
 #[cfg(all(
