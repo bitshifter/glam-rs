@@ -4,6 +4,13 @@
 use core::fmt;
 use core::ops::*;
 
+/// Creates a 4-dimensional `bool` vector mask.
+#[inline(always)]
+#[must_use]
+pub const fn bvec4(x: bool, y: bool, z: bool, w: bool) -> BVec4 {
+    BVec4::new(x, y, z, w)
+}
+
 /// A 4-dimensional `bool` vector mask.
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(C, align(1))]
