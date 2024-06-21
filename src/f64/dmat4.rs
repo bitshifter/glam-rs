@@ -753,6 +753,34 @@ impl DMat4 {
         )
     }
 
+    /// Creates a right-handed perspective projection matrix with [-1,1] depth range.
+    /// This is the same as the OpenGL `glFurstum` function.
+    /// See <https://registry.khronos.org/OpenGL-Refpages/gl2.1/xhtml/glFrustum.xml>
+    #[inline]
+    #[must_use]
+    pub fn frustum_rh_gl(
+        left: f64,
+        right: f64,
+        bottom: f64,
+        top: f64,
+        z_near: f64,
+        z_far: f64,
+    ) -> Self {
+        let inv_width = 1.0 / (right - left);
+        let inv_height = 1.0 / (top - bottom);
+        let inv_depth = 1.0 / (z_far - z_near);
+        let a = (right + left) * inv_width;
+        let b = (top + bottom) * inv_height;
+        let c = -(z_far + z_near) * inv_depth;
+        let d = -(2.0 * z_far * z_near) * inv_depth;
+        Self::from_cols(
+            DVec4::new((2.0 * z_near) * inv_width, 0.0, 0.0, 0.0),
+            DVec4::new(0.0, (2.0 * z_near) * inv_height, 0.0, 0.0),
+            DVec4::new(a, b, c, -1.0),
+            DVec4::new(0.0, 0.0, d, 0.0),
+        )
+    }
+
     /// Creates a left-handed perspective projection matrix with `[0,1]` depth range.
     ///
     /// # Panics

@@ -468,6 +468,25 @@ macro_rules! impl_mat4_tests {
             assert_approx_eq!($vec4::new(2.5, 5.0, -5.0, 5.0), projected);
         });
 
+        glam_test!(test_mat4_frustum_gl_rh, {
+            let fov_y_radians = $t::to_radians(90.0);
+            let aspect_ratio = 2.0;
+            let z_near = 5.0;
+            let z_far = 15.0;
+            let f = (0.5 * fov_y_radians).tan();
+            let height = z_near * f;
+            let width = height * aspect_ratio;
+            let projection = $mat4::frustum_rh_gl(-width, width, -height, height, z_near, z_far);
+
+            let original = $vec3::new(5.0, 5.0, -15.0);
+            let projected = projection * original.extend(1.0);
+            assert_approx_eq!($vec4::new(2.5, 5.0, 15.0, 15.0), projected);
+
+            let original = $vec3::new(5.0, 5.0, -5.0);
+            let projected = projection * original.extend(1.0);
+            assert_approx_eq!($vec4::new(2.5, 5.0, -5.0, 5.0), projected);
+        });
+
         glam_test!(test_mat4_perspective_lh, {
             let projection = $mat4::perspective_lh($t::to_radians(90.0), 2.0, 5.0, 15.0);
 
