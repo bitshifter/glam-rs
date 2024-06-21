@@ -827,30 +827,6 @@ impl Mat4 {
     }
 
     /// Creates a right-handed perspective projection matrix with [-1,1] depth range.
-    /// This is the same as the OpenGL `gluPerspective` function.
-    /// See <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml>
-    #[inline]
-    #[must_use]
-    pub fn perspective_rh_gl(
-        fov_y_radians: f32,
-        aspect_ratio: f32,
-        z_near: f32,
-        z_far: f32,
-    ) -> Self {
-        let inv_length = 1.0 / (z_near - z_far);
-        let f = 1.0 / math::tan(0.5 * fov_y_radians);
-        let a = f / aspect_ratio;
-        let b = (z_near + z_far) * inv_length;
-        let c = (2.0 * z_near * z_far) * inv_length;
-        Self::from_cols(
-            Vec4::new(a, 0.0, 0.0, 0.0),
-            Vec4::new(0.0, f, 0.0, 0.0),
-            Vec4::new(0.0, 0.0, b, -1.0),
-            Vec4::new(0.0, 0.0, c, 0.0),
-        )
-    }
-
-    /// Creates a right-handed perspective projection matrix with [-1,1] depth range.
     /// This is the same as the OpenGL `glFurstum` function.
     /// See <https://registry.khronos.org/OpenGL-Refpages/gl2.1/xhtml/glFrustum.xml>
     #[inline]
@@ -875,6 +851,94 @@ impl Mat4 {
             Vec4::new(0.0, (2.0 * z_near) * inv_height, 0.0, 0.0),
             Vec4::new(a, b, c, -1.0),
             Vec4::new(0.0, 0.0, d, 0.0),
+        )
+    }
+
+    /// Creates a left-handed perspective projection matrix with `[0,1]` depth range.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
+    /// enabled.
+    #[inline]
+    #[must_use]
+    pub fn frustum_lh(
+        left: f32,
+        right: f32,
+        bottom: f32,
+        top: f32,
+        z_near: f32,
+        z_far: f32,
+    ) -> Self {
+        glam_assert!(z_near > 0.0 && z_far > 0.0);
+        let inv_width = 1.0 / (right - left);
+        let inv_height = 1.0 / (top - bottom);
+        let inv_depth = 1.0 / (z_far - z_near);
+        let a = (right + left) * inv_width;
+        let b = (top + bottom) * inv_height;
+        let c = z_far * inv_depth;
+        let d = -(z_far * z_near) * inv_depth;
+        Self::from_cols(
+            Vec4::new((2.0 * z_near) * inv_width, 0.0, 0.0, 0.0),
+            Vec4::new(0.0, (2.0 * z_near) * inv_height, 0.0, 0.0),
+            Vec4::new(a, b, c, 1.0),
+            Vec4::new(0.0, 0.0, d, 0.0),
+        )
+    }
+
+    /// Creates a right-handed perspective projection matrix with `[0,1]` depth range.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
+    /// enabled.
+    #[inline]
+    #[must_use]
+    pub fn frustum_rh(
+        left: f32,
+        right: f32,
+        bottom: f32,
+        top: f32,
+        z_near: f32,
+        z_far: f32,
+    ) -> Self {
+        glam_assert!(z_near > 0.0 && z_far > 0.0);
+        let inv_width = 1.0 / (right - left);
+        let inv_height = 1.0 / (top - bottom);
+        let inv_depth = 1.0 / (z_far - z_near);
+        let a = (right + left) * inv_width;
+        let b = (top + bottom) * inv_height;
+        let c = -z_far * inv_depth;
+        let d = -(z_far * z_near) * inv_depth;
+        Self::from_cols(
+            Vec4::new((2.0 * z_near) * inv_width, 0.0, 0.0, 0.0),
+            Vec4::new(0.0, (2.0 * z_near) * inv_height, 0.0, 0.0),
+            Vec4::new(a, b, c, -1.0),
+            Vec4::new(0.0, 0.0, d, 0.0),
+        )
+    }
+
+    /// Creates a right-handed perspective projection matrix with [-1,1] depth range.
+    /// This is the same as the OpenGL `gluPerspective` function.
+    /// See <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml>
+    #[inline]
+    #[must_use]
+    pub fn perspective_rh_gl(
+        fov_y_radians: f32,
+        aspect_ratio: f32,
+        z_near: f32,
+        z_far: f32,
+    ) -> Self {
+        let inv_length = 1.0 / (z_near - z_far);
+        let f = 1.0 / math::tan(0.5 * fov_y_radians);
+        let a = f / aspect_ratio;
+        let b = (z_near + z_far) * inv_length;
+        let c = (2.0 * z_near * z_far) * inv_length;
+        Self::from_cols(
+            Vec4::new(a, 0.0, 0.0, 0.0),
+            Vec4::new(0.0, f, 0.0, 0.0),
+            Vec4::new(0.0, 0.0, b, -1.0),
+            Vec4::new(0.0, 0.0, c, 0.0),
         )
     }
 
