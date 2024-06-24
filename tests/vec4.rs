@@ -1202,7 +1202,7 @@ macro_rules! impl_vec4_float_tests {
             let normal = $vec4::Y;
             assert_approx_eq!(incident.reflect(normal), $vec4::ONE);
         });
-        
+
         glam_test!(test_refract, {
             let incident = $vec4::NEG_ONE.normalize();
             let normal = $vec4::ONE.normalize();
