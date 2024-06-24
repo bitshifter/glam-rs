@@ -861,6 +861,44 @@ impl Vec3 {
         )
     }
 
+    /// Returns the reflection vector for a given incident vector `self` and surface normal
+    /// `normal`.
+    ///
+    /// `normal` must be normalized.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `normal` is not normalized when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn reflect(self, normal: Self) -> Self {
+        glam_assert!(normal.is_normalized());
+        self - 2.0 * self.dot(normal) * normal
+    }
+
+    /// Returns the refraction direction for a given incident vector `self`, surface normal
+    /// `normal` and ratio of indices of refraction, `eta`. When total internal reflection occurs,
+    /// a zero vector will be returned.
+    ///
+    /// `self` and `normal` must be normalized.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `self` or `normal` is not normalized when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn refract(self, normal: Self, eta: f32) -> Self {
+        glam_assert!(self.is_normalized());
+        glam_assert!(normal.is_normalized());
+        let n_dot_i = normal.dot(self);
+        let k = 1.0 - eta * eta * (1.0 - n_dot_i * n_dot_i);
+        if k >= 0.0 {
+            eta * self - (eta * n_dot_i + math::sqrt(k)) * normal
+        } else {
+            Self::ZERO
+        }
+    }
+
     /// Returns the angle (in radians) between two vectors in the range `[0, +π]`.
     ///
     /// The inputs do not need to be unit vectors however they must be non-zero.

@@ -1001,6 +1001,22 @@ macro_rules! impl_vec2_float_tests {
             assert_approx_eq!(vec, $vec2::new(0.0, -1.0));
             assert_approx_eq!(vec.to_angle(), angle);
         });
+
+        glam_test!(test_reflect, {
+            let incident = $vec2::new(1.0, -1.0);
+            let normal = $vec2::Y;
+            assert_approx_eq!(incident.reflect(normal), $vec2::ONE);
+        });
+
+        glam_test!(test_refract, {
+            let incident = $vec2::NEG_ONE.normalize();
+            let normal = $vec2::ONE.normalize();
+            assert_approx_eq!(incident.refract(normal, 0.5), incident);
+
+            let incident = $vec2::new(1.0, -1.0).normalize();
+            let normal = $vec2::Y;
+            assert_approx_eq!(incident.refract(normal, 1.5), $vec2::ZERO);
+        });
     };
 }
 
