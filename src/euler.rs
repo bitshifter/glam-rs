@@ -406,4 +406,3 @@ impl_euler_to_mat3!(f64, DMat3, DVec3);
 impl_euler_to_mat4!(f64, DMat4, DMat3);
 impl_quat_to_euler!(f64, DQuat, DMat3);
 impl_euler_to_quat!(f64, DQuat, DVec3);
-
