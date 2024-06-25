@@ -1196,6 +1196,22 @@ macro_rules! impl_vec4_float_tests {
             let a = $vec4::new(1.0, 2.0, 3.0, 4.0);
             assert_eq!(format!("{:.2}", a), "[1.00, 2.00, 3.00, 4.00]");
         });
+
+        glam_test!(test_reflect, {
+            let incident = $vec4::new(1.0, -1.0, 1.0, 1.0);
+            let normal = $vec4::Y;
+            assert_approx_eq!(incident.reflect(normal), $vec4::ONE);
+        });
+
+        glam_test!(test_refract, {
+            let incident = $vec4::NEG_ONE.normalize();
+            let normal = $vec4::ONE.normalize();
+            assert_approx_eq!(incident.refract(normal, 0.5), incident);
+
+            let incident = $vec4::new(1.0, -1.0, 0.0, 0.0).normalize();
+            let normal = $vec4::Y;
+            assert_approx_eq!(incident.refract(normal, 1.5), $vec4::ZERO);
+        });
     };
 }
 
