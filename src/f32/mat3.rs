@@ -1,8 +1,10 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
 use crate::{
-    euler::FromEuler, f32::math, swizzles::*, DMat3, EulerRot, Mat2, Mat3A, Mat4, Quat, Vec2, Vec3,
-    Vec3A,
+    euler::{FromEuler, ToEuler},
+    f32::math,
+    swizzles::*,
+    DMat3, EulerRot, Mat2, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A,
 };
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;

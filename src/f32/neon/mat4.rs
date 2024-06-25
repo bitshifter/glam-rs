@@ -1,8 +1,11 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
 use crate::{
-    euler::FromEuler, f32::math, neon::*, swizzles::*, DMat4, EulerRot, Mat3, Mat3A, Quat, Vec3,
-    Vec3A, Vec4,
+    euler::{FromEuler, ToEuler},
+    f32::math,
+    neon::*,
+    swizzles::*,
+    DMat4, EulerRot, Mat3, Mat3A, Quat, Vec3, Vec3A, Vec4,
 };
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -384,6 +387,13 @@ impl Mat4 {
     #[must_use]
     pub fn from_euler(order: EulerRot, a: f32, b: f32, c: f32) -> Self {
         Self::from_euler_angles(order, a, b, c)
+    }
+
+    /// Extract Euler angles with the given Euler rotation order.
+    #[inline]
+    #[must_use]
+    pub fn to_euler(&self, order: EulerRot) -> (f32, f32, f32) {
+        self.to_euler_angles(order)
     }
 
     /// Creates an affine transformation matrix containing a 3D rotation around the x axis of

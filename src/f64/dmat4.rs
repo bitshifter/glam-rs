@@ -1,6 +1,11 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
-use crate::{euler::FromEuler, f64::math, swizzles::*, DMat3, DQuat, DVec3, DVec4, EulerRot, Mat4};
+use crate::{
+    euler::{FromEuler, ToEuler},
+    f64::math,
+    swizzles::*,
+    DMat3, DQuat, DVec3, DVec4, EulerRot, Mat4,
+};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -376,6 +381,13 @@ impl DMat4 {
     #[must_use]
     pub fn from_euler(order: EulerRot, a: f64, b: f64, c: f64) -> Self {
         Self::from_euler_angles(order, a, b, c)
+    }
+
+    /// Extract Euler angles with the given Euler rotation order.
+    #[inline]
+    #[must_use]
+    pub fn to_euler(&self, order: EulerRot) -> (f64, f64, f64) {
+        self.to_euler_angles(order)
     }
 
     /// Creates an affine transformation matrix containing a 3D rotation around the x axis of

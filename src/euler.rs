@@ -301,25 +301,31 @@ macro_rules! impl_mat3_to_euler {
                 use crate::$scalar::math;
 
                 // TODO: is this just rotation from the inital axis?
-                let mat3_from_rotation = |r: $vec3| -> $mat3 {
-                    // TODO: switch to glam math wrapper
-                    let (sin_rz, cos_rz) = math::sin_cos(r.z);
-                    let (sin_ry, cos_ry) = math::sin_cos(r.y);
-                    let (sin_rx, cos_rx) = math::sin_cos(r.x);
+                let mat3_from_rotation = |i: usize, r: $scalar| -> $mat3 {
+                    match i {
+                        0 => $mat3::from_rotation_x(r),
+                        1 => $mat3::from_rotation_y(r),
+                        2 => $mat3::from_rotation_z(r),
+                        _ => unreachable!()
+                    }
+                    // // TODO: switch to glam math wrapper
+                    // let (sin_rz, cos_rz) = math::sin_cos(r.z);
+                    // let (sin_ry, cos_ry) = math::sin_cos(r.y);
+                    // let (sin_rx, cos_rx) = math::sin_cos(r.x);
 
-                    $mat3::from_cols(
-                        $vec3::new(cos_rz * cos_ry, sin_rz * cos_ry, -sin_ry),
-                        $vec3::new(
-                            -sin_rz * cos_rx + cos_rz * sin_ry * sin_rx,
-                            cos_rz * cos_rx + sin_rz * sin_ry * sin_rx,
-                            cos_ry * sin_rx,
-                        ),
-                        $vec3::new(
-                            -sin_rz * -sin_rx + cos_rz * sin_ry * cos_rx,
-                            cos_rz * -sin_rx + sin_rz * sin_ry * cos_rx,
-                            cos_ry * cos_rx,
-                        ),
-                    )
+                    // $mat3::from_cols(
+                    //     $vec3::new(cos_rz * cos_ry, sin_rz * cos_ry, -sin_ry),
+                    //     $vec3::new(
+                    //         -sin_rz * cos_rx + cos_rz * sin_ry * sin_rx,
+                    //         cos_rz * cos_rx + sin_rz * sin_ry * sin_rx,
+                    //         cos_ry * sin_rx,
+                    //     ),
+                    //     $vec3::new(
+                    //         -sin_rz * -sin_rx + cos_rz * sin_ry * cos_rx,
+                    //         cos_rz * -sin_rx + sin_rz * sin_ry * cos_rx,
+                    //         cos_ry * cos_rx,
+                    //     ),
+                    // )
                 };
 
                 let order = Order::from_euler(euler);
@@ -332,10 +338,9 @@ macro_rules! impl_mat3_to_euler {
                     // Remove the x rotation from M, so that the remaining
                     // rotation, N, is only around two axes, and gimbal lock
                     // cannot occur.
-                    let mut r = $vec3::ZERO;
-                    r[i] = if order.parity_even { -x } else { x };
+                    let r = if order.parity_even { -x } else { x };
 
-                    let n = mat3_from_rotation(r) * self;
+                    let n = self * mat3_from_rotation(i, r);
 
                     // Extract the other two angles, y and z, from N.
                     let sy = math::sqrt(n.col(j)[i] * n.col(j)[i] + n.col(k)[i] * n.col(k)[i]);
@@ -349,10 +354,9 @@ macro_rules! impl_mat3_to_euler {
                     // Remove the x rotation from M, so that the remaining
                     // rotation, N, is only around two axes, and gimbal lock
                     // cannot occur.
-                    let mut r = $vec3::ZERO;
-                    r[i] = if order.parity_even { -x } else { x };
+                    let r = if order.parity_even { -x } else { x };
 
-                    let n = mat3_from_rotation(r) * self;
+                    let n = self * mat3_from_rotation(i, r);
 
                     // Extract the other two angles, y and z, from N.
                     let cy = math::sqrt(n.col(i)[i] * n.col(i)[i] + n.col(i)[j] * n.col(i)[j]);
