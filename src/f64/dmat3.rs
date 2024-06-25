@@ -226,6 +226,13 @@ impl DMat3 {
         Self::from_euler_angles(order, a, b, c)
     }
 
+    /// Extract Euler angles with the given Euler rotation order.
+    #[inline]
+    #[must_use]
+    pub fn to_euler(&self, order: EulerRot) -> (f64, f64, f64) {
+        self.to_euler_angles(order)
+    }
+
     /// Creates a 3D rotation matrix from `angle` (in radians) around the x axis.
     #[inline]
     #[must_use]

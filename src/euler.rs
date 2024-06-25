@@ -379,6 +379,20 @@ macro_rules! impl_mat3_to_euler {
     };
 }
 
+macro_rules! impl_mat4_to_euler {
+    ($scalar:ident, $mat4:ident, $mat3:ident) => {
+        impl ToEuler for $mat4 {
+            type Scalar = $scalar;
+            fn to_euler_angles(
+                self,
+                order: EulerRot,
+            ) -> (Self::Scalar, Self::Scalar, Self::Scalar) {
+                $mat3::from_mat4(self).to_euler_angles(order)
+            }
+        }
+    };
+}
+
 macro_rules! impl_quat_to_euler {
     ($scalar:ident, $quat:ident, $mat3:ident) => {
         impl ToEuler for $quat {
@@ -398,11 +412,13 @@ impl_euler_to_mat3!(f32, Mat3, Vec3);
 impl_mat3_to_euler!(f32, Mat3A, Vec3A);
 impl_euler_to_mat3!(f32, Mat3A, Vec3A);
 impl_euler_to_mat4!(f32, Mat4, Mat3);
+impl_mat4_to_euler!(f32, Mat4, Mat3);
 impl_quat_to_euler!(f32, Quat, Mat3);
 impl_euler_to_quat!(f32, Quat, Vec3);
 
 impl_mat3_to_euler!(f64, DMat3, DVec3);
 impl_euler_to_mat3!(f64, DMat3, DVec3);
+impl_mat4_to_euler!(f64, DMat4, DMat3);
 impl_euler_to_mat4!(f64, DMat4, DMat3);
 impl_quat_to_euler!(f64, DQuat, DMat3);
 impl_euler_to_quat!(f64, DQuat, DVec3);
