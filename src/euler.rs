@@ -25,20 +25,20 @@ pub enum EulerRot {
     ZXZ,
 
     // relative orderings
-    XYZr,
-    XZYr,
-    YZXr,
-    YXZr,
-    ZXYr,
-    ZYXr,
+    XYZRel,
+    XZYRel,
+    YZXRel,
+    YXZRel,
+    ZXYRel,
+    ZYXRel,
 
     // relative first axis repeated
-    XZXr,
-    XYXr,
-    YXYr,
-    YZYr,
-    ZYZr,
-    ZXZr,
+    XZXRel,
+    XYXRel,
+    YXYRel,
+    YZYRel,
+    ZYZRel,
+    ZXZRel,
 }
 
 pub(crate) trait ToEuler {
@@ -113,18 +113,18 @@ impl Order {
             EulerRot::ZXZ => Self::new(Axis::Z, Parity::Even, Repeated::Yes, Frame::Static),
             EulerRot::ZYX => Self::new(Axis::Z, Parity::Odd, Repeated::No, Frame::Static),
             EulerRot::ZYZ => Self::new(Axis::Z, Parity::Odd, Repeated::Yes, Frame::Static),
-            EulerRot::ZYXr => Self::new(Axis::X, Parity::Even, Repeated::No, Frame::Relative),
-            EulerRot::XYXr => Self::new(Axis::X, Parity::Even, Repeated::Yes, Frame::Relative),
-            EulerRot::YZXr => Self::new(Axis::X, Parity::Odd, Repeated::No, Frame::Relative),
-            EulerRot::XZXr => Self::new(Axis::X, Parity::Odd, Repeated::Yes, Frame::Relative),
-            EulerRot::XZYr => Self::new(Axis::Y, Parity::Even, Repeated::No, Frame::Relative),
-            EulerRot::YZYr => Self::new(Axis::Y, Parity::Even, Repeated::Yes, Frame::Relative),
-            EulerRot::ZXYr => Self::new(Axis::Y, Parity::Odd, Repeated::No, Frame::Relative),
-            EulerRot::YXYr => Self::new(Axis::Y, Parity::Odd, Repeated::Yes, Frame::Relative),
-            EulerRot::YXZr => Self::new(Axis::Z, Parity::Even, Repeated::No, Frame::Relative),
-            EulerRot::ZXZr => Self::new(Axis::Z, Parity::Even, Repeated::Yes, Frame::Relative),
-            EulerRot::XYZr => Self::new(Axis::Z, Parity::Odd, Repeated::No, Frame::Relative),
-            EulerRot::ZYZr => Self::new(Axis::Z, Parity::Odd, Repeated::Yes, Frame::Relative),
+            EulerRot::ZYXRel => Self::new(Axis::X, Parity::Even, Repeated::No, Frame::Relative),
+            EulerRot::XYXRel => Self::new(Axis::X, Parity::Even, Repeated::Yes, Frame::Relative),
+            EulerRot::YZXRel => Self::new(Axis::X, Parity::Odd, Repeated::No, Frame::Relative),
+            EulerRot::XZXRel => Self::new(Axis::X, Parity::Odd, Repeated::Yes, Frame::Relative),
+            EulerRot::XZYRel => Self::new(Axis::Y, Parity::Even, Repeated::No, Frame::Relative),
+            EulerRot::YZYRel => Self::new(Axis::Y, Parity::Even, Repeated::Yes, Frame::Relative),
+            EulerRot::ZXYRel => Self::new(Axis::Y, Parity::Odd, Repeated::No, Frame::Relative),
+            EulerRot::YXYRel => Self::new(Axis::Y, Parity::Odd, Repeated::Yes, Frame::Relative),
+            EulerRot::YXZRel => Self::new(Axis::Z, Parity::Even, Repeated::No, Frame::Relative),
+            EulerRot::ZXZRel => Self::new(Axis::Z, Parity::Even, Repeated::Yes, Frame::Relative),
+            EulerRot::XYZRel => Self::new(Axis::Z, Parity::Odd, Repeated::No, Frame::Relative),
+            EulerRot::ZYZRel => Self::new(Axis::Z, Parity::Odd, Repeated::Yes, Frame::Relative),
         }
     }
 
@@ -152,7 +152,7 @@ impl Order {
     }
 }
 
-macro_rules! impl_euler_to_mat3 {
+macro_rules! impl_mat3_from_euler {
     ($scalar:ident, $mat3:ident, $vec3:ident) => {
         impl FromEuler for $mat3 {
             type Scalar = $scalar;
@@ -173,7 +173,8 @@ macro_rules! impl_euler_to_mat3 {
                     $vec3::new(z, y, x)
                 };
 
-                if !order.parity_even {
+                // rotation direction is reverse from original paper
+                if order.parity_even {
                     angles = -angles;
                 }
 
@@ -190,23 +191,23 @@ macro_rules! impl_euler_to_mat3 {
 
                 if order.initial_repeated {
                     m[i][i] = cj;
-                    m[j][i] = sj * si;
-                    m[k][i] = sj * ci;
-                    m[i][j] = sj * sh;
+                    m[i][j] = sj * si;
+                    m[i][k] = sj * ci;
+                    m[j][i] = sj * sh;
                     m[j][j] = -cj * ss + cc;
-                    m[k][j] = -cj * cs - sc;
-                    m[i][k] = -sj * ch;
-                    m[j][k] = cj * sc + cs;
+                    m[j][k] = -cj * cs - sc;
+                    m[k][i] = -sj * ch;
+                    m[k][j] = cj * sc + cs;
                     m[k][k] = cj * cc - ss;
                 } else {
                     m[i][i] = cj * ch;
-                    m[j][i] = sj * sc - cs;
-                    m[k][i] = sj * cc + ss;
-                    m[i][j] = cj * sh;
+                    m[i][j] = sj * sc - cs;
+                    m[i][k] = sj * cc + ss;
+                    m[j][i] = cj * sh;
                     m[j][j] = sj * ss + cc;
-                    m[k][j] = sj * cs - sc;
-                    m[i][k] = -sj;
-                    m[j][k] = cj * si;
+                    m[j][k] = sj * cs - sc;
+                    m[k][i] = -sj;
+                    m[k][j] = cj * si;
                     m[k][k] = cj * ci;
                 }
 
@@ -216,7 +217,7 @@ macro_rules! impl_euler_to_mat3 {
     };
 }
 
-macro_rules! impl_euler_to_mat4 {
+macro_rules! impl_mat4_from_euler {
     ($scalar:ident, $mat4:ident, $mat3:ident) => {
         impl FromEuler for $mat4 {
             type Scalar = $scalar;
@@ -232,7 +233,41 @@ macro_rules! impl_euler_to_mat4 {
     };
 }
 
-macro_rules! impl_euler_to_quat {
+// macro_rules! impl_quat_from_euler {
+//     ($scalar:ident, $quat:ident, $vec3:ident) => {
+//         impl FromEuler for $quat {
+//             type Scalar = $scalar;
+//             fn from_euler_angles(
+//                 euler: EulerRot,
+//                 x: Self::Scalar,
+//                 y: Self::Scalar,
+//                 z: Self::Scalar,
+//             ) -> Self {
+//                 let order = Order::from_euler(euler);
+//                 let (i, j, k) = order.angle_order();
+
+//                 let angles = if order.frame_static {
+//                     $vec3::new(x, y, z)
+//                 } else {
+//                     $vec3::new(z, y, x)
+//                 };
+
+//                 const AXIS : [$vec3; 3] = [$vec3::X, $vec3::Y, $vec3::Z];
+//                 // let q = [
+//                 //     $quat::from_rotation_z(z),
+//                 //     $quat::from_rotation_y(y),
+//                 //     $quat::from_rotation_x(x),
+//                 // ];
+
+//                 $quat::from_axis_angle(AXIS[i], angles.x)
+//                     * $quat::from_axis_angle(AXIS[j], angles.y)
+//                     * $quat::from_axis_angle(AXIS[k], angles.z)
+//             }
+//         }
+//     };
+// }
+
+macro_rules! impl_quat_from_euler {
     ($scalar:ident, $quat:ident, $vec3:ident) => {
         impl FromEuler for $quat {
             type Scalar = $scalar;
@@ -290,6 +325,21 @@ macro_rules! impl_euler_to_quat {
     };
 }
 
+macro_rules! impl_quat_from_euler {
+    ($scalar:ident, $quat:ident, $mat3:ident) => {
+        impl FromEuler for $quat {
+            type Scalar = $scalar;
+            fn from_euler_angles(
+                euler: EulerRot,
+                x: Self::Scalar,
+                y: Self::Scalar,
+                z: Self::Scalar,
+            ) -> Self {
+                $quat::from_mat3(&$mat3::from_euler_angles(euler, x, y, z))
+            }
+        }
+    };
+}
 macro_rules! impl_mat3_to_euler {
     ($scalar:ident, $mat3:ident, $vec3:ident) => {
         impl ToEuler for $mat3 {
@@ -300,32 +350,12 @@ macro_rules! impl_mat3_to_euler {
             ) -> (Self::Scalar, Self::Scalar, Self::Scalar) {
                 use crate::$scalar::math;
 
-                // TODO: is this just rotation from the inital axis?
-                let mat3_from_rotation = |i: usize, r: $scalar| -> $mat3 {
-                    match i {
-                        0 => $mat3::from_rotation_x(r),
-                        1 => $mat3::from_rotation_y(r),
-                        2 => $mat3::from_rotation_z(r),
-                        _ => unreachable!()
+                let mat3_from_rotation = |initial_axis: Axis, r: $scalar| -> $mat3 {
+                    match initial_axis {
+                        Axis::X => $mat3::from_rotation_x(r),
+                        Axis::Y => $mat3::from_rotation_y(r),
+                        Axis::Z => $mat3::from_rotation_z(r),
                     }
-                    // // TODO: switch to glam math wrapper
-                    // let (sin_rz, cos_rz) = math::sin_cos(r.z);
-                    // let (sin_ry, cos_ry) = math::sin_cos(r.y);
-                    // let (sin_rx, cos_rx) = math::sin_cos(r.x);
-
-                    // $mat3::from_cols(
-                    //     $vec3::new(cos_rz * cos_ry, sin_rz * cos_ry, -sin_ry),
-                    //     $vec3::new(
-                    //         -sin_rz * cos_rx + cos_rz * sin_ry * sin_rx,
-                    //         cos_rz * cos_rx + sin_rz * sin_ry * sin_rx,
-                    //         cos_ry * sin_rx,
-                    //     ),
-                    //     $vec3::new(
-                    //         -sin_rz * -sin_rx + cos_rz * sin_ry * cos_rx,
-                    //         cos_rz * -sin_rx + sin_rz * sin_ry * cos_rx,
-                    //         cos_ry * cos_rx,
-                    //     ),
-                    // )
                 };
 
                 let order = Order::from_euler(euler);
@@ -335,14 +365,13 @@ macro_rules! impl_mat3_to_euler {
                     // Extract the first angle, x.
                     let x = math::atan2(self.col(j)[i], self.col(k)[i]);
 
-                    // Remove the x rotation from M, so that the remaining
-                    // rotation, N, is only around two axes, and gimbal lock
-                    // cannot occur.
+                    // Remove the x rotation from self so that the remaining rotation is only around
+                    // two axes and gimbal lock cannot occur.
                     let r = if order.parity_even { -x } else { x };
 
-                    let n = self * mat3_from_rotation(i, r);
+                    let n = self * mat3_from_rotation(order.initial_axis, r);
 
-                    // Extract the other two angles, y and z, from N.
+                    // Extract the other two angles, y and z, from n.
                     let sy = math::sqrt(n.col(j)[i] * n.col(j)[i] + n.col(k)[i] * n.col(k)[i]);
                     let y = math::atan2(sy, n.col(i)[i]);
                     let z = math::atan2(n.col(j)[k], n.col(j)[j]);
@@ -351,14 +380,13 @@ macro_rules! impl_mat3_to_euler {
                     // Extract the first angle, x.
                     let x = math::atan2(self.col(j)[k], self.col(k)[k]);
 
-                    // Remove the x rotation from M, so that the remaining
-                    // rotation, N, is only around two axes, and gimbal lock
-                    // cannot occur.
+                    // Remove the x rotation from self so that the remaining rotation is only around
+                    // two axes and gimbal lock cannot occur.
                     let r = if order.parity_even { -x } else { x };
 
-                    let n = self * mat3_from_rotation(i, r);
+                    let n = self * mat3_from_rotation(order.initial_axis, r);
 
-                    // Extract the other two angles, y and z, from N.
+                    // Extract the other two angles, y and z, from n.
                     let cy = math::sqrt(n.col(i)[i] * n.col(i)[i] + n.col(i)[j] * n.col(i)[j]);
                     let y = math::atan2(-n.col(i)[k], cy);
                     let z = math::atan2(-n.col(j)[i], n.col(j)[j]);
@@ -412,17 +440,17 @@ macro_rules! impl_quat_to_euler {
 }
 
 impl_mat3_to_euler!(f32, Mat3, Vec3);
-impl_euler_to_mat3!(f32, Mat3, Vec3);
+impl_mat3_from_euler!(f32, Mat3, Vec3);
 impl_mat3_to_euler!(f32, Mat3A, Vec3A);
-impl_euler_to_mat3!(f32, Mat3A, Vec3A);
-impl_euler_to_mat4!(f32, Mat4, Mat3);
+impl_mat3_from_euler!(f32, Mat3A, Vec3A);
+impl_mat4_from_euler!(f32, Mat4, Mat3);
 impl_mat4_to_euler!(f32, Mat4, Mat3);
 impl_quat_to_euler!(f32, Quat, Mat3);
-impl_euler_to_quat!(f32, Quat, Vec3);
+impl_quat_from_euler!(f32, Quat, Mat3);
 
 impl_mat3_to_euler!(f64, DMat3, DVec3);
-impl_euler_to_mat3!(f64, DMat3, DVec3);
+impl_mat3_from_euler!(f64, DMat3, DVec3);
 impl_mat4_to_euler!(f64, DMat4, DMat3);
-impl_euler_to_mat4!(f64, DMat4, DMat3);
+impl_mat4_from_euler!(f64, DMat4, DMat3);
 impl_quat_to_euler!(f64, DQuat, DMat3);
-impl_euler_to_quat!(f64, DQuat, DVec3);
+impl_quat_from_euler!(f64, DQuat, DMat3);
