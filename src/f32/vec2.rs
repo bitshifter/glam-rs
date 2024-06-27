@@ -514,6 +514,9 @@ impl Vec2 {
     #[inline]
     #[must_use]
     pub fn is_normalized(self) -> bool {
+        if self.length_squared() <= f32::MIN + 1.0 {
+            return false;
+        }
         math::abs(self.length_squared() - 1.0) <= 2e-4
     }
 
