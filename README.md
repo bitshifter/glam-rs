@@ -60,9 +60,10 @@ SIMD is supported on `x86`, `x86_64` and `wasm32` targets.
 * `SSE2` is enabled by default on `x86_64` targets.
 * To enable `SSE2` on `x86` targets add `-C target-feature=+sse2` to
   `RUSTCFLAGS`.
+* `NEON` is enabled by default on `aarch64` targets.
+* To enable `NEON` on `aarch64` targets add `-C target-feature=+neon` to `RUSTFLAGS`.
 * To enable `simd128` on `wasm32` targets add `-C target-feature=+simd128` to
   `RUSTFLAGS`.
-* To enable `NEON` on `aarch64` targets add `-C target-feature=+neon` to `RUSTFLAGS`.
 * Experimental [portable simd] support can be enabled with the `core-simd`
   feature. This requires the nightly compiler as it is still unstable in Rust.
 
