@@ -51,7 +51,18 @@ union UnionCast {
 }
 {% endif %}
 
-{%- if is_scalar and is_bool %}
+/// Creates a {{ dim }}-dimensional `bool` vector mask.
+#[inline(always)]
+#[must_use]
+pub const fn {{ self_t | lower }}(
+    {% for c in components %}
+        {{ c }}: bool,
+    {% endfor %}
+) -> {{ self_t }} {
+    {{ self_t }}::new({{ components | join(sep=",") }})
+}
+
+{% if is_scalar and is_bool %}
 /// A {{ dim }}-dimensional `bool` vector mask.
 {%- elif is_scalar and is_u32 %}
 /// A {{ dim }}-dimensional `u32` vector mask.

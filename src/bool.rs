@@ -34,47 +34,47 @@ mod wasm32;
 ))]
 mod scalar;
 
-pub use bvec2::BVec2;
-pub use bvec3::BVec3;
-pub use bvec4::BVec4;
+pub use bvec2::{bvec2, BVec2};
+pub use bvec3::{bvec3, BVec3};
+pub use bvec4::{bvec4, BVec4};
 
 #[cfg(all(
     target_arch = "aarch64",
     not(any(feature = "core-simd", feature = "scalar-math"))
 ))]
-pub use neon::bvec3a::BVec3A;
+pub use neon::bvec3a::{bvec3a, BVec3A};
 #[cfg(all(
     target_arch = "aarch64",
     not(any(feature = "core-simd", feature = "scalar-math"))
 ))]
-pub use neon::bvec4a::BVec4A;
+pub use neon::bvec4a::{bvec4a, BVec4A};
 
 #[cfg(all(
     target_feature = "sse2",
     not(any(feature = "core-simd", feature = "scalar-math"))
 ))]
-pub use sse2::bvec3a::BVec3A;
+pub use sse2::bvec3a::{bvec3a, BVec3A};
 #[cfg(all(
     target_feature = "sse2",
     not(any(feature = "core-simd", feature = "scalar-math"))
 ))]
-pub use sse2::bvec4a::BVec4A;
+pub use sse2::bvec4a::{bvec4a, BVec4A};
 
 #[cfg(all(
     target_feature = "simd128",
     not(any(feature = "core-simd", feature = "scalar-math"))
 ))]
-pub use wasm32::bvec3a::BVec3A;
+pub use wasm32::bvec3a::{bvec3a, BVec3A};
 #[cfg(all(
     target_feature = "simd128",
     not(any(feature = "core-simd", feature = "scalar-math"))
 ))]
-pub use wasm32::bvec4a::BVec4A;
+pub use wasm32::bvec4a::{bvec4a, BVec4A};
 
 #[cfg(all(feature = "core-simd", not(feature = "scalar-math")))]
-pub use coresimd::bvec3a::BVec3A;
+pub use coresimd::bvec3a::{bvec3a, BVec3A};
 #[cfg(all(feature = "core-simd", not(feature = "scalar-math")))]
-pub use coresimd::bvec4a::BVec4A;
+pub use coresimd::bvec4a::{bvec4a, BVec4A};
 
 #[cfg(any(
     not(any(
@@ -85,16 +85,18 @@ pub use coresimd::bvec4a::BVec4A;
     )),
     feature = "scalar-math"
 ))]
-pub use scalar::bvec3a::BVec3A;
+pub use scalar::bvec3a::{bvec3a, BVec3A};
 
-#[cfg(not(any(
-    feature = "scalar-math",
-    feature = "core-simd",
-    target_arch = "aarch64",
-    target_feature = "sse2",
-    target_feature = "simd128"
-),))]
-pub use scalar::bvec4a::BVec4A;
+#[cfg(any(
+    not(any(
+        feature = "core-simd",
+        target_arch = "aarch64",
+        target_feature = "sse2",
+        target_feature = "simd128"
+    )),
+    feature = "scalar-math"
+))]
+pub use scalar::bvec4a::{bvec4a, BVec4A};
 
 mod const_test_bvec2 {
     const_assert_eq!(1, core::mem::align_of::<super::BVec2>());
