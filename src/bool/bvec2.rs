@@ -4,6 +4,13 @@
 use core::fmt;
 use core::ops::*;
 
+/// Creates a 2-dimensional `bool` vector mask.
+#[inline(always)]
+#[must_use]
+pub const fn bvec2(x: bool, y: bool) -> BVec2 {
+    BVec2::new(x, y)
+}
+
 /// A 2-dimensional `bool` vector mask.
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(C, align(1))]

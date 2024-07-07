@@ -6,6 +6,13 @@ use core::ops::*;
 
 use core::arch::wasm32::*;
 
+/// Creates a 3-dimensional `bool` vector mask.
+#[inline(always)]
+#[must_use]
+pub const fn bvec3a(x: bool, y: bool, z: bool) -> BVec3A {
+    BVec3A::new(x, y, z)
+}
+
 /// A 3-dimensional SIMD vector mask.
 ///
 /// This type is 16 byte aligned.
