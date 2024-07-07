@@ -1,4 +1,4 @@
-use crate::{DMat3, DMat4, DQuat, DVec3, Mat3, Mat3A, Mat4, Quat, Vec3, Vec3A};
+use crate::{DMat3, DMat4, DQuat, DVec3, Mat3, Mat3A, Mat4, Quat, Vec3, Vec3A, Vec3Swizzles};
 
 /// Euler rotation sequences.
 ///
@@ -267,63 +267,63 @@ macro_rules! impl_mat4_from_euler {
 //     };
 // }
 
-macro_rules! impl_quat_from_euler {
-    ($scalar:ident, $quat:ident, $vec3:ident) => {
-        impl FromEuler for $quat {
-            type Scalar = $scalar;
-            fn from_euler_angles(
-                euler: EulerRot,
-                x: Self::Scalar,
-                y: Self::Scalar,
-                z: Self::Scalar,
-            ) -> Self {
-                use crate::$scalar::math;
+// macro_rules! impl_quat_from_euler {
+//     ($scalar:ident, $quat:ident, $vec3:ident) => {
+//         impl FromEuler for $quat {
+//             type Scalar = $scalar;
+//             fn from_euler_angles(
+//                 euler: EulerRot,
+//                 x: Self::Scalar,
+//                 y: Self::Scalar,
+//                 z: Self::Scalar,
+//             ) -> Self {
+//                 use crate::$scalar::math;
 
-                let order = Order::from_euler(euler);
-                let (i, j, k) = order.angle_order();
+//                 let order = Order::from_euler(euler);
+//                 let (i, j, k) = order.angle_order();
 
-                let mut angles = if order.frame_static {
-                    $vec3::new(x, y, z)
-                } else {
-                    $vec3::new(z, y, x)
-                };
+//                 let mut angles = if order.frame_static {
+//                     $vec3::new(x, y, z)
+//                 } else {
+//                     $vec3::new(z, y, x)
+//                 };
 
-                if !order.parity_even {
-                    angles.y = -angles.y;
-                }
+//                 if !order.parity_even {
+//                     angles.y = -angles.y;
+//                 }
 
-                let ti = angles.x * 0.5;
-                let tj = angles.y * 0.5;
-                let th = angles.z * 0.5;
-                let (si, ci) = math::sin_cos(ti);
-                let (sj, cj) = math::sin_cos(tj);
-                let (sh, ch) = math::sin_cos(th);
-                let cc = ci * ch;
-                let cs = ci * sh;
-                let sc = si * ch;
-                let ss = si * sh;
+//                 let ti = angles.x * 0.5;
+//                 let tj = angles.y * 0.5;
+//                 let th = angles.z * 0.5;
+//                 let (si, ci) = math::sin_cos(ti);
+//                 let (sj, cj) = math::sin_cos(tj);
+//                 let (sh, ch) = math::sin_cos(th);
+//                 let cc = ci * ch;
+//                 let cs = ci * sh;
+//                 let sc = si * ch;
+//                 let ss = si * sh;
 
-                let parity = if order.parity_even { 1.0 } else { -1.0 };
+//                 let parity = if order.parity_even { 1.0 } else { -1.0 };
 
-                let mut a = [0.0; 4];
+//                 let mut a = [0.0; 4];
 
-                if order.initial_repeated {
-                    a[i] = cj * (cs + sc);
-                    a[j] = sj * (cc + ss) * parity;
-                    a[k] = sj * (cs - sc);
-                    a[3] = cj * (cc - ss);
-                } else {
-                    a[i] = cj * sc - sj * cs;
-                    a[j] = (cj * ss + sj * cc) * parity;
-                    a[k] = cj * cs - sj * sc;
-                    a[3] = cj * cc + sj * ss;
-                }
+//                 if order.initial_repeated {
+//                     a[i] = cj * (cs + sc);
+//                     a[j] = sj * (cc + ss) * parity;
+//                     a[k] = sj * (cs - sc);
+//                     a[3] = cj * (cc - ss);
+//                 } else {
+//                     a[i] = cj * sc - sj * cs;
+//                     a[j] = (cj * ss + sj * cc) * parity;
+//                     a[k] = cj * cs - sj * sc;
+//                     a[3] = cj * cc + sj * ss;
+//                 }
 
-                $quat::from_array(a)
-            }
-        }
-    };
-}
+//                 $quat::from_array(a)
+//             }
+//         }
+//     };
+// }
 
 macro_rules! impl_quat_from_euler {
     ($scalar:ident, $quat:ident, $mat3:ident) => {
@@ -350,62 +350,42 @@ macro_rules! impl_mat3_to_euler {
             ) -> (Self::Scalar, Self::Scalar, Self::Scalar) {
                 use crate::$scalar::math;
 
-                let mat3_from_rotation = |initial_axis: Axis, r: $scalar| -> $mat3 {
-                    match initial_axis {
-                        Axis::X => $mat3::from_rotation_x(r),
-                        Axis::Y => $mat3::from_rotation_y(r),
-                        Axis::Z => $mat3::from_rotation_z(r),
-                    }
-                };
-
                 let order = Order::from_euler(euler);
                 let (i, j, k) = order.angle_order();
 
-                let (mut x, mut y, mut z) = if order.initial_repeated {
-                    // Extract the first angle, x.
-                    let x = math::atan2(self.col(j)[i], self.col(k)[i]);
-
-                    // Remove the x rotation from self so that the remaining rotation is only around
-                    // two axes and gimbal lock cannot occur.
-                    let r = if order.parity_even { -x } else { x };
-
-                    let n = self * mat3_from_rotation(order.initial_axis, r);
-
-                    // Extract the other two angles, y and z, from n.
-                    let sy = math::sqrt(n.col(j)[i] * n.col(j)[i] + n.col(k)[i] * n.col(k)[i]);
-                    let y = math::atan2(sy, n.col(i)[i]);
-                    let z = math::atan2(n.col(j)[k], n.col(j)[j]);
-                    (x, y, z)
+                let mut ea = $vec3::ZERO;
+                if order.initial_repeated {
+                    let sy = math::sqrt(self.col(i)[j] * self.col(i)[j] + self.col(i)[k] * self.col(i)[k]);
+                    if (sy > 16.0 * $scalar::EPSILON) {
+                        ea.x = math::atan2(self.col(i)[j], self.col(i)[k]);
+                        ea.y = math::atan2(sy, self.col(i)[i]);
+                        ea.z = math::atan2(self.col(j)[i], -self.col(k)[i]);
+                    } else {
+                        ea.x = math::atan2(-self.col(j)[k], self.col(j)[j]);
+                        ea.y = math::atan2(sy, self.col(i)[i]);
+                    }
                 } else {
-                    // Extract the first angle, x.
-                    let x = math::atan2(self.col(j)[k], self.col(k)[k]);
+                    let cy = math::sqrt(self.col(i)[i] * self.col(i)[i] + self.col(j)[i] * self.col(j)[i]);
+                    if (cy > 16.0 * $scalar::EPSILON) {
+                        ea.x = math::atan2(self.col(k)[j], self.col(k)[k]);
+                        ea.y = math::atan2(-self.col(k)[i], cy);
+                        ea.z = math::atan2(self.col(j)[i], self.col(i)[i]);
+                    } else {
+                        ea.x = math::atan2(-self.col(j)[k], self.col(j)[j]);
+                        ea.y = math::atan2(-self.col(k)[i], cy);
+                    }
+                }
 
-                    // Remove the x rotation from self so that the remaining rotation is only around
-                    // two axes and gimbal lock cannot occur.
-                    let r = if order.parity_even { -x } else { x };
-
-                    let n = self * mat3_from_rotation(order.initial_axis, r);
-
-                    // Extract the other two angles, y and z, from n.
-                    let cy = math::sqrt(n.col(i)[i] * n.col(i)[i] + n.col(i)[j] * n.col(i)[j]);
-                    let y = math::atan2(-n.col(i)[k], cy);
-                    let z = math::atan2(-n.col(j)[i], n.col(j)[j]);
-                    (x, y, z)
-                };
-
-                if !order.parity_even {
-                    x = -x;
-                    y = -y;
-                    z = -z;
+                // reverse rotation angle of original code
+                if order.parity_even {
+                    ea = -ea;
                 }
 
                 if !order.frame_static {
-                    let t = x;
-                    x = z;
-                    z = t;
+                    ea = ea.zyx();
                 }
 
-                (x, y, z)
+                (ea.x, ea.y, ea.z)
             }
         }
     };
