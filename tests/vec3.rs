@@ -4,7 +4,7 @@
 mod support;
 
 macro_rules! impl_vec3_tests {
-    ($t:ident, $new:ident, $vec3:ident, $mask:ident) => {
+    ($t:ident, $new:ident, $vec3:ident, $mask:ident, $masknew:ident) => {
         glam_test!(test_const, {
             const V0: $vec3 = $vec3::splat(1 as $t);
             const V1: $vec3 = $vec3::new(1 as $t, 2 as $t, 3 as $t);
@@ -308,6 +308,18 @@ macro_rules! impl_vec3_tests {
             a.z = 1 as $t;
             assert!(!a.cmpeq($vec3::ZERO).any());
             assert!(a.cmpeq($vec3::ONE).all());
+        });
+
+        glam_test!(test_mask_new, {
+            assert_eq!(
+                $mask::new(false, false, false),
+                $masknew(false, false, false)
+            );
+            assert_eq!($mask::new(true, false, false), $masknew(true, false, false));
+            assert_eq!($mask::new(false, true, true), $masknew(false, true, true));
+            assert_eq!($mask::new(false, true, false), $masknew(false, true, false));
+            assert_eq!($mask::new(true, false, true), $masknew(true, false, true));
+            assert_eq!($mask::new(true, true, true), $masknew(true, true, true));
         });
 
         glam_test!(test_mask_from_array_bool, {
@@ -622,8 +634,8 @@ macro_rules! impl_vec3_tests {
 }
 
 macro_rules! impl_vec3_signed_tests {
-    ($t:ident, $new:ident, $vec3:ident, $mask:ident) => {
-        impl_vec3_tests!($t, $new, $vec3, $mask);
+    ($t:ident, $new:ident, $vec3:ident, $mask:ident, $masknew:ident) => {
+        impl_vec3_tests!($t, $new, $vec3, $mask, $masknew);
 
         glam_test!(test_neg, {
             let a = $new(1 as $t, 2 as $t, 3 as $t);
@@ -716,8 +728,8 @@ macro_rules! impl_vec3_signed_tests {
 }
 
 macro_rules! impl_vec3_signed_integer_tests {
-    ($t:ident, $new:ident, $vec3:ident, $mask:ident) => {
-        impl_vec3_signed_tests!($t, $new, $vec3, $mask);
+    ($t:ident, $new:ident, $vec3:ident, $mask:ident, $masknew:ident) => {
+        impl_vec3_signed_tests!($t, $new, $vec3, $mask, $masknew);
 
         glam_test!(test_signum, {
             assert_eq!($vec3::ZERO.signum(), $vec3::ZERO);
@@ -759,8 +771,8 @@ macro_rules! impl_vec3_eq_hash_tests {
 }
 
 macro_rules! impl_vec3_float_tests {
-    ($t:ident, $new:ident, $vec3:ident, $mask:ident) => {
-        impl_vec3_signed_tests!($t, $new, $vec3, $mask);
+    ($t:ident, $new:ident, $vec3:ident, $mask:ident, $masknew:ident) => {
+        impl_vec3_signed_tests!($t, $new, $vec3, $mask, $masknew);
         impl_vec_float_normalize_tests!($t, $vec3);
 
         glam_test!(test_nan, {
@@ -1278,7 +1290,7 @@ macro_rules! impl_vec3_bit_op_tests {
 }
 
 mod vec3 {
-    use glam::{vec3, BVec3, Vec3};
+    use glam::{bvec3, vec3, BVec3, Vec3};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1460,12 +1472,11 @@ mod vec3 {
         assert_eq!(Vec3A::new(1.0, 2.0, 3.0), U64Vec3::new(1, 2, 3).as_vec3a());
     });
 
-    impl_vec3_float_tests!(f32, vec3, Vec3, BVec3);
+    impl_vec3_float_tests!(f32, vec3, Vec3, BVec3, bvec3);
 }
 
 mod vec3a {
-    use glam::BVec3A;
-    use glam::{vec3a, Vec3A, Vec4};
+    use glam::{bvec3a, vec3a, BVec3A, Vec3A, Vec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1530,11 +1541,11 @@ mod vec3a {
         assert_eq!(v2.min_element(), 2.0);
     });
 
-    impl_vec3_float_tests!(f32, vec3a, Vec3A, BVec3A);
+    impl_vec3_float_tests!(f32, vec3a, Vec3A, BVec3A, bvec3a);
 }
 
 mod dvec3 {
-    use glam::{dvec3, BVec3, DVec3, IVec3, UVec3, Vec3};
+    use glam::{bvec3, dvec3, BVec3, DVec3, IVec3, UVec3, Vec3};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1553,11 +1564,11 @@ mod dvec3 {
         assert_eq!(DVec3::new(1.0, 2.0, 3.0), DVec3::from(UVec3::new(1, 2, 3)));
     });
 
-    impl_vec3_float_tests!(f64, dvec3, DVec3, BVec3);
+    impl_vec3_float_tests!(f64, dvec3, DVec3, BVec3, bvec3);
 }
 
 mod i16vec3 {
-    use glam::{i16vec3, BVec3, I16Vec3, I64Vec3, IVec3, U16Vec3, U64Vec3, UVec3};
+    use glam::{bvec3, i16vec3, BVec3, I16Vec3, I64Vec3, IVec3, U16Vec3, U64Vec3, UVec3};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1693,7 +1704,7 @@ mod i16vec3 {
         );
     });
 
-    impl_vec3_signed_integer_tests!(i16, i16vec3, I16Vec3, BVec3);
+    impl_vec3_signed_integer_tests!(i16, i16vec3, I16Vec3, BVec3, bvec3);
     impl_vec3_eq_hash_tests!(i16, i16vec3);
 
     impl_vec3_scalar_shift_op_tests!(I16Vec3, -2, 2);
@@ -1704,7 +1715,7 @@ mod i16vec3 {
 }
 
 mod u16vec3 {
-    use glam::{u16vec3, BVec3, I16Vec3, I64Vec3, IVec3, U16Vec3, U64Vec3, UVec3};
+    use glam::{bvec3, u16vec3, BVec3, I16Vec3, I64Vec3, IVec3, U16Vec3, U64Vec3, UVec3};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1832,7 +1843,7 @@ mod u16vec3 {
         );
     });
 
-    impl_vec3_tests!(u16, u16vec3, U16Vec3, BVec3);
+    impl_vec3_tests!(u16, u16vec3, U16Vec3, BVec3, bvec3);
     impl_vec3_eq_hash_tests!(u16, u16vec3);
 
     impl_vec3_scalar_shift_op_tests!(U16Vec3, 0, 2);
@@ -1843,7 +1854,7 @@ mod u16vec3 {
 }
 
 mod ivec3 {
-    use glam::{ivec3, BVec3, I16Vec3, I64Vec3, IVec3, U16Vec3, U64Vec3, UVec3};
+    use glam::{bvec3, ivec3, BVec3, I16Vec3, I64Vec3, IVec3, U16Vec3, U64Vec3, UVec3};
 
     glam_test!(test_align, {
         use std::mem;
@@ -1966,7 +1977,7 @@ mod ivec3 {
         );
     });
 
-    impl_vec3_signed_integer_tests!(i32, ivec3, IVec3, BVec3);
+    impl_vec3_signed_integer_tests!(i32, ivec3, IVec3, BVec3, bvec3);
     impl_vec3_eq_hash_tests!(i32, ivec3);
 
     impl_vec3_scalar_shift_op_tests!(IVec3, -2, 2);
@@ -1977,7 +1988,7 @@ mod ivec3 {
 }
 
 mod uvec3 {
-    use glam::{uvec3, BVec3, I16Vec3, I64Vec3, IVec3, U16Vec3, U64Vec3, UVec3};
+    use glam::{bvec3, uvec3, BVec3, I16Vec3, I64Vec3, IVec3, U16Vec3, U64Vec3, UVec3};
 
     glam_test!(test_align, {
         use std::mem;
@@ -2097,7 +2108,7 @@ mod uvec3 {
         );
     });
 
-    impl_vec3_tests!(u32, uvec3, UVec3, BVec3);
+    impl_vec3_tests!(u32, uvec3, UVec3, BVec3, bvec3);
     impl_vec3_eq_hash_tests!(u32, uvec3);
 
     impl_vec3_scalar_shift_op_tests!(UVec3, 0, 2);
@@ -2108,7 +2119,7 @@ mod uvec3 {
 }
 
 mod i64vec3 {
-    use glam::{i64vec3, BVec3, I16Vec3, I64Vec3, IVec3, U16Vec3, U64Vec3, UVec3};
+    use glam::{bvec3, i64vec3, BVec3, I16Vec3, I64Vec3, IVec3, U16Vec3, U64Vec3, UVec3};
 
     glam_test!(test_align, {
         use std::mem;
@@ -2163,7 +2174,7 @@ mod i64vec3 {
         );
     });
 
-    impl_vec3_signed_integer_tests!(i64, i64vec3, I64Vec3, BVec3);
+    impl_vec3_signed_integer_tests!(i64, i64vec3, I64Vec3, BVec3, bvec3);
     impl_vec3_eq_hash_tests!(i64, i64vec3);
 
     impl_vec3_scalar_shift_op_tests!(I64Vec3, -2, 2);
@@ -2174,7 +2185,7 @@ mod i64vec3 {
 }
 
 mod u64vec3 {
-    use glam::{u64vec3, BVec3, I16Vec3, I64Vec3, IVec3, U16Vec3, U64Vec3, UVec3};
+    use glam::{bvec3, u64vec3, BVec3, I16Vec3, I64Vec3, IVec3, U16Vec3, U64Vec3, UVec3};
 
     glam_test!(test_align, {
         use std::mem;
@@ -2228,7 +2239,7 @@ mod u64vec3 {
         );
     });
 
-    impl_vec3_tests!(u64, u64vec3, U64Vec3, BVec3);
+    impl_vec3_tests!(u64, u64vec3, U64Vec3, BVec3, bvec3);
     impl_vec3_eq_hash_tests!(u64, u64vec3);
 
     impl_vec3_scalar_shift_op_tests!(U64Vec3, 0, 2);
