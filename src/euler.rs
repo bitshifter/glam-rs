@@ -233,100 +233,8 @@ macro_rules! impl_mat4_from_euler {
     };
 }
 
-// macro_rules! impl_quat_from_euler {
-//     ($scalar:ident, $quat:ident, $vec3:ident) => {
-//         impl FromEuler for $quat {
-//             type Scalar = $scalar;
-//             fn from_euler_angles(
-//                 euler: EulerRot,
-//                 x: Self::Scalar,
-//                 y: Self::Scalar,
-//                 z: Self::Scalar,
-//             ) -> Self {
-//                 let order = Order::from_euler(euler);
-//                 let (i, j, k) = order.angle_order();
-
-//                 let angles = if order.frame_static {
-//                     $vec3::new(x, y, z)
-//                 } else {
-//                     $vec3::new(z, y, x)
-//                 };
-
-//                 const AXIS : [$vec3; 3] = [$vec3::X, $vec3::Y, $vec3::Z];
-//                 // let q = [
-//                 //     $quat::from_rotation_z(z),
-//                 //     $quat::from_rotation_y(y),
-//                 //     $quat::from_rotation_x(x),
-//                 // ];
-
-//                 $quat::from_axis_angle(AXIS[i], angles.x)
-//                     * $quat::from_axis_angle(AXIS[j], angles.y)
-//                     * $quat::from_axis_angle(AXIS[k], angles.z)
-//             }
-//         }
-//     };
-// }
-
-// macro_rules! impl_quat_from_euler {
-//     ($scalar:ident, $quat:ident, $vec3:ident) => {
-//         impl FromEuler for $quat {
-//             type Scalar = $scalar;
-//             fn from_euler_angles(
-//                 euler: EulerRot,
-//                 x: Self::Scalar,
-//                 y: Self::Scalar,
-//                 z: Self::Scalar,
-//             ) -> Self {
-//                 use crate::$scalar::math;
-
-//                 let order = Order::from_euler(euler);
-//                 let (i, j, k) = order.angle_order();
-
-//                 let mut angles = if order.frame_static {
-//                     $vec3::new(x, y, z)
-//                 } else {
-//                     $vec3::new(z, y, x)
-//                 };
-
-//                 if !order.parity_even {
-//                     angles.y = -angles.y;
-//                 }
-
-//                 let ti = angles.x * 0.5;
-//                 let tj = angles.y * 0.5;
-//                 let th = angles.z * 0.5;
-//                 let (si, ci) = math::sin_cos(ti);
-//                 let (sj, cj) = math::sin_cos(tj);
-//                 let (sh, ch) = math::sin_cos(th);
-//                 let cc = ci * ch;
-//                 let cs = ci * sh;
-//                 let sc = si * ch;
-//                 let ss = si * sh;
-
-//                 let parity = if order.parity_even { 1.0 } else { -1.0 };
-
-//                 let mut a = [0.0; 4];
-
-//                 if order.initial_repeated {
-//                     a[i] = cj * (cs + sc);
-//                     a[j] = sj * (cc + ss) * parity;
-//                     a[k] = sj * (cs - sc);
-//                     a[3] = cj * (cc - ss);
-//                 } else {
-//                     a[i] = cj * sc - sj * cs;
-//                     a[j] = (cj * ss + sj * cc) * parity;
-//                     a[k] = cj * cs - sj * sc;
-//                     a[3] = cj * cc + sj * ss;
-//                 }
-
-//                 $quat::from_array(a)
-//             }
-//         }
-//     };
-// }
-
 macro_rules! impl_quat_from_euler {
-    ($scalar:ident, $quat:ident, $mat3:ident) => {
+    ($scalar:ident, $quat:ident, $vec3:ident) => {
         impl FromEuler for $quat {
             type Scalar = $scalar;
             fn from_euler_angles(
@@ -335,11 +243,54 @@ macro_rules! impl_quat_from_euler {
                 y: Self::Scalar,
                 z: Self::Scalar,
             ) -> Self {
-                $quat::from_mat3(&$mat3::from_euler_angles(euler, x, y, z))
+                use crate::$scalar::math;
+
+                let order = Order::from_euler(euler);
+                let (i, j, k) = order.angle_order();
+
+                let mut angles = if order.frame_static {
+                    $vec3::new(x, y, z)
+                } else {
+                    $vec3::new(z, y, x)
+                };
+
+                if order.parity_even {
+                    angles.y = -angles.y;
+                }
+
+                let ti = angles.x * 0.5;
+                let tj = angles.y * 0.5;
+                let th = angles.z * 0.5;
+                let (si, ci) = math::sin_cos(ti);
+                let (sj, cj) = math::sin_cos(tj);
+                let (sh, ch) = math::sin_cos(th);
+                let cc = ci * ch;
+                let cs = ci * sh;
+                let sc = si * ch;
+                let ss = si * sh;
+
+                let parity = if !order.parity_even { 1.0 } else { -1.0 };
+
+                let mut a = [0.0; 4];
+
+                if order.initial_repeated {
+                    a[i] = cj * (cs + sc);
+                    a[j] = sj * (cc + ss) * parity;
+                    a[k] = sj * (cs - sc);
+                    a[3] = cj * (cc - ss);
+                } else {
+                    a[i] = cj * sc - sj * cs;
+                    a[j] = (cj * ss + sj * cc) * parity;
+                    a[k] = cj * cs - sj * sc;
+                    a[3] = cj * cc + sj * ss;
+                }
+
+                $quat::from_array(a)
             }
         }
     };
 }
+
 macro_rules! impl_mat3_to_euler {
     ($scalar:ident, $mat3:ident, $vec3:ident) => {
         impl ToEuler for $mat3 {
@@ -355,7 +306,10 @@ macro_rules! impl_mat3_to_euler {
 
                 let mut ea = $vec3::ZERO;
                 if order.initial_repeated {
-                    let sy = math::sqrt(self.col(i)[j] * self.col(i)[j] + self.col(i)[k] * self.col(i)[k]);
+                    let sy = math::sqrt(
+                        self.col(i)[j] * self.col(i)[j] + self.col(i)[k] * self.col(i)[k],
+                    );
+                    // TODO: https://d3cw3dd2w32x2b.cloudfront.net/wp-content/uploads/2012/07/euler-angles1.pdf
                     if (sy > 16.0 * $scalar::EPSILON) {
                         ea.x = math::atan2(self.col(i)[j], self.col(i)[k]);
                         ea.y = math::atan2(sy, self.col(i)[i]);
@@ -365,7 +319,10 @@ macro_rules! impl_mat3_to_euler {
                         ea.y = math::atan2(sy, self.col(i)[i]);
                     }
                 } else {
-                    let cy = math::sqrt(self.col(i)[i] * self.col(i)[i] + self.col(j)[i] * self.col(j)[i]);
+                    let cy = math::sqrt(
+                        self.col(i)[i] * self.col(i)[i] + self.col(j)[i] * self.col(j)[i],
+                    );
+                    // TODO: https://d3cw3dd2w32x2b.cloudfront.net/wp-content/uploads/2012/07/euler-angles1.pdf
                     if (cy > 16.0 * $scalar::EPSILON) {
                         ea.x = math::atan2(self.col(k)[j], self.col(k)[k]);
                         ea.y = math::atan2(-self.col(k)[i], cy);
@@ -426,11 +383,11 @@ impl_mat3_from_euler!(f32, Mat3A, Vec3A);
 impl_mat4_from_euler!(f32, Mat4, Mat3);
 impl_mat4_to_euler!(f32, Mat4, Mat3);
 impl_quat_to_euler!(f32, Quat, Mat3);
-impl_quat_from_euler!(f32, Quat, Mat3);
+impl_quat_from_euler!(f32, Quat, Vec3);
 
 impl_mat3_to_euler!(f64, DMat3, DVec3);
 impl_mat3_from_euler!(f64, DMat3, DVec3);
 impl_mat4_to_euler!(f64, DMat4, DMat3);
 impl_mat4_from_euler!(f64, DMat4, DMat3);
 impl_quat_to_euler!(f64, DQuat, DMat3);
-impl_quat_from_euler!(f64, DQuat, DMat3);
+impl_quat_from_euler!(f64, DQuat, DVec3);
