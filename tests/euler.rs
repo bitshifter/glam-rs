@@ -37,8 +37,7 @@ trait EulerEpsilon {
 }
 impl EulerEpsilon for f32 {
     const Q_EPS: f32 = 1e-5;
-    // TODO: sse2 impl passes with 1e-5 but scalar-math does not, why?
-    const E_EPS: f32 = 2e-4;
+    const E_EPS: f32 = 1e-5;
 }
 
 impl EulerEpsilon for f64 {
