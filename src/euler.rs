@@ -8,37 +8,57 @@ use crate::{DMat3, DMat4, DQuat, DVec3, Mat3, Mat3A, Mat4, Quat, Vec3, Vec3A, Ve
 /// YXZ can be used for yaw (y-axis), pitch (x-axis), roll (z-axis).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum EulerRot {
-    // usual orderings
-    XYZ,
-    XZY,
-    YZX,
-    YXZ,
-    ZXY,
+    /// Intrinsic three-axis rotation ZYX
     ZYX,
+    /// Intrinsic three-axis rotation ZXY
+    ZXY,
+    /// Intrinsic three-axis rotation YXZ
+    YXZ,
+    /// Intrinsic three-axis rotation YZX
+    YZX,
+    /// Intrinsic three-axis rotation XYZ
+    XYZ,
+    /// Intrinsic three-axis rotation XZY
+    XZY,
 
-    // first axis repeated
-    XZX,
-    XYX,
-    YXY,
-    YZY,
+    /// Intrinsic two-axis rotation ZYZ
     ZYZ,
+    /// Intrinsic two-axis rotation ZXZ
     ZXZ,
+    /// Intrinsic two-axis rotation YXY
+    YXY,
+    /// Intrinsic two-axis rotation YZY
+    YZY,
+    /// Intrinsic two-axis rotation XYX
+    XYX,
+    /// Intrinsic two-axis rotation XZX
+    XZX,
 
-    // relative orderings
-    XYZRel,
-    XZYRel,
-    YZXRel,
-    YXZRel,
-    ZXYRel,
-    ZYXRel,
+    /// Extrinsic three-axis rotation ZYX
+    ZYXEx,
+    /// Extrinsic three-axis rotation ZXY
+    ZXYEx,
+    /// Extrinsic three-axis rotation YXZ
+    YXZEx,
+    /// Extrinsic three-axis rotation YZX
+    YZXEx,
+    /// Extrinsic three-axis rotation XYZ
+    XYZEx,
+    /// Extrinsic three-axis rotation XZY
+    XZYEx,
 
-    // relative first axis repeated
-    XZXRel,
-    XYXRel,
-    YXYRel,
-    YZYRel,
-    ZYZRel,
-    ZXZRel,
+    /// Extrinsic two-axis rotation ZYZ
+    ZYZEx,
+    /// Extrinsic two-axis rotation ZXZ
+    ZXZEx,
+    /// Extrinsic two-axis rotation YXY
+    YXYEx,
+    /// Extrinsic two-axis rotation YZY
+    YZYEx,
+    /// Extrinsic two-axis rotation XYX
+    XYXEx,
+    /// Extrinsic two-axis rotation XZX
+    XZXEx,
 }
 
 pub(crate) trait ToEuler {
@@ -113,18 +133,18 @@ impl Order {
             EulerRot::ZXZ => Self::new(Axis::Z, Parity::Even, Repeated::Yes, Frame::Static),
             EulerRot::ZYX => Self::new(Axis::Z, Parity::Odd, Repeated::No, Frame::Static),
             EulerRot::ZYZ => Self::new(Axis::Z, Parity::Odd, Repeated::Yes, Frame::Static),
-            EulerRot::ZYXRel => Self::new(Axis::X, Parity::Even, Repeated::No, Frame::Relative),
-            EulerRot::XYXRel => Self::new(Axis::X, Parity::Even, Repeated::Yes, Frame::Relative),
-            EulerRot::YZXRel => Self::new(Axis::X, Parity::Odd, Repeated::No, Frame::Relative),
-            EulerRot::XZXRel => Self::new(Axis::X, Parity::Odd, Repeated::Yes, Frame::Relative),
-            EulerRot::XZYRel => Self::new(Axis::Y, Parity::Even, Repeated::No, Frame::Relative),
-            EulerRot::YZYRel => Self::new(Axis::Y, Parity::Even, Repeated::Yes, Frame::Relative),
-            EulerRot::ZXYRel => Self::new(Axis::Y, Parity::Odd, Repeated::No, Frame::Relative),
-            EulerRot::YXYRel => Self::new(Axis::Y, Parity::Odd, Repeated::Yes, Frame::Relative),
-            EulerRot::YXZRel => Self::new(Axis::Z, Parity::Even, Repeated::No, Frame::Relative),
-            EulerRot::ZXZRel => Self::new(Axis::Z, Parity::Even, Repeated::Yes, Frame::Relative),
-            EulerRot::XYZRel => Self::new(Axis::Z, Parity::Odd, Repeated::No, Frame::Relative),
-            EulerRot::ZYZRel => Self::new(Axis::Z, Parity::Odd, Repeated::Yes, Frame::Relative),
+            EulerRot::ZYXEx => Self::new(Axis::X, Parity::Even, Repeated::No, Frame::Relative),
+            EulerRot::XYXEx => Self::new(Axis::X, Parity::Even, Repeated::Yes, Frame::Relative),
+            EulerRot::YZXEx => Self::new(Axis::X, Parity::Odd, Repeated::No, Frame::Relative),
+            EulerRot::XZXEx => Self::new(Axis::X, Parity::Odd, Repeated::Yes, Frame::Relative),
+            EulerRot::XZYEx => Self::new(Axis::Y, Parity::Even, Repeated::No, Frame::Relative),
+            EulerRot::YZYEx => Self::new(Axis::Y, Parity::Even, Repeated::Yes, Frame::Relative),
+            EulerRot::ZXYEx => Self::new(Axis::Y, Parity::Odd, Repeated::No, Frame::Relative),
+            EulerRot::YXYEx => Self::new(Axis::Y, Parity::Odd, Repeated::Yes, Frame::Relative),
+            EulerRot::YXZEx => Self::new(Axis::Z, Parity::Even, Repeated::No, Frame::Relative),
+            EulerRot::ZXZEx => Self::new(Axis::Z, Parity::Even, Repeated::Yes, Frame::Relative),
+            EulerRot::XYZEx => Self::new(Axis::Z, Parity::Odd, Repeated::No, Frame::Relative),
+            EulerRot::ZYZEx => Self::new(Axis::Z, Parity::Odd, Repeated::Yes, Frame::Relative),
         }
     }
 

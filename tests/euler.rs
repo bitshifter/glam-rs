@@ -35,6 +35,7 @@ trait EulerEpsilon {
     /// epsilon for comparing quaternion round-tripped through eulers (quat -> euler -> quat)
     const E_EPS: f32;
 }
+
 impl EulerEpsilon for f32 {
     const Q_EPS: f32 = 1e-5;
     const E_EPS: f32 = 1e-5;
