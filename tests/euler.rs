@@ -86,31 +86,6 @@ mod euler {
         }
     }
 
-    // fn test_random_angles<F: Fn(&Mat4, &Fn(&Mat4, EulerRot) -> Mat4, EulerRot) -> Mat4>(rot_euler_rot: &F, order: EulerRot)
-    // {
-    //     use rand::{Rng, SeedableRng};
-    //     use rand_xoshiro::Xoshiro256Plus;
-    //     let mut rng = Xoshiro256Plus::seed_from_u64(0);
-    //     let i = rng.gen_range(-f32::consts::PI, f32::consts::PI);
-    //     let j = rng.gen_range(-f32::consts::PI, f32::consts::PI);
-    //     let k = rng.gen_range(-f32::consts::PI, f32::consts::PI);
-    //     for _ in 0..100000 {
-    //         let m = Mat4::from_euler(order, i, j, k);
-
-    //         // Add a small random error to the elements of m
-    //         for c in 0..3 {
-    //             let col = m.col_mut(c);
-    //             for r in 0..3 {
-    //                 col[r] = rng.get_range(-1e-7, 1e-7);
-    //             }
-    //         }
-
-    //         // Extract Euler angles from m, convert the Euler angles back to a matrix n and verify that
-    //         // the entries in m and n do not differ too much.
-    //         test_matrix(m, &matrix_euler_matrix, order);
-    //     }
-    // }
-
     mod f32 {
         pub fn deg_to_rad(a: i32, b: i32, c: i32) -> (f32, f32, f32) {
             (
