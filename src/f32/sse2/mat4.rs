@@ -405,9 +405,9 @@ impl Mat4 {
     #[must_use]
     pub fn to_euler(&self, order: EulerRot) -> (f32, f32, f32) {
         glam_assert!(
-            self.x_axis.is_normalized()
-                && self.y_axis.is_normalized()
-                && self.z_axis.is_normalized()
+            self.x_axis.xyz().is_normalized()
+                && self.y_axis.xyz().is_normalized()
+                && self.z_axis.xyz().is_normalized()
         );
         self.to_euler_angles(order)
     }

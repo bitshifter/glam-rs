@@ -2,63 +2,78 @@ use crate::{DMat3, DMat4, DQuat, DVec3, Mat3, Mat3A, Mat4, Quat, Vec3, Vec3A, Ve
 
 /// Euler rotation sequences.
 ///
-/// The angles are applied starting from the right.
-/// E.g. XYZ will first apply the z-axis rotation.
+/// Both intrinsic and extrinsic rotation sequences are supported. Extrinsic rotations are most
+/// commonly used and have no suffix, intrinsic sequences have an `In` suffix.
 ///
-/// YXZ can be used for yaw (y-axis), pitch (x-axis), roll (z-axis).
+/// Extrinsic rotation sequences are all defined with respect to a fixed frame. Rotations are
+/// applied from right to left, for example `EulerRot::XYZ` will result in the following rotation
+/// sequence:
+///
+/// ```
+/// Rextrinsic = Rz(k) * Ry(j) * Rx(i)
+/// ```
+/// 
+/// Intrinsic rotations are all defined with respect to the rotating coordinate frame. Rotations
+/// are applied from left to right, for example `EulerRot::XYZIn` with result in the following
+/// rotation sequence:
+///
+/// ```
+/// Rintrinsic = Rx(i) * Ry(j) * Rz(k)
+/// ```
+///
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum EulerRot {
-    /// Intrinsic three-axis rotation ZYX
+    /// Extrinsic three-axis rotation ZYX
     ZYX,
-    /// Intrinsic three-axis rotation ZXY
+    /// Extrinsic three-axis rotation ZXY
     ZXY,
-    /// Intrinsic three-axis rotation YXZ
+    /// Extrinsic three-axis rotation YXZ
     YXZ,
-    /// Intrinsic three-axis rotation YZX
+    /// Extrinsic three-axis rotation YZX
     YZX,
-    /// Intrinsic three-axis rotation XYZ
+    /// Extrinsic three-axis rotation XYZ
     XYZ,
-    /// Intrinsic three-axis rotation XZY
+    /// Extrinsic three-axis rotation XZY
     XZY,
 
-    /// Intrinsic two-axis rotation ZYZ
+    /// Extrinsic two-axis rotation ZYZ
     ZYZ,
-    /// Intrinsic two-axis rotation ZXZ
+    /// Extrinsic two-axis rotation ZXZ
     ZXZ,
-    /// Intrinsic two-axis rotation YXY
+    /// Extrinsic two-axis rotation YXY
     YXY,
-    /// Intrinsic two-axis rotation YZY
+    /// Extrinsic two-axis rotation YZY
     YZY,
-    /// Intrinsic two-axis rotation XYX
+    /// Extrinsic two-axis rotation XYX
     XYX,
-    /// Intrinsic two-axis rotation XZX
+    /// Extrinsic two-axis rotation XZX
     XZX,
 
-    /// Extrinsic three-axis rotation ZYX
-    ZYXEx,
-    /// Extrinsic three-axis rotation ZXY
-    ZXYEx,
-    /// Extrinsic three-axis rotation YXZ
-    YXZEx,
-    /// Extrinsic three-axis rotation YZX
-    YZXEx,
-    /// Extrinsic three-axis rotation XYZ
-    XYZEx,
-    /// Extrinsic three-axis rotation XZY
-    XZYEx,
+    /// Intrinsic three-axis rotation ZYX
+    ZYXIn,
+    /// Intrinsic three-axis rotation ZXY
+    ZXYIn,
+    /// Intrinsic three-axis rotation YXZ
+    YXZIn,
+    /// Intrinsic three-axis rotation YZX
+    YZXIn,
+    /// Intrinsic three-axis rotation XYZ
+    XYZIn,
+    /// Intrinsic three-axis rotation XZY
+    XZYIn,
 
-    /// Extrinsic two-axis rotation ZYZ
-    ZYZEx,
-    /// Extrinsic two-axis rotation ZXZ
-    ZXZEx,
-    /// Extrinsic two-axis rotation YXY
-    YXYEx,
-    /// Extrinsic two-axis rotation YZY
-    YZYEx,
-    /// Extrinsic two-axis rotation XYX
-    XYXEx,
-    /// Extrinsic two-axis rotation XZX
-    XZXEx,
+    /// Intrinsic two-axis rotation ZYZ
+    ZYZIn,
+    /// Intrinsic two-axis rotation ZXZ
+    ZXZIn,
+    /// Intrinsic two-axis rotation YXY
+    YXYIn,
+    /// Intrinsic two-axis rotation YZY
+    YZYIn,
+    /// Intrinsic two-axis rotation XYX
+    XYXIn,
+    /// Intrinsic two-axis rotation XZX
+    XZXIn,
 }
 
 pub(crate) trait ToEuler {
@@ -110,16 +125,21 @@ struct Order {
 }
 
 impl Order {
-    fn new(initial_axis: Axis, parity: Parity, initial_repeated: Repeated, frame: Frame) -> Self {
+    const fn new(
+        initial_axis: Axis,
+        parity: Parity,
+        initial_repeated: Repeated,
+        frame: Frame,
+    ) -> Self {
         Self {
             initial_axis,
-            parity_even: parity == Parity::Even,
-            initial_repeated: initial_repeated == Repeated::Yes,
-            frame_static: frame == Frame::Static,
+            parity_even: parity as u32 == Parity::Even as u32,
+            initial_repeated: initial_repeated as u32 == Repeated::Yes as u32,
+            frame_static: frame as u32 == Frame::Static as u32,
         }
     }
 
-    fn from_euler(euler: EulerRot) -> Self {
+    const fn from_euler(euler: EulerRot) -> Self {
         match euler {
             EulerRot::XYZ => Self::new(Axis::X, Parity::Even, Repeated::No, Frame::Static),
             EulerRot::XYX => Self::new(Axis::X, Parity::Even, Repeated::Yes, Frame::Static),
@@ -133,40 +153,44 @@ impl Order {
             EulerRot::ZXZ => Self::new(Axis::Z, Parity::Even, Repeated::Yes, Frame::Static),
             EulerRot::ZYX => Self::new(Axis::Z, Parity::Odd, Repeated::No, Frame::Static),
             EulerRot::ZYZ => Self::new(Axis::Z, Parity::Odd, Repeated::Yes, Frame::Static),
-            EulerRot::ZYXEx => Self::new(Axis::X, Parity::Even, Repeated::No, Frame::Relative),
-            EulerRot::XYXEx => Self::new(Axis::X, Parity::Even, Repeated::Yes, Frame::Relative),
-            EulerRot::YZXEx => Self::new(Axis::X, Parity::Odd, Repeated::No, Frame::Relative),
-            EulerRot::XZXEx => Self::new(Axis::X, Parity::Odd, Repeated::Yes, Frame::Relative),
-            EulerRot::XZYEx => Self::new(Axis::Y, Parity::Even, Repeated::No, Frame::Relative),
-            EulerRot::YZYEx => Self::new(Axis::Y, Parity::Even, Repeated::Yes, Frame::Relative),
-            EulerRot::ZXYEx => Self::new(Axis::Y, Parity::Odd, Repeated::No, Frame::Relative),
-            EulerRot::YXYEx => Self::new(Axis::Y, Parity::Odd, Repeated::Yes, Frame::Relative),
-            EulerRot::YXZEx => Self::new(Axis::Z, Parity::Even, Repeated::No, Frame::Relative),
-            EulerRot::ZXZEx => Self::new(Axis::Z, Parity::Even, Repeated::Yes, Frame::Relative),
-            EulerRot::XYZEx => Self::new(Axis::Z, Parity::Odd, Repeated::No, Frame::Relative),
-            EulerRot::ZYZEx => Self::new(Axis::Z, Parity::Odd, Repeated::Yes, Frame::Relative),
+            EulerRot::ZYXIn => Self::new(Axis::X, Parity::Even, Repeated::No, Frame::Relative),
+            EulerRot::XYXIn => Self::new(Axis::X, Parity::Even, Repeated::Yes, Frame::Relative),
+            EulerRot::YZXIn => Self::new(Axis::X, Parity::Odd, Repeated::No, Frame::Relative),
+            EulerRot::XZXIn => Self::new(Axis::X, Parity::Odd, Repeated::Yes, Frame::Relative),
+            EulerRot::XZYIn => Self::new(Axis::Y, Parity::Even, Repeated::No, Frame::Relative),
+            EulerRot::YZYIn => Self::new(Axis::Y, Parity::Even, Repeated::Yes, Frame::Relative),
+            EulerRot::ZXYIn => Self::new(Axis::Y, Parity::Odd, Repeated::No, Frame::Relative),
+            EulerRot::YXYIn => Self::new(Axis::Y, Parity::Odd, Repeated::Yes, Frame::Relative),
+            EulerRot::YXZIn => Self::new(Axis::Z, Parity::Even, Repeated::No, Frame::Relative),
+            EulerRot::ZXZIn => Self::new(Axis::Z, Parity::Even, Repeated::Yes, Frame::Relative),
+            EulerRot::XYZIn => Self::new(Axis::Z, Parity::Odd, Repeated::No, Frame::Relative),
+            EulerRot::ZYZIn => Self::new(Axis::Z, Parity::Odd, Repeated::Yes, Frame::Relative),
         }
     }
 
-    fn angle_order(self) -> (usize, usize, usize) {
-        let next_axis = |i| (i + 1) % 3;
-        let prev_axis = |i| {
-            if i > 0 {
-                i - 1
-            } else {
-                2
-            }
-        };
+    const fn next_axis(i: usize) -> usize {
+        (i + 1) % 3
+    }
+
+    const fn prev_axis(i: usize) -> usize {
+        if i > 0 {
+            i - 1
+        } else {
+            2
+        }
+    }
+
+    const fn angle_order(self) -> (usize, usize, usize) {
         let i = self.initial_axis as usize;
         let j = if self.parity_even {
-            next_axis(i)
+            Order::next_axis(i)
         } else {
-            prev_axis(i)
+            Order::prev_axis(i)
         };
         let k = if self.parity_even {
-            prev_axis(i)
+            Order::prev_axis(i)
         } else {
-            next_axis(i)
+            Order::next_axis(i)
         };
         (i, j, k)
     }
