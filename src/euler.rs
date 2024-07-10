@@ -353,7 +353,6 @@ macro_rules! impl_mat3_to_euler {
                     let sy = math::sqrt(
                         self.col(i)[j] * self.col(i)[j] + self.col(i)[k] * self.col(i)[k],
                     );
-                    // TODO: https://d3cw3dd2w32x2b.cloudfront.net/wp-content/uploads/2012/07/euler-angles1.pdf
                     if (sy > 16.0 * $scalar::EPSILON) {
                         ea.x = math::atan2(self.col(i)[j], self.col(i)[k]);
                         ea.y = math::atan2(sy, self.col(i)[i]);
@@ -366,7 +365,6 @@ macro_rules! impl_mat3_to_euler {
                     let cy = math::sqrt(
                         self.col(i)[i] * self.col(i)[i] + self.col(j)[i] * self.col(j)[i],
                     );
-                    // TODO: https://d3cw3dd2w32x2b.cloudfront.net/wp-content/uploads/2012/07/euler-angles1.pdf
                     if (cy > 16.0 * $scalar::EPSILON) {
                         ea.x = math::atan2(self.col(k)[j], self.col(k)[k]);
                         ea.y = math::atan2(-self.col(k)[i], cy);
