@@ -12,7 +12,7 @@ use crate::{DMat3, DMat4, DQuat, DVec3, Mat3, Mat3A, Mat4, Quat, Vec3, Vec3A, Ve
 /// ```
 /// Rextrinsic = Rz(k) * Ry(j) * Rx(i)
 /// ```
-/// 
+///
 /// Intrinsic rotations are all defined with respect to the rotating coordinate frame. Rotations
 /// are applied from left to right, for example `EulerRot::XYZIn` with result in the following
 /// rotation sequence:
