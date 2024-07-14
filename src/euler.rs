@@ -1,3 +1,5 @@
+// Based on Ken Shoemake. 1994. Euler angle conversion. Graphics gems IV.  Academic Press
+// Professional, Inc., USA, 222–229.
 use crate::{DMat3, DMat4, DQuat, DVec3, Mat3, Mat3A, Mat4, Quat, Vec3, Vec3A, Vec3Swizzles};
 
 /// Euler rotation sequences.
