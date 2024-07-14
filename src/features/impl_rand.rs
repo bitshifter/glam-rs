@@ -84,11 +84,12 @@ macro_rules! impl_float_types {
         impl Distribution<$quat> for Standard {
             #[inline]
             fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $quat {
-                let u = rng.gen_range::<$t, _>(0.0..=1.0);
-                let (u1, u2) = ($t::sqrt(1.0 - u), $t::sqrt(u));
-                let (sin1, cos1) = rng.gen_range::<$t, _>(0.0..=TAU).sin_cos();
-                let (sin2, cos2) = rng.gen_range::<$t, _>(0.0..=TAU).sin_cos();
-                $quat::from_xyzw(u1 * sin1, u1 * cos1, u2 * sin2, u2 * cos2)
+                let z = rng.gen_range::<$t, _>(-1.0..=1.0);
+                let (y, x) = math::sin_cos(rng.gen_range::<$t, _>(0.0..TAU));
+                let r = math::sqrt(1.0 - z * z);
+                let axis = $vec3::new(r * x, r * y, z);
+                let angle = rng.gen_range::<$t, _>(0.0..TAU);
+                $quat::from_axis_angle(axis, angle)
             }
         }
 
@@ -140,6 +141,7 @@ macro_rules! impl_float_types {
 }
 
 mod f32 {
+    use crate::f32::math;
     use crate::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
     use core::f32::consts::TAU;
     use rand::{
@@ -169,6 +171,7 @@ mod f32 {
 }
 
 mod f64 {
+    use crate::f64::math;
     use crate::{DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
     use core::f64::consts::TAU;
     use rand::{
