@@ -2,78 +2,78 @@ use crate::{DMat3, DMat4, DQuat, DVec3, Mat3, Mat3A, Mat4, Quat, Vec3, Vec3A, Ve
 
 /// Euler rotation sequences.
 ///
-/// Both intrinsic and extrinsic rotation sequences are supported. Extrinsic rotations are most
-/// commonly used and have no suffix, intrinsic sequences have an `In` suffix.
-///
-/// Extrinsic rotation sequences are all defined with respect to a fixed frame. Rotations are
-/// applied from right to left, for example `EulerRot::XYZ` will result in the following rotation
-/// sequence:
+/// The three elemental rotations may be extrinsic (rotations about the axes xyz of the original
+/// coordinate system, which is assumed to remain motionless), or intrinsic(rotations about the
+/// axes of the rotating coordinate system XYZ, solidary with the moving body, which changes its
+/// orientation after each elemental rotation).
 ///
 /// ```
-/// Rextrinsic = Rz(k) * Ry(j) * Rx(i)
-/// ```
+/// # use glam::{EulerRot, Mat3};
+/// # let i = core::f32::consts::FRAC_PI_2;
+/// # let j = core::f32::consts::FRAC_PI_4;
+/// # let k = core::f32::consts::FRAC_PI_8;
+/// let m_intrinsic = Mat3::from_rotation_x(i) * Mat3::from_rotation_y(j) * Mat3::from_rotation_z(k);
+/// let n_intrinsic = Mat3::from_euler(EulerRot::XYZ, i, j, k);
+/// assert!(m_intrinsic.abs_diff_eq(n_intrinsic, 2e-6));
 ///
-/// Intrinsic rotations are all defined with respect to the rotating coordinate frame. Rotations
-/// are applied from left to right, for example `EulerRot::XYZIn` with result in the following
-/// rotation sequence:
-///
-/// ```
-/// Rintrinsic = Rx(i) * Ry(j) * Rz(k)
+/// let m_extrinsic = Mat3::from_rotation_z(k) * Mat3::from_rotation_y(j) * Mat3::from_rotation_x(i);
+/// let n_extrinsic = Mat3::from_euler(EulerRot::XYZEx, i, j, k);
+/// assert!(m_extrinsic.abs_diff_eq(n_extrinsic, 2e-6));
 /// ```
 ///
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum EulerRot {
-    /// Extrinsic three-axis rotation ZYX
+    /// Intrinsic three-axis rotation ZYX
     ZYX,
-    /// Extrinsic three-axis rotation ZXY
+    /// Intrinsic three-axis rotation ZXY
     ZXY,
-    /// Extrinsic three-axis rotation YXZ
+    /// Intrinsic three-axis rotation YXZ
     YXZ,
-    /// Extrinsic three-axis rotation YZX
+    /// Intrinsic three-axis rotation YZX
     YZX,
-    /// Extrinsic three-axis rotation XYZ
+    /// Intrinsic three-axis rotation XYZ
     XYZ,
-    /// Extrinsic three-axis rotation XZY
+    /// Intrinsic three-axis rotation XZY
     XZY,
 
-    /// Extrinsic two-axis rotation ZYZ
+    /// Intrinsic two-axis rotation ZYZ
     ZYZ,
-    /// Extrinsic two-axis rotation ZXZ
+    /// Intrinsic two-axis rotation ZXZ
     ZXZ,
-    /// Extrinsic two-axis rotation YXY
+    /// Intrinsic two-axis rotation YXY
     YXY,
-    /// Extrinsic two-axis rotation YZY
+    /// Intrinsic two-axis rotation YZY
     YZY,
-    /// Extrinsic two-axis rotation XYX
+    /// Intrinsic two-axis rotation XYX
     XYX,
-    /// Extrinsic two-axis rotation XZX
+    /// Intrinsic two-axis rotation XZX
     XZX,
 
-    /// Intrinsic three-axis rotation ZYX
-    ZYXIn,
-    /// Intrinsic three-axis rotation ZXY
-    ZXYIn,
-    /// Intrinsic three-axis rotation YXZ
-    YXZIn,
-    /// Intrinsic three-axis rotation YZX
-    YZXIn,
-    /// Intrinsic three-axis rotation XYZ
-    XYZIn,
-    /// Intrinsic three-axis rotation XZY
-    XZYIn,
+    /// Extrinsic three-axis rotation ZYX
+    ZYXEx,
+    /// Extrinsic three-axis rotation ZXY
+    ZXYEx,
+    /// Extrinsic three-axis rotation YXZ
+    YXZEx,
+    /// Extrinsic three-axis rotation YZX
+    YZXEx,
+    /// Extrinsic three-axis rotation XYZ
+    XYZEx,
+    /// Extrinsic three-axis rotation XZY
+    XZYEx,
 
-    /// Intrinsic two-axis rotation ZYZ
-    ZYZIn,
-    /// Intrinsic two-axis rotation ZXZ
-    ZXZIn,
-    /// Intrinsic two-axis rotation YXY
-    YXYIn,
-    /// Intrinsic two-axis rotation YZY
-    YZYIn,
-    /// Intrinsic two-axis rotation XYX
-    XYXIn,
-    /// Intrinsic two-axis rotation XZX
-    XZXIn,
+    /// Extrinsic two-axis rotation ZYZ
+    ZYZEx,
+    /// Extrinsic two-axis rotation ZXZ
+    ZXZEx,
+    /// Extrinsic two-axis rotation YXY
+    YXYEx,
+    /// Extrinsic two-axis rotation YZY
+    YZYEx,
+    /// Extrinsic two-axis rotation XYX
+    XYXEx,
+    /// Extrinsic two-axis rotation XZX
+    XZXEx,
 }
 
 pub(crate) trait ToEuler {
@@ -153,18 +153,18 @@ impl Order {
             EulerRot::ZXZ => Self::new(Axis::Z, Parity::Even, Repeated::Yes, Frame::Static),
             EulerRot::ZYX => Self::new(Axis::Z, Parity::Odd, Repeated::No, Frame::Static),
             EulerRot::ZYZ => Self::new(Axis::Z, Parity::Odd, Repeated::Yes, Frame::Static),
-            EulerRot::ZYXIn => Self::new(Axis::X, Parity::Even, Repeated::No, Frame::Relative),
-            EulerRot::XYXIn => Self::new(Axis::X, Parity::Even, Repeated::Yes, Frame::Relative),
-            EulerRot::YZXIn => Self::new(Axis::X, Parity::Odd, Repeated::No, Frame::Relative),
-            EulerRot::XZXIn => Self::new(Axis::X, Parity::Odd, Repeated::Yes, Frame::Relative),
-            EulerRot::XZYIn => Self::new(Axis::Y, Parity::Even, Repeated::No, Frame::Relative),
-            EulerRot::YZYIn => Self::new(Axis::Y, Parity::Even, Repeated::Yes, Frame::Relative),
-            EulerRot::ZXYIn => Self::new(Axis::Y, Parity::Odd, Repeated::No, Frame::Relative),
-            EulerRot::YXYIn => Self::new(Axis::Y, Parity::Odd, Repeated::Yes, Frame::Relative),
-            EulerRot::YXZIn => Self::new(Axis::Z, Parity::Even, Repeated::No, Frame::Relative),
-            EulerRot::ZXZIn => Self::new(Axis::Z, Parity::Even, Repeated::Yes, Frame::Relative),
-            EulerRot::XYZIn => Self::new(Axis::Z, Parity::Odd, Repeated::No, Frame::Relative),
-            EulerRot::ZYZIn => Self::new(Axis::Z, Parity::Odd, Repeated::Yes, Frame::Relative),
+            EulerRot::ZYXEx => Self::new(Axis::X, Parity::Even, Repeated::No, Frame::Relative),
+            EulerRot::XYXEx => Self::new(Axis::X, Parity::Even, Repeated::Yes, Frame::Relative),
+            EulerRot::YZXEx => Self::new(Axis::X, Parity::Odd, Repeated::No, Frame::Relative),
+            EulerRot::XZXEx => Self::new(Axis::X, Parity::Odd, Repeated::Yes, Frame::Relative),
+            EulerRot::XZYEx => Self::new(Axis::Y, Parity::Even, Repeated::No, Frame::Relative),
+            EulerRot::YZYEx => Self::new(Axis::Y, Parity::Even, Repeated::Yes, Frame::Relative),
+            EulerRot::ZXYEx => Self::new(Axis::Y, Parity::Odd, Repeated::No, Frame::Relative),
+            EulerRot::YXYEx => Self::new(Axis::Y, Parity::Odd, Repeated::Yes, Frame::Relative),
+            EulerRot::YXZEx => Self::new(Axis::Z, Parity::Even, Repeated::No, Frame::Relative),
+            EulerRot::ZXZEx => Self::new(Axis::Z, Parity::Even, Repeated::Yes, Frame::Relative),
+            EulerRot::XYZEx => Self::new(Axis::Z, Parity::Odd, Repeated::No, Frame::Relative),
+            EulerRot::ZYZEx => Self::new(Axis::Z, Parity::Odd, Repeated::Yes, Frame::Relative),
         }
     }
 

@@ -42,18 +42,18 @@ mod euler {
             EulerRot::ZXZ => (2, 0, 2),
             EulerRot::ZYX => (2, 1, 0),
             EulerRot::ZYZ => (2, 1, 2),
-            EulerRot::ZYXIn => (2, 1, 0),
-            EulerRot::XYXIn => (0, 1, 0),
-            EulerRot::YZXIn => (1, 2, 0),
-            EulerRot::XZXIn => (0, 2, 0),
-            EulerRot::XZYIn => (0, 2, 1),
-            EulerRot::YZYIn => (1, 2, 1),
-            EulerRot::ZXYIn => (2, 0, 1),
-            EulerRot::YXYIn => (1, 0, 1),
-            EulerRot::YXZIn => (1, 0, 2),
-            EulerRot::ZXZIn => (2, 0, 2),
-            EulerRot::XYZIn => (0, 1, 2),
-            EulerRot::ZYZIn => (2, 1, 2),
+            EulerRot::ZYXEx => (2, 1, 0),
+            EulerRot::XYXEx => (0, 1, 0),
+            EulerRot::YZXEx => (1, 2, 0),
+            EulerRot::XZXEx => (0, 2, 0),
+            EulerRot::XZYEx => (0, 2, 1),
+            EulerRot::YZYEx => (1, 2, 1),
+            EulerRot::ZXYEx => (2, 0, 1),
+            EulerRot::YXYEx => (1, 0, 1),
+            EulerRot::YXZEx => (1, 0, 2),
+            EulerRot::ZXZEx => (2, 0, 2),
+            EulerRot::XYZEx => (0, 1, 2),
+            EulerRot::ZYZEx => (2, 1, 2),
         }
     }
 
@@ -71,18 +71,18 @@ mod euler {
             | EulerRot::ZXZ
             | EulerRot::ZYX
             | EulerRot::ZYZ => true,
-            EulerRot::ZYXIn
-            | EulerRot::XYXIn
-            | EulerRot::YZXIn
-            | EulerRot::XZXIn
-            | EulerRot::XZYIn
-            | EulerRot::YZYIn
-            | EulerRot::ZXYIn
-            | EulerRot::YXYIn
-            | EulerRot::YXZIn
-            | EulerRot::ZXZIn
-            | EulerRot::XYZIn
-            | EulerRot::ZYZIn => false,
+            EulerRot::ZYXEx
+            | EulerRot::XYXEx
+            | EulerRot::YZXEx
+            | EulerRot::XZXEx
+            | EulerRot::XZYEx
+            | EulerRot::YZYEx
+            | EulerRot::ZXYEx
+            | EulerRot::YXYEx
+            | EulerRot::YXZEx
+            | EulerRot::ZXZEx
+            | EulerRot::XYZEx
+            | EulerRot::ZYZEx => false,
         }
     }
 
@@ -133,19 +133,19 @@ mod euler {
         test(EulerRot::ZYZ);
         test(EulerRot::ZXZ);
 
-        test(EulerRot::XYZIn);
-        test(EulerRot::XZYIn);
-        test(EulerRot::YZXIn);
-        test(EulerRot::YXZIn);
-        test(EulerRot::ZXYIn);
-        test(EulerRot::ZYXIn);
+        test(EulerRot::XYZEx);
+        test(EulerRot::XZYEx);
+        test(EulerRot::YZXEx);
+        test(EulerRot::YXZEx);
+        test(EulerRot::ZXYEx);
+        test(EulerRot::ZYXEx);
 
-        test(EulerRot::XZXIn);
-        test(EulerRot::XYXIn);
-        test(EulerRot::YXYIn);
-        test(EulerRot::YZYIn);
-        test(EulerRot::ZYZIn);
-        test(EulerRot::ZXZIn);
+        test(EulerRot::XZXEx);
+        test(EulerRot::XYXEx);
+        test(EulerRot::YXYEx);
+        test(EulerRot::YZYEx);
+        test(EulerRot::ZYZEx);
+        test(EulerRot::ZXZEx);
     }
 
     macro_rules! impl_quat_euler_test {
