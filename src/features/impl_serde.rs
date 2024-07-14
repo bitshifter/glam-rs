@@ -1117,6 +1117,60 @@ mod euler {
                 EulerRot::XZY => {
                     serde::Serializer::serialize_unit_variant(serializer, "EulerRot", 5u32, "XZY")
                 }
+                EulerRot::ZYZ => {
+                    serde::Serializer::serialize_unit_variant(serializer, "EulerRot", 6u32, "ZYZ")
+                }
+                EulerRot::ZXZ => {
+                    serde::Serializer::serialize_unit_variant(serializer, "EulerRot", 7u32, "ZXZ")
+                }
+                EulerRot::YXY => {
+                    serde::Serializer::serialize_unit_variant(serializer, "EulerRot", 8u32, "YXY")
+                }
+                EulerRot::YZY => {
+                    serde::Serializer::serialize_unit_variant(serializer, "EulerRot", 9u32, "YZY")
+                }
+                EulerRot::XYX => {
+                    serde::Serializer::serialize_unit_variant(serializer, "EulerRot", 10u32, "XYX")
+                }
+                EulerRot::XZX => {
+                    serde::Serializer::serialize_unit_variant(serializer, "EulerRot", 11u32, "XZX")
+                }
+                EulerRot::ZYXEx => serde::Serializer::serialize_unit_variant(
+                    serializer, "EulerRot", 12u32, "ZYXEx",
+                ),
+                EulerRot::ZXYEx => serde::Serializer::serialize_unit_variant(
+                    serializer, "EulerRot", 13u32, "ZXYEx",
+                ),
+                EulerRot::YXZEx => serde::Serializer::serialize_unit_variant(
+                    serializer, "EulerRot", 14u32, "YXZEx",
+                ),
+                EulerRot::YZXEx => serde::Serializer::serialize_unit_variant(
+                    serializer, "EulerRot", 15u32, "YZXEx",
+                ),
+                EulerRot::XYZEx => serde::Serializer::serialize_unit_variant(
+                    serializer, "EulerRot", 16u32, "XYZEx",
+                ),
+                EulerRot::XZYEx => serde::Serializer::serialize_unit_variant(
+                    serializer, "EulerRot", 17u32, "XZYEx",
+                ),
+                EulerRot::ZYZEx => serde::Serializer::serialize_unit_variant(
+                    serializer, "EulerRot", 18u32, "ZYZEx",
+                ),
+                EulerRot::ZXZEx => serde::Serializer::serialize_unit_variant(
+                    serializer, "EulerRot", 19u32, "ZXZEx",
+                ),
+                EulerRot::YXYEx => serde::Serializer::serialize_unit_variant(
+                    serializer, "EulerRot", 20u32, "YXYEx",
+                ),
+                EulerRot::YZYEx => serde::Serializer::serialize_unit_variant(
+                    serializer, "EulerRot", 21u32, "YZYEx",
+                ),
+                EulerRot::XYXEx => serde::Serializer::serialize_unit_variant(
+                    serializer, "EulerRot", 22u32, "XYXEx",
+                ),
+                EulerRot::XZXEx => serde::Serializer::serialize_unit_variant(
+                    serializer, "EulerRot", 23u32, "XZXEx",
+                ),
             }
         }
     }
@@ -1134,6 +1188,24 @@ mod euler {
                 YZX,
                 XYZ,
                 XZY,
+                ZYZ,
+                ZXZ,
+                YXY,
+                YZY,
+                XYX,
+                XZX,
+                ZYXEx,
+                ZXYEx,
+                YXZEx,
+                YZXEx,
+                XYZEx,
+                XZYEx,
+                ZYZEx,
+                ZXZEx,
+                YXYEx,
+                YZYEx,
+                XYXEx,
+                XZXEx,
             }
             struct FieldVisitor;
 
@@ -1153,9 +1225,28 @@ mod euler {
                         3u64 => Ok(Field::YZX),
                         4u64 => Ok(Field::XYZ),
                         5u64 => Ok(Field::XZY),
+                        6u64 => Ok(Field::ZYZ),
+                        7u64 => Ok(Field::ZXZ),
+                        8u64 => Ok(Field::YXY),
+                        9u64 => Ok(Field::YZY),
+                        10u64 => Ok(Field::XYX),
+                        11u64 => Ok(Field::XZX),
+
+                        12u64 => Ok(Field::ZYXEx),
+                        13u64 => Ok(Field::ZXYEx),
+                        14u64 => Ok(Field::YXZEx),
+                        15u64 => Ok(Field::YZXEx),
+                        16u64 => Ok(Field::XYZEx),
+                        17u64 => Ok(Field::XZYEx),
+                        18u64 => Ok(Field::ZYZEx),
+                        19u64 => Ok(Field::ZXZEx),
+                        20u64 => Ok(Field::YXYEx),
+                        21u64 => Ok(Field::YZYEx),
+                        22u64 => Ok(Field::XYXEx),
+                        23u64 => Ok(Field::XZXEx),
                         _ => Err(serde::de::Error::invalid_value(
                             serde::de::Unexpected::Unsigned(value),
-                            &"variant index 0 <= i < 6",
+                            &"variant index 0 <= i < 24",
                         )),
                     }
                 }
@@ -1170,6 +1261,24 @@ mod euler {
                         "YZX" => Ok(Field::YZX),
                         "XYZ" => Ok(Field::XYZ),
                         "XZY" => Ok(Field::XZY),
+                        "ZYZ" => Ok(Field::ZYZ),
+                        "ZXZ" => Ok(Field::ZXZ),
+                        "YXY" => Ok(Field::YXY),
+                        "YZY" => Ok(Field::YZY),
+                        "XYX" => Ok(Field::XYX),
+                        "XZX" => Ok(Field::XZX),
+                        "ZYXEx" => Ok(Field::ZYXEx),
+                        "ZXYEx" => Ok(Field::ZXYEx),
+                        "YXZEx" => Ok(Field::YXZEx),
+                        "YZXEx" => Ok(Field::YZXEx),
+                        "XYZEx" => Ok(Field::XYZEx),
+                        "XZYEx" => Ok(Field::XZYEx),
+                        "ZYZEx" => Ok(Field::ZYZEx),
+                        "ZXZEx" => Ok(Field::ZXZEx),
+                        "YXYEx" => Ok(Field::YXYEx),
+                        "YZYEx" => Ok(Field::YZYEx),
+                        "XYXEx" => Ok(Field::XYXEx),
+                        "XZXEx" => Ok(Field::XZXEx),
                         _ => Err(serde::de::Error::unknown_variant(value, VARIANTS)),
                     }
                 }
@@ -1184,6 +1293,24 @@ mod euler {
                         b"YZX" => Ok(Field::YZX),
                         b"XYZ" => Ok(Field::XYZ),
                         b"XZY" => Ok(Field::XZY),
+                        b"ZYZ" => Ok(Field::ZYZ),
+                        b"ZXZ" => Ok(Field::ZXZ),
+                        b"YXY" => Ok(Field::YXY),
+                        b"YZY" => Ok(Field::YZY),
+                        b"XYX" => Ok(Field::XYX),
+                        b"XZX" => Ok(Field::XZX),
+                        b"ZYXEx" => Ok(Field::ZYXEx),
+                        b"ZXYEx" => Ok(Field::ZXYEx),
+                        b"YXZEx" => Ok(Field::YXZEx),
+                        b"YZXEx" => Ok(Field::YZXEx),
+                        b"XYZEx" => Ok(Field::XYZEx),
+                        b"XZYEx" => Ok(Field::XZYEx),
+                        b"ZYZEx" => Ok(Field::ZYZEx),
+                        b"ZXZEx" => Ok(Field::ZXZEx),
+                        b"YXYEx" => Ok(Field::YXYEx),
+                        b"YZYEx" => Ok(Field::YZYEx),
+                        b"XYXEx" => Ok(Field::XYXEx),
+                        b"XZXEx" => Ok(Field::XZXEx),
                         _ => {
                             #[cfg(feature = "std")]
                             let value = &String::from_utf8_lossy(value);
@@ -1245,10 +1372,87 @@ mod euler {
                             serde::de::VariantAccess::unit_variant(variant)?;
                             Ok(EulerRot::XZY)
                         }
+
+                        (Field::ZYZ, variant) => {
+                            serde::de::VariantAccess::unit_variant(variant)?;
+                            Ok(EulerRot::ZYZ)
+                        }
+                        (Field::ZXZ, variant) => {
+                            serde::de::VariantAccess::unit_variant(variant)?;
+                            Ok(EulerRot::ZXZ)
+                        }
+                        (Field::YXY, variant) => {
+                            serde::de::VariantAccess::unit_variant(variant)?;
+                            Ok(EulerRot::YXY)
+                        }
+                        (Field::YZY, variant) => {
+                            serde::de::VariantAccess::unit_variant(variant)?;
+                            Ok(EulerRot::YZY)
+                        }
+                        (Field::XYX, variant) => {
+                            serde::de::VariantAccess::unit_variant(variant)?;
+                            Ok(EulerRot::XYX)
+                        }
+                        (Field::XZX, variant) => {
+                            serde::de::VariantAccess::unit_variant(variant)?;
+                            Ok(EulerRot::XZX)
+                        }
+                        (Field::ZYXEx, variant) => {
+                            serde::de::VariantAccess::unit_variant(variant)?;
+                            Ok(EulerRot::ZYXEx)
+                        }
+                        (Field::ZXYEx, variant) => {
+                            serde::de::VariantAccess::unit_variant(variant)?;
+                            Ok(EulerRot::ZXYEx)
+                        }
+                        (Field::YXZEx, variant) => {
+                            serde::de::VariantAccess::unit_variant(variant)?;
+                            Ok(EulerRot::YXZEx)
+                        }
+                        (Field::YZXEx, variant) => {
+                            serde::de::VariantAccess::unit_variant(variant)?;
+                            Ok(EulerRot::YZXEx)
+                        }
+                        (Field::XYZEx, variant) => {
+                            serde::de::VariantAccess::unit_variant(variant)?;
+                            Ok(EulerRot::XYZEx)
+                        }
+                        (Field::XZYEx, variant) => {
+                            serde::de::VariantAccess::unit_variant(variant)?;
+                            Ok(EulerRot::XZYEx)
+                        }
+                        (Field::ZYZEx, variant) => {
+                            serde::de::VariantAccess::unit_variant(variant)?;
+                            Ok(EulerRot::ZYZEx)
+                        }
+                        (Field::ZXZEx, variant) => {
+                            serde::de::VariantAccess::unit_variant(variant)?;
+                            Ok(EulerRot::ZXZEx)
+                        }
+                        (Field::YXYEx, variant) => {
+                            serde::de::VariantAccess::unit_variant(variant)?;
+                            Ok(EulerRot::YXYEx)
+                        }
+                        (Field::YZYEx, variant) => {
+                            serde::de::VariantAccess::unit_variant(variant)?;
+                            Ok(EulerRot::YZYEx)
+                        }
+                        (Field::XYXEx, variant) => {
+                            serde::de::VariantAccess::unit_variant(variant)?;
+                            Ok(EulerRot::XYXEx)
+                        }
+                        (Field::XZXEx, variant) => {
+                            serde::de::VariantAccess::unit_variant(variant)?;
+                            Ok(EulerRot::XZXEx)
+                        }
                     }
                 }
             }
-            const VARIANTS: &[&str] = &["ZYX", "ZXY", "YXZ", "YZX", "XYZ", "XZY"];
+            const VARIANTS: &[&str] = &[
+                "ZYX", "ZXY", "YXZ", "YZX", "XYZ", "XZY", "ZYZ", "ZXZ", "YXY", "YZY", "XYX", "XZX",
+                "ZYXEx", "ZXYEx", "YXZEx", "YZXEx", "XYZEx", "XZYEx", "ZYZEx", "ZXZEx", "YXYEx",
+                "YZYEx", "XYXEx", "XZXEx",
+            ];
             serde::Deserializer::deserialize_enum(
                 deserializer,
                 "EulerRot",
@@ -1263,10 +1467,37 @@ mod euler {
 
     #[test]
     fn test_euler_rot_serde() {
-        let a = EulerRot::XYZ;
-        let serialized = serde_json::to_string(&a).unwrap();
-        assert_eq!("\"XYZ\"", serialized);
-        let deserialized = serde_json::from_str(&serialized).unwrap();
-        assert_eq!(a, deserialized);
+        const PAIRS: [(EulerRot, &str); 24] = [
+            (EulerRot::ZYX, "\"ZYX\""),
+            (EulerRot::ZXY, "\"ZXY\""),
+            (EulerRot::YXZ, "\"YXZ\""),
+            (EulerRot::YZX, "\"YZX\""),
+            (EulerRot::XYZ, "\"XYZ\""),
+            (EulerRot::XZY, "\"XZY\""),
+            (EulerRot::ZYZ, "\"ZYZ\""),
+            (EulerRot::ZXZ, "\"ZXZ\""),
+            (EulerRot::YXY, "\"YXY\""),
+            (EulerRot::YZY, "\"YZY\""),
+            (EulerRot::XYX, "\"XYX\""),
+            (EulerRot::XZX, "\"XZX\""),
+            (EulerRot::ZYXEx, "\"ZYXEx\""),
+            (EulerRot::ZXYEx, "\"ZXYEx\""),
+            (EulerRot::YXZEx, "\"YXZEx\""),
+            (EulerRot::YZXEx, "\"YZXEx\""),
+            (EulerRot::XYZEx, "\"XYZEx\""),
+            (EulerRot::XZYEx, "\"XZYEx\""),
+            (EulerRot::ZYZEx, "\"ZYZEx\""),
+            (EulerRot::ZXZEx, "\"ZXZEx\""),
+            (EulerRot::YXYEx, "\"YXYEx\""),
+            (EulerRot::YZYEx, "\"YZYEx\""),
+            (EulerRot::XYXEx, "\"XYXEx\""),
+            (EulerRot::XZXEx, "\"XZXEx\""),
+        ];
+        for (enum_value, enum_string) in PAIRS {
+            let serialized = serde_json::to_string(&enum_value).unwrap();
+            assert_eq!(enum_string, serialized);
+            let deserialized = serde_json::from_str(&serialized).unwrap();
+            assert_eq!(enum_value, deserialized);
+        }
     }
 }

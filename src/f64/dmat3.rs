@@ -1,6 +1,11 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
-use crate::{f64::math, swizzles::*, DMat2, DMat4, DQuat, DVec2, DVec3, EulerRot, Mat3};
+use crate::{
+    euler::{FromEuler, ToEuler},
+    f64::math,
+    swizzles::*,
+    DMat2, DMat4, DQuat, DVec2, DVec3, EulerRot, Mat3,
+};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -221,8 +226,26 @@ impl DMat3 {
     #[inline]
     #[must_use]
     pub fn from_euler(order: EulerRot, a: f64, b: f64, c: f64) -> Self {
-        let quat = DQuat::from_euler(order, a, b, c);
-        Self::from_quat(quat)
+        Self::from_euler_angles(order, a, b, c)
+    }
+
+    /// Extract Euler angles with the given Euler rotation order.
+    ///
+    /// Note if the input matrix contains scales, shears, or other non-rotation transformations then
+    /// the resulting Euler angles will be ill-defined.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if any input matrix column is not normalized when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn to_euler(&self, order: EulerRot) -> (f64, f64, f64) {
+        glam_assert!(
+            self.x_axis.is_normalized()
+                && self.y_axis.is_normalized()
+                && self.z_axis.is_normalized()
+        );
+        self.to_euler_angles(order)
     }
 
     /// Creates a 3D rotation matrix from `angle` (in radians) around the x axis.

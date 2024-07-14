@@ -72,7 +72,7 @@ use crate::{
         Mat3A,
     {% endif %}
 {% elif dim == 3 %}
-    EulerRot,
+    EulerRot, euler::{FromEuler, ToEuler},
     {{ mat2_t }}, {{ mat4_t }}, {{ quat_t }}, {{ vec2_t }}, {{ col_t }},
     {% if is_align %}
         {{ mat3_t }}, {{ vec3_t }},
@@ -80,7 +80,7 @@ use crate::{
         Mat3A, Vec3A,
     {% endif %}
 {% elif dim == 4 %}
-    EulerRot,
+    EulerRot, euler::{FromEuler, ToEuler},
     {{ mat3_t }}, {{ quat_t }}, {{ vec3_t }}, {{ col_t }},
     {% if scalar_t == "f32" %}
         Mat3A, Vec3A,
@@ -521,8 +521,24 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn from_euler(order: EulerRot, a: {{ scalar_t }}, b: {{ scalar_t }}, c: {{ scalar_t }}) -> Self {
-        let quat = {{ quat_t }}::from_euler(order, a, b, c);
-        Self::from_quat(quat)
+        Self::from_euler_angles(order, a, b, c)
+    }
+
+    /// Extract Euler angles with the given Euler rotation order.
+    ///
+    /// Note if the input matrix contains scales, shears, or other non-rotation transformations then
+    /// the resulting Euler angles will be ill-defined.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if any input matrix column is not normalized when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn to_euler(&self, order: EulerRot) -> ({{ scalar_t }}, {{ scalar_t }}, {{ scalar_t }}) {
+        glam_assert!(self.x_axis.is_normalized()
+            && self.y_axis.is_normalized()
+            && self.z_axis.is_normalized());
+        self.to_euler_angles(order)
     }
 
     /// Creates a 3D rotation matrix from `angle` (in radians) around the x axis.
@@ -853,8 +869,25 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn from_euler(order: EulerRot, a: {{ scalar_t }}, b: {{ scalar_t }}, c: {{ scalar_t }}) -> Self {
-        let quat = {{ quat_t }}::from_euler(order, a, b, c);
-        Self::from_quat(quat)
+        Self::from_euler_angles(order, a, b, c)
+    }
+
+    /// Extract Euler angles with the given Euler rotation order.
+    ///
+    /// Note if the upper 3x3 matrix contain scales, shears, or other non-rotation transformations
+    /// then the resulting Euler angles will be ill-defined.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if any column of the upper 3x3 rotation matrix is not normalized when
+    /// `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn to_euler(&self, order: EulerRot) -> ({{ scalar_t }}, {{ scalar_t }}, {{ scalar_t }}) {
+        glam_assert!(self.x_axis.xyz().is_normalized()
+            && self.y_axis.xyz().is_normalized()
+            && self.z_axis.xyz().is_normalized());
+        self.to_euler_angles(order)
     }
 
     /// Creates an affine transformation matrix containing a 3D rotation around the x axis of
