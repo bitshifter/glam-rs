@@ -657,6 +657,7 @@ impl Vec4 {
     /// # Panics
     ///
     /// Will panic if `rhs` has a length of zero when `glam_assert` is enabled.
+    #[doc(alias("plane"))]
     #[inline]
     #[must_use]
     pub fn reject_from(self, rhs: Self) -> Self {
@@ -687,6 +688,7 @@ impl Vec4 {
     /// # Panics
     ///
     /// Will panic if `rhs` is not normalized when `glam_assert` is enabled.
+    #[doc(alias("plane"))]
     #[inline]
     #[must_use]
     pub fn reject_from_normalized(self, rhs: Self) -> Self {
