@@ -84,10 +84,12 @@ macro_rules! impl_float_types {
         impl Distribution<$quat> for Standard {
             #[inline]
             fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $quat {
-                let yaw = -PI + rng.gen::<$t>() * 2.0 * PI;
-                let pitch = -PI + rng.gen::<$t>() * 2.0 * PI;
-                let roll = -PI + rng.gen::<$t>() * 2.0 * PI;
-                $quat::from_euler(crate::EulerRot::YXZ, yaw, pitch, roll)
+                let z = rng.gen_range::<$t, _>(-1.0..=1.0);
+                let (y, x) = math::sin_cos(rng.gen_range::<$t, _>(0.0..TAU));
+                let r = math::sqrt(1.0 - z * z);
+                let axis = $vec3::new(r * x, r * y, z);
+                let angle = rng.gen_range::<$t, _>(0.0..TAU);
+                $quat::from_axis_angle(axis, angle)
             }
         }
 
@@ -139,8 +141,9 @@ macro_rules! impl_float_types {
 }
 
 mod f32 {
+    use crate::f32::math;
     use crate::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
-    use core::f32::consts::PI;
+    use core::f32::consts::TAU;
     use rand::{
         distributions::{Distribution, Standard},
         Rng,
@@ -168,8 +171,9 @@ mod f32 {
 }
 
 mod f64 {
+    use crate::f64::math;
     use crate::{DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
-    use core::f64::consts::PI;
+    use core::f64::consts::TAU;
     use rand::{
         distributions::{Distribution, Standard},
         Rng,
