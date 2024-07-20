@@ -1792,6 +1792,13 @@ mod uvec2 {
         );
     });
 
+    glam_test!(test_div_ceil, {
+        assert_eq!(
+            UVec2::new(11, 12).div_ceil(UVec2::new(2, 3)),
+            UVec2::new(6, 4)
+        );
+    });
+
     impl_vec2_tests!(u32, uvec2, UVec2, UVec3, BVec2, bvec2);
     impl_vec2_eq_hash_tests!(u32, uvec2);
 

@@ -42,3 +42,16 @@ mod test {
         const_assert_eq!(16, core::mem::align_of::<super::U64Vec4>());
     }
 }
+
+/// rustc implementation from 1.73
+#[inline]
+#[track_caller]
+const fn div_ceil_u64(lhs: u64, rhs: u64) -> u64 {
+    let d = lhs / rhs;
+    let r = lhs % rhs;
+    if r > 0 {
+        d + 1
+    } else {
+        d
+    }
+}

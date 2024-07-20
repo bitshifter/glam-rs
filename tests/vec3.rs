@@ -1843,6 +1843,13 @@ mod u16vec3 {
         );
     });
 
+    glam_test!(test_div_ceil, {
+        assert_eq!(
+            U16Vec3::new(11, 12, 0).div_ceil(U16Vec3::new(2, 3, 1)),
+            U16Vec3::new(6, 4, 0)
+        );
+    });
+
     impl_vec3_tests!(u16, u16vec3, U16Vec3, BVec3, bvec3);
     impl_vec3_eq_hash_tests!(u16, u16vec3);
 

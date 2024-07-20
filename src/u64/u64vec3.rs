@@ -2,6 +2,8 @@
 
 use crate::{BVec3, BVec3A, I16Vec3, I64Vec3, IVec3, U16Vec3, U64Vec2, U64Vec4, UVec3};
 
+use crate::u64::div_ceil_u64;
+
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -527,6 +529,19 @@ impl U64Vec3 {
             x: self.x.saturating_add_signed(rhs.x),
             y: self.y.saturating_add_signed(rhs.y),
             z: self.z.saturating_add_signed(rhs.z),
+        }
+    }
+
+    /// Returns a vector containing quotient of `self` and `rhs`, rounding the result towards positive infinity.
+    ///
+    /// In other words this computes `[self.x.div_ceil(rhs.x), self.y.div_ceil(rhs.y), ..]`.
+    #[inline]
+    #[must_use]
+    pub const fn div_ceil(self, rhs: Self) -> Self {
+        Self {
+            x: div_ceil_u64(self.x, rhs.x),
+            y: div_ceil_u64(self.y, rhs.y),
+            z: div_ceil_u64(self.z, rhs.z),
         }
     }
 }

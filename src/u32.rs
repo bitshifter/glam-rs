@@ -42,3 +42,17 @@ mod test {
         const_assert_eq!(16, core::mem::align_of::<super::UVec4>());
     }
 }
+
+
+/// rustc implementation from 1.73
+#[inline]
+#[track_caller]
+const fn div_ceil_u32(lhs: u32, rhs: u32) -> u32 {
+    let d = lhs / rhs;
+    let r = lhs % rhs;
+    if r > 0 {
+        d + 1
+    } else {
+        d
+    }
+}

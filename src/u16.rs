@@ -42,3 +42,17 @@ mod test {
         const_assert_eq!(8, core::mem::align_of::<super::U16Vec4>());
     }
 }
+
+/// rustc implementation from 1.73
+#[inline]
+#[track_caller]
+const fn div_ceil_u16(lhs: u16, rhs: u16) -> u16 {
+    let d = lhs / rhs;
+    let r = lhs % rhs;
+    if r > 0 {
+        d + 1
+    } else {
+        d
+    }
+}
+
