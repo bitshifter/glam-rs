@@ -478,6 +478,18 @@ impl U16Vec2 {
             y: div_ceil_u16(self.y, rhs.y),
         }
     }
+
+    /// Returns a vector containing quotient of `self` and `rhs`, rounding the result towards positive infinity.
+    ///
+    /// In other words this computes `[self.x.div_ceil(rhs), self.y.div_ceil(rhs), ..]`.
+    #[inline]
+    #[must_use]
+    pub const fn div_ceil_scalar(self, rhs: u16) -> Self {
+        Self {
+            x: div_ceil_u16(self.x, rhs),
+            y: div_ceil_u16(self.y, rhs),
+        }
+    }
 }
 
 impl Default for U16Vec2 {

@@ -2524,6 +2524,13 @@ mod u64vec4 {
         );
     });
 
+    glam_test!(test_div_ceil_scalar, {
+        assert_eq!(
+            U64Vec4::new(11, 12, 0, 12345).div_ceil_scalar(1000),
+            U64Vec4::new(1, 1, 0, 13)
+        );
+    });
+
     impl_vec4_tests!(u64, u64vec4, U64Vec4, U64Vec3, U64Vec2, BVec4, bvec4);
     impl_vec4_eq_hash_tests!(u64, u64vec4);
 

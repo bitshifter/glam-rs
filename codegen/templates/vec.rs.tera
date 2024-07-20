@@ -2584,6 +2584,19 @@ impl {{ self_t }} {
                 {%- endfor %}
             }
         }
+
+        /// Returns a vector containing quotient of `self` and `rhs`, rounding the result towards positive infinity.
+        ///
+        /// In other words this computes `[self.x.div_ceil(rhs), self.y.div_ceil(rhs), ..]`.
+        #[inline]
+        #[must_use]
+        pub const fn div_ceil_scalar(self, rhs: {{ scalar_t }}) -> Self {
+            Self {
+                {% for c in components %}
+                    {{ c }}: div_ceil_{{ scalar_t }}(self.{{ c }}, rhs),
+                {%- endfor %}
+            }
+        }
     {% endif %}
 {% endif %}
 }

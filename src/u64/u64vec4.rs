@@ -575,6 +575,20 @@ impl U64Vec4 {
             w: div_ceil_u64(self.w, rhs.w),
         }
     }
+
+    /// Returns a vector containing quotient of `self` and `rhs`, rounding the result towards positive infinity.
+    ///
+    /// In other words this computes `[self.x.div_ceil(rhs), self.y.div_ceil(rhs), ..]`.
+    #[inline]
+    #[must_use]
+    pub const fn div_ceil_scalar(self, rhs: u64) -> Self {
+        Self {
+            x: div_ceil_u64(self.x, rhs),
+            y: div_ceil_u64(self.y, rhs),
+            z: div_ceil_u64(self.z, rhs),
+            w: div_ceil_u64(self.w, rhs),
+        }
+    }
 }
 
 impl Default for U64Vec4 {
