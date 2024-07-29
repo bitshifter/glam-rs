@@ -125,3 +125,6 @@ members = [
     "codegen",
     "test_no_std",
 ]
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(target_arch, values("spirv"))'] }
