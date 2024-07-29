@@ -6,9 +6,11 @@ mod euler {
     use std::ops::RangeInclusive;
 
     /// Helper to get the 'canonical' version of a `Quat`. We define the canonical of quat `q` as:
+    ///
     /// * `q`, if q.w > epsilon
     /// * `-q`, if q.w < -epsilon
     /// * `(0, 0, 0, 1)` otherwise
+    ///
     /// The rationale is that q and -q represent the same rotation, and any (_, _, _, 0) represent no rotation at all.
     trait CanonicalQuat: Copy {
         fn canonical(self) -> Self;
