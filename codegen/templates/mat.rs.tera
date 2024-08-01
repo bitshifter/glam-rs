@@ -1,3 +1,4 @@
+{% import "macros.rs.tera" as macros %}
 {% import "coresimd.rs.tera" as coresimd %}
 {% import "neon.rs.tera" as neon %}
 {% import "sse2.rs.tera" as sse2 %}
@@ -437,6 +438,8 @@ impl {{ self_t }} {
         Self::from_cols(m.x_axis.xy(), m.y_axis.xy())
     }
 
+    {{ macros::impl_mat3_minor(mat3_t=mat3_t) }}
+
 {% if scalar_t == "f32" %}
     /// Creates a {{ nxn }} matrix from a 3x3 matrix, discarding the 2nd row and column.
     #[inline]
@@ -445,6 +448,8 @@ impl {{ self_t }} {
         {# TODO: SIMD optimise #}
         Self::from_cols(m.x_axis.xy(), m.y_axis.xy())
     }
+
+    {{ macros::impl_mat3_minor(mat3_t="Mat3A", align="a") }}
 {% endif %}
 
 {% elif dim == 3 %}
@@ -458,6 +463,8 @@ impl {{ self_t }} {
             {{ col_t }}::from_vec4(m.z_axis),
         )
     }
+
+    {{ macros::impl_mat4_minor(mat4_t=mat4_t, vec3_t=col_t) }}
 
     /// Creates a 3D rotation matrix from the given quaternion.
     ///

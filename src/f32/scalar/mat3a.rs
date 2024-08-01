@@ -165,6 +165,100 @@ impl Mat3A {
         )
     }
 
+    /// Creates a 3x3 matrix from the minor of the given 4x4 matrix, discarding the `i`th column
+    /// and `j`th row.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `i` or `j` is greater than 3.
+    #[inline]
+    #[must_use]
+    pub fn from_mat4_minor(m: Mat4, i: usize, j: usize) -> Self {
+        match (i, j) {
+            (0, 0) => Self::from_cols(
+                Vec3A::from_vec4(m.y_axis.yzww()),
+                Vec3A::from_vec4(m.z_axis.yzww()),
+                Vec3A::from_vec4(m.w_axis.yzww()),
+            ),
+            (0, 1) => Self::from_cols(
+                Vec3A::from_vec4(m.y_axis.xzww()),
+                Vec3A::from_vec4(m.z_axis.xzww()),
+                Vec3A::from_vec4(m.w_axis.xzww()),
+            ),
+            (0, 2) => Self::from_cols(
+                Vec3A::from_vec4(m.y_axis.xyww()),
+                Vec3A::from_vec4(m.z_axis.xyww()),
+                Vec3A::from_vec4(m.w_axis.xyww()),
+            ),
+            (0, 3) => Self::from_cols(
+                Vec3A::from_vec4(m.y_axis.xyzw()),
+                Vec3A::from_vec4(m.z_axis.xyzw()),
+                Vec3A::from_vec4(m.w_axis.xyzw()),
+            ),
+            (1, 0) => Self::from_cols(
+                Vec3A::from_vec4(m.x_axis.yzww()),
+                Vec3A::from_vec4(m.z_axis.yzww()),
+                Vec3A::from_vec4(m.w_axis.yzww()),
+            ),
+            (1, 1) => Self::from_cols(
+                Vec3A::from_vec4(m.x_axis.xzww()),
+                Vec3A::from_vec4(m.z_axis.xzww()),
+                Vec3A::from_vec4(m.w_axis.xzww()),
+            ),
+            (1, 2) => Self::from_cols(
+                Vec3A::from_vec4(m.x_axis.xyww()),
+                Vec3A::from_vec4(m.z_axis.xyww()),
+                Vec3A::from_vec4(m.w_axis.xyww()),
+            ),
+            (1, 3) => Self::from_cols(
+                Vec3A::from_vec4(m.x_axis.xyzw()),
+                Vec3A::from_vec4(m.z_axis.xyzw()),
+                Vec3A::from_vec4(m.w_axis.xyzw()),
+            ),
+            (2, 0) => Self::from_cols(
+                Vec3A::from_vec4(m.x_axis.yzww()),
+                Vec3A::from_vec4(m.y_axis.yzww()),
+                Vec3A::from_vec4(m.w_axis.yzww()),
+            ),
+            (2, 1) => Self::from_cols(
+                Vec3A::from_vec4(m.x_axis.xzww()),
+                Vec3A::from_vec4(m.y_axis.xzww()),
+                Vec3A::from_vec4(m.w_axis.xzww()),
+            ),
+            (2, 2) => Self::from_cols(
+                Vec3A::from_vec4(m.x_axis.xyww()),
+                Vec3A::from_vec4(m.y_axis.xyww()),
+                Vec3A::from_vec4(m.w_axis.xyww()),
+            ),
+            (2, 3) => Self::from_cols(
+                Vec3A::from_vec4(m.x_axis.xyzw()),
+                Vec3A::from_vec4(m.y_axis.xyzw()),
+                Vec3A::from_vec4(m.w_axis.xyzw()),
+            ),
+            (3, 0) => Self::from_cols(
+                Vec3A::from_vec4(m.x_axis.yzww()),
+                Vec3A::from_vec4(m.y_axis.yzww()),
+                Vec3A::from_vec4(m.z_axis.yzww()),
+            ),
+            (3, 1) => Self::from_cols(
+                Vec3A::from_vec4(m.x_axis.xzww()),
+                Vec3A::from_vec4(m.y_axis.xzww()),
+                Vec3A::from_vec4(m.z_axis.xzww()),
+            ),
+            (3, 2) => Self::from_cols(
+                Vec3A::from_vec4(m.x_axis.xyww()),
+                Vec3A::from_vec4(m.y_axis.xyww()),
+                Vec3A::from_vec4(m.z_axis.xyww()),
+            ),
+            (3, 3) => Self::from_cols(
+                Vec3A::from_vec4(m.x_axis.xyzw()),
+                Vec3A::from_vec4(m.y_axis.xyzw()),
+                Vec3A::from_vec4(m.z_axis.xyzw()),
+            ),
+            _ => panic!("index out of bounds"),
+        }
+    }
+
     /// Creates a 3D rotation matrix from the given quaternion.
     ///
     /// # Panics
