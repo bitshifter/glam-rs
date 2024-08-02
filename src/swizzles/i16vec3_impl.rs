@@ -120,12 +120,6 @@ impl Vec3Swizzles for I16Vec3 {
 
     #[inline]
     #[must_use]
-    fn xyz(self) -> I16Vec3 {
-        I16Vec3::new(self.x, self.y, self.z)
-    }
-
-    #[inline]
-    #[must_use]
     fn xzx(self) -> I16Vec3 {
         I16Vec3::new(self.x, self.z, self.x)
     }

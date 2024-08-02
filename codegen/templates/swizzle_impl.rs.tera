@@ -53,7 +53,7 @@ impl Vec{{ dim }}Swizzles for {{ self_t }} {
         {% for j0 in indices | slice(end=dim) %}
             {% for j1 in indices | slice(end=dim) %}
                 {% if i == 2 %}
-                    {% set skip = dim == 2 and j0 == "x" and j1 == "y" %}
+                    {% set skip = dim == 2 and j0 == 0 and j1 == 1 %}
                     {% if not skip %}
     #[inline]
     #[must_use]
@@ -64,7 +64,7 @@ impl Vec{{ dim }}Swizzles for {{ self_t }} {
                 {% else %}
                     {% for j2 in indices | slice(end=dim) %}
                         {% if i == 3 %}
-                            {% set skip = dim == 3 and j0 == "x" and j1 == "y" and j2 == "z" %}
+                            {% set skip = dim == 3 and j0 == 0 and j1 == 1 and j2 == 2 %}
                             {% if not skip %}
     #[inline]
     #[must_use]
@@ -82,7 +82,7 @@ impl Vec{{ dim }}Swizzles for {{ self_t }} {
                             {% endif %}
                         {% else %}
                             {% for j3 in indices | slice(end=dim) %}
-                                {% set skip = dim == 4 and j0 == "x" and j1 == "y" and j2 == "z" and j3 == "w" %}
+                                {% set skip = dim == 4 and j0 == 0 and j1 == 1 and j2 == 2 and j3 == 3 %}
                                 {% if not skip %}
     #[inline]
     #[must_use]

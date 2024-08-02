@@ -18,15 +18,6 @@ impl Vec2Swizzles for DVec2 {
 
     #[inline]
     #[must_use]
-    fn xy(self) -> DVec2 {
-        DVec2 {
-            x: self.x,
-            y: self.y,
-        }
-    }
-
-    #[inline]
-    #[must_use]
     fn yx(self) -> DVec2 {
         DVec2 {
             x: self.y,

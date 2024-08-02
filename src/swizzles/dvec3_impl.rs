@@ -120,12 +120,6 @@ impl Vec3Swizzles for DVec3 {
 
     #[inline]
     #[must_use]
-    fn xyz(self) -> DVec3 {
-        DVec3::new(self.x, self.y, self.z)
-    }
-
-    #[inline]
-    #[must_use]
     fn xzx(self) -> DVec3 {
         DVec3::new(self.x, self.z, self.x)
     }

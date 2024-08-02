@@ -706,12 +706,6 @@ impl Vec4Swizzles for Vec4 {
 
     #[inline]
     #[must_use]
-    fn xyzw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_01_00) })
-    }
-
-    #[inline]
-    #[must_use]
     fn xywx(self) -> Vec4 {
         Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_01_00) })
     }

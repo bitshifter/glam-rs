@@ -124,12 +124,6 @@ impl Vec3Swizzles for Vec3A {
 
     #[inline]
     #[must_use]
-    fn xyz(self) -> Vec3A {
-        Vec3A(i32x4_shuffle::<0, 1, 6, 4>(self.0, self.0).into())
-    }
-
-    #[inline]
-    #[must_use]
     fn xzx(self) -> Vec3A {
         Vec3A(i32x4_shuffle::<0, 2, 4, 4>(self.0, self.0).into())
     }

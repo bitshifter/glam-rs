@@ -703,12 +703,6 @@ impl Vec4Swizzles for Vec4 {
 
     #[inline]
     #[must_use]
-    fn xyzw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 1, 2, 3]))
-    }
-
-    #[inline]
-    #[must_use]
     fn xywx(self) -> Vec4 {
         Vec4(simd_swizzle!(self.0, [0, 1, 3, 0]))
     }
