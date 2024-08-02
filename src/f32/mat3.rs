@@ -165,6 +165,36 @@ impl Mat3 {
         )
     }
 
+    /// Creates a 3x3 matrix from the minor of the given 4x4 matrix, discarding the `i`th column
+    /// and `j`th row.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `i` or `j` is greater than 3.
+    #[inline]
+    #[must_use]
+    pub fn from_mat4_minor(m: Mat4, i: usize, j: usize) -> Self {
+        match (i, j) {
+            (0, 0) => Self::from_cols(m.y_axis.yzw(), m.z_axis.yzw(), m.w_axis.yzw()),
+            (0, 1) => Self::from_cols(m.y_axis.xzw(), m.z_axis.xzw(), m.w_axis.xzw()),
+            (0, 2) => Self::from_cols(m.y_axis.xyw(), m.z_axis.xyw(), m.w_axis.xyw()),
+            (0, 3) => Self::from_cols(m.y_axis.xyz(), m.z_axis.xyz(), m.w_axis.xyz()),
+            (1, 0) => Self::from_cols(m.x_axis.yzw(), m.z_axis.yzw(), m.w_axis.yzw()),
+            (1, 1) => Self::from_cols(m.x_axis.xzw(), m.z_axis.xzw(), m.w_axis.xzw()),
+            (1, 2) => Self::from_cols(m.x_axis.xyw(), m.z_axis.xyw(), m.w_axis.xyw()),
+            (1, 3) => Self::from_cols(m.x_axis.xyz(), m.z_axis.xyz(), m.w_axis.xyz()),
+            (2, 0) => Self::from_cols(m.x_axis.yzw(), m.y_axis.yzw(), m.w_axis.yzw()),
+            (2, 1) => Self::from_cols(m.x_axis.xzw(), m.y_axis.xzw(), m.w_axis.xzw()),
+            (2, 2) => Self::from_cols(m.x_axis.xyw(), m.y_axis.xyw(), m.w_axis.xyw()),
+            (2, 3) => Self::from_cols(m.x_axis.xyz(), m.y_axis.xyz(), m.w_axis.xyz()),
+            (3, 0) => Self::from_cols(m.x_axis.yzw(), m.y_axis.yzw(), m.z_axis.yzw()),
+            (3, 1) => Self::from_cols(m.x_axis.xzw(), m.y_axis.xzw(), m.z_axis.xzw()),
+            (3, 2) => Self::from_cols(m.x_axis.xyw(), m.y_axis.xyw(), m.z_axis.xyw()),
+            (3, 3) => Self::from_cols(m.x_axis.xyz(), m.y_axis.xyz(), m.z_axis.xyz()),
+            _ => panic!("index out of bounds"),
+        }
+    }
+
     /// Creates a 3D rotation matrix from the given quaternion.
     ///
     /// # Panics

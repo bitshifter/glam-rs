@@ -127,12 +127,6 @@ impl Vec3Swizzles for Vec3A {
 
     #[inline]
     #[must_use]
-    fn xyz(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_01_00) }).into())
-    }
-
-    #[inline]
-    #[must_use]
     fn xzx(self) -> Vec3A {
         Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_10_00) }).into())
     }

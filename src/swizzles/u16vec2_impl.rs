@@ -18,15 +18,6 @@ impl Vec2Swizzles for U16Vec2 {
 
     #[inline]
     #[must_use]
-    fn xy(self) -> U16Vec2 {
-        U16Vec2 {
-            x: self.x,
-            y: self.y,
-        }
-    }
-
-    #[inline]
-    #[must_use]
     fn yx(self) -> U16Vec2 {
         U16Vec2 {
             x: self.y,

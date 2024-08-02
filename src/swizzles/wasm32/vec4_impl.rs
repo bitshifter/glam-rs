@@ -703,12 +703,6 @@ impl Vec4Swizzles for Vec4 {
 
     #[inline]
     #[must_use]
-    fn xyzw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 1, 6, 7>(self.0, self.0))
-    }
-
-    #[inline]
-    #[must_use]
     fn xywx(self) -> Vec4 {
         Vec4(i32x4_shuffle::<0, 1, 7, 4>(self.0, self.0))
     }

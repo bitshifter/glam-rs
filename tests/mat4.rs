@@ -9,16 +9,16 @@ macro_rules! impl_mat4_tests {
             [0.0, 0.0, 1.0, 0.0],
             [0.0, 0.0, 0.0, 1.0],
         ];
-        const MATRIX: [[$t; 4]; 4] = [
+        const ARRAY4X4: [[$t; 4]; 4] = [
             [1.0, 2.0, 3.0, 4.0],
             [5.0, 6.0, 7.0, 8.0],
             [9.0, 10.0, 11.0, 12.0],
             [13.0, 14.0, 15.0, 16.0],
         ];
-
-        const MATRIX1D: [$t; 16] = [
+        const ARRAY1X16: [$t; 16] = [
             1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0,
         ];
+        const ARRAY3X3: [[$t; 3]; 3] = [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]];
 
         glam_test!(test_const, {
             const M0: $mat4 = $mat4::from_cols(
@@ -27,12 +27,12 @@ macro_rules! impl_mat4_tests {
                 $newvec4(9.0, 10.0, 11.0, 12.0),
                 $newvec4(13.0, 14.0, 15.0, 16.0),
             );
-            const M1: $mat4 = $mat4::from_cols_array(&MATRIX1D);
-            const M2: $mat4 = $mat4::from_cols_array_2d(&MATRIX);
+            const M1: $mat4 = $mat4::from_cols_array(&ARRAY1X16);
+            const M2: $mat4 = $mat4::from_cols_array_2d(&ARRAY4X4);
 
-            assert_eq!(MATRIX1D, M0.to_cols_array());
-            assert_eq!(MATRIX1D, M1.to_cols_array());
-            assert_eq!(MATRIX1D, M2.to_cols_array());
+            assert_eq!(ARRAY1X16, M0.to_cols_array());
+            assert_eq!(ARRAY1X16, M1.to_cols_array());
+            assert_eq!(ARRAY1X16, M2.to_cols_array());
         });
 
         glam_test!(test_mat4_identity, {
@@ -76,7 +76,7 @@ macro_rules! impl_mat4_tests {
             m.y_axis = $vec4::new(5.0, 6.0, 7.0, 8.0);
             m.z_axis = $vec4::new(9.0, 10.0, 11.0, 12.0);
             m.w_axis = $vec4::new(13.0, 14.0, 15.0, 16.0);
-            assert_eq!($mat4::from_cols_array_2d(&MATRIX), m);
+            assert_eq!($mat4::from_cols_array_2d(&ARRAY4X4), m);
             assert_eq!($vec4::new(1.0, 2.0, 3.0, 4.0), m.x_axis);
             assert_eq!($vec4::new(5.0, 6.0, 7.0, 8.0), m.y_axis);
             assert_eq!($vec4::new(9.0, 10.0, 11.0, 12.0), m.z_axis);
@@ -116,7 +116,7 @@ macro_rules! impl_mat4_tests {
                 [9.0, 10.0, 11.0, 12.0],
                 [13.0, 14.0, 15.0, 16.0],
             ]);
-            assert_eq!(MATRIX, a.to_cols_array_2d());
+            assert_eq!(ARRAY4X4, a.to_cols_array_2d());
             let b = $mat4::from_cols(
                 $newvec4(1.0, 2.0, 3.0, 4.0),
                 $newvec4(5.0, 6.0, 7.0, 8.0),
@@ -168,7 +168,7 @@ macro_rules! impl_mat4_tests {
 
         glam_test!(test_from_mat3, {
             let m3 =
-                $mat3::from_cols_array_2d(&[[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]]);
+                $mat3::from_cols_array_2d(&ARRAY3X3);
             let m4 = $mat4::from_mat3(m3);
             assert_eq!(
                 $mat4::from_cols_array_2d(&[
@@ -584,7 +584,7 @@ macro_rules! impl_mat4_tests {
         });
 
         glam_test!(test_mat4_ops, {
-            let m0 = $mat4::from_cols_array_2d(&MATRIX);
+            let m0 = $mat4::from_cols_array_2d(&ARRAY4X4);
             let m0x2 = $mat4::from_cols_array_2d(&[
                 [2.0, 4.0, 6.0, 8.0],
                 [10.0, 12.0, 14.0, 16.0],
@@ -629,7 +629,7 @@ macro_rules! impl_mat4_tests {
         });
 
         glam_test!(test_mat4_fmt, {
-            let a = $mat4::from_cols_array_2d(&MATRIX);
+            let a = $mat4::from_cols_array_2d(&ARRAY4X4);
             assert_eq!(
                 format!("{}", a),
                 "[[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]]"
@@ -641,11 +641,11 @@ macro_rules! impl_mat4_tests {
         });
 
         glam_test!(test_mat4_to_from_slice, {
-            let m = $mat4::from_cols_slice(&MATRIX1D);
-            assert_eq!($mat4::from_cols_array(&MATRIX1D), m);
+            let m = $mat4::from_cols_slice(&ARRAY1X16);
+            assert_eq!($mat4::from_cols_array(&ARRAY1X16), m);
             let mut out: [$t; 16] = Default::default();
             m.write_cols_to_slice(&mut out);
-            assert_eq!(MATRIX1D, out);
+            assert_eq!(ARRAY1X16, out);
 
             should_panic!({ $mat4::from_cols_slice(&[0.0; 15]) });
             should_panic!({ $mat4::IDENTITY.write_cols_to_slice(&mut [0.0; 15]) });
@@ -697,13 +697,13 @@ macro_rules! impl_mat4_tests {
 macro_rules! impl_as_ref_tests {
     ($mat:ident) => {
         glam_test!(test_as_ref, {
-            let m = $mat::from_cols_array_2d(&MATRIX);
-            assert_eq!(MATRIX1D, *m.as_ref());
+            let m = $mat::from_cols_array_2d(&ARRAY4X4);
+            assert_eq!(ARRAY1X16, *m.as_ref());
         });
         glam_test!(test_as_mut, {
             let mut m = $mat::ZERO;
-            *m.as_mut() = MATRIX1D;
-            assert_eq!($mat::from_cols_array_2d(&MATRIX), m);
+            *m.as_mut() = ARRAY1X16;
+            assert_eq!($mat::from_cols_array_2d(&ARRAY4X4), m);
         });
     };
 }
@@ -720,7 +720,7 @@ mod mat4 {
 
     glam_test!(test_from_mat3a, {
         use glam::Mat3A;
-        let m3 = Mat3A::from_cols_array_2d(&[[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]]);
+        let m3 = Mat3A::from_cols_array_2d(&ARRAY3X3);
         let m4 = Mat4::from_mat3a(m3);
         assert_eq!(
             Mat4::from_cols_array_2d(&[

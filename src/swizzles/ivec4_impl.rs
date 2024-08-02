@@ -699,12 +699,6 @@ impl Vec4Swizzles for IVec4 {
 
     #[inline]
     #[must_use]
-    fn xyzw(self) -> IVec4 {
-        IVec4::new(self.x, self.y, self.z, self.w)
-    }
-
-    #[inline]
-    #[must_use]
     fn xywx(self) -> IVec4 {
         IVec4::new(self.x, self.y, self.w, self.x)
     }

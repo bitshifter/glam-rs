@@ -18,15 +18,6 @@ impl Vec2Swizzles for I64Vec2 {
 
     #[inline]
     #[must_use]
-    fn xy(self) -> I64Vec2 {
-        I64Vec2 {
-            x: self.x,
-            y: self.y,
-        }
-    }
-
-    #[inline]
-    #[must_use]
     fn yx(self) -> I64Vec2 {
         I64Vec2 {
             x: self.y,

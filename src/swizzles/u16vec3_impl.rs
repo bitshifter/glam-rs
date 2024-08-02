@@ -120,12 +120,6 @@ impl Vec3Swizzles for U16Vec3 {
 
     #[inline]
     #[must_use]
-    fn xyz(self) -> U16Vec3 {
-        U16Vec3::new(self.x, self.y, self.z)
-    }
-
-    #[inline]
-    #[must_use]
     fn xzx(self) -> U16Vec3 {
         U16Vec3::new(self.x, self.z, self.x)
     }

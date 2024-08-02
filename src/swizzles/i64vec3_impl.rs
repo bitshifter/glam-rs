@@ -120,12 +120,6 @@ impl Vec3Swizzles for I64Vec3 {
 
     #[inline]
     #[must_use]
-    fn xyz(self) -> I64Vec3 {
-        I64Vec3::new(self.x, self.y, self.z)
-    }
-
-    #[inline]
-    #[must_use]
     fn xzx(self) -> I64Vec3 {
         I64Vec3::new(self.x, self.z, self.x)
     }

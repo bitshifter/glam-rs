@@ -114,11 +114,57 @@ impl Mat2 {
         Self::from_cols(m.x_axis.xy(), m.y_axis.xy())
     }
 
+    /// Creates a 2x2 matrix from the minor of the given 3x3 matrix, discarding the `i`th column
+    /// and `j`th row.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `i` or `j` is greater than 2.
+    #[inline]
+    #[must_use]
+    pub fn from_mat3_minor(m: Mat3, i: usize, j: usize) -> Self {
+        match (i, j) {
+            (0, 0) => Self::from_cols(m.y_axis.yz(), m.z_axis.yz()),
+            (0, 1) => Self::from_cols(m.y_axis.xz(), m.z_axis.xz()),
+            (0, 2) => Self::from_cols(m.y_axis.xy(), m.z_axis.xy()),
+            (1, 0) => Self::from_cols(m.x_axis.yz(), m.z_axis.yz()),
+            (1, 1) => Self::from_cols(m.x_axis.xz(), m.z_axis.xz()),
+            (1, 2) => Self::from_cols(m.x_axis.xy(), m.z_axis.xy()),
+            (2, 0) => Self::from_cols(m.x_axis.yz(), m.y_axis.yz()),
+            (2, 1) => Self::from_cols(m.x_axis.xz(), m.y_axis.xz()),
+            (2, 2) => Self::from_cols(m.x_axis.xy(), m.y_axis.xy()),
+            _ => panic!("index out of bounds"),
+        }
+    }
+
     /// Creates a 2x2 matrix from a 3x3 matrix, discarding the 2nd row and column.
     #[inline]
     #[must_use]
     pub fn from_mat3a(m: Mat3A) -> Self {
         Self::from_cols(m.x_axis.xy(), m.y_axis.xy())
+    }
+
+    /// Creates a 2x2 matrix from the minor of the given 3x3 matrix, discarding the `i`th column
+    /// and `j`th row.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `i` or `j` is greater than 2.
+    #[inline]
+    #[must_use]
+    pub fn from_mat3a_minor(m: Mat3A, i: usize, j: usize) -> Self {
+        match (i, j) {
+            (0, 0) => Self::from_cols(m.y_axis.yz(), m.z_axis.yz()),
+            (0, 1) => Self::from_cols(m.y_axis.xz(), m.z_axis.xz()),
+            (0, 2) => Self::from_cols(m.y_axis.xy(), m.z_axis.xy()),
+            (1, 0) => Self::from_cols(m.x_axis.yz(), m.z_axis.yz()),
+            (1, 1) => Self::from_cols(m.x_axis.xz(), m.z_axis.xz()),
+            (1, 2) => Self::from_cols(m.x_axis.xy(), m.z_axis.xy()),
+            (2, 0) => Self::from_cols(m.x_axis.yz(), m.y_axis.yz()),
+            (2, 1) => Self::from_cols(m.x_axis.xz(), m.y_axis.xz()),
+            (2, 2) => Self::from_cols(m.x_axis.xy(), m.y_axis.xy()),
+            _ => panic!("index out of bounds"),
+        }
     }
 
     /// Creates a 2x2 matrix from the first 4 values in `slice`.
