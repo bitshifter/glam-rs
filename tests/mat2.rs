@@ -115,6 +115,8 @@ macro_rules! impl_mat2_tests {
                     test_matrix_minor!(3, m2, m3, i, j);
                 }
             }
+            should_panic!({ $mat2::from_mat3_minor(m3, 3, 0) });
+            should_panic!({ $mat2::from_mat3_minor(m3, 0, 3) });
         });
 
         glam_test!(test_mat2_transpose, {
@@ -278,6 +280,8 @@ mod mat2 {
                 test_matrix_minor!(3, m2, m3, i, j);
             }
         }
+        should_panic!({ Mat2::from_mat3a_minor(m3, 3, 0) });
+        should_panic!({ Mat2::from_mat3a_minor(m3, 0, 3) });
     });
 
     glam_test!(test_as, {

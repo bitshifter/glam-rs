@@ -234,6 +234,8 @@ macro_rules! impl_mat3_tests {
                     test_matrix_minor!(4, m3, m4, i, j);
                 }
             }
+            should_panic!({ $mat3::from_mat4_minor(m4, 4, 0) });
+            should_panic!({ $mat3::from_mat4_minor(m4, 0, 4) });
         });
 
         glam_test!(test_mat3_transpose, {
