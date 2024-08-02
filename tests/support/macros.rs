@@ -247,3 +247,22 @@ macro_rules! vec2_float_test_vectors {
         ]
     };
 }
+
+#[macro_export]
+macro_rules! test_matrix_minor {
+    ($n:expr, $minor:expr, $input:expr, $i:expr, $j:expr) => {
+        let mut yy = 0;
+        for y in 0..$n {
+            if y != $j {
+                let mut xx = 0;
+                for x in 0..$n {
+                    if x != $i {
+                        assert_eq!($minor.col(xx)[yy], $input.col(x)[y]);
+                        xx += 1;
+                    }
+                }
+                yy += 1;
+            }
+        }
+    };
+}
