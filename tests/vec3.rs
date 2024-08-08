@@ -1027,7 +1027,7 @@ macro_rules! impl_vec3_float_tests {
                 $vec3::new(1.0, 2.0, 3.0).map(|n| n + 3.0),
                 $vec3::new(1.0, 2.0, 3.0) + $vec3::splat(3.0)
             );
-            assert_approx_eq!($vec3::new(1.0, 2.0, 3.0).map(|n| 1.0), $vec3::splat(1.0));
+            assert_approx_eq!($vec3::new(1.0, 2.0, 3.0).map(|_| 0.0), $vec3::ZERO);
         });
 
         glam_test!(test_angle_between, {

@@ -1165,6 +1165,14 @@ macro_rules! impl_vec4_float_tests {
             );
         });
 
+        glam_test!(test_map, {
+            assert_approx_eq!(
+                $vec4::new(1.0, 2.0, 3.0, 4.0).map(|n| n + 3.0),
+                $vec4::new(1.0, 2.0, 3.0, 4.0) + $vec4::splat(3.0)
+            );
+            assert_approx_eq!($vec4::new(1.0, 2.0, 3.0, 4.0).map(|_| 0.0), $vec4::ZERO);
+        });
+
         glam_test!(test_clamp_length, {
             // Too long gets shortened
             assert_eq!(
