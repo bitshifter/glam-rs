@@ -673,6 +673,16 @@ impl Vec2 {
         }
     }
 
+    /// Returns a vector containing each element of `self` modified by a mapping function `f`.
+    #[inline]
+    #[must_use]
+    pub fn map<F>(self, f: F) -> Self
+    where
+        F: Fn(f32) -> f32,
+    {
+        Self::new(f(self.x), f(self.y))
+    }
+
     /// Performs a linear interpolation between `self` and `rhs` based on the value `s`.
     ///
     /// When `s` is `0.0`, the result will be equal to `self`.  When `s` is `1.0`, the result
