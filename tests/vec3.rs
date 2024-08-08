@@ -1022,6 +1022,14 @@ macro_rules! impl_vec3_float_tests {
             );
         });
 
+        glam_test!(test_map, {
+            assert_approx_eq!(
+                $vec3::new(1.0, 2.0, 3.0).map(|n| n + 3.0),
+                $vec3::new(1.0, 2.0, 3.0) + $vec3::splat(3.0)
+            );
+            assert_approx_eq!($vec3::new(1.0, 2.0, 3.0).map(|n| 1.0), $vec3::splat(1.0));
+        });
+
         glam_test!(test_angle_between, {
             let angle = $vec3::new(1.0, 0.0, 1.0).angle_between($vec3::new(1.0, 1.0, 0.0));
             assert_approx_eq!(core::$t::consts::FRAC_PI_3, angle, 1e-6);

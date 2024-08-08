@@ -1853,7 +1853,7 @@ impl {{ self_t }} {
     {
         Self::new(
             {% for c in components %}
-                {{ c }}: f(self.{{ c }}),
+                f(self.{{ c }}),
             {%- endfor %}
         )
     }
