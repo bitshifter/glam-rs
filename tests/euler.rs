@@ -252,6 +252,11 @@ mod euler {
         };
     }
 
+    #[test]
+    fn test_euler_default() {
+        assert_eq!(EulerRot::YXZ, EulerRot::default());
+    }
+
     mod quat {
         impl_quat_euler_test!(Quat, f32);
     }
