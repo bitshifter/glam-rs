@@ -78,6 +78,13 @@ pub enum EulerRot {
     XZXEx,
 }
 
+impl Default for EulerRot {
+    /// Default `YXZ` as yaw (y-axis), pitch (x-axis), roll (z-axis).
+    fn default() -> Self {
+        Self::YXZ
+    }
+}
+
 pub(crate) trait ToEuler {
     type Scalar;
     fn to_euler_angles(self, order: EulerRot) -> (Self::Scalar, Self::Scalar, Self::Scalar);
