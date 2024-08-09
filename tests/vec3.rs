@@ -110,6 +110,15 @@ macro_rules! impl_vec3_tests {
             assert_eq!($vec3::ONE, v);
         });
 
+        glam_test!(test_map, {
+            let v = $vec3::new(1 as $t, 2 as $t, 3 as $t);
+            assert_eq!(
+                v.map(|n| n + 3 as $t),
+                v + $vec3::splat(3 as $t)
+            );
+            assert_eq!(v.map(|_| 0 as $t), $vec3::ZERO);
+        });
+
         glam_test!(test_with, {
             assert_eq!($vec3::X, $vec3::ZERO.with_x(1 as $t));
             assert_eq!($vec3::Y, $vec3::ZERO.with_y(1 as $t));
@@ -1020,14 +1029,6 @@ macro_rules! impl_vec3_float_tests {
                 $vec3::new(1.0, 2.0, 3.0).exp(),
                 $vec3::new((1.0 as $t).exp(), (2.0 as $t).exp(), (3.0 as $t).exp())
             );
-        });
-
-        glam_test!(test_map, {
-            assert_approx_eq!(
-                $vec3::new(1.0, 2.0, 3.0).map(|n| n + 3.0),
-                $vec3::new(1.0, 2.0, 3.0) + $vec3::splat(3.0)
-            );
-            assert_approx_eq!($vec3::new(1.0, 2.0, 3.0).map(|_| 0.0), $vec3::ZERO);
         });
 
         glam_test!(test_angle_between, {

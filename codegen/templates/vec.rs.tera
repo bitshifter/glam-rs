@@ -411,6 +411,20 @@ impl {{ self_t }} {
         {% endif %}
     }
 
+    /// Returns a vector containing each element of `self` modified by a mapping function `f`.
+    #[inline]
+    #[must_use]
+    pub fn map<F>(self, f: F) -> Self
+    where
+        F: Fn({{ scalar_t }}) -> {{ scalar_t }},
+    {
+        Self::new(
+            {% for c in components %}
+                f(self.{{ c }}),
+            {%- endfor %}
+        )
+    }
+
     /// Creates a vector from the elements in `if_true` and `if_false`, selecting which to use
     /// for each element of `self`.
     ///
@@ -1842,20 +1856,6 @@ impl {{ self_t }} {
         {% else %}
             unimplemented!()
         {% endif %}
-    }
-
-    /// Returns a vector containing each element of `self` modified by a mapping function `f`.
-    #[inline]
-    #[must_use]
-    pub fn map<F>(self, f: F) -> Self
-    where
-        F: Fn({{ scalar_t }}) -> {{ scalar_t }},
-    {
-        Self::new(
-            {% for c in components %}
-                f(self.{{ c }}),
-            {%- endfor %}
-        )
     }
 
     /// Performs a linear interpolation between `self` and `rhs` based on the value `s`.
