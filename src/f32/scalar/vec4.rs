@@ -111,6 +111,16 @@ impl Vec4 {
         }
     }
 
+    /// Returns a vector containing each element of `self` modified by a mapping function `f`.
+    #[inline]
+    #[must_use]
+    pub fn map<F>(self, f: F) -> Self
+    where
+        F: Fn(f32) -> f32,
+    {
+        Self::new(f(self.x), f(self.y), f(self.z), f(self.w))
+    }
+
     /// Creates a vector from the elements in `if_true` and `if_false`, selecting which to use
     /// for each element of `self`.
     ///
@@ -806,16 +816,6 @@ impl Vec4 {
             z: 1.0 / self.z,
             w: 1.0 / self.w,
         }
-    }
-
-    /// Returns a vector containing each element of `self` modified by a mapping function `f`.
-    #[inline]
-    #[must_use]
-    pub fn map<F>(self, f: F) -> Self
-    where
-        F: Fn(f32) -> f32,
-    {
-        Self::new(f(self.x), f(self.y), f(self.z), f(self.w))
     }
 
     /// Performs a linear interpolation between `self` and `rhs` based on the value `s`.

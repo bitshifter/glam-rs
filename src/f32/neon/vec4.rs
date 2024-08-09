@@ -97,6 +97,16 @@ impl Vec4 {
         unsafe { UnionCast { a: [v; 4] }.v }
     }
 
+    /// Returns a vector containing each element of `self` modified by a mapping function `f`.
+    #[inline]
+    #[must_use]
+    pub fn map<F>(self, f: F) -> Self
+    where
+        F: Fn(f32) -> f32,
+    {
+        Self::new(f(self.x), f(self.y), f(self.z), f(self.w))
+    }
+
     /// Creates a vector from the elements in `if_true` and `if_false`, selecting which to use
     /// for each element of `self`.
     ///
@@ -726,16 +736,6 @@ impl Vec4 {
     #[must_use]
     pub fn recip(self) -> Self {
         Self(unsafe { vdivq_f32(Self::ONE.0, self.0) })
-    }
-
-    /// Returns a vector containing each element of `self` modified by a mapping function `f`.
-    #[inline]
-    #[must_use]
-    pub fn map<F>(self, f: F) -> Self
-    where
-        F: Fn(f32) -> f32,
-    {
-        Self::new(f(self.x), f(self.y), f(self.z), f(self.w))
     }
 
     /// Performs a linear interpolation between `self` and `rhs` based on the value `s`.

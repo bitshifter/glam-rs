@@ -98,6 +98,16 @@ impl Vec3A {
         unsafe { UnionCast { a: [v; 4] }.v }
     }
 
+    /// Returns a vector containing each element of `self` modified by a mapping function `f`.
+    #[inline]
+    #[must_use]
+    pub fn map<F>(self, f: F) -> Self
+    where
+        F: Fn(f32) -> f32,
+    {
+        Self::new(f(self.x), f(self.y), f(self.z))
+    }
+
     /// Creates a vector from the elements in `if_true` and `if_false`, selecting which to use
     /// for each element of `self`.
     ///
@@ -748,16 +758,6 @@ impl Vec3A {
     #[must_use]
     pub fn recip(self) -> Self {
         Self(unsafe { _mm_div_ps(Self::ONE.0, self.0) })
-    }
-
-    /// Returns a vector containing each element of `self` modified by a mapping function `f`.
-    #[inline]
-    #[must_use]
-    pub fn map<F>(self, f: F) -> Self
-    where
-        F: Fn(f32) -> f32,
-    {
-        Self::new(f(self.x), f(self.y), f(self.z))
     }
 
     /// Performs a linear interpolation between `self` and `rhs` based on the value `s`.
