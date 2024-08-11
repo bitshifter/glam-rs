@@ -112,10 +112,7 @@ macro_rules! impl_vec3_tests {
 
         glam_test!(test_map, {
             let v = $vec3::new(1 as $t, 2 as $t, 3 as $t);
-            assert_eq!(
-                v.map(|n| n + 3 as $t),
-                v + $vec3::splat(3 as $t)
-            );
+            assert_eq!(v.map(|n| n + 3 as $t), v + $vec3::splat(3 as $t));
             assert_eq!(v.map(|_| 0 as $t), $vec3::ZERO);
         });
 

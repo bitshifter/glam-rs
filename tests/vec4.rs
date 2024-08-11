@@ -154,10 +154,7 @@ macro_rules! impl_vec4_tests {
 
         glam_test!(test_map, {
             let v = $vec4::new(1 as $t, 2 as $t, 3 as $t, 4 as $t);
-            assert_eq!(
-                v.map(|n| n + 3 as $t),
-                v + $vec4::splat(3 as $t)
-            );
+            assert_eq!(v.map(|n| n + 3 as $t), v + $vec4::splat(3 as $t));
             assert_eq!(v.map(|_| 0 as $t), $vec4::ZERO);
         });
 
