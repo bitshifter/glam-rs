@@ -84,6 +84,12 @@ macro_rules! impl_vec2_tests {
             assert_eq!($vec2::ONE, v);
         });
 
+        glam_test!(test_map, {
+            let v = $vec2::new(1 as $t, 2 as $t);
+            assert_eq!(v.map(|n| n + 3 as $t), v + $vec2::splat(3 as $t));
+            assert_eq!(v.map(|_| 0 as $t), $vec2::ZERO);
+        });
+
         glam_test!(test_with, {
             assert_eq!($vec2::X, $vec2::ZERO.with_x(1 as $t));
             assert_eq!($vec2::Y, $vec2::ZERO.with_y(1 as $t));

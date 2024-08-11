@@ -152,6 +152,12 @@ macro_rules! impl_vec4_tests {
             assert_eq!($vec4::ONE, v);
         });
 
+        glam_test!(test_map, {
+            let v = $vec4::new(1 as $t, 2 as $t, 3 as $t, 4 as $t);
+            assert_eq!(v.map(|n| n + 3 as $t), v + $vec4::splat(3 as $t));
+            assert_eq!(v.map(|_| 0 as $t), $vec4::ZERO);
+        });
+
         glam_test!(test_with, {
             assert_eq!($vec4::X, $vec4::ZERO.with_x(1 as $t));
             assert_eq!($vec4::Y, $vec4::ZERO.with_y(1 as $t));
