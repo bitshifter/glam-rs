@@ -759,7 +759,7 @@ impl DVec3 {
     #[inline]
     #[must_use]
     pub fn lerp(self, rhs: Self, s: f64) -> Self {
-        self + ((rhs - self) * s)
+        self * (1.0 - s) + rhs * s
     }
 
     /// Moves towards `rhs` based on the value `d`.

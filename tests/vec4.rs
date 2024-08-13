@@ -1124,6 +1124,13 @@ macro_rules! impl_vec4_float_tests {
             assert_approx_eq!($vec4::ZERO, v0.lerp(v1, 0.5));
         });
 
+        glam_test!(test_lerp_big_difference, {
+            let v0 = $vec4::new(-1e30, -1e30, -1e30, -1e30);
+            let v1 = $vec4::new(16.0, 16.0, 16.0, 16.0);
+            assert_approx_eq!(v0, v0.lerp(v1, 0.0));
+            assert_approx_eq!(v1, v0.lerp(v1, 1.0));
+        });
+
         glam_test!(test_move_towards, {
             let v0 = $vec4::new(-1.0, -1.0, -1.0, -1.0);
             let v1 = $vec4::new(1.0, 1.0, 1.0, 1.0);
