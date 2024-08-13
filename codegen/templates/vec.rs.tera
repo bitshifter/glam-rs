@@ -1867,7 +1867,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn lerp(self, rhs: Self, s: {{ scalar_t }}) -> Self {
-        self + ((rhs - self) * s)
+        self * (1.0 - s) + rhs * s
     }
 
     /// Moves towards `rhs` based on the value `d`.
