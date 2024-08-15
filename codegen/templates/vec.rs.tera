@@ -3660,6 +3660,14 @@ impl Neg for {{ self_t }} {
         {% endif %}
     }
 }
+
+impl Neg for &{{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn neg(self) -> {{ self_t }} {
+        (*self).neg()
+    }
+}
 {% endif %}
 
 {% if not is_float %}

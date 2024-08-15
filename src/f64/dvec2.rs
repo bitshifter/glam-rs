@@ -1736,6 +1736,14 @@ impl Neg for DVec2 {
     }
 }
 
+impl Neg for &DVec2 {
+    type Output = DVec2;
+    #[inline]
+    fn neg(self) -> DVec2 {
+        (*self).neg()
+    }
+}
+
 impl Index<usize> for DVec2 {
     type Output = f64;
     #[inline]

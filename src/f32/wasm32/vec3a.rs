@@ -1705,6 +1705,14 @@ impl Neg for Vec3A {
     }
 }
 
+impl Neg for &Vec3A {
+    type Output = Vec3A;
+    #[inline]
+    fn neg(self) -> Vec3A {
+        (*self).neg()
+    }
+}
+
 impl Index<usize> for Vec3A {
     type Output = f32;
     #[inline]

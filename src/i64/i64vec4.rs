@@ -1495,6 +1495,14 @@ impl Neg for I64Vec4 {
     }
 }
 
+impl Neg for &I64Vec4 {
+    type Output = I64Vec4;
+    #[inline]
+    fn neg(self) -> I64Vec4 {
+        (*self).neg()
+    }
+}
+
 impl Not for I64Vec4 {
     type Output = Self;
     #[inline]

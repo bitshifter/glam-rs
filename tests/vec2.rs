@@ -662,6 +662,11 @@ macro_rules! impl_vec2_signed_tests {
             assert_eq!($new(0.0 as $t, -0.0 as $t), -$new(-0.0 as $t, 0.0 as $t));
         });
 
+        glam_test!(test_neg_propagation, {
+            let a = $new(1 as $t, 2 as $t);
+            assert_eq!(-a, -(&a));
+        });
+
         glam_test!(test_perp, {
             let v1 = $vec2::new(1 as $t, 2 as $t);
             let v2 = $vec2::new(1 as $t, 1 as $t);
