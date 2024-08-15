@@ -245,30 +245,42 @@ macro_rules! impl_vec2_tests {
         glam_test!(test_assign_ops_propagation, {
             let vec = $new(1 as $t, 2 as $t);
             let mut a = vec;
+            let mut b = vec;
             let scalar = 2 as $t;
 
             a += &scalar;
-            assert_eq!($new(3 as $t, 4 as $t), a);
+            b += scalar;
+            assert_eq!(b, a, "AddAssign<Scalar>");
             a -= &scalar;
-            assert_eq!($new(1 as $t, 2 as $t), a);
+            b -= scalar;
+            assert_eq!(b, a, "SubAssign<Scalar>");
             a *= &scalar;
-            assert_eq!($new(2 as $t, 4 as $t), a);
+            b *= scalar;
+            assert_eq!(b, a, "MulAssign<Scalar>");
             a /= &scalar;
-            assert_eq!($new(1 as $t, 2 as $t), a);
+            b /= scalar;
+            assert_eq!(b, a, "DivAssign<Scalar>");
             a %= &scalar;
-            assert_eq!($new(1 as $t, 0 as $t), a);
+            b %= scalar;
+            assert_eq!(b, a, "MulAssign<Scalar>");
 
             a = vec;
+            b = vec;
             a += &vec;
-            assert_eq!($new(2 as $t, 4 as $t), a);
+            b += vec;
+            assert_eq!(b, a, "AddAssign<Vec>");
             a -= &vec;
-            assert_eq!($new(1 as $t, 2 as $t), a);
+            b -= vec;
+            assert_eq!(b, a, "SubAssign<Vec>");
             a *= &vec;
-            assert_eq!($new(1 as $t, 4 as $t), a);
+            b *= vec;
+            assert_eq!(b, a, "MulAssign<Vec>");
             a /= &vec;
-            assert_eq!($new(1 as $t, 2 as $t), a);
+            b /= vec;
+            assert_eq!(b, a, "DivAssign<Vec>");
             a %= &vec;
-            assert_eq!($new(0 as $t, 0 as $t), a);
+            b %= vec;
+            assert_eq!(b, a, "RemAssign<Vec>");
         });
 
         glam_test!(test_min_max, {
