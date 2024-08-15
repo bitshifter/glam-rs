@@ -242,6 +242,35 @@ macro_rules! impl_vec2_tests {
             assert_eq!($new(0 as $t, 0 as $t), b);
         });
 
+        glam_test!(test_assign_ops_propagation, {
+            let vec = $new(1 as $t, 2 as $t);
+            let mut a = vec;
+            let scalar = 2 as $t;
+
+            a += &scalar;
+            assert_eq!($new(3 as $t, 4 as $t), a);
+            a -= &scalar;
+            assert_eq!($new(1 as $t, 2 as $t), a);
+            a *= &scalar;
+            assert_eq!($new(2 as $t, 4 as $t), a);
+            a /= &scalar;
+            assert_eq!($new(1 as $t, 2 as $t), a);
+            a %= &scalar;
+            assert_eq!($new(1 as $t, 0 as $t), a);
+
+            a = vec;
+            a += &vec;
+            assert_eq!($new(2 as $t, 4 as $t), a);
+            a -= &vec;
+            assert_eq!($new(1 as $t, 2 as $t), a);
+            a *= &vec;
+            assert_eq!($new(1 as $t, 4 as $t), a);
+            a /= &vec;
+            assert_eq!($new(1 as $t, 2 as $t), a);
+            a %= &vec;
+            assert_eq!($new(0 as $t, 0 as $t), a);
+        });
+
         glam_test!(test_min_max, {
             let a = $new(0 as $t, 2 as $t);
             let b = $new(1 as $t, 1 as $t);

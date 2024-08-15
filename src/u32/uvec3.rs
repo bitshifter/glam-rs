@@ -560,12 +560,43 @@ impl Div<UVec3> for UVec3 {
     }
 }
 
+impl Div<&UVec3> for UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn div(self, rhs: &UVec3) -> UVec3 {
+        self.div(*rhs)
+    }
+}
+
+impl Div<&UVec3> for &UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn div(self, rhs: &UVec3) -> UVec3 {
+        (*self).div(*rhs)
+    }
+}
+
+impl Div<UVec3> for &UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn div(self, rhs: UVec3) -> UVec3 {
+        (*self).div(rhs)
+    }
+}
+
 impl DivAssign<UVec3> for UVec3 {
     #[inline]
     fn div_assign(&mut self, rhs: Self) {
         self.x.div_assign(rhs.x);
         self.y.div_assign(rhs.y);
         self.z.div_assign(rhs.z);
+    }
+}
+
+impl DivAssign<&Self> for UVec3 {
+    #[inline]
+    fn div_assign(&mut self, rhs: &Self) {
+        self.div_assign(*rhs)
     }
 }
 
@@ -581,12 +612,43 @@ impl Div<u32> for UVec3 {
     }
 }
 
+impl Div<&u32> for UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn div(self, rhs: &u32) -> UVec3 {
+        self.div(*rhs)
+    }
+}
+
+impl Div<&u32> for &UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn div(self, rhs: &u32) -> UVec3 {
+        (*self).div(*rhs)
+    }
+}
+
+impl Div<u32> for &UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn div(self, rhs: u32) -> UVec3 {
+        (*self).div(rhs)
+    }
+}
+
 impl DivAssign<u32> for UVec3 {
     #[inline]
     fn div_assign(&mut self, rhs: u32) {
         self.x.div_assign(rhs);
         self.y.div_assign(rhs);
         self.z.div_assign(rhs);
+    }
+}
+
+impl DivAssign<&u32> for UVec3 {
+    #[inline]
+    fn div_assign(&mut self, rhs: &u32) {
+        self.div_assign(*rhs)
     }
 }
 
@@ -602,6 +664,30 @@ impl Div<UVec3> for u32 {
     }
 }
 
+impl Div<&UVec3> for u32 {
+    type Output = UVec3;
+    #[inline]
+    fn div(self, rhs: &UVec3) -> UVec3 {
+        self.div(*rhs)
+    }
+}
+
+impl Div<&UVec3> for &u32 {
+    type Output = UVec3;
+    #[inline]
+    fn div(self, rhs: &UVec3) -> UVec3 {
+        (*self).div(*rhs)
+    }
+}
+
+impl Div<UVec3> for &u32 {
+    type Output = UVec3;
+    #[inline]
+    fn div(self, rhs: UVec3) -> UVec3 {
+        (*self).div(rhs)
+    }
+}
+
 impl Mul<UVec3> for UVec3 {
     type Output = Self;
     #[inline]
@@ -614,12 +700,43 @@ impl Mul<UVec3> for UVec3 {
     }
 }
 
+impl Mul<&UVec3> for UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn mul(self, rhs: &UVec3) -> UVec3 {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&UVec3> for &UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn mul(self, rhs: &UVec3) -> UVec3 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<UVec3> for &UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn mul(self, rhs: UVec3) -> UVec3 {
+        (*self).mul(rhs)
+    }
+}
+
 impl MulAssign<UVec3> for UVec3 {
     #[inline]
     fn mul_assign(&mut self, rhs: Self) {
         self.x.mul_assign(rhs.x);
         self.y.mul_assign(rhs.y);
         self.z.mul_assign(rhs.z);
+    }
+}
+
+impl MulAssign<&Self> for UVec3 {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &Self) {
+        self.mul_assign(*rhs)
     }
 }
 
@@ -635,12 +752,43 @@ impl Mul<u32> for UVec3 {
     }
 }
 
+impl Mul<&u32> for UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn mul(self, rhs: &u32) -> UVec3 {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&u32> for &UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn mul(self, rhs: &u32) -> UVec3 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<u32> for &UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn mul(self, rhs: u32) -> UVec3 {
+        (*self).mul(rhs)
+    }
+}
+
 impl MulAssign<u32> for UVec3 {
     #[inline]
     fn mul_assign(&mut self, rhs: u32) {
         self.x.mul_assign(rhs);
         self.y.mul_assign(rhs);
         self.z.mul_assign(rhs);
+    }
+}
+
+impl MulAssign<&u32> for UVec3 {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &u32) {
+        self.mul_assign(*rhs)
     }
 }
 
@@ -656,6 +804,30 @@ impl Mul<UVec3> for u32 {
     }
 }
 
+impl Mul<&UVec3> for u32 {
+    type Output = UVec3;
+    #[inline]
+    fn mul(self, rhs: &UVec3) -> UVec3 {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&UVec3> for &u32 {
+    type Output = UVec3;
+    #[inline]
+    fn mul(self, rhs: &UVec3) -> UVec3 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<UVec3> for &u32 {
+    type Output = UVec3;
+    #[inline]
+    fn mul(self, rhs: UVec3) -> UVec3 {
+        (*self).mul(rhs)
+    }
+}
+
 impl Add<UVec3> for UVec3 {
     type Output = Self;
     #[inline]
@@ -668,12 +840,43 @@ impl Add<UVec3> for UVec3 {
     }
 }
 
+impl Add<&UVec3> for UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn add(self, rhs: &UVec3) -> UVec3 {
+        self.add(*rhs)
+    }
+}
+
+impl Add<&UVec3> for &UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn add(self, rhs: &UVec3) -> UVec3 {
+        (*self).add(*rhs)
+    }
+}
+
+impl Add<UVec3> for &UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn add(self, rhs: UVec3) -> UVec3 {
+        (*self).add(rhs)
+    }
+}
+
 impl AddAssign<UVec3> for UVec3 {
     #[inline]
     fn add_assign(&mut self, rhs: Self) {
         self.x.add_assign(rhs.x);
         self.y.add_assign(rhs.y);
         self.z.add_assign(rhs.z);
+    }
+}
+
+impl AddAssign<&Self> for UVec3 {
+    #[inline]
+    fn add_assign(&mut self, rhs: &Self) {
+        self.add_assign(*rhs)
     }
 }
 
@@ -689,12 +892,43 @@ impl Add<u32> for UVec3 {
     }
 }
 
+impl Add<&u32> for UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn add(self, rhs: &u32) -> UVec3 {
+        self.add(*rhs)
+    }
+}
+
+impl Add<&u32> for &UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn add(self, rhs: &u32) -> UVec3 {
+        (*self).add(*rhs)
+    }
+}
+
+impl Add<u32> for &UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn add(self, rhs: u32) -> UVec3 {
+        (*self).add(rhs)
+    }
+}
+
 impl AddAssign<u32> for UVec3 {
     #[inline]
     fn add_assign(&mut self, rhs: u32) {
         self.x.add_assign(rhs);
         self.y.add_assign(rhs);
         self.z.add_assign(rhs);
+    }
+}
+
+impl AddAssign<&u32> for UVec3 {
+    #[inline]
+    fn add_assign(&mut self, rhs: &u32) {
+        self.add_assign(*rhs)
     }
 }
 
@@ -710,6 +944,30 @@ impl Add<UVec3> for u32 {
     }
 }
 
+impl Add<&UVec3> for u32 {
+    type Output = UVec3;
+    #[inline]
+    fn add(self, rhs: &UVec3) -> UVec3 {
+        self.add(*rhs)
+    }
+}
+
+impl Add<&UVec3> for &u32 {
+    type Output = UVec3;
+    #[inline]
+    fn add(self, rhs: &UVec3) -> UVec3 {
+        (*self).add(*rhs)
+    }
+}
+
+impl Add<UVec3> for &u32 {
+    type Output = UVec3;
+    #[inline]
+    fn add(self, rhs: UVec3) -> UVec3 {
+        (*self).add(rhs)
+    }
+}
+
 impl Sub<UVec3> for UVec3 {
     type Output = Self;
     #[inline]
@@ -722,12 +980,43 @@ impl Sub<UVec3> for UVec3 {
     }
 }
 
+impl Sub<&UVec3> for UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn sub(self, rhs: &UVec3) -> UVec3 {
+        self.sub(*rhs)
+    }
+}
+
+impl Sub<&UVec3> for &UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn sub(self, rhs: &UVec3) -> UVec3 {
+        (*self).sub(*rhs)
+    }
+}
+
+impl Sub<UVec3> for &UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn sub(self, rhs: UVec3) -> UVec3 {
+        (*self).sub(rhs)
+    }
+}
+
 impl SubAssign<UVec3> for UVec3 {
     #[inline]
     fn sub_assign(&mut self, rhs: UVec3) {
         self.x.sub_assign(rhs.x);
         self.y.sub_assign(rhs.y);
         self.z.sub_assign(rhs.z);
+    }
+}
+
+impl SubAssign<&Self> for UVec3 {
+    #[inline]
+    fn sub_assign(&mut self, rhs: &Self) {
+        self.sub_assign(*rhs)
     }
 }
 
@@ -743,12 +1032,43 @@ impl Sub<u32> for UVec3 {
     }
 }
 
+impl Sub<&u32> for UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn sub(self, rhs: &u32) -> UVec3 {
+        self.sub(*rhs)
+    }
+}
+
+impl Sub<&u32> for &UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn sub(self, rhs: &u32) -> UVec3 {
+        (*self).sub(*rhs)
+    }
+}
+
+impl Sub<u32> for &UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn sub(self, rhs: u32) -> UVec3 {
+        (*self).sub(rhs)
+    }
+}
+
 impl SubAssign<u32> for UVec3 {
     #[inline]
     fn sub_assign(&mut self, rhs: u32) {
         self.x.sub_assign(rhs);
         self.y.sub_assign(rhs);
         self.z.sub_assign(rhs);
+    }
+}
+
+impl SubAssign<&u32> for UVec3 {
+    #[inline]
+    fn sub_assign(&mut self, rhs: &u32) {
+        self.sub_assign(*rhs)
     }
 }
 
@@ -764,6 +1084,30 @@ impl Sub<UVec3> for u32 {
     }
 }
 
+impl Sub<&UVec3> for u32 {
+    type Output = UVec3;
+    #[inline]
+    fn sub(self, rhs: &UVec3) -> UVec3 {
+        self.sub(*rhs)
+    }
+}
+
+impl Sub<&UVec3> for &u32 {
+    type Output = UVec3;
+    #[inline]
+    fn sub(self, rhs: &UVec3) -> UVec3 {
+        (*self).sub(*rhs)
+    }
+}
+
+impl Sub<UVec3> for &u32 {
+    type Output = UVec3;
+    #[inline]
+    fn sub(self, rhs: UVec3) -> UVec3 {
+        (*self).sub(rhs)
+    }
+}
+
 impl Rem<UVec3> for UVec3 {
     type Output = Self;
     #[inline]
@@ -776,12 +1120,43 @@ impl Rem<UVec3> for UVec3 {
     }
 }
 
+impl Rem<&UVec3> for UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn rem(self, rhs: &UVec3) -> UVec3 {
+        self.rem(*rhs)
+    }
+}
+
+impl Rem<&UVec3> for &UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn rem(self, rhs: &UVec3) -> UVec3 {
+        (*self).rem(*rhs)
+    }
+}
+
+impl Rem<UVec3> for &UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn rem(self, rhs: UVec3) -> UVec3 {
+        (*self).rem(rhs)
+    }
+}
+
 impl RemAssign<UVec3> for UVec3 {
     #[inline]
     fn rem_assign(&mut self, rhs: Self) {
         self.x.rem_assign(rhs.x);
         self.y.rem_assign(rhs.y);
         self.z.rem_assign(rhs.z);
+    }
+}
+
+impl RemAssign<&Self> for UVec3 {
+    #[inline]
+    fn rem_assign(&mut self, rhs: &Self) {
+        self.rem_assign(*rhs)
     }
 }
 
@@ -797,12 +1172,43 @@ impl Rem<u32> for UVec3 {
     }
 }
 
+impl Rem<&u32> for UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn rem(self, rhs: &u32) -> UVec3 {
+        self.rem(*rhs)
+    }
+}
+
+impl Rem<&u32> for &UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn rem(self, rhs: &u32) -> UVec3 {
+        (*self).rem(*rhs)
+    }
+}
+
+impl Rem<u32> for &UVec3 {
+    type Output = UVec3;
+    #[inline]
+    fn rem(self, rhs: u32) -> UVec3 {
+        (*self).rem(rhs)
+    }
+}
+
 impl RemAssign<u32> for UVec3 {
     #[inline]
     fn rem_assign(&mut self, rhs: u32) {
         self.x.rem_assign(rhs);
         self.y.rem_assign(rhs);
         self.z.rem_assign(rhs);
+    }
+}
+
+impl RemAssign<&u32> for UVec3 {
+    #[inline]
+    fn rem_assign(&mut self, rhs: &u32) {
+        self.rem_assign(*rhs)
     }
 }
 
@@ -815,6 +1221,30 @@ impl Rem<UVec3> for u32 {
             y: self.rem(rhs.y),
             z: self.rem(rhs.z),
         }
+    }
+}
+
+impl Rem<&UVec3> for u32 {
+    type Output = UVec3;
+    #[inline]
+    fn rem(self, rhs: &UVec3) -> UVec3 {
+        self.rem(*rhs)
+    }
+}
+
+impl Rem<&UVec3> for &u32 {
+    type Output = UVec3;
+    #[inline]
+    fn rem(self, rhs: &UVec3) -> UVec3 {
+        (*self).rem(*rhs)
+    }
+}
+
+impl Rem<UVec3> for &u32 {
+    type Output = UVec3;
+    #[inline]
+    fn rem(self, rhs: UVec3) -> UVec3 {
+        (*self).rem(rhs)
     }
 }
 

@@ -2670,6 +2670,13 @@ impl DivAssign<{{ self_t }}> for {{ self_t }} {
     }
 }
 
+impl DivAssign<&Self> for {{ self_t }} {
+    #[inline]
+    fn div_assign(&mut self, rhs: &Self) {
+        self.div_assign(*rhs)
+    }
+}
+
 impl Div<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
     #[inline]
@@ -2736,6 +2743,13 @@ impl DivAssign<{{ scalar_t }}> for {{ self_t }} {
         {% else %}
             unimplemented!()
         {% endif %}
+    }
+}
+
+impl DivAssign<&{{ scalar_t }}> for {{ self_t }} {
+    #[inline]
+    fn div_assign(&mut self, rhs: &{{ scalar_t }}) {
+        self.div_assign(*rhs)
     }
 }
 
@@ -2856,6 +2870,13 @@ impl MulAssign<{{ self_t }}> for {{ self_t }} {
     }
 }
 
+impl MulAssign<&Self> for {{ self_t }} {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &Self) {
+        self.mul_assign(*rhs)
+    }
+}
+
 impl Mul<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
     #[inline]
@@ -2922,6 +2943,13 @@ impl MulAssign<{{ scalar_t }}> for {{ self_t }} {
         {% else %}
             unimplemented!()
         {% endif %}
+    }
+}
+
+impl MulAssign<&{{ scalar_t }}> for {{ self_t }} {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &{{ scalar_t }}) {
+        self.mul_assign(*rhs)
     }
 }
 
@@ -3042,6 +3070,13 @@ impl AddAssign<{{ self_t }}> for {{ self_t }} {
     }
 }
 
+impl AddAssign<&Self> for {{ self_t }} {
+    #[inline]
+    fn add_assign(&mut self, rhs: &Self) {
+        self.add_assign(*rhs)
+    }
+}
+
 impl Add<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
     #[inline]
@@ -3108,6 +3143,13 @@ impl AddAssign<{{ scalar_t }}> for {{ self_t }} {
         {% else %}
             unimplemented!()
         {% endif %}
+    }
+}
+
+impl AddAssign<&{{ scalar_t }}> for {{ self_t }} {
+    #[inline]
+    fn add_assign(&mut self, rhs: &{{ scalar_t }}) {
+        self.add_assign(*rhs)
     }
 }
 
@@ -3228,6 +3270,13 @@ impl SubAssign<{{ self_t }}> for {{ self_t }} {
     }
 }
 
+impl SubAssign<&Self> for {{ self_t }} {
+    #[inline]
+    fn sub_assign(&mut self, rhs: &Self) {
+        self.sub_assign(*rhs)
+    }
+}
+
 impl Sub<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
     #[inline]
@@ -3294,6 +3343,13 @@ impl SubAssign<{{ scalar_t }}> for {{ self_t }} {
         {% else %}
             unimplemented!()
         {% endif %}
+    }
+}
+
+impl SubAssign<&{{ scalar_t }}> for {{ self_t }} {
+    #[inline]
+    fn sub_assign(&mut self, rhs: &{{ scalar_t }}) {
+        self.sub_assign(*rhs)
     }
 }
 
@@ -3415,6 +3471,13 @@ impl RemAssign<{{ self_t }}> for {{ self_t }} {
     }
 }
 
+impl RemAssign<&Self> for {{ self_t }} {
+    #[inline]
+    fn rem_assign(&mut self, rhs: &Self) {
+        self.rem_assign(*rhs)
+    }
+}
+
 impl Rem<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
     #[inline]
@@ -3467,6 +3530,13 @@ impl RemAssign<{{ scalar_t }}> for {{ self_t }} {
         {% else %}
             *self = self.rem(Self::splat(rhs));
         {% endif %}
+    }
+}
+
+impl RemAssign<&{{ scalar_t }}> for {{ self_t }} {
+    #[inline]
+    fn rem_assign(&mut self, rhs: &{{ scalar_t }}) {
+        self.rem_assign(*rhs)
     }
 }
 
