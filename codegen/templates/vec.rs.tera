@@ -2625,6 +2625,30 @@ impl Div<{{ self_t }}> for {{ self_t }} {
     }
 }
 
+impl Div<&{{ self_t }}> for {{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn div(self, rhs: &{{ self_t }}) -> {{ self_t }} {
+        self.div(*rhs)
+    }
+}
+
+impl Div<&{{ self_t }}> for &{{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn div(self, rhs: &{{ self_t }}) -> {{ self_t }} {
+        (*self).div(*rhs)
+    }
+}
+
+impl Div<{{ self_t }}> for &{{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn div(self, rhs: {{ self_t }}) -> {{ self_t }} {
+        (*self).div(rhs)
+    }
+}
+
 impl DivAssign<{{ self_t }}> for {{ self_t }} {
     #[inline]
     fn div_assign(&mut self, rhs: Self) {
@@ -2643,6 +2667,13 @@ impl DivAssign<{{ self_t }}> for {{ self_t }} {
         {% else %}
             unimplemented!()
         {% endif %}
+    }
+}
+
+impl DivAssign<&Self> for {{ self_t }} {
+    #[inline]
+    fn div_assign(&mut self, rhs: &Self) {
+        self.div_assign(*rhs)
     }
 }
 
@@ -2670,6 +2701,30 @@ impl Div<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
+impl Div<&{{ scalar_t }}> for {{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn div(self, rhs: &{{ scalar_t }}) -> {{ self_t }} {
+        self.div(*rhs)
+    }
+}
+
+impl Div<&{{ scalar_t }}> for &{{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn div(self, rhs: &{{ scalar_t }}) -> {{ self_t }} {
+        (*self).div(*rhs)
+    }
+}
+
+impl Div<{{ scalar_t }}> for &{{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn div(self, rhs: {{ scalar_t }}) -> {{ self_t }} {
+        (*self).div(rhs)
+    }
+}
+
 impl DivAssign<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
     fn div_assign(&mut self, rhs: {{ scalar_t }}) {
@@ -2688,6 +2743,13 @@ impl DivAssign<{{ scalar_t }}> for {{ self_t }} {
         {% else %}
             unimplemented!()
         {% endif %}
+    }
+}
+
+impl DivAssign<&{{ scalar_t }}> for {{ self_t }} {
+    #[inline]
+    fn div_assign(&mut self, rhs: &{{ scalar_t }}) {
+        self.div_assign(*rhs)
     }
 }
 
@@ -2715,6 +2777,30 @@ impl Div<{{ self_t }}> for {{ scalar_t }} {
     }
 }
 
+impl Div<&{{ self_t }}> for {{ scalar_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn div(self, rhs: &{{ self_t }}) -> {{ self_t }} {
+        self.div(*rhs)
+    }
+}
+
+impl Div<&{{ self_t }}> for &{{ scalar_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn div(self, rhs: &{{ self_t }}) -> {{ self_t }} {
+        (*self).div(*rhs)
+    }
+}
+
+impl Div<{{ self_t }}> for &{{ scalar_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn div(self, rhs: {{ self_t }}) -> {{ self_t }} {
+        (*self).div(rhs)
+    }
+}
+
 impl Mul<{{ self_t }}> for {{ self_t }} {
     type Output = Self;
     #[inline]
@@ -2739,6 +2825,30 @@ impl Mul<{{ self_t }}> for {{ self_t }} {
     }
 }
 
+impl Mul<&{{ self_t }}> for {{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn mul(self, rhs: &{{ self_t }}) -> {{ self_t }} {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&{{ self_t }}> for &{{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn mul(self, rhs: &{{ self_t }}) -> {{ self_t }} {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<{{ self_t }}> for &{{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn mul(self, rhs: {{ self_t }}) -> {{ self_t }} {
+        (*self).mul(rhs)
+    }
+}
+
 impl MulAssign<{{ self_t }}> for {{ self_t }} {
     #[inline]
     fn mul_assign(&mut self, rhs: Self) {
@@ -2757,6 +2867,13 @@ impl MulAssign<{{ self_t }}> for {{ self_t }} {
         {% else %}
             unimplemented!()
         {% endif %}
+    }
+}
+
+impl MulAssign<&Self> for {{ self_t }} {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &Self) {
+        self.mul_assign(*rhs)
     }
 }
 
@@ -2784,6 +2901,30 @@ impl Mul<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
+impl Mul<&{{ scalar_t }}> for {{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn mul(self, rhs: &{{ scalar_t }}) -> {{ self_t }} {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&{{ scalar_t }}> for &{{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn mul(self, rhs: &{{ scalar_t }}) -> {{ self_t }} {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<{{ scalar_t }}> for &{{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn mul(self, rhs: {{ scalar_t }}) -> {{ self_t }} {
+        (*self).mul(rhs)
+    }
+}
+
 impl MulAssign<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
     fn mul_assign(&mut self, rhs: {{ scalar_t }}) {
@@ -2802,6 +2943,13 @@ impl MulAssign<{{ scalar_t }}> for {{ self_t }} {
         {% else %}
             unimplemented!()
         {% endif %}
+    }
+}
+
+impl MulAssign<&{{ scalar_t }}> for {{ self_t }} {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &{{ scalar_t }}) {
+        self.mul_assign(*rhs)
     }
 }
 
@@ -2829,6 +2977,30 @@ impl Mul<{{ self_t }}> for {{ scalar_t }} {
     }
 }
 
+impl Mul<&{{ self_t }}> for {{ scalar_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn mul(self, rhs: &{{ self_t }}) -> {{ self_t }} {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&{{ self_t }}> for &{{ scalar_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn mul(self, rhs: &{{ self_t }}) -> {{ self_t }} {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<{{ self_t }}> for &{{ scalar_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn mul(self, rhs: {{ self_t }}) -> {{ self_t }} {
+        (*self).mul(rhs)
+    }
+}
+
 impl Add<{{ self_t }}> for {{ self_t }} {
     type Output = Self;
     #[inline]
@@ -2853,6 +3025,30 @@ impl Add<{{ self_t }}> for {{ self_t }} {
     }
 }
 
+impl Add<&{{ self_t }}> for {{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn add(self, rhs: &{{ self_t }}) -> {{ self_t }} {
+        self.add(*rhs)
+    }
+}
+
+impl Add<&{{ self_t }}> for &{{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn add(self, rhs: &{{ self_t }}) -> {{ self_t }} {
+        (*self).add(*rhs)
+    }
+}
+
+impl Add<{{ self_t }}> for &{{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn add(self, rhs: {{ self_t }}) -> {{ self_t }} {
+        (*self).add(rhs)
+    }
+}
+
 impl AddAssign<{{ self_t }}> for {{ self_t }} {
     #[inline]
     fn add_assign(&mut self, rhs: Self) {
@@ -2871,6 +3067,13 @@ impl AddAssign<{{ self_t }}> for {{ self_t }} {
         {% else %}
             unimplemented!()
         {% endif %}
+    }
+}
+
+impl AddAssign<&Self> for {{ self_t }} {
+    #[inline]
+    fn add_assign(&mut self, rhs: &Self) {
+        self.add_assign(*rhs)
     }
 }
 
@@ -2898,6 +3101,30 @@ impl Add<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
+impl Add<&{{ scalar_t }}> for {{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn add(self, rhs: &{{ scalar_t }}) -> {{ self_t }} {
+        self.add(*rhs)
+    }
+}
+
+impl Add<&{{ scalar_t }}> for &{{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn add(self, rhs: &{{ scalar_t }}) -> {{ self_t }} {
+        (*self).add(*rhs)
+    }
+}
+
+impl Add<{{ scalar_t }}> for &{{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn add(self, rhs: {{ scalar_t }}) -> {{ self_t }} {
+        (*self).add(rhs)
+    }
+}
+
 impl AddAssign<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
     fn add_assign(&mut self, rhs: {{ scalar_t }}) {
@@ -2916,6 +3143,13 @@ impl AddAssign<{{ scalar_t }}> for {{ self_t }} {
         {% else %}
             unimplemented!()
         {% endif %}
+    }
+}
+
+impl AddAssign<&{{ scalar_t }}> for {{ self_t }} {
+    #[inline]
+    fn add_assign(&mut self, rhs: &{{ scalar_t }}) {
+        self.add_assign(*rhs)
     }
 }
 
@@ -2943,6 +3177,30 @@ impl Add<{{ self_t }}> for {{ scalar_t }} {
     }
 }
 
+impl Add<&{{ self_t }}> for {{ scalar_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn add(self, rhs: &{{ self_t }}) -> {{ self_t }} {
+        self.add(*rhs)
+    }
+}
+
+impl Add<&{{ self_t }}> for &{{ scalar_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn add(self, rhs: &{{ self_t }}) -> {{ self_t }} {
+        (*self).add(*rhs)
+    }
+}
+
+impl Add<{{ self_t }}> for &{{ scalar_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn add(self, rhs: {{ self_t }}) -> {{ self_t }} {
+        (*self).add(rhs)
+    }
+}
+
 impl Sub<{{ self_t }}> for {{ self_t }} {
     type Output = Self;
     #[inline]
@@ -2967,6 +3225,30 @@ impl Sub<{{ self_t }}> for {{ self_t }} {
     }
 }
 
+impl Sub<&{{ self_t }}> for {{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn sub(self, rhs: &{{ self_t }}) -> {{ self_t }} {
+        self.sub(*rhs)
+    }
+}
+
+impl Sub<&{{ self_t }}> for &{{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn sub(self, rhs: &{{ self_t }}) -> {{ self_t }} {
+        (*self).sub(*rhs)
+    }
+}
+
+impl Sub<{{ self_t }}> for &{{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn sub(self, rhs: {{ self_t }}) -> {{ self_t }} {
+        (*self).sub(rhs)
+    }
+}
+
 impl SubAssign<{{ self_t }}> for {{ self_t }} {
     #[inline]
     fn sub_assign(&mut self, rhs: {{ self_t }}) {
@@ -2985,6 +3267,13 @@ impl SubAssign<{{ self_t }}> for {{ self_t }} {
         {% else %}
             unimplemented!()
         {% endif %}
+    }
+}
+
+impl SubAssign<&Self> for {{ self_t }} {
+    #[inline]
+    fn sub_assign(&mut self, rhs: &Self) {
+        self.sub_assign(*rhs)
     }
 }
 
@@ -3012,6 +3301,30 @@ impl Sub<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
+impl Sub<&{{ scalar_t }}> for {{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn sub(self, rhs: &{{ scalar_t }}) -> {{ self_t }} {
+        self.sub(*rhs)
+    }
+}
+
+impl Sub<&{{ scalar_t }}> for &{{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn sub(self, rhs: &{{ scalar_t }}) -> {{ self_t }} {
+        (*self).sub(*rhs)
+    }
+}
+
+impl Sub<{{ scalar_t }}> for &{{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn sub(self, rhs: {{ scalar_t }}) -> {{ self_t }} {
+        (*self).sub(rhs)
+    }
+}
+
 impl SubAssign<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
     fn sub_assign(&mut self, rhs: {{ scalar_t }}) {
@@ -3030,6 +3343,13 @@ impl SubAssign<{{ scalar_t }}> for {{ self_t }} {
         {% else %}
             unimplemented!()
         {% endif %}
+    }
+}
+
+impl SubAssign<&{{ scalar_t }}> for {{ self_t }} {
+    #[inline]
+    fn sub_assign(&mut self, rhs: &{{ scalar_t }}) {
+        self.sub_assign(*rhs)
     }
 }
 
@@ -3054,6 +3374,30 @@ impl Sub<{{ self_t }}> for {{ scalar_t }} {
         {% else %}
             unimplemented!()
         {% endif %}
+    }
+}
+
+impl Sub<&{{ self_t }}> for {{ scalar_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn sub(self, rhs: &{{ self_t }}) -> {{ self_t }} {
+        self.sub(*rhs)
+    }
+}
+
+impl Sub<&{{ self_t }}> for &{{ scalar_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn sub(self, rhs: &{{ self_t }}) -> {{ self_t }} {
+        (*self).sub(*rhs)
+    }
+}
+
+impl Sub<{{ self_t }}> for &{{ scalar_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn sub(self, rhs: {{ self_t }}) -> {{ self_t }} {
+        (*self).sub(rhs)
     }
 }
 
@@ -3088,6 +3432,30 @@ impl Rem<{{ self_t }}> for {{ self_t }} {
     }
 }
 
+impl Rem<&{{ self_t }}> for {{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn rem(self, rhs: &{{ self_t }}) -> {{ self_t }} {
+        self.rem(*rhs)
+    }
+}
+
+impl Rem<&{{ self_t }}> for &{{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn rem(self, rhs: &{{ self_t }}) -> {{ self_t }} {
+        (*self).rem(*rhs)
+    }
+}
+
+impl Rem<{{ self_t }}> for &{{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn rem(self, rhs: {{ self_t }}) -> {{ self_t }} {
+        (*self).rem(rhs)
+    }
+}
+
 impl RemAssign<{{ self_t }}> for {{ self_t }} {
     #[inline]
     fn rem_assign(&mut self, rhs: Self) {
@@ -3100,6 +3468,13 @@ impl RemAssign<{{ self_t }}> for {{ self_t }} {
         {% else %}
             *self = self.rem(rhs);
         {% endif %}
+    }
+}
+
+impl RemAssign<&Self> for {{ self_t }} {
+    #[inline]
+    fn rem_assign(&mut self, rhs: &Self) {
+        self.rem_assign(*rhs)
     }
 }
 
@@ -3119,6 +3494,30 @@ impl Rem<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
+impl Rem<&{{ scalar_t }}> for {{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn rem(self, rhs: &{{ scalar_t }}) -> {{ self_t }} {
+        self.rem(*rhs)
+    }
+}
+
+impl Rem<&{{ scalar_t }}> for &{{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn rem(self, rhs: &{{ scalar_t }}) -> {{ self_t }} {
+        (*self).rem(*rhs)
+    }
+}
+
+impl Rem<{{ scalar_t }}> for &{{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn rem(self, rhs: {{ scalar_t }}) -> {{ self_t }} {
+        (*self).rem(rhs)
+    }
+}
+
 impl RemAssign<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
     fn rem_assign(&mut self, rhs: {{ scalar_t }}) {
@@ -3131,6 +3530,13 @@ impl RemAssign<{{ scalar_t }}> for {{ self_t }} {
         {% else %}
             *self = self.rem(Self::splat(rhs));
         {% endif %}
+    }
+}
+
+impl RemAssign<&{{ scalar_t }}> for {{ self_t }} {
+    #[inline]
+    fn rem_assign(&mut self, rhs: &{{ scalar_t }}) {
+        self.rem_assign(*rhs)
     }
 }
 
@@ -3147,6 +3553,30 @@ impl Rem<{{ self_t }}> for {{ scalar_t }} {
         {% else %}
             {{ self_t }}::splat(self).rem(rhs)
         {% endif %}
+    }
+}
+
+impl Rem<&{{ self_t }}> for {{ scalar_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn rem(self, rhs: &{{ self_t }}) -> {{ self_t }} {
+        self.rem(*rhs)
+    }
+}
+
+impl Rem<&{{ self_t }}> for &{{ scalar_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn rem(self, rhs: &{{ self_t }}) -> {{ self_t }} {
+        (*self).rem(*rhs)
+    }
+}
+
+impl Rem<{{ self_t }}> for &{{ scalar_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn rem(self, rhs: {{ self_t }}) -> {{ self_t }} {
+        (*self).rem(rhs)
     }
 }
 
@@ -3228,6 +3658,14 @@ impl Neg for {{ self_t }} {
         {% else %}
             unimplemented!()
         {% endif %}
+    }
+}
+
+impl Neg for &{{ self_t }} {
+    type Output = {{ self_t }};
+    #[inline]
+    fn neg(self) -> {{ self_t }} {
+        (*self).neg()
     }
 }
 {% endif %}
