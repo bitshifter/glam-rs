@@ -611,6 +611,19 @@ impl Quat {
         Vec4::from(self).abs_diff_eq(Vec4::from(rhs), max_abs_diff)
     }
 
+    #[inline(always)]
+    #[must_use]
+    fn lerp_impl(self, end: Self, s: f32) -> Self {
+        const NEG_ZERO: float32x4_t = f32x4_from_array([-0.0; 4]);
+        let start = self.0;
+        let end = end.0;
+        unsafe {
+            let interpolated =
+                vaddq_f32(vmulq_f32(vsubq_f32(end, start), vld1q_dup_f32(&s)), start);
+            Quat(interpolated).normalize()
+        }
+    }
+
     /// Performs a linear interpolation between `self` and `rhs` based on
     /// the value `s`.
     ///
@@ -628,24 +641,18 @@ impl Quat {
         glam_assert!(end.is_normalized());
 
         const NEG_ZERO: float32x4_t = f32x4_from_array([-0.0; 4]);
-        let start = self.0;
-        let end = end.0;
         unsafe {
-            let dot = dot4_into_f32x4(start, end);
+            let dot = dot4_into_f32x4(self.0, end.0);
             // Calculate the bias, if the dot product is positive or zero, there is no bias
             // but if it is negative, we want to flip the 'end' rotation XYZW components
             let bias = vandq_u32(vreinterpretq_u32_f32(dot), vreinterpretq_u32_f32(NEG_ZERO));
-            let interpolated = vaddq_f32(
-                vmulq_f32(
-                    vsubq_f32(
-                        vreinterpretq_f32_u32(veorq_u32(vreinterpretq_u32_f32(end), bias)),
-                        start,
-                    ),
-                    vld1q_dup_f32(&s),
-                ),
-                start,
-            );
-            Quat(interpolated).normalize()
+            self.lerp_impl(
+                Self(vreinterpretq_f32_u32(veorq_u32(
+                    vreinterpretq_u32_f32(end),
+                    bias,
+                ))),
+                s,
+            )
         }
     }
 
@@ -665,8 +672,6 @@ impl Quat {
         glam_assert!(self.is_normalized());
         glam_assert!(end.is_normalized());
 
-        const DOT_THRESHOLD: f32 = 0.9995;
-
         // Note that a rotation can be represented by two quaternions: `q` and
         // `-q`. The slerp path between `q` and `end` will be different from the
         // path between `-q` and `end`. One path will take the long way around and
@@ -679,9 +684,10 @@ impl Quat {
             dot = -dot;
         }
 
+        const DOT_THRESHOLD: f32 = 1.0 - f32::EPSILON;
         if dot > DOT_THRESHOLD {
-            // assumes lerp returns a normalized quaternion
-            self.lerp(end, s)
+            // if above threshold perform linear interpolation to avoid divide by zero
+            self.lerp_impl(end, s)
         } else {
             let theta = math::acos_approx(dot);
 
