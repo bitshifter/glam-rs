@@ -617,13 +617,7 @@ impl Quat {
     #[inline(always)]
     #[must_use]
     fn lerp_impl(self, end: Self, s: f32) -> Self {
-        let start = self.0;
-        let end = end.0;
-        unsafe {
-            let interpolated =
-                _mm_add_ps(_mm_mul_ps(_mm_sub_ps(end, start), _mm_set_ps1(s)), start);
-            Quat(interpolated).normalize()
-        }
+        (self * (1.0 - s) + end * s).normalize()
     }
 
     /// Performs a linear interpolation between `self` and `rhs` based on

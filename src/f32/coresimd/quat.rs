@@ -609,10 +609,7 @@ impl Quat {
     #[inline(always)]
     #[must_use]
     fn lerp_impl(self, end: Self, s: f32) -> Self {
-        let start = self.0;
-        let end = end.0;
-        let interpolated = start + ((end - start) * f32x4::splat(s));
-        Quat(interpolated).normalize()
+        (self * (1.0 - s) + end * s).normalize()
     }
 
     /// Performs a linear interpolation between `self` and `rhs` based on
@@ -674,17 +671,10 @@ impl Quat {
         } else {
             let theta = math::acos_approx(dot);
 
-            let x = math::sin(theta * (1.0 - s));
-            let y = math::sin(theta * s);
-            let z = math::sin(theta);
-            let w = 0.0;
-            let tmp = f32x4::from_array([x, y, z, w]);
-
-            let scale1 = simd_swizzle!(tmp, [0, 0, 0, 0]);
-            let scale2 = simd_swizzle!(tmp, [1, 1, 1, 1]);
-            let theta_sin = simd_swizzle!(tmp, [2, 2, 2, 2]);
-
-            Self(self.0.mul(scale1).add(end.0.mul(scale2)).div(theta_sin))
+            let scale1 = math::sin(theta * (1.0 - s));
+            let scale2 = math::sin(theta * s);
+            let theta_sin = math::sin(theta);
+            ((self * scale1) + (end * scale2)) * (1.0 / theta_sin)
         }
     }
 

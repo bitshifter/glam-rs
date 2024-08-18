@@ -603,8 +603,7 @@ impl DQuat {
     #[inline(always)]
     #[must_use]
     fn lerp_impl(self, end: Self, s: f64) -> Self {
-        let interpolated = self + ((end - self) * s);
-        interpolated.normalize()
+        (self * (1.0 - s) + end * s).normalize()
     }
 
     /// Performs a linear interpolation between `self` and `rhs` based on
@@ -666,8 +665,7 @@ impl DQuat {
             let scale1 = math::sin(theta * (1.0 - s));
             let scale2 = math::sin(theta * s);
             let theta_sin = math::sin(theta);
-
-            self.mul(scale1).add(end.mul(scale2)).mul(1.0 / theta_sin)
+            ((self * scale1) + (end * scale2)) * (1.0 / theta_sin)
         }
     }
 

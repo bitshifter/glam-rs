@@ -614,14 +614,7 @@ impl Quat {
     #[inline(always)]
     #[must_use]
     fn lerp_impl(self, end: Self, s: f32) -> Self {
-        const NEG_ZERO: float32x4_t = f32x4_from_array([-0.0; 4]);
-        let start = self.0;
-        let end = end.0;
-        unsafe {
-            let interpolated =
-                vaddq_f32(vmulq_f32(vsubq_f32(end, start), vld1q_dup_f32(&s)), start);
-            Quat(interpolated).normalize()
-        }
+        (self * (1.0 - s) + end * s).normalize()
     }
 
     /// Performs a linear interpolation between `self` and `rhs` based on
@@ -648,7 +641,7 @@ impl Quat {
             let bias = vandq_u32(vreinterpretq_u32_f32(dot), vreinterpretq_u32_f32(NEG_ZERO));
             self.lerp_impl(
                 Self(vreinterpretq_f32_u32(veorq_u32(
-                    vreinterpretq_u32_f32(end),
+                    vreinterpretq_u32_f32(end.0),
                     bias,
                 ))),
                 s,
@@ -691,22 +684,10 @@ impl Quat {
         } else {
             let theta = math::acos_approx(dot);
 
-            let x = math::sin(theta * (1.0 - s));
-            let y = math::sin(theta * s);
-            let z = math::sin(theta);
-            let w = 0.0;
-            unsafe {
-                let tmp = vld1q_f32([x, y, z, w].as_ptr());
-
-                let scale1 = vdupq_laneq_f32(tmp, 0);
-                let scale2 = vdupq_laneq_f32(tmp, 1);
-                let theta_sin = vdupq_laneq_f32(tmp, 2);
-
-                Self(vdivq_f32(
-                    vaddq_f32(vmulq_f32(self.0, scale1), vmulq_f32(end.0, scale2)),
-                    theta_sin,
-                ))
-            }
+            let scale1 = math::sin(theta * (1.0 - s));
+            let scale2 = math::sin(theta * s);
+            let theta_sin = math::sin(theta);
+            ((self * scale1) + (end * scale2)) * (1.0 / theta_sin)
         }
     }
 

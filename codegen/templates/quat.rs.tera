@@ -753,46 +753,7 @@ impl {{ self_t }} {
     #[inline(always)]
     #[must_use]
     fn lerp_impl(self, end: Self, s: {{ scalar_t }}) -> Self {
-        {% if is_scalar %}
-            let interpolated = self + ((end - self) * s);
-            interpolated.normalize()
-        {% elif is_sse2 %}
-            let start = self.0;
-            let end = end.0;
-            unsafe {
-                let interpolated = _mm_add_ps(
-                    _mm_mul_ps(_mm_sub_ps(end, start), _mm_set_ps1(s)),
-                    start,
-                );
-                {{ self_t }}(interpolated).normalize()
-            }
-        {% elif is_wasm32 %}
-            let start = self.0;
-            let end = end.0;
-            let interpolated = f32x4_add(
-                f32x4_mul(f32x4_sub(end, start), f32x4_splat(s)),
-                start,
-            );
-            {{ self_t }}(interpolated).normalize()
-        {% elif is_coresimd %}
-            let start = self.0;
-            let end = end.0;
-            let interpolated = start + ((end - start) * f32x4::splat(s));
-            {{ self_t }}(interpolated).normalize()
-        {% elif is_neon %}
-            const NEG_ZERO: float32x4_t = f32x4_from_array([-0.0; 4]);
-            let start = self.0;
-            let end = end.0;
-            unsafe {
-                let interpolated = vaddq_f32(
-                    vmulq_f32(vsubq_f32(end, start), vld1q_dup_f32(&s)),
-                    start,
-                );
-                {{ self_t }}(interpolated).normalize()
-            }
-        {% else %}
-            unimplemented!()
-        {% endif %}
+        (self * (1.0 - s) + end * s).normalize()
     }
 
     /// Performs a linear interpolation between `self` and `rhs` based on
@@ -846,7 +807,7 @@ impl {{ self_t }} {
                 // but if it is negative, we want to flip the 'end' rotation XYZW components
                 let bias = vandq_u32(vreinterpretq_u32_f32(dot), vreinterpretq_u32_f32(NEG_ZERO));
                 self.lerp_impl(
-                    Self(vreinterpretq_f32_u32(veorq_u32(vreinterpretq_u32_f32(end), bias))), s)
+                    Self(vreinterpretq_f32_u32(veorq_u32(vreinterpretq_u32_f32(end.0), bias))), s)
             }
         {% else %}
             unimplemented!()
@@ -887,15 +848,7 @@ impl {{ self_t }} {
             self.lerp_impl(end, s)
         } else {
             let theta = math::acos_approx(dot);
-            {% if is_scalar %}
-                let scale1 = math::sin(theta * (1.0 - s));
-                let scale2 = math::sin(theta * s);
-                let theta_sin = math::sin(theta);
-
-                self.mul(scale1)
-                    .add(end.mul(scale2))
-                    .mul(1.0 / theta_sin)
-            {% elif is_sse2 %}
+            {% if is_sse2 %}
                 let x = 1.0 - s;
                 let y = s;
                 let z = 1.0;
@@ -913,57 +866,11 @@ impl {{ self_t }} {
                         theta_sin,
                     ))
                 }
-            {% elif is_wasm32 %}
-                // TODO: v128_sin is broken
-                // let x = 1.0 - s;
-                // let y = s;
-                // let z = 1.0;
-                // let w = 0.0;
-                // let tmp = f32x4_mul(f32x4_splat(theta), f32x4(x, y, z, w));
-                // let tmp = v128_sin(tmp);
-                let x = math::sin(theta * (1.0 - s));
-                let y = math::sin(theta * s);
-                let z = math::sin(theta);
-                let w = 0.0;
-                let tmp = f32x4(x, y, z, w);
-
-                let scale1 = i32x4_shuffle::<0, 0, 4, 4>(tmp, tmp);
-                let scale2 = i32x4_shuffle::<1, 1, 5, 5>(tmp, tmp);
-                let theta_sin = i32x4_shuffle::<2, 2, 6, 6>(tmp, tmp);
-
-                Self(f32x4_div(
-                    f32x4_add(f32x4_mul(self.0, scale1), f32x4_mul(end.0, scale2)),
-                    theta_sin,
-                ))
-            {% elif is_coresimd %}
-                let x = math::sin(theta * (1.0 - s));
-                let y = math::sin(theta * s);
-                let z = math::sin(theta);
-                let w = 0.0;
-                let tmp = f32x4::from_array([x, y, z, w]);
-
-                let scale1 = simd_swizzle!(tmp, [0, 0, 0, 0]);
-                let scale2 = simd_swizzle!(tmp, [1, 1, 1, 1]);
-                let theta_sin = simd_swizzle!(tmp, [2, 2, 2, 2]);
-
-                Self(self.0.mul(scale1).add(end.0.mul(scale2)).div(theta_sin))
-            {% elif is_neon %}
-                let x = math::sin(theta * (1.0 - s));
-                let y = math::sin(theta * s);
-                let z = math::sin(theta);
-                let w = 0.0;
-                unsafe {
-                    let tmp = vld1q_f32([x, y, z, w].as_ptr());
-
-                    let scale1 = vdupq_laneq_f32(tmp, 0);
-                    let scale2 = vdupq_laneq_f32(tmp, 1);
-                    let theta_sin = vdupq_laneq_f32(tmp, 2);
-
-                    Self(vdivq_f32(
-                        vaddq_f32(vmulq_f32(self.0, scale1), vmulq_f32(end.0, scale2)),
-                        theta_sin,
-                    ))
-                }
+            {% else %}
+                let scale1 = math::sin(theta * (1.0 - s));
+                let scale2 = math::sin(theta * s);
+                let theta_sin = math::sin(theta);
+                ((self * scale1) + (end * scale2)) * (1.0 / theta_sin)
             {% endif %}
         }
     }

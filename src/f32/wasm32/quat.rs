@@ -609,10 +609,7 @@ impl Quat {
     #[inline(always)]
     #[must_use]
     fn lerp_impl(self, end: Self, s: f32) -> Self {
-        let start = self.0;
-        let end = end.0;
-        let interpolated = f32x4_add(f32x4_mul(f32x4_sub(end, start), f32x4_splat(s)), start);
-        Quat(interpolated).normalize()
+        (self * (1.0 - s) + end * s).normalize()
     }
 
     /// Performs a linear interpolation between `self` and `rhs` based on
@@ -674,27 +671,10 @@ impl Quat {
         } else {
             let theta = math::acos_approx(dot);
 
-            // TODO: v128_sin is broken
-            // let x = 1.0 - s;
-            // let y = s;
-            // let z = 1.0;
-            // let w = 0.0;
-            // let tmp = f32x4_mul(f32x4_splat(theta), f32x4(x, y, z, w));
-            // let tmp = v128_sin(tmp);
-            let x = math::sin(theta * (1.0 - s));
-            let y = math::sin(theta * s);
-            let z = math::sin(theta);
-            let w = 0.0;
-            let tmp = f32x4(x, y, z, w);
-
-            let scale1 = i32x4_shuffle::<0, 0, 4, 4>(tmp, tmp);
-            let scale2 = i32x4_shuffle::<1, 1, 5, 5>(tmp, tmp);
-            let theta_sin = i32x4_shuffle::<2, 2, 6, 6>(tmp, tmp);
-
-            Self(f32x4_div(
-                f32x4_add(f32x4_mul(self.0, scale1), f32x4_mul(end.0, scale2)),
-                theta_sin,
-            ))
+            let scale1 = math::sin(theta * (1.0 - s));
+            let scale2 = math::sin(theta * s);
+            let theta_sin = math::sin(theta);
+            ((self * scale1) + (end * scale2)) * (1.0 / theta_sin)
         }
     }
 
