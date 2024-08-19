@@ -618,6 +618,12 @@ impl Quat {
         Vec4::from(self).abs_diff_eq(Vec4::from(rhs), max_abs_diff)
     }
 
+    #[inline(always)]
+    #[must_use]
+    fn lerp_impl(self, end: Self, s: f32) -> Self {
+        (self * (1.0 - s) + end * s).normalize()
+    }
+
     /// Performs a linear interpolation between `self` and `rhs` based on
     /// the value `s`.
     ///
@@ -634,11 +640,9 @@ impl Quat {
         glam_assert!(self.is_normalized());
         glam_assert!(end.is_normalized());
 
-        let start = self;
-        let dot = start.dot(end);
+        let dot = self.dot(end);
         let bias = if dot >= 0.0 { 1.0 } else { -1.0 };
-        let interpolated = start.add(end.mul(bias).sub(start).mul(s));
-        interpolated.normalize()
+        self.lerp_impl(end * bias, s)
     }
 
     /// Performs a spherical linear interpolation between `self` and `end`
@@ -657,8 +661,6 @@ impl Quat {
         glam_assert!(self.is_normalized());
         glam_assert!(end.is_normalized());
 
-        const DOT_THRESHOLD: f32 = 0.9995;
-
         // Note that a rotation can be represented by two quaternions: `q` and
         // `-q`. The slerp path between `q` and `end` will be different from the
         // path between `-q` and `end`. One path will take the long way around and
@@ -671,17 +673,17 @@ impl Quat {
             dot = -dot;
         }
 
+        const DOT_THRESHOLD: f32 = 1.0 - f32::EPSILON;
         if dot > DOT_THRESHOLD {
-            // assumes lerp returns a normalized quaternion
-            self.lerp(end, s)
+            // if above threshold perform linear interpolation to avoid divide by zero
+            self.lerp_impl(end, s)
         } else {
             let theta = math::acos_approx(dot);
 
             let scale1 = math::sin(theta * (1.0 - s));
             let scale2 = math::sin(theta * s);
             let theta_sin = math::sin(theta);
-
-            self.mul(scale1).add(end.mul(scale2)).mul(1.0 / theta_sin)
+            ((self * scale1) + (end * scale2)) * (1.0 / theta_sin)
         }
     }
 

@@ -606,6 +606,12 @@ impl Quat {
         Vec4::from(self).abs_diff_eq(Vec4::from(rhs), max_abs_diff)
     }
 
+    #[inline(always)]
+    #[must_use]
+    fn lerp_impl(self, end: Self, s: f32) -> Self {
+        (self * (1.0 - s) + end * s).normalize()
+    }
+
     /// Performs a linear interpolation between `self` and `rhs` based on
     /// the value `s`.
     ///
@@ -623,14 +629,11 @@ impl Quat {
         glam_assert!(end.is_normalized());
 
         const NEG_ZERO: f32x4 = f32x4::from_array([-0.0; 4]);
-        let start = self.0;
-        let end = end.0;
-        let dot = dot4_into_f32x4(start, end);
+        let dot = dot4_into_f32x4(self.0, end.0);
         // Calculate the bias, if the dot product is positive or zero, there is no bias
         // but if it is negative, we want to flip the 'end' rotation XYZW components
         let bias = f32x4_bitand(dot, NEG_ZERO);
-        let interpolated = start + ((f32x4_bitxor(end, bias) - start) * f32x4::splat(s));
-        Quat(interpolated).normalize()
+        self.lerp_impl(Self(f32x4_bitxor(end.0, bias)), s)
     }
 
     /// Performs a spherical linear interpolation between `self` and `end`
@@ -649,8 +652,6 @@ impl Quat {
         glam_assert!(self.is_normalized());
         glam_assert!(end.is_normalized());
 
-        const DOT_THRESHOLD: f32 = 0.9995;
-
         // Note that a rotation can be represented by two quaternions: `q` and
         // `-q`. The slerp path between `q` and `end` will be different from the
         // path between `-q` and `end`. One path will take the long way around and
@@ -663,23 +664,17 @@ impl Quat {
             dot = -dot;
         }
 
+        const DOT_THRESHOLD: f32 = 1.0 - f32::EPSILON;
         if dot > DOT_THRESHOLD {
-            // assumes lerp returns a normalized quaternion
-            self.lerp(end, s)
+            // if above threshold perform linear interpolation to avoid divide by zero
+            self.lerp_impl(end, s)
         } else {
             let theta = math::acos_approx(dot);
 
-            let x = math::sin(theta * (1.0 - s));
-            let y = math::sin(theta * s);
-            let z = math::sin(theta);
-            let w = 0.0;
-            let tmp = f32x4::from_array([x, y, z, w]);
-
-            let scale1 = simd_swizzle!(tmp, [0, 0, 0, 0]);
-            let scale2 = simd_swizzle!(tmp, [1, 1, 1, 1]);
-            let theta_sin = simd_swizzle!(tmp, [2, 2, 2, 2]);
-
-            Self(self.0.mul(scale1).add(end.0.mul(scale2)).div(theta_sin))
+            let scale1 = math::sin(theta * (1.0 - s));
+            let scale2 = math::sin(theta * s);
+            let theta_sin = math::sin(theta);
+            ((self * scale1) + (end * scale2)) * (1.0 / theta_sin)
         }
     }
 

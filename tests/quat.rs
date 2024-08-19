@@ -260,6 +260,9 @@ macro_rules! impl_quat_tests {
 
         glam_test!(test_lerp, {
             let q0 = $quat::from_rotation_y(deg(0.0));
+            assert_approx_eq!(q0, q0.slerp(q0, 0.0));
+            assert_approx_eq!(q0, q0.slerp(q0, 1.0));
+
             let q1 = $quat::from_rotation_y(deg(90.0));
             assert_approx_eq!(q0, q0.lerp(q1, 0.0));
             assert_approx_eq!(q1, q0.lerp(q1, 1.0));
@@ -271,13 +274,16 @@ macro_rules! impl_quat_tests {
 
         glam_test!(test_slerp, {
             let q0 = $quat::from_rotation_y(deg(0.0));
+            assert_approx_eq!(q0, q0.slerp(q0, 0.0));
+            assert_approx_eq!(q0, q0.slerp(q0, 1.0));
+
             let q1 = $quat::from_rotation_y(deg(90.0));
             assert_approx_eq!(q0, q0.slerp(q1, 0.0), 1.0e-3);
             assert_approx_eq!(q1, q0.slerp(q1, 1.0), 1.0e-3);
             assert_approx_eq!($quat::from_rotation_y(deg(45.0)), q0.slerp(q1, 0.5), 1.0e-3);
 
-            should_glam_assert!({ $quat::lerp($quat::IDENTITY * 2.0, $quat::IDENTITY, 1.0) });
-            should_glam_assert!({ $quat::lerp($quat::IDENTITY, $quat::IDENTITY * 0.5, 1.0) });
+            should_glam_assert!({ $quat::slerp($quat::IDENTITY * 2.0, $quat::IDENTITY, 1.0) });
+            should_glam_assert!({ $quat::slerp($quat::IDENTITY, $quat::IDENTITY * 0.5, 1.0) });
         });
 
         glam_test!(test_slerp_constant_speed, {
