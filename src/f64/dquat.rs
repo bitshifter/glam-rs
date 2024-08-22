@@ -1,5 +1,8 @@
 // Generated from quat.rs.tera template. Edit the template, not the generated file.
 
+#[cfg(feature = "wasm-bindgen")]
+use wasm_bindgen::prelude::*;
+
 use crate::{
     euler::{EulerRot, FromEuler, ToEuler},
     f64::math,
@@ -29,6 +32,7 @@ pub const fn dquat(x: f64, y: f64, z: f64, w: f64) -> DQuat {
 #[derive(Clone, Copy)]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
+#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen)]
 pub struct DQuat {
     pub x: f64,
     pub y: f64,

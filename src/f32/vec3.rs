@@ -1,5 +1,8 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
+#[cfg(feature = "wasm-bindgen")]
+use wasm_bindgen::prelude::*;
+
 use crate::{f32::math, BVec3, BVec3A, Vec2, Vec4};
 
 #[cfg(not(target_arch = "spirv"))]
@@ -18,12 +21,21 @@ pub const fn vec3(x: f32, y: f32, z: f32) -> Vec3 {
 #[derive(Clone, Copy, PartialEq)]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
+#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen)]
 pub struct Vec3 {
     pub x: f32,
     pub y: f32,
     pub z: f32,
 }
 
+#[cfg(feature = "wasm-bindgen")]
+#[wasm_bindgen]
+impl Vec3 {
+    #[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(constructor))]
+    pub fn wasm_bindgen_ctor(x: f32, y: f32, z: f32) -> Self {
+        Self { x, y, z }
+    }
+}
 impl Vec3 {
     /// All zeroes.
     pub const ZERO: Self = Self::splat(0.0);
