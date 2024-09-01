@@ -518,6 +518,17 @@ impl Vec2 {
         self.normalize_or(Self::ZERO)
     }
 
+    /// Returns a tuple of `self` as a normalized direction vector and length.
+    ///
+    /// If `self` is infinite, of length zero or very close to zero the returned direction
+    /// vector will be invalid.
+    #[inline]
+    #[must_use]
+    pub fn direction_and_length(self) -> (Self, f32) {
+        let length = self.length();
+        (self / length, length)
+    }
+
     /// Returns whether `self` is length `1.0` or not.
     ///
     /// Uses a precision threshold of approximately `1e-4`.

@@ -188,6 +188,14 @@ macro_rules! impl_vec_float_normalize_tests {
             assert_eq!(from_x_y($t::MAX, 0.0).normalize_or_zero(), $vec::ZERO);
             assert_eq!(from_x_y($t::MAX, $t::MAX).normalize_or_zero(), $vec::ZERO);
         });
+
+        glam_test!(test_direction_and_length, {
+            assert_eq!(from_x_y(-42.0, 0.0).direction_and_length(), (from_x_y(-1.0, 0.0), 42.0));
+            assert_eq!(
+                from_x_y($t::MAX.sqrt(), 0.0).direction_and_length(),
+                (from_x_y(1.0, 0.0), $t::MAX.sqrt())
+            );
+        });
     };
 }
 
