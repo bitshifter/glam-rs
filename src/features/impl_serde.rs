@@ -23,7 +23,7 @@ macro_rules! impl_serde_vec2 {
                     type Value = $vec2;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(concat!("struct ", stringify!($vec2)))
+                        formatter.write_str(&format!("a {} struct", stringify!($vec2)))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$vec2, V::Error>
@@ -90,7 +90,7 @@ macro_rules! impl_serde_vec3 {
                     type Value = $vec3;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(concat!("struct ", stringify!($vec3)))
+                        formatter.write_str(&format!("a {} struct", stringify!($vec3)))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$vec3, V::Error>
@@ -160,7 +160,7 @@ macro_rules! impl_serde_vec4 {
                     type Value = $vec4;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(concat!("struct ", stringify!($vec4)))
+                        formatter.write_str(&format!("a {} struct", stringify!($vec4)))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$vec4, V::Error>
@@ -235,7 +235,7 @@ macro_rules! impl_serde_quat {
                     type Value = $quat;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(concat!("struct ", stringify!($quat)))
+                        formatter.write_str(&format!("a {} struct", stringify!($quat)))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$quat, V::Error>
@@ -311,7 +311,7 @@ macro_rules! impl_serde_mat2 {
                     type Value = $mat2;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(concat!("struct ", stringify!($mat2)))
+                        formatter.write_str(&format!("a {} struct", stringify!($mat2)))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$mat2, V::Error>
@@ -394,7 +394,7 @@ macro_rules! impl_serde_mat3 {
                     type Value = $mat3;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(concat!("struct ", stringify!($mat3)))
+                        formatter.write_str(&format!("a {} struct", stringify!($mat3)))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$mat3, V::Error>
@@ -465,7 +465,7 @@ macro_rules! impl_serde_mat4 {
                     type Value = $mat4;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(concat!("struct ", stringify!($mat4)))
+                        formatter.write_str(&format!("a {} struct", stringify!($mat4)))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$mat4, V::Error>
@@ -550,7 +550,7 @@ macro_rules! impl_serde_affine2 {
                     type Value = $affine2;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str("struct $affine2")
+                        formatter.write_str(&format!("a {} struct", stringify!($affine2)))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$affine2, V::Error>
@@ -635,7 +635,7 @@ macro_rules! impl_serde_affine3 {
                     type Value = $affine3;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str("struct $affine3")
+                        formatter.write_str(&format!("a {} struct", stringify!($affine3)))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$affine3, V::Error>
@@ -851,7 +851,7 @@ mod bool {
                 type Value = BVec3A;
 
                 fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                    formatter.write_str("struct BVec3A")
+                    formatter.write_str("a BVec3A struct")
                 }
 
                 fn visit_seq<V>(self, mut seq: V) -> Result<BVec3A, V::Error>
@@ -921,7 +921,7 @@ mod bool {
                 type Value = BVec4A;
 
                 fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                    formatter.write_str(concat!("struct ", stringify!(BVec4A)))
+                    formatter.write_str(&format!("a {} struct", stringify!(BVec4A)))
                 }
 
                 fn visit_seq<V>(self, mut seq: V) -> Result<BVec4A, V::Error>
@@ -1212,7 +1212,7 @@ mod euler {
             impl<'de> serde::de::Visitor<'de> for FieldVisitor {
                 type Value = Field;
                 fn expecting(&self, formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-                    core::fmt::Formatter::write_str(formatter, "variant identifier")
+                    core::fmt::Formatter::write_str(formatter, "a variant identifier")
                 }
                 fn visit_u64<E>(self, value: u64) -> Result<Self::Value, E>
                 where
@@ -1341,7 +1341,7 @@ mod euler {
                     &self,
                     __formatter: &mut core::fmt::Formatter<'_>,
                 ) -> core::fmt::Result {
-                    core::fmt::Formatter::write_str(__formatter, "enum EulerRot")
+                    core::fmt::Formatter::write_str(__formatter, "an EulerRot enum")
                 }
                 fn visit_enum<A>(self, data: A) -> Result<Self::Value, A::Error>
                 where
