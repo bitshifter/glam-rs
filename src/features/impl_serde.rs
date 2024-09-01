@@ -1,5 +1,6 @@
 macro_rules! impl_serde_vec2 {
     ($t:ty, $vec2:ident) => {
+        /// Serialize as a sequence of 2 values.
         impl Serialize for $vec2 {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -12,6 +13,7 @@ macro_rules! impl_serde_vec2 {
             }
         }
 
+        /// Deserialize expects a sequence of 2 values.
         impl<'de> Deserialize<'de> for $vec2 {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
@@ -69,6 +71,7 @@ macro_rules! impl_serde_vec3 {
         impl_serde_vec3!($t, $vec3, test_vec3_serde);
     };
     ($t:ty, $vec3:ident, $test_name:ident) => {
+        /// Serialize as a sequence of 3 values.
         impl Serialize for $vec3 {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -82,6 +85,7 @@ macro_rules! impl_serde_vec3 {
             }
         }
 
+        /// Deserialize expects a sequence of 3 values.
         impl<'de> Deserialize<'de> for $vec3 {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
@@ -140,6 +144,7 @@ macro_rules! impl_serde_vec3 {
 
 macro_rules! impl_serde_vec4 {
     ($t:ty, $vec4:ident) => {
+        /// Serialize as a sequence of 4 values.
         impl Serialize for $vec4 {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -154,6 +159,7 @@ macro_rules! impl_serde_vec4 {
             }
         }
 
+        /// Deserialize expects a sequence of 4 values.
         impl<'de> Deserialize<'de> for $vec4 {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
@@ -217,6 +223,7 @@ macro_rules! impl_serde_vec4 {
 
 macro_rules! impl_serde_quat {
     ($t:ty, $quat:ident) => {
+        /// Serialize as a sequence of 4 values.
         impl Serialize for $quat {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -231,6 +238,7 @@ macro_rules! impl_serde_quat {
             }
         }
 
+        /// Deserialize expects a sequence of 4 values.
         impl<'de> Deserialize<'de> for $quat {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
@@ -294,6 +302,7 @@ macro_rules! impl_serde_quat {
 
 macro_rules! impl_serde_mat2 {
     ($t:ty, $mat2:ident) => {
+        /// Serialize as a sequence of 4 values.
         impl Serialize for $mat2 {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -309,6 +318,7 @@ macro_rules! impl_serde_mat2 {
             }
         }
 
+        /// Deserialize expects a sequence of 4 values.
         impl<'de> Deserialize<'de> for $mat2 {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
@@ -377,6 +387,7 @@ macro_rules! impl_serde_mat3 {
         impl_serde_mat3!($t, $mat3, test_mat3_serde);
     };
     ($t:ty, $mat3:ident, $test_name:ident) => {
+        /// Serialize as a sequence of 9 values.
         impl Serialize for $mat3 {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -400,6 +411,7 @@ macro_rules! impl_serde_mat3 {
             }
         }
 
+        /// Deserialize expects a sequence of 9 values.
         impl<'de> Deserialize<'de> for $mat3 {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
@@ -466,6 +478,7 @@ macro_rules! impl_serde_mat3 {
 
 macro_rules! impl_serde_mat4 {
     ($t:ty, $mat4:ident) => {
+        /// Serialize as a sequence of 16 values.
         impl Serialize for $mat4 {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -479,6 +492,7 @@ macro_rules! impl_serde_mat4 {
             }
         }
 
+        /// Deserialize expects a sequence of 16 values.
         impl<'de> Deserialize<'de> for $mat4 {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
@@ -555,6 +569,7 @@ macro_rules! impl_serde_mat4 {
 
 macro_rules! impl_serde_affine2 {
     ($t:ty, $affine2:ident) => {
+        /// Serialize as a sequence of 6 values.
         impl Serialize for $affine2 {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -572,6 +587,7 @@ macro_rules! impl_serde_affine2 {
             }
         }
 
+        /// Deserialize expects a sequence of 6 values.
         impl<'de> Deserialize<'de> for $affine2 {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
@@ -646,6 +662,7 @@ macro_rules! impl_serde_affine2 {
 
 macro_rules! impl_serde_affine3 {
     ($t:ty, $affine3:ident) => {
+        /// Serialize as a sequence of 12 values.
         impl Serialize for $affine3 {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -669,6 +686,7 @@ macro_rules! impl_serde_affine3 {
             }
         }
 
+        /// Deserialize expects a sequence of 12 values.
         impl<'de> Deserialize<'de> for $affine3 {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
