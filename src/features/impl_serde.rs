@@ -25,7 +25,7 @@ macro_rules! impl_serde_vec2 {
                     type Value = $vec2;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(&format!("a sequence of 2 {} values", stringify!($t)))
+                        formatter.write_str(&concat!("a sequence of 2 ", stringify!($t), " values"))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$vec2, V::Error>
@@ -97,7 +97,7 @@ macro_rules! impl_serde_vec3 {
                     type Value = $vec3;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(&format!("a sequence of 3 {} values", stringify!($t)))
+                        formatter.write_str(&concat!("a sequence of 3 ", stringify!($t), " values"))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$vec3, V::Error>
@@ -171,7 +171,7 @@ macro_rules! impl_serde_vec4 {
                     type Value = $vec4;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(&format!("a sequence of 4 {} values", stringify!($t)))
+                        formatter.write_str(&concat!("a sequence of 4 ", stringify!($t), " values"))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$vec4, V::Error>
@@ -250,7 +250,7 @@ macro_rules! impl_serde_quat {
                     type Value = $quat;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(&format!("a sequence of 4 {} values", stringify!($t)))
+                        formatter.write_str(&concat!("a sequence of 4 ", stringify!($t), " values"))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$quat, V::Error>
@@ -324,27 +324,21 @@ macro_rules! impl_serde_mat2 {
             where
                 D: Deserializer<'de>,
             {
-                const ELEMENTS: usize = 4;
-
                 struct Mat2Visitor;
 
                 impl<'de> Visitor<'de> for Mat2Visitor {
                     type Value = $mat2;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(&format!(
-                            "a sequence of {} {} values",
-                            ELEMENTS,
-                            stringify!($t)
-                        ))
+                        formatter.write_str(&concat!("a sequence of 4 ", stringify!($t), "values"))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$mat2, V::Error>
                     where
                         V: SeqAccess<'de>,
                     {
-                        let mut f = { [0.0; ELEMENTS] };
-                        for i in 0..ELEMENTS {
+                        let mut f = { [0.0; 4] };
+                        for i in 0..4 {
                             f[i] = seq
                                 .next_element()?
                                 .ok_or_else(|| de::Error::invalid_length(i, &self))?;
@@ -353,7 +347,7 @@ macro_rules! impl_serde_mat2 {
                     }
                 }
 
-                deserializer.deserialize_tuple_struct(stringify!($mat2), ELEMENTS, Mat2Visitor)
+                deserializer.deserialize_tuple_struct(stringify!($mat2), 4, Mat2Visitor)
             }
         }
 
@@ -417,27 +411,21 @@ macro_rules! impl_serde_mat3 {
             where
                 D: Deserializer<'de>,
             {
-                const ELEMENTS: usize = 9;
-
                 struct Mat3Visitor;
 
                 impl<'de> Visitor<'de> for Mat3Visitor {
                     type Value = $mat3;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(&format!(
-                            "a sequence of {} {} values",
-                            ELEMENTS,
-                            stringify!($t)
-                        ))
+                        formatter.write_str(&concat!("a sequence of 9 ", stringify!($t), "values"))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$mat3, V::Error>
                     where
                         V: SeqAccess<'de>,
                     {
-                        let mut f = { [0.0; ELEMENTS] };
-                        for i in 0..ELEMENTS {
+                        let mut f = { [0.0; 9] };
+                        for i in 0..9 {
                             f[i] = seq
                                 .next_element()?
                                 .ok_or_else(|| de::Error::invalid_length(i, &self))?;
@@ -446,7 +434,7 @@ macro_rules! impl_serde_mat3 {
                     }
                 }
 
-                deserializer.deserialize_tuple_struct(stringify!($mat3), ELEMENTS, Mat3Visitor)
+                deserializer.deserialize_tuple_struct(stringify!($mat3), 9, Mat3Visitor)
             }
         }
 
@@ -498,27 +486,21 @@ macro_rules! impl_serde_mat4 {
             where
                 D: Deserializer<'de>,
             {
-                const ELEMENTS: usize = 16;
-
                 struct Mat4Visitor;
 
                 impl<'de> Visitor<'de> for Mat4Visitor {
                     type Value = $mat4;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(&format!(
-                            "a sequence of {} {} values",
-                            ELEMENTS,
-                            stringify!($t)
-                        ))
+                        formatter.write_str(&concat!("a sequence of 16 ", stringify!($t), "values"))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$mat4, V::Error>
                     where
                         V: SeqAccess<'de>,
                     {
-                        let mut f = { [0.0; ELEMENTS] };
-                        for i in 0..ELEMENTS {
+                        let mut f = { [0.0; 16] };
+                        for i in 0..16 {
                             f[i] = seq
                                 .next_element()?
                                 .ok_or_else(|| de::Error::invalid_length(i, &self))?;
@@ -527,7 +509,7 @@ macro_rules! impl_serde_mat4 {
                     }
                 }
 
-                deserializer.deserialize_tuple_struct(stringify!($mat4), ELEMENTS, Mat4Visitor)
+                deserializer.deserialize_tuple_struct(stringify!($mat4), 16, Mat4Visitor)
             }
         }
 
@@ -593,26 +575,20 @@ macro_rules! impl_serde_affine2 {
             where
                 D: Deserializer<'de>,
             {
-                const ELEMENTS: usize = 6;
-
                 struct Affine2Visitor;
 
                 impl<'de> Visitor<'de> for Affine2Visitor {
                     type Value = $affine2;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(&format!(
-                            "a sequence of {} {} values",
-                            ELEMENTS,
-                            stringify!($t)
-                        ))
+                        formatter.write_str(&concat!("a sequence of 6 ", stringify!($t), "values"))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$affine2, V::Error>
                     where
                         V: SeqAccess<'de>,
                     {
-                        let mut f = [0.0; ELEMENTS];
+                        let mut f = [0.0; 6];
                         for (i, v) in f.iter_mut().enumerate() {
                             *v = seq
                                 .next_element()?
@@ -622,11 +598,7 @@ macro_rules! impl_serde_affine2 {
                     }
                 }
 
-                deserializer.deserialize_tuple_struct(
-                    stringify!($affine2),
-                    ELEMENTS,
-                    Affine2Visitor,
-                )
+                deserializer.deserialize_tuple_struct(stringify!($affine2), 6, Affine2Visitor)
             }
         }
 
@@ -692,26 +664,20 @@ macro_rules! impl_serde_affine3 {
             where
                 D: Deserializer<'de>,
             {
-                const ELEMENTS: usize = 12;
-
                 struct Affine3Visitor;
 
                 impl<'de> Visitor<'de> for Affine3Visitor {
                     type Value = $affine3;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(&format!(
-                            "a sequence of {} {} values",
-                            ELEMENTS,
-                            stringify!($t)
-                        ))
+                        formatter.write_str(&concat!("a sequence of 12 ", stringify!($t), "values"))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$affine3, V::Error>
                     where
                         V: SeqAccess<'de>,
                     {
-                        let mut f = [0.0; ELEMENTS];
+                        let mut f = [0.0; 12];
                         for (i, v) in f.iter_mut().enumerate() {
                             *v = seq
                                 .next_element()?
@@ -721,11 +687,7 @@ macro_rules! impl_serde_affine3 {
                     }
                 }
 
-                deserializer.deserialize_tuple_struct(
-                    stringify!($affine3),
-                    ELEMENTS,
-                    Affine3Visitor,
-                )
+                deserializer.deserialize_tuple_struct(stringify!($affine3), 12, Affine3Visitor)
             }
         }
 
@@ -929,7 +891,7 @@ mod bool {
                 type Value = BVec3A;
 
                 fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                    formatter.write_str(&format!("a sequence of 3 {} values", stringify!($t)))
+                    formatter.write_str(&concat!("a sequence of 3 ", stringify!($t), "values"))
                 }
 
                 fn visit_seq<V>(self, mut seq: V) -> Result<BVec3A, V::Error>
@@ -999,7 +961,7 @@ mod bool {
                 type Value = BVec4A;
 
                 fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                    formatter.write_str(&format!("a sequence of 4 {} values", stringify!($t)))
+                    formatter.write_str(&concat!("a sequence of 4 ", stringify!($t), "values"))
                 }
 
                 fn visit_seq<V>(self, mut seq: V) -> Result<BVec4A, V::Error>
