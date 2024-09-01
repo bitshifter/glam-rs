@@ -1,5 +1,6 @@
 macro_rules! impl_serde_vec2 {
     ($t:ty, $vec2:ident) => {
+        /// Serialize as a sequence of 2 values.
         impl Serialize for $vec2 {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -12,6 +13,7 @@ macro_rules! impl_serde_vec2 {
             }
         }
 
+        /// Deserialize expects a sequence of 2 values.
         impl<'de> Deserialize<'de> for $vec2 {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
@@ -23,7 +25,7 @@ macro_rules! impl_serde_vec2 {
                     type Value = $vec2;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(concat!("struct ", stringify!($vec2)))
+                        formatter.write_str(&concat!("a sequence of 2 ", stringify!($t), " values"))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$vec2, V::Error>
@@ -57,6 +59,9 @@ macro_rules! impl_serde_vec2 {
             assert!(deserialized.is_err());
             let deserialized = serde_json::from_str::<$vec2>(SX3);
             assert!(deserialized.is_err());
+
+            let deserialized = serde_json::from_str::<$vec2>(ST0);
+            assert!(deserialized.is_err());
         }
     };
 }
@@ -66,6 +71,7 @@ macro_rules! impl_serde_vec3 {
         impl_serde_vec3!($t, $vec3, test_vec3_serde);
     };
     ($t:ty, $vec3:ident, $test_name:ident) => {
+        /// Serialize as a sequence of 3 values.
         impl Serialize for $vec3 {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -79,6 +85,7 @@ macro_rules! impl_serde_vec3 {
             }
         }
 
+        /// Deserialize expects a sequence of 3 values.
         impl<'de> Deserialize<'de> for $vec3 {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
@@ -90,7 +97,7 @@ macro_rules! impl_serde_vec3 {
                     type Value = $vec3;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(concat!("struct ", stringify!($vec3)))
+                        formatter.write_str(&concat!("a sequence of 3 ", stringify!($t), " values"))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$vec3, V::Error>
@@ -129,12 +136,15 @@ macro_rules! impl_serde_vec3 {
             assert!(deserialized.is_err());
             let deserialized = serde_json::from_str::<$vec3>(SX4);
             assert!(deserialized.is_err());
+            let deserialized = serde_json::from_str::<$vec3>(ST0);
+            assert!(deserialized.is_err());
         }
     };
 }
 
 macro_rules! impl_serde_vec4 {
     ($t:ty, $vec4:ident) => {
+        /// Serialize as a sequence of 4 values.
         impl Serialize for $vec4 {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -149,6 +159,7 @@ macro_rules! impl_serde_vec4 {
             }
         }
 
+        /// Deserialize expects a sequence of 4 values.
         impl<'de> Deserialize<'de> for $vec4 {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
@@ -160,7 +171,7 @@ macro_rules! impl_serde_vec4 {
                     type Value = $vec4;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(concat!("struct ", stringify!($vec4)))
+                        formatter.write_str(&concat!("a sequence of 4 ", stringify!($t), " values"))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$vec4, V::Error>
@@ -204,12 +215,15 @@ macro_rules! impl_serde_vec4 {
             assert!(deserialized.is_err());
             let deserialized = serde_json::from_str::<$vec4>(SX5);
             assert!(deserialized.is_err());
+            let deserialized = serde_json::from_str::<$vec4>(ST0);
+            assert!(deserialized.is_err());
         }
     };
 }
 
 macro_rules! impl_serde_quat {
     ($t:ty, $quat:ident) => {
+        /// Serialize as a sequence of 4 values.
         impl Serialize for $quat {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -224,6 +238,7 @@ macro_rules! impl_serde_quat {
             }
         }
 
+        /// Deserialize expects a sequence of 4 values.
         impl<'de> Deserialize<'de> for $quat {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
@@ -235,7 +250,7 @@ macro_rules! impl_serde_quat {
                     type Value = $quat;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(concat!("struct ", stringify!($quat)))
+                        formatter.write_str(&concat!("a sequence of 4 ", stringify!($t), " values"))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$quat, V::Error>
@@ -279,12 +294,15 @@ macro_rules! impl_serde_quat {
             assert!(deserialized.is_err());
             let deserialized = serde_json::from_str::<$quat>("[1.0,2.0,3.0,4.0,5.0]");
             assert!(deserialized.is_err());
+            let deserialized = serde_json::from_str::<$quat>("{}");
+            assert!(deserialized.is_err());
         }
     };
 }
 
 macro_rules! impl_serde_mat2 {
     ($t:ty, $mat2:ident) => {
+        /// Serialize as a sequence of 4 values.
         impl Serialize for $mat2 {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -300,6 +318,7 @@ macro_rules! impl_serde_mat2 {
             }
         }
 
+        /// Deserialize expects a sequence of 4 values.
         impl<'de> Deserialize<'de> for $mat2 {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
@@ -311,7 +330,7 @@ macro_rules! impl_serde_mat2 {
                     type Value = $mat2;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(concat!("struct ", stringify!($mat2)))
+                        formatter.write_str(&concat!("a sequence of 4 ", stringify!($t), "values"))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$mat2, V::Error>
@@ -351,6 +370,8 @@ macro_rules! impl_serde_mat2 {
             assert!(deserialized.is_err());
             let deserialized = serde_json::from_str::<$mat2>("[[1.0,2.0],[3.0,4.0]]");
             assert!(deserialized.is_err());
+            let deserialized = serde_json::from_str::<$mat2>("{}");
+            assert!(deserialized.is_err());
         }
     };
 }
@@ -360,6 +381,7 @@ macro_rules! impl_serde_mat3 {
         impl_serde_mat3!($t, $mat3, test_mat3_serde);
     };
     ($t:ty, $mat3:ident, $test_name:ident) => {
+        /// Serialize as a sequence of 9 values.
         impl Serialize for $mat3 {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -383,6 +405,7 @@ macro_rules! impl_serde_mat3 {
             }
         }
 
+        /// Deserialize expects a sequence of 9 values.
         impl<'de> Deserialize<'de> for $mat3 {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
@@ -394,7 +417,7 @@ macro_rules! impl_serde_mat3 {
                     type Value = $mat3;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(concat!("struct ", stringify!($mat3)))
+                        formatter.write_str(&concat!("a sequence of 9 ", stringify!($t), "values"))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$mat3, V::Error>
@@ -435,12 +458,15 @@ macro_rules! impl_serde_mat3 {
             let deserialized =
                 serde_json::from_str::<$mat3>("[[1.0,2.0,3.0],[4.0,5.0,6.0],[7.0,8.0,9.0]]");
             assert!(deserialized.is_err());
+            let deserialized = serde_json::from_str::<$mat3>("{}");
+            assert!(deserialized.is_err());
         }
     };
 }
 
 macro_rules! impl_serde_mat4 {
     ($t:ty, $mat4:ident) => {
+        /// Serialize as a sequence of 16 values.
         impl Serialize for $mat4 {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -454,6 +480,7 @@ macro_rules! impl_serde_mat4 {
             }
         }
 
+        /// Deserialize expects a sequence of 16 values.
         impl<'de> Deserialize<'de> for $mat4 {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
@@ -465,7 +492,7 @@ macro_rules! impl_serde_mat4 {
                     type Value = $mat4;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(concat!("struct ", stringify!($mat4)))
+                        formatter.write_str(&concat!("a sequence of 16 ", stringify!($t), "values"))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$mat4, V::Error>
@@ -516,12 +543,15 @@ macro_rules! impl_serde_mat4 {
                 "[[1.0,2.0,3.0,4.0],[5.0,6.0,7.0,8.0],[9.0,10.0,11.0,12.0][13.0,14.0,15.0,16.0]]",
             );
             assert!(deserialized.is_err());
+            let deserialized = serde_json::from_str::<$mat4>("{}");
+            assert!(deserialized.is_err());
         }
     };
 }
 
 macro_rules! impl_serde_affine2 {
     ($t:ty, $affine2:ident) => {
+        /// Serialize as a sequence of 6 values.
         impl Serialize for $affine2 {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -539,6 +569,7 @@ macro_rules! impl_serde_affine2 {
             }
         }
 
+        /// Deserialize expects a sequence of 6 values.
         impl<'de> Deserialize<'de> for $affine2 {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
@@ -550,7 +581,7 @@ macro_rules! impl_serde_affine2 {
                     type Value = $affine2;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str("struct $affine2")
+                        formatter.write_str(&concat!("a sequence of 6 ", stringify!($t), "values"))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$affine2, V::Error>
@@ -595,12 +626,15 @@ macro_rules! impl_serde_affine2 {
                 "[[1.0,2.0,3.0,4.0],[5.0,6.0,7.0,8.0],[9.0,10.0,11.0,12.0][13.0,14.0,15.0,16.0]]",
             );
             assert!(deserialized.is_err());
+            let deserialized = serde_json::from_str::<$affine2>("{}");
+            assert!(deserialized.is_err());
         }
     };
 }
 
 macro_rules! impl_serde_affine3 {
     ($t:ty, $affine3:ident) => {
+        /// Serialize as a sequence of 12 values.
         impl Serialize for $affine3 {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -624,6 +658,7 @@ macro_rules! impl_serde_affine3 {
             }
         }
 
+        /// Deserialize expects a sequence of 12 values.
         impl<'de> Deserialize<'de> for $affine3 {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
@@ -635,7 +670,7 @@ macro_rules! impl_serde_affine3 {
                     type Value = $affine3;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str("struct $affine3")
+                        formatter.write_str(&concat!("a sequence of 12 ", stringify!($t), "values"))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$affine3, V::Error>
@@ -685,6 +720,8 @@ macro_rules! impl_serde_affine3 {
             let deserialized = serde_json::from_str::<$affine3>(
                 "[[1.0,2.0,3.0,4.0],[5.0,6.0,7.0,8.0],[9.0,10.0,11.0,12.0][13.0,14.0,15.0,16.0]]",
             );
+            assert!(deserialized.is_err());
+            let deserialized = serde_json::from_str::<$affine3>("{}");
             assert!(deserialized.is_err());
         }
     };
@@ -782,6 +819,7 @@ mod test_float {
     pub const SX3: &str = "[1.0,2.0,3.0]";
     pub const SX4: &str = "[1.0,2.0,3.0,4.0]";
     pub const SX5: &str = "[1.0,2.0,3.0,4.0,5.0]";
+    pub const ST0: &str = "{}";
 }
 
 #[cfg(test)]
@@ -792,6 +830,7 @@ mod test_int {
     pub const SX3: &str = "[1,2,3]";
     pub const SX4: &str = "[1,2,3,4]";
     pub const SX5: &str = "[1,2,3,4,5]";
+    pub const ST0: &str = "{}";
 }
 
 #[cfg(test)]
@@ -802,6 +841,7 @@ mod test_bool_mask {
     pub const SX3: &str = "[true,true,true]";
     pub const SX4: &str = "[true,true,true,true]";
     pub const SX5: &str = "[true,true,true,true,true]";
+    pub const ST0: &str = "{}";
     pub const V1: bool = true;
     pub const V2: bool = true;
     pub const V3: bool = true;
@@ -851,7 +891,7 @@ mod bool {
                 type Value = BVec3A;
 
                 fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                    formatter.write_str("struct BVec3A")
+                    formatter.write_str(&concat!("a sequence of 3 ", stringify!($t), "values"))
                 }
 
                 fn visit_seq<V>(self, mut seq: V) -> Result<BVec3A, V::Error>
@@ -921,7 +961,7 @@ mod bool {
                 type Value = BVec4A;
 
                 fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                    formatter.write_str(concat!("struct ", stringify!(BVec4A)))
+                    formatter.write_str(&concat!("a sequence of 4 ", stringify!($t), "values"))
                 }
 
                 fn visit_seq<V>(self, mut seq: V) -> Result<BVec4A, V::Error>
@@ -1212,7 +1252,7 @@ mod euler {
             impl<'de> serde::de::Visitor<'de> for FieldVisitor {
                 type Value = Field;
                 fn expecting(&self, formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-                    core::fmt::Formatter::write_str(formatter, "variant identifier")
+                    core::fmt::Formatter::write_str(formatter, "a variant identifier")
                 }
                 fn visit_u64<E>(self, value: u64) -> Result<Self::Value, E>
                 where
@@ -1341,7 +1381,7 @@ mod euler {
                     &self,
                     __formatter: &mut core::fmt::Formatter<'_>,
                 ) -> core::fmt::Result {
-                    core::fmt::Formatter::write_str(__formatter, "enum EulerRot")
+                    core::fmt::Formatter::write_str(__formatter, "an EulerRot enum")
                 }
                 fn visit_enum<A>(self, data: A) -> Result<Self::Value, A::Error>
                 where
