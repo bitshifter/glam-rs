@@ -6,7 +6,6 @@ use crate::{
     DQuat, Mat3, Mat3A, Mat4, Vec2, Vec3, Vec3A, Vec4,
 };
 
-#[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, Div, Mul, MulAssign, Neg, Sub};
@@ -763,7 +762,6 @@ impl Quat {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for Quat {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt.debug_tuple(stringify!(Quat))
@@ -775,7 +773,6 @@ impl fmt::Debug for Quat {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Quat {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(p) = f.precision() {
