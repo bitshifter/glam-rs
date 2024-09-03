@@ -50,8 +50,10 @@ impl DAffine3 {
     #[must_use]
     pub fn from_cols_array(m: &[f64; 12]) -> Self {
         Self {
-            matrix3: DMat3::from_cols_slice(&m[0..9]),
-            translation: DVec3::from_slice(&m[9..12]),
+            matrix3: DMat3::from_cols_array(&[
+                m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8],
+            ]),
+            translation: DVec3::from_array([m[9], m[10], m[11]]),
         }
     }
 
