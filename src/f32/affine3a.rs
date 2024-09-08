@@ -488,7 +488,6 @@ impl PartialEq for Affine3A {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl core::fmt::Debug for Affine3A {
     fn fmt(&self, fmt: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         fmt.debug_struct(stringify!(Affine3A))
@@ -498,7 +497,6 @@ impl core::fmt::Debug for Affine3A {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl core::fmt::Display for Affine3A {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         if let Some(p) = f.precision() {

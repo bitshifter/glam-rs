@@ -473,7 +473,6 @@ impl PartialEq for DAffine3 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl core::fmt::Debug for DAffine3 {
     fn fmt(&self, fmt: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         fmt.debug_struct(stringify!(DAffine3))
@@ -483,7 +482,6 @@ impl core::fmt::Debug for DAffine3 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl core::fmt::Display for DAffine3 {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         if let Some(p) = f.precision() {
