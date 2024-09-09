@@ -715,9 +715,6 @@ impl Quat {
     #[inline]
     #[must_use]
     pub fn mul_quat(self, rhs: Self) -> Self {
-        glam_assert!(self.is_normalized());
-        glam_assert!(rhs.is_normalized());
-
         unsafe {
             let lhs = self.0;
             let rhs = rhs.0;

@@ -711,7 +711,7 @@ impl {{ self_t }} {
         glam_assert!(self.is_normalized() && rhs.is_normalized());
         math::acos_approx(math::abs(self.dot(rhs))) * 2.0
     }
-    
+
     /// Rotates towards `rhs` up to `max_angle` (in radians).
     ///
     /// When `max_angle` is `0.0`, the result will be equal to `self`. When `max_angle` is equal to
@@ -775,7 +775,7 @@ impl {{ self_t }} {
         {% if is_scalar %}
             let dot = self.dot(end);
             let bias = if dot >= 0.0 { 1.0 } else { -1.0 };
-            self.lerp_impl(end * bias, s) 
+            self.lerp_impl(end * bias, s)
         {% elif is_sse2 %}
             const NEG_ZERO: __m128 = m128_from_f32x4([-0.0; 4]);
             unsafe {
@@ -908,9 +908,6 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn mul_quat(self, rhs: Self) -> Self {
-        glam_assert!(self.is_normalized());
-        glam_assert!(rhs.is_normalized());
-
         {% if is_scalar %}
             let (x0, y0, z0, w0) = self.into();
             let (x1, y1, z1, w1) = rhs.into();
