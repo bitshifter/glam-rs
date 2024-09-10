@@ -226,8 +226,6 @@ macro_rules! impl_quat_tests {
 
             should_glam_assert!({ ($quat::IDENTITY * 0.5).mul_vec3($vec3::X) });
             should_glam_assert!({ ($quat::IDENTITY * 0.5) * $vec3::X });
-            should_glam_assert!({ ($quat::IDENTITY * 0.5).mul_quat($quat::IDENTITY) });
-            should_glam_assert!({ ($quat::IDENTITY * 0.5) * $quat::IDENTITY });
         });
 
         glam_test!(test_angle_between, {

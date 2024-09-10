@@ -725,9 +725,6 @@ impl Quat {
     #[inline]
     #[must_use]
     pub fn mul_quat(self, rhs: Self) -> Self {
-        glam_assert!(self.is_normalized());
-        glam_assert!(rhs.is_normalized());
-
         // Based on https://github.com/nfrechette/rtm `rtm::quat_mul`
         const CONTROL_WZYX: __m128 = m128_from_f32x4([1.0, -1.0, 1.0, -1.0]);
         const CONTROL_ZWXY: __m128 = m128_from_f32x4([1.0, 1.0, -1.0, -1.0]);
