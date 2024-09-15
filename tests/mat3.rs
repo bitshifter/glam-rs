@@ -238,6 +238,30 @@ macro_rules! impl_mat3_tests {
             should_panic!({ $mat3::from_mat4_minor(m4, 0, 4) });
         });
 
+        glam_test!(test_mat3_look_at, {
+            let eye = $vec3::new(0.0, 0.0, -5.0);
+            let center = $vec3::new(0.0, 0.0, 0.0);
+            let up = $vec3::new(1.0, 0.0, 0.0);
+
+            let point = $vec3::new(1.0, 0.0, 0.0);
+
+            let lh = $mat3::look_at_lh(eye, center, up);
+            let rh = $mat3::look_at_rh(eye, center, up);
+            assert_approx_eq!(lh * point, $vec3::new(0.0, 1.0, 0.0));
+            assert_approx_eq!(rh * point, $vec3::new(0.0, 1.0, 0.0));
+
+            let dir = (center - eye).normalize();
+            let lh = $mat3::look_to_lh(dir, up);
+            let rh = $mat3::look_to_rh(dir, up);
+            assert_approx_eq!(lh * point, $vec3::new(0.0, 1.0, 0.0));
+            assert_approx_eq!(rh * point, $vec3::new(0.0, 1.0, 0.0));
+
+            should_glam_assert!({ $mat3::look_to_lh($vec3::ONE, $vec3::ZERO) });
+            should_glam_assert!({ $mat3::look_to_lh($vec3::ZERO, $vec3::ONE) });
+            should_glam_assert!({ $mat3::look_to_rh($vec3::ONE, $vec3::ZERO) });
+            should_glam_assert!({ $mat3::look_to_rh($vec3::ZERO, $vec3::ONE) });
+        });
+
         glam_test!(test_mat3_transpose, {
             let m = $newmat3(
                 $newvec3(1.0, 2.0, 3.0),
