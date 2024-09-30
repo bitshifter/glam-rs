@@ -1,5 +1,8 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
+#[cfg(feature = "wasm-bindgen")]
+use wasm_bindgen::prelude::*;
+
 use crate::{
     euler::{FromEuler, ToEuler},
     f64::math,
@@ -50,11 +53,43 @@ pub const fn dmat4(x_axis: DVec4, y_axis: DVec4, z_axis: DVec4, w_axis: DVec4) -
 #[derive(Clone, Copy)]
 #[cfg_attr(feature = "cuda", repr(align(16)))]
 #[repr(C)]
+#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen)]
 pub struct DMat4 {
     pub x_axis: DVec4,
     pub y_axis: DVec4,
     pub z_axis: DVec4,
     pub w_axis: DVec4,
+}
+
+#[cfg(feature = "wasm-bindgen")]
+#[wasm_bindgen]
+impl DMat4 {
+    #[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(constructor))]
+    pub fn wasm_bindgen_ctor(
+        m00: f64,
+        m01: f64,
+        m02: f64,
+        m03: f64,
+        m10: f64,
+        m11: f64,
+        m12: f64,
+        m13: f64,
+        m20: f64,
+        m21: f64,
+        m22: f64,
+        m23: f64,
+        m30: f64,
+        m31: f64,
+        m32: f64,
+        m33: f64,
+    ) -> Self {
+        Self {
+            x_axis: DVec4::new(m00, m01, m02, m03),
+            y_axis: DVec4::new(m10, m11, m12, m13),
+            z_axis: DVec4::new(m20, m21, m22, m23),
+            w_axis: DVec4::new(m30, m31, m32, m33),
+        }
+    }
 }
 
 impl DMat4 {

@@ -1,5 +1,8 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
+#[cfg(feature = "wasm-bindgen")]
+use wasm_bindgen::prelude::*;
+
 use crate::{BVec2, I16Vec2, I64Vec2, IVec2, U16Vec2, U64Vec3, UVec2};
 
 #[cfg(not(target_arch = "spirv"))]
@@ -20,11 +23,20 @@ pub const fn u64vec2(x: u64, y: u64) -> U64Vec2 {
 #[cfg_attr(feature = "cuda", repr(align(16)))]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
+#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen)]
 pub struct U64Vec2 {
     pub x: u64,
     pub y: u64,
 }
 
+#[cfg(feature = "wasm-bindgen")]
+#[wasm_bindgen]
+impl U64Vec2 {
+    #[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(constructor))]
+    pub fn wasm_bindgen_ctor(x: u64, y: u64) -> Self {
+        Self { x, y }
+    }
+}
 impl U64Vec2 {
     /// All zeroes.
     pub const ZERO: Self = Self::splat(0);

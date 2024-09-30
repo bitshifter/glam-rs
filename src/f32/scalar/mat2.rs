@@ -1,5 +1,8 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
+#[cfg(feature = "wasm-bindgen")]
+use wasm_bindgen::prelude::*;
+
 use crate::{f32::math, swizzles::*, DMat2, Mat3, Mat3A, Vec2};
 #[cfg(not(target_arch = "spirv"))]
 use core::fmt;
@@ -21,9 +24,22 @@ pub const fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
 )]
 #[cfg_attr(feature = "cuda", repr(align(8)))]
 #[repr(C)]
+#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen)]
 pub struct Mat2 {
     pub x_axis: Vec2,
     pub y_axis: Vec2,
+}
+
+#[cfg(feature = "wasm-bindgen")]
+#[wasm_bindgen]
+impl Mat2 {
+    #[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(constructor))]
+    pub fn wasm_bindgen_ctor(m00: f32, m01: f32, m10: f32, m11: f32) -> Self {
+        Self {
+            x_axis: Vec2::new(m00, m01),
+            y_axis: Vec2::new(m10, m11),
+        }
+    }
 }
 
 impl Mat2 {

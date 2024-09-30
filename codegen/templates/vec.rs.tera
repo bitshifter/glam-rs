@@ -134,6 +134,9 @@
     {% set zero = "0" %}
 {% endif %}
 
+#[cfg(feature = "wasm-bindgen")]
+use wasm_bindgen::prelude::*;
+
 {% if bveca_from_type and bveca_from_type == "BVec4A" and is_scalar %}
     {% if scalar_t == "f32" %}
         #[cfg(feature = "scalar-math")]
@@ -273,6 +276,7 @@ pub const fn {{ self_t | lower }}(
 {%- if is_scalar %}
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
+#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen)]
 pub struct {{ self_t }}
 {
     {% for c in components %}
@@ -281,9 +285,63 @@ pub struct {{ self_t }}
 }
 {% else %}
 #[repr(transparent)]
+#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen)]
 pub struct {{ self_t }}(pub(crate) {{ simd_t }});
 {% endif %}
 
+{%- if not is_sse2 %}
+#[cfg(feature = "wasm-bindgen")]
+#[wasm_bindgen]
+impl {{ self_t }} {
+    #[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(constructor))]
+    pub fn wasm_bindgen_ctor(
+        {% for c in components %}
+            {{ c }}: {{ scalar_t }},
+        {% endfor %}
+    ) -> Self {
+        {% if is_scalar %}
+            Self {
+                {% for c in components %}
+                    {{ c }},
+                {%- endfor %}
+            }
+        {% elif is_sse2 %}
+            unsafe {
+                UnionCast { a: [
+                    {% if dim == 3 %}
+                        x, y, z, z
+                    {% elif dim == 4 %}
+                        x, y, z, w
+                    {% endif %}
+                ] }.v
+            }
+        {% elif is_wasm32 %}
+            Self(f32x4(
+                {% if dim == 3 %}
+                    x, y, z, z
+                {% elif dim == 4 %}
+                    x, y, z, w
+                {% endif %}
+            ))
+        {% elif is_coresimd %}
+            Self(f32x4::from_array([
+                x, y, z,
+                {% if dim == 3 %}
+                    z
+                {% elif dim == 4 %}
+                    w
+                {% endif %}
+            ]))
+        {% elif is_neon %}
+            {% if dim == 3 %}
+                unsafe { UnionCast { a: [x, y, z, z] }.v }
+            {% elif dim == 4 %}
+                unsafe { UnionCast { a: [x, y, z, w] }.v }
+            {% endif %}
+        {% endif %}
+    }
+}
+{%- endif %}
 impl {{ self_t }} {
     /// All zeroes.
     pub const ZERO: Self = Self::splat({{ zero }});

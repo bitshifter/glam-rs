@@ -1,5 +1,8 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
+#[cfg(feature = "wasm-bindgen")]
+use wasm_bindgen::prelude::*;
+
 use crate::{
     euler::{FromEuler, ToEuler},
     f32::math,
@@ -56,11 +59,43 @@ pub const fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat
     repr(align(16))
 )]
 #[repr(C)]
+#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen)]
 pub struct Mat4 {
     pub x_axis: Vec4,
     pub y_axis: Vec4,
     pub z_axis: Vec4,
     pub w_axis: Vec4,
+}
+
+#[cfg(feature = "wasm-bindgen")]
+#[wasm_bindgen]
+impl Mat4 {
+    #[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(constructor))]
+    pub fn wasm_bindgen_ctor(
+        m00: f32,
+        m01: f32,
+        m02: f32,
+        m03: f32,
+        m10: f32,
+        m11: f32,
+        m12: f32,
+        m13: f32,
+        m20: f32,
+        m21: f32,
+        m22: f32,
+        m23: f32,
+        m30: f32,
+        m31: f32,
+        m32: f32,
+        m33: f32,
+    ) -> Self {
+        Self {
+            x_axis: Vec4::new(m00, m01, m02, m03),
+            y_axis: Vec4::new(m10, m11, m12, m13),
+            z_axis: Vec4::new(m20, m21, m22, m23),
+            w_axis: Vec4::new(m30, m31, m32, m33),
+        }
+    }
 }
 
 impl Mat4 {

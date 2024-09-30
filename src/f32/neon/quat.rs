@@ -1,5 +1,8 @@
 // Generated from quat.rs.tera template. Edit the template, not the generated file.
 
+#[cfg(feature = "wasm-bindgen")]
+use wasm_bindgen::prelude::*;
+
 use crate::{
     euler::{EulerRot, FromEuler, ToEuler},
     f32::math,
@@ -41,6 +44,7 @@ pub const fn quat(x: f32, y: f32, z: f32, w: f32) -> Quat {
 /// This type is 16 byte aligned.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
+#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen)]
 pub struct Quat(pub(crate) float32x4_t);
 
 impl Quat {

@@ -113,6 +113,7 @@ glam = { version = "0.29.0", default-features = false }
   without the `scalar-math` feature. It should work between all other builds of
   `glam`.  Endian conversion is currently not supported
 * [`bytecheck`] - to perform archive validation when using the `rkyv` feature
+* [`wasm-bindgen`] - adds `#[wasm_bindgen]` to types and constructors
 
 [`approx`]: https://docs.rs/approx
 [`bytemuck`]: https://docs.rs/bytemuck
