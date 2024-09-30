@@ -6,7 +6,6 @@ use crate::{
     swizzles::*,
     DMat3, EulerRot, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A,
 };
-#[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
@@ -902,7 +901,6 @@ impl PartialEq for Mat3A {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for Mat3A {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt.debug_struct(stringify!(Mat3A))
@@ -913,7 +911,6 @@ impl fmt::Debug for Mat3A {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Mat3A {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(p) = f.precision() {

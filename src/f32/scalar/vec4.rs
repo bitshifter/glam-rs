@@ -7,7 +7,6 @@ use crate::BVec4 as BVec4A;
 use crate::BVec4A;
 use crate::{f32::math, BVec4, Vec2, Vec3, Vec3A};
 
-#[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::{f32, ops::*};
@@ -1866,7 +1865,6 @@ impl IndexMut<usize> for Vec4 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Vec4 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(p) = f.precision() {
@@ -1881,7 +1879,6 @@ impl fmt::Display for Vec4 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for Vec4 {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt.debug_tuple(stringify!(Vec4))

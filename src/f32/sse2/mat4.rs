@@ -7,7 +7,6 @@ use crate::{
     swizzles::*,
     DMat4, EulerRot, Mat3, Mat3A, Quat, Vec3, Vec3A, Vec4,
 };
-#[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
@@ -1468,7 +1467,6 @@ impl AsMut<[f32; 16]> for Mat4 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for Mat4 {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt.debug_struct(stringify!(Mat4))
@@ -1480,7 +1478,6 @@ impl fmt::Debug for Mat4 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Mat4 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(p) = f.precision() {

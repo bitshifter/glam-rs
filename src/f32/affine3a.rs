@@ -52,8 +52,10 @@ impl Affine3A {
     #[must_use]
     pub fn from_cols_array(m: &[f32; 12]) -> Self {
         Self {
-            matrix3: Mat3A::from_cols_slice(&m[0..9]),
-            translation: Vec3A::from_slice(&m[9..12]),
+            matrix3: Mat3A::from_cols_array(&[
+                m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8],
+            ]),
+            translation: Vec3A::from_array([m[9], m[10], m[11]]),
         }
     }
 
@@ -486,7 +488,6 @@ impl PartialEq for Affine3A {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl core::fmt::Debug for Affine3A {
     fn fmt(&self, fmt: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         fmt.debug_struct(stringify!(Affine3A))
@@ -496,7 +497,6 @@ impl core::fmt::Debug for Affine3A {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl core::fmt::Display for Affine3A {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         if let Some(p) = f.precision() {

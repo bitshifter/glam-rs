@@ -1,7 +1,6 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
 use crate::{f64::math, swizzles::*, DMat3, DVec2, Mat2};
-#[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
@@ -510,7 +509,6 @@ impl AsMut<[f64; 4]> for DMat2 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for DMat2 {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt.debug_struct(stringify!(DMat2))
@@ -520,7 +518,6 @@ impl fmt::Debug for DMat2 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for DMat2 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(p) = f.precision() {

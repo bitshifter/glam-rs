@@ -28,8 +28,12 @@
 
 {% if dim == 2 %}
     {% set size = 6 %}
+    {% set mat_size = 4 %}
+    {% set vec_size = 2 %}
 {% elif dim == 3 %}
     {% set size = 12 %}
+    {% set mat_size = 9 %}
+    {% set vec_size = 3 %}
 {% endif %}
 
 {% set components = ["x", "y", "z", "w"] | slice(end = dim + 1) %}
@@ -108,8 +112,16 @@ impl {{ self_t }} {
     #[must_use]
     pub fn from_cols_array(m: &[{{ scalar_t }}; {{ size }}]) -> Self {
         Self {
-            matrix{{ dim }}: {{ mat_t }}::from_cols_slice(&m[0..{{ dim * dim }}]),
-            translation: {{ col_t }}::from_slice(&m[{{ dim * dim }}..{{ size }}]),
+            matrix{{ dim }}: {{ mat_t }}::from_cols_array(&[
+				{% for i in range(end = mat_size) %}
+					m[{{ i }}],
+				{%- endfor %}
+			]),
+            translation: {{ col_t }}::from_array([
+				{% for i in range(start = mat_size, end = mat_size + vec_size) %}
+					m[{{ i }}],
+				{%- endfor %}
+			]),
         }
     }
 
@@ -721,7 +733,6 @@ impl PartialEq for {{ self_t }} {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl core::fmt::Debug for {{ self_t }} {
     fn fmt(&self, fmt: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         fmt.debug_struct(stringify!({{ self_t }}))
@@ -731,7 +742,6 @@ impl core::fmt::Debug for {{ self_t }} {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl core::fmt::Display for {{ self_t }} {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         if let Some(p) = f.precision() {
