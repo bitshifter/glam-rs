@@ -855,19 +855,7 @@ impl Mat4 {
 
     /// Creates a right-handed perspective projection matrix with `[-1,1]` depth range.
     ///
-    /// # Interpretation
-    ///
-    /// This matrix an be interpreted as a projection that maps from the standard graphics "right-handed" coordinate system:
-    ///
-    /// - `X+` points right
-    /// - `Y+` points up
-    /// - `Z+` points *out of the screen*
-    ///
-    /// ...to the normalized device coordinate system that OpenGL expects:
-    ///
-    /// - `X+` points right, in the range `[-1, 1]`
-    /// - `Y+` points up, in the range `[-1, 1]`
-    /// - `Z+` points into the screen, in the range *`[-1, 1]`*
+    /// Useful to map the standard right-handed coordinate system into what OpenGL expects.
     ///
     /// This is the same as the OpenGL `gluPerspective` function.
     /// See <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml>
@@ -894,19 +882,7 @@ impl Mat4 {
 
     /// Creates a right-handed perspective projection matrix with `[0,1]` depth range and Y axis pointing down.
     ///
-    /// # Interpretation
-    ///
-    /// This matrix an be interpreted as a projection that maps from the standard graphics "right-handed" coordinate system:
-    ///
-    /// - `X+` points right
-    /// - `Y+` points up
-    /// - `Z+` points *out of the screen*
-    ///
-    /// ...to the normalized device coordinate system that Vulkan expects:
-    ///
-    /// - `X+` points right, in the range `[-1, 1]`
-    /// - `Y+` points *down*, in the range `[-1, 1]`
-    /// - `Z+` points into the screen, in the range `[0, 1]`
+    /// Useful to map the standard right-handed coordinate system into what Vulkan expects.
     #[inline]
     #[must_use]
     pub fn perspective_rh_vk(
@@ -920,19 +896,7 @@ impl Mat4 {
 
     /// Creates a left-handed perspective projection matrix with `[0,1]` depth range.
     ///
-    /// # Interpretation
-    ///
-    /// This matrix an be interpreted as a projection that maps from the standard graphics "left-handed" coordinate system:
-    ///
-    /// - `X+` points right
-    /// - `Y+` points up
-    /// - `Z+` points *into the screen*
-    ///
-    /// ...to the normalized device coordinate system that WebGPU/Direct3D/Metal expect:
-    ///
-    /// - `X+` points right, in the range `[-1, 1]`
-    /// - `Y+` points up, in the range `[-1, 1]`
-    /// - `Z+` points into the screen, in the range `[0, 1]`
+    /// Useful to map the standard left-handed coordinate system into what WebGPU/Metal/Direct3D expect.
     ///
     /// # Panics
     ///
@@ -956,19 +920,7 @@ impl Mat4 {
 
     /// Creates a right-handed perspective projection matrix with `[0,1]` depth range.
     ///
-    /// # Interpretation
-    ///
-    /// This matrix an be interpreted as a projection that maps from the standard graphics "right-handed" coordinate system:
-    ///
-    /// - `X+` points right
-    /// - `Y+` points up
-    /// - `Z+` points *out of the screen*
-    ///
-    /// ...to the normalized device coordinate system that WebGPU/Direct3D/Metal expect:
-    ///
-    /// - `X+` points right, in the range `[-1, 1]`
-    /// - `Y+` points up, in the range `[-1, 1]`
-    /// - `Z+` points into the screen, in the range `[0, 1]`
+    /// Useful to map the standard right-handed coordinate system into what WebGPU/Metal/Direct3D expect.
     ///
     /// # Panics
     ///
@@ -992,22 +944,8 @@ impl Mat4 {
 
     /// Creates an infinite left-handed perspective projection matrix with `[0,1]` depth range.
     ///
-    /// # Interpretation
-    ///
-    /// This matrix an be interpreted as a projection that maps from the standard graphics "left-handed" coordinate system:
-    ///
-    /// - `X+` points right
-    /// - `Y+` points up
-    /// - `Z+` points *into the screen*
-    ///
-    /// ...to the normalized device coordinate system that WebGPU/Direct3D/Metal expect:
-    ///
-    /// - `X+` points right, in the range `[-1, 1]`
-    /// - `Y+` points up, in the range `[-1, 1]`
-    /// - `Z+` points into the screen, in the range `[0, 1]`
-    ///
-    /// Z values near `z_near` map to a normalized-device-coordinate Z value of `0`.
-    /// Z values near infinity map to a normalized-device-coordinate Z value of `1`.
+    /// Like `perspective_lh`, but with an infinite value for `z_far`.
+    /// The result is that points near `z_near` are mapped to depth `0`, and as they move towards infinity the depth approaches `1`.
     ///
     /// # Panics
     ///
@@ -1029,8 +967,6 @@ impl Mat4 {
     }
 
     /// Creates an infinite reverse left-handed perspective projection matrix with `[0,1]` depth range.
-    ///
-    /// # Interpretation
     ///
     /// Similar to `perspective_infinite_lh`, but maps `Z = z_near` to a depth of `1` and `Z = infinity` to a depth of `0`.
     ///
@@ -1058,22 +994,8 @@ impl Mat4 {
 
     /// Creates an infinite right-handed perspective projection matrix with `[0,1]` depth range.
     ///
-    /// # Interpretation
-    ///
-    /// This matrix an be interpreted as a projection that maps from the standard graphics "right-handed" coordinate system:
-    ///
-    /// - `X+` points right
-    /// - `Y+` points up
-    /// - `Z+` points *out of the screen*
-    ///
-    /// ...to the normalized device coordinate system that WebGPU/Direct3D/Metal expect:
-    ///
-    /// - `X+` points right, in the range `[-1, 1]`
-    /// - `Y+` points up, in the range `[-1, 1]`
-    /// - `Z+` points into the screen, in the range `[0, 1]`
-    ///
-    /// Z values near `z_near` map to a normalized-device-coordinate Z value of `0`.
-    /// Z values near infinity map to a normalized-device-coordinate Z value of `1`.
+    /// Like `perspective_rh`, but with an infinite value for `z_far`.
+    /// The result is that points near `z_near` are mapped to depth `0`, and as they move towards infinity the depth approaches `1`.
     ///
     /// # Panics
     ///
@@ -1093,8 +1015,6 @@ impl Mat4 {
     }
 
     /// Creates an infinite reverse right-handed perspective projection matrix with `[0,1]` depth range.
-    ///
-    /// # Interpretation
     ///
     /// Similar to `perspective_infinite_rh`, but maps `Z = z_near` to a depth of `1` and `Z = infinity` to a depth of `0`.
     ///
