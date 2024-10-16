@@ -26,7 +26,6 @@
 
 {% set components = ["x", "y", "z", "w"] | slice(end = dim) %}
 
-#[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::ops::*;
 
@@ -543,7 +542,6 @@ impl From<{{ self_t }}> for {{ simd_t }} {
 }
 {% endif %}
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for {{ self_t }} {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let arr = self.into_u32_array();
@@ -557,7 +555,6 @@ impl fmt::Debug for {{ self_t }} {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for {{ self_t }} {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let arr = self.into_bool_array();

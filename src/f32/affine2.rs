@@ -50,8 +50,8 @@ impl Affine2 {
     #[must_use]
     pub fn from_cols_array(m: &[f32; 6]) -> Self {
         Self {
-            matrix2: Mat2::from_cols_slice(&m[0..4]),
-            translation: Vec2::from_slice(&m[4..6]),
+            matrix2: Mat2::from_cols_array(&[m[0], m[1], m[2], m[3]]),
+            translation: Vec2::from_array([m[4], m[5]]),
         }
     }
 
@@ -344,7 +344,6 @@ impl PartialEq for Affine2 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl core::fmt::Debug for Affine2 {
     fn fmt(&self, fmt: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         fmt.debug_struct(stringify!(Affine2))
@@ -354,7 +353,6 @@ impl core::fmt::Debug for Affine2 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl core::fmt::Display for Affine2 {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         if let Some(p) = f.precision() {

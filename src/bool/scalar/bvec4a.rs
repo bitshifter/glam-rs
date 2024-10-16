@@ -1,6 +1,5 @@
 // Generated from vec_mask.rs.tera template. Edit the template, not the generated file.
 
-#[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::ops::*;
 
@@ -207,7 +206,6 @@ impl Not for BVec4A {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for BVec4A {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let arr = self.into_u32_array();
@@ -223,7 +221,6 @@ impl fmt::Debug for BVec4A {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for BVec4A {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let arr = self.into_bool_array();
