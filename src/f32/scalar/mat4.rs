@@ -770,7 +770,22 @@ impl Mat4 {
         Self::look_to_rh(eye, center.sub(eye), up)
     }
 
-    /// Creates a right-handed perspective projection matrix with [-1,1] depth range.
+    /// Creates a right-handed perspective projection matrix with `[-1,1]` depth range.
+    ///
+    /// # Interpretation
+    ///
+    /// This matrix an be interpreted as a projection that maps from the standard graphics "right-handed" coordinate system:
+    ///
+    /// - `X+` points right
+    /// - `Y+` points up
+    /// - `Z+` points *out of the screen*
+    ///
+    /// ...to the normalized device coordinate system that OpenGL expects:
+    ///
+    /// - `X+` points right, in the range `[-1, 1]`
+    /// - `Y+` points up, in the range `[-1, 1]`
+    /// - `Z+` points into the screen, in the range *`[-1, 1]`*
+    ///
     /// This is the same as the OpenGL `gluPerspective` function.
     /// See <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml>
     #[inline]
@@ -794,7 +809,47 @@ impl Mat4 {
         )
     }
 
+    /// Creates a right-handed perspective projection matrix with `[0,1]` depth range and Y axis pointing down.
+    ///
+    /// # Interpretation
+    ///
+    /// This matrix an be interpreted as a projection that maps from the standard graphics "right-handed" coordinate system:
+    ///
+    /// - `X+` points right
+    /// - `Y+` points up
+    /// - `Z+` points *out of the screen*
+    ///
+    /// ...to the normalized device coordinate system that Vulkan expects:
+    ///
+    /// - `X+` points right, in the range `[-1, 1]`
+    /// - `Y+` points *down*, in the range `[-1, 1]`
+    /// - `Z+` points into the screen, in the range `[0, 1]`
+    #[inline]
+    #[must_use]
+    pub fn perspective_rh_vk(
+        fov_y_radians: f32,
+        aspect_ratio: f32,
+        z_near: f32,
+        z_far: f32,
+    ) -> Self {
+        todo!()
+    }
+
     /// Creates a left-handed perspective projection matrix with `[0,1]` depth range.
+    ///
+    /// # Interpretation
+    ///
+    /// This matrix an be interpreted as a projection that maps from the standard graphics "left-handed" coordinate system:
+    ///
+    /// - `X+` points right
+    /// - `Y+` points up
+    /// - `Z+` points *into the screen*
+    ///
+    /// ...to the normalized device coordinate system that WebGPU/Direct3D/Metal expect:
+    ///
+    /// - `X+` points right, in the range `[-1, 1]`
+    /// - `Y+` points up, in the range `[-1, 1]`
+    /// - `Z+` points into the screen, in the range `[0, 1]`
     ///
     /// # Panics
     ///
@@ -818,6 +873,20 @@ impl Mat4 {
 
     /// Creates a right-handed perspective projection matrix with `[0,1]` depth range.
     ///
+    /// # Interpretation
+    ///
+    /// This matrix an be interpreted as a projection that maps from the standard graphics "right-handed" coordinate system:
+    ///
+    /// - `X+` points right
+    /// - `Y+` points up
+    /// - `Z+` points *out of the screen*
+    ///
+    /// ...to the normalized device coordinate system that WebGPU/Direct3D/Metal expect:
+    ///
+    /// - `X+` points right, in the range `[-1, 1]`
+    /// - `Y+` points up, in the range `[-1, 1]`
+    /// - `Z+` points into the screen, in the range `[0, 1]`
+    ///
     /// # Panics
     ///
     /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
@@ -840,9 +909,27 @@ impl Mat4 {
 
     /// Creates an infinite left-handed perspective projection matrix with `[0,1]` depth range.
     ///
+    /// # Interpretation
+    ///
+    /// This matrix an be interpreted as a projection that maps from the standard graphics "left-handed" coordinate system:
+    ///
+    /// - `X+` points right
+    /// - `Y+` points up
+    /// - `Z+` points *into the screen*
+    ///
+    /// ...to the normalized device coordinate system that WebGPU/Direct3D/Metal expect:
+    ///
+    /// - `X+` points right, in the range `[-1, 1]`
+    /// - `Y+` points up, in the range `[-1, 1]`
+    /// - `Z+` points into the screen, in the range `[0, 1]`
+    ///
+    /// Z values near `z_near` map to a normalized-device-coordinate Z value of `0`.
+    /// Z values near infinity map to a normalized-device-coordinate Z value of `1`.
+    ///
     /// # Panics
     ///
-    /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
+    /// enabled.
     #[inline]
     #[must_use]
     pub fn perspective_infinite_lh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Self {
@@ -858,7 +945,11 @@ impl Mat4 {
         )
     }
 
-    /// Creates an infinite left-handed perspective projection matrix with `[0,1]` depth range.
+    /// Creates an infinite reverse left-handed perspective projection matrix with `[0,1]` depth range.
+    ///
+    /// # Interpretation
+    ///
+    /// Similar to `perspective_infinite_lh`, but maps `Z = z_near` to a depth of `1` and `Z = infinity` to a depth of `0`.
     ///
     /// # Panics
     ///
@@ -882,8 +973,29 @@ impl Mat4 {
         )
     }
 
-    /// Creates an infinite right-handed perspective projection matrix with
-    /// `[0,1]` depth range.
+    /// Creates an infinite right-handed perspective projection matrix with `[0,1]` depth range.
+    ///
+    /// # Interpretation
+    ///
+    /// This matrix an be interpreted as a projection that maps from the standard graphics "right-handed" coordinate system:
+    ///
+    /// - `X+` points right
+    /// - `Y+` points up
+    /// - `Z+` points *out of the screen*
+    ///
+    /// ...to the normalized device coordinate system that WebGPU/Direct3D/Metal expect:
+    ///
+    /// - `X+` points right, in the range `[-1, 1]`
+    /// - `Y+` points up, in the range `[-1, 1]`
+    /// - `Z+` points into the screen, in the range `[0, 1]`
+    ///
+    /// Z values near `z_near` map to a normalized-device-coordinate Z value of `0`.
+    /// Z values near infinity map to a normalized-device-coordinate Z value of `1`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
+    /// enabled.
     #[inline]
     #[must_use]
     pub fn perspective_infinite_rh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Self {
@@ -897,8 +1009,15 @@ impl Mat4 {
         )
     }
 
-    /// Creates an infinite reverse right-handed perspective projection matrix
-    /// with `[0,1]` depth range.
+    /// Creates an infinite reverse right-handed perspective projection matrix with `[0,1]` depth range.
+    ///
+    /// # Interpretation
+    ///
+    /// Similar to `perspective_infinite_rh`, but maps `Z = z_near` to a depth of `1` and `Z = infinity` to a depth of `0`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     pub fn perspective_infinite_reverse_rh(
@@ -920,6 +1039,8 @@ impl Mat4 {
     /// range.  This is the same as the OpenGL `glOrtho` function in OpenGL.
     /// See
     /// <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml>
+    ///
+    /// Useful to map a right-handed coordinate system to the normalized device coordinates that OpenGL expects.
     #[inline]
     #[must_use]
     pub fn orthographic_rh_gl(
@@ -945,7 +1066,26 @@ impl Mat4 {
         )
     }
 
+    /// Creates a right-handed orthographic projection matrix with `[0,1]` depth
+    /// range and Y axis pointing down.
+    ///
+    /// Useful to map a right-handed coordinate system to the normalized device coordinates that Vulkan expects.
+    #[inline]
+    #[must_use]
+    pub fn orthographic_rh_vk(
+        left: f32,
+        right: f32,
+        bottom: f32,
+        top: f32,
+        near: f32,
+        far: f32,
+    ) -> Self {
+        todo!()
+    }
+
     /// Creates a left-handed orthographic projection matrix with `[0,1]` depth range.
+    ///
+    /// Useful to map a left-handed coordinate system to the normalized device coordinates that WebGPU/Direct3D/Metal expect.
     #[inline]
     #[must_use]
     pub fn orthographic_lh(
@@ -973,6 +1113,8 @@ impl Mat4 {
     }
 
     /// Creates a right-handed orthographic projection matrix with `[0,1]` depth range.
+    ///
+    /// Useful to map a right-handed coordinate system to the normalized device coordinates that WebGPU/Direct3D/Metal expect.
     #[inline]
     #[must_use]
     pub fn orthographic_rh(
