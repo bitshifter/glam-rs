@@ -483,6 +483,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub const fn from_slice(slice: &[{{ scalar_t }}]) -> Self {
+        assert!(slice.len() >= {{ dim }});
         Self::new(
             {% for c in components %}
                 slice[{{ loop.index0 }}],
@@ -504,9 +505,7 @@ impl {{ self_t }} {
             assert!(slice.len() >= 4);
             unsafe { vst1q_f32(slice.as_mut_ptr(), self.0); }
         {% else %}
-            {% for c in components %}
-                slice[{{ loop.index0 }}] = self.{{ c }};
-            {%- endfor %}
+            slice.copy_from_slice(&self.to_array());
         {% endif %}
     }
 
