@@ -147,6 +147,7 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub const fn from_slice(slice: &[f32]) -> Self {
+        assert!(slice.len() >= 4);
         Self::new(slice[0], slice[1], slice[2], slice[3])
     }
 
