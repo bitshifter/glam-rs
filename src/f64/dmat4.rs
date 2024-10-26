@@ -779,20 +779,6 @@ impl DMat4 {
         )
     }
 
-    /// Creates a right-handed perspective projection matrix with `[0,1]` depth range and Y axis pointing down.
-    ///
-    /// Useful to map the standard right-handed coordinate system into what Vulkan expects.
-    #[inline]
-    #[must_use]
-    pub fn perspective_rh_vk(
-        fov_y_radians: f64,
-        aspect_ratio: f64,
-        z_near: f64,
-        z_far: f64,
-    ) -> Self {
-        todo!()
-    }
-
     /// Creates a left-handed perspective projection matrix with `[0,1]` depth range.
     ///
     /// Useful to map the standard left-handed coordinate system into what WebGPU/Metal/Direct3D expect.
@@ -966,23 +952,6 @@ impl DMat4 {
             DVec4::new(0.0, 0.0, c, 0.0),
             DVec4::new(tx, ty, tz, 1.0),
         )
-    }
-
-    /// Creates a right-handed orthographic projection matrix with `[0,1]` depth
-    /// range and Y axis pointing down.
-    ///
-    /// Useful to map a right-handed coordinate system to the normalized device coordinates that Vulkan expects.
-    #[inline]
-    #[must_use]
-    pub fn orthographic_rh_vk(
-        left: f64,
-        right: f64,
-        bottom: f64,
-        top: f64,
-        near: f64,
-        far: f64,
-    ) -> Self {
-        todo!()
     }
 
     /// Creates a left-handed orthographic projection matrix with `[0,1]` depth range.
