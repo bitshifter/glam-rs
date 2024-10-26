@@ -1743,20 +1743,6 @@ impl {{ self_t }} {
         )
     }
 
-    /// Creates a right-handed perspective projection matrix with `[0,1]` depth range and Y axis pointing down.
-    ///
-    /// Useful to map the standard right-handed coordinate system into what Vulkan expects.
-    #[inline]
-    #[must_use]
-    pub fn perspective_rh_vk(
-        fov_y_radians: {{ scalar_t }},
-        aspect_ratio: {{ scalar_t }},
-        z_near: {{ scalar_t }},
-        z_far: {{ scalar_t }},
-    ) -> Self {
-        todo!()
-    }
-
     /// Creates a left-handed perspective projection matrix with `[0,1]` depth range.
     ///
     /// Useful to map the standard left-handed coordinate system into what WebGPU/Metal/Direct3D expect.
@@ -1930,23 +1916,6 @@ impl {{ self_t }} {
             {{ col_t }}::new(0.0, 0.0, c, 0.0),
             {{ col_t }}::new(tx, ty, tz, 1.0),
         )
-    }
-
-    /// Creates a right-handed orthographic projection matrix with `[0,1]` depth
-    /// range and Y axis pointing down.
-    ///
-    /// Useful to map a right-handed coordinate system to the normalized device coordinates that Vulkan expects.
-    #[inline]
-    #[must_use]
-    pub fn orthographic_rh_vk(
-        left: {{ scalar_t }},
-        right: {{ scalar_t }},
-        bottom: {{ scalar_t }},
-        top: {{ scalar_t }},
-        near: {{ scalar_t }},
-        far: {{ scalar_t }},
-    ) -> Self {
-        todo!()
     }
 
     /// Creates a left-handed orthographic projection matrix with `[0,1]` depth range.
