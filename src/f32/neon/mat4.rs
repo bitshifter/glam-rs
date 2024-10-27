@@ -853,7 +853,10 @@ impl Mat4 {
         Self::look_to_rh(eye, center.sub(eye), up)
     }
 
-    /// Creates a right-handed perspective projection matrix with [-1,1] depth range.
+    /// Creates a right-handed perspective projection matrix with `[-1,1]` depth range.
+    ///
+    /// Useful to map the standard right-handed coordinate system into what OpenGL expects.
+    ///
     /// This is the same as the OpenGL `gluPerspective` function.
     /// See <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml>
     #[inline]
@@ -879,6 +882,8 @@ impl Mat4 {
 
     /// Creates a left-handed perspective projection matrix with `[0,1]` depth range.
     ///
+    /// Useful to map the standard left-handed coordinate system into what WebGPU/Metal/Direct3D expect.
+    ///
     /// # Panics
     ///
     /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
@@ -900,6 +905,8 @@ impl Mat4 {
     }
 
     /// Creates a right-handed perspective projection matrix with `[0,1]` depth range.
+    ///
+    /// Useful to map the standard right-handed coordinate system into what WebGPU/Metal/Direct3D expect.
     ///
     /// # Panics
     ///
@@ -923,9 +930,13 @@ impl Mat4 {
 
     /// Creates an infinite left-handed perspective projection matrix with `[0,1]` depth range.
     ///
+    /// Like `perspective_lh`, but with an infinite value for `z_far`.
+    /// The result is that points near `z_near` are mapped to depth `0`, and as they move towards infinity the depth approaches `1`.
+    ///
     /// # Panics
     ///
-    /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
+    /// enabled.
     #[inline]
     #[must_use]
     pub fn perspective_infinite_lh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Self {
@@ -941,7 +952,9 @@ impl Mat4 {
         )
     }
 
-    /// Creates an infinite left-handed perspective projection matrix with `[0,1]` depth range.
+    /// Creates an infinite reverse left-handed perspective projection matrix with `[0,1]` depth range.
+    ///
+    /// Similar to `perspective_infinite_lh`, but maps `Z = z_near` to a depth of `1` and `Z = infinity` to a depth of `0`.
     ///
     /// # Panics
     ///
@@ -965,8 +978,15 @@ impl Mat4 {
         )
     }
 
-    /// Creates an infinite right-handed perspective projection matrix with
-    /// `[0,1]` depth range.
+    /// Creates an infinite right-handed perspective projection matrix with `[0,1]` depth range.
+    ///
+    /// Like `perspective_rh`, but with an infinite value for `z_far`.
+    /// The result is that points near `z_near` are mapped to depth `0`, and as they move towards infinity the depth approaches `1`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
+    /// enabled.
     #[inline]
     #[must_use]
     pub fn perspective_infinite_rh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Self {
@@ -980,8 +1000,13 @@ impl Mat4 {
         )
     }
 
-    /// Creates an infinite reverse right-handed perspective projection matrix
-    /// with `[0,1]` depth range.
+    /// Creates an infinite reverse right-handed perspective projection matrix with `[0,1]` depth range.
+    ///
+    /// Similar to `perspective_infinite_rh`, but maps `Z = z_near` to a depth of `1` and `Z = infinity` to a depth of `0`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     pub fn perspective_infinite_reverse_rh(
@@ -1003,6 +1028,8 @@ impl Mat4 {
     /// range.  This is the same as the OpenGL `glOrtho` function in OpenGL.
     /// See
     /// <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml>
+    ///
+    /// Useful to map a right-handed coordinate system to the normalized device coordinates that OpenGL expects.
     #[inline]
     #[must_use]
     pub fn orthographic_rh_gl(
@@ -1029,6 +1056,8 @@ impl Mat4 {
     }
 
     /// Creates a left-handed orthographic projection matrix with `[0,1]` depth range.
+    ///
+    /// Useful to map a left-handed coordinate system to the normalized device coordinates that WebGPU/Direct3D/Metal expect.
     #[inline]
     #[must_use]
     pub fn orthographic_lh(
@@ -1056,6 +1085,8 @@ impl Mat4 {
     }
 
     /// Creates a right-handed orthographic projection matrix with `[0,1]` depth range.
+    ///
+    /// Useful to map a right-handed coordinate system to the normalized device coordinates that WebGPU/Direct3D/Metal expect.
     #[inline]
     #[must_use]
     pub fn orthographic_rh(
