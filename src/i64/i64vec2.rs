@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec2, I16Vec2, I64Vec3, IVec2, U16Vec2, U64Vec2, UVec2};
+use crate::{BVec2, I16Vec2, I64Vec3, I8Vec2, IVec2, U16Vec2, U64Vec2, U8Vec2, UVec2};
 
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -422,6 +422,20 @@ impl I64Vec2 {
     #[must_use]
     pub fn as_dvec2(&self) -> crate::DVec2 {
         crate::DVec2::new(self.x as f64, self.y as f64)
+    }
+
+    /// Casts all elements of `self` to `i8`.
+    #[inline]
+    #[must_use]
+    pub fn as_i8vec2(&self) -> crate::I8Vec2 {
+        crate::I8Vec2::new(self.x as i8, self.y as i8)
+    }
+
+    /// Casts all elements of `self` to `u8`.
+    #[inline]
+    #[must_use]
+    pub fn as_u8vec2(&self) -> crate::U8Vec2 {
+        crate::U8Vec2::new(self.x as u8, self.y as u8)
     }
 
     /// Casts all elements of `self` to `i16`.
@@ -1721,6 +1735,20 @@ impl From<I64Vec2> for (i64, i64) {
     #[inline]
     fn from(v: I64Vec2) -> Self {
         (v.x, v.y)
+    }
+}
+
+impl From<I8Vec2> for I64Vec2 {
+    #[inline]
+    fn from(v: I8Vec2) -> Self {
+        Self::new(i64::from(v.x), i64::from(v.y))
+    }
+}
+
+impl From<U8Vec2> for I64Vec2 {
+    #[inline]
+    fn from(v: U8Vec2) -> Self {
+        Self::new(i64::from(v.x), i64::from(v.y))
     }
 }
 
