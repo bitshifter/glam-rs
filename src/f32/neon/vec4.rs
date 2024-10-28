@@ -1,5 +1,8 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
+#[cfg(feature = "wasm-bindgen")]
+use wasm_bindgen::prelude::*;
+
 use crate::{f32::math, neon::*, BVec4, BVec4A, Vec2, Vec3, Vec3A};
 
 use core::fmt;
@@ -28,8 +31,17 @@ pub const fn vec4(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
 /// This type is 16 byte aligned.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
+#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen)]
 pub struct Vec4(pub(crate) float32x4_t);
 
+#[cfg(feature = "wasm-bindgen")]
+#[wasm_bindgen]
+impl Vec4 {
+    #[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(constructor))]
+    pub fn wasm_bindgen_ctor(x: f32, y: f32, z: f32, w: f32) -> Self {
+        unsafe { UnionCast { a: [x, y, z, w] }.v }
+    }
+}
 impl Vec4 {
     /// All zeroes.
     pub const ZERO: Self = Self::splat(0.0);

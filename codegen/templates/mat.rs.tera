@@ -61,6 +61,11 @@
 {% set axes = ["x_axis", "y_axis", "z_axis", "w_axis"] | slice(end = dim) %}
 {% set dimension_in_full = ["zero", "one", "two", "three", "four"] | nth(n = dim) %}
 
+{%- if not is_sse2 %}
+#[cfg(feature = "wasm-bindgen")]
+use wasm_bindgen::prelude::*;
+{%- endif %}
+
 use crate::{
 {% if scalar_t == "f32" %}
     DMat{{ dim }},
@@ -215,9 +220,15 @@ pub const fn {{ self_t | lower }}(
 {%- endif %}
 {%- if self_t == "Mat2" and not is_scalar %}
 #[repr(transparent)]
+{%- if not is_sse2 %}
+#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen)]
+{%- endif %}
 pub struct {{ self_t }}(pub(crate) {{ simd_t }});
 {%- else %}
 #[repr(C)]
+{%- if not is_sse2 %}
+#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen)]
+{%- endif %}
 pub struct {{ self_t }}
 {
     {% for axis in axes %}
@@ -225,6 +236,41 @@ pub struct {{ self_t }}
     {%- endfor %}
 }
 {% endif %}
+
+{%- if not is_sse2 %}
+#[cfg(feature = "wasm-bindgen")]
+#[wasm_bindgen]
+impl {{ self_t }} {
+  #[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(constructor))]
+    pub fn wasm_bindgen_ctor(
+        {% for i in range(end = dim) %}
+            {%- for j in range(end = dim) %}
+                m{{ i }}{{ j }}: {{ scalar_t }},
+            {%- endfor %}
+        {%- endfor %}
+    ) -> Self {
+        {% if self_t == "Mat2" and is_sse2 %}
+            unsafe { UnionCast { a: [m00, m01, m10, m11] }.v }
+        {% elif self_t == "Mat2" and is_wasm32 %}
+            Self(f32x4(m00, m01, m10, m11))
+        {% elif self_t == "Mat2" and is_coresimd %}
+            Self(f32x4::from_array([m00, m01, m10, m11]))
+        {% elif self_t == "Mat2" and is_neon %}
+            unsafe { UnionCast { a: [m00, m01, m10, m11] }.v }
+        {% else %}
+        Self {
+            {% for i in range(end = dim) %}
+                {{ axes[i] }}: {{ col_t}}::new(
+                    {% for j in range(end = dim) %}
+                        m{{ i }}{{ j }},
+                    {% endfor %}
+                ),
+            {%- endfor %}
+        }
+        {% endif %}
+    }
+}
+{%- endif %}
 
 impl {{ self_t }} {
     /// A {{ nxn }} matrix with all elements set to `0.0`.

@@ -1,5 +1,8 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
+#[cfg(feature = "wasm-bindgen")]
+use wasm_bindgen::prelude::*;
+
 #[cfg(not(feature = "scalar-math"))]
 use crate::BVec4A;
 use crate::{BVec4, I16Vec4, I64Vec4, IVec2, IVec3, U16Vec4, U64Vec4, UVec4};
@@ -21,6 +24,7 @@ pub const fn ivec4(x: i32, y: i32, z: i32, w: i32) -> IVec4 {
 #[cfg_attr(feature = "cuda", repr(align(16)))]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
+#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen)]
 pub struct IVec4 {
     pub x: i32,
     pub y: i32,
@@ -28,6 +32,14 @@ pub struct IVec4 {
     pub w: i32,
 }
 
+#[cfg(feature = "wasm-bindgen")]
+#[wasm_bindgen]
+impl IVec4 {
+    #[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(constructor))]
+    pub fn wasm_bindgen_ctor(x: i32, y: i32, z: i32, w: i32) -> Self {
+        Self { x, y, z, w }
+    }
+}
 impl IVec4 {
     /// All zeroes.
     pub const ZERO: Self = Self::splat(0);

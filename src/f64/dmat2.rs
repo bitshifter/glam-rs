@@ -1,5 +1,8 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
+#[cfg(feature = "wasm-bindgen")]
+use wasm_bindgen::prelude::*;
+
 use crate::{f64::math, swizzles::*, DMat3, DVec2, Mat2};
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -16,9 +19,22 @@ pub const fn dmat2(x_axis: DVec2, y_axis: DVec2) -> DMat2 {
 #[derive(Clone, Copy)]
 #[cfg_attr(feature = "cuda", repr(align(16)))]
 #[repr(C)]
+#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen)]
 pub struct DMat2 {
     pub x_axis: DVec2,
     pub y_axis: DVec2,
+}
+
+#[cfg(feature = "wasm-bindgen")]
+#[wasm_bindgen]
+impl DMat2 {
+    #[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(constructor))]
+    pub fn wasm_bindgen_ctor(m00: f64, m01: f64, m10: f64, m11: f64) -> Self {
+        Self {
+            x_axis: DVec2::new(m00, m01),
+            y_axis: DVec2::new(m10, m11),
+        }
+    }
 }
 
 impl DMat2 {

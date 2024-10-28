@@ -1,5 +1,8 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
+#[cfg(feature = "wasm-bindgen")]
+use wasm_bindgen::prelude::*;
+
 use crate::{f32::math, swizzles::*, DMat2, Mat3, Mat3A, Vec2};
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -21,7 +24,16 @@ pub const fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
 /// This type is 16 byte aligned.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
+#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen)]
 pub struct Mat2(pub(crate) v128);
+#[cfg(feature = "wasm-bindgen")]
+#[wasm_bindgen]
+impl Mat2 {
+    #[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(constructor))]
+    pub fn wasm_bindgen_ctor(m00: f32, m01: f32, m10: f32, m11: f32) -> Self {
+        Self(f32x4(m00, m01, m10, m11))
+    }
+}
 
 impl Mat2 {
     /// A 2x2 matrix with all elements set to `0.0`.

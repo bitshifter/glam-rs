@@ -1,5 +1,8 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
+#[cfg(feature = "wasm-bindgen")]
+use wasm_bindgen::prelude::*;
+
 use crate::{
     euler::{FromEuler, ToEuler},
     f64::math,
@@ -43,10 +46,34 @@ pub const fn dmat3(x_axis: DVec3, y_axis: DVec3, z_axis: DVec3) -> DMat3 {
 /// transform.
 #[derive(Clone, Copy)]
 #[repr(C)]
+#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen)]
 pub struct DMat3 {
     pub x_axis: DVec3,
     pub y_axis: DVec3,
     pub z_axis: DVec3,
+}
+
+#[cfg(feature = "wasm-bindgen")]
+#[wasm_bindgen]
+impl DMat3 {
+    #[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(constructor))]
+    pub fn wasm_bindgen_ctor(
+        m00: f64,
+        m01: f64,
+        m02: f64,
+        m10: f64,
+        m11: f64,
+        m12: f64,
+        m20: f64,
+        m21: f64,
+        m22: f64,
+    ) -> Self {
+        Self {
+            x_axis: DVec3::new(m00, m01, m02),
+            y_axis: DVec3::new(m10, m11, m12),
+            z_axis: DVec3::new(m20, m21, m22),
+        }
+    }
 }
 
 impl DMat3 {
