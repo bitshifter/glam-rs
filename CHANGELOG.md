@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+### Added
+
+* Added `i8` and `u8` vector types, `I8Vec2`, `I8Vec3`, `I8Vec4`,
+  `U8Vec2`, `U8Vec3` and `U8Vec4`.
+
+### Changed
+
+* Removed normalized assertions from quaternion multiplies as sometimes this is
+  valid.
+
+* Include `Debug` and `Display` implementations on `spirv` targets.
+
+* Optimized vector `from_slice` and `write_to_slice` methods.
+
+* Improved serde error messages.
+
 ## [0.29.0] - 2024-08-20
 
 ### Breaking changes
