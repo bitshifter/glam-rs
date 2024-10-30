@@ -1,30 +1,32 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec2, I16Vec2, I64Vec2, I8Vec2, IVec3, U16Vec2, U64Vec2, U8Vec2, UVec2};
+use crate::{
+    BVec3, BVec3A, I16Vec3, I64Vec3, I8Vec2, I8Vec4, IVec3, U16Vec3, U64Vec3, U8Vec3, UVec3,
+};
 
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::{f32, ops::*};
 
-/// Creates a 2-dimensional vector.
+/// Creates a 3-dimensional vector.
 #[inline(always)]
 #[must_use]
-pub const fn ivec2(x: i32, y: i32) -> IVec2 {
-    IVec2::new(x, y)
+pub const fn i8vec3(x: i8, y: i8, z: i8) -> I8Vec3 {
+    I8Vec3::new(x, y, z)
 }
 
-/// A 2-dimensional vector.
+/// A 3-dimensional vector.
 #[cfg_attr(not(target_arch = "spirv"), derive(Hash))]
 #[derive(Clone, Copy, PartialEq, Eq)]
-#[cfg_attr(feature = "cuda", repr(align(8)))]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
-pub struct IVec2 {
-    pub x: i32,
-    pub y: i32,
+pub struct I8Vec3 {
+    pub x: i8,
+    pub y: i8,
+    pub z: i8,
 }
 
-impl IVec2 {
+impl I8Vec3 {
     /// All zeroes.
     pub const ZERO: Self = Self::splat(0);
 
@@ -34,39 +36,45 @@ impl IVec2 {
     /// All negative ones.
     pub const NEG_ONE: Self = Self::splat(-1);
 
-    /// All `i32::MIN`.
-    pub const MIN: Self = Self::splat(i32::MIN);
+    /// All `i8::MIN`.
+    pub const MIN: Self = Self::splat(i8::MIN);
 
-    /// All `i32::MAX`.
-    pub const MAX: Self = Self::splat(i32::MAX);
+    /// All `i8::MAX`.
+    pub const MAX: Self = Self::splat(i8::MAX);
 
     /// A unit vector pointing along the positive X axis.
-    pub const X: Self = Self::new(1, 0);
+    pub const X: Self = Self::new(1, 0, 0);
 
     /// A unit vector pointing along the positive Y axis.
-    pub const Y: Self = Self::new(0, 1);
+    pub const Y: Self = Self::new(0, 1, 0);
+
+    /// A unit vector pointing along the positive Z axis.
+    pub const Z: Self = Self::new(0, 0, 1);
 
     /// A unit vector pointing along the negative X axis.
-    pub const NEG_X: Self = Self::new(-1, 0);
+    pub const NEG_X: Self = Self::new(-1, 0, 0);
 
     /// A unit vector pointing along the negative Y axis.
-    pub const NEG_Y: Self = Self::new(0, -1);
+    pub const NEG_Y: Self = Self::new(0, -1, 0);
+
+    /// A unit vector pointing along the negative Z axis.
+    pub const NEG_Z: Self = Self::new(0, 0, -1);
 
     /// The unit axes.
-    pub const AXES: [Self; 2] = [Self::X, Self::Y];
+    pub const AXES: [Self; 3] = [Self::X, Self::Y, Self::Z];
 
     /// Creates a new vector.
     #[inline(always)]
     #[must_use]
-    pub const fn new(x: i32, y: i32) -> Self {
-        Self { x, y }
+    pub const fn new(x: i8, y: i8, z: i8) -> Self {
+        Self { x, y, z }
     }
 
     /// Creates a vector with all elements set to `v`.
     #[inline]
     #[must_use]
-    pub const fn splat(v: i32) -> Self {
-        Self { x: v, y: v }
+    pub const fn splat(v: i8) -> Self {
+        Self { x: v, y: v, z: v }
     }
 
     /// Returns a vector containing each element of `self` modified by a mapping function `f`.
@@ -74,9 +82,9 @@ impl IVec2 {
     #[must_use]
     pub fn map<F>(self, f: F) -> Self
     where
-        F: Fn(i32) -> i32,
+        F: Fn(i8) -> i8,
     {
-        Self::new(f(self.x), f(self.y))
+        Self::new(f(self.x), f(self.y), f(self.z))
     }
 
     /// Creates a vector from the elements in `if_true` and `if_false`, selecting which to use
@@ -86,77 +94,108 @@ impl IVec2 {
     /// uses the element from `if_false`.
     #[inline]
     #[must_use]
-    pub fn select(mask: BVec2, if_true: Self, if_false: Self) -> Self {
+    pub fn select(mask: BVec3, if_true: Self, if_false: Self) -> Self {
         Self {
             x: if mask.test(0) { if_true.x } else { if_false.x },
             y: if mask.test(1) { if_true.y } else { if_false.y },
+            z: if mask.test(2) { if_true.z } else { if_false.z },
         }
     }
 
     /// Creates a new vector from an array.
     #[inline]
     #[must_use]
-    pub const fn from_array(a: [i32; 2]) -> Self {
-        Self::new(a[0], a[1])
+    pub const fn from_array(a: [i8; 3]) -> Self {
+        Self::new(a[0], a[1], a[2])
     }
 
-    /// `[x, y]`
+    /// `[x, y, z]`
     #[inline]
     #[must_use]
-    pub const fn to_array(&self) -> [i32; 2] {
-        [self.x, self.y]
+    pub const fn to_array(&self) -> [i8; 3] {
+        [self.x, self.y, self.z]
     }
 
-    /// Creates a vector from the first 2 values in `slice`.
+    /// Creates a vector from the first 3 values in `slice`.
     ///
     /// # Panics
     ///
-    /// Panics if `slice` is less than 2 elements long.
+    /// Panics if `slice` is less than 3 elements long.
     #[inline]
     #[must_use]
-    pub const fn from_slice(slice: &[i32]) -> Self {
-        assert!(slice.len() >= 2);
-        Self::new(slice[0], slice[1])
+    pub const fn from_slice(slice: &[i8]) -> Self {
+        assert!(slice.len() >= 3);
+        Self::new(slice[0], slice[1], slice[2])
     }
 
-    /// Writes the elements of `self` to the first 2 elements in `slice`.
+    /// Writes the elements of `self` to the first 3 elements in `slice`.
     ///
     /// # Panics
     ///
-    /// Panics if `slice` is less than 2 elements long.
+    /// Panics if `slice` is less than 3 elements long.
     #[inline]
-    pub fn write_to_slice(self, slice: &mut [i32]) {
+    pub fn write_to_slice(self, slice: &mut [i8]) {
         slice.copy_from_slice(&self.to_array());
     }
 
-    /// Creates a 3D vector from `self` and the given `z` value.
+    /// Internal method for creating a 3D vector from a 4D vector, discarding `w`.
+    #[allow(dead_code)]
     #[inline]
     #[must_use]
-    pub const fn extend(self, z: i32) -> IVec3 {
-        IVec3::new(self.x, self.y, z)
+    pub(crate) fn from_vec4(v: I8Vec4) -> Self {
+        Self {
+            x: v.x,
+            y: v.y,
+            z: v.z,
+        }
     }
 
-    /// Creates a 2D vector from `self` with the given value of `x`.
+    /// Creates a 4D vector from `self` and the given `w` value.
     #[inline]
     #[must_use]
-    pub fn with_x(mut self, x: i32) -> Self {
+    pub fn extend(self, w: i8) -> I8Vec4 {
+        I8Vec4::new(self.x, self.y, self.z, w)
+    }
+
+    /// Creates a 2D vector from the `x` and `y` elements of `self`, discarding `z`.
+    ///
+    /// Truncation may also be performed by using [`self.xy()`][crate::swizzles::Vec3Swizzles::xy()].
+    #[inline]
+    #[must_use]
+    pub fn truncate(self) -> I8Vec2 {
+        use crate::swizzles::Vec3Swizzles;
+        self.xy()
+    }
+
+    /// Creates a 3D vector from `self` with the given value of `x`.
+    #[inline]
+    #[must_use]
+    pub fn with_x(mut self, x: i8) -> Self {
         self.x = x;
         self
     }
 
-    /// Creates a 2D vector from `self` with the given value of `y`.
+    /// Creates a 3D vector from `self` with the given value of `y`.
     #[inline]
     #[must_use]
-    pub fn with_y(mut self, y: i32) -> Self {
+    pub fn with_y(mut self, y: i8) -> Self {
         self.y = y;
+        self
+    }
+
+    /// Creates a 3D vector from `self` with the given value of `z`.
+    #[inline]
+    #[must_use]
+    pub fn with_z(mut self, z: i8) -> Self {
+        self.z = z;
         self
     }
 
     /// Computes the dot product of `self` and `rhs`.
     #[inline]
     #[must_use]
-    pub fn dot(self, rhs: Self) -> i32 {
-        (self.x * rhs.x) + (self.y * rhs.y)
+    pub fn dot(self, rhs: Self) -> i8 {
+        (self.x * rhs.x) + (self.y * rhs.y) + (self.z * rhs.z)
     }
 
     /// Returns a vector where every component is the dot product of `self` and `rhs`.
@@ -164,6 +203,17 @@ impl IVec2 {
     #[must_use]
     pub fn dot_into_vec(self, rhs: Self) -> Self {
         Self::splat(self.dot(rhs))
+    }
+
+    /// Computes the cross product of `self` and `rhs`.
+    #[inline]
+    #[must_use]
+    pub fn cross(self, rhs: Self) -> Self {
+        Self {
+            x: self.y * rhs.z - rhs.y * self.z,
+            y: self.z * rhs.x - rhs.z * self.x,
+            z: self.x * rhs.y - rhs.x * self.y,
+        }
     }
 
     /// Returns a vector containing the minimum values for each element of `self` and `rhs`.
@@ -175,6 +225,7 @@ impl IVec2 {
         Self {
             x: self.x.min(rhs.x),
             y: self.y.min(rhs.y),
+            z: self.z.min(rhs.z),
         }
     }
 
@@ -187,10 +238,11 @@ impl IVec2 {
         Self {
             x: self.x.max(rhs.x),
             y: self.y.max(rhs.y),
+            z: self.z.max(rhs.z),
         }
     }
 
-    /// Component-wise clamping of values, similar to [`i32::clamp`].
+    /// Component-wise clamping of values, similar to [`i8::clamp`].
     ///
     /// Each element in `min` must be less-or-equal to the corresponding element in `max`.
     ///
@@ -209,8 +261,8 @@ impl IVec2 {
     /// In other words this computes `min(x, y, ..)`.
     #[inline]
     #[must_use]
-    pub fn min_element(self) -> i32 {
-        self.x.min(self.y)
+    pub fn min_element(self) -> i8 {
+        self.x.min(self.y.min(self.z))
     }
 
     /// Returns the horizontal maximum of `self`.
@@ -218,8 +270,8 @@ impl IVec2 {
     /// In other words this computes `max(x, y, ..)`.
     #[inline]
     #[must_use]
-    pub fn max_element(self) -> i32 {
-        self.x.max(self.y)
+    pub fn max_element(self) -> i8 {
+        self.x.max(self.y.max(self.z))
     }
 
     /// Returns the sum of all elements of `self`.
@@ -227,8 +279,8 @@ impl IVec2 {
     /// In other words, this computes `self.x + self.y + ..`.
     #[inline]
     #[must_use]
-    pub fn element_sum(self) -> i32 {
-        self.x + self.y
+    pub fn element_sum(self) -> i8 {
+        self.x + self.y + self.z
     }
 
     /// Returns the product of all elements of `self`.
@@ -236,8 +288,8 @@ impl IVec2 {
     /// In other words, this computes `self.x * self.y * ..`.
     #[inline]
     #[must_use]
-    pub fn element_product(self) -> i32 {
-        self.x * self.y
+    pub fn element_product(self) -> i8 {
+        self.x * self.y * self.z
     }
 
     /// Returns a vector mask containing the result of a `==` comparison for each element of
@@ -247,8 +299,8 @@ impl IVec2 {
     /// elements.
     #[inline]
     #[must_use]
-    pub fn cmpeq(self, rhs: Self) -> BVec2 {
-        BVec2::new(self.x.eq(&rhs.x), self.y.eq(&rhs.y))
+    pub fn cmpeq(self, rhs: Self) -> BVec3 {
+        BVec3::new(self.x.eq(&rhs.x), self.y.eq(&rhs.y), self.z.eq(&rhs.z))
     }
 
     /// Returns a vector mask containing the result of a `!=` comparison for each element of
@@ -258,8 +310,8 @@ impl IVec2 {
     /// elements.
     #[inline]
     #[must_use]
-    pub fn cmpne(self, rhs: Self) -> BVec2 {
-        BVec2::new(self.x.ne(&rhs.x), self.y.ne(&rhs.y))
+    pub fn cmpne(self, rhs: Self) -> BVec3 {
+        BVec3::new(self.x.ne(&rhs.x), self.y.ne(&rhs.y), self.z.ne(&rhs.z))
     }
 
     /// Returns a vector mask containing the result of a `>=` comparison for each element of
@@ -269,8 +321,8 @@ impl IVec2 {
     /// elements.
     #[inline]
     #[must_use]
-    pub fn cmpge(self, rhs: Self) -> BVec2 {
-        BVec2::new(self.x.ge(&rhs.x), self.y.ge(&rhs.y))
+    pub fn cmpge(self, rhs: Self) -> BVec3 {
+        BVec3::new(self.x.ge(&rhs.x), self.y.ge(&rhs.y), self.z.ge(&rhs.z))
     }
 
     /// Returns a vector mask containing the result of a `>` comparison for each element of
@@ -280,8 +332,8 @@ impl IVec2 {
     /// elements.
     #[inline]
     #[must_use]
-    pub fn cmpgt(self, rhs: Self) -> BVec2 {
-        BVec2::new(self.x.gt(&rhs.x), self.y.gt(&rhs.y))
+    pub fn cmpgt(self, rhs: Self) -> BVec3 {
+        BVec3::new(self.x.gt(&rhs.x), self.y.gt(&rhs.y), self.z.gt(&rhs.z))
     }
 
     /// Returns a vector mask containing the result of a `<=` comparison for each element of
@@ -291,8 +343,8 @@ impl IVec2 {
     /// elements.
     #[inline]
     #[must_use]
-    pub fn cmple(self, rhs: Self) -> BVec2 {
-        BVec2::new(self.x.le(&rhs.x), self.y.le(&rhs.y))
+    pub fn cmple(self, rhs: Self) -> BVec3 {
+        BVec3::new(self.x.le(&rhs.x), self.y.le(&rhs.y), self.z.le(&rhs.z))
     }
 
     /// Returns a vector mask containing the result of a `<` comparison for each element of
@@ -302,8 +354,8 @@ impl IVec2 {
     /// elements.
     #[inline]
     #[must_use]
-    pub fn cmplt(self, rhs: Self) -> BVec2 {
-        BVec2::new(self.x.lt(&rhs.x), self.y.lt(&rhs.y))
+    pub fn cmplt(self, rhs: Self) -> BVec3 {
+        BVec3::new(self.x.lt(&rhs.x), self.y.lt(&rhs.y), self.z.lt(&rhs.z))
     }
 
     /// Returns a vector containing the absolute value of each element of `self`.
@@ -313,6 +365,7 @@ impl IVec2 {
         Self {
             x: self.x.abs(),
             y: self.y.abs(),
+            z: self.z.abs(),
         }
     }
 
@@ -327,31 +380,34 @@ impl IVec2 {
         Self {
             x: self.x.signum(),
             y: self.y.signum(),
+            z: self.z.signum(),
         }
     }
 
-    /// Returns a bitmask with the lowest 2 bits set to the sign bits from the elements of `self`.
+    /// Returns a bitmask with the lowest 3 bits set to the sign bits from the elements of `self`.
     ///
     /// A negative element results in a `1` bit and a positive element in a `0` bit.  Element `x` goes
     /// into the first lowest bit, element `y` into the second, etc.
     #[inline]
     #[must_use]
     pub fn is_negative_bitmask(self) -> u32 {
-        (self.x.is_negative() as u32) | (self.y.is_negative() as u32) << 1
+        (self.x.is_negative() as u32)
+            | (self.y.is_negative() as u32) << 1
+            | (self.z.is_negative() as u32) << 2
     }
 
     /// Computes the squared length of `self`.
     #[doc(alias = "magnitude2")]
     #[inline]
     #[must_use]
-    pub fn length_squared(self) -> i32 {
+    pub fn length_squared(self) -> i8 {
         self.dot(self)
     }
 
     /// Compute the squared euclidean distance between two points in space.
     #[inline]
     #[must_use]
-    pub fn distance_squared(self, rhs: Self) -> i32 {
+    pub fn distance_squared(self, rhs: Self) -> i8 {
         (self - rhs).length_squared()
     }
 
@@ -362,7 +418,11 @@ impl IVec2 {
     #[inline]
     #[must_use]
     pub fn div_euclid(self, rhs: Self) -> Self {
-        Self::new(self.x.div_euclid(rhs.x), self.y.div_euclid(rhs.y))
+        Self::new(
+            self.x.div_euclid(rhs.x),
+            self.y.div_euclid(rhs.y),
+            self.z.div_euclid(rhs.z),
+        )
     }
 
     /// Returns the element-wise remainder of [Euclidean division] of `self` by `rhs`.
@@ -370,107 +430,85 @@ impl IVec2 {
     /// # Panics
     /// This function will panic if any `rhs` element is 0 or the division results in overflow.
     ///
-    /// [Euclidean division]: i32::rem_euclid
+    /// [Euclidean division]: i8::rem_euclid
     #[inline]
     #[must_use]
     pub fn rem_euclid(self, rhs: Self) -> Self {
-        Self::new(self.x.rem_euclid(rhs.x), self.y.rem_euclid(rhs.y))
-    }
-
-    /// Returns a vector that is equal to `self` rotated by 90 degrees.
-    #[inline]
-    #[must_use]
-    pub fn perp(self) -> Self {
-        Self {
-            x: -self.y,
-            y: self.x,
-        }
-    }
-
-    /// The perpendicular dot product of `self` and `rhs`.
-    /// Also known as the wedge product, 2D cross product, and determinant.
-    #[doc(alias = "wedge")]
-    #[doc(alias = "cross")]
-    #[doc(alias = "determinant")]
-    #[inline]
-    #[must_use]
-    pub fn perp_dot(self, rhs: Self) -> i32 {
-        (self.x * rhs.y) - (self.y * rhs.x)
-    }
-
-    /// Returns `rhs` rotated by the angle of `self`. If `self` is normalized,
-    /// then this just rotation. This is what you usually want. Otherwise,
-    /// it will be like a rotation with a multiplication by `self`'s length.
-    #[inline]
-    #[must_use]
-    pub fn rotate(self, rhs: Self) -> Self {
-        Self {
-            x: self.x * rhs.x - self.y * rhs.y,
-            y: self.y * rhs.x + self.x * rhs.y,
-        }
+        Self::new(
+            self.x.rem_euclid(rhs.x),
+            self.y.rem_euclid(rhs.y),
+            self.z.rem_euclid(rhs.z),
+        )
     }
 
     /// Casts all elements of `self` to `f32`.
     #[inline]
     #[must_use]
-    pub fn as_vec2(&self) -> crate::Vec2 {
-        crate::Vec2::new(self.x as f32, self.y as f32)
+    pub fn as_vec3(&self) -> crate::Vec3 {
+        crate::Vec3::new(self.x as f32, self.y as f32, self.z as f32)
+    }
+
+    /// Casts all elements of `self` to `f32`.
+    #[inline]
+    #[must_use]
+    pub fn as_vec3a(&self) -> crate::Vec3A {
+        crate::Vec3A::new(self.x as f32, self.y as f32, self.z as f32)
     }
 
     /// Casts all elements of `self` to `f64`.
     #[inline]
     #[must_use]
-    pub fn as_dvec2(&self) -> crate::DVec2 {
-        crate::DVec2::new(self.x as f64, self.y as f64)
-    }
-
-    /// Casts all elements of `self` to `i8`.
-    #[inline]
-    #[must_use]
-    pub fn as_i8vec2(&self) -> crate::I8Vec2 {
-        crate::I8Vec2::new(self.x as i8, self.y as i8)
+    pub fn as_dvec3(&self) -> crate::DVec3 {
+        crate::DVec3::new(self.x as f64, self.y as f64, self.z as f64)
     }
 
     /// Casts all elements of `self` to `u8`.
     #[inline]
     #[must_use]
-    pub fn as_u8vec2(&self) -> crate::U8Vec2 {
-        crate::U8Vec2::new(self.x as u8, self.y as u8)
+    pub fn as_u8vec3(&self) -> crate::U8Vec3 {
+        crate::U8Vec3::new(self.x as u8, self.y as u8, self.z as u8)
     }
 
     /// Casts all elements of `self` to `i16`.
     #[inline]
     #[must_use]
-    pub fn as_i16vec2(&self) -> crate::I16Vec2 {
-        crate::I16Vec2::new(self.x as i16, self.y as i16)
+    pub fn as_i16vec3(&self) -> crate::I16Vec3 {
+        crate::I16Vec3::new(self.x as i16, self.y as i16, self.z as i16)
     }
 
     /// Casts all elements of `self` to `u16`.
     #[inline]
     #[must_use]
-    pub fn as_u16vec2(&self) -> crate::U16Vec2 {
-        crate::U16Vec2::new(self.x as u16, self.y as u16)
+    pub fn as_u16vec3(&self) -> crate::U16Vec3 {
+        crate::U16Vec3::new(self.x as u16, self.y as u16, self.z as u16)
+    }
+
+    /// Casts all elements of `self` to `i32`.
+    #[inline]
+    #[must_use]
+    pub fn as_ivec3(&self) -> crate::IVec3 {
+        crate::IVec3::new(self.x as i32, self.y as i32, self.z as i32)
     }
 
     /// Casts all elements of `self` to `u32`.
     #[inline]
     #[must_use]
-    pub fn as_uvec2(&self) -> crate::UVec2 {
-        crate::UVec2::new(self.x as u32, self.y as u32)
+    pub fn as_uvec3(&self) -> crate::UVec3 {
+        crate::UVec3::new(self.x as u32, self.y as u32, self.z as u32)
     }
 
     /// Casts all elements of `self` to `i64`.
     #[inline]
     #[must_use]
-    pub fn as_i64vec2(&self) -> crate::I64Vec2 {
-        crate::I64Vec2::new(self.x as i64, self.y as i64)
+    pub fn as_i64vec3(&self) -> crate::I64Vec3 {
+        crate::I64Vec3::new(self.x as i64, self.y as i64, self.z as i64)
     }
 
     /// Casts all elements of `self` to `u64`.
     #[inline]
     #[must_use]
-    pub fn as_u64vec2(&self) -> crate::U64Vec2 {
-        crate::U64Vec2::new(self.x as u64, self.y as u64)
+    pub fn as_u64vec3(&self) -> crate::U64Vec3 {
+        crate::U64Vec3::new(self.x as u64, self.y as u64, self.z as u64)
     }
 
     /// Returns a vector containing the wrapping addition of `self` and `rhs`.
@@ -482,6 +520,7 @@ impl IVec2 {
         Self {
             x: self.x.wrapping_add(rhs.x),
             y: self.y.wrapping_add(rhs.y),
+            z: self.z.wrapping_add(rhs.z),
         }
     }
 
@@ -494,6 +533,7 @@ impl IVec2 {
         Self {
             x: self.x.wrapping_sub(rhs.x),
             y: self.y.wrapping_sub(rhs.y),
+            z: self.z.wrapping_sub(rhs.z),
         }
     }
 
@@ -506,6 +546,7 @@ impl IVec2 {
         Self {
             x: self.x.wrapping_mul(rhs.x),
             y: self.y.wrapping_mul(rhs.y),
+            z: self.z.wrapping_mul(rhs.z),
         }
     }
 
@@ -518,6 +559,7 @@ impl IVec2 {
         Self {
             x: self.x.wrapping_div(rhs.x),
             y: self.y.wrapping_div(rhs.y),
+            z: self.z.wrapping_div(rhs.z),
         }
     }
 
@@ -530,6 +572,7 @@ impl IVec2 {
         Self {
             x: self.x.saturating_add(rhs.x),
             y: self.y.saturating_add(rhs.y),
+            z: self.z.saturating_add(rhs.z),
         }
     }
 
@@ -542,6 +585,7 @@ impl IVec2 {
         Self {
             x: self.x.saturating_sub(rhs.x),
             y: self.y.saturating_sub(rhs.y),
+            z: self.z.saturating_sub(rhs.z),
         }
     }
 
@@ -554,6 +598,7 @@ impl IVec2 {
         Self {
             x: self.x.saturating_mul(rhs.x),
             y: self.y.saturating_mul(rhs.y),
+            z: self.z.saturating_mul(rhs.z),
         }
     }
 
@@ -566,6 +611,7 @@ impl IVec2 {
         Self {
             x: self.x.saturating_div(rhs.x),
             y: self.y.saturating_div(rhs.y),
+            z: self.z.saturating_div(rhs.z),
         }
     }
 
@@ -574,10 +620,11 @@ impl IVec2 {
     /// In other words this computes `[self.x.wrapping_add_unsigned(rhs.x), self.y.wrapping_add_unsigned(rhs.y), ..]`.
     #[inline]
     #[must_use]
-    pub const fn wrapping_add_unsigned(self, rhs: UVec2) -> Self {
+    pub const fn wrapping_add_unsigned(self, rhs: U8Vec3) -> Self {
         Self {
             x: self.x.wrapping_add_unsigned(rhs.x),
             y: self.y.wrapping_add_unsigned(rhs.y),
+            z: self.z.wrapping_add_unsigned(rhs.z),
         }
     }
 
@@ -586,10 +633,11 @@ impl IVec2 {
     /// In other words this computes `[self.x.wrapping_sub_unsigned(rhs.x), self.y.wrapping_sub_unsigned(rhs.y), ..]`.
     #[inline]
     #[must_use]
-    pub const fn wrapping_sub_unsigned(self, rhs: UVec2) -> Self {
+    pub const fn wrapping_sub_unsigned(self, rhs: U8Vec3) -> Self {
         Self {
             x: self.x.wrapping_sub_unsigned(rhs.x),
             y: self.y.wrapping_sub_unsigned(rhs.y),
+            z: self.z.wrapping_sub_unsigned(rhs.z),
         }
     }
 
@@ -598,10 +646,11 @@ impl IVec2 {
     /// In other words this computes `[self.x.saturating_add_unsigned(rhs.x), self.y.saturating_add_unsigned(rhs.y), ..]`.
     #[inline]
     #[must_use]
-    pub const fn saturating_add_unsigned(self, rhs: UVec2) -> Self {
+    pub const fn saturating_add_unsigned(self, rhs: U8Vec3) -> Self {
         Self {
             x: self.x.saturating_add_unsigned(rhs.x),
             y: self.y.saturating_add_unsigned(rhs.y),
+            z: self.z.saturating_add_unsigned(rhs.z),
         }
     }
 
@@ -610,713 +659,739 @@ impl IVec2 {
     /// In other words this computes `[self.x.saturating_sub_unsigned(rhs.x), self.y.saturating_sub_unsigned(rhs.y), ..]`.
     #[inline]
     #[must_use]
-    pub const fn saturating_sub_unsigned(self, rhs: UVec2) -> Self {
+    pub const fn saturating_sub_unsigned(self, rhs: U8Vec3) -> Self {
         Self {
             x: self.x.saturating_sub_unsigned(rhs.x),
             y: self.y.saturating_sub_unsigned(rhs.y),
+            z: self.z.saturating_sub_unsigned(rhs.z),
         }
     }
 }
 
-impl Default for IVec2 {
+impl Default for I8Vec3 {
     #[inline(always)]
     fn default() -> Self {
         Self::ZERO
     }
 }
 
-impl Div<IVec2> for IVec2 {
+impl Div<I8Vec3> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn div(self, rhs: Self) -> Self {
         Self {
             x: self.x.div(rhs.x),
             y: self.y.div(rhs.y),
+            z: self.z.div(rhs.z),
         }
     }
 }
 
-impl Div<&IVec2> for IVec2 {
-    type Output = IVec2;
+impl Div<&I8Vec3> for I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn div(self, rhs: &IVec2) -> IVec2 {
+    fn div(self, rhs: &I8Vec3) -> I8Vec3 {
         self.div(*rhs)
     }
 }
 
-impl Div<&IVec2> for &IVec2 {
-    type Output = IVec2;
+impl Div<&I8Vec3> for &I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn div(self, rhs: &IVec2) -> IVec2 {
+    fn div(self, rhs: &I8Vec3) -> I8Vec3 {
         (*self).div(*rhs)
     }
 }
 
-impl Div<IVec2> for &IVec2 {
-    type Output = IVec2;
+impl Div<I8Vec3> for &I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn div(self, rhs: IVec2) -> IVec2 {
+    fn div(self, rhs: I8Vec3) -> I8Vec3 {
         (*self).div(rhs)
     }
 }
 
-impl DivAssign<IVec2> for IVec2 {
+impl DivAssign<I8Vec3> for I8Vec3 {
     #[inline]
     fn div_assign(&mut self, rhs: Self) {
         self.x.div_assign(rhs.x);
         self.y.div_assign(rhs.y);
+        self.z.div_assign(rhs.z);
     }
 }
 
-impl DivAssign<&Self> for IVec2 {
+impl DivAssign<&Self> for I8Vec3 {
     #[inline]
     fn div_assign(&mut self, rhs: &Self) {
         self.div_assign(*rhs)
     }
 }
 
-impl Div<i32> for IVec2 {
+impl Div<i8> for I8Vec3 {
     type Output = Self;
     #[inline]
-    fn div(self, rhs: i32) -> Self {
+    fn div(self, rhs: i8) -> Self {
         Self {
             x: self.x.div(rhs),
             y: self.y.div(rhs),
+            z: self.z.div(rhs),
         }
     }
 }
 
-impl Div<&i32> for IVec2 {
-    type Output = IVec2;
+impl Div<&i8> for I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn div(self, rhs: &i32) -> IVec2 {
+    fn div(self, rhs: &i8) -> I8Vec3 {
         self.div(*rhs)
     }
 }
 
-impl Div<&i32> for &IVec2 {
-    type Output = IVec2;
+impl Div<&i8> for &I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn div(self, rhs: &i32) -> IVec2 {
+    fn div(self, rhs: &i8) -> I8Vec3 {
         (*self).div(*rhs)
     }
 }
 
-impl Div<i32> for &IVec2 {
-    type Output = IVec2;
+impl Div<i8> for &I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn div(self, rhs: i32) -> IVec2 {
+    fn div(self, rhs: i8) -> I8Vec3 {
         (*self).div(rhs)
     }
 }
 
-impl DivAssign<i32> for IVec2 {
+impl DivAssign<i8> for I8Vec3 {
     #[inline]
-    fn div_assign(&mut self, rhs: i32) {
+    fn div_assign(&mut self, rhs: i8) {
         self.x.div_assign(rhs);
         self.y.div_assign(rhs);
+        self.z.div_assign(rhs);
     }
 }
 
-impl DivAssign<&i32> for IVec2 {
+impl DivAssign<&i8> for I8Vec3 {
     #[inline]
-    fn div_assign(&mut self, rhs: &i32) {
+    fn div_assign(&mut self, rhs: &i8) {
         self.div_assign(*rhs)
     }
 }
 
-impl Div<IVec2> for i32 {
-    type Output = IVec2;
+impl Div<I8Vec3> for i8 {
+    type Output = I8Vec3;
     #[inline]
-    fn div(self, rhs: IVec2) -> IVec2 {
-        IVec2 {
+    fn div(self, rhs: I8Vec3) -> I8Vec3 {
+        I8Vec3 {
             x: self.div(rhs.x),
             y: self.div(rhs.y),
+            z: self.div(rhs.z),
         }
     }
 }
 
-impl Div<&IVec2> for i32 {
-    type Output = IVec2;
+impl Div<&I8Vec3> for i8 {
+    type Output = I8Vec3;
     #[inline]
-    fn div(self, rhs: &IVec2) -> IVec2 {
+    fn div(self, rhs: &I8Vec3) -> I8Vec3 {
         self.div(*rhs)
     }
 }
 
-impl Div<&IVec2> for &i32 {
-    type Output = IVec2;
+impl Div<&I8Vec3> for &i8 {
+    type Output = I8Vec3;
     #[inline]
-    fn div(self, rhs: &IVec2) -> IVec2 {
+    fn div(self, rhs: &I8Vec3) -> I8Vec3 {
         (*self).div(*rhs)
     }
 }
 
-impl Div<IVec2> for &i32 {
-    type Output = IVec2;
+impl Div<I8Vec3> for &i8 {
+    type Output = I8Vec3;
     #[inline]
-    fn div(self, rhs: IVec2) -> IVec2 {
+    fn div(self, rhs: I8Vec3) -> I8Vec3 {
         (*self).div(rhs)
     }
 }
 
-impl Mul<IVec2> for IVec2 {
+impl Mul<I8Vec3> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn mul(self, rhs: Self) -> Self {
         Self {
             x: self.x.mul(rhs.x),
             y: self.y.mul(rhs.y),
+            z: self.z.mul(rhs.z),
         }
     }
 }
 
-impl Mul<&IVec2> for IVec2 {
-    type Output = IVec2;
+impl Mul<&I8Vec3> for I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn mul(self, rhs: &IVec2) -> IVec2 {
+    fn mul(self, rhs: &I8Vec3) -> I8Vec3 {
         self.mul(*rhs)
     }
 }
 
-impl Mul<&IVec2> for &IVec2 {
-    type Output = IVec2;
+impl Mul<&I8Vec3> for &I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn mul(self, rhs: &IVec2) -> IVec2 {
+    fn mul(self, rhs: &I8Vec3) -> I8Vec3 {
         (*self).mul(*rhs)
     }
 }
 
-impl Mul<IVec2> for &IVec2 {
-    type Output = IVec2;
+impl Mul<I8Vec3> for &I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn mul(self, rhs: IVec2) -> IVec2 {
+    fn mul(self, rhs: I8Vec3) -> I8Vec3 {
         (*self).mul(rhs)
     }
 }
 
-impl MulAssign<IVec2> for IVec2 {
+impl MulAssign<I8Vec3> for I8Vec3 {
     #[inline]
     fn mul_assign(&mut self, rhs: Self) {
         self.x.mul_assign(rhs.x);
         self.y.mul_assign(rhs.y);
+        self.z.mul_assign(rhs.z);
     }
 }
 
-impl MulAssign<&Self> for IVec2 {
+impl MulAssign<&Self> for I8Vec3 {
     #[inline]
     fn mul_assign(&mut self, rhs: &Self) {
         self.mul_assign(*rhs)
     }
 }
 
-impl Mul<i32> for IVec2 {
+impl Mul<i8> for I8Vec3 {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: i32) -> Self {
+    fn mul(self, rhs: i8) -> Self {
         Self {
             x: self.x.mul(rhs),
             y: self.y.mul(rhs),
+            z: self.z.mul(rhs),
         }
     }
 }
 
-impl Mul<&i32> for IVec2 {
-    type Output = IVec2;
+impl Mul<&i8> for I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn mul(self, rhs: &i32) -> IVec2 {
+    fn mul(self, rhs: &i8) -> I8Vec3 {
         self.mul(*rhs)
     }
 }
 
-impl Mul<&i32> for &IVec2 {
-    type Output = IVec2;
+impl Mul<&i8> for &I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn mul(self, rhs: &i32) -> IVec2 {
+    fn mul(self, rhs: &i8) -> I8Vec3 {
         (*self).mul(*rhs)
     }
 }
 
-impl Mul<i32> for &IVec2 {
-    type Output = IVec2;
+impl Mul<i8> for &I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn mul(self, rhs: i32) -> IVec2 {
+    fn mul(self, rhs: i8) -> I8Vec3 {
         (*self).mul(rhs)
     }
 }
 
-impl MulAssign<i32> for IVec2 {
+impl MulAssign<i8> for I8Vec3 {
     #[inline]
-    fn mul_assign(&mut self, rhs: i32) {
+    fn mul_assign(&mut self, rhs: i8) {
         self.x.mul_assign(rhs);
         self.y.mul_assign(rhs);
+        self.z.mul_assign(rhs);
     }
 }
 
-impl MulAssign<&i32> for IVec2 {
+impl MulAssign<&i8> for I8Vec3 {
     #[inline]
-    fn mul_assign(&mut self, rhs: &i32) {
+    fn mul_assign(&mut self, rhs: &i8) {
         self.mul_assign(*rhs)
     }
 }
 
-impl Mul<IVec2> for i32 {
-    type Output = IVec2;
+impl Mul<I8Vec3> for i8 {
+    type Output = I8Vec3;
     #[inline]
-    fn mul(self, rhs: IVec2) -> IVec2 {
-        IVec2 {
+    fn mul(self, rhs: I8Vec3) -> I8Vec3 {
+        I8Vec3 {
             x: self.mul(rhs.x),
             y: self.mul(rhs.y),
+            z: self.mul(rhs.z),
         }
     }
 }
 
-impl Mul<&IVec2> for i32 {
-    type Output = IVec2;
+impl Mul<&I8Vec3> for i8 {
+    type Output = I8Vec3;
     #[inline]
-    fn mul(self, rhs: &IVec2) -> IVec2 {
+    fn mul(self, rhs: &I8Vec3) -> I8Vec3 {
         self.mul(*rhs)
     }
 }
 
-impl Mul<&IVec2> for &i32 {
-    type Output = IVec2;
+impl Mul<&I8Vec3> for &i8 {
+    type Output = I8Vec3;
     #[inline]
-    fn mul(self, rhs: &IVec2) -> IVec2 {
+    fn mul(self, rhs: &I8Vec3) -> I8Vec3 {
         (*self).mul(*rhs)
     }
 }
 
-impl Mul<IVec2> for &i32 {
-    type Output = IVec2;
+impl Mul<I8Vec3> for &i8 {
+    type Output = I8Vec3;
     #[inline]
-    fn mul(self, rhs: IVec2) -> IVec2 {
+    fn mul(self, rhs: I8Vec3) -> I8Vec3 {
         (*self).mul(rhs)
     }
 }
 
-impl Add<IVec2> for IVec2 {
+impl Add<I8Vec3> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn add(self, rhs: Self) -> Self {
         Self {
             x: self.x.add(rhs.x),
             y: self.y.add(rhs.y),
+            z: self.z.add(rhs.z),
         }
     }
 }
 
-impl Add<&IVec2> for IVec2 {
-    type Output = IVec2;
+impl Add<&I8Vec3> for I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn add(self, rhs: &IVec2) -> IVec2 {
+    fn add(self, rhs: &I8Vec3) -> I8Vec3 {
         self.add(*rhs)
     }
 }
 
-impl Add<&IVec2> for &IVec2 {
-    type Output = IVec2;
+impl Add<&I8Vec3> for &I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn add(self, rhs: &IVec2) -> IVec2 {
+    fn add(self, rhs: &I8Vec3) -> I8Vec3 {
         (*self).add(*rhs)
     }
 }
 
-impl Add<IVec2> for &IVec2 {
-    type Output = IVec2;
+impl Add<I8Vec3> for &I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn add(self, rhs: IVec2) -> IVec2 {
+    fn add(self, rhs: I8Vec3) -> I8Vec3 {
         (*self).add(rhs)
     }
 }
 
-impl AddAssign<IVec2> for IVec2 {
+impl AddAssign<I8Vec3> for I8Vec3 {
     #[inline]
     fn add_assign(&mut self, rhs: Self) {
         self.x.add_assign(rhs.x);
         self.y.add_assign(rhs.y);
+        self.z.add_assign(rhs.z);
     }
 }
 
-impl AddAssign<&Self> for IVec2 {
+impl AddAssign<&Self> for I8Vec3 {
     #[inline]
     fn add_assign(&mut self, rhs: &Self) {
         self.add_assign(*rhs)
     }
 }
 
-impl Add<i32> for IVec2 {
+impl Add<i8> for I8Vec3 {
     type Output = Self;
     #[inline]
-    fn add(self, rhs: i32) -> Self {
+    fn add(self, rhs: i8) -> Self {
         Self {
             x: self.x.add(rhs),
             y: self.y.add(rhs),
+            z: self.z.add(rhs),
         }
     }
 }
 
-impl Add<&i32> for IVec2 {
-    type Output = IVec2;
+impl Add<&i8> for I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn add(self, rhs: &i32) -> IVec2 {
+    fn add(self, rhs: &i8) -> I8Vec3 {
         self.add(*rhs)
     }
 }
 
-impl Add<&i32> for &IVec2 {
-    type Output = IVec2;
+impl Add<&i8> for &I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn add(self, rhs: &i32) -> IVec2 {
+    fn add(self, rhs: &i8) -> I8Vec3 {
         (*self).add(*rhs)
     }
 }
 
-impl Add<i32> for &IVec2 {
-    type Output = IVec2;
+impl Add<i8> for &I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn add(self, rhs: i32) -> IVec2 {
+    fn add(self, rhs: i8) -> I8Vec3 {
         (*self).add(rhs)
     }
 }
 
-impl AddAssign<i32> for IVec2 {
+impl AddAssign<i8> for I8Vec3 {
     #[inline]
-    fn add_assign(&mut self, rhs: i32) {
+    fn add_assign(&mut self, rhs: i8) {
         self.x.add_assign(rhs);
         self.y.add_assign(rhs);
+        self.z.add_assign(rhs);
     }
 }
 
-impl AddAssign<&i32> for IVec2 {
+impl AddAssign<&i8> for I8Vec3 {
     #[inline]
-    fn add_assign(&mut self, rhs: &i32) {
+    fn add_assign(&mut self, rhs: &i8) {
         self.add_assign(*rhs)
     }
 }
 
-impl Add<IVec2> for i32 {
-    type Output = IVec2;
+impl Add<I8Vec3> for i8 {
+    type Output = I8Vec3;
     #[inline]
-    fn add(self, rhs: IVec2) -> IVec2 {
-        IVec2 {
+    fn add(self, rhs: I8Vec3) -> I8Vec3 {
+        I8Vec3 {
             x: self.add(rhs.x),
             y: self.add(rhs.y),
+            z: self.add(rhs.z),
         }
     }
 }
 
-impl Add<&IVec2> for i32 {
-    type Output = IVec2;
+impl Add<&I8Vec3> for i8 {
+    type Output = I8Vec3;
     #[inline]
-    fn add(self, rhs: &IVec2) -> IVec2 {
+    fn add(self, rhs: &I8Vec3) -> I8Vec3 {
         self.add(*rhs)
     }
 }
 
-impl Add<&IVec2> for &i32 {
-    type Output = IVec2;
+impl Add<&I8Vec3> for &i8 {
+    type Output = I8Vec3;
     #[inline]
-    fn add(self, rhs: &IVec2) -> IVec2 {
+    fn add(self, rhs: &I8Vec3) -> I8Vec3 {
         (*self).add(*rhs)
     }
 }
 
-impl Add<IVec2> for &i32 {
-    type Output = IVec2;
+impl Add<I8Vec3> for &i8 {
+    type Output = I8Vec3;
     #[inline]
-    fn add(self, rhs: IVec2) -> IVec2 {
+    fn add(self, rhs: I8Vec3) -> I8Vec3 {
         (*self).add(rhs)
     }
 }
 
-impl Sub<IVec2> for IVec2 {
+impl Sub<I8Vec3> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn sub(self, rhs: Self) -> Self {
         Self {
             x: self.x.sub(rhs.x),
             y: self.y.sub(rhs.y),
+            z: self.z.sub(rhs.z),
         }
     }
 }
 
-impl Sub<&IVec2> for IVec2 {
-    type Output = IVec2;
+impl Sub<&I8Vec3> for I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn sub(self, rhs: &IVec2) -> IVec2 {
+    fn sub(self, rhs: &I8Vec3) -> I8Vec3 {
         self.sub(*rhs)
     }
 }
 
-impl Sub<&IVec2> for &IVec2 {
-    type Output = IVec2;
+impl Sub<&I8Vec3> for &I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn sub(self, rhs: &IVec2) -> IVec2 {
+    fn sub(self, rhs: &I8Vec3) -> I8Vec3 {
         (*self).sub(*rhs)
     }
 }
 
-impl Sub<IVec2> for &IVec2 {
-    type Output = IVec2;
+impl Sub<I8Vec3> for &I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn sub(self, rhs: IVec2) -> IVec2 {
+    fn sub(self, rhs: I8Vec3) -> I8Vec3 {
         (*self).sub(rhs)
     }
 }
 
-impl SubAssign<IVec2> for IVec2 {
+impl SubAssign<I8Vec3> for I8Vec3 {
     #[inline]
-    fn sub_assign(&mut self, rhs: IVec2) {
+    fn sub_assign(&mut self, rhs: I8Vec3) {
         self.x.sub_assign(rhs.x);
         self.y.sub_assign(rhs.y);
+        self.z.sub_assign(rhs.z);
     }
 }
 
-impl SubAssign<&Self> for IVec2 {
+impl SubAssign<&Self> for I8Vec3 {
     #[inline]
     fn sub_assign(&mut self, rhs: &Self) {
         self.sub_assign(*rhs)
     }
 }
 
-impl Sub<i32> for IVec2 {
+impl Sub<i8> for I8Vec3 {
     type Output = Self;
     #[inline]
-    fn sub(self, rhs: i32) -> Self {
+    fn sub(self, rhs: i8) -> Self {
         Self {
             x: self.x.sub(rhs),
             y: self.y.sub(rhs),
+            z: self.z.sub(rhs),
         }
     }
 }
 
-impl Sub<&i32> for IVec2 {
-    type Output = IVec2;
+impl Sub<&i8> for I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn sub(self, rhs: &i32) -> IVec2 {
+    fn sub(self, rhs: &i8) -> I8Vec3 {
         self.sub(*rhs)
     }
 }
 
-impl Sub<&i32> for &IVec2 {
-    type Output = IVec2;
+impl Sub<&i8> for &I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn sub(self, rhs: &i32) -> IVec2 {
+    fn sub(self, rhs: &i8) -> I8Vec3 {
         (*self).sub(*rhs)
     }
 }
 
-impl Sub<i32> for &IVec2 {
-    type Output = IVec2;
+impl Sub<i8> for &I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn sub(self, rhs: i32) -> IVec2 {
+    fn sub(self, rhs: i8) -> I8Vec3 {
         (*self).sub(rhs)
     }
 }
 
-impl SubAssign<i32> for IVec2 {
+impl SubAssign<i8> for I8Vec3 {
     #[inline]
-    fn sub_assign(&mut self, rhs: i32) {
+    fn sub_assign(&mut self, rhs: i8) {
         self.x.sub_assign(rhs);
         self.y.sub_assign(rhs);
+        self.z.sub_assign(rhs);
     }
 }
 
-impl SubAssign<&i32> for IVec2 {
+impl SubAssign<&i8> for I8Vec3 {
     #[inline]
-    fn sub_assign(&mut self, rhs: &i32) {
+    fn sub_assign(&mut self, rhs: &i8) {
         self.sub_assign(*rhs)
     }
 }
 
-impl Sub<IVec2> for i32 {
-    type Output = IVec2;
+impl Sub<I8Vec3> for i8 {
+    type Output = I8Vec3;
     #[inline]
-    fn sub(self, rhs: IVec2) -> IVec2 {
-        IVec2 {
+    fn sub(self, rhs: I8Vec3) -> I8Vec3 {
+        I8Vec3 {
             x: self.sub(rhs.x),
             y: self.sub(rhs.y),
+            z: self.sub(rhs.z),
         }
     }
 }
 
-impl Sub<&IVec2> for i32 {
-    type Output = IVec2;
+impl Sub<&I8Vec3> for i8 {
+    type Output = I8Vec3;
     #[inline]
-    fn sub(self, rhs: &IVec2) -> IVec2 {
+    fn sub(self, rhs: &I8Vec3) -> I8Vec3 {
         self.sub(*rhs)
     }
 }
 
-impl Sub<&IVec2> for &i32 {
-    type Output = IVec2;
+impl Sub<&I8Vec3> for &i8 {
+    type Output = I8Vec3;
     #[inline]
-    fn sub(self, rhs: &IVec2) -> IVec2 {
+    fn sub(self, rhs: &I8Vec3) -> I8Vec3 {
         (*self).sub(*rhs)
     }
 }
 
-impl Sub<IVec2> for &i32 {
-    type Output = IVec2;
+impl Sub<I8Vec3> for &i8 {
+    type Output = I8Vec3;
     #[inline]
-    fn sub(self, rhs: IVec2) -> IVec2 {
+    fn sub(self, rhs: I8Vec3) -> I8Vec3 {
         (*self).sub(rhs)
     }
 }
 
-impl Rem<IVec2> for IVec2 {
+impl Rem<I8Vec3> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn rem(self, rhs: Self) -> Self {
         Self {
             x: self.x.rem(rhs.x),
             y: self.y.rem(rhs.y),
+            z: self.z.rem(rhs.z),
         }
     }
 }
 
-impl Rem<&IVec2> for IVec2 {
-    type Output = IVec2;
+impl Rem<&I8Vec3> for I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn rem(self, rhs: &IVec2) -> IVec2 {
+    fn rem(self, rhs: &I8Vec3) -> I8Vec3 {
         self.rem(*rhs)
     }
 }
 
-impl Rem<&IVec2> for &IVec2 {
-    type Output = IVec2;
+impl Rem<&I8Vec3> for &I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn rem(self, rhs: &IVec2) -> IVec2 {
+    fn rem(self, rhs: &I8Vec3) -> I8Vec3 {
         (*self).rem(*rhs)
     }
 }
 
-impl Rem<IVec2> for &IVec2 {
-    type Output = IVec2;
+impl Rem<I8Vec3> for &I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn rem(self, rhs: IVec2) -> IVec2 {
+    fn rem(self, rhs: I8Vec3) -> I8Vec3 {
         (*self).rem(rhs)
     }
 }
 
-impl RemAssign<IVec2> for IVec2 {
+impl RemAssign<I8Vec3> for I8Vec3 {
     #[inline]
     fn rem_assign(&mut self, rhs: Self) {
         self.x.rem_assign(rhs.x);
         self.y.rem_assign(rhs.y);
+        self.z.rem_assign(rhs.z);
     }
 }
 
-impl RemAssign<&Self> for IVec2 {
+impl RemAssign<&Self> for I8Vec3 {
     #[inline]
     fn rem_assign(&mut self, rhs: &Self) {
         self.rem_assign(*rhs)
     }
 }
 
-impl Rem<i32> for IVec2 {
+impl Rem<i8> for I8Vec3 {
     type Output = Self;
     #[inline]
-    fn rem(self, rhs: i32) -> Self {
+    fn rem(self, rhs: i8) -> Self {
         Self {
             x: self.x.rem(rhs),
             y: self.y.rem(rhs),
+            z: self.z.rem(rhs),
         }
     }
 }
 
-impl Rem<&i32> for IVec2 {
-    type Output = IVec2;
+impl Rem<&i8> for I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn rem(self, rhs: &i32) -> IVec2 {
+    fn rem(self, rhs: &i8) -> I8Vec3 {
         self.rem(*rhs)
     }
 }
 
-impl Rem<&i32> for &IVec2 {
-    type Output = IVec2;
+impl Rem<&i8> for &I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn rem(self, rhs: &i32) -> IVec2 {
+    fn rem(self, rhs: &i8) -> I8Vec3 {
         (*self).rem(*rhs)
     }
 }
 
-impl Rem<i32> for &IVec2 {
-    type Output = IVec2;
+impl Rem<i8> for &I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn rem(self, rhs: i32) -> IVec2 {
+    fn rem(self, rhs: i8) -> I8Vec3 {
         (*self).rem(rhs)
     }
 }
 
-impl RemAssign<i32> for IVec2 {
+impl RemAssign<i8> for I8Vec3 {
     #[inline]
-    fn rem_assign(&mut self, rhs: i32) {
+    fn rem_assign(&mut self, rhs: i8) {
         self.x.rem_assign(rhs);
         self.y.rem_assign(rhs);
+        self.z.rem_assign(rhs);
     }
 }
 
-impl RemAssign<&i32> for IVec2 {
+impl RemAssign<&i8> for I8Vec3 {
     #[inline]
-    fn rem_assign(&mut self, rhs: &i32) {
+    fn rem_assign(&mut self, rhs: &i8) {
         self.rem_assign(*rhs)
     }
 }
 
-impl Rem<IVec2> for i32 {
-    type Output = IVec2;
+impl Rem<I8Vec3> for i8 {
+    type Output = I8Vec3;
     #[inline]
-    fn rem(self, rhs: IVec2) -> IVec2 {
-        IVec2 {
+    fn rem(self, rhs: I8Vec3) -> I8Vec3 {
+        I8Vec3 {
             x: self.rem(rhs.x),
             y: self.rem(rhs.y),
+            z: self.rem(rhs.z),
         }
     }
 }
 
-impl Rem<&IVec2> for i32 {
-    type Output = IVec2;
+impl Rem<&I8Vec3> for i8 {
+    type Output = I8Vec3;
     #[inline]
-    fn rem(self, rhs: &IVec2) -> IVec2 {
+    fn rem(self, rhs: &I8Vec3) -> I8Vec3 {
         self.rem(*rhs)
     }
 }
 
-impl Rem<&IVec2> for &i32 {
-    type Output = IVec2;
+impl Rem<&I8Vec3> for &i8 {
+    type Output = I8Vec3;
     #[inline]
-    fn rem(self, rhs: &IVec2) -> IVec2 {
+    fn rem(self, rhs: &I8Vec3) -> I8Vec3 {
         (*self).rem(*rhs)
     }
 }
 
-impl Rem<IVec2> for &i32 {
-    type Output = IVec2;
+impl Rem<I8Vec3> for &i8 {
+    type Output = I8Vec3;
     #[inline]
-    fn rem(self, rhs: IVec2) -> IVec2 {
+    fn rem(self, rhs: I8Vec3) -> I8Vec3 {
         (*self).rem(rhs)
     }
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl AsRef<[i32; 2]> for IVec2 {
+impl AsRef<[i8; 3]> for I8Vec3 {
     #[inline]
-    fn as_ref(&self) -> &[i32; 2] {
-        unsafe { &*(self as *const IVec2 as *const [i32; 2]) }
+    fn as_ref(&self) -> &[i8; 3] {
+        unsafe { &*(self as *const I8Vec3 as *const [i8; 3]) }
     }
 }
 
 #[cfg(not(target_arch = "spirv"))]
-impl AsMut<[i32; 2]> for IVec2 {
+impl AsMut<[i8; 3]> for I8Vec3 {
     #[inline]
-    fn as_mut(&mut self) -> &mut [i32; 2] {
-        unsafe { &mut *(self as *mut IVec2 as *mut [i32; 2]) }
+    fn as_mut(&mut self) -> &mut [i8; 3] {
+        unsafe { &mut *(self as *mut I8Vec3 as *mut [i8; 3]) }
     }
 }
 
-impl Sum for IVec2 {
+impl Sum for I8Vec3 {
     #[inline]
     fn sum<I>(iter: I) -> Self
     where
@@ -1326,7 +1401,7 @@ impl Sum for IVec2 {
     }
 }
 
-impl<'a> Sum<&'a Self> for IVec2 {
+impl<'a> Sum<&'a Self> for I8Vec3 {
     #[inline]
     fn sum<I>(iter: I) -> Self
     where
@@ -1336,7 +1411,7 @@ impl<'a> Sum<&'a Self> for IVec2 {
     }
 }
 
-impl Product for IVec2 {
+impl Product for I8Vec3 {
     #[inline]
     fn product<I>(iter: I) -> Self
     where
@@ -1346,7 +1421,7 @@ impl Product for IVec2 {
     }
 }
 
-impl<'a> Product<&'a Self> for IVec2 {
+impl<'a> Product<&'a Self> for I8Vec3 {
     #[inline]
     fn product<I>(iter: I) -> Self
     where
@@ -1356,446 +1431,532 @@ impl<'a> Product<&'a Self> for IVec2 {
     }
 }
 
-impl Neg for IVec2 {
+impl Neg for I8Vec3 {
     type Output = Self;
     #[inline]
     fn neg(self) -> Self {
         Self {
             x: self.x.neg(),
             y: self.y.neg(),
+            z: self.z.neg(),
         }
     }
 }
 
-impl Neg for &IVec2 {
-    type Output = IVec2;
+impl Neg for &I8Vec3 {
+    type Output = I8Vec3;
     #[inline]
-    fn neg(self) -> IVec2 {
+    fn neg(self) -> I8Vec3 {
         (*self).neg()
     }
 }
 
-impl Not for IVec2 {
+impl Not for I8Vec3 {
     type Output = Self;
     #[inline]
     fn not(self) -> Self::Output {
         Self {
             x: self.x.not(),
             y: self.y.not(),
+            z: self.z.not(),
         }
     }
 }
 
-impl BitAnd for IVec2 {
+impl BitAnd for I8Vec3 {
     type Output = Self;
     #[inline]
     fn bitand(self, rhs: Self) -> Self::Output {
         Self {
             x: self.x.bitand(rhs.x),
             y: self.y.bitand(rhs.y),
+            z: self.z.bitand(rhs.z),
         }
     }
 }
 
-impl BitOr for IVec2 {
+impl BitOr for I8Vec3 {
     type Output = Self;
     #[inline]
     fn bitor(self, rhs: Self) -> Self::Output {
         Self {
             x: self.x.bitor(rhs.x),
             y: self.y.bitor(rhs.y),
+            z: self.z.bitor(rhs.z),
         }
     }
 }
 
-impl BitXor for IVec2 {
+impl BitXor for I8Vec3 {
     type Output = Self;
     #[inline]
     fn bitxor(self, rhs: Self) -> Self::Output {
         Self {
             x: self.x.bitxor(rhs.x),
             y: self.y.bitxor(rhs.y),
+            z: self.z.bitxor(rhs.z),
         }
     }
 }
 
-impl BitAnd<i32> for IVec2 {
+impl BitAnd<i8> for I8Vec3 {
     type Output = Self;
     #[inline]
-    fn bitand(self, rhs: i32) -> Self::Output {
+    fn bitand(self, rhs: i8) -> Self::Output {
         Self {
             x: self.x.bitand(rhs),
             y: self.y.bitand(rhs),
+            z: self.z.bitand(rhs),
         }
     }
 }
 
-impl BitOr<i32> for IVec2 {
+impl BitOr<i8> for I8Vec3 {
     type Output = Self;
     #[inline]
-    fn bitor(self, rhs: i32) -> Self::Output {
+    fn bitor(self, rhs: i8) -> Self::Output {
         Self {
             x: self.x.bitor(rhs),
             y: self.y.bitor(rhs),
+            z: self.z.bitor(rhs),
         }
     }
 }
 
-impl BitXor<i32> for IVec2 {
+impl BitXor<i8> for I8Vec3 {
     type Output = Self;
     #[inline]
-    fn bitxor(self, rhs: i32) -> Self::Output {
+    fn bitxor(self, rhs: i8) -> Self::Output {
         Self {
             x: self.x.bitxor(rhs),
             y: self.y.bitxor(rhs),
+            z: self.z.bitxor(rhs),
         }
     }
 }
 
-impl Shl<i8> for IVec2 {
+impl Shl<i8> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: i8) -> Self::Output {
         Self {
             x: self.x.shl(rhs),
             y: self.y.shl(rhs),
+            z: self.z.shl(rhs),
         }
     }
 }
 
-impl Shr<i8> for IVec2 {
+impl Shr<i8> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: i8) -> Self::Output {
         Self {
             x: self.x.shr(rhs),
             y: self.y.shr(rhs),
+            z: self.z.shr(rhs),
         }
     }
 }
 
-impl Shl<i16> for IVec2 {
+impl Shl<i16> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: i16) -> Self::Output {
         Self {
             x: self.x.shl(rhs),
             y: self.y.shl(rhs),
+            z: self.z.shl(rhs),
         }
     }
 }
 
-impl Shr<i16> for IVec2 {
+impl Shr<i16> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: i16) -> Self::Output {
         Self {
             x: self.x.shr(rhs),
             y: self.y.shr(rhs),
+            z: self.z.shr(rhs),
         }
     }
 }
 
-impl Shl<i32> for IVec2 {
+impl Shl<i32> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: i32) -> Self::Output {
         Self {
             x: self.x.shl(rhs),
             y: self.y.shl(rhs),
+            z: self.z.shl(rhs),
         }
     }
 }
 
-impl Shr<i32> for IVec2 {
+impl Shr<i32> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: i32) -> Self::Output {
         Self {
             x: self.x.shr(rhs),
             y: self.y.shr(rhs),
+            z: self.z.shr(rhs),
         }
     }
 }
 
-impl Shl<i64> for IVec2 {
+impl Shl<i64> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: i64) -> Self::Output {
         Self {
             x: self.x.shl(rhs),
             y: self.y.shl(rhs),
+            z: self.z.shl(rhs),
         }
     }
 }
 
-impl Shr<i64> for IVec2 {
+impl Shr<i64> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: i64) -> Self::Output {
         Self {
             x: self.x.shr(rhs),
             y: self.y.shr(rhs),
+            z: self.z.shr(rhs),
         }
     }
 }
 
-impl Shl<u8> for IVec2 {
+impl Shl<u8> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: u8) -> Self::Output {
         Self {
             x: self.x.shl(rhs),
             y: self.y.shl(rhs),
+            z: self.z.shl(rhs),
         }
     }
 }
 
-impl Shr<u8> for IVec2 {
+impl Shr<u8> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: u8) -> Self::Output {
         Self {
             x: self.x.shr(rhs),
             y: self.y.shr(rhs),
+            z: self.z.shr(rhs),
         }
     }
 }
 
-impl Shl<u16> for IVec2 {
+impl Shl<u16> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: u16) -> Self::Output {
         Self {
             x: self.x.shl(rhs),
             y: self.y.shl(rhs),
+            z: self.z.shl(rhs),
         }
     }
 }
 
-impl Shr<u16> for IVec2 {
+impl Shr<u16> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: u16) -> Self::Output {
         Self {
             x: self.x.shr(rhs),
             y: self.y.shr(rhs),
+            z: self.z.shr(rhs),
         }
     }
 }
 
-impl Shl<u32> for IVec2 {
+impl Shl<u32> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: u32) -> Self::Output {
         Self {
             x: self.x.shl(rhs),
             y: self.y.shl(rhs),
+            z: self.z.shl(rhs),
         }
     }
 }
 
-impl Shr<u32> for IVec2 {
+impl Shr<u32> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: u32) -> Self::Output {
         Self {
             x: self.x.shr(rhs),
             y: self.y.shr(rhs),
+            z: self.z.shr(rhs),
         }
     }
 }
 
-impl Shl<u64> for IVec2 {
+impl Shl<u64> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: u64) -> Self::Output {
         Self {
             x: self.x.shl(rhs),
             y: self.y.shl(rhs),
+            z: self.z.shl(rhs),
         }
     }
 }
 
-impl Shr<u64> for IVec2 {
+impl Shr<u64> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: u64) -> Self::Output {
         Self {
             x: self.x.shr(rhs),
             y: self.y.shr(rhs),
+            z: self.z.shr(rhs),
         }
     }
 }
 
-impl Shl<crate::IVec2> for IVec2 {
+impl Shl<crate::IVec3> for I8Vec3 {
     type Output = Self;
     #[inline]
-    fn shl(self, rhs: crate::IVec2) -> Self::Output {
+    fn shl(self, rhs: crate::IVec3) -> Self::Output {
         Self {
             x: self.x.shl(rhs.x),
             y: self.y.shl(rhs.y),
+            z: self.z.shl(rhs.z),
         }
     }
 }
 
-impl Shr<crate::IVec2> for IVec2 {
+impl Shr<crate::IVec3> for I8Vec3 {
     type Output = Self;
     #[inline]
-    fn shr(self, rhs: crate::IVec2) -> Self::Output {
+    fn shr(self, rhs: crate::IVec3) -> Self::Output {
         Self {
             x: self.x.shr(rhs.x),
             y: self.y.shr(rhs.y),
+            z: self.z.shr(rhs.z),
         }
     }
 }
 
-impl Shl<crate::UVec2> for IVec2 {
+impl Shl<crate::UVec3> for I8Vec3 {
     type Output = Self;
     #[inline]
-    fn shl(self, rhs: crate::UVec2) -> Self::Output {
+    fn shl(self, rhs: crate::UVec3) -> Self::Output {
         Self {
             x: self.x.shl(rhs.x),
             y: self.y.shl(rhs.y),
+            z: self.z.shl(rhs.z),
         }
     }
 }
 
-impl Shr<crate::UVec2> for IVec2 {
+impl Shr<crate::UVec3> for I8Vec3 {
     type Output = Self;
     #[inline]
-    fn shr(self, rhs: crate::UVec2) -> Self::Output {
+    fn shr(self, rhs: crate::UVec3) -> Self::Output {
         Self {
             x: self.x.shr(rhs.x),
             y: self.y.shr(rhs.y),
+            z: self.z.shr(rhs.z),
         }
     }
 }
 
-impl Index<usize> for IVec2 {
-    type Output = i32;
+impl Index<usize> for I8Vec3 {
+    type Output = i8;
     #[inline]
     fn index(&self, index: usize) -> &Self::Output {
         match index {
             0 => &self.x,
             1 => &self.y,
+            2 => &self.z,
             _ => panic!("index out of bounds"),
         }
     }
 }
 
-impl IndexMut<usize> for IVec2 {
+impl IndexMut<usize> for I8Vec3 {
     #[inline]
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         match index {
             0 => &mut self.x,
             1 => &mut self.y,
+            2 => &mut self.z,
             _ => panic!("index out of bounds"),
         }
     }
 }
 
-impl fmt::Display for IVec2 {
+impl fmt::Display for I8Vec3 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "[{}, {}]", self.x, self.y)
+        write!(f, "[{}, {}, {}]", self.x, self.y, self.z)
     }
 }
 
-impl fmt::Debug for IVec2 {
+impl fmt::Debug for I8Vec3 {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
-        fmt.debug_tuple(stringify!(IVec2))
+        fmt.debug_tuple(stringify!(I8Vec3))
             .field(&self.x)
             .field(&self.y)
+            .field(&self.z)
             .finish()
     }
 }
 
-impl From<[i32; 2]> for IVec2 {
+impl From<[i8; 3]> for I8Vec3 {
     #[inline]
-    fn from(a: [i32; 2]) -> Self {
-        Self::new(a[0], a[1])
+    fn from(a: [i8; 3]) -> Self {
+        Self::new(a[0], a[1], a[2])
     }
 }
 
-impl From<IVec2> for [i32; 2] {
+impl From<I8Vec3> for [i8; 3] {
     #[inline]
-    fn from(v: IVec2) -> Self {
-        [v.x, v.y]
+    fn from(v: I8Vec3) -> Self {
+        [v.x, v.y, v.z]
     }
 }
 
-impl From<(i32, i32)> for IVec2 {
+impl From<(i8, i8, i8)> for I8Vec3 {
     #[inline]
-    fn from(t: (i32, i32)) -> Self {
-        Self::new(t.0, t.1)
+    fn from(t: (i8, i8, i8)) -> Self {
+        Self::new(t.0, t.1, t.2)
     }
 }
 
-impl From<IVec2> for (i32, i32) {
+impl From<I8Vec3> for (i8, i8, i8) {
     #[inline]
-    fn from(v: IVec2) -> Self {
-        (v.x, v.y)
+    fn from(v: I8Vec3) -> Self {
+        (v.x, v.y, v.z)
     }
 }
 
-impl From<I8Vec2> for IVec2 {
+impl From<(I8Vec2, i8)> for I8Vec3 {
     #[inline]
-    fn from(v: I8Vec2) -> Self {
-        Self::new(i32::from(v.x), i32::from(v.y))
+    fn from((v, z): (I8Vec2, i8)) -> Self {
+        Self::new(v.x, v.y, z)
     }
 }
 
-impl From<U8Vec2> for IVec2 {
-    #[inline]
-    fn from(v: U8Vec2) -> Self {
-        Self::new(i32::from(v.x), i32::from(v.y))
-    }
-}
-
-impl From<I16Vec2> for IVec2 {
-    #[inline]
-    fn from(v: I16Vec2) -> Self {
-        Self::new(i32::from(v.x), i32::from(v.y))
-    }
-}
-
-impl From<U16Vec2> for IVec2 {
-    #[inline]
-    fn from(v: U16Vec2) -> Self {
-        Self::new(i32::from(v.x), i32::from(v.y))
-    }
-}
-
-impl TryFrom<UVec2> for IVec2 {
+impl TryFrom<U8Vec3> for I8Vec3 {
     type Error = core::num::TryFromIntError;
 
     #[inline]
-    fn try_from(v: UVec2) -> Result<Self, Self::Error> {
-        Ok(Self::new(i32::try_from(v.x)?, i32::try_from(v.y)?))
+    fn try_from(v: U8Vec3) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            i8::try_from(v.x)?,
+            i8::try_from(v.y)?,
+            i8::try_from(v.z)?,
+        ))
     }
 }
 
-impl TryFrom<I64Vec2> for IVec2 {
+impl TryFrom<I16Vec3> for I8Vec3 {
     type Error = core::num::TryFromIntError;
 
     #[inline]
-    fn try_from(v: I64Vec2) -> Result<Self, Self::Error> {
-        Ok(Self::new(i32::try_from(v.x)?, i32::try_from(v.y)?))
+    fn try_from(v: I16Vec3) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            i8::try_from(v.x)?,
+            i8::try_from(v.y)?,
+            i8::try_from(v.z)?,
+        ))
     }
 }
 
-impl TryFrom<U64Vec2> for IVec2 {
+impl TryFrom<U16Vec3> for I8Vec3 {
     type Error = core::num::TryFromIntError;
 
     #[inline]
-    fn try_from(v: U64Vec2) -> Result<Self, Self::Error> {
-        Ok(Self::new(i32::try_from(v.x)?, i32::try_from(v.y)?))
+    fn try_from(v: U16Vec3) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            i8::try_from(v.x)?,
+            i8::try_from(v.y)?,
+            i8::try_from(v.z)?,
+        ))
     }
 }
 
-impl From<BVec2> for IVec2 {
+impl TryFrom<IVec3> for I8Vec3 {
+    type Error = core::num::TryFromIntError;
+
     #[inline]
-    fn from(v: BVec2) -> Self {
-        Self::new(i32::from(v.x), i32::from(v.y))
+    fn try_from(v: IVec3) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            i8::try_from(v.x)?,
+            i8::try_from(v.y)?,
+            i8::try_from(v.z)?,
+        ))
+    }
+}
+
+impl TryFrom<UVec3> for I8Vec3 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: UVec3) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            i8::try_from(v.x)?,
+            i8::try_from(v.y)?,
+            i8::try_from(v.z)?,
+        ))
+    }
+}
+
+impl TryFrom<I64Vec3> for I8Vec3 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: I64Vec3) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            i8::try_from(v.x)?,
+            i8::try_from(v.y)?,
+            i8::try_from(v.z)?,
+        ))
+    }
+}
+
+impl TryFrom<U64Vec3> for I8Vec3 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: U64Vec3) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            i8::try_from(v.x)?,
+            i8::try_from(v.y)?,
+            i8::try_from(v.z)?,
+        ))
+    }
+}
+
+impl From<BVec3> for I8Vec3 {
+    #[inline]
+    fn from(v: BVec3) -> Self {
+        Self::new(i8::from(v.x), i8::from(v.y), i8::from(v.z))
+    }
+}
+
+impl From<BVec3A> for I8Vec3 {
+    #[inline]
+    fn from(v: BVec3A) -> Self {
+        let bool_array: [bool; 3] = v.into();
+        Self::new(
+            i8::from(bool_array[0]),
+            i8::from(bool_array[1]),
+            i8::from(bool_array[2]),
+        )
     }
 }

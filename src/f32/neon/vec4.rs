@@ -902,6 +902,20 @@ impl Vec4 {
         crate::DVec4::new(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
     }
 
+    /// Casts all elements of `self` to `i8`.
+    #[inline]
+    #[must_use]
+    pub fn as_i8vec4(&self) -> crate::I8Vec4 {
+        crate::I8Vec4::new(self.x as i8, self.y as i8, self.z as i8, self.w as i8)
+    }
+
+    /// Casts all elements of `self` to `u8`.
+    #[inline]
+    #[must_use]
+    pub fn as_u8vec4(&self) -> crate::U8Vec4 {
+        crate::U8Vec4::new(self.x as u8, self.y as u8, self.z as u8, self.w as u8)
+    }
+
     /// Casts all elements of `self` to `i16`.
     #[inline]
     #[must_use]

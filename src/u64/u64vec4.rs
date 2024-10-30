@@ -2,7 +2,7 @@
 
 #[cfg(not(feature = "scalar-math"))]
 use crate::BVec4A;
-use crate::{BVec4, I16Vec4, I64Vec4, IVec4, U16Vec4, U64Vec2, U64Vec3, UVec4};
+use crate::{BVec4, I16Vec4, I64Vec4, I8Vec4, IVec4, U16Vec4, U64Vec2, U64Vec3, U8Vec4, UVec4};
 
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -390,6 +390,20 @@ impl U64Vec4 {
     #[must_use]
     pub fn as_dvec4(&self) -> crate::DVec4 {
         crate::DVec4::new(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
+    }
+
+    /// Casts all elements of `self` to `i8`.
+    #[inline]
+    #[must_use]
+    pub fn as_i8vec4(&self) -> crate::I8Vec4 {
+        crate::I8Vec4::new(self.x as i8, self.y as i8, self.z as i8, self.w as i8)
+    }
+
+    /// Casts all elements of `self` to `u8`.
+    #[inline]
+    #[must_use]
+    pub fn as_u8vec4(&self) -> crate::U8Vec4 {
+        crate::U8Vec4::new(self.x as u8, self.y as u8, self.z as u8, self.w as u8)
     }
 
     /// Casts all elements of `self` to `i16`.
@@ -1807,6 +1821,18 @@ impl From<(U64Vec2, U64Vec2)> for U64Vec4 {
     }
 }
 
+impl From<U8Vec4> for U64Vec4 {
+    #[inline]
+    fn from(v: U8Vec4) -> Self {
+        Self::new(
+            u64::from(v.x),
+            u64::from(v.y),
+            u64::from(v.z),
+            u64::from(v.w),
+        )
+    }
+}
+
 impl From<U16Vec4> for U64Vec4 {
     #[inline]
     fn from(v: U16Vec4) -> Self {
@@ -1828,6 +1854,20 @@ impl From<UVec4> for U64Vec4 {
             u64::from(v.z),
             u64::from(v.w),
         )
+    }
+}
+
+impl TryFrom<I8Vec4> for U64Vec4 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: I8Vec4) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            u64::try_from(v.x)?,
+            u64::try_from(v.y)?,
+            u64::try_from(v.z)?,
+            u64::try_from(v.w)?,
+        ))
     }
 }
 

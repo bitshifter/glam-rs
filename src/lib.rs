@@ -15,6 +15,10 @@
   * square matrices: [`DMat2`], [`DMat3`] and [`DMat4`]
   * a quaternion type: [`DQuat`]
   * affine transformation types: [`DAffine2`] and [`DAffine3`]
+* [`i8`](mod@i8) types
+  * vectors: [`I8Vec2`], [`I8Vec3`] and [`I8Vec4`]
+* [`u8`](mod@u8) types
+  * vectors: [`U8Vec2`], [`U8Vec3`] and [`U8Vec4`]
 * [`i16`](mod@i16) types
   * vectors: [`I16Vec2`], [`I16Vec3`] and [`I16Vec4`]
 * [`u16`](mod@u16) types
@@ -317,6 +321,14 @@ pub use self::f32::*;
 /** `f64` vector, quaternion and matrix types. */
 pub mod f64;
 pub use self::f64::*;
+
+/** `i8` vector types. */
+pub mod i8;
+pub use self::i8::*;
+
+/** `u8` vector types. */
+pub mod u8;
+pub use self::u8::*;
 
 /** `i16` vector types. */
 pub mod i16;
