@@ -733,6 +733,35 @@ mod mat4 {
         );
     });
 
+    glam_test!(test_transform_vec3a, {
+        use glam::Vec3A;
+        let m = Mat4::from_axis_angle(Vec3::Z, deg(90.0));
+        let result3 = m.transform_vector3a(Vec3A::Y);
+        assert_approx_eq!(Vec3A::new(-1.0, 0.0, 0.0), result3);
+
+        let m = Mat4::from_scale_rotation_translation(
+            Vec3::new(0.5, 1.5, 2.0),
+            Quat::from_rotation_x(deg(90.0)),
+            Vec3::new(1.0, 2.0, 3.0),
+        );
+        let result3 = m.transform_vector3a(Vec3A::Y);
+        assert_approx_eq!(Vec3A::new(0.0, 0.0, 1.5), result3, 1.0e-6);
+
+        let result3 = m.transform_point3a(Vec3A::Y);
+        assert_approx_eq!(Vec3A::new(1.0, 2.0, 4.5), result3, 1.0e-6);
+
+        let m = Mat4::from_cols(
+            vec4(8.0, 0.0, 0.0, 0.0),
+            vec4(0.0, 4.0, 0.0, 0.0),
+            vec4(0.0, 0.0, 2.0, 2.0),
+            vec4(0.0, 0.0, 0.0, 0.0),
+        );
+        assert_approx_eq!(
+            Vec3A::new(4.0, 2.0, 1.0),
+            m.project_point3a(Vec3A::new(2.0, 2.0, 2.0))
+        );
+    });
+
     glam_test!(test_as, {
         use glam::DMat4;
         assert_eq!(

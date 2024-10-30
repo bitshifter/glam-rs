@@ -1126,7 +1126,7 @@ impl Mat4 {
         res = self.y_axis.mul(rhs.y).add(res);
         res = self.z_axis.mul(rhs.z).add(res);
         res = self.w_axis.add(res);
-        res = res.mul(res.wwww().recip());
+        res = res.div(res.w);
         res.xyz()
     }
 
@@ -1171,6 +1171,23 @@ impl Mat4 {
         res = self.y_axis.mul(rhs.y).add(res);
         res = self.z_axis.mul(rhs.z).add(res);
         res.xyz()
+    }
+
+    /// Transforms the given [`Vec3A`] as a 3D point, applying perspective correction.
+    ///
+    /// This is the equivalent of multiplying the [`Vec3A`] as a 4D vector where `w` is `1.0`.
+    /// The perspective divide is performed meaning the resulting 3D vector is divided by `w`.
+    ///
+    /// This method assumes that `self` contains a projective transform.
+    #[inline]
+    #[must_use]
+    pub fn project_point3a(&self, rhs: Vec3A) -> Vec3A {
+        let mut res = self.x_axis.mul(rhs.xxxx());
+        res = self.y_axis.mul(rhs.yyyy()).add(res);
+        res = self.z_axis.mul(rhs.zzzz()).add(res);
+        res = self.w_axis.add(res);
+        res = res.div(res.wwww());
+        Vec3A::from_vec4(res)
     }
 
     /// Transforms the given [`Vec3A`] as 3D point.
