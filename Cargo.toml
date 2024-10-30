@@ -48,7 +48,7 @@ mint = { version = "0.5.8", optional = true, default-features = false }
 rand = { version = "0.8", optional = true, default-features = false }
 serde = { version = "1.0", optional = true, default-features = false }
 rkyv = { version = "0.7", optional = true, default-features = false }
-bytecheck = { version = "0.8", optional = true, default-features = false }
+bytecheck = { version = "0.7", optional = true, default-features = false }
 libm = { version = "0.2", optional = true, default-features = false}
 
 [dev-dependencies]
