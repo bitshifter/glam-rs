@@ -12,6 +12,9 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Added `i8` and `u8` vector types, `I8Vec2`, `I8Vec3`, `I8Vec4`,
   `U8Vec2`, `U8Vec3` and `U8Vec4`.
 
+* Added `Mat4::project_point3a(Vec3A)` method transforming points by
+  perspective projections.
+
 ### Changed
 
 * Removed normalized assertions from quaternion multiplies as sometimes this is
