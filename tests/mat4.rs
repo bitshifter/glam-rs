@@ -446,14 +446,16 @@ macro_rules! impl_mat4_tests {
             assert_approx_eq!(lh.transform_point3(point), $vec3::new(0.0, 1.0, 5.0));
             assert_approx_eq!(rh.transform_point3(point), $vec3::new(0.0, 1.0, -5.0));
 
-            let dir = center - eye;
+            let dir = (center - eye).normalize();
             let lh = $mat4::look_to_lh(eye, dir, up);
             let rh = $mat4::look_to_rh(eye, dir, up);
             assert_approx_eq!(lh.transform_point3(point), $vec3::new(0.0, 1.0, 5.0));
             assert_approx_eq!(rh.transform_point3(point), $vec3::new(0.0, 1.0, -5.0));
 
-            should_glam_assert!({ $mat4::look_at_lh($vec3::ONE, $vec3::ZERO, $vec3::ZERO) });
-            should_glam_assert!({ $mat4::look_at_rh($vec3::ONE, $vec3::ZERO, $vec3::ZERO) });
+            should_glam_assert!({ $mat4::look_to_lh($vec3::ONE, $vec3::ONE, $vec3::ZERO) });
+            should_glam_assert!({ $mat4::look_to_lh($vec3::ONE, $vec3::ZERO, $vec3::ONE) });
+            should_glam_assert!({ $mat4::look_to_rh($vec3::ONE, $vec3::ONE, $vec3::ZERO) });
+            should_glam_assert!({ $mat4::look_to_rh($vec3::ONE, $vec3::ZERO, $vec3::ONE) });
         });
 
         glam_test!(test_mat4_perspective_gl_rh, {
