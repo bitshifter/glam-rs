@@ -1,7 +1,6 @@
 macro_rules! impl_vec_types {
     ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident, $uniform:ident) => {
         use super::{UniformVec2, UniformVec3, UniformVec4};
-        use core::marker::PhantomData;
         use rand::{
             distributions::{
                 uniform::{SampleBorrow, SampleUniform, UniformSampler},
@@ -18,10 +17,10 @@ macro_rules! impl_vec_types {
         }
 
         impl SampleUniform for $vec2 {
-            type Sampler = UniformVec2<$vec2, $uniform<$t>>;
+            type Sampler = UniformVec2<$uniform<$t>>;
         }
 
-        impl UniformSampler for UniformVec2<$vec2, $uniform<$t>> {
+        impl UniformSampler for UniformVec2<$uniform<$t>> {
             type X = $vec2;
 
             fn new<B1, B2>(low_b: B1, high_b: B2) -> Self
@@ -36,7 +35,6 @@ macro_rules! impl_vec_types {
                 Self {
                     x_gen: $uniform::new(low.x, high.x),
                     y_gen: $uniform::new(low.y, high.y),
-                    vec_type: PhantomData,
                 }
             }
 
@@ -58,7 +56,6 @@ macro_rules! impl_vec_types {
                 Self {
                     x_gen: $uniform::new_inclusive(low.x, high.x),
                     y_gen: $uniform::new_inclusive(low.y, high.y),
-                    vec_type: PhantomData,
                 }
             }
 
@@ -121,10 +118,10 @@ macro_rules! impl_vec_types {
         }
 
         impl SampleUniform for $vec3 {
-            type Sampler = UniformVec3<$vec3, $uniform<$t>>;
+            type Sampler = UniformVec3<$uniform<$t>>;
         }
 
-        impl UniformSampler for UniformVec3<$vec3, $uniform<$t>> {
+        impl UniformSampler for UniformVec3<$uniform<$t>> {
             type X = $vec3;
 
             fn new<B1, B2>(low_b: B1, high_b: B2) -> Self
@@ -141,7 +138,6 @@ macro_rules! impl_vec_types {
                     x_gen: $uniform::new(low.x, high.x),
                     y_gen: $uniform::new(low.y, high.y),
                     z_gen: $uniform::new(low.z, high.z),
-                    vec_type: PhantomData,
                 }
             }
 
@@ -168,7 +164,6 @@ macro_rules! impl_vec_types {
                     x_gen: $uniform::new_inclusive(low.x, high.x),
                     y_gen: $uniform::new_inclusive(low.y, high.y),
                     z_gen: $uniform::new_inclusive(low.z, high.z),
-                    vec_type: PhantomData,
                 }
             }
 
@@ -245,10 +240,10 @@ macro_rules! impl_vec_types {
         }
 
         impl SampleUniform for $vec4 {
-            type Sampler = UniformVec4<$vec4, $uniform<$t>>;
+            type Sampler = UniformVec4<$uniform<$t>>;
         }
 
-        impl UniformSampler for UniformVec4<$vec4, $uniform<$t>> {
+        impl UniformSampler for UniformVec4<$uniform<$t>> {
             type X = $vec4;
 
             fn new<B1, B2>(low_b: B1, high_b: B2) -> Self
@@ -267,7 +262,6 @@ macro_rules! impl_vec_types {
                     y_gen: $uniform::new(low.y, high.y),
                     z_gen: $uniform::new(low.z, high.z),
                     w_gen: $uniform::new(low.w, high.w),
-                    vec_type: PhantomData,
                 }
             }
 
@@ -299,7 +293,6 @@ macro_rules! impl_vec_types {
                     y_gen: $uniform::new_inclusive(low.y, high.y),
                     z_gen: $uniform::new_inclusive(low.z, high.z),
                     w_gen: $uniform::new_inclusive(low.w, high.w),
-                    vec_type: PhantomData,
                 }
             }
 
@@ -509,27 +502,24 @@ macro_rules! impl_float_types {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub struct UniformVec2<T, G> {
+pub struct UniformVec2<G> {
     x_gen: G,
     y_gen: G,
-    vec_type: core::marker::PhantomData<T>,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub struct UniformVec3<T, G> {
+pub struct UniformVec3<G> {
     x_gen: G,
     y_gen: G,
     z_gen: G,
-    vec_type: core::marker::PhantomData<T>,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub struct UniformVec4<T, G> {
+pub struct UniformVec4<G> {
     x_gen: G,
     y_gen: G,
     z_gen: G,
     w_gen: G,
-    vec_type: core::marker::PhantomData<T>,
 }
 
 mod f32 {
