@@ -1,13 +1,115 @@
 macro_rules! impl_vec_types {
-    ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident) => {
+    ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident, $uniform:ident) => {
+        use super::{UniformVec2, UniformVec3, UniformVec4};
+        use core::marker::PhantomData;
         use rand::{
-            distributions::{Distribution, Standard},
+            distributions::{
+                uniform::{SampleBorrow, SampleUniform, UniformSampler},
+                Distribution, Standard,
+            },
             Rng,
         };
+
         impl Distribution<$vec2> for Standard {
             #[inline]
             fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $vec2 {
                 rng.gen::<[$t; 2]>().into()
+            }
+        }
+
+        impl SampleUniform for $vec2 {
+            type Sampler = UniformVec2<$vec2, $uniform<$t>>;
+        }
+
+        impl UniformSampler for UniformVec2<$vec2, $uniform<$t>> {
+            type X = $vec2;
+
+            fn new<B1, B2>(low_b: B1, high_b: B2) -> Self
+            where
+                B1: SampleBorrow<Self::X> + Sized,
+                B2: SampleBorrow<Self::X> + Sized,
+            {
+                let low = *low_b.borrow();
+                let high = *high_b.borrow();
+                assert!(low.x < high.x, "Uniform::new called with `low.x >= high.x");
+                assert!(low.y < high.y, "Uniform::new called with `low.y >= high.y");
+                Self {
+                    x_gen: $uniform::new(low.x, high.x),
+                    y_gen: $uniform::new(low.y, high.y),
+                    vec_type: PhantomData,
+                }
+            }
+
+            fn new_inclusive<B1, B2>(low_b: B1, high_b: B2) -> Self
+            where
+                B1: SampleBorrow<Self::X> + Sized,
+                B2: SampleBorrow<Self::X> + Sized,
+            {
+                let low = *low_b.borrow();
+                let high = *high_b.borrow();
+                assert!(
+                    low.x < high.x,
+                    "Uniform::new_inclusive called with `low.x >= high.x"
+                );
+                assert!(
+                    low.y < high.y,
+                    "Uniform::new_inclusive called with `low.y >= high.y"
+                );
+                Self {
+                    x_gen: $uniform::new_inclusive(low.x, high.x),
+                    y_gen: $uniform::new_inclusive(low.y, high.y),
+                    vec_type: PhantomData,
+                }
+            }
+
+            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
+                Self::X::from([self.x_gen.sample(rng), self.y_gen.sample(rng)])
+            }
+
+            fn sample_single<R: Rng + ?Sized, B1, B2>(low_b: B1, high_b: B2, rng: &mut R) -> Self::X
+            where
+                B1: SampleBorrow<Self::X> + Sized,
+                B2: SampleBorrow<Self::X> + Sized,
+            {
+                let low = *low_b.borrow();
+                let high = *high_b.borrow();
+                assert!(
+                    low.x < high.x,
+                    "Uniform::sample_single called with `low.x >= high.x"
+                );
+                assert!(
+                    low.y < high.y,
+                    "Uniform::sample_single called with `low.y >= high.y"
+                );
+                Self::X::from([
+                    $uniform::<$t>::sample_single(low.x, high.x, rng),
+                    $uniform::<$t>::sample_single(low.y, high.y, rng),
+                ])
+            }
+
+            fn sample_single_inclusive<R: Rng + ?Sized, B1, B2>(
+                low_b: B1,
+                high_b: B2,
+                rng: &mut R,
+            ) -> Self::X
+            where
+                B1: SampleBorrow<Self::X> + Sized,
+                B2: SampleBorrow<Self::X> + Sized,
+            {
+                let low = *low_b.borrow();
+                let high = *high_b.borrow();
+                assert!(
+                    low.x < high.x,
+                    "Uniform::sample_single_inclusive called with `low.x >= high.x"
+                );
+                assert!(
+                    low.y < high.y,
+                    "Uniform::sample_single_inclusive called with `low.y >= high.y"
+                );
+                Self::X::from([
+                    $uniform::<$t>::sample_single_inclusive(low.x, high.x, rng),
+                    $uniform::<$t>::sample_single_inclusive(low.y, high.y, rng),
+                ])
             }
         }
 
@@ -18,10 +120,262 @@ macro_rules! impl_vec_types {
             }
         }
 
+        impl SampleUniform for $vec3 {
+            type Sampler = UniformVec3<$vec3, $uniform<$t>>;
+        }
+
+        impl UniformSampler for UniformVec3<$vec3, $uniform<$t>> {
+            type X = $vec3;
+
+            fn new<B1, B2>(low_b: B1, high_b: B2) -> Self
+            where
+                B1: SampleBorrow<Self::X> + Sized,
+                B2: SampleBorrow<Self::X> + Sized,
+            {
+                let low = *low_b.borrow();
+                let high = *high_b.borrow();
+                assert!(low.x < high.x, "Uniform::new called with `low.x >= high.x");
+                assert!(low.y < high.y, "Uniform::new called with `low.y >= high.y");
+                assert!(low.z < high.z, "Uniform::new called with `low.z >= high.z");
+                Self {
+                    x_gen: $uniform::new(low.x, high.x),
+                    y_gen: $uniform::new(low.y, high.y),
+                    z_gen: $uniform::new(low.z, high.z),
+                    vec_type: PhantomData,
+                }
+            }
+
+            fn new_inclusive<B1, B2>(low_b: B1, high_b: B2) -> Self
+            where
+                B1: SampleBorrow<Self::X> + Sized,
+                B2: SampleBorrow<Self::X> + Sized,
+            {
+                let low = *low_b.borrow();
+                let high = *high_b.borrow();
+                assert!(
+                    low.x < high.x,
+                    "Uniform::new_inclusive called with `low.x >= high.x"
+                );
+                assert!(
+                    low.y < high.y,
+                    "Uniform::new_inclusive called with `low.y >= high.y"
+                );
+                assert!(
+                    low.z < high.z,
+                    "Uniform::new_inclusive called with `low.z >= high.z"
+                );
+                Self {
+                    x_gen: $uniform::new_inclusive(low.x, high.x),
+                    y_gen: $uniform::new_inclusive(low.y, high.y),
+                    z_gen: $uniform::new_inclusive(low.z, high.z),
+                    vec_type: PhantomData,
+                }
+            }
+
+            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
+                Self::X::from([
+                    self.x_gen.sample(rng),
+                    self.y_gen.sample(rng),
+                    self.z_gen.sample(rng),
+                ])
+            }
+
+            fn sample_single<R: Rng + ?Sized, B1, B2>(low_b: B1, high_b: B2, rng: &mut R) -> Self::X
+            where
+                B1: SampleBorrow<Self::X> + Sized,
+                B2: SampleBorrow<Self::X> + Sized,
+            {
+                let low = *low_b.borrow();
+                let high = *high_b.borrow();
+                assert!(
+                    low.x < high.x,
+                    "Uniform::sample_single called with `low.x >= high.x"
+                );
+                assert!(
+                    low.y < high.y,
+                    "Uniform::sample_single called with `low.y >= high.y"
+                );
+                assert!(
+                    low.z < high.z,
+                    "Uniform::sample_single called with `low.z >= high.z"
+                );
+                Self::X::from([
+                    $uniform::<$t>::sample_single(low.x, high.x, rng),
+                    $uniform::<$t>::sample_single(low.y, high.y, rng),
+                    $uniform::<$t>::sample_single(low.z, high.z, rng),
+                ])
+            }
+
+            fn sample_single_inclusive<R: Rng + ?Sized, B1, B2>(
+                low_b: B1,
+                high_b: B2,
+                rng: &mut R,
+            ) -> Self::X
+            where
+                B1: SampleBorrow<Self::X> + Sized,
+                B2: SampleBorrow<Self::X> + Sized,
+            {
+                let low = *low_b.borrow();
+                let high = *high_b.borrow();
+                assert!(
+                    low.x < high.x,
+                    "Uniform::sample_single_inclusive called with `low.x >= high.x"
+                );
+                assert!(
+                    low.y < high.y,
+                    "Uniform::sample_single_inclusive called with `low.y >= high.y"
+                );
+                assert!(
+                    low.z < high.z,
+                    "Uniform::sample_single_inclusive called with `low.z >= high.z"
+                );
+                Self::X::from([
+                    $uniform::<$t>::sample_single_inclusive(low.x, high.x, rng),
+                    $uniform::<$t>::sample_single_inclusive(low.y, high.y, rng),
+                    $uniform::<$t>::sample_single_inclusive(low.z, high.z, rng),
+                ])
+            }
+        }
+
         impl Distribution<$vec4> for Standard {
             #[inline]
             fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $vec4 {
                 rng.gen::<[$t; 4]>().into()
+            }
+        }
+
+        impl SampleUniform for $vec4 {
+            type Sampler = UniformVec4<$vec4, $uniform<$t>>;
+        }
+
+        impl UniformSampler for UniformVec4<$vec4, $uniform<$t>> {
+            type X = $vec4;
+
+            fn new<B1, B2>(low_b: B1, high_b: B2) -> Self
+            where
+                B1: SampleBorrow<Self::X> + Sized,
+                B2: SampleBorrow<Self::X> + Sized,
+            {
+                let low = *low_b.borrow();
+                let high = *high_b.borrow();
+                assert!(low.x < high.x, "Uniform::new called with `low.x >= high.x");
+                assert!(low.y < high.y, "Uniform::new called with `low.y >= high.y");
+                assert!(low.z < high.z, "Uniform::new called with `low.z >= high.z");
+                assert!(low.w < high.w, "Uniform::new called with `low.w >= high.w");
+                Self {
+                    x_gen: $uniform::new(low.x, high.x),
+                    y_gen: $uniform::new(low.y, high.y),
+                    z_gen: $uniform::new(low.z, high.z),
+                    w_gen: $uniform::new(low.w, high.w),
+                    vec_type: PhantomData,
+                }
+            }
+
+            fn new_inclusive<B1, B2>(low_b: B1, high_b: B2) -> Self
+            where
+                B1: SampleBorrow<Self::X> + Sized,
+                B2: SampleBorrow<Self::X> + Sized,
+            {
+                let low = *low_b.borrow();
+                let high = *high_b.borrow();
+                assert!(
+                    low.x < high.x,
+                    "Uniform::new_inclusive called with `low.x >= high.x"
+                );
+                assert!(
+                    low.y < high.y,
+                    "Uniform::new_inclusive called with `low.y >= high.y"
+                );
+                assert!(
+                    low.z < high.z,
+                    "Uniform::new_inclusive called with `low.z >= high.z"
+                );
+                assert!(
+                    low.w < high.w,
+                    "Uniform::new_inclusive called with `low.w >= high.w"
+                );
+                Self {
+                    x_gen: $uniform::new_inclusive(low.x, high.x),
+                    y_gen: $uniform::new_inclusive(low.y, high.y),
+                    z_gen: $uniform::new_inclusive(low.z, high.z),
+                    w_gen: $uniform::new_inclusive(low.w, high.w),
+                    vec_type: PhantomData,
+                }
+            }
+
+            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
+                Self::X::from([
+                    self.x_gen.sample(rng),
+                    self.y_gen.sample(rng),
+                    self.z_gen.sample(rng),
+                    self.w_gen.sample(rng),
+                ])
+            }
+
+            fn sample_single<R: Rng + ?Sized, B1, B2>(low_b: B1, high_b: B2, rng: &mut R) -> Self::X
+            where
+                B1: SampleBorrow<Self::X> + Sized,
+                B2: SampleBorrow<Self::X> + Sized,
+            {
+                let low = *low_b.borrow();
+                let high = *high_b.borrow();
+                assert!(
+                    low.x < high.x,
+                    "Uniform::sample_single called with `low.x >= high.x"
+                );
+                assert!(
+                    low.y < high.y,
+                    "Uniform::sample_single called with `low.y >= high.y"
+                );
+                assert!(
+                    low.z < high.z,
+                    "Uniform::sample_single called with `low.z >= high.z"
+                );
+                assert!(
+                    low.w < high.w,
+                    "Uniform::sample_single called with `low.w >= high.w"
+                );
+                Self::X::from([
+                    $uniform::<$t>::sample_single(low.x, high.x, rng),
+                    $uniform::<$t>::sample_single(low.y, high.y, rng),
+                    $uniform::<$t>::sample_single(low.z, high.z, rng),
+                    $uniform::<$t>::sample_single(low.w, high.w, rng),
+                ])
+            }
+
+            fn sample_single_inclusive<R: Rng + ?Sized, B1, B2>(
+                low_b: B1,
+                high_b: B2,
+                rng: &mut R,
+            ) -> Self::X
+            where
+                B1: SampleBorrow<Self::X> + Sized,
+                B2: SampleBorrow<Self::X> + Sized,
+            {
+                let low = *low_b.borrow();
+                let high = *high_b.borrow();
+                assert!(
+                    low.x < high.x,
+                    "Uniform::sample_single_inclusive called with `low.x >= high.x"
+                );
+                assert!(
+                    low.y < high.y,
+                    "Uniform::sample_single_inclusive called with `low.y >= high.y"
+                );
+                assert!(
+                    low.z < high.z,
+                    "Uniform::sample_single_inclusive called with `low.z >= high.z"
+                );
+                assert!(
+                    low.w < high.w,
+                    "Uniform::sample_single_inclusive called with `low.w >= high.w"
+                );
+                Self::X::from([
+                    $uniform::<$t>::sample_single_inclusive(low.x, high.x, rng),
+                    $uniform::<$t>::sample_single_inclusive(low.y, high.y, rng),
+                    $uniform::<$t>::sample_single_inclusive(low.z, high.z, rng),
+                    $uniform::<$t>::sample_single_inclusive(low.w, high.w, rng),
+                ])
             }
         }
 
@@ -62,369 +416,17 @@ macro_rules! impl_vec_types {
 
 macro_rules! impl_int_types {
     ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident) => {
-        impl_vec_types!($t, $vec2, $vec3, $vec4);
-        use super::{UniformVec2, UniformVec3, UniformVec4};
-        use core::marker::PhantomData;
-        use rand::distributions::uniform::{
-            SampleBorrow, SampleUniform, UniformInt, UniformSampler,
-        };
+        use rand::distributions::uniform::UniformInt;
 
-        impl SampleUniform for $vec2 {
-            type Sampler = UniformVec2<$vec2, UniformInt<$t>>;
-        }
-
-        impl UniformSampler for UniformVec2<$vec2, UniformInt<$t>> {
-            type X = $vec2;
-
-            fn new<B1, B2>(low_b: B1, high_b: B2) -> Self
-            where
-                B1: SampleBorrow<Self::X> + Sized,
-                B2: SampleBorrow<Self::X> + Sized,
-            {
-                let low = *low_b.borrow();
-                let high = *high_b.borrow();
-                assert!(low.x < high.x, "Uniform::new called with `low.x >= high.x");
-                assert!(low.y < high.y, "Uniform::new called with `low.y >= high.y");
-                Self {
-                    x_gen: UniformInt::new(low.x, high.x),
-                    y_gen: UniformInt::new(low.y, high.y),
-                    vec_type: PhantomData,
-                }
-            }
-
-            fn new_inclusive<B1, B2>(low_b: B1, high_b: B2) -> Self
-            where
-                B1: SampleBorrow<Self::X> + Sized,
-                B2: SampleBorrow<Self::X> + Sized,
-            {
-                let low = *low_b.borrow();
-                let high = *high_b.borrow();
-                assert!(
-                    low.x < high.x,
-                    "Uniform::new_inclusive called with `low.x >= high.x"
-                );
-                assert!(
-                    low.y < high.y,
-                    "Uniform::new_inclusive called with `low.y >= high.y"
-                );
-                Self {
-                    x_gen: UniformInt::new_inclusive(low.x, high.x),
-                    y_gen: UniformInt::new_inclusive(low.y, high.y),
-                    vec_type: PhantomData,
-                }
-            }
-
-            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
-                Self::X {
-                    x: self.x_gen.sample(rng),
-                    y: self.y_gen.sample(rng),
-                }
-            }
-
-            fn sample_single<R: Rng + ?Sized, B1, B2>(low_b: B1, high_b: B2, rng: &mut R) -> Self::X
-            where
-                B1: SampleBorrow<Self::X> + Sized,
-                B2: SampleBorrow<Self::X> + Sized,
-            {
-                let low = *low_b.borrow();
-                let high = *high_b.borrow();
-                assert!(
-                    low.x < high.x,
-                    "Uniform::sample_single called with `low.x >= high.x"
-                );
-                assert!(
-                    low.y < high.y,
-                    "Uniform::sample_single called with `low.y >= high.y"
-                );
-                Self::X {
-                    x: UniformInt::<$t>::sample_single(low.x, high.x, rng),
-                    y: UniformInt::<$t>::sample_single(low.y, high.y, rng),
-                }
-            }
-
-            fn sample_single_inclusive<R: Rng + ?Sized, B1, B2>(
-                low_b: B1,
-                high_b: B2,
-                rng: &mut R,
-            ) -> Self::X
-            where
-                B1: SampleBorrow<Self::X> + Sized,
-                B2: SampleBorrow<Self::X> + Sized,
-            {
-                let low = *low_b.borrow();
-                let high = *high_b.borrow();
-                assert!(
-                    low.x < high.x,
-                    "Uniform::sample_single_inclusive called with `low.x >= high.x"
-                );
-                assert!(
-                    low.y < high.y,
-                    "Uniform::sample_single_inclusive called with `low.y >= high.y"
-                );
-                Self::X {
-                    x: UniformInt::<$t>::sample_single_inclusive(low.x, high.x, rng),
-                    y: UniformInt::<$t>::sample_single_inclusive(low.y, high.y, rng),
-                }
-            }
-        }
-
-        impl SampleUniform for $vec3 {
-            type Sampler = UniformVec3<$vec3, UniformInt<$t>>;
-        }
-
-        impl UniformSampler for UniformVec3<$vec3, UniformInt<$t>> {
-            type X = $vec3;
-
-            fn new<B1, B2>(low_b: B1, high_b: B2) -> Self
-            where
-                B1: SampleBorrow<Self::X> + Sized,
-                B2: SampleBorrow<Self::X> + Sized,
-            {
-                let low = *low_b.borrow();
-                let high = *high_b.borrow();
-                assert!(low.x < high.x, "Uniform::new called with `low.x >= high.x");
-                assert!(low.y < high.y, "Uniform::new called with `low.y >= high.y");
-                assert!(low.z < high.z, "Uniform::new called with `low.z >= high.z");
-                Self {
-                    x_gen: UniformInt::new(low.x, high.x),
-                    y_gen: UniformInt::new(low.y, high.y),
-                    z_gen: UniformInt::new(low.z, high.z),
-                    vec_type: PhantomData,
-                }
-            }
-
-            fn new_inclusive<B1, B2>(low_b: B1, high_b: B2) -> Self
-            where
-                B1: SampleBorrow<Self::X> + Sized,
-                B2: SampleBorrow<Self::X> + Sized,
-            {
-                let low = *low_b.borrow();
-                let high = *high_b.borrow();
-                assert!(
-                    low.x < high.x,
-                    "Uniform::new_inclusive called with `low.x >= high.x"
-                );
-                assert!(
-                    low.y < high.y,
-                    "Uniform::new_inclusive called with `low.y >= high.y"
-                );
-                assert!(
-                    low.z < high.z,
-                    "Uniform::new_inclusive called with `low.z >= high.z"
-                );
-                Self {
-                    x_gen: UniformInt::new_inclusive(low.x, high.x),
-                    y_gen: UniformInt::new_inclusive(low.y, high.y),
-                    z_gen: UniformInt::new_inclusive(low.z, high.z),
-                    vec_type: PhantomData,
-                }
-            }
-
-            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
-                Self::X {
-                    x: self.x_gen.sample(rng),
-                    y: self.y_gen.sample(rng),
-                    z: self.z_gen.sample(rng),
-                }
-            }
-
-            fn sample_single<R: Rng + ?Sized, B1, B2>(low_b: B1, high_b: B2, rng: &mut R) -> Self::X
-            where
-                B1: SampleBorrow<Self::X> + Sized,
-                B2: SampleBorrow<Self::X> + Sized,
-            {
-                let low = *low_b.borrow();
-                let high = *high_b.borrow();
-                assert!(
-                    low.x < high.x,
-                    "Uniform::sample_single called with `low.x >= high.x"
-                );
-                assert!(
-                    low.y < high.y,
-                    "Uniform::sample_single called with `low.y >= high.y"
-                );
-                assert!(
-                    low.z < high.z,
-                    "Uniform::sample_single called with `low.z >= high.z"
-                );
-                Self::X {
-                    x: UniformInt::<$t>::sample_single(low.x, high.x, rng),
-                    y: UniformInt::<$t>::sample_single(low.y, high.y, rng),
-                    z: UniformInt::<$t>::sample_single(low.z, high.z, rng),
-                }
-            }
-
-            fn sample_single_inclusive<R: Rng + ?Sized, B1, B2>(
-                low_b: B1,
-                high_b: B2,
-                rng: &mut R,
-            ) -> Self::X
-            where
-                B1: SampleBorrow<Self::X> + Sized,
-                B2: SampleBorrow<Self::X> + Sized,
-            {
-                let low = *low_b.borrow();
-                let high = *high_b.borrow();
-                assert!(
-                    low.x < high.x,
-                    "Uniform::sample_single_inclusive called with `low.x >= high.x"
-                );
-                assert!(
-                    low.y < high.y,
-                    "Uniform::sample_single_inclusive called with `low.y >= high.y"
-                );
-                assert!(
-                    low.z < high.z,
-                    "Uniform::sample_single_inclusive called with `low.z >= high.z"
-                );
-                Self::X {
-                    x: UniformInt::<$t>::sample_single_inclusive(low.x, high.x, rng),
-                    y: UniformInt::<$t>::sample_single_inclusive(low.y, high.y, rng),
-                    z: UniformInt::<$t>::sample_single_inclusive(low.z, high.z, rng),
-                }
-            }
-        }
-
-        impl SampleUniform for $vec4 {
-            type Sampler = UniformVec4<$vec4, UniformInt<$t>>;
-        }
-
-        impl UniformSampler for UniformVec4<$vec4, UniformInt<$t>> {
-            type X = $vec4;
-
-            fn new<B1, B2>(low_b: B1, high_b: B2) -> Self
-            where
-                B1: SampleBorrow<Self::X> + Sized,
-                B2: SampleBorrow<Self::X> + Sized,
-            {
-                let low = *low_b.borrow();
-                let high = *high_b.borrow();
-                assert!(low.x < high.x, "Uniform::new called with `low.x >= high.x");
-                assert!(low.y < high.y, "Uniform::new called with `low.y >= high.y");
-                assert!(low.z < high.z, "Uniform::new called with `low.z >= high.z");
-                assert!(low.w < high.w, "Uniform::new called with `low.w >= high.w");
-                Self {
-                    x_gen: UniformInt::new(low.x, high.x),
-                    y_gen: UniformInt::new(low.y, high.y),
-                    z_gen: UniformInt::new(low.z, high.z),
-                    w_gen: UniformInt::new(low.w, high.w),
-                    vec_type: PhantomData,
-                }
-            }
-
-            fn new_inclusive<B1, B2>(low_b: B1, high_b: B2) -> Self
-            where
-                B1: SampleBorrow<Self::X> + Sized,
-                B2: SampleBorrow<Self::X> + Sized,
-            {
-                let low = *low_b.borrow();
-                let high = *high_b.borrow();
-                assert!(
-                    low.x < high.x,
-                    "Uniform::new_inclusive called with `low.x >= high.x"
-                );
-                assert!(
-                    low.y < high.y,
-                    "Uniform::new_inclusive called with `low.y >= high.y"
-                );
-                assert!(
-                    low.z < high.z,
-                    "Uniform::new_inclusive called with `low.z >= high.z"
-                );
-                assert!(
-                    low.w < high.w,
-                    "Uniform::new_inclusive called with `low.w >= high.w"
-                );
-                Self {
-                    x_gen: UniformInt::new_inclusive(low.x, high.x),
-                    y_gen: UniformInt::new_inclusive(low.y, high.y),
-                    z_gen: UniformInt::new_inclusive(low.z, high.z),
-                    w_gen: UniformInt::new_inclusive(low.w, high.w),
-                    vec_type: PhantomData,
-                }
-            }
-
-            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
-                Self::X {
-                    x: self.x_gen.sample(rng),
-                    y: self.y_gen.sample(rng),
-                    z: self.z_gen.sample(rng),
-                    w: self.w_gen.sample(rng),
-                }
-            }
-
-            fn sample_single<R: Rng + ?Sized, B1, B2>(low_b: B1, high_b: B2, rng: &mut R) -> Self::X
-            where
-                B1: SampleBorrow<Self::X> + Sized,
-                B2: SampleBorrow<Self::X> + Sized,
-            {
-                let low = *low_b.borrow();
-                let high = *high_b.borrow();
-                assert!(
-                    low.x < high.x,
-                    "Uniform::sample_single called with `low.x >= high.x"
-                );
-                assert!(
-                    low.y < high.y,
-                    "Uniform::sample_single called with `low.y >= high.y"
-                );
-                assert!(
-                    low.z < high.z,
-                    "Uniform::sample_single called with `low.z >= high.z"
-                );
-                assert!(
-                    low.w < high.w,
-                    "Uniform::sample_single called with `low.w >= high.w"
-                );
-                Self::X {
-                    x: UniformInt::<$t>::sample_single(low.x, high.x, rng),
-                    y: UniformInt::<$t>::sample_single(low.y, high.y, rng),
-                    z: UniformInt::<$t>::sample_single(low.z, high.z, rng),
-                    w: UniformInt::<$t>::sample_single(low.w, high.w, rng),
-                }
-            }
-
-            fn sample_single_inclusive<R: Rng + ?Sized, B1, B2>(
-                low_b: B1,
-                high_b: B2,
-                rng: &mut R,
-            ) -> Self::X
-            where
-                B1: SampleBorrow<Self::X> + Sized,
-                B2: SampleBorrow<Self::X> + Sized,
-            {
-                let low = *low_b.borrow();
-                let high = *high_b.borrow();
-                assert!(
-                    low.x < high.x,
-                    "Uniform::sample_single_inclusive called with `low.x >= high.x"
-                );
-                assert!(
-                    low.y < high.y,
-                    "Uniform::sample_single_inclusive called with `low.y >= high.y"
-                );
-                assert!(
-                    low.z < high.z,
-                    "Uniform::sample_single_inclusive called with `low.z >= high.z"
-                );
-                assert!(
-                    low.w < high.w,
-                    "Uniform::sample_single_inclusive called with `low.w >= high.w"
-                );
-                Self::X {
-                    x: UniformInt::<$t>::sample_single_inclusive(low.x, high.x, rng),
-                    y: UniformInt::<$t>::sample_single_inclusive(low.y, high.y, rng),
-                    z: UniformInt::<$t>::sample_single_inclusive(low.z, high.z, rng),
-                    w: UniformInt::<$t>::sample_single_inclusive(low.w, high.w, rng),
-                }
-            }
-        }
+        impl_vec_types!($t, $vec2, $vec3, $vec4, UniformInt);
     };
 }
 
 macro_rules! impl_float_types {
     ($t:ident, $mat2:ident, $mat3:ident, $mat4:ident, $quat:ident, $vec2:ident, $vec3:ident, $vec4:ident) => {
-        impl_vec_types!($t, $vec2, $vec3, $vec4);
+        use rand::distributions::uniform::UniformFloat;
+
+        impl_vec_types!($t, $vec2, $vec3, $vec4, UniformFloat);
 
         impl Distribution<$mat2> for Standard {
             #[inline]
