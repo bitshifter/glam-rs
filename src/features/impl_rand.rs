@@ -76,7 +76,7 @@ macro_rules! impl_int_types {
         impl UniformSampler for UniformVec2<$vec2, UniformInt<$t>> {
             type X = $vec2;
 
-            fn new<B1, B2>(low: B1, high: B2) -> Self
+            fn new<B1, B2>(_low: B1, _high: B2) -> Self
             where
                 B1: SampleBorrow<Self::X> + Sized,
                 B2: SampleBorrow<Self::X> + Sized,
@@ -84,7 +84,7 @@ macro_rules! impl_int_types {
                 todo!()
             }
 
-            fn new_inclusive<B1, B2>(low: B1, high: B2) -> Self
+            fn new_inclusive<B1, B2>(_low: B1, _high: B2) -> Self
             where
                 B1: SampleBorrow<Self::X> + Sized,
                 B2: SampleBorrow<Self::X> + Sized,
@@ -92,11 +92,11 @@ macro_rules! impl_int_types {
                 todo!()
             }
 
-            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
+            fn sample<R: Rng + ?Sized>(&self, _rng: &mut R) -> Self::X {
                 todo!()
             }
 
-            fn sample_single<R: Rng + ?Sized, B1, B2>(low: B1, high: B2, rng: &mut R) -> Self::X
+            fn sample_single<R: Rng + ?Sized, B1, B2>(_low: B1, _high: B2, _rng: &mut R) -> Self::X
             where
                 B1: SampleBorrow<Self::X> + Sized,
                 B2: SampleBorrow<Self::X> + Sized,
@@ -105,9 +105,9 @@ macro_rules! impl_int_types {
             }
 
             fn sample_single_inclusive<R: Rng + ?Sized, B1, B2>(
-                low: B1,
-                high: B2,
-                rng: &mut R,
+                _low: B1,
+                _high: B2,
+                _rng: &mut R,
             ) -> Self::X
             where
                 B1: SampleBorrow<Self::X> + Sized,
@@ -124,7 +124,7 @@ macro_rules! impl_int_types {
         impl UniformSampler for UniformVec3<$vec3, UniformInt<$t>> {
             type X = $vec3;
 
-            fn new<B1, B2>(low: B1, high: B2) -> Self
+            fn new<B1, B2>(_low: B1, _high: B2) -> Self
             where
                 B1: SampleBorrow<Self::X> + Sized,
                 B2: SampleBorrow<Self::X> + Sized,
@@ -132,7 +132,7 @@ macro_rules! impl_int_types {
                 todo!()
             }
 
-            fn new_inclusive<B1, B2>(low: B1, high: B2) -> Self
+            fn new_inclusive<B1, B2>(_low: B1, _high: B2) -> Self
             where
                 B1: SampleBorrow<Self::X> + Sized,
                 B2: SampleBorrow<Self::X> + Sized,
@@ -140,11 +140,11 @@ macro_rules! impl_int_types {
                 todo!()
             }
 
-            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
+            fn sample<R: Rng + ?Sized>(&self, _rng: &mut R) -> Self::X {
                 todo!()
             }
 
-            fn sample_single<R: Rng + ?Sized, B1, B2>(low: B1, high: B2, rng: &mut R) -> Self::X
+            fn sample_single<R: Rng + ?Sized, B1, B2>(_low: B1, _high: B2, _rng: &mut R) -> Self::X
             where
                 B1: SampleBorrow<Self::X> + Sized,
                 B2: SampleBorrow<Self::X> + Sized,
@@ -153,9 +153,9 @@ macro_rules! impl_int_types {
             }
 
             fn sample_single_inclusive<R: Rng + ?Sized, B1, B2>(
-                low: B1,
-                high: B2,
-                rng: &mut R,
+                _low: B1,
+                _high: B2,
+                _rng: &mut R,
             ) -> Self::X
             where
                 B1: SampleBorrow<Self::X> + Sized,
@@ -188,7 +188,7 @@ macro_rules! impl_int_types {
                 }
             }
 
-            fn new_inclusive<B1, B2>(low: B1, high: B2) -> Self
+            fn new_inclusive<B1, B2>(_low: B1, _high: B2) -> Self
             where
                 B1: SampleBorrow<Self::X> + Sized,
                 B2: SampleBorrow<Self::X> + Sized,
@@ -196,11 +196,11 @@ macro_rules! impl_int_types {
                 todo!()
             }
 
-            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
+            fn sample<R: Rng + ?Sized>(&self, _rng: &mut R) -> Self::X {
                 todo!()
             }
 
-            fn sample_single<R: Rng + ?Sized, B1, B2>(low: B1, high: B2, rng: &mut R) -> Self::X
+            fn sample_single<R: Rng + ?Sized, B1, B2>(_low: B1, _high: B2, _rng: &mut R) -> Self::X
             where
                 B1: SampleBorrow<Self::X> + Sized,
                 B2: SampleBorrow<Self::X> + Sized,
@@ -209,9 +209,9 @@ macro_rules! impl_int_types {
             }
 
             fn sample_single_inclusive<R: Rng + ?Sized, B1, B2>(
-                low: B1,
-                high: B2,
-                rng: &mut R,
+                _low: B1,
+                _high: B2,
+                _rng: &mut R,
             ) -> Self::X
             where
                 B1: SampleBorrow<Self::X> + Sized,
