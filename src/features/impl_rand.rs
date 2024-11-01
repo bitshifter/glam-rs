@@ -508,12 +508,14 @@ macro_rules! impl_float_types {
     };
 }
 
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct UniformVec2<T, G> {
     x_gen: G,
     y_gen: G,
     vec_type: core::marker::PhantomData<T>,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct UniformVec3<T, G> {
     x_gen: G,
     y_gen: G,
@@ -521,6 +523,7 @@ pub struct UniformVec3<T, G> {
     vec_type: core::marker::PhantomData<T>,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct UniformVec4<T, G> {
     x_gen: G,
     y_gen: G,
