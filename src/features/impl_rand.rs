@@ -1,5 +1,11 @@
+use rand::distributions::uniform::{UniformFloat, UniformInt};
+
 macro_rules! impl_vec_types {
     ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident) => {
+        use rand::{
+            distributions::{Distribution, Standard},
+            Rng,
+        };
         impl Distribution<$vec2> for Standard {
             #[inline]
             fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $vec2 {
@@ -52,6 +58,109 @@ macro_rules! impl_vec_types {
             let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
             let b: $vec4 = rng2.gen();
             assert_eq!(a, b.into());
+        }
+    };
+}
+
+macro_rules! impl_int_types {
+    ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident) => {
+        impl_vec_types!($t, $vec2, $vec3, $vec4);
+        use super::{UniformIntVec2, UniformIntVec3, UniformIntVec4};
+        use core::marker::PhantomData;
+        use rand::distributions::uniform::{
+            SampleBorrow, SampleUniform, UniformInt, UniformSampler,
+        };
+
+        impl SampleUniform for $vec2 {
+            type Sampler = UniformIntVec2<$vec2, $t>;
+        }
+
+        impl UniformSampler for UniformIntVec2<$vec2, $t> {
+            type X = $vec2;
+
+            fn new<B1, B2>(low: B1, high: B2) -> Self
+            where
+                B1: SampleBorrow<Self::X> + Sized,
+                B2: SampleBorrow<Self::X> + Sized,
+            {
+                todo!()
+            }
+
+            fn new_inclusive<B1, B2>(low: B1, high: B2) -> Self
+            where
+                B1: SampleBorrow<Self::X> + Sized,
+                B2: SampleBorrow<Self::X> + Sized,
+            {
+                todo!()
+            }
+
+            fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
+                todo!()
+            }
+        }
+
+        impl SampleUniform for $vec3 {
+            type Sampler = UniformIntVec3<$vec3, $t>;
+        }
+
+        impl UniformSampler for UniformIntVec3<$vec3, $t> {
+            type X = $vec3;
+
+            fn new<B1, B2>(low: B1, high: B2) -> Self
+            where
+                B1: SampleBorrow<Self::X> + Sized,
+                B2: SampleBorrow<Self::X> + Sized,
+            {
+                todo!()
+            }
+
+            fn new_inclusive<B1, B2>(low: B1, high: B2) -> Self
+            where
+                B1: SampleBorrow<Self::X> + Sized,
+                B2: SampleBorrow<Self::X> + Sized,
+            {
+                todo!()
+            }
+
+            fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
+                todo!()
+            }
+        }
+
+        impl SampleUniform for $vec4 {
+            type Sampler = UniformIntVec4<$vec4, $t>;
+        }
+
+        impl UniformSampler for UniformIntVec4<$vec4, $t> {
+            type X = $vec4;
+
+            fn new<B1, B2>(low_b: B1, high_b: B2) -> Self
+            where
+                B1: SampleBorrow<Self::X> + Sized,
+                B2: SampleBorrow<Self::X> + Sized,
+            {
+                let low = *low_b.borrow();
+                let high = *high_b.borrow();
+                Self {
+                    x_gen: UniformInt::new(low.x, high.x),
+                    y_gen: UniformInt::new(low.y, high.y),
+                    z_gen: UniformInt::new(low.z, high.z),
+                    w_gen: UniformInt::new(low.w, high.w),
+                    vec_type: PhantomData,
+                }
+            }
+
+            fn new_inclusive<B1, B2>(low: B1, high: B2) -> Self
+            where
+                B1: SampleBorrow<Self::X> + Sized,
+                B2: SampleBorrow<Self::X> + Sized,
+            {
+                todo!()
+            }
+
+            fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
+                todo!()
+            }
         }
     };
 }
@@ -140,14 +249,58 @@ macro_rules! impl_float_types {
     };
 }
 
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct UniformFloatVec2<T, I> {
+    x_gen: UniformFloat<I>,
+    y_gen: UniformFloat<I>,
+    vec_type: core::marker::PhantomData<T>,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct UniformFloatVec3<T, I> {
+    x_gen: UniformFloat<I>,
+    y_gen: UniformFloat<I>,
+    z_gen: UniformFloat<I>,
+    vec_type: core::marker::PhantomData<T>,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct UniformFloatVec4<T, I> {
+    x_gen: UniformFloat<I>,
+    y_gen: UniformFloat<I>,
+    z_gen: UniformFloat<I>,
+    w_gen: UniformFloat<I>,
+    vec_type: core::marker::PhantomData<T>,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct UniformIntVec2<T, I> {
+    x_gen: UniformInt<I>,
+    y_gen: UniformInt<I>,
+    vec_type: core::marker::PhantomData<T>,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct UniformIntVec3<T, I> {
+    x_gen: UniformInt<I>,
+    y_gen: UniformInt<I>,
+    z_gen: UniformInt<I>,
+    vec_type: core::marker::PhantomData<T>,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct UniformIntVec4<T, I> {
+    x_gen: UniformInt<I>,
+    y_gen: UniformInt<I>,
+    z_gen: UniformInt<I>,
+    w_gen: UniformInt<I>,
+    vec_type: core::marker::PhantomData<T>,
+}
+
 mod f32 {
     use crate::f32::math;
     use crate::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
     use core::f32::consts::TAU;
-    use rand::{
-        distributions::{Distribution, Standard},
-        Rng,
-    };
 
     impl_float_types!(f32, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4);
 
@@ -174,90 +327,54 @@ mod f64 {
     use crate::f64::math;
     use crate::{DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
     use core::f64::consts::TAU;
-    use rand::{
-        distributions::{Distribution, Standard},
-        Rng,
-    };
 
     impl_float_types!(f64, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4);
 }
 
 mod i8 {
     use crate::{I8Vec2, I8Vec3, I8Vec4};
-    use rand::{
-        distributions::{Distribution, Standard},
-        Rng,
-    };
 
-    impl_vec_types!(i8, I8Vec2, I8Vec3, I8Vec4);
+    impl_int_types!(i8, I8Vec2, I8Vec3, I8Vec4);
 }
 
 mod i16 {
     use crate::{I16Vec2, I16Vec3, I16Vec4};
-    use rand::{
-        distributions::{Distribution, Standard},
-        Rng,
-    };
 
-    impl_vec_types!(i16, I16Vec2, I16Vec3, I16Vec4);
+    impl_int_types!(i16, I16Vec2, I16Vec3, I16Vec4);
 }
 
 mod i32 {
     use crate::{IVec2, IVec3, IVec4};
-    use rand::{
-        distributions::{Distribution, Standard},
-        Rng,
-    };
 
-    impl_vec_types!(i32, IVec2, IVec3, IVec4);
+    impl_int_types!(i32, IVec2, IVec3, IVec4);
 }
 
 mod i64 {
     use crate::{I64Vec2, I64Vec3, I64Vec4};
-    use rand::{
-        distributions::{Distribution, Standard},
-        Rng,
-    };
 
-    impl_vec_types!(i64, I64Vec2, I64Vec3, I64Vec4);
+    impl_int_types!(i64, I64Vec2, I64Vec3, I64Vec4);
 }
 
 mod u8 {
     use crate::{U8Vec2, U8Vec3, U8Vec4};
-    use rand::{
-        distributions::{Distribution, Standard},
-        Rng,
-    };
 
-    impl_vec_types!(u8, U8Vec2, U8Vec3, U8Vec4);
+    impl_int_types!(u8, U8Vec2, U8Vec3, U8Vec4);
 }
 
 mod u16 {
     use crate::{U16Vec2, U16Vec3, U16Vec4};
-    use rand::{
-        distributions::{Distribution, Standard},
-        Rng,
-    };
 
-    impl_vec_types!(u16, U16Vec2, U16Vec3, U16Vec4);
+    impl_int_types!(u16, U16Vec2, U16Vec3, U16Vec4);
 }
 
 mod u32 {
     use crate::{UVec2, UVec3, UVec4};
-    use rand::{
-        distributions::{Distribution, Standard},
-        Rng,
-    };
 
-    impl_vec_types!(u32, UVec2, UVec3, UVec4);
+    impl_int_types!(u32, UVec2, UVec3, UVec4);
 }
 
 mod u64 {
     use crate::{U64Vec2, U64Vec3, U64Vec4};
-    use rand::{
-        distributions::{Distribution, Standard},
-        Rng,
-    };
 
-    impl_vec_types!(u64, U64Vec2, U64Vec3, U64Vec4);
+    impl_int_types!(u64, U64Vec2, U64Vec3, U64Vec4);
 }
