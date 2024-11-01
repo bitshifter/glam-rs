@@ -1,5 +1,3 @@
-use rand::distributions::uniform::{UniformFloat, UniformInt};
-
 macro_rules! impl_vec_types {
     ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident) => {
         use rand::{
@@ -65,17 +63,17 @@ macro_rules! impl_vec_types {
 macro_rules! impl_int_types {
     ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident) => {
         impl_vec_types!($t, $vec2, $vec3, $vec4);
-        use super::{UniformIntVec2, UniformIntVec3, UniformIntVec4};
+        use super::{UniformVec2, UniformVec3, UniformVec4};
         use core::marker::PhantomData;
         use rand::distributions::uniform::{
             SampleBorrow, SampleUniform, UniformInt, UniformSampler,
         };
 
         impl SampleUniform for $vec2 {
-            type Sampler = UniformIntVec2<$vec2, $t>;
+            type Sampler = UniformVec2<$vec2, UniformInt<$t>>;
         }
 
-        impl UniformSampler for UniformIntVec2<$vec2, $t> {
+        impl UniformSampler for UniformVec2<$vec2, UniformInt<$t>> {
             type X = $vec2;
 
             fn new<B1, B2>(low: B1, high: B2) -> Self
@@ -94,16 +92,36 @@ macro_rules! impl_int_types {
                 todo!()
             }
 
-            fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
+            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
+                todo!()
+            }
+
+            fn sample_single<R: Rng + ?Sized, B1, B2>(low: B1, high: B2, rng: &mut R) -> Self::X
+            where
+                B1: SampleBorrow<Self::X> + Sized,
+                B2: SampleBorrow<Self::X> + Sized,
+            {
+                todo!()
+            }
+
+            fn sample_single_inclusive<R: Rng + ?Sized, B1, B2>(
+                low: B1,
+                high: B2,
+                rng: &mut R,
+            ) -> Self::X
+            where
+                B1: SampleBorrow<Self::X> + Sized,
+                B2: SampleBorrow<Self::X> + Sized,
+            {
                 todo!()
             }
         }
 
         impl SampleUniform for $vec3 {
-            type Sampler = UniformIntVec3<$vec3, $t>;
+            type Sampler = UniformVec3<$vec3, UniformInt<$t>>;
         }
 
-        impl UniformSampler for UniformIntVec3<$vec3, $t> {
+        impl UniformSampler for UniformVec3<$vec3, UniformInt<$t>> {
             type X = $vec3;
 
             fn new<B1, B2>(low: B1, high: B2) -> Self
@@ -122,16 +140,36 @@ macro_rules! impl_int_types {
                 todo!()
             }
 
-            fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
+            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
+                todo!()
+            }
+
+            fn sample_single<R: Rng + ?Sized, B1, B2>(low: B1, high: B2, rng: &mut R) -> Self::X
+            where
+                B1: SampleBorrow<Self::X> + Sized,
+                B2: SampleBorrow<Self::X> + Sized,
+            {
+                todo!()
+            }
+
+            fn sample_single_inclusive<R: Rng + ?Sized, B1, B2>(
+                low: B1,
+                high: B2,
+                rng: &mut R,
+            ) -> Self::X
+            where
+                B1: SampleBorrow<Self::X> + Sized,
+                B2: SampleBorrow<Self::X> + Sized,
+            {
                 todo!()
             }
         }
 
         impl SampleUniform for $vec4 {
-            type Sampler = UniformIntVec4<$vec4, $t>;
+            type Sampler = UniformVec4<$vec4, UniformInt<$t>>;
         }
 
-        impl UniformSampler for UniformIntVec4<$vec4, $t> {
+        impl UniformSampler for UniformVec4<$vec4, UniformInt<$t>> {
             type X = $vec4;
 
             fn new<B1, B2>(low_b: B1, high_b: B2) -> Self
@@ -158,7 +196,27 @@ macro_rules! impl_int_types {
                 todo!()
             }
 
-            fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
+            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
+                todo!()
+            }
+
+            fn sample_single<R: Rng + ?Sized, B1, B2>(low: B1, high: B2, rng: &mut R) -> Self::X
+            where
+                B1: SampleBorrow<Self::X> + Sized,
+                B2: SampleBorrow<Self::X> + Sized,
+            {
+                todo!()
+            }
+
+            fn sample_single_inclusive<R: Rng + ?Sized, B1, B2>(
+                low: B1,
+                high: B2,
+                rng: &mut R,
+            ) -> Self::X
+            where
+                B1: SampleBorrow<Self::X> + Sized,
+                B2: SampleBorrow<Self::X> + Sized,
+            {
                 todo!()
             }
         }
@@ -250,50 +308,26 @@ macro_rules! impl_float_types {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub struct UniformFloatVec2<T, I> {
-    x_gen: UniformFloat<I>,
-    y_gen: UniformFloat<I>,
+pub struct UniformVec2<T, G> {
+    x_gen: G,
+    y_gen: G,
     vec_type: core::marker::PhantomData<T>,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub struct UniformFloatVec3<T, I> {
-    x_gen: UniformFloat<I>,
-    y_gen: UniformFloat<I>,
-    z_gen: UniformFloat<I>,
+pub struct UniformVec3<T, G> {
+    x_gen: G,
+    y_gen: G,
+    z_gen: G,
     vec_type: core::marker::PhantomData<T>,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub struct UniformFloatVec4<T, I> {
-    x_gen: UniformFloat<I>,
-    y_gen: UniformFloat<I>,
-    z_gen: UniformFloat<I>,
-    w_gen: UniformFloat<I>,
-    vec_type: core::marker::PhantomData<T>,
-}
-
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub struct UniformIntVec2<T, I> {
-    x_gen: UniformInt<I>,
-    y_gen: UniformInt<I>,
-    vec_type: core::marker::PhantomData<T>,
-}
-
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub struct UniformIntVec3<T, I> {
-    x_gen: UniformInt<I>,
-    y_gen: UniformInt<I>,
-    z_gen: UniformInt<I>,
-    vec_type: core::marker::PhantomData<T>,
-}
-
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub struct UniformIntVec4<T, I> {
-    x_gen: UniformInt<I>,
-    y_gen: UniformInt<I>,
-    z_gen: UniformInt<I>,
-    w_gen: UniformInt<I>,
+pub struct UniformVec4<T, G> {
+    x_gen: G,
+    y_gen: G,
+    z_gen: G,
+    w_gen: G,
     vec_type: core::marker::PhantomData<T>,
 }
 
