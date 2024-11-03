@@ -408,8 +408,9 @@ macro_rules! impl_vec_types {
 }
 
 macro_rules! test_vec_type_uniform {
-    // If I put these into a macro in the main branch below, rustc will complain about unused macros
-    // even if I use it.
+    // NOTE: These were intended to be placed in a `macro_rules!` statement in the main rule below,
+    // but rustc wants to complain about unused macros if I try to do that... even if I do use the
+    // macros.
     (__repeat_code 2, $code:expr) => {
         ($code, $code)
     };
