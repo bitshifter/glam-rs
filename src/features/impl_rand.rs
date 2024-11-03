@@ -407,242 +407,98 @@ macro_rules! impl_vec_types {
     };
 }
 
+macro_rules! test_vec_type_uniform {
+    // If I put these into a macro in the main branch below, rustc will complain about unused macros
+    // even if I use it.
+    (__repeat_code 2, $code:expr) => {
+        ($code, $code)
+    };
+    (__repeat_code 3, $code:expr) => {
+        ($code, $code, $code)
+    };
+    (__repeat_code 4, $code:expr) => {
+        ($code, $code, $code, $code)
+    };
+    ($test_name:ident, $vec:ident, $t:ty, $t_count:tt) => {
+        #[test]
+        fn $test_name() {
+            use rand::{distributions::Uniform, Rng, SeedableRng};
+            use rand_xoshiro::Xoshiro256Plus;
+
+            macro_rules! test_uniform {
+                ($int_uniform:expr, $vec_uniform:expr) => {
+                    let mut int_rng = Xoshiro256Plus::seed_from_u64(0);
+                    let mut vec_rng = Xoshiro256Plus::seed_from_u64(0);
+                    let full_int_uniform = $int_uniform;
+                    let full_vec_uniform = $vec_uniform;
+
+                    let v_int = test_vec_type_uniform!(
+                        __repeat_code $t_count,
+                        int_rng.sample(full_int_uniform)
+                    );
+                    let v_vec: $vec = vec_rng.sample(full_vec_uniform);
+                    assert_eq!(v_int, v_vec.into());
+                };
+            }
+
+            test_uniform!(
+                Uniform::new(<$t>::default(), <$t>::MAX),
+                Uniform::new($vec::default(), $vec::MAX)
+            );
+
+            test_uniform!(
+                Uniform::new(&<$t>::default(), &<$t>::MAX),
+                Uniform::new(&$vec::default(), &$vec::MAX)
+            );
+
+            test_uniform!(
+                Uniform::new_inclusive(<$t>::default(), <$t>::MAX),
+                Uniform::new_inclusive($vec::default(), $vec::MAX)
+            );
+
+            test_uniform!(
+                Uniform::new_inclusive(&<$t>::default(), &<$t>::MAX),
+                Uniform::new_inclusive(&$vec::default(), &$vec::MAX)
+            );
+
+            macro_rules! test_sample_uniform_sampler {
+                ($sampler_function_name:ident) => {
+                    let mut int_rng = Xoshiro256Plus::seed_from_u64(0);
+                    let mut vec_rng = Xoshiro256Plus::seed_from_u64(0);
+
+                    let v_int = test_vec_type_uniform!(
+                        __repeat_code $t_count,
+                        <$t as SampleUniform>::Sampler::$sampler_function_name(
+                            <$t>::default(),
+                            <$t>::MAX,
+                            &mut int_rng,
+                        )
+                    );
+
+                    let v_vec: $vec = <$vec as SampleUniform>::Sampler::$sampler_function_name(
+                        $vec::default(),
+                        $vec::MAX,
+                        &mut vec_rng,
+                    );
+                    assert_eq!(v_int, v_vec.into());
+                };
+            }
+
+            test_sample_uniform_sampler!(sample_single);
+            test_sample_uniform_sampler!(sample_single_inclusive);
+        }
+    };
+}
+
 macro_rules! impl_int_types {
     ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident) => {
         use rand::distributions::uniform::UniformInt;
 
         impl_vec_types!($t, $vec2, $vec3, $vec4, UniformInt);
 
-        #[test]
-        fn test_vec2_rand_uniform() {
-            use rand::{distributions::Uniform, Rng, SeedableRng};
-            use rand_xoshiro::Xoshiro256Plus;
-
-            macro_rules! test_uniform {
-                ($int_uniform:expr, $vec_uniform:expr) => {
-                    let mut int_rng = Xoshiro256Plus::seed_from_u64(0);
-                    let mut vec_rng = Xoshiro256Plus::seed_from_u64(0);
-                    let full_int_uniform = $int_uniform;
-                    let full_vec_uniform = $vec_uniform;
-
-                    let v_int: ($t, $t) = (
-                        int_rng.sample(full_int_uniform),
-                        int_rng.sample(full_int_uniform),
-                    );
-                    let v_vec: $vec2 = vec_rng.sample(full_vec_uniform);
-                    assert_eq!(v_int, v_vec.into());
-                };
-            }
-
-            test_uniform!(
-                Uniform::new(<$t>::default(), <$t>::MAX),
-                Uniform::new($vec2::default(), $vec2::MAX)
-            );
-
-            test_uniform!(
-                Uniform::new(&<$t>::default(), &<$t>::MAX),
-                Uniform::new(&$vec2::default(), &$vec2::MAX)
-            );
-
-            test_uniform!(
-                Uniform::new_inclusive(<$t>::default(), <$t>::MAX),
-                Uniform::new_inclusive($vec2::default(), $vec2::MAX)
-            );
-
-            test_uniform!(
-                Uniform::new_inclusive(&<$t>::default(), &<$t>::MAX),
-                Uniform::new_inclusive(&$vec2::default(), &$vec2::MAX)
-            );
-
-            macro_rules! test_sample_uniform_sampler {
-                ($sampler_function_name:ident) => {
-                    let mut int_rng = Xoshiro256Plus::seed_from_u64(0);
-                    let mut vec_rng = Xoshiro256Plus::seed_from_u64(0);
-
-                    let v_int: ($t, $t) = (
-                        <$t as SampleUniform>::Sampler::$sampler_function_name(
-                            <$t>::default(),
-                            <$t>::MAX,
-                            &mut int_rng,
-                        ),
-                        <$t as SampleUniform>::Sampler::$sampler_function_name(
-                            <$t>::default(),
-                            <$t>::MAX,
-                            &mut int_rng,
-                        ),
-                    );
-                    let v_vec: $vec2 = <$vec2 as SampleUniform>::Sampler::$sampler_function_name(
-                        $vec2::default(),
-                        $vec2::MAX,
-                        &mut vec_rng,
-                    );
-                    assert_eq!(v_int, v_vec.into());
-                };
-            }
-
-            test_sample_uniform_sampler!(sample_single);
-            test_sample_uniform_sampler!(sample_single_inclusive);
-        }
-
-        #[test]
-        fn test_vec3_rand_uniform() {
-            use rand::{distributions::Uniform, Rng, SeedableRng};
-            use rand_xoshiro::Xoshiro256Plus;
-
-            macro_rules! test_uniform {
-                ($int_uniform:expr, $vec_uniform:expr) => {
-                    let mut int_rng = Xoshiro256Plus::seed_from_u64(0);
-                    let mut vec_rng = Xoshiro256Plus::seed_from_u64(0);
-                    let full_int_uniform = $int_uniform;
-                    let full_vec_uniform = $vec_uniform;
-
-                    let v_int: ($t, $t, $t) = (
-                        int_rng.sample(full_int_uniform),
-                        int_rng.sample(full_int_uniform),
-                        int_rng.sample(full_int_uniform),
-                    );
-                    let v_vec: $vec3 = vec_rng.sample(full_vec_uniform);
-                    assert_eq!(v_int, v_vec.into());
-                };
-            }
-
-            test_uniform!(
-                Uniform::new(<$t>::default(), <$t>::MAX),
-                Uniform::new($vec3::default(), $vec3::MAX)
-            );
-
-            test_uniform!(
-                Uniform::new(&<$t>::default(), &<$t>::MAX),
-                Uniform::new(&$vec3::default(), &$vec3::MAX)
-            );
-
-            test_uniform!(
-                Uniform::new_inclusive(<$t>::default(), <$t>::MAX),
-                Uniform::new_inclusive($vec3::default(), $vec3::MAX)
-            );
-
-            test_uniform!(
-                Uniform::new_inclusive(&<$t>::default(), &<$t>::MAX),
-                Uniform::new_inclusive(&$vec3::default(), &$vec3::MAX)
-            );
-
-            macro_rules! test_sample_uniform_sampler {
-                ($sampler_function_name:ident) => {
-                    let mut int_rng = Xoshiro256Plus::seed_from_u64(0);
-                    let mut vec_rng = Xoshiro256Plus::seed_from_u64(0);
-
-                    let v_int: ($t, $t, $t) = (
-                        <$t as SampleUniform>::Sampler::$sampler_function_name(
-                            <$t>::default(),
-                            <$t>::MAX,
-                            &mut int_rng,
-                        ),
-                        <$t as SampleUniform>::Sampler::$sampler_function_name(
-                            <$t>::default(),
-                            <$t>::MAX,
-                            &mut int_rng,
-                        ),
-                        <$t as SampleUniform>::Sampler::$sampler_function_name(
-                            <$t>::default(),
-                            <$t>::MAX,
-                            &mut int_rng,
-                        ),
-                    );
-                    let v_vec: $vec3 = <$vec3 as SampleUniform>::Sampler::$sampler_function_name(
-                        $vec3::default(),
-                        $vec3::MAX,
-                        &mut vec_rng,
-                    );
-                    assert_eq!(v_int, v_vec.into());
-                };
-            }
-
-            test_sample_uniform_sampler!(sample_single);
-            test_sample_uniform_sampler!(sample_single_inclusive);
-        }
-
-        #[test]
-        fn test_vec4_rand_uniform() {
-            use rand::{distributions::Uniform, Rng, SeedableRng};
-            use rand_xoshiro::Xoshiro256Plus;
-
-            macro_rules! test_uniform {
-                ($int_uniform:expr, $vec_uniform:expr) => {
-                    let mut int_rng = Xoshiro256Plus::seed_from_u64(0);
-                    let mut vec_rng = Xoshiro256Plus::seed_from_u64(0);
-                    let full_int_uniform = $int_uniform;
-                    let full_vec_uniform = $vec_uniform;
-
-                    let v_int: ($t, $t, $t, $t) = (
-                        int_rng.sample(full_int_uniform),
-                        int_rng.sample(full_int_uniform),
-                        int_rng.sample(full_int_uniform),
-                        int_rng.sample(full_int_uniform),
-                    );
-                    let v_vec: $vec4 = vec_rng.sample(full_vec_uniform);
-                    assert_eq!(v_int, v_vec.into());
-                };
-            }
-
-            test_uniform!(
-                Uniform::new(<$t>::default(), <$t>::MAX),
-                Uniform::new($vec4::default(), $vec4::MAX)
-            );
-
-            test_uniform!(
-                Uniform::new(&<$t>::default(), &<$t>::MAX),
-                Uniform::new(&$vec4::default(), &$vec4::MAX)
-            );
-
-            test_uniform!(
-                Uniform::new_inclusive(<$t>::default(), <$t>::MAX),
-                Uniform::new_inclusive($vec4::default(), $vec4::MAX)
-            );
-
-            test_uniform!(
-                Uniform::new_inclusive(&<$t>::default(), &<$t>::MAX),
-                Uniform::new_inclusive(&$vec4::default(), &$vec4::MAX)
-            );
-
-            macro_rules! test_sample_uniform_sampler {
-                ($sampler_function_name:ident) => {
-                    let mut int_rng = Xoshiro256Plus::seed_from_u64(0);
-                    let mut vec_rng = Xoshiro256Plus::seed_from_u64(0);
-
-                    let v_int: ($t, $t, $t, $t) = (
-                        <$t as SampleUniform>::Sampler::$sampler_function_name(
-                            <$t>::default(),
-                            <$t>::MAX,
-                            &mut int_rng,
-                        ),
-                        <$t as SampleUniform>::Sampler::$sampler_function_name(
-                            <$t>::default(),
-                            <$t>::MAX,
-                            &mut int_rng,
-                        ),
-                        <$t as SampleUniform>::Sampler::$sampler_function_name(
-                            <$t>::default(),
-                            <$t>::MAX,
-                            &mut int_rng,
-                        ),
-                        <$t as SampleUniform>::Sampler::$sampler_function_name(
-                            <$t>::default(),
-                            <$t>::MAX,
-                            &mut int_rng,
-                        ),
-                    );
-                    let v_vec: $vec4 = <$vec4 as SampleUniform>::Sampler::$sampler_function_name(
-                        $vec4::default(),
-                        $vec4::MAX,
-                        &mut vec_rng,
-                    );
-                    assert_eq!(v_int, v_vec.into());
-                };
-            }
-
-            test_sample_uniform_sampler!(sample_single);
-            test_sample_uniform_sampler!(sample_single_inclusive);
-        }
+        test_vec_type_uniform!(test_vec2_rand_uniform, $vec2, $t, 2);
+        test_vec_type_uniform!(test_vec3_rand_uniform, $vec3, $t, 3);
+        test_vec_type_uniform!(test_vec4_rand_uniform, $vec4, $t, 4);
     };
 }
 
