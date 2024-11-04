@@ -420,9 +420,11 @@ macro_rules! test_vec_type_uniform {
     (__repeat_code 4, $code:expr) => {
         ($code, $code, $code, $code)
     };
-    ($test_name:ident, $vec:ident, $t:ty, $t_count:tt) => {
+    ($equality_test_name:ident, $vec:ident, $t:ty, $t_count:tt) => {
+        // Tests that we reach the same result, whether we generate the vector type directly, or
+        // generate its internal values $t_count times and convert the result into the vector type.
         #[test]
-        fn $test_name() {
+        fn $equality_test_name() {
             use rand::{distributions::Uniform, Rng, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
 
@@ -488,6 +490,10 @@ macro_rules! test_vec_type_uniform {
             test_sample_uniform_sampler!(sample_single);
             test_sample_uniform_sampler!(sample_single_inclusive);
         }
+        
+        // TODO: Test to ensure that all generated numbers are within specified range. This is
+        // technically covered by `rand`'s own tests, as we're currently just wrapping `rand`'s
+        // Uniform generators, but it's nice to have for completeness.
     };
 }
 
