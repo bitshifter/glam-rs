@@ -503,9 +503,9 @@ macro_rules! impl_int_types {
 
         impl_vec_types!($t, $vec2, $vec3, $vec4, UniformInt);
 
-        test_vec_type_uniform!(test_vec2_rand_uniform, $vec2, $t, 2);
-        test_vec_type_uniform!(test_vec3_rand_uniform, $vec3, $t, 3);
-        test_vec_type_uniform!(test_vec4_rand_uniform, $vec4, $t, 4);
+        test_vec_type_uniform!(test_vec2_rand_uniform_equality, $vec2, $t, 2);
+        test_vec_type_uniform!(test_vec3_rand_uniform_equality, $vec3, $t, 3);
+        test_vec_type_uniform!(test_vec4_rand_uniform_equality, $vec4, $t, 4);
     };
 }
 
