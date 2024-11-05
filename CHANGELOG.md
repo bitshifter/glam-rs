@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [0.29.2] - 2024-11-05
+
+### Fixed
+
+* Fix regression in vector `write_to_slice` methods where the destination had to
+  be the same size as the input, but it should support writing to a slice that
+  is the same size or larger than the input.
+
 ## [0.29.1] - 2024-10-30
 
 ### Added
@@ -1141,7 +1149,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.29.1...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.29.2...HEAD
+[0.29.2]: https://github.com/bitshifter/glam-rs/compare/0.29.1...0.29.2
 [0.29.1]: https://github.com/bitshifter/glam-rs/compare/0.29.0...0.29.1
 [0.29.0]: https://github.com/bitshifter/glam-rs/compare/0.28.0...0.29.0
 [0.28.0]: https://github.com/bitshifter/glam-rs/compare/0.27.0...0.28.0
