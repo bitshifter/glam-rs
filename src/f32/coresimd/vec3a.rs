@@ -143,7 +143,7 @@ impl Vec3A {
     /// Panics if `slice` is less than 3 elements long.
     #[inline]
     pub fn write_to_slice(self, slice: &mut [f32]) {
-        slice.copy_from_slice(&self.to_array());
+        slice[..3].copy_from_slice(&self.to_array());
     }
 
     /// Creates a [`Vec3A`] from the `x`, `y` and `z` elements of `self` discarding `w`.

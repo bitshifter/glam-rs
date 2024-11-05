@@ -529,7 +529,7 @@ impl {{ self_t }} {
             assert!(slice.len() >= 4);
             unsafe { vst1q_f32(slice.as_mut_ptr(), self.0); }
         {% else %}
-            slice.copy_from_slice(&self.to_array());
+            slice[..{{ dim }}].copy_from_slice(&self.to_array());
         {% endif %}
     }
 

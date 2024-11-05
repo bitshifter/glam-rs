@@ -836,6 +836,11 @@ macro_rules! impl_vec4_tests {
             let mut a = [0 as $t, 0 as $t, 0 as $t, 0 as $t];
             v.write_to_slice(&mut a);
             assert_eq!(v, $vec4::from_slice(&a));
+
+            let mut a = [0 as $t; 17];
+            v.write_to_slice(&mut a);
+            assert_eq!(v, $vec4::from_slice(&a[..4]));
+            assert_eq!([0 as $t; 13], a[4..]);
         });
 
         glam_test!(test_sum, {
