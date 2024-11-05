@@ -634,7 +634,7 @@ macro_rules! impl_float_types {
         }
 
         #[test]
-        fn test_quat_rand() {
+        fn test_quat_rand_standard() {
             use rand::{Rng, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
