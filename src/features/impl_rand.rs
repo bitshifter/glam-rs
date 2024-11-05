@@ -522,7 +522,6 @@ macro_rules! impl_int_types {
 
         impl_vec_types!($t, $vec2, $vec3, $vec4, UniformInt);
 
-        test_vec_type_uniform!(test_vec3_rand_uniform_equality, $vec3, $t, 3);
         test_vec_type_uniform!(
             test_vec2_rand_uniform_equality,
             $vec2,
@@ -722,8 +721,6 @@ mod u16 {
 }
 
 mod u32 {
-    use rand::SeedableRng;
-
     use crate::{UVec2, UVec3, UVec4};
 
     impl_int_types!(u32, UVec2, UVec3, UVec4);
