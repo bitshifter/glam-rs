@@ -718,6 +718,11 @@ macro_rules! impl_vec3_tests {
             v.write_to_slice(&mut a);
             assert_eq!(v, $vec3::from_slice(&a));
 
+            let mut a = [0 as $t; 17];
+            v.write_to_slice(&mut a);
+            assert_eq!(v, $vec3::from_slice(&a[..3]));
+            assert_eq!([0 as $t; 14], a[3..]);
+
             should_panic!({ $vec3::ONE.write_to_slice(&mut [0 as $t; 2]) });
             should_panic!({ $vec3::from_slice(&[0 as $t; 2]) });
         });
