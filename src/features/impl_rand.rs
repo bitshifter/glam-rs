@@ -408,9 +408,9 @@ macro_rules! impl_vec_types {
 }
 
 macro_rules! test_vec_type_uniform {
-    // NOTE: These were intended to be placed in a `macro_rules!` statement in the main rule below,
-    // but rustc wants to complain about unused macros if I try to do that... even if I do use the
-    // macros.
+    // NOTE: These were intended to be placed in a `macro_rules!` statement in
+    // the main rule below, but rustc wants to complain about unused macros if I
+    // try to do that... even if I do use the macros.
     (__repeat_code 2, $code:expr) => {
         ($code, $code)
     };
@@ -420,55 +420,74 @@ macro_rules! test_vec_type_uniform {
     (__repeat_code 4, $code:expr) => {
         ($code, $code, $code, $code)
     };
-    ($equality_test_name:ident, $vec:ident, $t:ty, $t_count:tt) => {
-        // Tests that we reach the same result, whether we generate the vector type directly, or
-        // generate its internal values $t_count times and convert the result into the vector type.
+    (
+        $equality_test_name:ident,
+        $vec:ident,
+        $t:ty,
+        $t_count:tt
+    ) => {
+        /// Tests that we reach the same result, whether we generate the vector
+        /// type directly, or generate its internal values $t_count times and
+        /// convert the result into the vector type.
         #[test]
         fn $equality_test_name() {
             use rand::{distributions::Uniform, Rng, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
 
+            let mut int_rng = Xoshiro256Plus::seed_from_u64(0);
+            let mut vec_rng = Xoshiro256Plus::seed_from_u64(0);
+
             macro_rules! test_uniform {
-                ($int_uniform:expr, $vec_uniform:expr) => {
-                    let mut int_rng = Xoshiro256Plus::seed_from_u64(0);
-                    let mut vec_rng = Xoshiro256Plus::seed_from_u64(0);
-                    let full_int_uniform = $int_uniform;
-                    let full_vec_uniform = $vec_uniform;
+                (__single_test, $int_uniform:expr, $vec_uniform:expr) => {
+                    let int_uniform = $int_uniform;
+                    let vec_uniform = $vec_uniform;
 
                     let v_int = test_vec_type_uniform!(
                         __repeat_code $t_count,
-                        int_rng.sample(full_int_uniform)
+                        int_rng.sample(int_uniform)
                     );
-                    let v_vec: $vec = vec_rng.sample(full_vec_uniform);
+                    let v_vec: $vec = vec_rng.sample(vec_uniform);
                     assert_eq!(v_int, v_vec.into());
+                };
+                (
+                    $uniform_function_name:ident,
+                    $t_low:expr,
+                    $t_high:expr,
+                    $vec_low:expr,
+                    $vec_high:expr
+                ) => {
+                    test_uniform!(
+                        __single_test,
+                        Uniform::$uniform_function_name($t_low, $t_high),
+                        Uniform::$uniform_function_name($vec_low, $vec_high)
+                    );
+
+                    test_uniform!(
+                        __single_test,
+                        Uniform::$uniform_function_name(&$t_low, &$t_high),
+                        Uniform::$uniform_function_name(&$vec_low, &$vec_high)
+                    );
                 };
             }
 
             test_uniform!(
-                Uniform::new(<$t>::default(), <$t>::MAX),
-                Uniform::new($vec::default(), $vec::MAX)
+                new,
+                <$t>::default(),
+                <$t>::MAX,
+                $vec::default(),
+                $vec::MAX
             );
 
             test_uniform!(
-                Uniform::new(&<$t>::default(), &<$t>::MAX),
-                Uniform::new(&$vec::default(), &$vec::MAX)
-            );
-
-            test_uniform!(
-                Uniform::new_inclusive(<$t>::default(), <$t>::MAX),
-                Uniform::new_inclusive($vec::default(), $vec::MAX)
-            );
-
-            test_uniform!(
-                Uniform::new_inclusive(&<$t>::default(), &<$t>::MAX),
-                Uniform::new_inclusive(&$vec::default(), &$vec::MAX)
+                new_inclusive,
+                <$t>::default(),
+                <$t>::MAX,
+                $vec::default(),
+                $vec::MAX
             );
 
             macro_rules! test_sample_uniform_sampler {
                 ($sampler_function_name:ident) => {
-                    let mut int_rng = Xoshiro256Plus::seed_from_u64(0);
-                    let mut vec_rng = Xoshiro256Plus::seed_from_u64(0);
-
                     let v_int = test_vec_type_uniform!(
                         __repeat_code $t_count,
                         <$t as SampleUniform>::Sampler::$sampler_function_name(
@@ -490,7 +509,7 @@ macro_rules! test_vec_type_uniform {
             test_sample_uniform_sampler!(sample_single);
             test_sample_uniform_sampler!(sample_single_inclusive);
         }
-        
+
         // TODO: Test to ensure that all generated numbers are within specified range. This is
         // technically covered by `rand`'s own tests, as we're currently just wrapping `rand`'s
         // Uniform generators, but it's nice to have for completeness.
@@ -503,9 +522,25 @@ macro_rules! impl_int_types {
 
         impl_vec_types!($t, $vec2, $vec3, $vec4, UniformInt);
 
-        test_vec_type_uniform!(test_vec2_rand_uniform_equality, $vec2, $t, 2);
         test_vec_type_uniform!(test_vec3_rand_uniform_equality, $vec3, $t, 3);
-        test_vec_type_uniform!(test_vec4_rand_uniform_equality, $vec4, $t, 4);
+        test_vec_type_uniform!(
+            test_vec2_rand_uniform_equality,
+            $vec2,
+            $t,
+            2
+        );
+        test_vec_type_uniform!(
+            test_vec3_rand_uniform_equality,
+            $vec3,
+            $t,
+            3
+        );
+        test_vec_type_uniform!(
+            test_vec4_rand_uniform_equality,
+            $vec4,
+            $t,
+            4
+        );
     };
 }
 
@@ -687,6 +722,8 @@ mod u16 {
 }
 
 mod u32 {
+    use rand::SeedableRng;
+
     use crate::{UVec2, UVec3, UVec4};
 
     impl_int_types!(u32, UVec2, UVec3, UVec4);
