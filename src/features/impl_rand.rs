@@ -1,5 +1,12 @@
 macro_rules! impl_vec_types {
-    ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident, $uniform:ident) => {
+    (
+        $t:ty,
+        $vec2:ident,
+        $vec3:ident,
+        $vec4:ident,
+        $uniform:ident,
+        $upper_range_multiplier:expr
+    ) => {
         use super::{UniformVec2, UniformVec3, UniformVec4};
         use rand::{
             distributions::{
@@ -404,6 +411,30 @@ macro_rules! impl_vec_types {
             let b: $vec4 = rng2.gen();
             assert_eq!(a, b.into());
         }
+
+        test_vec_type_uniform!(
+            test_vec2_rand_uniform_equality,
+            $vec2,
+            $t,
+            2,
+            $upper_range_multiplier
+        );
+
+        test_vec_type_uniform!(
+            test_vec3_rand_uniform_equality,
+            $vec3,
+            $t,
+            3,
+            $upper_range_multiplier
+        );
+
+        test_vec_type_uniform!(
+            test_vec4_rand_uniform_equality,
+            $vec4,
+            $t,
+            4,
+            $upper_range_multiplier
+        );
     };
 }
 
@@ -424,7 +455,8 @@ macro_rules! test_vec_type_uniform {
         $equality_test_name:ident,
         $vec:ident,
         $t:ty,
-        $t_count:tt
+        $t_count:tt,
+        $upper_range_multiplier:expr
     ) => {
         /// Tests that we reach the same result, whether we generate the vector
         /// type directly, or generate its internal values $t_count times and
@@ -438,15 +470,22 @@ macro_rules! test_vec_type_uniform {
             let mut vec_rng = Xoshiro256Plus::seed_from_u64(0);
 
             macro_rules! test_uniform {
-                (__single_test, $int_uniform:expr, $vec_uniform:expr) => {
-                    let int_uniform = $int_uniform;
-                    let vec_uniform = $vec_uniform;
+                (
+                    __single_test,
+                    $uniform_function_name:ident,
+                    $t_low:expr,
+                    $t_high:expr,
+                    $vec_low:expr,
+                    $vec_high:expr
+                ) => {
+                    let int_u = Uniform::$uniform_function_name($t_low, $t_high);
+                    let vec_u = Uniform::$uniform_function_name($vec_low, $vec_high);
 
                     let v_int = test_vec_type_uniform!(
                         __repeat_code $t_count,
-                        int_rng.sample(int_uniform)
+                        int_rng.sample(int_u)
                     );
-                    let v_vec: $vec = vec_rng.sample(vec_uniform);
+                    let v_vec: $vec = vec_rng.sample(vec_u);
                     assert_eq!(v_int, v_vec.into());
                 };
                 (
@@ -458,14 +497,16 @@ macro_rules! test_vec_type_uniform {
                 ) => {
                     test_uniform!(
                         __single_test,
-                        Uniform::$uniform_function_name($t_low, $t_high),
-                        Uniform::$uniform_function_name($vec_low, $vec_high)
+                        $uniform_function_name,
+                        $t_low, $t_high,
+                        $vec_low, $vec_high
                     );
 
                     test_uniform!(
                         __single_test,
-                        Uniform::$uniform_function_name(&$t_low, &$t_high),
-                        Uniform::$uniform_function_name(&$vec_low, &$vec_high)
+                        $uniform_function_name,
+                        &$t_low, &$t_high,
+                        &$vec_low, &$vec_high
                     );
                 };
             }
@@ -473,17 +514,17 @@ macro_rules! test_vec_type_uniform {
             test_uniform!(
                 new,
                 <$t>::default(),
-                <$t>::MAX,
+                <$t>::MAX * $upper_range_multiplier,
                 $vec::default(),
-                $vec::MAX
+                $vec::MAX * $upper_range_multiplier
             );
 
             test_uniform!(
                 new_inclusive,
                 <$t>::default(),
-                <$t>::MAX,
+                <$t>::MAX * $upper_range_multiplier,
                 $vec::default(),
-                $vec::MAX
+                $vec::MAX * $upper_range_multiplier
             );
 
             macro_rules! test_sample_uniform_sampler {
@@ -492,14 +533,14 @@ macro_rules! test_vec_type_uniform {
                         __repeat_code $t_count,
                         <$t as SampleUniform>::Sampler::$sampler_function_name(
                             <$t>::default(),
-                            <$t>::MAX,
+                            <$t>::MAX * $upper_range_multiplier,
                             &mut int_rng,
                         )
                     );
 
                     let v_vec: $vec = <$vec as SampleUniform>::Sampler::$sampler_function_name(
                         $vec::default(),
-                        $vec::MAX,
+                        $vec::MAX * $upper_range_multiplier,
                         &mut vec_rng,
                     );
                     assert_eq!(v_int, v_vec.into());
@@ -509,10 +550,6 @@ macro_rules! test_vec_type_uniform {
             test_sample_uniform_sampler!(sample_single);
             test_sample_uniform_sampler!(sample_single_inclusive);
         }
-
-        // TODO: Test to ensure that all generated numbers are within specified range. This is
-        // technically covered by `rand`'s own tests, as we're currently just wrapping `rand`'s
-        // Uniform generators, but it's nice to have for completeness.
     };
 }
 
@@ -520,26 +557,7 @@ macro_rules! impl_int_types {
     ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident) => {
         use rand::distributions::uniform::UniformInt;
 
-        impl_vec_types!($t, $vec2, $vec3, $vec4, UniformInt);
-
-        test_vec_type_uniform!(
-            test_vec2_rand_uniform_equality,
-            $vec2,
-            $t,
-            2
-        );
-        test_vec_type_uniform!(
-            test_vec3_rand_uniform_equality,
-            $vec3,
-            $t,
-            3
-        );
-        test_vec_type_uniform!(
-            test_vec4_rand_uniform_equality,
-            $vec4,
-            $t,
-            4
-        );
+        impl_vec_types!($t, $vec2, $vec3, $vec4, UniformInt, 1);
     };
 }
 
@@ -547,7 +565,7 @@ macro_rules! impl_float_types {
     ($t:ident, $mat2:ident, $mat3:ident, $mat4:ident, $quat:ident, $vec2:ident, $vec3:ident, $vec4:ident) => {
         use rand::distributions::uniform::UniformFloat;
 
-        impl_vec_types!($t, $vec2, $vec3, $vec4, UniformFloat);
+        impl_vec_types!($t, $vec2, $vec3, $vec4, UniformFloat, 0.1);
 
         impl Distribution<$mat2> for Standard {
             #[inline]
@@ -583,7 +601,7 @@ macro_rules! impl_float_types {
         }
 
         #[test]
-        fn test_mat2_rand() {
+        fn test_mat2_rand_standard() {
             use rand::{Rng, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
@@ -594,7 +612,7 @@ macro_rules! impl_float_types {
         }
 
         #[test]
-        fn test_mat3_rand() {
+        fn test_mat3_rand_standard() {
             use rand::{Rng, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
@@ -605,7 +623,7 @@ macro_rules! impl_float_types {
         }
 
         #[test]
-        fn test_mat4_rand() {
+        fn test_mat4_rand_standard() {
             use rand::{Rng, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
@@ -665,7 +683,7 @@ mod f32 {
     }
 
     #[test]
-    fn test_vec3a_rand() {
+    fn test_vec3a_rand_standard() {
         use rand::{Rng, SeedableRng};
         use rand_xoshiro::Xoshiro256Plus;
         let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
