@@ -456,7 +456,7 @@ macro_rules! test_vec_type_uniform {
         $vec:ident,
         $t:ty,
         $t_count:tt,
-        $upper_range_multiplier:expr
+        $upper_range_divisor:expr
     ) => {
         /// Tests that we reach the same result, whether we generate the vector
         /// type directly, or generate its internal values $t_count times and
@@ -514,17 +514,17 @@ macro_rules! test_vec_type_uniform {
             test_uniform!(
                 new,
                 <$t>::default(),
-                <$t>::MAX * $upper_range_multiplier,
+                <$t>::MAX / $upper_range_divisor,
                 $vec::default(),
-                $vec::MAX * $upper_range_multiplier
+                $vec::MAX / $upper_range_divisor
             );
 
             test_uniform!(
                 new_inclusive,
                 <$t>::default(),
-                <$t>::MAX * $upper_range_multiplier,
+                <$t>::MAX / $upper_range_divisor,
                 $vec::default(),
-                $vec::MAX * $upper_range_multiplier
+                $vec::MAX / $upper_range_divisor
             );
 
             macro_rules! test_sample_uniform_sampler {
@@ -533,14 +533,14 @@ macro_rules! test_vec_type_uniform {
                         __repeat_code $t_count,
                         <$t as SampleUniform>::Sampler::$sampler_function_name(
                             <$t>::default(),
-                            <$t>::MAX * $upper_range_multiplier,
+                            <$t>::MAX / $upper_range_divisor,
                             &mut int_rng,
                         )
                     );
 
                     let v_vec: $vec = <$vec as SampleUniform>::Sampler::$sampler_function_name(
                         $vec::default(),
-                        $vec::MAX * $upper_range_multiplier,
+                        $vec::MAX / $upper_range_divisor,
                         &mut vec_rng,
                     );
                     assert_eq!(v_int, v_vec.into());
@@ -565,7 +565,7 @@ macro_rules! impl_float_types {
     ($t:ident, $mat2:ident, $mat3:ident, $mat4:ident, $quat:ident, $vec2:ident, $vec3:ident, $vec4:ident) => {
         use rand::distributions::uniform::UniformFloat;
 
-        impl_vec_types!($t, $vec2, $vec3, $vec4, UniformFloat, 0.1);
+        impl_vec_types!($t, $vec2, $vec3, $vec4, UniformFloat, 10.0);
 
         impl Distribution<$mat2> for Standard {
             #[inline]
