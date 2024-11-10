@@ -1100,9 +1100,9 @@ impl DivAssign<Vec3A> for Vec3A {
     }
 }
 
-impl DivAssign<&Self> for Vec3A {
+impl DivAssign<&Vec3A> for Vec3A {
     #[inline]
-    fn div_assign(&mut self, rhs: &Self) {
+    fn div_assign(&mut self, rhs: &Vec3A) {
         self.div_assign(*rhs)
     }
 }
@@ -1224,9 +1224,9 @@ impl MulAssign<Vec3A> for Vec3A {
     }
 }
 
-impl MulAssign<&Self> for Vec3A {
+impl MulAssign<&Vec3A> for Vec3A {
     #[inline]
-    fn mul_assign(&mut self, rhs: &Self) {
+    fn mul_assign(&mut self, rhs: &Vec3A) {
         self.mul_assign(*rhs)
     }
 }
@@ -1348,9 +1348,9 @@ impl AddAssign<Vec3A> for Vec3A {
     }
 }
 
-impl AddAssign<&Self> for Vec3A {
+impl AddAssign<&Vec3A> for Vec3A {
     #[inline]
-    fn add_assign(&mut self, rhs: &Self) {
+    fn add_assign(&mut self, rhs: &Vec3A) {
         self.add_assign(*rhs)
     }
 }
@@ -1472,9 +1472,9 @@ impl SubAssign<Vec3A> for Vec3A {
     }
 }
 
-impl SubAssign<&Self> for Vec3A {
+impl SubAssign<&Vec3A> for Vec3A {
     #[inline]
-    fn sub_assign(&mut self, rhs: &Self) {
+    fn sub_assign(&mut self, rhs: &Vec3A) {
         self.sub_assign(*rhs)
     }
 }
@@ -1599,9 +1599,9 @@ impl RemAssign<Vec3A> for Vec3A {
     }
 }
 
-impl RemAssign<&Self> for Vec3A {
+impl RemAssign<&Vec3A> for Vec3A {
     #[inline]
-    fn rem_assign(&mut self, rhs: &Self) {
+    fn rem_assign(&mut self, rhs: &Vec3A) {
         self.rem_assign(*rhs)
     }
 }

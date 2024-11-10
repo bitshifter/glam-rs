@@ -71,3 +71,36 @@
         }
     }
 {% endmacro impl_mat4_minor %}
+
+
+{% macro impl_op_ref_inner(op, self_t, rhs_t, output_t, self, self_ref, rhs_ref) %}
+{% set method = op | snake_case %}
+{% if rhs_ref and rhs_t %}
+    {% set rhs = "&" ~ rhs_t %}
+{% elif rhs_t %}
+    {% set rhs = rhs_t %}
+{% endif %}
+
+impl {{ op }}{% if rhs_t %}<{{ rhs }}>{% endif %} for {% if self_ref %}&{% endif %}{{ self_t }} {
+    {% if output_t %}
+    type Output = {{ output_t }};
+    {% endif -%}
+    #[inline]
+    fn {{ method }}({{ self }}{% if rhs_t %}, rhs: {{ rhs }}{% endif %}){% if output_t %} -> {{ output_t }}{% endif %}{ 
+        {% if self_ref %} (*self) {% else %} self {% endif %}.{{method}}
+        ({% if rhs_ref %} *rhs {% elif rhs_t %} rhs {% endif %})
+    }
+}
+{% endmacro impl_op_ref_inner %}
+
+{% macro impl_op_ref(op, self_t, rhs_t=false, output_t=false, self="self") %}
+{%if rhs_t %}
+{{ self::impl_op_ref_inner(op=op, self_t=self_t, rhs_t=rhs_t, output_t=output_t, self=self, self_ref=false, rhs_ref=true) }}
+{%if output_t %}
+{{ self::impl_op_ref_inner(op=op, self_t=self_t, rhs_t=rhs_t, output_t=output_t, self=self, self_ref=true, rhs_ref=true) }}
+{% endif %}
+{% endif %}
+{%if output_t %}
+{{ self::impl_op_ref_inner(op=op, self_t=self_t, rhs_t=rhs_t, output_t=output_t, self=self, self_ref=true, rhs_ref=false) }}
+{% endif %}
+{% endmacro impl_op_ref %}

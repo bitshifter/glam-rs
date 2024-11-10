@@ -2695,29 +2695,7 @@ impl Div<{{ self_t }}> for {{ self_t }} {
     }
 }
 
-impl Div<&{{ self_t }}> for {{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn div(self, rhs: &{{ self_t }}) -> {{ self_t }} {
-        self.div(*rhs)
-    }
-}
-
-impl Div<&{{ self_t }}> for &{{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn div(self, rhs: &{{ self_t }}) -> {{ self_t }} {
-        (*self).div(*rhs)
-    }
-}
-
-impl Div<{{ self_t }}> for &{{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn div(self, rhs: {{ self_t }}) -> {{ self_t }} {
-        (*self).div(rhs)
-    }
-}
+{{ macros::impl_op_ref(op="Div", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
 
 impl DivAssign<{{ self_t }}> for {{ self_t }} {
     #[inline]
@@ -2740,12 +2718,7 @@ impl DivAssign<{{ self_t }}> for {{ self_t }} {
     }
 }
 
-impl DivAssign<&Self> for {{ self_t }} {
-    #[inline]
-    fn div_assign(&mut self, rhs: &Self) {
-        self.div_assign(*rhs)
-    }
-}
+{{ macros::impl_op_ref(op="DivAssign", self_t=self_t, rhs_t=self_t, self="&mut self") }}
 
 impl Div<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -2771,29 +2744,7 @@ impl Div<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-impl Div<&{{ scalar_t }}> for {{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn div(self, rhs: &{{ scalar_t }}) -> {{ self_t }} {
-        self.div(*rhs)
-    }
-}
-
-impl Div<&{{ scalar_t }}> for &{{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn div(self, rhs: &{{ scalar_t }}) -> {{ self_t }} {
-        (*self).div(*rhs)
-    }
-}
-
-impl Div<{{ scalar_t }}> for &{{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn div(self, rhs: {{ scalar_t }}) -> {{ self_t }} {
-        (*self).div(rhs)
-    }
-}
+{{ macros::impl_op_ref(op="Div", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
 
 impl DivAssign<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
@@ -2816,12 +2767,7 @@ impl DivAssign<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-impl DivAssign<&{{ scalar_t }}> for {{ self_t }} {
-    #[inline]
-    fn div_assign(&mut self, rhs: &{{ scalar_t }}) {
-        self.div_assign(*rhs)
-    }
-}
+{{ macros::impl_op_ref(op="DivAssign", self_t=self_t, rhs_t=scalar_t, self="&mut self") }}
 
 impl Div<{{ self_t }}> for {{ scalar_t }} {
     type Output = {{ self_t }};
@@ -2847,29 +2793,7 @@ impl Div<{{ self_t }}> for {{ scalar_t }} {
     }
 }
 
-impl Div<&{{ self_t }}> for {{ scalar_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn div(self, rhs: &{{ self_t }}) -> {{ self_t }} {
-        self.div(*rhs)
-    }
-}
-
-impl Div<&{{ self_t }}> for &{{ scalar_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn div(self, rhs: &{{ self_t }}) -> {{ self_t }} {
-        (*self).div(*rhs)
-    }
-}
-
-impl Div<{{ self_t }}> for &{{ scalar_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn div(self, rhs: {{ self_t }}) -> {{ self_t }} {
-        (*self).div(rhs)
-    }
-}
+{{ macros::impl_op_ref(op="Div", self_t=scalar_t, rhs_t=self_t, output_t=self_t) }}
 
 impl Mul<{{ self_t }}> for {{ self_t }} {
     type Output = Self;
@@ -2895,29 +2819,7 @@ impl Mul<{{ self_t }}> for {{ self_t }} {
     }
 }
 
-impl Mul<&{{ self_t }}> for {{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn mul(self, rhs: &{{ self_t }}) -> {{ self_t }} {
-        self.mul(*rhs)
-    }
-}
-
-impl Mul<&{{ self_t }}> for &{{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn mul(self, rhs: &{{ self_t }}) -> {{ self_t }} {
-        (*self).mul(*rhs)
-    }
-}
-
-impl Mul<{{ self_t }}> for &{{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn mul(self, rhs: {{ self_t }}) -> {{ self_t }} {
-        (*self).mul(rhs)
-    }
-}
+{{ macros::impl_op_ref(op="Mul", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
 
 impl MulAssign<{{ self_t }}> for {{ self_t }} {
     #[inline]
@@ -2940,12 +2842,7 @@ impl MulAssign<{{ self_t }}> for {{ self_t }} {
     }
 }
 
-impl MulAssign<&Self> for {{ self_t }} {
-    #[inline]
-    fn mul_assign(&mut self, rhs: &Self) {
-        self.mul_assign(*rhs)
-    }
-}
+{{ macros::impl_op_ref(op="MulAssign", self_t=self_t, rhs_t=self_t, self="&mut self") }}
 
 impl Mul<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -2971,29 +2868,7 @@ impl Mul<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-impl Mul<&{{ scalar_t }}> for {{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn mul(self, rhs: &{{ scalar_t }}) -> {{ self_t }} {
-        self.mul(*rhs)
-    }
-}
-
-impl Mul<&{{ scalar_t }}> for &{{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn mul(self, rhs: &{{ scalar_t }}) -> {{ self_t }} {
-        (*self).mul(*rhs)
-    }
-}
-
-impl Mul<{{ scalar_t }}> for &{{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn mul(self, rhs: {{ scalar_t }}) -> {{ self_t }} {
-        (*self).mul(rhs)
-    }
-}
+{{ macros::impl_op_ref(op="Mul", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
 
 impl MulAssign<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
@@ -3016,12 +2891,7 @@ impl MulAssign<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-impl MulAssign<&{{ scalar_t }}> for {{ self_t }} {
-    #[inline]
-    fn mul_assign(&mut self, rhs: &{{ scalar_t }}) {
-        self.mul_assign(*rhs)
-    }
-}
+{{ macros::impl_op_ref(op="MulAssign", self_t=self_t, rhs_t=scalar_t, self="&mut self") }}
 
 impl Mul<{{ self_t }}> for {{ scalar_t }} {
     type Output = {{ self_t }};
@@ -3047,29 +2917,7 @@ impl Mul<{{ self_t }}> for {{ scalar_t }} {
     }
 }
 
-impl Mul<&{{ self_t }}> for {{ scalar_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn mul(self, rhs: &{{ self_t }}) -> {{ self_t }} {
-        self.mul(*rhs)
-    }
-}
-
-impl Mul<&{{ self_t }}> for &{{ scalar_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn mul(self, rhs: &{{ self_t }}) -> {{ self_t }} {
-        (*self).mul(*rhs)
-    }
-}
-
-impl Mul<{{ self_t }}> for &{{ scalar_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn mul(self, rhs: {{ self_t }}) -> {{ self_t }} {
-        (*self).mul(rhs)
-    }
-}
+{{ macros::impl_op_ref(op="Mul", self_t=scalar_t, rhs_t=self_t, output_t=self_t) }}
 
 impl Add<{{ self_t }}> for {{ self_t }} {
     type Output = Self;
@@ -3095,29 +2943,7 @@ impl Add<{{ self_t }}> for {{ self_t }} {
     }
 }
 
-impl Add<&{{ self_t }}> for {{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn add(self, rhs: &{{ self_t }}) -> {{ self_t }} {
-        self.add(*rhs)
-    }
-}
-
-impl Add<&{{ self_t }}> for &{{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn add(self, rhs: &{{ self_t }}) -> {{ self_t }} {
-        (*self).add(*rhs)
-    }
-}
-
-impl Add<{{ self_t }}> for &{{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn add(self, rhs: {{ self_t }}) -> {{ self_t }} {
-        (*self).add(rhs)
-    }
-}
+{{ macros::impl_op_ref(op="Add", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
 
 impl AddAssign<{{ self_t }}> for {{ self_t }} {
     #[inline]
@@ -3140,12 +2966,7 @@ impl AddAssign<{{ self_t }}> for {{ self_t }} {
     }
 }
 
-impl AddAssign<&Self> for {{ self_t }} {
-    #[inline]
-    fn add_assign(&mut self, rhs: &Self) {
-        self.add_assign(*rhs)
-    }
-}
+{{ macros::impl_op_ref(op="AddAssign", self_t=self_t, rhs_t=self_t, self="&mut self") }}
 
 impl Add<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -3171,29 +2992,7 @@ impl Add<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-impl Add<&{{ scalar_t }}> for {{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn add(self, rhs: &{{ scalar_t }}) -> {{ self_t }} {
-        self.add(*rhs)
-    }
-}
-
-impl Add<&{{ scalar_t }}> for &{{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn add(self, rhs: &{{ scalar_t }}) -> {{ self_t }} {
-        (*self).add(*rhs)
-    }
-}
-
-impl Add<{{ scalar_t }}> for &{{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn add(self, rhs: {{ scalar_t }}) -> {{ self_t }} {
-        (*self).add(rhs)
-    }
-}
+{{ macros::impl_op_ref(op="Add", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
 
 impl AddAssign<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
@@ -3216,12 +3015,7 @@ impl AddAssign<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-impl AddAssign<&{{ scalar_t }}> for {{ self_t }} {
-    #[inline]
-    fn add_assign(&mut self, rhs: &{{ scalar_t }}) {
-        self.add_assign(*rhs)
-    }
-}
+{{ macros::impl_op_ref(op="AddAssign", self_t=self_t, rhs_t=scalar_t, self="&mut self") }}
 
 impl Add<{{ self_t }}> for {{ scalar_t }} {
     type Output = {{ self_t }};
@@ -3247,29 +3041,7 @@ impl Add<{{ self_t }}> for {{ scalar_t }} {
     }
 }
 
-impl Add<&{{ self_t }}> for {{ scalar_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn add(self, rhs: &{{ self_t }}) -> {{ self_t }} {
-        self.add(*rhs)
-    }
-}
-
-impl Add<&{{ self_t }}> for &{{ scalar_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn add(self, rhs: &{{ self_t }}) -> {{ self_t }} {
-        (*self).add(*rhs)
-    }
-}
-
-impl Add<{{ self_t }}> for &{{ scalar_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn add(self, rhs: {{ self_t }}) -> {{ self_t }} {
-        (*self).add(rhs)
-    }
-}
+{{ macros::impl_op_ref(op="Add", self_t=scalar_t, rhs_t=self_t, output_t=self_t) }}
 
 impl Sub<{{ self_t }}> for {{ self_t }} {
     type Output = Self;
@@ -3295,29 +3067,7 @@ impl Sub<{{ self_t }}> for {{ self_t }} {
     }
 }
 
-impl Sub<&{{ self_t }}> for {{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn sub(self, rhs: &{{ self_t }}) -> {{ self_t }} {
-        self.sub(*rhs)
-    }
-}
-
-impl Sub<&{{ self_t }}> for &{{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn sub(self, rhs: &{{ self_t }}) -> {{ self_t }} {
-        (*self).sub(*rhs)
-    }
-}
-
-impl Sub<{{ self_t }}> for &{{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn sub(self, rhs: {{ self_t }}) -> {{ self_t }} {
-        (*self).sub(rhs)
-    }
-}
+{{ macros::impl_op_ref(op="Sub", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
 
 impl SubAssign<{{ self_t }}> for {{ self_t }} {
     #[inline]
@@ -3340,12 +3090,7 @@ impl SubAssign<{{ self_t }}> for {{ self_t }} {
     }
 }
 
-impl SubAssign<&Self> for {{ self_t }} {
-    #[inline]
-    fn sub_assign(&mut self, rhs: &Self) {
-        self.sub_assign(*rhs)
-    }
-}
+{{ macros::impl_op_ref(op="SubAssign", self_t=self_t, rhs_t=self_t, self="&mut self") }}
 
 impl Sub<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -3371,29 +3116,7 @@ impl Sub<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-impl Sub<&{{ scalar_t }}> for {{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn sub(self, rhs: &{{ scalar_t }}) -> {{ self_t }} {
-        self.sub(*rhs)
-    }
-}
-
-impl Sub<&{{ scalar_t }}> for &{{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn sub(self, rhs: &{{ scalar_t }}) -> {{ self_t }} {
-        (*self).sub(*rhs)
-    }
-}
-
-impl Sub<{{ scalar_t }}> for &{{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn sub(self, rhs: {{ scalar_t }}) -> {{ self_t }} {
-        (*self).sub(rhs)
-    }
-}
+{{ macros::impl_op_ref(op="Sub", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
 
 impl SubAssign<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
@@ -3416,12 +3139,7 @@ impl SubAssign<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-impl SubAssign<&{{ scalar_t }}> for {{ self_t }} {
-    #[inline]
-    fn sub_assign(&mut self, rhs: &{{ scalar_t }}) {
-        self.sub_assign(*rhs)
-    }
-}
+{{ macros::impl_op_ref(op="SubAssign", self_t=self_t, rhs_t=scalar_t, self="&mut self") }}
 
 impl Sub<{{ self_t }}> for {{ scalar_t }} {
     type Output = {{ self_t }};
@@ -3447,29 +3165,7 @@ impl Sub<{{ self_t }}> for {{ scalar_t }} {
     }
 }
 
-impl Sub<&{{ self_t }}> for {{ scalar_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn sub(self, rhs: &{{ self_t }}) -> {{ self_t }} {
-        self.sub(*rhs)
-    }
-}
-
-impl Sub<&{{ self_t }}> for &{{ scalar_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn sub(self, rhs: &{{ self_t }}) -> {{ self_t }} {
-        (*self).sub(*rhs)
-    }
-}
-
-impl Sub<{{ self_t }}> for &{{ scalar_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn sub(self, rhs: {{ self_t }}) -> {{ self_t }} {
-        (*self).sub(rhs)
-    }
-}
+{{ macros::impl_op_ref(op="Sub", self_t=scalar_t, rhs_t=self_t, output_t=self_t) }}
 
 impl Rem<{{ self_t }}> for {{ self_t }} {
     type Output = Self;
@@ -3502,29 +3198,7 @@ impl Rem<{{ self_t }}> for {{ self_t }} {
     }
 }
 
-impl Rem<&{{ self_t }}> for {{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn rem(self, rhs: &{{ self_t }}) -> {{ self_t }} {
-        self.rem(*rhs)
-    }
-}
-
-impl Rem<&{{ self_t }}> for &{{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn rem(self, rhs: &{{ self_t }}) -> {{ self_t }} {
-        (*self).rem(*rhs)
-    }
-}
-
-impl Rem<{{ self_t }}> for &{{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn rem(self, rhs: {{ self_t }}) -> {{ self_t }} {
-        (*self).rem(rhs)
-    }
-}
+{{ macros::impl_op_ref(op="Rem", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
 
 impl RemAssign<{{ self_t }}> for {{ self_t }} {
     #[inline]
@@ -3541,12 +3215,7 @@ impl RemAssign<{{ self_t }}> for {{ self_t }} {
     }
 }
 
-impl RemAssign<&Self> for {{ self_t }} {
-    #[inline]
-    fn rem_assign(&mut self, rhs: &Self) {
-        self.rem_assign(*rhs)
-    }
-}
+{{ macros::impl_op_ref(op="RemAssign", self_t=self_t, rhs_t=self_t, self="&mut self") }}
 
 impl Rem<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -3564,29 +3233,7 @@ impl Rem<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-impl Rem<&{{ scalar_t }}> for {{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn rem(self, rhs: &{{ scalar_t }}) -> {{ self_t }} {
-        self.rem(*rhs)
-    }
-}
-
-impl Rem<&{{ scalar_t }}> for &{{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn rem(self, rhs: &{{ scalar_t }}) -> {{ self_t }} {
-        (*self).rem(*rhs)
-    }
-}
-
-impl Rem<{{ scalar_t }}> for &{{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn rem(self, rhs: {{ scalar_t }}) -> {{ self_t }} {
-        (*self).rem(rhs)
-    }
-}
+{{ macros::impl_op_ref(op="Rem", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
 
 impl RemAssign<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
@@ -3603,12 +3250,7 @@ impl RemAssign<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-impl RemAssign<&{{ scalar_t }}> for {{ self_t }} {
-    #[inline]
-    fn rem_assign(&mut self, rhs: &{{ scalar_t }}) {
-        self.rem_assign(*rhs)
-    }
-}
+{{ macros::impl_op_ref(op="RemAssign", self_t=self_t, rhs_t=scalar_t, self="&mut self") }}
 
 impl Rem<{{ self_t }}> for {{ scalar_t }} {
     type Output = {{ self_t }};
@@ -3626,29 +3268,7 @@ impl Rem<{{ self_t }}> for {{ scalar_t }} {
     }
 }
 
-impl Rem<&{{ self_t }}> for {{ scalar_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn rem(self, rhs: &{{ self_t }}) -> {{ self_t }} {
-        self.rem(*rhs)
-    }
-}
-
-impl Rem<&{{ self_t }}> for &{{ scalar_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn rem(self, rhs: &{{ self_t }}) -> {{ self_t }} {
-        (*self).rem(*rhs)
-    }
-}
-
-impl Rem<{{ self_t }}> for &{{ scalar_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn rem(self, rhs: {{ self_t }}) -> {{ self_t }} {
-        (*self).rem(rhs)
-    }
-}
+{{ macros::impl_op_ref(op="Rem", self_t=scalar_t, rhs_t=self_t, output_t=self_t) }}
 
 #[cfg(not(target_arch = "spirv"))]
 impl AsRef<[{{ scalar_t }}; {{ dim }}]> for {{ self_t }} {
@@ -3731,13 +3351,7 @@ impl Neg for {{ self_t }} {
     }
 }
 
-impl Neg for &{{ self_t }} {
-    type Output = {{ self_t }};
-    #[inline]
-    fn neg(self) -> {{ self_t }} {
-        (*self).neg()
-    }
-}
+{{ macros::impl_op_ref(op="Neg", self_t=self_t, output_t=self_t) }}
 {% endif %}
 
 {% if not is_float %}
