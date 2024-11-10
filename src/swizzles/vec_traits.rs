@@ -81,17 +81,29 @@ pub trait Vec3Swizzles: Sized + Copy + Clone {
 
     fn xy(self) -> Self::Vec2;
 
+    fn with_xy(self, rhs: Self::Vec2) -> Self;
+
     fn xz(self) -> Self::Vec2;
 
+    fn with_xz(self, rhs: Self::Vec2) -> Self;
+
     fn yx(self) -> Self::Vec2;
+
+    fn with_yx(self, rhs: Self::Vec2) -> Self;
 
     fn yy(self) -> Self::Vec2;
 
     fn yz(self) -> Self::Vec2;
 
+    fn with_yz(self, rhs: Self::Vec2) -> Self;
+
     fn zx(self) -> Self::Vec2;
 
+    fn with_zx(self, rhs: Self::Vec2) -> Self;
+
     fn zy(self) -> Self::Vec2;
+
+    fn with_zy(self, rhs: Self::Vec2) -> Self;
 
     fn zz(self) -> Self::Vec2;
 
@@ -325,31 +337,55 @@ pub trait Vec4Swizzles: Sized + Copy + Clone {
 
     fn xy(self) -> Self::Vec2;
 
+    fn with_xy(self, rhs: Self::Vec2) -> Self;
+
     fn xz(self) -> Self::Vec2;
+
+    fn with_xz(self, rhs: Self::Vec2) -> Self;
 
     fn xw(self) -> Self::Vec2;
 
+    fn with_xw(self, rhs: Self::Vec2) -> Self;
+
     fn yx(self) -> Self::Vec2;
+
+    fn with_yx(self, rhs: Self::Vec2) -> Self;
 
     fn yy(self) -> Self::Vec2;
 
     fn yz(self) -> Self::Vec2;
 
+    fn with_yz(self, rhs: Self::Vec2) -> Self;
+
     fn yw(self) -> Self::Vec2;
+
+    fn with_yw(self, rhs: Self::Vec2) -> Self;
 
     fn zx(self) -> Self::Vec2;
 
+    fn with_zx(self, rhs: Self::Vec2) -> Self;
+
     fn zy(self) -> Self::Vec2;
+
+    fn with_zy(self, rhs: Self::Vec2) -> Self;
 
     fn zz(self) -> Self::Vec2;
 
     fn zw(self) -> Self::Vec2;
 
+    fn with_zw(self, rhs: Self::Vec2) -> Self;
+
     fn wx(self) -> Self::Vec2;
+
+    fn with_wx(self, rhs: Self::Vec2) -> Self;
 
     fn wy(self) -> Self::Vec2;
 
+    fn with_wy(self, rhs: Self::Vec2) -> Self;
+
     fn wz(self) -> Self::Vec2;
+
+    fn with_wz(self, rhs: Self::Vec2) -> Self;
 
     fn ww(self) -> Self::Vec2;
 
@@ -367,21 +403,33 @@ pub trait Vec4Swizzles: Sized + Copy + Clone {
 
     fn xyz(self) -> Self::Vec3;
 
+    fn with_xyz(self, rhs: Self::Vec3) -> Self;
+
     fn xyw(self) -> Self::Vec3;
+
+    fn with_xyw(self, rhs: Self::Vec3) -> Self;
 
     fn xzx(self) -> Self::Vec3;
 
     fn xzy(self) -> Self::Vec3;
 
+    fn with_xzy(self, rhs: Self::Vec3) -> Self;
+
     fn xzz(self) -> Self::Vec3;
 
     fn xzw(self) -> Self::Vec3;
+
+    fn with_xzw(self, rhs: Self::Vec3) -> Self;
 
     fn xwx(self) -> Self::Vec3;
 
     fn xwy(self) -> Self::Vec3;
 
+    fn with_xwy(self, rhs: Self::Vec3) -> Self;
+
     fn xwz(self) -> Self::Vec3;
+
+    fn with_xwz(self, rhs: Self::Vec3) -> Self;
 
     fn xww(self) -> Self::Vec3;
 
@@ -391,7 +439,11 @@ pub trait Vec4Swizzles: Sized + Copy + Clone {
 
     fn yxz(self) -> Self::Vec3;
 
+    fn with_yxz(self, rhs: Self::Vec3) -> Self;
+
     fn yxw(self) -> Self::Vec3;
+
+    fn with_yxw(self, rhs: Self::Vec3) -> Self;
 
     fn yyx(self) -> Self::Vec3;
 
@@ -403,17 +455,25 @@ pub trait Vec4Swizzles: Sized + Copy + Clone {
 
     fn yzx(self) -> Self::Vec3;
 
+    fn with_yzx(self, rhs: Self::Vec3) -> Self;
+
     fn yzy(self) -> Self::Vec3;
 
     fn yzz(self) -> Self::Vec3;
 
     fn yzw(self) -> Self::Vec3;
 
+    fn with_yzw(self, rhs: Self::Vec3) -> Self;
+
     fn ywx(self) -> Self::Vec3;
+
+    fn with_ywx(self, rhs: Self::Vec3) -> Self;
 
     fn ywy(self) -> Self::Vec3;
 
     fn ywz(self) -> Self::Vec3;
+
+    fn with_ywz(self, rhs: Self::Vec3) -> Self;
 
     fn yww(self) -> Self::Vec3;
 
@@ -421,17 +481,25 @@ pub trait Vec4Swizzles: Sized + Copy + Clone {
 
     fn zxy(self) -> Self::Vec3;
 
+    fn with_zxy(self, rhs: Self::Vec3) -> Self;
+
     fn zxz(self) -> Self::Vec3;
 
     fn zxw(self) -> Self::Vec3;
 
+    fn with_zxw(self, rhs: Self::Vec3) -> Self;
+
     fn zyx(self) -> Self::Vec3;
+
+    fn with_zyx(self, rhs: Self::Vec3) -> Self;
 
     fn zyy(self) -> Self::Vec3;
 
     fn zyz(self) -> Self::Vec3;
 
     fn zyw(self) -> Self::Vec3;
+
+    fn with_zyw(self, rhs: Self::Vec3) -> Self;
 
     fn zzx(self) -> Self::Vec3;
 
@@ -443,7 +511,11 @@ pub trait Vec4Swizzles: Sized + Copy + Clone {
 
     fn zwx(self) -> Self::Vec3;
 
+    fn with_zwx(self, rhs: Self::Vec3) -> Self;
+
     fn zwy(self) -> Self::Vec3;
+
+    fn with_zwy(self, rhs: Self::Vec3) -> Self;
 
     fn zwz(self) -> Self::Vec3;
 
@@ -453,21 +525,33 @@ pub trait Vec4Swizzles: Sized + Copy + Clone {
 
     fn wxy(self) -> Self::Vec3;
 
+    fn with_wxy(self, rhs: Self::Vec3) -> Self;
+
     fn wxz(self) -> Self::Vec3;
+
+    fn with_wxz(self, rhs: Self::Vec3) -> Self;
 
     fn wxw(self) -> Self::Vec3;
 
     fn wyx(self) -> Self::Vec3;
 
+    fn with_wyx(self, rhs: Self::Vec3) -> Self;
+
     fn wyy(self) -> Self::Vec3;
 
     fn wyz(self) -> Self::Vec3;
+
+    fn with_wyz(self, rhs: Self::Vec3) -> Self;
 
     fn wyw(self) -> Self::Vec3;
 
     fn wzx(self) -> Self::Vec3;
 
+    fn with_wzx(self, rhs: Self::Vec3) -> Self;
+
     fn wzy(self) -> Self::Vec3;
+
+    fn with_wzy(self, rhs: Self::Vec3) -> Self;
 
     fn wzz(self) -> Self::Vec3;
 

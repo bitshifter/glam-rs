@@ -54,12 +54,20 @@
                         {% if not skip %}
                             fn {{e0}}{{e1}}(self) -> {{ret2}};
                         {% endif %}
+                        {% set skip = dim == 2 or e0 == e1 %}
+                        {% if not skip %}
+                            fn with_{{e0}}{{e1}}(self, rhs: {{ret2}}) -> Self;
+                        {% endif %}
                     {% else %}
                         {% for e2 in components | slice(end=dim) %}
                             {% if i == 3 %}
                                 {% set skip = dim == 3 and e0 == "x" and e1 == "y" and e2 == "z" %}
                                 {% if not skip %}
                                     fn {{e0}}{{e1}}{{e2}}(self) -> {{ret3}};
+                                {% endif %}
+                                {% set skip = dim == 3 or e0 == e1 or e0 == e2 or e1 == e2 %}
+                                {% if not skip %}
+                                    fn with_{{e0}}{{e1}}{{e2}}(self, rhs: {{ret3}}) -> Self;
                                 {% endif %}
                             {% else %}
                                 {% for e3 in components | slice(end=dim) %}

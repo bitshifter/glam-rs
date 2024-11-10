@@ -27,11 +27,23 @@ impl Vec4Swizzles for U8Vec4 {
 
     #[inline]
     #[must_use]
+    fn with_xy(self, rhs: U8Vec2) -> Self {
+        Self::new(rhs.x, rhs.y, self.z, self.w)
+    }
+
+    #[inline]
+    #[must_use]
     fn xz(self) -> U8Vec2 {
         U8Vec2 {
             x: self.x,
             y: self.z,
         }
+    }
+
+    #[inline]
+    #[must_use]
+    fn with_xz(self, rhs: U8Vec2) -> Self {
+        Self::new(rhs.x, self.y, rhs.y, self.w)
     }
 
     #[inline]
@@ -45,11 +57,23 @@ impl Vec4Swizzles for U8Vec4 {
 
     #[inline]
     #[must_use]
+    fn with_xw(self, rhs: U8Vec2) -> Self {
+        Self::new(rhs.x, self.y, self.z, rhs.y)
+    }
+
+    #[inline]
+    #[must_use]
     fn yx(self) -> U8Vec2 {
         U8Vec2 {
             x: self.y,
             y: self.x,
         }
+    }
+
+    #[inline]
+    #[must_use]
+    fn with_yx(self, rhs: U8Vec2) -> Self {
+        Self::new(rhs.y, rhs.x, self.z, self.w)
     }
 
     #[inline]
@@ -72,11 +96,23 @@ impl Vec4Swizzles for U8Vec4 {
 
     #[inline]
     #[must_use]
+    fn with_yz(self, rhs: U8Vec2) -> Self {
+        Self::new(self.x, rhs.x, rhs.y, self.w)
+    }
+
+    #[inline]
+    #[must_use]
     fn yw(self) -> U8Vec2 {
         U8Vec2 {
             x: self.y,
             y: self.w,
         }
+    }
+
+    #[inline]
+    #[must_use]
+    fn with_yw(self, rhs: U8Vec2) -> Self {
+        Self::new(self.x, rhs.x, self.z, rhs.y)
     }
 
     #[inline]
@@ -90,11 +126,23 @@ impl Vec4Swizzles for U8Vec4 {
 
     #[inline]
     #[must_use]
+    fn with_zx(self, rhs: U8Vec2) -> Self {
+        Self::new(rhs.y, self.y, rhs.x, self.w)
+    }
+
+    #[inline]
+    #[must_use]
     fn zy(self) -> U8Vec2 {
         U8Vec2 {
             x: self.z,
             y: self.y,
         }
+    }
+
+    #[inline]
+    #[must_use]
+    fn with_zy(self, rhs: U8Vec2) -> Self {
+        Self::new(self.x, rhs.y, rhs.x, self.w)
     }
 
     #[inline]
@@ -117,11 +165,23 @@ impl Vec4Swizzles for U8Vec4 {
 
     #[inline]
     #[must_use]
+    fn with_zw(self, rhs: U8Vec2) -> Self {
+        Self::new(self.x, self.y, rhs.x, rhs.y)
+    }
+
+    #[inline]
+    #[must_use]
     fn wx(self) -> U8Vec2 {
         U8Vec2 {
             x: self.w,
             y: self.x,
         }
+    }
+
+    #[inline]
+    #[must_use]
+    fn with_wx(self, rhs: U8Vec2) -> Self {
+        Self::new(rhs.y, self.y, self.z, rhs.x)
     }
 
     #[inline]
@@ -135,11 +195,23 @@ impl Vec4Swizzles for U8Vec4 {
 
     #[inline]
     #[must_use]
+    fn with_wy(self, rhs: U8Vec2) -> Self {
+        Self::new(self.x, rhs.y, self.z, rhs.x)
+    }
+
+    #[inline]
+    #[must_use]
     fn wz(self) -> U8Vec2 {
         U8Vec2 {
             x: self.w,
             y: self.z,
         }
+    }
+
+    #[inline]
+    #[must_use]
+    fn with_wz(self, rhs: U8Vec2) -> Self {
+        Self::new(self.x, self.y, rhs.y, rhs.x)
     }
 
     #[inline]
@@ -195,8 +267,20 @@ impl Vec4Swizzles for U8Vec4 {
 
     #[inline]
     #[must_use]
+    fn with_xyz(self, rhs: U8Vec3) -> Self {
+        Self::new(rhs.x, rhs.y, rhs.z, self.w)
+    }
+
+    #[inline]
+    #[must_use]
     fn xyw(self) -> U8Vec3 {
         U8Vec3::new(self.x, self.y, self.w)
+    }
+
+    #[inline]
+    #[must_use]
+    fn with_xyw(self, rhs: U8Vec3) -> Self {
+        Self::new(rhs.x, rhs.y, self.z, rhs.z)
     }
 
     #[inline]
@@ -213,6 +297,12 @@ impl Vec4Swizzles for U8Vec4 {
 
     #[inline]
     #[must_use]
+    fn with_xzy(self, rhs: U8Vec3) -> Self {
+        Self::new(rhs.x, rhs.z, rhs.y, self.w)
+    }
+
+    #[inline]
+    #[must_use]
     fn xzz(self) -> U8Vec3 {
         U8Vec3::new(self.x, self.z, self.z)
     }
@@ -221,6 +311,12 @@ impl Vec4Swizzles for U8Vec4 {
     #[must_use]
     fn xzw(self) -> U8Vec3 {
         U8Vec3::new(self.x, self.z, self.w)
+    }
+
+    #[inline]
+    #[must_use]
+    fn with_xzw(self, rhs: U8Vec3) -> Self {
+        Self::new(rhs.x, self.y, rhs.y, rhs.z)
     }
 
     #[inline]
@@ -237,8 +333,20 @@ impl Vec4Swizzles for U8Vec4 {
 
     #[inline]
     #[must_use]
+    fn with_xwy(self, rhs: U8Vec3) -> Self {
+        Self::new(rhs.x, rhs.z, self.z, rhs.y)
+    }
+
+    #[inline]
+    #[must_use]
     fn xwz(self) -> U8Vec3 {
         U8Vec3::new(self.x, self.w, self.z)
+    }
+
+    #[inline]
+    #[must_use]
+    fn with_xwz(self, rhs: U8Vec3) -> Self {
+        Self::new(rhs.x, self.y, rhs.z, rhs.y)
     }
 
     #[inline]
@@ -267,8 +375,20 @@ impl Vec4Swizzles for U8Vec4 {
 
     #[inline]
     #[must_use]
+    fn with_yxz(self, rhs: U8Vec3) -> Self {
+        Self::new(rhs.y, rhs.x, rhs.z, self.w)
+    }
+
+    #[inline]
+    #[must_use]
     fn yxw(self) -> U8Vec3 {
         U8Vec3::new(self.y, self.x, self.w)
+    }
+
+    #[inline]
+    #[must_use]
+    fn with_yxw(self, rhs: U8Vec3) -> Self {
+        Self::new(rhs.y, rhs.x, self.z, rhs.z)
     }
 
     #[inline]
@@ -303,6 +423,12 @@ impl Vec4Swizzles for U8Vec4 {
 
     #[inline]
     #[must_use]
+    fn with_yzx(self, rhs: U8Vec3) -> Self {
+        Self::new(rhs.z, rhs.x, rhs.y, self.w)
+    }
+
+    #[inline]
+    #[must_use]
     fn yzy(self) -> U8Vec3 {
         U8Vec3::new(self.y, self.z, self.y)
     }
@@ -321,8 +447,20 @@ impl Vec4Swizzles for U8Vec4 {
 
     #[inline]
     #[must_use]
+    fn with_yzw(self, rhs: U8Vec3) -> Self {
+        Self::new(self.x, rhs.x, rhs.y, rhs.z)
+    }
+
+    #[inline]
+    #[must_use]
     fn ywx(self) -> U8Vec3 {
         U8Vec3::new(self.y, self.w, self.x)
+    }
+
+    #[inline]
+    #[must_use]
+    fn with_ywx(self, rhs: U8Vec3) -> Self {
+        Self::new(rhs.z, rhs.x, self.z, rhs.y)
     }
 
     #[inline]
@@ -335,6 +473,12 @@ impl Vec4Swizzles for U8Vec4 {
     #[must_use]
     fn ywz(self) -> U8Vec3 {
         U8Vec3::new(self.y, self.w, self.z)
+    }
+
+    #[inline]
+    #[must_use]
+    fn with_ywz(self, rhs: U8Vec3) -> Self {
+        Self::new(self.x, rhs.x, rhs.z, rhs.y)
     }
 
     #[inline]
@@ -357,6 +501,12 @@ impl Vec4Swizzles for U8Vec4 {
 
     #[inline]
     #[must_use]
+    fn with_zxy(self, rhs: U8Vec3) -> Self {
+        Self::new(rhs.y, rhs.z, rhs.x, self.w)
+    }
+
+    #[inline]
+    #[must_use]
     fn zxz(self) -> U8Vec3 {
         U8Vec3::new(self.z, self.x, self.z)
     }
@@ -369,8 +519,20 @@ impl Vec4Swizzles for U8Vec4 {
 
     #[inline]
     #[must_use]
+    fn with_zxw(self, rhs: U8Vec3) -> Self {
+        Self::new(rhs.y, self.y, rhs.x, rhs.z)
+    }
+
+    #[inline]
+    #[must_use]
     fn zyx(self) -> U8Vec3 {
         U8Vec3::new(self.z, self.y, self.x)
+    }
+
+    #[inline]
+    #[must_use]
+    fn with_zyx(self, rhs: U8Vec3) -> Self {
+        Self::new(rhs.z, rhs.y, rhs.x, self.w)
     }
 
     #[inline]
@@ -389,6 +551,12 @@ impl Vec4Swizzles for U8Vec4 {
     #[must_use]
     fn zyw(self) -> U8Vec3 {
         U8Vec3::new(self.z, self.y, self.w)
+    }
+
+    #[inline]
+    #[must_use]
+    fn with_zyw(self, rhs: U8Vec3) -> Self {
+        Self::new(self.x, rhs.y, rhs.x, rhs.z)
     }
 
     #[inline]
@@ -423,8 +591,20 @@ impl Vec4Swizzles for U8Vec4 {
 
     #[inline]
     #[must_use]
+    fn with_zwx(self, rhs: U8Vec3) -> Self {
+        Self::new(rhs.z, self.y, rhs.x, rhs.y)
+    }
+
+    #[inline]
+    #[must_use]
     fn zwy(self) -> U8Vec3 {
         U8Vec3::new(self.z, self.w, self.y)
+    }
+
+    #[inline]
+    #[must_use]
+    fn with_zwy(self, rhs: U8Vec3) -> Self {
+        Self::new(self.x, rhs.z, rhs.x, rhs.y)
     }
 
     #[inline]
@@ -453,8 +633,20 @@ impl Vec4Swizzles for U8Vec4 {
 
     #[inline]
     #[must_use]
+    fn with_wxy(self, rhs: U8Vec3) -> Self {
+        Self::new(rhs.y, rhs.z, self.z, rhs.x)
+    }
+
+    #[inline]
+    #[must_use]
     fn wxz(self) -> U8Vec3 {
         U8Vec3::new(self.w, self.x, self.z)
+    }
+
+    #[inline]
+    #[must_use]
+    fn with_wxz(self, rhs: U8Vec3) -> Self {
+        Self::new(rhs.y, self.y, rhs.z, rhs.x)
     }
 
     #[inline]
@@ -471,6 +663,12 @@ impl Vec4Swizzles for U8Vec4 {
 
     #[inline]
     #[must_use]
+    fn with_wyx(self, rhs: U8Vec3) -> Self {
+        Self::new(rhs.z, rhs.y, self.z, rhs.x)
+    }
+
+    #[inline]
+    #[must_use]
     fn wyy(self) -> U8Vec3 {
         U8Vec3::new(self.w, self.y, self.y)
     }
@@ -479,6 +677,12 @@ impl Vec4Swizzles for U8Vec4 {
     #[must_use]
     fn wyz(self) -> U8Vec3 {
         U8Vec3::new(self.w, self.y, self.z)
+    }
+
+    #[inline]
+    #[must_use]
+    fn with_wyz(self, rhs: U8Vec3) -> Self {
+        Self::new(self.x, rhs.y, rhs.z, rhs.x)
     }
 
     #[inline]
@@ -495,8 +699,20 @@ impl Vec4Swizzles for U8Vec4 {
 
     #[inline]
     #[must_use]
+    fn with_wzx(self, rhs: U8Vec3) -> Self {
+        Self::new(rhs.z, self.y, rhs.y, rhs.x)
+    }
+
+    #[inline]
+    #[must_use]
     fn wzy(self) -> U8Vec3 {
         U8Vec3::new(self.w, self.z, self.y)
+    }
+
+    #[inline]
+    #[must_use]
+    fn with_wzy(self, rhs: U8Vec3) -> Self {
+        Self::new(self.x, rhs.z, rhs.y, rhs.x)
     }
 
     #[inline]
