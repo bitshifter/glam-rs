@@ -668,9 +668,9 @@ impl DivAssign<I64Vec2> for I64Vec2 {
     }
 }
 
-impl DivAssign<&Self> for I64Vec2 {
+impl DivAssign<&I64Vec2> for I64Vec2 {
     #[inline]
-    fn div_assign(&mut self, rhs: &Self) {
+    fn div_assign(&mut self, rhs: &I64Vec2) {
         self.div_assign(*rhs)
     }
 }
@@ -803,9 +803,9 @@ impl MulAssign<I64Vec2> for I64Vec2 {
     }
 }
 
-impl MulAssign<&Self> for I64Vec2 {
+impl MulAssign<&I64Vec2> for I64Vec2 {
     #[inline]
-    fn mul_assign(&mut self, rhs: &Self) {
+    fn mul_assign(&mut self, rhs: &I64Vec2) {
         self.mul_assign(*rhs)
     }
 }
@@ -938,9 +938,9 @@ impl AddAssign<I64Vec2> for I64Vec2 {
     }
 }
 
-impl AddAssign<&Self> for I64Vec2 {
+impl AddAssign<&I64Vec2> for I64Vec2 {
     #[inline]
-    fn add_assign(&mut self, rhs: &Self) {
+    fn add_assign(&mut self, rhs: &I64Vec2) {
         self.add_assign(*rhs)
     }
 }
@@ -1073,9 +1073,9 @@ impl SubAssign<I64Vec2> for I64Vec2 {
     }
 }
 
-impl SubAssign<&Self> for I64Vec2 {
+impl SubAssign<&I64Vec2> for I64Vec2 {
     #[inline]
-    fn sub_assign(&mut self, rhs: &Self) {
+    fn sub_assign(&mut self, rhs: &I64Vec2) {
         self.sub_assign(*rhs)
     }
 }
@@ -1208,9 +1208,9 @@ impl RemAssign<I64Vec2> for I64Vec2 {
     }
 }
 
-impl RemAssign<&Self> for I64Vec2 {
+impl RemAssign<&I64Vec2> for I64Vec2 {
     #[inline]
-    fn rem_assign(&mut self, rhs: &Self) {
+    fn rem_assign(&mut self, rhs: &I64Vec2) {
         self.rem_assign(*rhs)
     }
 }
