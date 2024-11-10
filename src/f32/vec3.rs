@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{f32::math, BVec3, BVec3A, Vec2, Vec4};
+use crate::{f32::math, BVec3, BVec3A, FloatExt, Quat, Vec2, Vec4};
 
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -974,6 +974,49 @@ impl Vec3 {
             Self::new(1.0 + sign * self.x * self.x * a, sign * b, -sign * self.x),
             Self::new(b, sign + self.y * self.y * a, -self.y),
         )
+    }
+
+    /// Performs a spherical linear interpolation between `self` and `rhs` based on the value `s`.
+    ///
+    /// When `s` is `0.0`, the result will be equal to `self`.  When `s` is `1.0`, the result
+    /// will be equal to `rhs`. When `s` is outside of range `[0, 1]`, the result is linearly
+    /// extrapolated.
+    #[inline]
+    #[must_use]
+    pub fn slerp(self, rhs: Self, s: f32) -> Self {
+        let self_length = self.length();
+        let rhs_length = rhs.length();
+        // Cosine of the angle between the vectors [-1, 1], or NaN if either vector has a zero length
+        let cos_alpha = self.dot(rhs) / (self_length * rhs_length);
+        // If cos_alpha is close to 1 or -1, or is NaN the calculations for t1 and t2 break down
+        if math::abs(cos_alpha) < 1.0 - 3e-7 {
+            // Angle between the vectors [0, +π]
+            let alpha = math::acos_approx(cos_alpha);
+            // Sine of the angle between vectors [0, 1]
+            let sin_alpha = math::sin(alpha);
+            let t1 = math::sin((1. - s) * alpha) / sin_alpha;
+            let t2 = math::sin(s * alpha) / sin_alpha;
+
+            // Interpolate vector lengths
+            let result_length = self_length.lerp(rhs_length, s);
+            // Scale the vectors to the target length and interpolate them
+            return self * (result_length / self_length) * t1
+                + rhs * (result_length / rhs_length) * t2;
+        }
+        if cos_alpha < 0.0 {
+            // Vectors are almost parallel in opposing directions
+
+            // Create a rotation from self to rhs along some axis
+            #[allow(clippy::useless_conversion)]
+            let axis = self.any_orthogonal_vector().normalize().into();
+            let rotation = Quat::from_axis_angle(axis, core::f32::consts::PI * s);
+            // Interpolate vector lengths
+            let result_length = self_length.lerp(rhs_length, s);
+            rotation * self * (result_length / self_length)
+        } else {
+            // Vectors are almost parallel in the same direction, or cos_alpha was NaN
+            self.lerp(rhs, s)
+        }
     }
 
     /// Casts all elements of `self` to `f64`.
