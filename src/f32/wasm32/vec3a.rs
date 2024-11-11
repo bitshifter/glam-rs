@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{f32::math, wasm32::*, BVec3, BVec3A, Vec2, Vec3, Vec4};
+use crate::{f32::math, wasm32::*, BVec3, BVec3A, Quat, Vec2, Vec3, Vec4};
 
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -897,6 +897,26 @@ impl Vec3A {
             self.dot(rhs)
                 .div(math::sqrt(self.length_squared().mul(rhs.length_squared()))),
         )
+    }
+
+    /// Rotates towards `rhs` up to `max_angle` (in radians).
+    ///
+    /// When `max_angle` is `0.0`, the result will be equal to `self`. When `max_angle` is equal to
+    /// `self.angle_between(rhs)`, the result will be parallel to `rhs`. If `max_angle` is negative,
+    /// rotates towards the exact opposite of `rhs`. Will not go past the target.
+    #[inline]
+    #[must_use]
+    pub fn rotate_towards(self, rhs: Self, max_angle: f32) -> Self {
+        let angle_between = self.angle_between(rhs);
+        if angle_between <= 1e-4 {
+            return rhs;
+        }
+        let angle = max_angle.clamp(angle_between - core::f32::consts::PI, angle_between);
+        let axis = self
+            .cross(rhs)
+            .try_normalize()
+            .unwrap_or_else(|| self.any_orthogonal_vector().normalize());
+        Quat::from_axis_angle(axis.into(), angle) * self
     }
 
     /// Returns some vector that is orthogonal to the given one.

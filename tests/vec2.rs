@@ -992,6 +992,13 @@ macro_rules! impl_vec2_float_tests {
             );
             assert_approx_eq!(v2, v0.rotate_towards(v1, -FRAC_PI_2), eps);
             assert_approx_eq!(v2, v0.rotate_towards(v1, -FRAC_PI_2 * 1.5), eps);
+
+            // Not normalized
+            assert_approx_eq!(v1 * 2., (v0 * 2.).rotate_towards(v1, FRAC_PI_2), eps);
+            assert_approx_eq!(v1, v0.rotate_towards(v1 * 2., FRAC_PI_2), eps);
+
+            // Parralel
+            assert_approx_eq!(v2, v0.rotate_towards(-v0, FRAC_PI_2), eps);
         });
 
         glam_test!(test_midpoint, {

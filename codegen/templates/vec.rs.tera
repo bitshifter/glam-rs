@@ -34,12 +34,14 @@
         {% set vec3_t = "Vec3" %}
         {% set vec3a_t = "Vec3A" %}
         {% set vec4_t = "Vec4" %}
+        {% set quat_t = "Quat" %}
     {% elif scalar_t == "f64" %}
         {% set self_t = "DVec" ~ dim %}
         {% set vec2_t = "DVec2" %}
         {% set vec3_t = "DVec3" %}
         {% set vec4_t = "DVec4" %}
         {% set from_types = ["Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim] %}
+        {% set quat_t = "DQuat" %}
     {% endif %}
 {% elif scalar_t == "i8" %}
     {% set is_signed = true %}
@@ -199,6 +201,9 @@
     {% endif %}
     {% if is_float %}
         {{ scalar_t }}::math,
+        {% if dim == 3 %}
+            {{ quat_t }},
+        {% endif %}
     {% endif %}
     {% if from_types %}
         {% for ty in from_types %}
@@ -2109,6 +2114,26 @@ impl {{ self_t }} {
                 math::sqrt(self.length_squared().mul(rhs.length_squared()))))
     }
 
+    /// Rotates towards `rhs` up to `max_angle` (in radians).
+    ///
+    /// When `max_angle` is `0.0`, the result will be equal to `self`. When `max_angle` is equal to
+    /// `self.angle_between(rhs)`, the result will be parallel to `rhs`. If `max_angle` is negative,
+    /// rotates towards the exact opposite of `rhs`. Will not go past the target.
+    #[inline]
+    #[must_use]
+    pub fn rotate_towards(self, rhs: Self, max_angle: {{ scalar_t }}) -> Self {
+        let angle_between = self.angle_between(rhs);
+        if angle_between <= 1e-4 {
+            return rhs;
+        }
+        let angle = max_angle.clamp(angle_between - core::{{ scalar_t }}::consts::PI, angle_between);
+        let axis = self
+            .cross(rhs)
+            .try_normalize()
+            .unwrap_or_else(|| self.any_orthogonal_vector().normalize());
+        {{ quat_t }}::from_axis_angle(axis{% if self_t == "Vec3A" %}.into(){% endif%}, angle) * self
+    }
+
     /// Returns some vector that is orthogonal to the given one.
     ///
     /// The input vector must be finite and non-zero.
@@ -2205,7 +2230,7 @@ impl {{ self_t }} {
     /// Rotates towards `rhs` up to `max_angle` (in radians).
     ///
     /// When `max_angle` is `0.0`, the result will be equal to `self`. When `max_angle` is equal to
-    /// `self.angle_between(rhs)`, the result will be equal to `rhs`. If `max_angle` is negative,
+    /// `self.angle_between(rhs)`, the result will be parallel to `rhs`. If `max_angle` is negative,
     /// rotates towards the exact opposite of `rhs`. Will not go past the target.
     #[inline]
     #[must_use]

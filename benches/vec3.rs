@@ -184,6 +184,15 @@ bench_select!(
     from => random_vec3
 );
 
+bench_trinop!(
+    vec3_rotate_towards,
+    "vec3 rotate_towards",
+    op => rotate_towards,
+    from1 => random_vec3,
+    from2 => random_vec3,
+    from3 => random_f32
+);
+
 criterion_group!(
     benches,
     vec3_angle_between,
@@ -203,6 +212,7 @@ criterion_group!(
     vec3_to_array_into,
     vec3_to_rgb,
     vec3_to_tuple_into,
+    vec3_rotate_towards,
 );
 
 criterion_main!(benches);
