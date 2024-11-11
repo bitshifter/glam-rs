@@ -5,6 +5,8 @@ use glam::*;
 
 glam_test!(test_u16vec4_swizzles, {
     let v = u16vec4(1_u16, 2_u16, 3_u16, 4_u16);
+    let rhs3 = u16vec3(11_u16, 12_u16, 13_u16);
+    let rhs2 = u16vec2(11_u16, 12_u16);
     assert_eq!(v, v.xyzw());
     assert_eq!(v.xxxx(), u16vec4(1_u16, 1_u16, 1_u16, 1_u16));
     assert_eq!(v.xxxy(), u16vec4(1_u16, 1_u16, 1_u16, 2_u16));
@@ -325,102 +327,30 @@ glam_test!(test_u16vec4_swizzles, {
     assert_eq!(v.wwy(), u16vec3(4_u16, 4_u16, 2_u16));
     assert_eq!(v.wwz(), u16vec3(4_u16, 4_u16, 3_u16));
     assert_eq!(v.www(), u16vec3(4_u16, 4_u16, 4_u16));
-    assert_eq!(
-        v.with_xyz(u16vec3(2_u16, 3_u16, 4_u16)),
-        u16vec4(2_u16, 3_u16, 4_u16, 4_u16)
-    );
-    assert_eq!(
-        v.with_xyw(u16vec3(2_u16, 3_u16, 1_u16)),
-        u16vec4(2_u16, 3_u16, 3_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_xzy(u16vec3(2_u16, 4_u16, 3_u16)),
-        u16vec4(2_u16, 3_u16, 4_u16, 4_u16)
-    );
-    assert_eq!(
-        v.with_xzw(u16vec3(2_u16, 4_u16, 1_u16)),
-        u16vec4(2_u16, 2_u16, 4_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_xwy(u16vec3(2_u16, 1_u16, 3_u16)),
-        u16vec4(2_u16, 3_u16, 3_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_xwz(u16vec3(2_u16, 1_u16, 4_u16)),
-        u16vec4(2_u16, 2_u16, 4_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_yxz(u16vec3(3_u16, 2_u16, 4_u16)),
-        u16vec4(2_u16, 3_u16, 4_u16, 4_u16)
-    );
-    assert_eq!(
-        v.with_yxw(u16vec3(3_u16, 2_u16, 1_u16)),
-        u16vec4(2_u16, 3_u16, 3_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_yzx(u16vec3(3_u16, 4_u16, 2_u16)),
-        u16vec4(2_u16, 3_u16, 4_u16, 4_u16)
-    );
-    assert_eq!(
-        v.with_yzw(u16vec3(3_u16, 4_u16, 1_u16)),
-        u16vec4(1_u16, 3_u16, 4_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_ywx(u16vec3(3_u16, 1_u16, 2_u16)),
-        u16vec4(2_u16, 3_u16, 3_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_ywz(u16vec3(3_u16, 1_u16, 4_u16)),
-        u16vec4(1_u16, 3_u16, 4_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_zxy(u16vec3(4_u16, 2_u16, 3_u16)),
-        u16vec4(2_u16, 3_u16, 4_u16, 4_u16)
-    );
-    assert_eq!(
-        v.with_zxw(u16vec3(4_u16, 2_u16, 1_u16)),
-        u16vec4(2_u16, 2_u16, 4_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_zyx(u16vec3(4_u16, 3_u16, 2_u16)),
-        u16vec4(2_u16, 3_u16, 4_u16, 4_u16)
-    );
-    assert_eq!(
-        v.with_zyw(u16vec3(4_u16, 3_u16, 1_u16)),
-        u16vec4(1_u16, 3_u16, 4_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_zwx(u16vec3(4_u16, 1_u16, 2_u16)),
-        u16vec4(2_u16, 2_u16, 4_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_zwy(u16vec3(4_u16, 1_u16, 3_u16)),
-        u16vec4(1_u16, 3_u16, 4_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_wxy(u16vec3(1_u16, 2_u16, 3_u16)),
-        u16vec4(2_u16, 3_u16, 3_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_wxz(u16vec3(1_u16, 2_u16, 4_u16)),
-        u16vec4(2_u16, 2_u16, 4_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_wyx(u16vec3(1_u16, 3_u16, 2_u16)),
-        u16vec4(2_u16, 3_u16, 3_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_wyz(u16vec3(1_u16, 3_u16, 4_u16)),
-        u16vec4(1_u16, 3_u16, 4_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_wzx(u16vec3(1_u16, 4_u16, 2_u16)),
-        u16vec4(2_u16, 2_u16, 4_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_wzy(u16vec3(1_u16, 4_u16, 3_u16)),
-        u16vec4(1_u16, 3_u16, 4_u16, 1_u16)
-    );
+    assert_eq!(v.with_xyz(rhs3), u16vec4(11_u16, 12_u16, 13_u16, 4_u16));
+    assert_eq!(v.with_xyw(rhs3), u16vec4(11_u16, 12_u16, 3_u16, 13_u16));
+    assert_eq!(v.with_xzy(rhs3), u16vec4(11_u16, 13_u16, 12_u16, 4_u16));
+    assert_eq!(v.with_xzw(rhs3), u16vec4(11_u16, 2_u16, 12_u16, 13_u16));
+    assert_eq!(v.with_xwy(rhs3), u16vec4(11_u16, 13_u16, 3_u16, 12_u16));
+    assert_eq!(v.with_xwz(rhs3), u16vec4(11_u16, 2_u16, 13_u16, 12_u16));
+    assert_eq!(v.with_yxz(rhs3), u16vec4(12_u16, 11_u16, 13_u16, 4_u16));
+    assert_eq!(v.with_yxw(rhs3), u16vec4(12_u16, 11_u16, 3_u16, 13_u16));
+    assert_eq!(v.with_yzx(rhs3), u16vec4(13_u16, 11_u16, 12_u16, 4_u16));
+    assert_eq!(v.with_yzw(rhs3), u16vec4(1_u16, 11_u16, 12_u16, 13_u16));
+    assert_eq!(v.with_ywx(rhs3), u16vec4(13_u16, 11_u16, 3_u16, 12_u16));
+    assert_eq!(v.with_ywz(rhs3), u16vec4(1_u16, 11_u16, 13_u16, 12_u16));
+    assert_eq!(v.with_zxy(rhs3), u16vec4(12_u16, 13_u16, 11_u16, 4_u16));
+    assert_eq!(v.with_zxw(rhs3), u16vec4(12_u16, 2_u16, 11_u16, 13_u16));
+    assert_eq!(v.with_zyx(rhs3), u16vec4(13_u16, 12_u16, 11_u16, 4_u16));
+    assert_eq!(v.with_zyw(rhs3), u16vec4(1_u16, 12_u16, 11_u16, 13_u16));
+    assert_eq!(v.with_zwx(rhs3), u16vec4(13_u16, 2_u16, 11_u16, 12_u16));
+    assert_eq!(v.with_zwy(rhs3), u16vec4(1_u16, 13_u16, 11_u16, 12_u16));
+    assert_eq!(v.with_wxy(rhs3), u16vec4(12_u16, 13_u16, 3_u16, 11_u16));
+    assert_eq!(v.with_wxz(rhs3), u16vec4(12_u16, 2_u16, 13_u16, 11_u16));
+    assert_eq!(v.with_wyx(rhs3), u16vec4(13_u16, 12_u16, 3_u16, 11_u16));
+    assert_eq!(v.with_wyz(rhs3), u16vec4(1_u16, 12_u16, 13_u16, 11_u16));
+    assert_eq!(v.with_wzx(rhs3), u16vec4(13_u16, 2_u16, 12_u16, 11_u16));
+    assert_eq!(v.with_wzy(rhs3), u16vec4(1_u16, 13_u16, 12_u16, 11_u16));
     assert_eq!(v.xx(), u16vec2(1_u16, 1_u16));
     assert_eq!(v.xy(), u16vec2(1_u16, 2_u16));
     assert_eq!(v.xz(), u16vec2(1_u16, 3_u16));
@@ -437,58 +367,23 @@ glam_test!(test_u16vec4_swizzles, {
     assert_eq!(v.wy(), u16vec2(4_u16, 2_u16));
     assert_eq!(v.wz(), u16vec2(4_u16, 3_u16));
     assert_eq!(v.ww(), u16vec2(4_u16, 4_u16));
-    assert_eq!(
-        v.with_xy(u16vec2(2_u16, 3_u16)),
-        u16vec4(2_u16, 3_u16, 3_u16, 4_u16)
-    );
-    assert_eq!(
-        v.with_xz(u16vec2(2_u16, 4_u16)),
-        u16vec4(2_u16, 2_u16, 4_u16, 4_u16)
-    );
-    assert_eq!(
-        v.with_xw(u16vec2(2_u16, 1_u16)),
-        u16vec4(2_u16, 2_u16, 3_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_yx(u16vec2(3_u16, 2_u16)),
-        u16vec4(2_u16, 3_u16, 3_u16, 4_u16)
-    );
-    assert_eq!(
-        v.with_yz(u16vec2(3_u16, 4_u16)),
-        u16vec4(1_u16, 3_u16, 4_u16, 4_u16)
-    );
-    assert_eq!(
-        v.with_yw(u16vec2(3_u16, 1_u16)),
-        u16vec4(1_u16, 3_u16, 3_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_zx(u16vec2(4_u16, 2_u16)),
-        u16vec4(2_u16, 2_u16, 4_u16, 4_u16)
-    );
-    assert_eq!(
-        v.with_zy(u16vec2(4_u16, 3_u16)),
-        u16vec4(1_u16, 3_u16, 4_u16, 4_u16)
-    );
-    assert_eq!(
-        v.with_zw(u16vec2(4_u16, 1_u16)),
-        u16vec4(1_u16, 2_u16, 4_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_wx(u16vec2(1_u16, 2_u16)),
-        u16vec4(2_u16, 2_u16, 3_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_wy(u16vec2(1_u16, 3_u16)),
-        u16vec4(1_u16, 3_u16, 3_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_wz(u16vec2(1_u16, 4_u16)),
-        u16vec4(1_u16, 2_u16, 4_u16, 1_u16)
-    );
+    assert_eq!(v.with_xy(rhs2), u16vec4(11_u16, 12_u16, 3_u16, 4_u16));
+    assert_eq!(v.with_xz(rhs2), u16vec4(11_u16, 2_u16, 12_u16, 4_u16));
+    assert_eq!(v.with_xw(rhs2), u16vec4(11_u16, 2_u16, 3_u16, 12_u16));
+    assert_eq!(v.with_yx(rhs2), u16vec4(12_u16, 11_u16, 3_u16, 4_u16));
+    assert_eq!(v.with_yz(rhs2), u16vec4(1_u16, 11_u16, 12_u16, 4_u16));
+    assert_eq!(v.with_yw(rhs2), u16vec4(1_u16, 11_u16, 3_u16, 12_u16));
+    assert_eq!(v.with_zx(rhs2), u16vec4(12_u16, 2_u16, 11_u16, 4_u16));
+    assert_eq!(v.with_zy(rhs2), u16vec4(1_u16, 12_u16, 11_u16, 4_u16));
+    assert_eq!(v.with_zw(rhs2), u16vec4(1_u16, 2_u16, 11_u16, 12_u16));
+    assert_eq!(v.with_wx(rhs2), u16vec4(12_u16, 2_u16, 3_u16, 11_u16));
+    assert_eq!(v.with_wy(rhs2), u16vec4(1_u16, 12_u16, 3_u16, 11_u16));
+    assert_eq!(v.with_wz(rhs2), u16vec4(1_u16, 2_u16, 12_u16, 11_u16));
 });
 
 glam_test!(test_u16vec3_swizzles, {
     let v = u16vec3(1_u16, 2_u16, 3_u16);
+    let rhs2 = u16vec2(11_u16, 12_u16);
     assert_eq!(v, v.xyz());
     assert_eq!(v.xxxx(), u16vec4(1_u16, 1_u16, 1_u16, 1_u16));
     assert_eq!(v.xxxy(), u16vec4(1_u16, 1_u16, 1_u16, 2_u16));
@@ -606,30 +501,12 @@ glam_test!(test_u16vec3_swizzles, {
     assert_eq!(v.zx(), u16vec2(3_u16, 1_u16));
     assert_eq!(v.zy(), u16vec2(3_u16, 2_u16));
     assert_eq!(v.zz(), u16vec2(3_u16, 3_u16));
-    assert_eq!(
-        v.with_xy(u16vec2(2_u16, 3_u16)),
-        u16vec3(2_u16, 3_u16, 3_u16)
-    );
-    assert_eq!(
-        v.with_xz(u16vec2(2_u16, 1_u16)),
-        u16vec3(2_u16, 2_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_yx(u16vec2(3_u16, 2_u16)),
-        u16vec3(2_u16, 3_u16, 3_u16)
-    );
-    assert_eq!(
-        v.with_yz(u16vec2(3_u16, 1_u16)),
-        u16vec3(1_u16, 3_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_zx(u16vec2(1_u16, 2_u16)),
-        u16vec3(2_u16, 2_u16, 1_u16)
-    );
-    assert_eq!(
-        v.with_zy(u16vec2(1_u16, 3_u16)),
-        u16vec3(1_u16, 3_u16, 1_u16)
-    );
+    assert_eq!(v.with_xy(rhs2), u16vec3(11_u16, 12_u16, 3_u16));
+    assert_eq!(v.with_xz(rhs2), u16vec3(11_u16, 2_u16, 12_u16));
+    assert_eq!(v.with_yx(rhs2), u16vec3(12_u16, 11_u16, 3_u16));
+    assert_eq!(v.with_yz(rhs2), u16vec3(1_u16, 11_u16, 12_u16));
+    assert_eq!(v.with_zx(rhs2), u16vec3(12_u16, 2_u16, 11_u16));
+    assert_eq!(v.with_zy(rhs2), u16vec3(1_u16, 12_u16, 11_u16));
 });
 
 glam_test!(test_u16vec2_swizzles, {

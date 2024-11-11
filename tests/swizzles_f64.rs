@@ -5,6 +5,8 @@ use glam::*;
 
 glam_test!(test_dvec4_swizzles, {
     let v = dvec4(1_f64, 2_f64, 3_f64, 4_f64);
+    let rhs3 = dvec3(11_f64, 12_f64, 13_f64);
+    let rhs2 = dvec2(11_f64, 12_f64);
     assert_eq!(v, v.xyzw());
     assert_eq!(v.xxxx(), dvec4(1_f64, 1_f64, 1_f64, 1_f64));
     assert_eq!(v.xxxy(), dvec4(1_f64, 1_f64, 1_f64, 2_f64));
@@ -325,102 +327,30 @@ glam_test!(test_dvec4_swizzles, {
     assert_eq!(v.wwy(), dvec3(4_f64, 4_f64, 2_f64));
     assert_eq!(v.wwz(), dvec3(4_f64, 4_f64, 3_f64));
     assert_eq!(v.www(), dvec3(4_f64, 4_f64, 4_f64));
-    assert_eq!(
-        v.with_xyz(dvec3(2_f64, 3_f64, 4_f64)),
-        dvec4(2_f64, 3_f64, 4_f64, 4_f64)
-    );
-    assert_eq!(
-        v.with_xyw(dvec3(2_f64, 3_f64, 1_f64)),
-        dvec4(2_f64, 3_f64, 3_f64, 1_f64)
-    );
-    assert_eq!(
-        v.with_xzy(dvec3(2_f64, 4_f64, 3_f64)),
-        dvec4(2_f64, 3_f64, 4_f64, 4_f64)
-    );
-    assert_eq!(
-        v.with_xzw(dvec3(2_f64, 4_f64, 1_f64)),
-        dvec4(2_f64, 2_f64, 4_f64, 1_f64)
-    );
-    assert_eq!(
-        v.with_xwy(dvec3(2_f64, 1_f64, 3_f64)),
-        dvec4(2_f64, 3_f64, 3_f64, 1_f64)
-    );
-    assert_eq!(
-        v.with_xwz(dvec3(2_f64, 1_f64, 4_f64)),
-        dvec4(2_f64, 2_f64, 4_f64, 1_f64)
-    );
-    assert_eq!(
-        v.with_yxz(dvec3(3_f64, 2_f64, 4_f64)),
-        dvec4(2_f64, 3_f64, 4_f64, 4_f64)
-    );
-    assert_eq!(
-        v.with_yxw(dvec3(3_f64, 2_f64, 1_f64)),
-        dvec4(2_f64, 3_f64, 3_f64, 1_f64)
-    );
-    assert_eq!(
-        v.with_yzx(dvec3(3_f64, 4_f64, 2_f64)),
-        dvec4(2_f64, 3_f64, 4_f64, 4_f64)
-    );
-    assert_eq!(
-        v.with_yzw(dvec3(3_f64, 4_f64, 1_f64)),
-        dvec4(1_f64, 3_f64, 4_f64, 1_f64)
-    );
-    assert_eq!(
-        v.with_ywx(dvec3(3_f64, 1_f64, 2_f64)),
-        dvec4(2_f64, 3_f64, 3_f64, 1_f64)
-    );
-    assert_eq!(
-        v.with_ywz(dvec3(3_f64, 1_f64, 4_f64)),
-        dvec4(1_f64, 3_f64, 4_f64, 1_f64)
-    );
-    assert_eq!(
-        v.with_zxy(dvec3(4_f64, 2_f64, 3_f64)),
-        dvec4(2_f64, 3_f64, 4_f64, 4_f64)
-    );
-    assert_eq!(
-        v.with_zxw(dvec3(4_f64, 2_f64, 1_f64)),
-        dvec4(2_f64, 2_f64, 4_f64, 1_f64)
-    );
-    assert_eq!(
-        v.with_zyx(dvec3(4_f64, 3_f64, 2_f64)),
-        dvec4(2_f64, 3_f64, 4_f64, 4_f64)
-    );
-    assert_eq!(
-        v.with_zyw(dvec3(4_f64, 3_f64, 1_f64)),
-        dvec4(1_f64, 3_f64, 4_f64, 1_f64)
-    );
-    assert_eq!(
-        v.with_zwx(dvec3(4_f64, 1_f64, 2_f64)),
-        dvec4(2_f64, 2_f64, 4_f64, 1_f64)
-    );
-    assert_eq!(
-        v.with_zwy(dvec3(4_f64, 1_f64, 3_f64)),
-        dvec4(1_f64, 3_f64, 4_f64, 1_f64)
-    );
-    assert_eq!(
-        v.with_wxy(dvec3(1_f64, 2_f64, 3_f64)),
-        dvec4(2_f64, 3_f64, 3_f64, 1_f64)
-    );
-    assert_eq!(
-        v.with_wxz(dvec3(1_f64, 2_f64, 4_f64)),
-        dvec4(2_f64, 2_f64, 4_f64, 1_f64)
-    );
-    assert_eq!(
-        v.with_wyx(dvec3(1_f64, 3_f64, 2_f64)),
-        dvec4(2_f64, 3_f64, 3_f64, 1_f64)
-    );
-    assert_eq!(
-        v.with_wyz(dvec3(1_f64, 3_f64, 4_f64)),
-        dvec4(1_f64, 3_f64, 4_f64, 1_f64)
-    );
-    assert_eq!(
-        v.with_wzx(dvec3(1_f64, 4_f64, 2_f64)),
-        dvec4(2_f64, 2_f64, 4_f64, 1_f64)
-    );
-    assert_eq!(
-        v.with_wzy(dvec3(1_f64, 4_f64, 3_f64)),
-        dvec4(1_f64, 3_f64, 4_f64, 1_f64)
-    );
+    assert_eq!(v.with_xyz(rhs3), dvec4(11_f64, 12_f64, 13_f64, 4_f64));
+    assert_eq!(v.with_xyw(rhs3), dvec4(11_f64, 12_f64, 3_f64, 13_f64));
+    assert_eq!(v.with_xzy(rhs3), dvec4(11_f64, 13_f64, 12_f64, 4_f64));
+    assert_eq!(v.with_xzw(rhs3), dvec4(11_f64, 2_f64, 12_f64, 13_f64));
+    assert_eq!(v.with_xwy(rhs3), dvec4(11_f64, 13_f64, 3_f64, 12_f64));
+    assert_eq!(v.with_xwz(rhs3), dvec4(11_f64, 2_f64, 13_f64, 12_f64));
+    assert_eq!(v.with_yxz(rhs3), dvec4(12_f64, 11_f64, 13_f64, 4_f64));
+    assert_eq!(v.with_yxw(rhs3), dvec4(12_f64, 11_f64, 3_f64, 13_f64));
+    assert_eq!(v.with_yzx(rhs3), dvec4(13_f64, 11_f64, 12_f64, 4_f64));
+    assert_eq!(v.with_yzw(rhs3), dvec4(1_f64, 11_f64, 12_f64, 13_f64));
+    assert_eq!(v.with_ywx(rhs3), dvec4(13_f64, 11_f64, 3_f64, 12_f64));
+    assert_eq!(v.with_ywz(rhs3), dvec4(1_f64, 11_f64, 13_f64, 12_f64));
+    assert_eq!(v.with_zxy(rhs3), dvec4(12_f64, 13_f64, 11_f64, 4_f64));
+    assert_eq!(v.with_zxw(rhs3), dvec4(12_f64, 2_f64, 11_f64, 13_f64));
+    assert_eq!(v.with_zyx(rhs3), dvec4(13_f64, 12_f64, 11_f64, 4_f64));
+    assert_eq!(v.with_zyw(rhs3), dvec4(1_f64, 12_f64, 11_f64, 13_f64));
+    assert_eq!(v.with_zwx(rhs3), dvec4(13_f64, 2_f64, 11_f64, 12_f64));
+    assert_eq!(v.with_zwy(rhs3), dvec4(1_f64, 13_f64, 11_f64, 12_f64));
+    assert_eq!(v.with_wxy(rhs3), dvec4(12_f64, 13_f64, 3_f64, 11_f64));
+    assert_eq!(v.with_wxz(rhs3), dvec4(12_f64, 2_f64, 13_f64, 11_f64));
+    assert_eq!(v.with_wyx(rhs3), dvec4(13_f64, 12_f64, 3_f64, 11_f64));
+    assert_eq!(v.with_wyz(rhs3), dvec4(1_f64, 12_f64, 13_f64, 11_f64));
+    assert_eq!(v.with_wzx(rhs3), dvec4(13_f64, 2_f64, 12_f64, 11_f64));
+    assert_eq!(v.with_wzy(rhs3), dvec4(1_f64, 13_f64, 12_f64, 11_f64));
     assert_eq!(v.xx(), dvec2(1_f64, 1_f64));
     assert_eq!(v.xy(), dvec2(1_f64, 2_f64));
     assert_eq!(v.xz(), dvec2(1_f64, 3_f64));
@@ -437,58 +367,23 @@ glam_test!(test_dvec4_swizzles, {
     assert_eq!(v.wy(), dvec2(4_f64, 2_f64));
     assert_eq!(v.wz(), dvec2(4_f64, 3_f64));
     assert_eq!(v.ww(), dvec2(4_f64, 4_f64));
-    assert_eq!(
-        v.with_xy(dvec2(2_f64, 3_f64)),
-        dvec4(2_f64, 3_f64, 3_f64, 4_f64)
-    );
-    assert_eq!(
-        v.with_xz(dvec2(2_f64, 4_f64)),
-        dvec4(2_f64, 2_f64, 4_f64, 4_f64)
-    );
-    assert_eq!(
-        v.with_xw(dvec2(2_f64, 1_f64)),
-        dvec4(2_f64, 2_f64, 3_f64, 1_f64)
-    );
-    assert_eq!(
-        v.with_yx(dvec2(3_f64, 2_f64)),
-        dvec4(2_f64, 3_f64, 3_f64, 4_f64)
-    );
-    assert_eq!(
-        v.with_yz(dvec2(3_f64, 4_f64)),
-        dvec4(1_f64, 3_f64, 4_f64, 4_f64)
-    );
-    assert_eq!(
-        v.with_yw(dvec2(3_f64, 1_f64)),
-        dvec4(1_f64, 3_f64, 3_f64, 1_f64)
-    );
-    assert_eq!(
-        v.with_zx(dvec2(4_f64, 2_f64)),
-        dvec4(2_f64, 2_f64, 4_f64, 4_f64)
-    );
-    assert_eq!(
-        v.with_zy(dvec2(4_f64, 3_f64)),
-        dvec4(1_f64, 3_f64, 4_f64, 4_f64)
-    );
-    assert_eq!(
-        v.with_zw(dvec2(4_f64, 1_f64)),
-        dvec4(1_f64, 2_f64, 4_f64, 1_f64)
-    );
-    assert_eq!(
-        v.with_wx(dvec2(1_f64, 2_f64)),
-        dvec4(2_f64, 2_f64, 3_f64, 1_f64)
-    );
-    assert_eq!(
-        v.with_wy(dvec2(1_f64, 3_f64)),
-        dvec4(1_f64, 3_f64, 3_f64, 1_f64)
-    );
-    assert_eq!(
-        v.with_wz(dvec2(1_f64, 4_f64)),
-        dvec4(1_f64, 2_f64, 4_f64, 1_f64)
-    );
+    assert_eq!(v.with_xy(rhs2), dvec4(11_f64, 12_f64, 3_f64, 4_f64));
+    assert_eq!(v.with_xz(rhs2), dvec4(11_f64, 2_f64, 12_f64, 4_f64));
+    assert_eq!(v.with_xw(rhs2), dvec4(11_f64, 2_f64, 3_f64, 12_f64));
+    assert_eq!(v.with_yx(rhs2), dvec4(12_f64, 11_f64, 3_f64, 4_f64));
+    assert_eq!(v.with_yz(rhs2), dvec4(1_f64, 11_f64, 12_f64, 4_f64));
+    assert_eq!(v.with_yw(rhs2), dvec4(1_f64, 11_f64, 3_f64, 12_f64));
+    assert_eq!(v.with_zx(rhs2), dvec4(12_f64, 2_f64, 11_f64, 4_f64));
+    assert_eq!(v.with_zy(rhs2), dvec4(1_f64, 12_f64, 11_f64, 4_f64));
+    assert_eq!(v.with_zw(rhs2), dvec4(1_f64, 2_f64, 11_f64, 12_f64));
+    assert_eq!(v.with_wx(rhs2), dvec4(12_f64, 2_f64, 3_f64, 11_f64));
+    assert_eq!(v.with_wy(rhs2), dvec4(1_f64, 12_f64, 3_f64, 11_f64));
+    assert_eq!(v.with_wz(rhs2), dvec4(1_f64, 2_f64, 12_f64, 11_f64));
 });
 
 glam_test!(test_dvec3_swizzles, {
     let v = dvec3(1_f64, 2_f64, 3_f64);
+    let rhs2 = dvec2(11_f64, 12_f64);
     assert_eq!(v, v.xyz());
     assert_eq!(v.xxxx(), dvec4(1_f64, 1_f64, 1_f64, 1_f64));
     assert_eq!(v.xxxy(), dvec4(1_f64, 1_f64, 1_f64, 2_f64));
@@ -606,12 +501,12 @@ glam_test!(test_dvec3_swizzles, {
     assert_eq!(v.zx(), dvec2(3_f64, 1_f64));
     assert_eq!(v.zy(), dvec2(3_f64, 2_f64));
     assert_eq!(v.zz(), dvec2(3_f64, 3_f64));
-    assert_eq!(v.with_xy(dvec2(2_f64, 3_f64)), dvec3(2_f64, 3_f64, 3_f64));
-    assert_eq!(v.with_xz(dvec2(2_f64, 1_f64)), dvec3(2_f64, 2_f64, 1_f64));
-    assert_eq!(v.with_yx(dvec2(3_f64, 2_f64)), dvec3(2_f64, 3_f64, 3_f64));
-    assert_eq!(v.with_yz(dvec2(3_f64, 1_f64)), dvec3(1_f64, 3_f64, 1_f64));
-    assert_eq!(v.with_zx(dvec2(1_f64, 2_f64)), dvec3(2_f64, 2_f64, 1_f64));
-    assert_eq!(v.with_zy(dvec2(1_f64, 3_f64)), dvec3(1_f64, 3_f64, 1_f64));
+    assert_eq!(v.with_xy(rhs2), dvec3(11_f64, 12_f64, 3_f64));
+    assert_eq!(v.with_xz(rhs2), dvec3(11_f64, 2_f64, 12_f64));
+    assert_eq!(v.with_yx(rhs2), dvec3(12_f64, 11_f64, 3_f64));
+    assert_eq!(v.with_yz(rhs2), dvec3(1_f64, 11_f64, 12_f64));
+    assert_eq!(v.with_zx(rhs2), dvec3(12_f64, 2_f64, 11_f64));
+    assert_eq!(v.with_zy(rhs2), dvec3(1_f64, 12_f64, 11_f64));
 });
 
 glam_test!(test_dvec2_swizzles, {
