@@ -95,12 +95,12 @@ impl {{ op }}{% if rhs_t %}<{{ rhs }}>{% endif %} for {% if self_ref %}&{% endif
 
 {% macro impl_op_ref(op, self_t, rhs_t=false, output_t=false, self="self") %}
 {%if rhs_t %}
-{{ self::impl_op_ref_inner(op=op, self_t=self_t, rhs_t=rhs_t, output_t=output_t, self=self, self_ref=false, rhs_ref=true) }}
-{%if output_t %}
-{{ self::impl_op_ref_inner(op=op, self_t=self_t, rhs_t=rhs_t, output_t=output_t, self=self, self_ref=true, rhs_ref=true) }}
+    {{ self::impl_op_ref_inner(op=op, self_t=self_t, rhs_t=rhs_t, output_t=output_t, self=self, self_ref=false, rhs_ref=true) }}
+    {%if output_t %}
+        {{ self::impl_op_ref_inner(op=op, self_t=self_t, rhs_t=rhs_t, output_t=output_t, self=self, self_ref=true, rhs_ref=true) }}
+    {% endif %}
 {% endif %}
-{% endif %}
 {%if output_t %}
-{{ self::impl_op_ref_inner(op=op, self_t=self_t, rhs_t=rhs_t, output_t=output_t, self=self, self_ref=true, rhs_ref=false) }}
+    {{ self::impl_op_ref_inner(op=op, self_t=self_t, rhs_t=rhs_t, output_t=output_t, self=self, self_ref=true, rhs_ref=false) }}
 {% endif %}
 {% endmacro impl_op_ref %}
