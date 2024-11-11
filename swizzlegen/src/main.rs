@@ -166,6 +166,42 @@ fn write_test_loops(
             E[e0], E[e1], E[e2], vec3t, V[e0], t, V[e1], t, V[e2], t,
         )
     })?;
+    if size == 4 {
+        // with_XXX swizzles
+        write_loops_vec3(out, size, |out, e0, e1, e2| {
+            if e0 == e1 || e0 == e2 || e1 == e2 {
+                return Ok(());
+            }
+            // The V used for the rhs. V shifted 1 to the right
+            let v_rhs = |i: usize| V[(i + 1) % size];
+            // Calculate the expected value for a position
+            let result = |pos: usize| {
+                // If any e matches this position the resulting value there should be from the rhs
+                if [e0, e1, e2].contains(&pos) {
+                    return v_rhs(pos);
+                }
+                // Unchanged
+                V[pos]
+            };
+            writeln!(
+            out,
+            "    assert_eq!(v.with_{}{}{}({}({}_{t}, {}_{t}, {}_{t})), {}({}_{t}, {}_{t}, {}_{t}, {}_{t}));",
+            E[e0],
+            E[e1],
+            E[e2],
+            vec3t,
+            v_rhs(e0),
+            v_rhs(e1),
+            v_rhs(e2),
+            vec4t,
+            result(0),
+            result(1),
+            result(2),
+            result(3),
+            t = t,
+        )
+        })?;
+    }
     write_loops_vec2(out, size, |out, e0, e1| {
         writeln!(
             out,
@@ -173,6 +209,59 @@ fn write_test_loops(
             E[e0], E[e1], vec2t, V[e0], t, V[e1], t,
         )
     })?;
+    if size >= 3 {
+        // with_XX swizzles
+        write_loops_vec2(out, size, |out, e0, e1| {
+            if e0 == e1 {
+                return Ok(());
+            }
+            // The V used for the rhs. V shifted 1 to the right
+            let v_rhs = |i: usize| V[(i + 1) % size];
+            // Calculate the expected value for a position
+            let result = |pos: usize| {
+                // If any e matches this position the resulting value there should be from the rhs
+                if [e0, e1].contains(&pos) {
+                    return v_rhs(pos);
+                }
+                // Unchanged
+                V[pos]
+            };
+            write!(
+                out,
+                "    assert_eq!(v.with_{}{}({}({}_{t}, {}_{t})), ",
+                E[e0],
+                E[e1],
+                vec2t,
+                v_rhs(e0),
+                v_rhs(e1),
+                t = t,
+            )?;
+            if size == 3 {
+                writeln!(
+                    out,
+                    "{}({}_{t}, {}_{t}, {}_{t}));",
+                    vec3t,
+                    result(0),
+                    result(1),
+                    result(2),
+                    t = t,
+                )?;
+            } else {
+                writeln!(
+                    out,
+                    "{}({}_{t}, {}_{t}, {}_{t}, {}_{t}));",
+                    vec4t,
+                    result(0),
+                    result(1),
+                    result(2),
+                    result(3),
+                    t = t,
+                )?;
+            }
+
+            Ok(())
+        })?;
+    }
     Ok(())
 }
 
@@ -181,9 +270,9 @@ fn write_swizzle_tests_preamble(filename: &str) -> Result<impl Write> {
     write_swizzle_head(&mut out)?;
     writeln!(
         &mut out,
-        r#"#[macro_use]
-mod support;
-use glam::*;"#
+        "#[macro_use]\n\
+        mod support;\n\
+        use glam::*;"
     )?;
     Ok(out)
 }
@@ -223,6 +312,5 @@ fn main() -> Result<()> {
     // Change into `./codegen` dir for convenience to the user
     std::env::set_current_dir(env!("CARGO_MANIFEST_DIR"))?;
 
-    write_swizzle_tests()?;
-    Ok(())
+    write_swizzle_tests()
 }
