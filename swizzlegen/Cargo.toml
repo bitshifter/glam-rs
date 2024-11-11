@@ -1,0 +1,7 @@
+[package]
+name = "swizzlegen"
+version = "0.1.0"
+authors = ["Cameron Hart <cameron.hart@gmail.com>"]
+edition = "2021"
+
+[dependencies]
