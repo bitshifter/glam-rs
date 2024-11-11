@@ -261,10 +261,6 @@ glam_test!(test_dvec4_swizzles, {
     assert_eq!(v.wwwy(), dvec4(4_f64, 4_f64, 4_f64, 2_f64));
     assert_eq!(v.wwwz(), dvec4(4_f64, 4_f64, 4_f64, 3_f64));
     assert_eq!(v.wwww(), dvec4(4_f64, 4_f64, 4_f64, 4_f64));
-});
-
-glam_test!(test_dvec4_swizzles_2, {
-    let v = dvec4(1_f64, 2_f64, 3_f64, 4_f64);
     assert_eq!(v.xxx(), dvec3(1_f64, 1_f64, 1_f64));
     assert_eq!(v.xxy(), dvec3(1_f64, 1_f64, 2_f64));
     assert_eq!(v.xxz(), dvec3(1_f64, 1_f64, 3_f64));
