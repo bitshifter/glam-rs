@@ -81,10 +81,6 @@ glam_test!(test_{vec4t}_swizzles, {{
     let rhs3 = {vec3t}(11_{t}, 12_{t}, 13_{t});
     let rhs2 = {vec2t}(11_{t}, 12_{t});
 "#,
-        vec4t = vec4t,
-        vec3t = vec3t,
-        vec2t = vec2t,
-        t = t
     )?;
 
     writeln!(out, "    assert_eq!(v, v.xyzw());")?;
@@ -112,9 +108,6 @@ glam_test!(test_{vec3t}_swizzles, {{
     let v = {vec3t}(1_{t}, 2_{t}, 3_{t});
     let rhs2 = {vec2t}(11_{t}, 12_{t});
 "#,
-        vec3t = vec3t,
-        vec2t = vec2t,
-        t = t
     )?;
 
     writeln!(out, "    assert_eq!(v, v.xyz());")?;
@@ -194,16 +187,14 @@ fn write_test_loops(
             };
             writeln!(
                 out,
-                "    assert_eq!(v.with_{}{}{}(rhs3), {}({}_{t}, {}_{t}, {}_{t}, {}_{t}));",
+                "    assert_eq!(v.with_{}{}{}(rhs3), {vec4t}({}_{t}, {}_{t}, {}_{t}, {}_{t}));",
                 E[e0],
                 E[e1],
                 E[e2],
-                vec4t,
                 result(0),
                 result(1),
                 result(2),
                 result(3),
-                t = t,
             )
         })?;
     }
@@ -235,23 +226,19 @@ fn write_test_loops(
             if size == 3 {
                 writeln!(
                     out,
-                    "{}({}_{t}, {}_{t}, {}_{t}));",
-                    vec3t,
+                    "{vec3t}({}_{t}, {}_{t}, {}_{t}));",
                     result(0),
                     result(1),
                     result(2),
-                    t = t,
                 )?;
             } else {
                 writeln!(
                     out,
-                    "{}({}_{t}, {}_{t}, {}_{t}, {}_{t}));",
-                    vec4t,
+                    "{vec4t}({}_{t}, {}_{t}, {}_{t}, {}_{t}));",
                     result(0),
                     result(1),
                     result(2),
                     result(3),
-                    t = t,
                 )?;
             }
 
