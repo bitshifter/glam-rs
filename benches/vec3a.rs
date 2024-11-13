@@ -154,6 +154,15 @@ bench_select!(
     from => random_vec3a
 );
 
+bench_trinop!(
+    vec3a_slerp,
+    "vec3a slerp",
+    op => slerp,
+    from1 => random_vec3a,
+    from2 => random_vec3a,
+    from3 => random_f32
+);
+
 criterion_group!(
     benches,
     vec3a_normalize_bench,
@@ -171,6 +180,7 @@ criterion_group!(
     vec3a_to_rgb,
     vec3a_to_tuple_into,
     vec3a_to_vec3,
+    vec3a_slerp,
 );
 
 criterion_main!(benches);
