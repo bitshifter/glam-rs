@@ -61,6 +61,24 @@ impl Vec{{ dim }}Swizzles for {{ self_t }} {
             {{ vec2_t }} { x: self.{{ e[j0] }}, y: self.{{ e[j1] }} }
     }
                     {% endif %}
+                    {% set skip = dim == 2 or j0 == j1 %}
+                    {% if not skip %}
+    #[inline]
+    #[must_use]
+    fn with_{{ e[j0] }}{{ e[j1] }}(self, rhs: {{ vec2_t }}) -> Self {
+        Self::new(
+            {% for l in range(start = 0, end = dim) %}
+                {% if j0 == l %}
+                    rhs.x,
+                {% elif j1 == l %}
+                    rhs.y,
+                {% else %}
+                    self.{{e[l]}},
+                {% endif %}
+            {% endfor %}
+        )
+    }
+                    {% endif %}
                 {% else %}
                     {% for j2 in indices | slice(end=dim) %}
                         {% if i == 3 %}
@@ -78,6 +96,26 @@ impl Vec{{ dim }}Swizzles for {{ self_t }} {
             {% else %}
                 {{ vec3_t }}::new(self.{{ e[j0] }}, self.{{ e[j1] }}, self.{{ e[j2] }})
             {% endif %}
+    }
+                            {% endif %}
+                            {% set skip = dim == 3 or j0 == j1 or j0 == j2 or j1 == j2 %}
+                            {% if not skip %}
+    #[inline]
+    #[must_use]
+    fn with_{{ e[j0] }}{{ e[j1] }}{{ e[j2] }}(self, rhs: {{ vec3_t }}) -> Self {
+        Self::new(
+            {% for l in range(start = 0, end = dim) %}
+                {% if j0 == l %}
+                    rhs.x,
+                {% elif j1 == l %}
+                    rhs.y,
+                {% elif j2 == l %}
+                    rhs.z,
+                {% else %}
+                    self.{{e[l]}},
+                {% endif %}
+            {% endfor %}
+        )
     }
                             {% endif %}
                         {% else %}

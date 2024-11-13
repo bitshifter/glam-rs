@@ -5,6 +5,8 @@ use glam::*;
 
 glam_test!(test_u8vec4_swizzles, {
     let v = u8vec4(1_u8, 2_u8, 3_u8, 4_u8);
+    let rhs3 = u8vec3(11_u8, 12_u8, 13_u8);
+    let rhs2 = u8vec2(11_u8, 12_u8);
     assert_eq!(v, v.xyzw());
     assert_eq!(v.xxxx(), u8vec4(1_u8, 1_u8, 1_u8, 1_u8));
     assert_eq!(v.xxxy(), u8vec4(1_u8, 1_u8, 1_u8, 2_u8));
@@ -325,6 +327,30 @@ glam_test!(test_u8vec4_swizzles, {
     assert_eq!(v.wwy(), u8vec3(4_u8, 4_u8, 2_u8));
     assert_eq!(v.wwz(), u8vec3(4_u8, 4_u8, 3_u8));
     assert_eq!(v.www(), u8vec3(4_u8, 4_u8, 4_u8));
+    assert_eq!(v.with_xyz(rhs3), u8vec4(11_u8, 12_u8, 13_u8, 4_u8));
+    assert_eq!(v.with_xyw(rhs3), u8vec4(11_u8, 12_u8, 3_u8, 13_u8));
+    assert_eq!(v.with_xzy(rhs3), u8vec4(11_u8, 13_u8, 12_u8, 4_u8));
+    assert_eq!(v.with_xzw(rhs3), u8vec4(11_u8, 2_u8, 12_u8, 13_u8));
+    assert_eq!(v.with_xwy(rhs3), u8vec4(11_u8, 13_u8, 3_u8, 12_u8));
+    assert_eq!(v.with_xwz(rhs3), u8vec4(11_u8, 2_u8, 13_u8, 12_u8));
+    assert_eq!(v.with_yxz(rhs3), u8vec4(12_u8, 11_u8, 13_u8, 4_u8));
+    assert_eq!(v.with_yxw(rhs3), u8vec4(12_u8, 11_u8, 3_u8, 13_u8));
+    assert_eq!(v.with_yzx(rhs3), u8vec4(13_u8, 11_u8, 12_u8, 4_u8));
+    assert_eq!(v.with_yzw(rhs3), u8vec4(1_u8, 11_u8, 12_u8, 13_u8));
+    assert_eq!(v.with_ywx(rhs3), u8vec4(13_u8, 11_u8, 3_u8, 12_u8));
+    assert_eq!(v.with_ywz(rhs3), u8vec4(1_u8, 11_u8, 13_u8, 12_u8));
+    assert_eq!(v.with_zxy(rhs3), u8vec4(12_u8, 13_u8, 11_u8, 4_u8));
+    assert_eq!(v.with_zxw(rhs3), u8vec4(12_u8, 2_u8, 11_u8, 13_u8));
+    assert_eq!(v.with_zyx(rhs3), u8vec4(13_u8, 12_u8, 11_u8, 4_u8));
+    assert_eq!(v.with_zyw(rhs3), u8vec4(1_u8, 12_u8, 11_u8, 13_u8));
+    assert_eq!(v.with_zwx(rhs3), u8vec4(13_u8, 2_u8, 11_u8, 12_u8));
+    assert_eq!(v.with_zwy(rhs3), u8vec4(1_u8, 13_u8, 11_u8, 12_u8));
+    assert_eq!(v.with_wxy(rhs3), u8vec4(12_u8, 13_u8, 3_u8, 11_u8));
+    assert_eq!(v.with_wxz(rhs3), u8vec4(12_u8, 2_u8, 13_u8, 11_u8));
+    assert_eq!(v.with_wyx(rhs3), u8vec4(13_u8, 12_u8, 3_u8, 11_u8));
+    assert_eq!(v.with_wyz(rhs3), u8vec4(1_u8, 12_u8, 13_u8, 11_u8));
+    assert_eq!(v.with_wzx(rhs3), u8vec4(13_u8, 2_u8, 12_u8, 11_u8));
+    assert_eq!(v.with_wzy(rhs3), u8vec4(1_u8, 13_u8, 12_u8, 11_u8));
     assert_eq!(v.xx(), u8vec2(1_u8, 1_u8));
     assert_eq!(v.xy(), u8vec2(1_u8, 2_u8));
     assert_eq!(v.xz(), u8vec2(1_u8, 3_u8));
@@ -341,10 +367,23 @@ glam_test!(test_u8vec4_swizzles, {
     assert_eq!(v.wy(), u8vec2(4_u8, 2_u8));
     assert_eq!(v.wz(), u8vec2(4_u8, 3_u8));
     assert_eq!(v.ww(), u8vec2(4_u8, 4_u8));
+    assert_eq!(v.with_xy(rhs2), u8vec4(11_u8, 12_u8, 3_u8, 4_u8));
+    assert_eq!(v.with_xz(rhs2), u8vec4(11_u8, 2_u8, 12_u8, 4_u8));
+    assert_eq!(v.with_xw(rhs2), u8vec4(11_u8, 2_u8, 3_u8, 12_u8));
+    assert_eq!(v.with_yx(rhs2), u8vec4(12_u8, 11_u8, 3_u8, 4_u8));
+    assert_eq!(v.with_yz(rhs2), u8vec4(1_u8, 11_u8, 12_u8, 4_u8));
+    assert_eq!(v.with_yw(rhs2), u8vec4(1_u8, 11_u8, 3_u8, 12_u8));
+    assert_eq!(v.with_zx(rhs2), u8vec4(12_u8, 2_u8, 11_u8, 4_u8));
+    assert_eq!(v.with_zy(rhs2), u8vec4(1_u8, 12_u8, 11_u8, 4_u8));
+    assert_eq!(v.with_zw(rhs2), u8vec4(1_u8, 2_u8, 11_u8, 12_u8));
+    assert_eq!(v.with_wx(rhs2), u8vec4(12_u8, 2_u8, 3_u8, 11_u8));
+    assert_eq!(v.with_wy(rhs2), u8vec4(1_u8, 12_u8, 3_u8, 11_u8));
+    assert_eq!(v.with_wz(rhs2), u8vec4(1_u8, 2_u8, 12_u8, 11_u8));
 });
 
 glam_test!(test_u8vec3_swizzles, {
     let v = u8vec3(1_u8, 2_u8, 3_u8);
+    let rhs2 = u8vec2(11_u8, 12_u8);
     assert_eq!(v, v.xyz());
     assert_eq!(v.xxxx(), u8vec4(1_u8, 1_u8, 1_u8, 1_u8));
     assert_eq!(v.xxxy(), u8vec4(1_u8, 1_u8, 1_u8, 2_u8));
@@ -462,6 +501,12 @@ glam_test!(test_u8vec3_swizzles, {
     assert_eq!(v.zx(), u8vec2(3_u8, 1_u8));
     assert_eq!(v.zy(), u8vec2(3_u8, 2_u8));
     assert_eq!(v.zz(), u8vec2(3_u8, 3_u8));
+    assert_eq!(v.with_xy(rhs2), u8vec3(11_u8, 12_u8, 3_u8));
+    assert_eq!(v.with_xz(rhs2), u8vec3(11_u8, 2_u8, 12_u8));
+    assert_eq!(v.with_yx(rhs2), u8vec3(12_u8, 11_u8, 3_u8));
+    assert_eq!(v.with_yz(rhs2), u8vec3(1_u8, 11_u8, 12_u8));
+    assert_eq!(v.with_zx(rhs2), u8vec3(12_u8, 2_u8, 11_u8));
+    assert_eq!(v.with_zy(rhs2), u8vec3(1_u8, 12_u8, 11_u8));
 });
 
 glam_test!(test_u8vec2_swizzles, {
