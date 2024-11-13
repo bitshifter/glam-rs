@@ -1050,9 +1050,9 @@ impl DivAssign<DVec2> for DVec2 {
     }
 }
 
-impl DivAssign<&Self> for DVec2 {
+impl DivAssign<&DVec2> for DVec2 {
     #[inline]
-    fn div_assign(&mut self, rhs: &Self) {
+    fn div_assign(&mut self, rhs: &DVec2) {
         self.div_assign(*rhs)
     }
 }
@@ -1185,9 +1185,9 @@ impl MulAssign<DVec2> for DVec2 {
     }
 }
 
-impl MulAssign<&Self> for DVec2 {
+impl MulAssign<&DVec2> for DVec2 {
     #[inline]
-    fn mul_assign(&mut self, rhs: &Self) {
+    fn mul_assign(&mut self, rhs: &DVec2) {
         self.mul_assign(*rhs)
     }
 }
@@ -1320,9 +1320,9 @@ impl AddAssign<DVec2> for DVec2 {
     }
 }
 
-impl AddAssign<&Self> for DVec2 {
+impl AddAssign<&DVec2> for DVec2 {
     #[inline]
-    fn add_assign(&mut self, rhs: &Self) {
+    fn add_assign(&mut self, rhs: &DVec2) {
         self.add_assign(*rhs)
     }
 }
@@ -1455,9 +1455,9 @@ impl SubAssign<DVec2> for DVec2 {
     }
 }
 
-impl SubAssign<&Self> for DVec2 {
+impl SubAssign<&DVec2> for DVec2 {
     #[inline]
-    fn sub_assign(&mut self, rhs: &Self) {
+    fn sub_assign(&mut self, rhs: &DVec2) {
         self.sub_assign(*rhs)
     }
 }
@@ -1590,9 +1590,9 @@ impl RemAssign<DVec2> for DVec2 {
     }
 }
 
-impl RemAssign<&Self> for DVec2 {
+impl RemAssign<&DVec2> for DVec2 {
     #[inline]
-    fn rem_assign(&mut self, rhs: &Self) {
+    fn rem_assign(&mut self, rhs: &DVec2) {
         self.rem_assign(*rhs)
     }
 }

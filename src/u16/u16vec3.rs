@@ -607,9 +607,9 @@ impl DivAssign<U16Vec3> for U16Vec3 {
     }
 }
 
-impl DivAssign<&Self> for U16Vec3 {
+impl DivAssign<&U16Vec3> for U16Vec3 {
     #[inline]
-    fn div_assign(&mut self, rhs: &Self) {
+    fn div_assign(&mut self, rhs: &U16Vec3) {
         self.div_assign(*rhs)
     }
 }
@@ -747,9 +747,9 @@ impl MulAssign<U16Vec3> for U16Vec3 {
     }
 }
 
-impl MulAssign<&Self> for U16Vec3 {
+impl MulAssign<&U16Vec3> for U16Vec3 {
     #[inline]
-    fn mul_assign(&mut self, rhs: &Self) {
+    fn mul_assign(&mut self, rhs: &U16Vec3) {
         self.mul_assign(*rhs)
     }
 }
@@ -887,9 +887,9 @@ impl AddAssign<U16Vec3> for U16Vec3 {
     }
 }
 
-impl AddAssign<&Self> for U16Vec3 {
+impl AddAssign<&U16Vec3> for U16Vec3 {
     #[inline]
-    fn add_assign(&mut self, rhs: &Self) {
+    fn add_assign(&mut self, rhs: &U16Vec3) {
         self.add_assign(*rhs)
     }
 }
@@ -1027,9 +1027,9 @@ impl SubAssign<U16Vec3> for U16Vec3 {
     }
 }
 
-impl SubAssign<&Self> for U16Vec3 {
+impl SubAssign<&U16Vec3> for U16Vec3 {
     #[inline]
-    fn sub_assign(&mut self, rhs: &Self) {
+    fn sub_assign(&mut self, rhs: &U16Vec3) {
         self.sub_assign(*rhs)
     }
 }
@@ -1167,9 +1167,9 @@ impl RemAssign<U16Vec3> for U16Vec3 {
     }
 }
 
-impl RemAssign<&Self> for U16Vec3 {
+impl RemAssign<&U16Vec3> for U16Vec3 {
     #[inline]
-    fn rem_assign(&mut self, rhs: &Self) {
+    fn rem_assign(&mut self, rhs: &U16Vec3) {
         self.rem_assign(*rhs)
     }
 }

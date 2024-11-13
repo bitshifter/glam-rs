@@ -668,9 +668,9 @@ impl DivAssign<IVec2> for IVec2 {
     }
 }
 
-impl DivAssign<&Self> for IVec2 {
+impl DivAssign<&IVec2> for IVec2 {
     #[inline]
-    fn div_assign(&mut self, rhs: &Self) {
+    fn div_assign(&mut self, rhs: &IVec2) {
         self.div_assign(*rhs)
     }
 }
@@ -803,9 +803,9 @@ impl MulAssign<IVec2> for IVec2 {
     }
 }
 
-impl MulAssign<&Self> for IVec2 {
+impl MulAssign<&IVec2> for IVec2 {
     #[inline]
-    fn mul_assign(&mut self, rhs: &Self) {
+    fn mul_assign(&mut self, rhs: &IVec2) {
         self.mul_assign(*rhs)
     }
 }
@@ -938,9 +938,9 @@ impl AddAssign<IVec2> for IVec2 {
     }
 }
 
-impl AddAssign<&Self> for IVec2 {
+impl AddAssign<&IVec2> for IVec2 {
     #[inline]
-    fn add_assign(&mut self, rhs: &Self) {
+    fn add_assign(&mut self, rhs: &IVec2) {
         self.add_assign(*rhs)
     }
 }
@@ -1073,9 +1073,9 @@ impl SubAssign<IVec2> for IVec2 {
     }
 }
 
-impl SubAssign<&Self> for IVec2 {
+impl SubAssign<&IVec2> for IVec2 {
     #[inline]
-    fn sub_assign(&mut self, rhs: &Self) {
+    fn sub_assign(&mut self, rhs: &IVec2) {
         self.sub_assign(*rhs)
     }
 }
@@ -1208,9 +1208,9 @@ impl RemAssign<IVec2> for IVec2 {
     }
 }
 
-impl RemAssign<&Self> for IVec2 {
+impl RemAssign<&IVec2> for IVec2 {
     #[inline]
-    fn rem_assign(&mut self, rhs: &Self) {
+    fn rem_assign(&mut self, rhs: &IVec2) {
         self.rem_assign(*rhs)
     }
 }

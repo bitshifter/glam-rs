@@ -607,9 +607,9 @@ impl DivAssign<UVec3> for UVec3 {
     }
 }
 
-impl DivAssign<&Self> for UVec3 {
+impl DivAssign<&UVec3> for UVec3 {
     #[inline]
-    fn div_assign(&mut self, rhs: &Self) {
+    fn div_assign(&mut self, rhs: &UVec3) {
         self.div_assign(*rhs)
     }
 }
@@ -747,9 +747,9 @@ impl MulAssign<UVec3> for UVec3 {
     }
 }
 
-impl MulAssign<&Self> for UVec3 {
+impl MulAssign<&UVec3> for UVec3 {
     #[inline]
-    fn mul_assign(&mut self, rhs: &Self) {
+    fn mul_assign(&mut self, rhs: &UVec3) {
         self.mul_assign(*rhs)
     }
 }
@@ -887,9 +887,9 @@ impl AddAssign<UVec3> for UVec3 {
     }
 }
 
-impl AddAssign<&Self> for UVec3 {
+impl AddAssign<&UVec3> for UVec3 {
     #[inline]
-    fn add_assign(&mut self, rhs: &Self) {
+    fn add_assign(&mut self, rhs: &UVec3) {
         self.add_assign(*rhs)
     }
 }
@@ -1027,9 +1027,9 @@ impl SubAssign<UVec3> for UVec3 {
     }
 }
 
-impl SubAssign<&Self> for UVec3 {
+impl SubAssign<&UVec3> for UVec3 {
     #[inline]
-    fn sub_assign(&mut self, rhs: &Self) {
+    fn sub_assign(&mut self, rhs: &UVec3) {
         self.sub_assign(*rhs)
     }
 }
@@ -1167,9 +1167,9 @@ impl RemAssign<UVec3> for UVec3 {
     }
 }
 
-impl RemAssign<&Self> for UVec3 {
+impl RemAssign<&UVec3> for UVec3 {
     #[inline]
-    fn rem_assign(&mut self, rhs: &Self) {
+    fn rem_assign(&mut self, rhs: &UVec3) {
         self.rem_assign(*rhs)
     }
 }
