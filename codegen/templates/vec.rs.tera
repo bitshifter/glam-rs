@@ -2124,8 +2124,9 @@ impl {{ self_t }} {
     pub fn rotate_towards(self, rhs: Self, max_angle: {{ scalar_t }}) -> Self {
         let angle_between = self.angle_between(rhs);
         if angle_between <= 1e-4 {
-            return rhs;
+            return self;
         }
+        // When `max_angle < 0`, rotate no further than `PI` radians away
         let angle = max_angle.clamp(angle_between - core::{{ scalar_t }}::consts::PI, angle_between);
         let axis = self
             .cross(rhs)
@@ -2238,7 +2239,7 @@ impl {{ self_t }} {
         let a = self.angle_to(rhs);
         let abs_a = math::abs(a);
         if abs_a <= 1e-4 {
-            return rhs;
+            return *self;
         }
         // When `max_angle < 0`, rotate no further than `PI` radians away
         let angle = max_angle.clamp(abs_a - core::{{ scalar_t }}::consts::PI, abs_a) * math::signum(a);
