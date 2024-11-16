@@ -27,8 +27,8 @@ Rust code. The templates are fairly declarative and easier to follow than the
 macros (in my opinion). I try to stick to basic features of the [templating
 language] to keep things simple.
 
-[`Tera`]: https://tera.netlify.app/
-[templating language]: https://tera.netlify.app/docs/
+[`Tera`]: https://keats.github.io/tera/
+[templating language]: https://keats.github.io/tera/docs/
 
 ### Control variables
 
