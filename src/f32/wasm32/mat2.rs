@@ -256,6 +256,13 @@ impl Mat2 {
         Self(i32x4_shuffle::<0, 2, 5, 7>(self.0, self.0))
     }
 
+    /// Returns the trace of `self`.
+    #[inline]
+    #[must_use]
+    pub fn trace(&self) -> f32 {
+        self.x_axis.x + self.y_axis.y
+    }
+
     /// Returns the determinant of `self`.
     #[inline]
     #[must_use]
