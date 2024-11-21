@@ -119,41 +119,43 @@ fn qr4(A: DMat4) -> (DMat4, DMat4) {
     return (Q, A);
 }
 
+/// The algorithm given in https://en.wikipedia.org/wiki/Eigenvalue_algorithm#Symmetric_3%C3%973_matrices (Nov 20, 2024)
 fn eigvals3_symmetric(A: DMat3) -> [f64; 3] {
-    let [a, b, c] = eigvals3(A);
-    [a.x, b.x, c.x]
+    let p1 = A.y_axis.x.powi(2) + A.z_axis.x.powi(2) + A.z_axis.y.powi(2);
 
-    // TODO:
-    // let p1 = A.y_axis.x.powi(2) + A.z_axis.x.powi(2) + A.z_axis.y.powi(2);
+    if p1 == 0.0 {
+        // A is diagonal
+        [A.x_axis.x, A.y_axis.y, A.z_axis.z]
+    } else {
+        let tr = A.trace();
+        let q = tr / 3.0;
+        let p2 = (A.x_axis.x - q).powi(2)
+            + (A.y_axis.y - q).powi(2)
+            + (A.z_axis.z - q).powi(2)
+            + 2.0 * p1;
+        let p = (p2 / 6.0).sqrt();
+        let B = (A - q * DMat3::IDENTITY) / p;
+        let r = B.determinant() / 2.0;
 
-    // if p1 == 0.0 {
-    //     // A is diagonal
-    //     [A.x_axis.x, A.y_axis.y, A.z_axis.z]
-    // } else {
-    //     let tr = A.trace();
-    //     let q = tr / 3.0;
-    //     let p2 = (A.x_axis.x - q).powi(2)
-    //         + (A.y_axis.y - q).powi(2)
-    //         + (A.z_axis.z - q).powi(2)
-    //         + 2.0 * p1;
-    //     let p = (p2 / 6.0).sqrt();
-    //     let B = (1.0 / p) * (A - q * DMat3::IDENTITY);
-    //     let r = B.determinant() / 2.0;
-    //     // let r = -1.0_f64;
+        // In exact arithmetic for a symmetric matrix -1 <= r <= 1
+        // but computation error can leave it slightly outside this range.
+        let phi = r.clamp(-1.0, 1.0).acos() / 3.0;
 
-    //     // In exact arithmetic for a symmetric matrix  -1 <= r <= 1
-    //     // but computation error can leave it slightly outside this range.
-    //     let phi = r.clamp(-1.0, 1.0).acos();
+        // the eigenvalues satisfy c <= b <= a
+        let a = q + 2.0 * p * phi.cos();
+        let c = q + 2.0 * p * (phi + (2.0 * std::f64::consts::PI / 3.0)).cos();
+        let b = tr - a - c;
 
-    //     // the eigenvalues satisfy c <= b <= a
-    //     let a = q + 2.0 * p * phi.cos();
-    //     let c = q + 2.0 * p * (phi + (2.0 * std::f64::consts::PI / 3.0)).cos();
-    //     let b = tr - a - c;
+        dbg!(A, a, b, c, phi, r);
 
-    //     dbg!(a, b, c, phi, r);
+        [a, b, c]
+    }
+}
 
-    //     [a, b, c]
-    // }
+// TODO: Implement an algorithm for this that takes advantage of the symmetric structure
+fn eigvals4_symmetric(A: DMat4) -> [f64; 4] {
+    let [a, b, c, d] = eigvals4(A);
+    [a.x, b.x, c.x, d.x]
 }
 
 #[inline]
@@ -198,8 +200,6 @@ fn hessenberg3(A: DMat3) -> DMat3 {
     );
     A.y_axis = A.y_axis - 2.0 * V * v.x;
     A.z_axis = A.z_axis - 2.0 * V * v.y;
-
-    // Q2D(1:n,k+1:n) = Q2D(1:n,k+1:n) - 2 * (Q2D(1:n,k+1:n) * v) * v.';
 
     A
 }
@@ -275,8 +275,6 @@ fn hessenberg4(A: DMat4) -> DMat4 {
     A.z_axis = A.z_axis - 2.0 * V * v.x;
     A.w_axis = A.w_axis - 2.0 * V * v.y;
 
-    // Q2D(1:n,k+1:n) = Q2D(1:n,k+1:n) - 2 * (Q2D(1:n,k+1:n) * v) * v.';
-
     // dbg!(A);
     // todo!();
     A
@@ -284,7 +282,6 @@ fn hessenberg4(A: DMat4) -> DMat4 {
 
 fn eigvals3(A: DMat3) -> [DVec2; 3] {
     const CUTOFF: f64 = 1e-14;
-    dbg!(A);
 
     let mut A = hessenberg3(A);
     // dbg!(A);
@@ -292,8 +289,6 @@ fn eigvals3(A: DMat3) -> [DVec2; 3] {
 
     let mut k = 0;
     loop {
-        dbg!(A);
-
         if A.x_axis.y.abs() <= CUTOFF * (A.x_axis.x.abs() + A.y_axis.y.abs()) {
             let [a, b] = eigvals2(DMat2::from_mat3_minor(A, 0, 0));
             return [a, b, complex(A.x_axis.x)];
@@ -386,7 +381,7 @@ fn eigvals4(A: DMat4) -> [DVec2; 4] {
 }
 
 const EPS: f32 = 1e-12;
-const SYMMETRIC_EPS: f32 = 1e-7;
+const SYMMETRIC_EPS: f32 = 1e-8;
 
 #[cfg(test)]
 /// The tests here are from https://math.stackexchange.com/a/894641
@@ -564,7 +559,7 @@ glam_test!(test_eigvals3, {
         }
     }
 
-    // These three examples are the symmetric test cases from above
+    // These three test cases are the symmetric test cases from above
     let [a, b, c] = sorted(eigvals3_symmetric(DMat3::from_cols_array(&[
         0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0,
     ])));
@@ -654,9 +649,46 @@ glam_test!(test_eigvals4, {
         use rand_xoshiro::Xoshiro256Plus;
         let mut rng = Xoshiro256Plus::seed_from_u64(0);
 
-        for _ in 0..1_000_000 {
+        for _ in 0..10_000 {
             let A = DMat4::from_cols_array(&rng.gen::<[f64; 16]>());
-            dbg!(A);
+            let eigvals = eigvals4(A);
+            assert_valid(&eigvals, A.trace(), (A * A).trace(), A.determinant(), EPS);
+        }
+    }
+
+    // These two test cases are the symmetric test cases from above
+    // Hilbert matrix
+    let [a, b, c, d] = sorted(eigvals4_symmetric(DMat4::from_cols_array(
+        &[
+            1f64, 2f64, 3f64, 4f64, 2f64, 3f64, 4f64, 5f64, 3f64, 4f64, 5f64, 6f64, 4f64, 5f64,
+            6f64, 7f64,
+        ]
+        .map(|x| x.recip()),
+    )));
+    assert_approx_eq!(a, 9.670230402261436e-5, EPS);
+    assert_approx_eq!(b, 0.006738273605760762, EPS);
+    assert_approx_eq!(c, 0.16914122022145014, EPS);
+    assert_approx_eq!(d, 1.5002142800592426, EPS);
+
+    // A matrix with a low condition number, which is a bad case for the base QR algorithm
+    let delta = 1e-5;
+    let [a, b, c, d] = sorted(eigvals4_symmetric(DMat4::from_cols_array(&[
+        1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, delta, 0.0, 0.0, delta, 1.0,
+    ])));
+    assert_approx_eq!(a, 1.0 - delta, EPS);
+    assert_approx_eq!(b, 1.0, EPS);
+    assert_approx_eq!(c, 1.0, EPS);
+    assert_approx_eq!(d, 1.0 + delta, EPS);
+
+    #[cfg(feature = "rand")]
+    {
+        use rand::{Rng, SeedableRng};
+        use rand_xoshiro::Xoshiro256Plus;
+        let mut rng = Xoshiro256Plus::seed_from_u64(0);
+
+        for _ in 0..10_000 {
+            let A = DMat4::from_cols_array(&rng.gen::<[f64; 16]>());
+            let A = A + A.transpose();
             let eigvals = eigvals4(A);
             assert_valid(&eigvals, A.trace(), (A * A).trace(), A.determinant(), EPS);
         }
