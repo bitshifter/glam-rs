@@ -490,6 +490,13 @@ impl Mat3 {
         }
     }
 
+    /// Returns the trace of `self`.
+    #[inline]
+    #[must_use]
+    pub fn trace(&self) -> f32 {
+        self.x_axis.x + self.y_axis.y + self.z_axis.z
+    }
+
     /// Returns the determinant of `self`.
     #[inline]
     #[must_use]

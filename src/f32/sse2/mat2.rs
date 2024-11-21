@@ -275,6 +275,13 @@ impl Mat2 {
         Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_10_00) })
     }
 
+    /// Returns the trace of `self`.
+    #[inline]
+    #[must_use]
+    pub fn trace(&self) -> f32 {
+        self.x_axis.x + self.y_axis.y
+    }
+
     /// Returns the determinant of `self`.
     #[inline]
     #[must_use]
