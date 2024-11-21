@@ -30,19 +30,19 @@ fn csqrt(x: f64) -> DVec2 {
 }
 
 // Direct solving of characteristic polynomial
-fn eigvals2_symmetric(m: DMat2) -> [f64; 2] {
-    let t = m.trace();
-    let d = m.determinant();
-    let center = 0.5 * t;
-    let gap = (0.25 * t * t - d).sqrt();
-    [center - gap, center + gap]
-}
-
 fn eigvals2(m: DMat2) -> [DVec2; 2] {
     let t = m.trace();
     let d = m.determinant();
     let center = complex(0.5 * t);
     let gap = csqrt(0.25 * t * t - d);
+    [center - gap, center + gap]
+}
+
+fn eigvals2_symmetric(m: DMat2) -> [f64; 2] {
+    let t = m.trace();
+    let d = m.determinant();
+    let center = 0.5 * t;
+    let gap = (0.25 * t * t - d).sqrt();
     [center - gap, center + gap]
 }
 
@@ -152,7 +152,7 @@ fn eigvals3_symmetric(A: DMat3) -> [f64; 3] {
     }
 }
 
-// TODO: Implement an algorithm for this that takes advantage of the symmetric structure
+// TODO: Implement an algorithm that takes advantage of the symmetric structure
 fn eigvals4_symmetric(A: DMat4) -> [f64; 4] {
     let [a, b, c, d] = eigvals4(A);
     [a.x, b.x, c.x, d.x]
@@ -205,8 +205,6 @@ fn hessenberg3(A: DMat3) -> DMat3 {
 }
 
 fn hessenberg4(A: DMat4) -> DMat4 {
-    // dbg!(A);
-
     let mut v = A.x_axis.yzw();
     let alpha = -v.length();
     let alpha = if v.x < 0.0 { -alpha } else { alpha };
@@ -231,13 +229,6 @@ fn hessenberg4(A: DMat4) -> DMat4 {
     A.z_axis = A.z_axis - 2.0 * V * v.y;
     A.w_axis = A.w_axis - 2.0 * V * v.z;
 
-    // let Z = hessenberg3(DMat3::from_mat4_minor(A, 0, 0));
-    // let A = DMat4::from_cols_array(&[
-    //     A.x_axis.x, A.x_axis.y, A.x_axis.z, A.x_axis.w, A.y_axis.x, Z.x_axis.x, Z.x_axis.y,
-    //     Z.x_axis.z, A.z_axis.x, Z.y_axis.x, Z.y_axis.y, Z.y_axis.z, A.w_axis.x, Z.z_axis.x,
-    //     Z.z_axis.y, Z.z_axis.z,
-    // ]);
-
     let mut v = A.y_axis.zw();
     let alpha = -v.length();
     let alpha = if v.x < 0.0 { -alpha } else { alpha };
@@ -247,24 +238,11 @@ fn hessenberg4(A: DMat4) -> DMat4 {
     let Q = DMat2::from_cols(A.z_axis.zw(), A.w_axis.zw());
     let Q = Q - 2.0 * outer_product2(v, lmul2(v, Q));
 
-    // let mut AA = DMat3::from_cols_array(&[
-    //     A.y_axis.y, alpha, 0.0, A.z_axis.y, Q.x_axis.x, Q.x_axis.y, A.w_axis.y, Q.y_axis.x,
-    //     Q.y_axis.y,
-    // ]);
-
     let mut A = DMat4::from_cols_array(&[
         A.x_axis.x, A.x_axis.y, A.x_axis.z, A.x_axis.w, A.y_axis.x, A.y_axis.y, alpha, 0.0,
         A.z_axis.x, A.z_axis.y, Q.x_axis.x, Q.x_axis.y, A.w_axis.x, A.w_axis.y, Q.y_axis.x,
         Q.y_axis.y,
     ]);
-
-    // let V = dvec3(
-    //     dvec2(A.y_axis.x, A.z_axis.x).dot(v),
-    //     dvec2(A.y_axis.y, A.z_axis.y).dot(v),
-    //     dvec2(A.y_axis.z, A.z_axis.z).dot(v),
-    // );
-    // A.y_axis = A.y_axis - 2.0 * V * v.x;
-    // A.z_axis = A.z_axis - 2.0 * V * v.y;
 
     let V = dvec4(
         dvec2(A.z_axis.x, A.w_axis.x).dot(v),
@@ -275,8 +253,6 @@ fn hessenberg4(A: DMat4) -> DMat4 {
     A.z_axis = A.z_axis - 2.0 * V * v.x;
     A.w_axis = A.w_axis - 2.0 * V * v.y;
 
-    // dbg!(A);
-    // todo!();
     A
 }
 
@@ -284,11 +260,10 @@ fn eigvals3(A: DMat3) -> [DVec2; 3] {
     const CUTOFF: f64 = 1e-14;
 
     let mut A = hessenberg3(A);
-    // dbg!(A);
-    // panic!();
 
-    let mut k = 0;
-    loop {
+    // We shouldn't have more than a couple dozen iterations
+    for _ in 0..1000 {
+        // If some subdiagonal element is small enough, deflate
         if A.x_axis.y.abs() <= CUTOFF * (A.x_axis.x.abs() + A.y_axis.y.abs()) {
             let [a, b] = eigvals2(DMat2::from_mat3_minor(A, 0, 0));
             return [a, b, complex(A.x_axis.x)];
@@ -298,14 +273,7 @@ fn eigvals3(A: DMat3) -> [DVec2; 3] {
             return [a, b, complex(A.z_axis.z)];
         }
 
-        // let sigma = A.z_axis.z;
-
-        // let d = 0.5 * (A.y_axis.y - A.z_axis.z);
-        // let sigma = A.z_axis.z + d - d.signum() * (d.powi(2) + A.y_axis.z.powi(2)).sqrt();
-
-        // let (Q, R) = qr(A - sigma * DMat3::IDENTITY);
-        // A = R * Q + sigma * DMat3::IDENTITY;
-
+        // Double shift QR step
         let s = A.y_axis.y + A.z_axis.z;
         let t = A.y_axis.y * A.z_axis.z - A.y_axis.z * A.z_axis.y;
 
@@ -313,35 +281,19 @@ fn eigvals3(A: DMat3) -> [DVec2; 3] {
         let (Z, _) = qr3(M);
 
         A = Z.transpose() * A * Z;
-
-        k += 1;
-
-        // We shouldn't have more than a couple dozen iterations
-        if k > 1000 {
-            unreachable!();
-        }
     }
+
+    unreachable!();
 }
 
 fn eigvals4(A: DMat4) -> [DVec2; 4] {
     const CUTOFF: f64 = 1e-14;
 
     let mut A = hessenberg4(A);
-    // let mut A = A;
-    dbg!(A);
 
-    let mut k = 0;
-    loop {
-        // if k > 100 {
-        //     return [
-        //         complex(A.x_axis.x),
-        //         complex(A.y_axis.y),
-        //         complex(A.z_axis.z),
-        //         complex(A.w_axis.w),
-        //     ];
-        // }
-
-        // TODO: Don't recompute tridiagonizalation for smaller problems
+    // We shouldn't have more than a couple dozen iterations
+    for _ in 0..1000 {
+        // If some subdiagonal element is small enough, deflate
         if A.x_axis.y.abs() <= CUTOFF * (A.x_axis.x.abs() + A.y_axis.y.abs()) {
             let [a, b, c] = eigvals3(DMat3::from_mat4_minor(A, 0, 0));
             return [complex(A.x_axis.x), a, b, c];
@@ -356,13 +308,7 @@ fn eigvals4(A: DMat4) -> [DVec2; 4] {
             return [a, b, c, complex(A.w_axis.w)];
         }
 
-        // let sigma = A.w_axis.w;
-        // // let d = 0.5 * (A.y_axis.y - A.z_axis.z);
-        // // let sigma = A.z_axis.z + d - d.signum() * (d.powi(2) + A.y_axis.z.powi(2)).sqrt();
-
-        // let (Q, R) = qr4(A - sigma * DMat4::IDENTITY);
-        // A = R * Q + sigma * DMat4::IDENTITY;
-
+        // Double shift QR step
         let s = A.y_axis.z + A.z_axis.w;
         let t = A.y_axis.z * A.z_axis.w - A.y_axis.w * A.z_axis.z;
 
@@ -370,14 +316,9 @@ fn eigvals4(A: DMat4) -> [DVec2; 4] {
         let (Z, _) = qr4(M);
 
         A = Z.transpose() * A * Z;
-
-        k += 1;
-
-        // We shouldn't have more than a couple dozen iterations
-        if k > 1000 {
-            unreachable!();
-        }
     }
+
+    unreachable!();
 }
 
 const EPS: f32 = 1e-12;
@@ -552,7 +493,7 @@ glam_test!(test_eigvals3, {
         use rand_xoshiro::Xoshiro256Plus;
         let mut rng = Xoshiro256Plus::seed_from_u64(0);
 
-        for _ in 0..1000 {
+        for _ in 0..10_000 {
             let A = DMat3::from_cols_array(&rng.gen::<[f64; 9]>());
             let eigvals = eigvals3(A);
             assert_valid(&eigvals, A.trace(), (A * A).trace(), A.determinant(), EPS);
