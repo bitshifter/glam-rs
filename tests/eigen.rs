@@ -7,20 +7,13 @@ use glam::{
     dvec2, dvec3, dvec4, DMat2, DMat3, DMat4, DVec2, DVec3, DVec4, Vec3Swizzles, Vec4Swizzles,
 };
 
-fn sorted<const N: usize>(mut x: [f64; N]) -> [f64; N] {
-    x.sort_by(|a, b| a.total_cmp(&b));
-    x
-}
-
+// Mock complex number implementation via a 2d vector
+#[inline]
 fn complex(x: f64) -> DVec2 {
     dvec2(x, 0.0)
 }
 
-fn csorted<const N: usize>(mut x: [DVec2; N]) -> [DVec2; N] {
-    x.sort_by(|a, b| a.x.total_cmp(&b.x).then(a.y.total_cmp(&b.y)));
-    x
-}
-
+#[inline]
 fn csqrt(x: f64) -> DVec2 {
     if x.is_sign_positive() {
         dvec2(x.sqrt(), 0.0)
@@ -29,143 +22,10 @@ fn csqrt(x: f64) -> DVec2 {
     }
 }
 
-// Direct solving of characteristic polynomial
-fn eigvals2(m: DMat2) -> [DVec2; 2] {
-    let t = m.trace();
-    let d = m.determinant();
-    let center = complex(0.5 * t);
-    let gap = csqrt(0.25 * t * t - d);
-    [center - gap, center + gap]
-}
-
-fn eigvals2_symmetric(m: DMat2) -> [f64; 2] {
-    let t = m.trace();
-    let d = m.determinant();
-    let center = 0.5 * t;
-    let gap = (0.25 * t * t - d).sqrt();
-    [center - gap, center + gap]
-}
-
-fn qr3(A: DMat3) -> (DMat3, DMat3) {
-    let mut A = A;
-    let mut Q = DMat3::IDENTITY;
-
-    let H = make_householder3(A.x_axis);
-    Q = Q * H;
-    A = H * A;
-
-    let H = make_householder2(A.y_axis.yz());
-    let H = DMat3::from_cols_array(&[
-        1.0, 0.0, 0.0, 0.0, H.x_axis.x, H.y_axis.x, 0.0, H.x_axis.y, H.y_axis.y,
-    ]);
-    Q = Q * H;
-    A = H * A;
-
-    return (Q, A);
-}
-
-// These make_householder functions assume that a.x + a.length() is nonzero
-fn make_householder2(a: DVec2) -> DMat2 {
-    let d = a.x + a.length().copysign(a.x);
-    let mut v = a / d;
-    v.x = 1.0;
-    let mut H = DMat2::IDENTITY;
-    H -= (2.0 / v.dot(v)) * DMat2::from_cols(v * v.x, v * v.y);
-    H
-}
-
-fn make_householder3(a: DVec3) -> DMat3 {
-    let d = a.x + a.length().copysign(a.x);
-    let mut v = a / d;
-    v.x = 1.0;
-    let mut H = DMat3::IDENTITY;
-    H -= (2.0 / v.dot(v)) * DMat3::from_cols(v * v.x, v * v.y, v * v.z);
-    H
-}
-
-fn make_householder4(a: DVec4) -> DMat4 {
-    let d = a.x + a.length().copysign(a.x);
-    let mut v = a / d;
-    v.x = 1.0;
-    let mut H = DMat4::IDENTITY;
-    H -= (2.0 / v.dot(v)) * DMat4::from_cols(v * v.x, v * v.y, v * v.z, v * v.w);
-    H
-}
-
-fn qr4(A: DMat4) -> (DMat4, DMat4) {
-    let mut A = A;
-    let mut Q = DMat4::IDENTITY;
-
-    let H = make_householder4(A.x_axis);
-    Q = Q * H;
-    A = H * A;
-
-    let H = make_householder3(A.y_axis.yzw());
-    let H = DMat4::from_cols_array(&[
-        1.0, 0.0, 0.0, 0.0, 0.0, H.x_axis.x, H.y_axis.x, H.z_axis.x, 0.0, H.x_axis.y, H.y_axis.y,
-        H.z_axis.y, 0.0, H.x_axis.z, H.y_axis.z, H.z_axis.z,
-    ]);
-    Q = Q * H;
-    A = H * A;
-
-    let H = make_householder2(A.z_axis.zw());
-    let H = DMat4::from_cols_array(&[
-        1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, H.x_axis.x, H.y_axis.x, 0.0, 0.0,
-        H.x_axis.y, H.y_axis.y,
-    ]);
-    Q = Q * H;
-    A = H * A;
-
-    return (Q, A);
-}
-
-/// The algorithm given in https://en.wikipedia.org/wiki/Eigenvalue_algorithm#Symmetric_3%C3%973_matrices (Nov 20, 2024)
-fn eigvals3_symmetric(A: DMat3) -> [f64; 3] {
-    let p1 = A.y_axis.x.powi(2) + A.z_axis.x.powi(2) + A.z_axis.y.powi(2);
-
-    if p1 == 0.0 {
-        // A is diagonal
-        [A.x_axis.x, A.y_axis.y, A.z_axis.z]
-    } else {
-        let tr = A.trace();
-        let q = tr / 3.0;
-        let p2 = (A.x_axis.x - q).powi(2)
-            + (A.y_axis.y - q).powi(2)
-            + (A.z_axis.z - q).powi(2)
-            + 2.0 * p1;
-        let p = (p2 / 6.0).sqrt();
-        let B = (A - q * DMat3::IDENTITY) / p;
-        let r = B.determinant() / 2.0;
-
-        // In exact arithmetic for a symmetric matrix -1 <= r <= 1
-        // but computation error can leave it slightly outside this range.
-        let phi = r.clamp(-1.0, 1.0).acos() / 3.0;
-
-        // the eigenvalues satisfy c <= b <= a
-        let a = q + 2.0 * p * phi.cos();
-        let c = q + 2.0 * p * (phi + (2.0 * std::f64::consts::PI / 3.0)).cos();
-        let b = tr - a - c;
-
-        dbg!(A, a, b, c, phi, r);
-
-        [a, b, c]
-    }
-}
-
-// TODO: Implement an algorithm that takes advantage of the symmetric structure
-fn eigvals4_symmetric(A: DMat4) -> [f64; 4] {
-    let [a, b, c, d] = eigvals4(A);
-    [a.x, b.x, c.x, d.x]
-}
-
+// These left-multiplication functions should be replaced with https://github.com/bitshifter/glam-rs/issues/494
 #[inline]
 fn lmul2(v: DVec2, M: DMat2) -> DVec2 {
     dvec2(v.dot(M.x_axis), v.dot(M.y_axis))
-}
-
-#[inline]
-fn outer_product2(a: DVec2, b: DVec2) -> DMat2 {
-    DMat2::from_cols(a * b.x, a * b.y)
 }
 
 #[inline]
@@ -174,14 +34,90 @@ fn lmul3(v: DVec3, M: DMat3) -> DVec3 {
 }
 
 #[inline]
+fn outer_product2(a: DVec2, b: DVec2) -> DMat2 {
+    DMat2::from_cols(a * b.x, a * b.y)
+}
+
+#[inline]
 fn outer_product3(a: DVec3, b: DVec3) -> DMat3 {
     DMat3::from_cols(a * b.x, a * b.y, a * b.z)
 }
 
+#[inline]
+fn outer_product4(a: DVec4, b: DVec4) -> DMat4 {
+    DMat4::from_cols(a * b.x, a * b.y, a * b.z, a * b.w)
+}
+
+// These householder functions assume that a.x is nonzero
+fn householder2(a: DVec2) -> DMat2 {
+    let d = a.x + a.length().copysign(a.x);
+    let v = dvec2(1.0, a.y / d).normalize();
+    DMat2::IDENTITY - 2.0 * outer_product2(v, v)
+}
+
+fn householder3(a: DVec3) -> DMat3 {
+    let d = a.x + a.length().copysign(a.x);
+    let v = dvec3(1.0, a.y / d, a.z / d).normalize();
+    DMat3::IDENTITY - 2.0 * outer_product3(v, v)
+}
+
+fn householder4(a: DVec4) -> DMat4 {
+    let d = a.x + a.length().copysign(a.x);
+    let v = dvec4(1.0, a.y / d, a.z / d, a.w / d).normalize();
+    DMat4::IDENTITY - 2.0 * outer_product4(v, v)
+}
+
+// Computes a QR decomposition of the given matrix
+// These functions could be made more efficient by taking advantage of the hessenberg form of the inputs matrix
+fn qr3(A: DMat3) -> (DMat3, DMat3) {
+    let mut A = A;
+    let mut Q = DMat3::IDENTITY;
+
+    let H = householder3(A.x_axis);
+    Q *= H;
+    A = H * A;
+
+    let H = householder2(A.y_axis.yz());
+    let H = DMat3::from_cols_array(&[
+        1.0, 0.0, 0.0, 0.0, H.x_axis.x, H.y_axis.x, 0.0, H.x_axis.y, H.y_axis.y,
+    ]);
+    Q *= H;
+    A = H * A;
+
+    (Q, A)
+}
+
+fn qr4(A: DMat4) -> (DMat4, DMat4) {
+    let mut A = A;
+    let mut Q = DMat4::IDENTITY;
+
+    let H = householder4(A.x_axis);
+    Q *= H;
+    A = H * A;
+
+    let H = householder3(A.y_axis.yzw());
+    let H = DMat4::from_cols_array(&[
+        1.0, 0.0, 0.0, 0.0, 0.0, H.x_axis.x, H.y_axis.x, H.z_axis.x, 0.0, H.x_axis.y, H.y_axis.y,
+        H.z_axis.y, 0.0, H.x_axis.z, H.y_axis.z, H.z_axis.z,
+    ]);
+    Q *= H;
+    A = H * A;
+
+    let H = householder2(A.z_axis.zw());
+    let H = DMat4::from_cols_array(&[
+        1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, H.x_axis.x, H.y_axis.x, 0.0, 0.0,
+        H.x_axis.y, H.y_axis.y,
+    ]);
+    Q *= H;
+    A = H * A;
+
+    (Q, A)
+}
+
+// Computes the hessenberg form of a matrix
 fn hessenberg3(A: DMat3) -> DMat3 {
     let mut v = A.x_axis.yz();
-    let alpha = -v.length();
-    let alpha = if v.x < 0.0 { -alpha } else { alpha };
+    let alpha = -v.length() * v.x.signum();
     v.x -= alpha;
     v = v.normalize_or_zero();
 
@@ -194,20 +130,19 @@ fn hessenberg3(A: DMat3) -> DMat3 {
     ]);
 
     let V = dvec3(
-        dvec2(A.y_axis.x, A.z_axis.x).dot(v),
-        dvec2(A.y_axis.y, A.z_axis.y).dot(v),
-        dvec2(A.y_axis.z, A.z_axis.z).dot(v),
+        A.row(0).yz().dot(v),
+        A.row(1).yz().dot(v),
+        A.row(2).yz().dot(v),
     );
-    A.y_axis = A.y_axis - 2.0 * V * v.x;
-    A.z_axis = A.z_axis - 2.0 * V * v.y;
+    A.y_axis -= 2.0 * V * v.x;
+    A.z_axis -= 2.0 * V * v.y;
 
     A
 }
 
 fn hessenberg4(A: DMat4) -> DMat4 {
     let mut v = A.x_axis.yzw();
-    let alpha = -v.length();
-    let alpha = if v.x < 0.0 { -alpha } else { alpha };
+    let alpha = -v.length() * v.x.signum();
     v.x -= alpha;
     v = v.normalize_or_zero();
 
@@ -220,18 +155,17 @@ fn hessenberg4(A: DMat4) -> DMat4 {
     ]);
 
     let V = dvec4(
-        dvec3(A.y_axis.x, A.z_axis.x, A.w_axis.x).dot(v),
-        dvec3(A.y_axis.y, A.z_axis.y, A.w_axis.y).dot(v),
-        dvec3(A.y_axis.z, A.z_axis.z, A.w_axis.z).dot(v),
-        dvec3(A.y_axis.w, A.z_axis.w, A.w_axis.w).dot(v),
+        A.row(0).yzw().dot(v),
+        A.row(1).yzw().dot(v),
+        A.row(2).yzw().dot(v),
+        A.row(3).yzw().dot(v),
     );
-    A.y_axis = A.y_axis - 2.0 * V * v.x;
-    A.z_axis = A.z_axis - 2.0 * V * v.y;
-    A.w_axis = A.w_axis - 2.0 * V * v.z;
+    A.y_axis -= 2.0 * V * v.x;
+    A.z_axis -= 2.0 * V * v.y;
+    A.w_axis -= 2.0 * V * v.z;
 
     let mut v = A.y_axis.zw();
-    let alpha = -v.length();
-    let alpha = if v.x < 0.0 { -alpha } else { alpha };
+    let alpha = -v.length() * v.x.signum();
     v.x -= alpha;
     v = v.normalize_or_zero();
 
@@ -245,24 +179,24 @@ fn hessenberg4(A: DMat4) -> DMat4 {
     ]);
 
     let V = dvec4(
-        dvec2(A.z_axis.x, A.w_axis.x).dot(v),
-        dvec2(A.z_axis.y, A.w_axis.y).dot(v),
-        dvec2(A.z_axis.z, A.w_axis.z).dot(v),
-        dvec2(A.z_axis.w, A.w_axis.w).dot(v),
+        A.row(0).zw().dot(v),
+        A.row(1).zw().dot(v),
+        A.row(2).zw().dot(v),
+        A.row(3).zw().dot(v),
     );
-    A.z_axis = A.z_axis - 2.0 * V * v.x;
-    A.w_axis = A.w_axis - 2.0 * V * v.y;
+    A.z_axis -= 2.0 * V * v.x;
+    A.w_axis -= 2.0 * V * v.y;
 
     A
 }
 
-fn eigvals3(A: DMat3) -> [DVec2; 3] {
+// The eigvals*_hessenberg functions use the QR algorithm to determine the eigenvalues
+/// Requires A to be a hessenberg matrix
+fn eigvals3_hessenberg(mut A: DMat3) -> [DVec2; 3] {
     const CUTOFF: f64 = 1e-14;
 
-    let mut A = hessenberg3(A);
-
     // We shouldn't have more than a couple dozen iterations
-    for _ in 0..1000 {
+    for _ in 0..100 {
         // If some subdiagonal element is small enough, deflate
         if A.x_axis.y.abs() <= CUTOFF * (A.x_axis.x.abs() + A.y_axis.y.abs()) {
             let [a, b] = eigvals2(DMat2::from_mat3_minor(A, 0, 0));
@@ -286,16 +220,15 @@ fn eigvals3(A: DMat3) -> [DVec2; 3] {
     unreachable!();
 }
 
-fn eigvals4(A: DMat4) -> [DVec2; 4] {
+/// Requires A to be a hessenberg matrix
+fn eigvals4_hessenberg(mut A: DMat4) -> [DVec2; 4] {
     const CUTOFF: f64 = 1e-14;
 
-    let mut A = hessenberg4(A);
-
     // We shouldn't have more than a couple dozen iterations
-    for _ in 0..1000 {
+    for _ in 0..100 {
         // If some subdiagonal element is small enough, deflate
         if A.x_axis.y.abs() <= CUTOFF * (A.x_axis.x.abs() + A.y_axis.y.abs()) {
-            let [a, b, c] = eigvals3(DMat3::from_mat4_minor(A, 0, 0));
+            let [a, b, c] = eigvals3_hessenberg(DMat3::from_mat4_minor(A, 0, 0));
             return [complex(A.x_axis.x), a, b, c];
         }
         if A.y_axis.z.abs() <= CUTOFF * (A.y_axis.y.abs() + A.z_axis.z.abs()) {
@@ -304,7 +237,7 @@ fn eigvals4(A: DMat4) -> [DVec2; 4] {
             return [a, b, c, d];
         }
         if A.z_axis.w.abs() <= CUTOFF * (A.z_axis.z.abs() + A.w_axis.w.abs()) {
-            let [a, b, c] = eigvals3(DMat3::from_mat4(A));
+            let [a, b, c] = eigvals3_hessenberg(DMat3::from_mat4(A));
             return [a, b, c, complex(A.w_axis.w)];
         }
 
@@ -321,10 +254,97 @@ fn eigvals4(A: DMat4) -> [DVec2; 4] {
     unreachable!();
 }
 
+// Direct solving of characteristic polynomial
+/// Computes the eigenvalues of a dense 2x2 matrix
+fn eigvals2(m: DMat2) -> [DVec2; 2] {
+    let t = m.trace();
+    let d = m.determinant();
+    let center = complex(0.5 * t);
+    let gap = csqrt(0.25 * t * t - d);
+    [center - gap, center + gap]
+}
+
+/// Computes the eigenvalues of a dense 3x3 matrix
+fn eigvals3(A: DMat3) -> [DVec2; 3] {
+    eigvals3_hessenberg(hessenberg3(A))
+}
+
+/// Computes the eigenvalues of a dense 4x4 matrix
+fn eigvals4(A: DMat4) -> [DVec2; 4] {
+    eigvals4_hessenberg(hessenberg4(A))
+}
+
+// The symmetric cases exhibit nice properties, allowing for specialized algorithms
+// Additionally, symmetric matrices always have real eigenvalues, allowing for a simpler return type
+// TODO: Implement glam_assert to assure symmetry
+/// Computes the eigenvalues of a dense, symmetric 2x2 matrix
+fn eigvals2_symmetric(m: DMat2) -> [f64; 2] {
+    let t = m.trace();
+    let d = m.determinant();
+    let center = 0.5 * t;
+    let gap = (0.25 * t * t - d).sqrt();
+    [center - gap, center + gap]
+}
+
+// TODO: This algorithm is much quicker than the QR algorithm for symmetric 3x3 matrices, but has lower precision
+// Uses the algorithm given in https://en.wikipedia.org/wiki/Eigenvalue_algorithm#Symmetric_3%C3%973_matrices (Nov 20, 2024)
+/// Computes the eigenvalues of a dense, symmetric 3x3 matrix
+fn eigvals3_symmetric(A: DMat3) -> [f64; 3] {
+    use std::f64::consts::PI;
+
+    let p1 = A.y_axis.x.powi(2) + A.z_axis.x.powi(2) + A.z_axis.y.powi(2);
+
+    if p1 == 0.0 {
+        // A is diagonal
+        [A.x_axis.x, A.y_axis.y, A.z_axis.z]
+    } else {
+        let tr = A.trace();
+        let q = tr / 3.0;
+        let p2 = (A.x_axis.x - q).powi(2)
+            + (A.y_axis.y - q).powi(2)
+            + (A.z_axis.z - q).powi(2)
+            + 2.0 * p1;
+        let p = (p2 / 6.0).sqrt();
+        let B = (A - q * DMat3::IDENTITY) / p;
+        let r = B.determinant() / 2.0;
+
+        // In exact arithmetic for a symmetric matrix -1 <= r <= 1
+        // but computation error can leave it slightly outside this range.
+        let phi = r.clamp(-1.0, 1.0).acos() / 3.0;
+
+        // the eigenvalues satisfy c <= b <= a
+        let a = q + 2.0 * p * phi.cos();
+        let c = q + 2.0 * p * (phi + (2.0 * PI / 3.0)).cos();
+        let b = tr - a - c;
+
+        [a, b, c]
+    }
+}
+
+// TODO: Implement an algorithm that takes advantage of the symmetric structure
+/// Computes the eigenvalues of a dense, symmetric 4x4 matrix
+fn eigvals4_symmetric(A: DMat4) -> [f64; 4] {
+    let [a, b, c, d] = eigvals4(A);
+    [a.x, b.x, c.x, d.x]
+}
+
+// Testing
 const EPS: f32 = 1e-12;
 const SYMMETRIC_EPS: f32 = 1e-8;
 
 #[cfg(test)]
+fn sorted<const N: usize>(mut x: [f64; N]) -> [f64; N] {
+    x.sort_by(|a, b| a.total_cmp(b));
+    x
+}
+
+#[cfg(test)]
+fn csorted<const N: usize>(mut x: [DVec2; N]) -> [DVec2; N] {
+    x.sort_by(|a, b| a.x.total_cmp(&b.x).then(a.y.total_cmp(&b.y)));
+    x
+}
+
+#[cfg(all(test, feature = "rand"))]
 /// The tests here are from https://math.stackexchange.com/a/894641
 fn assert_valid(eigvals: &[DVec2], trace: f64, trace_sq: f64, det: f64, eps: f32) {
     // The sum of the eigenvalues should be equal to the trace
@@ -458,7 +478,7 @@ glam_test!(test_eigvals3, {
     // Another test case that did non converge with just the Rayleigh Quotient shift
     let [a, b, c] = csorted(eigvals3(DMat3::from_cols_array(&[
         0.16321690858303795,
-        0.016804839607712952,
+        0.01680483960771295,
         0.0,
         -0.08822904497924268,
         -0.5184780437091311,
