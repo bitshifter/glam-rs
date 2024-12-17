@@ -2071,7 +2071,6 @@ impl From<BVec4> for I8Vec4 {
 }
 
 #[cfg(not(feature = "scalar-math"))]
-
 impl From<BVec4A> for I8Vec4 {
     #[inline]
     fn from(v: BVec4A) -> Self {
