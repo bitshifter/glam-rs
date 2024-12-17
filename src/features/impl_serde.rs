@@ -907,7 +907,7 @@ mod bool {
                 type Value = BVec3A;
 
                 fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                    formatter.write_str(&concat!("a sequence of 3 ", stringify!($t), "values"))
+                    formatter.write_str(concat!("a sequence of 3 ", stringify!($t), "values"))
                 }
 
                 fn visit_seq<V>(self, mut seq: V) -> Result<BVec3A, V::Error>
@@ -977,7 +977,7 @@ mod bool {
                 type Value = BVec4A;
 
                 fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                    formatter.write_str(&concat!("a sequence of 4 ", stringify!($t), "values"))
+                    formatter.write_str(concat!("a sequence of 4 ", stringify!($t), "values"))
                 }
 
                 fn visit_seq<V>(self, mut seq: V) -> Result<BVec4A, V::Error>
@@ -1295,7 +1295,7 @@ mod euler {
             }
             struct FieldVisitor;
 
-            impl<'de> serde::de::Visitor<'de> for FieldVisitor {
+            impl serde::de::Visitor<'_> for FieldVisitor {
                 type Value = Field;
                 fn expecting(&self, formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
                     core::fmt::Formatter::write_str(formatter, "a variant identifier")
