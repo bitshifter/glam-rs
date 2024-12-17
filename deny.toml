@@ -10,6 +10,7 @@ skip-tree = [
 allow = [
     "Apache-2.0",
     "MIT",
+    "Unicode-3.0",
 ]
 exceptions = [
     { allow = [
