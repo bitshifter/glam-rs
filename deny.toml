@@ -12,8 +12,3 @@ allow = [
     "MIT",
     "Unicode-3.0",
 ]
-exceptions = [
-    { allow = [
-        "Unicode-DFS-2016",
-    ], name = "unicode-ident" },
-]
