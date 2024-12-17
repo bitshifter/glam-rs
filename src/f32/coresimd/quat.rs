@@ -585,7 +585,7 @@ impl Quat {
         glam_assert!(self.is_normalized() && rhs.is_normalized());
         let angle = self.angle_between(rhs);
         if angle <= 1e-4 {
-            return *self;
+            return rhs;
         }
         let s = (max_angle / angle).clamp(-1.0, 1.0);
         self.slerp(rhs, s)
