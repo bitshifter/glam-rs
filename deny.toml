@@ -1,7 +1,3 @@
-[advisories]
-# criterion is currently failing cargo-deny due to serde_cbor being unmaintained
-unmaintained = "warn"
-
 [bans]
 multiple-versions = "deny"
 deny = []
@@ -11,7 +7,6 @@ skip-tree = [
 ]
 
 [licenses]
-unlicensed = "deny"
 allow = [
     "Apache-2.0",
     "MIT",
