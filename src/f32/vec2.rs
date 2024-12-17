@@ -921,7 +921,7 @@ impl Vec2 {
     /// Rotates towards `rhs` up to `max_angle` (in radians).
     ///
     /// When `max_angle` is `0.0`, the result will be equal to `self`. When `max_angle` is equal to
-    /// `self.angle_between(rhs)`, the result will be equal to `rhs`. If `max_angle` is negative,
+    /// `self.angle_between(rhs)`, the result will be parallel to `rhs`. If `max_angle` is negative,
     /// rotates towards the exact opposite of `rhs`. Will not go past the target.
     #[inline]
     #[must_use]
@@ -929,7 +929,7 @@ impl Vec2 {
         let a = self.angle_to(rhs);
         let abs_a = math::abs(a);
         if abs_a <= 1e-4 {
-            return rhs;
+            return *self;
         }
         // When `max_angle < 0`, rotate no further than `PI` radians away
         let angle = max_angle.clamp(abs_a - core::f32::consts::PI, abs_a) * math::signum(a);
