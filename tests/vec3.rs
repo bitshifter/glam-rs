@@ -1101,6 +1101,50 @@ macro_rules! impl_vec3_float_tests {
             assert_approx_eq!(v1, v0.lerp(v1, 1.0));
         });
 
+        glam_test!(test_slerp, {
+            let v0 = $vec3::new(1.0, 2.0, 3.0);
+            let v1 = $vec3::new(4.0, 5.0, 6.0);
+            assert_approx_eq!(v0.slerp(v1, 0.0), v0);
+            assert_approx_eq!(v0.slerp(v1, 1.0), v1);
+            assert_approx_eq!(
+                v0.slerp(v1, 0.5).length(),
+                (v0.length() + v1.length()) / 2.,
+                5e-7
+            );
+            assert_approx_eq!(
+                v0.angle_between(v0.slerp(v1, 0.5)) * 2.0,
+                v0.angle_between(v1)
+            );
+            assert_approx_eq!(
+                $vec3::new(5.0, 0.0, 0.0).slerp($vec3::new(0.0, 5.0, 0.0), 0.5),
+                $vec3::new(5.0, 5.0, 0.0) * std::$t::consts::FRAC_1_SQRT_2
+            );
+        });
+        glam_test!(test_slerp_extrapolate, {
+            let v0 = $vec3::Y;
+            let v1 = $vec3::X;
+            // Normalized
+            assert_approx_eq!(v0.slerp(v1, -1.0), $vec3::NEG_X, 2e-7);
+            assert_approx_eq!(v0.slerp(v1, 2.0), $vec3::NEG_Y, 2e-7);
+            // Scaled
+            assert_approx_eq!(v0.slerp(v1 * 1.5, -1.0), $vec3::NEG_X * 0.5);
+            assert_approx_eq!(v0.slerp(v1 * 1.5, 2.0), $vec3::NEG_Y * 2.0, 4e-7);
+        });
+        glam_test!(test_slerp_parallel, {
+            // Same direction
+            assert_approx_eq!($vec3::ONE.slerp($vec3::splat(2.), 0.5), $vec3::splat(1.5));
+            assert_approx_eq!($vec3::splat(2.).slerp($vec3::ONE, 0.5), $vec3::splat(1.5));
+            // Opposite direction
+            assert_approx_eq!($vec3::Y.slerp($vec3::NEG_Y, 0.5), $vec3::X);
+            assert_approx_eq!(($vec3::Y * 1.5).slerp($vec3::NEG_Y * 0.5, 0.5), $vec3::X);
+            assert_approx_eq!(($vec3::Y * 0.5).slerp($vec3::NEG_Y * 1.5, 0.5), $vec3::X);
+        });
+        glam_test!(test_slerp_zero_length, {
+            assert_approx_eq!($vec3::ZERO.slerp($vec3::ZERO, 0.5), $vec3::ZERO);
+            assert_approx_eq!($vec3::ZERO.slerp($vec3::ONE, 0.5), $vec3::splat(0.5));
+            assert_approx_eq!($vec3::ONE.slerp($vec3::ZERO, 0.5), $vec3::splat(0.5));
+        });
+
         glam_test!(test_move_towards, {
             let v0 = $vec3::new(-1.0, -1.0, -1.0);
             let v1 = $vec3::new(1.0, 1.0, 1.0);

@@ -34,12 +34,14 @@
         {% set vec3_t = "Vec3" %}
         {% set vec3a_t = "Vec3A" %}
         {% set vec4_t = "Vec4" %}
+        {% set quat_t = "Quat" %}
     {% elif scalar_t == "f64" %}
         {% set self_t = "DVec" ~ dim %}
         {% set vec2_t = "DVec2" %}
         {% set vec3_t = "DVec3" %}
         {% set vec4_t = "DVec4" %}
         {% set from_types = ["Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim] %}
+        {% set quat_t = "DQuat" %}
     {% endif %}
 {% elif scalar_t == "i8" %}
     {% set is_signed = true %}
@@ -199,6 +201,10 @@
     {% endif %}
     {% if is_float %}
         {{ scalar_t }}::math,
+        {% if dim == 3 %}
+            FloatExt,
+            {{ quat_t }},
+        {% endif %}
     {% endif %}
     {% if from_types %}
         {% for ty in from_types %}
@@ -2163,6 +2169,49 @@ impl {{ self_t }} {
             Self::new(b, sign + self.y * self.y * a, -self.y),
         )
     }
+
+    /// Performs a spherical linear interpolation between `self` and `rhs` based on the value `s`.
+    ///
+    /// When `s` is `0.0`, the result will be equal to `self`.  When `s` is `1.0`, the result
+    /// will be equal to `rhs`. When `s` is outside of range `[0, 1]`, the result is linearly
+    /// extrapolated.
+    #[inline]
+    #[must_use]
+    pub fn slerp(self, rhs: Self, s: {{ scalar_t }}) -> Self {
+        let self_length = self.length();
+        let rhs_length = rhs.length();
+        // Cosine of the angle between the vectors [-1, 1], or NaN if either vector has a zero length
+        let dot = self.dot(rhs) / (self_length * rhs_length);
+        // If dot is close to 1 or -1, or is NaN the calculations for t1 and t2 break down
+        if math::abs(dot) < 1.0 - 3e-7 {
+            // Angle between the vectors [0, +π]
+            let theta = math::acos_approx(dot);
+            // Sine of the angle between vectors [0, 1]
+            let sin_theta = math::sin(theta);
+            let t1 = math::sin(theta * (1. - s));
+            let t2 = math::sin(theta * s);
+        
+            // Interpolate vector lengths
+            let result_length = self_length.lerp(rhs_length, s);
+            // Scale the vectors to the target length and interpolate them
+            return (self * (result_length / self_length) * t1
+                + rhs * (result_length / rhs_length) * t2)
+                * sin_theta.recip();
+        }
+        if dot < 0.0 {
+            // Vectors are almost parallel in opposing directions
+
+            // Create a rotation from self to rhs along some axis
+            let axis = self.any_orthogonal_vector().normalize(){% if is_align %}.into(){% endif %};
+            let rotation = {{ quat_t }}::from_axis_angle(axis, core::{{ scalar_t }}::consts::PI * s);
+            // Interpolate vector lengths
+            let result_length = self_length.lerp(rhs_length, s);
+            rotation * self * (result_length / self_length) 
+        } else {
+            // Vectors are almost parallel in the same direction, or dot was NaN
+            self.lerp(rhs, s)
+        }
+    }
 {% endif %}
 {% endif %}
 
@@ -2205,7 +2254,7 @@ impl {{ self_t }} {
     /// Rotates towards `rhs` up to `max_angle` (in radians).
     ///
     /// When `max_angle` is `0.0`, the result will be equal to `self`. When `max_angle` is equal to
-    /// `self.angle_between(rhs)`, the result will be equal to `rhs`. If `max_angle` is negative,
+    /// `self.angle_between(rhs)`, the result will be parallel to `rhs`. If `max_angle` is negative,
     /// rotates towards the exact opposite of `rhs`. Will not go past the target.
     #[inline]
     #[must_use]
