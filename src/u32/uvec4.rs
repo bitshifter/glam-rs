@@ -382,11 +382,30 @@ impl UVec4 {
     ///
     /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
     #[inline]
+    #[must_use]
     pub fn manhattan_distance(self, other: Self) -> u32 {
         self.x.abs_diff(other.x)
             + self.y.abs_diff(other.y)
             + self.z.abs_diff(other.z)
             + self.w.abs_diff(other.w)
+    }
+
+    /// Computes the [chebyshev distance] between two points.
+    ///
+    /// [chebyshev distance]: https://en.wikipedia.org/wiki/Chebyshev_distance
+    #[inline]
+    #[must_use]
+    pub fn chebyshev_distance(self, other: Self) -> u32 {
+        // Note: the compiler will eventually optimize out the loop
+        [
+            self.x.abs_diff(other.x),
+            self.y.abs_diff(other.y),
+            self.z.abs_diff(other.z),
+            self.w.abs_diff(other.w),
+        ]
+        .into_iter()
+        .max()
+        .unwrap()
     }
 
     /// Casts all elements of `self` to `f32`.

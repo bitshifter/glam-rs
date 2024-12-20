@@ -2180,6 +2180,20 @@ impl {{ self_t }} {
         {% endfor %}
     }
 
+    /// Computes the [chebyshev distance] between two points.
+    ///
+    /// [chebyshev distance]: https://en.wikipedia.org/wiki/Chebyshev_distance
+    #[inline]
+    #[must_use]
+    pub fn chebyshev_distance(self, other: Self) -> {{ scalar_t }} {
+        // Note: the compiler will eventually optimize out the loop
+        [
+            {% for c in components %}
+                self.{{c}}.abs_diff(other.{{c}}),
+            {% endfor %}
+        ].into_iter().max().unwrap()
+    }
+
 {% endif %}
 
 
