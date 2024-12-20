@@ -378,6 +378,17 @@ impl U64Vec4 {
         self.dot(self)
     }
 
+    /// Computes the [manhattan distance] between two points.
+    ///
+    /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
+    #[inline]
+    pub fn manhattan_distance(self, other: Self) -> u64 {
+        self.x.abs_diff(other.x)
+            + self.y.abs_diff(other.y)
+            + self.z.abs_diff(other.z)
+            + self.w.abs_diff(other.w)
+    }
+
     /// Casts all elements of `self` to `f32`.
     #[inline]
     #[must_use]

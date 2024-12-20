@@ -2166,6 +2166,23 @@ impl {{ self_t }} {
 {% endif %}
 {% endif %}
 
+{% if not is_float %}
+
+    /// Computes the [manhattan distance] between two points.
+    ///
+    /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
+    #[inline]
+    #[must_use]
+    pub fn manhattan_distance(self, other: Self) -> {{ scalar_t }} {
+        {% for c in components %}
+            {% if not loop.first %} + {% endif %}
+            self.{{c}}.abs_diff(other.{{c}})
+        {% endfor %}
+    }
+
+{% endif %}
+
+
 {% if is_signed and dim == 2 %}
     /// Returns a vector that is equal to `self` rotated by 90 degrees.
     #[inline]

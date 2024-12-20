@@ -441,6 +441,14 @@ impl I8Vec3 {
         )
     }
 
+    /// Computes the [manhattan distance] between two points.
+    ///
+    /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
+    #[inline]
+    pub fn manhattan_distance(self, other: Self) -> i8 {
+        self.x.abs_diff(other.x) + self.y.abs_diff(other.y) + self.z.abs_diff(other.z)
+    }
+
     /// Casts all elements of `self` to `f32`.
     #[inline]
     #[must_use]

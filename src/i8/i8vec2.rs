@@ -377,6 +377,14 @@ impl I8Vec2 {
         Self::new(self.x.rem_euclid(rhs.x), self.y.rem_euclid(rhs.y))
     }
 
+    /// Computes the [manhattan distance] between two points.
+    ///
+    /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
+    #[inline]
+    pub fn manhattan_distance(self, other: Self) -> i8 {
+        self.x.abs_diff(other.x) + self.y.abs_diff(other.y)
+    }
+
     /// Returns a vector that is equal to `self` rotated by 90 degrees.
     #[inline]
     #[must_use]
