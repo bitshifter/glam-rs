@@ -594,6 +594,13 @@ impl DMat4 {
         }
     }
 
+    /// Returns the trace of `self`.
+    #[inline]
+    #[must_use]
+    pub fn trace(&self) -> f64 {
+        self.x_axis.x + self.y_axis.y + self.z_axis.z + self.w_axis.w
+    }
+
     /// Returns the determinant of `self`.
     #[must_use]
     pub fn determinant(&self) -> f64 {

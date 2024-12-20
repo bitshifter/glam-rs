@@ -256,6 +256,13 @@ impl Mat2 {
         Self(simd_swizzle!(self.0, [0, 2, 1, 3]))
     }
 
+    /// Returns the trace of `self`.
+    #[inline]
+    #[must_use]
+    pub fn trace(&self) -> f32 {
+        self.x_axis.x + self.y_axis.y
+    }
+
     /// Returns the determinant of `self`.
     #[inline]
     #[must_use]

@@ -1226,6 +1226,19 @@ impl {{ self_t }} {
         {% endif %}
     }
 
+    /// Returns the trace of `self`.
+    #[inline]
+    #[must_use]
+    pub fn trace(&self) -> {{ scalar_t }} {
+        {% if dim == 2 %}
+            self.x_axis.x + self.y_axis.y
+        {% elif dim == 3 %}
+            self.x_axis.x + self.y_axis.y + self.z_axis.z
+        {% elif dim == 4 %}
+            self.x_axis.x + self.y_axis.y + self.z_axis.z + self.w_axis.w
+        {% endif %}
+    }
+
     /// Returns the determinant of `self`.
     {%- if dim < 4 %}
     #[inline]
@@ -1518,7 +1531,7 @@ impl {{ self_t }} {
                 glam_assert!(Mat2(tmp).is_finite());
                 //let dbca = simd_swizzle!(abcd, [3, 1, 2, 0]);
                 let dbca = vsetq_lane_f32(
-                    vgetq_lane_f32(abcd, 0), 
+                    vgetq_lane_f32(abcd, 0),
                     vsetq_lane_f32(vgetq_lane_f32(abcd, 3), abcd, 0),
                     3,
                 );
@@ -2676,4 +2689,3 @@ impl fmt::Display for {{ self_t }} {
         }
     }
 }
-
