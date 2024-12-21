@@ -396,6 +396,69 @@ impl Quat {
         }
     }
 
+    /// Creates a quaterion rotation from a facing direction and an up direction.
+    ///
+    /// For a left-handed view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn look_to_lh(dir: Vec3, up: Vec3) -> Self {
+        Self::look_to_rh(-dir, up)
+    }
+
+    /// Creates a quaterion rotation from facing direction and an up direction.
+    ///
+    /// For a right-handed view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `dir` and `up` are not normalized when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn look_to_rh(dir: Vec3, up: Vec3) -> Self {
+        glam_assert!(dir.is_normalized());
+        glam_assert!(up.is_normalized());
+        let f = dir;
+        let s = f.cross(up).normalize();
+        let u = s.cross(f);
+
+        Self::from_rotation_axes(
+            Vec3::new(s.x, u.x, -f.x),
+            Vec3::new(s.y, u.y, -f.y),
+            Vec3::new(s.z, u.z, -f.z),
+        )
+    }
+
+    /// Creates a left-handed view matrix using a camera position, a focal point, and an up
+    /// direction.
+    ///
+    /// For a left-handed view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn look_at_lh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
+        Self::look_to_lh(center.sub(eye).normalize(), up)
+    }
+
+    /// Creates a right-handed view matrix using a camera position, an up direction, and a focal
+    /// point.
+    ///
+    /// For a right-handed view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    #[inline]
+    pub fn look_at_rh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
+        Self::look_to_rh(center.sub(eye).normalize(), up)
+    }
+
     /// Returns the rotation axis (normalized) and angle (in radians) of `self`.
     #[inline]
     #[must_use]

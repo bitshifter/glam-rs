@@ -164,6 +164,30 @@ macro_rules! impl_quat_tests {
             }
         });
 
+        glam_test!(test_quat_look_at, {
+            let eye = $vec3::new(0.0, 0.0, -5.0);
+            let center = $vec3::new(0.0, 0.0, 0.0);
+            let up = $vec3::new(1.0, 0.0, 0.0);
+
+            let point = $vec3::new(1.0, 0.0, 0.0);
+
+            let lh = $quat::look_at_lh(eye, center, up);
+            let rh = $quat::look_at_rh(eye, center, up);
+            assert_approx_eq!(lh * point, $vec3::new(0.0, 1.0, 0.0));
+            assert_approx_eq!(rh * point, $vec3::new(0.0, 1.0, 0.0));
+
+            let dir = (center - eye).normalize();
+            let lh = $quat::look_to_lh(dir, up);
+            let rh = $quat::look_to_rh(dir, up);
+            assert_approx_eq!(lh * point, $vec3::new(0.0, 1.0, 0.0));
+            assert_approx_eq!(rh * point, $vec3::new(0.0, 1.0, 0.0));
+
+            should_glam_assert!({ $quat::look_to_lh($vec3::ONE, $vec3::ZERO) });
+            should_glam_assert!({ $quat::look_to_lh($vec3::ZERO, $vec3::ONE) });
+            should_glam_assert!({ $quat::look_to_rh($vec3::ONE, $vec3::ZERO) });
+            should_glam_assert!({ $quat::look_to_rh($vec3::ZERO, $vec3::ONE) });
+        });
+
         glam_test!(test_mul_vec3, {
             let qrz = $quat::from_rotation_z(deg(90.0));
             assert_approx_eq!($vec3::Y, qrz * $vec3::X);
