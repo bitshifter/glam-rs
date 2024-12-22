@@ -982,6 +982,26 @@ macro_rules! impl_vec4_signed_integer_tests {
                 $vec4::new(26, 2, 24, -22).manhattan_distance($vec4::new(26, 23, 6, 23)),
                 84
             );
+
+            assert_eq!(
+                $vec4::new(41, 8, 21, 87).checked_manhattan_distance($vec4::new(49, 48, 28, 40)),
+                Some(102)
+            );
+            assert_eq!(
+                $vec4::new(19, 16, 100, 74).checked_manhattan_distance($vec4::new(14, 55, 115, 48)),
+                Some(85)
+            );
+
+            assert_eq!(
+                $vec4::new(26, 2, 24, -22).checked_manhattan_distance($vec4::new(26, 23, 6, 23)),
+                Some(84)
+            );
+
+            assert_eq!(
+                $vec4::new($t::MIN, $t::MIN, $t::MIN, $t::MIN)
+                    .checked_manhattan_distance($vec4::new($t::MAX, $t::MAX, $t::MAX, $t::MAX)),
+                None
+            );
         });
 
         glam_test!(test_chebyshev_distance, {
@@ -1013,6 +1033,22 @@ macro_rules! impl_vec4_unsigned_integer_tests {
             assert_eq!(
                 $vec4::new(19, 16, 179, 174).manhattan_distance($vec4::new(14, 55, 115, 148)),
                 134
+            );
+
+            assert_eq!(
+                $vec4::new(41, 8, 21, 87).checked_manhattan_distance($vec4::new(49, 48, 128, 40)),
+                Some(202)
+            );
+            assert_eq!(
+                $vec4::new(19, 16, 179, 174)
+                    .checked_manhattan_distance($vec4::new(14, 55, 115, 148)),
+                Some(134)
+            );
+
+            assert_eq!(
+                $vec4::new($t::MIN, $t::MIN, $t::MIN, $t::MIN)
+                    .checked_manhattan_distance($vec4::new($t::MAX, $t::MAX, $t::MAX, $t::MAX)),
+                None
             );
         });
 

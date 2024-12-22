@@ -863,6 +863,28 @@ macro_rules! impl_vec3_signed_integer_tests {
                 $vec3::new(-23, 2, -99).manhattan_distance($vec3::new(22, -12, 24)),
                 182
             );
+
+            assert_eq!(
+                $vec3::new(3, 27, 98).checked_manhattan_distance($vec3::new(20, 65, 97)),
+                Some(56)
+            );
+            assert_eq!(
+                $vec3::new(8, 12, 12).checked_manhattan_distance($vec3::new(24, 56, 2)),
+                Some(70)
+            );
+            assert_eq!(
+                $vec3::new(-23, 2, -99).checked_manhattan_distance($vec3::new(22, -12, 24)),
+                Some(182)
+            );
+
+            assert_eq!(
+                $vec3::new($t::MIN, $t::MIN, $t::MIN).checked_manhattan_distance($vec3::new(
+                    $t::MAX,
+                    $t::MAX,
+                    $t::MAX
+                )),
+                None
+            );
         });
 
         glam_test!(test_chebyshev_distance, {
@@ -894,6 +916,24 @@ macro_rules! impl_vec3_unsigned_integer_tests {
             assert_eq!(
                 $vec3::new(8, 12, 12).manhattan_distance($vec3::new(24, 56, 2)),
                 70
+            );
+
+            assert_eq!(
+                $vec3::new(3, 27, 98).checked_manhattan_distance($vec3::new(20, 65, 97)),
+                Some(56)
+            );
+            assert_eq!(
+                $vec3::new(8, 12, 12).checked_manhattan_distance($vec3::new(24, 56, 2)),
+                Some(70)
+            );
+
+            assert_eq!(
+                $vec3::new($t::MIN, $t::MIN, $t::MIN).checked_manhattan_distance($vec3::new(
+                    $t::MAX,
+                    $t::MAX,
+                    $t::MAX
+                )),
+                None
             );
         });
 
