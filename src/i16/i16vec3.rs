@@ -446,7 +446,7 @@ impl I16Vec3 {
     /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
     #[inline]
     #[must_use]
-    pub fn manhattan_distance(self, other: Self) -> i16 {
+    pub fn manhattan_distance(self, other: Self) -> u16 {
         self.x.abs_diff(other.x) + self.y.abs_diff(other.y) + self.z.abs_diff(other.z)
     }
 
@@ -455,7 +455,7 @@ impl I16Vec3 {
     /// [chebyshev distance]: https://en.wikipedia.org/wiki/Chebyshev_distance
     #[inline]
     #[must_use]
-    pub fn chebyshev_distance(self, other: Self) -> i16 {
+    pub fn chebyshev_distance(self, other: Self) -> u16 {
         // Note: the compiler will eventually optimize out the loop
         [
             self.x.abs_diff(other.x),

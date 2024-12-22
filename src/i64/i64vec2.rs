@@ -382,7 +382,7 @@ impl I64Vec2 {
     /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
     #[inline]
     #[must_use]
-    pub fn manhattan_distance(self, other: Self) -> i64 {
+    pub fn manhattan_distance(self, other: Self) -> u64 {
         self.x.abs_diff(other.x) + self.y.abs_diff(other.y)
     }
 
@@ -391,7 +391,7 @@ impl I64Vec2 {
     /// [chebyshev distance]: https://en.wikipedia.org/wiki/Chebyshev_distance
     #[inline]
     #[must_use]
-    pub fn chebyshev_distance(self, other: Self) -> i64 {
+    pub fn chebyshev_distance(self, other: Self) -> u64 {
         // Note: the compiler will eventually optimize out the loop
         [self.x.abs_diff(other.x), self.y.abs_diff(other.y)]
             .into_iter()
