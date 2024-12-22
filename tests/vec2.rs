@@ -734,6 +734,40 @@ macro_rules! impl_vec2_signed_integer_tests {
             assert_eq!($vec3::ONE.signum(), $vec3::ONE);
             assert_eq!((-$vec3::ONE).signum(), -$vec3::ONE);
         });
+
+        glam_test!(test_manhattan_distance, {
+            assert_eq!($vec2::new(5, 2).manhattan_distance($vec2::new(23, 16)), 32);
+            assert_eq!($vec2::new(30, 11).manhattan_distance($vec2::new(30, 11)), 0);
+            assert_eq!(
+                $vec2::new(-8, -23).manhattan_distance($vec2::new(12, 7)),
+                50
+            );
+        });
+
+        glam_test!(test_chebyshev_distance, {
+            assert_eq!($vec2::new(5, 2).chebyshev_distance($vec2::new(23, 16)), 18);
+            assert_eq!($vec2::new(30, 11).chebyshev_distance($vec2::new(30, 11)), 0);
+            assert_eq!(
+                $vec2::new(-8, -23).chebyshev_distance($vec2::new(12, 7)),
+                30
+            );
+        });
+    };
+}
+
+macro_rules! impl_vec2_unsigned_integer_tests {
+    ($t:ident, $new:ident, $vec2:ident, $vec3:ident, $mask:ident, $masknew:ident) => {
+        impl_vec2_tests!($t, $new, $vec2, $vec3, $mask, $masknew);
+
+        glam_test!(test_manhattan_distance, {
+            assert_eq!($vec2::new(5, 2).manhattan_distance($vec2::new(23, 16)), 32);
+            assert_eq!($vec2::new(30, 11).manhattan_distance($vec2::new(30, 11)), 0);
+        });
+
+        glam_test!(test_chebyshev_distance, {
+            assert_eq!($vec2::new(5, 2).chebyshev_distance($vec2::new(23, 16)), 18);
+            assert_eq!($vec2::new(30, 11).chebyshev_distance($vec2::new(30, 11)), 0);
+        });
     };
 }
 
@@ -1727,7 +1761,7 @@ mod u8vec2 {
         );
     });
 
-    impl_vec2_tests!(u8, u8vec2, U8Vec2, U8Vec3, BVec2, bvec2);
+    impl_vec2_unsigned_integer_tests!(u8, u8vec2, U8Vec2, U8Vec3, BVec2, bvec2);
     impl_vec2_eq_hash_tests!(u8, u8vec2);
 
     impl_vec2_scalar_shift_op_tests!(U8Vec2, 0, 2);
@@ -2020,7 +2054,7 @@ mod u16vec2 {
         );
     });
 
-    impl_vec2_tests!(u16, u16vec2, U16Vec2, U16Vec3, BVec2, bvec2);
+    impl_vec2_unsigned_integer_tests!(u16, u16vec2, U16Vec2, U16Vec3, BVec2, bvec2);
     impl_vec2_eq_hash_tests!(u16, u16vec2);
 
     impl_vec2_scalar_shift_op_tests!(U16Vec2, 0, 2);
@@ -2295,7 +2329,7 @@ mod uvec2 {
         );
     });
 
-    impl_vec2_tests!(u32, uvec2, UVec2, UVec3, BVec2, bvec2);
+    impl_vec2_unsigned_integer_tests!(u32, uvec2, UVec2, UVec3, BVec2, bvec2);
     impl_vec2_eq_hash_tests!(u32, uvec2);
 
     impl_vec2_scalar_shift_op_tests!(UVec2, 0, 2);
@@ -2443,7 +2477,7 @@ mod u64vec2 {
         );
     });
 
-    impl_vec2_tests!(u64, u64vec2, U64Vec2, U64Vec3, BVec2, bvec2);
+    impl_vec2_unsigned_integer_tests!(u64, u64vec2, U64Vec2, U64Vec3, BVec2, bvec2);
     impl_vec2_eq_hash_tests!(u64, u64vec2);
 
     impl_vec2_scalar_shift_op_tests!(U64Vec2, 0, 2);
