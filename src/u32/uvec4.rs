@@ -380,6 +380,9 @@ impl UVec4 {
 
     /// Computes the [manhattan distance] between two points.
     ///
+    /// # Overflow
+    /// This method may overflow if the result is greater than [`u32::MAX`].
+    ///
     /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
     #[inline]
     #[must_use]
