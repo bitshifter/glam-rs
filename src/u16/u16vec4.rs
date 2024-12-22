@@ -404,14 +404,9 @@ impl U16Vec4 {
     #[must_use]
     pub fn checked_manhattan_distance(self, other: Self) -> Option<u16> {
         let d = self.x.abs_diff(other.x);
-
         let d = d.checked_add(self.y.abs_diff(other.y))?;
-
         let d = d.checked_add(self.z.abs_diff(other.z))?;
-
-        let d = d.checked_add(self.w.abs_diff(other.w))?;
-
-        d
+        d.checked_add(self.w.abs_diff(other.w))
     }
 
     /// Computes the [chebyshev distance] between two points.

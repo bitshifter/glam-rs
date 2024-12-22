@@ -400,10 +400,7 @@ impl IVec2 {
     #[must_use]
     pub fn checked_manhattan_distance(self, other: Self) -> Option<u32> {
         let d = self.x.abs_diff(other.x);
-
-        let d = d.checked_add(self.y.abs_diff(other.y))?;
-
-        d
+        d.checked_add(self.y.abs_diff(other.y))
     }
 
     /// Computes the [chebyshev distance] between two points.

@@ -2202,14 +2202,14 @@ impl {{ self_t }} {
     #[must_use]
     pub fn checked_manhattan_distance(self, other: Self) -> Option<{{ unsigned_scalar_t }}> {
         {% for c in components %}
-            {% if loop.first %}
+            {%- if loop.first -%}
                 let d = self.{{c}}.abs_diff(other.{{c}});
-            {% else %}
+            {%- elif loop.last -%}
+                d.checked_add(self.{{c}}.abs_diff(other.{{c}}))
+            {%- else -%}
                 let d = d.checked_add(self.{{c}}.abs_diff(other.{{c}}))?;
-            {% endif %}
+            {%- endif -%}
         {% endfor %}
-
-        d
     }
 
     /// Computes the [chebyshev distance] between two points.

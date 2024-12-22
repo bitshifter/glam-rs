@@ -377,12 +377,8 @@ impl U64Vec3 {
     #[must_use]
     pub fn checked_manhattan_distance(self, other: Self) -> Option<u64> {
         let d = self.x.abs_diff(other.x);
-
         let d = d.checked_add(self.y.abs_diff(other.y))?;
-
-        let d = d.checked_add(self.z.abs_diff(other.z))?;
-
-        d
+        d.checked_add(self.z.abs_diff(other.z))
     }
 
     /// Computes the [chebyshev distance] between two points.
