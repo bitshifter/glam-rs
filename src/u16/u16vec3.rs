@@ -359,11 +359,30 @@ impl U16Vec3 {
     /// # Overflow
     /// This method may overflow if the result is greater than [`u16::MAX`].
     ///
+    /// See also [`checked_manhattan_distance`][U16Vec3::checked_manhattan_distance].
+    ///
     /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
     #[inline]
     #[must_use]
     pub fn manhattan_distance(self, other: Self) -> u16 {
         self.x.abs_diff(other.x) + self.y.abs_diff(other.y) + self.z.abs_diff(other.z)
+    }
+
+    /// Computes the [manhattan distance] between two points.
+    ///
+    /// This will returns [`None`] if the result is greater than [`u16::MAX`].
+    ///
+    /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
+    #[inline]
+    #[must_use]
+    pub fn checked_manhattan_distance(self, other: Self) -> Option<u16> {
+        let d = self.x.abs_diff(other.x);
+
+        let d = d.checked_add(self.y.abs_diff(other.y))?;
+
+        let d = d.checked_add(self.z.abs_diff(other.z))?;
+
+        d
     }
 
     /// Computes the [chebyshev distance] between two points.

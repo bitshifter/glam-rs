@@ -383,6 +383,8 @@ impl U64Vec4 {
     /// # Overflow
     /// This method may overflow if the result is greater than [`u64::MAX`].
     ///
+    /// See also [`checked_manhattan_distance`][U64Vec4::checked_manhattan_distance].
+    ///
     /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
     #[inline]
     #[must_use]
@@ -391,6 +393,25 @@ impl U64Vec4 {
             + self.y.abs_diff(other.y)
             + self.z.abs_diff(other.z)
             + self.w.abs_diff(other.w)
+    }
+
+    /// Computes the [manhattan distance] between two points.
+    ///
+    /// This will returns [`None`] if the result is greater than [`u64::MAX`].
+    ///
+    /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
+    #[inline]
+    #[must_use]
+    pub fn checked_manhattan_distance(self, other: Self) -> Option<u64> {
+        let d = self.x.abs_diff(other.x);
+
+        let d = d.checked_add(self.y.abs_diff(other.y))?;
+
+        let d = d.checked_add(self.z.abs_diff(other.z))?;
+
+        let d = d.checked_add(self.w.abs_diff(other.w))?;
+
+        d
     }
 
     /// Computes the [chebyshev distance] between two points.

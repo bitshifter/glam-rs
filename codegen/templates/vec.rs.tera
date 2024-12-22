@@ -2181,6 +2181,8 @@ impl {{ self_t }} {
     /// # Overflow
     /// This method may overflow if the result is greater than [`{{ unsigned_scalar_t }}::MAX`].
     ///
+    /// See also [`checked_manhattan_distance`][{{ self_t }}::checked_manhattan_distance].
+    ///
     /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
     #[inline]
     #[must_use]
@@ -2189,6 +2191,25 @@ impl {{ self_t }} {
             {% if not loop.first %} + {% endif %}
             self.{{c}}.abs_diff(other.{{c}})
         {% endfor %}
+    }
+
+    /// Computes the [manhattan distance] between two points.
+    ///
+    /// This will returns [`None`] if the result is greater than [`{{ unsigned_scalar_t }}::MAX`].
+    ///
+    /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
+    #[inline]
+    #[must_use]
+    pub fn checked_manhattan_distance(self, other: Self) -> Option<{{ unsigned_scalar_t }}> {
+        {% for c in components %}
+            {% if loop.first %}
+                let d = self.{{c}}.abs_diff(other.{{c}});
+            {% else %}
+                let d = d.checked_add(self.{{c}}.abs_diff(other.{{c}}))?;
+            {% endif %}
+        {% endfor %}
+
+        d
     }
 
     /// Computes the [chebyshev distance] between two points.
