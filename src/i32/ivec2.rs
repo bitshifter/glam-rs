@@ -377,6 +377,45 @@ impl IVec2 {
         Self::new(self.x.rem_euclid(rhs.x), self.y.rem_euclid(rhs.y))
     }
 
+    /// Computes the [manhattan distance] between two points.
+    ///
+    /// # Overflow
+    /// This method may overflow if the result is greater than [`u32::MAX`].
+    ///
+    /// See also [`checked_manhattan_distance`][IVec2::checked_manhattan_distance].
+    ///
+    /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
+    #[inline]
+    #[must_use]
+    pub fn manhattan_distance(self, other: Self) -> u32 {
+        self.x.abs_diff(other.x) + self.y.abs_diff(other.y)
+    }
+
+    /// Computes the [manhattan distance] between two points.
+    ///
+    /// This will returns [`None`] if the result is greater than [`u32::MAX`].
+    ///
+    /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
+    #[inline]
+    #[must_use]
+    pub fn checked_manhattan_distance(self, other: Self) -> Option<u32> {
+        let d = self.x.abs_diff(other.x);
+        d.checked_add(self.y.abs_diff(other.y))
+    }
+
+    /// Computes the [chebyshev distance] between two points.
+    ///
+    /// [chebyshev distance]: https://en.wikipedia.org/wiki/Chebyshev_distance
+    #[inline]
+    #[must_use]
+    pub fn chebyshev_distance(self, other: Self) -> u32 {
+        // Note: the compiler will eventually optimize out the loop
+        [self.x.abs_diff(other.x), self.y.abs_diff(other.y)]
+            .into_iter()
+            .max()
+            .unwrap()
+    }
+
     /// Returns a vector that is equal to `self` rotated by 90 degrees.
     #[inline]
     #[must_use]

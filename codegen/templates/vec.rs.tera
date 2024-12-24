@@ -46,6 +46,7 @@
 {% elif scalar_t == "i8" %}
     {% set is_signed = true %}
     {% set is_float = false %}
+    {% set unsigned_scalar_t = "u8" %}
     {% set self_t = "I8Vec" ~ dim %}
     {% set opposite_signedness_t = "U8Vec" ~ dim %}
     {% set vec2_t = "I8Vec2" %}
@@ -55,6 +56,7 @@
 {% elif scalar_t == "u8" %}
     {% set is_signed = false %}
     {% set is_float = false %}
+    {% set unsigned_scalar_t = "u8" %}
     {% set self_t = "U8Vec" ~ dim %}
     {% set opposite_signedness_t = "I8Vec" ~ dim %}
     {% set vec2_t = "U8Vec2" %}
@@ -64,6 +66,7 @@
 {% elif scalar_t == "i16" %}
     {% set is_signed = true %}
     {% set is_float = false %}
+    {% set unsigned_scalar_t = "u16" %}
     {% set self_t = "I16Vec" ~ dim %}
     {% set opposite_signedness_t = "U16Vec" ~ dim %}
     {% set vec2_t = "I16Vec2" %}
@@ -74,6 +77,7 @@
 {% elif scalar_t == "u16" %}
     {% set is_signed = false %}
     {% set is_float = false %}
+    {% set unsigned_scalar_t = "u16" %}
     {% set self_t = "U16Vec" ~ dim %}
     {% set opposite_signedness_t = "I16Vec" ~ dim %}
     {% set vec2_t = "U16Vec2" %}
@@ -84,6 +88,7 @@
 {% elif scalar_t == "i32" %}
     {% set is_signed = true %}
     {% set is_float = false %}
+    {% set unsigned_scalar_t = "u32" %}
     {% set self_t = "IVec" ~ dim %}
     {% set opposite_signedness_t = "UVec" ~ dim %}
     {% set vec2_t = "IVec2" %}
@@ -94,6 +99,7 @@
 {% elif scalar_t == "u32" %}
     {% set is_signed = false %}
     {% set is_float = false %}
+    {% set unsigned_scalar_t = "u32" %}
     {% set self_t = "UVec" ~ dim %}
     {% set opposite_signedness_t = "IVec" ~ dim %}
     {% set vec2_t = "UVec2" %}
@@ -104,6 +110,7 @@
 {% elif scalar_t == "i64" %}
     {% set is_signed = true %}
     {% set is_float = false %}
+    {% set unsigned_scalar_t = "u64" %}
     {% set self_t = "I64Vec" ~ dim %}
     {% set opposite_signedness_t = "U64Vec" ~ dim %}
     {% set vec2_t = "I64Vec2" %}
@@ -114,6 +121,7 @@
 {% elif scalar_t == "u64" %}
     {% set is_signed = false %}
     {% set is_float = false %}
+    {% set unsigned_scalar_t = "u64" %}
     {% set self_t = "U64Vec" ~ dim %}
     {% set opposite_signedness_t = "I64Vec" ~ dim %}
     {% set vec2_t = "U64Vec2" %}
@@ -2214,6 +2222,61 @@ impl {{ self_t }} {
     }
 {% endif %}
 {% endif %}
+
+{% if not is_float %}
+
+    /// Computes the [manhattan distance] between two points.
+    ///
+    /// # Overflow
+    /// This method may overflow if the result is greater than [`{{ unsigned_scalar_t }}::MAX`].
+    ///
+    /// See also [`checked_manhattan_distance`][{{ self_t }}::checked_manhattan_distance].
+    ///
+    /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
+    #[inline]
+    #[must_use]
+    pub fn manhattan_distance(self, other: Self) -> {{ unsigned_scalar_t }} {
+        {% for c in components %}
+            {% if not loop.first %} + {% endif %}
+            self.{{c}}.abs_diff(other.{{c}})
+        {% endfor %}
+    }
+
+    /// Computes the [manhattan distance] between two points.
+    ///
+    /// This will returns [`None`] if the result is greater than [`{{ unsigned_scalar_t }}::MAX`].
+    ///
+    /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
+    #[inline]
+    #[must_use]
+    pub fn checked_manhattan_distance(self, other: Self) -> Option<{{ unsigned_scalar_t }}> {
+        {% for c in components %}
+            {%- if loop.first -%}
+                let d = self.{{c}}.abs_diff(other.{{c}});
+            {%- elif loop.last -%}
+                d.checked_add(self.{{c}}.abs_diff(other.{{c}}))
+            {%- else -%}
+                let d = d.checked_add(self.{{c}}.abs_diff(other.{{c}}))?;
+            {%- endif -%}
+        {% endfor %}
+    }
+
+    /// Computes the [chebyshev distance] between two points.
+    ///
+    /// [chebyshev distance]: https://en.wikipedia.org/wiki/Chebyshev_distance
+    #[inline]
+    #[must_use]
+    pub fn chebyshev_distance(self, other: Self) -> {{ unsigned_scalar_t }} {
+        // Note: the compiler will eventually optimize out the loop
+        [
+            {% for c in components %}
+                self.{{c}}.abs_diff(other.{{c}}),
+            {% endfor %}
+        ].into_iter().max().unwrap()
+    }
+
+{% endif %}
+
 
 {% if is_signed and dim == 2 %}
     /// Returns a vector that is equal to `self` rotated by 90 degrees.

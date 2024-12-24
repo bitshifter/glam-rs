@@ -354,6 +354,50 @@ impl U64Vec3 {
         self.dot(self)
     }
 
+    /// Computes the [manhattan distance] between two points.
+    ///
+    /// # Overflow
+    /// This method may overflow if the result is greater than [`u64::MAX`].
+    ///
+    /// See also [`checked_manhattan_distance`][U64Vec3::checked_manhattan_distance].
+    ///
+    /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
+    #[inline]
+    #[must_use]
+    pub fn manhattan_distance(self, other: Self) -> u64 {
+        self.x.abs_diff(other.x) + self.y.abs_diff(other.y) + self.z.abs_diff(other.z)
+    }
+
+    /// Computes the [manhattan distance] between two points.
+    ///
+    /// This will returns [`None`] if the result is greater than [`u64::MAX`].
+    ///
+    /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
+    #[inline]
+    #[must_use]
+    pub fn checked_manhattan_distance(self, other: Self) -> Option<u64> {
+        let d = self.x.abs_diff(other.x);
+        let d = d.checked_add(self.y.abs_diff(other.y))?;
+        d.checked_add(self.z.abs_diff(other.z))
+    }
+
+    /// Computes the [chebyshev distance] between two points.
+    ///
+    /// [chebyshev distance]: https://en.wikipedia.org/wiki/Chebyshev_distance
+    #[inline]
+    #[must_use]
+    pub fn chebyshev_distance(self, other: Self) -> u64 {
+        // Note: the compiler will eventually optimize out the loop
+        [
+            self.x.abs_diff(other.x),
+            self.y.abs_diff(other.y),
+            self.z.abs_diff(other.z),
+        ]
+        .into_iter()
+        .max()
+        .unwrap()
+    }
+
     /// Casts all elements of `self` to `f32`.
     #[inline]
     #[must_use]
