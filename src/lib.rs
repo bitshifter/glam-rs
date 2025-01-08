@@ -272,7 +272,7 @@ The minimum supported Rust version is `1.68.2`.
     feature(portable_simd)
 )]
 
-#![cfg(all(not(feature = "std"), not(feature = "libm")))]
+#[cfg(all(not(feature = "std"), not(feature = "libm")))]
 compile_error!("You must specify a math backend using either the `std` feature or `libm` feature");
 
 #[macro_use]
