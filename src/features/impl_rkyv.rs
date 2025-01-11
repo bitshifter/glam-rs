@@ -46,6 +46,7 @@ macro_rules! impl_rkyv_derive {
 
             #[inline]
             unsafe fn resolve(&self, _: usize, _: Self::Resolver, out: *mut Self::Archived) {
+                #[allow(unexpected_cfgs)]
                 out.write(to_archived!(*self as Self));
             }
         }
@@ -53,6 +54,7 @@ macro_rules! impl_rkyv_derive {
         impl<D: Fallible + ?Sized> Deserialize<$type, D> for $type {
             #[inline]
             fn deserialize(&self, _: &mut D) -> Result<$type, D::Error> {
+                #[allow(unexpected_cfgs)]
                 Ok(from_archived!(*self))
             }
         }
