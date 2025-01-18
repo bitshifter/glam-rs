@@ -1681,10 +1681,7 @@ mod i8vec2 {
     });
 
     glam_test!(test_checked_add_unsigned, {
-        assert_eq!(
-            I8Vec2::MAX.checked_add_unsigned(U8Vec2::ONE),
-            None
-        );
+        assert_eq!(I8Vec2::MAX.checked_add_unsigned(U8Vec2::ONE), None);
         assert_eq!(
             I8Vec2::NEG_ONE.checked_add_unsigned(U8Vec2::ONE),
             Some(I8Vec2::ZERO)
@@ -1692,10 +1689,7 @@ mod i8vec2 {
     });
 
     glam_test!(test_checked_sub_unsigned, {
-        assert_eq!(
-            I8Vec2::MIN.checked_sub_unsigned(U8Vec2::ONE),
-            None
-        );
+        assert_eq!(I8Vec2::MIN.checked_sub_unsigned(U8Vec2::ONE), None);
         assert_eq!(
             I8Vec2::ZERO.checked_sub_unsigned(U8Vec2::ONE),
             Some(I8Vec2::NEG_ONE)
@@ -2005,12 +1999,8 @@ mod i16vec2 {
         );
     });
 
-
     glam_test!(test_checked_add_unsigned, {
-        assert_eq!(
-            I16Vec2::MAX.checked_add_unsigned(U16Vec2::ONE),
-            None
-        );
+        assert_eq!(I16Vec2::MAX.checked_add_unsigned(U16Vec2::ONE), None);
         assert_eq!(
             I16Vec2::NEG_ONE.checked_add_unsigned(U16Vec2::ONE),
             Some(I16Vec2::ZERO)
@@ -2018,10 +2008,7 @@ mod i16vec2 {
     });
 
     glam_test!(test_checked_sub_unsigned, {
-        assert_eq!(
-            I16Vec2::MIN.checked_sub_unsigned(U16Vec2::ONE),
-            None
-        );
+        assert_eq!(I16Vec2::MIN.checked_sub_unsigned(U16Vec2::ONE), None);
         assert_eq!(
             I16Vec2::ZERO.checked_sub_unsigned(U16Vec2::ONE),
             Some(I16Vec2::NEG_ONE)
@@ -2310,10 +2297,7 @@ mod ivec2 {
     });
 
     glam_test!(test_checked_add_unsigned, {
-        assert_eq!(
-            IVec2::MAX.checked_add_unsigned(UVec2::ONE),
-            None
-        );
+        assert_eq!(IVec2::MAX.checked_add_unsigned(UVec2::ONE), None);
         assert_eq!(
             IVec2::NEG_ONE.checked_add_unsigned(UVec2::ONE),
             Some(IVec2::ZERO)
@@ -2321,10 +2305,7 @@ mod ivec2 {
     });
 
     glam_test!(test_checked_sub_unsigned, {
-        assert_eq!(
-            IVec2::MIN.checked_sub_unsigned(UVec2::ONE),
-            None
-        );
+        assert_eq!(IVec2::MIN.checked_sub_unsigned(UVec2::ONE), None);
         assert_eq!(
             IVec2::ZERO.checked_sub_unsigned(UVec2::ONE),
             Some(IVec2::NEG_ONE)
@@ -2541,10 +2522,7 @@ mod i64vec2 {
     });
 
     glam_test!(test_checked_add_unsigned, {
-        assert_eq!(
-            I64Vec2::MAX.checked_add_unsigned(U64Vec2::ONE),
-            None
-        );
+        assert_eq!(I64Vec2::MAX.checked_add_unsigned(U64Vec2::ONE), None);
         assert_eq!(
             I64Vec2::NEG_ONE.checked_add_unsigned(U64Vec2::ONE),
             Some(I64Vec2::ZERO)
@@ -2552,10 +2530,7 @@ mod i64vec2 {
     });
 
     glam_test!(test_checked_sub_unsigned, {
-        assert_eq!(
-            I64Vec2::MIN.checked_sub_unsigned(U64Vec2::ONE),
-            None
-        );
+        assert_eq!(I64Vec2::MIN.checked_sub_unsigned(U64Vec2::ONE), None);
         assert_eq!(
             I64Vec2::ZERO.checked_sub_unsigned(U64Vec2::ONE),
             Some(I64Vec2::NEG_ONE)
