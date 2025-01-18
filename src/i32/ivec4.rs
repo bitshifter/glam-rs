@@ -587,6 +587,110 @@ impl IVec4 {
 
     /// Returns a vector containing the wrapping addition of `self` and `rhs`.
     ///
+    /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
+    #[inline]
+    #[must_use]
+    pub const fn checked_add(self, rhs: Self) -> Option<Self> {
+        let x = match self.x.checked_add(rhs.x) {
+            Some(v) => v,
+            None => return None,
+        };
+        let y = match self.y.checked_add(rhs.y) {
+            Some(v) => v,
+            None => return None,
+        };
+        let z = match self.z.checked_add(rhs.z) {
+            Some(v) => v,
+            None => return None,
+        };
+        let w = match self.w.checked_add(rhs.w) {
+            Some(v) => v,
+            None => return None,
+        };
+
+        Some(Self { x, y, z, w })
+    }
+
+    /// Returns a vector containing the wrapping subtraction of `self` and `rhs`.
+    ///
+    /// In other words this computes `Some([self.x - rhs.x, self.y - rhs.y, ..])` but returns `None` on any overflow.
+    #[inline]
+    #[must_use]
+    pub const fn checked_sub(self, rhs: Self) -> Option<Self> {
+        let x = match self.x.checked_sub(rhs.x) {
+            Some(v) => v,
+            None => return None,
+        };
+        let y = match self.y.checked_sub(rhs.y) {
+            Some(v) => v,
+            None => return None,
+        };
+        let z = match self.z.checked_sub(rhs.z) {
+            Some(v) => v,
+            None => return None,
+        };
+        let w = match self.w.checked_sub(rhs.w) {
+            Some(v) => v,
+            None => return None,
+        };
+
+        Some(Self { x, y, z, w })
+    }
+
+    /// Returns a vector containing the wrapping multiplication of `self` and `rhs`.
+    ///
+    /// In other words this computes `Some([self.x * rhs.x, self.y * rhs.y, ..])` but returns `None` on any overflow.
+    #[inline]
+    #[must_use]
+    pub const fn checked_mul(self, rhs: Self) -> Option<Self> {
+        let x = match self.x.checked_mul(rhs.x) {
+            Some(v) => v,
+            None => return None,
+        };
+        let y = match self.y.checked_mul(rhs.y) {
+            Some(v) => v,
+            None => return None,
+        };
+        let z = match self.z.checked_mul(rhs.z) {
+            Some(v) => v,
+            None => return None,
+        };
+        let w = match self.w.checked_mul(rhs.w) {
+            Some(v) => v,
+            None => return None,
+        };
+
+        Some(Self { x, y, z, w })
+    }
+
+    /// Returns a vector containing the wrapping division of `self` and `rhs`.
+    ///
+    /// In other words this computes `Some([self.x / rhs.x, self.y / rhs.y, ..])` but returns `None` on any division by zero.
+    #[inline]
+    #[must_use]
+    pub const fn checked_div(self, rhs: Self) -> Option<Self> {
+        let x = match self.x.checked_div(rhs.x) {
+            Some(v) => v,
+            None => return None,
+        };
+        let y = match self.y.checked_div(rhs.y) {
+            Some(v) => v,
+            None => return None,
+        };
+        let z = match self.z.checked_div(rhs.z) {
+            Some(v) => v,
+            None => return None,
+        };
+        let w = match self.w.checked_div(rhs.w) {
+            Some(v) => v,
+            None => return None,
+        };
+
+        Some(Self { x, y, z, w })
+    }
+
+    /// Returns a vector containing the wrapping addition of `self` and `rhs`.
+    ///
     /// In other words this computes `[self.x.wrapping_add(rhs.x), self.y.wrapping_add(rhs.y), ..]`.
     #[inline]
     #[must_use]
@@ -695,6 +799,58 @@ impl IVec4 {
             z: self.z.saturating_div(rhs.z),
             w: self.w.saturating_div(rhs.w),
         }
+    }
+
+    /// Returns a vector containing the wrapping addition of `self` and unsigned vector `rhs`.
+    ///
+    /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
+    #[inline]
+    #[must_use]
+    pub const fn checked_add_unsigned(self, rhs: UVec4) -> Option<Self> {
+        let x = match self.x.checked_add_unsigned(rhs.x) {
+            Some(v) => v,
+            None => return None,
+        };
+        let y = match self.y.checked_add_unsigned(rhs.y) {
+            Some(v) => v,
+            None => return None,
+        };
+        let z = match self.z.checked_add_unsigned(rhs.z) {
+            Some(v) => v,
+            None => return None,
+        };
+        let w = match self.w.checked_add_unsigned(rhs.w) {
+            Some(v) => v,
+            None => return None,
+        };
+
+        Some(Self { x, y, z, w })
+    }
+
+    /// Returns a vector containing the wrapping subtraction of `self` and unsigned vector `rhs`.
+    ///
+    /// In other words this computes `Some([self.x - rhs.x, self.y - rhs.y, ..])` but returns `None` on any overflow.
+    #[inline]
+    #[must_use]
+    pub const fn checked_sub_unsigned(self, rhs: UVec4) -> Option<Self> {
+        let x = match self.x.checked_sub_unsigned(rhs.x) {
+            Some(v) => v,
+            None => return None,
+        };
+        let y = match self.y.checked_sub_unsigned(rhs.y) {
+            Some(v) => v,
+            None => return None,
+        };
+        let z = match self.z.checked_sub_unsigned(rhs.z) {
+            Some(v) => v,
+            None => return None,
+        };
+        let w = match self.w.checked_sub_unsigned(rhs.w) {
+            Some(v) => v,
+            None => return None,
+        };
+
+        Some(Self { x, y, z, w })
     }
 
     /// Returns a vector containing the wrapping addition of `self` and unsigned vector `rhs`.
