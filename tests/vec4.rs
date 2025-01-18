@@ -968,6 +968,49 @@ macro_rules! impl_vec4_signed_integer_tests {
             assert_eq!((-$vec4::ONE).signum(), -$vec4::ONE);
         });
 
+        glam_test!(test_checked_add, {
+            assert_eq!($vec4::MAX.checked_add($vec4::ONE), None);
+            assert_eq!($vec4::MAX.checked_add($vec4::X), None);
+            assert_eq!($vec4::MAX.checked_add($vec4::Y), None);
+            assert_eq!($vec4::MAX.checked_add($vec4::Z), None);
+            assert_eq!($vec4::MAX.checked_add($vec4::W), None);
+            assert_eq!($vec4::MAX.checked_add($vec4::ZERO), Some($vec4::MAX));
+        });
+
+        glam_test!(test_checked_sub, {
+            assert_eq!($vec4::MIN.checked_sub($vec4::ONE), None);
+            assert_eq!($vec4::MIN.checked_sub($vec4::X), None);
+            assert_eq!($vec4::MIN.checked_sub($vec4::Y), None);
+            assert_eq!($vec4::MIN.checked_sub($vec4::Z), None);
+            assert_eq!($vec4::MIN.checked_sub($vec4::W), None);
+            assert_eq!($vec4::MIN.checked_sub($vec4::ZERO), Some($vec4::MIN));
+        });
+
+        glam_test!(test_checked_mul, {
+            assert_eq!($vec4::MIN.checked_mul($vec4::MIN), None);
+            assert_eq!($vec4::MAX.checked_mul($vec4::MIN), None);
+            assert_eq!($vec4::MIN.checked_mul($vec4::MAX), None);
+            assert_eq!($vec4::MAX.checked_mul($vec4::MAX), None);
+            assert_eq!($vec4::ZERO.checked_mul($vec4::MIN), Some($vec4::ZERO));
+            assert_eq!($vec4::MAX.checked_mul($vec4::ZERO), Some($vec4::ZERO));
+            assert_eq!($vec4::MIN.checked_mul($vec4::ONE), Some($vec4::MIN));
+            assert_eq!($vec4::MAX.checked_mul($vec4::ONE), Some($vec4::MAX));
+            assert_eq!($vec4::ZERO.checked_mul($vec4::ZERO), Some($vec4::ZERO));
+            assert_eq!($vec4::ONE.checked_mul($vec4::ONE), Some($vec4::ONE));
+        });
+
+        glam_test!(test_checked_div, {
+            assert_eq!($vec4::MIN.checked_div($vec4::ZERO), None);
+            assert_eq!($vec4::MAX.checked_div($vec4::ZERO), None);
+            assert_eq!($vec4::MAX.checked_div($vec4::X), None);
+            assert_eq!($vec4::MAX.checked_div($vec4::Y), None);
+            assert_eq!($vec4::MAX.checked_div($vec4::Z), None);
+            assert_eq!($vec4::MAX.checked_div($vec4::W), None);
+            assert_eq!($vec4::ZERO.checked_div($vec4::ONE), Some($vec4::ZERO));
+            assert_eq!($vec4::MIN.checked_div($vec4::ONE), Some($vec4::MIN));
+            assert_eq!($vec4::MAX.checked_div($vec4::ONE), Some($vec4::MAX));
+        });
+
         glam_test!(test_manhattan_distance, {
             assert_eq!(
                 $vec4::new(41, 8, 21, 87).manhattan_distance($vec4::new(49, 48, 28, 40)),
@@ -1024,6 +1067,42 @@ macro_rules! impl_vec4_signed_integer_tests {
 macro_rules! impl_vec4_unsigned_integer_tests {
     ($t:ident, $new:ident, $vec4:ident, $vec3:ident, $vec2:ident, $mask:ident, $masknew:ident) => {
         impl_vec4_tests!($t, $new, $vec4, $vec3, $vec2, $mask, $masknew);
+
+        glam_test!(test_checked_add, {
+            assert_eq!($vec4::MAX.checked_add($vec4::ONE), None);
+            assert_eq!($vec4::MAX.checked_add($vec4::X), None);
+            assert_eq!($vec4::MAX.checked_add($vec4::Y), None);
+            assert_eq!($vec4::MAX.checked_add($vec4::Z), None);
+            assert_eq!($vec4::MAX.checked_add($vec4::W), None);
+            assert_eq!($vec4::MAX.checked_add($vec4::ZERO), Some($vec4::MAX));
+        });
+
+        glam_test!(test_checked_sub, {
+            assert_eq!($vec4::ZERO.checked_sub($vec4::ONE), None);
+            assert_eq!($vec4::ZERO.checked_sub($vec4::X), None);
+            assert_eq!($vec4::ZERO.checked_sub($vec4::Y), None);
+            assert_eq!($vec4::ZERO.checked_sub($vec4::Z), None);
+            assert_eq!($vec4::ZERO.checked_sub($vec4::W), None);
+            assert_eq!($vec4::ZERO.checked_sub($vec4::ZERO), Some($vec4::MIN));
+        });
+
+        glam_test!(test_checked_mul, {
+            assert_eq!($vec4::MAX.checked_mul($vec4::MAX), None);
+            assert_eq!($vec4::MAX.checked_mul($vec4::ZERO), Some($vec4::ZERO));
+            assert_eq!($vec4::MAX.checked_mul($vec4::ONE), Some($vec4::MAX));
+            assert_eq!($vec4::ZERO.checked_mul($vec4::ZERO), Some($vec4::ZERO));
+            assert_eq!($vec4::ONE.checked_mul($vec4::ONE), Some($vec4::ONE));
+        });
+
+        glam_test!(test_checked_div, {
+            assert_eq!($vec4::MAX.checked_div($vec4::ZERO), None);
+            assert_eq!($vec4::MAX.checked_div($vec4::X), None);
+            assert_eq!($vec4::MAX.checked_div($vec4::Y), None);
+            assert_eq!($vec4::MAX.checked_div($vec4::Z), None);
+            assert_eq!($vec4::MAX.checked_div($vec4::W), None);
+            assert_eq!($vec4::ZERO.checked_div($vec4::ONE), Some($vec4::ZERO));
+            assert_eq!($vec4::MAX.checked_div($vec4::ONE), Some($vec4::MAX));
+        });
 
         glam_test!(test_manhattan_distance, {
             assert_eq!(
@@ -2161,7 +2240,7 @@ mod i8vec4 {
         );
     });
 
-    glam_test!(test_wrapping_sub, {
+    glam_test!(test_wrapping_m, {
         assert_eq!(
             I8Vec4::new(i8::MAX, 5, i8::MIN, 0).wrapping_sub(I8Vec4::new(1, 3, i8::MAX, 0)),
             I8Vec4::new(126, 2, 1, 0)
@@ -2207,6 +2286,28 @@ mod i8vec4 {
         assert_eq!(
             I8Vec4::new(i8::MAX, i8::MIN, 0, 0).saturating_div(I8Vec4::new(2, 2, 3, 4)),
             I8Vec4::new(63, -64, 0, 0)
+        );
+    });
+
+    glam_test!(test_checked_add_unsigned, {
+        assert_eq!(
+            I8Vec4::MAX.checked_add_unsigned(U8Vec4::ONE),
+            None
+        );
+        assert_eq!(
+            I8Vec4::NEG_ONE.checked_add_unsigned(U8Vec4::ONE),
+            Some(I8Vec4::ZERO)
+        );
+    });
+
+    glam_test!(test_checked_sub_unsigned, {
+        assert_eq!(
+            I8Vec4::MIN.checked_sub_unsigned(U8Vec4::ONE),
+            None
+        );
+        assert_eq!(
+            I8Vec4::ZERO.checked_sub_unsigned(U8Vec4::ONE),
+            Some(I8Vec4::NEG_ONE)
         );
     });
 
@@ -2556,6 +2657,29 @@ mod i16vec4 {
         );
     });
 
+    glam_test!(test_checked_add_unsigned, {
+        assert_eq!(
+            I16Vec4::MAX.checked_add_unsigned(U16Vec4::ONE),
+            None
+        );
+        assert_eq!(
+            I16Vec4::NEG_ONE.checked_add_unsigned(U16Vec4::ONE),
+            Some(I16Vec4::ZERO)
+        );
+    });
+
+    glam_test!(test_checked_sub_unsigned, {
+        assert_eq!(
+            I16Vec4::MIN.checked_sub_unsigned(U16Vec4::ONE),
+            None
+        );
+        assert_eq!(
+            I16Vec4::ZERO.checked_sub_unsigned(U16Vec4::ONE),
+            Some(I16Vec4::NEG_ONE)
+        );
+    });
+
+
     glam_test!(test_wrapping_add_unsigned, {
         assert_eq!(
             I16Vec4::new(i16::MAX, i16::MAX, i16::MAX, i16::MAX)
@@ -2885,6 +3009,28 @@ mod ivec4 {
         );
     });
 
+    glam_test!(test_checked_add_unsigned, {
+        assert_eq!(
+            IVec4::MAX.checked_add_unsigned(UVec4::ONE),
+            None
+        );
+        assert_eq!(
+            IVec4::NEG_ONE.checked_add_unsigned(UVec4::ONE),
+            Some(IVec4::ZERO)
+        );
+    });
+
+    glam_test!(test_checked_sub_unsigned, {
+        assert_eq!(
+            IVec4::MIN.checked_sub_unsigned(UVec4::ONE),
+            None
+        );
+        assert_eq!(
+            IVec4::ZERO.checked_sub_unsigned(UVec4::ONE),
+            Some(IVec4::NEG_ONE)
+        );
+    });
+
     glam_test!(test_wrapping_add_unsigned, {
         assert_eq!(
             IVec4::new(i32::MAX, i32::MAX, i32::MAX, i32::MAX)
@@ -3136,6 +3282,28 @@ mod i64vec4 {
         assert!(I64Vec4::try_from(U64Vec4::new(1, u64::MAX, 3, 4)).is_err());
         assert!(I64Vec4::try_from(U64Vec4::new(1, 2, u64::MAX, 4)).is_err());
         assert!(I64Vec4::try_from(U64Vec4::new(1, 2, 3, u64::MAX)).is_err());
+    });
+
+    glam_test!(test_checked_add_unsigned, {
+        assert_eq!(
+            I64Vec4::MAX.checked_add_unsigned(U64Vec4::ONE),
+            None
+        );
+        assert_eq!(
+            I64Vec4::NEG_ONE.checked_add_unsigned(U64Vec4::ONE),
+            Some(I64Vec4::ZERO)
+        );
+    });
+
+    glam_test!(test_checked_sub_unsigned, {
+        assert_eq!(
+            I64Vec4::MIN.checked_sub_unsigned(U64Vec4::ONE),
+            None
+        );
+        assert_eq!(
+            I64Vec4::ZERO.checked_sub_unsigned(U64Vec4::ONE),
+            Some(I64Vec4::NEG_ONE)
+        );
     });
 
     glam_test!(test_wrapping_add_unsigned, {
