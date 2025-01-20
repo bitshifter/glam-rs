@@ -144,7 +144,7 @@ impl DVec2 {
         DVec3::new(self.x, self.y, z)
     }
 
-    /// Sets the x component of this 2D vector
+    /// Sets the `x` component of this 2D vector
     #[inline]
     #[must_use]
     pub fn set_x(mut self, x: f64) -> Self {
@@ -152,14 +152,14 @@ impl DVec2 {
         self
     }
 
-    /// Returns a new version of this 2D vector with the given x value.
+    /// Returns a new version of this 2D vector with the given `x` value.
     #[inline]
     #[must_use]
     pub fn with_x(&self, x: f64) -> Self {
         Self { x, ..*self }
     }
 
-    /// Sets the y component of this 2D vector
+    /// Sets the `y` component of this 2D vector
     #[inline]
     #[must_use]
     pub fn set_y(mut self, y: f64) -> Self {
@@ -167,7 +167,7 @@ impl DVec2 {
         self
     }
 
-    /// Returns a new version of this 2D vector with the given y value.
+    /// Returns a new version of this 2D vector with the given `y` value.
     #[inline]
     #[must_use]
     pub fn with_y(&self, y: f64) -> Self {

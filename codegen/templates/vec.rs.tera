@@ -616,7 +616,7 @@ impl {{ self_t }} {
 
 
 {% for c in components %}
-    /// Sets the {{ c }} component of this {{ dim }}D vector
+    /// Sets the `{{ c }}` component of this {{ dim }}D vector
     #[inline]
     #[must_use]
     pub fn set_{{ c }}(mut self, {{ c }}: {{ scalar_t }}) -> Self {
@@ -624,7 +624,7 @@ impl {{ self_t }} {
         self
     }
 
-    /// Returns a new version of this {{ dim }}D vector with the given {{ c }} value.
+    /// Returns a new version of this {{ dim }}D vector with the given `{{ c }}` value.
     #[inline]
     #[must_use]
     pub fn with_{{ c }}(&self, {{ c }}: {{ scalar_t }}) -> Self {

@@ -173,7 +173,7 @@ impl DVec4 {
         self.xyz()
     }
 
-    /// Sets the x component of this 4D vector
+    /// Sets the `x` component of this 4D vector
     #[inline]
     #[must_use]
     pub fn set_x(mut self, x: f64) -> Self {
@@ -181,14 +181,14 @@ impl DVec4 {
         self
     }
 
-    /// Returns a new version of this 4D vector with the given x value.
+    /// Returns a new version of this 4D vector with the given `x` value.
     #[inline]
     #[must_use]
     pub fn with_x(&self, x: f64) -> Self {
         Self { x, ..*self }
     }
 
-    /// Sets the y component of this 4D vector
+    /// Sets the `y` component of this 4D vector
     #[inline]
     #[must_use]
     pub fn set_y(mut self, y: f64) -> Self {
@@ -196,14 +196,14 @@ impl DVec4 {
         self
     }
 
-    /// Returns a new version of this 4D vector with the given y value.
+    /// Returns a new version of this 4D vector with the given `y` value.
     #[inline]
     #[must_use]
     pub fn with_y(&self, y: f64) -> Self {
         Self { y, ..*self }
     }
 
-    /// Sets the z component of this 4D vector
+    /// Sets the `z` component of this 4D vector
     #[inline]
     #[must_use]
     pub fn set_z(mut self, z: f64) -> Self {
@@ -211,14 +211,14 @@ impl DVec4 {
         self
     }
 
-    /// Returns a new version of this 4D vector with the given z value.
+    /// Returns a new version of this 4D vector with the given `z` value.
     #[inline]
     #[must_use]
     pub fn with_z(&self, z: f64) -> Self {
         Self { z, ..*self }
     }
 
-    /// Sets the w component of this 4D vector
+    /// Sets the `w` component of this 4D vector
     #[inline]
     #[must_use]
     pub fn set_w(mut self, w: f64) -> Self {
@@ -226,7 +226,7 @@ impl DVec4 {
         self
     }
 
-    /// Returns a new version of this 4D vector with the given w value.
+    /// Returns a new version of this 4D vector with the given `w` value.
     #[inline]
     #[must_use]
     pub fn with_w(&self, w: f64) -> Self {

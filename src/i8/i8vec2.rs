@@ -136,7 +136,7 @@ impl I8Vec2 {
         I8Vec3::new(self.x, self.y, z)
     }
 
-    /// Sets the x component of this 2D vector
+    /// Sets the `x` component of this 2D vector
     #[inline]
     #[must_use]
     pub fn set_x(mut self, x: i8) -> Self {
@@ -144,14 +144,14 @@ impl I8Vec2 {
         self
     }
 
-    /// Returns a new version of this 2D vector with the given x value.
+    /// Returns a new version of this 2D vector with the given `x` value.
     #[inline]
     #[must_use]
     pub fn with_x(&self, x: i8) -> Self {
         Self { x, ..*self }
     }
 
-    /// Sets the y component of this 2D vector
+    /// Sets the `y` component of this 2D vector
     #[inline]
     #[must_use]
     pub fn set_y(mut self, y: i8) -> Self {
@@ -159,7 +159,7 @@ impl I8Vec2 {
         self
     }
 
-    /// Returns a new version of this 2D vector with the given y value.
+    /// Returns a new version of this 2D vector with the given `y` value.
     #[inline]
     #[must_use]
     pub fn with_y(&self, y: i8) -> Self {

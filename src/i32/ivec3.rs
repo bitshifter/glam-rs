@@ -167,7 +167,7 @@ impl IVec3 {
         self.xy()
     }
 
-    /// Sets the x component of this 3D vector
+    /// Sets the `x` component of this 3D vector
     #[inline]
     #[must_use]
     pub fn set_x(mut self, x: i32) -> Self {
@@ -175,14 +175,14 @@ impl IVec3 {
         self
     }
 
-    /// Returns a new version of this 3D vector with the given x value.
+    /// Returns a new version of this 3D vector with the given `x` value.
     #[inline]
     #[must_use]
     pub fn with_x(&self, x: i32) -> Self {
         Self { x, ..*self }
     }
 
-    /// Sets the y component of this 3D vector
+    /// Sets the `y` component of this 3D vector
     #[inline]
     #[must_use]
     pub fn set_y(mut self, y: i32) -> Self {
@@ -190,14 +190,14 @@ impl IVec3 {
         self
     }
 
-    /// Returns a new version of this 3D vector with the given y value.
+    /// Returns a new version of this 3D vector with the given `y` value.
     #[inline]
     #[must_use]
     pub fn with_y(&self, y: i32) -> Self {
         Self { y, ..*self }
     }
 
-    /// Sets the z component of this 3D vector
+    /// Sets the `z` component of this 3D vector
     #[inline]
     #[must_use]
     pub fn set_z(mut self, z: i32) -> Self {
@@ -205,7 +205,7 @@ impl IVec3 {
         self
     }
 
-    /// Returns a new version of this 3D vector with the given z value.
+    /// Returns a new version of this 3D vector with the given `z` value.
     #[inline]
     #[must_use]
     pub fn with_z(&self, z: i32) -> Self {

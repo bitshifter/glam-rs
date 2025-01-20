@@ -172,7 +172,7 @@ impl Vec3A {
         self.xy()
     }
 
-    /// Sets the x component of this 3D vector
+    /// Sets the `x` component of this 3D vector
     #[inline]
     #[must_use]
     pub fn set_x(mut self, x: f32) -> Self {
@@ -180,7 +180,7 @@ impl Vec3A {
         self
     }
 
-    /// Returns a new version of this 3D vector with the given x value.
+    /// Returns a new version of this 3D vector with the given `x` value.
     #[inline]
     #[must_use]
     pub fn with_x(&self, x: f32) -> Self {
@@ -189,7 +189,7 @@ impl Vec3A {
         new
     }
 
-    /// Sets the y component of this 3D vector
+    /// Sets the `y` component of this 3D vector
     #[inline]
     #[must_use]
     pub fn set_y(mut self, y: f32) -> Self {
@@ -197,7 +197,7 @@ impl Vec3A {
         self
     }
 
-    /// Returns a new version of this 3D vector with the given y value.
+    /// Returns a new version of this 3D vector with the given `y` value.
     #[inline]
     #[must_use]
     pub fn with_y(&self, y: f32) -> Self {
@@ -206,7 +206,7 @@ impl Vec3A {
         new
     }
 
-    /// Sets the z component of this 3D vector
+    /// Sets the `z` component of this 3D vector
     #[inline]
     #[must_use]
     pub fn set_z(mut self, z: f32) -> Self {
@@ -214,7 +214,7 @@ impl Vec3A {
         self
     }
 
-    /// Returns a new version of this 3D vector with the given z value.
+    /// Returns a new version of this 3D vector with the given `z` value.
     #[inline]
     #[must_use]
     pub fn with_z(&self, z: f32) -> Self {
