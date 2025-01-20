@@ -155,28 +155,49 @@ impl U16Vec3 {
         self.xy()
     }
 
-    /// Creates a 3D vector from `self` with the given value of `x`.
+    /// Sets the x component of this 3D vector
     #[inline]
     #[must_use]
-    pub fn with_x(mut self, x: u16) -> Self {
+    pub fn set_x(mut self, x: u16) -> Self {
         self.x = x;
         self
     }
 
-    /// Creates a 3D vector from `self` with the given value of `y`.
+    /// Returns a new version of this 3D vector with the given x value.
     #[inline]
     #[must_use]
-    pub fn with_y(mut self, y: u16) -> Self {
+    pub fn with_x(&self, x: u16) -> Self {
+        Self { x, ..*self }
+    }
+
+    /// Sets the y component of this 3D vector
+    #[inline]
+    #[must_use]
+    pub fn set_y(mut self, y: u16) -> Self {
         self.y = y;
         self
     }
 
-    /// Creates a 3D vector from `self` with the given value of `z`.
+    /// Returns a new version of this 3D vector with the given y value.
     #[inline]
     #[must_use]
-    pub fn with_z(mut self, z: u16) -> Self {
+    pub fn with_y(&self, y: u16) -> Self {
+        Self { y, ..*self }
+    }
+
+    /// Sets the z component of this 3D vector
+    #[inline]
+    #[must_use]
+    pub fn set_z(mut self, z: u16) -> Self {
         self.z = z;
         self
+    }
+
+    /// Returns a new version of this 3D vector with the given z value.
+    #[inline]
+    #[must_use]
+    pub fn with_z(&self, z: u16) -> Self {
+        Self { z, ..*self }
     }
 
     /// Computes the dot product of `self` and `rhs`.

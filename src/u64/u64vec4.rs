@@ -150,36 +150,64 @@ impl U64Vec4 {
         self.xyz()
     }
 
-    /// Creates a 4D vector from `self` with the given value of `x`.
+    /// Sets the x component of this 4D vector
     #[inline]
     #[must_use]
-    pub fn with_x(mut self, x: u64) -> Self {
+    pub fn set_x(mut self, x: u64) -> Self {
         self.x = x;
         self
     }
 
-    /// Creates a 4D vector from `self` with the given value of `y`.
+    /// Returns a new version of this 4D vector with the given x value.
     #[inline]
     #[must_use]
-    pub fn with_y(mut self, y: u64) -> Self {
+    pub fn with_x(&self, x: u64) -> Self {
+        Self { x, ..*self }
+    }
+
+    /// Sets the y component of this 4D vector
+    #[inline]
+    #[must_use]
+    pub fn set_y(mut self, y: u64) -> Self {
         self.y = y;
         self
     }
 
-    /// Creates a 4D vector from `self` with the given value of `z`.
+    /// Returns a new version of this 4D vector with the given y value.
     #[inline]
     #[must_use]
-    pub fn with_z(mut self, z: u64) -> Self {
+    pub fn with_y(&self, y: u64) -> Self {
+        Self { y, ..*self }
+    }
+
+    /// Sets the z component of this 4D vector
+    #[inline]
+    #[must_use]
+    pub fn set_z(mut self, z: u64) -> Self {
         self.z = z;
         self
     }
 
-    /// Creates a 4D vector from `self` with the given value of `w`.
+    /// Returns a new version of this 4D vector with the given z value.
     #[inline]
     #[must_use]
-    pub fn with_w(mut self, w: u64) -> Self {
+    pub fn with_z(&self, z: u64) -> Self {
+        Self { z, ..*self }
+    }
+
+    /// Sets the w component of this 4D vector
+    #[inline]
+    #[must_use]
+    pub fn set_w(mut self, w: u64) -> Self {
         self.w = w;
         self
+    }
+
+    /// Returns a new version of this 4D vector with the given w value.
+    #[inline]
+    #[must_use]
+    pub fn with_w(&self, w: u64) -> Self {
+        Self { w, ..*self }
     }
 
     /// Computes the dot product of `self` and `rhs`.

@@ -177,28 +177,55 @@ impl Vec3A {
         self.xy()
     }
 
-    /// Creates a 3D vector from `self` with the given value of `x`.
+    /// Sets the x component of this 3D vector
     #[inline]
     #[must_use]
-    pub fn with_x(mut self, x: f32) -> Self {
+    pub fn set_x(mut self, x: f32) -> Self {
         self.x = x;
         self
     }
 
-    /// Creates a 3D vector from `self` with the given value of `y`.
+    /// Returns a new version of this 3D vector with the given x value.
     #[inline]
     #[must_use]
-    pub fn with_y(mut self, y: f32) -> Self {
+    pub fn with_x(&self, x: f32) -> Self {
+        let mut new = *self;
+        new.x = x;
+        new
+    }
+
+    /// Sets the y component of this 3D vector
+    #[inline]
+    #[must_use]
+    pub fn set_y(mut self, y: f32) -> Self {
         self.y = y;
         self
     }
 
-    /// Creates a 3D vector from `self` with the given value of `z`.
+    /// Returns a new version of this 3D vector with the given y value.
     #[inline]
     #[must_use]
-    pub fn with_z(mut self, z: f32) -> Self {
+    pub fn with_y(&self, y: f32) -> Self {
+        let mut new = *self;
+        new.y = y;
+        new
+    }
+
+    /// Sets the z component of this 3D vector
+    #[inline]
+    #[must_use]
+    pub fn set_z(mut self, z: f32) -> Self {
         self.z = z;
         self
+    }
+
+    /// Returns a new version of this 3D vector with the given z value.
+    #[inline]
+    #[must_use]
+    pub fn with_z(&self, z: f32) -> Self {
+        let mut new = *self;
+        new.z = z;
+        new
     }
 
     /// Computes the dot product of `self` and `rhs`.

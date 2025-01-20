@@ -160,36 +160,72 @@ impl Vec4 {
         self.xyz()
     }
 
-    /// Creates a 4D vector from `self` with the given value of `x`.
+    /// Sets the x component of this 4D vector
     #[inline]
     #[must_use]
-    pub fn with_x(mut self, x: f32) -> Self {
+    pub fn set_x(mut self, x: f32) -> Self {
         self.x = x;
         self
     }
 
-    /// Creates a 4D vector from `self` with the given value of `y`.
+    /// Returns a new version of this 4D vector with the given x value.
     #[inline]
     #[must_use]
-    pub fn with_y(mut self, y: f32) -> Self {
+    pub fn with_x(&self, x: f32) -> Self {
+        let mut new = *self;
+        new.x = x;
+        new
+    }
+
+    /// Sets the y component of this 4D vector
+    #[inline]
+    #[must_use]
+    pub fn set_y(mut self, y: f32) -> Self {
         self.y = y;
         self
     }
 
-    /// Creates a 4D vector from `self` with the given value of `z`.
+    /// Returns a new version of this 4D vector with the given y value.
     #[inline]
     #[must_use]
-    pub fn with_z(mut self, z: f32) -> Self {
+    pub fn with_y(&self, y: f32) -> Self {
+        let mut new = *self;
+        new.y = y;
+        new
+    }
+
+    /// Sets the z component of this 4D vector
+    #[inline]
+    #[must_use]
+    pub fn set_z(mut self, z: f32) -> Self {
         self.z = z;
         self
     }
 
-    /// Creates a 4D vector from `self` with the given value of `w`.
+    /// Returns a new version of this 4D vector with the given z value.
     #[inline]
     #[must_use]
-    pub fn with_w(mut self, w: f32) -> Self {
+    pub fn with_z(&self, z: f32) -> Self {
+        let mut new = *self;
+        new.z = z;
+        new
+    }
+
+    /// Sets the w component of this 4D vector
+    #[inline]
+    #[must_use]
+    pub fn set_w(mut self, w: f32) -> Self {
         self.w = w;
         self
+    }
+
+    /// Returns a new version of this 4D vector with the given w value.
+    #[inline]
+    #[must_use]
+    pub fn with_w(&self, w: f32) -> Self {
+        let mut new = *self;
+        new.w = w;
+        new
     }
 
     /// Computes the dot product of `self` and `rhs`.
