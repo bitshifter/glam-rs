@@ -139,9 +139,9 @@ impl I16Vec2 {
     /// Sets the `x` component of this 2D vector
     #[inline]
     #[must_use]
-    pub fn set_x(mut self, x: i16) -> Self {
+    pub fn set_x(&mut self, x: i16) -> Self {
         self.x = x;
-        self
+        *self
     }
 
     /// Returns a new version of this 2D vector with the given `x` value.
@@ -154,9 +154,9 @@ impl I16Vec2 {
     /// Sets the `y` component of this 2D vector
     #[inline]
     #[must_use]
-    pub fn set_y(mut self, y: i16) -> Self {
+    pub fn set_y(&mut self, y: i16) -> Self {
         self.y = y;
-        self
+        *self
     }
 
     /// Returns a new version of this 2D vector with the given `y` value.

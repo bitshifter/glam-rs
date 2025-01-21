@@ -153,9 +153,9 @@ impl UVec4 {
     /// Sets the `x` component of this 4D vector
     #[inline]
     #[must_use]
-    pub fn set_x(mut self, x: u32) -> Self {
+    pub fn set_x(&mut self, x: u32) -> Self {
         self.x = x;
-        self
+        *self
     }
 
     /// Returns a new version of this 4D vector with the given `x` value.
@@ -168,9 +168,9 @@ impl UVec4 {
     /// Sets the `y` component of this 4D vector
     #[inline]
     #[must_use]
-    pub fn set_y(mut self, y: u32) -> Self {
+    pub fn set_y(&mut self, y: u32) -> Self {
         self.y = y;
-        self
+        *self
     }
 
     /// Returns a new version of this 4D vector with the given `y` value.
@@ -183,9 +183,9 @@ impl UVec4 {
     /// Sets the `z` component of this 4D vector
     #[inline]
     #[must_use]
-    pub fn set_z(mut self, z: u32) -> Self {
+    pub fn set_z(&mut self, z: u32) -> Self {
         self.z = z;
-        self
+        *self
     }
 
     /// Returns a new version of this 4D vector with the given `z` value.
@@ -198,9 +198,9 @@ impl UVec4 {
     /// Sets the `w` component of this 4D vector
     #[inline]
     #[must_use]
-    pub fn set_w(mut self, w: u32) -> Self {
+    pub fn set_w(&mut self, w: u32) -> Self {
         self.w = w;
-        self
+        *self
     }
 
     /// Returns a new version of this 4D vector with the given `w` value.
