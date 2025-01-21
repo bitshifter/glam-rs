@@ -147,9 +147,9 @@ impl DVec2 {
     /// Sets the `x` component of this 2D vector
     #[inline]
     #[must_use]
-    pub fn set_x(&mut self, x: f64) -> Self {
+    pub fn set_x(&mut self, x: f64) -> &mut Self {
         self.x = x;
-        *self
+        self
     }
 
     /// Returns a new version of this 2D vector with the given `x` value.
@@ -162,9 +162,9 @@ impl DVec2 {
     /// Sets the `y` component of this 2D vector
     #[inline]
     #[must_use]
-    pub fn set_y(&mut self, y: f64) -> Self {
+    pub fn set_y(&mut self, y: f64) -> &mut Self {
         self.y = y;
-        *self
+        self
     }
 
     /// Returns a new version of this 2D vector with the given `y` value.

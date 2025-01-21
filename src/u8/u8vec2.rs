@@ -130,9 +130,9 @@ impl U8Vec2 {
     /// Sets the `x` component of this 2D vector
     #[inline]
     #[must_use]
-    pub fn set_x(&mut self, x: u8) -> Self {
+    pub fn set_x(&mut self, x: u8) -> &mut Self {
         self.x = x;
-        *self
+        self
     }
 
     /// Returns a new version of this 2D vector with the given `x` value.
@@ -145,9 +145,9 @@ impl U8Vec2 {
     /// Sets the `y` component of this 2D vector
     #[inline]
     #[must_use]
-    pub fn set_y(&mut self, y: u8) -> Self {
+    pub fn set_y(&mut self, y: u8) -> &mut Self {
         self.y = y;
-        *self
+        self
     }
 
     /// Returns a new version of this 2D vector with the given `y` value.

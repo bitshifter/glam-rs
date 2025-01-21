@@ -621,7 +621,7 @@ impl {{ self_t }} {
     #[must_use]
     pub fn set_{{ c }}(&mut self, {{ c }}: {{ scalar_t }}) -> &mut Self {
         self.{{ c }} = {{ c }};
-        *self
+        self
     }
 
     /// Returns a new version of this {{ dim }}D vector with the given `{{ c }}` value.

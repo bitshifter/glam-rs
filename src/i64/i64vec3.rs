@@ -170,9 +170,9 @@ impl I64Vec3 {
     /// Sets the `x` component of this 3D vector
     #[inline]
     #[must_use]
-    pub fn set_x(&mut self, x: i64) -> Self {
+    pub fn set_x(&mut self, x: i64) -> &mut Self {
         self.x = x;
-        *self
+        self
     }
 
     /// Returns a new version of this 3D vector with the given `x` value.
@@ -185,9 +185,9 @@ impl I64Vec3 {
     /// Sets the `y` component of this 3D vector
     #[inline]
     #[must_use]
-    pub fn set_y(&mut self, y: i64) -> Self {
+    pub fn set_y(&mut self, y: i64) -> &mut Self {
         self.y = y;
-        *self
+        self
     }
 
     /// Returns a new version of this 3D vector with the given `y` value.
@@ -200,9 +200,9 @@ impl I64Vec3 {
     /// Sets the `z` component of this 3D vector
     #[inline]
     #[must_use]
-    pub fn set_z(&mut self, z: i64) -> Self {
+    pub fn set_z(&mut self, z: i64) -> &mut Self {
         self.z = z;
-        *self
+        self
     }
 
     /// Returns a new version of this 3D vector with the given `z` value.

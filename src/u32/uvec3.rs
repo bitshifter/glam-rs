@@ -158,9 +158,9 @@ impl UVec3 {
     /// Sets the `x` component of this 3D vector
     #[inline]
     #[must_use]
-    pub fn set_x(&mut self, x: u32) -> Self {
+    pub fn set_x(&mut self, x: u32) -> &mut Self {
         self.x = x;
-        *self
+        self
     }
 
     /// Returns a new version of this 3D vector with the given `x` value.
@@ -173,9 +173,9 @@ impl UVec3 {
     /// Sets the `y` component of this 3D vector
     #[inline]
     #[must_use]
-    pub fn set_y(&mut self, y: u32) -> Self {
+    pub fn set_y(&mut self, y: u32) -> &mut Self {
         self.y = y;
-        *self
+        self
     }
 
     /// Returns a new version of this 3D vector with the given `y` value.
@@ -188,9 +188,9 @@ impl UVec3 {
     /// Sets the `z` component of this 3D vector
     #[inline]
     #[must_use]
-    pub fn set_z(&mut self, z: u32) -> Self {
+    pub fn set_z(&mut self, z: u32) -> &mut Self {
         self.z = z;
-        *self
+        self
     }
 
     /// Returns a new version of this 3D vector with the given `z` value.
