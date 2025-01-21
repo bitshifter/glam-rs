@@ -148,7 +148,7 @@ impl IVec2 {
     #[inline]
     #[must_use]
     pub fn with_x(&self, x: i32) -> Self {
-        Self { x, ..*self }
+        Self::new(x, self.y)
     }
 
     /// Sets the `y` component of this 2D vector
@@ -163,7 +163,7 @@ impl IVec2 {
     #[inline]
     #[must_use]
     pub fn with_y(&self, y: i32) -> Self {
-        Self { y, ..*self }
+        Self::new(self.x, y)
     }
 
     /// Computes the dot product of `self` and `rhs`.

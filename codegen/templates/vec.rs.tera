@@ -627,14 +627,16 @@ impl {{ self_t }} {
     /// Returns a new version of this {{ dim }}D vector with the given `{{ c }}` value.
     #[inline]
     #[must_use]
-    pub fn with_{{ c }}(&self, {{ c }}: {{ scalar_t }}) -> Self {
-        {% if self_t == "Vec3A" or self_t == "Vec4" %}
-            let mut new = *self;
-            new.{{ c }} = {{ c }};
-            new
-        {% else %}
-            Self { {{ c }}, ..*self }
-        {% endif %}
+    pub fn with_{{ c }}(self, {{ c }}: {{ scalar_t }}) -> Self {
+        Self::new(
+            {% for i in range(start = 0, end = dim) %}
+                {% if c == components[i] %}
+                    {{ c }},
+                {% else %}
+                    self.{{ components[i] }},
+                {% endif %}
+            {% endfor %}
+        )
     }
 {% endfor %}
 

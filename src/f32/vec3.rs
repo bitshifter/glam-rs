@@ -185,7 +185,7 @@ impl Vec3 {
     #[inline]
     #[must_use]
     pub fn with_x(&self, x: f32) -> Self {
-        Self { x, ..*self }
+        Self::new(x, self.y, self.z)
     }
 
     /// Sets the `y` component of this 3D vector
@@ -200,7 +200,7 @@ impl Vec3 {
     #[inline]
     #[must_use]
     pub fn with_y(&self, y: f32) -> Self {
-        Self { y, ..*self }
+        Self::new(self.x, y, self.z)
     }
 
     /// Sets the `z` component of this 3D vector
@@ -215,7 +215,7 @@ impl Vec3 {
     #[inline]
     #[must_use]
     pub fn with_z(&self, z: f32) -> Self {
-        Self { z, ..*self }
+        Self::new(self.x, self.y, z)
     }
 
     /// Computes the dot product of `self` and `rhs`.

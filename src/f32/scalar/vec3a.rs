@@ -195,9 +195,7 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn with_x(&self, x: f32) -> Self {
-        let mut new = *self;
-        new.x = x;
-        new
+        Self::new(x, self.y, self.z)
     }
 
     /// Sets the `y` component of this 3D vector
@@ -212,9 +210,7 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn with_y(&self, y: f32) -> Self {
-        let mut new = *self;
-        new.y = y;
-        new
+        Self::new(self.x, y, self.z)
     }
 
     /// Sets the `z` component of this 3D vector
@@ -229,9 +225,7 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn with_z(&self, z: f32) -> Self {
-        let mut new = *self;
-        new.z = z;
-        new
+        Self::new(self.x, self.y, z)
     }
 
     /// Computes the dot product of `self` and `rhs`.

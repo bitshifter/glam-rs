@@ -180,9 +180,7 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn with_x(&self, x: f32) -> Self {
-        let mut new = *self;
-        new.x = x;
-        new
+        Self::new(x, self.y, self.z, self.w)
     }
 
     /// Sets the `y` component of this 4D vector
@@ -197,9 +195,7 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn with_y(&self, y: f32) -> Self {
-        let mut new = *self;
-        new.y = y;
-        new
+        Self::new(self.x, y, self.z, self.w)
     }
 
     /// Sets the `z` component of this 4D vector
@@ -214,9 +210,7 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn with_z(&self, z: f32) -> Self {
-        let mut new = *self;
-        new.z = z;
-        new
+        Self::new(self.x, self.y, z, self.w)
     }
 
     /// Sets the `w` component of this 4D vector
@@ -231,9 +225,7 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn with_w(&self, w: f32) -> Self {
-        let mut new = *self;
-        new.w = w;
-        new
+        Self::new(self.x, self.y, self.z, w)
     }
 
     /// Computes the dot product of `self` and `rhs`.

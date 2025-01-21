@@ -185,7 +185,7 @@ impl DVec4 {
     #[inline]
     #[must_use]
     pub fn with_x(&self, x: f64) -> Self {
-        Self { x, ..*self }
+        Self::new(x, self.y, self.z, self.w)
     }
 
     /// Sets the `y` component of this 4D vector
@@ -200,7 +200,7 @@ impl DVec4 {
     #[inline]
     #[must_use]
     pub fn with_y(&self, y: f64) -> Self {
-        Self { y, ..*self }
+        Self::new(self.x, y, self.z, self.w)
     }
 
     /// Sets the `z` component of this 4D vector
@@ -215,7 +215,7 @@ impl DVec4 {
     #[inline]
     #[must_use]
     pub fn with_z(&self, z: f64) -> Self {
-        Self { z, ..*self }
+        Self::new(self.x, self.y, z, self.w)
     }
 
     /// Sets the `w` component of this 4D vector
@@ -230,7 +230,7 @@ impl DVec4 {
     #[inline]
     #[must_use]
     pub fn with_w(&self, w: f64) -> Self {
-        Self { w, ..*self }
+        Self::new(self.x, self.y, self.z, w)
     }
 
     /// Computes the dot product of `self` and `rhs`.
