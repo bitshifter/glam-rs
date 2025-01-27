@@ -27,8 +27,8 @@ Rust code. The templates are fairly declarative and easier to follow than the
 macros (in my opinion). I try to stick to basic features of the [templating
 language] to keep things simple.
 
-[`Tera`]: https://tera.netlify.app/
-[templating language]: https://tera.netlify.app/docs/
+[`Tera`]: https://keats.github.io/tera/
+[templating language]: https://keats.github.io/tera/docs/
 
 ### Control variables
 
@@ -77,6 +77,7 @@ Each template starts with setting up a number of common variables based on the
 inputs from the `codegen` program. Commonly used variables are:
 
 * `self_t` - the name of the type being generated
+* `unsigned_scalar_t` - the unsigned version of `scalar_t` (e.g. `u8`, `u16`, `u32`)
 * `inner_t` - the inner storage type used by this type (e.g. `__m128` or
   `core::storage::XYZ<f32>`)
 * `deref_t` - the type used by the `Deref` and `DerefMut` implementation - not

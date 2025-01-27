@@ -1,8 +1,7 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec2, I16Vec2, I64Vec3, IVec2, U16Vec2, U64Vec2, UVec2};
+use crate::{BVec2, I16Vec2, I64Vec3, I8Vec2, IVec2, U16Vec2, U64Vec2, U8Vec2, UVec2};
 
-#[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::{f32, ops::*};
@@ -70,6 +69,16 @@ impl I64Vec2 {
         Self { x: v, y: v }
     }
 
+    /// Returns a vector containing each element of `self` modified by a mapping function `f`.
+    #[inline]
+    #[must_use]
+    pub fn map<F>(self, f: F) -> Self
+    where
+        F: Fn(i64) -> i64,
+    {
+        Self::new(f(self.x), f(self.y))
+    }
+
     /// Creates a vector from the elements in `if_true` and `if_false`, selecting which to use
     /// for each element of `self`.
     ///
@@ -106,6 +115,7 @@ impl I64Vec2 {
     #[inline]
     #[must_use]
     pub const fn from_slice(slice: &[i64]) -> Self {
+        assert!(slice.len() >= 2);
         Self::new(slice[0], slice[1])
     }
 
@@ -116,8 +126,7 @@ impl I64Vec2 {
     /// Panics if `slice` is less than 2 elements long.
     #[inline]
     pub fn write_to_slice(self, slice: &mut [i64]) {
-        slice[0] = self.x;
-        slice[1] = self.y;
+        slice[..2].copy_from_slice(&self.to_array());
     }
 
     /// Creates a 3D vector from `self` and the given `z` value.
@@ -368,6 +377,45 @@ impl I64Vec2 {
         Self::new(self.x.rem_euclid(rhs.x), self.y.rem_euclid(rhs.y))
     }
 
+    /// Computes the [manhattan distance] between two points.
+    ///
+    /// # Overflow
+    /// This method may overflow if the result is greater than [`u64::MAX`].
+    ///
+    /// See also [`checked_manhattan_distance`][I64Vec2::checked_manhattan_distance].
+    ///
+    /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
+    #[inline]
+    #[must_use]
+    pub fn manhattan_distance(self, other: Self) -> u64 {
+        self.x.abs_diff(other.x) + self.y.abs_diff(other.y)
+    }
+
+    /// Computes the [manhattan distance] between two points.
+    ///
+    /// This will returns [`None`] if the result is greater than [`u64::MAX`].
+    ///
+    /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
+    #[inline]
+    #[must_use]
+    pub fn checked_manhattan_distance(self, other: Self) -> Option<u64> {
+        let d = self.x.abs_diff(other.x);
+        d.checked_add(self.y.abs_diff(other.y))
+    }
+
+    /// Computes the [chebyshev distance] between two points.
+    ///
+    /// [chebyshev distance]: https://en.wikipedia.org/wiki/Chebyshev_distance
+    #[inline]
+    #[must_use]
+    pub fn chebyshev_distance(self, other: Self) -> u64 {
+        // Note: the compiler will eventually optimize out the loop
+        [self.x.abs_diff(other.x), self.y.abs_diff(other.y)]
+            .into_iter()
+            .max()
+            .unwrap()
+    }
+
     /// Returns a vector that is equal to `self` rotated by 90 degrees.
     #[inline]
     #[must_use]
@@ -413,6 +461,20 @@ impl I64Vec2 {
     #[must_use]
     pub fn as_dvec2(&self) -> crate::DVec2 {
         crate::DVec2::new(self.x as f64, self.y as f64)
+    }
+
+    /// Casts all elements of `self` to `i8`.
+    #[inline]
+    #[must_use]
+    pub fn as_i8vec2(&self) -> crate::I8Vec2 {
+        crate::I8Vec2::new(self.x as i8, self.y as i8)
+    }
+
+    /// Casts all elements of `self` to `u8`.
+    #[inline]
+    #[must_use]
+    pub fn as_u8vec2(&self) -> crate::U8Vec2 {
+        crate::U8Vec2::new(self.x as u8, self.y as u8)
     }
 
     /// Casts all elements of `self` to `i16`.
@@ -613,11 +675,42 @@ impl Div<I64Vec2> for I64Vec2 {
     }
 }
 
+impl Div<&I64Vec2> for I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn div(self, rhs: &I64Vec2) -> I64Vec2 {
+        self.div(*rhs)
+    }
+}
+
+impl Div<&I64Vec2> for &I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn div(self, rhs: &I64Vec2) -> I64Vec2 {
+        (*self).div(*rhs)
+    }
+}
+
+impl Div<I64Vec2> for &I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn div(self, rhs: I64Vec2) -> I64Vec2 {
+        (*self).div(rhs)
+    }
+}
+
 impl DivAssign<I64Vec2> for I64Vec2 {
     #[inline]
     fn div_assign(&mut self, rhs: Self) {
         self.x.div_assign(rhs.x);
         self.y.div_assign(rhs.y);
+    }
+}
+
+impl DivAssign<&I64Vec2> for I64Vec2 {
+    #[inline]
+    fn div_assign(&mut self, rhs: &I64Vec2) {
+        self.div_assign(*rhs)
     }
 }
 
@@ -632,11 +725,42 @@ impl Div<i64> for I64Vec2 {
     }
 }
 
+impl Div<&i64> for I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn div(self, rhs: &i64) -> I64Vec2 {
+        self.div(*rhs)
+    }
+}
+
+impl Div<&i64> for &I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn div(self, rhs: &i64) -> I64Vec2 {
+        (*self).div(*rhs)
+    }
+}
+
+impl Div<i64> for &I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn div(self, rhs: i64) -> I64Vec2 {
+        (*self).div(rhs)
+    }
+}
+
 impl DivAssign<i64> for I64Vec2 {
     #[inline]
     fn div_assign(&mut self, rhs: i64) {
         self.x.div_assign(rhs);
         self.y.div_assign(rhs);
+    }
+}
+
+impl DivAssign<&i64> for I64Vec2 {
+    #[inline]
+    fn div_assign(&mut self, rhs: &i64) {
+        self.div_assign(*rhs)
     }
 }
 
@@ -651,6 +775,30 @@ impl Div<I64Vec2> for i64 {
     }
 }
 
+impl Div<&I64Vec2> for i64 {
+    type Output = I64Vec2;
+    #[inline]
+    fn div(self, rhs: &I64Vec2) -> I64Vec2 {
+        self.div(*rhs)
+    }
+}
+
+impl Div<&I64Vec2> for &i64 {
+    type Output = I64Vec2;
+    #[inline]
+    fn div(self, rhs: &I64Vec2) -> I64Vec2 {
+        (*self).div(*rhs)
+    }
+}
+
+impl Div<I64Vec2> for &i64 {
+    type Output = I64Vec2;
+    #[inline]
+    fn div(self, rhs: I64Vec2) -> I64Vec2 {
+        (*self).div(rhs)
+    }
+}
+
 impl Mul<I64Vec2> for I64Vec2 {
     type Output = Self;
     #[inline]
@@ -662,11 +810,42 @@ impl Mul<I64Vec2> for I64Vec2 {
     }
 }
 
+impl Mul<&I64Vec2> for I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn mul(self, rhs: &I64Vec2) -> I64Vec2 {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&I64Vec2> for &I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn mul(self, rhs: &I64Vec2) -> I64Vec2 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<I64Vec2> for &I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn mul(self, rhs: I64Vec2) -> I64Vec2 {
+        (*self).mul(rhs)
+    }
+}
+
 impl MulAssign<I64Vec2> for I64Vec2 {
     #[inline]
     fn mul_assign(&mut self, rhs: Self) {
         self.x.mul_assign(rhs.x);
         self.y.mul_assign(rhs.y);
+    }
+}
+
+impl MulAssign<&I64Vec2> for I64Vec2 {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &I64Vec2) {
+        self.mul_assign(*rhs)
     }
 }
 
@@ -681,11 +860,42 @@ impl Mul<i64> for I64Vec2 {
     }
 }
 
+impl Mul<&i64> for I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn mul(self, rhs: &i64) -> I64Vec2 {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&i64> for &I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn mul(self, rhs: &i64) -> I64Vec2 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<i64> for &I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn mul(self, rhs: i64) -> I64Vec2 {
+        (*self).mul(rhs)
+    }
+}
+
 impl MulAssign<i64> for I64Vec2 {
     #[inline]
     fn mul_assign(&mut self, rhs: i64) {
         self.x.mul_assign(rhs);
         self.y.mul_assign(rhs);
+    }
+}
+
+impl MulAssign<&i64> for I64Vec2 {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &i64) {
+        self.mul_assign(*rhs)
     }
 }
 
@@ -700,6 +910,30 @@ impl Mul<I64Vec2> for i64 {
     }
 }
 
+impl Mul<&I64Vec2> for i64 {
+    type Output = I64Vec2;
+    #[inline]
+    fn mul(self, rhs: &I64Vec2) -> I64Vec2 {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&I64Vec2> for &i64 {
+    type Output = I64Vec2;
+    #[inline]
+    fn mul(self, rhs: &I64Vec2) -> I64Vec2 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<I64Vec2> for &i64 {
+    type Output = I64Vec2;
+    #[inline]
+    fn mul(self, rhs: I64Vec2) -> I64Vec2 {
+        (*self).mul(rhs)
+    }
+}
+
 impl Add<I64Vec2> for I64Vec2 {
     type Output = Self;
     #[inline]
@@ -711,11 +945,42 @@ impl Add<I64Vec2> for I64Vec2 {
     }
 }
 
+impl Add<&I64Vec2> for I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn add(self, rhs: &I64Vec2) -> I64Vec2 {
+        self.add(*rhs)
+    }
+}
+
+impl Add<&I64Vec2> for &I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn add(self, rhs: &I64Vec2) -> I64Vec2 {
+        (*self).add(*rhs)
+    }
+}
+
+impl Add<I64Vec2> for &I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn add(self, rhs: I64Vec2) -> I64Vec2 {
+        (*self).add(rhs)
+    }
+}
+
 impl AddAssign<I64Vec2> for I64Vec2 {
     #[inline]
     fn add_assign(&mut self, rhs: Self) {
         self.x.add_assign(rhs.x);
         self.y.add_assign(rhs.y);
+    }
+}
+
+impl AddAssign<&I64Vec2> for I64Vec2 {
+    #[inline]
+    fn add_assign(&mut self, rhs: &I64Vec2) {
+        self.add_assign(*rhs)
     }
 }
 
@@ -730,11 +995,42 @@ impl Add<i64> for I64Vec2 {
     }
 }
 
+impl Add<&i64> for I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn add(self, rhs: &i64) -> I64Vec2 {
+        self.add(*rhs)
+    }
+}
+
+impl Add<&i64> for &I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn add(self, rhs: &i64) -> I64Vec2 {
+        (*self).add(*rhs)
+    }
+}
+
+impl Add<i64> for &I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn add(self, rhs: i64) -> I64Vec2 {
+        (*self).add(rhs)
+    }
+}
+
 impl AddAssign<i64> for I64Vec2 {
     #[inline]
     fn add_assign(&mut self, rhs: i64) {
         self.x.add_assign(rhs);
         self.y.add_assign(rhs);
+    }
+}
+
+impl AddAssign<&i64> for I64Vec2 {
+    #[inline]
+    fn add_assign(&mut self, rhs: &i64) {
+        self.add_assign(*rhs)
     }
 }
 
@@ -749,6 +1045,30 @@ impl Add<I64Vec2> for i64 {
     }
 }
 
+impl Add<&I64Vec2> for i64 {
+    type Output = I64Vec2;
+    #[inline]
+    fn add(self, rhs: &I64Vec2) -> I64Vec2 {
+        self.add(*rhs)
+    }
+}
+
+impl Add<&I64Vec2> for &i64 {
+    type Output = I64Vec2;
+    #[inline]
+    fn add(self, rhs: &I64Vec2) -> I64Vec2 {
+        (*self).add(*rhs)
+    }
+}
+
+impl Add<I64Vec2> for &i64 {
+    type Output = I64Vec2;
+    #[inline]
+    fn add(self, rhs: I64Vec2) -> I64Vec2 {
+        (*self).add(rhs)
+    }
+}
+
 impl Sub<I64Vec2> for I64Vec2 {
     type Output = Self;
     #[inline]
@@ -760,11 +1080,42 @@ impl Sub<I64Vec2> for I64Vec2 {
     }
 }
 
+impl Sub<&I64Vec2> for I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn sub(self, rhs: &I64Vec2) -> I64Vec2 {
+        self.sub(*rhs)
+    }
+}
+
+impl Sub<&I64Vec2> for &I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn sub(self, rhs: &I64Vec2) -> I64Vec2 {
+        (*self).sub(*rhs)
+    }
+}
+
+impl Sub<I64Vec2> for &I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn sub(self, rhs: I64Vec2) -> I64Vec2 {
+        (*self).sub(rhs)
+    }
+}
+
 impl SubAssign<I64Vec2> for I64Vec2 {
     #[inline]
     fn sub_assign(&mut self, rhs: I64Vec2) {
         self.x.sub_assign(rhs.x);
         self.y.sub_assign(rhs.y);
+    }
+}
+
+impl SubAssign<&I64Vec2> for I64Vec2 {
+    #[inline]
+    fn sub_assign(&mut self, rhs: &I64Vec2) {
+        self.sub_assign(*rhs)
     }
 }
 
@@ -779,11 +1130,42 @@ impl Sub<i64> for I64Vec2 {
     }
 }
 
+impl Sub<&i64> for I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn sub(self, rhs: &i64) -> I64Vec2 {
+        self.sub(*rhs)
+    }
+}
+
+impl Sub<&i64> for &I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn sub(self, rhs: &i64) -> I64Vec2 {
+        (*self).sub(*rhs)
+    }
+}
+
+impl Sub<i64> for &I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn sub(self, rhs: i64) -> I64Vec2 {
+        (*self).sub(rhs)
+    }
+}
+
 impl SubAssign<i64> for I64Vec2 {
     #[inline]
     fn sub_assign(&mut self, rhs: i64) {
         self.x.sub_assign(rhs);
         self.y.sub_assign(rhs);
+    }
+}
+
+impl SubAssign<&i64> for I64Vec2 {
+    #[inline]
+    fn sub_assign(&mut self, rhs: &i64) {
+        self.sub_assign(*rhs)
     }
 }
 
@@ -798,6 +1180,30 @@ impl Sub<I64Vec2> for i64 {
     }
 }
 
+impl Sub<&I64Vec2> for i64 {
+    type Output = I64Vec2;
+    #[inline]
+    fn sub(self, rhs: &I64Vec2) -> I64Vec2 {
+        self.sub(*rhs)
+    }
+}
+
+impl Sub<&I64Vec2> for &i64 {
+    type Output = I64Vec2;
+    #[inline]
+    fn sub(self, rhs: &I64Vec2) -> I64Vec2 {
+        (*self).sub(*rhs)
+    }
+}
+
+impl Sub<I64Vec2> for &i64 {
+    type Output = I64Vec2;
+    #[inline]
+    fn sub(self, rhs: I64Vec2) -> I64Vec2 {
+        (*self).sub(rhs)
+    }
+}
+
 impl Rem<I64Vec2> for I64Vec2 {
     type Output = Self;
     #[inline]
@@ -809,11 +1215,42 @@ impl Rem<I64Vec2> for I64Vec2 {
     }
 }
 
+impl Rem<&I64Vec2> for I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn rem(self, rhs: &I64Vec2) -> I64Vec2 {
+        self.rem(*rhs)
+    }
+}
+
+impl Rem<&I64Vec2> for &I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn rem(self, rhs: &I64Vec2) -> I64Vec2 {
+        (*self).rem(*rhs)
+    }
+}
+
+impl Rem<I64Vec2> for &I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn rem(self, rhs: I64Vec2) -> I64Vec2 {
+        (*self).rem(rhs)
+    }
+}
+
 impl RemAssign<I64Vec2> for I64Vec2 {
     #[inline]
     fn rem_assign(&mut self, rhs: Self) {
         self.x.rem_assign(rhs.x);
         self.y.rem_assign(rhs.y);
+    }
+}
+
+impl RemAssign<&I64Vec2> for I64Vec2 {
+    #[inline]
+    fn rem_assign(&mut self, rhs: &I64Vec2) {
+        self.rem_assign(*rhs)
     }
 }
 
@@ -828,11 +1265,42 @@ impl Rem<i64> for I64Vec2 {
     }
 }
 
+impl Rem<&i64> for I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn rem(self, rhs: &i64) -> I64Vec2 {
+        self.rem(*rhs)
+    }
+}
+
+impl Rem<&i64> for &I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn rem(self, rhs: &i64) -> I64Vec2 {
+        (*self).rem(*rhs)
+    }
+}
+
+impl Rem<i64> for &I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn rem(self, rhs: i64) -> I64Vec2 {
+        (*self).rem(rhs)
+    }
+}
+
 impl RemAssign<i64> for I64Vec2 {
     #[inline]
     fn rem_assign(&mut self, rhs: i64) {
         self.x.rem_assign(rhs);
         self.y.rem_assign(rhs);
+    }
+}
+
+impl RemAssign<&i64> for I64Vec2 {
+    #[inline]
+    fn rem_assign(&mut self, rhs: &i64) {
+        self.rem_assign(*rhs)
     }
 }
 
@@ -844,6 +1312,30 @@ impl Rem<I64Vec2> for i64 {
             x: self.rem(rhs.x),
             y: self.rem(rhs.y),
         }
+    }
+}
+
+impl Rem<&I64Vec2> for i64 {
+    type Output = I64Vec2;
+    #[inline]
+    fn rem(self, rhs: &I64Vec2) -> I64Vec2 {
+        self.rem(*rhs)
+    }
+}
+
+impl Rem<&I64Vec2> for &i64 {
+    type Output = I64Vec2;
+    #[inline]
+    fn rem(self, rhs: &I64Vec2) -> I64Vec2 {
+        (*self).rem(*rhs)
+    }
+}
+
+impl Rem<I64Vec2> for &i64 {
+    type Output = I64Vec2;
+    #[inline]
+    fn rem(self, rhs: I64Vec2) -> I64Vec2 {
+        (*self).rem(rhs)
     }
 }
 
@@ -911,6 +1403,14 @@ impl Neg for I64Vec2 {
             x: self.x.neg(),
             y: self.y.neg(),
         }
+    }
+}
+
+impl Neg for &I64Vec2 {
+    type Output = I64Vec2;
+    #[inline]
+    fn neg(self) -> I64Vec2 {
+        (*self).neg()
     }
 }
 
@@ -1234,14 +1734,12 @@ impl IndexMut<usize> for I64Vec2 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for I64Vec2 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "[{}, {}]", self.x, self.y)
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for I64Vec2 {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt.debug_tuple(stringify!(I64Vec2))
@@ -1276,6 +1774,20 @@ impl From<I64Vec2> for (i64, i64) {
     #[inline]
     fn from(v: I64Vec2) -> Self {
         (v.x, v.y)
+    }
+}
+
+impl From<I8Vec2> for I64Vec2 {
+    #[inline]
+    fn from(v: I8Vec2) -> Self {
+        Self::new(i64::from(v.x), i64::from(v.y))
+    }
+}
+
+impl From<U8Vec2> for I64Vec2 {
+    #[inline]
+    fn from(v: U8Vec2) -> Self {
+        Self::new(i64::from(v.x), i64::from(v.y))
     }
 }
 

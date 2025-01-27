@@ -58,6 +58,30 @@ impl ContextBuilder {
         Self::new_tvecn_swizzle_impl(4, "D")
     }
 
+    pub fn new_i8vec2_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(2, "I8")
+    }
+
+    pub fn new_i8vec3_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(3, "I8")
+    }
+
+    pub fn new_i8vec4_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(4, "I8")
+    }
+
+    pub fn new_u8vec2_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(2, "U8")
+    }
+
+    pub fn new_u8vec3_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(3, "U8")
+    }
+
+    pub fn new_u8vec4_swizzle_impl() -> Self {
+        Self::new_tvecn_swizzle_impl(4, "U8")
+    }
+
     pub fn new_i16vec2_swizzle_impl() -> Self {
         Self::new_tvecn_swizzle_impl(2, "I16")
     }
@@ -223,6 +247,30 @@ impl ContextBuilder {
 
     pub fn new_dvec4() -> Self {
         Self::new_vecn(4).with_scalar_t("f64")
+    }
+
+    pub fn new_i8vec2() -> Self {
+        Self::new_vecn(2).with_scalar_t("i8")
+    }
+
+    pub fn new_i8vec3() -> Self {
+        Self::new_vecn(3).with_scalar_t("i8")
+    }
+
+    pub fn new_i8vec4() -> Self {
+        Self::new_vecn(4).with_scalar_t("i8")
+    }
+
+    pub fn new_u8vec2() -> Self {
+        Self::new_vecn(2).with_scalar_t("u8")
+    }
+
+    pub fn new_u8vec3() -> Self {
+        Self::new_vecn(3).with_scalar_t("u8")
+    }
+
+    pub fn new_u8vec4() -> Self {
+        Self::new_vecn(4).with_scalar_t("u8")
     }
 
     pub fn new_i16vec2() -> Self {
@@ -489,6 +537,30 @@ pub fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
             ContextBuilder::new_dvec4_swizzle_impl().build(),
         ),
         (
+            "src/swizzles/i8vec2_impl.rs",
+            ContextBuilder::new_i8vec2_swizzle_impl().build(),
+        ),
+        (
+            "src/swizzles/i8vec3_impl.rs",
+            ContextBuilder::new_i8vec3_swizzle_impl().build(),
+        ),
+        (
+            "src/swizzles/i8vec4_impl.rs",
+            ContextBuilder::new_i8vec4_swizzle_impl().build(),
+        ),
+        (
+            "src/swizzles/u8vec2_impl.rs",
+            ContextBuilder::new_u8vec2_swizzle_impl().build(),
+        ),
+        (
+            "src/swizzles/u8vec3_impl.rs",
+            ContextBuilder::new_u8vec3_swizzle_impl().build(),
+        ),
+        (
+            "src/swizzles/u8vec4_impl.rs",
+            ContextBuilder::new_u8vec4_swizzle_impl().build(),
+        ),
+        (
             "src/swizzles/i16vec2_impl.rs",
             ContextBuilder::new_i16vec2_swizzle_impl().build(),
         ),
@@ -658,6 +730,12 @@ pub fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
         ("src/f64/dvec2.rs", ContextBuilder::new_dvec2().build()),
         ("src/f64/dvec3.rs", ContextBuilder::new_dvec3().build()),
         ("src/f64/dvec4.rs", ContextBuilder::new_dvec4().build()),
+        ("src/i8/i8vec2.rs", ContextBuilder::new_i8vec2().build()),
+        ("src/i8/i8vec3.rs", ContextBuilder::new_i8vec3().build()),
+        ("src/i8/i8vec4.rs", ContextBuilder::new_i8vec4().build()),
+        ("src/u8/u8vec2.rs", ContextBuilder::new_u8vec2().build()),
+        ("src/u8/u8vec3.rs", ContextBuilder::new_u8vec3().build()),
+        ("src/u8/u8vec4.rs", ContextBuilder::new_u8vec4().build()),
         ("src/i16/i16vec2.rs", ContextBuilder::new_i16vec2().build()),
         ("src/i16/i16vec3.rs", ContextBuilder::new_i16vec3().build()),
         ("src/i16/i16vec4.rs", ContextBuilder::new_i16vec4().build()),

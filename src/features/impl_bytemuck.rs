@@ -1,8 +1,8 @@
 use crate::{
     Affine2, Affine3A, DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4,
-    I16Vec2, I16Vec3, I16Vec4, I64Vec2, I64Vec3, I64Vec4, IVec2, IVec3, IVec4, Mat2, Mat3, Mat3A,
-    Mat4, Quat, U16Vec2, U16Vec3, U16Vec4, U64Vec2, U64Vec3, U64Vec4, UVec2, UVec3, UVec4, Vec2,
-    Vec3, Vec3A, Vec4,
+    I16Vec2, I16Vec3, I16Vec4, I64Vec2, I64Vec3, I64Vec4, I8Vec2, I8Vec3, I8Vec4, IVec2, IVec3,
+    IVec4, Mat2, Mat3, Mat3A, Mat4, Quat, U16Vec2, U16Vec3, U16Vec4, U64Vec2, U64Vec3, U64Vec4,
+    U8Vec2, U8Vec3, U8Vec4, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
 };
 use bytemuck::{AnyBitPattern, Pod, Zeroable};
 
@@ -55,6 +55,20 @@ unsafe impl Zeroable for DVec3 {}
 unsafe impl Pod for DVec4 {}
 unsafe impl Zeroable for DVec4 {}
 
+unsafe impl Pod for I8Vec2 {}
+unsafe impl Zeroable for I8Vec2 {}
+unsafe impl Pod for I8Vec3 {}
+unsafe impl Zeroable for I8Vec3 {}
+unsafe impl Pod for I8Vec4 {}
+unsafe impl Zeroable for I8Vec4 {}
+
+unsafe impl Pod for U8Vec2 {}
+unsafe impl Zeroable for U8Vec2 {}
+unsafe impl Pod for U8Vec3 {}
+unsafe impl Zeroable for U8Vec3 {}
+unsafe impl Pod for U8Vec4 {}
+unsafe impl Zeroable for U8Vec4 {}
+
 unsafe impl Pod for I16Vec2 {}
 unsafe impl Zeroable for I16Vec2 {}
 unsafe impl Pod for I16Vec3 {}
@@ -101,9 +115,9 @@ unsafe impl Zeroable for U64Vec4 {}
 mod test {
     use crate::{
         Affine2, Affine3A, DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4,
-        I16Vec2, I16Vec3, I16Vec4, I64Vec2, I64Vec3, I64Vec4, IVec2, IVec3, IVec4, Mat2, Mat3,
-        Mat3A, Mat4, Quat, U16Vec2, U16Vec3, U16Vec4, U64Vec2, U64Vec3, U64Vec4, UVec2, UVec3,
-        UVec4, Vec2, Vec3, Vec3A, Vec4,
+        I16Vec2, I16Vec3, I16Vec4, I64Vec2, I64Vec3, I64Vec4, I8Vec2, I8Vec3, I8Vec4, IVec2, IVec3,
+        IVec4, Mat2, Mat3, Mat3A, Mat4, Quat, U16Vec2, U16Vec3, U16Vec4, U64Vec2, U64Vec3, U64Vec4,
+        U8Vec2, U8Vec3, U8Vec4, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
     };
     use core::mem;
 
@@ -160,6 +174,14 @@ mod test {
     test_pod_t!(dvec2, DVec2);
     test_pod_t!(dvec3, DVec3);
     test_pod_t!(dvec4, DVec4);
+
+    test_pod_t!(i8vec2, I8Vec2);
+    test_pod_t!(i8vec3, I8Vec3);
+    test_pod_t!(i8vec4, I8Vec4);
+
+    test_pod_t!(u8vec2, U8Vec2);
+    test_pod_t!(u8vec3, U8Vec3);
+    test_pod_t!(u8vec4, U8Vec4);
 
     test_pod_t!(i16vec2, I16Vec2);
     test_pod_t!(i16vec3, I16Vec3);

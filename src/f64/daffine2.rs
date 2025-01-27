@@ -50,8 +50,8 @@ impl DAffine2 {
     #[must_use]
     pub fn from_cols_array(m: &[f64; 6]) -> Self {
         Self {
-            matrix2: DMat2::from_cols_slice(&m[0..4]),
-            translation: DVec2::from_slice(&m[4..6]),
+            matrix2: DMat2::from_cols_array(&[m[0], m[1], m[2], m[3]]),
+            translation: DVec2::from_array([m[4], m[5]]),
         }
     }
 
@@ -333,7 +333,6 @@ impl PartialEq for DAffine2 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl core::fmt::Debug for DAffine2 {
     fn fmt(&self, fmt: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         fmt.debug_struct(stringify!(DAffine2))
@@ -343,7 +342,6 @@ impl core::fmt::Debug for DAffine2 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl core::fmt::Display for DAffine2 {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         if let Some(p) = f.precision() {

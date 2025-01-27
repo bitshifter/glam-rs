@@ -27,6 +27,12 @@ impl Vec3Swizzles for Vec3 {
 
     #[inline]
     #[must_use]
+    fn with_xy(self, rhs: Vec2) -> Self {
+        Self::new(rhs.x, rhs.y, self.z)
+    }
+
+    #[inline]
+    #[must_use]
     fn xz(self) -> Vec2 {
         Vec2 {
             x: self.x,
@@ -36,11 +42,23 @@ impl Vec3Swizzles for Vec3 {
 
     #[inline]
     #[must_use]
+    fn with_xz(self, rhs: Vec2) -> Self {
+        Self::new(rhs.x, self.y, rhs.y)
+    }
+
+    #[inline]
+    #[must_use]
     fn yx(self) -> Vec2 {
         Vec2 {
             x: self.y,
             y: self.x,
         }
+    }
+
+    #[inline]
+    #[must_use]
+    fn with_yx(self, rhs: Vec2) -> Self {
+        Self::new(rhs.y, rhs.x, self.z)
     }
 
     #[inline]
@@ -63,6 +81,12 @@ impl Vec3Swizzles for Vec3 {
 
     #[inline]
     #[must_use]
+    fn with_yz(self, rhs: Vec2) -> Self {
+        Self::new(self.x, rhs.x, rhs.y)
+    }
+
+    #[inline]
+    #[must_use]
     fn zx(self) -> Vec2 {
         Vec2 {
             x: self.z,
@@ -72,11 +96,23 @@ impl Vec3Swizzles for Vec3 {
 
     #[inline]
     #[must_use]
+    fn with_zx(self, rhs: Vec2) -> Self {
+        Self::new(rhs.y, self.y, rhs.x)
+    }
+
+    #[inline]
+    #[must_use]
     fn zy(self) -> Vec2 {
         Vec2 {
             x: self.z,
             y: self.y,
         }
+    }
+
+    #[inline]
+    #[must_use]
+    fn with_zy(self, rhs: Vec2) -> Self {
+        Self::new(self.x, rhs.y, rhs.x)
     }
 
     #[inline]

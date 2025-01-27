@@ -140,7 +140,7 @@ mod libm_math {
     }
 }
 
-#[cfg(not(feature = "libm"))]
+#[cfg(all(not(feature = "libm"), feature = "std"))]
 mod std_math {
     #[inline(always)]
     pub(crate) fn abs(f: f32) -> f32 {
@@ -234,8 +234,88 @@ mod std_math {
     }
 }
 
+// Used to reduce the number of compilation errors, in the event that no other
+// math backend is specified.
+#[cfg(all(not(feature = "libm"), not(feature = "std")))]
+mod no_backend_math {
+    pub(crate) fn abs(_: f32) -> f32 {
+        unimplemented!()
+    }
+
+    pub(crate) fn acos_approx(_: f32) -> f32 {
+        unimplemented!()
+    }
+
+    pub(crate) fn atan2(_: f32, _: f32) -> f32 {
+        unimplemented!()
+    }
+
+    pub(crate) fn sin(_: f32) -> f32 {
+        unimplemented!()
+    }
+
+    pub(crate) fn sin_cos(_: f32) -> (f32, f32) {
+        unimplemented!()
+    }
+
+    pub(crate) fn tan(_: f32) -> f32 {
+        unimplemented!()
+    }
+
+    pub(crate) fn sqrt(_: f32) -> f32 {
+        unimplemented!()
+    }
+
+    pub(crate) fn copysign(_: f32, _: f32) -> f32 {
+        unimplemented!()
+    }
+
+    pub(crate) fn signum(_: f32) -> f32 {
+        unimplemented!()
+    }
+
+    pub(crate) fn round(_: f32) -> f32 {
+        unimplemented!()
+    }
+
+    pub(crate) fn trunc(_: f32) -> f32 {
+        unimplemented!()
+    }
+
+    pub(crate) fn ceil(_: f32) -> f32 {
+        unimplemented!()
+    }
+
+    pub(crate) fn floor(_: f32) -> f32 {
+        unimplemented!()
+    }
+
+    pub(crate) fn exp(_: f32) -> f32 {
+        unimplemented!()
+    }
+
+    pub(crate) fn powf(_: f32, _: f32) -> f32 {
+        unimplemented!()
+    }
+
+    pub(crate) fn mul_add(_: f32, _: f32, _: f32) -> f32 {
+        unimplemented!()
+    }
+
+    pub fn div_euclid(_: f32, _: f32) -> f32 {
+        unimplemented!()
+    }
+
+    pub fn rem_euclid(_: f32, _: f32) -> f32 {
+        unimplemented!()
+    }
+}
+
 #[cfg(feature = "libm")]
 pub(crate) use libm_math::*;
 
-#[cfg(not(feature = "libm"))]
+#[cfg(all(not(feature = "libm"), feature = "std"))]
 pub(crate) use std_math::*;
+
+#[cfg(all(not(feature = "libm"), not(feature = "std")))]
+pub(crate) use no_backend_math::*;

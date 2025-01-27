@@ -34,71 +34,101 @@
         {% set vec3_t = "Vec3" %}
         {% set vec3a_t = "Vec3A" %}
         {% set vec4_t = "Vec4" %}
+        {% set quat_t = "Quat" %}
     {% elif scalar_t == "f64" %}
         {% set self_t = "DVec" ~ dim %}
         {% set vec2_t = "DVec2" %}
         {% set vec3_t = "DVec3" %}
         {% set vec4_t = "DVec4" %}
         {% set from_types = ["Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim] %}
+        {% set quat_t = "DQuat" %}
     {% endif %}
+{% elif scalar_t == "i8" %}
+    {% set is_signed = true %}
+    {% set is_float = false %}
+    {% set unsigned_scalar_t = "u8" %}
+    {% set self_t = "I8Vec" ~ dim %}
+    {% set opposite_signedness_t = "U8Vec" ~ dim %}
+    {% set vec2_t = "I8Vec2" %}
+    {% set vec3_t = "I8Vec3" %}
+    {% set vec4_t = "I8Vec4" %}
+    {% set try_from_types = ["U8Vec" ~ dim, "I16Vec" ~ dim, "U16Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim] %}
+{% elif scalar_t == "u8" %}
+    {% set is_signed = false %}
+    {% set is_float = false %}
+    {% set unsigned_scalar_t = "u8" %}
+    {% set self_t = "U8Vec" ~ dim %}
+    {% set opposite_signedness_t = "I8Vec" ~ dim %}
+    {% set vec2_t = "U8Vec2" %}
+    {% set vec3_t = "U8Vec3" %}
+    {% set vec4_t = "U8Vec4" %}
+    {% set try_from_types = ["I8Vec" ~ dim, "I16Vec" ~ dim, "U16Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim] %}
 {% elif scalar_t == "i16" %}
     {% set is_signed = true %}
     {% set is_float = false %}
+    {% set unsigned_scalar_t = "u16" %}
     {% set self_t = "I16Vec" ~ dim %}
     {% set opposite_signedness_t = "U16Vec" ~ dim %}
     {% set vec2_t = "I16Vec2" %}
     {% set vec3_t = "I16Vec3" %}
     {% set vec4_t = "I16Vec4" %}
+    {% set from_types = ["I8Vec" ~ dim, "U8Vec" ~ dim] %}
     {% set try_from_types = ["U16Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim] %}
 {% elif scalar_t == "u16" %}
     {% set is_signed = false %}
     {% set is_float = false %}
+    {% set unsigned_scalar_t = "u16" %}
     {% set self_t = "U16Vec" ~ dim %}
     {% set opposite_signedness_t = "I16Vec" ~ dim %}
     {% set vec2_t = "U16Vec2" %}
     {% set vec3_t = "U16Vec3" %}
     {% set vec4_t = "U16Vec4" %}
-    {% set try_from_types = ["I16Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim] %}
+    {% set from_types = ["U8Vec" ~ dim] %}
+    {% set try_from_types = ["I8Vec" ~ dim, "I16Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim] %}
 {% elif scalar_t == "i32" %}
     {% set is_signed = true %}
     {% set is_float = false %}
+    {% set unsigned_scalar_t = "u32" %}
     {% set self_t = "IVec" ~ dim %}
     {% set opposite_signedness_t = "UVec" ~ dim %}
     {% set vec2_t = "IVec2" %}
     {% set vec3_t = "IVec3" %}
     {% set vec4_t = "IVec4" %}
-    {% set from_types = ["I16Vec" ~ dim, "U16Vec" ~ dim] %}
+    {% set from_types = ["I8Vec" ~ dim, "U8Vec" ~ dim, "I16Vec" ~ dim, "U16Vec" ~ dim] %}
     {% set try_from_types = ["UVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim] %}
 {% elif scalar_t == "u32" %}
     {% set is_signed = false %}
     {% set is_float = false %}
+    {% set unsigned_scalar_t = "u32" %}
     {% set self_t = "UVec" ~ dim %}
     {% set opposite_signedness_t = "IVec" ~ dim %}
     {% set vec2_t = "UVec2" %}
     {% set vec3_t = "UVec3" %}
     {% set vec4_t = "UVec4" %}
-    {% set from_types = ["U16Vec" ~ dim] %}
-    {% set try_from_types = ["I16Vec" ~ dim, "IVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim] %}
+    {% set from_types = ["U8Vec" ~ dim, "U16Vec" ~ dim] %}
+    {% set try_from_types = ["I8Vec" ~ dim, "I16Vec" ~ dim, "IVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim] %}
 {% elif scalar_t == "i64" %}
     {% set is_signed = true %}
     {% set is_float = false %}
+    {% set unsigned_scalar_t = "u64" %}
     {% set self_t = "I64Vec" ~ dim %}
     {% set opposite_signedness_t = "U64Vec" ~ dim %}
     {% set vec2_t = "I64Vec2" %}
     {% set vec3_t = "I64Vec3" %}
     {% set vec4_t = "I64Vec4" %}
-    {% set from_types = ["I16Vec" ~ dim, "U16Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim] %}
+    {% set from_types = ["I8Vec" ~ dim, "U8Vec" ~ dim, "I16Vec" ~ dim, "U16Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim] %}
     {% set try_from_types = ["U64Vec" ~ dim] %}
 {% elif scalar_t == "u64" %}
     {% set is_signed = false %}
     {% set is_float = false %}
+    {% set unsigned_scalar_t = "u64" %}
     {% set self_t = "U64Vec" ~ dim %}
     {% set opposite_signedness_t = "I64Vec" ~ dim %}
     {% set vec2_t = "U64Vec2" %}
     {% set vec3_t = "U64Vec3" %}
     {% set vec4_t = "U64Vec4" %}
-    {% set from_types = ["U16Vec" ~ dim, "UVec" ~ dim] %}
-    {% set try_from_types = ["I16Vec" ~ dim, "IVec" ~ dim, "I64Vec" ~ dim] %}
+    {% set from_types = ["U8Vec" ~ dim, "U16Vec" ~ dim, "UVec" ~ dim] %}
+    {% set try_from_types = ["I8Vec" ~ dim, "I16Vec" ~ dim, "IVec" ~ dim, "I64Vec" ~ dim] %}
 {% endif %}
 {% set bvec_from_type = "BVec" ~ dim %}
 {% if dim > 2 %}
@@ -106,7 +136,9 @@
 {% endif %}
 
 {% if dim == 2 %}
-    {% if scalar_t == "i16" or scalar_t == "u16" %}
+    {% if scalar_t == "i8" or scalar_t == "u8" %}
+        {% set cuda_align = 2 %}
+    {% elif scalar_t == "i16" or scalar_t == "u16" %}
         {% set cuda_align = 4 %}
     {% elif scalar_t == "f32" or scalar_t == "i32" or scalar_t == "u32" %}
         {% set cuda_align = 8 %}
@@ -114,7 +146,9 @@
         {% set cuda_align = 16 %}
     {% endif %}
 {% elif dim == 4 %}
-    {% if scalar_t == "i16" or scalar_t == "u16" %}
+    {% if scalar_t == "i8" or scalar_t == "u8" %}
+        {% set cuda_align = 4 %}
+    {% elif scalar_t == "i16" or scalar_t == "u16" %}
         {% set cuda_align = 8 %}
     {% elif scalar_t == "f32" or scalar_t == "i32" or scalar_t == "u32" %}
         {% set cuda_align = 16 %}
@@ -175,6 +209,10 @@
     {% endif %}
     {% if is_float %}
         {{ scalar_t }}::math,
+        {% if dim == 3 %}
+            FloatExt,
+            {{ quat_t }},
+        {% endif %}
     {% endif %}
     {% if from_types %}
         {% for ty in from_types %}
@@ -191,7 +229,6 @@
     {% endif %}
 };
 
-#[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::{f32, ops::*};
@@ -411,6 +448,20 @@ impl {{ self_t }} {
         {% endif %}
     }
 
+    /// Returns a vector containing each element of `self` modified by a mapping function `f`.
+    #[inline]
+    #[must_use]
+    pub fn map<F>(self, f: F) -> Self
+    where
+        F: Fn({{ scalar_t }}) -> {{ scalar_t }},
+    {
+        Self::new(
+            {% for c in components %}
+                f(self.{{ c }}),
+            {%- endfor %}
+        )
+    }
+
     /// Creates a vector from the elements in `if_true` and `if_false`, selecting which to use
     /// for each element of `self`.
     ///
@@ -470,6 +521,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub const fn from_slice(slice: &[{{ scalar_t }}]) -> Self {
+        assert!(slice.len() >= {{ dim }});
         Self::new(
             {% for c in components %}
                 slice[{{ loop.index0 }}],
@@ -491,9 +543,7 @@ impl {{ self_t }} {
             assert!(slice.len() >= 4);
             unsafe { vst1q_f32(slice.as_mut_ptr(), self.0); }
         {% else %}
-            {% for c in components %}
-                slice[{{ loop.index0 }}] = self.{{ c }};
-            {%- endfor %}
+            slice[..{{ dim }}].copy_from_slice(&self.to_array());
         {% endif %}
     }
 
@@ -1853,7 +1903,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn lerp(self, rhs: Self, s: {{ scalar_t }}) -> Self {
-        self + ((rhs - self) * s)
+        self * (1.0 - s) + rhs * s
     }
 
     /// Moves towards `rhs` based on the value `d`.
@@ -2127,8 +2177,106 @@ impl {{ self_t }} {
             Self::new(b, sign + self.y * self.y * a, -self.y),
         )
     }
+
+    /// Performs a spherical linear interpolation between `self` and `rhs` based on the value `s`.
+    ///
+    /// When `s` is `0.0`, the result will be equal to `self`.  When `s` is `1.0`, the result
+    /// will be equal to `rhs`. When `s` is outside of range `[0, 1]`, the result is linearly
+    /// extrapolated.
+    #[inline]
+    #[must_use]
+    pub fn slerp(self, rhs: Self, s: {{ scalar_t }}) -> Self {
+        let self_length = self.length();
+        let rhs_length = rhs.length();
+        // Cosine of the angle between the vectors [-1, 1], or NaN if either vector has a zero length
+        let dot = self.dot(rhs) / (self_length * rhs_length);
+        // If dot is close to 1 or -1, or is NaN the calculations for t1 and t2 break down
+        if math::abs(dot) < 1.0 - 3e-7 {
+            // Angle between the vectors [0, +π]
+            let theta = math::acos_approx(dot);
+            // Sine of the angle between vectors [0, 1]
+            let sin_theta = math::sin(theta);
+            let t1 = math::sin(theta * (1. - s));
+            let t2 = math::sin(theta * s);
+        
+            // Interpolate vector lengths
+            let result_length = self_length.lerp(rhs_length, s);
+            // Scale the vectors to the target length and interpolate them
+            return (self * (result_length / self_length) * t1
+                + rhs * (result_length / rhs_length) * t2)
+                * sin_theta.recip();
+        }
+        if dot < 0.0 {
+            // Vectors are almost parallel in opposing directions
+
+            // Create a rotation from self to rhs along some axis
+            let axis = self.any_orthogonal_vector().normalize(){% if is_align %}.into(){% endif %};
+            let rotation = {{ quat_t }}::from_axis_angle(axis, core::{{ scalar_t }}::consts::PI * s);
+            // Interpolate vector lengths
+            let result_length = self_length.lerp(rhs_length, s);
+            rotation * self * (result_length / self_length) 
+        } else {
+            // Vectors are almost parallel in the same direction, or dot was NaN
+            self.lerp(rhs, s)
+        }
+    }
 {% endif %}
 {% endif %}
+
+{% if not is_float %}
+
+    /// Computes the [manhattan distance] between two points.
+    ///
+    /// # Overflow
+    /// This method may overflow if the result is greater than [`{{ unsigned_scalar_t }}::MAX`].
+    ///
+    /// See also [`checked_manhattan_distance`][{{ self_t }}::checked_manhattan_distance].
+    ///
+    /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
+    #[inline]
+    #[must_use]
+    pub fn manhattan_distance(self, other: Self) -> {{ unsigned_scalar_t }} {
+        {% for c in components %}
+            {% if not loop.first %} + {% endif %}
+            self.{{c}}.abs_diff(other.{{c}})
+        {% endfor %}
+    }
+
+    /// Computes the [manhattan distance] between two points.
+    ///
+    /// This will returns [`None`] if the result is greater than [`{{ unsigned_scalar_t }}::MAX`].
+    ///
+    /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
+    #[inline]
+    #[must_use]
+    pub fn checked_manhattan_distance(self, other: Self) -> Option<{{ unsigned_scalar_t }}> {
+        {% for c in components %}
+            {%- if loop.first -%}
+                let d = self.{{c}}.abs_diff(other.{{c}});
+            {%- elif loop.last -%}
+                d.checked_add(self.{{c}}.abs_diff(other.{{c}}))
+            {%- else -%}
+                let d = d.checked_add(self.{{c}}.abs_diff(other.{{c}}))?;
+            {%- endif -%}
+        {% endfor %}
+    }
+
+    /// Computes the [chebyshev distance] between two points.
+    ///
+    /// [chebyshev distance]: https://en.wikipedia.org/wiki/Chebyshev_distance
+    #[inline]
+    #[must_use]
+    pub fn chebyshev_distance(self, other: Self) -> {{ unsigned_scalar_t }} {
+        // Note: the compiler will eventually optimize out the loop
+        [
+            {% for c in components %}
+                self.{{c}}.abs_diff(other.{{c}}),
+            {% endfor %}
+        ].into_iter().max().unwrap()
+    }
+
+{% endif %}
+
 
 {% if is_signed and dim == 2 %}
     /// Returns a vector that is equal to `self` rotated by 90 degrees.
@@ -2169,7 +2317,7 @@ impl {{ self_t }} {
     /// Rotates towards `rhs` up to `max_angle` (in radians).
     ///
     /// When `max_angle` is `0.0`, the result will be equal to `self`. When `max_angle` is equal to
-    /// `self.angle_between(rhs)`, the result will be equal to `rhs`. If `max_angle` is negative,
+    /// `self.angle_between(rhs)`, the result will be parallel to `rhs`. If `max_angle` is negative,
     /// rotates towards the exact opposite of `rhs`. Will not go past the target.
     #[inline]
     #[must_use]
@@ -2237,6 +2385,54 @@ impl {{ self_t }} {
     #[must_use]
     pub fn as_dvec4(&self) -> crate::DVec4 {
         crate::DVec4::new(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
+    }
+    {% endif %}
+{% endif %}
+{% if scalar_t != "i8" %}
+    {% if dim == 2 %}
+    /// Casts all elements of `self` to `i8`.
+    #[inline]
+    #[must_use]
+    pub fn as_i8vec2(&self) -> crate::I8Vec2 {
+        crate::I8Vec2::new(self.x as i8, self.y as i8)
+    }
+    {% elif dim == 3 %}
+    /// Casts all elements of `self` to `i8`.
+    #[inline]
+    #[must_use]
+    pub fn as_i8vec3(&self) -> crate::I8Vec3 {
+        crate::I8Vec3::new(self.x as i8, self.y as i8, self.z as i8)
+    }
+    {% elif dim == 4 %}
+    /// Casts all elements of `self` to `i8`.
+    #[inline]
+    #[must_use]
+    pub fn as_i8vec4(&self) -> crate::I8Vec4 {
+        crate::I8Vec4::new(self.x as i8, self.y as i8, self.z as i8, self.w as i8)
+    }
+    {% endif %}
+{% endif %}
+{% if scalar_t != "u8" %}
+    {% if dim == 2 %}
+    /// Casts all elements of `self` to `u8`.
+    #[inline]
+    #[must_use]
+    pub fn as_u8vec2(&self) -> crate::U8Vec2 {
+        crate::U8Vec2::new(self.x as u8, self.y as u8)
+    }
+    {% elif dim == 3 %}
+    /// Casts all elements of `self` to `u8`.
+    #[inline]
+    #[must_use]
+    pub fn as_u8vec3(&self) -> crate::U8Vec3 {
+        crate::U8Vec3::new(self.x as u8, self.y as u8, self.z as u8)
+    }
+    {% elif dim == 4 %}
+    /// Casts all elements of `self` to `u8`.
+    #[inline]
+    #[must_use]
+    pub fn as_u8vec4(&self) -> crate::U8Vec4 {
+        crate::U8Vec4::new(self.x as u8, self.y as u8, self.z as u8, self.w as u8)
     }
     {% endif %}
 {% endif %}
@@ -2611,6 +2807,8 @@ impl Div<{{ self_t }}> for {{ self_t }} {
     }
 }
 
+{{ macros::impl_op_ref(op="Div", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+
 impl DivAssign<{{ self_t }}> for {{ self_t }} {
     #[inline]
     fn div_assign(&mut self, rhs: Self) {
@@ -2631,6 +2829,8 @@ impl DivAssign<{{ self_t }}> for {{ self_t }} {
         {% endif %}
     }
 }
+
+{{ macros::impl_op_ref(op="DivAssign", self_t=self_t, rhs_t=self_t, self="&mut self") }}
 
 impl Div<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -2656,6 +2856,8 @@ impl Div<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
+{{ macros::impl_op_ref(op="Div", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
+
 impl DivAssign<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
     fn div_assign(&mut self, rhs: {{ scalar_t }}) {
@@ -2676,6 +2878,8 @@ impl DivAssign<{{ scalar_t }}> for {{ self_t }} {
         {% endif %}
     }
 }
+
+{{ macros::impl_op_ref(op="DivAssign", self_t=self_t, rhs_t=scalar_t, self="&mut self") }}
 
 impl Div<{{ self_t }}> for {{ scalar_t }} {
     type Output = {{ self_t }};
@@ -2701,6 +2905,8 @@ impl Div<{{ self_t }}> for {{ scalar_t }} {
     }
 }
 
+{{ macros::impl_op_ref(op="Div", self_t=scalar_t, rhs_t=self_t, output_t=self_t) }}
+
 impl Mul<{{ self_t }}> for {{ self_t }} {
     type Output = Self;
     #[inline]
@@ -2725,6 +2931,8 @@ impl Mul<{{ self_t }}> for {{ self_t }} {
     }
 }
 
+{{ macros::impl_op_ref(op="Mul", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+
 impl MulAssign<{{ self_t }}> for {{ self_t }} {
     #[inline]
     fn mul_assign(&mut self, rhs: Self) {
@@ -2745,6 +2953,8 @@ impl MulAssign<{{ self_t }}> for {{ self_t }} {
         {% endif %}
     }
 }
+
+{{ macros::impl_op_ref(op="MulAssign", self_t=self_t, rhs_t=self_t, self="&mut self") }}
 
 impl Mul<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -2770,6 +2980,8 @@ impl Mul<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
+{{ macros::impl_op_ref(op="Mul", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
+
 impl MulAssign<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
     fn mul_assign(&mut self, rhs: {{ scalar_t }}) {
@@ -2790,6 +3002,8 @@ impl MulAssign<{{ scalar_t }}> for {{ self_t }} {
         {% endif %}
     }
 }
+
+{{ macros::impl_op_ref(op="MulAssign", self_t=self_t, rhs_t=scalar_t, self="&mut self") }}
 
 impl Mul<{{ self_t }}> for {{ scalar_t }} {
     type Output = {{ self_t }};
@@ -2815,6 +3029,8 @@ impl Mul<{{ self_t }}> for {{ scalar_t }} {
     }
 }
 
+{{ macros::impl_op_ref(op="Mul", self_t=scalar_t, rhs_t=self_t, output_t=self_t) }}
+
 impl Add<{{ self_t }}> for {{ self_t }} {
     type Output = Self;
     #[inline]
@@ -2839,6 +3055,8 @@ impl Add<{{ self_t }}> for {{ self_t }} {
     }
 }
 
+{{ macros::impl_op_ref(op="Add", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+
 impl AddAssign<{{ self_t }}> for {{ self_t }} {
     #[inline]
     fn add_assign(&mut self, rhs: Self) {
@@ -2859,6 +3077,8 @@ impl AddAssign<{{ self_t }}> for {{ self_t }} {
         {% endif %}
     }
 }
+
+{{ macros::impl_op_ref(op="AddAssign", self_t=self_t, rhs_t=self_t, self="&mut self") }}
 
 impl Add<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -2884,6 +3104,8 @@ impl Add<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
+{{ macros::impl_op_ref(op="Add", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
+
 impl AddAssign<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
     fn add_assign(&mut self, rhs: {{ scalar_t }}) {
@@ -2904,6 +3126,8 @@ impl AddAssign<{{ scalar_t }}> for {{ self_t }} {
         {% endif %}
     }
 }
+
+{{ macros::impl_op_ref(op="AddAssign", self_t=self_t, rhs_t=scalar_t, self="&mut self") }}
 
 impl Add<{{ self_t }}> for {{ scalar_t }} {
     type Output = {{ self_t }};
@@ -2929,6 +3153,8 @@ impl Add<{{ self_t }}> for {{ scalar_t }} {
     }
 }
 
+{{ macros::impl_op_ref(op="Add", self_t=scalar_t, rhs_t=self_t, output_t=self_t) }}
+
 impl Sub<{{ self_t }}> for {{ self_t }} {
     type Output = Self;
     #[inline]
@@ -2953,6 +3179,8 @@ impl Sub<{{ self_t }}> for {{ self_t }} {
     }
 }
 
+{{ macros::impl_op_ref(op="Sub", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+
 impl SubAssign<{{ self_t }}> for {{ self_t }} {
     #[inline]
     fn sub_assign(&mut self, rhs: {{ self_t }}) {
@@ -2973,6 +3201,8 @@ impl SubAssign<{{ self_t }}> for {{ self_t }} {
         {% endif %}
     }
 }
+
+{{ macros::impl_op_ref(op="SubAssign", self_t=self_t, rhs_t=self_t, self="&mut self") }}
 
 impl Sub<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -2998,6 +3228,8 @@ impl Sub<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
+{{ macros::impl_op_ref(op="Sub", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
+
 impl SubAssign<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
     fn sub_assign(&mut self, rhs: {{ scalar_t }}) {
@@ -3018,6 +3250,8 @@ impl SubAssign<{{ scalar_t }}> for {{ self_t }} {
         {% endif %}
     }
 }
+
+{{ macros::impl_op_ref(op="SubAssign", self_t=self_t, rhs_t=scalar_t, self="&mut self") }}
 
 impl Sub<{{ self_t }}> for {{ scalar_t }} {
     type Output = {{ self_t }};
@@ -3042,6 +3276,8 @@ impl Sub<{{ self_t }}> for {{ scalar_t }} {
         {% endif %}
     }
 }
+
+{{ macros::impl_op_ref(op="Sub", self_t=scalar_t, rhs_t=self_t, output_t=self_t) }}
 
 impl Rem<{{ self_t }}> for {{ self_t }} {
     type Output = Self;
@@ -3074,6 +3310,8 @@ impl Rem<{{ self_t }}> for {{ self_t }} {
     }
 }
 
+{{ macros::impl_op_ref(op="Rem", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+
 impl RemAssign<{{ self_t }}> for {{ self_t }} {
     #[inline]
     fn rem_assign(&mut self, rhs: Self) {
@@ -3088,6 +3326,8 @@ impl RemAssign<{{ self_t }}> for {{ self_t }} {
         {% endif %}
     }
 }
+
+{{ macros::impl_op_ref(op="RemAssign", self_t=self_t, rhs_t=self_t, self="&mut self") }}
 
 impl Rem<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -3105,6 +3345,8 @@ impl Rem<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
+{{ macros::impl_op_ref(op="Rem", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
+
 impl RemAssign<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
     fn rem_assign(&mut self, rhs: {{ scalar_t }}) {
@@ -3119,6 +3361,8 @@ impl RemAssign<{{ scalar_t }}> for {{ self_t }} {
         {% endif %}
     }
 }
+
+{{ macros::impl_op_ref(op="RemAssign", self_t=self_t, rhs_t=scalar_t, self="&mut self") }}
 
 impl Rem<{{ self_t }}> for {{ scalar_t }} {
     type Output = {{ self_t }};
@@ -3135,6 +3379,8 @@ impl Rem<{{ self_t }}> for {{ scalar_t }} {
         {% endif %}
     }
 }
+
+{{ macros::impl_op_ref(op="Rem", self_t=scalar_t, rhs_t=self_t, output_t=self_t) }}
 
 #[cfg(not(target_arch = "spirv"))]
 impl AsRef<[{{ scalar_t }}; {{ dim }}]> for {{ self_t }} {
@@ -3216,6 +3462,8 @@ impl Neg for {{ self_t }} {
         {% endif %}
     }
 }
+
+{{ macros::impl_op_ref(op="Neg", self_t=self_t, output_t=self_t) }}
 {% endif %}
 
 {% if not is_float %}
@@ -3389,7 +3637,6 @@ impl IndexMut<usize> for {{ self_t }} {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for {{ self_t }} {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         {% if is_float %}
@@ -3416,7 +3663,6 @@ impl fmt::Display for {{ self_t }} {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for {{ self_t }} {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt.debug_tuple(stringify!({{ self_t }}))
@@ -3717,7 +3963,7 @@ impl From<{{ bvec_from_type }}> for {{ self_t }} {
 {% if bveca_from_type %}
     {% if bveca_from_type == "BVec4A" %}
     #[cfg(not(feature = "scalar-math"))]
-    {% endif %}
+    {%- endif %}
     impl From<{{ bveca_from_type }}> for {{ self_t }} {
         #[inline]
         fn from(v: {{ bveca_from_type }}) -> Self {

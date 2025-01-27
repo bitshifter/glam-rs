@@ -9,7 +9,6 @@ use crate::{
 
 use core::arch::aarch64::*;
 
-#[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, Deref, DerefMut, Div, Mul, MulAssign, Neg, Sub};
@@ -394,6 +393,69 @@ impl Quat {
         }
     }
 
+    /// Creates a quaterion rotation from a facing direction and an up direction.
+    ///
+    /// For a left-handed view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn look_to_lh(dir: Vec3, up: Vec3) -> Self {
+        Self::look_to_rh(-dir, up)
+    }
+
+    /// Creates a quaterion rotation from facing direction and an up direction.
+    ///
+    /// For a right-handed view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `dir` and `up` are not normalized when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn look_to_rh(dir: Vec3, up: Vec3) -> Self {
+        glam_assert!(dir.is_normalized());
+        glam_assert!(up.is_normalized());
+        let f = dir;
+        let s = f.cross(up).normalize();
+        let u = s.cross(f);
+
+        Self::from_rotation_axes(
+            Vec3::new(s.x, u.x, -f.x),
+            Vec3::new(s.y, u.y, -f.y),
+            Vec3::new(s.z, u.z, -f.z),
+        )
+    }
+
+    /// Creates a left-handed view matrix using a camera position, a focal point, and an up
+    /// direction.
+    ///
+    /// For a left-handed view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn look_at_lh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
+        Self::look_to_lh(center.sub(eye).normalize(), up)
+    }
+
+    /// Creates a right-handed view matrix using a camera position, an up direction, and a focal
+    /// point.
+    ///
+    /// For a right-handed view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    #[inline]
+    pub fn look_at_rh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
+        Self::look_to_rh(center.sub(eye).normalize(), up)
+    }
+
     /// Returns the rotation axis (normalized) and angle (in radians) of `self`.
     #[inline]
     #[must_use]
@@ -521,6 +583,7 @@ impl Quat {
         Vec4::from(self).is_finite()
     }
 
+    /// Returns `true` if any elements are `NAN`.
     #[inline]
     #[must_use]
     pub fn is_nan(self) -> bool {
@@ -590,7 +653,7 @@ impl Quat {
         glam_assert!(self.is_normalized() && rhs.is_normalized());
         let angle = self.angle_between(rhs);
         if angle <= 1e-4 {
-            return *self;
+            return rhs;
         }
         let s = (max_radians / angle).clamp(-1.0, 1.0);
         self.slerp(rhs, s)
@@ -611,6 +674,12 @@ impl Quat {
         Vec4::from(self).abs_diff_eq(Vec4::from(rhs), max_abs_diff)
     }
 
+    #[inline(always)]
+    #[must_use]
+    fn lerp_impl(self, end: Self, s: f32) -> Self {
+        (self * (1.0 - s) + end * s).normalize()
+    }
+
     /// Performs a linear interpolation between `self` and `rhs` based on
     /// the value `s`.
     ///
@@ -628,24 +697,18 @@ impl Quat {
         glam_assert!(end.is_normalized());
 
         const NEG_ZERO: float32x4_t = f32x4_from_array([-0.0; 4]);
-        let start = self.0;
-        let end = end.0;
         unsafe {
-            let dot = dot4_into_f32x4(start, end);
+            let dot = dot4_into_f32x4(self.0, end.0);
             // Calculate the bias, if the dot product is positive or zero, there is no bias
             // but if it is negative, we want to flip the 'end' rotation XYZW components
             let bias = vandq_u32(vreinterpretq_u32_f32(dot), vreinterpretq_u32_f32(NEG_ZERO));
-            let interpolated = vaddq_f32(
-                vmulq_f32(
-                    vsubq_f32(
-                        vreinterpretq_f32_u32(veorq_u32(vreinterpretq_u32_f32(end), bias)),
-                        start,
-                    ),
-                    vld1q_dup_f32(&s),
-                ),
-                start,
-            );
-            Quat(interpolated).normalize()
+            self.lerp_impl(
+                Self(vreinterpretq_f32_u32(veorq_u32(
+                    vreinterpretq_u32_f32(end.0),
+                    bias,
+                ))),
+                s,
+            )
         }
     }
 
@@ -665,8 +728,6 @@ impl Quat {
         glam_assert!(self.is_normalized());
         glam_assert!(end.is_normalized());
 
-        const DOT_THRESHOLD: f32 = 0.9995;
-
         // Note that a rotation can be represented by two quaternions: `q` and
         // `-q`. The slerp path between `q` and `end` will be different from the
         // path between `-q` and `end`. One path will take the long way around and
@@ -679,28 +740,17 @@ impl Quat {
             dot = -dot;
         }
 
+        const DOT_THRESHOLD: f32 = 1.0 - f32::EPSILON;
         if dot > DOT_THRESHOLD {
-            // assumes lerp returns a normalized quaternion
-            self.lerp(end, s)
+            // if above threshold perform linear interpolation to avoid divide by zero
+            self.lerp_impl(end, s)
         } else {
             let theta = math::acos_approx(dot);
 
-            let x = math::sin(theta * (1.0 - s));
-            let y = math::sin(theta * s);
-            let z = math::sin(theta);
-            let w = 0.0;
-            unsafe {
-                let tmp = vld1q_f32([x, y, z, w].as_ptr());
-
-                let scale1 = vdupq_laneq_f32(tmp, 0);
-                let scale2 = vdupq_laneq_f32(tmp, 1);
-                let theta_sin = vdupq_laneq_f32(tmp, 2);
-
-                Self(vdivq_f32(
-                    vaddq_f32(vmulq_f32(self.0, scale1), vmulq_f32(end.0, scale2)),
-                    theta_sin,
-                ))
-            }
+            let scale1 = math::sin(theta * (1.0 - s));
+            let scale2 = math::sin(theta * s);
+            let theta_sin = math::sin(theta);
+            ((self * scale1) + (end * scale2)) * (1.0 / theta_sin)
         }
     }
 
@@ -728,9 +778,6 @@ impl Quat {
     #[inline]
     #[must_use]
     pub fn mul_quat(self, rhs: Self) -> Self {
-        glam_assert!(self.is_normalized());
-        glam_assert!(rhs.is_normalized());
-
         unsafe {
             let lhs = self.0;
             let rhs = rhs.0;
@@ -816,7 +863,6 @@ impl Quat {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for Quat {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt.debug_tuple(stringify!(Quat))
@@ -828,7 +874,6 @@ impl fmt::Debug for Quat {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Quat {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(p) = f.precision() {

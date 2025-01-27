@@ -6,7 +6,6 @@ use crate::{
     swizzles::*,
     DMat2, DMat4, DQuat, DVec2, DVec3, EulerRot, Mat3,
 };
-#[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
@@ -553,6 +552,69 @@ impl DMat3 {
         DMat2::from_cols(self.x_axis.xy(), self.y_axis.xy()) * rhs
     }
 
+    /// Creates a left-handed view matrix using a facing direction and an up direction.
+    ///
+    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn look_to_lh(dir: DVec3, up: DVec3) -> Self {
+        Self::look_to_rh(-dir, up)
+    }
+
+    /// Creates a right-handed view matrix using a facing direction and an up direction.
+    ///
+    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn look_to_rh(dir: DVec3, up: DVec3) -> Self {
+        glam_assert!(dir.is_normalized());
+        glam_assert!(up.is_normalized());
+        let f = dir;
+        let s = f.cross(up).normalize();
+        let u = s.cross(f);
+
+        Self::from_cols(
+            DVec3::new(s.x, u.x, -f.x),
+            DVec3::new(s.y, u.y, -f.y),
+            DVec3::new(s.z, u.z, -f.z),
+        )
+    }
+
+    /// Creates a left-handed view matrix using a camera position, a focal point and an up
+    /// direction.
+    ///
+    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn look_at_lh(eye: DVec3, center: DVec3, up: DVec3) -> Self {
+        Self::look_to_lh(center.sub(eye).normalize(), up)
+    }
+
+    /// Creates a right-handed view matrix using a camera position, a focal point and an up
+    /// direction.
+    ///
+    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    #[inline]
+    pub fn look_at_rh(eye: DVec3, center: DVec3, up: DVec3) -> Self {
+        Self::look_to_rh(center.sub(eye).normalize(), up)
+    }
+
     /// Transforms a 3D vector.
     #[inline]
     #[must_use]
@@ -826,7 +888,6 @@ impl AsMut<[f64; 9]> for DMat3 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for DMat3 {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt.debug_struct(stringify!(DMat3))
@@ -837,7 +898,6 @@ impl fmt::Debug for DMat3 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for DMat3 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(p) = f.precision() {

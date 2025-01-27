@@ -164,6 +164,30 @@ macro_rules! impl_quat_tests {
             }
         });
 
+        glam_test!(test_quat_look_at, {
+            let eye = $vec3::new(0.0, 0.0, -5.0);
+            let center = $vec3::new(0.0, 0.0, 0.0);
+            let up = $vec3::new(1.0, 0.0, 0.0);
+
+            let point = $vec3::new(1.0, 0.0, 0.0);
+
+            let lh = $quat::look_at_lh(eye, center, up);
+            let rh = $quat::look_at_rh(eye, center, up);
+            assert_approx_eq!(lh * point, $vec3::new(0.0, 1.0, 0.0));
+            assert_approx_eq!(rh * point, $vec3::new(0.0, 1.0, 0.0));
+
+            let dir = (center - eye).normalize();
+            let lh = $quat::look_to_lh(dir, up);
+            let rh = $quat::look_to_rh(dir, up);
+            assert_approx_eq!(lh * point, $vec3::new(0.0, 1.0, 0.0));
+            assert_approx_eq!(rh * point, $vec3::new(0.0, 1.0, 0.0));
+
+            should_glam_assert!({ $quat::look_to_lh($vec3::ONE, $vec3::ZERO) });
+            should_glam_assert!({ $quat::look_to_lh($vec3::ZERO, $vec3::ONE) });
+            should_glam_assert!({ $quat::look_to_rh($vec3::ONE, $vec3::ZERO) });
+            should_glam_assert!({ $quat::look_to_rh($vec3::ZERO, $vec3::ONE) });
+        });
+
         glam_test!(test_mul_vec3, {
             let qrz = $quat::from_rotation_z(deg(90.0));
             assert_approx_eq!($vec3::Y, qrz * $vec3::X);
@@ -226,8 +250,6 @@ macro_rules! impl_quat_tests {
 
             should_glam_assert!({ ($quat::IDENTITY * 0.5).mul_vec3($vec3::X) });
             should_glam_assert!({ ($quat::IDENTITY * 0.5) * $vec3::X });
-            should_glam_assert!({ ($quat::IDENTITY * 0.5).mul_quat($quat::IDENTITY) });
-            should_glam_assert!({ ($quat::IDENTITY * 0.5) * $quat::IDENTITY });
         });
 
         glam_test!(test_angle_between, {
@@ -260,6 +282,9 @@ macro_rules! impl_quat_tests {
 
         glam_test!(test_lerp, {
             let q0 = $quat::from_rotation_y(deg(0.0));
+            assert_approx_eq!(q0, q0.slerp(q0, 0.0));
+            assert_approx_eq!(q0, q0.slerp(q0, 1.0));
+
             let q1 = $quat::from_rotation_y(deg(90.0));
             assert_approx_eq!(q0, q0.lerp(q1, 0.0));
             assert_approx_eq!(q1, q0.lerp(q1, 1.0));
@@ -271,13 +296,16 @@ macro_rules! impl_quat_tests {
 
         glam_test!(test_slerp, {
             let q0 = $quat::from_rotation_y(deg(0.0));
+            assert_approx_eq!(q0, q0.slerp(q0, 0.0));
+            assert_approx_eq!(q0, q0.slerp(q0, 1.0));
+
             let q1 = $quat::from_rotation_y(deg(90.0));
             assert_approx_eq!(q0, q0.slerp(q1, 0.0), 1.0e-3);
             assert_approx_eq!(q1, q0.slerp(q1, 1.0), 1.0e-3);
             assert_approx_eq!($quat::from_rotation_y(deg(45.0)), q0.slerp(q1, 0.5), 1.0e-3);
 
-            should_glam_assert!({ $quat::lerp($quat::IDENTITY * 2.0, $quat::IDENTITY, 1.0) });
-            should_glam_assert!({ $quat::lerp($quat::IDENTITY, $quat::IDENTITY * 0.5, 1.0) });
+            should_glam_assert!({ $quat::slerp($quat::IDENTITY * 2.0, $quat::IDENTITY, 1.0) });
+            should_glam_assert!({ $quat::slerp($quat::IDENTITY, $quat::IDENTITY * 0.5, 1.0) });
         });
 
         glam_test!(test_slerp_constant_speed, {
@@ -352,6 +380,11 @@ macro_rules! impl_quat_tests {
             );
             assert_approx_eq!(q2, q0.rotate_towards(q1, -FRAC_PI_2), eps);
             assert_approx_eq!(q2, q0.rotate_towards(q1, -FRAC_PI_2 * 1.5), eps);
+
+            // Small angles
+            let q0 = $quat::from_euler(EulerRot::YXZ, 0.0, 0.0, 0.0);
+            let q1 = $quat::from_euler(EulerRot::YXZ, 1e-4, 0.0, 0.0);
+            assert_eq!(q1, q0.rotate_towards(q1, FRAC_PI_2))
         });
 
         glam_test!(test_fmt, {

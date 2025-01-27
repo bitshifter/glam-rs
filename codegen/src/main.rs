@@ -4,6 +4,7 @@ use anyhow::{bail, Context};
 use clap::{arg, command};
 use rustfmt_wrapper::rustfmt;
 use std::path::Path;
+use tera::{from_value, to_value, Value};
 
 use outputs::build_output_pairs;
 
@@ -60,7 +61,28 @@ fn main() -> anyhow::Result<()> {
     } else {
         None
     };
-    let tera = tera::Tera::new("templates/**/*.rs.tera").context("tera parsing error(s)")?;
+    let mut tera = tera::Tera::new("templates/**/*.rs.tera").context("tera parsing error(s)")?;
+    tera.register_filter(
+        "snake_case",
+        |value: &Value, _: &_| -> tera::Result<Value> {
+            let input = from_value::<String>(value.clone())?;
+            let mut iter = input.chars();
+
+            let mut string = String::new();
+
+            if let Some(first) = iter.next() {
+                string.push(first.to_ascii_lowercase());
+
+                for char in iter {
+                    if char.is_uppercase() {
+                        string.push('_');
+                    }
+                    string.push(char.to_ascii_lowercase());
+                }
+            }
+            tera::Result::Ok(to_value(string)?)
+        },
+    );
 
     let repo = git2::Repository::open(GLAM_ROOT).context("failed to open git repo")?;
     let workdir = repo.workdir().unwrap();

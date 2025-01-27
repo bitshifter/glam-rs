@@ -2,7 +2,6 @@
 
 use crate::{f32::math, BVec2, Vec3};
 
-#[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::{f32, ops::*};
@@ -78,6 +77,16 @@ impl Vec2 {
         Self { x: v, y: v }
     }
 
+    /// Returns a vector containing each element of `self` modified by a mapping function `f`.
+    #[inline]
+    #[must_use]
+    pub fn map<F>(self, f: F) -> Self
+    where
+        F: Fn(f32) -> f32,
+    {
+        Self::new(f(self.x), f(self.y))
+    }
+
     /// Creates a vector from the elements in `if_true` and `if_false`, selecting which to use
     /// for each element of `self`.
     ///
@@ -114,6 +123,7 @@ impl Vec2 {
     #[inline]
     #[must_use]
     pub const fn from_slice(slice: &[f32]) -> Self {
+        assert!(slice.len() >= 2);
         Self::new(slice[0], slice[1])
     }
 
@@ -124,8 +134,7 @@ impl Vec2 {
     /// Panics if `slice` is less than 2 elements long.
     #[inline]
     pub fn write_to_slice(self, slice: &mut [f32]) {
-        slice[0] = self.x;
-        slice[1] = self.y;
+        slice[..2].copy_from_slice(&self.to_array());
     }
 
     /// Creates a 3D vector from `self` and the given `z` value.
@@ -682,7 +691,7 @@ impl Vec2 {
     #[inline]
     #[must_use]
     pub fn lerp(self, rhs: Self, s: f32) -> Self {
-        self + ((rhs - self) * s)
+        self * (1.0 - s) + rhs * s
     }
 
     /// Moves towards `rhs` based on the value `d`.
@@ -934,6 +943,20 @@ impl Vec2 {
         crate::DVec2::new(self.x as f64, self.y as f64)
     }
 
+    /// Casts all elements of `self` to `i8`.
+    #[inline]
+    #[must_use]
+    pub fn as_i8vec2(&self) -> crate::I8Vec2 {
+        crate::I8Vec2::new(self.x as i8, self.y as i8)
+    }
+
+    /// Casts all elements of `self` to `u8`.
+    #[inline]
+    #[must_use]
+    pub fn as_u8vec2(&self) -> crate::U8Vec2 {
+        crate::U8Vec2::new(self.x as u8, self.y as u8)
+    }
+
     /// Casts all elements of `self` to `i16`.
     #[inline]
     #[must_use]
@@ -995,11 +1018,42 @@ impl Div<Vec2> for Vec2 {
     }
 }
 
+impl Div<&Vec2> for Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn div(self, rhs: &Vec2) -> Vec2 {
+        self.div(*rhs)
+    }
+}
+
+impl Div<&Vec2> for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn div(self, rhs: &Vec2) -> Vec2 {
+        (*self).div(*rhs)
+    }
+}
+
+impl Div<Vec2> for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn div(self, rhs: Vec2) -> Vec2 {
+        (*self).div(rhs)
+    }
+}
+
 impl DivAssign<Vec2> for Vec2 {
     #[inline]
     fn div_assign(&mut self, rhs: Self) {
         self.x.div_assign(rhs.x);
         self.y.div_assign(rhs.y);
+    }
+}
+
+impl DivAssign<&Vec2> for Vec2 {
+    #[inline]
+    fn div_assign(&mut self, rhs: &Vec2) {
+        self.div_assign(*rhs)
     }
 }
 
@@ -1014,11 +1068,42 @@ impl Div<f32> for Vec2 {
     }
 }
 
+impl Div<&f32> for Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn div(self, rhs: &f32) -> Vec2 {
+        self.div(*rhs)
+    }
+}
+
+impl Div<&f32> for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn div(self, rhs: &f32) -> Vec2 {
+        (*self).div(*rhs)
+    }
+}
+
+impl Div<f32> for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn div(self, rhs: f32) -> Vec2 {
+        (*self).div(rhs)
+    }
+}
+
 impl DivAssign<f32> for Vec2 {
     #[inline]
     fn div_assign(&mut self, rhs: f32) {
         self.x.div_assign(rhs);
         self.y.div_assign(rhs);
+    }
+}
+
+impl DivAssign<&f32> for Vec2 {
+    #[inline]
+    fn div_assign(&mut self, rhs: &f32) {
+        self.div_assign(*rhs)
     }
 }
 
@@ -1033,6 +1118,30 @@ impl Div<Vec2> for f32 {
     }
 }
 
+impl Div<&Vec2> for f32 {
+    type Output = Vec2;
+    #[inline]
+    fn div(self, rhs: &Vec2) -> Vec2 {
+        self.div(*rhs)
+    }
+}
+
+impl Div<&Vec2> for &f32 {
+    type Output = Vec2;
+    #[inline]
+    fn div(self, rhs: &Vec2) -> Vec2 {
+        (*self).div(*rhs)
+    }
+}
+
+impl Div<Vec2> for &f32 {
+    type Output = Vec2;
+    #[inline]
+    fn div(self, rhs: Vec2) -> Vec2 {
+        (*self).div(rhs)
+    }
+}
+
 impl Mul<Vec2> for Vec2 {
     type Output = Self;
     #[inline]
@@ -1044,11 +1153,42 @@ impl Mul<Vec2> for Vec2 {
     }
 }
 
+impl Mul<&Vec2> for Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn mul(self, rhs: &Vec2) -> Vec2 {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&Vec2> for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn mul(self, rhs: &Vec2) -> Vec2 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<Vec2> for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn mul(self, rhs: Vec2) -> Vec2 {
+        (*self).mul(rhs)
+    }
+}
+
 impl MulAssign<Vec2> for Vec2 {
     #[inline]
     fn mul_assign(&mut self, rhs: Self) {
         self.x.mul_assign(rhs.x);
         self.y.mul_assign(rhs.y);
+    }
+}
+
+impl MulAssign<&Vec2> for Vec2 {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &Vec2) {
+        self.mul_assign(*rhs)
     }
 }
 
@@ -1063,11 +1203,42 @@ impl Mul<f32> for Vec2 {
     }
 }
 
+impl Mul<&f32> for Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn mul(self, rhs: &f32) -> Vec2 {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&f32> for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn mul(self, rhs: &f32) -> Vec2 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<f32> for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn mul(self, rhs: f32) -> Vec2 {
+        (*self).mul(rhs)
+    }
+}
+
 impl MulAssign<f32> for Vec2 {
     #[inline]
     fn mul_assign(&mut self, rhs: f32) {
         self.x.mul_assign(rhs);
         self.y.mul_assign(rhs);
+    }
+}
+
+impl MulAssign<&f32> for Vec2 {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &f32) {
+        self.mul_assign(*rhs)
     }
 }
 
@@ -1082,6 +1253,30 @@ impl Mul<Vec2> for f32 {
     }
 }
 
+impl Mul<&Vec2> for f32 {
+    type Output = Vec2;
+    #[inline]
+    fn mul(self, rhs: &Vec2) -> Vec2 {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&Vec2> for &f32 {
+    type Output = Vec2;
+    #[inline]
+    fn mul(self, rhs: &Vec2) -> Vec2 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<Vec2> for &f32 {
+    type Output = Vec2;
+    #[inline]
+    fn mul(self, rhs: Vec2) -> Vec2 {
+        (*self).mul(rhs)
+    }
+}
+
 impl Add<Vec2> for Vec2 {
     type Output = Self;
     #[inline]
@@ -1093,11 +1288,42 @@ impl Add<Vec2> for Vec2 {
     }
 }
 
+impl Add<&Vec2> for Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn add(self, rhs: &Vec2) -> Vec2 {
+        self.add(*rhs)
+    }
+}
+
+impl Add<&Vec2> for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn add(self, rhs: &Vec2) -> Vec2 {
+        (*self).add(*rhs)
+    }
+}
+
+impl Add<Vec2> for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn add(self, rhs: Vec2) -> Vec2 {
+        (*self).add(rhs)
+    }
+}
+
 impl AddAssign<Vec2> for Vec2 {
     #[inline]
     fn add_assign(&mut self, rhs: Self) {
         self.x.add_assign(rhs.x);
         self.y.add_assign(rhs.y);
+    }
+}
+
+impl AddAssign<&Vec2> for Vec2 {
+    #[inline]
+    fn add_assign(&mut self, rhs: &Vec2) {
+        self.add_assign(*rhs)
     }
 }
 
@@ -1112,11 +1338,42 @@ impl Add<f32> for Vec2 {
     }
 }
 
+impl Add<&f32> for Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn add(self, rhs: &f32) -> Vec2 {
+        self.add(*rhs)
+    }
+}
+
+impl Add<&f32> for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn add(self, rhs: &f32) -> Vec2 {
+        (*self).add(*rhs)
+    }
+}
+
+impl Add<f32> for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn add(self, rhs: f32) -> Vec2 {
+        (*self).add(rhs)
+    }
+}
+
 impl AddAssign<f32> for Vec2 {
     #[inline]
     fn add_assign(&mut self, rhs: f32) {
         self.x.add_assign(rhs);
         self.y.add_assign(rhs);
+    }
+}
+
+impl AddAssign<&f32> for Vec2 {
+    #[inline]
+    fn add_assign(&mut self, rhs: &f32) {
+        self.add_assign(*rhs)
     }
 }
 
@@ -1131,6 +1388,30 @@ impl Add<Vec2> for f32 {
     }
 }
 
+impl Add<&Vec2> for f32 {
+    type Output = Vec2;
+    #[inline]
+    fn add(self, rhs: &Vec2) -> Vec2 {
+        self.add(*rhs)
+    }
+}
+
+impl Add<&Vec2> for &f32 {
+    type Output = Vec2;
+    #[inline]
+    fn add(self, rhs: &Vec2) -> Vec2 {
+        (*self).add(*rhs)
+    }
+}
+
+impl Add<Vec2> for &f32 {
+    type Output = Vec2;
+    #[inline]
+    fn add(self, rhs: Vec2) -> Vec2 {
+        (*self).add(rhs)
+    }
+}
+
 impl Sub<Vec2> for Vec2 {
     type Output = Self;
     #[inline]
@@ -1142,11 +1423,42 @@ impl Sub<Vec2> for Vec2 {
     }
 }
 
+impl Sub<&Vec2> for Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn sub(self, rhs: &Vec2) -> Vec2 {
+        self.sub(*rhs)
+    }
+}
+
+impl Sub<&Vec2> for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn sub(self, rhs: &Vec2) -> Vec2 {
+        (*self).sub(*rhs)
+    }
+}
+
+impl Sub<Vec2> for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn sub(self, rhs: Vec2) -> Vec2 {
+        (*self).sub(rhs)
+    }
+}
+
 impl SubAssign<Vec2> for Vec2 {
     #[inline]
     fn sub_assign(&mut self, rhs: Vec2) {
         self.x.sub_assign(rhs.x);
         self.y.sub_assign(rhs.y);
+    }
+}
+
+impl SubAssign<&Vec2> for Vec2 {
+    #[inline]
+    fn sub_assign(&mut self, rhs: &Vec2) {
+        self.sub_assign(*rhs)
     }
 }
 
@@ -1161,11 +1473,42 @@ impl Sub<f32> for Vec2 {
     }
 }
 
+impl Sub<&f32> for Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn sub(self, rhs: &f32) -> Vec2 {
+        self.sub(*rhs)
+    }
+}
+
+impl Sub<&f32> for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn sub(self, rhs: &f32) -> Vec2 {
+        (*self).sub(*rhs)
+    }
+}
+
+impl Sub<f32> for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn sub(self, rhs: f32) -> Vec2 {
+        (*self).sub(rhs)
+    }
+}
+
 impl SubAssign<f32> for Vec2 {
     #[inline]
     fn sub_assign(&mut self, rhs: f32) {
         self.x.sub_assign(rhs);
         self.y.sub_assign(rhs);
+    }
+}
+
+impl SubAssign<&f32> for Vec2 {
+    #[inline]
+    fn sub_assign(&mut self, rhs: &f32) {
+        self.sub_assign(*rhs)
     }
 }
 
@@ -1180,6 +1523,30 @@ impl Sub<Vec2> for f32 {
     }
 }
 
+impl Sub<&Vec2> for f32 {
+    type Output = Vec2;
+    #[inline]
+    fn sub(self, rhs: &Vec2) -> Vec2 {
+        self.sub(*rhs)
+    }
+}
+
+impl Sub<&Vec2> for &f32 {
+    type Output = Vec2;
+    #[inline]
+    fn sub(self, rhs: &Vec2) -> Vec2 {
+        (*self).sub(*rhs)
+    }
+}
+
+impl Sub<Vec2> for &f32 {
+    type Output = Vec2;
+    #[inline]
+    fn sub(self, rhs: Vec2) -> Vec2 {
+        (*self).sub(rhs)
+    }
+}
+
 impl Rem<Vec2> for Vec2 {
     type Output = Self;
     #[inline]
@@ -1191,11 +1558,42 @@ impl Rem<Vec2> for Vec2 {
     }
 }
 
+impl Rem<&Vec2> for Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn rem(self, rhs: &Vec2) -> Vec2 {
+        self.rem(*rhs)
+    }
+}
+
+impl Rem<&Vec2> for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn rem(self, rhs: &Vec2) -> Vec2 {
+        (*self).rem(*rhs)
+    }
+}
+
+impl Rem<Vec2> for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn rem(self, rhs: Vec2) -> Vec2 {
+        (*self).rem(rhs)
+    }
+}
+
 impl RemAssign<Vec2> for Vec2 {
     #[inline]
     fn rem_assign(&mut self, rhs: Self) {
         self.x.rem_assign(rhs.x);
         self.y.rem_assign(rhs.y);
+    }
+}
+
+impl RemAssign<&Vec2> for Vec2 {
+    #[inline]
+    fn rem_assign(&mut self, rhs: &Vec2) {
+        self.rem_assign(*rhs)
     }
 }
 
@@ -1210,11 +1608,42 @@ impl Rem<f32> for Vec2 {
     }
 }
 
+impl Rem<&f32> for Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn rem(self, rhs: &f32) -> Vec2 {
+        self.rem(*rhs)
+    }
+}
+
+impl Rem<&f32> for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn rem(self, rhs: &f32) -> Vec2 {
+        (*self).rem(*rhs)
+    }
+}
+
+impl Rem<f32> for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn rem(self, rhs: f32) -> Vec2 {
+        (*self).rem(rhs)
+    }
+}
+
 impl RemAssign<f32> for Vec2 {
     #[inline]
     fn rem_assign(&mut self, rhs: f32) {
         self.x.rem_assign(rhs);
         self.y.rem_assign(rhs);
+    }
+}
+
+impl RemAssign<&f32> for Vec2 {
+    #[inline]
+    fn rem_assign(&mut self, rhs: &f32) {
+        self.rem_assign(*rhs)
     }
 }
 
@@ -1226,6 +1655,30 @@ impl Rem<Vec2> for f32 {
             x: self.rem(rhs.x),
             y: self.rem(rhs.y),
         }
+    }
+}
+
+impl Rem<&Vec2> for f32 {
+    type Output = Vec2;
+    #[inline]
+    fn rem(self, rhs: &Vec2) -> Vec2 {
+        self.rem(*rhs)
+    }
+}
+
+impl Rem<&Vec2> for &f32 {
+    type Output = Vec2;
+    #[inline]
+    fn rem(self, rhs: &Vec2) -> Vec2 {
+        (*self).rem(*rhs)
+    }
+}
+
+impl Rem<Vec2> for &f32 {
+    type Output = Vec2;
+    #[inline]
+    fn rem(self, rhs: Vec2) -> Vec2 {
+        (*self).rem(rhs)
     }
 }
 
@@ -1296,6 +1749,14 @@ impl Neg for Vec2 {
     }
 }
 
+impl Neg for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn neg(self) -> Vec2 {
+        (*self).neg()
+    }
+}
+
 impl Index<usize> for Vec2 {
     type Output = f32;
     #[inline]
@@ -1319,7 +1780,6 @@ impl IndexMut<usize> for Vec2 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for Vec2 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(p) = f.precision() {
@@ -1330,7 +1790,6 @@ impl fmt::Display for Vec2 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for Vec2 {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt.debug_tuple(stringify!(Vec2))

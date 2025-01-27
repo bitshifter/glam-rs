@@ -15,6 +15,10 @@
   * square matrices: [`DMat2`], [`DMat3`] and [`DMat4`]
   * a quaternion type: [`DQuat`]
   * affine transformation types: [`DAffine2`] and [`DAffine3`]
+* [`i8`](mod@i8) types
+  * vectors: [`I8Vec2`], [`I8Vec3`] and [`I8Vec4`]
+* [`u8`](mod@u8) types
+  * vectors: [`U8Vec2`], [`U8Vec3`] and [`U8Vec4`]
 * [`i16`](mod@i16) types
   * vectors: [`I16Vec2`], [`I16Vec3`] and [`I16Vec4`]
 * [`u16`](mod@u16) types
@@ -252,7 +256,7 @@ and benchmarks.
 The minimum supported Rust version is `1.68.2`.
 
 */
-#![doc(html_root_url = "https://docs.rs/glam/0.28.0")]
+#![doc(html_root_url = "https://docs.rs/glam/0.29.2")]
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(target_arch = "spirv", feature(repr_simd))]
 #![deny(
@@ -267,6 +271,9 @@ The minimum supported Rust version is `1.68.2`.
     all(feature = "core-simd", not(feature = "scalar-math")),
     feature(portable_simd)
 )]
+
+#[cfg(all(not(feature = "std"), not(feature = "libm")))]
+compile_error!("You must specify a math backend using either the `std` feature or `libm` feature");
 
 #[macro_use]
 mod macros;
@@ -317,6 +324,14 @@ pub use self::f32::*;
 /** `f64` vector, quaternion and matrix types. */
 pub mod f64;
 pub use self::f64::*;
+
+/** `i8` vector types. */
+pub mod i8;
+pub use self::i8::*;
+
+/** `u8` vector types. */
+pub mod u8;
+pub use self::u8::*;
 
 /** `i16` vector types. */
 pub mod i16;

@@ -1,8 +1,7 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec2, I16Vec2, I64Vec2, IVec2, U16Vec2, U64Vec2, UVec3};
+use crate::{BVec2, I16Vec2, I64Vec2, I8Vec2, IVec2, U16Vec2, U64Vec2, U8Vec2, UVec3};
 
-#[cfg(not(target_arch = "spirv"))]
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::{f32, ops::*};
@@ -61,6 +60,16 @@ impl UVec2 {
         Self { x: v, y: v }
     }
 
+    /// Returns a vector containing each element of `self` modified by a mapping function `f`.
+    #[inline]
+    #[must_use]
+    pub fn map<F>(self, f: F) -> Self
+    where
+        F: Fn(u32) -> u32,
+    {
+        Self::new(f(self.x), f(self.y))
+    }
+
     /// Creates a vector from the elements in `if_true` and `if_false`, selecting which to use
     /// for each element of `self`.
     ///
@@ -97,6 +106,7 @@ impl UVec2 {
     #[inline]
     #[must_use]
     pub const fn from_slice(slice: &[u32]) -> Self {
+        assert!(slice.len() >= 2);
         Self::new(slice[0], slice[1])
     }
 
@@ -107,8 +117,7 @@ impl UVec2 {
     /// Panics if `slice` is less than 2 elements long.
     #[inline]
     pub fn write_to_slice(self, slice: &mut [u32]) {
-        slice[0] = self.x;
-        slice[1] = self.y;
+        slice[..2].copy_from_slice(&self.to_array());
     }
 
     /// Creates a 3D vector from `self` and the given `z` value.
@@ -296,6 +305,45 @@ impl UVec2 {
         self.dot(self)
     }
 
+    /// Computes the [manhattan distance] between two points.
+    ///
+    /// # Overflow
+    /// This method may overflow if the result is greater than [`u32::MAX`].
+    ///
+    /// See also [`checked_manhattan_distance`][UVec2::checked_manhattan_distance].
+    ///
+    /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
+    #[inline]
+    #[must_use]
+    pub fn manhattan_distance(self, other: Self) -> u32 {
+        self.x.abs_diff(other.x) + self.y.abs_diff(other.y)
+    }
+
+    /// Computes the [manhattan distance] between two points.
+    ///
+    /// This will returns [`None`] if the result is greater than [`u32::MAX`].
+    ///
+    /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
+    #[inline]
+    #[must_use]
+    pub fn checked_manhattan_distance(self, other: Self) -> Option<u32> {
+        let d = self.x.abs_diff(other.x);
+        d.checked_add(self.y.abs_diff(other.y))
+    }
+
+    /// Computes the [chebyshev distance] between two points.
+    ///
+    /// [chebyshev distance]: https://en.wikipedia.org/wiki/Chebyshev_distance
+    #[inline]
+    #[must_use]
+    pub fn chebyshev_distance(self, other: Self) -> u32 {
+        // Note: the compiler will eventually optimize out the loop
+        [self.x.abs_diff(other.x), self.y.abs_diff(other.y)]
+            .into_iter()
+            .max()
+            .unwrap()
+    }
+
     /// Casts all elements of `self` to `f32`.
     #[inline]
     #[must_use]
@@ -308,6 +356,20 @@ impl UVec2 {
     #[must_use]
     pub fn as_dvec2(&self) -> crate::DVec2 {
         crate::DVec2::new(self.x as f64, self.y as f64)
+    }
+
+    /// Casts all elements of `self` to `i8`.
+    #[inline]
+    #[must_use]
+    pub fn as_i8vec2(&self) -> crate::I8Vec2 {
+        crate::I8Vec2::new(self.x as i8, self.y as i8)
+    }
+
+    /// Casts all elements of `self` to `u8`.
+    #[inline]
+    #[must_use]
+    pub fn as_u8vec2(&self) -> crate::U8Vec2 {
+        crate::U8Vec2::new(self.x as u8, self.y as u8)
     }
 
     /// Casts all elements of `self` to `i16`.
@@ -484,11 +546,42 @@ impl Div<UVec2> for UVec2 {
     }
 }
 
+impl Div<&UVec2> for UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn div(self, rhs: &UVec2) -> UVec2 {
+        self.div(*rhs)
+    }
+}
+
+impl Div<&UVec2> for &UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn div(self, rhs: &UVec2) -> UVec2 {
+        (*self).div(*rhs)
+    }
+}
+
+impl Div<UVec2> for &UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn div(self, rhs: UVec2) -> UVec2 {
+        (*self).div(rhs)
+    }
+}
+
 impl DivAssign<UVec2> for UVec2 {
     #[inline]
     fn div_assign(&mut self, rhs: Self) {
         self.x.div_assign(rhs.x);
         self.y.div_assign(rhs.y);
+    }
+}
+
+impl DivAssign<&UVec2> for UVec2 {
+    #[inline]
+    fn div_assign(&mut self, rhs: &UVec2) {
+        self.div_assign(*rhs)
     }
 }
 
@@ -503,11 +596,42 @@ impl Div<u32> for UVec2 {
     }
 }
 
+impl Div<&u32> for UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn div(self, rhs: &u32) -> UVec2 {
+        self.div(*rhs)
+    }
+}
+
+impl Div<&u32> for &UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn div(self, rhs: &u32) -> UVec2 {
+        (*self).div(*rhs)
+    }
+}
+
+impl Div<u32> for &UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn div(self, rhs: u32) -> UVec2 {
+        (*self).div(rhs)
+    }
+}
+
 impl DivAssign<u32> for UVec2 {
     #[inline]
     fn div_assign(&mut self, rhs: u32) {
         self.x.div_assign(rhs);
         self.y.div_assign(rhs);
+    }
+}
+
+impl DivAssign<&u32> for UVec2 {
+    #[inline]
+    fn div_assign(&mut self, rhs: &u32) {
+        self.div_assign(*rhs)
     }
 }
 
@@ -522,6 +646,30 @@ impl Div<UVec2> for u32 {
     }
 }
 
+impl Div<&UVec2> for u32 {
+    type Output = UVec2;
+    #[inline]
+    fn div(self, rhs: &UVec2) -> UVec2 {
+        self.div(*rhs)
+    }
+}
+
+impl Div<&UVec2> for &u32 {
+    type Output = UVec2;
+    #[inline]
+    fn div(self, rhs: &UVec2) -> UVec2 {
+        (*self).div(*rhs)
+    }
+}
+
+impl Div<UVec2> for &u32 {
+    type Output = UVec2;
+    #[inline]
+    fn div(self, rhs: UVec2) -> UVec2 {
+        (*self).div(rhs)
+    }
+}
+
 impl Mul<UVec2> for UVec2 {
     type Output = Self;
     #[inline]
@@ -533,11 +681,42 @@ impl Mul<UVec2> for UVec2 {
     }
 }
 
+impl Mul<&UVec2> for UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn mul(self, rhs: &UVec2) -> UVec2 {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&UVec2> for &UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn mul(self, rhs: &UVec2) -> UVec2 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<UVec2> for &UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn mul(self, rhs: UVec2) -> UVec2 {
+        (*self).mul(rhs)
+    }
+}
+
 impl MulAssign<UVec2> for UVec2 {
     #[inline]
     fn mul_assign(&mut self, rhs: Self) {
         self.x.mul_assign(rhs.x);
         self.y.mul_assign(rhs.y);
+    }
+}
+
+impl MulAssign<&UVec2> for UVec2 {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &UVec2) {
+        self.mul_assign(*rhs)
     }
 }
 
@@ -552,11 +731,42 @@ impl Mul<u32> for UVec2 {
     }
 }
 
+impl Mul<&u32> for UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn mul(self, rhs: &u32) -> UVec2 {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&u32> for &UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn mul(self, rhs: &u32) -> UVec2 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<u32> for &UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn mul(self, rhs: u32) -> UVec2 {
+        (*self).mul(rhs)
+    }
+}
+
 impl MulAssign<u32> for UVec2 {
     #[inline]
     fn mul_assign(&mut self, rhs: u32) {
         self.x.mul_assign(rhs);
         self.y.mul_assign(rhs);
+    }
+}
+
+impl MulAssign<&u32> for UVec2 {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &u32) {
+        self.mul_assign(*rhs)
     }
 }
 
@@ -571,6 +781,30 @@ impl Mul<UVec2> for u32 {
     }
 }
 
+impl Mul<&UVec2> for u32 {
+    type Output = UVec2;
+    #[inline]
+    fn mul(self, rhs: &UVec2) -> UVec2 {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&UVec2> for &u32 {
+    type Output = UVec2;
+    #[inline]
+    fn mul(self, rhs: &UVec2) -> UVec2 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<UVec2> for &u32 {
+    type Output = UVec2;
+    #[inline]
+    fn mul(self, rhs: UVec2) -> UVec2 {
+        (*self).mul(rhs)
+    }
+}
+
 impl Add<UVec2> for UVec2 {
     type Output = Self;
     #[inline]
@@ -582,11 +816,42 @@ impl Add<UVec2> for UVec2 {
     }
 }
 
+impl Add<&UVec2> for UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn add(self, rhs: &UVec2) -> UVec2 {
+        self.add(*rhs)
+    }
+}
+
+impl Add<&UVec2> for &UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn add(self, rhs: &UVec2) -> UVec2 {
+        (*self).add(*rhs)
+    }
+}
+
+impl Add<UVec2> for &UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn add(self, rhs: UVec2) -> UVec2 {
+        (*self).add(rhs)
+    }
+}
+
 impl AddAssign<UVec2> for UVec2 {
     #[inline]
     fn add_assign(&mut self, rhs: Self) {
         self.x.add_assign(rhs.x);
         self.y.add_assign(rhs.y);
+    }
+}
+
+impl AddAssign<&UVec2> for UVec2 {
+    #[inline]
+    fn add_assign(&mut self, rhs: &UVec2) {
+        self.add_assign(*rhs)
     }
 }
 
@@ -601,11 +866,42 @@ impl Add<u32> for UVec2 {
     }
 }
 
+impl Add<&u32> for UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn add(self, rhs: &u32) -> UVec2 {
+        self.add(*rhs)
+    }
+}
+
+impl Add<&u32> for &UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn add(self, rhs: &u32) -> UVec2 {
+        (*self).add(*rhs)
+    }
+}
+
+impl Add<u32> for &UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn add(self, rhs: u32) -> UVec2 {
+        (*self).add(rhs)
+    }
+}
+
 impl AddAssign<u32> for UVec2 {
     #[inline]
     fn add_assign(&mut self, rhs: u32) {
         self.x.add_assign(rhs);
         self.y.add_assign(rhs);
+    }
+}
+
+impl AddAssign<&u32> for UVec2 {
+    #[inline]
+    fn add_assign(&mut self, rhs: &u32) {
+        self.add_assign(*rhs)
     }
 }
 
@@ -620,6 +916,30 @@ impl Add<UVec2> for u32 {
     }
 }
 
+impl Add<&UVec2> for u32 {
+    type Output = UVec2;
+    #[inline]
+    fn add(self, rhs: &UVec2) -> UVec2 {
+        self.add(*rhs)
+    }
+}
+
+impl Add<&UVec2> for &u32 {
+    type Output = UVec2;
+    #[inline]
+    fn add(self, rhs: &UVec2) -> UVec2 {
+        (*self).add(*rhs)
+    }
+}
+
+impl Add<UVec2> for &u32 {
+    type Output = UVec2;
+    #[inline]
+    fn add(self, rhs: UVec2) -> UVec2 {
+        (*self).add(rhs)
+    }
+}
+
 impl Sub<UVec2> for UVec2 {
     type Output = Self;
     #[inline]
@@ -631,11 +951,42 @@ impl Sub<UVec2> for UVec2 {
     }
 }
 
+impl Sub<&UVec2> for UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn sub(self, rhs: &UVec2) -> UVec2 {
+        self.sub(*rhs)
+    }
+}
+
+impl Sub<&UVec2> for &UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn sub(self, rhs: &UVec2) -> UVec2 {
+        (*self).sub(*rhs)
+    }
+}
+
+impl Sub<UVec2> for &UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn sub(self, rhs: UVec2) -> UVec2 {
+        (*self).sub(rhs)
+    }
+}
+
 impl SubAssign<UVec2> for UVec2 {
     #[inline]
     fn sub_assign(&mut self, rhs: UVec2) {
         self.x.sub_assign(rhs.x);
         self.y.sub_assign(rhs.y);
+    }
+}
+
+impl SubAssign<&UVec2> for UVec2 {
+    #[inline]
+    fn sub_assign(&mut self, rhs: &UVec2) {
+        self.sub_assign(*rhs)
     }
 }
 
@@ -650,11 +1001,42 @@ impl Sub<u32> for UVec2 {
     }
 }
 
+impl Sub<&u32> for UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn sub(self, rhs: &u32) -> UVec2 {
+        self.sub(*rhs)
+    }
+}
+
+impl Sub<&u32> for &UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn sub(self, rhs: &u32) -> UVec2 {
+        (*self).sub(*rhs)
+    }
+}
+
+impl Sub<u32> for &UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn sub(self, rhs: u32) -> UVec2 {
+        (*self).sub(rhs)
+    }
+}
+
 impl SubAssign<u32> for UVec2 {
     #[inline]
     fn sub_assign(&mut self, rhs: u32) {
         self.x.sub_assign(rhs);
         self.y.sub_assign(rhs);
+    }
+}
+
+impl SubAssign<&u32> for UVec2 {
+    #[inline]
+    fn sub_assign(&mut self, rhs: &u32) {
+        self.sub_assign(*rhs)
     }
 }
 
@@ -669,6 +1051,30 @@ impl Sub<UVec2> for u32 {
     }
 }
 
+impl Sub<&UVec2> for u32 {
+    type Output = UVec2;
+    #[inline]
+    fn sub(self, rhs: &UVec2) -> UVec2 {
+        self.sub(*rhs)
+    }
+}
+
+impl Sub<&UVec2> for &u32 {
+    type Output = UVec2;
+    #[inline]
+    fn sub(self, rhs: &UVec2) -> UVec2 {
+        (*self).sub(*rhs)
+    }
+}
+
+impl Sub<UVec2> for &u32 {
+    type Output = UVec2;
+    #[inline]
+    fn sub(self, rhs: UVec2) -> UVec2 {
+        (*self).sub(rhs)
+    }
+}
+
 impl Rem<UVec2> for UVec2 {
     type Output = Self;
     #[inline]
@@ -680,11 +1086,42 @@ impl Rem<UVec2> for UVec2 {
     }
 }
 
+impl Rem<&UVec2> for UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn rem(self, rhs: &UVec2) -> UVec2 {
+        self.rem(*rhs)
+    }
+}
+
+impl Rem<&UVec2> for &UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn rem(self, rhs: &UVec2) -> UVec2 {
+        (*self).rem(*rhs)
+    }
+}
+
+impl Rem<UVec2> for &UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn rem(self, rhs: UVec2) -> UVec2 {
+        (*self).rem(rhs)
+    }
+}
+
 impl RemAssign<UVec2> for UVec2 {
     #[inline]
     fn rem_assign(&mut self, rhs: Self) {
         self.x.rem_assign(rhs.x);
         self.y.rem_assign(rhs.y);
+    }
+}
+
+impl RemAssign<&UVec2> for UVec2 {
+    #[inline]
+    fn rem_assign(&mut self, rhs: &UVec2) {
+        self.rem_assign(*rhs)
     }
 }
 
@@ -699,11 +1136,42 @@ impl Rem<u32> for UVec2 {
     }
 }
 
+impl Rem<&u32> for UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn rem(self, rhs: &u32) -> UVec2 {
+        self.rem(*rhs)
+    }
+}
+
+impl Rem<&u32> for &UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn rem(self, rhs: &u32) -> UVec2 {
+        (*self).rem(*rhs)
+    }
+}
+
+impl Rem<u32> for &UVec2 {
+    type Output = UVec2;
+    #[inline]
+    fn rem(self, rhs: u32) -> UVec2 {
+        (*self).rem(rhs)
+    }
+}
+
 impl RemAssign<u32> for UVec2 {
     #[inline]
     fn rem_assign(&mut self, rhs: u32) {
         self.x.rem_assign(rhs);
         self.y.rem_assign(rhs);
+    }
+}
+
+impl RemAssign<&u32> for UVec2 {
+    #[inline]
+    fn rem_assign(&mut self, rhs: &u32) {
+        self.rem_assign(*rhs)
     }
 }
 
@@ -715,6 +1183,30 @@ impl Rem<UVec2> for u32 {
             x: self.rem(rhs.x),
             y: self.rem(rhs.y),
         }
+    }
+}
+
+impl Rem<&UVec2> for u32 {
+    type Output = UVec2;
+    #[inline]
+    fn rem(self, rhs: &UVec2) -> UVec2 {
+        self.rem(*rhs)
+    }
+}
+
+impl Rem<&UVec2> for &u32 {
+    type Output = UVec2;
+    #[inline]
+    fn rem(self, rhs: &UVec2) -> UVec2 {
+        (*self).rem(*rhs)
+    }
+}
+
+impl Rem<UVec2> for &u32 {
+    type Output = UVec2;
+    #[inline]
+    fn rem(self, rhs: UVec2) -> UVec2 {
+        (*self).rem(rhs)
     }
 }
 
@@ -1094,14 +1586,12 @@ impl IndexMut<usize> for UVec2 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Display for UVec2 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "[{}, {}]", self.x, self.y)
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl fmt::Debug for UVec2 {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt.debug_tuple(stringify!(UVec2))
@@ -1139,10 +1629,26 @@ impl From<UVec2> for (u32, u32) {
     }
 }
 
+impl From<U8Vec2> for UVec2 {
+    #[inline]
+    fn from(v: U8Vec2) -> Self {
+        Self::new(u32::from(v.x), u32::from(v.y))
+    }
+}
+
 impl From<U16Vec2> for UVec2 {
     #[inline]
     fn from(v: U16Vec2) -> Self {
         Self::new(u32::from(v.x), u32::from(v.y))
+    }
+}
+
+impl TryFrom<I8Vec2> for UVec2 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: I8Vec2) -> Result<Self, Self::Error> {
+        Ok(Self::new(u32::try_from(v.x)?, u32::try_from(v.y)?))
     }
 }
 
