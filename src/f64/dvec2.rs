@@ -833,14 +833,14 @@ impl DVec2 {
         }
     }
 
-    /// Creates a 2D vector containing `[angle.cos(), angle.sin()]`. This can be used in
+    /// Creates a 2D vector containing `[radians.cos(), radians.sin()]`. This can be used in
     /// conjunction with the [`rotate()`][Self::rotate()] method, e.g.
-    /// `DVec2::from_angle(PI).rotate(DVec2::Y)` will create the vector `[-1, 0]`
-    /// and rotate [`DVec2::Y`] around it returning `-DVec2::Y`.
+    /// `DVec2::from_angle(PI).rotate(DVec2::Y)` will create the vector `[-1, 0]` and rotate
+    /// [`DVec2::Y`] around it returning `-DVec2::Y`.
     #[inline]
     #[must_use]
-    pub fn from_angle(angle: f64) -> Self {
-        let (sin, cos) = math::sin_cos(angle);
+    pub fn from_angle(radians: f64) -> Self {
+        let (sin, cos) = math::sin_cos(radians);
         Self { x: cos, y: sin }
     }
 
@@ -909,21 +909,21 @@ impl DVec2 {
         }
     }
 
-    /// Rotates towards `rhs` up to `max_angle` (in radians).
+    /// Rotates towards `rhs` up to an angle of `max_radians`.
     ///
-    /// When `max_angle` is `0.0`, the result will be equal to `self`. When `max_angle` is equal to
-    /// `self.angle_between(rhs)`, the result will be equal to `rhs`. If `max_angle` is negative,
+    /// When `max_radians` is `0.0`, the result will be equal to `self`. When `max_radians` is equal to
+    /// `self.angle_between(rhs)`, the result will be equal to `rhs`. If `max_radians` is negative,
     /// rotates towards the exact opposite of `rhs`. Will not go past the target.
     #[inline]
     #[must_use]
-    pub fn rotate_towards(&self, rhs: Self, max_angle: f64) -> Self {
+    pub fn rotate_towards(&self, rhs: Self, max_radians: f64) -> Self {
         let a = self.angle_to(rhs);
         let abs_a = math::abs(a);
         if abs_a <= 1e-4 {
             return rhs;
         }
-        // When `max_angle < 0`, rotate no further than `PI` radians away
-        let angle = max_angle.clamp(abs_a - core::f64::consts::PI, abs_a) * math::signum(a);
+        // When `max_radians < 0`, rotate no further than `PI` radians away
+        let angle = max_radians.clamp(abs_a - core::f64::consts::PI, abs_a) * math::signum(a);
         Self::from_angle(angle).rotate(*self)
     }
 

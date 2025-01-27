@@ -139,45 +139,45 @@ impl DAffine3 {
     }
 
     /// Creates an affine transform containing a 3D rotation around a normalized
-    /// rotation `axis` of `angle` (in radians).
+    /// rotation `axis` of an angle of `radians`.
     #[inline]
     #[must_use]
-    pub fn from_axis_angle(axis: DVec3, angle: f64) -> Self {
+    pub fn from_axis_angle(axis: DVec3, radians: f64) -> Self {
         Self {
-            matrix3: DMat3::from_axis_angle(axis, angle),
+            matrix3: DMat3::from_axis_angle(axis, radians),
             translation: DVec3::ZERO,
         }
     }
 
-    /// Creates an affine transform containing a 3D rotation around the x axis of
-    /// `angle` (in radians).
+    /// Creates an affine transform containing a 3D rotation around the x axis of an
+    /// angle of `radians`.
     #[inline]
     #[must_use]
-    pub fn from_rotation_x(angle: f64) -> Self {
+    pub fn from_rotation_x(radians: f64) -> Self {
         Self {
-            matrix3: DMat3::from_rotation_x(angle),
+            matrix3: DMat3::from_rotation_x(radians),
             translation: DVec3::ZERO,
         }
     }
 
-    /// Creates an affine transform containing a 3D rotation around the y axis of
-    /// `angle` (in radians).
+    /// Creates an affine transform containing a 3D rotation around the y axis of an
+    /// angle of `radians`.
     #[inline]
     #[must_use]
-    pub fn from_rotation_y(angle: f64) -> Self {
+    pub fn from_rotation_y(radians: f64) -> Self {
         Self {
-            matrix3: DMat3::from_rotation_y(angle),
+            matrix3: DMat3::from_rotation_y(radians),
             translation: DVec3::ZERO,
         }
     }
 
-    /// Creates an affine transform containing a 3D rotation around the z axis of
-    /// `angle` (in radians).
+    /// Creates an affine transform containing a 3D rotation around the z axis of an
+    /// angle of `radians`.
     #[inline]
     #[must_use]
-    pub fn from_rotation_z(angle: f64) -> Self {
+    pub fn from_rotation_z(radians: f64) -> Self {
         Self {
-            matrix3: DMat3::from_rotation_z(angle),
+            matrix3: DMat3::from_rotation_z(radians),
             translation: DVec3::ZERO,
         }
     }

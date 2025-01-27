@@ -225,18 +225,18 @@ impl DMat3 {
         )
     }
 
-    /// Creates a 3D rotation matrix from a normalized rotation `axis` and `angle` (in
-    /// radians).
+    /// Creates a 3D rotation matrix from a normalized rotation `axis` and an angle of
+    /// `radians`.
     ///
     /// # Panics
     ///
     /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn from_axis_angle(axis: DVec3, angle: f64) -> Self {
+    pub fn from_axis_angle(axis: DVec3, radians: f64) -> Self {
         glam_assert!(axis.is_normalized());
 
-        let (sin, cos) = math::sin_cos(angle);
+        let (sin, cos) = math::sin_cos(radians);
         let (xsin, ysin, zsin) = axis.mul(sin).into();
         let (x, y, z) = axis.into();
         let (x2, y2, z2) = axis.mul(axis).into();
@@ -278,11 +278,11 @@ impl DMat3 {
         self.to_euler_angles(order)
     }
 
-    /// Creates a 3D rotation matrix from `angle` (in radians) around the x axis.
+    /// Creates a 3D rotation matrix from an angle of `radians` around the x axis.
     #[inline]
     #[must_use]
-    pub fn from_rotation_x(angle: f64) -> Self {
-        let (sina, cosa) = math::sin_cos(angle);
+    pub fn from_rotation_x(radians: f64) -> Self {
+        let (sina, cosa) = math::sin_cos(radians);
         Self::from_cols(
             DVec3::X,
             DVec3::new(0.0, cosa, sina),
@@ -290,11 +290,11 @@ impl DMat3 {
         )
     }
 
-    /// Creates a 3D rotation matrix from `angle` (in radians) around the y axis.
+    /// Creates a 3D rotation matrix from an angle of `radians` around the y axis.
     #[inline]
     #[must_use]
-    pub fn from_rotation_y(angle: f64) -> Self {
-        let (sina, cosa) = math::sin_cos(angle);
+    pub fn from_rotation_y(radians: f64) -> Self {
+        let (sina, cosa) = math::sin_cos(radians);
         Self::from_cols(
             DVec3::new(cosa, 0.0, -sina),
             DVec3::Y,
@@ -302,11 +302,11 @@ impl DMat3 {
         )
     }
 
-    /// Creates a 3D rotation matrix from `angle` (in radians) around the z axis.
+    /// Creates a 3D rotation matrix from an angle of `radians` around the z axis.
     #[inline]
     #[must_use]
-    pub fn from_rotation_z(angle: f64) -> Self {
-        let (sina, cosa) = math::sin_cos(angle);
+    pub fn from_rotation_z(radians: f64) -> Self {
+        let (sina, cosa) = math::sin_cos(radians);
         Self::from_cols(
             DVec3::new(cosa, sina, 0.0),
             DVec3::new(-sina, cosa, 0.0),
@@ -328,15 +328,15 @@ impl DMat3 {
         )
     }
 
-    /// Creates an affine transformation matrix from the given 2D rotation `angle` (in
-    /// radians).
+    /// Creates an affine transformation matrix from the given 2D rotation angle of
+    /// `radians`.
     ///
     /// The resulting matrix can be used to transform 2D points and vectors. See
     /// [`Self::transform_point2()`] and [`Self::transform_vector2()`].
     #[inline]
     #[must_use]
-    pub fn from_angle(angle: f64) -> Self {
-        let (sin, cos) = math::sin_cos(angle);
+    pub fn from_angle(radians: f64) -> Self {
+        let (sin, cos) = math::sin_cos(radians);
         Self::from_cols(
             DVec3::new(cos, sin, 0.0),
             DVec3::new(-sin, cos, 0.0),
@@ -344,15 +344,15 @@ impl DMat3 {
         )
     }
 
-    /// Creates an affine transformation matrix from the given 2D `scale`, rotation `angle` (in
-    /// radians) and `translation`.
+    /// Creates an affine transformation matrix from the given 2D `scale`, rotation angle of
+    /// `radians` and `translation`.
     ///
     /// The resulting matrix can be used to transform 2D points and vectors. See
     /// [`Self::transform_point2()`] and [`Self::transform_vector2()`].
     #[inline]
     #[must_use]
-    pub fn from_scale_angle_translation(scale: DVec2, angle: f64, translation: DVec2) -> Self {
-        let (sin, cos) = math::sin_cos(angle);
+    pub fn from_scale_angle_translation(scale: DVec2, radians: f64, translation: DVec2) -> Self {
+        let (sin, cos) = math::sin_cos(radians);
         Self::from_cols(
             DVec3::new(cos * scale.x, sin * scale.x, 0.0),
             DVec3::new(-sin * scale.y, cos * scale.y, 0.0),

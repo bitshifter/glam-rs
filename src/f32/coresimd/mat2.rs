@@ -90,20 +90,20 @@ impl Mat2 {
         Self::new(diagonal.x, 0.0, 0.0, diagonal.y)
     }
 
-    /// Creates a 2x2 matrix containing the combining non-uniform `scale` and rotation of
-    /// `angle` (in radians).
+    /// Creates a 2x2 matrix containing the combining non-uniform `scale` and rotation of an
+    /// angle of `radians`.
     #[inline]
     #[must_use]
-    pub fn from_scale_angle(scale: Vec2, angle: f32) -> Self {
-        let (sin, cos) = math::sin_cos(angle);
+    pub fn from_scale_angle(scale: Vec2, radians: f32) -> Self {
+        let (sin, cos) = math::sin_cos(radians);
         Self::new(cos * scale.x, sin * scale.x, -sin * scale.y, cos * scale.y)
     }
 
-    /// Creates a 2x2 matrix containing a rotation of `angle` (in radians).
+    /// Creates a 2x2 matrix containing a rotation angle of `radians`.
     #[inline]
     #[must_use]
-    pub fn from_angle(angle: f32) -> Self {
-        let (sin, cos) = math::sin_cos(angle);
+    pub fn from_angle(radians: f32) -> Self {
+        let (sin, cos) = math::sin_cos(radians);
         Self::new(cos, sin, -sin, cos)
     }
 

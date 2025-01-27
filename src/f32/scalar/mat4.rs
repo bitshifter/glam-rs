@@ -347,7 +347,7 @@ impl Mat4 {
     }
 
     /// Creates an affine transformation matrix containing a 3D rotation around a normalized
-    /// rotation `axis` of `angle` (in radians).
+    /// rotation `axis` of an angle of `radians`.
     ///
     /// The resulting matrix can be used to transform 3D points and vectors. See
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
@@ -357,10 +357,10 @@ impl Mat4 {
     /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
+    pub fn from_axis_angle(axis: Vec3, radians: f32) -> Self {
         glam_assert!(axis.is_normalized());
 
-        let (sin, cos) = math::sin_cos(angle);
+        let (sin, cos) = math::sin_cos(radians);
         let axis_sin = axis.mul(sin);
         let axis_sq = axis.mul(axis);
         let omc = 1.0 - cos;
@@ -421,15 +421,15 @@ impl Mat4 {
         self.to_euler_angles(order)
     }
 
-    /// Creates an affine transformation matrix containing a 3D rotation around the x axis of
-    /// `angle` (in radians).
+    /// Creates an affine transformation matrix containing a 3D rotation around the x axis of an
+    /// angle of `radians`.
     ///
     /// The resulting matrix can be used to transform 3D points and vectors. See
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
     #[must_use]
-    pub fn from_rotation_x(angle: f32) -> Self {
-        let (sina, cosa) = math::sin_cos(angle);
+    pub fn from_rotation_x(radians: f32) -> Self {
+        let (sina, cosa) = math::sin_cos(radians);
         Self::from_cols(
             Vec4::X,
             Vec4::new(0.0, cosa, sina, 0.0),
@@ -438,15 +438,15 @@ impl Mat4 {
         )
     }
 
-    /// Creates an affine transformation matrix containing a 3D rotation around the y axis of
-    /// `angle` (in radians).
+    /// Creates an affine transformation matrix containing a 3D rotation around the y axis of an
+    /// angle of `radians`.
     ///
     /// The resulting matrix can be used to transform 3D points and vectors. See
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
     #[must_use]
-    pub fn from_rotation_y(angle: f32) -> Self {
-        let (sina, cosa) = math::sin_cos(angle);
+    pub fn from_rotation_y(radians: f32) -> Self {
+        let (sina, cosa) = math::sin_cos(radians);
         Self::from_cols(
             Vec4::new(cosa, 0.0, -sina, 0.0),
             Vec4::Y,
@@ -455,15 +455,15 @@ impl Mat4 {
         )
     }
 
-    /// Creates an affine transformation matrix containing a 3D rotation around the z axis of
-    /// `angle` (in radians).
+    /// Creates an affine transformation matrix containing a 3D rotation around the z axis of an
+    /// angle of `radians`.
     ///
     /// The resulting matrix can be used to transform 3D points and vectors. See
     /// [`Self::transform_point3()`] and [`Self::transform_vector3()`].
     #[inline]
     #[must_use]
-    pub fn from_rotation_z(angle: f32) -> Self {
-        let (sina, cosa) = math::sin_cos(angle);
+    pub fn from_rotation_z(radians: f32) -> Self {
+        let (sina, cosa) = math::sin_cos(radians);
         Self::from_cols(
             Vec4::new(cosa, sina, 0.0, 0.0),
             Vec4::new(-sina, cosa, 0.0, 0.0),

@@ -92,19 +92,19 @@ impl DMat2 {
     }
 
     /// Creates a 2x2 matrix containing the combining non-uniform `scale` and rotation of
-    /// `angle` (in radians).
+    /// an angle of `radians`.
     #[inline]
     #[must_use]
-    pub fn from_scale_angle(scale: DVec2, angle: f64) -> Self {
-        let (sin, cos) = math::sin_cos(angle);
+    pub fn from_scale_angle(scale: DVec2, radians: f64) -> Self {
+        let (sin, cos) = math::sin_cos(radians);
         Self::new(cos * scale.x, sin * scale.x, -sin * scale.y, cos * scale.y)
     }
 
-    /// Creates a 2x2 matrix containing a rotation of `angle` (in radians).
+    /// Creates a 2x2 matrix containing a rotation of an angle of `radians`.
     #[inline]
     #[must_use]
-    pub fn from_angle(angle: f64) -> Self {
-        let (sin, cos) = math::sin_cos(angle);
+    pub fn from_angle(radians: f64) -> Self {
+        let (sin, cos) = math::sin_cos(radians);
         Self::new(cos, sin, -sin, cos)
     }
 

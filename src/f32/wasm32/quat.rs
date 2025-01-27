@@ -117,7 +117,7 @@ impl Quat {
         slice[3] = self.w;
     }
 
-    /// Create a quaternion for a normalized rotation `axis` and `angle` (in radians).
+    /// Create a quaternion for a normalized rotation `axis` and an angle `radians`.
     ///
     /// The axis must be a unit vector.
     ///
@@ -126,7 +126,7 @@ impl Quat {
     /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
+    pub fn from_axis_angle(axis: Vec3, radians: f32) -> Self {
         glam_assert!(axis.is_normalized());
         let (s, c) = math::sin_cos(angle * 0.5);
         let v = axis * s;
@@ -147,27 +147,27 @@ impl Quat {
         }
     }
 
-    /// Creates a quaternion from the `angle` (in radians) around the x axis.
+    /// Creates a quaternion from an angle of `radians` around the x axis.
     #[inline]
     #[must_use]
-    pub fn from_rotation_x(angle: f32) -> Self {
-        let (s, c) = math::sin_cos(angle * 0.5);
+    pub fn from_rotation_x(radians: f32) -> Self {
+        let (s, c) = math::sin_cos(radians * 0.5);
         Self::from_xyzw(s, 0.0, 0.0, c)
     }
 
-    /// Creates a quaternion from the `angle` (in radians) around the y axis.
+    /// Creates a quaternion from an angle of `radians` around the y axis.
     #[inline]
     #[must_use]
-    pub fn from_rotation_y(angle: f32) -> Self {
-        let (s, c) = math::sin_cos(angle * 0.5);
+    pub fn from_rotation_y(radians: f32) -> Self {
+        let (s, c) = math::sin_cos(radians * 0.5);
         Self::from_xyzw(0.0, s, 0.0, c)
     }
 
-    /// Creates a quaternion from the `angle` (in radians) around the z axis.
+    /// Creates a quaternion from an `angle` of `radians` around the z axis.
     #[inline]
     #[must_use]
-    pub fn from_rotation_z(angle: f32) -> Self {
-        let (s, c) = math::sin_cos(angle * 0.5);
+    pub fn from_rotation_z(radians: f32) -> Self {
+        let (s, c) = math::sin_cos(radians * 0.5);
         Self::from_xyzw(0.0, 0.0, s, c)
     }
 
@@ -568,10 +568,10 @@ impl Quat {
         math::acos_approx(math::abs(self.dot(rhs))) * 2.0
     }
 
-    /// Rotates towards `rhs` up to `max_angle` (in radians).
+    /// Rotates towards `rhs` up to an angle of `max_radians`.
     ///
-    /// When `max_angle` is `0.0`, the result will be equal to `self`. When `max_angle` is equal to
-    /// `self.angle_between(rhs)`, the result will be equal to `rhs`. If `max_angle` is negative,
+    /// When `max_radians` is `0.0`, the result will be equal to `self`. When `max_radians` is equal to
+    /// `self.angle_between(rhs)`, the result will be equal to `rhs`. If `max_radians` is negative,
     /// rotates towards the exact opposite of `rhs`. Will not go past the target.
     ///
     /// Both quaternions must be normalized.
@@ -581,13 +581,13 @@ impl Quat {
     /// Will panic if `self` or `rhs` are not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn rotate_towards(&self, rhs: Self, max_angle: f32) -> Self {
+    pub fn rotate_towards(&self, rhs: Self, max_radians: f32) -> Self {
         glam_assert!(self.is_normalized() && rhs.is_normalized());
         let angle = self.angle_between(rhs);
         if angle <= 1e-4 {
             return *self;
         }
-        let s = (max_angle / angle).clamp(-1.0, 1.0);
+        let s = (max_radians / angle).clamp(-1.0, 1.0);
         self.slerp(rhs, s)
     }
 

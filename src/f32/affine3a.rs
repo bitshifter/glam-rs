@@ -141,45 +141,45 @@ impl Affine3A {
     }
 
     /// Creates an affine transform containing a 3D rotation around a normalized
-    /// rotation `axis` of `angle` (in radians).
+    /// rotation `axis` of an angle of `radians`.
     #[inline]
     #[must_use]
-    pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
+    pub fn from_axis_angle(axis: Vec3, radians: f32) -> Self {
         Self {
-            matrix3: Mat3A::from_axis_angle(axis, angle),
+            matrix3: Mat3A::from_axis_angle(axis, radians),
             translation: Vec3A::ZERO,
         }
     }
 
-    /// Creates an affine transform containing a 3D rotation around the x axis of
-    /// `angle` (in radians).
+    /// Creates an affine transform containing a 3D rotation around the x axis of an
+    /// angle of `radians`.
     #[inline]
     #[must_use]
-    pub fn from_rotation_x(angle: f32) -> Self {
+    pub fn from_rotation_x(radians: f32) -> Self {
         Self {
-            matrix3: Mat3A::from_rotation_x(angle),
+            matrix3: Mat3A::from_rotation_x(radians),
             translation: Vec3A::ZERO,
         }
     }
 
-    /// Creates an affine transform containing a 3D rotation around the y axis of
-    /// `angle` (in radians).
+    /// Creates an affine transform containing a 3D rotation around the y axis of an
+    /// angle of `radians`.
     #[inline]
     #[must_use]
-    pub fn from_rotation_y(angle: f32) -> Self {
+    pub fn from_rotation_y(radians: f32) -> Self {
         Self {
-            matrix3: Mat3A::from_rotation_y(angle),
+            matrix3: Mat3A::from_rotation_y(radians),
             translation: Vec3A::ZERO,
         }
     }
 
-    /// Creates an affine transform containing a 3D rotation around the z axis of
-    /// `angle` (in radians).
+    /// Creates an affine transform containing a 3D rotation around the z axis of an
+    /// angle of `radians`.
     #[inline]
     #[must_use]
-    pub fn from_rotation_z(angle: f32) -> Self {
+    pub fn from_rotation_z(radians: f32) -> Self {
         Self {
-            matrix3: Mat3A::from_rotation_z(angle),
+            matrix3: Mat3A::from_rotation_z(radians),
             translation: Vec3A::ZERO,
         }
     }

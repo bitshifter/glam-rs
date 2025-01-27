@@ -127,12 +127,12 @@ impl Affine2 {
         }
     }
 
-    /// Creates an affine transform from the given rotation `angle`.
+    /// Creates an affine transform from the given rotation angle of `radians`.
     #[inline]
     #[must_use]
-    pub fn from_angle(angle: f32) -> Self {
+    pub fn from_angle(radians: f32) -> Self {
         Self {
-            matrix2: Mat2::from_angle(angle),
+            matrix2: Mat2::from_angle(radians),
             translation: Vec2::ZERO,
         }
     }
@@ -171,30 +171,30 @@ impl Affine2 {
         }
     }
 
-    /// Creates an affine transform from the given 2D `scale`, rotation `angle` (in radians) and
+    /// Creates an affine transform from the given 2D `scale`, rotation angle of `radians` and
     /// `translation`.
     ///
     /// Equivalent to `Affine2::from_translation(translation) *
     /// Affine2::from_angle(angle) * Affine2::from_scale(scale)`
     #[inline]
     #[must_use]
-    pub fn from_scale_angle_translation(scale: Vec2, angle: f32, translation: Vec2) -> Self {
-        let rotation = Mat2::from_angle(angle);
+    pub fn from_scale_angle_translation(scale: Vec2, radians: f32, translation: Vec2) -> Self {
+        let rotation = Mat2::from_angle(radians);
         Self {
             matrix2: Mat2::from_cols(rotation.x_axis * scale.x, rotation.y_axis * scale.y),
             translation,
         }
     }
 
-    /// Creates an affine transform from the given 2D rotation `angle` (in radians) and
+    /// Creates an affine transform from the given 2D rotation angle of `radians` and
     /// `translation`.
     ///
     /// Equivalent to `Affine2::from_translation(translation) * Affine2::from_angle(angle)`
     #[inline]
     #[must_use]
-    pub fn from_angle_translation(angle: f32, translation: Vec2) -> Self {
+    pub fn from_angle_translation(radians: f32, translation: Vec2) -> Self {
         Self {
-            matrix2: Mat2::from_angle(angle),
+            matrix2: Mat2::from_angle(radians),
             translation,
         }
     }

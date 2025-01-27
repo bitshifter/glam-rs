@@ -127,12 +127,12 @@ impl DAffine2 {
         }
     }
 
-    /// Creates an affine transform from the given rotation `angle`.
+    /// Creates an affine transform from the given rotation angle of `radians`.
     #[inline]
     #[must_use]
-    pub fn from_angle(angle: f64) -> Self {
+    pub fn from_angle(radians: f64) -> Self {
         Self {
-            matrix2: DMat2::from_angle(angle),
+            matrix2: DMat2::from_angle(radians),
             translation: DVec2::ZERO,
         }
     }
@@ -171,30 +171,30 @@ impl DAffine2 {
         }
     }
 
-    /// Creates an affine transform from the given 2D `scale`, rotation `angle` (in radians) and
+    /// Creates an affine transform from the given 2D `scale`, rotation angle of `radians` and
     /// `translation`.
     ///
     /// Equivalent to `DAffine2::from_translation(translation) *
     /// DAffine2::from_angle(angle) * DAffine2::from_scale(scale)`
     #[inline]
     #[must_use]
-    pub fn from_scale_angle_translation(scale: DVec2, angle: f64, translation: DVec2) -> Self {
-        let rotation = DMat2::from_angle(angle);
+    pub fn from_scale_angle_translation(scale: DVec2, radians: f64, translation: DVec2) -> Self {
+        let rotation = DMat2::from_angle(radians);
         Self {
             matrix2: DMat2::from_cols(rotation.x_axis * scale.x, rotation.y_axis * scale.y),
             translation,
         }
     }
 
-    /// Creates an affine transform from the given 2D rotation `angle` (in radians) and
+    /// Creates an affine transform from the given 2D rotation angle of `radians` and
     /// `translation`.
     ///
     /// Equivalent to `DAffine2::from_translation(translation) * DAffine2::from_angle(angle)`
     #[inline]
     #[must_use]
-    pub fn from_angle_translation(angle: f64, translation: DVec2) -> Self {
+    pub fn from_angle_translation(radians: f64, translation: DVec2) -> Self {
         Self {
-            matrix2: DMat2::from_angle(angle),
+            matrix2: DMat2::from_angle(radians),
             translation,
         }
     }
