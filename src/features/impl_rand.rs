@@ -9,17 +9,17 @@ macro_rules! impl_vec_types {
     ) => {
         use super::{UniformVec2, UniformVec3, UniformVec4};
         use rand::{
-            distributions::{
-                uniform::{SampleBorrow, SampleUniform, UniformSampler},
-                Distribution, Standard,
+            distr::{
+                uniform::{Error as UniformError, SampleBorrow, SampleUniform, UniformSampler},
+                Distribution, StandardUniform,
             },
             Rng,
         };
 
-        impl Distribution<$vec2> for Standard {
+        impl Distribution<$vec2> for StandardUniform {
             #[inline]
             fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $vec2 {
-                rng.gen::<[$t; 2]>().into()
+                rng.random::<[$t; 2]>().into()
             }
         }
 
@@ -30,97 +30,95 @@ macro_rules! impl_vec_types {
         impl UniformSampler for UniformVec2<$uniform<$t>> {
             type X = $vec2;
 
-            fn new<B1, B2>(low_b: B1, high_b: B2) -> Self
+            fn new<B1, B2>(low_b: B1, high_b: B2) -> Result<Self, UniformError>
             where
                 B1: SampleBorrow<Self::X> + Sized,
                 B2: SampleBorrow<Self::X> + Sized,
             {
                 let low = *low_b.borrow();
                 let high = *high_b.borrow();
-                assert!(low.x < high.x, "Uniform::new called with `low.x >= high.x");
-                assert!(low.y < high.y, "Uniform::new called with `low.y >= high.y");
-                Self {
-                    x_gen: $uniform::new(low.x, high.x),
-                    y_gen: $uniform::new(low.y, high.y),
+
+                if low.x >= high.x || low.y >= high.y {
+                    return Err(UniformError::EmptyRange);
                 }
+
+                Ok(Self {
+                    x_gen: $uniform::new(low.x, high.x)?,
+                    y_gen: $uniform::new(low.y, high.y)?,
+                })
             }
 
-            fn new_inclusive<B1, B2>(low_b: B1, high_b: B2) -> Self
+            fn new_inclusive<B1, B2>(low_b: B1, high_b: B2) -> Result<Self, UniformError>
             where
                 B1: SampleBorrow<Self::X> + Sized,
                 B2: SampleBorrow<Self::X> + Sized,
             {
                 let low = *low_b.borrow();
                 let high = *high_b.borrow();
-                assert!(
-                    low.x < high.x,
-                    "Uniform::new_inclusive called with `low.x >= high.x"
-                );
-                assert!(
-                    low.y < high.y,
-                    "Uniform::new_inclusive called with `low.y >= high.y"
-                );
-                Self {
-                    x_gen: $uniform::new_inclusive(low.x, high.x),
-                    y_gen: $uniform::new_inclusive(low.y, high.y),
+
+                if low.x >= high.x || low.y >= high.y {
+                    return Err(UniformError::EmptyRange);
                 }
+
+                Ok(Self {
+                    x_gen: $uniform::new_inclusive(low.x, high.x)?,
+                    y_gen: $uniform::new_inclusive(low.y, high.y)?,
+                })
             }
 
             fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
                 Self::X::from([self.x_gen.sample(rng), self.y_gen.sample(rng)])
             }
 
-            fn sample_single<R: Rng + ?Sized, B1, B2>(low_b: B1, high_b: B2, rng: &mut R) -> Self::X
+            fn sample_single<R: Rng + ?Sized, B1, B2>(
+                low_b: B1,
+                high_b: B2,
+                rng: &mut R,
+            ) -> Result<Self::X, UniformError>
             where
                 B1: SampleBorrow<Self::X> + Sized,
                 B2: SampleBorrow<Self::X> + Sized,
             {
                 let low = *low_b.borrow();
                 let high = *high_b.borrow();
-                assert!(
-                    low.x < high.x,
-                    "Uniform::sample_single called with `low.x >= high.x"
-                );
-                assert!(
-                    low.y < high.y,
-                    "Uniform::sample_single called with `low.y >= high.y"
-                );
-                Self::X::from([
-                    $uniform::<$t>::sample_single(low.x, high.x, rng),
-                    $uniform::<$t>::sample_single(low.y, high.y, rng),
-                ])
+
+                if low.x >= high.x || low.y >= high.y {
+                    return Err(UniformError::EmptyRange);
+                }
+
+                Ok(Self::X::from([
+                    $uniform::<$t>::sample_single(low.x, high.x, rng)?,
+                    $uniform::<$t>::sample_single(low.y, high.y, rng)?,
+                ]))
             }
 
             fn sample_single_inclusive<R: Rng + ?Sized, B1, B2>(
                 low_b: B1,
                 high_b: B2,
                 rng: &mut R,
-            ) -> Self::X
+            ) -> Result<Self::X, UniformError>
             where
                 B1: SampleBorrow<Self::X> + Sized,
                 B2: SampleBorrow<Self::X> + Sized,
             {
                 let low = *low_b.borrow();
                 let high = *high_b.borrow();
-                assert!(
-                    low.x < high.x,
-                    "Uniform::sample_single_inclusive called with `low.x >= high.x"
-                );
-                assert!(
-                    low.y < high.y,
-                    "Uniform::sample_single_inclusive called with `low.y >= high.y"
-                );
-                Self::X::from([
-                    $uniform::<$t>::sample_single_inclusive(low.x, high.x, rng),
-                    $uniform::<$t>::sample_single_inclusive(low.y, high.y, rng),
-                ])
+
+                if low.x >= high.x || low.y >= high.y {
+                    return Err(UniformError::EmptyRange);
+                }
+
+                Ok(Self::X::from([
+                    $uniform::<$t>::sample_single_inclusive(low.x, high.x, rng)?,
+                    $uniform::<$t>::sample_single_inclusive(low.y, high.y, rng)?,
+                ]))
             }
         }
 
-        impl Distribution<$vec3> for Standard {
+        impl Distribution<$vec3> for StandardUniform {
             #[inline]
             fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $vec3 {
-                rng.gen::<[$t; 3]>().into()
+                rng.random::<[$t; 3]>().into()
             }
         }
 
@@ -131,47 +129,42 @@ macro_rules! impl_vec_types {
         impl UniformSampler for UniformVec3<$uniform<$t>> {
             type X = $vec3;
 
-            fn new<B1, B2>(low_b: B1, high_b: B2) -> Self
+            fn new<B1, B2>(low_b: B1, high_b: B2) -> Result<Self, UniformError>
             where
                 B1: SampleBorrow<Self::X> + Sized,
                 B2: SampleBorrow<Self::X> + Sized,
             {
                 let low = *low_b.borrow();
                 let high = *high_b.borrow();
-                assert!(low.x < high.x, "Uniform::new called with `low.x >= high.x");
-                assert!(low.y < high.y, "Uniform::new called with `low.y >= high.y");
-                assert!(low.z < high.z, "Uniform::new called with `low.z >= high.z");
-                Self {
-                    x_gen: $uniform::new(low.x, high.x),
-                    y_gen: $uniform::new(low.y, high.y),
-                    z_gen: $uniform::new(low.z, high.z),
+
+                if low.x >= high.x || low.y >= high.y || low.z >= high.z {
+                    return Err(UniformError::EmptyRange);
                 }
+
+                Ok(Self {
+                    x_gen: $uniform::new(low.x, high.x)?,
+                    y_gen: $uniform::new(low.y, high.y)?,
+                    z_gen: $uniform::new(low.z, high.z)?,
+                })
             }
 
-            fn new_inclusive<B1, B2>(low_b: B1, high_b: B2) -> Self
+            fn new_inclusive<B1, B2>(low_b: B1, high_b: B2) -> Result<Self, UniformError>
             where
                 B1: SampleBorrow<Self::X> + Sized,
                 B2: SampleBorrow<Self::X> + Sized,
             {
                 let low = *low_b.borrow();
                 let high = *high_b.borrow();
-                assert!(
-                    low.x < high.x,
-                    "Uniform::new_inclusive called with `low.x >= high.x"
-                );
-                assert!(
-                    low.y < high.y,
-                    "Uniform::new_inclusive called with `low.y >= high.y"
-                );
-                assert!(
-                    low.z < high.z,
-                    "Uniform::new_inclusive called with `low.z >= high.z"
-                );
-                Self {
-                    x_gen: $uniform::new_inclusive(low.x, high.x),
-                    y_gen: $uniform::new_inclusive(low.y, high.y),
-                    z_gen: $uniform::new_inclusive(low.z, high.z),
+
+                if low.x >= high.x || low.y >= high.y || low.z >= high.z {
+                    return Err(UniformError::EmptyRange);
                 }
+
+                Ok(Self {
+                    x_gen: $uniform::new_inclusive(low.x, high.x)?,
+                    y_gen: $uniform::new_inclusive(low.y, high.y)?,
+                    z_gen: $uniform::new_inclusive(low.z, high.z)?,
+                })
             }
 
             fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
@@ -182,67 +175,57 @@ macro_rules! impl_vec_types {
                 ])
             }
 
-            fn sample_single<R: Rng + ?Sized, B1, B2>(low_b: B1, high_b: B2, rng: &mut R) -> Self::X
+            fn sample_single<R: Rng + ?Sized, B1, B2>(
+                low_b: B1,
+                high_b: B2,
+                rng: &mut R,
+            ) -> Result<Self::X, UniformError>
             where
                 B1: SampleBorrow<Self::X> + Sized,
                 B2: SampleBorrow<Self::X> + Sized,
             {
                 let low = *low_b.borrow();
                 let high = *high_b.borrow();
-                assert!(
-                    low.x < high.x,
-                    "Uniform::sample_single called with `low.x >= high.x"
-                );
-                assert!(
-                    low.y < high.y,
-                    "Uniform::sample_single called with `low.y >= high.y"
-                );
-                assert!(
-                    low.z < high.z,
-                    "Uniform::sample_single called with `low.z >= high.z"
-                );
-                Self::X::from([
-                    $uniform::<$t>::sample_single(low.x, high.x, rng),
-                    $uniform::<$t>::sample_single(low.y, high.y, rng),
-                    $uniform::<$t>::sample_single(low.z, high.z, rng),
-                ])
+
+                if low.x >= high.x || low.y >= high.y || low.z >= high.z {
+                    return Err(UniformError::EmptyRange);
+                }
+
+                Ok(Self::X::from([
+                    $uniform::<$t>::sample_single(low.x, high.x, rng)?,
+                    $uniform::<$t>::sample_single(low.y, high.y, rng)?,
+                    $uniform::<$t>::sample_single(low.z, high.z, rng)?,
+                ]))
             }
 
             fn sample_single_inclusive<R: Rng + ?Sized, B1, B2>(
                 low_b: B1,
                 high_b: B2,
                 rng: &mut R,
-            ) -> Self::X
+            ) -> Result<Self::X, UniformError>
             where
                 B1: SampleBorrow<Self::X> + Sized,
                 B2: SampleBorrow<Self::X> + Sized,
             {
                 let low = *low_b.borrow();
                 let high = *high_b.borrow();
-                assert!(
-                    low.x < high.x,
-                    "Uniform::sample_single_inclusive called with `low.x >= high.x"
-                );
-                assert!(
-                    low.y < high.y,
-                    "Uniform::sample_single_inclusive called with `low.y >= high.y"
-                );
-                assert!(
-                    low.z < high.z,
-                    "Uniform::sample_single_inclusive called with `low.z >= high.z"
-                );
-                Self::X::from([
-                    $uniform::<$t>::sample_single_inclusive(low.x, high.x, rng),
-                    $uniform::<$t>::sample_single_inclusive(low.y, high.y, rng),
-                    $uniform::<$t>::sample_single_inclusive(low.z, high.z, rng),
-                ])
+
+                if low.x >= high.x || low.y >= high.y || low.z >= high.z {
+                    return Err(UniformError::EmptyRange);
+                }
+
+                Ok(Self::X::from([
+                    $uniform::<$t>::sample_single_inclusive(low.x, high.x, rng)?,
+                    $uniform::<$t>::sample_single_inclusive(low.y, high.y, rng)?,
+                    $uniform::<$t>::sample_single_inclusive(low.z, high.z, rng)?,
+                ]))
             }
         }
 
-        impl Distribution<$vec4> for Standard {
+        impl Distribution<$vec4> for StandardUniform {
             #[inline]
             fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $vec4 {
-                rng.gen::<[$t; 4]>().into()
+                rng.random::<[$t; 4]>().into()
             }
         }
 
@@ -253,54 +236,44 @@ macro_rules! impl_vec_types {
         impl UniformSampler for UniformVec4<$uniform<$t>> {
             type X = $vec4;
 
-            fn new<B1, B2>(low_b: B1, high_b: B2) -> Self
+            fn new<B1, B2>(low_b: B1, high_b: B2) -> Result<Self, UniformError>
             where
                 B1: SampleBorrow<Self::X> + Sized,
                 B2: SampleBorrow<Self::X> + Sized,
             {
                 let low = *low_b.borrow();
                 let high = *high_b.borrow();
-                assert!(low.x < high.x, "Uniform::new called with `low.x >= high.x");
-                assert!(low.y < high.y, "Uniform::new called with `low.y >= high.y");
-                assert!(low.z < high.z, "Uniform::new called with `low.z >= high.z");
-                assert!(low.w < high.w, "Uniform::new called with `low.w >= high.w");
-                Self {
-                    x_gen: $uniform::new(low.x, high.x),
-                    y_gen: $uniform::new(low.y, high.y),
-                    z_gen: $uniform::new(low.z, high.z),
-                    w_gen: $uniform::new(low.w, high.w),
+
+                if low.x >= high.x || low.y >= high.y || low.z >= high.z || low.w >= high.w {
+                    return Err(UniformError::EmptyRange);
                 }
+
+                Ok(Self {
+                    x_gen: $uniform::new(low.x, high.x)?,
+                    y_gen: $uniform::new(low.y, high.y)?,
+                    z_gen: $uniform::new(low.z, high.z)?,
+                    w_gen: $uniform::new(low.w, high.w)?,
+                })
             }
 
-            fn new_inclusive<B1, B2>(low_b: B1, high_b: B2) -> Self
+            fn new_inclusive<B1, B2>(low_b: B1, high_b: B2) -> Result<Self, UniformError>
             where
                 B1: SampleBorrow<Self::X> + Sized,
                 B2: SampleBorrow<Self::X> + Sized,
             {
                 let low = *low_b.borrow();
                 let high = *high_b.borrow();
-                assert!(
-                    low.x < high.x,
-                    "Uniform::new_inclusive called with `low.x >= high.x"
-                );
-                assert!(
-                    low.y < high.y,
-                    "Uniform::new_inclusive called with `low.y >= high.y"
-                );
-                assert!(
-                    low.z < high.z,
-                    "Uniform::new_inclusive called with `low.z >= high.z"
-                );
-                assert!(
-                    low.w < high.w,
-                    "Uniform::new_inclusive called with `low.w >= high.w"
-                );
-                Self {
-                    x_gen: $uniform::new_inclusive(low.x, high.x),
-                    y_gen: $uniform::new_inclusive(low.y, high.y),
-                    z_gen: $uniform::new_inclusive(low.z, high.z),
-                    w_gen: $uniform::new_inclusive(low.w, high.w),
+
+                if low.x >= high.x || low.y >= high.y || low.z >= high.z || low.w >= high.w {
+                    return Err(UniformError::EmptyRange);
                 }
+
+                Ok(Self {
+                    x_gen: $uniform::new_inclusive(low.x, high.x)?,
+                    y_gen: $uniform::new_inclusive(low.y, high.y)?,
+                    z_gen: $uniform::new_inclusive(low.z, high.z)?,
+                    w_gen: $uniform::new_inclusive(low.w, high.w)?,
+                })
             }
 
             fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
@@ -312,70 +285,52 @@ macro_rules! impl_vec_types {
                 ])
             }
 
-            fn sample_single<R: Rng + ?Sized, B1, B2>(low_b: B1, high_b: B2, rng: &mut R) -> Self::X
+            fn sample_single<R: Rng + ?Sized, B1, B2>(
+                low_b: B1,
+                high_b: B2,
+                rng: &mut R,
+            ) -> Result<Self::X, UniformError>
             where
                 B1: SampleBorrow<Self::X> + Sized,
                 B2: SampleBorrow<Self::X> + Sized,
             {
                 let low = *low_b.borrow();
                 let high = *high_b.borrow();
-                assert!(
-                    low.x < high.x,
-                    "Uniform::sample_single called with `low.x >= high.x"
-                );
-                assert!(
-                    low.y < high.y,
-                    "Uniform::sample_single called with `low.y >= high.y"
-                );
-                assert!(
-                    low.z < high.z,
-                    "Uniform::sample_single called with `low.z >= high.z"
-                );
-                assert!(
-                    low.w < high.w,
-                    "Uniform::sample_single called with `low.w >= high.w"
-                );
-                Self::X::from([
-                    $uniform::<$t>::sample_single(low.x, high.x, rng),
-                    $uniform::<$t>::sample_single(low.y, high.y, rng),
-                    $uniform::<$t>::sample_single(low.z, high.z, rng),
-                    $uniform::<$t>::sample_single(low.w, high.w, rng),
-                ])
+
+                if low.x >= high.x || low.y >= high.y || low.z >= high.z || low.w >= high.w {
+                    return Err(UniformError::EmptyRange);
+                }
+
+                Ok(Self::X::from([
+                    $uniform::<$t>::sample_single(low.x, high.x, rng)?,
+                    $uniform::<$t>::sample_single(low.y, high.y, rng)?,
+                    $uniform::<$t>::sample_single(low.z, high.z, rng)?,
+                    $uniform::<$t>::sample_single(low.w, high.w, rng)?,
+                ]))
             }
 
             fn sample_single_inclusive<R: Rng + ?Sized, B1, B2>(
                 low_b: B1,
                 high_b: B2,
                 rng: &mut R,
-            ) -> Self::X
+            ) -> Result<Self::X, UniformError>
             where
                 B1: SampleBorrow<Self::X> + Sized,
                 B2: SampleBorrow<Self::X> + Sized,
             {
                 let low = *low_b.borrow();
                 let high = *high_b.borrow();
-                assert!(
-                    low.x < high.x,
-                    "Uniform::sample_single_inclusive called with `low.x >= high.x"
-                );
-                assert!(
-                    low.y < high.y,
-                    "Uniform::sample_single_inclusive called with `low.y >= high.y"
-                );
-                assert!(
-                    low.z < high.z,
-                    "Uniform::sample_single_inclusive called with `low.z >= high.z"
-                );
-                assert!(
-                    low.w < high.w,
-                    "Uniform::sample_single_inclusive called with `low.w >= high.w"
-                );
-                Self::X::from([
-                    $uniform::<$t>::sample_single_inclusive(low.x, high.x, rng),
-                    $uniform::<$t>::sample_single_inclusive(low.y, high.y, rng),
-                    $uniform::<$t>::sample_single_inclusive(low.z, high.z, rng),
-                    $uniform::<$t>::sample_single_inclusive(low.w, high.w, rng),
-                ])
+
+                if low.x >= high.x || low.y >= high.y || low.z >= high.z || low.w >= high.w {
+                    return Err(UniformError::EmptyRange);
+                }
+
+                Ok(Self::X::from([
+                    $uniform::<$t>::sample_single_inclusive(low.x, high.x, rng)?,
+                    $uniform::<$t>::sample_single_inclusive(low.y, high.y, rng)?,
+                    $uniform::<$t>::sample_single_inclusive(low.z, high.z, rng)?,
+                    $uniform::<$t>::sample_single_inclusive(low.w, high.w, rng)?,
+                ]))
             }
         }
 
@@ -384,9 +339,9 @@ macro_rules! impl_vec_types {
             use rand::{Rng, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
-            let a: ($t, $t) = rng1.gen();
+            let a: ($t, $t) = rng1.random();
             let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
-            let b: $vec2 = rng2.gen();
+            let b: $vec2 = rng2.random();
             assert_eq!(a, b.into());
         }
 
@@ -395,9 +350,9 @@ macro_rules! impl_vec_types {
             use rand::{Rng, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
-            let a: ($t, $t, $t) = rng1.gen();
+            let a: ($t, $t, $t) = rng1.random();
             let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
-            let b: $vec3 = rng2.gen();
+            let b: $vec3 = rng2.random();
             assert_eq!(a, b.into());
         }
 
@@ -406,9 +361,9 @@ macro_rules! impl_vec_types {
             use rand::{Rng, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
-            let a: ($t, $t, $t, $t) = rng1.gen();
+            let a: ($t, $t, $t, $t) = rng1.random();
             let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
-            let b: $vec4 = rng2.gen();
+            let b: $vec4 = rng2.random();
             assert_eq!(a, b.into());
         }
 
@@ -463,7 +418,7 @@ macro_rules! test_vec_type_uniform {
         /// convert the result into the vector type.
         #[test]
         fn $equality_test_name() {
-            use rand::{distributions::Uniform, Rng, SeedableRng};
+            use rand::{distr::Uniform, Rng, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
 
             let mut int_rng = Xoshiro256Plus::seed_from_u64(0);
@@ -478,8 +433,8 @@ macro_rules! test_vec_type_uniform {
                     $vec_low:expr,
                     $vec_high:expr
                 ) => {
-                    let int_u = Uniform::$uniform_function_name($t_low, $t_high);
-                    let vec_u = Uniform::$uniform_function_name($vec_low, $vec_high);
+                    let int_u = Uniform::$uniform_function_name($t_low, $t_high).unwrap();
+                    let vec_u = Uniform::$uniform_function_name($vec_low, $vec_high).unwrap();
 
                     let v_int = test_vec_type_uniform!(
                         __repeat_code $t_count,
@@ -535,14 +490,14 @@ macro_rules! test_vec_type_uniform {
                             <$t>::default(),
                             <$t>::MAX / $upper_range_divisor,
                             &mut int_rng,
-                        )
+                        ).unwrap()
                     );
 
                     let v_vec: $vec = <$vec as SampleUniform>::Sampler::$sampler_function_name(
                         $vec::default(),
                         $vec::MAX / $upper_range_divisor,
                         &mut vec_rng,
-                    );
+                    ).unwrap();
                     assert_eq!(v_int, v_vec.into());
                 };
             }
@@ -555,7 +510,7 @@ macro_rules! test_vec_type_uniform {
 
 macro_rules! impl_int_types {
     ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident) => {
-        use rand::distributions::uniform::UniformInt;
+        use rand::distr::uniform::UniformInt;
 
         impl_vec_types!($t, $vec2, $vec3, $vec4, UniformInt, 1);
     };
@@ -563,39 +518,39 @@ macro_rules! impl_int_types {
 
 macro_rules! impl_float_types {
     ($t:ident, $mat2:ident, $mat3:ident, $mat4:ident, $quat:ident, $vec2:ident, $vec3:ident, $vec4:ident) => {
-        use rand::distributions::uniform::UniformFloat;
+        use rand::distr::uniform::UniformFloat;
 
         impl_vec_types!($t, $vec2, $vec3, $vec4, UniformFloat, 10.0);
 
-        impl Distribution<$mat2> for Standard {
+        impl Distribution<$mat2> for StandardUniform {
             #[inline]
             fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $mat2 {
-                $mat2::from_cols_array(&rng.gen())
+                $mat2::from_cols_array(&rng.random())
             }
         }
 
-        impl Distribution<$mat3> for Standard {
+        impl Distribution<$mat3> for StandardUniform {
             #[inline]
             fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $mat3 {
-                $mat3::from_cols_array(&rng.gen())
+                $mat3::from_cols_array(&rng.random())
             }
         }
 
-        impl Distribution<$mat4> for Standard {
+        impl Distribution<$mat4> for StandardUniform {
             #[inline]
             fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $mat4 {
-                $mat4::from_cols_array(&rng.gen())
+                $mat4::from_cols_array(&rng.random())
             }
         }
 
-        impl Distribution<$quat> for Standard {
+        impl Distribution<$quat> for StandardUniform {
             #[inline]
             fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $quat {
-                let z = rng.gen_range::<$t, _>(-1.0..=1.0);
-                let (y, x) = math::sin_cos(rng.gen_range::<$t, _>(0.0..TAU));
+                let z = rng.random_range::<$t, _>(-1.0..=1.0);
+                let (y, x) = math::sin_cos(rng.random_range::<$t, _>(0.0..TAU));
                 let r = math::sqrt(1.0 - z * z);
                 let axis = $vec3::new(r * x, r * y, z);
-                let angle = rng.gen_range::<$t, _>(0.0..TAU);
+                let angle = rng.random_range::<$t, _>(0.0..TAU);
                 $quat::from_axis_angle(axis, angle)
             }
         }
@@ -605,9 +560,9 @@ macro_rules! impl_float_types {
             use rand::{Rng, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
-            let a = $mat2::from_cols_array(&rng1.gen::<[$t; 4]>());
+            let a = $mat2::from_cols_array(&rng1.random::<[$t; 4]>());
             let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
-            let b = rng2.gen::<$mat2>();
+            let b = rng2.random::<$mat2>();
             assert_eq!(a, b);
         }
 
@@ -616,9 +571,9 @@ macro_rules! impl_float_types {
             use rand::{Rng, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
-            let a = $mat3::from_cols_array(&rng1.gen::<[$t; 9]>());
+            let a = $mat3::from_cols_array(&rng1.random::<[$t; 9]>());
             let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
-            let b = rng2.gen::<$mat3>();
+            let b = rng2.random::<$mat3>();
             assert_eq!(a, b);
         }
 
@@ -627,9 +582,9 @@ macro_rules! impl_float_types {
             use rand::{Rng, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
-            let a = $mat4::from_cols_array(&rng1.gen::<[$t; 16]>());
+            let a = $mat4::from_cols_array(&rng1.random::<[$t; 16]>());
             let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
-            let b = rng2.gen::<$mat4>();
+            let b = rng2.random::<$mat4>();
             assert_eq!(a, b);
         }
 
@@ -638,10 +593,10 @@ macro_rules! impl_float_types {
             use rand::{Rng, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
-            let a: $quat = rng1.gen();
+            let a: $quat = rng1.random();
             assert!(a.is_normalized());
             let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
-            let b: $quat = rng2.gen();
+            let b: $quat = rng2.random();
             assert_eq!(a, b);
         }
     };
@@ -675,10 +630,10 @@ mod f32 {
 
     impl_float_types!(f32, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4);
 
-    impl Distribution<Vec3A> for Standard {
+    impl Distribution<Vec3A> for StandardUniform {
         #[inline]
         fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Vec3A {
-            rng.gen::<[f32; 3]>().into()
+            rng.random::<[f32; 3]>().into()
         }
     }
 
@@ -687,9 +642,9 @@ mod f32 {
         use rand::{Rng, SeedableRng};
         use rand_xoshiro::Xoshiro256Plus;
         let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
-        let a: (f32, f32, f32) = rng1.gen();
+        let a: (f32, f32, f32) = rng1.random();
         let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
-        let b: Vec3A = rng2.gen();
+        let b: Vec3A = rng2.random();
         assert_eq!(a, b.into());
     }
 }
