@@ -41,21 +41,22 @@ fast-math = []
 # experimental nightly portable-simd support
 core-simd = []
 
+bytecheck = ["rkyv/bytecheck"]
+
 [dependencies]
 approx = { version = "0.5", optional = true, default-features = false }
 bytemuck = { version = "1.9", optional = true, default-features = false }
 mint = { version = "0.5.8", optional = true, default-features = false }
 rand = { version = "0.9", optional = true, default-features = false }
 serde = { version = "1.0", optional = true, default-features = false }
-rkyv = { version = "0.7", optional = true, default-features = false }
-bytecheck = { version = "0.7", optional = true, default-features = false }
-libm = { version = "0.2", optional = true, default-features = false}
+rkyv = { version = "0.8", optional = true, default-features = false }
+libm = { version = "0.2", optional = true, default-features = false }
 
 [dev-dependencies]
 # rand_xoshiro is required for tests if rand is enabled
 rand_xoshiro = "0.7"
-# Set a size_xx feature so that this crate compiles properly with --all-targets --all-features
-rkyv = { version = "0.7", default-features = false, features = ["size_32"] }
+# "alloc" is needed to support to_bytes()/deserialize() in tests.
+rkyv = { version = "0.8", default-features = false, features = ["alloc"] }
 serde_json = "1.0"
 
 [target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
