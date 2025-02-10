@@ -2240,7 +2240,7 @@ mod i8vec4 {
         );
     });
 
-    glam_test!(test_wrapping_m, {
+    glam_test!(test_wrapping_sub, {
         assert_eq!(
             I8Vec4::new(i8::MAX, 5, i8::MIN, 0).wrapping_sub(I8Vec4::new(1, 3, i8::MAX, 0)),
             I8Vec4::new(126, 2, 1, 0)
