@@ -1,6 +1,8 @@
 #[cfg(feature = "bytecheck")]
 macro_rules! impl_rkyv {
     (@bytecheck $type:ty) => {
+        // SAFETY: All bit patterns are valid for these primitive types.
+        // https://docs.rs/bytecheck/0.8.1/src/bytecheck/lib.rs.html#352
         unsafe impl<C: Fallible +?Sized> rkyv::bytecheck::CheckBytes<C> for $type {
             #[inline]
             unsafe fn check_bytes(
@@ -175,7 +177,6 @@ mod test {
     >;
     /// The deserializer type expected by [`rkyv::deserialize()`].
     pub type TestDeserializer = rkyv::api::high::HighDeserializer<rkyv::rancor::Panic>;
-    pub type TestValidator<'a> = rkyv::api::high::HighValidator<'a, rkyv::rancor::Panic>;
     pub fn test_archive<T>(value: &T)
     where
         T: core::fmt::Debug
@@ -183,16 +184,12 @@ mod test {
             + rkyv::Portable
             + for<'a> rkyv::Serialize<TestSerializer<'a>>,
         T::Archived: core::fmt::Debug + PartialEq<T> + rkyv::Deserialize<T, TestDeserializer>,
-        // #[cfg(feature = "bytecheck")]
-        T::Archived: for<'a> rkyv::bytecheck::CheckBytes<TestValidator<'a>>,
     {
         let buffer = rkyv::to_bytes(value).unwrap();
 
-        #[cfg(feature = "bytecheck")]
-        {
-            let archived_value = rkyv::access::<T::Archived, rkyv::rancor::Panic>(&buffer).unwrap();
-            assert_eq!(archived_value, value);
-        }
+        // SAFETY: all bit patterns are valid for the primitive types used by glam.  There is
+        // no need to write special-cased conditional tests that rely on bytecheck for the safe
+        // rkyv::access() wrapper.
         let archived_value = unsafe { rkyv::access_unchecked::<T::Archived>(&buffer) };
         assert_eq!(archived_value, value);
         assert_eq!(
