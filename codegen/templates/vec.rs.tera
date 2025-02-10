@@ -2584,6 +2584,74 @@ impl {{ self_t }} {
 {% if not is_float %}
     /// Returns a vector containing the wrapping addition of `self` and `rhs`.
     ///
+    /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
+    #[inline]
+    #[must_use]
+    pub const fn checked_add(self, rhs: Self) -> Option<Self> {
+        {% for c in components %}
+            let {{ c }} = match self.{{ c }}.checked_add(rhs.{{ c }}) { Some(v) => v, None => {return None} };
+        {%- endfor %}
+
+        Some(Self {
+            {% for c in components %}
+                {{ c }},
+            {%- endfor %}
+        })
+    }
+
+    /// Returns a vector containing the wrapping subtraction of `self` and `rhs`.
+    ///
+    /// In other words this computes `Some([self.x - rhs.x, self.y - rhs.y, ..])` but returns `None` on any overflow.
+    #[inline]
+    #[must_use]
+    pub const fn checked_sub(self, rhs: Self) -> Option<Self> {
+        {% for c in components %}
+            let {{ c }} = match self.{{ c }}.checked_sub(rhs.{{ c }}) { Some(v) => v, None => {return None} };
+        {%- endfor %}
+
+        Some(Self {
+            {% for c in components %}
+                {{ c }},
+            {%- endfor %}
+        })
+    }
+
+    /// Returns a vector containing the wrapping multiplication of `self` and `rhs`.
+    ///
+    /// In other words this computes `Some([self.x * rhs.x, self.y * rhs.y, ..])` but returns `None` on any overflow.
+    #[inline]
+    #[must_use]
+    pub const fn checked_mul(self, rhs: Self) -> Option<Self> {
+        {% for c in components %}
+            let {{ c }} = match self.{{ c }}.checked_mul(rhs.{{ c }}) { Some(v) => v, None => {return None} };
+        {%- endfor %}
+
+        Some(Self {
+            {% for c in components %}
+                {{ c }},
+            {%- endfor %}
+        })
+    }
+
+    /// Returns a vector containing the wrapping division of `self` and `rhs`.
+    ///
+    /// In other words this computes `Some([self.x / rhs.x, self.y / rhs.y, ..])` but returns `None` on any division by zero.
+    #[inline]
+    #[must_use]
+    pub const fn checked_div(self, rhs: Self) -> Option<Self> {
+        {% for c in components %}
+            let {{ c }} = match self.{{ c }}.checked_div(rhs.{{ c }}) { Some(v) => v, None => {return None} };
+        {%- endfor %}
+
+        Some(Self {
+            {% for c in components %}
+                {{ c }},
+            {%- endfor %}
+        })
+    }
+
+    /// Returns a vector containing the wrapping addition of `self` and `rhs`.
+    ///
     /// In other words this computes `[self.x.wrapping_add(rhs.x), self.y.wrapping_add(rhs.y), ..]`.
     #[inline]
     #[must_use]
@@ -2688,6 +2756,40 @@ impl {{ self_t }} {
     {% if is_signed %}
         /// Returns a vector containing the wrapping addition of `self` and unsigned vector `rhs`.
         ///
+        /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
+        #[inline]
+        #[must_use]
+        pub const fn checked_add_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Option<Self> {
+            {% for c in components %}
+                let {{ c }} = match self.{{ c }}.checked_add_unsigned(rhs.{{ c }}) { Some(v) => v, None => {return None} };
+            {%- endfor %}
+
+            Some(Self {
+                {% for c in components %}
+                    {{ c }},
+                {%- endfor %}
+            })
+        }
+
+        /// Returns a vector containing the wrapping subtraction of `self` and unsigned vector `rhs`.
+        ///
+        /// In other words this computes `Some([self.x - rhs.x, self.y - rhs.y, ..])` but returns `None` on any overflow.
+        #[inline]
+        #[must_use]
+        pub const fn checked_sub_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Option<Self> {
+            {% for c in components %}
+                let {{ c }} = match self.{{ c }}.checked_sub_unsigned(rhs.{{ c }}) { Some(v) => v, None => {return None} };
+            {%- endfor %}
+
+            Some(Self {
+                {% for c in components %}
+                    {{ c }},
+                {%- endfor %}
+            })
+        }
+
+        /// Returns a vector containing the wrapping addition of `self` and unsigned vector `rhs`.
+        ///
         /// In other words this computes `[self.x.wrapping_add_unsigned(rhs.x), self.y.wrapping_add_unsigned(rhs.y), ..]`.
         #[inline]
         #[must_use]
@@ -2738,6 +2840,23 @@ impl {{ self_t }} {
             }
         }
     {% else %}
+        /// Returns a vector containing the wrapping addition of `self` and signed vector `rhs`.
+        ///
+        /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
+        #[inline]
+        #[must_use]
+        pub const fn checked_add_signed(self, rhs: {{ opposite_signedness_t }}) -> Option<Self> {
+            {% for c in components %}
+                let {{ c }} = match self.{{ c }}.checked_add_signed(rhs.{{ c }}) { Some(v) => v, None => {return None} };
+            {%- endfor %}
+
+            Some(Self {
+                {% for c in components %}
+                    {{ c }},
+                {%- endfor %}
+            })
+        }
+
         /// Returns a vector containing the wrapping addition of `self` and signed vector `rhs`.
         ///
         /// In other words this computes `[self.x.wrapping_add_signed(rhs.x), self.y.wrapping_add_signed(rhs.y), ..]`.
