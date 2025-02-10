@@ -10,6 +10,7 @@ FEATURE_SETS=(
   # std
   "std"
   "std $DEPENDENCIES"
+  "std $DEPENDENCIES bytecheck"
   "std scalar-math $DEPENDENCIES"
   "std cuda"
   "std scalar-math cuda"
