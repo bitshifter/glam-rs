@@ -27,7 +27,7 @@ jobs:
       - name: Build-test documentation
         env:
           RUSTDOCFLAGS: -Dwarnings
-        run: cargo doc --all --all-features --no-deps --document-private-items --features rkyv/size_32
+        run: cargo doc --all --all-features --no-deps --document-private-items --features rkyv/pointer_width_32
 
   test:
     name: Test
