@@ -730,46 +730,46 @@ macro_rules! impl_vec2_signed_integer_tests {
         impl_vec2_signed_tests!($t, $new, $vec2, $vec3, $mask, $masknew);
 
         glam_test!(test_signum, {
-            assert_eq!($vec3::ZERO.signum(), $vec3::ZERO);
-            assert_eq!($vec3::ONE.signum(), $vec3::ONE);
-            assert_eq!((-$vec3::ONE).signum(), -$vec3::ONE);
+            assert_eq!($vec2::ZERO.signum(), $vec2::ZERO);
+            assert_eq!($vec2::ONE.signum(), $vec2::ONE);
+            assert_eq!((-$vec2::ONE).signum(), -$vec2::ONE);
         });
 
         glam_test!(test_checked_add, {
-            assert_eq!($vec3::MAX.checked_add($vec3::ONE), None);
-            assert_eq!($vec3::MAX.checked_add($vec3::X), None);
-            assert_eq!($vec3::MAX.checked_add($vec3::Y), None);
-            assert_eq!($vec3::MAX.checked_add($vec3::ZERO), Some($vec3::MAX));
+            assert_eq!($vec2::MAX.checked_add($vec2::ONE), None);
+            assert_eq!($vec2::MAX.checked_add($vec2::X), None);
+            assert_eq!($vec2::MAX.checked_add($vec2::Y), None);
+            assert_eq!($vec2::MAX.checked_add($vec2::ZERO), Some($vec2::MAX));
         });
 
         glam_test!(test_checked_sub, {
-            assert_eq!($vec3::MIN.checked_sub($vec3::ONE), None);
-            assert_eq!($vec3::MIN.checked_sub($vec3::X), None);
-            assert_eq!($vec3::MIN.checked_sub($vec3::Y), None);
-            assert_eq!($vec3::MIN.checked_sub($vec3::ZERO), Some($vec3::MIN));
+            assert_eq!($vec2::MIN.checked_sub($vec2::ONE), None);
+            assert_eq!($vec2::MIN.checked_sub($vec2::X), None);
+            assert_eq!($vec2::MIN.checked_sub($vec2::Y), None);
+            assert_eq!($vec2::MIN.checked_sub($vec2::ZERO), Some($vec2::MIN));
         });
 
         glam_test!(test_checked_mul, {
-            assert_eq!($vec3::MIN.checked_mul($vec3::MIN), None);
-            assert_eq!($vec3::MAX.checked_mul($vec3::MIN), None);
-            assert_eq!($vec3::MIN.checked_mul($vec3::MAX), None);
-            assert_eq!($vec3::MAX.checked_mul($vec3::MAX), None);
-            assert_eq!($vec3::ZERO.checked_mul($vec3::MIN), Some($vec3::ZERO));
-            assert_eq!($vec3::MAX.checked_mul($vec3::ZERO), Some($vec3::ZERO));
-            assert_eq!($vec3::MIN.checked_mul($vec3::ONE), Some($vec3::MIN));
-            assert_eq!($vec3::MAX.checked_mul($vec3::ONE), Some($vec3::MAX));
-            assert_eq!($vec3::ZERO.checked_mul($vec3::ZERO), Some($vec3::ZERO));
-            assert_eq!($vec3::ONE.checked_mul($vec3::ONE), Some($vec3::ONE));
+            assert_eq!($vec2::MIN.checked_mul($vec2::MIN), None);
+            assert_eq!($vec2::MAX.checked_mul($vec2::MIN), None);
+            assert_eq!($vec2::MIN.checked_mul($vec2::MAX), None);
+            assert_eq!($vec2::MAX.checked_mul($vec2::MAX), None);
+            assert_eq!($vec2::ZERO.checked_mul($vec2::MIN), Some($vec2::ZERO));
+            assert_eq!($vec2::MAX.checked_mul($vec2::ZERO), Some($vec2::ZERO));
+            assert_eq!($vec2::MIN.checked_mul($vec2::ONE), Some($vec2::MIN));
+            assert_eq!($vec2::MAX.checked_mul($vec2::ONE), Some($vec2::MAX));
+            assert_eq!($vec2::ZERO.checked_mul($vec2::ZERO), Some($vec2::ZERO));
+            assert_eq!($vec2::ONE.checked_mul($vec2::ONE), Some($vec2::ONE));
         });
 
         glam_test!(test_checked_div, {
-            assert_eq!($vec3::MIN.checked_div($vec3::ZERO), None);
-            assert_eq!($vec3::MAX.checked_div($vec3::ZERO), None);
-            assert_eq!($vec3::MAX.checked_div($vec3::X), None);
-            assert_eq!($vec3::MAX.checked_div($vec3::Y), None);
-            assert_eq!($vec3::ZERO.checked_div($vec3::ONE), Some($vec3::ZERO));
-            assert_eq!($vec3::MIN.checked_div($vec3::ONE), Some($vec3::MIN));
-            assert_eq!($vec3::MAX.checked_div($vec3::ONE), Some($vec3::MAX));
+            assert_eq!($vec2::MIN.checked_div($vec2::ZERO), None);
+            assert_eq!($vec2::MAX.checked_div($vec2::ZERO), None);
+            assert_eq!($vec2::MAX.checked_div($vec2::X), None);
+            assert_eq!($vec2::MAX.checked_div($vec2::Y), None);
+            assert_eq!($vec2::ZERO.checked_div($vec2::ONE), Some($vec2::ZERO));
+            assert_eq!($vec2::MIN.checked_div($vec2::ONE), Some($vec2::MIN));
+            assert_eq!($vec2::MAX.checked_div($vec2::ONE), Some($vec2::MAX));
         });
 
         glam_test!(test_manhattan_distance, {
