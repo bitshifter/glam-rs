@@ -604,7 +604,7 @@ impl {{ self_t }} {
     /// Truncation to [`{{ vec3_t }}`] may also be performed by using [`self.xyz()`][crate::swizzles::Vec4Swizzles::xyz()].
 {%- if scalar_t == "f32" %}
     ///
-    /// To truncate to [`Vec3A`] use [`Vec3A::from()`].
+    /// To truncate to [`Vec3A`] use [`Vec3A::from_vec4()`].
 {%- endif %}
     #[inline]
     #[must_use]

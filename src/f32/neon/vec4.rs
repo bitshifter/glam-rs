@@ -160,7 +160,7 @@ impl Vec4 {
     ///
     /// Truncation to [`Vec3`] may also be performed by using [`self.xyz()`][crate::swizzles::Vec4Swizzles::xyz()].
     ///
-    /// To truncate to [`Vec3A`] use [`Vec3A::from()`].
+    /// To truncate to [`Vec3A`] use [`Vec3A::from_vec4()`].
     #[inline]
     #[must_use]
     pub fn truncate(self) -> Vec3 {
