@@ -179,6 +179,16 @@ macro_rules! impl_mat4_tests {
                 ]),
                 m4
             );
+
+            let t = $vec3::new(10.0, 11.0, 12.0);
+            let m4 = $mat4::from_mat3_translation(m3, t);
+            assert_eq!($mat4::from_cols_array_2d(&[
+                    [1.0, 2.0, 3.0, 0.0],
+                    [4.0, 5.0, 6.0, 0.0],
+                    [7.0, 8.0, 9.0, 0.0],
+                    [10.0, 11.0, 12.0, 1.0]
+            ]),
+                m4);
         });
 
         glam_test!(test_mat4_mul, {

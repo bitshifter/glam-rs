@@ -36,6 +36,9 @@ The format is based on [Keep a Changelog], and this project adheres to
   `chebyshev_distance` methods to integer vector types which calculates the
   Manhattan Distance and the Chebyshev Distance between two vectors.
 
+* Added 4x4 matrix `from_mat3_translation` method to have parity with the 3D
+  affine type.
+
 ### Fixed
 
 * `Quat::rotate_towards()` now returns the target `Quat` if the angle is small.
