@@ -449,6 +449,18 @@ impl IVec2 {
         }
     }
 
+    /// Checks if the point is inside the area of a
+    /// rectangle delimited by `a` and `b`.
+    ///
+    /// Where:
+    /// - `a` is the top-left corner
+    /// - `b` is the bottom-right corner
+    #[inline]
+    #[must_use]
+    pub fn within(&self, a: &Self, b: &Self) -> bool {
+        self.x >= a.x && self.x <= b.x && self.y >= a.y && self.y <= b.y
+    }
+
     /// Casts all elements of `self` to `f32`.
     #[inline]
     #[must_use]

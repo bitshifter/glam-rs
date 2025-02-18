@@ -633,6 +633,14 @@ macro_rules! impl_vec2_tests {
             assert_eq!([two, two].iter().product::<$vec2>(), two * two);
             assert_eq!([two, two].into_iter().product::<$vec2>(), two * two);
         });
+        glam_test!(test_within, {
+            let top_left = $vec2::new(0 as $t, 0 as $t);
+            let bottom_right = $vec2::new(2 as $t, 2 as $t);
+            let point = $vec2::new(1 as $t, 1 as $t);
+            assert!(point.within(&top_left, &bottom_right));
+            let point = $vec2::new(4 as $t, 1 as $t);
+            assert!(!point.within(&top_left, &bottom_right));
+        });
     };
 }
 
@@ -721,6 +729,14 @@ macro_rules! impl_vec2_signed_tests {
             assert_eq!((-four).rem_euclid(three), two);
             assert_eq!(four.rem_euclid(-three), one);
             assert_eq!((-four).rem_euclid(-three), two);
+        });
+        glam_test!(test_within_signed, {
+            let top_left = $vec2::new(-2 as $t, -2 as $t);
+            let bottom_right = $vec2::new(2 as $t, 2 as $t);
+            let point = $vec2::new(-1 as $t, 1 as $t);
+            assert!(point.within(&top_left, &bottom_right));
+            let point = $vec2::new(-12 as $t, 0 as $t);
+            assert!(!point.within(&top_left, &bottom_right));
         });
     };
 }
@@ -1278,6 +1294,15 @@ macro_rules! impl_vec2_float_tests {
             let incident = $vec2::new(1.0, -1.0).normalize();
             let normal = $vec2::Y;
             assert_approx_eq!(incident.refract(normal, 1.5), $vec2::ZERO);
+        });
+
+        glam_test!(test_within_float, {
+            let top_left = $vec2::new(-1.5 as $t, -2.5 as $t);
+            let bottom_right = $vec2::new(3 as $t, 3 as $t);
+            let point = $vec2::new(0.3 as $t, -1.5 as $t);
+            assert!(point.within(&top_left, &bottom_right));
+            let point = $vec2::new(9.0 as $t, -12.0 as $t);
+            assert!(!point.within(&top_left, &bottom_right));
         });
     };
 }
