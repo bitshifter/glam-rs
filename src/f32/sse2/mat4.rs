@@ -305,6 +305,21 @@ impl Mat4 {
         )
     }
 
+    /// Creates an affine transformation matrics from a 3x3 matrix (expressing scale, shear and
+    /// rotation) and a translation vector.
+    ///
+    /// Equivalent to `Mat4::from_translation(translation) * Mat4::from_mat3(mat3)`
+    #[inline]
+    #[must_use]
+    pub fn from_mat3_translation(mat3: Mat3, translation: Vec3) -> Self {
+        Self::from_cols(
+            Vec4::from((mat3.x_axis, 0.0)),
+            Vec4::from((mat3.y_axis, 0.0)),
+            Vec4::from((mat3.z_axis, 0.0)),
+            Vec4::from((translation, 1.0)),
+        )
+    }
+
     /// Creates an affine transformation matrix from the given 3x3 linear transformation
     /// matrix.
     ///
