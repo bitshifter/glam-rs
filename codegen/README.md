@@ -118,12 +118,6 @@ The following steps will be performed for each output file:
 * Rust format the template output
 * Write the formatted output to the output file path
 
-### Template errors
-
-The `Tera` error output leaves a little to be desired. If the template fails to
-render with no error it is usually because a variable that doesn't exist is
-being referenced somewhere in the template.
-
 ### Rust format errors
 
 If the Rust format step fails it is usually because the template generated

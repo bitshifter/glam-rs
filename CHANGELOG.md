@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
-## [Unreleased]
+## [0.30.0] - 2025-02-18
 
 ### Breaking changes
 
@@ -21,7 +21,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 * Implemented `rand` `Uniform` distribution trait for  all vector types.
 
-* Added "swizzle assignment" support to vector swizzles, in the form of 
+* Added "swizzle assignment" support to vector swizzles, in the form of
   `v.with_zx(ivec2(1, 2))` which will return a copy of `v` where the `z`
   and `x` components are set to 1 and 2 respectively.
 
@@ -1188,7 +1188,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.29.2...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.30.0...HEAD
+[0.30.0]: https://github.com/bitshifter/glam-rs/compare/0.29.2...0.30.0
 [0.29.2]: https://github.com/bitshifter/glam-rs/compare/0.29.1...0.29.2
 [0.29.1]: https://github.com/bitshifter/glam-rs/compare/0.29.0...0.29.1
 [0.29.0]: https://github.com/bitshifter/glam-rs/compare/0.28.0...0.29.0
