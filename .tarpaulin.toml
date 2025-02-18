@@ -2,6 +2,7 @@
 features = "approx bytemuck mint rand rkyv serde debug-glam-assert"
 exclude-files = [
     "codegen/*",
+    "swizzlegen/*",
     "src/neon.rs",
     "src/bool/neon/*",
     "src/f32/neon/*",
@@ -18,6 +19,7 @@ exclude-files = [
 features = "scalar-math approx bytemuck mint rand rkyv serde debug-glam-assert"
 exclude-files = [
     "codegen/*",
+    "swizzlegen/*",
     "src/neon.rs",
     "src/bool/neon/*",
     "src/f32/neon/*",
@@ -34,6 +36,7 @@ exclude-files = [
 features = "core-simd approx bytemuck mint rand rkyv serde debug-glam-assert"
 exclude-files = [
     "codegen/*",
+    "swizzlegen/*",
     "src/neon.rs",
     "src/bool/neon/*",
     "src/f32/neon/*",
