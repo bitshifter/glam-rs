@@ -5,6 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+### Breaking changes
+
+* The `up` and `dir` vectors passed to affine and matrix `look_to_lh` and
+  `look_to_rh` methods must now be normalized. This was changed to be consistent
+  with other methods.
+
+* Updated the optional `rand` dependency to `0.9`
+
+* Updated the optional `rkyv` dependency to `0.8`
+
+### Added
+
+* Implemented `rand` `Uniform` distribution trait for  all vector types.
+
+* Added "swizzle assignment" support to vector swizzles, in the form of 
+  `v.with_zx(ivec2(1, 2))` which will return a copy of `v` where the `z`
+  and `x` components are set to 1 and 2 respectively.
+
+* Added `Mat3` and `Quat` `look_at_lh` and `look_at_rh` methods.
+
+* Added `Quat` `look_to_lh` and `look_to_rh` methods.
+
+* Added 3D vector `slerp` method that performs a spherical linear interpolation
+  between a source and a target 3D vector.
+
+* Added `manhattan_distance`, `checked_manhattan_distance` and
+  `chebyshev_distance` methods to integer vector types which calculates the
+  Manhattan Distance and the Chebyshev Distance between two vectors.
+
+### Fixed
+
+* `Quat::rotate_towards()` now returns the target `Quat` if the angle is small.
+  Previously `self` was returned which could skip the rotation entirely.
+
 ## [0.29.2] - 2024-11-05
 
 ### Fixed
@@ -32,7 +68,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 * Optimized vector `from_slice` and `write_to_slice` methods.
 
-* Improved serde error messages.
+* Improved `serde` error messages.
 
 ## [0.29.0] - 2024-08-20
 
@@ -108,7 +144,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ### Added
 
-* Added vector `fract_gl` which uses the GLSL specification of fract,
+* Added vector `fract_gl` which uses the GLSL specification of `fract`,
  `self - self.floor()`.
 
 ## [0.26.0] - 2024-03-18
