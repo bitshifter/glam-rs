@@ -218,8 +218,7 @@ macro_rules! impl_bvec2_tests {
             assert_ne!(a, c);
             assert_ne!(a_hashed, c_hashed);
         });
-
-    }
+    };
 }
 
 macro_rules! impl_vec2_tests {
@@ -1563,8 +1562,7 @@ mod dvec2 {
 
 mod i8vec2 {
     use glam::{
-        i8vec2, BVec2, I16Vec2, I64Vec2, I8Vec2, I8Vec3, IVec2, U16Vec2, U64Vec2, U8Vec2,
-        UVec2,
+        i8vec2, BVec2, I16Vec2, I64Vec2, I8Vec2, I8Vec3, IVec2, U16Vec2, U64Vec2, U8Vec2, UVec2,
     };
 
     glam_test!(test_align, {
@@ -1739,8 +1737,7 @@ mod i8vec2 {
 
 mod u8vec2 {
     use glam::{
-        u8vec2, BVec2, I16Vec2, I64Vec2, I8Vec2, IVec2, U16Vec2, U64Vec2, U8Vec2, U8Vec3,
-        UVec2,
+        u8vec2, BVec2, I16Vec2, I64Vec2, I8Vec2, IVec2, U16Vec2, U64Vec2, U8Vec2, U8Vec3, UVec2,
     };
 
     glam_test!(test_align, {
@@ -1893,8 +1890,7 @@ mod u8vec2 {
 
 mod i16vec2 {
     use glam::{
-        i16vec2, BVec2, I16Vec2, I16Vec3, I64Vec2, I8Vec2, IVec2, U16Vec2, U64Vec2, U8Vec2,
-        UVec2,
+        i16vec2, BVec2, I16Vec2, I16Vec3, I64Vec2, I8Vec2, IVec2, U16Vec2, U64Vec2, U8Vec2, UVec2,
     };
 
     glam_test!(test_align, {
@@ -2057,9 +2053,7 @@ mod i16vec2 {
 }
 
 mod u16vec2 {
-    use glam::{
-        u16vec2, BVec2, I16Vec2, I64Vec2, I8Vec2, IVec2, U16Vec2, U16Vec3, U64Vec2, UVec2,
-    };
+    use glam::{u16vec2, BVec2, I16Vec2, I64Vec2, I8Vec2, IVec2, U16Vec2, U16Vec3, U64Vec2, UVec2};
 
     glam_test!(test_align, {
         use core::mem;
@@ -2202,8 +2196,7 @@ mod u16vec2 {
 
 mod ivec2 {
     use glam::{
-        ivec2, BVec2, I16Vec2, I64Vec2, I8Vec2, IVec2, IVec3, U16Vec2, U64Vec2, U8Vec2,
-        UVec2,
+        ivec2, BVec2, I16Vec2, I64Vec2, I8Vec2, IVec2, IVec3, U16Vec2, U64Vec2, U8Vec2, UVec2,
     };
 
     glam_test!(test_align, {
@@ -2353,8 +2346,7 @@ mod ivec2 {
 
 mod uvec2 {
     use glam::{
-        uvec2, BVec2, I16Vec2, I64Vec2, I8Vec2, IVec2, U16Vec2, U64Vec2, U8Vec2, UVec2,
-        UVec3,
+        uvec2, BVec2, I16Vec2, I64Vec2, I8Vec2, IVec2, U16Vec2, U64Vec2, U8Vec2, UVec2, UVec3,
     };
 
     glam_test!(test_align, {
@@ -2489,8 +2481,7 @@ mod uvec2 {
 
 mod i64vec2 {
     use glam::{
-        i64vec2, BVec2, I16Vec2, I64Vec2, I64Vec3, I8Vec2, IVec2, U16Vec2, U64Vec2, U8Vec2,
-        UVec2,
+        i64vec2, BVec2, I16Vec2, I64Vec2, I64Vec3, I8Vec2, IVec2, U16Vec2, U64Vec2, U8Vec2, UVec2,
     };
 
     glam_test!(test_align, {
@@ -2574,8 +2565,7 @@ mod i64vec2 {
 
 mod u64vec2 {
     use glam::{
-        u64vec2, BVec2, I16Vec2, I64Vec2, I8Vec2, IVec2, U16Vec2, U64Vec2, U64Vec3, U8Vec2,
-        UVec2,
+        u64vec2, BVec2, I16Vec2, I64Vec2, I8Vec2, IVec2, U16Vec2, U64Vec2, U64Vec3, U8Vec2, UVec2,
     };
 
     glam_test!(test_align, {
