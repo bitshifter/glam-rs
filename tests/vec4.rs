@@ -3,8 +3,319 @@
 #[macro_use]
 mod support;
 
+macro_rules! impl_bvec4_tests {
+    ($mask:ident, $masknew:ident) => {
+        glam_test!(test_mask_new, {
+            assert_eq!(
+                $mask::new(false, false, false, false),
+                $masknew(false, false, false, false)
+            );
+            assert_eq!(
+                $mask::new(false, false, true, true),
+                $masknew(false, false, true, true)
+            );
+            assert_eq!(
+                $mask::new(true, true, false, false),
+                $masknew(true, true, false, false)
+            );
+            assert_eq!(
+                $mask::new(false, true, false, true),
+                $masknew(false, true, false, true)
+            );
+            assert_eq!(
+                $mask::new(true, false, true, false),
+                $masknew(true, false, true, false)
+            );
+            assert_eq!(
+                $mask::new(true, true, true, true),
+                $masknew(true, true, true, true)
+            );
+        });
+
+        glam_test!(test_mask_from_array_bool, {
+            assert_eq!(
+                $mask::new(false, false, false, false),
+                $mask::from([false, false, false, false])
+            );
+            assert_eq!(
+                $mask::new(false, false, true, true),
+                $mask::from([false, false, true, true])
+            );
+            assert_eq!(
+                $mask::new(true, true, false, false),
+                $mask::from([true, true, false, false])
+            );
+            assert_eq!(
+                $mask::new(false, true, false, true),
+                $mask::from([false, true, false, true])
+            );
+            assert_eq!(
+                $mask::new(true, false, true, false),
+                $mask::from([true, false, true, false])
+            );
+            assert_eq!(
+                $mask::new(true, true, true, true),
+                $mask::from([true, true, true, true])
+            );
+        });
+
+        glam_test!(test_mask_into_array_u32, {
+            assert_eq!(
+                Into::<[u32; 4]>::into($mask::new(false, false, false, false)),
+                [0, 0, 0, 0]
+            );
+            assert_eq!(
+                Into::<[u32; 4]>::into($mask::new(false, false, true, true)),
+                [0, 0, !0, !0]
+            );
+            assert_eq!(
+                Into::<[u32; 4]>::into($mask::new(true, true, false, false)),
+                [!0, !0, 0, 0]
+            );
+            assert_eq!(
+                Into::<[u32; 4]>::into($mask::new(false, true, false, true)),
+                [0, !0, 0, !0]
+            );
+            assert_eq!(
+                Into::<[u32; 4]>::into($mask::new(true, false, true, false)),
+                [!0, 0, !0, 0]
+            );
+            assert_eq!(
+                Into::<[u32; 4]>::into($mask::new(true, true, true, true)),
+                [!0, !0, !0, !0]
+            );
+        });
+
+        glam_test!(test_mask_into_array_bool, {
+            assert_eq!(
+                Into::<[bool; 4]>::into($mask::new(false, false, false, false)),
+                [false, false, false, false]
+            );
+            assert_eq!(
+                Into::<[bool; 4]>::into($mask::new(false, false, true, true)),
+                [false, false, true, true]
+            );
+            assert_eq!(
+                Into::<[bool; 4]>::into($mask::new(true, true, false, false)),
+                [true, true, false, false]
+            );
+            assert_eq!(
+                Into::<[bool; 4]>::into($mask::new(false, true, false, true)),
+                [false, true, false, true]
+            );
+            assert_eq!(
+                Into::<[bool; 4]>::into($mask::new(true, false, true, false)),
+                [true, false, true, false]
+            );
+            assert_eq!(
+                Into::<[bool; 4]>::into($mask::new(true, true, true, true)),
+                [true, true, true, true]
+            );
+        });
+
+        glam_test!(test_mask_splat, {
+            assert_eq!($mask::splat(false), $mask::new(false, false, false, false));
+            assert_eq!($mask::splat(true), $mask::new(true, true, true, true));
+        });
+
+        glam_test!(test_mask_bitmask, {
+            assert_eq!($mask::new(false, false, false, false).bitmask(), 0b0000);
+            assert_eq!($mask::new(false, false, true, true).bitmask(), 0b1100);
+            assert_eq!($mask::new(true, true, false, false).bitmask(), 0b0011);
+            assert_eq!($mask::new(false, true, false, true).bitmask(), 0b1010);
+            assert_eq!($mask::new(true, false, true, false).bitmask(), 0b0101);
+            assert_eq!($mask::new(true, true, true, true).bitmask(), 0b1111);
+        });
+
+        glam_test!(test_mask_any, {
+            assert_eq!($mask::new(false, false, false, false).any(), false);
+            assert_eq!($mask::new(true, false, false, false).any(), true);
+            assert_eq!($mask::new(false, true, false, false).any(), true);
+            assert_eq!($mask::new(false, false, true, false).any(), true);
+            assert_eq!($mask::new(false, false, false, true).any(), true);
+        });
+
+        glam_test!(test_mask_all, {
+            assert_eq!($mask::new(true, true, true, true).all(), true);
+            assert_eq!($mask::new(false, true, true, true).all(), false);
+            assert_eq!($mask::new(true, false, true, true).all(), false);
+            assert_eq!($mask::new(true, true, false, true).all(), false);
+            assert_eq!($mask::new(true, true, true, false).all(), false);
+        });
+
+        glam_test!(test_mask_and, {
+            assert_eq!(
+                ($mask::new(false, false, false, false) & $mask::new(false, false, false, false))
+                    .bitmask(),
+                0b0000,
+            );
+            assert_eq!(
+                ($mask::new(true, true, true, true) & $mask::new(true, true, true, true)).bitmask(),
+                0b1111,
+            );
+            assert_eq!(
+                ($mask::new(true, false, true, false) & $mask::new(false, true, false, true))
+                    .bitmask(),
+                0b0000,
+            );
+            assert_eq!(
+                ($mask::new(true, false, true, true) & $mask::new(true, true, true, false))
+                    .bitmask(),
+                0b0101,
+            );
+
+            let mut mask = $mask::new(true, true, false, false);
+            mask &= $mask::new(true, false, true, false);
+            assert_eq!(mask.bitmask(), 0b0001);
+        });
+
+        glam_test!(test_mask_or, {
+            assert_eq!(
+                ($mask::new(false, false, false, false) | $mask::new(false, false, false, false))
+                    .bitmask(),
+                0b0000,
+            );
+            assert_eq!(
+                ($mask::new(true, true, true, true) | $mask::new(true, true, true, true)).bitmask(),
+                0b1111,
+            );
+            assert_eq!(
+                ($mask::new(true, false, true, false) | $mask::new(false, true, false, true))
+                    .bitmask(),
+                0b1111,
+            );
+            assert_eq!(
+                ($mask::new(true, false, true, false) | $mask::new(true, false, true, false))
+                    .bitmask(),
+                0b0101,
+            );
+
+            let mut mask = $mask::new(true, true, false, false);
+            mask |= $mask::new(true, false, true, false);
+            assert_eq!(mask.bitmask(), 0b0111);
+        });
+
+        glam_test!(test_mask_xor, {
+            assert_eq!(
+                ($mask::new(false, false, false, false) ^ $mask::new(false, false, false, false))
+                    .bitmask(),
+                0b0000,
+            );
+            assert_eq!(
+                ($mask::new(true, true, true, true) ^ $mask::new(true, true, true, true)).bitmask(),
+                0b0000,
+            );
+            assert_eq!(
+                ($mask::new(true, false, true, false) ^ $mask::new(false, true, false, true))
+                    .bitmask(),
+                0b1111,
+            );
+            assert_eq!(
+                ($mask::new(true, false, true, false) ^ $mask::new(true, false, true, false))
+                    .bitmask(),
+                0b0000,
+            );
+
+            let mut mask = $mask::new(true, true, false, false);
+            mask ^= $mask::new(true, false, true, false);
+            assert_eq!(mask.bitmask(), 0b0110);
+        });
+
+        glam_test!(test_mask_not, {
+            assert_eq!((!$mask::new(false, false, false, false)).bitmask(), 0b1111);
+            assert_eq!((!$mask::new(true, true, true, true)).bitmask(), 0b0000);
+            assert_eq!((!$mask::new(true, false, true, false)).bitmask(), 0b1010);
+            assert_eq!((!$mask::new(false, true, false, true)).bitmask(), 0b0101);
+        });
+
+        glam_test!(test_mask_fmt, {
+            let a = $mask::new(true, false, true, false);
+
+            assert_eq!(format!("{}", a), "[true, false, true, false]");
+            assert_eq!(
+                format!("{:?}", a),
+                format!("{}(0xffffffff, 0x0, 0xffffffff, 0x0)", stringify!($mask))
+            );
+        });
+
+        glam_test!(test_mask_eq, {
+            let a = $mask::new(true, false, true, false);
+            let b = $mask::new(true, false, true, false);
+            let c = $mask::new(false, true, true, false);
+
+            assert_eq!(a, b);
+            assert_eq!(b, a);
+            assert_ne!(a, c);
+            assert_ne!(b, c);
+        });
+
+        glam_test!(test_mask_test, {
+            let a = $mask::new(true, false, true, false);
+            assert_eq!(a.test(0), true);
+            assert_eq!(a.test(1), false);
+            assert_eq!(a.test(2), true);
+            assert_eq!(a.test(3), false);
+
+            let b = $mask::new(false, true, false, true);
+            assert_eq!(b.test(0), false);
+            assert_eq!(b.test(1), true);
+            assert_eq!(b.test(2), false);
+            assert_eq!(b.test(3), true);
+        });
+
+        glam_test!(test_mask_set, {
+            let mut a = $mask::new(false, true, false, true);
+            a.set(0, true);
+            assert_eq!(a.test(0), true);
+            a.set(1, false);
+            assert_eq!(a.test(1), false);
+            a.set(2, true);
+            assert_eq!(a.test(2), true);
+            a.set(3, false);
+            assert_eq!(a.test(3), false);
+
+            let mut b = $mask::new(true, false, true, false);
+            b.set(0, false);
+            assert_eq!(b.test(0), false);
+            b.set(1, true);
+            assert_eq!(b.test(1), true);
+            b.set(2, false);
+            assert_eq!(b.test(2), false);
+            b.set(3, true);
+            assert_eq!(b.test(3), true);
+        });
+
+        glam_test!(test_mask_hash, {
+            use std::collections::hash_map::DefaultHasher;
+            use std::hash::Hash;
+            use std::hash::Hasher;
+
+            let a = $mask::new(true, false, true, false);
+            let b = $mask::new(true, false, true, false);
+            let c = $mask::new(false, true, true, false);
+
+            let mut hasher = DefaultHasher::new();
+            a.hash(&mut hasher);
+            let a_hashed = hasher.finish();
+
+            let mut hasher = DefaultHasher::new();
+            b.hash(&mut hasher);
+            let b_hashed = hasher.finish();
+
+            let mut hasher = DefaultHasher::new();
+            c.hash(&mut hasher);
+            let c_hashed = hasher.finish();
+
+            assert_eq!(a, b);
+            assert_eq!(a_hashed, b_hashed);
+            assert_ne!(a, c);
+            assert_ne!(a_hashed, c_hashed);
+        });
+    };
+}
+
 macro_rules! impl_vec4_tests {
-    ($t:ident, $new:ident, $vec4:ident, $vec3:ident, $vec2:ident, $mask:ident, $masknew:ident) => {
+    ($t:ident, $new:ident, $vec4:ident, $vec3:ident, $vec2:ident, $mask:ident) => {
         glam_test!(test_const, {
             const V0: $vec4 = $vec4::splat(1 as $t);
             const V1: $vec4 = $vec4::new(1 as $t, 2 as $t, 3 as $t, 4 as $t);
@@ -490,158 +801,7 @@ macro_rules! impl_vec4_tests {
             assert!(a == a);
         });
 
-        glam_test!(test_slice, {
-            let a = [1 as $t, 2 as $t, 3 as $t, 4 as $t];
-            let b = $vec4::from_slice(&a);
-            let c: [$t; 4] = b.into();
-            assert_eq!(a, c);
-            let mut d = [0 as $t, 0 as $t, 0 as $t, 0 as $t];
-            b.write_to_slice(&mut d[..]);
-            assert_eq!(a, d);
-
-            should_panic!({ $vec4::ONE.write_to_slice(&mut [0 as $t; 3]) });
-            should_panic!({ $vec4::from_slice(&[0 as $t; 3]) });
-        });
-
-        glam_test!(test_mask_new, {
-            assert_eq!(
-                $mask::new(false, false, false, false),
-                $masknew(false, false, false, false)
-            );
-            assert_eq!(
-                $mask::new(false, false, true, true),
-                $masknew(false, false, true, true)
-            );
-            assert_eq!(
-                $mask::new(true, true, false, false),
-                $masknew(true, true, false, false)
-            );
-            assert_eq!(
-                $mask::new(false, true, false, true),
-                $masknew(false, true, false, true)
-            );
-            assert_eq!(
-                $mask::new(true, false, true, false),
-                $masknew(true, false, true, false)
-            );
-            assert_eq!(
-                $mask::new(true, true, true, true),
-                $masknew(true, true, true, true)
-            );
-        });
-
-        glam_test!(test_mask_from_array_bool, {
-            assert_eq!(
-                $mask::new(false, false, false, false),
-                $mask::from([false, false, false, false])
-            );
-            assert_eq!(
-                $mask::new(false, false, true, true),
-                $mask::from([false, false, true, true])
-            );
-            assert_eq!(
-                $mask::new(true, true, false, false),
-                $mask::from([true, true, false, false])
-            );
-            assert_eq!(
-                $mask::new(false, true, false, true),
-                $mask::from([false, true, false, true])
-            );
-            assert_eq!(
-                $mask::new(true, false, true, false),
-                $mask::from([true, false, true, false])
-            );
-            assert_eq!(
-                $mask::new(true, true, true, true),
-                $mask::from([true, true, true, true])
-            );
-        });
-
-        glam_test!(test_mask_into_array_u32, {
-            assert_eq!(
-                Into::<[u32; 4]>::into($mask::new(false, false, false, false)),
-                [0, 0, 0, 0]
-            );
-            assert_eq!(
-                Into::<[u32; 4]>::into($mask::new(false, false, true, true)),
-                [0, 0, !0, !0]
-            );
-            assert_eq!(
-                Into::<[u32; 4]>::into($mask::new(true, true, false, false)),
-                [!0, !0, 0, 0]
-            );
-            assert_eq!(
-                Into::<[u32; 4]>::into($mask::new(false, true, false, true)),
-                [0, !0, 0, !0]
-            );
-            assert_eq!(
-                Into::<[u32; 4]>::into($mask::new(true, false, true, false)),
-                [!0, 0, !0, 0]
-            );
-            assert_eq!(
-                Into::<[u32; 4]>::into($mask::new(true, true, true, true)),
-                [!0, !0, !0, !0]
-            );
-        });
-
-        glam_test!(test_mask_into_array_bool, {
-            assert_eq!(
-                Into::<[bool; 4]>::into($mask::new(false, false, false, false)),
-                [false, false, false, false]
-            );
-            assert_eq!(
-                Into::<[bool; 4]>::into($mask::new(false, false, true, true)),
-                [false, false, true, true]
-            );
-            assert_eq!(
-                Into::<[bool; 4]>::into($mask::new(true, true, false, false)),
-                [true, true, false, false]
-            );
-            assert_eq!(
-                Into::<[bool; 4]>::into($mask::new(false, true, false, true)),
-                [false, true, false, true]
-            );
-            assert_eq!(
-                Into::<[bool; 4]>::into($mask::new(true, false, true, false)),
-                [true, false, true, false]
-            );
-            assert_eq!(
-                Into::<[bool; 4]>::into($mask::new(true, true, true, true)),
-                [true, true, true, true]
-            );
-        });
-
-        glam_test!(test_mask_splat, {
-            assert_eq!($mask::splat(false), $mask::new(false, false, false, false));
-            assert_eq!($mask::splat(true), $mask::new(true, true, true, true));
-        });
-
-        glam_test!(test_mask_bitmask, {
-            assert_eq!($mask::new(false, false, false, false).bitmask(), 0b0000);
-            assert_eq!($mask::new(false, false, true, true).bitmask(), 0b1100);
-            assert_eq!($mask::new(true, true, false, false).bitmask(), 0b0011);
-            assert_eq!($mask::new(false, true, false, true).bitmask(), 0b1010);
-            assert_eq!($mask::new(true, false, true, false).bitmask(), 0b0101);
-            assert_eq!($mask::new(true, true, true, true).bitmask(), 0b1111);
-        });
-
-        glam_test!(test_mask_any, {
-            assert_eq!($mask::new(false, false, false, false).any(), false);
-            assert_eq!($mask::new(true, false, false, false).any(), true);
-            assert_eq!($mask::new(false, true, false, false).any(), true);
-            assert_eq!($mask::new(false, false, true, false).any(), true);
-            assert_eq!($mask::new(false, false, false, true).any(), true);
-        });
-
-        glam_test!(test_mask_all, {
-            assert_eq!($mask::new(true, true, true, true).all(), true);
-            assert_eq!($mask::new(false, true, true, true).all(), false);
-            assert_eq!($mask::new(true, false, true, true).all(), false);
-            assert_eq!($mask::new(true, true, false, true).all(), false);
-            assert_eq!($mask::new(true, true, true, false).all(), false);
-        });
-
-        glam_test!(test_mask_select, {
+        glam_test!(test_select, {
             let a = $vec4::new(1 as $t, 2 as $t, 3 as $t, 4 as $t);
             let b = $vec4::new(5 as $t, 6 as $t, 7 as $t, 8 as $t);
             assert_eq!(
@@ -662,173 +822,17 @@ macro_rules! impl_vec4_tests {
             );
         });
 
-        glam_test!(test_mask_and, {
-            assert_eq!(
-                ($mask::new(false, false, false, false) & $mask::new(false, false, false, false))
-                    .bitmask(),
-                0b0000,
-            );
-            assert_eq!(
-                ($mask::new(true, true, true, true) & $mask::new(true, true, true, true)).bitmask(),
-                0b1111,
-            );
-            assert_eq!(
-                ($mask::new(true, false, true, false) & $mask::new(false, true, false, true))
-                    .bitmask(),
-                0b0000,
-            );
-            assert_eq!(
-                ($mask::new(true, false, true, true) & $mask::new(true, true, true, false))
-                    .bitmask(),
-                0b0101,
-            );
+        glam_test!(test_slice, {
+            let a = [1 as $t, 2 as $t, 3 as $t, 4 as $t];
+            let b = $vec4::from_slice(&a);
+            let c: [$t; 4] = b.into();
+            assert_eq!(a, c);
+            let mut d = [0 as $t, 0 as $t, 0 as $t, 0 as $t];
+            b.write_to_slice(&mut d[..]);
+            assert_eq!(a, d);
 
-            let mut mask = $mask::new(true, true, false, false);
-            mask &= $mask::new(true, false, true, false);
-            assert_eq!(mask.bitmask(), 0b0001);
-        });
-
-        glam_test!(test_mask_or, {
-            assert_eq!(
-                ($mask::new(false, false, false, false) | $mask::new(false, false, false, false))
-                    .bitmask(),
-                0b0000,
-            );
-            assert_eq!(
-                ($mask::new(true, true, true, true) | $mask::new(true, true, true, true)).bitmask(),
-                0b1111,
-            );
-            assert_eq!(
-                ($mask::new(true, false, true, false) | $mask::new(false, true, false, true))
-                    .bitmask(),
-                0b1111,
-            );
-            assert_eq!(
-                ($mask::new(true, false, true, false) | $mask::new(true, false, true, false))
-                    .bitmask(),
-                0b0101,
-            );
-
-            let mut mask = $mask::new(true, true, false, false);
-            mask |= $mask::new(true, false, true, false);
-            assert_eq!(mask.bitmask(), 0b0111);
-        });
-
-        glam_test!(test_mask_xor, {
-            assert_eq!(
-                ($mask::new(false, false, false, false) ^ $mask::new(false, false, false, false))
-                    .bitmask(),
-                0b0000,
-            );
-            assert_eq!(
-                ($mask::new(true, true, true, true) ^ $mask::new(true, true, true, true)).bitmask(),
-                0b0000,
-            );
-            assert_eq!(
-                ($mask::new(true, false, true, false) ^ $mask::new(false, true, false, true))
-                    .bitmask(),
-                0b1111,
-            );
-            assert_eq!(
-                ($mask::new(true, false, true, false) ^ $mask::new(true, false, true, false))
-                    .bitmask(),
-                0b0000,
-            );
-
-            let mut mask = $mask::new(true, true, false, false);
-            mask ^= $mask::new(true, false, true, false);
-            assert_eq!(mask.bitmask(), 0b0110);
-        });
-
-        glam_test!(test_mask_not, {
-            assert_eq!((!$mask::new(false, false, false, false)).bitmask(), 0b1111);
-            assert_eq!((!$mask::new(true, true, true, true)).bitmask(), 0b0000);
-            assert_eq!((!$mask::new(true, false, true, false)).bitmask(), 0b1010);
-            assert_eq!((!$mask::new(false, true, false, true)).bitmask(), 0b0101);
-        });
-
-        glam_test!(test_mask_fmt, {
-            let a = $mask::new(true, false, true, false);
-
-            assert_eq!(format!("{}", a), "[true, false, true, false]");
-            assert_eq!(
-                format!("{:?}", a),
-                format!("{}(0xffffffff, 0x0, 0xffffffff, 0x0)", stringify!($mask))
-            );
-        });
-
-        glam_test!(test_mask_eq, {
-            let a = $mask::new(true, false, true, false);
-            let b = $mask::new(true, false, true, false);
-            let c = $mask::new(false, true, true, false);
-
-            assert_eq!(a, b);
-            assert_eq!(b, a);
-            assert_ne!(a, c);
-            assert_ne!(b, c);
-        });
-
-        glam_test!(test_mask_test, {
-            let a = $mask::new(true, false, true, false);
-            assert_eq!(a.test(0), true);
-            assert_eq!(a.test(1), false);
-            assert_eq!(a.test(2), true);
-            assert_eq!(a.test(3), false);
-
-            let b = $mask::new(false, true, false, true);
-            assert_eq!(b.test(0), false);
-            assert_eq!(b.test(1), true);
-            assert_eq!(b.test(2), false);
-            assert_eq!(b.test(3), true);
-        });
-
-        glam_test!(test_mask_set, {
-            let mut a = $mask::new(false, true, false, true);
-            a.set(0, true);
-            assert_eq!(a.test(0), true);
-            a.set(1, false);
-            assert_eq!(a.test(1), false);
-            a.set(2, true);
-            assert_eq!(a.test(2), true);
-            a.set(3, false);
-            assert_eq!(a.test(3), false);
-
-            let mut b = $mask::new(true, false, true, false);
-            b.set(0, false);
-            assert_eq!(b.test(0), false);
-            b.set(1, true);
-            assert_eq!(b.test(1), true);
-            b.set(2, false);
-            assert_eq!(b.test(2), false);
-            b.set(3, true);
-            assert_eq!(b.test(3), true);
-        });
-
-        glam_test!(test_mask_hash, {
-            use std::collections::hash_map::DefaultHasher;
-            use std::hash::Hash;
-            use std::hash::Hasher;
-
-            let a = $mask::new(true, false, true, false);
-            let b = $mask::new(true, false, true, false);
-            let c = $mask::new(false, true, true, false);
-
-            let mut hasher = DefaultHasher::new();
-            a.hash(&mut hasher);
-            let a_hashed = hasher.finish();
-
-            let mut hasher = DefaultHasher::new();
-            b.hash(&mut hasher);
-            let b_hashed = hasher.finish();
-
-            let mut hasher = DefaultHasher::new();
-            c.hash(&mut hasher);
-            let c_hashed = hasher.finish();
-
-            assert_eq!(a, b);
-            assert_eq!(a_hashed, b_hashed);
-            assert_ne!(a, c);
-            assert_ne!(a_hashed, c_hashed);
+            should_panic!({ $vec4::ONE.write_to_slice(&mut [0 as $t; 3]) });
+            should_panic!({ $vec4::from_slice(&[0 as $t; 3]) });
         });
 
         glam_test!(test_to_from_slice, {
@@ -858,8 +862,8 @@ macro_rules! impl_vec4_tests {
 }
 
 macro_rules! impl_vec4_signed_tests {
-    ($t:ident, $new:ident, $vec4:ident, $vec3:ident, $vec2:ident, $mask:ident, $masknew:ident) => {
-        impl_vec4_tests!($t, $new, $vec4, $vec3, $vec2, $mask, $masknew);
+    ($t:ident, $new:ident, $vec4:ident, $vec3:ident, $vec2:ident, $mask:ident) => {
+        impl_vec4_tests!($t, $new, $vec4, $vec3, $vec2, $mask);
 
         glam_test!(test_neg, {
             let a = $new(1 as $t, 2 as $t, 3 as $t, 4 as $t);
@@ -959,8 +963,8 @@ macro_rules! impl_vec4_signed_tests {
 }
 
 macro_rules! impl_vec4_signed_integer_tests {
-    ($t:ident, $new:ident, $vec4:ident, $vec3:ident, $vec2:ident, $mask:ident, $masknew:ident) => {
-        impl_vec4_signed_tests!($t, $new, $vec4, $vec3, $vec2, $mask, $masknew);
+    ($t:ident, $new:ident, $vec4:ident, $vec3:ident, $vec2:ident, $mask:ident) => {
+        impl_vec4_signed_tests!($t, $new, $vec4, $vec3, $vec2, $mask);
 
         glam_test!(test_signum, {
             assert_eq!($vec4::ZERO.signum(), $vec4::ZERO);
@@ -1065,8 +1069,8 @@ macro_rules! impl_vec4_signed_integer_tests {
 }
 
 macro_rules! impl_vec4_unsigned_integer_tests {
-    ($t:ident, $new:ident, $vec4:ident, $vec3:ident, $vec2:ident, $mask:ident, $masknew:ident) => {
-        impl_vec4_tests!($t, $new, $vec4, $vec3, $vec2, $mask, $masknew);
+    ($t:ident, $new:ident, $vec4:ident, $vec3:ident, $vec2:ident, $mask:ident) => {
+        impl_vec4_tests!($t, $new, $vec4, $vec3, $vec2, $mask);
 
         glam_test!(test_checked_add, {
             assert_eq!($vec4::MAX.checked_add($vec4::ONE), None);
@@ -1176,8 +1180,8 @@ macro_rules! impl_vec4_eq_hash_tests {
 }
 
 macro_rules! impl_vec4_float_tests {
-    ($t:ident, $new:ident, $vec4:ident, $vec3:ident, $vec2:ident, $mask:ident, $masknew:ident) => {
-        impl_vec4_signed_tests!($t, $new, $vec4, $vec3, $vec2, $mask, $masknew);
+    ($t:ident, $new:ident, $vec4:ident, $vec3:ident, $vec2:ident, $mask:ident) => {
+        impl_vec4_signed_tests!($t, $new, $vec4, $vec3, $vec2, $mask);
         impl_vec_float_normalize_tests!($t, $vec4);
 
         glam_test!(test_vec4_nan, {
@@ -1714,11 +1718,35 @@ macro_rules! impl_vec4_bit_op_tests {
     };
 }
 
+mod bvec4 {
+    use glam::{bvec4, BVec4};
+
+    glam_test!(test_mask_align, {
+        use std::mem;
+        assert_eq!(4, mem::size_of::<BVec4>());
+        assert_eq!(1, mem::align_of::<BVec4>());
+    });
+
+    impl_bvec4_tests!(BVec4, bvec4);
+}
+
+mod bvec4a {
+    use glam::{bvec4a, BVec4A};
+
+    glam_test!(test_mask_align, {
+        use std::mem;
+        assert_eq!(16, mem::size_of::<BVec4A>());
+        assert_eq!(16, mem::align_of::<BVec4A>());
+    });
+
+    impl_bvec4_tests!(BVec4A, bvec4a);
+}
+
 mod vec4 {
     #[cfg(feature = "scalar-math")]
-    use glam::{bvec4, BVec4};
+    use glam::BVec4;
     #[cfg(not(feature = "scalar-math"))]
-    use glam::{bvec4a, BVec4A};
+    use glam::BVec4A;
     use glam::{vec4, Vec2, Vec3, Vec4};
 
     glam_test!(test_align, {
@@ -1728,16 +1756,6 @@ mod vec4 {
             assert_eq!(16, mem::align_of::<Vec4>());
         } else {
             assert_eq!(4, mem::align_of::<Vec4>());
-        }
-        #[cfg(not(feature = "scalar-math"))]
-        {
-            assert_eq!(16, mem::size_of::<BVec4A>());
-            assert_eq!(16, mem::align_of::<BVec4A>());
-        }
-        #[cfg(feature = "scalar-math")]
-        {
-            assert_eq!(4, mem::size_of::<BVec4>());
-            assert_eq!(1, mem::align_of::<BVec4>());
         }
     });
 
@@ -2115,14 +2133,14 @@ mod vec4 {
     });
 
     #[cfg(not(feature = "scalar-math"))]
-    impl_vec4_float_tests!(f32, vec4, Vec4, Vec3, Vec2, BVec4A, bvec4a);
+    impl_vec4_float_tests!(f32, vec4, Vec4, Vec3, Vec2, BVec4A);
 
     #[cfg(feature = "scalar-math")]
-    impl_vec4_float_tests!(f32, vec4, Vec4, Vec3, Vec2, BVec4, bvec4);
+    impl_vec4_float_tests!(f32, vec4, Vec4, Vec3, Vec2, BVec4);
 }
 
 mod dvec4 {
-    use glam::{bvec4, dvec4, BVec4, DVec2, DVec3, DVec4, IVec4, UVec4, Vec4};
+    use glam::{dvec4, BVec4, DVec2, DVec3, DVec4, IVec4, UVec4, Vec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -2131,8 +2149,6 @@ mod dvec4 {
         assert_eq!(mem::align_of::<f64>(), mem::align_of::<DVec4>());
         #[cfg(feature = "cuda")]
         assert_eq!(16, mem::align_of::<DVec4>());
-        assert_eq!(4, mem::size_of::<BVec4>());
-        assert_eq!(1, mem::align_of::<BVec4>());
     });
 
     glam_test!(test_try_from, {
@@ -2150,13 +2166,13 @@ mod dvec4 {
         );
     });
 
-    impl_vec4_float_tests!(f64, dvec4, DVec4, DVec3, DVec2, BVec4, bvec4);
+    impl_vec4_float_tests!(f64, dvec4, DVec4, DVec3, DVec2, BVec4);
 }
 
 mod i8vec4 {
     use glam::{
-        bvec4, i8vec4, BVec4, I16Vec4, I64Vec4, I8Vec2, I8Vec3, I8Vec4, IVec4, U16Vec4, U64Vec4,
-        U8Vec4, UVec4,
+        i8vec4, BVec4, I16Vec4, I64Vec4, I8Vec2, I8Vec3, I8Vec4, IVec4, U16Vec4, U64Vec4, U8Vec4,
+        UVec4,
     };
 
     glam_test!(test_align, {
@@ -2337,7 +2353,7 @@ mod i8vec4 {
         );
     });
 
-    impl_vec4_signed_integer_tests!(i8, i8vec4, I8Vec4, I8Vec3, I8Vec2, BVec4, bvec4);
+    impl_vec4_signed_integer_tests!(i8, i8vec4, I8Vec4, I8Vec3, I8Vec2, BVec4);
     impl_vec4_eq_hash_tests!(i8, i8vec4);
 
     impl_vec4_scalar_shift_op_tests!(I8Vec4, -2, 2);
@@ -2349,8 +2365,8 @@ mod i8vec4 {
 
 mod u8vec4 {
     use glam::{
-        bvec4, u8vec4, BVec4, I16Vec4, I64Vec4, I8Vec4, IVec4, U16Vec4, U64Vec4, U8Vec2, U8Vec3,
-        U8Vec4, UVec4,
+        u8vec4, BVec4, I16Vec4, I64Vec4, I8Vec4, IVec4, U16Vec4, U64Vec4, U8Vec2, U8Vec3, U8Vec4,
+        UVec4,
     };
 
     glam_test!(test_align, {
@@ -2514,7 +2530,7 @@ mod u8vec4 {
         );
     });
 
-    impl_vec4_unsigned_integer_tests!(u8, u8vec4, U8Vec4, U8Vec3, U8Vec2, BVec4, bvec4);
+    impl_vec4_unsigned_integer_tests!(u8, u8vec4, U8Vec4, U8Vec3, U8Vec2, BVec4);
     impl_vec4_eq_hash_tests!(u8, u8vec4);
 
     impl_vec4_scalar_shift_op_tests!(U8Vec4, 0, 2);
@@ -2526,7 +2542,7 @@ mod u8vec4 {
 
 mod i16vec4 {
     use glam::{
-        bvec4, i16vec4, BVec4, I16Vec2, I16Vec3, I16Vec4, I64Vec4, I8Vec4, IVec4, U16Vec4, U64Vec4,
+        i16vec4, BVec4, I16Vec2, I16Vec3, I16Vec4, I64Vec4, I8Vec4, IVec4, U16Vec4, U64Vec4,
         U8Vec4, UVec4,
     };
 
@@ -2699,7 +2715,7 @@ mod i16vec4 {
         );
     });
 
-    impl_vec4_signed_integer_tests!(i16, i16vec4, I16Vec4, I16Vec3, I16Vec2, BVec4, bvec4);
+    impl_vec4_signed_integer_tests!(i16, i16vec4, I16Vec4, I16Vec3, I16Vec2, BVec4);
     impl_vec4_eq_hash_tests!(i16, i16vec4);
 
     impl_vec4_scalar_shift_op_tests!(I16Vec4, -2, 2);
@@ -2711,7 +2727,7 @@ mod i16vec4 {
 
 mod u16vec4 {
     use glam::{
-        bvec4, u16vec4, BVec4, I16Vec4, I64Vec4, I8Vec4, IVec4, U16Vec2, U16Vec3, U16Vec4, U64Vec4,
+        u16vec4, BVec4, I16Vec4, I64Vec4, I8Vec4, IVec4, U16Vec2, U16Vec3, U16Vec4, U64Vec4,
         U8Vec4, UVec4,
     };
 
@@ -2872,7 +2888,7 @@ mod u16vec4 {
         );
     });
 
-    impl_vec4_unsigned_integer_tests!(u16, u16vec4, U16Vec4, U16Vec3, U16Vec2, BVec4, bvec4);
+    impl_vec4_unsigned_integer_tests!(u16, u16vec4, U16Vec4, U16Vec3, U16Vec2, BVec4);
     impl_vec4_eq_hash_tests!(u16, u16vec4);
 
     impl_vec4_scalar_shift_op_tests!(U16Vec4, 0, 2);
@@ -2884,8 +2900,8 @@ mod u16vec4 {
 
 mod ivec4 {
     use glam::{
-        bvec4, ivec4, BVec4, I16Vec4, I64Vec4, I8Vec4, IVec2, IVec3, IVec4, U16Vec4, U64Vec4,
-        U8Vec4, UVec4,
+        ivec4, BVec4, I16Vec4, I64Vec4, I8Vec4, IVec2, IVec3, IVec4, U16Vec4, U64Vec4, U8Vec4,
+        UVec4,
     };
 
     glam_test!(test_align, {
@@ -2895,8 +2911,6 @@ mod ivec4 {
         assert_eq!(4, mem::align_of::<IVec4>());
         #[cfg(feature = "cuda")]
         assert_eq!(16, mem::align_of::<IVec4>());
-        assert_eq!(4, mem::size_of::<BVec4>());
-        assert_eq!(1, mem::align_of::<BVec4>());
     });
 
     glam_test!(test_try_from, {
@@ -3044,7 +3058,7 @@ mod ivec4 {
         );
     });
 
-    impl_vec4_signed_integer_tests!(i32, ivec4, IVec4, IVec3, IVec2, BVec4, bvec4);
+    impl_vec4_signed_integer_tests!(i32, ivec4, IVec4, IVec3, IVec2, BVec4);
     impl_vec4_eq_hash_tests!(i32, ivec4);
 
     impl_vec4_scalar_shift_op_tests!(IVec4, -2, 2);
@@ -3056,8 +3070,8 @@ mod ivec4 {
 
 mod uvec4 {
     use glam::{
-        bvec4, uvec4, BVec4, I16Vec4, I64Vec4, I8Vec4, IVec4, U16Vec4, U64Vec4, U8Vec4, UVec2,
-        UVec3, UVec4,
+        uvec4, BVec4, I16Vec4, I64Vec4, I8Vec4, IVec4, U16Vec4, U64Vec4, U8Vec4, UVec2, UVec3,
+        UVec4,
     };
 
     glam_test!(test_align, {
@@ -3067,8 +3081,6 @@ mod uvec4 {
         assert_eq!(4, mem::align_of::<UVec4>());
         #[cfg(feature = "cuda")]
         assert_eq!(16, mem::align_of::<UVec4>());
-        assert_eq!(4, mem::size_of::<BVec4>());
-        assert_eq!(1, mem::align_of::<BVec4>());
     });
 
     glam_test!(test_try_from, {
@@ -3202,7 +3214,7 @@ mod uvec4 {
         );
     });
 
-    impl_vec4_unsigned_integer_tests!(u32, uvec4, UVec4, UVec3, UVec2, BVec4, bvec4);
+    impl_vec4_unsigned_integer_tests!(u32, uvec4, UVec4, UVec3, UVec2, BVec4);
     impl_vec4_eq_hash_tests!(u32, uvec4);
 
     impl_vec4_scalar_shift_op_tests!(UVec4, 0, 2);
@@ -3214,7 +3226,7 @@ mod uvec4 {
 
 mod i64vec4 {
     use glam::{
-        bvec4, i64vec4, BVec4, I16Vec4, I64Vec2, I64Vec3, I64Vec4, I8Vec4, IVec4, U16Vec4, U64Vec4,
+        i64vec4, BVec4, I16Vec4, I64Vec2, I64Vec3, I64Vec4, I8Vec4, IVec4, U16Vec4, U64Vec4,
         U8Vec4, UVec4,
     };
 
@@ -3225,8 +3237,6 @@ mod i64vec4 {
         assert_eq!(8, mem::align_of::<I64Vec4>());
         #[cfg(feature = "cuda")]
         assert_eq!(16, mem::align_of::<I64Vec4>());
-        assert_eq!(4, mem::size_of::<BVec4>());
-        assert_eq!(1, mem::align_of::<BVec4>());
     });
 
     glam_test!(test_try_from, {
@@ -3313,7 +3323,7 @@ mod i64vec4 {
         );
     });
 
-    impl_vec4_signed_integer_tests!(i64, i64vec4, I64Vec4, I64Vec3, I64Vec2, BVec4, bvec4);
+    impl_vec4_signed_integer_tests!(i64, i64vec4, I64Vec4, I64Vec3, I64Vec2, BVec4);
     impl_vec4_eq_hash_tests!(i64, i64vec4);
 
     impl_vec4_scalar_shift_op_tests!(I64Vec4, -2, 2);
@@ -3325,7 +3335,7 @@ mod i64vec4 {
 
 mod u64vec4 {
     use glam::{
-        bvec4, u64vec4, BVec4, I16Vec4, I64Vec4, I8Vec4, IVec4, U16Vec4, U64Vec2, U64Vec3, U64Vec4,
+        u64vec4, BVec4, I16Vec4, I64Vec4, I8Vec4, IVec4, U16Vec4, U64Vec2, U64Vec3, U64Vec4,
         U8Vec4, UVec4,
     };
 
@@ -3336,8 +3346,6 @@ mod u64vec4 {
         assert_eq!(8, mem::align_of::<U64Vec4>());
         #[cfg(feature = "cuda")]
         assert_eq!(16, mem::align_of::<U64Vec4>());
-        assert_eq!(4, mem::size_of::<BVec4>());
-        assert_eq!(1, mem::align_of::<BVec4>());
     });
 
     glam_test!(test_try_from, {
@@ -3409,7 +3417,7 @@ mod u64vec4 {
         );
     });
 
-    impl_vec4_unsigned_integer_tests!(u64, u64vec4, U64Vec4, U64Vec3, U64Vec2, BVec4, bvec4);
+    impl_vec4_unsigned_integer_tests!(u64, u64vec4, U64Vec4, U64Vec3, U64Vec2, BVec4);
     impl_vec4_eq_hash_tests!(u64, u64vec4);
 
     impl_vec4_scalar_shift_op_tests!(U64Vec4, 0, 2);
