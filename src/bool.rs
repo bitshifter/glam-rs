@@ -87,17 +87,6 @@ pub use coresimd::bvec4a::{bvec4a, BVec4A};
 ))]
 pub use scalar::bvec3a::{bvec3a, BVec3A};
 
-#[cfg(any(
-    not(any(
-        feature = "core-simd",
-        target_arch = "aarch64",
-        target_feature = "sse2",
-        target_feature = "simd128"
-    )),
-    feature = "scalar-math"
-))]
-pub use scalar::bvec4a::{bvec4a, BVec4A};
-
 mod const_test_bvec2 {
     const_assert_eq!(1, core::mem::align_of::<super::BVec2>());
     const_assert_eq!(2, core::mem::size_of::<super::BVec2>());

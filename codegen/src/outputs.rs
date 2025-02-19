@@ -669,10 +669,6 @@ pub fn build_output_pairs() -> HashMap<&'static str, tera::Context> {
             ContextBuilder::new_bvec3a().target_coresimd().build(),
         ),
         (
-            "src/bool/scalar/bvec4a.rs",
-            ContextBuilder::new_bvec4a().build(),
-        ),
-        (
             "src/bool/sse2/bvec4a.rs",
             ContextBuilder::new_bvec4a().target_sse2().build(),
         ),
