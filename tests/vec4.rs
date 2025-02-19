@@ -801,7 +801,7 @@ macro_rules! impl_vec4_tests {
             assert!(a == a);
         });
 
-        glam_test!(test_mask_select, {
+        glam_test!(test_select, {
             let a = $vec4::new(1 as $t, 2 as $t, 3 as $t, 4 as $t);
             let b = $vec4::new(5 as $t, 6 as $t, 7 as $t, 8 as $t);
             assert_eq!(
@@ -1720,11 +1720,25 @@ macro_rules! impl_vec4_bit_op_tests {
 
 mod bvec4 {
     use glam::{bvec4, BVec4};
+
+    glam_test!(test_mask_align, {
+        use std::mem;
+        assert_eq!(4, mem::size_of::<BVec4>());
+        assert_eq!(1, mem::align_of::<BVec4>());
+    });
+
     impl_bvec4_tests!(BVec4, bvec4);
 }
 
 mod bvec4a {
     use glam::{bvec4a, BVec4A};
+
+    glam_test!(test_mask_align, {
+        use std::mem;
+        assert_eq!(16, mem::size_of::<BVec4A>());
+        assert_eq!(16, mem::align_of::<BVec4A>());
+    });
+
     impl_bvec4_tests!(BVec4A, bvec4a);
 }
 
@@ -1742,16 +1756,6 @@ mod vec4 {
             assert_eq!(16, mem::align_of::<Vec4>());
         } else {
             assert_eq!(4, mem::align_of::<Vec4>());
-        }
-        #[cfg(not(feature = "scalar-math"))]
-        {
-            assert_eq!(16, mem::size_of::<BVec4A>());
-            assert_eq!(16, mem::align_of::<BVec4A>());
-        }
-        #[cfg(feature = "scalar-math")]
-        {
-            assert_eq!(4, mem::size_of::<BVec4>());
-            assert_eq!(1, mem::align_of::<BVec4>());
         }
     });
 
@@ -2145,8 +2149,6 @@ mod dvec4 {
         assert_eq!(mem::align_of::<f64>(), mem::align_of::<DVec4>());
         #[cfg(feature = "cuda")]
         assert_eq!(16, mem::align_of::<DVec4>());
-        assert_eq!(4, mem::size_of::<BVec4>());
-        assert_eq!(1, mem::align_of::<BVec4>());
     });
 
     glam_test!(test_try_from, {
@@ -2909,8 +2911,6 @@ mod ivec4 {
         assert_eq!(4, mem::align_of::<IVec4>());
         #[cfg(feature = "cuda")]
         assert_eq!(16, mem::align_of::<IVec4>());
-        assert_eq!(4, mem::size_of::<BVec4>());
-        assert_eq!(1, mem::align_of::<BVec4>());
     });
 
     glam_test!(test_try_from, {
@@ -3081,8 +3081,6 @@ mod uvec4 {
         assert_eq!(4, mem::align_of::<UVec4>());
         #[cfg(feature = "cuda")]
         assert_eq!(16, mem::align_of::<UVec4>());
-        assert_eq!(4, mem::size_of::<BVec4>());
-        assert_eq!(1, mem::align_of::<BVec4>());
     });
 
     glam_test!(test_try_from, {
@@ -3239,8 +3237,6 @@ mod i64vec4 {
         assert_eq!(8, mem::align_of::<I64Vec4>());
         #[cfg(feature = "cuda")]
         assert_eq!(16, mem::align_of::<I64Vec4>());
-        assert_eq!(4, mem::size_of::<BVec4>());
-        assert_eq!(1, mem::align_of::<BVec4>());
     });
 
     glam_test!(test_try_from, {
@@ -3350,8 +3346,6 @@ mod u64vec4 {
         assert_eq!(8, mem::align_of::<U64Vec4>());
         #[cfg(feature = "cuda")]
         assert_eq!(16, mem::align_of::<U64Vec4>());
-        assert_eq!(4, mem::size_of::<BVec4>());
-        assert_eq!(1, mem::align_of::<BVec4>());
     });
 
     glam_test!(test_try_from, {

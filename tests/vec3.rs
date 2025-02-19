@@ -686,16 +686,7 @@ macro_rules! impl_vec3_tests {
             assert_eq!(a, c);
         });
 
-        glam_test!(test_mask, {
-            let mut a = $vec3::ZERO;
-            a.x = 1 as $t;
-            a.y = 1 as $t;
-            a.z = 1 as $t;
-            assert!(!a.cmpeq($vec3::ZERO).any());
-            assert!(a.cmpeq($vec3::ONE).all());
-        });
-
-        glam_test!(test_mask_select, {
+        glam_test!(test_select, {
             let a = $vec3::new(1 as $t, 2 as $t, 3 as $t);
             let b = $vec3::new(4 as $t, 5 as $t, 6 as $t);
             assert_eq!(
@@ -1630,11 +1621,25 @@ macro_rules! impl_vec3_bit_op_tests {
 
 mod bvec3 {
     use glam::{bvec3, BVec3};
+
+    glam_test!(test_mask_align, {
+        use std::mem;
+        assert_eq!(3, mem::size_of::<BVec3>());
+        assert_eq!(1, mem::align_of::<BVec3>());
+    });
+
     impl_bvec3_tests!(BVec3, bvec3);
 }
 
 mod bvec3a {
     use glam::{bvec3a, BVec3A};
+
+    glam_test!(test_mask_align, {
+        use std::mem;
+        assert_eq!(16, mem::size_of::<BVec3A>());
+        assert_eq!(16, mem::align_of::<BVec3A>());
+    });
+
     impl_bvec3_tests!(BVec3A, bvec3a);
 }
 
@@ -1645,8 +1650,6 @@ mod vec3 {
         use std::mem;
         assert_eq!(12, mem::size_of::<Vec3>());
         assert_eq!(4, mem::align_of::<Vec3>());
-        assert_eq!(3, mem::size_of::<BVec3>());
-        assert_eq!(1, mem::align_of::<BVec3>());
     });
 
     glam_test!(test_as, {
@@ -1903,8 +1906,6 @@ mod vec3a {
         use std::mem;
         assert_eq!(16, mem::size_of::<Vec3A>());
         assert_eq!(16, mem::align_of::<Vec3A>());
-        assert_eq!(16, mem::size_of::<BVec3A>());
-        assert_eq!(16, mem::align_of::<BVec3A>());
     });
 
     glam_test!(test_mask_align16, {
@@ -1972,8 +1973,6 @@ mod dvec3 {
         use std::mem;
         assert_eq!(24, mem::size_of::<DVec3>());
         assert_eq!(mem::align_of::<f64>(), mem::align_of::<DVec3>());
-        assert_eq!(3, mem::size_of::<BVec3>());
-        assert_eq!(1, mem::align_of::<BVec3>());
     });
 
     glam_test!(test_try_from, {
@@ -2646,8 +2645,6 @@ mod ivec3 {
         use std::mem;
         assert_eq!(12, mem::size_of::<IVec3>());
         assert_eq!(4, mem::align_of::<IVec3>());
-        assert_eq!(3, mem::size_of::<BVec3>());
-        assert_eq!(1, mem::align_of::<BVec3>());
     });
 
     glam_test!(test_try_from, {
@@ -2799,8 +2796,6 @@ mod uvec3 {
         use std::mem;
         assert_eq!(12, mem::size_of::<UVec3>());
         assert_eq!(4, mem::align_of::<UVec3>());
-        assert_eq!(3, mem::size_of::<BVec3>());
-        assert_eq!(1, mem::align_of::<BVec3>());
     });
 
     glam_test!(test_try_from, {
@@ -2940,8 +2935,6 @@ mod i64vec3 {
         use std::mem;
         assert_eq!(24, mem::size_of::<I64Vec3>());
         assert_eq!(8, mem::align_of::<I64Vec3>());
-        assert_eq!(3, mem::size_of::<BVec3>());
-        assert_eq!(1, mem::align_of::<BVec3>());
     });
 
     glam_test!(test_try_from, {
@@ -3024,8 +3017,6 @@ mod u64vec3 {
         use std::mem;
         assert_eq!(24, mem::size_of::<U64Vec3>());
         assert_eq!(8, mem::align_of::<U64Vec3>());
-        assert_eq!(3, mem::size_of::<BVec3>());
-        assert_eq!(1, mem::align_of::<BVec3>());
     });
 
     glam_test!(test_try_from, {
