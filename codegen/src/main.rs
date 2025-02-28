@@ -1,5 +1,3 @@
-mod outputs;
-
 use anyhow::{bail, Context};
 use clap::{arg, command};
 use rustfmt_wrapper::rustfmt;
@@ -8,10 +6,10 @@ use std::collections::BTreeMap;
 use std::path::Path;
 use tera::{from_value, to_value};
 
-use outputs::build_output_pairs;
+// use outputs::build_output_pairs;
 
 const GLAM_ROOT: &str = "..";
-// const CONFIG_FILE: &str = "codegen.json";
+const CONFIG_FILE: &str = "codegen.json";
 
 #[derive(Serialize, Deserialize)]
 struct Config {
@@ -31,76 +29,107 @@ struct Output {
 }
 
 impl Config {
-    fn new() -> Config {
-        Config {
-            version: 1,
-            templates: BTreeMap::new(),
+    fn from_file<P: AsRef<Path>>(path: P) -> anyhow::Result<Config> {
+        let file = std::fs::File::open(path)?;
+        let reader = std::io::BufReader::new(file);
+        let config = serde_json::from_reader(reader)?;
+        Ok(config)
+    }
+
+    fn build_output_pairs(&self) -> anyhow::Result<BTreeMap<String, tera::Context>> {
+        match self.version {
+            1 => self.build_output_pairs_v1(),
+            _ => Err(anyhow::Error::msg("Unexpected config file version")),
         }
     }
 
-    fn from(output_pairs: std::collections::HashMap<&str, tera::Context>) -> Option<Config> {
-        let mut config = Config::new();
-        for (output_path, tera_context) in output_pairs.into_iter() {
-            let json_context = tera_context.into_json();
-            let context_map = json_context.as_object()?;
-            let template_path = context_map.get("template_path")?.as_str()?;
-            if !config.templates.contains_key(template_path) {
-                let mut template = Template::default();
-                for (property, value) in context_map.iter() {
-                    if property == "template_path" {
-                        continue;
-                    }
-                    if value.is_boolean() {
-                        template.properties.insert(
-                            property.clone(), Some(serde_json::Value::Bool(false))
-                        );
-                    } else if value.is_i64() {
-                        template
-                            .properties
-                            .insert(property.clone(), None);
-                    } else if value.is_string() {
-                        template
-                            .properties
-                            .insert(property.clone(), None);
+    fn build_output_pairs_v1(&self) -> anyhow::Result<BTreeMap<String, tera::Context>> {
+        let mut output_pairs = BTreeMap::new();
+        for (template_path, template) in self.templates.iter() {
+            for (output_path, output) in template.outputs.iter() {
+                let mut context = tera::Context::new();
+                context.insert("template_path", template_path);
+                for (prop_key, prop_value) in template.properties.iter() {
+                    if let Some(prop_override) = output.properties.get(prop_key) {
+                        context.insert(prop_key, prop_override);
                     } else {
-                        unimplemented!();
+                        // TODO: error message
+                        if let Some(prop_value) = prop_value {
+                            context.insert(prop_key, prop_value);
+                        } else {
+                            return Err(anyhow::Error::msg("Missing property override"));
+                        }
                     }
                 }
-                config.templates.insert(template_path.to_string(), template);
+                output_pairs.insert(output_path.clone(), context);
             }
-            let mut output = Output::default();
-            for (property, value) in context_map.iter() {
-                if property == "template_path" {
-                    continue;
-                }
-                if let Some(bool_value) = value.as_bool() {
-                    if bool_value {
-                        output
-                            .properties
-                            .insert(property.clone(), serde_json::Value::Bool(bool_value));
-                    }
-                } else if let Some(i64_value) = value.as_i64() {
-                    output.properties.insert(
-                        property.clone(),
-                        serde_json::Value::Number(i64_value.into()),
-                    );
-                } else if let Some(str_value) = value.as_str() {
-                    output.properties.insert(
-                        property.clone(),
-                        serde_json::Value::String(str_value.to_string()),
-                    );
-                } else {
-                    unimplemented!();
-                }
-            }
-            config
-                .templates
-                .get_mut(template_path)?
-                .outputs
-                .insert(output_path.to_string(), output);
         }
-        Some(config)
+        Ok(output_pairs)
     }
+
+    // fn from(output_pairs: std::collections::HashMap<&str, tera::Context>) -> Option<Config> {
+    //     let mut config = Config::new();
+    //     for (output_path, tera_context) in output_pairs.into_iter() {
+    //         let json_context = tera_context.into_json();
+    //         let context_map = json_context.as_object()?;
+    //         let template_path = context_map.get("template_path")?.as_str()?;
+    //         if !config.templates.contains_key(template_path) {
+    //             let mut template = Template::default();
+    //             for (property, value) in context_map.iter() {
+    //                 if property == "template_path" {
+    //                     continue;
+    //                 }
+    //                 if value.is_boolean() {
+    //                     template.properties.insert(
+    //                         property.clone(), Some(serde_json::Value::Bool(false))
+    //                     );
+    //                 } else if value.is_i64() {
+    //                     template
+    //                         .properties
+    //                         .insert(property.clone(), None);
+    //                 } else if value.is_string() {
+    //                     template
+    //                         .properties
+    //                         .insert(property.clone(), None);
+    //                 } else {
+    //                     unimplemented!();
+    //                 }
+    //             }
+    //             config.templates.insert(template_path.to_string(), template);
+    //         }
+    //         let mut output = Output::default();
+    //         for (property, value) in context_map.iter() {
+    //             if property == "template_path" {
+    //                 continue;
+    //             }
+    //             if let Some(bool_value) = value.as_bool() {
+    //                 if bool_value {
+    //                     output
+    //                         .properties
+    //                         .insert(property.clone(), serde_json::Value::Bool(bool_value));
+    //                 }
+    //             } else if let Some(i64_value) = value.as_i64() {
+    //                 output.properties.insert(
+    //                     property.clone(),
+    //                     serde_json::Value::Number(i64_value.into()),
+    //                 );
+    //             } else if let Some(str_value) = value.as_str() {
+    //                 output.properties.insert(
+    //                     property.clone(),
+    //                     serde_json::Value::String(str_value.to_string()),
+    //                 );
+    //             } else {
+    //                 unimplemented!();
+    //             }
+    //         }
+    //         config
+    //             .templates
+    //             .get_mut(template_path)?
+    //             .outputs
+    //             .insert(output_path.to_string(), output);
+    //     }
+    //     Some(config)
+    // }
 }
 
 fn is_modified(repo: &git2::Repository, output_path: &str) -> anyhow::Result<bool> {
@@ -140,7 +169,7 @@ fn main() -> anyhow::Result<()> {
     let output_path_glob = matches.value_of("GLOB");
     let check = matches.is_present("check");
     let verbose = matches.is_present("verbose");
-    let dump: bool = matches.is_present("dump");
+    // let dump: bool = matches.is_present("dump");
 
     if stdout && output_path_glob.is_none() {
         // TODO: What if the glob matches multiple files?
@@ -156,6 +185,7 @@ fn main() -> anyhow::Result<()> {
     } else {
         None
     };
+
     let mut tera = tera::Tera::new("templates/**/*.rs.tera").context("tera parsing error(s)")?;
     tera.register_filter(
         "snake_case",
@@ -179,19 +209,20 @@ fn main() -> anyhow::Result<()> {
         },
     );
 
+    let config = Config::from_file(Path::new(GLAM_ROOT).join(CONFIG_FILE))?;
+    let output_pairs = config.build_output_pairs()?;
+    // if dump {
+    //     let config = Config::from(output_pairs);
+    //     // for output_pair in output_pairs.into_iter() {
+    //     //     config.outputs.insert(output_pair.0.to_string(), output_pair.1.into_json());
+    //     // }
+    //     let json_string = serde_json::to_string_pretty(&config)?;
+    //     println!("{}", json_string);
+    //     return Ok(());
+    // }
+
     let repo = git2::Repository::open(GLAM_ROOT).context("failed to open git repo")?;
     let workdir = repo.workdir().unwrap();
-
-    let output_pairs = build_output_pairs();
-    if dump {
-        let config = Config::from(output_pairs);
-        // for output_pair in output_pairs.into_iter() {
-        //     config.outputs.insert(output_pair.0.to_string(), output_pair.1.into_json());
-        // }
-        let json_string = serde_json::to_string_pretty(&config)?;
-        println!("{}", json_string);
-        return Ok(());
-    }
 
     let mut output_paths = vec![];
     if let Some(glob) = glob {

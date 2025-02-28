@@ -64,6 +64,7 @@
     "mat.rs.tera": {
       "properties": {
         "dim": null,
+        "is_align": false,
         "is_coresimd": false,
         "is_neon": false,
         "is_scalar": false,
