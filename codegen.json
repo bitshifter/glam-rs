@@ -1,5 +1,6 @@
 {
   "version": 1,
+  "template_root": "templates",
   "templates": {
     "affine.rs.tera": {
       "properties": {

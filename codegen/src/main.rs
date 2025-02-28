@@ -14,6 +14,7 @@ const CONFIG_FILE: &str = "codegen.json";
 #[derive(Serialize, Deserialize)]
 struct Config {
     version: u32,
+    template_root: String,
     templates: BTreeMap<String, Template>,
 }
 
@@ -160,7 +161,6 @@ fn main() -> anyhow::Result<()> {
         .arg(arg!(-n - -nofmt))
         .arg(arg!(--check))
         .arg(arg!(-v - -verbose))
-        .arg(arg!(-d - -dump))
         .get_matches();
 
     let force = matches.is_present("force");
@@ -169,7 +169,6 @@ fn main() -> anyhow::Result<()> {
     let output_path_glob = matches.value_of("GLOB");
     let check = matches.is_present("check");
     let verbose = matches.is_present("verbose");
-    // let dump: bool = matches.is_present("dump");
 
     if stdout && output_path_glob.is_none() {
         // TODO: What if the glob matches multiple files?
@@ -186,7 +185,10 @@ fn main() -> anyhow::Result<()> {
         None
     };
 
-    let mut tera = tera::Tera::new("templates/**/*.rs.tera").context("tera parsing error(s)")?;
+    let config = Config::from_file(Path::new(GLAM_ROOT).join(CONFIG_FILE))?;
+
+    let template_path = Path::new(GLAM_ROOT).join(&config.template_root).join("**/*.rs.tera");
+    let mut tera = tera::Tera::new(template_path.to_str().unwrap()).context("tera parsing error(s)")?;
     tera.register_filter(
         "snake_case",
         |value: &tera::Value, _: &_| -> tera::Result<tera::Value> {
@@ -209,17 +211,7 @@ fn main() -> anyhow::Result<()> {
         },
     );
 
-    let config = Config::from_file(Path::new(GLAM_ROOT).join(CONFIG_FILE))?;
     let output_pairs = config.build_output_pairs()?;
-    // if dump {
-    //     let config = Config::from(output_pairs);
-    //     // for output_pair in output_pairs.into_iter() {
-    //     //     config.outputs.insert(output_pair.0.to_string(), output_pair.1.into_json());
-    //     // }
-    //     let json_string = serde_json::to_string_pretty(&config)?;
-    //     println!("{}", json_string);
-    //     return Ok(());
-    // }
 
     let repo = git2::Repository::open(GLAM_ROOT).context("failed to open git repo")?;
     let workdir = repo.workdir().unwrap();
