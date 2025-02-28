@@ -187,8 +187,11 @@ fn main() -> anyhow::Result<()> {
 
     let config = Config::from_file(Path::new(GLAM_ROOT).join(CONFIG_FILE))?;
 
-    let template_path = Path::new(GLAM_ROOT).join(&config.template_root).join("**/*.rs.tera");
-    let mut tera = tera::Tera::new(template_path.to_str().unwrap()).context("tera parsing error(s)")?;
+    let template_path = Path::new(GLAM_ROOT)
+        .join(&config.template_root)
+        .join("**/*.rs.tera");
+    let mut tera =
+        tera::Tera::new(template_path.to_str().unwrap()).context("tera parsing error(s)")?;
     tera.register_filter(
         "snake_case",
         |value: &tera::Value, _: &_| -> tera::Result<tera::Value> {
