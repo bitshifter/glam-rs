@@ -355,7 +355,7 @@ impl Vec2 {
     #[inline]
     #[must_use]
     pub fn is_negative_bitmask(self) -> u32 {
-        (self.x.is_sign_negative() as u32) | (self.y.is_sign_negative() as u32) << 1
+        (self.x.is_sign_negative() as u32) | ((self.y.is_sign_negative() as u32) << 1)
     }
 
     /// Returns `true` if, and only if, all elements are finite.  If any element is either
