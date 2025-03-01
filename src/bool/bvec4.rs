@@ -57,7 +57,7 @@ impl BVec4 {
     #[inline]
     #[must_use]
     pub fn bitmask(self) -> u32 {
-        (self.x as u32) | (self.y as u32) << 1 | (self.z as u32) << 2 | (self.w as u32) << 3
+        (self.x as u32) | ((self.y as u32) << 1) | ((self.z as u32) << 2) | ((self.w as u32) << 3)
     }
 
     /// Returns true if any of the elements are true, false otherwise.
