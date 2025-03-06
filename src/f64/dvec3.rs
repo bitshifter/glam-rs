@@ -964,9 +964,6 @@ impl DVec3 {
     #[must_use]
     pub fn rotate_towards(self, rhs: Self, max_angle: f64) -> Self {
         let angle_between = self.angle_between(rhs);
-        if angle_between <= 1e-4 {
-            return self;
-        }
         // When `max_angle < 0`, rotate no further than `PI` radians away
         let angle = max_angle.clamp(angle_between - core::f64::consts::PI, angle_between);
         let axis = self
