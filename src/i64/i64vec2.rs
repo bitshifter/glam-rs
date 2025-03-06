@@ -222,6 +222,30 @@ impl I64Vec2 {
         self.x.max(self.y)
     }
 
+    /// Returns the index of the first minimum element of `self`.
+    #[doc(alias = "argmin")]
+    #[inline]
+    #[must_use]
+    pub fn min_position(self) -> usize {
+        if self.x <= self.y {
+            0
+        } else {
+            1
+        }
+    }
+
+    /// Returns the index of the first maximum element of `self`.
+    #[doc(alias = "argmax")]
+    #[inline]
+    #[must_use]
+    pub fn max_position(self) -> usize {
+        if self.x >= self.y {
+            0
+        } else {
+            1
+        }
+    }
+
     /// Returns the sum of all elements of `self`.
     ///
     /// In other words, this computes `self.x + self.y + ..`.

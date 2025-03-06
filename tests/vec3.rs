@@ -611,6 +611,24 @@ macro_rules! impl_vec3_tests {
             assert_eq!((4 as $t, 5 as $t, 6 as $t), b.max(a).into());
         });
 
+        glam_test!(test_min_position_max_position, {
+            let a = $new(1 as $t, 2 as $t, 3 as $t);
+            let b = $new(1 as $t, 1 as $t, 1 as $t);
+            let c = $new(3 as $t, 2 as $t, 1 as $t);
+            let d = $new(1 as $t, 2 as $t, 1 as $t);
+            let e = $new(1 as $t, 0 as $t, 1 as $t);
+            assert_eq!(0, a.min_position());
+            assert_eq!(0, b.min_position());
+            assert_eq!(2, c.min_position());
+            assert_eq!(0, d.min_position());
+            assert_eq!(1, e.min_position());
+            assert_eq!(2, a.max_position());
+            assert_eq!(0, b.max_position());
+            assert_eq!(0, c.max_position());
+            assert_eq!(1, d.max_position());
+            assert_eq!(0, e.max_position());
+        });
+
         glam_test!(test_clamp, {
             fn vec(x: i32, y: i32, z: i32) -> $vec3 {
                 $vec3::new(x as $t, y as $t, z as $t)

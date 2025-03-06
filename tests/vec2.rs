@@ -510,6 +510,18 @@ macro_rules! impl_vec2_tests {
             assert_eq!($new(1 as $t, 2 as $t), b.max(a));
         });
 
+        glam_test!(test_min_position_max_position, {
+            let a = $new(0 as $t, 2 as $t);
+            let b = $new(1 as $t, 1 as $t);
+            let c = $new(2 as $t, 1 as $t);
+            assert_eq!(0, a.min_position());
+            assert_eq!(0, b.min_position());
+            assert_eq!(1, c.min_position());
+            assert_eq!(1, a.max_position());
+            assert_eq!(0, b.max_position());
+            assert_eq!(0, c.max_position());
+        });
+
         glam_test!(test_sum_product, {
             let a = $new(2 as $t, 3 as $t);
             assert_eq!(a.element_sum(), 5 as $t);
