@@ -1340,6 +1340,9 @@ macro_rules! impl_vec3_float_tests {
         glam_test!(test_rotate_towards, {
             use core::$t::consts::PI;
 
+            // Self
+            assert_approx_eq!($vec3::X, $vec3::X.rotate_towards($vec3::X, PI / 2.));
+
             // Positive angle
             assert_approx_eq!($vec3::X, $vec3::X.rotate_towards($vec3::NEG_Y, 0.0));
             assert_approx_eq!(
@@ -1372,7 +1375,7 @@ macro_rules! impl_vec3_float_tests {
                 $vec3::X.rotate_towards($vec3::NEG_Y * 2., PI / 2.)
             );
 
-            // Parralel
+            // Parallel
             assert_approx_eq!($vec3::Y, $vec3::X.rotate_towards($vec3::NEG_X, PI / 2.));
         });
 
