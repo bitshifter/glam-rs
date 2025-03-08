@@ -31,6 +31,8 @@
   * vectors: [`I64Vec2`], [`I64Vec3`] and [`I64Vec4`]
 * [`u64`](mod@u64) types
   * vectors: [`U64Vec2`], [`U64Vec3`] and [`U64Vec4`]
+* [`usize`](mod@usize) types
+  * vectors: [`USizeVec2`], [`USizeVec3`] and [`USizeVec4`]
 * [`bool`](mod@bool) types
   * vectors: [`BVec2`], [`BVec3`] and [`BVec4`]
 
@@ -356,6 +358,10 @@ pub use self::i64::*;
 /** `u64` vector types. */
 pub mod u64;
 pub use self::u64::*;
+
+/** `usize` vector types. */
+pub mod usize;
+pub use self::usize::*;
 
 /** Traits adding swizzle methods to all vector types. */
 pub mod swizzles;

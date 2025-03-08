@@ -626,6 +626,36 @@
             "vec4_t": "UVec4"
           }
         },
+        "src/swizzles/usizevec2_impl.rs": {
+          "properties": {
+            "dim": 2,
+            "is_scalar": true,
+            "self_t": "USizeVec2",
+            "vec2_t": "USizeVec2",
+            "vec3_t": "USizeVec3",
+            "vec4_t": "USizeVec4"
+          }
+        },
+        "src/swizzles/usizevec3_impl.rs": {
+          "properties": {
+            "dim": 3,
+            "is_scalar": true,
+            "self_t": "USizeVec3",
+            "vec2_t": "USizeVec2",
+            "vec3_t": "USizeVec3",
+            "vec4_t": "USizeVec4"
+          }
+        },
+        "src/swizzles/usizevec4_impl.rs": {
+          "properties": {
+            "dim": 4,
+            "is_scalar": true,
+            "self_t": "USizeVec4",
+            "vec2_t": "USizeVec2",
+            "vec3_t": "USizeVec3",
+            "vec4_t": "USizeVec4"
+          }
+        },
         "src/swizzles/vec2_impl.rs": {
           "properties": {
             "dim": 2,
@@ -969,6 +999,27 @@
             "dim": 4,
             "is_scalar": true,
             "scalar_t": "u8"
+          }
+        },
+        "src/usize/usizevec2.rs": {
+          "properties": {
+            "dim": 2,
+            "is_scalar": true,
+            "scalar_t": "usize"
+          }
+        },
+        "src/usize/usizevec3.rs": {
+          "properties": {
+            "dim": 3,
+            "is_scalar": true,
+            "scalar_t": "usize"
+          }
+        },
+        "src/usize/usizevec4.rs": {
+          "properties": {
+            "dim": 4,
+            "is_scalar": true,
+            "scalar_t": "usize"
           }
         }
       }

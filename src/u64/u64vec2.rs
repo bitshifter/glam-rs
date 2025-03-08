@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec2, I16Vec2, I64Vec2, I8Vec2, IVec2, U16Vec2, U64Vec3, U8Vec2, UVec2};
+use crate::{BVec2, I16Vec2, I64Vec2, I8Vec2, IVec2, U16Vec2, U64Vec3, U8Vec2, USizeVec2, UVec2};
 
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -1796,6 +1796,15 @@ impl TryFrom<I64Vec2> for U64Vec2 {
 
     #[inline]
     fn try_from(v: I64Vec2) -> Result<Self, Self::Error> {
+        Ok(Self::new(u64::try_from(v.x)?, u64::try_from(v.y)?))
+    }
+}
+
+impl TryFrom<USizeVec2> for U64Vec2 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: USizeVec2) -> Result<Self, Self::Error> {
         Ok(Self::new(u64::try_from(v.x)?, u64::try_from(v.y)?))
     }
 }
