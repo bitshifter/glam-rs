@@ -2457,8 +2457,10 @@ mod uvec2 {
             UVec2::new(1, 2),
             UVec2::try_from(USizeVec2::new(1, 2)).unwrap()
         );
-        assert!(UVec2::try_from(USizeVec2::new(usize::MAX, 2)).is_err());
-        assert!(UVec2::try_from(USizeVec2::new(1, usize::MAX)).is_err());
+        if core::mem::size_of::<usize>() > 4 {
+            assert!(UVec2::try_from(USizeVec2::new(usize::MAX, 2)).is_err());
+            assert!(UVec2::try_from(USizeVec2::new(1, usize::MAX)).is_err());
+        }
     });
 
     glam_test!(test_wrapping_add, {
@@ -2575,8 +2577,10 @@ mod i64vec2 {
             I64Vec2::new(1, 2),
             I64Vec2::try_from(USizeVec2::new(1, 2)).unwrap()
         );
-        assert!(I64Vec2::try_from(USizeVec2::new(usize::MAX, 2)).is_err());
-        assert!(I64Vec2::try_from(USizeVec2::new(1, usize::MAX)).is_err());
+        if core::mem::size_of::<usize>() > 4 {
+            assert!(I64Vec2::try_from(USizeVec2::new(usize::MAX, 2)).is_err());
+            assert!(I64Vec2::try_from(USizeVec2::new(1, usize::MAX)).is_err());
+        }
     });
 
     glam_test!(test_checked_add_unsigned, {
@@ -2721,9 +2725,9 @@ mod usizevec2 {
 
     glam_test!(test_align, {
         use core::mem;
-        assert_eq!(16, mem::size_of::<USizeVec2>());
+        assert_eq!(mem::size_of::<usize>() * 2, mem::size_of::<USizeVec2>());
         #[cfg(not(feature = "cuda"))]
-        assert_eq!(8, mem::align_of::<USizeVec2>());
+        assert_eq!(mem::align_of::<usize>(), mem::align_of::<USizeVec2>());
         #[cfg(feature = "cuda")]
         assert_eq!(16, mem::align_of::<USizeVec2>());
     });

@@ -3208,10 +3208,12 @@ mod uvec4 {
             UVec4::new(1, 2, 3, 4),
             UVec4::try_from(USizeVec4::new(1, 2, 3, 4)).unwrap()
         );
-        assert!(UVec4::try_from(USizeVec4::new(usize::MAX, 2, 3, 4)).is_err());
-        assert!(UVec4::try_from(USizeVec4::new(1, usize::MAX, 3, 4)).is_err());
-        assert!(UVec4::try_from(USizeVec4::new(1, 2, usize::MAX, 4)).is_err());
-        assert!(UVec4::try_from(USizeVec4::new(1, 2, 3, usize::MAX)).is_err());
+        if core::mem::size_of::<usize>() > 4 {
+            assert!(UVec4::try_from(USizeVec4::new(usize::MAX, 2, 3, 4)).is_err());
+            assert!(UVec4::try_from(USizeVec4::new(1, usize::MAX, 3, 4)).is_err());
+            assert!(UVec4::try_from(USizeVec4::new(1, 2, usize::MAX, 4)).is_err());
+            assert!(UVec4::try_from(USizeVec4::new(1, 2, 3, usize::MAX)).is_err());
+        }
     });
 
     glam_test!(test_wrapping_add, {
@@ -3350,10 +3352,12 @@ mod i64vec4 {
             I64Vec4::new(1, 2, 3, 4),
             I64Vec4::try_from(USizeVec4::new(1, 2, 3, 4)).unwrap()
         );
-        assert!(I64Vec4::try_from(USizeVec4::new(usize::MAX, 2, 3, 4)).is_err());
-        assert!(I64Vec4::try_from(USizeVec4::new(1, usize::MAX, 3, 4)).is_err());
-        assert!(I64Vec4::try_from(USizeVec4::new(1, 2, usize::MAX, 4)).is_err());
-        assert!(I64Vec4::try_from(USizeVec4::new(1, 2, 3, usize::MAX)).is_err());
+        if core::mem::size_of::<usize>() > 4 {
+            assert!(I64Vec4::try_from(USizeVec4::new(usize::MAX, 2, 3, 4)).is_err());
+            assert!(I64Vec4::try_from(USizeVec4::new(1, usize::MAX, 3, 4)).is_err());
+            assert!(I64Vec4::try_from(USizeVec4::new(1, 2, usize::MAX, 4)).is_err());
+            assert!(I64Vec4::try_from(USizeVec4::new(1, 2, 3, usize::MAX)).is_err());
+        }
     });
 
     glam_test!(test_checked_add_unsigned, {
@@ -3521,9 +3525,9 @@ mod usizevec4 {
 
     glam_test!(test_align, {
         use std::mem;
-        assert_eq!(32, mem::size_of::<USizeVec4>());
+        assert_eq!(mem::size_of::<usize>() * 4, mem::size_of::<USizeVec4>());
         #[cfg(not(feature = "cuda"))]
-        assert_eq!(8, mem::align_of::<USizeVec4>());
+        assert_eq!(mem::align_of::<usize>(), mem::align_of::<USizeVec4>());
         #[cfg(feature = "cuda")]
         assert_eq!(16, mem::align_of::<USizeVec4>());
     });

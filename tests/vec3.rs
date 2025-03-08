@@ -2921,9 +2921,11 @@ mod uvec3 {
             UVec3::new(1, 2, 3),
             UVec3::try_from(USizeVec3::new(1, 2, 3)).unwrap()
         );
-        assert!(UVec3::try_from(USizeVec3::new(usize::MAX, 2, 3)).is_err());
-        assert!(UVec3::try_from(USizeVec3::new(1, usize::MAX, 3)).is_err());
-        assert!(UVec3::try_from(USizeVec3::new(1, 2, usize::MAX)).is_err());
+        if core::mem::size_of::<usize>() > 4 {
+            assert!(UVec3::try_from(USizeVec3::new(usize::MAX, 2, 3)).is_err());
+            assert!(UVec3::try_from(USizeVec3::new(1, usize::MAX, 3)).is_err());
+            assert!(UVec3::try_from(USizeVec3::new(1, 2, usize::MAX)).is_err());
+        }
     });
 
     glam_test!(test_wrapping_add, {
@@ -3037,9 +3039,11 @@ mod i64vec3 {
             I64Vec3::new(1, 2, 3),
             I64Vec3::try_from(USizeVec3::new(1, 2, 3)).unwrap()
         );
-        assert!(I64Vec3::try_from(USizeVec3::new(usize::MAX, 2, 3)).is_err());
-        assert!(I64Vec3::try_from(USizeVec3::new(1, usize::MAX, 3)).is_err());
-        assert!(I64Vec3::try_from(USizeVec3::new(1, 2, usize::MAX)).is_err());
+        if core::mem::size_of::<usize>() > 4 {
+            assert!(I64Vec3::try_from(USizeVec3::new(usize::MAX, 2, 3)).is_err());
+            assert!(I64Vec3::try_from(USizeVec3::new(1, usize::MAX, 3)).is_err());
+            assert!(I64Vec3::try_from(USizeVec3::new(1, 2, usize::MAX)).is_err());
+        }
     });
 
     glam_test!(test_checked_add_unsigned, {
@@ -3186,8 +3190,8 @@ mod usizevec3 {
 
     glam_test!(test_align, {
         use std::mem;
-        assert_eq!(24, mem::size_of::<USizeVec3>());
-        assert_eq!(8, mem::align_of::<USizeVec3>());
+        assert_eq!(mem::size_of::<usize>() * 3, mem::size_of::<USizeVec3>());
+        assert_eq!(mem::align_of::<usize>(), mem::align_of::<USizeVec3>());
     });
 
     glam_test!(test_try_from, {
