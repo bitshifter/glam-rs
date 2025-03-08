@@ -10,7 +10,7 @@ pub use usizevec4::{usizevec4, USizeVec4};
 mod test {
     use super::*;
     mod const_test_usizevec2 {
-        const_assert_eq!(16, core::mem::size_of::<super::USizeVec2>());
+        const_assert_eq!(core::mem::size_of::<usize>() * 2, core::mem::size_of::<super::USizeVec2>());
 
         #[cfg(not(feature = "cuda"))]
         const_assert_eq!(
@@ -22,7 +22,7 @@ mod test {
     }
 
     mod const_test_usizevec3 {
-        const_assert_eq!(24, core::mem::size_of::<super::USizeVec3>());
+        const_assert_eq!(core::mem::size_of::<usize>() * 3, core::mem::size_of::<super::USizeVec3>());
 
         const_assert_eq!(
             core::mem::align_of::<usize>(),
@@ -31,7 +31,7 @@ mod test {
     }
 
     mod const_test_usizevec4 {
-        const_assert_eq!(32, core::mem::size_of::<super::USizeVec4>());
+        const_assert_eq!(core::mem::size_of::<usize>() * 4, core::mem::size_of::<super::USizeVec4>());
 
         #[cfg(not(feature = "cuda"))]
         const_assert_eq!(
