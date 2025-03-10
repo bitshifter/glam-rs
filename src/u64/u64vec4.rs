@@ -2,7 +2,9 @@
 
 #[cfg(not(feature = "scalar-math"))]
 use crate::BVec4A;
-use crate::{BVec4, I16Vec4, I64Vec4, I8Vec4, IVec4, U16Vec4, U64Vec2, U64Vec3, U8Vec4, UVec4};
+use crate::{
+    BVec4, I16Vec4, I64Vec4, I8Vec4, IVec4, U16Vec4, U64Vec2, U64Vec3, U8Vec4, USizeVec4, UVec4,
+};
 
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -2125,6 +2127,20 @@ impl TryFrom<I64Vec4> for U64Vec4 {
 
     #[inline]
     fn try_from(v: I64Vec4) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            u64::try_from(v.x)?,
+            u64::try_from(v.y)?,
+            u64::try_from(v.z)?,
+            u64::try_from(v.w)?,
+        ))
+    }
+}
+
+impl TryFrom<USizeVec4> for U64Vec4 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: USizeVec4) -> Result<Self, Self::Error> {
         Ok(Self::new(
             u64::try_from(v.x)?,
             u64::try_from(v.y)?,

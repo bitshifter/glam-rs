@@ -828,6 +828,14 @@ mod test_u64 {
 }
 
 #[cfg(test)]
+mod test_usize {
+    pub const V1: usize = 1;
+    pub const V2: usize = 2;
+    pub const V3: usize = 3;
+    pub const V4: usize = 4;
+}
+
+#[cfg(test)]
 mod test_float {
     pub const SX0: &str = "[]";
     pub const SX1: &str = "[1.0]";
@@ -1177,6 +1185,21 @@ mod u64 {
     };
 
     impl_serde_vec_types!(u64, U64Vec2, U64Vec3, U64Vec4);
+}
+
+mod usize {
+    #[cfg(test)]
+    use super::test_int::*;
+    #[cfg(test)]
+    use super::test_usize::*;
+    use crate::{USizeVec2, USizeVec3, USizeVec4};
+    use core::fmt;
+    use serde::{
+        de::{self, Deserialize, Deserializer, SeqAccess, Visitor},
+        ser::{Serialize, SerializeTupleStruct, Serializer},
+    };
+
+    impl_serde_vec_types!(usize, USizeVec2, USizeVec3, USizeVec4);
 }
 
 mod euler {

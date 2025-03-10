@@ -39,6 +39,8 @@ and feel of the API has solidified.
   * vectors: `I64Vec2`, `I64Vec3` and `I64Vec4`
 * `u64` types
   * vectors: `U64Vec2`, `U64Vec3` and `U64Vec4`
+* `usize` types
+  * vectors: `USizeVec2`, `USizeVec3` and `USizeVec4`
 * `bool` types
   * vectors: `BVec2`, `BVec3` and `BVec4`
 

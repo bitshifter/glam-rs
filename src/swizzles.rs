@@ -30,6 +30,10 @@ mod u64vec2_impl;
 mod u64vec3_impl;
 mod u64vec4_impl;
 
+mod usizevec2_impl;
+mod usizevec3_impl;
+mod usizevec4_impl;
+
 mod uvec2_impl;
 mod uvec3_impl;
 mod uvec4_impl;

@@ -1,7 +1,8 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
 use crate::{
-    BVec3, BVec3A, I16Vec3, I64Vec3, I8Vec3, IVec3, U16Vec3, U64Vec3, U8Vec3, UVec2, UVec4,
+    BVec3, BVec3A, I16Vec3, I64Vec3, I8Vec3, IVec3, U16Vec3, U64Vec3, U8Vec3, USizeVec3, UVec2,
+    UVec4,
 };
 
 use core::fmt;
@@ -1977,6 +1978,19 @@ impl TryFrom<U64Vec3> for UVec3 {
 
     #[inline]
     fn try_from(v: U64Vec3) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            u32::try_from(v.x)?,
+            u32::try_from(v.y)?,
+            u32::try_from(v.z)?,
+        ))
+    }
+}
+
+impl TryFrom<USizeVec3> for UVec3 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: USizeVec3) -> Result<Self, Self::Error> {
         Ok(Self::new(
             u32::try_from(v.x)?,
             u32::try_from(v.y)?,
