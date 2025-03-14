@@ -1342,6 +1342,8 @@ macro_rules! impl_vec3_float_tests {
 
             // Self
             assert_approx_eq!($vec3::X, $vec3::X.rotate_towards($vec3::X, PI / 2.));
+            assert_approx_eq!($vec3::Y * 2.0, ($vec3::Y * 2.0).rotate_towards($vec3::Y, PI / 2.));
+            assert_approx_eq!($vec3::Z, $vec3::Z.rotate_towards($vec3::Z, PI / 2.));
 
             // Positive angle
             assert_approx_eq!($vec3::X, $vec3::X.rotate_towards($vec3::NEG_Y, 0.0));
