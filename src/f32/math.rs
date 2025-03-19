@@ -236,7 +236,11 @@ mod std_math {
 
 // Used to reduce the number of compilation errors, in the event that no other
 // math backend is specified.
-#[cfg(all(not(feature = "libm"), not(feature = "std"), not(feature = "libm-fallback")))]
+#[cfg(all(
+    not(feature = "libm"),
+    not(feature = "std"),
+    not(feature = "libm-fallback")
+))]
 mod no_backend_math {
     pub(crate) fn abs(_: f32) -> f32 {
         unimplemented!()
@@ -317,5 +321,9 @@ pub(crate) use libm_math::*;
 #[cfg(all(not(feature = "libm"), feature = "std"))]
 pub(crate) use std_math::*;
 
-#[cfg(all(not(feature = "libm"), not(feature = "std"), not(feature = "libm-fallback")))]
+#[cfg(all(
+    not(feature = "libm"),
+    not(feature = "std"),
+    not(feature = "libm-fallback")
+))]
 pub(crate) use no_backend_math::*;
