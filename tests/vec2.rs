@@ -1112,8 +1112,14 @@ macro_rules! impl_vec2_float_tests {
 
             // Self
             assert_approx_eq!($vec2::X, $vec2::X.rotate_towards($vec2::X, FRAC_PI_2), eps);
-            assert_approx_eq!($vec3::Y * 2.0, ($vec3::Y * 2.0).rotate_towards($vec3::Y, FRAC_PI_2));
-            assert_approx_eq!($vec3::NEG_X, $vec3::NEG_X.rotate_towards($vec3::NEG_X, FRAC_PI_2));
+            assert_approx_eq!(
+                $vec3::Y * 2.0,
+                ($vec3::Y * 2.0).rotate_towards($vec3::Y, FRAC_PI_2)
+            );
+            assert_approx_eq!(
+                $vec3::NEG_X,
+                $vec3::NEG_X.rotate_towards($vec3::NEG_X, FRAC_PI_2)
+            );
 
             // Positive delta
             assert_approx_eq!($vec2::X, $vec2::X.rotate_towards($vec2::NEG_Y, 0.0), eps);
