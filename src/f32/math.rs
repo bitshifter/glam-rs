@@ -32,7 +32,7 @@ fn acos_approx_f32(v: f32) -> f32 {
     }
 }
 
-#[cfg(any(feature = "libm", feature = "nostd-libm"))]
+#[cfg(any(feature = "libm", all(feature = "nostd-libm", not(feature = "std"))))]
 mod libm_math {
     #[inline(always)]
     pub(crate) fn abs(f: f32) -> f32 {

@@ -1,4 +1,4 @@
-#[cfg(any(feature = "libm", feature = "nostd-libm"))]
+#[cfg(any(feature = "libm", all(feature = "nostd-libm", not(feature = "std"))))]
 mod libm_math {
     #[inline(always)]
     pub(crate) fn abs(f: f64) -> f64 {
