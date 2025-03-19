@@ -277,7 +277,7 @@ The minimum supported Rust version is `1.68.2`.
 #[cfg(all(
     not(feature = "std"),
     not(feature = "libm"),
-    not(feature = "libm-fallback")
+    not(feature = "nostd-libm")
 ))]
 compile_error!("You must specify a math backend using either the `std` feature or `libm` feature");
 
