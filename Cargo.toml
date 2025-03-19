@@ -43,6 +43,12 @@ core-simd = []
 
 bytecheck = ["rkyv/bytecheck"]
 
+# enables libm and prefers it over std
+libm = ["dep:libm"]
+
+# enables libm but will prefer std if available
+libm-fallback = ["dep:libm"]
+
 [dependencies]
 approx = { version = "0.5", optional = true, default-features = false }
 bytemuck = { version = "1.9", optional = true, default-features = false }

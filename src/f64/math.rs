@@ -1,4 +1,4 @@
-#[cfg(feature = "libm")]
+#[cfg(any(feature = "libm", feature = "libm-fallback"))]
 mod libm_math {
     #[inline(always)]
     pub(crate) fn abs(f: f64) -> f64 {
@@ -200,7 +200,7 @@ mod std_math {
 
 // Used to reduce the number of compilation errors, in the event that no other
 // math backend is specified.
-#[cfg(all(not(feature = "libm"), not(feature = "std")))]
+#[cfg(all(not(feature = "libm"), not(feature = "std"), not(feature = "libm-fallback")))]
 mod no_backend_math {
     pub(crate) fn abs(_: f64) -> f64 {
         unimplemented!()
@@ -275,11 +275,11 @@ mod no_backend_math {
     }
 }
 
-#[cfg(feature = "libm")]
+#[cfg(any(feature = "libm", all(feature = "libm-fallback", not(feature = "std"))))]
 pub(crate) use libm_math::*;
 
 #[cfg(all(not(feature = "libm"), feature = "std"))]
 pub(crate) use std_math::*;
 
-#[cfg(all(not(feature = "libm"), not(feature = "std")))]
+#[cfg(all(not(feature = "libm"), not(feature = "std"), not(feature = "libm-fallback")))]
 pub(crate) use no_backend_math::*;
