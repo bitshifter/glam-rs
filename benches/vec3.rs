@@ -185,6 +185,15 @@ bench_select!(
 );
 
 bench_trinop!(
+    vec3_rotate_towards,
+    "vec3 rotate_towards",
+    op => rotate_towards,
+    from1 => random_vec3,
+    from2 => random_vec3,
+    from3 => random_f32
+);
+
+bench_trinop!(
     vec3_slerp,
     "vec3 slerp",
     op => slerp,
@@ -213,6 +222,7 @@ criterion_group!(
     vec3_to_rgb,
     vec3_to_tuple_into,
     vec3_slerp,
+    vec3_rotate_towards,
 );
 
 criterion_main!(benches);

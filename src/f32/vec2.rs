@@ -952,9 +952,6 @@ impl Vec2 {
     pub fn rotate_towards(&self, rhs: Self, max_angle: f32) -> Self {
         let a = self.angle_to(rhs);
         let abs_a = math::abs(a);
-        if abs_a <= 1e-4 {
-            return rhs;
-        }
         // When `max_angle < 0`, rotate no further than `PI` radians away
         let angle = max_angle.clamp(abs_a - core::f32::consts::PI, abs_a) * math::signum(a);
         Self::from_angle(angle).rotate(*self)

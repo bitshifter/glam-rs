@@ -1337,6 +1337,53 @@ macro_rules! impl_vec3_float_tests {
             assert_approx_eq!(v1, v0.move_towards(v1, v0.distance(v1) + 1.0));
         });
 
+        glam_test!(test_rotate_towards, {
+            use core::$t::consts::PI;
+
+            // Self
+            assert_approx_eq!($vec3::X, $vec3::X.rotate_towards($vec3::X, PI / 2.));
+            assert_approx_eq!(
+                $vec3::Y * 2.0,
+                ($vec3::Y * 2.0).rotate_towards($vec3::Y, PI / 2.)
+            );
+            assert_approx_eq!($vec3::Z, $vec3::Z.rotate_towards($vec3::Z, PI / 2.));
+
+            // Positive angle
+            assert_approx_eq!($vec3::X, $vec3::X.rotate_towards($vec3::NEG_Y, 0.0));
+            assert_approx_eq!(
+                $vec3::new($t::sqrt(2.0) / 2.0, -$t::sqrt(2.0) / 2.0, 0.0),
+                $vec3::X.rotate_towards($vec3::NEG_Y, PI / 4.)
+            );
+            assert_approx_eq!(
+                $vec3::new($t::sqrt(2.0) / 2.0, 0.0, $t::sqrt(2.0) / 2.0),
+                $vec3::X.rotate_towards($vec3::Z, PI / 4.)
+            );
+            assert_approx_eq!($vec3::NEG_Y, $vec3::X.rotate_towards($vec3::NEG_Y, PI / 2.));
+            assert_approx_eq!($vec3::NEG_Y, $vec3::X.rotate_towards($vec3::NEG_Y, PI));
+
+            // Negative angle
+            assert_approx_eq!(
+                $vec3::new($t::sqrt(2.0) / 2.0, $t::sqrt(2.0) / 2.0, 0.0),
+                $vec3::X.rotate_towards($vec3::NEG_Y, -PI / 4.)
+            );
+            assert_approx_eq!($vec3::Y, $vec3::X.rotate_towards($vec3::NEG_Y, -PI / 2.));
+            assert_approx_eq!($vec3::Y, $vec3::X.rotate_towards($vec3::NEG_Y, -PI), 2e-7);
+
+            // Not normalized
+            assert_approx_eq!(
+                $vec3::NEG_Y * 2.,
+                ($vec3::X * 2.).rotate_towards($vec3::NEG_Y, PI / 2.),
+                2e-7
+            );
+            assert_approx_eq!(
+                $vec3::NEG_Y,
+                $vec3::X.rotate_towards($vec3::NEG_Y * 2., PI / 2.)
+            );
+
+            // Parallel
+            assert_approx_eq!($vec3::Y, $vec3::X.rotate_towards($vec3::NEG_X, PI / 2.));
+        });
+
         glam_test!(test_midpoint, {
             let v0 = $vec3::new(-1.0, -1.0, -1.0);
             let v1 = $vec3::new(1.0, 1.0, 1.0);

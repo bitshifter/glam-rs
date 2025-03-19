@@ -933,6 +933,24 @@ impl Vec3A {
         )
     }
 
+    /// Rotates towards `rhs` up to `max_angle` (in radians).
+    ///
+    /// When `max_angle` is `0.0`, the result will be equal to `self`. When `max_angle` is equal to
+    /// `self.angle_between(rhs)`, the result will be parallel to `rhs`. If `max_angle` is negative,
+    /// rotates towards the exact opposite of `rhs`. Will not go past the target.
+    #[inline]
+    #[must_use]
+    pub fn rotate_towards(self, rhs: Self, max_angle: f32) -> Self {
+        let angle_between = self.angle_between(rhs);
+        // When `max_angle < 0`, rotate no further than `PI` radians away
+        let angle = max_angle.clamp(angle_between - core::f32::consts::PI, angle_between);
+        let axis = self
+            .cross(rhs)
+            .try_normalize()
+            .unwrap_or_else(|| self.any_orthogonal_vector().normalize());
+        Quat::from_axis_angle(axis.into(), angle) * self
+    }
+
     /// Returns some vector that is orthogonal to the given one.
     ///
     /// The input vector must be finite and non-zero.
