@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+## Added
+
+* Added `usize` vector types, `USizeVec2`, `USizeVec3` and `USizeVec4`.
+
+* Added `min_position` and `max_position` methods for vector types, which return
+  the index of the min or max element in the vector.
+
+* Added `rotate_towards` method to 3D vector types.
+
+## Changed
+
+* Removed the small angle check from 2D vector `rotate_towards` implementations
+  as it was unnecessary and would not preserve the length of the input.
+
 ## [0.30.0] - 2025-02-18
 
 ### Breaking changes

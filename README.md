@@ -103,9 +103,10 @@ libm = ["glam/libm"]
 glam = { version = "0.30.0", default-features = false }
 ```
 
-Alternatively, you can use the `nostd-libm` feature.
-This will always include a `libm` dependency, but allows the user to still override it with `std` if they prefer.
-This will allow your crate to compile with default features disabled, instead of forcing the user to enable either `std` or `libm`.
+Alternatively, you can use the `nostd-libm` feature. This will always include a
+`libm` dependency, but allows the user to still override it with `std` if they
+prefer. This will allow your crate to compile with default features disabled,
+instead of forcing the user to enable either `std` or `libm`.
 
 ```toml
 [features]
