@@ -431,6 +431,13 @@ impl U64Vec2 {
         crate::I64Vec2::new(self.x as i64, self.y as i64)
     }
 
+    /// Casts all elements of `self` to `usize`.
+    #[inline]
+    #[must_use]
+    pub fn as_usizevec2(&self) -> crate::USizeVec2 {
+        crate::USizeVec2::new(self.x as usize, self.y as usize)
+    }
+
     /// Returns a vector containing the wrapping addition of `self` and `rhs`.
     ///
     /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
