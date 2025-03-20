@@ -227,7 +227,8 @@ and benchmarks.
 * `std` - the default feature, has no dependencies.
 * `approx` - traits and macros for approximate float comparisons
 * `bytemuck` - for casting into slices of bytes
-* `libm` - uses `libm` math functions instead of `std`, required to compile with `no_std`
+* `libm` - uses `libm` math functions instead of `std`
+* `nostd-libm` - uses `libm` math functions if `std` is not available
 * `mint` - for interoperating with other 3D math libraries
 * `rand` - implementations of `Distribution` trait for all `glam` types.
 * `rkyv` - implementations of `Archive`, `Serialize` and `Deserialize` for all
@@ -256,7 +257,7 @@ and benchmarks.
 The minimum supported Rust version is `1.68.2`.
 
 */
-#![doc(html_root_url = "https://docs.rs/glam/0.29.2")]
+#![doc(html_root_url = "https://docs.rs/glam/0.29.3")]
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(target_arch = "spirv", feature(repr_simd))]
 #![deny(

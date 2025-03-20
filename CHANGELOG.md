@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [0.29.3] - 2025-03-22
+
+### Added
+
+* Added `nostd-libm` feature to assist with `no_std` compatible libraries.
+
 ## [0.29.2] - 2024-11-05
 
 ### Fixed
@@ -1149,7 +1155,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.29.2...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.29.3...HEAD
+[0.29.3]: https://github.com/bitshifter/glam-rs/compare/0.29.2...0.29.3
 [0.29.2]: https://github.com/bitshifter/glam-rs/compare/0.29.1...0.29.2
 [0.29.1]: https://github.com/bitshifter/glam-rs/compare/0.29.0...0.29.1
 [0.29.0]: https://github.com/bitshifter/glam-rs/compare/0.28.0...0.29.0
