@@ -1315,7 +1315,7 @@ impl {{ self_t }} {
                 {% if loop.first %}
                     (self.{{ c }}.is_sign_negative() as u32) |
                 {% else %}
-                    (self.{{ c }}.is_sign_negative() as u32) << {{ loop.index0 }} {% if not loop.last %} | {% endif %}
+                    ((self.{{ c }}.is_sign_negative() as u32) << {{ loop.index0 }}) {% if not loop.last %} | {% endif %}
                 {% endif %}
             {% endfor %}
         {% elif is_scalar %}
@@ -1323,7 +1323,7 @@ impl {{ self_t }} {
                 {% if loop.first %}
                     (self.{{ c }}.is_negative() as u32) |
                 {% else %}
-                    (self.{{ c }}.is_negative() as u32) << {{ loop.index0 }} {% if not loop.last %} | {% endif %}
+                    ((self.{{ c }}.is_negative() as u32) << {{ loop.index0 }}) {% if not loop.last %} | {% endif %}
                 {% endif %}
             {% endfor %}
         {% elif is_sse2 %}
