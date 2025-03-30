@@ -4235,9 +4235,7 @@ impl From<{{ bvec_from_type }}> for {{ self_t }} {
 }
 
 {% if bveca_from_type %}
-    {% if bveca_from_type == "BVec4A" %}
-    #[cfg(not(feature = "scalar-math"))]
-    {% endif %}
+    {% if bveca_from_type == "BVec4A" %}#[cfg(not(feature = "scalar-math"))]{% endif %}
     impl From<{{ bveca_from_type }}> for {{ self_t }} {
         #[inline]
         fn from(v: {{ bveca_from_type }}) -> Self {
