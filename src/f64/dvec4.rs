@@ -441,9 +441,9 @@ impl DVec4 {
     #[must_use]
     pub fn is_negative_bitmask(self) -> u32 {
         (self.x.is_sign_negative() as u32)
-            | (self.y.is_sign_negative() as u32) << 1
-            | (self.z.is_sign_negative() as u32) << 2
-            | (self.w.is_sign_negative() as u32) << 3
+            | ((self.y.is_sign_negative() as u32) << 1)
+            | ((self.z.is_sign_negative() as u32) << 2)
+            | ((self.w.is_sign_negative() as u32) << 3)
     }
 
     /// Returns `true` if, and only if, all elements are finite.  If any element is either
@@ -1996,7 +1996,6 @@ impl From<BVec4> for DVec4 {
 }
 
 #[cfg(not(feature = "scalar-math"))]
-
 impl From<BVec4A> for DVec4 {
     #[inline]
     fn from(v: BVec4A) -> Self {

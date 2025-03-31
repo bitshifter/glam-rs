@@ -1295,7 +1295,7 @@ mod euler {
             }
             struct FieldVisitor;
 
-            impl<'de> serde::de::Visitor<'de> for FieldVisitor {
+            impl serde::de::Visitor<'_> for FieldVisitor {
                 type Value = Field;
                 fn expecting(&self, formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
                     core::fmt::Formatter::write_str(formatter, "a variant identifier")

@@ -1,4 +1,4 @@
-#[cfg(feature = "libm")]
+#[cfg(any(feature = "libm", all(feature = "nostd-libm", not(feature = "std"))))]
 mod libm_math {
     #[inline(always)]
     pub(crate) fn abs(f: f64) -> f64 {
@@ -105,7 +105,7 @@ mod libm_math {
     }
 }
 
-#[cfg(not(feature = "libm"))]
+#[cfg(all(not(feature = "libm"), feature = "std"))]
 mod std_math {
     #[inline(always)]
     pub(crate) fn abs(f: f64) -> f64 {
@@ -198,8 +198,8 @@ mod std_math {
     }
 }
 
-#[cfg(feature = "libm")]
+#[cfg(any(feature = "libm", all(feature = "nostd-libm", not(feature = "std"))))]
 pub(crate) use libm_math::*;
 
-#[cfg(not(feature = "libm"))]
+#[cfg(all(not(feature = "libm"), feature = "std"))]
 pub(crate) use std_math::*;

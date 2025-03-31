@@ -421,9 +421,9 @@ impl I8Vec4 {
     #[must_use]
     pub fn is_negative_bitmask(self) -> u32 {
         (self.x.is_negative() as u32)
-            | (self.y.is_negative() as u32) << 1
-            | (self.z.is_negative() as u32) << 2
-            | (self.w.is_negative() as u32) << 3
+            | ((self.y.is_negative() as u32) << 1)
+            | ((self.z.is_negative() as u32) << 2)
+            | ((self.w.is_negative() as u32) << 3)
     }
 
     /// Computes the squared length of `self`.
@@ -2071,7 +2071,6 @@ impl From<BVec4> for I8Vec4 {
 }
 
 #[cfg(not(feature = "scalar-math"))]
-
 impl From<BVec4A> for I8Vec4 {
     #[inline]
     fn from(v: BVec4A) -> Self {

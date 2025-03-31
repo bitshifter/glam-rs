@@ -84,7 +84,7 @@ defined in `std`. For example:
 
 ```toml
 [dependencies]
-glam = { version = "0.29.2", default-features = false, features = ["libm"] }
+glam = { version = "0.29.3", default-features = false, features = ["libm"] }
 ```
 
 To support both `std` and `no_std` builds in project, you can use the following
@@ -98,15 +98,30 @@ std = ["glam/std"]
 libm = ["glam/libm"]
 
 [dependencies]
-glam = { version = "0.29.2", default-features = false }
+glam = { version = "0.29.3", default-features = false }
+```
+
+Alternatively, you can use the `nostd-libm` feature.
+This will always include a `libm` dependency, but allows the user to still override it with `std` if they prefer.
+This will allow your crate to compile with default features disabled, instead of forcing the user to enable either `std` or `libm`.
+
+```toml
+[features]
+default = ["std"]
+
+std = ["glam/std"]
+libm = ["glam/libm"]
+
+[dependencies]
+glam = { version = "0.30.0", default-features = false, features = ["nostd-libm"] }
 ```
 
 ### Optional features
 
 * [`approx`] - traits and macros for approximate float comparisons
 * [`bytemuck`] - for casting into slices of bytes
-* [`libm`] - uses `libm` math functions instead of `std`, required to compile
-  with `no_std`
+* [`libm`] - uses `libm` math functions instead of `std`
+* [`nostd-libm`] - uses `libm` math functions if `std` is not available
 * [`mint`] - for interoperating with other 3D math libraries
 * [`rand`] - implementations of `Distribution` trait for all `glam` types.
 * [`serde`] - implementations of `Serialize` and `Deserialize` for all `glam`
