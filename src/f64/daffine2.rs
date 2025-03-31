@@ -302,6 +302,13 @@ impl DAffine2 {
             translation,
         }
     }
+
+    /// Casts all elements of `self` to `f32`.
+    #[inline]
+    #[must_use]
+    pub fn as_affine2(&self) -> crate::Affine2 {
+        crate::Affine2::from_mat2_translation(self.matrix2.as_mat2(), self.translation.as_vec2())
+    }
 }
 
 impl Default for DAffine2 {

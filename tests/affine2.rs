@@ -304,6 +304,14 @@ mod affine2 {
         assert_eq!(m, Mat3A::from(a));
     });
 
+    glam_test!(test_as, {
+        use glam::DAffine2;
+        assert_eq!(
+            DAffine2::from_cols_array(&[1., 2., 3., 4., 5., 6.]),
+            Affine2::from_cols_array(&[1., 2., 3., 4., 5., 6.]).as_daffine2(),
+        );
+    });
+
     impl_affine2_tests!(f32, Affine2, Vec2, Mat2, Mat3);
 }
 
@@ -337,6 +345,14 @@ mod daffine2 {
         use std::mem;
         assert_eq!(48, mem::size_of::<DAffine2>());
         assert_eq!(16, mem::align_of::<DAffine2>());
+    });
+
+    glam_test!(test_as, {
+        use glam::Affine2;
+        assert_eq!(
+            Affine2::from_cols_array(&[1., 2., 3., 4., 5., 6.]),
+            DAffine2::from_cols_array(&[1., 2., 3., 4., 5., 6.]).as_affine2()
+        );
     });
 
     impl_affine2_tests!(f64, DAffine2, DVec2, DMat2, DMat3);

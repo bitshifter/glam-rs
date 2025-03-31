@@ -313,6 +313,13 @@ impl Affine2 {
             translation,
         }
     }
+
+    /// Casts all elements of `self` to `f64`.
+    #[inline]
+    #[must_use]
+    pub fn as_daffine2(&self) -> crate::DAffine2 {
+        crate::DAffine2::from_mat2_translation(self.matrix2.as_dmat2(), self.translation.as_dvec2())
+    }
 }
 
 impl Default for Affine2 {
