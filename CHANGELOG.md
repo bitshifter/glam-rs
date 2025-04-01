@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+## Added
+
+- Added precision conversion functions for Affine types: `Affine3A::as_daffine3`,
+  `DAffine3::as_affine3a`, `Affine2::as_daffine2` and `DAffine3::as_affine2`
+
 ## [0.30.1] - 2025-03-20
 
 ## Added

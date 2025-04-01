@@ -702,6 +702,42 @@ impl {{ self_t }} {
             translation,
         }
     }
+
+{% if scalar_t == "f64" %}
+    {% if dim == 2 %}
+    /// Casts all elements of `self` to `f32`.
+    #[inline]
+    #[must_use]
+    pub fn as_affine2(&self) -> crate::Affine2 {
+        crate::Affine2::from_mat2_translation(self.matrix2.as_mat2(), self.translation.as_vec2())
+    }
+    {% elif dim == 3 %}
+    /// Casts all elements of `self` to `f32`.
+    #[inline]
+    #[must_use]
+    pub fn as_affine3a(&self) -> crate::Affine3A {
+        crate::Affine3A::from_mat3_translation(self.matrix3.as_mat3(), self.translation.as_vec3())
+    }
+    {% endif %}
+{% endif %}
+
+{% if scalar_t == "f32" %}
+    {% if dim == 2 %}
+    /// Casts all elements of `self` to `f64`.
+    #[inline]
+    #[must_use]
+    pub fn as_daffine2(&self) -> crate::DAffine2 {
+        crate::DAffine2::from_mat2_translation(self.matrix2.as_dmat2(), self.translation.as_dvec2())
+    }
+    {% elif dim == 3 %}
+    /// Casts all elements of `self` to `f64`.
+    #[inline]
+    #[must_use]
+    pub fn as_daffine3(&self) -> crate::DAffine3 {
+        crate::DAffine3::from_mat3_translation(self.matrix3.as_dmat3(), self.translation.as_dvec3())
+    }
+    {% endif %}
+{% endif %}
 }
 
 impl Default for {{ self_t }} {

@@ -389,6 +389,15 @@ mod affine3a {
         assert_approx_eq!(Vec3A::new(1.0, 2.0, 4.5), result3, 1.0e-6);
     });
 
+    glam_test!(test_as, {
+        use glam::DAffine3;
+        assert_eq!(
+            DAffine3::from_cols_array(&[1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12.]),
+            Affine3A::from_cols_array(&[1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12.])
+                .as_daffine3(),
+        );
+    });
+
     impl_affine3_tests!(f32, Affine3A, Quat, Vec3, Mat3, Mat4);
 }
 
@@ -414,6 +423,15 @@ mod daffine3 {
         use std::mem;
         assert_eq!(96, mem::size_of::<DAffine3>());
         assert_eq!(mem::align_of::<f64>(), mem::align_of::<DAffine3>());
+    });
+
+    glam_test!(test_as, {
+        use glam::Affine3A;
+        assert_eq!(
+            Affine3A::from_cols_array(&[1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12.]),
+            DAffine3::from_cols_array(&[1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12.])
+                .as_affine3a(),
+        );
     });
 
     impl_affine3_tests!(f64, DAffine3, DQuat, DVec3, DMat3, DMat4);
