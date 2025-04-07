@@ -423,6 +423,9 @@ impl I8Vec3 {
     ///
     /// A negative element results in a `1` bit and a positive element in a `0` bit.  Element `x` goes
     /// into the first lowest bit, element `y` into the second, etc.
+    ///
+    /// An element is negative if it has a negative sign, including -0.0, NaNs with negative sign
+    /// bit and negative infinity.
     #[inline]
     #[must_use]
     pub fn is_negative_bitmask(self) -> u32 {
