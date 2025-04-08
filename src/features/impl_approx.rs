@@ -223,8 +223,20 @@ mod test {
         impl_approx_test!(f32, Mat3, Mat3::from_cols_slice(&ONESF32));
         impl_approx_test!(f32, Mat3A, Mat3A::from_cols_slice(&ONESF32));
         impl_approx_test!(f32, Mat4, Mat4::from_cols_slice(&ONESF32));
-        impl_affine_approx_test!(f32, Affine2, from_mat3, Mat3, Affine2::from_cols_slice(&ONESF32));
-        impl_affine_approx_test!(f32, Affine3A, from_mat4, Mat4, Affine3A::from_cols_slice(&ONESF32));
+        impl_affine_approx_test!(
+            f32,
+            Affine2,
+            from_mat3,
+            Mat3,
+            Affine2::from_cols_slice(&ONESF32)
+        );
+        impl_affine_approx_test!(
+            f32,
+            Affine3A,
+            from_mat4,
+            Mat4,
+            Affine3A::from_cols_slice(&ONESF32)
+        );
 
         const ONESF64: [f64; 16] = [1.0; 16];
         impl_approx_test!(f64, DVec2);
@@ -234,7 +246,19 @@ mod test {
         impl_approx_test!(f64, DMat2, DMat2::from_cols_slice(&ONESF64));
         impl_approx_test!(f64, DMat3, DMat3::from_cols_slice(&ONESF64));
         impl_approx_test!(f64, DMat4, DMat4::from_cols_slice(&ONESF64));
-        impl_affine_approx_test!(f64, DAffine2, from_mat3, DMat3, DAffine2::from_cols_slice(&ONESF64));
-        impl_affine_approx_test!(f64, DAffine3, from_mat4, DMat4, DAffine3::from_cols_slice(&ONESF64));
+        impl_affine_approx_test!(
+            f64,
+            DAffine2,
+            from_mat3,
+            DMat3,
+            DAffine2::from_cols_slice(&ONESF64)
+        );
+        impl_affine_approx_test!(
+            f64,
+            DAffine3,
+            from_mat4,
+            DMat4,
+            DAffine3::from_cols_slice(&ONESF64)
+        );
     }
 }
