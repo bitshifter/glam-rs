@@ -186,6 +186,30 @@ mod test {
         };
     }
 
+    macro_rules! impl_affine_approx_test {
+        ($prim:ident, $type:ident, $from:ident, $mat:ident, $ones:expr) => {
+            let ones = $mat::from($ones);
+            let one_eps = ones * $mat::default_epsilon();
+            let two_eps = one_eps + one_eps;
+
+            let one_ulp = ones * $prim::from_bits($prim::to_bits(1.0) + 1);
+            let four_ulp = ones * $prim::from_bits($prim::to_bits(1.0) + 16);
+
+            approx::assert_abs_diff_eq!($type::$from(ones), $type::$from(ones));
+            approx::assert_abs_diff_eq!($type::$from(ones), $type::$from(ones + one_eps));
+            approx::assert_abs_diff_eq!($type::$from(ones), $type::$from(ones - one_eps));
+
+            approx::assert_abs_diff_ne!($type::$from(ones), $type::$from(ones + two_eps));
+            approx::assert_abs_diff_ne!($type::$from(ones), $type::$from(ones - two_eps));
+
+            approx::assert_relative_eq!($type::$from(ones), $type::$from(ones));
+            approx::assert_relative_ne!($type::$from(ones), $type::$from(ones - ones));
+
+            // defaults to 4 ulps and I have no idea how to pass other parameters to this macro :)
+            approx::assert_ulps_eq!($type::$from(ones), $type::$from(one_ulp));
+            approx::assert_ulps_ne!($type::$from(ones), $type::$from(four_ulp));
+        };
+    }
     #[test]
     fn test_approx() {
         const ONESF32: [f32; 16] = [1.0; 16];
@@ -199,8 +223,20 @@ mod test {
         impl_approx_test!(f32, Mat3, Mat3::from_cols_slice(&ONESF32));
         impl_approx_test!(f32, Mat3A, Mat3A::from_cols_slice(&ONESF32));
         impl_approx_test!(f32, Mat4, Mat4::from_cols_slice(&ONESF32));
-        // impl_approx_test!(f32, Affine2, Affine2::from_cols_slice(&ONESF32));
-        // impl_approx_test!(f32, Affine3A, Affine3A::from_cols_slice(&ONESF32));
+        impl_affine_approx_test!(
+            f32,
+            Affine2,
+            from_mat3,
+            Mat3,
+            Affine2::from_cols_slice(&ONESF32)
+        );
+        impl_affine_approx_test!(
+            f32,
+            Affine3A,
+            from_mat4,
+            Mat4,
+            Affine3A::from_cols_slice(&ONESF32)
+        );
 
         const ONESF64: [f64; 16] = [1.0; 16];
         impl_approx_test!(f64, DVec2);
@@ -210,7 +246,19 @@ mod test {
         impl_approx_test!(f64, DMat2, DMat2::from_cols_slice(&ONESF64));
         impl_approx_test!(f64, DMat3, DMat3::from_cols_slice(&ONESF64));
         impl_approx_test!(f64, DMat4, DMat4::from_cols_slice(&ONESF64));
-        // impl_approx_test!(f64, DAffine2, DAffine2::from_cols_slice(&ONESF64));
-        // impl_approx_test!(f64, DAffine3, DAffine3::from_cols_slice(&ONESF64));
+        impl_affine_approx_test!(
+            f64,
+            DAffine2,
+            from_mat3,
+            DMat3,
+            DAffine2::from_cols_slice(&ONESF64)
+        );
+        impl_affine_approx_test!(
+            f64,
+            DAffine3,
+            from_mat4,
+            DMat4,
+            DAffine3::from_cols_slice(&ONESF64)
+        );
     }
 }
