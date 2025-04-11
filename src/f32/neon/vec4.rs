@@ -55,17 +55,6 @@ impl Vec4 {
     /// All `f32::NEG_INFINITY`.
     pub const NEG_INFINITY: Self = Self::splat(f32::NEG_INFINITY);
 
-    /// Vec4 uses Rust Portable SIMD
-    pub const USES_CORE_SIMD: bool = false;
-    /// Vec4 uses Arm NEON
-    pub const USES_NEON: bool = true;
-    /// Vec4 uses scalar math
-    pub const USES_SCALAR_MATH: bool = false;
-    /// Vec4 uses Intel SSE2
-    pub const USES_SSE2: bool = false;
-    /// Vec4 uses WebAssembly 128-bit SIMD
-    pub const USES_WASM32_SIMD: bool = false;
-
     /// A unit vector pointing along the positive X axis.
     pub const X: Self = Self::new(1.0, 0.0, 0.0, 0.0);
 
@@ -92,6 +81,17 @@ impl Vec4 {
 
     /// The unit axes.
     pub const AXES: [Self; 4] = [Self::X, Self::Y, Self::Z, Self::W];
+
+    /// Vec4 uses Rust Portable SIMD
+    pub const USES_CORE_SIMD: bool = false;
+    /// Vec4 uses Arm NEON
+    pub const USES_NEON: bool = true;
+    /// Vec4 uses scalar math
+    pub const USES_SCALAR_MATH: bool = false;
+    /// Vec4 uses Intel SSE2
+    pub const USES_SSE2: bool = false;
+    /// Vec4 uses WebAssembly 128-bit SIMD
+    pub const USES_WASM32_SIMD: bool = false;
 
     /// Creates a new vector.
     #[inline(always)]

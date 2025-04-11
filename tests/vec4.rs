@@ -1291,6 +1291,13 @@ macro_rules! impl_vec4_float_tests {
                 assert!(!$vec4::NAN.max($vec4::ZERO).is_nan_mask().all());
                 assert!($vec4::ZERO.max($vec4::NAN).is_nan_mask().all());
                 assert!($vec4::NAN.max($vec4::NAN).is_nan_mask().all());
+            } else if $vec4::USES_WASM32_SIMD {
+                assert!($vec4::NAN.min($vec4::ZERO).is_nan_mask().all());
+                assert!($vec4::ZERO.min($vec4::NAN).is_nan_mask().all());
+                assert!($vec4::NAN.min($vec4::NAN).is_nan_mask().all());
+                assert!($vec4::NAN.max($vec4::ZERO).is_nan_mask().all());
+                assert!($vec4::ZERO.max($vec4::NAN).is_nan_mask().all());
+                assert!($vec4::NAN.max($vec4::NAN).is_nan_mask().all());
             }
         });
 
@@ -1307,6 +1314,9 @@ macro_rules! impl_vec4_float_tests {
             } else if $vec4::USES_SSE2 {
                 assert!(v.min_element().is_nan());
                 assert!(v.max_element().is_nan());
+            } else if $vec4::USES_WASM32_SIMD {
+                assert_eq!(2.0, v.min_element());
+                assert_eq!(4.0, v.max_element());
             }
         });
 
@@ -1321,7 +1331,7 @@ macro_rules! impl_vec4_float_tests {
                 //     .is_nan_mask()
                 //     .all());
             } else if $vec4::USES_NEON {
-                // TODO
+                assert_eq!($vec4::NEG_ONE, $vec4::NAN.clamp($vec4::NEG_ONE, $vec4::ONE));
             } else if $vec4::USES_SSE2 {
                 assert_eq!($vec4::NEG_ONE, $vec4::NAN.clamp($vec4::NEG_ONE, $vec4::ONE));
                 // assert_eq!($vec4::ONE, $vec4::NAN.clamp($vec4::NAN, $vec4::ONE));
@@ -1329,6 +1339,8 @@ macro_rules! impl_vec4_float_tests {
                 //     .clamp($vec4::NEG_ONE, $vec4::NAN)
                 //     .is_nan_mask()
                 //     .all());
+            } else if $vec4::USES_WASM32_SIMD {
+                assert_eq!($vec4::NEG_ONE, $vec4::NAN.clamp($vec4::NEG_ONE, $vec4::ONE));
             }
         });
 

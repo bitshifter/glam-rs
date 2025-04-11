@@ -48,17 +48,6 @@ impl DVec2 {
     /// All `f64::NEG_INFINITY`.
     pub const NEG_INFINITY: Self = Self::splat(f64::NEG_INFINITY);
 
-    /// DVec2 uses Rust Portable SIMD
-    pub const USES_CORE_SIMD: bool = false;
-    /// DVec2 uses Arm NEON
-    pub const USES_NEON: bool = false;
-    /// DVec2 uses scalar math
-    pub const USES_SCALAR_MATH: bool = true;
-    /// DVec2 uses Intel SSE2
-    pub const USES_SSE2: bool = false;
-    /// DVec2 uses WebAssembly 128-bit SIMD
-    pub const USES_WASM32_SIMD: bool = false;
-
     /// A unit vector pointing along the positive X axis.
     pub const X: Self = Self::new(1.0, 0.0);
 
@@ -73,6 +62,17 @@ impl DVec2 {
 
     /// The unit axes.
     pub const AXES: [Self; 2] = [Self::X, Self::Y];
+
+    /// DVec2 uses Rust Portable SIMD
+    pub const USES_CORE_SIMD: bool = false;
+    /// DVec2 uses Arm NEON
+    pub const USES_NEON: bool = false;
+    /// DVec2 uses scalar math
+    pub const USES_SCALAR_MATH: bool = true;
+    /// DVec2 uses Intel SSE2
+    pub const USES_SSE2: bool = false;
+    /// DVec2 uses WebAssembly 128-bit SIMD
+    pub const USES_WASM32_SIMD: bool = false;
 
     /// Creates a new vector.
     #[inline(always)]
