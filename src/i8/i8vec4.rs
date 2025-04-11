@@ -215,29 +215,29 @@ impl I8Vec4 {
 
     /// Returns a vector containing the minimum values for each element of `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
+    /// In other words this computes `[min(x, rhs.x), min(self.y, rhs.y), ..]`.
     #[inline]
     #[must_use]
     pub fn min(self, rhs: Self) -> Self {
         Self {
-            x: self.x.min(rhs.x),
-            y: self.y.min(rhs.y),
-            z: self.z.min(rhs.z),
-            w: self.w.min(rhs.w),
+            x: if self.x < rhs.x { self.x } else { rhs.x },
+            y: if self.y < rhs.y { self.y } else { rhs.y },
+            z: if self.z < rhs.z { self.z } else { rhs.z },
+            w: if self.w < rhs.w { self.w } else { rhs.w },
         }
     }
 
     /// Returns a vector containing the maximum values for each element of `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
+    /// In other words this computes `[max(self.x, rhs.x), max(self.y, rhs.y), ..]`.
     #[inline]
     #[must_use]
     pub fn max(self, rhs: Self) -> Self {
         Self {
-            x: self.x.max(rhs.x),
-            y: self.y.max(rhs.y),
-            z: self.z.max(rhs.z),
-            w: self.w.max(rhs.w),
+            x: if self.x > rhs.x { self.x } else { rhs.x },
+            y: if self.y > rhs.y { self.y } else { rhs.y },
+            z: if self.z > rhs.z { self.z } else { rhs.z },
+            w: if self.w > rhs.w { self.w } else { rhs.w },
         }
     }
 
@@ -261,7 +261,8 @@ impl I8Vec4 {
     #[inline]
     #[must_use]
     pub fn min_element(self) -> i8 {
-        self.x.min(self.y.min(self.z.min(self.w)))
+        let min = |a, b| if a < b { a } else { b };
+        min(self.x, min(self.y, min(self.z, self.w)))
     }
 
     /// Returns the horizontal maximum of `self`.
@@ -270,7 +271,8 @@ impl I8Vec4 {
     #[inline]
     #[must_use]
     pub fn max_element(self) -> i8 {
-        self.x.max(self.y.max(self.z.max(self.w)))
+        let max = |a, b| if a > b { a } else { b };
+        max(self.x, max(self.y, max(self.z, self.w)))
     }
 
     /// Returns the index of the first minimum element of `self`.

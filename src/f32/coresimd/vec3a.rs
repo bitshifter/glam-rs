@@ -75,6 +75,17 @@ impl Vec3A {
     /// The unit axes.
     pub const AXES: [Self; 3] = [Self::X, Self::Y, Self::Z];
 
+    /// Vec3A uses Rust Portable SIMD
+    pub const USES_CORE_SIMD: bool = true;
+    /// Vec3A uses Arm NEON
+    pub const USES_NEON: bool = false;
+    /// Vec3A uses scalar math
+    pub const USES_SCALAR_MATH: bool = false;
+    /// Vec3A uses Intel SSE2
+    pub const USES_SSE2: bool = false;
+    /// Vec3A uses WebAssembly 128-bit SIMD
+    pub const USES_WASM32_SIMD: bool = false;
+
     /// Creates a new vector.
     #[inline(always)]
     #[must_use]
@@ -224,25 +235,34 @@ impl Vec3A {
 
     /// Returns a vector containing the minimum values for each element of `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
+    /// In other words this computes `[min(x, rhs.x), min(self.y, rhs.y), ..]`.
+    ///
+    /// NaN propogation does not follow IEEE 754-2008 semantics for minNum and may differ on
+    /// different SIMD architectures.
     #[inline]
     #[must_use]
     pub fn min(self, rhs: Self) -> Self {
-        Self(self.0.simd_min(rhs.0))
+        Self(self.0.simd_lt(rhs.0).select(self.0, rhs.0))
     }
 
     /// Returns a vector containing the maximum values for each element of `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
+    /// In other words this computes `[max(self.x, rhs.x), max(self.y, rhs.y), ..]`.
+    ///
+    /// NaN propogation does not follow IEEE 754-2008 semantics for maxNum and may differ on
+    /// different SIMD architectures.
     #[inline]
     #[must_use]
     pub fn max(self, rhs: Self) -> Self {
-        Self(self.0.simd_max(rhs.0))
+        Self(self.0.simd_gt(rhs.0).select(self.0, rhs.0))
     }
 
     /// Component-wise clamping of values, similar to [`f32::clamp`].
     ///
     /// Each element in `min` must be less-or-equal to the corresponding element in `max`.
+    ///
+    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
+    /// different SIMD architectures.
     ///
     /// # Panics
     ///
@@ -257,24 +277,32 @@ impl Vec3A {
     /// Returns the horizontal minimum of `self`.
     ///
     /// In other words this computes `min(x, y, ..)`.
+    ///
+    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
+    /// different SIMD architectures.
     #[inline]
     #[must_use]
     pub fn min_element(self) -> f32 {
+        let min = |a: f32x4, b: f32x4| a.simd_lt(b).select(a, b);
         let v = self.0;
-        let v = v.simd_min(simd_swizzle!(v, [2, 2, 1, 1]));
-        let v = v.simd_min(simd_swizzle!(v, [1, 0, 0, 0]));
+        let v = min(v, simd_swizzle!(v, [2, 2, 1, 1]));
+        let v = min(v, simd_swizzle!(v, [1, 0, 0, 0]));
         v[0]
     }
 
     /// Returns the horizontal maximum of `self`.
     ///
     /// In other words this computes `max(x, y, ..)`.
+    ///
+    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
+    /// different SIMD architectures.
     #[inline]
     #[must_use]
     pub fn max_element(self) -> f32 {
+        let max = |a: f32x4, b: f32x4| a.simd_gt(b).select(a, b);
         let v = self.0;
-        let v = v.simd_max(simd_swizzle!(v, [2, 2, 0, 0]));
-        let v = v.simd_max(simd_swizzle!(v, [1, 0, 0, 0]));
+        let v = max(v, simd_swizzle!(v, [2, 2, 0, 0]));
+        let v = max(v, simd_swizzle!(v, [1, 0, 0, 0]));
         v[0]
     }
 

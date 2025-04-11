@@ -159,25 +159,25 @@ impl U16Vec2 {
 
     /// Returns a vector containing the minimum values for each element of `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
+    /// In other words this computes `[min(x, rhs.x), min(self.y, rhs.y), ..]`.
     #[inline]
     #[must_use]
     pub fn min(self, rhs: Self) -> Self {
         Self {
-            x: self.x.min(rhs.x),
-            y: self.y.min(rhs.y),
+            x: if self.x < rhs.x { self.x } else { rhs.x },
+            y: if self.y < rhs.y { self.y } else { rhs.y },
         }
     }
 
     /// Returns a vector containing the maximum values for each element of `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
+    /// In other words this computes `[max(self.x, rhs.x), max(self.y, rhs.y), ..]`.
     #[inline]
     #[must_use]
     pub fn max(self, rhs: Self) -> Self {
         Self {
-            x: self.x.max(rhs.x),
-            y: self.y.max(rhs.y),
+            x: if self.x > rhs.x { self.x } else { rhs.x },
+            y: if self.y > rhs.y { self.y } else { rhs.y },
         }
     }
 
@@ -201,7 +201,8 @@ impl U16Vec2 {
     #[inline]
     #[must_use]
     pub fn min_element(self) -> u16 {
-        self.x.min(self.y)
+        let min = |a, b| if a < b { a } else { b };
+        min(self.x, self.y)
     }
 
     /// Returns the horizontal maximum of `self`.
@@ -210,7 +211,8 @@ impl U16Vec2 {
     #[inline]
     #[must_use]
     pub fn max_element(self) -> u16 {
-        self.x.max(self.y)
+        let max = |a, b| if a > b { a } else { b };
+        max(self.x, self.y)
     }
 
     /// Returns the index of the first minimum element of `self`.

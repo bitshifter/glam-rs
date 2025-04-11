@@ -395,6 +395,19 @@ impl {{ self_t }} {
         {% endfor %}
     ];
 
+{% if is_float %}
+    /// {{ self_t }} uses Rust Portable SIMD
+    pub const USES_CORE_SIMD: bool = {{ is_coresimd }};
+    /// {{ self_t }} uses Arm NEON
+    pub const USES_NEON: bool = {{ is_neon }};
+    /// {{ self_t }} uses scalar math
+    pub const USES_SCALAR_MATH: bool = {{ is_scalar }};
+    /// {{ self_t }} uses Intel SSE2
+    pub const USES_SSE2: bool = {{ is_sse2 }};
+    /// {{ self_t }} uses WebAssembly 128-bit SIMD
+    pub const USES_WASM32_SIMD: bool = {{ is_wasm32 }};
+{% endif %}
+
     /// Creates a new vector.
     #[inline(always)]
     #[must_use]
@@ -755,14 +768,19 @@ impl {{ self_t }} {
 
     /// Returns a vector containing the minimum values for each element of `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
+    /// In other words this computes `[min(x, rhs.x), min(self.y, rhs.y), ..]`.
+{%- if is_float  %}
+    /// 
+    /// NaN propogation does not follow IEEE 754-2008 semantics for minNum and may differ on
+    /// different SIMD architectures.
+{%- endif %}
     #[inline]
     #[must_use]
     pub fn min(self, rhs: Self) -> Self {
         {% if is_scalar %}
             Self {
                 {% for c in components %}
-                    {{ c }}: self.{{ c }}.min(rhs.{{ c }}),
+                    {{ c }}: if self.{{ c }} < rhs.{{ c }} { self.{{ c }} } else { rhs.{{ c }} },
                 {%- endfor %}
             }
         {% elif is_sse2 %}
@@ -770,7 +788,7 @@ impl {{ self_t }} {
         {% elif is_wasm32 %}
             Self(f32x4_pmin(self.0, rhs.0))
         {% elif is_coresimd %}
-            Self(self.0.simd_min(rhs.0))
+            Self(self.0.simd_lt(rhs.0).select(self.0, rhs.0))
         {% elif is_neon %}
             Self(unsafe { vminq_f32(self.0, rhs.0) })
         {% else %}
@@ -780,14 +798,19 @@ impl {{ self_t }} {
 
     /// Returns a vector containing the maximum values for each element of `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
+    /// In other words this computes `[max(self.x, rhs.x), max(self.y, rhs.y), ..]`.
+{%- if is_float  %}
+    /// 
+    /// NaN propogation does not follow IEEE 754-2008 semantics for maxNum and may differ on
+    /// different SIMD architectures.
+{%- endif %}
     #[inline]
     #[must_use]
     pub fn max(self, rhs: Self) -> Self {
         {% if is_scalar %}
             Self {
                 {% for c in components %}
-                    {{ c }}: self.{{ c }}.max(rhs.{{ c }}),
+                    {{ c }}: if self.{{ c }} > rhs.{{ c }} { self.{{ c }} } else { rhs.{{ c }} },
                 {%- endfor %}
             }
         {% elif is_sse2 %}
@@ -795,7 +818,7 @@ impl {{ self_t }} {
         {% elif is_wasm32 %}
             Self(f32x4_pmax(self.0, rhs.0))
         {% elif is_coresimd %}
-            Self(self.0.simd_max(rhs.0))
+            Self(self.0.simd_gt(rhs.0).select(self.0, rhs.0))
         {% elif is_neon %}
             Self(unsafe { vmaxq_f32(self.0, rhs.0) })
         {% else %}
@@ -806,6 +829,11 @@ impl {{ self_t }} {
     /// Component-wise clamping of values, similar to [`{{ scalar_t }}::clamp`].
     ///
     /// Each element in `min` must be less-or-equal to the corresponding element in `max`.
+{%- if is_float  %}
+    /// 
+    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
+    /// different SIMD architectures.
+{%- endif %}
     ///
     /// # Panics
     ///
@@ -820,16 +848,22 @@ impl {{ self_t }} {
     /// Returns the horizontal minimum of `self`.
     ///
     /// In other words this computes `min(x, y, ..)`.
+{%- if is_float  %}
+    /// 
+    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
+    /// different SIMD architectures.
+{%- endif %}
     #[inline]
     #[must_use]
     pub fn min_element(self) -> {{ scalar_t }} {
         {% if is_scalar %}
-            {% if dim == 2 %}
-                self.x.min(self.y)
-            {% elif dim == 3 %}
-                self.x.min(self.y.min(self.z))
-            {% elif dim == 4 %}
-                self.x.min(self.y.min(self.z.min(self.w)))
+            let min = |a, b| if a < b { a } else { b };
+            {%- if dim == 2 %}
+                min(self.x, self.y)
+            {%- elif dim == 3 %}
+                min(self.x, min(self.y, self.z))
+            {%- elif dim == 4 %}
+                min(self.x, min(self.y, min(self.z, self.w)))
             {% endif %}
         {% elif is_sse2 %}
             {% if dim == 3 %}
@@ -860,13 +894,17 @@ impl {{ self_t }} {
                 f32x4_extract_lane::<0>(v)
             {% endif %}
         {% elif is_coresimd %}
-            {% if dim == 3 %}
+            let min = |a: {{ simd_t }}, b: {{ simd_t }}| a.simd_lt(b).select(a, b);
+            {%- if dim == 3 %}
                 let v = self.0;
-                let v = v.simd_min(simd_swizzle!(v, [2, 2, 1, 1]));
-                let v = v.simd_min(simd_swizzle!(v, [1, 0, 0, 0]));
+                let v = min(v, simd_swizzle!(v, [2, 2, 1, 1]));
+                let v = min(v, simd_swizzle!(v, [1, 0, 0, 0]));
                 v[0]
-            {% elif dim == 4 %}
-                self.0.reduce_min()
+            {%- elif dim == 4 %}
+                let v = self.0;
+                let v = min(v, simd_swizzle!(v, [2, 3, 0, 0]));
+                let v = min(v, simd_swizzle!(v, [1, 0, 0, 0]));
+                v[0]
             {% endif %}
         {% elif is_neon %}
             {% if dim == 3 %}
@@ -882,16 +920,22 @@ impl {{ self_t }} {
     /// Returns the horizontal maximum of `self`.
     ///
     /// In other words this computes `max(x, y, ..)`.
+{%- if is_float  %}
+    /// 
+    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
+    /// different SIMD architectures.
+{%- endif %}
     #[inline]
     #[must_use]
     pub fn max_element(self) -> {{ scalar_t }} {
         {% if is_scalar %}
-            {% if dim == 2 %}
-                self.x.max(self.y)
-            {% elif dim == 3 %}
-                self.x.max(self.y.max(self.z))
-            {% elif dim == 4 %}
-                self.x.max(self.y.max(self.z.max(self.w)))
+            let max = |a, b| if a > b { a } else { b };
+            {%- if dim == 2 %}
+                max(self.x, self.y)
+            {%- elif dim == 3 %}
+                max(self.x, max(self.y, self.z))
+            {%- elif dim == 4 %}
+                max(self.x, max(self.y, max(self.z, self.w)))
             {% endif %}
         {% elif is_sse2 %}
             {% if dim == 3 %}
@@ -922,13 +966,17 @@ impl {{ self_t }} {
                 f32x4_extract_lane::<0>(v)
             {% endif %}
         {% elif is_coresimd %}
-            {% if dim == 3 %}
+            let max = |a: {{ simd_t }}, b: {{ simd_t }}| a.simd_gt(b).select(a, b);
+            {%- if dim == 3 %}
                 let v = self.0;
-                let v = v.simd_max(simd_swizzle!(v, [2, 2, 0, 0]));
-                let v = v.simd_max(simd_swizzle!(v, [1, 0, 0, 0]));
+                let v = max(v, simd_swizzle!(v, [2, 2, 0, 0]));
+                let v = max(v, simd_swizzle!(v, [1, 0, 0, 0]));
                 v[0]
-            {% elif dim == 4 %}
-                self.0.reduce_max()
+            {%- elif dim == 4 %}
+                let v = self.0;
+                let v = max(v, simd_swizzle!(v, [2, 3, 0, 0]));
+                let v = max(v, simd_swizzle!(v, [1, 0, 0, 0]));
+                v[0]
             {% endif %}
         {% elif is_neon %}
             {% if dim == 3 %}
