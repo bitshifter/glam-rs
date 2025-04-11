@@ -236,26 +236,32 @@ impl Vec3 {
     /// Returns a vector containing the minimum values for each element of `self` and `rhs`.
     ///
     /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
+    ///
+    /// Nan propogation does not follow IEEE 754-2008 semantics for minNum and may differ on
+    /// different SIMD architectures.
     #[inline]
     #[must_use]
     pub fn min(self, rhs: Self) -> Self {
         Self {
-            x: self.x.min(rhs.x),
-            y: self.y.min(rhs.y),
-            z: self.z.min(rhs.z),
+            x: if self.x < rhs.x { self.x } else { rhs.x },
+            y: if self.y < rhs.y { self.y } else { rhs.y },
+            z: if self.z < rhs.z { self.z } else { rhs.z },
         }
     }
 
     /// Returns a vector containing the maximum values for each element of `self` and `rhs`.
     ///
     /// In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
+    ///
+    /// Nan propogation does not follow IEEE 754-2008 semantics for maxNum and may differ on
+    /// different SIMD architectures.
     #[inline]
     #[must_use]
     pub fn max(self, rhs: Self) -> Self {
         Self {
-            x: self.x.max(rhs.x),
-            y: self.y.max(rhs.y),
-            z: self.z.max(rhs.z),
+            x: if self.x > rhs.x { self.x } else { rhs.x },
+            y: if self.y > rhs.y { self.y } else { rhs.y },
+            z: if self.z > rhs.z { self.z } else { rhs.z },
         }
     }
 

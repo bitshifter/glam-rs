@@ -164,8 +164,8 @@ impl U64Vec2 {
     #[must_use]
     pub fn min(self, rhs: Self) -> Self {
         Self {
-            x: self.x.min(rhs.x),
-            y: self.y.min(rhs.y),
+            x: if self.x < rhs.x { self.x } else { rhs.x },
+            y: if self.y < rhs.y { self.y } else { rhs.y },
         }
     }
 
@@ -176,8 +176,8 @@ impl U64Vec2 {
     #[must_use]
     pub fn max(self, rhs: Self) -> Self {
         Self {
-            x: self.x.max(rhs.x),
-            y: self.y.max(rhs.y),
+            x: if self.x > rhs.x { self.x } else { rhs.x },
+            y: if self.y > rhs.y { self.y } else { rhs.y },
         }
     }
 

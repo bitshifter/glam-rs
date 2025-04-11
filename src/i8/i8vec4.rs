@@ -220,10 +220,10 @@ impl I8Vec4 {
     #[must_use]
     pub fn min(self, rhs: Self) -> Self {
         Self {
-            x: self.x.min(rhs.x),
-            y: self.y.min(rhs.y),
-            z: self.z.min(rhs.z),
-            w: self.w.min(rhs.w),
+            x: if self.x < rhs.x { self.x } else { rhs.x },
+            y: if self.y < rhs.y { self.y } else { rhs.y },
+            z: if self.z < rhs.z { self.z } else { rhs.z },
+            w: if self.w < rhs.w { self.w } else { rhs.w },
         }
     }
 
@@ -234,10 +234,10 @@ impl I8Vec4 {
     #[must_use]
     pub fn max(self, rhs: Self) -> Self {
         Self {
-            x: self.x.max(rhs.x),
-            y: self.y.max(rhs.y),
-            z: self.z.max(rhs.z),
-            w: self.w.max(rhs.w),
+            x: if self.x > rhs.x { self.x } else { rhs.x },
+            y: if self.y > rhs.y { self.y } else { rhs.y },
+            z: if self.z > rhs.z { self.z } else { rhs.z },
+            w: if self.w > rhs.w { self.w } else { rhs.w },
         }
     }
 
