@@ -788,7 +788,7 @@ impl {{ self_t }} {
         {% elif is_wasm32 %}
             Self(f32x4_pmin(self.0, rhs.0))
         {% elif is_coresimd %}
-            Self(self.0.simd_min(rhs.0))
+            Self(self.0.simd_lt(rhs.0).select(self.0, rhs.0))
         {% elif is_neon %}
             Self(unsafe { vminq_f32(self.0, rhs.0) })
         {% else %}
@@ -818,7 +818,7 @@ impl {{ self_t }} {
         {% elif is_wasm32 %}
             Self(f32x4_pmax(self.0, rhs.0))
         {% elif is_coresimd %}
-            Self(self.0.simd_max(rhs.0))
+            Self(self.0.simd_gt(rhs.0).select(self.0, rhs.0))
         {% elif is_neon %}
             Self(unsafe { vmaxq_f32(self.0, rhs.0) })
         {% else %}
@@ -858,11 +858,11 @@ impl {{ self_t }} {
     pub fn min_element(self) -> {{ scalar_t }} {
         {% if is_scalar %}
             let min = |a, b| if a < b { a } else { b };
-            {% if dim == 2 %}
+            {%- if dim == 2 %}
                 min(self.x, self.y)
-            {% elif dim == 3 %}
+            {%- elif dim == 3 %}
                 min(self.x, min(self.y, self.z))
-            {% elif dim == 4 %}
+            {%- elif dim == 4 %}
                 min(self.x, min(self.y, min(self.z, self.w)))
             {% endif %}
         {% elif is_sse2 %}
@@ -894,13 +894,17 @@ impl {{ self_t }} {
                 f32x4_extract_lane::<0>(v)
             {% endif %}
         {% elif is_coresimd %}
-            {% if dim == 3 %}
+            let min = |a: {{ simd_t }}, b: {{ simd_t }}| a.simd_lt(b).select(a, b);
+            {%- if dim == 3 %}
                 let v = self.0;
-                let v = v.simd_min(simd_swizzle!(v, [2, 2, 1, 1]));
-                let v = v.simd_min(simd_swizzle!(v, [1, 0, 0, 0]));
+                let v = min(v, simd_swizzle!(v, [2, 2, 1, 1]));
+                let v = min(v, simd_swizzle!(v, [1, 0, 0, 0]));
                 v[0]
-            {% elif dim == 4 %}
-                self.0.reduce_min()
+            {%- elif dim == 4 %}
+                let v = self.0;
+                let v = min(v, simd_swizzle!(v, [2, 3, 0, 0]));
+                let v = min(v, simd_swizzle!(v, [1, 0, 0, 0]));
+                v[0]
             {% endif %}
         {% elif is_neon %}
             {% if dim == 3 %}
@@ -926,11 +930,11 @@ impl {{ self_t }} {
     pub fn max_element(self) -> {{ scalar_t }} {
         {% if is_scalar %}
             let max = |a, b| if a > b { a } else { b };
-            {% if dim == 2 %}
+            {%- if dim == 2 %}
                 max(self.x, self.y)
-            {% elif dim == 3 %}
+            {%- elif dim == 3 %}
                 max(self.x, max(self.y, self.z))
-            {% elif dim == 4 %}
+            {%- elif dim == 4 %}
                 max(self.x, max(self.y, max(self.z, self.w)))
             {% endif %}
         {% elif is_sse2 %}
@@ -962,13 +966,17 @@ impl {{ self_t }} {
                 f32x4_extract_lane::<0>(v)
             {% endif %}
         {% elif is_coresimd %}
-            {% if dim == 3 %}
+            let max = |a: {{ simd_t }}, b: {{ simd_t }}| a.simd_gt(b).select(a, b);
+            {%- if dim == 3 %}
                 let v = self.0;
-                let v = v.simd_max(simd_swizzle!(v, [2, 2, 0, 0]));
-                let v = v.simd_max(simd_swizzle!(v, [1, 0, 0, 0]));
+                let v = max(v, simd_swizzle!(v, [2, 2, 0, 0]));
+                let v = max(v, simd_swizzle!(v, [1, 0, 0, 0]));
                 v[0]
-            {% elif dim == 4 %}
-                self.0.reduce_max()
+            {%- elif dim == 4 %}
+                let v = self.0;
+                let v = max(v, simd_swizzle!(v, [2, 3, 0, 0]));
+                let v = max(v, simd_swizzle!(v, [1, 0, 0, 0]));
+                v[0]
             {% endif %}
         {% elif is_neon %}
             {% if dim == 3 %}

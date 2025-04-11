@@ -1293,9 +1293,16 @@ macro_rules! impl_vec4_float_tests {
                 assert!($vec4::NAN.max($vec4::NAN).is_nan_mask().all());
             } else if $vec4::USES_WASM32_SIMD {
                 assert!($vec4::NAN.min($vec4::ZERO).is_nan_mask().all());
-                assert!($vec4::ZERO.min($vec4::NAN).is_nan_mask().all());
+                assert!(!$vec4::ZERO.min($vec4::NAN).is_nan_mask().all());
                 assert!($vec4::NAN.min($vec4::NAN).is_nan_mask().all());
                 assert!($vec4::NAN.max($vec4::ZERO).is_nan_mask().all());
+                assert!(!$vec4::ZERO.max($vec4::NAN).is_nan_mask().all());
+                assert!($vec4::NAN.max($vec4::NAN).is_nan_mask().all());
+            } else if $vec4::USES_CORE_SIMD {
+                assert!(!$vec4::NAN.min($vec4::ZERO).is_nan_mask().all());
+                assert!($vec4::ZERO.min($vec4::NAN).is_nan_mask().all());
+                assert!($vec4::NAN.min($vec4::NAN).is_nan_mask().all());
+                assert!(!$vec4::NAN.max($vec4::ZERO).is_nan_mask().all());
                 assert!($vec4::ZERO.max($vec4::NAN).is_nan_mask().all());
                 assert!($vec4::NAN.max($vec4::NAN).is_nan_mask().all());
             }
@@ -1317,6 +1324,9 @@ macro_rules! impl_vec4_float_tests {
             } else if $vec4::USES_WASM32_SIMD {
                 assert_eq!(2.0, v.min_element());
                 assert_eq!(4.0, v.max_element());
+            } else if $vec4::USES_CORE_SIMD {
+                assert!(v.min_element().is_nan());
+                assert!(v.max_element().is_nan());
             }
         });
 
@@ -1325,22 +1335,60 @@ macro_rules! impl_vec4_float_tests {
             // The purpose of this test is to document the different behaviour.
             if $vec4::USES_SCALAR_MATH {
                 assert_eq!($vec4::NEG_ONE, $vec4::NAN.clamp($vec4::NEG_ONE, $vec4::ONE));
-                // assert_eq!($vec4::ONE, $vec4::NAN.clamp($vec4::NAN, $vec4::ONE));
-                // assert!($vec4::NAN
-                //     .clamp($vec4::NEG_ONE, $vec4::NAN)
-                //     .is_nan_mask()
-                //     .all());
+                #[cfg(not(any(feature = "debug-glam-assert", feature = "glam-assert")))]
+                {
+                    assert_eq!($vec4::ONE, $vec4::NAN.clamp($vec4::NAN, $vec4::ONE));
+                    assert!($vec4::NAN
+                        .clamp($vec4::NEG_ONE, $vec4::NAN)
+                        .is_nan_mask()
+                        .all());
+                }
             } else if $vec4::USES_NEON {
-                assert_eq!($vec4::NEG_ONE, $vec4::NAN.clamp($vec4::NEG_ONE, $vec4::ONE));
+                assert!($vec4::NAN
+                    .clamp($vec4::NEG_ONE, $vec4::ONE)
+                    .is_nan_mask()
+                    .all());
+                #[cfg(not(any(feature = "debug-glam-assert", feature = "glam-assert")))]
+                {
+                    assert!($vec4::NAN.clamp($vec4::NAN, $vec4::ONE).is_nan_mask().all());
+                    assert!($vec4::NAN
+                        .clamp($vec4::NEG_ONE, $vec4::NAN)
+                        .is_nan_mask()
+                        .all());
+                }
             } else if $vec4::USES_SSE2 {
                 assert_eq!($vec4::NEG_ONE, $vec4::NAN.clamp($vec4::NEG_ONE, $vec4::ONE));
-                // assert_eq!($vec4::ONE, $vec4::NAN.clamp($vec4::NAN, $vec4::ONE));
-                // assert!($vec4::NAN
-                //     .clamp($vec4::NEG_ONE, $vec4::NAN)
-                //     .is_nan_mask()
-                //     .all());
+                #[cfg(not(any(feature = "debug-glam-assert", feature = "glam-assert")))]
+                {
+                    assert_eq!($vec4::ONE, $vec4::NAN.clamp($vec4::NAN, $vec4::ONE));
+                    assert!($vec4::NAN
+                        .clamp($vec4::NEG_ONE, $vec4::NAN)
+                        .is_nan_mask()
+                        .all());
+                }
             } else if $vec4::USES_WASM32_SIMD {
+                assert!($vec4::NAN
+                    .clamp($vec4::NEG_ONE, $vec4::ONE)
+                    .is_nan_mask()
+                    .all());
+                #[cfg(not(any(feature = "debug-glam-assert", feature = "glam-assert")))]
+                {
+                    assert!($vec4::NAN.clamp($vec4::NAN, $vec4::ONE).is_nan_mask().all());
+                    assert!($vec4::NAN
+                        .clamp($vec4::NEG_ONE, $vec4::NAN)
+                        .is_nan_mask()
+                        .all());
+                }
+            } else if $vec4::USES_CORE_SIMD {
                 assert_eq!($vec4::NEG_ONE, $vec4::NAN.clamp($vec4::NEG_ONE, $vec4::ONE));
+                #[cfg(not(any(feature = "debug-glam-assert", feature = "glam-assert")))]
+                {
+                    assert_eq!($vec4::ONE, $vec4::NAN.clamp($vec4::NAN, $vec4::ONE));
+                    assert!($vec4::NAN
+                        .clamp($vec4::NEG_ONE, $vec4::NAN)
+                        .is_nan_mask()
+                        .all());
+                }
             }
         });
 

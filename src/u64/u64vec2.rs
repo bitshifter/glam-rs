@@ -202,7 +202,6 @@ impl U64Vec2 {
     #[must_use]
     pub fn min_element(self) -> u64 {
         let min = |a, b| if a < b { a } else { b };
-
         min(self.x, self.y)
     }
 
@@ -213,7 +212,6 @@ impl U64Vec2 {
     #[must_use]
     pub fn max_element(self) -> u64 {
         let max = |a, b| if a > b { a } else { b };
-
         max(self.x, self.y)
     }
 

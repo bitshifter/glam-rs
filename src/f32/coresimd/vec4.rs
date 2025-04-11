@@ -226,7 +226,7 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn min(self, rhs: Self) -> Self {
-        Self(self.0.simd_min(rhs.0))
+        Self(self.0.simd_lt(rhs.0).select(self.0, rhs.0))
     }
 
     /// Returns a vector containing the maximum values for each element of `self` and `rhs`.
@@ -238,7 +238,7 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn max(self, rhs: Self) -> Self {
-        Self(self.0.simd_max(rhs.0))
+        Self(self.0.simd_gt(rhs.0).select(self.0, rhs.0))
     }
 
     /// Component-wise clamping of values, similar to [`f32::clamp`].
@@ -267,7 +267,11 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn min_element(self) -> f32 {
-        self.0.reduce_min()
+        let min = |a: f32x4, b: f32x4| a.simd_lt(b).select(a, b);
+        let v = self.0;
+        let v = min(v, simd_swizzle!(v, [2, 3, 0, 0]));
+        let v = min(v, simd_swizzle!(v, [1, 0, 0, 0]));
+        v[0]
     }
 
     /// Returns the horizontal maximum of `self`.
@@ -279,7 +283,11 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn max_element(self) -> f32 {
-        self.0.reduce_max()
+        let max = |a: f32x4, b: f32x4| a.simd_gt(b).select(a, b);
+        let v = self.0;
+        let v = max(v, simd_swizzle!(v, [2, 3, 0, 0]));
+        let v = max(v, simd_swizzle!(v, [1, 0, 0, 0]));
+        v[0]
     }
 
     /// Returns the index of the first minimum element of `self`.

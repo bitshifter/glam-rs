@@ -302,7 +302,6 @@ impl Vec4 {
     #[must_use]
     pub fn min_element(self) -> f32 {
         let min = |a, b| if a < b { a } else { b };
-
         min(self.x, min(self.y, min(self.z, self.w)))
     }
 
@@ -316,7 +315,6 @@ impl Vec4 {
     #[must_use]
     pub fn max_element(self) -> f32 {
         let max = |a, b| if a > b { a } else { b };
-
         max(self.x, max(self.y, max(self.z, self.w)))
     }
 

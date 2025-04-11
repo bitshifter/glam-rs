@@ -252,7 +252,6 @@ impl USizeVec3 {
     #[must_use]
     pub fn min_element(self) -> usize {
         let min = |a, b| if a < b { a } else { b };
-
         min(self.x, min(self.y, self.z))
     }
 
@@ -263,7 +262,6 @@ impl USizeVec3 {
     #[must_use]
     pub fn max_element(self) -> usize {
         let max = |a, b| if a > b { a } else { b };
-
         max(self.x, max(self.y, self.z))
     }
 

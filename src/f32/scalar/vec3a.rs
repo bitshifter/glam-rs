@@ -302,7 +302,6 @@ impl Vec3A {
     #[must_use]
     pub fn min_element(self) -> f32 {
         let min = |a, b| if a < b { a } else { b };
-
         min(self.x, min(self.y, self.z))
     }
 
@@ -316,7 +315,6 @@ impl Vec3A {
     #[must_use]
     pub fn max_element(self) -> f32 {
         let max = |a, b| if a > b { a } else { b };
-
         max(self.x, max(self.y, self.z))
     }
 
