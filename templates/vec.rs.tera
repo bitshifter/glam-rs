@@ -769,7 +769,7 @@ impl {{ self_t }} {
     /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
 {%- if is_float  %}
     /// 
-    /// Nan propogation does not follow IEEE 754-2008 semantics for minNum and may differ on
+    /// NaN propogation does not follow IEEE 754-2008 semantics for minNum and may differ on
     /// different SIMD architectures.
 {%- endif %}
     #[inline]
@@ -799,7 +799,7 @@ impl {{ self_t }} {
     /// In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
 {%- if is_float  %}
     /// 
-    /// Nan propogation does not follow IEEE 754-2008 semantics for maxNum and may differ on
+    /// NaN propogation does not follow IEEE 754-2008 semantics for maxNum and may differ on
     /// different SIMD architectures.
 {%- endif %}
     #[inline]
@@ -827,6 +827,11 @@ impl {{ self_t }} {
     /// Component-wise clamping of values, similar to [`{{ scalar_t }}::clamp`].
     ///
     /// Each element in `min` must be less-or-equal to the corresponding element in `max`.
+{%- if is_float  %}
+    /// 
+    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
+    /// different SIMD architectures.
+{%- endif %}
     ///
     /// # Panics
     ///
@@ -841,16 +846,22 @@ impl {{ self_t }} {
     /// Returns the horizontal minimum of `self`.
     ///
     /// In other words this computes `min(x, y, ..)`.
+{%- if is_float  %}
+    /// 
+    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
+    /// different SIMD architectures.
+{%- endif %}
     #[inline]
     #[must_use]
     pub fn min_element(self) -> {{ scalar_t }} {
         {% if is_scalar %}
+            let min = |a, b| if a < b { a } else { b };
             {% if dim == 2 %}
-                self.x.min(self.y)
+                min(self.x, self.y)
             {% elif dim == 3 %}
-                self.x.min(self.y.min(self.z))
+                min(self.x, min(self.y, self.z))
             {% elif dim == 4 %}
-                self.x.min(self.y.min(self.z.min(self.w)))
+                min(self.x, min(self.y, min(self.z, self.w)))
             {% endif %}
         {% elif is_sse2 %}
             {% if dim == 3 %}
@@ -903,16 +914,22 @@ impl {{ self_t }} {
     /// Returns the horizontal maximum of `self`.
     ///
     /// In other words this computes `max(x, y, ..)`.
+{%- if is_float  %}
+    /// 
+    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
+    /// different SIMD architectures.
+{%- endif %}
     #[inline]
     #[must_use]
     pub fn max_element(self) -> {{ scalar_t }} {
         {% if is_scalar %}
+            let max = |a, b| if a > b { a } else { b };
             {% if dim == 2 %}
-                self.x.max(self.y)
+                max(self.x, self.y)
             {% elif dim == 3 %}
-                self.x.max(self.y.max(self.z))
+                max(self.x, max(self.y, self.z))
             {% elif dim == 4 %}
-                self.x.max(self.y.max(self.z.max(self.w)))
+                max(self.x, max(self.y, max(self.z, self.w)))
             {% endif %}
         {% elif is_sse2 %}
             {% if dim == 3 %}

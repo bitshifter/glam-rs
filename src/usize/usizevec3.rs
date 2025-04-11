@@ -251,7 +251,9 @@ impl USizeVec3 {
     #[inline]
     #[must_use]
     pub fn min_element(self) -> usize {
-        self.x.min(self.y.min(self.z))
+        let min = |a, b| if a < b { a } else { b };
+
+        min(self.x, min(self.y, self.z))
     }
 
     /// Returns the horizontal maximum of `self`.
@@ -260,7 +262,9 @@ impl USizeVec3 {
     #[inline]
     #[must_use]
     pub fn max_element(self) -> usize {
-        self.x.max(self.y.max(self.z))
+        let max = |a, b| if a > b { a } else { b };
+
+        max(self.x, max(self.y, self.z))
     }
 
     /// Returns the index of the first minimum element of `self`.

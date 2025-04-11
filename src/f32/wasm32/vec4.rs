@@ -220,7 +220,7 @@ impl Vec4 {
     ///
     /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
     ///
-    /// Nan propogation does not follow IEEE 754-2008 semantics for minNum and may differ on
+    /// NaN propogation does not follow IEEE 754-2008 semantics for minNum and may differ on
     /// different SIMD architectures.
     #[inline]
     #[must_use]
@@ -232,7 +232,7 @@ impl Vec4 {
     ///
     /// In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
     ///
-    /// Nan propogation does not follow IEEE 754-2008 semantics for maxNum and may differ on
+    /// NaN propogation does not follow IEEE 754-2008 semantics for maxNum and may differ on
     /// different SIMD architectures.
     #[inline]
     #[must_use]
@@ -243,6 +243,9 @@ impl Vec4 {
     /// Component-wise clamping of values, similar to [`f32::clamp`].
     ///
     /// Each element in `min` must be less-or-equal to the corresponding element in `max`.
+    ///
+    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
+    /// different SIMD architectures.
     ///
     /// # Panics
     ///
@@ -257,6 +260,9 @@ impl Vec4 {
     /// Returns the horizontal minimum of `self`.
     ///
     /// In other words this computes `min(x, y, ..)`.
+    ///
+    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
+    /// different SIMD architectures.
     #[inline]
     #[must_use]
     pub fn min_element(self) -> f32 {
@@ -269,6 +275,9 @@ impl Vec4 {
     /// Returns the horizontal maximum of `self`.
     ///
     /// In other words this computes `max(x, y, ..)`.
+    ///
+    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
+    /// different SIMD architectures.
     #[inline]
     #[must_use]
     pub fn max_element(self) -> f32 {

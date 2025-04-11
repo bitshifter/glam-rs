@@ -189,7 +189,7 @@ impl Vec2 {
     ///
     /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
     ///
-    /// Nan propogation does not follow IEEE 754-2008 semantics for minNum and may differ on
+    /// NaN propogation does not follow IEEE 754-2008 semantics for minNum and may differ on
     /// different SIMD architectures.
     #[inline]
     #[must_use]
@@ -204,7 +204,7 @@ impl Vec2 {
     ///
     /// In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
     ///
-    /// Nan propogation does not follow IEEE 754-2008 semantics for maxNum and may differ on
+    /// NaN propogation does not follow IEEE 754-2008 semantics for maxNum and may differ on
     /// different SIMD architectures.
     #[inline]
     #[must_use]
@@ -219,6 +219,9 @@ impl Vec2 {
     ///
     /// Each element in `min` must be less-or-equal to the corresponding element in `max`.
     ///
+    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
+    /// different SIMD architectures.
+    ///
     /// # Panics
     ///
     /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
@@ -232,19 +235,29 @@ impl Vec2 {
     /// Returns the horizontal minimum of `self`.
     ///
     /// In other words this computes `min(x, y, ..)`.
+    ///
+    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
+    /// different SIMD architectures.
     #[inline]
     #[must_use]
     pub fn min_element(self) -> f32 {
-        self.x.min(self.y)
+        let min = |a, b| if a < b { a } else { b };
+
+        min(self.x, self.y)
     }
 
     /// Returns the horizontal maximum of `self`.
     ///
     /// In other words this computes `max(x, y, ..)`.
+    ///
+    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
+    /// different SIMD architectures.
     #[inline]
     #[must_use]
     pub fn max_element(self) -> f32 {
-        self.x.max(self.y)
+        let max = |a, b| if a > b { a } else { b };
+
+        max(self.x, self.y)
     }
 
     /// Returns the index of the first minimum element of `self`.

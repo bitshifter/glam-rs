@@ -201,7 +201,9 @@ impl U16Vec2 {
     #[inline]
     #[must_use]
     pub fn min_element(self) -> u16 {
-        self.x.min(self.y)
+        let min = |a, b| if a < b { a } else { b };
+
+        min(self.x, self.y)
     }
 
     /// Returns the horizontal maximum of `self`.
@@ -210,7 +212,9 @@ impl U16Vec2 {
     #[inline]
     #[must_use]
     pub fn max_element(self) -> u16 {
-        self.x.max(self.y)
+        let max = |a, b| if a > b { a } else { b };
+
+        max(self.x, self.y)
     }
 
     /// Returns the index of the first minimum element of `self`.
