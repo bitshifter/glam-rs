@@ -1302,8 +1302,8 @@ macro_rules! impl_vec4_float_tests {
                 assert_eq!(2.0, v.min_element());
                 assert_eq!(4.0, v.max_element());
             } else if $vec4::USES_NEON {
-                assert!(v.min_element().is_nan());
-                assert!(v.max_element().is_nan());
+                assert_eq!(2.0, v.min_element());
+                assert_eq!(4.0, v.max_element());
             } else if $vec4::USES_SSE2 {
                 assert!(v.min_element().is_nan());
                 assert!(v.max_element().is_nan());
