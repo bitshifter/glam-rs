@@ -364,6 +364,17 @@ impl {{ self_t }} {
 
     /// All `{{ scalar_t }}::NEG_INFINITY`.
     pub const NEG_INFINITY: Self = Self::splat({{ scalar_t }}::NEG_INFINITY);
+
+    /// {{ self_t }} uses Rust Portable SIMD
+    pub const USES_CORE_SIMD: bool = {{ is_coresimd }};
+    /// {{ self_t }} uses Arm NEON
+    pub const USES_NEON: bool = {{ is_neon }};
+    /// {{ self_t }} uses scalar math
+    pub const USES_SCALAR_MATH: bool = {{ is_scalar }};
+    /// {{ self_t }} uses Intel SSE2
+    pub const USES_SSE2: bool = {{ is_sse2 }};
+    /// {{ self_t }} uses WebAssembly 128-bit SIMD
+    pub const USES_WASM32_SIMD: bool = {{ is_wasm32 }};
 {% endif %}
 
 {% for i in range(end = dim) %}
