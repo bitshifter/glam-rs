@@ -1322,7 +1322,10 @@ macro_rules! impl_vec4_float_tests {
             } else if $vec4::USES_SSE2 {
                 assert_eq!($vec4::NEG_ONE, $vec4::NAN.clamp($vec4::NEG_ONE, $vec4::ONE));
                 assert_eq!($vec4::ONE, $vec4::NAN.clamp($vec4::NAN, $vec4::ONE));
-                assert!($vec4::NAN.clamp($vec4::NEG_ONE, $vec4::NAN).is_nan_mask().all());
+                assert!($vec4::NAN
+                    .clamp($vec4::NEG_ONE, $vec4::NAN)
+                    .is_nan_mask()
+                    .all());
             }
         });
 
