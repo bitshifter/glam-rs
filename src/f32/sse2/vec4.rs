@@ -235,7 +235,7 @@ impl Vec4 {
 
     /// Returns a vector containing the minimum values for each element of `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
+    /// In other words this computes `[min(x, rhs.x), min(self.y, rhs.y), ..]`.
     ///
     /// NaN propogation does not follow IEEE 754-2008 semantics for minNum and may differ on
     /// different SIMD architectures.
@@ -247,7 +247,7 @@ impl Vec4 {
 
     /// Returns a vector containing the maximum values for each element of `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
+    /// In other words this computes `[max(self.x, rhs.x), max(self.y, rhs.y), ..]`.
     ///
     /// NaN propogation does not follow IEEE 754-2008 semantics for maxNum and may differ on
     /// different SIMD architectures.

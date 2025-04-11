@@ -215,7 +215,7 @@ impl I8Vec4 {
 
     /// Returns a vector containing the minimum values for each element of `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
+    /// In other words this computes `[min(x, rhs.x), min(self.y, rhs.y), ..]`.
     #[inline]
     #[must_use]
     pub fn min(self, rhs: Self) -> Self {
@@ -229,7 +229,7 @@ impl I8Vec4 {
 
     /// Returns a vector containing the maximum values for each element of `self` and `rhs`.
     ///
-    /// In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
+    /// In other words this computes `[max(self.x, rhs.x), max(self.y, rhs.y), ..]`.
     #[inline]
     #[must_use]
     pub fn max(self, rhs: Self) -> Self {
