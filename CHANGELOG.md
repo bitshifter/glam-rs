@@ -9,8 +9,17 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## Added
 
-- Added precision conversion functions for Affine types: `Affine3A::as_daffine3`,
-  `DAffine3::as_affine3a`, `Affine2::as_daffine2` and `DAffine3::as_affine2`
+* Added precision conversion functions for affine types:
+  `Affine3A::as_daffine3`, `DAffine3::as_affine3a`, `Affine2::as_daffine2` and
+  `DAffine3::as_affine2`
+
+## Changed
+
+* Vector min and max scalar implementations have been changed to use an `if`
+  check instead of the built in Rust floating point primitive `min` and `max`
+  methods. The Rust methods have special handling for `NaN` propagation however
+  because this is not consistent between the different SIMD implementations in
+  glam the most efficient implementation is preferred.
 
 ## [0.30.1] - 2025-03-20
 
