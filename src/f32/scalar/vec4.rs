@@ -703,6 +703,21 @@ impl Vec4 {
         self.normalize_or(Self::ZERO)
     }
 
+    /// Returns `self` normalized to length 1.0 and the length of `self`.
+    ///
+    /// If `self` is zero length then `(Self::X, 0.0)` is returned.
+    #[inline]
+    #[must_use]
+    pub fn normalize_and_length(self) -> (Self, f32) {
+        let length = self.length();
+        let rcp = 1.0 / length;
+        if rcp.is_finite() && rcp > 0.0 {
+            (self * rcp, length)
+        } else {
+            (Self::X, 0.0)
+        }
+    }
+
     /// Returns whether `self` is length `1.0` or not.
     ///
     /// Uses a precision threshold of approximately `1e-4`.
