@@ -5,13 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
-## [Unreleased]
+## [0.30.2] - 2025-04-13
 
 ## Added
 
 * Added precision conversion functions for affine types:
   `Affine3A::as_daffine3`, `DAffine3::as_affine3a`, `Affine2::as_daffine2` and
   `DAffine3::as_affine2`
+
+* Added `normalize_and_length` method to `f32` and `f64` vectors.
 
 ## Changed
 
@@ -1220,7 +1222,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.30.1...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.30.2...HEAD
+[0.30.2]: https://github.com/bitshifter/glam-rs/compare/0.30.1...0.30.2
 [0.30.1]: https://github.com/bitshifter/glam-rs/compare/0.30.0...0.30.1
 [0.30.0]: https://github.com/bitshifter/glam-rs/compare/0.29.2...0.30.0
 [0.29.2]: https://github.com/bitshifter/glam-rs/compare/0.29.1...0.29.2
