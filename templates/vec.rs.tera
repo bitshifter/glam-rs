@@ -3801,6 +3801,8 @@ impl Not for {{ self_t }} {
     }
 }
 
+{{ macros::impl_op_ref(op="Not", self_t=self_t, output_t=self_t) }}
+
 impl BitAnd for {{ self_t }} {
     type Output = Self;
     #[inline]
@@ -3886,6 +3888,8 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
         }
     }
 
+    {{ macros::impl_op_ref(op="Shl", self_t=self_t, rhs_t=rhs_t, output_t=self_t) }}
+
     impl Shr<{{ rhs_t }}> for {{ self_t }} {
         type Output = Self;
         #[inline]
@@ -3897,6 +3901,8 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
             }
         }
     }
+
+    {{ macros::impl_op_ref(op="Shr", self_t=self_t, rhs_t=rhs_t, output_t=self_t) }}
 {% endfor %}
 
 {% for rhs_t in ["crate::IVec" ~ dim, "crate::UVec" ~ dim] %}
@@ -3912,6 +3918,8 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
             }
         }
 
+        {{ macros::impl_op_ref(op="Shl", self_t=self_t, rhs_t=rhs_t, output_t=self_t) }}
+
         impl Shr<{{ rhs_t }}> for {{ self_t }} {
             type Output = Self;
             #[inline]
@@ -3923,6 +3931,8 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
                 }
             }
         }
+
+        {{ macros::impl_op_ref(op="Shr", self_t=self_t, rhs_t=rhs_t, output_t=self_t) }}
 {% endfor %}
 {% endif %}
 

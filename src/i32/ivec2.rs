@@ -1570,6 +1570,14 @@ impl Not for IVec2 {
     }
 }
 
+impl Not for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn not(self) -> IVec2 {
+        (*self).not()
+    }
+}
+
 impl BitAnd for IVec2 {
     type Output = Self;
     #[inline]
@@ -1647,6 +1655,30 @@ impl Shl<i8> for IVec2 {
     }
 }
 
+impl Shl<&i8> for IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: &i8) -> IVec2 {
+        self.shl(*rhs)
+    }
+}
+
+impl Shl<&i8> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: &i8) -> IVec2 {
+        (*self).shl(*rhs)
+    }
+}
+
+impl Shl<i8> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: i8) -> IVec2 {
+        (*self).shl(rhs)
+    }
+}
+
 impl Shr<i8> for IVec2 {
     type Output = Self;
     #[inline]
@@ -1655,6 +1687,30 @@ impl Shr<i8> for IVec2 {
             x: self.x.shr(rhs),
             y: self.y.shr(rhs),
         }
+    }
+}
+
+impl Shr<&i8> for IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: &i8) -> IVec2 {
+        self.shr(*rhs)
+    }
+}
+
+impl Shr<&i8> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: &i8) -> IVec2 {
+        (*self).shr(*rhs)
+    }
+}
+
+impl Shr<i8> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: i8) -> IVec2 {
+        (*self).shr(rhs)
     }
 }
 
@@ -1669,6 +1725,30 @@ impl Shl<i16> for IVec2 {
     }
 }
 
+impl Shl<&i16> for IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: &i16) -> IVec2 {
+        self.shl(*rhs)
+    }
+}
+
+impl Shl<&i16> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: &i16) -> IVec2 {
+        (*self).shl(*rhs)
+    }
+}
+
+impl Shl<i16> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: i16) -> IVec2 {
+        (*self).shl(rhs)
+    }
+}
+
 impl Shr<i16> for IVec2 {
     type Output = Self;
     #[inline]
@@ -1677,6 +1757,30 @@ impl Shr<i16> for IVec2 {
             x: self.x.shr(rhs),
             y: self.y.shr(rhs),
         }
+    }
+}
+
+impl Shr<&i16> for IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: &i16) -> IVec2 {
+        self.shr(*rhs)
+    }
+}
+
+impl Shr<&i16> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: &i16) -> IVec2 {
+        (*self).shr(*rhs)
+    }
+}
+
+impl Shr<i16> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: i16) -> IVec2 {
+        (*self).shr(rhs)
     }
 }
 
@@ -1691,6 +1795,30 @@ impl Shl<i32> for IVec2 {
     }
 }
 
+impl Shl<&i32> for IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: &i32) -> IVec2 {
+        self.shl(*rhs)
+    }
+}
+
+impl Shl<&i32> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: &i32) -> IVec2 {
+        (*self).shl(*rhs)
+    }
+}
+
+impl Shl<i32> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: i32) -> IVec2 {
+        (*self).shl(rhs)
+    }
+}
+
 impl Shr<i32> for IVec2 {
     type Output = Self;
     #[inline]
@@ -1699,6 +1827,30 @@ impl Shr<i32> for IVec2 {
             x: self.x.shr(rhs),
             y: self.y.shr(rhs),
         }
+    }
+}
+
+impl Shr<&i32> for IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: &i32) -> IVec2 {
+        self.shr(*rhs)
+    }
+}
+
+impl Shr<&i32> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: &i32) -> IVec2 {
+        (*self).shr(*rhs)
+    }
+}
+
+impl Shr<i32> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: i32) -> IVec2 {
+        (*self).shr(rhs)
     }
 }
 
@@ -1713,6 +1865,30 @@ impl Shl<i64> for IVec2 {
     }
 }
 
+impl Shl<&i64> for IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: &i64) -> IVec2 {
+        self.shl(*rhs)
+    }
+}
+
+impl Shl<&i64> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: &i64) -> IVec2 {
+        (*self).shl(*rhs)
+    }
+}
+
+impl Shl<i64> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: i64) -> IVec2 {
+        (*self).shl(rhs)
+    }
+}
+
 impl Shr<i64> for IVec2 {
     type Output = Self;
     #[inline]
@@ -1721,6 +1897,30 @@ impl Shr<i64> for IVec2 {
             x: self.x.shr(rhs),
             y: self.y.shr(rhs),
         }
+    }
+}
+
+impl Shr<&i64> for IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: &i64) -> IVec2 {
+        self.shr(*rhs)
+    }
+}
+
+impl Shr<&i64> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: &i64) -> IVec2 {
+        (*self).shr(*rhs)
+    }
+}
+
+impl Shr<i64> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: i64) -> IVec2 {
+        (*self).shr(rhs)
     }
 }
 
@@ -1735,6 +1935,30 @@ impl Shl<u8> for IVec2 {
     }
 }
 
+impl Shl<&u8> for IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: &u8) -> IVec2 {
+        self.shl(*rhs)
+    }
+}
+
+impl Shl<&u8> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: &u8) -> IVec2 {
+        (*self).shl(*rhs)
+    }
+}
+
+impl Shl<u8> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: u8) -> IVec2 {
+        (*self).shl(rhs)
+    }
+}
+
 impl Shr<u8> for IVec2 {
     type Output = Self;
     #[inline]
@@ -1743,6 +1967,30 @@ impl Shr<u8> for IVec2 {
             x: self.x.shr(rhs),
             y: self.y.shr(rhs),
         }
+    }
+}
+
+impl Shr<&u8> for IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: &u8) -> IVec2 {
+        self.shr(*rhs)
+    }
+}
+
+impl Shr<&u8> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: &u8) -> IVec2 {
+        (*self).shr(*rhs)
+    }
+}
+
+impl Shr<u8> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: u8) -> IVec2 {
+        (*self).shr(rhs)
     }
 }
 
@@ -1757,6 +2005,30 @@ impl Shl<u16> for IVec2 {
     }
 }
 
+impl Shl<&u16> for IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: &u16) -> IVec2 {
+        self.shl(*rhs)
+    }
+}
+
+impl Shl<&u16> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: &u16) -> IVec2 {
+        (*self).shl(*rhs)
+    }
+}
+
+impl Shl<u16> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: u16) -> IVec2 {
+        (*self).shl(rhs)
+    }
+}
+
 impl Shr<u16> for IVec2 {
     type Output = Self;
     #[inline]
@@ -1765,6 +2037,30 @@ impl Shr<u16> for IVec2 {
             x: self.x.shr(rhs),
             y: self.y.shr(rhs),
         }
+    }
+}
+
+impl Shr<&u16> for IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: &u16) -> IVec2 {
+        self.shr(*rhs)
+    }
+}
+
+impl Shr<&u16> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: &u16) -> IVec2 {
+        (*self).shr(*rhs)
+    }
+}
+
+impl Shr<u16> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: u16) -> IVec2 {
+        (*self).shr(rhs)
     }
 }
 
@@ -1779,6 +2075,30 @@ impl Shl<u32> for IVec2 {
     }
 }
 
+impl Shl<&u32> for IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: &u32) -> IVec2 {
+        self.shl(*rhs)
+    }
+}
+
+impl Shl<&u32> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: &u32) -> IVec2 {
+        (*self).shl(*rhs)
+    }
+}
+
+impl Shl<u32> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: u32) -> IVec2 {
+        (*self).shl(rhs)
+    }
+}
+
 impl Shr<u32> for IVec2 {
     type Output = Self;
     #[inline]
@@ -1787,6 +2107,30 @@ impl Shr<u32> for IVec2 {
             x: self.x.shr(rhs),
             y: self.y.shr(rhs),
         }
+    }
+}
+
+impl Shr<&u32> for IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: &u32) -> IVec2 {
+        self.shr(*rhs)
+    }
+}
+
+impl Shr<&u32> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: &u32) -> IVec2 {
+        (*self).shr(*rhs)
+    }
+}
+
+impl Shr<u32> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: u32) -> IVec2 {
+        (*self).shr(rhs)
     }
 }
 
@@ -1801,6 +2145,30 @@ impl Shl<u64> for IVec2 {
     }
 }
 
+impl Shl<&u64> for IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: &u64) -> IVec2 {
+        self.shl(*rhs)
+    }
+}
+
+impl Shl<&u64> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: &u64) -> IVec2 {
+        (*self).shl(*rhs)
+    }
+}
+
+impl Shl<u64> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: u64) -> IVec2 {
+        (*self).shl(rhs)
+    }
+}
+
 impl Shr<u64> for IVec2 {
     type Output = Self;
     #[inline]
@@ -1809,6 +2177,30 @@ impl Shr<u64> for IVec2 {
             x: self.x.shr(rhs),
             y: self.y.shr(rhs),
         }
+    }
+}
+
+impl Shr<&u64> for IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: &u64) -> IVec2 {
+        self.shr(*rhs)
+    }
+}
+
+impl Shr<&u64> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: &u64) -> IVec2 {
+        (*self).shr(*rhs)
+    }
+}
+
+impl Shr<u64> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: u64) -> IVec2 {
+        (*self).shr(rhs)
     }
 }
 
@@ -1823,6 +2215,30 @@ impl Shl<crate::IVec2> for IVec2 {
     }
 }
 
+impl Shl<&crate::IVec2> for IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: &crate::IVec2) -> IVec2 {
+        self.shl(*rhs)
+    }
+}
+
+impl Shl<&crate::IVec2> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: &crate::IVec2) -> IVec2 {
+        (*self).shl(*rhs)
+    }
+}
+
+impl Shl<crate::IVec2> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: crate::IVec2) -> IVec2 {
+        (*self).shl(rhs)
+    }
+}
+
 impl Shr<crate::IVec2> for IVec2 {
     type Output = Self;
     #[inline]
@@ -1831,6 +2247,30 @@ impl Shr<crate::IVec2> for IVec2 {
             x: self.x.shr(rhs.x),
             y: self.y.shr(rhs.y),
         }
+    }
+}
+
+impl Shr<&crate::IVec2> for IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: &crate::IVec2) -> IVec2 {
+        self.shr(*rhs)
+    }
+}
+
+impl Shr<&crate::IVec2> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: &crate::IVec2) -> IVec2 {
+        (*self).shr(*rhs)
+    }
+}
+
+impl Shr<crate::IVec2> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: crate::IVec2) -> IVec2 {
+        (*self).shr(rhs)
     }
 }
 
@@ -1845,6 +2285,30 @@ impl Shl<crate::UVec2> for IVec2 {
     }
 }
 
+impl Shl<&crate::UVec2> for IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: &crate::UVec2) -> IVec2 {
+        self.shl(*rhs)
+    }
+}
+
+impl Shl<&crate::UVec2> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: &crate::UVec2) -> IVec2 {
+        (*self).shl(*rhs)
+    }
+}
+
+impl Shl<crate::UVec2> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shl(self, rhs: crate::UVec2) -> IVec2 {
+        (*self).shl(rhs)
+    }
+}
+
 impl Shr<crate::UVec2> for IVec2 {
     type Output = Self;
     #[inline]
@@ -1853,6 +2317,30 @@ impl Shr<crate::UVec2> for IVec2 {
             x: self.x.shr(rhs.x),
             y: self.y.shr(rhs.y),
         }
+    }
+}
+
+impl Shr<&crate::UVec2> for IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: &crate::UVec2) -> IVec2 {
+        self.shr(*rhs)
+    }
+}
+
+impl Shr<&crate::UVec2> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: &crate::UVec2) -> IVec2 {
+        (*self).shr(*rhs)
+    }
+}
+
+impl Shr<crate::UVec2> for &IVec2 {
+    type Output = IVec2;
+    #[inline]
+    fn shr(self, rhs: crate::UVec2) -> IVec2 {
+        (*self).shr(rhs)
     }
 }
 
