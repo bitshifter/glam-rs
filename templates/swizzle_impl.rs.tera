@@ -56,7 +56,6 @@ impl Vec{{ dim }}Swizzles for {{ self_t }} {
                     {% set skip = dim == 2 and j0 == 0 and j1 == 1 %}
                     {% if not skip %}
     #[inline]
-    #[must_use]
     fn {{ e[j0] }}{{ e[j1] }}(self) -> {{ vec2_t }} {
             {{ vec2_t }} { x: self.{{ e[j0] }}, y: self.{{ e[j1] }} }
     }
@@ -64,7 +63,6 @@ impl Vec{{ dim }}Swizzles for {{ self_t }} {
                     {% set skip = dim == 2 or j0 == j1 %}
                     {% if not skip %}
     #[inline]
-    #[must_use]
     fn with_{{ e[j0] }}{{ e[j1] }}(self, rhs: {{ vec2_t }}) -> Self {
         Self::new(
             {% for l in range(start = 0, end = dim) %}
@@ -85,7 +83,6 @@ impl Vec{{ dim }}Swizzles for {{ self_t }} {
                             {% set skip = dim == 3 and j0 == 0 and j1 == 1 and j2 == 2 %}
                             {% if not skip %}
     #[inline]
-    #[must_use]
     fn {{ e[j0] }}{{ e[j1] }}{{ e[j2] }}(self) -> {{ vec3_t }} {
             {% if vec3_t == "Vec3A" and is_sse2 %}
                 {{ vec3_t }}((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_{{ b[j2] }}_{{ b[j1] }}_{{ b[j0] }}) }).into())
@@ -101,7 +98,6 @@ impl Vec{{ dim }}Swizzles for {{ self_t }} {
                             {% set skip = dim == 3 or j0 == j1 or j0 == j2 or j1 == j2 %}
                             {% if not skip %}
     #[inline]
-    #[must_use]
     fn with_{{ e[j0] }}{{ e[j1] }}{{ e[j2] }}(self, rhs: {{ vec3_t }}) -> Self {
         Self::new(
             {% for l in range(start = 0, end = dim) %}
@@ -123,7 +119,6 @@ impl Vec{{ dim }}Swizzles for {{ self_t }} {
                                 {% set skip = dim == 4 and j0 == 0 and j1 == 1 and j2 == 2 and j3 == 3 %}
                                 {% if not skip %}
     #[inline]
-    #[must_use]
     fn {{ e[j0] }}{{ e[j1] }}{{ e[j2] }}{{ e[j3] }}(self) -> {{ vec4_t }} {
             {% if is_sse2 %}
                 {{ vec4_t }}(unsafe { _mm_shuffle_ps(self.0, self.0, 0b{{ b[j3] }}_{{ b[j2] }}_{{ b[j1] }}_{{ b[j0] }}) })
