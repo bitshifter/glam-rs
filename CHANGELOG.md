@@ -5,9 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## Unreleased
+
+### Added
+
+* Added `speedy` feature, implementing serialization and deserialization via the `speedy` crate.
+
 ## [0.30.2] - 2025-04-13
 
-## Added
+### Added
 
 * Added precision conversion functions for affine types:
   `Affine3A::as_daffine3`, `DAffine3::as_affine3a`, `Affine2::as_daffine2` and
@@ -15,7 +21,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 * Added `normalize_and_length` method to `f32` and `f64` vectors.
 
-## Changed
+### Changed
 
 * Vector min and max scalar implementations have been changed to use an `if`
   check instead of the built in Rust floating point primitive `min` and `max`
@@ -25,7 +31,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [0.30.1] - 2025-03-20
 
-## Added
+### Added
 
 * Added `usize` vector types, `USizeVec2`, `USizeVec3` and `USizeVec4`.
 
@@ -34,7 +40,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 * Added `rotate_towards` method to 3D vector types.
 
-## Changed
+### Changed
 
 * Removed the small angle check from 2D vector `rotate_towards` implementations
   as it was unnecessary and would not preserve the length of the input.
