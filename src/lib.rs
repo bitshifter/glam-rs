@@ -240,6 +240,7 @@ and benchmarks.
 * `bytecheck` - to perform archive validation when using the `rkyv` feature
 * `serde` - implementations of `Serialize` and `Deserialize` for all `glam`
   types. Note that serialization should work between builds of `glam` with and without SIMD enabled
+* `speedy` - implementations of `speedy`'s `Readable` and `Writable` for all `glam` types.
 * `scalar-math` - disables SIMD support and uses native alignment for all types.
 * `debug-glam-assert` - adds assertions in debug builds which check the validity of parameters
   passed to `glam` to help catch runtime errors.

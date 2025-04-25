@@ -130,6 +130,7 @@ glam = { version = "0.30.2", default-features = false, features = ["nostd-libm"]
 * [`serde`] - implementations of `Serialize` and `Deserialize` for all `glam`
   types. Note that serialization should work between builds of `glam` with and
   without SIMD enabled
+* [`speedy`] - implementations of `speedy`'s `Readable` and `Writable` for all `glam` types.
 * [`rkyv`] - implementations of `Archive`, `Serialize` and `Deserialize` for
   all `glam` types. Note that serialization is not interoperable with and
   without the `scalar-math` feature. It should work between all other builds of
@@ -142,6 +143,7 @@ glam = { version = "0.30.2", default-features = false, features = ["nostd-libm"]
 [`mint`]: https://github.com/kvark/mint
 [`rand`]: https://github.com/rust-random/rand
 [`serde`]: https://serde.rs
+[`speedy`]: https://docs.rs/speedy
 [`rkyv`]: https://github.com/rkyv/rkyv
 [`bytecheck`]: https://github.com/rkyv/bytecheck
 
