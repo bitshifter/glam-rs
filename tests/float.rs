@@ -32,6 +32,13 @@ macro_rules! impl_float_tests {
             assert!($t::remap(0., 0., 0., 0., 1.).is_nan());
             assert!($t::remap(1., 0., 0., 0., 1.).is_infinite());
         });
+
+        glam_test!(test_fract_gl, {
+            assert_approx_eq!(1.35.fract_gl(), 0.35);
+            assert_approx_eq!((-1.5).fract_gl(), 0.5);
+            assert_approx_eq!((-2000000.123).fract_gl(), 0.877, 0.002);
+            assert_approx_eq!(1000000.123.fract_gl(), 0.123, 0.002);
+        });
     };
 }
 
