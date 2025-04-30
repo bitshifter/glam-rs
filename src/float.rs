@@ -27,4 +27,12 @@ pub trait FloatExt {
     /// `in_start` and `in_end` must not be equal, otherwise the result will be either infinite or `NAN`.
     #[must_use]
     fn remap(self, in_start: Self, in_end: Self, out_start: Self, out_end: Self) -> Self;
+
+    /// Returns the fractional part of the input as `self - self.floor()`.
+    ///
+    /// Note that this differs from the Rust implementation of `fract` which returns
+    /// `self - self.trunc()`.
+    ///
+    /// Note that this is fast but not precise for large numbers.
+    fn fract_gl(self) -> Self;
 }

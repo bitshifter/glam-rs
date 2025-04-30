@@ -18,4 +18,9 @@ impl FloatExt for {{ scalar_t }} {
         let t = {{ scalar_t }}::inverse_lerp(in_start, in_end, self);
         {{ scalar_t }}::lerp(out_start, out_end, t)
     }
+
+    #[inline]
+    fn fract_gl(self) -> {{ scalar_t }} {
+        self - crate::{{ scalar_t }}::math::floor(self)
+    }
 }
