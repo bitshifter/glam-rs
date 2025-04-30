@@ -18,4 +18,9 @@ impl FloatExt for f64 {
         let t = f64::inverse_lerp(in_start, in_end, self);
         f64::lerp(out_start, out_end, t)
     }
+
+    #[inline]
+    fn fract_gl(self) -> f64 {
+        self - crate::f64::math::floor(self)
+    }
 }

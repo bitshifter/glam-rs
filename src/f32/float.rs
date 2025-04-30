@@ -18,4 +18,9 @@ impl FloatExt for f32 {
         let t = f32::inverse_lerp(in_start, in_end, self);
         f32::lerp(out_start, out_end, t)
     }
+
+    #[inline]
+    fn fract_gl(self) -> f32 {
+        self - crate::f32::math::floor(self)
+    }
 }
