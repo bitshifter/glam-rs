@@ -5,11 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
-## Unreleased
+## [0.30.3] - 2025-05-01
 
 ### Added
 
-* Added `speedy` feature, implementing serialization and deserialization via the `speedy` crate.
+* Added `speedy` feature, implementing serialization and deserialization via the
+  `speedy` crate.
+
+* Added `fract_gl` to the 'FloatExt' trait which uses the GLSL specification of
+  `fract`, `self - self.floor()`.
 
 ## [0.30.2] - 2025-04-13
 
@@ -1228,7 +1232,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.30.2...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.30.3...HEAD
+[0.30.3]: https://github.com/bitshifter/glam-rs/compare/0.30.2...0.30.3
 [0.30.2]: https://github.com/bitshifter/glam-rs/compare/0.30.1...0.30.2
 [0.30.1]: https://github.com/bitshifter/glam-rs/compare/0.30.0...0.30.1
 [0.30.0]: https://github.com/bitshifter/glam-rs/compare/0.29.2...0.30.0

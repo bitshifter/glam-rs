@@ -86,7 +86,7 @@ defined in `std`. For example:
 
 ```toml
 [dependencies]
-glam = { version = "0.30.2", default-features = false, features = ["libm"] }
+glam = { version = "0.30.3", default-features = false, features = ["libm"] }
 ```
 
 To support both `std` and `no_std` builds in project, you can use the following
@@ -100,7 +100,7 @@ std = ["glam/std"]
 libm = ["glam/libm"]
 
 [dependencies]
-glam = { version = "0.30.2", default-features = false }
+glam = { version = "0.30.3", default-features = false }
 ```
 
 Alternatively, you can use the `nostd-libm` feature. This will always include a
@@ -116,7 +116,7 @@ std = ["glam/std"]
 libm = ["glam/libm"]
 
 [dependencies]
-glam = { version = "0.30.2", default-features = false, features = ["nostd-libm"] }
+glam = { version = "0.30.3", default-features = false, features = ["nostd-libm"] }
 ```
 
 ### Optional features
@@ -124,7 +124,6 @@ glam = { version = "0.30.2", default-features = false, features = ["nostd-libm"]
 * [`approx`] - traits and macros for approximate float comparisons
 * [`bytemuck`] - for casting into slices of bytes
 * [`libm`] - uses `libm` math functions instead of `std`
-* [`nostd-libm`] - uses `libm` math functions if `std` is not available
 * [`mint`] - for interoperating with other 3D math libraries
 * [`rand`] - implementations of `Distribution` trait for all `glam` types.
 * [`serde`] - implementations of `Serialize` and `Deserialize` for all `glam`
@@ -153,6 +152,7 @@ glam = { version = "0.30.2", default-features = false, features = ["nostd-libm"]
 * `debug-glam-assert` - adds assertions in debug builds which check the validity
   of parameters passed to `glam` to help catch runtime errors
 * `glam-assert` - adds validation assertions to all builds
+* `nostd-libm` - uses `libm` math functions if `std` is not available
 * `cuda` - forces `glam` types to match expected [cuda alignment]
 * `fast-math` - By default, glam attempts to provide bit-for-bit identical
   results on all platforms. Using this feature will enable platform specific
