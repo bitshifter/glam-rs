@@ -2026,7 +2026,7 @@ impl From<(f32, f32, f32, f32)> for Vec4 {
 impl From<Vec4> for (f32, f32, f32, f32) {
     #[inline]
     fn from(v: Vec4) -> Self {
-        (v.x, v.y, v.z, v.w)
+        Self::from(<[f32; 4]>::from(v))
     }
 }
 

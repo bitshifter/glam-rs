@@ -1862,13 +1862,7 @@ impl From<(f32, f32, f32, f32)> for Vec4 {
 impl From<Vec4> for (f32, f32, f32, f32) {
     #[inline]
     fn from(v: Vec4) -> Self {
-        use crate::align16::Align16;
-        use core::mem::MaybeUninit;
-        let mut out: MaybeUninit<Align16<Self>> = MaybeUninit::uninit();
-        unsafe {
-            vst1q_f32(out.as_mut_ptr().cast(), v.0);
-            out.assume_init().0
-        }
+        Self::from(<[f32; 4]>::from(v))
     }
 }
 
