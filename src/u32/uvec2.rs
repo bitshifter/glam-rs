@@ -1748,7 +1748,7 @@ impl From<(u32, u32)> for UVec2 {
 impl From<UVec2> for (u32, u32) {
     #[inline]
     fn from(v: UVec2) -> Self {
-        (v.x, v.y)
+        Self::from(<[u32; 2]>::from(v))
     }
 }
 

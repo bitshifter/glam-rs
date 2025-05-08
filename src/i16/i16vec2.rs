@@ -1917,7 +1917,7 @@ impl From<(i16, i16)> for I16Vec2 {
 impl From<I16Vec2> for (i16, i16) {
     #[inline]
     fn from(v: I16Vec2) -> Self {
-        (v.x, v.y)
+        Self::from(<[i16; 2]>::from(v))
     }
 }
 

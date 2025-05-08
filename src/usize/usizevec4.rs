@@ -1967,7 +1967,7 @@ impl From<(usize, usize, usize, usize)> for USizeVec4 {
 impl From<USizeVec4> for (usize, usize, usize, usize) {
     #[inline]
     fn from(v: USizeVec4) -> Self {
-        (v.x, v.y, v.z, v.w)
+        Self::from(<[usize; 4]>::from(v))
     }
 }
 

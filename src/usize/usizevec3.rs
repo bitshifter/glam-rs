@@ -1857,7 +1857,7 @@ impl From<(usize, usize, usize)> for USizeVec3 {
 impl From<USizeVec3> for (usize, usize, usize) {
     #[inline]
     fn from(v: USizeVec3) -> Self {
-        (v.x, v.y, v.z)
+        Self::from(<[usize; 3]>::from(v))
     }
 }
 
