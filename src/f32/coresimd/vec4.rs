@@ -1812,7 +1812,7 @@ impl From<(f32, f32, f32, f32)> for Vec4 {
 impl From<Vec4> for (f32, f32, f32, f32) {
     #[inline]
     fn from(v: Vec4) -> Self {
-        unsafe { *(v.0.to_array().as_ptr() as *const Self) }
+        Self::from(<[f32; 4]>::from(v))
     }
 }
 
