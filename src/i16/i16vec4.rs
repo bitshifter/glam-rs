@@ -2199,7 +2199,7 @@ impl From<(i16, i16, i16, i16)> for I16Vec4 {
 impl From<I16Vec4> for (i16, i16, i16, i16) {
     #[inline]
     fn from(v: I16Vec4) -> Self {
-        Self::from(<[i16; 4]>::from(v))
+        (v.x, v.y, v.z, v.w)
     }
 }
 

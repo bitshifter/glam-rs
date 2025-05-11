@@ -2047,7 +2047,7 @@ impl From<(f64, f64, f64)> for DVec3 {
 impl From<DVec3> for (f64, f64, f64) {
     #[inline]
     fn from(v: DVec3) -> Self {
-        Self::from(<[f64; 3]>::from(v))
+        (v.x, v.y, v.z)
     }
 }
 

@@ -1748,7 +1748,7 @@ impl From<(u16, u16)> for U16Vec2 {
 impl From<U16Vec2> for (u16, u16) {
     #[inline]
     fn from(v: U16Vec2) -> Self {
-        Self::from(<[u16; 2]>::from(v))
+        (v.x, v.y)
     }
 }
 

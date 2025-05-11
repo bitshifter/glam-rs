@@ -2040,7 +2040,7 @@ impl From<(f32, f32, f32)> for Vec3 {
 impl From<Vec3> for (f32, f32, f32) {
     #[inline]
     fn from(v: Vec3) -> Self {
-        Self::from(<[f32; 3]>::from(v))
+        (v.x, v.y, v.z)
     }
 }
 

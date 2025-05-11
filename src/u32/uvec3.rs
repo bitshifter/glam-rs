@@ -1905,7 +1905,7 @@ impl From<(u32, u32, u32)> for UVec3 {
 impl From<UVec3> for (u32, u32, u32) {
     #[inline]
     fn from(v: UVec3) -> Self {
-        Self::from(<[u32; 3]>::from(v))
+        (v.x, v.y, v.z)
     }
 }
 

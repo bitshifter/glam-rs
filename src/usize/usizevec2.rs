@@ -1706,7 +1706,7 @@ impl From<(usize, usize)> for USizeVec2 {
 impl From<USizeVec2> for (usize, usize) {
     #[inline]
     fn from(v: USizeVec2) -> Self {
-        Self::from(<[usize; 2]>::from(v))
+        (v.x, v.y)
     }
 }
 

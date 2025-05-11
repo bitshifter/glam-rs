@@ -1917,7 +1917,7 @@ impl From<(i64, i64)> for I64Vec2 {
 impl From<I64Vec2> for (i64, i64) {
     #[inline]
     fn from(v: I64Vec2) -> Self {
-        Self::from(<[i64; 2]>::from(v))
+        (v.x, v.y)
     }
 }
 

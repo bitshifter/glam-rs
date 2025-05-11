@@ -2063,7 +2063,7 @@ impl From<(i32, i32, i32)> for IVec3 {
 impl From<IVec3> for (i32, i32, i32) {
     #[inline]
     fn from(v: IVec3) -> Self {
-        Self::from(<[i32; 3]>::from(v))
+        (v.x, v.y, v.z)
     }
 }
 

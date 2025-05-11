@@ -2015,7 +2015,7 @@ impl From<(f64, f64, f64, f64)> for DVec4 {
 impl From<DVec4> for (f64, f64, f64, f64) {
     #[inline]
     fn from(v: DVec4) -> Self {
-        Self::from(<[f64; 4]>::from(v))
+        (v.x, v.y, v.z, v.w)
     }
 }
 

@@ -1897,7 +1897,7 @@ impl From<(f32, f32)> for Vec2 {
 impl From<Vec2> for (f32, f32) {
     #[inline]
     fn from(v: Vec2) -> Self {
-        Self::from(<[f32; 2]>::from(v))
+        (v.x, v.y)
     }
 }
 
