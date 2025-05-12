@@ -532,11 +532,11 @@ impl I64Vec4 {
     /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
     #[inline]
     #[must_use]
-    pub fn manhattan_distance(self, other: Self) -> u64 {
-        self.x.abs_diff(other.x)
-            + self.y.abs_diff(other.y)
-            + self.z.abs_diff(other.z)
-            + self.w.abs_diff(other.w)
+    pub fn manhattan_distance(self, rhs: Self) -> u64 {
+        self.x.abs_diff(rhs.x)
+            + self.y.abs_diff(rhs.y)
+            + self.z.abs_diff(rhs.z)
+            + self.w.abs_diff(rhs.w)
     }
 
     /// Computes the [manhattan distance] between two points.
@@ -546,11 +546,11 @@ impl I64Vec4 {
     /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
     #[inline]
     #[must_use]
-    pub fn checked_manhattan_distance(self, other: Self) -> Option<u64> {
-        let d = self.x.abs_diff(other.x);
-        let d = d.checked_add(self.y.abs_diff(other.y))?;
-        let d = d.checked_add(self.z.abs_diff(other.z))?;
-        d.checked_add(self.w.abs_diff(other.w))
+    pub fn checked_manhattan_distance(self, rhs: Self) -> Option<u64> {
+        let d = self.x.abs_diff(rhs.x);
+        let d = d.checked_add(self.y.abs_diff(rhs.y))?;
+        let d = d.checked_add(self.z.abs_diff(rhs.z))?;
+        d.checked_add(self.w.abs_diff(rhs.w))
     }
 
     /// Computes the [chebyshev distance] between two points.
@@ -558,13 +558,13 @@ impl I64Vec4 {
     /// [chebyshev distance]: https://en.wikipedia.org/wiki/Chebyshev_distance
     #[inline]
     #[must_use]
-    pub fn chebyshev_distance(self, other: Self) -> u64 {
+    pub fn chebyshev_distance(self, rhs: Self) -> u64 {
         // Note: the compiler will eventually optimize out the loop
         [
-            self.x.abs_diff(other.x),
-            self.y.abs_diff(other.y),
-            self.z.abs_diff(other.z),
-            self.w.abs_diff(other.w),
+            self.x.abs_diff(rhs.x),
+            self.y.abs_diff(rhs.y),
+            self.z.abs_diff(rhs.z),
+            self.w.abs_diff(rhs.w),
         ]
         .into_iter()
         .max()

@@ -2407,10 +2407,10 @@ impl {{ self_t }} {
     /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
     #[inline]
     #[must_use]
-    pub fn manhattan_distance(self, other: Self) -> {{ unsigned_scalar_t }} {
+    pub fn manhattan_distance(self, rhs: Self) -> {{ unsigned_scalar_t }} {
         {% for c in components %}
             {% if not loop.first %} + {% endif %}
-            self.{{c}}.abs_diff(other.{{c}})
+            self.{{c}}.abs_diff(rhs.{{c}})
         {% endfor %}
     }
 
@@ -2421,14 +2421,14 @@ impl {{ self_t }} {
     /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
     #[inline]
     #[must_use]
-    pub fn checked_manhattan_distance(self, other: Self) -> Option<{{ unsigned_scalar_t }}> {
+    pub fn checked_manhattan_distance(self, rhs: Self) -> Option<{{ unsigned_scalar_t }}> {
         {% for c in components %}
             {%- if loop.first -%}
-                let d = self.{{c}}.abs_diff(other.{{c}});
+                let d = self.{{c}}.abs_diff(rhs.{{c}});
             {%- elif loop.last -%}
-                d.checked_add(self.{{c}}.abs_diff(other.{{c}}))
+                d.checked_add(self.{{c}}.abs_diff(rhs.{{c}}))
             {%- else -%}
-                let d = d.checked_add(self.{{c}}.abs_diff(other.{{c}}))?;
+                let d = d.checked_add(self.{{c}}.abs_diff(rhs.{{c}}))?;
             {%- endif -%}
         {% endfor %}
     }
@@ -2438,11 +2438,11 @@ impl {{ self_t }} {
     /// [chebyshev distance]: https://en.wikipedia.org/wiki/Chebyshev_distance
     #[inline]
     #[must_use]
-    pub fn chebyshev_distance(self, other: Self) -> {{ unsigned_scalar_t }} {
+    pub fn chebyshev_distance(self, rhs: Self) -> {{ unsigned_scalar_t }} {
         // Note: the compiler will eventually optimize out the loop
         [
             {% for c in components %}
-                self.{{c}}.abs_diff(other.{{c}}),
+                self.{{c}}.abs_diff(rhs.{{c}}),
             {% endfor %}
         ].into_iter().max().unwrap()
     }

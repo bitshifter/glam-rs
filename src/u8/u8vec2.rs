@@ -341,8 +341,8 @@ impl U8Vec2 {
     /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
     #[inline]
     #[must_use]
-    pub fn manhattan_distance(self, other: Self) -> u8 {
-        self.x.abs_diff(other.x) + self.y.abs_diff(other.y)
+    pub fn manhattan_distance(self, rhs: Self) -> u8 {
+        self.x.abs_diff(rhs.x) + self.y.abs_diff(rhs.y)
     }
 
     /// Computes the [manhattan distance] between two points.
@@ -352,9 +352,9 @@ impl U8Vec2 {
     /// [manhattan distance]: https://en.wikipedia.org/wiki/Taxicab_geometry
     #[inline]
     #[must_use]
-    pub fn checked_manhattan_distance(self, other: Self) -> Option<u8> {
-        let d = self.x.abs_diff(other.x);
-        d.checked_add(self.y.abs_diff(other.y))
+    pub fn checked_manhattan_distance(self, rhs: Self) -> Option<u8> {
+        let d = self.x.abs_diff(rhs.x);
+        d.checked_add(self.y.abs_diff(rhs.y))
     }
 
     /// Computes the [chebyshev distance] between two points.
@@ -362,9 +362,9 @@ impl U8Vec2 {
     /// [chebyshev distance]: https://en.wikipedia.org/wiki/Chebyshev_distance
     #[inline]
     #[must_use]
-    pub fn chebyshev_distance(self, other: Self) -> u8 {
+    pub fn chebyshev_distance(self, rhs: Self) -> u8 {
         // Note: the compiler will eventually optimize out the loop
-        [self.x.abs_diff(other.x), self.y.abs_diff(other.y)]
+        [self.x.abs_diff(rhs.x), self.y.abs_diff(rhs.y)]
             .into_iter()
             .max()
             .unwrap()
