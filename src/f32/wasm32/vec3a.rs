@@ -1954,7 +1954,7 @@ impl From<(f32, f32, f32)> for Vec3A {
 impl From<Vec3A> for (f32, f32, f32) {
     #[inline]
     fn from(v: Vec3A) -> Self {
-        unsafe { *(&v.0 as *const v128 as *const Self) }
+        (v.x, v.y, v.z)
     }
 }
 

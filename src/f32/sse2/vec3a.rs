@@ -1999,13 +1999,7 @@ impl From<(f32, f32, f32)> for Vec3A {
 impl From<Vec3A> for (f32, f32, f32) {
     #[inline]
     fn from(v: Vec3A) -> Self {
-        use crate::Align16;
-        use core::mem::MaybeUninit;
-        let mut out: MaybeUninit<Align16<Self>> = MaybeUninit::uninit();
-        unsafe {
-            _mm_store_ps(out.as_mut_ptr().cast(), v.0);
-            out.assume_init().0
-        }
+        (v.x, v.y, v.z)
     }
 }
 

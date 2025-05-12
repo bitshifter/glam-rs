@@ -4080,39 +4080,11 @@ impl From<{{ macros::make_tuple_t(t=scalar_t, n=dim) }}> for {{ self_t }} {
 impl From<{{ self_t }}> for {{ macros::make_tuple_t(t=scalar_t, n=dim) }} {
     #[inline]
     fn from(v: {{ self_t }}) -> Self {
-        {% if is_scalar %}
-            (
-                {% for c in components %}
-                    v.{{ c }},
-                {%- endfor %}
-            )
-        {% elif is_sse2 %}
-            use core::mem::MaybeUninit;
-            use crate::Align16;
-            let mut out: MaybeUninit<Align16<Self>> = MaybeUninit::uninit();
-            unsafe {
-                _mm_store_ps(out.as_mut_ptr().cast(), v.0);
-                out.assume_init().0
-            }
-        {% elif is_wasm32 %}
-            unsafe {
-                *(&v.0 as *const v128 as *const Self)
-            }
-        {% elif is_coresimd %}
-            unsafe {
-                *(v.0.to_array().as_ptr() as *const Self)
-            }
-        {% elif is_neon %}
-            use core::mem::MaybeUninit;
-            use crate::align16::Align16;
-            let mut out: MaybeUninit<Align16<Self>> = MaybeUninit::uninit();
-            unsafe {
-                vst1q_f32(out.as_mut_ptr().cast(), v.0);
-                out.assume_init().0
-            }
-        {% else %}
-            unimplemented!()
-        {% endif %}
+        (
+            {% for c in components %}
+                v.{{ c }},
+            {%- endfor %}
+        )
     }
 }
 
