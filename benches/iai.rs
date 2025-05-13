@@ -12,6 +12,11 @@ use glam::BVec4 as BVec4A;
 use glam::BVec4A;
 
 #[inline]
+fn bb_f32() -> f32 {
+    black_box(0.5)
+}
+
+#[inline]
 fn mat2() -> Mat2 {
     black_box(Mat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]))
 }
@@ -193,6 +198,12 @@ fn vec3a_select(b: BVec3A, v1: Vec3A, v2: Vec3A) -> Vec3A {
 }
 
 #[library_benchmark]
+#[bench::args(vec3a(), vec3a(), bb_f32())]
+fn vec3a_slerp(v1: Vec3A, v2: Vec3A, t: f32) -> Vec3A {
+    black_box(v1.slerp(v2, t))
+}
+
+#[library_benchmark]
 #[bench::args(vec4(), vec4())]
 fn vec4_dot(v1: Vec4, v2: Vec4) -> f32 {
     black_box(v1.dot(v2))
@@ -260,6 +271,7 @@ library_benchmark_group!(
         vec3a_cross,
         vec3a_length,
         vec3a_normalize,
+        vec3a_slerp,
         vec3a_select,
 );
 
