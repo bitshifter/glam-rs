@@ -437,6 +437,7 @@ impl DQuat {
     ///
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn look_at_rh(eye: DVec3, center: DVec3, up: DVec3) -> Self {
         Self::look_to_rh(center.sub(eye).normalize(), up)
     }

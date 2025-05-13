@@ -496,6 +496,8 @@ impl Vec4 {
     /// Performs `is_finite` on each element of self, returning a vector mask of the results.
     ///
     /// In other words, this computes `[x.is_finite(), y.is_finite(), ...]`.
+    #[inline]
+    #[must_use]
     pub fn is_finite_mask(self) -> BVec4A {
         BVec4A(unsafe { _mm_cmplt_ps(crate::sse2::m128_abs(self.0), Self::INFINITY.0) })
     }

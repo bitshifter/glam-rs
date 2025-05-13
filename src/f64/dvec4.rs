@@ -530,6 +530,8 @@ impl DVec4 {
     /// Performs `is_finite` on each element of self, returning a vector mask of the results.
     ///
     /// In other words, this computes `[x.is_finite(), y.is_finite(), ...]`.
+    #[inline]
+    #[must_use]
     pub fn is_finite_mask(self) -> BVec4 {
         BVec4::new(
             self.x.is_finite(),

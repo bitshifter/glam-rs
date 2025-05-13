@@ -576,6 +576,7 @@ impl {{ self_t }} {
     ///
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
     #[inline]
+    #[must_use]
     pub fn look_at_rh(eye: {{ vec3_t }}, center: {{ vec3_t }}, up: {{ vec3_t }}) -> Self {
         Self::look_to_rh(center.sub(eye).normalize(), up)
     }
