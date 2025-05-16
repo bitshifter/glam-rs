@@ -5,7 +5,7 @@ use crate::{DMat3, DMat4, DQuat, DVec3, Mat3, Mat3A, Mat4, Quat, Vec3, Vec3A, Ve
 /// Euler rotation sequences.
 ///
 /// The three elemental rotations may be extrinsic (rotations about the axes xyz of the original
-/// coordinate system, which is assumed to remain motionless), or intrinsic(rotations about the
+/// coordinate system, which is assumed to remain motionless), or intrinsic (rotations about the
 /// axes of the rotating coordinate system XYZ, solidary with the moving body, which changes its
 /// orientation after each elemental rotation).
 ///
