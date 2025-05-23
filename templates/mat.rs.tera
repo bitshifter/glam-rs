@@ -1804,6 +1804,98 @@ impl {{ self_t }} {
         Self::look_to_rh(eye, center.sub(eye).normalize(), up)
     }
 
+    /// Creates a right-handed perspective projection matrix with [-1,1] depth range.
+    /// This is the same as the OpenGL `glFurstum` function.
+    /// See <https://registry.khronos.org/OpenGL-Refpages/gl2.1/xhtml/glFrustum.xml>
+    #[inline]
+    #[must_use]
+    pub fn frustum_rh_gl(
+        left: {{ scalar_t }},
+        right: {{ scalar_t }},
+        bottom: {{ scalar_t }},
+        top: {{ scalar_t }},
+        z_near: {{ scalar_t }},
+        z_far: {{ scalar_t }},
+    ) -> Self {
+        let inv_width = 1.0 / (right - left);
+        let inv_height = 1.0 / (top - bottom);
+        let inv_depth = 1.0 / (z_far - z_near);
+        let a = (right + left) * inv_width;
+        let b = (top + bottom) * inv_height;
+        let c = -(z_far + z_near) * inv_depth;
+        let d = -(2.0 * z_far * z_near) * inv_depth;
+        Self::from_cols(
+            {{ col_t }}::new((2.0 * z_near) * inv_width, 0.0, 0.0, 0.0),
+            {{ col_t }}::new(0.0, (2.0 * z_near) * inv_height, 0.0, 0.0),
+            {{ col_t }}::new(a, b, c, -1.0),
+            {{ col_t }}::new(0.0, 0.0, d, 0.0),
+        )
+    }
+
+    /// Creates a left-handed perspective projection matrix with `[0,1]` depth range.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
+    /// enabled.
+    #[inline]
+    #[must_use]
+    pub fn frustum_lh(
+        left: {{ scalar_t }},
+        right: {{ scalar_t }},
+        bottom: {{ scalar_t }},
+        top: {{ scalar_t }},
+        z_near: {{ scalar_t }},
+        z_far: {{ scalar_t }},
+    ) -> Self {
+        glam_assert!(z_near > 0.0 && z_far > 0.0);
+        let inv_width = 1.0 / (right - left);
+        let inv_height = 1.0 / (top - bottom);
+        let inv_depth = 1.0 / (z_far - z_near);
+        let a = (right + left) * inv_width;
+        let b = (top + bottom) * inv_height;
+        let c = z_far * inv_depth;
+        let d = -(z_far * z_near) * inv_depth;
+        Self::from_cols(
+            {{ col_t }}::new((2.0 * z_near) * inv_width, 0.0, 0.0, 0.0),
+            {{ col_t }}::new(0.0, (2.0 * z_near) * inv_height, 0.0, 0.0),
+            {{ col_t }}::new(a, b, c, 1.0),
+            {{ col_t }}::new(0.0, 0.0, d, 0.0),
+        )
+    }
+
+    /// Creates a right-handed perspective projection matrix with `[0,1]` depth range.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
+    /// enabled.
+    #[inline]
+    #[must_use]
+    pub fn frustum_rh(
+        left: {{ scalar_t }},
+        right: {{ scalar_t }},
+        bottom: {{ scalar_t }},
+        top: {{ scalar_t }},
+        z_near: {{ scalar_t }},
+        z_far: {{ scalar_t }},
+    ) -> Self {
+        glam_assert!(z_near > 0.0 && z_far > 0.0);
+        let inv_width = 1.0 / (right - left);
+        let inv_height = 1.0 / (top - bottom);
+        let inv_depth = 1.0 / (z_far - z_near);
+        let a = (right + left) * inv_width;
+        let b = (top + bottom) * inv_height;
+        let c = -z_far * inv_depth;
+        let d = -(z_far * z_near) * inv_depth;
+        Self::from_cols(
+            {{ col_t }}::new((2.0 * z_near) * inv_width, 0.0, 0.0, 0.0),
+            {{ col_t }}::new(0.0, (2.0 * z_near) * inv_height, 0.0, 0.0),
+            {{ col_t }}::new(a, b, c, -1.0),
+            {{ col_t }}::new(0.0, 0.0, d, 0.0),
+        )
+    }
+
     /// Creates a right-handed perspective projection matrix with `[-1,1]` depth range.
     ///
     /// Useful to map the standard right-handed coordinate system into what OpenGL expects.
