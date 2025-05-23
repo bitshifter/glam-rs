@@ -95,7 +95,7 @@ impl Vec2 {
     #[inline]
     #[must_use]
     pub const fn splat(v: f32) -> Self {
-        Self { x: v, y: v }
+        Self::new(v, v)
     }
 
     /// Returns a vector containing each element of `self` modified by a mapping function `f`.
@@ -116,10 +116,10 @@ impl Vec2 {
     #[inline]
     #[must_use]
     pub fn select(mask: BVec2, if_true: Self, if_false: Self) -> Self {
-        Self {
-            x: if mask.test(0) { if_true.x } else { if_false.x },
-            y: if mask.test(1) { if_true.y } else { if_false.y },
-        }
+        Self::new(
+            if mask.test(0) { if_true.x } else { if_false.x },
+            if mask.test(1) { if_true.y } else { if_false.y },
+        )
     }
 
     /// Creates a new vector from an array.
@@ -204,10 +204,10 @@ impl Vec2 {
     #[inline]
     #[must_use]
     pub fn min(self, rhs: Self) -> Self {
-        Self {
-            x: if self.x < rhs.x { self.x } else { rhs.x },
-            y: if self.y < rhs.y { self.y } else { rhs.y },
-        }
+        Self::new(
+            if self.x < rhs.x { self.x } else { rhs.x },
+            if self.y < rhs.y { self.y } else { rhs.y },
+        )
     }
 
     /// Returns a vector containing the maximum values for each element of `self` and `rhs`.
@@ -219,10 +219,10 @@ impl Vec2 {
     #[inline]
     #[must_use]
     pub fn max(self, rhs: Self) -> Self {
-        Self {
-            x: if self.x > rhs.x { self.x } else { rhs.x },
-            y: if self.y > rhs.y { self.y } else { rhs.y },
-        }
+        Self::new(
+            if self.x > rhs.x { self.x } else { rhs.x },
+            if self.y > rhs.y { self.y } else { rhs.y },
+        )
     }
 
     /// Component-wise clamping of values, similar to [`f32::clamp`].
@@ -380,10 +380,7 @@ impl Vec2 {
     #[inline]
     #[must_use]
     pub fn abs(self) -> Self {
-        Self {
-            x: math::abs(self.x),
-            y: math::abs(self.y),
-        }
+        Self::new(math::abs(self.x), math::abs(self.y))
     }
 
     /// Returns a vector with elements representing the sign of `self`.
@@ -394,20 +391,14 @@ impl Vec2 {
     #[inline]
     #[must_use]
     pub fn signum(self) -> Self {
-        Self {
-            x: math::signum(self.x),
-            y: math::signum(self.y),
-        }
+        Self::new(math::signum(self.x), math::signum(self.y))
     }
 
     /// Returns a vector with signs of `rhs` and the magnitudes of `self`.
     #[inline]
     #[must_use]
     pub fn copysign(self, rhs: Self) -> Self {
-        Self {
-            x: math::copysign(self.x, rhs.x),
-            y: math::copysign(self.y, rhs.y),
-        }
+        Self::new(math::copysign(self.x, rhs.x), math::copysign(self.y, rhs.y))
     }
 
     /// Returns a bitmask with the lowest 2 bits set to the sign bits from the elements of `self`.
@@ -692,10 +683,7 @@ impl Vec2 {
     #[inline]
     #[must_use]
     pub fn round(self) -> Self {
-        Self {
-            x: math::round(self.x),
-            y: math::round(self.y),
-        }
+        Self::new(math::round(self.x), math::round(self.y))
     }
 
     /// Returns a vector containing the largest integer less than or equal to a number for each
@@ -703,10 +691,7 @@ impl Vec2 {
     #[inline]
     #[must_use]
     pub fn floor(self) -> Self {
-        Self {
-            x: math::floor(self.x),
-            y: math::floor(self.y),
-        }
+        Self::new(math::floor(self.x), math::floor(self.y))
     }
 
     /// Returns a vector containing the smallest integer greater than or equal to a number for
@@ -714,10 +699,7 @@ impl Vec2 {
     #[inline]
     #[must_use]
     pub fn ceil(self) -> Self {
-        Self {
-            x: math::ceil(self.x),
-            y: math::ceil(self.y),
-        }
+        Self::new(math::ceil(self.x), math::ceil(self.y))
     }
 
     /// Returns a vector containing the integer part each element of `self`. This means numbers are
@@ -725,10 +707,7 @@ impl Vec2 {
     #[inline]
     #[must_use]
     pub fn trunc(self) -> Self {
-        Self {
-            x: math::trunc(self.x),
-            y: math::trunc(self.y),
-        }
+        Self::new(math::trunc(self.x), math::trunc(self.y))
     }
 
     /// Returns a vector containing `0.0` if `rhs < self` and 1.0 otherwise.
@@ -845,10 +824,7 @@ impl Vec2 {
     #[inline]
     #[must_use]
     pub fn recip(self) -> Self {
-        Self {
-            x: 1.0 / self.x,
-            y: 1.0 / self.y,
-        }
+        Self::new(1.0 / self.x, 1.0 / self.y)
     }
 
     /// Performs a linear interpolation between `self` and `rhs` based on the value `s`.
@@ -1019,7 +995,7 @@ impl Vec2 {
     #[must_use]
     pub fn from_angle(angle: f32) -> Self {
         let (sin, cos) = math::sin_cos(angle);
-        Self { x: cos, y: sin }
+        Self::new(cos, sin)
     }
 
     /// Returns the angle (in radians) of this vector in the range `[-π, +π]`.
@@ -1057,10 +1033,7 @@ impl Vec2 {
     #[inline]
     #[must_use]
     pub fn perp(self) -> Self {
-        Self {
-            x: -self.y,
-            y: self.x,
-        }
+        Self::new(-self.y, self.x)
     }
 
     /// The perpendicular dot product of `self` and `rhs`.
@@ -1084,10 +1057,10 @@ impl Vec2 {
     #[inline]
     #[must_use]
     pub fn rotate(self, rhs: Self) -> Self {
-        Self {
-            x: self.x * rhs.x - self.y * rhs.y,
-            y: self.y * rhs.x + self.x * rhs.y,
-        }
+        Self::new(
+            self.x * rhs.x - self.y * rhs.y,
+            self.y * rhs.x + self.x * rhs.y,
+        )
     }
 
     /// Rotates `self` by `angle` (in radians), equivalent to
@@ -1213,10 +1186,7 @@ impl Div for Vec2 {
     type Output = Self;
     #[inline]
     fn div(self, rhs: Self) -> Self {
-        Self {
-            x: self.x.div(rhs.x),
-            y: self.y.div(rhs.y),
-        }
+        Self::new(self.x.div(rhs.x), self.y.div(rhs.y))
     }
 }
 
@@ -1263,10 +1233,7 @@ impl Div<f32> for Vec2 {
     type Output = Self;
     #[inline]
     fn div(self, rhs: f32) -> Self {
-        Self {
-            x: self.x.div(rhs),
-            y: self.y.div(rhs),
-        }
+        Self::new(self.x.div(rhs), self.y.div(rhs))
     }
 }
 
@@ -1313,10 +1280,7 @@ impl Div<Vec2> for f32 {
     type Output = Vec2;
     #[inline]
     fn div(self, rhs: Vec2) -> Vec2 {
-        Vec2 {
-            x: self.div(rhs.x),
-            y: self.div(rhs.y),
-        }
+        Vec2::new(self.div(rhs.x), self.div(rhs.y))
     }
 }
 
@@ -1348,10 +1312,7 @@ impl Mul for Vec2 {
     type Output = Self;
     #[inline]
     fn mul(self, rhs: Self) -> Self {
-        Self {
-            x: self.x.mul(rhs.x),
-            y: self.y.mul(rhs.y),
-        }
+        Self::new(self.x.mul(rhs.x), self.y.mul(rhs.y))
     }
 }
 
@@ -1398,10 +1359,7 @@ impl Mul<f32> for Vec2 {
     type Output = Self;
     #[inline]
     fn mul(self, rhs: f32) -> Self {
-        Self {
-            x: self.x.mul(rhs),
-            y: self.y.mul(rhs),
-        }
+        Self::new(self.x.mul(rhs), self.y.mul(rhs))
     }
 }
 
@@ -1448,10 +1406,7 @@ impl Mul<Vec2> for f32 {
     type Output = Vec2;
     #[inline]
     fn mul(self, rhs: Vec2) -> Vec2 {
-        Vec2 {
-            x: self.mul(rhs.x),
-            y: self.mul(rhs.y),
-        }
+        Vec2::new(self.mul(rhs.x), self.mul(rhs.y))
     }
 }
 
@@ -1483,10 +1438,7 @@ impl Add for Vec2 {
     type Output = Self;
     #[inline]
     fn add(self, rhs: Self) -> Self {
-        Self {
-            x: self.x.add(rhs.x),
-            y: self.y.add(rhs.y),
-        }
+        Self::new(self.x.add(rhs.x), self.y.add(rhs.y))
     }
 }
 
@@ -1533,10 +1485,7 @@ impl Add<f32> for Vec2 {
     type Output = Self;
     #[inline]
     fn add(self, rhs: f32) -> Self {
-        Self {
-            x: self.x.add(rhs),
-            y: self.y.add(rhs),
-        }
+        Self::new(self.x.add(rhs), self.y.add(rhs))
     }
 }
 
@@ -1583,10 +1532,7 @@ impl Add<Vec2> for f32 {
     type Output = Vec2;
     #[inline]
     fn add(self, rhs: Vec2) -> Vec2 {
-        Vec2 {
-            x: self.add(rhs.x),
-            y: self.add(rhs.y),
-        }
+        Vec2::new(self.add(rhs.x), self.add(rhs.y))
     }
 }
 
@@ -1618,10 +1564,7 @@ impl Sub for Vec2 {
     type Output = Self;
     #[inline]
     fn sub(self, rhs: Self) -> Self {
-        Self {
-            x: self.x.sub(rhs.x),
-            y: self.y.sub(rhs.y),
-        }
+        Self::new(self.x.sub(rhs.x), self.y.sub(rhs.y))
     }
 }
 
@@ -1668,10 +1611,7 @@ impl Sub<f32> for Vec2 {
     type Output = Self;
     #[inline]
     fn sub(self, rhs: f32) -> Self {
-        Self {
-            x: self.x.sub(rhs),
-            y: self.y.sub(rhs),
-        }
+        Self::new(self.x.sub(rhs), self.y.sub(rhs))
     }
 }
 
@@ -1718,10 +1658,7 @@ impl Sub<Vec2> for f32 {
     type Output = Vec2;
     #[inline]
     fn sub(self, rhs: Vec2) -> Vec2 {
-        Vec2 {
-            x: self.sub(rhs.x),
-            y: self.sub(rhs.y),
-        }
+        Vec2::new(self.sub(rhs.x), self.sub(rhs.y))
     }
 }
 
@@ -1753,10 +1690,7 @@ impl Rem for Vec2 {
     type Output = Self;
     #[inline]
     fn rem(self, rhs: Self) -> Self {
-        Self {
-            x: self.x.rem(rhs.x),
-            y: self.y.rem(rhs.y),
-        }
+        Self::new(self.x.rem(rhs.x), self.y.rem(rhs.y))
     }
 }
 
@@ -1803,10 +1737,7 @@ impl Rem<f32> for Vec2 {
     type Output = Self;
     #[inline]
     fn rem(self, rhs: f32) -> Self {
-        Self {
-            x: self.x.rem(rhs),
-            y: self.y.rem(rhs),
-        }
+        Self::new(self.x.rem(rhs), self.y.rem(rhs))
     }
 }
 
@@ -1853,10 +1784,7 @@ impl Rem<Vec2> for f32 {
     type Output = Vec2;
     #[inline]
     fn rem(self, rhs: Vec2) -> Vec2 {
-        Vec2 {
-            x: self.rem(rhs.x),
-            y: self.rem(rhs.y),
-        }
+        Vec2::new(self.rem(rhs.x), self.rem(rhs.y))
     }
 }
 
@@ -1942,10 +1870,7 @@ impl Neg for Vec2 {
     type Output = Self;
     #[inline]
     fn neg(self) -> Self {
-        Self {
-            x: self.x.neg(),
-            y: self.y.neg(),
-        }
+        Self::new(self.x.neg(), self.y.neg())
     }
 }
 

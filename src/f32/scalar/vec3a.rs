@@ -35,6 +35,7 @@ pub struct Vec3A {
     pub x: f32,
     pub y: f32,
     pub z: f32,
+    _w: f32,
 }
 
 impl Vec3A {
@@ -100,14 +101,14 @@ impl Vec3A {
     #[inline(always)]
     #[must_use]
     pub const fn new(x: f32, y: f32, z: f32) -> Self {
-        Self { x, y, z }
+        Self { x, y, z, _w: 0.0 }
     }
 
     /// Creates a vector with all elements set to `v`.
     #[inline]
     #[must_use]
     pub const fn splat(v: f32) -> Self {
-        Self { x: v, y: v, z: v }
+        Self::new(v, v, v)
     }
 
     /// Returns a vector containing each element of `self` modified by a mapping function `f`.
@@ -128,11 +129,11 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn select(mask: BVec3A, if_true: Self, if_false: Self) -> Self {
-        Self {
-            x: if mask.test(0) { if_true.x } else { if_false.x },
-            y: if mask.test(1) { if_true.y } else { if_false.y },
-            z: if mask.test(2) { if_true.z } else { if_false.z },
-        }
+        Self::new(
+            if mask.test(0) { if_true.x } else { if_false.x },
+            if mask.test(1) { if_true.y } else { if_false.y },
+            if mask.test(2) { if_true.z } else { if_false.z },
+        )
     }
 
     /// Creates a new vector from an array.
@@ -177,11 +178,7 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn from_vec4(v: Vec4) -> Self {
-        Self {
-            x: v.x,
-            y: v.y,
-            z: v.z,
-        }
+        Self::new(v.x, v.y, v.z)
     }
 
     /// Creates a 4D vector from `self` and the given `w` value.
@@ -269,11 +266,11 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn cross(self, rhs: Self) -> Self {
-        Self {
-            x: self.y * rhs.z - rhs.y * self.z,
-            y: self.z * rhs.x - rhs.z * self.x,
-            z: self.x * rhs.y - rhs.x * self.y,
-        }
+        Self::new(
+            self.y * rhs.z - rhs.y * self.z,
+            self.z * rhs.x - rhs.z * self.x,
+            self.x * rhs.y - rhs.x * self.y,
+        )
     }
 
     /// Returns a vector containing the minimum values for each element of `self` and `rhs`.
@@ -285,11 +282,11 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn min(self, rhs: Self) -> Self {
-        Self {
-            x: if self.x < rhs.x { self.x } else { rhs.x },
-            y: if self.y < rhs.y { self.y } else { rhs.y },
-            z: if self.z < rhs.z { self.z } else { rhs.z },
-        }
+        Self::new(
+            if self.x < rhs.x { self.x } else { rhs.x },
+            if self.y < rhs.y { self.y } else { rhs.y },
+            if self.z < rhs.z { self.z } else { rhs.z },
+        )
     }
 
     /// Returns a vector containing the maximum values for each element of `self` and `rhs`.
@@ -301,11 +298,11 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn max(self, rhs: Self) -> Self {
-        Self {
-            x: if self.x > rhs.x { self.x } else { rhs.x },
-            y: if self.y > rhs.y { self.y } else { rhs.y },
-            z: if self.z > rhs.z { self.z } else { rhs.z },
-        }
+        Self::new(
+            if self.x > rhs.x { self.x } else { rhs.x },
+            if self.y > rhs.y { self.y } else { rhs.y },
+            if self.z > rhs.z { self.z } else { rhs.z },
+        )
     }
 
     /// Component-wise clamping of values, similar to [`f32::clamp`].
@@ -473,11 +470,7 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn abs(self) -> Self {
-        Self {
-            x: math::abs(self.x),
-            y: math::abs(self.y),
-            z: math::abs(self.z),
-        }
+        Self::new(math::abs(self.x), math::abs(self.y), math::abs(self.z))
     }
 
     /// Returns a vector with elements representing the sign of `self`.
@@ -488,22 +481,22 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn signum(self) -> Self {
-        Self {
-            x: math::signum(self.x),
-            y: math::signum(self.y),
-            z: math::signum(self.z),
-        }
+        Self::new(
+            math::signum(self.x),
+            math::signum(self.y),
+            math::signum(self.z),
+        )
     }
 
     /// Returns a vector with signs of `rhs` and the magnitudes of `self`.
     #[inline]
     #[must_use]
     pub fn copysign(self, rhs: Self) -> Self {
-        Self {
-            x: math::copysign(self.x, rhs.x),
-            y: math::copysign(self.y, rhs.y),
-            z: math::copysign(self.z, rhs.z),
-        }
+        Self::new(
+            math::copysign(self.x, rhs.x),
+            math::copysign(self.y, rhs.y),
+            math::copysign(self.z, rhs.z),
+        )
     }
 
     /// Returns a bitmask with the lowest 3 bits set to the sign bits from the elements of `self`.
@@ -796,11 +789,11 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn round(self) -> Self {
-        Self {
-            x: math::round(self.x),
-            y: math::round(self.y),
-            z: math::round(self.z),
-        }
+        Self::new(
+            math::round(self.x),
+            math::round(self.y),
+            math::round(self.z),
+        )
     }
 
     /// Returns a vector containing the largest integer less than or equal to a number for each
@@ -808,11 +801,11 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn floor(self) -> Self {
-        Self {
-            x: math::floor(self.x),
-            y: math::floor(self.y),
-            z: math::floor(self.z),
-        }
+        Self::new(
+            math::floor(self.x),
+            math::floor(self.y),
+            math::floor(self.z),
+        )
     }
 
     /// Returns a vector containing the smallest integer greater than or equal to a number for
@@ -820,11 +813,7 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn ceil(self) -> Self {
-        Self {
-            x: math::ceil(self.x),
-            y: math::ceil(self.y),
-            z: math::ceil(self.z),
-        }
+        Self::new(math::ceil(self.x), math::ceil(self.y), math::ceil(self.z))
     }
 
     /// Returns a vector containing the integer part each element of `self`. This means numbers are
@@ -832,11 +821,11 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn trunc(self) -> Self {
-        Self {
-            x: math::trunc(self.x),
-            y: math::trunc(self.y),
-            z: math::trunc(self.z),
-        }
+        Self::new(
+            math::trunc(self.x),
+            math::trunc(self.y),
+            math::trunc(self.z),
+        )
     }
 
     /// Returns a vector containing `0.0` if `rhs < self` and 1.0 otherwise.
@@ -961,11 +950,7 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn recip(self) -> Self {
-        Self {
-            x: 1.0 / self.x,
-            y: 1.0 / self.y,
-            z: 1.0 / self.z,
-        }
+        Self::new(1.0 / self.x, 1.0 / self.y, 1.0 / self.z)
     }
 
     /// Performs a linear interpolation between `self` and `rhs` based on the value `s`.
@@ -1440,11 +1425,7 @@ impl Div for Vec3A {
     type Output = Self;
     #[inline]
     fn div(self, rhs: Self) -> Self {
-        Self {
-            x: self.x.div(rhs.x),
-            y: self.y.div(rhs.y),
-            z: self.z.div(rhs.z),
-        }
+        Self::new(self.x.div(rhs.x), self.y.div(rhs.y), self.z.div(rhs.z))
     }
 }
 
@@ -1492,11 +1473,7 @@ impl Div<f32> for Vec3A {
     type Output = Self;
     #[inline]
     fn div(self, rhs: f32) -> Self {
-        Self {
-            x: self.x.div(rhs),
-            y: self.y.div(rhs),
-            z: self.z.div(rhs),
-        }
+        Self::new(self.x.div(rhs), self.y.div(rhs), self.z.div(rhs))
     }
 }
 
@@ -1544,11 +1521,7 @@ impl Div<Vec3A> for f32 {
     type Output = Vec3A;
     #[inline]
     fn div(self, rhs: Vec3A) -> Vec3A {
-        Vec3A {
-            x: self.div(rhs.x),
-            y: self.div(rhs.y),
-            z: self.div(rhs.z),
-        }
+        Vec3A::new(self.div(rhs.x), self.div(rhs.y), self.div(rhs.z))
     }
 }
 
@@ -1580,11 +1553,7 @@ impl Mul for Vec3A {
     type Output = Self;
     #[inline]
     fn mul(self, rhs: Self) -> Self {
-        Self {
-            x: self.x.mul(rhs.x),
-            y: self.y.mul(rhs.y),
-            z: self.z.mul(rhs.z),
-        }
+        Self::new(self.x.mul(rhs.x), self.y.mul(rhs.y), self.z.mul(rhs.z))
     }
 }
 
@@ -1632,11 +1601,7 @@ impl Mul<f32> for Vec3A {
     type Output = Self;
     #[inline]
     fn mul(self, rhs: f32) -> Self {
-        Self {
-            x: self.x.mul(rhs),
-            y: self.y.mul(rhs),
-            z: self.z.mul(rhs),
-        }
+        Self::new(self.x.mul(rhs), self.y.mul(rhs), self.z.mul(rhs))
     }
 }
 
@@ -1684,11 +1649,7 @@ impl Mul<Vec3A> for f32 {
     type Output = Vec3A;
     #[inline]
     fn mul(self, rhs: Vec3A) -> Vec3A {
-        Vec3A {
-            x: self.mul(rhs.x),
-            y: self.mul(rhs.y),
-            z: self.mul(rhs.z),
-        }
+        Vec3A::new(self.mul(rhs.x), self.mul(rhs.y), self.mul(rhs.z))
     }
 }
 
@@ -1720,11 +1681,7 @@ impl Add for Vec3A {
     type Output = Self;
     #[inline]
     fn add(self, rhs: Self) -> Self {
-        Self {
-            x: self.x.add(rhs.x),
-            y: self.y.add(rhs.y),
-            z: self.z.add(rhs.z),
-        }
+        Self::new(self.x.add(rhs.x), self.y.add(rhs.y), self.z.add(rhs.z))
     }
 }
 
@@ -1772,11 +1729,7 @@ impl Add<f32> for Vec3A {
     type Output = Self;
     #[inline]
     fn add(self, rhs: f32) -> Self {
-        Self {
-            x: self.x.add(rhs),
-            y: self.y.add(rhs),
-            z: self.z.add(rhs),
-        }
+        Self::new(self.x.add(rhs), self.y.add(rhs), self.z.add(rhs))
     }
 }
 
@@ -1824,11 +1777,7 @@ impl Add<Vec3A> for f32 {
     type Output = Vec3A;
     #[inline]
     fn add(self, rhs: Vec3A) -> Vec3A {
-        Vec3A {
-            x: self.add(rhs.x),
-            y: self.add(rhs.y),
-            z: self.add(rhs.z),
-        }
+        Vec3A::new(self.add(rhs.x), self.add(rhs.y), self.add(rhs.z))
     }
 }
 
@@ -1860,11 +1809,7 @@ impl Sub for Vec3A {
     type Output = Self;
     #[inline]
     fn sub(self, rhs: Self) -> Self {
-        Self {
-            x: self.x.sub(rhs.x),
-            y: self.y.sub(rhs.y),
-            z: self.z.sub(rhs.z),
-        }
+        Self::new(self.x.sub(rhs.x), self.y.sub(rhs.y), self.z.sub(rhs.z))
     }
 }
 
@@ -1912,11 +1857,7 @@ impl Sub<f32> for Vec3A {
     type Output = Self;
     #[inline]
     fn sub(self, rhs: f32) -> Self {
-        Self {
-            x: self.x.sub(rhs),
-            y: self.y.sub(rhs),
-            z: self.z.sub(rhs),
-        }
+        Self::new(self.x.sub(rhs), self.y.sub(rhs), self.z.sub(rhs))
     }
 }
 
@@ -1964,11 +1905,7 @@ impl Sub<Vec3A> for f32 {
     type Output = Vec3A;
     #[inline]
     fn sub(self, rhs: Vec3A) -> Vec3A {
-        Vec3A {
-            x: self.sub(rhs.x),
-            y: self.sub(rhs.y),
-            z: self.sub(rhs.z),
-        }
+        Vec3A::new(self.sub(rhs.x), self.sub(rhs.y), self.sub(rhs.z))
     }
 }
 
@@ -2000,11 +1937,7 @@ impl Rem for Vec3A {
     type Output = Self;
     #[inline]
     fn rem(self, rhs: Self) -> Self {
-        Self {
-            x: self.x.rem(rhs.x),
-            y: self.y.rem(rhs.y),
-            z: self.z.rem(rhs.z),
-        }
+        Self::new(self.x.rem(rhs.x), self.y.rem(rhs.y), self.z.rem(rhs.z))
     }
 }
 
@@ -2052,11 +1985,7 @@ impl Rem<f32> for Vec3A {
     type Output = Self;
     #[inline]
     fn rem(self, rhs: f32) -> Self {
-        Self {
-            x: self.x.rem(rhs),
-            y: self.y.rem(rhs),
-            z: self.z.rem(rhs),
-        }
+        Self::new(self.x.rem(rhs), self.y.rem(rhs), self.z.rem(rhs))
     }
 }
 
@@ -2104,11 +2033,7 @@ impl Rem<Vec3A> for f32 {
     type Output = Vec3A;
     #[inline]
     fn rem(self, rhs: Vec3A) -> Vec3A {
-        Vec3A {
-            x: self.rem(rhs.x),
-            y: self.rem(rhs.y),
-            z: self.rem(rhs.z),
-        }
+        Vec3A::new(self.rem(rhs.x), self.rem(rhs.y), self.rem(rhs.z))
     }
 }
 
@@ -2194,11 +2119,7 @@ impl Neg for Vec3A {
     type Output = Self;
     #[inline]
     fn neg(self) -> Self {
-        Self {
-            x: self.x.neg(),
-            y: self.y.neg(),
-            z: self.z.neg(),
-        }
+        Self::new(self.x.neg(), self.y.neg(), self.z.neg())
     }
 }
 
@@ -2293,11 +2214,7 @@ impl From<Vec3> for Vec3A {
 impl From<Vec3A> for Vec3 {
     #[inline]
     fn from(v: Vec3A) -> Self {
-        Self {
-            x: v.x,
-            y: v.y,
-            z: v.z,
-        }
+        Self::new(v.x, v.y, v.z)
     }
 }
 
