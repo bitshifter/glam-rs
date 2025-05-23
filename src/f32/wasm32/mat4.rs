@@ -874,7 +874,9 @@ impl Mat4 {
     }
 
     /// Creates a right-handed perspective projection matrix with [-1,1] depth range.
+    ///
     /// This is the same as the OpenGL `glFurstum` function.
+    ///
     /// See <https://registry.khronos.org/OpenGL-Refpages/gl2.1/xhtml/glFrustum.xml>
     #[inline]
     #[must_use]
@@ -893,9 +895,10 @@ impl Mat4 {
         let b = (top + bottom) * inv_height;
         let c = -(z_far + z_near) * inv_depth;
         let d = -(2.0 * z_far * z_near) * inv_depth;
+        let two_z_near = 2.0 * z_near;
         Self::from_cols(
-            Vec4::new((2.0 * z_near) * inv_width, 0.0, 0.0, 0.0),
-            Vec4::new(0.0, (2.0 * z_near) * inv_height, 0.0, 0.0),
+            Vec4::new(two_z_near * inv_width, 0.0, 0.0, 0.0),
+            Vec4::new(0.0, two_z_near * inv_height, 0.0, 0.0),
             Vec4::new(a, b, c, -1.0),
             Vec4::new(0.0, 0.0, d, 0.0),
         )
@@ -925,9 +928,10 @@ impl Mat4 {
         let b = (top + bottom) * inv_height;
         let c = z_far * inv_depth;
         let d = -(z_far * z_near) * inv_depth;
+        let two_z_near = 2.0 * z_near;
         Self::from_cols(
-            Vec4::new((2.0 * z_near) * inv_width, 0.0, 0.0, 0.0),
-            Vec4::new(0.0, (2.0 * z_near) * inv_height, 0.0, 0.0),
+            Vec4::new(two_z_near * inv_width, 0.0, 0.0, 0.0),
+            Vec4::new(0.0, two_z_near * inv_height, 0.0, 0.0),
             Vec4::new(a, b, c, 1.0),
             Vec4::new(0.0, 0.0, d, 0.0),
         )
@@ -957,9 +961,10 @@ impl Mat4 {
         let b = (top + bottom) * inv_height;
         let c = -z_far * inv_depth;
         let d = -(z_far * z_near) * inv_depth;
+        let two_z_near = 2.0 * z_near;
         Self::from_cols(
-            Vec4::new((2.0 * z_near) * inv_width, 0.0, 0.0, 0.0),
-            Vec4::new(0.0, (2.0 * z_near) * inv_height, 0.0, 0.0),
+            Vec4::new(two_z_near * inv_width, 0.0, 0.0, 0.0),
+            Vec4::new(0.0, two_z_near * inv_height, 0.0, 0.0),
             Vec4::new(a, b, c, -1.0),
             Vec4::new(0.0, 0.0, d, 0.0),
         )
