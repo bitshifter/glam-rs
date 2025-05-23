@@ -1919,7 +1919,7 @@ impl From<[f32; 3]> for Vec3A {
 impl From<Vec3A> for [f32; 3] {
     #[inline]
     fn from(v: Vec3A) -> Self {
-        unsafe { *(v.0.to_array().as_ptr() as *const Self) }
+        unsafe { *(v.0.as_array().as_ptr() as *const Self) }
     }
 }
 
@@ -1947,7 +1947,7 @@ impl From<Vec3> for Vec3A {
 impl From<Vec3A> for Vec3 {
     #[inline]
     fn from(v: Vec3A) -> Self {
-        unsafe { *(v.0.to_array().as_ptr() as *const Self) }
+        unsafe { *(v.0.as_array().as_ptr() as *const Self) }
     }
 }
 

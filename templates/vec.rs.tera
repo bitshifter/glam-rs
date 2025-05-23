@@ -4054,7 +4054,7 @@ impl From<{{ self_t }}> for [{{ scalar_t }}; {{ dim }}] {
         {% elif is_coresimd %}
             {% if dim == 3 %}
                 unsafe {
-                    *(v.0.to_array().as_ptr() as *const Self)
+                    *(v.0.as_array().as_ptr() as *const Self)
                 }
             {% elif dim == 4 %}
                 v.0.to_array()
@@ -4126,7 +4126,7 @@ impl From<Vec3A> for Vec3 {
             }
         {% elif is_coresimd %}
             unsafe {
-                *(v.0.to_array().as_ptr() as *const Self)
+                *(v.0.as_array().as_ptr() as *const Self)
             }
         {% elif is_neon %}
             use core::mem::MaybeUninit;
