@@ -468,6 +468,45 @@ macro_rules! impl_mat4_tests {
             should_glam_assert!({ $mat4::look_to_rh($vec3::ONE, $vec3::ZERO, $vec3::ONE) });
         });
 
+        glam_test!(test_mat4_frustum_gl_rh, {
+            let fov_y_radians = $t::to_radians(90.0);
+            let aspect_ratio = 2.0;
+            let z_near = 5.0;
+            let z_far = 15.0;
+            let f = (0.5 * fov_y_radians).tan();
+            let height = z_near * f;
+            let width = height * aspect_ratio;
+            let projection = $mat4::frustum_rh_gl(-width, width, -height, height, z_near, z_far);
+            let other_projection = $mat4::perspective_rh_gl(fov_y_radians, aspect_ratio, z_near, z_far);
+            assert_approx_eq!(projection, other_projection);
+        });
+
+        glam_test!(test_mat4_frustum_lh, {
+            let fov_y_radians = $t::to_radians(90.0);
+            let aspect_ratio = 2.0;
+            let z_near = 5.0;
+            let z_far = 15.0;
+            let f = (0.5 * fov_y_radians).tan();
+            let height = z_near * f;
+            let width = height * aspect_ratio;
+            let projection = $mat4::frustum_lh(-width, width, -height, height, z_near, z_far);
+            let other_projection = $mat4::perspective_lh(fov_y_radians, aspect_ratio, z_near, z_far);
+            assert_approx_eq!(projection, other_projection);
+        });
+
+        glam_test!(test_mat4_frustum_rh, {
+            let fov_y_radians = $t::to_radians(90.0);
+            let aspect_ratio = 2.0;
+            let z_near = 5.0;
+            let z_far = 15.0;
+            let f = (0.5 * fov_y_radians).tan();
+            let height = z_near * f;
+            let width = height * aspect_ratio;
+            let projection = $mat4::frustum_rh(-width, width, -height, height, z_near, z_far);
+            let other_projection = $mat4::perspective_rh(fov_y_radians, aspect_ratio, z_near, z_far);
+            assert_approx_eq!(projection, other_projection);
+        });
+
         glam_test!(test_mat4_perspective_gl_rh, {
             let projection = $mat4::perspective_rh_gl($t::to_radians(90.0), 2.0, 5.0, 15.0);
 

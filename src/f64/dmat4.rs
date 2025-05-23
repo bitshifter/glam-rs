@@ -777,6 +777,103 @@ impl DMat4 {
         Self::look_to_rh(eye, center.sub(eye).normalize(), up)
     }
 
+    /// Creates a right-handed perspective projection matrix with [-1,1] depth range.
+    ///
+    /// This is the same as the OpenGL `glFurstum` function.
+    ///
+    /// See <https://registry.khronos.org/OpenGL-Refpages/gl2.1/xhtml/glFrustum.xml>
+    #[inline]
+    #[must_use]
+    pub fn frustum_rh_gl(
+        left: f64,
+        right: f64,
+        bottom: f64,
+        top: f64,
+        z_near: f64,
+        z_far: f64,
+    ) -> Self {
+        let inv_width = 1.0 / (right - left);
+        let inv_height = 1.0 / (top - bottom);
+        let inv_depth = 1.0 / (z_far - z_near);
+        let a = (right + left) * inv_width;
+        let b = (top + bottom) * inv_height;
+        let c = -(z_far + z_near) * inv_depth;
+        let d = -(2.0 * z_far * z_near) * inv_depth;
+        let two_z_near = 2.0 * z_near;
+        Self::from_cols(
+            DVec4::new(two_z_near * inv_width, 0.0, 0.0, 0.0),
+            DVec4::new(0.0, two_z_near * inv_height, 0.0, 0.0),
+            DVec4::new(a, b, c, -1.0),
+            DVec4::new(0.0, 0.0, d, 0.0),
+        )
+    }
+
+    /// Creates a left-handed perspective projection matrix with `[0,1]` depth range.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
+    /// enabled.
+    #[inline]
+    #[must_use]
+    pub fn frustum_lh(
+        left: f64,
+        right: f64,
+        bottom: f64,
+        top: f64,
+        z_near: f64,
+        z_far: f64,
+    ) -> Self {
+        glam_assert!(z_near > 0.0 && z_far > 0.0);
+        let inv_width = 1.0 / (right - left);
+        let inv_height = 1.0 / (top - bottom);
+        let inv_depth = 1.0 / (z_far - z_near);
+        let a = (right + left) * inv_width;
+        let b = (top + bottom) * inv_height;
+        let c = z_far * inv_depth;
+        let d = -(z_far * z_near) * inv_depth;
+        let two_z_near = 2.0 * z_near;
+        Self::from_cols(
+            DVec4::new(two_z_near * inv_width, 0.0, 0.0, 0.0),
+            DVec4::new(0.0, two_z_near * inv_height, 0.0, 0.0),
+            DVec4::new(a, b, c, 1.0),
+            DVec4::new(0.0, 0.0, d, 0.0),
+        )
+    }
+
+    /// Creates a right-handed perspective projection matrix with `[0,1]` depth range.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
+    /// enabled.
+    #[inline]
+    #[must_use]
+    pub fn frustum_rh(
+        left: f64,
+        right: f64,
+        bottom: f64,
+        top: f64,
+        z_near: f64,
+        z_far: f64,
+    ) -> Self {
+        glam_assert!(z_near > 0.0 && z_far > 0.0);
+        let inv_width = 1.0 / (right - left);
+        let inv_height = 1.0 / (top - bottom);
+        let inv_depth = 1.0 / (z_far - z_near);
+        let a = (right + left) * inv_width;
+        let b = (top + bottom) * inv_height;
+        let c = -z_far * inv_depth;
+        let d = -(z_far * z_near) * inv_depth;
+        let two_z_near = 2.0 * z_near;
+        Self::from_cols(
+            DVec4::new(two_z_near * inv_width, 0.0, 0.0, 0.0),
+            DVec4::new(0.0, two_z_near * inv_height, 0.0, 0.0),
+            DVec4::new(a, b, c, -1.0),
+            DVec4::new(0.0, 0.0, d, 0.0),
+        )
+    }
+
     /// Creates a right-handed perspective projection matrix with `[-1,1]` depth range.
     ///
     /// Useful to map the standard right-handed coordinate system into what OpenGL expects.
