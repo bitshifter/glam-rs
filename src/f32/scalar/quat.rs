@@ -26,6 +26,7 @@ pub const fn quat(x: f32, y: f32, z: f32, w: f32) -> Quat {
 /// floating point "error creep" which can occur when successive quaternion
 /// operations are applied.
 #[derive(Clone, Copy)]
+#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(
     not(any(feature = "scalar-math", target_arch = "spirv")),
     repr(align(16))

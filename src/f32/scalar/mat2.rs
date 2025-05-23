@@ -14,6 +14,7 @@ pub const fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
 
 /// A 2x2 column major matrix.
 #[derive(Clone, Copy)]
+#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(
     not(any(feature = "scalar-math", target_arch = "spirv")),
     repr(align(16))

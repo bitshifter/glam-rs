@@ -102,6 +102,7 @@ pub const fn {{ self_t | lower }}(x: {{ scalar_t }}, y: {{ scalar_t }}, z: {{ sc
 /// This type is 16 byte aligned.
 {%- endif %}
 #[derive(Clone, Copy)]
+#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 {%- if is_scalar %}
 {%- if scalar_t == "f32" %}
 #[cfg_attr(not(any(feature = "scalar-math", target_arch = "spirv")), repr(align(16)))]
