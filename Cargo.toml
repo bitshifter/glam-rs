@@ -39,7 +39,7 @@ cuda = []
 fast-math = []
 
 # experimental nightly portable-simd support
-core-simd = []
+core-simd = ["bytemuck?/nightly_portable_simd"]
 
 bytecheck = ["rkyv/bytecheck"]
 
@@ -51,7 +51,7 @@ nostd-libm = ["dep:libm"]
 
 [dependencies]
 approx = { version = "0.5", optional = true, default-features = false }
-bytemuck = { version = "1.9", optional = true, default-features = false, features = ["derive"] }
+bytemuck = { version = "1.9", optional = true, default-features = false, features = ["derive", "aarch64_simd", "wasm_simd"] }
 mint = { version = "0.5.8", optional = true, default-features = false }
 rand = { version = "0.9", optional = true, default-features = false }
 serde = { version = "1.0", optional = true, default-features = false }
