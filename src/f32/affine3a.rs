@@ -7,6 +7,7 @@ use core::ops::{Deref, DerefMut, Mul, MulAssign};
 ///
 /// This type is 16 byte aligned.
 #[derive(Copy, Clone)]
+#[cfg_attr(feature = "bytemuck", derive(bytemuck::AnyBitPattern))]
 #[repr(C)]
 pub struct Affine3A {
     pub matrix3: Mat3A,

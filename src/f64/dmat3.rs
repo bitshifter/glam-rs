@@ -42,6 +42,7 @@ pub const fn dmat3(x_axis: DVec3, y_axis: DVec3, z_axis: DVec3) -> DMat3 {
 /// vectors respectively. These methods assume that `Self` contains a valid affine
 /// transform.
 #[derive(Clone, Copy)]
+#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[repr(C)]
 pub struct DMat3 {
     pub x_axis: DVec3,

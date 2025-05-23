@@ -6,9 +6,9 @@
         {% set col_t = "Vec3A" %}
         {% set mat_t = "Mat3A" %}
     {% else %}
-        {% set self_t = "Affine" ~ dim %}
-        {% set col_t = "Vec" ~ dim %}
-        {% set mat_t = "Mat" ~ dim %}
+        {% set self_t = "Affine2" %}
+        {% set col_t = "Vec2" %}
+        {% set mat_t = "Mat2" %}
     {% endif %}
     {% set quat_t = "Quat" %}
     {% set vec2_t = "Vec2" %}
@@ -59,6 +59,14 @@ use core::ops::{Deref, DerefMut, Mul, MulAssign};
 /// This type is 16 byte aligned.
 {%- endif %}
 #[derive(Copy, Clone)]
+{%- if self_t == "Affine2" %}
+#[cfg_attr(all(feature = "bytemuck", not(feature = "scalar-math")), derive(bytemuck::AnyBitPattern))]
+#[cfg_attr(all(feature = "bytemuck", feature = "scalar-math"), derive(bytemuck::Pod, bytemuck::Zeroable))]
+{%- elif self_t == "Affine3A" and is_scalar %}
+#[cfg_attr(feature = "bytemuck", derive(bytemuck::AnyBitPattern))]
+{%- else %}
+#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
+{%- endif %}
 #[repr(C)]
 pub struct {{ self_t }} {
     pub matrix{{ dim }}: {{ mat_t }},

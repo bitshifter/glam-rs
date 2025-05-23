@@ -15,6 +15,7 @@ pub const fn dvec2(x: f64, y: f64) -> DVec2 {
 
 /// A 2-dimensional vector.
 #[derive(Clone, Copy, PartialEq)]
+#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(feature = "cuda", repr(align(16)))]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
