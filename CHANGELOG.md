@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+### Added
+
+* Added 4x4 matrix `frustum_lh`, `frustum_rh` and `frustum_rh_gl` methods.
+
+### Changed
+
+* `bytemuck` trait implementations now use derive macros to catch potentially
+  misuse.
+
+### Fixed
+
+* Fixed unsoundness in core-simd implementation of `Vec3A` to `[f32;3]` array
+  and `Vec3A` to `Vec3` conversion.
+
+* Fixed potential unsoundness in conversion from `Vec4` to
+  `(f32, f32, f32, f32)` tuple conversion.
+
 ## [0.30.3] - 2025-05-01
 
 ### Added
