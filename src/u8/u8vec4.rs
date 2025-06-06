@@ -1642,6 +1642,30 @@ impl BitAnd for U8Vec4 {
     }
 }
 
+impl BitAnd<&U8Vec4> for U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitand(self, rhs: &U8Vec4) -> U8Vec4 {
+        self.bitand(*rhs)
+    }
+}
+
+impl BitAnd<&U8Vec4> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitand(self, rhs: &U8Vec4) -> U8Vec4 {
+        (*self).bitand(*rhs)
+    }
+}
+
+impl BitAnd<U8Vec4> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitand(self, rhs: U8Vec4) -> U8Vec4 {
+        (*self).bitand(rhs)
+    }
+}
+
 impl BitOr for U8Vec4 {
     type Output = Self;
     #[inline]
@@ -1652,6 +1676,30 @@ impl BitOr for U8Vec4 {
             z: self.z.bitor(rhs.z),
             w: self.w.bitor(rhs.w),
         }
+    }
+}
+
+impl BitOr<&U8Vec4> for U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitor(self, rhs: &U8Vec4) -> U8Vec4 {
+        self.bitor(*rhs)
+    }
+}
+
+impl BitOr<&U8Vec4> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitor(self, rhs: &U8Vec4) -> U8Vec4 {
+        (*self).bitor(*rhs)
+    }
+}
+
+impl BitOr<U8Vec4> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitor(self, rhs: U8Vec4) -> U8Vec4 {
+        (*self).bitor(rhs)
     }
 }
 
@@ -1668,6 +1716,30 @@ impl BitXor for U8Vec4 {
     }
 }
 
+impl BitXor<&U8Vec4> for U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitxor(self, rhs: &U8Vec4) -> U8Vec4 {
+        self.bitxor(*rhs)
+    }
+}
+
+impl BitXor<&U8Vec4> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitxor(self, rhs: &U8Vec4) -> U8Vec4 {
+        (*self).bitxor(*rhs)
+    }
+}
+
+impl BitXor<U8Vec4> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitxor(self, rhs: U8Vec4) -> U8Vec4 {
+        (*self).bitxor(rhs)
+    }
+}
+
 impl BitAnd<u8> for U8Vec4 {
     type Output = Self;
     #[inline]
@@ -1678,6 +1750,30 @@ impl BitAnd<u8> for U8Vec4 {
             z: self.z.bitand(rhs),
             w: self.w.bitand(rhs),
         }
+    }
+}
+
+impl BitAnd<&u8> for U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitand(self, rhs: &u8) -> U8Vec4 {
+        self.bitand(*rhs)
+    }
+}
+
+impl BitAnd<&u8> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitand(self, rhs: &u8) -> U8Vec4 {
+        (*self).bitand(*rhs)
+    }
+}
+
+impl BitAnd<u8> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitand(self, rhs: u8) -> U8Vec4 {
+        (*self).bitand(rhs)
     }
 }
 
@@ -1694,6 +1790,30 @@ impl BitOr<u8> for U8Vec4 {
     }
 }
 
+impl BitOr<&u8> for U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitor(self, rhs: &u8) -> U8Vec4 {
+        self.bitor(*rhs)
+    }
+}
+
+impl BitOr<&u8> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitor(self, rhs: &u8) -> U8Vec4 {
+        (*self).bitor(*rhs)
+    }
+}
+
+impl BitOr<u8> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitor(self, rhs: u8) -> U8Vec4 {
+        (*self).bitor(rhs)
+    }
+}
+
 impl BitXor<u8> for U8Vec4 {
     type Output = Self;
     #[inline]
@@ -1704,6 +1824,30 @@ impl BitXor<u8> for U8Vec4 {
             z: self.z.bitxor(rhs),
             w: self.w.bitxor(rhs),
         }
+    }
+}
+
+impl BitXor<&u8> for U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitxor(self, rhs: &u8) -> U8Vec4 {
+        self.bitxor(*rhs)
+    }
+}
+
+impl BitXor<&u8> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitxor(self, rhs: &u8) -> U8Vec4 {
+        (*self).bitxor(*rhs)
+    }
+}
+
+impl BitXor<u8> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitxor(self, rhs: u8) -> U8Vec4 {
+        (*self).bitxor(rhs)
     }
 }
 

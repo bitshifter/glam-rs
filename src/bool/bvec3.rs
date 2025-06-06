@@ -136,10 +136,41 @@ impl BitAnd for BVec3 {
     }
 }
 
+impl BitAnd<&BVec3> for BVec3 {
+    type Output = BVec3;
+    #[inline]
+    fn bitand(self, rhs: &BVec3) -> BVec3 {
+        self.bitand(*rhs)
+    }
+}
+
+impl BitAnd<&BVec3> for &BVec3 {
+    type Output = BVec3;
+    #[inline]
+    fn bitand(self, rhs: &BVec3) -> BVec3 {
+        (*self).bitand(*rhs)
+    }
+}
+
+impl BitAnd<BVec3> for &BVec3 {
+    type Output = BVec3;
+    #[inline]
+    fn bitand(self, rhs: BVec3) -> BVec3 {
+        (*self).bitand(rhs)
+    }
+}
+
 impl BitAndAssign for BVec3 {
     #[inline]
     fn bitand_assign(&mut self, rhs: Self) {
         *self = self.bitand(rhs);
+    }
+}
+
+impl BitAndAssign<&BVec3> for BVec3 {
+    #[inline]
+    fn bitand_assign(&mut self, rhs: &BVec3) {
+        self.bitand_assign(*rhs)
     }
 }
 
@@ -155,10 +186,41 @@ impl BitOr for BVec3 {
     }
 }
 
+impl BitOr<&BVec3> for BVec3 {
+    type Output = BVec3;
+    #[inline]
+    fn bitor(self, rhs: &BVec3) -> BVec3 {
+        self.bitor(*rhs)
+    }
+}
+
+impl BitOr<&BVec3> for &BVec3 {
+    type Output = BVec3;
+    #[inline]
+    fn bitor(self, rhs: &BVec3) -> BVec3 {
+        (*self).bitor(*rhs)
+    }
+}
+
+impl BitOr<BVec3> for &BVec3 {
+    type Output = BVec3;
+    #[inline]
+    fn bitor(self, rhs: BVec3) -> BVec3 {
+        (*self).bitor(rhs)
+    }
+}
+
 impl BitOrAssign for BVec3 {
     #[inline]
     fn bitor_assign(&mut self, rhs: Self) {
         *self = self.bitor(rhs);
+    }
+}
+
+impl BitOrAssign<&BVec3> for BVec3 {
+    #[inline]
+    fn bitor_assign(&mut self, rhs: &BVec3) {
+        self.bitor_assign(*rhs)
     }
 }
 
@@ -174,10 +236,41 @@ impl BitXor for BVec3 {
     }
 }
 
+impl BitXor<&BVec3> for BVec3 {
+    type Output = BVec3;
+    #[inline]
+    fn bitxor(self, rhs: &BVec3) -> BVec3 {
+        self.bitxor(*rhs)
+    }
+}
+
+impl BitXor<&BVec3> for &BVec3 {
+    type Output = BVec3;
+    #[inline]
+    fn bitxor(self, rhs: &BVec3) -> BVec3 {
+        (*self).bitxor(*rhs)
+    }
+}
+
+impl BitXor<BVec3> for &BVec3 {
+    type Output = BVec3;
+    #[inline]
+    fn bitxor(self, rhs: BVec3) -> BVec3 {
+        (*self).bitxor(rhs)
+    }
+}
+
 impl BitXorAssign for BVec3 {
     #[inline]
     fn bitxor_assign(&mut self, rhs: Self) {
         *self = self.bitxor(rhs);
+    }
+}
+
+impl BitXorAssign<&BVec3> for BVec3 {
+    #[inline]
+    fn bitxor_assign(&mut self, rhs: &BVec3) {
+        self.bitxor_assign(*rhs)
     }
 }
 
@@ -190,6 +283,14 @@ impl Not for BVec3 {
             y: !self.y,
             z: !self.z,
         }
+    }
+}
+
+impl Not for &BVec3 {
+    type Output = BVec3;
+    #[inline]
+    fn not(self) -> BVec3 {
+        (*self).not()
     }
 }
 

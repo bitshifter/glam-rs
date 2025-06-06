@@ -3815,6 +3815,8 @@ impl BitAnd for {{ self_t }} {
     }
 }
 
+{{ macros::impl_op_ref(op="BitAnd", method="bitand", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+
 impl BitOr for {{ self_t }} {
     type Output = Self;
     #[inline]
@@ -3826,6 +3828,8 @@ impl BitOr for {{ self_t }} {
         }
     }
 }
+
+{{ macros::impl_op_ref(op="BitOr", method="bitor", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
 
 impl BitXor for {{ self_t }} {
     type Output = Self;
@@ -3839,6 +3843,8 @@ impl BitXor for {{ self_t }} {
     }
 }
 
+{{ macros::impl_op_ref(op="BitXor", method="bitxor", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+
 impl BitAnd<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
     #[inline]
@@ -3850,6 +3856,8 @@ impl BitAnd<{{ scalar_t }}> for {{ self_t }} {
         }
     }
 }
+
+{{ macros::impl_op_ref(op="BitAnd", method="bitand", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
 
 impl BitOr<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -3863,6 +3871,8 @@ impl BitOr<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
+{{ macros::impl_op_ref(op="BitOr", method="bitor", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
+
 impl BitXor<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
     #[inline]
@@ -3874,6 +3884,8 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
         }
     }
 }
+
+{{ macros::impl_op_ref(op="BitXor", method="bitxor", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
 
 {% for rhs_t in ["i8", "i16", "i32", "i64", "u8", "u16", "u32", "u64"] %}
     impl Shl<{{ rhs_t }}> for {{ self_t }} {

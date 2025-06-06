@@ -1707,6 +1707,30 @@ impl BitAnd for IVec3 {
     }
 }
 
+impl BitAnd<&IVec3> for IVec3 {
+    type Output = IVec3;
+    #[inline]
+    fn bitand(self, rhs: &IVec3) -> IVec3 {
+        self.bitand(*rhs)
+    }
+}
+
+impl BitAnd<&IVec3> for &IVec3 {
+    type Output = IVec3;
+    #[inline]
+    fn bitand(self, rhs: &IVec3) -> IVec3 {
+        (*self).bitand(*rhs)
+    }
+}
+
+impl BitAnd<IVec3> for &IVec3 {
+    type Output = IVec3;
+    #[inline]
+    fn bitand(self, rhs: IVec3) -> IVec3 {
+        (*self).bitand(rhs)
+    }
+}
+
 impl BitOr for IVec3 {
     type Output = Self;
     #[inline]
@@ -1716,6 +1740,30 @@ impl BitOr for IVec3 {
             y: self.y.bitor(rhs.y),
             z: self.z.bitor(rhs.z),
         }
+    }
+}
+
+impl BitOr<&IVec3> for IVec3 {
+    type Output = IVec3;
+    #[inline]
+    fn bitor(self, rhs: &IVec3) -> IVec3 {
+        self.bitor(*rhs)
+    }
+}
+
+impl BitOr<&IVec3> for &IVec3 {
+    type Output = IVec3;
+    #[inline]
+    fn bitor(self, rhs: &IVec3) -> IVec3 {
+        (*self).bitor(*rhs)
+    }
+}
+
+impl BitOr<IVec3> for &IVec3 {
+    type Output = IVec3;
+    #[inline]
+    fn bitor(self, rhs: IVec3) -> IVec3 {
+        (*self).bitor(rhs)
     }
 }
 
@@ -1731,6 +1779,30 @@ impl BitXor for IVec3 {
     }
 }
 
+impl BitXor<&IVec3> for IVec3 {
+    type Output = IVec3;
+    #[inline]
+    fn bitxor(self, rhs: &IVec3) -> IVec3 {
+        self.bitxor(*rhs)
+    }
+}
+
+impl BitXor<&IVec3> for &IVec3 {
+    type Output = IVec3;
+    #[inline]
+    fn bitxor(self, rhs: &IVec3) -> IVec3 {
+        (*self).bitxor(*rhs)
+    }
+}
+
+impl BitXor<IVec3> for &IVec3 {
+    type Output = IVec3;
+    #[inline]
+    fn bitxor(self, rhs: IVec3) -> IVec3 {
+        (*self).bitxor(rhs)
+    }
+}
+
 impl BitAnd<i32> for IVec3 {
     type Output = Self;
     #[inline]
@@ -1740,6 +1812,30 @@ impl BitAnd<i32> for IVec3 {
             y: self.y.bitand(rhs),
             z: self.z.bitand(rhs),
         }
+    }
+}
+
+impl BitAnd<&i32> for IVec3 {
+    type Output = IVec3;
+    #[inline]
+    fn bitand(self, rhs: &i32) -> IVec3 {
+        self.bitand(*rhs)
+    }
+}
+
+impl BitAnd<&i32> for &IVec3 {
+    type Output = IVec3;
+    #[inline]
+    fn bitand(self, rhs: &i32) -> IVec3 {
+        (*self).bitand(*rhs)
+    }
+}
+
+impl BitAnd<i32> for &IVec3 {
+    type Output = IVec3;
+    #[inline]
+    fn bitand(self, rhs: i32) -> IVec3 {
+        (*self).bitand(rhs)
     }
 }
 
@@ -1755,6 +1851,30 @@ impl BitOr<i32> for IVec3 {
     }
 }
 
+impl BitOr<&i32> for IVec3 {
+    type Output = IVec3;
+    #[inline]
+    fn bitor(self, rhs: &i32) -> IVec3 {
+        self.bitor(*rhs)
+    }
+}
+
+impl BitOr<&i32> for &IVec3 {
+    type Output = IVec3;
+    #[inline]
+    fn bitor(self, rhs: &i32) -> IVec3 {
+        (*self).bitor(*rhs)
+    }
+}
+
+impl BitOr<i32> for &IVec3 {
+    type Output = IVec3;
+    #[inline]
+    fn bitor(self, rhs: i32) -> IVec3 {
+        (*self).bitor(rhs)
+    }
+}
+
 impl BitXor<i32> for IVec3 {
     type Output = Self;
     #[inline]
@@ -1764,6 +1884,30 @@ impl BitXor<i32> for IVec3 {
             y: self.y.bitxor(rhs),
             z: self.z.bitxor(rhs),
         }
+    }
+}
+
+impl BitXor<&i32> for IVec3 {
+    type Output = IVec3;
+    #[inline]
+    fn bitxor(self, rhs: &i32) -> IVec3 {
+        self.bitxor(*rhs)
+    }
+}
+
+impl BitXor<&i32> for &IVec3 {
+    type Output = IVec3;
+    #[inline]
+    fn bitxor(self, rhs: &i32) -> IVec3 {
+        (*self).bitxor(*rhs)
+    }
+}
+
+impl BitXor<i32> for &IVec3 {
+    type Output = IVec3;
+    #[inline]
+    fn bitxor(self, rhs: i32) -> IVec3 {
+        (*self).bitxor(rhs)
     }
 }
 

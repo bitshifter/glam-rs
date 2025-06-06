@@ -73,8 +73,10 @@
 {% endmacro impl_mat4_minor %}
 
 
-{% macro impl_op_ref_inner(op, self_t, rhs_t, output_t, self, self_ref, rhs_ref) %}
-{% set method = op | snake_case %}
+{% macro impl_op_ref_inner(op, method, self_t, rhs_t, output_t, self, self_ref, rhs_ref) %}
+{% if not method %}
+    {% set method = op | snake_case %}
+{% endif %}
 {% if rhs_ref and rhs_t %}
     {% set rhs = "&" ~ rhs_t %}
 {% elif rhs_t %}
@@ -93,14 +95,36 @@ impl {{ op }}{% if rhs_t %}<{{ rhs }}>{% endif %} for {% if self_ref %}&{% endif
 }
 {% endmacro impl_op_ref_inner %}
 
-{% macro impl_op_ref(op, self_t, rhs_t=false, output_t=false, self="self") %}
+{% macro impl_op_ref(op, self_t, rhs_t=false, output_t=false, self="self", method=false) %}
 {%if rhs_t %}
-    {{ self::impl_op_ref_inner(op=op, self_t=self_t, rhs_t=rhs_t, output_t=output_t, self=self, self_ref=false, rhs_ref=true) }}
+    {{ self::impl_op_ref_inner(op=op, method=method, self_t=self_t, rhs_t=rhs_t, output_t=output_t, self=self, self_ref=false, rhs_ref=true) }}
     {%if output_t %}
-        {{ self::impl_op_ref_inner(op=op, self_t=self_t, rhs_t=rhs_t, output_t=output_t, self=self, self_ref=true, rhs_ref=true) }}
+        {{ self::impl_op_ref_inner(op=op, method=method, self_t=self_t, rhs_t=rhs_t, output_t=output_t, self=self, self_ref=true, rhs_ref=true) }}
     {% endif %}
 {% endif %}
 {%if output_t %}
-    {{ self::impl_op_ref_inner(op=op, self_t=self_t, rhs_t=rhs_t, output_t=output_t, self=self, self_ref=true, rhs_ref=false) }}
+    {{ self::impl_op_ref_inner(op=op, method=method, self_t=self_t, rhs_t=rhs_t, output_t=output_t, self=self, self_ref=true, rhs_ref=false) }}
 {% endif %}
 {% endmacro impl_op_ref %}
+
+{% macro impl_op_assign_inner(op, self_t, rhs_t, self_ref, rhs_ref) %}
+{% set method = op | lower %}
+{% if rhs_ref and rhs_t %}
+    {% set rhs = "&" ~ rhs_t %}
+{% elif rhs_t %}
+    {% set rhs = rhs_t %}
+{% endif %}
+
+impl {{ op }}Assign{% if rhs_t %}<{{ rhs }}>{% endif %} for {% if self_ref %}&{% endif %}{{ self_t }} {
+    #[inline]
+    fn {{ method }}_assign(&mut self{% if rhs_t %}, rhs: {{ rhs }}{% endif %}) { 
+        *self = self.{{ method }}(
+        {% if self_ref %} (*self) {% else %} self {% endif %}.{{method}}
+        ({% if rhs_ref %} *rhs {% elif rhs_t %} rhs {% endif %})
+    }
+}
+{% endmacro impl_op_ref_inner %}
+
+{% macro impl_op_assign(op, self_t, rhs_t=false) %}
+{% endmacro impl_op_assign %}
+
