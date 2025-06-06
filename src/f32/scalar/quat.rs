@@ -8,7 +8,7 @@ use crate::{
 
 use core::fmt;
 use core::iter::{Product, Sum};
-use core::ops::{Add, Div, Mul, MulAssign, Neg, Sub};
+use core::ops::{Add, AddAssign, Div, Mul, MulAssign, Neg, Sub};
 
 /// Creates a quaternion from `x`, `y`, `z` and `w` values.
 ///
@@ -861,6 +861,19 @@ impl Add<Quat> for Quat {
     #[inline]
     fn add(self, rhs: Self) -> Self {
         Self::from_vec4(Vec4::from(self) + Vec4::from(rhs))
+    }
+}
+
+impl AddAssign<Quat> for Quat {
+    /// Adds two quaternions.
+    ///
+    /// The sum is not guaranteed to be normalized.
+    ///
+    /// Note that addition is not the same as combining the rotations represented by the
+    /// two quaternions! That corresponds to multiplication.
+    #[inline]
+    fn add_assign(&mut self, rhs: Self) {
+        *self = *self + rhs;
     }
 }
 

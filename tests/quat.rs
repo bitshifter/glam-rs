@@ -607,6 +607,19 @@ macro_rules! impl_quat_tests {
                 assert_approx_eq!(angle, angle2);
             }
         });
+
+        glam_test!(test_add_assign, {
+            {
+                // Normalization not needed for this test.
+                let q = $quat::from_xyzw(1.0, 2.0, 3.0, 4.0);
+                let p = $quat::from_xyzw(5.0, 6.0, 7.0, 8.0);
+
+                let mut pq = p;
+                pq += q;
+
+                assert_eq!(p + q, pq);
+            }
+        });
     };
 }
 

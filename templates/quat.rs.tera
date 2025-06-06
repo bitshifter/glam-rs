@@ -69,7 +69,7 @@ use core::ops::{
     {% if not is_scalar %}
         Deref, DerefMut,
     {% endif %}
-    Add, Div, Mul, MulAssign, Neg, Sub
+    Add, AddAssign, Div, Mul, MulAssign, Neg, Sub
 };
 
 {% if is_sse2 or is_neon %}
@@ -1255,6 +1255,19 @@ impl Add<{{ self_t }}> for {{ self_t }} {
     #[inline]
     fn add(self, rhs: Self) -> Self {
         Self::from_vec4({{ vec4_t }}::from(self) + {{ vec4_t }}::from(rhs))
+    }
+}
+
+impl AddAssign<{{ self_t }}> for {{ self_t }} {
+    /// Adds two quaternions.
+    ///
+    /// The sum is not guaranteed to be normalized.
+    ///
+    /// Note that addition is not the same as combining the rotations represented by the
+    /// two quaternions! That corresponds to multiplication.
+    #[inline]
+    fn add_assign(&mut self, rhs: Self) {
+        *self = *self + rhs;
     }
 }
 
