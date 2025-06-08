@@ -410,10 +410,10 @@ impl Add<Mat2> for Mat2 {
     }
 }
 
-impl Add<&Mat2> for Mat2 {
-    type Output = Mat2;
+impl Add<&Self> for Mat2 {
+    type Output = Self;
     #[inline]
-    fn add(self, rhs: &Mat2) -> Mat2 {
+    fn add(self, rhs: &Self) -> Self {
         self.add(*rhs)
     }
 }
@@ -436,14 +436,14 @@ impl Add<Mat2> for &Mat2 {
 
 impl AddAssign for Mat2 {
     #[inline]
-    fn add_assign(&mut self, rhs: Mat2) {
+    fn add_assign(&mut self, rhs: Self) {
         *self = self.add(rhs);
     }
 }
 
-impl AddAssign<&Mat2> for Mat2 {
+impl AddAssign<&Self> for Mat2 {
     #[inline]
-    fn add_assign(&mut self, rhs: &Mat2) {
+    fn add_assign(&mut self, rhs: &Self) {
         self.add_assign(*rhs);
     }
 }
@@ -456,10 +456,10 @@ impl Sub<Mat2> for Mat2 {
     }
 }
 
-impl Sub<&Mat2> for Mat2 {
-    type Output = Mat2;
+impl Sub<&Self> for Mat2 {
+    type Output = Self;
     #[inline]
-    fn sub(self, rhs: &Mat2) -> Mat2 {
+    fn sub(self, rhs: &Self) -> Self {
         self.sub(*rhs)
     }
 }
@@ -482,14 +482,14 @@ impl Sub<Mat2> for &Mat2 {
 
 impl SubAssign for Mat2 {
     #[inline]
-    fn sub_assign(&mut self, rhs: Mat2) {
+    fn sub_assign(&mut self, rhs: Self) {
         *self = self.sub(rhs);
     }
 }
 
-impl SubAssign<&Mat2> for Mat2 {
+impl SubAssign<&Self> for Mat2 {
     #[inline]
-    fn sub_assign(&mut self, rhs: &Mat2) {
+    fn sub_assign(&mut self, rhs: &Self) {
         self.sub_assign(*rhs);
     }
 }
@@ -530,10 +530,10 @@ impl Mul<Mat2> for Mat2 {
     }
 }
 
-impl Mul<&Mat2> for Mat2 {
-    type Output = Mat2;
+impl Mul<&Self> for Mat2 {
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: &Mat2) -> Mat2 {
+    fn mul(self, rhs: &Self) -> Self {
         self.mul(*rhs)
     }
 }
@@ -556,14 +556,14 @@ impl Mul<Mat2> for &Mat2 {
 
 impl MulAssign for Mat2 {
     #[inline]
-    fn mul_assign(&mut self, rhs: Mat2) {
+    fn mul_assign(&mut self, rhs: Self) {
         *self = self.mul(rhs);
     }
 }
 
-impl MulAssign<&Mat2> for Mat2 {
+impl MulAssign<&Self> for Mat2 {
     #[inline]
-    fn mul_assign(&mut self, rhs: &Mat2) {
+    fn mul_assign(&mut self, rhs: &Self) {
         self.mul_assign(*rhs);
     }
 }
@@ -641,9 +641,9 @@ impl Mul<f32> for Mat2 {
 }
 
 impl Mul<&f32> for Mat2 {
-    type Output = Mat2;
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: &f32) -> Mat2 {
+    fn mul(self, rhs: &f32) -> Self {
         self.mul(*rhs)
     }
 }
@@ -719,9 +719,9 @@ impl Div<f32> for Mat2 {
 }
 
 impl Div<&f32> for Mat2 {
-    type Output = Mat2;
+    type Output = Self;
     #[inline]
-    fn div(self, rhs: &f32) -> Mat2 {
+    fn div(self, rhs: &f32) -> Self {
         self.div(*rhs)
     }
 }

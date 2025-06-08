@@ -1140,7 +1140,7 @@ impl Default for DVec4 {
     }
 }
 
-impl Div<DVec4> for DVec4 {
+impl Div for DVec4 {
     type Output = Self;
     #[inline]
     fn div(self, rhs: Self) -> Self {
@@ -1153,10 +1153,10 @@ impl Div<DVec4> for DVec4 {
     }
 }
 
-impl Div<&DVec4> for DVec4 {
-    type Output = DVec4;
+impl Div<&Self> for DVec4 {
+    type Output = Self;
     #[inline]
-    fn div(self, rhs: &DVec4) -> DVec4 {
+    fn div(self, rhs: &Self) -> Self {
         self.div(*rhs)
     }
 }
@@ -1177,7 +1177,7 @@ impl Div<DVec4> for &DVec4 {
     }
 }
 
-impl DivAssign<DVec4> for DVec4 {
+impl DivAssign for DVec4 {
     #[inline]
     fn div_assign(&mut self, rhs: Self) {
         self.x.div_assign(rhs.x);
@@ -1187,9 +1187,9 @@ impl DivAssign<DVec4> for DVec4 {
     }
 }
 
-impl DivAssign<&DVec4> for DVec4 {
+impl DivAssign<&Self> for DVec4 {
     #[inline]
-    fn div_assign(&mut self, rhs: &DVec4) {
+    fn div_assign(&mut self, rhs: &Self) {
         self.div_assign(*rhs);
     }
 }
@@ -1208,9 +1208,9 @@ impl Div<f64> for DVec4 {
 }
 
 impl Div<&f64> for DVec4 {
-    type Output = DVec4;
+    type Output = Self;
     #[inline]
-    fn div(self, rhs: &f64) -> DVec4 {
+    fn div(self, rhs: &f64) -> Self {
         self.div(*rhs)
     }
 }
@@ -1285,7 +1285,7 @@ impl Div<DVec4> for &f64 {
     }
 }
 
-impl Mul<DVec4> for DVec4 {
+impl Mul for DVec4 {
     type Output = Self;
     #[inline]
     fn mul(self, rhs: Self) -> Self {
@@ -1298,10 +1298,10 @@ impl Mul<DVec4> for DVec4 {
     }
 }
 
-impl Mul<&DVec4> for DVec4 {
-    type Output = DVec4;
+impl Mul<&Self> for DVec4 {
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: &DVec4) -> DVec4 {
+    fn mul(self, rhs: &Self) -> Self {
         self.mul(*rhs)
     }
 }
@@ -1322,7 +1322,7 @@ impl Mul<DVec4> for &DVec4 {
     }
 }
 
-impl MulAssign<DVec4> for DVec4 {
+impl MulAssign for DVec4 {
     #[inline]
     fn mul_assign(&mut self, rhs: Self) {
         self.x.mul_assign(rhs.x);
@@ -1332,9 +1332,9 @@ impl MulAssign<DVec4> for DVec4 {
     }
 }
 
-impl MulAssign<&DVec4> for DVec4 {
+impl MulAssign<&Self> for DVec4 {
     #[inline]
-    fn mul_assign(&mut self, rhs: &DVec4) {
+    fn mul_assign(&mut self, rhs: &Self) {
         self.mul_assign(*rhs);
     }
 }
@@ -1353,9 +1353,9 @@ impl Mul<f64> for DVec4 {
 }
 
 impl Mul<&f64> for DVec4 {
-    type Output = DVec4;
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: &f64) -> DVec4 {
+    fn mul(self, rhs: &f64) -> Self {
         self.mul(*rhs)
     }
 }
@@ -1430,7 +1430,7 @@ impl Mul<DVec4> for &f64 {
     }
 }
 
-impl Add<DVec4> for DVec4 {
+impl Add for DVec4 {
     type Output = Self;
     #[inline]
     fn add(self, rhs: Self) -> Self {
@@ -1443,10 +1443,10 @@ impl Add<DVec4> for DVec4 {
     }
 }
 
-impl Add<&DVec4> for DVec4 {
-    type Output = DVec4;
+impl Add<&Self> for DVec4 {
+    type Output = Self;
     #[inline]
-    fn add(self, rhs: &DVec4) -> DVec4 {
+    fn add(self, rhs: &Self) -> Self {
         self.add(*rhs)
     }
 }
@@ -1467,7 +1467,7 @@ impl Add<DVec4> for &DVec4 {
     }
 }
 
-impl AddAssign<DVec4> for DVec4 {
+impl AddAssign for DVec4 {
     #[inline]
     fn add_assign(&mut self, rhs: Self) {
         self.x.add_assign(rhs.x);
@@ -1477,9 +1477,9 @@ impl AddAssign<DVec4> for DVec4 {
     }
 }
 
-impl AddAssign<&DVec4> for DVec4 {
+impl AddAssign<&Self> for DVec4 {
     #[inline]
-    fn add_assign(&mut self, rhs: &DVec4) {
+    fn add_assign(&mut self, rhs: &Self) {
         self.add_assign(*rhs);
     }
 }
@@ -1498,9 +1498,9 @@ impl Add<f64> for DVec4 {
 }
 
 impl Add<&f64> for DVec4 {
-    type Output = DVec4;
+    type Output = Self;
     #[inline]
-    fn add(self, rhs: &f64) -> DVec4 {
+    fn add(self, rhs: &f64) -> Self {
         self.add(*rhs)
     }
 }
@@ -1575,7 +1575,7 @@ impl Add<DVec4> for &f64 {
     }
 }
 
-impl Sub<DVec4> for DVec4 {
+impl Sub for DVec4 {
     type Output = Self;
     #[inline]
     fn sub(self, rhs: Self) -> Self {
@@ -1588,10 +1588,10 @@ impl Sub<DVec4> for DVec4 {
     }
 }
 
-impl Sub<&DVec4> for DVec4 {
-    type Output = DVec4;
+impl Sub<&Self> for DVec4 {
+    type Output = Self;
     #[inline]
-    fn sub(self, rhs: &DVec4) -> DVec4 {
+    fn sub(self, rhs: &Self) -> Self {
         self.sub(*rhs)
     }
 }
@@ -1612,9 +1612,9 @@ impl Sub<DVec4> for &DVec4 {
     }
 }
 
-impl SubAssign<DVec4> for DVec4 {
+impl SubAssign for DVec4 {
     #[inline]
-    fn sub_assign(&mut self, rhs: DVec4) {
+    fn sub_assign(&mut self, rhs: Self) {
         self.x.sub_assign(rhs.x);
         self.y.sub_assign(rhs.y);
         self.z.sub_assign(rhs.z);
@@ -1622,9 +1622,9 @@ impl SubAssign<DVec4> for DVec4 {
     }
 }
 
-impl SubAssign<&DVec4> for DVec4 {
+impl SubAssign<&Self> for DVec4 {
     #[inline]
-    fn sub_assign(&mut self, rhs: &DVec4) {
+    fn sub_assign(&mut self, rhs: &Self) {
         self.sub_assign(*rhs);
     }
 }
@@ -1643,9 +1643,9 @@ impl Sub<f64> for DVec4 {
 }
 
 impl Sub<&f64> for DVec4 {
-    type Output = DVec4;
+    type Output = Self;
     #[inline]
-    fn sub(self, rhs: &f64) -> DVec4 {
+    fn sub(self, rhs: &f64) -> Self {
         self.sub(*rhs)
     }
 }
@@ -1720,7 +1720,7 @@ impl Sub<DVec4> for &f64 {
     }
 }
 
-impl Rem<DVec4> for DVec4 {
+impl Rem for DVec4 {
     type Output = Self;
     #[inline]
     fn rem(self, rhs: Self) -> Self {
@@ -1733,10 +1733,10 @@ impl Rem<DVec4> for DVec4 {
     }
 }
 
-impl Rem<&DVec4> for DVec4 {
-    type Output = DVec4;
+impl Rem<&Self> for DVec4 {
+    type Output = Self;
     #[inline]
-    fn rem(self, rhs: &DVec4) -> DVec4 {
+    fn rem(self, rhs: &Self) -> Self {
         self.rem(*rhs)
     }
 }
@@ -1757,7 +1757,7 @@ impl Rem<DVec4> for &DVec4 {
     }
 }
 
-impl RemAssign<DVec4> for DVec4 {
+impl RemAssign for DVec4 {
     #[inline]
     fn rem_assign(&mut self, rhs: Self) {
         self.x.rem_assign(rhs.x);
@@ -1767,9 +1767,9 @@ impl RemAssign<DVec4> for DVec4 {
     }
 }
 
-impl RemAssign<&DVec4> for DVec4 {
+impl RemAssign<&Self> for DVec4 {
     #[inline]
-    fn rem_assign(&mut self, rhs: &DVec4) {
+    fn rem_assign(&mut self, rhs: &Self) {
         self.rem_assign(*rhs);
     }
 }
@@ -1788,9 +1788,9 @@ impl Rem<f64> for DVec4 {
 }
 
 impl Rem<&f64> for DVec4 {
-    type Output = DVec4;
+    type Output = Self;
     #[inline]
-    fn rem(self, rhs: &f64) -> DVec4 {
+    fn rem(self, rhs: &f64) -> Self {
         self.rem(*rhs)
     }
 }
@@ -1869,7 +1869,7 @@ impl Rem<DVec4> for &f64 {
 impl AsRef<[f64; 4]> for DVec4 {
     #[inline]
     fn as_ref(&self) -> &[f64; 4] {
-        unsafe { &*(self as *const DVec4 as *const [f64; 4]) }
+        unsafe { &*(self as *const Self as *const [f64; 4]) }
     }
 }
 
@@ -1877,7 +1877,7 @@ impl AsRef<[f64; 4]> for DVec4 {
 impl AsMut<[f64; 4]> for DVec4 {
     #[inline]
     fn as_mut(&mut self) -> &mut [f64; 4] {
-        unsafe { &mut *(self as *mut DVec4 as *mut [f64; 4]) }
+        unsafe { &mut *(self as *mut Self as *mut [f64; 4]) }
     }
 }
 

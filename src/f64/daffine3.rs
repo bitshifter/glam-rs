@@ -536,10 +536,10 @@ impl Mul for DAffine3 {
     }
 }
 
-impl Mul<&DAffine3> for DAffine3 {
-    type Output = DAffine3;
+impl Mul<&Self> for DAffine3 {
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: &DAffine3) -> DAffine3 {
+    fn mul(self, rhs: &Self) -> Self {
         self.mul(*rhs)
     }
 }
@@ -562,14 +562,14 @@ impl Mul<DAffine3> for &DAffine3 {
 
 impl MulAssign for DAffine3 {
     #[inline]
-    fn mul_assign(&mut self, rhs: DAffine3) {
+    fn mul_assign(&mut self, rhs: Self) {
         *self = self.mul(rhs);
     }
 }
 
-impl MulAssign<&DAffine3> for DAffine3 {
+impl MulAssign<&Self> for DAffine3 {
     #[inline]
-    fn mul_assign(&mut self, rhs: &DAffine3) {
+    fn mul_assign(&mut self, rhs: &Self) {
         self.mul_assign(*rhs);
     }
 }
@@ -617,9 +617,9 @@ impl Mul<DAffine3> for DMat4 {
 }
 
 impl Mul<&DAffine3> for DMat4 {
-    type Output = DMat4;
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: &DAffine3) -> DMat4 {
+    fn mul(self, rhs: &DAffine3) -> Self {
         self.mul(*rhs)
     }
 }

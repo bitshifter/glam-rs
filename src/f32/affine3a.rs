@@ -551,10 +551,10 @@ impl Mul for Affine3A {
     }
 }
 
-impl Mul<&Affine3A> for Affine3A {
-    type Output = Affine3A;
+impl Mul<&Self> for Affine3A {
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: &Affine3A) -> Affine3A {
+    fn mul(self, rhs: &Self) -> Self {
         self.mul(*rhs)
     }
 }
@@ -577,14 +577,14 @@ impl Mul<Affine3A> for &Affine3A {
 
 impl MulAssign for Affine3A {
     #[inline]
-    fn mul_assign(&mut self, rhs: Affine3A) {
+    fn mul_assign(&mut self, rhs: Self) {
         *self = self.mul(rhs);
     }
 }
 
-impl MulAssign<&Affine3A> for Affine3A {
+impl MulAssign<&Self> for Affine3A {
     #[inline]
-    fn mul_assign(&mut self, rhs: &Affine3A) {
+    fn mul_assign(&mut self, rhs: &Self) {
         self.mul_assign(*rhs);
     }
 }
@@ -632,9 +632,9 @@ impl Mul<Affine3A> for Mat4 {
 }
 
 impl Mul<&Affine3A> for Mat4 {
-    type Output = Mat4;
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: &Affine3A) -> Mat4 {
+    fn mul(self, rhs: &Affine3A) -> Self {
         self.mul(*rhs)
     }
 }

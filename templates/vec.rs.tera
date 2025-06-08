@@ -3105,7 +3105,7 @@ impl PartialEq for {{ self_t }} {
 }
 {% endif %}
 
-impl Div<{{ self_t }}> for {{ self_t }} {
+impl Div for {{ self_t }} {
     type Output = Self;
     #[inline]
     fn div(self, rhs: Self) -> Self {
@@ -3131,7 +3131,7 @@ impl Div<{{ self_t }}> for {{ self_t }} {
 
 {{ macros::impl_ref_binop(imp="Div", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
 
-impl DivAssign<{{ self_t }}> for {{ self_t }} {
+impl DivAssign for {{ self_t }} {
     #[inline]
     fn div_assign(&mut self, rhs: Self) {
         {% if is_scalar %}
@@ -3229,7 +3229,7 @@ impl Div<{{ self_t }}> for {{ scalar_t }} {
 
 {{ macros::impl_ref_binop(imp="Div", self_t=scalar_t, rhs_t=self_t, output_t=self_t) }}
 
-impl Mul<{{ self_t }}> for {{ self_t }} {
+impl Mul for {{ self_t }} {
     type Output = Self;
     #[inline]
     fn mul(self, rhs: Self) -> Self {
@@ -3255,7 +3255,7 @@ impl Mul<{{ self_t }}> for {{ self_t }} {
 
 {{ macros::impl_ref_binop(imp="Mul", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
 
-impl MulAssign<{{ self_t }}> for {{ self_t }} {
+impl MulAssign for {{ self_t }} {
     #[inline]
     fn mul_assign(&mut self, rhs: Self) {
         {% if is_scalar %}
@@ -3353,7 +3353,7 @@ impl Mul<{{ self_t }}> for {{ scalar_t }} {
 
 {{ macros::impl_ref_binop(imp="Mul", self_t=scalar_t, rhs_t=self_t, output_t=self_t) }}
 
-impl Add<{{ self_t }}> for {{ self_t }} {
+impl Add for {{ self_t }} {
     type Output = Self;
     #[inline]
     fn add(self, rhs: Self) -> Self {
@@ -3379,7 +3379,7 @@ impl Add<{{ self_t }}> for {{ self_t }} {
 
 {{ macros::impl_ref_binop(imp="Add", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
 
-impl AddAssign<{{ self_t }}> for {{ self_t }} {
+impl AddAssign for {{ self_t }} {
     #[inline]
     fn add_assign(&mut self, rhs: Self) {
         {% if is_scalar %}
@@ -3477,7 +3477,7 @@ impl Add<{{ self_t }}> for {{ scalar_t }} {
 
 {{ macros::impl_ref_binop(imp="Add", self_t=scalar_t, rhs_t=self_t, output_t=self_t) }}
 
-impl Sub<{{ self_t }}> for {{ self_t }} {
+impl Sub for {{ self_t }} {
     type Output = Self;
     #[inline]
     fn sub(self, rhs: Self) -> Self {
@@ -3503,9 +3503,9 @@ impl Sub<{{ self_t }}> for {{ self_t }} {
 
 {{ macros::impl_ref_binop(imp="Sub", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
 
-impl SubAssign<{{ self_t }}> for {{ self_t }} {
+impl SubAssign for {{ self_t }} {
     #[inline]
-    fn sub_assign(&mut self, rhs: {{ self_t }}) {
+    fn sub_assign(&mut self, rhs: Self) {
         {% if is_scalar %}
             {% for c in components %}
                 self.{{ c }}.sub_assign(rhs.{{ c }});
@@ -3601,7 +3601,7 @@ impl Sub<{{ self_t }}> for {{ scalar_t }} {
 
 {{ macros::impl_ref_binop(imp="Sub", self_t=scalar_t, rhs_t=self_t, output_t=self_t) }}
 
-impl Rem<{{ self_t }}> for {{ self_t }} {
+impl Rem for {{ self_t }} {
     type Output = Self;
     #[inline]
     fn rem(self, rhs: Self) -> Self {
@@ -3634,7 +3634,7 @@ impl Rem<{{ self_t }}> for {{ self_t }} {
 
 {{ macros::impl_ref_binop(imp="Rem", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
 
-impl RemAssign<{{ self_t }}> for {{ self_t }} {
+impl RemAssign for {{ self_t }} {
     #[inline]
     fn rem_assign(&mut self, rhs: Self) {
         {% if is_scalar %}
@@ -3708,7 +3708,7 @@ impl Rem<{{ self_t }}> for {{ scalar_t }} {
 impl AsRef<[{{ scalar_t }}; {{ dim }}]> for {{ self_t }} {
     #[inline]
     fn as_ref(&self) -> &[{{ scalar_t }}; {{ dim }}] {
-        unsafe { &*(self as *const {{ self_t }} as *const [{{ scalar_t }}; {{ dim }}]) }
+        unsafe { &*(self as *const Self as *const [{{ scalar_t }}; {{ dim }}]) }
     }
 }
 
@@ -3716,7 +3716,7 @@ impl AsRef<[{{ scalar_t }}; {{ dim }}]> for {{ self_t }} {
 impl AsMut<[{{ scalar_t }}; {{ dim }}]> for {{ self_t }} {
     #[inline]
     fn as_mut(&mut self) -> &mut [{{ scalar_t }}; {{ dim }}] {
-        unsafe { &mut *(self as *mut {{ self_t }} as *mut [{{ scalar_t }}; {{ dim }}]) }
+        unsafe { &mut *(self as *mut Self as *mut [{{ scalar_t }}; {{ dim }}]) }
     }
 }
 
@@ -3792,7 +3792,7 @@ impl Neg for {{ self_t }} {
 impl Not for {{ self_t }} {
     type Output = Self;
     #[inline]
-    fn not(self) -> Self::Output {
+    fn not(self) -> Self {
         Self {
             {% for c in components %}
                 {{ c }}: self.{{ c }}.not(),

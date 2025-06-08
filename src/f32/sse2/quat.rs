@@ -914,10 +914,10 @@ impl Add<Quat> for Quat {
     }
 }
 
-impl Add<&Quat> for Quat {
-    type Output = Quat;
+impl Add<&Self> for Quat {
+    type Output = Self;
     #[inline]
-    fn add(self, rhs: &Quat) -> Quat {
+    fn add(self, rhs: &Self) -> Self {
         self.add(*rhs)
     }
 }
@@ -940,14 +940,14 @@ impl Add<Quat> for &Quat {
 
 impl AddAssign for Quat {
     #[inline]
-    fn add_assign(&mut self, rhs: Quat) {
+    fn add_assign(&mut self, rhs: Self) {
         *self = self.add(rhs);
     }
 }
 
-impl AddAssign<&Quat> for Quat {
+impl AddAssign<&Self> for Quat {
     #[inline]
-    fn add_assign(&mut self, rhs: &Quat) {
+    fn add_assign(&mut self, rhs: &Self) {
         self.add_assign(*rhs);
     }
 }
@@ -963,10 +963,10 @@ impl Sub<Quat> for Quat {
     }
 }
 
-impl Sub<&Quat> for Quat {
-    type Output = Quat;
+impl Sub<&Self> for Quat {
+    type Output = Self;
     #[inline]
-    fn sub(self, rhs: &Quat) -> Quat {
+    fn sub(self, rhs: &Self) -> Self {
         self.sub(*rhs)
     }
 }
@@ -989,14 +989,14 @@ impl Sub<Quat> for &Quat {
 
 impl SubAssign for Quat {
     #[inline]
-    fn sub_assign(&mut self, rhs: Quat) {
+    fn sub_assign(&mut self, rhs: Self) {
         *self = self.sub(rhs);
     }
 }
 
-impl SubAssign<&Quat> for Quat {
+impl SubAssign<&Self> for Quat {
     #[inline]
-    fn sub_assign(&mut self, rhs: &Quat) {
+    fn sub_assign(&mut self, rhs: &Self) {
         self.sub_assign(*rhs);
     }
 }
@@ -1013,9 +1013,9 @@ impl Mul<f32> for Quat {
 }
 
 impl Mul<&f32> for Quat {
-    type Output = Quat;
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: &f32) -> Quat {
+    fn mul(self, rhs: &f32) -> Self {
         self.mul(*rhs)
     }
 }
@@ -1061,9 +1061,9 @@ impl Div<f32> for Quat {
 }
 
 impl Div<&f32> for Quat {
-    type Output = Quat;
+    type Output = Self;
     #[inline]
-    fn div(self, rhs: &f32) -> Quat {
+    fn div(self, rhs: &f32) -> Self {
         self.div(*rhs)
     }
 }
@@ -1115,10 +1115,10 @@ impl Mul<Quat> for Quat {
     }
 }
 
-impl Mul<&Quat> for Quat {
-    type Output = Quat;
+impl Mul<&Self> for Quat {
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: &Quat) -> Quat {
+    fn mul(self, rhs: &Self) -> Self {
         self.mul(*rhs)
     }
 }
@@ -1141,14 +1141,14 @@ impl Mul<Quat> for &Quat {
 
 impl MulAssign for Quat {
     #[inline]
-    fn mul_assign(&mut self, rhs: Quat) {
+    fn mul_assign(&mut self, rhs: Self) {
         *self = self.mul(rhs);
     }
 }
 
-impl MulAssign<&Quat> for Quat {
+impl MulAssign<&Self> for Quat {
     #[inline]
-    fn mul_assign(&mut self, rhs: &Quat) {
+    fn mul_assign(&mut self, rhs: &Self) {
         self.mul_assign(*rhs);
     }
 }

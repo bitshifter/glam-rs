@@ -73,8 +73,8 @@
 {% endmacro impl_mat4_minor %}
 
 {% macro impl_ref_unop(imp, self_t, output_t) %}
+    {% set op = imp | lower %}
     impl {{ imp }} for &{{ self_t }} {
-        {% set op = imp | lower %}
         type Output = {{ output_t }};
         #[inline]
         fn {{ op }}(self) -> {{ output_t }} {
@@ -85,13 +85,21 @@
 
 {% macro impl_ref_binop(imp, self_t, rhs_t, output_t) %}
     {% set op = imp | lower %}
-    {% if not rhs_t %}
-        {% set rhs_t=self_t %}
+    {% if rhs_t == self_t %}
+        {% set val_rhs_t = "Self" %}
+    {% else %}
+        {% set val_rhs_t = rhs_t %}
     {% endif %}
-    impl {{ imp }}<&{{ rhs_t }}> for {{ self_t }} {
-        type Output = {{ output_t }};
+    {% if output_t == self_t %}
+        {% set val_output_t = "Self" %}
+    {% else %}
+        {% set val_output_t = output_t %}
+    {% endif %}
+    impl {{ imp }}<&{{ val_rhs_t }}> for {{ self_t }} {
+        type Output = {{ val_output_t }};
         #[inline]
-        fn {{ op }}(self, rhs: &{{ rhs_t }}) -> {{ output_t }} {
+        fn {{ op }}(self, rhs: &{{ val_rhs_t }}) -> {{ val_output_t }}
+        {
             self.{{ op }}(*rhs)
         }
     }
@@ -115,6 +123,9 @@
 
 {% macro impl_ref_op_assign(imp, self_t, rhs_t) %}
     {% set op = imp | lower %}
+    {% if rhs_t == self_t %}
+        {% set rhs_t = "Self" %}
+    {% endif %}
     impl {{ imp }}Assign<&{{ rhs_t }}> for {{ self_t }} {
         #[inline]
         fn {{ op }}_assign(&mut self, rhs: &{{ rhs_t }}) {
@@ -127,7 +138,7 @@
     {% set op = imp | lower %}
     impl {{ imp }}Assign{% if rhs_t != self_t %}<{{rhs_t}}>{% endif %} for {{ self_t }} {
         #[inline]
-        fn {{ op }}_assign(&mut self, rhs: {{ rhs_t }}) {
+        fn {{ op }}_assign(&mut self, rhs: {% if rhs_t == self_t %} Self {% else %} {{ rhs_t }} {% endif %}) {
             *self = self.{{ op }}(rhs);
         }
     }

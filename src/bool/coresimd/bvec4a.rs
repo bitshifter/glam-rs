@@ -162,10 +162,10 @@ impl BitAnd for BVec4A {
     }
 }
 
-impl BitAnd<&BVec4A> for BVec4A {
-    type Output = BVec4A;
+impl BitAnd<&Self> for BVec4A {
+    type Output = Self;
     #[inline]
-    fn bitand(self, rhs: &BVec4A) -> BVec4A {
+    fn bitand(self, rhs: &Self) -> Self {
         self.bitand(*rhs)
     }
 }
@@ -188,14 +188,14 @@ impl BitAnd<BVec4A> for &BVec4A {
 
 impl BitAndAssign for BVec4A {
     #[inline]
-    fn bitand_assign(&mut self, rhs: BVec4A) {
+    fn bitand_assign(&mut self, rhs: Self) {
         *self = self.bitand(rhs);
     }
 }
 
-impl BitAndAssign<&BVec4A> for BVec4A {
+impl BitAndAssign<&Self> for BVec4A {
     #[inline]
-    fn bitand_assign(&mut self, rhs: &BVec4A) {
+    fn bitand_assign(&mut self, rhs: &Self) {
         self.bitand_assign(*rhs);
     }
 }
@@ -208,10 +208,10 @@ impl BitOr for BVec4A {
     }
 }
 
-impl BitOr<&BVec4A> for BVec4A {
-    type Output = BVec4A;
+impl BitOr<&Self> for BVec4A {
+    type Output = Self;
     #[inline]
-    fn bitor(self, rhs: &BVec4A) -> BVec4A {
+    fn bitor(self, rhs: &Self) -> Self {
         self.bitor(*rhs)
     }
 }
@@ -234,14 +234,14 @@ impl BitOr<BVec4A> for &BVec4A {
 
 impl BitOrAssign for BVec4A {
     #[inline]
-    fn bitor_assign(&mut self, rhs: BVec4A) {
+    fn bitor_assign(&mut self, rhs: Self) {
         *self = self.bitor(rhs);
     }
 }
 
-impl BitOrAssign<&BVec4A> for BVec4A {
+impl BitOrAssign<&Self> for BVec4A {
     #[inline]
-    fn bitor_assign(&mut self, rhs: &BVec4A) {
+    fn bitor_assign(&mut self, rhs: &Self) {
         self.bitor_assign(*rhs);
     }
 }
@@ -254,10 +254,10 @@ impl BitXor for BVec4A {
     }
 }
 
-impl BitXor<&BVec4A> for BVec4A {
-    type Output = BVec4A;
+impl BitXor<&Self> for BVec4A {
+    type Output = Self;
     #[inline]
-    fn bitxor(self, rhs: &BVec4A) -> BVec4A {
+    fn bitxor(self, rhs: &Self) -> Self {
         self.bitxor(*rhs)
     }
 }
@@ -280,14 +280,14 @@ impl BitXor<BVec4A> for &BVec4A {
 
 impl BitXorAssign for BVec4A {
     #[inline]
-    fn bitxor_assign(&mut self, rhs: BVec4A) {
+    fn bitxor_assign(&mut self, rhs: Self) {
         *self = self.bitxor(rhs);
     }
 }
 
-impl BitXorAssign<&BVec4A> for BVec4A {
+impl BitXorAssign<&Self> for BVec4A {
     #[inline]
-    fn bitxor_assign(&mut self, rhs: &BVec4A) {
+    fn bitxor_assign(&mut self, rhs: &Self) {
         self.bitxor_assign(*rhs);
     }
 }

@@ -723,10 +723,10 @@ impl Add<DMat3> for DMat3 {
     }
 }
 
-impl Add<&DMat3> for DMat3 {
-    type Output = DMat3;
+impl Add<&Self> for DMat3 {
+    type Output = Self;
     #[inline]
-    fn add(self, rhs: &DMat3) -> DMat3 {
+    fn add(self, rhs: &Self) -> Self {
         self.add(*rhs)
     }
 }
@@ -749,14 +749,14 @@ impl Add<DMat3> for &DMat3 {
 
 impl AddAssign for DMat3 {
     #[inline]
-    fn add_assign(&mut self, rhs: DMat3) {
+    fn add_assign(&mut self, rhs: Self) {
         *self = self.add(rhs);
     }
 }
 
-impl AddAssign<&DMat3> for DMat3 {
+impl AddAssign<&Self> for DMat3 {
     #[inline]
-    fn add_assign(&mut self, rhs: &DMat3) {
+    fn add_assign(&mut self, rhs: &Self) {
         self.add_assign(*rhs);
     }
 }
@@ -773,10 +773,10 @@ impl Sub<DMat3> for DMat3 {
     }
 }
 
-impl Sub<&DMat3> for DMat3 {
-    type Output = DMat3;
+impl Sub<&Self> for DMat3 {
+    type Output = Self;
     #[inline]
-    fn sub(self, rhs: &DMat3) -> DMat3 {
+    fn sub(self, rhs: &Self) -> Self {
         self.sub(*rhs)
     }
 }
@@ -799,14 +799,14 @@ impl Sub<DMat3> for &DMat3 {
 
 impl SubAssign for DMat3 {
     #[inline]
-    fn sub_assign(&mut self, rhs: DMat3) {
+    fn sub_assign(&mut self, rhs: Self) {
         *self = self.sub(rhs);
     }
 }
 
-impl SubAssign<&DMat3> for DMat3 {
+impl SubAssign<&Self> for DMat3 {
     #[inline]
-    fn sub_assign(&mut self, rhs: &DMat3) {
+    fn sub_assign(&mut self, rhs: &Self) {
         self.sub_assign(*rhs);
     }
 }
@@ -839,10 +839,10 @@ impl Mul<DMat3> for DMat3 {
     }
 }
 
-impl Mul<&DMat3> for DMat3 {
-    type Output = DMat3;
+impl Mul<&Self> for DMat3 {
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: &DMat3) -> DMat3 {
+    fn mul(self, rhs: &Self) -> Self {
         self.mul(*rhs)
     }
 }
@@ -865,14 +865,14 @@ impl Mul<DMat3> for &DMat3 {
 
 impl MulAssign for DMat3 {
     #[inline]
-    fn mul_assign(&mut self, rhs: DMat3) {
+    fn mul_assign(&mut self, rhs: Self) {
         *self = self.mul(rhs);
     }
 }
 
-impl MulAssign<&DMat3> for DMat3 {
+impl MulAssign<&Self> for DMat3 {
     #[inline]
-    fn mul_assign(&mut self, rhs: &DMat3) {
+    fn mul_assign(&mut self, rhs: &Self) {
         self.mul_assign(*rhs);
     }
 }
@@ -950,9 +950,9 @@ impl Mul<f64> for DMat3 {
 }
 
 impl Mul<&f64> for DMat3 {
-    type Output = DMat3;
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: &f64) -> DMat3 {
+    fn mul(self, rhs: &f64) -> Self {
         self.mul(*rhs)
     }
 }
@@ -1028,9 +1028,9 @@ impl Div<f64> for DMat3 {
 }
 
 impl Div<&f64> for DMat3 {
-    type Output = DMat3;
+    type Output = Self;
     #[inline]
-    fn div(self, rhs: &f64) -> DMat3 {
+    fn div(self, rhs: &f64) -> Self {
         self.div(*rhs)
     }
 }
