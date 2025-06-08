@@ -1,3 +1,5 @@
+{% import "macros.rs.tera" as macros %}
+
 // Generated from {{template_path}} template. Edit the template, not the generated file.
 
 {% if not is_scalar %}
@@ -69,7 +71,7 @@ use core::ops::{
     {% if not is_scalar %}
         Deref, DerefMut,
     {% endif %}
-    Add, AddAssign, Div, Mul, MulAssign, Neg, Sub
+    Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign
 };
 
 {% if is_sse2 or is_neon %}
@@ -1258,18 +1260,9 @@ impl Add<{{ self_t }}> for {{ self_t }} {
     }
 }
 
-impl AddAssign<{{ self_t }}> for {{ self_t }} {
-    /// Adds two quaternions.
-    ///
-    /// The sum is not guaranteed to be normalized.
-    ///
-    /// Note that addition is not the same as combining the rotations represented by the
-    /// two quaternions! That corresponds to multiplication.
-    #[inline]
-    fn add_assign(&mut self, rhs: Self) {
-        *self = *self + rhs;
-    }
-}
+{{ macros::impl_ref_binop(imp="Add", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+
+{{ macros::impl_op_assign(imp="Add", self_t=self_t, rhs_t=self_t) }}
 
 impl Sub<{{ self_t }}> for {{ self_t }} {
     type Output = Self;
@@ -1282,6 +1275,10 @@ impl Sub<{{ self_t }}> for {{ self_t }} {
     }
 }
 
+{{ macros::impl_ref_binop(imp="Sub", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+
+{{ macros::impl_op_assign(imp="Sub", self_t=self_t, rhs_t=self_t) }}
+
 impl Mul<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
     /// Multiplies a quaternion by a scalar value.
@@ -1293,6 +1290,10 @@ impl Mul<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
+{{ macros::impl_ref_binop(imp="Mul", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
+
+{{ macros::impl_op_assign(imp="Mul", self_t=self_t, rhs_t=scalar_t) }}
+
 impl Div<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
     /// Divides a quaternion by a scalar value.
@@ -1302,6 +1303,10 @@ impl Div<{{ scalar_t }}> for {{ self_t }} {
         Self::from_vec4({{ vec4_t }}::from(self) / rhs)
     }
 }
+
+{{ macros::impl_ref_binop(imp="Div", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
+
+{{ macros::impl_op_assign(imp="Div", self_t=self_t, rhs_t=scalar_t) }}
 
 impl Mul<{{ self_t }}> for {{ self_t }} {
     type Output = Self;
@@ -1320,21 +1325,9 @@ impl Mul<{{ self_t }}> for {{ self_t }} {
     }
 }
 
-impl MulAssign<{{ self_t }}> for {{ self_t }} {
-    /// Multiplies two quaternions. If they each represent a rotation, the result will
-    /// represent the combined rotation.
-    ///
-    /// Note that due to floating point rounding the result may not be perfectly
-    /// normalized.
-    ///
-    /// # Panics
-    ///
-    /// Will panic if `self` or `rhs` are not normalized when `glam_assert` is enabled.
-    #[inline]
-    fn mul_assign(&mut self, rhs: Self) {
-        *self = self.mul_quat(rhs);
-    }
-}
+{{ macros::impl_ref_binop(imp="Mul", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+
+{{ macros::impl_op_assign(imp="Mul", self_t=self_t, rhs_t=self_t) }}
 
 impl Mul<{{ vec3_t }}> for {{ self_t }} {
     type Output = {{ vec3_t }};
@@ -1349,6 +1342,20 @@ impl Mul<{{ vec3_t }}> for {{ self_t }} {
     }
 }
 
+{{ macros::impl_ref_binop(imp="Mul", self_t=self_t, rhs_t=vec3_t, output_t=vec3_t) }}
+
+{% if scalar_t == "f32" %}
+impl Mul<Vec3A> for Quat {
+    type Output = Vec3A;
+    #[inline]
+    fn mul(self, rhs: Vec3A) -> Self::Output {
+        self.mul_vec3a(rhs)
+    }
+}
+
+{{ macros::impl_ref_binop(imp="Mul", self_t=self_t, rhs_t="Vec3A", output_t="Vec3A") }}
+{% endif %}
+
 impl Neg for {{ self_t }} {
     type Output = Self;
     #[inline]
@@ -1356,6 +1363,8 @@ impl Neg for {{ self_t }} {
         self * -1.0
     }
 }
+
+{{ macros::impl_ref_unop(imp="Neg", self_t=self_t, output_t=self_t) }}
 
 impl Default for {{ self_t }} {
     #[inline]
@@ -1414,16 +1423,6 @@ impl<'a> Product<&'a Self> for {{ self_t }} {
         iter.fold(Self::IDENTITY, |a, &b| Self::mul(a, b))
     }
 }
-
-{% if scalar_t == "f32" %}
-impl Mul<Vec3A> for Quat {
-    type Output = Vec3A;
-    #[inline]
-    fn mul(self, rhs: Vec3A) -> Self::Output {
-        self.mul_vec3a(rhs)
-    }
-}
-{% endif %}
 
 impl From<{{ self_t }}> for {{ vec4_t }} {
     #[inline]
