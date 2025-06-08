@@ -113,11 +113,8 @@
     }
 {% endmacro impl_ref_biop %}
 
-{% macro impl_ref_op_assign(imp, self_t, rhs_t=false) %}
+{% macro impl_ref_op_assign(imp, self_t, rhs_t) %}
     {% set op = imp | lower %}
-    {% if not rhs_t %}
-        {% set rhs_t = self_t %}
-    {% endif %}
     impl {{ imp }}Assign<&{{ rhs_t }}> for {{ self_t }} {
         #[inline]
         fn {{ op }}_assign(&mut self, rhs: &{{ rhs_t }}) {
@@ -126,11 +123,8 @@
     }
 {% endmacro forward_ref_op_assign %}
 
-{% macro impl_op_assign(imp, self_t, rhs_t=false) %}
+{% macro impl_op_assign(imp, self_t, rhs_t) %}
     {% set op = imp | lower %}
-    {% if not rhs_t %}
-        {% set rhs_t = self_t %}
-    {% endif %}
     impl {{ imp }}Assign{% if rhs_t != self_t %}<{{rhs_t}}>{% endif %} for {{ self_t }} {
         #[inline]
         fn {{ op }}_assign(&mut self, rhs: {{ rhs_t }}) {
