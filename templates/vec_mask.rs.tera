@@ -440,9 +440,9 @@ impl BitAnd for {{ self_t }} {
     }
 }
 
-{{ macros::impl_op_ref(op="BitAnd", method="bitand", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+{{ macros::impl_ref_binop(imp="BitAnd", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
 
-{{ macros::impl_op_assign(imp="BitAnd", self_t=self_t) }}
+{{ macros::impl_op_assign(imp="BitAnd", self_t=self_t, rhs_t=self_t) }}
 
 impl BitOr for {{ self_t }} {
     type Output = Self;
@@ -468,9 +468,9 @@ impl BitOr for {{ self_t }} {
     }
 }
 
-{{ macros::impl_op_ref(op="BitOr", method="bitor", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+{{ macros::impl_ref_binop(imp="BitOr", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
 
-{{ macros::impl_op_assign(imp="BitOr", self_t=self_t) }}
+{{ macros::impl_op_assign(imp="BitOr", self_t=self_t, rhs_t=self_t) }}
 
 impl BitXor for {{ self_t }} {
     type Output = Self;
@@ -496,9 +496,9 @@ impl BitXor for {{ self_t }} {
     }
 }
 
-{{ macros::impl_op_ref(op="BitXor", method="bitxor", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+{{ macros::impl_ref_binop(imp="BitXor", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
 
-{{ macros::impl_op_assign(imp="BitXor", self_t=self_t) }}
+{{ macros::impl_op_assign(imp="BitXor", self_t=self_t, rhs_t=self_t) }}
 
 impl Not for {{ self_t }} {
     type Output = Self;
@@ -526,7 +526,7 @@ impl Not for {{ self_t }} {
     }
 }
 
-{{ macros::impl_op_ref(op="Not", self_t=self_t, output_t=self_t) }}
+{{ macros::impl_ref_unop(imp="Not", self_t=self_t, output_t=self_t) }}
 
 {% if not is_scalar %}
 impl From<{{ self_t }}> for {{ simd_t }} {
