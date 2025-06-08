@@ -389,10 +389,41 @@ impl Mul for DAffine2 {
     }
 }
 
+impl Mul<&DAffine2> for DAffine2 {
+    type Output = DAffine2;
+    #[inline]
+    fn mul(self, rhs: &DAffine2) -> DAffine2 {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&DAffine2> for &DAffine2 {
+    type Output = DAffine2;
+    #[inline]
+    fn mul(self, rhs: &DAffine2) -> DAffine2 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<DAffine2> for &DAffine2 {
+    type Output = DAffine2;
+    #[inline]
+    fn mul(self, rhs: DAffine2) -> DAffine2 {
+        (*self).mul(rhs)
+    }
+}
+
 impl MulAssign for DAffine2 {
     #[inline]
     fn mul_assign(&mut self, rhs: DAffine2) {
         *self = self.mul(rhs);
+    }
+}
+
+impl MulAssign<&DAffine2> for DAffine2 {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &DAffine2) {
+        self.mul_assign(*rhs);
     }
 }
 
@@ -416,11 +447,73 @@ impl Mul<DMat3> for DAffine2 {
     }
 }
 
+impl Mul<&DMat3> for DAffine2 {
+    type Output = DMat3;
+    #[inline]
+    fn mul(self, rhs: &DMat3) -> DMat3 {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&DMat3> for &DAffine2 {
+    type Output = DMat3;
+    #[inline]
+    fn mul(self, rhs: &DMat3) -> DMat3 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<DMat3> for &DAffine2 {
+    type Output = DMat3;
+    #[inline]
+    fn mul(self, rhs: DMat3) -> DMat3 {
+        (*self).mul(rhs)
+    }
+}
+
 impl Mul<DAffine2> for DMat3 {
     type Output = DMat3;
 
     #[inline]
     fn mul(self, rhs: DAffine2) -> Self::Output {
         self * DMat3::from(rhs)
+    }
+}
+
+impl Mul<&DAffine2> for DMat3 {
+    type Output = DMat3;
+    #[inline]
+    fn mul(self, rhs: &DAffine2) -> DMat3 {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&DAffine2> for &DMat3 {
+    type Output = DMat3;
+    #[inline]
+    fn mul(self, rhs: &DAffine2) -> DMat3 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<DAffine2> for &DMat3 {
+    type Output = DMat3;
+    #[inline]
+    fn mul(self, rhs: DAffine2) -> DMat3 {
+        (*self).mul(rhs)
+    }
+}
+
+impl MulAssign<DAffine2> for DMat3 {
+    #[inline]
+    fn mul_assign(&mut self, rhs: DAffine2) {
+        *self = self.mul(rhs);
+    }
+}
+
+impl MulAssign<&DAffine2> for DMat3 {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &DAffine2) {
+        self.mul_assign(*rhs);
     }
 }
