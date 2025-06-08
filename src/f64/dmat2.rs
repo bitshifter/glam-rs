@@ -276,21 +276,21 @@ impl DMat2 {
     #[inline]
     #[must_use]
     pub fn mul_mat2(&self, rhs: &Self) -> Self {
-        Self::from_cols(self.mul(rhs.x_axis), self.mul(rhs.y_axis))
+        self.mul(rhs)
     }
 
     /// Adds two 2x2 matrices.
     #[inline]
     #[must_use]
     pub fn add_mat2(&self, rhs: &Self) -> Self {
-        Self::from_cols(self.x_axis.add(rhs.x_axis), self.y_axis.add(rhs.y_axis))
+        self.add(rhs)
     }
 
     /// Subtracts two 2x2 matrices.
     #[inline]
     #[must_use]
     pub fn sub_mat2(&self, rhs: &Self) -> Self {
-        Self::from_cols(self.x_axis.sub(rhs.x_axis), self.y_axis.sub(rhs.y_axis))
+        self.sub(rhs)
     }
 
     /// Multiplies a 2x2 matrix by a scalar.
@@ -348,14 +348,45 @@ impl Add<DMat2> for DMat2 {
     type Output = Self;
     #[inline]
     fn add(self, rhs: Self) -> Self::Output {
-        self.add_mat2(&rhs)
+        Self::from_cols(self.x_axis.add(rhs.x_axis), self.y_axis.add(rhs.y_axis))
     }
 }
 
-impl AddAssign<DMat2> for DMat2 {
+impl Add<&DMat2> for DMat2 {
+    type Output = DMat2;
     #[inline]
-    fn add_assign(&mut self, rhs: Self) {
-        *self = self.add_mat2(&rhs);
+    fn add(self, rhs: &DMat2) -> DMat2 {
+        self.add(*rhs)
+    }
+}
+
+impl Add<&DMat2> for &DMat2 {
+    type Output = DMat2;
+    #[inline]
+    fn add(self, rhs: &DMat2) -> DMat2 {
+        (*self).add(*rhs)
+    }
+}
+
+impl Add<DMat2> for &DMat2 {
+    type Output = DMat2;
+    #[inline]
+    fn add(self, rhs: DMat2) -> DMat2 {
+        (*self).add(rhs)
+    }
+}
+
+impl AddAssign for DMat2 {
+    #[inline]
+    fn add_assign(&mut self, rhs: DMat2) {
+        *self = self.add(rhs);
+    }
+}
+
+impl AddAssign<&DMat2> for DMat2 {
+    #[inline]
+    fn add_assign(&mut self, rhs: &DMat2) {
+        self.add_assign(*rhs);
     }
 }
 
@@ -363,14 +394,45 @@ impl Sub<DMat2> for DMat2 {
     type Output = Self;
     #[inline]
     fn sub(self, rhs: Self) -> Self::Output {
-        self.sub_mat2(&rhs)
+        Self::from_cols(self.x_axis.sub(rhs.x_axis), self.y_axis.sub(rhs.y_axis))
     }
 }
 
-impl SubAssign<DMat2> for DMat2 {
+impl Sub<&DMat2> for DMat2 {
+    type Output = DMat2;
     #[inline]
-    fn sub_assign(&mut self, rhs: Self) {
-        *self = self.sub_mat2(&rhs);
+    fn sub(self, rhs: &DMat2) -> DMat2 {
+        self.sub(*rhs)
+    }
+}
+
+impl Sub<&DMat2> for &DMat2 {
+    type Output = DMat2;
+    #[inline]
+    fn sub(self, rhs: &DMat2) -> DMat2 {
+        (*self).sub(*rhs)
+    }
+}
+
+impl Sub<DMat2> for &DMat2 {
+    type Output = DMat2;
+    #[inline]
+    fn sub(self, rhs: DMat2) -> DMat2 {
+        (*self).sub(rhs)
+    }
+}
+
+impl SubAssign for DMat2 {
+    #[inline]
+    fn sub_assign(&mut self, rhs: DMat2) {
+        *self = self.sub(rhs);
+    }
+}
+
+impl SubAssign<&DMat2> for DMat2 {
+    #[inline]
+    fn sub_assign(&mut self, rhs: &DMat2) {
+        self.sub_assign(*rhs);
     }
 }
 
@@ -382,18 +444,57 @@ impl Neg for DMat2 {
     }
 }
 
+impl Neg for &DMat2 {
+    type Output = DMat2;
+    #[inline]
+    fn neg(self) -> DMat2 {
+        (*self).neg()
+    }
+}
+
 impl Mul<DMat2> for DMat2 {
     type Output = Self;
     #[inline]
     fn mul(self, rhs: Self) -> Self::Output {
-        self.mul_mat2(&rhs)
+        Self::from_cols(self.mul(rhs.x_axis), self.mul(rhs.y_axis))
     }
 }
 
-impl MulAssign<DMat2> for DMat2 {
+impl Mul<&DMat2> for DMat2 {
+    type Output = DMat2;
     #[inline]
-    fn mul_assign(&mut self, rhs: Self) {
-        *self = self.mul_mat2(&rhs);
+    fn mul(self, rhs: &DMat2) -> DMat2 {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&DMat2> for &DMat2 {
+    type Output = DMat2;
+    #[inline]
+    fn mul(self, rhs: &DMat2) -> DMat2 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<DMat2> for &DMat2 {
+    type Output = DMat2;
+    #[inline]
+    fn mul(self, rhs: DMat2) -> DMat2 {
+        (*self).mul(rhs)
+    }
+}
+
+impl MulAssign for DMat2 {
+    #[inline]
+    fn mul_assign(&mut self, rhs: DMat2) {
+        *self = self.mul(rhs);
+    }
+}
+
+impl MulAssign<&DMat2> for DMat2 {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &DMat2) {
+        self.mul_assign(*rhs);
     }
 }
 
@@ -405,11 +506,59 @@ impl Mul<DVec2> for DMat2 {
     }
 }
 
+impl Mul<&DVec2> for DMat2 {
+    type Output = DVec2;
+    #[inline]
+    fn mul(self, rhs: &DVec2) -> DVec2 {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&DVec2> for &DMat2 {
+    type Output = DVec2;
+    #[inline]
+    fn mul(self, rhs: &DVec2) -> DVec2 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<DVec2> for &DMat2 {
+    type Output = DVec2;
+    #[inline]
+    fn mul(self, rhs: DVec2) -> DVec2 {
+        (*self).mul(rhs)
+    }
+}
+
 impl Mul<DMat2> for f64 {
     type Output = DMat2;
     #[inline]
     fn mul(self, rhs: DMat2) -> Self::Output {
         rhs.mul_scalar(self)
+    }
+}
+
+impl Mul<&DMat2> for f64 {
+    type Output = DMat2;
+    #[inline]
+    fn mul(self, rhs: &DMat2) -> DMat2 {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&DMat2> for &f64 {
+    type Output = DMat2;
+    #[inline]
+    fn mul(self, rhs: &DMat2) -> DMat2 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<DMat2> for &f64 {
+    type Output = DMat2;
+    #[inline]
+    fn mul(self, rhs: DMat2) -> DMat2 {
+        (*self).mul(rhs)
     }
 }
 
@@ -421,10 +570,41 @@ impl Mul<f64> for DMat2 {
     }
 }
 
+impl Mul<&f64> for DMat2 {
+    type Output = DMat2;
+    #[inline]
+    fn mul(self, rhs: &f64) -> DMat2 {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&f64> for &DMat2 {
+    type Output = DMat2;
+    #[inline]
+    fn mul(self, rhs: &f64) -> DMat2 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<f64> for &DMat2 {
+    type Output = DMat2;
+    #[inline]
+    fn mul(self, rhs: f64) -> DMat2 {
+        (*self).mul(rhs)
+    }
+}
+
 impl MulAssign<f64> for DMat2 {
     #[inline]
     fn mul_assign(&mut self, rhs: f64) {
-        *self = self.mul_scalar(rhs);
+        *self = self.mul(rhs);
+    }
+}
+
+impl MulAssign<&f64> for DMat2 {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &f64) {
+        self.mul_assign(*rhs);
     }
 }
 
@@ -436,6 +616,30 @@ impl Div<DMat2> for f64 {
     }
 }
 
+impl Div<&DMat2> for f64 {
+    type Output = DMat2;
+    #[inline]
+    fn div(self, rhs: &DMat2) -> DMat2 {
+        self.div(*rhs)
+    }
+}
+
+impl Div<&DMat2> for &f64 {
+    type Output = DMat2;
+    #[inline]
+    fn div(self, rhs: &DMat2) -> DMat2 {
+        (*self).div(*rhs)
+    }
+}
+
+impl Div<DMat2> for &f64 {
+    type Output = DMat2;
+    #[inline]
+    fn div(self, rhs: DMat2) -> DMat2 {
+        (*self).div(rhs)
+    }
+}
+
 impl Div<f64> for DMat2 {
     type Output = Self;
     #[inline]
@@ -444,10 +648,41 @@ impl Div<f64> for DMat2 {
     }
 }
 
+impl Div<&f64> for DMat2 {
+    type Output = DMat2;
+    #[inline]
+    fn div(self, rhs: &f64) -> DMat2 {
+        self.div(*rhs)
+    }
+}
+
+impl Div<&f64> for &DMat2 {
+    type Output = DMat2;
+    #[inline]
+    fn div(self, rhs: &f64) -> DMat2 {
+        (*self).div(*rhs)
+    }
+}
+
+impl Div<f64> for &DMat2 {
+    type Output = DMat2;
+    #[inline]
+    fn div(self, rhs: f64) -> DMat2 {
+        (*self).div(rhs)
+    }
+}
+
 impl DivAssign<f64> for DMat2 {
     #[inline]
     fn div_assign(&mut self, rhs: f64) {
-        *self = self.div_scalar(rhs);
+        *self = self.div(rhs);
+    }
+}
+
+impl DivAssign<&f64> for DMat2 {
+    #[inline]
+    fn div_assign(&mut self, rhs: &f64) {
+        self.div_assign(*rhs);
     }
 }
 
