@@ -1190,7 +1190,7 @@ impl DivAssign<DVec4> for DVec4 {
 impl DivAssign<&DVec4> for DVec4 {
     #[inline]
     fn div_assign(&mut self, rhs: &DVec4) {
-        self.div_assign(*rhs)
+        self.div_assign(*rhs);
     }
 }
 
@@ -1244,7 +1244,7 @@ impl DivAssign<f64> for DVec4 {
 impl DivAssign<&f64> for DVec4 {
     #[inline]
     fn div_assign(&mut self, rhs: &f64) {
-        self.div_assign(*rhs)
+        self.div_assign(*rhs);
     }
 }
 
@@ -1335,7 +1335,7 @@ impl MulAssign<DVec4> for DVec4 {
 impl MulAssign<&DVec4> for DVec4 {
     #[inline]
     fn mul_assign(&mut self, rhs: &DVec4) {
-        self.mul_assign(*rhs)
+        self.mul_assign(*rhs);
     }
 }
 
@@ -1389,7 +1389,7 @@ impl MulAssign<f64> for DVec4 {
 impl MulAssign<&f64> for DVec4 {
     #[inline]
     fn mul_assign(&mut self, rhs: &f64) {
-        self.mul_assign(*rhs)
+        self.mul_assign(*rhs);
     }
 }
 
@@ -1480,7 +1480,7 @@ impl AddAssign<DVec4> for DVec4 {
 impl AddAssign<&DVec4> for DVec4 {
     #[inline]
     fn add_assign(&mut self, rhs: &DVec4) {
-        self.add_assign(*rhs)
+        self.add_assign(*rhs);
     }
 }
 
@@ -1534,7 +1534,7 @@ impl AddAssign<f64> for DVec4 {
 impl AddAssign<&f64> for DVec4 {
     #[inline]
     fn add_assign(&mut self, rhs: &f64) {
-        self.add_assign(*rhs)
+        self.add_assign(*rhs);
     }
 }
 
@@ -1625,7 +1625,7 @@ impl SubAssign<DVec4> for DVec4 {
 impl SubAssign<&DVec4> for DVec4 {
     #[inline]
     fn sub_assign(&mut self, rhs: &DVec4) {
-        self.sub_assign(*rhs)
+        self.sub_assign(*rhs);
     }
 }
 
@@ -1679,7 +1679,7 @@ impl SubAssign<f64> for DVec4 {
 impl SubAssign<&f64> for DVec4 {
     #[inline]
     fn sub_assign(&mut self, rhs: &f64) {
-        self.sub_assign(*rhs)
+        self.sub_assign(*rhs);
     }
 }
 
@@ -1770,7 +1770,7 @@ impl RemAssign<DVec4> for DVec4 {
 impl RemAssign<&DVec4> for DVec4 {
     #[inline]
     fn rem_assign(&mut self, rhs: &DVec4) {
-        self.rem_assign(*rhs)
+        self.rem_assign(*rhs);
     }
 }
 
@@ -1824,7 +1824,7 @@ impl RemAssign<f64> for DVec4 {
 impl RemAssign<&f64> for DVec4 {
     #[inline]
     fn rem_assign(&mut self, rhs: &f64) {
-        self.rem_assign(*rhs)
+        self.rem_assign(*rhs);
     }
 }
 

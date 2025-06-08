@@ -3152,7 +3152,7 @@ impl DivAssign<{{ self_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_op_ref(op="DivAssign", self_t=self_t, rhs_t=self_t, self="&mut self") }}
+{{ macros::impl_ref_op_assign(imp="Div", self_t=self_t, rhs_t=self_t) }}
 
 impl Div<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -3201,7 +3201,7 @@ impl DivAssign<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_op_ref(op="DivAssign", self_t=self_t, rhs_t=scalar_t, self="&mut self") }}
+{{ macros::impl_ref_op_assign(imp="Div", self_t=self_t, rhs_t=scalar_t) }}
 
 impl Div<{{ self_t }}> for {{ scalar_t }} {
     type Output = {{ self_t }};
@@ -3276,7 +3276,7 @@ impl MulAssign<{{ self_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_op_ref(op="MulAssign", self_t=self_t, rhs_t=self_t, self="&mut self") }}
+{{ macros::impl_ref_op_assign(imp="Mul", self_t=self_t, rhs_t=self_t) }}
 
 impl Mul<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -3325,7 +3325,7 @@ impl MulAssign<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_op_ref(op="MulAssign", self_t=self_t, rhs_t=scalar_t, self="&mut self") }}
+{{ macros::impl_ref_op_assign(imp="Mul", self_t=self_t, rhs_t=scalar_t) }}
 
 impl Mul<{{ self_t }}> for {{ scalar_t }} {
     type Output = {{ self_t }};
@@ -3400,7 +3400,7 @@ impl AddAssign<{{ self_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_op_ref(op="AddAssign", self_t=self_t, rhs_t=self_t, self="&mut self") }}
+{{ macros::impl_ref_op_assign(imp="Add", self_t=self_t, rhs_t=self_t) }}
 
 impl Add<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -3449,7 +3449,7 @@ impl AddAssign<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_op_ref(op="AddAssign", self_t=self_t, rhs_t=scalar_t, self="&mut self") }}
+{{ macros::impl_ref_op_assign(imp="Add", self_t=self_t, rhs_t=scalar_t) }}
 
 impl Add<{{ self_t }}> for {{ scalar_t }} {
     type Output = {{ self_t }};
@@ -3524,7 +3524,7 @@ impl SubAssign<{{ self_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_op_ref(op="SubAssign", self_t=self_t, rhs_t=self_t, self="&mut self") }}
+{{ macros::impl_ref_op_assign(imp="Sub", self_t=self_t, rhs_t=self_t) }}
 
 impl Sub<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -3573,7 +3573,7 @@ impl SubAssign<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_op_ref(op="SubAssign", self_t=self_t, rhs_t=scalar_t, self="&mut self") }}
+{{ macros::impl_ref_op_assign(imp="Sub", self_t=self_t, rhs_t=scalar_t) }}
 
 impl Sub<{{ self_t }}> for {{ scalar_t }} {
     type Output = {{ self_t }};
@@ -3649,7 +3649,7 @@ impl RemAssign<{{ self_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_op_ref(op="RemAssign", self_t=self_t, rhs_t=self_t, self="&mut self") }}
+{{ macros::impl_ref_op_assign(imp="Rem", self_t=self_t, rhs_t=self_t) }}
 
 impl Rem<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -3684,7 +3684,7 @@ impl RemAssign<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_op_ref(op="RemAssign", self_t=self_t, rhs_t=scalar_t, self="&mut self") }}
+{{ macros::impl_ref_op_assign(imp="Rem", self_t=self_t, rhs_t=scalar_t) }}
 
 impl Rem<{{ self_t }}> for {{ scalar_t }} {
     type Output = {{ self_t }};
@@ -3817,6 +3817,8 @@ impl BitAnd for {{ self_t }} {
 
 {{ macros::impl_op_ref(op="BitAnd", method="bitand", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
 
+{{ macros::impl_op_assign(imp="BitAnd", self_t=self_t, rhs_t=self_t) }}
+
 impl BitOr for {{ self_t }} {
     type Output = Self;
     #[inline]
@@ -3830,6 +3832,8 @@ impl BitOr for {{ self_t }} {
 }
 
 {{ macros::impl_op_ref(op="BitOr", method="bitor", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+
+{{ macros::impl_op_assign(imp="BitOr", self_t=self_t, rhs_t=self_t) }}
 
 impl BitXor for {{ self_t }} {
     type Output = Self;
@@ -3845,6 +3849,8 @@ impl BitXor for {{ self_t }} {
 
 {{ macros::impl_op_ref(op="BitXor", method="bitxor", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
 
+{{ macros::impl_op_assign(imp="BitXor", self_t=self_t, rhs_t=self_t) }}
+
 impl BitAnd<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
     #[inline]
@@ -3858,6 +3864,8 @@ impl BitAnd<{{ scalar_t }}> for {{ self_t }} {
 }
 
 {{ macros::impl_op_ref(op="BitAnd", method="bitand", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
+
+{{ macros::impl_op_assign(imp="BitAnd", self_t=self_t, rhs_t=scalar_t) }}
 
 impl BitOr<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -3873,6 +3881,8 @@ impl BitOr<{{ scalar_t }}> for {{ self_t }} {
 
 {{ macros::impl_op_ref(op="BitOr", method="bitor", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
 
+{{ macros::impl_op_assign(imp="BitOr", self_t=self_t, rhs_t=scalar_t) }}
+
 impl BitXor<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
     #[inline]
@@ -3886,6 +3896,8 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
 }
 
 {{ macros::impl_op_ref(op="BitXor", method="bitxor", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
+
+{{ macros::impl_op_assign(imp="BitXor", self_t=self_t, rhs_t=scalar_t) }}
 
 {% for rhs_t in ["i8", "i16", "i32", "i64", "u8", "u16", "u32", "u64"] %}
     impl Shl<{{ rhs_t }}> for {{ self_t }} {
@@ -3902,6 +3914,8 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
 
     {{ macros::impl_op_ref(op="Shl", self_t=self_t, rhs_t=rhs_t, output_t=self_t) }}
 
+    {{ macros::impl_op_assign(imp="Shl", self_t=self_t, rhs_t=rhs_t) }}
+
     impl Shr<{{ rhs_t }}> for {{ self_t }} {
         type Output = Self;
         #[inline]
@@ -3915,6 +3929,8 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
     }
 
     {{ macros::impl_op_ref(op="Shr", self_t=self_t, rhs_t=rhs_t, output_t=self_t) }}
+
+    {{ macros::impl_op_assign(imp="Shr", self_t=self_t, rhs_t=rhs_t) }}
 {% endfor %}
 
 {% for rhs_t in ["crate::IVec" ~ dim, "crate::UVec" ~ dim] %}

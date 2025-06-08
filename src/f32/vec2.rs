@@ -1130,7 +1130,7 @@ impl DivAssign<Vec2> for Vec2 {
 impl DivAssign<&Vec2> for Vec2 {
     #[inline]
     fn div_assign(&mut self, rhs: &Vec2) {
-        self.div_assign(*rhs)
+        self.div_assign(*rhs);
     }
 }
 
@@ -1180,7 +1180,7 @@ impl DivAssign<f32> for Vec2 {
 impl DivAssign<&f32> for Vec2 {
     #[inline]
     fn div_assign(&mut self, rhs: &f32) {
-        self.div_assign(*rhs)
+        self.div_assign(*rhs);
     }
 }
 
@@ -1265,7 +1265,7 @@ impl MulAssign<Vec2> for Vec2 {
 impl MulAssign<&Vec2> for Vec2 {
     #[inline]
     fn mul_assign(&mut self, rhs: &Vec2) {
-        self.mul_assign(*rhs)
+        self.mul_assign(*rhs);
     }
 }
 
@@ -1315,7 +1315,7 @@ impl MulAssign<f32> for Vec2 {
 impl MulAssign<&f32> for Vec2 {
     #[inline]
     fn mul_assign(&mut self, rhs: &f32) {
-        self.mul_assign(*rhs)
+        self.mul_assign(*rhs);
     }
 }
 
@@ -1400,7 +1400,7 @@ impl AddAssign<Vec2> for Vec2 {
 impl AddAssign<&Vec2> for Vec2 {
     #[inline]
     fn add_assign(&mut self, rhs: &Vec2) {
-        self.add_assign(*rhs)
+        self.add_assign(*rhs);
     }
 }
 
@@ -1450,7 +1450,7 @@ impl AddAssign<f32> for Vec2 {
 impl AddAssign<&f32> for Vec2 {
     #[inline]
     fn add_assign(&mut self, rhs: &f32) {
-        self.add_assign(*rhs)
+        self.add_assign(*rhs);
     }
 }
 
@@ -1535,7 +1535,7 @@ impl SubAssign<Vec2> for Vec2 {
 impl SubAssign<&Vec2> for Vec2 {
     #[inline]
     fn sub_assign(&mut self, rhs: &Vec2) {
-        self.sub_assign(*rhs)
+        self.sub_assign(*rhs);
     }
 }
 
@@ -1585,7 +1585,7 @@ impl SubAssign<f32> for Vec2 {
 impl SubAssign<&f32> for Vec2 {
     #[inline]
     fn sub_assign(&mut self, rhs: &f32) {
-        self.sub_assign(*rhs)
+        self.sub_assign(*rhs);
     }
 }
 
@@ -1670,7 +1670,7 @@ impl RemAssign<Vec2> for Vec2 {
 impl RemAssign<&Vec2> for Vec2 {
     #[inline]
     fn rem_assign(&mut self, rhs: &Vec2) {
-        self.rem_assign(*rhs)
+        self.rem_assign(*rhs);
     }
 }
 
@@ -1720,7 +1720,7 @@ impl RemAssign<f32> for Vec2 {
 impl RemAssign<&f32> for Vec2 {
     #[inline]
     fn rem_assign(&mut self, rhs: &f32) {
-        self.rem_assign(*rhs)
+        self.rem_assign(*rhs);
     }
 }
 

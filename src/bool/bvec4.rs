@@ -167,7 +167,7 @@ impl BitAnd<BVec4> for &BVec4 {
 
 impl BitAndAssign for BVec4 {
     #[inline]
-    fn bitand_assign(&mut self, rhs: Self) {
+    fn bitand_assign(&mut self, rhs: BVec4) {
         *self = self.bitand(rhs);
     }
 }
@@ -175,7 +175,7 @@ impl BitAndAssign for BVec4 {
 impl BitAndAssign<&BVec4> for BVec4 {
     #[inline]
     fn bitand_assign(&mut self, rhs: &BVec4) {
-        self.bitand_assign(*rhs)
+        self.bitand_assign(*rhs);
     }
 }
 
@@ -218,7 +218,7 @@ impl BitOr<BVec4> for &BVec4 {
 
 impl BitOrAssign for BVec4 {
     #[inline]
-    fn bitor_assign(&mut self, rhs: Self) {
+    fn bitor_assign(&mut self, rhs: BVec4) {
         *self = self.bitor(rhs);
     }
 }
@@ -226,7 +226,7 @@ impl BitOrAssign for BVec4 {
 impl BitOrAssign<&BVec4> for BVec4 {
     #[inline]
     fn bitor_assign(&mut self, rhs: &BVec4) {
-        self.bitor_assign(*rhs)
+        self.bitor_assign(*rhs);
     }
 }
 
@@ -269,7 +269,7 @@ impl BitXor<BVec4> for &BVec4 {
 
 impl BitXorAssign for BVec4 {
     #[inline]
-    fn bitxor_assign(&mut self, rhs: Self) {
+    fn bitxor_assign(&mut self, rhs: BVec4) {
         *self = self.bitxor(rhs);
     }
 }
@@ -277,7 +277,7 @@ impl BitXorAssign for BVec4 {
 impl BitXorAssign<&BVec4> for BVec4 {
     #[inline]
     fn bitxor_assign(&mut self, rhs: &BVec4) {
-        self.bitxor_assign(*rhs)
+        self.bitxor_assign(*rhs);
     }
 }
 

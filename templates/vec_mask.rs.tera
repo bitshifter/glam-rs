@@ -442,14 +442,7 @@ impl BitAnd for {{ self_t }} {
 
 {{ macros::impl_op_ref(op="BitAnd", method="bitand", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
 
-impl BitAndAssign for {{ self_t }} {
-    #[inline]
-    fn bitand_assign(&mut self, rhs: Self) {
-        *self = self.bitand(rhs);
-    }
-}
-
-{{ macros::impl_op_ref(op="BitAndAssign", method="bitand_assign", self_t=self_t, rhs_t=self_t, self="&mut self") }}
+{{ macros::impl_op_assign(imp="BitAnd", self_t=self_t) }}
 
 impl BitOr for {{ self_t }} {
     type Output = Self;
@@ -477,14 +470,7 @@ impl BitOr for {{ self_t }} {
 
 {{ macros::impl_op_ref(op="BitOr", method="bitor", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
 
-impl BitOrAssign for {{ self_t }} {
-    #[inline]
-    fn bitor_assign(&mut self, rhs: Self) {
-        *self = self.bitor(rhs);
-    }
-}
-
-{{ macros::impl_op_ref(op="BitOrAssign", method="bitor_assign", self_t=self_t, rhs_t=self_t, self="&mut self") }}
+{{ macros::impl_op_assign(imp="BitOr", self_t=self_t) }}
 
 impl BitXor for {{ self_t }} {
     type Output = Self;
@@ -512,14 +498,7 @@ impl BitXor for {{ self_t }} {
 
 {{ macros::impl_op_ref(op="BitXor", method="bitxor", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
 
-impl BitXorAssign for {{ self_t }} {
-    #[inline]
-    fn bitxor_assign(&mut self, rhs: Self) {
-        *self = self.bitxor(rhs);
-    }
-}
-
-{{ macros::impl_op_ref(op="BitXorAssign", method="bitxor_assign", self_t=self_t, rhs_t=self_t, self="&mut self") }}
+{{ macros::impl_op_assign(imp="BitXor", self_t=self_t) }}
 
 impl Not for {{ self_t }} {
     type Output = Self;
