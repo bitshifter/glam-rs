@@ -110,133 +110,133 @@ impl Vec3Swizzles for I64Vec3 {
     }
 
     #[inline]
-    fn xxx(self) -> I64Vec3 {
-        I64Vec3::new(self.x, self.x, self.x)
+    fn xxx(self) -> Self {
+        Self::new(self.x, self.x, self.x)
     }
 
     #[inline]
-    fn xxy(self) -> I64Vec3 {
-        I64Vec3::new(self.x, self.x, self.y)
+    fn xxy(self) -> Self {
+        Self::new(self.x, self.x, self.y)
     }
 
     #[inline]
-    fn xxz(self) -> I64Vec3 {
-        I64Vec3::new(self.x, self.x, self.z)
+    fn xxz(self) -> Self {
+        Self::new(self.x, self.x, self.z)
     }
 
     #[inline]
-    fn xyx(self) -> I64Vec3 {
-        I64Vec3::new(self.x, self.y, self.x)
+    fn xyx(self) -> Self {
+        Self::new(self.x, self.y, self.x)
     }
 
     #[inline]
-    fn xyy(self) -> I64Vec3 {
-        I64Vec3::new(self.x, self.y, self.y)
+    fn xyy(self) -> Self {
+        Self::new(self.x, self.y, self.y)
     }
 
     #[inline]
-    fn xzx(self) -> I64Vec3 {
-        I64Vec3::new(self.x, self.z, self.x)
+    fn xzx(self) -> Self {
+        Self::new(self.x, self.z, self.x)
     }
 
     #[inline]
-    fn xzy(self) -> I64Vec3 {
-        I64Vec3::new(self.x, self.z, self.y)
+    fn xzy(self) -> Self {
+        Self::new(self.x, self.z, self.y)
     }
 
     #[inline]
-    fn xzz(self) -> I64Vec3 {
-        I64Vec3::new(self.x, self.z, self.z)
+    fn xzz(self) -> Self {
+        Self::new(self.x, self.z, self.z)
     }
 
     #[inline]
-    fn yxx(self) -> I64Vec3 {
-        I64Vec3::new(self.y, self.x, self.x)
+    fn yxx(self) -> Self {
+        Self::new(self.y, self.x, self.x)
     }
 
     #[inline]
-    fn yxy(self) -> I64Vec3 {
-        I64Vec3::new(self.y, self.x, self.y)
+    fn yxy(self) -> Self {
+        Self::new(self.y, self.x, self.y)
     }
 
     #[inline]
-    fn yxz(self) -> I64Vec3 {
-        I64Vec3::new(self.y, self.x, self.z)
+    fn yxz(self) -> Self {
+        Self::new(self.y, self.x, self.z)
     }
 
     #[inline]
-    fn yyx(self) -> I64Vec3 {
-        I64Vec3::new(self.y, self.y, self.x)
+    fn yyx(self) -> Self {
+        Self::new(self.y, self.y, self.x)
     }
 
     #[inline]
-    fn yyy(self) -> I64Vec3 {
-        I64Vec3::new(self.y, self.y, self.y)
+    fn yyy(self) -> Self {
+        Self::new(self.y, self.y, self.y)
     }
 
     #[inline]
-    fn yyz(self) -> I64Vec3 {
-        I64Vec3::new(self.y, self.y, self.z)
+    fn yyz(self) -> Self {
+        Self::new(self.y, self.y, self.z)
     }
 
     #[inline]
-    fn yzx(self) -> I64Vec3 {
-        I64Vec3::new(self.y, self.z, self.x)
+    fn yzx(self) -> Self {
+        Self::new(self.y, self.z, self.x)
     }
 
     #[inline]
-    fn yzy(self) -> I64Vec3 {
-        I64Vec3::new(self.y, self.z, self.y)
+    fn yzy(self) -> Self {
+        Self::new(self.y, self.z, self.y)
     }
 
     #[inline]
-    fn yzz(self) -> I64Vec3 {
-        I64Vec3::new(self.y, self.z, self.z)
+    fn yzz(self) -> Self {
+        Self::new(self.y, self.z, self.z)
     }
 
     #[inline]
-    fn zxx(self) -> I64Vec3 {
-        I64Vec3::new(self.z, self.x, self.x)
+    fn zxx(self) -> Self {
+        Self::new(self.z, self.x, self.x)
     }
 
     #[inline]
-    fn zxy(self) -> I64Vec3 {
-        I64Vec3::new(self.z, self.x, self.y)
+    fn zxy(self) -> Self {
+        Self::new(self.z, self.x, self.y)
     }
 
     #[inline]
-    fn zxz(self) -> I64Vec3 {
-        I64Vec3::new(self.z, self.x, self.z)
+    fn zxz(self) -> Self {
+        Self::new(self.z, self.x, self.z)
     }
 
     #[inline]
-    fn zyx(self) -> I64Vec3 {
-        I64Vec3::new(self.z, self.y, self.x)
+    fn zyx(self) -> Self {
+        Self::new(self.z, self.y, self.x)
     }
 
     #[inline]
-    fn zyy(self) -> I64Vec3 {
-        I64Vec3::new(self.z, self.y, self.y)
+    fn zyy(self) -> Self {
+        Self::new(self.z, self.y, self.y)
     }
 
     #[inline]
-    fn zyz(self) -> I64Vec3 {
-        I64Vec3::new(self.z, self.y, self.z)
+    fn zyz(self) -> Self {
+        Self::new(self.z, self.y, self.z)
     }
 
     #[inline]
-    fn zzx(self) -> I64Vec3 {
-        I64Vec3::new(self.z, self.z, self.x)
+    fn zzx(self) -> Self {
+        Self::new(self.z, self.z, self.x)
     }
 
     #[inline]
-    fn zzy(self) -> I64Vec3 {
-        I64Vec3::new(self.z, self.z, self.y)
+    fn zzy(self) -> Self {
+        Self::new(self.z, self.z, self.y)
     }
 
     #[inline]
-    fn zzz(self) -> I64Vec3 {
-        I64Vec3::new(self.z, self.z, self.z)
+    fn zzz(self) -> Self {
+        Self::new(self.z, self.z, self.z)
     }
 
     #[inline]

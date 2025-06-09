@@ -8,24 +8,24 @@ impl Vec2Swizzles for I16Vec2 {
     type Vec4 = I16Vec4;
 
     #[inline]
-    fn xx(self) -> I16Vec2 {
-        I16Vec2 {
+    fn xx(self) -> Self {
+        Self {
             x: self.x,
             y: self.x,
         }
     }
 
     #[inline]
-    fn yx(self) -> I16Vec2 {
-        I16Vec2 {
+    fn yx(self) -> Self {
+        Self {
             x: self.y,
             y: self.x,
         }
     }
 
     #[inline]
-    fn yy(self) -> I16Vec2 {
-        I16Vec2 {
+    fn yy(self) -> Self {
+        Self {
             x: self.y,
             y: self.y,
         }

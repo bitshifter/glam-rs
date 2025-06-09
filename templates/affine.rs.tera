@@ -824,10 +824,10 @@ impl<'a> core::iter::Product<&'a Self> for {{ self_t }} {
 }
 
 impl Mul for {{ self_t }} {
-    type Output = {{ self_t }};
+    type Output = Self;
 
     #[inline]
-    fn mul(self, rhs: {{ self_t }}) -> Self::Output {
+    fn mul(self, rhs: Self) -> Self {
         Self {
             matrix{{ dim }}: self.matrix{{ dim }} * rhs.matrix{{ dim }},
             translation: self.matrix{{ dim }} * rhs.translation + self.translation,
@@ -842,7 +842,7 @@ impl Mul for {{ self_t }} {
 {% if dim == 2 %}
 impl From<{{ self_t }}> for {{ mat3_t }} {
     #[inline]
-    fn from(m: {{ self_t }}) -> {{ mat3_t }} {
+    fn from(m: {{ self_t }}) -> Self {
         Self::from_cols(
             m.matrix2.x_axis.extend(0.0),
             m.matrix2.y_axis.extend(0.0),
@@ -863,11 +863,11 @@ impl Mul<{{ mat3_t }}> for {{ self_t }} {
 {{ macros::impl_ref_binop(imp="Mul", self_t=self_t, rhs_t=mat3_t, output_t=mat3_t) }}
 
 impl Mul<{{ self_t }}> for {{ mat3_t }} {
-    type Output = {{ mat3_t }};
+    type Output = Self;
 
     #[inline]
-    fn mul(self, rhs: {{ self_t }}) -> Self::Output {
-        self * {{ mat3_t }}::from(rhs)
+    fn mul(self, rhs: {{ self_t }}) -> Self {
+        self * Self::from(rhs)
     }
 }
 
@@ -888,11 +888,11 @@ impl Mul<{{ mat4_t }}> for {{ self_t }} {
 {{ macros::impl_ref_binop(imp="Mul", self_t=self_t, rhs_t=mat4_t, output_t=mat4_t) }}
 
 impl Mul<{{ self_t }}> for {{ mat4_t }} {
-    type Output = {{ mat4_t }};
+    type Output = Self;
 
     #[inline]
-    fn mul(self, rhs: {{ self_t }}) -> Self::Output {
-        self * {{ mat4_t }}::from(rhs)
+    fn mul(self, rhs: {{ self_t }}) -> Self {
+        self * Self::from(rhs)
     }
 }
 
@@ -903,8 +903,8 @@ impl Mul<{{ self_t }}> for {{ mat4_t }} {
 
 impl From<{{ self_t }}> for {{ mat4_t }} {
     #[inline]
-    fn from(m: {{ self_t }}) -> {{ mat4_t }} {
-        {{ mat4_t }}::from_cols(
+    fn from(m: {{ self_t }}) -> Self {
+        Self::from_cols(
             m.matrix3.x_axis.extend(0.0),
             m.matrix3.y_axis.extend(0.0),
             m.matrix3.z_axis.extend(0.0),
@@ -928,11 +928,11 @@ impl Mul<Mat3A> for Affine2 {
 {{ macros::impl_ref_binop(imp="Mul", self_t=self_t, rhs_t="Mat3A", output_t="Mat3A") }}
 
 impl Mul<Affine2> for Mat3A {
-    type Output = Mat3A;
+    type Output = Self;
 
     #[inline]
-    fn mul(self, rhs: Affine2) -> Self::Output {
-        self * Mat3A::from(rhs)
+    fn mul(self, rhs: Affine2) -> Self {
+        self * Self::from(rhs)
     }
 }
 
@@ -942,7 +942,7 @@ impl Mul<Affine2> for Mat3A {
 
 impl From<Affine2> for Mat3A {
     #[inline]
-    fn from(m: Affine2) -> Mat3A {
+    fn from(m: Affine2) -> Self {
         Self::from_cols(
             Vec3A::from((m.matrix2.x_axis, 0.0)),
             Vec3A::from((m.matrix2.y_axis, 0.0)),

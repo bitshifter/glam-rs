@@ -132,7 +132,7 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub const fn to_array(&self) -> [f32; 3] {
-        unsafe { *(self as *const Vec3A as *const [f32; 3]) }
+        unsafe { *(self as *const Self as *const [f32; 3]) }
     }
 
     /// Creates a vector from the first 3 values in `slice`.

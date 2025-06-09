@@ -714,10 +714,10 @@ impl Default for Mat3 {
     }
 }
 
-impl Add<Mat3> for Mat3 {
+impl Add for Mat3 {
     type Output = Self;
     #[inline]
-    fn add(self, rhs: Self) -> Self::Output {
+    fn add(self, rhs: Self) -> Self {
         Self::from_cols(
             self.x_axis.add(rhs.x_axis),
             self.y_axis.add(rhs.y_axis),
@@ -764,10 +764,10 @@ impl AddAssign<&Self> for Mat3 {
     }
 }
 
-impl Sub<Mat3> for Mat3 {
+impl Sub for Mat3 {
     type Output = Self;
     #[inline]
-    fn sub(self, rhs: Self) -> Self::Output {
+    fn sub(self, rhs: Self) -> Self {
         Self::from_cols(
             self.x_axis.sub(rhs.x_axis),
             self.y_axis.sub(rhs.y_axis),
@@ -830,10 +830,10 @@ impl Neg for &Mat3 {
     }
 }
 
-impl Mul<Mat3> for Mat3 {
+impl Mul for Mat3 {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: Self) -> Self::Output {
+    fn mul(self, rhs: Self) -> Self {
         Self::from_cols(
             self.mul(rhs.x_axis),
             self.mul(rhs.y_axis),
@@ -947,7 +947,7 @@ impl Mul<Mat3> for &f32 {
 impl Mul<f32> for Mat3 {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: f32) -> Self::Output {
+    fn mul(self, rhs: f32) -> Self {
         self.mul_scalar(rhs)
     }
 }
@@ -1025,7 +1025,7 @@ impl Div<Mat3> for &f32 {
 impl Div<f32> for Mat3 {
     type Output = Self;
     #[inline]
-    fn div(self, rhs: f32) -> Self::Output {
+    fn div(self, rhs: f32) -> Self {
         self.div_scalar(rhs)
     }
 }

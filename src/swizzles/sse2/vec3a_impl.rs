@@ -117,133 +117,133 @@ impl Vec3Swizzles for Vec3A {
     }
 
     #[inline]
-    fn xxx(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_00_00) }).into())
+    fn xxx(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_00_00) }).into())
     }
 
     #[inline]
-    fn xxy(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_00_00) }).into())
+    fn xxy(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_00_00) }).into())
     }
 
     #[inline]
-    fn xxz(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_00_00) }).into())
+    fn xxz(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_00_00) }).into())
     }
 
     #[inline]
-    fn xyx(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_01_00) }).into())
+    fn xyx(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_01_00) }).into())
     }
 
     #[inline]
-    fn xyy(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_01_00) }).into())
+    fn xyy(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_01_00) }).into())
     }
 
     #[inline]
-    fn xzx(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_10_00) }).into())
+    fn xzx(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_10_00) }).into())
     }
 
     #[inline]
-    fn xzy(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_10_00) }).into())
+    fn xzy(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_10_00) }).into())
     }
 
     #[inline]
-    fn xzz(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_10_00) }).into())
+    fn xzz(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_10_00) }).into())
     }
 
     #[inline]
-    fn yxx(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_00_01) }).into())
+    fn yxx(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_00_01) }).into())
     }
 
     #[inline]
-    fn yxy(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_00_01) }).into())
+    fn yxy(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_00_01) }).into())
     }
 
     #[inline]
-    fn yxz(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_00_01) }).into())
+    fn yxz(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_00_01) }).into())
     }
 
     #[inline]
-    fn yyx(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_01_01) }).into())
+    fn yyx(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_01_01) }).into())
     }
 
     #[inline]
-    fn yyy(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_01_01) }).into())
+    fn yyy(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_01_01) }).into())
     }
 
     #[inline]
-    fn yyz(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_01_01) }).into())
+    fn yyz(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_01_01) }).into())
     }
 
     #[inline]
-    fn yzx(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_10_01) }).into())
+    fn yzx(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_10_01) }).into())
     }
 
     #[inline]
-    fn yzy(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_10_01) }).into())
+    fn yzy(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_10_01) }).into())
     }
 
     #[inline]
-    fn yzz(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_10_01) }).into())
+    fn yzz(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_10_01) }).into())
     }
 
     #[inline]
-    fn zxx(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_00_10) }).into())
+    fn zxx(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_00_10) }).into())
     }
 
     #[inline]
-    fn zxy(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_00_10) }).into())
+    fn zxy(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_00_10) }).into())
     }
 
     #[inline]
-    fn zxz(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_00_10) }).into())
+    fn zxz(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_00_10) }).into())
     }
 
     #[inline]
-    fn zyx(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_01_10) }).into())
+    fn zyx(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_01_10) }).into())
     }
 
     #[inline]
-    fn zyy(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_01_10) }).into())
+    fn zyy(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_01_10) }).into())
     }
 
     #[inline]
-    fn zyz(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_01_10) }).into())
+    fn zyz(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_01_10) }).into())
     }
 
     #[inline]
-    fn zzx(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_10_10) }).into())
+    fn zzx(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_10_10) }).into())
     }
 
     #[inline]
-    fn zzy(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_10_10) }).into())
+    fn zzy(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_10_10) }).into())
     }
 
     #[inline]
-    fn zzz(self) -> Vec3A {
-        Vec3A((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_10_10) }).into())
+    fn zzz(self) -> Self {
+        Self((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_10_10) }).into())
     }
 
     #[inline]

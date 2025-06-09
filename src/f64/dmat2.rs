@@ -344,10 +344,10 @@ impl Default for DMat2 {
     }
 }
 
-impl Add<DMat2> for DMat2 {
+impl Add for DMat2 {
     type Output = Self;
     #[inline]
-    fn add(self, rhs: Self) -> Self::Output {
+    fn add(self, rhs: Self) -> Self {
         Self::from_cols(self.x_axis.add(rhs.x_axis), self.y_axis.add(rhs.y_axis))
     }
 }
@@ -390,10 +390,10 @@ impl AddAssign<&Self> for DMat2 {
     }
 }
 
-impl Sub<DMat2> for DMat2 {
+impl Sub for DMat2 {
     type Output = Self;
     #[inline]
-    fn sub(self, rhs: Self) -> Self::Output {
+    fn sub(self, rhs: Self) -> Self {
         Self::from_cols(self.x_axis.sub(rhs.x_axis), self.y_axis.sub(rhs.y_axis))
     }
 }
@@ -452,10 +452,10 @@ impl Neg for &DMat2 {
     }
 }
 
-impl Mul<DMat2> for DMat2 {
+impl Mul for DMat2 {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: Self) -> Self::Output {
+    fn mul(self, rhs: Self) -> Self {
         Self::from_cols(self.mul(rhs.x_axis), self.mul(rhs.y_axis))
     }
 }
@@ -565,7 +565,7 @@ impl Mul<DMat2> for &f64 {
 impl Mul<f64> for DMat2 {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: f64) -> Self::Output {
+    fn mul(self, rhs: f64) -> Self {
         self.mul_scalar(rhs)
     }
 }
@@ -643,7 +643,7 @@ impl Div<DMat2> for &f64 {
 impl Div<f64> for DMat2 {
     type Output = Self;
     #[inline]
-    fn div(self, rhs: f64) -> Self::Output {
+    fn div(self, rhs: f64) -> Self {
         self.div_scalar(rhs)
     }
 }

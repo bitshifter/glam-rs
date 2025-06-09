@@ -872,7 +872,7 @@ impl fmt::Display for Quat {
     }
 }
 
-impl Add<Quat> for Quat {
+impl Add for Quat {
     type Output = Self;
     /// Adds two quaternions.
     ///
@@ -924,7 +924,7 @@ impl AddAssign<&Self> for Quat {
     }
 }
 
-impl Sub<Quat> for Quat {
+impl Sub for Quat {
     type Output = Self;
     /// Subtracts the `rhs` quaternion from `self`.
     ///
@@ -1070,7 +1070,7 @@ impl DivAssign<&f32> for Quat {
     }
 }
 
-impl Mul<Quat> for Quat {
+impl Mul for Quat {
     type Output = Self;
     /// Multiplies two quaternions. If they each represent a rotation, the result will
     /// represent the combined rotation.

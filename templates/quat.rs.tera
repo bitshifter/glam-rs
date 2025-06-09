@@ -1246,7 +1246,7 @@ impl fmt::Display for {{ self_t }} {
     }
 }
 
-impl Add<{{ self_t }}> for {{ self_t }} {
+impl Add for {{ self_t }} {
     type Output = Self;
     /// Adds two quaternions.
     ///
@@ -1264,7 +1264,7 @@ impl Add<{{ self_t }}> for {{ self_t }} {
 
 {{ macros::impl_op_assign(imp="Add", self_t=self_t, rhs_t=self_t) }}
 
-impl Sub<{{ self_t }}> for {{ self_t }} {
+impl Sub for {{ self_t }} {
     type Output = Self;
     /// Subtracts the `rhs` quaternion from `self`.
     ///
@@ -1308,7 +1308,7 @@ impl Div<{{ scalar_t }}> for {{ self_t }} {
 
 {{ macros::impl_op_assign(imp="Div", self_t=self_t, rhs_t=scalar_t) }}
 
-impl Mul<{{ self_t }}> for {{ self_t }} {
+impl Mul for {{ self_t }} {
     type Output = Self;
     /// Multiplies two quaternions. If they each represent a rotation, the result will
     /// represent the combined rotation.

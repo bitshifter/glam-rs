@@ -192,14 +192,14 @@ impl Order {
     const fn angle_order(self) -> (usize, usize, usize) {
         let i = self.initial_axis as usize;
         let j = if self.parity_even {
-            Order::next_axis(i)
+            Self::next_axis(i)
         } else {
-            Order::prev_axis(i)
+            Self::prev_axis(i)
         };
         let k = if self.parity_even {
-            Order::prev_axis(i)
+            Self::prev_axis(i)
         } else {
-            Order::next_axis(i)
+            Self::next_axis(i)
         };
         (i, j, k)
     }

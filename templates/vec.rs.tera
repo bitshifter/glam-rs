@@ -543,7 +543,7 @@ impl {{ self_t }} {
                 {% endfor %}
             ]
         {% else %}
-            unsafe { *(self as *const {{ self_t }} as *const [{{ scalar_t }}; {{ dim }}]) }
+            unsafe { *(self as *const Self as *const [{{ scalar_t }}; {{ dim }}]) }
         {% endif %}
     }
 
@@ -3933,11 +3933,11 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
     {{ macros::impl_op_assign(imp="Shr", self_t=self_t, rhs_t=rhs_t) }}
 {% endfor %}
 
-{% for rhs_t in ["crate::IVec" ~ dim, "crate::UVec" ~ dim] %}
-        impl Shl<{{ rhs_t }}> for {{ self_t }} {
+{% for rhs_t in ["IVec" ~ dim, "UVec" ~ dim] %}
+        impl Shl{% if rhs_t != self_t %}<{{ rhs_t }}>{% endif %} for {{ self_t }} {
             type Output = Self;
             #[inline]
-            fn shl(self, rhs: {{ rhs_t }}) -> Self::Output {
+            fn shl(self, rhs: {% if rhs_t != self_t %}{{ rhs_t }}{% else %}Self{% endif %}) -> Self {
                 Self {
                     {% for c in components %}
                         {{ c }}: self.{{ c }}.shl(rhs.{{ c }}),
@@ -3948,10 +3948,10 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
 
         {{ macros::impl_ref_binop(imp="Shl", self_t=self_t, rhs_t=rhs_t, output_t=self_t) }}
 
-        impl Shr<{{ rhs_t }}> for {{ self_t }} {
+        impl Shr{% if rhs_t != self_t %}<{{ rhs_t }}>{% endif %} for {{ self_t }} {
             type Output = Self;
             #[inline]
-            fn shr(self, rhs: {{ rhs_t }}) -> Self::Output {
+            fn shr(self, rhs: {% if rhs_t != self_t %}{{ rhs_t }}{% else %}Self{% endif %}) -> Self {
                 Self {
                     {% for c in components %}
                         {{ c }}: self.{{ c }}.shr(rhs.{{ c }}),

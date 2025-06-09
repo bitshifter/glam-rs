@@ -402,10 +402,10 @@ impl Default for Mat2 {
     }
 }
 
-impl Add<Mat2> for Mat2 {
+impl Add for Mat2 {
     type Output = Self;
     #[inline]
-    fn add(self, rhs: Self) -> Self::Output {
+    fn add(self, rhs: Self) -> Self {
         Self(unsafe { _mm_add_ps(self.0, rhs.0) })
     }
 }
@@ -448,10 +448,10 @@ impl AddAssign<&Self> for Mat2 {
     }
 }
 
-impl Sub<Mat2> for Mat2 {
+impl Sub for Mat2 {
     type Output = Self;
     #[inline]
-    fn sub(self, rhs: Self) -> Self::Output {
+    fn sub(self, rhs: Self) -> Self {
         Self(unsafe { _mm_sub_ps(self.0, rhs.0) })
     }
 }
@@ -510,10 +510,10 @@ impl Neg for &Mat2 {
     }
 }
 
-impl Mul<Mat2> for Mat2 {
+impl Mul for Mat2 {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: Self) -> Self::Output {
+    fn mul(self, rhs: Self) -> Self {
         unsafe {
             let abcd = self.0;
             let rhs = rhs.0;
@@ -635,7 +635,7 @@ impl Mul<Mat2> for &f32 {
 impl Mul<f32> for Mat2 {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: f32) -> Self::Output {
+    fn mul(self, rhs: f32) -> Self {
         self.mul_scalar(rhs)
     }
 }
@@ -713,7 +713,7 @@ impl Div<Mat2> for &f32 {
 impl Div<f32> for Mat2 {
     type Output = Self;
     #[inline]
-    fn div(self, rhs: f32) -> Self::Output {
+    fn div(self, rhs: f32) -> Self {
         self.div_scalar(rhs)
     }
 }

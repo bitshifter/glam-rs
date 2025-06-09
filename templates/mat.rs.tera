@@ -2504,10 +2504,10 @@ impl Default for {{ self_t }} {
     }
 }
 
-impl Add<{{ self_t }}> for {{ self_t }} {
+impl Add for {{ self_t }} {
     type Output = Self;
     #[inline]
-    fn add(self, rhs: Self) -> Self::Output {
+    fn add(self, rhs: Self) -> Self {
         {% if self_t == "Mat2" and is_sse2 %}
             Self(unsafe { _mm_add_ps(self.0, rhs.0) })
         {% elif self_t == "Mat2" and is_wasm32 %}
@@ -2530,10 +2530,10 @@ impl Add<{{ self_t }}> for {{ self_t }} {
 
 {{ macros::impl_op_assign(imp="Add", self_t=self_t, rhs_t=self_t) }}
 
-impl Sub<{{ self_t }}> for {{ self_t }} {
+impl Sub for {{ self_t }} {
     type Output = Self;
     #[inline]
-    fn sub(self, rhs: Self) -> Self::Output {
+    fn sub(self, rhs: Self) -> Self {
         {% if self_t == "Mat2" and is_sse2 %}
             Self(unsafe { _mm_sub_ps(self.0, rhs.0) })
         {% elif self_t == "Mat2" and is_wasm32 %}
@@ -2580,10 +2580,10 @@ impl Neg for {{ self_t }} {
 
 {{ macros::impl_ref_unop(imp="Neg", self_t=self_t, output_t=self_t) }}
 
-impl Mul<{{ self_t }}> for {{ self_t }} {
+impl Mul for {{ self_t }} {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: Self) -> Self::Output {
+    fn mul(self, rhs: Self) -> Self {
         {% if self_t == "Mat2" and is_sse2 %}
             unsafe {
                 let abcd = self.0;
@@ -2677,7 +2677,7 @@ impl Mul<{{ self_t }}> for {{ scalar_t }} {
 impl Mul<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: {{ scalar_t }}) -> Self::Output {
+    fn mul(self, rhs: {{ scalar_t }}) -> Self {
         self.mul_scalar(rhs)
     }
 }
@@ -2699,7 +2699,7 @@ impl Div<{{ self_t }}> for {{ scalar_t }} {
 impl Div<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
     #[inline]
-    fn div(self, rhs: {{ scalar_t }}) -> Self::Output {
+    fn div(self, rhs: {{ scalar_t }}) -> Self {
         self.div_scalar(rhs)
     }
 }

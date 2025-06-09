@@ -2924,10 +2924,10 @@ impl ShrAssign<&u64> for I64Vec4 {
     }
 }
 
-impl Shl<crate::IVec4> for I64Vec4 {
+impl Shl<IVec4> for I64Vec4 {
     type Output = Self;
     #[inline]
-    fn shl(self, rhs: crate::IVec4) -> Self::Output {
+    fn shl(self, rhs: IVec4) -> Self {
         Self {
             x: self.x.shl(rhs.x),
             y: self.y.shl(rhs.y),
@@ -2937,34 +2937,34 @@ impl Shl<crate::IVec4> for I64Vec4 {
     }
 }
 
-impl Shl<&crate::IVec4> for I64Vec4 {
+impl Shl<&IVec4> for I64Vec4 {
     type Output = Self;
     #[inline]
-    fn shl(self, rhs: &crate::IVec4) -> Self {
+    fn shl(self, rhs: &IVec4) -> Self {
         self.shl(*rhs)
     }
 }
 
-impl Shl<&crate::IVec4> for &I64Vec4 {
+impl Shl<&IVec4> for &I64Vec4 {
     type Output = I64Vec4;
     #[inline]
-    fn shl(self, rhs: &crate::IVec4) -> I64Vec4 {
+    fn shl(self, rhs: &IVec4) -> I64Vec4 {
         (*self).shl(*rhs)
     }
 }
 
-impl Shl<crate::IVec4> for &I64Vec4 {
+impl Shl<IVec4> for &I64Vec4 {
     type Output = I64Vec4;
     #[inline]
-    fn shl(self, rhs: crate::IVec4) -> I64Vec4 {
+    fn shl(self, rhs: IVec4) -> I64Vec4 {
         (*self).shl(rhs)
     }
 }
 
-impl Shr<crate::IVec4> for I64Vec4 {
+impl Shr<IVec4> for I64Vec4 {
     type Output = Self;
     #[inline]
-    fn shr(self, rhs: crate::IVec4) -> Self::Output {
+    fn shr(self, rhs: IVec4) -> Self {
         Self {
             x: self.x.shr(rhs.x),
             y: self.y.shr(rhs.y),
@@ -2974,34 +2974,34 @@ impl Shr<crate::IVec4> for I64Vec4 {
     }
 }
 
-impl Shr<&crate::IVec4> for I64Vec4 {
+impl Shr<&IVec4> for I64Vec4 {
     type Output = Self;
     #[inline]
-    fn shr(self, rhs: &crate::IVec4) -> Self {
+    fn shr(self, rhs: &IVec4) -> Self {
         self.shr(*rhs)
     }
 }
 
-impl Shr<&crate::IVec4> for &I64Vec4 {
+impl Shr<&IVec4> for &I64Vec4 {
     type Output = I64Vec4;
     #[inline]
-    fn shr(self, rhs: &crate::IVec4) -> I64Vec4 {
+    fn shr(self, rhs: &IVec4) -> I64Vec4 {
         (*self).shr(*rhs)
     }
 }
 
-impl Shr<crate::IVec4> for &I64Vec4 {
+impl Shr<IVec4> for &I64Vec4 {
     type Output = I64Vec4;
     #[inline]
-    fn shr(self, rhs: crate::IVec4) -> I64Vec4 {
+    fn shr(self, rhs: IVec4) -> I64Vec4 {
         (*self).shr(rhs)
     }
 }
 
-impl Shl<crate::UVec4> for I64Vec4 {
+impl Shl<UVec4> for I64Vec4 {
     type Output = Self;
     #[inline]
-    fn shl(self, rhs: crate::UVec4) -> Self::Output {
+    fn shl(self, rhs: UVec4) -> Self {
         Self {
             x: self.x.shl(rhs.x),
             y: self.y.shl(rhs.y),
@@ -3011,34 +3011,34 @@ impl Shl<crate::UVec4> for I64Vec4 {
     }
 }
 
-impl Shl<&crate::UVec4> for I64Vec4 {
+impl Shl<&UVec4> for I64Vec4 {
     type Output = Self;
     #[inline]
-    fn shl(self, rhs: &crate::UVec4) -> Self {
+    fn shl(self, rhs: &UVec4) -> Self {
         self.shl(*rhs)
     }
 }
 
-impl Shl<&crate::UVec4> for &I64Vec4 {
+impl Shl<&UVec4> for &I64Vec4 {
     type Output = I64Vec4;
     #[inline]
-    fn shl(self, rhs: &crate::UVec4) -> I64Vec4 {
+    fn shl(self, rhs: &UVec4) -> I64Vec4 {
         (*self).shl(*rhs)
     }
 }
 
-impl Shl<crate::UVec4> for &I64Vec4 {
+impl Shl<UVec4> for &I64Vec4 {
     type Output = I64Vec4;
     #[inline]
-    fn shl(self, rhs: crate::UVec4) -> I64Vec4 {
+    fn shl(self, rhs: UVec4) -> I64Vec4 {
         (*self).shl(rhs)
     }
 }
 
-impl Shr<crate::UVec4> for I64Vec4 {
+impl Shr<UVec4> for I64Vec4 {
     type Output = Self;
     #[inline]
-    fn shr(self, rhs: crate::UVec4) -> Self::Output {
+    fn shr(self, rhs: UVec4) -> Self {
         Self {
             x: self.x.shr(rhs.x),
             y: self.y.shr(rhs.y),
@@ -3048,26 +3048,26 @@ impl Shr<crate::UVec4> for I64Vec4 {
     }
 }
 
-impl Shr<&crate::UVec4> for I64Vec4 {
+impl Shr<&UVec4> for I64Vec4 {
     type Output = Self;
     #[inline]
-    fn shr(self, rhs: &crate::UVec4) -> Self {
+    fn shr(self, rhs: &UVec4) -> Self {
         self.shr(*rhs)
     }
 }
 
-impl Shr<&crate::UVec4> for &I64Vec4 {
+impl Shr<&UVec4> for &I64Vec4 {
     type Output = I64Vec4;
     #[inline]
-    fn shr(self, rhs: &crate::UVec4) -> I64Vec4 {
+    fn shr(self, rhs: &UVec4) -> I64Vec4 {
         (*self).shr(*rhs)
     }
 }
 
-impl Shr<crate::UVec4> for &I64Vec4 {
+impl Shr<UVec4> for &I64Vec4 {
     type Output = I64Vec4;
     #[inline]
-    fn shr(self, rhs: crate::UVec4) -> I64Vec4 {
+    fn shr(self, rhs: UVec4) -> I64Vec4 {
         (*self).shr(rhs)
     }
 }

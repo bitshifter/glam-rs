@@ -135,7 +135,7 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub const fn to_array(&self) -> [f32; 4] {
-        unsafe { *(self as *const Vec4 as *const [f32; 4]) }
+        unsafe { *(self as *const Self as *const [f32; 4]) }
     }
 
     /// Creates a vector from the first 4 values in `slice`.

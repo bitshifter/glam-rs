@@ -825,7 +825,7 @@ impl fmt::Display for DQuat {
     }
 }
 
-impl Add<DQuat> for DQuat {
+impl Add for DQuat {
     type Output = Self;
     /// Adds two quaternions.
     ///
@@ -877,7 +877,7 @@ impl AddAssign<&Self> for DQuat {
     }
 }
 
-impl Sub<DQuat> for DQuat {
+impl Sub for DQuat {
     type Output = Self;
     /// Subtracts the `rhs` quaternion from `self`.
     ///
@@ -1023,7 +1023,7 @@ impl DivAssign<&f64> for DQuat {
     }
 }
 
-impl Mul<DQuat> for DQuat {
+impl Mul for DQuat {
     type Output = Self;
     /// Multiplies two quaternions. If they each represent a rotation, the result will
     /// represent the combined rotation.

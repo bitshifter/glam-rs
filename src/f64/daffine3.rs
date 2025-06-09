@@ -525,10 +525,10 @@ impl<'a> core::iter::Product<&'a Self> for DAffine3 {
 }
 
 impl Mul for DAffine3 {
-    type Output = DAffine3;
+    type Output = Self;
 
     #[inline]
-    fn mul(self, rhs: DAffine3) -> Self::Output {
+    fn mul(self, rhs: Self) -> Self {
         Self {
             matrix3: self.matrix3 * rhs.matrix3,
             translation: self.matrix3 * rhs.translation + self.translation,
@@ -608,11 +608,11 @@ impl Mul<DMat4> for &DAffine3 {
 }
 
 impl Mul<DAffine3> for DMat4 {
-    type Output = DMat4;
+    type Output = Self;
 
     #[inline]
-    fn mul(self, rhs: DAffine3) -> Self::Output {
-        self * DMat4::from(rhs)
+    fn mul(self, rhs: DAffine3) -> Self {
+        self * Self::from(rhs)
     }
 }
 
@@ -656,8 +656,8 @@ impl MulAssign<&DAffine3> for DMat4 {
 
 impl From<DAffine3> for DMat4 {
     #[inline]
-    fn from(m: DAffine3) -> DMat4 {
-        DMat4::from_cols(
+    fn from(m: DAffine3) -> Self {
+        Self::from_cols(
             m.matrix3.x_axis.extend(0.0),
             m.matrix3.y_axis.extend(0.0),
             m.matrix3.z_axis.extend(0.0),
