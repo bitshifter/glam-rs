@@ -708,33 +708,21 @@ impl Mat3A {
     #[inline]
     #[must_use]
     pub fn mul_mat3(&self, rhs: &Self) -> Self {
-        Self::from_cols(
-            self.mul(rhs.x_axis),
-            self.mul(rhs.y_axis),
-            self.mul(rhs.z_axis),
-        )
+        self.mul(rhs)
     }
 
     /// Adds two 3x3 matrices.
     #[inline]
     #[must_use]
     pub fn add_mat3(&self, rhs: &Self) -> Self {
-        Self::from_cols(
-            self.x_axis.add(rhs.x_axis),
-            self.y_axis.add(rhs.y_axis),
-            self.z_axis.add(rhs.z_axis),
-        )
+        self.add(rhs)
     }
 
     /// Subtracts two 3x3 matrices.
     #[inline]
     #[must_use]
     pub fn sub_mat3(&self, rhs: &Self) -> Self {
-        Self::from_cols(
-            self.x_axis.sub(rhs.x_axis),
-            self.y_axis.sub(rhs.y_axis),
-            self.z_axis.sub(rhs.z_axis),
-        )
+        self.sub(rhs)
     }
 
     /// Multiplies a 3x3 matrix by a scalar.
@@ -801,33 +789,103 @@ impl Default for Mat3A {
     }
 }
 
-impl Add<Mat3A> for Mat3A {
+impl Add for Mat3A {
     type Output = Self;
     #[inline]
-    fn add(self, rhs: Self) -> Self::Output {
-        self.add_mat3(&rhs)
+    fn add(self, rhs: Self) -> Self {
+        Self::from_cols(
+            self.x_axis.add(rhs.x_axis),
+            self.y_axis.add(rhs.y_axis),
+            self.z_axis.add(rhs.z_axis),
+        )
     }
 }
 
-impl AddAssign<Mat3A> for Mat3A {
+impl Add<&Self> for Mat3A {
+    type Output = Self;
+    #[inline]
+    fn add(self, rhs: &Self) -> Self {
+        self.add(*rhs)
+    }
+}
+
+impl Add<&Mat3A> for &Mat3A {
+    type Output = Mat3A;
+    #[inline]
+    fn add(self, rhs: &Mat3A) -> Mat3A {
+        (*self).add(*rhs)
+    }
+}
+
+impl Add<Mat3A> for &Mat3A {
+    type Output = Mat3A;
+    #[inline]
+    fn add(self, rhs: Mat3A) -> Mat3A {
+        (*self).add(rhs)
+    }
+}
+
+impl AddAssign for Mat3A {
     #[inline]
     fn add_assign(&mut self, rhs: Self) {
-        *self = self.add_mat3(&rhs);
+        *self = self.add(rhs);
     }
 }
 
-impl Sub<Mat3A> for Mat3A {
+impl AddAssign<&Self> for Mat3A {
+    #[inline]
+    fn add_assign(&mut self, rhs: &Self) {
+        self.add_assign(*rhs);
+    }
+}
+
+impl Sub for Mat3A {
     type Output = Self;
     #[inline]
-    fn sub(self, rhs: Self) -> Self::Output {
-        self.sub_mat3(&rhs)
+    fn sub(self, rhs: Self) -> Self {
+        Self::from_cols(
+            self.x_axis.sub(rhs.x_axis),
+            self.y_axis.sub(rhs.y_axis),
+            self.z_axis.sub(rhs.z_axis),
+        )
     }
 }
 
-impl SubAssign<Mat3A> for Mat3A {
+impl Sub<&Self> for Mat3A {
+    type Output = Self;
+    #[inline]
+    fn sub(self, rhs: &Self) -> Self {
+        self.sub(*rhs)
+    }
+}
+
+impl Sub<&Mat3A> for &Mat3A {
+    type Output = Mat3A;
+    #[inline]
+    fn sub(self, rhs: &Mat3A) -> Mat3A {
+        (*self).sub(*rhs)
+    }
+}
+
+impl Sub<Mat3A> for &Mat3A {
+    type Output = Mat3A;
+    #[inline]
+    fn sub(self, rhs: Mat3A) -> Mat3A {
+        (*self).sub(rhs)
+    }
+}
+
+impl SubAssign for Mat3A {
     #[inline]
     fn sub_assign(&mut self, rhs: Self) {
-        *self = self.sub_mat3(&rhs);
+        *self = self.sub(rhs);
+    }
+}
+
+impl SubAssign<&Self> for Mat3A {
+    #[inline]
+    fn sub_assign(&mut self, rhs: &Self) {
+        self.sub_assign(*rhs);
     }
 }
 
@@ -839,18 +897,61 @@ impl Neg for Mat3A {
     }
 }
 
-impl Mul<Mat3A> for Mat3A {
-    type Output = Self;
+impl Neg for &Mat3A {
+    type Output = Mat3A;
     #[inline]
-    fn mul(self, rhs: Self) -> Self::Output {
-        self.mul_mat3(&rhs)
+    fn neg(self) -> Mat3A {
+        (*self).neg()
     }
 }
 
-impl MulAssign<Mat3A> for Mat3A {
+impl Mul for Mat3A {
+    type Output = Self;
+    #[inline]
+    fn mul(self, rhs: Self) -> Self {
+        Self::from_cols(
+            self.mul(rhs.x_axis),
+            self.mul(rhs.y_axis),
+            self.mul(rhs.z_axis),
+        )
+    }
+}
+
+impl Mul<&Self> for Mat3A {
+    type Output = Self;
+    #[inline]
+    fn mul(self, rhs: &Self) -> Self {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&Mat3A> for &Mat3A {
+    type Output = Mat3A;
+    #[inline]
+    fn mul(self, rhs: &Mat3A) -> Mat3A {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<Mat3A> for &Mat3A {
+    type Output = Mat3A;
+    #[inline]
+    fn mul(self, rhs: Mat3A) -> Mat3A {
+        (*self).mul(rhs)
+    }
+}
+
+impl MulAssign for Mat3A {
     #[inline]
     fn mul_assign(&mut self, rhs: Self) {
-        *self = self.mul_mat3(&rhs);
+        *self = self.mul(rhs);
+    }
+}
+
+impl MulAssign<&Self> for Mat3A {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &Self) {
+        self.mul_assign(*rhs);
     }
 }
 
@@ -862,6 +963,30 @@ impl Mul<Vec3A> for Mat3A {
     }
 }
 
+impl Mul<&Vec3A> for Mat3A {
+    type Output = Vec3A;
+    #[inline]
+    fn mul(self, rhs: &Vec3A) -> Vec3A {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&Vec3A> for &Mat3A {
+    type Output = Vec3A;
+    #[inline]
+    fn mul(self, rhs: &Vec3A) -> Vec3A {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<Vec3A> for &Mat3A {
+    type Output = Vec3A;
+    #[inline]
+    fn mul(self, rhs: Vec3A) -> Vec3A {
+        (*self).mul(rhs)
+    }
+}
+
 impl Mul<Mat3A> for f32 {
     type Output = Mat3A;
     #[inline]
@@ -870,18 +995,73 @@ impl Mul<Mat3A> for f32 {
     }
 }
 
+impl Mul<&Mat3A> for f32 {
+    type Output = Mat3A;
+    #[inline]
+    fn mul(self, rhs: &Mat3A) -> Mat3A {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&Mat3A> for &f32 {
+    type Output = Mat3A;
+    #[inline]
+    fn mul(self, rhs: &Mat3A) -> Mat3A {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<Mat3A> for &f32 {
+    type Output = Mat3A;
+    #[inline]
+    fn mul(self, rhs: Mat3A) -> Mat3A {
+        (*self).mul(rhs)
+    }
+}
+
 impl Mul<f32> for Mat3A {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: f32) -> Self::Output {
+    fn mul(self, rhs: f32) -> Self {
         self.mul_scalar(rhs)
+    }
+}
+
+impl Mul<&f32> for Mat3A {
+    type Output = Self;
+    #[inline]
+    fn mul(self, rhs: &f32) -> Self {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&f32> for &Mat3A {
+    type Output = Mat3A;
+    #[inline]
+    fn mul(self, rhs: &f32) -> Mat3A {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<f32> for &Mat3A {
+    type Output = Mat3A;
+    #[inline]
+    fn mul(self, rhs: f32) -> Mat3A {
+        (*self).mul(rhs)
     }
 }
 
 impl MulAssign<f32> for Mat3A {
     #[inline]
     fn mul_assign(&mut self, rhs: f32) {
-        *self = self.mul_scalar(rhs);
+        *self = self.mul(rhs);
+    }
+}
+
+impl MulAssign<&f32> for Mat3A {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &f32) {
+        self.mul_assign(*rhs);
     }
 }
 
@@ -893,18 +1073,73 @@ impl Div<Mat3A> for f32 {
     }
 }
 
+impl Div<&Mat3A> for f32 {
+    type Output = Mat3A;
+    #[inline]
+    fn div(self, rhs: &Mat3A) -> Mat3A {
+        self.div(*rhs)
+    }
+}
+
+impl Div<&Mat3A> for &f32 {
+    type Output = Mat3A;
+    #[inline]
+    fn div(self, rhs: &Mat3A) -> Mat3A {
+        (*self).div(*rhs)
+    }
+}
+
+impl Div<Mat3A> for &f32 {
+    type Output = Mat3A;
+    #[inline]
+    fn div(self, rhs: Mat3A) -> Mat3A {
+        (*self).div(rhs)
+    }
+}
+
 impl Div<f32> for Mat3A {
     type Output = Self;
     #[inline]
-    fn div(self, rhs: f32) -> Self::Output {
+    fn div(self, rhs: f32) -> Self {
         self.div_scalar(rhs)
+    }
+}
+
+impl Div<&f32> for Mat3A {
+    type Output = Self;
+    #[inline]
+    fn div(self, rhs: &f32) -> Self {
+        self.div(*rhs)
+    }
+}
+
+impl Div<&f32> for &Mat3A {
+    type Output = Mat3A;
+    #[inline]
+    fn div(self, rhs: &f32) -> Mat3A {
+        (*self).div(*rhs)
+    }
+}
+
+impl Div<f32> for &Mat3A {
+    type Output = Mat3A;
+    #[inline]
+    fn div(self, rhs: f32) -> Mat3A {
+        (*self).div(rhs)
     }
 }
 
 impl DivAssign<f32> for Mat3A {
     #[inline]
     fn div_assign(&mut self, rhs: f32) {
-        *self = self.div_scalar(rhs);
+        *self = self.div(rhs);
+    }
+}
+
+impl DivAssign<&f32> for Mat3A {
+    #[inline]
+    fn div_assign(&mut self, rhs: &f32) {
+        self.div_assign(*rhs);
     }
 }
 
@@ -913,6 +1148,30 @@ impl Mul<Vec3> for Mat3A {
     #[inline]
     fn mul(self, rhs: Vec3) -> Vec3 {
         self.mul_vec3a(rhs.into()).into()
+    }
+}
+
+impl Mul<&Vec3> for Mat3A {
+    type Output = Vec3;
+    #[inline]
+    fn mul(self, rhs: &Vec3) -> Vec3 {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&Vec3> for &Mat3A {
+    type Output = Vec3;
+    #[inline]
+    fn mul(self, rhs: &Vec3) -> Vec3 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<Vec3> for &Mat3A {
+    type Output = Vec3;
+    #[inline]
+    fn mul(self, rhs: Vec3) -> Vec3 {
+        (*self).mul(rhs)
     }
 }
 

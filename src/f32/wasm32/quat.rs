@@ -11,7 +11,9 @@ use core::arch::wasm32::*;
 
 use core::fmt;
 use core::iter::{Product, Sum};
-use core::ops::{Add, AddAssign, Deref, DerefMut, Div, Mul, MulAssign, Neg, Sub};
+use core::ops::{
+    Add, AddAssign, Deref, DerefMut, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign,
+};
 
 /// Creates a quaternion from `x`, `y`, `z` and `w` values.
 ///
@@ -870,7 +872,7 @@ impl fmt::Display for Quat {
     }
 }
 
-impl Add<Quat> for Quat {
+impl Add for Quat {
     type Output = Self;
     /// Adds two quaternions.
     ///
@@ -884,20 +886,45 @@ impl Add<Quat> for Quat {
     }
 }
 
-impl AddAssign<Quat> for Quat {
-    /// Adds two quaternions.
-    ///
-    /// The sum is not guaranteed to be normalized.
-    ///
-    /// Note that addition is not the same as combining the rotations represented by the
-    /// two quaternions! That corresponds to multiplication.
+impl Add<&Self> for Quat {
+    type Output = Self;
     #[inline]
-    fn add_assign(&mut self, rhs: Self) {
-        *self = *self + rhs;
+    fn add(self, rhs: &Self) -> Self {
+        self.add(*rhs)
     }
 }
 
-impl Sub<Quat> for Quat {
+impl Add<&Quat> for &Quat {
+    type Output = Quat;
+    #[inline]
+    fn add(self, rhs: &Quat) -> Quat {
+        (*self).add(*rhs)
+    }
+}
+
+impl Add<Quat> for &Quat {
+    type Output = Quat;
+    #[inline]
+    fn add(self, rhs: Quat) -> Quat {
+        (*self).add(rhs)
+    }
+}
+
+impl AddAssign for Quat {
+    #[inline]
+    fn add_assign(&mut self, rhs: Self) {
+        *self = self.add(rhs);
+    }
+}
+
+impl AddAssign<&Self> for Quat {
+    #[inline]
+    fn add_assign(&mut self, rhs: &Self) {
+        self.add_assign(*rhs);
+    }
+}
+
+impl Sub for Quat {
     type Output = Self;
     /// Subtracts the `rhs` quaternion from `self`.
     ///
@@ -905,6 +932,44 @@ impl Sub<Quat> for Quat {
     #[inline]
     fn sub(self, rhs: Self) -> Self {
         Self::from_vec4(Vec4::from(self) - Vec4::from(rhs))
+    }
+}
+
+impl Sub<&Self> for Quat {
+    type Output = Self;
+    #[inline]
+    fn sub(self, rhs: &Self) -> Self {
+        self.sub(*rhs)
+    }
+}
+
+impl Sub<&Quat> for &Quat {
+    type Output = Quat;
+    #[inline]
+    fn sub(self, rhs: &Quat) -> Quat {
+        (*self).sub(*rhs)
+    }
+}
+
+impl Sub<Quat> for &Quat {
+    type Output = Quat;
+    #[inline]
+    fn sub(self, rhs: Quat) -> Quat {
+        (*self).sub(rhs)
+    }
+}
+
+impl SubAssign for Quat {
+    #[inline]
+    fn sub_assign(&mut self, rhs: Self) {
+        *self = self.sub(rhs);
+    }
+}
+
+impl SubAssign<&Self> for Quat {
+    #[inline]
+    fn sub_assign(&mut self, rhs: &Self) {
+        self.sub_assign(*rhs);
     }
 }
 
@@ -919,6 +984,44 @@ impl Mul<f32> for Quat {
     }
 }
 
+impl Mul<&f32> for Quat {
+    type Output = Self;
+    #[inline]
+    fn mul(self, rhs: &f32) -> Self {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&f32> for &Quat {
+    type Output = Quat;
+    #[inline]
+    fn mul(self, rhs: &f32) -> Quat {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<f32> for &Quat {
+    type Output = Quat;
+    #[inline]
+    fn mul(self, rhs: f32) -> Quat {
+        (*self).mul(rhs)
+    }
+}
+
+impl MulAssign<f32> for Quat {
+    #[inline]
+    fn mul_assign(&mut self, rhs: f32) {
+        *self = self.mul(rhs);
+    }
+}
+
+impl MulAssign<&f32> for Quat {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &f32) {
+        self.mul_assign(*rhs);
+    }
+}
+
 impl Div<f32> for Quat {
     type Output = Self;
     /// Divides a quaternion by a scalar value.
@@ -929,7 +1032,45 @@ impl Div<f32> for Quat {
     }
 }
 
-impl Mul<Quat> for Quat {
+impl Div<&f32> for Quat {
+    type Output = Self;
+    #[inline]
+    fn div(self, rhs: &f32) -> Self {
+        self.div(*rhs)
+    }
+}
+
+impl Div<&f32> for &Quat {
+    type Output = Quat;
+    #[inline]
+    fn div(self, rhs: &f32) -> Quat {
+        (*self).div(*rhs)
+    }
+}
+
+impl Div<f32> for &Quat {
+    type Output = Quat;
+    #[inline]
+    fn div(self, rhs: f32) -> Quat {
+        (*self).div(rhs)
+    }
+}
+
+impl DivAssign<f32> for Quat {
+    #[inline]
+    fn div_assign(&mut self, rhs: f32) {
+        *self = self.div(rhs);
+    }
+}
+
+impl DivAssign<&f32> for Quat {
+    #[inline]
+    fn div_assign(&mut self, rhs: &f32) {
+        self.div_assign(*rhs);
+    }
+}
+
+impl Mul for Quat {
     type Output = Self;
     /// Multiplies two quaternions. If they each represent a rotation, the result will
     /// represent the combined rotation.
@@ -946,19 +1087,41 @@ impl Mul<Quat> for Quat {
     }
 }
 
-impl MulAssign<Quat> for Quat {
-    /// Multiplies two quaternions. If they each represent a rotation, the result will
-    /// represent the combined rotation.
-    ///
-    /// Note that due to floating point rounding the result may not be perfectly
-    /// normalized.
-    ///
-    /// # Panics
-    ///
-    /// Will panic if `self` or `rhs` are not normalized when `glam_assert` is enabled.
+impl Mul<&Self> for Quat {
+    type Output = Self;
+    #[inline]
+    fn mul(self, rhs: &Self) -> Self {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&Quat> for &Quat {
+    type Output = Quat;
+    #[inline]
+    fn mul(self, rhs: &Quat) -> Quat {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<Quat> for &Quat {
+    type Output = Quat;
+    #[inline]
+    fn mul(self, rhs: Quat) -> Quat {
+        (*self).mul(rhs)
+    }
+}
+
+impl MulAssign for Quat {
     #[inline]
     fn mul_assign(&mut self, rhs: Self) {
-        *self = self.mul_quat(rhs);
+        *self = self.mul(rhs);
+    }
+}
+
+impl MulAssign<&Self> for Quat {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &Self) {
+        self.mul_assign(*rhs);
     }
 }
 
@@ -975,11 +1138,75 @@ impl Mul<Vec3> for Quat {
     }
 }
 
+impl Mul<&Vec3> for Quat {
+    type Output = Vec3;
+    #[inline]
+    fn mul(self, rhs: &Vec3) -> Vec3 {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&Vec3> for &Quat {
+    type Output = Vec3;
+    #[inline]
+    fn mul(self, rhs: &Vec3) -> Vec3 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<Vec3> for &Quat {
+    type Output = Vec3;
+    #[inline]
+    fn mul(self, rhs: Vec3) -> Vec3 {
+        (*self).mul(rhs)
+    }
+}
+
+impl Mul<Vec3A> for Quat {
+    type Output = Vec3A;
+    #[inline]
+    fn mul(self, rhs: Vec3A) -> Self::Output {
+        self.mul_vec3a(rhs)
+    }
+}
+
+impl Mul<&Vec3A> for Quat {
+    type Output = Vec3A;
+    #[inline]
+    fn mul(self, rhs: &Vec3A) -> Vec3A {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&Vec3A> for &Quat {
+    type Output = Vec3A;
+    #[inline]
+    fn mul(self, rhs: &Vec3A) -> Vec3A {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<Vec3A> for &Quat {
+    type Output = Vec3A;
+    #[inline]
+    fn mul(self, rhs: Vec3A) -> Vec3A {
+        (*self).mul(rhs)
+    }
+}
+
 impl Neg for Quat {
     type Output = Self;
     #[inline]
     fn neg(self) -> Self {
         self * -1.0
+    }
+}
+
+impl Neg for &Quat {
+    type Output = Quat;
+    #[inline]
+    fn neg(self) -> Quat {
+        (*self).neg()
     }
 }
 
@@ -1038,14 +1265,6 @@ impl<'a> Product<&'a Self> for Quat {
         I: Iterator<Item = &'a Self>,
     {
         iter.fold(Self::IDENTITY, |a, &b| Self::mul(a, b))
-    }
-}
-
-impl Mul<Vec3A> for Quat {
-    type Output = Vec3A;
-    #[inline]
-    fn mul(self, rhs: Vec3A) -> Self::Output {
-        self.mul_vec3a(rhs)
     }
 }
 

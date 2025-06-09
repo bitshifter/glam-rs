@@ -643,1277 +643,1277 @@ impl Vec4Swizzles for Vec4 {
     }
 
     #[inline]
-    fn xxxx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_00_00) })
+    fn xxxx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_00_00) })
     }
 
     #[inline]
-    fn xxxy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_00_00) })
+    fn xxxy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_00_00) })
     }
 
     #[inline]
-    fn xxxz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_00_00) })
+    fn xxxz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_00_00) })
     }
 
     #[inline]
-    fn xxxw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_00_00) })
+    fn xxxw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_00_00) })
     }
 
     #[inline]
-    fn xxyx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_00_00) })
+    fn xxyx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_00_00) })
     }
 
     #[inline]
-    fn xxyy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_00_00) })
+    fn xxyy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_00_00) })
     }
 
     #[inline]
-    fn xxyz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_00_00) })
+    fn xxyz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_00_00) })
     }
 
     #[inline]
-    fn xxyw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_00_00) })
+    fn xxyw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_00_00) })
     }
 
     #[inline]
-    fn xxzx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_00_00) })
+    fn xxzx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_00_00) })
     }
 
     #[inline]
-    fn xxzy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_00_00) })
+    fn xxzy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_00_00) })
     }
 
     #[inline]
-    fn xxzz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_00_00) })
+    fn xxzz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_00_00) })
     }
 
     #[inline]
-    fn xxzw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_00_00) })
+    fn xxzw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_00_00) })
     }
 
     #[inline]
-    fn xxwx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_00_00) })
+    fn xxwx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_00_00) })
     }
 
     #[inline]
-    fn xxwy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_00_00) })
+    fn xxwy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_00_00) })
     }
 
     #[inline]
-    fn xxwz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_00_00) })
+    fn xxwz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_00_00) })
     }
 
     #[inline]
-    fn xxww(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_00_00) })
+    fn xxww(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_00_00) })
     }
 
     #[inline]
-    fn xyxx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_01_00) })
+    fn xyxx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_01_00) })
     }
 
     #[inline]
-    fn xyxy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_01_00) })
+    fn xyxy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_01_00) })
     }
 
     #[inline]
-    fn xyxz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_01_00) })
+    fn xyxz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_01_00) })
     }
 
     #[inline]
-    fn xyxw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_01_00) })
+    fn xyxw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_01_00) })
     }
 
     #[inline]
-    fn xyyx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_01_00) })
+    fn xyyx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_01_00) })
     }
 
     #[inline]
-    fn xyyy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_01_00) })
+    fn xyyy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_01_00) })
     }
 
     #[inline]
-    fn xyyz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_01_00) })
+    fn xyyz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_01_00) })
     }
 
     #[inline]
-    fn xyyw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_01_00) })
+    fn xyyw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_01_00) })
     }
 
     #[inline]
-    fn xyzx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_01_00) })
+    fn xyzx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_01_00) })
     }
 
     #[inline]
-    fn xyzy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_01_00) })
+    fn xyzy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_01_00) })
     }
 
     #[inline]
-    fn xyzz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_01_00) })
+    fn xyzz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_01_00) })
     }
 
     #[inline]
-    fn xywx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_01_00) })
+    fn xywx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_01_00) })
     }
 
     #[inline]
-    fn xywy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_01_00) })
+    fn xywy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_01_00) })
     }
 
     #[inline]
-    fn xywz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_01_00) })
+    fn xywz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_01_00) })
     }
 
     #[inline]
-    fn xyww(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_01_00) })
+    fn xyww(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_01_00) })
     }
 
     #[inline]
-    fn xzxx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_10_00) })
+    fn xzxx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_10_00) })
     }
 
     #[inline]
-    fn xzxy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_10_00) })
+    fn xzxy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_10_00) })
     }
 
     #[inline]
-    fn xzxz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_10_00) })
+    fn xzxz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_10_00) })
     }
 
     #[inline]
-    fn xzxw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_10_00) })
+    fn xzxw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_10_00) })
     }
 
     #[inline]
-    fn xzyx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_10_00) })
+    fn xzyx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_10_00) })
     }
 
     #[inline]
-    fn xzyy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_10_00) })
+    fn xzyy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_10_00) })
     }
 
     #[inline]
-    fn xzyz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_10_00) })
+    fn xzyz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_10_00) })
     }
 
     #[inline]
-    fn xzyw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_10_00) })
+    fn xzyw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_10_00) })
     }
 
     #[inline]
-    fn xzzx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_10_00) })
+    fn xzzx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_10_00) })
     }
 
     #[inline]
-    fn xzzy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_10_00) })
+    fn xzzy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_10_00) })
     }
 
     #[inline]
-    fn xzzz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_10_00) })
+    fn xzzz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_10_00) })
     }
 
     #[inline]
-    fn xzzw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_10_00) })
+    fn xzzw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_10_00) })
     }
 
     #[inline]
-    fn xzwx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_10_00) })
+    fn xzwx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_10_00) })
     }
 
     #[inline]
-    fn xzwy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_10_00) })
+    fn xzwy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_10_00) })
     }
 
     #[inline]
-    fn xzwz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_10_00) })
+    fn xzwz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_10_00) })
     }
 
     #[inline]
-    fn xzww(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_10_00) })
+    fn xzww(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_10_00) })
     }
 
     #[inline]
-    fn xwxx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_11_00) })
+    fn xwxx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_11_00) })
     }
 
     #[inline]
-    fn xwxy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_11_00) })
+    fn xwxy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_11_00) })
     }
 
     #[inline]
-    fn xwxz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_11_00) })
+    fn xwxz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_11_00) })
     }
 
     #[inline]
-    fn xwxw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_11_00) })
+    fn xwxw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_11_00) })
     }
 
     #[inline]
-    fn xwyx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_11_00) })
+    fn xwyx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_11_00) })
     }
 
     #[inline]
-    fn xwyy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_11_00) })
+    fn xwyy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_11_00) })
     }
 
     #[inline]
-    fn xwyz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_11_00) })
+    fn xwyz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_11_00) })
     }
 
     #[inline]
-    fn xwyw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_11_00) })
+    fn xwyw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_11_00) })
     }
 
     #[inline]
-    fn xwzx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_11_00) })
+    fn xwzx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_11_00) })
     }
 
     #[inline]
-    fn xwzy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_11_00) })
+    fn xwzy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_11_00) })
     }
 
     #[inline]
-    fn xwzz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_11_00) })
+    fn xwzz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_11_00) })
     }
 
     #[inline]
-    fn xwzw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_11_00) })
+    fn xwzw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_11_00) })
     }
 
     #[inline]
-    fn xwwx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_11_00) })
+    fn xwwx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_11_00) })
     }
 
     #[inline]
-    fn xwwy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_11_00) })
+    fn xwwy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_11_00) })
     }
 
     #[inline]
-    fn xwwz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_11_00) })
+    fn xwwz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_11_00) })
     }
 
     #[inline]
-    fn xwww(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_11_00) })
+    fn xwww(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_11_00) })
     }
 
     #[inline]
-    fn yxxx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_00_01) })
+    fn yxxx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_00_01) })
     }
 
     #[inline]
-    fn yxxy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_00_01) })
+    fn yxxy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_00_01) })
     }
 
     #[inline]
-    fn yxxz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_00_01) })
+    fn yxxz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_00_01) })
     }
 
     #[inline]
-    fn yxxw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_00_01) })
+    fn yxxw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_00_01) })
     }
 
     #[inline]
-    fn yxyx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_00_01) })
+    fn yxyx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_00_01) })
     }
 
     #[inline]
-    fn yxyy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_00_01) })
+    fn yxyy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_00_01) })
     }
 
     #[inline]
-    fn yxyz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_00_01) })
+    fn yxyz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_00_01) })
     }
 
     #[inline]
-    fn yxyw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_00_01) })
+    fn yxyw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_00_01) })
     }
 
     #[inline]
-    fn yxzx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_00_01) })
+    fn yxzx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_00_01) })
     }
 
     #[inline]
-    fn yxzy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_00_01) })
+    fn yxzy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_00_01) })
     }
 
     #[inline]
-    fn yxzz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_00_01) })
+    fn yxzz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_00_01) })
     }
 
     #[inline]
-    fn yxzw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_00_01) })
+    fn yxzw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_00_01) })
     }
 
     #[inline]
-    fn yxwx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_00_01) })
+    fn yxwx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_00_01) })
     }
 
     #[inline]
-    fn yxwy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_00_01) })
+    fn yxwy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_00_01) })
     }
 
     #[inline]
-    fn yxwz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_00_01) })
+    fn yxwz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_00_01) })
     }
 
     #[inline]
-    fn yxww(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_00_01) })
+    fn yxww(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_00_01) })
     }
 
     #[inline]
-    fn yyxx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_01_01) })
+    fn yyxx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_01_01) })
     }
 
     #[inline]
-    fn yyxy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_01_01) })
+    fn yyxy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_01_01) })
     }
 
     #[inline]
-    fn yyxz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_01_01) })
+    fn yyxz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_01_01) })
     }
 
     #[inline]
-    fn yyxw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_01_01) })
+    fn yyxw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_01_01) })
     }
 
     #[inline]
-    fn yyyx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_01_01) })
+    fn yyyx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_01_01) })
     }
 
     #[inline]
-    fn yyyy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_01_01) })
+    fn yyyy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_01_01) })
     }
 
     #[inline]
-    fn yyyz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_01_01) })
+    fn yyyz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_01_01) })
     }
 
     #[inline]
-    fn yyyw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_01_01) })
+    fn yyyw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_01_01) })
     }
 
     #[inline]
-    fn yyzx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_01_01) })
+    fn yyzx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_01_01) })
     }
 
     #[inline]
-    fn yyzy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_01_01) })
+    fn yyzy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_01_01) })
     }
 
     #[inline]
-    fn yyzz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_01_01) })
+    fn yyzz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_01_01) })
     }
 
     #[inline]
-    fn yyzw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_01_01) })
+    fn yyzw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_01_01) })
     }
 
     #[inline]
-    fn yywx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_01_01) })
+    fn yywx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_01_01) })
     }
 
     #[inline]
-    fn yywy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_01_01) })
+    fn yywy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_01_01) })
     }
 
     #[inline]
-    fn yywz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_01_01) })
+    fn yywz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_01_01) })
     }
 
     #[inline]
-    fn yyww(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_01_01) })
+    fn yyww(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_01_01) })
     }
 
     #[inline]
-    fn yzxx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_10_01) })
+    fn yzxx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_10_01) })
     }
 
     #[inline]
-    fn yzxy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_10_01) })
+    fn yzxy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_10_01) })
     }
 
     #[inline]
-    fn yzxz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_10_01) })
+    fn yzxz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_10_01) })
     }
 
     #[inline]
-    fn yzxw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_10_01) })
+    fn yzxw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_10_01) })
     }
 
     #[inline]
-    fn yzyx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_10_01) })
+    fn yzyx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_10_01) })
     }
 
     #[inline]
-    fn yzyy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_10_01) })
+    fn yzyy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_10_01) })
     }
 
     #[inline]
-    fn yzyz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_10_01) })
+    fn yzyz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_10_01) })
     }
 
     #[inline]
-    fn yzyw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_10_01) })
+    fn yzyw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_10_01) })
     }
 
     #[inline]
-    fn yzzx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_10_01) })
+    fn yzzx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_10_01) })
     }
 
     #[inline]
-    fn yzzy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_10_01) })
+    fn yzzy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_10_01) })
     }
 
     #[inline]
-    fn yzzz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_10_01) })
+    fn yzzz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_10_01) })
     }
 
     #[inline]
-    fn yzzw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_10_01) })
+    fn yzzw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_10_01) })
     }
 
     #[inline]
-    fn yzwx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_10_01) })
+    fn yzwx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_10_01) })
     }
 
     #[inline]
-    fn yzwy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_10_01) })
+    fn yzwy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_10_01) })
     }
 
     #[inline]
-    fn yzwz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_10_01) })
+    fn yzwz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_10_01) })
     }
 
     #[inline]
-    fn yzww(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_10_01) })
+    fn yzww(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_10_01) })
     }
 
     #[inline]
-    fn ywxx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_11_01) })
+    fn ywxx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_11_01) })
     }
 
     #[inline]
-    fn ywxy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_11_01) })
+    fn ywxy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_11_01) })
     }
 
     #[inline]
-    fn ywxz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_11_01) })
+    fn ywxz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_11_01) })
     }
 
     #[inline]
-    fn ywxw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_11_01) })
+    fn ywxw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_11_01) })
     }
 
     #[inline]
-    fn ywyx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_11_01) })
+    fn ywyx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_11_01) })
     }
 
     #[inline]
-    fn ywyy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_11_01) })
+    fn ywyy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_11_01) })
     }
 
     #[inline]
-    fn ywyz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_11_01) })
+    fn ywyz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_11_01) })
     }
 
     #[inline]
-    fn ywyw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_11_01) })
+    fn ywyw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_11_01) })
     }
 
     #[inline]
-    fn ywzx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_11_01) })
+    fn ywzx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_11_01) })
     }
 
     #[inline]
-    fn ywzy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_11_01) })
+    fn ywzy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_11_01) })
     }
 
     #[inline]
-    fn ywzz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_11_01) })
+    fn ywzz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_11_01) })
     }
 
     #[inline]
-    fn ywzw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_11_01) })
+    fn ywzw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_11_01) })
     }
 
     #[inline]
-    fn ywwx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_11_01) })
+    fn ywwx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_11_01) })
     }
 
     #[inline]
-    fn ywwy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_11_01) })
+    fn ywwy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_11_01) })
     }
 
     #[inline]
-    fn ywwz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_11_01) })
+    fn ywwz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_11_01) })
     }
 
     #[inline]
-    fn ywww(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_11_01) })
+    fn ywww(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_11_01) })
     }
 
     #[inline]
-    fn zxxx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_00_10) })
+    fn zxxx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_00_10) })
     }
 
     #[inline]
-    fn zxxy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_00_10) })
+    fn zxxy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_00_10) })
     }
 
     #[inline]
-    fn zxxz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_00_10) })
+    fn zxxz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_00_10) })
     }
 
     #[inline]
-    fn zxxw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_00_10) })
+    fn zxxw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_00_10) })
     }
 
     #[inline]
-    fn zxyx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_00_10) })
+    fn zxyx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_00_10) })
     }
 
     #[inline]
-    fn zxyy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_00_10) })
+    fn zxyy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_00_10) })
     }
 
     #[inline]
-    fn zxyz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_00_10) })
+    fn zxyz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_00_10) })
     }
 
     #[inline]
-    fn zxyw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_00_10) })
+    fn zxyw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_00_10) })
     }
 
     #[inline]
-    fn zxzx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_00_10) })
+    fn zxzx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_00_10) })
     }
 
     #[inline]
-    fn zxzy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_00_10) })
+    fn zxzy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_00_10) })
     }
 
     #[inline]
-    fn zxzz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_00_10) })
+    fn zxzz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_00_10) })
     }
 
     #[inline]
-    fn zxzw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_00_10) })
+    fn zxzw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_00_10) })
     }
 
     #[inline]
-    fn zxwx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_00_10) })
+    fn zxwx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_00_10) })
     }
 
     #[inline]
-    fn zxwy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_00_10) })
+    fn zxwy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_00_10) })
     }
 
     #[inline]
-    fn zxwz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_00_10) })
+    fn zxwz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_00_10) })
     }
 
     #[inline]
-    fn zxww(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_00_10) })
+    fn zxww(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_00_10) })
     }
 
     #[inline]
-    fn zyxx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_01_10) })
+    fn zyxx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_01_10) })
     }
 
     #[inline]
-    fn zyxy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_01_10) })
+    fn zyxy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_01_10) })
     }
 
     #[inline]
-    fn zyxz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_01_10) })
+    fn zyxz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_01_10) })
     }
 
     #[inline]
-    fn zyxw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_01_10) })
+    fn zyxw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_01_10) })
     }
 
     #[inline]
-    fn zyyx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_01_10) })
+    fn zyyx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_01_10) })
     }
 
     #[inline]
-    fn zyyy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_01_10) })
+    fn zyyy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_01_10) })
     }
 
     #[inline]
-    fn zyyz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_01_10) })
+    fn zyyz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_01_10) })
     }
 
     #[inline]
-    fn zyyw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_01_10) })
+    fn zyyw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_01_10) })
     }
 
     #[inline]
-    fn zyzx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_01_10) })
+    fn zyzx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_01_10) })
     }
 
     #[inline]
-    fn zyzy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_01_10) })
+    fn zyzy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_01_10) })
     }
 
     #[inline]
-    fn zyzz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_01_10) })
+    fn zyzz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_01_10) })
     }
 
     #[inline]
-    fn zyzw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_01_10) })
+    fn zyzw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_01_10) })
     }
 
     #[inline]
-    fn zywx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_01_10) })
+    fn zywx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_01_10) })
     }
 
     #[inline]
-    fn zywy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_01_10) })
+    fn zywy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_01_10) })
     }
 
     #[inline]
-    fn zywz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_01_10) })
+    fn zywz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_01_10) })
     }
 
     #[inline]
-    fn zyww(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_01_10) })
+    fn zyww(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_01_10) })
     }
 
     #[inline]
-    fn zzxx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_10_10) })
+    fn zzxx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_10_10) })
     }
 
     #[inline]
-    fn zzxy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_10_10) })
+    fn zzxy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_10_10) })
     }
 
     #[inline]
-    fn zzxz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_10_10) })
+    fn zzxz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_10_10) })
     }
 
     #[inline]
-    fn zzxw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_10_10) })
+    fn zzxw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_10_10) })
     }
 
     #[inline]
-    fn zzyx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_10_10) })
+    fn zzyx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_10_10) })
     }
 
     #[inline]
-    fn zzyy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_10_10) })
+    fn zzyy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_10_10) })
     }
 
     #[inline]
-    fn zzyz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_10_10) })
+    fn zzyz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_10_10) })
     }
 
     #[inline]
-    fn zzyw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_10_10) })
+    fn zzyw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_10_10) })
     }
 
     #[inline]
-    fn zzzx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_10_10) })
+    fn zzzx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_10_10) })
     }
 
     #[inline]
-    fn zzzy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_10_10) })
+    fn zzzy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_10_10) })
     }
 
     #[inline]
-    fn zzzz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_10_10) })
+    fn zzzz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_10_10) })
     }
 
     #[inline]
-    fn zzzw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_10_10) })
+    fn zzzw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_10_10) })
     }
 
     #[inline]
-    fn zzwx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_10_10) })
+    fn zzwx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_10_10) })
     }
 
     #[inline]
-    fn zzwy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_10_10) })
+    fn zzwy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_10_10) })
     }
 
     #[inline]
-    fn zzwz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_10_10) })
+    fn zzwz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_10_10) })
     }
 
     #[inline]
-    fn zzww(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_10_10) })
+    fn zzww(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_10_10) })
     }
 
     #[inline]
-    fn zwxx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_11_10) })
+    fn zwxx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_11_10) })
     }
 
     #[inline]
-    fn zwxy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_11_10) })
+    fn zwxy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_11_10) })
     }
 
     #[inline]
-    fn zwxz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_11_10) })
+    fn zwxz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_11_10) })
     }
 
     #[inline]
-    fn zwxw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_11_10) })
+    fn zwxw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_11_10) })
     }
 
     #[inline]
-    fn zwyx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_11_10) })
+    fn zwyx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_11_10) })
     }
 
     #[inline]
-    fn zwyy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_11_10) })
+    fn zwyy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_11_10) })
     }
 
     #[inline]
-    fn zwyz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_11_10) })
+    fn zwyz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_11_10) })
     }
 
     #[inline]
-    fn zwyw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_11_10) })
+    fn zwyw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_11_10) })
     }
 
     #[inline]
-    fn zwzx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_11_10) })
+    fn zwzx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_11_10) })
     }
 
     #[inline]
-    fn zwzy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_11_10) })
+    fn zwzy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_11_10) })
     }
 
     #[inline]
-    fn zwzz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_11_10) })
+    fn zwzz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_11_10) })
     }
 
     #[inline]
-    fn zwzw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_11_10) })
+    fn zwzw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_11_10) })
     }
 
     #[inline]
-    fn zwwx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_11_10) })
+    fn zwwx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_11_10) })
     }
 
     #[inline]
-    fn zwwy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_11_10) })
+    fn zwwy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_11_10) })
     }
 
     #[inline]
-    fn zwwz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_11_10) })
+    fn zwwz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_11_10) })
     }
 
     #[inline]
-    fn zwww(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_11_10) })
+    fn zwww(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_11_10) })
     }
 
     #[inline]
-    fn wxxx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_00_11) })
+    fn wxxx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_00_11) })
     }
 
     #[inline]
-    fn wxxy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_00_11) })
+    fn wxxy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_00_11) })
     }
 
     #[inline]
-    fn wxxz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_00_11) })
+    fn wxxz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_00_11) })
     }
 
     #[inline]
-    fn wxxw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_00_11) })
+    fn wxxw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_00_11) })
     }
 
     #[inline]
-    fn wxyx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_00_11) })
+    fn wxyx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_00_11) })
     }
 
     #[inline]
-    fn wxyy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_00_11) })
+    fn wxyy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_00_11) })
     }
 
     #[inline]
-    fn wxyz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_00_11) })
+    fn wxyz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_00_11) })
     }
 
     #[inline]
-    fn wxyw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_00_11) })
+    fn wxyw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_00_11) })
     }
 
     #[inline]
-    fn wxzx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_00_11) })
+    fn wxzx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_00_11) })
     }
 
     #[inline]
-    fn wxzy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_00_11) })
+    fn wxzy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_00_11) })
     }
 
     #[inline]
-    fn wxzz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_00_11) })
+    fn wxzz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_00_11) })
     }
 
     #[inline]
-    fn wxzw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_00_11) })
+    fn wxzw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_00_11) })
     }
 
     #[inline]
-    fn wxwx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_00_11) })
+    fn wxwx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_00_11) })
     }
 
     #[inline]
-    fn wxwy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_00_11) })
+    fn wxwy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_00_11) })
     }
 
     #[inline]
-    fn wxwz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_00_11) })
+    fn wxwz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_00_11) })
     }
 
     #[inline]
-    fn wxww(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_00_11) })
+    fn wxww(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_00_11) })
     }
 
     #[inline]
-    fn wyxx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_01_11) })
+    fn wyxx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_01_11) })
     }
 
     #[inline]
-    fn wyxy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_01_11) })
+    fn wyxy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_01_11) })
     }
 
     #[inline]
-    fn wyxz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_01_11) })
+    fn wyxz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_01_11) })
     }
 
     #[inline]
-    fn wyxw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_01_11) })
+    fn wyxw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_01_11) })
     }
 
     #[inline]
-    fn wyyx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_01_11) })
+    fn wyyx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_01_11) })
     }
 
     #[inline]
-    fn wyyy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_01_11) })
+    fn wyyy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_01_11) })
     }
 
     #[inline]
-    fn wyyz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_01_11) })
+    fn wyyz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_01_11) })
     }
 
     #[inline]
-    fn wyyw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_01_11) })
+    fn wyyw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_01_11) })
     }
 
     #[inline]
-    fn wyzx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_01_11) })
+    fn wyzx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_01_11) })
     }
 
     #[inline]
-    fn wyzy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_01_11) })
+    fn wyzy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_01_11) })
     }
 
     #[inline]
-    fn wyzz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_01_11) })
+    fn wyzz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_01_11) })
     }
 
     #[inline]
-    fn wyzw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_01_11) })
+    fn wyzw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_01_11) })
     }
 
     #[inline]
-    fn wywx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_01_11) })
+    fn wywx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_01_11) })
     }
 
     #[inline]
-    fn wywy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_01_11) })
+    fn wywy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_01_11) })
     }
 
     #[inline]
-    fn wywz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_01_11) })
+    fn wywz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_01_11) })
     }
 
     #[inline]
-    fn wyww(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_01_11) })
+    fn wyww(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_01_11) })
     }
 
     #[inline]
-    fn wzxx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_10_11) })
+    fn wzxx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_10_11) })
     }
 
     #[inline]
-    fn wzxy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_10_11) })
+    fn wzxy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_10_11) })
     }
 
     #[inline]
-    fn wzxz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_10_11) })
+    fn wzxz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_10_11) })
     }
 
     #[inline]
-    fn wzxw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_10_11) })
+    fn wzxw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_10_11) })
     }
 
     #[inline]
-    fn wzyx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_10_11) })
+    fn wzyx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_10_11) })
     }
 
     #[inline]
-    fn wzyy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_10_11) })
+    fn wzyy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_10_11) })
     }
 
     #[inline]
-    fn wzyz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_10_11) })
+    fn wzyz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_10_11) })
     }
 
     #[inline]
-    fn wzyw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_10_11) })
+    fn wzyw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_10_11) })
     }
 
     #[inline]
-    fn wzzx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_10_11) })
+    fn wzzx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_10_11) })
     }
 
     #[inline]
-    fn wzzy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_10_11) })
+    fn wzzy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_10_11) })
     }
 
     #[inline]
-    fn wzzz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_10_11) })
+    fn wzzz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_10_11) })
     }
 
     #[inline]
-    fn wzzw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_10_11) })
+    fn wzzw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_10_11) })
     }
 
     #[inline]
-    fn wzwx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_10_11) })
+    fn wzwx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_10_11) })
     }
 
     #[inline]
-    fn wzwy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_10_11) })
+    fn wzwy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_10_11) })
     }
 
     #[inline]
-    fn wzwz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_10_11) })
+    fn wzwz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_10_11) })
     }
 
     #[inline]
-    fn wzww(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_10_11) })
+    fn wzww(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_10_11) })
     }
 
     #[inline]
-    fn wwxx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_11_11) })
+    fn wwxx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_00_11_11) })
     }
 
     #[inline]
-    fn wwxy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_11_11) })
+    fn wwxy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_00_11_11) })
     }
 
     #[inline]
-    fn wwxz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_11_11) })
+    fn wwxz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_00_11_11) })
     }
 
     #[inline]
-    fn wwxw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_11_11) })
+    fn wwxw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_00_11_11) })
     }
 
     #[inline]
-    fn wwyx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_11_11) })
+    fn wwyx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_01_11_11) })
     }
 
     #[inline]
-    fn wwyy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_11_11) })
+    fn wwyy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_01_11_11) })
     }
 
     #[inline]
-    fn wwyz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_11_11) })
+    fn wwyz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_01_11_11) })
     }
 
     #[inline]
-    fn wwyw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_11_11) })
+    fn wwyw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_11_11) })
     }
 
     #[inline]
-    fn wwzx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_11_11) })
+    fn wwzx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_10_11_11) })
     }
 
     #[inline]
-    fn wwzy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_11_11) })
+    fn wwzy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_10_11_11) })
     }
 
     #[inline]
-    fn wwzz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_11_11) })
+    fn wwzz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_10_11_11) })
     }
 
     #[inline]
-    fn wwzw(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_11_11) })
+    fn wwzw(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_10_11_11) })
     }
 
     #[inline]
-    fn wwwx(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_11_11) })
+    fn wwwx(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_11_11_11) })
     }
 
     #[inline]
-    fn wwwy(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_11_11) })
+    fn wwwy(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b01_11_11_11) })
     }
 
     #[inline]
-    fn wwwz(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_11_11) })
+    fn wwwz(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b10_11_11_11) })
     }
 
     #[inline]
-    fn wwww(self) -> Vec4 {
-        Vec4(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_11_11) })
+    fn wwww(self) -> Self {
+        Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_11_11_11) })
     }
 }

@@ -827,7 +827,7 @@ impl Default for U8Vec4 {
     }
 }
 
-impl Div<U8Vec4> for U8Vec4 {
+impl Div for U8Vec4 {
     type Output = Self;
     #[inline]
     fn div(self, rhs: Self) -> Self {
@@ -840,10 +840,10 @@ impl Div<U8Vec4> for U8Vec4 {
     }
 }
 
-impl Div<&U8Vec4> for U8Vec4 {
-    type Output = U8Vec4;
+impl Div<&Self> for U8Vec4 {
+    type Output = Self;
     #[inline]
-    fn div(self, rhs: &U8Vec4) -> U8Vec4 {
+    fn div(self, rhs: &Self) -> Self {
         self.div(*rhs)
     }
 }
@@ -864,7 +864,7 @@ impl Div<U8Vec4> for &U8Vec4 {
     }
 }
 
-impl DivAssign<U8Vec4> for U8Vec4 {
+impl DivAssign for U8Vec4 {
     #[inline]
     fn div_assign(&mut self, rhs: Self) {
         self.x.div_assign(rhs.x);
@@ -874,10 +874,10 @@ impl DivAssign<U8Vec4> for U8Vec4 {
     }
 }
 
-impl DivAssign<&U8Vec4> for U8Vec4 {
+impl DivAssign<&Self> for U8Vec4 {
     #[inline]
-    fn div_assign(&mut self, rhs: &U8Vec4) {
-        self.div_assign(*rhs)
+    fn div_assign(&mut self, rhs: &Self) {
+        self.div_assign(*rhs);
     }
 }
 
@@ -895,9 +895,9 @@ impl Div<u8> for U8Vec4 {
 }
 
 impl Div<&u8> for U8Vec4 {
-    type Output = U8Vec4;
+    type Output = Self;
     #[inline]
-    fn div(self, rhs: &u8) -> U8Vec4 {
+    fn div(self, rhs: &u8) -> Self {
         self.div(*rhs)
     }
 }
@@ -931,7 +931,7 @@ impl DivAssign<u8> for U8Vec4 {
 impl DivAssign<&u8> for U8Vec4 {
     #[inline]
     fn div_assign(&mut self, rhs: &u8) {
-        self.div_assign(*rhs)
+        self.div_assign(*rhs);
     }
 }
 
@@ -972,7 +972,7 @@ impl Div<U8Vec4> for &u8 {
     }
 }
 
-impl Mul<U8Vec4> for U8Vec4 {
+impl Mul for U8Vec4 {
     type Output = Self;
     #[inline]
     fn mul(self, rhs: Self) -> Self {
@@ -985,10 +985,10 @@ impl Mul<U8Vec4> for U8Vec4 {
     }
 }
 
-impl Mul<&U8Vec4> for U8Vec4 {
-    type Output = U8Vec4;
+impl Mul<&Self> for U8Vec4 {
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: &U8Vec4) -> U8Vec4 {
+    fn mul(self, rhs: &Self) -> Self {
         self.mul(*rhs)
     }
 }
@@ -1009,7 +1009,7 @@ impl Mul<U8Vec4> for &U8Vec4 {
     }
 }
 
-impl MulAssign<U8Vec4> for U8Vec4 {
+impl MulAssign for U8Vec4 {
     #[inline]
     fn mul_assign(&mut self, rhs: Self) {
         self.x.mul_assign(rhs.x);
@@ -1019,10 +1019,10 @@ impl MulAssign<U8Vec4> for U8Vec4 {
     }
 }
 
-impl MulAssign<&U8Vec4> for U8Vec4 {
+impl MulAssign<&Self> for U8Vec4 {
     #[inline]
-    fn mul_assign(&mut self, rhs: &U8Vec4) {
-        self.mul_assign(*rhs)
+    fn mul_assign(&mut self, rhs: &Self) {
+        self.mul_assign(*rhs);
     }
 }
 
@@ -1040,9 +1040,9 @@ impl Mul<u8> for U8Vec4 {
 }
 
 impl Mul<&u8> for U8Vec4 {
-    type Output = U8Vec4;
+    type Output = Self;
     #[inline]
-    fn mul(self, rhs: &u8) -> U8Vec4 {
+    fn mul(self, rhs: &u8) -> Self {
         self.mul(*rhs)
     }
 }
@@ -1076,7 +1076,7 @@ impl MulAssign<u8> for U8Vec4 {
 impl MulAssign<&u8> for U8Vec4 {
     #[inline]
     fn mul_assign(&mut self, rhs: &u8) {
-        self.mul_assign(*rhs)
+        self.mul_assign(*rhs);
     }
 }
 
@@ -1117,7 +1117,7 @@ impl Mul<U8Vec4> for &u8 {
     }
 }
 
-impl Add<U8Vec4> for U8Vec4 {
+impl Add for U8Vec4 {
     type Output = Self;
     #[inline]
     fn add(self, rhs: Self) -> Self {
@@ -1130,10 +1130,10 @@ impl Add<U8Vec4> for U8Vec4 {
     }
 }
 
-impl Add<&U8Vec4> for U8Vec4 {
-    type Output = U8Vec4;
+impl Add<&Self> for U8Vec4 {
+    type Output = Self;
     #[inline]
-    fn add(self, rhs: &U8Vec4) -> U8Vec4 {
+    fn add(self, rhs: &Self) -> Self {
         self.add(*rhs)
     }
 }
@@ -1154,7 +1154,7 @@ impl Add<U8Vec4> for &U8Vec4 {
     }
 }
 
-impl AddAssign<U8Vec4> for U8Vec4 {
+impl AddAssign for U8Vec4 {
     #[inline]
     fn add_assign(&mut self, rhs: Self) {
         self.x.add_assign(rhs.x);
@@ -1164,10 +1164,10 @@ impl AddAssign<U8Vec4> for U8Vec4 {
     }
 }
 
-impl AddAssign<&U8Vec4> for U8Vec4 {
+impl AddAssign<&Self> for U8Vec4 {
     #[inline]
-    fn add_assign(&mut self, rhs: &U8Vec4) {
-        self.add_assign(*rhs)
+    fn add_assign(&mut self, rhs: &Self) {
+        self.add_assign(*rhs);
     }
 }
 
@@ -1185,9 +1185,9 @@ impl Add<u8> for U8Vec4 {
 }
 
 impl Add<&u8> for U8Vec4 {
-    type Output = U8Vec4;
+    type Output = Self;
     #[inline]
-    fn add(self, rhs: &u8) -> U8Vec4 {
+    fn add(self, rhs: &u8) -> Self {
         self.add(*rhs)
     }
 }
@@ -1221,7 +1221,7 @@ impl AddAssign<u8> for U8Vec4 {
 impl AddAssign<&u8> for U8Vec4 {
     #[inline]
     fn add_assign(&mut self, rhs: &u8) {
-        self.add_assign(*rhs)
+        self.add_assign(*rhs);
     }
 }
 
@@ -1262,7 +1262,7 @@ impl Add<U8Vec4> for &u8 {
     }
 }
 
-impl Sub<U8Vec4> for U8Vec4 {
+impl Sub for U8Vec4 {
     type Output = Self;
     #[inline]
     fn sub(self, rhs: Self) -> Self {
@@ -1275,10 +1275,10 @@ impl Sub<U8Vec4> for U8Vec4 {
     }
 }
 
-impl Sub<&U8Vec4> for U8Vec4 {
-    type Output = U8Vec4;
+impl Sub<&Self> for U8Vec4 {
+    type Output = Self;
     #[inline]
-    fn sub(self, rhs: &U8Vec4) -> U8Vec4 {
+    fn sub(self, rhs: &Self) -> Self {
         self.sub(*rhs)
     }
 }
@@ -1299,9 +1299,9 @@ impl Sub<U8Vec4> for &U8Vec4 {
     }
 }
 
-impl SubAssign<U8Vec4> for U8Vec4 {
+impl SubAssign for U8Vec4 {
     #[inline]
-    fn sub_assign(&mut self, rhs: U8Vec4) {
+    fn sub_assign(&mut self, rhs: Self) {
         self.x.sub_assign(rhs.x);
         self.y.sub_assign(rhs.y);
         self.z.sub_assign(rhs.z);
@@ -1309,10 +1309,10 @@ impl SubAssign<U8Vec4> for U8Vec4 {
     }
 }
 
-impl SubAssign<&U8Vec4> for U8Vec4 {
+impl SubAssign<&Self> for U8Vec4 {
     #[inline]
-    fn sub_assign(&mut self, rhs: &U8Vec4) {
-        self.sub_assign(*rhs)
+    fn sub_assign(&mut self, rhs: &Self) {
+        self.sub_assign(*rhs);
     }
 }
 
@@ -1330,9 +1330,9 @@ impl Sub<u8> for U8Vec4 {
 }
 
 impl Sub<&u8> for U8Vec4 {
-    type Output = U8Vec4;
+    type Output = Self;
     #[inline]
-    fn sub(self, rhs: &u8) -> U8Vec4 {
+    fn sub(self, rhs: &u8) -> Self {
         self.sub(*rhs)
     }
 }
@@ -1366,7 +1366,7 @@ impl SubAssign<u8> for U8Vec4 {
 impl SubAssign<&u8> for U8Vec4 {
     #[inline]
     fn sub_assign(&mut self, rhs: &u8) {
-        self.sub_assign(*rhs)
+        self.sub_assign(*rhs);
     }
 }
 
@@ -1407,7 +1407,7 @@ impl Sub<U8Vec4> for &u8 {
     }
 }
 
-impl Rem<U8Vec4> for U8Vec4 {
+impl Rem for U8Vec4 {
     type Output = Self;
     #[inline]
     fn rem(self, rhs: Self) -> Self {
@@ -1420,10 +1420,10 @@ impl Rem<U8Vec4> for U8Vec4 {
     }
 }
 
-impl Rem<&U8Vec4> for U8Vec4 {
-    type Output = U8Vec4;
+impl Rem<&Self> for U8Vec4 {
+    type Output = Self;
     #[inline]
-    fn rem(self, rhs: &U8Vec4) -> U8Vec4 {
+    fn rem(self, rhs: &Self) -> Self {
         self.rem(*rhs)
     }
 }
@@ -1444,7 +1444,7 @@ impl Rem<U8Vec4> for &U8Vec4 {
     }
 }
 
-impl RemAssign<U8Vec4> for U8Vec4 {
+impl RemAssign for U8Vec4 {
     #[inline]
     fn rem_assign(&mut self, rhs: Self) {
         self.x.rem_assign(rhs.x);
@@ -1454,10 +1454,10 @@ impl RemAssign<U8Vec4> for U8Vec4 {
     }
 }
 
-impl RemAssign<&U8Vec4> for U8Vec4 {
+impl RemAssign<&Self> for U8Vec4 {
     #[inline]
-    fn rem_assign(&mut self, rhs: &U8Vec4) {
-        self.rem_assign(*rhs)
+    fn rem_assign(&mut self, rhs: &Self) {
+        self.rem_assign(*rhs);
     }
 }
 
@@ -1475,9 +1475,9 @@ impl Rem<u8> for U8Vec4 {
 }
 
 impl Rem<&u8> for U8Vec4 {
-    type Output = U8Vec4;
+    type Output = Self;
     #[inline]
-    fn rem(self, rhs: &u8) -> U8Vec4 {
+    fn rem(self, rhs: &u8) -> Self {
         self.rem(*rhs)
     }
 }
@@ -1511,7 +1511,7 @@ impl RemAssign<u8> for U8Vec4 {
 impl RemAssign<&u8> for U8Vec4 {
     #[inline]
     fn rem_assign(&mut self, rhs: &u8) {
-        self.rem_assign(*rhs)
+        self.rem_assign(*rhs);
     }
 }
 
@@ -1556,7 +1556,7 @@ impl Rem<U8Vec4> for &u8 {
 impl AsRef<[u8; 4]> for U8Vec4 {
     #[inline]
     fn as_ref(&self) -> &[u8; 4] {
-        unsafe { &*(self as *const U8Vec4 as *const [u8; 4]) }
+        unsafe { &*(self as *const Self as *const [u8; 4]) }
     }
 }
 
@@ -1564,7 +1564,7 @@ impl AsRef<[u8; 4]> for U8Vec4 {
 impl AsMut<[u8; 4]> for U8Vec4 {
     #[inline]
     fn as_mut(&mut self) -> &mut [u8; 4] {
-        unsafe { &mut *(self as *mut U8Vec4 as *mut [u8; 4]) }
+        unsafe { &mut *(self as *mut Self as *mut [u8; 4]) }
     }
 }
 
@@ -1611,13 +1611,21 @@ impl<'a> Product<&'a Self> for U8Vec4 {
 impl Not for U8Vec4 {
     type Output = Self;
     #[inline]
-    fn not(self) -> Self::Output {
+    fn not(self) -> Self {
         Self {
             x: self.x.not(),
             y: self.y.not(),
             z: self.z.not(),
             w: self.w.not(),
         }
+    }
+}
+
+impl Not for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn not(self) -> U8Vec4 {
+        (*self).not()
     }
 }
 
@@ -1634,6 +1642,44 @@ impl BitAnd for U8Vec4 {
     }
 }
 
+impl BitAnd<&Self> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn bitand(self, rhs: &Self) -> Self {
+        self.bitand(*rhs)
+    }
+}
+
+impl BitAnd<&U8Vec4> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitand(self, rhs: &U8Vec4) -> U8Vec4 {
+        (*self).bitand(*rhs)
+    }
+}
+
+impl BitAnd<U8Vec4> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitand(self, rhs: U8Vec4) -> U8Vec4 {
+        (*self).bitand(rhs)
+    }
+}
+
+impl BitAndAssign for U8Vec4 {
+    #[inline]
+    fn bitand_assign(&mut self, rhs: Self) {
+        *self = self.bitand(rhs);
+    }
+}
+
+impl BitAndAssign<&Self> for U8Vec4 {
+    #[inline]
+    fn bitand_assign(&mut self, rhs: &Self) {
+        self.bitand_assign(*rhs);
+    }
+}
+
 impl BitOr for U8Vec4 {
     type Output = Self;
     #[inline]
@@ -1644,6 +1690,44 @@ impl BitOr for U8Vec4 {
             z: self.z.bitor(rhs.z),
             w: self.w.bitor(rhs.w),
         }
+    }
+}
+
+impl BitOr<&Self> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn bitor(self, rhs: &Self) -> Self {
+        self.bitor(*rhs)
+    }
+}
+
+impl BitOr<&U8Vec4> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitor(self, rhs: &U8Vec4) -> U8Vec4 {
+        (*self).bitor(*rhs)
+    }
+}
+
+impl BitOr<U8Vec4> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitor(self, rhs: U8Vec4) -> U8Vec4 {
+        (*self).bitor(rhs)
+    }
+}
+
+impl BitOrAssign for U8Vec4 {
+    #[inline]
+    fn bitor_assign(&mut self, rhs: Self) {
+        *self = self.bitor(rhs);
+    }
+}
+
+impl BitOrAssign<&Self> for U8Vec4 {
+    #[inline]
+    fn bitor_assign(&mut self, rhs: &Self) {
+        self.bitor_assign(*rhs);
     }
 }
 
@@ -1660,6 +1744,44 @@ impl BitXor for U8Vec4 {
     }
 }
 
+impl BitXor<&Self> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn bitxor(self, rhs: &Self) -> Self {
+        self.bitxor(*rhs)
+    }
+}
+
+impl BitXor<&U8Vec4> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitxor(self, rhs: &U8Vec4) -> U8Vec4 {
+        (*self).bitxor(*rhs)
+    }
+}
+
+impl BitXor<U8Vec4> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitxor(self, rhs: U8Vec4) -> U8Vec4 {
+        (*self).bitxor(rhs)
+    }
+}
+
+impl BitXorAssign for U8Vec4 {
+    #[inline]
+    fn bitxor_assign(&mut self, rhs: Self) {
+        *self = self.bitxor(rhs);
+    }
+}
+
+impl BitXorAssign<&Self> for U8Vec4 {
+    #[inline]
+    fn bitxor_assign(&mut self, rhs: &Self) {
+        self.bitxor_assign(*rhs);
+    }
+}
+
 impl BitAnd<u8> for U8Vec4 {
     type Output = Self;
     #[inline]
@@ -1670,6 +1792,44 @@ impl BitAnd<u8> for U8Vec4 {
             z: self.z.bitand(rhs),
             w: self.w.bitand(rhs),
         }
+    }
+}
+
+impl BitAnd<&u8> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn bitand(self, rhs: &u8) -> Self {
+        self.bitand(*rhs)
+    }
+}
+
+impl BitAnd<&u8> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitand(self, rhs: &u8) -> U8Vec4 {
+        (*self).bitand(*rhs)
+    }
+}
+
+impl BitAnd<u8> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitand(self, rhs: u8) -> U8Vec4 {
+        (*self).bitand(rhs)
+    }
+}
+
+impl BitAndAssign<u8> for U8Vec4 {
+    #[inline]
+    fn bitand_assign(&mut self, rhs: u8) {
+        *self = self.bitand(rhs);
+    }
+}
+
+impl BitAndAssign<&u8> for U8Vec4 {
+    #[inline]
+    fn bitand_assign(&mut self, rhs: &u8) {
+        self.bitand_assign(*rhs);
     }
 }
 
@@ -1686,6 +1846,44 @@ impl BitOr<u8> for U8Vec4 {
     }
 }
 
+impl BitOr<&u8> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn bitor(self, rhs: &u8) -> Self {
+        self.bitor(*rhs)
+    }
+}
+
+impl BitOr<&u8> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitor(self, rhs: &u8) -> U8Vec4 {
+        (*self).bitor(*rhs)
+    }
+}
+
+impl BitOr<u8> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitor(self, rhs: u8) -> U8Vec4 {
+        (*self).bitor(rhs)
+    }
+}
+
+impl BitOrAssign<u8> for U8Vec4 {
+    #[inline]
+    fn bitor_assign(&mut self, rhs: u8) {
+        *self = self.bitor(rhs);
+    }
+}
+
+impl BitOrAssign<&u8> for U8Vec4 {
+    #[inline]
+    fn bitor_assign(&mut self, rhs: &u8) {
+        self.bitor_assign(*rhs);
+    }
+}
+
 impl BitXor<u8> for U8Vec4 {
     type Output = Self;
     #[inline]
@@ -1696,6 +1894,44 @@ impl BitXor<u8> for U8Vec4 {
             z: self.z.bitxor(rhs),
             w: self.w.bitxor(rhs),
         }
+    }
+}
+
+impl BitXor<&u8> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn bitxor(self, rhs: &u8) -> Self {
+        self.bitxor(*rhs)
+    }
+}
+
+impl BitXor<&u8> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitxor(self, rhs: &u8) -> U8Vec4 {
+        (*self).bitxor(*rhs)
+    }
+}
+
+impl BitXor<u8> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn bitxor(self, rhs: u8) -> U8Vec4 {
+        (*self).bitxor(rhs)
+    }
+}
+
+impl BitXorAssign<u8> for U8Vec4 {
+    #[inline]
+    fn bitxor_assign(&mut self, rhs: u8) {
+        *self = self.bitxor(rhs);
+    }
+}
+
+impl BitXorAssign<&u8> for U8Vec4 {
+    #[inline]
+    fn bitxor_assign(&mut self, rhs: &u8) {
+        self.bitxor_assign(*rhs);
     }
 }
 
@@ -1712,6 +1948,44 @@ impl Shl<i8> for U8Vec4 {
     }
 }
 
+impl Shl<&i8> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn shl(self, rhs: &i8) -> Self {
+        self.shl(*rhs)
+    }
+}
+
+impl Shl<&i8> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shl(self, rhs: &i8) -> U8Vec4 {
+        (*self).shl(*rhs)
+    }
+}
+
+impl Shl<i8> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shl(self, rhs: i8) -> U8Vec4 {
+        (*self).shl(rhs)
+    }
+}
+
+impl ShlAssign<i8> for U8Vec4 {
+    #[inline]
+    fn shl_assign(&mut self, rhs: i8) {
+        *self = self.shl(rhs);
+    }
+}
+
+impl ShlAssign<&i8> for U8Vec4 {
+    #[inline]
+    fn shl_assign(&mut self, rhs: &i8) {
+        self.shl_assign(*rhs);
+    }
+}
+
 impl Shr<i8> for U8Vec4 {
     type Output = Self;
     #[inline]
@@ -1722,6 +1996,44 @@ impl Shr<i8> for U8Vec4 {
             z: self.z.shr(rhs),
             w: self.w.shr(rhs),
         }
+    }
+}
+
+impl Shr<&i8> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn shr(self, rhs: &i8) -> Self {
+        self.shr(*rhs)
+    }
+}
+
+impl Shr<&i8> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shr(self, rhs: &i8) -> U8Vec4 {
+        (*self).shr(*rhs)
+    }
+}
+
+impl Shr<i8> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shr(self, rhs: i8) -> U8Vec4 {
+        (*self).shr(rhs)
+    }
+}
+
+impl ShrAssign<i8> for U8Vec4 {
+    #[inline]
+    fn shr_assign(&mut self, rhs: i8) {
+        *self = self.shr(rhs);
+    }
+}
+
+impl ShrAssign<&i8> for U8Vec4 {
+    #[inline]
+    fn shr_assign(&mut self, rhs: &i8) {
+        self.shr_assign(*rhs);
     }
 }
 
@@ -1738,6 +2050,44 @@ impl Shl<i16> for U8Vec4 {
     }
 }
 
+impl Shl<&i16> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn shl(self, rhs: &i16) -> Self {
+        self.shl(*rhs)
+    }
+}
+
+impl Shl<&i16> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shl(self, rhs: &i16) -> U8Vec4 {
+        (*self).shl(*rhs)
+    }
+}
+
+impl Shl<i16> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shl(self, rhs: i16) -> U8Vec4 {
+        (*self).shl(rhs)
+    }
+}
+
+impl ShlAssign<i16> for U8Vec4 {
+    #[inline]
+    fn shl_assign(&mut self, rhs: i16) {
+        *self = self.shl(rhs);
+    }
+}
+
+impl ShlAssign<&i16> for U8Vec4 {
+    #[inline]
+    fn shl_assign(&mut self, rhs: &i16) {
+        self.shl_assign(*rhs);
+    }
+}
+
 impl Shr<i16> for U8Vec4 {
     type Output = Self;
     #[inline]
@@ -1748,6 +2098,44 @@ impl Shr<i16> for U8Vec4 {
             z: self.z.shr(rhs),
             w: self.w.shr(rhs),
         }
+    }
+}
+
+impl Shr<&i16> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn shr(self, rhs: &i16) -> Self {
+        self.shr(*rhs)
+    }
+}
+
+impl Shr<&i16> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shr(self, rhs: &i16) -> U8Vec4 {
+        (*self).shr(*rhs)
+    }
+}
+
+impl Shr<i16> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shr(self, rhs: i16) -> U8Vec4 {
+        (*self).shr(rhs)
+    }
+}
+
+impl ShrAssign<i16> for U8Vec4 {
+    #[inline]
+    fn shr_assign(&mut self, rhs: i16) {
+        *self = self.shr(rhs);
+    }
+}
+
+impl ShrAssign<&i16> for U8Vec4 {
+    #[inline]
+    fn shr_assign(&mut self, rhs: &i16) {
+        self.shr_assign(*rhs);
     }
 }
 
@@ -1764,6 +2152,44 @@ impl Shl<i32> for U8Vec4 {
     }
 }
 
+impl Shl<&i32> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn shl(self, rhs: &i32) -> Self {
+        self.shl(*rhs)
+    }
+}
+
+impl Shl<&i32> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shl(self, rhs: &i32) -> U8Vec4 {
+        (*self).shl(*rhs)
+    }
+}
+
+impl Shl<i32> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shl(self, rhs: i32) -> U8Vec4 {
+        (*self).shl(rhs)
+    }
+}
+
+impl ShlAssign<i32> for U8Vec4 {
+    #[inline]
+    fn shl_assign(&mut self, rhs: i32) {
+        *self = self.shl(rhs);
+    }
+}
+
+impl ShlAssign<&i32> for U8Vec4 {
+    #[inline]
+    fn shl_assign(&mut self, rhs: &i32) {
+        self.shl_assign(*rhs);
+    }
+}
+
 impl Shr<i32> for U8Vec4 {
     type Output = Self;
     #[inline]
@@ -1774,6 +2200,44 @@ impl Shr<i32> for U8Vec4 {
             z: self.z.shr(rhs),
             w: self.w.shr(rhs),
         }
+    }
+}
+
+impl Shr<&i32> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn shr(self, rhs: &i32) -> Self {
+        self.shr(*rhs)
+    }
+}
+
+impl Shr<&i32> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shr(self, rhs: &i32) -> U8Vec4 {
+        (*self).shr(*rhs)
+    }
+}
+
+impl Shr<i32> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shr(self, rhs: i32) -> U8Vec4 {
+        (*self).shr(rhs)
+    }
+}
+
+impl ShrAssign<i32> for U8Vec4 {
+    #[inline]
+    fn shr_assign(&mut self, rhs: i32) {
+        *self = self.shr(rhs);
+    }
+}
+
+impl ShrAssign<&i32> for U8Vec4 {
+    #[inline]
+    fn shr_assign(&mut self, rhs: &i32) {
+        self.shr_assign(*rhs);
     }
 }
 
@@ -1790,6 +2254,44 @@ impl Shl<i64> for U8Vec4 {
     }
 }
 
+impl Shl<&i64> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn shl(self, rhs: &i64) -> Self {
+        self.shl(*rhs)
+    }
+}
+
+impl Shl<&i64> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shl(self, rhs: &i64) -> U8Vec4 {
+        (*self).shl(*rhs)
+    }
+}
+
+impl Shl<i64> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shl(self, rhs: i64) -> U8Vec4 {
+        (*self).shl(rhs)
+    }
+}
+
+impl ShlAssign<i64> for U8Vec4 {
+    #[inline]
+    fn shl_assign(&mut self, rhs: i64) {
+        *self = self.shl(rhs);
+    }
+}
+
+impl ShlAssign<&i64> for U8Vec4 {
+    #[inline]
+    fn shl_assign(&mut self, rhs: &i64) {
+        self.shl_assign(*rhs);
+    }
+}
+
 impl Shr<i64> for U8Vec4 {
     type Output = Self;
     #[inline]
@@ -1800,6 +2302,44 @@ impl Shr<i64> for U8Vec4 {
             z: self.z.shr(rhs),
             w: self.w.shr(rhs),
         }
+    }
+}
+
+impl Shr<&i64> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn shr(self, rhs: &i64) -> Self {
+        self.shr(*rhs)
+    }
+}
+
+impl Shr<&i64> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shr(self, rhs: &i64) -> U8Vec4 {
+        (*self).shr(*rhs)
+    }
+}
+
+impl Shr<i64> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shr(self, rhs: i64) -> U8Vec4 {
+        (*self).shr(rhs)
+    }
+}
+
+impl ShrAssign<i64> for U8Vec4 {
+    #[inline]
+    fn shr_assign(&mut self, rhs: i64) {
+        *self = self.shr(rhs);
+    }
+}
+
+impl ShrAssign<&i64> for U8Vec4 {
+    #[inline]
+    fn shr_assign(&mut self, rhs: &i64) {
+        self.shr_assign(*rhs);
     }
 }
 
@@ -1816,6 +2356,44 @@ impl Shl<u8> for U8Vec4 {
     }
 }
 
+impl Shl<&u8> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn shl(self, rhs: &u8) -> Self {
+        self.shl(*rhs)
+    }
+}
+
+impl Shl<&u8> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shl(self, rhs: &u8) -> U8Vec4 {
+        (*self).shl(*rhs)
+    }
+}
+
+impl Shl<u8> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shl(self, rhs: u8) -> U8Vec4 {
+        (*self).shl(rhs)
+    }
+}
+
+impl ShlAssign<u8> for U8Vec4 {
+    #[inline]
+    fn shl_assign(&mut self, rhs: u8) {
+        *self = self.shl(rhs);
+    }
+}
+
+impl ShlAssign<&u8> for U8Vec4 {
+    #[inline]
+    fn shl_assign(&mut self, rhs: &u8) {
+        self.shl_assign(*rhs);
+    }
+}
+
 impl Shr<u8> for U8Vec4 {
     type Output = Self;
     #[inline]
@@ -1826,6 +2404,44 @@ impl Shr<u8> for U8Vec4 {
             z: self.z.shr(rhs),
             w: self.w.shr(rhs),
         }
+    }
+}
+
+impl Shr<&u8> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn shr(self, rhs: &u8) -> Self {
+        self.shr(*rhs)
+    }
+}
+
+impl Shr<&u8> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shr(self, rhs: &u8) -> U8Vec4 {
+        (*self).shr(*rhs)
+    }
+}
+
+impl Shr<u8> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shr(self, rhs: u8) -> U8Vec4 {
+        (*self).shr(rhs)
+    }
+}
+
+impl ShrAssign<u8> for U8Vec4 {
+    #[inline]
+    fn shr_assign(&mut self, rhs: u8) {
+        *self = self.shr(rhs);
+    }
+}
+
+impl ShrAssign<&u8> for U8Vec4 {
+    #[inline]
+    fn shr_assign(&mut self, rhs: &u8) {
+        self.shr_assign(*rhs);
     }
 }
 
@@ -1842,6 +2458,44 @@ impl Shl<u16> for U8Vec4 {
     }
 }
 
+impl Shl<&u16> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn shl(self, rhs: &u16) -> Self {
+        self.shl(*rhs)
+    }
+}
+
+impl Shl<&u16> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shl(self, rhs: &u16) -> U8Vec4 {
+        (*self).shl(*rhs)
+    }
+}
+
+impl Shl<u16> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shl(self, rhs: u16) -> U8Vec4 {
+        (*self).shl(rhs)
+    }
+}
+
+impl ShlAssign<u16> for U8Vec4 {
+    #[inline]
+    fn shl_assign(&mut self, rhs: u16) {
+        *self = self.shl(rhs);
+    }
+}
+
+impl ShlAssign<&u16> for U8Vec4 {
+    #[inline]
+    fn shl_assign(&mut self, rhs: &u16) {
+        self.shl_assign(*rhs);
+    }
+}
+
 impl Shr<u16> for U8Vec4 {
     type Output = Self;
     #[inline]
@@ -1852,6 +2506,44 @@ impl Shr<u16> for U8Vec4 {
             z: self.z.shr(rhs),
             w: self.w.shr(rhs),
         }
+    }
+}
+
+impl Shr<&u16> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn shr(self, rhs: &u16) -> Self {
+        self.shr(*rhs)
+    }
+}
+
+impl Shr<&u16> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shr(self, rhs: &u16) -> U8Vec4 {
+        (*self).shr(*rhs)
+    }
+}
+
+impl Shr<u16> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shr(self, rhs: u16) -> U8Vec4 {
+        (*self).shr(rhs)
+    }
+}
+
+impl ShrAssign<u16> for U8Vec4 {
+    #[inline]
+    fn shr_assign(&mut self, rhs: u16) {
+        *self = self.shr(rhs);
+    }
+}
+
+impl ShrAssign<&u16> for U8Vec4 {
+    #[inline]
+    fn shr_assign(&mut self, rhs: &u16) {
+        self.shr_assign(*rhs);
     }
 }
 
@@ -1868,6 +2560,44 @@ impl Shl<u32> for U8Vec4 {
     }
 }
 
+impl Shl<&u32> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn shl(self, rhs: &u32) -> Self {
+        self.shl(*rhs)
+    }
+}
+
+impl Shl<&u32> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shl(self, rhs: &u32) -> U8Vec4 {
+        (*self).shl(*rhs)
+    }
+}
+
+impl Shl<u32> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shl(self, rhs: u32) -> U8Vec4 {
+        (*self).shl(rhs)
+    }
+}
+
+impl ShlAssign<u32> for U8Vec4 {
+    #[inline]
+    fn shl_assign(&mut self, rhs: u32) {
+        *self = self.shl(rhs);
+    }
+}
+
+impl ShlAssign<&u32> for U8Vec4 {
+    #[inline]
+    fn shl_assign(&mut self, rhs: &u32) {
+        self.shl_assign(*rhs);
+    }
+}
+
 impl Shr<u32> for U8Vec4 {
     type Output = Self;
     #[inline]
@@ -1878,6 +2608,44 @@ impl Shr<u32> for U8Vec4 {
             z: self.z.shr(rhs),
             w: self.w.shr(rhs),
         }
+    }
+}
+
+impl Shr<&u32> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn shr(self, rhs: &u32) -> Self {
+        self.shr(*rhs)
+    }
+}
+
+impl Shr<&u32> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shr(self, rhs: &u32) -> U8Vec4 {
+        (*self).shr(*rhs)
+    }
+}
+
+impl Shr<u32> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shr(self, rhs: u32) -> U8Vec4 {
+        (*self).shr(rhs)
+    }
+}
+
+impl ShrAssign<u32> for U8Vec4 {
+    #[inline]
+    fn shr_assign(&mut self, rhs: u32) {
+        *self = self.shr(rhs);
+    }
+}
+
+impl ShrAssign<&u32> for U8Vec4 {
+    #[inline]
+    fn shr_assign(&mut self, rhs: &u32) {
+        self.shr_assign(*rhs);
     }
 }
 
@@ -1894,6 +2662,44 @@ impl Shl<u64> for U8Vec4 {
     }
 }
 
+impl Shl<&u64> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn shl(self, rhs: &u64) -> Self {
+        self.shl(*rhs)
+    }
+}
+
+impl Shl<&u64> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shl(self, rhs: &u64) -> U8Vec4 {
+        (*self).shl(*rhs)
+    }
+}
+
+impl Shl<u64> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shl(self, rhs: u64) -> U8Vec4 {
+        (*self).shl(rhs)
+    }
+}
+
+impl ShlAssign<u64> for U8Vec4 {
+    #[inline]
+    fn shl_assign(&mut self, rhs: u64) {
+        *self = self.shl(rhs);
+    }
+}
+
+impl ShlAssign<&u64> for U8Vec4 {
+    #[inline]
+    fn shl_assign(&mut self, rhs: &u64) {
+        self.shl_assign(*rhs);
+    }
+}
+
 impl Shr<u64> for U8Vec4 {
     type Output = Self;
     #[inline]
@@ -1907,10 +2713,48 @@ impl Shr<u64> for U8Vec4 {
     }
 }
 
-impl Shl<crate::IVec4> for U8Vec4 {
+impl Shr<&u64> for U8Vec4 {
     type Output = Self;
     #[inline]
-    fn shl(self, rhs: crate::IVec4) -> Self::Output {
+    fn shr(self, rhs: &u64) -> Self {
+        self.shr(*rhs)
+    }
+}
+
+impl Shr<&u64> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shr(self, rhs: &u64) -> U8Vec4 {
+        (*self).shr(*rhs)
+    }
+}
+
+impl Shr<u64> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shr(self, rhs: u64) -> U8Vec4 {
+        (*self).shr(rhs)
+    }
+}
+
+impl ShrAssign<u64> for U8Vec4 {
+    #[inline]
+    fn shr_assign(&mut self, rhs: u64) {
+        *self = self.shr(rhs);
+    }
+}
+
+impl ShrAssign<&u64> for U8Vec4 {
+    #[inline]
+    fn shr_assign(&mut self, rhs: &u64) {
+        self.shr_assign(*rhs);
+    }
+}
+
+impl Shl<IVec4> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn shl(self, rhs: IVec4) -> Self {
         Self {
             x: self.x.shl(rhs.x),
             y: self.y.shl(rhs.y),
@@ -1920,10 +2764,34 @@ impl Shl<crate::IVec4> for U8Vec4 {
     }
 }
 
-impl Shr<crate::IVec4> for U8Vec4 {
+impl Shl<&IVec4> for U8Vec4 {
     type Output = Self;
     #[inline]
-    fn shr(self, rhs: crate::IVec4) -> Self::Output {
+    fn shl(self, rhs: &IVec4) -> Self {
+        self.shl(*rhs)
+    }
+}
+
+impl Shl<&IVec4> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shl(self, rhs: &IVec4) -> U8Vec4 {
+        (*self).shl(*rhs)
+    }
+}
+
+impl Shl<IVec4> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shl(self, rhs: IVec4) -> U8Vec4 {
+        (*self).shl(rhs)
+    }
+}
+
+impl Shr<IVec4> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn shr(self, rhs: IVec4) -> Self {
         Self {
             x: self.x.shr(rhs.x),
             y: self.y.shr(rhs.y),
@@ -1933,10 +2801,34 @@ impl Shr<crate::IVec4> for U8Vec4 {
     }
 }
 
-impl Shl<crate::UVec4> for U8Vec4 {
+impl Shr<&IVec4> for U8Vec4 {
     type Output = Self;
     #[inline]
-    fn shl(self, rhs: crate::UVec4) -> Self::Output {
+    fn shr(self, rhs: &IVec4) -> Self {
+        self.shr(*rhs)
+    }
+}
+
+impl Shr<&IVec4> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shr(self, rhs: &IVec4) -> U8Vec4 {
+        (*self).shr(*rhs)
+    }
+}
+
+impl Shr<IVec4> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shr(self, rhs: IVec4) -> U8Vec4 {
+        (*self).shr(rhs)
+    }
+}
+
+impl Shl<UVec4> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn shl(self, rhs: UVec4) -> Self {
         Self {
             x: self.x.shl(rhs.x),
             y: self.y.shl(rhs.y),
@@ -1946,16 +2838,64 @@ impl Shl<crate::UVec4> for U8Vec4 {
     }
 }
 
-impl Shr<crate::UVec4> for U8Vec4 {
+impl Shl<&UVec4> for U8Vec4 {
     type Output = Self;
     #[inline]
-    fn shr(self, rhs: crate::UVec4) -> Self::Output {
+    fn shl(self, rhs: &UVec4) -> Self {
+        self.shl(*rhs)
+    }
+}
+
+impl Shl<&UVec4> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shl(self, rhs: &UVec4) -> U8Vec4 {
+        (*self).shl(*rhs)
+    }
+}
+
+impl Shl<UVec4> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shl(self, rhs: UVec4) -> U8Vec4 {
+        (*self).shl(rhs)
+    }
+}
+
+impl Shr<UVec4> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn shr(self, rhs: UVec4) -> Self {
         Self {
             x: self.x.shr(rhs.x),
             y: self.y.shr(rhs.y),
             z: self.z.shr(rhs.z),
             w: self.w.shr(rhs.w),
         }
+    }
+}
+
+impl Shr<&UVec4> for U8Vec4 {
+    type Output = Self;
+    #[inline]
+    fn shr(self, rhs: &UVec4) -> Self {
+        self.shr(*rhs)
+    }
+}
+
+impl Shr<&UVec4> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shr(self, rhs: &UVec4) -> U8Vec4 {
+        (*self).shr(*rhs)
+    }
+}
+
+impl Shr<UVec4> for &U8Vec4 {
+    type Output = U8Vec4;
+    #[inline]
+    fn shr(self, rhs: UVec4) -> U8Vec4 {
+        (*self).shr(rhs)
     }
 }
 

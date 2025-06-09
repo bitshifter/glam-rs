@@ -640,1277 +640,1277 @@ impl Vec4Swizzles for Vec4 {
     }
 
     #[inline]
-    fn xxxx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 0, 4, 4>(self.0, self.0))
+    fn xxxx(self) -> Self {
+        Self(i32x4_shuffle::<0, 0, 4, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn xxxy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 0, 4, 5>(self.0, self.0))
+    fn xxxy(self) -> Self {
+        Self(i32x4_shuffle::<0, 0, 4, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn xxxz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 0, 4, 6>(self.0, self.0))
+    fn xxxz(self) -> Self {
+        Self(i32x4_shuffle::<0, 0, 4, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn xxxw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 0, 4, 7>(self.0, self.0))
+    fn xxxw(self) -> Self {
+        Self(i32x4_shuffle::<0, 0, 4, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn xxyx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 0, 5, 4>(self.0, self.0))
+    fn xxyx(self) -> Self {
+        Self(i32x4_shuffle::<0, 0, 5, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn xxyy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 0, 5, 5>(self.0, self.0))
+    fn xxyy(self) -> Self {
+        Self(i32x4_shuffle::<0, 0, 5, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn xxyz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 0, 5, 6>(self.0, self.0))
+    fn xxyz(self) -> Self {
+        Self(i32x4_shuffle::<0, 0, 5, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn xxyw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 0, 5, 7>(self.0, self.0))
+    fn xxyw(self) -> Self {
+        Self(i32x4_shuffle::<0, 0, 5, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn xxzx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 0, 6, 4>(self.0, self.0))
+    fn xxzx(self) -> Self {
+        Self(i32x4_shuffle::<0, 0, 6, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn xxzy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 0, 6, 5>(self.0, self.0))
+    fn xxzy(self) -> Self {
+        Self(i32x4_shuffle::<0, 0, 6, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn xxzz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 0, 6, 6>(self.0, self.0))
+    fn xxzz(self) -> Self {
+        Self(i32x4_shuffle::<0, 0, 6, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn xxzw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 0, 6, 7>(self.0, self.0))
+    fn xxzw(self) -> Self {
+        Self(i32x4_shuffle::<0, 0, 6, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn xxwx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 0, 7, 4>(self.0, self.0))
+    fn xxwx(self) -> Self {
+        Self(i32x4_shuffle::<0, 0, 7, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn xxwy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 0, 7, 5>(self.0, self.0))
+    fn xxwy(self) -> Self {
+        Self(i32x4_shuffle::<0, 0, 7, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn xxwz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 0, 7, 6>(self.0, self.0))
+    fn xxwz(self) -> Self {
+        Self(i32x4_shuffle::<0, 0, 7, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn xxww(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 0, 7, 7>(self.0, self.0))
+    fn xxww(self) -> Self {
+        Self(i32x4_shuffle::<0, 0, 7, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn xyxx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 1, 4, 4>(self.0, self.0))
+    fn xyxx(self) -> Self {
+        Self(i32x4_shuffle::<0, 1, 4, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn xyxy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 1, 4, 5>(self.0, self.0))
+    fn xyxy(self) -> Self {
+        Self(i32x4_shuffle::<0, 1, 4, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn xyxz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 1, 4, 6>(self.0, self.0))
+    fn xyxz(self) -> Self {
+        Self(i32x4_shuffle::<0, 1, 4, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn xyxw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 1, 4, 7>(self.0, self.0))
+    fn xyxw(self) -> Self {
+        Self(i32x4_shuffle::<0, 1, 4, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn xyyx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 1, 5, 4>(self.0, self.0))
+    fn xyyx(self) -> Self {
+        Self(i32x4_shuffle::<0, 1, 5, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn xyyy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 1, 5, 5>(self.0, self.0))
+    fn xyyy(self) -> Self {
+        Self(i32x4_shuffle::<0, 1, 5, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn xyyz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 1, 5, 6>(self.0, self.0))
+    fn xyyz(self) -> Self {
+        Self(i32x4_shuffle::<0, 1, 5, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn xyyw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 1, 5, 7>(self.0, self.0))
+    fn xyyw(self) -> Self {
+        Self(i32x4_shuffle::<0, 1, 5, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn xyzx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 1, 6, 4>(self.0, self.0))
+    fn xyzx(self) -> Self {
+        Self(i32x4_shuffle::<0, 1, 6, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn xyzy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 1, 6, 5>(self.0, self.0))
+    fn xyzy(self) -> Self {
+        Self(i32x4_shuffle::<0, 1, 6, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn xyzz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 1, 6, 6>(self.0, self.0))
+    fn xyzz(self) -> Self {
+        Self(i32x4_shuffle::<0, 1, 6, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn xywx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 1, 7, 4>(self.0, self.0))
+    fn xywx(self) -> Self {
+        Self(i32x4_shuffle::<0, 1, 7, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn xywy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 1, 7, 5>(self.0, self.0))
+    fn xywy(self) -> Self {
+        Self(i32x4_shuffle::<0, 1, 7, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn xywz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 1, 7, 6>(self.0, self.0))
+    fn xywz(self) -> Self {
+        Self(i32x4_shuffle::<0, 1, 7, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn xyww(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 1, 7, 7>(self.0, self.0))
+    fn xyww(self) -> Self {
+        Self(i32x4_shuffle::<0, 1, 7, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn xzxx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 2, 4, 4>(self.0, self.0))
+    fn xzxx(self) -> Self {
+        Self(i32x4_shuffle::<0, 2, 4, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn xzxy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 2, 4, 5>(self.0, self.0))
+    fn xzxy(self) -> Self {
+        Self(i32x4_shuffle::<0, 2, 4, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn xzxz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 2, 4, 6>(self.0, self.0))
+    fn xzxz(self) -> Self {
+        Self(i32x4_shuffle::<0, 2, 4, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn xzxw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 2, 4, 7>(self.0, self.0))
+    fn xzxw(self) -> Self {
+        Self(i32x4_shuffle::<0, 2, 4, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn xzyx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 2, 5, 4>(self.0, self.0))
+    fn xzyx(self) -> Self {
+        Self(i32x4_shuffle::<0, 2, 5, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn xzyy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 2, 5, 5>(self.0, self.0))
+    fn xzyy(self) -> Self {
+        Self(i32x4_shuffle::<0, 2, 5, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn xzyz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 2, 5, 6>(self.0, self.0))
+    fn xzyz(self) -> Self {
+        Self(i32x4_shuffle::<0, 2, 5, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn xzyw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 2, 5, 7>(self.0, self.0))
+    fn xzyw(self) -> Self {
+        Self(i32x4_shuffle::<0, 2, 5, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn xzzx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 2, 6, 4>(self.0, self.0))
+    fn xzzx(self) -> Self {
+        Self(i32x4_shuffle::<0, 2, 6, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn xzzy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 2, 6, 5>(self.0, self.0))
+    fn xzzy(self) -> Self {
+        Self(i32x4_shuffle::<0, 2, 6, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn xzzz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 2, 6, 6>(self.0, self.0))
+    fn xzzz(self) -> Self {
+        Self(i32x4_shuffle::<0, 2, 6, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn xzzw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 2, 6, 7>(self.0, self.0))
+    fn xzzw(self) -> Self {
+        Self(i32x4_shuffle::<0, 2, 6, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn xzwx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 2, 7, 4>(self.0, self.0))
+    fn xzwx(self) -> Self {
+        Self(i32x4_shuffle::<0, 2, 7, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn xzwy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 2, 7, 5>(self.0, self.0))
+    fn xzwy(self) -> Self {
+        Self(i32x4_shuffle::<0, 2, 7, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn xzwz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 2, 7, 6>(self.0, self.0))
+    fn xzwz(self) -> Self {
+        Self(i32x4_shuffle::<0, 2, 7, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn xzww(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 2, 7, 7>(self.0, self.0))
+    fn xzww(self) -> Self {
+        Self(i32x4_shuffle::<0, 2, 7, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn xwxx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 3, 4, 4>(self.0, self.0))
+    fn xwxx(self) -> Self {
+        Self(i32x4_shuffle::<0, 3, 4, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn xwxy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 3, 4, 5>(self.0, self.0))
+    fn xwxy(self) -> Self {
+        Self(i32x4_shuffle::<0, 3, 4, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn xwxz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 3, 4, 6>(self.0, self.0))
+    fn xwxz(self) -> Self {
+        Self(i32x4_shuffle::<0, 3, 4, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn xwxw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 3, 4, 7>(self.0, self.0))
+    fn xwxw(self) -> Self {
+        Self(i32x4_shuffle::<0, 3, 4, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn xwyx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 3, 5, 4>(self.0, self.0))
+    fn xwyx(self) -> Self {
+        Self(i32x4_shuffle::<0, 3, 5, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn xwyy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 3, 5, 5>(self.0, self.0))
+    fn xwyy(self) -> Self {
+        Self(i32x4_shuffle::<0, 3, 5, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn xwyz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 3, 5, 6>(self.0, self.0))
+    fn xwyz(self) -> Self {
+        Self(i32x4_shuffle::<0, 3, 5, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn xwyw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 3, 5, 7>(self.0, self.0))
+    fn xwyw(self) -> Self {
+        Self(i32x4_shuffle::<0, 3, 5, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn xwzx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 3, 6, 4>(self.0, self.0))
+    fn xwzx(self) -> Self {
+        Self(i32x4_shuffle::<0, 3, 6, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn xwzy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 3, 6, 5>(self.0, self.0))
+    fn xwzy(self) -> Self {
+        Self(i32x4_shuffle::<0, 3, 6, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn xwzz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 3, 6, 6>(self.0, self.0))
+    fn xwzz(self) -> Self {
+        Self(i32x4_shuffle::<0, 3, 6, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn xwzw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 3, 6, 7>(self.0, self.0))
+    fn xwzw(self) -> Self {
+        Self(i32x4_shuffle::<0, 3, 6, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn xwwx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 3, 7, 4>(self.0, self.0))
+    fn xwwx(self) -> Self {
+        Self(i32x4_shuffle::<0, 3, 7, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn xwwy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 3, 7, 5>(self.0, self.0))
+    fn xwwy(self) -> Self {
+        Self(i32x4_shuffle::<0, 3, 7, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn xwwz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 3, 7, 6>(self.0, self.0))
+    fn xwwz(self) -> Self {
+        Self(i32x4_shuffle::<0, 3, 7, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn xwww(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<0, 3, 7, 7>(self.0, self.0))
+    fn xwww(self) -> Self {
+        Self(i32x4_shuffle::<0, 3, 7, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn yxxx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 0, 4, 4>(self.0, self.0))
+    fn yxxx(self) -> Self {
+        Self(i32x4_shuffle::<1, 0, 4, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn yxxy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 0, 4, 5>(self.0, self.0))
+    fn yxxy(self) -> Self {
+        Self(i32x4_shuffle::<1, 0, 4, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn yxxz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 0, 4, 6>(self.0, self.0))
+    fn yxxz(self) -> Self {
+        Self(i32x4_shuffle::<1, 0, 4, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn yxxw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 0, 4, 7>(self.0, self.0))
+    fn yxxw(self) -> Self {
+        Self(i32x4_shuffle::<1, 0, 4, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn yxyx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 0, 5, 4>(self.0, self.0))
+    fn yxyx(self) -> Self {
+        Self(i32x4_shuffle::<1, 0, 5, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn yxyy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 0, 5, 5>(self.0, self.0))
+    fn yxyy(self) -> Self {
+        Self(i32x4_shuffle::<1, 0, 5, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn yxyz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 0, 5, 6>(self.0, self.0))
+    fn yxyz(self) -> Self {
+        Self(i32x4_shuffle::<1, 0, 5, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn yxyw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 0, 5, 7>(self.0, self.0))
+    fn yxyw(self) -> Self {
+        Self(i32x4_shuffle::<1, 0, 5, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn yxzx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 0, 6, 4>(self.0, self.0))
+    fn yxzx(self) -> Self {
+        Self(i32x4_shuffle::<1, 0, 6, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn yxzy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 0, 6, 5>(self.0, self.0))
+    fn yxzy(self) -> Self {
+        Self(i32x4_shuffle::<1, 0, 6, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn yxzz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 0, 6, 6>(self.0, self.0))
+    fn yxzz(self) -> Self {
+        Self(i32x4_shuffle::<1, 0, 6, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn yxzw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 0, 6, 7>(self.0, self.0))
+    fn yxzw(self) -> Self {
+        Self(i32x4_shuffle::<1, 0, 6, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn yxwx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 0, 7, 4>(self.0, self.0))
+    fn yxwx(self) -> Self {
+        Self(i32x4_shuffle::<1, 0, 7, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn yxwy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 0, 7, 5>(self.0, self.0))
+    fn yxwy(self) -> Self {
+        Self(i32x4_shuffle::<1, 0, 7, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn yxwz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 0, 7, 6>(self.0, self.0))
+    fn yxwz(self) -> Self {
+        Self(i32x4_shuffle::<1, 0, 7, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn yxww(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 0, 7, 7>(self.0, self.0))
+    fn yxww(self) -> Self {
+        Self(i32x4_shuffle::<1, 0, 7, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn yyxx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 1, 4, 4>(self.0, self.0))
+    fn yyxx(self) -> Self {
+        Self(i32x4_shuffle::<1, 1, 4, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn yyxy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 1, 4, 5>(self.0, self.0))
+    fn yyxy(self) -> Self {
+        Self(i32x4_shuffle::<1, 1, 4, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn yyxz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 1, 4, 6>(self.0, self.0))
+    fn yyxz(self) -> Self {
+        Self(i32x4_shuffle::<1, 1, 4, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn yyxw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 1, 4, 7>(self.0, self.0))
+    fn yyxw(self) -> Self {
+        Self(i32x4_shuffle::<1, 1, 4, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn yyyx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 1, 5, 4>(self.0, self.0))
+    fn yyyx(self) -> Self {
+        Self(i32x4_shuffle::<1, 1, 5, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn yyyy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 1, 5, 5>(self.0, self.0))
+    fn yyyy(self) -> Self {
+        Self(i32x4_shuffle::<1, 1, 5, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn yyyz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 1, 5, 6>(self.0, self.0))
+    fn yyyz(self) -> Self {
+        Self(i32x4_shuffle::<1, 1, 5, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn yyyw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 1, 5, 7>(self.0, self.0))
+    fn yyyw(self) -> Self {
+        Self(i32x4_shuffle::<1, 1, 5, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn yyzx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 1, 6, 4>(self.0, self.0))
+    fn yyzx(self) -> Self {
+        Self(i32x4_shuffle::<1, 1, 6, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn yyzy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 1, 6, 5>(self.0, self.0))
+    fn yyzy(self) -> Self {
+        Self(i32x4_shuffle::<1, 1, 6, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn yyzz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 1, 6, 6>(self.0, self.0))
+    fn yyzz(self) -> Self {
+        Self(i32x4_shuffle::<1, 1, 6, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn yyzw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 1, 6, 7>(self.0, self.0))
+    fn yyzw(self) -> Self {
+        Self(i32x4_shuffle::<1, 1, 6, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn yywx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 1, 7, 4>(self.0, self.0))
+    fn yywx(self) -> Self {
+        Self(i32x4_shuffle::<1, 1, 7, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn yywy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 1, 7, 5>(self.0, self.0))
+    fn yywy(self) -> Self {
+        Self(i32x4_shuffle::<1, 1, 7, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn yywz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 1, 7, 6>(self.0, self.0))
+    fn yywz(self) -> Self {
+        Self(i32x4_shuffle::<1, 1, 7, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn yyww(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 1, 7, 7>(self.0, self.0))
+    fn yyww(self) -> Self {
+        Self(i32x4_shuffle::<1, 1, 7, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn yzxx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 2, 4, 4>(self.0, self.0))
+    fn yzxx(self) -> Self {
+        Self(i32x4_shuffle::<1, 2, 4, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn yzxy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 2, 4, 5>(self.0, self.0))
+    fn yzxy(self) -> Self {
+        Self(i32x4_shuffle::<1, 2, 4, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn yzxz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 2, 4, 6>(self.0, self.0))
+    fn yzxz(self) -> Self {
+        Self(i32x4_shuffle::<1, 2, 4, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn yzxw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 2, 4, 7>(self.0, self.0))
+    fn yzxw(self) -> Self {
+        Self(i32x4_shuffle::<1, 2, 4, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn yzyx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 2, 5, 4>(self.0, self.0))
+    fn yzyx(self) -> Self {
+        Self(i32x4_shuffle::<1, 2, 5, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn yzyy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 2, 5, 5>(self.0, self.0))
+    fn yzyy(self) -> Self {
+        Self(i32x4_shuffle::<1, 2, 5, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn yzyz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 2, 5, 6>(self.0, self.0))
+    fn yzyz(self) -> Self {
+        Self(i32x4_shuffle::<1, 2, 5, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn yzyw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 2, 5, 7>(self.0, self.0))
+    fn yzyw(self) -> Self {
+        Self(i32x4_shuffle::<1, 2, 5, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn yzzx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 2, 6, 4>(self.0, self.0))
+    fn yzzx(self) -> Self {
+        Self(i32x4_shuffle::<1, 2, 6, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn yzzy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 2, 6, 5>(self.0, self.0))
+    fn yzzy(self) -> Self {
+        Self(i32x4_shuffle::<1, 2, 6, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn yzzz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 2, 6, 6>(self.0, self.0))
+    fn yzzz(self) -> Self {
+        Self(i32x4_shuffle::<1, 2, 6, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn yzzw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 2, 6, 7>(self.0, self.0))
+    fn yzzw(self) -> Self {
+        Self(i32x4_shuffle::<1, 2, 6, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn yzwx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 2, 7, 4>(self.0, self.0))
+    fn yzwx(self) -> Self {
+        Self(i32x4_shuffle::<1, 2, 7, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn yzwy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 2, 7, 5>(self.0, self.0))
+    fn yzwy(self) -> Self {
+        Self(i32x4_shuffle::<1, 2, 7, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn yzwz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 2, 7, 6>(self.0, self.0))
+    fn yzwz(self) -> Self {
+        Self(i32x4_shuffle::<1, 2, 7, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn yzww(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 2, 7, 7>(self.0, self.0))
+    fn yzww(self) -> Self {
+        Self(i32x4_shuffle::<1, 2, 7, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn ywxx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 3, 4, 4>(self.0, self.0))
+    fn ywxx(self) -> Self {
+        Self(i32x4_shuffle::<1, 3, 4, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn ywxy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 3, 4, 5>(self.0, self.0))
+    fn ywxy(self) -> Self {
+        Self(i32x4_shuffle::<1, 3, 4, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn ywxz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 3, 4, 6>(self.0, self.0))
+    fn ywxz(self) -> Self {
+        Self(i32x4_shuffle::<1, 3, 4, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn ywxw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 3, 4, 7>(self.0, self.0))
+    fn ywxw(self) -> Self {
+        Self(i32x4_shuffle::<1, 3, 4, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn ywyx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 3, 5, 4>(self.0, self.0))
+    fn ywyx(self) -> Self {
+        Self(i32x4_shuffle::<1, 3, 5, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn ywyy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 3, 5, 5>(self.0, self.0))
+    fn ywyy(self) -> Self {
+        Self(i32x4_shuffle::<1, 3, 5, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn ywyz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 3, 5, 6>(self.0, self.0))
+    fn ywyz(self) -> Self {
+        Self(i32x4_shuffle::<1, 3, 5, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn ywyw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 3, 5, 7>(self.0, self.0))
+    fn ywyw(self) -> Self {
+        Self(i32x4_shuffle::<1, 3, 5, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn ywzx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 3, 6, 4>(self.0, self.0))
+    fn ywzx(self) -> Self {
+        Self(i32x4_shuffle::<1, 3, 6, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn ywzy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 3, 6, 5>(self.0, self.0))
+    fn ywzy(self) -> Self {
+        Self(i32x4_shuffle::<1, 3, 6, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn ywzz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 3, 6, 6>(self.0, self.0))
+    fn ywzz(self) -> Self {
+        Self(i32x4_shuffle::<1, 3, 6, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn ywzw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 3, 6, 7>(self.0, self.0))
+    fn ywzw(self) -> Self {
+        Self(i32x4_shuffle::<1, 3, 6, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn ywwx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 3, 7, 4>(self.0, self.0))
+    fn ywwx(self) -> Self {
+        Self(i32x4_shuffle::<1, 3, 7, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn ywwy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 3, 7, 5>(self.0, self.0))
+    fn ywwy(self) -> Self {
+        Self(i32x4_shuffle::<1, 3, 7, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn ywwz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 3, 7, 6>(self.0, self.0))
+    fn ywwz(self) -> Self {
+        Self(i32x4_shuffle::<1, 3, 7, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn ywww(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<1, 3, 7, 7>(self.0, self.0))
+    fn ywww(self) -> Self {
+        Self(i32x4_shuffle::<1, 3, 7, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn zxxx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 0, 4, 4>(self.0, self.0))
+    fn zxxx(self) -> Self {
+        Self(i32x4_shuffle::<2, 0, 4, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn zxxy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 0, 4, 5>(self.0, self.0))
+    fn zxxy(self) -> Self {
+        Self(i32x4_shuffle::<2, 0, 4, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn zxxz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 0, 4, 6>(self.0, self.0))
+    fn zxxz(self) -> Self {
+        Self(i32x4_shuffle::<2, 0, 4, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn zxxw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 0, 4, 7>(self.0, self.0))
+    fn zxxw(self) -> Self {
+        Self(i32x4_shuffle::<2, 0, 4, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn zxyx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 0, 5, 4>(self.0, self.0))
+    fn zxyx(self) -> Self {
+        Self(i32x4_shuffle::<2, 0, 5, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn zxyy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 0, 5, 5>(self.0, self.0))
+    fn zxyy(self) -> Self {
+        Self(i32x4_shuffle::<2, 0, 5, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn zxyz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 0, 5, 6>(self.0, self.0))
+    fn zxyz(self) -> Self {
+        Self(i32x4_shuffle::<2, 0, 5, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn zxyw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 0, 5, 7>(self.0, self.0))
+    fn zxyw(self) -> Self {
+        Self(i32x4_shuffle::<2, 0, 5, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn zxzx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 0, 6, 4>(self.0, self.0))
+    fn zxzx(self) -> Self {
+        Self(i32x4_shuffle::<2, 0, 6, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn zxzy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 0, 6, 5>(self.0, self.0))
+    fn zxzy(self) -> Self {
+        Self(i32x4_shuffle::<2, 0, 6, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn zxzz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 0, 6, 6>(self.0, self.0))
+    fn zxzz(self) -> Self {
+        Self(i32x4_shuffle::<2, 0, 6, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn zxzw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 0, 6, 7>(self.0, self.0))
+    fn zxzw(self) -> Self {
+        Self(i32x4_shuffle::<2, 0, 6, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn zxwx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 0, 7, 4>(self.0, self.0))
+    fn zxwx(self) -> Self {
+        Self(i32x4_shuffle::<2, 0, 7, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn zxwy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 0, 7, 5>(self.0, self.0))
+    fn zxwy(self) -> Self {
+        Self(i32x4_shuffle::<2, 0, 7, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn zxwz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 0, 7, 6>(self.0, self.0))
+    fn zxwz(self) -> Self {
+        Self(i32x4_shuffle::<2, 0, 7, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn zxww(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 0, 7, 7>(self.0, self.0))
+    fn zxww(self) -> Self {
+        Self(i32x4_shuffle::<2, 0, 7, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn zyxx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 1, 4, 4>(self.0, self.0))
+    fn zyxx(self) -> Self {
+        Self(i32x4_shuffle::<2, 1, 4, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn zyxy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 1, 4, 5>(self.0, self.0))
+    fn zyxy(self) -> Self {
+        Self(i32x4_shuffle::<2, 1, 4, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn zyxz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 1, 4, 6>(self.0, self.0))
+    fn zyxz(self) -> Self {
+        Self(i32x4_shuffle::<2, 1, 4, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn zyxw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 1, 4, 7>(self.0, self.0))
+    fn zyxw(self) -> Self {
+        Self(i32x4_shuffle::<2, 1, 4, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn zyyx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 1, 5, 4>(self.0, self.0))
+    fn zyyx(self) -> Self {
+        Self(i32x4_shuffle::<2, 1, 5, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn zyyy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 1, 5, 5>(self.0, self.0))
+    fn zyyy(self) -> Self {
+        Self(i32x4_shuffle::<2, 1, 5, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn zyyz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 1, 5, 6>(self.0, self.0))
+    fn zyyz(self) -> Self {
+        Self(i32x4_shuffle::<2, 1, 5, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn zyyw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 1, 5, 7>(self.0, self.0))
+    fn zyyw(self) -> Self {
+        Self(i32x4_shuffle::<2, 1, 5, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn zyzx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 1, 6, 4>(self.0, self.0))
+    fn zyzx(self) -> Self {
+        Self(i32x4_shuffle::<2, 1, 6, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn zyzy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 1, 6, 5>(self.0, self.0))
+    fn zyzy(self) -> Self {
+        Self(i32x4_shuffle::<2, 1, 6, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn zyzz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 1, 6, 6>(self.0, self.0))
+    fn zyzz(self) -> Self {
+        Self(i32x4_shuffle::<2, 1, 6, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn zyzw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 1, 6, 7>(self.0, self.0))
+    fn zyzw(self) -> Self {
+        Self(i32x4_shuffle::<2, 1, 6, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn zywx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 1, 7, 4>(self.0, self.0))
+    fn zywx(self) -> Self {
+        Self(i32x4_shuffle::<2, 1, 7, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn zywy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 1, 7, 5>(self.0, self.0))
+    fn zywy(self) -> Self {
+        Self(i32x4_shuffle::<2, 1, 7, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn zywz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 1, 7, 6>(self.0, self.0))
+    fn zywz(self) -> Self {
+        Self(i32x4_shuffle::<2, 1, 7, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn zyww(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 1, 7, 7>(self.0, self.0))
+    fn zyww(self) -> Self {
+        Self(i32x4_shuffle::<2, 1, 7, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn zzxx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 2, 4, 4>(self.0, self.0))
+    fn zzxx(self) -> Self {
+        Self(i32x4_shuffle::<2, 2, 4, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn zzxy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 2, 4, 5>(self.0, self.0))
+    fn zzxy(self) -> Self {
+        Self(i32x4_shuffle::<2, 2, 4, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn zzxz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 2, 4, 6>(self.0, self.0))
+    fn zzxz(self) -> Self {
+        Self(i32x4_shuffle::<2, 2, 4, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn zzxw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 2, 4, 7>(self.0, self.0))
+    fn zzxw(self) -> Self {
+        Self(i32x4_shuffle::<2, 2, 4, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn zzyx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 2, 5, 4>(self.0, self.0))
+    fn zzyx(self) -> Self {
+        Self(i32x4_shuffle::<2, 2, 5, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn zzyy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 2, 5, 5>(self.0, self.0))
+    fn zzyy(self) -> Self {
+        Self(i32x4_shuffle::<2, 2, 5, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn zzyz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 2, 5, 6>(self.0, self.0))
+    fn zzyz(self) -> Self {
+        Self(i32x4_shuffle::<2, 2, 5, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn zzyw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 2, 5, 7>(self.0, self.0))
+    fn zzyw(self) -> Self {
+        Self(i32x4_shuffle::<2, 2, 5, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn zzzx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 2, 6, 4>(self.0, self.0))
+    fn zzzx(self) -> Self {
+        Self(i32x4_shuffle::<2, 2, 6, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn zzzy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 2, 6, 5>(self.0, self.0))
+    fn zzzy(self) -> Self {
+        Self(i32x4_shuffle::<2, 2, 6, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn zzzz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 2, 6, 6>(self.0, self.0))
+    fn zzzz(self) -> Self {
+        Self(i32x4_shuffle::<2, 2, 6, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn zzzw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 2, 6, 7>(self.0, self.0))
+    fn zzzw(self) -> Self {
+        Self(i32x4_shuffle::<2, 2, 6, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn zzwx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 2, 7, 4>(self.0, self.0))
+    fn zzwx(self) -> Self {
+        Self(i32x4_shuffle::<2, 2, 7, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn zzwy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 2, 7, 5>(self.0, self.0))
+    fn zzwy(self) -> Self {
+        Self(i32x4_shuffle::<2, 2, 7, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn zzwz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 2, 7, 6>(self.0, self.0))
+    fn zzwz(self) -> Self {
+        Self(i32x4_shuffle::<2, 2, 7, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn zzww(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 2, 7, 7>(self.0, self.0))
+    fn zzww(self) -> Self {
+        Self(i32x4_shuffle::<2, 2, 7, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn zwxx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 3, 4, 4>(self.0, self.0))
+    fn zwxx(self) -> Self {
+        Self(i32x4_shuffle::<2, 3, 4, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn zwxy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 3, 4, 5>(self.0, self.0))
+    fn zwxy(self) -> Self {
+        Self(i32x4_shuffle::<2, 3, 4, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn zwxz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 3, 4, 6>(self.0, self.0))
+    fn zwxz(self) -> Self {
+        Self(i32x4_shuffle::<2, 3, 4, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn zwxw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 3, 4, 7>(self.0, self.0))
+    fn zwxw(self) -> Self {
+        Self(i32x4_shuffle::<2, 3, 4, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn zwyx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 3, 5, 4>(self.0, self.0))
+    fn zwyx(self) -> Self {
+        Self(i32x4_shuffle::<2, 3, 5, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn zwyy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 3, 5, 5>(self.0, self.0))
+    fn zwyy(self) -> Self {
+        Self(i32x4_shuffle::<2, 3, 5, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn zwyz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 3, 5, 6>(self.0, self.0))
+    fn zwyz(self) -> Self {
+        Self(i32x4_shuffle::<2, 3, 5, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn zwyw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 3, 5, 7>(self.0, self.0))
+    fn zwyw(self) -> Self {
+        Self(i32x4_shuffle::<2, 3, 5, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn zwzx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 3, 6, 4>(self.0, self.0))
+    fn zwzx(self) -> Self {
+        Self(i32x4_shuffle::<2, 3, 6, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn zwzy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 3, 6, 5>(self.0, self.0))
+    fn zwzy(self) -> Self {
+        Self(i32x4_shuffle::<2, 3, 6, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn zwzz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 3, 6, 6>(self.0, self.0))
+    fn zwzz(self) -> Self {
+        Self(i32x4_shuffle::<2, 3, 6, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn zwzw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 3, 6, 7>(self.0, self.0))
+    fn zwzw(self) -> Self {
+        Self(i32x4_shuffle::<2, 3, 6, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn zwwx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 3, 7, 4>(self.0, self.0))
+    fn zwwx(self) -> Self {
+        Self(i32x4_shuffle::<2, 3, 7, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn zwwy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 3, 7, 5>(self.0, self.0))
+    fn zwwy(self) -> Self {
+        Self(i32x4_shuffle::<2, 3, 7, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn zwwz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 3, 7, 6>(self.0, self.0))
+    fn zwwz(self) -> Self {
+        Self(i32x4_shuffle::<2, 3, 7, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn zwww(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<2, 3, 7, 7>(self.0, self.0))
+    fn zwww(self) -> Self {
+        Self(i32x4_shuffle::<2, 3, 7, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn wxxx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 0, 4, 4>(self.0, self.0))
+    fn wxxx(self) -> Self {
+        Self(i32x4_shuffle::<3, 0, 4, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn wxxy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 0, 4, 5>(self.0, self.0))
+    fn wxxy(self) -> Self {
+        Self(i32x4_shuffle::<3, 0, 4, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn wxxz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 0, 4, 6>(self.0, self.0))
+    fn wxxz(self) -> Self {
+        Self(i32x4_shuffle::<3, 0, 4, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn wxxw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 0, 4, 7>(self.0, self.0))
+    fn wxxw(self) -> Self {
+        Self(i32x4_shuffle::<3, 0, 4, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn wxyx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 0, 5, 4>(self.0, self.0))
+    fn wxyx(self) -> Self {
+        Self(i32x4_shuffle::<3, 0, 5, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn wxyy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 0, 5, 5>(self.0, self.0))
+    fn wxyy(self) -> Self {
+        Self(i32x4_shuffle::<3, 0, 5, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn wxyz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 0, 5, 6>(self.0, self.0))
+    fn wxyz(self) -> Self {
+        Self(i32x4_shuffle::<3, 0, 5, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn wxyw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 0, 5, 7>(self.0, self.0))
+    fn wxyw(self) -> Self {
+        Self(i32x4_shuffle::<3, 0, 5, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn wxzx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 0, 6, 4>(self.0, self.0))
+    fn wxzx(self) -> Self {
+        Self(i32x4_shuffle::<3, 0, 6, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn wxzy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 0, 6, 5>(self.0, self.0))
+    fn wxzy(self) -> Self {
+        Self(i32x4_shuffle::<3, 0, 6, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn wxzz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 0, 6, 6>(self.0, self.0))
+    fn wxzz(self) -> Self {
+        Self(i32x4_shuffle::<3, 0, 6, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn wxzw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 0, 6, 7>(self.0, self.0))
+    fn wxzw(self) -> Self {
+        Self(i32x4_shuffle::<3, 0, 6, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn wxwx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 0, 7, 4>(self.0, self.0))
+    fn wxwx(self) -> Self {
+        Self(i32x4_shuffle::<3, 0, 7, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn wxwy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 0, 7, 5>(self.0, self.0))
+    fn wxwy(self) -> Self {
+        Self(i32x4_shuffle::<3, 0, 7, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn wxwz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 0, 7, 6>(self.0, self.0))
+    fn wxwz(self) -> Self {
+        Self(i32x4_shuffle::<3, 0, 7, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn wxww(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 0, 7, 7>(self.0, self.0))
+    fn wxww(self) -> Self {
+        Self(i32x4_shuffle::<3, 0, 7, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn wyxx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 1, 4, 4>(self.0, self.0))
+    fn wyxx(self) -> Self {
+        Self(i32x4_shuffle::<3, 1, 4, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn wyxy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 1, 4, 5>(self.0, self.0))
+    fn wyxy(self) -> Self {
+        Self(i32x4_shuffle::<3, 1, 4, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn wyxz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 1, 4, 6>(self.0, self.0))
+    fn wyxz(self) -> Self {
+        Self(i32x4_shuffle::<3, 1, 4, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn wyxw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 1, 4, 7>(self.0, self.0))
+    fn wyxw(self) -> Self {
+        Self(i32x4_shuffle::<3, 1, 4, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn wyyx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 1, 5, 4>(self.0, self.0))
+    fn wyyx(self) -> Self {
+        Self(i32x4_shuffle::<3, 1, 5, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn wyyy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 1, 5, 5>(self.0, self.0))
+    fn wyyy(self) -> Self {
+        Self(i32x4_shuffle::<3, 1, 5, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn wyyz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 1, 5, 6>(self.0, self.0))
+    fn wyyz(self) -> Self {
+        Self(i32x4_shuffle::<3, 1, 5, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn wyyw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 1, 5, 7>(self.0, self.0))
+    fn wyyw(self) -> Self {
+        Self(i32x4_shuffle::<3, 1, 5, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn wyzx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 1, 6, 4>(self.0, self.0))
+    fn wyzx(self) -> Self {
+        Self(i32x4_shuffle::<3, 1, 6, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn wyzy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 1, 6, 5>(self.0, self.0))
+    fn wyzy(self) -> Self {
+        Self(i32x4_shuffle::<3, 1, 6, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn wyzz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 1, 6, 6>(self.0, self.0))
+    fn wyzz(self) -> Self {
+        Self(i32x4_shuffle::<3, 1, 6, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn wyzw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 1, 6, 7>(self.0, self.0))
+    fn wyzw(self) -> Self {
+        Self(i32x4_shuffle::<3, 1, 6, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn wywx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 1, 7, 4>(self.0, self.0))
+    fn wywx(self) -> Self {
+        Self(i32x4_shuffle::<3, 1, 7, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn wywy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 1, 7, 5>(self.0, self.0))
+    fn wywy(self) -> Self {
+        Self(i32x4_shuffle::<3, 1, 7, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn wywz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 1, 7, 6>(self.0, self.0))
+    fn wywz(self) -> Self {
+        Self(i32x4_shuffle::<3, 1, 7, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn wyww(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 1, 7, 7>(self.0, self.0))
+    fn wyww(self) -> Self {
+        Self(i32x4_shuffle::<3, 1, 7, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn wzxx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 2, 4, 4>(self.0, self.0))
+    fn wzxx(self) -> Self {
+        Self(i32x4_shuffle::<3, 2, 4, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn wzxy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 2, 4, 5>(self.0, self.0))
+    fn wzxy(self) -> Self {
+        Self(i32x4_shuffle::<3, 2, 4, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn wzxz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 2, 4, 6>(self.0, self.0))
+    fn wzxz(self) -> Self {
+        Self(i32x4_shuffle::<3, 2, 4, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn wzxw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 2, 4, 7>(self.0, self.0))
+    fn wzxw(self) -> Self {
+        Self(i32x4_shuffle::<3, 2, 4, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn wzyx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 2, 5, 4>(self.0, self.0))
+    fn wzyx(self) -> Self {
+        Self(i32x4_shuffle::<3, 2, 5, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn wzyy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 2, 5, 5>(self.0, self.0))
+    fn wzyy(self) -> Self {
+        Self(i32x4_shuffle::<3, 2, 5, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn wzyz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 2, 5, 6>(self.0, self.0))
+    fn wzyz(self) -> Self {
+        Self(i32x4_shuffle::<3, 2, 5, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn wzyw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 2, 5, 7>(self.0, self.0))
+    fn wzyw(self) -> Self {
+        Self(i32x4_shuffle::<3, 2, 5, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn wzzx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 2, 6, 4>(self.0, self.0))
+    fn wzzx(self) -> Self {
+        Self(i32x4_shuffle::<3, 2, 6, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn wzzy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 2, 6, 5>(self.0, self.0))
+    fn wzzy(self) -> Self {
+        Self(i32x4_shuffle::<3, 2, 6, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn wzzz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 2, 6, 6>(self.0, self.0))
+    fn wzzz(self) -> Self {
+        Self(i32x4_shuffle::<3, 2, 6, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn wzzw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 2, 6, 7>(self.0, self.0))
+    fn wzzw(self) -> Self {
+        Self(i32x4_shuffle::<3, 2, 6, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn wzwx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 2, 7, 4>(self.0, self.0))
+    fn wzwx(self) -> Self {
+        Self(i32x4_shuffle::<3, 2, 7, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn wzwy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 2, 7, 5>(self.0, self.0))
+    fn wzwy(self) -> Self {
+        Self(i32x4_shuffle::<3, 2, 7, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn wzwz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 2, 7, 6>(self.0, self.0))
+    fn wzwz(self) -> Self {
+        Self(i32x4_shuffle::<3, 2, 7, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn wzww(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 2, 7, 7>(self.0, self.0))
+    fn wzww(self) -> Self {
+        Self(i32x4_shuffle::<3, 2, 7, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn wwxx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 3, 4, 4>(self.0, self.0))
+    fn wwxx(self) -> Self {
+        Self(i32x4_shuffle::<3, 3, 4, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn wwxy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 3, 4, 5>(self.0, self.0))
+    fn wwxy(self) -> Self {
+        Self(i32x4_shuffle::<3, 3, 4, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn wwxz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 3, 4, 6>(self.0, self.0))
+    fn wwxz(self) -> Self {
+        Self(i32x4_shuffle::<3, 3, 4, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn wwxw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 3, 4, 7>(self.0, self.0))
+    fn wwxw(self) -> Self {
+        Self(i32x4_shuffle::<3, 3, 4, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn wwyx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 3, 5, 4>(self.0, self.0))
+    fn wwyx(self) -> Self {
+        Self(i32x4_shuffle::<3, 3, 5, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn wwyy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 3, 5, 5>(self.0, self.0))
+    fn wwyy(self) -> Self {
+        Self(i32x4_shuffle::<3, 3, 5, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn wwyz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 3, 5, 6>(self.0, self.0))
+    fn wwyz(self) -> Self {
+        Self(i32x4_shuffle::<3, 3, 5, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn wwyw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 3, 5, 7>(self.0, self.0))
+    fn wwyw(self) -> Self {
+        Self(i32x4_shuffle::<3, 3, 5, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn wwzx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 3, 6, 4>(self.0, self.0))
+    fn wwzx(self) -> Self {
+        Self(i32x4_shuffle::<3, 3, 6, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn wwzy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 3, 6, 5>(self.0, self.0))
+    fn wwzy(self) -> Self {
+        Self(i32x4_shuffle::<3, 3, 6, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn wwzz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 3, 6, 6>(self.0, self.0))
+    fn wwzz(self) -> Self {
+        Self(i32x4_shuffle::<3, 3, 6, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn wwzw(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 3, 6, 7>(self.0, self.0))
+    fn wwzw(self) -> Self {
+        Self(i32x4_shuffle::<3, 3, 6, 7>(self.0, self.0))
     }
 
     #[inline]
-    fn wwwx(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 3, 7, 4>(self.0, self.0))
+    fn wwwx(self) -> Self {
+        Self(i32x4_shuffle::<3, 3, 7, 4>(self.0, self.0))
     }
 
     #[inline]
-    fn wwwy(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 3, 7, 5>(self.0, self.0))
+    fn wwwy(self) -> Self {
+        Self(i32x4_shuffle::<3, 3, 7, 5>(self.0, self.0))
     }
 
     #[inline]
-    fn wwwz(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 3, 7, 6>(self.0, self.0))
+    fn wwwz(self) -> Self {
+        Self(i32x4_shuffle::<3, 3, 7, 6>(self.0, self.0))
     }
 
     #[inline]
-    fn wwww(self) -> Vec4 {
-        Vec4(i32x4_shuffle::<3, 3, 7, 7>(self.0, self.0))
+    fn wwww(self) -> Self {
+        Self(i32x4_shuffle::<3, 3, 7, 7>(self.0, self.0))
     }
 }

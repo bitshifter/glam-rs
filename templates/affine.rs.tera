@@ -1,3 +1,5 @@
+{% import "macros.rs.tera" as macros %}
+
 // Generated from {{template_path}} template. Edit the template, not the generated file.
 
 {% if scalar_t == "f32" %}
@@ -822,10 +824,10 @@ impl<'a> core::iter::Product<&'a Self> for {{ self_t }} {
 }
 
 impl Mul for {{ self_t }} {
-    type Output = {{ self_t }};
+    type Output = Self;
 
     #[inline]
-    fn mul(self, rhs: {{ self_t }}) -> Self::Output {
+    fn mul(self, rhs: Self) -> Self {
         Self {
             matrix{{ dim }}: self.matrix{{ dim }} * rhs.matrix{{ dim }},
             translation: self.matrix{{ dim }} * rhs.translation + self.translation,
@@ -833,17 +835,14 @@ impl Mul for {{ self_t }} {
     }
 }
 
-impl MulAssign for {{ self_t }} {
-    #[inline]
-    fn mul_assign(&mut self, rhs: {{ self_t }}) {
-        *self = self.mul(rhs);
-    }
-}
+{{ macros::impl_ref_binop(imp="Mul", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+
+{{ macros::impl_op_assign(imp="Mul", self_t=self_t, rhs_t=self_t) }}
 
 {% if dim == 2 %}
 impl From<{{ self_t }}> for {{ mat3_t }} {
     #[inline]
-    fn from(m: {{ self_t }}) -> {{ mat3_t }} {
+    fn from(m: {{ self_t }}) -> Self {
         Self::from_cols(
             m.matrix2.x_axis.extend(0.0),
             m.matrix2.y_axis.extend(0.0),
@@ -861,27 +860,22 @@ impl Mul<{{ mat3_t }}> for {{ self_t }} {
     }
 }
 
+{{ macros::impl_ref_binop(imp="Mul", self_t=self_t, rhs_t=mat3_t, output_t=mat3_t) }}
+
 impl Mul<{{ self_t }}> for {{ mat3_t }} {
-    type Output = {{ mat3_t }};
+    type Output = Self;
 
     #[inline]
-    fn mul(self, rhs: {{ self_t }}) -> Self::Output {
-        self * {{ mat3_t }}::from(rhs)
+    fn mul(self, rhs: {{ self_t }}) -> Self {
+        self * Self::from(rhs)
     }
 }
+
+{{ macros::impl_ref_binop(imp="Mul", self_t=mat3_t, rhs_t=self_t, output_t=mat3_t) }}
+
+{{ macros::impl_op_assign(imp="Mul", self_t=mat3_t, rhs_t=self_t) }}
+
 {% elif dim == 3 %}
-impl From<{{ self_t }}> for {{ mat4_t }} {
-    #[inline]
-    fn from(m: {{ self_t }}) -> {{ mat4_t }} {
-        {{ mat4_t }}::from_cols(
-            m.matrix3.x_axis.extend(0.0),
-            m.matrix3.y_axis.extend(0.0),
-            m.matrix3.z_axis.extend(0.0),
-            m.translation.extend(1.0),
-        )
-    }
-}
-
 impl Mul<{{ mat4_t }}> for {{ self_t }} {
     type Output = {{ mat4_t }};
 
@@ -891,28 +885,37 @@ impl Mul<{{ mat4_t }}> for {{ self_t }} {
     }
 }
 
+{{ macros::impl_ref_binop(imp="Mul", self_t=self_t, rhs_t=mat4_t, output_t=mat4_t) }}
+
 impl Mul<{{ self_t }}> for {{ mat4_t }} {
-    type Output = {{ mat4_t }};
+    type Output = Self;
 
     #[inline]
-    fn mul(self, rhs: {{ self_t }}) -> Self::Output {
-        self * {{ mat4_t }}::from(rhs)
+    fn mul(self, rhs: {{ self_t }}) -> Self {
+        self * Self::from(rhs)
     }
 }
-{% endif %}
 
-{% if self_t == "Affine2" %}
-impl From<Affine2> for Mat3A {
+{{ macros::impl_ref_binop(imp="Mul", self_t=mat4_t, rhs_t=self_t, output_t=mat4_t) }}
+
+{{ macros::impl_op_assign(imp="Mul", self_t=mat4_t, rhs_t=self_t) }}
+
+
+impl From<{{ self_t }}> for {{ mat4_t }} {
     #[inline]
-    fn from(m: Affine2) -> Mat3A {
+    fn from(m: {{ self_t }}) -> Self {
         Self::from_cols(
-            Vec3A::from((m.matrix2.x_axis, 0.0)),
-            Vec3A::from((m.matrix2.y_axis, 0.0)),
-            Vec3A::from((m.translation, 1.0)),
+            m.matrix3.x_axis.extend(0.0),
+            m.matrix3.y_axis.extend(0.0),
+            m.matrix3.z_axis.extend(0.0),
+            m.translation.extend(1.0),
         )
     }
 }
 
+{% endif %}
+
+{% if self_t == "Affine2" %}
 impl Mul<Mat3A> for Affine2 {
     type Output = Mat3A;
 
@@ -922,12 +925,29 @@ impl Mul<Mat3A> for Affine2 {
     }
 }
 
+{{ macros::impl_ref_binop(imp="Mul", self_t=self_t, rhs_t="Mat3A", output_t="Mat3A") }}
+
 impl Mul<Affine2> for Mat3A {
-    type Output = Mat3A;
+    type Output = Self;
 
     #[inline]
-    fn mul(self, rhs: Affine2) -> Self::Output {
-        self * Mat3A::from(rhs)
+    fn mul(self, rhs: Affine2) -> Self {
+        self * Self::from(rhs)
+    }
+}
+
+{{ macros::impl_ref_binop(imp="Mul", self_t="Mat3A", rhs_t=self_t, output_t="Mat3A") }}
+
+{{ macros::impl_op_assign(imp="Mul", self_t="Mat3A", rhs_t=self_t) }}
+
+impl From<Affine2> for Mat3A {
+    #[inline]
+    fn from(m: Affine2) -> Self {
+        Self::from_cols(
+            Vec3A::from((m.matrix2.x_axis, 0.0)),
+            Vec3A::from((m.matrix2.y_axis, 0.0)),
+            Vec3A::from((m.translation, 1.0)),
+        )
     }
 }
 {% endif %}

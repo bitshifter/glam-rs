@@ -4,23 +4,23 @@ use crate::float::FloatExt;
 
 impl FloatExt for {{ scalar_t }} {
     #[inline]
-    fn lerp(self, rhs: {{ scalar_t }}, t: {{ scalar_t }}) -> {{ scalar_t }} {
+    fn lerp(self, rhs: Self, t: Self) -> Self {
         self + (rhs - self) * t
     }
 
     #[inline]
-    fn inverse_lerp(a: {{ scalar_t }}, b: {{ scalar_t }}, v: {{ scalar_t }}) -> {{ scalar_t }} {
+    fn inverse_lerp(a: Self, b: Self, v: Self) -> Self {
         (v - a) / (b - a)
     }
 
     #[inline]
-    fn remap(self, in_start: {{ scalar_t }}, in_end: {{ scalar_t }}, out_start: {{ scalar_t }}, out_end: {{ scalar_t }}) -> {{ scalar_t }} {
-        let t = {{ scalar_t }}::inverse_lerp(in_start, in_end, self);
-        {{ scalar_t }}::lerp(out_start, out_end, t)
+    fn remap(self, in_start: Self, in_end: Self, out_start: Self, out_end: Self) -> Self {
+        let t = Self::inverse_lerp(in_start, in_end, self);
+        Self::lerp(out_start, out_end, t)
     }
 
     #[inline]
-    fn fract_gl(self) -> {{ scalar_t }} {
+    fn fract_gl(self) -> Self {
         self - crate::{{ scalar_t }}::math::floor(self)
     }
 }

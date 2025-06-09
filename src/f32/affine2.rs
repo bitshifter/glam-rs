@@ -396,10 +396,10 @@ impl<'a> core::iter::Product<&'a Self> for Affine2 {
 }
 
 impl Mul for Affine2 {
-    type Output = Affine2;
+    type Output = Self;
 
     #[inline]
-    fn mul(self, rhs: Affine2) -> Self::Output {
+    fn mul(self, rhs: Self) -> Self {
         Self {
             matrix2: self.matrix2 * rhs.matrix2,
             translation: self.matrix2 * rhs.translation + self.translation,
@@ -407,16 +407,47 @@ impl Mul for Affine2 {
     }
 }
 
+impl Mul<&Self> for Affine2 {
+    type Output = Self;
+    #[inline]
+    fn mul(self, rhs: &Self) -> Self {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&Affine2> for &Affine2 {
+    type Output = Affine2;
+    #[inline]
+    fn mul(self, rhs: &Affine2) -> Affine2 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<Affine2> for &Affine2 {
+    type Output = Affine2;
+    #[inline]
+    fn mul(self, rhs: Affine2) -> Affine2 {
+        (*self).mul(rhs)
+    }
+}
+
 impl MulAssign for Affine2 {
     #[inline]
-    fn mul_assign(&mut self, rhs: Affine2) {
+    fn mul_assign(&mut self, rhs: Self) {
         *self = self.mul(rhs);
+    }
+}
+
+impl MulAssign<&Self> for Affine2 {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &Self) {
+        self.mul_assign(*rhs);
     }
 }
 
 impl From<Affine2> for Mat3 {
     #[inline]
-    fn from(m: Affine2) -> Mat3 {
+    fn from(m: Affine2) -> Self {
         Self::from_cols(
             m.matrix2.x_axis.extend(0.0),
             m.matrix2.y_axis.extend(0.0),
@@ -434,23 +465,74 @@ impl Mul<Mat3> for Affine2 {
     }
 }
 
-impl Mul<Affine2> for Mat3 {
+impl Mul<&Mat3> for Affine2 {
     type Output = Mat3;
-
     #[inline]
-    fn mul(self, rhs: Affine2) -> Self::Output {
-        self * Mat3::from(rhs)
+    fn mul(self, rhs: &Mat3) -> Mat3 {
+        self.mul(*rhs)
     }
 }
 
-impl From<Affine2> for Mat3A {
+impl Mul<&Mat3> for &Affine2 {
+    type Output = Mat3;
     #[inline]
-    fn from(m: Affine2) -> Mat3A {
-        Self::from_cols(
-            Vec3A::from((m.matrix2.x_axis, 0.0)),
-            Vec3A::from((m.matrix2.y_axis, 0.0)),
-            Vec3A::from((m.translation, 1.0)),
-        )
+    fn mul(self, rhs: &Mat3) -> Mat3 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<Mat3> for &Affine2 {
+    type Output = Mat3;
+    #[inline]
+    fn mul(self, rhs: Mat3) -> Mat3 {
+        (*self).mul(rhs)
+    }
+}
+
+impl Mul<Affine2> for Mat3 {
+    type Output = Self;
+
+    #[inline]
+    fn mul(self, rhs: Affine2) -> Self {
+        self * Self::from(rhs)
+    }
+}
+
+impl Mul<&Affine2> for Mat3 {
+    type Output = Self;
+    #[inline]
+    fn mul(self, rhs: &Affine2) -> Self {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&Affine2> for &Mat3 {
+    type Output = Mat3;
+    #[inline]
+    fn mul(self, rhs: &Affine2) -> Mat3 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<Affine2> for &Mat3 {
+    type Output = Mat3;
+    #[inline]
+    fn mul(self, rhs: Affine2) -> Mat3 {
+        (*self).mul(rhs)
+    }
+}
+
+impl MulAssign<Affine2> for Mat3 {
+    #[inline]
+    fn mul_assign(&mut self, rhs: Affine2) {
+        *self = self.mul(rhs);
+    }
+}
+
+impl MulAssign<&Affine2> for Mat3 {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &Affine2) {
+        self.mul_assign(*rhs);
     }
 }
 
@@ -463,11 +545,84 @@ impl Mul<Mat3A> for Affine2 {
     }
 }
 
-impl Mul<Affine2> for Mat3A {
+impl Mul<&Mat3A> for Affine2 {
     type Output = Mat3A;
+    #[inline]
+    fn mul(self, rhs: &Mat3A) -> Mat3A {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&Mat3A> for &Affine2 {
+    type Output = Mat3A;
+    #[inline]
+    fn mul(self, rhs: &Mat3A) -> Mat3A {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<Mat3A> for &Affine2 {
+    type Output = Mat3A;
+    #[inline]
+    fn mul(self, rhs: Mat3A) -> Mat3A {
+        (*self).mul(rhs)
+    }
+}
+
+impl Mul<Affine2> for Mat3A {
+    type Output = Self;
 
     #[inline]
-    fn mul(self, rhs: Affine2) -> Self::Output {
-        self * Mat3A::from(rhs)
+    fn mul(self, rhs: Affine2) -> Self {
+        self * Self::from(rhs)
+    }
+}
+
+impl Mul<&Affine2> for Mat3A {
+    type Output = Self;
+    #[inline]
+    fn mul(self, rhs: &Affine2) -> Self {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&Affine2> for &Mat3A {
+    type Output = Mat3A;
+    #[inline]
+    fn mul(self, rhs: &Affine2) -> Mat3A {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<Affine2> for &Mat3A {
+    type Output = Mat3A;
+    #[inline]
+    fn mul(self, rhs: Affine2) -> Mat3A {
+        (*self).mul(rhs)
+    }
+}
+
+impl MulAssign<Affine2> for Mat3A {
+    #[inline]
+    fn mul_assign(&mut self, rhs: Affine2) {
+        *self = self.mul(rhs);
+    }
+}
+
+impl MulAssign<&Affine2> for Mat3A {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &Affine2) {
+        self.mul_assign(*rhs);
+    }
+}
+
+impl From<Affine2> for Mat3A {
+    #[inline]
+    fn from(m: Affine2) -> Self {
+        Self::from_cols(
+            Vec3A::from((m.matrix2.x_axis, 0.0)),
+            Vec3A::from((m.matrix2.y_axis, 0.0)),
+            Vec3A::from((m.translation, 1.0)),
+        )
     }
 }

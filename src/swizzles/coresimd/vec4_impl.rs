@@ -640,1277 +640,1277 @@ impl Vec4Swizzles for Vec4 {
     }
 
     #[inline]
-    fn xxxx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 0, 0, 0]))
+    fn xxxx(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 0, 0, 0]))
     }
 
     #[inline]
-    fn xxxy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 0, 0, 1]))
+    fn xxxy(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 0, 0, 1]))
     }
 
     #[inline]
-    fn xxxz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 0, 0, 2]))
+    fn xxxz(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 0, 0, 2]))
     }
 
     #[inline]
-    fn xxxw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 0, 0, 3]))
+    fn xxxw(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 0, 0, 3]))
     }
 
     #[inline]
-    fn xxyx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 0, 1, 0]))
+    fn xxyx(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 0, 1, 0]))
     }
 
     #[inline]
-    fn xxyy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 0, 1, 1]))
+    fn xxyy(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 0, 1, 1]))
     }
 
     #[inline]
-    fn xxyz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 0, 1, 2]))
+    fn xxyz(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 0, 1, 2]))
     }
 
     #[inline]
-    fn xxyw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 0, 1, 3]))
+    fn xxyw(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 0, 1, 3]))
     }
 
     #[inline]
-    fn xxzx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 0, 2, 0]))
+    fn xxzx(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 0, 2, 0]))
     }
 
     #[inline]
-    fn xxzy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 0, 2, 1]))
+    fn xxzy(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 0, 2, 1]))
     }
 
     #[inline]
-    fn xxzz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 0, 2, 2]))
+    fn xxzz(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 0, 2, 2]))
     }
 
     #[inline]
-    fn xxzw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 0, 2, 3]))
+    fn xxzw(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 0, 2, 3]))
     }
 
     #[inline]
-    fn xxwx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 0, 3, 0]))
+    fn xxwx(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 0, 3, 0]))
     }
 
     #[inline]
-    fn xxwy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 0, 3, 1]))
+    fn xxwy(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 0, 3, 1]))
     }
 
     #[inline]
-    fn xxwz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 0, 3, 2]))
+    fn xxwz(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 0, 3, 2]))
     }
 
     #[inline]
-    fn xxww(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 0, 3, 3]))
+    fn xxww(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 0, 3, 3]))
     }
 
     #[inline]
-    fn xyxx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 1, 0, 0]))
+    fn xyxx(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 1, 0, 0]))
     }
 
     #[inline]
-    fn xyxy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 1, 0, 1]))
+    fn xyxy(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 1, 0, 1]))
     }
 
     #[inline]
-    fn xyxz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 1, 0, 2]))
+    fn xyxz(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 1, 0, 2]))
     }
 
     #[inline]
-    fn xyxw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 1, 0, 3]))
+    fn xyxw(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 1, 0, 3]))
     }
 
     #[inline]
-    fn xyyx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 1, 1, 0]))
+    fn xyyx(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 1, 1, 0]))
     }
 
     #[inline]
-    fn xyyy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 1, 1, 1]))
+    fn xyyy(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 1, 1, 1]))
     }
 
     #[inline]
-    fn xyyz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 1, 1, 2]))
+    fn xyyz(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 1, 1, 2]))
     }
 
     #[inline]
-    fn xyyw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 1, 1, 3]))
+    fn xyyw(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 1, 1, 3]))
     }
 
     #[inline]
-    fn xyzx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 1, 2, 0]))
+    fn xyzx(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 1, 2, 0]))
     }
 
     #[inline]
-    fn xyzy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 1, 2, 1]))
+    fn xyzy(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 1, 2, 1]))
     }
 
     #[inline]
-    fn xyzz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 1, 2, 2]))
+    fn xyzz(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 1, 2, 2]))
     }
 
     #[inline]
-    fn xywx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 1, 3, 0]))
+    fn xywx(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 1, 3, 0]))
     }
 
     #[inline]
-    fn xywy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 1, 3, 1]))
+    fn xywy(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 1, 3, 1]))
     }
 
     #[inline]
-    fn xywz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 1, 3, 2]))
+    fn xywz(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 1, 3, 2]))
     }
 
     #[inline]
-    fn xyww(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 1, 3, 3]))
+    fn xyww(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 1, 3, 3]))
     }
 
     #[inline]
-    fn xzxx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 2, 0, 0]))
+    fn xzxx(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 2, 0, 0]))
     }
 
     #[inline]
-    fn xzxy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 2, 0, 1]))
+    fn xzxy(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 2, 0, 1]))
     }
 
     #[inline]
-    fn xzxz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 2, 0, 2]))
+    fn xzxz(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 2, 0, 2]))
     }
 
     #[inline]
-    fn xzxw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 2, 0, 3]))
+    fn xzxw(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 2, 0, 3]))
     }
 
     #[inline]
-    fn xzyx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 2, 1, 0]))
+    fn xzyx(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 2, 1, 0]))
     }
 
     #[inline]
-    fn xzyy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 2, 1, 1]))
+    fn xzyy(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 2, 1, 1]))
     }
 
     #[inline]
-    fn xzyz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 2, 1, 2]))
+    fn xzyz(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 2, 1, 2]))
     }
 
     #[inline]
-    fn xzyw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 2, 1, 3]))
+    fn xzyw(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 2, 1, 3]))
     }
 
     #[inline]
-    fn xzzx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 2, 2, 0]))
+    fn xzzx(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 2, 2, 0]))
     }
 
     #[inline]
-    fn xzzy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 2, 2, 1]))
+    fn xzzy(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 2, 2, 1]))
     }
 
     #[inline]
-    fn xzzz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 2, 2, 2]))
+    fn xzzz(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 2, 2, 2]))
     }
 
     #[inline]
-    fn xzzw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 2, 2, 3]))
+    fn xzzw(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 2, 2, 3]))
     }
 
     #[inline]
-    fn xzwx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 2, 3, 0]))
+    fn xzwx(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 2, 3, 0]))
     }
 
     #[inline]
-    fn xzwy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 2, 3, 1]))
+    fn xzwy(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 2, 3, 1]))
     }
 
     #[inline]
-    fn xzwz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 2, 3, 2]))
+    fn xzwz(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 2, 3, 2]))
     }
 
     #[inline]
-    fn xzww(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 2, 3, 3]))
+    fn xzww(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 2, 3, 3]))
     }
 
     #[inline]
-    fn xwxx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 3, 0, 0]))
+    fn xwxx(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 3, 0, 0]))
     }
 
     #[inline]
-    fn xwxy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 3, 0, 1]))
+    fn xwxy(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 3, 0, 1]))
     }
 
     #[inline]
-    fn xwxz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 3, 0, 2]))
+    fn xwxz(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 3, 0, 2]))
     }
 
     #[inline]
-    fn xwxw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 3, 0, 3]))
+    fn xwxw(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 3, 0, 3]))
     }
 
     #[inline]
-    fn xwyx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 3, 1, 0]))
+    fn xwyx(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 3, 1, 0]))
     }
 
     #[inline]
-    fn xwyy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 3, 1, 1]))
+    fn xwyy(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 3, 1, 1]))
     }
 
     #[inline]
-    fn xwyz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 3, 1, 2]))
+    fn xwyz(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 3, 1, 2]))
     }
 
     #[inline]
-    fn xwyw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 3, 1, 3]))
+    fn xwyw(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 3, 1, 3]))
     }
 
     #[inline]
-    fn xwzx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 3, 2, 0]))
+    fn xwzx(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 3, 2, 0]))
     }
 
     #[inline]
-    fn xwzy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 3, 2, 1]))
+    fn xwzy(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 3, 2, 1]))
     }
 
     #[inline]
-    fn xwzz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 3, 2, 2]))
+    fn xwzz(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 3, 2, 2]))
     }
 
     #[inline]
-    fn xwzw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 3, 2, 3]))
+    fn xwzw(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 3, 2, 3]))
     }
 
     #[inline]
-    fn xwwx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 3, 3, 0]))
+    fn xwwx(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 3, 3, 0]))
     }
 
     #[inline]
-    fn xwwy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 3, 3, 1]))
+    fn xwwy(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 3, 3, 1]))
     }
 
     #[inline]
-    fn xwwz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 3, 3, 2]))
+    fn xwwz(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 3, 3, 2]))
     }
 
     #[inline]
-    fn xwww(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [0, 3, 3, 3]))
+    fn xwww(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 3, 3, 3]))
     }
 
     #[inline]
-    fn yxxx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 0, 0, 0]))
+    fn yxxx(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 0, 0, 0]))
     }
 
     #[inline]
-    fn yxxy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 0, 0, 1]))
+    fn yxxy(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 0, 0, 1]))
     }
 
     #[inline]
-    fn yxxz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 0, 0, 2]))
+    fn yxxz(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 0, 0, 2]))
     }
 
     #[inline]
-    fn yxxw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 0, 0, 3]))
+    fn yxxw(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 0, 0, 3]))
     }
 
     #[inline]
-    fn yxyx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 0, 1, 0]))
+    fn yxyx(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 0, 1, 0]))
     }
 
     #[inline]
-    fn yxyy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 0, 1, 1]))
+    fn yxyy(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 0, 1, 1]))
     }
 
     #[inline]
-    fn yxyz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 0, 1, 2]))
+    fn yxyz(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 0, 1, 2]))
     }
 
     #[inline]
-    fn yxyw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 0, 1, 3]))
+    fn yxyw(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 0, 1, 3]))
     }
 
     #[inline]
-    fn yxzx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 0, 2, 0]))
+    fn yxzx(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 0, 2, 0]))
     }
 
     #[inline]
-    fn yxzy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 0, 2, 1]))
+    fn yxzy(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 0, 2, 1]))
     }
 
     #[inline]
-    fn yxzz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 0, 2, 2]))
+    fn yxzz(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 0, 2, 2]))
     }
 
     #[inline]
-    fn yxzw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 0, 2, 3]))
+    fn yxzw(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 0, 2, 3]))
     }
 
     #[inline]
-    fn yxwx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 0, 3, 0]))
+    fn yxwx(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 0, 3, 0]))
     }
 
     #[inline]
-    fn yxwy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 0, 3, 1]))
+    fn yxwy(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 0, 3, 1]))
     }
 
     #[inline]
-    fn yxwz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 0, 3, 2]))
+    fn yxwz(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 0, 3, 2]))
     }
 
     #[inline]
-    fn yxww(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 0, 3, 3]))
+    fn yxww(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 0, 3, 3]))
     }
 
     #[inline]
-    fn yyxx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 1, 0, 0]))
+    fn yyxx(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 1, 0, 0]))
     }
 
     #[inline]
-    fn yyxy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 1, 0, 1]))
+    fn yyxy(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 1, 0, 1]))
     }
 
     #[inline]
-    fn yyxz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 1, 0, 2]))
+    fn yyxz(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 1, 0, 2]))
     }
 
     #[inline]
-    fn yyxw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 1, 0, 3]))
+    fn yyxw(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 1, 0, 3]))
     }
 
     #[inline]
-    fn yyyx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 1, 1, 0]))
+    fn yyyx(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 1, 1, 0]))
     }
 
     #[inline]
-    fn yyyy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 1, 1, 1]))
+    fn yyyy(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 1, 1, 1]))
     }
 
     #[inline]
-    fn yyyz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 1, 1, 2]))
+    fn yyyz(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 1, 1, 2]))
     }
 
     #[inline]
-    fn yyyw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 1, 1, 3]))
+    fn yyyw(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 1, 1, 3]))
     }
 
     #[inline]
-    fn yyzx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 1, 2, 0]))
+    fn yyzx(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 1, 2, 0]))
     }
 
     #[inline]
-    fn yyzy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 1, 2, 1]))
+    fn yyzy(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 1, 2, 1]))
     }
 
     #[inline]
-    fn yyzz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 1, 2, 2]))
+    fn yyzz(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 1, 2, 2]))
     }
 
     #[inline]
-    fn yyzw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 1, 2, 3]))
+    fn yyzw(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 1, 2, 3]))
     }
 
     #[inline]
-    fn yywx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 1, 3, 0]))
+    fn yywx(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 1, 3, 0]))
     }
 
     #[inline]
-    fn yywy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 1, 3, 1]))
+    fn yywy(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 1, 3, 1]))
     }
 
     #[inline]
-    fn yywz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 1, 3, 2]))
+    fn yywz(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 1, 3, 2]))
     }
 
     #[inline]
-    fn yyww(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 1, 3, 3]))
+    fn yyww(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 1, 3, 3]))
     }
 
     #[inline]
-    fn yzxx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 2, 0, 0]))
+    fn yzxx(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 2, 0, 0]))
     }
 
     #[inline]
-    fn yzxy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 2, 0, 1]))
+    fn yzxy(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 2, 0, 1]))
     }
 
     #[inline]
-    fn yzxz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 2, 0, 2]))
+    fn yzxz(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 2, 0, 2]))
     }
 
     #[inline]
-    fn yzxw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 2, 0, 3]))
+    fn yzxw(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 2, 0, 3]))
     }
 
     #[inline]
-    fn yzyx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 2, 1, 0]))
+    fn yzyx(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 2, 1, 0]))
     }
 
     #[inline]
-    fn yzyy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 2, 1, 1]))
+    fn yzyy(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 2, 1, 1]))
     }
 
     #[inline]
-    fn yzyz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 2, 1, 2]))
+    fn yzyz(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 2, 1, 2]))
     }
 
     #[inline]
-    fn yzyw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 2, 1, 3]))
+    fn yzyw(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 2, 1, 3]))
     }
 
     #[inline]
-    fn yzzx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 2, 2, 0]))
+    fn yzzx(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 2, 2, 0]))
     }
 
     #[inline]
-    fn yzzy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 2, 2, 1]))
+    fn yzzy(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 2, 2, 1]))
     }
 
     #[inline]
-    fn yzzz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 2, 2, 2]))
+    fn yzzz(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 2, 2, 2]))
     }
 
     #[inline]
-    fn yzzw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 2, 2, 3]))
+    fn yzzw(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 2, 2, 3]))
     }
 
     #[inline]
-    fn yzwx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 2, 3, 0]))
+    fn yzwx(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 2, 3, 0]))
     }
 
     #[inline]
-    fn yzwy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 2, 3, 1]))
+    fn yzwy(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 2, 3, 1]))
     }
 
     #[inline]
-    fn yzwz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 2, 3, 2]))
+    fn yzwz(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 2, 3, 2]))
     }
 
     #[inline]
-    fn yzww(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 2, 3, 3]))
+    fn yzww(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 2, 3, 3]))
     }
 
     #[inline]
-    fn ywxx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 3, 0, 0]))
+    fn ywxx(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 3, 0, 0]))
     }
 
     #[inline]
-    fn ywxy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 3, 0, 1]))
+    fn ywxy(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 3, 0, 1]))
     }
 
     #[inline]
-    fn ywxz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 3, 0, 2]))
+    fn ywxz(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 3, 0, 2]))
     }
 
     #[inline]
-    fn ywxw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 3, 0, 3]))
+    fn ywxw(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 3, 0, 3]))
     }
 
     #[inline]
-    fn ywyx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 3, 1, 0]))
+    fn ywyx(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 3, 1, 0]))
     }
 
     #[inline]
-    fn ywyy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 3, 1, 1]))
+    fn ywyy(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 3, 1, 1]))
     }
 
     #[inline]
-    fn ywyz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 3, 1, 2]))
+    fn ywyz(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 3, 1, 2]))
     }
 
     #[inline]
-    fn ywyw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 3, 1, 3]))
+    fn ywyw(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 3, 1, 3]))
     }
 
     #[inline]
-    fn ywzx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 3, 2, 0]))
+    fn ywzx(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 3, 2, 0]))
     }
 
     #[inline]
-    fn ywzy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 3, 2, 1]))
+    fn ywzy(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 3, 2, 1]))
     }
 
     #[inline]
-    fn ywzz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 3, 2, 2]))
+    fn ywzz(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 3, 2, 2]))
     }
 
     #[inline]
-    fn ywzw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 3, 2, 3]))
+    fn ywzw(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 3, 2, 3]))
     }
 
     #[inline]
-    fn ywwx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 3, 3, 0]))
+    fn ywwx(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 3, 3, 0]))
     }
 
     #[inline]
-    fn ywwy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 3, 3, 1]))
+    fn ywwy(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 3, 3, 1]))
     }
 
     #[inline]
-    fn ywwz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 3, 3, 2]))
+    fn ywwz(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 3, 3, 2]))
     }
 
     #[inline]
-    fn ywww(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [1, 3, 3, 3]))
+    fn ywww(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 3, 3, 3]))
     }
 
     #[inline]
-    fn zxxx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 0, 0, 0]))
+    fn zxxx(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 0, 0, 0]))
     }
 
     #[inline]
-    fn zxxy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 0, 0, 1]))
+    fn zxxy(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 0, 0, 1]))
     }
 
     #[inline]
-    fn zxxz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 0, 0, 2]))
+    fn zxxz(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 0, 0, 2]))
     }
 
     #[inline]
-    fn zxxw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 0, 0, 3]))
+    fn zxxw(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 0, 0, 3]))
     }
 
     #[inline]
-    fn zxyx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 0, 1, 0]))
+    fn zxyx(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 0, 1, 0]))
     }
 
     #[inline]
-    fn zxyy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 0, 1, 1]))
+    fn zxyy(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 0, 1, 1]))
     }
 
     #[inline]
-    fn zxyz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 0, 1, 2]))
+    fn zxyz(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 0, 1, 2]))
     }
 
     #[inline]
-    fn zxyw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 0, 1, 3]))
+    fn zxyw(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 0, 1, 3]))
     }
 
     #[inline]
-    fn zxzx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 0, 2, 0]))
+    fn zxzx(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 0, 2, 0]))
     }
 
     #[inline]
-    fn zxzy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 0, 2, 1]))
+    fn zxzy(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 0, 2, 1]))
     }
 
     #[inline]
-    fn zxzz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 0, 2, 2]))
+    fn zxzz(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 0, 2, 2]))
     }
 
     #[inline]
-    fn zxzw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 0, 2, 3]))
+    fn zxzw(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 0, 2, 3]))
     }
 
     #[inline]
-    fn zxwx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 0, 3, 0]))
+    fn zxwx(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 0, 3, 0]))
     }
 
     #[inline]
-    fn zxwy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 0, 3, 1]))
+    fn zxwy(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 0, 3, 1]))
     }
 
     #[inline]
-    fn zxwz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 0, 3, 2]))
+    fn zxwz(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 0, 3, 2]))
     }
 
     #[inline]
-    fn zxww(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 0, 3, 3]))
+    fn zxww(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 0, 3, 3]))
     }
 
     #[inline]
-    fn zyxx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 1, 0, 0]))
+    fn zyxx(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 1, 0, 0]))
     }
 
     #[inline]
-    fn zyxy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 1, 0, 1]))
+    fn zyxy(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 1, 0, 1]))
     }
 
     #[inline]
-    fn zyxz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 1, 0, 2]))
+    fn zyxz(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 1, 0, 2]))
     }
 
     #[inline]
-    fn zyxw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 1, 0, 3]))
+    fn zyxw(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 1, 0, 3]))
     }
 
     #[inline]
-    fn zyyx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 1, 1, 0]))
+    fn zyyx(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 1, 1, 0]))
     }
 
     #[inline]
-    fn zyyy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 1, 1, 1]))
+    fn zyyy(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 1, 1, 1]))
     }
 
     #[inline]
-    fn zyyz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 1, 1, 2]))
+    fn zyyz(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 1, 1, 2]))
     }
 
     #[inline]
-    fn zyyw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 1, 1, 3]))
+    fn zyyw(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 1, 1, 3]))
     }
 
     #[inline]
-    fn zyzx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 1, 2, 0]))
+    fn zyzx(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 1, 2, 0]))
     }
 
     #[inline]
-    fn zyzy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 1, 2, 1]))
+    fn zyzy(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 1, 2, 1]))
     }
 
     #[inline]
-    fn zyzz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 1, 2, 2]))
+    fn zyzz(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 1, 2, 2]))
     }
 
     #[inline]
-    fn zyzw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 1, 2, 3]))
+    fn zyzw(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 1, 2, 3]))
     }
 
     #[inline]
-    fn zywx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 1, 3, 0]))
+    fn zywx(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 1, 3, 0]))
     }
 
     #[inline]
-    fn zywy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 1, 3, 1]))
+    fn zywy(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 1, 3, 1]))
     }
 
     #[inline]
-    fn zywz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 1, 3, 2]))
+    fn zywz(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 1, 3, 2]))
     }
 
     #[inline]
-    fn zyww(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 1, 3, 3]))
+    fn zyww(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 1, 3, 3]))
     }
 
     #[inline]
-    fn zzxx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 2, 0, 0]))
+    fn zzxx(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 2, 0, 0]))
     }
 
     #[inline]
-    fn zzxy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 2, 0, 1]))
+    fn zzxy(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 2, 0, 1]))
     }
 
     #[inline]
-    fn zzxz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 2, 0, 2]))
+    fn zzxz(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 2, 0, 2]))
     }
 
     #[inline]
-    fn zzxw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 2, 0, 3]))
+    fn zzxw(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 2, 0, 3]))
     }
 
     #[inline]
-    fn zzyx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 2, 1, 0]))
+    fn zzyx(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 2, 1, 0]))
     }
 
     #[inline]
-    fn zzyy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 2, 1, 1]))
+    fn zzyy(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 2, 1, 1]))
     }
 
     #[inline]
-    fn zzyz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 2, 1, 2]))
+    fn zzyz(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 2, 1, 2]))
     }
 
     #[inline]
-    fn zzyw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 2, 1, 3]))
+    fn zzyw(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 2, 1, 3]))
     }
 
     #[inline]
-    fn zzzx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 2, 2, 0]))
+    fn zzzx(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 2, 2, 0]))
     }
 
     #[inline]
-    fn zzzy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 2, 2, 1]))
+    fn zzzy(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 2, 2, 1]))
     }
 
     #[inline]
-    fn zzzz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 2, 2, 2]))
+    fn zzzz(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 2, 2, 2]))
     }
 
     #[inline]
-    fn zzzw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 2, 2, 3]))
+    fn zzzw(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 2, 2, 3]))
     }
 
     #[inline]
-    fn zzwx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 2, 3, 0]))
+    fn zzwx(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 2, 3, 0]))
     }
 
     #[inline]
-    fn zzwy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 2, 3, 1]))
+    fn zzwy(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 2, 3, 1]))
     }
 
     #[inline]
-    fn zzwz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 2, 3, 2]))
+    fn zzwz(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 2, 3, 2]))
     }
 
     #[inline]
-    fn zzww(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 2, 3, 3]))
+    fn zzww(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 2, 3, 3]))
     }
 
     #[inline]
-    fn zwxx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 3, 0, 0]))
+    fn zwxx(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 3, 0, 0]))
     }
 
     #[inline]
-    fn zwxy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 3, 0, 1]))
+    fn zwxy(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 3, 0, 1]))
     }
 
     #[inline]
-    fn zwxz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 3, 0, 2]))
+    fn zwxz(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 3, 0, 2]))
     }
 
     #[inline]
-    fn zwxw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 3, 0, 3]))
+    fn zwxw(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 3, 0, 3]))
     }
 
     #[inline]
-    fn zwyx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 3, 1, 0]))
+    fn zwyx(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 3, 1, 0]))
     }
 
     #[inline]
-    fn zwyy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 3, 1, 1]))
+    fn zwyy(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 3, 1, 1]))
     }
 
     #[inline]
-    fn zwyz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 3, 1, 2]))
+    fn zwyz(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 3, 1, 2]))
     }
 
     #[inline]
-    fn zwyw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 3, 1, 3]))
+    fn zwyw(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 3, 1, 3]))
     }
 
     #[inline]
-    fn zwzx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 3, 2, 0]))
+    fn zwzx(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 3, 2, 0]))
     }
 
     #[inline]
-    fn zwzy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 3, 2, 1]))
+    fn zwzy(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 3, 2, 1]))
     }
 
     #[inline]
-    fn zwzz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 3, 2, 2]))
+    fn zwzz(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 3, 2, 2]))
     }
 
     #[inline]
-    fn zwzw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 3, 2, 3]))
+    fn zwzw(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 3, 2, 3]))
     }
 
     #[inline]
-    fn zwwx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 3, 3, 0]))
+    fn zwwx(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 3, 3, 0]))
     }
 
     #[inline]
-    fn zwwy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 3, 3, 1]))
+    fn zwwy(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 3, 3, 1]))
     }
 
     #[inline]
-    fn zwwz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 3, 3, 2]))
+    fn zwwz(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 3, 3, 2]))
     }
 
     #[inline]
-    fn zwww(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [2, 3, 3, 3]))
+    fn zwww(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 3, 3, 3]))
     }
 
     #[inline]
-    fn wxxx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 0, 0, 0]))
+    fn wxxx(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 0, 0, 0]))
     }
 
     #[inline]
-    fn wxxy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 0, 0, 1]))
+    fn wxxy(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 0, 0, 1]))
     }
 
     #[inline]
-    fn wxxz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 0, 0, 2]))
+    fn wxxz(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 0, 0, 2]))
     }
 
     #[inline]
-    fn wxxw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 0, 0, 3]))
+    fn wxxw(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 0, 0, 3]))
     }
 
     #[inline]
-    fn wxyx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 0, 1, 0]))
+    fn wxyx(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 0, 1, 0]))
     }
 
     #[inline]
-    fn wxyy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 0, 1, 1]))
+    fn wxyy(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 0, 1, 1]))
     }
 
     #[inline]
-    fn wxyz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 0, 1, 2]))
+    fn wxyz(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 0, 1, 2]))
     }
 
     #[inline]
-    fn wxyw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 0, 1, 3]))
+    fn wxyw(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 0, 1, 3]))
     }
 
     #[inline]
-    fn wxzx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 0, 2, 0]))
+    fn wxzx(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 0, 2, 0]))
     }
 
     #[inline]
-    fn wxzy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 0, 2, 1]))
+    fn wxzy(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 0, 2, 1]))
     }
 
     #[inline]
-    fn wxzz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 0, 2, 2]))
+    fn wxzz(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 0, 2, 2]))
     }
 
     #[inline]
-    fn wxzw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 0, 2, 3]))
+    fn wxzw(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 0, 2, 3]))
     }
 
     #[inline]
-    fn wxwx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 0, 3, 0]))
+    fn wxwx(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 0, 3, 0]))
     }
 
     #[inline]
-    fn wxwy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 0, 3, 1]))
+    fn wxwy(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 0, 3, 1]))
     }
 
     #[inline]
-    fn wxwz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 0, 3, 2]))
+    fn wxwz(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 0, 3, 2]))
     }
 
     #[inline]
-    fn wxww(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 0, 3, 3]))
+    fn wxww(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 0, 3, 3]))
     }
 
     #[inline]
-    fn wyxx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 1, 0, 0]))
+    fn wyxx(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 1, 0, 0]))
     }
 
     #[inline]
-    fn wyxy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 1, 0, 1]))
+    fn wyxy(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 1, 0, 1]))
     }
 
     #[inline]
-    fn wyxz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 1, 0, 2]))
+    fn wyxz(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 1, 0, 2]))
     }
 
     #[inline]
-    fn wyxw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 1, 0, 3]))
+    fn wyxw(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 1, 0, 3]))
     }
 
     #[inline]
-    fn wyyx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 1, 1, 0]))
+    fn wyyx(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 1, 1, 0]))
     }
 
     #[inline]
-    fn wyyy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 1, 1, 1]))
+    fn wyyy(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 1, 1, 1]))
     }
 
     #[inline]
-    fn wyyz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 1, 1, 2]))
+    fn wyyz(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 1, 1, 2]))
     }
 
     #[inline]
-    fn wyyw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 1, 1, 3]))
+    fn wyyw(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 1, 1, 3]))
     }
 
     #[inline]
-    fn wyzx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 1, 2, 0]))
+    fn wyzx(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 1, 2, 0]))
     }
 
     #[inline]
-    fn wyzy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 1, 2, 1]))
+    fn wyzy(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 1, 2, 1]))
     }
 
     #[inline]
-    fn wyzz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 1, 2, 2]))
+    fn wyzz(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 1, 2, 2]))
     }
 
     #[inline]
-    fn wyzw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 1, 2, 3]))
+    fn wyzw(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 1, 2, 3]))
     }
 
     #[inline]
-    fn wywx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 1, 3, 0]))
+    fn wywx(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 1, 3, 0]))
     }
 
     #[inline]
-    fn wywy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 1, 3, 1]))
+    fn wywy(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 1, 3, 1]))
     }
 
     #[inline]
-    fn wywz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 1, 3, 2]))
+    fn wywz(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 1, 3, 2]))
     }
 
     #[inline]
-    fn wyww(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 1, 3, 3]))
+    fn wyww(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 1, 3, 3]))
     }
 
     #[inline]
-    fn wzxx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 2, 0, 0]))
+    fn wzxx(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 2, 0, 0]))
     }
 
     #[inline]
-    fn wzxy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 2, 0, 1]))
+    fn wzxy(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 2, 0, 1]))
     }
 
     #[inline]
-    fn wzxz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 2, 0, 2]))
+    fn wzxz(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 2, 0, 2]))
     }
 
     #[inline]
-    fn wzxw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 2, 0, 3]))
+    fn wzxw(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 2, 0, 3]))
     }
 
     #[inline]
-    fn wzyx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 2, 1, 0]))
+    fn wzyx(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 2, 1, 0]))
     }
 
     #[inline]
-    fn wzyy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 2, 1, 1]))
+    fn wzyy(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 2, 1, 1]))
     }
 
     #[inline]
-    fn wzyz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 2, 1, 2]))
+    fn wzyz(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 2, 1, 2]))
     }
 
     #[inline]
-    fn wzyw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 2, 1, 3]))
+    fn wzyw(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 2, 1, 3]))
     }
 
     #[inline]
-    fn wzzx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 2, 2, 0]))
+    fn wzzx(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 2, 2, 0]))
     }
 
     #[inline]
-    fn wzzy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 2, 2, 1]))
+    fn wzzy(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 2, 2, 1]))
     }
 
     #[inline]
-    fn wzzz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 2, 2, 2]))
+    fn wzzz(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 2, 2, 2]))
     }
 
     #[inline]
-    fn wzzw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 2, 2, 3]))
+    fn wzzw(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 2, 2, 3]))
     }
 
     #[inline]
-    fn wzwx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 2, 3, 0]))
+    fn wzwx(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 2, 3, 0]))
     }
 
     #[inline]
-    fn wzwy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 2, 3, 1]))
+    fn wzwy(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 2, 3, 1]))
     }
 
     #[inline]
-    fn wzwz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 2, 3, 2]))
+    fn wzwz(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 2, 3, 2]))
     }
 
     #[inline]
-    fn wzww(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 2, 3, 3]))
+    fn wzww(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 2, 3, 3]))
     }
 
     #[inline]
-    fn wwxx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 3, 0, 0]))
+    fn wwxx(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 3, 0, 0]))
     }
 
     #[inline]
-    fn wwxy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 3, 0, 1]))
+    fn wwxy(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 3, 0, 1]))
     }
 
     #[inline]
-    fn wwxz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 3, 0, 2]))
+    fn wwxz(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 3, 0, 2]))
     }
 
     #[inline]
-    fn wwxw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 3, 0, 3]))
+    fn wwxw(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 3, 0, 3]))
     }
 
     #[inline]
-    fn wwyx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 3, 1, 0]))
+    fn wwyx(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 3, 1, 0]))
     }
 
     #[inline]
-    fn wwyy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 3, 1, 1]))
+    fn wwyy(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 3, 1, 1]))
     }
 
     #[inline]
-    fn wwyz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 3, 1, 2]))
+    fn wwyz(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 3, 1, 2]))
     }
 
     #[inline]
-    fn wwyw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 3, 1, 3]))
+    fn wwyw(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 3, 1, 3]))
     }
 
     #[inline]
-    fn wwzx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 3, 2, 0]))
+    fn wwzx(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 3, 2, 0]))
     }
 
     #[inline]
-    fn wwzy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 3, 2, 1]))
+    fn wwzy(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 3, 2, 1]))
     }
 
     #[inline]
-    fn wwzz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 3, 2, 2]))
+    fn wwzz(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 3, 2, 2]))
     }
 
     #[inline]
-    fn wwzw(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 3, 2, 3]))
+    fn wwzw(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 3, 2, 3]))
     }
 
     #[inline]
-    fn wwwx(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 3, 3, 0]))
+    fn wwwx(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 3, 3, 0]))
     }
 
     #[inline]
-    fn wwwy(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 3, 3, 1]))
+    fn wwwy(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 3, 3, 1]))
     }
 
     #[inline]
-    fn wwwz(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 3, 3, 2]))
+    fn wwwz(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 3, 3, 2]))
     }
 
     #[inline]
-    fn wwww(self) -> Vec4 {
-        Vec4(simd_swizzle!(self.0, [3, 3, 3, 3]))
+    fn wwww(self) -> Self {
+        Self(simd_swizzle!(self.0, [3, 3, 3, 3]))
     }
 }

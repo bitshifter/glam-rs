@@ -1210,36 +1210,21 @@ impl DMat4 {
     #[inline]
     #[must_use]
     pub fn mul_mat4(&self, rhs: &Self) -> Self {
-        Self::from_cols(
-            self.mul(rhs.x_axis),
-            self.mul(rhs.y_axis),
-            self.mul(rhs.z_axis),
-            self.mul(rhs.w_axis),
-        )
+        self.mul(rhs)
     }
 
     /// Adds two 4x4 matrices.
     #[inline]
     #[must_use]
     pub fn add_mat4(&self, rhs: &Self) -> Self {
-        Self::from_cols(
-            self.x_axis.add(rhs.x_axis),
-            self.y_axis.add(rhs.y_axis),
-            self.z_axis.add(rhs.z_axis),
-            self.w_axis.add(rhs.w_axis),
-        )
+        self.add(rhs)
     }
 
     /// Subtracts two 4x4 matrices.
     #[inline]
     #[must_use]
     pub fn sub_mat4(&self, rhs: &Self) -> Self {
-        Self::from_cols(
-            self.x_axis.sub(rhs.x_axis),
-            self.y_axis.sub(rhs.y_axis),
-            self.z_axis.sub(rhs.z_axis),
-            self.w_axis.sub(rhs.w_axis),
-        )
+        self.sub(rhs)
     }
 
     /// Multiplies a 4x4 matrix by a scalar.
@@ -1315,33 +1300,105 @@ impl Default for DMat4 {
     }
 }
 
-impl Add<DMat4> for DMat4 {
+impl Add for DMat4 {
     type Output = Self;
     #[inline]
-    fn add(self, rhs: Self) -> Self::Output {
-        self.add_mat4(&rhs)
+    fn add(self, rhs: Self) -> Self {
+        Self::from_cols(
+            self.x_axis.add(rhs.x_axis),
+            self.y_axis.add(rhs.y_axis),
+            self.z_axis.add(rhs.z_axis),
+            self.w_axis.add(rhs.w_axis),
+        )
     }
 }
 
-impl AddAssign<DMat4> for DMat4 {
+impl Add<&Self> for DMat4 {
+    type Output = Self;
+    #[inline]
+    fn add(self, rhs: &Self) -> Self {
+        self.add(*rhs)
+    }
+}
+
+impl Add<&DMat4> for &DMat4 {
+    type Output = DMat4;
+    #[inline]
+    fn add(self, rhs: &DMat4) -> DMat4 {
+        (*self).add(*rhs)
+    }
+}
+
+impl Add<DMat4> for &DMat4 {
+    type Output = DMat4;
+    #[inline]
+    fn add(self, rhs: DMat4) -> DMat4 {
+        (*self).add(rhs)
+    }
+}
+
+impl AddAssign for DMat4 {
     #[inline]
     fn add_assign(&mut self, rhs: Self) {
-        *self = self.add_mat4(&rhs);
+        *self = self.add(rhs);
     }
 }
 
-impl Sub<DMat4> for DMat4 {
+impl AddAssign<&Self> for DMat4 {
+    #[inline]
+    fn add_assign(&mut self, rhs: &Self) {
+        self.add_assign(*rhs);
+    }
+}
+
+impl Sub for DMat4 {
     type Output = Self;
     #[inline]
-    fn sub(self, rhs: Self) -> Self::Output {
-        self.sub_mat4(&rhs)
+    fn sub(self, rhs: Self) -> Self {
+        Self::from_cols(
+            self.x_axis.sub(rhs.x_axis),
+            self.y_axis.sub(rhs.y_axis),
+            self.z_axis.sub(rhs.z_axis),
+            self.w_axis.sub(rhs.w_axis),
+        )
     }
 }
 
-impl SubAssign<DMat4> for DMat4 {
+impl Sub<&Self> for DMat4 {
+    type Output = Self;
+    #[inline]
+    fn sub(self, rhs: &Self) -> Self {
+        self.sub(*rhs)
+    }
+}
+
+impl Sub<&DMat4> for &DMat4 {
+    type Output = DMat4;
+    #[inline]
+    fn sub(self, rhs: &DMat4) -> DMat4 {
+        (*self).sub(*rhs)
+    }
+}
+
+impl Sub<DMat4> for &DMat4 {
+    type Output = DMat4;
+    #[inline]
+    fn sub(self, rhs: DMat4) -> DMat4 {
+        (*self).sub(rhs)
+    }
+}
+
+impl SubAssign for DMat4 {
     #[inline]
     fn sub_assign(&mut self, rhs: Self) {
-        *self = self.sub_mat4(&rhs);
+        *self = self.sub(rhs);
+    }
+}
+
+impl SubAssign<&Self> for DMat4 {
+    #[inline]
+    fn sub_assign(&mut self, rhs: &Self) {
+        self.sub_assign(*rhs);
     }
 }
 
@@ -1358,18 +1415,62 @@ impl Neg for DMat4 {
     }
 }
 
-impl Mul<DMat4> for DMat4 {
-    type Output = Self;
+impl Neg for &DMat4 {
+    type Output = DMat4;
     #[inline]
-    fn mul(self, rhs: Self) -> Self::Output {
-        self.mul_mat4(&rhs)
+    fn neg(self) -> DMat4 {
+        (*self).neg()
     }
 }
 
-impl MulAssign<DMat4> for DMat4 {
+impl Mul for DMat4 {
+    type Output = Self;
+    #[inline]
+    fn mul(self, rhs: Self) -> Self {
+        Self::from_cols(
+            self.mul(rhs.x_axis),
+            self.mul(rhs.y_axis),
+            self.mul(rhs.z_axis),
+            self.mul(rhs.w_axis),
+        )
+    }
+}
+
+impl Mul<&Self> for DMat4 {
+    type Output = Self;
+    #[inline]
+    fn mul(self, rhs: &Self) -> Self {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&DMat4> for &DMat4 {
+    type Output = DMat4;
+    #[inline]
+    fn mul(self, rhs: &DMat4) -> DMat4 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<DMat4> for &DMat4 {
+    type Output = DMat4;
+    #[inline]
+    fn mul(self, rhs: DMat4) -> DMat4 {
+        (*self).mul(rhs)
+    }
+}
+
+impl MulAssign for DMat4 {
     #[inline]
     fn mul_assign(&mut self, rhs: Self) {
-        *self = self.mul_mat4(&rhs);
+        *self = self.mul(rhs);
+    }
+}
+
+impl MulAssign<&Self> for DMat4 {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &Self) {
+        self.mul_assign(*rhs);
     }
 }
 
@@ -1381,6 +1482,30 @@ impl Mul<DVec4> for DMat4 {
     }
 }
 
+impl Mul<&DVec4> for DMat4 {
+    type Output = DVec4;
+    #[inline]
+    fn mul(self, rhs: &DVec4) -> DVec4 {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&DVec4> for &DMat4 {
+    type Output = DVec4;
+    #[inline]
+    fn mul(self, rhs: &DVec4) -> DVec4 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<DVec4> for &DMat4 {
+    type Output = DVec4;
+    #[inline]
+    fn mul(self, rhs: DVec4) -> DVec4 {
+        (*self).mul(rhs)
+    }
+}
+
 impl Mul<DMat4> for f64 {
     type Output = DMat4;
     #[inline]
@@ -1389,18 +1514,73 @@ impl Mul<DMat4> for f64 {
     }
 }
 
+impl Mul<&DMat4> for f64 {
+    type Output = DMat4;
+    #[inline]
+    fn mul(self, rhs: &DMat4) -> DMat4 {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&DMat4> for &f64 {
+    type Output = DMat4;
+    #[inline]
+    fn mul(self, rhs: &DMat4) -> DMat4 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<DMat4> for &f64 {
+    type Output = DMat4;
+    #[inline]
+    fn mul(self, rhs: DMat4) -> DMat4 {
+        (*self).mul(rhs)
+    }
+}
+
 impl Mul<f64> for DMat4 {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: f64) -> Self::Output {
+    fn mul(self, rhs: f64) -> Self {
         self.mul_scalar(rhs)
+    }
+}
+
+impl Mul<&f64> for DMat4 {
+    type Output = Self;
+    #[inline]
+    fn mul(self, rhs: &f64) -> Self {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&f64> for &DMat4 {
+    type Output = DMat4;
+    #[inline]
+    fn mul(self, rhs: &f64) -> DMat4 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<f64> for &DMat4 {
+    type Output = DMat4;
+    #[inline]
+    fn mul(self, rhs: f64) -> DMat4 {
+        (*self).mul(rhs)
     }
 }
 
 impl MulAssign<f64> for DMat4 {
     #[inline]
     fn mul_assign(&mut self, rhs: f64) {
-        *self = self.mul_scalar(rhs);
+        *self = self.mul(rhs);
+    }
+}
+
+impl MulAssign<&f64> for DMat4 {
+    #[inline]
+    fn mul_assign(&mut self, rhs: &f64) {
+        self.mul_assign(*rhs);
     }
 }
 
@@ -1412,18 +1592,73 @@ impl Div<DMat4> for f64 {
     }
 }
 
+impl Div<&DMat4> for f64 {
+    type Output = DMat4;
+    #[inline]
+    fn div(self, rhs: &DMat4) -> DMat4 {
+        self.div(*rhs)
+    }
+}
+
+impl Div<&DMat4> for &f64 {
+    type Output = DMat4;
+    #[inline]
+    fn div(self, rhs: &DMat4) -> DMat4 {
+        (*self).div(*rhs)
+    }
+}
+
+impl Div<DMat4> for &f64 {
+    type Output = DMat4;
+    #[inline]
+    fn div(self, rhs: DMat4) -> DMat4 {
+        (*self).div(rhs)
+    }
+}
+
 impl Div<f64> for DMat4 {
     type Output = Self;
     #[inline]
-    fn div(self, rhs: f64) -> Self::Output {
+    fn div(self, rhs: f64) -> Self {
         self.div_scalar(rhs)
+    }
+}
+
+impl Div<&f64> for DMat4 {
+    type Output = Self;
+    #[inline]
+    fn div(self, rhs: &f64) -> Self {
+        self.div(*rhs)
+    }
+}
+
+impl Div<&f64> for &DMat4 {
+    type Output = DMat4;
+    #[inline]
+    fn div(self, rhs: &f64) -> DMat4 {
+        (*self).div(*rhs)
+    }
+}
+
+impl Div<f64> for &DMat4 {
+    type Output = DMat4;
+    #[inline]
+    fn div(self, rhs: f64) -> DMat4 {
+        (*self).div(rhs)
     }
 }
 
 impl DivAssign<f64> for DMat4 {
     #[inline]
     fn div_assign(&mut self, rhs: f64) {
-        *self = self.div_scalar(rhs);
+        *self = self.div(rhs);
+    }
+}
+
+impl DivAssign<&f64> for DMat4 {
+    #[inline]
+    fn div_assign(&mut self, rhs: &f64) {
+        self.div_assign(*rhs);
     }
 }
 

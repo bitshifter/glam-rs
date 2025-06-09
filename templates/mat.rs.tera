@@ -2387,107 +2387,21 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn mul_mat{{ dim }}(&self, rhs: &Self) -> Self {
-        {% if self_t == "Mat2" and is_sse2 %}
-            unsafe {
-                let abcd = self.0;
-                let rhs = rhs.0;
-                let xxyy0 = _mm_shuffle_ps(rhs, rhs, 0b01_01_00_00);
-                let xxyy1 = _mm_shuffle_ps(rhs, rhs, 0b11_11_10_10);
-                let axbxcydy0 = _mm_mul_ps(abcd, xxyy0);
-                let axbxcydy1 = _mm_mul_ps(abcd, xxyy1);
-                let cydyaxbx0 = _mm_shuffle_ps(axbxcydy0, axbxcydy0, 0b01_00_11_10);
-                let cydyaxbx1 = _mm_shuffle_ps(axbxcydy1, axbxcydy1, 0b01_00_11_10);
-                let result0 = _mm_add_ps(axbxcydy0, cydyaxbx0);
-                let result1 = _mm_add_ps(axbxcydy1, cydyaxbx1);
-                Self(_mm_shuffle_ps(result0, result1, 0b01_00_01_00))
-            }
-        {% elif self_t == "Mat2" and is_wasm32 %}
-            let abcd = self.0;
-            let rhs = rhs.0;
-            let xxyy0 = i32x4_shuffle::<0, 0, 5, 5>(rhs, rhs);
-            let xxyy1 = i32x4_shuffle::<2, 2, 7, 7>(rhs, rhs);
-            let axbxcydy0 = f32x4_mul(abcd, xxyy0);
-            let axbxcydy1 = f32x4_mul(abcd, xxyy1);
-            let cydyaxbx0 = i32x4_shuffle::<2, 3, 4, 5>(axbxcydy0, axbxcydy0);
-            let cydyaxbx1 = i32x4_shuffle::<2, 3, 4, 5>(axbxcydy1, axbxcydy1);
-            let result0 = f32x4_add(axbxcydy0, cydyaxbx0);
-            let result1 = f32x4_add(axbxcydy1, cydyaxbx1);
-            Self(i32x4_shuffle::<0, 1, 4, 5>(result0, result1))
-        {% elif self_t == "Mat2" and is_coresimd %}
-            let abcd = self.0;
-            let xxyy0 = simd_swizzle!(rhs.0, [0, 0, 1, 1]);
-            let xxyy1 = simd_swizzle!(rhs.0, [2, 2, 3, 3]);
-            let axbxcydy0 = abcd * xxyy0;
-            let axbxcydy1 = abcd * xxyy1;
-            let cydyaxbx0 = simd_swizzle!(axbxcydy0, [2, 3, 0, 1]);
-            let cydyaxbx1 = simd_swizzle!(axbxcydy1, [2, 3, 0, 1]);
-            let result0 = axbxcydy0 + cydyaxbx0;
-            let result1 = axbxcydy1 + cydyaxbx1;
-            Self(simd_swizzle!(result0, result1, [0, 1, 4, 5]))
-        {% elif self_t == "Mat2" and is_neon %}
-            unsafe {
-                let abcd = self.0;
-                let xxyy0 = vzip1q_f32(rhs.0, rhs.0);
-                let xxyy1 = vzip2q_f32(rhs.0, rhs.0);
-                let axbxcydy0 = vmulq_f32(abcd, xxyy0);
-                let axbxcydy1 = vmulq_f32(abcd, xxyy1);
-                let cydyaxbx0 = vextq_f32(axbxcydy0, axbxcydy0, 2);
-                let cydyaxbx1 = vextq_f32(axbxcydy1, axbxcydy1, 2);
-                let result0 = vaddq_f32(axbxcydy0, cydyaxbx0);
-                let result1 = vaddq_f32(axbxcydy1, cydyaxbx1);
-                Self(vreinterpretq_f32_u64(
-                        vsetq_lane_u64(vgetq_lane_u64(vreinterpretq_u64_f32(result1), 0),
-                        vreinterpretq_u64_f32(result0), 1)))
-            }
-        {% else %}
-            Self::from_cols(
-                {% for axis in axes %}
-                    self.mul(rhs.{{ axis }}),
-                {%- endfor %}
-            )
-        {% endif %}
+        self.mul(rhs)
     }
 
     /// Adds two {{ nxn }} matrices.
     #[inline]
     #[must_use]
     pub fn add_mat{{ dim }}(&self, rhs: &Self) -> Self {
-        {% if self_t == "Mat2" and is_sse2 %}
-            Self(unsafe { _mm_add_ps(self.0, rhs.0) })
-        {% elif self_t == "Mat2" and is_wasm32 %}
-            Self(f32x4_add(self.0, rhs.0))
-        {% elif self_t == "Mat2" and is_coresimd %}
-            Self(self.0 + rhs.0)
-        {% elif self_t == "Mat2" and is_neon %}
-            Self(unsafe { vaddq_f32(self.0, rhs.0) })
-        {% else %}
-            Self::from_cols(
-                {% for axis in axes %}
-                    self.{{ axis }}.add(rhs.{{ axis }}),
-                {%- endfor %}
-            )
-        {% endif %}
+        self.add(rhs)
     }
 
     /// Subtracts two {{ nxn }} matrices.
     #[inline]
     #[must_use]
     pub fn sub_mat{{ dim }}(&self, rhs: &Self) -> Self {
-        {% if self_t == "Mat2" and is_sse2 %}
-            Self(unsafe { _mm_sub_ps(self.0, rhs.0) })
-        {% elif self_t == "Mat2" and is_wasm32 %}
-            Self(f32x4_sub(self.0, rhs.0))
-        {% elif self_t == "Mat2" and is_coresimd %}
-            Self(self.0 - rhs.0)
-        {% elif self_t == "Mat2" and is_neon %}
-            Self(unsafe { vsubq_f32(self.0, rhs.0) })
-        {% else %}
-            Self::from_cols(
-                {% for axis in axes %}
-                    self.{{ axis }}.sub(rhs.{{ axis }}),
-                {%- endfor %}
-            )
-        {% endif %}
+        self.sub(rhs)
     }
 
     /// Multiplies a {{ nxn }} matrix by a scalar.
@@ -2590,35 +2504,57 @@ impl Default for {{ self_t }} {
     }
 }
 
-impl Add<{{ self_t }}> for {{ self_t }} {
+impl Add for {{ self_t }} {
     type Output = Self;
     #[inline]
-    fn add(self, rhs: Self) -> Self::Output {
-        self.add_mat{{ dim }}(&rhs)
+    fn add(self, rhs: Self) -> Self {
+        {% if self_t == "Mat2" and is_sse2 %}
+            Self(unsafe { _mm_add_ps(self.0, rhs.0) })
+        {% elif self_t == "Mat2" and is_wasm32 %}
+            Self(f32x4_add(self.0, rhs.0))
+        {% elif self_t == "Mat2" and is_coresimd %}
+            Self(self.0 + rhs.0)
+        {% elif self_t == "Mat2" and is_neon %}
+            Self(unsafe { vaddq_f32(self.0, rhs.0) })
+        {% else %}
+            Self::from_cols(
+                {% for axis in axes %}
+                    self.{{ axis }}.add(rhs.{{ axis }}),
+                {%- endfor %}
+            )
+        {% endif %}
     }
 }
 
-impl AddAssign<{{ self_t }}> for {{ self_t }} {
-    #[inline]
-    fn add_assign(&mut self, rhs: Self) {
-        *self = self.add_mat{{ dim }}(&rhs);
-    }
-}
+{{ macros::impl_ref_binop(imp="Add", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
 
-impl Sub<{{ self_t }}> for {{ self_t }} {
+{{ macros::impl_op_assign(imp="Add", self_t=self_t, rhs_t=self_t) }}
+
+impl Sub for {{ self_t }} {
     type Output = Self;
     #[inline]
-    fn sub(self, rhs: Self) -> Self::Output {
-        self.sub_mat{{ dim }}(&rhs)
+    fn sub(self, rhs: Self) -> Self {
+        {% if self_t == "Mat2" and is_sse2 %}
+            Self(unsafe { _mm_sub_ps(self.0, rhs.0) })
+        {% elif self_t == "Mat2" and is_wasm32 %}
+            Self(f32x4_sub(self.0, rhs.0))
+        {% elif self_t == "Mat2" and is_coresimd %}
+            Self(self.0 - rhs.0)
+        {% elif self_t == "Mat2" and is_neon %}
+            Self(unsafe { vsubq_f32(self.0, rhs.0) })
+        {% else %}
+            Self::from_cols(
+                {% for axis in axes %}
+                    self.{{ axis }}.sub(rhs.{{ axis }}),
+                {%- endfor %}
+            )
+        {% endif %}
     }
 }
 
-impl SubAssign<{{ self_t }}> for {{ self_t }} {
-    #[inline]
-    fn sub_assign(&mut self, rhs: Self) {
-        *self = self.sub_mat{{ dim }}(&rhs);
-    }
-}
+{{ macros::impl_ref_binop(imp="Sub", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+
+{{ macros::impl_op_assign(imp="Sub", self_t=self_t, rhs_t=self_t) }}
 
 impl Neg for {{ self_t }} {
     type Output = Self;
@@ -2642,20 +2578,77 @@ impl Neg for {{ self_t }} {
     }
 }
 
-impl Mul<{{ self_t }}> for {{ self_t }} {
+{{ macros::impl_ref_unop(imp="Neg", self_t=self_t, output_t=self_t) }}
+
+impl Mul for {{ self_t }} {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: Self) -> Self::Output {
-        self.mul_mat{{ dim }}(&rhs)
+    fn mul(self, rhs: Self) -> Self {
+        {% if self_t == "Mat2" and is_sse2 %}
+            unsafe {
+                let abcd = self.0;
+                let rhs = rhs.0;
+                let xxyy0 = _mm_shuffle_ps(rhs, rhs, 0b01_01_00_00);
+                let xxyy1 = _mm_shuffle_ps(rhs, rhs, 0b11_11_10_10);
+                let axbxcydy0 = _mm_mul_ps(abcd, xxyy0);
+                let axbxcydy1 = _mm_mul_ps(abcd, xxyy1);
+                let cydyaxbx0 = _mm_shuffle_ps(axbxcydy0, axbxcydy0, 0b01_00_11_10);
+                let cydyaxbx1 = _mm_shuffle_ps(axbxcydy1, axbxcydy1, 0b01_00_11_10);
+                let result0 = _mm_add_ps(axbxcydy0, cydyaxbx0);
+                let result1 = _mm_add_ps(axbxcydy1, cydyaxbx1);
+                Self(_mm_shuffle_ps(result0, result1, 0b01_00_01_00))
+            }
+        {% elif self_t == "Mat2" and is_wasm32 %}
+            let abcd = self.0;
+            let rhs = rhs.0;
+            let xxyy0 = i32x4_shuffle::<0, 0, 5, 5>(rhs, rhs);
+            let xxyy1 = i32x4_shuffle::<2, 2, 7, 7>(rhs, rhs);
+            let axbxcydy0 = f32x4_mul(abcd, xxyy0);
+            let axbxcydy1 = f32x4_mul(abcd, xxyy1);
+            let cydyaxbx0 = i32x4_shuffle::<2, 3, 4, 5>(axbxcydy0, axbxcydy0);
+            let cydyaxbx1 = i32x4_shuffle::<2, 3, 4, 5>(axbxcydy1, axbxcydy1);
+            let result0 = f32x4_add(axbxcydy0, cydyaxbx0);
+            let result1 = f32x4_add(axbxcydy1, cydyaxbx1);
+            Self(i32x4_shuffle::<0, 1, 4, 5>(result0, result1))
+        {% elif self_t == "Mat2" and is_coresimd %}
+            let abcd = self.0;
+            let xxyy0 = simd_swizzle!(rhs.0, [0, 0, 1, 1]);
+            let xxyy1 = simd_swizzle!(rhs.0, [2, 2, 3, 3]);
+            let axbxcydy0 = abcd * xxyy0;
+            let axbxcydy1 = abcd * xxyy1;
+            let cydyaxbx0 = simd_swizzle!(axbxcydy0, [2, 3, 0, 1]);
+            let cydyaxbx1 = simd_swizzle!(axbxcydy1, [2, 3, 0, 1]);
+            let result0 = axbxcydy0 + cydyaxbx0;
+            let result1 = axbxcydy1 + cydyaxbx1;
+            Self(simd_swizzle!(result0, result1, [0, 1, 4, 5]))
+        {% elif self_t == "Mat2" and is_neon %}
+            unsafe {
+                let abcd = self.0;
+                let xxyy0 = vzip1q_f32(rhs.0, rhs.0);
+                let xxyy1 = vzip2q_f32(rhs.0, rhs.0);
+                let axbxcydy0 = vmulq_f32(abcd, xxyy0);
+                let axbxcydy1 = vmulq_f32(abcd, xxyy1);
+                let cydyaxbx0 = vextq_f32(axbxcydy0, axbxcydy0, 2);
+                let cydyaxbx1 = vextq_f32(axbxcydy1, axbxcydy1, 2);
+                let result0 = vaddq_f32(axbxcydy0, cydyaxbx0);
+                let result1 = vaddq_f32(axbxcydy1, cydyaxbx1);
+                Self(vreinterpretq_f32_u64(
+                        vsetq_lane_u64(vgetq_lane_u64(vreinterpretq_u64_f32(result1), 0),
+                        vreinterpretq_u64_f32(result0), 1)))
+            }
+        {% else %}
+            Self::from_cols(
+                {% for axis in axes %}
+                    self.mul(rhs.{{ axis }}),
+                {%- endfor %}
+            )
+        {% endif %}
     }
 }
 
-impl MulAssign<{{ self_t }}> for {{ self_t }} {
-    #[inline]
-    fn mul_assign(&mut self, rhs: Self) {
-        *self = self.mul_mat{{ dim }}(&rhs);
-    }
-}
+{{ macros::impl_ref_binop(imp="Mul", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+
+{{ macros::impl_op_assign(imp="Mul", self_t=self_t, rhs_t=self_t) }}
 
 impl Mul<{{ col_t }}> for {{ self_t }} {
     type Output = {{ col_t }};
@@ -2669,6 +2662,8 @@ impl Mul<{{ col_t }}> for {{ self_t }} {
     }
 }
 
+{{ macros::impl_ref_binop(imp="Mul", self_t=self_t, rhs_t=col_t, output_t=col_t) }}
+
 impl Mul<{{ self_t }}> for {{ scalar_t }} {
     type Output = {{ self_t }};
     #[inline]
@@ -2677,20 +2672,19 @@ impl Mul<{{ self_t }}> for {{ scalar_t }} {
     }
 }
 
+{{ macros::impl_ref_binop(imp="Mul", self_t=scalar_t, rhs_t=self_t, output_t=self_t) }}
+
 impl Mul<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
     #[inline]
-    fn mul(self, rhs: {{ scalar_t }}) -> Self::Output {
+    fn mul(self, rhs: {{ scalar_t }}) -> Self {
         self.mul_scalar(rhs)
     }
 }
 
-impl MulAssign<{{ scalar_t }}> for {{ self_t }} {
-    #[inline]
-    fn mul_assign(&mut self, rhs: {{ scalar_t }}) {
-        *self = self.mul_scalar(rhs);
-    }
-}
+{{ macros::impl_ref_binop(imp="Mul", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
+
+{{ macros::impl_op_assign(imp="Mul", self_t=self_t, rhs_t=scalar_t) }}
 
 impl Div<{{ self_t }}> for {{ scalar_t }} {
     type Output = {{ self_t }};
@@ -2700,20 +2694,19 @@ impl Div<{{ self_t }}> for {{ scalar_t }} {
     }
 }
 
+{{ macros::impl_ref_binop(imp="Div", self_t=scalar_t, rhs_t=self_t, output_t=self_t) }}
+
 impl Div<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
     #[inline]
-    fn div(self, rhs: {{ scalar_t }}) -> Self::Output {
+    fn div(self, rhs: {{ scalar_t }}) -> Self {
         self.div_scalar(rhs)
     }
 }
 
-impl DivAssign<{{ scalar_t }}> for {{ self_t }} {
-    #[inline]
-    fn div_assign(&mut self, rhs: {{ scalar_t }}) {
-        *self = self.div_scalar(rhs);
-    }
-}
+{{ macros::impl_ref_binop(imp="Div", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
+
+{{ macros::impl_op_assign(imp="Div", self_t=self_t, rhs_t=scalar_t) }}
 
 {% if self_t == "Mat3" %}
 impl Mul<Vec3A> for Mat3 {
@@ -2723,6 +2716,8 @@ impl Mul<Vec3A> for Mat3 {
         self.mul_vec3a(rhs)
     }
 }
+
+{{ macros::impl_ref_binop(imp="Mul", self_t=self_t, rhs_t="Vec3A", output_t="Vec3A") }}
 
 impl From<Mat3A> for Mat3 {
     #[inline]
@@ -2742,6 +2737,8 @@ impl Mul<Vec3> for Mat3A {
         self.mul_vec3a(rhs.into()).into()
     }
 }
+
+{{ macros::impl_ref_binop(imp="Mul", self_t=self_t, rhs_t="Vec3", output_t="Vec3") }}
 
 impl From<Mat3> for Mat3A {
     #[inline]

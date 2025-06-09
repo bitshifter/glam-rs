@@ -4,23 +4,23 @@ use crate::float::FloatExt;
 
 impl FloatExt for f64 {
     #[inline]
-    fn lerp(self, rhs: f64, t: f64) -> f64 {
+    fn lerp(self, rhs: Self, t: Self) -> Self {
         self + (rhs - self) * t
     }
 
     #[inline]
-    fn inverse_lerp(a: f64, b: f64, v: f64) -> f64 {
+    fn inverse_lerp(a: Self, b: Self, v: Self) -> Self {
         (v - a) / (b - a)
     }
 
     #[inline]
-    fn remap(self, in_start: f64, in_end: f64, out_start: f64, out_end: f64) -> f64 {
-        let t = f64::inverse_lerp(in_start, in_end, self);
-        f64::lerp(out_start, out_end, t)
+    fn remap(self, in_start: Self, in_end: Self, out_start: Self, out_end: Self) -> Self {
+        let t = Self::inverse_lerp(in_start, in_end, self);
+        Self::lerp(out_start, out_end, t)
     }
 
     #[inline]
-    fn fract_gl(self) -> f64 {
+    fn fract_gl(self) -> Self {
         self - crate::f64::math::floor(self)
     }
 }

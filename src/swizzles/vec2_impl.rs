@@ -8,24 +8,24 @@ impl Vec2Swizzles for Vec2 {
     type Vec4 = Vec4;
 
     #[inline]
-    fn xx(self) -> Vec2 {
-        Vec2 {
+    fn xx(self) -> Self {
+        Self {
             x: self.x,
             y: self.x,
         }
     }
 
     #[inline]
-    fn yx(self) -> Vec2 {
-        Vec2 {
+    fn yx(self) -> Self {
+        Self {
             x: self.y,
             y: self.x,
         }
     }
 
     #[inline]
-    fn yy(self) -> Vec2 {
-        Vec2 {
+    fn yy(self) -> Self {
+        Self {
             x: self.y,
             y: self.y,
         }

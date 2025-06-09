@@ -114,133 +114,133 @@ impl Vec3Swizzles for Vec3A {
     }
 
     #[inline]
-    fn xxx(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [0, 0, 0, 0]).into())
+    fn xxx(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 0, 0, 0]).into())
     }
 
     #[inline]
-    fn xxy(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [0, 0, 1, 0]).into())
+    fn xxy(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 0, 1, 0]).into())
     }
 
     #[inline]
-    fn xxz(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [0, 0, 2, 0]).into())
+    fn xxz(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 0, 2, 0]).into())
     }
 
     #[inline]
-    fn xyx(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [0, 1, 0, 0]).into())
+    fn xyx(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 1, 0, 0]).into())
     }
 
     #[inline]
-    fn xyy(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [0, 1, 1, 0]).into())
+    fn xyy(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 1, 1, 0]).into())
     }
 
     #[inline]
-    fn xzx(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [0, 2, 0, 0]).into())
+    fn xzx(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 2, 0, 0]).into())
     }
 
     #[inline]
-    fn xzy(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [0, 2, 1, 0]).into())
+    fn xzy(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 2, 1, 0]).into())
     }
 
     #[inline]
-    fn xzz(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [0, 2, 2, 0]).into())
+    fn xzz(self) -> Self {
+        Self(simd_swizzle!(self.0, [0, 2, 2, 0]).into())
     }
 
     #[inline]
-    fn yxx(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [1, 0, 0, 0]).into())
+    fn yxx(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 0, 0, 0]).into())
     }
 
     #[inline]
-    fn yxy(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [1, 0, 1, 0]).into())
+    fn yxy(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 0, 1, 0]).into())
     }
 
     #[inline]
-    fn yxz(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [1, 0, 2, 0]).into())
+    fn yxz(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 0, 2, 0]).into())
     }
 
     #[inline]
-    fn yyx(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [1, 1, 0, 0]).into())
+    fn yyx(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 1, 0, 0]).into())
     }
 
     #[inline]
-    fn yyy(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [1, 1, 1, 0]).into())
+    fn yyy(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 1, 1, 0]).into())
     }
 
     #[inline]
-    fn yyz(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [1, 1, 2, 0]).into())
+    fn yyz(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 1, 2, 0]).into())
     }
 
     #[inline]
-    fn yzx(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [1, 2, 0, 0]).into())
+    fn yzx(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 2, 0, 0]).into())
     }
 
     #[inline]
-    fn yzy(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [1, 2, 1, 0]).into())
+    fn yzy(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 2, 1, 0]).into())
     }
 
     #[inline]
-    fn yzz(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [1, 2, 2, 0]).into())
+    fn yzz(self) -> Self {
+        Self(simd_swizzle!(self.0, [1, 2, 2, 0]).into())
     }
 
     #[inline]
-    fn zxx(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [2, 0, 0, 0]).into())
+    fn zxx(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 0, 0, 0]).into())
     }
 
     #[inline]
-    fn zxy(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [2, 0, 1, 0]).into())
+    fn zxy(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 0, 1, 0]).into())
     }
 
     #[inline]
-    fn zxz(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [2, 0, 2, 0]).into())
+    fn zxz(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 0, 2, 0]).into())
     }
 
     #[inline]
-    fn zyx(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [2, 1, 0, 0]).into())
+    fn zyx(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 1, 0, 0]).into())
     }
 
     #[inline]
-    fn zyy(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [2, 1, 1, 0]).into())
+    fn zyy(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 1, 1, 0]).into())
     }
 
     #[inline]
-    fn zyz(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [2, 1, 2, 0]).into())
+    fn zyz(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 1, 2, 0]).into())
     }
 
     #[inline]
-    fn zzx(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [2, 2, 0, 0]).into())
+    fn zzx(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 2, 0, 0]).into())
     }
 
     #[inline]
-    fn zzy(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [2, 2, 1, 0]).into())
+    fn zzy(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 2, 1, 0]).into())
     }
 
     #[inline]
-    fn zzz(self) -> Vec3A {
-        Vec3A(simd_swizzle!(self.0, [2, 2, 2, 0]).into())
+    fn zzz(self) -> Self {
+        Self(simd_swizzle!(self.0, [2, 2, 2, 0]).into())
     }
 
     #[inline]
