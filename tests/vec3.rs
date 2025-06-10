@@ -144,8 +144,63 @@ macro_rules! impl_bvec3_tests {
                 0b101,
             );
 
+            assert_eq!(
+                (&$mask::new(false, false, false) & $mask::new(false, false, false)).bitmask(),
+                0b000,
+            );
+            assert_eq!(
+                (&$mask::new(true, true, true) & $mask::new(true, true, true)).bitmask(),
+                0b111,
+            );
+            assert_eq!(
+                (&$mask::new(true, false, true) & $mask::new(false, true, false)).bitmask(),
+                0b000,
+            );
+            assert_eq!(
+                (&$mask::new(true, false, true) & $mask::new(true, true, true)).bitmask(),
+                0b101,
+            );
+
+            assert_eq!(
+                ($mask::new(false, false, false) & &$mask::new(false, false, false)).bitmask(),
+                0b000,
+            );
+            assert_eq!(
+                ($mask::new(true, true, true) & &$mask::new(true, true, true)).bitmask(),
+                0b111,
+            );
+            assert_eq!(
+                ($mask::new(true, false, true) & &$mask::new(false, true, false)).bitmask(),
+                0b000,
+            );
+            assert_eq!(
+                ($mask::new(true, false, true) & &$mask::new(true, true, true)).bitmask(),
+                0b101,
+            );
+
+            assert_eq!(
+                (&$mask::new(false, false, false) & &$mask::new(false, false, false)).bitmask(),
+                0b000,
+            );
+            assert_eq!(
+                (&$mask::new(true, true, true) & &$mask::new(true, true, true)).bitmask(),
+                0b111,
+            );
+            assert_eq!(
+                (&$mask::new(true, false, true) & &$mask::new(false, true, false)).bitmask(),
+                0b000,
+            );
+            assert_eq!(
+                (&$mask::new(true, false, true) & &$mask::new(true, true, true)).bitmask(),
+                0b101,
+            );
+
             let mut mask = $mask::new(true, true, false);
             mask &= $mask::new(true, false, false);
+            assert_eq!(mask.bitmask(), 0b001);
+
+            let mut mask = $mask::new(true, true, false);
+            mask &= &$mask::new(true, false, false);
             assert_eq!(mask.bitmask(), 0b001);
         });
 
@@ -167,8 +222,63 @@ macro_rules! impl_bvec3_tests {
                 0b101,
             );
 
+            assert_eq!(
+                (&$mask::new(false, false, false) | $mask::new(false, false, false)).bitmask(),
+                0b000,
+            );
+            assert_eq!(
+                (&$mask::new(true, true, true) | $mask::new(true, true, true)).bitmask(),
+                0b111,
+            );
+            assert_eq!(
+                (&$mask::new(true, false, true) | $mask::new(false, true, false)).bitmask(),
+                0b111,
+            );
+            assert_eq!(
+                (&$mask::new(true, false, true) | $mask::new(true, false, true)).bitmask(),
+                0b101,
+            );
+
+            assert_eq!(
+                ($mask::new(false, false, false) | &$mask::new(false, false, false)).bitmask(),
+                0b000,
+            );
+            assert_eq!(
+                ($mask::new(true, true, true) | &$mask::new(true, true, true)).bitmask(),
+                0b111,
+            );
+            assert_eq!(
+                ($mask::new(true, false, true) | &$mask::new(false, true, false)).bitmask(),
+                0b111,
+            );
+            assert_eq!(
+                ($mask::new(true, false, true) | &$mask::new(true, false, true)).bitmask(),
+                0b101,
+            );
+
+            assert_eq!(
+                (&$mask::new(false, false, false) | &$mask::new(false, false, false)).bitmask(),
+                0b000,
+            );
+            assert_eq!(
+                (&$mask::new(true, true, true) | &$mask::new(true, true, true)).bitmask(),
+                0b111,
+            );
+            assert_eq!(
+                (&$mask::new(true, false, true) | &$mask::new(false, true, false)).bitmask(),
+                0b111,
+            );
+            assert_eq!(
+                (&$mask::new(true, false, true) | &$mask::new(true, false, true)).bitmask(),
+                0b101,
+            );
+
             let mut mask = $mask::new(true, true, false);
             mask |= $mask::new(true, false, false);
+            assert_eq!(mask.bitmask(), 0b011);
+
+            let mut mask = $mask::new(true, true, false);
+            mask |= &$mask::new(true, false, false);
             assert_eq!(mask.bitmask(), 0b011);
         });
 
@@ -190,8 +300,63 @@ macro_rules! impl_bvec3_tests {
                 0b000,
             );
 
+            assert_eq!(
+                (&$mask::new(false, false, false) ^ $mask::new(false, false, false)).bitmask(),
+                0b000,
+            );
+            assert_eq!(
+                (&$mask::new(true, true, true) ^ $mask::new(true, true, true)).bitmask(),
+                0b000,
+            );
+            assert_eq!(
+                (&$mask::new(true, false, true) ^ $mask::new(false, true, false)).bitmask(),
+                0b111,
+            );
+            assert_eq!(
+                (&$mask::new(true, false, true) ^ $mask::new(true, false, true)).bitmask(),
+                0b000,
+            );
+
+            assert_eq!(
+                ($mask::new(false, false, false) ^ &$mask::new(false, false, false)).bitmask(),
+                0b000,
+            );
+            assert_eq!(
+                ($mask::new(true, true, true) ^ &$mask::new(true, true, true)).bitmask(),
+                0b000,
+            );
+            assert_eq!(
+                ($mask::new(true, false, true) ^ &$mask::new(false, true, false)).bitmask(),
+                0b111,
+            );
+            assert_eq!(
+                ($mask::new(true, false, true) ^ &$mask::new(true, false, true)).bitmask(),
+                0b000,
+            );
+
+            assert_eq!(
+                (&$mask::new(false, false, false) ^ &$mask::new(false, false, false)).bitmask(),
+                0b000,
+            );
+            assert_eq!(
+                (&$mask::new(true, true, true) ^ &$mask::new(true, true, true)).bitmask(),
+                0b000,
+            );
+            assert_eq!(
+                (&$mask::new(true, false, true) ^ &$mask::new(false, true, false)).bitmask(),
+                0b111,
+            );
+            assert_eq!(
+                (&$mask::new(true, false, true) ^ &$mask::new(true, false, true)).bitmask(),
+                0b000,
+            );
+
             let mut mask = $mask::new(true, true, false);
             mask ^= $mask::new(true, false, false);
+            assert_eq!(mask.bitmask(), 0b010);
+
+            let mut mask = $mask::new(true, true, false);
+            mask ^= &$mask::new(true, false, false);
             assert_eq!(mask.bitmask(), 0b010);
         });
 
@@ -200,6 +365,11 @@ macro_rules! impl_bvec3_tests {
             assert_eq!((!$mask::new(true, true, true)).bitmask(), 0b000);
             assert_eq!((!$mask::new(true, false, true)).bitmask(), 0b010);
             assert_eq!((!$mask::new(false, true, false)).bitmask(), 0b101);
+
+            assert_eq!((!&$mask::new(false, false, false)).bitmask(), 0b111);
+            assert_eq!((!&$mask::new(true, true, true)).bitmask(), 0b000);
+            assert_eq!((!&$mask::new(true, false, true)).bitmask(), 0b010);
+            assert_eq!((!&$mask::new(false, true, false)).bitmask(), 0b101);
         });
 
         glam_test!(test_mask_fmt, {
