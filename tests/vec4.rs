@@ -1898,12 +1898,40 @@ macro_rules! impl_vec4_scalar_shift_op_test {
                     for z in $t_min..$t_max {
                         for w in $t_min..$t_max {
                             for rhs in $rhs_min..$rhs_max {
+                                let lhs = $vec4::new(x, y, z, w);
                                 assert_eq!(
-                                    $vec4::new(x, y, z, w) << rhs,
+                                    lhs << rhs,
                                     $vec4::new(x << rhs, y << rhs, z << rhs, w << rhs)
                                 );
                                 assert_eq!(
-                                    $vec4::new(x, y, z, w) >> rhs,
+                                    lhs >> rhs,
+                                    $vec4::new(x >> rhs, y >> rhs, z >> rhs, w >> rhs)
+                                );
+
+                                assert_eq!(
+                                    &lhs << rhs,
+                                    $vec4::new(x << rhs, y << rhs, z << rhs, w << rhs)
+                                );
+                                assert_eq!(
+                                    &lhs >> rhs,
+                                    $vec4::new(x >> rhs, y >> rhs, z >> rhs, w >> rhs)
+                                );
+
+                                assert_eq!(
+                                    lhs << &rhs,
+                                    $vec4::new(x << rhs, y << rhs, z << rhs, w << rhs)
+                                );
+                                assert_eq!(
+                                    lhs >> &rhs,
+                                    $vec4::new(x >> rhs, y >> rhs, z >> rhs, w >> rhs)
+                                );
+
+                                assert_eq!(
+                                    &lhs << &rhs,
+                                    $vec4::new(x << rhs, y << rhs, z << rhs, w << rhs)
+                                );
+                                assert_eq!(
+                                    &lhs >> &rhs,
                                     $vec4::new(x >> rhs, y >> rhs, z >> rhs, w >> rhs)
                                 );
                             }
@@ -1963,14 +1991,13 @@ macro_rules! impl_vec4_shift_op_test {
                                 for y2 in $t_min..$t_max {
                                     for z2 in $t_min..$t_max {
                                         for w2 in $t_min..$t_max {
+                                            let lhs = $vec4::new(x1, y1, z1, w1);
                                             assert_eq!(
-                                                $vec4::new(x1, y1, z1, w1)
-                                                    << $rhs::new(x2, y2, z2, w2),
+                                                lhs << $rhs::new(x2, y2, z2, w2),
                                                 $vec4::new(x1 << x2, y1 << y2, z1 << z2, w1 << w2)
                                             );
                                             assert_eq!(
-                                                $vec4::new(x1, y1, z1, w1)
-                                                    >> $rhs::new(x2, y2, z2, w2),
+                                                lhs >> $rhs::new(x2, y2, z2, w2),
                                                 $vec4::new(x1 >> x2, y1 >> y2, z1 >> z2, w1 >> w2)
                                             );
                                         }
@@ -2006,18 +2033,82 @@ macro_rules! impl_vec4_scalar_bit_op_tests {
                     for z in $t_min..$t_max {
                         for w in $t_min..$t_max {
                             for rhs in $t_min..$t_max {
+                                let lhs = $vec4::new(x, y, z, w);
                                 assert_eq!(
-                                    $vec4::new(x, y, z, w) & rhs,
+                                    lhs & rhs,
                                     $vec4::new(x & rhs, y & rhs, z & rhs, w & rhs)
                                 );
                                 assert_eq!(
-                                    $vec4::new(x, y, z, w) | rhs,
+                                    lhs | rhs,
                                     $vec4::new(x | rhs, y | rhs, z | rhs, w | rhs)
                                 );
                                 assert_eq!(
-                                    $vec4::new(x, y, z, w) ^ rhs,
+                                    lhs ^ rhs,
                                     $vec4::new(x ^ rhs, y ^ rhs, z ^ rhs, w ^ rhs)
                                 );
+
+                                assert_eq!(
+                                    &lhs & rhs,
+                                    $vec4::new(x & rhs, y & rhs, z & rhs, w & rhs)
+                                );
+                                assert_eq!(
+                                    &lhs | rhs,
+                                    $vec4::new(x | rhs, y | rhs, z | rhs, w | rhs)
+                                );
+                                assert_eq!(
+                                    &lhs ^ rhs,
+                                    $vec4::new(x ^ rhs, y ^ rhs, z ^ rhs, w ^ rhs)
+                                );
+
+                                assert_eq!(
+                                    lhs & &rhs,
+                                    $vec4::new(x & rhs, y & rhs, z & rhs, w & rhs)
+                                );
+                                assert_eq!(
+                                    lhs | &rhs,
+                                    $vec4::new(x | rhs, y | rhs, z | rhs, w | rhs)
+                                );
+                                assert_eq!(
+                                    lhs ^ &rhs,
+                                    $vec4::new(x ^ rhs, y ^ rhs, z ^ rhs, w ^ rhs)
+                                );
+
+                                assert_eq!(
+                                    &lhs & &rhs,
+                                    $vec4::new(x & rhs, y & rhs, z & rhs, w & rhs)
+                                );
+                                assert_eq!(
+                                    &lhs | &rhs,
+                                    $vec4::new(x | rhs, y | rhs, z | rhs, w | rhs)
+                                );
+                                assert_eq!(
+                                    &lhs ^ &rhs,
+                                    $vec4::new(x ^ rhs, y ^ rhs, z ^ rhs, w ^ rhs)
+                                );
+
+                                let mut a = lhs;
+                                a &= rhs;
+                                assert_eq!(a, lhs & rhs);
+
+                                let mut a = lhs;
+                                a &= &rhs;
+                                assert_eq!(a, lhs & rhs);
+
+                                let mut a = lhs;
+                                a |= rhs;
+                                assert_eq!(a, lhs | rhs);
+
+                                let mut a = lhs;
+                                a |= &rhs;
+                                assert_eq!(a, lhs | rhs);
+
+                                let mut a = lhs;
+                                a ^= rhs;
+                                assert_eq!(a, lhs ^ rhs);
+
+                                let mut a = lhs;
+                                a ^= &rhs;
+                                assert_eq!(a, lhs ^ rhs);
                             }
                         }
                     }
@@ -2034,25 +2125,63 @@ macro_rules! impl_vec4_bit_op_tests {
                 for y1 in $t_min..$t_max {
                     for z1 in $t_min..$t_max {
                         for w1 in $t_min..$t_max {
-                            assert_eq!(!$vec4::new(x1, y1, z1, w1), $vec4::new(!x1, !y1, !z1, !w1));
+                            let lhs = $vec4::new(x1, y1, z1, w1);
+                            assert_eq!(!lhs, $vec4::new(!x1, !y1, !z1, !w1));
+                            assert_eq!(!&lhs, $vec4::new(!x1, !y1, !z1, !w1));
 
                             for x2 in $t_min..$t_max {
                                 for y2 in $t_min..$t_max {
                                     for z2 in $t_min..$t_max {
                                         for w2 in $t_min..$t_max {
                                             assert_eq!(
-                                                $vec4::new(x1, y1, z1, w1)
-                                                    & $vec4::new(x2, y2, z2, w2),
+                                                lhs & $vec4::new(x2, y2, z2, w2),
                                                 $vec4::new(x1 & x2, y1 & y2, z1 & z2, w1 & w2)
                                             );
                                             assert_eq!(
-                                                $vec4::new(x1, y1, z1, w1)
-                                                    | $vec4::new(x2, y2, z2, w2),
+                                                lhs | $vec4::new(x2, y2, z2, w2),
                                                 $vec4::new(x1 | x2, y1 | y2, z1 | z2, w1 | w2)
                                             );
                                             assert_eq!(
-                                                $vec4::new(x1, y1, z1, w1)
-                                                    ^ $vec4::new(x2, y2, z2, w2),
+                                                lhs ^ $vec4::new(x2, y2, z2, w2),
+                                                $vec4::new(x1 ^ x2, y1 ^ y2, z1 ^ z2, w1 ^ w2)
+                                            );
+
+                                            assert_eq!(
+                                                &lhs & $vec4::new(x2, y2, z2, w2),
+                                                $vec4::new(x1 & x2, y1 & y2, z1 & z2, w1 & w2)
+                                            );
+                                            assert_eq!(
+                                                &lhs | $vec4::new(x2, y2, z2, w2),
+                                                $vec4::new(x1 | x2, y1 | y2, z1 | z2, w1 | w2)
+                                            );
+                                            assert_eq!(
+                                                &lhs ^ $vec4::new(x2, y2, z2, w2),
+                                                $vec4::new(x1 ^ x2, y1 ^ y2, z1 ^ z2, w1 ^ w2)
+                                            );
+
+                                            assert_eq!(
+                                                lhs & &$vec4::new(x2, y2, z2, w2),
+                                                $vec4::new(x1 & x2, y1 & y2, z1 & z2, w1 & w2)
+                                            );
+                                            assert_eq!(
+                                                lhs | &$vec4::new(x2, y2, z2, w2),
+                                                $vec4::new(x1 | x2, y1 | y2, z1 | z2, w1 | w2)
+                                            );
+                                            assert_eq!(
+                                                lhs ^ &$vec4::new(x2, y2, z2, w2),
+                                                $vec4::new(x1 ^ x2, y1 ^ y2, z1 ^ z2, w1 ^ w2)
+                                            );
+
+                                            assert_eq!(
+                                                &lhs & &$vec4::new(x2, y2, z2, w2),
+                                                $vec4::new(x1 & x2, y1 & y2, z1 & z2, w1 & w2)
+                                            );
+                                            assert_eq!(
+                                                &lhs | &$vec4::new(x2, y2, z2, w2),
+                                                $vec4::new(x1 | x2, y1 | y2, z1 | z2, w1 | w2)
+                                            );
+                                            assert_eq!(
+                                                &lhs ^ &$vec4::new(x2, y2, z2, w2),
                                                 $vec4::new(x1 ^ x2, y1 ^ y2, z1 ^ z2, w1 ^ w2)
                                             );
                                         }
@@ -2965,6 +3094,14 @@ mod u8vec4 {
         );
     });
 
+    glam_test!(test_checked_add_signed, {
+        assert_eq!(U8Vec4::MAX.checked_add_signed(I8Vec4::ONE), None);
+        assert_eq!(
+            U8Vec4::ONE.checked_add_signed(I8Vec4::NEG_ONE),
+            Some(U8Vec4::ZERO)
+        );
+    });
+
     glam_test!(test_wrapping_add_signed, {
         assert_eq!(
             U8Vec4::new(u8::MAX, u8::MAX, u8::MAX, u8::MAX)
@@ -3341,6 +3478,14 @@ mod u16vec4 {
         );
     });
 
+    glam_test!(test_checked_add_signed, {
+        assert_eq!(U16Vec4::MAX.checked_add_signed(I16Vec4::ONE), None);
+        assert_eq!(
+            U16Vec4::ONE.checked_add_signed(I16Vec4::NEG_ONE),
+            Some(U16Vec4::ZERO)
+        );
+    });
+
     glam_test!(test_wrapping_add_signed, {
         assert_eq!(
             U16Vec4::new(u16::MAX, u16::MAX, u16::MAX, u16::MAX)
@@ -3687,6 +3832,14 @@ mod uvec4 {
         );
     });
 
+    glam_test!(test_checked_add_signed, {
+        assert_eq!(UVec4::MAX.checked_add_signed(IVec4::ONE), None);
+        assert_eq!(
+            UVec4::ONE.checked_add_signed(IVec4::NEG_ONE),
+            Some(UVec4::ZERO)
+        );
+    });
+
     glam_test!(test_wrapping_add_signed, {
         assert_eq!(
             UVec4::new(u32::MAX, u32::MAX, u32::MAX, u32::MAX)
@@ -3903,6 +4056,14 @@ mod u64vec4 {
         assert_eq!(
             U64Vec4::new(1, 2, 3, 4),
             U64Vec4::try_from(USizeVec4::new(1, 2, 3, 4)).unwrap()
+        );
+    });
+
+    glam_test!(test_checked_add_signed, {
+        assert_eq!(U64Vec4::MAX.checked_add_signed(I64Vec4::ONE), None);
+        assert_eq!(
+            U64Vec4::ONE.checked_add_signed(I64Vec4::NEG_ONE),
+            Some(U64Vec4::ZERO)
         );
     });
 

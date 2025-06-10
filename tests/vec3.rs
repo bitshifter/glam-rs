@@ -1826,14 +1826,18 @@ macro_rules! impl_vec3_scalar_shift_op_test {
                 for y in $t_min..$t_max {
                     for z in $t_min..$t_max {
                         for rhs in $rhs_min..$rhs_max {
-                            assert_eq!(
-                                $vec3::new(x, y, z) << rhs,
-                                $vec3::new(x << rhs, y << rhs, z << rhs)
-                            );
-                            assert_eq!(
-                                $vec3::new(x, y, z) >> rhs,
-                                $vec3::new(x >> rhs, y >> rhs, z >> rhs)
-                            );
+                            let lhs = $vec3::new(x, y, z);
+                            assert_eq!(lhs << rhs, $vec3::new(x << rhs, y << rhs, z << rhs));
+                            assert_eq!(lhs >> rhs, $vec3::new(x >> rhs, y >> rhs, z >> rhs));
+
+                            assert_eq!(&lhs << rhs, $vec3::new(x << rhs, y << rhs, z << rhs));
+                            assert_eq!(&lhs >> rhs, $vec3::new(x >> rhs, y >> rhs, z >> rhs));
+
+                            assert_eq!(lhs << &rhs, $vec3::new(x << rhs, y << rhs, z << rhs));
+                            assert_eq!(lhs >> &rhs, $vec3::new(x >> rhs, y >> rhs, z >> rhs));
+
+                            assert_eq!(&lhs << &rhs, $vec3::new(x << rhs, y << rhs, z << rhs));
+                            assert_eq!(&lhs >> &rhs, $vec3::new(x >> rhs, y >> rhs, z >> rhs));
                         }
                     }
                 }
@@ -1888,12 +1892,41 @@ macro_rules! impl_vec3_shift_op_test {
                         for x2 in $t_min..$t_max {
                             for y2 in $t_min..$t_max {
                                 for z2 in $t_min..$t_max {
+                                    let lhs = $vec3::new(x1, y1, z1);
+                                    let rhs = $rhs::new(x2, y2, z2);
                                     assert_eq!(
-                                        $vec3::new(x1, y1, z1) << $rhs::new(x2, y2, z2),
+                                        lhs << rhs,
                                         $vec3::new(x1 << x2, y1 << y2, z1 << z2)
                                     );
                                     assert_eq!(
-                                        $vec3::new(x1, y1, z1) >> $rhs::new(x2, y2, z2),
+                                        lhs >> rhs,
+                                        $vec3::new(x1 >> x2, y1 >> y2, z1 >> z2)
+                                    );
+
+                                    assert_eq!(
+                                        &lhs << rhs,
+                                        $vec3::new(x1 << x2, y1 << y2, z1 << z2)
+                                    );
+                                    assert_eq!(
+                                        &lhs >> rhs,
+                                        $vec3::new(x1 >> x2, y1 >> y2, z1 >> z2)
+                                    );
+
+                                    assert_eq!(
+                                        lhs << &rhs,
+                                        $vec3::new(x1 << x2, y1 << y2, z1 << z2)
+                                    );
+                                    assert_eq!(
+                                        lhs >> &rhs,
+                                        $vec3::new(x1 >> x2, y1 >> y2, z1 >> z2)
+                                    );
+
+                                    assert_eq!(
+                                        &lhs << &rhs,
+                                        $vec3::new(x1 << x2, y1 << y2, z1 << z2)
+                                    );
+                                    assert_eq!(
+                                        &lhs >> &rhs,
                                         $vec3::new(x1 >> x2, y1 >> y2, z1 >> z2)
                                     );
                                 }
@@ -1926,18 +1959,46 @@ macro_rules! impl_vec3_scalar_bit_op_tests {
                 for y in $t_min..$t_max {
                     for z in $t_min..$t_max {
                         for rhs in $t_min..$t_max {
-                            assert_eq!(
-                                $vec3::new(x, y, z) & rhs,
-                                $vec3::new(x & rhs, y & rhs, z & rhs)
-                            );
-                            assert_eq!(
-                                $vec3::new(x, y, z) | rhs,
-                                $vec3::new(x | rhs, y | rhs, z | rhs)
-                            );
-                            assert_eq!(
-                                $vec3::new(x, y, z) ^ rhs,
-                                $vec3::new(x ^ rhs, y ^ rhs, z ^ rhs)
-                            );
+                            let lhs = $vec3::new(x, y, z);
+                            assert_eq!(lhs & rhs, $vec3::new(x & rhs, y & rhs, z & rhs));
+                            assert_eq!(lhs | rhs, $vec3::new(x | rhs, y | rhs, z | rhs));
+                            assert_eq!(lhs ^ rhs, $vec3::new(x ^ rhs, y ^ rhs, z ^ rhs));
+
+                            assert_eq!(&lhs & rhs, $vec3::new(x & rhs, y & rhs, z & rhs));
+                            assert_eq!(&lhs | rhs, $vec3::new(x | rhs, y | rhs, z | rhs));
+                            assert_eq!(&lhs ^ rhs, $vec3::new(x ^ rhs, y ^ rhs, z ^ rhs));
+
+                            assert_eq!(lhs & &rhs, $vec3::new(x & rhs, y & rhs, z & rhs));
+                            assert_eq!(lhs | &rhs, $vec3::new(x | rhs, y | rhs, z | rhs));
+                            assert_eq!(lhs ^ &rhs, $vec3::new(x ^ rhs, y ^ rhs, z ^ rhs));
+
+                            assert_eq!(&lhs & &rhs, $vec3::new(x & rhs, y & rhs, z & rhs));
+                            assert_eq!(&lhs | &rhs, $vec3::new(x | rhs, y | rhs, z | rhs));
+                            assert_eq!(&lhs ^ &rhs, $vec3::new(x ^ rhs, y ^ rhs, z ^ rhs));
+
+                            let mut a = lhs;
+                            a &= rhs;
+                            assert_eq!(a, lhs & rhs);
+
+                            let mut a = lhs;
+                            a &= &rhs;
+                            assert_eq!(a, lhs & rhs);
+
+                            let mut a = lhs;
+                            a |= rhs;
+                            assert_eq!(a, lhs | rhs);
+
+                            let mut a = lhs;
+                            a |= &rhs;
+                            assert_eq!(a, lhs | rhs);
+
+                            let mut a = lhs;
+                            a ^= rhs;
+                            assert_eq!(a, lhs ^ rhs);
+
+                            let mut a = lhs;
+                            a ^= &rhs;
+                            assert_eq!(a, lhs ^ rhs);
                         }
                     }
                 }
@@ -1952,21 +2013,62 @@ macro_rules! impl_vec3_bit_op_tests {
             for x1 in $t_min..$t_max {
                 for y1 in $t_min..$t_max {
                     for z1 in $t_min..$t_max {
-                        assert_eq!(!$vec3::new(x1, y1, z1), $vec3::new(!x1, !y1, !z1));
+                        let lhs = $vec3::new(x1, y1, z1);
+                        assert_eq!(!lhs, $vec3::new(!x1, !y1, !z1));
+                        assert_eq!(!&lhs, $vec3::new(!x1, !y1, !z1));
 
                         for x2 in $t_min..$t_max {
                             for y2 in $t_min..$t_max {
                                 for z2 in $t_min..$t_max {
                                     assert_eq!(
-                                        $vec3::new(x1, y1, z1) & $vec3::new(x2, y2, z2),
+                                        lhs & $vec3::new(x2, y2, z2),
                                         $vec3::new(x1 & x2, y1 & y2, z1 & z2)
                                     );
                                     assert_eq!(
-                                        $vec3::new(x1, y1, z1) | $vec3::new(x2, y2, z2),
+                                        lhs | $vec3::new(x2, y2, z2),
                                         $vec3::new(x1 | x2, y1 | y2, z1 | z2)
                                     );
                                     assert_eq!(
-                                        $vec3::new(x1, y1, z1) ^ $vec3::new(x2, y2, z2),
+                                        lhs ^ $vec3::new(x2, y2, z2),
+                                        $vec3::new(x1 ^ x2, y1 ^ y2, z1 ^ z2)
+                                    );
+
+                                    assert_eq!(
+                                        &lhs & $vec3::new(x2, y2, z2),
+                                        $vec3::new(x1 & x2, y1 & y2, z1 & z2)
+                                    );
+                                    assert_eq!(
+                                        &lhs | $vec3::new(x2, y2, z2),
+                                        $vec3::new(x1 | x2, y1 | y2, z1 | z2)
+                                    );
+                                    assert_eq!(
+                                        &lhs ^ $vec3::new(x2, y2, z2),
+                                        $vec3::new(x1 ^ x2, y1 ^ y2, z1 ^ z2)
+                                    );
+
+                                    assert_eq!(
+                                        lhs & &$vec3::new(x2, y2, z2),
+                                        $vec3::new(x1 & x2, y1 & y2, z1 & z2)
+                                    );
+                                    assert_eq!(
+                                        lhs | &$vec3::new(x2, y2, z2),
+                                        $vec3::new(x1 | x2, y1 | y2, z1 | z2)
+                                    );
+                                    assert_eq!(
+                                        lhs ^ &$vec3::new(x2, y2, z2),
+                                        $vec3::new(x1 ^ x2, y1 ^ y2, z1 ^ z2)
+                                    );
+
+                                    assert_eq!(
+                                        &lhs & &$vec3::new(x2, y2, z2),
+                                        $vec3::new(x1 & x2, y1 & y2, z1 & z2)
+                                    );
+                                    assert_eq!(
+                                        &lhs | &$vec3::new(x2, y2, z2),
+                                        $vec3::new(x1 | x2, y1 | y2, z1 | z2)
+                                    );
+                                    assert_eq!(
+                                        &lhs ^ &$vec3::new(x2, y2, z2),
                                         $vec3::new(x1 ^ x2, y1 ^ y2, z1 ^ z2)
                                     );
                                 }
