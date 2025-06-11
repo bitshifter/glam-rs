@@ -217,13 +217,36 @@ macro_rules! impl_affine2_tests {
             assert_approx_eq!(m0, m0 * $affine2::IDENTITY);
             assert_approx_eq!(m0, $affine2::IDENTITY * m0);
 
+            assert_approx_eq!(m0, &$affine2::IDENTITY * m0);
+            assert_approx_eq!(m0, $affine2::IDENTITY * &m0);
+            assert_approx_eq!(m0, &$affine2::IDENTITY * &m0);
+
             let mut m1 = m0;
             m1 *= $affine2::IDENTITY;
+            assert_approx_eq!(m1, m0);
+
+            let mut m1 = m0;
+            m1 *= &$affine2::IDENTITY;
             assert_approx_eq!(m1, m0);
 
             let mat3 = $mat3::from(m0);
             assert_approx_eq!(mat3, $affine2::IDENTITY * mat3);
             assert_approx_eq!(mat3, mat3 * $affine2::IDENTITY);
+
+            assert_approx_eq!(mat3, &$affine2::IDENTITY * mat3);
+            assert_approx_eq!(mat3, &mat3 * $affine2::IDENTITY);
+            assert_approx_eq!(mat3, $affine2::IDENTITY * &mat3);
+            assert_approx_eq!(mat3, mat3 * &$affine2::IDENTITY);
+            assert_approx_eq!(mat3, &$affine2::IDENTITY * &mat3);
+            assert_approx_eq!(mat3, &mat3 * &$affine2::IDENTITY);
+
+            let mut n = mat3;
+            n *= $affine2::IDENTITY;
+            assert_approx_eq!(mat3, n);
+
+            let mut n = mat3;
+            n *= &$affine2::IDENTITY;
+            assert_approx_eq!(mat3, n);
         });
 
         glam_test!(test_affine2_fmt, {
