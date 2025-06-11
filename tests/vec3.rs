@@ -1838,6 +1838,22 @@ macro_rules! impl_vec3_scalar_shift_op_test {
 
                             assert_eq!(&lhs << &rhs, $vec3::new(x << rhs, y << rhs, z << rhs));
                             assert_eq!(&lhs >> &rhs, $vec3::new(x >> rhs, y >> rhs, z >> rhs));
+
+                            let mut a = lhs;
+                            a <<= rhs;
+                            assert_eq!(a, lhs << rhs);
+
+                            let mut a = lhs;
+                            a <<= &rhs;
+                            assert_eq!(a, lhs << rhs);
+
+                            let mut a = lhs;
+                            a >>= rhs;
+                            assert_eq!(a, lhs >> rhs);
+
+                            let mut a = lhs;
+                            a >>= &rhs;
+                            assert_eq!(a, lhs >> rhs);
                         }
                     }
                 }
@@ -2020,57 +2036,46 @@ macro_rules! impl_vec3_bit_op_tests {
                         for x2 in $t_min..$t_max {
                             for y2 in $t_min..$t_max {
                                 for z2 in $t_min..$t_max {
-                                    assert_eq!(
-                                        lhs & $vec3::new(x2, y2, z2),
-                                        $vec3::new(x1 & x2, y1 & y2, z1 & z2)
-                                    );
-                                    assert_eq!(
-                                        lhs | $vec3::new(x2, y2, z2),
-                                        $vec3::new(x1 | x2, y1 | y2, z1 | z2)
-                                    );
-                                    assert_eq!(
-                                        lhs ^ $vec3::new(x2, y2, z2),
-                                        $vec3::new(x1 ^ x2, y1 ^ y2, z1 ^ z2)
-                                    );
+                                    let rhs = $vec3::new(x2, y2, z2);
+                                    assert_eq!(lhs & rhs, $vec3::new(x1 & x2, y1 & y2, z1 & z2));
+                                    assert_eq!(lhs | rhs, $vec3::new(x1 | x2, y1 | y2, z1 | z2));
+                                    assert_eq!(lhs ^ rhs, $vec3::new(x1 ^ x2, y1 ^ y2, z1 ^ z2));
 
-                                    assert_eq!(
-                                        &lhs & $vec3::new(x2, y2, z2),
-                                        $vec3::new(x1 & x2, y1 & y2, z1 & z2)
-                                    );
-                                    assert_eq!(
-                                        &lhs | $vec3::new(x2, y2, z2),
-                                        $vec3::new(x1 | x2, y1 | y2, z1 | z2)
-                                    );
-                                    assert_eq!(
-                                        &lhs ^ $vec3::new(x2, y2, z2),
-                                        $vec3::new(x1 ^ x2, y1 ^ y2, z1 ^ z2)
-                                    );
+                                    assert_eq!(&lhs & rhs, $vec3::new(x1 & x2, y1 & y2, z1 & z2));
+                                    assert_eq!(&lhs | rhs, $vec3::new(x1 | x2, y1 | y2, z1 | z2));
+                                    assert_eq!(&lhs ^ rhs, $vec3::new(x1 ^ x2, y1 ^ y2, z1 ^ z2));
 
-                                    assert_eq!(
-                                        lhs & &$vec3::new(x2, y2, z2),
-                                        $vec3::new(x1 & x2, y1 & y2, z1 & z2)
-                                    );
-                                    assert_eq!(
-                                        lhs | &$vec3::new(x2, y2, z2),
-                                        $vec3::new(x1 | x2, y1 | y2, z1 | z2)
-                                    );
-                                    assert_eq!(
-                                        lhs ^ &$vec3::new(x2, y2, z2),
-                                        $vec3::new(x1 ^ x2, y1 ^ y2, z1 ^ z2)
-                                    );
+                                    assert_eq!(lhs & &rhs, $vec3::new(x1 & x2, y1 & y2, z1 & z2));
+                                    assert_eq!(lhs | &rhs, $vec3::new(x1 | x2, y1 | y2, z1 | z2));
+                                    assert_eq!(lhs ^ &rhs, $vec3::new(x1 ^ x2, y1 ^ y2, z1 ^ z2));
 
-                                    assert_eq!(
-                                        &lhs & &$vec3::new(x2, y2, z2),
-                                        $vec3::new(x1 & x2, y1 & y2, z1 & z2)
-                                    );
-                                    assert_eq!(
-                                        &lhs | &$vec3::new(x2, y2, z2),
-                                        $vec3::new(x1 | x2, y1 | y2, z1 | z2)
-                                    );
-                                    assert_eq!(
-                                        &lhs ^ &$vec3::new(x2, y2, z2),
-                                        $vec3::new(x1 ^ x2, y1 ^ y2, z1 ^ z2)
-                                    );
+                                    assert_eq!(&lhs & &rhs, $vec3::new(x1 & x2, y1 & y2, z1 & z2));
+                                    assert_eq!(&lhs | &rhs, $vec3::new(x1 | x2, y1 | y2, z1 | z2));
+                                    assert_eq!(&lhs ^ &rhs, $vec3::new(x1 ^ x2, y1 ^ y2, z1 ^ z2));
+
+                                    let mut a = lhs;
+                                    a &= rhs;
+                                    assert_eq!(a, lhs & rhs);
+
+                                    let mut a = lhs;
+                                    a &= &rhs;
+                                    assert_eq!(a, lhs & rhs);
+
+                                    let mut a = lhs;
+                                    a |= rhs;
+                                    assert_eq!(a, lhs | rhs);
+
+                                    let mut a = lhs;
+                                    a |= &rhs;
+                                    assert_eq!(a, lhs | rhs);
+
+                                    let mut a = lhs;
+                                    a ^= rhs;
+                                    assert_eq!(a, lhs ^ rhs);
+
+                                    let mut a = lhs;
+                                    a ^= &rhs;
+                                    assert_eq!(a, lhs ^ rhs);
                                 }
                             }
                         }
@@ -3539,6 +3544,62 @@ mod i64vec3 {
             assert!(I64Vec3::try_from(USizeVec3::new(1, usize::MAX, 3)).is_err());
             assert!(I64Vec3::try_from(USizeVec3::new(1, 2, usize::MAX)).is_err());
         }
+    });
+
+    glam_test!(test_wrapping_add, {
+        assert_eq!(
+            I64Vec3::new(i64::MAX, 5, i64::MAX).wrapping_add(I64Vec3::new(1, 3, i64::MAX)),
+            I64Vec3::new(-9223372036854775808, 8, -2),
+        );
+    });
+
+    glam_test!(test_wrapping_sub, {
+        assert_eq!(
+            I64Vec3::new(-1, 5, i64::MIN).wrapping_sub(I64Vec3::new(i64::MAX, 3, i64::MAX)),
+            I64Vec3::new(i64::MIN, 2, 1)
+        );
+    });
+
+    glam_test!(test_wrapping_mul, {
+        assert_eq!(
+            I64Vec3::new(i64::MAX, 5, i64::MAX).wrapping_mul(I64Vec3::new(3, 3, 5)),
+            I64Vec3::new(9223372036854775805, 15, 9223372036854775803)
+        );
+    });
+
+    glam_test!(test_wrapping_div, {
+        assert_eq!(
+            I64Vec3::new(i64::MAX, 5, i64::MAX).wrapping_div(I64Vec3::new(3, 3, 5)),
+            I64Vec3::new(3074457345618258602, 1, 1844674407370955161)
+        );
+    });
+
+    glam_test!(test_saturating_add, {
+        assert_eq!(
+            I64Vec3::new(i64::MAX, i64::MAX, 0).saturating_add(I64Vec3::new(1, i64::MAX, 2)),
+            I64Vec3::new(i64::MAX, i64::MAX, 2)
+        );
+    });
+
+    glam_test!(test_saturating_sub, {
+        assert_eq!(
+            I64Vec3::new(0, i64::MAX, 0).saturating_sub(I64Vec3::new(1, 1, 2)),
+            I64Vec3::new(-1, 9223372036854775806, -2)
+        );
+    });
+
+    glam_test!(test_saturating_mul, {
+        assert_eq!(
+            I64Vec3::new(i64::MAX, i64::MAX, 0).saturating_mul(I64Vec3::new(2, i64::MAX, 0)),
+            I64Vec3::new(i64::MAX, i64::MAX, 0)
+        );
+    });
+
+    glam_test!(test_saturating_div, {
+        assert_eq!(
+            I64Vec3::new(i64::MAX, i64::MAX, 0).saturating_div(I64Vec3::new(2, i64::MAX, 3)),
+            I64Vec3::new(4611686018427387903, 1, 0)
+        );
     });
 
     glam_test!(test_checked_add_unsigned, {

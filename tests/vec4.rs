@@ -1934,6 +1934,22 @@ macro_rules! impl_vec4_scalar_shift_op_test {
                                     &lhs >> &rhs,
                                     $vec4::new(x >> rhs, y >> rhs, z >> rhs, w >> rhs)
                                 );
+
+                                let mut a = lhs;
+                                a <<= rhs;
+                                assert_eq!(a, lhs << rhs);
+
+                                let mut a = lhs;
+                                a <<= &rhs;
+                                assert_eq!(a, lhs << rhs);
+
+                                let mut a = lhs;
+                                a >>= rhs;
+                                assert_eq!(a, lhs >> rhs);
+
+                                let mut a = lhs;
+                                a >>= &rhs;
+                                assert_eq!(a, lhs >> rhs);
                             }
                         }
                     }
@@ -2133,57 +2149,82 @@ macro_rules! impl_vec4_bit_op_tests {
                                 for y2 in $t_min..$t_max {
                                     for z2 in $t_min..$t_max {
                                         for w2 in $t_min..$t_max {
+                                            let rhs = $vec4::new(x2, y2, z2, w2);
                                             assert_eq!(
-                                                lhs & $vec4::new(x2, y2, z2, w2),
+                                                lhs & rhs,
                                                 $vec4::new(x1 & x2, y1 & y2, z1 & z2, w1 & w2)
                                             );
                                             assert_eq!(
-                                                lhs | $vec4::new(x2, y2, z2, w2),
+                                                lhs | rhs,
                                                 $vec4::new(x1 | x2, y1 | y2, z1 | z2, w1 | w2)
                                             );
                                             assert_eq!(
-                                                lhs ^ $vec4::new(x2, y2, z2, w2),
+                                                lhs ^ rhs,
                                                 $vec4::new(x1 ^ x2, y1 ^ y2, z1 ^ z2, w1 ^ w2)
                                             );
 
                                             assert_eq!(
-                                                &lhs & $vec4::new(x2, y2, z2, w2),
+                                                &lhs & rhs,
                                                 $vec4::new(x1 & x2, y1 & y2, z1 & z2, w1 & w2)
                                             );
                                             assert_eq!(
-                                                &lhs | $vec4::new(x2, y2, z2, w2),
+                                                &lhs | rhs,
                                                 $vec4::new(x1 | x2, y1 | y2, z1 | z2, w1 | w2)
                                             );
                                             assert_eq!(
-                                                &lhs ^ $vec4::new(x2, y2, z2, w2),
+                                                &lhs ^ rhs,
                                                 $vec4::new(x1 ^ x2, y1 ^ y2, z1 ^ z2, w1 ^ w2)
                                             );
 
                                             assert_eq!(
-                                                lhs & &$vec4::new(x2, y2, z2, w2),
+                                                lhs & &rhs,
                                                 $vec4::new(x1 & x2, y1 & y2, z1 & z2, w1 & w2)
                                             );
                                             assert_eq!(
-                                                lhs | &$vec4::new(x2, y2, z2, w2),
+                                                lhs | &rhs,
                                                 $vec4::new(x1 | x2, y1 | y2, z1 | z2, w1 | w2)
                                             );
                                             assert_eq!(
-                                                lhs ^ &$vec4::new(x2, y2, z2, w2),
+                                                lhs ^ &rhs,
                                                 $vec4::new(x1 ^ x2, y1 ^ y2, z1 ^ z2, w1 ^ w2)
                                             );
 
                                             assert_eq!(
-                                                &lhs & &$vec4::new(x2, y2, z2, w2),
+                                                &lhs & &rhs,
                                                 $vec4::new(x1 & x2, y1 & y2, z1 & z2, w1 & w2)
                                             );
                                             assert_eq!(
-                                                &lhs | &$vec4::new(x2, y2, z2, w2),
+                                                &lhs | &rhs,
                                                 $vec4::new(x1 | x2, y1 | y2, z1 | z2, w1 | w2)
                                             );
                                             assert_eq!(
-                                                &lhs ^ &$vec4::new(x2, y2, z2, w2),
+                                                &lhs ^ &rhs,
                                                 $vec4::new(x1 ^ x2, y1 ^ y2, z1 ^ z2, w1 ^ w2)
                                             );
+
+                                            let mut a = lhs;
+                                            a &= rhs;
+                                            assert_eq!(a, lhs & rhs);
+
+                                            let mut a = lhs;
+                                            a &= &rhs;
+                                            assert_eq!(a, lhs & rhs);
+
+                                            let mut a = lhs;
+                                            a |= rhs;
+                                            assert_eq!(a, lhs | rhs);
+
+                                            let mut a = lhs;
+                                            a |= &rhs;
+                                            assert_eq!(a, lhs | rhs);
+
+                                            let mut a = lhs;
+                                            a ^= rhs;
+                                            assert_eq!(a, lhs ^ rhs);
+
+                                            let mut a = lhs;
+                                            a ^= &rhs;
+                                            assert_eq!(a, lhs ^ rhs);
                                         }
                                     }
                                 }

@@ -1609,8 +1609,34 @@ macro_rules! impl_vec2_scalar_shift_op_test {
             for x in $t_min..$t_max {
                 for y in $t_min..$t_max {
                     for rhs in $rhs_min..$rhs_max {
-                        assert_eq!($vec2::new(x, y) << rhs, $vec2::new(x << rhs, y << rhs));
-                        assert_eq!($vec2::new(x, y) >> rhs, $vec2::new(x >> rhs, y >> rhs));
+                        let lhs = $vec2::new(x, y);
+                        assert_eq!(lhs << rhs, $vec2::new(x << rhs, y << rhs));
+                        assert_eq!(lhs >> rhs, $vec2::new(x >> rhs, y >> rhs));
+
+                        assert_eq!(&lhs << rhs, $vec2::new(x << rhs, y << rhs));
+                        assert_eq!(&lhs >> rhs, $vec2::new(x >> rhs, y >> rhs));
+
+                        assert_eq!(lhs << &rhs, $vec2::new(x << rhs, y << rhs));
+                        assert_eq!(lhs >> &rhs, $vec2::new(x >> rhs, y >> rhs));
+
+                        assert_eq!(&lhs << &rhs, $vec2::new(x << rhs, y << rhs));
+                        assert_eq!(&lhs >> &rhs, $vec2::new(x >> rhs, y >> rhs));
+
+                        let mut a = lhs;
+                        a <<= rhs;
+                        assert_eq!(a, lhs << rhs);
+
+                        let mut a = lhs;
+                        a <<= &rhs;
+                        assert_eq!(a, lhs << rhs);
+
+                        let mut a = lhs;
+                        a >>= rhs;
+                        assert_eq!(a, lhs >> rhs);
+
+                        let mut a = lhs;
+                        a >>= &rhs;
+                        assert_eq!(a, lhs >> rhs);
                     }
                 }
             }
@@ -1662,14 +1688,19 @@ macro_rules! impl_vec2_shift_op_test {
                 for y1 in $t_min..$t_max {
                     for x2 in $t_min..$t_max {
                         for y2 in $t_min..$t_max {
-                            assert_eq!(
-                                $vec2::new(x1, y1) << $rhs::new(x2, y2),
-                                $vec2::new(x1 << x2, y1 << y2)
-                            );
-                            assert_eq!(
-                                $vec2::new(x1, y1) >> $rhs::new(x2, y2),
-                                $vec2::new(x1 >> x2, y1 >> y2)
-                            );
+                            let lhs = $vec2::new(x1, y1);
+                            let rhs = $rhs::new(x2, y2);
+                            assert_eq!(lhs << rhs, $vec2::new(x1 << x2, y1 << y2));
+                            assert_eq!(lhs >> rhs, $vec2::new(x1 >> x2, y1 >> y2));
+
+                            assert_eq!(&lhs << rhs, $vec2::new(x1 << x2, y1 << y2));
+                            assert_eq!(&lhs >> rhs, $vec2::new(x1 >> x2, y1 >> y2));
+
+                            assert_eq!(lhs << &rhs, $vec2::new(x1 << x2, y1 << y2));
+                            assert_eq!(lhs >> &rhs, $vec2::new(x1 >> x2, y1 >> y2));
+
+                            assert_eq!(&lhs << &rhs, $vec2::new(x1 << x2, y1 << y2));
+                            assert_eq!(&lhs >> &rhs, $vec2::new(x1 >> x2, y1 >> y2));
                         }
                     }
                 }
@@ -1697,9 +1728,46 @@ macro_rules! impl_vec2_scalar_bit_op_tests {
             for x in $t_min..$t_max {
                 for y in $t_min..$t_max {
                     for rhs in $t_min..$t_max {
-                        assert_eq!($vec2::new(x, y) & rhs, $vec2::new(x & rhs, y & rhs));
-                        assert_eq!($vec2::new(x, y) | rhs, $vec2::new(x | rhs, y | rhs));
-                        assert_eq!($vec2::new(x, y) ^ rhs, $vec2::new(x ^ rhs, y ^ rhs));
+                        let lhs = $vec2::new(x, y);
+                        assert_eq!(lhs & rhs, $vec2::new(x & rhs, y & rhs));
+                        assert_eq!(lhs | rhs, $vec2::new(x | rhs, y | rhs));
+                        assert_eq!(lhs ^ rhs, $vec2::new(x ^ rhs, y ^ rhs));
+
+                        assert_eq!(&lhs & rhs, $vec2::new(x & rhs, y & rhs));
+                        assert_eq!(&lhs | rhs, $vec2::new(x | rhs, y | rhs));
+                        assert_eq!(&lhs ^ rhs, $vec2::new(x ^ rhs, y ^ rhs));
+
+                        assert_eq!(lhs & &rhs, $vec2::new(x & rhs, y & rhs));
+                        assert_eq!(lhs | &rhs, $vec2::new(x | rhs, y | rhs));
+                        assert_eq!(lhs ^ &rhs, $vec2::new(x ^ rhs, y ^ rhs));
+
+                        assert_eq!(&lhs & &rhs, $vec2::new(x & rhs, y & rhs));
+                        assert_eq!(&lhs | &rhs, $vec2::new(x | rhs, y | rhs));
+                        assert_eq!(&lhs ^ &rhs, $vec2::new(x ^ rhs, y ^ rhs));
+
+                        let mut a = lhs;
+                        a &= rhs;
+                        assert_eq!(a, lhs & rhs);
+
+                        let mut a = lhs;
+                        a &= &rhs;
+                        assert_eq!(a, lhs & rhs);
+
+                        let mut a = lhs;
+                        a |= rhs;
+                        assert_eq!(a, lhs | rhs);
+
+                        let mut a = lhs;
+                        a |= &rhs;
+                        assert_eq!(a, lhs | rhs);
+
+                        let mut a = lhs;
+                        a ^= rhs;
+                        assert_eq!(a, lhs ^ rhs);
+
+                        let mut a = lhs;
+                        a ^= &rhs;
+                        assert_eq!(a, lhs ^ rhs);
                     }
                 }
             }
@@ -1712,22 +1780,52 @@ macro_rules! impl_vec2_bit_op_tests {
         glam_test!(test_vec2_bit_ops, {
             for x1 in $t_min..$t_max {
                 for y1 in $t_min..$t_max {
-                    assert_eq!(!$vec2::new(x1, y1), $vec2::new(!x1, !y1));
+                    let lhs = $vec2::new(x1, y1);
+                    assert_eq!(!lhs, $vec2::new(!x1, !y1));
+                    assert_eq!(!&lhs, $vec2::new(!x1, !y1));
 
                     for x2 in $t_min..$t_max {
                         for y2 in $t_min..$t_max {
-                            assert_eq!(
-                                $vec2::new(x1, y1) & $vec2::new(x2, y2),
-                                $vec2::new(x1 & x2, y1 & y2)
-                            );
-                            assert_eq!(
-                                $vec2::new(x1, y1) | $vec2::new(x2, y2),
-                                $vec2::new(x1 | x2, y1 | y2)
-                            );
-                            assert_eq!(
-                                $vec2::new(x1, y1) ^ $vec2::new(x2, y2),
-                                $vec2::new(x1 ^ x2, y1 ^ y2)
-                            );
+                            let rhs = $vec2::new(x2, y2);
+                            assert_eq!(lhs & rhs, $vec2::new(x1 & x2, y1 & y2));
+                            assert_eq!(lhs | rhs, $vec2::new(x1 | x2, y1 | y2));
+                            assert_eq!(lhs ^ rhs, $vec2::new(x1 ^ x2, y1 ^ y2));
+
+                            assert_eq!(&lhs & rhs, $vec2::new(x1 & x2, y1 & y2));
+                            assert_eq!(&lhs | rhs, $vec2::new(x1 | x2, y1 | y2));
+                            assert_eq!(&lhs ^ rhs, $vec2::new(x1 ^ x2, y1 ^ y2));
+
+                            assert_eq!(lhs & &rhs, $vec2::new(x1 & x2, y1 & y2));
+                            assert_eq!(lhs | &rhs, $vec2::new(x1 | x2, y1 | y2));
+                            assert_eq!(lhs ^ &rhs, $vec2::new(x1 ^ x2, y1 ^ y2));
+
+                            assert_eq!(&lhs & &rhs, $vec2::new(x1 & x2, y1 & y2));
+                            assert_eq!(&lhs | &rhs, $vec2::new(x1 | x2, y1 | y2));
+                            assert_eq!(&lhs ^ &rhs, $vec2::new(x1 ^ x2, y1 ^ y2));
+
+                            let mut a = lhs;
+                            a &= rhs;
+                            assert_eq!(a, lhs & rhs);
+
+                            let mut a = lhs;
+                            a &= &rhs;
+                            assert_eq!(a, lhs & rhs);
+
+                            let mut a = lhs;
+                            a |= rhs;
+                            assert_eq!(a, lhs | rhs);
+
+                            let mut a = lhs;
+                            a |= &rhs;
+                            assert_eq!(a, lhs | rhs);
+
+                            let mut a = lhs;
+                            a ^= rhs;
+                            assert_eq!(a, lhs ^ rhs);
+
+                            let mut a = lhs;
+                            a ^= &rhs;
+                            assert_eq!(a, lhs ^ rhs);
                         }
                     }
                 }
