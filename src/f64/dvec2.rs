@@ -938,16 +938,6 @@ impl DVec2 {
         math::atan2(self.y, self.x)
     }
 
-    #[inline]
-    #[must_use]
-    #[deprecated(
-        since = "0.27.0",
-        note = "Use angle_to() instead, the semantics of angle_between will change in the future."
-    )]
-    pub fn angle_between(self, rhs: Self) -> f64 {
-        self.angle_to(rhs)
-    }
-
     /// Returns the angle of rotation (in radians) from `self` to `rhs` in the range `[-π, +π]`.
     ///
     /// The inputs do not need to be unit vectors however they must be non-zero.
