@@ -497,7 +497,7 @@ impl Quat {
     /// `[x, y, z, w]`
     #[inline]
     #[must_use]
-    pub fn to_array(&self) -> [f32; 4] {
+    pub fn to_array(self) -> [f32; 4] {
         [self.x, self.y, self.z, self.w]
     }
 
@@ -656,7 +656,7 @@ impl Quat {
     /// Will panic if `self` or `rhs` are not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn rotate_towards(&self, rhs: Self, max_angle: f32) -> Self {
+    pub fn rotate_towards(self, rhs: Self, max_angle: f32) -> Self {
         glam_assert!(self.is_normalized() && rhs.is_normalized());
         let angle = self.angle_between(rhs);
         if angle <= 1e-4 {
