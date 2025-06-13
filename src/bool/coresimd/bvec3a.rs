@@ -89,7 +89,7 @@ impl BVec3A {
     /// Panics if `index` is greater than 2.
     #[inline]
     #[must_use]
-    pub fn test(&self, index: usize) -> bool {
+    pub fn test(self, index: usize) -> bool {
         self.0.test(index)
     }
 
