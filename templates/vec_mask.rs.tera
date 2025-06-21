@@ -282,6 +282,7 @@ impl {{ self_t }} {
     #[must_use]
     pub fn test(&self, index: usize) -> bool {
         {% if is_coresimd %}
+            assert!(index < {{ dim }}, "index out of bounds");
             self.0.test(index)
         {% else %}
             match index {
@@ -316,6 +317,7 @@ impl {{ self_t }} {
                 _ => panic!("index out of bounds")
             }
         {% elif is_coresimd %}
+            assert!(index < {{ dim }}, "index out of bounds");
             self.0.set(index, value)
         {% elif is_neon %}
             self.0 = match index { 
