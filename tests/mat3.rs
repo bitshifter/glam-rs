@@ -133,12 +133,13 @@ macro_rules! impl_mat3_tests {
         });
 
         glam_test!(test_mat3_mul_vec3, {
-            let mat_a = $mat3::from_axis_angle($vec3::Z, deg(90.0));
-            assert_approx_eq!($newvec3(-1.0, 0.0, 0.0), mat_a * $newvec3(0.0, 1.0, 0.0));
-            assert_approx_eq!(
-                $vec3::new(-1.0, 0.0, 0.0),
-                mat_a.mul_vec3($vec3::new(0.0, 1.0, 0.0))
-            );
+            let m = $mat3::from_axis_angle($vec3::Z, deg(90.0));
+            assert_approx_eq!($vec3::NEG_X, m * $vec3::Y);
+            assert_approx_eq!($vec3::NEG_X, &m * $vec3::Y);
+            assert_approx_eq!($vec3::NEG_X, m * &$vec3::Y);
+            assert_approx_eq!($vec3::NEG_X, &m * &$vec3::Y);
+
+            assert_approx_eq!($vec3::NEG_X, m.mul_vec3($vec3::Y))
         });
 
         glam_test!(test_mat3_transform2d, {
@@ -376,8 +377,16 @@ macro_rules! impl_mat3_tests {
             m1 *= 2.0;
             assert_eq!(m0x2, m1);
 
+            let mut m1 = m0;
+            m1 *= &2.0;
+            assert_eq!(m0x2, m1);
+
             let mut m1 = m0x2;
             m1 /= 2.0;
+            assert_eq!(m0, m1);
+
+            let mut m1 = m0x2;
+            m1 /= &2.0;
             assert_eq!(m0, m1);
 
             let mut m1 = m0;
@@ -385,12 +394,24 @@ macro_rules! impl_mat3_tests {
             assert_eq!(m0x2, m1);
 
             let mut m1 = m0;
+            m1 += &m0;
+            assert_eq!(m0x2, m1);
+
+            let mut m1 = m0;
             m1 -= m0;
+            assert_eq!($mat3::ZERO, m1);
+
+            let mut m1 = m0;
+            m1 -= &m0;
             assert_eq!($mat3::ZERO, m1);
 
             let mut m1 = $mat3::IDENTITY;
             m1 *= m0;
-            assert_approx_eq!(m0, m1);
+            assert_eq!(m0, m1);
+
+            let mut m1 = $mat3::IDENTITY;
+            m1 *= &m0;
+            assert_eq!(m0, m1);
         });
 
         glam_test!(test_mat3_abs, {

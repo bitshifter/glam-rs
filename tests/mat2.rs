@@ -78,9 +78,29 @@ macro_rules! impl_mat2_tests {
 
         glam_test!(test_mat2_mul, {
             let mat_a = $mat2::from_angle(deg(90.0));
+
             let res_a = mat_a * $vec2::Y;
             assert_approx_eq!($newvec2(-1.0, 0.0), res_a);
+
+            let res_a = &mat_a * $vec2::Y;
+            assert_approx_eq!($newvec2(-1.0, 0.0), res_a);
+
+            let res_a = mat_a * &$vec2::Y;
+            assert_approx_eq!($newvec2(-1.0, 0.0), res_a);
+
+            let res_a = &mat_a * &$vec2::Y;
+            assert_approx_eq!($newvec2(-1.0, 0.0), res_a);
+
             let res_b = mat_a * $vec2::X;
+            assert_approx_eq!($newvec2(0.0, 1.0), res_b);
+
+            let res_b = &mat_a * $vec2::X;
+            assert_approx_eq!($newvec2(0.0, 1.0), res_b);
+
+            let res_b = mat_a * &$vec2::X;
+            assert_approx_eq!($newvec2(0.0, 1.0), res_b);
+
+            let res_b = &mat_a * &$vec2::X;
             assert_approx_eq!($newvec2(0.0, 1.0), res_b);
         });
 
@@ -216,8 +236,16 @@ macro_rules! impl_mat2_tests {
             m1 *= 2.0;
             assert_eq!(m0x2, m1);
 
+            let mut m1 = m0;
+            m1 *= &2.0;
+            assert_eq!(m0x2, m1);
+
             let mut m1 = m0x2;
             m1 /= 2.0;
+            assert_eq!(m0, m1);
+
+            let mut m1 = m0x2;
+            m1 /= &2.0;
             assert_eq!(m0, m1);
 
             let mut m1 = m0;
@@ -225,11 +253,24 @@ macro_rules! impl_mat2_tests {
             assert_eq!(m0x2, m1);
 
             let mut m1 = m0;
+            m1 += &m0;
+            assert_eq!(m0x2, m1);
+
+            let mut m1 = m0;
             m1 -= m0;
+            assert_eq!($mat2::ZERO, m1);
+
+            let mut m1 = m0;
+            m1 -= &m0;
             assert_eq!($mat2::ZERO, m1);
 
             let mut m1 = $mat2::IDENTITY;
             m1 *= m0;
+            assert_eq!(m0, m1);
+
+            let mut m1 = $mat2::IDENTITY;
+            m1 *= &m0;
+            assert_eq!(m0, m1);
         });
 
         glam_test!(test_mat2_fmt, {

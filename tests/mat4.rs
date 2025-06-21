@@ -695,8 +695,16 @@ macro_rules! impl_mat4_tests {
             m1 *= 2.0;
             assert_eq!(m0x2, m1);
 
+            let mut m1 = m0;
+            m1 *= &2.0;
+            assert_eq!(m0x2, m1);
+
             let mut m1 = m0x2;
             m1 /= 2.0;
+            assert_eq!(m0, m1);
+
+            let mut m1 = m0x2;
+            m1 /= &2.0;
             assert_eq!(m0, m1);
 
             let mut m1 = m0;
@@ -704,12 +712,24 @@ macro_rules! impl_mat4_tests {
             assert_eq!(m0x2, m1);
 
             let mut m1 = m0;
+            m1 += &m0;
+            assert_eq!(m0x2, m1);
+
+            let mut m1 = m0;
             m1 -= m0;
+            assert_eq!($mat4::ZERO, m1);
+
+            let mut m1 = m0;
+            m1 -= &m0;
             assert_eq!($mat4::ZERO, m1);
 
             let mut m1 = $mat4::IDENTITY;
             m1 *= m0;
-            assert_approx_eq!(m0, m1);
+            assert_eq!(m0, m1);
+
+            let mut m1 = $mat4::IDENTITY;
+            m1 *= &m0;
+            assert_eq!(m0, m1);
         });
 
         glam_test!(test_mat4_fmt, {

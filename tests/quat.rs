@@ -107,6 +107,13 @@ macro_rules! impl_quat_tests {
             let yx1 = $quat::from_euler(EulerRot::YXZ, yaw, pitch, zero);
             assert_approx_eq!(yx0, yx1);
 
+            let yx0 = &y0 * x0;
+            assert_approx_eq!(yx0, yx1);
+            let yx0 = y0 * &x0;
+            assert_approx_eq!(yx0, yx1);
+            let yx0 = &y0 * &x0;
+            assert_approx_eq!(yx0, yx1);
+
             let yxz0 = y0 * x0 * z0;
             assert!(yxz0.is_normalized());
             let yxz1 = $quat::from_euler(EulerRot::YXZ, yaw, pitch, roll);
@@ -132,6 +139,10 @@ macro_rules! impl_quat_tests {
 
             let mut x0 = $quat::from_rotation_x(pitch);
             x0 *= x0;
+            assert_approx_eq!(x0, $quat::from_rotation_x(pitch * 2.0));
+
+            let mut x0 = $quat::from_rotation_x(pitch);
+            x0 *= &x0.clone();
             assert_approx_eq!(x0, $quat::from_rotation_x(pitch * 2.0));
 
             should_glam_assert!({ ($quat::IDENTITY * 2.0).inverse() });
