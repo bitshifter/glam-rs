@@ -2008,14 +2008,21 @@ macro_rules! impl_vec4_shift_op_test {
                                     for z2 in $t_min..$t_max {
                                         for w2 in $t_min..$t_max {
                                             let lhs = $vec4::new(x1, y1, z1, w1);
-                                            assert_eq!(
-                                                lhs << $rhs::new(x2, y2, z2, w2),
-                                                $vec4::new(x1 << x2, y1 << y2, z1 << z2, w1 << w2)
-                                            );
-                                            assert_eq!(
-                                                lhs >> $rhs::new(x2, y2, z2, w2),
-                                                $vec4::new(x1 >> x2, y1 >> y2, z1 >> z2, w1 >> w2)
-                                            );
+                                            let rhs = $rhs::new(x2, y2, z2, w2);
+
+                                            let shl =
+                                                $vec4::new(x1 << x2, y1 << y2, z1 << z2, w1 << w2);
+                                            assert_eq!(lhs << rhs, shl);
+                                            assert_eq!(&lhs << rhs, shl);
+                                            assert_eq!(lhs << &rhs, shl);
+                                            assert_eq!(&lhs << &rhs, shl);
+
+                                            let shr =
+                                                $vec4::new(x1 >> x2, y1 >> y2, z1 >> z2, w1 >> w2);
+                                            assert_eq!(lhs >> rhs, shr);
+                                            assert_eq!(&lhs >> rhs, shr);
+                                            assert_eq!(lhs >> &rhs, shr);
+                                            assert_eq!(&lhs >> &rhs, shr);
                                         }
                                     }
                                 }
@@ -4097,6 +4104,72 @@ mod u64vec4 {
         assert_eq!(
             U64Vec4::new(1, 2, 3, 4),
             U64Vec4::try_from(USizeVec4::new(1, 2, 3, 4)).unwrap()
+        );
+    });
+
+    glam_test!(test_wrapping_add, {
+        assert_eq!(
+            U64Vec4::new(u64::MAX, 5, u64::MAX, 0).wrapping_add(U64Vec4::new(1, 3, u64::MAX, 0)),
+            U64Vec4::new(0, 8, u64::MAX.wrapping_add(u64::MAX), 0),
+        );
+    });
+
+    glam_test!(test_wrapping_sub, {
+        assert_eq!(
+            U64Vec4::new(u64::MAX, 5, u64::MAX - 1, 0).wrapping_sub(U64Vec4::new(
+                1,
+                3,
+                u64::MAX,
+                0
+            )),
+            U64Vec4::new(
+                u64::MAX.wrapping_sub(1),
+                2,
+                (u64::MAX - 1).wrapping_sub(u64::MAX),
+                0
+            )
+        );
+    });
+
+    glam_test!(test_wrapping_mul, {
+        assert_eq!(
+            U64Vec4::new(u64::MAX, 5, u64::MAX, 0).wrapping_mul(U64Vec4::new(3, 3, 5, 1)),
+            U64Vec4::new(u64::MAX.wrapping_mul(3), 15, u64::MAX.wrapping_mul(5), 0)
+        );
+    });
+
+    glam_test!(test_wrapping_div, {
+        assert_eq!(
+            U64Vec4::new(u64::MAX, 5, u64::MAX, 0).wrapping_div(U64Vec4::new(3, 3, 5, 1)),
+            U64Vec4::new(u64::MAX.wrapping_div(3), 1, u64::MAX.wrapping_div(5), 0)
+        );
+    });
+
+    glam_test!(test_saturating_add, {
+        assert_eq!(
+            U64Vec4::new(u64::MAX, u64::MAX, 0, 0).saturating_add(U64Vec4::new(1, u64::MAX, 2, 3)),
+            U64Vec4::new(u64::MAX, u64::MAX, 2, 3)
+        );
+    });
+
+    glam_test!(test_saturating_sub, {
+        assert_eq!(
+            U64Vec4::new(0, u64::MAX, 0, 0).saturating_sub(U64Vec4::new(1, 1, 2, 3)),
+            U64Vec4::new(0, u64::MAX.saturating_sub(1), 0, 0)
+        );
+    });
+
+    glam_test!(test_saturating_mul, {
+        assert_eq!(
+            U64Vec4::new(u64::MAX, u64::MAX, 0, 0).saturating_mul(U64Vec4::new(2, u64::MAX, 0, 0)),
+            U64Vec4::new(u64::MAX, u64::MAX, 0, 0)
+        );
+    });
+
+    glam_test!(test_saturating_div, {
+        assert_eq!(
+            U64Vec4::new(u64::MAX, u64::MAX, 0, 0).saturating_div(U64Vec4::new(2, u64::MAX, 3, 4)),
+            U64Vec4::new(u64::MAX.saturating_div(2), 1, 0, 0)
         );
     });
 
