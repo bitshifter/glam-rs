@@ -10,6 +10,8 @@ macro_rules! impl_bvec2_tests {
             assert_eq!($mask::new(true, false), $masknew(true, false));
             assert_eq!($mask::new(false, true), $masknew(false, true));
             assert_eq!($mask::new(true, true), $masknew(true, true));
+
+            assert_eq!($mask::default(), $mask::FALSE);
         });
 
         glam_test!(test_mask_from_array_bool, {
@@ -246,6 +248,23 @@ macro_rules! impl_bvec2_tests {
             );
 
             assert_eq!(
+                (&$mask::new(false, false) ^ $mask::new(false, false)).bitmask(),
+                0b00,
+            );
+            assert_eq!(
+                (&$mask::new(false, false) ^ $mask::new(false, true)).bitmask(),
+                0b10,
+            );
+            assert_eq!(
+                (&$mask::new(true, false) ^ $mask::new(false, true)).bitmask(),
+                0b11,
+            );
+            assert_eq!(
+                (&$mask::new(true, true) ^ $mask::new(true, true)).bitmask(),
+                0b00,
+            );
+
+            assert_eq!(
                 ($mask::new(false, false) ^ &$mask::new(false, false)).bitmask(),
                 0b00,
             );
@@ -329,6 +348,8 @@ macro_rules! impl_bvec2_tests {
             let b = $mask::new(false, true);
             assert_eq!(b.test(0), false);
             assert_eq!(b.test(1), true);
+
+            should_panic!({ a.test(2) });
         });
 
         glam_test!(test_mask_set, {
@@ -343,6 +364,11 @@ macro_rules! impl_bvec2_tests {
             assert_eq!(b.test(0), false);
             b.set(1, true);
             assert_eq!(b.test(1), true);
+
+            should_panic!({
+                let mut a = $mask::FALSE;
+                a.set(2, true)
+            });
         });
 
         glam_test!(test_mask_hash, {

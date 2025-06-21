@@ -30,6 +30,8 @@ macro_rules! impl_bvec4_tests {
                 $mask::new(true, true, true, true),
                 $masknew(true, true, true, true)
             );
+
+            assert_eq!($mask::default(), $mask::FALSE);
         });
 
         glam_test!(test_mask_from_array_bool, {
@@ -467,6 +469,8 @@ macro_rules! impl_bvec4_tests {
             assert_eq!(b.test(1), true);
             assert_eq!(b.test(2), false);
             assert_eq!(b.test(3), true);
+
+            should_panic!({ a.test(4) });
         });
 
         glam_test!(test_mask_set, {
@@ -489,6 +493,11 @@ macro_rules! impl_bvec4_tests {
             assert_eq!(b.test(2), false);
             b.set(3, true);
             assert_eq!(b.test(3), true);
+
+            should_panic!({
+                let mut a = $mask::FALSE;
+                a.set(4, true)
+            });
         });
 
         glam_test!(test_mask_hash, {
