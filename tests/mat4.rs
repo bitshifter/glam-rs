@@ -191,7 +191,17 @@ macro_rules! impl_mat4_tests {
                 m4);
         });
 
-        glam_test!(test_mat4_mul, {
+        glam_test!(test_mat4_mul_vec4, {
+            let m = $mat4::from_axis_angle($vec3::Z, deg(90.0));
+            assert_approx_eq!($vec4::NEG_X, m * $vec4::Y);
+            assert_approx_eq!($vec4::NEG_X, &m * $vec4::Y);
+            assert_approx_eq!($vec4::NEG_X, m * &$vec4::Y);
+            assert_approx_eq!($vec4::NEG_X, &m * &$vec4::Y);
+
+            assert_approx_eq!($vec4::NEG_X, m.mul_vec4($vec4::Y))
+        });
+
+        glam_test!(test_mat4_transform3d, {
             let m = $mat4::from_axis_angle($vec3::Z, deg(90.0));
             let result3 = m.transform_vector3($vec3::Y);
             assert_approx_eq!($newvec3(-1.0, 0.0, 0.0), result3);
