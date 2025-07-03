@@ -7,6 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - run: rustup update --no-self-update stable
       - run: rustup default stable
@@ -38,6 +40,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
       - run: rustup update --no-self-update ${{ matrix.toolchain }}
       - run: rustup default ${{ matrix.toolchain }}
       - run: ./build_and_test_features.sh
@@ -52,6 +56,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
       - run: rustup update --no-self-update ${{ matrix.toolchain }}
       - run: rustup default ${{ matrix.toolchain }}
       - run: ./build_all_msrv.sh
@@ -66,6 +72,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
       - run: rustup update --no-self-update ${{ matrix.toolchain }}
       - run: rustup default ${{ matrix.toolchain }}
       - run: cargo test --features core-simd
@@ -80,6 +88,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Install
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
