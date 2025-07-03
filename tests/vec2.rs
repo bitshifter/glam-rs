@@ -3069,6 +3069,62 @@ mod i64vec2 {
         }
     });
 
+    glam_test!(test_wrapping_add, {
+        assert_eq!(
+            I64Vec2::new(i64::MAX, 5).wrapping_add(I64Vec2::new(1, 3)),
+            I64Vec2::new(i64::MIN, 8),
+        );
+    });
+
+    glam_test!(test_wrapping_sub, {
+        assert_eq!(
+            I64Vec2::new(i64::MAX, 5).wrapping_sub(I64Vec2::new(1, 3)),
+            I64Vec2::new(9223372036854775806, 2)
+        );
+    });
+
+    glam_test!(test_wrapping_mul, {
+        assert_eq!(
+            I64Vec2::new(i64::MAX, 5).wrapping_mul(I64Vec2::new(3, 3)),
+            I64Vec2::new(9223372036854775805, 15)
+        );
+    });
+
+    glam_test!(test_wrapping_div, {
+        assert_eq!(
+            I64Vec2::new(i64::MAX, 5).wrapping_div(I64Vec2::new(3, 3)),
+            I64Vec2::new(3074457345618258602, 1)
+        );
+    });
+
+    glam_test!(test_saturating_add, {
+        assert_eq!(
+            I64Vec2::new(i64::MAX, i64::MIN).saturating_add(I64Vec2::new(1, -1)),
+            I64Vec2::new(i64::MAX, i64::MIN)
+        );
+    });
+
+    glam_test!(test_saturating_sub, {
+        assert_eq!(
+            I64Vec2::new(i64::MIN, i64::MAX).saturating_sub(I64Vec2::new(1, -1)),
+            I64Vec2::new(i64::MIN, i64::MAX)
+        );
+    });
+
+    glam_test!(test_saturating_mul, {
+        assert_eq!(
+            I64Vec2::new(i64::MAX, i64::MIN).saturating_mul(I64Vec2::new(2, 2)),
+            I64Vec2::new(i64::MAX, i64::MIN)
+        );
+    });
+
+    glam_test!(test_saturating_div, {
+        assert_eq!(
+            I64Vec2::new(i64::MAX, i64::MIN).saturating_div(I64Vec2::new(2, 2)),
+            I64Vec2::new(4611686018427387903, -4611686018427387904)
+        );
+    });
+
     glam_test!(test_checked_add_unsigned, {
         assert_eq!(I64Vec2::MAX.checked_add_unsigned(U64Vec2::ONE), None);
         assert_eq!(

@@ -3985,6 +3985,62 @@ mod i64vec4 {
         }
     });
 
+    glam_test!(test_wrapping_add, {
+        assert_eq!(
+            I64Vec4::new(i64::MAX, 5, i64::MIN, 0).wrapping_add(I64Vec4::new(1, 3, i64::MAX, 0)),
+            I64Vec4::new(i64::MIN, 8, -1, 0),
+        );
+    });
+
+    glam_test!(test_wrapping_sub, {
+        assert_eq!(
+            I64Vec4::new(i64::MAX, 5, i64::MIN, 0).wrapping_sub(I64Vec4::new(1, 3, i64::MAX, 0)),
+            I64Vec4::new(9223372036854775806, 2, 1, 0)
+        );
+    });
+
+    glam_test!(test_wrapping_mul, {
+        assert_eq!(
+            I64Vec4::new(i64::MAX, 5, i64::MIN, 0).wrapping_mul(I64Vec4::new(3, 3, 5, 1)),
+            I64Vec4::new(9223372036854775805, 15, -9223372036854775808, 0)
+        );
+    });
+
+    glam_test!(test_wrapping_div, {
+        assert_eq!(
+            I64Vec4::new(i64::MAX, 5, i64::MIN, 0).wrapping_div(I64Vec4::new(3, 3, 5, 1)),
+            I64Vec4::new(3074457345618258602, 1, -1844674407370955161, 0)
+        );
+    });
+
+    glam_test!(test_saturating_add, {
+        assert_eq!(
+            I64Vec4::new(i64::MAX, i64::MIN, 0, 0).saturating_add(I64Vec4::new(1, -1, 2, 3)),
+            I64Vec4::new(i64::MAX, i64::MIN, 2, 3)
+        );
+    });
+
+    glam_test!(test_saturating_sub, {
+        assert_eq!(
+            I64Vec4::new(i64::MIN, i64::MAX, 0, 0).saturating_sub(I64Vec4::new(1, -1, 2, 3)),
+            I64Vec4::new(i64::MIN, i64::MAX, -2, -3)
+        );
+    });
+
+    glam_test!(test_saturating_mul, {
+        assert_eq!(
+            I64Vec4::new(i64::MAX, i64::MIN, 0, 0).saturating_mul(I64Vec4::new(2, 2, 0, 0)),
+            I64Vec4::new(i64::MAX, i64::MIN, 0, 0)
+        );
+    });
+
+    glam_test!(test_saturating_div, {
+        assert_eq!(
+            I64Vec4::new(i64::MAX, i64::MIN, 0, 0).saturating_div(I64Vec4::new(2, 2, 3, 4)),
+            I64Vec4::new(4611686018427387903, -4611686018427387904, 0, 0)
+        );
+    });
+
     glam_test!(test_checked_add_unsigned, {
         assert_eq!(I64Vec4::MAX.checked_add_unsigned(U64Vec4::ONE), None);
         assert_eq!(
