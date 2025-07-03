@@ -131,10 +131,9 @@ fn write_test_vec2(
     write!(
         out,
         r#"
-glam_test!(test_{}_swizzles, {{
-    let v = {}(1_{}, 2_{});
-"#,
-        vec2t, vec2t, t, t,
+glam_test!(test_{vec2t}_swizzles, {{
+    let v = {vec2t}(1_{t}, 2_{t});
+"#
     )?;
 
     writeln!(out, "    assert_eq!(v, v.xy());")?;
