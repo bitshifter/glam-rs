@@ -1,0 +1,3 @@
+[submodule "codegen"]
+	path = codegen
+	url = git@github.com:bitshifter/glam-codegen.git
