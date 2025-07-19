@@ -13,7 +13,7 @@
 - Are you modify generated code?
 - Have you modified the templates and run the code generator?
 
-See https://github.com/bitshifter/glam-rs/blob/main/codegen/README.md for details.
+See https://github.com/bitshifter/glam-codegen/blob/main/README.md for details.
 
 ## Testing and linting
 
