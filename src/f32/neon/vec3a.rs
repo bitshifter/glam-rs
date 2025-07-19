@@ -1095,6 +1095,22 @@ impl Vec3A {
         )
     }
 
+    /// Given a unit vector return two other vectors that together form a right-handed orthonormal
+    /// basis. That is, all three vectors are orthogonal to each other and are normalized.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `self` is not normalized when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    #[deprecated(
+        since = "0.30.4",
+        note = "Use any_orthonormal_pair_rh() instead to preserve identical functionality, or any_orthonormal_pair_lh if you a left-handed basis."
+    )]
+    pub fn any_orthonormal_pair(&self) -> (Self, Self) {
+        self.any_orthonormal_pair_rh()
+    }
+
     /// Performs a spherical linear interpolation between `self` and `rhs` based on the value `s`.
     ///
     /// When `s` is `0.0`, the result will be equal to `self`.  When `s` is `1.0`, the result
