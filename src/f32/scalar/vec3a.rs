@@ -1067,7 +1067,7 @@ impl Vec3A {
         Self::new(b, sign + self.y * self.y * a, -self.y)
     }
 
-    /// Given a unit vector return two other vectors that together form an orthonormal
+    /// Given a unit vector return two other vectors that together form a left-handed orthonormal
     /// basis. That is, all three vectors are orthogonal to each other and are normalized.
     ///
     /// # Panics
@@ -1075,7 +1075,20 @@ impl Vec3A {
     /// Will panic if `self` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn any_orthonormal_pair(&self) -> (Self, Self) {
+    pub fn any_orthonormal_pair_lh(&self) -> (Self, Self) {
+        let (a, b) = self.any_orthonormal_pair_rh();
+        (-a, b)
+    }
+
+    /// Given a unit vector return two other vectors that together form a right-handed orthonormal
+    /// basis. That is, all three vectors are orthogonal to each other and are normalized.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `self` is not normalized when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn any_orthonormal_pair_rh(&self) -> (Self, Self) {
         glam_assert!(self.is_normalized());
         // From https://graphics.pixar.com/library/OrthonormalB/paper.pdf
         let sign = math::signum(self.z);
