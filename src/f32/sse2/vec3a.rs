@@ -235,7 +235,7 @@ impl Vec3A {
         Self(unsafe { dot3_into_m128(self.0, rhs.0) })
     }
 
-    /// Computes the cross product of `self` and `rhs`.
+    /// Computes the right-handed cross product of `self` and `rhs`.
     #[inline]
     #[must_use]
     pub fn cross(self, rhs: Self) -> Self {
