@@ -233,7 +233,7 @@ impl Vec3A {
         Self::splat(self.dot(rhs))
     }
 
-    /// Computes the cross product of `self` and `rhs`.
+    /// Computes the right-handed cross product of `self` and `rhs`.
     #[inline]
     #[must_use]
     pub fn cross(self, rhs: Self) -> Self {
