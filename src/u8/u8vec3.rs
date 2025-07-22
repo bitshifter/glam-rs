@@ -19,7 +19,10 @@ pub const fn u8vec3(x: u8, y: u8, z: u8) -> U8Vec3 {
 /// A 3-dimensional vector.
 #[cfg_attr(not(target_arch = "spirv"), derive(Hash))]
 #[derive(Clone, Copy, PartialEq, Eq)]
-#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
+#[cfg_attr(
+    all(feature = "bytemuck", not(target_arch = "spirv")),
+    derive(bytemuck::Pod, bytemuck::Zeroable)
+)]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct U8Vec3 {

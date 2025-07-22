@@ -19,7 +19,10 @@ pub const fn u64vec3(x: u64, y: u64, z: u64) -> U64Vec3 {
 /// A 3-dimensional vector.
 #[cfg_attr(not(target_arch = "spirv"), derive(Hash))]
 #[derive(Clone, Copy, PartialEq, Eq)]
-#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
+#[cfg_attr(
+    all(feature = "bytemuck", not(target_arch = "spirv")),
+    derive(bytemuck::Pod, bytemuck::Zeroable)
+)]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct U64Vec3 {
