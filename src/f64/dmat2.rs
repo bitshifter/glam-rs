@@ -14,7 +14,10 @@ pub const fn dmat2(x_axis: DVec2, y_axis: DVec2) -> DMat2 {
 
 /// A 2x2 column major matrix.
 #[derive(Clone, Copy)]
-#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
+#[cfg_attr(
+    all(feature = "bytemuck", not(target_arch = "spirv")),
+    derive(bytemuck::Pod, bytemuck::Zeroable)
+)]
 #[cfg_attr(feature = "cuda", repr(align(16)))]
 #[repr(C)]
 pub struct DMat2 {

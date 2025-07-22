@@ -26,7 +26,10 @@ pub const fn dquat(x: f64, y: f64, z: f64, w: f64) -> DQuat {
 /// floating point "error creep" which can occur when successive quaternion
 /// operations are applied.
 #[derive(Clone, Copy)]
-#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
+#[cfg_attr(
+    all(feature = "bytemuck", not(target_arch = "spirv")),
+    derive(bytemuck::Pod, bytemuck::Zeroable)
+)]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct DQuat {

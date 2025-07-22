@@ -312,9 +312,9 @@ pub const fn {{ self_t | lower }}(
     {% endif %}
 )]
 {%- if self_t == "Vec3A" and is_scalar %}
-#[cfg_attr(feature = "bytemuck", derive(bytemuck::AnyBitPattern))]
+#[cfg_attr(all(feature = "bytemuck", not(target_arch = "spirv")), derive(bytemuck::AnyBitPattern))]
 {%- else %}
-#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
+#[cfg_attr(all(feature = "bytemuck", not(target_arch = "spirv")), derive(bytemuck::Pod, bytemuck::Zeroable))]
 {%- endif %}
 {%- if self_t == "Vec3A" and is_scalar %}
 #[cfg_attr(not(target_arch = "spirv"), repr(align(16)))]

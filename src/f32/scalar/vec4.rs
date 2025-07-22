@@ -20,7 +20,10 @@ pub const fn vec4(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
 
 /// A 4-dimensional vector.
 #[derive(Clone, Copy, PartialEq)]
-#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
+#[cfg_attr(
+    all(feature = "bytemuck", not(target_arch = "spirv")),
+    derive(bytemuck::Pod, bytemuck::Zeroable)
+)]
 #[cfg_attr(
     any(
         not(any(feature = "scalar-math", target_arch = "spirv")),
