@@ -1825,6 +1825,301 @@ macro_rules! impl_vec3_float_tests {
             let normal = $vec3::Y;
             assert_approx_eq!(incident.refract(normal, 1.5), $vec3::ZERO);
         });
+
+        glam_test!(test_as, {
+            use glam::{
+                DVec3, I16Vec3, I64Vec3, I8Vec3, IVec3, U16Vec3, U64Vec3, U8Vec3, USizeVec3, UVec3,
+                Vec3, Vec3A,
+            };
+            assert_eq!(
+                DVec3::new(-1.0, -2.0, -3.0),
+                Vec3::new(-1.0, -2.0, -3.0).as_dvec3()
+            );
+            assert_eq!(
+                I8Vec3::new(-1, -2, -3),
+                Vec3::new(-1.0, -2.0, -3.0).as_i8vec3()
+            );
+            assert_eq!(U8Vec3::new(1, 2, 3), Vec3::new(1.0, 2.0, 3.0).as_u8vec3());
+            assert_eq!(
+                I16Vec3::new(-1, -2, -3),
+                Vec3::new(-1.0, -2.0, -3.0).as_i16vec3()
+            );
+            assert_eq!(U16Vec3::new(1, 2, 3), Vec3::new(1.0, 2.0, 3.0).as_u16vec3());
+            assert_eq!(
+                IVec3::new(-1, -2, -3),
+                Vec3::new(-1.0, -2.0, -3.0).as_ivec3()
+            );
+            assert_eq!(UVec3::new(1, 2, 3), Vec3::new(1.0, 2.0, 3.0).as_uvec3());
+            assert_eq!(
+                I64Vec3::new(-1, -2, -3),
+                Vec3::new(-1.0, -2.0, -3.0).as_i64vec3()
+            );
+            assert_eq!(U64Vec3::new(1, 2, 3), Vec3::new(1.0, 2.0, 3.0).as_u64vec3());
+            assert_eq!(
+                USizeVec3::new(1, 2, 3),
+                Vec3::new(1.0, 2.0, 3.0).as_usizevec3()
+            );
+
+            assert_eq!(
+                DVec3::new(-1.0, -2.0, -3.0),
+                Vec3A::new(-1.0, -2.0, -3.0).as_dvec3()
+            );
+            assert_eq!(
+                I8Vec3::new(-1, -2, -3),
+                Vec3A::new(-1.0, -2.0, -3.0).as_i8vec3()
+            );
+            assert_eq!(U8Vec3::new(1, 2, 3), Vec3A::new(1.0, 2.0, 3.0).as_u8vec3());
+            assert_eq!(
+                I16Vec3::new(-1, -2, -3),
+                Vec3A::new(-1.0, -2.0, -3.0).as_i16vec3()
+            );
+            assert_eq!(
+                U16Vec3::new(1, 2, 3),
+                Vec3A::new(1.0, 2.0, 3.0).as_u16vec3()
+            );
+            assert_eq!(
+                IVec3::new(-1, -2, -3),
+                Vec3A::new(-1.0, -2.0, -3.0).as_ivec3()
+            );
+            assert_eq!(UVec3::new(1, 2, 3), Vec3A::new(1.0, 2.0, 3.0).as_uvec3());
+            assert_eq!(
+                I64Vec3::new(-1, -2, -3),
+                Vec3A::new(-1.0, -2.0, -3.0).as_i64vec3()
+            );
+            assert_eq!(
+                U64Vec3::new(1, 2, 3),
+                Vec3A::new(1.0, 2.0, 3.0).as_u64vec3()
+            );
+            assert_eq!(
+                USizeVec3::new(1, 2, 3),
+                Vec3A::new(1.0, 2.0, 3.0).as_usizevec3()
+            );
+
+            assert_eq!(
+                I8Vec3::new(-1, -2, -3),
+                DVec3::new(-1.0, -2.0, -3.0).as_i8vec3()
+            );
+            assert_eq!(U8Vec3::new(1, 2, 3), DVec3::new(1.0, 2.0, 3.0).as_u8vec3());
+            assert_eq!(
+                I16Vec3::new(-1, -2, -3),
+                DVec3::new(-1.0, -2.0, -3.0).as_i16vec3()
+            );
+            assert_eq!(
+                U16Vec3::new(1, 2, 3),
+                DVec3::new(1.0, 2.0, 3.0).as_u16vec3()
+            );
+            assert_eq!(
+                IVec3::new(-1, -2, -3),
+                DVec3::new(-1.0, -2.0, -3.0).as_ivec3()
+            );
+            assert_eq!(UVec3::new(1, 2, 3), DVec3::new(1.0, 2.0, 3.0).as_uvec3());
+            assert_eq!(
+                I64Vec3::new(-1, -2, -3),
+                DVec3::new(-1.0, -2.0, -3.0).as_i64vec3()
+            );
+            assert_eq!(
+                U64Vec3::new(1, 2, 3),
+                DVec3::new(1.0, 2.0, 3.0).as_u64vec3()
+            );
+            assert_eq!(
+                USizeVec3::new(1, 2, 3),
+                DVec3::new(1.0, 2.0, 3.0).as_usizevec3()
+            );
+            assert_eq!(
+                Vec3::new(-1.0, -2.0, -3.0),
+                DVec3::new(-1.0, -2.0, -3.0).as_vec3()
+            );
+            assert_eq!(
+                Vec3A::new(-1.0, -2.0, -3.0),
+                DVec3::new(-1.0, -2.0, -3.0).as_vec3a()
+            );
+
+            assert_eq!(
+                DVec3::new(-1.0, -2.0, -3.0),
+                I8Vec3::new(-1, -2, -3).as_dvec3()
+            );
+            assert_eq!(U8Vec3::new(1, 2, 3), I8Vec3::new(1, 2, 3).as_u8vec3());
+            assert_eq!(
+                I16Vec3::new(-1, -2, -3),
+                I8Vec3::new(-1, -2, -3).as_i16vec3()
+            );
+            assert_eq!(U16Vec3::new(1, 2, 3), I8Vec3::new(1, 2, 3).as_u16vec3());
+            assert_eq!(IVec3::new(-1, -2, -3), I8Vec3::new(-1, -2, -3).as_ivec3());
+            assert_eq!(UVec3::new(1, 2, 3), I8Vec3::new(1, 2, 3).as_uvec3());
+            assert_eq!(
+                I64Vec3::new(-1, -2, -3),
+                I8Vec3::new(-1, -2, -3).as_i64vec3()
+            );
+            assert_eq!(U64Vec3::new(1, 2, 3), I8Vec3::new(1, 2, 3).as_u64vec3());
+            assert_eq!(USizeVec3::new(1, 2, 3), I8Vec3::new(1, 2, 3).as_usizevec3());
+            assert_eq!(
+                Vec3::new(-1.0, -2.0, -3.0),
+                I8Vec3::new(-1, -2, -3).as_vec3()
+            );
+            assert_eq!(
+                Vec3A::new(-1.0, -2.0, -3.0),
+                I8Vec3::new(-1, -2, -3).as_vec3a()
+            );
+
+            assert_eq!(DVec3::new(1.0, 2.0, 3.0), U8Vec3::new(1, 2, 3).as_dvec3());
+            assert_eq!(I8Vec3::new(1, 2, 3), U8Vec3::new(1, 2, 3).as_i8vec3());
+            assert_eq!(I16Vec3::new(1, 2, 3), U8Vec3::new(1, 2, 3).as_i16vec3());
+            assert_eq!(U16Vec3::new(1, 2, 3), U8Vec3::new(1, 2, 3).as_u16vec3());
+            assert_eq!(IVec3::new(1, 2, 3), U8Vec3::new(1, 2, 3).as_ivec3());
+            assert_eq!(UVec3::new(1, 2, 3), U8Vec3::new(1, 2, 3).as_uvec3());
+            assert_eq!(I64Vec3::new(1, 2, 3), U8Vec3::new(1, 2, 3).as_i64vec3());
+            assert_eq!(U64Vec3::new(1, 2, 3), U8Vec3::new(1, 2, 3).as_u64vec3());
+            assert_eq!(USizeVec3::new(1, 2, 3), U8Vec3::new(1, 2, 3).as_usizevec3());
+            assert_eq!(Vec3::new(1.0, 2.0, 3.0), U8Vec3::new(1, 2, 3).as_vec3());
+            assert_eq!(Vec3A::new(1.0, 2.0, 3.0), U8Vec3::new(1, 2, 3).as_vec3a());
+
+            assert_eq!(
+                DVec3::new(-1.0, -2.0, -3.0),
+                I16Vec3::new(-1, -2, -3).as_dvec3()
+            );
+            assert_eq!(
+                I8Vec3::new(-1, -2, -3),
+                I16Vec3::new(-1, -2, -3).as_i8vec3()
+            );
+            assert_eq!(U8Vec3::new(1, 2, 3), I16Vec3::new(1, 2, 3).as_u8vec3());
+            assert_eq!(U16Vec3::new(1, 2, 3), I16Vec3::new(1, 2, 3).as_u16vec3());
+            assert_eq!(IVec3::new(-1, -2, -3), I16Vec3::new(-1, -2, -3).as_ivec3());
+            assert_eq!(UVec3::new(1, 2, 3), I16Vec3::new(1, 2, 3).as_uvec3());
+            assert_eq!(
+                I64Vec3::new(-1, -2, -3),
+                I16Vec3::new(-1, -2, -3).as_i64vec3()
+            );
+            assert_eq!(U64Vec3::new(1, 2, 3), I16Vec3::new(1, 2, 3).as_u64vec3());
+            assert_eq!(
+                USizeVec3::new(1, 2, 3),
+                I16Vec3::new(1, 2, 3).as_usizevec3()
+            );
+            assert_eq!(
+                Vec3::new(-1.0, -2.0, -3.0),
+                I16Vec3::new(-1, -2, -3).as_vec3()
+            );
+            assert_eq!(
+                Vec3A::new(-1.0, -2.0, -3.0),
+                I16Vec3::new(-1, -2, -3).as_vec3a()
+            );
+
+            assert_eq!(DVec3::new(1.0, 2.0, 3.0), U16Vec3::new(1, 2, 3).as_dvec3());
+            assert_eq!(I8Vec3::new(1, 2, 3), U16Vec3::new(1, 2, 3).as_i8vec3());
+            assert_eq!(U8Vec3::new(1, 2, 3), U16Vec3::new(1, 2, 3).as_u8vec3());
+            assert_eq!(I16Vec3::new(1, 2, 3), U16Vec3::new(1, 2, 3).as_i16vec3());
+            assert_eq!(IVec3::new(1, 2, 3), U16Vec3::new(1, 2, 3).as_ivec3());
+            assert_eq!(UVec3::new(1, 2, 3), U16Vec3::new(1, 2, 3).as_uvec3());
+            assert_eq!(I64Vec3::new(1, 2, 3), U16Vec3::new(1, 2, 3).as_i64vec3());
+            assert_eq!(U64Vec3::new(1, 2, 3), U16Vec3::new(1, 2, 3).as_u64vec3());
+            assert_eq!(
+                USizeVec3::new(1, 2, 3),
+                U16Vec3::new(1, 2, 3).as_usizevec3()
+            );
+            assert_eq!(Vec3::new(1.0, 2.0, 3.0), U16Vec3::new(1, 2, 3).as_vec3());
+            assert_eq!(Vec3A::new(1.0, 2.0, 3.0), U16Vec3::new(1, 2, 3).as_vec3a());
+
+            assert_eq!(
+                DVec3::new(-1.0, -2.0, -3.0),
+                IVec3::new(-1, -2, -3).as_dvec3()
+            );
+            assert_eq!(I8Vec3::new(-1, -2, -3), IVec3::new(-1, -2, -3).as_i8vec3());
+            assert_eq!(U8Vec3::new(1, 2, 3), IVec3::new(1, 2, 3).as_u8vec3());
+            assert_eq!(
+                I16Vec3::new(-1, -2, -3),
+                IVec3::new(-1, -2, -3).as_i16vec3()
+            );
+            assert_eq!(U16Vec3::new(1, 2, 3), IVec3::new(1, 2, 3).as_u16vec3());
+            assert_eq!(UVec3::new(1, 2, 3), IVec3::new(1, 2, 3).as_uvec3());
+            assert_eq!(
+                I64Vec3::new(-1, -2, -3),
+                IVec3::new(-1, -2, -3).as_i64vec3()
+            );
+            assert_eq!(U64Vec3::new(1, 2, 3), IVec3::new(1, 2, 3).as_u64vec3());
+            assert_eq!(USizeVec3::new(1, 2, 3), IVec3::new(1, 2, 3).as_usizevec3());
+            assert_eq!(
+                Vec3::new(-1.0, -2.0, -3.0),
+                IVec3::new(-1, -2, -3).as_vec3()
+            );
+            assert_eq!(
+                Vec3A::new(-1.0, -2.0, -3.0),
+                IVec3::new(-1, -2, -3).as_vec3a()
+            );
+
+            assert_eq!(DVec3::new(1.0, 2.0, 3.0), UVec3::new(1, 2, 3).as_dvec3());
+            assert_eq!(I8Vec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_i8vec3());
+            assert_eq!(U8Vec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_u8vec3());
+            assert_eq!(I16Vec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_i16vec3());
+            assert_eq!(U16Vec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_u16vec3());
+            assert_eq!(IVec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_ivec3());
+            assert_eq!(I64Vec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_i64vec3());
+            assert_eq!(U64Vec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_u64vec3());
+            assert_eq!(USizeVec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_usizevec3());
+            assert_eq!(Vec3::new(1.0, 2.0, 3.0), UVec3::new(1, 2, 3).as_vec3());
+            assert_eq!(Vec3A::new(1.0, 2.0, 3.0), UVec3::new(1, 2, 3).as_vec3a());
+
+            assert_eq!(
+                DVec3::new(-1.0, -2.0, -3.0),
+                I64Vec3::new(-1, -2, -3).as_dvec3()
+            );
+            assert_eq!(
+                I8Vec3::new(-1, -2, -3),
+                I64Vec3::new(-1, -2, -3).as_i8vec3()
+            );
+            assert_eq!(U8Vec3::new(1, 2, 3), I64Vec3::new(1, 2, 3).as_u8vec3());
+            assert_eq!(U16Vec3::new(1, 2, 3), I64Vec3::new(1, 2, 3).as_u16vec3());
+            assert_eq!(
+                I16Vec3::new(-1, -2, -3),
+                I64Vec3::new(-1, -2, -3).as_i16vec3()
+            );
+            assert_eq!(UVec3::new(1, 2, 3), I64Vec3::new(1, 2, 3).as_uvec3());
+            assert_eq!(IVec3::new(-1, -2, -3), I64Vec3::new(-1, -2, -3).as_ivec3());
+            assert_eq!(U64Vec3::new(1, 2, 3), I64Vec3::new(1, 2, 3).as_u64vec3());
+            assert_eq!(
+                USizeVec3::new(1, 2, 3),
+                I64Vec3::new(1, 2, 3).as_usizevec3()
+            );
+            assert_eq!(
+                Vec3::new(-1.0, -2.0, -3.0),
+                I64Vec3::new(-1, -2, -3).as_vec3()
+            );
+            assert_eq!(
+                Vec3A::new(-1.0, -2.0, -3.0),
+                I64Vec3::new(-1, -2, -3).as_vec3a()
+            );
+
+            assert_eq!(DVec3::new(1.0, 2.0, 3.0), U64Vec3::new(1, 2, 3).as_dvec3());
+            assert_eq!(I8Vec3::new(1, 2, 3), U64Vec3::new(1, 2, 3).as_i8vec3());
+            assert_eq!(U8Vec3::new(1, 2, 3), U64Vec3::new(1, 2, 3).as_u8vec3());
+            assert_eq!(I16Vec3::new(1, 2, 3), U64Vec3::new(1, 2, 3).as_i16vec3());
+            assert_eq!(U16Vec3::new(1, 2, 3), U64Vec3::new(1, 2, 3).as_u16vec3());
+            assert_eq!(IVec3::new(1, 2, 3), U64Vec3::new(1, 2, 3).as_ivec3());
+            assert_eq!(UVec3::new(1, 2, 3), U64Vec3::new(1, 2, 3).as_uvec3());
+            assert_eq!(I64Vec3::new(1, 2, 3), U64Vec3::new(1, 2, 3).as_i64vec3());
+            assert_eq!(
+                USizeVec3::new(1, 2, 3),
+                U64Vec3::new(1, 2, 3).as_usizevec3()
+            );
+            assert_eq!(Vec3::new(1.0, 2.0, 3.0), U64Vec3::new(1, 2, 3).as_vec3());
+            assert_eq!(Vec3A::new(1.0, 2.0, 3.0), U64Vec3::new(1, 2, 3).as_vec3a());
+
+            assert_eq!(
+                DVec3::new(1.0, 2.0, 3.0),
+                USizeVec3::new(1, 2, 3).as_dvec3()
+            );
+            assert_eq!(I8Vec3::new(1, 2, 3), USizeVec3::new(1, 2, 3).as_i8vec3());
+            assert_eq!(U8Vec3::new(1, 2, 3), USizeVec3::new(1, 2, 3).as_u8vec3());
+            assert_eq!(I16Vec3::new(1, 2, 3), USizeVec3::new(1, 2, 3).as_i16vec3());
+            assert_eq!(U16Vec3::new(1, 2, 3), USizeVec3::new(1, 2, 3).as_u16vec3());
+            assert_eq!(IVec3::new(1, 2, 3), USizeVec3::new(1, 2, 3).as_ivec3());
+            assert_eq!(UVec3::new(1, 2, 3), USizeVec3::new(1, 2, 3).as_uvec3());
+            assert_eq!(I64Vec3::new(1, 2, 3), USizeVec3::new(1, 2, 3).as_i64vec3());
+            assert_eq!(U64Vec3::new(1, 2, 3), USizeVec3::new(1, 2, 3).as_u64vec3());
+            assert_eq!(Vec3::new(1.0, 2.0, 3.0), USizeVec3::new(1, 2, 3).as_vec3());
+            assert_eq!(
+                Vec3A::new(1.0, 2.0, 3.0),
+                USizeVec3::new(1, 2, 3).as_vec3a()
+            );
+        });
     };
 }
 
@@ -2128,299 +2423,10 @@ mod vec3 {
         assert_eq!(4, mem::align_of::<Vec3>());
     });
 
-    glam_test!(test_as, {
-        use glam::{
-            DVec3, I16Vec3, I64Vec3, I8Vec3, IVec3, U16Vec3, U64Vec3, U8Vec3, USizeVec3, UVec3,
-            Vec3A,
-        };
-        assert_eq!(
-            DVec3::new(-1.0, -2.0, -3.0),
-            Vec3::new(-1.0, -2.0, -3.0).as_dvec3()
-        );
-        assert_eq!(
-            I8Vec3::new(-1, -2, -3),
-            Vec3::new(-1.0, -2.0, -3.0).as_i8vec3()
-        );
-        assert_eq!(U8Vec3::new(1, 2, 3), Vec3::new(1.0, 2.0, 3.0).as_u8vec3());
-        assert_eq!(
-            I16Vec3::new(-1, -2, -3),
-            Vec3::new(-1.0, -2.0, -3.0).as_i16vec3()
-        );
-        assert_eq!(U16Vec3::new(1, 2, 3), Vec3::new(1.0, 2.0, 3.0).as_u16vec3());
-        assert_eq!(
-            IVec3::new(-1, -2, -3),
-            Vec3::new(-1.0, -2.0, -3.0).as_ivec3()
-        );
-        assert_eq!(UVec3::new(1, 2, 3), Vec3::new(1.0, 2.0, 3.0).as_uvec3());
-        assert_eq!(
-            I64Vec3::new(-1, -2, -3),
-            Vec3::new(-1.0, -2.0, -3.0).as_i64vec3()
-        );
-        assert_eq!(U64Vec3::new(1, 2, 3), Vec3::new(1.0, 2.0, 3.0).as_u64vec3());
-        assert_eq!(
-            USizeVec3::new(1, 2, 3),
-            Vec3::new(1.0, 2.0, 3.0).as_usizevec3()
-        );
-
-        assert_eq!(
-            DVec3::new(-1.0, -2.0, -3.0),
-            Vec3A::new(-1.0, -2.0, -3.0).as_dvec3()
-        );
-        assert_eq!(
-            I8Vec3::new(-1, -2, -3),
-            Vec3A::new(-1.0, -2.0, -3.0).as_i8vec3()
-        );
-        assert_eq!(U8Vec3::new(1, 2, 3), Vec3A::new(1.0, 2.0, 3.0).as_u8vec3());
-        assert_eq!(
-            I16Vec3::new(-1, -2, -3),
-            Vec3A::new(-1.0, -2.0, -3.0).as_i16vec3()
-        );
-        assert_eq!(
-            U16Vec3::new(1, 2, 3),
-            Vec3A::new(1.0, 2.0, 3.0).as_u16vec3()
-        );
-        assert_eq!(
-            IVec3::new(-1, -2, -3),
-            Vec3A::new(-1.0, -2.0, -3.0).as_ivec3()
-        );
-        assert_eq!(UVec3::new(1, 2, 3), Vec3A::new(1.0, 2.0, 3.0).as_uvec3());
-        assert_eq!(
-            I64Vec3::new(-1, -2, -3),
-            Vec3A::new(-1.0, -2.0, -3.0).as_i64vec3()
-        );
-        assert_eq!(
-            U64Vec3::new(1, 2, 3),
-            Vec3A::new(1.0, 2.0, 3.0).as_u64vec3()
-        );
-        assert_eq!(
-            USizeVec3::new(1, 2, 3),
-            Vec3A::new(1.0, 2.0, 3.0).as_usizevec3()
-        );
-
-        assert_eq!(
-            I8Vec3::new(-1, -2, -3),
-            DVec3::new(-1.0, -2.0, -3.0).as_i8vec3()
-        );
-        assert_eq!(U8Vec3::new(1, 2, 3), DVec3::new(1.0, 2.0, 3.0).as_u8vec3());
-        assert_eq!(
-            I16Vec3::new(-1, -2, -3),
-            DVec3::new(-1.0, -2.0, -3.0).as_i16vec3()
-        );
-        assert_eq!(
-            U16Vec3::new(1, 2, 3),
-            DVec3::new(1.0, 2.0, 3.0).as_u16vec3()
-        );
-        assert_eq!(
-            IVec3::new(-1, -2, -3),
-            DVec3::new(-1.0, -2.0, -3.0).as_ivec3()
-        );
-        assert_eq!(UVec3::new(1, 2, 3), DVec3::new(1.0, 2.0, 3.0).as_uvec3());
-        assert_eq!(
-            I64Vec3::new(-1, -2, -3),
-            DVec3::new(-1.0, -2.0, -3.0).as_i64vec3()
-        );
-        assert_eq!(
-            U64Vec3::new(1, 2, 3),
-            DVec3::new(1.0, 2.0, 3.0).as_u64vec3()
-        );
-        assert_eq!(
-            USizeVec3::new(1, 2, 3),
-            DVec3::new(1.0, 2.0, 3.0).as_usizevec3()
-        );
-        assert_eq!(
-            Vec3::new(-1.0, -2.0, -3.0),
-            DVec3::new(-1.0, -2.0, -3.0).as_vec3()
-        );
-        assert_eq!(
-            Vec3A::new(-1.0, -2.0, -3.0),
-            DVec3::new(-1.0, -2.0, -3.0).as_vec3a()
-        );
-
-        assert_eq!(
-            DVec3::new(-1.0, -2.0, -3.0),
-            I8Vec3::new(-1, -2, -3).as_dvec3()
-        );
-        assert_eq!(U8Vec3::new(1, 2, 3), I8Vec3::new(1, 2, 3).as_u8vec3());
-        assert_eq!(
-            I16Vec3::new(-1, -2, -3),
-            I8Vec3::new(-1, -2, -3).as_i16vec3()
-        );
-        assert_eq!(U16Vec3::new(1, 2, 3), I8Vec3::new(1, 2, 3).as_u16vec3());
-        assert_eq!(IVec3::new(-1, -2, -3), I8Vec3::new(-1, -2, -3).as_ivec3());
-        assert_eq!(UVec3::new(1, 2, 3), I8Vec3::new(1, 2, 3).as_uvec3());
-        assert_eq!(
-            I64Vec3::new(-1, -2, -3),
-            I8Vec3::new(-1, -2, -3).as_i64vec3()
-        );
-        assert_eq!(U64Vec3::new(1, 2, 3), I8Vec3::new(1, 2, 3).as_u64vec3());
-        assert_eq!(USizeVec3::new(1, 2, 3), I8Vec3::new(1, 2, 3).as_usizevec3());
-        assert_eq!(
-            Vec3::new(-1.0, -2.0, -3.0),
-            I8Vec3::new(-1, -2, -3).as_vec3()
-        );
-        assert_eq!(
-            Vec3A::new(-1.0, -2.0, -3.0),
-            I8Vec3::new(-1, -2, -3).as_vec3a()
-        );
-
-        assert_eq!(DVec3::new(1.0, 2.0, 3.0), U8Vec3::new(1, 2, 3).as_dvec3());
-        assert_eq!(I8Vec3::new(1, 2, 3), U8Vec3::new(1, 2, 3).as_i8vec3());
-        assert_eq!(I16Vec3::new(1, 2, 3), U8Vec3::new(1, 2, 3).as_i16vec3());
-        assert_eq!(U16Vec3::new(1, 2, 3), U8Vec3::new(1, 2, 3).as_u16vec3());
-        assert_eq!(IVec3::new(1, 2, 3), U8Vec3::new(1, 2, 3).as_ivec3());
-        assert_eq!(UVec3::new(1, 2, 3), U8Vec3::new(1, 2, 3).as_uvec3());
-        assert_eq!(I64Vec3::new(1, 2, 3), U8Vec3::new(1, 2, 3).as_i64vec3());
-        assert_eq!(U64Vec3::new(1, 2, 3), U8Vec3::new(1, 2, 3).as_u64vec3());
-        assert_eq!(USizeVec3::new(1, 2, 3), U8Vec3::new(1, 2, 3).as_usizevec3());
-        assert_eq!(Vec3::new(1.0, 2.0, 3.0), U8Vec3::new(1, 2, 3).as_vec3());
-        assert_eq!(Vec3A::new(1.0, 2.0, 3.0), U8Vec3::new(1, 2, 3).as_vec3a());
-
-        assert_eq!(
-            DVec3::new(-1.0, -2.0, -3.0),
-            I16Vec3::new(-1, -2, -3).as_dvec3()
-        );
-        assert_eq!(
-            I8Vec3::new(-1, -2, -3),
-            I16Vec3::new(-1, -2, -3).as_i8vec3()
-        );
-        assert_eq!(U8Vec3::new(1, 2, 3), I16Vec3::new(1, 2, 3).as_u8vec3());
-        assert_eq!(U16Vec3::new(1, 2, 3), I16Vec3::new(1, 2, 3).as_u16vec3());
-        assert_eq!(IVec3::new(-1, -2, -3), I16Vec3::new(-1, -2, -3).as_ivec3());
-        assert_eq!(UVec3::new(1, 2, 3), I16Vec3::new(1, 2, 3).as_uvec3());
-        assert_eq!(
-            I64Vec3::new(-1, -2, -3),
-            I16Vec3::new(-1, -2, -3).as_i64vec3()
-        );
-        assert_eq!(U64Vec3::new(1, 2, 3), I16Vec3::new(1, 2, 3).as_u64vec3());
-        assert_eq!(
-            USizeVec3::new(1, 2, 3),
-            I16Vec3::new(1, 2, 3).as_usizevec3()
-        );
-        assert_eq!(
-            Vec3::new(-1.0, -2.0, -3.0),
-            I16Vec3::new(-1, -2, -3).as_vec3()
-        );
-        assert_eq!(
-            Vec3A::new(-1.0, -2.0, -3.0),
-            I16Vec3::new(-1, -2, -3).as_vec3a()
-        );
-
-        assert_eq!(DVec3::new(1.0, 2.0, 3.0), U16Vec3::new(1, 2, 3).as_dvec3());
-        assert_eq!(I8Vec3::new(1, 2, 3), U16Vec3::new(1, 2, 3).as_i8vec3());
-        assert_eq!(U8Vec3::new(1, 2, 3), U16Vec3::new(1, 2, 3).as_u8vec3());
-        assert_eq!(I16Vec3::new(1, 2, 3), U16Vec3::new(1, 2, 3).as_i16vec3());
-        assert_eq!(IVec3::new(1, 2, 3), U16Vec3::new(1, 2, 3).as_ivec3());
-        assert_eq!(UVec3::new(1, 2, 3), U16Vec3::new(1, 2, 3).as_uvec3());
-        assert_eq!(I64Vec3::new(1, 2, 3), U16Vec3::new(1, 2, 3).as_i64vec3());
-        assert_eq!(U64Vec3::new(1, 2, 3), U16Vec3::new(1, 2, 3).as_u64vec3());
-        assert_eq!(
-            USizeVec3::new(1, 2, 3),
-            U16Vec3::new(1, 2, 3).as_usizevec3()
-        );
-        assert_eq!(Vec3::new(1.0, 2.0, 3.0), U16Vec3::new(1, 2, 3).as_vec3());
-        assert_eq!(Vec3A::new(1.0, 2.0, 3.0), U16Vec3::new(1, 2, 3).as_vec3a());
-
-        assert_eq!(
-            DVec3::new(-1.0, -2.0, -3.0),
-            IVec3::new(-1, -2, -3).as_dvec3()
-        );
-        assert_eq!(I8Vec3::new(-1, -2, -3), IVec3::new(-1, -2, -3).as_i8vec3());
-        assert_eq!(U8Vec3::new(1, 2, 3), IVec3::new(1, 2, 3).as_u8vec3());
-        assert_eq!(
-            I16Vec3::new(-1, -2, -3),
-            IVec3::new(-1, -2, -3).as_i16vec3()
-        );
-        assert_eq!(U16Vec3::new(1, 2, 3), IVec3::new(1, 2, 3).as_u16vec3());
-        assert_eq!(UVec3::new(1, 2, 3), IVec3::new(1, 2, 3).as_uvec3());
-        assert_eq!(
-            I64Vec3::new(-1, -2, -3),
-            IVec3::new(-1, -2, -3).as_i64vec3()
-        );
-        assert_eq!(U64Vec3::new(1, 2, 3), IVec3::new(1, 2, 3).as_u64vec3());
-        assert_eq!(USizeVec3::new(1, 2, 3), IVec3::new(1, 2, 3).as_usizevec3());
-        assert_eq!(
-            Vec3::new(-1.0, -2.0, -3.0),
-            IVec3::new(-1, -2, -3).as_vec3()
-        );
-        assert_eq!(
-            Vec3A::new(-1.0, -2.0, -3.0),
-            IVec3::new(-1, -2, -3).as_vec3a()
-        );
-
-        assert_eq!(DVec3::new(1.0, 2.0, 3.0), UVec3::new(1, 2, 3).as_dvec3());
-        assert_eq!(I8Vec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_i8vec3());
-        assert_eq!(U8Vec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_u8vec3());
-        assert_eq!(I16Vec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_i16vec3());
-        assert_eq!(U16Vec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_u16vec3());
-        assert_eq!(IVec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_ivec3());
-        assert_eq!(I64Vec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_i64vec3());
-        assert_eq!(U64Vec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_u64vec3());
-        assert_eq!(USizeVec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_usizevec3());
-        assert_eq!(Vec3::new(1.0, 2.0, 3.0), UVec3::new(1, 2, 3).as_vec3());
-        assert_eq!(Vec3A::new(1.0, 2.0, 3.0), UVec3::new(1, 2, 3).as_vec3a());
-
-        assert_eq!(
-            DVec3::new(-1.0, -2.0, -3.0),
-            I64Vec3::new(-1, -2, -3).as_dvec3()
-        );
-        assert_eq!(
-            I8Vec3::new(-1, -2, -3),
-            I64Vec3::new(-1, -2, -3).as_i8vec3()
-        );
-        assert_eq!(U8Vec3::new(1, 2, 3), I64Vec3::new(1, 2, 3).as_u8vec3());
-        assert_eq!(U16Vec3::new(1, 2, 3), I64Vec3::new(1, 2, 3).as_u16vec3());
-        assert_eq!(
-            I16Vec3::new(-1, -2, -3),
-            I64Vec3::new(-1, -2, -3).as_i16vec3()
-        );
-        assert_eq!(UVec3::new(1, 2, 3), I64Vec3::new(1, 2, 3).as_uvec3());
-        assert_eq!(IVec3::new(-1, -2, -3), I64Vec3::new(-1, -2, -3).as_ivec3());
-        assert_eq!(U64Vec3::new(1, 2, 3), I64Vec3::new(1, 2, 3).as_u64vec3());
-        assert_eq!(
-            USizeVec3::new(1, 2, 3),
-            I64Vec3::new(1, 2, 3).as_usizevec3()
-        );
-        assert_eq!(
-            Vec3::new(-1.0, -2.0, -3.0),
-            I64Vec3::new(-1, -2, -3).as_vec3()
-        );
-        assert_eq!(
-            Vec3A::new(-1.0, -2.0, -3.0),
-            I64Vec3::new(-1, -2, -3).as_vec3a()
-        );
-
-        assert_eq!(DVec3::new(1.0, 2.0, 3.0), U64Vec3::new(1, 2, 3).as_dvec3());
-        assert_eq!(I8Vec3::new(1, 2, 3), U64Vec3::new(1, 2, 3).as_i8vec3());
-        assert_eq!(U8Vec3::new(1, 2, 3), U64Vec3::new(1, 2, 3).as_u8vec3());
-        assert_eq!(I16Vec3::new(1, 2, 3), U64Vec3::new(1, 2, 3).as_i16vec3());
-        assert_eq!(U16Vec3::new(1, 2, 3), U64Vec3::new(1, 2, 3).as_u16vec3());
-        assert_eq!(IVec3::new(1, 2, 3), U64Vec3::new(1, 2, 3).as_ivec3());
-        assert_eq!(UVec3::new(1, 2, 3), U64Vec3::new(1, 2, 3).as_uvec3());
-        assert_eq!(I64Vec3::new(1, 2, 3), U64Vec3::new(1, 2, 3).as_i64vec3());
-        assert_eq!(
-            USizeVec3::new(1, 2, 3),
-            U64Vec3::new(1, 2, 3).as_usizevec3()
-        );
-        assert_eq!(Vec3::new(1.0, 2.0, 3.0), U64Vec3::new(1, 2, 3).as_vec3());
-        assert_eq!(Vec3A::new(1.0, 2.0, 3.0), U64Vec3::new(1, 2, 3).as_vec3a());
-
-        assert_eq!(
-            DVec3::new(1.0, 2.0, 3.0),
-            USizeVec3::new(1, 2, 3).as_dvec3()
-        );
-        assert_eq!(I8Vec3::new(1, 2, 3), USizeVec3::new(1, 2, 3).as_i8vec3());
-        assert_eq!(U8Vec3::new(1, 2, 3), USizeVec3::new(1, 2, 3).as_u8vec3());
-        assert_eq!(I16Vec3::new(1, 2, 3), USizeVec3::new(1, 2, 3).as_i16vec3());
-        assert_eq!(U16Vec3::new(1, 2, 3), USizeVec3::new(1, 2, 3).as_u16vec3());
-        assert_eq!(IVec3::new(1, 2, 3), USizeVec3::new(1, 2, 3).as_ivec3());
-        assert_eq!(UVec3::new(1, 2, 3), USizeVec3::new(1, 2, 3).as_uvec3());
-        assert_eq!(I64Vec3::new(1, 2, 3), USizeVec3::new(1, 2, 3).as_i64vec3());
-        assert_eq!(U64Vec3::new(1, 2, 3), USizeVec3::new(1, 2, 3).as_u64vec3());
-        assert_eq!(Vec3::new(1.0, 2.0, 3.0), USizeVec3::new(1, 2, 3).as_vec3());
-        assert_eq!(
-            Vec3A::new(1.0, 2.0, 3.0),
-            USizeVec3::new(1, 2, 3).as_vec3a()
-        );
+    glam_test!(test_to_vec3a, {
+        use glam::Vec3A;
+        let v = Vec3::new(1.0, 2.0, 3.0);
+        assert_eq!(Vec3A::new(1.0, 2.0, 3.0), v.to_vec3a());
     });
 
     impl_vec3_float_tests!(f32, vec3, Vec3, BVec3);
@@ -2488,6 +2494,12 @@ mod vec3a {
         assert_eq!(v1.max_element(), 3.0);
         let v2 = Vec3A::from_vec4(Vec4::new(4.0, 3.0, 2.0, 1.0));
         assert_eq!(v2.min_element(), 2.0);
+    });
+
+    glam_test!(test_to_vec3, {
+        use glam::Vec3;
+        let v = Vec3A::new(1.0, 2.0, 3.0);
+        assert_eq!(Vec3::new(1.0, 2.0, 3.0), v.to_vec3());
     });
 
     impl_vec3_float_tests!(f32, vec3a, Vec3A, BVec3A);
