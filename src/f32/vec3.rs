@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{f32::math, BVec3, BVec3A, FloatExt, Quat, Vec2, Vec4};
+use crate::{f32::math, BVec3, BVec3A, FloatExt, Quat, Vec2, Vec3A, Vec4};
 
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -130,7 +130,7 @@ impl Vec3 {
         Self::new(a[0], a[1], a[2])
     }
 
-    /// `[x, y, z]`
+    /// Converts `self` to `[x, y, z]`
     #[inline]
     #[must_use]
     pub const fn to_array(&self) -> [f32; 3] {
@@ -186,6 +186,13 @@ impl Vec3 {
     pub fn truncate(self) -> Vec2 {
         use crate::swizzles::Vec3Swizzles;
         self.xy()
+    }
+
+    // Converts `self` to a `Vec3A`.
+    #[inline]
+    #[must_use]
+    pub fn to_vec3a(self) -> Vec3A {
+        Vec3A::from(self)
     }
 
     /// Creates a 3D vector from `self` with the given value of `x`.

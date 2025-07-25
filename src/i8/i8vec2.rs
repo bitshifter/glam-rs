@@ -104,7 +104,7 @@ impl I8Vec2 {
         Self::new(a[0], a[1])
     }
 
-    /// `[x, y]`
+    /// Converts `self` to `[x, y]`
     #[inline]
     #[must_use]
     pub const fn to_array(&self) -> [i8; 2] {
