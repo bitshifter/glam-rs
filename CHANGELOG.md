@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [0.30.5] - 2025-07-26
+
+### Added
+
+* Added `Vec3::to_vec3a` and `Vec3A::to_vec3` methods.
+
+### Fixed
+
+* Fixed using `bytemuck` feature on `spirv` targets.
+
 ## [0.30.4] - 2025-06-12
 
 ### Added
@@ -1256,7 +1266,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.30.4...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.30.5...HEAD
+[0.30.5]: https://github.com/bitshifter/glam-rs/compare/0.30.4...0.30.5
 [0.30.4]: https://github.com/bitshifter/glam-rs/compare/0.30.3...0.30.4
 [0.30.3]: https://github.com/bitshifter/glam-rs/compare/0.30.2...0.30.3
 [0.30.2]: https://github.com/bitshifter/glam-rs/compare/0.30.1...0.30.2
