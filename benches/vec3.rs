@@ -131,7 +131,7 @@ bench_func!(
 
 #[inline(always)]
 fn vec3_any_orthonormal_pair(v: Vec3) -> (Vec3, Vec3) {
-    v.any_orthonormal_pair()
+    v.any_orthonormal_pair_rh()
 }
 
 bench_func!(
