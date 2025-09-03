@@ -107,7 +107,7 @@ impl I64Vec2 {
     /// Converts `self` to `[x, y]`
     #[inline]
     #[must_use]
-    pub const fn to_array(&self) -> [i64; 2] {
+    pub const fn to_array(self) -> [i64; 2] {
         [self.x, self.y]
     }
 
@@ -485,70 +485,70 @@ impl I64Vec2 {
     /// Casts all elements of `self` to `f32`.
     #[inline]
     #[must_use]
-    pub fn as_vec2(&self) -> crate::Vec2 {
+    pub fn as_vec2(self) -> crate::Vec2 {
         crate::Vec2::new(self.x as f32, self.y as f32)
     }
 
     /// Casts all elements of `self` to `f64`.
     #[inline]
     #[must_use]
-    pub fn as_dvec2(&self) -> crate::DVec2 {
+    pub fn as_dvec2(self) -> crate::DVec2 {
         crate::DVec2::new(self.x as f64, self.y as f64)
     }
 
     /// Casts all elements of `self` to `i8`.
     #[inline]
     #[must_use]
-    pub fn as_i8vec2(&self) -> crate::I8Vec2 {
+    pub fn as_i8vec2(self) -> crate::I8Vec2 {
         crate::I8Vec2::new(self.x as i8, self.y as i8)
     }
 
     /// Casts all elements of `self` to `u8`.
     #[inline]
     #[must_use]
-    pub fn as_u8vec2(&self) -> crate::U8Vec2 {
+    pub fn as_u8vec2(self) -> crate::U8Vec2 {
         crate::U8Vec2::new(self.x as u8, self.y as u8)
     }
 
     /// Casts all elements of `self` to `i16`.
     #[inline]
     #[must_use]
-    pub fn as_i16vec2(&self) -> crate::I16Vec2 {
+    pub fn as_i16vec2(self) -> crate::I16Vec2 {
         crate::I16Vec2::new(self.x as i16, self.y as i16)
     }
 
     /// Casts all elements of `self` to `u16`.
     #[inline]
     #[must_use]
-    pub fn as_u16vec2(&self) -> crate::U16Vec2 {
+    pub fn as_u16vec2(self) -> crate::U16Vec2 {
         crate::U16Vec2::new(self.x as u16, self.y as u16)
     }
 
     /// Casts all elements of `self` to `i32`.
     #[inline]
     #[must_use]
-    pub fn as_ivec2(&self) -> crate::IVec2 {
+    pub fn as_ivec2(self) -> crate::IVec2 {
         crate::IVec2::new(self.x as i32, self.y as i32)
     }
 
     /// Casts all elements of `self` to `u32`.
     #[inline]
     #[must_use]
-    pub fn as_uvec2(&self) -> crate::UVec2 {
+    pub fn as_uvec2(self) -> crate::UVec2 {
         crate::UVec2::new(self.x as u32, self.y as u32)
     }
 
     /// Casts all elements of `self` to `u64`.
     #[inline]
     #[must_use]
-    pub fn as_u64vec2(&self) -> crate::U64Vec2 {
+    pub fn as_u64vec2(self) -> crate::U64Vec2 {
         crate::U64Vec2::new(self.x as u64, self.y as u64)
     }
 
     /// Casts all elements of `self` to `usize`.
     #[inline]
     #[must_use]
-    pub fn as_usizevec2(&self) -> crate::USizeVec2 {
+    pub fn as_usizevec2(self) -> crate::USizeVec2 {
         crate::USizeVec2::new(self.x as usize, self.y as usize)
     }
 

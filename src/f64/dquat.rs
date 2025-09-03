@@ -480,7 +480,7 @@ impl DQuat {
     /// `[x, y, z, w]`
     #[inline]
     #[must_use]
-    pub fn to_array(&self) -> [f64; 4] {
+    pub fn to_array(self) -> [f64; 4] {
         [self.x, self.y, self.z, self.w]
     }
 
@@ -643,7 +643,7 @@ impl DQuat {
     /// Will panic if `self` or `rhs` are not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn rotate_towards(&self, rhs: Self, max_angle: f64) -> Self {
+    pub fn rotate_towards(self, rhs: Self, max_angle: f64) -> Self {
         glam_assert!(self.is_normalized() && rhs.is_normalized());
         let angle = self.angle_between(rhs);
         if angle <= 1e-4 {
