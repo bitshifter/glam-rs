@@ -1235,6 +1235,14 @@ impl AsRef<[f32; 4]> for Quat {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
+impl AsMut<[f32; 4]> for Quat {
+    #[inline]
+    fn as_mut(&mut self) -> &mut [f32; 4] {
+        unsafe { &mut *(self as *mut Self as *mut [f32; 4]) }
+    }
+}
+
 impl Sum<Self> for Quat {
     fn sum<I>(iter: I) -> Self
     where

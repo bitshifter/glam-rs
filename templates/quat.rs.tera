@@ -1388,6 +1388,14 @@ impl AsRef<[{{ scalar_t }}; 4]> for {{ self_t }} {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
+impl AsMut<[{{ scalar_t }}; 4]> for {{ self_t }} {
+    #[inline]
+    fn as_mut(&mut self) -> &mut [{{ scalar_t }}; 4] {
+        unsafe { &mut *(self as *mut Self as *mut [{{ scalar_t }}; 4]) }
+    }
+}
+
 impl Sum<Self> for {{ self_t }} {
     fn sum<I>(iter: I) -> Self
     where

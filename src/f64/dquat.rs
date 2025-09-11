@@ -1156,6 +1156,14 @@ impl AsRef<[f64; 4]> for DQuat {
     }
 }
 
+#[cfg(not(target_arch = "spirv"))]
+impl AsMut<[f64; 4]> for DQuat {
+    #[inline]
+    fn as_mut(&mut self) -> &mut [f64; 4] {
+        unsafe { &mut *(self as *mut Self as *mut [f64; 4]) }
+    }
+}
+
 impl Sum<Self> for DQuat {
     fn sum<I>(iter: I) -> Self
     where
