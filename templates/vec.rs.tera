@@ -322,8 +322,8 @@ pub const fn {{ self_t | lower }}(
 #[cfg_attr(feature = "cuda", repr(align({{ cuda_align }})))]
 {%- endif %}
 {%- if is_scalar %}
-#[cfg_attr(not(target_arch = "spirv"), repr(C))]
-#[cfg_attr(target_arch = "spirv", repr(simd))]
+#[repr(C)]
+#[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct {{ self_t }}
 {
     {% for c in components %}

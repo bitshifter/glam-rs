@@ -31,8 +31,8 @@ pub const fn quat(x: f32, y: f32, z: f32, w: f32) -> Quat {
     derive(bytemuck::Pod, bytemuck::Zeroable)
 )]
 #[cfg_attr(not(feature = "scalar-math"), repr(align(16)))]
-#[cfg_attr(not(target_arch = "spirv"), repr(C))]
-#[cfg_attr(target_arch = "spirv", repr(simd))]
+#[repr(C)]
+#[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct Quat {
     pub x: f32,
     pub y: f32,

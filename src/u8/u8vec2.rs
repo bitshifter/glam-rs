@@ -20,8 +20,8 @@ pub const fn u8vec2(x: u8, y: u8) -> U8Vec2 {
     derive(bytemuck::Pod, bytemuck::Zeroable)
 )]
 #[cfg_attr(feature = "cuda", repr(align(2)))]
-#[cfg_attr(not(target_arch = "spirv"), repr(C))]
-#[cfg_attr(target_arch = "spirv", repr(simd))]
+#[repr(C)]
+#[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct U8Vec2 {
     pub x: u8,
     pub y: u8,

@@ -20,8 +20,8 @@ pub const fn i16vec2(x: i16, y: i16) -> I16Vec2 {
     derive(bytemuck::Pod, bytemuck::Zeroable)
 )]
 #[cfg_attr(feature = "cuda", repr(align(4)))]
-#[cfg_attr(not(target_arch = "spirv"), repr(C))]
-#[cfg_attr(target_arch = "spirv", repr(simd))]
+#[repr(C)]
+#[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct I16Vec2 {
     pub x: i16,
     pub y: i16,

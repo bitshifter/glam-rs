@@ -22,8 +22,8 @@ pub const fn u16vec3(x: u16, y: u16, z: u16) -> U16Vec3 {
     all(feature = "bytemuck", not(target_arch = "spirv")),
     derive(bytemuck::Pod, bytemuck::Zeroable)
 )]
-#[cfg_attr(not(target_arch = "spirv"), repr(C))]
-#[cfg_attr(target_arch = "spirv", repr(simd))]
+#[repr(C)]
+#[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct U16Vec3 {
     pub x: u16,
     pub y: u16,

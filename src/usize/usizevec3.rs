@@ -22,8 +22,8 @@ pub const fn usizevec3(x: usize, y: usize, z: usize) -> USizeVec3 {
     all(feature = "bytemuck", not(target_arch = "spirv")),
     derive(bytemuck::Pod, bytemuck::Zeroable)
 )]
-#[cfg_attr(not(target_arch = "spirv"), repr(C))]
-#[cfg_attr(target_arch = "spirv", repr(simd))]
+#[repr(C)]
+#[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct USizeVec3 {
     pub x: usize,
     pub y: usize,

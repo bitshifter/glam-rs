@@ -109,8 +109,8 @@ pub const fn {{ self_t | lower }}(x: {{ scalar_t }}, y: {{ scalar_t }}, z: {{ sc
 {%- if scalar_t == "f32" %}
 #[cfg_attr(not(feature = "scalar-math"), repr(align(16)))]
 {%- endif %}
-#[cfg_attr(not(target_arch = "spirv"), repr(C))]
-#[cfg_attr(target_arch = "spirv", repr(simd))]
+#[repr(C)]
+#[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct {{ self_t }}{
     pub x: {{ scalar_t }},
     pub y: {{ scalar_t }},
