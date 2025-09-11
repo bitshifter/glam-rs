@@ -30,10 +30,7 @@ pub const fn quat(x: f32, y: f32, z: f32, w: f32) -> Quat {
     all(feature = "bytemuck", not(target_arch = "spirv")),
     derive(bytemuck::Pod, bytemuck::Zeroable)
 )]
-#[cfg_attr(
-    not(any(feature = "scalar-math", target_arch = "spirv")),
-    repr(align(16))
-)]
+#[cfg_attr(not(feature = "scalar-math"), repr(align(16)))]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct Quat {

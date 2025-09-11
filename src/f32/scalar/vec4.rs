@@ -24,13 +24,7 @@ pub const fn vec4(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
     all(feature = "bytemuck", not(target_arch = "spirv")),
     derive(bytemuck::Pod, bytemuck::Zeroable)
 )]
-#[cfg_attr(
-    any(
-        not(any(feature = "scalar-math", target_arch = "spirv")),
-        feature = "cuda"
-    ),
-    repr(align(16))
-)]
+#[cfg_attr(any(not(feature = "scalar-math"), feature = "cuda"), repr(align(16)))]
 #[cfg_attr(not(target_arch = "spirv"), repr(C))]
 #[cfg_attr(target_arch = "spirv", repr(simd))]
 pub struct Vec4 {
