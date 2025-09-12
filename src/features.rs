@@ -18,3 +18,6 @@ pub mod impl_speedy;
 
 #[cfg(feature = "rkyv")]
 pub mod impl_rkyv;
+
+#[cfg(feature = "encase")]
+pub mod impl_encase;

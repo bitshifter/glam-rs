@@ -20,7 +20,7 @@ jobs:
       # run clippy to verify we have no warnings
       - run: cargo fetch
       - name: cargo clippy
-        run: cargo clippy --workspace --all-targets --features std,debug-glam-assert,approx,bytemuck,mint,rand,serde,rkyv,speedy -- -D warnings
+        run: cargo clippy --workspace --all-targets --features std,debug-glam-assert,approx,bytemuck,mint,rand,serde,rkyv,speedy,encase -- -D warnings
 
       # check that codegen output matches committed source files
       - name: codegen
@@ -29,7 +29,7 @@ jobs:
       - name: Build-test documentation
         env:
           RUSTDOCFLAGS: -Dwarnings
-        run: cargo doc --all --no-deps --document-private-items --features std,debug-glam-assert,approx,bytemuck,mint,rand,serde,rkyv,speedy,rkyv/pointer_width_32
+        run: cargo doc --all --no-deps --document-private-items --features std,debug-glam-assert,approx,bytemuck,mint,rand,serde,rkyv,speedy,rkyv/pointer_width_32,encase
 
   test:
     name: Test

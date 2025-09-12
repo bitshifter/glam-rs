@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## Unreleased
+
+### Added
+
+* Added `encase` feature, providing `encase` trait implementations for `glam` types.
+
 ## [0.30.5] - 2025-07-26
 
 ### Added
