@@ -58,6 +58,7 @@ serde = { version = "1.0", optional = true, default-features = false }
 rkyv = { version = "0.8", optional = true, default-features = false }
 libm = { version = "0.2", optional = true, default-features = false }
 speedy = { version = "0.8", optional = true, default-features = false }
+encase = { version = "0.12", optional = true, default-features = false }
 
 [dev-dependencies]
 # rand_xoshiro is required for tests if rand is enabled

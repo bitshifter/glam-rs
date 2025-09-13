@@ -238,6 +238,7 @@ and benchmarks.
   `scalar-math` feature. It should work between all other builds of `glam`.
   Endian conversion is currently not supported
 * `bytecheck` - to perform archive validation when using the `rkyv` feature
+* `encase` - `encase` trait implementations for `glam` types.
 * `serde` - implementations of `Serialize` and `Deserialize` for all `glam`
   types. Note that serialization should work between builds of `glam` with and without SIMD enabled
 * `speedy` - implementations of `speedy`'s `Readable` and `Writable` for all `glam` types.
