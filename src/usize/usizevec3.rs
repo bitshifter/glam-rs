@@ -18,10 +18,7 @@ pub const fn usizevec3(x: usize, y: usize, z: usize) -> USizeVec3 {
 
 /// A 3-dimensional vector.
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
-#[cfg_attr(
-    all(feature = "bytemuck", not(target_arch = "spirv")),
-    derive(bytemuck::Pod, bytemuck::Zeroable)
-)]
+#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[repr(C)]
 #[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct USizeVec3 {
