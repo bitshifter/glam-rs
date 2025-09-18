@@ -5,12 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
-## [Unreleased]
+## [0.30.6] - 2025-09-18
 
 ### Added
 
 * Added `encase` feature, providing `encase` trait implementations for `glam`
   types.
+
+### Changed
+
+* Consistently use `self` for vector and quat methods and `&self` for matrix and
+  affine methods.
 
 ## [0.30.5] - 2025-07-26
 
@@ -1273,7 +1278,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.30.5...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.30.6...HEAD
+[0.30.5]: https://github.com/bitshifter/glam-rs/compare/0.30.5...0.30.6
 [0.30.5]: https://github.com/bitshifter/glam-rs/compare/0.30.4...0.30.5
 [0.30.4]: https://github.com/bitshifter/glam-rs/compare/0.30.3...0.30.4
 [0.30.3]: https://github.com/bitshifter/glam-rs/compare/0.30.2...0.30.3
