@@ -1205,7 +1205,6 @@ impl PartialEq for Quat {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsRef<[f32; 4]> for Quat {
     #[inline]
     fn as_ref(&self) -> &[f32; 4] {

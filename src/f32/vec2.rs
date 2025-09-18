@@ -1762,7 +1762,6 @@ impl Rem<Vec2> for &f32 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsRef<[f32; 2]> for Vec2 {
     #[inline]
     fn as_ref(&self) -> &[f32; 2] {
@@ -1770,7 +1769,6 @@ impl AsRef<[f32; 2]> for Vec2 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsMut<[f32; 2]> for Vec2 {
     #[inline]
     fn as_mut(&mut self) -> &mut [f32; 2] {

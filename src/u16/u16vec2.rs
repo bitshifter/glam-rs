@@ -1336,7 +1336,6 @@ impl Rem<U16Vec2> for &u16 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsRef<[u16; 2]> for U16Vec2 {
     #[inline]
     fn as_ref(&self) -> &[u16; 2] {
@@ -1344,7 +1343,6 @@ impl AsRef<[u16; 2]> for U16Vec2 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsMut<[u16; 2]> for U16Vec2 {
     #[inline]
     fn as_mut(&mut self) -> &mut [u16; 2] {

@@ -1111,7 +1111,6 @@ impl PartialEq for DMat3 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsRef<[f64; 9]> for DMat3 {
     #[inline]
     fn as_ref(&self) -> &[f64; 9] {
@@ -1119,7 +1118,6 @@ impl AsRef<[f64; 9]> for DMat3 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsMut<[f64; 9]> for DMat3 {
     #[inline]
     fn as_mut(&mut self) -> &mut [f64; 9] {

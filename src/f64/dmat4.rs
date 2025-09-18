@@ -1711,7 +1711,6 @@ impl PartialEq for DMat4 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsRef<[f64; 16]> for DMat4 {
     #[inline]
     fn as_ref(&self) -> &[f64; 16] {
@@ -1719,7 +1718,6 @@ impl AsRef<[f64; 16]> for DMat4 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsMut<[f64; 16]> for DMat4 {
     #[inline]
     fn as_mut(&mut self) -> &mut [f64; 16] {

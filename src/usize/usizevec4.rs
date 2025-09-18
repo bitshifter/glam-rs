@@ -1495,7 +1495,6 @@ impl Rem<USizeVec4> for &usize {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsRef<[usize; 4]> for USizeVec4 {
     #[inline]
     fn as_ref(&self) -> &[usize; 4] {
@@ -1503,7 +1502,6 @@ impl AsRef<[usize; 4]> for USizeVec4 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsMut<[usize; 4]> for USizeVec4 {
     #[inline]
     fn as_mut(&mut self) -> &mut [usize; 4] {

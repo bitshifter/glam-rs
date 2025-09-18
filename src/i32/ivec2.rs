@@ -1486,7 +1486,6 @@ impl Rem<IVec2> for &i32 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsRef<[i32; 2]> for IVec2 {
     #[inline]
     fn as_ref(&self) -> &[i32; 2] {
@@ -1494,7 +1493,6 @@ impl AsRef<[i32; 2]> for IVec2 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsMut<[i32; 2]> for IVec2 {
     #[inline]
     fn as_mut(&mut self) -> &mut [i32; 2] {

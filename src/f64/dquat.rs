@@ -1148,7 +1148,6 @@ impl PartialEq for DQuat {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsRef<[f64; 4]> for DQuat {
     #[inline]
     fn as_ref(&self) -> &[f64; 4] {

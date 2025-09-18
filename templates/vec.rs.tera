@@ -3717,7 +3717,6 @@ impl Rem<{{ self_t }}> for {{ scalar_t }} {
 
 {{ macros::impl_ref_binop(imp="Rem", self_t=scalar_t, rhs_t=self_t, output_t=self_t) }}
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsRef<[{{ scalar_t }}; {{ dim }}]> for {{ self_t }} {
     #[inline]
     fn as_ref(&self) -> &[{{ scalar_t }}; {{ dim }}] {
@@ -3725,7 +3724,6 @@ impl AsRef<[{{ scalar_t }}; {{ dim }}]> for {{ self_t }} {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsMut<[{{ scalar_t }}; {{ dim }}]> for {{ self_t }} {
     #[inline]
     fn as_mut(&mut self) -> &mut [{{ scalar_t }}; {{ dim }}] {
