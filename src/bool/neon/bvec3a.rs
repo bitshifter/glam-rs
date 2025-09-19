@@ -98,7 +98,7 @@ impl BVec3A {
     /// Panics if `index` is greater than 2.
     #[inline]
     #[must_use]
-    pub fn test(self, index: usize) -> bool {
+    pub fn test(&self, index: usize) -> bool {
         match index {
             0 => (self.bitmask() & (1 << 0)) != 0,
             1 => (self.bitmask() & (1 << 1)) != 0,

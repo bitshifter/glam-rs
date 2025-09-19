@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [0.30.7] - 2025-09-20
+
+### Changed
+
+* Reverted change to use `self` in vectors and `&self` in vectors and matrices
+  as this was a breaking change for some code.
+
 ## [0.30.6] - 2025-09-18
 
 ### Added
@@ -1278,8 +1285,9 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.30.6...HEAD
-[0.30.5]: https://github.com/bitshifter/glam-rs/compare/0.30.5...0.30.6
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.30.7...HEAD
+[0.30.7]: https://github.com/bitshifter/glam-rs/compare/0.30.6...0.30.7
+[0.30.6]: https://github.com/bitshifter/glam-rs/compare/0.30.5...0.30.6
 [0.30.5]: https://github.com/bitshifter/glam-rs/compare/0.30.4...0.30.5
 [0.30.4]: https://github.com/bitshifter/glam-rs/compare/0.30.3...0.30.4
 [0.30.3]: https://github.com/bitshifter/glam-rs/compare/0.30.2...0.30.3

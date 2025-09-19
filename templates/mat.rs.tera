@@ -1011,7 +1011,7 @@ impl {{ self_t }} {
     ///
     /// Panics if `slice` is less than {{ size }} elements long.
     #[inline]
-    pub fn write_cols_to_slice(&self, slice: &mut [{{ scalar_t }}]) {
+    pub fn write_cols_to_slice(self, slice: &mut [{{ scalar_t }}]) {
         {% for i in range(end = dim) %}
             {%- for j in range(end = dim) %}
                 slice[{{ i * dim + j }}] = self.{{ axes[i] }}.{{ components[j] }};
