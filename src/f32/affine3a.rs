@@ -121,7 +121,7 @@ impl Affine3A {
     ///
     /// Panics if `slice` is less than 12 elements long.
     #[inline]
-    pub fn write_cols_to_slice(&self, slice: &mut [f32]) {
+    pub fn write_cols_to_slice(self, slice: &mut [f32]) {
         self.matrix3.write_cols_to_slice(&mut slice[0..9]);
         self.translation.write_to_slice(&mut slice[9..12]);
     }

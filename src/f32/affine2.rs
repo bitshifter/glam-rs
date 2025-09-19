@@ -126,7 +126,7 @@ impl Affine2 {
     ///
     /// Panics if `slice` is less than 6 elements long.
     #[inline]
-    pub fn write_cols_to_slice(&self, slice: &mut [f32]) {
+    pub fn write_cols_to_slice(self, slice: &mut [f32]) {
         self.matrix2.write_cols_to_slice(&mut slice[0..4]);
         self.translation.write_to_slice(&mut slice[4..6]);
     }
@@ -247,7 +247,7 @@ impl Affine2 {
     /// vector contains any zero elements when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn to_scale_angle_translation(&self) -> (Vec2, f32, Vec2) {
+    pub fn to_scale_angle_translation(self) -> (Vec2, f32, Vec2) {
         use crate::f32::math;
         let det = self.matrix2.determinant();
         glam_assert!(det != 0.0);
