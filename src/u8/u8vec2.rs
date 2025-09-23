@@ -14,8 +14,7 @@ pub const fn u8vec2(x: u8, y: u8) -> U8Vec2 {
 }
 
 /// A 2-dimensional vector.
-#[cfg_attr(not(target_arch = "spirv"), derive(Hash))]
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
 #[cfg_attr(
     all(feature = "bytemuck", not(target_arch = "spirv")),
     derive(bytemuck::Pod, bytemuck::Zeroable)
@@ -1337,7 +1336,6 @@ impl Rem<U8Vec2> for &u8 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsRef<[u8; 2]> for U8Vec2 {
     #[inline]
     fn as_ref(&self) -> &[u8; 2] {
@@ -1345,7 +1343,6 @@ impl AsRef<[u8; 2]> for U8Vec2 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsMut<[u8; 2]> for U8Vec2 {
     #[inline]
     fn as_mut(&mut self) -> &mut [u8; 2] {

@@ -14,8 +14,7 @@ pub const fn i64vec2(x: i64, y: i64) -> I64Vec2 {
 }
 
 /// A 2-dimensional vector.
-#[cfg_attr(not(target_arch = "spirv"), derive(Hash))]
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
 #[cfg_attr(
     all(feature = "bytemuck", not(target_arch = "spirv")),
     derive(bytemuck::Pod, bytemuck::Zeroable)
@@ -1487,7 +1486,6 @@ impl Rem<I64Vec2> for &i64 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsRef<[i64; 2]> for I64Vec2 {
     #[inline]
     fn as_ref(&self) -> &[i64; 2] {
@@ -1495,7 +1493,6 @@ impl AsRef<[i64; 2]> for I64Vec2 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsMut<[i64; 2]> for I64Vec2 {
     #[inline]
     fn as_mut(&mut self) -> &mut [i64; 2] {

@@ -2798,7 +2798,6 @@ impl PartialEq for {{ self_t }} {
 }
 
 {% if not is_align %}
-#[cfg(not(target_arch = "spirv"))]
 impl AsRef<[{{ scalar_t }}; {{ size }}]> for {{ self_t }} {
     #[inline]
     fn as_ref(&self) -> &[{{ scalar_t }}; {{ size }}] {
@@ -2806,7 +2805,6 @@ impl AsRef<[{{ scalar_t }}; {{ size }}]> for {{ self_t }} {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsMut<[{{ scalar_t }}; {{ size }}]> for {{ self_t }} {
     #[inline]
     fn as_mut(&mut self) -> &mut [{{ scalar_t }}; {{ size }}] {

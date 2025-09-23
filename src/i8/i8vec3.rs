@@ -17,8 +17,7 @@ pub const fn i8vec3(x: i8, y: i8, z: i8) -> I8Vec3 {
 }
 
 /// A 3-dimensional vector.
-#[cfg_attr(not(target_arch = "spirv"), derive(Hash))]
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
 #[cfg_attr(
     all(feature = "bytemuck", not(target_arch = "spirv")),
     derive(bytemuck::Pod, bytemuck::Zeroable)
@@ -1602,7 +1601,6 @@ impl Rem<I8Vec3> for &i8 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsRef<[i8; 3]> for I8Vec3 {
     #[inline]
     fn as_ref(&self) -> &[i8; 3] {
@@ -1610,7 +1608,6 @@ impl AsRef<[i8; 3]> for I8Vec3 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsMut<[i8; 3]> for I8Vec3 {
     #[inline]
     fn as_mut(&mut self) -> &mut [i8; 3] {

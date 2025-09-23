@@ -1380,7 +1380,6 @@ impl PartialEq for {{ self_t }} {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsRef<[{{ scalar_t }}; 4]> for {{ self_t }} {
     #[inline]
     fn as_ref(&self) -> &[{{ scalar_t }}; 4] {

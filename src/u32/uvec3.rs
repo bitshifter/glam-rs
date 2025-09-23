@@ -17,8 +17,7 @@ pub const fn uvec3(x: u32, y: u32, z: u32) -> UVec3 {
 }
 
 /// A 3-dimensional vector.
-#[cfg_attr(not(target_arch = "spirv"), derive(Hash))]
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
 #[cfg_attr(
     all(feature = "bytemuck", not(target_arch = "spirv")),
     derive(bytemuck::Pod, bytemuck::Zeroable)
@@ -1464,7 +1463,6 @@ impl Rem<UVec3> for &u32 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsRef<[u32; 3]> for UVec3 {
     #[inline]
     fn as_ref(&self) -> &[u32; 3] {
@@ -1472,7 +1470,6 @@ impl AsRef<[u32; 3]> for UVec3 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsMut<[u32; 3]> for UVec3 {
     #[inline]
     fn as_mut(&mut self) -> &mut [u32; 3] {

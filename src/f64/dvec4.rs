@@ -1868,7 +1868,6 @@ impl Rem<DVec4> for &f64 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsRef<[f64; 4]> for DVec4 {
     #[inline]
     fn as_ref(&self) -> &[f64; 4] {
@@ -1876,7 +1875,6 @@ impl AsRef<[f64; 4]> for DVec4 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsMut<[f64; 4]> for DVec4 {
     #[inline]
     fn as_mut(&mut self) -> &mut [f64; 4] {

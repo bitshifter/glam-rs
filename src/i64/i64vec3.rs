@@ -17,8 +17,7 @@ pub const fn i64vec3(x: i64, y: i64, z: i64) -> I64Vec3 {
 }
 
 /// A 3-dimensional vector.
-#[cfg_attr(not(target_arch = "spirv"), derive(Hash))]
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
 #[cfg_attr(
     all(feature = "bytemuck", not(target_arch = "spirv")),
     derive(bytemuck::Pod, bytemuck::Zeroable)
@@ -1602,7 +1601,6 @@ impl Rem<I64Vec3> for &i64 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsRef<[i64; 3]> for I64Vec3 {
     #[inline]
     fn as_ref(&self) -> &[i64; 3] {
@@ -1610,7 +1608,6 @@ impl AsRef<[i64; 3]> for I64Vec3 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsMut<[i64; 3]> for I64Vec3 {
     #[inline]
     fn as_mut(&mut self) -> &mut [i64; 3] {

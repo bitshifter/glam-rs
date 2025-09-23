@@ -1157,7 +1157,6 @@ impl PartialEq for Mat3 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsRef<[f32; 9]> for Mat3 {
     #[inline]
     fn as_ref(&self) -> &[f32; 9] {
@@ -1165,7 +1164,6 @@ impl AsRef<[f32; 9]> for Mat3 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsMut<[f32; 9]> for Mat3 {
     #[inline]
     fn as_mut(&mut self) -> &mut [f32; 9] {

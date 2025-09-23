@@ -18,8 +18,7 @@ pub const fn uvec4(x: u32, y: u32, z: u32, w: u32) -> UVec4 {
 }
 
 /// A 4-dimensional vector.
-#[cfg_attr(not(target_arch = "spirv"), derive(Hash))]
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
 #[cfg_attr(
     all(feature = "bytemuck", not(target_arch = "spirv")),
     derive(bytemuck::Pod, bytemuck::Zeroable)
@@ -1555,7 +1554,6 @@ impl Rem<UVec4> for &u32 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsRef<[u32; 4]> for UVec4 {
     #[inline]
     fn as_ref(&self) -> &[u32; 4] {
@@ -1563,7 +1561,6 @@ impl AsRef<[u32; 4]> for UVec4 {
     }
 }
 
-#[cfg(not(target_arch = "spirv"))]
 impl AsMut<[u32; 4]> for UVec4 {
     #[inline]
     fn as_mut(&mut self) -> &mut [u32; 4] {
