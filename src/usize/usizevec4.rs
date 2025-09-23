@@ -24,8 +24,8 @@ pub const fn usizevec4(x: usize, y: usize, z: usize, w: usize) -> USizeVec4 {
     derive(bytemuck::Pod, bytemuck::Zeroable)
 )]
 #[cfg_attr(feature = "cuda", repr(align(16)))]
-#[cfg_attr(not(target_arch = "spirv"), repr(C))]
-#[cfg_attr(target_arch = "spirv", repr(simd))]
+#[repr(C)]
+#[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct USizeVec4 {
     pub x: usize,
     pub y: usize,

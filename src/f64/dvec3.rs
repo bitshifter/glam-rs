@@ -19,8 +19,8 @@ pub const fn dvec3(x: f64, y: f64, z: f64) -> DVec3 {
     all(feature = "bytemuck", not(target_arch = "spirv")),
     derive(bytemuck::Pod, bytemuck::Zeroable)
 )]
-#[cfg_attr(not(target_arch = "spirv"), repr(C))]
-#[cfg_attr(target_arch = "spirv", repr(simd))]
+#[repr(C)]
+#[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct DVec3 {
     pub x: f64,
     pub y: f64,

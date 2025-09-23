@@ -13,6 +13,7 @@ pub const fn bvec3(x: bool, y: bool, z: bool) -> BVec3 {
 /// A 3-dimensional `bool` vector mask.
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(C, align(1))]
+#[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct BVec3 {
     pub x: bool,
     pub y: bool,

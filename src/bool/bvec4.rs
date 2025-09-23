@@ -13,6 +13,7 @@ pub const fn bvec4(x: bool, y: bool, z: bool, w: bool) -> BVec4 {
 /// A 4-dimensional `bool` vector mask.
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(C, align(1))]
+#[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct BVec4 {
     pub x: bool,
     pub y: bool,

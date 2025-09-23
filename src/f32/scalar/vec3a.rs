@@ -27,9 +27,9 @@ pub const fn vec3a(x: f32, y: f32, z: f32) -> Vec3A {
     all(feature = "bytemuck", not(target_arch = "spirv")),
     derive(bytemuck::AnyBitPattern)
 )]
-#[cfg_attr(not(target_arch = "spirv"), repr(align(16)))]
-#[cfg_attr(not(target_arch = "spirv"), repr(C))]
-#[cfg_attr(target_arch = "spirv", repr(simd))]
+#[repr(align(16))]
+#[repr(C)]
+#[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct Vec3A {
     pub x: f32,
     pub y: f32,

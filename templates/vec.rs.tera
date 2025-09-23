@@ -315,20 +315,15 @@ pub const fn {{ self_t | lower }}(
 #[cfg_attr(all(feature = "bytemuck", not(target_arch = "spirv")), derive(bytemuck::Pod, bytemuck::Zeroable))]
 {%- endif %}
 {%- if self_t == "Vec3A" and is_scalar %}
-#[cfg_attr(not(target_arch = "spirv"), repr(align(16)))]
+#[repr(align(16))]
 {%- elif self_t == "Vec4" and is_scalar %}
-#[cfg_attr(
-    any(
-        not(any(feature = "scalar-math", target_arch = "spirv")),
-        feature = "cuda"),
-    repr(align(16))
-)]
+#[cfg_attr(any(not(feature = "scalar-math"), feature = "cuda"), repr(align(16)))]
 {%- elif dim != 3 and is_scalar %}
 #[cfg_attr(feature = "cuda", repr(align({{ cuda_align }})))]
 {%- endif %}
 {%- if is_scalar %}
-#[cfg_attr(not(target_arch = "spirv"), repr(C))]
-#[cfg_attr(target_arch = "spirv", repr(simd))]
+#[repr(C)]
+#[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct {{ self_t }}
 {
     {% for c in components %}

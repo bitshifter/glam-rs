@@ -79,6 +79,7 @@ pub const fn {{ self_t | lower }}(
 {%- endif %}
 {%- if is_scalar %}
 #[repr(C, align({{ align }}))]
+#[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct {{ self_t }}
 {
 {% for c in components %}

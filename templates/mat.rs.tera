@@ -206,14 +206,9 @@ pub const fn {{ self_t | lower }}(
 #[cfg_attr(all(feature = "bytemuck", not(target_arch = "spirv")), derive(bytemuck::Pod, bytemuck::Zeroable))]
 {%- endif %}
 {%- if self_t == "Mat4" and is_scalar %}
-#[cfg_attr(
-    any(
-        not(any(feature = "scalar-math", target_arch = "spirv")),
-        feature = "cuda"),
-    repr(align(16))
-)]
+#[cfg_attr(any(not(feature = "scalar-math"), feature = "cuda"), repr(align(16)))]
 {%- elif self_t == "Mat2" and is_scalar %}
-#[cfg_attr(not(any(feature = "scalar-math", target_arch = "spirv")), repr(align(16)))]
+#[cfg_attr(not(feature = "scalar-math"), repr(align(16)))]
 #[cfg_attr(feature = "cuda", repr(align(8)))]
 {%- elif self_t == "DMat2" or self_t == "DMat4" %}
 #[cfg_attr(feature = "cuda", repr(align(16)))]

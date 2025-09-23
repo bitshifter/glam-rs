@@ -22,8 +22,8 @@ pub const fn i64vec3(x: i64, y: i64, z: i64) -> I64Vec3 {
     all(feature = "bytemuck", not(target_arch = "spirv")),
     derive(bytemuck::Pod, bytemuck::Zeroable)
 )]
-#[cfg_attr(not(target_arch = "spirv"), repr(C))]
-#[cfg_attr(target_arch = "spirv", repr(simd))]
+#[repr(C)]
+#[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct I64Vec3 {
     pub x: i64,
     pub y: i64,

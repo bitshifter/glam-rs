@@ -24,8 +24,8 @@ pub const fn u8vec4(x: u8, y: u8, z: u8, w: u8) -> U8Vec4 {
     derive(bytemuck::Pod, bytemuck::Zeroable)
 )]
 #[cfg_attr(feature = "cuda", repr(align(4)))]
-#[cfg_attr(not(target_arch = "spirv"), repr(C))]
-#[cfg_attr(target_arch = "spirv", repr(simd))]
+#[repr(C)]
+#[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct U8Vec4 {
     pub x: u8,
     pub y: u8,
