@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [0.30.8] - 2025-09-25
+
+### Changed
+
+* Updates from the rust-gpu project, primarily removing the requirement to use
+  `repr(simd)` on `spirv`.
+
 ## [0.30.7] - 2025-09-20
 
 ### Changed
@@ -1285,7 +1292,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.30.7...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.30.8...HEAD
+[0.30.8]: https://github.com/bitshifter/glam-rs/compare/0.30.7...0.30.8
 [0.30.7]: https://github.com/bitshifter/glam-rs/compare/0.30.6...0.30.7
 [0.30.6]: https://github.com/bitshifter/glam-rs/compare/0.30.5...0.30.6
 [0.30.5]: https://github.com/bitshifter/glam-rs/compare/0.30.4...0.30.5
