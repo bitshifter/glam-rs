@@ -15,10 +15,7 @@ pub const fn dvec3(x: f64, y: f64, z: f64) -> DVec3 {
 
 /// A 3-dimensional vector.
 #[derive(Clone, Copy, PartialEq)]
-#[cfg_attr(
-    all(feature = "bytemuck", not(target_arch = "spirv")),
-    derive(bytemuck::Pod, bytemuck::Zeroable)
-)]
+#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[repr(C)]
 #[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct DVec3 {

@@ -6,18 +6,11 @@ use core::ops::{Deref, DerefMut, Mul, MulAssign};
 /// A 2D affine transform, which can represent translation, rotation, scaling and shear.
 #[derive(Copy, Clone)]
 #[cfg_attr(
-    all(
-        feature = "bytemuck",
-        not(any(feature = "scalar-math", target_arch = "spirv"))
-    ),
+    all(feature = "bytemuck", not(feature = "scalar-math")),
     derive(bytemuck::AnyBitPattern)
 )]
 #[cfg_attr(
-    all(
-        feature = "bytemuck",
-        feature = "scalar-math",
-        not(target_arch = "spirv")
-    ),
+    all(feature = "bytemuck", feature = "scalar-math"),
     derive(bytemuck::Pod, bytemuck::Zeroable)
 )]
 #[repr(C)]

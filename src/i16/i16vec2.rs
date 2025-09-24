@@ -15,10 +15,7 @@ pub const fn i16vec2(x: i16, y: i16) -> I16Vec2 {
 
 /// A 2-dimensional vector.
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
-#[cfg_attr(
-    all(feature = "bytemuck", not(target_arch = "spirv")),
-    derive(bytemuck::Pod, bytemuck::Zeroable)
-)]
+#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(feature = "cuda", repr(align(4)))]
 #[repr(C)]
 #[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
