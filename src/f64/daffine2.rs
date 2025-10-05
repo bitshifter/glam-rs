@@ -5,7 +5,12 @@ use core::ops::{Deref, DerefMut, Mul, MulAssign};
 
 /// A 2D affine transform, which can represent translation, rotation, scaling and shear.
 #[derive(Copy, Clone)]
+#[cfg_attr(
+    feature = "zerocopy",
+    derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::KnownLayout)
+)]
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
+#[cfg_attr(feature = "zerocopy", derive(zerocopy::IntoBytes))]
 #[repr(C)]
 pub struct DAffine2 {
     pub matrix2: DMat2,

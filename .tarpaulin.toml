@@ -1,5 +1,5 @@
 [sse2_math]
-features = "approx bytemuck mint rand rkyv serde debug-glam-assert"
+features = "approx bytemuck mint rand rkyv serde zerocopy debug-glam-assert"
 exclude-files = [
     "codegen/*",
     "swizzlegen/*",
@@ -16,7 +16,7 @@ exclude-files = [
 ]
 
 [scalar_math]
-features = "scalar-math approx bytemuck mint rand rkyv serde debug-glam-assert"
+features = "scalar-math approx bytemuck mint rand rkyv serde zerocopy debug-glam-assert"
 exclude-files = [
     "codegen/*",
     "swizzlegen/*",
@@ -33,7 +33,7 @@ exclude-files = [
 ]
 
 [core_simd]
-features = "core-simd approx bytemuck mint rand rkyv serde debug-glam-assert"
+features = "core-simd approx bytemuck mint rand rkyv serde zerocopy debug-glam-assert"
 exclude-files = [
     "codegen/*",
     "swizzlegen/*",

@@ -15,7 +15,12 @@ pub const fn vec3(x: f32, y: f32, z: f32) -> Vec3 {
 
 /// A 3-dimensional vector.
 #[derive(Clone, Copy, PartialEq)]
+#[cfg_attr(
+    feature = "zerocopy",
+    derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::KnownLayout)
+)]
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
+#[cfg_attr(feature = "zerocopy", derive(zerocopy::IntoBytes))]
 #[repr(C)]
 #[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct Vec3 {

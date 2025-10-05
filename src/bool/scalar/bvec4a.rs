@@ -11,7 +11,16 @@ pub const fn bvec4a(x: bool, y: bool, z: bool, w: bool) -> BVec4A {
 }
 
 /// A 4-dimensional `u32` vector mask.
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy)]
+#[cfg_attr(
+    feature = "zerocopy",
+    derive(zerocopy::Immutable, zerocopy::KnownLayout)
+)]
+#[cfg_attr(not(feature = "zerocopy"), derive(PartialEq, Eq, Hash))]
+#[cfg_attr(
+    feature = "zerocopy",
+    derive(zerocopy::ByteEq, zerocopy::ByteHash, zerocopy::IntoBytes)
+)]
 #[repr(C, align(16))]
 #[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct BVec4A {

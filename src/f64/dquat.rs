@@ -27,6 +27,15 @@ pub const fn dquat(x: f64, y: f64, z: f64, w: f64) -> DQuat {
 /// operations are applied.
 #[derive(Clone, Copy)]
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
+#[cfg_attr(
+    feature = "zerocopy",
+    derive(
+        zerocopy::FromBytes,
+        zerocopy::Immutable,
+        zerocopy::IntoBytes,
+        zerocopy::KnownLayout
+    )
+)]
 #[repr(C)]
 #[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct DQuat {
@@ -38,7 +47,7 @@ pub struct DQuat {
 
 impl DQuat {
     /// All zeros.
-    const ZERO: Self = Self::from_array([0.0; 4]);
+    pub const ZERO: Self = Self::from_array([0.0; 4]);
 
     /// The identity quaternion. Corresponds to no rotation.
     pub const IDENTITY: Self = Self::from_xyzw(0.0, 0.0, 0.0, 1.0);

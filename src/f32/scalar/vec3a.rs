@@ -23,6 +23,10 @@ pub const fn vec3a(x: f32, y: f32, z: f32) -> Vec3A {
 ///
 /// This type is 16 byte aligned.
 #[derive(Clone, Copy, PartialEq)]
+#[cfg_attr(
+    feature = "zerocopy",
+    derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::KnownLayout)
+)]
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::AnyBitPattern))]
 #[repr(align(16))]
 #[repr(C)]

@@ -200,10 +200,12 @@ pub const fn {{ self_t | lower }}(
 /// This type is 16 byte aligned.
 {%- endif %}
 #[derive(Clone, Copy)]
+#[cfg_attr(feature = "zerocopy", derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::KnownLayout))]
 {%- if self_t == "Mat3A" and is_scalar %}
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::AnyBitPattern))]
 {%- else %}
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
+#[cfg_attr(feature = "zerocopy", derive(zerocopy::IntoBytes))]
 {%- endif %}
 {%- if self_t == "Mat4" and is_scalar %}
 #[cfg_attr(any(not(feature = "scalar-math"), feature = "cuda"), repr(align(16)))]

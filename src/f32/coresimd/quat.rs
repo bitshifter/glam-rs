@@ -36,12 +36,21 @@ pub const fn quat(x: f32, y: f32, z: f32, w: f32) -> Quat {
 /// This type is 16 byte aligned.
 #[derive(Clone, Copy)]
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
+#[cfg_attr(
+    feature = "zerocopy",
+    derive(
+        zerocopy::FromBytes,
+        zerocopy::Immutable,
+        zerocopy::IntoBytes,
+        zerocopy::KnownLayout
+    )
+)]
 #[repr(transparent)]
 pub struct Quat(pub(crate) f32x4);
 
 impl Quat {
     /// All zeros.
-    const ZERO: Self = Self::from_array([0.0; 4]);
+    pub const ZERO: Self = Self::from_array([0.0; 4]);
 
     /// The identity quaternion. Corresponds to no rotation.
     pub const IDENTITY: Self = Self::from_xyzw(0.0, 0.0, 0.0, 1.0);

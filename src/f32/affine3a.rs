@@ -7,7 +7,24 @@ use core::ops::{Deref, DerefMut, Mul, MulAssign};
 ///
 /// This type is 16 byte aligned.
 #[derive(Copy, Clone)]
+#[cfg_attr(
+    feature = "zerocopy",
+    derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::KnownLayout)
+)]
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::AnyBitPattern))]
+#[cfg_attr(
+    all(
+        feature = "zerocopy",
+        any(
+            feature = "core-simd",
+            target_arch = "aarch64",
+            target_feature = "sse2",
+            target_feature = "simd128"
+        ),
+        not(feature = "scalar-math")
+    ),
+    derive(zerocopy::IntoBytes)
+)]
 #[repr(C)]
 pub struct Affine3A {
     pub matrix3: Mat3A,
