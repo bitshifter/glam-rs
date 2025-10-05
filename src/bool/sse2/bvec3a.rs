@@ -25,6 +25,11 @@ pub const fn bvec3a(x: bool, y: bool, z: bool) -> BVec3A {
 ///
 /// This type is 16 byte aligned.
 #[derive(Clone, Copy)]
+#[cfg_attr(
+    feature = "zerocopy",
+    derive(zerocopy::Immutable, zerocopy::KnownLayout)
+)]
+#[cfg_attr(feature = "zerocopy", derive(zerocopy::IntoBytes))]
 #[repr(transparent)]
 pub struct BVec3A(pub(crate) __m128);
 

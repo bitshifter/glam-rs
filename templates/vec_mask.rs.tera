@@ -72,12 +72,15 @@ pub const fn {{ self_t | lower }}(
 ///
 /// This type is {{ align }} byte aligned.
 {%- endif %}
-{%- if is_scalar or is_bool %}
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
-{%- else %}
 #[derive(Clone, Copy)]
-{%- endif %}
+#[cfg_attr(feature = "zerocopy", derive(zerocopy::Immutable, zerocopy::KnownLayout))]
 {%- if is_scalar %}
+{%- if is_bool or dim == 3 %}
+#[derive(PartialEq, Eq, Hash)]
+{%- else %}
+#[cfg_attr(not(feature = "zerocopy"), derive(PartialEq, Eq, Hash))]
+#[cfg_attr(feature = "zerocopy", derive(zerocopy::ByteEq, zerocopy::ByteHash, zerocopy::IntoBytes))]
+{%- endif %}
 #[repr(C, align({{ align }}))]
 #[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct {{ self_t }}
@@ -87,6 +90,7 @@ pub struct {{ self_t }}
 {%- endfor %}
 }
 {%- else %}
+#[cfg_attr(feature = "zerocopy", derive(zerocopy::IntoBytes))]
 #[repr(transparent)]
 pub struct {{ self_t }}(pub(crate) {{ simd_t }});
 {% endif %}

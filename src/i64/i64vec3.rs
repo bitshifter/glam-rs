@@ -17,8 +17,15 @@ pub const fn i64vec3(x: i64, y: i64, z: i64) -> I64Vec3 {
 }
 
 /// A 3-dimensional vector.
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy)]
+#[cfg_attr(
+    feature = "zerocopy",
+    derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::KnownLayout)
+)]
+#[cfg_attr(not(feature = "zerocopy"), derive(PartialEq, Eq, Hash))]
+#[cfg_attr(feature = "zerocopy", derive(zerocopy::ByteEq, zerocopy::ByteHash))]
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
+#[cfg_attr(feature = "zerocopy", derive(zerocopy::IntoBytes))]
 #[repr(C)]
 #[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct I64Vec3 {

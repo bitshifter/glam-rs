@@ -301,18 +301,20 @@ pub const fn {{ self_t | lower }}(
 #[derive(
     Clone,
     Copy,
-    {% if is_scalar %}
+    {% if is_scalar and is_float %}
     PartialEq,
-    {% if not is_float %}
-    Eq,
-    Hash,
-    {% endif %}
     {% endif %}
 )]
+#[cfg_attr(feature = "zerocopy", derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::KnownLayout))]
+{%- if is_scalar and not is_float %}
+#[cfg_attr(not(feature = "zerocopy"), derive(PartialEq, Eq, Hash))]
+#[cfg_attr(feature = "zerocopy", derive(zerocopy::ByteEq, zerocopy::ByteHash))]
+{%- endif %}
 {%- if self_t == "Vec3A" and is_scalar %}
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::AnyBitPattern))]
 {%- else %}
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
+#[cfg_attr(feature = "zerocopy", derive(zerocopy::IntoBytes))]
 {%- endif %}
 {%- if self_t == "Vec3A" and is_scalar %}
 #[repr(align(16))]

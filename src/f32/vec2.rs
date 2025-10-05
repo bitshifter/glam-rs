@@ -15,7 +15,12 @@ pub const fn vec2(x: f32, y: f32) -> Vec2 {
 
 /// A 2-dimensional vector.
 #[derive(Clone, Copy, PartialEq)]
+#[cfg_attr(
+    feature = "zerocopy",
+    derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::KnownLayout)
+)]
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
+#[cfg_attr(feature = "zerocopy", derive(zerocopy::IntoBytes))]
 #[cfg_attr(feature = "cuda", repr(align(8)))]
 #[repr(C)]
 #[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
