@@ -73,8 +73,8 @@ pub const fn {{ self_t | lower }}(
 /// This type is {{ align }} byte aligned.
 {%- endif %}
 #[derive(Clone, Copy)]
-#[cfg_attr(feature = "zerocopy", derive(zerocopy::Immutable, zerocopy::KnownLayout))]
 {%- if is_scalar %}
+#[cfg_attr(feature = "zerocopy", derive(zerocopy::Immutable, zerocopy::KnownLayout))]
 {%- if is_bool or dim == 3 %}
 #[derive(PartialEq, Eq, Hash)]
 {%- else %}
@@ -90,7 +90,9 @@ pub struct {{ self_t }}
 {%- endfor %}
 }
 {%- else %}
-#[cfg_attr(feature = "zerocopy", derive(zerocopy::IntoBytes))]
+{%- if not is_coresimd %}
+#[cfg_attr(feature = "zerocopy", derive(zerocopy::Immutable, zerocopy::IntoBytes, zerocopy::KnownLayout))]
+{%- endif %}
 #[repr(transparent)]
 pub struct {{ self_t }}(pub(crate) {{ simd_t }});
 {% endif %}

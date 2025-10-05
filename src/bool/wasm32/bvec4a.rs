@@ -18,9 +18,8 @@ pub const fn bvec4a(x: bool, y: bool, z: bool, w: bool) -> BVec4A {
 #[derive(Clone, Copy)]
 #[cfg_attr(
     feature = "zerocopy",
-    derive(zerocopy::Immutable, zerocopy::KnownLayout)
+    derive(zerocopy::Immutable, zerocopy::IntoBytes, zerocopy::KnownLayout)
 )]
-#[cfg_attr(feature = "zerocopy", derive(zerocopy::IntoBytes))]
 #[repr(transparent)]
 pub struct BVec4A(pub(crate) v128);
 
