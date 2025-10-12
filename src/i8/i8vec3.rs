@@ -17,15 +17,17 @@ pub const fn i8vec3(x: i8, y: i8, z: i8) -> I8Vec3 {
 }
 
 /// A 3-dimensional vector.
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(
     feature = "zerocopy",
-    derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::KnownLayout)
+    derive(
+        zerocopy::FromBytes,
+        zerocopy::Immutable,
+        zerocopy::IntoBytes,
+        zerocopy::KnownLayout
+    )
 )]
-#[cfg_attr(not(feature = "zerocopy"), derive(PartialEq, Eq, Hash))]
-#[cfg_attr(feature = "zerocopy", derive(zerocopy::ByteEq, zerocopy::ByteHash))]
-#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
-#[cfg_attr(feature = "zerocopy", derive(zerocopy::IntoBytes))]
 #[repr(C)]
 #[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct I8Vec3 {

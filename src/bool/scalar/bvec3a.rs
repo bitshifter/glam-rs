@@ -11,12 +11,7 @@ pub const fn bvec3a(x: bool, y: bool, z: bool) -> BVec3A {
 }
 
 /// A 3-dimensional `u32` vector mask.
-#[derive(Clone, Copy)]
-#[cfg_attr(
-    feature = "zerocopy",
-    derive(zerocopy::Immutable, zerocopy::KnownLayout)
-)]
-#[derive(PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(C, align(16))]
 #[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct BVec3A {
