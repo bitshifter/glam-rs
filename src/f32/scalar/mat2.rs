@@ -14,12 +14,16 @@ pub const fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
 
 /// A 2x2 column major matrix.
 #[derive(Clone, Copy)]
+#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(
     feature = "zerocopy",
-    derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::KnownLayout)
+    derive(
+        zerocopy::FromBytes,
+        zerocopy::Immutable,
+        zerocopy::IntoBytes,
+        zerocopy::KnownLayout
+    )
 )]
-#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
-#[cfg_attr(feature = "zerocopy", derive(zerocopy::IntoBytes))]
 #[cfg_attr(not(feature = "scalar-math"), repr(align(16)))]
 #[cfg_attr(feature = "cuda", repr(align(8)))]
 #[repr(C)]
