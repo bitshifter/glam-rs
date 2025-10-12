@@ -6,16 +6,16 @@ use core::ops::{Deref, DerefMut, Mul, MulAssign};
 /// A 2D affine transform, which can represent translation, rotation, scaling and shear.
 #[derive(Copy, Clone)]
 #[cfg_attr(
-    feature = "zerocopy",
-    derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::KnownLayout)
-)]
-#[cfg_attr(
     all(feature = "bytemuck", not(feature = "scalar-math")),
     derive(bytemuck::AnyBitPattern)
 )]
 #[cfg_attr(
     all(feature = "bytemuck", feature = "scalar-math"),
     derive(bytemuck::Pod, bytemuck::Zeroable)
+)]
+#[cfg_attr(
+    feature = "zerocopy",
+    derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::KnownLayout)
 )]
 #[repr(C)]
 pub struct Affine2 {

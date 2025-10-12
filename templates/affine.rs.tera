@@ -61,16 +61,17 @@ use core::ops::{Deref, DerefMut, Mul, MulAssign};
 /// This type is 16 byte aligned.
 {%- endif %}
 #[derive(Copy, Clone)]
-#[cfg_attr(feature = "zerocopy", derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::KnownLayout))]
 {%- if self_t == "Affine2" %}
 #[cfg_attr(all(feature = "bytemuck", not(feature = "scalar-math")), derive(bytemuck::AnyBitPattern))]
 #[cfg_attr(all(feature = "bytemuck", feature = "scalar-math"), derive(bytemuck::Pod, bytemuck::Zeroable))]
+#[cfg_attr(feature = "zerocopy", derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::KnownLayout))]
 {%- elif self_t == "Affine3A" and is_scalar %}
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::AnyBitPattern))]
+#[cfg_attr(feature = "zerocopy", derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::KnownLayout))]
 #[cfg_attr(all(feature = "zerocopy", any(feature = "core-simd", target_arch = "aarch64", target_feature = "sse2", target_feature = "simd128"), not(feature = "scalar-math")), derive(zerocopy::IntoBytes))]
 {%- else %}
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
-#[cfg_attr(feature = "zerocopy", derive(zerocopy::IntoBytes))]
+#[cfg_attr(feature = "zerocopy", derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::IntoBytes, zerocopy::KnownLayout))]
 {%- endif %}
 #[repr(C)]
 pub struct {{ self_t }} {

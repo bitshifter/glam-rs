@@ -7,11 +7,11 @@ use core::ops::{Deref, DerefMut, Mul, MulAssign};
 ///
 /// This type is 16 byte aligned.
 #[derive(Copy, Clone)]
+#[cfg_attr(feature = "bytemuck", derive(bytemuck::AnyBitPattern))]
 #[cfg_attr(
     feature = "zerocopy",
     derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::KnownLayout)
 )]
-#[cfg_attr(feature = "bytemuck", derive(bytemuck::AnyBitPattern))]
 #[cfg_attr(
     all(
         feature = "zerocopy",
