@@ -35,7 +35,7 @@ mod test {
                 // should be the same size
                 let t: $t = t.unwrap();
                 // should be zero
-                assert_eq!(t, $t::ZERO);
+                assert_eq!(t, <$t as zerocopy::FromZeros>::new_zeroed());
             }
         };
     }

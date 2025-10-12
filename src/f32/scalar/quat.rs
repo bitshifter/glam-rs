@@ -48,7 +48,7 @@ pub struct Quat {
 
 impl Quat {
     /// All zeros.
-    pub const ZERO: Self = Self::from_array([0.0; 4]);
+    const ZERO: Self = Self::from_array([0.0; 4]);
 
     /// The identity quaternion. Corresponds to no rotation.
     pub const IDENTITY: Self = Self::from_xyzw(0.0, 0.0, 0.0, 1.0);
