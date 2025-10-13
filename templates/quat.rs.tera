@@ -105,6 +105,7 @@ pub const fn {{ self_t | lower }}(x: {{ scalar_t }}, y: {{ scalar_t }}, z: {{ sc
 {%- endif %}
 #[derive(Clone, Copy)]
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
+#[cfg_attr(feature = "zerocopy", derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::IntoBytes, zerocopy::KnownLayout))]
 {%- if is_scalar %}
 {%- if scalar_t == "f32" %}
 #[cfg_attr(not(feature = "scalar-math"), repr(align(16)))]

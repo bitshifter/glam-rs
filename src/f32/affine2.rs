@@ -13,6 +13,10 @@ use core::ops::{Deref, DerefMut, Mul, MulAssign};
     all(feature = "bytemuck", feature = "scalar-math"),
     derive(bytemuck::Pod, bytemuck::Zeroable)
 )]
+#[cfg_attr(
+    feature = "zerocopy",
+    derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::KnownLayout)
+)]
 #[repr(C)]
 pub struct Affine2 {
     pub matrix2: Mat2,

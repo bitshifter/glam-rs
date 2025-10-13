@@ -23,6 +23,15 @@ pub const fn vec4(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
 /// This type is 16 byte aligned.
 #[derive(Clone, Copy)]
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
+#[cfg_attr(
+    feature = "zerocopy",
+    derive(
+        zerocopy::FromBytes,
+        zerocopy::Immutable,
+        zerocopy::IntoBytes,
+        zerocopy::KnownLayout
+    )
+)]
 #[repr(transparent)]
 pub struct Vec4(pub(crate) f32x4);
 
