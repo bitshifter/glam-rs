@@ -8,6 +8,9 @@ use core::{f32, ops::*};
 
 use core::arch::aarch64::*;
 
+#[cfg(feature = "zerocopy")]
+use zerocopy_derive::*;
+
 #[repr(C)]
 union UnionCast {
     a: [f32; 4],
@@ -30,12 +33,7 @@ pub const fn vec4(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(
     feature = "zerocopy",
-    derive(
-        zerocopy::FromBytes,
-        zerocopy::Immutable,
-        zerocopy::IntoBytes,
-        zerocopy::KnownLayout
-    )
+    derive(FromBytes, Immutable, IntoBytes, KnownLayout)
 )]
 #[repr(transparent)]
 pub struct Vec4(pub(crate) float32x4_t);

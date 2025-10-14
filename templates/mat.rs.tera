@@ -118,6 +118,11 @@ use core::simd::*;
 use core::arch::aarch64::*;
 {% endif %}
 
+{% if not is_coresimd %}
+#[cfg(feature = "zerocopy")]
+use zerocopy_derive::*;
+{% endif %}
+
 {% set is_sse2_or_neon = is_sse2 or is_neon %}
 {% if self_t == "Mat2" and is_sse2_or_neon %}
 #[repr(C)]
@@ -202,10 +207,14 @@ pub const fn {{ self_t | lower }}(
 #[derive(Clone, Copy)]
 {%- if self_t == "Mat3A" and is_scalar %}
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::AnyBitPattern))]
-#[cfg_attr(feature = "zerocopy", derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::KnownLayout))]
+{%- if not is_coresimd %}
+#[cfg_attr(feature = "zerocopy", derive(FromBytes, Immutable, KnownLayout))]
+{%- endif %}
 {%- else %}
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
-#[cfg_attr(feature = "zerocopy", derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::IntoBytes, zerocopy::KnownLayout))]
+{%- if not is_coresimd %}
+#[cfg_attr(feature = "zerocopy", derive(FromBytes, Immutable, IntoBytes, KnownLayout))]
+{%- endif %}
 {%- endif %}
 {%- if self_t == "Mat4" and is_scalar %}
 #[cfg_attr(any(not(feature = "scalar-math"), feature = "cuda"), repr(align(16)))]

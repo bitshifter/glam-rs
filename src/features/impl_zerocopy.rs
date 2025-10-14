@@ -44,7 +44,6 @@ mod test {
     test_from_bytes_t!(affine3a_from, Affine3A);
     #[cfg(all(
         any(
-            feature = "core-simd",
             target_arch = "aarch64",
             target_feature = "sse2",
             target_feature = "simd128"

@@ -18,6 +18,9 @@ use core::ops::{
     Add, AddAssign, Deref, DerefMut, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign,
 };
 
+#[cfg(feature = "zerocopy")]
+use zerocopy_derive::*;
+
 #[repr(C)]
 union UnionCast {
     a: [f32; 4],
@@ -47,12 +50,7 @@ pub const fn quat(x: f32, y: f32, z: f32, w: f32) -> Quat {
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(
     feature = "zerocopy",
-    derive(
-        zerocopy::FromBytes,
-        zerocopy::Immutable,
-        zerocopy::IntoBytes,
-        zerocopy::KnownLayout
-    )
+    derive(FromBytes, Immutable, IntoBytes, KnownLayout)
 )]
 #[repr(transparent)]
 pub struct Quat(pub(crate) __m128);

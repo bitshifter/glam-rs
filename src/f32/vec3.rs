@@ -6,6 +6,9 @@ use core::fmt;
 use core::iter::{Product, Sum};
 use core::{f32, ops::*};
 
+#[cfg(feature = "zerocopy")]
+use zerocopy_derive::*;
+
 /// Creates a 3-dimensional vector.
 #[inline(always)]
 #[must_use]
@@ -18,12 +21,7 @@ pub const fn vec3(x: f32, y: f32, z: f32) -> Vec3 {
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(
     feature = "zerocopy",
-    derive(
-        zerocopy::FromBytes,
-        zerocopy::Immutable,
-        zerocopy::IntoBytes,
-        zerocopy::KnownLayout
-    )
+    derive(FromBytes, Immutable, IntoBytes, KnownLayout)
 )]
 #[repr(C)]
 #[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]

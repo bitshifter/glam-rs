@@ -8,6 +8,9 @@ use core::fmt;
 use core::iter::{Product, Sum};
 use core::{f32, ops::*};
 
+#[cfg(feature = "zerocopy")]
+use zerocopy_derive::*;
+
 /// Creates a 4-dimensional vector.
 #[inline(always)]
 #[must_use]
@@ -20,12 +23,7 @@ pub const fn dvec4(x: f64, y: f64, z: f64, w: f64) -> DVec4 {
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(
     feature = "zerocopy",
-    derive(
-        zerocopy::FromBytes,
-        zerocopy::Immutable,
-        zerocopy::IntoBytes,
-        zerocopy::KnownLayout
-    )
+    derive(FromBytes, Immutable, IntoBytes, KnownLayout)
 )]
 #[cfg_attr(feature = "cuda", repr(align(16)))]
 #[repr(C)]

@@ -7,6 +7,9 @@ use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAss
 
 use core::arch::wasm32::*;
 
+#[cfg(feature = "zerocopy")]
+use zerocopy_derive::*;
+
 /// Creates a 2x2 matrix from two column vectors.
 #[inline(always)]
 #[must_use]
@@ -23,12 +26,7 @@ pub const fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(
     feature = "zerocopy",
-    derive(
-        zerocopy::FromBytes,
-        zerocopy::Immutable,
-        zerocopy::IntoBytes,
-        zerocopy::KnownLayout
-    )
+    derive(FromBytes, Immutable, IntoBytes, KnownLayout)
 )]
 #[repr(transparent)]
 pub struct Mat2(pub(crate) v128);

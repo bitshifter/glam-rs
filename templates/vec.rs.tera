@@ -263,6 +263,11 @@ use std::simd::StdFloat;
 use core::arch::aarch64::*;
 {% endif %}
 
+{% if not is_coresimd %}
+#[cfg(feature = "zerocopy")]
+use zerocopy_derive::*;
+{% endif %}
+
 {% if is_sse2 or is_neon %}
 #[repr(C)]
 union UnionCast {
@@ -311,10 +316,14 @@ pub const fn {{ self_t | lower }}(
 )]
 {%- if self_t == "Vec3A" and is_scalar %}
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::AnyBitPattern))]
-#[cfg_attr(feature = "zerocopy", derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::KnownLayout))]
+{%- if not is_coresimd %}
+#[cfg_attr(feature = "zerocopy", derive(FromBytes, Immutable, KnownLayout))]
+{%- endif %}
 {%- else %}
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
-#[cfg_attr(feature = "zerocopy", derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::IntoBytes, zerocopy::KnownLayout))]
+{%- if not is_coresimd %}
+#[cfg_attr(feature = "zerocopy", derive(FromBytes, Immutable, IntoBytes, KnownLayout))]
+{%- endif %}
 {%- endif %}
 {%- if self_t == "Vec3A" and is_scalar %}
 #[repr(align(16))]

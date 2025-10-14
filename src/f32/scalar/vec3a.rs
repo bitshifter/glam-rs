@@ -6,6 +6,9 @@ use core::fmt;
 use core::iter::{Product, Sum};
 use core::{f32, ops::*};
 
+#[cfg(feature = "zerocopy")]
+use zerocopy_derive::*;
+
 /// Creates a 3-dimensional vector.
 #[inline(always)]
 #[must_use]
@@ -24,10 +27,7 @@ pub const fn vec3a(x: f32, y: f32, z: f32) -> Vec3A {
 /// This type is 16 byte aligned.
 #[derive(Clone, Copy, PartialEq)]
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::AnyBitPattern))]
-#[cfg_attr(
-    feature = "zerocopy",
-    derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::KnownLayout)
-)]
+#[cfg_attr(feature = "zerocopy", derive(FromBytes, Immutable, KnownLayout))]
 #[repr(align(16))]
 #[repr(C)]
 #[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]

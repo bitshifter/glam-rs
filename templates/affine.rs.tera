@@ -55,6 +55,9 @@ use crate::{
 };
 use core::ops::{Deref, DerefMut, Mul, MulAssign};
 
+#[cfg(all(feature = "zerocopy", not(feature = "core-simd")))]
+use zerocopy_derive::*;
+
 /// A {{ dim }}D affine transform, which can represent translation, rotation, scaling and shear.
 {%- if is_align %}
 ///
@@ -64,14 +67,28 @@ use core::ops::{Deref, DerefMut, Mul, MulAssign};
 {%- if self_t == "Affine2" %}
 #[cfg_attr(all(feature = "bytemuck", not(feature = "scalar-math")), derive(bytemuck::AnyBitPattern))]
 #[cfg_attr(all(feature = "bytemuck", feature = "scalar-math"), derive(bytemuck::Pod, bytemuck::Zeroable))]
-#[cfg_attr(feature = "zerocopy", derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::KnownLayout))]
+#[cfg_attr(
+    {% if scalar_t != "f64" %}
+    all(feature = "zerocopy", not(feature = "core-simd")),
+    {% else %}
+    feature = "zerocopy",
+    {% endif %}
+    derive(FromBytes, Immutable, KnownLayout))
+]
 {%- elif self_t == "Affine3A" and is_scalar %}
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::AnyBitPattern))]
-#[cfg_attr(feature = "zerocopy", derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::KnownLayout))]
-#[cfg_attr(all(feature = "zerocopy", any(feature = "core-simd", target_arch = "aarch64", target_feature = "sse2", target_feature = "simd128"), not(feature = "scalar-math")), derive(zerocopy::IntoBytes))]
+#[cfg_attr(all(feature = "zerocopy", not(feature = "core-simd")), derive(FromBytes, Immutable, KnownLayout))]
+#[cfg_attr(all(feature = "zerocopy", any(target_arch = "aarch64", target_feature = "sse2", target_feature = "simd128"), not(any(feature = "core-simd", feature = "scalar-math"))), derive(IntoBytes))]
 {%- else %}
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
-#[cfg_attr(feature = "zerocopy", derive(zerocopy::FromBytes, zerocopy::Immutable, zerocopy::IntoBytes, zerocopy::KnownLayout))]
+#[cfg_attr(
+    {% if scalar_t != "f64" %}
+    all(feature = "zerocopy", not(feature = "core-simd")),
+    {% else %}
+    feature = "zerocopy",
+    {% endif %}
+    derive(FromBytes, Immutable, IntoBytes, KnownLayout))
+]
 {%- endif %}
 #[repr(C)]
 pub struct {{ self_t }} {

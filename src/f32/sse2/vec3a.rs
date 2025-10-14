@@ -11,6 +11,9 @@ use core::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use core::arch::x86_64::*;
 
+#[cfg(feature = "zerocopy")]
+use zerocopy_derive::*;
+
 #[repr(C)]
 union UnionCast {
     a: [f32; 4],
@@ -37,12 +40,7 @@ pub const fn vec3a(x: f32, y: f32, z: f32) -> Vec3A {
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(
     feature = "zerocopy",
-    derive(
-        zerocopy::FromBytes,
-        zerocopy::Immutable,
-        zerocopy::IntoBytes,
-        zerocopy::KnownLayout
-    )
+    derive(FromBytes, Immutable, IntoBytes, KnownLayout)
 )]
 #[repr(transparent)]
 pub struct Vec3A(pub(crate) __m128);
