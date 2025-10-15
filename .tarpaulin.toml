@@ -33,7 +33,7 @@ exclude-files = [
 ]
 
 [core_simd]
-features = "core-simd approx bytemuck mint rand rkyv serde zerocopy debug-glam-assert"
+features = "core-simd approx bytemuck mint rand rkyv serde debug-glam-assert"
 exclude-files = [
     "codegen/*",
     "swizzlegen/*",

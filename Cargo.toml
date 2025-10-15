@@ -41,9 +41,11 @@ fast-math = []
 serde = ["dep:serde_core"]
 
 # experimental nightly portable-simd support
-core-simd = ["bytemuck?/nightly_portable_simd", "zerocopy?/simd-nightly"]
+core-simd = ["bytemuck?/nightly_portable_simd"]
 
 bytecheck = ["rkyv/bytecheck"]
+
+zerocopy = ["dep:zerocopy", "dep:zerocopy-derive"]
 
 # enables libm and prefers it over std
 libm = ["dep:libm"]
@@ -61,7 +63,8 @@ rkyv = { version = "0.8", optional = true, default-features = false }
 libm = { version = "0.2", optional = true, default-features = false }
 speedy = { version = "0.8", optional = true, default-features = false }
 encase = { version = "0.12", optional = true, default-features = false }
-zerocopy = { version = "0.8", optional = true, default-features = false, features = ["derive", "simd"] }
+zerocopy = { version = "0.8", optional = true, default-features = false, features = ["simd"] }
+zerocopy-derive = { version = "0.8", optional = true, default-features = false }
 
 [dev-dependencies]
 # rand_xoshiro is required for tests if rand is enabled
