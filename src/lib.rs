@@ -227,6 +227,7 @@ All `glam` dependencies are optional, however some are required for tests
 and benchmarks.
 
 * `std` - the default feature, has no dependencies.
+* `arbitrary` - implementations of `Arbitrary` trait for all `glam` types.
 * `approx` - traits and macros for approximate float comparisons
 * `bytemuck` - for casting into slices of bytes
 * `libm` - uses `libm` math functions instead of `std`
