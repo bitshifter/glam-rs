@@ -787,7 +787,7 @@ impl DMat4 {
 
     /// Creates a right-handed perspective projection matrix with [-1,1] depth range.
     ///
-    /// This is the same as the OpenGL `glFurstum` function.
+    /// This is the same as the OpenGL `glFrustum` function.
     ///
     /// See <https://registry.khronos.org/OpenGL-Refpages/gl2.1/xhtml/glFrustum.xml>
     #[inline]
