@@ -121,6 +121,7 @@ glam = { version = "0.30.8", default-features = false, features = ["nostd-libm"]
 
 ### Optional features
 
+* [`arbitrary`] - `arbitrary` trait implementations for `glam` types.
 * [`approx`] - traits and macros for approximate float comparisons
 * [`bytemuck`] - for casting into slices of bytes
 * [`libm`] - uses `libm` math functions instead of `std`
@@ -137,6 +138,7 @@ glam = { version = "0.30.8", default-features = false, features = ["nostd-libm"]
 * [`bytecheck`] - to perform archive validation when using the `rkyv` feature
 * [`encase`] - `encase` trait implementations for `glam` types.
 
+[`arbitrary`]: https://docs.rs/arbitrary
 [`approx`]: https://docs.rs/approx
 [`bytemuck`]: https://docs.rs/bytemuck
 [`libm`]: https://github.com/rust-lang/libm

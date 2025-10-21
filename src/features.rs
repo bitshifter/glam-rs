@@ -24,3 +24,6 @@ pub mod impl_encase;
 
 #[cfg(feature = "zerocopy")]
 pub mod impl_zerocopy;
+
+#[cfg(feature = "arbitrary")]
+pub mod impl_arbitrary;
