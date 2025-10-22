@@ -221,17 +221,16 @@ let a = Vec4::new(1.0, 2.0, 3.0, 4.0);
 assert_eq!(format!("{}", a), "[1, 2, 3, 4]");
 ```
 
-## Feature gates
+## Optional features
 
 All `glam` dependencies are optional, however some are required for tests
 and benchmarks.
 
-* `std` - the default feature, has no dependencies.
-* `arbitrary` - implementations of `Arbitrary` trait for all `glam` types.
 * `approx` - traits and macros for approximate float comparisons
+* `arbitrary` - implementations of `Arbitrary` trait for all `glam` types.
 * `bytemuck` - for casting into slices of bytes
+* `encase` - `encase` trait implementations for `glam` types.
 * `libm` - uses `libm` math functions instead of `std`
-* `nostd-libm` - uses `libm` math functions if `std` is not available
 * `mint` - for interoperating with other 3D math libraries
 * `rand` - implementations of `Distribution` trait for all `glam` types.
 * `rkyv` - implementations of `Archive`, `Serialize` and `Deserialize` for all
@@ -239,23 +238,27 @@ and benchmarks.
   `scalar-math` feature. It should work between all other builds of `glam`.
   Endian conversion is currently not supported
 * `bytecheck` - to perform archive validation when using the `rkyv` feature
-* `encase` - `encase` trait implementations for `glam` types.
 * `serde` - implementations of `Serialize` and `Deserialize` for all `glam`
   types. Note that serialization should work between builds of `glam` with and without SIMD enabled
 * `speedy` - implementations of `speedy`'s `Readable` and `Writable` for all `glam` types.
+* `zerocopy` - implementations of zerocopy traits for safe transmutes.
+
+## Feature gates
+
+* `std` - the default feature, has no dependencies.
+* `nostd-libm` - uses `libm` math functions if `std` is not available
 * `scalar-math` - disables SIMD support and uses native alignment for all types.
 * `debug-glam-assert` - adds assertions in debug builds which check the validity of parameters
   passed to `glam` to help catch runtime errors.
 * `glam-assert` - adds assertions to all builds which check the validity of parameters passed to
   `glam` to help catch runtime errors.
 * `cuda` - forces `glam` types to match expected cuda alignment
-* `fast-math` - By default, glam attempts to provide bit-for-bit identical
-  results on all platforms. Using this feature will enable platform specific
-  optimizations that may not be identical to other platforms. **Intermediate
-  libraries should not use this feature and defer the decision to the final
-  binary build**.
-* `core-simd` - enables SIMD support via the portable simd module. This is an
-  unstable feature which requires a nightly Rust toolchain and `std` support.
+* `fast-math` - By default, glam attempts to provide bit-for-bit identical results on all platforms.
+  Using this feature will enable platform specific optimizations that may not be identical to other
+  platforms. **Intermediate libraries should not use this feature and defer the decision to the
+  final binary build**.
+* `core-simd` - enables SIMD support via the portable simd module. This is an unstable feature which
+  requires a nightly Rust toolchain and `std` support.
 
 ## Minimum Supported Rust Version (MSRV)
 

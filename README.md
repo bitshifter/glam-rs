@@ -6,11 +6,6 @@
 
 A simple and fast 3D math library for games and graphics.
 
-## Development status
-
-`glam` is in beta stage. Base functionality has been implemented and the look
-and feel of the API has solidified.
-
 ## Features
 
 * `f32` types
@@ -67,7 +62,8 @@ SIMD is supported on `x86`, `x86_64` and `wasm32` targets.
 * To enable `SSE2` on `x86` targets add `-C target-feature=+sse2` to
   `RUSTCFLAGS`.
 * `NEON` is enabled by default on `aarch64` targets.
-* To enable `NEON` on `aarch64` targets add `-C target-feature=+neon` to `RUSTFLAGS`.
+* To enable `NEON` on `aarch64` targets add `-C target-feature=+neon` to
+  `RUSTFLAGS`.
 * To enable `simd128` on `wasm32` targets add `-C target-feature=+simd128` to
   `RUSTFLAGS`.
 * Experimental [portable simd] support can be enabled with the `core-simd`
@@ -121,22 +117,24 @@ glam = { version = "0.30.8", default-features = false, features = ["nostd-libm"]
 
 ### Optional features
 
-* [`arbitrary`] - `arbitrary` trait implementations for `glam` types.
 * [`approx`] - traits and macros for approximate float comparisons
+* [`arbitrary`] - `arbitrary` trait implementations for `glam` types.
 * [`bytemuck`] - for casting into slices of bytes
+* [`encase`] - `encase` trait implementations for `glam` types.
 * [`libm`] - uses `libm` math functions instead of `std`
 * [`mint`] - for interoperating with other 3D math libraries
 * [`rand`] - implementations of `Distribution` trait for all `glam` types.
+* [`rkyv`] - implementations of `Archive`, `Serialize` and `Deserialize` for all
+  `glam` types. Note that serialization is not interoperable with and without
+  the `scalar-math` feature. It should work between all other builds of `glam`.
+  Endian conversion is currently not supported
+* [`bytecheck`] - to perform archive validation when using the `rkyv` feature
 * [`serde`] - implementations of `Serialize` and `Deserialize` for all `glam`
   types. Note that serialization should work between builds of `glam` with and
   without SIMD enabled
-* [`speedy`] - implementations of `speedy`'s `Readable` and `Writable` for all `glam` types.
-* [`rkyv`] - implementations of `Archive`, `Serialize` and `Deserialize` for
-  all `glam` types. Note that serialization is not interoperable with and
-  without the `scalar-math` feature. It should work between all other builds of
-  `glam`.  Endian conversion is currently not supported
-* [`bytecheck`] - to perform archive validation when using the `rkyv` feature
-* [`encase`] - `encase` trait implementations for `glam` types.
+* [`speedy`] - implementations of `speedy`'s `Readable` and `Writable` for all
+  `glam` types.
+* [`zerocopy`] - implementations of zerocopy traits for safe transmutes.
 
 [`arbitrary`]: https://docs.rs/arbitrary
 [`approx`]: https://docs.rs/approx
@@ -152,11 +150,12 @@ glam = { version = "0.30.8", default-features = false, features = ["nostd-libm"]
 
 ### Feature gates
 
+* `std` - the default feature, has no dependencies.
+* `nostd-libm` - uses `libm` math functions if `std` is not available
 * `scalar-math` - compiles with SIMD support disabled
 * `debug-glam-assert` - adds assertions in debug builds which check the validity
   of parameters passed to `glam` to help catch runtime errors
 * `glam-assert` - adds validation assertions to all builds
-* `nostd-libm` - uses `libm` math functions if `std` is not available
 * `cuda` - forces `glam` types to match expected [cuda alignment]
 * `fast-math` - By default, glam attempts to provide bit-for-bit identical
   results on all platforms. Using this feature will enable platform specific
