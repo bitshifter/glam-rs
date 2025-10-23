@@ -1641,6 +1641,35 @@ macro_rules! impl_vec3_float_tests {
             assert_approx_eq!(v1, v0.move_towards(v1, v0.distance(v1) + 1.0));
         });
 
+        glam_test!(test_rotate_axis, {
+            use core::$t::consts::PI;
+
+            assert_approx_eq!($vec3::Y, $vec3::Y.rotate_x(0.0));
+            assert_approx_eq!($vec3::Z, $vec3::Y.rotate_x(PI / 2.));
+            assert_approx_eq!(
+                $vec3::new(0.0, $t::sqrt(2.0) / 2.0, $t::sqrt(2.0) / 2.0),
+                $vec3::Y.rotate_x(PI / 4.)
+            );
+
+            assert_approx_eq!($vec3::X, $vec3::X.rotate_y(0.0));
+            assert_approx_eq!($vec3::NEG_Z, $vec3::X.rotate_y(PI / 2.));
+            assert_approx_eq!(
+                $vec3::new($t::sqrt(2.0) / 2.0, 0.0, -$t::sqrt(2.0) / 2.0),
+                $vec3::X.rotate_y(PI / 4.)
+            );
+
+            assert_approx_eq!($vec3::X, $vec3::X.rotate_z(0.0));
+            assert_approx_eq!($vec3::Y, $vec3::X.rotate_z(PI / 2.));
+            assert_approx_eq!(
+                $vec3::new(-$t::sqrt(2.0) / 2.0, $t::sqrt(2.0) / 2.0, 0.0),
+                $vec3::Y.rotate_z(PI / 4.)
+            );
+
+            let axis = $vec3::new(1.0, 1.0, 1.0).normalize();
+            assert_approx_eq!($vec3::NEG_X, $vec3::NEG_X.rotate_axis(axis, 0.0));
+            assert_approx_eq!($vec3::Y, $vec3::X.rotate_axis(axis, PI * 2. / 3.));
+        });
+
         glam_test!(test_rotate_towards, {
             use core::$t::consts::PI;
 

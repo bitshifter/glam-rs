@@ -1011,6 +1011,55 @@ impl DVec3 {
         )
     }
 
+    /// Rotates around the x axis by `angle` (in radians).
+    #[inline]
+    #[must_use]
+    pub fn rotate_x(self, angle: f64) -> Self {
+        let (sina, cosa) = math::sin_cos(angle);
+        Self::new(
+            self.x,
+            self.y * cosa - self.z * sina,
+            self.y * sina + self.z * cosa,
+        )
+    }
+
+    /// Rotates around the y axis by `angle` (in radians).
+    #[inline]
+    #[must_use]
+    pub fn rotate_y(self, angle: f64) -> Self {
+        let (sina, cosa) = math::sin_cos(angle);
+        Self::new(
+            self.x * cosa + self.z * sina,
+            self.y,
+            self.x * -sina + self.z * cosa,
+        )
+    }
+
+    /// Rotates around the z axis by `angle` (in radians).
+    #[inline]
+    #[must_use]
+    pub fn rotate_z(self, angle: f64) -> Self {
+        let (sina, cosa) = math::sin_cos(angle);
+        Self::new(
+            self.x * cosa - self.y * sina,
+            self.x * sina + self.y * cosa,
+            self.z,
+        )
+    }
+
+    /// Rotates around `axis` by `angle` (in radians).
+    ///
+    /// The axis must be a unit vector.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn rotate_axis(self, axis: Self, angle: f64) -> Self {
+        DQuat::from_axis_angle(axis, angle) * self
+    }
+
     /// Rotates towards `rhs` up to `max_angle` (in radians).
     ///
     /// When `max_angle` is `0.0`, the result will be equal to `self`. When `max_angle` is equal to
