@@ -1247,7 +1247,7 @@ macro_rules! impl_vec3_eq_hash_tests {
 }
 
 macro_rules! impl_vec3_float_tests {
-    ($t:ident, $new:ident, $vec3:ident, $mask:ident) => {
+    ($t:ident, $new:ident, $vec3:ident, $mask:ident, $quat:ident) => {
         impl_vec3_signed_tests!($t, $new, $vec3, $mask);
         impl_vec_float_normalize_tests!($t, $vec3);
 
@@ -1650,12 +1650,20 @@ macro_rules! impl_vec3_float_tests {
                 $vec3::new(0.0, $t::sqrt(2.0) / 2.0, $t::sqrt(2.0) / 2.0),
                 $vec3::Y.rotate_x(PI / 4.)
             );
+            assert_approx_eq!(
+                $quat::from_rotation_x(PI / 4.) * $vec3::Y,
+                $vec3::Y.rotate_x(PI / 4.)
+            );
 
             assert_approx_eq!($vec3::X, $vec3::X.rotate_y(0.0));
             assert_approx_eq!($vec3::NEG_Z, $vec3::X.rotate_y(PI / 2.));
             assert_approx_eq!(
                 $vec3::new($t::sqrt(2.0) / 2.0, 0.0, -$t::sqrt(2.0) / 2.0),
                 $vec3::X.rotate_y(PI / 4.)
+            );
+            assert_approx_eq!(
+                $quat::from_rotation_y(PI / 4.) * $vec3::Y,
+                $vec3::Y.rotate_y(PI / 4.)
             );
 
             assert_approx_eq!($vec3::X, $vec3::X.rotate_z(0.0));
@@ -1664,10 +1672,18 @@ macro_rules! impl_vec3_float_tests {
                 $vec3::new(-$t::sqrt(2.0) / 2.0, $t::sqrt(2.0) / 2.0, 0.0),
                 $vec3::Y.rotate_z(PI / 4.)
             );
+            assert_approx_eq!(
+                $quat::from_rotation_z(PI / 4.) * $vec3::Y,
+                $vec3::Y.rotate_z(PI / 4.)
+            );
 
             let axis = $vec3::new(1.0, 1.0, 1.0).normalize();
             assert_approx_eq!($vec3::NEG_X, $vec3::NEG_X.rotate_axis(axis, 0.0));
             assert_approx_eq!($vec3::Y, $vec3::X.rotate_axis(axis, PI * 2. / 3.));
+            assert_approx_eq!(
+                $quat::from_axis_angle(axis.into(), PI * 2. / 3.) * $vec3::X,
+                $vec3::X.rotate_axis(axis, PI * 2. / 3.)
+            );
         });
 
         glam_test!(test_rotate_towards, {
@@ -2444,7 +2460,7 @@ mod bvec3a {
 }
 
 mod vec3 {
-    use glam::{vec3, BVec3, Vec3};
+    use glam::{vec3, BVec3, Quat, Vec3};
 
     glam_test!(test_align, {
         use std::mem;
@@ -2458,11 +2474,11 @@ mod vec3 {
         assert_eq!(Vec3A::new(1.0, 2.0, 3.0), v.to_vec3a());
     });
 
-    impl_vec3_float_tests!(f32, vec3, Vec3, BVec3);
+    impl_vec3_float_tests!(f32, vec3, Vec3, BVec3, Quat);
 }
 
 mod vec3a {
-    use glam::{vec3a, BVec3A, Vec3A, Vec4};
+    use glam::{vec3a, BVec3A, Quat, Vec3A, Vec4};
 
     glam_test!(test_align, {
         use std::mem;
@@ -2531,11 +2547,11 @@ mod vec3a {
         assert_eq!(Vec3::new(1.0, 2.0, 3.0), v.to_vec3());
     });
 
-    impl_vec3_float_tests!(f32, vec3a, Vec3A, BVec3A);
+    impl_vec3_float_tests!(f32, vec3a, Vec3A, BVec3A, Quat);
 }
 
 mod dvec3 {
-    use glam::{dvec3, BVec3, DVec3, IVec3, UVec3, Vec3};
+    use glam::{dvec3, BVec3, DQuat, DVec3, IVec3, UVec3, Vec3};
 
     glam_test!(test_align, {
         use std::mem;
@@ -2552,7 +2568,7 @@ mod dvec3 {
         assert_eq!(DVec3::new(1.0, 2.0, 3.0), DVec3::from(UVec3::new(1, 2, 3)));
     });
 
-    impl_vec3_float_tests!(f64, dvec3, DVec3, BVec3);
+    impl_vec3_float_tests!(f64, dvec3, DVec3, BVec3, DQuat);
 }
 
 mod i8vec3 {
