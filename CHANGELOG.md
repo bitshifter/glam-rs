@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ### Added
 
+* Added 3D vector `rotate_x`, `rotate_y`, `rotate_z` and `rotate_axis` methods.
+
 * Added `arbitrary` feature, providing `arbitrary` trait implementations for
   `glam` types.
 
