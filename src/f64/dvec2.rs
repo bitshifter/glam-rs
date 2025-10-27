@@ -989,6 +989,10 @@ impl DVec2 {
     /// Returns `rhs` rotated by the angle of `self`. If `self` is normalized,
     /// then this just rotation. This is what you usually want. Otherwise,
     /// it will be like a rotation with a multiplication by `self`'s length.
+    ///
+    /// This can be used in conjunction with the [`from_angle()`][Self::from_angle()] method, e.g.
+    /// `DVec2::from_angle(PI).rotate(DVec2::Y)` will create the vector `[-1, 0]`
+    /// and rotate [`DVec2::Y`] around it returning `-DVec2::Y`.
     #[inline]
     #[must_use]
     pub fn rotate(self, rhs: Self) -> Self {

@@ -476,6 +476,9 @@ impl I64Vec2 {
     /// Returns `rhs` rotated by the angle of `self`. If `self` is normalized,
     /// then this just rotation. This is what you usually want. Otherwise,
     /// it will be like a rotation with a multiplication by `self`'s length.
+    ///
+    /// This can be used to rotate by 90 degree increments, e.g. `[sin(90), cos(90)` = `[1, 0]` or
+    /// `[sin(180), cos(180)]` = `[0, -1]`.
     #[inline]
     #[must_use]
     pub fn rotate(self, rhs: Self) -> Self {
