@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
-## [Unreleased]
+## [0.30.9] - 2025-10-28
 
 ### Added
 
@@ -16,6 +16,11 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 * Added `zerocopy` feature, providing `zerocopy` trait implementations for
   `glam` types.
+
+### Changed
+
+* Made the threshold used in `DQuat::is_near_identity()` more precise,
+  previously it used the same threshold as `Quat::is_near_identity`.
 
 ## [0.30.8] - 2025-09-25
 
@@ -1304,7 +1309,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.30.8...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.30.9...HEAD
+[0.30.9]: https://github.com/bitshifter/glam-rs/compare/0.30.8...0.30.9
 [0.30.8]: https://github.com/bitshifter/glam-rs/compare/0.30.7...0.30.8
 [0.30.7]: https://github.com/bitshifter/glam-rs/compare/0.30.6...0.30.7
 [0.30.6]: https://github.com/bitshifter/glam-rs/compare/0.30.5...0.30.6

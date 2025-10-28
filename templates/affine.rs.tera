@@ -55,7 +55,13 @@ use crate::{
 };
 use core::ops::{Deref, DerefMut, Mul, MulAssign};
 
-#[cfg(all(feature = "zerocopy", not(feature = "core-simd")))]
+#[cfg(
+    {% if scalar_t != "f64" %}
+        all(feature = "zerocopy", not(feature = "core-simd"))
+    {% else %}
+        feature = "zerocopy"
+    {% endif %}
+    )]
 use zerocopy_derive::*;
 
 /// A {{ dim }}D affine transform, which can represent translation, rotation, scaling and shear.
