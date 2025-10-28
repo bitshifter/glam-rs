@@ -2,7 +2,9 @@
 
 set -e
 
+DEPENDENCIES="arbitrary approx bytemuck encase mint rand rkyv serde speedy zerocopy debug-glam-assert"
+
 CARGO='rustup run 1.68.2 cargo'
-$CARGO check --features "bytemuck mint rand serde zerocopy debug-glam-assert" && \
-$CARGO check --features "scalar-math bytemuck mint rand serde zerocopy debug-glam-assert" && \
-$CARGO check --no-default-features --features "libm scalar-math bytemuck mint rand serde zerocopy debug-glam-assert"
+$CARGO check --features "$DEPENDENCIES" && \
+$CARGO check --features "scalar-math $DEPENDENCIES" && \
+$CARGO check --no-default-features --features "libm scalar-math $DEPENDENCIES"

@@ -3,7 +3,7 @@
 set -ex
 
 # Supported dependencies
-DEPENDENCIES="approx bytemuck mint rand rkyv serde zerocopy debug-glam-assert"
+DEPENDENCIES="arbitrary approx bytemuck encase mint rand rkyv serde speedy zerocopy debug-glam-assert"
 
 # Set of features to build & test.
 FEATURE_SETS=(
