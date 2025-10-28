@@ -3,7 +3,7 @@
 use crate::{DMat2, DMat3, DVec2};
 use core::ops::{Deref, DerefMut, Mul, MulAssign};
 
-#[cfg(all(feature = "zerocopy", not(feature = "core-simd")))]
+#[cfg(feature = "zerocopy")]
 use zerocopy_derive::*;
 
 /// A 2D affine transform, which can represent translation, rotation, scaling and shear.
