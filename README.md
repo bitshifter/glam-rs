@@ -136,17 +136,18 @@ glam = { version = "0.30.9", default-features = false, features = ["nostd-libm"]
   `glam` types.
 * [`zerocopy`] - implementations of zerocopy traits for safe transmutes.
 
-[`arbitrary`]: https://docs.rs/arbitrary
 [`approx`]: https://docs.rs/approx
+[`arbitrary`]: https://docs.rs/arbitrary
+[`bytecheck`]: https://github.com/rkyv/bytecheck
 [`bytemuck`]: https://docs.rs/bytemuck
+[`encase`]: https://github.com/teoxoy/encase
 [`libm`]: https://github.com/rust-lang/libm
 [`mint`]: https://github.com/kvark/mint
 [`rand`]: https://github.com/rust-random/rand
+[`rkyv`]: https://github.com/rkyv/rkyv
 [`serde`]: https://serde.rs
 [`speedy`]: https://docs.rs/speedy
-[`rkyv`]: https://github.com/rkyv/rkyv
-[`bytecheck`]: https://github.com/rkyv/bytecheck
-[`encase`]: https://github.com/teoxoy/encase
+[`zerocopy`]: https://github.com/google/zerocopy
 
 ### Feature gates
 
