@@ -46,6 +46,7 @@ arbitrary_matrix_impl!(
 #[cfg(test)]
 mod test {
     use arbitrary::Unstructured;
+    use core::mem::size_of;
 
     use crate::{
         Affine2, Affine3A, BVec2, BVec3, BVec3A, BVec4, BVec4A, DAffine2, DAffine3, DMat2, DMat3,
@@ -59,9 +60,9 @@ mod test {
     fn test_arbitrary_f32() {
         // The float arbitrary impl converts byte array -> integer bits -> float bits.
         // Writing little endian floats to the buffer allows tests without precision issues.
-        let mut bytes = Vec::new();
-        for i in 1..=16 {
-            bytes.extend_from_slice(&(i as f32).to_le_bytes());
+        let mut bytes = [0u8; 16 * size_of::<f32>()];
+        for (i, chunk) in bytes.chunks_exact_mut(size_of::<f32>()).enumerate() {
+            chunk.copy_from_slice(&((i + 1) as f32).to_le_bytes());
         }
 
         assert_eq!(
@@ -122,9 +123,9 @@ mod test {
     fn test_arbitrary_f64() {
         // The float arbitrary impl converts byte array -> integer bits -> float bits.
         // Writing little endian floats to the buffer allows tests without precision issues.
-        let mut bytes = Vec::new();
-        for i in 1..=16 {
-            bytes.extend_from_slice(&(i as f64).to_le_bytes());
+        let mut bytes = [0u8; 16 * size_of::<f64>()];
+        for (i, chunk) in bytes.chunks_exact_mut(size_of::<f64>()).enumerate() {
+            chunk.copy_from_slice(&((i + 1) as f64).to_le_bytes());
         }
 
         assert_eq!(
@@ -176,9 +177,9 @@ mod test {
     #[test]
     fn test_arbitrary_usize() {
         // The integer arbitrary impl converts little endian bytes.
-        let mut bytes = Vec::new();
-        for i in 1..=4usize {
-            bytes.extend_from_slice(&i.to_le_bytes());
+        let mut bytes = [0u8; 4 * size_of::<usize>()];
+        for (i, chunk) in bytes.chunks_exact_mut(size_of::<usize>()).enumerate() {
+            chunk.copy_from_slice(&(i + 1).to_le_bytes());
         }
 
         assert_eq!(
@@ -198,9 +199,9 @@ mod test {
     #[test]
     fn test_arbitrary_u8() {
         // The integer arbitrary impl converts little endian bytes.
-        let mut bytes = Vec::new();
-        for i in 1..=4u8 {
-            bytes.extend_from_slice(&i.to_le_bytes());
+        let mut bytes = [0u8; 4 * size_of::<u8>()];
+        for (i, chunk) in bytes.chunks_exact_mut(size_of::<u8>()).enumerate() {
+            chunk.copy_from_slice(&(i as u8 + 1).to_le_bytes());
         }
 
         assert_eq!(
@@ -220,9 +221,9 @@ mod test {
     #[test]
     fn test_arbitrary_i8() {
         // The integer arbitrary impl converts little endian bytes.
-        let mut bytes = Vec::new();
-        for i in 1..=4i8 {
-            bytes.extend_from_slice(&i.to_le_bytes());
+        let mut bytes = [0u8; 4 * size_of::<i8>()];
+        for (i, chunk) in bytes.chunks_exact_mut(size_of::<i8>()).enumerate() {
+            chunk.copy_from_slice(&(i as i8 + 1).to_le_bytes());
         }
 
         assert_eq!(
@@ -242,9 +243,9 @@ mod test {
     #[test]
     fn test_arbitrary_u16() {
         // The integer arbitrary impl converts little endian bytes.
-        let mut bytes = Vec::new();
-        for i in 1..=4u16 {
-            bytes.extend_from_slice(&i.to_le_bytes());
+        let mut bytes = [0u8; 4 * size_of::<u16>()];
+        for (i, chunk) in bytes.chunks_exact_mut(size_of::<u16>()).enumerate() {
+            chunk.copy_from_slice(&(i as u16 + 1).to_le_bytes());
         }
 
         assert_eq!(
@@ -264,9 +265,9 @@ mod test {
     #[test]
     fn test_arbitrary_i16() {
         // The integer arbitrary impl converts little endian bytes.
-        let mut bytes = Vec::new();
-        for i in 1..=4i16 {
-            bytes.extend_from_slice(&i.to_le_bytes());
+        let mut bytes = [0u8; 4 * size_of::<i16>()];
+        for (i, chunk) in bytes.chunks_exact_mut(size_of::<i16>()).enumerate() {
+            chunk.copy_from_slice(&(i as i16 + 1).to_le_bytes());
         }
 
         assert_eq!(
@@ -286,9 +287,9 @@ mod test {
     #[test]
     fn test_arbitrary_u32() {
         // The integer arbitrary impl converts little endian bytes.
-        let mut bytes = Vec::new();
-        for i in 1..=4u32 {
-            bytes.extend_from_slice(&i.to_le_bytes());
+        let mut bytes = [0u8; 4 * size_of::<u32>()];
+        for (i, chunk) in bytes.chunks_exact_mut(size_of::<u32>()).enumerate() {
+            chunk.copy_from_slice(&(i as u32 + 1).to_le_bytes());
         }
 
         assert_eq!(
@@ -308,9 +309,9 @@ mod test {
     #[test]
     fn test_arbitrary_i32() {
         // The integer arbitrary impl converts little endian bytes.
-        let mut bytes = Vec::new();
-        for i in 1..=4i32 {
-            bytes.extend_from_slice(&i.to_le_bytes());
+        let mut bytes = [0u8; 4 * size_of::<i32>()];
+        for (i, chunk) in bytes.chunks_exact_mut(size_of::<i32>()).enumerate() {
+            chunk.copy_from_slice(&(i as i32 + 1).to_le_bytes());
         }
 
         assert_eq!(
@@ -330,9 +331,9 @@ mod test {
     #[test]
     fn test_arbitrary_u64() {
         // The integer arbitrary impl converts little endian bytes.
-        let mut bytes = Vec::new();
-        for i in 1..=4u64 {
-            bytes.extend_from_slice(&i.to_le_bytes());
+        let mut bytes = [0u8; 4 * size_of::<u64>()];
+        for (i, chunk) in bytes.chunks_exact_mut(size_of::<u64>()).enumerate() {
+            chunk.copy_from_slice(&(i as u64 + 1).to_le_bytes());
         }
 
         assert_eq!(
@@ -352,9 +353,9 @@ mod test {
     #[test]
     fn test_arbitrary_i64() {
         // The integer arbitrary impl converts little endian bytes.
-        let mut bytes = Vec::new();
-        for i in 1..=4i64 {
-            bytes.extend_from_slice(&i.to_le_bytes());
+        let mut bytes = [0u8; 4 * size_of::<i64>()];
+        for (i, chunk) in bytes.chunks_exact_mut(size_of::<i64>()).enumerate() {
+            chunk.copy_from_slice(&(i as i64 + 1).to_le_bytes());
         }
 
         assert_eq!(
