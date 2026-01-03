@@ -56,7 +56,7 @@ macro_rules! impl_vec_types {
                 let low = *low_b.borrow();
                 let high = *high_b.borrow();
 
-                if low.x >= high.x || low.y >= high.y {
+                if !low.cmple(high).all() {
                     return Err(UniformError::EmptyRange);
                 }
 
@@ -156,7 +156,7 @@ macro_rules! impl_vec_types {
                 let low = *low_b.borrow();
                 let high = *high_b.borrow();
 
-                if low.x >= high.x || low.y >= high.y || low.z >= high.z {
+                if !low.cmple(high).all() {
                     return Err(UniformError::EmptyRange);
                 }
 
@@ -264,7 +264,7 @@ macro_rules! impl_vec_types {
                 let low = *low_b.borrow();
                 let high = *high_b.borrow();
 
-                if low.x >= high.x || low.y >= high.y || low.z >= high.z || low.w >= high.w {
+                if !low.cmple(high).all() {
                     return Err(UniformError::EmptyRange);
                 }
 
@@ -480,6 +480,14 @@ macro_rules! test_vec_type_uniform {
                 <$t>::MAX / $upper_range_divisor,
                 $vec::default(),
                 $vec::MAX / $upper_range_divisor
+            );
+
+            test_uniform!(
+                new_inclusive,
+                <$t>::default(),
+                <$t>::default(),
+                $vec::default(),
+                $vec::default()
             );
 
             macro_rules! test_sample_uniform_sampler {
