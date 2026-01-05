@@ -2040,6 +2040,41 @@ impl {{ self_t }} {
         )
     }
 
+    /// Returns a vector containing `2^self` for each element of `self`.
+    #[inline]
+    #[must_use]
+    pub fn exp2(self) -> Self {
+        Self::new(
+            {% for c in components %}
+                math::exp2(self.{{ c }}),
+            {%- endfor %}
+        )
+    }
+
+    /// Returns a vector containing the natural logarithm for each element of `self`.
+    /// This returns NaN when the element is negative and negative infinity when the element is zero.
+    #[inline]
+    #[must_use]
+    pub fn ln(self) -> Self {
+        Self::new(
+            {% for c in components %}
+                math::ln(self.{{ c }}),
+            {%- endfor %}
+        )
+    }
+
+    /// Returns a vector containing the base 2 logarithm for each element of `self`.
+    /// This returns NaN when the element is negative and negative infinity when the element is zero.
+    #[inline]
+    #[must_use]
+    pub fn log2(self) -> Self {
+        Self::new(
+            {% for c in components %}
+                math::log2(self.{{ c }}),
+            {%- endfor %}
+        )
+    }
+
     /// Returns a vector containing each element of `self` raised to the power of `n`.
     #[inline]
     #[must_use]

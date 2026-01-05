@@ -75,6 +75,21 @@ mod libm_math {
     }
 
     #[inline(always)]
+    pub(crate) fn exp2(f: f64) -> f64 {
+        libm::exp2(f)
+    }
+
+    #[inline(always)]
+    pub(crate) fn ln(f: f64) -> f64 {
+        libm::log(f)
+    }
+
+    #[inline(always)]
+    pub(crate) fn log2(f: f64) -> f64 {
+        libm::log2(f)
+    }
+
+    #[inline(always)]
     pub(crate) fn powf(f: f64, n: f64) -> f64 {
         libm::pow(f, n)
     }
@@ -178,6 +193,21 @@ mod std_math {
     }
 
     #[inline(always)]
+    pub(crate) fn exp2(f: f64) -> f64 {
+        f64::exp2(f)
+    }
+
+    #[inline(always)]
+    pub(crate) fn ln(f: f64) -> f64 {
+        f64::ln(f)
+    }
+
+    #[inline(always)]
+    pub(crate) fn log2(f: f64) -> f64 {
+        f64::log2(f)
+    }
+
+    #[inline(always)]
     pub(crate) fn powf(f: f64, n: f64) -> f64 {
         f64::powf(f, n)
     }
@@ -259,6 +289,18 @@ mod no_backend_math {
     }
 
     pub(crate) fn exp(_: f64) -> f64 {
+        unimplemented!()
+    }
+
+    pub(crate) fn exp2(_: f64) -> f64 {
+        unimplemented!()
+    }
+
+    pub(crate) fn ln(_: f64) -> f64 {
+        unimplemented!()
+    }
+
+    pub(crate) fn log2(_: f64) -> f64 {
         unimplemented!()
     }
 
