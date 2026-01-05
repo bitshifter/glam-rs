@@ -5,7 +5,7 @@ macro_rules! bench_func {
             const SIZE: usize = 1 << 13;
             let mut rng = support::PCG32::default();
             let inputs =
-                criterion::black_box((0..SIZE).map(|_| $from(&mut rng)).collect::<Vec<_>>());
+                core::hint::black_box((0..SIZE).map(|_| $from(&mut rng)).collect::<Vec<_>>());
             // pre-fill output vector with some random value
             let mut outputs = vec![$func($from(&mut rng)); SIZE];
             let mut i = 0;
@@ -17,7 +17,7 @@ macro_rules! bench_func {
                     }
                 })
             });
-            criterion::black_box(outputs);
+            core::hint::black_box(outputs);
         }
     };
 }
@@ -29,7 +29,7 @@ macro_rules! bench_unop {
             const SIZE: usize = 1 << 13;
             let mut rng = support::PCG32::default();
             let inputs =
-                criterion::black_box((0..SIZE).map(|_| $from(&mut rng)).collect::<Vec<_>>());
+                core::hint::black_box((0..SIZE).map(|_| $from(&mut rng)).collect::<Vec<_>>());
             // pre-fill output vector with some random value
             let mut outputs = vec![$from(&mut rng).$unop(); SIZE];
             let mut i = 0;
@@ -41,7 +41,7 @@ macro_rules! bench_unop {
                     }
                 })
             });
-            criterion::black_box(outputs);
+            core::hint::black_box(outputs);
         }
     };
 }
@@ -53,9 +53,9 @@ macro_rules! bench_binop {
             const SIZE: usize = 1 << 13;
             let mut rng = support::PCG32::default();
             let inputs1 =
-                criterion::black_box((0..SIZE).map(|_| $from1(&mut rng)).collect::<Vec<_>>());
+                core::hint::black_box((0..SIZE).map(|_| $from1(&mut rng)).collect::<Vec<_>>());
             let inputs2 =
-                criterion::black_box((0..SIZE).map(|_| $from2(&mut rng)).collect::<Vec<_>>());
+                core::hint::black_box((0..SIZE).map(|_| $from2(&mut rng)).collect::<Vec<_>>());
             // pre-fill output vector with some random value
             let mut outputs = vec![$from1(&mut rng).$binop($from2(&mut rng)); SIZE];
             let mut i = 0;
@@ -67,7 +67,7 @@ macro_rules! bench_binop {
                     }
                 })
             });
-            criterion::black_box(outputs);
+            core::hint::black_box(outputs);
         }
     };
     ($name: ident, $desc: expr, op => $binop: ident, from => $from: expr) => {
@@ -82,11 +82,11 @@ macro_rules! bench_trinop {
             const SIZE: usize = 1 << 13;
             let mut rng = support::PCG32::default();
             let inputs1 =
-                criterion::black_box((0..SIZE).map(|_| $from1(&mut rng)).collect::<Vec<_>>());
+                core::hint::black_box((0..SIZE).map(|_| $from1(&mut rng)).collect::<Vec<_>>());
             let inputs2 =
-                criterion::black_box((0..SIZE).map(|_| $from2(&mut rng)).collect::<Vec<_>>());
+                core::hint::black_box((0..SIZE).map(|_| $from2(&mut rng)).collect::<Vec<_>>());
             let inputs3 =
-                criterion::black_box((0..SIZE).map(|_| $from3(&mut rng)).collect::<Vec<_>>());
+                core::hint::black_box((0..SIZE).map(|_| $from3(&mut rng)).collect::<Vec<_>>());
             // pre-fill output vector with some random value
             let mut outputs =
                 vec![$from1(&mut rng).$trinop($from2(&mut rng), $from3(&mut rng)); SIZE];
@@ -101,7 +101,7 @@ macro_rules! bench_trinop {
                     }
                 })
             });
-            criterion::black_box(outputs);
+            core::hint::black_box(outputs);
         }
     };
 }
@@ -113,9 +113,9 @@ macro_rules! bench_select {
             const SIZE: usize = 1 << 13;
             let mut rng = support::PCG32::default();
             let inputs1 =
-                criterion::black_box((0..SIZE).map(|_| $from(&mut rng)).collect::<Vec<_>>());
+                core::hint::black_box((0..SIZE).map(|_| $from(&mut rng)).collect::<Vec<_>>());
             let inputs2 =
-                criterion::black_box((0..SIZE).map(|_| $from(&mut rng)).collect::<Vec<_>>());
+                core::hint::black_box((0..SIZE).map(|_| $from(&mut rng)).collect::<Vec<_>>());
             let masks = vec![$from(&mut rng).$op($from(&mut rng)); SIZE];
             // pre-fill output vector with some random value
             let mut outputs = vec![$from(&mut rng); SIZE];
@@ -132,7 +132,7 @@ macro_rules! bench_select {
                     }
                 })
             });
-            criterion::black_box(outputs);
+            core::hint::black_box(outputs);
         }
     };
 }
@@ -142,7 +142,7 @@ macro_rules! bench_from_ypr {
         pub(crate) fn $name(c: &mut Criterion) {
             const SIZE: usize = 1 << 13;
             let mut rng = support::PCG32::default();
-            let inputs = criterion::black_box(
+            let inputs = core::hint::black_box(
                 (0..SIZE)
                     .map(|_| {
                         (
