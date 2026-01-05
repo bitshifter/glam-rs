@@ -86,7 +86,7 @@ pub fn mat4_from_srt(c: &mut Criterion) {
     use glam::{Quat, Vec3};
     const SIZE: usize = 1 << 13;
     let mut rng = support::PCG32::default();
-    let inputs = criterion::black_box(
+    let inputs = core::hint::black_box(
         (0..SIZE)
             .map(|_| {
                 (
