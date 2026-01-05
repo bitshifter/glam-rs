@@ -1766,6 +1766,34 @@ macro_rules! impl_vec3_float_tests {
             );
         });
 
+        glam_test!(test_exp2, {
+            assert_approx_eq!(
+                $vec3::new(1.0, 2.0, 3.0).exp2(),
+                $vec3::new((1.0 as $t).exp2(), (2.0 as $t).exp2(), (3.0 as $t).exp2(),),
+                1e-5
+            );
+        });
+
+        glam_test!(test_ln, {
+            assert_approx_eq!(
+                $vec3::new(1.0, 2.0, 3.0).ln(),
+                $vec3::new((1.0 as $t).ln(), (2.0 as $t).ln(), (3.0 as $t).ln(),),
+                1e-5
+            );
+            assert!($vec3::NEG_ONE.ln().is_nan());
+            assert_eq!($vec3::ZERO.ln(), $vec3::NEG_INFINITY);
+        });
+
+        glam_test!(test_log2, {
+            assert_approx_eq!(
+                $vec3::new(1.0, 2.0, 3.0).log2(),
+                $vec3::new((1.0 as $t).log2(), (2.0 as $t).log2(), (3.0 as $t).log2(),),
+                1e-5
+            );
+            assert!($vec3::NEG_ONE.log2().is_nan());
+            assert_eq!($vec3::ZERO.log2(), $vec3::NEG_INFINITY);
+        });
+
         glam_test!(test_angle_between, {
             let angle = $vec3::new(1.0, 0.0, 1.0).angle_between($vec3::new(1.0, 1.0, 0.0));
             assert_approx_eq!(core::$t::consts::FRAC_PI_3, angle, 1e-6);

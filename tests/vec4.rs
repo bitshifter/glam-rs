@@ -1821,6 +1821,49 @@ macro_rules! impl_vec4_float_tests {
             );
         });
 
+        glam_test!(test_exp2, {
+            assert_approx_eq!(
+                $vec4::new(1.0, 2.0, 3.0, 4.0).exp2(),
+                $vec4::new(
+                    (1.0 as $t).exp2(),
+                    (2.0 as $t).exp2(),
+                    (3.0 as $t).exp2(),
+                    (4.0 as $t).exp2()
+                ),
+                1e-5
+            );
+        });
+
+        glam_test!(test_ln, {
+            assert_approx_eq!(
+                $vec4::new(1.0, 2.0, 3.0, 4.0).ln(),
+                $vec4::new(
+                    (1.0 as $t).ln(),
+                    (2.0 as $t).ln(),
+                    (3.0 as $t).ln(),
+                    (4.0 as $t).ln()
+                ),
+                1e-5
+            );
+            assert!($vec4::NEG_ONE.ln().is_nan());
+            assert_eq!($vec4::ZERO.ln(), $vec4::NEG_INFINITY);
+        });
+
+        glam_test!(test_log2, {
+            assert_approx_eq!(
+                $vec4::new(1.0, 2.0, 3.0, 4.0).log2(),
+                $vec4::new(
+                    (1.0 as $t).log2(),
+                    (2.0 as $t).log2(),
+                    (3.0 as $t).log2(),
+                    (4.0 as $t).log2()
+                ),
+                1e-5
+            );
+            assert!($vec4::NEG_ONE.log2().is_nan());
+            assert_eq!($vec4::ZERO.log2(), $vec4::NEG_INFINITY);
+        });
+
         glam_test!(test_clamp_length, {
             // Too long gets shortened
             assert_eq!(
