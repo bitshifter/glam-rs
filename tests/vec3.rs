@@ -1899,6 +1899,11 @@ macro_rules! impl_vec3_float_tests {
             assert_approx_eq!(incident.refract(normal, 1.5), $vec3::ZERO);
         });
 
+        glam_test!(test_homogeneous, {
+            let v = $vec3::new(1.0, 2.0, 3.0);
+            assert_approx_eq!(v, $vec3::from_homogeneous(v.to_homogeneous()));
+        });
+
         glam_test!(test_as, {
             use glam::{
                 DVec3, I16Vec3, I64Vec3, I8Vec3, IVec3, U16Vec3, U64Vec3, U8Vec3, USizeVec3, UVec3,

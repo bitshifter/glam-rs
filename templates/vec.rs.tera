@@ -636,20 +636,59 @@ impl {{ self_t }} {
         use crate::swizzles::Vec3Swizzles;
         self.xy()
     }
+
+    {% if is_float %}
+    /// Projects a homogeneous coordinate to 3D space by performing perspective divide.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `v.w` is `0` when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn from_homogeneous(v: {{ vec4_t }}) -> Self {
+        glam_assert!(v.w != 0.0);
+        Self::from_vec4(v) / v.w
+    }
+    
+    /// Creates a homogeneous coordinate from `self`, equivalent to `self.extend(1.0)`.
+    #[inline]
+    #[must_use]
+    pub fn to_homogeneous(self) -> {{ vec4_t }} {
+        self.extend(1.0)
+    }
+    {% endif %}
+
 {% elif dim == 4 %}
     /// Creates a 3D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
     ///
     /// Truncation to [`{{ vec3_t }}`] may also be performed by using [`self.xyz()`][crate::swizzles::Vec4Swizzles::xyz()].
-{%- if scalar_t == "f32" %}
+    {%- if scalar_t == "f32" %}
     ///
     /// To truncate to [`Vec3A`] use [`Vec3A::from_vec4()`].
-{%- endif %}
+    {%- endif %}
     #[inline]
     #[must_use]
     pub fn truncate(self) -> {{ vec3_t }} {
         use crate::swizzles::Vec4Swizzles;
         self.xyz()
     }
+
+    {% if is_float %}
+    /// Projects a homogeneous coordinate to 3D space by performing perspective divide.
+    {%- if scalar_t == "f32" %}
+    ///
+    /// To project to [`Vec3A`] use [`Vec3A::from_homogeneous()`].
+    {%- endif %}
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `self.w` is `0` when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn project(self) -> {{ vec3_t }} {
+        {{ vec3_t }}::from_homogeneous(self)
+    }
+    {% endif %}
 {% endif %}
 
 {% if self_t == "Vec3A" %}

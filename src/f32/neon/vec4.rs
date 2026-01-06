@@ -187,6 +187,19 @@ impl Vec4 {
         self.xyz()
     }
 
+    /// Projects a homogeneous coordinate to 3D space by performing perspective divide.
+    ///
+    /// To project to [`Vec3A`] use [`Vec3A::from_homogeneous()`].
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `self.w` is `0` when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn project(self) -> Vec3 {
+        Vec3::from_homogeneous(self)
+    }
+
     /// Creates a 4D vector from `self` with the given value of `x`.
     #[inline]
     #[must_use]

@@ -192,6 +192,17 @@ impl DVec4 {
         self.xyz()
     }
 
+    /// Projects a homogeneous coordinate to 3D space by performing perspective divide.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `self.w` is `0` when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn project(self) -> DVec3 {
+        DVec3::from_homogeneous(self)
+    }
+
     /// Creates a 4D vector from `self` with the given value of `x`.
     #[inline]
     #[must_use]
