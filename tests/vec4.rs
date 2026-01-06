@@ -1939,6 +1939,11 @@ macro_rules! impl_vec4_float_tests {
             let normal = $vec4::Y;
             assert_approx_eq!(incident.refract(normal, 1.5), $vec4::ZERO);
         });
+
+        glam_test!(test_homogeneous, {
+            let v = $vec4::new(1.0, 2.0, 3.0, 1.0);
+            assert_approx_eq!(v, v.project().to_homogeneous());
+        });
     };
 }
 

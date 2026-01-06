@@ -190,6 +190,25 @@ impl Vec3A {
         self.xy()
     }
 
+    /// Projects a homogeneous coordinate to 3D space by performing perspective divide.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `v.w` is `0` when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn from_homogeneous(v: Vec4) -> Self {
+        glam_assert!(v.w != 0.0);
+        Self::from_vec4(v) / v.w
+    }
+
+    /// Creates a homogeneous coordinate from `self`, equivalent to `self.extend(1.0)`.
+    #[inline]
+    #[must_use]
+    pub fn to_homogeneous(self) -> Vec4 {
+        self.extend(1.0)
+    }
+
     // Converts `self` to a `Vec3`.
     #[inline]
     #[must_use]
