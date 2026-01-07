@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [0.30.10] - 2026-01-07
+
+### Added
+
+* Added float vector `exp2`, `ln` and `log2` methods.
+
+* Added convenience methods for working with homogeneous coordinates, including
+  3D vector `from_homogeneous` and `to_homogeneous` and 4D vector `project`.
+
+### Fixed
+
+* Fixed `rand` `UniformSampler` `new_inclusive` methods so they're actually
+  inclusive.
+
 ## [0.30.9] - 2025-10-28
 
 ### Added
@@ -1309,7 +1323,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.30.9...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.30.10...HEAD
+[0.30.9]: https://github.com/bitshifter/glam-rs/compare/0.30.9...0.30.10
 [0.30.9]: https://github.com/bitshifter/glam-rs/compare/0.30.8...0.30.9
 [0.30.8]: https://github.com/bitshifter/glam-rs/compare/0.30.7...0.30.8
 [0.30.7]: https://github.com/bitshifter/glam-rs/compare/0.30.6...0.30.7
