@@ -1,10 +1,10 @@
 #[cfg(test)]
 mod test {
     use crate::{
-        Affine2, Affine3A, DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4,
-        I16Vec2, I16Vec3, I16Vec4, I64Vec2, I64Vec3, I64Vec4, I8Vec2, I8Vec3, I8Vec4, IVec2, IVec3,
-        IVec4, Mat2, Mat3, Mat3A, Mat4, Quat, U16Vec2, U16Vec3, U16Vec4, U64Vec2, U64Vec3, U64Vec4,
-        U8Vec2, U8Vec3, U8Vec4, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
+        Affine2, Affine3, Affine3A, DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3,
+        DVec4, I16Vec2, I16Vec3, I16Vec4, I64Vec2, I64Vec3, I64Vec4, I8Vec2, I8Vec3, I8Vec4, IVec2,
+        IVec3, IVec4, Mat2, Mat3, Mat3A, Mat4, Quat, U16Vec2, U16Vec3, U16Vec4, U64Vec2, U64Vec3,
+        U64Vec4, U8Vec2, U8Vec3, U8Vec4, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
     };
     use core::mem;
 
@@ -40,7 +40,9 @@ mod test {
         };
     }
 
-    test_from_bytes_t!(affine2, Affine2);
+    test_from_bytes_t!(affine2_from, Affine2);
+    test_from_bytes_t!(affine3_from, Affine3);
+    test_into_bytes_t!(affine3_into, Affine3);
     test_from_bytes_t!(affine3a_from, Affine3A);
     #[cfg(all(
         any(
@@ -88,7 +90,8 @@ mod test {
     test_from_bytes_t!(vec4_from, Vec4);
     test_into_bytes_t!(vec4_into, Vec4);
 
-    test_into_bytes_t!(daffine2, DAffine2);
+    test_from_bytes_t!(daffine2_from, DAffine2);
+    test_into_bytes_t!(daffine2_into, DAffine2);
     test_from_bytes_t!(daffine3_from, DAffine3);
     test_into_bytes_t!(daffine3_into, DAffine3);
     test_from_bytes_t!(dmat2_from, DMat2);

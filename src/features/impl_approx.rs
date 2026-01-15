@@ -1,6 +1,6 @@
 use crate::{
-    Affine2, Affine3A, DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, Mat2,
-    Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4,
+    Affine2, Affine3, Affine3A, DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3,
+    DVec4, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4,
 };
 use approx::{AbsDiffEq, RelativeEq, UlpsEq};
 
@@ -141,6 +141,7 @@ impl_approx_as_ref!(f32, Vec4);
 impl_approx_as_ref!(f32, Vec3A);
 
 impl_approx_xzy_axes!(f32, Affine2);
+impl_approx_xzyw_axes!(f32, Affine3);
 impl_approx_xzyw_axes!(f32, Affine3A);
 impl_approx_xzy_axes!(f32, Mat3A);
 
@@ -229,6 +230,13 @@ mod test {
             from_mat3,
             Mat3,
             Affine2::from_cols_slice(&ONESF32)
+        );
+        impl_affine_approx_test!(
+            f32,
+            Affine3,
+            from_mat4,
+            Mat4,
+            Affine3::from_cols_slice(&ONESF32)
         );
         impl_affine_approx_test!(
             f32,

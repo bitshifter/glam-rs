@@ -112,7 +112,7 @@ macro_rules! impl_affine3_tests {
             );
 
             assert_approx_eq!(
-                $quat::from_affine3(&$affine3::from_rotation_x(deg(180.0))),
+                $quat::from_affine3(&$affine3::from_rotation_x(deg(180.0)).into()),
                 $quat::from_rotation_x(deg(180.0))
             );
 
@@ -369,6 +369,42 @@ macro_rules! impl_affine3_tests {
             assert!(!$affine3::from_scale($vec3::new(1.0, 1.0, $t::NEG_INFINITY)).is_finite());
         });
     };
+}
+
+mod affine3 {
+    use super::support::{deg, FloatCompare};
+    use glam::{Affine3, Mat3, Mat4, Quat, Vec3};
+
+    impl FloatCompare for Affine3 {
+        #[inline]
+        fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
+            self.abs_diff_eq(*other, max_abs_diff)
+        }
+        #[inline]
+        fn abs_diff(&self, other: &Self) -> Self {
+            Self {
+                matrix3: self.matrix3.abs_diff(&other.matrix3),
+                translation: self.translation.abs_diff(&other.translation),
+            }
+        }
+    }
+
+    glam_test!(test_align, {
+        use std::mem;
+        assert_eq!(48, mem::size_of::<Affine3>());
+        assert_eq!(mem::align_of::<f32>(), mem::align_of::<Affine3>());
+    });
+
+    // glam_test!(test_as, {
+    //     use glam::Affine3A;
+    //     assert_eq!(
+    //         Affine3A::from_cols_array(&[1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12.]),
+    //         Affine3::from_cols_array(&[1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12.])
+    //             .as_affine3a(),
+    //     );
+    // });
+
+    impl_affine3_tests!(f32, Affine3, Quat, Vec3, Mat3, Mat4);
 }
 
 mod affine3a {

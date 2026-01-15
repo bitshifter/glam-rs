@@ -633,7 +633,7 @@ macro_rules! impl_serde_affine2 {
 }
 
 macro_rules! impl_serde_affine3 {
-    ($t:ty, $affine3:ident) => {
+    ($testname:ident, $t:ty, $affine3:ident) => {
         /// Serialize as a sequence of 12 values.
         impl Serialize for $affine3 {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -692,7 +692,7 @@ macro_rules! impl_serde_affine3 {
         }
 
         #[test]
-        fn test_affine3_serde() {
+        fn $testname() {
             let a = $affine3::from_cols_array(&[
                 1.0, 0.0, 0.0, 0.0, 2.0, 0.0, 0.0, 0.0, 3.0, 4.0, 5.0, 6.0,
             ]);
@@ -738,7 +738,7 @@ macro_rules! impl_serde_vec_types {
 macro_rules! impl_serde_float_types {
     ($t:ty, $affine2:ident, $affine3:ident, $mat2:ident, $mat3:ident, $mat4:ident, $quat:ident, $vec2:ident, $vec3:ident, $vec4:ident) => {
         impl_serde_affine2!($t, $affine2);
-        impl_serde_affine3!($t, $affine3);
+        impl_serde_affine3!(test_affine3_serde, $t, $affine3);
         impl_serde_mat2!($t, $mat2);
         impl_serde_mat3!($t, $mat3);
         impl_serde_mat4!($t, $mat4);
@@ -1038,14 +1038,15 @@ mod f32 {
     use super::test_f32::*;
     #[cfg(test)]
     use super::test_float::*;
-    use crate::{Affine2, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
+    use crate::{Affine2, Affine3, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
     use core::fmt;
     use serde_core::{
         de::{self, Deserialize, Deserializer, SeqAccess, Visitor},
         ser::{Serialize, SerializeTupleStruct, Serializer},
     };
 
-    impl_serde_float_types!(f32, Affine2, Affine3A, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4);
+    impl_serde_float_types!(f32, Affine2, Affine3, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4);
+    impl_serde_affine3!(test_affine3a_serde, f32, Affine3A);
     impl_serde_mat3!(f32, Mat3A, test_mat3a_serde);
     impl_serde_vec3!(f32, Vec3A, test_vec3a_serde);
 }

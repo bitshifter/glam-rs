@@ -1,4 +1,5 @@
 mod affine2;
+mod affine3;
 mod affine3a;
 mod float;
 mod mat3;
@@ -71,6 +72,7 @@ use wasm32::*;
 use coresimd::*;
 
 pub use affine2::Affine2;
+pub use affine3::Affine3;
 pub use affine3a::Affine3A;
 pub use mat2::{mat2, Mat2};
 pub use mat3::{mat3, Mat3};
