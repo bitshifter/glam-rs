@@ -1038,7 +1038,9 @@ mod f32 {
     use super::test_f32::*;
     #[cfg(test)]
     use super::test_float::*;
-    use crate::{Affine2, Affine3, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
+    use crate::{
+        Affine2, Affine3, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4,
+    };
     use core::fmt;
     use serde_core::{
         de::{self, Deserialize, Deserializer, SeqAccess, Visitor},
