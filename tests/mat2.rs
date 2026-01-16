@@ -104,6 +104,21 @@ macro_rules! impl_mat2_tests {
             assert_approx_eq!($newvec2(0.0, 1.0), res_b);
         });
 
+        glam_test!(test_mat2_mul_vec2, {
+            let m = $mat2::from_angle(deg(90.0));
+            assert_approx_eq!($vec2::NEG_X, m * $vec2::Y);
+            assert_approx_eq!($vec2::NEG_X, &m * $vec2::Y);
+            assert_approx_eq!($vec2::NEG_X, m * &$vec2::Y);
+            assert_approx_eq!($vec2::NEG_X, &m * &$vec2::Y);
+
+            assert_approx_eq!($vec2::NEG_X, m.mul_vec2($vec2::Y))
+        });
+
+        glam_test!(test_mat2_mul_diagonal, {
+            let v = $vec2::new(1.0, 2.0);
+            assert_eq!($mat2::IDENTITY * $mat2::from_diagonal(v), $mat2::IDENTITY.mul_diagonal_scale(v));
+        });
+
         glam_test!(test_from_scale_angle, {
             let rot = $mat2::from_scale_angle($vec2::new(4.0, 2.0), deg(180.0));
             assert_approx_eq!($vec2::X * -4.0, rot * $vec2::X, 1.0e-6);

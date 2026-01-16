@@ -338,6 +338,15 @@ impl Mat2 {
         Self::from_cols(self.x_axis.mul(rhs), self.y_axis.mul(rhs))
     }
 
+    /// Multiply `self` by a scaling vector `scale`.
+    /// This is faster than creating a whole diagonal scaling matrix and then multiplying that.
+    /// This operation is commutative.
+    #[inline]
+    #[must_use]
+    pub fn mul_diagonal_scale(&self, scale: Vec2) -> Self {
+        Self::from_cols(self.x_axis * scale.x, self.y_axis * scale.y)
+    }
+
     /// Divides a 2x2 matrix by a scalar.
     #[inline]
     #[must_use]

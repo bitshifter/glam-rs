@@ -2431,6 +2431,19 @@ impl {{ self_t }} {
         {% endif %}
     }
 
+    /// Multiply `self` by a scaling vector `scale`.
+    /// This is faster than creating a whole diagonal scaling matrix and then multiplying that.
+    /// This operation is commutative.
+    #[inline]
+    #[must_use]
+    pub fn mul_diagonal_scale(&self, scale: {{ vecn_t }}) -> Self {
+        Self::from_cols(
+            {% for i in range(end = dim) %}
+                self.{{ axes[i] }} * scale.{{ components[i] }},
+            {%- endfor %}
+        )
+    }
+
     /// Divides a {{ nxn }} matrix by a scalar.
     #[inline]
     #[must_use]
