@@ -416,6 +416,13 @@ mod affine3a {
         }
     }
 
+    glam_test!(test_from_affine3a, {
+        assert_approx_eq!(
+            Quat::from_affine3(&Affine3A::from_rotation_x(deg(180.0)).into()),
+            Quat::from_rotation_x(deg(180.0))
+        );
+    });
+
     glam_test!(test_align, {
         use std::mem;
         assert_eq!(64, mem::size_of::<Affine3A>());
