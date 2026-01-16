@@ -201,6 +201,11 @@ macro_rules! impl_mat4_tests {
             assert_approx_eq!($vec4::NEG_X, m.mul_vec4($vec4::Y))
         });
 
+        glam_test!(test_mat4_mul_diagonal, {
+            let v = $vec4::new(1.0, 2.0, 3.0, 4.0);
+            assert_eq!($mat4::IDENTITY * $mat4::from_diagonal(v), $mat4::IDENTITY.mul_diagonal_scale(v));
+        });
+
         glam_test!(test_mat4_transform3d, {
             let m = $mat4::from_axis_angle($vec3::Z, deg(90.0));
             let result3 = m.transform_vector3($vec3::Y);

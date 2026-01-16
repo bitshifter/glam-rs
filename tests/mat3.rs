@@ -142,6 +142,14 @@ macro_rules! impl_mat3_tests {
             assert_approx_eq!($vec3::NEG_X, m.mul_vec3($vec3::Y))
         });
 
+        glam_test!(test_mat3_mul_diagonal, {
+            let v = $vec3::new(1.0, 2.0, 3.0);
+            assert_eq!(
+                $mat3::IDENTITY * $mat3::from_diagonal(v),
+                $mat3::IDENTITY.mul_diagonal_scale(v)
+            );
+        });
+
         glam_test!(test_mat3_transform2d, {
             let m = $mat3::from_translation($vec2::new(2.0, 4.0));
             assert_eq!($vec2::ZERO, m.transform_vector2($vec2::ZERO));
