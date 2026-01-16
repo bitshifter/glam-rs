@@ -4,9 +4,15 @@
 
 {% if scalar_t == "f32" %}
     {% if dim == 3 %}
-        {% set self_t = "Affine3A" %}
-        {% set col_t = "Vec3A" %}
-        {% set mat_t = "Mat3A" %}
+        {% if is_align %}
+            {% set self_t = "Affine3A" %}
+            {% set col_t = "Vec3A" %}
+            {% set mat_t = "Mat3A" %}
+        {% else %}
+            {% set self_t = "Affine3" %}
+            {% set col_t = "Vec3" %}
+            {% set mat_t = "Mat3" %}
+        {% endif %}
     {% else %}
         {% set self_t = "Affine2" %}
         {% set col_t = "Vec2" %}
@@ -44,8 +50,10 @@
 use crate::{
 {% if self_t == "Affine2" %}
     Mat3A, Vec3A,
+{% elif self_t == "Affine3" %}
+    Affine3A,
 {% elif self_t == "Affine3A" %}
-    Vec3, Mat3,
+    Affine3, Vec3, Mat3,
 {% endif %}
 {% if dim == 2 %}
     {{ mat_t }}, {{ col_t }}, {{ mat3_t }},
@@ -752,6 +760,13 @@ impl {{ self_t }} {
     /// Casts all elements of `self` to `f32`.
     #[inline]
     #[must_use]
+    pub fn as_affine3(&self) -> crate::Affine3 {
+        crate::Affine3::from_mat3_translation(self.matrix3.as_mat3(), self.translation.as_vec3())
+    }
+
+    /// Casts all elements of `self` to `f32`.
+    #[inline]
+    #[must_use]
     pub fn as_affine3a(&self) -> crate::Affine3A {
         crate::Affine3A::from_mat3_translation(self.matrix3.as_mat3(), self.translation.as_vec3())
     }
@@ -939,6 +954,32 @@ impl From<{{ self_t }}> for {{ mat4_t }} {
         )
     }
 }
+
+{% if self_t == "Affine3" %}
+impl From<Affine3A> for Affine3 {
+    #[inline]
+    fn from(a: Affine3A) -> Self {
+        Self::from_cols(
+            a.matrix3.x_axis.into(),
+            a.matrix3.y_axis.into(),
+            a.matrix3.z_axis.into(),
+            a.translation.into(),
+        )
+    }
+}
+{% elif self_t == "Affine3A" %}
+impl From<Affine3> for Affine3A {
+    #[inline]
+    fn from(a: Affine3) -> Self {
+        Self::from_cols(
+            a.matrix3.x_axis.into(),
+            a.matrix3.y_axis.into(),
+            a.matrix3.z_axis.into(),
+            a.translation.into(),
+        )
+    }
+}
+{% endif %}
 
 {% endif %}
 

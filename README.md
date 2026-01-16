@@ -12,7 +12,7 @@ A simple and fast 3D math library for games and graphics.
   * vectors: `Vec2`, `Vec3`, `Vec3A` and `Vec4`
   * square matrices: `Mat2`, `Mat3`, `Mat3A` and `Mat4`
   * a quaternion type: `Quat`
-  * affine transformation types: `Affine2` and `Affine3A`
+  * affine transformation types: `Affine2`, `Affine3` and `Affine3A`
 * `f64` types
   * vectors: `DVec2`, `DVec3` and `DVec4`
   * square matrices: `DMat2`, `DMat3` and `DMat4`

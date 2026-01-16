@@ -9,7 +9,7 @@
   * vectors: [`Vec2`], [`Vec3`], [`Vec3A`] and [`Vec4`]
   * square matrices: [`Mat2`], [`Mat3`], [`Mat3A`] and [`Mat4`]
   * a quaternion type: [`Quat`]
-  * affine transformation types: [`Affine2`] and [`Affine3A`]
+  * affine transformation types: [`Affine2`], [`Affine3`] and [`Affine3A`]
 * [`f64`](mod@f64) types
   * vectors: [`DVec2`], [`DVec3`] and [`DVec4`]
   * square matrices: [`DMat2`], [`DMat3`] and [`DMat4`]
@@ -95,10 +95,14 @@ let v3a = Vec3A::from(v3);
 assert_eq!(Vec3A::new(1.0, 2.0, 3.0), v3a);
 ```
 
-## Affine2 and Affine3A
+## Affine2, Affine3 and Affine3A
 
-`Affine2` and `Affine3A` are composed of a linear transform matrix and a vector translation. The
-represent 2D and 3D affine transformations which are commonly used in games.
+`Affine2`, `Affine3` and `Affine3A` are composed of a linear transform matrix and a vector
+translation. The represent 2D and 3D affine transformations which are commonly used in games.
+
+`Affine3` is composed from `Vec3` and `Mat3` whereas `Affine3A` is composed from `Mat3A` and
+`Vec3A`. `Affine3A` will generally be faster but is 16 byte aligned and 64 btyes verses `Affine3`
+which is 48 bytes.
 
 The table below shows the performance advantage of `Affine2` over `Mat3A` and `Mat3A` over `Mat3`.
 

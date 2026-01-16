@@ -65,9 +65,12 @@ macro_rules! impl_rkyv_derive {
 }
 
 mod f32 {
-    use crate::{Affine2, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
+    use crate::{
+        Affine2, Affine3, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4,
+    };
     use rkyv::{rancor::Fallible, Archive, Deserialize, Place, Serialize};
     impl_rkyv!(Affine2);
+    impl_rkyv!(Affine3);
     impl_rkyv!(Affine3A);
     impl_rkyv!(Mat2);
     impl_rkyv!(Mat3);
@@ -200,8 +203,13 @@ mod test {
 
     #[test]
     fn test_rkyv() {
-        use crate::{Affine2, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
+        use crate::{
+            Affine2, Affine3, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4,
+        };
         test_archive(&Affine2::from_cols_array(&[1.0, 0.0, 2.0, 0.0, 3.0, 4.0]));
+        test_archive(&Affine3::from_cols_array(&[
+            1.0, 0.0, 0.0, 0.0, 2.0, 0.0, 0.0, 0.0, 3.0, 4.0, 5.0, 6.0,
+        ]));
         test_archive(&Affine3A::from_cols_array(&[
             1.0, 0.0, 0.0, 0.0, 2.0, 0.0, 0.0, 0.0, 3.0, 4.0, 5.0, 6.0,
         ]));

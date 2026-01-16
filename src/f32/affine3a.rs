@@ -1,6 +1,6 @@
 // Generated from affine.rs.tera template. Edit the template, not the generated file.
 
-use crate::{Mat3, Mat3A, Mat4, Quat, Vec3, Vec3A};
+use crate::{Affine3, Mat3, Mat3A, Mat4, Quat, Vec3, Vec3A};
 use core::ops::{Deref, DerefMut, Mul, MulAssign};
 
 #[cfg(all(feature = "zerocopy", not(feature = "core-simd")))]
@@ -696,6 +696,18 @@ impl From<Affine3A> for Mat4 {
             m.matrix3.y_axis.extend(0.0),
             m.matrix3.z_axis.extend(0.0),
             m.translation.extend(1.0),
+        )
+    }
+}
+
+impl From<Affine3> for Affine3A {
+    #[inline]
+    fn from(a: Affine3) -> Self {
+        Self::from_cols(
+            a.matrix3.x_axis.into(),
+            a.matrix3.y_axis.into(),
+            a.matrix3.z_axis.into(),
+            a.translation.into(),
         )
     }
 }

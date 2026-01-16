@@ -24,7 +24,9 @@ arbitrary_vector_impl!(
     UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4
 );
 
-use crate::{Affine2, Affine3A, DAffine2, DAffine3, DMat2, DMat3, DMat4, Mat2, Mat3, Mat3A, Mat4};
+use crate::{
+    Affine2, Affine3, Affine3A, DAffine2, DAffine3, DMat2, DMat3, DMat4, Mat2, Mat3, Mat3A, Mat4,
+};
 
 macro_rules! arbitrary_matrix_impl {
     ($($ty:ty),*) => {
@@ -40,7 +42,7 @@ macro_rules! arbitrary_matrix_impl {
 }
 
 arbitrary_matrix_impl!(
-    Affine2, Affine3A, DAffine2, DAffine3, DMat2, DMat3, DMat4, Mat2, Mat3, Mat3A, Mat4
+    Affine2, Affine3, Affine3A, DAffine2, DAffine3, DMat2, DMat3, DMat4, Mat2, Mat3, Mat3A, Mat4
 );
 
 #[cfg(test)]
@@ -49,11 +51,11 @@ mod test {
     use core::mem::size_of;
 
     use crate::{
-        Affine2, Affine3A, BVec2, BVec3, BVec3A, BVec4, BVec4A, DAffine2, DAffine3, DMat2, DMat3,
-        DMat4, DQuat, DVec2, DVec3, DVec4, I16Vec2, I16Vec3, I16Vec4, I64Vec2, I64Vec3, I64Vec4,
-        I8Vec2, I8Vec3, I8Vec4, IVec2, IVec3, IVec4, Mat2, Mat3, Mat3A, Mat4, Quat, U16Vec2,
-        U16Vec3, U16Vec4, U64Vec2, U64Vec3, U64Vec4, U8Vec2, U8Vec3, U8Vec4, USizeVec2, USizeVec3,
-        USizeVec4, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
+        Affine2, Affine3, Affine3A, BVec2, BVec3, BVec3A, BVec4, BVec4A, DAffine2, DAffine3, DMat2,
+        DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, I16Vec2, I16Vec3, I16Vec4, I64Vec2, I64Vec3,
+        I64Vec4, I8Vec2, I8Vec3, I8Vec4, IVec2, IVec3, IVec4, Mat2, Mat3, Mat3A, Mat4, Quat,
+        U16Vec2, U16Vec3, U16Vec4, U64Vec2, U64Vec3, U64Vec4, U8Vec2, U8Vec3, U8Vec4, USizeVec2,
+        USizeVec3, USizeVec4, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
     };
 
     #[test]
@@ -67,6 +69,12 @@ mod test {
 
         assert_eq!(
             Affine2::from_cols_array(&[1.0, 2.0, 3.0, 4.0, 5.0, 6.0]),
+            Unstructured::new(&bytes).arbitrary().unwrap()
+        );
+        assert_eq!(
+            Affine3::from_cols_array(&[
+                1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0
+            ]),
             Unstructured::new(&bytes).arbitrary().unwrap()
         );
         assert_eq!(
