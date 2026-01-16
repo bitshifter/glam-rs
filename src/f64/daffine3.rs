@@ -454,6 +454,13 @@ impl DAffine3 {
     /// Casts all elements of `self` to `f32`.
     #[inline]
     #[must_use]
+    pub fn as_affine3(&self) -> crate::Affine3 {
+        crate::Affine3::from_mat3_translation(self.matrix3.as_mat3(), self.translation.as_vec3())
+    }
+
+    /// Casts all elements of `self` to `f32`.
+    #[inline]
+    #[must_use]
     pub fn as_affine3a(&self) -> crate::Affine3A {
         crate::Affine3A::from_mat3_translation(self.matrix3.as_mat3(), self.translation.as_vec3())
     }

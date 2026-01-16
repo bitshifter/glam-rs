@@ -395,15 +395,6 @@ mod affine3 {
         assert_eq!(mem::align_of::<f32>(), mem::align_of::<Affine3>());
     });
 
-    // glam_test!(test_as, {
-    //     use glam::Affine3A;
-    //     assert_eq!(
-    //         Affine3A::from_cols_array(&[1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12.]),
-    //         Affine3::from_cols_array(&[1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12.])
-    //             .as_affine3a(),
-    //     );
-    // });
-
     impl_affine3_tests!(f32, Affine3, Quat, Vec3, Mat3, Mat4);
 }
 
@@ -485,7 +476,12 @@ mod daffine3 {
     });
 
     glam_test!(test_as, {
-        use glam::Affine3A;
+        use glam::{Affine3, Affine3A};
+        assert_eq!(
+            Affine3::from_cols_array(&[1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12.]),
+            DAffine3::from_cols_array(&[1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12.])
+                .as_affine3(),
+        );
         assert_eq!(
             Affine3A::from_cols_array(&[1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12.]),
             DAffine3::from_cols_array(&[1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12.])
