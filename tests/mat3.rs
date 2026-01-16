@@ -144,7 +144,10 @@ macro_rules! impl_mat3_tests {
 
         glam_test!(test_mat3_mul_diagonal, {
             let v = $vec3::new(1.0, 2.0, 3.0);
-            assert_eq!($mat3::IDENTITY * $mat3::from_diagonal(v), $mat3::IDENTITY.mul_diagonal_scale(v));
+            assert_eq!(
+                $mat3::IDENTITY * $mat3::from_diagonal(v),
+                $mat3::IDENTITY.mul_diagonal_scale(v)
+            );
         });
 
         glam_test!(test_mat3_transform2d, {

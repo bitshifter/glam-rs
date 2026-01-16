@@ -116,7 +116,10 @@ macro_rules! impl_mat2_tests {
 
         glam_test!(test_mat2_mul_diagonal, {
             let v = $vec2::new(1.0, 2.0);
-            assert_eq!($mat2::IDENTITY * $mat2::from_diagonal(v), $mat2::IDENTITY.mul_diagonal_scale(v));
+            assert_eq!(
+                $mat2::IDENTITY * $mat2::from_diagonal(v),
+                $mat2::IDENTITY.mul_diagonal_scale(v)
+            );
         });
 
         glam_test!(test_from_scale_angle, {
