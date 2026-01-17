@@ -790,6 +790,22 @@ impl Vec3A {
         Self(f32x4_trunc(self.0))
     }
 
+    /// Returns a vector containing `0.0` if `rhs < self` and 1.0 otherwise.
+    ///
+    /// Similar to glsl's step(edge, x), which translates into edge.step(x)
+    #[inline]
+    #[must_use]
+    pub fn step(self, rhs: Self) -> Self {
+        Self::select(rhs.cmplt(self), Self::ZERO, Self::ONE)
+    }
+
+    /// Returns a vector containing all elements of `self` clamped to the range of `[0, 1]`.
+    #[inline]
+    #[must_use]
+    pub fn saturate(self) -> Self {
+        self.clamp(Self::ZERO, Self::ONE)
+    }
+
     /// Returns a vector containing the fractional part of the vector as `self - self.trunc()`.
     ///
     /// Note that this differs from the GLSL implementation of `fract` which returns
@@ -853,6 +869,42 @@ impl Vec3A {
             math::powf(self.x, n),
             math::powf(self.y, n),
             math::powf(self.z, n),
+        )
+    }
+
+    /// Returns a vector containing the square root for each element of `self`.
+    /// This returns NaN when the element is negative.
+    #[inline]
+    #[must_use]
+    pub fn sqrt(self) -> Self {
+        Self::new(math::sqrt(self.x), math::sqrt(self.y), math::sqrt(self.z))
+    }
+
+    /// Returns a vector containing the cosine for each element of `self`.
+    #[inline]
+    #[must_use]
+    pub fn cos(self) -> Self {
+        Self::new(math::cos(self.x), math::cos(self.y), math::cos(self.z))
+    }
+
+    /// Returns a vector containing the sine for each element of `self`.
+    #[inline]
+    #[must_use]
+    pub fn sin(self) -> Self {
+        Self::new(math::sin(self.x), math::sin(self.y), math::sin(self.z))
+    }
+
+    /// Returns a tuple of two vectors containing the sine and cosine for each element of `self`.
+    #[inline]
+    #[must_use]
+    pub fn sin_cos(self) -> (Self, Self) {
+        let (sin_x, cos_x) = math::sin_cos(self.x);
+        let (sin_y, cos_y) = math::sin_cos(self.y);
+        let (sin_z, cos_z) = math::sin_cos(self.z);
+
+        (
+            Self::new(sin_x, sin_y, sin_z),
+            Self::new(cos_x, cos_y, cos_z),
         )
     }
 

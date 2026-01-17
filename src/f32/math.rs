@@ -51,6 +51,12 @@ mod libm_math {
 
     #[allow(unused)]
     #[inline(always)]
+    pub(crate) fn cos(f: f32) -> f32 {
+        libm::cosf(f)
+    }
+
+    #[allow(unused)]
+    #[inline(always)]
     pub(crate) fn sin(f: f32) -> f32 {
         libm::sinf(f)
     }
@@ -174,6 +180,12 @@ mod std_math {
 
     #[allow(unused)]
     #[inline(always)]
+    pub(crate) fn cos(f: f32) -> f32 {
+        f32::cos(f)
+    }
+
+    #[allow(unused)]
+    #[inline(always)]
     pub(crate) fn sin(f: f32) -> f32 {
         f32::sin(f)
     }
@@ -281,6 +293,10 @@ mod no_backend_math {
     }
 
     pub(crate) fn atan2(_: f32, _: f32) -> f32 {
+        unimplemented!()
+    }
+
+    pub(crate) fn cos(_: f32) -> f32 {
         unimplemented!()
     }
 
