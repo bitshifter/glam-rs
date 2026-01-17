@@ -1864,7 +1864,7 @@ macro_rules! impl_vec3_float_tests {
                 assert!(orthonormal.is_normalized());
                 assert!(n.dot(orthonormal).abs() < eps);
 
-                let (a, b) = n.any_orthonormal_pair();
+                let (a, b) = n.any_orthonormal_pair_rh();
                 assert!(a.is_normalized() && n.dot(a).abs() < eps);
                 assert!(b.is_normalized() && n.dot(b).abs() < eps);
             }
