@@ -2393,14 +2393,15 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn mul_transpose_vec{{ dim }}(&self, rhs: {{ vecn_t }}) -> {{ vecn_t }} {
-        {% for i in range(end = dim) %}
+        {% if self_t == "Mat3A" %}
+            self.mul_transpose_vec3a(rhs.into()).into()
+        {% else %}
             {{ vecn_t }}::new(
-                {% for j in range(end = dim) %}
-                    self.{{ axes[j] }}.{{ components[i] }},
+                {% for axis in axes %}
+                    self.{{ axis }}.dot(rhs),
                 {%- endfor %}
-            ) * rhs.{{ components[i] }}
-            {%- if i < (dim - 1) %} + {% endif %}
-        {%- endfor %}
+            )
+        {% endif %}
     }
 
 {% if self_t == "Mat3A" %}
@@ -2408,9 +2409,11 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn mul_transpose_vec3a(&self, rhs: Vec3A) -> Vec3A {
-        Vec3A::new(self.x_axis.x, self.y_axis.x, self.z_axis.x) * rhs.xxx()
-            + Vec3A::new(self.x_axis.y, self.y_axis.y, self.z_axis.y) * rhs.yyy()
-            + Vec3A::new(self.x_axis.z, self.y_axis.z, self.z_axis.z) * rhs.zzz()
+        Vec3A::new(
+            self.x_axis.dot(rhs),
+            self.y_axis.dot(rhs),
+            self.z_axis.dot(rhs),
+        )
     }
 {% endif %}
 

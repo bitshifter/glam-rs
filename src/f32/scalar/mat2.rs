@@ -314,8 +314,7 @@ impl Mat2 {
     #[inline]
     #[must_use]
     pub fn mul_transpose_vec2(&self, rhs: Vec2) -> Vec2 {
-        Vec2::new(self.x_axis.x, self.y_axis.x) * rhs.x
-            + Vec2::new(self.x_axis.y, self.y_axis.y) * rhs.y
+        Vec2::new(self.x_axis.dot(rhs), self.y_axis.dot(rhs))
     }
 
     /// Multiplies two 2x2 matrices.

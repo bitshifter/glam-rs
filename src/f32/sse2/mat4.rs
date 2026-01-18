@@ -1366,10 +1366,12 @@ impl Mat4 {
     #[inline]
     #[must_use]
     pub fn mul_transpose_vec4(&self, rhs: Vec4) -> Vec4 {
-        Vec4::new(self.x_axis.x, self.y_axis.x, self.z_axis.x, self.w_axis.x) * rhs.x
-            + Vec4::new(self.x_axis.y, self.y_axis.y, self.z_axis.y, self.w_axis.y) * rhs.y
-            + Vec4::new(self.x_axis.z, self.y_axis.z, self.z_axis.z, self.w_axis.z) * rhs.z
-            + Vec4::new(self.x_axis.w, self.y_axis.w, self.z_axis.w, self.w_axis.w) * rhs.w
+        Vec4::new(
+            self.x_axis.dot(rhs),
+            self.y_axis.dot(rhs),
+            self.z_axis.dot(rhs),
+            self.w_axis.dot(rhs),
+        )
     }
 
     /// Multiplies two 4x4 matrices.

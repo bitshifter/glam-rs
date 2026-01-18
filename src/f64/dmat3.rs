@@ -637,9 +637,11 @@ impl DMat3 {
     #[inline]
     #[must_use]
     pub fn mul_transpose_vec3(&self, rhs: DVec3) -> DVec3 {
-        DVec3::new(self.x_axis.x, self.y_axis.x, self.z_axis.x) * rhs.x
-            + DVec3::new(self.x_axis.y, self.y_axis.y, self.z_axis.y) * rhs.y
-            + DVec3::new(self.x_axis.z, self.y_axis.z, self.z_axis.z) * rhs.z
+        DVec3::new(
+            self.x_axis.dot(rhs),
+            self.y_axis.dot(rhs),
+            self.z_axis.dot(rhs),
+        )
     }
 
     /// Multiplies two 3x3 matrices.
