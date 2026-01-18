@@ -35,4 +35,14 @@ pub trait FloatExt {
     ///
     /// Note that this is fast but not precise for large numbers.
     fn fract_gl(self) -> Self;
+
+    /// Returns `0.0` if `value < self` and 1.0 otherwise.
+    ///
+    /// Similar to glsl's step(edge, x), which translates into edge.step(x)
+    #[must_use]
+    fn step(self, value: Self) -> Self;
+
+    /// Returns `self` clamped within the range `[0.0, 1.0]`
+    #[must_use]
+    fn saturate(self) -> Self;
 }

@@ -2043,6 +2043,22 @@ impl {{ self_t }} {
         {% endif %}
     }
 
+    /// Returns a vector containing `0.0` if `rhs < self` and 1.0 otherwise.
+    ///
+    /// Similar to glsl's step(edge, x), which translates into edge.step(x)
+    #[inline]
+    #[must_use]
+    pub fn step(self, rhs: Self) -> Self {
+        Self::select(rhs.cmplt(self), Self::ZERO, Self::ONE)
+    }
+
+    /// Returns a vector containing all elements of `self` clamped to the range of `[0, 1]`.
+    #[inline]
+    #[must_use]
+    pub fn saturate(self) -> Self {
+        self.clamp(Self::ZERO, Self::ONE)
+    }
+
     /// Returns a vector containing the fractional part of the vector as `self - self.trunc()`.
     ///
     /// Note that this differs from the GLSL implementation of `fract` which returns
@@ -2122,6 +2138,62 @@ impl {{ self_t }} {
             {% for c in components %}
                 math::powf(self.{{ c }}, n),
             {%- endfor %}
+        )
+    }
+
+    /// Returns a vector containing the square root for each element of `self`.
+    /// This returns NaN when the element is negative.
+    #[inline]
+    #[must_use]
+    pub fn sqrt(self) -> Self {
+        Self::new(
+            {% for c in components %}
+                math::sqrt(self.{{ c }}),
+            {%- endfor %}
+        )
+    }
+
+    /// Returns a vector containing the cosine for each element of `self`.
+    #[inline]
+    #[must_use]
+    pub fn cos(self) -> Self {
+        Self::new(
+            {% for c in components %}
+                math::cos(self.{{ c }}),
+            {%- endfor %}
+        )
+    }
+
+    /// Returns a vector containing the sine for each element of `self`.
+    #[inline]
+    #[must_use]
+    pub fn sin(self) -> Self {
+        Self::new(
+            {% for c in components %}
+                math::sin(self.{{ c }}),
+            {%- endfor %}
+        )
+    }
+
+    /// Returns a tuple of two vectors containing the sine and cosine for each element of `self`.
+    #[inline]
+    #[must_use]
+    pub fn sin_cos(self) -> (Self, Self) {
+        {% for c in components %}
+            let (sin_{{ c }}, cos_{{ c }}) = math::sin_cos(self.{{ c }});
+        {%- endfor %}
+
+        (
+            Self::new(
+                {% for c in components %}
+                    sin_{{ c }},
+                {%- endfor %}
+            ),
+            Self::new(
+                {% for c in components %}
+                    cos_{{ c }},
+                {%- endfor %}
+            )
         )
     }
 
