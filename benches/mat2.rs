@@ -15,6 +15,14 @@ bench_binop!(
     from2 => random_vec2
 );
 
+bench_binop!(
+    mat2_mul_transpose_vec2,
+    "mat2 mul transpose vec2",
+    op => mul,
+    from1 => random_mat2,
+    from2 => random_vec2
+);
+
 bench_unop!(
     mat2_transpose,
     "mat2 transpose",
@@ -36,6 +44,7 @@ criterion_group!(
     mat2_determinant,
     mat2_inverse,
     mat2_mul_vec2,
+    mat2_mul_transpose_vec2,
     mat2_mul_mat2,
 );
 
