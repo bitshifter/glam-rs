@@ -119,7 +119,7 @@ impl DAffine2 {
     ///
     /// Panics if `slice` is less than 6 elements long.
     #[inline]
-    pub fn write_cols_to_slice(self, slice: &mut [f64]) {
+    pub fn write_cols_to_slice(&self, slice: &mut [f64]) {
         self.matrix2.write_cols_to_slice(&mut slice[0..4]);
         self.translation.write_to_slice(&mut slice[4..6]);
     }
@@ -229,7 +229,7 @@ impl DAffine2 {
     /// vector contains any zero elements when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn to_scale_angle_translation(self) -> (DVec2, f64, DVec2) {
+    pub fn to_scale_angle_translation(&self) -> (DVec2, f64, DVec2) {
         use crate::f64::math;
         let det = self.matrix2.determinant();
         glam_assert!(det != 0.0);
