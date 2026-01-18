@@ -711,6 +711,14 @@ impl Mat3A {
         res
     }
 
+    #[inline]
+    #[must_use]
+    pub fn mul_transpose_vec3(&self, rhs: Vec3) -> Vec3 {
+        Vec3::new(self.x_axis.x, self.y_axis.x, self.z_axis.x) * rhs.x
+            + Vec3::new(self.x_axis.y, self.y_axis.y, self.z_axis.y) * rhs.y
+            + Vec3::new(self.x_axis.z, self.y_axis.z, self.z_axis.z) * rhs.z
+    }
+
     /// Multiplies two 3x3 matrices.
     #[inline]
     #[must_use]

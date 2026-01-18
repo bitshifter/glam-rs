@@ -2389,6 +2389,19 @@ impl {{ self_t }} {
     }
 {% endif %}
 
+    #[inline]
+    #[must_use]
+    pub fn mul_transpose_vec{{ dim }}(&self, rhs: {{ vecn_t }}) -> {{ vecn_t }} {
+        {% for i in range(end = dim) %}
+            {{ vecn_t }}::new(
+                {% for j in range(end = dim) %}
+                    self.{{ axes[j] }}.{{ components[i] }},
+                {%- endfor %}
+            ) * rhs.{{ components[i] }}
+            {%- if i < (dim - 1) %} + {% endif %}
+        {%- endfor %}
+    }
+
     /// Multiplies two {{ nxn }} matrices.
     #[inline]
     #[must_use]

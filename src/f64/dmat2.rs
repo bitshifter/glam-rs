@@ -279,6 +279,13 @@ impl DMat2 {
         )
     }
 
+    #[inline]
+    #[must_use]
+    pub fn mul_transpose_vec2(&self, rhs: DVec2) -> DVec2 {
+        DVec2::new(self.x_axis.x, self.y_axis.x) * rhs.x
+            + DVec2::new(self.x_axis.y, self.y_axis.y) * rhs.y
+    }
+
     /// Multiplies two 2x2 matrices.
     #[inline]
     #[must_use]
