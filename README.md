@@ -1,4 +1,4 @@
-# glam
+# 🧑‍🎤 glam
 
 [![Build Status]][github-ci] [![Coverage Status]][coveralls.io]
 [![Latest Version]][crates.io] [![docs]][docs.rs]
