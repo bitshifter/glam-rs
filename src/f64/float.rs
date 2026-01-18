@@ -23,4 +23,18 @@ impl FloatExt for f64 {
     fn fract_gl(self) -> Self {
         self - crate::f64::math::floor(self)
     }
+
+    #[inline]
+    fn step(self, value: Self) -> Self {
+        if value < self {
+            0.0
+        } else {
+            1.0
+        }
+    }
+
+    #[inline]
+    fn saturate(self) -> Self {
+        self.clamp(0.0, 1.0)
+    }
 }

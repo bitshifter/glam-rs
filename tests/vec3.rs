@@ -1794,6 +1794,71 @@ macro_rules! impl_vec3_float_tests {
             assert_eq!($vec3::ZERO.log2(), $vec3::NEG_INFINITY);
         });
 
+        glam_test!(test_sqrt, {
+            assert_approx_eq!(
+                $vec3::new(1.0, 2.0, 3.0).sqrt(),
+                $vec3::new((1.0 as $t).sqrt(), (2.0 as $t).sqrt(), (3.0 as $t).sqrt(),),
+                1e-5
+            );
+            assert!($vec3::NEG_ONE.sqrt().is_nan());
+        });
+
+        glam_test!(test_sin, {
+            assert_approx_eq!(
+                $vec3::new(1.0, 2.0, 3.0).sin(),
+                $vec3::new((1.0 as $t).sin(), (2.0 as $t).sin(), (3.0 as $t).sin(),),
+                1e-5
+            );
+        });
+
+        glam_test!(test_cos, {
+            assert_approx_eq!(
+                $vec3::new(1.0, 2.0, 3.0).cos(),
+                $vec3::new((1.0 as $t).cos(), (2.0 as $t).cos(), (3.0 as $t).cos(),),
+                1e-5
+            );
+        });
+
+        glam_test!(test_sin_cos, {
+            let (s, c) = $vec3::new(1.0, 2.0, 3.0).sin_cos();
+            assert_approx_eq!(
+                s,
+                $vec3::new((1.0 as $t).sin(), (2.0 as $t).sin(), (3.0 as $t).sin(),),
+                1e-5
+            );
+            assert_approx_eq!(
+                c,
+                $vec3::new((1.0 as $t).cos(), (2.0 as $t).cos(), (3.0 as $t).cos(),),
+                1e-5
+            );
+        });
+
+        glam_test!(test_step, {
+            use glam::FloatExt;
+            assert_approx_eq!(
+                $vec3::new(1.0, 2.0, 3.0).step($vec3::splat(2.5)),
+                $vec3::new(
+                    (1.0 as $t).step(2.5),
+                    (2.0 as $t).step(2.5),
+                    (3.0 as $t).step(2.5),
+                ),
+                1e-5
+            );
+        });
+
+        glam_test!(test_saturate, {
+            use glam::FloatExt;
+            assert_approx_eq!(
+                $vec3::new(1.0, 2.0, 3.0).saturate(),
+                $vec3::new(
+                    (1.0 as $t).saturate(),
+                    (2.0 as $t).saturate(),
+                    (3.0 as $t).saturate(),
+                ),
+                1e-5
+            );
+        });
+
         glam_test!(test_angle_between, {
             let angle = $vec3::new(1.0, 0.0, 1.0).angle_between($vec3::new(1.0, 1.0, 0.0));
             assert_approx_eq!(core::$t::consts::FRAC_PI_3, angle, 1e-6);
