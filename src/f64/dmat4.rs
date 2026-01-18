@@ -518,7 +518,7 @@ impl DMat4 {
     ///
     /// Panics if `slice` is less than 16 elements long.
     #[inline]
-    pub fn write_cols_to_slice(self, slice: &mut [f64]) {
+    pub fn write_cols_to_slice(&self, slice: &mut [f64]) {
         slice[0] = self.x_axis.x;
         slice[1] = self.x_axis.y;
         slice[2] = self.x_axis.z;

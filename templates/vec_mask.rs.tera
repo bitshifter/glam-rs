@@ -281,7 +281,7 @@ impl {{ self_t }} {
     /// Panics if `index` is greater than {{ dim  - 1 }}.
     #[inline]
     #[must_use]
-    pub fn test(&self, index: usize) -> bool {
+    pub fn test(self, index: usize) -> bool {
         {% if is_coresimd %}
             assert!(index < {{ dim }}, "index out of bounds");
             self.0.test(index)

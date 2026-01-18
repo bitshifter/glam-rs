@@ -1037,13 +1037,13 @@ impl DVec4 {
     /// `self.distance(rhs)`, the result will be equal to `rhs`. Will not go past `rhs`.
     #[inline]
     #[must_use]
-    pub fn move_towards(&self, rhs: Self, d: f64) -> Self {
-        let a = rhs - *self;
+    pub fn move_towards(self, rhs: Self, d: f64) -> Self {
+        let a = rhs - self;
         let len = a.length();
         if len <= d || len <= 1e-4 {
             return rhs;
         }
-        *self + a / len * d
+        self + a / len * d
     }
 
     /// Calculates the midpoint between `self` and `rhs`.
@@ -1184,70 +1184,70 @@ impl DVec4 {
     /// Casts all elements of `self` to `f32`.
     #[inline]
     #[must_use]
-    pub fn as_vec4(&self) -> crate::Vec4 {
+    pub fn as_vec4(self) -> crate::Vec4 {
         crate::Vec4::new(self.x as f32, self.y as f32, self.z as f32, self.w as f32)
     }
 
     /// Casts all elements of `self` to `i8`.
     #[inline]
     #[must_use]
-    pub fn as_i8vec4(&self) -> crate::I8Vec4 {
+    pub fn as_i8vec4(self) -> crate::I8Vec4 {
         crate::I8Vec4::new(self.x as i8, self.y as i8, self.z as i8, self.w as i8)
     }
 
     /// Casts all elements of `self` to `u8`.
     #[inline]
     #[must_use]
-    pub fn as_u8vec4(&self) -> crate::U8Vec4 {
+    pub fn as_u8vec4(self) -> crate::U8Vec4 {
         crate::U8Vec4::new(self.x as u8, self.y as u8, self.z as u8, self.w as u8)
     }
 
     /// Casts all elements of `self` to `i16`.
     #[inline]
     #[must_use]
-    pub fn as_i16vec4(&self) -> crate::I16Vec4 {
+    pub fn as_i16vec4(self) -> crate::I16Vec4 {
         crate::I16Vec4::new(self.x as i16, self.y as i16, self.z as i16, self.w as i16)
     }
 
     /// Casts all elements of `self` to `u16`.
     #[inline]
     #[must_use]
-    pub fn as_u16vec4(&self) -> crate::U16Vec4 {
+    pub fn as_u16vec4(self) -> crate::U16Vec4 {
         crate::U16Vec4::new(self.x as u16, self.y as u16, self.z as u16, self.w as u16)
     }
 
     /// Casts all elements of `self` to `i32`.
     #[inline]
     #[must_use]
-    pub fn as_ivec4(&self) -> crate::IVec4 {
+    pub fn as_ivec4(self) -> crate::IVec4 {
         crate::IVec4::new(self.x as i32, self.y as i32, self.z as i32, self.w as i32)
     }
 
     /// Casts all elements of `self` to `u32`.
     #[inline]
     #[must_use]
-    pub fn as_uvec4(&self) -> crate::UVec4 {
+    pub fn as_uvec4(self) -> crate::UVec4 {
         crate::UVec4::new(self.x as u32, self.y as u32, self.z as u32, self.w as u32)
     }
 
     /// Casts all elements of `self` to `i64`.
     #[inline]
     #[must_use]
-    pub fn as_i64vec4(&self) -> crate::I64Vec4 {
+    pub fn as_i64vec4(self) -> crate::I64Vec4 {
         crate::I64Vec4::new(self.x as i64, self.y as i64, self.z as i64, self.w as i64)
     }
 
     /// Casts all elements of `self` to `u64`.
     #[inline]
     #[must_use]
-    pub fn as_u64vec4(&self) -> crate::U64Vec4 {
+    pub fn as_u64vec4(self) -> crate::U64Vec4 {
         crate::U64Vec4::new(self.x as u64, self.y as u64, self.z as u64, self.w as u64)
     }
 
     /// Casts all elements of `self` to `usize`.
     #[inline]
     #[must_use]
-    pub fn as_usizevec4(&self) -> crate::USizeVec4 {
+    pub fn as_usizevec4(self) -> crate::USizeVec4 {
         crate::USizeVec4::new(
             self.x as usize,
             self.y as usize,
