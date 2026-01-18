@@ -1,7 +1,7 @@
 #![allow(clippy::all)]
 
 use core::hint::black_box;
-use iai_callgrind::{library_benchmark, library_benchmark_group, main};
+use gungraun::{library_benchmark, library_benchmark_group, main};
 
 use glam::{BVec3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
 
