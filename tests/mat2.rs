@@ -114,6 +114,12 @@ macro_rules! impl_mat2_tests {
             assert_approx_eq!($vec2::NEG_X, m.mul_vec2($vec2::Y))
         });
 
+        glam_test!(test_mat2_mul_transpose_vec2, {
+            let v = $vec2::new(1.0, 2.0);
+            let m = $mat2::from_cols_array(&ARRAY1X4);
+            assert_eq!(m.transpose().mul_vec2(v), m.mul_transpose_vec2(v));
+        });
+
         glam_test!(test_mat2_mul_diagonal, {
             let v = $vec2::new(1.0, 2.0);
             assert_eq!(

@@ -633,6 +633,17 @@ impl DMat3 {
         res
     }
 
+    /// Transforms a 3D vector by the transpose of `self`.
+    #[inline]
+    #[must_use]
+    pub fn mul_transpose_vec3(&self, rhs: DVec3) -> DVec3 {
+        DVec3::new(
+            self.x_axis.dot(rhs),
+            self.y_axis.dot(rhs),
+            self.z_axis.dot(rhs),
+        )
+    }
+
     /// Multiplies two 3x3 matrices.
     #[inline]
     #[must_use]

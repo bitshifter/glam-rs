@@ -3,7 +3,7 @@
 use core::hint::black_box;
 use iai_callgrind::{library_benchmark, library_benchmark_group, main};
 
-use glam::{BVec3A, Mat2, Mat3A, Mat4, Quat, Vec2, Vec3A, Vec4};
+use glam::{BVec3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
 
 #[cfg(feature = "scalar-math")]
 use glam::BVec4 as BVec4A;
@@ -19,6 +19,13 @@ fn bb_f32() -> f32 {
 #[inline]
 fn mat2() -> Mat2 {
     black_box(Mat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]))
+}
+
+#[inline]
+fn mat3() -> Mat3 {
+    black_box(Mat3::from_cols_array(&[
+        1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0,
+    ]))
 }
 
 #[inline]
@@ -43,6 +50,11 @@ fn quat() -> Quat {
 #[inline]
 fn vec2() -> Vec2 {
     black_box(Vec2::new(1.0, 2.0))
+}
+
+#[inline]
+fn vec3() -> Vec3 {
+    black_box(Vec3::new(1.0, 2.0, 3.0))
 }
 
 #[inline]
@@ -96,6 +108,48 @@ fn mat2_mul_vec2(m: Mat2, v: Vec2) -> Vec2 {
 }
 
 #[library_benchmark]
+#[bench::args(mat2(), vec2())]
+fn mat2_mul_transpose_vec2(m: Mat2, v: Vec2) -> Vec2 {
+    black_box(m.mul_transpose_vec2(v))
+}
+
+#[library_benchmark]
+#[bench::args(mat3())]
+fn mat3_determinant(m: Mat3) -> f32 {
+    black_box(m.determinant())
+}
+
+#[library_benchmark]
+#[bench::args(mat3())]
+fn mat3_inverse(m: Mat3) -> Mat3 {
+    black_box(m.inverse())
+}
+
+#[library_benchmark]
+#[bench::args(mat3())]
+fn mat3_transpose(m: Mat3) -> Mat3 {
+    black_box(m.transpose())
+}
+
+#[library_benchmark]
+#[bench::args(mat3(), mat3())]
+fn mat3_mul_mat3(m1: Mat3, m2: Mat3) -> Mat3 {
+    black_box(m1 * m2)
+}
+
+#[library_benchmark]
+#[bench::args(mat3(), vec3())]
+fn mat3_mul_vec3(m: Mat3, v: Vec3) -> Vec3 {
+    black_box(m * v)
+}
+
+#[library_benchmark]
+#[bench::args(mat3(), vec3())]
+fn mat3_mul_transpose_vec3(m: Mat3, v: Vec3) -> Vec3 {
+    black_box(m.mul_transpose_vec3(v))
+}
+
+#[library_benchmark]
 #[bench::args(mat3a())]
 fn mat3a_determinant(m: Mat3A) -> f32 {
     black_box(m.determinant())
@@ -126,6 +180,12 @@ fn mat3a_mul_vec3a(m: Mat3A, v: Vec3A) -> Vec3A {
 }
 
 #[library_benchmark]
+#[bench::args(mat3a(), vec3a())]
+fn mat3a_mul_transpose_vec3a(m: Mat3A, v: Vec3A) -> Vec3A {
+    black_box(m.mul_transpose_vec3a(v))
+}
+
+#[library_benchmark]
 #[bench::args(mat4())]
 fn mat4_determinant(m: Mat4) -> f32 {
     black_box(m.determinant())
@@ -153,6 +213,12 @@ fn mat4_mul_mat4(m1: Mat4, m2: Mat4) -> Mat4 {
 #[bench::args(mat4(), vec4())]
 fn mat4_mul_vec4(m: Mat4, v: Vec4) -> Vec4 {
     black_box(m * v)
+}
+
+#[library_benchmark]
+#[bench::args(mat4(), vec4())]
+fn mat4_mul_transpose_vec4(m: Mat4, v: Vec4) -> Vec4 {
+    black_box(m.mul_transpose_vec4(v))
 }
 
 #[library_benchmark]
@@ -234,7 +300,19 @@ library_benchmark_group!(
         mat2_inverse,
         mat2_mul_mat2,
         mat2_mul_vec2,
+        mat2_mul_transpose_vec2,
         mat2_transpose,
+);
+
+library_benchmark_group!(
+    name = bench_mat3;
+    benchmarks =
+        mat3_determinant,
+        mat3_inverse,
+        mat3_mul_mat3,
+        mat3_mul_vec3,
+        mat3_mul_transpose_vec3,
+        mat3_transpose,
 );
 
 library_benchmark_group!(
@@ -244,6 +322,7 @@ library_benchmark_group!(
         mat3a_inverse,
         mat3a_mul_mat3a,
         mat3a_mul_vec3a,
+        mat3a_mul_transpose_vec3a,
         mat3a_transpose,
 );
 
@@ -254,6 +333,7 @@ library_benchmark_group!(
         mat4_inverse,
         mat4_mul_mat4,
         mat4_mul_vec4,
+        mat4_mul_transpose_vec4,
         mat4_transpose,
 );
 
@@ -286,6 +366,7 @@ library_benchmark_group!(
 
 main!(
     library_benchmark_groups = bench_mat2,
+    bench_mat3,
     bench_mat3a,
     bench_mat4,
     bench_quat,

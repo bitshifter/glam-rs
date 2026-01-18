@@ -636,6 +636,17 @@ impl Mat3 {
         self.mul_vec3(rhs.into()).into()
     }
 
+    /// Transforms a 3D vector by the transpose of `self`.
+    #[inline]
+    #[must_use]
+    pub fn mul_transpose_vec3(&self, rhs: Vec3) -> Vec3 {
+        Vec3::new(
+            self.x_axis.dot(rhs),
+            self.y_axis.dot(rhs),
+            self.z_axis.dot(rhs),
+        )
+    }
+
     /// Multiplies two 3x3 matrices.
     #[inline]
     #[must_use]

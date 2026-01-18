@@ -2389,6 +2389,34 @@ impl {{ self_t }} {
     }
 {% endif %}
 
+    /// Transforms a {{ dim }}D vector by the transpose of `self`.
+    #[inline]
+    #[must_use]
+    pub fn mul_transpose_vec{{ dim }}(&self, rhs: {{ vecn_t }}) -> {{ vecn_t }} {
+        {% if self_t == "Mat3A" %}
+            self.mul_transpose_vec3a(rhs.into()).into()
+        {% else %}
+            {{ vecn_t }}::new(
+                {% for axis in axes %}
+                    self.{{ axis }}.dot(rhs),
+                {%- endfor %}
+            )
+        {% endif %}
+    }
+
+{% if self_t == "Mat3A" %}
+    /// Transforms a [`Vec3A`] by the transpose of `self`.
+    #[inline]
+    #[must_use]
+    pub fn mul_transpose_vec3a(&self, rhs: Vec3A) -> Vec3A {
+        Vec3A::new(
+            self.x_axis.dot(rhs),
+            self.y_axis.dot(rhs),
+            self.z_axis.dot(rhs),
+        )
+    }
+{% endif %}
+
     /// Multiplies two {{ nxn }} matrices.
     #[inline]
     #[must_use]
