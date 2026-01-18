@@ -633,6 +633,7 @@ impl DMat3 {
         res
     }
 
+    /// Transforms a 3D vector by the transpose of `self`.
     #[inline]
     #[must_use]
     pub fn mul_transpose_vec3(&self, rhs: DVec3) -> DVec3 {

@@ -1346,6 +1346,7 @@ impl Mat4 {
         res
     }
 
+    /// Transforms a 4D vector by the transpose of `self`.
     #[inline]
     #[must_use]
     pub fn mul_transpose_vec4(&self, rhs: Vec4) -> Vec4 {

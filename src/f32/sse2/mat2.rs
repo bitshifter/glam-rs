@@ -338,6 +338,7 @@ impl Mat2 {
         }
     }
 
+    /// Transforms a 2D vector by the transpose of `self`.
     #[inline]
     #[must_use]
     pub fn mul_transpose_vec2(&self, rhs: Vec2) -> Vec2 {

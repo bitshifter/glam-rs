@@ -537,6 +537,12 @@ mod mat3a {
         assert_approx_eq!(vec3a(-1.0, 0.0, 0.0), mat_a.mul_vec3a(Vec3A::Y));
     });
 
+    glam_test!(test_mul_transpose_vec3a, {
+        let v = Vec3A::new(1.0, 2.0, 3.0);
+        let m = Mat3A::from_cols_array(&[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]);
+        assert_eq!(m.transpose().mul_vec3a(v), m.mul_transpose_vec3a(v));
+    });
+
     glam_test!(test_as, {
         use glam::DMat3;
         assert_eq!(
