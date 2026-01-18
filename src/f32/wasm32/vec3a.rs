@@ -934,12 +934,12 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn move_towards(self, rhs: Self, d: f32) -> Self {
-        let a = rhs - *self;
+        let a = rhs - self;
         let len = a.length();
         if len <= d || len <= 1e-4 {
             return rhs;
         }
-        *self + a / len * d
+        self + a / len * d
     }
 
     /// Calculates the midpoint between `self` and `rhs`.

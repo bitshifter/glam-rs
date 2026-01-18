@@ -852,12 +852,12 @@ impl DVec2 {
     #[inline]
     #[must_use]
     pub fn move_towards(self, rhs: Self, d: f64) -> Self {
-        let a = rhs - *self;
+        let a = rhs - self;
         let len = a.length();
         if len <= d || len <= 1e-4 {
             return rhs;
         }
-        *self + a / len * d
+        self + a / len * d
     }
 
     /// Calculates the midpoint between `self` and `rhs`.
@@ -1075,7 +1075,7 @@ impl DVec2 {
         let abs_a = math::abs(a);
         // When `max_angle < 0`, rotate no further than `PI` radians away
         let angle = max_angle.clamp(abs_a - core::f64::consts::PI, abs_a) * math::signum(a);
-        Self::from_angle(angle).rotate(*self)
+        Self::from_angle(angle).rotate(self)
     }
 
     /// Casts all elements of `self` to `f32`.
