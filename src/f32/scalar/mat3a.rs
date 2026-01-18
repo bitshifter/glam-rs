@@ -563,6 +563,13 @@ impl Mat3A {
         }
     }
 
+    /// Returns the diagonal of `self`.
+    #[inline]
+    #[must_use]
+    pub fn diagonal(&self) -> Vec3A {
+        Vec3A::new(self.x_axis.x, self.y_axis.y, self.z_axis.z)
+    }
+
     /// Returns the determinant of `self`.
     #[inline]
     #[must_use]

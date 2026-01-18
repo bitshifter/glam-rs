@@ -269,6 +269,13 @@ impl Mat2 {
         }
     }
 
+    /// Returns the diagonal of `self`.
+    #[inline]
+    #[must_use]
+    pub fn diagonal(&self) -> Vec2 {
+        Vec2::new(self.x_axis.x, self.y_axis.y)
+    }
+
     /// Returns the determinant of `self`.
     #[inline]
     #[must_use]

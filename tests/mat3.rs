@@ -132,6 +132,11 @@ macro_rules! impl_mat3_tests {
             should_glam_assert!({ $mat3::from_quat($quat::from_xyzw(0.0, 0.0, 0.0, 0.0)) });
         });
 
+        glam_test!(test_diagonal, {
+            let m = $mat3::from_cols_array(&ARRAY1X9);
+            assert_eq!($newvec3(1.0, 5.0, 9.0), m.diagonal());
+        });
+
         glam_test!(test_mat3_mul_vec3, {
             let m = $mat3::from_axis_angle($vec3::Z, deg(90.0));
             assert_approx_eq!($vec3::NEG_X, m * $vec3::Y);

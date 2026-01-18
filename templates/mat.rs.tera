@@ -1252,6 +1252,17 @@ impl {{ self_t }} {
         {% endif %}
     }
 
+    /// Returns the diagonal of `self`.
+    #[inline]
+    #[must_use]
+    pub fn diagonal(&self) -> {{ col_t }} {
+        {{ col_t }}::new(
+            {% for i in range(end = dim) %}
+                self.{{ axes[i] }}.{{ components[i] }},
+            {% endfor %}
+        )
+    }
+
     /// Returns the determinant of `self`.
     {%- if dim < 4 %}
     #[inline]

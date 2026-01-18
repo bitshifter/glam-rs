@@ -283,6 +283,13 @@ impl Mat2 {
         Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_10_00) })
     }
 
+    /// Returns the diagonal of `self`.
+    #[inline]
+    #[must_use]
+    pub fn diagonal(&self) -> Vec2 {
+        Vec2::new(self.x_axis.x, self.y_axis.y)
+    }
+
     /// Returns the determinant of `self`.
     #[inline]
     #[must_use]

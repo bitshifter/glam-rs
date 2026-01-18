@@ -617,6 +617,13 @@ impl DMat4 {
         }
     }
 
+    /// Returns the diagonal of `self`.
+    #[inline]
+    #[must_use]
+    pub fn diagonal(&self) -> DVec4 {
+        DVec4::new(self.x_axis.x, self.y_axis.y, self.z_axis.z, self.w_axis.w)
+    }
+
     /// Returns the determinant of `self`.
     #[must_use]
     pub fn determinant(&self) -> f64 {

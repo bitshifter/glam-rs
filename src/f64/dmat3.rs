@@ -502,6 +502,13 @@ impl DMat3 {
         }
     }
 
+    /// Returns the diagonal of `self`.
+    #[inline]
+    #[must_use]
+    pub fn diagonal(&self) -> DVec3 {
+        DVec3::new(self.x_axis.x, self.y_axis.y, self.z_axis.z)
+    }
+
     /// Returns the determinant of `self`.
     #[inline]
     #[must_use]

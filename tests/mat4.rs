@@ -191,6 +191,11 @@ macro_rules! impl_mat4_tests {
                 m4);
         });
 
+        glam_test!(test_diagonal, {
+            let m = $mat4::from_cols_array(&ARRAY1X16);
+            assert_eq!($vec4::new(1.0, 6.0, 11.0, 16.0), m.diagonal());
+        });
+
         glam_test!(test_mat4_mul_vec4, {
             let m = $mat4::from_axis_angle($vec3::Z, deg(90.0));
             assert_approx_eq!($vec4::NEG_X, m * $vec4::Y);
