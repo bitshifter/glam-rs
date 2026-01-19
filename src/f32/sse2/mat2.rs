@@ -303,6 +303,41 @@ impl Mat2 {
         }
     }
 
+    /// If `CHECKED` is true then if the determinant is zero this function will return a tuple
+    /// containing a zero matrix and false. If the determinant is non zero a tuple containing the
+    /// inverted matrix and true is returned.
+    ///
+    /// If `CHECKED` is false then the determinant is not checked and if it is zero the resulting
+    /// inverted matrix will be invalid. Will panic if the determinant of `self` is zero when
+    /// `glam_assert` is enabled.
+    ///
+    /// A tuple containing the inverted matrix and a bool is used instead of an option here as
+    /// regular Rust enums put the discriminant first which can result in a lot of padding if the
+    /// matrix is aligned.
+    #[inline(always)]
+    #[must_use]
+    fn inverse_checked<const CHECKED: bool>(&self) -> (Self, bool) {
+        unsafe {
+            use crate::Vec4;
+            const SIGN: __m128 = crate::sse2::m128_from_f32x4([1.0, -1.0, -1.0, 1.0]);
+            let abcd = self.0;
+            let dcba = _mm_shuffle_ps(abcd, abcd, 0b00_01_10_11);
+            let prod = _mm_mul_ps(abcd, dcba);
+            let sub = _mm_sub_ps(prod, _mm_shuffle_ps(prod, prod, 0b01_01_01_01));
+            let det = _mm_shuffle_ps(sub, sub, 0b00_00_00_00);
+            if CHECKED {
+                if Vec4(det) == Vec4::ZERO {
+                    return (Self::ZERO, false);
+                }
+            } else {
+                glam_assert!(Vec4(det).cmpne(Vec4::ZERO).all());
+            }
+            let tmp = _mm_div_ps(SIGN, det);
+            let dbca = _mm_shuffle_ps(abcd, abcd, 0b00_10_01_11);
+            (Self(_mm_mul_ps(dbca, tmp)), true)
+        }
+    }
+
     /// Returns the inverse of `self`.
     ///
     /// If the matrix is not invertible the returned matrix will be invalid.
@@ -313,18 +348,26 @@ impl Mat2 {
     #[inline]
     #[must_use]
     pub fn inverse(&self) -> Self {
-        unsafe {
-            const SIGN: __m128 = crate::sse2::m128_from_f32x4([1.0, -1.0, -1.0, 1.0]);
-            let abcd = self.0;
-            let dcba = _mm_shuffle_ps(abcd, abcd, 0b00_01_10_11);
-            let prod = _mm_mul_ps(abcd, dcba);
-            let sub = _mm_sub_ps(prod, _mm_shuffle_ps(prod, prod, 0b01_01_01_01));
-            let det = _mm_shuffle_ps(sub, sub, 0b00_00_00_00);
-            let tmp = _mm_div_ps(SIGN, det);
-            glam_assert!(Mat2(tmp).is_finite());
-            let dbca = _mm_shuffle_ps(abcd, abcd, 0b00_10_01_11);
-            Self(_mm_mul_ps(dbca, tmp))
+        self.inverse_checked::<false>().0
+    }
+
+    /// Returns the inverse of `self` or `None` if the matrix is not invertible.
+    #[inline]
+    #[must_use]
+    pub fn try_inverse(&self) -> Option<Self> {
+        let (m, is_valid) = self.inverse_checked::<true>();
+        if is_valid {
+            Some(m)
+        } else {
+            None
         }
+    }
+
+    /// Returns the inverse of `self` or `Mat2::ZERO` if the matrix is not invertible.
+    #[inline]
+    #[must_use]
+    pub fn inverse_or_zero(&self) -> Self {
+        self.inverse_checked::<true>().0
     }
 
     /// Transforms a 2D vector.

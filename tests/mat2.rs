@@ -192,20 +192,29 @@ macro_rules! impl_mat2_tests {
         });
 
         glam_test!(test_mat2_inverse, {
-            let inv = $mat2::IDENTITY.inverse();
-            assert_approx_eq!($mat2::IDENTITY, inv);
+            assert_eq!(None, $mat2::ZERO.try_inverse());
+            assert_eq!($mat2::ZERO, $mat2::ZERO.inverse_or_zero());
+            assert_eq!(Some($mat2::IDENTITY), $mat2::IDENTITY.try_inverse());
+            assert_eq!($mat2::IDENTITY, $mat2::IDENTITY.inverse_or_zero());
+            assert_eq!($mat2::IDENTITY, $mat2::IDENTITY.inverse());
 
             let rot = $mat2::from_angle(deg(90.0));
+            let rot_inv = rot.try_inverse();
+            assert_ne!(None, rot_inv);
             let rot_inv = rot.inverse();
             assert_approx_eq!($mat2::IDENTITY, rot * rot_inv);
             assert_approx_eq!($mat2::IDENTITY, rot_inv * rot);
 
             let scale = $mat2::from_diagonal($newvec2(4.0, 5.0));
+            let scale_inv = scale.try_inverse();
+            assert_ne!(None, scale_inv);
             let scale_inv = scale.inverse();
             assert_approx_eq!($mat2::IDENTITY, scale * scale_inv);
             assert_approx_eq!($mat2::IDENTITY, scale_inv * scale);
 
             let m = scale * rot;
+            let m_inv = m.try_inverse();
+            assert_ne!(None, m_inv);
             let m_inv = m.inverse();
             assert_approx_eq!($mat2::IDENTITY, m * m_inv);
             assert_approx_eq!($mat2::IDENTITY, m_inv * m);

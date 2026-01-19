@@ -593,6 +593,38 @@ impl Mat3A {
         self.z_axis.dot(self.x_axis.cross(self.y_axis))
     }
 
+    /// If `CHECKED` is true then if the determinant is zero this function will return a tuple
+    /// containing a zero matrix and false. If the determinant is non zero a tuple containing the
+    /// inverted matrix and true is returned.
+    ///
+    /// If `CHECKED` is false then the determinant is not checked and if it is zero the resulting
+    /// inverted matrix will be invalid. Will panic if the determinant of `self` is zero when
+    /// `glam_assert` is enabled.
+    ///
+    /// A tuple containing the inverted matrix and a bool is used instead of an option here as
+    /// regular Rust enums put the discriminant first which can result in a lot of padding if the
+    /// matrix is aligned.
+    #[inline(always)]
+    #[must_use]
+    fn inverse_checked<const CHECKED: bool>(&self) -> (Self, bool) {
+        let tmp0 = self.y_axis.cross(self.z_axis);
+        let tmp1 = self.z_axis.cross(self.x_axis);
+        let tmp2 = self.x_axis.cross(self.y_axis);
+        let det = self.z_axis.dot(tmp2);
+        if CHECKED {
+            if det == 0.0 {
+                return (Self::ZERO, false);
+            }
+        } else {
+            glam_assert!(det != 0.0);
+        }
+        let inv_det = Vec3A::splat(det.recip());
+        (
+            Self::from_cols(tmp0.mul(inv_det), tmp1.mul(inv_det), tmp2.mul(inv_det)).transpose(),
+            true,
+        )
+    }
+
     /// Returns the inverse of `self`.
     ///
     /// If the matrix is not invertible the returned matrix will be invalid.
@@ -603,13 +635,26 @@ impl Mat3A {
     #[inline]
     #[must_use]
     pub fn inverse(&self) -> Self {
-        let tmp0 = self.y_axis.cross(self.z_axis);
-        let tmp1 = self.z_axis.cross(self.x_axis);
-        let tmp2 = self.x_axis.cross(self.y_axis);
-        let det = self.z_axis.dot(tmp2);
-        glam_assert!(det != 0.0);
-        let inv_det = Vec3A::splat(det.recip());
-        Self::from_cols(tmp0.mul(inv_det), tmp1.mul(inv_det), tmp2.mul(inv_det)).transpose()
+        self.inverse_checked::<false>().0
+    }
+
+    /// Returns the inverse of `self` or `None` if the matrix is not invertible.
+    #[inline]
+    #[must_use]
+    pub fn try_inverse(&self) -> Option<Self> {
+        let (m, is_valid) = self.inverse_checked::<true>();
+        if is_valid {
+            Some(m)
+        } else {
+            None
+        }
+    }
+
+    /// Returns the inverse of `self` or `Mat3A::ZERO` if the matrix is not invertible.
+    #[inline]
+    #[must_use]
+    pub fn inverse_or_zero(&self) -> Self {
+        self.inverse_checked::<true>().0
     }
 
     /// Transforms the given 2D vector as a point.

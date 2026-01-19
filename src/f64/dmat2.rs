@@ -252,6 +252,40 @@ impl DMat2 {
         self.x_axis.x * self.y_axis.y - self.x_axis.y * self.y_axis.x
     }
 
+    /// If `CHECKED` is true then if the determinant is zero this function will return a tuple
+    /// containing a zero matrix and false. If the determinant is non zero a tuple containing the
+    /// inverted matrix and true is returned.
+    ///
+    /// If `CHECKED` is false then the determinant is not checked and if it is zero the resulting
+    /// inverted matrix will be invalid. Will panic if the determinant of `self` is zero when
+    /// `glam_assert` is enabled.
+    ///
+    /// A tuple containing the inverted matrix and a bool is used instead of an option here as
+    /// regular Rust enums put the discriminant first which can result in a lot of padding if the
+    /// matrix is aligned.
+    #[inline(always)]
+    #[must_use]
+    fn inverse_checked<const CHECKED: bool>(&self) -> (Self, bool) {
+        let det = self.determinant();
+        if CHECKED {
+            if det == 0.0 {
+                return (Self::ZERO, false);
+            }
+        } else {
+            glam_assert!(det != 0.0);
+        }
+        let inv_det = det.recip();
+        (
+            Self::new(
+                self.y_axis.y * inv_det,
+                self.x_axis.y * -inv_det,
+                self.y_axis.x * -inv_det,
+                self.x_axis.x * inv_det,
+            ),
+            true,
+        )
+    }
+
     /// Returns the inverse of `self`.
     ///
     /// If the matrix is not invertible the returned matrix will be invalid.
@@ -262,17 +296,26 @@ impl DMat2 {
     #[inline]
     #[must_use]
     pub fn inverse(&self) -> Self {
-        let inv_det = {
-            let det = self.determinant();
-            glam_assert!(det != 0.0);
-            det.recip()
-        };
-        Self::new(
-            self.y_axis.y * inv_det,
-            self.x_axis.y * -inv_det,
-            self.y_axis.x * -inv_det,
-            self.x_axis.x * inv_det,
-        )
+        self.inverse_checked::<false>().0
+    }
+
+    /// Returns the inverse of `self` or `None` if the matrix is not invertible.
+    #[inline]
+    #[must_use]
+    pub fn try_inverse(&self) -> Option<Self> {
+        let (m, is_valid) = self.inverse_checked::<true>();
+        if is_valid {
+            Some(m)
+        } else {
+            None
+        }
+    }
+
+    /// Returns the inverse of `self` or `DMat2::ZERO` if the matrix is not invertible.
+    #[inline]
+    #[must_use]
+    pub fn inverse_or_zero(&self) -> Self {
+        self.inverse_checked::<true>().0
     }
 
     /// Transforms a 2D vector.
