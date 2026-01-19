@@ -76,6 +76,11 @@ macro_rules! impl_mat2_tests {
             assert_eq!(b, f);
         });
 
+        glam_test!(test_diagonal, {
+            let m = $mat2::from_cols_array(&ARRAY1X4);
+            assert_eq!($newvec2(1.0, 4.0), m.diagonal());
+        });
+
         glam_test!(test_mat2_mul, {
             let mat_a = $mat2::from_angle(deg(90.0));
 
