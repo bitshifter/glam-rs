@@ -307,29 +307,30 @@ macro_rules! impl_mat3_tests {
         });
 
         glam_test!(test_mat3_inverse, {
-            // assert_eq!(None, $mat3::ZERO.inverse());
-            let inv = $mat3::IDENTITY.inverse();
-            // assert_ne!(None, inv);
-            assert_approx_eq!($mat3::IDENTITY, inv);
+            assert_eq!(None, $mat3::ZERO.try_inverse());
+            assert_eq!($mat3::ZERO, $mat3::ZERO.inverse_or_zero());
+            assert_eq!(Some($mat3::IDENTITY), $mat3::IDENTITY.try_inverse());
+            assert_eq!($mat3::IDENTITY, $mat3::IDENTITY.inverse_or_zero());
+            assert_eq!($mat3::IDENTITY, $mat3::IDENTITY.inverse());
 
             let rotz = $mat3::from_rotation_z(deg(90.0));
+            let rotz_inv = rotz.try_inverse();
+            assert_ne!(None, rotz_inv);
             let rotz_inv = rotz.inverse();
-            // assert_ne!(None, rotz_inv);
-            // let rotz_inv = rotz_inv.unwrap();
             assert_approx_eq!($mat3::IDENTITY, rotz * rotz_inv);
             assert_approx_eq!($mat3::IDENTITY, rotz_inv * rotz);
 
             let scale = $mat3::from_diagonal($vec3::new(4.0, 5.0, 6.0));
+            let scale_inv = scale.try_inverse();
+            assert_ne!(None, scale_inv);
             let scale_inv = scale.inverse();
-            // assert_ne!(None, scale_inv);
-            // let scale_inv = scale_inv.unwrap();
             assert_approx_eq!($mat3::IDENTITY, scale * scale_inv);
             assert_approx_eq!($mat3::IDENTITY, scale_inv * scale);
 
             let m = scale * rotz;
+            let m_inv = m.try_inverse();
+            assert_ne!(None, m_inv);
             let m_inv = m.inverse();
-            // assert_ne!(None, m_inv);
-            // let m_inv = m_inv.unwrap();
             assert_approx_eq!($mat3::IDENTITY, m * m_inv);
             assert_approx_eq!($mat3::IDENTITY, m_inv * m);
             assert_approx_eq!(m_inv, rotz_inv * scale_inv);

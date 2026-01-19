@@ -238,14 +238,24 @@
     let row2 = simd_swizzle!(row0, row1, [0, 2, 4, 6]);
 
     let dot0 = dot4(self.x_axis.0, row2);
-    glam_assert!(dot0 != 0.0);
+
+    if CHECKED {
+        if dot0 == 0.0 {
+            return (Self::ZERO, false);
+        }
+    } else {
+        glam_assert!(dot0 != 0.0);
+    }
 
     let rcp0 = f32x4::splat(dot0.recip());
 
-    Self {
-        x_axis: Vec4(inv0 * rcp0),
-        y_axis: Vec4(inv1 * rcp0),
-        z_axis: Vec4(inv2 * rcp0),
-        w_axis: Vec4(inv3 * rcp0),
-    }
+    (
+        Self {
+            x_axis: Vec4(inv0 * rcp0),
+            y_axis: Vec4(inv1 * rcp0),
+            z_axis: Vec4(inv2 * rcp0),
+            w_axis: Vec4(inv3 * rcp0),
+        },
+        true
+    )
 {% endmacro impl_mat4_inverse %}

@@ -645,15 +645,20 @@ impl DMat4 {
             - m03 * (m10 * a1223 - m11 * a0223 + m12 * a0123)
     }
 
-    /// Returns the inverse of `self`.
+    /// If `CHECKED` is true then if the determinant is zero this function will return a tuple
+    /// containing a zero matrix and false. If the determinant is non zero a tuple containing the
+    /// inverted matrix and true is returned.
     ///
-    /// If the matrix is not invertible the returned matrix will be invalid.
+    /// If `CHECKED` is false then the determinant is not checked and if it is zero the resulting
+    /// inverted matrix will be invalid. Will panic if the determinant of `self` is zero when
+    /// `glam_assert` is enabled.
     ///
-    /// # Panics
-    ///
-    /// Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
+    /// A tuple containing the inverted matrix and a bool is used instead of an option here as
+    /// regular Rust enums put the discriminant first which can result in a lot of padding if the
+    /// matrix is aligned.
+    #[inline(always)]
     #[must_use]
-    pub fn inverse(&self) -> Self {
+    fn inverse_checked<const CHECKED: bool>(&self) -> (Self, bool) {
         let (m00, m01, m02, m03) = self.x_axis.into();
         let (m10, m11, m12, m13) = self.y_axis.into();
         let (m20, m21, m22, m23) = self.z_axis.into();
@@ -720,10 +725,45 @@ impl DMat4 {
         let dot0 = self.x_axis.mul(col0);
         let dot1 = dot0.x + dot0.y + dot0.z + dot0.w;
 
-        glam_assert!(dot1 != 0.0);
+        if CHECKED {
+            if dot1 == 0.0 {
+                return (Self::ZERO, false);
+            }
+        } else {
+            glam_assert!(dot1 != 0.0);
+        }
 
         let rcp_det = dot1.recip();
-        inverse.mul(rcp_det)
+        (inverse.mul(rcp_det), true)
+    }
+
+    /// Returns the inverse of `self`.
+    ///
+    /// If the matrix is not invertible the returned matrix will be invalid.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
+    #[must_use]
+    pub fn inverse(&self) -> Self {
+        self.inverse_checked::<false>().0
+    }
+
+    /// Returns the inverse of `self` or `None` if the matrix is not invertible.
+    #[must_use]
+    pub fn try_inverse(&self) -> Option<Self> {
+        let (m, is_valid) = self.inverse_checked::<true>();
+        if is_valid {
+            Some(m)
+        } else {
+            None
+        }
+    }
+
+    /// Returns the inverse of `self` or `None` if the matrix is not invertible.
+    #[must_use]
+    pub fn inverse_or_zero(&self) -> Self {
+        self.inverse_checked::<true>().0
     }
 
     /// Creates a left-handed view matrix using a camera position, a facing direction and an up

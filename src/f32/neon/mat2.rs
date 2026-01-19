@@ -307,6 +307,46 @@ impl Mat2 {
         }
     }
 
+    /// If `CHECKED` is true then if the determinant is zero this function will return a tuple
+    /// containing a zero matrix and false. If the determinant is non zero a tuple containing the
+    /// inverted matrix and true is returned.
+    ///
+    /// If `CHECKED` is false then the determinant is not checked and if it is zero the resulting
+    /// inverted matrix will be invalid. Will panic if the determinant of `self` is zero when
+    /// `glam_assert` is enabled.
+    ///
+    /// A tuple containing the inverted matrix and a bool is used instead of an option here as
+    /// regular Rust enums put the discriminant first which can result in a lot of padding if the
+    /// matrix is aligned.
+    #[inline(always)]
+    #[must_use]
+    fn inverse_checked<const CHECKED: bool>(&self) -> (Self, bool) {
+        unsafe {
+            use crate::Vec4;
+            const SIGN: float32x4_t = crate::neon::f32x4_from_array([1.0, -1.0, -1.0, 1.0]);
+            let abcd = self.0;
+            let badc = vrev64q_f32(abcd);
+            let dcba = vextq_f32(badc, badc, 2);
+            let prod = vmulq_f32(abcd, dcba);
+            let sub = vsubq_f32(prod, vdupq_laneq_f32(prod, 1));
+            let det = vdupq_laneq_f32(sub, 0);
+            if CHECKED {
+                if Vec4(det) == Vec4::ZERO {
+                    return (Self::ZERO, false);
+                }
+            } else {
+                glam_assert!(Vec4(det).cmpneq(Vec4::ZERO).all());
+            }
+            let tmp = vdivq_f32(SIGN, det);
+            let dbca = vsetq_lane_f32(
+                vgetq_lane_f32(abcd, 0),
+                vsetq_lane_f32(vgetq_lane_f32(abcd, 3), abcd, 0),
+                3,
+            );
+            (Self(vmulq_f32(dbca, tmp)), true)
+        }
+    }
+
     /// Returns the inverse of `self`.
     ///
     /// If the matrix is not invertible the returned matrix will be invalid.
@@ -317,24 +357,26 @@ impl Mat2 {
     #[inline]
     #[must_use]
     pub fn inverse(&self) -> Self {
-        unsafe {
-            const SIGN: float32x4_t = crate::neon::f32x4_from_array([1.0, -1.0, -1.0, 1.0]);
-            let abcd = self.0;
-            let badc = vrev64q_f32(abcd);
-            let dcba = vextq_f32(badc, badc, 2);
-            let prod = vmulq_f32(abcd, dcba);
-            let sub = vsubq_f32(prod, vdupq_laneq_f32(prod, 1));
-            let det = vdupq_laneq_f32(sub, 0);
-            let tmp = vdivq_f32(SIGN, det);
-            glam_assert!(Mat2(tmp).is_finite());
-            //let dbca = simd_swizzle!(abcd, [3, 1, 2, 0]);
-            let dbca = vsetq_lane_f32(
-                vgetq_lane_f32(abcd, 0),
-                vsetq_lane_f32(vgetq_lane_f32(abcd, 3), abcd, 0),
-                3,
-            );
-            Self(vmulq_f32(dbca, tmp))
+        self.inverse_checked::<false>().0
+    }
+
+    /// Returns the inverse of `self` or `None` if the matrix is not invertible.
+    #[inline]
+    #[must_use]
+    pub fn try_inverse(&self) -> Option<Self> {
+        let (m, is_valid) = self.inverse_checked::<true>();
+        if is_valid {
+            Some(m)
+        } else {
+            None
         }
+    }
+
+    /// Returns the inverse of `self` or `None` if the matrix is not invertible.
+    #[inline]
+    #[must_use]
+    pub fn inverse_or_zero(&self) -> Self {
+        self.inverse_checked::<true>().0
     }
 
     /// Transforms a 2D vector.
