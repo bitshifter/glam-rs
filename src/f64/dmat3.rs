@@ -573,7 +573,7 @@ impl DMat3 {
         }
     }
 
-    /// Returns the inverse of `self` or `None` if the matrix is not invertible.
+    /// Returns the inverse of `self` or `DMat3::ZERO` if the matrix is not invertible.
     #[inline]
     #[must_use]
     pub fn inverse_or_zero(&self) -> Self {

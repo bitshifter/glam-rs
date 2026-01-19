@@ -1734,7 +1734,7 @@ impl {{ self_t }} {
         if is_valid { Some(m) } else { None }
     }
 
-    /// Returns the inverse of `self` or `None` if the matrix is not invertible.
+    /// Returns the inverse of `self` or `{{ self_t }}::ZERO` if the matrix is not invertible.
     {%- if dim < 4 %}
     #[inline]
     {%- endif %}

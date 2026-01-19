@@ -772,7 +772,7 @@ impl Mat4 {
         }
     }
 
-    /// Returns the inverse of `self` or `None` if the matrix is not invertible.
+    /// Returns the inverse of `self` or `Mat4::ZERO` if the matrix is not invertible.
     #[must_use]
     pub fn inverse_or_zero(&self) -> Self {
         self.inverse_checked::<true>().0

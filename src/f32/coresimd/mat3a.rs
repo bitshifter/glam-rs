@@ -632,7 +632,7 @@ impl Mat3A {
         }
     }
 
-    /// Returns the inverse of `self` or `None` if the matrix is not invertible.
+    /// Returns the inverse of `self` or `Mat3A::ZERO` if the matrix is not invertible.
     #[inline]
     #[must_use]
     pub fn inverse_or_zero(&self) -> Self {
