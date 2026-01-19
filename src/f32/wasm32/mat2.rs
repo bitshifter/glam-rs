@@ -308,7 +308,7 @@ impl Mat2 {
                 return (Self::ZERO, false);
             }
         } else {
-            glam_assert!(Vec4(det).cmpneq(Vec4::ZERO).all());
+            glam_assert!(Vec4(det).cmpne(Vec4::ZERO).all());
         }
         let tmp = f32x4_div(SIGN, det);
         let dbca = i32x4_shuffle::<3, 1, 6, 4>(abcd, abcd);

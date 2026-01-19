@@ -301,7 +301,7 @@ impl Mat2 {
                 return (Self::ZERO, false);
             }
         } else {
-            glam_assert!(Vec4(det).cmpneq(Vec4::ZERO).all());
+            glam_assert!(Vec4(det).cmpne(Vec4::ZERO).all());
         }
         let tmp = SIGN / det;
         let dbca = simd_swizzle!(abcd, [3, 1, 2, 0]);

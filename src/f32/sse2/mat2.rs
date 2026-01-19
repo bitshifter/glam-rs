@@ -330,7 +330,7 @@ impl Mat2 {
                     return (Self::ZERO, false);
                 }
             } else {
-                glam_assert!(Vec4(det).cmpneq(Vec4::ZERO).all());
+                glam_assert!(Vec4(det).cmpne(Vec4::ZERO).all());
             }
             let tmp = _mm_div_ps(SIGN, det);
             let dbca = _mm_shuffle_ps(abcd, abcd, 0b00_10_01_11);

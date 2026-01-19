@@ -335,7 +335,7 @@ impl Mat2 {
                     return (Self::ZERO, false);
                 }
             } else {
-                glam_assert!(Vec4(det).cmpneq(Vec4::ZERO).all());
+                glam_assert!(Vec4(det).cmpne(Vec4::ZERO).all());
             }
             let tmp = vdivq_f32(SIGN, det);
             let dbca = vsetq_lane_f32(
