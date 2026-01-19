@@ -76,6 +76,9 @@ macro_rules! impl_quat_tests {
             assert_approx_eq!(y0, y3);
             let y4 = $quat::from_mat3(&$mat3::from_quat(y0));
             assert_approx_eq!(y0, y4);
+            let m0 = $mat3::from_quat(y0);
+            let y5 = $quat::from_rotation_axes(m0.x_axis, m0.y_axis, m0.z_axis);
+            assert_approx_eq!(y0, y5);
 
             let x0 = $quat::from_rotation_x(pitch);
             assert!(x0.is_normalized());

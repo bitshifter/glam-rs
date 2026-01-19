@@ -5,6 +5,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+### Breaking changes
+
+* The signature of `Quat::from_affine3(&Affine3A)` was changed to 
+  `Quat::from_affine3(&Affine3)` with the addition of the `Affine3` type.
+
+* Removed deprecated `Vec2` and `DVec2` `angle_between` methods.
+
+* Consistently use `&self` for matrix and affine type methods and `self`
+  for vector, quat and mask types.
+
+### Added
+
+* Added `Affine3` type.
+
+* Added `diagonal` method to matrix types which returns a vector containing the
+  diagonal of the matrix.
+
+* Added `mul_diagonal_scale` methods to matrix types which multiply the matrix
+  by a scale vector without needing to mulitply by a scale matrix.
+
+* Added `mul_transpose_vecn` methods to matrix types which multiply the vector
+  by the transpose of the matrix without needing to transpose it first. They can
+  be slightly more efficient for SIMD backed types.
+
+* Added `try_inverse` method to matrix types which returns an option containing
+  the inverted matrix or `None` if the matrix was not invertible.
+
+* Added `inverse_or_zero` method to matrix types which returns the inverted
+  matrix or a zero matrix if the matrix was not invertible.
+
+* Added `step` and `saturate` methods to the `FloatExt` trait.
+
+* Added `step`, `saturate`, `sqrt`, `sin`, `cos` and `sin_cos` methods to float
+  vector types.
+
+* Added `from_rotation_axes` method to quaternion types. This method was
+  previously internal only.
+
 ## [0.30.10] - 2026-01-07
 
 ### Added
@@ -1324,7 +1364,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
 [Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.30.10...HEAD
-[0.30.9]: https://github.com/bitshifter/glam-rs/compare/0.30.9...0.30.10
+[0.30.10]: https://github.com/bitshifter/glam-rs/compare/0.30.9...0.30.10
 [0.30.9]: https://github.com/bitshifter/glam-rs/compare/0.30.8...0.30.9
 [0.30.8]: https://github.com/bitshifter/glam-rs/compare/0.30.7...0.30.8
 [0.30.7]: https://github.com/bitshifter/glam-rs/compare/0.30.6...0.30.7
