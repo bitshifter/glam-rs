@@ -197,7 +197,7 @@ impl Quat {
     /// Will panic if any axis is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub(crate) fn from_rotation_axes(x_axis: Vec3, y_axis: Vec3, z_axis: Vec3) -> Self {
+    pub fn from_rotation_axes(x_axis: Vec3, y_axis: Vec3, z_axis: Vec3) -> Self {
         glam_assert!(x_axis.is_normalized() && y_axis.is_normalized() && z_axis.is_normalized());
         // Based on https://github.com/microsoft/DirectXMath `XMQuaternionRotationMatrix`
         let (m00, m01, m02) = x_axis.into();
@@ -825,12 +825,7 @@ impl Quat {
     #[inline]
     #[must_use]
     pub fn from_affine3(a: &crate::Affine3) -> Self {
-        #[allow(clippy::useless_conversion)]
-        Self::from_rotation_axes(
-            a.matrix3.x_axis.into(),
-            a.matrix3.y_axis.into(),
-            a.matrix3.z_axis.into(),
-        )
+        Self::from_rotation_axes(a.matrix3.x_axis, a.matrix3.y_axis, a.matrix3.z_axis)
     }
 
     /// Creates a quaternion from a 3x3 rotation matrix inside a 3D affine transform.
@@ -845,7 +840,6 @@ impl Quat {
     #[inline]
     #[must_use]
     pub fn from_affine3a(a: &crate::Affine3A) -> Self {
-        #[allow(clippy::useless_conversion)]
         Self::from_rotation_axes(
             a.matrix3.x_axis.into(),
             a.matrix3.y_axis.into(),
