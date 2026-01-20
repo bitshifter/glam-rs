@@ -3,7 +3,8 @@
 #[cfg(not(feature = "scalar-math"))]
 use crate::BVec4A;
 use crate::{
-    BVec4, I16Vec4, I64Vec4, I8Vec4, IVec4, U16Vec4, U64Vec4, U8Vec4, USizeVec2, USizeVec3, UVec4,
+    BVec4, I16Vec4, I64Vec4, I8Vec4, ISizeVec4, IVec4, U16Vec4, U64Vec4, U8Vec4, USizeVec2,
+    USizeVec3, UVec4,
 };
 
 use core::fmt;
@@ -763,6 +764,60 @@ impl USizeVec4 {
             y: self.y.saturating_div(rhs.y),
             z: self.z.saturating_div(rhs.z),
             w: self.w.saturating_div(rhs.w),
+        }
+    }
+
+    /// Returns a vector containing the wrapping addition of `self` and signed vector `rhs`.
+    ///
+    /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
+    #[inline]
+    #[must_use]
+    pub const fn checked_add_signed(self, rhs: ISizeVec4) -> Option<Self> {
+        let x = match self.x.checked_add_signed(rhs.x) {
+            Some(v) => v,
+            None => return None,
+        };
+        let y = match self.y.checked_add_signed(rhs.y) {
+            Some(v) => v,
+            None => return None,
+        };
+        let z = match self.z.checked_add_signed(rhs.z) {
+            Some(v) => v,
+            None => return None,
+        };
+        let w = match self.w.checked_add_signed(rhs.w) {
+            Some(v) => v,
+            None => return None,
+        };
+
+        Some(Self { x, y, z, w })
+    }
+
+    /// Returns a vector containing the wrapping addition of `self` and signed vector `rhs`.
+    ///
+    /// In other words this computes `[self.x.wrapping_add_signed(rhs.x), self.y.wrapping_add_signed(rhs.y), ..]`.
+    #[inline]
+    #[must_use]
+    pub const fn wrapping_add_signed(self, rhs: ISizeVec4) -> Self {
+        Self {
+            x: self.x.wrapping_add_signed(rhs.x),
+            y: self.y.wrapping_add_signed(rhs.y),
+            z: self.z.wrapping_add_signed(rhs.z),
+            w: self.w.wrapping_add_signed(rhs.w),
+        }
+    }
+
+    /// Returns a vector containing the saturating addition of `self` and signed vector `rhs`.
+    ///
+    /// In other words this computes `[self.x.saturating_add_signed(rhs.x), self.y.saturating_add_signed(rhs.y), ..]`.
+    #[inline]
+    #[must_use]
+    pub const fn saturating_add_signed(self, rhs: ISizeVec4) -> Self {
+        Self {
+            x: self.x.saturating_add_signed(rhs.x),
+            y: self.y.saturating_add_signed(rhs.y),
+            z: self.z.saturating_add_signed(rhs.z),
+            w: self.w.saturating_add_signed(rhs.w),
         }
     }
 }
@@ -3015,6 +3070,20 @@ impl TryFrom<I64Vec4> for USizeVec4 {
 
     #[inline]
     fn try_from(v: I64Vec4) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            usize::try_from(v.x)?,
+            usize::try_from(v.y)?,
+            usize::try_from(v.z)?,
+            usize::try_from(v.w)?,
+        ))
+    }
+}
+
+impl TryFrom<ISizeVec4> for USizeVec4 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: ISizeVec4) -> Result<Self, Self::Error> {
         Ok(Self::new(
             usize::try_from(v.x)?,
             usize::try_from(v.y)?,

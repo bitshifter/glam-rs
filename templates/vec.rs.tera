@@ -129,16 +129,28 @@
     {% set vec4_t = "U64Vec4" %}
     {% set from_types = ["U8Vec" ~ dim, "U16Vec" ~ dim, "UVec" ~ dim] %}
     {% set try_from_types = ["I8Vec" ~ dim, "I16Vec" ~ dim, "IVec" ~ dim, "I64Vec" ~ dim, "USizeVec" ~ dim] %}
+{% elif scalar_t == "isize" %}
+    {% set is_signed = true %}
+    {% set is_float = false %}
+    {% set unsigned_scalar_t = "usize" %}
+    {% set self_t = "ISizeVec" ~ dim %}
+    {% set opposite_signedness_t = "USizeVec" ~ dim %}
+    {% set vec2_t = "ISizeVec2" %}
+    {% set vec3_t = "ISizeVec3" %}
+    {% set vec4_t = "ISizeVec4" %}
+    {% set from_types = ["I8Vec" ~ dim, "I16Vec" ~ dim, "U8Vec" ~ dim] %}
+    {% set try_from_types = ["U16Vec" ~ dim, "UVec" ~ dim, "U64Vec" ~ dim, "USizeVec" ~ dim, "IVec" ~ dim, "I64Vec" ~ dim] %}
 {% elif scalar_t == "usize" %}
     {% set is_signed = false %}
     {% set is_float = false %}
     {% set unsigned_scalar_t = "usize" %}
     {% set self_t = "USizeVec" ~ dim %}
+    {% set opposite_signedness_t = "ISizeVec" ~ dim %}
     {% set vec2_t = "USizeVec2" %}
     {% set vec3_t = "USizeVec3" %}
     {% set vec4_t = "USizeVec4" %}
     {% set from_types = ["U8Vec" ~ dim, "U16Vec" ~ dim] %}
-    {% set try_from_types = ["I8Vec" ~ dim, "I16Vec" ~ dim, "IVec" ~ dim, "I64Vec" ~ dim, "UVec" ~ dim, "U64Vec" ~ dim] %}
+    {% set try_from_types = ["I8Vec" ~ dim, "I16Vec" ~ dim, "IVec" ~ dim, "I64Vec" ~ dim, "ISizeVec" ~ dim, "UVec" ~ dim, "U64Vec" ~ dim] %}
 {% endif %}
 {% set bvec_from_type = "BVec" ~ dim %}
 {% if dim > 2 %}
@@ -154,7 +166,7 @@
         {% set cuda_align = 8 %}
     {% elif scalar_t == "f64" or scalar_t == "i64" or scalar_t == "u64" %}
         {% set cuda_align = 16 %}
-    {% elif scalar_t == "usize" %}
+    {% elif scalar_t == "usize" or scalar_t == "isize" %}
         {# assuming 64 bit here #}
         {% set cuda_align = 16 %}
     {% endif %}
@@ -167,7 +179,7 @@
         {% set cuda_align = 16 %}
     {% elif scalar_t == "f64" or scalar_t == "i64" or scalar_t == "u64" %}
         {% set cuda_align = 16 %}
-    {% elif scalar_t == "usize" %}
+    {% elif scalar_t == "usize" or scalar_t == "isize" %}
         {# assuming 64 bit here #}
         {% set cuda_align = 16 %}
     {% endif %}
@@ -3168,137 +3180,135 @@ impl {{ self_t }} {
         }
     }
 
-    {% if scalar_t != "usize" %}
-        {% if is_signed %}
-            /// Returns a vector containing the wrapping addition of `self` and unsigned vector `rhs`.
-            ///
-            /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
-            #[inline]
-            #[must_use]
-            pub const fn checked_add_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Option<Self> {
+    {% if is_signed %}
+        /// Returns a vector containing the wrapping addition of `self` and unsigned vector `rhs`.
+        ///
+        /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
+        #[inline]
+        #[must_use]
+        pub const fn checked_add_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Option<Self> {
+            {% for c in components %}
+                let {{ c }} = match self.{{ c }}.checked_add_unsigned(rhs.{{ c }}) { Some(v) => v, None => {return None} };
+            {%- endfor %}
+
+            Some(Self {
                 {% for c in components %}
-                    let {{ c }} = match self.{{ c }}.checked_add_unsigned(rhs.{{ c }}) { Some(v) => v, None => {return None} };
+                    {{ c }},
                 {%- endfor %}
+            })
+        }
 
-                Some(Self {
-                    {% for c in components %}
-                        {{ c }},
-                    {%- endfor %}
-                })
-            }
+        /// Returns a vector containing the wrapping subtraction of `self` and unsigned vector `rhs`.
+        ///
+        /// In other words this computes `Some([self.x - rhs.x, self.y - rhs.y, ..])` but returns `None` on any overflow.
+        #[inline]
+        #[must_use]
+        pub const fn checked_sub_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Option<Self> {
+            {% for c in components %}
+                let {{ c }} = match self.{{ c }}.checked_sub_unsigned(rhs.{{ c }}) { Some(v) => v, None => {return None} };
+            {%- endfor %}
 
-            /// Returns a vector containing the wrapping subtraction of `self` and unsigned vector `rhs`.
-            ///
-            /// In other words this computes `Some([self.x - rhs.x, self.y - rhs.y, ..])` but returns `None` on any overflow.
-            #[inline]
-            #[must_use]
-            pub const fn checked_sub_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Option<Self> {
+            Some(Self {
                 {% for c in components %}
-                    let {{ c }} = match self.{{ c }}.checked_sub_unsigned(rhs.{{ c }}) { Some(v) => v, None => {return None} };
+                    {{ c }},
                 {%- endfor %}
+            })
+        }
 
-                Some(Self {
-                    {% for c in components %}
-                        {{ c }},
-                    {%- endfor %}
-                })
-            }
-
-            /// Returns a vector containing the wrapping addition of `self` and unsigned vector `rhs`.
-            ///
-            /// In other words this computes `[self.x.wrapping_add_unsigned(rhs.x), self.y.wrapping_add_unsigned(rhs.y), ..]`.
-            #[inline]
-            #[must_use]
-            pub const fn wrapping_add_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Self {
-                Self {
-                    {% for c in components %}
-                        {{ c }}: self.{{ c }}.wrapping_add_unsigned(rhs.{{ c }}),
-                    {%- endfor %}
-                }
-            }
-
-            /// Returns a vector containing the wrapping subtraction of `self` and unsigned vector `rhs`.
-            ///
-            /// In other words this computes `[self.x.wrapping_sub_unsigned(rhs.x), self.y.wrapping_sub_unsigned(rhs.y), ..]`.
-            #[inline]
-            #[must_use]
-            pub const fn wrapping_sub_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Self {
-                Self {
-                    {% for c in components %}
-                        {{ c }}: self.{{ c }}.wrapping_sub_unsigned(rhs.{{ c }}),
-                    {%- endfor %}
-                }
-            }
-
-            // Returns a vector containing the saturating addition of `self` and unsigned vector `rhs`.
-            ///
-            /// In other words this computes `[self.x.saturating_add_unsigned(rhs.x), self.y.saturating_add_unsigned(rhs.y), ..]`.
-            #[inline]
-            #[must_use]
-            pub const fn saturating_add_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Self {
-                Self {
-                    {% for c in components %}
-                        {{ c }}: self.{{ c }}.saturating_add_unsigned(rhs.{{ c }}),
-                    {%- endfor %}
-                }
-            }
-
-            /// Returns a vector containing the saturating subtraction of `self` and unsigned vector `rhs`.
-            ///
-            /// In other words this computes `[self.x.saturating_sub_unsigned(rhs.x), self.y.saturating_sub_unsigned(rhs.y), ..]`.
-            #[inline]
-            #[must_use]
-            pub const fn saturating_sub_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Self {
-                Self {
-                    {% for c in components %}
-                        {{ c }}: self.{{ c }}.saturating_sub_unsigned(rhs.{{ c }}),
-                    {%- endfor %}
-                }
-            }
-        {% else %}
-            /// Returns a vector containing the wrapping addition of `self` and signed vector `rhs`.
-            ///
-            /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
-            #[inline]
-            #[must_use]
-            pub const fn checked_add_signed(self, rhs: {{ opposite_signedness_t }}) -> Option<Self> {
+        /// Returns a vector containing the wrapping addition of `self` and unsigned vector `rhs`.
+        ///
+        /// In other words this computes `[self.x.wrapping_add_unsigned(rhs.x), self.y.wrapping_add_unsigned(rhs.y), ..]`.
+        #[inline]
+        #[must_use]
+        pub const fn wrapping_add_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Self {
+            Self {
                 {% for c in components %}
-                    let {{ c }} = match self.{{ c }}.checked_add_signed(rhs.{{ c }}) { Some(v) => v, None => {return None} };
+                    {{ c }}: self.{{ c }}.wrapping_add_unsigned(rhs.{{ c }}),
                 {%- endfor %}
-
-                Some(Self {
-                    {% for c in components %}
-                        {{ c }},
-                    {%- endfor %}
-                })
             }
+        }
 
-            /// Returns a vector containing the wrapping addition of `self` and signed vector `rhs`.
-            ///
-            /// In other words this computes `[self.x.wrapping_add_signed(rhs.x), self.y.wrapping_add_signed(rhs.y), ..]`.
-            #[inline]
-            #[must_use]
-            pub const fn wrapping_add_signed(self, rhs: {{ opposite_signedness_t }}) -> Self {
-                Self {
-                    {% for c in components %}
-                        {{ c }}: self.{{ c }}.wrapping_add_signed(rhs.{{ c }}),
-                    {%- endfor %}
-                }
+        /// Returns a vector containing the wrapping subtraction of `self` and unsigned vector `rhs`.
+        ///
+        /// In other words this computes `[self.x.wrapping_sub_unsigned(rhs.x), self.y.wrapping_sub_unsigned(rhs.y), ..]`.
+        #[inline]
+        #[must_use]
+        pub const fn wrapping_sub_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Self {
+            Self {
+                {% for c in components %}
+                    {{ c }}: self.{{ c }}.wrapping_sub_unsigned(rhs.{{ c }}),
+                {%- endfor %}
             }
+        }
 
-            /// Returns a vector containing the saturating addition of `self` and signed vector `rhs`.
-            ///
-            /// In other words this computes `[self.x.saturating_add_signed(rhs.x), self.y.saturating_add_signed(rhs.y), ..]`.
-            #[inline]
-            #[must_use]
-            pub const fn saturating_add_signed(self, rhs: {{ opposite_signedness_t }}) -> Self {
-                Self {
-                    {% for c in components %}
-                        {{ c }}: self.{{ c }}.saturating_add_signed(rhs.{{ c }}),
-                    {%- endfor %}
-                }
+        // Returns a vector containing the saturating addition of `self` and unsigned vector `rhs`.
+        ///
+        /// In other words this computes `[self.x.saturating_add_unsigned(rhs.x), self.y.saturating_add_unsigned(rhs.y), ..]`.
+        #[inline]
+        #[must_use]
+        pub const fn saturating_add_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Self {
+            Self {
+                {% for c in components %}
+                    {{ c }}: self.{{ c }}.saturating_add_unsigned(rhs.{{ c }}),
+                {%- endfor %}
             }
-        {% endif %}
+        }
+
+        /// Returns a vector containing the saturating subtraction of `self` and unsigned vector `rhs`.
+        ///
+        /// In other words this computes `[self.x.saturating_sub_unsigned(rhs.x), self.y.saturating_sub_unsigned(rhs.y), ..]`.
+        #[inline]
+        #[must_use]
+        pub const fn saturating_sub_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Self {
+            Self {
+                {% for c in components %}
+                    {{ c }}: self.{{ c }}.saturating_sub_unsigned(rhs.{{ c }}),
+                {%- endfor %}
+            }
+        }
+    {% else %}
+        /// Returns a vector containing the wrapping addition of `self` and signed vector `rhs`.
+        ///
+        /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
+        #[inline]
+        #[must_use]
+        pub const fn checked_add_signed(self, rhs: {{ opposite_signedness_t }}) -> Option<Self> {
+            {% for c in components %}
+                let {{ c }} = match self.{{ c }}.checked_add_signed(rhs.{{ c }}) { Some(v) => v, None => {return None} };
+            {%- endfor %}
+
+            Some(Self {
+                {% for c in components %}
+                    {{ c }},
+                {%- endfor %}
+            })
+        }
+
+        /// Returns a vector containing the wrapping addition of `self` and signed vector `rhs`.
+        ///
+        /// In other words this computes `[self.x.wrapping_add_signed(rhs.x), self.y.wrapping_add_signed(rhs.y), ..]`.
+        #[inline]
+        #[must_use]
+        pub const fn wrapping_add_signed(self, rhs: {{ opposite_signedness_t }}) -> Self {
+            Self {
+                {% for c in components %}
+                    {{ c }}: self.{{ c }}.wrapping_add_signed(rhs.{{ c }}),
+                {%- endfor %}
+            }
+        }
+
+        /// Returns a vector containing the saturating addition of `self` and signed vector `rhs`.
+        ///
+        /// In other words this computes `[self.x.saturating_add_signed(rhs.x), self.y.saturating_add_signed(rhs.y), ..]`.
+        #[inline]
+        #[must_use]
+        pub const fn saturating_add_signed(self, rhs: {{ opposite_signedness_t }}) -> Self {
+            Self {
+                {% for c in components %}
+                    {{ c }}: self.{{ c }}.saturating_add_signed(rhs.{{ c }}),
+                {%- endfor %}
+            }
+        }
     {% endif %}
 {% endif %}
 }
