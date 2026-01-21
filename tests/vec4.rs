@@ -4412,6 +4412,7 @@ mod u64vec4 {
     impl_vec4_bit_op_tests!(U64Vec4, 0, 2);
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 mod isizevec4 {
     use glam::{
         isizevec4, BVec4, I16Vec4, I8Vec4, ISizeVec2, ISizeVec3, ISizeVec4, IVec4, U16Vec4,
