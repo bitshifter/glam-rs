@@ -4415,8 +4415,8 @@ mod u64vec4 {
 #[cfg(not(target_arch = "wasm32"))]
 mod isizevec4 {
     use glam::{
-        isizevec4, BVec4, I16Vec4, I8Vec4, ISizeVec2, ISizeVec3, ISizeVec4, IVec4, U16Vec4,
-        U8Vec4, USizeVec4, UVec4,
+        isizevec4, BVec4, I16Vec4, I8Vec4, ISizeVec2, ISizeVec3, ISizeVec4, IVec4, U16Vec4, U8Vec4,
+        USizeVec4, UVec4,
     };
 
     glam_test!(test_align, {
@@ -4477,14 +4477,24 @@ mod isizevec4 {
 
     glam_test!(test_wrapping_add, {
         assert_eq!(
-            ISizeVec4::new(isize::MAX, 5, isize::MIN, 0).wrapping_add(ISizeVec4::new(1, 3, isize::MAX, 0)),
+            ISizeVec4::new(isize::MAX, 5, isize::MIN, 0).wrapping_add(ISizeVec4::new(
+                1,
+                3,
+                isize::MAX,
+                0
+            )),
             ISizeVec4::new(isize::MIN, 8, -1, 0),
         );
     });
 
     glam_test!(test_wrapping_sub, {
         assert_eq!(
-            ISizeVec4::new(isize::MAX, 5, isize::MIN, 0).wrapping_sub(ISizeVec4::new(1, 3, isize::MAX, 0)),
+            ISizeVec4::new(isize::MAX, 5, isize::MIN, 0).wrapping_sub(ISizeVec4::new(
+                1,
+                3,
+                isize::MAX,
+                0
+            )),
             ISizeVec4::new(9223372036854775806, 2, 1, 0)
         );
     });
@@ -4505,14 +4515,16 @@ mod isizevec4 {
 
     glam_test!(test_saturating_add, {
         assert_eq!(
-            ISizeVec4::new(isize::MAX, isize::MIN, 0, 0).saturating_add(ISizeVec4::new(1, -1, 2, 3)),
+            ISizeVec4::new(isize::MAX, isize::MIN, 0, 0)
+                .saturating_add(ISizeVec4::new(1, -1, 2, 3)),
             ISizeVec4::new(isize::MAX, isize::MIN, 2, 3)
         );
     });
 
     glam_test!(test_saturating_sub, {
         assert_eq!(
-            ISizeVec4::new(isize::MIN, isize::MAX, 0, 0).saturating_sub(ISizeVec4::new(1, -1, 2, 3)),
+            ISizeVec4::new(isize::MIN, isize::MAX, 0, 0)
+                .saturating_sub(ISizeVec4::new(1, -1, 2, 3)),
             ISizeVec4::new(isize::MIN, isize::MAX, -2, -3)
         );
     });
