@@ -3400,6 +3400,7 @@ mod u64vec2 {
     impl_vec2_bit_op_tests!(U64Vec2, 0, 2);
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 mod isizevec2 {
     use glam::{
         isizevec2, BVec2, I16Vec2, I8Vec2, ISizeVec2, ISizeVec3, IVec2, U16Vec2, U8Vec2, USizeVec2,
@@ -3559,7 +3560,6 @@ mod isizevec2 {
     impl_vec2_bit_op_tests!(ISizeVec2, -2, 2);
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 mod usizevec2 {
     use glam::{
         usizevec2, BVec2, I16Vec2, I64Vec2, I8Vec2, IVec2, U16Vec2, U64Vec2, U8Vec2, USizeVec2,
