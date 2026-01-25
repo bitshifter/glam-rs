@@ -3400,6 +3400,166 @@ mod u64vec2 {
     impl_vec2_bit_op_tests!(U64Vec2, 0, 2);
 }
 
+mod isizevec2 {
+    use glam::{
+        isizevec2, BVec2, I16Vec2, I8Vec2, ISizeVec2, ISizeVec3, IVec2, U16Vec2, U8Vec2, USizeVec2,
+        UVec2,
+    };
+
+    glam_test!(test_align, {
+        use core::mem;
+        assert_eq!(16, mem::size_of::<ISizeVec2>());
+        #[cfg(not(feature = "cuda"))]
+        assert_eq!(8, mem::align_of::<ISizeVec2>());
+        #[cfg(feature = "cuda")]
+        assert_eq!(16, mem::align_of::<ISizeVec2>());
+    });
+
+    glam_test!(test_try_from, {
+        assert_eq!(ISizeVec2::new(1, 2), ISizeVec2::from(I8Vec2::new(1, 2)));
+        assert_eq!(ISizeVec2::new(1, 2), ISizeVec2::from(U8Vec2::new(1, 2)));
+        assert_eq!(ISizeVec2::new(1, 2), ISizeVec2::from(I16Vec2::new(1, 2)));
+        assert_eq!(
+            ISizeVec2::new(1, 2),
+            ISizeVec2::try_from(U16Vec2::new(1, 2)).unwrap()
+        );
+        assert_eq!(
+            ISizeVec2::new(1, 2),
+            ISizeVec2::try_from(IVec2::new(1, 2)).unwrap()
+        );
+        assert_eq!(
+            ISizeVec2::new(1, 2),
+            ISizeVec2::try_from(UVec2::new(1, 2)).unwrap()
+        );
+
+        assert_eq!(
+            ISizeVec2::new(1, 2),
+            ISizeVec2::try_from(USizeVec2::new(1, 2)).unwrap()
+        );
+        assert!(ISizeVec2::try_from(USizeVec2::new(usize::MAX, 2)).is_err());
+        assert!(ISizeVec2::try_from(USizeVec2::new(1, usize::MAX)).is_err());
+
+        assert_eq!(
+            ISizeVec2::new(1, 2),
+            ISizeVec2::try_from(USizeVec2::new(1, 2)).unwrap()
+        );
+        if core::mem::size_of::<usize>() > 4 {
+            assert!(ISizeVec2::try_from(USizeVec2::new(usize::MAX, 2)).is_err());
+            assert!(ISizeVec2::try_from(USizeVec2::new(1, usize::MAX)).is_err());
+        }
+    });
+
+    glam_test!(test_wrapping_add, {
+        assert_eq!(
+            ISizeVec2::new(isize::MAX, 5).wrapping_add(ISizeVec2::new(1, 3)),
+            ISizeVec2::new(isize::MIN, 8),
+        );
+    });
+
+    glam_test!(test_wrapping_sub, {
+        assert_eq!(
+            ISizeVec2::new(isize::MAX, 5).wrapping_sub(ISizeVec2::new(1, 3)),
+            ISizeVec2::new(9223372036854775806, 2)
+        );
+    });
+
+    glam_test!(test_wrapping_mul, {
+        assert_eq!(
+            ISizeVec2::new(isize::MAX, 5).wrapping_mul(ISizeVec2::new(3, 3)),
+            ISizeVec2::new(9223372036854775805, 15)
+        );
+    });
+
+    glam_test!(test_wrapping_div, {
+        assert_eq!(
+            ISizeVec2::new(isize::MAX, 5).wrapping_div(ISizeVec2::new(3, 3)),
+            ISizeVec2::new(3074457345618258602, 1)
+        );
+    });
+
+    glam_test!(test_saturating_add, {
+        assert_eq!(
+            ISizeVec2::new(isize::MAX, isize::MIN).saturating_add(ISizeVec2::new(1, -1)),
+            ISizeVec2::new(isize::MAX, isize::MIN)
+        );
+    });
+
+    glam_test!(test_saturating_sub, {
+        assert_eq!(
+            ISizeVec2::new(isize::MIN, isize::MAX).saturating_sub(ISizeVec2::new(1, -1)),
+            ISizeVec2::new(isize::MIN, isize::MAX)
+        );
+    });
+
+    glam_test!(test_saturating_mul, {
+        assert_eq!(
+            ISizeVec2::new(isize::MAX, isize::MIN).saturating_mul(ISizeVec2::new(2, 2)),
+            ISizeVec2::new(isize::MAX, isize::MIN)
+        );
+    });
+
+    glam_test!(test_saturating_div, {
+        assert_eq!(
+            ISizeVec2::new(isize::MAX, isize::MIN).saturating_div(ISizeVec2::new(2, 2)),
+            ISizeVec2::new(4611686018427387903, -4611686018427387904)
+        );
+    });
+
+    glam_test!(test_checked_add_unsigned, {
+        assert_eq!(ISizeVec2::MAX.checked_add_unsigned(USizeVec2::ONE), None);
+        assert_eq!(
+            ISizeVec2::NEG_ONE.checked_add_unsigned(USizeVec2::ONE),
+            Some(ISizeVec2::ZERO)
+        );
+    });
+
+    glam_test!(test_checked_sub_unsigned, {
+        assert_eq!(ISizeVec2::MIN.checked_sub_unsigned(USizeVec2::ONE), None);
+        assert_eq!(
+            ISizeVec2::ZERO.checked_sub_unsigned(USizeVec2::ONE),
+            Some(ISizeVec2::NEG_ONE)
+        );
+    });
+
+    glam_test!(test_wrapping_add_unsigned, {
+        assert_eq!(
+            ISizeVec2::new(isize::MAX, isize::MAX).wrapping_add_unsigned(USizeVec2::new(1, 1)),
+            ISizeVec2::new(isize::MIN, isize::MIN)
+        );
+    });
+
+    glam_test!(test_wrapping_sub_unsigned, {
+        assert_eq!(
+            ISizeVec2::new(isize::MIN, isize::MIN).wrapping_sub_unsigned(USizeVec2::new(1, 1)),
+            ISizeVec2::new(isize::MAX, isize::MAX)
+        );
+    });
+
+    glam_test!(test_saturating_add_unsigned, {
+        assert_eq!(
+            ISizeVec2::new(isize::MAX, isize::MAX).saturating_add_unsigned(USizeVec2::new(1, 1)),
+            ISizeVec2::new(isize::MAX, isize::MAX)
+        );
+    });
+
+    glam_test!(test_saturating_sub_unsigned, {
+        assert_eq!(
+            ISizeVec2::new(isize::MIN, isize::MIN).saturating_sub_unsigned(USizeVec2::new(1, 1)),
+            ISizeVec2::new(isize::MIN, isize::MIN)
+        );
+    });
+
+    impl_vec2_signed_integer_tests!(isize, isizevec2, ISizeVec2, ISizeVec3, BVec2);
+    impl_vec2_eq_hash_tests!(isize, isizevec2);
+
+    impl_vec2_scalar_shift_op_tests!(ISizeVec2, -2, 2);
+    impl_vec2_shift_op_tests!(ISizeVec2);
+
+    impl_vec2_scalar_bit_op_tests!(ISizeVec2, -2, 2);
+    impl_vec2_bit_op_tests!(ISizeVec2, -2, 2);
+}
+
+#[cfg(not(target_arch = "wasm32"))]
 mod usizevec2 {
     use glam::{
         usizevec2, BVec2, I16Vec2, I64Vec2, I8Vec2, IVec2, U16Vec2, U64Vec2, U8Vec2, USizeVec2,

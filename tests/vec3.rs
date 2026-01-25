@@ -3994,6 +3994,197 @@ mod u64vec3 {
     impl_vec3_bit_op_tests!(U64Vec3, 0, 2);
 }
 
+#[cfg(not(target_arch = "wasm32"))]
+mod isizevec3 {
+    use glam::{
+        isizevec3, BVec3, I16Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U8Vec3, USizeVec3, UVec3,
+    };
+
+    glam_test!(test_align, {
+        use std::mem;
+        assert_eq!(24, mem::size_of::<ISizeVec3>());
+        assert_eq!(8, mem::align_of::<ISizeVec3>());
+    });
+
+    glam_test!(test_try_from, {
+        assert_eq!(
+            ISizeVec3::new(1, 2, 3),
+            ISizeVec3::from(I8Vec3::new(1, 2, 3))
+        );
+        assert_eq!(
+            ISizeVec3::new(1, 2, 3),
+            ISizeVec3::from(U8Vec3::new(1, 2, 3))
+        );
+        assert_eq!(
+            ISizeVec3::new(1, 2, 3),
+            ISizeVec3::from(I16Vec3::new(1, 2, 3))
+        );
+        assert_eq!(
+            ISizeVec3::new(1, 2, 3),
+            ISizeVec3::try_from(U16Vec3::new(1, 2, 3)).unwrap()
+        );
+        assert_eq!(
+            ISizeVec3::new(1, 2, 3),
+            ISizeVec3::try_from(IVec3::new(1, 2, 3)).unwrap()
+        );
+        assert_eq!(
+            ISizeVec3::new(1, 2, 3),
+            ISizeVec3::try_from(UVec3::new(1, 2, 3)).unwrap()
+        );
+
+        assert_eq!(
+            ISizeVec3::new(1, 2, 3),
+            ISizeVec3::try_from(USizeVec3::new(1, 2, 3)).unwrap()
+        );
+        assert!(ISizeVec3::try_from(USizeVec3::new(usize::MAX, 2, 3)).is_err());
+        assert!(ISizeVec3::try_from(USizeVec3::new(1, usize::MAX, 3)).is_err());
+        assert!(ISizeVec3::try_from(USizeVec3::new(1, 2, usize::MAX)).is_err());
+
+        assert_eq!(
+            ISizeVec3::new(1, 2, 3),
+            ISizeVec3::try_from(USizeVec3::new(1, 2, 3)).unwrap()
+        );
+        if core::mem::size_of::<usize>() > 4 {
+            assert!(ISizeVec3::try_from(USizeVec3::new(usize::MAX, 2, 3)).is_err());
+            assert!(ISizeVec3::try_from(USizeVec3::new(1, usize::MAX, 3)).is_err());
+            assert!(ISizeVec3::try_from(USizeVec3::new(1, 2, usize::MAX)).is_err());
+        }
+    });
+
+    glam_test!(test_wrapping_add, {
+        assert_eq!(
+            ISizeVec3::new(isize::MAX, 5, isize::MAX).wrapping_add(ISizeVec3::new(
+                1,
+                3,
+                isize::MAX
+            )),
+            ISizeVec3::new(-9223372036854775808, 8, -2),
+        );
+    });
+
+    glam_test!(test_wrapping_sub, {
+        assert_eq!(
+            ISizeVec3::new(-1, 5, isize::MIN).wrapping_sub(ISizeVec3::new(
+                isize::MAX,
+                3,
+                isize::MAX
+            )),
+            ISizeVec3::new(isize::MIN, 2, 1)
+        );
+    });
+
+    glam_test!(test_wrapping_mul, {
+        assert_eq!(
+            ISizeVec3::new(isize::MAX, 5, isize::MAX).wrapping_mul(ISizeVec3::new(3, 3, 5)),
+            ISizeVec3::new(9223372036854775805, 15, 9223372036854775803)
+        );
+    });
+
+    glam_test!(test_wrapping_div, {
+        assert_eq!(
+            ISizeVec3::new(isize::MAX, 5, isize::MAX).wrapping_div(ISizeVec3::new(3, 3, 5)),
+            ISizeVec3::new(3074457345618258602, 1, 1844674407370955161)
+        );
+    });
+
+    glam_test!(test_saturating_add, {
+        assert_eq!(
+            ISizeVec3::new(isize::MAX, isize::MAX, 0).saturating_add(ISizeVec3::new(
+                1,
+                isize::MAX,
+                2
+            )),
+            ISizeVec3::new(isize::MAX, isize::MAX, 2)
+        );
+    });
+
+    glam_test!(test_saturating_sub, {
+        assert_eq!(
+            ISizeVec3::new(0, isize::MAX, 0).saturating_sub(ISizeVec3::new(1, 1, 2)),
+            ISizeVec3::new(-1, 9223372036854775806, -2)
+        );
+    });
+
+    glam_test!(test_saturating_mul, {
+        assert_eq!(
+            ISizeVec3::new(isize::MAX, isize::MAX, 0).saturating_mul(ISizeVec3::new(
+                2,
+                isize::MAX,
+                0
+            )),
+            ISizeVec3::new(isize::MAX, isize::MAX, 0)
+        );
+    });
+
+    glam_test!(test_saturating_div, {
+        assert_eq!(
+            ISizeVec3::new(isize::MAX, isize::MAX, 0).saturating_div(ISizeVec3::new(
+                2,
+                isize::MAX,
+                3
+            )),
+            ISizeVec3::new(4611686018427387903, 1, 0)
+        );
+    });
+
+    glam_test!(test_checked_add_unsigned, {
+        assert_eq!(ISizeVec3::MAX.checked_add_unsigned(USizeVec3::ONE), None);
+        assert_eq!(
+            ISizeVec3::NEG_ONE.checked_add_unsigned(USizeVec3::ONE),
+            Some(ISizeVec3::ZERO)
+        );
+    });
+
+    glam_test!(test_checked_sub_unsigned, {
+        assert_eq!(ISizeVec3::MIN.checked_sub_unsigned(USizeVec3::ONE), None);
+        assert_eq!(
+            ISizeVec3::ZERO.checked_sub_unsigned(USizeVec3::ONE),
+            Some(ISizeVec3::NEG_ONE)
+        );
+    });
+
+    glam_test!(test_wrapping_add_unsigned, {
+        assert_eq!(
+            ISizeVec3::new(isize::MAX, isize::MAX, isize::MAX)
+                .wrapping_add_unsigned(USizeVec3::new(1, 1, 1)),
+            ISizeVec3::new(isize::MIN, isize::MIN, isize::MIN)
+        );
+    });
+
+    glam_test!(test_wrapping_sub_unsigned, {
+        assert_eq!(
+            ISizeVec3::new(isize::MIN, isize::MIN, isize::MIN)
+                .wrapping_sub_unsigned(USizeVec3::new(1, 1, 1)),
+            ISizeVec3::new(isize::MAX, isize::MAX, isize::MAX)
+        );
+    });
+
+    glam_test!(test_saturating_add_unsigned, {
+        assert_eq!(
+            ISizeVec3::new(isize::MAX, isize::MAX, isize::MAX)
+                .saturating_add_unsigned(USizeVec3::new(1, 1, 1)),
+            ISizeVec3::new(isize::MAX, isize::MAX, isize::MAX)
+        );
+    });
+
+    glam_test!(test_saturating_sub_unsigned, {
+        assert_eq!(
+            ISizeVec3::new(isize::MIN, isize::MIN, isize::MIN)
+                .saturating_sub_unsigned(USizeVec3::new(1, 1, 1)),
+            ISizeVec3::new(isize::MIN, isize::MIN, isize::MIN)
+        );
+    });
+
+    impl_vec3_signed_integer_tests!(isize, isizevec3, ISizeVec3, BVec3);
+    impl_vec3_eq_hash_tests!(isize, isizevec3);
+
+    impl_vec3_scalar_shift_op_tests!(ISizeVec3, -2, 2);
+    impl_vec3_shift_op_tests!(ISizeVec3);
+
+    impl_vec3_scalar_bit_op_tests!(ISizeVec3, -2, 2);
+    impl_vec3_bit_op_tests!(ISizeVec3, -2, 2);
+}
+
 mod usizevec3 {
     use glam::{
         usizevec3, BVec3, I16Vec3, I64Vec3, I8Vec3, IVec3, U16Vec3, U64Vec3, U8Vec3, USizeVec3,
