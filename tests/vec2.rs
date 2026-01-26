@@ -1963,7 +1963,8 @@ mod vec2 {
 
     glam_test!(test_as, {
         use glam::{
-            DVec2, I16Vec2, I64Vec2, I8Vec2, IVec2, U16Vec2, U64Vec2, U8Vec2, USizeVec2, UVec2,
+            DVec2, I16Vec2, I64Vec2, I8Vec2, ISizeVec2, IVec2, U16Vec2, U64Vec2, U8Vec2, USizeVec2,
+            UVec2,
         };
         assert_eq!(DVec2::new(-1.0, -2.0), Vec2::new(-1.0, -2.0).as_dvec2());
         assert_eq!(I8Vec2::new(-1, -2), Vec2::new(-1.0, -2.0).as_i8vec2());
@@ -2074,6 +2075,17 @@ mod vec2 {
         assert_eq!(UVec2::new(1, 2), U64Vec2::new(1, 2).as_uvec2());
         assert_eq!(I64Vec2::new(1, 2), U64Vec2::new(1, 2).as_i64vec2());
         assert_eq!(USizeVec2::new(1, 2), U64Vec2::new(1, 2).as_usizevec2());
+
+        assert_eq!(Vec2::new(-1.0, -2.0), ISizeVec2::new(-1, -2).as_vec2());
+        assert_eq!(DVec2::new(-1.0, -2.0), ISizeVec2::new(-1, -2).as_dvec2());
+        assert_eq!(U8Vec2::new(1, 2), ISizeVec2::new(1, 2).as_u8vec2());
+        assert_eq!(I8Vec2::new(-1, -2), ISizeVec2::new(-1, -2).as_i8vec2());
+        assert_eq!(U16Vec2::new(1, 2), ISizeVec2::new(1, 2).as_u16vec2());
+        assert_eq!(I16Vec2::new(-1, -2), ISizeVec2::new(-1, -2).as_i16vec2());
+        assert_eq!(UVec2::new(1, 2), ISizeVec2::new(1, 2).as_uvec2());
+        assert_eq!(IVec2::new(-1, -2), ISizeVec2::new(-1, -2).as_ivec2());
+        assert_eq!(U64Vec2::new(1, 2), ISizeVec2::new(1, 2).as_u64vec2());
+        assert_eq!(USizeVec2::new(1, 2), ISizeVec2::new(1, 2).as_usizevec2());
 
         assert_eq!(Vec2::new(1.0, 2.0), USizeVec2::new(1, 2).as_vec2());
         assert_eq!(DVec2::new(1.0, 2.0), USizeVec2::new(1, 2).as_dvec2());

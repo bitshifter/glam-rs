@@ -1971,8 +1971,8 @@ macro_rules! impl_vec3_float_tests {
 
         glam_test!(test_as, {
             use glam::{
-                DVec3, I16Vec3, I64Vec3, I8Vec3, IVec3, U16Vec3, U64Vec3, U8Vec3, USizeVec3, UVec3,
-                Vec3, Vec3A,
+                DVec3, I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U64Vec3, U8Vec3,
+                USizeVec3, UVec3, Vec3, Vec3A,
             };
             assert_eq!(
                 DVec3::new(-1.0, -2.0, -3.0),
@@ -2244,6 +2244,39 @@ macro_rules! impl_vec3_float_tests {
             );
             assert_eq!(Vec3::new(1.0, 2.0, 3.0), U64Vec3::new(1, 2, 3).as_vec3());
             assert_eq!(Vec3A::new(1.0, 2.0, 3.0), U64Vec3::new(1, 2, 3).as_vec3a());
+
+            assert_eq!(
+                DVec3::new(-1.0, -2.0, -3.0),
+                ISizeVec3::new(-1, -2, -3).as_dvec3()
+            );
+            assert_eq!(
+                I8Vec3::new(-1, -2, -3),
+                ISizeVec3::new(-1, -2, -3).as_i8vec3()
+            );
+            assert_eq!(U8Vec3::new(1, 2, 3), ISizeVec3::new(1, 2, 3).as_u8vec3());
+            assert_eq!(U16Vec3::new(1, 2, 3), ISizeVec3::new(1, 2, 3).as_u16vec3());
+            assert_eq!(
+                I16Vec3::new(-1, -2, -3),
+                ISizeVec3::new(-1, -2, -3).as_i16vec3()
+            );
+            assert_eq!(UVec3::new(1, 2, 3), ISizeVec3::new(1, 2, 3).as_uvec3());
+            assert_eq!(
+                IVec3::new(-1, -2, -3),
+                ISizeVec3::new(-1, -2, -3).as_ivec3()
+            );
+            assert_eq!(U64Vec3::new(1, 2, 3), ISizeVec3::new(1, 2, 3).as_u64vec3());
+            assert_eq!(
+                USizeVec3::new(1, 2, 3),
+                ISizeVec3::new(1, 2, 3).as_usizevec3()
+            );
+            assert_eq!(
+                Vec3::new(-1.0, -2.0, -3.0),
+                ISizeVec3::new(-1, -2, -3).as_vec3()
+            );
+            assert_eq!(
+                Vec3A::new(-1.0, -2.0, -3.0),
+                ISizeVec3::new(-1, -2, -3).as_vec3a()
+            );
 
             assert_eq!(
                 DVec3::new(1.0, 2.0, 3.0),
