@@ -3562,8 +3562,8 @@ mod isizevec2 {
 
 mod usizevec2 {
     use glam::{
-        usizevec2, BVec2, I16Vec2, I64Vec2, I8Vec2, IVec2, U16Vec2, U64Vec2, U8Vec2, USizeVec2,
-        USizeVec3, UVec2,
+        usizevec2, BVec2, I16Vec2, I64Vec2, I8Vec2, ISizeVec2, IVec2, U16Vec2, U64Vec2, U8Vec2,
+        USizeVec2, USizeVec3, UVec2,
     };
 
     glam_test!(test_align, {
@@ -3671,6 +3671,28 @@ mod usizevec2 {
         assert_eq!(
             USizeVec2::new(usize::MAX, usize::MAX).saturating_div(USizeVec2::new(2, usize::MAX)),
             USizeVec2::new(usize::MAX.saturating_div(2), 1)
+        );
+    });
+
+    glam_test!(test_checked_add_signed, {
+        assert_eq!(U16Vec2::MAX.checked_add_signed(I16Vec2::ONE), None);
+        assert_eq!(
+            U16Vec2::ONE.checked_add_signed(I16Vec2::NEG_ONE),
+            Some(U16Vec2::ZERO)
+        );
+    });
+
+    glam_test!(test_wrapping_add_signed, {
+        assert_eq!(
+            USizeVec2::new(usize::MAX, usize::MAX).wrapping_add_signed(ISizeVec2::new(1, 1)),
+            USizeVec2::new(usize::MIN, usize::MIN)
+        );
+    });
+
+    glam_test!(test_saturating_add_signed, {
+        assert_eq!(
+            USizeVec2::new(usize::MAX, usize::MAX).saturating_add_signed(ISizeVec2::new(1, 1)),
+            USizeVec2::new(usize::MAX, usize::MAX)
         );
     });
 
