@@ -2982,6 +2982,30 @@ impl {{ self_t }} {
     }
     {% endif %}
 {% endif %}
+{% if scalar_t != "isize" %}
+    {% if dim == 2 %}
+    /// Casts all elements of `self` to `isize`.
+    #[inline]
+    #[must_use]
+    pub fn as_isizevec2(self) -> crate::ISizeVec2 {
+        crate::ISizeVec2::new(self.x as isize, self.y as isize)
+    }
+    {% elif dim == 3 %}
+    /// Casts all elements of `self` to `isize`.
+    #[inline]
+    #[must_use]
+    pub fn as_isizevec3(self) -> crate::ISizeVec3 {
+        crate::ISizeVec3::new(self.x as isize, self.y as isize, self.z as isize)
+    }
+    {% elif dim == 4 %}
+    /// Casts all elements of `self` to `isize`.
+    #[inline]
+    #[must_use]
+    pub fn as_isizevec4(self) -> crate::ISizeVec4 {
+        crate::ISizeVec4::new(self.x as isize, self.y as isize, self.z as isize, self.w as isize)
+    }
+    {% endif %}
+{% endif %}
 {% if scalar_t != "usize" %}
     {% if dim == 2 %}
     /// Casts all elements of `self` to `usize`.

@@ -2512,6 +2512,10 @@ mod vec4 {
             Vec4::new(1.0, 2.0, 3.0, 4.0).as_u64vec4()
         );
         assert_eq!(
+            ISizeVec4::new(-1, -2, -3, -4),
+            Vec4::new(-1.0, -2.0, -3.0, -4.0).as_isizevec4()
+        );
+        assert_eq!(
             USizeVec4::new(1, 2, 3, 4),
             Vec4::new(1.0, 2.0, 3.0, 4.0).as_usizevec4()
         );
@@ -2553,6 +2557,10 @@ mod vec4 {
             DVec4::new(1.0, 2.0, 3.0, 4.0).as_u64vec4()
         );
         assert_eq!(
+            ISizeVec4::new(-1, -2, -3, -4),
+            DVec4::new(-1.0, -2.0, -3.0, -4.0).as_isizevec4()
+        );
+        assert_eq!(
             USizeVec4::new(1, 2, 3, 4),
             DVec4::new(1.0, 2.0, 3.0, 4.0).as_usizevec4()
         );
@@ -2588,6 +2596,10 @@ mod vec4 {
             I8Vec4::new(1, 2, 3, 4).as_u64vec4()
         );
         assert_eq!(
+            ISizeVec4::new(-1, -2, -3, -4),
+            I8Vec4::new(-1, -2, -3, -4).as_isizevec4()
+        );
+        assert_eq!(
             USizeVec4::new(1, 2, 3, 4),
             I8Vec4::new(1, 2, 3, 4).as_usizevec4()
         );
@@ -2618,6 +2630,10 @@ mod vec4 {
         assert_eq!(
             U64Vec4::new(1, 2, 3, 4),
             U8Vec4::new(1, 2, 3, 4).as_u64vec4()
+        );
+        assert_eq!(
+            ISizeVec4::new(1, 2, 3, 4),
+            U8Vec4::new(1, 2, 3, 4).as_isizevec4()
         );
         assert_eq!(
             USizeVec4::new(1, 2, 3, 4),
@@ -2658,6 +2674,10 @@ mod vec4 {
             I16Vec4::new(1, 2, 3, 4).as_u64vec4()
         );
         assert_eq!(
+            ISizeVec4::new(-1, -2, -3, -4),
+            I16Vec4::new(-1, -2, -3, -4).as_isizevec4()
+        );
+        assert_eq!(
             USizeVec4::new(1, 2, 3, 4),
             I16Vec4::new(1, 2, 3, 4).as_usizevec4()
         );
@@ -2691,6 +2711,10 @@ mod vec4 {
         assert_eq!(
             U64Vec4::new(1, 2, 3, 4),
             U16Vec4::new(1, 2, 3, 4).as_u64vec4()
+        );
+        assert_eq!(
+            ISizeVec4::new(1, 2, 3, 4),
+            U16Vec4::new(1, 2, 3, 4).as_isizevec4()
         );
         assert_eq!(
             USizeVec4::new(1, 2, 3, 4),
@@ -2728,6 +2752,10 @@ mod vec4 {
             IVec4::new(1, 2, 3, 4).as_u64vec4()
         );
         assert_eq!(
+            ISizeVec4::new(-1, -2, -3, -4),
+            IVec4::new(-1, -2, -3, -4).as_isizevec4()
+        );
+        assert_eq!(
             USizeVec4::new(1, 2, 3, 4),
             IVec4::new(1, 2, 3, 4).as_usizevec4()
         );
@@ -2758,6 +2786,10 @@ mod vec4 {
         assert_eq!(
             U64Vec4::new(1, 2, 3, 4),
             UVec4::new(1, 2, 3, 4).as_u64vec4()
+        );
+        assert_eq!(
+            ISizeVec4::new(1, 2, 3, 4),
+            UVec4::new(1, 2, 3, 4).as_isizevec4()
         );
         assert_eq!(
             USizeVec4::new(1, 2, 3, 4),
@@ -2835,6 +2867,10 @@ mod vec4 {
             ISizeVec4::new(-1, -2, -3, -4).as_ivec4()
         );
         assert_eq!(
+            I64Vec4::new(-1, -2, -3, -4),
+            ISizeVec4::new(-1, -2, -3, -4).as_i64vec4()
+        );
+        assert_eq!(
             U64Vec4::new(1, 2, 3, 4),
             ISizeVec4::new(1, 2, 3, 4).as_u64vec4()
         );
@@ -2877,7 +2913,10 @@ mod vec4 {
             USizeVec4::new(1, 2, 3, 4),
             U64Vec4::new(1, 2, 3, 4).as_usizevec4()
         );
-
+        assert_eq!(
+            ISizeVec4::new(1, 2, 3, 4),
+            U64Vec4::new(1, 2, 3, 4).as_isizevec4()
+        );
         assert_eq!(
             Vec4::new(1.0, 2.0, 3.0, 4.0),
             USizeVec4::new(1, 2, 3, 4).as_vec4()
@@ -2913,6 +2952,10 @@ mod vec4 {
         assert_eq!(
             I64Vec4::new(1, 2, 3, 4),
             USizeVec4::new(1, 2, 3, 4).as_i64vec4()
+        );
+        assert_eq!(
+            ISizeVec4::new(1, 2, 3, 4),
+            USizeVec4::new(1, 2, 3, 4).as_isizevec4()
         );
         assert_eq!(
             U64Vec4::new(1, 2, 3, 4),

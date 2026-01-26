@@ -1999,6 +1999,10 @@ macro_rules! impl_vec3_float_tests {
             );
             assert_eq!(U64Vec3::new(1, 2, 3), Vec3::new(1.0, 2.0, 3.0).as_u64vec3());
             assert_eq!(
+                ISizeVec3::new(-1, -2, -3),
+                Vec3::new(-1.0, -2.0, -3.0).as_isizevec3()
+            );
+            assert_eq!(
                 USizeVec3::new(1, 2, 3),
                 Vec3::new(1.0, 2.0, 3.0).as_usizevec3()
             );
@@ -2034,6 +2038,10 @@ macro_rules! impl_vec3_float_tests {
                 Vec3A::new(1.0, 2.0, 3.0).as_u64vec3()
             );
             assert_eq!(
+                ISizeVec3::new(-1, -2, -3),
+                Vec3A::new(-1.0, -2.0, -3.0).as_isizevec3()
+            );
+            assert_eq!(
                 USizeVec3::new(1, 2, 3),
                 Vec3A::new(1.0, 2.0, 3.0).as_usizevec3()
             );
@@ -2065,6 +2073,10 @@ macro_rules! impl_vec3_float_tests {
                 DVec3::new(1.0, 2.0, 3.0).as_u64vec3()
             );
             assert_eq!(
+                ISizeVec3::new(-1, -2, -3),
+                DVec3::new(-1.0, -2.0, -3.0).as_isizevec3()
+            );
+            assert_eq!(
                 USizeVec3::new(1, 2, 3),
                 DVec3::new(1.0, 2.0, 3.0).as_usizevec3()
             );
@@ -2094,6 +2106,10 @@ macro_rules! impl_vec3_float_tests {
                 I8Vec3::new(-1, -2, -3).as_i64vec3()
             );
             assert_eq!(U64Vec3::new(1, 2, 3), I8Vec3::new(1, 2, 3).as_u64vec3());
+            assert_eq!(
+                ISizeVec3::new(-1, -2, -3),
+                I8Vec3::new(-1, -2, -3).as_isizevec3()
+            );
             assert_eq!(USizeVec3::new(1, 2, 3), I8Vec3::new(1, 2, 3).as_usizevec3());
             assert_eq!(
                 Vec3::new(-1.0, -2.0, -3.0),
@@ -2112,6 +2128,7 @@ macro_rules! impl_vec3_float_tests {
             assert_eq!(UVec3::new(1, 2, 3), U8Vec3::new(1, 2, 3).as_uvec3());
             assert_eq!(I64Vec3::new(1, 2, 3), U8Vec3::new(1, 2, 3).as_i64vec3());
             assert_eq!(U64Vec3::new(1, 2, 3), U8Vec3::new(1, 2, 3).as_u64vec3());
+            assert_eq!(ISizeVec3::new(1, 2, 3), U8Vec3::new(1, 2, 3).as_isizevec3());
             assert_eq!(USizeVec3::new(1, 2, 3), U8Vec3::new(1, 2, 3).as_usizevec3());
             assert_eq!(Vec3::new(1.0, 2.0, 3.0), U8Vec3::new(1, 2, 3).as_vec3());
             assert_eq!(Vec3A::new(1.0, 2.0, 3.0), U8Vec3::new(1, 2, 3).as_vec3a());
@@ -2134,6 +2151,10 @@ macro_rules! impl_vec3_float_tests {
             );
             assert_eq!(U64Vec3::new(1, 2, 3), I16Vec3::new(1, 2, 3).as_u64vec3());
             assert_eq!(
+                ISizeVec3::new(-1, -2, -3),
+                I16Vec3::new(-1, -2, -3).as_isizevec3()
+            );
+            assert_eq!(
                 USizeVec3::new(1, 2, 3),
                 I16Vec3::new(1, 2, 3).as_usizevec3()
             );
@@ -2154,6 +2175,10 @@ macro_rules! impl_vec3_float_tests {
             assert_eq!(UVec3::new(1, 2, 3), U16Vec3::new(1, 2, 3).as_uvec3());
             assert_eq!(I64Vec3::new(1, 2, 3), U16Vec3::new(1, 2, 3).as_i64vec3());
             assert_eq!(U64Vec3::new(1, 2, 3), U16Vec3::new(1, 2, 3).as_u64vec3());
+            assert_eq!(
+                ISizeVec3::new(1, 2, 3),
+                U16Vec3::new(1, 2, 3).as_isizevec3()
+            );
             assert_eq!(
                 USizeVec3::new(1, 2, 3),
                 U16Vec3::new(1, 2, 3).as_usizevec3()
@@ -2178,6 +2203,10 @@ macro_rules! impl_vec3_float_tests {
                 IVec3::new(-1, -2, -3).as_i64vec3()
             );
             assert_eq!(U64Vec3::new(1, 2, 3), IVec3::new(1, 2, 3).as_u64vec3());
+            assert_eq!(
+                ISizeVec3::new(-1, -2, -3),
+                IVec3::new(-1, -2, -3).as_isizevec3()
+            );
             assert_eq!(USizeVec3::new(1, 2, 3), IVec3::new(1, 2, 3).as_usizevec3());
             assert_eq!(
                 Vec3::new(-1.0, -2.0, -3.0),
@@ -2196,6 +2225,7 @@ macro_rules! impl_vec3_float_tests {
             assert_eq!(IVec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_ivec3());
             assert_eq!(I64Vec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_i64vec3());
             assert_eq!(U64Vec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_u64vec3());
+            assert_eq!(ISizeVec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_isizevec3());
             assert_eq!(USizeVec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_usizevec3());
             assert_eq!(Vec3::new(1.0, 2.0, 3.0), UVec3::new(1, 2, 3).as_vec3());
             assert_eq!(Vec3A::new(1.0, 2.0, 3.0), UVec3::new(1, 2, 3).as_vec3a());
@@ -2239,6 +2269,10 @@ macro_rules! impl_vec3_float_tests {
             assert_eq!(UVec3::new(1, 2, 3), U64Vec3::new(1, 2, 3).as_uvec3());
             assert_eq!(I64Vec3::new(1, 2, 3), U64Vec3::new(1, 2, 3).as_i64vec3());
             assert_eq!(
+                ISizeVec3::new(1, 2, 3),
+                U64Vec3::new(1, 2, 3).as_isizevec3()
+            );
+            assert_eq!(
                 USizeVec3::new(1, 2, 3),
                 U64Vec3::new(1, 2, 3).as_usizevec3()
             );
@@ -2263,6 +2297,10 @@ macro_rules! impl_vec3_float_tests {
             assert_eq!(
                 IVec3::new(-1, -2, -3),
                 ISizeVec3::new(-1, -2, -3).as_ivec3()
+            );
+            assert_eq!(
+                I64Vec3::new(-1, -2, -3),
+                ISizeVec3::new(-1, -2, -3).as_i64vec3()
             );
             assert_eq!(U64Vec3::new(1, 2, 3), ISizeVec3::new(1, 2, 3).as_u64vec3());
             assert_eq!(
@@ -2290,6 +2328,10 @@ macro_rules! impl_vec3_float_tests {
             assert_eq!(UVec3::new(1, 2, 3), USizeVec3::new(1, 2, 3).as_uvec3());
             assert_eq!(I64Vec3::new(1, 2, 3), USizeVec3::new(1, 2, 3).as_i64vec3());
             assert_eq!(U64Vec3::new(1, 2, 3), USizeVec3::new(1, 2, 3).as_u64vec3());
+            assert_eq!(
+                ISizeVec3::new(1, 2, 3),
+                USizeVec3::new(1, 2, 3).as_isizevec3()
+            );
             assert_eq!(Vec3::new(1.0, 2.0, 3.0), USizeVec3::new(1, 2, 3).as_vec3());
             assert_eq!(
                 Vec3A::new(1.0, 2.0, 3.0),

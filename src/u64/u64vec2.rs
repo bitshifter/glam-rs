@@ -440,6 +440,13 @@ impl U64Vec2 {
         crate::I64Vec2::new(self.x as i64, self.y as i64)
     }
 
+    /// Casts all elements of `self` to `isize`.
+    #[inline]
+    #[must_use]
+    pub fn as_isizevec2(self) -> crate::ISizeVec2 {
+        crate::ISizeVec2::new(self.x as isize, self.y as isize)
+    }
+
     /// Casts all elements of `self` to `usize`.
     #[inline]
     #[must_use]
