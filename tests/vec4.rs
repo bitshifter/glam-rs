@@ -4415,8 +4415,8 @@ mod u64vec4 {
 #[cfg(not(target_arch = "wasm32"))]
 mod isizevec4 {
     use glam::{
-        isizevec4, BVec4, I16Vec4, I8Vec4, ISizeVec2, ISizeVec3, ISizeVec4, IVec4, U16Vec4, U8Vec4,
-        USizeVec4, UVec4,
+        isizevec4, BVec4, I16Vec4, I64Vec4, I8Vec4, ISizeVec2, ISizeVec3, ISizeVec4, IVec4,
+        U16Vec4, U64Vec4, U8Vec4, USizeVec4, UVec4,
     };
 
     glam_test!(test_align, {
@@ -4456,12 +4456,17 @@ mod isizevec4 {
 
         assert_eq!(
             ISizeVec4::new(1, 2, 3, 4),
-            ISizeVec4::try_from(USizeVec4::new(1, 2, 3, 4)).unwrap()
+            ISizeVec4::try_from(U64Vec4::new(1, 2, 3, 4)).unwrap()
         );
-        assert!(ISizeVec4::try_from(USizeVec4::new(usize::MAX, 2, 3, 4)).is_err());
-        assert!(ISizeVec4::try_from(USizeVec4::new(1, usize::MAX, 3, 4)).is_err());
-        assert!(ISizeVec4::try_from(USizeVec4::new(1, 2, usize::MAX, 4)).is_err());
-        assert!(ISizeVec4::try_from(USizeVec4::new(1, 2, 3, usize::MAX)).is_err());
+        assert!(ISizeVec4::try_from(U64Vec4::new(u64::MAX, 2, 3, 4)).is_err());
+        assert!(ISizeVec4::try_from(U64Vec4::new(1, u64::MAX, 3, 4)).is_err());
+        assert!(ISizeVec4::try_from(U64Vec4::new(1, 2, u64::MAX, 4)).is_err());
+        assert!(ISizeVec4::try_from(U64Vec4::new(1, 2, 3, u64::MAX)).is_err());
+
+        assert_eq!(
+            ISizeVec4::new(1, 2, 3, 4),
+            ISizeVec4::try_from(I64Vec4::new(1, 2, 3, 4)).unwrap()
+        );
 
         assert_eq!(
             ISizeVec4::new(1, 2, 3, 4),
@@ -4671,6 +4676,15 @@ mod usizevec4 {
         assert!(USizeVec4::try_from(I64Vec4::new(1, -2, 3, 4)).is_err());
         assert!(USizeVec4::try_from(I64Vec4::new(1, 2, -3, 4)).is_err());
         assert!(USizeVec4::try_from(I64Vec4::new(1, 2, 3, -4)).is_err());
+
+        assert_eq!(
+            USizeVec4::new(1, 2, 3, 4),
+            USizeVec4::try_from(ISizeVec4::new(1, 2, 3, 4)).unwrap()
+        );
+        assert!(USizeVec4::try_from(ISizeVec4::new(-1, 2, 3, 4)).is_err());
+        assert!(USizeVec4::try_from(ISizeVec4::new(1, -2, 3, 4)).is_err());
+        assert!(USizeVec4::try_from(ISizeVec4::new(1, 2, -3, 4)).is_err());
+        assert!(USizeVec4::try_from(ISizeVec4::new(1, 2, 3, -4)).is_err());
     });
 
     glam_test!(test_wrapping_add, {

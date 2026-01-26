@@ -3997,7 +3997,8 @@ mod u64vec3 {
 #[cfg(not(target_arch = "wasm32"))]
 mod isizevec3 {
     use glam::{
-        isizevec3, BVec3, I16Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U8Vec3, USizeVec3, UVec3,
+        isizevec3, BVec3, I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U64Vec3, U8Vec3,
+        USizeVec3, UVec3,
     };
 
     glam_test!(test_align, {
@@ -4034,11 +4035,16 @@ mod isizevec3 {
 
         assert_eq!(
             ISizeVec3::new(1, 2, 3),
-            ISizeVec3::try_from(USizeVec3::new(1, 2, 3)).unwrap()
+            ISizeVec3::try_from(U64Vec3::new(1, 2, 3)).unwrap()
         );
-        assert!(ISizeVec3::try_from(USizeVec3::new(usize::MAX, 2, 3)).is_err());
-        assert!(ISizeVec3::try_from(USizeVec3::new(1, usize::MAX, 3)).is_err());
-        assert!(ISizeVec3::try_from(USizeVec3::new(1, 2, usize::MAX)).is_err());
+        assert!(ISizeVec3::try_from(U64Vec3::new(u64::MAX, 2, 3)).is_err());
+        assert!(ISizeVec3::try_from(U64Vec3::new(1, u64::MAX, 3)).is_err());
+        assert!(ISizeVec3::try_from(U64Vec3::new(1, 2, u64::MAX)).is_err());
+
+        assert_eq!(
+            ISizeVec3::new(1, 2, 3),
+            ISizeVec3::try_from(I64Vec3::new(1, 2, 3)).unwrap()
+        );
 
         assert_eq!(
             ISizeVec3::new(1, 2, 3),
@@ -4248,6 +4254,14 @@ mod usizevec3 {
         assert!(USizeVec3::try_from(I64Vec3::new(-1, 2, 3)).is_err());
         assert!(USizeVec3::try_from(I64Vec3::new(1, -2, 3)).is_err());
         assert!(USizeVec3::try_from(I64Vec3::new(1, 2, -3)).is_err());
+
+        assert_eq!(
+            USizeVec3::new(1, 2, 3),
+            USizeVec3::try_from(ISizeVec3::new(1, 2, 3)).unwrap()
+        );
+        assert!(USizeVec3::try_from(ISizeVec3::new(-1, 2, 3)).is_err());
+        assert!(USizeVec3::try_from(ISizeVec3::new(1, -2, 3)).is_err());
+        assert!(USizeVec3::try_from(ISizeVec3::new(1, 2, -3)).is_err());
     });
 
     glam_test!(test_wrapping_add, {
