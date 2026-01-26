@@ -1987,7 +1987,10 @@ mod vec2 {
         assert_eq!(UVec2::new(1, 2), DVec2::new(1.0, 2.0).as_uvec2());
         assert_eq!(I64Vec2::new(-1, -2), DVec2::new(-1.0, -2.0).as_i64vec2());
         assert_eq!(U64Vec2::new(1, 2), DVec2::new(1.0, 2.0).as_u64vec2());
-        assert_eq!(ISizeVec2::new(-1, -2), DVec2::new(-1.0, -2.0).as_isizevec2());
+        assert_eq!(
+            ISizeVec2::new(-1, -2),
+            DVec2::new(-1.0, -2.0).as_isizevec2()
+        );
         assert_eq!(USizeVec2::new(1, 2), DVec2::new(1.0, 2.0).as_usizevec2());
 
         assert_eq!(Vec2::new(-1.0, -2.0), I8Vec2::new(-1, -2).as_vec2());
