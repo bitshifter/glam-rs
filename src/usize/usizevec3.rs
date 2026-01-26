@@ -2934,19 +2934,6 @@ impl TryFrom<I64Vec3> for USizeVec3 {
     }
 }
 
-impl TryFrom<ISizeVec3> for USizeVec3 {
-    type Error = core::num::TryFromIntError;
-
-    #[inline]
-    fn try_from(v: ISizeVec3) -> Result<Self, Self::Error> {
-        Ok(Self::new(
-            usize::try_from(v.x)?,
-            usize::try_from(v.y)?,
-            usize::try_from(v.z)?,
-        ))
-    }
-}
-
 impl TryFrom<UVec3> for USizeVec3 {
     type Error = core::num::TryFromIntError;
 
@@ -2965,6 +2952,19 @@ impl TryFrom<U64Vec3> for USizeVec3 {
 
     #[inline]
     fn try_from(v: U64Vec3) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            usize::try_from(v.x)?,
+            usize::try_from(v.y)?,
+            usize::try_from(v.z)?,
+        ))
+    }
+}
+
+impl TryFrom<ISizeVec3> for USizeVec3 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: ISizeVec3) -> Result<Self, Self::Error> {
         Ok(Self::new(
             usize::try_from(v.x)?,
             usize::try_from(v.y)?,

@@ -52,7 +52,7 @@
     {% set vec2_t = "I8Vec2" %}
     {% set vec3_t = "I8Vec3" %}
     {% set vec4_t = "I8Vec4" %}
-    {% set try_from_types = ["U8Vec" ~ dim, "I16Vec" ~ dim, "U16Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim, "USizeVec" ~ dim] %}
+    {% set try_from_types = ["U8Vec" ~ dim, "I16Vec" ~ dim, "U16Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim, "ISizeVec" ~ dim, "USizeVec" ~ dim] %}
 {% elif scalar_t == "u8" %}
     {% set is_signed = false %}
     {% set is_float = false %}
@@ -62,7 +62,7 @@
     {% set vec2_t = "U8Vec2" %}
     {% set vec3_t = "U8Vec3" %}
     {% set vec4_t = "U8Vec4" %}
-    {% set try_from_types = ["I8Vec" ~ dim, "I16Vec" ~ dim, "U16Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim, "USizeVec" ~ dim] %}
+    {% set try_from_types = ["I8Vec" ~ dim, "I16Vec" ~ dim, "U16Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim, "ISizeVec" ~ dim, "USizeVec" ~ dim] %}
 {% elif scalar_t == "i16" %}
     {% set is_signed = true %}
     {% set is_float = false %}
@@ -73,7 +73,7 @@
     {% set vec3_t = "I16Vec3" %}
     {% set vec4_t = "I16Vec4" %}
     {% set from_types = ["I8Vec" ~ dim, "U8Vec" ~ dim] %}
-    {% set try_from_types = ["U16Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim, "USizeVec" ~ dim] %}
+    {% set try_from_types = ["U16Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim, "ISizeVec" ~ dim, "USizeVec" ~ dim] %}
 {% elif scalar_t == "u16" %}
     {% set is_signed = false %}
     {% set is_float = false %}
@@ -84,7 +84,7 @@
     {% set vec3_t = "U16Vec3" %}
     {% set vec4_t = "U16Vec4" %}
     {% set from_types = ["U8Vec" ~ dim] %}
-    {% set try_from_types = ["I8Vec" ~ dim, "I16Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim, "USizeVec" ~ dim] %}
+    {% set try_from_types = ["I8Vec" ~ dim, "I16Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim, "ISizeVec" ~ dim, "USizeVec" ~ dim] %}
 {% elif scalar_t == "i32" %}
     {% set is_signed = true %}
     {% set is_float = false %}
@@ -95,7 +95,7 @@
     {% set vec3_t = "IVec3" %}
     {% set vec4_t = "IVec4" %}
     {% set from_types = ["I8Vec" ~ dim, "U8Vec" ~ dim, "I16Vec" ~ dim, "U16Vec" ~ dim] %}
-    {% set try_from_types = ["UVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim, "USizeVec" ~ dim] %}
+    {% set try_from_types = ["UVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim, "ISizeVec" ~ dim, "USizeVec" ~ dim] %}
 {% elif scalar_t == "u32" %}
     {% set is_signed = false %}
     {% set is_float = false %}
@@ -106,7 +106,7 @@
     {% set vec3_t = "UVec3" %}
     {% set vec4_t = "UVec4" %}
     {% set from_types = ["U8Vec" ~ dim, "U16Vec" ~ dim] %}
-    {% set try_from_types = ["I8Vec" ~ dim, "I16Vec" ~ dim, "IVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim, "USizeVec" ~ dim] %}
+    {% set try_from_types = ["I8Vec" ~ dim, "I16Vec" ~ dim, "IVec" ~ dim, "I64Vec" ~ dim, "U64Vec" ~ dim, "ISizeVec" ~ dim, "USizeVec" ~ dim] %}
 {% elif scalar_t == "i64" %}
     {% set is_signed = true %}
     {% set is_float = false %}
@@ -117,7 +117,7 @@
     {% set vec3_t = "I64Vec3" %}
     {% set vec4_t = "I64Vec4" %}
     {% set from_types = ["I8Vec" ~ dim, "U8Vec" ~ dim, "I16Vec" ~ dim, "U16Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim] %}
-    {% set try_from_types = ["U64Vec" ~ dim, "USizeVec" ~ dim] %}
+    {% set try_from_types = ["U64Vec" ~ dim, "ISizeVec" ~ dim, "USizeVec" ~ dim] %}
 {% elif scalar_t == "u64" %}
     {% set is_signed = false %}
     {% set is_float = false %}
@@ -128,7 +128,7 @@
     {% set vec3_t = "U64Vec3" %}
     {% set vec4_t = "U64Vec4" %}
     {% set from_types = ["U8Vec" ~ dim, "U16Vec" ~ dim, "UVec" ~ dim] %}
-    {% set try_from_types = ["I8Vec" ~ dim, "I16Vec" ~ dim, "IVec" ~ dim, "I64Vec" ~ dim, "USizeVec" ~ dim] %}
+    {% set try_from_types = ["I8Vec" ~ dim, "I16Vec" ~ dim, "IVec" ~ dim, "I64Vec" ~ dim, "ISizeVec" ~ dim, "USizeVec" ~ dim] %}
 {% elif scalar_t == "isize" %}
     {% set is_signed = true %}
     {% set is_float = false %}
@@ -150,7 +150,7 @@
     {% set vec3_t = "USizeVec3" %}
     {% set vec4_t = "USizeVec4" %}
     {% set from_types = ["U8Vec" ~ dim, "U16Vec" ~ dim] %}
-    {% set try_from_types = ["I8Vec" ~ dim, "I16Vec" ~ dim, "IVec" ~ dim, "I64Vec" ~ dim, "ISizeVec" ~ dim, "UVec" ~ dim, "U64Vec" ~ dim] %}
+    {% set try_from_types = ["I8Vec" ~ dim, "I16Vec" ~ dim, "IVec" ~ dim, "I64Vec" ~ dim, "UVec" ~ dim, "U64Vec" ~ dim, "ISizeVec" ~ dim] %}
 {% endif %}
 {% set bvec_from_type = "BVec" ~ dim %}
 {% if dim > 2 %}
