@@ -3888,10 +3888,12 @@ mod ivec4 {
             IVec4::new(1, 2, 3, 4),
             IVec4::try_from(ISizeVec4::new(1, 2, 3, 4)).unwrap()
         );
-        assert!(IVec4::try_from(ISizeVec4::new(isize::MAX, 2, 3, 4)).is_err());
-        assert!(IVec4::try_from(ISizeVec4::new(1, isize::MAX, 3, 4)).is_err());
-        assert!(IVec4::try_from(ISizeVec4::new(1, 2, isize::MAX, 4)).is_err());
-        assert!(IVec4::try_from(ISizeVec4::new(1, 2, 3, isize::MAX)).is_err());
+        if core::mem::size_of::<isize>() > 4 {
+            assert!(IVec4::try_from(ISizeVec4::new(isize::MAX, 2, 3, 4)).is_err());
+            assert!(IVec4::try_from(ISizeVec4::new(1, isize::MAX, 3, 4)).is_err());
+            assert!(IVec4::try_from(ISizeVec4::new(1, 2, isize::MAX, 4)).is_err());
+            assert!(IVec4::try_from(ISizeVec4::new(1, 2, 3, isize::MAX)).is_err());
+        }
 
         assert_eq!(
             IVec4::new(1, 2, 3, 4),
