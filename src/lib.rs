@@ -380,6 +380,10 @@ pub use self::u64::*;
 pub mod usize;
 pub use self::usize::*;
 
+/** `isize` vector types. */
+pub mod isize;
+pub use self::isize::*;
+
 /** Traits adding swizzle methods to all vector types. */
 pub mod swizzles;
 pub use self::swizzles::{Vec2Swizzles, Vec3Swizzles, Vec4Swizzles};

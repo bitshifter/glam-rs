@@ -3,7 +3,8 @@
 #[cfg(not(feature = "scalar-math"))]
 use crate::BVec4A;
 use crate::{
-    BVec4, I16Vec4, I64Vec4, I8Vec4, IVec4, U16Vec4, U64Vec4, U8Vec2, U8Vec3, USizeVec4, UVec4,
+    BVec4, I16Vec4, I64Vec4, I8Vec4, ISizeVec4, IVec4, U16Vec4, U64Vec4, U8Vec2, U8Vec3, USizeVec4,
+    UVec4,
 };
 
 use core::fmt;
@@ -541,6 +542,18 @@ impl U8Vec4 {
     #[must_use]
     pub fn as_u64vec4(self) -> crate::U64Vec4 {
         crate::U64Vec4::new(self.x as u64, self.y as u64, self.z as u64, self.w as u64)
+    }
+
+    /// Casts all elements of `self` to `isize`.
+    #[inline]
+    #[must_use]
+    pub fn as_isizevec4(self) -> crate::ISizeVec4 {
+        crate::ISizeVec4::new(
+            self.x as isize,
+            self.y as isize,
+            self.z as isize,
+            self.w as isize,
+        )
     }
 
     /// Casts all elements of `self` to `usize`.
@@ -3092,6 +3105,20 @@ impl TryFrom<U64Vec4> for U8Vec4 {
 
     #[inline]
     fn try_from(v: U64Vec4) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            u8::try_from(v.x)?,
+            u8::try_from(v.y)?,
+            u8::try_from(v.z)?,
+            u8::try_from(v.w)?,
+        ))
+    }
+}
+
+impl TryFrom<ISizeVec4> for U8Vec4 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: ISizeVec4) -> Result<Self, Self::Error> {
         Ok(Self::new(
             u8::try_from(v.x)?,
             u8::try_from(v.y)?,

@@ -1137,6 +1137,18 @@ impl Vec4 {
         crate::U64Vec4::new(self.x as u64, self.y as u64, self.z as u64, self.w as u64)
     }
 
+    /// Casts all elements of `self` to `isize`.
+    #[inline]
+    #[must_use]
+    pub fn as_isizevec4(self) -> crate::ISizeVec4 {
+        crate::ISizeVec4::new(
+            self.x as isize,
+            self.y as isize,
+            self.z as isize,
+            self.w as isize,
+        )
+    }
+
     /// Casts all elements of `self` to `usize`.
     #[inline]
     #[must_use]
