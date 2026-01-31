@@ -2746,7 +2746,8 @@ mod dvec3 {
 
 mod i8vec3 {
     use glam::{
-        i8vec3, BVec3, I16Vec3, I64Vec3, I8Vec3, IVec3, U16Vec3, U64Vec3, U8Vec3, USizeVec3, UVec3,
+        i8vec3, BVec3, I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U64Vec3, U8Vec3,
+        USizeVec3, UVec3,
     };
 
     glam_test!(test_align, {
@@ -2811,6 +2812,14 @@ mod i8vec3 {
         assert!(I8Vec3::try_from(U64Vec3::new(u64::MAX, 2, 3)).is_err());
         assert!(I8Vec3::try_from(U64Vec3::new(1, u64::MAX, 3)).is_err());
         assert!(I8Vec3::try_from(U64Vec3::new(1, 2, u64::MAX)).is_err());
+
+        assert_eq!(
+            I8Vec3::new(1, 2, 3),
+            I8Vec3::try_from(ISizeVec3::new(1, 2, 3)).unwrap()
+        );
+        assert!(I8Vec3::try_from(ISizeVec3::new(isize::MAX, 2, 3)).is_err());
+        assert!(I8Vec3::try_from(ISizeVec3::new(1, isize::MAX, 3)).is_err());
+        assert!(I8Vec3::try_from(ISizeVec3::new(1, 2, isize::MAX)).is_err());
 
         assert_eq!(
             I8Vec3::new(1, 2, 3),
@@ -2933,7 +2942,8 @@ mod i8vec3 {
 
 mod u8vec3 {
     use glam::{
-        u8vec3, BVec3, I16Vec3, I64Vec3, I8Vec3, IVec3, U16Vec3, U64Vec3, U8Vec3, USizeVec3, UVec3,
+        u8vec3, BVec3, I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U64Vec3, U8Vec3,
+        USizeVec3, UVec3,
     };
 
     glam_test!(test_align, {
@@ -3010,6 +3020,14 @@ mod u8vec3 {
         assert!(U8Vec3::try_from(U64Vec3::new(u64::MAX, 2, 3)).is_err());
         assert!(U8Vec3::try_from(U64Vec3::new(1, u64::MAX, 3)).is_err());
         assert!(U8Vec3::try_from(U64Vec3::new(1, 2, u64::MAX)).is_err());
+
+        assert_eq!(
+            U8Vec3::new(1, 2, 3),
+            U8Vec3::try_from(ISizeVec3::new(1, 2, 3)).unwrap()
+        );
+        assert!(U8Vec3::try_from(ISizeVec3::new(isize::MAX, 2, 3)).is_err());
+        assert!(U8Vec3::try_from(ISizeVec3::new(1, isize::MAX, 3)).is_err());
+        assert!(U8Vec3::try_from(ISizeVec3::new(1, 2, isize::MAX)).is_err());
 
         assert_eq!(
             U8Vec3::new(1, 2, 3),
@@ -3110,7 +3128,8 @@ mod u8vec3 {
 
 mod i16vec3 {
     use glam::{
-        i16vec3, BVec3, I16Vec3, I64Vec3, I8Vec3, IVec3, U16Vec3, U64Vec3, U8Vec3, USizeVec3, UVec3,
+        i16vec3, BVec3, I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U64Vec3, U8Vec3,
+        USizeVec3, UVec3,
     };
 
     glam_test!(test_align, {
@@ -3162,6 +3181,14 @@ mod i16vec3 {
         assert!(I16Vec3::try_from(U64Vec3::new(u64::MAX, 2, 3)).is_err());
         assert!(I16Vec3::try_from(U64Vec3::new(1, u64::MAX, 3)).is_err());
         assert!(I16Vec3::try_from(U64Vec3::new(1, 2, u64::MAX)).is_err());
+
+        assert_eq!(
+            I16Vec3::new(1, 2, 3),
+            I16Vec3::try_from(ISizeVec3::new(1, 2, 3)).unwrap()
+        );
+        assert!(I16Vec3::try_from(ISizeVec3::new(isize::MAX, 2, 3)).is_err());
+        assert!(I16Vec3::try_from(ISizeVec3::new(1, isize::MAX, 3)).is_err());
+        assert!(I16Vec3::try_from(ISizeVec3::new(1, 2, isize::MAX)).is_err());
 
         assert_eq!(
             I16Vec3::new(1, 2, 3),
@@ -3286,7 +3313,8 @@ mod i16vec3 {
 
 mod u16vec3 {
     use glam::{
-        u16vec3, BVec3, I16Vec3, I64Vec3, I8Vec3, IVec3, U16Vec3, U64Vec3, U8Vec3, USizeVec3, UVec3,
+        u16vec3, BVec3, I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U64Vec3, U8Vec3,
+        USizeVec3, UVec3,
     };
 
     glam_test!(test_align, {
@@ -3353,6 +3381,14 @@ mod u16vec3 {
         assert!(U16Vec3::try_from(U64Vec3::new(u64::MAX, 2, 3)).is_err());
         assert!(U16Vec3::try_from(U64Vec3::new(1, u64::MAX, 3)).is_err());
         assert!(U16Vec3::try_from(U64Vec3::new(1, 2, u64::MAX)).is_err());
+
+        assert_eq!(
+            U16Vec3::new(1, 2, 3),
+            U16Vec3::try_from(ISizeVec3::new(1, 2, 3)).unwrap()
+        );
+        assert!(U16Vec3::try_from(ISizeVec3::new(isize::MAX, 2, 3)).is_err());
+        assert!(U16Vec3::try_from(ISizeVec3::new(1, isize::MAX, 3)).is_err());
+        assert!(U16Vec3::try_from(ISizeVec3::new(1, 2, isize::MAX)).is_err());
 
         assert_eq!(
             U16Vec3::new(1, 2, 3),
@@ -3453,7 +3489,8 @@ mod u16vec3 {
 
 mod ivec3 {
     use glam::{
-        ivec3, BVec3, I16Vec3, I64Vec3, I8Vec3, IVec3, U16Vec3, U64Vec3, U8Vec3, USizeVec3, UVec3,
+        ivec3, BVec3, I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U64Vec3, U8Vec3,
+        USizeVec3, UVec3,
     };
 
     glam_test!(test_align, {
@@ -3492,6 +3529,14 @@ mod ivec3 {
         assert!(IVec3::try_from(U64Vec3::new(u64::MAX, 2, 3)).is_err());
         assert!(IVec3::try_from(U64Vec3::new(1, u64::MAX, 3)).is_err());
         assert!(IVec3::try_from(U64Vec3::new(1, 2, u64::MAX)).is_err());
+
+        assert_eq!(
+            IVec3::new(1, 2, 3),
+            IVec3::try_from(ISizeVec3::new(1, 2, 3)).unwrap()
+        );
+        assert!(IVec3::try_from(ISizeVec3::new(isize::MAX, 2, 3)).is_err());
+        assert!(IVec3::try_from(ISizeVec3::new(1, isize::MAX, 3)).is_err());
+        assert!(IVec3::try_from(ISizeVec3::new(1, 2, isize::MAX)).is_err());
 
         assert_eq!(
             IVec3::new(1, 2, 3),
@@ -3614,7 +3659,8 @@ mod ivec3 {
 
 mod uvec3 {
     use glam::{
-        uvec3, BVec3, I16Vec3, I64Vec3, I8Vec3, IVec3, U16Vec3, U64Vec3, U8Vec3, USizeVec3, UVec3,
+        uvec3, BVec3, I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U64Vec3, U8Vec3,
+        USizeVec3, UVec3,
     };
 
     glam_test!(test_align, {
@@ -3671,6 +3717,16 @@ mod uvec3 {
         assert!(UVec3::try_from(U64Vec3::new(u64::MAX, 2, 3)).is_err());
         assert!(UVec3::try_from(U64Vec3::new(1, u64::MAX, 3)).is_err());
         assert!(UVec3::try_from(U64Vec3::new(1, 2, u64::MAX)).is_err());
+
+        assert_eq!(
+            UVec3::new(1, 2, 3),
+            UVec3::try_from(ISizeVec3::new(1, 2, 3)).unwrap()
+        );
+        if core::mem::size_of::<isize>() > 4 {
+            assert!(UVec3::try_from(ISizeVec3::new(isize::MAX, 2, 3)).is_err());
+            assert!(UVec3::try_from(ISizeVec3::new(1, isize::MAX, 3)).is_err());
+            assert!(UVec3::try_from(ISizeVec3::new(1, 2, isize::MAX)).is_err());
+        }
 
         assert_eq!(
             UVec3::new(1, 2, 3),
@@ -3773,7 +3829,8 @@ mod uvec3 {
 
 mod i64vec3 {
     use glam::{
-        i64vec3, BVec3, I16Vec3, I64Vec3, I8Vec3, IVec3, U16Vec3, U64Vec3, U8Vec3, USizeVec3, UVec3,
+        i64vec3, BVec3, I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U64Vec3, U8Vec3,
+        USizeVec3, UVec3,
     };
 
     glam_test!(test_align, {
@@ -3797,6 +3854,11 @@ mod i64vec3 {
         assert!(I64Vec3::try_from(U64Vec3::new(u64::MAX, 2, 3)).is_err());
         assert!(I64Vec3::try_from(U64Vec3::new(1, u64::MAX, 3)).is_err());
         assert!(I64Vec3::try_from(U64Vec3::new(1, 2, u64::MAX)).is_err());
+
+        assert_eq!(
+            I64Vec3::new(1, 2, 3),
+            I64Vec3::try_from(ISizeVec3::new(1, 2, 3)).unwrap()
+        );
 
         assert_eq!(
             I64Vec3::new(1, 2, 3),
@@ -3923,7 +3985,8 @@ mod i64vec3 {
 
 mod u64vec3 {
     use glam::{
-        u64vec3, BVec3, I16Vec3, I64Vec3, I8Vec3, IVec3, U16Vec3, U64Vec3, U8Vec3, USizeVec3, UVec3,
+        u64vec3, BVec3, I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U64Vec3, U8Vec3,
+        USizeVec3, UVec3,
     };
 
     glam_test!(test_align, {
@@ -3962,6 +4025,14 @@ mod u64vec3 {
         assert!(U64Vec3::try_from(IVec3::new(1, 2, -3)).is_err());
 
         assert_eq!(U64Vec3::new(1, 2, 3), U64Vec3::from(UVec3::new(1, 2, 3)));
+
+        assert_eq!(
+            U64Vec3::new(1, 2, 3),
+            U64Vec3::try_from(ISizeVec3::new(1, 2, 3)).unwrap()
+        );
+        assert!(U64Vec3::try_from(ISizeVec3::new(-1, 2, 3)).is_err());
+        assert!(U64Vec3::try_from(ISizeVec3::new(1, -2, 3)).is_err());
+        assert!(U64Vec3::try_from(ISizeVec3::new(1, 2, -3)).is_err());
 
         assert_eq!(
             U64Vec3::new(1, 2, 3),
