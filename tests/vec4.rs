@@ -4096,10 +4096,12 @@ mod uvec4 {
             UVec4::new(1, 2, 3, 4),
             UVec4::try_from(ISizeVec4::new(1, 2, 3, 4)).unwrap()
         );
-        assert!(UVec4::try_from(ISizeVec4::new(isize::MAX, 2, 3, 4)).is_err());
-        assert!(UVec4::try_from(ISizeVec4::new(1, isize::MAX, 3, 4)).is_err());
-        assert!(UVec4::try_from(ISizeVec4::new(1, 2, isize::MAX, 4)).is_err());
-        assert!(UVec4::try_from(ISizeVec4::new(1, 2, 3, isize::MAX)).is_err());
+        if core::mem::size_of::<usize>() > 4 {
+            assert!(UVec4::try_from(ISizeVec4::new(isize::MAX, 2, 3, 4)).is_err());
+            assert!(UVec4::try_from(ISizeVec4::new(1, isize::MAX, 3, 4)).is_err());
+            assert!(UVec4::try_from(ISizeVec4::new(1, 2, isize::MAX, 4)).is_err());
+            assert!(UVec4::try_from(ISizeVec4::new(1, 2, 3, isize::MAX)).is_err());
+        }
 
         assert_eq!(
             UVec4::new(1, 2, 3, 4),
