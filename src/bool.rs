@@ -21,7 +21,7 @@ mod sse2;
     target_feature = "simd128",
     not(any(feature = "core-simd", feature = "scalar-math"))
 ))]
-mod wasm32;
+mod wasm;
 
 #[cfg(any(
     not(any(
@@ -64,12 +64,12 @@ pub use sse2::bvec4a::{bvec4a, BVec4A};
     target_feature = "simd128",
     not(any(feature = "core-simd", feature = "scalar-math"))
 ))]
-pub use wasm32::bvec3a::{bvec3a, BVec3A};
+pub use wasm::bvec3a::{bvec3a, BVec3A};
 #[cfg(all(
     target_feature = "simd128",
     not(any(feature = "core-simd", feature = "scalar-math"))
 ))]
-pub use wasm32::bvec4a::{bvec4a, BVec4A};
+pub use wasm::bvec4a::{bvec4a, BVec4A};
 
 #[cfg(all(feature = "core-simd", not(feature = "scalar-math")))]
 pub use coresimd::bvec3a::{bvec3a, BVec3A};

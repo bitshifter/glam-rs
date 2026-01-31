@@ -2,7 +2,7 @@
 {% import "coresimd.rs.tera" as coresimd %}
 {% import "neon.rs.tera" as neon %}
 {% import "sse2.rs.tera" as sse2 %}
-{% import "wasm32.rs.tera" as wasm32 %}
+{% import "wasm.rs.tera" as wasm %}
 
 // Generated from {{template_path}} template. Edit the template, not the generated file.
 
@@ -44,7 +44,7 @@
         {% set is_simd = true %}
         {% if is_sse2 %}
             {% set simd_t = "__m128" %}
-        {% elif is_wasm32 %}
+        {% elif is_wasm %}
             {% set simd_t = "v128" %}
         {% elif is_coresimd %}
             {% set simd_t = "f32x4" %}
@@ -90,8 +90,8 @@ use crate::{
 {% if self_t == "Mat4" %}
     {% if is_sse2 %}
         sse2::*,
-    {% elif is_wasm32 %}
-        wasm32::*,
+    {% elif is_wasm %}
+        wasm::*,
     {% elif is_coresimd %}
         coresimd::*,
     {% elif is_neon %}
@@ -110,8 +110,11 @@ use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAss
 use core::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use core::arch::x86_64::*;
-{% elif is_wasm32 %}
+{% elif is_wasm %}
+#[cfg(target_arch = "wasm32")]
 use core::arch::wasm32::*;
+#[cfg(target_arch = "wasm64")]
+use core::arch::wasm64::*;
 {% elif is_coresimd %}
 use core::simd::*;
 {% elif is_neon %}
@@ -271,7 +274,7 @@ impl {{ self_t }} {
     ) -> Self {
         {% if self_t == "Mat2" and is_sse2 %}
             unsafe { UnionCast { a: [m00, m01, m10, m11] }.v }
-        {% elif self_t == "Mat2" and is_wasm32 %}
+        {% elif self_t == "Mat2" and is_wasm %}
             Self(f32x4(m00, m01, m10, m11))
         {% elif self_t == "Mat2" and is_coresimd %}
             Self(f32x4::from_array([m00, m01, m10, m11]))
@@ -300,7 +303,7 @@ impl {{ self_t }} {
     ) -> Self {
         {% if self_t == "Mat2" and is_sse2 %}
             unsafe { UnionCast { a: [x_axis.x, x_axis.y, y_axis.x, y_axis.y] }.v }
-        {% elif self_t == "Mat2" and is_wasm32 %}
+        {% elif self_t == "Mat2" and is_wasm %}
             Self(f32x4(x_axis.x, x_axis.y, y_axis.x, y_axis.y))
         {% elif self_t == "Mat2" and is_coresimd %}
             Self(f32x4::from_array([x_axis.x, x_axis.y, y_axis.x, y_axis.y]))
@@ -1101,7 +1104,7 @@ impl {{ self_t }} {
     pub fn transpose(&self) -> Self {
         {% if self_t == "Mat2" and is_sse2 %}
             Self(unsafe { _mm_shuffle_ps(self.0, self.0, 0b11_01_10_00) })
-        {% elif self_t == "Mat2" and is_wasm32 %}
+        {% elif self_t == "Mat2" and is_wasm %}
             Self(i32x4_shuffle::<0, 2, 5, 7>(self.0, self.0))
         {% elif self_t == "Mat2" and is_coresimd %}
             Self(simd_swizzle!(self.0, [0, 2, 1, 3]))
@@ -1124,7 +1127,7 @@ impl {{ self_t }} {
                     z_axis: Vec3A(_mm_shuffle_ps(tmp1, self.z_axis.0, 0b10_10_10_00)),
                 }
             }
-        {% elif self_t == "Mat3A" and is_wasm32 %}
+        {% elif self_t == "Mat3A" and is_wasm %}
             let tmp0 = i32x4_shuffle::<0, 1, 4, 5>(self.x_axis.0, self.y_axis.0);
             let tmp1 = i32x4_shuffle::<2, 3, 6, 7>(self.x_axis.0, self.y_axis.0);
 
@@ -1197,7 +1200,7 @@ impl {{ self_t }} {
                     w_axis: Vec4(_mm_shuffle_ps(tmp1, tmp3, 0b11_01_11_01)),
                 }
             }
-        {% elif self_t == "Mat4" and is_wasm32 %}
+        {% elif self_t == "Mat4" and is_wasm %}
             // Based on https://github.com/microsoft/DirectXMath `XMMatrixTranspose`
             let tmp0 = i32x4_shuffle::<0, 1, 4, 5>(self.x_axis.0, self.y_axis.0);
             let tmp1 = i32x4_shuffle::<2, 3, 6, 7>(self.x_axis.0, self.y_axis.0);
@@ -1277,7 +1280,7 @@ impl {{ self_t }} {
                 let det = _mm_sub_ps(prod, _mm_shuffle_ps(prod, prod, 0b01_01_01_01));
                 _mm_cvtss_f32(det)
             }
-        {% elif self_t == "Mat2" and is_wasm32 %}
+        {% elif self_t == "Mat2" and is_wasm %}
             let abcd = self.0;
             let dcba = i32x4_shuffle::<3, 2, 5, 4>(abcd, abcd);
             let prod = f32x4_mul(abcd, dcba);
@@ -1334,7 +1337,7 @@ impl {{ self_t }} {
 
                 dot4(self.x_axis.0, detcof)
             }
-        {% elif self_t == "Mat4" and is_wasm32 %}
+        {% elif self_t == "Mat4" and is_wasm %}
             // Based on https://github.com/g-truc/glm `glm_mat4_determinant`
             let swp2a = i32x4_shuffle::<2, 1, 1, 0>(self.z_axis.0, self.z_axis.0);
             let swp3a = i32x4_shuffle::<3, 3, 2, 3>(self.w_axis.0, self.w_axis.0);
@@ -1529,9 +1532,9 @@ impl {{ self_t }} {
                 let dbca = _mm_shuffle_ps(abcd, abcd, 0b00_10_01_11);
                 (Self(_mm_mul_ps(dbca, tmp)), true)
             }
-        {% elif self_t == "Mat2" and is_wasm32 %}
+        {% elif self_t == "Mat2" and is_wasm %}
             use crate::Vec4;
-            const SIGN: v128 = crate::wasm32::v128_from_f32x4([1.0, -1.0, -1.0, 1.0]);
+            const SIGN: v128 = crate::wasm::v128_from_f32x4([1.0, -1.0, -1.0, 1.0]);
             let abcd = self.0;
             let dcba = i32x4_shuffle::<3, 2, 5, 4>(abcd, abcd);
             let prod = f32x4_mul(abcd, dcba);
@@ -1623,8 +1626,8 @@ impl {{ self_t }} {
             (Self::from_cols(tmp0.mul(inv_det), tmp1.mul(inv_det), tmp2.mul(inv_det)).transpose(), true)
         {% elif self_t == "Mat4" and is_sse2 %}
             {{ sse2::impl_mat4_inverse() }}
-        {% elif self_t == "Mat4" and is_wasm32 %}
-            {{ wasm32::impl_mat4_inverse() }}
+        {% elif self_t == "Mat4" and is_wasm %}
+            {{ wasm::impl_mat4_inverse() }}
         {% elif self_t == "Mat4" and is_coresimd %}
             {{ coresimd::impl_mat4_inverse() }}
         {% elif self_t == "Mat4" and is_neon %}
@@ -2400,7 +2403,7 @@ impl {{ self_t }} {
                 _mm_store_ps(out.as_mut_ptr().cast(), result);
                 out.assume_init().0
             }
-        {% elif self_t == "Mat2" and is_wasm32 %}
+        {% elif self_t == "Mat2" and is_wasm %}
             use core::mem::MaybeUninit;
             let abcd = self.0;
             let xxyy = f32x4(rhs.x, rhs.x, rhs.y, rhs.y);
@@ -2535,7 +2538,7 @@ impl {{ self_t }} {
     pub fn mul_scalar(&self, rhs: {{ scalar_t }}) -> Self {
         {% if self_t == "Mat2" and is_sse2 %}
             Self(unsafe { _mm_mul_ps(self.0, _mm_set_ps1(rhs)) })
-        {% elif self_t == "Mat2" and is_wasm32 %}
+        {% elif self_t == "Mat2" and is_wasm %}
             Self(f32x4_mul(self.0, f32x4_splat(rhs)))
         {% elif self_t == "Mat2" and is_coresimd %}
             Self(self.0 * f32x4::splat(rhs))
@@ -2569,7 +2572,7 @@ impl {{ self_t }} {
     pub fn div_scalar(&self, rhs: {{ scalar_t }}) -> Self {
         {% if self_t == "Mat2" and is_sse2 %}
             Self(unsafe { _mm_div_ps(self.0, _mm_set_ps1(rhs)) })
-        {% elif self_t == "Mat2" and is_wasm32 %}
+        {% elif self_t == "Mat2" and is_wasm %}
             Self(f32x4_div(self.0, f32x4_splat(rhs)))
         {% elif self_t == "Mat2" and is_coresimd %}
             Self(self.0 / f32x4::splat(rhs))
@@ -2648,7 +2651,7 @@ impl Add for {{ self_t }} {
     fn add(self, rhs: Self) -> Self {
         {% if self_t == "Mat2" and is_sse2 %}
             Self(unsafe { _mm_add_ps(self.0, rhs.0) })
-        {% elif self_t == "Mat2" and is_wasm32 %}
+        {% elif self_t == "Mat2" and is_wasm %}
             Self(f32x4_add(self.0, rhs.0))
         {% elif self_t == "Mat2" and is_coresimd %}
             Self(self.0 + rhs.0)
@@ -2674,7 +2677,7 @@ impl Sub for {{ self_t }} {
     fn sub(self, rhs: Self) -> Self {
         {% if self_t == "Mat2" and is_sse2 %}
             Self(unsafe { _mm_sub_ps(self.0, rhs.0) })
-        {% elif self_t == "Mat2" and is_wasm32 %}
+        {% elif self_t == "Mat2" and is_wasm %}
             Self(f32x4_sub(self.0, rhs.0))
         {% elif self_t == "Mat2" and is_coresimd %}
             Self(self.0 - rhs.0)
@@ -2700,7 +2703,7 @@ impl Neg for {{ self_t }} {
     fn neg(self) -> Self::Output {
         {% if self_t == "Mat2" and is_sse2 %}
             Self(unsafe { _mm_xor_ps(self.0, _mm_set1_ps(-0.0)) })
-        {% elif self_t == "Mat2" and is_wasm32 %}
+        {% elif self_t == "Mat2" and is_wasm %}
             Self(f32x4_neg(self.0))
         {% elif self_t == "Mat2" and is_coresimd %}
             Self(-self.0)
@@ -2736,7 +2739,7 @@ impl Mul for {{ self_t }} {
                 let result1 = _mm_add_ps(axbxcydy1, cydyaxbx1);
                 Self(_mm_shuffle_ps(result0, result1, 0b01_00_01_00))
             }
-        {% elif self_t == "Mat2" and is_wasm32 %}
+        {% elif self_t == "Mat2" and is_wasm %}
             let abcd = self.0;
             let rhs = rhs.0;
             let xxyy0 = i32x4_shuffle::<0, 0, 5, 5>(rhs, rhs);

@@ -97,7 +97,7 @@ impl Vec3A {
     /// Vec3A uses Intel SSE2
     pub const USES_SSE2: bool = false;
     /// Vec3A uses WebAssembly 128-bit SIMD
-    pub const USES_WASM32_SIMD: bool = false;
+    pub const USES_WASM_SIMD: bool = false;
 
     /// Creates a new vector.
     #[inline(always)]

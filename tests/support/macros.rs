@@ -1,8 +1,8 @@
 #[macro_export]
 macro_rules! glam_test {
     ($name:ident, $block:block) => {
-        #[cfg_attr(not(target_arch = "wasm32"), test)]
-        #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test::wasm_bindgen_test)]
+        #[cfg_attr(not(target_family = "wasm"), test)]
+        #[cfg_attr(target_family = "wasm", wasm_bindgen_test::wasm_bindgen_test)]
         fn $name() {
             $block
         }

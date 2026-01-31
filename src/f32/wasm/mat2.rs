@@ -5,7 +5,10 @@ use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
+#[cfg(target_arch = "wasm32")]
 use core::arch::wasm32::*;
+#[cfg(target_arch = "wasm64")]
+use core::arch::wasm64::*;
 
 #[cfg(feature = "zerocopy")]
 use zerocopy_derive::*;
@@ -297,7 +300,7 @@ impl Mat2 {
     #[must_use]
     fn inverse_checked<const CHECKED: bool>(&self) -> (Self, bool) {
         use crate::Vec4;
-        const SIGN: v128 = crate::wasm32::v128_from_f32x4([1.0, -1.0, -1.0, 1.0]);
+        const SIGN: v128 = crate::wasm::v128_from_f32x4([1.0, -1.0, -1.0, 1.0]);
         let abcd = self.0;
         let dcba = i32x4_shuffle::<3, 2, 5, 4>(abcd, abcd);
         let prod = f32x4_mul(abcd, dcba);

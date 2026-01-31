@@ -3,25 +3,28 @@
 use core::fmt;
 use core::ops::*;
 
+#[cfg(target_arch = "wasm32")]
 use core::arch::wasm32::*;
+#[cfg(target_arch = "wasm64")]
+use core::arch::wasm64::*;
 
-/// Creates a 3-dimensional `bool` vector mask.
+/// Creates a 4-dimensional `bool` vector mask.
 #[inline(always)]
 #[must_use]
-pub const fn bvec3a(x: bool, y: bool, z: bool) -> BVec3A {
-    BVec3A::new(x, y, z)
+pub const fn bvec4a(x: bool, y: bool, z: bool, w: bool) -> BVec4A {
+    BVec4A::new(x, y, z, w)
 }
 
-/// A 3-dimensional SIMD vector mask.
+/// A 4-dimensional SIMD vector mask.
 ///
 /// This type is 16 byte aligned.
 #[derive(Clone, Copy)]
 #[repr(transparent)]
-pub struct BVec3A(pub(crate) v128);
+pub struct BVec4A(pub(crate) v128);
 
 const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
 
-impl BVec3A {
+impl BVec4A {
     /// All false.
     pub const FALSE: Self = Self::splat(false);
 
@@ -31,12 +34,12 @@ impl BVec3A {
     /// Creates a new vector mask.
     #[inline(always)]
     #[must_use]
-    pub const fn new(x: bool, y: bool, z: bool) -> Self {
+    pub const fn new(x: bool, y: bool, z: bool, w: bool) -> Self {
         Self(u32x4(
             MASK[x as usize],
             MASK[y as usize],
             MASK[z as usize],
-            0,
+            MASK[w as usize],
         ))
     }
 
@@ -44,24 +47,24 @@ impl BVec3A {
     #[inline]
     #[must_use]
     pub const fn splat(v: bool) -> Self {
-        Self::new(v, v, v)
+        Self::new(v, v, v, v)
     }
 
     /// Creates a new vector mask from a bool array.
     #[inline]
     #[must_use]
-    pub const fn from_array(a: [bool; 3]) -> Self {
-        Self::new(a[0], a[1], a[2])
+    pub const fn from_array(a: [bool; 4]) -> Self {
+        Self::new(a[0], a[1], a[2], a[3])
     }
 
-    /// Returns a bitmask with the lowest 3 bits set from the elements of `self`.
+    /// Returns a bitmask with the lowest 4 bits set from the elements of `self`.
     ///
     /// A true element results in a `1` bit and a false element in a `0` bit.  Element `x` goes
     /// into the first lowest bit, element `y` into the second, etc.
     #[inline]
     #[must_use]
     pub fn bitmask(self) -> u32 {
-        (u32x4_bitmask(self.0) & 0x7) as u32
+        u32x4_bitmask(self.0) as u32
     }
 
     /// Returns true if any of the elements are true, false otherwise.
@@ -75,12 +78,12 @@ impl BVec3A {
     #[inline]
     #[must_use]
     pub fn all(self) -> bool {
-        self.bitmask() == 0x7
+        self.bitmask() == 0xf
     }
 
     /// Tests the value at `index`.
     ///
-    /// Panics if `index` is greater than 2.
+    /// Panics if `index` is greater than 3.
     #[inline]
     #[must_use]
     pub fn test(self, index: usize) -> bool {
@@ -88,64 +91,71 @@ impl BVec3A {
             0 => (self.bitmask() & (1 << 0)) != 0,
             1 => (self.bitmask() & (1 << 1)) != 0,
             2 => (self.bitmask() & (1 << 2)) != 0,
+            3 => (self.bitmask() & (1 << 3)) != 0,
             _ => panic!("index out of bounds"),
         }
     }
 
     /// Sets the element at `index`.
     ///
-    /// Panics if `index` is greater than 2.
+    /// Panics if `index` is greater than 3.
     #[inline]
     pub fn set(&mut self, index: usize, value: bool) {
-        use crate::Vec3A;
-        let mut v = Vec3A(self.0);
+        use crate::Vec4;
+        let mut v = Vec4(self.0);
         v[index] = f32::from_bits(MASK[value as usize]);
         self.0 = v.0;
     }
 
     #[inline]
     #[must_use]
-    fn into_bool_array(self) -> [bool; 3] {
+    fn into_bool_array(self) -> [bool; 4] {
         let bitmask = self.bitmask();
-        [(bitmask & 1) != 0, (bitmask & 2) != 0, (bitmask & 4) != 0]
+        [
+            (bitmask & 1) != 0,
+            (bitmask & 2) != 0,
+            (bitmask & 4) != 0,
+            (bitmask & 8) != 0,
+        ]
     }
 
     #[inline]
     #[must_use]
-    fn into_u32_array(self) -> [u32; 3] {
+    fn into_u32_array(self) -> [u32; 4] {
         let bitmask = self.bitmask();
         [
             MASK[(bitmask & 1) as usize],
             MASK[((bitmask >> 1) & 1) as usize],
             MASK[((bitmask >> 2) & 1) as usize],
+            MASK[((bitmask >> 3) & 1) as usize],
         ]
     }
 }
 
-impl Default for BVec3A {
+impl Default for BVec4A {
     #[inline]
     fn default() -> Self {
         Self::FALSE
     }
 }
 
-impl PartialEq for BVec3A {
+impl PartialEq for BVec4A {
     #[inline]
     fn eq(&self, rhs: &Self) -> bool {
         self.bitmask().eq(&rhs.bitmask())
     }
 }
 
-impl Eq for BVec3A {}
+impl Eq for BVec4A {}
 
-impl core::hash::Hash for BVec3A {
+impl core::hash::Hash for BVec4A {
     #[inline]
     fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
         self.bitmask().hash(state);
     }
 }
 
-impl BitAnd for BVec3A {
+impl BitAnd for BVec4A {
     type Output = Self;
     #[inline]
     fn bitand(self, rhs: Self) -> Self {
@@ -153,7 +163,7 @@ impl BitAnd for BVec3A {
     }
 }
 
-impl BitAnd<&Self> for BVec3A {
+impl BitAnd<&Self> for BVec4A {
     type Output = Self;
     #[inline]
     fn bitand(self, rhs: &Self) -> Self {
@@ -161,37 +171,37 @@ impl BitAnd<&Self> for BVec3A {
     }
 }
 
-impl BitAnd<&BVec3A> for &BVec3A {
-    type Output = BVec3A;
+impl BitAnd<&BVec4A> for &BVec4A {
+    type Output = BVec4A;
     #[inline]
-    fn bitand(self, rhs: &BVec3A) -> BVec3A {
+    fn bitand(self, rhs: &BVec4A) -> BVec4A {
         (*self).bitand(*rhs)
     }
 }
 
-impl BitAnd<BVec3A> for &BVec3A {
-    type Output = BVec3A;
+impl BitAnd<BVec4A> for &BVec4A {
+    type Output = BVec4A;
     #[inline]
-    fn bitand(self, rhs: BVec3A) -> BVec3A {
+    fn bitand(self, rhs: BVec4A) -> BVec4A {
         (*self).bitand(rhs)
     }
 }
 
-impl BitAndAssign for BVec3A {
+impl BitAndAssign for BVec4A {
     #[inline]
     fn bitand_assign(&mut self, rhs: Self) {
         *self = self.bitand(rhs);
     }
 }
 
-impl BitAndAssign<&Self> for BVec3A {
+impl BitAndAssign<&Self> for BVec4A {
     #[inline]
     fn bitand_assign(&mut self, rhs: &Self) {
         self.bitand_assign(*rhs);
     }
 }
 
-impl BitOr for BVec3A {
+impl BitOr for BVec4A {
     type Output = Self;
     #[inline]
     fn bitor(self, rhs: Self) -> Self {
@@ -199,7 +209,7 @@ impl BitOr for BVec3A {
     }
 }
 
-impl BitOr<&Self> for BVec3A {
+impl BitOr<&Self> for BVec4A {
     type Output = Self;
     #[inline]
     fn bitor(self, rhs: &Self) -> Self {
@@ -207,37 +217,37 @@ impl BitOr<&Self> for BVec3A {
     }
 }
 
-impl BitOr<&BVec3A> for &BVec3A {
-    type Output = BVec3A;
+impl BitOr<&BVec4A> for &BVec4A {
+    type Output = BVec4A;
     #[inline]
-    fn bitor(self, rhs: &BVec3A) -> BVec3A {
+    fn bitor(self, rhs: &BVec4A) -> BVec4A {
         (*self).bitor(*rhs)
     }
 }
 
-impl BitOr<BVec3A> for &BVec3A {
-    type Output = BVec3A;
+impl BitOr<BVec4A> for &BVec4A {
+    type Output = BVec4A;
     #[inline]
-    fn bitor(self, rhs: BVec3A) -> BVec3A {
+    fn bitor(self, rhs: BVec4A) -> BVec4A {
         (*self).bitor(rhs)
     }
 }
 
-impl BitOrAssign for BVec3A {
+impl BitOrAssign for BVec4A {
     #[inline]
     fn bitor_assign(&mut self, rhs: Self) {
         *self = self.bitor(rhs);
     }
 }
 
-impl BitOrAssign<&Self> for BVec3A {
+impl BitOrAssign<&Self> for BVec4A {
     #[inline]
     fn bitor_assign(&mut self, rhs: &Self) {
         self.bitor_assign(*rhs);
     }
 }
 
-impl BitXor for BVec3A {
+impl BitXor for BVec4A {
     type Output = Self;
     #[inline]
     fn bitxor(self, rhs: Self) -> Self {
@@ -245,7 +255,7 @@ impl BitXor for BVec3A {
     }
 }
 
-impl BitXor<&Self> for BVec3A {
+impl BitXor<&Self> for BVec4A {
     type Output = Self;
     #[inline]
     fn bitxor(self, rhs: &Self) -> Self {
@@ -253,37 +263,37 @@ impl BitXor<&Self> for BVec3A {
     }
 }
 
-impl BitXor<&BVec3A> for &BVec3A {
-    type Output = BVec3A;
+impl BitXor<&BVec4A> for &BVec4A {
+    type Output = BVec4A;
     #[inline]
-    fn bitxor(self, rhs: &BVec3A) -> BVec3A {
+    fn bitxor(self, rhs: &BVec4A) -> BVec4A {
         (*self).bitxor(*rhs)
     }
 }
 
-impl BitXor<BVec3A> for &BVec3A {
-    type Output = BVec3A;
+impl BitXor<BVec4A> for &BVec4A {
+    type Output = BVec4A;
     #[inline]
-    fn bitxor(self, rhs: BVec3A) -> BVec3A {
+    fn bitxor(self, rhs: BVec4A) -> BVec4A {
         (*self).bitxor(rhs)
     }
 }
 
-impl BitXorAssign for BVec3A {
+impl BitXorAssign for BVec4A {
     #[inline]
     fn bitxor_assign(&mut self, rhs: Self) {
         *self = self.bitxor(rhs);
     }
 }
 
-impl BitXorAssign<&Self> for BVec3A {
+impl BitXorAssign<&Self> for BVec4A {
     #[inline]
     fn bitxor_assign(&mut self, rhs: &Self) {
         self.bitxor_assign(*rhs);
     }
 }
 
-impl Not for BVec3A {
+impl Not for BVec4A {
     type Output = Self;
     #[inline]
     fn not(self) -> Self {
@@ -291,59 +301,60 @@ impl Not for BVec3A {
     }
 }
 
-impl Not for &BVec3A {
-    type Output = BVec3A;
+impl Not for &BVec4A {
+    type Output = BVec4A;
     #[inline]
-    fn not(self) -> BVec3A {
+    fn not(self) -> BVec4A {
         (*self).not()
     }
 }
 
-impl From<BVec3A> for v128 {
+impl From<BVec4A> for v128 {
     #[inline]
-    fn from(t: BVec3A) -> Self {
+    fn from(t: BVec4A) -> Self {
         t.0
     }
 }
 
-impl fmt::Debug for BVec3A {
+impl fmt::Debug for BVec4A {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let arr = self.into_u32_array();
         write!(
             f,
-            "{}({:#x}, {:#x}, {:#x})",
-            stringify!(BVec3A),
+            "{}({:#x}, {:#x}, {:#x}, {:#x})",
+            stringify!(BVec4A),
             arr[0],
             arr[1],
-            arr[2]
+            arr[2],
+            arr[3]
         )
     }
 }
 
-impl fmt::Display for BVec3A {
+impl fmt::Display for BVec4A {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let arr = self.into_bool_array();
-        write!(f, "[{}, {}, {}]", arr[0], arr[1], arr[2])
+        write!(f, "[{}, {}, {}, {}]", arr[0], arr[1], arr[2], arr[3])
     }
 }
 
-impl From<[bool; 3]> for BVec3A {
+impl From<[bool; 4]> for BVec4A {
     #[inline]
-    fn from(a: [bool; 3]) -> Self {
+    fn from(a: [bool; 4]) -> Self {
         Self::from_array(a)
     }
 }
 
-impl From<BVec3A> for [bool; 3] {
+impl From<BVec4A> for [bool; 4] {
     #[inline]
-    fn from(mask: BVec3A) -> Self {
+    fn from(mask: BVec4A) -> Self {
         mask.into_bool_array()
     }
 }
 
-impl From<BVec3A> for [u32; 3] {
+impl From<BVec4A> for [u32; 4] {
     #[inline]
-    fn from(mask: BVec3A) -> Self {
+    fn from(mask: BVec4A) -> Self {
         mask.into_u32_array()
     }
 }

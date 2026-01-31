@@ -3,11 +3,14 @@
 use crate::{
     euler::{EulerRot, FromEuler, ToEuler},
     f32::math,
-    wasm32::*,
+    wasm::*,
     DQuat, Mat3, Mat3A, Mat4, Vec2, Vec3, Vec3A, Vec4,
 };
 
+#[cfg(target_arch = "wasm32")]
 use core::arch::wasm32::*;
+#[cfg(target_arch = "wasm64")]
+use core::arch::wasm64::*;
 
 use core::fmt;
 use core::iter::{Product, Sum};

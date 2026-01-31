@@ -1336,7 +1336,7 @@ macro_rules! impl_vec3_float_tests {
                 assert!(!$vec3::NAN.max($vec3::ZERO).is_nan_mask().all());
                 assert!($vec3::ZERO.max($vec3::NAN).is_nan_mask().all());
                 assert!($vec3::NAN.max($vec3::NAN).is_nan_mask().all());
-            } else if $vec3::USES_WASM32_SIMD {
+            } else if $vec3::USES_WASM_SIMD {
                 assert!($vec3::NAN.min($vec3::ZERO).is_nan_mask().all());
                 assert!(!$vec3::ZERO.min($vec3::NAN).is_nan_mask().all());
                 assert!($vec3::NAN.min($vec3::NAN).is_nan_mask().all());
@@ -1366,7 +1366,7 @@ macro_rules! impl_vec3_float_tests {
             } else if $vec3::USES_SSE2 {
                 assert!(v.min_element().is_nan());
                 assert!(v.max_element().is_nan());
-            } else if $vec3::USES_WASM32_SIMD {
+            } else if $vec3::USES_WASM_SIMD {
                 assert_eq!(2.0, v.min_element());
                 assert_eq!(3.0, v.max_element());
             } else if $vec3::USES_CORE_SIMD {
@@ -1411,7 +1411,7 @@ macro_rules! impl_vec3_float_tests {
                         .is_nan_mask()
                         .all());
                 }
-            } else if $vec3::USES_WASM32_SIMD {
+            } else if $vec3::USES_WASM_SIMD {
                 assert!($vec3::NAN
                     .clamp($vec3::NEG_ONE, $vec3::ONE)
                     .is_nan_mask()

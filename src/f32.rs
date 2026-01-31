@@ -37,7 +37,7 @@ mod sse2;
     target_feature = "simd128",
     not(any(feature = "core-simd", feature = "scalar-math"))
 ))]
-mod wasm32;
+mod wasm;
 
 #[cfg(any(
     not(any(
@@ -66,7 +66,7 @@ use sse2::*;
     target_feature = "simd128",
     not(any(feature = "core-simd", feature = "scalar-math"))
 ))]
-use wasm32::*;
+use wasm::*;
 
 #[cfg(all(feature = "core-simd", not(feature = "scalar-math")))]
 use coresimd::*;

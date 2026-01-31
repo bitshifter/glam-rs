@@ -8,11 +8,11 @@ rational and explanation of these follows.
 
 There overarching design goals of glam are:
 
-* Good out of the box performance using SIMD when available
-* Has a simple public interface
-* Is fast to compile
-* Follow Rust [standard library] conventions and [API guidelines] where possible
-* High quality [rustdoc] generated document
+- Good out of the box performance using SIMD when available
+- Has a simple public interface
+- Is fast to compile
+- Follow Rust [standard library] conventions and [API guidelines] where possible
+- High quality [rustdoc] generated document
 
 [standard library]: https://doc.rust-lang.org/std/index.html
 [API guidelines]: https://rust-lang.github.io/api-guidelines
@@ -67,17 +67,17 @@ some additional complexity in implementation.
 ## High level structure
 
 `glam` supports a number of permutations of vector, quaternion and matrix types
-for `f32`, `f64`, `i32` and `u32` primitives, with SSE2 or wasm32 for some `f32`
-types and scalar fallbacks if SIMD is not available.
+for `f32`, `f64`, `i32` and `u32` primitives, with SSE2, NEON, or WASM SIMD for
+some `f32` types and scalar fallbacks if SIMD is not available.
 
 ### Component access via Deref
 
 The `Deref` trait is used to provide direct access to SIMD vector components
-like `.x`, `.y` and so on.  The `Deref` implementation will return `XYZ<T>`
+like `.x`, `.y` and so on. The `Deref` implementation will return `XYZ<T>`
 structure on which the vector components are accessible. Unfortunately if users
-dereference the public types they will see confusing errors messages about
-`XYZ` types but this on balance seemed preferable to needing to setter and
-getting methods to read and write component values.
+dereference the public types they will see confusing errors messages about `XYZ`
+types but this on balance seemed preferable to needing to setter and getting
+methods to read and write component values.
 
 ## Code generation
 

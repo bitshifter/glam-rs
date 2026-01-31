@@ -32,8 +32,11 @@ use crate::{
 use core::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use core::arch::x86_64::*;
-{% elif is_wasm32 %}
+{% elif is_wasm %}
+#[cfg(target_arch = "wasm32")]
 use core::arch::wasm32::*;
+#[cfg(target_arch = "wasm64")]
+use core::arch::wasm64::*;
 {% elif is_coresimd %}
 use core::simd::*;
 {% endif %}
@@ -97,7 +100,7 @@ impl Vec{{ dim }}Swizzles for {{ self_t }} {
     fn {{ e[j0] }}{{ e[j1] }}{{ e[j2] }}(self) -> {{ ret_t }} {
             {% if vec3_t == "Vec3A" and is_sse2 %}
                 {{ ret_t }}((unsafe { _mm_shuffle_ps(self.0, self.0, 0b00_{{ b[j2] }}_{{ b[j1] }}_{{ b[j0] }}) }).into())
-            {% elif vec3_t == "Vec3A" and is_wasm32 %}
+            {% elif vec3_t == "Vec3A" and is_wasm %}
                 {{ ret_t }}(i32x4_shuffle::<{{ l[j0] }}, {{ l[j1] }}, {{ h[j2] }}, {{ h[0] }}>(self.0, self.0).into())
             {% elif vec3_t == "Vec3A" and is_coresimd %}
                 {{ ret_t }}(simd_swizzle!(self.0, [{{ l[j0] }}, {{ l[j1] }}, {{ l[j2] }}, {{ l[0] }}]).into())
@@ -138,7 +141,7 @@ impl Vec{{ dim }}Swizzles for {{ self_t }} {
     fn {{ e[j0] }}{{ e[j1] }}{{ e[j2] }}{{ e[j3] }}(self) -> {{ ret_t }} {
             {% if is_sse2 %}
                 {{ ret_t }}(unsafe { _mm_shuffle_ps(self.0, self.0, 0b{{ b[j3] }}_{{ b[j2] }}_{{ b[j1] }}_{{ b[j0] }}) })
-            {% elif is_wasm32 %}
+            {% elif is_wasm %}
                 {{ ret_t }}(i32x4_shuffle::<{{ l[j0] }}, {{ l[j1] }}, {{ h[j2] }}, {{ h[j3] }}>(self.0, self.0))
             {% elif is_coresimd %}
                 {{ ret_t }}(simd_swizzle!(self.0, [{{ l[j0] }}, {{ l[j1] }}, {{ l[j2] }}, {{ l[j3] }}]))
