@@ -34,6 +34,8 @@ A simple and fast 3D math library for games and graphics.
   * vectors: `I64Vec2`, `I64Vec3` and `I64Vec4`
 * `u64` types
   * vectors: `U64Vec2`, `U64Vec3` and `U64Vec4`
+* `isize` types
+  * vectors: `ISizeVec2`, `ISizeVec3` and `ISizeVec4`
 * `usize` types
   * vectors: `USizeVec2`, `USizeVec3` and `USizeVec4`
 * `bool` types
