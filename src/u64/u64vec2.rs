@@ -1,6 +1,8 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec2, I16Vec2, I64Vec2, I8Vec2, IVec2, U16Vec2, U64Vec3, U8Vec2, USizeVec2, UVec2};
+use crate::{
+    BVec2, I16Vec2, I64Vec2, I8Vec2, ISizeVec2, IVec2, U16Vec2, U64Vec3, U8Vec2, USizeVec2, UVec2,
+};
 
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -438,6 +440,13 @@ impl U64Vec2 {
     #[must_use]
     pub fn as_i64vec2(self) -> crate::I64Vec2 {
         crate::I64Vec2::new(self.x as i64, self.y as i64)
+    }
+
+    /// Casts all elements of `self` to `isize`.
+    #[inline]
+    #[must_use]
+    pub fn as_isizevec2(self) -> crate::ISizeVec2 {
+        crate::ISizeVec2::new(self.x as isize, self.y as isize)
     }
 
     /// Casts all elements of `self` to `usize`.
@@ -2750,6 +2759,15 @@ impl TryFrom<I64Vec2> for U64Vec2 {
 
     #[inline]
     fn try_from(v: I64Vec2) -> Result<Self, Self::Error> {
+        Ok(Self::new(u64::try_from(v.x)?, u64::try_from(v.y)?))
+    }
+}
+
+impl TryFrom<ISizeVec2> for U64Vec2 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: ISizeVec2) -> Result<Self, Self::Error> {
         Ok(Self::new(u64::try_from(v.x)?, u64::try_from(v.y)?))
     }
 }

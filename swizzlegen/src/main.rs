@@ -287,6 +287,7 @@ fn write_swizzle_tests() -> Result<()> {
     write_swizzle_tests_scalar("u16", "u16")?;
     write_swizzle_tests_scalar("u8", "u8")?;
 
+    write_swizzle_tests_scalar("isize", "isize")?;
     write_swizzle_tests_scalar("usize", "usize")?;
 
     Ok(())
