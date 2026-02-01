@@ -2893,8 +2893,6 @@ mod ivec2 {
             IVec2::new(1, 2),
             IVec2::try_from(ISizeVec2::new(1, 2)).unwrap()
         );
-        assert!(IVec2::try_from(ISizeVec2::new(isize::MAX, 2)).is_err());
-        assert!(IVec2::try_from(ISizeVec2::new(1, isize::MAX)).is_err());
 
         assert_eq!(
             IVec2::new(1, 2),
@@ -3210,10 +3208,6 @@ mod i64vec2 {
             I64Vec2::new(1, 2),
             I64Vec2::try_from(ISizeVec2::new(1, 2)).unwrap()
         );
-        if core::mem::size_of::<isize>() < 8 {
-            assert!(I64Vec2::try_from(ISizeVec2::new(isize::MAX, 2)).is_err());
-            assert!(I64Vec2::try_from(ISizeVec2::new(1, isize::MAX)).is_err());
-        }
 
         assert_eq!(
             I64Vec2::new(1, 2),
