@@ -3534,9 +3534,11 @@ mod ivec3 {
             IVec3::new(1, 2, 3),
             IVec3::try_from(ISizeVec3::new(1, 2, 3)).unwrap()
         );
-        assert!(IVec3::try_from(ISizeVec3::new(isize::MAX, 2, 3)).is_err());
-        assert!(IVec3::try_from(ISizeVec3::new(1, isize::MAX, 3)).is_err());
-        assert!(IVec3::try_from(ISizeVec3::new(1, 2, isize::MAX)).is_err());
+        if core::mem::size_of::<isize>() > 4 {
+            assert!(IVec3::try_from(ISizeVec3::new(isize::MAX, 2, 3)).is_err());
+            assert!(IVec3::try_from(ISizeVec3::new(1, isize::MAX, 3)).is_err());
+            assert!(IVec3::try_from(ISizeVec3::new(1, 2, isize::MAX)).is_err());
+        }
 
         assert_eq!(
             IVec3::new(1, 2, 3),
