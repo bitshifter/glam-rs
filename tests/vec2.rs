@@ -2074,6 +2074,7 @@ mod vec2 {
         assert_eq!(UVec2::new(1, 2), I64Vec2::new(1, 2).as_uvec2());
         assert_eq!(IVec2::new(-1, -2), I64Vec2::new(-1, -2).as_ivec2());
         assert_eq!(U64Vec2::new(1, 2), I64Vec2::new(1, 2).as_u64vec2());
+        assert_eq!(ISizeVec2::new(-1, -2), I64Vec2::new(-1, -2).as_isizevec2());
         assert_eq!(USizeVec2::new(1, 2), I64Vec2::new(1, 2).as_usizevec2());
 
         assert_eq!(Vec2::new(1.0, 2.0), U64Vec2::new(1, 2).as_vec2());
@@ -3765,10 +3766,10 @@ mod usizevec2 {
     });
 
     glam_test!(test_checked_add_signed, {
-        assert_eq!(U16Vec2::MAX.checked_add_signed(I16Vec2::ONE), None);
+        assert_eq!(USizeVec2::MAX.checked_add_signed(ISizeVec2::ONE), None);
         assert_eq!(
-            U16Vec2::ONE.checked_add_signed(I16Vec2::NEG_ONE),
-            Some(U16Vec2::ZERO)
+            USizeVec2::ONE.checked_add_signed(ISizeVec2::NEG_ONE),
+            Some(USizeVec2::ZERO)
         );
     });
 

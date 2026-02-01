@@ -2830,6 +2830,10 @@ mod vec4 {
             I64Vec4::new(1, 2, 3, 4).as_u64vec4()
         );
         assert_eq!(
+            ISizeVec4::new(-1, -2, -3, -4),
+            I64Vec4::new(-1, -2, -3, -4).as_isizevec4()
+        );
+        assert_eq!(
             USizeVec4::new(1, 2, 3, 4),
             I64Vec4::new(1, 2, 3, 4).as_usizevec4()
         );

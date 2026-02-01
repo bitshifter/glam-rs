@@ -2248,6 +2248,10 @@ macro_rules! impl_vec3_float_tests {
             assert_eq!(IVec3::new(-1, -2, -3), I64Vec3::new(-1, -2, -3).as_ivec3());
             assert_eq!(U64Vec3::new(1, 2, 3), I64Vec3::new(1, 2, 3).as_u64vec3());
             assert_eq!(
+                ISizeVec3::new(-1, -2, -3),
+                I64Vec3::new(-1, -2, -3).as_isizevec3()
+            );
+            assert_eq!(
                 USizeVec3::new(1, 2, 3),
                 I64Vec3::new(1, 2, 3).as_usizevec3()
             );
