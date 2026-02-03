@@ -108,7 +108,7 @@ jobs:
         with:
           submodules: true
       - run: rustup component add rust-src --toolchain ${{ matrix.toolchain }}
-      - uses: bytecodealliance/actions/wasmtime/setup
+      - uses: bytecodealliance/actions/wasmtime/setup@v1
       - run: ./build_and_test_wasm64.sh
 
   # macos-latest uses aarch64 so using cross shouldn't be necessary anymore
