@@ -430,6 +430,8 @@ impl {{ self_t }} {
     pub const USES_SSE2: bool = {{ is_sse2 }};
     /// {{ self_t }} uses WebAssembly 128-bit SIMD
     pub const USES_WASM_SIMD: bool = {{ is_wasm }};
+    #[deprecated(since ="0.31.0", note = "Renamed to USES_WASM_SIMD")]
+    pub const USES_WASM32_SIMD: bool = {{ is_wasm }};
 {% endif %}
 
     /// Creates a new vector.

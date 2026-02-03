@@ -7,18 +7,18 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
-### Breaking changes
-
-* `USES_WASM32_SIMD` constant on vector types has been renamed to
- `USES_WASM_SIMD`.
-
 ### Added
+
+* Added `isize` vector types `ISizeVec2`, `ISizeVec3` and `ISizeVec4`.
 
 * Added `wasm64-unknown-unknown` support. The `wasm64-unknown-unknown` target
  uses the same `simd128` instructions as `wasm32`. Note that
  `wasm64-unknown-unknown` requires a `nightly` toolchain.
 
-* Added `isize` vector types `ISizeVec2`, `ISizeVec3` and `ISizeVec4`.
+### Changed
+
+* The `USES_WASM32_SIMD` constant on vector types has been renamed to
+ `USES_WASM_SIMD`, `USES_WASM32_SIMD` has been deprecated.
 
 ## [0.31.0] - 2026-01-21
 
