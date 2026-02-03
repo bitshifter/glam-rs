@@ -15,8 +15,10 @@ The format is based on [Keep a Changelog], and this project adheres to
 ### Added
 
 * Added `wasm64-unknown-unknown` support. The `wasm64-unknown-unknown` target
- uses the same `simd128` instructions as `wasm32`. Note that `wasm64-unknown-unknown`
- requires a `nightly` toolchain.
+ uses the same `simd128` instructions as `wasm32`. Note that
+ `wasm64-unknown-unknown` requires a `nightly` toolchain.
+
+* Added `isize` vector types `ISizeVec2`, `ISizeVec3` and `ISizeVec4`.
 
 ## [0.31.0] - 2026-01-21
 

@@ -1,8 +1,8 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
 use crate::{
-    BVec3, BVec3A, I16Vec3, I64Vec3, I8Vec3, IVec3, U16Vec3, U64Vec3, U8Vec3, USizeVec3, UVec2,
-    UVec4,
+    BVec3, BVec3A, I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U64Vec3, U8Vec3, USizeVec3,
+    UVec2, UVec4,
 };
 
 use core::fmt;
@@ -510,6 +510,13 @@ impl UVec3 {
     #[must_use]
     pub fn as_u64vec3(self) -> crate::U64Vec3 {
         crate::U64Vec3::new(self.x as u64, self.y as u64, self.z as u64)
+    }
+
+    /// Casts all elements of `self` to `isize`.
+    #[inline]
+    #[must_use]
+    pub fn as_isizevec3(self) -> crate::ISizeVec3 {
+        crate::ISizeVec3::new(self.x as isize, self.y as isize, self.z as isize)
     }
 
     /// Casts all elements of `self` to `usize`.
@@ -2932,6 +2939,19 @@ impl TryFrom<U64Vec3> for UVec3 {
 
     #[inline]
     fn try_from(v: U64Vec3) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            u32::try_from(v.x)?,
+            u32::try_from(v.y)?,
+            u32::try_from(v.z)?,
+        ))
+    }
+}
+
+impl TryFrom<ISizeVec3> for UVec3 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: ISizeVec3) -> Result<Self, Self::Error> {
         Ok(Self::new(
             u32::try_from(v.x)?,
             u32::try_from(v.y)?,

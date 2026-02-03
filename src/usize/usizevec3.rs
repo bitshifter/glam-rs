@@ -1,8 +1,8 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
 use crate::{
-    BVec3, BVec3A, I16Vec3, I64Vec3, I8Vec3, IVec3, U16Vec3, U64Vec3, U8Vec3, USizeVec2, USizeVec4,
-    UVec3,
+    BVec3, BVec3A, I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U64Vec3, U8Vec3, USizeVec2,
+    USizeVec4, UVec3,
 };
 
 use core::fmt;
@@ -519,6 +519,13 @@ impl USizeVec3 {
         crate::U64Vec3::new(self.x as u64, self.y as u64, self.z as u64)
     }
 
+    /// Casts all elements of `self` to `isize`.
+    #[inline]
+    #[must_use]
+    pub fn as_isizevec3(self) -> crate::ISizeVec3 {
+        crate::ISizeVec3::new(self.x as isize, self.y as isize, self.z as isize)
+    }
+
     /// Returns a vector containing the wrapping addition of `self` and `rhs`.
     ///
     /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
@@ -708,6 +715,54 @@ impl USizeVec3 {
             x: self.x.saturating_div(rhs.x),
             y: self.y.saturating_div(rhs.y),
             z: self.z.saturating_div(rhs.z),
+        }
+    }
+
+    /// Returns a vector containing the wrapping addition of `self` and signed vector `rhs`.
+    ///
+    /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
+    #[inline]
+    #[must_use]
+    pub const fn checked_add_signed(self, rhs: ISizeVec3) -> Option<Self> {
+        let x = match self.x.checked_add_signed(rhs.x) {
+            Some(v) => v,
+            None => return None,
+        };
+        let y = match self.y.checked_add_signed(rhs.y) {
+            Some(v) => v,
+            None => return None,
+        };
+        let z = match self.z.checked_add_signed(rhs.z) {
+            Some(v) => v,
+            None => return None,
+        };
+
+        Some(Self { x, y, z })
+    }
+
+    /// Returns a vector containing the wrapping addition of `self` and signed vector `rhs`.
+    ///
+    /// In other words this computes `[self.x.wrapping_add_signed(rhs.x), self.y.wrapping_add_signed(rhs.y), ..]`.
+    #[inline]
+    #[must_use]
+    pub const fn wrapping_add_signed(self, rhs: ISizeVec3) -> Self {
+        Self {
+            x: self.x.wrapping_add_signed(rhs.x),
+            y: self.y.wrapping_add_signed(rhs.y),
+            z: self.z.wrapping_add_signed(rhs.z),
+        }
+    }
+
+    /// Returns a vector containing the saturating addition of `self` and signed vector `rhs`.
+    ///
+    /// In other words this computes `[self.x.saturating_add_signed(rhs.x), self.y.saturating_add_signed(rhs.y), ..]`.
+    #[inline]
+    #[must_use]
+    pub const fn saturating_add_signed(self, rhs: ISizeVec3) -> Self {
+        Self {
+            x: self.x.saturating_add_signed(rhs.x),
+            y: self.y.saturating_add_signed(rhs.y),
+            z: self.z.saturating_add_signed(rhs.z),
         }
     }
 }
@@ -2897,6 +2952,19 @@ impl TryFrom<U64Vec3> for USizeVec3 {
 
     #[inline]
     fn try_from(v: U64Vec3) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            usize::try_from(v.x)?,
+            usize::try_from(v.y)?,
+            usize::try_from(v.z)?,
+        ))
+    }
+}
+
+impl TryFrom<ISizeVec3> for USizeVec3 {
+    type Error = core::num::TryFromIntError;
+
+    #[inline]
+    fn try_from(v: ISizeVec3) -> Result<Self, Self::Error> {
         Ok(Self::new(
             usize::try_from(v.x)?,
             usize::try_from(v.y)?,
