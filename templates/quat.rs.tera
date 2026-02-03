@@ -6,7 +6,7 @@
     {% set is_simd = true %}
     {% if is_sse2 %}
         {% set simd_t = "__m128" %}
-    {% elif is_wasm32 %}
+    {% elif is_wasm %}
         {% set simd_t = "v128" %}
     {% elif is_coresimd %}
         {% set simd_t = "f32x4" %}
@@ -43,8 +43,8 @@ use crate::{
     {% endif %}
     {% if is_sse2 %}
         sse2::*,
-    {% elif is_wasm32 %}
-        wasm32::*,
+    {% elif is_wasm %}
+        wasm::*,
     {% elif is_coresimd %}
         coresimd::*,
     {% elif is_neon %}
@@ -57,8 +57,11 @@ use crate::{
 use core::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use core::arch::x86_64::*;
-{% elif is_wasm32 %}
+{% elif is_wasm %}
+#[cfg(target_arch = "wasm32")]
 use core::arch::wasm32::*;
+#[cfg(target_arch = "wasm64")]
+use core::arch::wasm64::*;
 {% elif is_coresimd %}
 use core::simd::*;
 {% elif is_neon %}
@@ -158,7 +161,7 @@ impl {{ self_t }} {
             Self { x, y, z, w }
         {% elif is_sse2 %}
             unsafe { UnionCast { a: [x, y, z, w] }.v }
-        {% elif is_wasm32 %}
+        {% elif is_wasm %}
             Self(f32x4(x, y, z, w))
         {% elif is_coresimd %}
             Self(f32x4::from_array([x, y, z, w]))
@@ -647,7 +650,7 @@ impl {{ self_t }} {
         {% elif is_sse2 %}
             const SIGN: __m128 = m128_from_f32x4([-0.0, -0.0, -0.0, 0.0]);
             Self(unsafe { _mm_xor_ps(self.0, SIGN) })
-        {% elif is_wasm32 %}
+        {% elif is_wasm %}
             const SIGN: v128 = v128_from_f32x4([-1.0, -1.0, -1.0, 1.0]);
             Self(f32x4_mul(self.0, SIGN))
         {% elif is_coresimd %}
@@ -867,7 +870,7 @@ impl {{ self_t }} {
                 let bias = _mm_and_ps(dot, NEG_ZERO);
                 self.lerp_impl(Self(_mm_xor_ps(end.0, bias)), s)
             }
-        {% elif is_wasm32 %}
+        {% elif is_wasm %}
             const NEG_ZERO: v128 = v128_from_f32x4([-0.0; 4]);
             let dot = dot4_into_v128(self.0, end.0);
             // Calculate the bias, if the dot product is positive or zero, there is no bias
@@ -1035,7 +1038,7 @@ impl {{ self_t }} {
 
                 Self(_mm_add_ps(result0, result1))
             }
-        {% elif is_wasm32 %}
+        {% elif is_wasm %}
             let lhs = self.0;
             let rhs = rhs.0;
 
@@ -1203,7 +1206,7 @@ impl {{ self_t }} {
                     _mm_mul_ps(Vec3A(b).cross(rhs).into(), _mm_mul_ps(w, TWO)),
                 ))
             }
-        {% elif is_wasm32 %}
+        {% elif is_wasm %}
             const TWO: v128 = v128_from_f32x4([2.0; 4]);
             let w = i32x4_shuffle::<3, 3, 7, 7>(self.0, self.0);
             let b = self.0;

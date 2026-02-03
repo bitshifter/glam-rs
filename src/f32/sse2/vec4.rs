@@ -102,6 +102,8 @@ impl Vec4 {
     /// Vec4 uses Intel SSE2
     pub const USES_SSE2: bool = true;
     /// Vec4 uses WebAssembly 128-bit SIMD
+    pub const USES_WASM_SIMD: bool = false;
+    #[deprecated(since = "0.31.0", note = "Renamed to USES_WASM_SIMD")]
     pub const USES_WASM32_SIMD: bool = false;
 
     /// Creates a new vector.

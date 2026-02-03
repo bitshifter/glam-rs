@@ -1,7 +1,6 @@
 name: CI
 on: [push, pull_request]
 jobs:
-
   lint:
     name: Lint
     runs-on: ubuntu-latest
@@ -79,8 +78,8 @@ jobs:
       - run: cargo test --features core-simd
         shell: bash
 
-  test-wasm:
-    name: Test wasm
+  test-wasm32:
+    name: Test wasm32
     strategy:
       matrix:
         toolchain: [stable]
@@ -96,6 +95,21 @@ jobs:
 
       - run: ./build_and_test_wasm32_firefox.sh
       - run: ./build_and_test_wasm32_chrome.sh
+
+  test-wasm64:
+    name: Test wasm64
+    strategy:
+      matrix:
+        toolchain: [nightly]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+      - run: rustup component add rust-src --toolchain ${{ matrix.toolchain }}
+      - uses: bytecodealliance/actions/wasmtime/setup
+      - run: ./build_and_test_wasm64.sh
 
   # macos-latest uses aarch64 so using cross shouldn't be necessary anymore
   # test-arm:

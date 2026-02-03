@@ -7,10 +7,10 @@ exclude-files = [
     "src/bool/neon/*",
     "src/f32/neon/*",
     "src/swizzles/neon/*",
-    "src/wasm32.rs",
-    "src/bool/wasm32/*",
-    "src/f32/wasm32/*",
-    "src/swizzles/wasm32/*",
+    "src/wasm.rs",
+    "src/bool/wasm/*",
+    "src/f32/wasm/*",
+    "src/swizzles/wasm/*",
     "benches/*",
     "tests/support.rs"
 ]
@@ -24,10 +24,10 @@ exclude-files = [
     "src/bool/neon/*",
     "src/f32/neon/*",
     "src/swizzles/neon/*",
-    "src/wasm32.rs",
-    "src/bool/wasm32/*",
-    "src/f32/wasm32/*",
-    "src/swizzles/wasm32/*",
+    "src/wasm.rs",
+    "src/bool/wasm/*",
+    "src/f32/wasm/*",
+    "src/swizzles/wasm/*",
     "benches/*",
     "tests/support.rs"
 ]
@@ -41,10 +41,10 @@ exclude-files = [
     "src/bool/neon/*",
     "src/f32/neon/*",
     "src/swizzles/neon/*",
-    "src/wasm32.rs",
-    "src/bool/wasm32/*",
-    "src/f32/wasm32/*",
-    "src/swizzles/wasm32/*",
+    "src/wasm.rs",
+    "src/bool/wasm/*",
+    "src/f32/wasm/*",
+    "src/swizzles/wasm/*",
     "benches/*",
     "tests/support.rs"
 ]

@@ -1,4 +1,7 @@
+#[cfg(target_arch = "wasm32")]
 use core::arch::wasm32::*;
+#[cfg(target_arch = "wasm64")]
+use core::arch::wasm64::*;
 
 pub const fn v128_from_f32x4(a: [f32; 4]) -> v128 {
     f32x4(a[0], a[1], a[2], a[3])

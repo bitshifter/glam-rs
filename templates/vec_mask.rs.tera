@@ -17,7 +17,7 @@
     {% set is_u32 = true %}
     {% if is_sse2 %}
         {% set simd_t = "__m128" %}
-    {% elif is_wasm32 %}
+    {% elif is_wasm %}
         {% set simd_t = "v128" %}
     {% elif is_neon %}
         {% set simd_t = "uint32x4_t" %}
@@ -36,8 +36,11 @@ use core::ops::*;
 use core::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use core::arch::x86_64::*;
-{% elif is_wasm32 %}
+{% elif is_wasm %}
+#[cfg(target_arch = "wasm32")]
 use core::arch::wasm32::*;
+#[cfg(target_arch = "wasm64")]
+use core::arch::wasm64::*;
 {% elif is_neon %}
 use core::arch::aarch64::*;
 {% elif is_coresimd %}
@@ -133,7 +136,7 @@ impl {{ self_t }} {
                     {% endif %}
                 ] }.v
             }
-        {% elif is_wasm32 %}
+        {% elif is_wasm %}
             Self(u32x4(
                 MASK[x as usize],
                 MASK[y as usize],
@@ -198,7 +201,7 @@ impl {{ self_t }} {
             {% elif dim == 4 %}
                 unsafe { _mm_movemask_ps(self.0) as u32 }
             {% endif %}
-        {% elif is_wasm32 %}
+        {% elif is_wasm %}
             {% if dim == 3 %}
                 (u32x4_bitmask(self.0) & 0x7) as u32
             {% elif dim == 4 %}
@@ -433,7 +436,7 @@ impl BitAnd for {{ self_t }} {
             }
         {% elif is_sse2 %}
             Self(unsafe { _mm_and_ps(self.0, rhs.0) })
-        {% elif is_wasm32 %}
+        {% elif is_wasm %}
             Self(v128_and(self.0, rhs.0))
         {% elif is_neon %}
             Self(unsafe { vandq_u32(self.0, rhs.0) })
@@ -461,7 +464,7 @@ impl BitOr for {{ self_t }} {
             }
         {% elif is_sse2 %}
             Self(unsafe { _mm_or_ps(self.0, rhs.0) })
-        {% elif is_wasm32 %}
+        {% elif is_wasm %}
             Self(v128_or(self.0, rhs.0))
         {% elif is_neon %}
             Self(unsafe { vorrq_u32(self.0, rhs.0) })
@@ -489,7 +492,7 @@ impl BitXor for {{ self_t }} {
             }
         {% elif is_sse2 %}
             Self(unsafe { _mm_xor_ps(self.0, rhs.0) })
-        {% elif is_wasm32 %}
+        {% elif is_wasm %}
             Self(v128_xor(self.0, rhs.0))
         {% elif is_neon %}
             Self(unsafe { veorq_u32(self.0, rhs.0) })
@@ -519,7 +522,7 @@ impl Not for {{ self_t }} {
             Self(unsafe {
                 _mm_andnot_ps(self.0, _mm_set_ps1(f32::from_bits(0xff_ff_ff_ff)))
             })
-        {% elif is_wasm32 %}
+        {% elif is_wasm %}
             Self(v128_not(self.0))
         {% elif is_neon %}
             Self(unsafe { vmvnq_u32(self.0) })

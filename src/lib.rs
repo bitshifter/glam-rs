@@ -274,6 +274,7 @@ The minimum supported Rust version is `1.68.2`.
 #![doc(html_root_url = "https://docs.rs/glam/0.31.0")]
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(target_arch = "spirv", feature(repr_simd))]
+#![cfg_attr(target_arch = "wasm64", feature(simd_wasm64))]
 #![deny(
     rust_2018_compatibility,
     rust_2018_idioms,
@@ -323,7 +324,7 @@ mod sse2;
     target_feature = "simd128",
     not(any(feature = "core-simd", feature = "scalar-math"))
 ))]
-mod wasm32;
+mod wasm;
 
 #[cfg(all(feature = "core-simd", not(feature = "scalar-math")))]
 mod coresimd;
