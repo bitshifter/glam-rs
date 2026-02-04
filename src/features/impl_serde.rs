@@ -796,6 +796,14 @@ mod test_i64 {
 }
 
 #[cfg(test)]
+mod test_isize {
+    pub const V1: isize = 1;
+    pub const V2: isize = 2;
+    pub const V3: isize = 3;
+    pub const V4: isize = 4;
+}
+
+#[cfg(test)]
 mod test_u8 {
     pub const V1: u8 = 1;
     pub const V2: u8 = 2;
@@ -1128,6 +1136,21 @@ mod i64 {
     };
 
     impl_serde_vec_types!(i64, I64Vec2, I64Vec3, I64Vec4);
+}
+
+mod isize {
+    #[cfg(test)]
+    use super::test_int::*;
+    #[cfg(test)]
+    use super::test_isize::*;
+    use crate::{ISizeVec2, ISizeVec3, ISizeVec4};
+    use core::fmt;
+    use serde_core::{
+        de::{self, Deserialize, Deserializer, SeqAccess, Visitor},
+        ser::{Serialize, SerializeTupleStruct, Serializer},
+    };
+
+    impl_serde_vec_types!(isize, ISizeVec2, ISizeVec3, ISizeVec4);
 }
 
 mod u8 {
