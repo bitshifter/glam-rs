@@ -2,9 +2,9 @@ use mint::IntoMint;
 
 use crate::{
     DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, I16Vec2, I16Vec3, I16Vec4, I64Vec2, I64Vec3,
-    I64Vec4, I8Vec2, I8Vec3, I8Vec4, IVec2, IVec3, IVec4, Mat2, Mat3, Mat3A, Mat4, Quat, U16Vec2,
-    U16Vec3, U16Vec4, U64Vec2, U64Vec3, U64Vec4, U8Vec2, U8Vec3, U8Vec4, USizeVec2, USizeVec3,
-    USizeVec4, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
+    I64Vec4, I8Vec2, I8Vec3, I8Vec4, ISizeVec2, ISizeVec3, ISizeVec4, IVec2, IVec3, IVec4, Mat2,
+    Mat3, Mat3A, Mat4, Quat, U16Vec2, U16Vec3, U16Vec4, U64Vec2, U64Vec3, U64Vec4, U8Vec2, U8Vec3,
+    U8Vec4, USizeVec2, USizeVec3, USizeVec4, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
 };
 
 macro_rules! impl_vec_types {
@@ -319,6 +319,7 @@ impl_vec_types!(i32, IVec2, IVec3, IVec4);
 impl_vec_types!(u32, UVec2, UVec3, UVec4);
 impl_vec_types!(i64, I64Vec2, I64Vec3, I64Vec4);
 impl_vec_types!(u64, U64Vec2, U64Vec3, U64Vec4);
+impl_vec_types!(isize, ISizeVec2, ISizeVec3, ISizeVec4);
 impl_vec_types!(usize, USizeVec2, USizeVec3, USizeVec4);
 
 #[cfg(test)]
@@ -527,11 +528,43 @@ mod test {
         impl_float_tests!(f64, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4);
     }
 
+    mod i8 {
+        impl_vec_tests!(i8, I8Vec2, I8Vec3, I8Vec4);
+    }
+
+    mod u8 {
+        impl_vec_tests!(u8, U8Vec2, U8Vec3, U8Vec4);
+    }
+
+    mod i16 {
+        impl_vec_tests!(i16, I16Vec2, I16Vec3, I16Vec4);
+    }
+
+    mod u16 {
+        impl_vec_tests!(u16, U16Vec2, U16Vec3, U16Vec4);
+    }
+
     mod i32 {
         impl_vec_tests!(i32, IVec2, IVec3, IVec4);
     }
 
     mod u32 {
         impl_vec_tests!(u32, UVec2, UVec3, UVec4);
+    }
+
+    mod i64 {
+        impl_vec_tests!(i64, I64Vec2, I64Vec3, I64Vec4);
+    }
+
+    mod u64 {
+        impl_vec_tests!(u64, U64Vec2, U64Vec3, U64Vec4);
+    }
+
+    mod isize {
+        impl_vec_tests!(iSize, ISizeVec2, ISizeVec3, ISizeVec4);
+    }
+
+    mod usize {
+        impl_vec_tests!(uSize, USizeVec2, USizeVec3, USizeVec4);
     }
 }

@@ -1,8 +1,8 @@
 use crate::{
     BVec2, BVec3, BVec3A, BVec4, BVec4A, DQuat, DVec2, DVec3, DVec4, I16Vec2, I16Vec3, I16Vec4,
-    I64Vec2, I64Vec3, I64Vec4, I8Vec2, I8Vec3, I8Vec4, IVec2, IVec3, IVec4, Quat, U16Vec2, U16Vec3,
-    U16Vec4, U64Vec2, U64Vec3, U64Vec4, U8Vec2, U8Vec3, U8Vec4, USizeVec2, USizeVec3, USizeVec4,
-    UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
+    I64Vec2, I64Vec3, I64Vec4, I8Vec2, I8Vec3, I8Vec4, ISizeVec2, ISizeVec3, ISizeVec4, IVec2,
+    IVec3, IVec4, Quat, U16Vec2, U16Vec3, U16Vec4, U64Vec2, U64Vec3, U64Vec4, U8Vec2, U8Vec3,
+    U8Vec4, USizeVec2, USizeVec3, USizeVec4, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
 };
 
 macro_rules! arbitrary_vector_impl {
@@ -21,7 +21,7 @@ arbitrary_vector_impl!(
     BVec2, BVec3, BVec3A, BVec4, BVec4A, DQuat, DVec2, DVec3, DVec4, I16Vec2, I16Vec3, I16Vec4,
     I64Vec2, I64Vec3, I64Vec4, I8Vec2, I8Vec3, I8Vec4, IVec2, IVec3, IVec4, Quat, U16Vec2, U16Vec3,
     U16Vec4, U64Vec2, U64Vec3, U64Vec4, U8Vec2, U8Vec3, U8Vec4, USizeVec2, USizeVec3, USizeVec4,
-    UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4
+    UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4, ISizeVec2, ISizeVec3, ISizeVec4
 );
 
 use crate::{
@@ -53,9 +53,10 @@ mod test {
     use crate::{
         Affine2, Affine3, Affine3A, BVec2, BVec3, BVec3A, BVec4, BVec4A, DAffine2, DAffine3, DMat2,
         DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, I16Vec2, I16Vec3, I16Vec4, I64Vec2, I64Vec3,
-        I64Vec4, I8Vec2, I8Vec3, I8Vec4, IVec2, IVec3, IVec4, Mat2, Mat3, Mat3A, Mat4, Quat,
-        U16Vec2, U16Vec3, U16Vec4, U64Vec2, U64Vec3, U64Vec4, U8Vec2, U8Vec3, U8Vec4, USizeVec2,
-        USizeVec3, USizeVec4, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
+        I64Vec4, I8Vec2, I8Vec3, I8Vec4, ISizeVec2, ISizeVec3, ISizeVec4, IVec2, IVec3, IVec4,
+        Mat2, Mat3, Mat3A, Mat4, Quat, U16Vec2, U16Vec3, U16Vec4, U64Vec2, U64Vec3, U64Vec4,
+        U8Vec2, U8Vec3, U8Vec4, USizeVec2, USizeVec3, USizeVec4, UVec2, UVec3, UVec4, Vec2, Vec3,
+        Vec3A, Vec4,
     };
 
     #[test]
@@ -200,6 +201,28 @@ mod test {
         );
         assert_eq!(
             USizeVec4::new(1, 2, 3, 4),
+            Unstructured::new(&bytes).arbitrary().unwrap()
+        );
+    }
+
+    #[test]
+    fn test_arbitrary_isize() {
+        // The integer arbitrary impl converts little endian bytes.
+        let mut bytes = [0u8; 4 * size_of::<isize>()];
+        for (i, chunk) in bytes.chunks_exact_mut(size_of::<isize>()).enumerate() {
+            chunk.copy_from_slice(&(i + 1).to_le_bytes());
+        }
+
+        assert_eq!(
+            ISizeVec2::new(1, 2),
+            Unstructured::new(&bytes).arbitrary().unwrap()
+        );
+        assert_eq!(
+            ISizeVec3::new(1, 2, 3),
+            Unstructured::new(&bytes).arbitrary().unwrap()
+        );
+        assert_eq!(
+            ISizeVec4::new(1, 2, 3, 4),
             Unstructured::new(&bytes).arbitrary().unwrap()
         );
     }
