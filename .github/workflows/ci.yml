@@ -93,6 +93,7 @@ jobs:
       - name: Install
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
+      - run: ./build_and_test_wasm32_node.sh
       - run: ./build_and_test_wasm32_firefox.sh
       - run: ./build_and_test_wasm32_chrome.sh
 

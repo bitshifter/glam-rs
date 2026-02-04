@@ -3,9 +3,6 @@
 #[macro_use]
 mod macros;
 
-#[cfg(target_family = "wasm")]
-wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
-
 use glam::{
     DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3,
     Vec3A, Vec4,
