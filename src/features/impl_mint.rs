@@ -561,10 +561,10 @@ mod test {
     }
 
     mod isize {
-        impl_vec_tests!(iSize, ISizeVec2, ISizeVec3, ISizeVec4);
+        impl_vec_tests!(isize, ISizeVec2, ISizeVec3, ISizeVec4);
     }
 
     mod usize {
-        impl_vec_tests!(uSize, USizeVec2, USizeVec3, USizeVec4);
+        impl_vec_tests!(usize, USizeVec2, USizeVec3, USizeVec4);
     }
 }
