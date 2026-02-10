@@ -13,12 +13,12 @@ macro_rules! impl_vec_types {
                 uniform::{Error as UniformError, SampleBorrow, SampleUniform, UniformSampler},
                 Distribution, StandardUniform,
             },
-            Rng,
+            RngExt,
         };
 
         impl Distribution<$vec2> for StandardUniform {
             #[inline]
-            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $vec2 {
+            fn sample<R: RngExt + ?Sized>(&self, rng: &mut R) -> $vec2 {
                 rng.random::<[$t; 2]>().into()
             }
         }
@@ -66,11 +66,11 @@ macro_rules! impl_vec_types {
                 })
             }
 
-            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
+            fn sample<R: RngExt + ?Sized>(&self, rng: &mut R) -> Self::X {
                 Self::X::from([self.x_gen.sample(rng), self.y_gen.sample(rng)])
             }
 
-            fn sample_single<R: Rng + ?Sized, B1, B2>(
+            fn sample_single<R: RngExt + ?Sized, B1, B2>(
                 low_b: B1,
                 high_b: B2,
                 rng: &mut R,
@@ -92,7 +92,7 @@ macro_rules! impl_vec_types {
                 ]))
             }
 
-            fn sample_single_inclusive<R: Rng + ?Sized, B1, B2>(
+            fn sample_single_inclusive<R: RngExt + ?Sized, B1, B2>(
                 low_b: B1,
                 high_b: B2,
                 rng: &mut R,
@@ -117,7 +117,7 @@ macro_rules! impl_vec_types {
 
         impl Distribution<$vec3> for StandardUniform {
             #[inline]
-            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $vec3 {
+            fn sample<R: RngExt + ?Sized>(&self, rng: &mut R) -> $vec3 {
                 rng.random::<[$t; 3]>().into()
             }
         }
@@ -167,7 +167,7 @@ macro_rules! impl_vec_types {
                 })
             }
 
-            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
+            fn sample<R: RngExt + ?Sized>(&self, rng: &mut R) -> Self::X {
                 Self::X::from([
                     self.x_gen.sample(rng),
                     self.y_gen.sample(rng),
@@ -175,7 +175,7 @@ macro_rules! impl_vec_types {
                 ])
             }
 
-            fn sample_single<R: Rng + ?Sized, B1, B2>(
+            fn sample_single<R: RngExt + ?Sized, B1, B2>(
                 low_b: B1,
                 high_b: B2,
                 rng: &mut R,
@@ -198,7 +198,7 @@ macro_rules! impl_vec_types {
                 ]))
             }
 
-            fn sample_single_inclusive<R: Rng + ?Sized, B1, B2>(
+            fn sample_single_inclusive<R: RngExt + ?Sized, B1, B2>(
                 low_b: B1,
                 high_b: B2,
                 rng: &mut R,
@@ -224,7 +224,7 @@ macro_rules! impl_vec_types {
 
         impl Distribution<$vec4> for StandardUniform {
             #[inline]
-            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $vec4 {
+            fn sample<R: RngExt + ?Sized>(&self, rng: &mut R) -> $vec4 {
                 rng.random::<[$t; 4]>().into()
             }
         }
@@ -276,7 +276,7 @@ macro_rules! impl_vec_types {
                 })
             }
 
-            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
+            fn sample<R: RngExt + ?Sized>(&self, rng: &mut R) -> Self::X {
                 Self::X::from([
                     self.x_gen.sample(rng),
                     self.y_gen.sample(rng),
@@ -285,7 +285,7 @@ macro_rules! impl_vec_types {
                 ])
             }
 
-            fn sample_single<R: Rng + ?Sized, B1, B2>(
+            fn sample_single<R: RngExt + ?Sized, B1, B2>(
                 low_b: B1,
                 high_b: B2,
                 rng: &mut R,
@@ -309,7 +309,7 @@ macro_rules! impl_vec_types {
                 ]))
             }
 
-            fn sample_single_inclusive<R: Rng + ?Sized, B1, B2>(
+            fn sample_single_inclusive<R: RngExt + ?Sized, B1, B2>(
                 low_b: B1,
                 high_b: B2,
                 rng: &mut R,
@@ -336,7 +336,7 @@ macro_rules! impl_vec_types {
 
         #[test]
         fn test_vec2_rand_standard() {
-            use rand::{Rng, SeedableRng};
+            use rand::{RngExt, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
             let a: ($t, $t) = rng1.random();
@@ -347,7 +347,7 @@ macro_rules! impl_vec_types {
 
         #[test]
         fn test_vec3_rand_standard() {
-            use rand::{Rng, SeedableRng};
+            use rand::{RngExt, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
             let a: ($t, $t, $t) = rng1.random();
@@ -358,7 +358,7 @@ macro_rules! impl_vec_types {
 
         #[test]
         fn test_vec4_rand_standard() {
-            use rand::{Rng, SeedableRng};
+            use rand::{RngExt, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
             let a: ($t, $t, $t, $t) = rng1.random();
@@ -418,7 +418,7 @@ macro_rules! test_vec_type_uniform {
         /// convert the result into the vector type.
         #[test]
         fn $equality_test_name() {
-            use rand::{distr::Uniform, Rng, SeedableRng};
+            use rand::{distr::Uniform, RngExt, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
 
             let mut int_rng = Xoshiro256Plus::seed_from_u64(0);
@@ -532,28 +532,28 @@ macro_rules! impl_float_types {
 
         impl Distribution<$mat2> for StandardUniform {
             #[inline]
-            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $mat2 {
+            fn sample<R: RngExt + ?Sized>(&self, rng: &mut R) -> $mat2 {
                 $mat2::from_cols_array(&rng.random())
             }
         }
 
         impl Distribution<$mat3> for StandardUniform {
             #[inline]
-            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $mat3 {
+            fn sample<R: RngExt + ?Sized>(&self, rng: &mut R) -> $mat3 {
                 $mat3::from_cols_array(&rng.random())
             }
         }
 
         impl Distribution<$mat4> for StandardUniform {
             #[inline]
-            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $mat4 {
+            fn sample<R: RngExt + ?Sized>(&self, rng: &mut R) -> $mat4 {
                 $mat4::from_cols_array(&rng.random())
             }
         }
 
         impl Distribution<$quat> for StandardUniform {
             #[inline]
-            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $quat {
+            fn sample<R: RngExt + ?Sized>(&self, rng: &mut R) -> $quat {
                 let z = rng.random_range::<$t, _>(-1.0..=1.0);
                 let (y, x) = math::sin_cos(rng.random_range::<$t, _>(0.0..TAU));
                 let r = math::sqrt(1.0 - z * z);
@@ -565,7 +565,7 @@ macro_rules! impl_float_types {
 
         #[test]
         fn test_mat2_rand_standard() {
-            use rand::{Rng, SeedableRng};
+            use rand::{RngExt, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
             let a = $mat2::from_cols_array(&rng1.random::<[$t; 4]>());
@@ -576,7 +576,7 @@ macro_rules! impl_float_types {
 
         #[test]
         fn test_mat3_rand_standard() {
-            use rand::{Rng, SeedableRng};
+            use rand::{RngExt, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
             let a = $mat3::from_cols_array(&rng1.random::<[$t; 9]>());
@@ -587,7 +587,7 @@ macro_rules! impl_float_types {
 
         #[test]
         fn test_mat4_rand_standard() {
-            use rand::{Rng, SeedableRng};
+            use rand::{RngExt, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
             let a = $mat4::from_cols_array(&rng1.random::<[$t; 16]>());
@@ -598,7 +598,7 @@ macro_rules! impl_float_types {
 
         #[test]
         fn test_quat_rand_standard() {
-            use rand::{Rng, SeedableRng};
+            use rand::{RngExt, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
             let a: $quat = rng1.random();
@@ -640,14 +640,14 @@ mod f32 {
 
     impl Distribution<Vec3A> for StandardUniform {
         #[inline]
-        fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Vec3A {
+        fn sample<R: RngExt + ?Sized>(&self, rng: &mut R) -> Vec3A {
             rng.random::<[f32; 3]>().into()
         }
     }
 
     #[test]
     fn test_vec3a_rand_standard() {
-        use rand::{Rng, SeedableRng};
+        use rand::{RngExt, SeedableRng};
         use rand_xoshiro::Xoshiro256Plus;
         let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
         let a: (f32, f32, f32) = rng1.random();
