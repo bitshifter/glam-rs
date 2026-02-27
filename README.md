@@ -21,7 +21,7 @@ A simple and fast 3D math library for games and graphics.
 * `i8` types
   * vectors: `I8Vec2`, `I8Vec3` and `I8Vec4`
 * `u8` types
-  * vectors: `U16Vec2`, `U16Vec3` and `U16Vec4`
+  * vectors: `U8Vec2`, `U8Vec3` and `U8Vec4`
 * `i16` types
   * vectors: `I16Vec2`, `I16Vec3` and `I16Vec4`
 * `u16` types
