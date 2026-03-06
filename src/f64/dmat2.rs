@@ -381,6 +381,13 @@ impl DMat2 {
         Self::from_cols(self.x_axis.div(rhs), self.y_axis.div(rhs))
     }
 
+    /// Returns a matrix containing the reciprocal `1.0/n` of each element of `self`.
+    #[inline]
+    #[must_use]
+    pub fn recip(&self) -> Self {
+        Self::from_cols(self.x_axis.recip(), self.y_axis.recip())
+    }
+
     /// Returns true if the absolute difference of all elements between `self` and `rhs`
     /// is less than or equal to `max_abs_diff`.
     ///
@@ -685,7 +692,7 @@ impl Div<DMat2> for f64 {
     type Output = DMat2;
     #[inline]
     fn div(self, rhs: DMat2) -> Self::Output {
-        rhs.div_scalar(self)
+        DMat2::from_cols(self.div(rhs.x_axis), self.div(rhs.y_axis))
     }
 }
 
