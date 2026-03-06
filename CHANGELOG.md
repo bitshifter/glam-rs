@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [0.32.1] - 2026-03-06
+
+### Fixed
+
+* Fixed the implementation of dividing a scalar value by a matrix. This was
+  actually dividing the matrix by the scalar value, with this fix 
+  `1.0/m == m.recip()` is now true.
+
+### Added
+
+* Added matrix `recip()` method which returns a new matrix containing the
+  reciprocal of each element of the source matrix.
+
 ## [0.32.0] - 2026-02-11
 
 ### Breaking changes
@@ -46,7 +59,7 @@ The format is based on [Keep a Changelog], and this project adheres to
   diagonal of the matrix.
 
 * Added `mul_diagonal_scale` methods to matrix types which multiply the matrix
-  by a scale vector without needing to mulitply by a scale matrix.
+  by a scale vector without needing to multiply by a scale matrix.
 
 * Added `mul_transpose_vecn` methods to matrix types which multiply the vector
   by the transpose of the matrix without needing to transpose it first. They can
@@ -1384,7 +1397,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.32.0...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.32.1...HEAD
+[0.32.1]: https://github.com/bitshifter/glam-rs/compare/0.32.0...0.32.1
 [0.32.0]: https://github.com/bitshifter/glam-rs/compare/0.31.1...0.32.0
 [0.31.1]: https://github.com/bitshifter/glam-rs/compare/0.31.0...0.31.1
 [0.31.0]: https://github.com/bitshifter/glam-rs/compare/0.30.10...0.31.0
