@@ -227,6 +227,8 @@ macro_rules! impl_mat2_tests {
             let m0 = $mat2::from_cols_array_2d(&ARRAY2X2);
             let m0x2 = $mat2::from_cols_array_2d(&[[2.0, 4.0], [6.0, 8.0]]);
             let m0_neg = $mat2::from_cols_array_2d(&[[-1.0, -2.0], [-3.0, -4.0]]);
+            let m0_recip =
+                $mat2::from_cols_array_2d(&[[1.0 / 1.0, 1.0 / 2.0], [1.0 / 3.0, 1.0 / 4.0]]);
 
             assert_eq!(m0x2, m0 * 2.0);
             assert_eq!(m0x2, &m0 * 2.0);
@@ -243,10 +245,12 @@ macro_rules! impl_mat2_tests {
             assert_eq!(m0, m0x2 / &2.0);
             assert_eq!(m0, &m0x2 / &2.0);
 
-            assert_eq!(m0, 2.0 / m0x2);
-            assert_eq!(m0, &2.0 / m0x2);
-            assert_eq!(m0, 2.0 / &m0x2);
-            assert_eq!(m0, &2.0 / &m0x2);
+            assert_eq!(m0_recip, m0.recip());
+
+            assert_eq!(m0_recip, 1.0 / m0);
+            assert_eq!(m0_recip, &1.0 / m0);
+            assert_eq!(m0_recip, 1.0 / &m0);
+            assert_eq!(m0_recip, &1.0 / &m0);
 
             assert_eq!(m0x2, m0.add_mat2(&m0));
             assert_eq!(m0x2, m0 + m0);

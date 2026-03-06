@@ -418,6 +418,13 @@ impl Mat2 {
         Self(f32x4_div(self.0, f32x4_splat(rhs)))
     }
 
+    /// Returns a matrix containing the reciprocal `1.0/n` of each element of `self`.
+    #[inline]
+    #[must_use]
+    pub fn recip(&self) -> Self {
+        Self::from_cols(self.x_axis.recip(), self.y_axis.recip())
+    }
+
     /// Returns true if the absolute difference of all elements between `self` and `rhs`
     /// is less than or equal to `max_abs_diff`.
     ///
@@ -732,7 +739,7 @@ impl Div<Mat2> for f32 {
     type Output = Mat2;
     #[inline]
     fn div(self, rhs: Mat2) -> Self::Output {
-        rhs.div_scalar(self)
+        Mat2(f32x4_div(f32x4_splat(self), rhs.0))
     }
 }
 

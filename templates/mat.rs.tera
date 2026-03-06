@@ -2588,6 +2588,17 @@ impl {{ self_t }} {
         {% endif %}
     }
 
+    /// Returns a matrix containing the reciprocal `1.0/n` of each element of `self`.
+    #[inline]
+    #[must_use]
+    pub fn recip(&self) -> Self {
+        Self::from_cols(
+            {% for axis in axes %}
+                self.{{ axis }}.recip(),
+            {%- endfor %}
+        )
+    }
+
     /// Returns true if the absolute difference of all elements between `self` and `rhs`
     /// is less than or equal to `max_abs_diff`.
     ///
@@ -2831,7 +2842,21 @@ impl Div<{{ self_t }}> for {{ scalar_t }} {
     type Output = {{ self_t }};
     #[inline]
     fn div(self, rhs: {{ self_t }}) -> Self::Output {
-        rhs.div_scalar(self)
+        {% if self_t == "Mat2" and is_sse2 %}
+            {{ self_t }}(unsafe { _mm_div_ps(_mm_set_ps1(self), rhs.0) })
+        {% elif self_t == "Mat2" and is_wasm %}
+            {{ self_t }}(f32x4_div(f32x4_splat(self), rhs.0))
+        {% elif self_t == "Mat2" and is_coresimd %}
+            {{ self_t }}(f32x4::splat(self) / rhs.0)
+        {% elif self_t == "Mat2" and is_neon %}
+            {{ self_t }}(unsafe { vdivq_f32(vld1q_dup_f32(&self), rhs.0) })
+        {% else %}
+            {{ self_t }}::from_cols(
+                {% for axis in axes %}
+                    self.div(rhs.{{ axis }}),
+                {%- endfor %}
+            )
+        {% endif %}
     }
 }
 

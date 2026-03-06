@@ -675,6 +675,12 @@ macro_rules! impl_mat4_tests {
                 [-9.0, -10.0, -11.0, -12.0],
                 [-13.0, -14.0, -15.0, -16.0],
             ]);
+            let m0_recip = $mat4::from_cols_array_2d(&[
+                [1.0/1.0, 1.0/2.0, 1.0/3.0, 1.0/4.0],
+                [1.0/5.0, 1.0/6.0, 1.0/7.0, 1.0/8.0],
+                [1.0/9.0, 1.0/10.0, 1.0/11.0, 1.0/12.0],
+                [1.0/13.0, 1.0/14.0, 1.0/15.0, 1.0/16.0],
+            ]);
 
             assert_eq!(m0x2, m0 * 2.0);
             assert_eq!(m0x2, &m0 * 2.0);
@@ -691,10 +697,12 @@ macro_rules! impl_mat4_tests {
             assert_eq!(m0, m0x2 / &2.0);
             assert_eq!(m0, &m0x2 / &2.0);
 
-            assert_eq!(m0, 2.0 / m0x2);
-            assert_eq!(m0, &2.0 / m0x2);
-            assert_eq!(m0, 2.0 / &m0x2);
-            assert_eq!(m0, &2.0 / &m0x2);
+            assert_eq!(m0_recip, m0.recip());
+
+            assert_eq!(m0_recip, 1.0 / m0);
+            assert_eq!(m0_recip, &1.0 / m0);
+            assert_eq!(m0_recip, 1.0 / &m0);
+            assert_eq!(m0_recip, &1.0 / &m0);
 
             assert_eq!(m0x2, m0.add_mat4(&m0));
             assert_eq!(m0x2, m0 + m0);
