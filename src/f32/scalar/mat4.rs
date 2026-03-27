@@ -1241,7 +1241,7 @@ impl Mat4 {
         res.xyz()
     }
 
-    /// Transforms the give 3D vector as a direction.
+    /// Transforms the given 3D vector as a direction.
     ///
     /// This is the equivalent of multiplying the 3D vector as a 4D vector where `w` is
     /// `0.0`.
