@@ -37,7 +37,7 @@ use crate::{
     {{ scalar_t }}::math,
     euler::{EulerRot, FromEuler, ToEuler},
     {% if scalar_t == "f32" %}
-        DQuat, Mat3, Mat3A, Mat4, Vec2, Vec3, Vec3A, Vec4,
+        Mat3, Mat3A, Mat4, Vec2, Vec3, Vec3A, Vec4,
     {% elif scalar_t == "f64" %}
         DMat3, DMat4, DVec2, DVec3, DVec4, Quat,
     {% endif %}
@@ -51,6 +51,10 @@ use crate::{
         neon::*,
     {% endif %}
 };
+{% if scalar_t == "f32" %}
+#[cfg(feature = "f64")]
+use crate::DQuat;
+{% endif %}
 
 {% if is_sse2 %}
 #[cfg(target_arch = "x86")]
@@ -1247,6 +1251,7 @@ impl {{ self_t }} {
         {% endif %}
     }
 
+    #[cfg(feature = "f64")]
     #[inline]
     #[must_use]
     pub fn as_dquat(self) -> DQuat {

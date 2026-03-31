@@ -1,6 +1,8 @@
 // Based on Ken Shoemake. 1994. Euler angle conversion. Graphics gems IV.  Academic Press
 // Professional, Inc., USA, 222–229.
-use crate::{DMat3, DMat4, DQuat, DVec3, Mat3, Mat3A, Mat4, Quat, Vec3, Vec3A, Vec3Swizzles};
+#[cfg(feature = "f64")]
+use crate::{DMat3, DMat4, DQuat, DVec3};
+use crate::{Mat3, Mat3A, Mat4, Quat, Vec3, Vec3A, Vec3Swizzles};
 
 /// Euler rotation sequences.
 ///
@@ -436,9 +438,16 @@ impl_mat4_to_euler!(f32, Mat4, Mat3);
 impl_quat_to_euler!(f32, Quat, Mat3);
 impl_quat_from_euler!(f32, Quat, Vec3);
 
+ 
+#[cfg(feature = "f64")]
 impl_mat3_to_euler!(f64, DMat3, DVec3);
+#[cfg(feature = "f64")]
 impl_mat3_from_euler!(f64, DMat3, DVec3);
+#[cfg(feature = "f64")]
 impl_mat4_to_euler!(f64, DMat4, DMat3);
+#[cfg(feature = "f64")]
 impl_mat4_from_euler!(f64, DMat4, DMat3);
+#[cfg(feature = "f64")]
 impl_quat_to_euler!(f64, DQuat, DMat3);
+#[cfg(feature = "f64")]
 impl_quat_from_euler!(f64, DQuat, DVec3);

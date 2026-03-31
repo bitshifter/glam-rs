@@ -3,8 +3,11 @@
 use crate::{
     euler::{EulerRot, FromEuler, ToEuler},
     f32::math,
-    DQuat, Mat3, Mat3A, Mat4, Vec2, Vec3, Vec3A, Vec4,
+    Mat3, Mat3A, Mat4, Vec2, Vec3, Vec3A, Vec4,
 };
+
+#[cfg(feature = "f64")]
+use crate::DQuat;
 
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -839,6 +842,7 @@ impl Quat {
         self.mul_vec3(rhs.into()).into()
     }
 
+    #[cfg(feature = "f64")]
     #[inline]
     #[must_use]
     pub fn as_dquat(self) -> DQuat {

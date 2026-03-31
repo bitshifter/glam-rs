@@ -1,11 +1,14 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
+#[cfg(feature = "f64")]
+use crate::DMat4;
+
 use crate::{
     euler::{FromEuler, ToEuler},
     f32::math,
     sse2::*,
     swizzles::*,
-    DMat4, EulerRot, Mat3, Mat3A, Quat, Vec3, Vec3A, Vec4,
+    EulerRot, Mat3, Mat3A, Quat, Vec3, Vec3A, Vec4,
 };
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -1527,7 +1530,9 @@ impl Mat4 {
         )
     }
 
+    #[cfg(feature = "f64")]
     #[inline]
+    #[must_use]
     pub fn as_dmat4(&self) -> DMat4 {
         DMat4::from_cols(
             self.x_axis.as_dvec4(),

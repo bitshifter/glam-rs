@@ -587,6 +587,7 @@ impl I8Vec4 {
     }
 
     /// Casts all elements of `self` to `f64`.
+    #[cfg(feature = "f64")]
     #[inline]
     #[must_use]
     pub fn as_dvec4(self) -> crate::DVec4 {

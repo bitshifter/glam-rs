@@ -1,5 +1,8 @@
+#[cfg(feature = "f64")]
 mod dvec2_impl;
+#[cfg(feature = "f64")]
 mod dvec3_impl;
+#[cfg(feature = "f64")]
 mod dvec4_impl;
 
 mod ivec2_impl;

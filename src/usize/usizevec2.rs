@@ -387,6 +387,7 @@ impl USizeVec2 {
     }
 
     /// Casts all elements of `self` to `f64`.
+    #[cfg(feature = "f64")]
     #[inline]
     #[must_use]
     pub fn as_dvec2(self) -> crate::DVec2 {

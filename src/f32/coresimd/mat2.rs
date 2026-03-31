@@ -1,6 +1,9 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
-use crate::{f32::math, swizzles::*, DMat2, Mat3, Mat3A, Vec2};
+#[cfg(feature = "f64")]
+use crate::DMat2;
+
+use crate::{f32::math, swizzles::*, Mat3, Mat3A, Vec2};
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
@@ -433,7 +436,9 @@ impl Mat2 {
         Self::from_cols(self.x_axis.abs(), self.y_axis.abs())
     }
 
+    #[cfg(feature = "f64")]
     #[inline]
+    #[must_use]
     pub fn as_dmat2(&self) -> DMat2 {
         DMat2::from_cols(self.x_axis.as_dvec2(), self.y_axis.as_dvec2())
     }

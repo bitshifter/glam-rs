@@ -330,6 +330,7 @@ impl Affine2 {
     }
 
     /// Casts all elements of `self` to `f64`.
+    #[cfg(feature = "f64")]
     #[inline]
     #[must_use]
     pub fn as_daffine2(&self) -> crate::DAffine2 {
