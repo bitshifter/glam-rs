@@ -1970,10 +1970,13 @@ macro_rules! impl_vec3_float_tests {
         });
 
         glam_test!(test_as, {
+            #[cfg(feature = "f64")]
+            use glam::DVec3;
             use glam::{
-                DVec3, I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U64Vec3, U8Vec3,
-                USizeVec3, UVec3, Vec3, Vec3A,
+                I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U64Vec3, U8Vec3, USizeVec3,
+                UVec3, Vec3, Vec3A,
             };
+            #[cfg(feature = "f64")]
             assert_eq!(
                 DVec3::new(-1.0, -2.0, -3.0),
                 Vec3::new(-1.0, -2.0, -3.0).as_dvec3()
@@ -2007,6 +2010,7 @@ macro_rules! impl_vec3_float_tests {
                 Vec3::new(1.0, 2.0, 3.0).as_usizevec3()
             );
 
+            #[cfg(feature = "f64")]
             assert_eq!(
                 DVec3::new(-1.0, -2.0, -3.0),
                 Vec3A::new(-1.0, -2.0, -3.0).as_dvec3()
@@ -2046,49 +2050,62 @@ macro_rules! impl_vec3_float_tests {
                 Vec3A::new(1.0, 2.0, 3.0).as_usizevec3()
             );
 
+            #[cfg(feature = "f64")]
             assert_eq!(
                 I8Vec3::new(-1, -2, -3),
                 DVec3::new(-1.0, -2.0, -3.0).as_i8vec3()
             );
+            #[cfg(feature = "f64")]
             assert_eq!(U8Vec3::new(1, 2, 3), DVec3::new(1.0, 2.0, 3.0).as_u8vec3());
+            #[cfg(feature = "f64")]
             assert_eq!(
                 I16Vec3::new(-1, -2, -3),
                 DVec3::new(-1.0, -2.0, -3.0).as_i16vec3()
             );
+            #[cfg(feature = "f64")]
             assert_eq!(
                 U16Vec3::new(1, 2, 3),
                 DVec3::new(1.0, 2.0, 3.0).as_u16vec3()
             );
+            #[cfg(feature = "f64")]
             assert_eq!(
                 IVec3::new(-1, -2, -3),
                 DVec3::new(-1.0, -2.0, -3.0).as_ivec3()
             );
+            #[cfg(feature = "f64")]
             assert_eq!(UVec3::new(1, 2, 3), DVec3::new(1.0, 2.0, 3.0).as_uvec3());
+            #[cfg(feature = "f64")]
             assert_eq!(
                 I64Vec3::new(-1, -2, -3),
                 DVec3::new(-1.0, -2.0, -3.0).as_i64vec3()
             );
+            #[cfg(feature = "f64")]
             assert_eq!(
                 U64Vec3::new(1, 2, 3),
                 DVec3::new(1.0, 2.0, 3.0).as_u64vec3()
             );
+            #[cfg(feature = "f64")]
             assert_eq!(
                 ISizeVec3::new(-1, -2, -3),
                 DVec3::new(-1.0, -2.0, -3.0).as_isizevec3()
             );
+            #[cfg(feature = "f64")]
             assert_eq!(
                 USizeVec3::new(1, 2, 3),
                 DVec3::new(1.0, 2.0, 3.0).as_usizevec3()
             );
+            #[cfg(feature = "f64")]
             assert_eq!(
                 Vec3::new(-1.0, -2.0, -3.0),
                 DVec3::new(-1.0, -2.0, -3.0).as_vec3()
             );
+            #[cfg(feature = "f64")]
             assert_eq!(
                 Vec3A::new(-1.0, -2.0, -3.0),
                 DVec3::new(-1.0, -2.0, -3.0).as_vec3a()
             );
 
+            #[cfg(feature = "f64")]
             assert_eq!(
                 DVec3::new(-1.0, -2.0, -3.0),
                 I8Vec3::new(-1, -2, -3).as_dvec3()
@@ -2120,6 +2137,7 @@ macro_rules! impl_vec3_float_tests {
                 I8Vec3::new(-1, -2, -3).as_vec3a()
             );
 
+            #[cfg(feature = "f64")]
             assert_eq!(DVec3::new(1.0, 2.0, 3.0), U8Vec3::new(1, 2, 3).as_dvec3());
             assert_eq!(I8Vec3::new(1, 2, 3), U8Vec3::new(1, 2, 3).as_i8vec3());
             assert_eq!(I16Vec3::new(1, 2, 3), U8Vec3::new(1, 2, 3).as_i16vec3());
@@ -2133,6 +2151,7 @@ macro_rules! impl_vec3_float_tests {
             assert_eq!(Vec3::new(1.0, 2.0, 3.0), U8Vec3::new(1, 2, 3).as_vec3());
             assert_eq!(Vec3A::new(1.0, 2.0, 3.0), U8Vec3::new(1, 2, 3).as_vec3a());
 
+            #[cfg(feature = "f64")]
             assert_eq!(
                 DVec3::new(-1.0, -2.0, -3.0),
                 I16Vec3::new(-1, -2, -3).as_dvec3()
@@ -2167,6 +2186,7 @@ macro_rules! impl_vec3_float_tests {
                 I16Vec3::new(-1, -2, -3).as_vec3a()
             );
 
+            #[cfg(feature = "f64")]
             assert_eq!(DVec3::new(1.0, 2.0, 3.0), U16Vec3::new(1, 2, 3).as_dvec3());
             assert_eq!(I8Vec3::new(1, 2, 3), U16Vec3::new(1, 2, 3).as_i8vec3());
             assert_eq!(U8Vec3::new(1, 2, 3), U16Vec3::new(1, 2, 3).as_u8vec3());
@@ -2186,6 +2206,7 @@ macro_rules! impl_vec3_float_tests {
             assert_eq!(Vec3::new(1.0, 2.0, 3.0), U16Vec3::new(1, 2, 3).as_vec3());
             assert_eq!(Vec3A::new(1.0, 2.0, 3.0), U16Vec3::new(1, 2, 3).as_vec3a());
 
+            #[cfg(feature = "f64")]
             assert_eq!(
                 DVec3::new(-1.0, -2.0, -3.0),
                 IVec3::new(-1, -2, -3).as_dvec3()
@@ -2217,6 +2238,7 @@ macro_rules! impl_vec3_float_tests {
                 IVec3::new(-1, -2, -3).as_vec3a()
             );
 
+            #[cfg(feature = "f64")]
             assert_eq!(DVec3::new(1.0, 2.0, 3.0), UVec3::new(1, 2, 3).as_dvec3());
             assert_eq!(I8Vec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_i8vec3());
             assert_eq!(U8Vec3::new(1, 2, 3), UVec3::new(1, 2, 3).as_u8vec3());
@@ -2230,6 +2252,7 @@ macro_rules! impl_vec3_float_tests {
             assert_eq!(Vec3::new(1.0, 2.0, 3.0), UVec3::new(1, 2, 3).as_vec3());
             assert_eq!(Vec3A::new(1.0, 2.0, 3.0), UVec3::new(1, 2, 3).as_vec3a());
 
+            #[cfg(feature = "f64")]
             assert_eq!(
                 DVec3::new(-1.0, -2.0, -3.0),
                 I64Vec3::new(-1, -2, -3).as_dvec3()
@@ -2264,6 +2287,7 @@ macro_rules! impl_vec3_float_tests {
                 I64Vec3::new(-1, -2, -3).as_vec3a()
             );
 
+            #[cfg(feature = "f64")]
             assert_eq!(DVec3::new(1.0, 2.0, 3.0), U64Vec3::new(1, 2, 3).as_dvec3());
             assert_eq!(I8Vec3::new(1, 2, 3), U64Vec3::new(1, 2, 3).as_i8vec3());
             assert_eq!(U8Vec3::new(1, 2, 3), U64Vec3::new(1, 2, 3).as_u8vec3());
@@ -2283,6 +2307,7 @@ macro_rules! impl_vec3_float_tests {
             assert_eq!(Vec3::new(1.0, 2.0, 3.0), U64Vec3::new(1, 2, 3).as_vec3());
             assert_eq!(Vec3A::new(1.0, 2.0, 3.0), U64Vec3::new(1, 2, 3).as_vec3a());
 
+            #[cfg(feature = "f64")]
             assert_eq!(
                 DVec3::new(-1.0, -2.0, -3.0),
                 ISizeVec3::new(-1, -2, -3).as_dvec3()
@@ -2320,6 +2345,7 @@ macro_rules! impl_vec3_float_tests {
                 ISizeVec3::new(-1, -2, -3).as_vec3a()
             );
 
+            #[cfg(feature = "f64")]
             assert_eq!(
                 DVec3::new(1.0, 2.0, 3.0),
                 USizeVec3::new(1, 2, 3).as_dvec3()
@@ -2727,6 +2753,7 @@ mod vec3a {
     impl_vec3_float_tests!(f32, vec3a, Vec3A, BVec3A, Quat);
 }
 
+#[cfg(feature = "f64")]
 mod dvec3 {
     use glam::{dvec3, BVec3, DQuat, DVec3, IVec3, UVec3, Vec3};
 

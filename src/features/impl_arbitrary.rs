@@ -1,9 +1,12 @@
 use crate::{
-    BVec2, BVec3, BVec3A, BVec4, BVec4A, DQuat, DVec2, DVec3, DVec4, I16Vec2, I16Vec3, I16Vec4,
+    Affine2, Affine3, Affine3A, BVec2, BVec3, BVec3A, BVec4, BVec4A, I16Vec2, I16Vec3, I16Vec4,
     I64Vec2, I64Vec3, I64Vec4, I8Vec2, I8Vec3, I8Vec4, ISizeVec2, ISizeVec3, ISizeVec4, IVec2,
-    IVec3, IVec4, Quat, U16Vec2, U16Vec3, U16Vec4, U64Vec2, U64Vec3, U64Vec4, U8Vec2, U8Vec3,
-    U8Vec4, USizeVec2, USizeVec3, USizeVec4, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
+    IVec3, IVec4, Mat2, Mat3, Mat3A, Mat4, Quat, U16Vec2, U16Vec3, U16Vec4, U64Vec2, U64Vec3,
+    U64Vec4, U8Vec2, U8Vec3, U8Vec4, USizeVec2, USizeVec3, USizeVec4, UVec2, UVec3, UVec4, Vec2,
+    Vec3, Vec3A, Vec4,
 };
+#[cfg(feature = "f64")]
+use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
 
 macro_rules! arbitrary_vector_impl {
     ($($ty:ty),*) => {
@@ -17,16 +20,15 @@ macro_rules! arbitrary_vector_impl {
     };
 }
 
-arbitrary_vector_impl!(
-    BVec2, BVec3, BVec3A, BVec4, BVec4A, DQuat, DVec2, DVec3, DVec4, I16Vec2, I16Vec3, I16Vec4,
-    I64Vec2, I64Vec3, I64Vec4, I8Vec2, I8Vec3, I8Vec4, IVec2, IVec3, IVec4, Quat, U16Vec2, U16Vec3,
-    U16Vec4, U64Vec2, U64Vec3, U64Vec4, U8Vec2, U8Vec3, U8Vec4, USizeVec2, USizeVec3, USizeVec4,
-    UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4, ISizeVec2, ISizeVec3, ISizeVec4
-);
+#[cfg(feature = "f64")]
+arbitrary_vector_impl!(DQuat, DVec2, DVec3, DVec4);
 
-use crate::{
-    Affine2, Affine3, Affine3A, DAffine2, DAffine3, DMat2, DMat3, DMat4, Mat2, Mat3, Mat3A, Mat4,
-};
+arbitrary_vector_impl!(
+    BVec2, BVec3, BVec3A, BVec4, BVec4A, I16Vec2, I16Vec3, I16Vec4, I64Vec2, I64Vec3, I64Vec4,
+    I8Vec2, I8Vec3, I8Vec4, IVec2, IVec3, IVec4, Quat, U16Vec2, U16Vec3, U16Vec4, U64Vec2, U64Vec3,
+    U64Vec4, U8Vec2, U8Vec3, U8Vec4, USizeVec2, USizeVec3, USizeVec4, UVec2, UVec3, UVec4, Vec2,
+    Vec3, Vec3A, Vec4, ISizeVec2, ISizeVec3, ISizeVec4
+);
 
 macro_rules! arbitrary_matrix_impl {
     ($($ty:ty),*) => {
@@ -41,22 +43,25 @@ macro_rules! arbitrary_matrix_impl {
     };
 }
 
-arbitrary_matrix_impl!(
-    Affine2, Affine3, Affine3A, DAffine2, DAffine3, DMat2, DMat3, DMat4, Mat2, Mat3, Mat3A, Mat4
-);
+#[cfg(feature = "f64")]
+arbitrary_matrix_impl!(DAffine2, DAffine3, DMat2, DMat3, DMat4);
+
+arbitrary_matrix_impl!(Affine2, Affine3, Affine3A, Mat2, Mat3, Mat3A, Mat4);
 
 #[cfg(test)]
 mod test {
     use arbitrary::Unstructured;
     use core::mem::size_of;
 
+    #[cfg(feature = "f64")]
+    use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
+
     use crate::{
-        Affine2, Affine3, Affine3A, BVec2, BVec3, BVec3A, BVec4, BVec4A, DAffine2, DAffine3, DMat2,
-        DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, I16Vec2, I16Vec3, I16Vec4, I64Vec2, I64Vec3,
-        I64Vec4, I8Vec2, I8Vec3, I8Vec4, ISizeVec2, ISizeVec3, ISizeVec4, IVec2, IVec3, IVec4,
-        Mat2, Mat3, Mat3A, Mat4, Quat, U16Vec2, U16Vec3, U16Vec4, U64Vec2, U64Vec3, U64Vec4,
-        U8Vec2, U8Vec3, U8Vec4, USizeVec2, USizeVec3, USizeVec4, UVec2, UVec3, UVec4, Vec2, Vec3,
-        Vec3A, Vec4,
+        Affine2, Affine3, Affine3A, BVec2, BVec3, BVec3A, BVec4, BVec4A, I16Vec2, I16Vec3, I16Vec4,
+        I64Vec2, I64Vec3, I64Vec4, I8Vec2, I8Vec3, I8Vec4, ISizeVec2, ISizeVec3, ISizeVec4, IVec2,
+        IVec3, IVec4, Mat2, Mat3, Mat3A, Mat4, Quat, U16Vec2, U16Vec3, U16Vec4, U64Vec2, U64Vec3,
+        U64Vec4, U8Vec2, U8Vec3, U8Vec4, USizeVec2, USizeVec3, USizeVec4, UVec2, UVec3, UVec4,
+        Vec2, Vec3, Vec3A, Vec4,
     };
 
     #[test]
@@ -128,6 +133,7 @@ mod test {
         );
     }
 
+    #[cfg(feature = "f64")]
     #[test]
     fn test_arbitrary_f64() {
         // The float arbitrary impl converts byte array -> integer bits -> float bits.

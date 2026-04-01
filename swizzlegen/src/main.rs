@@ -73,10 +73,18 @@ fn write_test_vec4(
 ) -> Result<()> {
     const SIZE: usize = 4;
 
+    if t == "f64" {
+        write!(
+            out,
+            r#"
+#[cfg(feature = "f64")]"#
+        )?;
+    }
     write!(
         out,
         r#"
 glam_test!(test_{vec4t}_swizzles, {{
+    use glam::{{{vec2t}, {vec3t}, {vec4t}, Vec4Swizzles}};
     let v = {vec4t}(1_{t}, 2_{t}, 3_{t}, 4_{t});
     let rhs3 = {vec3t}(11_{t}, 12_{t}, 13_{t});
     let rhs2 = {vec2t}(11_{t}, 12_{t});
@@ -101,10 +109,19 @@ fn write_test_vec3(
 ) -> Result<()> {
     const SIZE: usize = 3;
 
+    if t == "f64" {
+        write!(
+            out,
+            r#"
+#[cfg(feature = "f64")]"#
+        )?;
+    }
+
     write!(
         out,
         r#"
 glam_test!(test_{vec3t}_swizzles, {{
+    use glam::{{{vec2t}, {vec3t}, {vec4t}, Vec3Swizzles}};
     let v = {vec3t}(1_{t}, 2_{t}, 3_{t});
     let rhs2 = {vec2t}(11_{t}, 12_{t});
 "#,
@@ -128,10 +145,19 @@ fn write_test_vec2(
 ) -> Result<()> {
     const SIZE: usize = 2;
 
+    if t == "f64" {
+        write!(
+            out,
+            r#"
+#[cfg(feature = "f64")]"#
+        )?;
+    }
+
     write!(
         out,
         r#"
 glam_test!(test_{vec2t}_swizzles, {{
+    use glam::{{{vec2t}, {vec3t}, {vec4t}, Vec2Swizzles}};
     let v = {vec2t}(1_{t}, 2_{t});
 "#
     )?;
@@ -253,8 +279,7 @@ fn write_swizzle_tests_preamble(filename: &str) -> Result<impl Write> {
     writeln!(
         &mut out,
         "#[macro_use]\n\
-        mod support;\n\
-        use glam::*;"
+        mod support;"
     )?;
     Ok(out)
 }

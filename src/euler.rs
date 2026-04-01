@@ -438,7 +438,6 @@ impl_mat4_to_euler!(f32, Mat4, Mat3);
 impl_quat_to_euler!(f32, Quat, Mat3);
 impl_quat_from_euler!(f32, Quat, Vec3);
 
- 
 #[cfg(feature = "f64")]
 impl_mat3_to_euler!(f64, DMat3, DVec3);
 #[cfg(feature = "f64")]

@@ -2471,10 +2471,13 @@ mod vec4 {
     }
 
     glam_test!(test_as, {
+        #[cfg(feature = "f64")]
+        use glam::DVec4;
         use glam::{
-            DVec4, I16Vec4, I64Vec4, I8Vec4, ISizeVec4, IVec4, U16Vec4, U64Vec4, U8Vec4, USizeVec4,
-            UVec4, Vec4,
+            I16Vec4, I64Vec4, I8Vec4, ISizeVec4, IVec4, U16Vec4, U64Vec4, U8Vec4, USizeVec4, UVec4,
+            Vec4,
         };
+        #[cfg(feature = "f64")]
         assert_eq!(
             DVec4::new(-1.0, -2.0, -3.0, -4.0),
             Vec4::new(-1.0, -2.0, -3.0, -4.0).as_dvec4()
@@ -2520,46 +2523,57 @@ mod vec4 {
             Vec4::new(1.0, 2.0, 3.0, 4.0).as_usizevec4()
         );
 
+        #[cfg(feature = "f64")]
         assert_eq!(
             Vec4::new(-1.0, -2.0, -3.0, -4.0),
             DVec4::new(-1.0, -2.0, -3.0, -4.0).as_vec4()
         );
+        #[cfg(feature = "f64")]
         assert_eq!(
             I8Vec4::new(-1, -2, -3, -4),
             DVec4::new(-1.0, -2.0, -3.0, -4.0).as_i8vec4()
         );
+        #[cfg(feature = "f64")]
         assert_eq!(
             U8Vec4::new(1, 2, 3, 4),
             DVec4::new(1.0, 2.0, 3.0, 4.0).as_u8vec4()
         );
+        #[cfg(feature = "f64")]
         assert_eq!(
             I16Vec4::new(-1, -2, -3, -4),
             DVec4::new(-1.0, -2.0, -3.0, -4.0).as_i16vec4()
         );
+        #[cfg(feature = "f64")]
         assert_eq!(
             U16Vec4::new(1, 2, 3, 4),
             DVec4::new(1.0, 2.0, 3.0, 4.0).as_u16vec4()
         );
+        #[cfg(feature = "f64")]
         assert_eq!(
             IVec4::new(-1, -2, -3, -4),
             DVec4::new(-1.0, -2.0, -3.0, -4.0).as_ivec4()
         );
+        #[cfg(feature = "f64")]
         assert_eq!(
             UVec4::new(1, 2, 3, 4),
             DVec4::new(1.0, 2.0, 3.0, 4.0).as_uvec4()
         );
+        #[cfg(feature = "f64")]
         assert_eq!(
             I64Vec4::new(-1, -2, -3, -4),
             DVec4::new(-1.0, -2.0, -3.0, -4.0).as_i64vec4()
         );
+        #[cfg(feature = "f64")]
         assert_eq!(
             U64Vec4::new(1, 2, 3, 4),
             DVec4::new(1.0, 2.0, 3.0, 4.0).as_u64vec4()
         );
+        #[cfg(feature = "f64")]
         assert_eq!(
             ISizeVec4::new(-1, -2, -3, -4),
             DVec4::new(-1.0, -2.0, -3.0, -4.0).as_isizevec4()
         );
+        #[cfg(feature = "f64")]
         assert_eq!(
             USizeVec4::new(1, 2, 3, 4),
             DVec4::new(1.0, 2.0, 3.0, 4.0).as_usizevec4()
@@ -2569,6 +2583,7 @@ mod vec4 {
             Vec4::new(-1.0, -2.0, -3.0, -4.0),
             I8Vec4::new(-1, -2, -3, -4).as_vec4()
         );
+        #[cfg(feature = "f64")]
         assert_eq!(
             DVec4::new(-1.0, -2.0, -3.0, -4.0),
             I8Vec4::new(-1, -2, -3, -4).as_dvec4()
@@ -2608,6 +2623,7 @@ mod vec4 {
             Vec4::new(1.0, 2.0, 3.0, 4.0),
             U8Vec4::new(1, 2, 3, 4).as_vec4()
         );
+        #[cfg(feature = "f64")]
         assert_eq!(
             DVec4::new(1.0, 2.0, 3.0, 4.0),
             U8Vec4::new(1, 2, 3, 4).as_dvec4()
@@ -2644,6 +2660,7 @@ mod vec4 {
             Vec4::new(-1.0, -2.0, -3.0, -4.0),
             I16Vec4::new(-1, -2, -3, -4).as_vec4()
         );
+        #[cfg(feature = "f64")]
         assert_eq!(
             DVec4::new(-1.0, -2.0, -3.0, -4.0),
             I16Vec4::new(-1, -2, -3, -4).as_dvec4()
@@ -2686,6 +2703,7 @@ mod vec4 {
             Vec4::new(1.0, 2.0, 3.0, 4.0),
             U16Vec4::new(1, 2, 3, 4).as_vec4()
         );
+        #[cfg(feature = "f64")]
         assert_eq!(
             DVec4::new(1.0, 2.0, 3.0, 4.0),
             U16Vec4::new(1, 2, 3, 4).as_dvec4()
@@ -2725,6 +2743,7 @@ mod vec4 {
             Vec4::new(-1.0, -2.0, -3.0, -4.0),
             IVec4::new(-1, -2, -3, -4).as_vec4()
         );
+        #[cfg(feature = "f64")]
         assert_eq!(
             DVec4::new(-1.0, -2.0, -3.0, -4.0),
             IVec4::new(-1, -2, -3, -4).as_dvec4()
@@ -2764,6 +2783,7 @@ mod vec4 {
             Vec4::new(1.0, 2.0, 3.0, 4.0),
             UVec4::new(1, 2, 3, 4).as_vec4()
         );
+        #[cfg(feature = "f64")]
         assert_eq!(
             DVec4::new(1.0, 2.0, 3.0, 4.0),
             UVec4::new(1, 2, 3, 4).as_dvec4()
@@ -2800,6 +2820,7 @@ mod vec4 {
             Vec4::new(-1.0, -2.0, -3.0, -4.0),
             I64Vec4::new(-1, -2, -3, -4).as_vec4()
         );
+        #[cfg(feature = "f64")]
         assert_eq!(
             DVec4::new(-1.0, -2.0, -3.0, -4.0),
             I64Vec4::new(-1, -2, -3, -4).as_dvec4()
@@ -2842,6 +2863,7 @@ mod vec4 {
             Vec4::new(-1.0, -2.0, -3.0, -4.0),
             ISizeVec4::new(-1, -2, -3, -4).as_vec4()
         );
+        #[cfg(feature = "f64")]
         assert_eq!(
             DVec4::new(-1.0, -2.0, -3.0, -4.0),
             ISizeVec4::new(-1, -2, -3, -4).as_dvec4()
@@ -2887,6 +2909,7 @@ mod vec4 {
             Vec4::new(1.0, 2.0, 3.0, 4.0),
             U64Vec4::new(1, 2, 3, 4).as_vec4()
         );
+        #[cfg(feature = "f64")]
         assert_eq!(
             DVec4::new(1.0, 2.0, 3.0, 4.0),
             U64Vec4::new(1, 2, 3, 4).as_dvec4()
@@ -2925,6 +2948,7 @@ mod vec4 {
             Vec4::new(1.0, 2.0, 3.0, 4.0),
             USizeVec4::new(1, 2, 3, 4).as_vec4()
         );
+        #[cfg(feature = "f64")]
         assert_eq!(
             DVec4::new(1.0, 2.0, 3.0, 4.0),
             USizeVec4::new(1, 2, 3, 4).as_dvec4()
@@ -2986,6 +3010,7 @@ mod vec4 {
     impl_vec4_float_tests!(f32, vec4, Vec4, Vec3, Vec2, BVec4);
 }
 
+#[cfg(feature = "f64")]
 mod dvec4 {
     use glam::{dvec4, BVec4, DVec2, DVec3, DVec4, IVec4, UVec4, Vec4};
 

@@ -755,6 +755,7 @@ mod test_f32 {
     pub const V4: f32 = 4.0;
 }
 
+#[cfg(feature = "f64")]
 #[cfg(test)]
 mod test_f64 {
     pub const V1: f64 = 1.0;
@@ -1061,6 +1062,7 @@ mod f32 {
     impl_serde_vec3!(f32, Vec3A, test_vec3a_serde);
 }
 
+#[cfg(feature = "f64")]
 mod f64 {
     #[cfg(test)]
     use super::test_f64::*;

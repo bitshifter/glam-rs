@@ -83,6 +83,7 @@ mod f32 {
     impl_rkyv!(Vec4);
 }
 
+#[cfg(feature = "f64")]
 mod f64 {
     use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
     use rkyv::{rancor::Fallible, Archive, Deserialize, Place, Serialize};
@@ -229,22 +230,26 @@ mod test {
         test_archive(&Vec3A::new(1.0, 2.0, 3.0));
         test_archive(&Vec4::new(1.0, 2.0, 3.0, 4.0));
 
-        use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
-        test_archive(&DAffine2::from_cols_array(&[1.0, 0.0, 2.0, 0.0, 3.0, 4.0]));
-        test_archive(&DAffine3::from_cols_array(&[
-            1.0, 0.0, 0.0, 0.0, 2.0, 0.0, 0.0, 0.0, 3.0, 4.0, 5.0, 6.0,
-        ]));
-        test_archive(&DMat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]));
-        test_archive(&DMat3::from_cols_array(&[
-            1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0,
-        ]));
-        test_archive(&DMat4::from_cols_array(&[
-            1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0,
-        ]));
-        test_archive(&DQuat::from_xyzw(1.0, 2.0, 3.0, 4.0));
-        test_archive(&DVec2::new(1.0, 2.0));
-        test_archive(&DVec3::new(1.0, 2.0, 3.0));
-        test_archive(&DVec4::new(1.0, 2.0, 3.0, 4.0));
+        #[cfg(feature = "f64")]
+        {
+            use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
+            test_archive(&DAffine2::from_cols_array(&[1.0, 0.0, 2.0, 0.0, 3.0, 4.0]));
+            test_archive(&DAffine3::from_cols_array(&[
+                1.0, 0.0, 0.0, 0.0, 2.0, 0.0, 0.0, 0.0, 3.0, 4.0, 5.0, 6.0,
+            ]));
+            test_archive(&DMat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]));
+            test_archive(&DMat3::from_cols_array(&[
+                1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0,
+            ]));
+            test_archive(&DMat4::from_cols_array(&[
+                1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0,
+                16.0,
+            ]));
+            test_archive(&DQuat::from_xyzw(1.0, 2.0, 3.0, 4.0));
+            test_archive(&DVec2::new(1.0, 2.0));
+            test_archive(&DVec3::new(1.0, 2.0, 3.0));
+            test_archive(&DVec4::new(1.0, 2.0, 3.0, 4.0));
+        }
 
         use crate::{I8Vec2, I8Vec3, I8Vec4};
         test_archive(&I8Vec2::new(-1, 2));

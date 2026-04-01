@@ -794,6 +794,7 @@ mod quat {
         assert_approx_eq!(y0, y2);
     });
 
+    #[cfg(feature = "f64")]
     glam_test!(test_as, {
         use glam::DQuat;
         assert_approx_eq!(
@@ -809,6 +810,7 @@ mod quat {
     impl_quat_tests!(f32, quat, Mat3, Mat4, Quat, Vec2, Vec3, Vec4);
 }
 
+#[cfg(feature = "f64")]
 mod dquat {
     use crate::support::{deg, rad};
     use core::ops::Neg;

@@ -1,11 +1,13 @@
 #[cfg(test)]
 mod test {
     use crate::{
-        Affine2, Affine3, Affine3A, DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3,
-        DVec4, I16Vec2, I16Vec3, I16Vec4, I64Vec2, I64Vec3, I64Vec4, I8Vec2, I8Vec3, I8Vec4, IVec2,
-        IVec3, IVec4, Mat2, Mat3, Mat3A, Mat4, Quat, U16Vec2, U16Vec3, U16Vec4, U64Vec2, U64Vec3,
-        U64Vec4, U8Vec2, U8Vec3, U8Vec4, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
+        Affine2, Affine3, Affine3A, I16Vec2, I16Vec3, I16Vec4, I64Vec2, I64Vec3, I64Vec4, I8Vec2,
+        I8Vec3, I8Vec4, IVec2, IVec3, IVec4, Mat2, Mat3, Mat3A, Mat4, Quat, U16Vec2, U16Vec3,
+        U16Vec4, U64Vec2, U64Vec3, U64Vec4, U8Vec2, U8Vec3, U8Vec4, UVec2, UVec3, UVec4, Vec2,
+        Vec3, Vec3A, Vec4,
     };
+    #[cfg(feature = "f64")]
+    use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
     use core::mem;
 
     macro_rules! test_pod_t {
@@ -53,14 +55,23 @@ mod test {
     test_any_bit_pattern_t!(vec3a, Vec3A);
     test_pod_t!(vec4, Vec4);
 
+    #[cfg(feature = "f64")]
     test_pod_t!(daffine2, DAffine2);
+    #[cfg(feature = "f64")]
     test_pod_t!(daffine3, DAffine3);
+    #[cfg(feature = "f64")]
     test_pod_t!(dmat2, DMat2);
+    #[cfg(feature = "f64")]
     test_pod_t!(dmat3, DMat3);
+    #[cfg(feature = "f64")]
     test_pod_t!(dmat4, DMat4);
+    #[cfg(feature = "f64")]
     test_pod_t!(dquat, DQuat);
+    #[cfg(feature = "f64")]
     test_pod_t!(dvec2, DVec2);
+    #[cfg(feature = "f64")]
     test_pod_t!(dvec3, DVec3);
+    #[cfg(feature = "f64")]
     test_pod_t!(dvec4, DVec4);
 
     test_pod_t!(i8vec2, I8Vec2);

@@ -1,7 +1,6 @@
-use crate::{
-    Affine2, Affine3, Affine3A, DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3,
-    DVec4, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4,
-};
+use crate::{Affine2, Affine3, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
+#[cfg(feature = "f64")]
+use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
 use approx::{AbsDiffEq, RelativeEq, UlpsEq};
 
 macro_rules! impl_approx_as_ref {
@@ -145,14 +144,23 @@ impl_approx_xzyw_axes!(f32, Affine3);
 impl_approx_xzyw_axes!(f32, Affine3A);
 impl_approx_xzy_axes!(f32, Mat3A);
 
+#[cfg(feature = "f64")]
 impl_approx_xzy_axes!(f64, DAffine2);
+#[cfg(feature = "f64")]
 impl_approx_xzyw_axes!(f64, DAffine3);
+#[cfg(feature = "f64")]
 impl_approx_as_ref!(f64, DMat2);
+#[cfg(feature = "f64")]
 impl_approx_as_ref!(f64, DMat3);
+#[cfg(feature = "f64")]
 impl_approx_as_ref!(f64, DMat4);
+#[cfg(feature = "f64")]
 impl_approx_as_ref!(f64, DQuat);
+#[cfg(feature = "f64")]
 impl_approx_as_ref!(f64, DVec2);
+#[cfg(feature = "f64")]
 impl_approx_as_ref!(f64, DVec3);
+#[cfg(feature = "f64")]
 impl_approx_as_ref!(f64, DVec4);
 
 #[cfg(test)]
@@ -246,27 +254,30 @@ mod test {
             Affine3A::from_cols_slice(&ONESF32)
         );
 
-        const ONESF64: [f64; 16] = [1.0; 16];
-        impl_approx_test!(f64, DVec2);
-        impl_approx_test!(f64, DVec3);
-        impl_approx_test!(f64, DVec4);
-        impl_approx_test!(f64, DQuat, DQuat::from_slice(&ONESF64));
-        impl_approx_test!(f64, DMat2, DMat2::from_cols_slice(&ONESF64));
-        impl_approx_test!(f64, DMat3, DMat3::from_cols_slice(&ONESF64));
-        impl_approx_test!(f64, DMat4, DMat4::from_cols_slice(&ONESF64));
-        impl_affine_approx_test!(
-            f64,
-            DAffine2,
-            from_mat3,
-            DMat3,
-            DAffine2::from_cols_slice(&ONESF64)
-        );
-        impl_affine_approx_test!(
-            f64,
-            DAffine3,
-            from_mat4,
-            DMat4,
-            DAffine3::from_cols_slice(&ONESF64)
-        );
+        #[cfg(feature = "f64")]
+        {
+            const ONESF64: [f64; 16] = [1.0; 16];
+            impl_approx_test!(f64, DVec2);
+            impl_approx_test!(f64, DVec3);
+            impl_approx_test!(f64, DVec4);
+            impl_approx_test!(f64, DQuat, DQuat::from_slice(&ONESF64));
+            impl_approx_test!(f64, DMat2, DMat2::from_cols_slice(&ONESF64));
+            impl_approx_test!(f64, DMat3, DMat3::from_cols_slice(&ONESF64));
+            impl_approx_test!(f64, DMat4, DMat4::from_cols_slice(&ONESF64));
+            impl_affine_approx_test!(
+                f64,
+                DAffine2,
+                from_mat3,
+                DMat3,
+                DAffine2::from_cols_slice(&ONESF64)
+            );
+            impl_affine_approx_test!(
+                f64,
+                DAffine3,
+                from_mat4,
+                DMat4,
+                DAffine3::from_cols_slice(&ONESF64)
+            );
+        }
     }
 }
