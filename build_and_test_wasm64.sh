@@ -8,13 +8,13 @@ CARGO_TARGET_WASM64_UNKNOWN_UNKNOWN_RUNNER="wasmtime --wasm memory64" \
 RUSTFLAGS="-Ctarget-feature=+simd128" \
   cargo +nightly test \
   --target wasm64-unknown-unknown \
-  --no-default-features --features libm \
+  --no-default-features --features libm,all-types \
   -Zbuild-std=std,panic_abort \
   -Zpanic-abort-tests
 
 CARGO_TARGET_WASM64_UNKNOWN_UNKNOWN_RUNNER="wasmtime --wasm memory64" \
   cargo +nightly test \
   --target wasm64-unknown-unknown \
-  --no-default-features --features libm \
+  --no-default-features --features libm,all-types \
   -Zbuild-std=std,panic_abort \
   -Zpanic-abort-tests

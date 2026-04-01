@@ -3,22 +3,21 @@
 set -ex
 
 # Supported dependencies
-DEPENDENCIES="arbitrary approx bytemuck encase mint rand rkyv serde speedy zerocopy debug-glam-assert"
+DEPENDENCIES="arbitrary approx bytemuck encase mint rand rkyv bytecheck serde speedy zerocopy debug-glam-assert"
 
 # Set of features to build & test.
 FEATURE_SETS=(
   # std
-  "std"
   "std $DEPENDENCIES"
-  "std $DEPENDENCIES bytecheck"
-  "std scalar-math $DEPENDENCIES"
-  "std cuda"
-  "std scalar-math cuda"
-  "std libm"
-  "std scalar-math libm"
+  "std all-types scalar-math $DEPENDENCIES"
+  "std all-types cuda"
+  "std all-types scalar-math cuda"
+  "std all-types libm"
+  "std all-types scalar-math libm"
   # no_std
-  "libm"
-  "libm scalar-math $DEPENDENCIES"
+  "libm $DEPENDENCIES"
+  "libm all-types $DEPENDENCIES"
+  "libm all-types scalar-math $DEPENDENCIES"
 )
 
 rustc --version

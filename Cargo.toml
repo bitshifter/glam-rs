@@ -15,13 +15,13 @@ rust-version = "1.68.2"
 maintenance = { status = "actively-developed" }
 
 [features]
-default = ["std", "f64", "int"]
+default = ["std", "all-types"]
 
 # enable support for the standard library
 std = []
 
 f64 = []
-int = []
+all-types = ["f64"]
 
 # enable additional glam checks if debug assertions are enabled
 debug-glam-assert = []
