@@ -344,9 +344,9 @@ pub mod f32;
 pub use self::f32::*;
 
 /** `f64` vector, quaternion and matrix types. */
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 pub mod f64;
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 pub use self::f64::*;
 
 /** `i8` vector types. */
@@ -386,7 +386,9 @@ pub mod usize;
 pub use self::usize::*;
 
 /** `isize` vector types. */
+#[cfg(feature = "isize")]
 pub mod isize;
+#[cfg(feature = "isize")]
 pub use self::isize::*;
 
 /** Traits adding swizzle methods to all vector types. */

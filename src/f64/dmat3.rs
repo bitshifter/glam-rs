@@ -788,7 +788,7 @@ impl DMat3 {
         Self::from_cols(self.x_axis.abs(), self.y_axis.abs(), self.z_axis.abs())
     }
 
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     #[inline]
     #[must_use]
     pub fn as_mat3(&self) -> Mat3 {

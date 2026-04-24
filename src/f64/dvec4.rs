@@ -1247,6 +1247,7 @@ impl DVec4 {
     }
 
     /// Casts all elements of `self` to `isize`.
+    #[cfg(feature = "isize")]
     #[inline]
     #[must_use]
     pub fn as_isizevec4(self) -> crate::ISizeVec4 {

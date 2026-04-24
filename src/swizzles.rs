@@ -1,8 +1,8 @@
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 mod dvec2_impl;
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 mod dvec3_impl;
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 mod dvec4_impl;
 
 mod ivec2_impl;
@@ -33,8 +33,11 @@ mod u64vec2_impl;
 mod u64vec3_impl;
 mod u64vec4_impl;
 
+#[cfg(feature = "isize")]
 mod isizevec2_impl;
+#[cfg(feature = "isize")]
 mod isizevec3_impl;
+#[cfg(feature = "isize")]
 mod isizevec4_impl;
 
 mod usizevec2_impl;

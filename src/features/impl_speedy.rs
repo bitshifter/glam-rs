@@ -2,7 +2,7 @@ use crate::{
     Affine2, Affine3, Affine3A, BVec2, BVec3, BVec4, IVec2, IVec3, IVec4, Mat2, Mat3, Mat3A, Mat4,
     Quat, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
 };
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
 use speedy::{Context, Readable, Reader, Writable, Writer};
 
@@ -62,11 +62,11 @@ impl_for_vec! {Vec3, new, f32, read_f32, write_f32, x, y, z}
 impl_for_vec! {Vec3A, new, f32, read_f32, write_f32, x, y, z}
 impl_for_vec! {Vec4, new, f32, read_f32, write_f32, x, y, z, w}
 
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 impl_for_vec! {DVec2, new, f64, read_f64, write_f64, x, y}
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 impl_for_vec! {DVec3, new, f64, read_f64, write_f64, x, y, z}
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 impl_for_vec! {DVec4, new, f64, read_f64, write_f64, x, y, z, w}
 
 impl_for_vec! {IVec2, new, i32, read_i32, write_i32, x, y}
@@ -78,7 +78,7 @@ impl_for_vec! {UVec3, new, u32, read_u32, write_u32, x, y, z}
 impl_for_vec! {UVec4, new, u32, read_u32, write_u32, x, y, z, w}
 
 impl_for_vec! {Quat, from_xyzw, f32, read_f32, write_f32, x, y, z, w}
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 impl_for_vec! {DQuat, from_xyzw, f64, read_f64, write_f64, x, y, z, w}
 
 macro_rules! impl_for_bvec {
@@ -179,20 +179,20 @@ impl_for_mat! { Mat3, 9, f32 }
 impl_for_mat! { Mat3A, 9, f32 }
 impl_for_mat! { Mat4, 16, f32 }
 
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 impl_for_mat! { DMat2, 4, f64 }
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 impl_for_mat! { DMat3, 9, f64 }
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 impl_for_mat! { DMat4, 16, f64 }
 
 impl_for_mat! { Affine2, 6, f32 }
 impl_for_mat! { Affine3, 12, f32 }
 impl_for_mat! { Affine3A, 12, f32 }
 
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 impl_for_mat! { DAffine2, 6, f64 }
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 impl_for_mat! { DAffine3, 12, f64 }
 
 #[test]
@@ -213,7 +213,7 @@ fn test_speedy() {
     test_vec!(Vec3A, new, 1, 2, 3);
     test_vec!(Vec4, new, 1, 2, 3, 4);
 
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     {
         test_vec!(DVec2, new, 1, 2);
         test_vec!(DVec3, new, 1, 2, 3);
@@ -229,7 +229,7 @@ fn test_speedy() {
     test_vec!(UVec4, new, 1, 2, 3, 4);
 
     test_vec!(Quat, from_xyzw, 1, 2, 3, 4);
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     test_vec!(DQuat, from_xyzw, 1, 2, 3, 4);
 
     for a in [false, true] {
@@ -288,7 +288,7 @@ fn test_speedy() {
     test_mat!(Mat3A);
     test_mat!(Mat4);
 
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     {
         test_mat!(DMat2);
         test_mat!(DMat3);
@@ -299,7 +299,7 @@ fn test_speedy() {
     test_mat!(Affine3);
     test_mat!(Affine3A);
 
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     {
         test_mat!(DAffine2);
         test_mat!(DAffine3);

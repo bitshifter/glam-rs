@@ -62,7 +62,7 @@
 {% set dimension_in_full = ["zero", "one", "two", "three", "four"] | nth(n = dim) %}
 
 {% if scalar_t == "f32" %}
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 use crate::DMat{{ dim }};
 {% endif %}
 use crate::{
@@ -2631,7 +2631,7 @@ impl {{ self_t }} {
     }
 
     {% if scalar_t == "f32" %}
-        #[cfg(feature = "f64-types")]
+        #[cfg(feature = "f64")]
         #[inline]
         #[must_use]
         pub fn as_dmat{{ dim }}(&self) -> DMat{{ dim }} {
@@ -2642,7 +2642,7 @@ impl {{ self_t }} {
             )
         }
     {% elif scalar_t == "f64" %}
-        #[cfg(feature = "f64-types")]
+        #[cfg(feature = "f64")]
         #[inline]
         #[must_use]
         pub fn as_mat{{ dim }}(&self) -> Mat{{ dim }} {

@@ -518,7 +518,7 @@ mod mat3 {
         assert_approx_eq!(vec3a(-1.0, 0.0, 0.0), mat_a.mul_vec3a(Vec3A::Y));
     });
 
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     glam_test!(test_as, {
         use glam::DMat3;
         assert_eq!(
@@ -557,7 +557,7 @@ mod mat3a {
         assert_eq!(m.transpose().mul_vec3a(v), m.mul_transpose_vec3a(v));
     });
 
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     glam_test!(test_as, {
         use glam::DMat3;
         assert_eq!(
@@ -569,7 +569,7 @@ mod mat3a {
     impl_mat3_tests!(f32, mat3a, Mat3A, Mat2, Mat4, Quat, vec3a, Vec3, Vec2);
 }
 
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 mod dmat3 {
     use super::support::deg;
     use glam::{dmat3, dvec3, swizzles::*, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3};

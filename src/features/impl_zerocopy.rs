@@ -6,7 +6,7 @@ mod test {
         U16Vec4, U64Vec2, U64Vec3, U64Vec4, U8Vec2, U8Vec3, U8Vec4, UVec2, UVec3, UVec4, Vec2,
         Vec3, Vec3A, Vec4,
     };
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
     use core::mem;
 
@@ -92,41 +92,41 @@ mod test {
     test_from_bytes_t!(vec4_from, Vec4);
     test_into_bytes_t!(vec4_into, Vec4);
 
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     test_from_bytes_t!(daffine2_from, DAffine2);
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     test_into_bytes_t!(daffine2_into, DAffine2);
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     test_from_bytes_t!(daffine3_from, DAffine3);
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     test_into_bytes_t!(daffine3_into, DAffine3);
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     test_from_bytes_t!(dmat2_from, DMat2);
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     test_into_bytes_t!(dmat2_into, DMat2);
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     test_from_bytes_t!(dmat3_from, DMat3);
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     test_into_bytes_t!(dmat3_into, DMat3);
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     test_from_bytes_t!(dmat4_from, DMat4);
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     test_into_bytes_t!(dmat4_into, DMat4);
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     test_from_bytes_t!(dquat_from, DQuat);
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     test_into_bytes_t!(dquat_into, DQuat);
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     test_from_bytes_t!(dvec2_from, DVec2);
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     test_into_bytes_t!(dvec2_into, DVec2);
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     test_from_bytes_t!(dvec3_from, DVec3);
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     test_into_bytes_t!(dvec3_into, DVec3);
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     test_from_bytes_t!(dvec4_from, DVec4);
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     test_into_bytes_t!(dvec4_into, DVec4);
 
     test_from_bytes_t!(i8vec2_from, I8Vec2);

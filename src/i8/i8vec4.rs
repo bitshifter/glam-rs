@@ -2,10 +2,26 @@
 
 #[cfg(not(feature = "scalar-math"))]
 use crate::BVec4A;
-use crate::{
-    BVec4, I16Vec4, I64Vec4, I8Vec2, I8Vec3, ISizeVec4, IVec4, U16Vec4, U64Vec4, U8Vec4, USizeVec4,
-    UVec4,
-};
+use crate::{BVec4, I8Vec2, I8Vec3};
+
+use crate::U8Vec4;
+
+use crate::I16Vec4;
+
+use crate::U16Vec4;
+
+use crate::IVec4;
+
+use crate::UVec4;
+
+use crate::I64Vec4;
+
+use crate::U64Vec4;
+
+#[cfg(feature = "isize")]
+use crate::ISizeVec4;
+
+use crate::USizeVec4;
 
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -587,7 +603,7 @@ impl I8Vec4 {
     }
 
     /// Casts all elements of `self` to `f64`.
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     #[inline]
     #[must_use]
     pub fn as_dvec4(self) -> crate::DVec4 {
@@ -644,6 +660,7 @@ impl I8Vec4 {
     }
 
     /// Casts all elements of `self` to `isize`.
+    #[cfg(feature = "isize")]
     #[inline]
     #[must_use]
     pub fn as_isizevec4(self) -> crate::ISizeVec4 {
@@ -886,6 +903,7 @@ impl I8Vec4 {
     /// Returns a vector containing the wrapping addition of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
+
     #[inline]
     #[must_use]
     pub const fn checked_add_unsigned(self, rhs: U8Vec4) -> Option<Self> {
@@ -912,6 +930,7 @@ impl I8Vec4 {
     /// Returns a vector containing the wrapping subtraction of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `Some([self.x - rhs.x, self.y - rhs.y, ..])` but returns `None` on any overflow.
+
     #[inline]
     #[must_use]
     pub const fn checked_sub_unsigned(self, rhs: U8Vec4) -> Option<Self> {
@@ -938,6 +957,7 @@ impl I8Vec4 {
     /// Returns a vector containing the wrapping addition of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `[self.x.wrapping_add_unsigned(rhs.x), self.y.wrapping_add_unsigned(rhs.y), ..]`.
+
     #[inline]
     #[must_use]
     pub const fn wrapping_add_unsigned(self, rhs: U8Vec4) -> Self {
@@ -952,6 +972,7 @@ impl I8Vec4 {
     /// Returns a vector containing the wrapping subtraction of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `[self.x.wrapping_sub_unsigned(rhs.x), self.y.wrapping_sub_unsigned(rhs.y), ..]`.
+
     #[inline]
     #[must_use]
     pub const fn wrapping_sub_unsigned(self, rhs: U8Vec4) -> Self {
@@ -968,6 +989,7 @@ impl I8Vec4 {
     /// In other words this computes `[self.x.saturating_add_unsigned(rhs.x), self.y.saturating_add_unsigned(rhs.y), ..]`.
     #[inline]
     #[must_use]
+
     pub const fn saturating_add_unsigned(self, rhs: U8Vec4) -> Self {
         Self {
             x: self.x.saturating_add_unsigned(rhs.x),
@@ -980,6 +1002,7 @@ impl I8Vec4 {
     /// Returns a vector containing the saturating subtraction of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `[self.x.saturating_sub_unsigned(rhs.x), self.y.saturating_sub_unsigned(rhs.y), ..]`.
+
     #[inline]
     #[must_use]
     pub const fn saturating_sub_unsigned(self, rhs: U8Vec4) -> Self {
@@ -3287,6 +3310,8 @@ impl TryFrom<U64Vec4> for I8Vec4 {
         ))
     }
 }
+
+#[cfg(feature = "isize")]
 
 impl TryFrom<ISizeVec4> for I8Vec4 {
     type Error = core::num::TryFromIntError;

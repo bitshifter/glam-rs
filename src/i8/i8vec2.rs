@@ -1,8 +1,25 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{
-    BVec2, I16Vec2, I64Vec2, I8Vec3, ISizeVec2, IVec2, U16Vec2, U64Vec2, U8Vec2, USizeVec2, UVec2,
-};
+use crate::{BVec2, I8Vec3};
+
+use crate::U8Vec2;
+
+use crate::I16Vec2;
+
+use crate::U16Vec2;
+
+use crate::IVec2;
+
+use crate::UVec2;
+
+use crate::I64Vec2;
+
+use crate::U64Vec2;
+
+#[cfg(feature = "isize")]
+use crate::ISizeVec2;
+
+use crate::USizeVec2;
 
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -498,7 +515,7 @@ impl I8Vec2 {
     }
 
     /// Casts all elements of `self` to `f64`.
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     #[inline]
     #[must_use]
     pub fn as_dvec2(self) -> crate::DVec2 {
@@ -555,6 +572,7 @@ impl I8Vec2 {
     }
 
     /// Casts all elements of `self` to `isize`.
+    #[cfg(feature = "isize")]
     #[inline]
     #[must_use]
     pub fn as_isizevec2(self) -> crate::ISizeVec2 {
@@ -739,6 +757,7 @@ impl I8Vec2 {
     /// Returns a vector containing the wrapping addition of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
+
     #[inline]
     #[must_use]
     pub const fn checked_add_unsigned(self, rhs: U8Vec2) -> Option<Self> {
@@ -757,6 +776,7 @@ impl I8Vec2 {
     /// Returns a vector containing the wrapping subtraction of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `Some([self.x - rhs.x, self.y - rhs.y, ..])` but returns `None` on any overflow.
+
     #[inline]
     #[must_use]
     pub const fn checked_sub_unsigned(self, rhs: U8Vec2) -> Option<Self> {
@@ -775,6 +795,7 @@ impl I8Vec2 {
     /// Returns a vector containing the wrapping addition of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `[self.x.wrapping_add_unsigned(rhs.x), self.y.wrapping_add_unsigned(rhs.y), ..]`.
+
     #[inline]
     #[must_use]
     pub const fn wrapping_add_unsigned(self, rhs: U8Vec2) -> Self {
@@ -787,6 +808,7 @@ impl I8Vec2 {
     /// Returns a vector containing the wrapping subtraction of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `[self.x.wrapping_sub_unsigned(rhs.x), self.y.wrapping_sub_unsigned(rhs.y), ..]`.
+
     #[inline]
     #[must_use]
     pub const fn wrapping_sub_unsigned(self, rhs: U8Vec2) -> Self {
@@ -801,6 +823,7 @@ impl I8Vec2 {
     /// In other words this computes `[self.x.saturating_add_unsigned(rhs.x), self.y.saturating_add_unsigned(rhs.y), ..]`.
     #[inline]
     #[must_use]
+
     pub const fn saturating_add_unsigned(self, rhs: U8Vec2) -> Self {
         Self {
             x: self.x.saturating_add_unsigned(rhs.x),
@@ -811,6 +834,7 @@ impl I8Vec2 {
     /// Returns a vector containing the saturating subtraction of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `[self.x.saturating_sub_unsigned(rhs.x), self.y.saturating_sub_unsigned(rhs.y), ..]`.
+
     #[inline]
     #[must_use]
     pub const fn saturating_sub_unsigned(self, rhs: U8Vec2) -> Self {
@@ -2941,6 +2965,8 @@ impl TryFrom<U64Vec2> for I8Vec2 {
         Ok(Self::new(i8::try_from(v.x)?, i8::try_from(v.y)?))
     }
 }
+
+#[cfg(feature = "isize")]
 
 impl TryFrom<ISizeVec2> for I8Vec2 {
     type Error = core::num::TryFromIntError;

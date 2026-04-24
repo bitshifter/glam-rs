@@ -83,7 +83,7 @@ mod f32 {
     impl_rkyv!(Vec4);
 }
 
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 mod f64 {
     use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
     use rkyv::{rancor::Fallible, Archive, Deserialize, Place, Serialize};
@@ -230,7 +230,7 @@ mod test {
         test_archive(&Vec3A::new(1.0, 2.0, 3.0));
         test_archive(&Vec4::new(1.0, 2.0, 3.0, 4.0));
 
-        #[cfg(feature = "f64-types")]
+        #[cfg(feature = "f64")]
         {
             use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
             test_archive(&DAffine2::from_cols_array(&[1.0, 0.0, 2.0, 0.0, 3.0, 4.0]));

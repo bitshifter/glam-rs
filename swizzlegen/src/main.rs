@@ -77,7 +77,7 @@ fn write_test_vec4(
         write!(
             out,
             r#"
-#[cfg(feature = "f64-types")]"#
+#[cfg(feature = "f64")]"#
         )?;
     }
     write!(
@@ -113,7 +113,7 @@ fn write_test_vec3(
         write!(
             out,
             r#"
-#[cfg(feature = "f64-types")]"#
+#[cfg(feature = "f64")]"#
         )?;
     }
 
@@ -149,7 +149,7 @@ fn write_test_vec2(
         write!(
             out,
             r#"
-#[cfg(feature = "f64-types")]"#
+#[cfg(feature = "f64")]"#
         )?;
     }
 

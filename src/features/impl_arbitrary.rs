@@ -5,7 +5,7 @@ use crate::{
     U64Vec4, U8Vec2, U8Vec3, U8Vec4, USizeVec2, USizeVec3, USizeVec4, UVec2, UVec3, UVec4, Vec2,
     Vec3, Vec3A, Vec4,
 };
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
 
 macro_rules! arbitrary_vector_impl {
@@ -20,7 +20,7 @@ macro_rules! arbitrary_vector_impl {
     };
 }
 
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 arbitrary_vector_impl!(DQuat, DVec2, DVec3, DVec4);
 
 arbitrary_vector_impl!(
@@ -43,7 +43,7 @@ macro_rules! arbitrary_matrix_impl {
     };
 }
 
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 arbitrary_matrix_impl!(DAffine2, DAffine3, DMat2, DMat3, DMat4);
 
 arbitrary_matrix_impl!(Affine2, Affine3, Affine3A, Mat2, Mat3, Mat3A, Mat4);
@@ -53,7 +53,7 @@ mod test {
     use arbitrary::Unstructured;
     use core::mem::size_of;
 
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
 
     use crate::{
@@ -133,7 +133,7 @@ mod test {
         );
     }
 
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     #[test]
     fn test_arbitrary_f64() {
         // The float arbitrary impl converts byte array -> integer bits -> float bits.

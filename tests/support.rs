@@ -3,7 +3,7 @@
 #[macro_use]
 mod macros;
 
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 use glam::{DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
 use glam::{Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
 
@@ -58,7 +58,7 @@ impl FloatCompare for f32 {
     }
 }
 
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 impl FloatCompare for f64 {
     #[inline]
     fn approx_eq(&self, other: &f64, max_abs_diff: f32) -> bool {
@@ -84,7 +84,7 @@ impl FloatCompare for Mat2 {
     }
 }
 
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 impl FloatCompare for DMat2 {
     #[inline]
     fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
@@ -129,7 +129,7 @@ impl FloatCompare for Mat3A {
     }
 }
 
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 impl FloatCompare for DMat3 {
     #[inline]
     fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
@@ -145,7 +145,7 @@ impl FloatCompare for DMat3 {
     }
 }
 
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 impl FloatCompare for DMat4 {
     #[inline]
     fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
@@ -235,7 +235,7 @@ impl FloatCompare for Vec4 {
     }
 }
 
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 impl FloatCompare for DQuat {
     #[inline]
     fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
@@ -249,7 +249,7 @@ impl FloatCompare for DQuat {
     }
 }
 
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 impl FloatCompare for DVec2 {
     #[inline]
     fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
@@ -261,7 +261,7 @@ impl FloatCompare for DVec2 {
     }
 }
 
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 impl FloatCompare for DVec3 {
     #[inline]
     fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
@@ -273,7 +273,7 @@ impl FloatCompare for DVec3 {
     }
 }
 
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 impl FloatCompare for DVec4 {
     #[inline]
     fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {

@@ -1,9 +1,25 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{
-    BVec3, BVec3A, I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U64Vec3, U8Vec2, U8Vec4,
-    USizeVec3, UVec3,
-};
+use crate::{BVec3, BVec3A, U8Vec2, U8Vec4};
+
+use crate::I8Vec3;
+
+use crate::I16Vec3;
+
+use crate::U16Vec3;
+
+use crate::IVec3;
+
+use crate::UVec3;
+
+use crate::I64Vec3;
+
+use crate::U64Vec3;
+
+#[cfg(feature = "isize")]
+use crate::ISizeVec3;
+
+use crate::USizeVec3;
 
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -457,7 +473,7 @@ impl U8Vec3 {
     }
 
     /// Casts all elements of `self` to `f64`.
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     #[inline]
     #[must_use]
     pub fn as_dvec3(self) -> crate::DVec3 {
@@ -514,6 +530,7 @@ impl U8Vec3 {
     }
 
     /// Casts all elements of `self` to `isize`.
+    #[cfg(feature = "isize")]
     #[inline]
     #[must_use]
     pub fn as_isizevec3(self) -> crate::ISizeVec3 {
@@ -722,6 +739,7 @@ impl U8Vec3 {
     /// Returns a vector containing the wrapping addition of `self` and signed vector `rhs`.
     ///
     /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
+
     #[inline]
     #[must_use]
     pub const fn checked_add_signed(self, rhs: I8Vec3) -> Option<Self> {
@@ -744,6 +762,7 @@ impl U8Vec3 {
     /// Returns a vector containing the wrapping addition of `self` and signed vector `rhs`.
     ///
     /// In other words this computes `[self.x.wrapping_add_signed(rhs.x), self.y.wrapping_add_signed(rhs.y), ..]`.
+
     #[inline]
     #[must_use]
     pub const fn wrapping_add_signed(self, rhs: I8Vec3) -> Self {
@@ -757,6 +776,7 @@ impl U8Vec3 {
     /// Returns a vector containing the saturating addition of `self` and signed vector `rhs`.
     ///
     /// In other words this computes `[self.x.saturating_add_signed(rhs.x), self.y.saturating_add_signed(rhs.y), ..]`.
+
     #[inline]
     #[must_use]
     pub const fn saturating_add_signed(self, rhs: I8Vec3) -> Self {
@@ -2959,6 +2979,8 @@ impl TryFrom<U64Vec3> for U8Vec3 {
         ))
     }
 }
+
+#[cfg(feature = "isize")]
 
 impl TryFrom<ISizeVec3> for U8Vec3 {
     type Error = core::num::TryFromIntError;

@@ -2,10 +2,26 @@
 
 #[cfg(not(feature = "scalar-math"))]
 use crate::BVec4A;
-use crate::{
-    BVec4, I16Vec4, I64Vec4, I8Vec4, ISizeVec4, IVec4, U16Vec4, U64Vec4, U8Vec2, U8Vec3, USizeVec4,
-    UVec4,
-};
+use crate::{BVec4, U8Vec2, U8Vec3};
+
+use crate::I8Vec4;
+
+use crate::I16Vec4;
+
+use crate::U16Vec4;
+
+use crate::IVec4;
+
+use crate::UVec4;
+
+use crate::I64Vec4;
+
+use crate::U64Vec4;
+
+#[cfg(feature = "isize")]
+use crate::ISizeVec4;
+
+use crate::USizeVec4;
 
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -489,7 +505,7 @@ impl U8Vec4 {
     }
 
     /// Casts all elements of `self` to `f64`.
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     #[inline]
     #[must_use]
     pub fn as_dvec4(self) -> crate::DVec4 {
@@ -546,6 +562,7 @@ impl U8Vec4 {
     }
 
     /// Casts all elements of `self` to `isize`.
+    #[cfg(feature = "isize")]
     #[inline]
     #[must_use]
     pub fn as_isizevec4(self) -> crate::ISizeVec4 {
@@ -788,6 +805,7 @@ impl U8Vec4 {
     /// Returns a vector containing the wrapping addition of `self` and signed vector `rhs`.
     ///
     /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
+
     #[inline]
     #[must_use]
     pub const fn checked_add_signed(self, rhs: I8Vec4) -> Option<Self> {
@@ -814,6 +832,7 @@ impl U8Vec4 {
     /// Returns a vector containing the wrapping addition of `self` and signed vector `rhs`.
     ///
     /// In other words this computes `[self.x.wrapping_add_signed(rhs.x), self.y.wrapping_add_signed(rhs.y), ..]`.
+
     #[inline]
     #[must_use]
     pub const fn wrapping_add_signed(self, rhs: I8Vec4) -> Self {
@@ -828,6 +847,7 @@ impl U8Vec4 {
     /// Returns a vector containing the saturating addition of `self` and signed vector `rhs`.
     ///
     /// In other words this computes `[self.x.saturating_add_signed(rhs.x), self.y.saturating_add_signed(rhs.y), ..]`.
+
     #[inline]
     #[must_use]
     pub const fn saturating_add_signed(self, rhs: I8Vec4) -> Self {
@@ -3114,6 +3134,8 @@ impl TryFrom<U64Vec4> for U8Vec4 {
         ))
     }
 }
+
+#[cfg(feature = "isize")]
 
 impl TryFrom<ISizeVec4> for U8Vec4 {
     type Error = core::num::TryFromIntError;

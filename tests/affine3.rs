@@ -446,7 +446,7 @@ mod affine3a {
         assert_approx_eq!(Vec3A::new(1.0, 2.0, 4.5), result3, 1.0e-6);
     });
 
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     glam_test!(test_as, {
         use glam::DAffine3;
         assert_eq!(
@@ -459,7 +459,7 @@ mod affine3a {
     impl_affine3_tests!(f32, Affine3A, Quat, Vec3, Mat3, Mat4);
 }
 
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 mod daffine3 {
     use super::support::{deg, FloatCompare};
     use glam::{DAffine3, DMat3, DMat4, DQuat, DVec3};

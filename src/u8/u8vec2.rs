@@ -1,8 +1,25 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{
-    BVec2, I16Vec2, I64Vec2, I8Vec2, ISizeVec2, IVec2, U16Vec2, U64Vec2, U8Vec3, USizeVec2, UVec2,
-};
+use crate::{BVec2, U8Vec3};
+
+use crate::I8Vec2;
+
+use crate::I16Vec2;
+
+use crate::U16Vec2;
+
+use crate::IVec2;
+
+use crate::UVec2;
+
+use crate::I64Vec2;
+
+use crate::U64Vec2;
+
+#[cfg(feature = "isize")]
+use crate::ISizeVec2;
+
+use crate::USizeVec2;
 
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -387,7 +404,7 @@ impl U8Vec2 {
     }
 
     /// Casts all elements of `self` to `f64`.
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     #[inline]
     #[must_use]
     pub fn as_dvec2(self) -> crate::DVec2 {
@@ -444,6 +461,7 @@ impl U8Vec2 {
     }
 
     /// Casts all elements of `self` to `isize`.
+    #[cfg(feature = "isize")]
     #[inline]
     #[must_use]
     pub fn as_isizevec2(self) -> crate::ISizeVec2 {
@@ -628,6 +646,7 @@ impl U8Vec2 {
     /// Returns a vector containing the wrapping addition of `self` and signed vector `rhs`.
     ///
     /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
+
     #[inline]
     #[must_use]
     pub const fn checked_add_signed(self, rhs: I8Vec2) -> Option<Self> {
@@ -646,6 +665,7 @@ impl U8Vec2 {
     /// Returns a vector containing the wrapping addition of `self` and signed vector `rhs`.
     ///
     /// In other words this computes `[self.x.wrapping_add_signed(rhs.x), self.y.wrapping_add_signed(rhs.y), ..]`.
+
     #[inline]
     #[must_use]
     pub const fn wrapping_add_signed(self, rhs: I8Vec2) -> Self {
@@ -658,6 +678,7 @@ impl U8Vec2 {
     /// Returns a vector containing the saturating addition of `self` and signed vector `rhs`.
     ///
     /// In other words this computes `[self.x.saturating_add_signed(rhs.x), self.y.saturating_add_signed(rhs.y), ..]`.
+
     #[inline]
     #[must_use]
     pub const fn saturating_add_signed(self, rhs: I8Vec2) -> Self {
@@ -2769,6 +2790,8 @@ impl TryFrom<U64Vec2> for U8Vec2 {
         Ok(Self::new(u8::try_from(v.x)?, u8::try_from(v.y)?))
     }
 }
+
+#[cfg(feature = "isize")]
 
 impl TryFrom<ISizeVec2> for U8Vec2 {
     type Error = core::num::TryFromIntError;

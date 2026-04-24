@@ -1,8 +1,18 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{
-    BVec2, I16Vec2, I64Vec2, I8Vec2, ISizeVec3, IVec2, U16Vec2, U64Vec2, U8Vec2, USizeVec2, UVec2,
-};
+use crate::{BVec2, I16Vec2, I8Vec2, ISizeVec3, U8Vec2};
+
+use crate::U16Vec2;
+
+use crate::UVec2;
+
+use crate::U64Vec2;
+
+use crate::USizeVec2;
+
+use crate::IVec2;
+
+use crate::I64Vec2;
 
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -498,7 +508,7 @@ impl ISizeVec2 {
     }
 
     /// Casts all elements of `self` to `f64`.
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     #[inline]
     #[must_use]
     pub fn as_dvec2(self) -> crate::DVec2 {
@@ -739,6 +749,7 @@ impl ISizeVec2 {
     /// Returns a vector containing the wrapping addition of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
+
     #[inline]
     #[must_use]
     pub const fn checked_add_unsigned(self, rhs: USizeVec2) -> Option<Self> {
@@ -757,6 +768,7 @@ impl ISizeVec2 {
     /// Returns a vector containing the wrapping subtraction of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `Some([self.x - rhs.x, self.y - rhs.y, ..])` but returns `None` on any overflow.
+
     #[inline]
     #[must_use]
     pub const fn checked_sub_unsigned(self, rhs: USizeVec2) -> Option<Self> {
@@ -775,6 +787,7 @@ impl ISizeVec2 {
     /// Returns a vector containing the wrapping addition of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `[self.x.wrapping_add_unsigned(rhs.x), self.y.wrapping_add_unsigned(rhs.y), ..]`.
+
     #[inline]
     #[must_use]
     pub const fn wrapping_add_unsigned(self, rhs: USizeVec2) -> Self {
@@ -787,6 +800,7 @@ impl ISizeVec2 {
     /// Returns a vector containing the wrapping subtraction of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `[self.x.wrapping_sub_unsigned(rhs.x), self.y.wrapping_sub_unsigned(rhs.y), ..]`.
+
     #[inline]
     #[must_use]
     pub const fn wrapping_sub_unsigned(self, rhs: USizeVec2) -> Self {
@@ -801,6 +815,7 @@ impl ISizeVec2 {
     /// In other words this computes `[self.x.saturating_add_unsigned(rhs.x), self.y.saturating_add_unsigned(rhs.y), ..]`.
     #[inline]
     #[must_use]
+
     pub const fn saturating_add_unsigned(self, rhs: USizeVec2) -> Self {
         Self {
             x: self.x.saturating_add_unsigned(rhs.x),
@@ -811,6 +826,7 @@ impl ISizeVec2 {
     /// Returns a vector containing the saturating subtraction of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `[self.x.saturating_sub_unsigned(rhs.x), self.y.saturating_sub_unsigned(rhs.y), ..]`.
+
     #[inline]
     #[must_use]
     pub const fn saturating_sub_unsigned(self, rhs: USizeVec2) -> Self {

@@ -52,7 +52,7 @@ use crate::{
     {% endif %}
 };
 {% if scalar_t == "f32" %}
-#[cfg(feature = "f64-types")]
+#[cfg(feature = "f64")]
 use crate::DQuat;
 {% endif %}
 
@@ -1251,7 +1251,7 @@ impl {{ self_t }} {
         {% endif %}
     }
 
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     #[inline]
     #[must_use]
     pub fn as_dquat(self) -> DQuat {

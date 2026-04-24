@@ -6,6 +6,12 @@
     )
 {% endmacro make_tuple_t %}
 
+{% macro cfg_check_for_type(ty) %}
+    {% if ty is starting_with("ISizeVec") %}
+        #[cfg(feature = "isize")]
+    {% endif %}
+{% endmacro cfg_check_for_type %}
+
 {% macro impl_mat3_minor(mat3_t, align="") %}
     /// Creates a 2x2 matrix from the minor of the given 3x3 matrix, discarding the `i`th column
     /// and `j`th row.

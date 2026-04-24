@@ -1101,7 +1101,7 @@ impl Vec4 {
     }
 
     /// Casts all elements of `self` to `f64`.
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     #[inline]
     #[must_use]
     pub fn as_dvec4(self) -> crate::DVec4 {
@@ -1165,6 +1165,7 @@ impl Vec4 {
     }
 
     /// Casts all elements of `self` to `isize`.
+    #[cfg(feature = "isize")]
     #[inline]
     #[must_use]
     pub fn as_isizevec4(self) -> crate::ISizeVec4 {

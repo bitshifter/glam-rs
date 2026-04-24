@@ -1236,7 +1236,7 @@ impl Vec3A {
     }
 
     /// Casts all elements of `self` to `f64`.
-    #[cfg(feature = "f64-types")]
+    #[cfg(feature = "f64")]
     #[inline]
     #[must_use]
     pub fn as_dvec3(self) -> crate::DVec3 {
@@ -1300,6 +1300,7 @@ impl Vec3A {
     }
 
     /// Casts all elements of `self` to `isize`.
+    #[cfg(feature = "isize")]
     #[inline]
     #[must_use]
     pub fn as_isizevec3(self) -> crate::ISizeVec3 {
