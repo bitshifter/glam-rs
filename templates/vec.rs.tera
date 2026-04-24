@@ -253,7 +253,7 @@
 };
 
 {% if try_from_types %}
-    {% for ty in try_from_types %}
+    {%- for ty in try_from_types %}
         {{ macros::cfg_check_for_type(ty=ty) }} 
         use crate::{{ ty }};
     {% endfor %}
@@ -2947,6 +2947,7 @@ impl {{ self_t }} {
 {% if scalar_t != "i64" %}
     {% if dim == 2 %}
     /// Casts all elements of `self` to `i64`.
+    #[cfg(feature = "i64")]
     #[inline]
     #[must_use]
     pub fn as_i64vec2(self) -> crate::I64Vec2 {
@@ -2954,6 +2955,7 @@ impl {{ self_t }} {
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `i64`.
+    #[cfg(feature = "i64")]
     #[inline]
     #[must_use]
     pub fn as_i64vec3(self) -> crate::I64Vec3 {
@@ -2961,6 +2963,7 @@ impl {{ self_t }} {
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `i64`.
+    #[cfg(feature = "i64")]
     #[inline]
     #[must_use]
     pub fn as_i64vec4(self) -> crate::I64Vec4 {
@@ -2971,6 +2974,7 @@ impl {{ self_t }} {
 {% if scalar_t != "u64" %}
     {% if dim == 2 %}
     /// Casts all elements of `self` to `u64`.
+    #[cfg(feature = "u64")]
     #[inline]
     #[must_use]
     pub fn as_u64vec2(self) -> crate::U64Vec2 {
@@ -2978,6 +2982,7 @@ impl {{ self_t }} {
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `u64`.
+    #[cfg(feature = "u64")]
     #[inline]
     #[must_use]
     pub fn as_u64vec3(self) -> crate::U64Vec3 {
@@ -2985,6 +2990,7 @@ impl {{ self_t }} {
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `u64`.
+    #[cfg(feature = "u64")]
     #[inline]
     #[must_use]
     pub fn as_u64vec4(self) -> crate::U64Vec4 {
@@ -3022,6 +3028,7 @@ impl {{ self_t }} {
 {% if scalar_t != "usize" %}
     {% if dim == 2 %}
     /// Casts all elements of `self` to `usize`.
+    #[cfg(feature = "usize")]
     #[inline]
     #[must_use]
     pub fn as_usizevec2(self) -> crate::USizeVec2 {
@@ -3029,6 +3036,7 @@ impl {{ self_t }} {
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `usize`.
+    #[cfg(feature = "usize")]
     #[inline]
     #[must_use]
     pub fn as_usizevec3(self) -> crate::USizeVec3 {
@@ -3036,6 +3044,7 @@ impl {{ self_t }} {
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `usize`.
+    #[cfg(feature = "usize")]
     #[inline]
     #[must_use]
     pub fn as_usizevec4(self) -> crate::USizeVec4 {

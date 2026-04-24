@@ -374,15 +374,21 @@ pub mod u32;
 pub use self::u32::*;
 
 /** `i64` vector types. */
+#[cfg(feature = "i64")]
 pub mod i64;
+#[cfg(feature = "i64")]
 pub use self::i64::*;
 
 /** `u64` vector types. */
+#[cfg(feature = "u64")]
 pub mod u64;
+#[cfg(feature = "u64")]
 pub use self::u64::*;
 
 /** `usize` vector types. */
+#[cfg(feature = "usize")]
 pub mod usize;
+#[cfg(feature = "usize")]
 pub use self::usize::*;
 
 /** `isize` vector types. */

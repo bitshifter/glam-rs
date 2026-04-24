@@ -8,11 +8,13 @@ use crate::I16Vec3;
 
 use crate::IVec3;
 
+#[cfg(feature = "i64")]
 use crate::I64Vec3;
 
 #[cfg(feature = "isize")]
 use crate::ISizeVec3;
 
+#[cfg(feature = "usize")]
 use crate::USizeVec3;
 
 use core::fmt;
@@ -517,6 +519,7 @@ impl U64Vec3 {
     }
 
     /// Casts all elements of `self` to `i64`.
+    #[cfg(feature = "i64")]
     #[inline]
     #[must_use]
     pub fn as_i64vec3(self) -> crate::I64Vec3 {
@@ -532,6 +535,7 @@ impl U64Vec3 {
     }
 
     /// Casts all elements of `self` to `usize`.
+    #[cfg(feature = "usize")]
     #[inline]
     #[must_use]
     pub fn as_usizevec3(self) -> crate::USizeVec3 {
@@ -734,6 +738,7 @@ impl U64Vec3 {
     ///
     /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
 
+    #[cfg(feature = "i64")]
     #[inline]
     #[must_use]
     pub const fn checked_add_signed(self, rhs: I64Vec3) -> Option<Self> {
@@ -757,6 +762,7 @@ impl U64Vec3 {
     ///
     /// In other words this computes `[self.x.wrapping_add_signed(rhs.x), self.y.wrapping_add_signed(rhs.y), ..]`.
 
+    #[cfg(feature = "i64")]
     #[inline]
     #[must_use]
     pub const fn wrapping_add_signed(self, rhs: I64Vec3) -> Self {
@@ -771,6 +777,7 @@ impl U64Vec3 {
     ///
     /// In other words this computes `[self.x.saturating_add_signed(rhs.x), self.y.saturating_add_signed(rhs.y), ..]`.
 
+    #[cfg(feature = "i64")]
     #[inline]
     #[must_use]
     pub const fn saturating_add_signed(self, rhs: I64Vec3) -> Self {
@@ -2943,6 +2950,8 @@ impl TryFrom<IVec3> for U64Vec3 {
     }
 }
 
+#[cfg(feature = "i64")]
+
 impl TryFrom<I64Vec3> for U64Vec3 {
     type Error = core::num::TryFromIntError;
 
@@ -2970,6 +2979,8 @@ impl TryFrom<ISizeVec3> for U64Vec3 {
         ))
     }
 }
+
+#[cfg(feature = "usize")]
 
 impl TryFrom<USizeVec3> for U64Vec3 {
     type Error = core::num::TryFromIntError;

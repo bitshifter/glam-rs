@@ -10,13 +10,16 @@ use crate::IVec4;
 
 use crate::UVec4;
 
+#[cfg(feature = "i64")]
 use crate::I64Vec4;
 
+#[cfg(feature = "u64")]
 use crate::U64Vec4;
 
 #[cfg(feature = "isize")]
 use crate::ISizeVec4;
 
+#[cfg(feature = "usize")]
 use crate::USizeVec4;
 
 use core::fmt;
@@ -642,6 +645,7 @@ impl I16Vec4 {
     }
 
     /// Casts all elements of `self` to `i64`.
+    #[cfg(feature = "i64")]
     #[inline]
     #[must_use]
     pub fn as_i64vec4(self) -> crate::I64Vec4 {
@@ -649,6 +653,7 @@ impl I16Vec4 {
     }
 
     /// Casts all elements of `self` to `u64`.
+    #[cfg(feature = "u64")]
     #[inline]
     #[must_use]
     pub fn as_u64vec4(self) -> crate::U64Vec4 {
@@ -669,6 +674,7 @@ impl I16Vec4 {
     }
 
     /// Casts all elements of `self` to `usize`.
+    #[cfg(feature = "usize")]
     #[inline]
     #[must_use]
     pub fn as_usizevec4(self) -> crate::USizeVec4 {
@@ -3275,6 +3281,8 @@ impl TryFrom<UVec4> for I16Vec4 {
     }
 }
 
+#[cfg(feature = "i64")]
+
 impl TryFrom<I64Vec4> for I16Vec4 {
     type Error = core::num::TryFromIntError;
 
@@ -3288,6 +3296,8 @@ impl TryFrom<I64Vec4> for I16Vec4 {
         ))
     }
 }
+
+#[cfg(feature = "u64")]
 
 impl TryFrom<U64Vec4> for I16Vec4 {
     type Error = core::num::TryFromIntError;
@@ -3318,6 +3328,8 @@ impl TryFrom<ISizeVec4> for I16Vec4 {
         ))
     }
 }
+
+#[cfg(feature = "usize")]
 
 impl TryFrom<USizeVec4> for I16Vec4 {
     type Error = core::num::TryFromIntError;

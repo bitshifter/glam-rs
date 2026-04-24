@@ -25,12 +25,18 @@ mod u16vec2_impl;
 mod u16vec3_impl;
 mod u16vec4_impl;
 
+#[cfg(feature = "i64")]
 mod i64vec2_impl;
+#[cfg(feature = "i64")]
 mod i64vec3_impl;
+#[cfg(feature = "i64")]
 mod i64vec4_impl;
 
+#[cfg(feature = "u64")]
 mod u64vec2_impl;
+#[cfg(feature = "u64")]
 mod u64vec3_impl;
+#[cfg(feature = "u64")]
 mod u64vec4_impl;
 
 #[cfg(feature = "isize")]
@@ -40,8 +46,11 @@ mod isizevec3_impl;
 #[cfg(feature = "isize")]
 mod isizevec4_impl;
 
+#[cfg(feature = "usize")]
 mod usizevec2_impl;
+#[cfg(feature = "usize")]
 mod usizevec3_impl;
+#[cfg(feature = "usize")]
 mod usizevec4_impl;
 
 mod uvec2_impl;

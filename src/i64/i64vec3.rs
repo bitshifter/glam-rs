@@ -2,11 +2,13 @@
 
 use crate::{BVec3, BVec3A, I16Vec3, I64Vec2, I64Vec4, I8Vec3, IVec3, U16Vec3, U8Vec3, UVec3};
 
+#[cfg(feature = "u64")]
 use crate::U64Vec3;
 
 #[cfg(feature = "isize")]
 use crate::ISizeVec3;
 
+#[cfg(feature = "usize")]
 use crate::USizeVec3;
 
 use core::fmt;
@@ -601,6 +603,7 @@ impl I64Vec3 {
     }
 
     /// Casts all elements of `self` to `u64`.
+    #[cfg(feature = "u64")]
     #[inline]
     #[must_use]
     pub fn as_u64vec3(self) -> crate::U64Vec3 {
@@ -616,6 +619,7 @@ impl I64Vec3 {
     }
 
     /// Casts all elements of `self` to `usize`.
+    #[cfg(feature = "usize")]
     #[inline]
     #[must_use]
     pub fn as_usizevec3(self) -> crate::USizeVec3 {
@@ -818,6 +822,7 @@ impl I64Vec3 {
     ///
     /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
 
+    #[cfg(feature = "u64")]
     #[inline]
     #[must_use]
     pub const fn checked_add_unsigned(self, rhs: U64Vec3) -> Option<Self> {
@@ -841,6 +846,7 @@ impl I64Vec3 {
     ///
     /// In other words this computes `Some([self.x - rhs.x, self.y - rhs.y, ..])` but returns `None` on any overflow.
 
+    #[cfg(feature = "u64")]
     #[inline]
     #[must_use]
     pub const fn checked_sub_unsigned(self, rhs: U64Vec3) -> Option<Self> {
@@ -864,6 +870,7 @@ impl I64Vec3 {
     ///
     /// In other words this computes `[self.x.wrapping_add_unsigned(rhs.x), self.y.wrapping_add_unsigned(rhs.y), ..]`.
 
+    #[cfg(feature = "u64")]
     #[inline]
     #[must_use]
     pub const fn wrapping_add_unsigned(self, rhs: U64Vec3) -> Self {
@@ -878,6 +885,7 @@ impl I64Vec3 {
     ///
     /// In other words this computes `[self.x.wrapping_sub_unsigned(rhs.x), self.y.wrapping_sub_unsigned(rhs.y), ..]`.
 
+    #[cfg(feature = "u64")]
     #[inline]
     #[must_use]
     pub const fn wrapping_sub_unsigned(self, rhs: U64Vec3) -> Self {
@@ -893,6 +901,7 @@ impl I64Vec3 {
     /// In other words this computes `[self.x.saturating_add_unsigned(rhs.x), self.y.saturating_add_unsigned(rhs.y), ..]`.
     #[inline]
     #[must_use]
+    #[cfg(feature = "u64")]
 
     pub const fn saturating_add_unsigned(self, rhs: U64Vec3) -> Self {
         Self {
@@ -906,6 +915,7 @@ impl I64Vec3 {
     ///
     /// In other words this computes `[self.x.saturating_sub_unsigned(rhs.x), self.y.saturating_sub_unsigned(rhs.y), ..]`.
 
+    #[cfg(feature = "u64")]
     #[inline]
     #[must_use]
     pub const fn saturating_sub_unsigned(self, rhs: U64Vec3) -> Self {
@@ -3080,6 +3090,8 @@ impl From<UVec3> for I64Vec3 {
     }
 }
 
+#[cfg(feature = "u64")]
+
 impl TryFrom<U64Vec3> for I64Vec3 {
     type Error = core::num::TryFromIntError;
 
@@ -3107,6 +3119,8 @@ impl TryFrom<ISizeVec3> for I64Vec3 {
         ))
     }
 }
+
+#[cfg(feature = "usize")]
 
 impl TryFrom<USizeVec3> for I64Vec3 {
     type Error = core::num::TryFromIntError;

@@ -8,13 +8,16 @@ use crate::IVec2;
 
 use crate::UVec2;
 
+#[cfg(feature = "i64")]
 use crate::I64Vec2;
 
+#[cfg(feature = "u64")]
 use crate::U64Vec2;
 
 #[cfg(feature = "isize")]
 use crate::ISizeVec2;
 
+#[cfg(feature = "usize")]
 use crate::USizeVec2;
 
 use core::fmt;
@@ -554,6 +557,7 @@ impl I16Vec2 {
     }
 
     /// Casts all elements of `self` to `i64`.
+    #[cfg(feature = "i64")]
     #[inline]
     #[must_use]
     pub fn as_i64vec2(self) -> crate::I64Vec2 {
@@ -561,6 +565,7 @@ impl I16Vec2 {
     }
 
     /// Casts all elements of `self` to `u64`.
+    #[cfg(feature = "u64")]
     #[inline]
     #[must_use]
     pub fn as_u64vec2(self) -> crate::U64Vec2 {
@@ -576,6 +581,7 @@ impl I16Vec2 {
     }
 
     /// Casts all elements of `self` to `usize`.
+    #[cfg(feature = "usize")]
     #[inline]
     #[must_use]
     pub fn as_usizevec2(self) -> crate::USizeVec2 {
@@ -2940,6 +2946,8 @@ impl TryFrom<UVec2> for I16Vec2 {
     }
 }
 
+#[cfg(feature = "i64")]
+
 impl TryFrom<I64Vec2> for I16Vec2 {
     type Error = core::num::TryFromIntError;
 
@@ -2948,6 +2956,8 @@ impl TryFrom<I64Vec2> for I16Vec2 {
         Ok(Self::new(i16::try_from(v.x)?, i16::try_from(v.y)?))
     }
 }
+
+#[cfg(feature = "u64")]
 
 impl TryFrom<U64Vec2> for I16Vec2 {
     type Error = core::num::TryFromIntError;
@@ -2968,6 +2978,8 @@ impl TryFrom<ISizeVec2> for I16Vec2 {
         Ok(Self::new(i16::try_from(v.x)?, i16::try_from(v.y)?))
     }
 }
+
+#[cfg(feature = "usize")]
 
 impl TryFrom<USizeVec2> for I16Vec2 {
     type Error = core::num::TryFromIntError;

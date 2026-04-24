@@ -7,9 +7,15 @@
 {% endmacro make_tuple_t %}
 
 {% macro cfg_check_for_type(ty) %}
-    {% if ty is starting_with("ISizeVec") %}
+    {%- if ty is starting_with("ISizeVec") %}
         #[cfg(feature = "isize")]
-    {% endif %}
+    {%- elif ty is starting_with("USizeVec") %}
+        #[cfg(feature = "usize")]
+    {%- elif ty is starting_with("I64Vec") %}
+        #[cfg(feature = "i64")]
+    {%- elif ty is starting_with("U64Vec") %}
+        #[cfg(feature = "u64")]
+    {%- endif %}
 {% endmacro cfg_check_for_type %}
 
 {% macro impl_mat3_minor(mat3_t, align="") %}
