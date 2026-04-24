@@ -1,6 +1,6 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
-#[cfg(feature = "f64")]
+#[cfg(feature = "f64-types")]
 use crate::DMat2;
 
 use crate::{f32::math, swizzles::*, Mat3, Mat3A, Vec2};
@@ -478,7 +478,7 @@ impl Mat2 {
         Self::from_cols(self.x_axis.abs(), self.y_axis.abs())
     }
 
-    #[cfg(feature = "f64")]
+    #[cfg(feature = "f64-types")]
     #[inline]
     #[must_use]
     pub fn as_dmat2(&self) -> DMat2 {

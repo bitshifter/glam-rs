@@ -446,7 +446,7 @@ impl Affine3 {
     }
 
     /// Casts all elements of `self` to `f64`.
-    #[cfg(feature = "f64")]
+    #[cfg(feature = "f64-types")]
     #[inline]
     #[must_use]
     pub fn as_daffine3(&self) -> crate::DAffine3 {

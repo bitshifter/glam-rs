@@ -7,7 +7,7 @@ use crate::{
     Mat3, Mat3A, Mat4, Vec2, Vec3, Vec3A, Vec4,
 };
 
-#[cfg(feature = "f64")]
+#[cfg(feature = "f64-types")]
 use crate::DQuat;
 
 use core::simd::*;
@@ -858,7 +858,7 @@ impl Quat {
         )
     }
 
-    #[cfg(feature = "f64")]
+    #[cfg(feature = "f64-types")]
     #[inline]
     #[must_use]
     pub fn as_dquat(self) -> DQuat {

@@ -2,7 +2,7 @@
 #[macro_use]
 mod support;
 
-#[cfg(feature = "f64")]
+#[cfg(feature = "f64-types")]
 glam_test!(test_dvec4_swizzles, {
     use glam::{dvec2, dvec3, dvec4, Vec4Swizzles};
     let v = dvec4(1_f64, 2_f64, 3_f64, 4_f64);
@@ -382,7 +382,7 @@ glam_test!(test_dvec4_swizzles, {
     assert_eq!(v.with_wz(rhs2), dvec4(1_f64, 2_f64, 12_f64, 11_f64));
 });
 
-#[cfg(feature = "f64")]
+#[cfg(feature = "f64-types")]
 glam_test!(test_dvec3_swizzles, {
     use glam::{dvec2, dvec3, dvec4, Vec3Swizzles};
     let v = dvec3(1_f64, 2_f64, 3_f64);
@@ -512,7 +512,7 @@ glam_test!(test_dvec3_swizzles, {
     assert_eq!(v.with_zy(rhs2), dvec3(1_f64, 12_f64, 11_f64));
 });
 
-#[cfg(feature = "f64")]
+#[cfg(feature = "f64-types")]
 glam_test!(test_dvec2_swizzles, {
     use glam::{dvec2, dvec3, dvec4, Vec2Swizzles};
     let v = dvec2(1_f64, 2_f64);

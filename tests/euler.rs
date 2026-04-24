@@ -98,7 +98,7 @@ mod euler {
         }
     }
 
-    #[cfg(feature = "f64")]
+    #[cfg(feature = "f64-types")]
     mod f64 {
         pub fn deg_to_rad(a: i32, b: i32, c: i32) -> (f64, f64, f64) {
             (
@@ -274,17 +274,17 @@ mod euler {
         impl_mat_euler_test!(Mat4, f32);
     }
 
-    #[cfg(feature = "f64")]
+    #[cfg(feature = "f64-types")]
     mod dquat {
         impl_quat_euler_test!(DQuat, f64);
     }
 
-    #[cfg(feature = "f64")]
+    #[cfg(feature = "f64-types")]
     mod dmat3 {
         impl_mat_euler_test!(DMat3, f64);
     }
 
-    #[cfg(feature = "f64")]
+    #[cfg(feature = "f64-types")]
     mod dmat4 {
         impl_mat_euler_test!(DMat4, f64);
     }

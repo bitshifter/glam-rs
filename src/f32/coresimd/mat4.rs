@@ -1,6 +1,6 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
-#[cfg(feature = "f64")]
+#[cfg(feature = "f64-types")]
 use crate::DMat4;
 
 use crate::{
@@ -1514,7 +1514,7 @@ impl Mat4 {
         )
     }
 
-    #[cfg(feature = "f64")]
+    #[cfg(feature = "f64-types")]
     #[inline]
     #[must_use]
     pub fn as_dmat4(&self) -> DMat4 {

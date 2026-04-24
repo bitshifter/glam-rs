@@ -1962,13 +1962,13 @@ mod vec2 {
     });
 
     glam_test!(test_as, {
-        #[cfg(feature = "f64")]
+        #[cfg(feature = "f64-types")]
         use glam::DVec2;
         use glam::{
             I16Vec2, I64Vec2, I8Vec2, ISizeVec2, IVec2, U16Vec2, U64Vec2, U8Vec2, USizeVec2, UVec2,
         };
 
-        #[cfg(feature = "f64")]
+        #[cfg(feature = "f64-types")]
         assert_eq!(DVec2::new(-1.0, -2.0), Vec2::new(-1.0, -2.0).as_dvec2());
         assert_eq!(I8Vec2::new(-1, -2), Vec2::new(-1.0, -2.0).as_i8vec2());
         assert_eq!(U8Vec2::new(1, 2), Vec2::new(1.0, 2.0).as_u8vec2());
@@ -1981,34 +1981,34 @@ mod vec2 {
         assert_eq!(ISizeVec2::new(-1, -2), Vec2::new(-1.0, -2.0).as_isizevec2());
         assert_eq!(USizeVec2::new(1, 2), Vec2::new(1.0, 2.0).as_usizevec2());
 
-        #[cfg(feature = "f64")]
+        #[cfg(feature = "f64-types")]
         assert_eq!(Vec2::new(-1.0, -2.0), DVec2::new(-1.0, -2.0).as_vec2());
-        #[cfg(feature = "f64")]
+        #[cfg(feature = "f64-types")]
         assert_eq!(I8Vec2::new(-1, -2), DVec2::new(-1.0, -2.0).as_i8vec2());
-        #[cfg(feature = "f64")]
+        #[cfg(feature = "f64-types")]
         assert_eq!(U8Vec2::new(1, 2), DVec2::new(1.0, 2.0).as_u8vec2());
-        #[cfg(feature = "f64")]
+        #[cfg(feature = "f64-types")]
         assert_eq!(I16Vec2::new(-1, -2), DVec2::new(-1.0, -2.0).as_i16vec2());
-        #[cfg(feature = "f64")]
+        #[cfg(feature = "f64-types")]
         assert_eq!(U16Vec2::new(1, 2), DVec2::new(1.0, 2.0).as_u16vec2());
-        #[cfg(feature = "f64")]
+        #[cfg(feature = "f64-types")]
         assert_eq!(IVec2::new(-1, -2), DVec2::new(-1.0, -2.0).as_ivec2());
-        #[cfg(feature = "f64")]
+        #[cfg(feature = "f64-types")]
         assert_eq!(UVec2::new(1, 2), DVec2::new(1.0, 2.0).as_uvec2());
-        #[cfg(feature = "f64")]
+        #[cfg(feature = "f64-types")]
         assert_eq!(I64Vec2::new(-1, -2), DVec2::new(-1.0, -2.0).as_i64vec2());
-        #[cfg(feature = "f64")]
+        #[cfg(feature = "f64-types")]
         assert_eq!(U64Vec2::new(1, 2), DVec2::new(1.0, 2.0).as_u64vec2());
-        #[cfg(feature = "f64")]
+        #[cfg(feature = "f64-types")]
         assert_eq!(
             ISizeVec2::new(-1, -2),
             DVec2::new(-1.0, -2.0).as_isizevec2()
         );
-        #[cfg(feature = "f64")]
+        #[cfg(feature = "f64-types")]
         assert_eq!(USizeVec2::new(1, 2), DVec2::new(1.0, 2.0).as_usizevec2());
 
         assert_eq!(Vec2::new(-1.0, -2.0), I8Vec2::new(-1, -2).as_vec2());
-        #[cfg(feature = "f64")]
+        #[cfg(feature = "f64-types")]
         assert_eq!(DVec2::new(-1.0, -2.0), I8Vec2::new(-1, -2).as_dvec2());
         assert_eq!(U8Vec2::new(1, 2), I8Vec2::new(1, 2).as_u8vec2());
         assert_eq!(I16Vec2::new(-1, -2), I8Vec2::new(-1, -2).as_i16vec2());
@@ -2021,7 +2021,7 @@ mod vec2 {
         assert_eq!(USizeVec2::new(1, 2), I8Vec2::new(1, 2).as_usizevec2());
 
         assert_eq!(Vec2::new(1.0, 2.0), U8Vec2::new(1, 2).as_vec2());
-        #[cfg(feature = "f64")]
+        #[cfg(feature = "f64-types")]
         assert_eq!(DVec2::new(1.0, 2.0), U8Vec2::new(1, 2).as_dvec2());
         assert_eq!(I8Vec2::new(1, 2), U8Vec2::new(1, 2).as_i8vec2());
         assert_eq!(I16Vec2::new(1, 2), U8Vec2::new(1, 2).as_i16vec2());
@@ -2034,7 +2034,7 @@ mod vec2 {
         assert_eq!(USizeVec2::new(1, 2), U8Vec2::new(1, 2).as_usizevec2());
 
         assert_eq!(Vec2::new(-1.0, -2.0), I16Vec2::new(-1, -2).as_vec2());
-        #[cfg(feature = "f64")]
+        #[cfg(feature = "f64-types")]
         assert_eq!(DVec2::new(-1.0, -2.0), I16Vec2::new(-1, -2).as_dvec2());
         assert_eq!(I8Vec2::new(-1, -2), I16Vec2::new(-1, -2).as_i8vec2());
         assert_eq!(U8Vec2::new(1, 2), I16Vec2::new(1, 2).as_u8vec2());
@@ -2047,7 +2047,7 @@ mod vec2 {
         assert_eq!(USizeVec2::new(1, 2), I16Vec2::new(1, 2).as_usizevec2());
 
         assert_eq!(Vec2::new(1.0, 2.0), U16Vec2::new(1, 2).as_vec2());
-        #[cfg(feature = "f64")]
+        #[cfg(feature = "f64-types")]
         assert_eq!(DVec2::new(1.0, 2.0), U16Vec2::new(1, 2).as_dvec2());
         assert_eq!(I8Vec2::new(1, 2), U16Vec2::new(1, 2).as_i8vec2());
         assert_eq!(U8Vec2::new(1, 2), U16Vec2::new(1, 2).as_u8vec2());
@@ -2060,7 +2060,7 @@ mod vec2 {
         assert_eq!(USizeVec2::new(1, 2), U16Vec2::new(1, 2).as_usizevec2());
 
         assert_eq!(Vec2::new(-1.0, -2.0), IVec2::new(-1, -2).as_vec2());
-        #[cfg(feature = "f64")]
+        #[cfg(feature = "f64-types")]
         assert_eq!(DVec2::new(-1.0, -2.0), IVec2::new(-1, -2).as_dvec2());
         assert_eq!(UVec2::new(1, 2), IVec2::new(1, 2).as_uvec2());
         assert_eq!(I8Vec2::new(-1, -2), IVec2::new(-1, -2).as_i8vec2());
@@ -2073,7 +2073,7 @@ mod vec2 {
         assert_eq!(USizeVec2::new(1, 2), IVec2::new(1, 2).as_usizevec2());
 
         assert_eq!(Vec2::new(1.0, 2.0), UVec2::new(1, 2).as_vec2());
-        #[cfg(feature = "f64")]
+        #[cfg(feature = "f64-types")]
         assert_eq!(DVec2::new(1.0, 2.0), UVec2::new(1, 2).as_dvec2());
         assert_eq!(I8Vec2::new(1, 2), UVec2::new(1, 2).as_i8vec2());
         assert_eq!(U8Vec2::new(1, 2), UVec2::new(1, 2).as_u8vec2());
@@ -2086,7 +2086,7 @@ mod vec2 {
         assert_eq!(USizeVec2::new(1, 2), UVec2::new(1, 2).as_usizevec2());
 
         assert_eq!(Vec2::new(-1.0, -2.0), I64Vec2::new(-1, -2).as_vec2());
-        #[cfg(feature = "f64")]
+        #[cfg(feature = "f64-types")]
         assert_eq!(DVec2::new(-1.0, -2.0), I64Vec2::new(-1, -2).as_dvec2());
         assert_eq!(U8Vec2::new(1, 2), I64Vec2::new(1, 2).as_u8vec2());
         assert_eq!(I8Vec2::new(-1, -2), I64Vec2::new(-1, -2).as_i8vec2());
@@ -2099,7 +2099,7 @@ mod vec2 {
         assert_eq!(USizeVec2::new(1, 2), I64Vec2::new(1, 2).as_usizevec2());
 
         assert_eq!(Vec2::new(1.0, 2.0), U64Vec2::new(1, 2).as_vec2());
-        #[cfg(feature = "f64")]
+        #[cfg(feature = "f64-types")]
         assert_eq!(DVec2::new(1.0, 2.0), U64Vec2::new(1, 2).as_dvec2());
         assert_eq!(I8Vec2::new(1, 2), U64Vec2::new(1, 2).as_i8vec2());
         assert_eq!(U8Vec2::new(1, 2), U64Vec2::new(1, 2).as_u8vec2());
@@ -2112,7 +2112,7 @@ mod vec2 {
         assert_eq!(USizeVec2::new(1, 2), U64Vec2::new(1, 2).as_usizevec2());
 
         assert_eq!(Vec2::new(-1.0, -2.0), ISizeVec2::new(-1, -2).as_vec2());
-        #[cfg(feature = "f64")]
+        #[cfg(feature = "f64-types")]
         assert_eq!(DVec2::new(-1.0, -2.0), ISizeVec2::new(-1, -2).as_dvec2());
         assert_eq!(U8Vec2::new(1, 2), ISizeVec2::new(1, 2).as_u8vec2());
         assert_eq!(I8Vec2::new(-1, -2), ISizeVec2::new(-1, -2).as_i8vec2());
@@ -2125,7 +2125,7 @@ mod vec2 {
         assert_eq!(USizeVec2::new(1, 2), ISizeVec2::new(1, 2).as_usizevec2());
 
         assert_eq!(Vec2::new(1.0, 2.0), USizeVec2::new(1, 2).as_vec2());
-        #[cfg(feature = "f64")]
+        #[cfg(feature = "f64-types")]
         assert_eq!(DVec2::new(1.0, 2.0), USizeVec2::new(1, 2).as_dvec2());
         assert_eq!(I8Vec2::new(1, 2), USizeVec2::new(1, 2).as_i8vec2());
         assert_eq!(U8Vec2::new(1, 2), USizeVec2::new(1, 2).as_u8vec2());
@@ -2141,7 +2141,7 @@ mod vec2 {
     impl_vec2_float_tests!(f32, vec2, Vec2, Vec3, BVec2);
 }
 
-#[cfg(feature = "f64")]
+#[cfg(feature = "f64-types")]
 mod dvec2 {
     use glam::{dvec2, BVec2, DVec2, DVec3, IVec2, UVec2, Vec2};
 

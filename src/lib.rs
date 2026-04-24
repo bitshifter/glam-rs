@@ -344,9 +344,9 @@ pub mod f32;
 pub use self::f32::*;
 
 /** `f64` vector, quaternion and matrix types. */
-#[cfg(feature = "f64")]
+#[cfg(feature = "f64-types")]
 pub mod f64;
-#[cfg(feature = "f64")]
+#[cfg(feature = "f64-types")]
 pub use self::f64::*;
 
 /** `i8` vector types. */

@@ -1374,7 +1374,7 @@ impl DMat4 {
         )
     }
 
-    #[cfg(feature = "f64")]
+    #[cfg(feature = "f64-types")]
     #[inline]
     #[must_use]
     pub fn as_mat4(&self) -> Mat4 {

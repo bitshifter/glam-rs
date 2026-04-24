@@ -1,5 +1,5 @@
 use crate::{Affine2, Affine3, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
-#[cfg(feature = "f64")]
+#[cfg(feature = "f64-types")]
 use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
 use approx::{AbsDiffEq, RelativeEq, UlpsEq};
 
@@ -144,23 +144,23 @@ impl_approx_xzyw_axes!(f32, Affine3);
 impl_approx_xzyw_axes!(f32, Affine3A);
 impl_approx_xzy_axes!(f32, Mat3A);
 
-#[cfg(feature = "f64")]
+#[cfg(feature = "f64-types")]
 impl_approx_xzy_axes!(f64, DAffine2);
-#[cfg(feature = "f64")]
+#[cfg(feature = "f64-types")]
 impl_approx_xzyw_axes!(f64, DAffine3);
-#[cfg(feature = "f64")]
+#[cfg(feature = "f64-types")]
 impl_approx_as_ref!(f64, DMat2);
-#[cfg(feature = "f64")]
+#[cfg(feature = "f64-types")]
 impl_approx_as_ref!(f64, DMat3);
-#[cfg(feature = "f64")]
+#[cfg(feature = "f64-types")]
 impl_approx_as_ref!(f64, DMat4);
-#[cfg(feature = "f64")]
+#[cfg(feature = "f64-types")]
 impl_approx_as_ref!(f64, DQuat);
-#[cfg(feature = "f64")]
+#[cfg(feature = "f64-types")]
 impl_approx_as_ref!(f64, DVec2);
-#[cfg(feature = "f64")]
+#[cfg(feature = "f64-types")]
 impl_approx_as_ref!(f64, DVec3);
-#[cfg(feature = "f64")]
+#[cfg(feature = "f64-types")]
 impl_approx_as_ref!(f64, DVec4);
 
 #[cfg(test)]
@@ -254,7 +254,7 @@ mod test {
             Affine3A::from_cols_slice(&ONESF32)
         );
 
-        #[cfg(feature = "f64")]
+        #[cfg(feature = "f64-types")]
         {
             const ONESF64: [f64; 16] = [1.0; 16];
             impl_approx_test!(f64, DVec2);

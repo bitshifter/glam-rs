@@ -20,8 +20,22 @@ default = ["std", "all-types"]
 # enable support for the standard library
 std = []
 
-f64 = []
-all-types = ["f64"]
+f64-types = []
+isize-types = []
+usize-types = []
+i64-types = []
+u64-types = []
+i32-types = []
+u32-types = []
+i16-types = []
+u16-types = []
+i8-types = []
+u8-types = []
+
+integer-types = ["i8-types", "u8-types", "i16-types", "u16-types", "i32-types", "u32-types", "i64-types", "u64-types"]
+size-types = ["isize-types", "usize-types"]
+
+all-types = ["f64-types", "integer-types", "size-types"]
 
 # enable additional glam checks if debug assertions are enabled
 debug-glam-assert = []

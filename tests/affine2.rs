@@ -327,7 +327,7 @@ mod affine2 {
         assert_eq!(m, Mat3A::from(a));
     });
 
-    #[cfg(feature = "f64")]
+    #[cfg(feature = "f64-types")]
     glam_test!(test_as, {
         use glam::DAffine2;
         assert_eq!(
@@ -339,7 +339,7 @@ mod affine2 {
     impl_affine2_tests!(f32, Affine2, Vec2, Mat2, Mat3);
 }
 
-#[cfg(feature = "f64")]
+#[cfg(feature = "f64-types")]
 mod daffine2 {
     use super::support::{deg, FloatCompare};
     use glam::{DAffine2, DMat2, DMat3, DVec2};

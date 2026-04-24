@@ -657,7 +657,7 @@ mod f32 {
     }
 }
 
-#[cfg(feature = "f64")]
+#[cfg(feature = "f64-types")]
 mod f64 {
     use crate::f64::math;
     use crate::{DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};

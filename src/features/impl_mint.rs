@@ -1,6 +1,6 @@
 use mint::IntoMint;
 
-#[cfg(feature = "f64")]
+#[cfg(feature = "f64-types")]
 use crate::{DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
 
 use crate::{
@@ -313,7 +313,7 @@ impl IntoMint for Mat3A {
 }
 
 impl_float_types!(f32, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4);
-#[cfg(feature = "f64")]
+#[cfg(feature = "f64-types")]
 impl_float_types!(f64, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4);
 impl_vec_types!(i8, I8Vec2, I8Vec3, I8Vec4);
 impl_vec_types!(u8, U8Vec2, U8Vec3, U8Vec4);
@@ -528,7 +528,7 @@ mod test {
         }
     }
 
-    #[cfg(feature = "f64")]
+    #[cfg(feature = "f64-types")]
     mod f64 {
         impl_float_tests!(f64, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4);
     }
