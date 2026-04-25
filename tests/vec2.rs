@@ -1821,10 +1821,12 @@ macro_rules! impl_vec2_shift_op_test {
 #[allow(unused_macros)]
 macro_rules! impl_vec2_shift_op_tests {
     ($vec2:ident) => {
+        #[cfg(feature = "i32")]
         mod shift_ivec2_by_ivec2 {
             use super::*;
             impl_vec2_shift_op_test!($vec2, IVec2, 0, 2);
         }
+        #[cfg(feature = "u32")]
         mod shift_ivec2_by_uvec2 {
             use super::*;
             impl_vec2_shift_op_test!($vec2, UVec2, 0, 2);
@@ -2012,7 +2014,7 @@ mod vec2 {
         assert_eq!(I64Vec2::new(-1, -2), Vec2::new(-1.0, -2.0).as_i64vec2());
         #[cfg(feature = "u64")]
         assert_eq!(U64Vec2::new(1, 2), Vec2::new(1.0, 2.0).as_u64vec2());
-        #[cfg(feature = "usize")]
+        #[cfg(feature = "isize")]
         assert_eq!(ISizeVec2::new(-1, -2), Vec2::new(-1.0, -2.0).as_isizevec2());
         #[cfg(feature = "usize")]
         assert_eq!(USizeVec2::new(1, 2), Vec2::new(1.0, 2.0).as_usizevec2());
@@ -3837,10 +3839,25 @@ mod isizevec2 {
 
 #[cfg(feature = "usize")]
 mod usizevec2 {
-    use glam::{
-        usizevec2, BVec2, I16Vec2, I64Vec2, I8Vec2, ISizeVec2, IVec2, U16Vec2, U64Vec2, U8Vec2,
-        USizeVec2, USizeVec3, UVec2,
-    };
+    #[cfg(feature = "i16")]
+    use glam::I16Vec2;
+    #[cfg(feature = "i64")]
+    use glam::I64Vec2;
+    #[cfg(feature = "i8")]
+    use glam::I8Vec2;
+    #[cfg(feature = "isize")]
+    use glam::ISizeVec2;
+    #[cfg(feature = "i32")]
+    use glam::IVec2;
+    #[cfg(feature = "u16")]
+    use glam::U16Vec2;
+    #[cfg(feature = "u64")]
+    use glam::U64Vec2;
+    #[cfg(feature = "u8")]
+    use glam::U8Vec2;
+    #[cfg(feature = "u32")]
+    use glam::UVec2;
+    use glam::{usizevec2, BVec2, USizeVec2, USizeVec3};
 
     glam_test!(test_align, {
         use core::mem;
@@ -3852,53 +3869,73 @@ mod usizevec2 {
     });
 
     glam_test!(test_try_from, {
-        assert_eq!(
-            USizeVec2::new(1, 2),
-            USizeVec2::try_from(I8Vec2::new(1, 2)).unwrap()
-        );
-        assert!(USizeVec2::try_from(I8Vec2::new(-1, 2)).is_err());
-        assert!(USizeVec2::try_from(I8Vec2::new(1, -2)).is_err());
+        #[cfg(feature = "i8")]
+        {
+            assert_eq!(
+                USizeVec2::new(1, 2),
+                USizeVec2::try_from(I8Vec2::new(1, 2)).unwrap()
+            );
+            assert!(USizeVec2::try_from(I8Vec2::new(-1, 2)).is_err());
+            assert!(USizeVec2::try_from(I8Vec2::new(1, -2)).is_err());
+        }
 
+        #[cfg(feature = "u8")]
         assert_eq!(USizeVec2::new(1, 2), USizeVec2::from(U8Vec2::new(1, 2)));
 
-        assert_eq!(
-            USizeVec2::new(1, 2),
-            USizeVec2::try_from(I16Vec2::new(1, 2)).unwrap()
-        );
-        assert!(USizeVec2::try_from(I16Vec2::new(-1, 2)).is_err());
-        assert!(USizeVec2::try_from(I16Vec2::new(1, -2)).is_err());
+        #[cfg(feature = "i16")]
+        {
+            assert_eq!(
+                USizeVec2::new(1, 2),
+                USizeVec2::try_from(I16Vec2::new(1, 2)).unwrap()
+            );
+            assert!(USizeVec2::try_from(I16Vec2::new(-1, 2)).is_err());
+            assert!(USizeVec2::try_from(I16Vec2::new(1, -2)).is_err());
+        }
 
+        #[cfg(feature = "u16")]
         assert_eq!(USizeVec2::new(1, 2), USizeVec2::from(U16Vec2::new(1, 2)));
 
-        assert_eq!(
-            USizeVec2::new(1, 2),
-            USizeVec2::try_from(IVec2::new(1, 2)).unwrap()
-        );
-        assert!(USizeVec2::try_from(IVec2::new(-1, 2)).is_err());
-        assert!(USizeVec2::try_from(IVec2::new(1, -2)).is_err());
+        #[cfg(feature = "i32")]
+        {
+            assert_eq!(
+                USizeVec2::new(1, 2),
+                USizeVec2::try_from(IVec2::new(1, 2)).unwrap()
+            );
+            assert!(USizeVec2::try_from(IVec2::new(-1, 2)).is_err());
+            assert!(USizeVec2::try_from(IVec2::new(1, -2)).is_err());
+        }
 
+        #[cfg(feature = "u32")]
         assert_eq!(
             USizeVec2::new(1, 2),
             USizeVec2::try_from(UVec2::new(1, 2)).unwrap()
         );
+
+        #[cfg(feature = "u64")]
         assert_eq!(
             USizeVec2::new(1, 2),
             USizeVec2::try_from(U64Vec2::new(1, 2)).unwrap()
         );
 
-        assert_eq!(
-            USizeVec2::new(1, 2),
-            USizeVec2::try_from(I64Vec2::new(1, 2)).unwrap()
-        );
-        assert!(USizeVec2::try_from(I64Vec2::new(-1, 2)).is_err());
-        assert!(USizeVec2::try_from(I64Vec2::new(1, -2)).is_err());
+        #[cfg(feature = "i64")]
+        {
+            assert_eq!(
+                USizeVec2::new(1, 2),
+                USizeVec2::try_from(I64Vec2::new(1, 2)).unwrap()
+            );
+            assert!(USizeVec2::try_from(I64Vec2::new(-1, 2)).is_err());
+            assert!(USizeVec2::try_from(I64Vec2::new(1, -2)).is_err());
+        }
 
-        assert_eq!(
-            USizeVec2::new(1, 2),
-            USizeVec2::try_from(ISizeVec2::new(1, 2)).unwrap()
-        );
-        assert!(USizeVec2::try_from(ISizeVec2::new(-1, 2)).is_err());
-        assert!(USizeVec2::try_from(ISizeVec2::new(1, -2)).is_err());
+        #[cfg(feature = "isize")]
+        {
+            assert_eq!(
+                USizeVec2::new(1, 2),
+                USizeVec2::try_from(ISizeVec2::new(1, 2)).unwrap()
+            );
+            assert!(USizeVec2::try_from(ISizeVec2::new(-1, 2)).is_err());
+            assert!(USizeVec2::try_from(ISizeVec2::new(1, -2)).is_err());
+        }
     });
 
     glam_test!(test_wrapping_add, {
@@ -3957,6 +3994,7 @@ mod usizevec2 {
         );
     });
 
+    #[cfg(feature = "isize")]
     glam_test!(test_checked_add_signed, {
         assert_eq!(USizeVec2::MAX.checked_add_signed(ISizeVec2::ONE), None);
         assert_eq!(
@@ -3965,6 +4003,7 @@ mod usizevec2 {
         );
     });
 
+    #[cfg(feature = "isize")]
     glam_test!(test_wrapping_add_signed, {
         assert_eq!(
             USizeVec2::new(usize::MAX, usize::MAX).wrapping_add_signed(ISizeVec2::new(1, 1)),
@@ -3972,6 +4011,7 @@ mod usizevec2 {
         );
     });
 
+    #[cfg(feature = "isize")]
     glam_test!(test_saturating_add_signed, {
         assert_eq!(
             USizeVec2::new(usize::MAX, usize::MAX).saturating_add_signed(ISizeVec2::new(1, 1)),
