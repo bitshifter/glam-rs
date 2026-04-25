@@ -1139,6 +1139,7 @@ impl Vec4 {
     }
 
     /// Casts all elements of `self` to `i8`.
+    #[cfg(feature = "i8")]
     #[inline]
     #[must_use]
     pub fn as_i8vec4(self) -> crate::I8Vec4 {
@@ -1146,6 +1147,7 @@ impl Vec4 {
     }
 
     /// Casts all elements of `self` to `u8`.
+    #[cfg(feature = "u8")]
     #[inline]
     #[must_use]
     pub fn as_u8vec4(self) -> crate::U8Vec4 {
@@ -1153,6 +1155,7 @@ impl Vec4 {
     }
 
     /// Casts all elements of `self` to `i16`.
+    #[cfg(feature = "i16")]
     #[inline]
     #[must_use]
     pub fn as_i16vec4(self) -> crate::I16Vec4 {
@@ -1160,6 +1163,7 @@ impl Vec4 {
     }
 
     /// Casts all elements of `self` to `u16`.
+    #[cfg(feature = "u16")]
     #[inline]
     #[must_use]
     pub fn as_u16vec4(self) -> crate::U16Vec4 {
@@ -1167,6 +1171,7 @@ impl Vec4 {
     }
 
     /// Casts all elements of `self` to `i32`.
+    #[cfg(feature = "i32")]
     #[inline]
     #[must_use]
     pub fn as_ivec4(self) -> crate::IVec4 {
@@ -1174,6 +1179,7 @@ impl Vec4 {
     }
 
     /// Casts all elements of `self` to `u32`.
+    #[cfg(feature = "u32")]
     #[inline]
     #[must_use]
     pub fn as_uvec4(self) -> crate::UVec4 {

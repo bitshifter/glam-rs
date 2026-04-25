@@ -350,27 +350,39 @@ pub mod f64;
 pub use self::f64::*;
 
 /** `i8` vector types. */
+#[cfg(feature = "i8")]
 pub mod i8;
+#[cfg(feature = "i8")]
 pub use self::i8::*;
 
 /** `u8` vector types. */
+#[cfg(feature = "u8")]
 pub mod u8;
+#[cfg(feature = "u8")]
 pub use self::u8::*;
 
 /** `i16` vector types. */
+#[cfg(feature = "i16")]
 pub mod i16;
+#[cfg(feature = "i16")]
 pub use self::i16::*;
 
 /** `u16` vector types. */
+#[cfg(feature = "u16")]
 pub mod u16;
+#[cfg(feature = "u16")]
 pub use self::u16::*;
 
 /** `i32` vector types. */
+#[cfg(feature = "i32")]
 pub mod i32;
+#[cfg(feature = "i32")]
 pub use self::i32::*;
 
 /** `u32` vector types. */
+#[cfg(feature = "u32")]
 pub mod u32;
+#[cfg(feature = "u32")]
 pub use self::u32::*;
 
 /** `i64` vector types. */

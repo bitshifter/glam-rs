@@ -2,8 +2,10 @@
 
 use crate::{BVec2, I16Vec2, I8Vec2, ISizeVec3, U8Vec2};
 
+#[cfg(feature = "u16")]
 use crate::U16Vec2;
 
+#[cfg(feature = "u32")]
 use crate::UVec2;
 
 #[cfg(feature = "u64")]
@@ -12,6 +14,7 @@ use crate::U64Vec2;
 #[cfg(feature = "usize")]
 use crate::USizeVec2;
 
+#[cfg(feature = "i32")]
 use crate::IVec2;
 
 #[cfg(feature = "i64")]
@@ -519,6 +522,7 @@ impl ISizeVec2 {
     }
 
     /// Casts all elements of `self` to `i8`.
+    #[cfg(feature = "i8")]
     #[inline]
     #[must_use]
     pub fn as_i8vec2(self) -> crate::I8Vec2 {
@@ -526,6 +530,7 @@ impl ISizeVec2 {
     }
 
     /// Casts all elements of `self` to `u8`.
+    #[cfg(feature = "u8")]
     #[inline]
     #[must_use]
     pub fn as_u8vec2(self) -> crate::U8Vec2 {
@@ -533,6 +538,7 @@ impl ISizeVec2 {
     }
 
     /// Casts all elements of `self` to `i16`.
+    #[cfg(feature = "i16")]
     #[inline]
     #[must_use]
     pub fn as_i16vec2(self) -> crate::I16Vec2 {
@@ -540,6 +546,7 @@ impl ISizeVec2 {
     }
 
     /// Casts all elements of `self` to `u16`.
+    #[cfg(feature = "u16")]
     #[inline]
     #[must_use]
     pub fn as_u16vec2(self) -> crate::U16Vec2 {
@@ -547,6 +554,7 @@ impl ISizeVec2 {
     }
 
     /// Casts all elements of `self` to `i32`.
+    #[cfg(feature = "i32")]
     #[inline]
     #[must_use]
     pub fn as_ivec2(self) -> crate::IVec2 {
@@ -554,6 +562,7 @@ impl ISizeVec2 {
     }
 
     /// Casts all elements of `self` to `u32`.
+    #[cfg(feature = "u32")]
     #[inline]
     #[must_use]
     pub fn as_uvec2(self) -> crate::UVec2 {
@@ -2701,6 +2710,8 @@ impl ShrAssign<&u64> for ISizeVec2 {
     }
 }
 
+#[cfg(feature = "i32")]
+
 impl Shl<IVec2> for ISizeVec2 {
     type Output = Self;
     #[inline]
@@ -2712,6 +2723,8 @@ impl Shl<IVec2> for ISizeVec2 {
     }
 }
 
+#[cfg(feature = "i32")]
+
 impl Shl<&IVec2> for ISizeVec2 {
     type Output = Self;
     #[inline]
@@ -2719,6 +2732,8 @@ impl Shl<&IVec2> for ISizeVec2 {
         self.shl(*rhs)
     }
 }
+
+#[cfg(feature = "i32")]
 
 impl Shl<&IVec2> for &ISizeVec2 {
     type Output = ISizeVec2;
@@ -2728,6 +2743,8 @@ impl Shl<&IVec2> for &ISizeVec2 {
     }
 }
 
+#[cfg(feature = "i32")]
+
 impl Shl<IVec2> for &ISizeVec2 {
     type Output = ISizeVec2;
     #[inline]
@@ -2735,6 +2752,8 @@ impl Shl<IVec2> for &ISizeVec2 {
         (*self).shl(rhs)
     }
 }
+
+#[cfg(feature = "i32")]
 
 impl Shr<IVec2> for ISizeVec2 {
     type Output = Self;
@@ -2747,6 +2766,8 @@ impl Shr<IVec2> for ISizeVec2 {
     }
 }
 
+#[cfg(feature = "i32")]
+
 impl Shr<&IVec2> for ISizeVec2 {
     type Output = Self;
     #[inline]
@@ -2754,6 +2775,8 @@ impl Shr<&IVec2> for ISizeVec2 {
         self.shr(*rhs)
     }
 }
+
+#[cfg(feature = "i32")]
 
 impl Shr<&IVec2> for &ISizeVec2 {
     type Output = ISizeVec2;
@@ -2763,6 +2786,8 @@ impl Shr<&IVec2> for &ISizeVec2 {
     }
 }
 
+#[cfg(feature = "i32")]
+
 impl Shr<IVec2> for &ISizeVec2 {
     type Output = ISizeVec2;
     #[inline]
@@ -2770,6 +2795,8 @@ impl Shr<IVec2> for &ISizeVec2 {
         (*self).shr(rhs)
     }
 }
+
+#[cfg(feature = "u32")]
 
 impl Shl<UVec2> for ISizeVec2 {
     type Output = Self;
@@ -2782,6 +2809,8 @@ impl Shl<UVec2> for ISizeVec2 {
     }
 }
 
+#[cfg(feature = "u32")]
+
 impl Shl<&UVec2> for ISizeVec2 {
     type Output = Self;
     #[inline]
@@ -2789,6 +2818,8 @@ impl Shl<&UVec2> for ISizeVec2 {
         self.shl(*rhs)
     }
 }
+
+#[cfg(feature = "u32")]
 
 impl Shl<&UVec2> for &ISizeVec2 {
     type Output = ISizeVec2;
@@ -2798,6 +2829,8 @@ impl Shl<&UVec2> for &ISizeVec2 {
     }
 }
 
+#[cfg(feature = "u32")]
+
 impl Shl<UVec2> for &ISizeVec2 {
     type Output = ISizeVec2;
     #[inline]
@@ -2805,6 +2838,8 @@ impl Shl<UVec2> for &ISizeVec2 {
         (*self).shl(rhs)
     }
 }
+
+#[cfg(feature = "u32")]
 
 impl Shr<UVec2> for ISizeVec2 {
     type Output = Self;
@@ -2817,6 +2852,8 @@ impl Shr<UVec2> for ISizeVec2 {
     }
 }
 
+#[cfg(feature = "u32")]
+
 impl Shr<&UVec2> for ISizeVec2 {
     type Output = Self;
     #[inline]
@@ -2825,6 +2862,8 @@ impl Shr<&UVec2> for ISizeVec2 {
     }
 }
 
+#[cfg(feature = "u32")]
+
 impl Shr<&UVec2> for &ISizeVec2 {
     type Output = ISizeVec2;
     #[inline]
@@ -2832,6 +2871,8 @@ impl Shr<&UVec2> for &ISizeVec2 {
         (*self).shr(*rhs)
     }
 }
+
+#[cfg(feature = "u32")]
 
 impl Shr<UVec2> for &ISizeVec2 {
     type Output = ISizeVec2;
@@ -2928,6 +2969,8 @@ impl From<U8Vec2> for ISizeVec2 {
     }
 }
 
+#[cfg(feature = "u16")]
+
 impl TryFrom<U16Vec2> for ISizeVec2 {
     type Error = core::num::TryFromIntError;
 
@@ -2936,6 +2979,8 @@ impl TryFrom<U16Vec2> for ISizeVec2 {
         Ok(Self::new(isize::try_from(v.x)?, isize::try_from(v.y)?))
     }
 }
+
+#[cfg(feature = "u32")]
 
 impl TryFrom<UVec2> for ISizeVec2 {
     type Error = core::num::TryFromIntError;
@@ -2967,6 +3012,8 @@ impl TryFrom<USizeVec2> for ISizeVec2 {
         Ok(Self::new(isize::try_from(v.x)?, isize::try_from(v.y)?))
     }
 }
+
+#[cfg(feature = "i32")]
 
 impl TryFrom<IVec2> for ISizeVec2 {
     type Error = core::num::TryFromIntError;

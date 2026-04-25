@@ -4,10 +4,13 @@
 use crate::BVec4A;
 use crate::{BVec4, I16Vec2, I16Vec3, I8Vec4, U8Vec4};
 
+#[cfg(feature = "u16")]
 use crate::U16Vec4;
 
+#[cfg(feature = "i32")]
 use crate::IVec4;
 
+#[cfg(feature = "u32")]
 use crate::UVec4;
 
 #[cfg(feature = "i64")]
@@ -610,6 +613,7 @@ impl I16Vec4 {
     }
 
     /// Casts all elements of `self` to `i8`.
+    #[cfg(feature = "i8")]
     #[inline]
     #[must_use]
     pub fn as_i8vec4(self) -> crate::I8Vec4 {
@@ -617,6 +621,7 @@ impl I16Vec4 {
     }
 
     /// Casts all elements of `self` to `u8`.
+    #[cfg(feature = "u8")]
     #[inline]
     #[must_use]
     pub fn as_u8vec4(self) -> crate::U8Vec4 {
@@ -624,6 +629,7 @@ impl I16Vec4 {
     }
 
     /// Casts all elements of `self` to `u16`.
+    #[cfg(feature = "u16")]
     #[inline]
     #[must_use]
     pub fn as_u16vec4(self) -> crate::U16Vec4 {
@@ -631,6 +637,7 @@ impl I16Vec4 {
     }
 
     /// Casts all elements of `self` to `i32`.
+    #[cfg(feature = "i32")]
     #[inline]
     #[must_use]
     pub fn as_ivec4(self) -> crate::IVec4 {
@@ -638,6 +645,7 @@ impl I16Vec4 {
     }
 
     /// Casts all elements of `self` to `u32`.
+    #[cfg(feature = "u32")]
     #[inline]
     #[must_use]
     pub fn as_uvec4(self) -> crate::UVec4 {
@@ -906,6 +914,7 @@ impl I16Vec4 {
     ///
     /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
 
+    #[cfg(feature = "u16")]
     #[inline]
     #[must_use]
     pub const fn checked_add_unsigned(self, rhs: U16Vec4) -> Option<Self> {
@@ -933,6 +942,7 @@ impl I16Vec4 {
     ///
     /// In other words this computes `Some([self.x - rhs.x, self.y - rhs.y, ..])` but returns `None` on any overflow.
 
+    #[cfg(feature = "u16")]
     #[inline]
     #[must_use]
     pub const fn checked_sub_unsigned(self, rhs: U16Vec4) -> Option<Self> {
@@ -960,6 +970,7 @@ impl I16Vec4 {
     ///
     /// In other words this computes `[self.x.wrapping_add_unsigned(rhs.x), self.y.wrapping_add_unsigned(rhs.y), ..]`.
 
+    #[cfg(feature = "u16")]
     #[inline]
     #[must_use]
     pub const fn wrapping_add_unsigned(self, rhs: U16Vec4) -> Self {
@@ -975,6 +986,7 @@ impl I16Vec4 {
     ///
     /// In other words this computes `[self.x.wrapping_sub_unsigned(rhs.x), self.y.wrapping_sub_unsigned(rhs.y), ..]`.
 
+    #[cfg(feature = "u16")]
     #[inline]
     #[must_use]
     pub const fn wrapping_sub_unsigned(self, rhs: U16Vec4) -> Self {
@@ -991,6 +1003,7 @@ impl I16Vec4 {
     /// In other words this computes `[self.x.saturating_add_unsigned(rhs.x), self.y.saturating_add_unsigned(rhs.y), ..]`.
     #[inline]
     #[must_use]
+    #[cfg(feature = "u16")]
 
     pub const fn saturating_add_unsigned(self, rhs: U16Vec4) -> Self {
         Self {
@@ -1005,6 +1018,7 @@ impl I16Vec4 {
     ///
     /// In other words this computes `[self.x.saturating_sub_unsigned(rhs.x), self.y.saturating_sub_unsigned(rhs.y), ..]`.
 
+    #[cfg(feature = "u16")]
     #[inline]
     #[must_use]
     pub const fn saturating_sub_unsigned(self, rhs: U16Vec4) -> Self {
@@ -2967,6 +2981,8 @@ impl ShrAssign<&u64> for I16Vec4 {
     }
 }
 
+#[cfg(feature = "i32")]
+
 impl Shl<IVec4> for I16Vec4 {
     type Output = Self;
     #[inline]
@@ -2980,6 +2996,8 @@ impl Shl<IVec4> for I16Vec4 {
     }
 }
 
+#[cfg(feature = "i32")]
+
 impl Shl<&IVec4> for I16Vec4 {
     type Output = Self;
     #[inline]
@@ -2987,6 +3005,8 @@ impl Shl<&IVec4> for I16Vec4 {
         self.shl(*rhs)
     }
 }
+
+#[cfg(feature = "i32")]
 
 impl Shl<&IVec4> for &I16Vec4 {
     type Output = I16Vec4;
@@ -2996,6 +3016,8 @@ impl Shl<&IVec4> for &I16Vec4 {
     }
 }
 
+#[cfg(feature = "i32")]
+
 impl Shl<IVec4> for &I16Vec4 {
     type Output = I16Vec4;
     #[inline]
@@ -3003,6 +3025,8 @@ impl Shl<IVec4> for &I16Vec4 {
         (*self).shl(rhs)
     }
 }
+
+#[cfg(feature = "i32")]
 
 impl Shr<IVec4> for I16Vec4 {
     type Output = Self;
@@ -3017,6 +3041,8 @@ impl Shr<IVec4> for I16Vec4 {
     }
 }
 
+#[cfg(feature = "i32")]
+
 impl Shr<&IVec4> for I16Vec4 {
     type Output = Self;
     #[inline]
@@ -3024,6 +3050,8 @@ impl Shr<&IVec4> for I16Vec4 {
         self.shr(*rhs)
     }
 }
+
+#[cfg(feature = "i32")]
 
 impl Shr<&IVec4> for &I16Vec4 {
     type Output = I16Vec4;
@@ -3033,6 +3061,8 @@ impl Shr<&IVec4> for &I16Vec4 {
     }
 }
 
+#[cfg(feature = "i32")]
+
 impl Shr<IVec4> for &I16Vec4 {
     type Output = I16Vec4;
     #[inline]
@@ -3040,6 +3070,8 @@ impl Shr<IVec4> for &I16Vec4 {
         (*self).shr(rhs)
     }
 }
+
+#[cfg(feature = "u32")]
 
 impl Shl<UVec4> for I16Vec4 {
     type Output = Self;
@@ -3054,6 +3086,8 @@ impl Shl<UVec4> for I16Vec4 {
     }
 }
 
+#[cfg(feature = "u32")]
+
 impl Shl<&UVec4> for I16Vec4 {
     type Output = Self;
     #[inline]
@@ -3061,6 +3095,8 @@ impl Shl<&UVec4> for I16Vec4 {
         self.shl(*rhs)
     }
 }
+
+#[cfg(feature = "u32")]
 
 impl Shl<&UVec4> for &I16Vec4 {
     type Output = I16Vec4;
@@ -3070,6 +3106,8 @@ impl Shl<&UVec4> for &I16Vec4 {
     }
 }
 
+#[cfg(feature = "u32")]
+
 impl Shl<UVec4> for &I16Vec4 {
     type Output = I16Vec4;
     #[inline]
@@ -3077,6 +3115,8 @@ impl Shl<UVec4> for &I16Vec4 {
         (*self).shl(rhs)
     }
 }
+
+#[cfg(feature = "u32")]
 
 impl Shr<UVec4> for I16Vec4 {
     type Output = Self;
@@ -3091,6 +3131,8 @@ impl Shr<UVec4> for I16Vec4 {
     }
 }
 
+#[cfg(feature = "u32")]
+
 impl Shr<&UVec4> for I16Vec4 {
     type Output = Self;
     #[inline]
@@ -3099,6 +3141,8 @@ impl Shr<&UVec4> for I16Vec4 {
     }
 }
 
+#[cfg(feature = "u32")]
+
 impl Shr<&UVec4> for &I16Vec4 {
     type Output = I16Vec4;
     #[inline]
@@ -3106,6 +3150,8 @@ impl Shr<&UVec4> for &I16Vec4 {
         (*self).shr(*rhs)
     }
 }
+
+#[cfg(feature = "u32")]
 
 impl Shr<UVec4> for &I16Vec4 {
     type Output = I16Vec4;
@@ -3239,6 +3285,8 @@ impl From<U8Vec4> for I16Vec4 {
     }
 }
 
+#[cfg(feature = "u16")]
+
 impl TryFrom<U16Vec4> for I16Vec4 {
     type Error = core::num::TryFromIntError;
 
@@ -3253,6 +3301,8 @@ impl TryFrom<U16Vec4> for I16Vec4 {
     }
 }
 
+#[cfg(feature = "i32")]
+
 impl TryFrom<IVec4> for I16Vec4 {
     type Error = core::num::TryFromIntError;
 
@@ -3266,6 +3316,8 @@ impl TryFrom<IVec4> for I16Vec4 {
         ))
     }
 }
+
+#[cfg(feature = "u32")]
 
 impl TryFrom<UVec4> for I16Vec4 {
     type Error = core::num::TryFromIntError;

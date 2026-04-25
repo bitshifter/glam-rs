@@ -4,10 +4,13 @@
 use crate::BVec4A;
 use crate::{BVec4, U16Vec4, U8Vec4, UVec2, UVec3};
 
+#[cfg(feature = "i8")]
 use crate::I8Vec4;
 
+#[cfg(feature = "i16")]
 use crate::I16Vec4;
 
+#[cfg(feature = "i32")]
 use crate::IVec4;
 
 #[cfg(feature = "i64")]
@@ -512,6 +515,7 @@ impl UVec4 {
     }
 
     /// Casts all elements of `self` to `i8`.
+    #[cfg(feature = "i8")]
     #[inline]
     #[must_use]
     pub fn as_i8vec4(self) -> crate::I8Vec4 {
@@ -519,6 +523,7 @@ impl UVec4 {
     }
 
     /// Casts all elements of `self` to `u8`.
+    #[cfg(feature = "u8")]
     #[inline]
     #[must_use]
     pub fn as_u8vec4(self) -> crate::U8Vec4 {
@@ -526,6 +531,7 @@ impl UVec4 {
     }
 
     /// Casts all elements of `self` to `i16`.
+    #[cfg(feature = "i16")]
     #[inline]
     #[must_use]
     pub fn as_i16vec4(self) -> crate::I16Vec4 {
@@ -533,6 +539,7 @@ impl UVec4 {
     }
 
     /// Casts all elements of `self` to `u16`.
+    #[cfg(feature = "u16")]
     #[inline]
     #[must_use]
     pub fn as_u16vec4(self) -> crate::U16Vec4 {
@@ -540,6 +547,7 @@ impl UVec4 {
     }
 
     /// Casts all elements of `self` to `i32`.
+    #[cfg(feature = "i32")]
     #[inline]
     #[must_use]
     pub fn as_ivec4(self) -> crate::IVec4 {
@@ -808,6 +816,7 @@ impl UVec4 {
     ///
     /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
 
+    #[cfg(feature = "i32")]
     #[inline]
     #[must_use]
     pub const fn checked_add_signed(self, rhs: IVec4) -> Option<Self> {
@@ -835,6 +844,7 @@ impl UVec4 {
     ///
     /// In other words this computes `[self.x.wrapping_add_signed(rhs.x), self.y.wrapping_add_signed(rhs.y), ..]`.
 
+    #[cfg(feature = "i32")]
     #[inline]
     #[must_use]
     pub const fn wrapping_add_signed(self, rhs: IVec4) -> Self {
@@ -850,6 +860,7 @@ impl UVec4 {
     ///
     /// In other words this computes `[self.x.saturating_add_signed(rhs.x), self.y.saturating_add_signed(rhs.y), ..]`.
 
+    #[cfg(feature = "i32")]
     #[inline]
     #[must_use]
     pub const fn saturating_add_signed(self, rhs: IVec4) -> Self {
@@ -2791,6 +2802,8 @@ impl ShrAssign<&u64> for UVec4 {
     }
 }
 
+#[cfg(feature = "i32")]
+
 impl Shl<IVec4> for UVec4 {
     type Output = Self;
     #[inline]
@@ -2804,6 +2817,8 @@ impl Shl<IVec4> for UVec4 {
     }
 }
 
+#[cfg(feature = "i32")]
+
 impl Shl<&IVec4> for UVec4 {
     type Output = Self;
     #[inline]
@@ -2811,6 +2826,8 @@ impl Shl<&IVec4> for UVec4 {
         self.shl(*rhs)
     }
 }
+
+#[cfg(feature = "i32")]
 
 impl Shl<&IVec4> for &UVec4 {
     type Output = UVec4;
@@ -2820,6 +2837,8 @@ impl Shl<&IVec4> for &UVec4 {
     }
 }
 
+#[cfg(feature = "i32")]
+
 impl Shl<IVec4> for &UVec4 {
     type Output = UVec4;
     #[inline]
@@ -2827,6 +2846,8 @@ impl Shl<IVec4> for &UVec4 {
         (*self).shl(rhs)
     }
 }
+
+#[cfg(feature = "i32")]
 
 impl Shr<IVec4> for UVec4 {
     type Output = Self;
@@ -2841,6 +2862,8 @@ impl Shr<IVec4> for UVec4 {
     }
 }
 
+#[cfg(feature = "i32")]
+
 impl Shr<&IVec4> for UVec4 {
     type Output = Self;
     #[inline]
@@ -2849,6 +2872,8 @@ impl Shr<&IVec4> for UVec4 {
     }
 }
 
+#[cfg(feature = "i32")]
+
 impl Shr<&IVec4> for &UVec4 {
     type Output = UVec4;
     #[inline]
@@ -2856,6 +2881,8 @@ impl Shr<&IVec4> for &UVec4 {
         (*self).shr(*rhs)
     }
 }
+
+#[cfg(feature = "i32")]
 
 impl Shr<IVec4> for &UVec4 {
     type Output = UVec4;
@@ -3063,6 +3090,8 @@ impl From<U16Vec4> for UVec4 {
     }
 }
 
+#[cfg(feature = "i8")]
+
 impl TryFrom<I8Vec4> for UVec4 {
     type Error = core::num::TryFromIntError;
 
@@ -3077,6 +3106,8 @@ impl TryFrom<I8Vec4> for UVec4 {
     }
 }
 
+#[cfg(feature = "i16")]
+
 impl TryFrom<I16Vec4> for UVec4 {
     type Error = core::num::TryFromIntError;
 
@@ -3090,6 +3121,8 @@ impl TryFrom<I16Vec4> for UVec4 {
         ))
     }
 }
+
+#[cfg(feature = "i32")]
 
 impl TryFrom<IVec4> for UVec4 {
     type Error = core::num::TryFromIntError;

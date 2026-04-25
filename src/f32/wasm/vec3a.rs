@@ -1267,6 +1267,7 @@ impl Vec3A {
     }
 
     /// Casts all elements of `self` to `i8`.
+    #[cfg(feature = "i8")]
     #[inline]
     #[must_use]
     pub fn as_i8vec3(self) -> crate::I8Vec3 {
@@ -1274,6 +1275,7 @@ impl Vec3A {
     }
 
     /// Casts all elements of `self` to `u8`.
+    #[cfg(feature = "u8")]
     #[inline]
     #[must_use]
     pub fn as_u8vec3(self) -> crate::U8Vec3 {
@@ -1281,6 +1283,7 @@ impl Vec3A {
     }
 
     /// Casts all elements of `self` to `i16`.
+    #[cfg(feature = "i16")]
     #[inline]
     #[must_use]
     pub fn as_i16vec3(self) -> crate::I16Vec3 {
@@ -1288,6 +1291,7 @@ impl Vec3A {
     }
 
     /// Casts all elements of `self` to `u16`.
+    #[cfg(feature = "u16")]
     #[inline]
     #[must_use]
     pub fn as_u16vec3(self) -> crate::U16Vec3 {
@@ -1295,6 +1299,7 @@ impl Vec3A {
     }
 
     /// Casts all elements of `self` to `i32`.
+    #[cfg(feature = "i32")]
     #[inline]
     #[must_use]
     pub fn as_ivec3(self) -> crate::IVec3 {
@@ -1302,6 +1307,7 @@ impl Vec3A {
     }
 
     /// Casts all elements of `self` to `u32`.
+    #[cfg(feature = "u32")]
     #[inline]
     #[must_use]
     pub fn as_uvec3(self) -> crate::UVec3 {

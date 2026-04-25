@@ -4,15 +4,19 @@
 use crate::BVec4A;
 use crate::{BVec4, U16Vec4, U8Vec4, USizeVec2, USizeVec3};
 
+#[cfg(feature = "i8")]
 use crate::I8Vec4;
 
+#[cfg(feature = "i16")]
 use crate::I16Vec4;
 
+#[cfg(feature = "i32")]
 use crate::IVec4;
 
 #[cfg(feature = "i64")]
 use crate::I64Vec4;
 
+#[cfg(feature = "u32")]
 use crate::UVec4;
 
 #[cfg(feature = "u64")]
@@ -511,6 +515,7 @@ impl USizeVec4 {
     }
 
     /// Casts all elements of `self` to `i8`.
+    #[cfg(feature = "i8")]
     #[inline]
     #[must_use]
     pub fn as_i8vec4(self) -> crate::I8Vec4 {
@@ -518,6 +523,7 @@ impl USizeVec4 {
     }
 
     /// Casts all elements of `self` to `u8`.
+    #[cfg(feature = "u8")]
     #[inline]
     #[must_use]
     pub fn as_u8vec4(self) -> crate::U8Vec4 {
@@ -525,6 +531,7 @@ impl USizeVec4 {
     }
 
     /// Casts all elements of `self` to `i16`.
+    #[cfg(feature = "i16")]
     #[inline]
     #[must_use]
     pub fn as_i16vec4(self) -> crate::I16Vec4 {
@@ -532,6 +539,7 @@ impl USizeVec4 {
     }
 
     /// Casts all elements of `self` to `u16`.
+    #[cfg(feature = "u16")]
     #[inline]
     #[must_use]
     pub fn as_u16vec4(self) -> crate::U16Vec4 {
@@ -539,6 +547,7 @@ impl USizeVec4 {
     }
 
     /// Casts all elements of `self` to `i32`.
+    #[cfg(feature = "i32")]
     #[inline]
     #[must_use]
     pub fn as_ivec4(self) -> crate::IVec4 {
@@ -546,6 +555,7 @@ impl USizeVec4 {
     }
 
     /// Casts all elements of `self` to `u32`.
+    #[cfg(feature = "u32")]
     #[inline]
     #[must_use]
     pub fn as_uvec4(self) -> crate::UVec4 {
@@ -2787,6 +2797,8 @@ impl ShrAssign<&u64> for USizeVec4 {
     }
 }
 
+#[cfg(feature = "i32")]
+
 impl Shl<IVec4> for USizeVec4 {
     type Output = Self;
     #[inline]
@@ -2800,6 +2812,8 @@ impl Shl<IVec4> for USizeVec4 {
     }
 }
 
+#[cfg(feature = "i32")]
+
 impl Shl<&IVec4> for USizeVec4 {
     type Output = Self;
     #[inline]
@@ -2807,6 +2821,8 @@ impl Shl<&IVec4> for USizeVec4 {
         self.shl(*rhs)
     }
 }
+
+#[cfg(feature = "i32")]
 
 impl Shl<&IVec4> for &USizeVec4 {
     type Output = USizeVec4;
@@ -2816,6 +2832,8 @@ impl Shl<&IVec4> for &USizeVec4 {
     }
 }
 
+#[cfg(feature = "i32")]
+
 impl Shl<IVec4> for &USizeVec4 {
     type Output = USizeVec4;
     #[inline]
@@ -2823,6 +2841,8 @@ impl Shl<IVec4> for &USizeVec4 {
         (*self).shl(rhs)
     }
 }
+
+#[cfg(feature = "i32")]
 
 impl Shr<IVec4> for USizeVec4 {
     type Output = Self;
@@ -2837,6 +2857,8 @@ impl Shr<IVec4> for USizeVec4 {
     }
 }
 
+#[cfg(feature = "i32")]
+
 impl Shr<&IVec4> for USizeVec4 {
     type Output = Self;
     #[inline]
@@ -2844,6 +2866,8 @@ impl Shr<&IVec4> for USizeVec4 {
         self.shr(*rhs)
     }
 }
+
+#[cfg(feature = "i32")]
 
 impl Shr<&IVec4> for &USizeVec4 {
     type Output = USizeVec4;
@@ -2853,6 +2877,8 @@ impl Shr<&IVec4> for &USizeVec4 {
     }
 }
 
+#[cfg(feature = "i32")]
+
 impl Shr<IVec4> for &USizeVec4 {
     type Output = USizeVec4;
     #[inline]
@@ -2860,6 +2886,8 @@ impl Shr<IVec4> for &USizeVec4 {
         (*self).shr(rhs)
     }
 }
+
+#[cfg(feature = "u32")]
 
 impl Shl<UVec4> for USizeVec4 {
     type Output = Self;
@@ -2874,6 +2902,8 @@ impl Shl<UVec4> for USizeVec4 {
     }
 }
 
+#[cfg(feature = "u32")]
+
 impl Shl<&UVec4> for USizeVec4 {
     type Output = Self;
     #[inline]
@@ -2881,6 +2911,8 @@ impl Shl<&UVec4> for USizeVec4 {
         self.shl(*rhs)
     }
 }
+
+#[cfg(feature = "u32")]
 
 impl Shl<&UVec4> for &USizeVec4 {
     type Output = USizeVec4;
@@ -2890,6 +2922,8 @@ impl Shl<&UVec4> for &USizeVec4 {
     }
 }
 
+#[cfg(feature = "u32")]
+
 impl Shl<UVec4> for &USizeVec4 {
     type Output = USizeVec4;
     #[inline]
@@ -2897,6 +2931,8 @@ impl Shl<UVec4> for &USizeVec4 {
         (*self).shl(rhs)
     }
 }
+
+#[cfg(feature = "u32")]
 
 impl Shr<UVec4> for USizeVec4 {
     type Output = Self;
@@ -2911,6 +2947,8 @@ impl Shr<UVec4> for USizeVec4 {
     }
 }
 
+#[cfg(feature = "u32")]
+
 impl Shr<&UVec4> for USizeVec4 {
     type Output = Self;
     #[inline]
@@ -2919,6 +2957,8 @@ impl Shr<&UVec4> for USizeVec4 {
     }
 }
 
+#[cfg(feature = "u32")]
+
 impl Shr<&UVec4> for &USizeVec4 {
     type Output = USizeVec4;
     #[inline]
@@ -2926,6 +2966,8 @@ impl Shr<&UVec4> for &USizeVec4 {
         (*self).shr(*rhs)
     }
 }
+
+#[cfg(feature = "u32")]
 
 impl Shr<UVec4> for &USizeVec4 {
     type Output = USizeVec4;
@@ -3059,6 +3101,8 @@ impl From<U16Vec4> for USizeVec4 {
     }
 }
 
+#[cfg(feature = "i8")]
+
 impl TryFrom<I8Vec4> for USizeVec4 {
     type Error = core::num::TryFromIntError;
 
@@ -3073,6 +3117,8 @@ impl TryFrom<I8Vec4> for USizeVec4 {
     }
 }
 
+#[cfg(feature = "i16")]
+
 impl TryFrom<I16Vec4> for USizeVec4 {
     type Error = core::num::TryFromIntError;
 
@@ -3086,6 +3132,8 @@ impl TryFrom<I16Vec4> for USizeVec4 {
         ))
     }
 }
+
+#[cfg(feature = "i32")]
 
 impl TryFrom<IVec4> for USizeVec4 {
     type Error = core::num::TryFromIntError;
@@ -3116,6 +3164,8 @@ impl TryFrom<I64Vec4> for USizeVec4 {
         ))
     }
 }
+
+#[cfg(feature = "u32")]
 
 impl TryFrom<UVec4> for USizeVec4 {
     type Error = core::num::TryFromIntError;

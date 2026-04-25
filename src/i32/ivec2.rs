@@ -2,6 +2,7 @@
 
 use crate::{BVec2, I16Vec2, I8Vec2, IVec3, U16Vec2, U8Vec2};
 
+#[cfg(feature = "u32")]
 use crate::UVec2;
 
 #[cfg(feature = "i64")]
@@ -518,6 +519,7 @@ impl IVec2 {
     }
 
     /// Casts all elements of `self` to `i8`.
+    #[cfg(feature = "i8")]
     #[inline]
     #[must_use]
     pub fn as_i8vec2(self) -> crate::I8Vec2 {
@@ -525,6 +527,7 @@ impl IVec2 {
     }
 
     /// Casts all elements of `self` to `u8`.
+    #[cfg(feature = "u8")]
     #[inline]
     #[must_use]
     pub fn as_u8vec2(self) -> crate::U8Vec2 {
@@ -532,6 +535,7 @@ impl IVec2 {
     }
 
     /// Casts all elements of `self` to `i16`.
+    #[cfg(feature = "i16")]
     #[inline]
     #[must_use]
     pub fn as_i16vec2(self) -> crate::I16Vec2 {
@@ -539,6 +543,7 @@ impl IVec2 {
     }
 
     /// Casts all elements of `self` to `u16`.
+    #[cfg(feature = "u16")]
     #[inline]
     #[must_use]
     pub fn as_u16vec2(self) -> crate::U16Vec2 {
@@ -546,6 +551,7 @@ impl IVec2 {
     }
 
     /// Casts all elements of `self` to `u32`.
+    #[cfg(feature = "u32")]
     #[inline]
     #[must_use]
     pub fn as_uvec2(self) -> crate::UVec2 {
@@ -756,6 +762,7 @@ impl IVec2 {
     ///
     /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
 
+    #[cfg(feature = "u32")]
     #[inline]
     #[must_use]
     pub const fn checked_add_unsigned(self, rhs: UVec2) -> Option<Self> {
@@ -775,6 +782,7 @@ impl IVec2 {
     ///
     /// In other words this computes `Some([self.x - rhs.x, self.y - rhs.y, ..])` but returns `None` on any overflow.
 
+    #[cfg(feature = "u32")]
     #[inline]
     #[must_use]
     pub const fn checked_sub_unsigned(self, rhs: UVec2) -> Option<Self> {
@@ -794,6 +802,7 @@ impl IVec2 {
     ///
     /// In other words this computes `[self.x.wrapping_add_unsigned(rhs.x), self.y.wrapping_add_unsigned(rhs.y), ..]`.
 
+    #[cfg(feature = "u32")]
     #[inline]
     #[must_use]
     pub const fn wrapping_add_unsigned(self, rhs: UVec2) -> Self {
@@ -807,6 +816,7 @@ impl IVec2 {
     ///
     /// In other words this computes `[self.x.wrapping_sub_unsigned(rhs.x), self.y.wrapping_sub_unsigned(rhs.y), ..]`.
 
+    #[cfg(feature = "u32")]
     #[inline]
     #[must_use]
     pub const fn wrapping_sub_unsigned(self, rhs: UVec2) -> Self {
@@ -821,6 +831,7 @@ impl IVec2 {
     /// In other words this computes `[self.x.saturating_add_unsigned(rhs.x), self.y.saturating_add_unsigned(rhs.y), ..]`.
     #[inline]
     #[must_use]
+    #[cfg(feature = "u32")]
 
     pub const fn saturating_add_unsigned(self, rhs: UVec2) -> Self {
         Self {
@@ -833,6 +844,7 @@ impl IVec2 {
     ///
     /// In other words this computes `[self.x.saturating_sub_unsigned(rhs.x), self.y.saturating_sub_unsigned(rhs.y), ..]`.
 
+    #[cfg(feature = "u32")]
     #[inline]
     #[must_use]
     pub const fn saturating_sub_unsigned(self, rhs: UVec2) -> Self {
@@ -2765,6 +2777,8 @@ impl Shr<IVec2> for &IVec2 {
     }
 }
 
+#[cfg(feature = "u32")]
+
 impl Shl<UVec2> for IVec2 {
     type Output = Self;
     #[inline]
@@ -2776,6 +2790,8 @@ impl Shl<UVec2> for IVec2 {
     }
 }
 
+#[cfg(feature = "u32")]
+
 impl Shl<&UVec2> for IVec2 {
     type Output = Self;
     #[inline]
@@ -2783,6 +2799,8 @@ impl Shl<&UVec2> for IVec2 {
         self.shl(*rhs)
     }
 }
+
+#[cfg(feature = "u32")]
 
 impl Shl<&UVec2> for &IVec2 {
     type Output = IVec2;
@@ -2792,6 +2810,8 @@ impl Shl<&UVec2> for &IVec2 {
     }
 }
 
+#[cfg(feature = "u32")]
+
 impl Shl<UVec2> for &IVec2 {
     type Output = IVec2;
     #[inline]
@@ -2799,6 +2819,8 @@ impl Shl<UVec2> for &IVec2 {
         (*self).shl(rhs)
     }
 }
+
+#[cfg(feature = "u32")]
 
 impl Shr<UVec2> for IVec2 {
     type Output = Self;
@@ -2811,6 +2833,8 @@ impl Shr<UVec2> for IVec2 {
     }
 }
 
+#[cfg(feature = "u32")]
+
 impl Shr<&UVec2> for IVec2 {
     type Output = Self;
     #[inline]
@@ -2819,6 +2843,8 @@ impl Shr<&UVec2> for IVec2 {
     }
 }
 
+#[cfg(feature = "u32")]
+
 impl Shr<&UVec2> for &IVec2 {
     type Output = IVec2;
     #[inline]
@@ -2826,6 +2852,8 @@ impl Shr<&UVec2> for &IVec2 {
         (*self).shr(*rhs)
     }
 }
+
+#[cfg(feature = "u32")]
 
 impl Shr<UVec2> for &IVec2 {
     type Output = IVec2;
@@ -2928,6 +2956,8 @@ impl From<U16Vec2> for IVec2 {
         Self::new(i32::from(v.x), i32::from(v.y))
     }
 }
+
+#[cfg(feature = "u32")]
 
 impl TryFrom<UVec2> for IVec2 {
     type Error = core::num::TryFromIntError;
