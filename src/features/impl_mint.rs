@@ -1,14 +1,31 @@
 use mint::IntoMint;
 
+use crate::{Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
+
 #[cfg(feature = "f64")]
 use crate::{DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
-
-use crate::{
-    I16Vec2, I16Vec3, I16Vec4, I64Vec2, I64Vec3, I64Vec4, I8Vec2, I8Vec3, I8Vec4, ISizeVec2,
-    ISizeVec3, ISizeVec4, IVec2, IVec3, IVec4, Mat2, Mat3, Mat3A, Mat4, Quat, U16Vec2, U16Vec3,
-    U16Vec4, U64Vec2, U64Vec3, U64Vec4, U8Vec2, U8Vec3, U8Vec4, USizeVec2, USizeVec3, USizeVec4,
-    UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
-};
+#[cfg(feature = "f64")]
+use crate::{DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
+#[cfg(feature = "i16")]
+use crate::{I16Vec2, I16Vec3, I16Vec4};
+#[cfg(feature = "i64")]
+use crate::{I64Vec2, I64Vec3, I64Vec4};
+#[cfg(feature = "i8")]
+use crate::{I8Vec2, I8Vec3, I8Vec4};
+#[cfg(feature = "isize")]
+use crate::{ISizeVec2, ISizeVec3, ISizeVec4};
+#[cfg(feature = "i32")]
+use crate::{IVec2, IVec3, IVec4};
+#[cfg(feature = "u16")]
+use crate::{U16Vec2, U16Vec3, U16Vec4};
+#[cfg(feature = "u64")]
+use crate::{U64Vec2, U64Vec3, U64Vec4};
+#[cfg(feature = "u8")]
+use crate::{U8Vec2, U8Vec3, U8Vec4};
+#[cfg(feature = "usize")]
+use crate::{USizeVec2, USizeVec3, USizeVec4};
+#[cfg(feature = "u32")]
+use crate::{UVec2, UVec3, UVec4};
 
 macro_rules! impl_vec_types {
     ($t:ty, $vec2:ty, $vec3:ty, $vec4:ty) => {
@@ -315,15 +332,25 @@ impl IntoMint for Mat3A {
 impl_float_types!(f32, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4);
 #[cfg(feature = "f64")]
 impl_float_types!(f64, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4);
+#[cfg(feature = "i8")]
 impl_vec_types!(i8, I8Vec2, I8Vec3, I8Vec4);
+#[cfg(feature = "u8")]
 impl_vec_types!(u8, U8Vec2, U8Vec3, U8Vec4);
+#[cfg(feature = "i16")]
 impl_vec_types!(i16, I16Vec2, I16Vec3, I16Vec4);
+#[cfg(feature = "u16")]
 impl_vec_types!(u16, U16Vec2, U16Vec3, U16Vec4);
+#[cfg(feature = "i32")]
 impl_vec_types!(i32, IVec2, IVec3, IVec4);
+#[cfg(feature = "u32")]
 impl_vec_types!(u32, UVec2, UVec3, UVec4);
+#[cfg(feature = "i64")]
 impl_vec_types!(i64, I64Vec2, I64Vec3, I64Vec4);
+#[cfg(feature = "u64")]
 impl_vec_types!(u64, U64Vec2, U64Vec3, U64Vec4);
+#[cfg(feature = "isize")]
 impl_vec_types!(isize, ISizeVec2, ISizeVec3, ISizeVec4);
+#[cfg(feature = "usize")]
 impl_vec_types!(usize, USizeVec2, USizeVec3, USizeVec4);
 
 #[cfg(test)]
@@ -533,42 +560,52 @@ mod test {
         impl_float_tests!(f64, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4);
     }
 
+    #[cfg(feature = "i8")]
     mod i8 {
         impl_vec_tests!(i8, I8Vec2, I8Vec3, I8Vec4);
     }
 
+    #[cfg(feature = "u8")]
     mod u8 {
         impl_vec_tests!(u8, U8Vec2, U8Vec3, U8Vec4);
     }
 
+    #[cfg(feature = "i16")]
     mod i16 {
         impl_vec_tests!(i16, I16Vec2, I16Vec3, I16Vec4);
     }
 
+    #[cfg(feature = "u16")]
     mod u16 {
         impl_vec_tests!(u16, U16Vec2, U16Vec3, U16Vec4);
     }
 
+    #[cfg(feature = "i32")]
     mod i32 {
         impl_vec_tests!(i32, IVec2, IVec3, IVec4);
     }
 
+    #[cfg(feature = "u32")]
     mod u32 {
         impl_vec_tests!(u32, UVec2, UVec3, UVec4);
     }
 
+    #[cfg(feature = "i64")]
     mod i64 {
         impl_vec_tests!(i64, I64Vec2, I64Vec3, I64Vec4);
     }
 
+    #[cfg(feature = "u64")]
     mod u64 {
         impl_vec_tests!(u64, U64Vec2, U64Vec3, U64Vec4);
     }
 
+    #[cfg(feature = "isize")]
     mod isize {
         impl_vec_tests!(isize, ISizeVec2, ISizeVec3, ISizeVec4);
     }
 
+    #[cfg(feature = "usize")]
     mod usize {
         impl_vec_tests!(usize, USizeVec2, USizeVec3, USizeVec4);
     }

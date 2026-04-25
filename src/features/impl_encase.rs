@@ -1,19 +1,29 @@
-use crate::{IVec2, IVec3, IVec4, Mat2, Mat3, Mat4, UVec2, UVec3, UVec4, Vec2, Vec3, Vec4};
+#[cfg(feature = "i32")]
+use crate::{IVec2, IVec3, IVec4};
+use crate::{Mat2, Mat3, Mat4, Vec2, Vec3, Vec4};
+#[cfg(feature = "u32")]
+use crate::{UVec2, UVec3, UVec4};
 use encase::{
     matrix::{impl_matrix, AsMutMatrixParts, AsRefMatrixParts, FromMatrixParts, MatrixScalar},
     vector::impl_vector,
 };
 
 impl_vector!(2, Vec2, f32; using AsRef AsMut From);
+#[cfg(feature = "u32")]
 impl_vector!(2, UVec2, u32; using AsRef AsMut From);
+#[cfg(feature = "i32")]
 impl_vector!(2, IVec2, i32; using AsRef AsMut From);
 
 impl_vector!(3, Vec3, f32; using AsRef AsMut From);
+#[cfg(feature = "u32")]
 impl_vector!(3, UVec3, u32; using AsRef AsMut From);
+#[cfg(feature = "i32")]
 impl_vector!(3, IVec3, i32; using AsRef AsMut From);
 
 impl_vector!(4, Vec4, f32; using AsRef AsMut From);
+#[cfg(feature = "u32")]
 impl_vector!(4, UVec4, u32; using AsRef AsMut From);
+#[cfg(feature = "i32")]
 impl_vector!(4, IVec4, i32; using AsRef AsMut From);
 
 macro_rules! impl_matrix_traits {
@@ -121,15 +131,21 @@ mod test {
     use encase::StorageBuffer;
 
     impl_vec_test!(2, vec2, Vec2, [1.12, 3.04]);
+    #[cfg(feature = "i32")]
     impl_vec_test!(2, ivec2, IVec2, [1, 3]);
+    #[cfg(feature = "u32")]
     impl_vec_test!(2, uvec2, UVec2, [1, 3]);
 
     impl_vec_test!(3, vec3, Vec3, [1.12, 3.04, 6.75]);
+    #[cfg(feature = "i32")]
     impl_vec_test!(3, ivec3, IVec3, [1, 3, 6]);
+    #[cfg(feature = "u32")]
     impl_vec_test!(3, uvec3, UVec3, [1, 3, 6]);
 
     impl_vec_test!(4, vec4, Vec4, [1.12, 3.04, 6.75, 9.99]);
+    #[cfg(feature = "i32")]
     impl_vec_test!(4, ivec4, IVec4, [1, 3, 6, 9]);
+    #[cfg(feature = "u32")]
     impl_vec_test!(4, uvec4, UVec4, [1, 3, 6, 9]);
 
     impl_mat_test!(2, 2, mat2, Mat2, [[1.12, 3.04], [8.65, 2.34]]);

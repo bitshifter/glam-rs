@@ -1,13 +1,32 @@
 #[cfg(test)]
 mod test {
     use crate::{
-        Affine2, Affine3, Affine3A, I16Vec2, I16Vec3, I16Vec4, I64Vec2, I64Vec3, I64Vec4, I8Vec2,
-        I8Vec3, I8Vec4, IVec2, IVec3, IVec4, Mat2, Mat3, Mat3A, Mat4, Quat, U16Vec2, U16Vec3,
-        U16Vec4, U64Vec2, U64Vec3, U64Vec4, U8Vec2, U8Vec3, U8Vec4, UVec2, UVec3, UVec4, Vec2,
-        Vec3, Vec3A, Vec4,
+        Affine2, Affine3, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4,
     };
     #[cfg(feature = "f64")]
     use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
+    #[cfg(feature = "f64")]
+    use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
+    #[cfg(feature = "i16")]
+    use crate::{I16Vec2, I16Vec3, I16Vec4};
+    #[cfg(feature = "i64")]
+    use crate::{I64Vec2, I64Vec3, I64Vec4};
+    #[cfg(feature = "i8")]
+    use crate::{I8Vec2, I8Vec3, I8Vec4};
+    #[cfg(feature = "isize")]
+    use crate::{ISizeVec2, ISizeVec3, ISizeVec4};
+    #[cfg(feature = "i32")]
+    use crate::{IVec2, IVec3, IVec4};
+    #[cfg(feature = "u16")]
+    use crate::{U16Vec2, U16Vec3, U16Vec4};
+    #[cfg(feature = "u64")]
+    use crate::{U64Vec2, U64Vec3, U64Vec4};
+    #[cfg(feature = "u8")]
+    use crate::{U8Vec2, U8Vec3, U8Vec4};
+    #[cfg(feature = "usize")]
+    use crate::{USizeVec2, USizeVec3, USizeVec4};
+    #[cfg(feature = "u32")]
+    use crate::{UVec2, UVec3, UVec4};
     use core::mem;
 
     macro_rules! test_pod_t {
@@ -74,35 +93,59 @@ mod test {
     #[cfg(feature = "f64")]
     test_pod_t!(dvec4, DVec4);
 
+    #[cfg(feature = "i8")]
     test_pod_t!(i8vec2, I8Vec2);
+    #[cfg(feature = "i8")]
     test_pod_t!(i8vec3, I8Vec3);
+    #[cfg(feature = "i8")]
     test_pod_t!(i8vec4, I8Vec4);
 
+    #[cfg(feature = "u8")]
     test_pod_t!(u8vec2, U8Vec2);
+    #[cfg(feature = "u8")]
     test_pod_t!(u8vec3, U8Vec3);
+    #[cfg(feature = "u8")]
     test_pod_t!(u8vec4, U8Vec4);
 
+    #[cfg(feature = "i16")]
     test_pod_t!(i16vec2, I16Vec2);
+    #[cfg(feature = "i16")]
     test_pod_t!(i16vec3, I16Vec3);
+    #[cfg(feature = "i16")]
     test_pod_t!(i16vec4, I16Vec4);
 
+    #[cfg(feature = "u16")]
     test_pod_t!(u16vec2, U16Vec2);
+    #[cfg(feature = "u16")]
     test_pod_t!(u16vec3, U16Vec3);
+    #[cfg(feature = "u16")]
     test_pod_t!(u16vec4, U16Vec4);
 
+    #[cfg(feature = "i32")]
     test_pod_t!(ivec2, IVec2);
+    #[cfg(feature = "i32")]
     test_pod_t!(ivec3, IVec3);
+    #[cfg(feature = "i32")]
     test_pod_t!(ivec4, IVec4);
 
+    #[cfg(feature = "u32")]
     test_pod_t!(uvec2, UVec2);
+    #[cfg(feature = "u32")]
     test_pod_t!(uvec3, UVec3);
+    #[cfg(feature = "u32")]
     test_pod_t!(uvec4, UVec4);
 
+    #[cfg(feature = "i64")]
     test_pod_t!(i64vec2, I64Vec2);
+    #[cfg(feature = "i64")]
     test_pod_t!(i64vec3, I64Vec3);
+    #[cfg(feature = "i64")]
     test_pod_t!(i64vec4, I64Vec4);
 
+    #[cfg(feature = "u64")]
     test_pod_t!(u64vec2, U64Vec2);
+    #[cfg(feature = "u64")]
     test_pod_t!(u64vec3, U64Vec3);
+    #[cfg(feature = "u64")]
     test_pod_t!(u64vec4, U64Vec4);
 }
