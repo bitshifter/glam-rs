@@ -997,6 +997,7 @@ macro_rules! impl_vec2_signed_integer_tests {
     };
 }
 
+#[allow(unused_macros)]
 macro_rules! impl_vec2_unsigned_integer_tests {
     ($t:ident, $new:ident, $vec2:ident, $vec3:ident, $mask:ident) => {
         impl_vec2_tests!($t, $new, $vec2, $vec3, $mask);
@@ -1058,6 +1059,7 @@ macro_rules! impl_vec2_unsigned_integer_tests {
     };
 }
 
+#[allow(unused_macros)]
 macro_rules! impl_vec2_eq_hash_tests {
     ($t:ident, $new:ident) => {
         glam_test!(test_ve2_hash, {
@@ -1707,6 +1709,7 @@ macro_rules! impl_vec2_float_tests {
     };
 }
 
+#[allow(unused_macros)]
 macro_rules! impl_vec2_scalar_shift_op_test {
     ($vec2:ident, $t_min:literal, $t_max:literal, $rhs_min:literal, $rhs_max:literal) => {
         glam_test!(test_vec2_scalar_shift_ops, {
@@ -1748,6 +1751,7 @@ macro_rules! impl_vec2_scalar_shift_op_test {
     };
 }
 
+#[allow(unused_macros)]
 macro_rules! impl_vec2_scalar_shift_op_tests {
     ($vec2:ident, $t_min:literal, $t_max:literal) => {
         mod shift_by_i8 {
@@ -1785,6 +1789,7 @@ macro_rules! impl_vec2_scalar_shift_op_tests {
     };
 }
 
+#[allow(unused_macros)]
 macro_rules! impl_vec2_shift_op_test {
     ($vec2:ident, $rhs:ident, $t_min:literal, $t_max:literal) => {
         glam_test!(test_vec2_shift_ops, {
@@ -1813,6 +1818,7 @@ macro_rules! impl_vec2_shift_op_test {
     };
 }
 
+#[allow(unused_macros)]
 macro_rules! impl_vec2_shift_op_tests {
     ($vec2:ident) => {
         mod shift_ivec2_by_ivec2 {
@@ -1826,6 +1832,7 @@ macro_rules! impl_vec2_shift_op_tests {
     };
 }
 
+#[allow(unused_macros)]
 macro_rules! impl_vec2_scalar_bit_op_tests {
     ($vec2:ident, $t_min:literal, $t_max:literal) => {
         glam_test!(test_vec2_scalar_bit_ops, {
@@ -1879,6 +1886,7 @@ macro_rules! impl_vec2_scalar_bit_op_tests {
     };
 }
 
+#[allow(unused_macros)]
 macro_rules! impl_vec2_bit_op_tests {
     ($vec2:ident, $t_min:literal, $t_max:literal) => {
         glam_test!(test_vec2_bit_ops, {
