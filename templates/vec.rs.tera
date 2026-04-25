@@ -4231,7 +4231,7 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
 {% for rhs_t in ["IVec" ~ dim, "UVec" ~ dim] %}
         {% if rhs_t != self_t %}
             {{ macros::cfg_check_for_type(ty=rhs_t) }}
-        {%- endif %}
+        {%- endif -%}
         impl Shl{% if rhs_t != self_t %}<{{ rhs_t }}>{% endif %} for {{ self_t }} {
             type Output = Self;
             #[inline]
@@ -4248,7 +4248,7 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
 
         {% if rhs_t != self_t %}
             {{- macros::cfg_check_for_type(ty=rhs_t) }}
-        {%- endif %}
+        {%- endif -%}
         impl Shr{% if rhs_t != self_t %}<{{ rhs_t }}>{% endif %} for {{ self_t }} {
             type Output = Self;
             #[inline]

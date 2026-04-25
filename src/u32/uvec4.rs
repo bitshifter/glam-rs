@@ -2806,7 +2806,6 @@ impl ShrAssign<&u64> for UVec4 {
 }
 
 #[cfg(feature = "i32")]
-
 impl Shl<IVec4> for UVec4 {
     type Output = Self;
     #[inline]
@@ -2821,7 +2820,6 @@ impl Shl<IVec4> for UVec4 {
 }
 
 #[cfg(feature = "i32")]
-
 impl Shl<&IVec4> for UVec4 {
     type Output = Self;
     #[inline]
@@ -2831,7 +2829,6 @@ impl Shl<&IVec4> for UVec4 {
 }
 
 #[cfg(feature = "i32")]
-
 impl Shl<&IVec4> for &UVec4 {
     type Output = UVec4;
     #[inline]
@@ -2841,7 +2838,6 @@ impl Shl<&IVec4> for &UVec4 {
 }
 
 #[cfg(feature = "i32")]
-
 impl Shl<IVec4> for &UVec4 {
     type Output = UVec4;
     #[inline]
@@ -2851,7 +2847,6 @@ impl Shl<IVec4> for &UVec4 {
 }
 
 #[cfg(feature = "i32")]
-
 impl Shr<IVec4> for UVec4 {
     type Output = Self;
     #[inline]
@@ -2866,7 +2861,6 @@ impl Shr<IVec4> for UVec4 {
 }
 
 #[cfg(feature = "i32")]
-
 impl Shr<&IVec4> for UVec4 {
     type Output = Self;
     #[inline]
@@ -2876,7 +2870,6 @@ impl Shr<&IVec4> for UVec4 {
 }
 
 #[cfg(feature = "i32")]
-
 impl Shr<&IVec4> for &UVec4 {
     type Output = UVec4;
     #[inline]
@@ -2886,7 +2879,6 @@ impl Shr<&IVec4> for &UVec4 {
 }
 
 #[cfg(feature = "i32")]
-
 impl Shr<IVec4> for &UVec4 {
     type Output = UVec4;
     #[inline]

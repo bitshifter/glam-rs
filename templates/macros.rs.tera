@@ -122,7 +122,7 @@
 
     {% if self_t is containing("Vec") %}
         {{ self::cfg_check_for_type(ty=val_rhs_t) -}}
-    {%- endif %}
+    {%- endif -%}
     impl {{ imp }}<&{{ val_rhs_t }}> for {{ self_t }} {
         type Output = {{ val_output_t }};
         #[inline]
@@ -134,7 +134,7 @@
 
     {% if self_t is containing("Vec") %}
         {{ self::cfg_check_for_type(ty=val_rhs_t) -}}
-    {%- endif %}
+    {%- endif -%}
     impl {{ imp }}<&{{ rhs_t }}> for &{{ self_t }} {
         type Output = {{ output_t }};
         #[inline]
@@ -145,7 +145,7 @@
 
     {% if self_t is containing("Vec") %}
         {{ self::cfg_check_for_type(ty=val_rhs_t) -}}
-    {%- endif %}
+    {%- endif -%}
     impl {{ imp }}<{{ rhs_t }}> for &{{ self_t }} {
         type Output = {{ output_t }};
         #[inline]
