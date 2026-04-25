@@ -755,7 +755,6 @@ impl USizeVec3 {
     /// Returns a vector containing the wrapping addition of `self` and signed vector `rhs`.
     ///
     /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
-
     #[cfg(feature = "isize")]
     #[inline]
     #[must_use]
@@ -779,7 +778,6 @@ impl USizeVec3 {
     /// Returns a vector containing the wrapping addition of `self` and signed vector `rhs`.
     ///
     /// In other words this computes `[self.x.wrapping_add_signed(rhs.x), self.y.wrapping_add_signed(rhs.y), ..]`.
-
     #[cfg(feature = "isize")]
     #[inline]
     #[must_use]
@@ -794,7 +792,6 @@ impl USizeVec3 {
     /// Returns a vector containing the saturating addition of `self` and signed vector `rhs`.
     ///
     /// In other words this computes `[self.x.saturating_add_signed(rhs.x), self.y.saturating_add_signed(rhs.y), ..]`.
-
     #[cfg(feature = "isize")]
     #[inline]
     #[must_use]

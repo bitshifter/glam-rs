@@ -919,7 +919,6 @@ impl IVec4 {
     /// Returns a vector containing the wrapping addition of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
-
     #[cfg(feature = "u32")]
     #[inline]
     #[must_use]
@@ -947,7 +946,6 @@ impl IVec4 {
     /// Returns a vector containing the wrapping subtraction of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `Some([self.x - rhs.x, self.y - rhs.y, ..])` but returns `None` on any overflow.
-
     #[cfg(feature = "u32")]
     #[inline]
     #[must_use]
@@ -975,7 +973,6 @@ impl IVec4 {
     /// Returns a vector containing the wrapping addition of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `[self.x.wrapping_add_unsigned(rhs.x), self.y.wrapping_add_unsigned(rhs.y), ..]`.
-
     #[cfg(feature = "u32")]
     #[inline]
     #[must_use]
@@ -991,7 +988,6 @@ impl IVec4 {
     /// Returns a vector containing the wrapping subtraction of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `[self.x.wrapping_sub_unsigned(rhs.x), self.y.wrapping_sub_unsigned(rhs.y), ..]`.
-
     #[cfg(feature = "u32")]
     #[inline]
     #[must_use]
@@ -1007,10 +1003,9 @@ impl IVec4 {
     // Returns a vector containing the saturating addition of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `[self.x.saturating_add_unsigned(rhs.x), self.y.saturating_add_unsigned(rhs.y), ..]`.
+    #[cfg(feature = "u32")]
     #[inline]
     #[must_use]
-    #[cfg(feature = "u32")]
-
     pub const fn saturating_add_unsigned(self, rhs: UVec4) -> Self {
         Self {
             x: self.x.saturating_add_unsigned(rhs.x),
@@ -1023,7 +1018,6 @@ impl IVec4 {
     /// Returns a vector containing the saturating subtraction of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `[self.x.saturating_sub_unsigned(rhs.x), self.y.saturating_sub_unsigned(rhs.y), ..]`.
-
     #[cfg(feature = "u32")]
     #[inline]
     #[must_use]

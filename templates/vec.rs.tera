@@ -3248,7 +3248,7 @@ impl {{ self_t }} {
         /// Returns a vector containing the wrapping addition of `self` and unsigned vector `rhs`.
         ///
         /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
-        {{ macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
+        {{- macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
         #[inline]
         #[must_use]
         pub const fn checked_add_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Option<Self> {
@@ -3266,7 +3266,7 @@ impl {{ self_t }} {
         /// Returns a vector containing the wrapping subtraction of `self` and unsigned vector `rhs`.
         ///
         /// In other words this computes `Some([self.x - rhs.x, self.y - rhs.y, ..])` but returns `None` on any overflow.
-        {{ macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
+        {{- macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
         #[inline]
         #[must_use]
         pub const fn checked_sub_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Option<Self> {
@@ -3284,7 +3284,7 @@ impl {{ self_t }} {
         /// Returns a vector containing the wrapping addition of `self` and unsigned vector `rhs`.
         ///
         /// In other words this computes `[self.x.wrapping_add_unsigned(rhs.x), self.y.wrapping_add_unsigned(rhs.y), ..]`.
-        {{ macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
+        {{- macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
         #[inline]
         #[must_use]
         pub const fn wrapping_add_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Self {
@@ -3298,7 +3298,7 @@ impl {{ self_t }} {
         /// Returns a vector containing the wrapping subtraction of `self` and unsigned vector `rhs`.
         ///
         /// In other words this computes `[self.x.wrapping_sub_unsigned(rhs.x), self.y.wrapping_sub_unsigned(rhs.y), ..]`.
-        {{ macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
+        {{- macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
         #[inline]
         #[must_use]
         pub const fn wrapping_sub_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Self {
@@ -3312,9 +3312,9 @@ impl {{ self_t }} {
         // Returns a vector containing the saturating addition of `self` and unsigned vector `rhs`.
         ///
         /// In other words this computes `[self.x.saturating_add_unsigned(rhs.x), self.y.saturating_add_unsigned(rhs.y), ..]`.
+        {{- macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
         #[inline]
         #[must_use]
-        {{ macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
         pub const fn saturating_add_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Self {
             Self {
                 {% for c in components %}
@@ -3326,7 +3326,7 @@ impl {{ self_t }} {
         /// Returns a vector containing the saturating subtraction of `self` and unsigned vector `rhs`.
         ///
         /// In other words this computes `[self.x.saturating_sub_unsigned(rhs.x), self.y.saturating_sub_unsigned(rhs.y), ..]`.
-        {{ macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
+        {{- macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
         #[inline]
         #[must_use]
         pub const fn saturating_sub_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Self {
@@ -3340,7 +3340,7 @@ impl {{ self_t }} {
         /// Returns a vector containing the wrapping addition of `self` and signed vector `rhs`.
         ///
         /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
-        {{ macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
+        {{- macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
         #[inline]
         #[must_use]
         pub const fn checked_add_signed(self, rhs: {{ opposite_signedness_t }}) -> Option<Self> {
@@ -3358,7 +3358,7 @@ impl {{ self_t }} {
         /// Returns a vector containing the wrapping addition of `self` and signed vector `rhs`.
         ///
         /// In other words this computes `[self.x.wrapping_add_signed(rhs.x), self.y.wrapping_add_signed(rhs.y), ..]`.
-        {{ macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
+        {{- macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
         #[inline]
         #[must_use]
         pub const fn wrapping_add_signed(self, rhs: {{ opposite_signedness_t }}) -> Self {
@@ -3372,7 +3372,7 @@ impl {{ self_t }} {
         /// Returns a vector containing the saturating addition of `self` and signed vector `rhs`.
         ///
         /// In other words this computes `[self.x.saturating_add_signed(rhs.x), self.y.saturating_add_signed(rhs.y), ..]`.
-        {{ macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
+        {{- macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
         #[inline]
         #[must_use]
         pub const fn saturating_add_signed(self, rhs: {{ opposite_signedness_t }}) -> Self {
@@ -4230,7 +4230,7 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
 
 {% for rhs_t in ["IVec" ~ dim, "UVec" ~ dim] %}
         {% if rhs_t != self_t %}
-            {{ macros::cfg_check_for_type(ty=rhs_t) -}}
+            {{ macros::cfg_check_for_type(ty=rhs_t) }}
         {%- endif %}
         impl Shl{% if rhs_t != self_t %}<{{ rhs_t }}>{% endif %} for {{ self_t }} {
             type Output = Self;
