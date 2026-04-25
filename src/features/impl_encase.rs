@@ -127,7 +127,11 @@ macro_rules! impl_mat_test {
 
 #[cfg(test)]
 mod test {
-    use crate::{IVec2, IVec3, IVec4, Mat2, Mat3, Mat4, UVec2, UVec3, UVec4, Vec2, Vec3, Vec4};
+    #[cfg(feature = "i32")]
+    use crate::{IVec2, IVec3, IVec4};
+    use crate::{Mat2, Mat3, Mat4, Vec2, Vec3, Vec4};
+    #[cfg(feature = "u32")]
+    use crate::{UVec2, UVec3, UVec4};
     use encase::StorageBuffer;
 
     impl_vec_test!(2, vec2, Vec2, [1.12, 3.04]);
