@@ -3041,6 +3041,7 @@ mod dvec4 {
     impl_vec4_float_tests!(f64, dvec4, DVec4, DVec3, DVec2, BVec4);
 }
 
+#[cfg(feature = "i8")]
 mod i8vec4 {
     use glam::{
         i8vec4, BVec4, I16Vec4, I64Vec4, I8Vec2, I8Vec3, I8Vec4, ISizeVec4, IVec4, U16Vec4,
@@ -3253,6 +3254,7 @@ mod i8vec4 {
     impl_vec4_bit_op_tests!(I8Vec4, -2, 2);
 }
 
+#[cfg(feature = "u8")]
 mod u8vec4 {
     use glam::{
         u8vec4, BVec4, I16Vec4, I64Vec4, I8Vec4, ISizeVec4, IVec4, U16Vec4, U64Vec4, U8Vec2,
@@ -3456,6 +3458,7 @@ mod u8vec4 {
     impl_vec4_bit_op_tests!(U8Vec4, 0, 2);
 }
 
+#[cfg(feature = "i16")]
 mod i16vec4 {
     use glam::{
         i16vec4, BVec4, I16Vec2, I16Vec3, I16Vec4, I64Vec4, I8Vec4, ISizeVec4, IVec4, U16Vec4,
@@ -3659,6 +3662,7 @@ mod i16vec4 {
     impl_vec4_bit_op_tests!(I16Vec4, -2, 2);
 }
 
+#[cfg(feature = "u16")]
 mod u16vec4 {
     use glam::{
         u16vec4, BVec4, I16Vec4, I64Vec4, I8Vec4, ISizeVec4, IVec4, U16Vec2, U16Vec3, U16Vec4,
@@ -3858,6 +3862,7 @@ mod u16vec4 {
     impl_vec4_bit_op_tests!(U16Vec4, 0, 2);
 }
 
+#[cfg(feature = "i32")]
 mod ivec4 {
     use glam::{
         ivec4, BVec4, I16Vec4, I64Vec4, I8Vec4, ISizeVec4, IVec2, IVec3, IVec4, U16Vec4, U64Vec4,
@@ -4048,6 +4053,7 @@ mod ivec4 {
     impl_vec4_bit_op_tests!(IVec4, -2, 2);
 }
 
+#[cfg(feature = "u32")]
 mod uvec4 {
     use glam::{
         uvec4, BVec4, I16Vec4, I64Vec4, I8Vec4, ISizeVec4, IVec4, U16Vec4, U64Vec4, U8Vec4,
@@ -4234,6 +4240,7 @@ mod uvec4 {
     impl_vec4_bit_op_tests!(UVec4, 0, 2);
 }
 
+#[cfg(feature = "i64")]
 mod i64vec4 {
     use glam::{
         i64vec4, BVec4, I16Vec4, I64Vec2, I64Vec3, I64Vec4, I8Vec4, ISizeVec4, IVec4, U16Vec4,
@@ -4415,6 +4422,7 @@ mod i64vec4 {
     impl_vec4_bit_op_tests!(I64Vec4, -2, 2);
 }
 
+#[cfg(feature = "u64")]
 mod u64vec4 {
     use glam::{
         u64vec4, BVec4, I16Vec4, I64Vec4, I8Vec4, ISizeVec4, IVec4, U16Vec4, U64Vec2, U64Vec3,
@@ -4791,6 +4799,7 @@ mod isizevec4 {
     impl_vec4_bit_op_tests!(ISizeVec4, -2, 2);
 }
 
+#[cfg(feature = "usize")]
 mod usizevec4 {
     use glam::{
         usizevec4, BVec4, I16Vec4, I64Vec4, I8Vec4, ISizeVec4, IVec4, U16Vec4, U64Vec4, U8Vec4,

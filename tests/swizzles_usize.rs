@@ -2,6 +2,7 @@
 #[macro_use]
 mod support;
 
+#[cfg(feature = "usize")]
 glam_test!(test_usizevec4_swizzles, {
     use glam::{usizevec2, usizevec3, usizevec4, Vec4Swizzles};
     let v = usizevec4(1_usize, 2_usize, 3_usize, 4_usize);
@@ -489,6 +490,7 @@ glam_test!(test_usizevec4_swizzles, {
     );
 });
 
+#[cfg(feature = "usize")]
 glam_test!(test_usizevec3_swizzles, {
     use glam::{usizevec2, usizevec3, usizevec4, Vec3Swizzles};
     let v = usizevec3(1_usize, 2_usize, 3_usize);
@@ -618,6 +620,7 @@ glam_test!(test_usizevec3_swizzles, {
     assert_eq!(v.with_zy(rhs2), usizevec3(1_usize, 12_usize, 11_usize));
 });
 
+#[cfg(feature = "usize")]
 glam_test!(test_usizevec2_swizzles, {
     use glam::{usizevec2, usizevec3, usizevec4, Vec2Swizzles};
     let v = usizevec2(1_usize, 2_usize);

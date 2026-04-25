@@ -2775,6 +2775,7 @@ mod dvec3 {
     impl_vec3_float_tests!(f64, dvec3, DVec3, BVec3, DQuat);
 }
 
+#[cfg(feature = "i8")]
 mod i8vec3 {
     use glam::{
         i8vec3, BVec3, I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U64Vec3, U8Vec3,
@@ -2971,6 +2972,7 @@ mod i8vec3 {
     impl_vec3_bit_op_tests!(I8Vec3, -2, 2);
 }
 
+#[cfg(feature = "u8")]
 mod u8vec3 {
     use glam::{
         u8vec3, BVec3, I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U64Vec3, U8Vec3,
@@ -3157,6 +3159,7 @@ mod u8vec3 {
     impl_vec3_bit_op_tests!(U8Vec3, 0, 2);
 }
 
+#[cfg(feature = "i16")]
 mod i16vec3 {
     use glam::{
         i16vec3, BVec3, I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U64Vec3, U8Vec3,
@@ -3342,6 +3345,7 @@ mod i16vec3 {
     impl_vec3_bit_op_tests!(I16Vec3, -2, 2);
 }
 
+#[cfg(feature = "u16")]
 mod u16vec3 {
     use glam::{
         u16vec3, BVec3, I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U64Vec3, U8Vec3,
@@ -3518,6 +3522,7 @@ mod u16vec3 {
     impl_vec3_bit_op_tests!(U16Vec3, 0, 2);
 }
 
+#[cfg(feature = "i32")]
 mod ivec3 {
     use glam::{
         ivec3, BVec3, I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U64Vec3, U8Vec3,
@@ -3690,6 +3695,7 @@ mod ivec3 {
     impl_vec3_bit_op_tests!(IVec3, -2, 2);
 }
 
+#[cfg(feature = "u32")]
 mod uvec3 {
     use glam::{
         uvec3, BVec3, I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U64Vec3, U8Vec3,
@@ -3860,6 +3866,7 @@ mod uvec3 {
     impl_vec3_bit_op_tests!(UVec3, 0, 2);
 }
 
+#[cfg(feature = "i64")]
 mod i64vec3 {
     use glam::{
         i64vec3, BVec3, I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U64Vec3, U8Vec3,
@@ -4016,6 +4023,7 @@ mod i64vec3 {
     impl_vec3_bit_op_tests!(I64Vec3, -2, 2);
 }
 
+#[cfg(feature = "u64")]
 mod u64vec3 {
     use glam::{
         u64vec3, BVec3, I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U64Vec3, U8Vec3,
@@ -4370,6 +4378,7 @@ mod isizevec3 {
     impl_vec3_bit_op_tests!(ISizeVec3, -2, 2);
 }
 
+#[cfg(feature = "usize")]
 mod usizevec3 {
     use glam::{
         usizevec3, BVec3, I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec3, U16Vec3, U64Vec3, U8Vec3,

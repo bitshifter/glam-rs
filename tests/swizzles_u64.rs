@@ -2,6 +2,7 @@
 #[macro_use]
 mod support;
 
+#[cfg(feature = "u64")]
 glam_test!(test_u64vec4_swizzles, {
     use glam::{u64vec2, u64vec3, u64vec4, Vec4Swizzles};
     let v = u64vec4(1_u64, 2_u64, 3_u64, 4_u64);
@@ -381,6 +382,7 @@ glam_test!(test_u64vec4_swizzles, {
     assert_eq!(v.with_wz(rhs2), u64vec4(1_u64, 2_u64, 12_u64, 11_u64));
 });
 
+#[cfg(feature = "u64")]
 glam_test!(test_u64vec3_swizzles, {
     use glam::{u64vec2, u64vec3, u64vec4, Vec3Swizzles};
     let v = u64vec3(1_u64, 2_u64, 3_u64);
@@ -510,6 +512,7 @@ glam_test!(test_u64vec3_swizzles, {
     assert_eq!(v.with_zy(rhs2), u64vec3(1_u64, 12_u64, 11_u64));
 });
 
+#[cfg(feature = "u64")]
 glam_test!(test_u64vec2_swizzles, {
     use glam::{u64vec2, u64vec3, u64vec4, Vec2Swizzles};
     let v = u64vec2(1_u64, 2_u64);

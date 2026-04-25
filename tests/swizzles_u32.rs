@@ -2,6 +2,7 @@
 #[macro_use]
 mod support;
 
+#[cfg(feature = "u32")]
 glam_test!(test_uvec4_swizzles, {
     use glam::{uvec2, uvec3, uvec4, Vec4Swizzles};
     let v = uvec4(1_u32, 2_u32, 3_u32, 4_u32);
@@ -381,6 +382,7 @@ glam_test!(test_uvec4_swizzles, {
     assert_eq!(v.with_wz(rhs2), uvec4(1_u32, 2_u32, 12_u32, 11_u32));
 });
 
+#[cfg(feature = "u32")]
 glam_test!(test_uvec3_swizzles, {
     use glam::{uvec2, uvec3, uvec4, Vec3Swizzles};
     let v = uvec3(1_u32, 2_u32, 3_u32);
@@ -510,6 +512,7 @@ glam_test!(test_uvec3_swizzles, {
     assert_eq!(v.with_zy(rhs2), uvec3(1_u32, 12_u32, 11_u32));
 });
 
+#[cfg(feature = "u32")]
 glam_test!(test_uvec2_swizzles, {
     use glam::{uvec2, uvec3, uvec4, Vec2Swizzles};
     let v = uvec2(1_u32, 2_u32);

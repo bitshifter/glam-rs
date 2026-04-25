@@ -73,13 +73,14 @@ fn write_test_vec4(
 ) -> Result<()> {
     const SIZE: usize = 4;
 
-    if t == "f64" {
+    if t != "f32" {
         write!(
             out,
             r#"
-#[cfg(feature = "f64")]"#
+#[cfg(feature = "{t}")]"#
         )?;
     }
+
     write!(
         out,
         r#"
@@ -109,11 +110,11 @@ fn write_test_vec3(
 ) -> Result<()> {
     const SIZE: usize = 3;
 
-    if t == "f64" {
+    if t != "f32" {
         write!(
             out,
             r#"
-#[cfg(feature = "f64")]"#
+#[cfg(feature = "{t}")]"#
         )?;
     }
 
@@ -145,11 +146,11 @@ fn write_test_vec2(
 ) -> Result<()> {
     const SIZE: usize = 2;
 
-    if t == "f64" {
+    if t != "f32" {
         write!(
             out,
             r#"
-#[cfg(feature = "f64")]"#
+#[cfg(feature = "{t}")]"#
         )?;
     }
 
