@@ -99,6 +99,7 @@ mod f64 {
     impl_rkyv!(DVec4);
 }
 
+#[cfg(feature = "i8")]
 mod i8 {
     use crate::{I8Vec2, I8Vec3, I8Vec4};
     use rkyv::{rancor::Fallible, Archive, Deserialize, Place, Serialize};
@@ -108,6 +109,7 @@ mod i8 {
     impl_rkyv!(I8Vec4);
 }
 
+#[cfg(feature = "i16")]
 mod i16 {
     use crate::{I16Vec2, I16Vec3, I16Vec4};
     use rkyv::{rancor::Fallible, Archive, Deserialize, Place, Serialize};
@@ -117,6 +119,7 @@ mod i16 {
     impl_rkyv!(I16Vec4);
 }
 
+#[cfg(feature = "i32")]
 mod i32 {
     use crate::{IVec2, IVec3, IVec4};
     use rkyv::{rancor::Fallible, Archive, Deserialize, Place, Serialize};
@@ -126,6 +129,7 @@ mod i32 {
     impl_rkyv!(IVec4);
 }
 
+#[cfg(feature = "i64")]
 mod i64 {
     use crate::{I64Vec2, I64Vec3, I64Vec4};
     use rkyv::{rancor::Fallible, Archive, Deserialize, Place, Serialize};
@@ -135,6 +139,7 @@ mod i64 {
     impl_rkyv!(I64Vec4);
 }
 
+#[cfg(feature = "u8")]
 mod u8 {
     use crate::{U8Vec2, U8Vec3, U8Vec4};
     use rkyv::{rancor::Fallible, Archive, Deserialize, Place, Serialize};
@@ -144,6 +149,7 @@ mod u8 {
     impl_rkyv!(U8Vec4);
 }
 
+#[cfg(feature = "u16")]
 mod u16 {
     use crate::{U16Vec2, U16Vec3, U16Vec4};
     use rkyv::{rancor::Fallible, Archive, Deserialize, Place, Serialize};
@@ -153,6 +159,7 @@ mod u16 {
     impl_rkyv!(U16Vec4);
 }
 
+#[cfg(feature = "u32")]
 mod u32 {
     use crate::{UVec2, UVec3, UVec4};
     use rkyv::{rancor::Fallible, Archive, Deserialize, Place, Serialize};
@@ -162,6 +169,7 @@ mod u32 {
     impl_rkyv!(UVec4);
 }
 
+#[cfg(feature = "u64")]
 mod u64 {
     use crate::{U64Vec2, U64Vec3, U64Vec4};
     use rkyv::{rancor::Fallible, Archive, Deserialize, Place, Serialize};
@@ -251,44 +259,68 @@ mod test {
             test_archive(&DVec4::new(1.0, 2.0, 3.0, 4.0));
         }
 
-        use crate::{I8Vec2, I8Vec3, I8Vec4};
-        test_archive(&I8Vec2::new(-1, 2));
-        test_archive(&I8Vec3::new(-1, 2, 3));
-        test_archive(&I8Vec4::new(-1, 2, 3, 4));
+        #[cfg(feature = "i8")]
+        {
+            use crate::{I8Vec2, I8Vec3, I8Vec4};
+            test_archive(&I8Vec2::new(-1, 2));
+            test_archive(&I8Vec3::new(-1, 2, 3));
+            test_archive(&I8Vec4::new(-1, 2, 3, 4));
+        }
 
-        use crate::{I16Vec2, I16Vec3, I16Vec4};
-        test_archive(&I16Vec2::new(-1, 2));
-        test_archive(&I16Vec3::new(-1, 2, 3));
-        test_archive(&I16Vec4::new(-1, 2, 3, 4));
+        #[cfg(feature = "i16")]
+        {
+            use crate::{I16Vec2, I16Vec3, I16Vec4};
+            test_archive(&I16Vec2::new(-1, 2));
+            test_archive(&I16Vec3::new(-1, 2, 3));
+            test_archive(&I16Vec4::new(-1, 2, 3, 4));
+        }
 
-        use crate::{IVec2, IVec3, IVec4};
-        test_archive(&IVec2::new(-1, 2));
-        test_archive(&IVec3::new(-1, 2, 3));
-        test_archive(&IVec4::new(-1, 2, 3, 4));
+        #[cfg(feature = "i32")]
+        {
+            use crate::{IVec2, IVec3, IVec4};
+            test_archive(&IVec2::new(-1, 2));
+            test_archive(&IVec3::new(-1, 2, 3));
+            test_archive(&IVec4::new(-1, 2, 3, 4));
+        }
 
-        use crate::{I64Vec2, I64Vec3, I64Vec4};
-        test_archive(&I64Vec2::new(-1, 2));
-        test_archive(&I64Vec3::new(-1, 2, 3));
-        test_archive(&I64Vec4::new(-1, 2, 3, 4));
+        #[cfg(feature = "i64")]
+        {
+            use crate::{I64Vec2, I64Vec3, I64Vec4};
+            test_archive(&I64Vec2::new(-1, 2));
+            test_archive(&I64Vec3::new(-1, 2, 3));
+            test_archive(&I64Vec4::new(-1, 2, 3, 4));
+        }
 
-        use crate::{U8Vec2, U8Vec3, U8Vec4};
-        test_archive(&U8Vec2::new(1, 2));
-        test_archive(&U8Vec3::new(1, 2, 3));
-        test_archive(&U8Vec4::new(1, 2, 3, 4));
+        #[cfg(feature = "u8")]
+        {
+            use crate::{U8Vec2, U8Vec3, U8Vec4};
+            test_archive(&U8Vec2::new(1, 2));
+            test_archive(&U8Vec3::new(1, 2, 3));
+            test_archive(&U8Vec4::new(1, 2, 3, 4));
+        }
 
-        use crate::{U16Vec2, U16Vec3, U16Vec4};
-        test_archive(&U16Vec2::new(1, 2));
-        test_archive(&U16Vec3::new(1, 2, 3));
-        test_archive(&U16Vec4::new(1, 2, 3, 4));
+        #[cfg(feature = "u16")]
+        {
+            use crate::{U16Vec2, U16Vec3, U16Vec4};
+            test_archive(&U16Vec2::new(1, 2));
+            test_archive(&U16Vec3::new(1, 2, 3));
+            test_archive(&U16Vec4::new(1, 2, 3, 4));
+        }
 
-        use crate::{UVec2, UVec3, UVec4};
-        test_archive(&UVec2::new(1, 2));
-        test_archive(&UVec3::new(1, 2, 3));
-        test_archive(&UVec4::new(1, 2, 3, 4));
+        #[cfg(feature = "u32")]
+        {
+            use crate::{UVec2, UVec3, UVec4};
+            test_archive(&UVec2::new(1, 2));
+            test_archive(&UVec3::new(1, 2, 3));
+            test_archive(&UVec4::new(1, 2, 3, 4));
+        }
 
-        use crate::{U64Vec2, U64Vec3, U64Vec4};
-        test_archive(&U64Vec2::new(1, 2));
-        test_archive(&U64Vec3::new(1, 2, 3));
-        test_archive(&U64Vec4::new(1, 2, 3, 4));
+        #[cfg(feature = "u64")]
+        {
+            use crate::{U64Vec2, U64Vec3, U64Vec4};
+            test_archive(&U64Vec2::new(1, 2));
+            test_archive(&U64Vec3::new(1, 2, 3));
+            test_archive(&U64Vec4::new(1, 2, 3, 4));
+        }
     }
 }

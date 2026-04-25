@@ -1,13 +1,32 @@
 #[cfg(test)]
 mod test {
     use crate::{
-        Affine2, Affine3, Affine3A, I16Vec2, I16Vec3, I16Vec4, I64Vec2, I64Vec3, I64Vec4, I8Vec2,
-        I8Vec3, I8Vec4, IVec2, IVec3, IVec4, Mat2, Mat3, Mat3A, Mat4, Quat, U16Vec2, U16Vec3,
-        U16Vec4, U64Vec2, U64Vec3, U64Vec4, U8Vec2, U8Vec3, U8Vec4, UVec2, UVec3, UVec4, Vec2,
-        Vec3, Vec3A, Vec4,
+        Affine2, Affine3, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4,
     };
     #[cfg(feature = "f64")]
     use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
+    #[cfg(feature = "f64")]
+    use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
+    #[cfg(feature = "i16")]
+    use crate::{I16Vec2, I16Vec3, I16Vec4};
+    #[cfg(feature = "i64")]
+    use crate::{I64Vec2, I64Vec3, I64Vec4};
+    #[cfg(feature = "i8")]
+    use crate::{I8Vec2, I8Vec3, I8Vec4};
+    #[cfg(feature = "isize")]
+    use crate::{ISizeVec2, ISizeVec3, ISizeVec4};
+    #[cfg(feature = "i32")]
+    use crate::{IVec2, IVec3, IVec4};
+    #[cfg(feature = "u16")]
+    use crate::{U16Vec2, U16Vec3, U16Vec4};
+    #[cfg(feature = "u64")]
+    use crate::{U64Vec2, U64Vec3, U64Vec4};
+    #[cfg(feature = "u8")]
+    use crate::{U8Vec2, U8Vec3, U8Vec4};
+    #[cfg(feature = "usize")]
+    use crate::{USizeVec2, USizeVec3, USizeVec4};
+    #[cfg(feature = "u32")]
+    use crate::{UVec2, UVec3, UVec4};
     use core::mem;
 
     macro_rules! test_into_bytes_t {
@@ -129,59 +148,107 @@ mod test {
     #[cfg(feature = "f64")]
     test_into_bytes_t!(dvec4_into, DVec4);
 
+    #[cfg(feature = "i8")]
     test_from_bytes_t!(i8vec2_from, I8Vec2);
+    #[cfg(feature = "i8")]
     test_into_bytes_t!(i8vec2_into, I8Vec2);
+    #[cfg(feature = "i8")]
     test_from_bytes_t!(i8vec3_from, I8Vec3);
+    #[cfg(feature = "i8")]
     test_into_bytes_t!(i8vec3_into, I8Vec3);
+    #[cfg(feature = "i8")]
     test_from_bytes_t!(i8vec4_from, I8Vec4);
+    #[cfg(feature = "i8")]
     test_into_bytes_t!(i8vec4_into, I8Vec4);
 
+    #[cfg(feature = "u8")]
     test_from_bytes_t!(u8vec2_from, U8Vec2);
+    #[cfg(feature = "u8")]
     test_into_bytes_t!(u8vec2_into, U8Vec2);
+    #[cfg(feature = "u8")]
     test_from_bytes_t!(u8vec3_from, U8Vec3);
+    #[cfg(feature = "u8")]
     test_into_bytes_t!(u8vec3_into, U8Vec3);
+    #[cfg(feature = "u8")]
     test_from_bytes_t!(u8vec4_from, U8Vec4);
+    #[cfg(feature = "u8")]
     test_into_bytes_t!(u8vec4_into, U8Vec4);
 
+    #[cfg(feature = "i16")]
     test_from_bytes_t!(i16vec2_from, I16Vec2);
+    #[cfg(feature = "i16")]
     test_into_bytes_t!(i16vec2_into, I16Vec2);
+    #[cfg(feature = "i16")]
     test_from_bytes_t!(i16vec3_from, I16Vec3);
+    #[cfg(feature = "i16")]
     test_into_bytes_t!(i16vec3_into, I16Vec3);
+    #[cfg(feature = "i16")]
     test_from_bytes_t!(i16vec4_from, I16Vec4);
+    #[cfg(feature = "i16")]
     test_into_bytes_t!(i16vec4_into, I16Vec4);
 
+    #[cfg(feature = "u16")]
     test_from_bytes_t!(u16vec2_from, U16Vec2);
+    #[cfg(feature = "u16")]
     test_into_bytes_t!(u16vec2_into, U16Vec2);
+    #[cfg(feature = "u16")]
     test_from_bytes_t!(u16vec3_from, U16Vec3);
+    #[cfg(feature = "u16")]
     test_into_bytes_t!(u16vec3_into, U16Vec3);
+    #[cfg(feature = "u16")]
     test_from_bytes_t!(u16vec4_from, U16Vec4);
+    #[cfg(feature = "u16")]
     test_into_bytes_t!(u16vec4_into, U16Vec4);
 
+    #[cfg(feature = "i32")]
     test_from_bytes_t!(ivec2_from, IVec2);
+    #[cfg(feature = "i32")]
     test_into_bytes_t!(ivec2_into, IVec2);
+    #[cfg(feature = "i32")]
     test_from_bytes_t!(ivec3_from, IVec3);
+    #[cfg(feature = "i32")]
     test_into_bytes_t!(ivec3_into, IVec3);
+    #[cfg(feature = "i32")]
     test_from_bytes_t!(ivec4_from, IVec4);
+    #[cfg(feature = "i32")]
     test_into_bytes_t!(ivec4_into, IVec4);
 
+    #[cfg(feature = "u32")]
     test_from_bytes_t!(uvec2_from, UVec2);
+    #[cfg(feature = "u32")]
     test_into_bytes_t!(uvec2_into, UVec2);
+    #[cfg(feature = "u32")]
     test_from_bytes_t!(uvec3_from, UVec3);
+    #[cfg(feature = "u32")]
     test_into_bytes_t!(uvec3_into, UVec3);
+    #[cfg(feature = "u32")]
     test_from_bytes_t!(uvec4_from, UVec4);
+    #[cfg(feature = "u32")]
     test_into_bytes_t!(uvec4_into, UVec4);
 
+    #[cfg(feature = "i64")]
     test_from_bytes_t!(i64vec2_from, I64Vec2);
+    #[cfg(feature = "i64")]
     test_into_bytes_t!(i64vec2_into, I64Vec2);
+    #[cfg(feature = "i64")]
     test_from_bytes_t!(i64vec3_from, I64Vec3);
+    #[cfg(feature = "i64")]
     test_into_bytes_t!(i64vec3_into, I64Vec3);
+    #[cfg(feature = "i64")]
     test_from_bytes_t!(i64vec4_from, I64Vec4);
+    #[cfg(feature = "i64")]
     test_into_bytes_t!(i64vec4_into, I64Vec4);
 
+    #[cfg(feature = "u64")]
     test_from_bytes_t!(u64vec2_from, U64Vec2);
+    #[cfg(feature = "u64")]
     test_into_bytes_t!(u64vec2_into, U64Vec2);
+    #[cfg(feature = "u64")]
     test_from_bytes_t!(u64vec3_from, U64Vec3);
+    #[cfg(feature = "u64")]
     test_into_bytes_t!(u64vec3_into, U64Vec3);
+    #[cfg(feature = "u64")]
     test_from_bytes_t!(u64vec4_from, U64Vec4);
+    #[cfg(feature = "u64")]
     test_into_bytes_t!(u64vec4_into, U64Vec4);
 }

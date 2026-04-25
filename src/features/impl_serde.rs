@@ -764,6 +764,7 @@ mod test_f64 {
     pub const V4: f64 = 4.0;
 }
 
+#[cfg(feature = "i8")]
 #[cfg(test)]
 mod test_i8 {
     pub const V1: i8 = 1;
@@ -772,6 +773,7 @@ mod test_i8 {
     pub const V4: i8 = 4;
 }
 
+#[cfg(feature = "i16")]
 #[cfg(test)]
 mod test_i16 {
     pub const V1: i16 = 1;
@@ -780,6 +782,7 @@ mod test_i16 {
     pub const V4: i16 = 4;
 }
 
+#[cfg(feature = "i32")]
 #[cfg(test)]
 mod test_i32 {
     pub const V1: i32 = 1;
@@ -788,6 +791,7 @@ mod test_i32 {
     pub const V4: i32 = 4;
 }
 
+#[cfg(feature = "i64")]
 #[cfg(test)]
 mod test_i64 {
     pub const V1: i64 = 1;
@@ -796,6 +800,7 @@ mod test_i64 {
     pub const V4: i64 = 4;
 }
 
+#[cfg(feature = "isize")]
 #[cfg(test)]
 mod test_isize {
     pub const V1: isize = 1;
@@ -804,6 +809,7 @@ mod test_isize {
     pub const V4: isize = 4;
 }
 
+#[cfg(feature = "u8")]
 #[cfg(test)]
 mod test_u8 {
     pub const V1: u8 = 1;
@@ -812,6 +818,7 @@ mod test_u8 {
     pub const V4: u8 = 4;
 }
 
+#[cfg(feature = "u16")]
 #[cfg(test)]
 mod test_u16 {
     pub const V1: u16 = 1;
@@ -820,6 +827,7 @@ mod test_u16 {
     pub const V4: u16 = 4;
 }
 
+#[cfg(feature = "u32")]
 #[cfg(test)]
 mod test_u32 {
     pub const V1: u32 = 1;
@@ -828,6 +836,7 @@ mod test_u32 {
     pub const V4: u32 = 4;
 }
 
+#[cfg(feature = "u64")]
 #[cfg(test)]
 mod test_u64 {
     pub const V1: u64 = 1;
@@ -836,6 +845,7 @@ mod test_u64 {
     pub const V4: u64 = 4;
 }
 
+#[cfg(feature = "usize")]
 #[cfg(test)]
 mod test_usize {
     pub const V1: usize = 1;
@@ -1080,6 +1090,7 @@ mod f64 {
     );
 }
 
+#[cfg(feature = "i8")]
 mod i8 {
     #[cfg(test)]
     use super::test_i8::*;
@@ -1095,6 +1106,7 @@ mod i8 {
     impl_serde_vec_types!(i8, I8Vec2, I8Vec3, I8Vec4);
 }
 
+#[cfg(feature = "i16")]
 mod i16 {
     #[cfg(test)]
     use super::test_i16::*;
@@ -1110,6 +1122,7 @@ mod i16 {
     impl_serde_vec_types!(i16, I16Vec2, I16Vec3, I16Vec4);
 }
 
+#[cfg(feature = "i32")]
 mod i32 {
     #[cfg(test)]
     use super::test_i32::*;
@@ -1125,6 +1138,7 @@ mod i32 {
     impl_serde_vec_types!(i32, IVec2, IVec3, IVec4);
 }
 
+#[cfg(feature = "i64")]
 mod i64 {
     #[cfg(test)]
     use super::test_i64::*;
@@ -1140,6 +1154,7 @@ mod i64 {
     impl_serde_vec_types!(i64, I64Vec2, I64Vec3, I64Vec4);
 }
 
+#[cfg(feature = "isize")]
 mod isize {
     #[cfg(test)]
     use super::test_int::*;
@@ -1155,6 +1170,7 @@ mod isize {
     impl_serde_vec_types!(isize, ISizeVec2, ISizeVec3, ISizeVec4);
 }
 
+#[cfg(feature = "u8")]
 mod u8 {
     #[cfg(test)]
     use super::test_int::*;
@@ -1170,6 +1186,7 @@ mod u8 {
     impl_serde_vec_types!(u8, U8Vec2, U8Vec3, U8Vec4);
 }
 
+#[cfg(feature = "u16")]
 mod u16 {
     #[cfg(test)]
     use super::test_int::*;
@@ -1185,6 +1202,7 @@ mod u16 {
     impl_serde_vec_types!(u16, U16Vec2, U16Vec3, U16Vec4);
 }
 
+#[cfg(feature = "u32")]
 mod u32 {
     #[cfg(test)]
     use super::test_int::*;
@@ -1200,6 +1218,7 @@ mod u32 {
     impl_serde_vec_types!(u32, UVec2, UVec3, UVec4);
 }
 
+#[cfg(feature = "u64")]
 mod u64 {
     #[cfg(test)]
     use super::test_int::*;
@@ -1215,6 +1234,7 @@ mod u64 {
     impl_serde_vec_types!(u64, U64Vec2, U64Vec3, U64Vec4);
 }
 
+#[cfg(feature = "usize")]
 mod usize {
     #[cfg(test)]
     use super::test_int::*;

@@ -1,9 +1,13 @@
 use crate::{
-    Affine2, Affine3, Affine3A, BVec2, BVec3, BVec4, IVec2, IVec3, IVec4, Mat2, Mat3, Mat3A, Mat4,
-    Quat, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
+    Affine2, Affine3, Affine3A, BVec2, BVec3, BVec4, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3,
+    Vec3A, Vec4,
 };
 #[cfg(feature = "f64")]
 use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
+#[cfg(feature = "i32")]
+use crate::{IVec2, IVec3, IVec4};
+#[cfg(feature = "u32")]
+use crate::{UVec2, UVec3, UVec4};
 use speedy::{Context, Readable, Reader, Writable, Writer};
 
 macro_rules! impl_for_vec {
@@ -69,12 +73,18 @@ impl_for_vec! {DVec3, new, f64, read_f64, write_f64, x, y, z}
 #[cfg(feature = "f64")]
 impl_for_vec! {DVec4, new, f64, read_f64, write_f64, x, y, z, w}
 
+#[cfg(feature = "i32")]
 impl_for_vec! {IVec2, new, i32, read_i32, write_i32, x, y}
+#[cfg(feature = "i32")]
 impl_for_vec! {IVec3, new, i32, read_i32, write_i32, x, y, z}
+#[cfg(feature = "i32")]
 impl_for_vec! {IVec4, new, i32, read_i32, write_i32, x, y, z, w}
 
+#[cfg(feature = "u32")]
 impl_for_vec! {UVec2, new, u32, read_u32, write_u32, x, y}
+#[cfg(feature = "u32")]
 impl_for_vec! {UVec3, new, u32, read_u32, write_u32, x, y, z}
+#[cfg(feature = "u32")]
 impl_for_vec! {UVec4, new, u32, read_u32, write_u32, x, y, z, w}
 
 impl_for_vec! {Quat, from_xyzw, f32, read_f32, write_f32, x, y, z, w}
@@ -220,13 +230,19 @@ fn test_speedy() {
         test_vec!(DVec4, new, 1, 2, 3, 4);
     }
 
-    test_vec!(IVec2, new, 1, 2);
-    test_vec!(IVec3, new, 1, 2, 3);
-    test_vec!(IVec4, new, 1, 2, 3, 4);
+    #[cfg(feature = "i32")]
+    {
+        test_vec!(IVec2, new, 1, 2);
+        test_vec!(IVec3, new, 1, 2, 3);
+        test_vec!(IVec4, new, 1, 2, 3, 4);
+    }
 
-    test_vec!(UVec2, new, 1, 2);
-    test_vec!(UVec3, new, 1, 2, 3);
-    test_vec!(UVec4, new, 1, 2, 3, 4);
+    #[cfg(feature = "u32")]
+    {
+        test_vec!(UVec2, new, 1, 2);
+        test_vec!(UVec3, new, 1, 2, 3);
+        test_vec!(UVec4, new, 1, 2, 3, 4);
+    }
 
     test_vec!(Quat, from_xyzw, 1, 2, 3, 4);
     #[cfg(feature = "f64")]
