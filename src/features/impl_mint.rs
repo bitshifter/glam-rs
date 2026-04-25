@@ -4,8 +4,6 @@ use crate::{Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
 
 #[cfg(feature = "f64")]
 use crate::{DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
-#[cfg(feature = "f64")]
-use crate::{DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
 #[cfg(feature = "i16")]
 use crate::{I16Vec2, I16Vec3, I16Vec4};
 #[cfg(feature = "i64")]
