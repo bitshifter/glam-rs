@@ -1,6 +1,14 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{f64::math, BVec2, DVec3, IVec2, UVec2, Vec2};
+use crate::{f64::math, BVec2, DVec3};
+
+use crate::Vec2;
+
+#[cfg(feature = "i32")]
+use crate::IVec2;
+
+#[cfg(feature = "u32")]
+use crate::UVec2;
 
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -2000,6 +2008,7 @@ impl From<Vec2> for DVec2 {
     }
 }
 
+#[cfg(feature = "i32")]
 impl From<IVec2> for DVec2 {
     #[inline]
     fn from(v: IVec2) -> Self {
@@ -2007,6 +2016,7 @@ impl From<IVec2> for DVec2 {
     }
 }
 
+#[cfg(feature = "u32")]
 impl From<UVec2> for DVec2 {
     #[inline]
     fn from(v: UVec2) -> Self {

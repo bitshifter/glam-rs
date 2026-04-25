@@ -1,6 +1,9 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{BVec2, U16Vec3, U8Vec2};
+use crate::{BVec2, U16Vec3};
+
+#[cfg(feature = "u8")]
+use crate::U8Vec2;
 
 #[cfg(feature = "i8")]
 use crate::I8Vec2;
@@ -2776,6 +2779,7 @@ impl From<U16Vec2> for (u16, u16) {
     }
 }
 
+#[cfg(feature = "u8")]
 impl From<U8Vec2> for U16Vec2 {
     #[inline]
     fn from(v: U8Vec2) -> Self {
@@ -2784,7 +2788,6 @@ impl From<U8Vec2> for U16Vec2 {
 }
 
 #[cfg(feature = "i8")]
-
 impl TryFrom<I8Vec2> for U16Vec2 {
     type Error = core::num::TryFromIntError;
 
@@ -2795,7 +2798,6 @@ impl TryFrom<I8Vec2> for U16Vec2 {
 }
 
 #[cfg(feature = "i16")]
-
 impl TryFrom<I16Vec2> for U16Vec2 {
     type Error = core::num::TryFromIntError;
 
@@ -2806,7 +2808,6 @@ impl TryFrom<I16Vec2> for U16Vec2 {
 }
 
 #[cfg(feature = "i32")]
-
 impl TryFrom<IVec2> for U16Vec2 {
     type Error = core::num::TryFromIntError;
 
@@ -2817,7 +2818,6 @@ impl TryFrom<IVec2> for U16Vec2 {
 }
 
 #[cfg(feature = "u32")]
-
 impl TryFrom<UVec2> for U16Vec2 {
     type Error = core::num::TryFromIntError;
 
@@ -2828,7 +2828,6 @@ impl TryFrom<UVec2> for U16Vec2 {
 }
 
 #[cfg(feature = "i64")]
-
 impl TryFrom<I64Vec2> for U16Vec2 {
     type Error = core::num::TryFromIntError;
 
@@ -2839,7 +2838,6 @@ impl TryFrom<I64Vec2> for U16Vec2 {
 }
 
 #[cfg(feature = "u64")]
-
 impl TryFrom<U64Vec2> for U16Vec2 {
     type Error = core::num::TryFromIntError;
 
@@ -2850,7 +2848,6 @@ impl TryFrom<U64Vec2> for U16Vec2 {
 }
 
 #[cfg(feature = "isize")]
-
 impl TryFrom<ISizeVec2> for U16Vec2 {
     type Error = core::num::TryFromIntError;
 
@@ -2861,7 +2858,6 @@ impl TryFrom<ISizeVec2> for U16Vec2 {
 }
 
 #[cfg(feature = "usize")]
-
 impl TryFrom<USizeVec2> for U16Vec2 {
     type Error = core::num::TryFromIntError;
 

@@ -2,7 +2,15 @@
 
 #[cfg(not(feature = "scalar-math"))]
 use crate::BVec4A;
-use crate::{f64::math, BVec4, DVec2, DVec3, IVec4, UVec4, Vec4};
+use crate::{f64::math, BVec4, DVec2, DVec3};
+
+use crate::Vec4;
+
+#[cfg(feature = "i32")]
+use crate::IVec4;
+
+#[cfg(feature = "u32")]
+use crate::UVec4;
 
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -2208,6 +2216,7 @@ impl From<Vec4> for DVec4 {
     }
 }
 
+#[cfg(feature = "i32")]
 impl From<IVec4> for DVec4 {
     #[inline]
     fn from(v: IVec4) -> Self {
@@ -2220,6 +2229,7 @@ impl From<IVec4> for DVec4 {
     }
 }
 
+#[cfg(feature = "u32")]
 impl From<UVec4> for DVec4 {
     #[inline]
     fn from(v: UVec4) -> Self {

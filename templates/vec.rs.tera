@@ -242,17 +242,17 @@
             {{ quat_t }},
         {% endif %}
     {% endif %}
-    {% if from_types %}
-        {% for ty in from_types %}
-            {{ ty }},
-        {% endfor %}
-    {% endif %}
     {% if bvec_from_type != mask_t %}
         {{ bvec_from_type }},
     {% endif %}
 };
-
-{% if try_from_types %}
+{%- if from_types %}
+    {%- for ty in from_types %}
+        {{ macros::cfg_check_for_type(ty=ty) }} 
+        use crate::{{ ty }};
+    {% endfor %}
+{% endif %}
+{%- if try_from_types %}
     {%- for ty in try_from_types %}
         {{ macros::cfg_check_for_type(ty=ty) }} 
         use crate::{{ ty }};
@@ -4552,6 +4552,7 @@ impl DerefMut for {{ self_t }} {
 
 {% if from_types %}
     {% for ty in from_types %}
+    {{ macros::cfg_check_for_type(ty=ty) -}} 
     impl From<{{ ty }}> for {{ self_t }} {
         #[inline]
         fn from(v: {{ ty }}) -> Self {
@@ -4567,7 +4568,7 @@ impl DerefMut for {{ self_t }} {
 
 {% if try_from_types %}
     {% for ty in try_from_types %}
-    {{ macros::cfg_check_for_type(ty=ty) }} 
+    {{ macros::cfg_check_for_type(ty=ty) -}} 
     impl TryFrom<{{ ty }}> for {{ self_t }} {
         type Error = core::num::TryFromIntError;
 

@@ -2,7 +2,25 @@
 
 #[cfg(not(feature = "scalar-math"))]
 use crate::BVec4A;
-use crate::{BVec4, I16Vec4, I64Vec2, I64Vec3, I8Vec4, IVec4, U16Vec4, U8Vec4, UVec4};
+use crate::{BVec4, I64Vec2, I64Vec3};
+
+#[cfg(feature = "i8")]
+use crate::I8Vec4;
+
+#[cfg(feature = "u8")]
+use crate::U8Vec4;
+
+#[cfg(feature = "i16")]
+use crate::I16Vec4;
+
+#[cfg(feature = "u16")]
+use crate::U16Vec4;
+
+#[cfg(feature = "i32")]
+use crate::IVec4;
+
+#[cfg(feature = "u32")]
+use crate::UVec4;
 
 #[cfg(feature = "u64")]
 use crate::U64Vec4;
@@ -3249,6 +3267,7 @@ impl From<(I64Vec2, I64Vec2)> for I64Vec4 {
     }
 }
 
+#[cfg(feature = "i8")]
 impl From<I8Vec4> for I64Vec4 {
     #[inline]
     fn from(v: I8Vec4) -> Self {
@@ -3261,6 +3280,7 @@ impl From<I8Vec4> for I64Vec4 {
     }
 }
 
+#[cfg(feature = "u8")]
 impl From<U8Vec4> for I64Vec4 {
     #[inline]
     fn from(v: U8Vec4) -> Self {
@@ -3273,6 +3293,7 @@ impl From<U8Vec4> for I64Vec4 {
     }
 }
 
+#[cfg(feature = "i16")]
 impl From<I16Vec4> for I64Vec4 {
     #[inline]
     fn from(v: I16Vec4) -> Self {
@@ -3285,6 +3306,7 @@ impl From<I16Vec4> for I64Vec4 {
     }
 }
 
+#[cfg(feature = "u16")]
 impl From<U16Vec4> for I64Vec4 {
     #[inline]
     fn from(v: U16Vec4) -> Self {
@@ -3297,6 +3319,7 @@ impl From<U16Vec4> for I64Vec4 {
     }
 }
 
+#[cfg(feature = "i32")]
 impl From<IVec4> for I64Vec4 {
     #[inline]
     fn from(v: IVec4) -> Self {
@@ -3309,6 +3332,7 @@ impl From<IVec4> for I64Vec4 {
     }
 }
 
+#[cfg(feature = "u32")]
 impl From<UVec4> for I64Vec4 {
     #[inline]
     fn from(v: UVec4) -> Self {
@@ -3322,7 +3346,6 @@ impl From<UVec4> for I64Vec4 {
 }
 
 #[cfg(feature = "u64")]
-
 impl TryFrom<U64Vec4> for I64Vec4 {
     type Error = core::num::TryFromIntError;
 
@@ -3338,7 +3361,6 @@ impl TryFrom<U64Vec4> for I64Vec4 {
 }
 
 #[cfg(feature = "isize")]
-
 impl TryFrom<ISizeVec4> for I64Vec4 {
     type Error = core::num::TryFromIntError;
 
@@ -3354,7 +3376,6 @@ impl TryFrom<ISizeVec4> for I64Vec4 {
 }
 
 #[cfg(feature = "usize")]
-
 impl TryFrom<USizeVec4> for I64Vec4 {
     type Error = core::num::TryFromIntError;
 

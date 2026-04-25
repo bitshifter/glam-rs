@@ -2,7 +2,13 @@
 
 #[cfg(not(feature = "scalar-math"))]
 use crate::BVec4A;
-use crate::{BVec4, U16Vec4, U8Vec4, UVec2, UVec3};
+use crate::{BVec4, UVec2, UVec3};
+
+#[cfg(feature = "u8")]
+use crate::U8Vec4;
+
+#[cfg(feature = "u16")]
+use crate::U16Vec4;
 
 #[cfg(feature = "i8")]
 use crate::I8Vec4;
@@ -3066,6 +3072,7 @@ impl From<(UVec2, UVec2)> for UVec4 {
     }
 }
 
+#[cfg(feature = "u8")]
 impl From<U8Vec4> for UVec4 {
     #[inline]
     fn from(v: U8Vec4) -> Self {
@@ -3078,6 +3085,7 @@ impl From<U8Vec4> for UVec4 {
     }
 }
 
+#[cfg(feature = "u16")]
 impl From<U16Vec4> for UVec4 {
     #[inline]
     fn from(v: U16Vec4) -> Self {
@@ -3091,7 +3099,6 @@ impl From<U16Vec4> for UVec4 {
 }
 
 #[cfg(feature = "i8")]
-
 impl TryFrom<I8Vec4> for UVec4 {
     type Error = core::num::TryFromIntError;
 
@@ -3107,7 +3114,6 @@ impl TryFrom<I8Vec4> for UVec4 {
 }
 
 #[cfg(feature = "i16")]
-
 impl TryFrom<I16Vec4> for UVec4 {
     type Error = core::num::TryFromIntError;
 
@@ -3123,7 +3129,6 @@ impl TryFrom<I16Vec4> for UVec4 {
 }
 
 #[cfg(feature = "i32")]
-
 impl TryFrom<IVec4> for UVec4 {
     type Error = core::num::TryFromIntError;
 
@@ -3139,7 +3144,6 @@ impl TryFrom<IVec4> for UVec4 {
 }
 
 #[cfg(feature = "i64")]
-
 impl TryFrom<I64Vec4> for UVec4 {
     type Error = core::num::TryFromIntError;
 
@@ -3155,7 +3159,6 @@ impl TryFrom<I64Vec4> for UVec4 {
 }
 
 #[cfg(feature = "u64")]
-
 impl TryFrom<U64Vec4> for UVec4 {
     type Error = core::num::TryFromIntError;
 
@@ -3171,7 +3174,6 @@ impl TryFrom<U64Vec4> for UVec4 {
 }
 
 #[cfg(feature = "isize")]
-
 impl TryFrom<ISizeVec4> for UVec4 {
     type Error = core::num::TryFromIntError;
 
@@ -3187,7 +3189,6 @@ impl TryFrom<ISizeVec4> for UVec4 {
 }
 
 #[cfg(feature = "usize")]
-
 impl TryFrom<USizeVec4> for UVec4 {
     type Error = core::num::TryFromIntError;
 

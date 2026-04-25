@@ -2780,7 +2780,6 @@ impl From<U8Vec2> for (u8, u8) {
 }
 
 #[cfg(feature = "i8")]
-
 impl TryFrom<I8Vec2> for U8Vec2 {
     type Error = core::num::TryFromIntError;
 
@@ -2791,7 +2790,6 @@ impl TryFrom<I8Vec2> for U8Vec2 {
 }
 
 #[cfg(feature = "i16")]
-
 impl TryFrom<I16Vec2> for U8Vec2 {
     type Error = core::num::TryFromIntError;
 
@@ -2802,7 +2800,6 @@ impl TryFrom<I16Vec2> for U8Vec2 {
 }
 
 #[cfg(feature = "u16")]
-
 impl TryFrom<U16Vec2> for U8Vec2 {
     type Error = core::num::TryFromIntError;
 
@@ -2813,7 +2810,6 @@ impl TryFrom<U16Vec2> for U8Vec2 {
 }
 
 #[cfg(feature = "i32")]
-
 impl TryFrom<IVec2> for U8Vec2 {
     type Error = core::num::TryFromIntError;
 
@@ -2824,7 +2820,6 @@ impl TryFrom<IVec2> for U8Vec2 {
 }
 
 #[cfg(feature = "u32")]
-
 impl TryFrom<UVec2> for U8Vec2 {
     type Error = core::num::TryFromIntError;
 
@@ -2835,7 +2830,6 @@ impl TryFrom<UVec2> for U8Vec2 {
 }
 
 #[cfg(feature = "i64")]
-
 impl TryFrom<I64Vec2> for U8Vec2 {
     type Error = core::num::TryFromIntError;
 
@@ -2846,7 +2840,6 @@ impl TryFrom<I64Vec2> for U8Vec2 {
 }
 
 #[cfg(feature = "u64")]
-
 impl TryFrom<U64Vec2> for U8Vec2 {
     type Error = core::num::TryFromIntError;
 
@@ -2857,7 +2850,6 @@ impl TryFrom<U64Vec2> for U8Vec2 {
 }
 
 #[cfg(feature = "isize")]
-
 impl TryFrom<ISizeVec2> for U8Vec2 {
     type Error = core::num::TryFromIntError;
 
@@ -2868,7 +2860,6 @@ impl TryFrom<ISizeVec2> for U8Vec2 {
 }
 
 #[cfg(feature = "usize")]
-
 impl TryFrom<USizeVec2> for U8Vec2 {
     type Error = core::num::TryFromIntError;
 
