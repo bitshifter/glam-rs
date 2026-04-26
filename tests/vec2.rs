@@ -3393,61 +3393,83 @@ mod uvec2 {
     });
 
     glam_test!(test_try_from, {
-        assert_eq!(
-            UVec2::new(1, 2),
-            UVec2::try_from(I8Vec2::new(1, 2)).unwrap()
-        );
-        assert!(UVec2::try_from(I8Vec2::new(-1, 2)).is_err());
-        assert!(UVec2::try_from(I8Vec2::new(1, -2)).is_err());
-
-        assert_eq!(UVec2::new(1, 2), UVec2::from(U8Vec2::new(1, 2)));
-
-        assert_eq!(
-            UVec2::new(1, 2),
-            UVec2::try_from(I16Vec2::new(1, 2)).unwrap()
-        );
-        assert!(UVec2::try_from(I16Vec2::new(-1, 2)).is_err());
-        assert!(UVec2::try_from(I16Vec2::new(1, -2)).is_err());
-
-        assert_eq!(UVec2::new(1, 2), UVec2::from(U16Vec2::new(1, 2)));
-
-        assert_eq!(UVec2::new(1, 2), UVec2::try_from(IVec2::new(1, 2)).unwrap());
-        assert!(UVec2::try_from(IVec2::new(-1, 2)).is_err());
-        assert!(UVec2::try_from(IVec2::new(1, -2)).is_err());
-
-        assert_eq!(
-            UVec2::new(1, 2),
-            UVec2::try_from(I64Vec2::new(1, 2)).unwrap()
-        );
-        assert!(UVec2::try_from(I64Vec2::new(-1, 2)).is_err());
-        assert!(UVec2::try_from(I64Vec2::new(1, -2)).is_err());
-
-        assert!(UVec2::try_from(I64Vec2::new(i64::MAX, 2)).is_err());
-        assert!(UVec2::try_from(I64Vec2::new(1, i64::MAX)).is_err());
-
-        assert_eq!(
-            UVec2::new(1, 2),
-            UVec2::try_from(U64Vec2::new(1, 2)).unwrap()
-        );
-        assert!(UVec2::try_from(U64Vec2::new(u64::MAX, 2)).is_err());
-        assert!(UVec2::try_from(U64Vec2::new(1, u64::MAX)).is_err());
-
-        assert_eq!(
-            UVec2::new(1, 2),
-            UVec2::try_from(ISizeVec2::new(1, 2)).unwrap()
-        );
-        if core::mem::size_of::<isize>() > 4 {
-            assert!(UVec2::try_from(ISizeVec2::new(isize::MAX, 2)).is_err());
-            assert!(UVec2::try_from(ISizeVec2::new(1, isize::MAX)).is_err());
+        #[cfg(feature = "i8")]
+        {
+            assert_eq!(
+                UVec2::new(1, 2),
+                UVec2::try_from(I8Vec2::new(1, 2)).unwrap()
+            );
+            assert!(UVec2::try_from(I8Vec2::new(-1, 2)).is_err());
+            assert!(UVec2::try_from(I8Vec2::new(1, -2)).is_err());
         }
 
-        assert_eq!(
-            UVec2::new(1, 2),
-            UVec2::try_from(USizeVec2::new(1, 2)).unwrap()
-        );
-        if core::mem::size_of::<usize>() > 4 {
-            assert!(UVec2::try_from(USizeVec2::new(usize::MAX, 2)).is_err());
-            assert!(UVec2::try_from(USizeVec2::new(1, usize::MAX)).is_err());
+        #[cfg(feature = "u8")]
+        assert_eq!(UVec2::new(1, 2), UVec2::from(U8Vec2::new(1, 2)));
+
+        #[cfg(feature = "i16")]
+        {
+            assert_eq!(
+                UVec2::new(1, 2),
+                UVec2::try_from(I16Vec2::new(1, 2)).unwrap()
+            );
+            assert!(UVec2::try_from(I16Vec2::new(-1, 2)).is_err());
+            assert!(UVec2::try_from(I16Vec2::new(1, -2)).is_err());
+        }
+
+        #[cfg(feature = "u16")]
+        assert_eq!(UVec2::new(1, 2), UVec2::from(U16Vec2::new(1, 2)));
+
+        #[cfg(feature = "i32")]
+        {
+            assert_eq!(UVec2::new(1, 2), UVec2::try_from(IVec2::new(1, 2)).unwrap());
+            assert!(UVec2::try_from(IVec2::new(-1, 2)).is_err());
+            assert!(UVec2::try_from(IVec2::new(1, -2)).is_err());
+        }
+
+        #[cfg(feature = "i64")]
+        {
+            assert_eq!(
+                UVec2::new(1, 2),
+                UVec2::try_from(I64Vec2::new(1, 2)).unwrap()
+            );
+            assert!(UVec2::try_from(I64Vec2::new(-1, 2)).is_err());
+            assert!(UVec2::try_from(I64Vec2::new(1, -2)).is_err());
+            assert!(UVec2::try_from(I64Vec2::new(i64::MAX, 2)).is_err());
+            assert!(UVec2::try_from(I64Vec2::new(1, i64::MAX)).is_err());
+        }
+
+        #[cfg(feature = "u64")]
+        {
+            assert_eq!(
+                UVec2::new(1, 2),
+                UVec2::try_from(U64Vec2::new(1, 2)).unwrap()
+            );
+            assert!(UVec2::try_from(U64Vec2::new(u64::MAX, 2)).is_err());
+            assert!(UVec2::try_from(U64Vec2::new(1, u64::MAX)).is_err());
+        }
+
+        #[cfg(feature = "isize")]
+        {
+            assert_eq!(
+                UVec2::new(1, 2),
+                UVec2::try_from(ISizeVec2::new(1, 2)).unwrap()
+            );
+            if core::mem::size_of::<isize>() > 4 {
+                assert!(UVec2::try_from(ISizeVec2::new(isize::MAX, 2)).is_err());
+                assert!(UVec2::try_from(ISizeVec2::new(1, isize::MAX)).is_err());
+            }
+        }
+
+        #[cfg(feature = "usize")]
+        {
+            assert_eq!(
+                UVec2::new(1, 2),
+                UVec2::try_from(USizeVec2::new(1, 2)).unwrap()
+            );
+            if core::mem::size_of::<usize>() > 4 {
+                assert!(UVec2::try_from(USizeVec2::new(usize::MAX, 2)).is_err());
+                assert!(UVec2::try_from(USizeVec2::new(1, usize::MAX)).is_err());
+            }
         }
     });
 
@@ -3507,6 +3529,7 @@ mod uvec2 {
         );
     });
 
+    #[cfg(feature = "i32")]
     glam_test!(test_checked_add_signed, {
         assert_eq!(UVec2::MAX.checked_add_signed(IVec2::ONE), None);
         assert_eq!(
@@ -3515,6 +3538,7 @@ mod uvec2 {
         );
     });
 
+    #[cfg(feature = "i32")]
     glam_test!(test_wrapping_add_signed, {
         assert_eq!(
             UVec2::new(u32::MAX, u32::MAX).wrapping_add_signed(IVec2::new(1, 1)),
@@ -3522,6 +3546,7 @@ mod uvec2 {
         );
     });
 
+    #[cfg(feature = "i32")]
     glam_test!(test_saturating_add_signed, {
         assert_eq!(
             UVec2::new(u32::MAX, u32::MAX).saturating_add_signed(IVec2::new(1, 1)),
