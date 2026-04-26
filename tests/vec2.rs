@@ -3191,41 +3191,58 @@ mod ivec2 {
     });
 
     glam_test!(test_try_from, {
+        #[cfg(feature = "u8")]
         assert_eq!(IVec2::new(1, 2), IVec2::from(U8Vec2::new(1, 2)));
+        #[cfg(feature = "i8")]
         assert_eq!(IVec2::new(1, 2), IVec2::from(I8Vec2::new(1, 2)));
 
+        #[cfg(feature = "u16")]
         assert_eq!(IVec2::new(1, 2), IVec2::from(U16Vec2::new(1, 2)));
+        #[cfg(feature = "i16")]
         assert_eq!(IVec2::new(1, 2), IVec2::from(I16Vec2::new(1, 2)));
 
-        assert_eq!(IVec2::new(1, 2), IVec2::try_from(UVec2::new(1, 2)).unwrap());
-        assert!(IVec2::try_from(UVec2::new(u32::MAX, 2)).is_err());
-        assert!(IVec2::try_from(UVec2::new(1, u32::MAX)).is_err());
+        #[cfg(feature = "u32")]
+        {
+            assert_eq!(IVec2::new(1, 2), IVec2::try_from(UVec2::new(1, 2)).unwrap());
+            assert!(IVec2::try_from(UVec2::new(u32::MAX, 2)).is_err());
+            assert!(IVec2::try_from(UVec2::new(1, u32::MAX)).is_err());
+        }
 
-        assert_eq!(
-            IVec2::new(1, 2),
-            IVec2::try_from(I64Vec2::new(1, 2)).unwrap()
-        );
-        assert!(IVec2::try_from(I64Vec2::new(i64::MAX, 2)).is_err());
-        assert!(IVec2::try_from(I64Vec2::new(1, i64::MAX)).is_err());
+        #[cfg(feature = "i64")]
+        {
+            assert_eq!(
+                IVec2::new(1, 2),
+                IVec2::try_from(I64Vec2::new(1, 2)).unwrap()
+            );
+            assert!(IVec2::try_from(I64Vec2::new(i64::MAX, 2)).is_err());
+            assert!(IVec2::try_from(I64Vec2::new(1, i64::MAX)).is_err());
+        }
 
-        assert_eq!(
-            IVec2::new(1, 2),
-            IVec2::try_from(U64Vec2::new(1, 2)).unwrap()
-        );
-        assert!(IVec2::try_from(U64Vec2::new(u64::MAX, 2)).is_err());
-        assert!(IVec2::try_from(U64Vec2::new(1, u64::MAX)).is_err());
+        #[cfg(feature = "u64")]
+        {
+            assert_eq!(
+                IVec2::new(1, 2),
+                IVec2::try_from(U64Vec2::new(1, 2)).unwrap()
+            );
+            assert!(IVec2::try_from(U64Vec2::new(u64::MAX, 2)).is_err());
+            assert!(IVec2::try_from(U64Vec2::new(1, u64::MAX)).is_err());
+        }
 
+        #[cfg(feature = "isize")]
         assert_eq!(
             IVec2::new(1, 2),
             IVec2::try_from(ISizeVec2::new(1, 2)).unwrap()
         );
 
-        assert_eq!(
-            IVec2::new(1, 2),
-            IVec2::try_from(USizeVec2::new(1, 2)).unwrap()
-        );
-        assert!(IVec2::try_from(USizeVec2::new(usize::MAX, 2)).is_err());
-        assert!(IVec2::try_from(USizeVec2::new(1, usize::MAX)).is_err());
+        #[cfg(feature = "usize")]
+        {
+            assert_eq!(
+                IVec2::new(1, 2),
+                IVec2::try_from(USizeVec2::new(1, 2)).unwrap()
+            );
+            assert!(IVec2::try_from(USizeVec2::new(usize::MAX, 2)).is_err());
+            assert!(IVec2::try_from(USizeVec2::new(1, usize::MAX)).is_err());
+        }
     });
 
     glam_test!(test_wrapping_add, {
@@ -3284,6 +3301,7 @@ mod ivec2 {
         );
     });
 
+    #[cfg(feature = "u32")]
     glam_test!(test_checked_add_unsigned, {
         assert_eq!(IVec2::MAX.checked_add_unsigned(UVec2::ONE), None);
         assert_eq!(
@@ -3292,6 +3310,7 @@ mod ivec2 {
         );
     });
 
+    #[cfg(feature = "u32")]
     glam_test!(test_checked_sub_unsigned, {
         assert_eq!(IVec2::MIN.checked_sub_unsigned(UVec2::ONE), None);
         assert_eq!(
@@ -3300,6 +3319,7 @@ mod ivec2 {
         );
     });
 
+    #[cfg(feature = "u32")]
     glam_test!(test_wrapping_add_unsigned, {
         assert_eq!(
             IVec2::new(i32::MAX, i32::MAX).wrapping_add_unsigned(UVec2::new(1, 1)),
@@ -3307,6 +3327,7 @@ mod ivec2 {
         );
     });
 
+    #[cfg(feature = "u32")]
     glam_test!(test_wrapping_sub_unsigned, {
         assert_eq!(
             IVec2::new(i32::MIN, i32::MIN).wrapping_sub_unsigned(UVec2::new(1, 1)),
@@ -3314,6 +3335,7 @@ mod ivec2 {
         );
     });
 
+    #[cfg(feature = "u32")]
     glam_test!(test_saturating_add_unsigned, {
         assert_eq!(
             IVec2::new(i32::MAX, i32::MAX).saturating_add_unsigned(UVec2::new(1, 1)),
@@ -3321,6 +3343,7 @@ mod ivec2 {
         );
     });
 
+    #[cfg(feature = "u32")]
     glam_test!(test_saturating_sub_unsigned, {
         assert_eq!(
             IVec2::new(i32::MIN, i32::MIN).saturating_sub_unsigned(UVec2::new(1, 1)),
