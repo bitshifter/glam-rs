@@ -516,6 +516,7 @@ macro_rules! test_vec_type_uniform {
     };
 }
 
+#[allow(unused_macros)]
 macro_rules! impl_int_types {
     ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident) => {
         use rand::distr::uniform::UniformInt;
@@ -657,6 +658,7 @@ mod f32 {
     }
 }
 
+#[cfg(feature = "f64")]
 mod f64 {
     use crate::f64::math;
     use crate::{DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
@@ -665,48 +667,56 @@ mod f64 {
     impl_float_types!(f64, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4);
 }
 
+#[cfg(feature = "i8")]
 mod i8 {
     use crate::{I8Vec2, I8Vec3, I8Vec4};
 
     impl_int_types!(i8, I8Vec2, I8Vec3, I8Vec4);
 }
 
+#[cfg(feature = "i16")]
 mod i16 {
     use crate::{I16Vec2, I16Vec3, I16Vec4};
 
     impl_int_types!(i16, I16Vec2, I16Vec3, I16Vec4);
 }
 
+#[cfg(feature = "i32")]
 mod i32 {
     use crate::{IVec2, IVec3, IVec4};
 
     impl_int_types!(i32, IVec2, IVec3, IVec4);
 }
 
+#[cfg(feature = "i64")]
 mod i64 {
     use crate::{I64Vec2, I64Vec3, I64Vec4};
 
     impl_int_types!(i64, I64Vec2, I64Vec3, I64Vec4);
 }
 
+#[cfg(feature = "u8")]
 mod u8 {
     use crate::{U8Vec2, U8Vec3, U8Vec4};
 
     impl_int_types!(u8, U8Vec2, U8Vec3, U8Vec4);
 }
 
+#[cfg(feature = "u16")]
 mod u16 {
     use crate::{U16Vec2, U16Vec3, U16Vec4};
 
     impl_int_types!(u16, U16Vec2, U16Vec3, U16Vec4);
 }
 
+#[cfg(feature = "u32")]
 mod u32 {
     use crate::{UVec2, UVec3, UVec4};
 
     impl_int_types!(u32, UVec2, UVec3, UVec4);
 }
 
+#[cfg(feature = "u64")]
 mod u64 {
     use crate::{U64Vec2, U64Vec3, U64Vec4};
 

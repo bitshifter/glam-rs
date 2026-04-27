@@ -411,7 +411,9 @@ impl DMat2 {
         Self::from_cols(self.x_axis.abs(), self.y_axis.abs())
     }
 
+    #[cfg(feature = "f64")]
     #[inline]
+    #[must_use]
     pub fn as_mat2(&self) -> Mat2 {
         Mat2::from_cols(self.x_axis.as_vec2(), self.y_axis.as_vec2())
     }

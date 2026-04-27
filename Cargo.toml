@@ -15,10 +15,28 @@ rust-version = "1.68.2"
 maintenance = { status = "actively-developed" }
 
 [features]
-default = ["std"]
+default = ["std", "all-types"]
 
 # enable support for the standard library
 std = []
+
+f64 = []
+isize = []
+usize = []
+i64 = []
+u64 = []
+i32 = []
+u32 = []
+i16 = []
+u16 = []
+i8 = []
+u8 = []
+
+float-types = ["f64"]
+integer-types = ["i8", "u8", "i16", "u16", "i32", "u32", "i64", "u64"]
+size-types = ["isize", "usize"]
+
+all-types = ["float-types", "integer-types", "size-types"]
 
 # enable additional glam checks if debug assertions are enabled
 debug-glam-assert = []

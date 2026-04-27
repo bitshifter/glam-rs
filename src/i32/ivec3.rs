@@ -1,9 +1,33 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{
-    BVec3, BVec3A, I16Vec3, I64Vec3, I8Vec3, ISizeVec3, IVec2, IVec4, U16Vec3, U64Vec3, U8Vec3,
-    USizeVec3, UVec3,
-};
+use crate::{BVec3, BVec3A, IVec2, IVec4};
+
+#[cfg(feature = "i8")]
+use crate::I8Vec3;
+
+#[cfg(feature = "u8")]
+use crate::U8Vec3;
+
+#[cfg(feature = "i16")]
+use crate::I16Vec3;
+
+#[cfg(feature = "u16")]
+use crate::U16Vec3;
+
+#[cfg(feature = "u32")]
+use crate::UVec3;
+
+#[cfg(feature = "i64")]
+use crate::I64Vec3;
+
+#[cfg(feature = "u64")]
+use crate::U64Vec3;
+
+#[cfg(feature = "isize")]
+use crate::ISizeVec3;
+
+#[cfg(feature = "usize")]
+use crate::USizeVec3;
 
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -547,6 +571,7 @@ impl IVec3 {
     }
 
     /// Casts all elements of `self` to `f64`.
+    #[cfg(feature = "f64")]
     #[inline]
     #[must_use]
     pub fn as_dvec3(self) -> crate::DVec3 {
@@ -554,6 +579,7 @@ impl IVec3 {
     }
 
     /// Casts all elements of `self` to `i8`.
+    #[cfg(feature = "i8")]
     #[inline]
     #[must_use]
     pub fn as_i8vec3(self) -> crate::I8Vec3 {
@@ -561,6 +587,7 @@ impl IVec3 {
     }
 
     /// Casts all elements of `self` to `u8`.
+    #[cfg(feature = "u8")]
     #[inline]
     #[must_use]
     pub fn as_u8vec3(self) -> crate::U8Vec3 {
@@ -568,6 +595,7 @@ impl IVec3 {
     }
 
     /// Casts all elements of `self` to `i16`.
+    #[cfg(feature = "i16")]
     #[inline]
     #[must_use]
     pub fn as_i16vec3(self) -> crate::I16Vec3 {
@@ -575,6 +603,7 @@ impl IVec3 {
     }
 
     /// Casts all elements of `self` to `u16`.
+    #[cfg(feature = "u16")]
     #[inline]
     #[must_use]
     pub fn as_u16vec3(self) -> crate::U16Vec3 {
@@ -582,6 +611,7 @@ impl IVec3 {
     }
 
     /// Casts all elements of `self` to `u32`.
+    #[cfg(feature = "u32")]
     #[inline]
     #[must_use]
     pub fn as_uvec3(self) -> crate::UVec3 {
@@ -589,6 +619,7 @@ impl IVec3 {
     }
 
     /// Casts all elements of `self` to `i64`.
+    #[cfg(feature = "i64")]
     #[inline]
     #[must_use]
     pub fn as_i64vec3(self) -> crate::I64Vec3 {
@@ -596,6 +627,7 @@ impl IVec3 {
     }
 
     /// Casts all elements of `self` to `u64`.
+    #[cfg(feature = "u64")]
     #[inline]
     #[must_use]
     pub fn as_u64vec3(self) -> crate::U64Vec3 {
@@ -603,6 +635,7 @@ impl IVec3 {
     }
 
     /// Casts all elements of `self` to `isize`.
+    #[cfg(feature = "isize")]
     #[inline]
     #[must_use]
     pub fn as_isizevec3(self) -> crate::ISizeVec3 {
@@ -610,6 +643,7 @@ impl IVec3 {
     }
 
     /// Casts all elements of `self` to `usize`.
+    #[cfg(feature = "usize")]
     #[inline]
     #[must_use]
     pub fn as_usizevec3(self) -> crate::USizeVec3 {
@@ -811,6 +845,7 @@ impl IVec3 {
     /// Returns a vector containing the wrapping addition of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
+    #[cfg(feature = "u32")]
     #[inline]
     #[must_use]
     pub const fn checked_add_unsigned(self, rhs: UVec3) -> Option<Self> {
@@ -833,6 +868,7 @@ impl IVec3 {
     /// Returns a vector containing the wrapping subtraction of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `Some([self.x - rhs.x, self.y - rhs.y, ..])` but returns `None` on any overflow.
+    #[cfg(feature = "u32")]
     #[inline]
     #[must_use]
     pub const fn checked_sub_unsigned(self, rhs: UVec3) -> Option<Self> {
@@ -855,6 +891,7 @@ impl IVec3 {
     /// Returns a vector containing the wrapping addition of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `[self.x.wrapping_add_unsigned(rhs.x), self.y.wrapping_add_unsigned(rhs.y), ..]`.
+    #[cfg(feature = "u32")]
     #[inline]
     #[must_use]
     pub const fn wrapping_add_unsigned(self, rhs: UVec3) -> Self {
@@ -868,6 +905,7 @@ impl IVec3 {
     /// Returns a vector containing the wrapping subtraction of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `[self.x.wrapping_sub_unsigned(rhs.x), self.y.wrapping_sub_unsigned(rhs.y), ..]`.
+    #[cfg(feature = "u32")]
     #[inline]
     #[must_use]
     pub const fn wrapping_sub_unsigned(self, rhs: UVec3) -> Self {
@@ -881,6 +919,7 @@ impl IVec3 {
     // Returns a vector containing the saturating addition of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `[self.x.saturating_add_unsigned(rhs.x), self.y.saturating_add_unsigned(rhs.y), ..]`.
+    #[cfg(feature = "u32")]
     #[inline]
     #[must_use]
     pub const fn saturating_add_unsigned(self, rhs: UVec3) -> Self {
@@ -894,6 +933,7 @@ impl IVec3 {
     /// Returns a vector containing the saturating subtraction of `self` and unsigned vector `rhs`.
     ///
     /// In other words this computes `[self.x.saturating_sub_unsigned(rhs.x), self.y.saturating_sub_unsigned(rhs.y), ..]`.
+    #[cfg(feature = "u32")]
     #[inline]
     #[must_use]
     pub const fn saturating_sub_unsigned(self, rhs: UVec3) -> Self {
@@ -2878,6 +2918,7 @@ impl Shr<IVec3> for &IVec3 {
     }
 }
 
+#[cfg(feature = "u32")]
 impl Shl<UVec3> for IVec3 {
     type Output = Self;
     #[inline]
@@ -2890,6 +2931,7 @@ impl Shl<UVec3> for IVec3 {
     }
 }
 
+#[cfg(feature = "u32")]
 impl Shl<&UVec3> for IVec3 {
     type Output = Self;
     #[inline]
@@ -2898,6 +2940,7 @@ impl Shl<&UVec3> for IVec3 {
     }
 }
 
+#[cfg(feature = "u32")]
 impl Shl<&UVec3> for &IVec3 {
     type Output = IVec3;
     #[inline]
@@ -2906,6 +2949,7 @@ impl Shl<&UVec3> for &IVec3 {
     }
 }
 
+#[cfg(feature = "u32")]
 impl Shl<UVec3> for &IVec3 {
     type Output = IVec3;
     #[inline]
@@ -2914,6 +2958,7 @@ impl Shl<UVec3> for &IVec3 {
     }
 }
 
+#[cfg(feature = "u32")]
 impl Shr<UVec3> for IVec3 {
     type Output = Self;
     #[inline]
@@ -2926,6 +2971,7 @@ impl Shr<UVec3> for IVec3 {
     }
 }
 
+#[cfg(feature = "u32")]
 impl Shr<&UVec3> for IVec3 {
     type Output = Self;
     #[inline]
@@ -2934,6 +2980,7 @@ impl Shr<&UVec3> for IVec3 {
     }
 }
 
+#[cfg(feature = "u32")]
 impl Shr<&UVec3> for &IVec3 {
     type Output = IVec3;
     #[inline]
@@ -2942,6 +2989,7 @@ impl Shr<&UVec3> for &IVec3 {
     }
 }
 
+#[cfg(feature = "u32")]
 impl Shr<UVec3> for &IVec3 {
     type Output = IVec3;
     #[inline]
@@ -3026,6 +3074,7 @@ impl From<(IVec2, i32)> for IVec3 {
     }
 }
 
+#[cfg(feature = "i8")]
 impl From<I8Vec3> for IVec3 {
     #[inline]
     fn from(v: I8Vec3) -> Self {
@@ -3033,6 +3082,7 @@ impl From<I8Vec3> for IVec3 {
     }
 }
 
+#[cfg(feature = "u8")]
 impl From<U8Vec3> for IVec3 {
     #[inline]
     fn from(v: U8Vec3) -> Self {
@@ -3040,6 +3090,7 @@ impl From<U8Vec3> for IVec3 {
     }
 }
 
+#[cfg(feature = "i16")]
 impl From<I16Vec3> for IVec3 {
     #[inline]
     fn from(v: I16Vec3) -> Self {
@@ -3047,6 +3098,7 @@ impl From<I16Vec3> for IVec3 {
     }
 }
 
+#[cfg(feature = "u16")]
 impl From<U16Vec3> for IVec3 {
     #[inline]
     fn from(v: U16Vec3) -> Self {
@@ -3054,6 +3106,7 @@ impl From<U16Vec3> for IVec3 {
     }
 }
 
+#[cfg(feature = "u32")]
 impl TryFrom<UVec3> for IVec3 {
     type Error = core::num::TryFromIntError;
 
@@ -3067,6 +3120,7 @@ impl TryFrom<UVec3> for IVec3 {
     }
 }
 
+#[cfg(feature = "i64")]
 impl TryFrom<I64Vec3> for IVec3 {
     type Error = core::num::TryFromIntError;
 
@@ -3080,6 +3134,7 @@ impl TryFrom<I64Vec3> for IVec3 {
     }
 }
 
+#[cfg(feature = "u64")]
 impl TryFrom<U64Vec3> for IVec3 {
     type Error = core::num::TryFromIntError;
 
@@ -3093,6 +3148,7 @@ impl TryFrom<U64Vec3> for IVec3 {
     }
 }
 
+#[cfg(feature = "isize")]
 impl TryFrom<ISizeVec3> for IVec3 {
     type Error = core::num::TryFromIntError;
 
@@ -3106,6 +3162,7 @@ impl TryFrom<ISizeVec3> for IVec3 {
     }
 }
 
+#[cfg(feature = "usize")]
 impl TryFrom<USizeVec3> for IVec3 {
     type Error = core::num::TryFromIntError;
 

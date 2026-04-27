@@ -1374,7 +1374,9 @@ impl DMat4 {
         )
     }
 
+    #[cfg(feature = "f64")]
     #[inline]
+    #[must_use]
     pub fn as_mat4(&self) -> Mat4 {
         Mat4::from_cols(
             self.x_axis.as_vec4(),

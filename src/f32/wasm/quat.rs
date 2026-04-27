@@ -4,8 +4,11 @@ use crate::{
     euler::{EulerRot, FromEuler, ToEuler},
     f32::math,
     wasm::*,
-    DQuat, Mat3, Mat3A, Mat4, Vec2, Vec3, Vec3A, Vec4,
+    Mat3, Mat3A, Mat4, Vec2, Vec3, Vec3A, Vec4,
 };
+
+#[cfg(feature = "f64")]
+use crate::DQuat;
 
 #[cfg(target_arch = "wasm32")]
 use core::arch::wasm32::*;
@@ -867,6 +870,7 @@ impl Quat {
         ))
     }
 
+    #[cfg(feature = "f64")]
     #[inline]
     #[must_use]
     pub fn as_dquat(self) -> DQuat {

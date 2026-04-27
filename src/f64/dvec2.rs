@@ -1,6 +1,14 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{f64::math, BVec2, DVec3, IVec2, UVec2, Vec2};
+use crate::{f64::math, BVec2, DVec3};
+
+use crate::Vec2;
+
+#[cfg(feature = "i32")]
+use crate::IVec2;
+
+#[cfg(feature = "u32")]
+use crate::UVec2;
 
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -1088,6 +1096,7 @@ impl DVec2 {
     }
 
     /// Casts all elements of `self` to `i8`.
+    #[cfg(feature = "i8")]
     #[inline]
     #[must_use]
     pub fn as_i8vec2(self) -> crate::I8Vec2 {
@@ -1095,6 +1104,7 @@ impl DVec2 {
     }
 
     /// Casts all elements of `self` to `u8`.
+    #[cfg(feature = "u8")]
     #[inline]
     #[must_use]
     pub fn as_u8vec2(self) -> crate::U8Vec2 {
@@ -1102,6 +1112,7 @@ impl DVec2 {
     }
 
     /// Casts all elements of `self` to `i16`.
+    #[cfg(feature = "i16")]
     #[inline]
     #[must_use]
     pub fn as_i16vec2(self) -> crate::I16Vec2 {
@@ -1109,6 +1120,7 @@ impl DVec2 {
     }
 
     /// Casts all elements of `self` to `u16`.
+    #[cfg(feature = "u16")]
     #[inline]
     #[must_use]
     pub fn as_u16vec2(self) -> crate::U16Vec2 {
@@ -1116,6 +1128,7 @@ impl DVec2 {
     }
 
     /// Casts all elements of `self` to `i32`.
+    #[cfg(feature = "i32")]
     #[inline]
     #[must_use]
     pub fn as_ivec2(self) -> crate::IVec2 {
@@ -1123,6 +1136,7 @@ impl DVec2 {
     }
 
     /// Casts all elements of `self` to `u32`.
+    #[cfg(feature = "u32")]
     #[inline]
     #[must_use]
     pub fn as_uvec2(self) -> crate::UVec2 {
@@ -1130,6 +1144,7 @@ impl DVec2 {
     }
 
     /// Casts all elements of `self` to `i64`.
+    #[cfg(feature = "i64")]
     #[inline]
     #[must_use]
     pub fn as_i64vec2(self) -> crate::I64Vec2 {
@@ -1137,6 +1152,7 @@ impl DVec2 {
     }
 
     /// Casts all elements of `self` to `u64`.
+    #[cfg(feature = "u64")]
     #[inline]
     #[must_use]
     pub fn as_u64vec2(self) -> crate::U64Vec2 {
@@ -1144,6 +1160,7 @@ impl DVec2 {
     }
 
     /// Casts all elements of `self` to `isize`.
+    #[cfg(feature = "isize")]
     #[inline]
     #[must_use]
     pub fn as_isizevec2(self) -> crate::ISizeVec2 {
@@ -1151,6 +1168,7 @@ impl DVec2 {
     }
 
     /// Casts all elements of `self` to `usize`.
+    #[cfg(feature = "usize")]
     #[inline]
     #[must_use]
     pub fn as_usizevec2(self) -> crate::USizeVec2 {
@@ -1990,6 +2008,7 @@ impl From<Vec2> for DVec2 {
     }
 }
 
+#[cfg(feature = "i32")]
 impl From<IVec2> for DVec2 {
     #[inline]
     fn from(v: IVec2) -> Self {
@@ -1997,6 +2016,7 @@ impl From<IVec2> for DVec2 {
     }
 }
 
+#[cfg(feature = "u32")]
 impl From<UVec2> for DVec2 {
     #[inline]
     fn from(v: UVec2) -> Self {

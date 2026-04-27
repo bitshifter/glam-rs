@@ -1,10 +1,13 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
+#[cfg(feature = "f64")]
+use crate::DMat3;
+
 use crate::{
     euler::{FromEuler, ToEuler},
     f32::math,
     swizzles::*,
-    DMat3, EulerRot, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A,
+    EulerRot, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A,
 };
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -873,7 +876,9 @@ impl Mat3A {
         Self::from_cols(self.x_axis.abs(), self.y_axis.abs(), self.z_axis.abs())
     }
 
+    #[cfg(feature = "f64")]
     #[inline]
+    #[must_use]
     pub fn as_dmat3(&self) -> DMat3 {
         DMat3::from_cols(
             self.x_axis.as_dvec3(),

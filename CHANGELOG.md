@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+### Breaking changes
+
+* Add types apart from `f32` and `bool` types are now optional but enabled by
+  default. Unused types can be disabled to improve compile times.
+
 ## [0.32.1] - 2026-03-06
 
 ### Fixed

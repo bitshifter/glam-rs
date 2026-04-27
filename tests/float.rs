@@ -48,6 +48,7 @@ mod float32 {
     impl_float_tests!(f32);
 }
 
+#[cfg(feature = "f64")]
 mod float64 {
     use glam::FloatExt;
 

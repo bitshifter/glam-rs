@@ -901,6 +901,7 @@ mod mat4 {
         );
     });
 
+    #[cfg(feature = "f64")]
     glam_test!(test_as, {
         use glam::DMat4;
         assert_eq!(
@@ -939,6 +940,7 @@ mod mat4 {
     impl_as_ref_tests!(Mat4);
 }
 
+#[cfg(feature = "f64")]
 mod dmat4 {
     use super::support::deg;
     use glam::{dmat4, dvec3, dvec4, swizzles::*, DMat3, DMat4, DQuat, DVec3, DVec4};

@@ -38,6 +38,10 @@
 * [`bool`](mod@bool) types
   * vectors: [`BVec2`], [`BVec3`] and [`BVec4`]
 
+All types are enabled by default. Only `f32` and `bool` types are built-in.
+All other types are optional and can be disabled if not needed for faster
+compile times.
+
 ## SIMD
 
 `glam` is built with SIMD in mind. Many `f32` types use 128-bit SIMD vector types for storage
@@ -226,6 +230,28 @@ use glam::Vec4;
 let a = Vec4::new(1.0, 2.0, 3.0, 4.0);
 assert_eq!(format!("{}", a), "[1, 2, 3, 4]");
 ```
+## Feature gates
+
+* `std` - the default feature, has no dependencies.
+* `all-types` - a default feature, enables `float-types`, `integer-types` and `size-types`
+* `float-types` - enables `f64` types
+* `integer-types` - enables `i8`, `i16`, `i32`, `i64`, `u8`, `u16`, `u32` and `u64` types
+* `size-types` - enables `isize` and `usize` types
+* `f64`, `i8`, `i16`, `i32`, `i64`, `isize`, `u8`, `u16`, `u32`, `u64`, `usize` - enables glam types
+  for the given intrinsic type
+* `nostd-libm` - uses `libm` math functions if `std` is not available
+* `scalar-math` - disables SIMD support and uses native alignment for all types.
+* `debug-glam-assert` - adds assertions in debug builds which check the validity of parameters
+  passed to `glam` to help catch runtime errors.
+* `glam-assert` - adds assertions to all builds which check the validity of parameters passed to
+  `glam` to help catch runtime errors.
+* `cuda` - forces `glam` types to match expected cuda alignment
+* `fast-math` - By default, glam attempts to provide bit-for-bit identical results on all platforms.
+  Using this feature will enable platform specific optimizations that may not be identical to other
+  platforms. **Intermediate libraries should not use this feature and defer the decision to the
+  final binary build**.
+* `core-simd` - enables SIMD support via the portable simd module. This is an unstable feature which
+  requires a nightly Rust toolchain and `std` support.
 
 ## Optional features
 
@@ -248,23 +274,6 @@ and benchmarks.
   types. Note that serialization should work between builds of `glam` with and without SIMD enabled
 * `speedy` - implementations of `speedy`'s `Readable` and `Writable` for all `glam` types.
 * `zerocopy` - implementations of zerocopy traits for safe transmutes.
-
-## Feature gates
-
-* `std` - the default feature, has no dependencies.
-* `nostd-libm` - uses `libm` math functions if `std` is not available
-* `scalar-math` - disables SIMD support and uses native alignment for all types.
-* `debug-glam-assert` - adds assertions in debug builds which check the validity of parameters
-  passed to `glam` to help catch runtime errors.
-* `glam-assert` - adds assertions to all builds which check the validity of parameters passed to
-  `glam` to help catch runtime errors.
-* `cuda` - forces `glam` types to match expected cuda alignment
-* `fast-math` - By default, glam attempts to provide bit-for-bit identical results on all platforms.
-  Using this feature will enable platform specific optimizations that may not be identical to other
-  platforms. **Intermediate libraries should not use this feature and defer the decision to the
-  final binary build**.
-* `core-simd` - enables SIMD support via the portable simd module. This is an unstable feature which
-  requires a nightly Rust toolchain and `std` support.
 
 ## Minimum Supported Rust Version (MSRV)
 
@@ -344,47 +353,69 @@ pub mod f32;
 pub use self::f32::*;
 
 /** `f64` vector, quaternion and matrix types. */
+#[cfg(feature = "f64")]
 pub mod f64;
+#[cfg(feature = "f64")]
 pub use self::f64::*;
 
 /** `i8` vector types. */
+#[cfg(feature = "i8")]
 pub mod i8;
+#[cfg(feature = "i8")]
 pub use self::i8::*;
 
 /** `u8` vector types. */
+#[cfg(feature = "u8")]
 pub mod u8;
+#[cfg(feature = "u8")]
 pub use self::u8::*;
 
 /** `i16` vector types. */
+#[cfg(feature = "i16")]
 pub mod i16;
+#[cfg(feature = "i16")]
 pub use self::i16::*;
 
 /** `u16` vector types. */
+#[cfg(feature = "u16")]
 pub mod u16;
+#[cfg(feature = "u16")]
 pub use self::u16::*;
 
 /** `i32` vector types. */
+#[cfg(feature = "i32")]
 pub mod i32;
+#[cfg(feature = "i32")]
 pub use self::i32::*;
 
 /** `u32` vector types. */
+#[cfg(feature = "u32")]
 pub mod u32;
+#[cfg(feature = "u32")]
 pub use self::u32::*;
 
 /** `i64` vector types. */
+#[cfg(feature = "i64")]
 pub mod i64;
+#[cfg(feature = "i64")]
 pub use self::i64::*;
 
 /** `u64` vector types. */
+#[cfg(feature = "u64")]
 pub mod u64;
+#[cfg(feature = "u64")]
 pub use self::u64::*;
 
 /** `usize` vector types. */
+#[cfg(feature = "usize")]
 pub mod usize;
+#[cfg(feature = "usize")]
 pub use self::usize::*;
 
 /** `isize` vector types. */
+#[cfg(feature = "isize")]
 pub mod isize;
+#[cfg(feature = "isize")]
 pub use self::isize::*;
 
 /** Traits adding swizzle methods to all vector types. */

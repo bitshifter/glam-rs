@@ -61,12 +61,11 @@
 {% set axes = ["x_axis", "y_axis", "z_axis", "w_axis"] | slice(end = dim) %}
 {% set dimension_in_full = ["zero", "one", "two", "three", "four"] | nth(n = dim) %}
 
-use crate::{
 {% if scalar_t == "f32" %}
-    DMat{{ dim }},
-{% elif scalar_t == "f64" %}
-    Mat{{ dim }},
+#[cfg(feature = "f64")]
+use crate::DMat{{ dim }};
 {% endif %}
+use crate::{
 {% if dim == 2 %}
     {{ mat3_t }}, {{ vec2_t }},
     {% if scalar_t == "f32" %}
@@ -86,6 +85,9 @@ use crate::{
     {% if scalar_t == "f32" %}
         Mat3A, Vec3A,
     {% endif %}
+{% endif %}
+{% if scalar_t == "f64" %}
+    Mat{{ dim }},
 {% endif %}
 {% if self_t == "Mat4" %}
     {% if is_sse2 %}
@@ -2629,7 +2631,9 @@ impl {{ self_t }} {
     }
 
     {% if scalar_t == "f32" %}
+        #[cfg(feature = "f64")]
         #[inline]
+        #[must_use]
         pub fn as_dmat{{ dim }}(&self) -> DMat{{ dim }} {
             DMat{{ dim }}::from_cols(
                 {% for axis in axes %}
@@ -2638,7 +2642,9 @@ impl {{ self_t }} {
             )
         }
     {% elif scalar_t == "f64" %}
+        #[cfg(feature = "f64")]
         #[inline]
+        #[must_use]
         pub fn as_mat{{ dim }}(&self) -> Mat{{ dim }} {
             Mat{{ dim }}::from_cols(
                 {% for axis in axes %}
