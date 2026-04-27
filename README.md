@@ -41,6 +41,10 @@ A simple and fast 3D math library for games and graphics.
 * `bool` types
   * vectors: `BVec2`, `BVec3` and `BVec4`
 
+All types are enabled by default. Only `f32` and `bool` types are built-in.
+All other types are optional and can be disabled if not needed for faster
+compile times.
+
 ### SIMD
 
 The `Vec3A`, `Vec4`, `Quat`, `Mat2`, `Mat3A`, `Mat4`, `Affine2` and `Affine3A`
@@ -117,6 +121,33 @@ libm = ["glam/libm"]
 glam = { version = "0.32.1", default-features = false, features = ["nostd-libm"] }
 ```
 
+### Feature gates
+
+* `std` - the default feature, has no dependencies.
+* `all-types` - a default feature, enables `float-types`, `integer-types`
+   and `size-types`
+* `float-types` - enables `f64` types
+* `integer-types` - enables `i8`, `i16`, `i32`, `i64`, `u8`, `u16`, `u32`
+   and `u64` types
+* `size-types` - enables `isize` and `usize` types
+* `f64`, `i8`, `i16`, `i32`, `i64`, `isize`, `u8`, `u16`, `u32`, `u64`, `usize`
+  - enables glam types for the given intrinsic type
+* `nostd-libm` - uses `libm` math functions if `std` is not available
+* `scalar-math` - compiles with SIMD support disabled
+* `debug-glam-assert` - adds assertions in debug builds which check the validity
+  of parameters passed to `glam` to help catch runtime errors
+* `glam-assert` - adds validation assertions to all builds
+* `cuda` - forces `glam` types to match expected [cuda alignment]
+* `fast-math` - By default, glam attempts to provide bit-for-bit identical
+  results on all platforms. Using this feature will enable platform specific
+  optimizations that may not be identical to other platforms. **Intermediate
+  libraries should not use this feature and defer the decision to the final
+  binary build**.
+* `core-simd` - enables SIMD support via the [portable simd] module. This is an
+  unstable feature which requires a nightly Rust toolchain and `std` support.
+
+[cuda alignment]: https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#built-in-vector-types
+
 ### Optional features
 
 * [`approx`] - traits and macros for approximate float comparisons
@@ -150,25 +181,6 @@ glam = { version = "0.32.1", default-features = false, features = ["nostd-libm"]
 [`serde`]: https://serde.rs
 [`speedy`]: https://docs.rs/speedy
 [`zerocopy`]: https://github.com/google/zerocopy
-
-### Feature gates
-
-* `std` - the default feature, has no dependencies.
-* `nostd-libm` - uses `libm` math functions if `std` is not available
-* `scalar-math` - compiles with SIMD support disabled
-* `debug-glam-assert` - adds assertions in debug builds which check the validity
-  of parameters passed to `glam` to help catch runtime errors
-* `glam-assert` - adds validation assertions to all builds
-* `cuda` - forces `glam` types to match expected [cuda alignment]
-* `fast-math` - By default, glam attempts to provide bit-for-bit identical
-  results on all platforms. Using this feature will enable platform specific
-  optimizations that may not be identical to other platforms. **Intermediate
-  libraries should not use this feature and defer the decision to the final
-  binary build**.
-* `core-simd` - enables SIMD support via the [portable simd] module. This is an
-  unstable feature which requires a nightly Rust toolchain and `std` support.
-
-[cuda alignment]: https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#built-in-vector-types
 
 ### Minimum Supported Rust Version (MSRV)
 
