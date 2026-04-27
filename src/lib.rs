@@ -238,7 +238,7 @@ assert_eq!(format!("{}", a), "[1, 2, 3, 4]");
 * `integer-types` - enables `i8`, `i16`, `i32`, `i64`, `u8`, `u16`, `u32` and `u64` types
 * `size-types` - enables `isize` and `usize` types
 * `f64`, `i8`, `i16`, `i32`, `i64`, `isize`, `u8`, `u16`, `u32`, `u64`, `usize` - enables glam types
-   for the given intrinsic type
+  for the given intrinsic type
 * `nostd-libm` - uses `libm` math functions if `std` is not available
 * `scalar-math` - disables SIMD support and uses native alignment for all types.
 * `debug-glam-assert` - adds assertions in debug builds which check the validity of parameters
