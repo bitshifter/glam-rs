@@ -5,12 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
-## [Unreleased]
+## [0.33.0]
 
 ### Breaking changes
 
-* Add types apart from `f32` and `bool` types are now optional but enabled by
+* All types apart from `f32` and `bool` types are now optional but enabled by
   default. Unused types can be disabled to improve compile times.
+
+* Added `#[must_use]` attribute to `as_dmat2`, `as_dmat3` and `as_dmat4` vector
+  methods.
 
 ## [0.32.1] - 2026-03-06
 
@@ -1404,7 +1407,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.32.1...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.33.0...HEAD
+[0.33.0]: https://github.com/bitshifter/glam-rs/compare/0.32.1...0.33.0
 [0.32.1]: https://github.com/bitshifter/glam-rs/compare/0.32.0...0.32.1
 [0.32.0]: https://github.com/bitshifter/glam-rs/compare/0.31.1...0.32.0
 [0.31.1]: https://github.com/bitshifter/glam-rs/compare/0.31.0...0.31.1
