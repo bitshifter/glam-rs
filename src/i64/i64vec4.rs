@@ -130,9 +130,9 @@ impl I64Vec4 {
     /// Returns a vector containing each element of `self` modified by a mapping function `f`.
     #[inline]
     #[must_use]
-    pub fn map<F>(self, f: F) -> Self
+    pub fn map<F>(self, mut f: F) -> Self
     where
-        F: Fn(i64) -> i64,
+        F: FnMut(i64) -> i64,
     {
         Self::new(f(self.x), f(self.y), f(self.z), f(self.w))
     }

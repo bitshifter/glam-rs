@@ -130,9 +130,9 @@ impl I16Vec4 {
     /// Returns a vector containing each element of `self` modified by a mapping function `f`.
     #[inline]
     #[must_use]
-    pub fn map<F>(self, f: F) -> Self
+    pub fn map<F>(self, mut f: F) -> Self
     where
-        F: Fn(i16) -> i16,
+        F: FnMut(i16) -> i16,
     {
         Self::new(f(self.x), f(self.y), f(self.z), f(self.w))
     }
