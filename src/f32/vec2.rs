@@ -101,7 +101,7 @@ impl Vec2 {
     /// Returns a vector containing each element of `self` modified by a mapping function `f`.
     #[inline]
     #[must_use]
-    pub fn map<F>(self, f: F) -> Self
+    pub fn map<F>(self, mut f: F) -> Self
     where
         F: FnMut(f32) -> f32,
     {
