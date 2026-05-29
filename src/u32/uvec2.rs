@@ -99,7 +99,7 @@ impl UVec2 {
     #[must_use]
     pub fn map<F>(self, f: F) -> Self
     where
-        F: Fn(u32) -> u32,
+        F: FnMut(u32) -> u32,
     {
         Self::new(f(self.x), f(self.y))
     }

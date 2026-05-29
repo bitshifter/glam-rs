@@ -135,7 +135,7 @@ impl DVec4 {
     #[must_use]
     pub fn map<F>(self, f: F) -> Self
     where
-        F: Fn(f64) -> f64,
+        F: FnMut(f64) -> f64,
     {
         Self::new(f(self.x), f(self.y), f(self.z), f(self.w))
     }

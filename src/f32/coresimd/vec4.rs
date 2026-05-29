@@ -110,7 +110,7 @@ impl Vec4 {
     #[must_use]
     pub fn map<F>(self, f: F) -> Self
     where
-        F: Fn(f32) -> f32,
+        F: FnMut(f32) -> f32,
     {
         Self::new(f(self.x), f(self.y), f(self.z), f(self.w))
     }

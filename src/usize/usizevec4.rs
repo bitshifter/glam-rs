@@ -117,7 +117,7 @@ impl USizeVec4 {
     #[must_use]
     pub fn map<F>(self, f: F) -> Self
     where
-        F: Fn(usize) -> usize,
+        F: FnMut(usize) -> usize,
     {
         Self::new(f(self.x), f(self.y), f(self.z), f(self.w))
     }

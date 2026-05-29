@@ -132,7 +132,7 @@ impl I8Vec4 {
     #[must_use]
     pub fn map<F>(self, f: F) -> Self
     where
-        F: Fn(i8) -> i8,
+        F: FnMut(i8) -> i8,
     {
         Self::new(f(self.x), f(self.y), f(self.z), f(self.w))
     }

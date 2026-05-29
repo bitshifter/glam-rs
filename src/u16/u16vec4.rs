@@ -117,7 +117,7 @@ impl U16Vec4 {
     #[must_use]
     pub fn map<F>(self, f: F) -> Self
     where
-        F: Fn(u16) -> u16,
+        F: FnMut(u16) -> u16,
     {
         Self::new(f(self.x), f(self.y), f(self.z), f(self.w))
     }

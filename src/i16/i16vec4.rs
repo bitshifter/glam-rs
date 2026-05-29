@@ -132,7 +132,7 @@ impl I16Vec4 {
     #[must_use]
     pub fn map<F>(self, f: F) -> Self
     where
-        F: Fn(i16) -> i16,
+        F: FnMut(i16) -> i16,
     {
         Self::new(f(self.x), f(self.y), f(self.z), f(self.w))
     }

@@ -132,7 +132,7 @@ impl ISizeVec4 {
     #[must_use]
     pub fn map<F>(self, f: F) -> Self
     where
-        F: Fn(isize) -> isize,
+        F: FnMut(isize) -> isize,
     {
         Self::new(f(self.x), f(self.y), f(self.z), f(self.w))
     }

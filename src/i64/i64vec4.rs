@@ -132,7 +132,7 @@ impl I64Vec4 {
     #[must_use]
     pub fn map<F>(self, f: F) -> Self
     where
-        F: Fn(i64) -> i64,
+        F: FnMut(i64) -> i64,
     {
         Self::new(f(self.x), f(self.y), f(self.z), f(self.w))
     }

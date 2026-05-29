@@ -114,7 +114,7 @@ impl IVec3 {
     #[must_use]
     pub fn map<F>(self, f: F) -> Self
     where
-        F: Fn(i32) -> i32,
+        F: FnMut(i32) -> i32,
     {
         Self::new(f(self.x), f(self.y), f(self.z))
     }
