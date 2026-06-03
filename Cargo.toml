@@ -156,8 +156,8 @@ harness = false
 
 [workspace]
 members = [
-    "codegen",
-    "swizzlegen",
+    "tools/codegen",
+    "tools/swizzlegen",
     "test_no_std",
 ]
 
