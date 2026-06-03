@@ -83,4 +83,4 @@ methods to read and write component values.
 
 See the [codegen README] for information on `glam`'s code generation process.
 
-[codegen README]: codegen/README.md
+[codegen README]: tools/codegen/README.md

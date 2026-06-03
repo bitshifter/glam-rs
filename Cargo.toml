@@ -156,9 +156,9 @@ harness = false
 
 [workspace]
 members = [
-    "codegen",
-    "swizzlegen",
-    "test_no_std",
+    "tools/codegen",
+    "tools/swizzlegen",
+    "tools/test_no_std",
 ]
 
 [lints.rust]
