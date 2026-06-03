@@ -158,7 +158,7 @@ harness = false
 members = [
     "tools/codegen",
     "tools/swizzlegen",
-    "test_no_std",
+    "tools/test_no_std",
 ]
 
 [lints.rust]
