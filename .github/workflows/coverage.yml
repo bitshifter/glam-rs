@@ -1,5 +1,10 @@
 name: coverage
-on: [push]
+on:
+  push:
+    branches: [main]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   coverage:
     container:
@@ -11,6 +16,8 @@ jobs:
         with:
           submodules: true
 
+      - uses: Swatinem/rust-cache@v2
+
       - name: Update nightly
         run: rustup update nightly
 
@@ -18,6 +25,6 @@ jobs:
         run: cargo +nightly tarpaulin --timeout 120 --out lcov --output-dir ./coverage
 
       - name: Upload to coveralls.io
-        uses: coverallsapp/github-action@master
+        uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
