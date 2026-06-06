@@ -1,3 +1,5 @@
+use std::path::Path;
+
 use argh::FromArgs;
 use xshell::Shell;
 
@@ -66,6 +68,9 @@ impl Prepare for CoverageLlvm {
                     .output_path
                     .clone()
                     .unwrap_or_else(|| "./coverage/lcov.info".to_string());
+                if let Some(parent) = Path::new(&path).parent() {
+                    std::fs::create_dir_all(parent).unwrap();
+                }
                 cmd = cmd.arg("--lcov").arg("--output-path").arg(path);
             }
 
