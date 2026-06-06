@@ -62,8 +62,7 @@ fn main() {
         Some(ref subcommand) => subcommand.prepare(&sh, &args),
         None => {
             let mut all = Vec::new();
-            all.extend(CheckFeatures {}.prepare(&sh, &args));
-            all.extend(TestFeatures {}.prepare(&sh, &args));
+            all.extend(TestFeatures::default().prepare(&sh, &args));
             all.extend(Lints {}.prepare(&sh, &args));
             all
         }
