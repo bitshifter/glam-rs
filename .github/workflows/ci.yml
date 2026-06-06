@@ -22,7 +22,7 @@ jobs:
       - run: rustup default stable
 
       - name: cargo ci lints
-        run: cargo run -p ci -- lints
+        run: cargo run --release -p ci -- lints
 
   test:
     name: Test
@@ -38,7 +38,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - run: rustup update --no-self-update ${{ matrix.toolchain }}
       - run: rustup default ${{ matrix.toolchain }}
-      - run: cargo run -p ci -- test-features
+      - run: cargo run --release -p ci -- test-features
 
   check-msrv:
     name: Check MSRV
@@ -54,8 +54,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - run: rustup update --no-self-update ${{ matrix.toolchain }}
       - run: rustup default ${{ matrix.toolchain }}
-      - run: ./build_all_msrv.sh
-        shell: bash
+      - run: cargo run --release -p ci -- msrv
 
   test-core-simd:
     name: Test portable simd
@@ -71,8 +70,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - run: rustup update --no-self-update ${{ matrix.toolchain }}
       - run: rustup default ${{ matrix.toolchain }}
-      - run: cargo test --features core-simd
-        shell: bash
+      - run: cargo run --release -p ci -- core-simd
 
   test-wasm32:
     name: Test wasm32
@@ -91,9 +89,7 @@ jobs:
       - name: Install wasm-pack
         uses: jetli/wasm-pack-action@v0.4.0
 
-      - run: ./build_and_test_wasm32_node.sh
-      - run: ./build_and_test_wasm32_firefox.sh
-      - run: ./build_and_test_wasm32_chrome.sh
+      - run: cargo run --release -p ci -- wasm32
 
   test-wasm64:
     name: Test wasm64
@@ -109,4 +105,4 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - run: rustup component add rust-src --toolchain ${{ matrix.toolchain }}
       - uses: bytecodealliance/actions/wasmtime/setup@v1
-      - run: ./build_and_test_wasm64.sh
+      - run: cargo run --release -p ci -- wasm64

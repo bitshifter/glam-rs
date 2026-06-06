@@ -20,7 +20,7 @@ See https://github.com/bitshifter/glam-codegen/blob/main/README.md for details.
 - Your PR should include tests for any bug fixes or new features.
 - `cargo test` and `cargo clippy` must pass.
 
-You can run most of glam's tests locally by running the `build_and_test_features.sh` script.
+You can run most of glam's tests locally by running `cargo run -p ci`.
 
 ## Breaking changes
 

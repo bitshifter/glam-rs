@@ -45,9 +45,8 @@ If you feel any documentation could be added or improved please
 Most of `glam`'s source code is generated. See the [codegen README] on how
 to modify the code templates and generate new source code.
 
-You can run some of `glam`'s test suite locally by running the
-`build_and_test_features.sh` script. It's worth running that before creating a
-PR.
+You can run `glam`'s test suite locally by running `cargo run -p ci`.
+It's worth running that before creating a PR.
 
 Also run `cargo fmt` and `cargo clippy` on any new code.
 

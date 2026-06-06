@@ -1,10 +1,19 @@
 pub mod check_features;
+pub mod ci;
 pub mod clippy;
 pub mod codegen;
+pub mod core_simd;
 pub mod doc;
 pub mod fmt;
 pub mod lints;
+pub mod msrv;
+pub mod pre_push;
 pub mod test_features;
+pub mod wasm32;
+pub mod wasm32_chrome;
+pub mod wasm32_firefox;
+pub mod wasm32_node;
+pub mod wasm64;
 
 macro_rules! deps {
     () => {
