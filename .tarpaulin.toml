@@ -31,7 +31,7 @@ exclude-files = [
 ]
 
 [core_simd]
-features = "core-simd arbitrary approx bytemuck encase mint rand rkyv bytecheck serde speedy zerocopy debug-glam-assert"
+features = "core-simd arbitrary approx bytemuck encase mint rand rkyv bytecheck serde speedy debug-glam-assert"
 exclude-files = [
     "tools/*",
     "src/neon.rs",
