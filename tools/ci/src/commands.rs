@@ -50,6 +50,6 @@ pub fn resolve_sets(index: Option<usize>) -> &'static [&'static str] {
 
 pub fn print_feature_sets() {
     for (i, features) in FEATURE_SETS.iter().enumerate() {
-        print!("  {}. {features}\n", i + 1);
+        println!("  {}. {features}", i + 1);
     }
 }
