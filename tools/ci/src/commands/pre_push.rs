@@ -15,8 +15,8 @@ pub struct PrePush {}
 impl Prepare for PrePush {
     fn prepare<'a>(&self, sh: &'a Shell, args: &Args) -> Vec<PreparedCommand<'a>> {
         let mut cmds = Vec::new();
-        cmds.extend(TestFeatures::default().prepare(sh, args));
         cmds.extend(Lints {}.prepare(sh, args));
+        cmds.extend(TestFeatures::default().prepare(sh, args));
         cmds
     }
 }
