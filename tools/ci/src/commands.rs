@@ -3,6 +3,8 @@ pub mod ci;
 pub mod clippy;
 pub mod codegen;
 pub mod core_simd;
+pub mod coverage_llvm;
+pub mod coverage_tarpaulin;
 pub mod doc;
 pub mod fmt;
 pub mod lints;

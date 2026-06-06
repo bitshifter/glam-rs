@@ -2,14 +2,17 @@ name: coverage
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   coverage:
-    container:
-      image: xd009642/tarpaulin:develop-nightly
-      options: --security-opt seccomp=unconfined
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [sse2_math, scalar_math, core_simd]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -18,13 +21,27 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
 
-      - name: Update nightly
-        run: rustup update nightly
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-llvm-cov
 
       - name: Generate code coverage
-        run: cargo +nightly tarpaulin --timeout 120 --out lcov --output-dir ./coverage
+        run: cargo run --release -p ci -- coverage-llvm -p ${{ matrix.profile }} --lcov
 
       - name: Upload to coveralls.io
         uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel: true
+          flag-name: ${{ matrix.profile }}
+
+  coverage-finalize:
+    needs: [coverage]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Finalize coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel-finished: true

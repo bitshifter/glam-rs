@@ -12,6 +12,8 @@ use commands::ci::Ci;
 use commands::clippy::Clippy;
 use commands::codegen::Codegen;
 use commands::core_simd::CoreSimd;
+use commands::coverage_llvm::CoverageLlvm;
+use commands::coverage_tarpaulin::CoverageTarpaulin;
 use commands::doc::Doc;
 use commands::fmt::Fmt;
 use commands::lints::Lints;
@@ -43,6 +45,8 @@ enum Subcommand {
     Clippy(Clippy),
     Codegen(Codegen),
     CoreSimd(CoreSimd),
+    CoverageLlvm(CoverageLlvm),
+    CoverageTarpaulin(CoverageTarpaulin),
     Doc(Doc),
     Fmt(Fmt),
     Lints(Lints),
@@ -64,6 +68,8 @@ impl Prepare for Subcommand {
             Subcommand::Clippy(cmd) => cmd.prepare(sh, args),
             Subcommand::Codegen(cmd) => cmd.prepare(sh, args),
             Subcommand::CoreSimd(cmd) => cmd.prepare(sh, args),
+            Subcommand::CoverageLlvm(cmd) => cmd.prepare(sh, args),
+            Subcommand::CoverageTarpaulin(cmd) => cmd.prepare(sh, args),
             Subcommand::Doc(cmd) => cmd.prepare(sh, args),
             Subcommand::Fmt(cmd) => cmd.prepare(sh, args),
             Subcommand::Lints(cmd) => cmd.prepare(sh, args),
