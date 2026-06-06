@@ -21,6 +21,9 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
 
+      - name: Install toolchains
+        run: rustup update --no-self-update stable && rustup update --no-self-update nightly
+
       - uses: taiki-e/install-action@v2
         with:
           tool: cargo-llvm-cov
