@@ -26,13 +26,13 @@ impl Prepare for Msrv {
 
         vec![
             PreparedCommand {
-                name: format!("msrv check: {}", super::MSRV_FEATURES),
-                command: a(super::MSRV_FEATURES),
+                name: format!("msrv check: {}", crate::features::MSRV_FEATURES),
+                command: a(crate::features::MSRV_FEATURES),
                 failure_message: "msrv check failed",
             },
             PreparedCommand {
-                name: format!("msrv check: scalar-math {}", super::MSRV_FEATURES),
-                command: a(&format!("scalar-math {}", super::MSRV_FEATURES)),
+                name: format!("msrv check: scalar-math {}", crate::features::MSRV_FEATURES),
+                command: a(&format!("scalar-math {}", crate::features::MSRV_FEATURES)),
                 failure_message: "msrv check (scalar-math) failed",
             },
             PreparedCommand {
@@ -41,7 +41,10 @@ impl Prepare for Msrv {
                     .arg("check")
                     .arg("--no-default-features")
                     .arg("--features")
-                    .arg(format!("libm scalar-math {}", super::MSRV_FEATURES)),
+                    .arg(format!(
+                        "libm scalar-math {}",
+                        crate::features::MSRV_FEATURES
+                    )),
                 failure_message: "msrv check (libm, no_std) failed",
             },
         ]
