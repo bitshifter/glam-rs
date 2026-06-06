@@ -1,5 +1,6 @@
 mod args;
 mod commands;
+mod features;
 mod prepare;
 mod toolchain;
 

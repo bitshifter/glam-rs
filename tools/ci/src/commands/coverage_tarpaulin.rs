@@ -54,13 +54,12 @@ impl Prepare for CoverageTarpaulin {
     fn prepare<'a>(&self, sh: &'a Shell, _args: &Args) -> Vec<PreparedCommand<'a>> {
         let mut cmds = Vec::new();
 
-        let deps = super::OPTIONAL_DEPS;
-        let scalar_features = format!("scalar-math {deps}");
+        let scalar_features = format!("scalar-math {}", crate::features::ALL_FEATURES);
 
         let profiles: &[(&str, &str)] = &[
-            ("sse2_math", deps),
+            ("sse2_math", crate::features::ALL_FEATURES),
             ("scalar_math", &scalar_features),
-            ("core_simd", super::CORE_SIMD_FEATURES),
+            ("core_simd", crate::features::CORE_SIMD_FEATURES),
         ];
 
         for &(name, features) in profiles {

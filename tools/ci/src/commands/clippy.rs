@@ -4,7 +4,7 @@ use xshell::{cmd, Shell};
 use crate::args::Args;
 use crate::prepare::{Prepare, PreparedCommand};
 
-use super::OPTIONAL_DEPS;
+use crate::features::ALL_FEATURES;
 
 #[derive(FromArgs)]
 #[argh(subcommand, name = "clippy")]
@@ -15,7 +15,7 @@ impl Prepare for Clippy {
     fn prepare<'a>(&self, sh: &'a Shell, _args: &Args) -> Vec<PreparedCommand<'a>> {
         let cmd = cmd!(
             sh,
-            "cargo clippy --workspace --all-targets --features {OPTIONAL_DEPS} -- -D warnings"
+            "cargo clippy --workspace --all-targets --features {ALL_FEATURES} -- -D warnings"
         );
         vec![PreparedCommand {
             name: "clippy".into(),

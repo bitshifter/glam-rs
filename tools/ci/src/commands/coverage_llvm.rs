@@ -33,13 +33,16 @@ impl Prepare for CoverageLlvm {
     fn prepare<'a>(&self, sh: &'a Shell, _args: &Args) -> Vec<PreparedCommand<'a>> {
         let mut cmds = Vec::new();
 
-        let deps = super::OPTIONAL_DEPS;
-        let scalar_features = format!("scalar-math {deps}");
+        let scalar_features = format!("scalar-math {}", crate::features::ALL_FEATURES);
 
         let profiles: &[(&str, &str, &str)] = &[
-            ("sse2_math", deps, "stable"),
+            ("sse2_math", crate::features::ALL_FEATURES, "stable"),
             ("scalar_math", &scalar_features, "stable"),
-            ("core_simd", super::CORE_SIMD_FEATURES, toolchain::NIGHTLY),
+            (
+                "core_simd",
+                crate::features::CORE_SIMD_FEATURES,
+                toolchain::NIGHTLY,
+            ),
         ];
 
         for &(name, features, tc) in profiles {

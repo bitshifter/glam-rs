@@ -18,14 +18,14 @@ pub struct TestFeatures {
 impl Prepare for TestFeatures {
     fn prepare<'a>(&self, sh: &'a Shell, _args: &Args) -> Vec<PreparedCommand<'a>> {
         if self.list {
-            super::print_feature_sets();
+            crate::features::print_feature_sets();
             return Vec::new();
         }
 
         let mut cmds = Vec::new();
 
-        let sets = super::resolve_sets(self.index);
-        let total = super::FEATURE_SETS.len();
+        let sets = crate::features::resolve_sets(self.index);
+        let total = crate::features::FEATURE_SETS.len();
 
         for (i, features) in sets.iter().enumerate() {
             let idx = self.index.unwrap_or(i + 1);

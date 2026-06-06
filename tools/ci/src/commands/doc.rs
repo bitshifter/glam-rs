@@ -4,7 +4,7 @@ use xshell::{cmd, Shell};
 use crate::args::Args;
 use crate::prepare::{Prepare, PreparedCommand};
 
-use super::OPTIONAL_DEPS;
+use crate::features::ALL_FEATURES;
 
 #[derive(FromArgs)]
 #[argh(subcommand, name = "doc")]
@@ -15,7 +15,7 @@ impl Prepare for Doc {
     fn prepare<'a>(&self, sh: &'a Shell, _args: &Args) -> Vec<PreparedCommand<'a>> {
         let cmd = cmd!(
             sh,
-            "cargo doc --all --no-deps --document-private-items --features {OPTIONAL_DEPS}"
+            "cargo doc --all --no-deps --document-private-items --features {ALL_FEATURES}"
         )
         .env("RUSTDOCFLAGS", "-Dwarnings");
         vec![PreparedCommand {
