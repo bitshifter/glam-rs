@@ -1,8 +1,7 @@
 [sse2_math]
-features = "approx bytemuck mint rand rkyv serde zerocopy debug-glam-assert"
+features = "arbitrary approx bytemuck encase mint rand rkyv bytecheck serde speedy zerocopy debug-glam-assert"
 exclude-files = [
-    "codegen/*",
-    "swizzlegen/*",
+    "tools/*",
     "src/neon.rs",
     "src/bool/neon/*",
     "src/f32/neon/*",
@@ -16,10 +15,9 @@ exclude-files = [
 ]
 
 [scalar_math]
-features = "scalar-math approx bytemuck mint rand rkyv serde zerocopy debug-glam-assert"
+features = "scalar-math arbitrary approx bytemuck encase mint rand rkyv bytecheck serde speedy zerocopy debug-glam-assert"
 exclude-files = [
-    "codegen/*",
-    "swizzlegen/*",
+    "tools/*",
     "src/neon.rs",
     "src/bool/neon/*",
     "src/f32/neon/*",
@@ -33,10 +31,9 @@ exclude-files = [
 ]
 
 [core_simd]
-features = "core-simd approx bytemuck mint rand rkyv serde debug-glam-assert"
+features = "core-simd arbitrary approx bytemuck encase mint rand rkyv bytecheck serde speedy zerocopy debug-glam-assert"
 exclude-files = [
-    "codegen/*",
-    "swizzlegen/*",
+    "tools/*",
     "src/neon.rs",
     "src/bool/neon/*",
     "src/f32/neon/*",
