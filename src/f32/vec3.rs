@@ -1216,7 +1216,7 @@ impl Vec3 {
         Self::new(b, sign + self.y * self.y * a, -self.y)
     }
 
-    /// Given a unit vector return two other vectors that together form an orthonormal
+    /// Given a unit vector return two other vectors that together form a right-handed orthonormal
     /// basis. That is, all three vectors are orthogonal to each other and are normalized.
     ///
     /// # Panics
