@@ -5,8 +5,6 @@ use crate::args::Args;
 use crate::prepare::{Prepare, PreparedCommand};
 use crate::toolchain;
 
-const FEATURES: &str = "all-types arbitrary approx mint speedy debug-glam-assert";
-
 #[derive(FromArgs, Default)]
 #[argh(subcommand, name = "msrv")]
 /// Check compilation with MSRV toolchain
@@ -20,22 +18,21 @@ impl Prepare for Msrv {
         let tc = self.toolchain.as_deref().unwrap_or(toolchain::MSRV);
 
         let a = |features: &str| {
-            let cmd = toolchain::cargo(sh, tc)
+            toolchain::cargo(sh, tc)
                 .arg("check")
                 .arg("--features")
-                .arg(features);
-            cmd
+                .arg(features)
         };
 
         vec![
             PreparedCommand {
-                name: format!("msrv check: {FEATURES}"),
-                command: a(FEATURES),
+                name: format!("msrv check: {}", super::MSRV_FEATURES),
+                command: a(super::MSRV_FEATURES),
                 failure_message: "msrv check failed",
             },
             PreparedCommand {
-                name: format!("msrv check: scalar-math {FEATURES}"),
-                command: a(&format!("scalar-math {FEATURES}")),
+                name: format!("msrv check: scalar-math {}", super::MSRV_FEATURES),
+                command: a(&format!("scalar-math {}", super::MSRV_FEATURES)),
                 failure_message: "msrv check (scalar-math) failed",
             },
             PreparedCommand {
@@ -44,7 +41,7 @@ impl Prepare for Msrv {
                     .arg("check")
                     .arg("--no-default-features")
                     .arg("--features")
-                    .arg(format!("libm scalar-math {FEATURES}")),
+                    .arg(format!("libm scalar-math {}", super::MSRV_FEATURES)),
                 failure_message: "msrv check (libm, no_std) failed",
             },
         ]

@@ -33,6 +33,12 @@ pub(crate) const FEATURE_SETS: &[&str] = &[
     concat!("libm all-types scalar-math ", deps!()),
 ];
 
+// MSRV reduced set — some optional deps need a newer rustc
+pub(crate) const MSRV_FEATURES: &str = "all-types arbitrary approx mint speedy debug-glam-assert";
+
+// All optional deps used by clippy and doc
+pub(crate) const OPTIONAL_DEPS: &str = deps!();
+
 pub fn resolve_sets(index: Option<usize>) -> &'static [&'static str] {
     match index {
         Some(i) => {
