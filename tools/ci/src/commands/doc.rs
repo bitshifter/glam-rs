@@ -4,7 +4,7 @@ use xshell::{cmd, Shell};
 use crate::args::Args;
 use crate::prepare::{Prepare, PreparedCommand};
 
-const DOC_FEATURES: &str = "std,debug-glam-assert,approx,bytemuck,mint,rand,serde,rkyv,speedy,rkyv/pointer_width_32,encase,zerocopy,arbitrary";
+const DOC_FEATURES: &str = "std,debug-glam-assert,approx,bytemuck,mint,rand,serde,rkyv,speedy,encase,zerocopy,arbitrary";
 
 #[derive(FromArgs)]
 #[argh(subcommand, name = "doc")]
