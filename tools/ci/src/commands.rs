@@ -41,6 +41,10 @@ pub(crate) const MSRV_FEATURES: &str = "all-types arbitrary approx mint speedy d
 // All optional deps used by clippy and doc
 pub(crate) const OPTIONAL_DEPS: &str = deps!();
 
+// core-simd profile features (no zerocopy as it doesn't compile with core-simd)
+pub(crate) const CORE_SIMD_FEATURES: &str =
+    "core-simd arbitrary approx bytemuck encase mint rand rkyv bytecheck serde speedy debug-glam-assert";
+
 pub fn resolve_sets(index: Option<usize>) -> &'static [&'static str] {
     match index {
         Some(i) => {

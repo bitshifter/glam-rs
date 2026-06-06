@@ -1,9 +1,25 @@
+use std::path::Path;
+
 use argh::FromArgs;
 use xshell::Shell;
 
 use crate::args::Args;
 use crate::prepare::{Prepare, PreparedCommand};
 use crate::toolchain;
+
+const EXCLUDE_FILES: &[&str] = &[
+    "tools/*",
+    "src/neon.rs",
+    "src/bool/neon/*",
+    "src/f32/neon/*",
+    "src/swizzles/neon/*",
+    "src/wasm.rs",
+    "src/bool/wasm/*",
+    "src/f32/wasm/*",
+    "src/swizzles/wasm/*",
+    "benches/*",
+    "tests/support.rs",
+];
 
 #[derive(FromArgs, Default)]
 #[argh(subcommand, name = "coverage-tarpaulin")]
@@ -37,25 +53,41 @@ pub struct CoverageTarpaulin {
 impl Prepare for CoverageTarpaulin {
     fn prepare<'a>(&self, sh: &'a Shell, _args: &Args) -> Vec<PreparedCommand<'a>> {
         let mut cmds = Vec::new();
-        let profile_names: &[&str] = &["sse2_math", "scalar_math", "core_simd"];
 
-        for &name in profile_names {
+        let deps = super::OPTIONAL_DEPS;
+        let scalar_features = format!("scalar-math {deps}");
+
+        let profiles: &[(&str, &str)] = &[
+            ("sse2_math", deps),
+            ("scalar_math", &scalar_features),
+            ("core_simd", super::CORE_SIMD_FEATURES),
+        ];
+
+        for &(name, features) in profiles {
             if let Some(ref filter) = self.profile {
                 if name != filter.as_str() {
                     continue;
                 }
             }
 
-            let cmd = toolchain::cargo(sh, "nightly")
+            let mut cmd = toolchain::cargo(sh, toolchain::NIGHTLY)
                 .arg("tarpaulin")
-                .arg("--config")
-                .arg(name)
+                .arg("--features")
+                .arg(features);
+            for &pat in EXCLUDE_FILES {
+                cmd = cmd.arg("--exclude-files").arg(pat);
+            }
+            cmd = cmd
                 .arg("--timeout")
                 .arg(self.timeout.to_string())
                 .arg("--out")
                 .arg(&self.out)
                 .arg("--output-dir")
                 .arg(&self.output_dir);
+
+            if let Some(parent) = Path::new(&self.output_dir).parent() {
+                std::fs::create_dir_all(parent).unwrap();
+            }
 
             cmds.push(PreparedCommand {
                 name: format!("coverage: {name}"),
