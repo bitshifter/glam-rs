@@ -838,6 +838,7 @@ mod test_u32 {
 
 #[cfg(feature = "u64")]
 #[cfg(test)]
+#[allow(dead_code)]
 mod test_u64 {
     pub const V1: u64 = 1;
     pub const V2: u64 = 2;
@@ -866,6 +867,7 @@ mod test_float {
 }
 
 #[cfg(test)]
+#[allow(dead_code)]
 mod test_int {
     pub const SX0: &str = "[]";
     pub const SX1: &str = "[1]";
