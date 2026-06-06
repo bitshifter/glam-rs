@@ -5,7 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
-## [0.33.0]
+## [0.33.1] - 2026-06-06
+
+### Changed
+
+* Changed vector `map` method constraint from `Fn` to `FnMut`, allowing closures
+  that mutate their captured state.
+
+* Clarified documentation for `any_orthogonal_pair` method to specify it produces
+  a right-handed basis.
+
+## [0.33.0] - 2026-05-21
 
 ### Breaking changes
 
@@ -1407,7 +1417,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.33.0...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.33.1...HEAD
+[0.33.1]: https://github.com/bitshifter/glam-rs/compare/0.33.0...0.33.1
 [0.33.0]: https://github.com/bitshifter/glam-rs/compare/0.32.1...0.33.0
 [0.32.1]: https://github.com/bitshifter/glam-rs/compare/0.32.0...0.32.1
 [0.32.0]: https://github.com/bitshifter/glam-rs/compare/0.31.1...0.32.0
