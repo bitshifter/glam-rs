@@ -14,7 +14,7 @@ pub struct CoverageLlvm {
     #[argh(
         option,
         short = 'p',
-        description = "profile: sse2_math, scalar_math, or core_simd"
+        description = "profile: native_simd, scalar_math, or core_simd"
     )]
     profile: Option<String>,
 
@@ -36,7 +36,7 @@ impl Prepare for CoverageLlvm {
         let scalar_features = format!("scalar-math {}", crate::features::ALL_FEATURES);
 
         let profiles: &[(&str, &str, &str)] = &[
-            ("sse2_math", crate::features::ALL_FEATURES, "stable"),
+            ("native_simd", crate::features::ALL_FEATURES, "stable"),
             ("scalar_math", &scalar_features, "stable"),
             (
                 "core_simd",

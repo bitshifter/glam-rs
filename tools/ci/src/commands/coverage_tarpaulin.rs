@@ -28,7 +28,7 @@ pub struct CoverageTarpaulin {
     #[argh(
         option,
         short = 'p',
-        description = "profile: sse2_math, scalar_math, or core_simd"
+        description = "profile: native_simd, scalar_math, or core_simd"
     )]
     profile: Option<String>,
 
@@ -57,7 +57,7 @@ impl Prepare for CoverageTarpaulin {
         let scalar_features = format!("scalar-math {}", crate::features::ALL_FEATURES);
 
         let profiles: &[(&str, &str)] = &[
-            ("sse2_math", crate::features::ALL_FEATURES),
+            ("native_simd", crate::features::ALL_FEATURES),
             ("scalar_math", &scalar_features),
             ("core_simd", crate::features::CORE_SIMD_FEATURES),
         ];

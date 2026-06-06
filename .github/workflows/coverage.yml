@@ -12,8 +12,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        profile: [sse2_math, scalar_math, core_simd]
-    runs-on: ubuntu-latest
+        profile: [native_simd, scalar_math, core_simd]
+        os: [ubuntu-latest]
+        include:
+          - profile: native_simd
+            os: macos-latest
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -36,7 +40,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           parallel: true
-          flag-name: ${{ matrix.profile }}
+          flag-name: ${{ matrix.profile }}-${{ matrix.os }}
 
   coverage-finalize:
     needs: [coverage]
