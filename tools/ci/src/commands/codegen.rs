@@ -11,7 +11,7 @@ pub struct Codegen {}
 
 impl Prepare for Codegen {
     fn prepare<'a>(&self, sh: &'a Shell, _args: &Args) -> Vec<PreparedCommand<'a>> {
-        let cmd = cmd!(sh, "cargo run --release -p codegen -- --check");
+        let cmd = cmd!(sh, "cargo run --release -p codegen -- --check **");
         vec![PreparedCommand {
             name: "codegen".into(),
             command: cmd,

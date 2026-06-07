@@ -1,6 +1,7 @@
 {
   "version": 1,
   "template_root": "templates",
+  "default_glob": "src/**",
   "templates": {
     "affine.rs.tera": {
       "properties": {
