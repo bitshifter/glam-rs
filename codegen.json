@@ -1185,6 +1185,126 @@
           }
         }
       }
+    },
+    "swizzle_test.rs.tera": {
+      "properties": {
+        "scalar_t": null,
+        "vec2_t": null,
+        "vec3_t": null,
+        "vec4_t": null,
+        "feature": "",
+        "has_vec3a": false
+      },
+      "outputs": {
+        "tests/swizzles_f32.rs": {
+          "properties": {
+            "scalar_t": "f32",
+            "vec2_t": "vec2",
+            "vec3_t": "vec3",
+            "vec4_t": "vec4",
+            "has_vec3a": true
+          }
+        },
+        "tests/swizzles_f64.rs": {
+          "properties": {
+            "scalar_t": "f64",
+            "vec2_t": "dvec2",
+            "vec3_t": "dvec3",
+            "vec4_t": "dvec4",
+            "feature": "f64"
+          }
+        },
+        "tests/swizzles_i32.rs": {
+          "properties": {
+            "scalar_t": "i32",
+            "vec2_t": "ivec2",
+            "vec3_t": "ivec3",
+            "vec4_t": "ivec4",
+            "feature": "i32"
+          }
+        },
+        "tests/swizzles_i64.rs": {
+          "properties": {
+            "scalar_t": "i64",
+            "vec2_t": "i64vec2",
+            "vec3_t": "i64vec3",
+            "vec4_t": "i64vec4",
+            "feature": "i64"
+          }
+        },
+        "tests/swizzles_i16.rs": {
+          "properties": {
+            "scalar_t": "i16",
+            "vec2_t": "i16vec2",
+            "vec3_t": "i16vec3",
+            "vec4_t": "i16vec4",
+            "feature": "i16"
+          }
+        },
+        "tests/swizzles_i8.rs": {
+          "properties": {
+            "scalar_t": "i8",
+            "vec2_t": "i8vec2",
+            "vec3_t": "i8vec3",
+            "vec4_t": "i8vec4",
+            "feature": "i8"
+          }
+        },
+        "tests/swizzles_u32.rs": {
+          "properties": {
+            "scalar_t": "u32",
+            "vec2_t": "uvec2",
+            "vec3_t": "uvec3",
+            "vec4_t": "uvec4",
+            "feature": "u32"
+          }
+        },
+        "tests/swizzles_u64.rs": {
+          "properties": {
+            "scalar_t": "u64",
+            "vec2_t": "u64vec2",
+            "vec3_t": "u64vec3",
+            "vec4_t": "u64vec4",
+            "feature": "u64"
+          }
+        },
+        "tests/swizzles_u16.rs": {
+          "properties": {
+            "scalar_t": "u16",
+            "vec2_t": "u16vec2",
+            "vec3_t": "u16vec3",
+            "vec4_t": "u16vec4",
+            "feature": "u16"
+          }
+        },
+        "tests/swizzles_u8.rs": {
+          "properties": {
+            "scalar_t": "u8",
+            "vec2_t": "u8vec2",
+            "vec3_t": "u8vec3",
+            "vec4_t": "u8vec4",
+            "feature": "u8"
+          }
+        },
+        "tests/swizzles_isize.rs": {
+          "properties": {
+            "scalar_t": "isize",
+            "vec2_t": "isizevec2",
+            "vec3_t": "isizevec3",
+            "vec4_t": "isizevec4",
+            "feature": "isize"
+          }
+        },
+        "tests/swizzles_usize.rs": {
+          "properties": {
+            "scalar_t": "usize",
+            "vec2_t": "usizevec2",
+            "vec3_t": "usizevec3",
+            "vec4_t": "usizevec4",
+            "feature": "usize"
+          }
+        }
+      }
     }
   }
 }

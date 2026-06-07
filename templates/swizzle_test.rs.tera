@@ -1,0 +1,188 @@
+// Generated from {{template_path}} template. Edit the template, not the generated file.
+#[macro_use]
+mod support;
+{% set dim4 = [0, 1, 2, 3] -%}
+{% set dim3 = [0, 1, 2] -%}
+{% set dim2 = [0, 1] -%}
+{% set e = ["x", "y", "z", "w"] -%}
+{% set val = ["1", "2", "3", "4"] -%}
+{% set val_rhs = ["11", "12", "13"] %}
+
+{% if feature is defined and feature != "" -%}
+#[cfg(feature = "{{feature}}")]
+{%- endif %}
+glam_test!(test_{{vec4_t}}_swizzles, {
+    use glam::{{"{"}}{{vec2_t}}, {{vec3_t}}, {{vec4_t}}, Vec4Swizzles{{"}"}};
+    let v = {{vec4_t}}(1_{{scalar_t}}, 2_{{scalar_t}}, 3_{{scalar_t}}, 4_{{scalar_t}});
+    let rhs3 = {{vec3_t}}(11_{{scalar_t}}, 12_{{scalar_t}}, 13_{{scalar_t}});
+    let rhs2 = {{vec2_t}}(11_{{scalar_t}}, 12_{{scalar_t}});
+    assert_eq!(v, v.xyzw());
+    {% for j0 in dim4 -%}
+        {%- for j1 in dim4 -%}
+            {%- for j2 in dim4 -%}
+                {%- for j3 in dim4 -%}
+                    {%- if j0 != 0 or j1 != 1 or j2 != 2 or j3 != 3 -%}
+                        assert_eq!(v.{{e[j0]}}{{e[j1]}}{{e[j2]}}{{e[j3]}}(), {{vec4_t}}({{val[j0]}}_{{scalar_t}}, {{val[j1]}}_{{scalar_t}}, {{val[j2]}}_{{scalar_t}}, {{val[j3]}}_{{scalar_t}}));
+                    {% endif %}
+                {%- endfor -%}
+            {%- endfor -%}
+        {%- endfor -%}
+    {%- endfor -%}
+    {%- for j0 in dim4 -%}
+        {%- for j1 in dim4 -%}
+            {%- for j2 in dim4 -%}
+                assert_eq!(v.{{e[j0]}}{{e[j1]}}{{e[j2]}}(), {{vec3_t}}({{val[j0]}}_{{scalar_t}}, {{val[j1]}}_{{scalar_t}}, {{val[j2]}}_{{scalar_t}}));
+            {% endfor %}
+        {%- endfor -%}
+    {%- endfor -%}
+    {%- for j0 in dim4 -%}
+        {%- for j1 in dim4 -%}
+            {%- for j2 in dim4 -%}
+                {%- if j0 != j1 and j0 != j2 and j1 != j2 -%}
+                assert_eq!(v.with_{{e[j0]}}{{e[j1]}}{{e[j2]}}(rhs3), {{vec4_t}}(
+                    {% if j0 == 0 %}{{val_rhs[0]}}_{{scalar_t}}{% elif j1 == 0 %}{{val_rhs[1]}}_{{scalar_t}}{% elif j2 == 0 %}{{val_rhs[2]}}_{{scalar_t}}{% else %}{{val[0]}}_{{scalar_t}}{% endif %},
+                    {% if j0 == 1 %}{{val_rhs[0]}}_{{scalar_t}}{% elif j1 == 1 %}{{val_rhs[1]}}_{{scalar_t}}{% elif j2 == 1 %}{{val_rhs[2]}}_{{scalar_t}}{% else %}{{val[1]}}_{{scalar_t}}{% endif %},
+                    {% if j0 == 2 %}{{val_rhs[0]}}_{{scalar_t}}{% elif j1 == 2 %}{{val_rhs[1]}}_{{scalar_t}}{% elif j2 == 2 %}{{val_rhs[2]}}_{{scalar_t}}{% else %}{{val[2]}}_{{scalar_t}}{% endif %},
+                    {% if j0 == 3 %}{{val_rhs[0]}}_{{scalar_t}}{% elif j1 == 3 %}{{val_rhs[1]}}_{{scalar_t}}{% elif j2 == 3 %}{{val_rhs[2]}}_{{scalar_t}}{% else %}{{val[3]}}_{{scalar_t}}{% endif %}
+                ));
+                {% endif %}
+            {%- endfor -%}
+        {%- endfor -%}
+    {%- endfor -%}
+    {%- for j0 in dim4 -%}
+        {%- for j1 in dim4 -%}
+            assert_eq!(v.{{e[j0]}}{{e[j1]}}(), {{vec2_t}}({{val[j0]}}_{{scalar_t}}, {{val[j1]}}_{{scalar_t}}));
+        {% endfor %}
+    {%- endfor -%}
+    {%- for j0 in dim4 -%}
+        {%- for j1 in dim4 -%}
+            {%- if j0 != j1 -%}
+                assert_eq!(v.with_{{e[j0]}}{{e[j1]}}(rhs2), {{vec4_t}}(
+                    {% if j0 == 0 %}{{val_rhs[0]}}_{{scalar_t}}{% elif j1 == 0 %}{{val_rhs[1]}}_{{scalar_t}}{% else %}{{val[0]}}_{{scalar_t}}{% endif %},
+                    {% if j0 == 1 %}{{val_rhs[0]}}_{{scalar_t}}{% elif j1 == 1 %}{{val_rhs[1]}}_{{scalar_t}}{% else %}{{val[1]}}_{{scalar_t}}{% endif %},
+                    {% if j0 == 2 %}{{val_rhs[0]}}_{{scalar_t}}{% elif j1 == 2 %}{{val_rhs[1]}}_{{scalar_t}}{% else %}{{val[2]}}_{{scalar_t}}{% endif %},
+                    {% if j0 == 3 %}{{val_rhs[0]}}_{{scalar_t}}{% elif j1 == 3 %}{{val_rhs[1]}}_{{scalar_t}}{% else %}{{val[3]}}_{{scalar_t}}{% endif %}
+                ));
+            {% endif %}
+        {%- endfor -%}
+    {%- endfor -%}
+});
+
+{% if has_vec3a %}
+glam_test!(test_vec3a_swizzles, {
+    use glam::{vec2, vec3a, vec4, Vec3Swizzles};
+    let v = vec3a(1_{{scalar_t}}, 2_{{scalar_t}}, 3_{{scalar_t}});
+    let rhs2 = vec2(11_{{scalar_t}}, 12_{{scalar_t}});
+    assert_eq!(v, v.xyz());
+    {% for j0 in dim3 -%}
+        {%- for j1 in dim3 -%}
+            {%- for j2 in dim3 -%}
+                {%- for j3 in dim3 -%}
+                    assert_eq!(v.{{e[j0]}}{{e[j1]}}{{e[j2]}}{{e[j3]}}(), vec4({{val[j0]}}_{{scalar_t}}, {{val[j1]}}_{{scalar_t}}, {{val[j2]}}_{{scalar_t}}, {{val[j3]}}_{{scalar_t}}));
+                {% endfor %}
+            {%- endfor -%}
+        {%- endfor -%}
+    {%- endfor -%}
+    {%- for j0 in dim3 -%}
+        {%- for j1 in dim3 -%}
+            {%- for j2 in dim3 -%}
+                {%- if j0 != 0 or j1 != 1 or j2 != 2 -%}
+                    assert_eq!(v.{{e[j0]}}{{e[j1]}}{{e[j2]}}(), vec3a({{val[j0]}}_{{scalar_t}}, {{val[j1]}}_{{scalar_t}}, {{val[j2]}}_{{scalar_t}}));
+                {% endif %}
+            {%- endfor -%}
+        {%- endfor -%}
+    {%- endfor -%}
+    {%- for j0 in dim3 -%}
+        {%- for j1 in dim3 -%}
+            assert_eq!(v.{{e[j0]}}{{e[j1]}}(), vec2({{val[j0]}}_{{scalar_t}}, {{val[j1]}}_{{scalar_t}}));
+        {% endfor %}
+    {%- endfor -%}
+    {%- for j0 in dim3 -%}
+        {%- for j1 in dim3 -%}
+            {%- if j0 != j1 -%}
+                assert_eq!(v.with_{{e[j0]}}{{e[j1]}}(rhs2), vec3a(
+                    {% if j0 == 0 %}{{val_rhs[0]}}_{{scalar_t}}{% elif j1 == 0 %}{{val_rhs[1]}}_{{scalar_t}}{% else %}{{val[0]}}_{{scalar_t}}{% endif %},
+                    {% if j0 == 1 %}{{val_rhs[0]}}_{{scalar_t}}{% elif j1 == 1 %}{{val_rhs[1]}}_{{scalar_t}}{% else %}{{val[1]}}_{{scalar_t}}{% endif %},
+                    {% if j0 == 2 %}{{val_rhs[0]}}_{{scalar_t}}{% elif j1 == 2 %}{{val_rhs[1]}}_{{scalar_t}}{% else %}{{val[2]}}_{{scalar_t}}{% endif %}
+                ));
+            {% endif %}
+        {%- endfor -%}
+    {%- endfor -%}
+});
+{% endif %}
+
+{% if feature is defined and feature != "" %}
+#[cfg(feature = "{{feature}}")]
+{%- endif %}
+glam_test!(test_{{vec3_t}}_swizzles, {
+    use glam::{{"{"}}{{vec2_t}}, {{vec3_t}}, {{vec4_t}}, Vec3Swizzles{{"}"}};
+    let v = {{vec3_t}}(1_{{scalar_t}}, 2_{{scalar_t}}, 3_{{scalar_t}});
+    let rhs2 = {{vec2_t}}(11_{{scalar_t}}, 12_{{scalar_t}});
+    assert_eq!(v, v.xyz());
+    {% for j0 in dim3 -%}
+        {%- for j1 in dim3 -%}
+            {%- for j2 in dim3 -%}
+                {%- for j3 in dim3 -%}
+                    assert_eq!(v.{{e[j0]}}{{e[j1]}}{{e[j2]}}{{e[j3]}}(), {{vec4_t}}({{val[j0]}}_{{scalar_t}}, {{val[j1]}}_{{scalar_t}}, {{val[j2]}}_{{scalar_t}}, {{val[j3]}}_{{scalar_t}}));
+                {% endfor %}
+            {%- endfor -%}
+        {%- endfor -%}
+    {%- endfor -%}
+    {%- for j0 in dim3 -%}
+        {%- for j1 in dim3 -%}
+            {%- for j2 in dim3 -%}
+                {%- if j0 != 0 or j1 != 1 or j2 != 2 -%}
+                    assert_eq!(v.{{e[j0]}}{{e[j1]}}{{e[j2]}}(), {{vec3_t}}({{val[j0]}}_{{scalar_t}}, {{val[j1]}}_{{scalar_t}}, {{val[j2]}}_{{scalar_t}}));
+                {% endif %}
+            {%- endfor -%}
+        {%- endfor -%}
+    {%- endfor -%}
+    {%- for j0 in dim3 -%}
+        {%- for j1 in dim3 -%}
+        assert_eq!(v.{{e[j0]}}{{e[j1]}}(), {{vec2_t}}({{val[j0]}}_{{scalar_t}}, {{val[j1]}}_{{scalar_t}}));
+        {% endfor %}
+    {%- endfor -%}
+    {%- for j0 in dim3 -%}
+        {%- for j1 in dim3 -%}
+            {%- if j0 != j1 -%}
+                assert_eq!(v.with_{{e[j0]}}{{e[j1]}}(rhs2), {{vec3_t}}(
+                    {% if j0 == 0 %}{{val_rhs[0]}}_{{scalar_t}}{% elif j1 == 0 %}{{val_rhs[1]}}_{{scalar_t}}{% else %}{{val[0]}}_{{scalar_t}}{% endif %},
+                    {% if j0 == 1 %}{{val_rhs[0]}}_{{scalar_t}}{% elif j1 == 1 %}{{val_rhs[1]}}_{{scalar_t}}{% else %}{{val[1]}}_{{scalar_t}}{% endif %},
+                    {% if j0 == 2 %}{{val_rhs[0]}}_{{scalar_t}}{% elif j1 == 2 %}{{val_rhs[1]}}_{{scalar_t}}{% else %}{{val[2]}}_{{scalar_t}}{% endif %}
+                ));
+            {% endif %}
+        {%- endfor -%}
+    {%- endfor -%}
+});
+
+{% if feature is defined and feature != "" %}
+#[cfg(feature = "{{feature}}")]
+{%- endif %}
+glam_test!(test_{{vec2_t}}_swizzles, {
+    use glam::{{"{"}}{{vec2_t}}, {{vec3_t}}, {{vec4_t}}, Vec2Swizzles{{"}"}};
+    let v = {{vec2_t}}(1_{{scalar_t}}, 2_{{scalar_t}});
+    assert_eq!(v, v.xy());
+    {% for j0 in dim2 -%}
+        {%- for j1 in dim2 -%}
+            {%- for j2 in dim2 -%}
+                {%- for j3 in dim2 -%}
+                    assert_eq!(v.{{e[j0]}}{{e[j1]}}{{e[j2]}}{{e[j3]}}(), {{vec4_t}}({{val[j0]}}_{{scalar_t}}, {{val[j1]}}_{{scalar_t}}, {{val[j2]}}_{{scalar_t}}, {{val[j3]}}_{{scalar_t}}));
+                {% endfor %}
+            {%- endfor -%}
+        {%- endfor -%}
+    {%- endfor -%}
+    {%- for j0 in dim2 -%}
+        {%- for j1 in dim2 -%}
+            {%- for j2 in dim2 -%}
+                assert_eq!(v.{{e[j0]}}{{e[j1]}}{{e[j2]}}(), {{vec3_t}}({{val[j0]}}_{{scalar_t}}, {{val[j1]}}_{{scalar_t}}, {{val[j2]}}_{{scalar_t}}));
+            {% endfor %}
+        {%- endfor -%}
+    {%- endfor -%}
+    {%- for j0 in dim2 -%}
+        {%- for j1 in dim2 -%}
+            {%- if j0 != 0 or j1 != 1 -%}
+                assert_eq!(v.{{e[j0]}}{{e[j1]}}(), {{vec2_t}}({{val[j0]}}_{{scalar_t}}, {{val[j1]}}_{{scalar_t}}));
+            {% endif %}
+        {%- endfor -%}
+    {%- endfor -%}
+});
