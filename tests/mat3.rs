@@ -454,6 +454,11 @@ macro_rules! impl_mat3_tests {
                 format!("{:.1}", a),
                 "[[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]]"
             );
+            let debug = format!("{:?}", a);
+            assert!(debug.starts_with(&format!("{} {{", stringify!($mat3))));
+            assert!(debug.contains("x_axis"));
+            assert!(debug.contains("y_axis"));
+            assert!(debug.contains("z_axis"));
         });
 
         glam_test!(test_mat3_to_from_slice, {

@@ -429,6 +429,7 @@ macro_rules! impl_quat_tests {
             assert_eq!(q, q * identity);
             assert_eq!(q, identity * q);
             assert_eq!(identity, $quat::default());
+            assert_eq!(identity, -&-identity);
         });
 
         glam_test!(test_slice, {
@@ -782,6 +783,19 @@ mod quat {
         assert_approx_eq!(Vec3A::Z, mrzx.mul_vec3a(Vec3A::X));
         assert_approx_eq!(-Vec3A::X, mrzx * Vec3A::Y);
         assert_approx_eq!(-Vec3A::X, mrzx.mul_vec3a(Vec3A::Y));
+    });
+
+    glam_test!(test_from_affine3a, {
+        use glam::Affine3A;
+        let q = Quat::from_rotation_y(deg(30.0));
+        let a = Affine3A::from_quat(q);
+        assert_approx_eq!(q, Quat::from_affine3a(&a));
+    });
+
+    glam_test!(test_quat_deref_mut, {
+        let mut q = Quat::from_rotation_y(deg(30.0));
+        q.x = 42.0;
+        assert_eq!(q.x, 42.0);
     });
 
     glam_test!(test_from_mat3a, {

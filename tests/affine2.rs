@@ -253,6 +253,10 @@ macro_rules! impl_affine2_tests {
             let a = $affine2::from_cols_array_2d(&MATRIX2D);
             assert_eq!(format!("{}", a), "[[1, 2], [3, 4], [5, 6]]");
             assert_eq!(format!("{:.1}", a), "[[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]]");
+            let debug = format!("{:?}", a);
+            assert!(debug.starts_with(&format!("{} {{", stringify!($affine2))));
+            assert!(debug.contains("matrix2"));
+            assert!(debug.contains("translation"));
         });
 
         glam_test!(test_affine2_to_from_slice, {
@@ -325,6 +329,18 @@ mod affine2 {
         assert_eq!(MATRIX2D, a.to_cols_array_2d());
 
         assert_eq!(m, Mat3A::from(a));
+    });
+
+    glam_test!(test_affine2_mul_mat3a, {
+        use glam::Mat3A;
+        let a = Affine2::from_cols_array_2d(&MATRIX2D);
+        let mat3a = Mat3A::from(a);
+        assert_approx_eq!(mat3a, Affine2::IDENTITY * mat3a);
+        assert_approx_eq!(mat3a, mat3a * Affine2::IDENTITY);
+
+        let mut n = mat3a;
+        n *= Affine2::IDENTITY;
+        assert_approx_eq!(mat3a, n);
     });
 
     #[cfg(feature = "f64")]

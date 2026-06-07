@@ -1496,6 +1496,8 @@ macro_rules! impl_vec2_float_tests {
             assert!(!$vec2::new($t::INFINITY, $t::NEG_INFINITY).is_finite());
             assert!(!$vec2::INFINITY.is_finite());
             assert!(!$vec2::NEG_INFINITY.is_finite());
+            assert!($vec2::new(-1.0, 2.0).is_finite_mask().all());
+            assert!(!$vec2::new($t::INFINITY, 1.0).is_finite_mask().all());
         });
 
         glam_test!(test_powf, {
