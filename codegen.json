@@ -1185,6 +1185,73 @@
           }
         }
       }
+    },
+    "swizzle_test.rs.tera": {
+      "properties": {
+        "scalar_t": null
+      },
+      "outputs": {
+        "tests/swizzles_f32.rs": {
+          "properties": {
+            "scalar_t": "f32"
+          }
+        },
+        "tests/swizzles_f64.rs": {
+          "properties": {
+            "scalar_t": "f64"
+          }
+        },
+        "tests/swizzles_i32.rs": {
+          "properties": {
+            "scalar_t": "i32"
+          }
+        },
+        "tests/swizzles_i64.rs": {
+          "properties": {
+            "scalar_t": "i64"
+          }
+        },
+        "tests/swizzles_i16.rs": {
+          "properties": {
+            "scalar_t": "i16"
+          }
+        },
+        "tests/swizzles_i8.rs": {
+          "properties": {
+            "scalar_t": "i8"
+          }
+        },
+        "tests/swizzles_u32.rs": {
+          "properties": {
+            "scalar_t": "u32"
+          }
+        },
+        "tests/swizzles_u64.rs": {
+          "properties": {
+            "scalar_t": "u64"
+          }
+        },
+        "tests/swizzles_u16.rs": {
+          "properties": {
+            "scalar_t": "u16"
+          }
+        },
+        "tests/swizzles_u8.rs": {
+          "properties": {
+            "scalar_t": "u8"
+          }
+        },
+        "tests/swizzles_isize.rs": {
+          "properties": {
+            "scalar_t": "isize"
+          }
+        },
+        "tests/swizzles_usize.rs": {
+          "properties": {
+            "scalar_t": "usize"
+          }
+        }
+      }
     }
   }
 }

@@ -158,7 +158,6 @@ harness = false
 members = [
     "tools/ci",
     "tools/codegen",
-    "tools/swizzlegen",
     "tools/test_no_std",
 ]
 
