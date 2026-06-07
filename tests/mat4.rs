@@ -777,6 +777,12 @@ macro_rules! impl_mat4_tests {
                 format!("{:.1}", a),
                 "[[1.0, 2.0, 3.0, 4.0], [5.0, 6.0, 7.0, 8.0], [9.0, 10.0, 11.0, 12.0], [13.0, 14.0, 15.0, 16.0]]"
             );
+            let debug = format!("{:?}", a);
+            assert!(debug.starts_with(&format!("{} {{", stringify!($mat4))));
+            assert!(debug.contains("x_axis"));
+            assert!(debug.contains("y_axis"));
+            assert!(debug.contains("z_axis"));
+            assert!(debug.contains("w_axis"));
         });
 
         glam_test!(test_mat4_to_from_slice, {

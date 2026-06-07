@@ -313,12 +313,18 @@ macro_rules! impl_mat2_tests {
             let mut m1 = $mat2::IDENTITY;
             m1 *= &m0;
             assert_eq!(m0, m1);
+
+            assert_eq!(m0, (-m0).abs());
         });
 
         glam_test!(test_mat2_fmt, {
             let a = $mat2::from_cols_array_2d(&ARRAY2X2);
             assert_eq!(format!("{}", a), "[[1, 2], [3, 4]]");
             assert_eq!(format!("{:.2}", a), "[[1.00, 2.00], [3.00, 4.00]]");
+            let debug = format!("{:?}", a);
+            assert!(debug.starts_with(&format!("{} {{", stringify!($mat2))));
+            assert!(debug.contains("x_axis"));
+            assert!(debug.contains("y_axis"));
         });
 
         glam_test!(test_mat2_to_from_slice, {

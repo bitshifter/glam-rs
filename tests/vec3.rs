@@ -1753,6 +1753,8 @@ macro_rules! impl_vec3_float_tests {
             assert!(!$vec3::NAN.is_finite());
             assert!(!$vec3::INFINITY.is_finite());
             assert!(!$vec3::NEG_INFINITY.is_finite());
+            assert!($vec3::new(-1.0, 2.0, 3.0).is_finite_mask().all());
+            assert!(!$vec3::new($t::INFINITY, 1.0, 2.0).is_finite_mask().all());
         });
 
         glam_test!(test_powf, {
