@@ -371,6 +371,94 @@ macro_rules! impl_quat_tests {
             assert!(s.is_normalized());
         });
 
+        glam_test!(test_slerp_long, {
+            let q0 = $quat::from_rotation_y(deg(0.0));
+            assert_approx_eq!(q0, q0.slerp_long(q0, 0.0));
+            assert_approx_eq!(q0, q0.slerp_long(q0, 1.0));
+
+            // When dot > 0, slerp_long matches slerp (same path)
+            let q1 = $quat::from_rotation_y(deg(90.0));
+            assert_approx_eq!(q0.slerp(q1, 0.5), q0.slerp_long(q1, 0.5), 1.0e-3);
+            assert_approx_eq!(
+                $quat::from_rotation_y(deg(45.0)),
+                q0.slerp_long(q1, 0.5),
+                1.0e-3
+            );
+
+            // When dot < 0, slerp_long takes the longer arc
+            let q2 = $quat::from_rotation_y(deg(200.0));
+            // slerp takes the short path (80° arc), slerp_long takes the long path (100° arc)
+            let mid_slerp = q0.slerp(q2, 0.5);
+            let mid_long = q0.slerp_long(q2, 0.5);
+            assert_approx_eq!($quat::from_rotation_y(deg(100.0)), mid_long, 1.0e-3);
+            let dist_slerp = q0.angle_between(mid_slerp);
+            let dist_long = q0.angle_between(mid_long);
+            assert!(dist_long > dist_slerp);
+
+            // Edge cases
+            let s1 = q0.slerp_long($quat::from_rotation_x(core::$t::consts::TAU), 1.);
+            assert!(s1.is_finite());
+            assert!(s1.is_normalized());
+
+            let s2 = q0.slerp_long($quat::from_rotation_x(-core::$t::consts::TAU), 1.);
+            assert!(s2.is_finite());
+            assert!(s2.is_normalized());
+
+            let s3 = q0.slerp_long($quat::from_rotation_x(core::$t::consts::PI), 1.);
+            assert!(s3.is_finite());
+            assert!(s3.is_normalized());
+
+            let s4 = q0.slerp_long($quat::from_rotation_x(-core::$t::consts::PI), 1.);
+            assert!(s4.is_finite());
+            assert!(s4.is_normalized());
+
+            should_glam_assert!({ $quat::slerp_long($quat::IDENTITY * 2.0, $quat::IDENTITY, 1.0) });
+            should_glam_assert!({ $quat::slerp_long($quat::IDENTITY, $quat::IDENTITY * 0.5, 1.0) });
+        });
+
+        glam_test!(test_slerp_long_constant_speed, {
+            let step = 0.01;
+            let mut s = 0.0;
+            while s <= 1.0 {
+                let q0 = $quat::from_rotation_y(deg(0.0));
+                let q1 = $quat::from_rotation_y(deg(90.0));
+                let result = q0.slerp_long(q1, s);
+                assert_approx_eq!($quat::from_rotation_y(deg(s * 90.0)), result, 1.0e-3);
+                assert!(result.is_normalized());
+                s += step;
+            }
+        });
+
+        glam_test!(test_slerp_extrapolate, {
+            let q0 = $quat::from_rotation_y(deg(0.0));
+            let q1 = $quat::from_rotation_y(deg(90.0));
+            let result = q0.slerp(q1, -0.5);
+            assert_approx_eq!($quat::from_rotation_y(deg(-45.0)), result, 1.0e-3);
+            assert!(result.is_normalized());
+            let result = q0.slerp(q1, 1.5);
+            assert_approx_eq!($quat::from_rotation_y(deg(135.0)), result, 1.0e-3);
+            assert!(result.is_normalized());
+        });
+
+        glam_test!(test_slerp_near_parallel, {
+            let q0 = $quat::from_rotation_y(deg(0.0));
+            let angle = 0.5;
+            let q1 = $quat::from_rotation_y(deg(angle));
+            let mid = q0.slerp(q1, 0.5);
+            assert_approx_eq!($quat::from_rotation_y(deg(angle * 0.5)), mid, 1.0e-6);
+            assert!(mid.is_normalized());
+        });
+
+        glam_test!(test_slerp_long_near_antipodal, {
+            let q0 = $quat::IDENTITY;
+            let q1 = $quat::from_rotation_y(deg(354.8));
+            let mid = q0.slerp_long(q1, 0.5);
+            assert!(mid.is_finite());
+            assert!(mid.is_normalized());
+            let short = q0.slerp(q1, 0.5);
+            assert!(q0.angle_between(mid) > q0.angle_between(short));
+        });
+
         glam_test!(test_rotate_towards, {
             use core::$t::consts::{FRAC_PI_2, FRAC_PI_4};
             let eps = 10.0 * $t::EPSILON as f32;
