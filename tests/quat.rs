@@ -379,7 +379,11 @@ macro_rules! impl_quat_tests {
             // When dot > 0, slerp_long matches slerp (same path)
             let q1 = $quat::from_rotation_y(deg(90.0));
             assert_approx_eq!(q0.slerp(q1, 0.5), q0.slerp_long(q1, 0.5), 1.0e-3);
-            assert_approx_eq!($quat::from_rotation_y(deg(45.0)), q0.slerp_long(q1, 0.5), 1.0e-3);
+            assert_approx_eq!(
+                $quat::from_rotation_y(deg(45.0)),
+                q0.slerp_long(q1, 0.5),
+                1.0e-3
+            );
 
             // When dot < 0, slerp_long takes the longer arc
             let q2 = $quat::from_rotation_y(deg(200.0));
@@ -922,4 +926,3 @@ mod dquat {
 
     impl_quat_tests!(f64, dquat, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4);
 }
-
