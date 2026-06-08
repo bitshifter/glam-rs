@@ -702,6 +702,17 @@ impl DQuat {
         self.lerp_impl(end * bias, s)
     }
 
+    #[inline(always)]
+    #[must_use]
+    fn slerp_impl(self, end: Self, dot: f64, s: f64) -> Self {
+        let theta = math::acos_approx(dot);
+
+        let scale1 = math::sin(theta * (1.0 - s));
+        let scale2 = math::sin(theta * s);
+        let theta_sin = math::sin(theta);
+        ((self * scale1) + (end * scale2)) * (1.0 / theta_sin)
+    }
+
     /// Performs a spherical linear interpolation between `self` and `end`
     /// based on the value `s`.
     ///
@@ -735,12 +746,37 @@ impl DQuat {
             // if above threshold perform linear interpolation to avoid divide by zero
             self.lerp_impl(end, s)
         } else {
-            let theta = math::acos_approx(dot);
+            self.slerp_impl(end, dot, s)
+        }
+    }
 
-            let scale1 = math::sin(theta * (1.0 - s));
-            let scale2 = math::sin(theta * s);
-            let theta_sin = math::sin(theta);
-            ((self * scale1) + (end * scale2)) * (1.0 / theta_sin)
+    /// Performs a spherical linear interpolation between `self` and `end` based on the value `s`,
+    /// preserving the rotation direction.
+    ///
+    /// When `s` is `0.0`, the result will be equal to `self`.  When `s` is `1.0`, the result will
+    /// be equal to `end`.
+    ///
+    /// When the dot product of `self` and `end` is negative, the standard [`slerp`](Self::slerp)
+    /// will flip the end quaternion to take the shortest path, while this method will take the
+    /// longer arc. This is useful when the intended rotation direction must be preserved.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `self` or `end` are not normalized when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn slerp_long(self, end: Self, s: f64) -> Self {
+        glam_assert!(self.is_normalized());
+        glam_assert!(end.is_normalized());
+
+        let dot = self.dot(end);
+
+        const DOT_THRESHOLD: f64 = 1.0 - f64::EPSILON;
+        if dot.abs() > DOT_THRESHOLD {
+            // if above threshold perform linear interpolation to avoid divide by zero
+            self.lerp_impl(end, s)
+        } else {
+            self.slerp_impl(end, dot, s)
         }
     }
 
