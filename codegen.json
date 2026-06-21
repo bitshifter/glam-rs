@@ -1253,6 +1253,59 @@
           }
         }
       }
+    },
+    "camera_impl.rs.tera": {
+      "properties": {
+        "scalar_t": null
+      },
+      "outputs": {
+        "src/camera/camera_impl.rs": {
+          "properties": { "scalar_t": "f32" }
+        },
+        "src/dcamera/camera_impl.rs": {
+          "properties": { "scalar_t": "f64" }
+        }
+      }
+    },
+    "camera_view.rs.tera": {
+      "properties": {
+        "scalar_t": null,
+        "world": null
+      },
+      "outputs": {
+        "src/camera/rh_yup/view.rs": {
+          "properties": { "scalar_t": "f32", "world": "rh_yup" }
+        },
+        "src/camera/lh_yup/view.rs": {
+          "properties": { "scalar_t": "f32", "world": "lh_yup" }
+        },
+        "src/dcamera/rh_yup/view.rs": {
+          "properties": { "scalar_t": "f64", "world": "rh_yup" }
+        },
+        "src/dcamera/lh_yup/view.rs": {
+          "properties": { "scalar_t": "f64", "world": "lh_yup" }
+        }
+      }
+    },
+    "camera_proj.rs.tera": {
+      "properties": {
+        "scalar_t": null,
+        "world": null
+      },
+      "outputs": {
+        "src/camera/rh_yup/proj.rs": {
+          "properties": { "scalar_t": "f32", "world": "rh_yup" }
+        },
+        "src/camera/lh_yup/proj.rs": {
+          "properties": { "scalar_t": "f32", "world": "lh_yup" }
+        },
+        "src/dcamera/rh_yup/proj.rs": {
+          "properties": { "scalar_t": "f64", "world": "rh_yup" }
+        },
+        "src/dcamera/lh_yup/proj.rs": {
+          "properties": { "scalar_t": "f64", "world": "lh_yup" }
+        }
+      }
     }
   }
 }

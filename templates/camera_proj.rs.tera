@@ -1,0 +1,200 @@
+// Generated from {{template_path}} template. Edit the template, not the generated file.
+
+{% if scalar_t == "f32" %}
+    {% set mat4_t = "Mat4" %}
+    {% set cam = "camera" %}
+{% elif scalar_t == "f64" %}
+    {% set mat4_t = "DMat4" %}
+    {% set cam = "dcamera" %}
+{% endif %}
+
+{% if world == "rh_yup" or world == "rh_zup" %}
+    {% set is_rh = true %}
+{% else %}
+    {% set is_rh = false %}
+{% endif %}
+
+pub mod opengl {
+    use crate::{
+        {{ mat4_t }},
+        {{ cam }}::camera_impl,
+    };
+
+    /// Creates a perspective projection matrix with `[-1, 1]` depth range.
+    ///
+    /// Expects a {% if is_rh %}right-handed{% else %}left-handed{% endif %} view space.
+    ///
+    /// This is the OpenGL `gluPerspective` equivalent.
+    #[inline]
+    #[must_use]
+    pub fn perspective(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, z_near: {{ scalar_t }}, z_far: {{ scalar_t }}) -> {{ mat4_t }} {
+        camera_impl::perspective::<{{ is_rh }}, false, false>(vertical_fov, aspect_ratio, z_near, z_far)
+    }
+
+    /// Creates an orthographic projection matrix with `[-1, 1]` depth range.
+    ///
+    /// Expects a {% if is_rh %}right-handed{% else %}left-handed{% endif %} view space.
+    ///
+    /// This is the OpenGL `glOrtho` equivalent.
+    #[inline]
+    #[must_use]
+    pub fn orthographic(left: {{ scalar_t }}, right: {{ scalar_t }}, bottom: {{ scalar_t }}, top: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
+        camera_impl::orthographic::<{{ is_rh }}, false, false>(left, right, bottom, top, near, far)
+    }
+
+    /// Creates a perspective projection matrix with `[-1, 1]` depth range.
+    ///
+    /// Expects a {% if is_rh %}right-handed{% else %}left-handed{% endif %} view space.
+    ///
+    /// This is the OpenGL `glFrustum` equivalent.
+    /// See <https://registry.khronos.org/OpenGL-Refpages/gl2.1/xhtml/glFrustum.xml>
+    #[inline]
+    #[must_use]
+    pub fn frustum(left: {{ scalar_t }}, right: {{ scalar_t }}, bottom: {{ scalar_t }}, top: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
+        camera_impl::frustum::<{{ is_rh }}, false, false>(left, right, bottom, top, near, far)
+    }
+}
+
+pub mod vulkan {
+    use crate::{
+        {{ mat4_t }},
+        {{ cam }}::camera_impl,
+    };
+
+    /// Creates a perspective projection matrix with `[0, 1]` depth range and Y-flip (Y-down NDC).
+    ///
+    /// Expects a {% if is_rh %}right-handed{% else %}left-handed{% endif %} view space.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn perspective(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, z_near: {{ scalar_t }}, z_far: {{ scalar_t }}) -> {{ mat4_t }} {
+        camera_impl::perspective::<{{ is_rh }}, true, true>(vertical_fov, aspect_ratio, z_near, z_far)
+    }
+
+    /// Creates an infinite perspective projection matrix with `[0, 1]` depth range and Y-flip (Y-down NDC).
+    ///
+    /// Expects a {% if is_rh %}right-handed{% else %}left-handed{% endif %} view space.
+    /// Like `perspective`, but with an infinite value for `far`. Points near `near`
+    /// map to depth `0`, and as they approach infinity depth approaches `1`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn perspective_infinite_z(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, z_near: {{ scalar_t }}) -> {{ mat4_t }} {
+        camera_impl::perspective_infinite_z::<{{ is_rh }}, true, true>(vertical_fov, aspect_ratio, z_near)
+    }
+
+    /// Creates an infinite perspective projection matrix with `[0, 1]` depth range and Y-flip (Y-down NDC),
+    /// with reversed depth.
+    ///
+    /// Expects a {% if is_rh %}right-handed{% else %}left-handed{% endif %} view space.
+    /// Maps `near` to depth `1` and infinity to depth `0`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn perspective_infinite_reverse_z(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, z_near: {{ scalar_t }}) -> {{ mat4_t }} {
+        camera_impl::perspective_infinite_reverse_z::<{{ is_rh }}, true>(vertical_fov, aspect_ratio, z_near)
+    }
+
+    /// Creates an orthographic projection matrix with `[0, 1]` depth range and Y-flip (Y-down NDC).
+    ///
+    /// Expects a {% if is_rh %}right-handed{% else %}left-handed{% endif %} view space.
+    #[inline]
+    #[must_use]
+    pub fn orthographic(left: {{ scalar_t }}, right: {{ scalar_t }}, bottom: {{ scalar_t }}, top: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
+        camera_impl::orthographic::<{{ is_rh }}, true, true>(left, right, bottom, top, near, far)
+    }
+
+    /// Creates a perspective projection from a frustum with `[0, 1]` depth range and Y-flip (Y-down NDC).
+    ///
+    /// Expects a {% if is_rh %}right-handed{% else %}left-handed{% endif %} view space.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn frustum(left: {{ scalar_t }}, right: {{ scalar_t }}, bottom: {{ scalar_t }}, top: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
+        camera_impl::frustum::<{{ is_rh }}, true, true>(left, right, bottom, top, near, far)
+    }
+}
+
+pub mod directx {
+    use crate::{
+        {{ mat4_t }},
+        {{ cam }}::camera_impl,
+    };
+
+    /// Creates a perspective projection matrix with `[0, 1]` depth range.
+    ///
+    /// Expects a {% if is_rh %}right-handed{% else %}left-handed{% endif %} view space.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn perspective(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, z_near: {{ scalar_t }}, z_far: {{ scalar_t }}) -> {{ mat4_t }} {
+        camera_impl::perspective::<{{ is_rh }}, true, false>(vertical_fov, aspect_ratio, z_near, z_far)
+    }
+
+    /// Creates an infinite perspective projection matrix with `[0, 1]` depth range.
+    ///
+    /// Expects a {% if is_rh %}right-handed{% else %}left-handed{% endif %} view space.
+    /// Like `perspective`, but with an infinite value for `far`. Points near `near`
+    /// map to depth `0`, and as they approach infinity depth approaches `1`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn perspective_infinite_z(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, z_near: {{ scalar_t }}) -> {{ mat4_t }} {
+        camera_impl::perspective_infinite_z::<{{ is_rh }}, true, false>(vertical_fov, aspect_ratio, z_near)
+    }
+
+    /// Creates an infinite perspective projection matrix with `[0, 1]` depth range,
+    /// with reversed depth.
+    ///
+    /// Expects a {% if is_rh %}right-handed{% else %}left-handed{% endif %} view space.
+    /// Maps `near` to depth `1` and infinity to depth `0`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn perspective_infinite_reverse_z(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, z_near: {{ scalar_t }}) -> {{ mat4_t }} {
+        camera_impl::perspective_infinite_reverse_z::<{{ is_rh }}, false>(vertical_fov, aspect_ratio, z_near)
+    }
+
+    /// Creates an orthographic projection matrix with `[0, 1]` depth range.
+    ///
+    /// Expects a {% if is_rh %}right-handed{% else %}left-handed{% endif %} view space.
+    #[inline]
+    #[must_use]
+    pub fn orthographic(left: {{ scalar_t }}, right: {{ scalar_t }}, bottom: {{ scalar_t }}, top: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
+        camera_impl::orthographic::<{{ is_rh }}, true, false>(left, right, bottom, top, near, far)
+    }
+
+    /// Creates a perspective projection from a frustum with `[0, 1]` depth range.
+    ///
+    /// Expects a {% if is_rh %}right-handed{% else %}left-handed{% endif %} view space.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
+    #[inline]
+    #[must_use]
+    pub fn frustum(left: {{ scalar_t }}, right: {{ scalar_t }}, bottom: {{ scalar_t }}, top: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
+        camera_impl::frustum::<{{ is_rh }}, true, false>(left, right, bottom, top, near, far)
+    }
+}

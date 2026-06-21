@@ -264,28 +264,6 @@ macro_rules! impl_affine3_tests {
             );
         });
 
-        glam_test!(test_affine3_look_at, {
-            let eye = $vec3::new(0.0, 0.0, -5.0);
-            let center = $vec3::new(0.0, 0.0, 0.0);
-            let up = $vec3::new(1.0, 0.0, 0.0);
-
-            let point = $vec3::new(1.0, 0.0, 0.0);
-
-            let lh = $affine3::look_at_lh(eye, center, up);
-            let rh = $affine3::look_at_rh(eye, center, up);
-            assert_approx_eq!(lh.transform_point3(point), $vec3::new(0.0, 1.0, 5.0));
-            assert_approx_eq!(rh.transform_point3(point), $vec3::new(0.0, 1.0, -5.0));
-
-            let dir = center - eye;
-            let lh = $affine3::look_to_lh(eye, dir, up);
-            let rh = $affine3::look_to_rh(eye, dir, up);
-            assert_approx_eq!(lh.transform_point3(point), $vec3::new(0.0, 1.0, 5.0));
-            assert_approx_eq!(rh.transform_point3(point), $vec3::new(0.0, 1.0, -5.0));
-
-            should_glam_assert!({ $affine3::look_at_lh($vec3::ONE, $vec3::ZERO, $vec3::ZERO) });
-            should_glam_assert!({ $affine3::look_at_rh($vec3::ONE, $vec3::ZERO, $vec3::ZERO) });
-        });
-
         glam_test!(test_affine3_ops, {
             let m0 = $affine3::from_cols_array_2d(&MATRIX2D);
             assert_approx_eq!(m0, m0 * $affine3::IDENTITY);
@@ -372,22 +350,8 @@ macro_rules! impl_affine3_tests {
 }
 
 mod affine3 {
-    use super::support::{deg, FloatCompare};
+    use super::support::deg;
     use glam::{Affine3, Mat3, Mat4, Quat, Vec3};
-
-    impl FloatCompare for Affine3 {
-        #[inline]
-        fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
-            self.abs_diff_eq(*other, max_abs_diff)
-        }
-        #[inline]
-        fn abs_diff(&self, other: &Self) -> Self {
-            Self {
-                matrix3: self.matrix3.abs_diff(&other.matrix3),
-                translation: self.translation.abs_diff(&other.translation),
-            }
-        }
-    }
 
     glam_test!(test_align, {
         use std::mem;
@@ -399,22 +363,8 @@ mod affine3 {
 }
 
 mod affine3a {
-    use super::support::{deg, FloatCompare};
+    use super::support::deg;
     use glam::{Affine3A, Mat3, Mat4, Quat, Vec3, Vec3A};
-
-    impl FloatCompare for Affine3A {
-        #[inline]
-        fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
-            self.abs_diff_eq(*other, max_abs_diff)
-        }
-        #[inline]
-        fn abs_diff(&self, other: &Self) -> Self {
-            Self {
-                matrix3: self.matrix3.abs_diff(&other.matrix3),
-                translation: self.translation.abs_diff(&other.translation),
-            }
-        }
-    }
 
     glam_test!(test_from_affine3a, {
         assert_approx_eq!(
@@ -461,22 +411,8 @@ mod affine3a {
 
 #[cfg(feature = "f64")]
 mod daffine3 {
-    use super::support::{deg, FloatCompare};
+    use super::support::deg;
     use glam::{DAffine3, DMat3, DMat4, DQuat, DVec3};
-
-    impl FloatCompare for DAffine3 {
-        #[inline]
-        fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
-            self.abs_diff_eq(*other, max_abs_diff as f64)
-        }
-        #[inline]
-        fn abs_diff(&self, other: &Self) -> Self {
-            Self {
-                matrix3: self.matrix3.abs_diff(&other.matrix3),
-                translation: self.translation.abs_diff(&other.translation),
-            }
-        }
-    }
 
     glam_test!(test_align, {
         use std::mem;

@@ -878,28 +878,15 @@ impl Mat4 {
         self.inverse_checked::<true>().0
     }
 
-    /// Creates a left-handed view matrix using a camera position, a facing direction and an up
-    /// direction
-    ///
-    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
-    ///
-    /// # Panics
-    ///
-    /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
+    #[deprecated(note = "use the `glam::camera::lh_yup::view::look_to_mat4` function instead")]
     #[inline]
     #[must_use]
     pub fn look_to_lh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
+        #[allow(deprecated)]
         Self::look_to_rh(eye, -dir, up)
     }
 
-    /// Creates a right-handed view matrix using a camera position, a facing direction, and an up
-    /// direction.
-    ///
-    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
-    ///
-    /// # Panics
-    ///
-    /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
+    #[deprecated(note = "use the `glam::camera::rh_yup::view::look_to_mat4` function instead")]
     #[inline]
     #[must_use]
     pub fn look_to_rh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
@@ -917,30 +904,18 @@ impl Mat4 {
         )
     }
 
-    /// Creates a left-handed view matrix using a camera position, a focal points and an up
-    /// direction.
-    ///
-    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
-    ///
-    /// # Panics
-    ///
-    /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    #[deprecated(note = "use the `glam::camera::lh_yup::view::look_at_mat4` function instead")]
     #[inline]
     #[must_use]
     pub fn look_at_lh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
+        #[allow(deprecated)]
         Self::look_to_lh(eye, center.sub(eye).normalize(), up)
     }
 
-    /// Creates a right-handed view matrix using a camera position, a focal point, and an up
-    /// direction.
-    ///
-    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
-    ///
-    /// # Panics
-    ///
-    /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    #[deprecated(note = "use the `glam::camera::rh_yup::view::look_at_mat4` function instead")]
     #[inline]
     pub fn look_at_rh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
+        #[allow(deprecated)]
         Self::look_to_rh(eye, center.sub(eye).normalize(), up)
     }
 
@@ -949,6 +924,7 @@ impl Mat4 {
     /// This is the same as the OpenGL `glFrustum` function.
     ///
     /// See <https://registry.khronos.org/OpenGL-Refpages/gl2.1/xhtml/glFrustum.xml>
+    #[deprecated(note = "use the `glam::camera::rh_yup::proj::opengl::frustum` function instead")]
     #[inline]
     #[must_use]
     pub fn frustum_rh_gl(
@@ -981,6 +957,7 @@ impl Mat4 {
     ///
     /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
     /// enabled.
+    #[deprecated(note = "use the `glam::camera::lh_yup::proj::directx::frustum` function instead")]
     #[inline]
     #[must_use]
     pub fn frustum_lh(
@@ -1014,6 +991,7 @@ impl Mat4 {
     ///
     /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
     /// enabled.
+    #[deprecated(note = "use the `glam::camera::rh_yup::proj::directx::frustum` function instead")]
     #[inline]
     #[must_use]
     pub fn frustum_rh(
@@ -1047,6 +1025,9 @@ impl Mat4 {
     ///
     /// This is the same as the OpenGL `gluPerspective` function.
     /// See <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml>
+    #[deprecated(
+        note = "use the `glam::camera::rh_yup::proj::opengl::perspective` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn perspective_rh_gl(
@@ -1076,6 +1057,9 @@ impl Mat4 {
     ///
     /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
     /// enabled.
+    #[deprecated(
+        note = "use the `glam::camera::lh_yup::proj::directx::perspective` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn perspective_lh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32, z_far: f32) -> Self {
@@ -1100,6 +1084,9 @@ impl Mat4 {
     ///
     /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
     /// enabled.
+    #[deprecated(
+        note = "use the `glam::camera::rh_yup::proj::directx::perspective` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn perspective_rh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32, z_far: f32) -> Self {
@@ -1125,6 +1112,9 @@ impl Mat4 {
     ///
     /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
     /// enabled.
+    #[deprecated(
+        note = "use the `glam::camera::lh_yup::proj::directx::perspective_infinite` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn perspective_infinite_lh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Self {
@@ -1147,6 +1137,9 @@ impl Mat4 {
     /// # Panics
     ///
     /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
+    #[deprecated(
+        note = "use the `glam::camera::lh_yup::proj::directx::perspective_infinite_reverse` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn perspective_infinite_reverse_lh(
@@ -1175,6 +1168,9 @@ impl Mat4 {
     ///
     /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
     /// enabled.
+    #[deprecated(
+        note = "use the `glam::camera::rh_yup::proj::directx::perspective_infinite` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn perspective_infinite_rh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Self {
@@ -1195,6 +1191,9 @@ impl Mat4 {
     /// # Panics
     ///
     /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
+    #[deprecated(
+        note = "use the `glam::camera::rh_yup::proj::directx::perspective_infinite_reverse` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn perspective_infinite_reverse_rh(
@@ -1218,6 +1217,9 @@ impl Mat4 {
     /// <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml>
     ///
     /// Useful to map a right-handed coordinate system to the normalized device coordinates that OpenGL expects.
+    #[deprecated(
+        note = "use the `glam::camera::rh_yup::proj::opengl::orthographic` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn orthographic_rh_gl(
@@ -1230,7 +1232,7 @@ impl Mat4 {
     ) -> Self {
         let a = 2.0 / (right - left);
         let b = 2.0 / (top - bottom);
-        let c = -2.0 / (far - near);
+        let c = 2.0 / (near - far);
         let tx = -(right + left) / (right - left);
         let ty = -(top + bottom) / (top - bottom);
         let tz = -(far + near) / (far - near);
@@ -1246,6 +1248,9 @@ impl Mat4 {
     /// Creates a left-handed orthographic projection matrix with `[0,1]` depth range.
     ///
     /// Useful to map a left-handed coordinate system to the normalized device coordinates that WebGPU/Direct3D/Metal expect.
+    #[deprecated(
+        note = "use the `glam::camera::lh_yup::proj::directx::orthographic` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn orthographic_lh(
@@ -1275,6 +1280,9 @@ impl Mat4 {
     /// Creates a right-handed orthographic projection matrix with `[0,1]` depth range.
     ///
     /// Useful to map a right-handed coordinate system to the normalized device coordinates that WebGPU/Direct3D/Metal expect.
+    #[deprecated(
+        note = "use the `glam::camera::rh_yup::proj::directx::orthographic` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn orthographic_rh(

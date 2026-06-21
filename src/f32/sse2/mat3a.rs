@@ -686,26 +686,15 @@ impl Mat3A {
         Mat2::from_cols(self.x_axis.xy(), self.y_axis.xy()) * rhs
     }
 
-    /// Creates a left-handed view matrix using a facing direction and an up direction.
-    ///
-    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
-    ///
-    /// # Panics
-    ///
-    /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
+    #[deprecated(note = "use the `glam::camera::lh_yup::view::look_to_mat3` function instead")]
     #[inline]
     #[must_use]
     pub fn look_to_lh(dir: Vec3, up: Vec3) -> Self {
+        #[allow(deprecated)]
         Self::look_to_rh(-dir, up)
     }
 
-    /// Creates a right-handed view matrix using a facing direction and an up direction.
-    ///
-    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
-    ///
-    /// # Panics
-    ///
-    /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
+    #[deprecated(note = "use the `glam::camera::rh_yup::view::look_to_mat3` function instead")]
     #[inline]
     #[must_use]
     pub fn look_to_rh(dir: Vec3, up: Vec3) -> Self {
@@ -722,30 +711,18 @@ impl Mat3A {
         )
     }
 
-    /// Creates a left-handed view matrix using a camera position, a focal point and an up
-    /// direction.
-    ///
-    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
-    ///
-    /// # Panics
-    ///
-    /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    #[deprecated(note = "use the `glam::camera::lh_yup::view::look_at_mat3` function instead")]
     #[inline]
     #[must_use]
     pub fn look_at_lh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
+        #[allow(deprecated)]
         Self::look_to_lh(center.sub(eye).normalize(), up)
     }
 
-    /// Creates a right-handed view matrix using a camera position, a focal point and an up
-    /// direction.
-    ///
-    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
-    ///
-    /// # Panics
-    ///
-    /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    #[deprecated(note = "use the `glam::camera::rh_yup::view::look_at_mat3` function instead")]
     #[inline]
     pub fn look_at_rh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
+        #[allow(deprecated)]
         Self::look_to_rh(center.sub(eye).normalize(), up)
     }
 
