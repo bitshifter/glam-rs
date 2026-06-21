@@ -641,13 +641,12 @@ macro_rules! impl_camera_tests {
         }
 
         /// Right-handed Y-up coordinate system.
-        ///
-        /// Forward is -Z (view space looks down -Z), up is +Y. This is the
-        /// standard OpenGL convention used by Maya, Godot, and Bevy.
         mod pipeline_rh_yup {
             use super::*;
             use glam::$camera::rh_yup::{proj, view};
 
+            /// Forward is -Z (view space looks down -Z), up is +Y. This is the
+            /// standard OpenGL convention used by Maya, Godot, and Bevy.
             const FWD: $vec3 = $vec3::NEG_Z;
             const RIGHT: $vec3 = $vec3::X;
             const UP: $vec3 = $vec3::Y;
@@ -682,16 +681,25 @@ macro_rules! impl_camera_tests {
                 let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
                 check_view_proj_pipeline(FWD, RIGHT, UP, v, p, -1.0, 1.0, false);
             });
+
+            glam_test!(test_gltf, {
+                // glTF: +Y up, +Z forward, -X right (right-handed)
+                const FWD: $vec3 = $vec3::Z;
+                const RIGHT: $vec3 = $vec3::NEG_X;
+                const UP: $vec3 = $vec3::Y;
+                let v = view::look_at_mat4($vec3::ZERO, FWD * 5.0, UP);
+                let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
+                check_view_proj_pipeline(FWD, RIGHT, UP, v, p, -1.0, 1.0, false);
+            });
         }
 
         /// Left-handed Y-up coordinate system.
-        ///
-        /// Forward is +Z (view space looks down +Z), up is +Y. This is the
-        /// DirectX convention used by Unity 3D.
         mod pipeline_lh_yup {
             use super::*;
             use glam::$camera::lh_yup::{proj, view};
 
+            /// Forward is +Z (view space looks down +Z), up is +Y. This is the
+            /// DirectX convention used by Unity 3D.
             const FWD: $vec3 = $vec3::Z;
             const RIGHT: $vec3 = $vec3::X;
             const UP: $vec3 = $vec3::Y;
