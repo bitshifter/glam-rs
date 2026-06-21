@@ -299,7 +299,7 @@ macro_rules! impl_camera_tests {
             glam_test!(test_mat4_perspective_infinite_lh, {
                 let deprecated_projection =
                     $mat4::perspective_infinite_lh($t::to_radians(90.0), 2.0, 5.0);
-                let projection = $camera::lh_yup::proj::directx::perspective_infinite_z(
+                let projection = $camera::lh_yup::proj::directx::perspective_infinite(
                     $t::to_radians(90.0),
                     2.0,
                     5.0,
@@ -315,14 +315,14 @@ macro_rules! impl_camera_tests {
                 assert_approx_eq!($vec4::new(2.5, 5.0, 0.0, 5.0), projected, 1e-6);
 
                 should_glam_assert!({
-                    $camera::lh_yup::proj::directx::perspective_infinite_z(0.0, 1.0, 0.0)
+                    $camera::lh_yup::proj::directx::perspective_infinite(0.0, 1.0, 0.0)
                 });
             });
 
             glam_test!(test_mat4_perspective_infinite_reverse_lh, {
                 let deprecated_projection =
                     $mat4::perspective_infinite_reverse_lh($t::to_radians(90.0), 2.0, 5.0);
-                let projection = $camera::lh_yup::proj::directx::perspective_infinite_reverse_z(
+                let projection = $camera::lh_yup::proj::directx::perspective_infinite_reverse(
                     $t::to_radians(90.0),
                     2.0,
                     5.0,
@@ -338,7 +338,7 @@ macro_rules! impl_camera_tests {
                 assert_approx_eq!($vec4::new(2.5, 5.0, 5.0, 5.0), projected, 1e-6);
 
                 should_glam_assert!({
-                    $camera::lh_yup::proj::directx::perspective_infinite_reverse_z(0.0, 1.0, 0.0)
+                    $camera::lh_yup::proj::directx::perspective_infinite_reverse(0.0, 1.0, 0.0)
                 });
             });
 
@@ -372,7 +372,7 @@ macro_rules! impl_camera_tests {
             glam_test!(test_mat4_perspective_infinite_rh, {
                 let deprecated_projection =
                     $mat4::perspective_infinite_rh($t::to_radians(90.0), 2.0, 5.0);
-                let projection = $camera::rh_yup::proj::directx::perspective_infinite_z(
+                let projection = $camera::rh_yup::proj::directx::perspective_infinite(
                     $t::to_radians(90.0),
                     2.0,
                     5.0,
@@ -388,14 +388,14 @@ macro_rules! impl_camera_tests {
                 assert_approx_eq!($vec4::new(2.5, 5.0, -10.0, -5.0), projected);
 
                 should_glam_assert!({
-                    $camera::rh_yup::proj::directx::perspective_infinite_z(0.0, 1.0, 0.0)
+                    $camera::rh_yup::proj::directx::perspective_infinite(0.0, 1.0, 0.0)
                 });
             });
 
             glam_test!(test_mat4_perspective_infinite_reverse_rh, {
                 let deprecated_projection =
                     $mat4::perspective_infinite_reverse_rh($t::to_radians(90.0), 2.0, 5.0);
-                let projection = $camera::rh_yup::proj::directx::perspective_infinite_reverse_z(
+                let projection = $camera::rh_yup::proj::directx::perspective_infinite_reverse(
                     $t::to_radians(90.0),
                     2.0,
                     5.0,

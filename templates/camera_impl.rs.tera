@@ -172,7 +172,7 @@ pub(crate) fn perspective<const RH: bool, const ZO: bool, const YFLIP: bool>(ver
 
 #[inline]
 #[must_use]
-pub(crate) fn perspective_infinite_z<const RH: bool, const ZO: bool, const YFLIP: bool>(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, z_near: {{ scalar_t }}) -> {{ mat4_t }} {
+pub(crate) fn perspective_infinite<const RH: bool, const ZO: bool, const YFLIP: bool>(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, z_near: {{ scalar_t }}) -> {{ mat4_t }} {
     glam_assert!(z_near > 0.0);
     let (sin_fov, cos_fov) = math::sin_cos(0.5 * vertical_fov);
     let h = cos_fov / sin_fov;
@@ -191,7 +191,7 @@ pub(crate) fn perspective_infinite_z<const RH: bool, const ZO: bool, const YFLIP
 
 #[inline]
 #[must_use]
-pub(crate) fn perspective_infinite_reverse_z<const RH: bool, const YFLIP: bool>(
+pub(crate) fn perspective_infinite_reverse<const RH: bool, const YFLIP: bool>(
     vertical_fov: {{ scalar_t }},
     aspect_ratio: {{ scalar_t }},
     z_near: {{ scalar_t }},

@@ -766,7 +766,18 @@ impl DMat4 {
         self.inverse_checked::<true>().0
     }
 
-    #[deprecated(note = "use the `glam::dcamera::lh_yup::view::look_to_mat4` function instead")]
+    /// Creates a left-handed view matrix using a camera position, a facing direction and an up
+    /// direction
+    ///
+    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::dcamera::lh_yup::view::look_to_mat4` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn look_to_lh(eye: DVec3, dir: DVec3, up: DVec3) -> Self {
@@ -774,7 +785,18 @@ impl DMat4 {
         Self::look_to_rh(eye, -dir, up)
     }
 
-    #[deprecated(note = "use the `glam::dcamera::rh_yup::view::look_to_mat4` function instead")]
+    /// Creates a right-handed view matrix using a camera position, a facing direction, and an up
+    /// direction.
+    ///
+    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::dcamera::rh_yup::view::look_to_mat4` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn look_to_rh(eye: DVec3, dir: DVec3, up: DVec3) -> Self {
@@ -792,7 +814,18 @@ impl DMat4 {
         )
     }
 
-    #[deprecated(note = "use the `glam::dcamera::lh_yup::view::look_at_mat4` function instead")]
+    /// Creates a left-handed view matrix using a camera position, a focal points and an up
+    /// direction.
+    ///
+    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::dcamera::lh_yup::view::look_at_mat4` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn look_at_lh(eye: DVec3, center: DVec3, up: DVec3) -> Self {
@@ -800,7 +833,18 @@ impl DMat4 {
         Self::look_to_lh(eye, center.sub(eye).normalize(), up)
     }
 
-    #[deprecated(note = "use the `glam::dcamera::rh_yup::view::look_at_mat4` function instead")]
+    /// Creates a right-handed view matrix using a camera position, a focal point, and an up
+    /// direction.
+    ///
+    /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::dcamera::rh_yup::view::look_at_mat4` function instead"
+    )]
     #[inline]
     pub fn look_at_rh(eye: DVec3, center: DVec3, up: DVec3) -> Self {
         #[allow(deprecated)]
@@ -812,7 +856,10 @@ impl DMat4 {
     /// This is the same as the OpenGL `glFrustum` function.
     ///
     /// See <https://registry.khronos.org/OpenGL-Refpages/gl2.1/xhtml/glFrustum.xml>
-    #[deprecated(note = "use the `glam::dcamera::rh_yup::proj::opengl::frustum` function instead")]
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::dcamera::rh_yup::proj::opengl::frustum` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn frustum_rh_gl(
@@ -845,7 +892,10 @@ impl DMat4 {
     ///
     /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
     /// enabled.
-    #[deprecated(note = "use the `glam::dcamera::lh_yup::proj::directx::frustum` function instead")]
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::dcamera::lh_yup::proj::directx::frustum` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn frustum_lh(
@@ -879,7 +929,10 @@ impl DMat4 {
     ///
     /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
     /// enabled.
-    #[deprecated(note = "use the `glam::dcamera::rh_yup::proj::directx::frustum` function instead")]
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::dcamera::rh_yup::proj::directx::frustum` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn frustum_rh(
@@ -914,6 +967,7 @@ impl DMat4 {
     /// This is the same as the OpenGL `gluPerspective` function.
     /// See <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml>
     #[deprecated(
+        since = "0.33.1",
         note = "use the `glam::dcamera::rh_yup::proj::opengl::perspective` function instead"
     )]
     #[inline]
@@ -946,6 +1000,7 @@ impl DMat4 {
     /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
     /// enabled.
     #[deprecated(
+        since = "0.33.1",
         note = "use the `glam::dcamera::lh_yup::proj::directx::perspective` function instead"
     )]
     #[inline]
@@ -973,6 +1028,7 @@ impl DMat4 {
     /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
     /// enabled.
     #[deprecated(
+        since = "0.33.1",
         note = "use the `glam::dcamera::rh_yup::proj::directx::perspective` function instead"
     )]
     #[inline]
@@ -1001,6 +1057,7 @@ impl DMat4 {
     /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
     /// enabled.
     #[deprecated(
+        since = "0.33.1",
         note = "use the `glam::dcamera::lh_yup::proj::directx::perspective_infinite` function instead"
     )]
     #[inline]
@@ -1026,6 +1083,7 @@ impl DMat4 {
     ///
     /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
     #[deprecated(
+        since = "0.33.1",
         note = "use the `glam::dcamera::lh_yup::proj::directx::perspective_infinite_reverse` function instead"
     )]
     #[inline]
@@ -1057,6 +1115,7 @@ impl DMat4 {
     /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
     /// enabled.
     #[deprecated(
+        since = "0.33.1",
         note = "use the `glam::dcamera::rh_yup::proj::directx::perspective_infinite` function instead"
     )]
     #[inline]
@@ -1080,6 +1139,7 @@ impl DMat4 {
     ///
     /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
     #[deprecated(
+        since = "0.33.1",
         note = "use the `glam::dcamera::rh_yup::proj::directx::perspective_infinite_reverse` function instead"
     )]
     #[inline]
@@ -1106,6 +1166,7 @@ impl DMat4 {
     ///
     /// Useful to map a right-handed coordinate system to the normalized device coordinates that OpenGL expects.
     #[deprecated(
+        since = "0.33.1",
         note = "use the `glam::dcamera::rh_yup::proj::opengl::orthographic` function instead"
     )]
     #[inline]
@@ -1137,6 +1198,7 @@ impl DMat4 {
     ///
     /// Useful to map a left-handed coordinate system to the normalized device coordinates that WebGPU/Direct3D/Metal expect.
     #[deprecated(
+        since = "0.33.1",
         note = "use the `glam::dcamera::lh_yup::proj::directx::orthographic` function instead"
     )]
     #[inline]
@@ -1169,6 +1231,7 @@ impl DMat4 {
     ///
     /// Useful to map a right-handed coordinate system to the normalized device coordinates that WebGPU/Direct3D/Metal expect.
     #[deprecated(
+        since = "0.33.1",
         note = "use the `glam::dcamera::rh_yup::proj::directx::orthographic` function instead"
     )]
     #[inline]

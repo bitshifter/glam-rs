@@ -85,8 +85,8 @@ pub mod vulkan {
     /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn perspective_infinite_z(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, z_near: {{ scalar_t }}) -> {{ mat4_t }} {
-        camera_impl::perspective_infinite_z::<{{ is_rh }}, true, true>(vertical_fov, aspect_ratio, z_near)
+    pub fn perspective_infinite(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, z_near: {{ scalar_t }}) -> {{ mat4_t }} {
+        camera_impl::perspective_infinite::<{{ is_rh }}, true, true>(vertical_fov, aspect_ratio, z_near)
     }
 
     /// Creates an infinite perspective projection matrix with `[0, 1]` depth range and Y-flip (Y-down NDC),
@@ -100,8 +100,8 @@ pub mod vulkan {
     /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn perspective_infinite_reverse_z(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, z_near: {{ scalar_t }}) -> {{ mat4_t }} {
-        camera_impl::perspective_infinite_reverse_z::<{{ is_rh }}, true>(vertical_fov, aspect_ratio, z_near)
+    pub fn perspective_infinite_reverse(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, z_near: {{ scalar_t }}) -> {{ mat4_t }} {
+        camera_impl::perspective_infinite_reverse::<{{ is_rh }}, true>(vertical_fov, aspect_ratio, z_near)
     }
 
     /// Creates an orthographic projection matrix with `[0, 1]` depth range and Y-flip (Y-down NDC).
@@ -157,8 +157,8 @@ pub mod directx {
     /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn perspective_infinite_z(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, z_near: {{ scalar_t }}) -> {{ mat4_t }} {
-        camera_impl::perspective_infinite_z::<{{ is_rh }}, true, false>(vertical_fov, aspect_ratio, z_near)
+    pub fn perspective_infinite(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, z_near: {{ scalar_t }}) -> {{ mat4_t }} {
+        camera_impl::perspective_infinite::<{{ is_rh }}, true, false>(vertical_fov, aspect_ratio, z_near)
     }
 
     /// Creates an infinite perspective projection matrix with `[0, 1]` depth range,
@@ -172,8 +172,8 @@ pub mod directx {
     /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn perspective_infinite_reverse_z(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, z_near: {{ scalar_t }}) -> {{ mat4_t }} {
-        camera_impl::perspective_infinite_reverse_z::<{{ is_rh }}, false>(vertical_fov, aspect_ratio, z_near)
+    pub fn perspective_infinite_reverse(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, z_near: {{ scalar_t }}) -> {{ mat4_t }} {
+        camera_impl::perspective_infinite_reverse::<{{ is_rh }}, false>(vertical_fov, aspect_ratio, z_near)
     }
 
     /// Creates an orthographic projection matrix with `[0, 1]` depth range.

@@ -65,8 +65,8 @@ pub mod vulkan {
     /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn perspective_infinite_z(vertical_fov: f32, aspect_ratio: f32, z_near: f32) -> Mat4 {
-        camera_impl::perspective_infinite_z::<true, true, true>(vertical_fov, aspect_ratio, z_near)
+    pub fn perspective_infinite(vertical_fov: f32, aspect_ratio: f32, z_near: f32) -> Mat4 {
+        camera_impl::perspective_infinite::<true, true, true>(vertical_fov, aspect_ratio, z_near)
     }
 
     /// Creates an infinite perspective projection matrix with `[0, 1]` depth range and Y-flip (Y-down NDC),
@@ -80,16 +80,8 @@ pub mod vulkan {
     /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn perspective_infinite_reverse_z(
-        vertical_fov: f32,
-        aspect_ratio: f32,
-        z_near: f32,
-    ) -> Mat4 {
-        camera_impl::perspective_infinite_reverse_z::<true, true>(
-            vertical_fov,
-            aspect_ratio,
-            z_near,
-        )
+    pub fn perspective_infinite_reverse(vertical_fov: f32, aspect_ratio: f32, z_near: f32) -> Mat4 {
+        camera_impl::perspective_infinite_reverse::<true, true>(vertical_fov, aspect_ratio, z_near)
     }
 
     /// Creates an orthographic projection matrix with `[0, 1]` depth range and Y-flip (Y-down NDC).
@@ -142,8 +134,8 @@ pub mod directx {
     /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn perspective_infinite_z(vertical_fov: f32, aspect_ratio: f32, z_near: f32) -> Mat4 {
-        camera_impl::perspective_infinite_z::<true, true, false>(vertical_fov, aspect_ratio, z_near)
+    pub fn perspective_infinite(vertical_fov: f32, aspect_ratio: f32, z_near: f32) -> Mat4 {
+        camera_impl::perspective_infinite::<true, true, false>(vertical_fov, aspect_ratio, z_near)
     }
 
     /// Creates an infinite perspective projection matrix with `[0, 1]` depth range,
@@ -157,16 +149,8 @@ pub mod directx {
     /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn perspective_infinite_reverse_z(
-        vertical_fov: f32,
-        aspect_ratio: f32,
-        z_near: f32,
-    ) -> Mat4 {
-        camera_impl::perspective_infinite_reverse_z::<true, false>(
-            vertical_fov,
-            aspect_ratio,
-            z_near,
-        )
+    pub fn perspective_infinite_reverse(vertical_fov: f32, aspect_ratio: f32, z_near: f32) -> Mat4 {
+        camera_impl::perspective_infinite_reverse::<true, false>(vertical_fov, aspect_ratio, z_near)
     }
 
     /// Creates an orthographic projection matrix with `[0, 1]` depth range.

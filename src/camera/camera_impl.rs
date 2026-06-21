@@ -134,7 +134,7 @@ pub(crate) fn perspective<const RH: bool, const ZO: bool, const YFLIP: bool>(
 
 #[inline]
 #[must_use]
-pub(crate) fn perspective_infinite_z<const RH: bool, const ZO: bool, const YFLIP: bool>(
+pub(crate) fn perspective_infinite<const RH: bool, const ZO: bool, const YFLIP: bool>(
     vertical_fov: f32,
     aspect_ratio: f32,
     z_near: f32,
@@ -157,7 +157,7 @@ pub(crate) fn perspective_infinite_z<const RH: bool, const ZO: bool, const YFLIP
 
 #[inline]
 #[must_use]
-pub(crate) fn perspective_infinite_reverse_z<const RH: bool, const YFLIP: bool>(
+pub(crate) fn perspective_infinite_reverse<const RH: bool, const YFLIP: bool>(
     vertical_fov: f32,
     aspect_ratio: f32,
     z_near: f32,
