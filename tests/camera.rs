@@ -158,16 +158,16 @@ macro_rules! impl_camera_tests {
                 assert_approx_eq!(rh.transform_point3(point), $vec3::new(0.0, 1.0, -5.0));
 
                 should_glam_assert!({
-                    $camera::lh_yup::view::look_to_mat4($vec3::ONE, $vec3::ZERO)
+                    $camera::lh_yup::view::look_to_mat4($vec3::ZERO, $vec3::ONE, $vec3::ZERO)
                 });
                 should_glam_assert!({
-                    $camera::lh_yup::view::look_to_mat4($vec3::ZERO, $vec3::ONE)
+                    $camera::lh_yup::view::look_to_mat4($vec3::ZERO, $vec3::ZERO, $vec3::ONE)
                 });
                 should_glam_assert!({
-                    $camera::rh_yup::view::look_to_mat4($vec3::ONE, $vec3::ZERO)
+                    $camera::rh_yup::view::look_to_mat4($vec3::ZERO, $vec3::ONE, $vec3::ZERO)
                 });
                 should_glam_assert!({
-                    $camera::rh_yup::view::look_to_mat4($vec3::ZERO, $vec3::ONE)
+                    $camera::rh_yup::view::look_to_mat4($vec3::ZERO, $vec3::ZERO, $vec3::ONE)
                 });
             });
 
@@ -411,7 +411,7 @@ macro_rules! impl_camera_tests {
                 assert_approx_eq!($vec4::new(2.5, 5.0, 5.0, -5.0), projected);
 
                 should_glam_assert!({
-                    $camera::rh_yup::proj::directx::perspective_infinite_reverse_rh(0.0, 1.0, 0.0)
+                    $camera::rh_yup::proj::directx::perspective_infinite_reverse(0.0, 1.0, 0.0)
                 });
             });
 
@@ -582,6 +582,149 @@ macro_rules! impl_camera_tests {
                 let original = $vec3::new(5.0, 5.0, 15.0);
                 let projected = p * original.extend(1.0);
                 assert_approx_eq!(projected, $vec4::new(2.5, 5.0, 15.0, 15.0), 1.0e-6);
+            });
+        }
+
+        fn check_view_proj_pipeline(
+            forward: $vec3,
+            right: $vec3,
+            up: $vec3,
+            view: $mat4,
+            proj: $mat4,
+            ndc_z_near: $t,
+            ndc_z_far: $t,
+            flip_y: bool,
+        ) {
+            // Point directly forward: should map to NDC centre (x=0, y=0)
+            let ndc = (proj * (view * (forward * 5.0).to_homogeneous())).project();
+            assert_approx_eq!(ndc.x, 0.0, 1e-6);
+            assert_approx_eq!(ndc.y, 0.0, 1e-6);
+            assert!(ndc.z > ndc_z_near && ndc.z < ndc_z_far);
+
+            // Point offset to the right: should map to positive x in NDC
+            let ndc = (proj * (view * (forward * 5.0 + right).to_homogeneous())).project();
+            assert!(ndc.x > 0.0);
+            assert_approx_eq!(ndc.y, 0.0, 1e-6);
+
+            // Point offset to the left: should map to negative x in NDC
+            let ndc = (proj * (view * (forward * 5.0 - right).to_homogeneous())).project();
+            assert!(ndc.x < 0.0);
+            assert_approx_eq!(ndc.y, 0.0, 1e-6);
+
+            // Point offset upward: y sign depends on whether NDC Y is flipped
+            let ndc = (proj * (view * (forward * 5.0 + up).to_homogeneous())).project();
+            if flip_y {
+                assert!(ndc.y < 0.0);
+            } else {
+                assert!(ndc.y > 0.0);
+            }
+
+            // Point offset downward: opposite y sign from upward
+            let ndc = (proj * (view * (forward * 5.0 - up).to_homogeneous())).project();
+            if flip_y {
+                assert!(ndc.y > 0.0);
+            } else {
+                assert!(ndc.y < 0.0);
+            }
+
+            // Point at the near plane: should map to the near NDC depth
+            let ndc = (proj * (view * (forward * 1.0).to_homogeneous())).project();
+            assert_approx_eq!(ndc.x, 0.0, 1e-6);
+            assert_approx_eq!(ndc.y, 0.0, 1e-6);
+            assert_approx_eq!(ndc.z, ndc_z_near, 1e-6);
+
+            // Point at the far plane: should map to the far NDC depth
+            let ndc = (proj * (view * (forward * 10.0).to_homogeneous())).project();
+            assert_approx_eq!(ndc.x, 0.0, 1e-6);
+            assert_approx_eq!(ndc.y, 0.0, 1e-6);
+            assert_approx_eq!(ndc.z, ndc_z_far, 1e-6);
+        }
+
+        /// Right-handed Y-up coordinate system.
+        ///
+        /// Forward is -Z (view space looks down -Z), up is +Y. This is the
+        /// standard OpenGL convention used by Maya, Godot, and Bevy.
+        mod pipeline_rh_yup {
+            use super::*;
+            use glam::$camera::rh_yup::{proj, view};
+
+            const FWD: $vec3 = $vec3::NEG_Z;
+            const RIGHT: $vec3 = $vec3::X;
+            const UP: $vec3 = $vec3::Y;
+
+            glam_test!(test_opengl_perspective, {
+                let v = view::look_at_mat4($vec3::ZERO, FWD * 5.0, UP);
+                let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
+                check_view_proj_pipeline(FWD, RIGHT, UP, v, p, -1.0, 1.0, false);
+            });
+
+            glam_test!(test_vulkan_perspective, {
+                let v = view::look_at_mat4($vec3::ZERO, FWD * 5.0, UP);
+                let p = proj::vulkan::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
+                check_view_proj_pipeline(FWD, RIGHT, UP, v, p, 0.0, 1.0, true);
+            });
+
+            glam_test!(test_directx_perspective, {
+                let v = view::look_at_mat4($vec3::ZERO, FWD * 5.0, UP);
+                let p = proj::directx::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
+                check_view_proj_pipeline(FWD, RIGHT, UP, v, p, 0.0, 1.0, false);
+            });
+
+            glam_test!(test_opengl_affine3, {
+                let a = view::look_at_affine3($vec3::ZERO, FWD * 5.0, UP);
+                let v = $mat4::from(a);
+                let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
+                check_view_proj_pipeline(FWD, RIGHT, UP, v, p, -1.0, 1.0, false);
+            });
+
+            glam_test!(test_opengl_look_to, {
+                let v = view::look_to_mat4($vec3::ZERO, FWD, UP);
+                let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
+                check_view_proj_pipeline(FWD, RIGHT, UP, v, p, -1.0, 1.0, false);
+            });
+        }
+
+        /// Left-handed Y-up coordinate system.
+        ///
+        /// Forward is +Z (view space looks down +Z), up is +Y. This is the
+        /// DirectX convention used by Unity 3D.
+        mod pipeline_lh_yup {
+            use super::*;
+            use glam::$camera::lh_yup::{proj, view};
+
+            const FWD: $vec3 = $vec3::Z;
+            const RIGHT: $vec3 = $vec3::X;
+            const UP: $vec3 = $vec3::Y;
+
+            glam_test!(test_opengl_perspective, {
+                let v = view::look_at_mat4($vec3::ZERO, FWD * 5.0, UP);
+                let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
+                check_view_proj_pipeline(FWD, RIGHT, UP, v, p, -1.0, 1.0, false);
+            });
+
+            glam_test!(test_vulkan_perspective, {
+                let v = view::look_at_mat4($vec3::ZERO, FWD * 5.0, UP);
+                let p = proj::vulkan::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
+                check_view_proj_pipeline(FWD, RIGHT, UP, v, p, 0.0, 1.0, true);
+            });
+
+            glam_test!(test_directx_perspective, {
+                let v = view::look_at_mat4($vec3::ZERO, FWD * 5.0, UP);
+                let p = proj::directx::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
+                check_view_proj_pipeline(FWD, RIGHT, UP, v, p, 0.0, 1.0, false);
+            });
+
+            glam_test!(test_opengl_affine3, {
+                let a = view::look_at_affine3($vec3::ZERO, FWD * 5.0, UP);
+                let v = $mat4::from(a);
+                let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
+                check_view_proj_pipeline(FWD, RIGHT, UP, v, p, -1.0, 1.0, false);
+            });
+
+            glam_test!(test_opengl_look_to, {
+                let v = view::look_to_mat4($vec3::ZERO, FWD, UP);
+                let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
+                check_view_proj_pipeline(FWD, RIGHT, UP, v, p, -1.0, 1.0, false);
             });
         }
     };

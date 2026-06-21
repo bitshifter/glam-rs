@@ -11,7 +11,7 @@ pub struct Fmt {}
 
 impl Prepare for Fmt {
     fn prepare<'a>(&self, sh: &'a Shell, _args: &Args) -> Vec<PreparedCommand<'a>> {
-        let cmd = cmd!(sh, "cargo fmt -- --check --color always");
+        let cmd = cmd!(sh, "cargo fmt -- --check --color never");
         vec![PreparedCommand {
             name: "rustfmt".into(),
             command: cmd,
