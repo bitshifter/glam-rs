@@ -466,14 +466,92 @@ macro_rules! impl_camera_tests {
             use super::*;
             use glam::$camera::rh_yup::view;
 
-            glam_test!(test_look_at_mat4, {
-                let eye = $vec3::new(0.0, 0.0, -5.0);
-                let center = $vec3::new(0.0, 0.0, 0.0);
-                let up = $vec3::new(1.0, 0.0, 0.0);
-                let point = $vec3::new(1.0, 0.0, 0.0);
+            const AXES: AxisConfig = AxisConfig {
+                forward: $vec3::NEG_Z,
+                right: $vec3::X,
+                up: $vec3::Y,
+            };
 
-                let m = view::look_at_mat4(eye, center, up);
-                assert_approx_eq!(m.transform_point3(point), $vec3::new(0.0, 1.0, -5.0));
+            glam_test!(test_look_at_mat4, {
+                let m = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
+                check_view(&AXES, &m);
+            });
+
+            glam_test!(test_look_to_mat4, {
+                let m = view::look_to_mat4(EYE, AXES.forward, AXES.up);
+                check_view(&AXES, &m);
+            });
+
+            glam_test!(test_look_at_affine3, {
+                let a = view::look_at_affine3(EYE, AXES.forward * 5.0, AXES.up);
+                let m = $mat4::from(a);
+                check_view(&AXES, &m);
+            });
+
+            glam_test!(test_look_to_affine3, {
+                let a = view::look_to_affine3(EYE, AXES.forward, AXES.up);
+                let m = $mat4::from(a);
+                check_view(&AXES, &m);
+            });
+
+            glam_test!(test_look_at_mat3, {
+                let rot = view::look_at_mat3(EYE, AXES.forward * 5.0, AXES.up);
+                check_view_rotation_mat3(&AXES, &rot);
+            });
+
+            glam_test!(test_look_to_mat3, {
+                let rot = view::look_to_mat3(AXES.forward, AXES.up);
+                check_view_rotation_mat3(&AXES, &rot);
+            });
+
+            glam_test!(test_look_at_quat, {
+                let q = view::look_at_quat(EYE, AXES.forward * 5.0, AXES.up);
+                let expected_z = handedness_sign(&AXES) * 5.0;
+
+                let p = q * (AXES.right * 5.0);
+                assert_approx_eq!(p.x, 5.0, 1e-6);
+                assert_approx_eq!(p.y, 0.0, 1e-6);
+                assert_approx_eq!(p.z, 0.0, 1e-6);
+
+                let p = q * (AXES.up * 5.0);
+                assert_approx_eq!(p.x, 0.0, 1e-6);
+                assert_approx_eq!(p.y, 5.0, 1e-6);
+                assert_approx_eq!(p.z, 0.0, 1e-6);
+
+                let p = q * (AXES.forward * 5.0);
+                assert_approx_eq!(p.x, 0.0, 1e-6);
+                assert_approx_eq!(p.y, 0.0, 1e-6);
+                assert_approx_eq!(p.z, expected_z, 1e-6);
+
+                let p = q * (-AXES.forward * 5.0);
+                assert_approx_eq!(p.x, 0.0, 1e-6);
+                assert_approx_eq!(p.y, 0.0, 1e-6);
+                assert_approx_eq!(p.z, -expected_z, 1e-6);
+            });
+
+            glam_test!(test_look_to_quat, {
+                let q = view::look_to_quat(AXES.forward, AXES.up);
+                let expected_z = handedness_sign(&AXES) * 5.0;
+
+                let p = q * (AXES.right * 5.0);
+                assert_approx_eq!(p.x, 5.0, 1e-6);
+                assert_approx_eq!(p.y, 0.0, 1e-6);
+                assert_approx_eq!(p.z, 0.0, 1e-6);
+
+                let p = q * (AXES.up * 5.0);
+                assert_approx_eq!(p.x, 0.0, 1e-6);
+                assert_approx_eq!(p.y, 5.0, 1e-6);
+                assert_approx_eq!(p.z, 0.0, 1e-6);
+
+                let p = q * (AXES.forward * 5.0);
+                assert_approx_eq!(p.x, 0.0, 1e-6);
+                assert_approx_eq!(p.y, 0.0, 1e-6);
+                assert_approx_eq!(p.z, expected_z, 1e-6);
+
+                let p = q * (-AXES.forward * 5.0);
+                assert_approx_eq!(p.x, 0.0, 1e-6);
+                assert_approx_eq!(p.y, 0.0, 1e-6);
+                assert_approx_eq!(p.z, -expected_z, 1e-6);
             });
         }
 
@@ -481,14 +559,92 @@ macro_rules! impl_camera_tests {
             use super::*;
             use glam::$camera::lh_yup::view;
 
-            glam_test!(test_look_at_mat4, {
-                let eye = $vec3::new(0.0, 0.0, -5.0);
-                let center = $vec3::new(0.0, 0.0, 0.0);
-                let up = $vec3::new(1.0, 0.0, 0.0);
-                let point = $vec3::new(1.0, 0.0, 0.0);
+            const AXES: AxisConfig = AxisConfig {
+                forward: $vec3::Z,
+                right: $vec3::X,
+                up: $vec3::Y,
+            };
 
-                let m = view::look_at_mat4(eye, center, up);
-                assert_approx_eq!(m.transform_point3(point), $vec3::new(0.0, 1.0, 5.0));
+            glam_test!(test_look_at_mat4, {
+                let m = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
+                check_view(&AXES, &m);
+            });
+
+            glam_test!(test_look_to_mat4, {
+                let m = view::look_to_mat4(EYE, AXES.forward, AXES.up);
+                check_view(&AXES, &m);
+            });
+
+            glam_test!(test_look_at_affine3, {
+                let a = view::look_at_affine3(EYE, AXES.forward * 5.0, AXES.up);
+                let m = $mat4::from(a);
+                check_view(&AXES, &m);
+            });
+
+            glam_test!(test_look_to_affine3, {
+                let a = view::look_to_affine3(EYE, AXES.forward, AXES.up);
+                let m = $mat4::from(a);
+                check_view(&AXES, &m);
+            });
+
+            glam_test!(test_look_at_mat3, {
+                let rot = view::look_at_mat3(EYE, AXES.forward * 5.0, AXES.up);
+                check_view_rotation_mat3(&AXES, &rot);
+            });
+
+            glam_test!(test_look_to_mat3, {
+                let rot = view::look_to_mat3(AXES.forward, AXES.up);
+                check_view_rotation_mat3(&AXES, &rot);
+            });
+
+            glam_test!(test_look_at_quat, {
+                let q = view::look_at_quat(EYE, AXES.forward * 5.0, AXES.up);
+                let expected_z = handedness_sign(&AXES) * 5.0;
+
+                let p = q * (AXES.right * 5.0);
+                assert_approx_eq!(p.x, 5.0, 1e-6);
+                assert_approx_eq!(p.y, 0.0, 1e-6);
+                assert_approx_eq!(p.z, 0.0, 1e-6);
+
+                let p = q * (AXES.up * 5.0);
+                assert_approx_eq!(p.x, 0.0, 1e-6);
+                assert_approx_eq!(p.y, 5.0, 1e-6);
+                assert_approx_eq!(p.z, 0.0, 1e-6);
+
+                let p = q * (AXES.forward * 5.0);
+                assert_approx_eq!(p.x, 0.0, 1e-6);
+                assert_approx_eq!(p.y, 0.0, 1e-6);
+                assert_approx_eq!(p.z, expected_z, 1e-6);
+
+                let p = q * (-AXES.forward * 5.0);
+                assert_approx_eq!(p.x, 0.0, 1e-6);
+                assert_approx_eq!(p.y, 0.0, 1e-6);
+                assert_approx_eq!(p.z, -expected_z, 1e-6);
+            });
+
+            glam_test!(test_look_to_quat, {
+                let q = view::look_to_quat(AXES.forward, AXES.up);
+                let expected_z = handedness_sign(&AXES) * 5.0;
+
+                let p = q * (AXES.right * 5.0);
+                assert_approx_eq!(p.x, 5.0, 1e-6);
+                assert_approx_eq!(p.y, 0.0, 1e-6);
+                assert_approx_eq!(p.z, 0.0, 1e-6);
+
+                let p = q * (AXES.up * 5.0);
+                assert_approx_eq!(p.x, 0.0, 1e-6);
+                assert_approx_eq!(p.y, 5.0, 1e-6);
+                assert_approx_eq!(p.z, 0.0, 1e-6);
+
+                let p = q * (AXES.forward * 5.0);
+                assert_approx_eq!(p.x, 0.0, 1e-6);
+                assert_approx_eq!(p.y, 0.0, 1e-6);
+                assert_approx_eq!(p.z, expected_z, 1e-6);
+
+                let p = q * (-AXES.forward * 5.0);
+                assert_approx_eq!(p.x, 0.0, 1e-6);
+                assert_approx_eq!(p.y, 0.0, 1e-6);
+                assert_approx_eq!(p.z, -expected_z, 1e-6);
             });
         }
 
@@ -612,10 +768,8 @@ macro_rules! impl_camera_tests {
             assert_approx_eq!(p.z, 0.0, 1e-6);
 
             // Forward maps to Z in view space, sign given by the handedness of the axis frame.
-            // Right · (Up × Forward) > 0  → LH (forward → +Z), < 0 → RH (forward → -Z).
             let fwd = (view * (axes.forward * 5.0).to_homogeneous()).project();
-            let handedness = axes.right.dot(axes.up.cross(axes.forward));
-            let expected_z = handedness.signum() * 5.0;
+            let expected_z = handedness_sign(axes) * 5.0;
             assert_approx_eq!(fwd.x, 0.0, 1e-6);
             assert_approx_eq!(fwd.y, 0.0, 1e-6);
             assert_approx_eq!(fwd.z, expected_z, 1e-6);
@@ -676,6 +830,35 @@ macro_rules! impl_camera_tests {
             assert_approx_eq!(pt.z, ndc.z_far, 1e-6);
         }
 
+        fn check_view_rotation_mat3(axes: &AxisConfig, rot: &$mat3) {
+            let expected_z = handedness_sign(axes) * 5.0;
+
+            let p = *rot * (axes.right * 5.0);
+            assert_approx_eq!(p.x, 5.0, 1e-6);
+            assert_approx_eq!(p.y, 0.0, 1e-6);
+            assert_approx_eq!(p.z, 0.0, 1e-6);
+
+            let p = *rot * (axes.up * 5.0);
+            assert_approx_eq!(p.x, 0.0, 1e-6);
+            assert_approx_eq!(p.y, 5.0, 1e-6);
+            assert_approx_eq!(p.z, 0.0, 1e-6);
+
+            let p = *rot * (axes.forward * 5.0);
+            assert_approx_eq!(p.x, 0.0, 1e-6);
+            assert_approx_eq!(p.y, 0.0, 1e-6);
+            assert_approx_eq!(p.z, expected_z, 1e-6);
+
+            let p = *rot * (-axes.forward * 5.0);
+            assert_approx_eq!(p.x, 0.0, 1e-6);
+            assert_approx_eq!(p.y, 0.0, 1e-6);
+            assert_approx_eq!(p.z, -expected_z, 1e-6);
+        }
+
+        fn handedness_sign(axes: &AxisConfig) -> $t {
+            // Right · (Up × Forward) > 0 → LH (forward → +Z), < 0 → RH (forward → -Z)
+            axes.right.dot(axes.up.cross(axes.forward)).signum()
+        }
+
         // Camera eye position used by all pipeline tests in this module.
         const EYE: $vec3 = $vec3::ZERO;
 
@@ -707,7 +890,7 @@ macro_rules! impl_camera_tests {
                 up: $vec3::Y,
             };
 
-            glam_test!(test_opengl_perspective, {
+            glam_test!(test_opengl_pipeline, {
                 let v = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
                 let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
                 check_view(&AXES, &v);
@@ -715,7 +898,7 @@ macro_rules! impl_camera_tests {
                 check_proj_near_far(&AXES, &NDC_OPENGL, &v, &p);
             });
 
-            glam_test!(test_vulkan_perspective, {
+            glam_test!(test_vulkan_pipeline, {
                 let v = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
                 let p = proj::vulkan::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
                 check_view(&AXES, &v);
@@ -723,29 +906,12 @@ macro_rules! impl_camera_tests {
                 check_proj_near_far(&AXES, &NDC_VULKAN, &v, &p);
             });
 
-            glam_test!(test_directx_perspective, {
+            glam_test!(test_directx_pipeline, {
                 let v = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
                 let p = proj::directx::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
                 check_view(&AXES, &v);
                 check_proj_direction(&AXES, &NDC_DIRECTX, &v, &p);
                 check_proj_near_far(&AXES, &NDC_DIRECTX, &v, &p);
-            });
-
-            glam_test!(test_opengl_affine3, {
-                let a = view::look_at_affine3(EYE, AXES.forward * 5.0, AXES.up);
-                let v = $mat4::from(a);
-                let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-                check_view(&AXES, &v);
-                check_proj_direction(&AXES, &NDC_OPENGL, &v, &p);
-                check_proj_near_far(&AXES, &NDC_OPENGL, &v, &p);
-            });
-
-            glam_test!(test_opengl_look_to, {
-                let v = view::look_to_mat4(EYE, AXES.forward, AXES.up);
-                let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-                check_view(&AXES, &v);
-                check_proj_direction(&AXES, &NDC_OPENGL, &v, &p);
-                check_proj_near_far(&AXES, &NDC_OPENGL, &v, &p);
             });
 
             glam_test!(test_gltf, {
@@ -775,7 +941,7 @@ macro_rules! impl_camera_tests {
                 up: $vec3::Y,
             };
 
-            glam_test!(test_opengl_perspective, {
+            glam_test!(test_opengl_pipeline, {
                 let v = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
                 let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
                 check_view(&AXES, &v);
@@ -783,7 +949,7 @@ macro_rules! impl_camera_tests {
                 check_proj_near_far(&AXES, &NDC_OPENGL, &v, &p);
             });
 
-            glam_test!(test_vulkan_perspective, {
+            glam_test!(test_vulkan_pipeline, {
                 let v = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
                 let p = proj::vulkan::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
                 check_view(&AXES, &v);
@@ -791,29 +957,12 @@ macro_rules! impl_camera_tests {
                 check_proj_near_far(&AXES, &NDC_VULKAN, &v, &p);
             });
 
-            glam_test!(test_directx_perspective, {
+            glam_test!(test_directx_pipeline, {
                 let v = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
                 let p = proj::directx::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
                 check_view(&AXES, &v);
                 check_proj_direction(&AXES, &NDC_DIRECTX, &v, &p);
                 check_proj_near_far(&AXES, &NDC_DIRECTX, &v, &p);
-            });
-
-            glam_test!(test_opengl_affine3, {
-                let a = view::look_at_affine3(EYE, AXES.forward * 5.0, AXES.up);
-                let v = $mat4::from(a);
-                let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-                check_view(&AXES, &v);
-                check_proj_direction(&AXES, &NDC_OPENGL, &v, &p);
-                check_proj_near_far(&AXES, &NDC_OPENGL, &v, &p);
-            });
-
-            glam_test!(test_opengl_look_to, {
-                let v = view::look_to_mat4(EYE, AXES.forward, AXES.up);
-                let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-                check_view(&AXES, &v);
-                check_proj_direction(&AXES, &NDC_OPENGL, &v, &p);
-                check_proj_near_far(&AXES, &NDC_OPENGL, &v, &p);
             });
         }
     };
@@ -868,17 +1017,48 @@ mod camera {
     // }
 
     mod affine3a {
-        use glam::camera::rh_yup::view;
+        use glam::camera::lh_yup::view as lh_view;
+        use glam::camera::rh_yup::view as rh_view;
         use glam::Vec3;
 
-        glam_test!(test_look_at_affine3a, {
+        glam_test!(test_rh_look_at_affine3a, {
             let eye = Vec3::new(0.0, 0.0, -5.0);
             let center = Vec3::ZERO;
             let up = Vec3::new(1.0, 0.0, 0.0);
             let point = Vec3::new(1.0, 0.0, 0.0);
 
-            let a = view::look_at_affine3a(eye, center, up);
+            let a = rh_view::look_at_affine3a(eye, center, up);
             assert_approx_eq!(a.transform_point3(point), Vec3::new(0.0, 1.0, -5.0));
+        });
+
+        glam_test!(test_rh_look_to_affine3a, {
+            let eye = Vec3::new(0.0, 0.0, -5.0);
+            let dir = Vec3::new(0.0, 0.0, 1.0);
+            let up = Vec3::new(1.0, 0.0, 0.0);
+            let point = Vec3::new(1.0, 0.0, 0.0);
+
+            let a = rh_view::look_to_affine3a(eye, dir, up);
+            assert_approx_eq!(a.transform_point3(point), Vec3::new(0.0, 1.0, -5.0));
+        });
+
+        glam_test!(test_lh_look_at_affine3a, {
+            let eye = Vec3::new(0.0, 0.0, -5.0);
+            let center = Vec3::ZERO;
+            let up = Vec3::new(1.0, 0.0, 0.0);
+            let point = Vec3::new(1.0, 0.0, 0.0);
+
+            let a = lh_view::look_at_affine3a(eye, center, up);
+            assert_approx_eq!(a.transform_point3(point), Vec3::new(0.0, 1.0, 5.0));
+        });
+
+        glam_test!(test_lh_look_to_affine3a, {
+            let eye = Vec3::new(0.0, 0.0, -5.0);
+            let dir = Vec3::new(0.0, 0.0, 1.0);
+            let up = Vec3::new(1.0, 0.0, 0.0);
+            let point = Vec3::new(1.0, 0.0, 0.0);
+
+            let a = lh_view::look_to_affine3a(eye, dir, up);
+            assert_approx_eq!(a.transform_point3(point), Vec3::new(0.0, 1.0, 5.0));
         });
     }
 }
