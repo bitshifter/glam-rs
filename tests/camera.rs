@@ -585,154 +585,235 @@ macro_rules! impl_camera_tests {
             });
         }
 
-        fn check_view_proj_pipeline(
+        struct AxisConfig {
             forward: $vec3,
             right: $vec3,
             up: $vec3,
-            view: $mat4,
-            proj: $mat4,
-            ndc_z_near: $t,
-            ndc_z_far: $t,
-            flip_y: bool,
-        ) {
+        }
+
+        struct NdcConfig {
+            z_near: $t,
+            z_far: $t,
+            y_down: bool,
+        }
+
+        fn check_view(axes: &AxisConfig, view: &$mat4) {
+            // Assumes the camera is at EYE (world origin); see module-level EYE constant.
+            // Right maps to +X in view space
+            let p = (view * (axes.right * 5.0).to_homogeneous()).project();
+            assert_approx_eq!(p.x, 5.0, 1e-6);
+            assert_approx_eq!(p.y, 0.0, 1e-6);
+            assert_approx_eq!(p.z, 0.0, 1e-6);
+
+            // Up maps to +Y in view space
+            let p = (view * (axes.up * 5.0).to_homogeneous()).project();
+            assert_approx_eq!(p.x, 0.0, 1e-6);
+            assert_approx_eq!(p.y, 5.0, 1e-6);
+            assert_approx_eq!(p.z, 0.0, 1e-6);
+
+            // Forward maps to Z in view space, sign given by the handedness of the axis frame.
+            // Right · (Up × Forward) > 0  → LH (forward → +Z), < 0 → RH (forward → -Z).
+            let fwd = (view * (axes.forward * 5.0).to_homogeneous()).project();
+            let handedness = axes.right.dot(axes.up.cross(axes.forward));
+            let expected_z = handedness.signum() * 5.0;
+            assert_approx_eq!(fwd.x, 0.0, 1e-6);
+            assert_approx_eq!(fwd.y, 0.0, 1e-6);
+            assert_approx_eq!(fwd.z, expected_z, 1e-6);
+
+            // Point behind the camera: opposite Z sign from forward
+            let behind = (view * (-axes.forward * 5.0).to_homogeneous()).project();
+            assert_approx_eq!(behind.x, 0.0, 1e-6);
+            assert_approx_eq!(behind.y, 0.0, 1e-6);
+            assert_approx_eq!(behind.z, -expected_z, 1e-6);
+
+            // Camera eye maps to view-space origin
+            let p = (view * EYE.to_homogeneous()).project();
+            assert_approx_eq!(p, $vec3::ZERO, 1e-6);
+        }
+
+        fn check_proj_direction(axes: &AxisConfig, ndc: &NdcConfig, view: &$mat4, proj: &$mat4) {
             // Point directly forward: should map to NDC centre (x=0, y=0)
-            let ndc = (proj * (view * (forward * 5.0).to_homogeneous())).project();
-            assert_approx_eq!(ndc.x, 0.0, 1e-6);
-            assert_approx_eq!(ndc.y, 0.0, 1e-6);
-            assert!(ndc.z > ndc_z_near && ndc.z < ndc_z_far);
+            let pt = (proj * (view * (axes.forward * 5.0).to_homogeneous())).project();
+            assert_approx_eq!(pt.x, 0.0, 1e-6);
+            assert_approx_eq!(pt.y, 0.0, 1e-6);
 
             // Point offset to the right: should map to positive x in NDC
-            let ndc = (proj * (view * (forward * 5.0 + right).to_homogeneous())).project();
-            assert!(ndc.x > 0.0);
-            assert_approx_eq!(ndc.y, 0.0, 1e-6);
+            let pt = (proj * (view * (axes.forward * 5.0 + axes.right).to_homogeneous())).project();
+            assert!(pt.x > 0.0);
 
             // Point offset to the left: should map to negative x in NDC
-            let ndc = (proj * (view * (forward * 5.0 - right).to_homogeneous())).project();
-            assert!(ndc.x < 0.0);
-            assert_approx_eq!(ndc.y, 0.0, 1e-6);
+            let pt = (proj * (view * (axes.forward * 5.0 - axes.right).to_homogeneous())).project();
+            assert!(pt.x < 0.0);
 
             // Point offset upward: y sign depends on whether NDC Y is flipped
-            let ndc = (proj * (view * (forward * 5.0 + up).to_homogeneous())).project();
-            if flip_y {
-                assert!(ndc.y < 0.0);
+            let pt = (proj * (view * (axes.forward * 5.0 + axes.up).to_homogeneous())).project();
+            if ndc.y_down {
+                assert!(pt.y < 0.0);
             } else {
-                assert!(ndc.y > 0.0);
+                assert!(pt.y > 0.0);
             }
 
             // Point offset downward: opposite y sign from upward
-            let ndc = (proj * (view * (forward * 5.0 - up).to_homogeneous())).project();
-            if flip_y {
-                assert!(ndc.y > 0.0);
+            let pt = (proj * (view * (axes.forward * 5.0 - axes.up).to_homogeneous())).project();
+            if ndc.y_down {
+                assert!(pt.y > 0.0);
             } else {
-                assert!(ndc.y < 0.0);
+                assert!(pt.y < 0.0);
             }
-
-            // Point at the near plane: should map to the near NDC depth
-            let ndc = (proj * (view * (forward * 1.0).to_homogeneous())).project();
-            assert_approx_eq!(ndc.x, 0.0, 1e-6);
-            assert_approx_eq!(ndc.y, 0.0, 1e-6);
-            assert_approx_eq!(ndc.z, ndc_z_near, 1e-6);
-
-            // Point at the far plane: should map to the far NDC depth
-            let ndc = (proj * (view * (forward * 10.0).to_homogeneous())).project();
-            assert_approx_eq!(ndc.x, 0.0, 1e-6);
-            assert_approx_eq!(ndc.y, 0.0, 1e-6);
-            assert_approx_eq!(ndc.z, ndc_z_far, 1e-6);
         }
 
-        /// Right-handed Y-up coordinate system.
+        fn check_proj_near_far(axes: &AxisConfig, ndc: &NdcConfig, view: &$mat4, proj: &$mat4) {
+            // Point at the near plane: should map to the near NDC depth
+            let pt = (proj * (view * (axes.forward * 1.0).to_homogeneous())).project();
+            assert_approx_eq!(pt.x, 0.0, 1e-6);
+            assert_approx_eq!(pt.y, 0.0, 1e-6);
+            assert_approx_eq!(pt.z, ndc.z_near, 1e-6);
+
+            // Point at the far plane: should map to the far NDC depth
+            let pt = (proj * (view * (axes.forward * 10.0).to_homogeneous())).project();
+            assert_approx_eq!(pt.x, 0.0, 1e-6);
+            assert_approx_eq!(pt.y, 0.0, 1e-6);
+            assert_approx_eq!(pt.z, ndc.z_far, 1e-6);
+        }
+
+        // Camera eye position used by all pipeline tests in this module.
+        const EYE: $vec3 = $vec3::ZERO;
+
+        const NDC_OPENGL: NdcConfig = NdcConfig {
+            z_near: -1.0,
+            z_far: 1.0,
+            y_down: false,
+        };
+        const NDC_VULKAN: NdcConfig = NdcConfig {
+            z_near: 0.0,
+            z_far: 1.0,
+            y_down: true,
+        };
+        const NDC_DIRECTX: NdcConfig = NdcConfig {
+            z_near: 0.0,
+            z_far: 1.0,
+            y_down: false,
+        };
+
         mod pipeline_rh_yup {
             use super::*;
             use glam::$camera::rh_yup::{proj, view};
 
-            /// Forward is -Z (view space looks down -Z), up is +Y. This is the
-            /// standard OpenGL convention used by Maya, Godot, and Bevy.
-            const FWD: $vec3 = $vec3::NEG_Z;
-            const RIGHT: $vec3 = $vec3::X;
-            const UP: $vec3 = $vec3::Y;
+            /// Right-handed Y-up. Forward is -Z, up is +Y.
+            /// Standard OpenGL convention used by Maya, Godot, and Bevy.
+            const AXES: AxisConfig = AxisConfig {
+                forward: $vec3::NEG_Z,
+                right: $vec3::X,
+                up: $vec3::Y,
+            };
 
             glam_test!(test_opengl_perspective, {
-                let v = view::look_at_mat4($vec3::ZERO, FWD * 5.0, UP);
+                let v = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
                 let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-                check_view_proj_pipeline(FWD, RIGHT, UP, v, p, -1.0, 1.0, false);
+                check_view(&AXES, &v);
+                check_proj_direction(&AXES, &NDC_OPENGL, &v, &p);
+                check_proj_near_far(&AXES, &NDC_OPENGL, &v, &p);
             });
 
             glam_test!(test_vulkan_perspective, {
-                let v = view::look_at_mat4($vec3::ZERO, FWD * 5.0, UP);
+                let v = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
                 let p = proj::vulkan::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-                check_view_proj_pipeline(FWD, RIGHT, UP, v, p, 0.0, 1.0, true);
+                check_view(&AXES, &v);
+                check_proj_direction(&AXES, &NDC_VULKAN, &v, &p);
+                check_proj_near_far(&AXES, &NDC_VULKAN, &v, &p);
             });
 
             glam_test!(test_directx_perspective, {
-                let v = view::look_at_mat4($vec3::ZERO, FWD * 5.0, UP);
+                let v = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
                 let p = proj::directx::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-                check_view_proj_pipeline(FWD, RIGHT, UP, v, p, 0.0, 1.0, false);
+                check_view(&AXES, &v);
+                check_proj_direction(&AXES, &NDC_DIRECTX, &v, &p);
+                check_proj_near_far(&AXES, &NDC_DIRECTX, &v, &p);
             });
 
             glam_test!(test_opengl_affine3, {
-                let a = view::look_at_affine3($vec3::ZERO, FWD * 5.0, UP);
+                let a = view::look_at_affine3(EYE, AXES.forward * 5.0, AXES.up);
                 let v = $mat4::from(a);
                 let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-                check_view_proj_pipeline(FWD, RIGHT, UP, v, p, -1.0, 1.0, false);
+                check_view(&AXES, &v);
+                check_proj_direction(&AXES, &NDC_OPENGL, &v, &p);
+                check_proj_near_far(&AXES, &NDC_OPENGL, &v, &p);
             });
 
             glam_test!(test_opengl_look_to, {
-                let v = view::look_to_mat4($vec3::ZERO, FWD, UP);
+                let v = view::look_to_mat4(EYE, AXES.forward, AXES.up);
                 let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-                check_view_proj_pipeline(FWD, RIGHT, UP, v, p, -1.0, 1.0, false);
+                check_view(&AXES, &v);
+                check_proj_direction(&AXES, &NDC_OPENGL, &v, &p);
+                check_proj_near_far(&AXES, &NDC_OPENGL, &v, &p);
             });
 
             glam_test!(test_gltf, {
                 // glTF: +Y up, +Z forward, -X right (right-handed)
-                const FWD: $vec3 = $vec3::Z;
-                const RIGHT: $vec3 = $vec3::NEG_X;
-                const UP: $vec3 = $vec3::Y;
-                let v = view::look_at_mat4($vec3::ZERO, FWD * 5.0, UP);
+                const GLTF: AxisConfig = AxisConfig {
+                    forward: $vec3::Z,
+                    right: $vec3::NEG_X,
+                    up: $vec3::Y,
+                };
+                let v = view::look_at_mat4(EYE, GLTF.forward * 5.0, GLTF.up);
                 let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-                check_view_proj_pipeline(FWD, RIGHT, UP, v, p, -1.0, 1.0, false);
+                check_view(&GLTF, &v);
+                check_proj_direction(&GLTF, &NDC_OPENGL, &v, &p);
+                check_proj_near_far(&GLTF, &NDC_OPENGL, &v, &p);
             });
         }
 
-        /// Left-handed Y-up coordinate system.
         mod pipeline_lh_yup {
             use super::*;
             use glam::$camera::lh_yup::{proj, view};
 
-            /// Forward is +Z (view space looks down +Z), up is +Y. This is the
+            /// Left-handed Y-up. Forward is +Z, up is +Y.
             /// DirectX convention used by Unity 3D.
-            const FWD: $vec3 = $vec3::Z;
-            const RIGHT: $vec3 = $vec3::X;
-            const UP: $vec3 = $vec3::Y;
+            const AXES: AxisConfig = AxisConfig {
+                forward: $vec3::Z,
+                right: $vec3::X,
+                up: $vec3::Y,
+            };
 
             glam_test!(test_opengl_perspective, {
-                let v = view::look_at_mat4($vec3::ZERO, FWD * 5.0, UP);
+                let v = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
                 let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-                check_view_proj_pipeline(FWD, RIGHT, UP, v, p, -1.0, 1.0, false);
+                check_view(&AXES, &v);
+                check_proj_direction(&AXES, &NDC_OPENGL, &v, &p);
+                check_proj_near_far(&AXES, &NDC_OPENGL, &v, &p);
             });
 
             glam_test!(test_vulkan_perspective, {
-                let v = view::look_at_mat4($vec3::ZERO, FWD * 5.0, UP);
+                let v = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
                 let p = proj::vulkan::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-                check_view_proj_pipeline(FWD, RIGHT, UP, v, p, 0.0, 1.0, true);
+                check_view(&AXES, &v);
+                check_proj_direction(&AXES, &NDC_VULKAN, &v, &p);
+                check_proj_near_far(&AXES, &NDC_VULKAN, &v, &p);
             });
 
             glam_test!(test_directx_perspective, {
-                let v = view::look_at_mat4($vec3::ZERO, FWD * 5.0, UP);
+                let v = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
                 let p = proj::directx::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-                check_view_proj_pipeline(FWD, RIGHT, UP, v, p, 0.0, 1.0, false);
+                check_view(&AXES, &v);
+                check_proj_direction(&AXES, &NDC_DIRECTX, &v, &p);
+                check_proj_near_far(&AXES, &NDC_DIRECTX, &v, &p);
             });
 
             glam_test!(test_opengl_affine3, {
-                let a = view::look_at_affine3($vec3::ZERO, FWD * 5.0, UP);
+                let a = view::look_at_affine3(EYE, AXES.forward * 5.0, AXES.up);
                 let v = $mat4::from(a);
                 let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-                check_view_proj_pipeline(FWD, RIGHT, UP, v, p, -1.0, 1.0, false);
+                check_view(&AXES, &v);
+                check_proj_direction(&AXES, &NDC_OPENGL, &v, &p);
+                check_proj_near_far(&AXES, &NDC_OPENGL, &v, &p);
             });
 
             glam_test!(test_opengl_look_to, {
-                let v = view::look_to_mat4($vec3::ZERO, FWD, UP);
+                let v = view::look_to_mat4(EYE, AXES.forward, AXES.up);
                 let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-                check_view_proj_pipeline(FWD, RIGHT, UP, v, p, -1.0, 1.0, false);
+                check_view(&AXES, &v);
+                check_proj_direction(&AXES, &NDC_OPENGL, &v, &p);
+                check_proj_near_far(&AXES, &NDC_OPENGL, &v, &p);
             });
         }
     };
