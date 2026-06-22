@@ -44,6 +44,15 @@
     {% set up_axis = "Z-up" %}
 {% endif %}
 
+//! View (camera) matrix constructors.
+//!
+//! Transforms world-space points into {{ up_axis }} view space while
+//! preserving {{ handedness }}ness.
+//!
+//! `look_at` targets a focal point; `look_to` targets a direction.
+//! Output types include [`{{ mat4 }}`], [`{{ affine3 }}`], [`{{ mat3 }}`],
+//! and [`{{ quat }}`]{% if is_f32 %} as well as [`{{ affine3a }}`] and [`{{ mat3a }}`].{% else %}.{% endif %}
+
 use crate::{
     {{ vec3 }}, {{ mat4 }}, {{ mat3 }}, {{ quat }}, {{ affine3 }},
     {% if is_f32 %}

@@ -1254,6 +1254,19 @@
         }
       }
     },
+    "camera_mod.rs.tera": {
+      "properties": {
+        "scalar_t": null
+      },
+      "outputs": {
+        "src/camera.rs": {
+          "properties": { "scalar_t": "f32" }
+        },
+        "src/dcamera.rs": {
+          "properties": { "scalar_t": "f64" }
+        }
+      }
+    },
     "camera_impl.rs.tera": {
       "properties": {
         "scalar_t": null

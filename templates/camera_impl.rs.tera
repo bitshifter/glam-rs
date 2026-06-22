@@ -1,4 +1,3 @@
-
 // Generated from {{template_path}} template. Edit the template, not the generated file.
 
 {% if scalar_t == "f32" %}

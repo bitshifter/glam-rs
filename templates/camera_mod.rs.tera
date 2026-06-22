@@ -1,4 +1,4 @@
-// Generated from camera_mod.rs.tera template. Edit the template, not the generated file.
+// Generated from {{template_path}} template. Edit the template, not the generated file.
 
 //! View and projection transform helpers.
 //!

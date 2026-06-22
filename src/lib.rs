@@ -348,10 +348,8 @@ use align16::Align16;
 pub mod bool;
 pub use self::bool::*;
 
-/** `f32` camera types. */
 pub mod camera;
 
-/** `f64` camera types. */
 #[cfg(feature = "f64")]
 pub mod dcamera;
 

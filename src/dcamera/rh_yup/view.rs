@@ -1,5 +1,14 @@
 // Generated from camera_view.rs.tera template. Edit the template, not the generated file.
 
+//! View (camera) matrix constructors.
+//!
+//! Transforms world-space points into Y-up view space while
+//! preserving right-handedness.
+//!
+//! `look_at` targets a focal point; `look_to` targets a direction.
+//! Output types include [`DMat4`], [`DAffine3`], [`DMat3`],
+//! and [`DQuat`].
+
 use crate::{dcamera::camera_impl, DAffine3, DMat3, DMat4, DQuat, DVec3};
 
 /// Creates a view transform using a camera position, a focal point, and an up direction.

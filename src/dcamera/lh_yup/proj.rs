@@ -1,24 +1,35 @@
 // Generated from camera_proj.rs.tera template. Edit the template, not the generated file.
 
+//! Projection matrix constructors.
+//!
+//! Expects view-space input with the same handedness as the containing
+//! world-space module (left-handed, Y-up).
+//!
+//! Each sub-module targets a specific graphics API convention:
+//!
+//! * [`opengl`] - NDC Z range **[-1, 1]**, Y-up
+//! * [`directx`] - NDC Z range **[0, 1]**, Y-up
+//! * [`vulkan`] - NDC Z range **[0, 1]**, Y-down
+
 pub mod opengl {
+    //! OpenGL NDC convention: Z range **[-1, 1]**, Y-up.
+    //!
+    //! Expects left-handed, Y-up view-space input.
+
     use crate::{dcamera::camera_impl, DMat4};
 
-    /// Creates a perspective projection matrix with `[-1, 1]` depth range.
+    /// Creates a perspective projection matrix for use with OpenGL.
     ///
-    /// Expects a left-handed view space.
-    ///
-    /// This is the OpenGL `gluPerspective` equivalent.
+    /// Expects a left-handed view space input.
     #[inline]
     #[must_use]
-    pub fn perspective(vertical_fov: f64, aspect_ratio: f64, z_near: f64, z_far: f64) -> DMat4 {
-        camera_impl::perspective::<false, false, false>(vertical_fov, aspect_ratio, z_near, z_far)
+    pub fn perspective(vertical_fov: f64, aspect_ratio: f64, near: f64, far: f64) -> DMat4 {
+        camera_impl::perspective::<false, false, false>(vertical_fov, aspect_ratio, near, far)
     }
 
-    /// Creates an orthographic projection matrix with `[-1, 1]` depth range.
+    /// Creates an orthographic projection matrix for use with OpenGL.
     ///
-    /// Expects a left-handed view space.
-    ///
-    /// This is the OpenGL `glOrtho` equivalent.
+    /// Expects a left-handed view space input.
     #[inline]
     #[must_use]
     pub fn orthographic(
@@ -32,12 +43,9 @@ pub mod opengl {
         camera_impl::orthographic::<false, false, false>(left, right, bottom, top, near, far)
     }
 
-    /// Creates a perspective projection matrix with `[-1, 1]` depth range.
+    /// Creates a perspective projection matrix from a frustum for use with OpenGL.
     ///
-    /// Expects a left-handed view space.
-    ///
-    /// This is the OpenGL `glFrustum` equivalent.
-    /// See <https://registry.khronos.org/OpenGL-Refpages/gl2.1/xhtml/glFrustum.xml>
+    /// Expects a left-handed view space input.
     #[inline]
     #[must_use]
     pub fn frustum(left: f64, right: f64, bottom: f64, top: f64, near: f64, far: f64) -> DMat4 {
@@ -46,58 +54,62 @@ pub mod opengl {
 }
 
 pub mod vulkan {
+    //! Vulkan NDC convention: Z range **[0, 1]**, Y-down.
+    //!
+    //! Expects a left-handed view space input.
+    //!
+    //! Includes standard, infinite-far, and reverse-depth variants.
+
     use crate::{dcamera::camera_impl, DMat4};
 
-    /// Creates a perspective projection matrix with `[0, 1]` depth range and Y-flip (Y-down NDC).
+    /// Creates a perspective projection matrix for use with Vulkan.
     ///
-    /// Expects a left-handed view space.
+    /// Expects a left-handed view space input.
     ///
     /// # Panics
     ///
     /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn perspective(vertical_fov: f64, aspect_ratio: f64, z_near: f64, z_far: f64) -> DMat4 {
-        camera_impl::perspective::<false, true, true>(vertical_fov, aspect_ratio, z_near, z_far)
+    pub fn perspective(vertical_fov: f64, aspect_ratio: f64, near: f64, far: f64) -> DMat4 {
+        camera_impl::perspective::<false, true, true>(vertical_fov, aspect_ratio, near, far)
     }
 
-    /// Creates an infinite perspective projection matrix with `[0, 1]` depth range and Y-flip (Y-down NDC).
+    /// Creates an infinite perspective projection matrix for use with Vulkan.
     ///
-    /// Expects a left-handed view space.
     /// Like `perspective`, but with an infinite value for `far`. Points near `near`
     /// map to depth `0`, and as they approach infinity depth approaches `1`.
     ///
+    /// Expects a left-handed view space input.
+    ///
     /// # Panics
     ///
     /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn perspective_infinite(vertical_fov: f64, aspect_ratio: f64, z_near: f64) -> DMat4 {
-        camera_impl::perspective_infinite::<false, true, true>(vertical_fov, aspect_ratio, z_near)
+    pub fn perspective_infinite(vertical_fov: f64, aspect_ratio: f64, near: f64) -> DMat4 {
+        camera_impl::perspective_infinite::<false, true, true>(vertical_fov, aspect_ratio, near)
     }
 
-    /// Creates an infinite perspective projection matrix with `[0, 1]` depth range and Y-flip (Y-down NDC),
-    /// with reversed depth.
+    /// Creates an infinite perspective projection matrix with reversed depth. For use with
+    /// Vulkan.
     ///
-    /// Expects a left-handed view space.
     /// Maps `near` to depth `1` and infinity to depth `0`.
     ///
+    /// Expects a left-handed view space input.
+    ///
     /// # Panics
     ///
     /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn perspective_infinite_reverse(
-        vertical_fov: f64,
-        aspect_ratio: f64,
-        z_near: f64,
-    ) -> DMat4 {
-        camera_impl::perspective_infinite_reverse::<false, true>(vertical_fov, aspect_ratio, z_near)
+    pub fn perspective_infinite_reverse(vertical_fov: f64, aspect_ratio: f64, near: f64) -> DMat4 {
+        camera_impl::perspective_infinite_reverse::<false, true>(vertical_fov, aspect_ratio, near)
     }
 
-    /// Creates an orthographic projection matrix with `[0, 1]` depth range and Y-flip (Y-down NDC).
+    /// Creates an orthographic projection matrix for use with Vulkan.
     ///
-    /// Expects a left-handed view space.
+    /// Expects a left-handed view space input.
     #[inline]
     #[must_use]
     pub fn orthographic(
@@ -111,9 +123,9 @@ pub mod vulkan {
         camera_impl::orthographic::<false, true, true>(left, right, bottom, top, near, far)
     }
 
-    /// Creates a perspective projection from a frustum with `[0, 1]` depth range and Y-flip (Y-down NDC).
+    /// Creates a perspective projection from a frustum for use with Vulkan.
     ///
-    /// Expects a left-handed view space.
+    /// Expects a left-handed view space input.
     ///
     /// # Panics
     ///
@@ -126,62 +138,62 @@ pub mod vulkan {
 }
 
 pub mod directx {
+    //! DirectX and WebGPU NDC convention: Z range **[0, 1]**, Y-up.
+    //!
+    //! Expects a left-handed view space input.
+    //!
+    //! Includes standard, infinite-far, and reverse-depth variants.
+
     use crate::{dcamera::camera_impl, DMat4};
 
-    /// Creates a perspective projection matrix with `[0, 1]` depth range.
+    /// Creates a perspective projection matrix for use with DirectX and WebGPU.
     ///
-    /// Expects a left-handed view space.
+    /// Expects a left-handed view space input.
     ///
     /// # Panics
     ///
     /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn perspective(vertical_fov: f64, aspect_ratio: f64, z_near: f64, z_far: f64) -> DMat4 {
-        camera_impl::perspective::<false, true, false>(vertical_fov, aspect_ratio, z_near, z_far)
+    pub fn perspective(vertical_fov: f64, aspect_ratio: f64, near: f64, far: f64) -> DMat4 {
+        camera_impl::perspective::<false, true, false>(vertical_fov, aspect_ratio, near, far)
     }
 
-    /// Creates an infinite perspective projection matrix with `[0, 1]` depth range.
+    /// Creates an infinite perspective projection matrix for use with DirectX and WebGPU.
     ///
-    /// Expects a left-handed view space.
     /// Like `perspective`, but with an infinite value for `far`. Points near `near`
     /// map to depth `0`, and as they approach infinity depth approaches `1`.
     ///
+    /// Expects a left-handed view space input.
+    ///
     /// # Panics
     ///
     /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn perspective_infinite(vertical_fov: f64, aspect_ratio: f64, z_near: f64) -> DMat4 {
-        camera_impl::perspective_infinite::<false, true, false>(vertical_fov, aspect_ratio, z_near)
+    pub fn perspective_infinite(vertical_fov: f64, aspect_ratio: f64, near: f64) -> DMat4 {
+        camera_impl::perspective_infinite::<false, true, false>(vertical_fov, aspect_ratio, near)
     }
 
-    /// Creates an infinite perspective projection matrix with `[0, 1]` depth range,
-    /// with reversed depth.
+    /// Creates an infinite perspective projection matrix with reversed depth. For use with
+    /// DirectX and WebGPU.
     ///
-    /// Expects a left-handed view space.
     /// Maps `near` to depth `1` and infinity to depth `0`.
     ///
+    /// Expects a left-handed view space input.
+    ///
     /// # Panics
     ///
     /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    pub fn perspective_infinite_reverse(
-        vertical_fov: f64,
-        aspect_ratio: f64,
-        z_near: f64,
-    ) -> DMat4 {
-        camera_impl::perspective_infinite_reverse::<false, false>(
-            vertical_fov,
-            aspect_ratio,
-            z_near,
-        )
+    pub fn perspective_infinite_reverse(vertical_fov: f64, aspect_ratio: f64, near: f64) -> DMat4 {
+        camera_impl::perspective_infinite_reverse::<false, false>(vertical_fov, aspect_ratio, near)
     }
 
-    /// Creates an orthographic projection matrix with `[0, 1]` depth range.
+    /// Creates an orthographic projection matrix for use with DirectX and WebGPU.
     ///
-    /// Expects a left-handed view space.
+    /// Expects a left-handed view space input.
     #[inline]
     #[must_use]
     pub fn orthographic(
@@ -195,9 +207,9 @@ pub mod directx {
         camera_impl::orthographic::<false, true, false>(left, right, bottom, top, near, far)
     }
 
-    /// Creates a perspective projection from a frustum with `[0, 1]` depth range.
+    /// Creates a perspective projection from a frustum for use with DirectX and WebGPU.
     ///
-    /// Expects a left-handed view space.
+    /// Expects a left-handed view space input.
     ///
     /// # Panics
     ///
