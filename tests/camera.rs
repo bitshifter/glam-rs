@@ -34,7 +34,7 @@ macro_rules! impl_camera_tests {
             y_down: false,
         };
 
-        /// Right-handed Y-up. Forward is -Z, up is +Y.
+        /// Right-handed Y-up. Forward is -Z, right is +X.
         /// Standard OpenGL convention used by Maya, Godot, and Bevy.
         const RH_YUP_AXES: AxisConfig = AxisConfig {
             forward: $vec3::NEG_Z,
@@ -42,12 +42,30 @@ macro_rules! impl_camera_tests {
             up: $vec3::Y,
         };
 
-        /// Left-handed Y-up. Forward is +Z, up is +Y.
+        /// Left-handed Y-up. Forward is +Z, right is +X.
         /// DirectX convention used by Unity 3D.
         const LH_YUP_AXES: AxisConfig = AxisConfig {
             forward: $vec3::Z,
             right: $vec3::X,
             up: $vec3::Y,
+        };
+
+        /// Right-handed Z-up. Forward is +Y, right is +X.
+        /// Convention used by Blender.
+        #[allow(unused)]
+        const RH_ZUP_AXES: AxisConfig = AxisConfig {
+            forward: $vec3::Y,
+            right: $vec3::X,
+            up: $vec3::Z,
+        };
+
+        /// Left-handed Z-up. Forward is +X, right is +Y
+        /// Convention used by Unreal Engine.
+        #[allow(unused)]
+        const LH_ZUP_AXES: AxisConfig = AxisConfig {
+            forward: $vec3::X,
+            right: $vec3::Y,
+            up: $vec3::Z,
         };
 
         fn check_view(axes: &AxisConfig, view: &$mat4) {
@@ -433,29 +451,7 @@ macro_rules! impl_camera_tests {
 
             use RH_YUP_AXES as AXES;
 
-            glam_test!(test_opengl_pipeline, {
-                let v = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
-                let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-                check_view(&AXES, &v);
-                check_proj_direction(&AXES, &NDC_OPENGL, &v, &p);
-                check_proj_near_far(&AXES, &NDC_OPENGL, &v, &p);
-            });
-
-            glam_test!(test_vulkan_pipeline, {
-                let v = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
-                let p = proj::vulkan::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-                check_view(&AXES, &v);
-                check_proj_direction(&AXES, &NDC_VULKAN, &v, &p);
-                check_proj_near_far(&AXES, &NDC_VULKAN, &v, &p);
-            });
-
-            glam_test!(test_directx_pipeline, {
-                let v = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
-                let p = proj::directx::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-                check_view(&AXES, &v);
-                check_proj_direction(&AXES, &NDC_DIRECTX, &v, &p);
-                check_proj_near_far(&AXES, &NDC_DIRECTX, &v, &p);
-            });
+            impl_pipeline_tests!($t);
 
             glam_test!(test_gltf, {
                 // glTF: +Y up, +Z forward, -X right (right-handed)
@@ -478,29 +474,7 @@ macro_rules! impl_camera_tests {
 
             use LH_YUP_AXES as AXES;
 
-            glam_test!(test_opengl_pipeline, {
-                let v = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
-                let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-                check_view(&AXES, &v);
-                check_proj_direction(&AXES, &NDC_OPENGL, &v, &p);
-                check_proj_near_far(&AXES, &NDC_OPENGL, &v, &p);
-            });
-
-            glam_test!(test_vulkan_pipeline, {
-                let v = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
-                let p = proj::vulkan::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-                check_view(&AXES, &v);
-                check_proj_direction(&AXES, &NDC_VULKAN, &v, &p);
-                check_proj_near_far(&AXES, &NDC_VULKAN, &v, &p);
-            });
-
-            glam_test!(test_directx_pipeline, {
-                let v = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
-                let p = proj::directx::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-                check_view(&AXES, &v);
-                check_proj_direction(&AXES, &NDC_DIRECTX, &v, &p);
-                check_proj_near_far(&AXES, &NDC_DIRECTX, &v, &p);
-            });
+            impl_pipeline_tests!($t);
         }
 
         mod deprecated {
@@ -961,6 +935,34 @@ macro_rules! impl_camera_tests {
                 assert_approx_eq!(projected, $vec4::new(0.5, 1.0, 0.75, 1.0));
             });
         }
+    };
+}
+
+macro_rules! impl_pipeline_tests {
+    ($t:ident) => {
+        glam_test!(test_opengl_pipeline, {
+            let v = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
+            let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
+            check_view(&AXES, &v);
+            check_proj_direction(&AXES, &NDC_OPENGL, &v, &p);
+            check_proj_near_far(&AXES, &NDC_OPENGL, &v, &p);
+        });
+
+        glam_test!(test_vulkan_pipeline, {
+            let v = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
+            let p = proj::vulkan::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
+            check_view(&AXES, &v);
+            check_proj_direction(&AXES, &NDC_VULKAN, &v, &p);
+            check_proj_near_far(&AXES, &NDC_VULKAN, &v, &p);
+        });
+
+        glam_test!(test_directx_pipeline, {
+            let v = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
+            let p = proj::directx::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
+            check_view(&AXES, &v);
+            check_proj_direction(&AXES, &NDC_DIRECTX, &v, &p);
+            check_proj_near_far(&AXES, &NDC_DIRECTX, &v, &p);
+        });
     };
 }
 

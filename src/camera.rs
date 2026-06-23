@@ -31,7 +31,7 @@ mod camera_impl;
 
 /// Right-handed, Y-up.
 ///
-/// View functions produce Y-up view space while preserving right-handedness.
+/// View functions produce right-handed view space transforms.
 /// Projection functions in [`rh_yup::proj`] expect right-handed view-space input.
 pub mod rh_yup {
     pub mod proj;
@@ -40,8 +40,8 @@ pub mod rh_yup {
 
 /// Left-handed, Y-up.
 ///
-/// View functions produce Y-up view space while preserving left-handedness.
-/// Projection functions in [`lh_yup::proj`] expect left-handed view-space input.
+/// View functions produce left-handed view space transforms.
+/// Projection functions in [`rh_yup::proj`] expect left-handed view-space input.
 pub mod lh_yup {
     pub mod proj;
     pub mod view;

@@ -29,20 +29,28 @@
 
 mod camera_impl;
 
-/// Right-handed, Y-up.
+{% for world in ["rh_yup", "lh_yup"] %}
+
+{% if world == "rh_yup" or world == "rh_zup" %}
+    {% set handedness = "Right-handed" %}
+{% else %}
+    {% set handedness = "Left-handed" %}
+{% endif %}
+
+{% if world == "rh_yup" or world == "lh_yup" %}
+    {% set up_axis = "Y-up" %}
+{% else %}
+    {% set up_axis = "Z-up" %}
+{% endif %}
+
+/// {{ handedness }}, {{ up_axis }}.
 ///
-/// View functions produce Y-up view space while preserving right-handedness.
-/// Projection functions in [`rh_yup::proj`] expect right-handed view-space input.
-pub mod rh_yup {
+/// View functions produce {{ handedness | lower }} view space transforms.
+/// Projection functions in [`rh_yup::proj`] expect {{ handedness | lower }} view-space input.
+pub mod {{ world }} {
     pub mod proj;
     pub mod view;
 }
 
-/// Left-handed, Y-up.
-///
-/// View functions produce Y-up view space while preserving left-handedness.
-/// Projection functions in [`lh_yup::proj`] expect left-handed view-space input.
-pub mod lh_yup {
-    pub mod proj;
-    pub mod view;
-}
+{% endfor %}
+

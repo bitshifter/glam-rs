@@ -8,10 +8,18 @@
     {% set cam = "dcamera" %}
 {% endif %}
 
-{% if world == "rh_yup" or world == "rh_zup" %}
+{% if world == "rh_yup" %}
     {% set is_rh = true %}
-{% else %}
+    {% set is_yup = true %}
+{% elif world == "rh_zup" %}
+    {% set is_rh = true %}
+    {% set is_yup = false %}
+{% elif world == "lh_yup" %}
     {% set is_rh = false %}
+    {% set is_yup = true %}
+{% elif world == "lh_zup" %}
+    {% set is_rh = false %}
+    {% set is_yup = false %}
 {% endif %}
 
 {% if is_rh %}
@@ -20,12 +28,9 @@
     {% set handedness = "left-handed" %}
 {% endif %}
 
-{% set up = "Y-up" %}
-
 //! Projection matrix constructors.
 //!
-//! Expects view-space input with the same handedness as the containing
-//! world-space module ({{ handedness }}, Y-up).
+//! Expects {{ handedness }} view-space input.
 //!
 //! Each sub-module targets a specific graphics API convention:
 //!
@@ -36,7 +41,7 @@
 pub mod opengl {
     //! OpenGL NDC convention: Z range **[-1, 1]**, Y-up.
     //!
-    //! Expects {{ handedness }}, {{ up }} view-space input.
+    //! Expects a {{ handedness }} view-space input.
 
     use crate::{
         {{ mat4_t }},

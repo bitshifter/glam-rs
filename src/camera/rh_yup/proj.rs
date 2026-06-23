@@ -2,8 +2,7 @@
 
 //! Projection matrix constructors.
 //!
-//! Expects view-space input with the same handedness as the containing
-//! world-space module (right-handed, Y-up).
+//! Expects right-handed view-space input.
 //!
 //! Each sub-module targets a specific graphics API convention:
 //!
@@ -14,7 +13,7 @@
 pub mod opengl {
     //! OpenGL NDC convention: Z range **[-1, 1]**, Y-up.
     //!
-    //! Expects right-handed, Y-up view-space input.
+    //! Expects a right-handed view-space input.
 
     use crate::{camera::camera_impl, Mat4};
 
