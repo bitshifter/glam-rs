@@ -449,32 +449,39 @@ macro_rules! impl_camera_tests {
             use super::*;
             use glam::$camera::rh::{proj, view};
 
-            use RH_YUP_AXES as AXES;
+            mod yup {
+                use super::*;
+                impl_pipeline_tests!($t, RH_YUP_AXES);
+            }
+            mod zup {
+                use super::*;
+                impl_pipeline_tests!($t, RH_ZUP_AXES);
+            }
 
-            impl_pipeline_tests!($t);
-
-            glam_test!(test_gltf, {
+            mod gltf {
+                use super::*;
                 // glTF: +Y up, +Z forward, -X right (right-handed)
-                const GLTF: AxisConfig = AxisConfig {
+                const GLTF_AXES: AxisConfig = AxisConfig {
                     forward: $vec3::Z,
                     right: $vec3::NEG_X,
                     up: $vec3::Y,
                 };
-                let v = view::look_at_mat4(EYE, GLTF.forward * 5.0, GLTF.up);
-                let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-                check_view(&GLTF, &v);
-                check_proj_direction(&GLTF, &NDC_OPENGL, &v, &p);
-                check_proj_near_far(&GLTF, &NDC_OPENGL, &v, &p);
-            });
+                impl_pipeline_tests!($t, GLTF_AXES);
+            }
         }
 
         mod pipeline_lh {
             use super::*;
             use glam::$camera::lh::{proj, view};
 
-            use LH_YUP_AXES as AXES;
-
-            impl_pipeline_tests!($t);
+            mod yup {
+                use super::*;
+                impl_pipeline_tests!($t, LH_YUP_AXES);
+            }
+            mod zup {
+                use super::*;
+                impl_pipeline_tests!($t, LH_ZUP_AXES);
+            }
         }
 
         mod deprecated {
@@ -939,29 +946,29 @@ macro_rules! impl_camera_tests {
 }
 
 macro_rules! impl_pipeline_tests {
-    ($t:ident) => {
+    ($t:ident, $axes:ident) => {
         glam_test!(test_opengl_pipeline, {
-            let v = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
+            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
             let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-            check_view(&AXES, &v);
-            check_proj_direction(&AXES, &NDC_OPENGL, &v, &p);
-            check_proj_near_far(&AXES, &NDC_OPENGL, &v, &p);
+            check_view(&$axes, &v);
+            check_proj_direction(&$axes, &NDC_OPENGL, &v, &p);
+            check_proj_near_far(&$axes, &NDC_OPENGL, &v, &p);
         });
 
         glam_test!(test_vulkan_pipeline, {
-            let v = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
+            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
             let p = proj::vulkan::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-            check_view(&AXES, &v);
-            check_proj_direction(&AXES, &NDC_VULKAN, &v, &p);
-            check_proj_near_far(&AXES, &NDC_VULKAN, &v, &p);
+            check_view(&$axes, &v);
+            check_proj_direction(&$axes, &NDC_VULKAN, &v, &p);
+            check_proj_near_far(&$axes, &NDC_VULKAN, &v, &p);
         });
 
         glam_test!(test_directx_pipeline, {
-            let v = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
+            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
             let p = proj::directx::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-            check_view(&AXES, &v);
-            check_proj_direction(&AXES, &NDC_DIRECTX, &v, &p);
-            check_proj_near_far(&AXES, &NDC_DIRECTX, &v, &p);
+            check_view(&$axes, &v);
+            check_proj_direction(&$axes, &NDC_DIRECTX, &v, &p);
+            check_proj_near_far(&$axes, &NDC_DIRECTX, &v, &p);
         });
     };
 }
