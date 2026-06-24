@@ -178,178 +178,30 @@ macro_rules! impl_camera_tests {
             use super::*;
             use glam::$camera::rh::view;
 
-            use RH_YUP_AXES as AXES;
+            mod yup {
+                use super::*;
+                impl_view_tests!(RH_YUP_AXES, $mat4);
+            }
 
-            glam_test!(test_look_at_mat4, {
-                let m = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
-                check_view(&AXES, &m);
-            });
-
-            glam_test!(test_look_to_mat4, {
-                let m = view::look_to_mat4(EYE, AXES.forward, AXES.up);
-                check_view(&AXES, &m);
-            });
-
-            glam_test!(test_look_at_affine3, {
-                let a = view::look_at_affine3(EYE, AXES.forward * 5.0, AXES.up);
-                let m = $mat4::from(a);
-                check_view(&AXES, &m);
-            });
-
-            glam_test!(test_look_to_affine3, {
-                let a = view::look_to_affine3(EYE, AXES.forward, AXES.up);
-                let m = $mat4::from(a);
-                check_view(&AXES, &m);
-            });
-
-            glam_test!(test_look_at_mat3, {
-                let rot = view::look_at_mat3(EYE, AXES.forward * 5.0, AXES.up);
-                check_view_rotation_mat3(&AXES, &rot);
-            });
-
-            glam_test!(test_look_to_mat3, {
-                let rot = view::look_to_mat3(AXES.forward, AXES.up);
-                check_view_rotation_mat3(&AXES, &rot);
-            });
-
-            glam_test!(test_look_at_quat, {
-                let q = view::look_at_quat(EYE, AXES.forward * 5.0, AXES.up);
-                let expected_z = handedness_sign(&AXES) * 5.0;
-
-                let p = q * (AXES.right * 5.0);
-                assert_approx_eq!(p.x, 5.0, 1e-6);
-                assert_approx_eq!(p.y, 0.0, 1e-6);
-                assert_approx_eq!(p.z, 0.0, 1e-6);
-
-                let p = q * (AXES.up * 5.0);
-                assert_approx_eq!(p.x, 0.0, 1e-6);
-                assert_approx_eq!(p.y, 5.0, 1e-6);
-                assert_approx_eq!(p.z, 0.0, 1e-6);
-
-                let p = q * (AXES.forward * 5.0);
-                assert_approx_eq!(p.x, 0.0, 1e-6);
-                assert_approx_eq!(p.y, 0.0, 1e-6);
-                assert_approx_eq!(p.z, expected_z, 1e-6);
-
-                let p = q * (-AXES.forward * 5.0);
-                assert_approx_eq!(p.x, 0.0, 1e-6);
-                assert_approx_eq!(p.y, 0.0, 1e-6);
-                assert_approx_eq!(p.z, -expected_z, 1e-6);
-            });
-
-            glam_test!(test_look_to_quat, {
-                let q = view::look_to_quat(AXES.forward, AXES.up);
-                let expected_z = handedness_sign(&AXES) * 5.0;
-
-                let p = q * (AXES.right * 5.0);
-                assert_approx_eq!(p.x, 5.0, 1e-6);
-                assert_approx_eq!(p.y, 0.0, 1e-6);
-                assert_approx_eq!(p.z, 0.0, 1e-6);
-
-                let p = q * (AXES.up * 5.0);
-                assert_approx_eq!(p.x, 0.0, 1e-6);
-                assert_approx_eq!(p.y, 5.0, 1e-6);
-                assert_approx_eq!(p.z, 0.0, 1e-6);
-
-                let p = q * (AXES.forward * 5.0);
-                assert_approx_eq!(p.x, 0.0, 1e-6);
-                assert_approx_eq!(p.y, 0.0, 1e-6);
-                assert_approx_eq!(p.z, expected_z, 1e-6);
-
-                let p = q * (-AXES.forward * 5.0);
-                assert_approx_eq!(p.x, 0.0, 1e-6);
-                assert_approx_eq!(p.y, 0.0, 1e-6);
-                assert_approx_eq!(p.z, -expected_z, 1e-6);
-            });
+            mod zup {
+                use super::*;
+                impl_view_tests!(RH_ZUP_AXES, $mat4);
+            }
         }
 
         mod view_lh {
             use super::*;
             use glam::$camera::lh::view;
 
-            use LH_YUP_AXES as AXES;
+            mod yup {
+                use super::*;
+                impl_view_tests!(LH_YUP_AXES, $mat4);
+            }
 
-            glam_test!(test_look_at_mat4, {
-                let m = view::look_at_mat4(EYE, AXES.forward * 5.0, AXES.up);
-                check_view(&AXES, &m);
-            });
-
-            glam_test!(test_look_to_mat4, {
-                let m = view::look_to_mat4(EYE, AXES.forward, AXES.up);
-                check_view(&AXES, &m);
-            });
-
-            glam_test!(test_look_at_affine3, {
-                let a = view::look_at_affine3(EYE, AXES.forward * 5.0, AXES.up);
-                let m = $mat4::from(a);
-                check_view(&AXES, &m);
-            });
-
-            glam_test!(test_look_to_affine3, {
-                let a = view::look_to_affine3(EYE, AXES.forward, AXES.up);
-                let m = $mat4::from(a);
-                check_view(&AXES, &m);
-            });
-
-            glam_test!(test_look_at_mat3, {
-                let rot = view::look_at_mat3(EYE, AXES.forward * 5.0, AXES.up);
-                check_view_rotation_mat3(&AXES, &rot);
-            });
-
-            glam_test!(test_look_to_mat3, {
-                let rot = view::look_to_mat3(AXES.forward, AXES.up);
-                check_view_rotation_mat3(&AXES, &rot);
-            });
-
-            glam_test!(test_look_at_quat, {
-                let q = view::look_at_quat(EYE, AXES.forward * 5.0, AXES.up);
-                let expected_z = handedness_sign(&AXES) * 5.0;
-
-                let p = q * (AXES.right * 5.0);
-                assert_approx_eq!(p.x, 5.0, 1e-6);
-                assert_approx_eq!(p.y, 0.0, 1e-6);
-                assert_approx_eq!(p.z, 0.0, 1e-6);
-
-                let p = q * (AXES.up * 5.0);
-                assert_approx_eq!(p.x, 0.0, 1e-6);
-                assert_approx_eq!(p.y, 5.0, 1e-6);
-                assert_approx_eq!(p.z, 0.0, 1e-6);
-
-                let p = q * (AXES.forward * 5.0);
-                assert_approx_eq!(p.x, 0.0, 1e-6);
-                assert_approx_eq!(p.y, 0.0, 1e-6);
-                assert_approx_eq!(p.z, expected_z, 1e-6);
-
-                let p = q * (-AXES.forward * 5.0);
-                assert_approx_eq!(p.x, 0.0, 1e-6);
-                assert_approx_eq!(p.y, 0.0, 1e-6);
-                assert_approx_eq!(p.z, -expected_z, 1e-6);
-            });
-
-            glam_test!(test_look_to_quat, {
-                let q = view::look_to_quat(AXES.forward, AXES.up);
-                let expected_z = handedness_sign(&AXES) * 5.0;
-
-                let p = q * (AXES.right * 5.0);
-                assert_approx_eq!(p.x, 5.0, 1e-6);
-                assert_approx_eq!(p.y, 0.0, 1e-6);
-                assert_approx_eq!(p.z, 0.0, 1e-6);
-
-                let p = q * (AXES.up * 5.0);
-                assert_approx_eq!(p.x, 0.0, 1e-6);
-                assert_approx_eq!(p.y, 5.0, 1e-6);
-                assert_approx_eq!(p.z, 0.0, 1e-6);
-
-                let p = q * (AXES.forward * 5.0);
-                assert_approx_eq!(p.x, 0.0, 1e-6);
-                assert_approx_eq!(p.y, 0.0, 1e-6);
-                assert_approx_eq!(p.z, expected_z, 1e-6);
-
-                let p = q * (-AXES.forward * 5.0);
-                assert_approx_eq!(p.x, 0.0, 1e-6);
-                assert_approx_eq!(p.y, 0.0, 1e-6);
-                assert_approx_eq!(p.z, -expected_z, 1e-6);
-            });
+            mod zup {
+                use super::*;
+                impl_view_tests!(LH_ZUP_AXES, $mat4);
+            }
         }
 
         mod proj_rh {
@@ -945,6 +797,92 @@ macro_rules! impl_camera_tests {
     };
 }
 
+macro_rules! impl_view_tests {
+    ($axes:ident, $mat4:ident) => {
+            glam_test!(test_look_at_mat4, {
+                let m = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
+                check_view(&$axes, &m);
+            });
+
+            glam_test!(test_look_to_mat4, {
+                let m = view::look_to_mat4(EYE, $axes.forward, $axes.up);
+                check_view(&$axes, &m);
+            });
+
+            glam_test!(test_look_at_affine3, {
+                let a = view::look_at_affine3(EYE, $axes.forward * 5.0, $axes.up);
+                let m = $mat4::from(a);
+                check_view(&$axes, &m);
+            });
+
+            glam_test!(test_look_to_affine3, {
+                let a = view::look_to_affine3(EYE, $axes.forward, $axes.up);
+                let m = $mat4::from(a);
+                check_view(&$axes, &m);
+            });
+
+            glam_test!(test_look_at_mat3, {
+                let rot = view::look_at_mat3(EYE, $axes.forward * 5.0, $axes.up);
+                check_view_rotation_mat3(&$axes, &rot);
+            });
+
+            glam_test!(test_look_to_mat3, {
+                let rot = view::look_to_mat3($axes.forward, $axes.up);
+                check_view_rotation_mat3(&$axes, &rot);
+            });
+
+            glam_test!(test_look_at_quat, {
+                let q = view::look_at_quat(EYE, $axes.forward * 5.0, $axes.up);
+                let expected_z = handedness_sign(&$axes) * 5.0;
+
+                let p = q * ($axes.right * 5.0);
+                assert_approx_eq!(p.x, 5.0, 1e-6);
+                assert_approx_eq!(p.y, 0.0, 1e-6);
+                assert_approx_eq!(p.z, 0.0, 1e-6);
+
+                let p = q * ($axes.up * 5.0);
+                assert_approx_eq!(p.x, 0.0, 1e-6);
+                assert_approx_eq!(p.y, 5.0, 1e-6);
+                assert_approx_eq!(p.z, 0.0, 1e-6);
+
+                let p = q * ($axes.forward * 5.0);
+                assert_approx_eq!(p.x, 0.0, 1e-6);
+                assert_approx_eq!(p.y, 0.0, 1e-6);
+                assert_approx_eq!(p.z, expected_z, 1e-6);
+
+                let p = q * (-$axes.forward * 5.0);
+                assert_approx_eq!(p.x, 0.0, 1e-6);
+                assert_approx_eq!(p.y, 0.0, 1e-6);
+                assert_approx_eq!(p.z, -expected_z, 1e-6);
+            });
+
+            glam_test!(test_look_to_quat, {
+                let q = view::look_to_quat($axes.forward, $axes.up);
+                let expected_z = handedness_sign(&$axes) * 5.0;
+
+                let p = q * ($axes.right * 5.0);
+                assert_approx_eq!(p.x, 5.0, 1e-6);
+                assert_approx_eq!(p.y, 0.0, 1e-6);
+                assert_approx_eq!(p.z, 0.0, 1e-6);
+
+                let p = q * ($axes.up * 5.0);
+                assert_approx_eq!(p.x, 0.0, 1e-6);
+                assert_approx_eq!(p.y, 5.0, 1e-6);
+                assert_approx_eq!(p.z, 0.0, 1e-6);
+
+                let p = q * ($axes.forward * 5.0);
+                assert_approx_eq!(p.x, 0.0, 1e-6);
+                assert_approx_eq!(p.y, 0.0, 1e-6);
+                assert_approx_eq!(p.z, expected_z, 1e-6);
+
+                let p = q * (-$axes.forward * 5.0);
+                assert_approx_eq!(p.x, 0.0, 1e-6);
+                assert_approx_eq!(p.y, 0.0, 1e-6);
+                assert_approx_eq!(p.z, -expected_z, 1e-6);
+            });
+    };
+}
+
 macro_rules! impl_pipeline_tests {
     ($t:ident, $axes:ident) => {
         glam_test!(test_opengl_pipeline, {
@@ -1028,36 +966,4 @@ mod camera {
 mod dcamera {
     use glam::{dcamera, DAffine3, DMat3, DMat4, DQuat, DVec3, DVec4};
     impl_camera_tests!(f64, DAffine3, DMat4, DMat3, DVec4, DVec3, DQuat, dcamera);
-
-    // mod view_rh_zup {
-    //     use glam::dcamera::rh_zup::view;
-    //     use glam::DVec3;
-
-    //     glam_test!(test_look_at_mat4, {
-    //         let eye = DVec3::new(0.0, 5.0, 0.0);
-    //         let center = DVec3::ZERO;
-    //         let up = DVec3::new(0.0, 0.0, 1.0);
-    //         let point = DVec3::new(1.0, 0.0, 0.0);
-
-    //         let m = view::look_at_mat4(eye, center, up);
-    //         let p = m.transform_point3(point);
-    //         assert_approx_eq!(p, DVec3::new(-1.0, 0.0, -5.0), 1.0e-12);
-    //     });
-    // }
-
-    // mod view_lh_zup {
-    //     use glam::dcamera::lh_zup::view;
-    //     use glam::DVec3;
-
-    //     glam_test!(test_look_at_mat4, {
-    //         let eye = DVec3::new(0.0, 5.0, 0.0);
-    //         let center = DVec3::ZERO;
-    //         let up = DVec3::new(0.0, 0.0, 1.0);
-    //         let point = DVec3::new(1.0, 0.0, 0.0);
-
-    //         let m = view::look_at_mat4(eye, center, up);
-    //         let p = m.transform_point3(point);
-    //         assert_approx_eq!(p, DVec3::new(1.0, 0.0, -5.0), 1.0e-12);
-    //     });
-    // }
 }
