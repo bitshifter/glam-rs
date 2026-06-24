@@ -16,7 +16,7 @@
 
 //! Projection matrix constructors.
 //!
-//! Expects {{ handedness }} view-space input.
+//! Expects {{ handedness }} Y-up view-space input.
 //!
 //! Each sub-module targets a specific graphics API convention:
 //!
@@ -27,7 +27,7 @@
 pub mod opengl {
     //! OpenGL NDC convention: Z range **[-1, 1]**, Y-up.
     //!
-    //! Expects a {{ handedness }} view-space input.
+    //! Expects a {{ handedness }} Y-up view-space input.
 
     use crate::{
         {{ mat4_t }},
@@ -36,7 +36,8 @@ pub mod opengl {
 
     /// Creates a perspective projection matrix for use with OpenGL.
     ///
-    /// Expects a {{ handedness }} view space input.
+    /// Expects a {{ handedness }} Y-up view space input.
+    /// Outputs NDC with Z in [-1, 1] and Y-up.
     {%- if is_rh %}
     ///
     /// This is the OpenGL `gluPerspective` equivalent.
@@ -49,7 +50,8 @@ pub mod opengl {
 
     /// Creates an orthographic projection matrix for use with OpenGL.
     ///
-    /// Expects a {{ handedness }} view space input.
+    /// Expects a {{ handedness }} Y-up view space input.
+    /// Outputs NDC with Z in [-1, 1] and Y-up.
     {%- if is_rh %}
     ///
     /// This is the OpenGL `glOrtho` equivalent.
@@ -62,7 +64,8 @@ pub mod opengl {
 
     /// Creates a perspective projection matrix from a frustum for use with OpenGL.
     ///
-    /// Expects a {{ handedness }} view space input.
+    /// Expects a {{ handedness }} Y-up view space input.
+    /// Outputs NDC with Z in [-1, 1] and Y-up.
     {%- if is_rh %}
     ///
     /// This is the OpenGL `glFrustum` equivalent.
@@ -102,7 +105,8 @@ pub mod {{ api }} {
 
     /// Creates a perspective projection matrix for use with {{ api_desc }}.
     ///
-    /// Expects a {{ handedness }} view space input.
+    /// Expects a {{ handedness }} Y-up view space input.
+    /// Outputs NDC with Z in {{ api_z }} and {{ api_y }}.
     ///
     /// # Panics
     ///
@@ -118,7 +122,8 @@ pub mod {{ api }} {
     /// Like `perspective`, but with an infinite value for `far`. Points near `near`
     /// map to depth `0`, and as they approach infinity depth approaches `1`.
     ///
-    /// Expects a {{ handedness }} view space input.
+    /// Expects a {{ handedness }} Y-up view space input.
+    /// Outputs NDC with Z in {{ api_z }} and {{ api_y }}.
     ///
     /// # Panics
     ///
@@ -136,7 +141,8 @@ pub mod {{ api }} {
     ///
     /// Reversed Z improves depth precision when used with a floating-point depth buffer.
     ///
-    /// Expects a {{ handedness }} view space input.
+    /// Expects a {{ handedness }} Y-up view space input.
+    /// Outputs NDC with Z in {{ api_z }} and {{ api_y }}.
     ///
     /// # Panics
     ///
@@ -149,7 +155,8 @@ pub mod {{ api }} {
 
     /// Creates an orthographic projection matrix for use with {{ api_desc }}.
     ///
-    /// Expects a {{ handedness }} view space input.
+    /// Expects a {{ handedness }} Y-up view space input.
+    /// Outputs NDC with Z in {{ api_z }} and {{ api_y }}.
     #[inline]
     #[must_use]
     pub fn orthographic(left: {{ scalar_t }}, right: {{ scalar_t }}, bottom: {{ scalar_t }}, top: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
@@ -158,7 +165,8 @@ pub mod {{ api }} {
 
     /// Creates a perspective projection from a frustum for use with {{ api_desc }}.
     ///
-    /// Expects a {{ handedness }} view space input.
+    /// Expects a {{ handedness }} Y-up view space input.
+    /// Outputs NDC with Z in {{ api_z }} and {{ api_y }}.
     ///
     /// # Panics
     ///

@@ -37,7 +37,9 @@ mod camera_impl;
     {% set handedness = "Left-handed" %}
 {% endif %}
 
-/// View functions produce {{ handedness | lower }} view space transforms.
+/// View functions produce {{ handedness | lower }} view space transforms with
+/// +Y = up, +X = right, and {% if is_rh %}-{% else %}+{% endif %}Z = forward.
+///
 /// Projection functions expect {{ handedness | lower }} view-space input.
 pub mod {{ mod }} {
     pub mod proj;

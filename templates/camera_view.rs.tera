@@ -28,8 +28,8 @@
 
 //! View (camera) matrix constructors for {{ handedness }} world coordinates.
 //!
-//! Every function transforms world-space points into Y-up view space while
-//! preserving handedness.
+//! Every function transforms world-space points into a {{ handedness }} Y-up
+//! view space with X-right and {% if is_rh %}-Z-forward{% else %}+Z-forward{% endif %}.
 //!
 //! * `look_at_*` targets a focal point (`center`)
 //! * `look_to_*` targets a forward direction (`dir`)
@@ -44,6 +44,8 @@ use crate::{
 
 /// Returns a `{{ mat4 }}` view matrix from eye, focal point, and up.
 ///
+/// Transforms {{ handedness }} world-space points into {{ handedness }} Y-up view space.
+///
 /// # Panics
 ///
 /// Will panic if `up` is not normalized when `glam_assert` is enabled.
@@ -54,6 +56,8 @@ pub fn look_at_mat4(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ m
 }
 
 /// Returns a `{{ mat4 }}` view matrix from eye, forward direction, and up.
+///
+/// Transforms {{ handedness }} world-space points into {{ handedness }} Y-up view space.
 ///
 /// # Panics
 ///
@@ -66,6 +70,8 @@ pub fn look_to_mat4(eye: {{ vec3 }}, dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ mat4
 
 /// Returns an `{{ affine3 }}` view transform from eye, focal point, and up.
 ///
+/// Transforms {{ handedness }} world-space points into {{ handedness }} Y-up view space.
+///
 /// # Panics
 ///
 /// Will panic if `up` is not normalized when `glam_assert` is enabled.
@@ -76,6 +82,8 @@ pub fn look_at_affine3(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {
 }
 
 /// Returns an `{{ affine3 }}` view transform from eye, forward direction, and up.
+///
+/// Transforms {{ handedness }} world-space points into {{ handedness }} Y-up view space.
 ///
 /// # Panics
 ///
@@ -89,6 +97,8 @@ pub fn look_to_affine3(eye: {{ vec3 }}, dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ a
 {% if is_f32 %}
 /// Returns an `{{ affine3a }}` view transform from eye, focal point, and up.
 ///
+/// Transforms {{ handedness }} world-space points into {{ handedness }} Y-up view space.
+///
 /// # Panics
 ///
 /// Will panic if `up` is not normalized when `glam_assert` is enabled.
@@ -99,6 +109,8 @@ pub fn look_at_affine3a(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> 
 }
 
 /// Returns an `{{ affine3a }}` view transform from eye, forward direction, and up.
+///
+/// Transforms {{ handedness }} world-space points into {{ handedness }} Y-up view space.
 ///
 /// # Panics
 ///
@@ -112,6 +124,8 @@ pub fn look_to_affine3a(eye: {{ vec3 }}, dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ 
 
 /// Returns a `{{ mat3 }}` view rotation (no translation) from eye, focal point, and up.
 ///
+/// Transforms {{ handedness }} world-space points into {{ handedness }} Y-up view space.
+///
 /// # Panics
 ///
 /// Will panic if `up` is not normalized when `glam_assert` is enabled.
@@ -122,6 +136,8 @@ pub fn look_at_mat3(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ m
 }
 
 /// Returns a `{{ mat3 }}` view rotation (no translation) from direction and up.
+///
+/// Transforms {{ handedness }} world-space points into {{ handedness }} Y-up view space.
 ///
 /// # Panics
 ///
@@ -135,6 +151,8 @@ pub fn look_to_mat3(dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ mat3 }} {
 {% if is_f32 %}
 /// Returns a `{{ mat3a }}` view rotation (no translation) from eye, focal point, and up.
 ///
+/// Transforms {{ handedness }} world-space points into {{ handedness }} Y-up view space.
+///
 /// # Panics
 ///
 /// Will panic if `up` is not normalized when `glam_assert` is enabled.
@@ -145,6 +163,8 @@ pub fn look_at_mat3a(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ 
 }
 
 /// Returns a `{{ mat3a }}` view rotation (no translation) from direction and up.
+///
+/// Transforms {{ handedness }} world-space points into {{ handedness }} Y-up view space.
 ///
 /// # Panics
 ///
@@ -158,6 +178,8 @@ pub fn look_to_mat3a(dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ mat3a }} {
 
 /// Returns a `{{ quat }}` view rotation from eye, focal point, and up.
 ///
+/// Transforms {{ handedness }} world-space points into {{ handedness }} Y-up view space.
+///
 /// # Panics
 ///
 /// Will panic if `up` is not normalized when `glam_assert` is enabled.
@@ -168,6 +190,8 @@ pub fn look_at_quat(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ q
 }
 
 /// Returns a `{{ quat }}` view rotation from direction and up.
+///
+/// Transforms {{ handedness }} world-space points into {{ handedness }} Y-up view space.
 ///
 /// # Panics
 ///
