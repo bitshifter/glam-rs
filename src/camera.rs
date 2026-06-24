@@ -7,12 +7,7 @@
 //!
 //! ## Choosing a sub-module
 //!
-//! Pick [`lh_yup`] or [`rh_yup`] based on your **world space** convention:
-//!
-//! | Module | World handedness | Up vector |
-//! |--------|-----------------|----------|
-//! | [`lh_yup`] | Left | Y |
-//! | [`rh_yup`] | Right | Y |
+//! Pick [`lh`] or [`rh`] based on your **world space** convention:
 //!
 //! The view functions in each sub-module transform world-space points into
 //! **Y-up view space** while preserving your world's handedness. The
@@ -29,20 +24,16 @@
 
 mod camera_impl;
 
-/// Right-handed, Y-up.
-///
 /// View functions produce right-handed view space transforms.
-/// Projection functions in [`rh_yup::proj`] expect right-handed view-space input.
-pub mod rh_yup {
+/// Projection functions expect right-handed view-space input.
+pub mod rh {
     pub mod proj;
     pub mod view;
 }
 
-/// Left-handed, Y-up.
-///
 /// View functions produce left-handed view space transforms.
-/// Projection functions in [`rh_yup::proj`] expect left-handed view-space input.
-pub mod lh_yup {
+/// Projection functions expect left-handed view-space input.
+pub mod lh {
     pub mod proj;
     pub mod view;
 }

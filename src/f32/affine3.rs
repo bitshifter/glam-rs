@@ -318,7 +318,7 @@ impl Affine3 {
     /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::lh_yup::view::look_to_affine3` function instead"
+        note = "use the `glam::camera::lh::view::look_to_affine3` function instead"
     )]
     #[inline]
     #[must_use]
@@ -333,7 +333,7 @@ impl Affine3 {
     /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::rh_yup::view::look_to_affine3` function instead"
+        note = "use the `glam::camera::rh::view::look_to_affine3` function instead"
     )]
     #[inline]
     #[must_use]
@@ -361,7 +361,7 @@ impl Affine3 {
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::lh_yup::view::look_at_affine3` function instead"
+        note = "use the `glam::camera::lh::view::look_at_affine3` function instead"
     )]
     #[inline]
     #[must_use]
@@ -380,7 +380,7 @@ impl Affine3 {
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::rh_yup::view::look_at_affine3` function instead"
+        note = "use the `glam::camera::rh::view::look_at_affine3` function instead"
     )]
     #[inline]
     #[must_use]

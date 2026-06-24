@@ -415,7 +415,7 @@ impl Quat {
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::lh_yup::view::look_to_quat` function instead"
+        note = "use the `glam::camera::lh::view::look_to_quat` function instead"
     )]
     #[inline]
     #[must_use]
@@ -433,7 +433,7 @@ impl Quat {
     /// Will panic if `dir` and `up` are not normalized when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::rh_yup::view::look_to_quat` function instead"
+        note = "use the `glam::camera::rh::view::look_to_quat` function instead"
     )]
     #[inline]
     #[must_use]
@@ -451,7 +451,7 @@ impl Quat {
         )
     }
 
-    /// Creates a left-handed view matrix using a camera position, a focal point, and an up
+    /// Creates a quaternion rotation from a camera position, a focal point, and an up
     /// direction.
     ///
     /// For a left-handed view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
@@ -461,7 +461,7 @@ impl Quat {
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::lh_yup::view::look_at_quat` function instead"
+        note = "use the `glam::camera::lh::view::look_at_quat` function instead"
     )]
     #[inline]
     #[must_use]
@@ -470,7 +470,7 @@ impl Quat {
         Self::look_to_lh(center.sub(eye).normalize(), up)
     }
 
-    /// Creates a right-handed view matrix using a camera position, an up direction, and a focal
+    /// Creates a quaternion rotation using a camera position, an up direction, and a focal
     /// point.
     ///
     /// For a right-handed view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
@@ -480,7 +480,7 @@ impl Quat {
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::rh_yup::view::look_at_quat` function instead"
+        note = "use the `glam::camera::rh::view::look_at_quat` function instead"
     )]
     #[inline]
     #[must_use]

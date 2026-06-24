@@ -685,7 +685,7 @@ impl Mat3A {
     /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::lh_yup::view::look_to_mat3` function instead"
+        note = "use the `glam::camera::lh::view::look_to_mat3` function instead"
     )]
     #[inline]
     #[must_use]
@@ -703,7 +703,7 @@ impl Mat3A {
     /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::rh_yup::view::look_to_mat3` function instead"
+        note = "use the `glam::camera::rh::view::look_to_mat3` function instead"
     )]
     #[inline]
     #[must_use]
@@ -731,7 +731,7 @@ impl Mat3A {
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::lh_yup::view::look_at_mat3` function instead"
+        note = "use the `glam::camera::lh::view::look_at_mat3` function instead"
     )]
     #[inline]
     #[must_use]
@@ -750,7 +750,7 @@ impl Mat3A {
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::rh_yup::view::look_at_mat3` function instead"
+        note = "use the `glam::camera::rh::view::look_at_mat3` function instead"
     )]
     #[inline]
     pub fn look_at_rh(eye: Vec3, center: Vec3, up: Vec3) -> Self {

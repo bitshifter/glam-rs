@@ -20,38 +20,15 @@
     {% set is_f32 = false %}
 {% endif %}
 
-{% if world == "rh_yup" or world == "rh_zup" %}
-    {% set is_rh = true %}
-{% else %}
-    {% set is_rh = false %}
-{% endif %}
-
-{% if world == "rh_yup" or world == "lh_yup" %}
-    {% set is_yup = true %}
-{% else %}
-    {% set is_yup = false %}
-{% endif %}
-
 {% if is_rh %}
     {% set handedness = "right-handed" %}
 {% else %}
     {% set handedness = "left-handed" %}
 {% endif %}
 
-{% if is_yup %}
-    {% set up_axis = "Y-up" %}
-{% else %}
-    {% set up_axis = "Z-up" %}
-{% endif %}
-
-//! View (camera) matrix constructors.
-//!
-//! Transforms world-space points into {{ up_axis }} view space while
-//! preserving {{ handedness }}ness.
+//! View (camera) matrix constructors for {{ handedness }} world coordinate systems.
 //!
 //! `look_at` targets a focal point; `look_to` targets a direction.
-//! Output types include [`{{ mat4 }}`], [`{{ affine3 }}`], [`{{ mat3 }}`],
-//! and [`{{ quat }}`]{% if is_f32 %} as well as [`{{ affine3a }}`] and [`{{ mat3a }}`].{% else %}.{% endif %}
 
 use crate::{
     {{ vec3 }}, {{ mat4 }}, {{ mat3 }}, {{ quat }}, {{ affine3 }},
@@ -61,11 +38,7 @@ use crate::{
     {{ cam }}::camera_impl,
 };
 
-{% if is_yup %}
-
 /// Creates a view transform using a camera position, a focal point, and an up direction.
-///
-/// For a {{ handedness }}, {{ up_axis }} view coordinate system.
 ///
 /// # Panics
 ///
@@ -78,8 +51,6 @@ pub fn look_at_mat4(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ m
 
 /// Creates a view transform using a camera position, a facing direction, and an up direction.
 ///
-/// For a {{ handedness }}, {{ up_axis }} view coordinate system.
-///
 /// # Panics
 ///
 /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
@@ -91,8 +62,6 @@ pub fn look_to_mat4(eye: {{ vec3 }}, dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ mat4
 
 /// Creates a view transform using a camera position, a focal point, and an up direction.
 ///
-/// For a {{ handedness }}, {{ up_axis }} view coordinate system.
-///
 /// # Panics
 ///
 /// Will panic if `up` is not normalized when `glam_assert` is enabled.
@@ -103,8 +72,6 @@ pub fn look_at_affine3(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {
 }
 
 /// Creates a view transform using a camera position, a facing direction, and an up direction.
-///
-/// For a {{ handedness }}, {{ up_axis }} view coordinate system.
 ///
 /// # Panics
 ///
@@ -118,8 +85,6 @@ pub fn look_to_affine3(eye: {{ vec3 }}, dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ a
 {% if is_f32 %}
 /// Creates a view transform using a camera position, a focal point, and an up direction.
 ///
-/// For a {{ handedness }}, {{ up_axis }} view coordinate system.
-///
 /// # Panics
 ///
 /// Will panic if `up` is not normalized when `glam_assert` is enabled.
@@ -130,8 +95,6 @@ pub fn look_at_affine3a(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> 
 }
 
 /// Creates a view transform using a camera position, a facing direction, and an up direction.
-///
-/// For a {{ handedness }}, {{ up_axis }} view coordinate system.
 ///
 /// # Panics
 ///
@@ -145,8 +108,6 @@ pub fn look_to_affine3a(eye: {{ vec3 }}, dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ 
 
 /// Creates a view rotation matrix using a camera position, a focal point, and an up direction.
 ///
-/// For a {{ handedness }}, {{ up_axis }} view coordinate system.
-///
 /// # Panics
 ///
 /// Will panic if `up` is not normalized when `glam_assert` is enabled.
@@ -157,8 +118,6 @@ pub fn look_at_mat3(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ m
 }
 
 /// Creates a view rotation matrix using a facing direction and an up direction.
-///
-/// For a {{ handedness }}, {{ up_axis }} view coordinate system.
 ///
 /// # Panics
 ///
@@ -172,8 +131,6 @@ pub fn look_to_mat3(dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ mat3 }} {
 {% if is_f32 %}
 /// Creates a view rotation matrix using a camera position, a focal point, and an up direction.
 ///
-/// For a {{ handedness }}, {{ up_axis }} view coordinate system.
-///
 /// # Panics
 ///
 /// Will panic if `up` is not normalized when `glam_assert` is enabled.
@@ -184,8 +141,6 @@ pub fn look_at_mat3a(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ 
 }
 
 /// Creates a view rotation matrix using a facing direction and an up direction.
-///
-/// For a {{ handedness }}, {{ up_axis }} view coordinate system.
 ///
 /// # Panics
 ///
@@ -199,8 +154,6 @@ pub fn look_to_mat3a(dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ mat3a }} {
 
 /// Creates a quaternion rotation from a camera position, a focal point, and an up direction.
 ///
-/// For a {{ handedness }}, {{ up_axis }} view coordinate system.
-///
 /// # Panics
 ///
 /// Will panic if `up` is not normalized when `glam_assert` is enabled.
@@ -211,8 +164,6 @@ pub fn look_at_quat(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ q
 }
 
 /// Creates a quaternion rotation from a facing direction and an up direction.
-///
-/// For a {{ handedness }}, {{ up_axis }} view coordinate system.
 ///
 /// # Panics
 ///
@@ -223,194 +174,3 @@ pub fn look_to_quat(dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ quat }} {
     camera_impl::look_to_quat::<{{ is_rh }}>(dir, up)
 }
 
-{% else %}
-{# Z-up worlds: convert to Y-up, apply view, convert back #}
-
-{% if is_rh %}
-// Right-handed Z-up view functions
-// Z-up to Y-up conversion: (x, y, z) -> (x, z, -y)
-{% set Zu = "z" %}
-{% set Zn = "y" %}
-{% set sign = "-" %}
-{% else %}
-// Left-handed Z-up view functions
-// Z-up to Y-up conversion: (x, y, z) -> (x, z, y)
-{% set Zu = "z" %}
-{% set Zn = "y" %}
-{% set sign = "" %}
-{% endif %}
-
-#[inline]
-#[must_use]
-fn convert_zup_to_yup(v: {{ vec3 }}) -> {{ vec3 }} {
-    {{ vec3 }}::new(v.x, v.{{ Zu }}, {{ sign }}v.{{ Zn }})
-}
-
-#[inline]
-#[must_use]
-fn convert_yup_to_zup_cols(m: {{ mat4 }}) -> {{ mat4 }} {
-    // V_zup = V_yup * R_zup_to_yup
-    // negate/swap columns of V_yup to account for zup->yup conversion
-    let col0 = m.x_axis;
-    let col1 = m.z_axis;
-    let col2 = -m.y_axis;
-    let col3 = m.w_axis;
-    {{ mat4 }}::from_cols(col0, col1, col2, col3)
-}
-
-/// Creates a view matrix using a camera position, a focal point, and an up direction.
-///
-/// For a {{ handedness }}, {{ up_axis }} view coordinate system.
-///
-/// # Panics
-///
-/// Will panic if `up` is not normalized when `glam_assert` is enabled.
-#[inline]
-#[must_use]
-pub fn look_at_mat4(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ mat4 }} {
-    look_to_mat4(eye, (center - eye).normalize(), up)
-}
-
-/// Creates a view matrix using a camera position, a facing direction, and an up direction.
-///
-/// For a {{ handedness }}, {{ up_axis }} view coordinate system.
-///
-/// # Panics
-///
-/// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
-#[inline]
-#[must_use]
-pub fn look_to_mat4(eye: {{ vec3 }}, dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ mat4 }} {
-    let eye_yup = convert_zup_to_yup(eye);
-    let dir_yup = convert_zup_to_yup(dir);
-    let up_yup = convert_zup_to_yup(up);
-    let v_yup = camera_impl::look_to_mat4::<{{ is_rh }}>(eye_yup, dir_yup, up_yup);
-    convert_yup_to_zup_cols(v_yup)
-}
-
-/// Creates a view transform using a camera position, a focal point, and an up direction.
-///
-/// For a {{ handedness }}, {{ up_axis }} view coordinate system.
-///
-/// # Panics
-///
-/// Will panic if `up` is not normalized when `glam_assert` is enabled.
-#[inline]
-#[must_use]
-pub fn look_at_affine3(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ affine3 }} {
-    look_to_affine3(eye, (center - eye).normalize(), up)
-}
-
-/// Creates a view transform using a camera position, a facing direction, and an up direction.
-///
-/// For a {{ handedness }}, {{ up_axis }} view coordinate system.
-///
-/// # Panics
-///
-/// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
-#[inline]
-#[must_use]
-pub fn look_to_affine3(eye: {{ vec3 }}, dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ affine3 }} {
-    let eye_yup = convert_zup_to_yup(eye);
-    let dir_yup = convert_zup_to_yup(dir);
-    let up_yup = convert_zup_to_yup(up);
-    let v_yup = look_to_affine3_internal(eye_yup, dir_yup, up_yup);
-    {{ affine3 }} {
-        matrix3: {{ mat3 }}::from_cols(v_yup.matrix3.x_axis, v_yup.matrix3.z_axis, -v_yup.matrix3.y_axis),
-        translation: v_yup.translation,
-    }
-}
-
-{% if has_affine3a %}
-/// Creates a view transform using a camera position, a focal point, and an up direction.
-///
-/// For a {{ handedness }}, {{ up_axis }} view coordinate system.
-///
-/// # Panics
-///
-/// Will panic if `up` is not normalized when `glam_assert` is enabled.
-#[inline]
-#[must_use]
-pub fn look_at_affine3a(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ affine3a }} {
-    look_to_affine3a(eye, (center - eye).normalize(), up)
-}
-
-/// Creates a view transform using a camera position, a facing direction, and an up direction.
-///
-/// For a {{ handedness }}, {{ up_axis }} view coordinate system.
-///
-/// # Panics
-///
-/// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
-#[inline]
-#[must_use]
-pub fn look_to_affine3a(eye: {{ vec3 }}, dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ affine3a }} {
-    let eye_yup = convert_zup_to_yup(eye);
-    let dir_yup = convert_zup_to_yup(dir);
-    let up_yup = convert_zup_to_yup(up);
-    let v_yup = look_to_affine3a_internal(eye_yup, dir_yup, up_yup);
-    {{ affine3a }} {
-        matrix3: {{ mat3a }}::from_cols(v_yup.matrix3.x_axis, v_yup.matrix3.z_axis, -v_yup.matrix3.y_axis),
-        translation: v_yup.translation,
-    }
-}
-{% endif %}
-
-/// Creates a view matrix using a camera position, a focal point, and an up direction.
-///
-/// For a {{ handedness }}, {{ up_axis }} view coordinate system.
-///
-/// # Panics
-///
-/// Will panic if `up` is not normalized when `glam_assert` is enabled.
-#[inline]
-#[must_use]
-pub fn look_at_mat3(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ mat3 }} {
-    look_to_mat3((center - eye).normalize(), up)
-}
-
-/// Creates a view matrix using a facing direction and an up direction.
-///
-/// For a {{ handedness }}, {{ up_axis }} view coordinate system.
-///
-/// # Panics
-///
-/// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
-#[inline]
-#[must_use]
-pub fn look_to_mat3(dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ mat3 }} {
-    look_to_mat3_internal(
-        convert_zup_to_yup(dir),
-        convert_zup_to_yup(up),
-    )
-}
-
-/// Creates a quaternion rotation from a camera position, a focal point, and an up direction.
-///
-/// For a {{ handedness }}, {{ up_axis }} view coordinate system.
-///
-/// # Panics
-///
-/// Will panic if `up` is not normalized when `glam_assert` is enabled.
-#[inline]
-#[must_use]
-pub fn look_at_quat(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ quat }} {
-    look_to_quat((center - eye).normalize(), up)
-}
-
-/// Creates a quaternion rotation from a facing direction and an up direction.
-///
-/// For a {{ handedness }}, {{ up_axis }} view coordinate system.
-///
-/// # Panics
-///
-/// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
-#[inline]
-#[must_use]
-pub fn look_to_quat(dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ quat }} {
-    look_to_quat_internal(
-        convert_zup_to_yup(dir),
-        convert_zup_to_yup(up),
-    )
-}
-{% endif %}

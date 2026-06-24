@@ -1,19 +1,12 @@
 // Generated from camera_view.rs.tera template. Edit the template, not the generated file.
 
-//! View (camera) matrix constructors.
-//!
-//! Transforms world-space points into Y-up view space while
-//! preserving left-handedness.
+//! View (camera) matrix constructors for left-handed world coordinate systems.
 //!
 //! `look_at` targets a focal point; `look_to` targets a direction.
-//! Output types include [`Mat4`], [`Affine3`], [`Mat3`],
-//! and [`Quat`] as well as [`Affine3A`] and [`Mat3A`].
 
 use crate::{camera::camera_impl, Affine3, Affine3A, Mat3, Mat3A, Mat4, Quat, Vec3};
 
 /// Creates a view transform using a camera position, a focal point, and an up direction.
-///
-/// For a left-handed, Y-up view coordinate system.
 ///
 /// # Panics
 ///
@@ -26,8 +19,6 @@ pub fn look_at_mat4(eye: Vec3, center: Vec3, up: Vec3) -> Mat4 {
 
 /// Creates a view transform using a camera position, a facing direction, and an up direction.
 ///
-/// For a left-handed, Y-up view coordinate system.
-///
 /// # Panics
 ///
 /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
@@ -38,8 +29,6 @@ pub fn look_to_mat4(eye: Vec3, dir: Vec3, up: Vec3) -> Mat4 {
 }
 
 /// Creates a view transform using a camera position, a focal point, and an up direction.
-///
-/// For a left-handed, Y-up view coordinate system.
 ///
 /// # Panics
 ///
@@ -52,8 +41,6 @@ pub fn look_at_affine3(eye: Vec3, center: Vec3, up: Vec3) -> Affine3 {
 
 /// Creates a view transform using a camera position, a facing direction, and an up direction.
 ///
-/// For a left-handed, Y-up view coordinate system.
-///
 /// # Panics
 ///
 /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
@@ -64,8 +51,6 @@ pub fn look_to_affine3(eye: Vec3, dir: Vec3, up: Vec3) -> Affine3 {
 }
 
 /// Creates a view transform using a camera position, a focal point, and an up direction.
-///
-/// For a left-handed, Y-up view coordinate system.
 ///
 /// # Panics
 ///
@@ -78,8 +63,6 @@ pub fn look_at_affine3a(eye: Vec3, center: Vec3, up: Vec3) -> Affine3A {
 
 /// Creates a view transform using a camera position, a facing direction, and an up direction.
 ///
-/// For a left-handed, Y-up view coordinate system.
-///
 /// # Panics
 ///
 /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
@@ -90,8 +73,6 @@ pub fn look_to_affine3a(eye: Vec3, dir: Vec3, up: Vec3) -> Affine3A {
 }
 
 /// Creates a view rotation matrix using a camera position, a focal point, and an up direction.
-///
-/// For a left-handed, Y-up view coordinate system.
 ///
 /// # Panics
 ///
@@ -104,8 +85,6 @@ pub fn look_at_mat3(eye: Vec3, center: Vec3, up: Vec3) -> Mat3 {
 
 /// Creates a view rotation matrix using a facing direction and an up direction.
 ///
-/// For a left-handed, Y-up view coordinate system.
-///
 /// # Panics
 ///
 /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
@@ -116,8 +95,6 @@ pub fn look_to_mat3(dir: Vec3, up: Vec3) -> Mat3 {
 }
 
 /// Creates a view rotation matrix using a camera position, a focal point, and an up direction.
-///
-/// For a left-handed, Y-up view coordinate system.
 ///
 /// # Panics
 ///
@@ -130,8 +107,6 @@ pub fn look_at_mat3a(eye: Vec3, center: Vec3, up: Vec3) -> Mat3A {
 
 /// Creates a view rotation matrix using a facing direction and an up direction.
 ///
-/// For a left-handed, Y-up view coordinate system.
-///
 /// # Panics
 ///
 /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
@@ -143,8 +118,6 @@ pub fn look_to_mat3a(dir: Vec3, up: Vec3) -> Mat3A {
 
 /// Creates a quaternion rotation from a camera position, a focal point, and an up direction.
 ///
-/// For a left-handed, Y-up view coordinate system.
-///
 /// # Panics
 ///
 /// Will panic if `up` is not normalized when `glam_assert` is enabled.
@@ -155,8 +128,6 @@ pub fn look_at_quat(eye: Vec3, center: Vec3, up: Vec3) -> Quat {
 }
 
 /// Creates a quaternion rotation from a facing direction and an up direction.
-///
-/// For a left-handed, Y-up view coordinate system.
 ///
 /// # Panics
 ///

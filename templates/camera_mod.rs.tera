@@ -7,12 +7,7 @@
 //!
 //! ## Choosing a sub-module
 //!
-//! Pick [`lh_yup`] or [`rh_yup`] based on your **world space** convention:
-//!
-//! | Module | World handedness | Up vector |
-//! |--------|-----------------|----------|
-//! | [`lh_yup`] | Left | Y |
-//! | [`rh_yup`] | Right | Y |
+//! Pick [`lh`] or [`rh`] based on your **world space** convention:
 //!
 //! The view functions in each sub-module transform world-space points into
 //! **Y-up view space** while preserving your world's handedness. The
@@ -29,28 +24,21 @@
 
 mod camera_impl;
 
-{% for world in ["rh_yup", "lh_yup"] %}
+{% for is_rh in [true, false] %}
 
-{% if world == "rh_yup" or world == "rh_zup" %}
+{% if is_rh %}
+    {% set mod = "rh" %}
     {% set handedness = "Right-handed" %}
 {% else %}
+    {% set mod = "lh" %}
     {% set handedness = "Left-handed" %}
 {% endif %}
 
-{% if world == "rh_yup" or world == "lh_yup" %}
-    {% set up_axis = "Y-up" %}
-{% else %}
-    {% set up_axis = "Z-up" %}
-{% endif %}
-
-/// {{ handedness }}, {{ up_axis }}.
-///
 /// View functions produce {{ handedness | lower }} view space transforms.
-/// Projection functions in [`rh_yup::proj`] expect {{ handedness | lower }} view-space input.
-pub mod {{ world }} {
+/// Projection functions expect {{ handedness | lower }} view-space input.
+pub mod {{ mod }} {
     pub mod proj;
     pub mod view;
 }
-
 {% endfor %}
 

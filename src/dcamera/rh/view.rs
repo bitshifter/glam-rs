@@ -1,19 +1,12 @@
 // Generated from camera_view.rs.tera template. Edit the template, not the generated file.
 
-//! View (camera) matrix constructors.
-//!
-//! Transforms world-space points into Y-up view space while
-//! preserving right-handedness.
+//! View (camera) matrix constructors for right-handed world coordinate systems.
 //!
 //! `look_at` targets a focal point; `look_to` targets a direction.
-//! Output types include [`DMat4`], [`DAffine3`], [`DMat3`],
-//! and [`DQuat`].
 
 use crate::{dcamera::camera_impl, DAffine3, DMat3, DMat4, DQuat, DVec3};
 
 /// Creates a view transform using a camera position, a focal point, and an up direction.
-///
-/// For a right-handed, Y-up view coordinate system.
 ///
 /// # Panics
 ///
@@ -26,8 +19,6 @@ pub fn look_at_mat4(eye: DVec3, center: DVec3, up: DVec3) -> DMat4 {
 
 /// Creates a view transform using a camera position, a facing direction, and an up direction.
 ///
-/// For a right-handed, Y-up view coordinate system.
-///
 /// # Panics
 ///
 /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
@@ -38,8 +29,6 @@ pub fn look_to_mat4(eye: DVec3, dir: DVec3, up: DVec3) -> DMat4 {
 }
 
 /// Creates a view transform using a camera position, a focal point, and an up direction.
-///
-/// For a right-handed, Y-up view coordinate system.
 ///
 /// # Panics
 ///
@@ -52,8 +41,6 @@ pub fn look_at_affine3(eye: DVec3, center: DVec3, up: DVec3) -> DAffine3 {
 
 /// Creates a view transform using a camera position, a facing direction, and an up direction.
 ///
-/// For a right-handed, Y-up view coordinate system.
-///
 /// # Panics
 ///
 /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
@@ -64,8 +51,6 @@ pub fn look_to_affine3(eye: DVec3, dir: DVec3, up: DVec3) -> DAffine3 {
 }
 
 /// Creates a view rotation matrix using a camera position, a focal point, and an up direction.
-///
-/// For a right-handed, Y-up view coordinate system.
 ///
 /// # Panics
 ///
@@ -78,8 +63,6 @@ pub fn look_at_mat3(eye: DVec3, center: DVec3, up: DVec3) -> DMat3 {
 
 /// Creates a view rotation matrix using a facing direction and an up direction.
 ///
-/// For a right-handed, Y-up view coordinate system.
-///
 /// # Panics
 ///
 /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
@@ -91,8 +74,6 @@ pub fn look_to_mat3(dir: DVec3, up: DVec3) -> DMat3 {
 
 /// Creates a quaternion rotation from a camera position, a focal point, and an up direction.
 ///
-/// For a right-handed, Y-up view coordinate system.
-///
 /// # Panics
 ///
 /// Will panic if `up` is not normalized when `glam_assert` is enabled.
@@ -103,8 +84,6 @@ pub fn look_at_quat(eye: DVec3, center: DVec3, up: DVec3) -> DQuat {
 }
 
 /// Creates a quaternion rotation from a facing direction and an up direction.
-///
-/// For a right-handed, Y-up view coordinate system.
 ///
 /// # Panics
 ///

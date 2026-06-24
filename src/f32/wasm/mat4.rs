@@ -882,7 +882,7 @@ impl Mat4 {
     /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::lh_yup::view::look_to_mat4` function instead"
+        note = "use the `glam::camera::lh::view::look_to_mat4` function instead"
     )]
     #[inline]
     #[must_use]
@@ -901,7 +901,7 @@ impl Mat4 {
     /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::rh_yup::view::look_to_mat4` function instead"
+        note = "use the `glam::camera::rh::view::look_to_mat4` function instead"
     )]
     #[inline]
     #[must_use]
@@ -930,7 +930,7 @@ impl Mat4 {
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::lh_yup::view::look_at_mat4` function instead"
+        note = "use the `glam::camera::lh::view::look_at_mat4` function instead"
     )]
     #[inline]
     #[must_use]
@@ -949,7 +949,7 @@ impl Mat4 {
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::rh_yup::view::look_at_mat4` function instead"
+        note = "use the `glam::camera::rh::view::look_at_mat4` function instead"
     )]
     #[inline]
     pub fn look_at_rh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
@@ -964,7 +964,7 @@ impl Mat4 {
     /// See <https://registry.khronos.org/OpenGL-Refpages/gl2.1/xhtml/glFrustum.xml>
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::rh_yup::proj::opengl::frustum` function instead"
+        note = "use the `glam::camera::rh::proj::opengl::frustum` function instead"
     )]
     #[inline]
     #[must_use]
@@ -1000,7 +1000,7 @@ impl Mat4 {
     /// enabled.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::lh_yup::proj::directx::frustum` function instead"
+        note = "use the `glam::camera::lh::proj::directx::frustum` function instead"
     )]
     #[inline]
     #[must_use]
@@ -1037,7 +1037,7 @@ impl Mat4 {
     /// enabled.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::rh_yup::proj::directx::frustum` function instead"
+        note = "use the `glam::camera::rh::proj::directx::frustum` function instead"
     )]
     #[inline]
     #[must_use]
@@ -1074,7 +1074,7 @@ impl Mat4 {
     /// See <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml>
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::rh_yup::proj::opengl::perspective` function instead"
+        note = "use the `glam::camera::rh::proj::opengl::perspective` function instead"
     )]
     #[inline]
     #[must_use]
@@ -1107,7 +1107,7 @@ impl Mat4 {
     /// enabled.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::lh_yup::proj::directx::perspective` function instead"
+        note = "use the `glam::camera::lh::proj::directx::perspective` function instead"
     )]
     #[inline]
     #[must_use]
@@ -1135,7 +1135,7 @@ impl Mat4 {
     /// enabled.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::rh_yup::proj::directx::perspective` function instead"
+        note = "use the `glam::camera::rh::proj::directx::perspective` function instead"
     )]
     #[inline]
     #[must_use]
@@ -1164,7 +1164,7 @@ impl Mat4 {
     /// enabled.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::lh_yup::proj::directx::perspective_infinite` function instead"
+        note = "use the `glam::camera::lh::proj::directx::perspective_infinite` function instead"
     )]
     #[inline]
     #[must_use]
@@ -1190,7 +1190,7 @@ impl Mat4 {
     /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::lh_yup::proj::directx::perspective_infinite_reverse` function instead"
+        note = "use the `glam::camera::lh::proj::directx::perspective_infinite_reverse` function instead"
     )]
     #[inline]
     #[must_use]
@@ -1222,7 +1222,7 @@ impl Mat4 {
     /// enabled.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::rh_yup::proj::directx::perspective_infinite` function instead"
+        note = "use the `glam::camera::rh::proj::directx::perspective_infinite` function instead"
     )]
     #[inline]
     #[must_use]
@@ -1246,7 +1246,7 @@ impl Mat4 {
     /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::rh_yup::proj::directx::perspective_infinite_reverse` function instead"
+        note = "use the `glam::camera::rh::proj::directx::perspective_infinite_reverse` function instead"
     )]
     #[inline]
     #[must_use]
@@ -1273,7 +1273,7 @@ impl Mat4 {
     /// Useful to map a right-handed coordinate system to the normalized device coordinates that OpenGL expects.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::rh_yup::proj::opengl::orthographic` function instead"
+        note = "use the `glam::camera::rh::proj::opengl::orthographic` function instead"
     )]
     #[inline]
     #[must_use]
@@ -1305,7 +1305,7 @@ impl Mat4 {
     /// Useful to map a left-handed coordinate system to the normalized device coordinates that WebGPU/Direct3D/Metal expect.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::lh_yup::proj::directx::orthographic` function instead"
+        note = "use the `glam::camera::lh::proj::directx::orthographic` function instead"
     )]
     #[inline]
     #[must_use]
@@ -1338,7 +1338,7 @@ impl Mat4 {
     /// Useful to map a right-handed coordinate system to the normalized device coordinates that WebGPU/Direct3D/Metal expect.
     #[deprecated(
         since = "0.33.1",
-        note = "use the `glam::camera::rh_yup::proj::directx::orthographic` function instead"
+        note = "use the `glam::camera::rh::proj::directx::orthographic` function instead"
     )]
     #[inline]
     #[must_use]
