@@ -1,7 +1,20 @@
 // Generated from camera_impl.rs.tera template. Edit the template, not the generated file.
 
+//! Internal primitives for building view and projection matrices.
+//!
+//! Each function is parameterized over const generics that select the
+//! coordinate system convention:
+//!
+//! * `RH` - right-handed (`true`) vs left-handed (`false`) view space
+//! * `ZO` - NDC Z maps to `[0, 1]` (`true`) vs `[-1, 1]` (`false`)
+//! * `YFLIP` - NDC Y points down (`true`) vs up (`false`)
+//!
+//! These are called by the public wrappers in `lh::proj`, `rh::proj`,
+//! `lh::view`, and `rh::view` and should not be used directly.
+
 use crate::{f64::math, DAffine3, DMat3, DMat4, DQuat, DVec3, DVec4};
 
+/// Computes an orthonormal view basis from eye, direction, and up.
 #[inline(always)]
 #[must_use]
 fn look_to_axes4<const RH: bool>(eye: DVec3, dir: DVec3, up: DVec3) -> [DVec3; 4] {
@@ -18,6 +31,7 @@ fn look_to_axes4<const RH: bool>(eye: DVec3, dir: DVec3, up: DVec3) -> [DVec3; 4
     ]
 }
 
+/// Same as [`look_to_axes4`] but without the translation row.
 #[inline(always)]
 #[must_use]
 fn look_to_axes3<const RH: bool>(dir: DVec3, up: DVec3) -> [DVec3; 3] {
@@ -33,6 +47,7 @@ fn look_to_axes3<const RH: bool>(dir: DVec3, up: DVec3) -> [DVec3; 3] {
     ]
 }
 
+/// Assembles a `DMat4` view matrix from eye, direction, and up.
 #[inline]
 #[must_use]
 pub(crate) fn look_to_mat4<const RH: bool>(eye: DVec3, dir: DVec3, up: DVec3) -> DMat4 {
@@ -45,6 +60,7 @@ pub(crate) fn look_to_mat4<const RH: bool>(eye: DVec3, dir: DVec3, up: DVec3) ->
     )
 }
 
+/// Assembles an `DAffine3` view transform from eye, direction, and up.
 #[inline]
 #[must_use]
 pub(crate) fn look_to_affine3<const RH: bool>(eye: DVec3, dir: DVec3, up: DVec3) -> DAffine3 {
@@ -55,6 +71,7 @@ pub(crate) fn look_to_affine3<const RH: bool>(eye: DVec3, dir: DVec3, up: DVec3)
     }
 }
 
+/// Returns a `DMat3` view rotation (no translation) from direction and up.
 #[inline]
 #[must_use]
 pub(crate) fn look_to_mat3<const RH: bool>(dir: DVec3, up: DVec3) -> DMat3 {
@@ -62,6 +79,7 @@ pub(crate) fn look_to_mat3<const RH: bool>(dir: DVec3, up: DVec3) -> DMat3 {
     DMat3::from_cols(axes[0], axes[1], axes[2])
 }
 
+/// Returns a `DQuat` representing a view rotation from direction and up.
 #[inline]
 #[must_use]
 pub(crate) fn look_to_quat<const RH: bool>(dir: DVec3, up: DVec3) -> DQuat {
@@ -69,32 +87,37 @@ pub(crate) fn look_to_quat<const RH: bool>(dir: DVec3, up: DVec3) -> DQuat {
     DQuat::from_rotation_axes(axes[0], axes[1], axes[2])
 }
 
+/// Builds a perspective projection matrix from FOV, aspect, and near/far planes.
+///
+/// # Panics
+///
+/// Will panic if `near` or `far` are <= 0 when `glam_assert` is enabled.
 #[inline]
 #[must_use]
 pub(crate) fn perspective<const RH: bool, const ZO: bool, const YFLIP: bool>(
     vertical_fov: f64,
     aspect_ratio: f64,
-    z_near: f64,
-    z_far: f64,
+    near: f64,
+    far: f64,
 ) -> DMat4 {
-    glam_assert!(z_near > 0.0 && z_far > 0.0);
+    glam_assert!(near > 0.0 && far > 0.0);
     let (sin_fov, cos_fov) = math::sin_cos(0.5 * vertical_fov);
     let h = cos_fov / sin_fov;
     let xx = h / aspect_ratio;
     let yy = if YFLIP { -h } else { h };
-    let z_range_inv = 1.0 / (z_far - z_near);
+    let z_range_inv = 1.0 / (far - near);
 
     let (zz, tz, zw) = match (ZO, RH) {
-        (true, false) => (z_far * z_range_inv, -z_near * z_far * z_range_inv, 1.0),
+        (true, false) => (far * z_range_inv, -near * far * z_range_inv, 1.0),
         (false, false) => (
-            (z_far + z_near) * z_range_inv,
-            -2.0 * z_far * z_near * z_range_inv,
+            (far + near) * z_range_inv,
+            -2.0 * far * near * z_range_inv,
             1.0,
         ),
-        (true, true) => (-z_far * z_range_inv, -z_near * z_far * z_range_inv, -1.0),
+        (true, true) => (-far * z_range_inv, -near * far * z_range_inv, -1.0),
         (false, true) => (
-            -(z_far + z_near) * z_range_inv,
-            -2.0 * z_far * z_near * z_range_inv,
+            -(far + near) * z_range_inv,
+            -2.0 * far * near * z_range_inv,
             -1.0,
         ),
     };
@@ -107,21 +130,28 @@ pub(crate) fn perspective<const RH: bool, const ZO: bool, const YFLIP: bool>(
     )
 }
 
+/// Like [`perspective`] but with an infinite far plane.
+///
+/// Depth approaches 1 as distance -> infinity.
+///
+/// # Panics
+///
+/// Will panic if `near` <= 0 when `glam_assert` is enabled.
 #[inline]
 #[must_use]
 pub(crate) fn perspective_infinite<const RH: bool, const ZO: bool, const YFLIP: bool>(
     vertical_fov: f64,
     aspect_ratio: f64,
-    z_near: f64,
+    near: f64,
 ) -> DMat4 {
-    glam_assert!(z_near > 0.0);
+    glam_assert!(near > 0.0);
     let (sin_fov, cos_fov) = math::sin_cos(0.5 * vertical_fov);
     let h = cos_fov / sin_fov;
     let xx = h / aspect_ratio;
     let yy = if YFLIP { -h } else { h };
     let zz = if RH { -1.0 } else { 1.0 };
     let zw = zz;
-    let tz = if ZO { -z_near } else { -2.0 * z_near };
+    let tz = if ZO { -near } else { -2.0 * near };
     DMat4::from_cols(
         DVec4::new(xx, 0.0, 0.0, 0.0),
         DVec4::new(0.0, yy, 0.0, 0.0),
@@ -130,20 +160,27 @@ pub(crate) fn perspective_infinite<const RH: bool, const ZO: bool, const YFLIP: 
     )
 }
 
+/// Infinite perspective with reversed Z: near maps to depth 1, infinity to 0.
+///
+/// Improves floating-point depth precision for distant objects.
+///
+/// # Panics
+///
+/// Will panic if `near` <= 0 when `glam_assert` is enabled.
 #[inline]
 #[must_use]
 pub(crate) fn perspective_infinite_reverse<const RH: bool, const YFLIP: bool>(
     vertical_fov: f64,
     aspect_ratio: f64,
-    z_near: f64,
+    near: f64,
 ) -> DMat4 {
-    glam_assert!(z_near > 0.0);
+    glam_assert!(near > 0.0);
     let (sin_fov, cos_fov) = math::sin_cos(0.5 * vertical_fov);
     let h = cos_fov / sin_fov;
     let xx = h / aspect_ratio;
     let yy = if YFLIP { -h } else { h };
     let zw = if RH { -1.0 } else { 1.0 };
-    let tz = z_near;
+    let tz = near;
     DMat4::from_cols(
         DVec4::new(xx, 0.0, 0.0, 0.0),
         DVec4::new(0.0, yy, 0.0, 0.0),
@@ -152,6 +189,7 @@ pub(crate) fn perspective_infinite_reverse<const RH: bool, const YFLIP: bool>(
     )
 }
 
+/// Builds an orthographic projection from left, right, bottom, top, near, far bounds.
 #[inline]
 #[must_use]
 pub(crate) fn orthographic<const RH: bool, const ZO: bool, const YFLIP: bool>(
@@ -192,6 +230,11 @@ pub(crate) fn orthographic<const RH: bool, const ZO: bool, const YFLIP: bool>(
     )
 }
 
+/// Builds a perspective projection from a general frustum.
+///
+/// # Panics
+///
+/// Will panic if `near` or `far` are <= 0 when `glam_assert` is enabled.
 #[inline]
 #[must_use]
 pub(crate) fn frustum<const RH: bool, const ZO: bool, const YFLIP: bool>(

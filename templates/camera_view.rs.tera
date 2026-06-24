@@ -26,9 +26,13 @@
     {% set handedness = "left-handed" %}
 {% endif %}
 
-//! View (camera) matrix constructors for {{ handedness }} world coordinate systems.
+//! View (camera) matrix constructors for {{ handedness }} world coordinates.
 //!
-//! `look_at` targets a focal point; `look_to` targets a direction.
+//! Every function transforms world-space points into Y-up view space while
+//! preserving handedness.
+//!
+//! * `look_at_*` targets a focal point (`center`)
+//! * `look_to_*` targets a forward direction (`dir`)
 
 use crate::{
     {{ vec3 }}, {{ mat4 }}, {{ mat3 }}, {{ quat }}, {{ affine3 }},
@@ -38,7 +42,7 @@ use crate::{
     {{ cam }}::camera_impl,
 };
 
-/// Creates a view transform using a camera position, a focal point, and an up direction.
+/// Returns a `{{ mat4 }}` view matrix from eye, focal point, and up.
 ///
 /// # Panics
 ///
@@ -49,7 +53,7 @@ pub fn look_at_mat4(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ m
     look_to_mat4(eye, (center - eye).normalize(), up)
 }
 
-/// Creates a view transform using a camera position, a facing direction, and an up direction.
+/// Returns a `{{ mat4 }}` view matrix from eye, forward direction, and up.
 ///
 /// # Panics
 ///
@@ -60,7 +64,7 @@ pub fn look_to_mat4(eye: {{ vec3 }}, dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ mat4
     camera_impl::look_to_mat4::<{{ is_rh }}>(eye, dir, up)
 }
 
-/// Creates a view transform using a camera position, a focal point, and an up direction.
+/// Returns an `{{ affine3 }}` view transform from eye, focal point, and up.
 ///
 /// # Panics
 ///
@@ -71,7 +75,7 @@ pub fn look_at_affine3(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {
     look_to_affine3(eye, (center - eye).normalize(), up)
 }
 
-/// Creates a view transform using a camera position, a facing direction, and an up direction.
+/// Returns an `{{ affine3 }}` view transform from eye, forward direction, and up.
 ///
 /// # Panics
 ///
@@ -83,7 +87,7 @@ pub fn look_to_affine3(eye: {{ vec3 }}, dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ a
 }
 
 {% if is_f32 %}
-/// Creates a view transform using a camera position, a focal point, and an up direction.
+/// Returns an `{{ affine3a }}` view transform from eye, focal point, and up.
 ///
 /// # Panics
 ///
@@ -94,7 +98,7 @@ pub fn look_at_affine3a(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> 
     look_to_affine3a(eye, (center - eye).normalize(), up)
 }
 
-/// Creates a view transform using a camera position, a facing direction, and an up direction.
+/// Returns an `{{ affine3a }}` view transform from eye, forward direction, and up.
 ///
 /// # Panics
 ///
@@ -106,7 +110,7 @@ pub fn look_to_affine3a(eye: {{ vec3 }}, dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ 
 }
 {% endif %}
 
-/// Creates a view rotation matrix using a camera position, a focal point, and an up direction.
+/// Returns a `{{ mat3 }}` view rotation (no translation) from eye, focal point, and up.
 ///
 /// # Panics
 ///
@@ -117,7 +121,7 @@ pub fn look_at_mat3(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ m
     look_to_mat3((center - eye).normalize(), up)
 }
 
-/// Creates a view rotation matrix using a facing direction and an up direction.
+/// Returns a `{{ mat3 }}` view rotation (no translation) from direction and up.
 ///
 /// # Panics
 ///
@@ -129,7 +133,7 @@ pub fn look_to_mat3(dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ mat3 }} {
 }
 
 {% if is_f32 %}
-/// Creates a view rotation matrix using a camera position, a focal point, and an up direction.
+/// Returns a `{{ mat3a }}` view rotation (no translation) from eye, focal point, and up.
 ///
 /// # Panics
 ///
@@ -140,7 +144,7 @@ pub fn look_at_mat3a(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ 
     look_to_mat3a((center - eye).normalize(), up)
 }
 
-/// Creates a view rotation matrix using a facing direction and an up direction.
+/// Returns a `{{ mat3a }}` view rotation (no translation) from direction and up.
 ///
 /// # Panics
 ///
@@ -152,7 +156,7 @@ pub fn look_to_mat3a(dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ mat3a }} {
 }
 {% endif %}
 
-/// Creates a quaternion rotation from a camera position, a focal point, and an up direction.
+/// Returns a `{{ quat }}` view rotation from eye, focal point, and up.
 ///
 /// # Panics
 ///
@@ -163,7 +167,7 @@ pub fn look_at_quat(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ q
     look_to_quat((center - eye).normalize(), up)
 }
 
-/// Creates a quaternion rotation from a facing direction and an up direction.
+/// Returns a `{{ quat }}` view rotation from direction and up.
 ///
 /// # Panics
 ///

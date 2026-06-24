@@ -102,6 +102,8 @@ pub mod vulkan {
     ///
     /// Maps `near` to depth `1` and infinity to depth `0`.
     ///
+    /// Reversed Z improves depth precision when used with a floating-point depth buffer.
+    ///
     /// Expects a right-handed view space input.
     ///
     /// # Panics
@@ -185,6 +187,8 @@ pub mod directx {
     /// DirectX and WebGPU.
     ///
     /// Maps `near` to depth `1` and infinity to depth `0`.
+    ///
+    /// Reversed Z improves depth precision when used with a floating-point depth buffer.
     ///
     /// Expects a right-handed view space input.
     ///

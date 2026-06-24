@@ -1,5 +1,17 @@
 // Generated from {{template_path}} template. Edit the template, not the generated file.
 
+//! Internal primitives for building view and projection matrices.
+//!
+//! Each function is parameterized over const generics that select the
+//! coordinate system convention:
+//!
+//! * `RH` - right-handed (`true`) vs left-handed (`false`) view space
+//! * `ZO` - NDC Z maps to `[0, 1]` (`true`) vs `[-1, 1]` (`false`)
+//! * `YFLIP` - NDC Y points down (`true`) vs up (`false`)
+//!
+//! These are called by the public wrappers in `lh::proj`, `rh::proj`,
+//! `lh::view`, and `rh::view` and should not be used directly.
+
 {% if scalar_t == "f32" %}
     {% set vec3_t = "Vec3" %}
     {% set vec4_t = "Vec4" %}
@@ -29,6 +41,7 @@ use crate::{
     {{ scalar_t }}::math,
 };
 
+/// Computes an orthonormal view basis from eye, direction, and up.
 #[inline(always)]
 #[must_use]
 fn look_to_axes4<const RH: bool>(eye: {{ vec3_t }}, dir: {{ vec3_t }}, up: {{ vec3_t }}) -> [{{ vec3_t }}; 4] {
@@ -45,6 +58,7 @@ fn look_to_axes4<const RH: bool>(eye: {{ vec3_t }}, dir: {{ vec3_t }}, up: {{ ve
     ]
 }
 
+/// Same as [`look_to_axes4`] but without the translation row.
 #[inline(always)]
 #[must_use]
 fn look_to_axes3<const RH: bool>(dir: {{ vec3_t }}, up: {{ vec3_t }}) -> [{{ vec3_t }}; 3] {
@@ -61,6 +75,7 @@ fn look_to_axes3<const RH: bool>(dir: {{ vec3_t }}, up: {{ vec3_t }}) -> [{{ vec
 }
 
 
+/// Assembles a `{{ mat4_t }}` view matrix from eye, direction, and up.
 #[inline]
 #[must_use]
 pub(crate) fn look_to_mat4<const RH: bool>(eye: {{ vec3_t }}, dir: {{ vec3_t }}, up: {{ vec3_t }}) -> {{ mat4_t }} {
@@ -73,6 +88,7 @@ pub(crate) fn look_to_mat4<const RH: bool>(eye: {{ vec3_t }}, dir: {{ vec3_t }},
     )
 }
 
+/// Assembles an `{{ affine3_t }}` view transform from eye, direction, and up.
 #[inline]
 #[must_use]
 pub(crate) fn look_to_affine3<const RH: bool>(eye: {{ vec3_t }}, dir: {{ vec3_t }}, up: {{ vec3_t }}) -> {{ affine3_t }} {
@@ -88,6 +104,7 @@ pub(crate) fn look_to_affine3<const RH: bool>(eye: {{ vec3_t }}, dir: {{ vec3_t 
 }
 
 {% if is_f32 %}
+/// Assembles an `{{ affine3a_t }}` view transform from eye, direction, and up.
 #[inline]
 #[must_use]
 pub(crate) fn look_to_affine3a<const RH: bool>(eye: {{ vec3_t }}, dir: {{ vec3_t }}, up: {{ vec3_t }}) -> {{ affine3a_t }} {
@@ -102,6 +119,7 @@ pub(crate) fn look_to_affine3a<const RH: bool>(eye: {{ vec3_t }}, dir: {{ vec3_t
     }
 }
 
+/// Returns a `{{ mat3a_t }}` view rotation (no translation) from direction and up.
 #[inline]
 #[must_use]
 pub(crate) fn look_to_mat3a<const RH: bool>(dir: {{ vec3_t }}, up: {{ vec3_t }}) -> {{ mat3a_t }} {
@@ -114,6 +132,7 @@ pub(crate) fn look_to_mat3a<const RH: bool>(dir: {{ vec3_t }}, up: {{ vec3_t }})
 }
 {% endif %}
 
+/// Returns a `{{ mat3_t }}` view rotation (no translation) from direction and up.
 #[inline]
 #[must_use]
 pub(crate) fn look_to_mat3<const RH: bool>(dir: {{ vec3_t }}, up: {{ vec3_t }}) -> {{ mat3_t }} {
@@ -125,6 +144,7 @@ pub(crate) fn look_to_mat3<const RH: bool>(dir: {{ vec3_t }}, up: {{ vec3_t }}) 
     )
 }
 
+/// Returns a `{{ quat_t }}` representing a view rotation from direction and up.
 #[inline]
 #[must_use]
 pub(crate) fn look_to_quat<const RH: bool>(dir: {{ vec3_t }}, up: {{ vec3_t }}) -> {{ quat_t }} {
@@ -136,28 +156,33 @@ pub(crate) fn look_to_quat<const RH: bool>(dir: {{ vec3_t }}, up: {{ vec3_t }}) 
     )
 }
 
+/// Builds a perspective projection matrix from FOV, aspect, and near/far planes.
+///
+/// # Panics
+///
+/// Will panic if `near` or `far` are <= 0 when `glam_assert` is enabled.
 #[inline]
 #[must_use]
-pub(crate) fn perspective<const RH: bool, const ZO: bool, const YFLIP: bool>(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, z_near: {{ scalar_t }}, z_far: {{ scalar_t }}) -> {{ mat4_t }} {
-    glam_assert!(z_near > 0.0 && z_far > 0.0);
+pub(crate) fn perspective<const RH: bool, const ZO: bool, const YFLIP: bool>(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
+    glam_assert!(near > 0.0 && far > 0.0);
     let (sin_fov, cos_fov) = math::sin_cos(0.5 * vertical_fov);
     let h = cos_fov / sin_fov;
     let xx = h / aspect_ratio;
     let yy = if YFLIP { -h } else { h };
-    let z_range_inv = 1.0 / (z_far - z_near);
+    let z_range_inv = 1.0 / (far - near);
 
     let (zz, tz, zw) = match (ZO, RH) {
         (true, false) => {
-            (z_far * z_range_inv, -z_near * z_far * z_range_inv, 1.0)
+            (far * z_range_inv, -near * far * z_range_inv, 1.0)
         }
         (false, false) => {
-            ((z_far + z_near) * z_range_inv, -2.0 * z_far * z_near * z_range_inv, 1.0)
+            ((far + near) * z_range_inv, -2.0 * far * near * z_range_inv, 1.0)
         }
         (true, true) => {
-            (-z_far * z_range_inv, -z_near * z_far * z_range_inv, -1.0)
+            (-far * z_range_inv, -near * far * z_range_inv, -1.0)
         }
         (false, true) => {
-            (-(z_far + z_near) * z_range_inv, -2.0 * z_far * z_near * z_range_inv, -1.0)
+            (-(far + near) * z_range_inv, -2.0 * far * near * z_range_inv, -1.0)
         }
     };
 
@@ -169,17 +194,24 @@ pub(crate) fn perspective<const RH: bool, const ZO: bool, const YFLIP: bool>(ver
     )
 }
 
+/// Like [`perspective`] but with an infinite far plane.
+///
+/// Depth approaches 1 as distance -> infinity.
+///
+/// # Panics
+///
+/// Will panic if `near` <= 0 when `glam_assert` is enabled.
 #[inline]
 #[must_use]
-pub(crate) fn perspective_infinite<const RH: bool, const ZO: bool, const YFLIP: bool>(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, z_near: {{ scalar_t }}) -> {{ mat4_t }} {
-    glam_assert!(z_near > 0.0);
+pub(crate) fn perspective_infinite<const RH: bool, const ZO: bool, const YFLIP: bool>(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, near: {{ scalar_t }}) -> {{ mat4_t }} {
+    glam_assert!(near > 0.0);
     let (sin_fov, cos_fov) = math::sin_cos(0.5 * vertical_fov);
     let h = cos_fov / sin_fov;
     let xx = h / aspect_ratio;
     let yy = if YFLIP { -h } else { h };
     let zz = if RH { -1.0 } else { 1.0 };
     let zw = zz;
-    let tz = if ZO { -z_near } else { -2.0 * z_near };
+    let tz = if ZO { -near } else { -2.0 * near };
     {{ mat4_t }}::from_cols(
         {{ vec4_t }}::new(xx, 0.0, 0.0, 0.0),
         {{ vec4_t }}::new(0.0, yy, 0.0, 0.0),
@@ -188,20 +220,27 @@ pub(crate) fn perspective_infinite<const RH: bool, const ZO: bool, const YFLIP: 
     )
 }
 
+/// Infinite perspective with reversed Z: near maps to depth 1, infinity to 0.
+///
+/// Improves floating-point depth precision for distant objects.
+///
+/// # Panics
+///
+/// Will panic if `near` <= 0 when `glam_assert` is enabled.
 #[inline]
 #[must_use]
 pub(crate) fn perspective_infinite_reverse<const RH: bool, const YFLIP: bool>(
     vertical_fov: {{ scalar_t }},
     aspect_ratio: {{ scalar_t }},
-    z_near: {{ scalar_t }},
+    near: {{ scalar_t }},
 ) -> {{ mat4_t }} {
-    glam_assert!(z_near > 0.0);
+    glam_assert!(near > 0.0);
     let (sin_fov, cos_fov) = math::sin_cos(0.5 * vertical_fov);
     let h = cos_fov / sin_fov;
     let xx = h / aspect_ratio;
     let yy = if YFLIP { -h } else { h };
     let zw = if RH { -1.0 } else { 1.0 };
-    let tz = z_near;
+    let tz = near;
     {{ mat4_t }}::from_cols(
         {{ vec4_t }}::new(xx, 0.0, 0.0, 0.0),
         {{ vec4_t }}::new(0.0, yy, 0.0, 0.0),
@@ -210,6 +249,7 @@ pub(crate) fn perspective_infinite_reverse<const RH: bool, const YFLIP: bool>(
     )
 }
 
+/// Builds an orthographic projection from left, right, bottom, top, near, far bounds.
 #[inline]
 #[must_use]
 pub(crate) fn orthographic<const RH: bool, const ZO: bool, const YFLIP: bool>(
@@ -242,6 +282,11 @@ pub(crate) fn orthographic<const RH: bool, const ZO: bool, const YFLIP: bool>(
     )
 }
 
+/// Builds a perspective projection from a general frustum.
+///
+/// # Panics
+///
+/// Will panic if `near` or `far` are <= 0 when `glam_assert` is enabled.
 #[inline]
 #[must_use]
 pub(crate) fn frustum<const RH: bool, const ZO: bool, const YFLIP: bool>(left: {{ scalar_t }}, right: {{ scalar_t }}, bottom: {{ scalar_t }}, top: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {

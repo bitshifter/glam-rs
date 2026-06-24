@@ -14,6 +14,9 @@
 //! corresponding projection functions expect view-space input in that same
 //! handedness.
 //!
+//! The `view` sub-module outputs Y-up view space; the `proj` sub-module expects
+//! its input in that same view space.
+//!
 //! Within each `proj` sub-module, pick the API-specific constructor:
 //!
 //! | Module     | NDC Z   | NDC Y |
