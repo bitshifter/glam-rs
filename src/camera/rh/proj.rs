@@ -58,7 +58,7 @@ pub mod opengl {
 pub mod vulkan {
     //! Vulkan NDC convention: Z range **[0, 1]**, Y-down.
     //!
-    //! Expects a right-handed view space input.
+    //! Expects a right-handed Y-up view space input.
     //!
     //! Includes standard, infinite-far, and reverse-depth variants.
 
@@ -142,7 +142,7 @@ pub mod vulkan {
 pub mod directx {
     //! DirectX and WebGPU NDC convention: Z range **[0, 1]**, Y-up.
     //!
-    //! Expects a right-handed view space input.
+    //! Expects a right-handed Y-up view space input.
     //!
     //! Includes standard, infinite-far, and reverse-depth variants.
 

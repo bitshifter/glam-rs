@@ -94,7 +94,7 @@ pub mod opengl {
 pub mod {{ api }} {
     //! {{ api_desc }} NDC convention: Z range **{{ api_z }}**, {{ api_y }}.
     //!
-    //! Expects a {{ handedness }} view space input.
+    //! Expects a {{ handedness }} Y-up view space input.
     //!
     //! Includes standard, infinite-far, and reverse-depth variants.
 
