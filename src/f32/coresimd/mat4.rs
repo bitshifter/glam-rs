@@ -25,8 +25,7 @@ pub const fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat
 
 /// A 4x4 column major matrix.
 ///
-/// This 4x4 matrix type features convenience methods for creating and using affine transforms and
-/// perspective projections. If you are primarily dealing with 3D affine transformations
+/// If you are primarily dealing with 3D affine transformations
 /// considering using [`Affine3A`](crate::Affine3A) which is faster than a 4x4 matrix
 /// for some affine operations.
 ///
@@ -34,24 +33,11 @@ pub const fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat
 /// using methods such as [`Self::from_translation()`], [`Self::from_quat()`],
 /// [`Self::from_scale()`] and [`Self::from_scale_rotation_translation()`].
 ///
-/// Orthographic projections can be created using the methods [`Self::orthographic_lh()`] for
-/// left-handed coordinate systems and [`Self::orthographic_rh()`] for right-handed
-/// systems. The resulting matrix is also an affine transformation.
-///
 /// The [`Self::transform_point3()`] and [`Self::transform_vector3()`] convenience methods
 /// are provided for performing affine transformations on 3D vectors and points. These
 /// multiply 3D inputs as 4D vectors with an implicit `w` value of `1` for points and `0`
 /// for vectors respectively. These methods assume that `Self` contains a valid affine
 /// transform.
-///
-/// Perspective projections can be created using methods such as
-/// [`Self::perspective_lh()`], [`Self::perspective_infinite_lh()`] and
-/// [`Self::perspective_infinite_reverse_lh()`] for left-handed co-ordinate systems and
-/// [`Self::perspective_rh()`], [`Self::perspective_infinite_rh()`] and
-/// [`Self::perspective_infinite_reverse_rh()`] for right-handed co-ordinate systems.
-///
-/// The resulting perspective project can be use to transform 3D vectors as points with
-/// perspective correction using the [`Self::project_point3()`] convenience method.
 #[derive(Clone, Copy)]
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[repr(C)]
