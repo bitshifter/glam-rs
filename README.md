@@ -13,11 +13,13 @@ A simple and fast 3D math library for games and graphics.
   * square matrices: `Mat2`, `Mat3`, `Mat3A` and `Mat4`
   * a quaternion type: `Quat`
   * affine transformation types: `Affine2`, `Affine3` and `Affine3A`
+  * camera view and projection constructors: `camera` module
 * `f64` types
   * vectors: `DVec2`, `DVec3` and `DVec4`
   * square matrices: `DMat2`, `DMat3` and `DMat4`
   * a quaternion type: `DQuat`
   * affine transformation types: `DAffine2` and `DAffine3`
+  * camera view and projection constructors: `dcamera` module
 * `i8` types
   * vectors: `I8Vec2`, `I8Vec3` and `I8Vec4`
 * `u8` types
@@ -204,6 +206,15 @@ contiguous memory.
 
 `glam` is co-ordinate system agnostic and intends to support both right-handed
 and left-handed conventions.
+
+### Camera
+
+`glam` provides a `camera` module with view matrix (`look_at`, `look_to`)
+and projection matrix (`perspective`, `orthographic`, `frustum`) constructors.
+
+Pick the `rh` or `lh` sub-module based on your world space handedness,
+then the API-specific constructor for your target graphics API convention
+(OpenGL, DirectX, Vulkan, or WebGPU).
 
 ## Design Philosophy
 

@@ -26,13 +26,18 @@
     {% set handedness = "left-handed" %}
 {% endif %}
 
-//! View (camera) matrix constructors for {{ handedness }} world coordinates.
+//! View (camera) constructors for {{ handedness }} world coordinate systems.
 //!
 //! Every function transforms world space points into a {{ handedness }} Y-up
 //! view space with X-right and {% if is_rh %}-Z-forward{% else %}+Z-forward{% endif %}.
 //!
 //! * `look_at_*` targets a focal point (`center`)
 //! * `look_to_*` targets a forward direction (`dir`)
+//!
+//! Functions returning `{{ mat4 }}`, `{{ affine3 }}`,{% if is_f32 %} `{{ affine3a }}`,{% endif %} or
+//! similar return a full view transform (rotation and translation).
+//! Functions returning `{{ mat3 }}`,{% if is_f32 %} `{{ mat3a }}`,{% endif %} or `{{ quat }}` return
+//! only the view rotation.
 
 use crate::{
     {{ vec3 }}, {{ mat4 }}, {{ mat3 }}, {{ quat }}, {{ affine3 }},

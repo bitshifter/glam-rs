@@ -1,12 +1,17 @@
 // Generated from camera_view.rs.tera template. Edit the template, not the generated file.
 
-//! View (camera) matrix constructors for left-handed world coordinates.
+//! View (camera) constructors for left-handed world coordinate systems.
 //!
 //! Every function transforms world space points into a left-handed Y-up
 //! view space with X-right and +Z-forward.
 //!
 //! * `look_at_*` targets a focal point (`center`)
 //! * `look_to_*` targets a forward direction (`dir`)
+//!
+//! Functions returning `DMat4`, `DAffine3`, or
+//! similar return a full view transform (rotation and translation).
+//! Functions returning `DMat3`, or `DQuat` return
+//! only the view rotation.
 
 use crate::{dcamera::camera_impl, DAffine3, DMat3, DMat4, DQuat, DVec3};
 

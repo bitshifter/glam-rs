@@ -1,12 +1,17 @@
 // Generated from camera_view.rs.tera template. Edit the template, not the generated file.
 
-//! View (camera) matrix constructors for right-handed world coordinates.
+//! View (camera) constructors for right-handed world coordinate systems.
 //!
 //! Every function transforms world space points into a right-handed Y-up
 //! view space with X-right and -Z-forward.
 //!
 //! * `look_at_*` targets a focal point (`center`)
 //! * `look_to_*` targets a forward direction (`dir`)
+//!
+//! Functions returning `Mat4`, `Affine3`, `Affine3A`, or
+//! similar return a full view transform (rotation and translation).
+//! Functions returning `Mat3`, `Mat3A`, or `Quat` return
+//! only the view rotation.
 
 use crate::{camera::camera_impl, Affine3, Affine3A, Mat3, Mat3A, Mat4, Quat, Vec3};
 

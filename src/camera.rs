@@ -32,8 +32,8 @@
 
 mod camera_impl;
 
-/// View functions produce right-handed view space transforms with
-/// +Y = up, +X = right, and -Z = forward.
+/// View functions produce right-handed Y-up view space with
+/// X-right and the negative Z axis pointing forward.
 ///
 /// Projection functions expect right-handed Y-up view space input.
 pub mod rh {
@@ -41,8 +41,8 @@ pub mod rh {
     pub mod view;
 }
 
-/// View functions produce left-handed view space transforms with
-/// +Y = up, +X = right, and +Z = forward.
+/// View functions produce left-handed Y-up view space with
+/// X-right and the positive Z axis pointing forward.
 ///
 /// Projection functions expect left-handed Y-up view space input.
 pub mod lh {

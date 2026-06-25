@@ -10,11 +10,13 @@
   * square matrices: [`Mat2`], [`Mat3`], [`Mat3A`] and [`Mat4`]
   * a quaternion type: [`Quat`]
   * affine transformation types: [`Affine2`], [`Affine3`] and [`Affine3A`]
+  * camera: [`camera`] module with view and projection constructors
 * [`f64`](mod@f64) types
   * vectors: [`DVec2`], [`DVec3`] and [`DVec4`]
   * square matrices: [`DMat2`], [`DMat3`] and [`DMat4`]
   * a quaternion type: [`DQuat`]
   * affine transformation types: [`DAffine2`] and [`DAffine3`]
+  * camera: [`dcamera`] module with view and projection constructors
 * [`i8`](mod@i8) types
   * vectors: [`I8Vec2`], [`I8Vec3`] and [`I8Vec4`]
 * [`u8`](mod@u8) types
@@ -150,6 +152,18 @@ Matrices are stored in memory in column-major order.
 
 All angles are in radians. Rust provides the `f32::to_radians()` and `f64::to_radians()` methods to
 convert from degrees.
+
+## Camera
+
+`glam` provides a [`camera`] module with view matrix (`look_at`, `look_to`) and
+projection matrix (`perspective`, `orthographic`, `frustum`) constructors.
+
+View functions transform world space points into Y-up view space. Choose [`rh`] or
+[`lh`] based on your world space handedness.
+
+Projection functions expect Y-up view space input with matching handedness. Within
+each sub-module, constructors are available for common graphics API conventions,
+including OpenGL, DirectX, Vulkan, and WebGPU.
 
 ## Direct element access
 
