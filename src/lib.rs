@@ -437,6 +437,9 @@ pub mod isize;
 #[cfg(feature = "isize")]
 pub use self::isize::*;
 
+/** The glam prelude, including all common types but excluding camera modules. */
+pub mod prelude;
+
 /** Traits adding swizzle methods to all vector types. */
 pub mod swizzles;
 pub use self::swizzles::{Vec2Swizzles, Vec3Swizzles, Vec4Swizzles};
