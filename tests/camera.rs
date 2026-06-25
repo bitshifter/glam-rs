@@ -145,6 +145,23 @@ macro_rules! impl_camera_tests {
             assert_approx_eq!(pt.z, ndc.z_far, 1e-6);
         }
 
+        fn check_proj_near(axes: &AxisConfig, ndc: &NdcConfig, view: &$mat4, proj: &$mat4) {
+            // For infinite projections, only the near plane is testable.
+            // (Far plane is at infinity, which cannot be represented.)
+            let pt = (proj * (view * (axes.forward * 1.0).to_homogeneous())).project();
+            assert_approx_eq!(pt.x, 0.0, 1e-6);
+            assert_approx_eq!(pt.y, 0.0, 1e-6);
+            assert_approx_eq!(pt.z, ndc.z_near, 1e-6);
+        }
+
+        fn check_proj_reverse_near(axes: &AxisConfig, ndc: &NdcConfig, view: &$mat4, proj: &$mat4) {
+            // Reverse-z: near plane maps to the far NDC depth, infinity maps to near NDC depth.
+            let pt = (proj * (view * (axes.forward * 1.0).to_homogeneous())).project();
+            assert_approx_eq!(pt.x, 0.0, 1e-6);
+            assert_approx_eq!(pt.y, 0.0, 1e-6);
+            assert_approx_eq!(pt.z, ndc.z_far, 1e-6);
+        }
+
         fn check_view_rotation_mat3(axes: &AxisConfig, rot: &$mat3) {
             let expected_z = handedness_sign(axes) * 5.0;
 
@@ -885,6 +902,7 @@ macro_rules! impl_view_tests {
 
 macro_rules! impl_pipeline_tests {
     ($t:ident, $axes:ident) => {
+        // ---- perspective ----
         glam_test!(test_opengl_pipeline, {
             let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
             let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
@@ -907,6 +925,102 @@ macro_rules! impl_pipeline_tests {
             check_view(&$axes, &v);
             check_proj_direction(&$axes, &NDC_DIRECTX, &v, &p);
             check_proj_near_far(&$axes, &NDC_DIRECTX, &v, &p);
+        });
+
+        // ---- orthographic ----
+        glam_test!(test_opengl_orthographic_pipeline, {
+            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
+            let p = proj::opengl::orthographic(-5.0, 5.0, -5.0, 5.0, 1.0, 10.0);
+            check_view(&$axes, &v);
+            check_proj_direction(&$axes, &NDC_OPENGL, &v, &p);
+            check_proj_near_far(&$axes, &NDC_OPENGL, &v, &p);
+        });
+
+        glam_test!(test_vulkan_orthographic_pipeline, {
+            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
+            let p = proj::vulkan::orthographic(-5.0, 5.0, -5.0, 5.0, 1.0, 10.0);
+            check_view(&$axes, &v);
+            check_proj_direction(&$axes, &NDC_VULKAN, &v, &p);
+            check_proj_near_far(&$axes, &NDC_VULKAN, &v, &p);
+        });
+
+        glam_test!(test_directx_orthographic_pipeline, {
+            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
+            let p = proj::directx::orthographic(-5.0, 5.0, -5.0, 5.0, 1.0, 10.0);
+            check_view(&$axes, &v);
+            check_proj_direction(&$axes, &NDC_DIRECTX, &v, &p);
+            check_proj_near_far(&$axes, &NDC_DIRECTX, &v, &p);
+        });
+
+        // ---- frustum ----
+        glam_test!(test_opengl_frustum_pipeline, {
+            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
+            let fov = $t::to_radians(90.0);
+            let f = (0.5 * fov).tan();
+            let height = 1.0 * f;
+            let width = height * 1.0;
+            let p = proj::opengl::frustum(-width, width, -height, height, 1.0, 10.0);
+            check_view(&$axes, &v);
+            check_proj_direction(&$axes, &NDC_OPENGL, &v, &p);
+            check_proj_near_far(&$axes, &NDC_OPENGL, &v, &p);
+        });
+
+        glam_test!(test_vulkan_frustum_pipeline, {
+            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
+            let fov = $t::to_radians(90.0);
+            let f = (0.5 * fov).tan();
+            let height = 1.0 * f;
+            let width = height * 1.0;
+            let p = proj::vulkan::frustum(-width, width, -height, height, 1.0, 10.0);
+            check_view(&$axes, &v);
+            check_proj_direction(&$axes, &NDC_VULKAN, &v, &p);
+            check_proj_near_far(&$axes, &NDC_VULKAN, &v, &p);
+        });
+
+        glam_test!(test_directx_frustum_pipeline, {
+            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
+            let fov = $t::to_radians(90.0);
+            let f = (0.5 * fov).tan();
+            let height = 1.0 * f;
+            let width = height * 1.0;
+            let p = proj::directx::frustum(-width, width, -height, height, 1.0, 10.0);
+            check_view(&$axes, &v);
+            check_proj_direction(&$axes, &NDC_DIRECTX, &v, &p);
+            check_proj_near_far(&$axes, &NDC_DIRECTX, &v, &p);
+        });
+
+        // ---- perspective_infinite (Vulkan / DirectX only) ----
+        glam_test!(test_vulkan_infinite_pipeline, {
+            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
+            let p = proj::vulkan::perspective_infinite($t::to_radians(90.0), 1.0, 1.0);
+            check_view(&$axes, &v);
+            check_proj_direction(&$axes, &NDC_VULKAN, &v, &p);
+            check_proj_near(&$axes, &NDC_VULKAN, &v, &p);
+        });
+
+        glam_test!(test_directx_infinite_pipeline, {
+            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
+            let p = proj::directx::perspective_infinite($t::to_radians(90.0), 1.0, 1.0);
+            check_view(&$axes, &v);
+            check_proj_direction(&$axes, &NDC_DIRECTX, &v, &p);
+            check_proj_near(&$axes, &NDC_DIRECTX, &v, &p);
+        });
+
+        // ---- perspective_infinite_reverse (Vulkan / DirectX only) ----
+        glam_test!(test_vulkan_infinite_reverse_pipeline, {
+            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
+            let p = proj::vulkan::perspective_infinite_reverse($t::to_radians(90.0), 1.0, 1.0);
+            check_view(&$axes, &v);
+            check_proj_direction(&$axes, &NDC_VULKAN, &v, &p);
+            check_proj_reverse_near(&$axes, &NDC_VULKAN, &v, &p);
+        });
+
+        glam_test!(test_directx_infinite_reverse_pipeline, {
+            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
+            let p = proj::directx::perspective_infinite_reverse($t::to_radians(90.0), 1.0, 1.0);
+            check_view(&$axes, &v);
+            check_proj_direction(&$axes, &NDC_DIRECTX, &v, &p);
+            check_proj_reverse_near(&$axes, &NDC_DIRECTX, &v, &p);
         });
     };
 }
