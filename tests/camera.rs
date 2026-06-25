@@ -529,6 +529,13 @@ macro_rules! impl_camera_tests {
                 assert_approx_eq!(deprecated_frustum, frustum);
                 assert_approx_eq!(deprecated_perspective, perspective);
                 assert_approx_eq!(frustum, perspective);
+
+                should_glam_assert!({
+                    $camera::rh::proj::opengl::frustum(-1.0, 1.0, -1.0, 1.0, 0.0, 1.0)
+                });
+                should_glam_assert!({
+                    $camera::rh::proj::opengl::frustum(-1.0, 1.0, -1.0, 1.0, 1.0, 0.0)
+                });
             });
 
             glam_test!(test_mat4_frustum_lh, {
@@ -555,6 +562,13 @@ macro_rules! impl_camera_tests {
                 assert_approx_eq!(deprecated_frustum, frustum);
                 assert_approx_eq!(deprecated_perspective, perspective);
                 assert_approx_eq!(frustum, perspective);
+
+                should_glam_assert!({
+                    $camera::lh::proj::directx::frustum(-1.0, 1.0, -1.0, 1.0, 0.0, 1.0)
+                });
+                should_glam_assert!({
+                    $camera::lh::proj::directx::frustum(-1.0, 1.0, -1.0, 1.0, 1.0, 0.0)
+                });
             });
 
             glam_test!(test_mat4_frustum_rh, {
@@ -581,6 +595,13 @@ macro_rules! impl_camera_tests {
                 assert_approx_eq!(deprecated_frustum, frustum);
                 assert_approx_eq!(deprecated_perspective, perspective);
                 assert_approx_eq!(frustum, perspective);
+
+                should_glam_assert!({
+                    $camera::rh::proj::directx::frustum(-1.0, 1.0, -1.0, 1.0, 0.0, 1.0)
+                });
+                should_glam_assert!({
+                    $camera::rh::proj::directx::frustum(-1.0, 1.0, -1.0, 1.0, 1.0, 0.0)
+                });
             });
 
             glam_test!(test_mat4_perspective_gl_rh, {
@@ -1042,6 +1063,46 @@ mod camera {
 
             let a = lh_view::look_to_affine3a(eye, dir, up);
             assert_approx_eq!(a.transform_point3(point), Vec3::new(0.0, 1.0, 5.0));
+        });
+    }
+
+    mod mat3a {
+        use glam::camera::lh::view as lh_view;
+        use glam::camera::rh::view as rh_view;
+        use glam::{Vec3, Vec3A};
+
+        glam_test!(test_rh_look_at_mat3a, {
+            let eye = Vec3::new(0.0, 0.0, -5.0);
+            let center = Vec3::ZERO;
+            let up = Vec3::new(1.0, 0.0, 0.0);
+
+            let rot = rh_view::look_at_mat3a(eye, center, up);
+            assert_approx_eq!(rot * Vec3A::X, Vec3A::new(0.0, 1.0, 0.0));
+        });
+
+        glam_test!(test_rh_look_to_mat3a, {
+            let dir = Vec3::new(0.0, 0.0, 1.0);
+            let up = Vec3::new(1.0, 0.0, 0.0);
+
+            let rot = rh_view::look_to_mat3a(dir, up);
+            assert_approx_eq!(rot * Vec3A::X, Vec3A::new(0.0, 1.0, 0.0));
+        });
+
+        glam_test!(test_lh_look_at_mat3a, {
+            let eye = Vec3::new(0.0, 0.0, -5.0);
+            let center = Vec3::ZERO;
+            let up = Vec3::new(1.0, 0.0, 0.0);
+
+            let rot = lh_view::look_at_mat3a(eye, center, up);
+            assert_approx_eq!(rot * Vec3A::X, Vec3A::new(0.0, 1.0, 0.0));
+        });
+
+        glam_test!(test_lh_look_to_mat3a, {
+            let dir = Vec3::new(0.0, 0.0, 1.0);
+            let up = Vec3::new(1.0, 0.0, 0.0);
+
+            let rot = lh_view::look_to_mat3a(dir, up);
+            assert_approx_eq!(rot * Vec3A::X, Vec3A::new(0.0, 1.0, 0.0));
         });
     }
 }
