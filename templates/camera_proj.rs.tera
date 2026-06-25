@@ -16,7 +16,7 @@
 
 //! Projection matrix constructors.
 //!
-//! Expects {{ handedness }} Y-up view-space input.
+//! Expects {{ handedness }} Y-up view space input.
 //!
 //! Each sub-module targets a specific graphics API convention:
 //!
@@ -27,7 +27,7 @@
 pub mod opengl {
     //! OpenGL NDC convention: Z range **[-1, 1]**, Y-up.
     //!
-    //! Expects a {{ handedness }} Y-up view-space input.
+    //! Expects a {{ handedness }} Y-up view space input.
 
     use crate::{
         {{ mat4_t }},
@@ -42,6 +42,10 @@ pub mod opengl {
     ///
     /// This is the OpenGL `gluPerspective` equivalent.
     {%- endif %}
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     pub fn perspective(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
@@ -71,6 +75,10 @@ pub mod opengl {
     /// This is the OpenGL `glFrustum` equivalent.
     /// See <https://registry.khronos.org/OpenGL-Refpages/gl2.1/xhtml/glFrustum.xml>
     {%- endif %}
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     pub fn frustum(left: {{ scalar_t }}, right: {{ scalar_t }}, bottom: {{ scalar_t }}, top: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
@@ -119,8 +127,8 @@ pub mod {{ api }} {
 
     /// Creates an infinite perspective projection matrix for use with {{ api_desc }}.
     ///
-    /// Like `perspective`, but with an infinite value for `far`. Points near `near`
-    /// map to depth `0`, and as they approach infinity depth approaches `1`.
+    /// Like `perspective`, but with an infinite value for `far`. Points at distance
+    /// `near` map to depth `0`; as distance approaches infinity, depth approaches `1`.
     ///
     /// Expects a {{ handedness }} Y-up view space input.
     /// Outputs NDC with Z in {{ api_z }} and {{ api_y }}.
@@ -134,7 +142,7 @@ pub mod {{ api }} {
         camera_impl::perspective_infinite::<{{ is_rh }}, {{ is_zo }}, {{ yflip }}>(vertical_fov, aspect_ratio, near)
     }
 
-    /// Creates an infinite perspective projection matrix with reversed depth. For use with 
+    /// Creates an infinite perspective projection matrix with reversed depth for use with
     /// {{ api_desc }}.
     ///
     /// Maps `near` to depth `1` and infinity to depth `0`.

@@ -2,7 +2,7 @@
 
 //! Projection matrix constructors.
 //!
-//! Expects left-handed Y-up view-space input.
+//! Expects left-handed Y-up view space input.
 //!
 //! Each sub-module targets a specific graphics API convention:
 //!
@@ -13,7 +13,7 @@
 pub mod opengl {
     //! OpenGL NDC convention: Z range **[-1, 1]**, Y-up.
     //!
-    //! Expects a left-handed Y-up view-space input.
+    //! Expects a left-handed Y-up view space input.
 
     use crate::{dcamera::camera_impl, DMat4};
 
@@ -21,6 +21,10 @@ pub mod opengl {
     ///
     /// Expects a left-handed Y-up view space input.
     /// Outputs NDC with Z in [-1, 1] and Y-up.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     pub fn perspective(vertical_fov: f64, aspect_ratio: f64, near: f64, far: f64) -> DMat4 {
@@ -48,6 +52,10 @@ pub mod opengl {
     ///
     /// Expects a left-handed Y-up view space input.
     /// Outputs NDC with Z in [-1, 1] and Y-up.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     pub fn frustum(left: f64, right: f64, bottom: f64, top: f64, near: f64, far: f64) -> DMat4 {
@@ -80,8 +88,8 @@ pub mod vulkan {
 
     /// Creates an infinite perspective projection matrix for use with Vulkan.
     ///
-    /// Like `perspective`, but with an infinite value for `far`. Points near `near`
-    /// map to depth `0`, and as they approach infinity depth approaches `1`.
+    /// Like `perspective`, but with an infinite value for `far`. Points at distance
+    /// `near` map to depth `0`; as distance approaches infinity, depth approaches `1`.
     ///
     /// Expects a left-handed Y-up view space input.
     /// Outputs NDC with Z in [0, 1] and Y-down.
@@ -95,7 +103,7 @@ pub mod vulkan {
         camera_impl::perspective_infinite::<false, true, true>(vertical_fov, aspect_ratio, near)
     }
 
-    /// Creates an infinite perspective projection matrix with reversed depth. For use with
+    /// Creates an infinite perspective projection matrix with reversed depth for use with
     /// Vulkan.
     ///
     /// Maps `near` to depth `1` and infinity to depth `0`.
@@ -171,8 +179,8 @@ pub mod directx {
 
     /// Creates an infinite perspective projection matrix for use with DirectX and WebGPU.
     ///
-    /// Like `perspective`, but with an infinite value for `far`. Points near `near`
-    /// map to depth `0`, and as they approach infinity depth approaches `1`.
+    /// Like `perspective`, but with an infinite value for `far`. Points at distance
+    /// `near` map to depth `0`; as distance approaches infinity, depth approaches `1`.
     ///
     /// Expects a left-handed Y-up view space input.
     /// Outputs NDC with Z in [0, 1] and Y-up.
@@ -186,7 +194,7 @@ pub mod directx {
         camera_impl::perspective_infinite::<false, true, false>(vertical_fov, aspect_ratio, near)
     }
 
-    /// Creates an infinite perspective projection matrix with reversed depth. For use with
+    /// Creates an infinite perspective projection matrix with reversed depth for use with
     /// DirectX and WebGPU.
     ///
     /// Maps `near` to depth `1` and infinity to depth `0`.

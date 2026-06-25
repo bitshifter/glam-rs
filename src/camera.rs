@@ -2,20 +2,24 @@
 
 //! View and projection transform helpers.
 //!
-//! This module provides view matrix (`look_at`, `look_to`) and projection
-//! matrix (`perspective`, `orthographic`, `frustum`) constructors.
+//! This module provides view matrix (`look_at`, `look_to`) and projection matrix (`perspective`,
+//! `orthographic`, `frustum`) constructors.
 //!
 //! ## Choosing a sub-module
 //!
 //! Pick [`lh`] or [`rh`] based on your **world space** convention:
 //!
-//! The view functions in each sub-module transform world-space points into
-//! **Y-up view space** while preserving your world's handedness. The
-//! corresponding projection functions expect view-space input in that same
-//! handedness.
+//! The view functions in each sub-module transform world-space points into **Y-up view space**
+//! while preserving your world's handedness.
 //!
-//! The `view` sub-module outputs Y-up view space; the `proj` sub-module expects
-//! its input in that same view space.
+//! Note that while the view space methods will preserve the handedness of your world's coordinate
+//! systems, view space is a different coordinate system and will not necessarily be the same as
+//! your world coordinate system, especially if your world up is not +Y.
+//!
+//! There are other possible view space coordinate systems, notably Y-down; however, `glam` only
+//! provides view and projection functions for left- and right-handed view space coordinate systems.
+//!
+//! The corresponding projection functions expect Y-up view-space input in that same handedness.
 //!
 //! Within each `proj` sub-module, pick the API-specific constructor:
 //!
