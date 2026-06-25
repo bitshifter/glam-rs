@@ -2,7 +2,7 @@
 
 //! View (camera) matrix constructors for right-handed world coordinates.
 //!
-//! Every function transforms world-space points into a right-handed Y-up
+//! Every function transforms world space points into a right-handed Y-up
 //! view space with X-right and -Z-forward.
 //!
 //! * `look_at_*` targets a focal point (`center`)
@@ -12,7 +12,7 @@ use crate::{dcamera::camera_impl, DAffine3, DMat3, DMat4, DQuat, DVec3};
 
 /// Returns a `DMat4` view matrix from eye, focal point, and up.
 ///
-/// Transforms right-handed world-space points into right-handed Y-up view space.
+/// Transforms right-handed world space points into right-handed Y-up view space.
 ///
 /// # Panics
 ///
@@ -25,7 +25,7 @@ pub fn look_at_mat4(eye: DVec3, center: DVec3, up: DVec3) -> DMat4 {
 
 /// Returns a `DMat4` view matrix from eye, forward direction, and up.
 ///
-/// Transforms right-handed world-space points into right-handed Y-up view space.
+/// Transforms right-handed world space points into right-handed Y-up view space.
 ///
 /// # Panics
 ///
@@ -38,7 +38,7 @@ pub fn look_to_mat4(eye: DVec3, dir: DVec3, up: DVec3) -> DMat4 {
 
 /// Returns an `DAffine3` view transform from eye, focal point, and up.
 ///
-/// Transforms right-handed world-space points into right-handed Y-up view space.
+/// Transforms right-handed world space points into right-handed Y-up view space.
 ///
 /// # Panics
 ///
@@ -51,7 +51,7 @@ pub fn look_at_affine3(eye: DVec3, center: DVec3, up: DVec3) -> DAffine3 {
 
 /// Returns an `DAffine3` view transform from eye, forward direction, and up.
 ///
-/// Transforms right-handed world-space points into right-handed Y-up view space.
+/// Transforms right-handed world space points into right-handed Y-up view space.
 ///
 /// # Panics
 ///
@@ -64,7 +64,7 @@ pub fn look_to_affine3(eye: DVec3, dir: DVec3, up: DVec3) -> DAffine3 {
 
 /// Returns a `DMat3` view rotation (no translation) from eye, focal point, and up.
 ///
-/// Transforms right-handed world-space points into right-handed Y-up view space.
+/// Transforms right-handed world space points into right-handed Y-up view space.
 ///
 /// # Panics
 ///
@@ -77,7 +77,7 @@ pub fn look_at_mat3(eye: DVec3, center: DVec3, up: DVec3) -> DMat3 {
 
 /// Returns a `DMat3` view rotation (no translation) from direction and up.
 ///
-/// Transforms right-handed world-space points into right-handed Y-up view space.
+/// Transforms right-handed world space points into right-handed Y-up view space.
 ///
 /// # Panics
 ///
@@ -90,7 +90,7 @@ pub fn look_to_mat3(dir: DVec3, up: DVec3) -> DMat3 {
 
 /// Returns a `DQuat` view rotation from eye, focal point, and up.
 ///
-/// Transforms right-handed world-space points into right-handed Y-up view space.
+/// Transforms right-handed world space points into right-handed Y-up view space.
 ///
 /// # Panics
 ///
@@ -103,7 +103,7 @@ pub fn look_at_quat(eye: DVec3, center: DVec3, up: DVec3) -> DQuat {
 
 /// Returns a `DQuat` view rotation from direction and up.
 ///
-/// Transforms right-handed world-space points into right-handed Y-up view space.
+/// Transforms right-handed world space points into right-handed Y-up view space.
 ///
 /// # Panics
 ///
