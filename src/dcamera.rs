@@ -16,7 +16,7 @@
 //! systems, view space is a different coordinate system and will not necessarily be the same as
 //! your world coordinate system, especially if your world up is not +Y.
 //!
-//! There are other possible view space coordinate systems, notably Y-down; however, `glam` only
+//! There are other possible view space coordinate systems, notably Y-down; however, glam only
 //! provides view and projection functions for left- and right-handed view space coordinate systems.
 //!
 //! The corresponding projection functions expect Y-up view space input with the matching
@@ -35,7 +35,7 @@ mod camera_impl;
 /// View functions produce right-handed view space transforms with
 /// +Y = up, +X = right, and -Z = forward.
 ///
-/// Projection functions expect Y-up right-handed view space input.
+/// Projection functions expect right-handed Y-up view space input.
 pub mod rh {
     pub mod proj;
     pub mod view;
@@ -44,7 +44,7 @@ pub mod rh {
 /// View functions produce left-handed view space transforms with
 /// +Y = up, +X = right, and +Z = forward.
 ///
-/// Projection functions expect Y-up left-handed view space input.
+/// Projection functions expect left-handed Y-up view space input.
 pub mod lh {
     pub mod proj;
     pub mod view;
