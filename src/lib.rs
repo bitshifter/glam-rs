@@ -158,8 +158,8 @@ convert from degrees.
 `glam` provides a [`camera`] module with view matrix (`look_at`, `look_to`) and
 projection matrix (`perspective`, `orthographic`, `frustum`) constructors.
 
-View functions transform world space points into Y-up view space. Choose [`rh`] or
-[`lh`] based on your world space handedness.
+View functions transform world space points into Y-up view space. Choose [`camera::rh`] or
+[`camera::lh`] based on your world space handedness.
 
 Projection functions expect Y-up view space input with matching handedness. Within
 each sub-module, constructors are available for common graphics API conventions,
