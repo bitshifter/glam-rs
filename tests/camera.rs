@@ -68,29 +68,29 @@ macro_rules! impl_camera_tests {
             up: $vec3::Z,
         };
 
-        fn check_view(axes: &AxisConfig, view: &$mat4) {
+        fn check_view(world: &AxisConfig, view: &$mat4) {
             // Assumes the camera is at EYE (world origin); see module-level EYE constant.
             // Right maps to +X in view space
-            let p = (view * (axes.right * 5.0).to_homogeneous()).project();
+            let p = (view * (world.right * 5.0).to_homogeneous()).project();
             assert_approx_eq!(p.x, 5.0, 1e-6);
             assert_approx_eq!(p.y, 0.0, 1e-6);
             assert_approx_eq!(p.z, 0.0, 1e-6);
 
             // Up maps to +Y in view space
-            let p = (view * (axes.up * 5.0).to_homogeneous()).project();
+            let p = (view * (world.up * 5.0).to_homogeneous()).project();
             assert_approx_eq!(p.x, 0.0, 1e-6);
             assert_approx_eq!(p.y, 5.0, 1e-6);
             assert_approx_eq!(p.z, 0.0, 1e-6);
 
             // Forward maps to Z in view space, sign given by the handedness of the axis frame.
-            let fwd = (view * (axes.forward * 5.0).to_homogeneous()).project();
-            let expected_z = handedness_sign(axes) * 5.0;
+            let fwd = (view * (world.forward * 5.0).to_homogeneous()).project();
+            let expected_z = handedness_sign(world) * 5.0;
             assert_approx_eq!(fwd.x, 0.0, 1e-6);
             assert_approx_eq!(fwd.y, 0.0, 1e-6);
             assert_approx_eq!(fwd.z, expected_z, 1e-6);
 
             // Point behind the camera: opposite Z sign from forward
-            let behind = (view * (-axes.forward * 5.0).to_homogeneous()).project();
+            let behind = (view * (-world.forward * 5.0).to_homogeneous()).project();
             assert_approx_eq!(behind.x, 0.0, 1e-6);
             assert_approx_eq!(behind.y, 0.0, 1e-6);
             assert_approx_eq!(behind.z, -expected_z, 1e-6);
@@ -100,22 +100,22 @@ macro_rules! impl_camera_tests {
             assert_approx_eq!(p, $vec3::ZERO, 1e-6);
         }
 
-        fn check_proj_direction(axes: &AxisConfig, ndc: &NdcConfig, view: &$mat4, proj: &$mat4) {
+        fn check_proj_direction(world: &AxisConfig, ndc: &NdcConfig, view: &$mat4, proj: &$mat4) {
             // Point directly forward: should map to NDC centre (x=0, y=0)
-            let pt = (proj * (view * (axes.forward * 5.0).to_homogeneous())).project();
+            let pt = (proj * (view * (world.forward * 5.0).to_homogeneous())).project();
             assert_approx_eq!(pt.x, 0.0, 1e-6);
             assert_approx_eq!(pt.y, 0.0, 1e-6);
 
             // Point offset to the right: should map to positive x in NDC
-            let pt = (proj * (view * (axes.forward * 5.0 + axes.right).to_homogeneous())).project();
+            let pt = (proj * (view * (world.forward * 5.0 + world.right).to_homogeneous())).project();
             assert!(pt.x > 0.0);
 
             // Point offset to the left: should map to negative x in NDC
-            let pt = (proj * (view * (axes.forward * 5.0 - axes.right).to_homogeneous())).project();
+            let pt = (proj * (view * (world.forward * 5.0 - world.right).to_homogeneous())).project();
             assert!(pt.x < 0.0);
 
             // Point offset upward: y sign depends on whether NDC Y is flipped
-            let pt = (proj * (view * (axes.forward * 5.0 + axes.up).to_homogeneous())).project();
+            let pt = (proj * (view * (world.forward * 5.0 + world.up).to_homogeneous())).project();
             if ndc.y_down {
                 assert!(pt.y < 0.0);
             } else {
@@ -123,7 +123,7 @@ macro_rules! impl_camera_tests {
             }
 
             // Point offset downward: opposite y sign from upward
-            let pt = (proj * (view * (axes.forward * 5.0 - axes.up).to_homogeneous())).project();
+            let pt = (proj * (view * (world.forward * 5.0 - world.up).to_homogeneous())).project();
             if ndc.y_down {
                 assert!(pt.y > 0.0);
             } else {
@@ -131,56 +131,56 @@ macro_rules! impl_camera_tests {
             }
         }
 
-        fn check_proj_near_far(axes: &AxisConfig, ndc: &NdcConfig, view: &$mat4, proj: &$mat4) {
+        fn check_proj_near_far(world: &AxisConfig, ndc: &NdcConfig, view: &$mat4, proj: &$mat4) {
             // Point at the near plane: should map to the near NDC depth
-            let pt = (proj * (view * (axes.forward * 1.0).to_homogeneous())).project();
+            let pt = (proj * (view * (world.forward * 1.0).to_homogeneous())).project();
             assert_approx_eq!(pt.x, 0.0, 1e-6);
             assert_approx_eq!(pt.y, 0.0, 1e-6);
             assert_approx_eq!(pt.z, ndc.z_near, 1e-6);
 
             // Point at the far plane: should map to the far NDC depth
-            let pt = (proj * (view * (axes.forward * 10.0).to_homogeneous())).project();
+            let pt = (proj * (view * (world.forward * 10.0).to_homogeneous())).project();
             assert_approx_eq!(pt.x, 0.0, 1e-6);
             assert_approx_eq!(pt.y, 0.0, 1e-6);
             assert_approx_eq!(pt.z, ndc.z_far, 1e-6);
         }
 
-        fn check_proj_near(axes: &AxisConfig, ndc: &NdcConfig, view: &$mat4, proj: &$mat4) {
+        fn check_proj_near(world: &AxisConfig, ndc: &NdcConfig, view: &$mat4, proj: &$mat4) {
             // For infinite projections, only the near plane is testable.
             // (Far plane is at infinity, which cannot be represented.)
-            let pt = (proj * (view * (axes.forward * 1.0).to_homogeneous())).project();
+            let pt = (proj * (view * (world.forward * 1.0).to_homogeneous())).project();
             assert_approx_eq!(pt.x, 0.0, 1e-6);
             assert_approx_eq!(pt.y, 0.0, 1e-6);
             assert_approx_eq!(pt.z, ndc.z_near, 1e-6);
         }
 
-        fn check_proj_reverse_near(axes: &AxisConfig, ndc: &NdcConfig, view: &$mat4, proj: &$mat4) {
+        fn check_proj_reverse_near(world: &AxisConfig, ndc: &NdcConfig, view: &$mat4, proj: &$mat4) {
             // Reverse-z: near plane maps to the far NDC depth, infinity maps to near NDC depth.
-            let pt = (proj * (view * (axes.forward * 1.0).to_homogeneous())).project();
+            let pt = (proj * (view * (world.forward * 1.0).to_homogeneous())).project();
             assert_approx_eq!(pt.x, 0.0, 1e-6);
             assert_approx_eq!(pt.y, 0.0, 1e-6);
             assert_approx_eq!(pt.z, ndc.z_far, 1e-6);
         }
 
-        fn check_view_rotation_mat3(axes: &AxisConfig, rot: &$mat3) {
-            let expected_z = handedness_sign(axes) * 5.0;
+        fn check_view_rotation_mat3(world: &AxisConfig, rot: &$mat3) {
+            let expected_z = handedness_sign(world) * 5.0;
 
-            let p = *rot * (axes.right * 5.0);
+            let p = *rot * (world.right * 5.0);
             assert_approx_eq!(p.x, 5.0, 1e-6);
             assert_approx_eq!(p.y, 0.0, 1e-6);
             assert_approx_eq!(p.z, 0.0, 1e-6);
 
-            let p = *rot * (axes.up * 5.0);
+            let p = *rot * (world.up * 5.0);
             assert_approx_eq!(p.x, 0.0, 1e-6);
             assert_approx_eq!(p.y, 5.0, 1e-6);
             assert_approx_eq!(p.z, 0.0, 1e-6);
 
-            let p = *rot * (axes.forward * 5.0);
+            let p = *rot * (world.forward * 5.0);
             assert_approx_eq!(p.x, 0.0, 1e-6);
             assert_approx_eq!(p.y, 0.0, 1e-6);
             assert_approx_eq!(p.z, expected_z, 1e-6);
 
-            let p = *rot * (-axes.forward * 5.0);
+            let p = *rot * (-world.forward * 5.0);
             assert_approx_eq!(p.x, 0.0, 1e-6);
             assert_approx_eq!(p.y, 0.0, 1e-6);
             assert_approx_eq!(p.z, -expected_z, 1e-6);
@@ -806,84 +806,84 @@ macro_rules! impl_camera_tests {
 }
 
 macro_rules! impl_view_tests {
-    ($axes:ident, $mat4:ident) => {
+    ($world:ident, $mat4:ident) => {
         glam_test!(test_look_at_mat4, {
-            let m = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
-            check_view(&$axes, &m);
+            let m = view::look_at_mat4(EYE, $world.forward * 5.0, $world.up);
+            check_view(&$world, &m);
         });
 
         glam_test!(test_look_to_mat4, {
-            let m = view::look_to_mat4(EYE, $axes.forward, $axes.up);
-            check_view(&$axes, &m);
+            let m = view::look_to_mat4(EYE, $world.forward, $world.up);
+            check_view(&$world, &m);
         });
 
         glam_test!(test_look_at_affine3, {
-            let a = view::look_at_affine3(EYE, $axes.forward * 5.0, $axes.up);
+            let a = view::look_at_affine3(EYE, $world.forward * 5.0, $world.up);
             let m = $mat4::from(a);
-            check_view(&$axes, &m);
+            check_view(&$world, &m);
         });
 
         glam_test!(test_look_to_affine3, {
-            let a = view::look_to_affine3(EYE, $axes.forward, $axes.up);
+            let a = view::look_to_affine3(EYE, $world.forward, $world.up);
             let m = $mat4::from(a);
-            check_view(&$axes, &m);
+            check_view(&$world, &m);
         });
 
         glam_test!(test_look_at_mat3, {
-            let rot = view::look_at_mat3(EYE, $axes.forward * 5.0, $axes.up);
-            check_view_rotation_mat3(&$axes, &rot);
+            let rot = view::look_at_mat3(EYE, $world.forward * 5.0, $world.up);
+            check_view_rotation_mat3(&$world, &rot);
         });
 
         glam_test!(test_look_to_mat3, {
-            let rot = view::look_to_mat3($axes.forward, $axes.up);
-            check_view_rotation_mat3(&$axes, &rot);
+            let rot = view::look_to_mat3($world.forward, $world.up);
+            check_view_rotation_mat3(&$world, &rot);
         });
 
         glam_test!(test_look_at_quat, {
-            let q = view::look_at_quat(EYE, $axes.forward * 5.0, $axes.up);
-            let expected_z = handedness_sign(&$axes) * 5.0;
+            let q = view::look_at_quat(EYE, $world.forward * 5.0, $world.up);
+            let expected_z = handedness_sign(&$world) * 5.0;
 
-            let p = q * ($axes.right * 5.0);
+            let p = q * ($world.right * 5.0);
             assert_approx_eq!(p.x, 5.0, 1e-6);
             assert_approx_eq!(p.y, 0.0, 1e-6);
             assert_approx_eq!(p.z, 0.0, 1e-6);
 
-            let p = q * ($axes.up * 5.0);
+            let p = q * ($world.up * 5.0);
             assert_approx_eq!(p.x, 0.0, 1e-6);
             assert_approx_eq!(p.y, 5.0, 1e-6);
             assert_approx_eq!(p.z, 0.0, 1e-6);
 
-            let p = q * ($axes.forward * 5.0);
+            let p = q * ($world.forward * 5.0);
             assert_approx_eq!(p.x, 0.0, 1e-6);
             assert_approx_eq!(p.y, 0.0, 1e-6);
             assert_approx_eq!(p.z, expected_z, 1e-6);
 
-            let p = q * (-$axes.forward * 5.0);
+            let p = q * (-$world.forward * 5.0);
             assert_approx_eq!(p.x, 0.0, 1e-6);
             assert_approx_eq!(p.y, 0.0, 1e-6);
             assert_approx_eq!(p.z, -expected_z, 1e-6);
         });
 
         glam_test!(test_look_to_quat, {
-            let q = view::look_to_quat($axes.forward, $axes.up);
-            let expected_z = handedness_sign(&$axes) * 5.0;
+            let q = view::look_to_quat($world.forward, $world.up);
+            let expected_z = handedness_sign(&$world) * 5.0;
 
-            let p = q * ($axes.right * 5.0);
+            let p = q * ($world.right * 5.0);
             assert_approx_eq!(p.x, 5.0, 1e-6);
             assert_approx_eq!(p.y, 0.0, 1e-6);
             assert_approx_eq!(p.z, 0.0, 1e-6);
 
-            let p = q * ($axes.up * 5.0);
+            let p = q * ($world.up * 5.0);
             assert_approx_eq!(p.x, 0.0, 1e-6);
             assert_approx_eq!(p.y, 5.0, 1e-6);
             assert_approx_eq!(p.z, 0.0, 1e-6);
 
-            let p = q * ($axes.forward * 5.0);
+            let p = q * ($world.forward * 5.0);
             assert_approx_eq!(p.x, 0.0, 1e-6);
             assert_approx_eq!(p.y, 0.0, 1e-6);
             assert_approx_eq!(p.z, expected_z, 1e-6);
 
-            let p = q * (-$axes.forward * 5.0);
+            let p = q * (-$world.forward * 5.0);
             assert_approx_eq!(p.x, 0.0, 1e-6);
             assert_approx_eq!(p.y, 0.0, 1e-6);
             assert_approx_eq!(p.z, -expected_z, 1e-6);
@@ -892,126 +892,126 @@ macro_rules! impl_view_tests {
 }
 
 macro_rules! impl_pipeline_tests {
-    ($t:ident, $axes:ident) => {
+    ($t:ident, $world:ident) => {
         // ---- perspective ----
         glam_test!(test_opengl_pipeline, {
-            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
+            let v = view::look_at_mat4(EYE, $world.forward * 5.0, $world.up);
             let p = proj::opengl::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-            check_view(&$axes, &v);
-            check_proj_direction(&$axes, &NDC_OPENGL, &v, &p);
-            check_proj_near_far(&$axes, &NDC_OPENGL, &v, &p);
+            check_view(&$world, &v);
+            check_proj_direction(&$world, &NDC_OPENGL, &v, &p);
+            check_proj_near_far(&$world, &NDC_OPENGL, &v, &p);
         });
 
         glam_test!(test_vulkan_pipeline, {
-            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
+            let v = view::look_at_mat4(EYE, $world.forward * 5.0, $world.up);
             let p = proj::vulkan::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-            check_view(&$axes, &v);
-            check_proj_direction(&$axes, &NDC_VULKAN, &v, &p);
-            check_proj_near_far(&$axes, &NDC_VULKAN, &v, &p);
+            check_view(&$world, &v);
+            check_proj_direction(&$world, &NDC_VULKAN, &v, &p);
+            check_proj_near_far(&$world, &NDC_VULKAN, &v, &p);
         });
 
         glam_test!(test_directx_pipeline, {
-            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
+            let v = view::look_at_mat4(EYE, $world.forward * 5.0, $world.up);
             let p = proj::directx::perspective($t::to_radians(90.0), 1.0, 1.0, 10.0);
-            check_view(&$axes, &v);
-            check_proj_direction(&$axes, &NDC_DIRECTX, &v, &p);
-            check_proj_near_far(&$axes, &NDC_DIRECTX, &v, &p);
+            check_view(&$world, &v);
+            check_proj_direction(&$world, &NDC_DIRECTX, &v, &p);
+            check_proj_near_far(&$world, &NDC_DIRECTX, &v, &p);
         });
 
         // ---- orthographic ----
         glam_test!(test_opengl_orthographic_pipeline, {
-            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
+            let v = view::look_at_mat4(EYE, $world.forward * 5.0, $world.up);
             let p = proj::opengl::orthographic(-5.0, 5.0, -5.0, 5.0, 1.0, 10.0);
-            check_view(&$axes, &v);
-            check_proj_direction(&$axes, &NDC_OPENGL, &v, &p);
-            check_proj_near_far(&$axes, &NDC_OPENGL, &v, &p);
+            check_view(&$world, &v);
+            check_proj_direction(&$world, &NDC_OPENGL, &v, &p);
+            check_proj_near_far(&$world, &NDC_OPENGL, &v, &p);
         });
 
         glam_test!(test_vulkan_orthographic_pipeline, {
-            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
+            let v = view::look_at_mat4(EYE, $world.forward * 5.0, $world.up);
             let p = proj::vulkan::orthographic(-5.0, 5.0, -5.0, 5.0, 1.0, 10.0);
-            check_view(&$axes, &v);
-            check_proj_direction(&$axes, &NDC_VULKAN, &v, &p);
-            check_proj_near_far(&$axes, &NDC_VULKAN, &v, &p);
+            check_view(&$world, &v);
+            check_proj_direction(&$world, &NDC_VULKAN, &v, &p);
+            check_proj_near_far(&$world, &NDC_VULKAN, &v, &p);
         });
 
         glam_test!(test_directx_orthographic_pipeline, {
-            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
+            let v = view::look_at_mat4(EYE, $world.forward * 5.0, $world.up);
             let p = proj::directx::orthographic(-5.0, 5.0, -5.0, 5.0, 1.0, 10.0);
-            check_view(&$axes, &v);
-            check_proj_direction(&$axes, &NDC_DIRECTX, &v, &p);
-            check_proj_near_far(&$axes, &NDC_DIRECTX, &v, &p);
+            check_view(&$world, &v);
+            check_proj_direction(&$world, &NDC_DIRECTX, &v, &p);
+            check_proj_near_far(&$world, &NDC_DIRECTX, &v, &p);
         });
 
         // ---- frustum ----
         glam_test!(test_opengl_frustum_pipeline, {
-            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
+            let v = view::look_at_mat4(EYE, $world.forward * 5.0, $world.up);
             let fov = $t::to_radians(90.0);
             let f = (0.5 * fov).tan();
             let height = 1.0 * f;
             let width = height * 1.0;
             let p = proj::opengl::frustum(-width, width, -height, height, 1.0, 10.0);
-            check_view(&$axes, &v);
-            check_proj_direction(&$axes, &NDC_OPENGL, &v, &p);
-            check_proj_near_far(&$axes, &NDC_OPENGL, &v, &p);
+            check_view(&$world, &v);
+            check_proj_direction(&$world, &NDC_OPENGL, &v, &p);
+            check_proj_near_far(&$world, &NDC_OPENGL, &v, &p);
         });
 
         glam_test!(test_vulkan_frustum_pipeline, {
-            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
+            let v = view::look_at_mat4(EYE, $world.forward * 5.0, $world.up);
             let fov = $t::to_radians(90.0);
             let f = (0.5 * fov).tan();
             let height = 1.0 * f;
             let width = height * 1.0;
             let p = proj::vulkan::frustum(-width, width, -height, height, 1.0, 10.0);
-            check_view(&$axes, &v);
-            check_proj_direction(&$axes, &NDC_VULKAN, &v, &p);
-            check_proj_near_far(&$axes, &NDC_VULKAN, &v, &p);
+            check_view(&$world, &v);
+            check_proj_direction(&$world, &NDC_VULKAN, &v, &p);
+            check_proj_near_far(&$world, &NDC_VULKAN, &v, &p);
         });
 
         glam_test!(test_directx_frustum_pipeline, {
-            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
+            let v = view::look_at_mat4(EYE, $world.forward * 5.0, $world.up);
             let fov = $t::to_radians(90.0);
             let f = (0.5 * fov).tan();
             let height = 1.0 * f;
             let width = height * 1.0;
             let p = proj::directx::frustum(-width, width, -height, height, 1.0, 10.0);
-            check_view(&$axes, &v);
-            check_proj_direction(&$axes, &NDC_DIRECTX, &v, &p);
-            check_proj_near_far(&$axes, &NDC_DIRECTX, &v, &p);
+            check_view(&$world, &v);
+            check_proj_direction(&$world, &NDC_DIRECTX, &v, &p);
+            check_proj_near_far(&$world, &NDC_DIRECTX, &v, &p);
         });
 
         // ---- perspective_infinite (Vulkan / DirectX only) ----
         glam_test!(test_vulkan_infinite_pipeline, {
-            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
+            let v = view::look_at_mat4(EYE, $world.forward * 5.0, $world.up);
             let p = proj::vulkan::perspective_infinite($t::to_radians(90.0), 1.0, 1.0);
-            check_view(&$axes, &v);
-            check_proj_direction(&$axes, &NDC_VULKAN, &v, &p);
-            check_proj_near(&$axes, &NDC_VULKAN, &v, &p);
+            check_view(&$world, &v);
+            check_proj_direction(&$world, &NDC_VULKAN, &v, &p);
+            check_proj_near(&$world, &NDC_VULKAN, &v, &p);
         });
 
         glam_test!(test_directx_infinite_pipeline, {
-            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
+            let v = view::look_at_mat4(EYE, $world.forward * 5.0, $world.up);
             let p = proj::directx::perspective_infinite($t::to_radians(90.0), 1.0, 1.0);
-            check_view(&$axes, &v);
-            check_proj_direction(&$axes, &NDC_DIRECTX, &v, &p);
-            check_proj_near(&$axes, &NDC_DIRECTX, &v, &p);
+            check_view(&$world, &v);
+            check_proj_direction(&$world, &NDC_DIRECTX, &v, &p);
+            check_proj_near(&$world, &NDC_DIRECTX, &v, &p);
         });
 
         // ---- perspective_infinite_reverse (Vulkan / DirectX only) ----
         glam_test!(test_vulkan_infinite_reverse_pipeline, {
-            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
+            let v = view::look_at_mat4(EYE, $world.forward * 5.0, $world.up);
             let p = proj::vulkan::perspective_infinite_reverse($t::to_radians(90.0), 1.0, 1.0);
-            check_view(&$axes, &v);
-            check_proj_direction(&$axes, &NDC_VULKAN, &v, &p);
-            check_proj_reverse_near(&$axes, &NDC_VULKAN, &v, &p);
+            check_view(&$world, &v);
+            check_proj_direction(&$world, &NDC_VULKAN, &v, &p);
+            check_proj_reverse_near(&$world, &NDC_VULKAN, &v, &p);
         });
 
         glam_test!(test_directx_infinite_reverse_pipeline, {
-            let v = view::look_at_mat4(EYE, $axes.forward * 5.0, $axes.up);
+            let v = view::look_at_mat4(EYE, $world.forward * 5.0, $world.up);
             let p = proj::directx::perspective_infinite_reverse($t::to_radians(90.0), 1.0, 1.0);
-            check_view(&$axes, &v);
-            check_proj_direction(&$axes, &NDC_DIRECTX, &v, &p);
-            check_proj_reverse_near(&$axes, &NDC_DIRECTX, &v, &p);
+            check_view(&$world, &v);
+            check_proj_direction(&$world, &NDC_DIRECTX, &v, &p);
+            check_proj_reverse_near(&$world, &NDC_DIRECTX, &v, &p);
         });
     };
 }
