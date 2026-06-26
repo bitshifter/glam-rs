@@ -35,6 +35,10 @@ jobs:
       - name: Generate code coverage
         run: cargo run --release -p ci -- coverage-llvm -p ${{ matrix.profile }} --lcov
 
+      - name: Trust Coveralls Homebrew tap (Homebrew 6 requirement)
+        if: runner.os == 'macOS'
+        run: brew trust coverallsapp/coveralls
+
       - name: Upload to coveralls.io
         uses: coverallsapp/github-action@v2
         with:
