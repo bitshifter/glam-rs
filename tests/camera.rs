@@ -107,11 +107,13 @@ macro_rules! impl_camera_tests {
             assert_approx_eq!(pt.y, 0.0, 1e-6);
 
             // Point offset to the right: should map to positive x in NDC
-            let pt = (proj * (view * (world.forward * 5.0 + world.right).to_homogeneous())).project();
+            let pt =
+                (proj * (view * (world.forward * 5.0 + world.right).to_homogeneous())).project();
             assert!(pt.x > 0.0);
 
             // Point offset to the left: should map to negative x in NDC
-            let pt = (proj * (view * (world.forward * 5.0 - world.right).to_homogeneous())).project();
+            let pt =
+                (proj * (view * (world.forward * 5.0 - world.right).to_homogeneous())).project();
             assert!(pt.x < 0.0);
 
             // Point offset upward: y sign depends on whether NDC Y is flipped
@@ -154,7 +156,12 @@ macro_rules! impl_camera_tests {
             assert_approx_eq!(pt.z, ndc.z_near, 1e-6);
         }
 
-        fn check_proj_reverse_near(world: &AxisConfig, ndc: &NdcConfig, view: &$mat4, proj: &$mat4) {
+        fn check_proj_reverse_near(
+            world: &AxisConfig,
+            ndc: &NdcConfig,
+            view: &$mat4,
+            proj: &$mat4,
+        ) {
             // Reverse-z: near plane maps to the far NDC depth, infinity maps to near NDC depth.
             let pt = (proj * (view * (world.forward * 1.0).to_homogeneous())).project();
             assert_approx_eq!(pt.x, 0.0, 1e-6);
