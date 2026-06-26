@@ -416,9 +416,14 @@ impl Quat {
     /// # Panics
     ///
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::lh::view::look_to_quat` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn look_to_lh(dir: Vec3, up: Vec3) -> Self {
+        #[allow(deprecated)]
         Self::look_to_rh(-dir, up)
     }
 
@@ -429,6 +434,10 @@ impl Quat {
     /// # Panics
     ///
     /// Will panic if `dir` and `up` are not normalized when `glam_assert` is enabled.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::rh::view::look_to_quat` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn look_to_rh(dir: Vec3, up: Vec3) -> Self {
@@ -445,7 +454,7 @@ impl Quat {
         )
     }
 
-    /// Creates a left-handed view matrix using a camera position, a focal point, and an up
+    /// Creates a quaternion rotation from a camera position, a focal point, and an up
     /// direction.
     ///
     /// For a left-handed view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
@@ -453,13 +462,18 @@ impl Quat {
     /// # Panics
     ///
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::lh::view::look_at_quat` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn look_at_lh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
+        #[allow(deprecated)]
         Self::look_to_lh(center.sub(eye).normalize(), up)
     }
 
-    /// Creates a right-handed view matrix using a camera position, an up direction, and a focal
+    /// Creates a quaternion rotation using a camera position, an up direction, and a focal
     /// point.
     ///
     /// For a right-handed view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
@@ -467,9 +481,14 @@ impl Quat {
     /// # Panics
     ///
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::rh::view::look_at_quat` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn look_at_rh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
+        #[allow(deprecated)]
         Self::look_to_rh(center.sub(eye).normalize(), up)
     }
 

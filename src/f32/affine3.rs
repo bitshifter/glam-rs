@@ -316,9 +316,14 @@ impl Affine3 {
     /// direction.
     ///
     /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::lh::view::look_to_affine3` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn look_to_lh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
+        #[allow(deprecated)]
         Self::look_to_rh(eye, -dir, up)
     }
 
@@ -326,6 +331,10 @@ impl Affine3 {
     /// direction.
     ///
     /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::rh::view::look_to_affine3` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn look_to_rh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
@@ -350,10 +359,15 @@ impl Affine3 {
     /// # Panics
     ///
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::lh::view::look_at_affine3` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn look_at_lh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
         glam_assert!(up.is_normalized());
+        #[allow(deprecated)]
         Self::look_to_lh(eye, center - eye, up)
     }
 
@@ -364,10 +378,15 @@ impl Affine3 {
     /// # Panics
     ///
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::rh::view::look_at_affine3` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn look_at_rh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
         glam_assert!(up.is_normalized());
+        #[allow(deprecated)]
         Self::look_to_rh(eye, center - eye, up)
     }
 

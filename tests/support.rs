@@ -3,9 +3,9 @@
 #[macro_use]
 mod macros;
 
+use glam::{Affine3, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
 #[cfg(feature = "f64")]
-use glam::{DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
-use glam::{Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
+use glam::{DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
 
 pub trait Deg {
     fn to_radians(self) -> Self;
@@ -67,6 +67,49 @@ impl FloatCompare for f64 {
     #[inline]
     fn abs_diff(&self, other: &f64) -> f64 {
         (self - other).abs()
+    }
+}
+
+impl FloatCompare for Affine3 {
+    #[inline]
+    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
+        self.abs_diff_eq(*other, max_abs_diff)
+    }
+    #[inline]
+    fn abs_diff(&self, other: &Self) -> Self {
+        Self::from_mat3_translation(
+            self.matrix3.abs_diff(&other.matrix3),
+            self.translation.abs_diff(&other.translation),
+        )
+    }
+}
+
+impl FloatCompare for Affine3A {
+    #[inline]
+    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
+        self.abs_diff_eq(*other, max_abs_diff)
+    }
+    #[inline]
+    fn abs_diff(&self, other: &Self) -> Self {
+        Self {
+            matrix3: self.matrix3.abs_diff(&other.matrix3),
+            translation: self.translation.abs_diff(&other.translation),
+        }
+    }
+}
+
+#[cfg(feature = "f64")]
+impl FloatCompare for DAffine3 {
+    #[inline]
+    fn approx_eq(&self, other: &Self, max_abs_diff: f32) -> bool {
+        self.abs_diff_eq(*other, max_abs_diff as f64)
+    }
+    #[inline]
+    fn abs_diff(&self, other: &Self) -> Self {
+        Self::from_mat3_translation(
+            self.matrix3.abs_diff(&other.matrix3),
+            self.translation.abs_diff(&other.translation),
+        )
     }
 }
 

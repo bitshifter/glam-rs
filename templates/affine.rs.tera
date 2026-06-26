@@ -33,6 +33,11 @@
     {% set mat3_t = "DMat3" %}
     {% set mat4_t = "DMat4" %}
 {% endif %}
+{% if scalar_t == "f32" %}
+    {% set cam = "camera" %}
+{% elif scalar_t == "f64" %}
+    {% set cam = "dcamera" %}
+{% endif %}
 
 {% if dim == 2 %}
     {% set size = 6 %}
@@ -597,9 +602,11 @@ impl {{ self_t }} {
     /// direction.
     ///
     /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
+    #[deprecated(since = "0.33.1", note = "use the `glam::{{ cam }}::lh::view::look_to_affine3` function instead")]
     #[inline]
     #[must_use]
     pub fn look_to_lh(eye: {{ vec3_t }}, dir: {{ vec3_t }}, up: {{ vec3_t }}) -> Self {
+        #[allow(deprecated)]
         Self::look_to_rh(eye, -dir, up)
     }
 
@@ -607,6 +614,7 @@ impl {{ self_t }} {
     /// direction.
     ///
     /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
+    #[deprecated(since = "0.33.1", note = "use the `glam::{{ cam }}::rh::view::look_to_affine3` function instead")]
     #[inline]
     #[must_use]
     pub fn look_to_rh(eye: {{ vec3_t }}, dir: {{ vec3_t }}, up: {{ vec3_t }}) -> Self {
@@ -631,10 +639,12 @@ impl {{ self_t }} {
     /// # Panics
     ///
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    #[deprecated(since = "0.33.1", note = "use the `glam::{{ cam }}::lh::view::look_at_affine3` function instead")]
     #[inline]
     #[must_use]
     pub fn look_at_lh(eye: {{ vec3_t }}, center: {{ vec3_t }}, up: {{ vec3_t }}) -> Self {
         glam_assert!(up.is_normalized());
+        #[allow(deprecated)]
         Self::look_to_lh(eye, center - eye, up)
     }
 
@@ -645,10 +655,12 @@ impl {{ self_t }} {
     /// # Panics
     ///
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    #[deprecated(since = "0.33.1", note = "use the `glam::{{ cam }}::rh::view::look_at_affine3` function instead")]
     #[inline]
     #[must_use]
     pub fn look_at_rh(eye: {{ vec3_t }}, center: {{ vec3_t }}, up: {{ vec3_t }}) -> Self {
         glam_assert!(up.is_normalized());
+        #[allow(deprecated)]
         Self::look_to_rh(eye, center - eye, up)
     }
 

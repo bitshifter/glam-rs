@@ -31,8 +31,7 @@ pub const fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat
 
 /// A 4x4 column major matrix.
 ///
-/// This 4x4 matrix type features convenience methods for creating and using affine transforms and
-/// perspective projections. If you are primarily dealing with 3D affine transformations
+/// If you are primarily dealing with 3D affine transformations
 /// considering using [`Affine3A`](crate::Affine3A) which is faster than a 4x4 matrix
 /// for some affine operations.
 ///
@@ -40,24 +39,11 @@ pub const fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat
 /// using methods such as [`Self::from_translation()`], [`Self::from_quat()`],
 /// [`Self::from_scale()`] and [`Self::from_scale_rotation_translation()`].
 ///
-/// Orthographic projections can be created using the methods [`Self::orthographic_lh()`] for
-/// left-handed coordinate systems and [`Self::orthographic_rh()`] for right-handed
-/// systems. The resulting matrix is also an affine transformation.
-///
 /// The [`Self::transform_point3()`] and [`Self::transform_vector3()`] convenience methods
 /// are provided for performing affine transformations on 3D vectors and points. These
 /// multiply 3D inputs as 4D vectors with an implicit `w` value of `1` for points and `0`
 /// for vectors respectively. These methods assume that `Self` contains a valid affine
 /// transform.
-///
-/// Perspective projections can be created using methods such as
-/// [`Self::perspective_lh()`], [`Self::perspective_infinite_lh()`] and
-/// [`Self::perspective_infinite_reverse_lh()`] for left-handed co-ordinate systems and
-/// [`Self::perspective_rh()`], [`Self::perspective_infinite_rh()`] and
-/// [`Self::perspective_infinite_reverse_rh()`] for right-handed co-ordinate systems.
-///
-/// The resulting perspective project can be use to transform 3D vectors as points with
-/// perspective correction using the [`Self::project_point3()`] convenience method.
 #[derive(Clone, Copy)]
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(
@@ -880,9 +866,14 @@ impl Mat4 {
     /// # Panics
     ///
     /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::lh::view::look_to_mat4` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn look_to_lh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
+        #[allow(deprecated)]
         Self::look_to_rh(eye, -dir, up)
     }
 
@@ -894,6 +885,10 @@ impl Mat4 {
     /// # Panics
     ///
     /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::rh::view::look_to_mat4` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn look_to_rh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
@@ -919,9 +914,14 @@ impl Mat4 {
     /// # Panics
     ///
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::lh::view::look_at_mat4` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn look_at_lh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
+        #[allow(deprecated)]
         Self::look_to_lh(eye, center.sub(eye).normalize(), up)
     }
 
@@ -933,8 +933,13 @@ impl Mat4 {
     /// # Panics
     ///
     /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::rh::view::look_at_mat4` function instead"
+    )]
     #[inline]
     pub fn look_at_rh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
+        #[allow(deprecated)]
         Self::look_to_rh(eye, center.sub(eye).normalize(), up)
     }
 
@@ -943,6 +948,10 @@ impl Mat4 {
     /// This is the same as the OpenGL `glFrustum` function.
     ///
     /// See <https://registry.khronos.org/OpenGL-Refpages/gl2.1/xhtml/glFrustum.xml>
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::rh::proj::opengl::frustum` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn frustum_rh_gl(
@@ -975,6 +984,10 @@ impl Mat4 {
     ///
     /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
     /// enabled.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::lh::proj::directx::frustum` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn frustum_lh(
@@ -1008,6 +1021,10 @@ impl Mat4 {
     ///
     /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
     /// enabled.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::rh::proj::directx::frustum` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn frustum_rh(
@@ -1041,6 +1058,10 @@ impl Mat4 {
     ///
     /// This is the same as the OpenGL `gluPerspective` function.
     /// See <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml>
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::rh::proj::opengl::perspective` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn perspective_rh_gl(
@@ -1070,6 +1091,10 @@ impl Mat4 {
     ///
     /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
     /// enabled.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::lh::proj::directx::perspective` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn perspective_lh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32, z_far: f32) -> Self {
@@ -1094,6 +1119,10 @@ impl Mat4 {
     ///
     /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
     /// enabled.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::rh::proj::directx::perspective` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn perspective_rh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32, z_far: f32) -> Self {
@@ -1119,6 +1148,10 @@ impl Mat4 {
     ///
     /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
     /// enabled.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::lh::proj::directx::perspective_infinite` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn perspective_infinite_lh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Self {
@@ -1141,6 +1174,10 @@ impl Mat4 {
     /// # Panics
     ///
     /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::lh::proj::directx::perspective_infinite_reverse` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn perspective_infinite_reverse_lh(
@@ -1169,6 +1206,10 @@ impl Mat4 {
     ///
     /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
     /// enabled.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::rh::proj::directx::perspective_infinite` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn perspective_infinite_rh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Self {
@@ -1189,6 +1230,10 @@ impl Mat4 {
     /// # Panics
     ///
     /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::rh::proj::directx::perspective_infinite_reverse` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn perspective_infinite_reverse_rh(
@@ -1212,6 +1257,10 @@ impl Mat4 {
     /// <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml>
     ///
     /// Useful to map a right-handed coordinate system to the normalized device coordinates that OpenGL expects.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::rh::proj::opengl::orthographic` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn orthographic_rh_gl(
@@ -1224,7 +1273,7 @@ impl Mat4 {
     ) -> Self {
         let a = 2.0 / (right - left);
         let b = 2.0 / (top - bottom);
-        let c = -2.0 / (far - near);
+        let c = 2.0 / (near - far);
         let tx = -(right + left) / (right - left);
         let ty = -(top + bottom) / (top - bottom);
         let tz = -(far + near) / (far - near);
@@ -1240,6 +1289,10 @@ impl Mat4 {
     /// Creates a left-handed orthographic projection matrix with `[0,1]` depth range.
     ///
     /// Useful to map a left-handed coordinate system to the normalized device coordinates that WebGPU/Direct3D/Metal expect.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::lh::proj::directx::orthographic` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn orthographic_lh(
@@ -1269,6 +1322,10 @@ impl Mat4 {
     /// Creates a right-handed orthographic projection matrix with `[0,1]` depth range.
     ///
     /// Useful to map a right-handed coordinate system to the normalized device coordinates that WebGPU/Direct3D/Metal expect.
+    #[deprecated(
+        since = "0.33.1",
+        note = "use the `glam::camera::rh::proj::directx::orthographic` function instead"
+    )]
     #[inline]
     #[must_use]
     pub fn orthographic_rh(
