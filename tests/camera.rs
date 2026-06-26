@@ -1111,6 +1111,45 @@ mod camera {
             let rot = lh_view::look_to_mat3a(dir, up);
             assert_approx_eq!(rot * Vec3A::X, Vec3A::new(0.0, 1.0, 0.0));
         });
+
+        mod deprecated {
+            #![allow(deprecated)]
+            use glam::camera::lh::view as lh_view;
+            use glam::camera::rh::view as rh_view;
+            use glam::{Mat3A, Vec3, Vec3A};
+
+            glam_test!(test_mat3a_look_at, {
+                let eye = Vec3::new(0.0, 0.0, -5.0);
+                let center = Vec3::ZERO;
+                let up = Vec3::new(1.0, 0.0, 0.0);
+
+                let deprecated_lh = Mat3A::look_at_lh(eye, center, up);
+                let deprecated_rh = Mat3A::look_at_rh(eye, center, up);
+                let lh = lh_view::look_at_mat3a(eye, center, up);
+                let rh = rh_view::look_at_mat3a(eye, center, up);
+                assert_approx_eq!(deprecated_lh, lh);
+                assert_approx_eq!(deprecated_rh, rh);
+
+                assert_approx_eq!(lh * Vec3A::X, Vec3A::new(0.0, 1.0, 0.0));
+                assert_approx_eq!(rh * Vec3A::X, Vec3A::new(0.0, 1.0, 0.0));
+
+                let dir = (center - eye).normalize();
+                let deprecated_lh = Mat3A::look_to_lh(dir, up);
+                let deprecated_rh = Mat3A::look_to_rh(dir, up);
+                let lh = lh_view::look_to_mat3a(dir, up);
+                let rh = rh_view::look_to_mat3a(dir, up);
+                assert_approx_eq!(deprecated_lh, lh);
+                assert_approx_eq!(deprecated_rh, rh);
+
+                assert_approx_eq!(lh * Vec3A::X, Vec3A::new(0.0, 1.0, 0.0));
+                assert_approx_eq!(rh * Vec3A::X, Vec3A::new(0.0, 1.0, 0.0));
+
+                should_glam_assert!({ lh_view::look_to_mat3a(Vec3::ONE, Vec3::ZERO) });
+                should_glam_assert!({ lh_view::look_to_mat3a(Vec3::ZERO, Vec3::ONE) });
+                should_glam_assert!({ rh_view::look_to_mat3a(Vec3::ONE, Vec3::ZERO) });
+                should_glam_assert!({ rh_view::look_to_mat3a(Vec3::ZERO, Vec3::ONE) });
+            });
+        }
     }
 }
 
