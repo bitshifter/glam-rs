@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [Unreleased]
+
+### Added
+
+* Added the `camera` and `dcamera` modules containing view and projection
+  constructor functions organized by handedness and graphics API convention.
+
+  The `view` sub-module provides `look_at_*` and `look_to_*` functions
+  that return `Mat4`, `Affine3`, `Affine3A`, `Mat3`, `Mat3A`, or `Quat`
+  view transforms.
+
+  The `proj` sub-module provides API-specific constructors for OpenGL,
+  DirectX and Vulkan conventions, each offering `perspective`,
+  `perspective_infinite`, `perspective_infinite_reverse`, `orthographic`,
+  and `frustum` constructors for both left-handed and right-handed view
+  spaces.
+
+* Added a `prelude` module which re-exports all common types and traits
+  but not camera modules.
+
+* Added `slerp_long` method to quaternion types, a spherical linear
+  interpolation that preserves the rotation direction.
+
+### Changed
+
+* View and projection constructors (`look_at_*`, `look_to_*`,
+  `perspective_*`, `orthographic_*`, `frustum_*`) have been moved off
+  matrix, affine and quaternion types into the `camera`/`dcamera` modules
+  as free functions. The existing methods on those types have been
+  deprecated.
+
 ## [0.33.1] - 2026-06-06
 
 ### Changed
