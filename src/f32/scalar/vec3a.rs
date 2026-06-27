@@ -521,6 +521,20 @@ impl Vec3A {
             | ((self.z.is_sign_negative() as u32) << 2)
     }
 
+    /// Returns a mask indicating which components are negative.
+    ///
+    /// An element is negative if it has a negative sign, including -0.0, NaNs with negative sign
+    /// bit and negative infinity.
+    #[inline]
+    #[must_use]
+    pub fn is_negative_mask(self) -> BVec3A {
+        BVec3A::new(
+            self.x.is_sign_negative(),
+            self.y.is_sign_negative(),
+            self.z.is_sign_negative(),
+        )
+    }
+
     /// Returns `true` if, and only if, all elements are finite.  If any element is either
     /// `NaN`, positive or negative infinity, this will return `false`.
     #[inline]

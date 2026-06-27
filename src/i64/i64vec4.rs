@@ -507,6 +507,21 @@ impl I64Vec4 {
             | ((self.w.is_negative() as u32) << 3)
     }
 
+    /// Returns a mask indicating which components are negative.
+    ///
+    /// An element is negative if it has a negative sign, including -0.0, NaNs with negative sign
+    /// bit and negative infinity.
+    #[inline]
+    #[must_use]
+    pub fn is_negative_mask(self) -> BVec4 {
+        BVec4::new(
+            self.x.is_negative(),
+            self.y.is_negative(),
+            self.z.is_negative(),
+            self.w.is_negative(),
+        )
+    }
+
     /// Computes the squared length of `self`.
     #[doc(alias = "magnitude2")]
     #[inline]
