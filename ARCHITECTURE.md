@@ -75,7 +75,7 @@ some `f32` types and scalar fallbacks if SIMD is not available.
 The `Deref` trait is used to provide direct access to SIMD vector components
 like `.x`, `.y` and so on. The `Deref` implementation will return `XYZ<T>`
 structure on which the vector components are accessible. Unfortunately if users
-dereference the public types they will see confusing errors messages about `XYZ`
+dereference the public types they will see confusing error messages about `XYZ`
 types but this on balance seemed preferable to needing to setter and getting
 methods to read and write component values.
 

@@ -51,12 +51,12 @@ and/or implementation. The use of SIMD generally enables better performance than
 numeric types such as `f32`.
 
 Some `glam` types use SIMD for storage meaning they are 16 byte aligned, these types include
-`Mat2`, `Mat3A`, `Mat4`, `Quat`, `Vec3A`, `Vec4`, `Affine2` an `Affine3A`. Types
+`Mat2`, `Mat3A`, `Mat4`, `Quat`, `Vec3A`, `Vec4`, `Affine2` and `Affine3A`. Types
 with an `A` suffix are a SIMD alternative to a scalar type, e.g. `Vec3` uses `f32` storage and
 `Vec3A` uses SIMD storage.
 
 When SIMD is not available on the target the types will maintain 16 byte alignment and internal
-padding so that object sizes and layouts will not change between architectures. There are scalar
+padding so that object sizes and layouts will not change between architectures. Scalar
 math fallback implementations exist when SIMD is not available. It is intended to add support for
 other SIMD architectures once they appear in stable Rust.
 
@@ -109,7 +109,7 @@ assert_eq!(Vec3A::new(1.0, 2.0, 3.0), v3a);
 translation. The represent 2D and 3D affine transformations which are commonly used in games.
 
 `Affine3` is composed from `Vec3` and `Mat3` whereas `Affine3A` is composed from `Mat3A` and
-`Vec3A`. `Affine3A` will generally be faster but is 16 byte aligned and 64 btyes verses `Affine3`
+`Vec3A`. `Affine3A` will generally be faster but is 16 byte aligned and 64 bytes versus `Affine3`
 which is 48 bytes.
 
 The table below shows the performance advantage of `Affine2` over `Mat3A` and `Mat3A` over `Mat3`.
