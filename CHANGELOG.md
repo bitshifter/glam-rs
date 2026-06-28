@@ -28,6 +28,9 @@ The format is based on [Keep a Changelog], and this project adheres to
 * Added `slerp_long` method to quaternion types, a spherical linear
   interpolation that preserves the rotation direction.
 
+* Added `is_negative_mask` method to all signed vector types which returns a
+  boolean mask vector indicating which components have a negative sign.
+
 ### Changed
 
 * View and projection constructors (`look_at_*`, `look_to_*`,
