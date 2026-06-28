@@ -142,7 +142,6 @@ pub mod vulkan {
 }
 
 #[doc(alias = "webgpu")]
-
 pub mod directx {
     //! DirectX and WebGPU NDC convention: Z range **[0, 1]**, Y-up.
     //!

@@ -102,7 +102,7 @@ pub mod opengl {
 
 {% if api == "directx" %}
 #[doc(alias = "webgpu")]
-{% endif %}
+{%- endif %}
 pub mod {{ api }} {
     //! {{ api_desc }} NDC convention: Z range **{{ api_z }}**, {{ api_y }}.
     //!
