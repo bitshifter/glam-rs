@@ -835,6 +835,28 @@ macro_rules! impl_vec2_signed_tests {
             assert_eq!($vec2::new(-2 as $t, -6 as $t).is_negative_bitmask(), 0b11);
         });
 
+        glam_test!(test_is_negative_mask, {
+            assert_eq!($vec2::ZERO.is_negative_mask(), $mask::new(false, false));
+            assert_eq!($vec2::ONE.is_negative_mask(), $mask::new(false, false));
+            assert_eq!((-$vec2::ONE).is_negative_mask(), $mask::new(true, true));
+            assert_eq!(
+                $vec2::new(-1 as $t, 2 as $t).is_negative_mask(),
+                $mask::new(true, false)
+            );
+            assert_eq!(
+                $vec2::new(8 as $t, 3 as $t).is_negative_mask(),
+                $mask::new(false, false)
+            );
+            assert_eq!(
+                $vec2::new(3 as $t, -4 as $t).is_negative_mask(),
+                $mask::new(false, true)
+            );
+            assert_eq!(
+                $vec2::new(-2 as $t, -6 as $t).is_negative_mask(),
+                $mask::new(true, true)
+            );
+        });
+
         glam_test!(test_abs, {
             assert_eq!($vec2::ZERO.abs(), $vec2::ZERO);
             assert_eq!($vec2::ONE.abs(), $vec2::ONE);
@@ -1316,6 +1338,29 @@ macro_rules! impl_vec2_float_tests {
             assert_eq!($vec2::new(8.0, 3.0).is_negative_bitmask(), 0b00);
             assert_eq!($vec2::new(3.0, -4.0).is_negative_bitmask(), 0b10);
             assert_eq!($vec2::new(-2.0, -6.0).is_negative_bitmask(), 0b11);
+        });
+
+        glam_test!(test_float_is_negative_mask, {
+            assert_eq!($vec2::ZERO.is_negative_mask(), $mask::new(false, false));
+            assert_eq!((-$vec2::ZERO).is_negative_mask(), $mask::new(true, true));
+            assert_eq!($vec2::ONE.is_negative_mask(), $mask::new(false, false));
+            assert_eq!((-$vec2::ONE).is_negative_mask(), $mask::new(true, true));
+            assert_eq!(
+                $vec2::new(-1.0, 2.0).is_negative_mask(),
+                $mask::new(true, false)
+            );
+            assert_eq!(
+                $vec2::new(8.0, 3.0).is_negative_mask(),
+                $mask::new(false, false)
+            );
+            assert_eq!(
+                $vec2::new(3.0, -4.0).is_negative_mask(),
+                $mask::new(false, true)
+            );
+            assert_eq!(
+                $vec2::new(-2.0, -6.0).is_negative_mask(),
+                $mask::new(true, true)
+            );
         });
 
         glam_test!(test_round, {

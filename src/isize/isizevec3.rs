@@ -467,6 +467,20 @@ impl ISizeVec3 {
             | ((self.z.is_negative() as u32) << 2)
     }
 
+    /// Returns a mask indicating which components are negative.
+    ///
+    /// An element is negative if it has a negative sign, including -0.0, NaNs with negative sign
+    /// bit and negative infinity.
+    #[inline]
+    #[must_use]
+    pub fn is_negative_mask(self) -> BVec3 {
+        BVec3::new(
+            self.x.is_negative(),
+            self.y.is_negative(),
+            self.z.is_negative(),
+        )
+    }
+
     /// Computes the squared length of `self`.
     #[doc(alias = "magnitude2")]
     #[inline]

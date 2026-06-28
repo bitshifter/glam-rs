@@ -1138,6 +1138,37 @@ macro_rules! impl_vec4_signed_tests {
             );
         });
 
+        glam_test!(test_is_negative_mask, {
+            assert_eq!(
+                $vec4::ZERO.is_negative_mask(),
+                $mask::new(false, false, false, false)
+            );
+            assert_eq!(
+                $vec4::ONE.is_negative_mask(),
+                $mask::new(false, false, false, false)
+            );
+            assert_eq!(
+                (-$vec4::ONE).is_negative_mask(),
+                $mask::new(true, true, true, true)
+            );
+            assert_eq!(
+                $vec4::new(-1 as $t, 2 as $t, 3 as $t, -4 as $t).is_negative_mask(),
+                $mask::new(true, false, false, true)
+            );
+            assert_eq!(
+                $vec4::new(1 as $t, 5 as $t, -3 as $t, 7 as $t).is_negative_mask(),
+                $mask::new(false, false, true, false)
+            );
+            assert_eq!(
+                $vec4::new(3 as $t, -4 as $t, 1 as $t, 6 as $t).is_negative_mask(),
+                $mask::new(false, true, false, false)
+            );
+            assert_eq!(
+                $vec4::new(2 as $t, -6 as $t, 5 as $t, -3 as $t).is_negative_mask(),
+                $mask::new(false, true, false, true)
+            );
+        });
+
         glam_test!(test_abs, {
             assert_eq!($vec4::ZERO.abs(), $vec4::ZERO);
             assert_eq!($vec4::ONE.abs(), $vec4::ONE);
@@ -1672,6 +1703,45 @@ macro_rules! impl_vec4_float_tests {
             assert_eq!(
                 $vec4::new(2.0, -6.0, 5.0, -3.0).is_negative_bitmask(),
                 0b1010
+            );
+        });
+
+        glam_test!(test_float_is_negative_mask, {
+            assert_eq!(
+                $vec4::ZERO.is_negative_mask(),
+                $mask::new(false, false, false, false)
+            );
+            assert_eq!(
+                (-$vec4::ZERO).is_negative_mask(),
+                $mask::new(true, true, true, true)
+            );
+            assert_eq!(
+                $vec4::ONE.is_negative_mask(),
+                $mask::new(false, false, false, false)
+            );
+            assert_eq!(
+                (-$vec4::ONE).is_negative_mask(),
+                $mask::new(true, true, true, true)
+            );
+            assert_eq!(
+                $vec4::new(-1.0, 2.0, 3.0, -4.0).is_negative_mask(),
+                $mask::new(true, false, false, true)
+            );
+            assert_eq!(
+                $vec4::new(8.0, 3.0, 1.0, -0.0).is_negative_mask(),
+                $mask::new(false, false, false, true)
+            );
+            assert_eq!(
+                $vec4::new(1.0, 5.0, -3.0, 7.0).is_negative_mask(),
+                $mask::new(false, false, true, false)
+            );
+            assert_eq!(
+                $vec4::new(3.0, -4.0, 1.0, 6.0).is_negative_mask(),
+                $mask::new(false, true, false, false)
+            );
+            assert_eq!(
+                $vec4::new(2.0, -6.0, 5.0, -3.0).is_negative_mask(),
+                $mask::new(false, true, false, true)
             );
         });
 

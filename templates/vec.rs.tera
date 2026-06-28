@@ -1597,6 +1597,46 @@ impl {{ self_t }} {
             unimplemented!()
         {% endif %}
     }
+
+    /// Returns a mask indicating which components are negative.
+    ///
+    /// An element is negative if it has a negative sign, including -0.0, NaNs with negative sign
+    /// bit and negative infinity.
+    #[inline]
+    #[must_use]
+    pub fn is_negative_mask(self) -> {{ mask_t }} {
+        {% if is_scalar and is_float %}
+            {{ mask_t }}::new(
+                {% for c in components %}
+                    self.{{ c }}.is_sign_negative(),
+                {%- endfor %}
+            )
+        {% elif is_scalar %}
+            {{ mask_t }}::new(
+                {% for c in components %}
+                    self.{{ c }}.is_negative(),
+                {%- endfor %}
+            )
+        {% elif is_sse2 %}
+            {{ mask_t }}(unsafe {
+                _mm_castsi128_ps(_mm_cmplt_epi32(_mm_castps_si128(self.0), _mm_setzero_si128()))
+            })
+        {% elif is_wasm %}
+            {{ mask_t }}(
+                i32x4_lt(self.0, i32x4_splat(0))
+            )
+        {% elif is_coresimd %}
+            {{ mask_t }}(
+                self.0.is_sign_negative()
+            )
+        {% elif is_neon %}
+            {{ mask_t }}(unsafe {
+                vcltq_s32(vreinterpretq_s32_f32(self.0), vdupq_n_s32(0))
+            })
+        {% else %}
+            unimplemented!()
+        {% endif %}
+    }
 {% endif %}
 
 {% if is_float %}

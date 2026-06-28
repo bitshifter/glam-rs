@@ -533,6 +533,21 @@ impl Vec3A {
         unsafe { (_mm_movemask_ps(self.0) as u32) & 0x7 }
     }
 
+    /// Returns a mask indicating which components are negative.
+    ///
+    /// An element is negative if it has a negative sign, including -0.0, NaNs with negative sign
+    /// bit and negative infinity.
+    #[inline]
+    #[must_use]
+    pub fn is_negative_mask(self) -> BVec3A {
+        BVec3A(unsafe {
+            _mm_castsi128_ps(_mm_cmplt_epi32(
+                _mm_castps_si128(self.0),
+                _mm_setzero_si128(),
+            ))
+        })
+    }
+
     /// Returns `true` if, and only if, all elements are finite.  If any element is either
     /// `NaN`, positive or negative infinity, this will return `false`.
     #[inline]
