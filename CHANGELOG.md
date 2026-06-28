@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
+## [0.33.2] - 2026-06-28
+
 ### Added
 
 * Added the `camera` and `dcamera` modules containing view and projection
@@ -1451,7 +1453,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.33.1...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.33.2...HEAD
+[0.33.2]: https://github.com/bitshifter/glam-rs/compare/0.33.1...0.33.2
 [0.33.1]: https://github.com/bitshifter/glam-rs/compare/0.33.0...0.33.1
 [0.33.0]: https://github.com/bitshifter/glam-rs/compare/0.32.1...0.33.0
 [0.32.1]: https://github.com/bitshifter/glam-rs/compare/0.32.0...0.32.1

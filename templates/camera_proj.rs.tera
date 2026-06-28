@@ -24,6 +24,7 @@
 //! * [`directx`] - NDC Z range **[0, 1]**, Y-up
 //! * [`vulkan`] - NDC Z range **[0, 1]**, Y-down
 
+#[doc(alias = "webgl")]
 pub mod opengl {
     //! OpenGL NDC convention: Z range **[-1, 1]**, Y-up.
     //!
@@ -99,6 +100,9 @@ pub mod opengl {
     {% set yflip = false %}
 {% endif %}
 
+{% if api == "directx" %}
+#[doc(alias = "webgpu")]
+{%- endif %}
 pub mod {{ api }} {
     //! {{ api_desc }} NDC convention: Z range **{{ api_z }}**, {{ api_y }}.
     //!

@@ -10,6 +10,7 @@
 //! * [`directx`] - NDC Z range **[0, 1]**, Y-up
 //! * [`vulkan`] - NDC Z range **[0, 1]**, Y-down
 
+#[doc(alias = "webgl")]
 pub mod opengl {
     //! OpenGL NDC convention: Z range **[-1, 1]**, Y-up.
     //!
@@ -140,6 +141,7 @@ pub mod vulkan {
     }
 }
 
+#[doc(alias = "webgpu")]
 pub mod directx {
     //! DirectX and WebGPU NDC convention: Z range **[0, 1]**, Y-up.
     //!

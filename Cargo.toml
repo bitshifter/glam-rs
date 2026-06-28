@@ -1,6 +1,6 @@
 [package]
 name = "glam"
-version = "0.33.1" # remember to update html_root_url
+version = "0.33.2" # remember to update html_root_url
 edition = "2021"
 description = "A simple and fast 3D math library for games and graphics"
 repository = "https://github.com/bitshifter/glam-rs"
