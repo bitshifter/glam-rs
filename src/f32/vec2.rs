@@ -1029,9 +1029,8 @@ impl Vec2 {
     ///
     /// The inputs do not need to be unit vectors however they must be non-zero.
     ///
-    /// The returned angle can be used with [`from_angle()`][Self::from_angle] and
-    /// [`rotate()`][Self::rotate], e.g.
-    /// `Vec2::from_angle(self.angle_to(rhs)).rotate(self)` will be equal to `rhs`.
+    /// The returned angle can be used with [`rotate_angle()`][Self::rotate_angle], e.g.
+    /// `self.rotate_angle(self.angle_to(rhs))` will be equal to `rhs`.
     #[inline]
     #[must_use]
     pub fn angle_to(self, rhs: Self) -> f32 {
@@ -1077,6 +1076,14 @@ impl Vec2 {
             x: self.x * rhs.x - self.y * rhs.y,
             y: self.y * rhs.x + self.x * rhs.y,
         }
+    }
+
+    /// Rotates `self` by `angle` (in radians), equivalent to
+    /// `self.rotate(Vec2::from_angle(angle))`.
+    #[inline]
+    #[must_use]
+    pub fn rotate_angle(self, angle: f32) -> Self {
+        self.rotate(Self::from_angle(angle))
     }
 
     /// Rotates towards `rhs` up to `max_angle` (in radians).

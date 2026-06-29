@@ -2479,9 +2479,8 @@ impl {{ self_t }} {
     ///
     /// The inputs do not need to be unit vectors however they must be non-zero.
     ///
-    /// The returned angle can be used with [`from_angle()`][Self::from_angle] and
-    /// [`rotate()`][Self::rotate], e.g.
-    /// `{{ vec2_t }}::from_angle(self.angle_to(rhs)).rotate(self)` will be equal to `rhs`.
+    /// The returned angle can be used with [`rotate_angle()`][Self::rotate_angle], e.g.
+    /// `self.rotate_angle(self.angle_to(rhs))` will be equal to `rhs`.
     #[inline]
     #[must_use]
     pub fn angle_to(self, rhs: Self) -> {{ scalar_t }} {
@@ -2795,6 +2794,14 @@ impl {{ self_t }} {
 {% endif %}
 
 {% if is_signed and is_float and dim == 2 %}
+    /// Rotates `self` by `angle` (in radians), equivalent to
+    /// `self.rotate({{ vec2_t }}::from_angle(angle))`.
+    #[inline]
+    #[must_use]
+    pub fn rotate_angle(self, angle: {{ scalar_t }}) -> Self {
+        self.rotate(Self::from_angle(angle))
+    }
+
     /// Rotates towards `rhs` up to `max_angle` (in radians).
     ///
     /// When `max_angle` is `0.0`, the result will be equal to `self`. When `max_angle` is equal to
