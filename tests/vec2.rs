@@ -1645,9 +1645,28 @@ macro_rules! impl_vec2_float_tests {
 
             // the angle returned by angle_to should rotate the input vector to the
             // destination vector
+            assert_approx_eq!($vec2::X.rotate_angle($vec2::X.angle_to($vec2::Y)), $vec2::Y);
+
+            should_glam_assert!({ $vec2::ZERO.angle_to($vec2::X) });
+            should_glam_assert!({ $vec2::X.angle_to($vec2::ZERO) });
+        });
+
+        glam_test!(test_rotate_angle, {
+            use core::$t::consts::{FRAC_PI_2, PI};
+
+            // rotate_angle is equivalent to self.rotate(Vec2::from_angle(angle))
+            assert_approx_eq!($vec2::Y, $vec2::X.rotate_angle(FRAC_PI_2), 1e-6);
+            assert_approx_eq!($vec2::NEG_X, $vec2::X.rotate_angle(PI), 1e-6);
+            assert_approx_eq!($vec2::NEG_Y, $vec2::X.rotate_angle(3.0 * FRAC_PI_2), 1e-6);
+
+            // Zero rotation is identity
+            assert_approx_eq!($vec2::X, $vec2::X.rotate_angle(0.0), 1e-6);
+
+            // Equivalent to rotate(Vec2::from_angle(angle))
             assert_approx_eq!(
-                $vec2::from_angle($vec2::X.angle_to($vec2::Y)).rotate($vec2::X),
-                $vec2::Y
+                $vec2::X.rotate_angle(FRAC_PI_2),
+                $vec2::X.rotate($vec2::from_angle(FRAC_PI_2)),
+                1e-6
             );
         });
 
