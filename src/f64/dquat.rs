@@ -641,8 +641,8 @@ impl DQuat {
         positive_w_angle < THRESHOLD_ANGLE
     }
 
-    /// Returns the angle (in radians) for the minimal rotation
-    /// for transforming this quaternion into another.
+    /// Returns the angle (in radians) for the minimal rotation between two quaternions
+    /// in the range `[0, +π]`.
     ///
     /// Both quaternions must be normalized.
     ///
