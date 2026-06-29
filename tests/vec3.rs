@@ -1949,6 +1949,41 @@ macro_rules! impl_vec3_float_tests {
             assert_approx_eq!(2.0 * core::$t::consts::FRAC_PI_3, angle, 1e-6);
         });
 
+        glam_test!(test_angle_to, {
+            use core::$t::consts::{FRAC_PI_2, PI};
+
+            // X to Y around Z axis is +PI/2
+            assert_approx_eq!(FRAC_PI_2, $vec3::X.angle_to($vec3::Y, $vec3::Z), 1e-6);
+
+            // Using angle_to with rotate_axis should reach the target
+            assert_approx_eq!(
+                $vec3::Y,
+                $vec3::X.rotate_axis($vec3::Z, $vec3::X.angle_to($vec3::Y, $vec3::Z)),
+                1e-6
+            );
+            assert_approx_eq!(
+                $vec3::X,
+                $vec3::Y.rotate_axis($vec3::Z, $vec3::Y.angle_to($vec3::X, $vec3::Z)),
+                1e-6
+            );
+
+            // Flipping the axis negates the angle
+            assert_approx_eq!(-FRAC_PI_2, $vec3::X.angle_to($vec3::Y, -$vec3::Z), 1e-6);
+
+            // Self to self is zero
+            assert_approx_eq!(0.0, $vec3::X.angle_to($vec3::X, $vec3::Z), 1e-6);
+
+            // Opposite directions
+            assert_approx_eq!(PI, $vec3::X.angle_to(-$vec3::X, $vec3::Z), 1e-6);
+
+            // Non-unit vectors
+            assert_approx_eq!(
+                FRAC_PI_2,
+                $vec3::new(5.0, 0.0, 0.0).angle_to($vec3::new(0.0, 5.0, 0.0), $vec3::Z),
+                1e-6
+            );
+        });
+
         glam_test!(test_clamp_length, {
             // Too long gets shortened
             assert_eq!(

@@ -1145,6 +1145,28 @@ impl Vec3A {
         )
     }
 
+    /// Returns the signed angle (in radians) from `self` to `rhs` around `axis`
+    /// in the range `[-π, +π]`.
+    ///
+    /// The `axis` must be a unit vector. The angle follows the right-hand rule
+    /// around `axis` and can be used with [`Self::rotate_axis`], e.g.
+    /// `self.rotate_axis(axis, self.angle_to(rhs, axis))` will be equal to `rhs`.
+    ///
+    /// For the unsigned angle without a reference axis, see [`Self::angle_between`].
+    ///
+    /// The inputs do not need to be unit vectors however they must be non-zero.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
+    #[doc(alias = "signed_angle")]
+    #[inline]
+    #[must_use]
+    pub fn angle_to(self, rhs: Self, axis: Self) -> f32 {
+        glam_assert!(axis.is_normalized());
+        math::atan2(self.cross(rhs).dot(axis), self.dot(rhs))
+    }
+
     /// Rotates around the x axis by `angle` (in radians).
     #[inline]
     #[must_use]

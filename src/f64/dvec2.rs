@@ -1036,6 +1036,10 @@ impl DVec2 {
     /// Returns the angle of rotation (in radians) from `self` to `rhs` in the range `[-π, +π]`.
     ///
     /// The inputs do not need to be unit vectors however they must be non-zero.
+    ///
+    /// The returned angle can be used with [`from_angle()`][Self::from_angle] and
+    /// [`rotate()`][Self::rotate], e.g.
+    /// `DVec2::from_angle(self.angle_to(rhs)).rotate(self)` will be equal to `rhs`.
     #[inline]
     #[must_use]
     pub fn angle_to(self, rhs: Self) -> f64 {
