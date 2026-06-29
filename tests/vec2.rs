@@ -1646,6 +1646,9 @@ macro_rules! impl_vec2_float_tests {
             // the angle returned by angle_to should rotate the input vector to the
             // destination vector
             assert_approx_eq!($vec2::X.rotate_angle($vec2::X.angle_to($vec2::Y)), $vec2::Y);
+
+            should_glam_assert!({ $vec2::ZERO.angle_to($vec2::X) });
+            should_glam_assert!({ $vec2::X.angle_to($vec2::ZERO) });
         });
 
         glam_test!(test_rotate_angle, {

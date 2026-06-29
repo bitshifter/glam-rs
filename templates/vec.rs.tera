@@ -1733,6 +1733,12 @@ impl {{ self_t }} {
             dot.sqrt()[0]
         {% endif %}
     }
+
+    /// Returns `true` if the vector is not the zero vector (also rejects NaN).
+    #[allow(dead_code)]
+    fn is_non_zero(self) -> bool {
+        self.length_squared() > 0.0
+    }
 {% endif %}
 
     /// Computes the squared length of `self`.
@@ -2484,6 +2490,8 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn angle_to(self, rhs: Self) -> {{ scalar_t }} {
+        glam_assert!(self.is_non_zero());
+        glam_assert!(rhs.is_non_zero());
         let angle = math::acos_approx(
             self.dot(rhs) / math::sqrt(self.length_squared() * rhs.length_squared()));
 
@@ -2499,6 +2507,8 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn angle_between(self, rhs: Self) -> {{ scalar_t }} {
+        glam_assert!(self.is_non_zero());
+        glam_assert!(rhs.is_non_zero());
         math::acos_approx(
             self.dot(rhs).div(
                 math::sqrt(self.length_squared().mul(rhs.length_squared()))))
@@ -2523,6 +2533,8 @@ impl {{ self_t }} {
     #[must_use]
     pub fn angle_to(self, rhs: Self, axis: Self) -> {{ scalar_t }} {
         glam_assert!(axis.is_normalized());
+        glam_assert!(self.is_non_zero());
+        glam_assert!(rhs.is_non_zero());
         math::atan2(self.cross(rhs).dot(axis), self.dot(rhs))
     }
 

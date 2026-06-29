@@ -1947,6 +1947,9 @@ macro_rules! impl_vec3_float_tests {
 
             let angle = $vec3::new(-1.0, 0.0, -1.0).angle_between($vec3::new(1.0, -1.0, 0.0));
             assert_approx_eq!(2.0 * core::$t::consts::FRAC_PI_3, angle, 1e-6);
+
+            should_glam_assert!({ $vec3::ZERO.angle_between($vec3::X) });
+            should_glam_assert!({ $vec3::X.angle_between($vec3::ZERO) });
         });
 
         glam_test!(test_angle_to, {
@@ -1982,6 +1985,9 @@ macro_rules! impl_vec3_float_tests {
                 $vec3::new(5.0, 0.0, 0.0).angle_to($vec3::new(0.0, 5.0, 0.0), $vec3::Z),
                 1e-6
             );
+
+            should_glam_assert!({ $vec3::ZERO.angle_to($vec3::X, $vec3::Z) });
+            should_glam_assert!({ $vec3::X.angle_to($vec3::ZERO, $vec3::Z) });
         });
 
         glam_test!(test_clamp_length, {

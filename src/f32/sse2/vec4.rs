@@ -567,6 +567,12 @@ impl Vec4 {
         }
     }
 
+    /// Returns `true` if the vector is not the zero vector (also rejects NaN).
+    #[allow(dead_code)]
+    fn is_non_zero(self) -> bool {
+        self.length_squared() > 0.0
+    }
+
     /// Computes the squared length of `self`.
     ///
     /// This is faster than `length()` as it avoids a square root operation.

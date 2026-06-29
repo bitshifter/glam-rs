@@ -562,6 +562,12 @@ impl Vec3A {
         f32x4_extract_lane::<0>(f32x4_sqrt(dot))
     }
 
+    /// Returns `true` if the vector is not the zero vector (also rejects NaN).
+    #[allow(dead_code)]
+    fn is_non_zero(self) -> bool {
+        self.length_squared() > 0.0
+    }
+
     /// Computes the squared length of `self`.
     ///
     /// This is faster than `length()` as it avoids a square root operation.
@@ -1100,6 +1106,8 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn angle_between(self, rhs: Self) -> f32 {
+        glam_assert!(self.is_non_zero());
+        glam_assert!(rhs.is_non_zero());
         math::acos_approx(
             self.dot(rhs)
                 .div(math::sqrt(self.length_squared().mul(rhs.length_squared()))),
@@ -1125,6 +1133,8 @@ impl Vec3A {
     #[must_use]
     pub fn angle_to(self, rhs: Self, axis: Self) -> f32 {
         glam_assert!(axis.is_normalized());
+        glam_assert!(self.is_non_zero());
+        glam_assert!(rhs.is_non_zero());
         math::atan2(self.cross(rhs).dot(axis), self.dot(rhs))
     }
 
