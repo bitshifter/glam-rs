@@ -1132,6 +1132,9 @@ impl Vec3A {
 
     /// Returns the angle (in radians) between two vectors in the range `[0, +π]`.
     ///
+    /// For the full rotation between two vectors as a quaternion, see
+    /// [`Quat::from_rotation_arc`].
+    ///
     /// The inputs do not need to be unit vectors however they must be non-zero.
     #[inline]
     #[must_use]
