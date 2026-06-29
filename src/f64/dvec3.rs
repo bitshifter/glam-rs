@@ -1129,6 +1129,10 @@ impl DVec3 {
     /// [`DQuat::from_rotation_arc`].
     ///
     /// The inputs do not need to be unit vectors however they must be non-zero.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `self` or `rhs` has zero length when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     pub fn angle_between(self, rhs: Self) -> f64 {
@@ -1154,6 +1158,7 @@ impl DVec3 {
     /// # Panics
     ///
     /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
+    /// Will panic if `self` or `rhs` has zero length when `glam_assert` is enabled.
     #[doc(alias = "signed_angle")]
     #[inline]
     #[must_use]

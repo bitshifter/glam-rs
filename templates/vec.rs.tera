@@ -2487,6 +2487,10 @@ impl {{ self_t }} {
     ///
     /// The returned angle can be used with [`rotate_angle()`][Self::rotate_angle], e.g.
     /// `self.rotate_angle(self.angle_to(rhs))` will be equal to `rhs`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `self` or `rhs` has zero length when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     pub fn angle_to(self, rhs: Self) -> {{ scalar_t }} {
@@ -2504,6 +2508,10 @@ impl {{ self_t }} {
     /// [`{{ quat_t }}::from_rotation_arc`].
     ///
     /// The inputs do not need to be unit vectors however they must be non-zero.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `self` or `rhs` has zero length when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     pub fn angle_between(self, rhs: Self) -> {{ scalar_t }} {
@@ -2528,6 +2536,7 @@ impl {{ self_t }} {
     /// # Panics
     ///
     /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
+    /// Will panic if `self` or `rhs` has zero length when `glam_assert` is enabled.
     #[doc(alias = "signed_angle")]
     #[inline]
     #[must_use]

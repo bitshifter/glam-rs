@@ -1045,6 +1045,10 @@ impl DVec2 {
     ///
     /// The returned angle can be used with [`rotate_angle()`][Self::rotate_angle], e.g.
     /// `self.rotate_angle(self.angle_to(rhs))` will be equal to `rhs`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `self` or `rhs` has zero length when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     pub fn angle_to(self, rhs: Self) -> f64 {
