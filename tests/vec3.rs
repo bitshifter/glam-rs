@@ -2629,141 +2629,9 @@ macro_rules! impl_vec3_float_tests {
 }
 
 #[allow(unused_macros)]
-macro_rules! impl_vec3_scalar_shift_op_test {
-    ($vec3:ident, $t_min:literal, $t_max:literal, $rhs_min:literal, $rhs_max:literal) => {
-        glam_test!(test_vec3_scalar_shift_ops, {
-            for x in $t_min..$t_max {
-                for y in $t_min..$t_max {
-                    for z in $t_min..$t_max {
-                        for rhs in $rhs_min..$rhs_max {
-                            let lhs = $vec3::new(x, y, z);
-                            assert_eq!(lhs << rhs, $vec3::new(x << rhs, y << rhs, z << rhs));
-                            assert_eq!(lhs >> rhs, $vec3::new(x >> rhs, y >> rhs, z >> rhs));
-
-                            assert_eq!(&lhs << rhs, $vec3::new(x << rhs, y << rhs, z << rhs));
-                            assert_eq!(&lhs >> rhs, $vec3::new(x >> rhs, y >> rhs, z >> rhs));
-
-                            assert_eq!(lhs << &rhs, $vec3::new(x << rhs, y << rhs, z << rhs));
-                            assert_eq!(lhs >> &rhs, $vec3::new(x >> rhs, y >> rhs, z >> rhs));
-
-                            assert_eq!(&lhs << &rhs, $vec3::new(x << rhs, y << rhs, z << rhs));
-                            assert_eq!(&lhs >> &rhs, $vec3::new(x >> rhs, y >> rhs, z >> rhs));
-
-                            let mut a = lhs;
-                            a <<= rhs;
-                            assert_eq!(a, lhs << rhs);
-
-                            let mut a = lhs;
-                            a <<= &rhs;
-                            assert_eq!(a, lhs << rhs);
-
-                            let mut a = lhs;
-                            a >>= rhs;
-                            assert_eq!(a, lhs >> rhs);
-
-                            let mut a = lhs;
-                            a >>= &rhs;
-                            assert_eq!(a, lhs >> rhs);
-                        }
-                    }
-                }
-            }
-        });
-    };
-}
-
-#[allow(unused_macros)]
 macro_rules! impl_vec3_scalar_shift_op_tests {
     ($vec3:ident, $t_min:literal, $t_max:literal) => {
-        mod shift_by_i8 {
-            use glam::$vec3;
-            impl_vec3_scalar_shift_op_test!($vec3, $t_min, $t_max, 0i8, 2);
-        }
-        mod shift_by_i16 {
-            use glam::$vec3;
-            impl_vec3_scalar_shift_op_test!($vec3, $t_min, $t_max, 0i16, 2);
-        }
-        mod shift_by_i32 {
-            use glam::$vec3;
-            impl_vec3_scalar_shift_op_test!($vec3, $t_min, $t_max, 0i32, 2);
-        }
-        mod shift_by_i64 {
-            use glam::$vec3;
-            impl_vec3_scalar_shift_op_test!($vec3, $t_min, $t_max, 0i64, 2);
-        }
-        mod shift_by_u8 {
-            use glam::$vec3;
-            impl_vec3_scalar_shift_op_test!($vec3, $t_min, $t_max, 0u8, 2);
-        }
-        mod shift_by_u16 {
-            use glam::$vec3;
-            impl_vec3_scalar_shift_op_test!($vec3, $t_min, $t_max, 0u16, 2);
-        }
-        mod shift_by_u32 {
-            use glam::$vec3;
-            impl_vec3_scalar_shift_op_test!($vec3, $t_min, $t_max, 0u32, 2);
-        }
-        mod shift_by_u64 {
-            use glam::$vec3;
-            impl_vec3_scalar_shift_op_test!($vec3, $t_min, $t_max, 0u64, 2);
-        }
-    };
-}
-
-#[allow(unused_macros)]
-macro_rules! impl_vec3_shift_op_test {
-    ($vec3:ident, $rhs:ident, $t_min:literal, $t_max:literal) => {
-        glam_test!(test_vec3_shift_ops, {
-            for x1 in $t_min..$t_max {
-                for y1 in $t_min..$t_max {
-                    for z1 in $t_min..$t_max {
-                        for x2 in $t_min..$t_max {
-                            for y2 in $t_min..$t_max {
-                                for z2 in $t_min..$t_max {
-                                    let lhs = $vec3::new(x1, y1, z1);
-                                    let rhs = $rhs::new(x2, y2, z2);
-                                    assert_eq!(
-                                        lhs << rhs,
-                                        $vec3::new(x1 << x2, y1 << y2, z1 << z2)
-                                    );
-                                    assert_eq!(
-                                        lhs >> rhs,
-                                        $vec3::new(x1 >> x2, y1 >> y2, z1 >> z2)
-                                    );
-
-                                    assert_eq!(
-                                        &lhs << rhs,
-                                        $vec3::new(x1 << x2, y1 << y2, z1 << z2)
-                                    );
-                                    assert_eq!(
-                                        &lhs >> rhs,
-                                        $vec3::new(x1 >> x2, y1 >> y2, z1 >> z2)
-                                    );
-
-                                    assert_eq!(
-                                        lhs << &rhs,
-                                        $vec3::new(x1 << x2, y1 << y2, z1 << z2)
-                                    );
-                                    assert_eq!(
-                                        lhs >> &rhs,
-                                        $vec3::new(x1 >> x2, y1 >> y2, z1 >> z2)
-                                    );
-
-                                    assert_eq!(
-                                        &lhs << &rhs,
-                                        $vec3::new(x1 << x2, y1 << y2, z1 << z2)
-                                    );
-                                    assert_eq!(
-                                        &lhs >> &rhs,
-                                        $vec3::new(x1 >> x2, y1 >> y2, z1 >> z2)
-                                    );
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        });
+        impl_vec_scalar_shift_op_test!(test_vec3_scalar_shift_ops, $vec3, $t_min, $t_max, x, y, z);
     };
 }
 
@@ -2773,12 +2641,12 @@ macro_rules! impl_vec3_shift_op_tests {
         #[cfg(feature = "i32")]
         mod shift_ivec3_by_ivec3 {
             use super::*;
-            impl_vec3_shift_op_test!($vec3, IVec3, 0, 2);
+            impl_vec_shift_op_test!(test_vec3_shift_ops, $vec3, IVec3, 0, 2, x1, y1, z1 ; x2, y2, z2);
         }
         #[cfg(feature = "u32")]
         mod shift_ivec3_by_uvec3 {
             use super::*;
-            impl_vec3_shift_op_test!($vec3, UVec3, 0, 2);
+            impl_vec_shift_op_test!(test_vec3_shift_ops, $vec3, UVec3, 0, 2, x1, y1, z1 ; x2, y2, z2);
         }
     };
 }
@@ -2786,120 +2654,14 @@ macro_rules! impl_vec3_shift_op_tests {
 #[allow(unused_macros)]
 macro_rules! impl_vec3_scalar_bit_op_tests {
     ($vec3:ident, $t_min:literal, $t_max:literal) => {
-        glam_test!(test_vec3_scalar_bit_ops, {
-            for x in $t_min..$t_max {
-                for y in $t_min..$t_max {
-                    for z in $t_min..$t_max {
-                        for rhs in $t_min..$t_max {
-                            let lhs = $vec3::new(x, y, z);
-                            assert_eq!(lhs & rhs, $vec3::new(x & rhs, y & rhs, z & rhs));
-                            assert_eq!(lhs | rhs, $vec3::new(x | rhs, y | rhs, z | rhs));
-                            assert_eq!(lhs ^ rhs, $vec3::new(x ^ rhs, y ^ rhs, z ^ rhs));
-
-                            assert_eq!(&lhs & rhs, $vec3::new(x & rhs, y & rhs, z & rhs));
-                            assert_eq!(&lhs | rhs, $vec3::new(x | rhs, y | rhs, z | rhs));
-                            assert_eq!(&lhs ^ rhs, $vec3::new(x ^ rhs, y ^ rhs, z ^ rhs));
-
-                            assert_eq!(lhs & &rhs, $vec3::new(x & rhs, y & rhs, z & rhs));
-                            assert_eq!(lhs | &rhs, $vec3::new(x | rhs, y | rhs, z | rhs));
-                            assert_eq!(lhs ^ &rhs, $vec3::new(x ^ rhs, y ^ rhs, z ^ rhs));
-
-                            assert_eq!(&lhs & &rhs, $vec3::new(x & rhs, y & rhs, z & rhs));
-                            assert_eq!(&lhs | &rhs, $vec3::new(x | rhs, y | rhs, z | rhs));
-                            assert_eq!(&lhs ^ &rhs, $vec3::new(x ^ rhs, y ^ rhs, z ^ rhs));
-
-                            let mut a = lhs;
-                            a &= rhs;
-                            assert_eq!(a, lhs & rhs);
-
-                            let mut a = lhs;
-                            a &= &rhs;
-                            assert_eq!(a, lhs & rhs);
-
-                            let mut a = lhs;
-                            a |= rhs;
-                            assert_eq!(a, lhs | rhs);
-
-                            let mut a = lhs;
-                            a |= &rhs;
-                            assert_eq!(a, lhs | rhs);
-
-                            let mut a = lhs;
-                            a ^= rhs;
-                            assert_eq!(a, lhs ^ rhs);
-
-                            let mut a = lhs;
-                            a ^= &rhs;
-                            assert_eq!(a, lhs ^ rhs);
-                        }
-                    }
-                }
-            }
-        });
+        impl_vec_scalar_bit_op_tests!(test_vec3_scalar_bit_ops, $vec3, $t_min, $t_max, x, y, z);
     };
 }
 
 #[allow(unused_macros)]
 macro_rules! impl_vec3_bit_op_tests {
     ($vec3:ident, $t_min:literal, $t_max:literal) => {
-        glam_test!(test_vec3_bit_ops, {
-            for x1 in $t_min..$t_max {
-                for y1 in $t_min..$t_max {
-                    for z1 in $t_min..$t_max {
-                        let lhs = $vec3::new(x1, y1, z1);
-                        assert_eq!(!lhs, $vec3::new(!x1, !y1, !z1));
-                        assert_eq!(!&lhs, $vec3::new(!x1, !y1, !z1));
-
-                        for x2 in $t_min..$t_max {
-                            for y2 in $t_min..$t_max {
-                                for z2 in $t_min..$t_max {
-                                    let rhs = $vec3::new(x2, y2, z2);
-                                    assert_eq!(lhs & rhs, $vec3::new(x1 & x2, y1 & y2, z1 & z2));
-                                    assert_eq!(lhs | rhs, $vec3::new(x1 | x2, y1 | y2, z1 | z2));
-                                    assert_eq!(lhs ^ rhs, $vec3::new(x1 ^ x2, y1 ^ y2, z1 ^ z2));
-
-                                    assert_eq!(&lhs & rhs, $vec3::new(x1 & x2, y1 & y2, z1 & z2));
-                                    assert_eq!(&lhs | rhs, $vec3::new(x1 | x2, y1 | y2, z1 | z2));
-                                    assert_eq!(&lhs ^ rhs, $vec3::new(x1 ^ x2, y1 ^ y2, z1 ^ z2));
-
-                                    assert_eq!(lhs & &rhs, $vec3::new(x1 & x2, y1 & y2, z1 & z2));
-                                    assert_eq!(lhs | &rhs, $vec3::new(x1 | x2, y1 | y2, z1 | z2));
-                                    assert_eq!(lhs ^ &rhs, $vec3::new(x1 ^ x2, y1 ^ y2, z1 ^ z2));
-
-                                    assert_eq!(&lhs & &rhs, $vec3::new(x1 & x2, y1 & y2, z1 & z2));
-                                    assert_eq!(&lhs | &rhs, $vec3::new(x1 | x2, y1 | y2, z1 | z2));
-                                    assert_eq!(&lhs ^ &rhs, $vec3::new(x1 ^ x2, y1 ^ y2, z1 ^ z2));
-
-                                    let mut a = lhs;
-                                    a &= rhs;
-                                    assert_eq!(a, lhs & rhs);
-
-                                    let mut a = lhs;
-                                    a &= &rhs;
-                                    assert_eq!(a, lhs & rhs);
-
-                                    let mut a = lhs;
-                                    a |= rhs;
-                                    assert_eq!(a, lhs | rhs);
-
-                                    let mut a = lhs;
-                                    a |= &rhs;
-                                    assert_eq!(a, lhs | rhs);
-
-                                    let mut a = lhs;
-                                    a ^= rhs;
-                                    assert_eq!(a, lhs ^ rhs);
-
-                                    let mut a = lhs;
-                                    a ^= &rhs;
-                                    assert_eq!(a, lhs ^ rhs);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        });
+        impl_vec_bit_op_tests!(test_vec3_bit_ops, $vec3, $t_min, $t_max, x1, y1, z1 ; x2, y2, z2);
     };
 }
 

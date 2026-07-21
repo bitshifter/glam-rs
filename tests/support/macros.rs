@@ -316,7 +316,238 @@ macro_rules! impl_vec_eq_hash_tests {
     };
 }
 
+/// Helper to generate nested for loops from variable names
+#[macro_export]
+macro_rules! impl_vec_nested_for {
+    ($range:expr, $body:tt, $var:ident) => {
+        for $var in $range $body
+    };
+    ($range:expr, $body:tt, $var:ident, $($rest:ident),+) => {
+        for $var in $range {
+            impl_vec_nested_for!($range, $body, $($rest),+)
+        }
+    };
+}
 
+/// Scalar shift op tests, generates all 8 shift_by_* modules at once.
+#[macro_export]
+macro_rules! impl_vec_scalar_shift_op_test {
+    ($test_name:ident, $vec:ident, $t_min:literal, $t_max:literal, $($var:ident),+) => {
+        mod shift_by_i8 {
+            use glam::$vec;
+            impl_vec_scalar_shift_op_test_inner!($test_name, $vec, $t_min, $t_max, i8, $($var),+);
+        }
+        mod shift_by_i16 {
+            use glam::$vec;
+            impl_vec_scalar_shift_op_test_inner!($test_name, $vec, $t_min, $t_max, i16, $($var),+);
+        }
+        mod shift_by_i32 {
+            use glam::$vec;
+            impl_vec_scalar_shift_op_test_inner!($test_name, $vec, $t_min, $t_max, i32, $($var),+);
+        }
+        mod shift_by_i64 {
+            use glam::$vec;
+            impl_vec_scalar_shift_op_test_inner!($test_name, $vec, $t_min, $t_max, i64, $($var),+);
+        }
+        mod shift_by_u8 {
+            use glam::$vec;
+            impl_vec_scalar_shift_op_test_inner!($test_name, $vec, $t_min, $t_max, u8, $($var),+);
+        }
+        mod shift_by_u16 {
+            use glam::$vec;
+            impl_vec_scalar_shift_op_test_inner!($test_name, $vec, $t_min, $t_max, u16, $($var),+);
+        }
+        mod shift_by_u32 {
+            use glam::$vec;
+            impl_vec_scalar_shift_op_test_inner!($test_name, $vec, $t_min, $t_max, u32, $($var),+);
+        }
+        mod shift_by_u64 {
+            use glam::$vec;
+            impl_vec_scalar_shift_op_test_inner!($test_name, $vec, $t_min, $t_max, u64, $($var),+);
+        }
+    };
+}
+
+/// The actual single `glam_test!` body for a scalar shift op test.
+/// Takes just the rhs type; 0 and 2 are implied.
+#[macro_export]
+macro_rules! impl_vec_scalar_shift_op_test_inner {
+    ($test_name:ident, $vec:ident, $t_min:literal, $t_max:literal,
+     $rhs_ty:ty, $($var:ident),+) => {
+        glam_test!($test_name, {
+            impl_vec_nested_for!($t_min..$t_max, {
+                for rhs in (0 as $rhs_ty)..(2 as $rhs_ty) {
+                    let lhs = $vec::new($($var),+);
+                    assert_eq!(lhs << rhs, $vec::new($($var << rhs),+));
+                    assert_eq!(lhs >> rhs, $vec::new($($var >> rhs),+));
+
+                    assert_eq!(&lhs << rhs, $vec::new($($var << rhs),+));
+                    assert_eq!(&lhs >> rhs, $vec::new($($var >> rhs),+));
+
+                    assert_eq!(lhs << &rhs, $vec::new($($var << rhs),+));
+                    assert_eq!(lhs >> &rhs, $vec::new($($var >> rhs),+));
+
+                    assert_eq!(&lhs << &rhs, $vec::new($($var << rhs),+));
+                    assert_eq!(&lhs >> &rhs, $vec::new($($var >> rhs),+));
+
+                    let mut a = lhs;
+                    a <<= rhs;
+                    assert_eq!(a, lhs << rhs);
+
+                    let mut a = lhs;
+                    a <<= &rhs;
+                    assert_eq!(a, lhs << rhs);
+
+                    let mut a = lhs;
+                    a >>= rhs;
+                    assert_eq!(a, lhs >> rhs);
+
+                    let mut a = lhs;
+                    a >>= &rhs;
+                    assert_eq!(a, lhs >> rhs);
+                }
+            }, $($var),+)
+        });
+    };
+}
+
+/// Shared vec-vec shift op test (dimension parameterized by two variable lists)
+#[macro_export]
+macro_rules! impl_vec_shift_op_test {
+    ($test_name:ident, $vec:ident, $rhs_ty:ident, $t_min:literal, $t_max:literal,
+     $($var1:ident),+ ; $($var2:ident),+) => {
+        glam_test!($test_name, {
+            impl_vec_nested_for!($t_min..$t_max, {
+                let lhs = $vec::new($($var1),+);
+                impl_vec_nested_for!($t_min..$t_max, {
+                    let rhs = $rhs_ty::new($($var2),+);
+                    assert_eq!(lhs << rhs, $vec::new($($var1 << $var2),+));
+                    assert_eq!(lhs >> rhs, $vec::new($($var1 >> $var2),+));
+
+                    assert_eq!(&lhs << rhs, $vec::new($($var1 << $var2),+));
+                    assert_eq!(&lhs >> rhs, $vec::new($($var1 >> $var2),+));
+
+                    assert_eq!(lhs << &rhs, $vec::new($($var1 << $var2),+));
+                    assert_eq!(lhs >> &rhs, $vec::new($($var1 >> $var2),+));
+
+                    assert_eq!(&lhs << &rhs, $vec::new($($var1 << $var2),+));
+                    assert_eq!(&lhs >> &rhs, $vec::new($($var1 >> $var2),+));
+                }, $($var2),+)
+            }, $($var1),+)
+        });
+    };
+}
+
+/// Shared scalar bit op test (dimension parameterized by variable list)
+#[macro_export]
+macro_rules! impl_vec_scalar_bit_op_tests {
+    ($test_name:ident, $vec:ident, $t_min:literal, $t_max:literal, $($var:ident),+) => {
+        glam_test!($test_name, {
+            impl_vec_nested_for!($t_min..$t_max, {
+                for rhs in $t_min..$t_max {
+                    let lhs = $vec::new($($var),+);
+                    assert_eq!(lhs & rhs, $vec::new($($var & rhs),+));
+                    assert_eq!(lhs | rhs, $vec::new($($var | rhs),+));
+                    assert_eq!(lhs ^ rhs, $vec::new($($var ^ rhs),+));
+
+                    assert_eq!(&lhs & rhs, $vec::new($($var & rhs),+));
+                    assert_eq!(&lhs | rhs, $vec::new($($var | rhs),+));
+                    assert_eq!(&lhs ^ rhs, $vec::new($($var ^ rhs),+));
+
+                    assert_eq!(lhs & &rhs, $vec::new($($var & rhs),+));
+                    assert_eq!(lhs | &rhs, $vec::new($($var | rhs),+));
+                    assert_eq!(lhs ^ &rhs, $vec::new($($var ^ rhs),+));
+
+                    assert_eq!(&lhs & &rhs, $vec::new($($var & rhs),+));
+                    assert_eq!(&lhs | &rhs, $vec::new($($var | rhs),+));
+                    assert_eq!(&lhs ^ &rhs, $vec::new($($var ^ rhs),+));
+
+                    let mut a = lhs;
+                    a &= rhs;
+                    assert_eq!(a, lhs & rhs);
+
+                    let mut a = lhs;
+                    a &= &rhs;
+                    assert_eq!(a, lhs & rhs);
+
+                    let mut a = lhs;
+                    a |= rhs;
+                    assert_eq!(a, lhs | rhs);
+
+                    let mut a = lhs;
+                    a |= &rhs;
+                    assert_eq!(a, lhs | rhs);
+
+                    let mut a = lhs;
+                    a ^= rhs;
+                    assert_eq!(a, lhs ^ rhs);
+
+                    let mut a = lhs;
+                    a ^= &rhs;
+                    assert_eq!(a, lhs ^ rhs);
+                }
+            }, $($var),+)
+        });
+    };
+}
+
+/// Shared vec-vec bit op test (dimension parameterized by two variable lists)
+#[macro_export]
+macro_rules! impl_vec_bit_op_tests {
+    ($test_name:ident, $vec:ident, $t_min:literal, $t_max:literal,
+     $($var1:ident),+ ; $($var2:ident),+) => {
+        glam_test!($test_name, {
+            impl_vec_nested_for!($t_min..$t_max, {
+                let lhs = $vec::new($($var1),+);
+                assert_eq!(!lhs, $vec::new($(!$var1),+));
+                assert_eq!(!&lhs, $vec::new($(!$var1),+));
+
+                impl_vec_nested_for!($t_min..$t_max, {
+                    let rhs = $vec::new($($var2),+);
+                    assert_eq!(lhs & rhs, $vec::new($($var1 & $var2),+));
+                    assert_eq!(lhs | rhs, $vec::new($($var1 | $var2),+));
+                    assert_eq!(lhs ^ rhs, $vec::new($($var1 ^ $var2),+));
+
+                    assert_eq!(&lhs & rhs, $vec::new($($var1 & $var2),+));
+                    assert_eq!(&lhs | rhs, $vec::new($($var1 | $var2),+));
+                    assert_eq!(&lhs ^ rhs, $vec::new($($var1 ^ $var2),+));
+
+                    assert_eq!(lhs & &rhs, $vec::new($($var1 & $var2),+));
+                    assert_eq!(lhs | &rhs, $vec::new($($var1 | $var2),+));
+                    assert_eq!(lhs ^ &rhs, $vec::new($($var1 ^ $var2),+));
+
+                    assert_eq!(&lhs & &rhs, $vec::new($($var1 & $var2),+));
+                    assert_eq!(&lhs | &rhs, $vec::new($($var1 | $var2),+));
+                    assert_eq!(&lhs ^ &rhs, $vec::new($($var1 ^ $var2),+));
+
+                    let mut a = lhs;
+                    a &= rhs;
+                    assert_eq!(a, lhs & rhs);
+
+                    let mut a = lhs;
+                    a &= &rhs;
+                    assert_eq!(a, lhs & rhs);
+
+                    let mut a = lhs;
+                    a |= rhs;
+                    assert_eq!(a, lhs | rhs);
+
+                    let mut a = lhs;
+                    a |= &rhs;
+                    assert_eq!(a, lhs | rhs);
+
+                    let mut a = lhs;
+                    a ^= rhs;
+                    assert_eq!(a, lhs ^ rhs);
+
+                    let mut a = lhs;
+                    a ^= &rhs;
+                    assert_eq!(a, lhs ^ rhs);
+                }, $($var2),+)
+            }, $($var1),+)
+        });
+    };
+}
 
 #[macro_export]
 macro_rules! test_matrix_minor {
