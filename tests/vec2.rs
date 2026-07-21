@@ -1084,7 +1084,7 @@ macro_rules! impl_vec2_unsigned_integer_tests {
 #[allow(unused_macros)]
 macro_rules! impl_vec2_eq_hash_tests {
     ($t:ident, $new:ident) => {
-        glam_test!(test_ve2_hash, {
+        glam_test!(test_vec2_hash, {
             use std::collections::hash_map::DefaultHasher;
             use std::hash::Hash;
             use std::hash::Hasher;
