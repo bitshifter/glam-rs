@@ -567,3 +567,166 @@ macro_rules! test_matrix_minor {
         }
     };
 }
+
+// === TryFrom test helpers ===
+
+/// try_from with MAX overflow error checks (Category B)
+macro_rules! impl_try_from_pair_with_max_error {
+    ($feature:literal, $src:ident, $tgt:ident, $max:path, 2) => {
+        #[cfg(feature = $feature)]
+        {
+            assert_eq!(
+                $src::new(1, 2),
+                $src::try_from($tgt::new(1, 2)).unwrap()
+            );
+            assert!($src::try_from($tgt::new($max, 2)).is_err());
+            assert!($src::try_from($tgt::new(1, $max)).is_err());
+        }
+    };
+    ($feature:literal, $src:ident, $tgt:ident, $max:path, 3) => {
+        #[cfg(feature = $feature)]
+        {
+            assert_eq!(
+                $src::new(1, 2, 3),
+                $src::try_from($tgt::new(1, 2, 3)).unwrap()
+            );
+            assert!($src::try_from($tgt::new($max, 2, 3)).is_err());
+            assert!($src::try_from($tgt::new(1, $max, 3)).is_err());
+            assert!($src::try_from($tgt::new(1, 2, $max)).is_err());
+        }
+    };
+    ($feature:literal, $src:ident, $tgt:ident, $max:path, 4) => {
+        #[cfg(feature = $feature)]
+        {
+            assert_eq!(
+                $src::new(1, 2, 3, 4),
+                $src::try_from($tgt::new(1, 2, 3, 4)).unwrap()
+            );
+            assert!($src::try_from($tgt::new($max, 2, 3, 4)).is_err());
+            assert!($src::try_from($tgt::new(1, $max, 3, 4)).is_err());
+            assert!($src::try_from($tgt::new(1, 2, $max, 4)).is_err());
+            assert!($src::try_from($tgt::new(1, 2, 3, $max)).is_err());
+        }
+    };
+}
+
+/// from (infallible) test (Category A)
+macro_rules! impl_from_pair_infallible {
+    ($feature:literal, $src:ident, $tgt:ident, 2) => {
+        #[cfg(feature = $feature)]
+        assert_eq!($src::new(1, 2), $src::from($tgt::new(1, 2)));
+    };
+    ($feature:literal, $src:ident, $tgt:ident, 3) => {
+        #[cfg(feature = $feature)]
+        assert_eq!($src::new(1, 2, 3), $src::from($tgt::new(1, 2, 3)));
+    };
+    ($feature:literal, $src:ident, $tgt:ident, 4) => {
+        #[cfg(feature = $feature)]
+        assert_eq!($src::new(1, 2, 3, 4), $src::from($tgt::new(1, 2, 3, 4)));
+    };
+}
+
+/// try_from with negative value error checks (Category C)
+macro_rules! impl_try_from_pair_with_negative_error {
+    ($feature:literal, $src:ident, $tgt:ident, 2) => {
+        #[cfg(feature = $feature)]
+        {
+            assert_eq!(
+                $src::new(1, 2),
+                $src::try_from($tgt::new(1, 2)).unwrap()
+            );
+            assert!($src::try_from($tgt::new(-1, 2)).is_err());
+            assert!($src::try_from($tgt::new(1, -2)).is_err());
+        }
+    };
+    ($feature:literal, $src:ident, $tgt:ident, 3) => {
+        #[cfg(feature = $feature)]
+        {
+            assert_eq!(
+                $src::new(1, 2, 3),
+                $src::try_from($tgt::new(1, 2, 3)).unwrap()
+            );
+            assert!($src::try_from($tgt::new(-1, 2, 3)).is_err());
+            assert!($src::try_from($tgt::new(1, -2, 3)).is_err());
+            assert!($src::try_from($tgt::new(1, 2, -3)).is_err());
+        }
+    };
+    ($feature:literal, $src:ident, $tgt:ident, 4) => {
+        #[cfg(feature = $feature)]
+        {
+            assert_eq!(
+                $src::new(1, 2, 3, 4),
+                $src::try_from($tgt::new(1, 2, 3, 4)).unwrap()
+            );
+            assert!($src::try_from($tgt::new(-1, 2, 3, 4)).is_err());
+            assert!($src::try_from($tgt::new(1, -2, 3, 4)).is_err());
+            assert!($src::try_from($tgt::new(1, 2, -3, 4)).is_err());
+            assert!($src::try_from($tgt::new(1, 2, 3, -4)).is_err());
+        }
+    };
+}
+
+/// try_from without error tests (Category E) - for same-width or narrower types
+macro_rules! impl_try_from_pair_no_error {
+    ($feature:literal, $src:ident, $tgt:ident, 2) => {
+        #[cfg(feature = $feature)]
+        assert_eq!($src::new(1, 2), $src::try_from($tgt::new(1, 2)).unwrap());
+    };
+    ($feature:literal, $src:ident, $tgt:ident, 3) => {
+        #[cfg(feature = $feature)]
+        assert_eq!($src::new(1, 2, 3), $src::try_from($tgt::new(1, 2, 3)).unwrap());
+    };
+    ($feature:literal, $src:ident, $tgt:ident, 4) => {
+        #[cfg(feature = $feature)]
+        assert_eq!($src::new(1, 2, 3, 4), $src::try_from($tgt::new(1, 2, 3, 4)).unwrap());
+    };
+}
+
+/// try_from with both negative and MAX overflow error checks (Category D)
+macro_rules! impl_try_from_pair_with_negmax_error {
+    ($feature:literal, $src:ident, $tgt:ident, $max:path, 2) => {
+        #[cfg(feature = $feature)]
+        {
+            assert_eq!(
+                $src::new(1, 2),
+                $src::try_from($tgt::new(1, 2)).unwrap()
+            );
+            assert!($src::try_from($tgt::new(-1, 2)).is_err());
+            assert!($src::try_from($tgt::new(1, -2)).is_err());
+            assert!($src::try_from($tgt::new($max, 2)).is_err());
+            assert!($src::try_from($tgt::new(1, $max)).is_err());
+        }
+    };
+    ($feature:literal, $src:ident, $tgt:ident, $max:path, 3) => {
+        #[cfg(feature = $feature)]
+        {
+            assert_eq!(
+                $src::new(1, 2, 3),
+                $src::try_from($tgt::new(1, 2, 3)).unwrap()
+            );
+            assert!($src::try_from($tgt::new(-1, 2, 3)).is_err());
+            assert!($src::try_from($tgt::new(1, -2, 3)).is_err());
+            assert!($src::try_from($tgt::new(1, 2, -3)).is_err());
+            assert!($src::try_from($tgt::new($max, 2, 3)).is_err());
+            assert!($src::try_from($tgt::new(1, $max, 3)).is_err());
+            assert!($src::try_from($tgt::new(1, 2, $max)).is_err());
+        }
+    };
+    ($feature:literal, $src:ident, $tgt:ident, $max:path, 4) => {
+        #[cfg(feature = $feature)]
+        {
+            assert_eq!(
+                $src::new(1, 2, 3, 4),
+                $src::try_from($tgt::new(1, 2, 3, 4)).unwrap()
+            );
+            assert!($src::try_from($tgt::new(-1, 2, 3, 4)).is_err());
+            assert!($src::try_from($tgt::new(1, -2, 3, 4)).is_err());
+            assert!($src::try_from($tgt::new(1, 2, -3, 4)).is_err());
+            assert!($src::try_from($tgt::new(1, 2, 3, -4)).is_err());
+            assert!($src::try_from($tgt::new($max, 2, 3, 4)).is_err());
+            assert!($src::try_from($tgt::new(1, $max, 3, 4)).is_err());
+            assert!($src::try_from($tgt::new(1, 2, $max, 4)).is_err());
+            assert!($src::try_from($tgt::new(1, 2, 3, $max)).is_err());
+        }
+    };
+}
