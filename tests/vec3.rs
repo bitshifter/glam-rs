@@ -2723,10 +2723,9 @@ macro_rules! impl_vec3_wrapping_saturating_tests {
             );
         });
     };
-}
+    ($vec:ident, $scalar:ty, $paired_vec:ident, $paired_feature:literal, signed) => {
+        impl_vec3_wrapping_saturating_tests!($vec, $scalar);
 
-macro_rules! impl_vec3_signed_pair_tests {
-    ($vec:ident, $scalar:ty, $paired_vec:ident, $paired_feature:literal) => {
         #[cfg(feature = $paired_feature)]
         glam_test!(test_checked_add_unsigned, {
             assert_eq!($vec::MAX.checked_add_unsigned($paired_vec::ONE), None);
@@ -2781,10 +2780,9 @@ macro_rules! impl_vec3_signed_pair_tests {
             );
         });
     };
-}
+    ($vec:ident, $scalar:ty, $paired_vec:ident, $paired_feature:literal, unsigned) => {
+        impl_vec3_wrapping_saturating_tests!($vec, $scalar);
 
-macro_rules! impl_vec3_unsigned_pair_tests {
-    ($vec:ident, $scalar:ty, $paired_vec:ident, $paired_feature:literal) => {
         #[cfg(feature = $paired_feature)]
         glam_test!(test_checked_add_signed, {
             assert_eq!($vec::MAX.checked_add_signed($paired_vec::ONE), None);
@@ -2813,6 +2811,7 @@ macro_rules! impl_vec3_unsigned_pair_tests {
         });
     };
 }
+
 
 mod bvec3 {
     use glam::{bvec3, BVec3};
@@ -3080,9 +3079,7 @@ mod i8vec3 {
         }
     });
 
-    impl_vec3_wrapping_saturating_tests!(I8Vec3, i8);
-
-    impl_vec3_signed_pair_tests!(I8Vec3, i8, U8Vec3, "u8");
+    impl_vec3_wrapping_saturating_tests!(I8Vec3, i8, U8Vec3, "u8", signed);
 
     impl_vec3_signed_integer_tests!(i8, i8vec3, I8Vec3, BVec3);
     impl_vec3_eq_hash_tests!(i8, i8vec3);
@@ -3232,9 +3229,7 @@ mod u8vec3 {
         }
     });
 
-    impl_vec3_wrapping_saturating_tests!(U8Vec3, u8);
-
-    impl_vec3_unsigned_pair_tests!(U8Vec3, u8, I8Vec3, "i8");
+    impl_vec3_wrapping_saturating_tests!(U8Vec3, u8, I8Vec3, "i8", unsigned);
 
     impl_vec3_unsigned_integer_tests!(u8, u8vec3, U8Vec3, BVec3);
     impl_vec3_eq_hash_tests!(u8, u8vec3);
@@ -3358,9 +3353,7 @@ mod i16vec3 {
         }
     });
 
-    impl_vec3_wrapping_saturating_tests!(I16Vec3, i16);
-
-    impl_vec3_signed_pair_tests!(I16Vec3, i16, U16Vec3, "u16");
+    impl_vec3_wrapping_saturating_tests!(I16Vec3, i16, U16Vec3, "u16", signed);
 
     impl_vec3_signed_integer_tests!(i16, i16vec3, I16Vec3, BVec3);
     impl_vec3_eq_hash_tests!(i16, i16vec3);
@@ -3499,9 +3492,7 @@ mod u16vec3 {
         }
     });
 
-    impl_vec3_wrapping_saturating_tests!(U16Vec3, u16);
-
-    impl_vec3_unsigned_pair_tests!(U16Vec3, u16, I16Vec3, "i16");
+    impl_vec3_wrapping_saturating_tests!(U16Vec3, u16, I16Vec3, "i16", unsigned);
 
     impl_vec3_unsigned_integer_tests!(u16, u16vec3, U16Vec3, BVec3);
     impl_vec3_eq_hash_tests!(u16, u16vec3);
@@ -3610,9 +3601,7 @@ mod ivec3 {
         }
     });
 
-    impl_vec3_wrapping_saturating_tests!(IVec3, i32);
-
-    impl_vec3_signed_pair_tests!(IVec3, i32, UVec3, "u32");
+    impl_vec3_wrapping_saturating_tests!(IVec3, i32, UVec3, "u32", signed);
 
     impl_vec3_signed_integer_tests!(i32, ivec3, IVec3, BVec3);
     impl_vec3_eq_hash_tests!(i32, ivec3);
@@ -3744,9 +3733,7 @@ mod uvec3 {
         }
     });
 
-    impl_vec3_wrapping_saturating_tests!(UVec3, u32);
-
-    impl_vec3_unsigned_pair_tests!(UVec3, u32, IVec3, "i32");
+    impl_vec3_wrapping_saturating_tests!(UVec3, u32, IVec3, "i32", unsigned);
 
     impl_vec3_unsigned_integer_tests!(u32, uvec3, UVec3, BVec3);
     impl_vec3_eq_hash_tests!(u32, uvec3);
@@ -3831,9 +3818,7 @@ mod i64vec3 {
         }
     });
 
-    impl_vec3_wrapping_saturating_tests!(I64Vec3, i64);
-
-    impl_vec3_signed_pair_tests!(I64Vec3, i64, U64Vec3, "u64");
+    impl_vec3_wrapping_saturating_tests!(I64Vec3, i64, U64Vec3, "u64", signed);
 
     impl_vec3_signed_integer_tests!(i64, i64vec3, I64Vec3, BVec3);
     impl_vec3_eq_hash_tests!(i64, i64vec3);
@@ -3945,9 +3930,7 @@ mod u64vec3 {
         );
     });
 
-    impl_vec3_wrapping_saturating_tests!(U64Vec3, u64);
-
-    impl_vec3_unsigned_pair_tests!(U64Vec3, u64, I64Vec3, "i64");
+    impl_vec3_wrapping_saturating_tests!(U64Vec3, u64, I64Vec3, "i64", unsigned);
 
     impl_vec3_unsigned_integer_tests!(u64, u64vec3, U64Vec3, BVec3);
     impl_vec3_eq_hash_tests!(u64, u64vec3);
@@ -4050,9 +4033,7 @@ mod isizevec3 {
         }
     });
 
-    impl_vec3_wrapping_saturating_tests!(ISizeVec3, isize);
-
-    impl_vec3_signed_pair_tests!(ISizeVec3, isize, USizeVec3, "usize");
+    impl_vec3_wrapping_saturating_tests!(ISizeVec3, isize, USizeVec3, "usize", signed);
 
     impl_vec3_signed_integer_tests!(isize, isizevec3, ISizeVec3, BVec3);
     impl_vec3_eq_hash_tests!(isize, isizevec3);
@@ -4173,9 +4154,7 @@ mod usizevec3 {
         }
     });
 
-    impl_vec3_wrapping_saturating_tests!(USizeVec3, usize);
-
-    impl_vec3_unsigned_pair_tests!(USizeVec3, usize, ISizeVec3, "isize");
+    impl_vec3_wrapping_saturating_tests!(USizeVec3, usize, ISizeVec3, "isize", unsigned);
 
     impl_vec3_unsigned_integer_tests!(usize, usizevec3, USizeVec3, BVec3);
     impl_vec3_eq_hash_tests!(usize, usizevec3);
