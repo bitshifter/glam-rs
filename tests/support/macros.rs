@@ -283,6 +283,41 @@ macro_rules! vec2_float_test_vectors {
     };
 }
 
+/// Unified eq/hash test for vectors of any dimension
+#[macro_export]
+macro_rules! impl_vec_eq_hash_tests {
+    ($test_name:ident, $t:ident, $new:ident, $($a_val:expr),+ ; $($c_val:expr),+) => {
+        glam_test!($test_name, {
+            use std::collections::hash_map::DefaultHasher;
+            use std::hash::Hash;
+            use std::hash::Hasher;
+
+            let a = $new($(($a_val) as $t),+);
+            let b = $new($(($a_val) as $t),+);
+            let c = $new($(($c_val) as $t),+);
+
+            let mut hasher = DefaultHasher::new();
+            a.hash(&mut hasher);
+            let a_hashed = hasher.finish();
+
+            let mut hasher = DefaultHasher::new();
+            b.hash(&mut hasher);
+            let b_hashed = hasher.finish();
+
+            let mut hasher = DefaultHasher::new();
+            c.hash(&mut hasher);
+            let c_hashed = hasher.finish();
+
+            assert_eq!(a, b);
+            assert_eq!(a_hashed, b_hashed);
+            assert_ne!(a, c);
+            assert_ne!(a_hashed, c_hashed);
+        });
+    };
+}
+
+
+
 #[macro_export]
 macro_rules! test_matrix_minor {
     ($n:expr, $minor:expr, $input:expr, $i:expr, $j:expr) => {

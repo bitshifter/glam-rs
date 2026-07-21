@@ -1417,32 +1417,7 @@ macro_rules! impl_vec4_unsigned_integer_tests {
 #[allow(unused_macros)]
 macro_rules! impl_vec4_eq_hash_tests {
     ($t:ident, $new:ident) => {
-        glam_test!(test_vec4_hash, {
-            use std::collections::hash_map::DefaultHasher;
-            use std::hash::Hash;
-            use std::hash::Hasher;
-
-            let a = $new(1 as $t, 2 as $t, 3 as $t, 4 as $t);
-            let b = $new(1 as $t, 2 as $t, 3 as $t, 4 as $t);
-            let c = $new(3 as $t, 2 as $t, 1 as $t, 4 as $t);
-
-            let mut hasher = DefaultHasher::new();
-            a.hash(&mut hasher);
-            let a_hashed = hasher.finish();
-
-            let mut hasher = DefaultHasher::new();
-            b.hash(&mut hasher);
-            let b_hashed = hasher.finish();
-
-            let mut hasher = DefaultHasher::new();
-            c.hash(&mut hasher);
-            let c_hashed = hasher.finish();
-
-            assert_eq!(a, b);
-            assert_eq!(a_hashed, b_hashed);
-            assert_ne!(a, c);
-            assert_ne!(a_hashed, c_hashed);
-        });
+        impl_vec_eq_hash_tests!(test_vec4_hash, $t, $new, 1, 2, 3, 4 ; 3, 2, 1, 4);
     };
 }
 
