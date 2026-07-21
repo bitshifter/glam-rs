@@ -1093,7 +1093,7 @@ macro_rules! impl_vec2_float_tests {
         impl_vec2_signed_tests!($t, $new, $vec2, $vec3, $mask);
         impl_vec_float_normalize_tests!($t, $vec2);
 
-        glam_test!(test_vec2_nan, {
+        glam_test!(test_nan, {
             assert!($vec2::NAN.is_nan());
             assert!(!$vec2::NAN.is_finite());
         });
