@@ -2434,8 +2434,22 @@ macro_rules! impl_vec2_u32_try_from_tests {
             impl_try_from_pair_with_negative_error!("i32", $src, IVec2, 2);
             impl_try_from_pair_with_negmax_error!("i64", $src, I64Vec2, i64::MAX, 2);
             impl_try_from_pair_with_max_error!("u64", $src, U64Vec2, u64::MAX, 2);
-            impl_try_from_pair_with_sizeof_max_error!("isize", $src, ISizeVec2, isize, isize::MAX, 2);
-            impl_try_from_pair_with_sizeof_max_error!("usize", $src, USizeVec2, usize, usize::MAX, 2);
+            impl_try_from_pair_with_sizeof_max_error!(
+                "isize",
+                $src,
+                ISizeVec2,
+                isize,
+                isize::MAX,
+                2
+            );
+            impl_try_from_pair_with_sizeof_max_error!(
+                "usize",
+                $src,
+                USizeVec2,
+                usize,
+                usize::MAX,
+                2
+            );
         });
     };
 }
@@ -2451,7 +2465,14 @@ macro_rules! impl_vec2_i64_try_from_tests {
             impl_from_pair_infallible!("u32", $src, UVec2, 2);
             impl_try_from_pair_with_max_error!("u64", $src, U64Vec2, u64::MAX, 2);
             impl_try_from_pair_no_error!("isize", $src, ISizeVec2, 2);
-            impl_try_from_pair_with_sizeof_max_error!("usize", $src, USizeVec2, usize, usize::MAX, 2);
+            impl_try_from_pair_with_sizeof_max_error!(
+                "usize",
+                $src,
+                USizeVec2,
+                usize,
+                usize::MAX,
+                2
+            );
         });
     };
 }
