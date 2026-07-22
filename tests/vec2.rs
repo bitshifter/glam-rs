@@ -2418,7 +2418,14 @@ macro_rules! impl_vec2_i32_try_from_tests {
             impl_try_from_pair_with_max_error!("u32", $src, UVec2, u32::MAX, 2);
             impl_try_from_pair_with_max_error!("i64", $src, I64Vec2, i64::MAX, 2);
             impl_try_from_pair_with_max_error!("u64", $src, U64Vec2, u64::MAX, 2);
-            impl_try_from_pair_no_error!("isize", $src, ISizeVec2, 2);
+            impl_try_from_pair_with_sizeof_max_error!(
+                "isize",
+                $src,
+                ISizeVec2,
+                isize,
+                isize::MAX,
+                2
+            );
             impl_try_from_pair_with_max_error!("usize", $src, USizeVec2, usize::MAX, 2);
         });
     };
