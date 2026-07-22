@@ -2084,6 +2084,55 @@ macro_rules! impl_vec4_float_tests {
             let v = $vec4::new(1.0, 2.0, 3.0, 1.0);
             assert_approx_eq!(v, v.project().to_homogeneous());
         });
+
+        glam_test!(test_as, {
+            #[cfg(feature = "f64")]
+            use glam::DVec4;
+            #[cfg(feature = "i16")]
+            use glam::I16Vec4;
+            #[cfg(feature = "i64")]
+            use glam::I64Vec4;
+            #[cfg(feature = "i8")]
+            use glam::I8Vec4;
+            #[cfg(feature = "isize")]
+            use glam::ISizeVec4;
+            #[cfg(feature = "i32")]
+            use glam::IVec4;
+            #[cfg(feature = "u16")]
+            use glam::U16Vec4;
+            #[cfg(feature = "u64")]
+            use glam::U64Vec4;
+            #[cfg(feature = "u8")]
+            use glam::U8Vec4;
+            #[cfg(feature = "usize")]
+            use glam::USizeVec4;
+            #[cfg(feature = "u32")]
+            use glam::UVec4;
+
+            impl_as_from_vec!(4);
+            #[cfg(feature = "f64")]
+            impl_as_from_dvec!(4);
+            #[cfg(feature = "i8")]
+            impl_as_from_i8vec!(4);
+            #[cfg(feature = "u8")]
+            impl_as_from_u8vec!(4);
+            #[cfg(feature = "i16")]
+            impl_as_from_i16vec!(4);
+            #[cfg(feature = "u16")]
+            impl_as_from_u16vec!(4);
+            #[cfg(feature = "i32")]
+            impl_as_from_ivec!(4);
+            #[cfg(feature = "u32")]
+            impl_as_from_uvec!(4);
+            #[cfg(feature = "i64")]
+            impl_as_from_i64vec!(4);
+            #[cfg(feature = "u64")]
+            impl_as_from_u64vec!(4);
+            #[cfg(feature = "isize")]
+            impl_as_from_isizevec!(4);
+            #[cfg(feature = "usize")]
+            impl_as_from_usizevec!(4);
+        });
     };
 }
 
@@ -2209,55 +2258,6 @@ mod vec4 {
         }
         assert_eq!([0xffffffff, 0, 0xffffffff, 0], a0.0);
     }
-
-    glam_test!(test_as, {
-        #[cfg(feature = "f64")]
-        use glam::DVec4;
-        #[cfg(feature = "i16")]
-        use glam::I16Vec4;
-        #[cfg(feature = "i64")]
-        use glam::I64Vec4;
-        #[cfg(feature = "i8")]
-        use glam::I8Vec4;
-        #[cfg(feature = "isize")]
-        use glam::ISizeVec4;
-        #[cfg(feature = "i32")]
-        use glam::IVec4;
-        #[cfg(feature = "u16")]
-        use glam::U16Vec4;
-        #[cfg(feature = "u64")]
-        use glam::U64Vec4;
-        #[cfg(feature = "u8")]
-        use glam::U8Vec4;
-        #[cfg(feature = "usize")]
-        use glam::USizeVec4;
-        #[cfg(feature = "u32")]
-        use glam::UVec4;
-
-        impl_as_from_vec!(4);
-        #[cfg(feature = "f64")]
-        impl_as_from_dvec!(4);
-        #[cfg(feature = "i8")]
-        impl_as_from_i8vec!(4);
-        #[cfg(feature = "u8")]
-        impl_as_from_u8vec!(4);
-        #[cfg(feature = "i16")]
-        impl_as_from_i16vec!(4);
-        #[cfg(feature = "u16")]
-        impl_as_from_u16vec!(4);
-        #[cfg(feature = "i32")]
-        impl_as_from_ivec!(4);
-        #[cfg(feature = "u32")]
-        impl_as_from_uvec!(4);
-        #[cfg(feature = "i64")]
-        impl_as_from_i64vec!(4);
-        #[cfg(feature = "u64")]
-        impl_as_from_u64vec!(4);
-        #[cfg(feature = "isize")]
-        impl_as_from_isizevec!(4);
-        #[cfg(feature = "usize")]
-        impl_as_from_usizevec!(4);
-    });
 
     glam_test!(test_vec3a, {
         use glam::Vec3A;

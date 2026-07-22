@@ -786,8 +786,8 @@ macro_rules! impl_vec_wrapping_test {
         });
         glam_test!(test_wrapping_sub, {
             assert_eq!(
-                $vec::new(<$t>::MAX, 5).wrapping_sub($vec::new(1, 3)),
-                $vec::new(<$t>::MAX - 1, 2)
+                $vec::new(<$t>::MIN, 5).wrapping_sub($vec::new(1, 3)),
+                $vec::new(<$t>::MAX, 2)
             );
         });
         glam_test!(test_wrapping_mul, {
@@ -812,8 +812,8 @@ macro_rules! impl_vec_wrapping_test {
         });
         glam_test!(test_wrapping_sub, {
             assert_eq!(
-                $vec::new(<$t>::MAX, 4, 5).wrapping_sub($vec::new(1, 2, 3)),
-                $vec::new(<$t>::MAX - 1, 2, 2)
+                $vec::new(<$t>::MIN, 4, 5).wrapping_sub($vec::new(1, 2, 3)),
+                $vec::new(<$t>::MAX, 2, 2)
             );
         });
         glam_test!(test_wrapping_mul, {
@@ -838,8 +838,8 @@ macro_rules! impl_vec_wrapping_test {
         });
         glam_test!(test_wrapping_sub, {
             assert_eq!(
-                $vec::new(<$t>::MAX, 4, 5, 4).wrapping_sub($vec::new(1, 2, 3, 2)),
-                $vec::new(<$t>::MAX - 1, 2, 2, 2)
+                $vec::new(<$t>::MIN, 4, 5, 4).wrapping_sub($vec::new(1, 2, 3, 2)),
+                $vec::new(<$t>::MAX, 2, 2, 2)
             );
         });
         glam_test!(test_wrapping_mul, {
