@@ -570,9 +570,7 @@ macro_rules! test_matrix_minor {
     };
 }
 
-// === TryFrom test helpers ===
-
-/// try_from with MAX overflow error checks (Category B)
+/// try_from with MAX overflow error checks
 macro_rules! impl_try_from_pair_with_max_error {
     ($feature:literal, $src:ident, $tgt:ident, $max:path, 2) => {
         #[cfg(feature = $feature)]
@@ -609,7 +607,7 @@ macro_rules! impl_try_from_pair_with_max_error {
     };
 }
 
-/// from (infallible) test (Category A)
+/// from (infallible) test
 macro_rules! impl_from_pair_infallible {
     ($feature:literal, $src:ident, $tgt:ident, 2) => {
         #[cfg(feature = $feature)]
@@ -625,7 +623,7 @@ macro_rules! impl_from_pair_infallible {
     };
 }
 
-/// try_from with negative value error checks (Category C)
+/// try_from with negative value error checks
 macro_rules! impl_try_from_pair_with_negative_error {
     ($feature:literal, $src:ident, $tgt:ident, 2) => {
         #[cfg(feature = $feature)]
@@ -662,7 +660,7 @@ macro_rules! impl_try_from_pair_with_negative_error {
     };
 }
 
-/// try_from without error tests (Category E) - for same-width or narrower types
+/// try_from without error tests - for same-width or narrower types
 macro_rules! impl_try_from_pair_no_error {
     ($feature:literal, $src:ident, $tgt:ident, 2) => {
         #[cfg(feature = $feature)]
@@ -684,7 +682,7 @@ macro_rules! impl_try_from_pair_no_error {
     };
 }
 
-/// try_from with both negative and MAX overflow error checks (Category D)
+/// try_from with both negative and MAX overflow error checks
 macro_rules! impl_try_from_pair_with_negmax_error {
     ($feature:literal, $src:ident, $tgt:ident, $max:path, 2) => {
         #[cfg(feature = $feature)]
