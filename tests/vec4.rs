@@ -2215,36 +2215,76 @@ macro_rules! impl_vec4_wrapping_saturating_tests {
         #[cfg(feature = $paired_feature)]
         glam_test!(test_wrapping_add_unsigned, {
             assert_eq!(
-                $vec::new(<$scalar>::MAX, <$scalar>::MAX, <$scalar>::MAX, <$scalar>::MAX)
-                    .wrapping_add_unsigned($paired_vec::new(1, 1, 1, 1)),
-                $vec::new(<$scalar>::MIN, <$scalar>::MIN, <$scalar>::MIN, <$scalar>::MIN)
+                $vec::new(
+                    <$scalar>::MAX,
+                    <$scalar>::MAX,
+                    <$scalar>::MAX,
+                    <$scalar>::MAX
+                )
+                .wrapping_add_unsigned($paired_vec::new(1, 1, 1, 1)),
+                $vec::new(
+                    <$scalar>::MIN,
+                    <$scalar>::MIN,
+                    <$scalar>::MIN,
+                    <$scalar>::MIN
+                )
             );
         });
 
         #[cfg(feature = $paired_feature)]
         glam_test!(test_wrapping_sub_unsigned, {
             assert_eq!(
-                $vec::new(<$scalar>::MIN, <$scalar>::MIN, <$scalar>::MIN, <$scalar>::MIN)
-                    .wrapping_sub_unsigned($paired_vec::new(1, 1, 1, 1)),
-                $vec::new(<$scalar>::MAX, <$scalar>::MAX, <$scalar>::MAX, <$scalar>::MAX)
+                $vec::new(
+                    <$scalar>::MIN,
+                    <$scalar>::MIN,
+                    <$scalar>::MIN,
+                    <$scalar>::MIN
+                )
+                .wrapping_sub_unsigned($paired_vec::new(1, 1, 1, 1)),
+                $vec::new(
+                    <$scalar>::MAX,
+                    <$scalar>::MAX,
+                    <$scalar>::MAX,
+                    <$scalar>::MAX
+                )
             );
         });
 
         #[cfg(feature = $paired_feature)]
         glam_test!(test_saturating_add_unsigned, {
             assert_eq!(
-                $vec::new(<$scalar>::MAX, <$scalar>::MAX, <$scalar>::MAX, <$scalar>::MAX)
-                    .saturating_add_unsigned($paired_vec::new(1, 1, 1, 1)),
-                $vec::new(<$scalar>::MAX, <$scalar>::MAX, <$scalar>::MAX, <$scalar>::MAX)
+                $vec::new(
+                    <$scalar>::MAX,
+                    <$scalar>::MAX,
+                    <$scalar>::MAX,
+                    <$scalar>::MAX
+                )
+                .saturating_add_unsigned($paired_vec::new(1, 1, 1, 1)),
+                $vec::new(
+                    <$scalar>::MAX,
+                    <$scalar>::MAX,
+                    <$scalar>::MAX,
+                    <$scalar>::MAX
+                )
             );
         });
 
         #[cfg(feature = $paired_feature)]
         glam_test!(test_saturating_sub_unsigned, {
             assert_eq!(
-                $vec::new(<$scalar>::MIN, <$scalar>::MIN, <$scalar>::MIN, <$scalar>::MIN)
-                    .saturating_sub_unsigned($paired_vec::new(1, 1, 1, 1)),
-                $vec::new(<$scalar>::MIN, <$scalar>::MIN, <$scalar>::MIN, <$scalar>::MIN)
+                $vec::new(
+                    <$scalar>::MIN,
+                    <$scalar>::MIN,
+                    <$scalar>::MIN,
+                    <$scalar>::MIN
+                )
+                .saturating_sub_unsigned($paired_vec::new(1, 1, 1, 1)),
+                $vec::new(
+                    <$scalar>::MIN,
+                    <$scalar>::MIN,
+                    <$scalar>::MIN,
+                    <$scalar>::MIN
+                )
             );
         });
     };
@@ -2263,23 +2303,42 @@ macro_rules! impl_vec4_wrapping_saturating_tests {
         #[cfg(feature = $paired_feature)]
         glam_test!(test_wrapping_add_signed, {
             assert_eq!(
-                $vec::new(<$scalar>::MAX, <$scalar>::MAX, <$scalar>::MAX, <$scalar>::MAX)
-                    .wrapping_add_signed($paired_vec::new(1, 1, 1, 1)),
-                $vec::new(<$scalar>::MIN, <$scalar>::MIN, <$scalar>::MIN, <$scalar>::MIN)
+                $vec::new(
+                    <$scalar>::MAX,
+                    <$scalar>::MAX,
+                    <$scalar>::MAX,
+                    <$scalar>::MAX
+                )
+                .wrapping_add_signed($paired_vec::new(1, 1, 1, 1)),
+                $vec::new(
+                    <$scalar>::MIN,
+                    <$scalar>::MIN,
+                    <$scalar>::MIN,
+                    <$scalar>::MIN
+                )
             );
         });
 
         #[cfg(feature = $paired_feature)]
         glam_test!(test_saturating_add_signed, {
             assert_eq!(
-                $vec::new(<$scalar>::MAX, <$scalar>::MAX, <$scalar>::MAX, <$scalar>::MAX)
-                    .saturating_add_signed($paired_vec::new(1, 1, 1, 1)),
-                $vec::new(<$scalar>::MAX, <$scalar>::MAX, <$scalar>::MAX, <$scalar>::MAX)
+                $vec::new(
+                    <$scalar>::MAX,
+                    <$scalar>::MAX,
+                    <$scalar>::MAX,
+                    <$scalar>::MAX
+                )
+                .saturating_add_signed($paired_vec::new(1, 1, 1, 1)),
+                $vec::new(
+                    <$scalar>::MAX,
+                    <$scalar>::MAX,
+                    <$scalar>::MAX,
+                    <$scalar>::MAX
+                )
             );
         });
     };
 }
-
 
 mod bvec4 {
     use glam::{bvec4, BVec4};
@@ -3081,22 +3140,19 @@ mod dvec4 {
 }
 
 #[cfg(feature = "i8")]
-
-
 // === Per-type try_from test macros ===
-
 macro_rules! impl_vec4_i8_try_from_tests {
     ($src:ident, $scalar:ty) => {
         glam_test!(test_try_from, {
-        impl_try_from_pair_with_max_error!("u8", $src, U8Vec4, u8::MAX, 4);
-        impl_try_from_pair_with_max_error!("i16", $src, I16Vec4, i16::MAX, 4);
-        impl_try_from_pair_with_max_error!("u16", $src, U16Vec4, u16::MAX, 4);
-        impl_try_from_pair_with_max_error!("i32", $src, IVec4, i32::MAX, 4);
-        impl_try_from_pair_with_max_error!("u32", $src, UVec4, u32::MAX, 4);
-        impl_try_from_pair_with_max_error!("i64", $src, I64Vec4, i64::MAX, 4);
-        impl_try_from_pair_with_max_error!("u64", $src, U64Vec4, u64::MAX, 4);
-        impl_try_from_pair_with_max_error!("isize", $src, ISizeVec4, isize::MAX, 4);
-        impl_try_from_pair_with_max_error!("usize", $src, USizeVec4, usize::MAX, 4);
+            impl_try_from_pair_with_max_error!("u8", $src, U8Vec4, u8::MAX, 4);
+            impl_try_from_pair_with_max_error!("i16", $src, I16Vec4, i16::MAX, 4);
+            impl_try_from_pair_with_max_error!("u16", $src, U16Vec4, u16::MAX, 4);
+            impl_try_from_pair_with_max_error!("i32", $src, IVec4, i32::MAX, 4);
+            impl_try_from_pair_with_max_error!("u32", $src, UVec4, u32::MAX, 4);
+            impl_try_from_pair_with_max_error!("i64", $src, I64Vec4, i64::MAX, 4);
+            impl_try_from_pair_with_max_error!("u64", $src, U64Vec4, u64::MAX, 4);
+            impl_try_from_pair_with_max_error!("isize", $src, ISizeVec4, isize::MAX, 4);
+            impl_try_from_pair_with_max_error!("usize", $src, USizeVec4, usize::MAX, 4);
         });
     };
 }
@@ -3104,15 +3160,15 @@ macro_rules! impl_vec4_i8_try_from_tests {
 macro_rules! impl_vec4_u8_try_from_tests {
     ($src:ident, $scalar:ty) => {
         glam_test!(test_try_from, {
-        impl_try_from_pair_with_negative_error!("i8", $src, I8Vec4, 4);
-        impl_try_from_pair_with_negmax_error!("i16", $src, I16Vec4, i16::MAX, 4);
-        impl_try_from_pair_with_max_error!("u16", $src, U16Vec4, u16::MAX, 4);
-        impl_try_from_pair_with_negmax_error!("i32", $src, IVec4, i32::MAX, 4);
-        impl_try_from_pair_with_max_error!("u32", $src, UVec4, u32::MAX, 4);
-        impl_try_from_pair_with_negmax_error!("i64", $src, I64Vec4, i64::MAX, 4);
-        impl_try_from_pair_with_max_error!("u64", $src, U64Vec4, u64::MAX, 4);
-        impl_try_from_pair_with_max_error!("isize", $src, ISizeVec4, isize::MAX, 4);
-        impl_try_from_pair_with_max_error!("usize", $src, USizeVec4, usize::MAX, 4);
+            impl_try_from_pair_with_negative_error!("i8", $src, I8Vec4, 4);
+            impl_try_from_pair_with_negmax_error!("i16", $src, I16Vec4, i16::MAX, 4);
+            impl_try_from_pair_with_max_error!("u16", $src, U16Vec4, u16::MAX, 4);
+            impl_try_from_pair_with_negmax_error!("i32", $src, IVec4, i32::MAX, 4);
+            impl_try_from_pair_with_max_error!("u32", $src, UVec4, u32::MAX, 4);
+            impl_try_from_pair_with_negmax_error!("i64", $src, I64Vec4, i64::MAX, 4);
+            impl_try_from_pair_with_max_error!("u64", $src, U64Vec4, u64::MAX, 4);
+            impl_try_from_pair_with_max_error!("isize", $src, ISizeVec4, isize::MAX, 4);
+            impl_try_from_pair_with_max_error!("usize", $src, USizeVec4, usize::MAX, 4);
         });
     };
 }
@@ -3120,15 +3176,15 @@ macro_rules! impl_vec4_u8_try_from_tests {
 macro_rules! impl_vec4_i16_try_from_tests {
     ($src:ident, $scalar:ty) => {
         glam_test!(test_try_from, {
-        impl_from_pair_infallible!("u8", $src, U8Vec4, 4);
-        impl_from_pair_infallible!("i8", $src, I8Vec4, 4);
-        impl_try_from_pair_with_max_error!("u16", $src, U16Vec4, u16::MAX, 4);
-        impl_try_from_pair_with_max_error!("i32", $src, IVec4, i32::MAX, 4);
-        impl_try_from_pair_with_max_error!("u32", $src, UVec4, u32::MAX, 4);
-        impl_try_from_pair_with_max_error!("i64", $src, I64Vec4, i64::MAX, 4);
-        impl_try_from_pair_with_max_error!("u64", $src, U64Vec4, u64::MAX, 4);
-        impl_try_from_pair_with_max_error!("isize", $src, ISizeVec4, isize::MAX, 4);
-        impl_try_from_pair_with_max_error!("usize", $src, USizeVec4, usize::MAX, 4);
+            impl_from_pair_infallible!("u8", $src, U8Vec4, 4);
+            impl_from_pair_infallible!("i8", $src, I8Vec4, 4);
+            impl_try_from_pair_with_max_error!("u16", $src, U16Vec4, u16::MAX, 4);
+            impl_try_from_pair_with_max_error!("i32", $src, IVec4, i32::MAX, 4);
+            impl_try_from_pair_with_max_error!("u32", $src, UVec4, u32::MAX, 4);
+            impl_try_from_pair_with_max_error!("i64", $src, I64Vec4, i64::MAX, 4);
+            impl_try_from_pair_with_max_error!("u64", $src, U64Vec4, u64::MAX, 4);
+            impl_try_from_pair_with_max_error!("isize", $src, ISizeVec4, isize::MAX, 4);
+            impl_try_from_pair_with_max_error!("usize", $src, USizeVec4, usize::MAX, 4);
         });
     };
 }
@@ -3136,15 +3192,15 @@ macro_rules! impl_vec4_i16_try_from_tests {
 macro_rules! impl_vec4_u16_try_from_tests {
     ($src:ident, $scalar:ty) => {
         glam_test!(test_try_from, {
-        impl_try_from_pair_with_negative_error!("i8", $src, I8Vec4, 4);
-        impl_from_pair_infallible!("u8", $src, U8Vec4, 4);
-        impl_try_from_pair_with_negative_error!("i16", $src, I16Vec4, 4);
-        impl_try_from_pair_with_negmax_error!("i32", $src, IVec4, i32::MAX, 4);
-        impl_try_from_pair_with_max_error!("u32", $src, UVec4, u32::MAX, 4);
-        impl_try_from_pair_with_negmax_error!("i64", $src, I64Vec4, i64::MAX, 4);
-        impl_try_from_pair_with_max_error!("u64", $src, U64Vec4, u64::MAX, 4);
-        impl_try_from_pair_with_max_error!("isize", $src, ISizeVec4, isize::MAX, 4);
-        impl_try_from_pair_with_max_error!("usize", $src, USizeVec4, usize::MAX, 4);
+            impl_try_from_pair_with_negative_error!("i8", $src, I8Vec4, 4);
+            impl_from_pair_infallible!("u8", $src, U8Vec4, 4);
+            impl_try_from_pair_with_negative_error!("i16", $src, I16Vec4, 4);
+            impl_try_from_pair_with_negmax_error!("i32", $src, IVec4, i32::MAX, 4);
+            impl_try_from_pair_with_max_error!("u32", $src, UVec4, u32::MAX, 4);
+            impl_try_from_pair_with_negmax_error!("i64", $src, I64Vec4, i64::MAX, 4);
+            impl_try_from_pair_with_max_error!("u64", $src, U64Vec4, u64::MAX, 4);
+            impl_try_from_pair_with_max_error!("isize", $src, ISizeVec4, isize::MAX, 4);
+            impl_try_from_pair_with_max_error!("usize", $src, USizeVec4, usize::MAX, 4);
         });
     };
 }
@@ -3152,15 +3208,15 @@ macro_rules! impl_vec4_u16_try_from_tests {
 macro_rules! impl_vec4_i32_try_from_tests {
     ($src:ident, $scalar:ty) => {
         glam_test!(test_try_from, {
-        impl_from_pair_infallible!("u8", $src, U8Vec4, 4);
-        impl_from_pair_infallible!("i8", $src, I8Vec4, 4);
-        impl_from_pair_infallible!("u16", $src, U16Vec4, 4);
-        impl_from_pair_infallible!("i16", $src, I16Vec4, 4);
-        impl_try_from_pair_with_max_error!("u32", $src, UVec4, u32::MAX, 4);
-        impl_try_from_pair_with_max_error!("i64", $src, I64Vec4, i64::MAX, 4);
-        impl_try_from_pair_with_max_error!("u64", $src, U64Vec4, u64::MAX, 4);
-        impl_try_from_pair_with_max_error!("isize", $src, ISizeVec4, isize::MAX, 4);
-        impl_try_from_pair_with_max_error!("usize", $src, USizeVec4, usize::MAX, 4);
+            impl_from_pair_infallible!("u8", $src, U8Vec4, 4);
+            impl_from_pair_infallible!("i8", $src, I8Vec4, 4);
+            impl_from_pair_infallible!("u16", $src, U16Vec4, 4);
+            impl_from_pair_infallible!("i16", $src, I16Vec4, 4);
+            impl_try_from_pair_with_max_error!("u32", $src, UVec4, u32::MAX, 4);
+            impl_try_from_pair_with_max_error!("i64", $src, I64Vec4, i64::MAX, 4);
+            impl_try_from_pair_with_max_error!("u64", $src, U64Vec4, u64::MAX, 4);
+            impl_try_from_pair_with_max_error!("isize", $src, ISizeVec4, isize::MAX, 4);
+            impl_try_from_pair_with_max_error!("usize", $src, USizeVec4, usize::MAX, 4);
         });
     };
 }
@@ -3168,15 +3224,15 @@ macro_rules! impl_vec4_i32_try_from_tests {
 macro_rules! impl_vec4_u32_try_from_tests {
     ($src:ident, $scalar:ty) => {
         glam_test!(test_try_from, {
-        impl_try_from_pair_with_negative_error!("i8", $src, I8Vec4, 4);
-        impl_from_pair_infallible!("u8", $src, U8Vec4, 4);
-        impl_try_from_pair_with_negative_error!("i16", $src, I16Vec4, 4);
-        impl_from_pair_infallible!("u16", $src, U16Vec4, 4);
-        impl_try_from_pair_with_negative_error!("i32", $src, IVec4, 4);
-        impl_try_from_pair_with_negmax_error!("i64", $src, I64Vec4, i64::MAX, 4);
-        impl_try_from_pair_with_max_error!("u64", $src, U64Vec4, u64::MAX, 4);
-        impl_try_from_pair_with_max_error!("isize", $src, ISizeVec4, isize::MAX, 4);
-        impl_try_from_pair_with_max_error!("usize", $src, USizeVec4, usize::MAX, 4);
+            impl_try_from_pair_with_negative_error!("i8", $src, I8Vec4, 4);
+            impl_from_pair_infallible!("u8", $src, U8Vec4, 4);
+            impl_try_from_pair_with_negative_error!("i16", $src, I16Vec4, 4);
+            impl_from_pair_infallible!("u16", $src, U16Vec4, 4);
+            impl_try_from_pair_with_negative_error!("i32", $src, IVec4, 4);
+            impl_try_from_pair_with_negmax_error!("i64", $src, I64Vec4, i64::MAX, 4);
+            impl_try_from_pair_with_max_error!("u64", $src, U64Vec4, u64::MAX, 4);
+            impl_try_from_pair_with_max_error!("isize", $src, ISizeVec4, isize::MAX, 4);
+            impl_try_from_pair_with_max_error!("usize", $src, USizeVec4, usize::MAX, 4);
         });
     };
 }
@@ -3184,15 +3240,15 @@ macro_rules! impl_vec4_u32_try_from_tests {
 macro_rules! impl_vec4_i64_try_from_tests {
     ($src:ident, $scalar:ty) => {
         glam_test!(test_try_from, {
-        impl_from_pair_infallible!("i8", $src, I8Vec4, 4);
-        impl_from_pair_infallible!("u8", $src, U8Vec4, 4);
-        impl_from_pair_infallible!("i16", $src, I16Vec4, 4);
-        impl_from_pair_infallible!("u16", $src, U16Vec4, 4);
-        impl_from_pair_infallible!("i32", $src, IVec4, 4);
-        impl_from_pair_infallible!("u32", $src, UVec4, 4);
-        impl_try_from_pair_with_max_error!("u64", $src, U64Vec4, u64::MAX, 4);
-        impl_try_from_pair_no_error!("isize", $src, ISizeVec4, 4);
-        impl_try_from_pair_with_max_error!("usize", $src, USizeVec4, usize::MAX, 4);
+            impl_from_pair_infallible!("i8", $src, I8Vec4, 4);
+            impl_from_pair_infallible!("u8", $src, U8Vec4, 4);
+            impl_from_pair_infallible!("i16", $src, I16Vec4, 4);
+            impl_from_pair_infallible!("u16", $src, U16Vec4, 4);
+            impl_from_pair_infallible!("i32", $src, IVec4, 4);
+            impl_from_pair_infallible!("u32", $src, UVec4, 4);
+            impl_try_from_pair_with_max_error!("u64", $src, U64Vec4, u64::MAX, 4);
+            impl_try_from_pair_no_error!("isize", $src, ISizeVec4, 4);
+            impl_try_from_pair_with_max_error!("usize", $src, USizeVec4, usize::MAX, 4);
         });
     };
 }
@@ -3200,15 +3256,15 @@ macro_rules! impl_vec4_i64_try_from_tests {
 macro_rules! impl_vec4_u64_try_from_tests {
     ($src:ident, $scalar:ty) => {
         glam_test!(test_try_from, {
-        impl_try_from_pair_with_negative_error!("i8", $src, I8Vec4, 4);
-        impl_from_pair_infallible!("u8", $src, U8Vec4, 4);
-        impl_try_from_pair_with_negative_error!("i16", $src, I16Vec4, 4);
-        impl_from_pair_infallible!("u16", $src, U16Vec4, 4);
-        impl_try_from_pair_with_negative_error!("i32", $src, IVec4, 4);
-        impl_from_pair_infallible!("u32", $src, UVec4, 4);
-        impl_try_from_pair_with_negative_error!("i64", $src, I64Vec4, 4);
-        impl_try_from_pair_with_negative_error!("isize", $src, ISizeVec4, 4);
-        impl_try_from_pair_no_error!("usize", $src, USizeVec4, 4);
+            impl_try_from_pair_with_negative_error!("i8", $src, I8Vec4, 4);
+            impl_from_pair_infallible!("u8", $src, U8Vec4, 4);
+            impl_try_from_pair_with_negative_error!("i16", $src, I16Vec4, 4);
+            impl_from_pair_infallible!("u16", $src, U16Vec4, 4);
+            impl_try_from_pair_with_negative_error!("i32", $src, IVec4, 4);
+            impl_from_pair_infallible!("u32", $src, UVec4, 4);
+            impl_try_from_pair_with_negative_error!("i64", $src, I64Vec4, 4);
+            impl_try_from_pair_with_negative_error!("isize", $src, ISizeVec4, 4);
+            impl_try_from_pair_no_error!("usize", $src, USizeVec4, 4);
         });
     };
 }
@@ -3216,15 +3272,15 @@ macro_rules! impl_vec4_u64_try_from_tests {
 macro_rules! impl_vec4_isize_try_from_tests {
     ($src:ident, $scalar:ty) => {
         glam_test!(test_try_from, {
-        impl_from_pair_infallible!("i8", $src, I8Vec4, 4);
-        impl_from_pair_infallible!("u8", $src, U8Vec4, 4);
-        impl_from_pair_infallible!("i16", $src, I16Vec4, 4);
-        impl_try_from_pair_no_error!("u16", $src, U16Vec4, 4);
-        impl_try_from_pair_no_error!("i32", $src, IVec4, 4);
-        impl_try_from_pair_no_error!("u32", $src, UVec4, 4);
-        impl_try_from_pair_with_max_error!("u64", $src, U64Vec4, u64::MAX, 4);
-        impl_try_from_pair_no_error!("i64", $src, I64Vec4, 4);
-        impl_try_from_pair_with_max_error!("usize", $src, USizeVec4, usize::MAX, 4);
+            impl_from_pair_infallible!("i8", $src, I8Vec4, 4);
+            impl_from_pair_infallible!("u8", $src, U8Vec4, 4);
+            impl_from_pair_infallible!("i16", $src, I16Vec4, 4);
+            impl_try_from_pair_no_error!("u16", $src, U16Vec4, 4);
+            impl_try_from_pair_no_error!("i32", $src, IVec4, 4);
+            impl_try_from_pair_no_error!("u32", $src, UVec4, 4);
+            impl_try_from_pair_with_max_error!("u64", $src, U64Vec4, u64::MAX, 4);
+            impl_try_from_pair_no_error!("i64", $src, I64Vec4, 4);
+            impl_try_from_pair_with_max_error!("usize", $src, USizeVec4, usize::MAX, 4);
         });
     };
 }
@@ -3232,18 +3288,20 @@ macro_rules! impl_vec4_isize_try_from_tests {
 macro_rules! impl_vec4_usize_try_from_tests {
     ($src:ident, $scalar:ty) => {
         glam_test!(test_try_from, {
-        impl_try_from_pair_with_negative_error!("i8", $src, I8Vec4, 4);
-        impl_from_pair_infallible!("u8", $src, U8Vec4, 4);
-        impl_try_from_pair_with_negative_error!("i16", $src, I16Vec4, 4);
-        impl_from_pair_infallible!("u16", $src, U16Vec4, 4);
-        impl_try_from_pair_with_negative_error!("i32", $src, IVec4, 4);
-        impl_try_from_pair_no_error!("u32", $src, UVec4, 4);
-        impl_try_from_pair_no_error!("u64", $src, U64Vec4, 4);
-        impl_try_from_pair_with_negative_error!("i64", $src, I64Vec4, 4);
-        impl_try_from_pair_with_negative_error!("isize", $src, ISizeVec4, 4);
+            impl_try_from_pair_with_negative_error!("i8", $src, I8Vec4, 4);
+            impl_from_pair_infallible!("u8", $src, U8Vec4, 4);
+            impl_try_from_pair_with_negative_error!("i16", $src, I16Vec4, 4);
+            impl_from_pair_infallible!("u16", $src, U16Vec4, 4);
+            impl_try_from_pair_with_negative_error!("i32", $src, IVec4, 4);
+            impl_try_from_pair_no_error!("u32", $src, UVec4, 4);
+            impl_try_from_pair_no_error!("u64", $src, U64Vec4, 4);
+            impl_try_from_pair_with_negative_error!("i64", $src, I64Vec4, 4);
+            impl_try_from_pair_with_negative_error!("isize", $src, ISizeVec4, 4);
         });
     };
 }
+
+#[cfg(feature = "i8")]
 mod i8vec4 {
     #[cfg(feature = "i16")]
     use glam::I16Vec4;
@@ -3276,7 +3334,7 @@ mod i8vec4 {
         assert_eq!(4, mem::align_of::<I8Vec4>());
     });
 
-        impl_vec4_i8_try_from_tests!(I8Vec4, i8);
+    impl_vec4_i8_try_from_tests!(I8Vec4, i8);
 
     impl_vec4_wrapping_saturating_tests!(I8Vec4, i8, U8Vec4, "u8", signed);
 
@@ -3321,7 +3379,7 @@ mod u8vec4 {
         assert_eq!(4, mem::align_of::<U8Vec4>());
     });
 
-        impl_vec4_u8_try_from_tests!(U8Vec4, u8);
+    impl_vec4_u8_try_from_tests!(U8Vec4, u8);
 
     impl_vec4_wrapping_saturating_tests!(U8Vec4, u8, I8Vec4, "i8", unsigned);
 
@@ -3366,7 +3424,7 @@ mod i16vec4 {
         assert_eq!(8, mem::align_of::<I16Vec4>());
     });
 
-        impl_vec4_i16_try_from_tests!(I16Vec4, i16);
+    impl_vec4_i16_try_from_tests!(I16Vec4, i16);
 
     impl_vec4_wrapping_saturating_tests!(I16Vec4, i16, U16Vec4, "u16", signed);
 
@@ -3411,7 +3469,7 @@ mod u16vec4 {
         assert_eq!(8, mem::align_of::<U16Vec4>());
     });
 
-        impl_vec4_u16_try_from_tests!(U16Vec4, u16);
+    impl_vec4_u16_try_from_tests!(U16Vec4, u16);
 
     impl_vec4_wrapping_saturating_tests!(U16Vec4, u16, I16Vec4, "i16", unsigned);
 
@@ -3456,7 +3514,7 @@ mod ivec4 {
         assert_eq!(16, mem::align_of::<IVec4>());
     });
 
-        impl_vec4_i32_try_from_tests!(IVec4, i32);
+    impl_vec4_i32_try_from_tests!(IVec4, i32);
 
     impl_vec4_wrapping_saturating_tests!(IVec4, i32, UVec4, "u32", signed);
 
@@ -3501,7 +3559,7 @@ mod uvec4 {
         assert_eq!(16, mem::align_of::<UVec4>());
     });
 
-        impl_vec4_u32_try_from_tests!(UVec4, u32);
+    impl_vec4_u32_try_from_tests!(UVec4, u32);
 
     impl_vec4_wrapping_saturating_tests!(UVec4, u32, IVec4, "i32", unsigned);
 
@@ -3546,7 +3604,7 @@ mod i64vec4 {
         assert_eq!(16, mem::align_of::<I64Vec4>());
     });
 
-        impl_vec4_i64_try_from_tests!(I64Vec4, i64);
+    impl_vec4_i64_try_from_tests!(I64Vec4, i64);
 
     impl_vec4_wrapping_saturating_tests!(I64Vec4, i64, U64Vec4, "u64", signed);
 
@@ -3591,7 +3649,7 @@ mod u64vec4 {
         assert_eq!(16, mem::align_of::<U64Vec4>());
     });
 
-        impl_vec4_u64_try_from_tests!(U64Vec4, u64);
+    impl_vec4_u64_try_from_tests!(U64Vec4, u64);
 
     impl_vec4_wrapping_saturating_tests!(U64Vec4, u64, I64Vec4, "i64", unsigned);
 
@@ -3636,7 +3694,7 @@ mod isizevec4 {
         assert_eq!(16, mem::align_of::<ISizeVec4>());
     });
 
-        impl_vec4_isize_try_from_tests!(ISizeVec4, isize);
+    impl_vec4_isize_try_from_tests!(ISizeVec4, isize);
 
     impl_vec4_wrapping_saturating_tests!(ISizeVec4, isize, USizeVec4, "usize", signed);
 
@@ -3681,7 +3739,7 @@ mod usizevec4 {
         assert_eq!(16, mem::align_of::<USizeVec4>());
     });
 
-        impl_vec4_usize_try_from_tests!(USizeVec4, usize);
+    impl_vec4_usize_try_from_tests!(USizeVec4, usize);
 
     impl_vec4_wrapping_saturating_tests!(USizeVec4, usize, ISizeVec4, "isize", unsigned);
 

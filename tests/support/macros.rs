@@ -1,3 +1,5 @@
+#![allow(unused_macros)]
+
 #[macro_export]
 macro_rules! glam_test {
     ($name:ident, $block:block) => {
@@ -575,10 +577,7 @@ macro_rules! impl_try_from_pair_with_max_error {
     ($feature:literal, $src:ident, $tgt:ident, $max:path, 2) => {
         #[cfg(feature = $feature)]
         {
-            assert_eq!(
-                $src::new(1, 2),
-                $src::try_from($tgt::new(1, 2)).unwrap()
-            );
+            assert_eq!($src::new(1, 2), $src::try_from($tgt::new(1, 2)).unwrap());
             assert!($src::try_from($tgt::new($max, 2)).is_err());
             assert!($src::try_from($tgt::new(1, $max)).is_err());
         }
@@ -631,10 +630,7 @@ macro_rules! impl_try_from_pair_with_negative_error {
     ($feature:literal, $src:ident, $tgt:ident, 2) => {
         #[cfg(feature = $feature)]
         {
-            assert_eq!(
-                $src::new(1, 2),
-                $src::try_from($tgt::new(1, 2)).unwrap()
-            );
+            assert_eq!($src::new(1, 2), $src::try_from($tgt::new(1, 2)).unwrap());
             assert!($src::try_from($tgt::new(-1, 2)).is_err());
             assert!($src::try_from($tgt::new(1, -2)).is_err());
         }
@@ -674,11 +670,17 @@ macro_rules! impl_try_from_pair_no_error {
     };
     ($feature:literal, $src:ident, $tgt:ident, 3) => {
         #[cfg(feature = $feature)]
-        assert_eq!($src::new(1, 2, 3), $src::try_from($tgt::new(1, 2, 3)).unwrap());
+        assert_eq!(
+            $src::new(1, 2, 3),
+            $src::try_from($tgt::new(1, 2, 3)).unwrap()
+        );
     };
     ($feature:literal, $src:ident, $tgt:ident, 4) => {
         #[cfg(feature = $feature)]
-        assert_eq!($src::new(1, 2, 3, 4), $src::try_from($tgt::new(1, 2, 3, 4)).unwrap());
+        assert_eq!(
+            $src::new(1, 2, 3, 4),
+            $src::try_from($tgt::new(1, 2, 3, 4)).unwrap()
+        );
     };
 }
 
@@ -687,10 +689,7 @@ macro_rules! impl_try_from_pair_with_negmax_error {
     ($feature:literal, $src:ident, $tgt:ident, $max:path, 2) => {
         #[cfg(feature = $feature)]
         {
-            assert_eq!(
-                $src::new(1, 2),
-                $src::try_from($tgt::new(1, 2)).unwrap()
-            );
+            assert_eq!($src::new(1, 2), $src::try_from($tgt::new(1, 2)).unwrap());
             assert!($src::try_from($tgt::new(-1, 2)).is_err());
             assert!($src::try_from($tgt::new(1, -2)).is_err());
             assert!($src::try_from($tgt::new($max, 2)).is_err());
