@@ -2,6 +2,9 @@
 #[path = "support/macros.rs"]
 #[macro_use]
 mod macros;
+#[path = "support/as_macros.rs"]
+#[macro_use]
+mod as_macros;
 
 use glam::{Affine3, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
 #[cfg(feature = "f64")]
