@@ -2159,196 +2159,6 @@ macro_rules! impl_vec3_bit_op_tests {
     };
 }
 
-macro_rules! impl_vec3_wrapping_saturating_tests {
-    // wrapping tests only (shared between signed and unsigned)
-    ($vec:ident, $t:ty, wrapping) => {
-        glam_test!(test_wrapping_add, {
-            assert_eq!(
-                $vec::new(<$t>::MAX, 0, 5).wrapping_add($vec::new(1, 2, 3)),
-                $vec::new(<$t>::MIN, 2, 8),
-            );
-        });
-
-        glam_test!(test_wrapping_sub, {
-            assert_eq!(
-                $vec::new(<$t>::MAX, 4, 5).wrapping_sub($vec::new(1, 2, 3)),
-                $vec::new(<$t>::MAX - 1, 2, 2)
-            );
-        });
-
-        glam_test!(test_wrapping_mul, {
-            assert_eq!(
-                $vec::new(<$t>::MAX, 2, 5).wrapping_mul($vec::new(3, 2, 3)),
-                $vec::new(<$t>::MAX.wrapping_mul(3), 4, 15)
-            );
-        });
-
-        glam_test!(test_wrapping_div, {
-            assert_eq!(
-                $vec::new(<$t>::MAX, 4, 5).wrapping_div($vec::new(3, 2, 3)),
-                $vec::new(<$t>::MAX / 3, 2, 1)
-            );
-        });
-    };
-    // signed variant: wrapping + signed-specific saturating tests + paired signed extras
-    ($vec:ident, $scalar:ty, $paired_vec:ident, $paired_feature:literal, signed) => {
-        impl_vec3_wrapping_saturating_tests!($vec, $scalar, wrapping);
-
-        glam_test!(test_saturating_add, {
-            assert_eq!(
-                $vec::new(<$scalar>::MAX, <$scalar>::MIN, 0).saturating_add($vec::new(1, -1, 0)),
-                $vec::new(<$scalar>::MAX, <$scalar>::MIN, 0)
-            );
-        });
-
-        glam_test!(test_saturating_sub, {
-            assert_eq!(
-                $vec::new(<$scalar>::MIN, <$scalar>::MAX, 0).saturating_sub($vec::new(1, -1, 0)),
-                $vec::new(<$scalar>::MIN, <$scalar>::MAX, 0)
-            );
-        });
-
-        glam_test!(test_saturating_mul, {
-            assert_eq!(
-                $vec::new(<$scalar>::MAX, <$scalar>::MIN, 0).saturating_mul($vec::new(2, 2, 0)),
-                $vec::new(<$scalar>::MAX, <$scalar>::MIN, 0)
-            );
-        });
-
-        glam_test!(test_saturating_div, {
-            assert_eq!(
-                $vec::new(<$scalar>::MAX, <$scalar>::MIN, 0).saturating_div($vec::new(2, 2, 3)),
-                $vec::new(<$scalar>::MAX / 2, <$scalar>::MIN / 2, 0)
-            );
-        });
-
-        #[cfg(feature = $paired_feature)]
-        glam_test!(test_checked_add_unsigned, {
-            assert_eq!($vec::MAX.checked_add_unsigned($paired_vec::ONE), None);
-            assert_eq!(
-                $vec::NEG_ONE.checked_add_unsigned($paired_vec::ONE),
-                Some($vec::ZERO)
-            );
-        });
-
-        #[cfg(feature = $paired_feature)]
-        glam_test!(test_checked_sub_unsigned, {
-            assert_eq!($vec::MIN.checked_sub_unsigned($paired_vec::ONE), None);
-            assert_eq!(
-                $vec::ZERO.checked_sub_unsigned($paired_vec::ONE),
-                Some($vec::NEG_ONE)
-            );
-        });
-
-        #[cfg(feature = $paired_feature)]
-        glam_test!(test_wrapping_add_unsigned, {
-            assert_eq!(
-                $vec::new(<$scalar>::MAX, <$scalar>::MAX, <$scalar>::MAX)
-                    .wrapping_add_unsigned($paired_vec::new(1, 1, 1)),
-                $vec::new(<$scalar>::MIN, <$scalar>::MIN, <$scalar>::MIN)
-            );
-        });
-
-        #[cfg(feature = $paired_feature)]
-        glam_test!(test_wrapping_sub_unsigned, {
-            assert_eq!(
-                $vec::new(<$scalar>::MIN, <$scalar>::MIN, <$scalar>::MIN)
-                    .wrapping_sub_unsigned($paired_vec::new(1, 1, 1)),
-                $vec::new(<$scalar>::MAX, <$scalar>::MAX, <$scalar>::MAX)
-            );
-        });
-
-        #[cfg(feature = $paired_feature)]
-        glam_test!(test_saturating_add_unsigned, {
-            assert_eq!(
-                $vec::new(<$scalar>::MAX, <$scalar>::MAX, <$scalar>::MAX)
-                    .saturating_add_unsigned($paired_vec::new(1, 1, 1)),
-                $vec::new(<$scalar>::MAX, <$scalar>::MAX, <$scalar>::MAX)
-            );
-        });
-
-        #[cfg(feature = $paired_feature)]
-        glam_test!(test_saturating_sub_unsigned, {
-            assert_eq!(
-                $vec::new(<$scalar>::MIN, <$scalar>::MIN, <$scalar>::MIN)
-                    .saturating_sub_unsigned($paired_vec::new(1, 1, 1)),
-                $vec::new(<$scalar>::MIN, <$scalar>::MIN, <$scalar>::MIN)
-            );
-        });
-    };
-    // unsigned variant: wrapping + unsigned-specific saturating tests + paired unsigned extras
-    ($vec:ident, $scalar:ty, $paired_vec:ident, $paired_feature:literal, unsigned) => {
-        impl_vec3_wrapping_saturating_tests!($vec, $scalar, wrapping);
-
-        glam_test!(test_saturating_add, {
-            assert_eq!(
-                $vec::new(<$scalar>::MAX, <$scalar>::MAX, 0).saturating_add($vec::new(
-                    1,
-                    <$scalar>::MAX,
-                    0
-                )),
-                $vec::new(<$scalar>::MAX, <$scalar>::MAX, 0)
-            );
-        });
-
-        glam_test!(test_saturating_sub, {
-            assert_eq!(
-                $vec::new(<$scalar>::MIN, <$scalar>::MAX, 0).saturating_sub($vec::new(1, 1, 0)),
-                $vec::new(<$scalar>::MIN, <$scalar>::MAX - 1, 0)
-            );
-        });
-
-        glam_test!(test_saturating_mul, {
-            assert_eq!(
-                $vec::new(<$scalar>::MAX, <$scalar>::MAX, 0).saturating_mul($vec::new(
-                    2,
-                    <$scalar>::MAX,
-                    0
-                )),
-                $vec::new(<$scalar>::MAX, <$scalar>::MAX, 0)
-            );
-        });
-
-        glam_test!(test_saturating_div, {
-            assert_eq!(
-                $vec::new(<$scalar>::MAX, <$scalar>::MAX, 0).saturating_div($vec::new(
-                    2,
-                    <$scalar>::MAX,
-                    3
-                )),
-                $vec::new(<$scalar>::MAX / 2, 1, 0)
-            );
-        });
-
-        #[cfg(feature = $paired_feature)]
-        glam_test!(test_checked_add_signed, {
-            assert_eq!($vec::MAX.checked_add_signed($paired_vec::ONE), None);
-            assert_eq!(
-                $vec::ONE.checked_add_signed($paired_vec::NEG_ONE),
-                Some($vec::ZERO)
-            );
-        });
-
-        #[cfg(feature = $paired_feature)]
-        glam_test!(test_wrapping_add_signed, {
-            assert_eq!(
-                $vec::new(<$scalar>::MAX, <$scalar>::MAX, <$scalar>::MAX)
-                    .wrapping_add_signed($paired_vec::new(1, 1, 1)),
-                $vec::new(<$scalar>::MIN, <$scalar>::MIN, <$scalar>::MIN)
-            );
-        });
-
-        #[cfg(feature = $paired_feature)]
-        glam_test!(test_saturating_add_signed, {
-            assert_eq!(
-                $vec::new(<$scalar>::MAX, <$scalar>::MAX, <$scalar>::MAX)
-                    .saturating_add_signed($paired_vec::new(1, 1, 1)),
-                $vec::new(<$scalar>::MAX, <$scalar>::MAX, <$scalar>::MAX)
-            );
-        });
-    };
-}
-
 mod bvec3 {
     use glam::{bvec3, BVec3};
 
@@ -2706,7 +2516,7 @@ mod i8vec3 {
 
     impl_vec3_i8_try_from_tests!(I8Vec3, i8);
 
-    impl_vec3_wrapping_saturating_tests!(I8Vec3, i8, U8Vec3, "u8", signed);
+    impl_vec_wrapping_saturating_tests!(3, I8Vec3, i8, U8Vec3, "u8", signed);
 
     impl_vec3_signed_integer_tests!(i8, i8vec3, I8Vec3, BVec3);
     impl_vec3_eq_hash_tests!(i8, i8vec3);
@@ -2748,7 +2558,7 @@ mod u8vec3 {
 
     impl_vec3_u8_try_from_tests!(U8Vec3, u8);
 
-    impl_vec3_wrapping_saturating_tests!(U8Vec3, u8, I8Vec3, "i8", unsigned);
+    impl_vec_wrapping_saturating_tests!(3, U8Vec3, u8, I8Vec3, "i8", unsigned);
 
     impl_vec3_unsigned_integer_tests!(u8, u8vec3, U8Vec3, BVec3);
     impl_vec3_eq_hash_tests!(u8, u8vec3);
@@ -2790,7 +2600,7 @@ mod i16vec3 {
 
     impl_vec3_i16_try_from_tests!(I16Vec3, i16);
 
-    impl_vec3_wrapping_saturating_tests!(I16Vec3, i16, U16Vec3, "u16", signed);
+    impl_vec_wrapping_saturating_tests!(3, I16Vec3, i16, U16Vec3, "u16", signed);
 
     impl_vec3_signed_integer_tests!(i16, i16vec3, I16Vec3, BVec3);
     impl_vec3_eq_hash_tests!(i16, i16vec3);
@@ -2832,7 +2642,7 @@ mod u16vec3 {
 
     impl_vec3_u16_try_from_tests!(U16Vec3, u16);
 
-    impl_vec3_wrapping_saturating_tests!(U16Vec3, u16, I16Vec3, "i16", unsigned);
+    impl_vec_wrapping_saturating_tests!(3, U16Vec3, u16, I16Vec3, "i16", unsigned);
 
     impl_vec3_unsigned_integer_tests!(u16, u16vec3, U16Vec3, BVec3);
     impl_vec3_eq_hash_tests!(u16, u16vec3);
@@ -2874,7 +2684,7 @@ mod ivec3 {
 
     impl_vec3_i32_try_from_tests!(IVec3, i32);
 
-    impl_vec3_wrapping_saturating_tests!(IVec3, i32, UVec3, "u32", signed);
+    impl_vec_wrapping_saturating_tests!(3, IVec3, i32, UVec3, "u32", signed);
 
     impl_vec3_signed_integer_tests!(i32, ivec3, IVec3, BVec3);
     impl_vec3_eq_hash_tests!(i32, ivec3);
@@ -2916,7 +2726,7 @@ mod uvec3 {
 
     impl_vec3_u32_try_from_tests!(UVec3, u32);
 
-    impl_vec3_wrapping_saturating_tests!(UVec3, u32, IVec3, "i32", unsigned);
+    impl_vec_wrapping_saturating_tests!(3, UVec3, u32, IVec3, "i32", unsigned);
 
     impl_vec3_unsigned_integer_tests!(u32, uvec3, UVec3, BVec3);
     impl_vec3_eq_hash_tests!(u32, uvec3);
@@ -2958,7 +2768,7 @@ mod i64vec3 {
 
     impl_vec3_i64_try_from_tests!(I64Vec3, i64);
 
-    impl_vec3_wrapping_saturating_tests!(I64Vec3, i64, U64Vec3, "u64", signed);
+    impl_vec_wrapping_saturating_tests!(3, I64Vec3, i64, U64Vec3, "u64", signed);
 
     impl_vec3_signed_integer_tests!(i64, i64vec3, I64Vec3, BVec3);
     impl_vec3_eq_hash_tests!(i64, i64vec3);
@@ -3000,7 +2810,7 @@ mod u64vec3 {
 
     impl_vec3_u64_try_from_tests!(U64Vec3, u64);
 
-    impl_vec3_wrapping_saturating_tests!(U64Vec3, u64, I64Vec3, "i64", unsigned);
+    impl_vec_wrapping_saturating_tests!(3, U64Vec3, u64, I64Vec3, "i64", unsigned);
 
     impl_vec3_unsigned_integer_tests!(u64, u64vec3, U64Vec3, BVec3);
     impl_vec3_eq_hash_tests!(u64, u64vec3);
@@ -3042,7 +2852,7 @@ mod isizevec3 {
 
     impl_vec3_isize_try_from_tests!(ISizeVec3, isize);
 
-    impl_vec3_wrapping_saturating_tests!(ISizeVec3, isize, USizeVec3, "usize", signed);
+    impl_vec_wrapping_saturating_tests!(3, ISizeVec3, isize, USizeVec3, "usize", signed);
 
     impl_vec3_signed_integer_tests!(isize, isizevec3, ISizeVec3, BVec3);
     impl_vec3_eq_hash_tests!(isize, isizevec3);
@@ -3084,7 +2894,7 @@ mod usizevec3 {
 
     impl_vec3_usize_try_from_tests!(USizeVec3, usize);
 
-    impl_vec3_wrapping_saturating_tests!(USizeVec3, usize, ISizeVec3, "isize", unsigned);
+    impl_vec_wrapping_saturating_tests!(3, USizeVec3, usize, ISizeVec3, "isize", unsigned);
 
     impl_vec3_unsigned_integer_tests!(usize, usizevec3, USizeVec3, BVec3);
     impl_vec3_eq_hash_tests!(usize, usizevec3);
