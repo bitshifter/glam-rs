@@ -2327,6 +2327,7 @@ macro_rules! impl_vec4_i8_try_from_tests {
     };
 }
 
+#[cfg(feature = "u8")]
 macro_rules! impl_vec4_u8_try_from_tests {
     ($src:ident, $scalar:ty) => {
         glam_test!(test_try_from, {
@@ -2343,6 +2344,7 @@ macro_rules! impl_vec4_u8_try_from_tests {
     };
 }
 
+#[cfg(feature = "i16")]
 macro_rules! impl_vec4_i16_try_from_tests {
     ($src:ident, $scalar:ty) => {
         glam_test!(test_try_from, {
@@ -2359,6 +2361,7 @@ macro_rules! impl_vec4_i16_try_from_tests {
     };
 }
 
+#[cfg(feature = "u16")]
 macro_rules! impl_vec4_u16_try_from_tests {
     ($src:ident, $scalar:ty) => {
         glam_test!(test_try_from, {
@@ -2375,6 +2378,7 @@ macro_rules! impl_vec4_u16_try_from_tests {
     };
 }
 
+#[cfg(feature = "i32")]
 macro_rules! impl_vec4_i32_try_from_tests {
     ($src:ident, $scalar:ty) => {
         glam_test!(test_try_from, {
@@ -2398,6 +2402,7 @@ macro_rules! impl_vec4_i32_try_from_tests {
     };
 }
 
+#[cfg(feature = "u32")]
 macro_rules! impl_vec4_u32_try_from_tests {
     ($src:ident, $scalar:ty) => {
         glam_test!(test_try_from, {
@@ -2428,6 +2433,7 @@ macro_rules! impl_vec4_u32_try_from_tests {
     };
 }
 
+#[cfg(feature = "i64")]
 macro_rules! impl_vec4_i64_try_from_tests {
     ($src:ident, $scalar:ty) => {
         glam_test!(test_try_from, {
@@ -2451,6 +2457,7 @@ macro_rules! impl_vec4_i64_try_from_tests {
     };
 }
 
+#[cfg(feature = "u64")]
 macro_rules! impl_vec4_u64_try_from_tests {
     ($src:ident, $scalar:ty) => {
         glam_test!(test_try_from, {
@@ -2467,6 +2474,7 @@ macro_rules! impl_vec4_u64_try_from_tests {
     };
 }
 
+#[cfg(feature = "isize")]
 macro_rules! impl_vec4_isize_try_from_tests {
     ($src:ident, $scalar:ty) => {
         glam_test!(test_try_from, {
@@ -2483,6 +2491,7 @@ macro_rules! impl_vec4_isize_try_from_tests {
     };
 }
 
+#[cfg(feature = "usize")]
 macro_rules! impl_vec4_usize_try_from_tests {
     ($src:ident, $scalar:ty) => {
         glam_test!(test_try_from, {
