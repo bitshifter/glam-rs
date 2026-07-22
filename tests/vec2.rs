@@ -1788,7 +1788,8 @@ macro_rules! impl_vec2_bit_op_tests {
 }
 
 macro_rules! impl_vec2_wrapping_saturating_tests {
-    ($vec:ident, $t:ty) => {
+    // wrapping tests only (shared between signed and unsigned)
+    ($vec:ident, $t:ty, wrapping) => {
         glam_test!(test_wrapping_add, {
             assert_eq!(
                 $vec::new(<$t>::MAX, 5).wrapping_add($vec::new(1, 3)),
@@ -1816,37 +1817,38 @@ macro_rules! impl_vec2_wrapping_saturating_tests {
                 $vec::new(<$t>::MAX / 3, 1)
             );
         });
+    };
+    // signed variant: wrapping + signed-specific saturating tests + paired signed extras
+    ($vec:ident, $scalar:ty, $paired_vec:ident, $paired_feature:literal, signed) => {
+        impl_vec2_wrapping_saturating_tests!($vec, $scalar, wrapping);
 
         glam_test!(test_saturating_add, {
             assert_eq!(
-                $vec::new(<$t>::MAX, <$t>::MAX).saturating_add($vec::new(1, <$t>::MAX)),
-                $vec::new(<$t>::MAX, <$t>::MAX)
+                $vec::new(<$scalar>::MAX, <$scalar>::MIN).saturating_add($vec::new(1, -1)),
+                $vec::new(<$scalar>::MAX, <$scalar>::MIN)
             );
         });
 
         glam_test!(test_saturating_sub, {
             assert_eq!(
-                $vec::new(<$t>::MIN, <$t>::MIN).saturating_sub($vec::new(1, 1)),
-                $vec::new(<$t>::MIN, <$t>::MIN)
+                $vec::new(<$scalar>::MIN, <$scalar>::MAX).saturating_sub($vec::new(1, -1)),
+                $vec::new(<$scalar>::MIN, <$scalar>::MAX)
             );
         });
 
         glam_test!(test_saturating_mul, {
             assert_eq!(
-                $vec::new(<$t>::MAX, <$t>::MAX).saturating_mul($vec::new(2, 2)),
-                $vec::new(<$t>::MAX, <$t>::MAX)
+                $vec::new(<$scalar>::MAX, <$scalar>::MIN).saturating_mul($vec::new(2, 2)),
+                $vec::new(<$scalar>::MAX, <$scalar>::MIN)
             );
         });
 
         glam_test!(test_saturating_div, {
             assert_eq!(
-                $vec::new(<$t>::MAX, <$t>::MAX).saturating_div($vec::new(2, <$t>::MAX)),
-                $vec::new(<$t>::MAX / 2, 1)
+                $vec::new(<$scalar>::MAX, <$scalar>::MIN).saturating_div($vec::new(2, 2)),
+                $vec::new(<$scalar>::MAX / 2, <$scalar>::MIN / 2)
             );
         });
-    };
-    ($vec:ident, $scalar:ty, $paired_vec:ident, $paired_feature:literal, signed) => {
-        impl_vec2_wrapping_saturating_tests!($vec, $scalar);
 
         #[cfg(feature = $paired_feature)]
         glam_test!(test_checked_add_unsigned, {
@@ -1902,8 +1904,37 @@ macro_rules! impl_vec2_wrapping_saturating_tests {
             );
         });
     };
+    // unsigned variant: wrapping + unsigned-specific saturating tests + paired unsigned extras
     ($vec:ident, $scalar:ty, $paired_vec:ident, $paired_feature:literal, unsigned) => {
-        impl_vec2_wrapping_saturating_tests!($vec, $scalar);
+        impl_vec2_wrapping_saturating_tests!($vec, $scalar, wrapping);
+
+        glam_test!(test_saturating_add, {
+            assert_eq!(
+                $vec::new(<$scalar>::MAX, <$scalar>::MAX).saturating_add($vec::new(1, <$scalar>::MAX)),
+                $vec::new(<$scalar>::MAX, <$scalar>::MAX)
+            );
+        });
+
+        glam_test!(test_saturating_sub, {
+            assert_eq!(
+                $vec::new(<$scalar>::MIN, <$scalar>::MAX).saturating_sub($vec::new(1, 1)),
+                $vec::new(<$scalar>::MIN, <$scalar>::MAX - 1)
+            );
+        });
+
+        glam_test!(test_saturating_mul, {
+            assert_eq!(
+                $vec::new(<$scalar>::MAX, <$scalar>::MAX).saturating_mul($vec::new(2, <$scalar>::MAX)),
+                $vec::new(<$scalar>::MAX, <$scalar>::MAX)
+            );
+        });
+
+        glam_test!(test_saturating_div, {
+            assert_eq!(
+                $vec::new(<$scalar>::MAX, <$scalar>::MAX).saturating_div($vec::new(2, <$scalar>::MAX)),
+                $vec::new(<$scalar>::MAX / 2, 1)
+            );
+        });
 
         #[cfg(feature = $paired_feature)]
         glam_test!(test_checked_add_signed, {
