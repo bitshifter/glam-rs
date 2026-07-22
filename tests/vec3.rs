@@ -2114,7 +2114,6 @@ macro_rules! impl_vec3_float_tests {
             impl_as_from_isizevec!(3);
             #[cfg(feature = "usize")]
             impl_as_from_usizevec!(3);
-
         });
     };
 }
