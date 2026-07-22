@@ -2170,28 +2170,32 @@ macro_rules! impl_vec4_wrapping_saturating_tests {
 
         glam_test!(test_saturating_add, {
             assert_eq!(
-                $vec::new(<$scalar>::MAX, <$scalar>::MIN, 0, 0).saturating_add($vec::new(1, -1, 0, 0)),
+                $vec::new(<$scalar>::MAX, <$scalar>::MIN, 0, 0)
+                    .saturating_add($vec::new(1, -1, 0, 0)),
                 $vec::new(<$scalar>::MAX, <$scalar>::MIN, 0, 0)
             );
         });
 
         glam_test!(test_saturating_sub, {
             assert_eq!(
-                $vec::new(<$scalar>::MIN, <$scalar>::MAX, 0, 0).saturating_sub($vec::new(1, -1, 0, 0)),
+                $vec::new(<$scalar>::MIN, <$scalar>::MAX, 0, 0)
+                    .saturating_sub($vec::new(1, -1, 0, 0)),
                 $vec::new(<$scalar>::MIN, <$scalar>::MAX, 0, 0)
             );
         });
 
         glam_test!(test_saturating_mul, {
             assert_eq!(
-                $vec::new(<$scalar>::MAX, <$scalar>::MIN, 0, 0).saturating_mul($vec::new(2, 2, 0, 0)),
+                $vec::new(<$scalar>::MAX, <$scalar>::MIN, 0, 0)
+                    .saturating_mul($vec::new(2, 2, 0, 0)),
                 $vec::new(<$scalar>::MAX, <$scalar>::MIN, 0, 0)
             );
         });
 
         glam_test!(test_saturating_div, {
             assert_eq!(
-                $vec::new(<$scalar>::MAX, <$scalar>::MIN, 0, 0).saturating_div($vec::new(2, 2, 3, 4)),
+                $vec::new(<$scalar>::MAX, <$scalar>::MIN, 0, 0)
+                    .saturating_div($vec::new(2, 2, 3, 4)),
                 $vec::new(<$scalar>::MAX / 2, <$scalar>::MIN / 2, 0, 0)
             );
         });
@@ -2296,28 +2300,44 @@ macro_rules! impl_vec4_wrapping_saturating_tests {
 
         glam_test!(test_saturating_add, {
             assert_eq!(
-                $vec::new(<$scalar>::MAX, <$scalar>::MAX, 0, 0).saturating_add($vec::new(1, <$scalar>::MAX, 0, 0)),
+                $vec::new(<$scalar>::MAX, <$scalar>::MAX, 0, 0).saturating_add($vec::new(
+                    1,
+                    <$scalar>::MAX,
+                    0,
+                    0
+                )),
                 $vec::new(<$scalar>::MAX, <$scalar>::MAX, 0, 0)
             );
         });
 
         glam_test!(test_saturating_sub, {
             assert_eq!(
-                $vec::new(<$scalar>::MIN, <$scalar>::MAX, 0, 0).saturating_sub($vec::new(1, 1, 0, 0)),
+                $vec::new(<$scalar>::MIN, <$scalar>::MAX, 0, 0)
+                    .saturating_sub($vec::new(1, 1, 0, 0)),
                 $vec::new(<$scalar>::MIN, <$scalar>::MAX - 1, 0, 0)
             );
         });
 
         glam_test!(test_saturating_mul, {
             assert_eq!(
-                $vec::new(<$scalar>::MAX, <$scalar>::MAX, 0, 0).saturating_mul($vec::new(2, <$scalar>::MAX, 0, 0)),
+                $vec::new(<$scalar>::MAX, <$scalar>::MAX, 0, 0).saturating_mul($vec::new(
+                    2,
+                    <$scalar>::MAX,
+                    0,
+                    0
+                )),
                 $vec::new(<$scalar>::MAX, <$scalar>::MAX, 0, 0)
             );
         });
 
         glam_test!(test_saturating_div, {
             assert_eq!(
-                $vec::new(<$scalar>::MAX, <$scalar>::MAX, 0, 0).saturating_div($vec::new(2, <$scalar>::MAX, 3, 4)),
+                $vec::new(<$scalar>::MAX, <$scalar>::MAX, 0, 0).saturating_div($vec::new(
+                    2,
+                    <$scalar>::MAX,
+                    3,
+                    4
+                )),
                 $vec::new(<$scalar>::MAX / 2, 1, 0, 0)
             );
         });
