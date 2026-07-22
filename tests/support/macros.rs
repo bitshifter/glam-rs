@@ -729,3 +729,48 @@ macro_rules! impl_try_from_pair_with_negmax_error {
         }
     };
 }
+
+/// try_from with MAX overflow error checks, conditional on target platform.
+/// Only expects overflow when `core::mem::size_of::<$cond_type>() > 4`.
+/// This handles isize/usize which are 32-bit on wasm32 and 64-bit on most other targets.
+macro_rules! impl_try_from_pair_with_sizeof_max_error {
+    ($feature:literal, $src:ident, $tgt:ident, $cond_type:ty, $max:path, 2) => {
+        #[cfg(feature = $feature)]
+        {
+            assert_eq!($src::new(1, 2), $src::try_from($tgt::new(1, 2)).unwrap());
+            if core::mem::size_of::<$cond_type>() > 4 {
+                assert!($src::try_from($tgt::new($max, 2)).is_err());
+                assert!($src::try_from($tgt::new(1, $max)).is_err());
+            }
+        }
+    };
+    ($feature:literal, $src:ident, $tgt:ident, $cond_type:ty, $max:path, 3) => {
+        #[cfg(feature = $feature)]
+        {
+            assert_eq!(
+                $src::new(1, 2, 3),
+                $src::try_from($tgt::new(1, 2, 3)).unwrap()
+            );
+            if core::mem::size_of::<$cond_type>() > 4 {
+                assert!($src::try_from($tgt::new($max, 2, 3)).is_err());
+                assert!($src::try_from($tgt::new(1, $max, 3)).is_err());
+                assert!($src::try_from($tgt::new(1, 2, $max)).is_err());
+            }
+        }
+    };
+    ($feature:literal, $src:ident, $tgt:ident, $cond_type:ty, $max:path, 4) => {
+        #[cfg(feature = $feature)]
+        {
+            assert_eq!(
+                $src::new(1, 2, 3, 4),
+                $src::try_from($tgt::new(1, 2, 3, 4)).unwrap()
+            );
+            if core::mem::size_of::<$cond_type>() > 4 {
+                assert!($src::try_from($tgt::new($max, 2, 3, 4)).is_err());
+                assert!($src::try_from($tgt::new(1, $max, 3, 4)).is_err());
+                assert!($src::try_from($tgt::new(1, 2, $max, 4)).is_err());
+                assert!($src::try_from($tgt::new(1, 2, 3, $max)).is_err());
+            }
+        }
+    };
+}
