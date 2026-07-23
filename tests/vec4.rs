@@ -1417,32 +1417,7 @@ macro_rules! impl_vec4_unsigned_integer_tests {
 #[allow(unused_macros)]
 macro_rules! impl_vec4_eq_hash_tests {
     ($t:ident, $new:ident) => {
-        glam_test!(test_vec4_hash, {
-            use std::collections::hash_map::DefaultHasher;
-            use std::hash::Hash;
-            use std::hash::Hasher;
-
-            let a = $new(1 as $t, 2 as $t, 3 as $t, 4 as $t);
-            let b = $new(1 as $t, 2 as $t, 3 as $t, 4 as $t);
-            let c = $new(3 as $t, 2 as $t, 1 as $t, 4 as $t);
-
-            let mut hasher = DefaultHasher::new();
-            a.hash(&mut hasher);
-            let a_hashed = hasher.finish();
-
-            let mut hasher = DefaultHasher::new();
-            b.hash(&mut hasher);
-            let b_hashed = hasher.finish();
-
-            let mut hasher = DefaultHasher::new();
-            c.hash(&mut hasher);
-            let c_hashed = hasher.finish();
-
-            assert_eq!(a, b);
-            assert_eq!(a_hashed, b_hashed);
-            assert_ne!(a, c);
-            assert_ne!(a_hashed, c_hashed);
-        });
+        impl_vec_eq_hash_tests!(test_vec4_hash, $t, $new, 1, 2, 3, 4 ; 3, 2, 1, 4);
     };
 }
 
@@ -1451,7 +1426,7 @@ macro_rules! impl_vec4_float_tests {
         impl_vec4_signed_tests!($t, $new, $vec4, $vec3, $vec2, $mask);
         impl_vec_float_normalize_tests!($t, $vec4);
 
-        glam_test!(test_vec4_nan, {
+        glam_test!(test_nan, {
             assert!($vec4::NAN.is_nan());
             assert!(!$vec4::NAN.is_finite());
         });
@@ -2113,150 +2088,18 @@ macro_rules! impl_vec4_float_tests {
 }
 
 #[allow(unused_macros)]
-macro_rules! impl_vec4_scalar_shift_op_test {
-    ($vec4:ident, $t_min:literal, $t_max:literal, $rhs_min:literal, $rhs_max:literal) => {
-        glam_test!(test_vec4_scalar_shift_ops, {
-            for x in $t_min..$t_max {
-                for y in $t_min..$t_max {
-                    for z in $t_min..$t_max {
-                        for w in $t_min..$t_max {
-                            for rhs in $rhs_min..$rhs_max {
-                                let lhs = $vec4::new(x, y, z, w);
-                                assert_eq!(
-                                    lhs << rhs,
-                                    $vec4::new(x << rhs, y << rhs, z << rhs, w << rhs)
-                                );
-                                assert_eq!(
-                                    lhs >> rhs,
-                                    $vec4::new(x >> rhs, y >> rhs, z >> rhs, w >> rhs)
-                                );
-
-                                assert_eq!(
-                                    &lhs << rhs,
-                                    $vec4::new(x << rhs, y << rhs, z << rhs, w << rhs)
-                                );
-                                assert_eq!(
-                                    &lhs >> rhs,
-                                    $vec4::new(x >> rhs, y >> rhs, z >> rhs, w >> rhs)
-                                );
-
-                                assert_eq!(
-                                    lhs << &rhs,
-                                    $vec4::new(x << rhs, y << rhs, z << rhs, w << rhs)
-                                );
-                                assert_eq!(
-                                    lhs >> &rhs,
-                                    $vec4::new(x >> rhs, y >> rhs, z >> rhs, w >> rhs)
-                                );
-
-                                assert_eq!(
-                                    &lhs << &rhs,
-                                    $vec4::new(x << rhs, y << rhs, z << rhs, w << rhs)
-                                );
-                                assert_eq!(
-                                    &lhs >> &rhs,
-                                    $vec4::new(x >> rhs, y >> rhs, z >> rhs, w >> rhs)
-                                );
-
-                                let mut a = lhs;
-                                a <<= rhs;
-                                assert_eq!(a, lhs << rhs);
-
-                                let mut a = lhs;
-                                a <<= &rhs;
-                                assert_eq!(a, lhs << rhs);
-
-                                let mut a = lhs;
-                                a >>= rhs;
-                                assert_eq!(a, lhs >> rhs);
-
-                                let mut a = lhs;
-                                a >>= &rhs;
-                                assert_eq!(a, lhs >> rhs);
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    };
-}
-
-#[allow(unused_macros)]
 macro_rules! impl_vec4_scalar_shift_op_tests {
     ($vec4:ident, $t_min:literal, $t_max:literal) => {
-        mod shift_by_i8 {
-            use glam::$vec4;
-            impl_vec4_scalar_shift_op_test!($vec4, $t_min, $t_max, 0i8, 2);
-        }
-        mod shift_by_i16 {
-            use glam::$vec4;
-            impl_vec4_scalar_shift_op_test!($vec4, $t_min, $t_max, 0i16, 2);
-        }
-        mod shift_by_i32 {
-            use glam::$vec4;
-            impl_vec4_scalar_shift_op_test!($vec4, $t_min, $t_max, 0i32, 2);
-        }
-        mod shift_by_i64 {
-            use glam::$vec4;
-            impl_vec4_scalar_shift_op_test!($vec4, $t_min, $t_max, 0i64, 2);
-        }
-        mod shift_by_u8 {
-            use glam::$vec4;
-            impl_vec4_scalar_shift_op_test!($vec4, $t_min, $t_max, 0u8, 2);
-        }
-        mod shift_by_u16 {
-            use glam::$vec4;
-            impl_vec4_scalar_shift_op_test!($vec4, $t_min, $t_max, 0u16, 2);
-        }
-        mod shift_by_u32 {
-            use glam::$vec4;
-            impl_vec4_scalar_shift_op_test!($vec4, $t_min, $t_max, 0u32, 2);
-        }
-        mod shift_by_u64 {
-            use glam::$vec4;
-            impl_vec4_scalar_shift_op_test!($vec4, $t_min, $t_max, 0u64, 2);
-        }
-    };
-}
-
-#[allow(unused_macros)]
-macro_rules! impl_vec4_shift_op_test {
-    ($vec4:ident, $rhs:ident, $t_min:literal, $t_max:literal) => {
-        glam_test!(test_vec4_shift_ops, {
-            for x1 in $t_min..$t_max {
-                for y1 in $t_min..$t_max {
-                    for z1 in $t_min..$t_max {
-                        for w1 in $t_min..$t_max {
-                            for x2 in $t_min..$t_max {
-                                for y2 in $t_min..$t_max {
-                                    for z2 in $t_min..$t_max {
-                                        for w2 in $t_min..$t_max {
-                                            let lhs = $vec4::new(x1, y1, z1, w1);
-                                            let rhs = $rhs::new(x2, y2, z2, w2);
-
-                                            let shl =
-                                                $vec4::new(x1 << x2, y1 << y2, z1 << z2, w1 << w2);
-                                            assert_eq!(lhs << rhs, shl);
-                                            assert_eq!(&lhs << rhs, shl);
-                                            assert_eq!(lhs << &rhs, shl);
-                                            assert_eq!(&lhs << &rhs, shl);
-
-                                            let shr =
-                                                $vec4::new(x1 >> x2, y1 >> y2, z1 >> z2, w1 >> w2);
-                                            assert_eq!(lhs >> rhs, shr);
-                                            assert_eq!(&lhs >> rhs, shr);
-                                            assert_eq!(lhs >> &rhs, shr);
-                                            assert_eq!(&lhs >> &rhs, shr);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        });
+        impl_vec_scalar_shift_op_test!(
+            test_vec4_scalar_shift_ops,
+            $vec4,
+            $t_min,
+            $t_max,
+            x,
+            y,
+            z,
+            w
+        );
     };
 }
 
@@ -2266,12 +2109,12 @@ macro_rules! impl_vec4_shift_op_tests {
         #[cfg(feature = "i32")]
         mod shift_ivec4_by_ivec4 {
             use super::*;
-            impl_vec4_shift_op_test!($vec4, IVec4, 0, 2);
+            impl_vec_shift_op_test!(test_vec4_shift_ops, $vec4, IVec4, 0, 2, x1, y1, z1, w1 ; x2, y2, z2, w2);
         }
         #[cfg(feature = "u32")]
         mod shift_ivec4_by_uvec4 {
             use super::*;
-            impl_vec4_shift_op_test!($vec4, UVec4, 0, 2);
+            impl_vec_shift_op_test!(test_vec4_shift_ops, $vec4, UVec4, 0, 2, x1, y1, z1, w1 ; x2, y2, z2, w2);
         }
     };
 }
@@ -2279,198 +2122,14 @@ macro_rules! impl_vec4_shift_op_tests {
 #[allow(unused_macros)]
 macro_rules! impl_vec4_scalar_bit_op_tests {
     ($vec4:ident, $t_min:literal, $t_max:literal) => {
-        glam_test!(test_vec4_scalar_bit_ops, {
-            for x in $t_min..$t_max {
-                for y in $t_min..$t_max {
-                    for z in $t_min..$t_max {
-                        for w in $t_min..$t_max {
-                            for rhs in $t_min..$t_max {
-                                let lhs = $vec4::new(x, y, z, w);
-                                assert_eq!(
-                                    lhs & rhs,
-                                    $vec4::new(x & rhs, y & rhs, z & rhs, w & rhs)
-                                );
-                                assert_eq!(
-                                    lhs | rhs,
-                                    $vec4::new(x | rhs, y | rhs, z | rhs, w | rhs)
-                                );
-                                assert_eq!(
-                                    lhs ^ rhs,
-                                    $vec4::new(x ^ rhs, y ^ rhs, z ^ rhs, w ^ rhs)
-                                );
-
-                                assert_eq!(
-                                    &lhs & rhs,
-                                    $vec4::new(x & rhs, y & rhs, z & rhs, w & rhs)
-                                );
-                                assert_eq!(
-                                    &lhs | rhs,
-                                    $vec4::new(x | rhs, y | rhs, z | rhs, w | rhs)
-                                );
-                                assert_eq!(
-                                    &lhs ^ rhs,
-                                    $vec4::new(x ^ rhs, y ^ rhs, z ^ rhs, w ^ rhs)
-                                );
-
-                                assert_eq!(
-                                    lhs & &rhs,
-                                    $vec4::new(x & rhs, y & rhs, z & rhs, w & rhs)
-                                );
-                                assert_eq!(
-                                    lhs | &rhs,
-                                    $vec4::new(x | rhs, y | rhs, z | rhs, w | rhs)
-                                );
-                                assert_eq!(
-                                    lhs ^ &rhs,
-                                    $vec4::new(x ^ rhs, y ^ rhs, z ^ rhs, w ^ rhs)
-                                );
-
-                                assert_eq!(
-                                    &lhs & &rhs,
-                                    $vec4::new(x & rhs, y & rhs, z & rhs, w & rhs)
-                                );
-                                assert_eq!(
-                                    &lhs | &rhs,
-                                    $vec4::new(x | rhs, y | rhs, z | rhs, w | rhs)
-                                );
-                                assert_eq!(
-                                    &lhs ^ &rhs,
-                                    $vec4::new(x ^ rhs, y ^ rhs, z ^ rhs, w ^ rhs)
-                                );
-
-                                let mut a = lhs;
-                                a &= rhs;
-                                assert_eq!(a, lhs & rhs);
-
-                                let mut a = lhs;
-                                a &= &rhs;
-                                assert_eq!(a, lhs & rhs);
-
-                                let mut a = lhs;
-                                a |= rhs;
-                                assert_eq!(a, lhs | rhs);
-
-                                let mut a = lhs;
-                                a |= &rhs;
-                                assert_eq!(a, lhs | rhs);
-
-                                let mut a = lhs;
-                                a ^= rhs;
-                                assert_eq!(a, lhs ^ rhs);
-
-                                let mut a = lhs;
-                                a ^= &rhs;
-                                assert_eq!(a, lhs ^ rhs);
-                            }
-                        }
-                    }
-                }
-            }
-        });
+        impl_vec_scalar_bit_op_tests!(test_vec4_scalar_bit_ops, $vec4, $t_min, $t_max, x, y, z, w);
     };
 }
 
 #[allow(unused_macros)]
 macro_rules! impl_vec4_bit_op_tests {
     ($vec4:ident, $t_min:literal, $t_max:literal) => {
-        glam_test!(test_vec4_bit_ops, {
-            for x1 in $t_min..$t_max {
-                for y1 in $t_min..$t_max {
-                    for z1 in $t_min..$t_max {
-                        for w1 in $t_min..$t_max {
-                            let lhs = $vec4::new(x1, y1, z1, w1);
-                            assert_eq!(!lhs, $vec4::new(!x1, !y1, !z1, !w1));
-                            assert_eq!(!&lhs, $vec4::new(!x1, !y1, !z1, !w1));
-
-                            for x2 in $t_min..$t_max {
-                                for y2 in $t_min..$t_max {
-                                    for z2 in $t_min..$t_max {
-                                        for w2 in $t_min..$t_max {
-                                            let rhs = $vec4::new(x2, y2, z2, w2);
-                                            assert_eq!(
-                                                lhs & rhs,
-                                                $vec4::new(x1 & x2, y1 & y2, z1 & z2, w1 & w2)
-                                            );
-                                            assert_eq!(
-                                                lhs | rhs,
-                                                $vec4::new(x1 | x2, y1 | y2, z1 | z2, w1 | w2)
-                                            );
-                                            assert_eq!(
-                                                lhs ^ rhs,
-                                                $vec4::new(x1 ^ x2, y1 ^ y2, z1 ^ z2, w1 ^ w2)
-                                            );
-
-                                            assert_eq!(
-                                                &lhs & rhs,
-                                                $vec4::new(x1 & x2, y1 & y2, z1 & z2, w1 & w2)
-                                            );
-                                            assert_eq!(
-                                                &lhs | rhs,
-                                                $vec4::new(x1 | x2, y1 | y2, z1 | z2, w1 | w2)
-                                            );
-                                            assert_eq!(
-                                                &lhs ^ rhs,
-                                                $vec4::new(x1 ^ x2, y1 ^ y2, z1 ^ z2, w1 ^ w2)
-                                            );
-
-                                            assert_eq!(
-                                                lhs & &rhs,
-                                                $vec4::new(x1 & x2, y1 & y2, z1 & z2, w1 & w2)
-                                            );
-                                            assert_eq!(
-                                                lhs | &rhs,
-                                                $vec4::new(x1 | x2, y1 | y2, z1 | z2, w1 | w2)
-                                            );
-                                            assert_eq!(
-                                                lhs ^ &rhs,
-                                                $vec4::new(x1 ^ x2, y1 ^ y2, z1 ^ z2, w1 ^ w2)
-                                            );
-
-                                            assert_eq!(
-                                                &lhs & &rhs,
-                                                $vec4::new(x1 & x2, y1 & y2, z1 & z2, w1 & w2)
-                                            );
-                                            assert_eq!(
-                                                &lhs | &rhs,
-                                                $vec4::new(x1 | x2, y1 | y2, z1 | z2, w1 | w2)
-                                            );
-                                            assert_eq!(
-                                                &lhs ^ &rhs,
-                                                $vec4::new(x1 ^ x2, y1 ^ y2, z1 ^ z2, w1 ^ w2)
-                                            );
-
-                                            let mut a = lhs;
-                                            a &= rhs;
-                                            assert_eq!(a, lhs & rhs);
-
-                                            let mut a = lhs;
-                                            a &= &rhs;
-                                            assert_eq!(a, lhs & rhs);
-
-                                            let mut a = lhs;
-                                            a |= rhs;
-                                            assert_eq!(a, lhs | rhs);
-
-                                            let mut a = lhs;
-                                            a |= &rhs;
-                                            assert_eq!(a, lhs | rhs);
-
-                                            let mut a = lhs;
-                                            a ^= rhs;
-                                            assert_eq!(a, lhs ^ rhs);
-
-                                            let mut a = lhs;
-                                            a ^= &rhs;
-                                            assert_eq!(a, lhs ^ rhs);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        });
+        impl_vec_bit_op_tests!(test_vec4_bit_ops, $vec4, $t_min, $t_max, x1, y1, z1, w1 ; x2, y2, z2, w2);
     };
 }
 
@@ -2515,6 +2174,55 @@ mod vec4 {
         }
     });
 
+    glam_test!(test_as, {
+        #[cfg(feature = "f64")]
+        use glam::DVec4;
+        #[cfg(feature = "i16")]
+        use glam::I16Vec4;
+        #[cfg(feature = "i64")]
+        use glam::I64Vec4;
+        #[cfg(feature = "i8")]
+        use glam::I8Vec4;
+        #[cfg(feature = "isize")]
+        use glam::ISizeVec4;
+        #[cfg(feature = "i32")]
+        use glam::IVec4;
+        #[cfg(feature = "u16")]
+        use glam::U16Vec4;
+        #[cfg(feature = "u64")]
+        use glam::U64Vec4;
+        #[cfg(feature = "u8")]
+        use glam::U8Vec4;
+        #[cfg(feature = "usize")]
+        use glam::USizeVec4;
+        #[cfg(feature = "u32")]
+        use glam::UVec4;
+
+        impl_as_from_vec!(4);
+        #[cfg(feature = "f64")]
+        impl_as_from_dvec!(4);
+        #[cfg(feature = "i8")]
+        impl_as_from_i8vec!(4);
+        #[cfg(feature = "u8")]
+        impl_as_from_u8vec!(4);
+        #[cfg(feature = "i16")]
+        impl_as_from_i16vec!(4);
+        #[cfg(feature = "u16")]
+        impl_as_from_u16vec!(4);
+        #[cfg(feature = "i32")]
+        impl_as_from_ivec!(4);
+        #[cfg(feature = "u32")]
+        impl_as_from_uvec!(4);
+        #[cfg(feature = "i64")]
+        impl_as_from_i64vec!(4);
+        #[cfg(feature = "u64")]
+        impl_as_from_u64vec!(4);
+        #[cfg(feature = "isize")]
+        impl_as_from_isizevec!(4);
+        #[cfg(feature = "usize")]
+        impl_as_from_usizevec!(4);
+    });
+
     #[cfg(all(
         target_feature = "sse2",
         not(any(feature = "core-simd", feature = "scalar-math"))
@@ -2550,678 +2258,6 @@ mod vec4 {
         }
         assert_eq!([0xffffffff, 0, 0xffffffff, 0], a0.0);
     }
-
-    glam_test!(test_as, {
-        #[cfg(feature = "f64")]
-        use glam::DVec4;
-        #[cfg(feature = "i16")]
-        use glam::I16Vec4;
-        #[cfg(feature = "i64")]
-        use glam::I64Vec4;
-        #[cfg(feature = "i8")]
-        use glam::I8Vec4;
-        #[cfg(feature = "isize")]
-        use glam::ISizeVec4;
-        #[cfg(feature = "i32")]
-        use glam::IVec4;
-        #[cfg(feature = "u16")]
-        use glam::U16Vec4;
-        #[cfg(feature = "u64")]
-        use glam::U64Vec4;
-        #[cfg(feature = "u8")]
-        use glam::U8Vec4;
-        #[cfg(feature = "usize")]
-        use glam::USizeVec4;
-        #[cfg(feature = "u32")]
-        use glam::UVec4;
-
-        #[cfg(feature = "f64")]
-        assert_eq!(
-            DVec4::new(-1.0, -2.0, -3.0, -4.0),
-            Vec4::new(-1.0, -2.0, -3.0, -4.0).as_dvec4()
-        );
-        #[cfg(feature = "i8")]
-        assert_eq!(
-            I8Vec4::new(-1, -2, -3, -4),
-            Vec4::new(-1.0, -2.0, -3.0, -4.0).as_i8vec4()
-        );
-        #[cfg(feature = "u8")]
-        assert_eq!(
-            U8Vec4::new(1, 2, 3, 4),
-            Vec4::new(1.0, 2.0, 3.0, 4.0).as_u8vec4()
-        );
-        #[cfg(feature = "i16")]
-        assert_eq!(
-            I16Vec4::new(-1, -2, -3, -4),
-            Vec4::new(-1.0, -2.0, -3.0, -4.0).as_i16vec4()
-        );
-        #[cfg(feature = "u16")]
-        assert_eq!(
-            U16Vec4::new(1, 2, 3, 4),
-            Vec4::new(1.0, 2.0, 3.0, 4.0).as_u16vec4()
-        );
-        #[cfg(feature = "i32")]
-        assert_eq!(
-            IVec4::new(-1, -2, -3, -4),
-            Vec4::new(-1.0, -2.0, -3.0, -4.0).as_ivec4()
-        );
-        #[cfg(feature = "u32")]
-        assert_eq!(
-            UVec4::new(1, 2, 3, 4),
-            Vec4::new(1.0, 2.0, 3.0, 4.0).as_uvec4()
-        );
-        #[cfg(feature = "i64")]
-        assert_eq!(
-            I64Vec4::new(-1, -2, -3, -4),
-            Vec4::new(-1.0, -2.0, -3.0, -4.0).as_i64vec4()
-        );
-        #[cfg(feature = "u64")]
-        assert_eq!(
-            U64Vec4::new(1, 2, 3, 4),
-            Vec4::new(1.0, 2.0, 3.0, 4.0).as_u64vec4()
-        );
-        #[cfg(feature = "isize")]
-        assert_eq!(
-            ISizeVec4::new(-1, -2, -3, -4),
-            Vec4::new(-1.0, -2.0, -3.0, -4.0).as_isizevec4()
-        );
-        #[cfg(feature = "usize")]
-        assert_eq!(
-            USizeVec4::new(1, 2, 3, 4),
-            Vec4::new(1.0, 2.0, 3.0, 4.0).as_usizevec4()
-        );
-
-        #[cfg(feature = "f64")]
-        {
-            assert_eq!(
-                Vec4::new(-1.0, -2.0, -3.0, -4.0),
-                DVec4::new(-1.0, -2.0, -3.0, -4.0).as_vec4()
-            );
-            #[cfg(feature = "i8")]
-            assert_eq!(
-                I8Vec4::new(-1, -2, -3, -4),
-                DVec4::new(-1.0, -2.0, -3.0, -4.0).as_i8vec4()
-            );
-            #[cfg(feature = "u8")]
-            assert_eq!(
-                U8Vec4::new(1, 2, 3, 4),
-                DVec4::new(1.0, 2.0, 3.0, 4.0).as_u8vec4()
-            );
-            #[cfg(feature = "i16")]
-            assert_eq!(
-                I16Vec4::new(-1, -2, -3, -4),
-                DVec4::new(-1.0, -2.0, -3.0, -4.0).as_i16vec4()
-            );
-            #[cfg(feature = "u16")]
-            assert_eq!(
-                U16Vec4::new(1, 2, 3, 4),
-                DVec4::new(1.0, 2.0, 3.0, 4.0).as_u16vec4()
-            );
-            #[cfg(feature = "i32")]
-            assert_eq!(
-                IVec4::new(-1, -2, -3, -4),
-                DVec4::new(-1.0, -2.0, -3.0, -4.0).as_ivec4()
-            );
-            #[cfg(feature = "u32")]
-            assert_eq!(
-                UVec4::new(1, 2, 3, 4),
-                DVec4::new(1.0, 2.0, 3.0, 4.0).as_uvec4()
-            );
-            #[cfg(feature = "i64")]
-            assert_eq!(
-                I64Vec4::new(-1, -2, -3, -4),
-                DVec4::new(-1.0, -2.0, -3.0, -4.0).as_i64vec4()
-            );
-            #[cfg(feature = "u64")]
-            assert_eq!(
-                U64Vec4::new(1, 2, 3, 4),
-                DVec4::new(1.0, 2.0, 3.0, 4.0).as_u64vec4()
-            );
-            #[cfg(feature = "isize")]
-            assert_eq!(
-                ISizeVec4::new(-1, -2, -3, -4),
-                DVec4::new(-1.0, -2.0, -3.0, -4.0).as_isizevec4()
-            );
-            #[cfg(feature = "usize")]
-            assert_eq!(
-                USizeVec4::new(1, 2, 3, 4),
-                DVec4::new(1.0, 2.0, 3.0, 4.0).as_usizevec4()
-            );
-        }
-
-        #[cfg(feature = "i8")]
-        {
-            #[cfg(feature = "i8")]
-            assert_eq!(
-                Vec4::new(-1.0, -2.0, -3.0, -4.0),
-                I8Vec4::new(-1, -2, -3, -4).as_vec4()
-            );
-            #[cfg(feature = "f64")]
-            assert_eq!(
-                DVec4::new(-1.0, -2.0, -3.0, -4.0),
-                I8Vec4::new(-1, -2, -3, -4).as_dvec4()
-            );
-            #[cfg(feature = "u8")]
-            assert_eq!(U8Vec4::new(1, 2, 3, 4), I8Vec4::new(1, 2, 3, 4).as_u8vec4());
-            #[cfg(feature = "i16")]
-            assert_eq!(
-                I16Vec4::new(-1, -2, -3, -4),
-                I8Vec4::new(-1, -2, -3, -4).as_i16vec4()
-            );
-            #[cfg(feature = "u16")]
-            assert_eq!(
-                U16Vec4::new(1, 2, 3, 4),
-                I8Vec4::new(1, 2, 3, 4).as_u16vec4()
-            );
-            #[cfg(feature = "i32")]
-            assert_eq!(
-                IVec4::new(-1, -2, -3, -4),
-                I8Vec4::new(-1, -2, -3, -4).as_ivec4()
-            );
-            #[cfg(feature = "u32")]
-            assert_eq!(UVec4::new(1, 2, 3, 4), I8Vec4::new(1, 2, 3, 4).as_uvec4());
-            #[cfg(feature = "i64")]
-            assert_eq!(
-                I64Vec4::new(-1, -2, -3, -4),
-                I8Vec4::new(-1, -2, -3, -4).as_i64vec4()
-            );
-            #[cfg(feature = "u64")]
-            assert_eq!(
-                U64Vec4::new(1, 2, 3, 4),
-                I8Vec4::new(1, 2, 3, 4).as_u64vec4()
-            );
-            #[cfg(feature = "isize")]
-            assert_eq!(
-                ISizeVec4::new(-1, -2, -3, -4),
-                I8Vec4::new(-1, -2, -3, -4).as_isizevec4()
-            );
-            #[cfg(feature = "usize")]
-            assert_eq!(
-                USizeVec4::new(1, 2, 3, 4),
-                I8Vec4::new(1, 2, 3, 4).as_usizevec4()
-            );
-        }
-
-        #[cfg(feature = "u8")]
-        {
-            assert_eq!(
-                Vec4::new(1.0, 2.0, 3.0, 4.0),
-                U8Vec4::new(1, 2, 3, 4).as_vec4()
-            );
-            #[cfg(feature = "f64")]
-            assert_eq!(
-                DVec4::new(1.0, 2.0, 3.0, 4.0),
-                U8Vec4::new(1, 2, 3, 4).as_dvec4()
-            );
-            #[cfg(feature = "i8")]
-            assert_eq!(I8Vec4::new(1, 2, 3, 4), U8Vec4::new(1, 2, 3, 4).as_i8vec4());
-            #[cfg(feature = "i16")]
-            assert_eq!(
-                I16Vec4::new(1, 2, 3, 4),
-                U8Vec4::new(1, 2, 3, 4).as_i16vec4()
-            );
-            #[cfg(feature = "u16")]
-            assert_eq!(
-                U16Vec4::new(1, 2, 3, 4),
-                U8Vec4::new(1, 2, 3, 4).as_u16vec4()
-            );
-            #[cfg(feature = "i32")]
-            assert_eq!(IVec4::new(1, 2, 3, 4), U8Vec4::new(1, 2, 3, 4).as_ivec4());
-            #[cfg(feature = "u32")]
-            assert_eq!(UVec4::new(1, 2, 3, 4), U8Vec4::new(1, 2, 3, 4).as_uvec4());
-            #[cfg(feature = "i64")]
-            assert_eq!(
-                I64Vec4::new(1, 2, 3, 4),
-                U8Vec4::new(1, 2, 3, 4).as_i64vec4()
-            );
-            #[cfg(feature = "u64")]
-            assert_eq!(
-                U64Vec4::new(1, 2, 3, 4),
-                U8Vec4::new(1, 2, 3, 4).as_u64vec4()
-            );
-            #[cfg(feature = "isize")]
-            assert_eq!(
-                ISizeVec4::new(1, 2, 3, 4),
-                U8Vec4::new(1, 2, 3, 4).as_isizevec4()
-            );
-            #[cfg(feature = "usize")]
-            assert_eq!(
-                USizeVec4::new(1, 2, 3, 4),
-                U8Vec4::new(1, 2, 3, 4).as_usizevec4()
-            );
-        }
-
-        #[cfg(feature = "i16")]
-        {
-            assert_eq!(
-                Vec4::new(-1.0, -2.0, -3.0, -4.0),
-                I16Vec4::new(-1, -2, -3, -4).as_vec4()
-            );
-            #[cfg(feature = "f64")]
-            assert_eq!(
-                DVec4::new(-1.0, -2.0, -3.0, -4.0),
-                I16Vec4::new(-1, -2, -3, -4).as_dvec4()
-            );
-            #[cfg(feature = "i8")]
-            assert_eq!(
-                I8Vec4::new(-1, -2, -3, -4),
-                I16Vec4::new(-1, -2, -3, -4).as_i8vec4()
-            );
-            #[cfg(feature = "u8")]
-            assert_eq!(
-                U8Vec4::new(1, 2, 3, 4),
-                I16Vec4::new(1, 2, 3, 4).as_u8vec4()
-            );
-            #[cfg(feature = "u16")]
-            assert_eq!(
-                U16Vec4::new(1, 2, 3, 4),
-                I16Vec4::new(1, 2, 3, 4).as_u16vec4()
-            );
-            #[cfg(feature = "i32")]
-            assert_eq!(
-                IVec4::new(-1, -2, -3, -4),
-                I16Vec4::new(-1, -2, -3, -4).as_ivec4()
-            );
-            #[cfg(feature = "u32")]
-            assert_eq!(UVec4::new(1, 2, 3, 4), I16Vec4::new(1, 2, 3, 4).as_uvec4());
-            #[cfg(feature = "i64")]
-            assert_eq!(
-                I64Vec4::new(-1, -2, -3, -4),
-                I16Vec4::new(-1, -2, -3, -4).as_i64vec4()
-            );
-            #[cfg(feature = "u64")]
-            assert_eq!(
-                U64Vec4::new(1, 2, 3, 4),
-                I16Vec4::new(1, 2, 3, 4).as_u64vec4()
-            );
-            #[cfg(feature = "isize")]
-            assert_eq!(
-                ISizeVec4::new(-1, -2, -3, -4),
-                I16Vec4::new(-1, -2, -3, -4).as_isizevec4()
-            );
-            #[cfg(feature = "usize")]
-            assert_eq!(
-                USizeVec4::new(1, 2, 3, 4),
-                I16Vec4::new(1, 2, 3, 4).as_usizevec4()
-            );
-        }
-
-        #[cfg(feature = "u16")]
-        {
-            assert_eq!(
-                Vec4::new(1.0, 2.0, 3.0, 4.0),
-                U16Vec4::new(1, 2, 3, 4).as_vec4()
-            );
-            #[cfg(feature = "f64")]
-            assert_eq!(
-                DVec4::new(1.0, 2.0, 3.0, 4.0),
-                U16Vec4::new(1, 2, 3, 4).as_dvec4()
-            );
-            #[cfg(feature = "i8")]
-            assert_eq!(
-                I8Vec4::new(1, 2, 3, 4),
-                U16Vec4::new(1, 2, 3, 4).as_i8vec4()
-            );
-            #[cfg(feature = "u8")]
-            assert_eq!(
-                U8Vec4::new(1, 2, 3, 4),
-                U16Vec4::new(1, 2, 3, 4).as_u8vec4()
-            );
-            #[cfg(feature = "i16")]
-            assert_eq!(
-                I16Vec4::new(1, 2, 3, 4),
-                U16Vec4::new(1, 2, 3, 4).as_i16vec4()
-            );
-            #[cfg(feature = "i32")]
-            assert_eq!(IVec4::new(1, 2, 3, 4), U16Vec4::new(1, 2, 3, 4).as_ivec4());
-            #[cfg(feature = "u32")]
-            assert_eq!(UVec4::new(1, 2, 3, 4), U16Vec4::new(1, 2, 3, 4).as_uvec4());
-            #[cfg(feature = "i64")]
-            assert_eq!(
-                I64Vec4::new(1, 2, 3, 4),
-                U16Vec4::new(1, 2, 3, 4).as_i64vec4()
-            );
-            #[cfg(feature = "u64")]
-            assert_eq!(
-                U64Vec4::new(1, 2, 3, 4),
-                U16Vec4::new(1, 2, 3, 4).as_u64vec4()
-            );
-            #[cfg(feature = "isize")]
-            assert_eq!(
-                ISizeVec4::new(1, 2, 3, 4),
-                U16Vec4::new(1, 2, 3, 4).as_isizevec4()
-            );
-            #[cfg(feature = "usize")]
-            assert_eq!(
-                USizeVec4::new(1, 2, 3, 4),
-                U16Vec4::new(1, 2, 3, 4).as_usizevec4()
-            );
-        }
-
-        #[cfg(feature = "i32")]
-        {
-            assert_eq!(
-                Vec4::new(-1.0, -2.0, -3.0, -4.0),
-                IVec4::new(-1, -2, -3, -4).as_vec4()
-            );
-            #[cfg(feature = "f64")]
-            assert_eq!(
-                DVec4::new(-1.0, -2.0, -3.0, -4.0),
-                IVec4::new(-1, -2, -3, -4).as_dvec4()
-            );
-            #[cfg(feature = "i8")]
-            assert_eq!(
-                I8Vec4::new(-1, -2, -3, -4),
-                IVec4::new(-1, -2, -3, -4).as_i8vec4()
-            );
-            #[cfg(feature = "u8")]
-            assert_eq!(U8Vec4::new(1, 2, 3, 4), IVec4::new(1, 2, 3, 4).as_u8vec4());
-            #[cfg(feature = "u32")]
-            assert_eq!(UVec4::new(1, 2, 3, 4), IVec4::new(1, 2, 3, 4).as_uvec4());
-            #[cfg(feature = "i16")]
-            assert_eq!(
-                I16Vec4::new(-1, -2, -3, -4),
-                IVec4::new(-1, -2, -3, -4).as_i16vec4()
-            );
-            #[cfg(feature = "u16")]
-            assert_eq!(
-                U16Vec4::new(1, 2, 3, 4),
-                IVec4::new(1, 2, 3, 4).as_u16vec4()
-            );
-            #[cfg(feature = "i64")]
-            assert_eq!(
-                I64Vec4::new(-1, -2, -3, -4),
-                IVec4::new(-1, -2, -3, -4).as_i64vec4()
-            );
-            #[cfg(feature = "u64")]
-            assert_eq!(
-                U64Vec4::new(1, 2, 3, 4),
-                IVec4::new(1, 2, 3, 4).as_u64vec4()
-            );
-            #[cfg(feature = "isize")]
-            assert_eq!(
-                ISizeVec4::new(-1, -2, -3, -4),
-                IVec4::new(-1, -2, -3, -4).as_isizevec4()
-            );
-            #[cfg(feature = "usize")]
-            assert_eq!(
-                USizeVec4::new(1, 2, 3, 4),
-                IVec4::new(1, 2, 3, 4).as_usizevec4()
-            );
-        }
-
-        #[cfg(feature = "u32")]
-        {
-            assert_eq!(
-                Vec4::new(1.0, 2.0, 3.0, 4.0),
-                UVec4::new(1, 2, 3, 4).as_vec4()
-            );
-            #[cfg(feature = "f64")]
-            assert_eq!(
-                DVec4::new(1.0, 2.0, 3.0, 4.0),
-                UVec4::new(1, 2, 3, 4).as_dvec4()
-            );
-            #[cfg(feature = "i8")]
-            assert_eq!(I8Vec4::new(1, 2, 3, 4), UVec4::new(1, 2, 3, 4).as_i8vec4());
-            #[cfg(feature = "u8")]
-            assert_eq!(U8Vec4::new(1, 2, 3, 4), UVec4::new(1, 2, 3, 4).as_u8vec4());
-            #[cfg(feature = "i16")]
-            assert_eq!(
-                I16Vec4::new(1, 2, 3, 4),
-                UVec4::new(1, 2, 3, 4).as_i16vec4()
-            );
-            #[cfg(feature = "u16")]
-            assert_eq!(
-                U16Vec4::new(1, 2, 3, 4),
-                UVec4::new(1, 2, 3, 4).as_u16vec4()
-            );
-            #[cfg(feature = "i32")]
-            assert_eq!(IVec4::new(1, 2, 3, 4), UVec4::new(1, 2, 3, 4).as_ivec4());
-            #[cfg(feature = "i64")]
-            assert_eq!(
-                I64Vec4::new(1, 2, 3, 4),
-                UVec4::new(1, 2, 3, 4).as_i64vec4()
-            );
-            #[cfg(feature = "u64")]
-            assert_eq!(
-                U64Vec4::new(1, 2, 3, 4),
-                UVec4::new(1, 2, 3, 4).as_u64vec4()
-            );
-            #[cfg(feature = "isize")]
-            assert_eq!(
-                ISizeVec4::new(1, 2, 3, 4),
-                UVec4::new(1, 2, 3, 4).as_isizevec4()
-            );
-            #[cfg(feature = "usize")]
-            assert_eq!(
-                USizeVec4::new(1, 2, 3, 4),
-                UVec4::new(1, 2, 3, 4).as_usizevec4()
-            );
-        }
-
-        #[cfg(feature = "i64")]
-        {
-            assert_eq!(
-                Vec4::new(-1.0, -2.0, -3.0, -4.0),
-                I64Vec4::new(-1, -2, -3, -4).as_vec4()
-            );
-            #[cfg(feature = "f64")]
-            assert_eq!(
-                DVec4::new(-1.0, -2.0, -3.0, -4.0),
-                I64Vec4::new(-1, -2, -3, -4).as_dvec4()
-            );
-            #[cfg(feature = "u8")]
-            assert_eq!(
-                U8Vec4::new(1, 2, 3, 4),
-                I64Vec4::new(1, 2, 3, 4).as_u8vec4()
-            );
-            #[cfg(feature = "i8")]
-            assert_eq!(
-                I8Vec4::new(-1, -2, -3, -4),
-                I64Vec4::new(-1, -2, -3, -4).as_i8vec4()
-            );
-            #[cfg(feature = "u16")]
-            assert_eq!(
-                U16Vec4::new(1, 2, 3, 4),
-                I64Vec4::new(1, 2, 3, 4).as_u16vec4()
-            );
-            #[cfg(feature = "i16")]
-            assert_eq!(
-                I16Vec4::new(-1, -2, -3, -4),
-                I64Vec4::new(-1, -2, -3, -4).as_i16vec4()
-            );
-            #[cfg(feature = "u32")]
-            assert_eq!(UVec4::new(1, 2, 3, 4), I64Vec4::new(1, 2, 3, 4).as_uvec4());
-            #[cfg(feature = "i32")]
-            assert_eq!(
-                IVec4::new(-1, -2, -3, -4),
-                I64Vec4::new(-1, -2, -3, -4).as_ivec4()
-            );
-            #[cfg(feature = "u64")]
-            assert_eq!(
-                U64Vec4::new(1, 2, 3, 4),
-                I64Vec4::new(1, 2, 3, 4).as_u64vec4()
-            );
-            #[cfg(feature = "isize")]
-            assert_eq!(
-                ISizeVec4::new(-1, -2, -3, -4),
-                I64Vec4::new(-1, -2, -3, -4).as_isizevec4()
-            );
-            #[cfg(feature = "usize")]
-            assert_eq!(
-                USizeVec4::new(1, 2, 3, 4),
-                I64Vec4::new(1, 2, 3, 4).as_usizevec4()
-            );
-        }
-
-        #[cfg(feature = "isize")]
-        {
-            assert_eq!(
-                Vec4::new(-1.0, -2.0, -3.0, -4.0),
-                ISizeVec4::new(-1, -2, -3, -4).as_vec4()
-            );
-            #[cfg(feature = "f64")]
-            assert_eq!(
-                DVec4::new(-1.0, -2.0, -3.0, -4.0),
-                ISizeVec4::new(-1, -2, -3, -4).as_dvec4()
-            );
-            #[cfg(feature = "u8")]
-            assert_eq!(
-                U8Vec4::new(1, 2, 3, 4),
-                ISizeVec4::new(1, 2, 3, 4).as_u8vec4()
-            );
-            #[cfg(feature = "i8")]
-            assert_eq!(
-                I8Vec4::new(-1, -2, -3, -4),
-                ISizeVec4::new(-1, -2, -3, -4).as_i8vec4()
-            );
-            #[cfg(feature = "u16")]
-            assert_eq!(
-                U16Vec4::new(1, 2, 3, 4),
-                ISizeVec4::new(1, 2, 3, 4).as_u16vec4()
-            );
-            #[cfg(feature = "i16")]
-            assert_eq!(
-                I16Vec4::new(-1, -2, -3, -4),
-                ISizeVec4::new(-1, -2, -3, -4).as_i16vec4()
-            );
-            #[cfg(feature = "u32")]
-            assert_eq!(
-                UVec4::new(1, 2, 3, 4),
-                ISizeVec4::new(1, 2, 3, 4).as_uvec4()
-            );
-            #[cfg(feature = "i32")]
-            assert_eq!(
-                IVec4::new(-1, -2, -3, -4),
-                ISizeVec4::new(-1, -2, -3, -4).as_ivec4()
-            );
-            #[cfg(feature = "i64")]
-            assert_eq!(
-                I64Vec4::new(-1, -2, -3, -4),
-                ISizeVec4::new(-1, -2, -3, -4).as_i64vec4()
-            );
-            #[cfg(feature = "u64")]
-            assert_eq!(
-                U64Vec4::new(1, 2, 3, 4),
-                ISizeVec4::new(1, 2, 3, 4).as_u64vec4()
-            );
-            #[cfg(feature = "usize")]
-            assert_eq!(
-                USizeVec4::new(1, 2, 3, 4),
-                ISizeVec4::new(1, 2, 3, 4).as_usizevec4()
-            );
-        }
-
-        #[cfg(feature = "u64")]
-        {
-            assert_eq!(
-                Vec4::new(1.0, 2.0, 3.0, 4.0),
-                U64Vec4::new(1, 2, 3, 4).as_vec4()
-            );
-            #[cfg(feature = "f64")]
-            assert_eq!(
-                DVec4::new(1.0, 2.0, 3.0, 4.0),
-                U64Vec4::new(1, 2, 3, 4).as_dvec4()
-            );
-            #[cfg(feature = "i8")]
-            assert_eq!(
-                I8Vec4::new(1, 2, 3, 4),
-                U64Vec4::new(1, 2, 3, 4).as_i8vec4()
-            );
-            #[cfg(feature = "u8")]
-            assert_eq!(
-                U8Vec4::new(1, 2, 3, 4),
-                U64Vec4::new(1, 2, 3, 4).as_u8vec4()
-            );
-            #[cfg(feature = "i16")]
-            assert_eq!(
-                I16Vec4::new(1, 2, 3, 4),
-                U64Vec4::new(1, 2, 3, 4).as_i16vec4()
-            );
-            #[cfg(feature = "u16")]
-            assert_eq!(
-                U16Vec4::new(1, 2, 3, 4),
-                U64Vec4::new(1, 2, 3, 4).as_u16vec4()
-            );
-            #[cfg(feature = "i32")]
-            assert_eq!(IVec4::new(1, 2, 3, 4), U64Vec4::new(1, 2, 3, 4).as_ivec4());
-            #[cfg(feature = "u32")]
-            assert_eq!(UVec4::new(1, 2, 3, 4), U64Vec4::new(1, 2, 3, 4).as_uvec4());
-            #[cfg(feature = "i64")]
-            assert_eq!(
-                I64Vec4::new(1, 2, 3, 4),
-                U64Vec4::new(1, 2, 3, 4).as_i64vec4()
-            );
-            #[cfg(feature = "usize")]
-            assert_eq!(
-                USizeVec4::new(1, 2, 3, 4),
-                U64Vec4::new(1, 2, 3, 4).as_usizevec4()
-            );
-            #[cfg(feature = "isize")]
-            assert_eq!(
-                ISizeVec4::new(1, 2, 3, 4),
-                U64Vec4::new(1, 2, 3, 4).as_isizevec4()
-            );
-        }
-
-        #[cfg(feature = "usize")]
-        {
-            assert_eq!(
-                Vec4::new(1.0, 2.0, 3.0, 4.0),
-                USizeVec4::new(1, 2, 3, 4).as_vec4()
-            );
-            #[cfg(feature = "f64")]
-            assert_eq!(
-                DVec4::new(1.0, 2.0, 3.0, 4.0),
-                USizeVec4::new(1, 2, 3, 4).as_dvec4()
-            );
-            #[cfg(feature = "i8")]
-            assert_eq!(
-                I8Vec4::new(1, 2, 3, 4),
-                USizeVec4::new(1, 2, 3, 4).as_i8vec4()
-            );
-            #[cfg(feature = "u8")]
-            assert_eq!(
-                U8Vec4::new(1, 2, 3, 4),
-                USizeVec4::new(1, 2, 3, 4).as_u8vec4()
-            );
-            #[cfg(feature = "i16")]
-            assert_eq!(
-                I16Vec4::new(1, 2, 3, 4),
-                USizeVec4::new(1, 2, 3, 4).as_i16vec4()
-            );
-            #[cfg(feature = "u16")]
-            assert_eq!(
-                U16Vec4::new(1, 2, 3, 4),
-                USizeVec4::new(1, 2, 3, 4).as_u16vec4()
-            );
-            #[cfg(feature = "i32")]
-            assert_eq!(
-                IVec4::new(1, 2, 3, 4),
-                USizeVec4::new(1, 2, 3, 4).as_ivec4()
-            );
-            #[cfg(feature = "u32")]
-            assert_eq!(
-                UVec4::new(1, 2, 3, 4),
-                USizeVec4::new(1, 2, 3, 4).as_uvec4()
-            );
-            #[cfg(feature = "i64")]
-            assert_eq!(
-                I64Vec4::new(1, 2, 3, 4),
-                USizeVec4::new(1, 2, 3, 4).as_i64vec4()
-            );
-            #[cfg(feature = "isize")]
-            assert_eq!(
-                ISizeVec4::new(1, 2, 3, 4),
-                USizeVec4::new(1, 2, 3, 4).as_isizevec4()
-            );
-            #[cfg(feature = "u64")]
-            assert_eq!(
-                U64Vec4::new(1, 2, 3, 4),
-                USizeVec4::new(1, 2, 3, 4).as_u64vec4()
-            );
-        }
-    });
 
     glam_test!(test_vec3a, {
         use glam::Vec3A;
@@ -3274,6 +2310,205 @@ mod dvec4 {
 }
 
 #[cfg(feature = "i8")]
+// === Per-type try_from test macros ===
+macro_rules! impl_vec4_i8_try_from_tests {
+    ($src:ident, $scalar:ty) => {
+        glam_test!(test_try_from, {
+            impl_try_from_pair_with_max_error!("u8", $src, U8Vec4, u8::MAX, 4);
+            impl_try_from_pair_with_max_error!("i16", $src, I16Vec4, i16::MAX, 4);
+            impl_try_from_pair_with_max_error!("u16", $src, U16Vec4, u16::MAX, 4);
+            impl_try_from_pair_with_max_error!("i32", $src, IVec4, i32::MAX, 4);
+            impl_try_from_pair_with_max_error!("u32", $src, UVec4, u32::MAX, 4);
+            impl_try_from_pair_with_max_error!("i64", $src, I64Vec4, i64::MAX, 4);
+            impl_try_from_pair_with_max_error!("u64", $src, U64Vec4, u64::MAX, 4);
+            impl_try_from_pair_with_max_error!("isize", $src, ISizeVec4, isize::MAX, 4);
+            impl_try_from_pair_with_max_error!("usize", $src, USizeVec4, usize::MAX, 4);
+        });
+    };
+}
+
+#[cfg(feature = "u8")]
+macro_rules! impl_vec4_u8_try_from_tests {
+    ($src:ident, $scalar:ty) => {
+        glam_test!(test_try_from, {
+            impl_try_from_pair_with_negative_error!("i8", $src, I8Vec4, 4);
+            impl_try_from_pair_with_negmax_error!("i16", $src, I16Vec4, i16::MAX, 4);
+            impl_try_from_pair_with_max_error!("u16", $src, U16Vec4, u16::MAX, 4);
+            impl_try_from_pair_with_negmax_error!("i32", $src, IVec4, i32::MAX, 4);
+            impl_try_from_pair_with_max_error!("u32", $src, UVec4, u32::MAX, 4);
+            impl_try_from_pair_with_negmax_error!("i64", $src, I64Vec4, i64::MAX, 4);
+            impl_try_from_pair_with_max_error!("u64", $src, U64Vec4, u64::MAX, 4);
+            impl_try_from_pair_with_max_error!("isize", $src, ISizeVec4, isize::MAX, 4);
+            impl_try_from_pair_with_max_error!("usize", $src, USizeVec4, usize::MAX, 4);
+        });
+    };
+}
+
+#[cfg(feature = "i16")]
+macro_rules! impl_vec4_i16_try_from_tests {
+    ($src:ident, $scalar:ty) => {
+        glam_test!(test_try_from, {
+            impl_from_pair_infallible!("u8", $src, U8Vec4, 4);
+            impl_from_pair_infallible!("i8", $src, I8Vec4, 4);
+            impl_try_from_pair_with_max_error!("u16", $src, U16Vec4, u16::MAX, 4);
+            impl_try_from_pair_with_max_error!("i32", $src, IVec4, i32::MAX, 4);
+            impl_try_from_pair_with_max_error!("u32", $src, UVec4, u32::MAX, 4);
+            impl_try_from_pair_with_max_error!("i64", $src, I64Vec4, i64::MAX, 4);
+            impl_try_from_pair_with_max_error!("u64", $src, U64Vec4, u64::MAX, 4);
+            impl_try_from_pair_with_max_error!("isize", $src, ISizeVec4, isize::MAX, 4);
+            impl_try_from_pair_with_max_error!("usize", $src, USizeVec4, usize::MAX, 4);
+        });
+    };
+}
+
+#[cfg(feature = "u16")]
+macro_rules! impl_vec4_u16_try_from_tests {
+    ($src:ident, $scalar:ty) => {
+        glam_test!(test_try_from, {
+            impl_try_from_pair_with_negative_error!("i8", $src, I8Vec4, 4);
+            impl_from_pair_infallible!("u8", $src, U8Vec4, 4);
+            impl_try_from_pair_with_negative_error!("i16", $src, I16Vec4, 4);
+            impl_try_from_pair_with_negmax_error!("i32", $src, IVec4, i32::MAX, 4);
+            impl_try_from_pair_with_max_error!("u32", $src, UVec4, u32::MAX, 4);
+            impl_try_from_pair_with_negmax_error!("i64", $src, I64Vec4, i64::MAX, 4);
+            impl_try_from_pair_with_max_error!("u64", $src, U64Vec4, u64::MAX, 4);
+            impl_try_from_pair_with_max_error!("isize", $src, ISizeVec4, isize::MAX, 4);
+            impl_try_from_pair_with_max_error!("usize", $src, USizeVec4, usize::MAX, 4);
+        });
+    };
+}
+
+#[cfg(feature = "i32")]
+macro_rules! impl_vec4_i32_try_from_tests {
+    ($src:ident, $scalar:ty) => {
+        glam_test!(test_try_from, {
+            impl_from_pair_infallible!("u8", $src, U8Vec4, 4);
+            impl_from_pair_infallible!("i8", $src, I8Vec4, 4);
+            impl_from_pair_infallible!("u16", $src, U16Vec4, 4);
+            impl_from_pair_infallible!("i16", $src, I16Vec4, 4);
+            impl_try_from_pair_with_max_error!("u32", $src, UVec4, u32::MAX, 4);
+            impl_try_from_pair_with_max_error!("i64", $src, I64Vec4, i64::MAX, 4);
+            impl_try_from_pair_with_max_error!("u64", $src, U64Vec4, u64::MAX, 4);
+            impl_try_from_pair_with_sizeof_max_error!(
+                "isize",
+                $src,
+                ISizeVec4,
+                isize,
+                isize::MAX,
+                4
+            );
+            impl_try_from_pair_with_max_error!("usize", $src, USizeVec4, usize::MAX, 4);
+        });
+    };
+}
+
+#[cfg(feature = "u32")]
+macro_rules! impl_vec4_u32_try_from_tests {
+    ($src:ident, $scalar:ty) => {
+        glam_test!(test_try_from, {
+            impl_try_from_pair_with_negative_error!("i8", $src, I8Vec4, 4);
+            impl_from_pair_infallible!("u8", $src, U8Vec4, 4);
+            impl_try_from_pair_with_negative_error!("i16", $src, I16Vec4, 4);
+            impl_from_pair_infallible!("u16", $src, U16Vec4, 4);
+            impl_try_from_pair_with_negative_error!("i32", $src, IVec4, 4);
+            impl_try_from_pair_with_negmax_error!("i64", $src, I64Vec4, i64::MAX, 4);
+            impl_try_from_pair_with_max_error!("u64", $src, U64Vec4, u64::MAX, 4);
+            impl_try_from_pair_with_sizeof_max_error!(
+                "isize",
+                $src,
+                ISizeVec4,
+                isize,
+                isize::MAX,
+                4
+            );
+            impl_try_from_pair_with_sizeof_max_error!(
+                "usize",
+                $src,
+                USizeVec4,
+                usize,
+                usize::MAX,
+                4
+            );
+        });
+    };
+}
+
+#[cfg(feature = "i64")]
+macro_rules! impl_vec4_i64_try_from_tests {
+    ($src:ident, $scalar:ty) => {
+        glam_test!(test_try_from, {
+            impl_from_pair_infallible!("i8", $src, I8Vec4, 4);
+            impl_from_pair_infallible!("u8", $src, U8Vec4, 4);
+            impl_from_pair_infallible!("i16", $src, I16Vec4, 4);
+            impl_from_pair_infallible!("u16", $src, U16Vec4, 4);
+            impl_from_pair_infallible!("i32", $src, IVec4, 4);
+            impl_from_pair_infallible!("u32", $src, UVec4, 4);
+            impl_try_from_pair_with_max_error!("u64", $src, U64Vec4, u64::MAX, 4);
+            impl_try_from_pair_no_error!("isize", $src, ISizeVec4, 4);
+            impl_try_from_pair_with_sizeof_max_error!(
+                "usize",
+                $src,
+                USizeVec4,
+                usize,
+                usize::MAX,
+                4
+            );
+        });
+    };
+}
+
+#[cfg(feature = "u64")]
+macro_rules! impl_vec4_u64_try_from_tests {
+    ($src:ident, $scalar:ty) => {
+        glam_test!(test_try_from, {
+            impl_try_from_pair_with_negative_error!("i8", $src, I8Vec4, 4);
+            impl_from_pair_infallible!("u8", $src, U8Vec4, 4);
+            impl_try_from_pair_with_negative_error!("i16", $src, I16Vec4, 4);
+            impl_from_pair_infallible!("u16", $src, U16Vec4, 4);
+            impl_try_from_pair_with_negative_error!("i32", $src, IVec4, 4);
+            impl_from_pair_infallible!("u32", $src, UVec4, 4);
+            impl_try_from_pair_with_negative_error!("i64", $src, I64Vec4, 4);
+            impl_try_from_pair_with_negative_error!("isize", $src, ISizeVec4, 4);
+            impl_try_from_pair_no_error!("usize", $src, USizeVec4, 4);
+        });
+    };
+}
+
+#[cfg(feature = "isize")]
+macro_rules! impl_vec4_isize_try_from_tests {
+    ($src:ident, $scalar:ty) => {
+        glam_test!(test_try_from, {
+            impl_from_pair_infallible!("i8", $src, I8Vec4, 4);
+            impl_from_pair_infallible!("u8", $src, U8Vec4, 4);
+            impl_from_pair_infallible!("i16", $src, I16Vec4, 4);
+            impl_try_from_pair_no_error!("u16", $src, U16Vec4, 4);
+            impl_try_from_pair_no_error!("i32", $src, IVec4, 4);
+            impl_try_from_pair_no_error!("u32", $src, UVec4, 4);
+            impl_try_from_pair_with_max_error!("u64", $src, U64Vec4, u64::MAX, 4);
+            impl_try_from_pair_no_error!("i64", $src, I64Vec4, 4);
+            impl_try_from_pair_with_max_error!("usize", $src, USizeVec4, usize::MAX, 4);
+        });
+    };
+}
+
+#[cfg(feature = "usize")]
+macro_rules! impl_vec4_usize_try_from_tests {
+    ($src:ident, $scalar:ty) => {
+        glam_test!(test_try_from, {
+            impl_try_from_pair_with_negative_error!("i8", $src, I8Vec4, 4);
+            impl_from_pair_infallible!("u8", $src, U8Vec4, 4);
+            impl_try_from_pair_with_negative_error!("i16", $src, I16Vec4, 4);
+            impl_from_pair_infallible!("u16", $src, U16Vec4, 4);
+            impl_try_from_pair_with_negative_error!("i32", $src, IVec4, 4);
+            impl_try_from_pair_no_error!("u32", $src, UVec4, 4);
+            impl_try_from_pair_no_error!("u64", $src, U64Vec4, 4);
+            impl_try_from_pair_with_negative_error!("i64", $src, I64Vec4, 4);
+            impl_try_from_pair_with_negative_error!("isize", $src, ISizeVec4, 4);
+        });
+    };
+}
+
+#[cfg(feature = "i8")]
 mod i8vec4 {
     #[cfg(feature = "i16")]
     use glam::I16Vec4;
@@ -3306,225 +2541,9 @@ mod i8vec4 {
         assert_eq!(4, mem::align_of::<I8Vec4>());
     });
 
-    glam_test!(test_try_from, {
-        #[cfg(feature = "u8")]
-        {
-            assert_eq!(
-                I8Vec4::new(1, 2, 3, 4),
-                I8Vec4::try_from(U8Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(I8Vec4::try_from(U8Vec4::new(u8::MAX, 2, 3, 4)).is_err());
-            assert!(I8Vec4::try_from(U8Vec4::new(1, u8::MAX, 3, 4)).is_err());
-            assert!(I8Vec4::try_from(U8Vec4::new(1, 2, u8::MAX, 4)).is_err());
-            assert!(I8Vec4::try_from(U8Vec4::new(1, 2, 3, u8::MAX)).is_err());
-        }
+    impl_vec4_i8_try_from_tests!(I8Vec4, i8);
 
-        #[cfg(feature = "i16")]
-        {
-            assert_eq!(
-                I8Vec4::new(1, 2, 3, 4),
-                I8Vec4::try_from(I16Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(I8Vec4::try_from(I16Vec4::new(i16::MAX, 2, 3, 4)).is_err());
-            assert!(I8Vec4::try_from(I16Vec4::new(1, i16::MAX, 3, 4)).is_err());
-            assert!(I8Vec4::try_from(I16Vec4::new(1, 2, i16::MAX, 4)).is_err());
-            assert!(I8Vec4::try_from(I16Vec4::new(1, 2, 3, i16::MAX)).is_err());
-        }
-
-        #[cfg(feature = "u16")]
-        {
-            assert_eq!(
-                I8Vec4::new(1, 2, 3, 4),
-                I8Vec4::try_from(U16Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(I8Vec4::try_from(U16Vec4::new(u16::MAX, 2, 3, 4)).is_err());
-            assert!(I8Vec4::try_from(U16Vec4::new(1, u16::MAX, 3, 4)).is_err());
-            assert!(I8Vec4::try_from(U16Vec4::new(1, 2, u16::MAX, 4)).is_err());
-            assert!(I8Vec4::try_from(U16Vec4::new(1, 2, 3, u16::MAX)).is_err());
-        }
-
-        #[cfg(feature = "i32")]
-        {
-            assert_eq!(
-                I8Vec4::new(1, 2, 3, 4),
-                I8Vec4::try_from(IVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(I8Vec4::try_from(IVec4::new(i32::MAX, 2, 3, 4)).is_err());
-            assert!(I8Vec4::try_from(IVec4::new(1, i32::MAX, 3, 4)).is_err());
-            assert!(I8Vec4::try_from(IVec4::new(1, 2, i32::MAX, 4)).is_err());
-            assert!(I8Vec4::try_from(IVec4::new(1, 2, 3, i32::MAX)).is_err());
-        }
-
-        #[cfg(feature = "u32")]
-        {
-            assert_eq!(
-                I8Vec4::new(1, 2, 3, 4),
-                I8Vec4::try_from(UVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(I8Vec4::try_from(UVec4::new(u32::MAX, 2, 3, 4)).is_err());
-            assert!(I8Vec4::try_from(UVec4::new(1, u32::MAX, 3, 4)).is_err());
-            assert!(I8Vec4::try_from(UVec4::new(1, 2, u32::MAX, 4)).is_err());
-            assert!(I8Vec4::try_from(UVec4::new(1, 2, 3, u32::MAX)).is_err());
-        }
-
-        #[cfg(feature = "i64")]
-        {
-            assert_eq!(
-                I8Vec4::new(1, 2, 3, 4),
-                I8Vec4::try_from(I64Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(I8Vec4::try_from(I64Vec4::new(i64::MAX, 2, 3, 4)).is_err());
-            assert!(I8Vec4::try_from(I64Vec4::new(1, i64::MAX, 3, 4)).is_err());
-            assert!(I8Vec4::try_from(I64Vec4::new(1, 2, i64::MAX, 4)).is_err());
-            assert!(I8Vec4::try_from(I64Vec4::new(1, 2, 3, i64::MAX)).is_err());
-        }
-
-        #[cfg(feature = "u64")]
-        {
-            assert_eq!(
-                I8Vec4::new(1, 2, 3, 4),
-                I8Vec4::try_from(U64Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(I8Vec4::try_from(U64Vec4::new(u64::MAX, 2, 3, 4)).is_err());
-            assert!(I8Vec4::try_from(U64Vec4::new(1, u64::MAX, 3, 4)).is_err());
-            assert!(I8Vec4::try_from(U64Vec4::new(1, 2, u64::MAX, 4)).is_err());
-            assert!(I8Vec4::try_from(U64Vec4::new(1, 2, 3, u64::MAX)).is_err());
-        }
-
-        #[cfg(feature = "isize")]
-        {
-            assert_eq!(
-                I8Vec4::new(1, 2, 3, 4),
-                I8Vec4::try_from(ISizeVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(I8Vec4::try_from(ISizeVec4::new(isize::MAX, 2, 3, 4)).is_err());
-            assert!(I8Vec4::try_from(ISizeVec4::new(1, isize::MAX, 3, 4)).is_err());
-            assert!(I8Vec4::try_from(ISizeVec4::new(1, 2, isize::MAX, 4)).is_err());
-            assert!(I8Vec4::try_from(ISizeVec4::new(1, 2, 3, isize::MAX)).is_err());
-        }
-
-        #[cfg(feature = "usize")]
-        {
-            assert_eq!(
-                I8Vec4::new(1, 2, 3, 4),
-                I8Vec4::try_from(USizeVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(I8Vec4::try_from(USizeVec4::new(usize::MAX, 2, 3, 4)).is_err());
-            assert!(I8Vec4::try_from(USizeVec4::new(1, usize::MAX, 3, 4)).is_err());
-            assert!(I8Vec4::try_from(USizeVec4::new(1, 2, usize::MAX, 4)).is_err());
-            assert!(I8Vec4::try_from(USizeVec4::new(1, 2, 3, usize::MAX)).is_err());
-        }
-    });
-
-    glam_test!(test_wrapping_add, {
-        assert_eq!(
-            I8Vec4::new(i8::MAX, 5, i8::MIN, 0).wrapping_add(I8Vec4::new(1, 3, i8::MAX, 0)),
-            I8Vec4::new(i8::MIN, 8, -1, 0),
-        );
-    });
-
-    glam_test!(test_wrapping_sub, {
-        assert_eq!(
-            I8Vec4::new(i8::MAX, 5, i8::MIN, 0).wrapping_sub(I8Vec4::new(1, 3, i8::MAX, 0)),
-            I8Vec4::new(126, 2, 1, 0)
-        );
-    });
-
-    glam_test!(test_wrapping_mul, {
-        assert_eq!(
-            I8Vec4::new(i8::MAX, 5, i8::MIN, 0).wrapping_mul(I8Vec4::new(3, 3, 5, 1)),
-            I8Vec4::new(125, 15, -128, 0)
-        );
-    });
-
-    glam_test!(test_wrapping_div, {
-        assert_eq!(
-            I8Vec4::new(i8::MAX, 5, i8::MIN, 0).wrapping_div(I8Vec4::new(3, 3, 5, 1)),
-            I8Vec4::new(42, 1, -25, 0)
-        );
-    });
-
-    glam_test!(test_saturating_add, {
-        assert_eq!(
-            I8Vec4::new(i8::MAX, i8::MIN, 0, 0).saturating_add(I8Vec4::new(1, -1, 2, 3)),
-            I8Vec4::new(i8::MAX, i8::MIN, 2, 3)
-        );
-    });
-
-    glam_test!(test_saturating_sub, {
-        assert_eq!(
-            I8Vec4::new(i8::MIN, i8::MAX, 0, 0).saturating_sub(I8Vec4::new(1, -1, 2, 3)),
-            I8Vec4::new(i8::MIN, i8::MAX, -2, -3)
-        );
-    });
-
-    glam_test!(test_saturating_mul, {
-        assert_eq!(
-            I8Vec4::new(i8::MAX, i8::MIN, 0, 0).saturating_mul(I8Vec4::new(2, 2, 0, 0)),
-            I8Vec4::new(i8::MAX, i8::MIN, 0, 0)
-        );
-    });
-
-    glam_test!(test_saturating_div, {
-        assert_eq!(
-            I8Vec4::new(i8::MAX, i8::MIN, 0, 0).saturating_div(I8Vec4::new(2, 2, 3, 4)),
-            I8Vec4::new(63, -64, 0, 0)
-        );
-    });
-
-    #[cfg(feature = "u8")]
-    glam_test!(test_checked_add_unsigned, {
-        assert_eq!(I8Vec4::MAX.checked_add_unsigned(U8Vec4::ONE), None);
-        assert_eq!(
-            I8Vec4::NEG_ONE.checked_add_unsigned(U8Vec4::ONE),
-            Some(I8Vec4::ZERO)
-        );
-    });
-
-    #[cfg(feature = "u8")]
-    glam_test!(test_checked_sub_unsigned, {
-        assert_eq!(I8Vec4::MIN.checked_sub_unsigned(U8Vec4::ONE), None);
-        assert_eq!(
-            I8Vec4::ZERO.checked_sub_unsigned(U8Vec4::ONE),
-            Some(I8Vec4::NEG_ONE)
-        );
-    });
-
-    #[cfg(feature = "u8")]
-    glam_test!(test_wrapping_add_unsigned, {
-        assert_eq!(
-            I8Vec4::new(i8::MAX, i8::MAX, i8::MAX, i8::MAX)
-                .wrapping_add_unsigned(U8Vec4::new(1, 1, 1, 1)),
-            I8Vec4::new(i8::MIN, i8::MIN, i8::MIN, i8::MIN)
-        );
-    });
-
-    #[cfg(feature = "u8")]
-    glam_test!(test_wrapping_sub_unsigned, {
-        assert_eq!(
-            I8Vec4::new(i8::MIN, i8::MIN, i8::MIN, i8::MIN)
-                .wrapping_sub_unsigned(U8Vec4::new(1, 1, 1, 1)),
-            I8Vec4::new(i8::MAX, i8::MAX, i8::MAX, i8::MAX)
-        );
-    });
-
-    #[cfg(feature = "u8")]
-    glam_test!(test_saturating_add_unsigned, {
-        assert_eq!(
-            I8Vec4::new(i8::MAX, i8::MAX, i8::MAX, i8::MAX)
-                .saturating_add_unsigned(U8Vec4::new(1, 1, 1, 1)),
-            I8Vec4::new(i8::MAX, i8::MAX, i8::MAX, i8::MAX)
-        );
-    });
-
-    #[cfg(feature = "u8")]
-    glam_test!(test_saturating_sub_unsigned, {
-        assert_eq!(
-            I8Vec4::new(i8::MIN, i8::MIN, i8::MIN, i8::MIN)
-                .saturating_sub_unsigned(U8Vec4::new(1, 1, 1, 1)),
-            I8Vec4::new(i8::MIN, i8::MIN, i8::MIN, i8::MIN)
-        );
-    });
+    impl_vec_wrapping_saturating_tests!(4, I8Vec4, i8, U8Vec4, "u8", signed);
 
     impl_vec4_signed_integer_tests!(i8, i8vec4, I8Vec4, I8Vec3, I8Vec2, BVec4);
     impl_vec4_eq_hash_tests!(i8, i8vec4);
@@ -3567,210 +2586,9 @@ mod u8vec4 {
         assert_eq!(4, mem::align_of::<U8Vec4>());
     });
 
-    glam_test!(test_try_from, {
-        #[cfg(feature = "i8")]
-        {
-            assert_eq!(
-                U8Vec4::new(1, 2, 3, 4),
-                U8Vec4::try_from(I8Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(U8Vec4::try_from(I8Vec4::new(-1, 2, 3, 4)).is_err());
-            assert!(U8Vec4::try_from(I8Vec4::new(1, -2, 3, 4)).is_err());
-            assert!(U8Vec4::try_from(I8Vec4::new(1, 2, -3, 4)).is_err());
-            assert!(U8Vec4::try_from(I8Vec4::new(1, 2, 3, -4)).is_err());
-        }
+    impl_vec4_u8_try_from_tests!(U8Vec4, u8);
 
-        #[cfg(feature = "i16")]
-        {
-            assert_eq!(
-                U8Vec4::new(1, 2, 3, 4),
-                U8Vec4::try_from(I16Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(U8Vec4::try_from(I16Vec4::new(-1, 2, 3, 4)).is_err());
-            assert!(U8Vec4::try_from(I16Vec4::new(1, -2, 3, 4)).is_err());
-            assert!(U8Vec4::try_from(I16Vec4::new(1, 2, -3, 4)).is_err());
-            assert!(U8Vec4::try_from(I16Vec4::new(1, 2, 3, -4)).is_err());
-            assert!(U8Vec4::try_from(I16Vec4::new(i16::MAX, 2, 3, 4)).is_err());
-            assert!(U8Vec4::try_from(I16Vec4::new(1, i16::MAX, 3, 4)).is_err());
-            assert!(U8Vec4::try_from(I16Vec4::new(1, 2, i16::MAX, 4)).is_err());
-            assert!(U8Vec4::try_from(I16Vec4::new(1, 2, 3, i16::MAX)).is_err());
-        }
-
-        #[cfg(feature = "u16")]
-        {
-            assert_eq!(
-                U8Vec4::new(1, 2, 3, 4),
-                U8Vec4::try_from(U16Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(U8Vec4::try_from(U16Vec4::new(u16::MAX, 2, 3, 4)).is_err());
-            assert!(U8Vec4::try_from(U16Vec4::new(1, u16::MAX, 3, 4)).is_err());
-            assert!(U8Vec4::try_from(U16Vec4::new(1, 2, u16::MAX, 4)).is_err());
-            assert!(U8Vec4::try_from(U16Vec4::new(1, 2, 3, u16::MAX)).is_err());
-        }
-
-        #[cfg(feature = "i32")]
-        {
-            assert_eq!(
-                U8Vec4::new(1, 2, 3, 4),
-                U8Vec4::try_from(IVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(U8Vec4::try_from(IVec4::new(-1, 2, 3, 4)).is_err());
-            assert!(U8Vec4::try_from(IVec4::new(1, -2, 3, 4)).is_err());
-            assert!(U8Vec4::try_from(IVec4::new(1, 2, -3, 4)).is_err());
-            assert!(U8Vec4::try_from(IVec4::new(1, 2, 3, -4)).is_err());
-            assert!(U8Vec4::try_from(IVec4::new(i32::MAX, 2, 3, 4)).is_err());
-            assert!(U8Vec4::try_from(IVec4::new(1, i32::MAX, 3, 4)).is_err());
-            assert!(U8Vec4::try_from(IVec4::new(1, 2, i32::MAX, 4)).is_err());
-            assert!(U8Vec4::try_from(IVec4::new(1, 2, 3, i32::MAX)).is_err());
-        }
-
-        #[cfg(feature = "u32")]
-        {
-            assert_eq!(
-                U8Vec4::new(1, 2, 3, 4),
-                U8Vec4::try_from(UVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(U8Vec4::try_from(UVec4::new(u32::MAX, 2, 3, 4)).is_err());
-            assert!(U8Vec4::try_from(UVec4::new(1, u32::MAX, 3, 4)).is_err());
-            assert!(U8Vec4::try_from(UVec4::new(1, 2, u32::MAX, 4)).is_err());
-            assert!(U8Vec4::try_from(UVec4::new(1, 2, 3, u32::MAX)).is_err());
-        }
-
-        #[cfg(feature = "i64")]
-        {
-            assert_eq!(
-                U8Vec4::new(1, 2, 3, 4),
-                U8Vec4::try_from(I64Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(U8Vec4::try_from(I64Vec4::new(-1, 2, 3, 4)).is_err());
-            assert!(U8Vec4::try_from(I64Vec4::new(1, -2, 3, 4)).is_err());
-            assert!(U8Vec4::try_from(I64Vec4::new(1, 2, -3, 4)).is_err());
-            assert!(U8Vec4::try_from(I64Vec4::new(1, 2, 3, -4)).is_err());
-            assert!(U8Vec4::try_from(I64Vec4::new(i64::MAX, 2, 3, 4)).is_err());
-            assert!(U8Vec4::try_from(I64Vec4::new(1, i64::MAX, 3, 4)).is_err());
-            assert!(U8Vec4::try_from(I64Vec4::new(1, 2, i64::MAX, 4)).is_err());
-            assert!(U8Vec4::try_from(I64Vec4::new(1, 2, 3, i64::MAX)).is_err());
-        }
-
-        #[cfg(feature = "u64")]
-        {
-            assert_eq!(
-                U8Vec4::new(1, 2, 3, 4),
-                U8Vec4::try_from(U64Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(U8Vec4::try_from(U64Vec4::new(u64::MAX, 2, 3, 4)).is_err());
-            assert!(U8Vec4::try_from(U64Vec4::new(1, u64::MAX, 3, 4)).is_err());
-            assert!(U8Vec4::try_from(U64Vec4::new(1, 2, u64::MAX, 4)).is_err());
-            assert!(U8Vec4::try_from(U64Vec4::new(1, 2, 3, u64::MAX)).is_err());
-        }
-
-        #[cfg(feature = "isize")]
-        {
-            assert_eq!(
-                U8Vec4::new(1, 2, 3, 4),
-                U8Vec4::try_from(ISizeVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(U8Vec4::try_from(ISizeVec4::new(isize::MAX, 2, 3, 4)).is_err());
-            assert!(U8Vec4::try_from(ISizeVec4::new(1, isize::MAX, 3, 4)).is_err());
-            assert!(U8Vec4::try_from(ISizeVec4::new(1, 2, isize::MAX, 4)).is_err());
-            assert!(U8Vec4::try_from(ISizeVec4::new(1, 2, 3, isize::MAX)).is_err());
-        }
-
-        #[cfg(feature = "usize")]
-        {
-            assert_eq!(
-                U8Vec4::new(1, 2, 3, 4),
-                U8Vec4::try_from(USizeVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(U8Vec4::try_from(USizeVec4::new(usize::MAX, 2, 3, 4)).is_err());
-            assert!(U8Vec4::try_from(USizeVec4::new(1, usize::MAX, 3, 4)).is_err());
-            assert!(U8Vec4::try_from(USizeVec4::new(1, 2, usize::MAX, 4)).is_err());
-            assert!(U8Vec4::try_from(USizeVec4::new(1, 2, 3, usize::MAX)).is_err());
-        }
-    });
-
-    glam_test!(test_wrapping_add, {
-        assert_eq!(
-            U8Vec4::new(u8::MAX, 5, u8::MAX, 0).wrapping_add(U8Vec4::new(1, 3, u8::MAX, 0)),
-            U8Vec4::new(0, 8, 254, 0),
-        );
-    });
-
-    glam_test!(test_wrapping_sub, {
-        assert_eq!(
-            U8Vec4::new(u8::MAX, 5, u8::MAX - 1, 0).wrapping_sub(U8Vec4::new(1, 3, u8::MAX, 0)),
-            U8Vec4::new(254, 2, 255, 0)
-        );
-    });
-
-    glam_test!(test_wrapping_mul, {
-        assert_eq!(
-            U8Vec4::new(u8::MAX, 5, u8::MAX, 0).wrapping_mul(U8Vec4::new(3, 3, 5, 1)),
-            U8Vec4::new(253, 15, 251, 0)
-        );
-    });
-
-    glam_test!(test_wrapping_div, {
-        assert_eq!(
-            U8Vec4::new(u8::MAX, 5, u8::MAX, 0).wrapping_div(U8Vec4::new(3, 3, 5, 1)),
-            U8Vec4::new(85, 1, 51, 0)
-        );
-    });
-
-    glam_test!(test_saturating_add, {
-        assert_eq!(
-            U8Vec4::new(u8::MAX, u8::MAX, 0, 0).saturating_add(U8Vec4::new(1, u8::MAX, 2, 3)),
-            U8Vec4::new(u8::MAX, u8::MAX, 2, 3)
-        );
-    });
-
-    glam_test!(test_saturating_sub, {
-        assert_eq!(
-            U8Vec4::new(0, u8::MAX, 0, 0).saturating_sub(U8Vec4::new(1, 1, 2, 3)),
-            U8Vec4::new(0, 254, 0, 0)
-        );
-    });
-
-    glam_test!(test_saturating_mul, {
-        assert_eq!(
-            U8Vec4::new(u8::MAX, u8::MAX, 0, 0).saturating_mul(U8Vec4::new(2, u8::MAX, 0, 0)),
-            U8Vec4::new(u8::MAX, u8::MAX, 0, 0)
-        );
-    });
-
-    glam_test!(test_saturating_div, {
-        assert_eq!(
-            U8Vec4::new(u8::MAX, u8::MAX, 0, 0).saturating_div(U8Vec4::new(2, u8::MAX, 3, 4)),
-            U8Vec4::new(127, 1, 0, 0)
-        );
-    });
-
-    #[cfg(feature = "i8")]
-    glam_test!(test_checked_add_signed, {
-        assert_eq!(U8Vec4::MAX.checked_add_signed(I8Vec4::ONE), None);
-        assert_eq!(
-            U8Vec4::ONE.checked_add_signed(I8Vec4::NEG_ONE),
-            Some(U8Vec4::ZERO)
-        );
-    });
-
-    #[cfg(feature = "i8")]
-    glam_test!(test_wrapping_add_signed, {
-        assert_eq!(
-            U8Vec4::new(u8::MAX, u8::MAX, u8::MAX, u8::MAX)
-                .wrapping_add_signed(I8Vec4::new(1, 1, 1, 1)),
-            U8Vec4::new(u8::MIN, u8::MIN, u8::MIN, u8::MIN)
-        );
-    });
-
-    #[cfg(feature = "i8")]
-    glam_test!(test_saturating_add_signed, {
-        assert_eq!(
-            U8Vec4::new(u8::MAX, u8::MAX, u8::MAX, u8::MAX)
-                .saturating_add_signed(I8Vec4::new(1, 1, 1, 1)),
-            U8Vec4::new(u8::MAX, u8::MAX, u8::MAX, u8::MAX)
-        );
-    });
+    impl_vec_wrapping_saturating_tests!(4, U8Vec4, u8, I8Vec4, "i8", unsigned);
 
     impl_vec4_unsigned_integer_tests!(u8, u8vec4, U8Vec4, U8Vec3, U8Vec2, BVec4);
     impl_vec4_eq_hash_tests!(u8, u8vec4);
@@ -3813,212 +2631,9 @@ mod i16vec4 {
         assert_eq!(8, mem::align_of::<I16Vec4>());
     });
 
-    glam_test!(test_try_from, {
-        #[cfg(feature = "u8")]
-        assert_eq!(
-            I16Vec4::new(1, 2, 3, 4),
-            I16Vec4::from(U8Vec4::new(1, 2, 3, 4))
-        );
-        #[cfg(feature = "i8")]
-        assert_eq!(
-            I16Vec4::new(1, 2, 3, 4),
-            I16Vec4::from(I8Vec4::new(1, 2, 3, 4))
-        );
+    impl_vec4_i16_try_from_tests!(I16Vec4, i16);
 
-        #[cfg(feature = "u16")]
-        {
-            assert_eq!(
-                I16Vec4::new(1, 2, 3, 4),
-                I16Vec4::try_from(U16Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(I16Vec4::try_from(U16Vec4::new(u16::MAX, 2, 3, 4)).is_err());
-            assert!(I16Vec4::try_from(U16Vec4::new(1, u16::MAX, 3, 4)).is_err());
-            assert!(I16Vec4::try_from(U16Vec4::new(1, 2, u16::MAX, 4)).is_err());
-            assert!(I16Vec4::try_from(U16Vec4::new(1, 2, 3, u16::MAX)).is_err());
-        }
-
-        #[cfg(feature = "i32")]
-        {
-            assert_eq!(
-                I16Vec4::new(1, 2, 3, 4),
-                I16Vec4::try_from(IVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(I16Vec4::try_from(IVec4::new(i32::MAX, 2, 3, 4)).is_err());
-            assert!(I16Vec4::try_from(IVec4::new(1, i32::MAX, 3, 4)).is_err());
-            assert!(I16Vec4::try_from(IVec4::new(1, 2, i32::MAX, 4)).is_err());
-            assert!(I16Vec4::try_from(IVec4::new(1, 2, 3, i32::MAX)).is_err());
-        }
-
-        #[cfg(feature = "u32")]
-        {
-            assert_eq!(
-                I16Vec4::new(1, 2, 3, 4),
-                I16Vec4::try_from(UVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(I16Vec4::try_from(UVec4::new(u32::MAX, 2, 3, 4)).is_err());
-            assert!(I16Vec4::try_from(UVec4::new(1, u32::MAX, 3, 4)).is_err());
-            assert!(I16Vec4::try_from(UVec4::new(1, 2, u32::MAX, 4)).is_err());
-            assert!(I16Vec4::try_from(UVec4::new(1, 2, 3, u32::MAX)).is_err());
-        }
-
-        #[cfg(feature = "i64")]
-        {
-            assert_eq!(
-                I16Vec4::new(1, 2, 3, 4),
-                I16Vec4::try_from(I64Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(I16Vec4::try_from(I64Vec4::new(i64::MAX, 2, 3, 4)).is_err());
-            assert!(I16Vec4::try_from(I64Vec4::new(1, i64::MAX, 3, 4)).is_err());
-            assert!(I16Vec4::try_from(I64Vec4::new(1, 2, i64::MAX, 4)).is_err());
-            assert!(I16Vec4::try_from(I64Vec4::new(1, 2, 3, i64::MAX)).is_err());
-        }
-
-        #[cfg(feature = "u64")]
-        {
-            assert_eq!(
-                I16Vec4::new(1, 2, 3, 4),
-                I16Vec4::try_from(U64Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(I16Vec4::try_from(U64Vec4::new(u64::MAX, 2, 3, 4)).is_err());
-            assert!(I16Vec4::try_from(U64Vec4::new(1, u64::MAX, 3, 4)).is_err());
-            assert!(I16Vec4::try_from(U64Vec4::new(1, 2, u64::MAX, 4)).is_err());
-            assert!(I16Vec4::try_from(U64Vec4::new(1, 2, 3, u64::MAX)).is_err());
-        }
-
-        #[cfg(feature = "isize")]
-        {
-            assert_eq!(
-                I16Vec4::new(1, 2, 3, 4),
-                I16Vec4::try_from(ISizeVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(I16Vec4::try_from(ISizeVec4::new(isize::MAX, 2, 3, 4)).is_err());
-            assert!(I16Vec4::try_from(ISizeVec4::new(1, isize::MAX, 3, 4)).is_err());
-            assert!(I16Vec4::try_from(ISizeVec4::new(1, 2, isize::MAX, 4)).is_err());
-            assert!(I16Vec4::try_from(ISizeVec4::new(1, 2, 3, isize::MAX)).is_err());
-        }
-
-        #[cfg(feature = "usize")]
-        {
-            assert_eq!(
-                I16Vec4::new(1, 2, 3, 4),
-                I16Vec4::try_from(USizeVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(I16Vec4::try_from(USizeVec4::new(usize::MAX, 2, 3, 4)).is_err());
-            assert!(I16Vec4::try_from(USizeVec4::new(1, usize::MAX, 3, 4)).is_err());
-            assert!(I16Vec4::try_from(USizeVec4::new(1, 2, usize::MAX, 4)).is_err());
-            assert!(I16Vec4::try_from(USizeVec4::new(1, 2, 3, usize::MAX)).is_err());
-        }
-    });
-
-    glam_test!(test_wrapping_add, {
-        assert_eq!(
-            I16Vec4::new(i16::MAX, 5, i16::MIN, 0).wrapping_add(I16Vec4::new(1, 3, i16::MAX, 0)),
-            I16Vec4::new(i16::MIN, 8, -1, 0),
-        );
-    });
-
-    glam_test!(test_wrapping_sub, {
-        assert_eq!(
-            I16Vec4::new(i16::MAX, 5, i16::MIN, 0).wrapping_sub(I16Vec4::new(1, 3, i16::MAX, 0)),
-            I16Vec4::new(32766, 2, 1, 0)
-        );
-    });
-
-    glam_test!(test_wrapping_mul, {
-        assert_eq!(
-            I16Vec4::new(i16::MAX, 5, i16::MIN, 0).wrapping_mul(I16Vec4::new(3, 3, 5, 1)),
-            I16Vec4::new(32765, 15, -32768, 0)
-        );
-    });
-
-    glam_test!(test_wrapping_div, {
-        assert_eq!(
-            I16Vec4::new(i16::MAX, 5, i16::MIN, 0).wrapping_div(I16Vec4::new(3, 3, 5, 1)),
-            I16Vec4::new(10922, 1, -6553, 0)
-        );
-    });
-
-    glam_test!(test_saturating_add, {
-        assert_eq!(
-            I16Vec4::new(i16::MAX, i16::MIN, 0, 0).saturating_add(I16Vec4::new(1, -1, 2, 3)),
-            I16Vec4::new(i16::MAX, i16::MIN, 2, 3)
-        );
-    });
-
-    glam_test!(test_saturating_sub, {
-        assert_eq!(
-            I16Vec4::new(i16::MIN, i16::MAX, 0, 0).saturating_sub(I16Vec4::new(1, -1, 2, 3)),
-            I16Vec4::new(i16::MIN, i16::MAX, -2, -3)
-        );
-    });
-
-    glam_test!(test_saturating_mul, {
-        assert_eq!(
-            I16Vec4::new(i16::MAX, i16::MIN, 0, 0).saturating_mul(I16Vec4::new(2, 2, 0, 0)),
-            I16Vec4::new(i16::MAX, i16::MIN, 0, 0)
-        );
-    });
-
-    glam_test!(test_saturating_div, {
-        assert_eq!(
-            I16Vec4::new(i16::MAX, i16::MIN, 0, 0).saturating_div(I16Vec4::new(2, 2, 3, 4)),
-            I16Vec4::new(16383, -16384, 0, 0)
-        );
-    });
-
-    #[cfg(feature = "u16")]
-    glam_test!(test_checked_add_unsigned, {
-        assert_eq!(I16Vec4::MAX.checked_add_unsigned(U16Vec4::ONE), None);
-        assert_eq!(
-            I16Vec4::NEG_ONE.checked_add_unsigned(U16Vec4::ONE),
-            Some(I16Vec4::ZERO)
-        );
-    });
-
-    #[cfg(feature = "u16")]
-    glam_test!(test_checked_sub_unsigned, {
-        assert_eq!(I16Vec4::MIN.checked_sub_unsigned(U16Vec4::ONE), None);
-        assert_eq!(
-            I16Vec4::ZERO.checked_sub_unsigned(U16Vec4::ONE),
-            Some(I16Vec4::NEG_ONE)
-        );
-    });
-
-    #[cfg(feature = "u16")]
-    glam_test!(test_wrapping_add_unsigned, {
-        assert_eq!(
-            I16Vec4::new(i16::MAX, i16::MAX, i16::MAX, i16::MAX)
-                .wrapping_add_unsigned(U16Vec4::new(1, 1, 1, 1)),
-            I16Vec4::new(i16::MIN, i16::MIN, i16::MIN, i16::MIN)
-        );
-    });
-
-    #[cfg(feature = "u16")]
-    glam_test!(test_wrapping_sub_unsigned, {
-        assert_eq!(
-            I16Vec4::new(i16::MIN, i16::MIN, i16::MIN, i16::MIN)
-                .wrapping_sub_unsigned(U16Vec4::new(1, 1, 1, 1)),
-            I16Vec4::new(i16::MAX, i16::MAX, i16::MAX, i16::MAX)
-        );
-    });
-
-    #[cfg(feature = "u16")]
-    glam_test!(test_saturating_add_unsigned, {
-        assert_eq!(
-            I16Vec4::new(i16::MAX, i16::MAX, i16::MAX, i16::MAX)
-                .saturating_add_unsigned(U16Vec4::new(1, 1, 1, 1)),
-            I16Vec4::new(i16::MAX, i16::MAX, i16::MAX, i16::MAX)
-        );
-    });
-
-    #[cfg(feature = "u16")]
-    glam_test!(test_saturating_sub_unsigned, {
-        assert_eq!(
-            I16Vec4::new(i16::MIN, i16::MIN, i16::MIN, i16::MIN)
-                .saturating_sub_unsigned(U16Vec4::new(1, 1, 1, 1)),
-            I16Vec4::new(i16::MIN, i16::MIN, i16::MIN, i16::MIN)
-        );
-    });
+    impl_vec_wrapping_saturating_tests!(4, I16Vec4, i16, U16Vec4, "u16", signed);
 
     impl_vec4_signed_integer_tests!(i16, i16vec4, I16Vec4, I16Vec3, I16Vec2, BVec4);
     impl_vec4_eq_hash_tests!(i16, i16vec4);
@@ -4061,205 +2676,9 @@ mod u16vec4 {
         assert_eq!(8, mem::align_of::<U16Vec4>());
     });
 
-    glam_test!(test_try_from, {
-        #[cfg(feature = "i8")]
-        {
-            assert_eq!(
-                U16Vec4::new(1, 2, 3, 4),
-                U16Vec4::try_from(I8Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(U16Vec4::try_from(I8Vec4::new(-1, 2, 3, 4)).is_err());
-            assert!(U16Vec4::try_from(I8Vec4::new(1, -2, 3, 4)).is_err());
-            assert!(U16Vec4::try_from(I8Vec4::new(1, 2, -3, 4)).is_err());
-            assert!(U16Vec4::try_from(I8Vec4::new(1, 2, 3, -4)).is_err());
-        }
+    impl_vec4_u16_try_from_tests!(U16Vec4, u16);
 
-        #[cfg(feature = "u8")]
-        assert_eq!(
-            U16Vec4::new(1, 2, 3, 4),
-            U16Vec4::from(U8Vec4::new(1, 2, 3, 4))
-        );
-
-        #[cfg(feature = "i16")]
-        {
-            assert_eq!(
-                U16Vec4::new(1, 2, 3, 4),
-                U16Vec4::try_from(I16Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(U16Vec4::try_from(I16Vec4::new(-1, 2, 3, 4)).is_err());
-            assert!(U16Vec4::try_from(I16Vec4::new(1, -2, 3, 4)).is_err());
-            assert!(U16Vec4::try_from(I16Vec4::new(1, 2, -3, 4)).is_err());
-            assert!(U16Vec4::try_from(I16Vec4::new(1, 2, 3, -4)).is_err());
-        }
-
-        #[cfg(feature = "i32")]
-        {
-            assert_eq!(
-                U16Vec4::new(1, 2, 3, 4),
-                U16Vec4::try_from(IVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(U16Vec4::try_from(IVec4::new(-1, 2, 3, 4)).is_err());
-            assert!(U16Vec4::try_from(IVec4::new(1, -2, 3, 4)).is_err());
-            assert!(U16Vec4::try_from(IVec4::new(1, 2, -3, 4)).is_err());
-            assert!(U16Vec4::try_from(IVec4::new(1, 2, 3, -4)).is_err());
-            assert!(U16Vec4::try_from(IVec4::new(i32::MAX, 2, 3, 4)).is_err());
-            assert!(U16Vec4::try_from(IVec4::new(1, i32::MAX, 3, 4)).is_err());
-            assert!(U16Vec4::try_from(IVec4::new(1, 2, i32::MAX, 4)).is_err());
-            assert!(U16Vec4::try_from(IVec4::new(1, 2, 3, i32::MAX)).is_err());
-        }
-
-        #[cfg(feature = "u32")]
-        {
-            assert_eq!(
-                U16Vec4::new(1, 2, 3, 4),
-                U16Vec4::try_from(UVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(U16Vec4::try_from(UVec4::new(u32::MAX, 2, 3, 4)).is_err());
-            assert!(U16Vec4::try_from(UVec4::new(1, u32::MAX, 3, 4)).is_err());
-            assert!(U16Vec4::try_from(UVec4::new(1, 2, u32::MAX, 4)).is_err());
-            assert!(U16Vec4::try_from(UVec4::new(1, 2, 3, u32::MAX)).is_err());
-        }
-
-        #[cfg(feature = "i64")]
-        {
-            assert_eq!(
-                U16Vec4::new(1, 2, 3, 4),
-                U16Vec4::try_from(I64Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(U16Vec4::try_from(I64Vec4::new(-1, 2, 3, 4)).is_err());
-            assert!(U16Vec4::try_from(I64Vec4::new(1, -2, 3, 4)).is_err());
-            assert!(U16Vec4::try_from(I64Vec4::new(1, 2, -3, 4)).is_err());
-            assert!(U16Vec4::try_from(I64Vec4::new(1, 2, 3, -4)).is_err());
-            assert!(U16Vec4::try_from(I64Vec4::new(i64::MAX, 2, 3, 4)).is_err());
-            assert!(U16Vec4::try_from(I64Vec4::new(1, i64::MAX, 3, 4)).is_err());
-            assert!(U16Vec4::try_from(I64Vec4::new(1, 2, i64::MAX, 4)).is_err());
-            assert!(U16Vec4::try_from(I64Vec4::new(1, 2, 3, i64::MAX)).is_err());
-        }
-
-        #[cfg(feature = "u64")]
-        {
-            assert_eq!(
-                U16Vec4::new(1, 2, 3, 4),
-                U16Vec4::try_from(U64Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(U16Vec4::try_from(U64Vec4::new(u64::MAX, 2, 3, 4)).is_err());
-            assert!(U16Vec4::try_from(U64Vec4::new(1, u64::MAX, 3, 4)).is_err());
-            assert!(U16Vec4::try_from(U64Vec4::new(1, 2, u64::MAX, 4)).is_err());
-            assert!(U16Vec4::try_from(U64Vec4::new(1, 2, 3, u64::MAX)).is_err());
-        }
-
-        #[cfg(feature = "isize")]
-        {
-            assert_eq!(
-                U16Vec4::new(1, 2, 3, 4),
-                U16Vec4::try_from(ISizeVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(U16Vec4::try_from(ISizeVec4::new(isize::MAX, 2, 3, 4)).is_err());
-            assert!(U16Vec4::try_from(ISizeVec4::new(1, isize::MAX, 3, 4)).is_err());
-            assert!(U16Vec4::try_from(ISizeVec4::new(1, 2, isize::MAX, 4)).is_err());
-            assert!(U16Vec4::try_from(ISizeVec4::new(1, 2, 3, isize::MAX)).is_err());
-        }
-
-        #[cfg(feature = "usize")]
-        {
-            assert_eq!(
-                U16Vec4::new(1, 2, 3, 4),
-                U16Vec4::try_from(USizeVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(U16Vec4::try_from(USizeVec4::new(usize::MAX, 2, 3, 4)).is_err());
-            assert!(U16Vec4::try_from(USizeVec4::new(1, usize::MAX, 3, 4)).is_err());
-            assert!(U16Vec4::try_from(USizeVec4::new(1, 2, usize::MAX, 4)).is_err());
-            assert!(U16Vec4::try_from(USizeVec4::new(1, 2, 3, usize::MAX)).is_err());
-        }
-    });
-
-    glam_test!(test_wrapping_add, {
-        assert_eq!(
-            U16Vec4::new(u16::MAX, 5, u16::MAX, 0).wrapping_add(U16Vec4::new(1, 3, u16::MAX, 0)),
-            U16Vec4::new(0, 8, 65534, 0),
-        );
-    });
-
-    glam_test!(test_wrapping_sub, {
-        assert_eq!(
-            U16Vec4::new(u16::MAX, 5, u16::MAX - 1, 0).wrapping_sub(U16Vec4::new(
-                1,
-                3,
-                u16::MAX,
-                0
-            )),
-            U16Vec4::new(65534, 2, 65535, 0)
-        );
-    });
-
-    glam_test!(test_wrapping_mul, {
-        assert_eq!(
-            U16Vec4::new(u16::MAX, 5, u16::MAX, 0).wrapping_mul(U16Vec4::new(3, 3, 5, 1)),
-            U16Vec4::new(65533, 15, 65531, 0)
-        );
-    });
-
-    glam_test!(test_wrapping_div, {
-        assert_eq!(
-            U16Vec4::new(u16::MAX, 5, u16::MAX, 0).wrapping_div(U16Vec4::new(3, 3, 5, 1)),
-            U16Vec4::new(21845, 1, 13107, 0)
-        );
-    });
-
-    glam_test!(test_saturating_add, {
-        assert_eq!(
-            U16Vec4::new(u16::MAX, u16::MAX, 0, 0).saturating_add(U16Vec4::new(1, u16::MAX, 2, 3)),
-            U16Vec4::new(u16::MAX, u16::MAX, 2, 3)
-        );
-    });
-
-    glam_test!(test_saturating_sub, {
-        assert_eq!(
-            U16Vec4::new(0, u16::MAX, 0, 0).saturating_sub(U16Vec4::new(1, 1, 2, 3)),
-            U16Vec4::new(0, 65534, 0, 0)
-        );
-    });
-
-    glam_test!(test_saturating_mul, {
-        assert_eq!(
-            U16Vec4::new(u16::MAX, u16::MAX, 0, 0).saturating_mul(U16Vec4::new(2, u16::MAX, 0, 0)),
-            U16Vec4::new(u16::MAX, u16::MAX, 0, 0)
-        );
-    });
-
-    glam_test!(test_saturating_div, {
-        assert_eq!(
-            U16Vec4::new(u16::MAX, u16::MAX, 0, 0).saturating_div(U16Vec4::new(2, u16::MAX, 3, 4)),
-            U16Vec4::new(32767, 1, 0, 0)
-        );
-    });
-
-    #[cfg(feature = "i16")]
-    glam_test!(test_checked_add_signed, {
-        assert_eq!(U16Vec4::MAX.checked_add_signed(I16Vec4::ONE), None);
-        assert_eq!(
-            U16Vec4::ONE.checked_add_signed(I16Vec4::NEG_ONE),
-            Some(U16Vec4::ZERO)
-        );
-    });
-
-    #[cfg(feature = "i16")]
-    glam_test!(test_wrapping_add_signed, {
-        assert_eq!(
-            U16Vec4::new(u16::MAX, u16::MAX, u16::MAX, u16::MAX)
-                .wrapping_add_signed(I16Vec4::new(1, 1, 1, 1)),
-            U16Vec4::new(u16::MIN, u16::MIN, u16::MIN, u16::MIN)
-        );
-    });
-
-    #[cfg(feature = "i16")]
-    glam_test!(test_saturating_add_signed, {
-        assert_eq!(
-            U16Vec4::new(u16::MAX, u16::MAX, u16::MAX, u16::MAX)
-                .saturating_add_signed(I16Vec4::new(1, 1, 1, 1)),
-            U16Vec4::new(u16::MAX, u16::MAX, u16::MAX, u16::MAX)
-        );
-    });
+    impl_vec_wrapping_saturating_tests!(4, U16Vec4, u16, I16Vec4, "i16", unsigned);
 
     impl_vec4_unsigned_integer_tests!(u16, u16vec4, U16Vec4, U16Vec3, U16Vec2, BVec4);
     impl_vec4_eq_hash_tests!(u16, u16vec4);
@@ -4302,195 +2721,9 @@ mod ivec4 {
         assert_eq!(16, mem::align_of::<IVec4>());
     });
 
-    glam_test!(test_try_from, {
-        #[cfg(feature = "u8")]
-        assert_eq!(IVec4::new(1, 2, 3, 4), IVec4::from(U8Vec4::new(1, 2, 3, 4)));
-        #[cfg(feature = "i8")]
-        assert_eq!(IVec4::new(1, 2, 3, 4), IVec4::from(I8Vec4::new(1, 2, 3, 4)));
+    impl_vec4_i32_try_from_tests!(IVec4, i32);
 
-        #[cfg(feature = "u16")]
-        assert_eq!(
-            IVec4::new(1, 2, 3, 4),
-            IVec4::from(U16Vec4::new(1, 2, 3, 4))
-        );
-        #[cfg(feature = "i16")]
-        assert_eq!(
-            IVec4::new(1, 2, 3, 4),
-            IVec4::from(I16Vec4::new(1, 2, 3, 4))
-        );
-
-        #[cfg(feature = "u32")]
-        {
-            assert_eq!(
-                IVec4::new(1, 2, 3, 4),
-                IVec4::try_from(UVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(IVec4::try_from(UVec4::new(u32::MAX, 2, 3, 4)).is_err());
-            assert!(IVec4::try_from(UVec4::new(1, u32::MAX, 3, 4)).is_err());
-            assert!(IVec4::try_from(UVec4::new(1, 2, u32::MAX, 4)).is_err());
-            assert!(IVec4::try_from(UVec4::new(1, 2, 3, u32::MAX)).is_err());
-        }
-
-        #[cfg(feature = "i64")]
-        {
-            assert_eq!(
-                IVec4::new(1, 2, 3, 4),
-                IVec4::try_from(I64Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(IVec4::try_from(I64Vec4::new(i64::MAX, 2, 3, 4)).is_err());
-            assert!(IVec4::try_from(I64Vec4::new(1, i64::MAX, 3, 4)).is_err());
-            assert!(IVec4::try_from(I64Vec4::new(1, 2, i64::MAX, 4)).is_err());
-            assert!(IVec4::try_from(I64Vec4::new(1, 2, 3, i64::MAX)).is_err());
-        }
-
-        #[cfg(feature = "u64")]
-        {
-            assert_eq!(
-                IVec4::new(1, 2, 3, 4),
-                IVec4::try_from(U64Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(IVec4::try_from(U64Vec4::new(u64::MAX, 2, 3, 4)).is_err());
-            assert!(IVec4::try_from(U64Vec4::new(1, u64::MAX, 3, 4)).is_err());
-            assert!(IVec4::try_from(U64Vec4::new(1, 2, u64::MAX, 4)).is_err());
-            assert!(IVec4::try_from(U64Vec4::new(1, 2, 3, u64::MAX)).is_err());
-        }
-
-        #[cfg(feature = "isize")]
-        {
-            assert_eq!(
-                IVec4::new(1, 2, 3, 4),
-                IVec4::try_from(ISizeVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            if core::mem::size_of::<isize>() > 4 {
-                assert!(IVec4::try_from(ISizeVec4::new(isize::MAX, 2, 3, 4)).is_err());
-                assert!(IVec4::try_from(ISizeVec4::new(1, isize::MAX, 3, 4)).is_err());
-                assert!(IVec4::try_from(ISizeVec4::new(1, 2, isize::MAX, 4)).is_err());
-                assert!(IVec4::try_from(ISizeVec4::new(1, 2, 3, isize::MAX)).is_err());
-            }
-        }
-
-        #[cfg(feature = "usize")]
-        {
-            assert_eq!(
-                IVec4::new(1, 2, 3, 4),
-                IVec4::try_from(USizeVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(IVec4::try_from(USizeVec4::new(usize::MAX, 2, 3, 4)).is_err());
-            assert!(IVec4::try_from(USizeVec4::new(1, usize::MAX, 3, 4)).is_err());
-            assert!(IVec4::try_from(USizeVec4::new(1, 2, usize::MAX, 4)).is_err());
-            assert!(IVec4::try_from(USizeVec4::new(1, 2, 3, usize::MAX)).is_err());
-        }
-    });
-
-    glam_test!(test_wrapping_add, {
-        assert_eq!(
-            IVec4::new(i32::MAX, 5, i32::MIN, 0).wrapping_add(IVec4::new(1, 3, i32::MAX, 0)),
-            IVec4::new(i32::MIN, 8, -1, 0),
-        );
-    });
-
-    glam_test!(test_wrapping_sub, {
-        assert_eq!(
-            IVec4::new(i32::MAX, 5, i32::MIN, 0).wrapping_sub(IVec4::new(1, 3, i32::MAX, 0)),
-            IVec4::new(2147483646, 2, 1, 0)
-        );
-    });
-
-    glam_test!(test_wrapping_mul, {
-        assert_eq!(
-            IVec4::new(i32::MAX, 5, i32::MIN, 0).wrapping_mul(IVec4::new(3, 3, 5, 1)),
-            IVec4::new(2147483645, 15, -2147483648, 0)
-        );
-    });
-
-    glam_test!(test_wrapping_div, {
-        assert_eq!(
-            IVec4::new(i32::MAX, 5, i32::MIN, 0).wrapping_div(IVec4::new(3, 3, 5, 1)),
-            IVec4::new(715827882, 1, -429496729, 0)
-        );
-    });
-
-    glam_test!(test_saturating_add, {
-        assert_eq!(
-            IVec4::new(i32::MAX, i32::MIN, 0, 0).saturating_add(IVec4::new(1, -1, 2, 3)),
-            IVec4::new(i32::MAX, i32::MIN, 2, 3)
-        );
-    });
-
-    glam_test!(test_saturating_sub, {
-        assert_eq!(
-            IVec4::new(i32::MIN, i32::MAX, 0, 0).saturating_sub(IVec4::new(1, -1, 2, 3)),
-            IVec4::new(i32::MIN, i32::MAX, -2, -3)
-        );
-    });
-
-    glam_test!(test_saturating_mul, {
-        assert_eq!(
-            IVec4::new(i32::MAX, i32::MIN, 0, 0).saturating_mul(IVec4::new(2, 2, 0, 0)),
-            IVec4::new(i32::MAX, i32::MIN, 0, 0)
-        );
-    });
-
-    glam_test!(test_saturating_div, {
-        assert_eq!(
-            IVec4::new(i32::MAX, i32::MIN, 0, 0).saturating_div(IVec4::new(2, 2, 3, 4)),
-            IVec4::new(1073741823, -1073741824, 0, 0)
-        );
-    });
-
-    #[cfg(feature = "u32")]
-    glam_test!(test_checked_add_unsigned, {
-        assert_eq!(IVec4::MAX.checked_add_unsigned(UVec4::ONE), None);
-        assert_eq!(
-            IVec4::NEG_ONE.checked_add_unsigned(UVec4::ONE),
-            Some(IVec4::ZERO)
-        );
-    });
-
-    #[cfg(feature = "u32")]
-    glam_test!(test_checked_sub_unsigned, {
-        assert_eq!(IVec4::MIN.checked_sub_unsigned(UVec4::ONE), None);
-        assert_eq!(
-            IVec4::ZERO.checked_sub_unsigned(UVec4::ONE),
-            Some(IVec4::NEG_ONE)
-        );
-    });
-
-    #[cfg(feature = "u32")]
-    glam_test!(test_wrapping_add_unsigned, {
-        assert_eq!(
-            IVec4::new(i32::MAX, i32::MAX, i32::MAX, i32::MAX)
-                .wrapping_add_unsigned(UVec4::new(1, 1, 1, 1)),
-            IVec4::new(i32::MIN, i32::MIN, i32::MIN, i32::MIN)
-        );
-    });
-
-    #[cfg(feature = "u32")]
-    glam_test!(test_wrapping_sub_unsigned, {
-        assert_eq!(
-            IVec4::new(i32::MIN, i32::MIN, i32::MIN, i32::MIN)
-                .wrapping_sub_unsigned(UVec4::new(1, 1, 1, 1)),
-            IVec4::new(i32::MAX, i32::MAX, i32::MAX, i32::MAX)
-        );
-    });
-
-    #[cfg(feature = "u32")]
-    glam_test!(test_saturating_add_unsigned, {
-        assert_eq!(
-            IVec4::new(i32::MAX, i32::MAX, i32::MAX, i32::MAX)
-                .saturating_add_unsigned(UVec4::new(1, 1, 1, 1)),
-            IVec4::new(i32::MAX, i32::MAX, i32::MAX, i32::MAX)
-        );
-    });
-
-    #[cfg(feature = "u32")]
-    glam_test!(test_saturating_sub_unsigned, {
-        assert_eq!(
-            IVec4::new(i32::MIN, i32::MIN, i32::MIN, i32::MIN)
-                .saturating_sub_unsigned(UVec4::new(1, 1, 1, 1)),
-            IVec4::new(i32::MIN, i32::MIN, i32::MIN, i32::MIN)
-        );
-    });
+    impl_vec_wrapping_saturating_tests!(4, IVec4, i32, UVec4, "u32", signed);
 
     impl_vec4_signed_integer_tests!(i32, ivec4, IVec4, IVec3, IVec2, BVec4);
     impl_vec4_eq_hash_tests!(i32, ivec4);
@@ -4533,191 +2766,9 @@ mod uvec4 {
         assert_eq!(16, mem::align_of::<UVec4>());
     });
 
-    glam_test!(test_try_from, {
-        #[cfg(feature = "i8")]
-        {
-            assert_eq!(
-                UVec4::new(1, 2, 3, 4),
-                UVec4::try_from(I8Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(UVec4::try_from(I8Vec4::new(-1, 2, 3, 4)).is_err());
-            assert!(UVec4::try_from(I8Vec4::new(1, -2, 3, 4)).is_err());
-            assert!(UVec4::try_from(I8Vec4::new(1, 2, -3, 4)).is_err());
-            assert!(UVec4::try_from(I8Vec4::new(1, 2, 3, -4)).is_err());
-        }
+    impl_vec4_u32_try_from_tests!(UVec4, u32);
 
-        #[cfg(feature = "u8")]
-        assert_eq!(UVec4::new(1, 2, 3, 4), UVec4::from(U8Vec4::new(1, 2, 3, 4)));
-
-        #[cfg(feature = "i16")]
-        {
-            assert_eq!(
-                UVec4::new(1, 2, 3, 4),
-                UVec4::try_from(I16Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(UVec4::try_from(I16Vec4::new(-1, 2, 3, 4)).is_err());
-            assert!(UVec4::try_from(I16Vec4::new(1, -2, 3, 4)).is_err());
-            assert!(UVec4::try_from(I16Vec4::new(1, 2, -3, 4)).is_err());
-            assert!(UVec4::try_from(I16Vec4::new(1, 2, 3, -4)).is_err());
-        }
-
-        #[cfg(feature = "u16")]
-        assert_eq!(
-            UVec4::new(1, 2, 3, 4),
-            UVec4::from(U16Vec4::new(1, 2, 3, 4))
-        );
-
-        #[cfg(feature = "i32")]
-        {
-            assert_eq!(
-                UVec4::new(1, 2, 3, 4),
-                UVec4::try_from(IVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(UVec4::try_from(IVec4::new(-1, 2, 3, 4)).is_err());
-            assert!(UVec4::try_from(IVec4::new(1, -2, 3, 4)).is_err());
-            assert!(UVec4::try_from(IVec4::new(1, 2, -3, 4)).is_err());
-            assert!(UVec4::try_from(IVec4::new(1, 2, 3, -4)).is_err());
-        }
-
-        #[cfg(feature = "i64")]
-        {
-            assert_eq!(
-                UVec4::new(1, 2, 3, 4),
-                UVec4::try_from(I64Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(UVec4::try_from(I64Vec4::new(-1, 2, 3, 4)).is_err());
-            assert!(UVec4::try_from(I64Vec4::new(1, -2, 3, 4)).is_err());
-            assert!(UVec4::try_from(I64Vec4::new(1, 2, -3, 4)).is_err());
-            assert!(UVec4::try_from(I64Vec4::new(1, 2, 3, -4)).is_err());
-            assert!(UVec4::try_from(I64Vec4::new(i64::MAX, 2, 3, 4)).is_err());
-            assert!(UVec4::try_from(I64Vec4::new(1, i64::MAX, 3, 4)).is_err());
-            assert!(UVec4::try_from(I64Vec4::new(1, 2, i64::MAX, 4)).is_err());
-            assert!(UVec4::try_from(I64Vec4::new(1, 2, 3, i64::MAX)).is_err());
-        }
-
-        #[cfg(feature = "u64")]
-        {
-            assert_eq!(
-                UVec4::new(1, 2, 3, 4),
-                UVec4::try_from(U64Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(UVec4::try_from(U64Vec4::new(u64::MAX, 2, 3, 4)).is_err());
-            assert!(UVec4::try_from(U64Vec4::new(1, u64::MAX, 3, 4)).is_err());
-            assert!(UVec4::try_from(U64Vec4::new(1, 2, u64::MAX, 4)).is_err());
-            assert!(UVec4::try_from(U64Vec4::new(1, 2, 3, u64::MAX)).is_err());
-        }
-
-        #[cfg(feature = "isize")]
-        {
-            assert_eq!(
-                UVec4::new(1, 2, 3, 4),
-                UVec4::try_from(ISizeVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            if core::mem::size_of::<usize>() > 4 {
-                assert!(UVec4::try_from(ISizeVec4::new(isize::MAX, 2, 3, 4)).is_err());
-                assert!(UVec4::try_from(ISizeVec4::new(1, isize::MAX, 3, 4)).is_err());
-                assert!(UVec4::try_from(ISizeVec4::new(1, 2, isize::MAX, 4)).is_err());
-                assert!(UVec4::try_from(ISizeVec4::new(1, 2, 3, isize::MAX)).is_err());
-            }
-        }
-
-        #[cfg(feature = "usize")]
-        {
-            assert_eq!(
-                UVec4::new(1, 2, 3, 4),
-                UVec4::try_from(USizeVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            if core::mem::size_of::<usize>() > 4 {
-                assert!(UVec4::try_from(USizeVec4::new(usize::MAX, 2, 3, 4)).is_err());
-                assert!(UVec4::try_from(USizeVec4::new(1, usize::MAX, 3, 4)).is_err());
-                assert!(UVec4::try_from(USizeVec4::new(1, 2, usize::MAX, 4)).is_err());
-                assert!(UVec4::try_from(USizeVec4::new(1, 2, 3, usize::MAX)).is_err());
-            }
-        }
-    });
-
-    glam_test!(test_wrapping_add, {
-        assert_eq!(
-            UVec4::new(u32::MAX, 5, u32::MAX, 0).wrapping_add(UVec4::new(1, 3, u32::MAX, 0)),
-            UVec4::new(0, 8, 4294967294, 0),
-        );
-    });
-
-    glam_test!(test_wrapping_sub, {
-        assert_eq!(
-            UVec4::new(u32::MAX, 5, u32::MAX - 1, 0).wrapping_sub(UVec4::new(1, 3, u32::MAX, 0)),
-            UVec4::new(4294967294, 2, 4294967295, 0)
-        );
-    });
-
-    glam_test!(test_wrapping_mul, {
-        assert_eq!(
-            UVec4::new(u32::MAX, 5, u32::MAX, 0).wrapping_mul(UVec4::new(3, 3, 5, 1)),
-            UVec4::new(4294967293, 15, 4294967291, 0)
-        );
-    });
-
-    glam_test!(test_wrapping_div, {
-        assert_eq!(
-            UVec4::new(u32::MAX, 5, u32::MAX, 0).wrapping_div(UVec4::new(3, 3, 5, 1)),
-            UVec4::new(1431655765, 1, 858993459, 0)
-        );
-    });
-
-    glam_test!(test_saturating_add, {
-        assert_eq!(
-            UVec4::new(u32::MAX, u32::MAX, 0, 0).saturating_add(UVec4::new(1, u32::MAX, 2, 3)),
-            UVec4::new(u32::MAX, u32::MAX, 2, 3)
-        );
-    });
-
-    glam_test!(test_saturating_sub, {
-        assert_eq!(
-            UVec4::new(0, u32::MAX, 0, 0).saturating_sub(UVec4::new(1, 1, 2, 3)),
-            UVec4::new(0, 4294967294, 0, 0)
-        );
-    });
-
-    glam_test!(test_saturating_mul, {
-        assert_eq!(
-            UVec4::new(u32::MAX, u32::MAX, 0, 0).saturating_mul(UVec4::new(2, u32::MAX, 0, 0)),
-            UVec4::new(u32::MAX, u32::MAX, 0, 0)
-        );
-    });
-
-    glam_test!(test_saturating_div, {
-        assert_eq!(
-            UVec4::new(u32::MAX, u32::MAX, 0, 0).saturating_div(UVec4::new(2, u32::MAX, 3, 4)),
-            UVec4::new(2147483647, 1, 0, 0)
-        );
-    });
-
-    #[cfg(feature = "i32")]
-    glam_test!(test_checked_add_signed, {
-        assert_eq!(UVec4::MAX.checked_add_signed(IVec4::ONE), None);
-        assert_eq!(
-            UVec4::ONE.checked_add_signed(IVec4::NEG_ONE),
-            Some(UVec4::ZERO)
-        );
-    });
-
-    #[cfg(feature = "i32")]
-    glam_test!(test_wrapping_add_signed, {
-        assert_eq!(
-            UVec4::new(u32::MAX, u32::MAX, u32::MAX, u32::MAX)
-                .wrapping_add_signed(IVec4::new(1, 1, 1, 1)),
-            UVec4::new(u32::MIN, u32::MIN, u32::MIN, u32::MIN)
-        );
-    });
-
-    #[cfg(feature = "i32")]
-    glam_test!(test_saturating_add_signed, {
-        assert_eq!(
-            UVec4::new(u32::MAX, u32::MAX, u32::MAX, u32::MAX)
-                .saturating_add_signed(IVec4::new(1, 1, 1, 1)),
-            UVec4::new(u32::MAX, u32::MAX, u32::MAX, u32::MAX)
-        );
-    });
+    impl_vec_wrapping_saturating_tests!(4, UVec4, u32, IVec4, "i32", unsigned);
 
     impl_vec4_unsigned_integer_tests!(u32, uvec4, UVec4, UVec3, UVec2, BVec4);
     impl_vec4_eq_hash_tests!(u32, uvec4);
@@ -4760,180 +2811,9 @@ mod i64vec4 {
         assert_eq!(16, mem::align_of::<I64Vec4>());
     });
 
-    glam_test!(test_try_from, {
-        #[cfg(feature = "i8")]
-        assert_eq!(
-            I64Vec4::new(1, 2, 3, 4),
-            I64Vec4::from(I8Vec4::new(1, 2, 3, 4))
-        );
-        #[cfg(feature = "u8")]
-        assert_eq!(
-            I64Vec4::new(1, 2, 3, 4),
-            I64Vec4::from(U8Vec4::new(1, 2, 3, 4))
-        );
-        #[cfg(feature = "i16")]
-        assert_eq!(
-            I64Vec4::new(1, 2, 3, 4),
-            I64Vec4::from(I16Vec4::new(1, 2, 3, 4))
-        );
-        #[cfg(feature = "u16")]
-        assert_eq!(
-            I64Vec4::new(1, 2, 3, 4),
-            I64Vec4::from(U16Vec4::new(1, 2, 3, 4))
-        );
-        #[cfg(feature = "i32")]
-        assert_eq!(
-            I64Vec4::new(1, 2, 3, 4),
-            I64Vec4::from(IVec4::new(1, 2, 3, 4))
-        );
-        #[cfg(feature = "u32")]
-        assert_eq!(
-            I64Vec4::new(1, 2, 3, 4),
-            I64Vec4::from(UVec4::new(1, 2, 3, 4))
-        );
+    impl_vec4_i64_try_from_tests!(I64Vec4, i64);
 
-        #[cfg(feature = "u64")]
-        {
-            assert_eq!(
-                I64Vec4::new(1, 2, 3, 4),
-                I64Vec4::try_from(U64Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(I64Vec4::try_from(U64Vec4::new(u64::MAX, 2, 3, 4)).is_err());
-            assert!(I64Vec4::try_from(U64Vec4::new(1, u64::MAX, 3, 4)).is_err());
-            assert!(I64Vec4::try_from(U64Vec4::new(1, 2, u64::MAX, 4)).is_err());
-            assert!(I64Vec4::try_from(U64Vec4::new(1, 2, 3, u64::MAX)).is_err());
-        }
-
-        #[cfg(feature = "isize")]
-        assert_eq!(
-            I64Vec4::new(1, 2, 3, 4),
-            I64Vec4::try_from(ISizeVec4::new(1, 2, 3, 4)).unwrap()
-        );
-
-        #[cfg(feature = "usize")]
-        {
-            assert_eq!(
-                I64Vec4::new(1, 2, 3, 4),
-                I64Vec4::try_from(USizeVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            if core::mem::size_of::<usize>() > 4 {
-                assert!(I64Vec4::try_from(USizeVec4::new(usize::MAX, 2, 3, 4)).is_err());
-                assert!(I64Vec4::try_from(USizeVec4::new(1, usize::MAX, 3, 4)).is_err());
-                assert!(I64Vec4::try_from(USizeVec4::new(1, 2, usize::MAX, 4)).is_err());
-                assert!(I64Vec4::try_from(USizeVec4::new(1, 2, 3, usize::MAX)).is_err());
-            }
-        }
-    });
-
-    glam_test!(test_wrapping_add, {
-        assert_eq!(
-            I64Vec4::new(i64::MAX, 5, i64::MIN, 0).wrapping_add(I64Vec4::new(1, 3, i64::MAX, 0)),
-            I64Vec4::new(i64::MIN, 8, -1, 0),
-        );
-    });
-
-    glam_test!(test_wrapping_sub, {
-        assert_eq!(
-            I64Vec4::new(i64::MAX, 5, i64::MIN, 0).wrapping_sub(I64Vec4::new(1, 3, i64::MAX, 0)),
-            I64Vec4::new(9223372036854775806, 2, 1, 0)
-        );
-    });
-
-    glam_test!(test_wrapping_mul, {
-        assert_eq!(
-            I64Vec4::new(i64::MAX, 5, i64::MIN, 0).wrapping_mul(I64Vec4::new(3, 3, 5, 1)),
-            I64Vec4::new(9223372036854775805, 15, -9223372036854775808, 0)
-        );
-    });
-
-    glam_test!(test_wrapping_div, {
-        assert_eq!(
-            I64Vec4::new(i64::MAX, 5, i64::MIN, 0).wrapping_div(I64Vec4::new(3, 3, 5, 1)),
-            I64Vec4::new(3074457345618258602, 1, -1844674407370955161, 0)
-        );
-    });
-
-    glam_test!(test_saturating_add, {
-        assert_eq!(
-            I64Vec4::new(i64::MAX, i64::MIN, 0, 0).saturating_add(I64Vec4::new(1, -1, 2, 3)),
-            I64Vec4::new(i64::MAX, i64::MIN, 2, 3)
-        );
-    });
-
-    glam_test!(test_saturating_sub, {
-        assert_eq!(
-            I64Vec4::new(i64::MIN, i64::MAX, 0, 0).saturating_sub(I64Vec4::new(1, -1, 2, 3)),
-            I64Vec4::new(i64::MIN, i64::MAX, -2, -3)
-        );
-    });
-
-    glam_test!(test_saturating_mul, {
-        assert_eq!(
-            I64Vec4::new(i64::MAX, i64::MIN, 0, 0).saturating_mul(I64Vec4::new(2, 2, 0, 0)),
-            I64Vec4::new(i64::MAX, i64::MIN, 0, 0)
-        );
-    });
-
-    glam_test!(test_saturating_div, {
-        assert_eq!(
-            I64Vec4::new(i64::MAX, i64::MIN, 0, 0).saturating_div(I64Vec4::new(2, 2, 3, 4)),
-            I64Vec4::new(4611686018427387903, -4611686018427387904, 0, 0)
-        );
-    });
-
-    #[cfg(feature = "u64")]
-    glam_test!(test_checked_add_unsigned, {
-        assert_eq!(I64Vec4::MAX.checked_add_unsigned(U64Vec4::ONE), None);
-        assert_eq!(
-            I64Vec4::NEG_ONE.checked_add_unsigned(U64Vec4::ONE),
-            Some(I64Vec4::ZERO)
-        );
-    });
-
-    #[cfg(feature = "u64")]
-    glam_test!(test_checked_sub_unsigned, {
-        assert_eq!(I64Vec4::MIN.checked_sub_unsigned(U64Vec4::ONE), None);
-        assert_eq!(
-            I64Vec4::ZERO.checked_sub_unsigned(U64Vec4::ONE),
-            Some(I64Vec4::NEG_ONE)
-        );
-    });
-
-    #[cfg(feature = "u64")]
-    glam_test!(test_wrapping_add_unsigned, {
-        assert_eq!(
-            I64Vec4::new(i64::MAX, i64::MAX, i64::MAX, i64::MAX)
-                .wrapping_add_unsigned(U64Vec4::new(1, 1, 1, 1)),
-            I64Vec4::new(i64::MIN, i64::MIN, i64::MIN, i64::MIN)
-        );
-    });
-
-    #[cfg(feature = "u64")]
-    glam_test!(test_wrapping_sub_unsigned, {
-        assert_eq!(
-            I64Vec4::new(i64::MIN, i64::MIN, i64::MIN, i64::MIN)
-                .wrapping_sub_unsigned(U64Vec4::new(1, 1, 1, 1)),
-            I64Vec4::new(i64::MAX, i64::MAX, i64::MAX, i64::MAX)
-        );
-    });
-
-    #[cfg(feature = "u64")]
-    glam_test!(test_saturating_add_unsigned, {
-        assert_eq!(
-            I64Vec4::new(i64::MAX, i64::MAX, i64::MAX, i64::MAX)
-                .saturating_add_unsigned(U64Vec4::new(1, 1, 1, 1)),
-            I64Vec4::new(i64::MAX, i64::MAX, i64::MAX, i64::MAX)
-        );
-    });
-
-    #[cfg(feature = "u64")]
-    glam_test!(test_saturating_sub_unsigned, {
-        assert_eq!(
-            I64Vec4::new(i64::MIN, i64::MIN, i64::MIN, i64::MIN)
-                .saturating_sub_unsigned(U64Vec4::new(1, 1, 1, 1)),
-            I64Vec4::new(i64::MIN, i64::MIN, i64::MIN, i64::MIN)
-        );
-    });
+    impl_vec_wrapping_saturating_tests!(4, I64Vec4, i64, U64Vec4, "u64", signed);
 
     impl_vec4_signed_integer_tests!(i64, i64vec4, I64Vec4, I64Vec3, I64Vec2, BVec4);
     impl_vec4_eq_hash_tests!(i64, i64vec4);
@@ -4976,184 +2856,9 @@ mod u64vec4 {
         assert_eq!(16, mem::align_of::<U64Vec4>());
     });
 
-    glam_test!(test_try_from, {
-        #[cfg(feature = "i8")]
-        {
-            assert_eq!(
-                U64Vec4::new(1, 2, 3, 4),
-                U64Vec4::try_from(I8Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(U64Vec4::try_from(I8Vec4::new(-1, 2, 3, 4)).is_err());
-            assert!(U64Vec4::try_from(I8Vec4::new(1, -2, 3, 4)).is_err());
-            assert!(U64Vec4::try_from(I8Vec4::new(1, 2, -3, 4)).is_err());
-            assert!(U64Vec4::try_from(I8Vec4::new(1, 2, 3, -4)).is_err());
-        }
+    impl_vec4_u64_try_from_tests!(U64Vec4, u64);
 
-        #[cfg(feature = "u8")]
-        assert_eq!(
-            U64Vec4::new(1, 2, 3, 4),
-            U64Vec4::from(U8Vec4::new(1, 2, 3, 4))
-        );
-
-        #[cfg(feature = "i16")]
-        {
-            assert_eq!(
-                U64Vec4::new(1, 2, 3, 4),
-                U64Vec4::try_from(I16Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(U64Vec4::try_from(I16Vec4::new(-1, 2, 3, 4)).is_err());
-            assert!(U64Vec4::try_from(I16Vec4::new(1, -2, 3, 4)).is_err());
-            assert!(U64Vec4::try_from(I16Vec4::new(1, 2, -3, 4)).is_err());
-            assert!(U64Vec4::try_from(I16Vec4::new(1, 2, 3, -4)).is_err());
-        }
-
-        #[cfg(feature = "u16")]
-        assert_eq!(
-            U64Vec4::new(1, 2, 3, 4),
-            U64Vec4::from(U16Vec4::new(1, 2, 3, 4))
-        );
-
-        #[cfg(feature = "i32")]
-        {
-            assert_eq!(
-                U64Vec4::new(1, 2, 3, 4),
-                U64Vec4::try_from(IVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(U64Vec4::try_from(IVec4::new(-1, 2, 3, 4)).is_err());
-            assert!(U64Vec4::try_from(IVec4::new(1, -2, 3, 4)).is_err());
-            assert!(U64Vec4::try_from(IVec4::new(1, 2, -3, 4)).is_err());
-            assert!(U64Vec4::try_from(IVec4::new(1, 2, 3, -4)).is_err());
-        }
-
-        #[cfg(feature = "u32")]
-        assert_eq!(
-            U64Vec4::new(1, 2, 3, 4),
-            U64Vec4::from(UVec4::new(1, 2, 3, 4))
-        );
-
-        #[cfg(feature = "i64")]
-        {
-            assert_eq!(
-                U64Vec4::new(1, 2, 3, 4),
-                U64Vec4::try_from(I64Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(U64Vec4::try_from(I64Vec4::new(-1, 2, 3, 4)).is_err());
-            assert!(U64Vec4::try_from(I64Vec4::new(1, -2, 3, 4)).is_err());
-            assert!(U64Vec4::try_from(I64Vec4::new(1, 2, -3, 4)).is_err());
-            assert!(U64Vec4::try_from(I64Vec4::new(1, 2, 3, -4)).is_err());
-        }
-
-        #[cfg(feature = "isize")]
-        {
-            assert_eq!(
-                U64Vec4::new(1, 2, 3, 4),
-                U64Vec4::try_from(ISizeVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(U64Vec4::try_from(ISizeVec4::new(-1, 2, 3, 4)).is_err());
-            assert!(U64Vec4::try_from(ISizeVec4::new(1, -2, 3, 4)).is_err());
-            assert!(U64Vec4::try_from(ISizeVec4::new(1, 2, -3, 4)).is_err());
-            assert!(U64Vec4::try_from(ISizeVec4::new(1, 2, 3, -4)).is_err());
-        }
-
-        #[cfg(feature = "usize")]
-        assert_eq!(
-            U64Vec4::new(1, 2, 3, 4),
-            U64Vec4::try_from(USizeVec4::new(1, 2, 3, 4)).unwrap()
-        );
-    });
-
-    glam_test!(test_wrapping_add, {
-        assert_eq!(
-            U64Vec4::new(u64::MAX, 5, u64::MAX, 0).wrapping_add(U64Vec4::new(1, 3, u64::MAX, 0)),
-            U64Vec4::new(0, 8, u64::MAX.wrapping_add(u64::MAX), 0),
-        );
-    });
-
-    glam_test!(test_wrapping_sub, {
-        assert_eq!(
-            U64Vec4::new(u64::MAX, 5, u64::MAX - 1, 0).wrapping_sub(U64Vec4::new(
-                1,
-                3,
-                u64::MAX,
-                0
-            )),
-            U64Vec4::new(
-                u64::MAX.wrapping_sub(1),
-                2,
-                (u64::MAX - 1).wrapping_sub(u64::MAX),
-                0
-            )
-        );
-    });
-
-    glam_test!(test_wrapping_mul, {
-        assert_eq!(
-            U64Vec4::new(u64::MAX, 5, u64::MAX, 0).wrapping_mul(U64Vec4::new(3, 3, 5, 1)),
-            U64Vec4::new(u64::MAX.wrapping_mul(3), 15, u64::MAX.wrapping_mul(5), 0)
-        );
-    });
-
-    glam_test!(test_wrapping_div, {
-        assert_eq!(
-            U64Vec4::new(u64::MAX, 5, u64::MAX, 0).wrapping_div(U64Vec4::new(3, 3, 5, 1)),
-            U64Vec4::new(u64::MAX.wrapping_div(3), 1, u64::MAX.wrapping_div(5), 0)
-        );
-    });
-
-    glam_test!(test_saturating_add, {
-        assert_eq!(
-            U64Vec4::new(u64::MAX, u64::MAX, 0, 0).saturating_add(U64Vec4::new(1, u64::MAX, 2, 3)),
-            U64Vec4::new(u64::MAX, u64::MAX, 2, 3)
-        );
-    });
-
-    glam_test!(test_saturating_sub, {
-        assert_eq!(
-            U64Vec4::new(0, u64::MAX, 0, 0).saturating_sub(U64Vec4::new(1, 1, 2, 3)),
-            U64Vec4::new(0, u64::MAX.saturating_sub(1), 0, 0)
-        );
-    });
-
-    glam_test!(test_saturating_mul, {
-        assert_eq!(
-            U64Vec4::new(u64::MAX, u64::MAX, 0, 0).saturating_mul(U64Vec4::new(2, u64::MAX, 0, 0)),
-            U64Vec4::new(u64::MAX, u64::MAX, 0, 0)
-        );
-    });
-
-    glam_test!(test_saturating_div, {
-        assert_eq!(
-            U64Vec4::new(u64::MAX, u64::MAX, 0, 0).saturating_div(U64Vec4::new(2, u64::MAX, 3, 4)),
-            U64Vec4::new(u64::MAX.saturating_div(2), 1, 0, 0)
-        );
-    });
-
-    #[cfg(feature = "i64")]
-    glam_test!(test_checked_add_signed, {
-        assert_eq!(U64Vec4::MAX.checked_add_signed(I64Vec4::ONE), None);
-        assert_eq!(
-            U64Vec4::ONE.checked_add_signed(I64Vec4::NEG_ONE),
-            Some(U64Vec4::ZERO)
-        );
-    });
-
-    #[cfg(feature = "i64")]
-    glam_test!(test_wrapping_add_signed, {
-        assert_eq!(
-            U64Vec4::new(u64::MAX, u64::MAX, u64::MAX, u64::MAX)
-                .wrapping_add_signed(I64Vec4::new(1, 1, 1, 1)),
-            U64Vec4::new(u64::MIN, u64::MIN, u64::MIN, u64::MIN)
-        );
-    });
-
-    #[cfg(feature = "i64")]
-    glam_test!(test_saturating_add_signed, {
-        assert_eq!(
-            U64Vec4::new(u64::MAX, u64::MAX, u64::MAX, u64::MAX)
-                .saturating_add_signed(I64Vec4::new(1, 1, 1, 1)),
-            U64Vec4::new(u64::MAX, u64::MAX, u64::MAX, u64::MAX)
-        );
-    });
+    impl_vec_wrapping_saturating_tests!(4, U64Vec4, u64, I64Vec4, "i64", unsigned);
 
     impl_vec4_unsigned_integer_tests!(u64, u64vec4, U64Vec4, U64Vec3, U64Vec2, BVec4);
     impl_vec4_eq_hash_tests!(u64, u64vec4);
@@ -5196,192 +2901,9 @@ mod isizevec4 {
         assert_eq!(16, mem::align_of::<ISizeVec4>());
     });
 
-    glam_test!(test_try_from, {
-        #[cfg(feature = "i8")]
-        assert_eq!(
-            ISizeVec4::new(1, 2, 3, 4),
-            ISizeVec4::from(I8Vec4::new(1, 2, 3, 4))
-        );
-        #[cfg(feature = "u8")]
-        assert_eq!(
-            ISizeVec4::new(1, 2, 3, 4),
-            ISizeVec4::from(U8Vec4::new(1, 2, 3, 4))
-        );
-        #[cfg(feature = "i16")]
-        assert_eq!(
-            ISizeVec4::new(1, 2, 3, 4),
-            ISizeVec4::from(I16Vec4::new(1, 2, 3, 4))
-        );
-        #[cfg(feature = "u16")]
-        assert_eq!(
-            ISizeVec4::new(1, 2, 3, 4),
-            ISizeVec4::try_from(U16Vec4::new(1, 2, 3, 4)).unwrap()
-        );
-        #[cfg(feature = "i32")]
-        assert_eq!(
-            ISizeVec4::new(1, 2, 3, 4),
-            ISizeVec4::try_from(IVec4::new(1, 2, 3, 4)).unwrap()
-        );
-        #[cfg(feature = "u32")]
-        assert_eq!(
-            ISizeVec4::new(1, 2, 3, 4),
-            ISizeVec4::try_from(UVec4::new(1, 2, 3, 4)).unwrap()
-        );
+    impl_vec4_isize_try_from_tests!(ISizeVec4, isize);
 
-        #[cfg(feature = "u64")]
-        {
-            assert_eq!(
-                ISizeVec4::new(1, 2, 3, 4),
-                ISizeVec4::try_from(U64Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(ISizeVec4::try_from(U64Vec4::new(u64::MAX, 2, 3, 4)).is_err());
-            assert!(ISizeVec4::try_from(U64Vec4::new(1, u64::MAX, 3, 4)).is_err());
-            assert!(ISizeVec4::try_from(U64Vec4::new(1, 2, u64::MAX, 4)).is_err());
-            assert!(ISizeVec4::try_from(U64Vec4::new(1, 2, 3, u64::MAX)).is_err());
-        }
-
-        #[cfg(feature = "i64")]
-        assert_eq!(
-            ISizeVec4::new(1, 2, 3, 4),
-            ISizeVec4::try_from(I64Vec4::new(1, 2, 3, 4)).unwrap()
-        );
-
-        #[cfg(feature = "usize")]
-        {
-            assert_eq!(
-                ISizeVec4::new(1, 2, 3, 4),
-                ISizeVec4::try_from(USizeVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            if core::mem::size_of::<usize>() > 4 {
-                assert!(ISizeVec4::try_from(USizeVec4::new(usize::MAX, 2, 3, 4)).is_err());
-                assert!(ISizeVec4::try_from(USizeVec4::new(1, usize::MAX, 3, 4)).is_err());
-                assert!(ISizeVec4::try_from(USizeVec4::new(1, 2, usize::MAX, 4)).is_err());
-                assert!(ISizeVec4::try_from(USizeVec4::new(1, 2, 3, usize::MAX)).is_err());
-            }
-        }
-    });
-
-    glam_test!(test_wrapping_add, {
-        assert_eq!(
-            ISizeVec4::new(isize::MAX, 5, isize::MIN, 0).wrapping_add(ISizeVec4::new(
-                1,
-                3,
-                isize::MAX,
-                0
-            )),
-            ISizeVec4::new(isize::MIN, 8, -1, 0),
-        );
-    });
-
-    glam_test!(test_wrapping_sub, {
-        assert_eq!(
-            ISizeVec4::new(isize::MAX, 5, isize::MIN, 0).wrapping_sub(ISizeVec4::new(
-                1,
-                3,
-                isize::MAX,
-                0
-            )),
-            ISizeVec4::new(9223372036854775806, 2, 1, 0)
-        );
-    });
-
-    glam_test!(test_wrapping_mul, {
-        assert_eq!(
-            ISizeVec4::new(isize::MAX, 5, isize::MIN, 0).wrapping_mul(ISizeVec4::new(3, 3, 5, 1)),
-            ISizeVec4::new(9223372036854775805, 15, -9223372036854775808, 0)
-        );
-    });
-
-    glam_test!(test_wrapping_div, {
-        assert_eq!(
-            ISizeVec4::new(isize::MAX, 5, isize::MIN, 0).wrapping_div(ISizeVec4::new(3, 3, 5, 1)),
-            ISizeVec4::new(3074457345618258602, 1, -1844674407370955161, 0)
-        );
-    });
-
-    glam_test!(test_saturating_add, {
-        assert_eq!(
-            ISizeVec4::new(isize::MAX, isize::MIN, 0, 0)
-                .saturating_add(ISizeVec4::new(1, -1, 2, 3)),
-            ISizeVec4::new(isize::MAX, isize::MIN, 2, 3)
-        );
-    });
-
-    glam_test!(test_saturating_sub, {
-        assert_eq!(
-            ISizeVec4::new(isize::MIN, isize::MAX, 0, 0)
-                .saturating_sub(ISizeVec4::new(1, -1, 2, 3)),
-            ISizeVec4::new(isize::MIN, isize::MAX, -2, -3)
-        );
-    });
-
-    glam_test!(test_saturating_mul, {
-        assert_eq!(
-            ISizeVec4::new(isize::MAX, isize::MIN, 0, 0).saturating_mul(ISizeVec4::new(2, 2, 0, 0)),
-            ISizeVec4::new(isize::MAX, isize::MIN, 0, 0)
-        );
-    });
-
-    glam_test!(test_saturating_div, {
-        assert_eq!(
-            ISizeVec4::new(isize::MAX, isize::MIN, 0, 0).saturating_div(ISizeVec4::new(2, 2, 3, 4)),
-            ISizeVec4::new(4611686018427387903, -4611686018427387904, 0, 0)
-        );
-    });
-
-    #[cfg(feature = "usize")]
-    glam_test!(test_checked_add_unsigned, {
-        assert_eq!(ISizeVec4::MAX.checked_add_unsigned(USizeVec4::ONE), None);
-        assert_eq!(
-            ISizeVec4::NEG_ONE.checked_add_unsigned(USizeVec4::ONE),
-            Some(ISizeVec4::ZERO)
-        );
-    });
-
-    #[cfg(feature = "usize")]
-    glam_test!(test_checked_sub_unsigned, {
-        assert_eq!(ISizeVec4::MIN.checked_sub_unsigned(USizeVec4::ONE), None);
-        assert_eq!(
-            ISizeVec4::ZERO.checked_sub_unsigned(USizeVec4::ONE),
-            Some(ISizeVec4::NEG_ONE)
-        );
-    });
-
-    #[cfg(feature = "usize")]
-    glam_test!(test_wrapping_add_unsigned, {
-        assert_eq!(
-            ISizeVec4::new(isize::MAX, isize::MAX, isize::MAX, isize::MAX)
-                .wrapping_add_unsigned(USizeVec4::new(1, 1, 1, 1)),
-            ISizeVec4::new(isize::MIN, isize::MIN, isize::MIN, isize::MIN)
-        );
-    });
-
-    #[cfg(feature = "usize")]
-    glam_test!(test_wrapping_sub_unsigned, {
-        assert_eq!(
-            ISizeVec4::new(isize::MIN, isize::MIN, isize::MIN, isize::MIN)
-                .wrapping_sub_unsigned(USizeVec4::new(1, 1, 1, 1)),
-            ISizeVec4::new(isize::MAX, isize::MAX, isize::MAX, isize::MAX)
-        );
-    });
-
-    #[cfg(feature = "usize")]
-    glam_test!(test_saturating_add_unsigned, {
-        assert_eq!(
-            ISizeVec4::new(isize::MAX, isize::MAX, isize::MAX, isize::MAX)
-                .saturating_add_unsigned(USizeVec4::new(1, 1, 1, 1)),
-            ISizeVec4::new(isize::MAX, isize::MAX, isize::MAX, isize::MAX)
-        );
-    });
-
-    #[cfg(feature = "usize")]
-    glam_test!(test_saturating_sub_unsigned, {
-        assert_eq!(
-            ISizeVec4::new(isize::MIN, isize::MIN, isize::MIN, isize::MIN)
-                .saturating_sub_unsigned(USizeVec4::new(1, 1, 1, 1)),
-            ISizeVec4::new(isize::MIN, isize::MIN, isize::MIN, isize::MIN)
-        );
-    });
+    impl_vec_wrapping_saturating_tests!(4, ISizeVec4, isize, USizeVec4, "usize", signed);
 
     impl_vec4_signed_integer_tests!(isize, isizevec4, ISizeVec4, ISizeVec3, ISizeVec2, BVec4);
     impl_vec4_eq_hash_tests!(isize, isizevec4);
@@ -5424,208 +2946,9 @@ mod usizevec4 {
         assert_eq!(16, mem::align_of::<USizeVec4>());
     });
 
-    glam_test!(test_try_from, {
-        #[cfg(feature = "i8")]
-        {
-            assert_eq!(
-                USizeVec4::new(1, 2, 3, 4),
-                USizeVec4::try_from(I8Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(USizeVec4::try_from(I8Vec4::new(-1, 2, 3, 4)).is_err());
-            assert!(USizeVec4::try_from(I8Vec4::new(1, -2, 3, 4)).is_err());
-            assert!(USizeVec4::try_from(I8Vec4::new(1, 2, -3, 4)).is_err());
-            assert!(USizeVec4::try_from(I8Vec4::new(1, 2, 3, -4)).is_err());
-        }
+    impl_vec4_usize_try_from_tests!(USizeVec4, usize);
 
-        #[cfg(feature = "u8")]
-        assert_eq!(
-            USizeVec4::new(1, 2, 3, 4),
-            USizeVec4::from(U8Vec4::new(1, 2, 3, 4))
-        );
-
-        #[cfg(feature = "i16")]
-        {
-            assert_eq!(
-                USizeVec4::new(1, 2, 3, 4),
-                USizeVec4::try_from(I16Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(USizeVec4::try_from(I16Vec4::new(-1, 2, 3, 4)).is_err());
-            assert!(USizeVec4::try_from(I16Vec4::new(1, -2, 3, 4)).is_err());
-            assert!(USizeVec4::try_from(I16Vec4::new(1, 2, -3, 4)).is_err());
-            assert!(USizeVec4::try_from(I16Vec4::new(1, 2, 3, -4)).is_err());
-        }
-
-        #[cfg(feature = "u16")]
-        assert_eq!(
-            USizeVec4::new(1, 2, 3, 4),
-            USizeVec4::from(U16Vec4::new(1, 2, 3, 4))
-        );
-
-        #[cfg(feature = "i32")]
-        {
-            assert_eq!(
-                USizeVec4::new(1, 2, 3, 4),
-                USizeVec4::try_from(IVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(USizeVec4::try_from(IVec4::new(-1, 2, 3, 4)).is_err());
-            assert!(USizeVec4::try_from(IVec4::new(1, -2, 3, 4)).is_err());
-            assert!(USizeVec4::try_from(IVec4::new(1, 2, -3, 4)).is_err());
-            assert!(USizeVec4::try_from(IVec4::new(1, 2, 3, -4)).is_err());
-        }
-
-        #[cfg(feature = "u32")]
-        assert_eq!(
-            USizeVec4::new(1, 2, 3, 4),
-            USizeVec4::try_from(UVec4::new(1, 2, 3, 4)).unwrap()
-        );
-        #[cfg(feature = "u64")]
-        assert_eq!(
-            USizeVec4::new(1, 2, 3, 4),
-            USizeVec4::try_from(U64Vec4::new(1, 2, 3, 4)).unwrap()
-        );
-
-        #[cfg(feature = "i64")]
-        {
-            assert_eq!(
-                USizeVec4::new(1, 2, 3, 4),
-                USizeVec4::try_from(I64Vec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(USizeVec4::try_from(I64Vec4::new(-1, 2, 3, 4)).is_err());
-            assert!(USizeVec4::try_from(I64Vec4::new(1, -2, 3, 4)).is_err());
-            assert!(USizeVec4::try_from(I64Vec4::new(1, 2, -3, 4)).is_err());
-            assert!(USizeVec4::try_from(I64Vec4::new(1, 2, 3, -4)).is_err());
-        }
-
-        #[cfg(feature = "isize")]
-        {
-            assert_eq!(
-                USizeVec4::new(1, 2, 3, 4),
-                USizeVec4::try_from(ISizeVec4::new(1, 2, 3, 4)).unwrap()
-            );
-            assert!(USizeVec4::try_from(ISizeVec4::new(-1, 2, 3, 4)).is_err());
-            assert!(USizeVec4::try_from(ISizeVec4::new(1, -2, 3, 4)).is_err());
-            assert!(USizeVec4::try_from(ISizeVec4::new(1, 2, -3, 4)).is_err());
-            assert!(USizeVec4::try_from(ISizeVec4::new(1, 2, 3, -4)).is_err());
-        }
-    });
-
-    glam_test!(test_wrapping_add, {
-        assert_eq!(
-            USizeVec4::new(usize::MAX, 5, usize::MAX, 0).wrapping_add(USizeVec4::new(
-                1,
-                3,
-                usize::MAX,
-                0
-            )),
-            USizeVec4::new(0, 8, usize::MAX.wrapping_add(usize::MAX), 0),
-        );
-    });
-
-    glam_test!(test_wrapping_sub, {
-        assert_eq!(
-            USizeVec4::new(usize::MAX, 5, usize::MAX - 1, 0).wrapping_sub(USizeVec4::new(
-                1,
-                3,
-                usize::MAX,
-                0
-            )),
-            USizeVec4::new(
-                usize::MAX.wrapping_sub(1),
-                2,
-                (usize::MAX - 1).wrapping_sub(usize::MAX),
-                0
-            )
-        );
-    });
-
-    glam_test!(test_wrapping_mul, {
-        assert_eq!(
-            USizeVec4::new(usize::MAX, 5, usize::MAX, 0).wrapping_mul(USizeVec4::new(3, 3, 5, 1)),
-            USizeVec4::new(
-                usize::MAX.wrapping_mul(3),
-                15,
-                usize::MAX.wrapping_mul(5),
-                0
-            )
-        );
-    });
-
-    glam_test!(test_wrapping_div, {
-        assert_eq!(
-            USizeVec4::new(usize::MAX, 5, usize::MAX, 0).wrapping_div(USizeVec4::new(3, 3, 5, 1)),
-            USizeVec4::new(usize::MAX.wrapping_div(3), 1, usize::MAX.wrapping_div(5), 0)
-        );
-    });
-
-    glam_test!(test_saturating_add, {
-        assert_eq!(
-            USizeVec4::new(usize::MAX, usize::MAX, 0, 0).saturating_add(USizeVec4::new(
-                1,
-                usize::MAX,
-                2,
-                3
-            )),
-            USizeVec4::new(usize::MAX, usize::MAX, 2, 3)
-        );
-    });
-
-    glam_test!(test_saturating_sub, {
-        assert_eq!(
-            USizeVec4::new(0, usize::MAX, 0, 0).saturating_sub(USizeVec4::new(1, 1, 2, 3)),
-            USizeVec4::new(0, usize::MAX.saturating_sub(1), 0, 0)
-        );
-    });
-
-    glam_test!(test_saturating_mul, {
-        assert_eq!(
-            USizeVec4::new(usize::MAX, usize::MAX, 0, 0).saturating_mul(USizeVec4::new(
-                2,
-                usize::MAX,
-                0,
-                0
-            )),
-            USizeVec4::new(usize::MAX, usize::MAX, 0, 0)
-        );
-    });
-
-    glam_test!(test_saturating_div, {
-        assert_eq!(
-            USizeVec4::new(usize::MAX, usize::MAX, 0, 0).saturating_div(USizeVec4::new(
-                2,
-                usize::MAX,
-                3,
-                4
-            )),
-            USizeVec4::new(usize::MAX.saturating_div(2), 1, 0, 0)
-        );
-    });
-
-    #[cfg(feature = "isize")]
-    glam_test!(test_checked_add_signed, {
-        assert_eq!(USizeVec4::MAX.checked_add_signed(ISizeVec4::ONE), None);
-        assert_eq!(
-            USizeVec4::ONE.checked_add_signed(ISizeVec4::NEG_ONE),
-            Some(USizeVec4::ZERO)
-        );
-    });
-
-    #[cfg(feature = "isize")]
-    glam_test!(test_wrapping_add_signed, {
-        assert_eq!(
-            USizeVec4::new(usize::MAX, usize::MAX, usize::MAX, usize::MAX)
-                .wrapping_add_signed(ISizeVec4::new(1, 1, 1, 1)),
-            USizeVec4::new(usize::MIN, usize::MIN, usize::MIN, usize::MIN)
-        );
-    });
-
-    #[cfg(feature = "isize")]
-    glam_test!(test_saturating_add_signed, {
-        assert_eq!(
-            USizeVec4::new(usize::MAX, usize::MAX, usize::MAX, usize::MAX)
-                .saturating_add_signed(ISizeVec4::new(1, 1, 1, 1)),
-            USizeVec4::new(usize::MAX, usize::MAX, usize::MAX, usize::MAX)
-        );
-    });
+    impl_vec_wrapping_saturating_tests!(4, USizeVec4, usize, ISizeVec4, "isize", unsigned);
 
     impl_vec4_unsigned_integer_tests!(usize, usizevec4, USizeVec4, USizeVec3, USizeVec2, BVec4);
     impl_vec4_eq_hash_tests!(usize, usizevec4);
