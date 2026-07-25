@@ -8,11 +8,7 @@
     {% set cam = "dcamera" %}
 {% endif %}
 
-{% if is_rh %}
-    {% set handedness = "right-handed" %}
-{% else %}
-    {% set handedness = "left-handed" %}
-{% endif %}
+{% set handedness = "right-handed" if is_rh else "left-handed" %}
 
 //! Projection matrix constructors.
 //!

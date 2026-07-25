@@ -21,6 +21,7 @@
     {% set vec3_t = "Vec3" %}
     {% set mat3_t = "Mat3" %}
     {% set mat4_t = "Mat4" %}
+    {% set cam = "camera" %}
 {% elif scalar_t == "f64" %}
     {% set self_t = "DAffine" ~ dim %}
     {% set col_t = "DVec" ~ dim %}
@@ -30,10 +31,6 @@
     {% set vec3_t = "DVec3" %}
     {% set mat3_t = "DMat3" %}
     {% set mat4_t = "DMat4" %}
-{% endif %}
-{% if scalar_t == "f32" %}
-    {% set cam = "camera" %}
-{% elif scalar_t == "f64" %}
     {% set cam = "dcamera" %}
 {% endif %}
 
