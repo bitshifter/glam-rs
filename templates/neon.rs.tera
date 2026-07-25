@@ -1,4 +1,4 @@
-{% macro impl_mat4_inverse() %}
+{% component neon_mat4_inverse() %}
     unsafe {
         // Based on https://github.com/g-truc/glm `glm_mat4_inverse`
         let swizzle3377 = |a: float32x4_t, b: float32x4_t| -> float32x4_t {
@@ -176,4 +176,4 @@
             true
         )
     }
-{% endmacro impl_mat4_inverse %}
+{% endcomponent %}

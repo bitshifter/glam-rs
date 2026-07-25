@@ -1,4 +1,4 @@
-{% macro impl_mat4_inverse() %}
+{% component coresimd_mat4_inverse() %}
     // Based on https://github.com/g-truc/glm `glm_mat4_inverse`
     let fac0 = {
         let swp0a = simd_swizzle!(
@@ -258,4 +258,4 @@
         },
         true
     )
-{% endmacro impl_mat4_inverse %}
+{% endcomponent %}

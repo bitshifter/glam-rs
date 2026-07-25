@@ -1,4 +1,4 @@
-{% macro impl_mat4_inverse() %}
+{% component wasm_mat4_inverse() %}
     // Based on https://github.com/g-truc/glm `glm_mat4_inverse`
     let fac0 = {
         let swp0a = i32x4_shuffle::<3, 3, 7, 7>(self.w_axis.0, self.z_axis.0);
@@ -146,4 +146,4 @@
         },
         true
     )
-{% endmacro impl_mat4_inverse %}
+{% endcomponent %}
