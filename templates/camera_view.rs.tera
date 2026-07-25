@@ -20,11 +20,7 @@
     {% set is_f32 = false %}
 {% endif %}
 
-{% if is_rh %}
-    {% set handedness = "right-handed" %}
-{% else %}
-    {% set handedness = "left-handed" %}
-{% endif %}
+{% set handedness = "right-handed" if is_rh else "left-handed" %}
 
 //! View (camera) constructors for {{ handedness }} world coordinate systems.
 //!

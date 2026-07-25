@@ -1,5 +1,3 @@
-{% import "macros.rs.tera" as macros %}
-
 // Generated from {{template_path}} template. Edit the template, not the generated file.
 
 {% if scalar_t == "f32" %}
@@ -23,6 +21,7 @@
     {% set vec3_t = "Vec3" %}
     {% set mat3_t = "Mat3" %}
     {% set mat4_t = "Mat4" %}
+    {% set cam = "camera" %}
 {% elif scalar_t == "f64" %}
     {% set self_t = "DAffine" ~ dim %}
     {% set col_t = "DVec" ~ dim %}
@@ -32,10 +31,6 @@
     {% set vec3_t = "DVec3" %}
     {% set mat3_t = "DMat3" %}
     {% set mat4_t = "DMat4" %}
-{% endif %}
-{% if scalar_t == "f32" %}
-    {% set cam = "camera" %}
-{% elif scalar_t == "f64" %}
     {% set cam = "dcamera" %}
 {% endif %}
 
@@ -49,8 +44,8 @@
     {% set vec_size = 3 %}
 {% endif %}
 
-{% set components = ["x", "y", "z", "w"] | slice(end = dim + 1) %}
-{% set axes = ["x_axis", "y_axis", "z_axis", "w_axis"] | slice(end = dim + 1) %}
+{% set components = ["x", "y", "z", "w"] [:dim + 1] %}
+{% set axes = ["x_axis", "y_axis", "z_axis", "w_axis"] [:dim + 1] %}
 
 use crate::{
 {% if self_t == "Affine2" %}
@@ -149,7 +144,7 @@ impl {{ self_t }} {
         ) -> Self {
         Self {
             matrix{{ dim }}: {{ mat_t }}::from_cols(
-                {% for axis in axes | slice(end = dim) %}
+                {% for axis in axes [:dim] %}
                     {{ axis }},
                 {% endfor %}
             ),
@@ -891,9 +886,9 @@ impl Mul for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="Mul", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="Mul" self_t={self_t} rhs_t={self_t} output_t={self_t}/> }}
 
-{{ macros::impl_op_assign(imp="Mul", self_t=self_t, rhs_t=self_t) }}
+{{ <impl_op_assign imp="Mul" self_t={self_t} rhs_t={self_t}/> }}
 
 {% if dim == 2 %}
 impl From<{{ self_t }}> for {{ mat3_t }} {
@@ -916,7 +911,7 @@ impl Mul<{{ mat3_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="Mul", self_t=self_t, rhs_t=mat3_t, output_t=mat3_t) }}
+{{ <impl_ref_binop imp="Mul" self_t={self_t} rhs_t={mat3_t} output_t={mat3_t}/> }}
 
 impl Mul<{{ self_t }}> for {{ mat3_t }} {
     type Output = Self;
@@ -927,9 +922,9 @@ impl Mul<{{ self_t }}> for {{ mat3_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="Mul", self_t=mat3_t, rhs_t=self_t, output_t=mat3_t) }}
+{{ <impl_ref_binop imp="Mul" self_t={mat3_t} rhs_t={self_t} output_t={mat3_t}/> }}
 
-{{ macros::impl_op_assign(imp="Mul", self_t=mat3_t, rhs_t=self_t) }}
+{{ <impl_op_assign imp="Mul" self_t={mat3_t} rhs_t={self_t}/> }}
 
 {% elif dim == 3 %}
 impl Mul<{{ mat4_t }}> for {{ self_t }} {
@@ -941,7 +936,7 @@ impl Mul<{{ mat4_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="Mul", self_t=self_t, rhs_t=mat4_t, output_t=mat4_t) }}
+{{ <impl_ref_binop imp="Mul" self_t={self_t} rhs_t={mat4_t} output_t={mat4_t}/> }}
 
 impl Mul<{{ self_t }}> for {{ mat4_t }} {
     type Output = Self;
@@ -952,9 +947,9 @@ impl Mul<{{ self_t }}> for {{ mat4_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="Mul", self_t=mat4_t, rhs_t=self_t, output_t=mat4_t) }}
+{{ <impl_ref_binop imp="Mul" self_t={mat4_t} rhs_t={self_t} output_t={mat4_t}/> }}
 
-{{ macros::impl_op_assign(imp="Mul", self_t=mat4_t, rhs_t=self_t) }}
+{{ <impl_op_assign imp="Mul" self_t={mat4_t} rhs_t={self_t}/> }}
 
 
 impl From<{{ self_t }}> for {{ mat4_t }} {
@@ -1007,7 +1002,7 @@ impl Mul<Mat3A> for Affine2 {
     }
 }
 
-{{ macros::impl_ref_binop(imp="Mul", self_t=self_t, rhs_t="Mat3A", output_t="Mat3A") }}
+{{ <impl_ref_binop imp="Mul" self_t={self_t} rhs_t="Mat3A" output_t="Mat3A"/> }}
 
 impl Mul<Affine2> for Mat3A {
     type Output = Self;
@@ -1018,9 +1013,9 @@ impl Mul<Affine2> for Mat3A {
     }
 }
 
-{{ macros::impl_ref_binop(imp="Mul", self_t="Mat3A", rhs_t=self_t, output_t="Mat3A") }}
+{{ <impl_ref_binop imp="Mul" self_t="Mat3A" rhs_t={self_t} output_t="Mat3A"/> }}
 
-{{ macros::impl_op_assign(imp="Mul", self_t="Mat3A", rhs_t=self_t) }}
+{{ <impl_op_assign imp="Mul" self_t="Mat3A" rhs_t={self_t}/> }}
 
 impl From<Affine2> for Mat3A {
     #[inline]

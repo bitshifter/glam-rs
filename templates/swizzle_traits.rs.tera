@@ -47,8 +47,8 @@
         {% endif %}
 
         {% for i in dimensions %}
-            {% for e0 in components | slice(end=dim) %}
-                {% for e1 in components | slice(end=dim) %}
+            {% for e0 in components [:dim] %}
+                {% for e1 in components [:dim] %}
                     {% if i == 2 %}
                         {% set skip = dim == 2 and e0 == "x" and e1 == "y" %}
                         {% if not skip %}
@@ -61,7 +61,7 @@
                             fn with_{{e0}}{{e1}}(self, rhs: {{ vec2_t }}) -> Self;
                         {% endif %}
                     {% else %}
-                        {% for e2 in components | slice(end=dim) %}
+                        {% for e2 in components [:dim] %}
                             {% if i == 3 %}
                                 {% set skip = dim == 3 and e0 == "x" and e1 == "y" and e2 == "z" %}
                                 {% if not skip %}
@@ -74,7 +74,7 @@
                                     fn with_{{e0}}{{e1}}{{e2}}(self, rhs: {{ vec3_t }}) -> Self;
                                 {% endif %}
                             {% else %}
-                                {% for e3 in components | slice(end=dim) %}
+                                {% for e3 in components [:dim] %}
                                     {% set skip = dim == 4 and e0 == "x" and e1 == "y" and e2 == "z" and e3 == "w" %}
                                     {% if not skip %}
                                         #[must_use]

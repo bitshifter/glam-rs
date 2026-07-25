@@ -1,5 +1,3 @@
-{% import "macros.rs.tera" as macros %}
-
 // Generated from {{template_path}} template. Edit the template, not the generated file.
 
 {% if is_scalar and not is_align %}
@@ -185,7 +183,7 @@
     {% endif %}
 {% endif %}
 
-{% set components = ["x", "y", "z", "w"] | slice(end = dim) %}
+{% set components = ["x", "y", "z", "w"] [:dim] %}
 {% if is_float %}
     {% set one = "1.0" %}
     {% set neg_one = "-1.0" %}
@@ -248,13 +246,13 @@
 };
 {%- if from_types %}
     {%- for ty in from_types %}
-        {{ macros::cfg_check_for_type(ty=ty) }} 
+        {{ <cfg_check_for_type ty={ty}/> }}
         use crate::{{ ty }};
     {% endfor %}
 {% endif %}
 {%- if try_from_types %}
     {%- for ty in try_from_types %}
-        {{ macros::cfg_check_for_type(ty=ty) }} 
+        {{ <cfg_check_for_type ty={ty}/> }}
         use crate::{{ ty }};
     {% endfor %}
 {% endif %}
@@ -3345,7 +3343,7 @@ impl {{ self_t }} {
         /// Returns a vector containing the wrapping addition of `self` and unsigned vector `rhs`.
         ///
         /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
-        {{- macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
+        {{- <cfg_check_for_type ty={opposite_signedness_t}/> }}
         #[inline]
         #[must_use]
         pub const fn checked_add_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Option<Self> {
@@ -3363,7 +3361,7 @@ impl {{ self_t }} {
         /// Returns a vector containing the wrapping subtraction of `self` and unsigned vector `rhs`.
         ///
         /// In other words this computes `Some([self.x - rhs.x, self.y - rhs.y, ..])` but returns `None` on any overflow.
-        {{- macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
+        {{- <cfg_check_for_type ty={opposite_signedness_t}/> }}
         #[inline]
         #[must_use]
         pub const fn checked_sub_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Option<Self> {
@@ -3381,7 +3379,7 @@ impl {{ self_t }} {
         /// Returns a vector containing the wrapping addition of `self` and unsigned vector `rhs`.
         ///
         /// In other words this computes `[self.x.wrapping_add_unsigned(rhs.x), self.y.wrapping_add_unsigned(rhs.y), ..]`.
-        {{- macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
+        {{- <cfg_check_for_type ty={opposite_signedness_t}/> }}
         #[inline]
         #[must_use]
         pub const fn wrapping_add_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Self {
@@ -3395,7 +3393,7 @@ impl {{ self_t }} {
         /// Returns a vector containing the wrapping subtraction of `self` and unsigned vector `rhs`.
         ///
         /// In other words this computes `[self.x.wrapping_sub_unsigned(rhs.x), self.y.wrapping_sub_unsigned(rhs.y), ..]`.
-        {{- macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
+        {{- <cfg_check_for_type ty={opposite_signedness_t}/> }}
         #[inline]
         #[must_use]
         pub const fn wrapping_sub_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Self {
@@ -3409,7 +3407,7 @@ impl {{ self_t }} {
         // Returns a vector containing the saturating addition of `self` and unsigned vector `rhs`.
         ///
         /// In other words this computes `[self.x.saturating_add_unsigned(rhs.x), self.y.saturating_add_unsigned(rhs.y), ..]`.
-        {{- macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
+        {{- <cfg_check_for_type ty={opposite_signedness_t}/> }}
         #[inline]
         #[must_use]
         pub const fn saturating_add_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Self {
@@ -3423,7 +3421,7 @@ impl {{ self_t }} {
         /// Returns a vector containing the saturating subtraction of `self` and unsigned vector `rhs`.
         ///
         /// In other words this computes `[self.x.saturating_sub_unsigned(rhs.x), self.y.saturating_sub_unsigned(rhs.y), ..]`.
-        {{- macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
+        {{- <cfg_check_for_type ty={opposite_signedness_t}/> }}
         #[inline]
         #[must_use]
         pub const fn saturating_sub_unsigned(self, rhs: {{ opposite_signedness_t }}) -> Self {
@@ -3437,7 +3435,7 @@ impl {{ self_t }} {
         /// Returns a vector containing the wrapping addition of `self` and signed vector `rhs`.
         ///
         /// In other words this computes `Some([self.x + rhs.x, self.y + rhs.y, ..])` but returns `None` on any overflow.
-        {{- macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
+        {{- <cfg_check_for_type ty={opposite_signedness_t}/> }}
         #[inline]
         #[must_use]
         pub const fn checked_add_signed(self, rhs: {{ opposite_signedness_t }}) -> Option<Self> {
@@ -3455,7 +3453,7 @@ impl {{ self_t }} {
         /// Returns a vector containing the wrapping addition of `self` and signed vector `rhs`.
         ///
         /// In other words this computes `[self.x.wrapping_add_signed(rhs.x), self.y.wrapping_add_signed(rhs.y), ..]`.
-        {{- macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
+        {{- <cfg_check_for_type ty={opposite_signedness_t}/> }}
         #[inline]
         #[must_use]
         pub const fn wrapping_add_signed(self, rhs: {{ opposite_signedness_t }}) -> Self {
@@ -3469,7 +3467,7 @@ impl {{ self_t }} {
         /// Returns a vector containing the saturating addition of `self` and signed vector `rhs`.
         ///
         /// In other words this computes `[self.x.saturating_add_signed(rhs.x), self.y.saturating_add_signed(rhs.y), ..]`.
-        {{- macros::cfg_check_for_type(ty=opposite_signedness_t) }} 
+        {{- <cfg_check_for_type ty={opposite_signedness_t}/> }}
         #[inline]
         #[must_use]
         pub const fn saturating_add_signed(self, rhs: {{ opposite_signedness_t }}) -> Self {
@@ -3523,7 +3521,7 @@ impl Div for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="Div", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="Div" self_t={self_t} rhs_t={self_t} output_t={self_t}/> }}
 
 impl DivAssign for {{ self_t }} {
     #[inline]
@@ -3546,7 +3544,7 @@ impl DivAssign for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_op_assign(imp="Div", self_t=self_t, rhs_t=self_t) }}
+{{ <impl_ref_op_assign imp="Div" self_t={self_t} rhs_t={self_t}/> }}
 
 impl Div<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -3572,7 +3570,7 @@ impl Div<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="Div", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="Div" self_t={self_t} rhs_t={scalar_t} output_t={self_t}/> }}
 
 impl DivAssign<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
@@ -3595,7 +3593,7 @@ impl DivAssign<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_op_assign(imp="Div", self_t=self_t, rhs_t=scalar_t) }}
+{{ <impl_ref_op_assign imp="Div" self_t={self_t} rhs_t={scalar_t}/> }}
 
 impl Div<{{ self_t }}> for {{ scalar_t }} {
     type Output = {{ self_t }};
@@ -3621,7 +3619,7 @@ impl Div<{{ self_t }}> for {{ scalar_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="Div", self_t=scalar_t, rhs_t=self_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="Div" self_t={scalar_t} rhs_t={self_t} output_t={self_t}/> }}
 
 impl Mul for {{ self_t }} {
     type Output = Self;
@@ -3647,7 +3645,7 @@ impl Mul for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="Mul", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="Mul" self_t={self_t} rhs_t={self_t} output_t={self_t}/> }}
 
 impl MulAssign for {{ self_t }} {
     #[inline]
@@ -3670,7 +3668,7 @@ impl MulAssign for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_op_assign(imp="Mul", self_t=self_t, rhs_t=self_t) }}
+{{ <impl_ref_op_assign imp="Mul" self_t={self_t} rhs_t={self_t}/> }}
 
 impl Mul<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -3696,7 +3694,7 @@ impl Mul<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="Mul", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="Mul" self_t={self_t} rhs_t={scalar_t} output_t={self_t}/> }}
 
 impl MulAssign<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
@@ -3719,7 +3717,7 @@ impl MulAssign<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_op_assign(imp="Mul", self_t=self_t, rhs_t=scalar_t) }}
+{{ <impl_ref_op_assign imp="Mul" self_t={self_t} rhs_t={scalar_t}/> }}
 
 impl Mul<{{ self_t }}> for {{ scalar_t }} {
     type Output = {{ self_t }};
@@ -3745,7 +3743,7 @@ impl Mul<{{ self_t }}> for {{ scalar_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="Mul", self_t=scalar_t, rhs_t=self_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="Mul" self_t={scalar_t} rhs_t={self_t} output_t={self_t}/> }}
 
 impl Add for {{ self_t }} {
     type Output = Self;
@@ -3771,7 +3769,7 @@ impl Add for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="Add", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="Add" self_t={self_t} rhs_t={self_t} output_t={self_t}/> }}
 
 impl AddAssign for {{ self_t }} {
     #[inline]
@@ -3794,7 +3792,7 @@ impl AddAssign for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_op_assign(imp="Add", self_t=self_t, rhs_t=self_t) }}
+{{ <impl_ref_op_assign imp="Add" self_t={self_t} rhs_t={self_t}/> }}
 
 impl Add<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -3820,7 +3818,7 @@ impl Add<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="Add", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="Add" self_t={self_t} rhs_t={scalar_t} output_t={self_t}/> }}
 
 impl AddAssign<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
@@ -3843,7 +3841,7 @@ impl AddAssign<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_op_assign(imp="Add", self_t=self_t, rhs_t=scalar_t) }}
+{{ <impl_ref_op_assign imp="Add" self_t={self_t} rhs_t={scalar_t}/> }}
 
 impl Add<{{ self_t }}> for {{ scalar_t }} {
     type Output = {{ self_t }};
@@ -3869,7 +3867,7 @@ impl Add<{{ self_t }}> for {{ scalar_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="Add", self_t=scalar_t, rhs_t=self_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="Add" self_t={scalar_t} rhs_t={self_t} output_t={self_t}/> }}
 
 impl Sub for {{ self_t }} {
     type Output = Self;
@@ -3895,7 +3893,7 @@ impl Sub for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="Sub", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="Sub" self_t={self_t} rhs_t={self_t} output_t={self_t}/> }}
 
 impl SubAssign for {{ self_t }} {
     #[inline]
@@ -3918,7 +3916,7 @@ impl SubAssign for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_op_assign(imp="Sub", self_t=self_t, rhs_t=self_t) }}
+{{ <impl_ref_op_assign imp="Sub" self_t={self_t} rhs_t={self_t}/> }}
 
 impl Sub<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -3944,7 +3942,7 @@ impl Sub<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="Sub", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="Sub" self_t={self_t} rhs_t={scalar_t} output_t={self_t}/> }}
 
 impl SubAssign<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
@@ -3967,7 +3965,7 @@ impl SubAssign<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_op_assign(imp="Sub", self_t=self_t, rhs_t=scalar_t) }}
+{{ <impl_ref_op_assign imp="Sub" self_t={self_t} rhs_t={scalar_t}/> }}
 
 impl Sub<{{ self_t }}> for {{ scalar_t }} {
     type Output = {{ self_t }};
@@ -3993,7 +3991,7 @@ impl Sub<{{ self_t }}> for {{ scalar_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="Sub", self_t=scalar_t, rhs_t=self_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="Sub" self_t={scalar_t} rhs_t={self_t} output_t={self_t}/> }}
 
 impl Rem for {{ self_t }} {
     type Output = Self;
@@ -4026,7 +4024,7 @@ impl Rem for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="Rem", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="Rem" self_t={self_t} rhs_t={self_t} output_t={self_t}/> }}
 
 impl RemAssign for {{ self_t }} {
     #[inline]
@@ -4043,7 +4041,7 @@ impl RemAssign for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_op_assign(imp="Rem", self_t=self_t, rhs_t=self_t) }}
+{{ <impl_ref_op_assign imp="Rem" self_t={self_t} rhs_t={self_t}/> }}
 
 impl Rem<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -4061,7 +4059,7 @@ impl Rem<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="Rem", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="Rem" self_t={self_t} rhs_t={scalar_t} output_t={self_t}/> }}
 
 impl RemAssign<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
@@ -4078,7 +4076,7 @@ impl RemAssign<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_op_assign(imp="Rem", self_t=self_t, rhs_t=scalar_t) }}
+{{ <impl_ref_op_assign imp="Rem" self_t={self_t} rhs_t={scalar_t}/> }}
 
 impl Rem<{{ self_t }}> for {{ scalar_t }} {
     type Output = {{ self_t }};
@@ -4096,7 +4094,7 @@ impl Rem<{{ self_t }}> for {{ scalar_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="Rem", self_t=scalar_t, rhs_t=self_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="Rem" self_t={scalar_t} rhs_t={self_t} output_t={self_t}/> }}
 
 impl AsRef<[{{ scalar_t }}; {{ dim }}]> for {{ self_t }} {
     #[inline]
@@ -4177,7 +4175,7 @@ impl Neg for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_unop(imp="Neg", self_t=self_t, output_t=self_t) }}
+{{ <impl_ref_unop imp="Neg" self_t={self_t} output_t={self_t}/> }}
 {% endif %}
 
 {% if not is_float %}
@@ -4193,7 +4191,7 @@ impl Not for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_unop(imp="Not", self_t=self_t, output_t=self_t) }}
+{{ <impl_ref_unop imp="Not" self_t={self_t} output_t={self_t}/> }}
 
 impl BitAnd for {{ self_t }} {
     type Output = Self;
@@ -4207,9 +4205,9 @@ impl BitAnd for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="BitAnd", method="bitand", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="BitAnd" self_t={self_t} rhs_t={self_t} output_t={self_t}/> }}
 
-{{ macros::impl_op_assign(imp="BitAnd", self_t=self_t, rhs_t=self_t) }}
+{{ <impl_op_assign imp="BitAnd" self_t={self_t} rhs_t={self_t}/> }}
 
 impl BitOr for {{ self_t }} {
     type Output = Self;
@@ -4223,9 +4221,9 @@ impl BitOr for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="BitOr", method="bitor", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="BitOr" self_t={self_t} rhs_t={self_t} output_t={self_t}/> }}
 
-{{ macros::impl_op_assign(imp="BitOr", self_t=self_t, rhs_t=self_t) }}
+{{ <impl_op_assign imp="BitOr" self_t={self_t} rhs_t={self_t}/> }}
 
 impl BitXor for {{ self_t }} {
     type Output = Self;
@@ -4239,9 +4237,9 @@ impl BitXor for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="BitXor", method="bitxor", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="BitXor" self_t={self_t} rhs_t={self_t} output_t={self_t}/> }}
 
-{{ macros::impl_op_assign(imp="BitXor", self_t=self_t, rhs_t=self_t) }}
+{{ <impl_op_assign imp="BitXor" self_t={self_t} rhs_t={self_t}/> }}
 
 impl BitAnd<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -4255,9 +4253,9 @@ impl BitAnd<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="BitAnd", method="bitand", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="BitAnd" self_t={self_t} rhs_t={scalar_t} output_t={self_t}/> }}
 
-{{ macros::impl_op_assign(imp="BitAnd", self_t=self_t, rhs_t=scalar_t) }}
+{{ <impl_op_assign imp="BitAnd" self_t={self_t} rhs_t={scalar_t}/> }}
 
 impl BitOr<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -4271,9 +4269,9 @@ impl BitOr<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="BitOr", method="bitor", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="BitOr" self_t={self_t} rhs_t={scalar_t} output_t={self_t}/> }}
 
-{{ macros::impl_op_assign(imp="BitOr", self_t=self_t, rhs_t=scalar_t) }}
+{{ <impl_op_assign imp="BitOr" self_t={self_t} rhs_t={scalar_t}/> }}
 
 impl BitXor<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
@@ -4287,9 +4285,9 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="BitXor", method="bitxor", self_t=self_t, rhs_t=scalar_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="BitXor" self_t={self_t} rhs_t={scalar_t} output_t={self_t}/> }}
 
-{{ macros::impl_op_assign(imp="BitXor", self_t=self_t, rhs_t=scalar_t) }}
+{{ <impl_op_assign imp="BitXor" self_t={self_t} rhs_t={scalar_t}/> }}
 
 {% for rhs_t in ["i8", "i16", "i32", "i64", "u8", "u16", "u32", "u64"] %}
     impl Shl<{{ rhs_t }}> for {{ self_t }} {
@@ -4304,9 +4302,9 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
         }
     }
 
-    {{ macros::impl_ref_binop(imp="Shl", self_t=self_t, rhs_t=rhs_t, output_t=self_t) }}
+    {{ <impl_ref_binop imp="Shl" self_t={self_t} rhs_t={rhs_t} output_t={self_t}/> }}
 
-    {{ macros::impl_op_assign(imp="Shl", self_t=self_t, rhs_t=rhs_t) }}
+    {{ <impl_op_assign imp="Shl" self_t={self_t} rhs_t={rhs_t}/> }}
 
     impl Shr<{{ rhs_t }}> for {{ self_t }} {
         type Output = Self;
@@ -4320,14 +4318,14 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
         }
     }
 
-    {{ macros::impl_ref_binop(imp="Shr", self_t=self_t, rhs_t=rhs_t, output_t=self_t) }}
+    {{ <impl_ref_binop imp="Shr" self_t={self_t} rhs_t={rhs_t} output_t={self_t}/> }}
 
-    {{ macros::impl_op_assign(imp="Shr", self_t=self_t, rhs_t=rhs_t) }}
+    {{ <impl_op_assign imp="Shr" self_t={self_t} rhs_t={rhs_t}/> }}
 {% endfor %}
 
 {% for rhs_t in ["IVec" ~ dim, "UVec" ~ dim] %}
         {% if rhs_t != self_t %}
-            {{ macros::cfg_check_for_type(ty=rhs_t) }}
+            {{ <cfg_check_for_type ty={rhs_t}/> }}
         {%- endif -%}
         impl Shl{% if rhs_t != self_t %}<{{ rhs_t }}>{% endif %} for {{ self_t }} {
             type Output = Self;
@@ -4341,10 +4339,10 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
             }
         }
 
-        {{ macros::impl_ref_binop(imp="Shl", self_t=self_t, rhs_t=rhs_t, output_t=self_t) }}
+        {{ <impl_ref_binop imp="Shl" self_t={self_t} rhs_t={rhs_t} output_t={self_t}/> }}
 
         {% if rhs_t != self_t %}
-            {{- macros::cfg_check_for_type(ty=rhs_t) }}
+            {{- <cfg_check_for_type ty={rhs_t}/> }}
         {%- endif -%}
         impl Shr{% if rhs_t != self_t %}<{{ rhs_t }}>{% endif %} for {{ self_t }} {
             type Output = Self;
@@ -4358,7 +4356,7 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
             }
         }
 
-        {{ macros::impl_ref_binop(imp="Shr", self_t=self_t, rhs_t=rhs_t, output_t=self_t) }}
+        {{ <impl_ref_binop imp="Shr" self_t={self_t} rhs_t={rhs_t} output_t={self_t}/> }}
 {% endfor %}
 {% endif %}
 
@@ -4509,9 +4507,9 @@ impl From<{{ self_t }}> for [{{ scalar_t }}; {{ dim }}] {
     }
 }
 
-impl From<{{ macros::make_tuple_t(t=scalar_t, n=dim) }}> for {{ self_t }} {
+impl From<{{ <make_tuple_t t={scalar_t} n={dim}/> }}> for {{ self_t }} {
     #[inline]
-    fn from(t: {{ macros::make_tuple_t(t=scalar_t, n=dim) }}) -> Self {
+    fn from(t: {{ <make_tuple_t t={scalar_t} n={dim}/> }}) -> Self {
         Self::new(
             {% for c in components %}
                 t.{{ loop.index0 }},
@@ -4520,7 +4518,7 @@ impl From<{{ macros::make_tuple_t(t=scalar_t, n=dim) }}> for {{ self_t }} {
     }
 }
 
-impl From<{{ self_t }}> for {{ macros::make_tuple_t(t=scalar_t, n=dim) }} {
+impl From<{{ self_t }}> for {{ <make_tuple_t t={scalar_t} n={dim}/> }} {
     #[inline]
     fn from(v: {{ self_t }}) -> Self {
         (
@@ -4649,7 +4647,7 @@ impl DerefMut for {{ self_t }} {
 
 {% if from_types %}
     {% for ty in from_types %}
-    {{ macros::cfg_check_for_type(ty=ty) -}} 
+    {{- <cfg_check_for_type ty={ty}/> }}
     impl From<{{ ty }}> for {{ self_t }} {
         #[inline]
         fn from(v: {{ ty }}) -> Self {
@@ -4665,7 +4663,7 @@ impl DerefMut for {{ self_t }} {
 
 {% if try_from_types %}
     {% for ty in try_from_types %}
-    {{ macros::cfg_check_for_type(ty=ty) -}} 
+    {{- <cfg_check_for_type ty={ty}/> }}
     impl TryFrom<{{ ty }}> for {{ self_t }} {
         type Error = core::num::TryFromIntError;
 

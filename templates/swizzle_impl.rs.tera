@@ -53,16 +53,12 @@ impl Vec{{ dim }}Swizzles for {{ self_t }} {
     {% endif %}
 
     {% for i in dimensions %}
-        {% for j0 in indices | slice(end=dim) %}
-            {% for j1 in indices | slice(end=dim) %}
+        {% for j0 in indices [:dim] %}
+            {% for j1 in indices [:dim] %}
                 {% if i == 2 %}
                     {% set skip = dim == 2 and j0 == 0 and j1 == 1 %}
                     {% if not skip %}
-                        {% if vec2_t == self_t %}
-                            {% set ret_t = "Self" %}
-                        {% else %}
-                            {% set ret_t = vec2_t %}
-                        {% endif %}
+                        {% set ret_t = "Self" if vec2_t == self_t else vec2_t %}
 
     #[inline]
     fn {{ e[j0] }}{{ e[j1] }}(self) -> {{ ret_t }} {
@@ -87,15 +83,11 @@ impl Vec{{ dim }}Swizzles for {{ self_t }} {
     }
                     {% endif %}
                 {% else %}
-                    {% for j2 in indices | slice(end=dim) %}
+                    {% for j2 in indices [:dim] %}
                         {% if i == 3 %}
                             {% set skip = dim == 3 and j0 == 0 and j1 == 1 and j2 == 2 %}
                             {% if not skip %}
-                                {% if vec3_t == self_t %}
-                                    {% set ret_t = "Self" %}
-                                {% else %}
-                                    {% set ret_t = vec3_t %}
-                                {% endif %}
+                                {% set ret_t = "Self" if vec3_t == self_t else vec3_t %}
     #[inline]
     fn {{ e[j0] }}{{ e[j1] }}{{ e[j2] }}(self) -> {{ ret_t }} {
             {% if vec3_t == "Vec3A" and is_sse2 %}
@@ -129,14 +121,10 @@ impl Vec{{ dim }}Swizzles for {{ self_t }} {
     }
                             {% endif %}
                         {% else %}
-                            {% for j3 in indices | slice(end=dim) %}
+                            {% for j3 in indices [:dim] %}
                                 {% set skip = dim == 4 and j0 == 0 and j1 == 1 and j2 == 2 and j3 == 3 %}
                                 {% if not skip %}
-                                    {% if vec4_t == self_t %}
-                                        {% set ret_t = "Self" %}
-                                    {% else %}
-                                        {% set ret_t = vec4_t %}
-                                    {% endif %}
+                                    {% set ret_t = "Self" if vec4_t == self_t else vec4_t %}
     #[inline]
     fn {{ e[j0] }}{{ e[j1] }}{{ e[j2] }}{{ e[j3] }}(self) -> {{ ret_t }} {
             {% if is_sse2 %}

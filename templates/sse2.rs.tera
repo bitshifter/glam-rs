@@ -1,4 +1,4 @@
-{% macro impl_mat4_inverse() %}
+{% component sse2_mat4_inverse() %}
     unsafe {
         // Based on https://github.com/g-truc/glm `glm_mat4_inverse`
         let fac0 = {
@@ -148,4 +148,4 @@
             true
         )
     }
-{% endmacro impl_mat4_inverse %}
+{% endcomponent %}

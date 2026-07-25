@@ -1,36 +1,36 @@
-{% macro make_tuple_t(t, n) %}
+{% component make_tuple_t(t, n) %}
     (
         {%- for i in range(end=n) -%}
             {{ t }},
         {%- endfor -%}
     )
-{% endmacro make_tuple_t %}
+{% endcomponent %}
 
-{% macro cfg_check_for_type(ty) %}
-    {%- if ty is starting_with("ISizeVec") %}
+{% component cfg_check_for_type(ty) %}
+    {%- if ty is starting_with(pat="ISizeVec") %}
         #[cfg(feature = "isize")]
-    {%- elif ty is starting_with("USizeVec") %}
+    {%- elif ty is starting_with(pat="USizeVec") %}
         #[cfg(feature = "usize")]
-    {%- elif ty is starting_with("I64Vec") %}
+    {%- elif ty is starting_with(pat="I64Vec") %}
         #[cfg(feature = "i64")]
-    {%- elif ty is starting_with("U64Vec") %}
+    {%- elif ty is starting_with(pat="U64Vec") %}
         #[cfg(feature = "u64")]
-    {%- elif ty is starting_with("IVec") %}
+    {%- elif ty is starting_with(pat="IVec") %}
         #[cfg(feature = "i32")]
-    {%- elif ty is starting_with("UVec") %}
+    {%- elif ty is starting_with(pat="UVec") %}
         #[cfg(feature = "u32")]
-    {%- elif ty is starting_with("I16Vec") %}
+    {%- elif ty is starting_with(pat="I16Vec") %}
         #[cfg(feature = "i16")]
-    {%- elif ty is starting_with("U16Vec") %}
+    {%- elif ty is starting_with(pat="U16Vec") %}
         #[cfg(feature = "u16")]
-    {%- elif ty is starting_with("I8Vec") %}
+    {%- elif ty is starting_with(pat="I8Vec") %}
         #[cfg(feature = "i8")]
-    {%- elif ty is starting_with("U8Vec") %}
+    {%- elif ty is starting_with(pat="U8Vec") %}
         #[cfg(feature = "u8")]
-    {%- endif %}
-{% endmacro cfg_check_for_type %}
+    {%- endif -%}
+{% endcomponent %}
 
-{% macro impl_mat3_minor(mat3_t, align="") %}
+{% component impl_mat3_minor(mat3_t, align="") %}
     /// Creates a 2x2 matrix from the minor of the given 3x3 matrix, discarding the `i`th column
     /// and `j`th row.
     ///
@@ -53,9 +53,9 @@
             _ => panic!("index out of bounds"),
         }
     }
-{% endmacro impl_mat3_minor %}
+{% endcomponent %}
 
-{% macro impl_mat4_minor(mat4_t, vec3_t) %}
+{% component impl_mat4_minor(mat4_t, vec3_t) %}
     {% if vec3_t == "Vec3A" %}
         {% set w = "w" %}
         {% set b = "Vec3A::from_vec4(" %}
@@ -94,9 +94,9 @@
             _ => panic!("index out of bounds"),
         }
     }
-{% endmacro impl_mat4_minor %}
+{% endcomponent %}
 
-{% macro impl_ref_unop(imp, self_t, output_t) %}
+{% component impl_ref_unop(imp, self_t, output_t) %}
     {% set op = imp | lower %}
     impl {{ imp }} for &{{ self_t }} {
         type Output = {{ output_t }};
@@ -105,9 +105,9 @@
             (*self).{{ op }}()
         }
     }
-{% endmacro impl_ref_unop %}
+{% endcomponent %}
 
-{% macro impl_ref_binop(imp, self_t, rhs_t, output_t) %}
+{% component impl_ref_binop(imp, self_t, rhs_t, output_t) %}
     {% set op = imp | lower %}
     {% if rhs_t == self_t %}
         {% set val_rhs_t = "Self" %}
@@ -120,9 +120,9 @@
         {% set val_output_t = output_t %}
     {% endif %}
 
-    {% if self_t is containing("Vec") %}
-        {{ self::cfg_check_for_type(ty=val_rhs_t) -}}
-    {%- endif -%}
+    {% if self_t is containing(pat="Vec") %}
+        {{ <cfg_check_for_type ty={val_rhs_t}/> -}}
+    {%- endif %}
     impl {{ imp }}<&{{ val_rhs_t }}> for {{ self_t }} {
         type Output = {{ val_output_t }};
         #[inline]
@@ -132,9 +132,9 @@
         }
     }
 
-    {% if self_t is containing("Vec") %}
-        {{ self::cfg_check_for_type(ty=val_rhs_t) -}}
-    {%- endif -%}
+    {% if self_t is containing(pat="Vec") %}
+        {{ <cfg_check_for_type ty={val_rhs_t}/> -}}
+    {%- endif %}
     impl {{ imp }}<&{{ rhs_t }}> for &{{ self_t }} {
         type Output = {{ output_t }};
         #[inline]
@@ -143,9 +143,9 @@
         }
     }
 
-    {% if self_t is containing("Vec") %}
-        {{ self::cfg_check_for_type(ty=val_rhs_t) -}}
-    {%- endif -%}
+    {% if self_t is containing(pat="Vec") %}
+        {{ <cfg_check_for_type ty={val_rhs_t}/> -}}
+    {%- endif %}
     impl {{ imp }}<{{ rhs_t }}> for &{{ self_t }} {
         type Output = {{ output_t }};
         #[inline]
@@ -153,9 +153,9 @@
             (*self).{{ op }}(rhs)
         }
     }
-{% endmacro impl_ref_biop %}
+{% endcomponent %}
 
-{% macro impl_ref_op_assign(imp, self_t, rhs_t) %}
+{% component impl_ref_op_assign(imp, self_t, rhs_t) %}
     {% set op = imp | lower %}
     {% if rhs_t == self_t %}
         {% set rhs_t = "Self" %}
@@ -166,9 +166,9 @@
             self.{{ op }}_assign(*rhs);
         }
     }
-{% endmacro forward_ref_op_assign %}
+{% endcomponent %}
 
-{% macro impl_op_assign(imp, self_t, rhs_t) %}
+{% component impl_op_assign(imp, self_t, rhs_t) %}
     {% set op = imp | lower %}
     impl {{ imp }}Assign{% if rhs_t != self_t %}<{{rhs_t}}>{% endif %} for {{ self_t }} {
         #[inline]
@@ -177,6 +177,6 @@
         }
     }
 
-    {{ self::impl_ref_op_assign(imp=imp, self_t=self_t, rhs_t=rhs_t) }}
-{% endmacro impl_op_assign %}
+    {{ <impl_ref_op_assign imp={imp} self_t={self_t} rhs_t={rhs_t}/> }}
+{% endcomponent %}
 

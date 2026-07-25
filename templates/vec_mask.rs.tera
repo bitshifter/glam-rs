@@ -1,5 +1,3 @@
-{% import "macros.rs.tera" as macros %}
-
 // Generated from {{template_path}} template. Edit the template, not the generated file.
 
 {% if scalar_t == "bool" %}
@@ -26,7 +24,7 @@
     {% endif %}
 {% endif %}
 
-{% set components = ["x", "y", "z", "w"] | slice(end = dim) %}
+{% set components = ["x", "y", "z", "w"] [:dim] %}
 
 use core::fmt;
 use core::ops::*;
@@ -358,7 +356,7 @@ impl {{ self_t }} {
                 {%- endfor %}
             ]
         {% else %}
-            {% set bits = [1, 2, 4, 8] | slice(end = dim) %}
+            {% set bits = [1, 2, 4, 8] [:dim] %}
             let bitmask = self.bitmask();
             [
                 {% for b in bits %}
@@ -448,9 +446,9 @@ impl BitAnd for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="BitAnd", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="BitAnd" self_t={self_t} rhs_t={self_t} output_t={self_t}/> }}
 
-{{ macros::impl_op_assign(imp="BitAnd", self_t=self_t, rhs_t=self_t) }}
+{{ <impl_op_assign imp="BitAnd" self_t={self_t} rhs_t={self_t}/> }}
 
 impl BitOr for {{ self_t }} {
     type Output = Self;
@@ -476,9 +474,9 @@ impl BitOr for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="BitOr", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="BitOr" self_t={self_t} rhs_t={self_t} output_t={self_t}/> }}
 
-{{ macros::impl_op_assign(imp="BitOr", self_t=self_t, rhs_t=self_t) }}
+{{ <impl_op_assign imp="BitOr" self_t={self_t} rhs_t={self_t}/> }}
 
 impl BitXor for {{ self_t }} {
     type Output = Self;
@@ -504,9 +502,9 @@ impl BitXor for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_binop(imp="BitXor", self_t=self_t, rhs_t=self_t, output_t=self_t) }}
+{{ <impl_ref_binop imp="BitXor" self_t={self_t} rhs_t={self_t} output_t={self_t}/> }}
 
-{{ macros::impl_op_assign(imp="BitXor", self_t=self_t, rhs_t=self_t) }}
+{{ <impl_op_assign imp="BitXor" self_t={self_t} rhs_t={self_t}/> }}
 
 impl Not for {{ self_t }} {
     type Output = Self;
@@ -534,7 +532,7 @@ impl Not for {{ self_t }} {
     }
 }
 
-{{ macros::impl_ref_unop(imp="Not", self_t=self_t, output_t=self_t) }}
+{{ <impl_ref_unop imp="Not" self_t={self_t} output_t={self_t}/> }}
 
 {% if not is_scalar %}
 impl From<{{ self_t }}> for {{ simd_t }} {
