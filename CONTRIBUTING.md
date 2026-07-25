@@ -45,7 +45,7 @@ If you feel any documentation could be added or improved please
 Most of `glam`'s source code is generated. See the [codegen README] on how
 to modify the code templates and generate new source code.
 
-Edit templates in the `templates/` directory (they use the Tera templating
+Edit templates in the `templates/` directory (they use the [Tera v2] templating
 language) and the `codegen.json` file which maps templates to output files.
 After modifying templates, run `cargo run --release -p codegen` from the repo
 root to regenerate source files (requires initializing the codegen submodule
@@ -61,3 +61,4 @@ Also run `cargo fmt` and `cargo clippy` on any new code.
 [ask a question]: https://github.com/bitshifter/glam-rs/discussions/new?category=q-a
 [suggest a new feature]: https://github.com/bitshifter/glam-rs/discussions/new?category=ideas
 [codegen README]: https://github.com/bitshifter/glam-codegen/blob/main/README.md
+[Tera v2]: https://keats.github.io/tera/
