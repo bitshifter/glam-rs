@@ -279,7 +279,7 @@ macro_rules! impl_serde_quat {
 
         #[test]
         fn test_quat_serde() {
-            let a = $quat::from_xyzw(1.0, 2.0, 3.0, 4.0);
+            let a = $quat::from_xyzw(V1, V2, V3, V4);
             let serialized = serde_json::to_string(&a).unwrap();
             assert_eq!(serialized, "[1.0,2.0,3.0,4.0]");
             let deserialized = serde_json::from_str(&serialized).unwrap();
