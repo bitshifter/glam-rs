@@ -1308,7 +1308,7 @@ impl Vec3 {
             let theta = math::acos_approx(dot);
             // Sine of the angle between vectors [0, 1]
             let sin_theta = math::sin(theta);
-            let t1 = math::sin(theta * (1. - s));
+            let t1 = math::sin(theta * (1.0 - s));
             let t2 = math::sin(theta * s);
 
             // Interpolate vector lengths
