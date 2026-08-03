@@ -7,6 +7,25 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
+## [0.33.3] - 2026-08-03
+
+### Added
+
+* Added `Vec3::angle_to` which returns the signed angle (in radians) between
+  two vectors around a given axis in the range `[-π, +π]`. The angle follows
+  the right-hand rule around the axis and can be used with `rotate_axis`, e.g.
+  `self.rotate_axis(axis, self.angle_to(rhs, axis))` will be equal to `rhs`.
+
+* Added `Vec2::rotate_angle` which rotates a vector by an angle (in radians),
+  equivalent to `self.rotate(Vec2::from_angle(angle))`.
+
+* Added `glam_assert`s that `angle_to` and `angle_between` inputs are non-zero
+  vectors.
+
+### Changed
+
+* `to_array` is now a `const fn` on all quaternion types.
+
 ## [0.33.2] - 2026-06-28
 
 ### Added
@@ -1453,7 +1472,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.33.2...HEAD
+[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.33.3...HEAD
+[0.33.3]: https://github.com/bitshifter/glam-rs/compare/0.33.2...0.33.3
 [0.33.2]: https://github.com/bitshifter/glam-rs/compare/0.33.1...0.33.2
 [0.33.1]: https://github.com/bitshifter/glam-rs/compare/0.33.0...0.33.1
 [0.33.0]: https://github.com/bitshifter/glam-rs/compare/0.32.1...0.33.0
