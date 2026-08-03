@@ -500,10 +500,10 @@ impl DQuat {
         self.to_euler_angles(order)
     }
 
-    /// `[x, y, z, w]`
+    /// Converts `self` to `[x, y, z, w]`
     #[inline]
     #[must_use]
-    pub fn to_array(self) -> [f64; 4] {
+    pub const fn to_array(&self) -> [f64; 4] {
         [self.x, self.y, self.z, self.w]
     }
 
