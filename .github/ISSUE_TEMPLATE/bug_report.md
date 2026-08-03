@@ -13,7 +13,7 @@ A clear and concise description of what the bug is.
 
 **To Reproduce**
 
-Can you provide some code that demonstrate the bug
+Please provide some code that demonstrates the bug.
 
 **Expected behavior**
 
@@ -22,7 +22,9 @@ A clear and concise description of what you expected to happen.
 **System information (please complete the following information):**
 
  - OS: [e.g. Linux]
- - Architecture [e.g. x86_64]
+ - Architecture: [e.g. x86_64]
+ - Rust version: [e.g. 1.80.0]
+ - glam version: [e.g. 0.29]
 
 **Additional context**
 
