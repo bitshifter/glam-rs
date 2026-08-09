@@ -732,10 +732,24 @@ impl HQuat {
 
     /// Converts to the equivalent [`Quat`].
     ///
-    /// The result is normalized because widening an `f16` quaternion to `f32`
-    /// preserves `f16` rounding so the result may not satisfy `f32`'s stricter
-    /// normalization check (used by [`Quat::mul_vec3`] when `glam_assert` is
-    /// enabled).
+    /// Note that the result is not normalized: widening an `f16` quaternion
+    /// to `f32` preserves the coarser `f16` rounding, so the result may not
+    /// satisfy [`Quat::is_normalized`]. Call [`Quat::normalize`] on the
+    /// result if it is to be used with functions that expect a normalized
+    /// input, such as [`Quat::mul_vec3`] when `glam_assert` is enabled.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use glam::{f16::HQuat, Quat};
+    /// # use half::f16;
+    /// let q = HQuat::from_rotation_x(f16::from_f32(std::f32::consts::FRAC_PI_2));
+    /// let q32 = q.as_quat();
+    /// // `f16` rounding is coarser than `f32`'s normalization tolerance:
+    /// assert!(!q32.is_normalized());
+    /// let q32 = q32.normalize();
+    /// assert!(q32.is_normalized());
+    /// ```
     #[inline]
     #[must_use]
     pub fn as_quat(self) -> Quat {
@@ -745,12 +759,13 @@ impl HQuat {
             f32::from(self.z),
             f32::from(self.w),
         )
-        .normalize()
     }
 
     /// Converts to a `DQuat`.
     ///
-    /// The result is normalized for the same reason as [`Self::as_quat`].
+    /// Note that the result is not normalized for the same reason as
+    /// [`Self::as_quat`]; normalize it if it is to be used with functions
+    /// that expect a normalized input.
     #[cfg(feature = "f64")]
     #[inline]
     #[must_use]
@@ -761,7 +776,6 @@ impl HQuat {
             f64::from(self.z),
             f64::from(self.w),
         )
-        .normalize()
     }
 }
 

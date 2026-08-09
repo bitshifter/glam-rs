@@ -240,7 +240,11 @@ glam_test!(test_hquat_finite, {
 
 glam_test!(test_hquat_as_conversions, {
     let q = HQuat::from_rotation_x(f16x(core::f32::consts::FRAC_PI_2));
+    // Widening to `f32` preserves `f16` rounding, which is coarser than
+    // `f32`'s normalization tolerance, so the result may not be normalized.
     let qf32 = q.as_quat();
+    assert!(!qf32.is_normalized());
+    let qf32 = qf32.normalize();
     let v = HVec3::new(f16x(0.0), f16x(1.0), f16x(0.0));
     let expected = q.mul_vec3(v);
     let r32 = qf32.mul_vec3(glam::Vec3::new(0.0, 1.0, 0.0));
@@ -254,6 +258,8 @@ glam_test!(test_hquat_as_conversions, {
     #[cfg(feature = "f64")]
     {
         let qf64 = q.as_dquat();
+        assert!(!qf64.is_normalized());
+        let qf64 = qf64.normalize();
         let r64 = qf64.mul_vec3(glam::DVec3::new(0.0, 1.0, 0.0));
         let r32_f64 = glam::DVec3::from(r32_h.as_vec3());
         assert!(r32_f64.angle_between(r64) < 1e-3, "{} vs {}", r32_f64, r64);

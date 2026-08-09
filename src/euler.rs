@@ -439,7 +439,10 @@ impl ToEuler for HQuat {
     fn to_euler_angles(self, euler: EulerRot) -> (Self::Scalar, Self::Scalar, Self::Scalar) {
         // Delegate to the `f32` implementation (widens exactly, and is at
         // least as accurate as a native `f16` computation) then narrow back.
-        let (x, y, z) = self.as_quat().to_euler_angles(euler);
+        // The `f32` implementation requires a normalized input (via
+        // `Mat3::from_quat` when `glam_assert` is enabled) and widening to
+        // `f32` preserves the coarser `f16` rounding, so normalize first.
+        let (x, y, z) = self.as_quat().normalize().to_euler_angles(euler);
         (f16::from_f32(x), f16::from_f32(y), f16::from_f32(z))
     }
 }
