@@ -613,7 +613,7 @@ impl Mat3A {
         } else {
             glam_assert!(det != 0.0);
         }
-        let inv_det = Vec3A::splat(det.recip());
+        let inv_det = Vec3A::splat(1.0 / det);
         (
             Self::from_cols(tmp0.mul(inv_det), tmp1.mul(inv_det), tmp2.mul(inv_det)).transpose(),
             true,

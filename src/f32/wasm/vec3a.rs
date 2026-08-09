@@ -726,7 +726,7 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn project_onto(self, rhs: Self) -> Self {
-        let other_len_sq_rcp = rhs.dot(rhs).recip();
+        let other_len_sq_rcp = 1.0 / rhs.dot(rhs);
         glam_assert!(other_len_sq_rcp.is_finite());
         rhs * self.dot(rhs) * other_len_sq_rcp
     }
@@ -1291,7 +1291,7 @@ impl Vec3A {
             // Scale the vectors to the target length and interpolate them
             return (self * (result_length / self_length) * t1
                 + rhs * (result_length / rhs_length) * t2)
-                * sin_theta.recip();
+                * (1.0 / sin_theta);
         }
         if dot < 0.0 {
             // Vectors are almost parallel in opposing directions

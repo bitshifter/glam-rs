@@ -541,7 +541,7 @@ impl DMat3 {
         } else {
             glam_assert!(det != 0.0);
         }
-        let inv_det = DVec3::splat(det.recip());
+        let inv_det = DVec3::splat(1.0 / det);
         (
             Self::from_cols(tmp0.mul(inv_det), tmp1.mul(inv_det), tmp2.mul(inv_det)).transpose(),
             true,

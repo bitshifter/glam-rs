@@ -734,7 +734,7 @@ impl Mat4 {
             glam_assert!(dot1 != 0.0);
         }
 
-        let rcp_det = dot1.recip();
+        let rcp_det = 1.0 / dot1;
         (inverse.mul(rcp_det), true)
     }
 
