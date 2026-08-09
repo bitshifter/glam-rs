@@ -308,7 +308,7 @@ impl Mat2 {
         } else {
             glam_assert!(det != 0.0);
         }
-        let inv_det = det.recip();
+        let inv_det = 1.0 / det;
         (
             Self::new(
                 self.y_axis.y * inv_det,

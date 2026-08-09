@@ -1586,7 +1586,7 @@ impl {{ self_t }} {
             } else {
                 glam_assert!(det != 0.0);
             }
-            let inv_det = det.recip();
+            let inv_det = 1.0 / det;
             (Self::new(
                 self.y_axis.y * inv_det,
                 self.x_axis.y * -inv_det,
@@ -1606,7 +1606,7 @@ impl {{ self_t }} {
             } else {
                 glam_assert!(det != 0.0);
             }
-            let inv_det = {{ col_t }}::splat(det.recip());
+            let inv_det = {{ col_t }}::splat(1.0 / det);
             (Self::from_cols(tmp0.mul(inv_det), tmp1.mul(inv_det), tmp2.mul(inv_det)).transpose(), true)
         {% elif self_t == "Mat4" and is_sse2 %}
             {{ <sse2_mat4_inverse/> }}
@@ -1691,7 +1691,7 @@ impl {{ self_t }} {
                 glam_assert!(dot1 != 0.0);
             }
 
-            let rcp_det = dot1.recip();
+            let rcp_det = 1.0 / dot1;
             (inverse.mul(rcp_det), true)
         {% endif %}
     }
