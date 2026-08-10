@@ -18,6 +18,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+* Added `bytemuck::Pod` and `bytemuck::Zeroable` impls for the archived types, so archived
+  buffers can still be cast to bytes for a GPU upload or a file write without going through
+  a serializer.
+
+* Added `From` conversions between each type and its archived form, which is all the leaf
+  types need to read a single value back and avoids requiring a deserializer for a
+  conversion that cannot fail.
+
 * Added `Archive::COPY_OPTIMIZATION` to the `rkyv` impls of every type whose archived form
   is a byte for byte copy of the native one, which lets `rkyv` serialize slices of them
   with a single `memcpy`. This covers `Vec2`, `Vec3`, `Vec4`, `Quat`, `Mat2`, `Mat3`,

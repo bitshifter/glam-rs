@@ -123,6 +123,39 @@ macro_rules! impl_rkyv {
         // primitives, so there is no padding and no uninitialised byte.
         unsafe impl NoUndef for $archived {}
 
+        // SAFETY: An array of archived primitives, for which zero is a valid value.
+        //
+        // The derive is unusable here: it would require the element type to implement
+        // `Zeroable`, which it only does when `rend` is built with its `bytemuck-1`
+        // feature, and that is not something `glam` can enable through `rkyv`.
+        #[cfg(feature = "bytemuck")]
+        unsafe impl bytemuck::Zeroable for $archived {}
+
+        // SAFETY: `#[repr(transparent)]` over an array of equally sized archived
+        // primitives, so there is no padding, and every bit pattern is a valid value of
+        // the primitive it archives. Note that this says nothing about endianness: reading
+        // these bytes as native primitives is only meaningful when the archive endianness
+        // matches the target, exactly as for the native `glam` types.
+        #[cfg(feature = "bytemuck")]
+        unsafe impl bytemuck::Pod for $archived {}
+
+        impl From<$type> for $archived {
+            #[inline]
+            fn from(value: $type) -> Self {
+                let $value = &value;
+                let native: [$prim; $n] = $to_native;
+                Self(native.map(ArchivablePrimitive::to_archived))
+            }
+        }
+
+        impl From<$archived> for $type {
+            #[inline]
+            fn from(archived: $archived) -> Self {
+                let $array: [$prim; $n] = archived.0.map(ArchivablePrimitive::from_archived);
+                $from_native
+            }
+        }
+
         impl Archive for $type {
             // SAFETY: The optimization copies the bytes of the native value straight into
             // the archive, so the two layouts have to agree byte for byte.
@@ -149,9 +182,7 @@ macro_rules! impl_rkyv {
 
             #[inline]
             fn resolve(&self, _: Self::Resolver, out: Place<Self::Archived>) {
-                let $value = self;
-                let native: [$prim; $n] = $to_native;
-                out.write($archived(native.map(ArchivablePrimitive::to_archived)));
+                out.write((*self).into());
             }
         }
 
@@ -165,8 +196,7 @@ macro_rules! impl_rkyv {
         impl<D: Fallible + ?Sized> Deserialize<$type, D> for $archived {
             #[inline]
             fn deserialize(&self, _: &mut D) -> Result<$type, D::Error> {
-                let $array: [$prim; $n] = self.0.map(ArchivablePrimitive::from_archived);
-                Ok($from_native)
+                Ok((*self).into())
             }
         }
 
@@ -481,6 +511,36 @@ mod test {
         assert!(!is_enabled::<Vec3A>());
         assert!(!is_enabled::<Mat3A>());
         assert!(!is_enabled::<Affine3A>());
+    }
+
+    /// The archived types are the form data is uploaded to a GPU or written to a file in,
+    /// so they have to be castable to bytes without going through a serializer.
+    #[cfg(feature = "bytemuck")]
+    #[test]
+    fn archived_types_are_pod() {
+        use crate::{ArchivedVec3, Vec3};
+
+        let values = [
+            ArchivedVec3::from(Vec3::new(1.0, 2.0, 3.0)),
+            ArchivedVec3::from(Vec3::new(4.0, 5.0, 6.0)),
+        ];
+
+        let bytes = bytemuck::cast_slice::<ArchivedVec3, u8>(&values);
+        assert_eq!(bytes.len(), 2 * core::mem::size_of::<ArchivedVec3>());
+        assert_eq!(bytemuck::cast_slice::<u8, ArchivedVec3>(bytes), &values);
+    }
+
+    /// Converting an archived value back without a deserializer, which is all the leaf
+    /// types need and is what makes the reference cast that used to work unnecessary.
+    #[test]
+    fn archived_conversions_round_trip() {
+        use crate::{ArchivedMat2, ArchivedVec3, Mat2, Vec3};
+
+        let vec = Vec3::new(1.0, 2.0, 3.0);
+        assert_eq!(Vec3::from(ArchivedVec3::from(vec)), vec);
+
+        let mat = Mat2::from_cols_array(&[1.0, 2.0, 3.0, 4.0]);
+        assert_eq!(Mat2::from(ArchivedMat2::from(mat)), mat);
     }
 
     #[test]
