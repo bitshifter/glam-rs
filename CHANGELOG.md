@@ -16,6 +16,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   changes the archived binary format, and reading an archived value now converts rather
   than casting a reference.
 
+### Added
+
+* Added `Archive::COPY_OPTIMIZATION` to the `rkyv` impls of every type whose archived form
+  is a byte for byte copy of the native one, which lets `rkyv` serialize slices of them
+  with a single `memcpy`. This covers `Vec2`, `Vec3`, `Vec4`, `Quat`, `Mat2`, `Mat3`,
+  `Mat4` and `Affine3` and their non `f32` equivalents, plus `Affine2` on backends where it
+  carries no padding. It is derived rather than hardcoded, so it turns itself off for the
+  16 byte aligned types and whenever the archive endianness does not match the target.
+
 ### Fixed
 
 * Fixed `unsafe impl NoUndef` being applied to types that carry padding, which copied
