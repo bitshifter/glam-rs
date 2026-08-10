@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+* Breaking change: `rkyv` support now archives each type to a dedicated `Archived*` type
+  built from `rkyv`'s own archived primitives, instead of aliasing the native `glam` type.
+  Archived data is endianness-explicit, independent of the SIMD backend `glam` was built
+  with, and one byte aligned when `rkyv` is built with its `unaligned` feature. This
+  changes the archived binary format, and reading an archived value now converts rather
+  than casting a reference.
+
+### Fixed
+
+* Fixed `unsafe impl NoUndef` being applied to types that carry padding, which copied
+  uninitialised bytes into archives. Every backend was affected: `Vec3A`, `Mat3A` and
+  `Affine3A` have four bytes of padding per `Vec3A` under `scalar-math`, and `Affine2` has
+  eight bytes of tail padding under SSE2 and NEON, where `Mat2` is 16 byte aligned.
+
+* Fixed `unsafe impl Portable` claiming a layout identical on all targets for types whose
+  archived form was native-endian and dependent on the selected SIMD backend.
+
 ## [0.33.6](https://github.com/bitshifter/glam-rs/compare/0.33.5...0.33.6) - 2026-08-28
 
 ### Added
