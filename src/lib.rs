@@ -327,6 +327,9 @@ mod deref;
 mod euler;
 mod features;
 
+#[cfg(feature = "rkyv")]
+pub use features::impl_rkyv::*;
+
 #[cfg(all(
     target_arch = "aarch64",
     not(any(feature = "core-simd", feature = "scalar-math"))
