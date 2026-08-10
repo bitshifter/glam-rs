@@ -11,7 +11,9 @@
 //! no arithmetic. Use [`rkyv::Deserialize`] to recover the native glam type.
 
 use rkyv::{
-    rancor::Fallible, traits::NoUndef, Archive, Archived, Deserialize, Place, Portable, Serialize,
+    rancor::Fallible,
+    traits::{CopyOptimization, NoUndef},
+    Archive, Archived, Deserialize, Place, Portable, Serialize,
 };
 
 use crate::{Affine2, Affine3, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
@@ -122,6 +124,26 @@ macro_rules! impl_rkyv {
         unsafe impl NoUndef for $archived {}
 
         impl Archive for $type {
+            // SAFETY: The optimization copies the bytes of the native value straight into
+            // the archive, so the two layouts have to agree byte for byte.
+            //
+            // The element type reports whether an archived primitive is a copy of its
+            // native form, which is false when the archive endianness and the target
+            // endianness disagree. Given that, the size check is enough: the native type
+            // holds exactly `$n` primitives, so if it is no larger than `$n` of them it has
+            // no padding, and both forms store those primitives in the order used by
+            // `to_array`/`to_cols_array` -- which glam itself implements as a transmute for
+            // the types that are laid out that way.
+            //
+            // Types that do have padding, such as `Vec3A` and (on SIMD backends) `Affine2`,
+            // are larger than their archived form and so disable the optimization here.
+            const COPY_OPTIMIZATION: CopyOptimization<Self> = unsafe {
+                CopyOptimization::enable_if(
+                    <$prim as Archive>::COPY_OPTIMIZATION.is_enabled()
+                        && core::mem::size_of::<Self>() == core::mem::size_of::<$archived>(),
+                )
+            };
+
             type Archived = $archived;
             type Resolver = ();
 
@@ -367,6 +389,43 @@ mod test {
             &rkyv::deserialize::<T, rkyv::rancor::Panic>(archived_value).unwrap(),
             value
         );
+        assert_copy_optimization_is_sound(value, archived_value);
+    }
+
+    /// [`rkyv::Archive::COPY_OPTIMIZATION`] promises that the archived form is a copy of
+    /// the native one, and rkyv acts on it by memcpying whole slices of native values into
+    /// the archive. The size half of that promise is checked when the constant is declared;
+    /// this pins the field order, which is not otherwise verifiable at compile time.
+    fn assert_copy_optimization_is_sound<T: Archive>(value: &T, archived_value: &T::Archived) {
+        if !T::COPY_OPTIMIZATION.is_enabled() {
+            return;
+        }
+
+        assert_eq!(
+            core::mem::size_of::<T>(),
+            core::mem::size_of::<T::Archived>(),
+            "the copy optimization may only be enabled for equally sized types"
+        );
+
+        // SAFETY: The optimization is only enabled for types without padding, so every byte
+        // of both values is initialised. This is the same read rkyv performs when it acts on
+        // the hint.
+        let (native, archived) = unsafe {
+            (
+                core::slice::from_raw_parts(
+                    core::ptr::from_ref(value).cast::<u8>(),
+                    core::mem::size_of::<T>(),
+                ),
+                core::slice::from_raw_parts(
+                    core::ptr::from_ref(archived_value).cast::<u8>(),
+                    core::mem::size_of::<T::Archived>(),
+                ),
+            )
+        };
+        assert_eq!(
+            native, archived,
+            "the copy optimization is enabled for a type whose archived form is not a copy"
+        );
     }
 
     /// The archived form must not impose an alignment on the buffer it is read from when
@@ -391,6 +450,37 @@ mod test {
         assert_eq!(core::mem::size_of::<ArchivedVec3>(), element * 3);
         assert_eq!(core::mem::size_of::<ArchivedVec3A>(), element * 3);
         assert_eq!(core::mem::size_of::<ArchivedVec4>(), element * 4);
+    }
+
+    /// Whether a type can be copied into the archive wholesale is a property of its native
+    /// layout, so it must not depend on the SIMD backend glam was built with.
+    #[test]
+    fn copy_optimization_is_backend_independent() {
+        use crate::{Affine3, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
+
+        fn is_enabled<T: Archive>() -> bool {
+            T::COPY_OPTIMIZATION.is_enabled()
+        }
+
+        // False when rkyv archives to the endianness the target does not use, which rules
+        // the optimization out for every type built on `f32`.
+        if is_enabled::<f32>() {
+            assert!(is_enabled::<Vec2>());
+            assert!(is_enabled::<Vec3>());
+            assert!(is_enabled::<Vec4>());
+            assert!(is_enabled::<Quat>());
+            assert!(is_enabled::<Mat2>());
+            assert!(is_enabled::<Mat3>());
+            assert!(is_enabled::<Mat4>());
+            assert!(is_enabled::<Affine3>());
+        }
+
+        // The archived form of the 16 byte aligned types drops the padding the native form
+        // carries, so it is smaller and cannot be a copy. `Affine2` is deliberately absent:
+        // it has tail padding on the SIMD backends but not under `scalar-math`.
+        assert!(!is_enabled::<Vec3A>());
+        assert!(!is_enabled::<Mat3A>());
+        assert!(!is_enabled::<Affine3A>());
     }
 
     #[test]
