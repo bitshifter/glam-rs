@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+* Added missing serde serialization to `BVec3A` and `BVec4A` when the
+  `scalar-math` feature is enabled.
+
 ## [0.33.3] - 2026-08-03
 
 ### Added
