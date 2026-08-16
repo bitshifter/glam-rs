@@ -17,6 +17,15 @@
   * a quaternion type: [`DQuat`]
   * affine transformation types: [`DAffine2`] and [`DAffine3`]
   * camera: [`dcamera`] module with view and projection constructors
+*/
+#![cfg_attr(
+    feature = "f16",
+    doc = "* [`f16`](mod@f16) types
+  * vectors: [`HVec2`], [`HVec3`] and [`HVec4`]
+  * a quaternion type: [`HQuat`]
+"
+)]
+/*!
 * [`i8`](mod@i8) types
   * vectors: [`I8Vec2`], [`I8Vec3`] and [`I8Vec4`]
 * [`u8`](mod@u8) types
@@ -42,7 +51,8 @@
 
 All types are enabled by default. Only `f32` and `bool` types are built-in.
 All other types are optional and can be disabled if not needed for faster
-compile times.
+compile times. The `f16` types are not enabled by default and require the
+`f16` feature to be enabled.
 
 ## SIMD
 
@@ -249,6 +259,10 @@ assert_eq!(format!("{}", a), "[1, 2, 3, 4]");
 * `std` - the default feature, has no dependencies.
 * `all-types` - a default feature, enables `float-types`, `integer-types` and `size-types`
 * `float-types` - enables `f64` types
+* `f16` - enables half-precision `f16` vector and quaternion types. This
+  feature is not included in `float-types` or `all-types` because it requires
+  the `half` crate, which needs a newer minimum supported Rust version than
+  `glam`.
 * `integer-types` - enables `i8`, `i16`, `i32`, `i64`, `u8`, `u16`, `u32` and `u64` types
 * `size-types` - enables `isize` and `usize` types
 * `f64`, `i8`, `i16`, `i32`, `i64`, `isize`, `u8`, `u16`, `u32`, `u64`, `usize` - enables glam types
@@ -375,6 +389,12 @@ pub use self::f32::*;
 pub mod f64;
 #[cfg(feature = "f64")]
 pub use self::f64::*;
+
+/** `f16` vector and quaternion types. */
+#[cfg(feature = "f16")]
+pub mod f16;
+#[cfg(feature = "f16")]
+pub use self::f16::*;
 
 /** `i8` vector types. */
 #[cfg(feature = "i8")]

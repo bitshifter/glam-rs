@@ -4,6 +4,9 @@ pub use crate::f32::*;
 #[cfg(feature = "f64")]
 pub use crate::f64::*;
 
+#[cfg(feature = "f16")]
+pub use crate::f16::*;
+
 #[cfg(feature = "i8")]
 pub use crate::i8::*;
 

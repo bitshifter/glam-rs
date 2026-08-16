@@ -4,6 +4,8 @@ use crate::{Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
 
 #[cfg(feature = "f64")]
 use crate::{DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
+#[cfg(feature = "f16")]
+use crate::{HQuat, HVec2, HVec3, HVec4};
 #[cfg(feature = "i16")]
 use crate::{I16Vec2, I16Vec3, I16Vec4};
 #[cfg(feature = "i64")]
@@ -254,6 +256,38 @@ macro_rules! impl_float_types {
     };
 }
 
+/// Implements `mint` conversions for half-precision vector and quaternion
+/// types. Matrices are not supported for `f16`.
+#[cfg(feature = "f16")]
+macro_rules! impl_f16_types {
+    ($quat:ident, $vec2:ident, $vec3:ident, $vec4:ident) => {
+        impl_vec_types!(half::f16, $vec2, $vec3, $vec4);
+
+        impl From<mint::Quaternion<half::f16>> for $quat {
+            fn from(q: mint::Quaternion<half::f16>) -> Self {
+                Self::from_xyzw(q.v.x, q.v.y, q.v.z, q.s)
+            }
+        }
+
+        impl From<$quat> for mint::Quaternion<half::f16> {
+            fn from(q: $quat) -> Self {
+                Self {
+                    s: q.w,
+                    v: mint::Vector3 {
+                        x: q.x,
+                        y: q.y,
+                        z: q.z,
+                    },
+                }
+            }
+        }
+
+        impl IntoMint for $quat {
+            type MintType = mint::Quaternion<half::f16>;
+        }
+    };
+}
+
 impl From<mint::Point3<f32>> for Vec3A {
     fn from(v: mint::Point3<f32>) -> Self {
         Self::new(v.x, v.y, v.z)
@@ -330,6 +364,8 @@ impl IntoMint for Mat3A {
 impl_float_types!(f32, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4);
 #[cfg(feature = "f64")]
 impl_float_types!(f64, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4);
+#[cfg(feature = "f16")]
+impl_f16_types!(HQuat, HVec2, HVec3, HVec4);
 #[cfg(feature = "i8")]
 impl_vec_types!(i8, I8Vec2, I8Vec3, I8Vec4);
 #[cfg(feature = "u8")]
@@ -556,6 +592,109 @@ mod test {
     #[cfg(feature = "f64")]
     mod f64 {
         impl_float_tests!(f64, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4);
+    }
+
+    #[cfg(feature = "f16")]
+    mod f16 {
+        use crate::{HQuat, HVec2, HVec3, HVec4};
+        use half::f16;
+        use mint;
+
+        #[test]
+        fn test_point2() {
+            let m = mint::Point2 {
+                x: f16::from_f32(1.0),
+                y: f16::from_f32(2.0),
+            };
+            let g = HVec2::from(m);
+            assert_eq!(g, HVec2::new(f16::from_f32(1.0), f16::from_f32(2.0)));
+            assert_eq!(m, g.into());
+        }
+
+        #[test]
+        fn test_point3() {
+            let m = mint::Point3 {
+                x: f16::from_f32(1.0),
+                y: f16::from_f32(2.0),
+                z: f16::from_f32(3.0),
+            };
+            let g = HVec3::from(m);
+            assert_eq!(
+                g,
+                HVec3::new(f16::from_f32(1.0), f16::from_f32(2.0), f16::from_f32(3.0))
+            );
+            assert_eq!(m, g.into());
+        }
+
+        #[test]
+        fn test_vector2() {
+            let m = mint::Vector2 {
+                x: f16::from_f32(1.0),
+                y: f16::from_f32(2.0),
+            };
+            let g = HVec2::from(m);
+            assert_eq!(g, HVec2::new(f16::from_f32(1.0), f16::from_f32(2.0)));
+            assert_eq!(m, g.into());
+        }
+
+        #[test]
+        fn test_vector3() {
+            let m = mint::Vector3 {
+                x: f16::from_f32(1.0),
+                y: f16::from_f32(2.0),
+                z: f16::from_f32(3.0),
+            };
+            let g = HVec3::from(m);
+            assert_eq!(
+                g,
+                HVec3::new(f16::from_f32(1.0), f16::from_f32(2.0), f16::from_f32(3.0))
+            );
+            assert_eq!(m, g.into());
+        }
+
+        #[test]
+        fn test_vector4() {
+            let m = mint::Vector4 {
+                x: f16::from_f32(1.0),
+                y: f16::from_f32(2.0),
+                z: f16::from_f32(3.0),
+                w: f16::from_f32(4.0),
+            };
+            let g = HVec4::from(m);
+            assert_eq!(
+                g,
+                HVec4::new(
+                    f16::from_f32(1.0),
+                    f16::from_f32(2.0),
+                    f16::from_f32(3.0),
+                    f16::from_f32(4.0),
+                )
+            );
+            assert_eq!(m, g.into());
+        }
+
+        #[test]
+        fn test_quaternion() {
+            let m = mint::Quaternion {
+                v: mint::Vector3 {
+                    x: f16::from_f32(1.0),
+                    y: f16::from_f32(2.0),
+                    z: f16::from_f32(3.0),
+                },
+                s: f16::from_f32(4.0),
+            };
+            let g = HQuat::from(m);
+            assert_eq!(
+                g,
+                HQuat::from_xyzw(
+                    f16::from_f32(1.0),
+                    f16::from_f32(2.0),
+                    f16::from_f32(3.0),
+                    f16::from_f32(4.0),
+                )
+            );
+            assert_eq!(m, g.into());
+        }
     }
 
     #[cfg(feature = "i8")]

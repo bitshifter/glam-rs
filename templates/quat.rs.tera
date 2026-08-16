@@ -31,7 +31,32 @@
     {% set mat3_t = "DMat3" %}
     {% set mat4_t = "DMat4" %}
     {% set cam = "dcamera" %}
+{% elif scalar_t == "f16" %}
+    {% set self_t = "HQuat" %}
+    {% set vec2_t = "HVec2" %}
+    {% set vec3_t = "HVec3" %}
+    {% set vec4_t = "HVec4" %}
 {% endif %}
+{%- if scalar_t == "f16" %}
+    {%- set consts_pi = "crate::f16::PI" %}
+{%- else %}
+    {%- set consts_pi = "core::" ~ scalar_t ~ "::consts::PI" %}
+{%- endif %}
+{%- if scalar_t == "f16" %}
+    {%- set one = "f16::ONE" %}
+    {%- set neg_one = "f16::NEG_ONE" %}
+    {%- set zero = "f16::ZERO" %}
+    {%- set two = "f16::from_f32_const(2.0)" %}
+    {%- set frac_1_2 = "f16::from_f32_const(0.5)" %}
+    {%- set eps_1e_4 = "f16::from_f32_const(1e-4)" %}
+{%- else %}
+    {%- set one = "1.0" %}
+    {%- set neg_one = "-1.0" %}
+    {%- set zero = "0.0" %}
+    {%- set two = "2.0" %}
+    {%- set frac_1_2 = "0.5" %}
+    {%- set eps_1e_4 = "1e-4" %}
+{%- endif %}
 
 use crate::{
     {{ scalar_t }}::math,
@@ -40,6 +65,8 @@ use crate::{
         Mat3, Mat3A, Mat4, Vec2, Vec3, Vec3A, Vec4,
     {% elif scalar_t == "f64" %}
         DMat3, DMat4, DVec2, DVec3, DVec4, Quat,
+    {% elif scalar_t == "f16" %}
+        HVec2, HVec3, HVec4, Quat,
     {% endif %}
     {% if is_sse2 %}
         sse2::*,
@@ -51,7 +78,7 @@ use crate::{
         neon::*,
     {% endif %}
 };
-{% if scalar_t == "f32" %}
+{% if scalar_t == "f32" or scalar_t == "f16" %}
 #[cfg(feature = "f64")]
 use crate::DQuat;
 {% endif %}
@@ -80,6 +107,9 @@ use core::ops::{
     {% endif %}
     Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign
 };
+{%- if scalar_t == "f16" %}
+use half::f16;
+{%- endif %}
 
 {% if not is_coresimd %}
 #[cfg(feature = "zerocopy")]
@@ -139,10 +169,10 @@ pub struct {{ self_t }}(pub(crate) {{ simd_t }});
 
 impl {{ self_t }} {
     /// All zeros.
-    const ZERO: Self = Self::from_array([0.0; 4]);
+    const ZERO: Self = Self::from_array([{{ zero }}; 4]);
 
     /// The identity quaternion. Corresponds to no rotation.
-    pub const IDENTITY: Self = Self::from_xyzw(0.0, 0.0, 0.0, 1.0);
+    pub const IDENTITY: Self = Self::from_xyzw({{ zero }}, {{ zero }}, {{ zero }}, {{ one }});
 
     /// All NANs.
     pub const NAN: Self = Self::from_array([{{ scalar_t }}::NAN; 4]);
@@ -264,7 +294,7 @@ impl {{ self_t }} {
     #[must_use]
     pub fn from_axis_angle(axis: {{ vec3_t }}, angle: {{ scalar_t }}) -> Self {
         glam_assert!(axis.is_normalized());
-        let (s, c) = math::sin_cos(angle * 0.5);
+        let (s, c) = math::sin_cos(angle * {{ frac_1_2 }});
         let v = axis * s;
         Self::from_xyzw(v.x, v.y, v.z, c)
     }
@@ -276,7 +306,7 @@ impl {{ self_t }} {
     #[must_use]
     pub fn from_scaled_axis(v: {{ vec3_t }}) -> Self {
         let length = v.length();
-        if length == 0.0 {
+        if length == {{ zero }} {
             Self::IDENTITY
         } else {
             Self::from_axis_angle(v / length, length)
@@ -287,24 +317,24 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn from_rotation_x(angle: {{ scalar_t }}) -> Self {
-        let (s, c) = math::sin_cos(angle * 0.5);
-        Self::from_xyzw(s, 0.0, 0.0, c)
+        let (s, c) = math::sin_cos(angle * {{ frac_1_2 }});
+        Self::from_xyzw(s, {{ zero }}, {{ zero }}, c)
     }
 
     /// Creates a quaternion from the `angle` (in radians) around the y axis.
     #[inline]
     #[must_use]
     pub fn from_rotation_y(angle: {{ scalar_t }}) -> Self {
-        let (s, c) = math::sin_cos(angle * 0.5);
-        Self::from_xyzw(0.0, s, 0.0, c)
+        let (s, c) = math::sin_cos(angle * {{ frac_1_2 }});
+        Self::from_xyzw({{ zero }}, s, {{ zero }}, c)
     }
 
     /// Creates a quaternion from the `angle` (in radians) around the z axis.
     #[inline]
     #[must_use]
     pub fn from_rotation_z(angle: {{ scalar_t }}) -> Self {
-        let (s, c) = math::sin_cos(angle * 0.5);
-        Self::from_xyzw(0.0, 0.0, s, c)
+        let (s, c) = math::sin_cos(angle * {{ frac_1_2 }});
+        Self::from_xyzw({{ zero }}, {{ zero }}, s, c)
     }
 
     /// Creates a quaternion from the given Euler rotation sequence and the angles (in radians).
@@ -330,14 +360,14 @@ impl {{ self_t }} {
         let (m00, m01, m02) = x_axis.into();
         let (m10, m11, m12) = y_axis.into();
         let (m20, m21, m22) = z_axis.into();
-        if m22 <= 0.0 {
+        if m22 <= {{ zero }} {
             // x^2 + y^2 >= z^2 + w^2
             let dif10 = m11 - m00;
-            let omm22 = 1.0 - m22;
-            if dif10 <= 0.0 {
+            let omm22 = {{ one }} - m22;
+            if dif10 <= {{ zero }} {
                 // x^2 >= y^2
                 let four_xsq = omm22 - dif10;
-                let inv4x = 0.5 / math::sqrt(four_xsq);
+                let inv4x = {{ frac_1_2 }} / math::sqrt(four_xsq);
                 Self::from_xyzw(
                     four_xsq * inv4x,
                     (m01 + m10) * inv4x,
@@ -347,7 +377,7 @@ impl {{ self_t }} {
             } else {
                 // y^2 >= x^2
                 let four_ysq = omm22 + dif10;
-                let inv4y = 0.5 / math::sqrt(four_ysq);
+                let inv4y = {{ frac_1_2 }} / math::sqrt(four_ysq);
                 Self::from_xyzw(
                     (m01 + m10) * inv4y,
                     four_ysq * inv4y,
@@ -358,11 +388,11 @@ impl {{ self_t }} {
         } else {
             // z^2 + w^2 >= x^2 + y^2
             let sum10 = m11 + m00;
-            let opm22 = 1.0 + m22;
-            if sum10 <= 0.0 {
+            let opm22 = {{ one }} + m22;
+            if sum10 <= {{ zero }} {
                 // z^2 >= w^2
                 let four_zsq = opm22 - sum10;
-                let inv4z = 0.5 / math::sqrt(four_zsq);
+                let inv4z = {{ frac_1_2 }} / math::sqrt(four_zsq);
                 Self::from_xyzw(
                     (m02 + m20) * inv4z,
                     (m12 + m21) * inv4z,
@@ -372,7 +402,7 @@ impl {{ self_t }} {
             } else {
                 // w^2 >= z^2
                 let four_wsq = opm22 + sum10;
-                let inv4w = 0.5 / math::sqrt(four_wsq);
+                let inv4w = {{ frac_1_2 }} / math::sqrt(four_wsq);
                 Self::from_xyzw(
                     (m12 - m21) * inv4w,
                     (m20 - m02) * inv4w,
@@ -383,6 +413,7 @@ impl {{ self_t }} {
         }
     }
 
+{% if scalar_t != "f16" %}
     /// Creates a quaternion from a 3x3 rotation matrix.
     ///
     /// Note if the input matrix contain scales, shears, or other non-rotation transformations then
@@ -439,6 +470,7 @@ impl {{ self_t }} {
             mat.z_axis.truncate(),
         )
     }
+{%- endif %}
 
     /// Gets the minimal rotation for transforming `from` to `to`.  The rotation is in the
     /// plane spanned by the two vectors.  Will rotate at most 180 degrees.
@@ -457,19 +489,23 @@ impl {{ self_t }} {
     pub fn from_rotation_arc(from: {{ vec3_t }}, to: {{ vec3_t }}) -> Self {
         glam_assert!(from.is_normalized());
         glam_assert!(to.is_normalized());
+{%- if scalar_t == "f16" %}
+        const ONE_MINUS_EPS: f16 = f16::from_f32_const(1.0 - 2.0 * f16::EPSILON.to_f32_const());
+{%- else %}
 
         const ONE_MINUS_EPS: {{ scalar_t }} = 1.0 - 2.0 * {{ scalar_t }}::EPSILON;
+{%- endif %}
         let dot = from.dot(to);
         if dot > ONE_MINUS_EPS {
             // 0° singularity: from ≈ to
             Self::IDENTITY
         } else if dot < -ONE_MINUS_EPS {
             // 180° singularity: from ≈ -to
-            use core::{{ scalar_t }}::consts::PI; // half a turn = 𝛕/2 = 180°
+            use {{ consts_pi }}; // half a turn = 𝛕/2 = 180°
             Self::from_axis_angle(from.any_orthonormal_vector(), PI)
         } else {
             let c = from.cross(to);
-            Self::from_xyzw(c.x, c.y, c.z, 1.0 + dot).normalize()
+            Self::from_xyzw(c.x, c.y, c.z, {{ one }} + dot).normalize()
         }
     }
 
@@ -489,7 +525,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn from_rotation_arc_colinear(from: {{ vec3_t }}, to: {{ vec3_t }}) -> Self {
-        if from.dot(to) < 0.0 {
+        if from.dot(to) < {{ zero }} {
             Self::from_rotation_arc(from, -to)
         } else {
             Self::from_rotation_arc(from, to)
@@ -513,28 +549,33 @@ impl {{ self_t }} {
     pub fn from_rotation_arc_2d(from: {{ vec2_t }}, to: {{ vec2_t }}) -> Self {
         glam_assert!(from.is_normalized());
         glam_assert!(to.is_normalized());
+{%- if scalar_t == "f16" %}
+        const ONE_MINUS_EPSILON: f16 = f16::from_f32_const(1.0 - 2.0 * f16::EPSILON.to_f32_const());
+{%- else %}
 
         const ONE_MINUS_EPSILON: {{ scalar_t }} = 1.0 - 2.0 * {{ scalar_t }}::EPSILON;
+{%- endif %}
         let dot = from.dot(to);
         if dot > ONE_MINUS_EPSILON {
             // 0° singularity: from ≈ to
             Self::IDENTITY
         } else if dot < -ONE_MINUS_EPSILON {
             // 180° singularity: from ≈ -to
-            const COS_FRAC_PI_2: {{ scalar_t }} = 0.0;
-            const SIN_FRAC_PI_2: {{ scalar_t }} = 1.0;
+            const COS_FRAC_PI_2: {{ scalar_t }} = {{ zero }};
+            const SIN_FRAC_PI_2: {{ scalar_t }} = {{ one }};
             // rotation around z by PI radians
-            Self::from_xyzw(0.0, 0.0, SIN_FRAC_PI_2, COS_FRAC_PI_2)
+            Self::from_xyzw({{ zero }}, {{ zero }}, SIN_FRAC_PI_2, COS_FRAC_PI_2)
         } else {
             // vector3 cross where z=0
             let z = from.x * to.y - to.x * from.y;
-            let w = 1.0 + dot;
+            let w = {{ one }} + dot;
             // calculate length with x=0 and y=0 to normalize
-            let len_rcp = 1.0 / math::sqrt(z * z + w * w);
-            Self::from_xyzw(0.0, 0.0, z * len_rcp, w * len_rcp)
+            let len_rcp = {{ one }} / math::sqrt(z * z + w * w);
+            Self::from_xyzw({{ zero }}, {{ zero }}, z * len_rcp, w * len_rcp)
         }
     }
 
+{% if scalar_t != "f16" %}
     /// Creates a quaterion rotation from a facing direction and an up direction.
     ///
     /// For a left-handed view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
@@ -605,20 +646,25 @@ impl {{ self_t }} {
         #[allow(deprecated)]
         Self::look_to_rh(center.sub(eye).normalize(), up)
     }
+{%- endif %}
 
     /// Returns the rotation axis (normalized) and angle (in radians) of `self`.
     #[inline]
     #[must_use]
     pub fn to_axis_angle(self) -> ({{ vec3_t }}, {{ scalar_t }}) {
+        {%- if scalar_t == "f16" %}
+        const EPSILON: f16 = f16::from_f32_const(1.0e-4);
+        {%- else %}
         const EPSILON: {{ scalar_t }} = 1.0e-8;
+        {%- endif %}
         let v = {{ vec3_t }}::new(self.x, self.y, self.z);
         let length = v.length();
         if length >= EPSILON {
-            let angle = 2.0 * math::atan2(length, self.w);
+            let angle = {{ two }} * math::atan2(length, self.w);
             let axis = v / length;
             (axis, angle)
         } else {
-            ({{ vec3_t }}::X, 0.0)
+            ({{ vec3_t }}::X, {{ zero }})
         }
     }
 
@@ -792,8 +838,14 @@ impl {{ self_t }} {
             const THRESHOLD_ANGLE: f32 = 0.002_847_144_6;
         {%- elif scalar_t == 'f64' %}
             const THRESHOLD_ANGLE: f64 = 2.827_296_549_232_347_4e-7;
+        {%- elif scalar_t == 'f16' %}
+            // f16 has a precision of about 2^-11 relative to 1.0, so the
+            // smallest representable rotation near identity is about 0.0625
+            // radians. A threshold of 0.1 radians considers rotations of up
+            // to ~5.7 degrees as near identity.
+            const THRESHOLD_ANGLE: f16 = f16::from_f32_const(0.1);
         {%- endif %}
-        let positive_w_angle = math::acos_approx(math::abs(self.w)) * 2.0;
+        let positive_w_angle = math::acos_approx(math::abs(self.w)) * {{ two }};
         positive_w_angle < THRESHOLD_ANGLE
     }
 
@@ -809,7 +861,7 @@ impl {{ self_t }} {
     #[must_use]
     pub fn angle_between(self, rhs: Self) -> {{ scalar_t }} {
         glam_assert!(self.is_normalized() && rhs.is_normalized());
-        math::acos_approx(math::abs(self.dot(rhs))) * 2.0
+        math::acos_approx(math::abs(self.dot(rhs))) * {{ two }}
     }
 
     /// Rotates towards `rhs` up to `max_angle` (in radians).
@@ -828,10 +880,10 @@ impl {{ self_t }} {
     pub fn rotate_towards(self, rhs: Self, max_angle: {{ scalar_t }}) -> Self {
         glam_assert!(self.is_normalized() && rhs.is_normalized());
         let angle = self.angle_between(rhs);
-        if angle <= 1e-4 {
+        if angle <= {{ eps_1e_4 }} {
             return rhs;
         }
-        let s = (max_angle / angle).clamp(-1.0, 1.0);
+        let s = (max_angle / angle).clamp({{ neg_one }}, {{ one }});
         self.slerp(rhs, s)
     }
 
@@ -853,7 +905,7 @@ impl {{ self_t }} {
     #[inline(always)]
     #[must_use]
     fn lerp_impl(self, end: Self, s: {{ scalar_t }}) -> Self {
-        (self * (1.0 - s) + end * s).normalize()
+        (self * ({{ one }} - s) + end * s).normalize()
     }
 
     /// Performs a linear interpolation between `self` and `rhs` based on
@@ -874,7 +926,7 @@ impl {{ self_t }} {
 
         {% if is_scalar %}
             let dot = self.dot(end);
-            let bias = if dot >= 0.0 { 1.0 } else { -1.0 };
+            let bias = if dot >= {{ zero }} { {{ one }} } else { {{ neg_one }} };
             self.lerp_impl(end * bias, s)
         {% elif is_sse2 %}
             const NEG_ZERO: __m128 = m128_from_f32x4([-0.0; 4]);
@@ -937,10 +989,10 @@ impl {{ self_t }} {
                 ))
             }
         {% else %}
-            let scale1 = math::sin(theta * (1.0 - s));
+            let scale1 = math::sin(theta * ({{ one }} - s));
             let scale2 = math::sin(theta * s);
             let theta_sin = math::sin(theta);
-            ((self * scale1) + (end * scale2)) * (1.0 / theta_sin)
+            ((self * scale1) + (end * scale2)) * ({{ one }} / theta_sin)
         {% endif %}
     }
 
@@ -967,12 +1019,16 @@ impl {{ self_t }} {
         // product between `self` and `end` should be positive. If the `dot`
         // product is negative, slerp between `self` and `-end`.
         let mut dot = self.dot(end);
-        if dot < 0.0 {
+        if dot < {{ zero }} {
             end = -end;
             dot = -dot;
         }
+{%- if scalar_t == "f16" %}
+        const DOT_THRESHOLD: f16 = f16::from_f32_const(1.0 - f16::EPSILON.to_f32_const());
+{%- else %}
 
         const DOT_THRESHOLD: {{ scalar_t }} = 1.0 - {{ scalar_t }}::EPSILON;
+{%- endif %}
         if dot > DOT_THRESHOLD {
             // if above threshold perform linear interpolation to avoid divide by zero
             self.lerp_impl(end, s)
@@ -1001,9 +1057,17 @@ impl {{ self_t }} {
         glam_assert!(end.is_normalized());
 
         let dot = self.dot(end);
+{%- if scalar_t == "f16" %}
+        const DOT_THRESHOLD: f16 = f16::from_f32_const(1.0 - f16::EPSILON.to_f32_const());
+{%- else %}
 
         const DOT_THRESHOLD: {{ scalar_t }} = 1.0 - {{ scalar_t }}::EPSILON;
+{%- endif %}
+        {%- if scalar_t == "f16" %}
+        if math::abs(dot) > DOT_THRESHOLD {
+        {%- else %}
         if dot.abs() > DOT_THRESHOLD {
+        {%- endif %}
             // if above threshold perform linear interpolation to avoid divide by zero
             self.lerp_impl(end, s)
         } else {
@@ -1026,8 +1090,8 @@ impl {{ self_t }} {
             let b2 = b.dot(b);
             rhs
                 .mul(w * w - b2)
-                .add(b.mul(rhs.dot(b) * 2.0))
-                .add(b.cross(rhs).mul(w * 2.0))
+                .add(b.mul(rhs.dot(b) * {{ two }}))
+                .add(b.cross(rhs).mul(w * {{ two }}))
         {% else %}
             self.mul_vec3a(rhs.into()).into()
         {% endif %}
@@ -1198,6 +1262,7 @@ impl {{ self_t }} {
         {% endif %}
     }
 
+{% if scalar_t != "f16" %}
     /// Creates a quaternion from a 3x3 rotation matrix inside a 3D affine transform.
     ///
     /// Note if the input affine matrix contain scales, shears, or other non-rotation
@@ -1216,6 +1281,7 @@ impl {{ self_t }} {
             a.matrix3.z_axis,
         )
     }
+{%- endif %}
 
 {% if scalar_t == "f32" %}
     /// Creates a quaternion from a 3x3 rotation matrix inside a 3D affine transform.
@@ -1309,6 +1375,40 @@ impl {{ self_t }} {
     #[must_use]
     pub fn as_quat(self) -> Quat {
         Quat::from_xyzw(self.x as f32, self.y as f32, self.z as f32, self.w as f32)
+    }
+{% elif scalar_t == "f16" %}
+    /// Converts to the equivalent [`Quat`].
+    ///
+    /// The result is normalized because widening an `f16` quaternion to `f32`
+    /// preserves `f16` rounding so the result may not satisfy `f32`'s stricter
+    /// normalization check (used by [`Quat::mul_vec3`] when `glam_assert` is
+    /// enabled).
+    #[inline]
+    #[must_use]
+    pub fn as_quat(self) -> Quat {
+        Quat::from_xyzw(
+            f32::from(self.x),
+            f32::from(self.y),
+            f32::from(self.z),
+            f32::from(self.w),
+        )
+        .normalize()
+    }
+
+    /// Converts to a `DQuat`.
+    ///
+    /// The result is normalized for the same reason as [`Self::as_quat`].
+    #[cfg(feature = "f64")]
+    #[inline]
+    #[must_use]
+    pub fn as_dquat(self) -> DQuat {
+        DQuat::from_xyzw(
+            f64::from(self.x),
+            f64::from(self.y),
+            f64::from(self.z),
+            f64::from(self.w),
+        )
+        .normalize()
     }
 {% endif %}
 }
@@ -1448,7 +1548,7 @@ impl Neg for {{ self_t }} {
     type Output = Self;
     #[inline]
     fn neg(self) -> Self {
-        self * -1.0
+        self * {{ neg_one }}
     }
 }
 

@@ -5,6 +5,8 @@ mod test {
     };
     #[cfg(feature = "f64")]
     use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
+    #[cfg(feature = "f16")]
+    use crate::{HQuat, HVec2, HVec3, HVec4};
     #[cfg(feature = "i16")]
     use crate::{I16Vec2, I16Vec3, I16Vec4};
     #[cfg(feature = "i64")]
@@ -141,6 +143,23 @@ mod test {
     test_from_bytes_t!(dvec4_from, DVec4);
     #[cfg(feature = "f64")]
     test_into_bytes_t!(dvec4_into, DVec4);
+
+    #[cfg(feature = "f16")]
+    test_from_bytes_t!(hquat_from, HQuat);
+    #[cfg(feature = "f16")]
+    test_into_bytes_t!(hquat_into, HQuat);
+    #[cfg(feature = "f16")]
+    test_from_bytes_t!(hvec2_from, HVec2);
+    #[cfg(feature = "f16")]
+    test_into_bytes_t!(hvec2_into, HVec2);
+    #[cfg(feature = "f16")]
+    test_from_bytes_t!(hvec3_from, HVec3);
+    #[cfg(feature = "f16")]
+    test_into_bytes_t!(hvec3_into, HVec3);
+    #[cfg(feature = "f16")]
+    test_from_bytes_t!(hvec4_from, HVec4);
+    #[cfg(feature = "f16")]
+    test_into_bytes_t!(hvec4_into, HVec4);
 
     #[cfg(feature = "i8")]
     test_from_bytes_t!(i8vec2_from, I8Vec2);

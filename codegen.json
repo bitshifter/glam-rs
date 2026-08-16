@@ -267,6 +267,12 @@
             "is_scalar": true,
             "scalar_t": "f64"
           }
+        },
+        "src/f16/hquat.rs": {
+          "properties": {
+            "is_scalar": true,
+            "scalar_t": "f16"
+          }
         }
       }
     },
@@ -733,6 +739,36 @@
             "vec3_t": "Vec3",
             "vec4_t": "Vec4"
           }
+        },
+        "src/swizzles/hvec2_impl.rs": {
+          "properties": {
+            "dim": 2,
+            "is_scalar": true,
+            "self_t": "HVec2",
+            "vec2_t": "HVec2",
+            "vec3_t": "HVec3",
+            "vec4_t": "HVec4"
+          }
+        },
+        "src/swizzles/hvec3_impl.rs": {
+          "properties": {
+            "dim": 3,
+            "is_scalar": true,
+            "self_t": "HVec3",
+            "vec2_t": "HVec2",
+            "vec3_t": "HVec3",
+            "vec4_t": "HVec4"
+          }
+        },
+        "src/swizzles/hvec4_impl.rs": {
+          "properties": {
+            "dim": 4,
+            "is_scalar": true,
+            "self_t": "HVec4",
+            "vec2_t": "HVec2",
+            "vec3_t": "HVec3",
+            "vec4_t": "HVec4"
+          }
         }
       }
     },
@@ -1080,6 +1116,27 @@
             "is_scalar": true,
             "scalar_t": "usize"
           }
+        },
+        "src/f16/hvec2.rs": {
+          "properties": {
+            "dim": 2,
+            "is_scalar": true,
+            "scalar_t": "f16"
+          }
+        },
+        "src/f16/hvec3.rs": {
+          "properties": {
+            "dim": 3,
+            "is_scalar": true,
+            "scalar_t": "f16"
+          }
+        },
+        "src/f16/hvec4.rs": {
+          "properties": {
+            "dim": 4,
+            "is_scalar": true,
+            "scalar_t": "f16"
+          }
         }
       }
     },
@@ -1250,6 +1307,11 @@
         "tests/swizzles_usize.rs": {
           "properties": {
             "scalar_t": "usize"
+          }
+        },
+        "tests/swizzles_f16.rs": {
+          "properties": {
+            "scalar_t": "f16"
           }
         }
       }

@@ -99,6 +99,17 @@ mod f64 {
     impl_rkyv!(DVec4);
 }
 
+#[cfg(feature = "f16")]
+mod f16 {
+    use crate::{HQuat, HVec2, HVec3, HVec4};
+    use rkyv::{rancor::Fallible, Archive, Deserialize, Place, Serialize};
+
+    impl_rkyv!(HQuat);
+    impl_rkyv!(HVec2);
+    impl_rkyv!(HVec3);
+    impl_rkyv!(HVec4);
+}
+
 #[cfg(feature = "i8")]
 mod i8 {
     use crate::{I8Vec2, I8Vec3, I8Vec4};
@@ -257,6 +268,30 @@ mod test {
             test_archive(&DVec2::new(1.0, 2.0));
             test_archive(&DVec3::new(1.0, 2.0, 3.0));
             test_archive(&DVec4::new(1.0, 2.0, 3.0, 4.0));
+        }
+
+        #[cfg(feature = "f16")]
+        {
+            use crate::{HQuat, HVec2, HVec3, HVec4};
+            use half::f16;
+            test_archive(&HQuat::from_xyzw(
+                f16::from_f32(1.0),
+                f16::from_f32(2.0),
+                f16::from_f32(3.0),
+                f16::from_f32(4.0),
+            ));
+            test_archive(&HVec2::new(f16::from_f32(1.0), f16::from_f32(2.0)));
+            test_archive(&HVec3::new(
+                f16::from_f32(1.0),
+                f16::from_f32(2.0),
+                f16::from_f32(3.0),
+            ));
+            test_archive(&HVec4::new(
+                f16::from_f32(1.0),
+                f16::from_f32(2.0),
+                f16::from_f32(3.0),
+                f16::from_f32(4.0),
+            ));
         }
 
         #[cfg(feature = "i8")]

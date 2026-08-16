@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+* Added `f16` vector and quaternion types (`HVec2`, `HVec3`, `HVec4` and
+  `HQuat`) enabled with the `f16` feature. This feature is not included in
+  `float-types` or `all-types` because the `half` crate requires a newer
+  minimum supported Rust version than `glam`.
+
+
 ## [0.33.5](https://github.com/bitshifter/glam-rs/compare/0.33.4...0.33.5) - 2026-08-19
 
 ### Fixed
