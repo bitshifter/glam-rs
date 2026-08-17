@@ -18,6 +18,7 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+          submodules: true # tools/codegen is a workspace member submodule
       - run: rustup update --no-self-update stable
       - run: rustup default stable
       - uses: release-plz/action@v0.5
@@ -41,6 +42,7 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
+          submodules: true # tools/codegen is a workspace member submodule
           # Allow pushing the changelog commit to the release PR branch.
           persist-credentials: true
       - run: rustup update --no-self-update stable
@@ -55,17 +57,17 @@ jobs:
 
       # release-plz only bumps Cargo.toml and Cargo.lock. Stamp the release
       # version header and compare links into the hand-curated changelog.
+      # prs_created is 'true' only when release-plz created or updated a
+      # release PR; on pushes with no pending release the `pr` output is
+      # '{}' and this step should be skipped.
       - name: Update changelog
+        if: ${{ steps.release-plz.outputs.prs_created == 'true' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR: ${{ steps.release-plz.outputs.pr }}
           REPO_URL: ${{ github.serverUrl }}/${{ github.repository }}
         run: |
           set -euo pipefail
-          if [ -z "$PR" ]; then
-            echo "No release PR was created, nothing to do"
-            exit 0
-          fi
           gh pr checkout "$(echo "$PR" | jq -r '.number')"
           new_ver=$(sed -n 's/^version = "\(.*\)"$/\1/p' Cargo.toml | head -1)
           prev_ver=$(git tag --list --sort=-version:refname | grep -m1 -E '^[0-9]+\.[0-9]+\.[0-9]+$')

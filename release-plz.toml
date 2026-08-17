@@ -31,11 +31,9 @@ semver_check = true
 # the release PR instead (see .github/scripts/prepare-release.py).
 changelog_update = false
 
-# Only the glam crate is released.
+# Only the glam crate is released. The `ci` and `glam-no_std` packages are
+# skipped automatically because they set `publish = false` in their
+# Cargo.toml; `codegen` needs an explicit exclusion as it doesn't.
 [[package]]
 name = "codegen"
-release = false
-
-[[package]]
-name = "glam-no_std"
 release = false
