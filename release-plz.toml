@@ -1,0 +1,41 @@
+# Release-plz configuration for glam.
+#
+# Mirrors the previous manual release process: a "Prepare <version> release"
+# PR bumps the version (minor if cargo-semver-checks detects breaking API
+# changes, patch otherwise); merging that PR tags the release and publishes
+# to crates.io.
+
+[workspace]
+# Only tag + publish when the release PR is merged, not on every push to
+# main. Note: release PR detection relies on the default `release-plz-`
+# branch prefix, so don't set pr_branch_prefix.
+release_always = false
+
+# Match the existing tag style: 0.33.3 (no "v" prefix, no package prefix).
+git_tag_name = "{{ version }}"
+
+# glam releases are a git tag + crates.io publish; no GitHub release.
+git_release_enable = false
+
+# Squash-merging this PR produces the usual "Prepare <version> release"
+# commit on main.
+pr_name = "Prepare {{ version }} release"
+
+# Run cargo-semver-checks; breaking API changes bump the minor version,
+# otherwise the patch version is bumped. This is the same rule the manual
+# process used.
+semver_check = true
+
+# The changelog is curated by hand in the [Unreleased] section. The
+# release-plz workflow stamps the version header, date and compare links on
+# the release PR instead (see .github/scripts/prepare-release.py).
+changelog_update = false
+
+# Only the glam crate is released.
+[[package]]
+name = "codegen"
+release = false
+
+[[package]]
+name = "glam-no_std"
+release = false
