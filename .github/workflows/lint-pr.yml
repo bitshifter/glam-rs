@@ -7,11 +7,11 @@ name: Lint PR
 #
 # This check is advisory: it is not a required status check, so it does not
 # block merging. PR titles can also be adjusted in the merge dialog when
-# squashing. Dependabot PRs (labelled `dependencies`) and draft PRs are
-# exempt.
+# squashing. Dependabot PRs (labelled `dependencies`) and release-plz PRs
+# (labelled `release`) are exempt, as are draft PRs.
 on:
   pull_request_target:
-    types: [opened, edited, reopened]
+    types: [opened, edited, reopened, ready_for_review]
 
 permissions:
   pull-requests: read
@@ -19,6 +19,9 @@ permissions:
 jobs:
   conventional-commits:
     name: Conventional Commits
+    # Skip draft (work-in-progress) PRs; they are validated once marked
+    # ready for review.
+    if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     steps:
       - uses: amannn/action-semantic-pull-request@v6
@@ -38,7 +41,8 @@ jobs:
             ci
             build
             revert
-          ignoreLabels: dependencies # dependabot PRs
-          ignoreDraft: true # WIP PRs
+          ignoreLabels: |
+            dependencies # dependabot PRs
+            release # release-plz PRs ("Prepare <version> release")
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

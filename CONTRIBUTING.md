@@ -56,12 +56,14 @@ Common types are `feat`, `fix`, `refactor`, `perf`, `docs`, `test`,
 area is optional, e.g. `feat(quat): ...` or `fix(vec3): ...`.
 
 Breaking changes append `!` after the type or scope, e.g.
-`feat(quat)!: remove the deprecated camera methods`, and will bump the
-minor version at the next release while glam is pre-1.0.
+`feat(quat)!: remove the deprecated camera methods`. Breaking changes
+bump the minor version at the next release while glam is pre-1.0; they
+are also detected automatically by cargo-semver-checks when the release
+PR is prepared, so a minor bump can occur even without the `!` marker.
 
 A check on the PR will suggest this format for titles that don't follow it.
 The check is not required and titles can also be adjusted in the merge
-dialog when squashing; dependabot and draft PRs are exempt.
+dialog when squashing; dependabot, release-plz and draft PRs are exempt.
 
 ## Code contributions
 

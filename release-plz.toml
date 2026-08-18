@@ -17,19 +17,23 @@ git_tag_name = "{{ version }}"
 git_release_enable = false
 
 # Squash-merging this PR produces the usual "Prepare <version> release"
-# commit on main.
+# commit on main. The `release` label is used by the PR-title lint
+# workflow to exempt release PRs from the Conventional Commits check.
 pr_name = "Prepare {{ version }} release"
+pr_labels = ["release"]
 
 # Run cargo-semver-checks and report API compatibility in the release PR
-# body. Note: the version bump itself is determined by the conventional
-# commit types below, not by this check.
+# body. This check can also drive the version bump: if it detects an
+# incompatible API change, release-plz bumps the minor version (the 0.x
+# breaking slot) regardless of the commit titles.
 semver_check = true
 
 # The changelog is generated from conventional commit messages on the
 # release PR using git-cliff's defaults (no git-cliff.toml). Version bumps
 # follow release-plz's pre-1.0 rules: breaking changes bump the minor
-# version (the 0.x breaking slot), while everything else - including
-# `feat:` - bumps the patch version. This matches the bump policy used
+# version (the 0.x breaking slot), whether detected by cargo-semver-checks
+# or by the `!` marker in a commit title. Everything else, including
+# `feat:`, bumps the patch version. This matches the bump policy used
 # before switching to release-plz.
 changelog_update = true
 
