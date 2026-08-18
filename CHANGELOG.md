@@ -7,6 +7,15 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## [Unreleased]
 
+## [0.33.4](https://github.com/bitshifter/glam-rs/compare/0.33.3...0.33.4) - 2026-08-18
+
+### Other
+
+- Add release-plz support ([#772](https://github.com/bitshifter/glam-rs/pull/772))
+- Remove version strings that need to be manually updated. ([#769](https://github.com/bitshifter/glam-rs/pull/769))
+- Add serde serialize to BVec3A & BVec4A when scalar-math enabled. ([#768](https://github.com/bitshifter/glam-rs/pull/768))
+- Replace scalar `recip()` calls with explicit division in vec templates ([#765](https://github.com/bitshifter/glam-rs/pull/765))
+
 ### Added
 
 * Added missing serde serialization to `BVec3A` and `BVec4A` when the
