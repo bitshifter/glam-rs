@@ -10,10 +10,13 @@ pub use usizevec4::{usizevec4, USizeVec4};
 mod test {
     use super::*;
     mod const_test_usizevec2 {
+        #[cfg(not(all(feature = "cuda", target_pointer_width = "32")))]
         const_assert_eq!(
             core::mem::size_of::<usize>() * 2,
             core::mem::size_of::<super::USizeVec2>()
         );
+        #[cfg(all(feature = "cuda", target_pointer_width = "32"))]
+        const_assert_eq!(16, core::mem::size_of::<super::USizeVec2>());
 
         #[cfg(not(feature = "cuda"))]
         const_assert_eq!(

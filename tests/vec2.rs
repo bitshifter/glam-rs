@@ -2509,7 +2509,10 @@ mod usizevec2 {
 
     glam_test!(test_align, {
         use core::mem;
+        #[cfg(not(all(feature = "cuda", target_pointer_width = "32")))]
         assert_eq!(mem::size_of::<usize>() * 2, mem::size_of::<USizeVec2>());
+        #[cfg(all(feature = "cuda", target_pointer_width = "32"))]
+        assert_eq!(16, mem::size_of::<USizeVec2>());
         #[cfg(not(feature = "cuda"))]
         assert_eq!(mem::align_of::<usize>(), mem::align_of::<USizeVec2>());
         #[cfg(feature = "cuda")]
