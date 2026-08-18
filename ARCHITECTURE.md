@@ -2,11 +2,11 @@
 
 This document describes the high-level architecture of `glam`. While `glam` is
 not a large library there are some complexities to its implementation. The
-rational and explanation of these follows.
+rationale and explanation of these follows.
 
 ## Design goals
 
-There overarching design goals of glam are:
+The overarching design goals of glam are:
 
 - Good out of the box performance using SIMD when available
 - Has a simple public interface
@@ -59,28 +59,37 @@ making them a trait means they won't pollute documentation.
 ### Support common primitives
 
 Initially `glam` only supported `f32` which kept the internal implementation
-relatively simple. However users also wanted support for other primitives types
-like `f64`, `i32` and `u32`. Because `glam` avoids using `generics` adding
-support for other primitive types without a lot of code duplication required
-some additional complexity in implementation.
+relatively simple. However users also wanted support for other primitive types.
+`glam` now supports `f32` and `f64` floats and the signed and unsigned integers
+`i8`/`u8`, `i16`/`u16`, `i32`/`u32`, `i64`/`u64` and `isize`/`usize`. Because
+`glam` avoids using generics, adding support for all of these types without a
+lot of code duplication requires some additional implementation complexity.
 
 ## High level structure
 
-`glam` supports a number of permutations of vector, quaternion and matrix types
-for `f32`, `f64`, `i32` and `u32` primitives, with SSE2, NEON, or WASM SIMD for
-some `f32` types and scalar fallbacks if SIMD is not available.
+`glam` supports a number of permutations of vector, quaternion, matrix, affine
+transform and boolean vector mask types for the `f32`, `f64` and integer
+primitives listed above. Some of these types have SSE2, NEON, WASM and
+`core-simd` backends, with scalar fallbacks when SIMD is not available.
 
 ### Component access via Deref
 
-The `Deref` trait is used to provide direct access to SIMD vector components
-like `.x`, `.y` and so on. The `Deref` implementation will return `XYZ<T>`
-structure on which the vector components are accessible. Unfortunately if users
-dereference the public types they will see confusing error messages about `XYZ`
-types but this on balance seemed preferable to needing to setter and getting
-methods to read and write component values.
+Vector, quaternion, matrix and affine transform types with SIMD backends store
+their data in SIMD values, e.g. an `__m128` on x86. The `Deref` and
+`DerefMut` traits are used to provide direct access to the components (`.x`,
+`.y`, `.z`, `.w`) or columns (`x_axis`, `y_axis` and so on) of these types.
+The `Deref` implementations return `Vec3<T>`, `Vec4<T>` or `Cols2<V>`,
+`Cols3<V>`, `Cols4<V>` structures defined in `src/deref.rs` on which those
+fields are directly accessible, e.g. `Vec3A` and `Quat` deref to `Vec3<T>` and
+`Vec4<T>` while SIMD-backed matrix and affine transform types deref to the
+`Cols*` structures. Unfortunately if users dereference the public types they
+will see confusing error messages about these wrapper types, but on balance
+this seemed preferable to needing setter and getter methods to read and write
+component values. When SIMD is not available or the `scalar-math` feature is
+enabled, these types instead expose their components as public fields directly.
 
 ## Code generation
 
 See the [codegen README] for information on `glam`'s code generation process.
 
-[codegen README]: tools/codegen/README.md
+[codegen README]: https://github.com/bitshifter/glam-codegen/blob/main/README.md
