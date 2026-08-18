@@ -1,0 +1,44 @@
+name: Lint PR
+
+# Validate PR titles against Conventional Commits. The squash-merged PR
+# title becomes the commit message that release-plz uses to generate the
+# changelog and determine the next version, so a conventional title keeps
+# the changelog readable.
+#
+# This check is advisory: it is not a required status check, so it does not
+# block merging. PR titles can also be adjusted in the merge dialog when
+# squashing. Dependabot PRs (labelled `dependencies`) and draft PRs are
+# exempt.
+on:
+  pull_request_target:
+    types: [opened, edited, reopened]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  conventional-commits:
+    name: Conventional Commits
+    runs-on: ubuntu-latest
+    steps:
+      - uses: amannn/action-semantic-pull-request@v6
+        with:
+          # Allowed commit types. Breaking changes are marked with `!`
+          # after the type or scope, e.g. `feat(quat)!: remove deprecated
+          # API`; a scope is optional, e.g. `fix(vec3): correct typo`.
+          types: |
+            feat
+            fix
+            refactor
+            perf
+            docs
+            test
+            chore
+            style
+            ci
+            build
+            revert
+          ignoreLabels: dependencies # dependabot PRs
+          ignoreDraft: true # WIP PRs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

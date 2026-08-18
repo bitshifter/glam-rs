@@ -1,9 +1,8 @@
 # Release-plz configuration for glam.
 #
 # Mirrors the previous manual release process: a "Prepare <version> release"
-# PR bumps the version (minor if cargo-semver-checks detects breaking API
-# changes, patch otherwise); merging that PR tags the release and publishes
-# to crates.io.
+# PR bumps the version and generates the changelog; merging that PR tags the
+# release and publishes to crates.io.
 
 [workspace]
 # Only tag + publish when the release PR is merged, not on every push to
@@ -21,15 +20,18 @@ git_release_enable = false
 # commit on main.
 pr_name = "Prepare {{ version }} release"
 
-# Run cargo-semver-checks; breaking API changes bump the minor version,
-# otherwise the patch version is bumped. This is the same rule the manual
-# process used.
+# Run cargo-semver-checks and report API compatibility in the release PR
+# body. Note: the version bump itself is determined by the conventional
+# commit types below, not by this check.
 semver_check = true
 
-# The changelog is curated by hand in the [Unreleased] section. The
-# release-plz workflow stamps the version header, date and compare links on
-# the release PR instead (see .github/scripts/prepare-release.py).
-changelog_update = false
+# The changelog is generated from conventional commit messages on the
+# release PR using git-cliff's defaults (no git-cliff.toml). Version bumps
+# follow release-plz's pre-1.0 rules: breaking changes bump the minor
+# version (the 0.x breaking slot), while everything else - including
+# `feat:` - bumps the patch version. This matches the bump policy used
+# before switching to release-plz.
+changelog_update = true
 
 # Only the glam crate is released. The `ci` and `glam-no_std` packages are
 # skipped automatically because they set `publish = false` in their
