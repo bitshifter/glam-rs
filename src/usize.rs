@@ -16,10 +16,7 @@ mod test {
             core::mem::size_of::<super::USizeVec2>()
         );
         #[cfg(all(feature = "cuda", target_pointer_width = "32"))]
-        const_assert_eq!(
-            16,
-            core::mem::size_of::<super::USizeVec2>()
-        );
+        const_assert_eq!(16, core::mem::size_of::<super::USizeVec2>());
 
         #[cfg(not(feature = "cuda"))]
         const_assert_eq!(
