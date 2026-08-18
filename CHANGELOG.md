@@ -7,18 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.33.4](https://github.com/bitshifter/glam-rs/compare/0.33.3...0.33.4) - 2026-08-18
 
+### Added
+
+- Add serde serialize to `BVec3A` and `BVec4A` when `scalar-math` enabled. ([#768](https://github.com/bitshifter/glam-rs/pull/768))
+
 ### Fixed
 
-- ISizeVec layout checks on 32-bit targets ([#775](https://github.com/bitshifter/glam-rs/pull/775))
+- `ISizeVecN` layout checks on 32-bit targets ([#775](https://github.com/bitshifter/glam-rs/pull/775))
+- `USizeVec2` layout checks on 32-bit targets ([#771](https://github.com/bitshifter/glam-rs/pull/771))
+
+### Changed
+
+- Replace scalar `recip()` calls with explicit division in vector implementations ([#765](https://github.com/bitshifter/glam-rs/pull/765))
 
 ### Other
 
-- normalize changelog to the release-plz format ([#776](https://github.com/bitshifter/glam-rs/pull/776))
-- Fix USizeVec2 layout checks on 32-bit targets ([#771](https://github.com/bitshifter/glam-rs/pull/771))
 - Add release-plz support ([#772](https://github.com/bitshifter/glam-rs/pull/772))
-- Remove version strings that need to be manually updated. ([#769](https://github.com/bitshifter/glam-rs/pull/769))
-- Add serde serialize to BVec3A & BVec4A when scalar-math enabled. ([#768](https://github.com/bitshifter/glam-rs/pull/768))
-- Replace scalar `recip()` calls with explicit division in vec templates ([#765](https://github.com/bitshifter/glam-rs/pull/765))
+- normalize changelog to the release-plz format ([#776](https://github.com/bitshifter/glam-rs/pull/776))
 
 ## [0.33.3](https://github.com/bitshifter/glam-rs/compare/0.33.2...0.33.3) - 2026-08-03
 
