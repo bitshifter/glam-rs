@@ -2851,8 +2851,8 @@ mod isizevec3 {
 
     glam_test!(test_align, {
         use std::mem;
-        assert_eq!(24, mem::size_of::<ISizeVec3>());
-        assert_eq!(8, mem::align_of::<ISizeVec3>());
+        assert_eq!(mem::size_of::<isize>() * 3, mem::size_of::<ISizeVec3>());
+        assert_eq!(mem::align_of::<isize>(), mem::align_of::<ISizeVec3>());
     });
 
     impl_vec3_isize_try_from_tests!(ISizeVec3, isize);

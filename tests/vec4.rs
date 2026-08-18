@@ -2894,9 +2894,9 @@ mod isizevec4 {
 
     glam_test!(test_align, {
         use std::mem;
-        assert_eq!(32, mem::size_of::<ISizeVec4>());
+        assert_eq!(mem::size_of::<isize>() * 4, mem::size_of::<ISizeVec4>());
         #[cfg(not(feature = "cuda"))]
-        assert_eq!(8, mem::align_of::<ISizeVec4>());
+        assert_eq!(mem::align_of::<isize>(), mem::align_of::<ISizeVec4>());
         #[cfg(feature = "cuda")]
         assert_eq!(16, mem::align_of::<ISizeVec4>());
     });
