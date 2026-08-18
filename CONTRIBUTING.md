@@ -40,6 +40,29 @@ improvement.
 If you feel any documentation could be added or improved please
 [open a GitHub issue] or submit a pull request.
 
+## Pull request titles
+
+PR titles should follow the [Conventional Commits] format, since the
+squash-merged title becomes the commit message that is used to generate the
+[changelog] and determine the version bump when a release is prepared with
+release-plz:
+
+```
+<type>(<scope>): <description>
+```
+
+Common types are `feat`, `fix`, `refactor`, `perf`, `docs`, `test`,
+`chore`, `ci`, `build` and `revert`. A scope describing the affected code
+area is optional, e.g. `feat(quat): ...` or `fix(vec3): ...`.
+
+Breaking changes append `!` after the type or scope, e.g.
+`feat(quat)!: remove the deprecated camera methods`, and will bump the
+minor version at the next release while glam is pre-1.0.
+
+A check on the PR will suggest this format for titles that don't follow it.
+The check is not required and titles can also be adjusted in the merge
+dialog when squashing; dependabot and draft PRs are exempt.
+
 ## Code contributions
 
 Most of `glam`'s source code is generated. See the [codegen README] on how
@@ -62,3 +85,5 @@ Also run `cargo fmt` and `cargo clippy` on any new code.
 [suggest a new feature]: https://github.com/bitshifter/glam-rs/discussions/new?category=ideas
 [codegen README]: https://github.com/bitshifter/glam-codegen/blob/main/README.md
 [Tera v2]: https://keats.github.io/tera/
+[Conventional Commits]: https://www.conventionalcommits.org/
+[changelog]: CHANGELOG.md

@@ -1,0 +1,55 @@
+name: Release-plz
+on:
+  push:
+    branches: [main]
+
+jobs:
+  # Publish to crates.io and push the git tag when the release PR is merged.
+  release-plz-release:
+    name: Release-plz release
+    if: ${{ github.repository_owner == 'bitshifter' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # push the git tag
+      pull-requests: read # detect the merged release PR
+      id-token: write # crates.io trusted publishing
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          submodules: true # tools/codegen is a workspace member submodule
+      - run: rustup update --no-self-update stable
+      - run: rustup default stable
+      - uses: release-plz/action@v0.5
+        with:
+          command: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Create or update the "Prepare <version> release" PR. release-plz bumps
+  # Cargo.toml/Cargo.lock and generates the changelog from conventional
+  # commit messages, so no custom changelog handling is needed.
+  release-plz-pr:
+    name: Release-plz PR
+    if: ${{ github.repository_owner == 'bitshifter' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # push commits to the release PR branch
+      pull-requests: write # open and update the release PR
+    concurrency:
+      group: release-plz-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          submodules: true # tools/codegen is a workspace member submodule
+      - run: rustup update --no-self-update stable
+      - run: rustup default stable
+      - uses: release-plz/action@v0.5
+        with:
+          command: release-pr
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
