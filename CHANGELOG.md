@@ -5,16 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
-## [Unreleased]
-
 ## [0.33.4](https://github.com/bitshifter/glam-rs/compare/0.33.3...0.33.4) - 2026-08-18
-
-### Other
-
-- Add release-plz support ([#772](https://github.com/bitshifter/glam-rs/pull/772))
-- Remove version strings that need to be manually updated. ([#769](https://github.com/bitshifter/glam-rs/pull/769))
-- Add serde serialize to BVec3A & BVec4A when scalar-math enabled. ([#768](https://github.com/bitshifter/glam-rs/pull/768))
-- Replace scalar `recip()` calls with explicit division in vec templates ([#765](https://github.com/bitshifter/glam-rs/pull/765))
 
 ### Added
 
@@ -1486,7 +1477,6 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [Keep a Changelog]: https://keepachangelog.com/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/bitshifter/glam-rs/compare/0.33.3...HEAD
 [0.33.3]: https://github.com/bitshifter/glam-rs/compare/0.33.2...0.33.3
 [0.33.2]: https://github.com/bitshifter/glam-rs/compare/0.33.1...0.33.2
 [0.33.1]: https://github.com/bitshifter/glam-rs/compare/0.33.0...0.33.1
