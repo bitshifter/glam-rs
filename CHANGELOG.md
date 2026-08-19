@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.33.5](https://github.com/bitshifter/glam-rs/compare/0.33.4...0.33.5) - 2026-08-19
+
+### Fixed
+
+- Fix remaining 32-bit layout tests and add i686 CI coveragees ([#784](https://github.com/bitshifter/glam-rs/pull/784))
+- 32-bit I64Vec3 and U64Vec3 alignment tests ([#781](https://github.com/bitshifter/glam-rs/pull/781))
+
 ## [0.33.4](https://github.com/bitshifter/glam-rs/compare/0.33.3...0.33.4) - 2026-08-18
 
 ### Added
