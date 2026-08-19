@@ -2376,7 +2376,7 @@ mod i64vec2 {
         use core::mem;
         assert_eq!(16, mem::size_of::<I64Vec2>());
         #[cfg(not(feature = "cuda"))]
-        assert_eq!(8, mem::align_of::<I64Vec2>());
+        assert_eq!(mem::align_of::<i64>(), mem::align_of::<I64Vec2>());
         #[cfg(feature = "cuda")]
         assert_eq!(16, mem::align_of::<I64Vec2>());
     });
@@ -2421,7 +2421,7 @@ mod u64vec2 {
         use core::mem;
         assert_eq!(16, mem::size_of::<U64Vec2>());
         #[cfg(not(feature = "cuda"))]
-        assert_eq!(8, mem::align_of::<U64Vec2>());
+        assert_eq!(mem::align_of::<u64>(), mem::align_of::<U64Vec2>());
         #[cfg(feature = "cuda")]
         assert_eq!(16, mem::align_of::<U64Vec2>());
     });

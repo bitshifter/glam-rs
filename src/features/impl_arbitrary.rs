@@ -250,9 +250,12 @@ mod test {
     #[test]
     fn test_arbitrary_usize() {
         // The integer arbitrary impl converts little endian bytes.
-        let mut bytes = [0u8; 4 * size_of::<usize>()];
-        for (i, chunk) in bytes.chunks_exact_mut(size_of::<usize>()).enumerate() {
-            chunk.copy_from_slice(&(i + 1).to_le_bytes());
+        // usize/isize are forwarded to u64/i64 (for corpus portability between
+        // 32-bit and 64-bit builds) so each value consumes 8 bytes on all
+        // targets, including 32-bit targets.
+        let mut bytes = [0u8; 4 * size_of::<u64>()];
+        for (i, chunk) in bytes.chunks_exact_mut(size_of::<u64>()).enumerate() {
+            chunk.copy_from_slice(&((i + 1) as u64).to_le_bytes());
         }
 
         assert_eq!(
@@ -273,9 +276,12 @@ mod test {
     #[test]
     fn test_arbitrary_isize() {
         // The integer arbitrary impl converts little endian bytes.
-        let mut bytes = [0u8; 4 * size_of::<isize>()];
-        for (i, chunk) in bytes.chunks_exact_mut(size_of::<isize>()).enumerate() {
-            chunk.copy_from_slice(&(i + 1).to_le_bytes());
+        // usize/isize are forwarded to u64/i64 (for corpus portability between
+        // 32-bit and 64-bit builds) so each value consumes 8 bytes on all
+        // targets, including 32-bit targets.
+        let mut bytes = [0u8; 4 * size_of::<i64>()];
+        for (i, chunk) in bytes.chunks_exact_mut(size_of::<i64>()).enumerate() {
+            chunk.copy_from_slice(&((i + 1) as i64).to_le_bytes());
         }
 
         assert_eq!(
