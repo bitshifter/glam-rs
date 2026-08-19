@@ -29,6 +29,8 @@ jobs:
           # Allowed commit types. Breaking changes are marked with `!`
           # after the type or scope, e.g. `feat(quat)!: remove deprecated
           # API`; a scope is optional, e.g. `fix(vec3): correct typo`.
+          # The Keep a Changelog types (changed/deprecated/removed/security)
+          # map to changelog sections via the `[changelog]` commit parsers.
           types: |
             feat
             fix
@@ -41,6 +43,10 @@ jobs:
             ci
             build
             revert
+            changed
+            deprecated
+            removed
+            security
           ignoreLabels: |
             dependencies # dependabot PRs
             release # release-plz PRs ("Prepare <version> release")

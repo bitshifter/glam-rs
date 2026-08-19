@@ -10,6 +10,11 @@
 # branch prefix, so don't set pr_branch_prefix.
 release_always = false
 
+# Only trigger when a commit matches this allowlist; everything else rides
+# along with the next release. Whether ride-along commits show up in the
+# changelog is decided by the `[changelog]` parsers below.
+release_commits = '^(feat|fix|perf|changed|deprecated|removed|security)(\(.*\))?!?:'
+
 # Match the existing tag style: 0.33.3 (no "v" prefix, no package prefix).
 git_tag_name = "{{ version }}"
 
@@ -29,7 +34,8 @@ pr_labels = ["release"]
 semver_check = true
 
 # The changelog is generated from conventional commit messages on the
-# release PR using git-cliff's defaults (no git-cliff.toml). Version bumps
+# release PR using git-cliff; see the `[changelog]` section for which
+# commits are kept. Version bumps
 # follow release-plz's pre-1.0 rules: breaking changes bump the minor
 # version (the 0.x breaking slot), whether detected by cargo-semver-checks
 # or by the `!` marker in a commit title. Everything else, including
@@ -43,3 +49,19 @@ changelog_update = true
 [[package]]
 name = "codegen"
 release = false
+
+# Keep a Changelog sections, with the noise filtered out: maintenance
+# commits are dropped, breaking changes are always kept, and anything else
+# (e.g. dependabot bumps) falls into "Other".
+[changelog]
+protect_breaking_commits = true
+commit_parsers = [
+    { message = '^feat', group = "added" },
+    { message = '^changed', group = "changed" },
+    { message = '^deprecated', group = "deprecated" },
+    { message = '^removed', group = "removed" },
+    { message = '^fix', group = "fixed" },
+    { message = '^security', group = "security" },
+    { message = '^(docs|chore|ci|test|refactor|style|build|revert)(\(.*\))?!?:', skip = true },
+    { message = '^.*', group = "other" },
+]
