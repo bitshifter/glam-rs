@@ -250,9 +250,12 @@ mod test {
     #[test]
     fn test_arbitrary_usize() {
         // The integer arbitrary impl converts little endian bytes.
-        let mut bytes = [0u8; 4 * size_of::<usize>()];
-        for (i, chunk) in bytes.chunks_exact_mut(size_of::<usize>()).enumerate() {
-            chunk.copy_from_slice(&(i + 1).to_le_bytes());
+        // usize/isize are forwarded to u64/i64 (for corpus portability between
+        // 32-bit and 64-bit builds) so each value consumes 8 bytes on all
+        // targets, including 32-bit targets.
+        let mut bytes = [0u8; 4 * size_of::<u64>()];
+        for (i, chunk) in bytes.chunks_exact_mut(size_of::<u64>()).enumerate() {
+            chunk.copy_from_slice(&((i + 1) as u64).to_le_bytes());
         }
 
         assert_eq!(
@@ -273,9 +276,12 @@ mod test {
     #[test]
     fn test_arbitrary_isize() {
         // The integer arbitrary impl converts little endian bytes.
-        let mut bytes = [0u8; 4 * size_of::<isize>()];
-        for (i, chunk) in bytes.chunks_exact_mut(size_of::<isize>()).enumerate() {
-            chunk.copy_from_slice(&(i + 1).to_le_bytes());
+        // usize/isize are forwarded to u64/i64 (for corpus portability between
+        // 32-bit and 64-bit builds) so each value consumes 8 bytes on all
+        // targets, including 32-bit targets.
+        let mut bytes = [0u8; 4 * size_of::<i64>()];
+        for (i, chunk) in bytes.chunks_exact_mut(size_of::<i64>()).enumerate() {
+            chunk.copy_from_slice(&((i + 1) as i64).to_le_bytes());
         }
 
         assert_eq!(
@@ -288,6 +294,54 @@ mod test {
         );
         assert_eq!(
             ISizeVec4::new(1, 2, 3, 4),
+            Unstructured::new(&bytes).arbitrary().unwrap()
+        );
+    }
+
+    // usize::MAX / isize::MIN only round-trip through the usize/isize
+    // arbitrary impls on 64-bit targets; on 32-bit the values fit in a fixed
+    // 32-bit read too, so this guards against the vec impl silently degrading
+    // to fixed-width u32/i32 components.
+    #[cfg(all(feature = "usize", target_pointer_width = "64"))]
+    #[test]
+    fn test_arbitrary_usize_max() {
+        let mut bytes = [0u8; 4 * size_of::<u64>()];
+        for chunk in bytes.chunks_exact_mut(size_of::<u64>()) {
+            chunk.copy_from_slice(&(usize::MAX as u64).to_le_bytes());
+        }
+
+        assert_eq!(
+            USizeVec2::splat(usize::MAX),
+            Unstructured::new(&bytes).arbitrary().unwrap()
+        );
+        assert_eq!(
+            USizeVec3::splat(usize::MAX),
+            Unstructured::new(&bytes).arbitrary().unwrap()
+        );
+        assert_eq!(
+            USizeVec4::splat(usize::MAX),
+            Unstructured::new(&bytes).arbitrary().unwrap()
+        );
+    }
+
+    #[cfg(all(feature = "isize", target_pointer_width = "64"))]
+    #[test]
+    fn test_arbitrary_isize_min() {
+        let mut bytes = [0u8; 4 * size_of::<i64>()];
+        for chunk in bytes.chunks_exact_mut(size_of::<i64>()) {
+            chunk.copy_from_slice(&(isize::MIN as i64).to_le_bytes());
+        }
+
+        assert_eq!(
+            ISizeVec2::splat(isize::MIN),
+            Unstructured::new(&bytes).arbitrary().unwrap()
+        );
+        assert_eq!(
+            ISizeVec3::splat(isize::MIN),
+            Unstructured::new(&bytes).arbitrary().unwrap()
+        );
+        assert_eq!(
+            ISizeVec4::splat(isize::MIN),
             Unstructured::new(&bytes).arbitrary().unwrap()
         );
     }

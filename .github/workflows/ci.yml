@@ -37,6 +37,30 @@ jobs:
       - run: rustup default ${{ matrix.toolchain }}
       - run: cargo run --release -p ci -- test-features
 
+  test-i686:
+    name: Test i686 (32-bit)
+    strategy:
+      matrix:
+        toolchain: [stable]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install 32-bit linker and runtime
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-multilib
+
+      - run: rustup update --no-self-update ${{ matrix.toolchain }}
+      - run: rustup default ${{ matrix.toolchain }}
+      - run: rustup target add i686-unknown-linux-gnu
+      - run: cargo run --release -p ci -- test-i686
+
   check-msrv:
     name: Check MSRV
     strategy:
