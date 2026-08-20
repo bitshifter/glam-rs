@@ -9,39 +9,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-* Breaking change: `rkyv` support now archives each type to a dedicated `Archived*` type
-  built from `rkyv`'s own archived primitives, instead of aliasing the native `glam` type.
-  Archived data is endianness-explicit, independent of the SIMD backend `glam` was built
-  with, and one byte aligned when `rkyv` is built with its `unaligned` feature. This
-  changes the archived binary format, and reading an archived value now converts rather
-  than casting a reference.
+- [**breaking**] `rkyv` support now archives each type to a dedicated `Archived*` type
+  instead of the native `glam` type, so archives no longer inherit the native type's
+  endianness or SIMD-backend-dependent layout, and no longer copy uninitialised padding.
+  This changes the archived format, and reading an archived value now converts it instead
+  of casting a reference.
 
 ### Added
 
-* Added `bytemuck::Pod` and `bytemuck::Zeroable` impls for the archived types, so archived
-  buffers can still be cast to bytes for a GPU upload or a file write without going through
-  a serializer.
+- `bytemuck::Pod` and `bytemuck::Zeroable` impls for the `rkyv` archived types, so they
+  can still be cast to bytes for a GPU upload or file write without a serializer.
 
-* Added `From` conversions between each type and its archived form, which is all the leaf
-  types need to read a single value back and avoids requiring a deserializer for a
-  conversion that cannot fail.
+- `From` conversions between each type and its `rkyv` archived form.
 
-* Added `Archive::COPY_OPTIMIZATION` to the `rkyv` impls of every type whose archived form
-  is a byte for byte copy of the native one, which lets `rkyv` serialize slices of them
-  with a single `memcpy`. This covers `Vec2`, `Vec3`, `Vec4`, `Quat`, `Mat2`, `Mat3`,
-  `Mat4` and `Affine3` and their non `f32` equivalents, plus `Affine2` on backends where it
-  carries no padding. It is derived rather than hardcoded, so it turns itself off for the
-  16 byte aligned types and whenever the archive endianness does not match the target.
+- `Archive::COPY_OPTIMIZATION` for the `rkyv` impls whose archived form is a byte-for-byte
+  copy of the native form, so slices serialize with a single `memcpy`.
 
 ### Fixed
 
-* Fixed `unsafe impl NoUndef` being applied to types that carry padding, which copied
-  uninitialised bytes into archives. Every backend was affected: `Vec3A`, `Mat3A` and
-  `Affine3A` have four bytes of padding per `Vec3A` under `scalar-math`, and `Affine2` has
-  eight bytes of tail padding under SSE2 and NEON, where `Mat2` is 16 byte aligned.
+- `NoUndef` is now only implemented for the padding-free `rkyv` archived types, so
+  uninitialised padding is no longer copied into archives.
 
-* Fixed `unsafe impl Portable` claiming a layout identical on all targets for types whose
-  archived form was native-endian and dependent on the selected SIMD backend.
+- `Portable` is now implemented on the `rkyv` archived types, which have a layout identical
+  on all targets, instead of the native types that depended on the SIMD backend.
 
 ## [0.33.6](https://github.com/bitshifter/glam-rs/compare/0.33.5...0.33.6) - 2026-08-28
 
