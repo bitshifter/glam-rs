@@ -329,7 +329,7 @@ mod euler;
 mod features;
 
 #[cfg(feature = "rkyv")]
-pub use features::impl_rkyv::*;
+pub use features::impl_rkyv as rkyv;
 
 #[cfg(all(
     target_arch = "aarch64",
