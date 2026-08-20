@@ -18,7 +18,7 @@
     {% set mask_t = "BVec" ~ dim ~ "A" %}
 {% endif %}
 
-{% if scalar_t == "f32" or scalar_t == "f64" %}
+{% if scalar_t == "f32" or scalar_t == "f64" or scalar_t == "f16" %}
     {% set is_signed = true %}
     {% set is_float = true %}
     {% if scalar_t == "f32" %}
@@ -40,6 +40,13 @@
         {% set vec4_t = "DVec4" %}
         {% set from_types = ["Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim] %}
         {% set quat_t = "DQuat" %}
+    {% elif scalar_t == "f16" %}
+        {% set self_t = "HVec" ~ dim %}
+        {% set vec2_t = "HVec2" %}
+        {% set vec3_t = "HVec3" %}
+        {% set vec4_t = "HVec4" %}
+        {% set from_types = ["Vec" ~ dim, "IVec" ~ dim, "UVec" ~ dim] %}
+        {% set quat_t = "HQuat" %}
     {% endif %}
 {% elif scalar_t == "i8" %}
     {% set is_signed = true %}
@@ -158,7 +165,7 @@
 {% if dim == 2 %}
     {% if scalar_t == "i8" or scalar_t == "u8" %}
         {% set cuda_align = 2 %}
-    {% elif scalar_t == "i16" or scalar_t == "u16" %}
+    {% elif scalar_t == "i16" or scalar_t == "u16" or scalar_t == "f16" %}
         {% set cuda_align = 4 %}
     {% elif scalar_t == "f32" or scalar_t == "i32" or scalar_t == "u32" %}
         {% set cuda_align = 8 %}
@@ -171,7 +178,7 @@
 {% elif dim == 4 %}
     {% if scalar_t == "i8" or scalar_t == "u8" %}
         {% set cuda_align = 4 %}
-    {% elif scalar_t == "i16" or scalar_t == "u16" %}
+    {% elif scalar_t == "i16" or scalar_t == "u16" or scalar_t == "f16" %}
         {% set cuda_align = 8 %}
     {% elif scalar_t == "f32" or scalar_t == "i32" or scalar_t == "u32" %}
         {% set cuda_align = 16 %}
@@ -185,9 +192,28 @@
 
 {% set components = ["x", "y", "z", "w"] [:dim] %}
 {% if is_float %}
-    {% set one = "1.0" %}
-    {% set neg_one = "-1.0" %}
-    {% set zero = "0.0" %}
+    {% if scalar_t == "f16" %}
+        {% set consts_pi = "crate::f16::PI" %}
+        {% set one = "f16::ONE" %}
+        {% set neg_one = "f16::NEG_ONE" %}
+        {% set zero = "f16::ZERO" %}
+        {% set two = "f16::from_f32_const(2.0)" %}
+        {% set frac_1_2 = "f16::from_f32_const(0.5)" %}
+        {% set eps_1e_4 = "f16::from_f32_const(1e-4)" %}
+        {#- `3e-7` is below f16 precision (it rounds to zero at the ULP of
+            1.0), so use `1.0 - f16::EPSILON` which is two ULP below 1.0 and
+            mirrors the intent of the f32 `1.0 - 3e-7` threshold. -#}
+        {% set slerp_dot_threshold = "f16::ONE - f16::EPSILON" %}
+    {% else %}
+        {% set consts_pi = "core::" ~ scalar_t ~ "::consts::PI" %}
+        {% set one = "1.0" %}
+        {% set neg_one = "-1.0" %}
+        {% set zero = "0.0" %}
+        {% set two = "2.0" %}
+        {% set frac_1_2 = "0.5" %}
+        {% set eps_1e_4 = "1e-4" %}
+        {% set slerp_dot_threshold = "1.0 - 3e-7" %}
+    {% endif %}
 {% else %}
     {% set one = "1" %}
     {% set neg_one = "-1" %}
@@ -259,7 +285,12 @@
 
 use core::fmt;
 use core::iter::{Product, Sum};
+{%- if scalar_t == "f16" %}
+use half::f16;
+use core::ops::*;
+{%- else %}
 use core::{f32, ops::*};
+{%- endif %}
 
 {% if is_sse2 %}
 #[cfg(target_arch = "x86")]
@@ -370,7 +401,7 @@ impl {{ self_t }} {
 
 {% if is_signed %}
     /// All negative ones.
-    pub const NEG_ONE: Self = Self::splat(-{{ one }});
+    pub const NEG_ONE: Self = Self::splat({{ neg_one }});
 {% endif %}
 
     /// All `{{ scalar_t }}::MIN`.
@@ -663,7 +694,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn from_homogeneous(v: {{ vec4_t }}) -> Self {
-        glam_assert!(v.w != 0.0);
+        glam_assert!(v.w != {{ zero }});
         Self::from_vec4(v) / v.w
     }
     
@@ -671,7 +702,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn to_homogeneous(self) -> {{ vec4_t }} {
-        self.extend(1.0)
+        self.extend({{ one }})
     }
     {% endif %}
 
@@ -1735,7 +1766,7 @@ impl {{ self_t }} {
     /// Returns `true` if the vector is not the zero vector (also rejects NaN).
     #[allow(dead_code)]
     fn is_non_zero(self) -> bool {
-        self.length_squared() > 0.0
+        self.length_squared() > {{ zero }}
     }
 {% endif %}
 
@@ -1759,7 +1790,7 @@ impl {{ self_t }} {
     #[must_use]
     pub fn length_recip(self) -> {{ scalar_t }} {
         {% if is_scalar or is_neon %}
-            1.0 / self.length()
+            {{ one }} / self.length()
         {% elif is_sse2 %}
             unsafe {
                 let dot = dot{{ dim }}_in_x(self.0, self.0);
@@ -1886,7 +1917,7 @@ impl {{ self_t }} {
     #[must_use]
     pub fn try_normalize(self) -> Option<Self> {
         let rcp = self.length_recip();
-        if rcp.is_finite() && rcp > 0.0 {
+        if rcp.is_finite() && rcp > {{ zero }} {
             Some(self * rcp)
         } else {
             None
@@ -1904,7 +1935,7 @@ impl {{ self_t }} {
     #[must_use]
     pub fn normalize_or(self, fallback: Self) -> Self {
         let rcp = self.length_recip();
-        if rcp.is_finite() && rcp > 0.0 {
+        if rcp.is_finite() && rcp > {{ zero }} {
             self * rcp
         } else {
             fallback
@@ -1930,21 +1961,25 @@ impl {{ self_t }} {
     #[must_use]
     pub fn normalize_and_length(self) -> (Self, {{ scalar_t }}) {
         let length = self.length();
-        let rcp = 1.0 / length;
-        if rcp.is_finite() && rcp > 0.0 {
+        let rcp = {{ one }} / length;
+        if rcp.is_finite() && rcp > {{ zero }} {
             (self * rcp, length)
         } else {
-            (Self::X, 0.0)
+            (Self::X, {{ zero }})
         }
     }
 
     /// Returns whether `self` is length `1.0` or not.
     ///
-    /// Uses a precision threshold of approximately `1e-4`.
+    /// Uses a precision threshold of approximately `{% if scalar_t == "f16" %}1e-3{% else %}1e-4{% endif %}`.
     #[inline]
     #[must_use]
     pub fn is_normalized(self) -> bool {
+        {%- if scalar_t == "f16" %}
+        math::abs(self.length_squared() - f16::from_f32_const(1.0)) <= f16::from_f32_const(1e-3)
+        {%- else %}
         math::abs(self.length_squared() - 1.0) <= 2e-4
+        {%- endif %}
     }
 
     /// Returns the vector projection of `self` onto `rhs`.
@@ -1957,7 +1992,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn project_onto(self, rhs: Self) -> Self {
-        let other_len_sq_rcp = 1.0 / rhs.dot(rhs);
+        let other_len_sq_rcp = {{ one }} / rhs.dot(rhs);
         glam_assert!(other_len_sq_rcp.is_finite());
         rhs * self.dot(rhs) * other_len_sq_rcp
     }
@@ -2267,7 +2302,7 @@ impl {{ self_t }} {
         {% if is_scalar %}
             Self {
                 {% for c in components %}
-                    {{ c }}: 1.0 / self.{{ c }},
+                    {{ c }}: {{ one }} / self.{{ c }},
                 {%- endfor %}
             }
         {% elif is_sse2 %}
@@ -2292,7 +2327,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn lerp(self, rhs: Self, s: {{ scalar_t }}) -> Self {
-        self * (1.0 - s) + rhs * s
+        self * ({{ one }} - s) + rhs * s
     }
 
     /// Moves towards `rhs` based on the value `d`.
@@ -2304,7 +2339,7 @@ impl {{ self_t }} {
     pub fn move_towards(self, rhs: Self, d: {{ scalar_t }}) -> Self {
         let a = rhs - self;
         let len = a.length();
-        if len <= d || len <= 1e-4 {
+        if len <= d || len <= {{ eps_1e_4 }} {
             return rhs;
         }
         self + a / len * d 
@@ -2317,7 +2352,7 @@ impl {{ self_t }} {
     /// while being slightly cheaper to compute.
     #[inline]
     pub fn midpoint(self, rhs: Self) -> Self {
-        (self + rhs) * 0.5
+        (self + rhs) * {{ frac_1_2 }}
     }
 
     /// Returns true if the absolute difference of all elements between `self` and `rhs` is
@@ -2343,7 +2378,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn clamp_length(self, min: {{ scalar_t }}, max: {{ scalar_t }}) -> Self {
-        glam_assert!(0.0 <= min);
+        glam_assert!({{ zero }} <= min);
         glam_assert!(min <= max);
         let length_sq = self.length_squared();
         if length_sq < min * min {
@@ -2363,7 +2398,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn clamp_length_max(self, max: {{ scalar_t }}) -> Self {
-        glam_assert!(0.0 <= max); 
+        glam_assert!({{ zero }} <= max); 
         let length_sq = self.length_squared();
         if length_sq > max * max {
             max * (self / math::sqrt(length_sq))
@@ -2380,7 +2415,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn clamp_length_min(self, min: {{ scalar_t }}) -> Self {
-        glam_assert!(0.0 <= min); 
+        glam_assert!({{ zero }} <= min); 
         let length_sq = self.length_squared();
         if length_sq < min * min {
             min * (self / math::sqrt(length_sq))
@@ -2429,7 +2464,7 @@ impl {{ self_t }} {
     #[must_use]
     pub fn reflect(self, normal: Self) -> Self {
         glam_assert!(normal.is_normalized());
-        self - 2.0 * self.dot(normal) * normal
+        self - {{ two }} * self.dot(normal) * normal
     }
 
     /// Returns the refraction direction for a given incident vector `self`, surface normal
@@ -2447,8 +2482,8 @@ impl {{ self_t }} {
         glam_assert!(self.is_normalized());
         glam_assert!(normal.is_normalized());
         let n_dot_i = normal.dot(self);
-        let k = 1.0 - eta * eta * (1.0 - n_dot_i * n_dot_i);
-        if k >= 0.0 {
+        let k = {{ one }} - eta * eta * ({{ one }} - n_dot_i * n_dot_i);
+        if k >= {{ zero }} {
             eta * self - (eta * n_dot_i + math::sqrt(k)) * normal
         } else {
             Self::ZERO
@@ -2604,7 +2639,7 @@ impl {{ self_t }} {
     pub fn rotate_towards(self, rhs: Self, max_angle: {{ scalar_t }}) -> Self {
         let angle_between = self.angle_between(rhs);
         // When `max_angle < 0`, rotate no further than `PI` radians away
-        let angle = max_angle.clamp(angle_between - core::{{ scalar_t }}::consts::PI, angle_between);
+        let angle = max_angle.clamp(angle_between - {{ consts_pi }}, angle_between);
         let axis = self
             .cross(rhs)
             .try_normalize()
@@ -2623,9 +2658,9 @@ impl {{ self_t }} {
     pub fn any_orthogonal_vector(self) -> Self {
         // This can probably be optimized
         if math::abs(self.x) > math::abs(self.y) {
-            Self::new(-self.z, 0.0, self.x) // self.cross(Self::Y)
+            Self::new(-self.z, {{ zero }}, self.x) // self.cross(Self::Y)
         } else {
-            Self::new(0.0, self.z, -self.y) // self.cross(Self::X)
+            Self::new({{ zero }}, self.z, -self.y) // self.cross(Self::X)
         }
     }
 
@@ -2642,7 +2677,7 @@ impl {{ self_t }} {
         glam_assert!(self.is_normalized());
         // From https://graphics.pixar.com/library/OrthonormalB/paper.pdf
         let sign = math::signum(self.z);
-        let a = -1.0 / (sign + self.z);
+        let a = {{ neg_one }} / (sign + self.z);
         let b = self.x * self.y * a;
         Self::new(b, sign + self.y * self.y * a, -self.y)
     }
@@ -2659,10 +2694,10 @@ impl {{ self_t }} {
         glam_assert!(self.is_normalized());
         // From https://graphics.pixar.com/library/OrthonormalB/paper.pdf
         let sign = math::signum(self.z);
-        let a = -1.0 / (sign + self.z);
+        let a = {{ neg_one }} / (sign + self.z);
         let b = self.x * self.y * a;
         (
-            Self::new(1.0 + sign * self.x * self.x * a, sign * b, -sign * self.x),
+            Self::new({{ one }} + sign * self.x * self.x * a, sign * b, -sign * self.x),
             Self::new(b, sign + self.y * self.y * a, -self.y),
         )
     }
@@ -2680,12 +2715,12 @@ impl {{ self_t }} {
         // Cosine of the angle between the vectors [-1, 1], or NaN if either vector has a zero length
         let dot = self.dot(rhs) / (self_length * rhs_length);
         // If dot is close to 1 or -1, or is NaN the calculations for t1 and t2 break down
-        if math::abs(dot) < 1.0 - 3e-7 {
+        if math::abs(dot) < {{ slerp_dot_threshold }} {
             // Angle between the vectors [0, +π]
             let theta = math::acos_approx(dot);
             // Sine of the angle between vectors [0, 1]
             let sin_theta = math::sin(theta);
-            let t1 = math::sin(theta * (1.0 - s));
+            let t1 = math::sin(theta * ({{ one }} - s));
             let t2 = math::sin(theta * s);
         
             // Interpolate vector lengths
@@ -2693,14 +2728,14 @@ impl {{ self_t }} {
             // Scale the vectors to the target length and interpolate them
             return (self * (result_length / self_length) * t1
                 + rhs * (result_length / rhs_length) * t2)
-                * (1.0 / sin_theta);
+                * ({{ one }} / sin_theta);
         }
-        if dot < 0.0 {
+        if dot < {{ zero }} {
             // Vectors are almost parallel in opposing directions
 
             // Create a rotation from self to rhs along some axis
             let axis = self.any_orthogonal_vector().normalize(){% if is_align %}.into(){% endif %};
-            let rotation = {{ quat_t }}::from_axis_angle(axis, core::{{ scalar_t }}::consts::PI * s);
+            let rotation = {{ quat_t }}::from_axis_angle(axis, {{ consts_pi }} * s);
             // Interpolate vector lengths
             let result_length = self_length.lerp(rhs_length, s);
             rotation * self * (result_length / self_length) 
@@ -2832,7 +2867,7 @@ impl {{ self_t }} {
         let a = self.angle_to(rhs);
         let abs_a = math::abs(a);
         // When `max_angle < 0`, rotate no further than `PI` radians away
-        let angle = max_angle.clamp(abs_a - core::{{ scalar_t }}::consts::PI, abs_a) * math::signum(a);
+        let angle = max_angle.clamp(abs_a - {{ consts_pi }}, abs_a) * math::signum(a);
         Self::from_angle(angle).rotate(self)
     }
 {% endif %}
@@ -2843,28 +2878,28 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_vec2(self) -> crate::Vec2 {
-        crate::Vec2::new(self.x as f32, self.y as f32)
+        crate::Vec2::new({% if scalar_t == "f16" %}f32::from(self.x), f32::from(self.y){% else %}self.x as f32, self.y as f32{% endif %})
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `f32`.
     #[inline]
     #[must_use]
     pub fn as_vec3(self) -> crate::Vec3 {
-        crate::Vec3::new(self.x as f32, self.y as f32, self.z as f32)
+        crate::Vec3::new({% if scalar_t == "f16" %}f32::from(self.x), f32::from(self.y), f32::from(self.z){% else %}self.x as f32, self.y as f32, self.z as f32{% endif %})
     }
 
     /// Casts all elements of `self` to `f32`.
     #[inline]
     #[must_use]
     pub fn as_vec3a(self) -> crate::Vec3A {
-        crate::Vec3A::new(self.x as f32, self.y as f32, self.z as f32)
+        crate::Vec3A::new({% if scalar_t == "f16" %}f32::from(self.x), f32::from(self.y), f32::from(self.z){% else %}self.x as f32, self.y as f32, self.z as f32{% endif %})
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `f32`.
     #[inline]
     #[must_use]
     pub fn as_vec4(self) -> crate::Vec4 {
-        crate::Vec4::new(self.x as f32, self.y as f32, self.z as f32, self.w as f32)
+        crate::Vec4::new({% if scalar_t == "f16" %}f32::from(self.x), f32::from(self.y), f32::from(self.z), f32::from(self.w){% else %}self.x as f32, self.y as f32, self.z as f32, self.w as f32{% endif %})
     }
     {% endif %}
 {% endif %}
@@ -2875,7 +2910,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_dvec2(self) -> crate::DVec2 {
-        crate::DVec2::new(self.x as f64, self.y as f64)
+        {% if scalar_t == "f16" %}self.as_vec2().as_dvec2(){% else %}crate::DVec2::new(self.x as f64, self.y as f64){% endif %}
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `f64`.
@@ -2883,7 +2918,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_dvec3(self) -> crate::DVec3 {
-        crate::DVec3::new(self.x as f64, self.y as f64, self.z as f64)
+        {% if scalar_t == "f16" %}self.as_vec3().as_dvec3(){% else %}crate::DVec3::new(self.x as f64, self.y as f64, self.z as f64){% endif %}
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `f64`.
@@ -2891,7 +2926,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_dvec4(self) -> crate::DVec4 {
-        crate::DVec4::new(self.x as f64, self.y as f64, self.z as f64, self.w as f64)
+        {% if scalar_t == "f16" %}self.as_vec4().as_dvec4(){% else %}crate::DVec4::new(self.x as f64, self.y as f64, self.z as f64, self.w as f64){% endif %}
     }
     {% endif %}
 {% endif %}
@@ -2902,7 +2937,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_i8vec2(self) -> crate::I8Vec2 {
-        crate::I8Vec2::new(self.x as i8, self.y as i8)
+        {% if scalar_t == "f16" %}self.as_vec2().as_i8vec2(){% else %}crate::I8Vec2::new(self.x as i8, self.y as i8){% endif %}
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `i8`.
@@ -2910,7 +2945,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_i8vec3(self) -> crate::I8Vec3 {
-        crate::I8Vec3::new(self.x as i8, self.y as i8, self.z as i8)
+        {% if scalar_t == "f16" %}self.as_vec3().as_i8vec3(){% else %}crate::I8Vec3::new(self.x as i8, self.y as i8, self.z as i8){% endif %}
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `i8`.
@@ -2918,7 +2953,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_i8vec4(self) -> crate::I8Vec4 {
-        crate::I8Vec4::new(self.x as i8, self.y as i8, self.z as i8, self.w as i8)
+        {% if scalar_t == "f16" %}self.as_vec4().as_i8vec4(){% else %}crate::I8Vec4::new(self.x as i8, self.y as i8, self.z as i8, self.w as i8){% endif %}
     }
     {% endif %}
 {% endif %}
@@ -2929,7 +2964,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_u8vec2(self) -> crate::U8Vec2 {
-        crate::U8Vec2::new(self.x as u8, self.y as u8)
+        {% if scalar_t == "f16" %}self.as_vec2().as_u8vec2(){% else %}crate::U8Vec2::new(self.x as u8, self.y as u8){% endif %}
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `u8`.
@@ -2937,7 +2972,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_u8vec3(self) -> crate::U8Vec3 {
-        crate::U8Vec3::new(self.x as u8, self.y as u8, self.z as u8)
+        {% if scalar_t == "f16" %}self.as_vec3().as_u8vec3(){% else %}crate::U8Vec3::new(self.x as u8, self.y as u8, self.z as u8){% endif %}
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `u8`.
@@ -2945,7 +2980,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_u8vec4(self) -> crate::U8Vec4 {
-        crate::U8Vec4::new(self.x as u8, self.y as u8, self.z as u8, self.w as u8)
+        {% if scalar_t == "f16" %}self.as_vec4().as_u8vec4(){% else %}crate::U8Vec4::new(self.x as u8, self.y as u8, self.z as u8, self.w as u8){% endif %}
     }
     {% endif %}
 {% endif %}
@@ -2956,7 +2991,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_i16vec2(self) -> crate::I16Vec2 {
-        crate::I16Vec2::new(self.x as i16, self.y as i16)
+        {% if scalar_t == "f16" %}self.as_vec2().as_i16vec2(){% else %}crate::I16Vec2::new(self.x as i16, self.y as i16){% endif %}
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `i16`.
@@ -2964,7 +2999,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_i16vec3(self) -> crate::I16Vec3 {
-        crate::I16Vec3::new(self.x as i16, self.y as i16, self.z as i16)
+        {% if scalar_t == "f16" %}self.as_vec3().as_i16vec3(){% else %}crate::I16Vec3::new(self.x as i16, self.y as i16, self.z as i16){% endif %}
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `i16`.
@@ -2972,7 +3007,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_i16vec4(self) -> crate::I16Vec4 {
-        crate::I16Vec4::new(self.x as i16, self.y as i16, self.z as i16, self.w as i16)
+        {% if scalar_t == "f16" %}self.as_vec4().as_i16vec4(){% else %}crate::I16Vec4::new(self.x as i16, self.y as i16, self.z as i16, self.w as i16){% endif %}
     }
     {% endif %}
 {% endif %}
@@ -2983,7 +3018,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_u16vec2(self) -> crate::U16Vec2 {
-        crate::U16Vec2::new(self.x as u16, self.y as u16)
+        {% if scalar_t == "f16" %}self.as_vec2().as_u16vec2(){% else %}crate::U16Vec2::new(self.x as u16, self.y as u16){% endif %}
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `u16`.
@@ -2991,7 +3026,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_u16vec3(self) -> crate::U16Vec3 {
-        crate::U16Vec3::new(self.x as u16, self.y as u16, self.z as u16)
+        {% if scalar_t == "f16" %}self.as_vec3().as_u16vec3(){% else %}crate::U16Vec3::new(self.x as u16, self.y as u16, self.z as u16){% endif %}
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `u16`.
@@ -2999,7 +3034,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_u16vec4(self) -> crate::U16Vec4 {
-        crate::U16Vec4::new(self.x as u16, self.y as u16, self.z as u16, self.w as u16)
+        {% if scalar_t == "f16" %}self.as_vec4().as_u16vec4(){% else %}crate::U16Vec4::new(self.x as u16, self.y as u16, self.z as u16, self.w as u16){% endif %}
     }
     {% endif %}
 {% endif %}
@@ -3010,7 +3045,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_ivec2(self) -> crate::IVec2 {
-        crate::IVec2::new(self.x as i32, self.y as i32)
+        {% if scalar_t == "f16" %}self.as_vec2().as_ivec2(){% else %}crate::IVec2::new(self.x as i32, self.y as i32){% endif %}
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `i32`.
@@ -3018,7 +3053,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_ivec3(self) -> crate::IVec3 {
-        crate::IVec3::new(self.x as i32, self.y as i32, self.z as i32)
+        {% if scalar_t == "f16" %}self.as_vec3().as_ivec3(){% else %}crate::IVec3::new(self.x as i32, self.y as i32, self.z as i32){% endif %}
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `i32`.
@@ -3026,7 +3061,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_ivec4(self) -> crate::IVec4 {
-        crate::IVec4::new(self.x as i32, self.y as i32, self.z as i32, self.w as i32)
+        {% if scalar_t == "f16" %}self.as_vec4().as_ivec4(){% else %}crate::IVec4::new(self.x as i32, self.y as i32, self.z as i32, self.w as i32){% endif %}
     }
     {% endif %}
 {% endif %}
@@ -3037,7 +3072,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_uvec2(self) -> crate::UVec2 {
-        crate::UVec2::new(self.x as u32, self.y as u32)
+        {% if scalar_t == "f16" %}self.as_vec2().as_uvec2(){% else %}crate::UVec2::new(self.x as u32, self.y as u32){% endif %}
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `u32`.
@@ -3045,7 +3080,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_uvec3(self) -> crate::UVec3 {
-        crate::UVec3::new(self.x as u32, self.y as u32, self.z as u32)
+        {% if scalar_t == "f16" %}self.as_vec3().as_uvec3(){% else %}crate::UVec3::new(self.x as u32, self.y as u32, self.z as u32){% endif %}
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `u32`.
@@ -3053,7 +3088,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_uvec4(self) -> crate::UVec4 {
-        crate::UVec4::new(self.x as u32, self.y as u32, self.z as u32, self.w as u32)
+        {% if scalar_t == "f16" %}self.as_vec4().as_uvec4(){% else %}crate::UVec4::new(self.x as u32, self.y as u32, self.z as u32, self.w as u32){% endif %}
     }
     {% endif %}
 {% endif %}
@@ -3064,7 +3099,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_i64vec2(self) -> crate::I64Vec2 {
-        crate::I64Vec2::new(self.x as i64, self.y as i64)
+        {% if scalar_t == "f16" %}self.as_vec2().as_i64vec2(){% else %}crate::I64Vec2::new(self.x as i64, self.y as i64){% endif %}
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `i64`.
@@ -3072,7 +3107,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_i64vec3(self) -> crate::I64Vec3 {
-        crate::I64Vec3::new(self.x as i64, self.y as i64, self.z as i64)
+        {% if scalar_t == "f16" %}self.as_vec3().as_i64vec3(){% else %}crate::I64Vec3::new(self.x as i64, self.y as i64, self.z as i64){% endif %}
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `i64`.
@@ -3080,7 +3115,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_i64vec4(self) -> crate::I64Vec4 {
-        crate::I64Vec4::new(self.x as i64, self.y as i64, self.z as i64, self.w as i64)
+        {% if scalar_t == "f16" %}self.as_vec4().as_i64vec4(){% else %}crate::I64Vec4::new(self.x as i64, self.y as i64, self.z as i64, self.w as i64){% endif %}
     }
     {% endif %}
 {% endif %}
@@ -3091,7 +3126,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_u64vec2(self) -> crate::U64Vec2 {
-        crate::U64Vec2::new(self.x as u64, self.y as u64)
+        {% if scalar_t == "f16" %}self.as_vec2().as_u64vec2(){% else %}crate::U64Vec2::new(self.x as u64, self.y as u64){% endif %}
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `u64`.
@@ -3099,7 +3134,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_u64vec3(self) -> crate::U64Vec3 {
-        crate::U64Vec3::new(self.x as u64, self.y as u64, self.z as u64)
+        {% if scalar_t == "f16" %}self.as_vec3().as_u64vec3(){% else %}crate::U64Vec3::new(self.x as u64, self.y as u64, self.z as u64){% endif %}
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `u64`.
@@ -3107,7 +3142,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_u64vec4(self) -> crate::U64Vec4 {
-        crate::U64Vec4::new(self.x as u64, self.y as u64, self.z as u64, self.w as u64)
+        {% if scalar_t == "f16" %}self.as_vec4().as_u64vec4(){% else %}crate::U64Vec4::new(self.x as u64, self.y as u64, self.z as u64, self.w as u64){% endif %}
     }
     {% endif %}
 {% endif %}
@@ -3118,7 +3153,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_isizevec2(self) -> crate::ISizeVec2 {
-        crate::ISizeVec2::new(self.x as isize, self.y as isize)
+        {% if scalar_t == "f16" %}self.as_vec2().as_isizevec2(){% else %}crate::ISizeVec2::new(self.x as isize, self.y as isize){% endif %}
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `isize`.
@@ -3126,7 +3161,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_isizevec3(self) -> crate::ISizeVec3 {
-        crate::ISizeVec3::new(self.x as isize, self.y as isize, self.z as isize)
+        {% if scalar_t == "f16" %}self.as_vec3().as_isizevec3(){% else %}crate::ISizeVec3::new(self.x as isize, self.y as isize, self.z as isize){% endif %}
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `isize`.
@@ -3134,7 +3169,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_isizevec4(self) -> crate::ISizeVec4 {
-        crate::ISizeVec4::new(self.x as isize, self.y as isize, self.z as isize, self.w as isize)
+        {% if scalar_t == "f16" %}self.as_vec4().as_isizevec4(){% else %}crate::ISizeVec4::new(self.x as isize, self.y as isize, self.z as isize, self.w as isize){% endif %}
     }
     {% endif %}
 {% endif %}
@@ -3145,7 +3180,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_usizevec2(self) -> crate::USizeVec2 {
-        crate::USizeVec2::new(self.x as usize, self.y as usize)
+        {% if scalar_t == "f16" %}self.as_vec2().as_usizevec2(){% else %}crate::USizeVec2::new(self.x as usize, self.y as usize){% endif %}
     }
     {% elif dim == 3 %}
     /// Casts all elements of `self` to `usize`.
@@ -3153,7 +3188,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_usizevec3(self) -> crate::USizeVec3 {
-        crate::USizeVec3::new(self.x as usize, self.y as usize, self.z as usize)
+        {% if scalar_t == "f16" %}self.as_vec3().as_usizevec3(){% else %}crate::USizeVec3::new(self.x as usize, self.y as usize, self.z as usize){% endif %}
     }
     {% elif dim == 4 %}
     /// Casts all elements of `self` to `usize`.
@@ -3161,7 +3196,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn as_usizevec4(self) -> crate::USizeVec4 {
-        crate::USizeVec4::new(self.x as usize, self.y as usize, self.z as usize, self.w as usize)
+        {% if scalar_t == "f16" %}self.as_vec4().as_usizevec4(){% else %}crate::USizeVec4::new(self.x as usize, self.y as usize, self.z as usize, self.w as usize){% endif %}
     }
     {% endif %}
 {% endif %}
@@ -4653,7 +4688,15 @@ impl DerefMut for {{ self_t }} {
         fn from(v: {{ ty }}) -> Self {
             Self::new(
                 {% for c in components %}
-                    {{ scalar_t }}::from(v.{{ c }}),
+                    {% if scalar_t == "f16" %}
+                        {%- if ty == "Vec" ~ dim %}
+                        f16::from_f32(v.{{ c }}),
+                        {%- else %}
+                        f16::from_f32(v.{{ c }} as f32),
+                        {%- endif %}
+                    {% else %}
+                        {{ scalar_t }}::from(v.{{ c }}),
+                    {% endif %}
                 {% endfor %}
             )
         }
@@ -4684,7 +4727,11 @@ impl From<{{ bvec_from_type }}> for {{ self_t }} {
     fn from(v: {{ bvec_from_type }}) -> Self {
         Self::new(
             {% for c in components %}
-                {{ scalar_t }}::from(v.{{ c }}),
+                {% if scalar_t == "f16" %}
+                    f16::from(u8::from(v.{{ c }})),
+                {% else %}
+                    {{ scalar_t }}::from(v.{{ c }}),
+                {% endif %}
             {% endfor %}
         )
     }
@@ -4700,7 +4747,11 @@ impl From<{{ bvec_from_type }}> for {{ self_t }} {
             let bool_array: [bool; {{ dim }}] = v.into();
             Self::new(
                 {% for c in components %}
-                    {{ scalar_t }}::from(bool_array[{{ loop.index0 }}]),
+                    {% if scalar_t == "f16" %}
+                        f16::from(u8::from(bool_array[{{ loop.index0 }}])),
+                    {% else %}
+                        {{ scalar_t }}::from(bool_array[{{ loop.index0 }}]),
+                    {% endif %}
                 {% endfor %}
             )
         }

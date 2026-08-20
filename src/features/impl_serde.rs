@@ -764,6 +764,16 @@ mod test_f64 {
     pub const V4: f64 = 4.0;
 }
 
+#[cfg(feature = "f16")]
+#[cfg(test)]
+mod test_f16 {
+    use half::f16;
+    pub const V1: f16 = f16::from_f32_const(1.0);
+    pub const V2: f16 = f16::from_f32_const(2.0);
+    pub const V3: f16 = f16::from_f32_const(3.0);
+    pub const V4: f16 = f16::from_f32_const(4.0);
+}
+
 #[cfg(feature = "i8")]
 #[cfg(test)]
 mod test_i8 {
@@ -1083,6 +1093,344 @@ mod f64 {
     impl_serde_float_types!(
         f64, DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4
     );
+}
+
+/// `f16` serialization support.
+///
+/// `half::f16` serializes as a `u16` newtype by default (when its `serde`
+/// feature is enabled), so these implementations serialize components as
+/// `f32` values instead to match the format used by the other glam float
+/// types. Deserialization reads back the same `f32` values.
+#[cfg(feature = "f16")]
+mod f16 {
+    #[cfg(test)]
+    use super::test_f16::*;
+    #[cfg(test)]
+    use super::test_float::*;
+    use crate::{HQuat, HVec2, HVec3, HVec4};
+    use core::fmt;
+    use half::f16;
+    use serde_core::{
+        de::{self, Deserialize, Deserializer, SeqAccess, Visitor},
+        ser::{Serialize, SerializeTupleStruct, Serializer},
+    };
+
+    macro_rules! impl_serde_vec2 {
+        ($vec2:ident) => {
+            /// Serialize as a sequence of 2 `f32` values.
+            impl Serialize for $vec2 {
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: Serializer,
+                {
+                    let mut state = serializer.serialize_tuple_struct(stringify!($vec2), 2)?;
+                    state.serialize_field(&f32::from(self.x))?;
+                    state.serialize_field(&f32::from(self.y))?;
+                    state.end()
+                }
+            }
+
+            /// Deserialize expects a sequence of 2 values.
+            impl<'de> Deserialize<'de> for $vec2 {
+                fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+                where
+                    D: Deserializer<'de>,
+                {
+                    struct Vec2Visitor;
+
+                    impl<'de> Visitor<'de> for Vec2Visitor {
+                        type Value = $vec2;
+
+                        fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+                            formatter.write_str("a sequence of 2 f16 values")
+                        }
+
+                        fn visit_seq<V>(self, mut seq: V) -> Result<$vec2, V::Error>
+                        where
+                            V: SeqAccess<'de>,
+                        {
+                            let x: f32 = seq
+                                .next_element()?
+                                .ok_or_else(|| de::Error::invalid_length(0, &self))?;
+                            let y: f32 = seq
+                                .next_element()?
+                                .ok_or_else(|| de::Error::invalid_length(1, &self))?;
+                            Ok($vec2::new(f16::from_f32(x), f16::from_f32(y)))
+                        }
+                    }
+
+                    deserializer.deserialize_tuple_struct(stringify!($vec2), 2, Vec2Visitor)
+                }
+            }
+
+            #[test]
+            fn test_vec2_serde() {
+                let a = $vec2::new(V1, V2);
+                let serialized = serde_json::to_string(&a).unwrap();
+                assert_eq!(SX2, serialized);
+                let deserialized = serde_json::from_str(&serialized).unwrap();
+                assert_eq!(a, deserialized);
+                let deserialized = serde_json::from_str::<$vec2>(SX0);
+                assert!(deserialized.is_err());
+                let deserialized = serde_json::from_str::<$vec2>(SX1);
+                assert!(deserialized.is_err());
+                let deserialized = serde_json::from_str::<$vec2>(SX3);
+                assert!(deserialized.is_err());
+                let deserialized = serde_json::from_str::<$vec2>(ST0);
+                assert!(deserialized.is_err());
+            }
+        };
+    }
+
+    macro_rules! impl_serde_vec3 {
+        ($vec3:ident) => {
+            /// Serialize as a sequence of 3 `f32` values.
+            impl Serialize for $vec3 {
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: Serializer,
+                {
+                    let mut state = serializer.serialize_tuple_struct(stringify!($vec3), 3)?;
+                    state.serialize_field(&f32::from(self.x))?;
+                    state.serialize_field(&f32::from(self.y))?;
+                    state.serialize_field(&f32::from(self.z))?;
+                    state.end()
+                }
+            }
+
+            /// Deserialize expects a sequence of 3 values.
+            impl<'de> Deserialize<'de> for $vec3 {
+                fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+                where
+                    D: Deserializer<'de>,
+                {
+                    struct Vec3Visitor;
+
+                    impl<'de> Visitor<'de> for Vec3Visitor {
+                        type Value = $vec3;
+
+                        fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+                            formatter.write_str("a sequence of 3 f16 values")
+                        }
+
+                        fn visit_seq<V>(self, mut seq: V) -> Result<$vec3, V::Error>
+                        where
+                            V: SeqAccess<'de>,
+                        {
+                            let x: f32 = seq
+                                .next_element()?
+                                .ok_or_else(|| de::Error::invalid_length(0, &self))?;
+                            let y: f32 = seq
+                                .next_element()?
+                                .ok_or_else(|| de::Error::invalid_length(1, &self))?;
+                            let z: f32 = seq
+                                .next_element()?
+                                .ok_or_else(|| de::Error::invalid_length(2, &self))?;
+                            Ok($vec3::new(
+                                f16::from_f32(x),
+                                f16::from_f32(y),
+                                f16::from_f32(z),
+                            ))
+                        }
+                    }
+
+                    deserializer.deserialize_tuple_struct(stringify!($vec3), 3, Vec3Visitor)
+                }
+            }
+
+            #[test]
+            fn test_vec3_serde() {
+                let a = $vec3::new(V1, V2, V3);
+                let serialized = serde_json::to_string(&a).unwrap();
+                assert_eq!(SX3, serialized);
+                let deserialized = serde_json::from_str(&serialized).unwrap();
+                assert_eq!(a, deserialized);
+                let deserialized = serde_json::from_str::<$vec3>(SX0);
+                assert!(deserialized.is_err());
+                let deserialized = serde_json::from_str::<$vec3>(SX1);
+                assert!(deserialized.is_err());
+                let deserialized = serde_json::from_str::<$vec3>(SX2);
+                assert!(deserialized.is_err());
+                let deserialized = serde_json::from_str::<$vec3>(SX4);
+                assert!(deserialized.is_err());
+                let deserialized = serde_json::from_str::<$vec3>(ST0);
+                assert!(deserialized.is_err());
+            }
+        };
+    }
+
+    macro_rules! impl_serde_vec4 {
+        ($vec4:ident) => {
+            /// Serialize as a sequence of 4 `f32` values.
+            impl Serialize for $vec4 {
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: Serializer,
+                {
+                    let mut state = serializer.serialize_tuple_struct(stringify!($vec4), 4)?;
+                    state.serialize_field(&f32::from(self.x))?;
+                    state.serialize_field(&f32::from(self.y))?;
+                    state.serialize_field(&f32::from(self.z))?;
+                    state.serialize_field(&f32::from(self.w))?;
+                    state.end()
+                }
+            }
+
+            /// Deserialize expects a sequence of 4 values.
+            impl<'de> Deserialize<'de> for $vec4 {
+                fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+                where
+                    D: Deserializer<'de>,
+                {
+                    struct Vec4Visitor;
+
+                    impl<'de> Visitor<'de> for Vec4Visitor {
+                        type Value = $vec4;
+
+                        fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+                            formatter.write_str("a sequence of 4 f16 values")
+                        }
+
+                        fn visit_seq<V>(self, mut seq: V) -> Result<$vec4, V::Error>
+                        where
+                            V: SeqAccess<'de>,
+                        {
+                            let x: f32 = seq
+                                .next_element()?
+                                .ok_or_else(|| de::Error::invalid_length(0, &self))?;
+                            let y: f32 = seq
+                                .next_element()?
+                                .ok_or_else(|| de::Error::invalid_length(1, &self))?;
+                            let z: f32 = seq
+                                .next_element()?
+                                .ok_or_else(|| de::Error::invalid_length(2, &self))?;
+                            let w: f32 = seq
+                                .next_element()?
+                                .ok_or_else(|| de::Error::invalid_length(3, &self))?;
+                            Ok($vec4::new(
+                                f16::from_f32(x),
+                                f16::from_f32(y),
+                                f16::from_f32(z),
+                                f16::from_f32(w),
+                            ))
+                        }
+                    }
+
+                    deserializer.deserialize_tuple_struct(stringify!($vec4), 4, Vec4Visitor)
+                }
+            }
+
+            #[test]
+            fn test_vec4_serde() {
+                let a = $vec4::new(V1, V2, V3, V4);
+                let serialized = serde_json::to_string(&a).unwrap();
+                assert_eq!(SX4, serialized);
+                let deserialized = serde_json::from_str(&serialized).unwrap();
+                assert_eq!(a, deserialized);
+                let deserialized = serde_json::from_str::<$vec4>(SX0);
+                assert!(deserialized.is_err());
+                let deserialized = serde_json::from_str::<$vec4>(SX1);
+                assert!(deserialized.is_err());
+                let deserialized = serde_json::from_str::<$vec4>(SX2);
+                assert!(deserialized.is_err());
+                let deserialized = serde_json::from_str::<$vec4>(SX3);
+                assert!(deserialized.is_err());
+                let deserialized = serde_json::from_str::<$vec4>(SX5);
+                assert!(deserialized.is_err());
+                let deserialized = serde_json::from_str::<$vec4>(ST0);
+                assert!(deserialized.is_err());
+            }
+        };
+    }
+
+    macro_rules! impl_serde_quat {
+        ($quat:ident) => {
+            /// Serialize as a sequence of 4 `f32` values.
+            impl Serialize for $quat {
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: Serializer,
+                {
+                    let mut state = serializer.serialize_tuple_struct(stringify!($quat), 4)?;
+                    state.serialize_field(&f32::from(self.x))?;
+                    state.serialize_field(&f32::from(self.y))?;
+                    state.serialize_field(&f32::from(self.z))?;
+                    state.serialize_field(&f32::from(self.w))?;
+                    state.end()
+                }
+            }
+
+            /// Deserialize expects a sequence of 4 values.
+            impl<'de> Deserialize<'de> for $quat {
+                fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+                where
+                    D: Deserializer<'de>,
+                {
+                    struct QuatVisitor;
+
+                    impl<'de> Visitor<'de> for QuatVisitor {
+                        type Value = $quat;
+
+                        fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+                            formatter.write_str("a sequence of 4 f16 values")
+                        }
+
+                        fn visit_seq<V>(self, mut seq: V) -> Result<$quat, V::Error>
+                        where
+                            V: SeqAccess<'de>,
+                        {
+                            let x: f32 = seq
+                                .next_element()?
+                                .ok_or_else(|| de::Error::invalid_length(0, &self))?;
+                            let y: f32 = seq
+                                .next_element()?
+                                .ok_or_else(|| de::Error::invalid_length(1, &self))?;
+                            let z: f32 = seq
+                                .next_element()?
+                                .ok_or_else(|| de::Error::invalid_length(2, &self))?;
+                            let w: f32 = seq
+                                .next_element()?
+                                .ok_or_else(|| de::Error::invalid_length(3, &self))?;
+                            Ok($quat::from_xyzw(
+                                f16::from_f32(x),
+                                f16::from_f32(y),
+                                f16::from_f32(z),
+                                f16::from_f32(w),
+                            ))
+                        }
+                    }
+
+                    deserializer.deserialize_tuple_struct(stringify!($quat), 4, QuatVisitor)
+                }
+            }
+
+            #[test]
+            fn test_quat_serde() {
+                let a = $quat::from_xyzw(V1, V2, V3, V4);
+                let serialized = serde_json::to_string(&a).unwrap();
+                assert_eq!(serialized, "[1.0,2.0,3.0,4.0]");
+                let deserialized = serde_json::from_str(&serialized).unwrap();
+                assert_eq!(a, deserialized);
+                let deserialized = serde_json::from_str::<$quat>("[]");
+                assert!(deserialized.is_err());
+                let deserialized = serde_json::from_str::<$quat>("[1.0]");
+                assert!(deserialized.is_err());
+                let deserialized = serde_json::from_str::<$quat>("[1.0,2.0]");
+                assert!(deserialized.is_err());
+                let deserialized = serde_json::from_str::<$quat>("[1.0,2.0,3.0]");
+                assert!(deserialized.is_err());
+                let deserialized = serde_json::from_str::<$quat>("[1.0,2.0,3.0,4.0,5.0]");
+                assert!(deserialized.is_err());
+                let deserialized = serde_json::from_str::<$quat>("{}");
+                assert!(deserialized.is_err());
+            }
+        };
+    }
+
+    impl_serde_vec2!(HVec2);
+    impl_serde_vec3!(HVec3);
+    impl_serde_vec4!(HVec4);
+    impl_serde_quat!(HQuat);
 }
 
 #[cfg(feature = "i8")]

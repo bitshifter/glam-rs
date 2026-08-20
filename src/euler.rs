@@ -2,7 +2,11 @@
 // Professional, Inc., USA, 222–229.
 #[cfg(feature = "f64")]
 use crate::{DMat3, DMat4, DQuat, DVec3};
+#[cfg(feature = "f16")]
+use crate::{HQuat, HVec3};
 use crate::{Mat3, Mat3A, Mat4, Quat, Vec3, Vec3A, Vec3Swizzles};
+#[cfg(feature = "f16")]
+use half::f16;
 
 /// Euler rotation sequences.
 ///
@@ -289,7 +293,7 @@ macro_rules! impl_mat4_from_euler {
 }
 
 macro_rules! impl_quat_from_euler {
-    ($scalar:ident, $quat:ident, $vec3:ident) => {
+    ($scalar:ident, $quat:ident, $vec3:ident, $half:expr, $one:expr, $neg_one:expr, $zero:expr) => {
         impl FromEuler for $quat {
             type Scalar = $scalar;
             fn from_euler_angles(
@@ -313,9 +317,9 @@ macro_rules! impl_quat_from_euler {
                     angles.y = -angles.y;
                 }
 
-                let ti = angles.x * 0.5;
-                let tj = angles.y * 0.5;
-                let th = angles.z * 0.5;
+                let ti = angles.x * $half;
+                let tj = angles.y * $half;
+                let th = angles.z * $half;
                 let (si, ci) = math::sin_cos(ti);
                 let (sj, cj) = math::sin_cos(tj);
                 let (sh, ch) = math::sin_cos(th);
@@ -324,9 +328,9 @@ macro_rules! impl_quat_from_euler {
                 let sc = si * ch;
                 let ss = si * sh;
 
-                let parity = if !order.parity_even { 1.0 } else { -1.0 };
+                let parity = if !order.parity_even { $one } else { $neg_one };
 
-                let mut a = [0.0; 4];
+                let mut a = [$zero; 4];
 
                 if order.initial_repeated {
                     a[i] = cj * (cs + sc);
@@ -429,6 +433,20 @@ macro_rules! impl_quat_to_euler {
     };
 }
 
+#[cfg(feature = "f16")]
+impl ToEuler for HQuat {
+    type Scalar = f16;
+    fn to_euler_angles(self, euler: EulerRot) -> (Self::Scalar, Self::Scalar, Self::Scalar) {
+        // Delegate to the `f32` implementation (widens exactly, and is at
+        // least as accurate as a native `f16` computation) then narrow back.
+        // The `f32` implementation requires a normalized input (via
+        // `Mat3::from_quat` when `glam_assert` is enabled) and widening to
+        // `f32` preserves the coarser `f16` rounding, so normalize first.
+        let (x, y, z) = self.as_quat().normalize().to_euler_angles(euler);
+        (f16::from_f32(x), f16::from_f32(y), f16::from_f32(z))
+    }
+}
+
 impl_mat3_to_euler!(f32, Mat3, Vec3);
 impl_mat3_from_euler!(f32, Mat3, Vec3);
 impl_mat3_to_euler!(f32, Mat3A, Vec3A);
@@ -436,7 +454,18 @@ impl_mat3_from_euler!(f32, Mat3A, Vec3A);
 impl_mat4_from_euler!(f32, Mat4, Mat3);
 impl_mat4_to_euler!(f32, Mat4, Mat3);
 impl_quat_to_euler!(f32, Quat, Mat3);
-impl_quat_from_euler!(f32, Quat, Vec3);
+impl_quat_from_euler!(f32, Quat, Vec3, 0.5, 1.0, -1.0, 0.0);
+
+#[cfg(feature = "f16")]
+impl_quat_from_euler!(
+    f16,
+    HQuat,
+    HVec3,
+    f16::from_f32_const(0.5),
+    f16::from_f32_const(1.0),
+    f16::from_f32_const(-1.0),
+    f16::from_f32_const(0.0)
+);
 
 #[cfg(feature = "f64")]
 impl_mat3_to_euler!(f64, DMat3, DVec3);
@@ -449,4 +478,4 @@ impl_mat4_from_euler!(f64, DMat4, DMat3);
 #[cfg(feature = "f64")]
 impl_quat_to_euler!(f64, DQuat, DMat3);
 #[cfg(feature = "f64")]
-impl_quat_from_euler!(f64, DQuat, DVec3);
+impl_quat_from_euler!(f64, DQuat, DVec3, 0.5, 1.0, -1.0, 0.0);

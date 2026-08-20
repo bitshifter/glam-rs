@@ -20,6 +20,9 @@ A simple and fast 3D math library for games and graphics.
   * a quaternion type: `DQuat`
   * affine transformation types: `DAffine2` and `DAffine3`
   * camera view and projection constructors: `dcamera` module
+* `f16` types
+  * vectors: `HVec2`, `HVec3` and `HVec4`
+  * a quaternion type: `HQuat`
 * `i8` types
   * vectors: `I8Vec2`, `I8Vec3` and `I8Vec4`
 * `u8` types
@@ -45,7 +48,8 @@ A simple and fast 3D math library for games and graphics.
 
 All types are enabled by default. Only `f32` and `bool` types are built-in.
 All other types are optional and can be disabled if not needed for faster
-compile times.
+compile times. The `f16` types are not enabled by default and require the `f16`
+feature to be enabled.
 
 ### SIMD
 
@@ -127,6 +131,10 @@ glam = { default-features = false, features = ["nostd-libm"] }
 * `all-types` - a default feature, enables `float-types`, `integer-types`
    and `size-types`
 * `float-types` - enables `f64` types
+* `f16` - enables half-precision `f16` vector and quaternion types. This
+  feature is not included in `float-types` or `all-types` because it requires
+  the `half` crate, which needs a newer minimum supported Rust version than
+  `glam`.
 * `integer-types` - enables `i8`, `i16`, `i32`, `i64`, `u8`, `u16`, `u32`
    and `u64` types
 * `size-types` - enables `isize` and `usize` types

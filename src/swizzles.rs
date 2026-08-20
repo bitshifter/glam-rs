@@ -33,6 +33,13 @@ mod i16vec3_impl;
 #[cfg(feature = "i16")]
 mod i16vec4_impl;
 
+#[cfg(feature = "f16")]
+mod hvec2_impl;
+#[cfg(feature = "f16")]
+mod hvec3_impl;
+#[cfg(feature = "f16")]
+mod hvec4_impl;
+
 #[cfg(feature = "u16")]
 mod u16vec2_impl;
 #[cfg(feature = "u16")]

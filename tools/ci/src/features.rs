@@ -14,17 +14,21 @@ pub(crate) const FEATURE_SETS: &[&str] = &[
     concat!("libm ", deps!()),
     concat!("libm all-types ", deps!()),
     concat!("libm all-types scalar-math ", deps!()),
+    // f16 types require the `half` crate, which has a higher MSRV than glam
+    concat!("std all-types f16 ", deps!()),
+    concat!("libm all-types f16 ", deps!()),
 ];
 
-// MSRV reduced set — some optional deps need a newer rustc
+// MSRV reduced set — some optional deps need a newer rustc.
+// `f16` is excluded because the `half` crate requires rustc >= 1.81.
 pub(crate) const MSRV_FEATURES: &str = "all-types arbitrary approx mint speedy debug-glam-assert";
 
 // All optional deps used by clippy, doc, and coverage
-pub(crate) const ALL_FEATURES: &str = deps!();
+pub(crate) const ALL_FEATURES: &str = concat!("f16 ", deps!());
 
 // core-simd profile features (no zerocopy as it doesn't compile with core-simd)
 pub(crate) const CORE_SIMD_FEATURES: &str =
-    "core-simd arbitrary approx bytemuck encase mint rand rkyv bytecheck serde speedy debug-glam-assert";
+    "core-simd f16 arbitrary approx bytemuck encase mint rand rkyv bytecheck serde speedy debug-glam-assert";
 
 pub fn resolve_sets(index: Option<usize>) -> &'static [&'static str] {
     match index {

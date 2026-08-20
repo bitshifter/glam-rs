@@ -4,6 +4,8 @@ use crate::{
 };
 #[cfg(feature = "f64")]
 use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
+#[cfg(feature = "f16")]
+use crate::{HQuat, HVec2, HVec3, HVec4};
 #[cfg(feature = "i16")]
 use crate::{I16Vec2, I16Vec3, I16Vec4};
 #[cfg(feature = "i64")]
@@ -41,6 +43,9 @@ arbitrary_vector_impl!(BVec2, BVec3, BVec3A, BVec4, BVec4A, Quat, Vec2, Vec3, Ve
 
 #[cfg(feature = "f64")]
 arbitrary_vector_impl!(DQuat, DVec2, DVec3, DVec4);
+
+#[cfg(feature = "f16")]
+arbitrary_vector_impl!(HQuat, HVec2, HVec3, HVec4);
 
 #[cfg(feature = "i8")]
 arbitrary_vector_impl!(I8Vec2, I8Vec3, I8Vec4);
@@ -98,6 +103,8 @@ mod test {
     };
     #[cfg(feature = "f64")]
     use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
+    #[cfg(feature = "f16")]
+    use crate::{HQuat, HVec2, HVec3, HVec4};
     #[cfg(feature = "i16")]
     use crate::{I16Vec2, I16Vec3, I16Vec4};
     #[cfg(feature = "i64")]
@@ -242,6 +249,47 @@ mod test {
         );
         assert_eq!(
             DVec4::new(1.0, 2.0, 3.0, 4.0),
+            Unstructured::new(&bytes).arbitrary().unwrap()
+        );
+    }
+
+    #[cfg(feature = "f16")]
+    #[test]
+    fn test_arbitrary_f16() {
+        // The f16 arbitrary impl converts little endian bytes to u16 bits.
+        let mut bytes = [0u8; 4 * size_of::<u16>()];
+        for (i, chunk) in bytes.chunks_exact_mut(size_of::<u16>()).enumerate() {
+            chunk.copy_from_slice(&(i as u16 + 1).to_le_bytes());
+        }
+
+        assert_eq!(
+            HVec2::from_array([half::f16::from_bits(1), half::f16::from_bits(2)]),
+            Unstructured::new(&bytes).arbitrary().unwrap()
+        );
+        assert_eq!(
+            HVec3::from_array([
+                half::f16::from_bits(1),
+                half::f16::from_bits(2),
+                half::f16::from_bits(3)
+            ]),
+            Unstructured::new(&bytes).arbitrary().unwrap()
+        );
+        assert_eq!(
+            HVec4::from_array([
+                half::f16::from_bits(1),
+                half::f16::from_bits(2),
+                half::f16::from_bits(3),
+                half::f16::from_bits(4)
+            ]),
+            Unstructured::new(&bytes).arbitrary().unwrap()
+        );
+        assert_eq!(
+            HQuat::from_array([
+                half::f16::from_bits(1),
+                half::f16::from_bits(2),
+                half::f16::from_bits(3),
+                half::f16::from_bits(4)
+            ]),
             Unstructured::new(&bytes).arbitrary().unwrap()
         );
     }

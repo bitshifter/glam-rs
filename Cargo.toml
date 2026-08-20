@@ -20,6 +20,7 @@ default = ["std", "all-types"]
 std = []
 
 f64 = []
+f16 = ["dep:half"]
 isize = []
 usize = []
 i64 = []
@@ -62,7 +63,11 @@ core-simd = ["bytemuck?/nightly_portable_simd"]
 
 bytecheck = ["rkyv/bytecheck"]
 
-zerocopy = ["dep:zerocopy", "dep:zerocopy-derive"]
+bytemuck = ["dep:bytemuck", "half?/bytemuck"]
+
+arbitrary = ["dep:arbitrary", "half?/arbitrary", "half?/std"]
+
+zerocopy = ["dep:zerocopy", "dep:zerocopy-derive", "half?/zerocopy"]
 
 # enables libm and prefers it over std
 libm = ["dep:libm"]
@@ -71,6 +76,7 @@ libm = ["dep:libm"]
 nostd-libm = ["dep:libm"]
 
 [dependencies]
+half = { version = "2.4", default-features = false, optional = true }
 approx = { version = "0.5", optional = true, default-features = false }
 bytemuck = { version = "1.9", optional = true, default-features = false, features = ["derive", "aarch64_simd", "wasm_simd"] }
 mint = { version = "0.5.8", optional = true, default-features = false }

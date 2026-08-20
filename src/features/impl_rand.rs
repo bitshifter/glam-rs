@@ -667,6 +667,122 @@ mod f64 {
     impl_float_types!(f64, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4);
 }
 
+#[cfg(feature = "f16")]
+mod f16 {
+    //! `rand` has no `f16` support, so half-precision types are sampled as
+    //! `f32` values and converted to `f16`.
+    use crate::{HQuat, HVec2, HVec3, HVec4};
+    use core::f32::consts::TAU;
+    use half::f16;
+    use rand::distr::{Distribution, StandardUniform};
+    use rand::RngExt;
+
+    impl Distribution<HVec2> for StandardUniform {
+        #[inline]
+        fn sample<R: RngExt + ?Sized>(&self, rng: &mut R) -> HVec2 {
+            let v = rng.random::<[f32; 2]>();
+            HVec2::new(f16::from_f32(v[0]), f16::from_f32(v[1]))
+        }
+    }
+
+    impl Distribution<HVec3> for StandardUniform {
+        #[inline]
+        fn sample<R: RngExt + ?Sized>(&self, rng: &mut R) -> HVec3 {
+            let v = rng.random::<[f32; 3]>();
+            HVec3::new(
+                f16::from_f32(v[0]),
+                f16::from_f32(v[1]),
+                f16::from_f32(v[2]),
+            )
+        }
+    }
+
+    impl Distribution<HVec4> for StandardUniform {
+        #[inline]
+        fn sample<R: RngExt + ?Sized>(&self, rng: &mut R) -> HVec4 {
+            let v = rng.random::<[f32; 4]>();
+            HVec4::new(
+                f16::from_f32(v[0]),
+                f16::from_f32(v[1]),
+                f16::from_f32(v[2]),
+                f16::from_f32(v[3]),
+            )
+        }
+    }
+
+    impl Distribution<HQuat> for StandardUniform {
+        #[inline]
+        fn sample<R: RngExt + ?Sized>(&self, rng: &mut R) -> HQuat {
+            let z = rng.random_range::<f32, _>(-1.0..=1.0);
+            let (y, x) = crate::f32::math::sin_cos(rng.random_range::<f32, _>(0.0..TAU));
+            let r = crate::f32::math::sqrt(1.0 - z * z);
+            let axis = HVec3::new(f16::from_f32(r * x), f16::from_f32(r * y), f16::from_f32(z));
+            let angle = rng.random_range::<f32, _>(0.0..TAU);
+            HQuat::from_axis_angle(axis, f16::from_f32(angle))
+        }
+    }
+
+    #[test]
+    fn test_hvec2_rand_standard() {
+        use rand::{RngExt, SeedableRng};
+        use rand_xoshiro::Xoshiro256Plus;
+        let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
+        let a: [f32; 2] = rng1.random();
+        let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
+        let b: HVec2 = rng2.random();
+        assert_eq!(b, HVec2::new(f16::from_f32(a[0]), f16::from_f32(a[1])));
+    }
+
+    #[test]
+    fn test_hvec3_rand_standard() {
+        use rand::{RngExt, SeedableRng};
+        use rand_xoshiro::Xoshiro256Plus;
+        let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
+        let a: [f32; 3] = rng1.random();
+        let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
+        let b: HVec3 = rng2.random();
+        assert_eq!(
+            b,
+            HVec3::new(
+                f16::from_f32(a[0]),
+                f16::from_f32(a[1]),
+                f16::from_f32(a[2])
+            )
+        );
+    }
+
+    #[test]
+    fn test_hvec4_rand_standard() {
+        use rand::{RngExt, SeedableRng};
+        use rand_xoshiro::Xoshiro256Plus;
+        let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
+        let a: [f32; 4] = rng1.random();
+        let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
+        let b: HVec4 = rng2.random();
+        assert_eq!(
+            b,
+            HVec4::new(
+                f16::from_f32(a[0]),
+                f16::from_f32(a[1]),
+                f16::from_f32(a[2]),
+                f16::from_f32(a[3]),
+            )
+        );
+    }
+
+    #[test]
+    fn test_hquat_rand_standard() {
+        use rand::{RngExt, SeedableRng};
+        use rand_xoshiro::Xoshiro256Plus;
+        let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
+        let a: HQuat = rng1.random();
+        assert!(a.is_normalized());
+        let mut rng2 = Xoshiro256Plus::seed_from_u64(0);
+        let b: HQuat = rng2.random();
+        assert_eq!(a, b);
+    }
+}
+
 #[cfg(feature = "i8")]
 mod i8 {
     use crate::{I8Vec2, I8Vec3, I8Vec4};

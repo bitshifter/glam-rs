@@ -279,6 +279,92 @@ mod euler {
         impl_quat_euler_test!(DQuat, f64);
     }
 
+    #[cfg(feature = "f16")]
+    mod hquat {
+        use super::{axis_order, is_intrinsic, test_all_orders, test_order_angles};
+        use glam::{EulerRot, HQuat};
+        use half::f16;
+
+        // f16 relative precision is ~2^-11 (~5e-4), and Euler conversions
+        // involve a couple of operations, so allow a few times that for the
+        // dot product of two quaternions representing the same rotation. The
+        // worst case measured across all orders/angles is |dot| >= 0.9976.
+        const EPS: f16 = f16::from_f32_const(5e-3);
+
+        const AXIS_ANGLE: [fn(f16) -> HQuat; 3] = [
+            HQuat::from_rotation_x,
+            HQuat::from_rotation_y,
+            HQuat::from_rotation_z,
+        ];
+
+        fn deg_to_rad(a: i32, b: i32, c: i32) -> (f16, f16, f16) {
+            (
+                f16::from_f32((a as f32).to_radians()),
+                f16::from_f32((b as f32).to_radians()),
+                f16::from_f32((c as f32).to_radians()),
+            )
+        }
+
+        #[inline]
+        fn abs_f16(a: f16) -> f16 {
+            if a < f16::ZERO {
+                -a
+            } else {
+                a
+            }
+        }
+
+        /// Compares two quaternions as rotations via their dot product: `q`
+        /// and `-q` are the same rotation, and two unit quaternions represent
+        /// the same rotation exactly when `|dot(q1, q2)| == 1`. Comparing
+        /// rotations this way is more robust for `f16` than comparing
+        /// components: the `w` component of a quaternion representing a ~180°
+        /// rotation can legitimately differ by up to ~1e-3 between equivalent
+        /// Euler angle representations (due to `f16` angle quantization), so a
+        /// component-wise comparison with a fixed `w ≈ 0` threshold cannot
+        /// reliably tell "same rotation" from "different rotation".
+        fn assert_same_rotation(a: HQuat, b: HQuat) {
+            let dot = f32::from(abs_f16(a.dot(b)));
+            assert!(
+                dot >= f32::from(EPS),
+                "quaternions {:?} and {:?} are not the same rotation: |dot| = {}, minimum required {}",
+                a,
+                b,
+                dot,
+                f32::from(EPS),
+            );
+        }
+
+        fn test_euler(order: EulerRot, a: i32, b: i32, c: i32) {
+            let (a, b, c) = deg_to_rad(a, b, c);
+
+            // Round trip through Euler angles.
+            let m = HQuat::from_euler(order, a, b, c);
+            let n = {
+                let (i, j, k) = m.to_euler(order);
+                HQuat::from_euler(order, i, j, k)
+            };
+            assert_same_rotation(m, n);
+
+            // Compare against the direct composition of axis-angle rotations.
+            let o = {
+                let (i, j, k) = axis_order(order);
+                if is_intrinsic(order) {
+                    AXIS_ANGLE[i](a) * AXIS_ANGLE[j](b) * AXIS_ANGLE[k](c)
+                } else {
+                    AXIS_ANGLE[k](c) * AXIS_ANGLE[j](b) * AXIS_ANGLE[i](a)
+                }
+            };
+            assert_same_rotation(m, o);
+        }
+
+        #[test]
+        fn test_all_euler_orders() {
+            let test = |order| test_order_angles(order, &test_euler);
+            test_all_orders(&test);
+        }
+    }
+
     #[cfg(feature = "f64")]
     mod dmat3 {
         impl_mat_euler_test!(DMat3, f64);

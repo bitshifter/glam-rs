@@ -5,6 +5,8 @@ mod test {
     };
     #[cfg(feature = "f64")]
     use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
+    #[cfg(feature = "f16")]
+    use crate::{HQuat, HVec2, HVec3, HVec4};
     #[cfg(feature = "i16")]
     use crate::{I16Vec2, I16Vec3, I16Vec4};
     #[cfg(feature = "i64")]
@@ -86,6 +88,15 @@ mod test {
     test_pod_t!(dvec3, DVec3);
     #[cfg(feature = "f64")]
     test_pod_t!(dvec4, DVec4);
+
+    #[cfg(feature = "f16")]
+    test_pod_t!(hquat, HQuat);
+    #[cfg(feature = "f16")]
+    test_pod_t!(hvec2, HVec2);
+    #[cfg(feature = "f16")]
+    test_pod_t!(hvec3, HVec3);
+    #[cfg(feature = "f16")]
+    test_pod_t!(hvec4, HVec4);
 
     #[cfg(feature = "i8")]
     test_pod_t!(i8vec2, I8Vec2);

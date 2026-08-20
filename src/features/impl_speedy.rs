@@ -4,6 +4,8 @@ use crate::{
 };
 #[cfg(feature = "f64")]
 use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
+#[cfg(feature = "f16")]
+use crate::{HQuat, HVec2, HVec3, HVec4};
 #[cfg(feature = "i32")]
 use crate::{IVec2, IVec3, IVec4};
 #[cfg(feature = "u32")]
@@ -90,6 +92,67 @@ impl_for_vec! {UVec4, new, u32, read_u32, write_u32, x, y, z, w}
 impl_for_vec! {Quat, from_xyzw, f32, read_f32, write_f32, x, y, z, w}
 #[cfg(feature = "f64")]
 impl_for_vec! {DQuat, from_xyzw, f64, read_f64, write_f64, x, y, z, w}
+
+#[cfg(feature = "f16")]
+macro_rules! impl_for_hvec {
+    ($T:ty, $ctor:ident, $($comp:ident),+) => {
+        impl<'a, C> Readable<'a, C> for $T
+        where
+            C: Context,
+        {
+            #[inline]
+            fn read_from<R: Reader<'a, C>>(reader: &mut R) -> Result<Self, C::Error> {
+                $(
+                    let $comp = half::f16::from_bits(reader.read_u16()?);
+                )+
+
+                Ok(<$T>::$ctor($($comp),+))
+            }
+
+            #[inline]
+            fn minimum_bytes_needed() -> usize {
+                let mut size = 0;
+                $(
+                    let $comp = <u16 as Readable::<'a, C>>::minimum_bytes_needed();
+                    size += $comp;
+                )+
+                size
+            }
+        }
+
+        impl<C> Writable<C> for $T
+        where
+            C: Context,
+        {
+            #[inline]
+            fn write_to<T: ?Sized + Writer<C>>(&self, writer: &mut T) -> Result<(), C::Error> {
+                $(
+                    writer.write_u16(self.$comp.to_bits())?;
+                )+
+
+                Ok(())
+            }
+
+            #[inline]
+            fn bytes_needed(&self) -> Result<usize, C::Error> {
+                let mut size = 0;
+                $(
+                    size += Writable::<C>::bytes_needed(&self.$comp.to_bits())?;
+                )+
+                Ok( size )
+            }
+        }
+    };
+}
+
+#[cfg(feature = "f16")]
+impl_for_hvec! {HVec2, new, x, y}
+#[cfg(feature = "f16")]
+impl_for_hvec! {HVec3, new, x, y, z}
+#[cfg(feature = "f16")]
+impl_for_hvec! {HVec4, new, x, y, z, w}
+#[cfg(feature = "f16")]
+impl_for_hvec! {HQuat, from_xyzw, x, y, z, w}
 
 macro_rules! impl_for_bvec {
     ($T:ty, $($comp:ident),+) => {
@@ -247,6 +310,24 @@ fn test_speedy() {
     test_vec!(Quat, from_xyzw, 1, 2, 3, 4);
     #[cfg(feature = "f64")]
     test_vec!(DQuat, from_xyzw, 1, 2, 3, 4);
+
+    #[cfg(feature = "f16")]
+    {
+        use half::f16;
+        macro_rules! test_hvec {
+            ($T:ty, $ctor:ident, $($values:literal),+) => {{
+                let original = <$T>::$ctor($(f16::from_f32($values as f32)),+);
+                let serialized = original.write_to_vec_with_ctx(Endianness::NATIVE).unwrap();
+                let deserialized = <$T>::read_from_buffer_with_ctx(Endianness::NATIVE, &serialized).unwrap();
+                assert_eq!(original, deserialized);
+            }}
+        }
+
+        test_hvec!(HVec2, new, 1, 2);
+        test_hvec!(HVec3, new, 1, 2, 3);
+        test_hvec!(HVec4, new, 1, 2, 3, 4);
+        test_hvec!(HQuat, from_xyzw, 1, 2, 3, 4);
+    }
 
     for a in [false, true] {
         for b in [false, true] {
