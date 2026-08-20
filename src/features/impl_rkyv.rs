@@ -462,7 +462,7 @@ mod test {
     /// `rkyv` is built with its `unaligned` feature.
     #[test]
     fn archived_alignment_follows_rkyv() {
-        use crate::{ArchivedVec3, ArchivedVec3A, ArchivedVec4};
+        use crate::rkyv::{ArchivedVec3, ArchivedVec3A, ArchivedVec4};
 
         let expected = core::mem::align_of::<rkyv::Archived<f32>>();
         assert_eq!(core::mem::align_of::<ArchivedVec3>(), expected);
@@ -474,7 +474,7 @@ mod test {
     /// alignment, regardless of the SIMD backend glam was built with.
     #[test]
     fn archived_size_is_exact() {
-        use crate::{ArchivedVec3, ArchivedVec3A, ArchivedVec4};
+        use crate::rkyv::{ArchivedVec3, ArchivedVec3A, ArchivedVec4};
 
         let element = core::mem::size_of::<rkyv::Archived<f32>>();
         assert_eq!(core::mem::size_of::<ArchivedVec3>(), element * 3);
@@ -518,7 +518,8 @@ mod test {
     #[cfg(feature = "bytemuck")]
     #[test]
     fn archived_types_are_pod() {
-        use crate::{ArchivedVec3, Vec3};
+        use crate::rkyv::ArchivedVec3;
+        use crate::Vec3;
 
         let values = [
             ArchivedVec3::from(Vec3::new(1.0, 2.0, 3.0)),
@@ -534,7 +535,8 @@ mod test {
     /// types need and is what makes the reference cast that used to work unnecessary.
     #[test]
     fn archived_conversions_round_trip() {
-        use crate::{ArchivedMat2, ArchivedVec3, Mat2, Vec3};
+        use crate::rkyv::{ArchivedMat2, ArchivedVec3};
+        use crate::{Mat2, Vec3};
 
         let vec = Vec3::new(1.0, 2.0, 3.0);
         assert_eq!(Vec3::from(ArchivedVec3::from(vec)), vec);
