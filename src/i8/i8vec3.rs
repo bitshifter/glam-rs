@@ -106,7 +106,7 @@ impl I8Vec3 {
     #[inline]
     #[must_use]
     pub const fn splat(v: i8) -> Self {
-        Self { x: v, y: v, z: v }
+        Self::new(v, v, v)
     }
 
     /// Returns a vector containing each element of `self` modified by a mapping function `f`.
@@ -127,11 +127,11 @@ impl I8Vec3 {
     #[inline]
     #[must_use]
     pub fn select(mask: BVec3, if_true: Self, if_false: Self) -> Self {
-        Self {
-            x: if mask.test(0) { if_true.x } else { if_false.x },
-            y: if mask.test(1) { if_true.y } else { if_false.y },
-            z: if mask.test(2) { if_true.z } else { if_false.z },
-        }
+        Self::new(
+            if mask.test(0) { if_true.x } else { if_false.x },
+            if mask.test(1) { if_true.y } else { if_false.y },
+            if mask.test(2) { if_true.z } else { if_false.z },
+        )
     }
 
     /// Creates a new vector from an array.
@@ -175,11 +175,7 @@ impl I8Vec3 {
     #[inline]
     #[must_use]
     pub(crate) fn from_vec4(v: I8Vec4) -> Self {
-        Self {
-            x: v.x,
-            y: v.y,
-            z: v.z,
-        }
+        Self::new(v.x, v.y, v.z)
     }
 
     /// Creates a 4D vector from `self` and the given `w` value.
@@ -241,11 +237,11 @@ impl I8Vec3 {
     #[inline]
     #[must_use]
     pub fn cross(self, rhs: Self) -> Self {
-        Self {
-            x: self.y * rhs.z - rhs.y * self.z,
-            y: self.z * rhs.x - rhs.z * self.x,
-            z: self.x * rhs.y - rhs.x * self.y,
-        }
+        Self::new(
+            self.y * rhs.z - rhs.y * self.z,
+            self.z * rhs.x - rhs.z * self.x,
+            self.x * rhs.y - rhs.x * self.y,
+        )
     }
 
     /// Returns a vector containing the minimum values for each element of `self` and `rhs`.
@@ -254,11 +250,11 @@ impl I8Vec3 {
     #[inline]
     #[must_use]
     pub fn min(self, rhs: Self) -> Self {
-        Self {
-            x: if self.x < rhs.x { self.x } else { rhs.x },
-            y: if self.y < rhs.y { self.y } else { rhs.y },
-            z: if self.z < rhs.z { self.z } else { rhs.z },
-        }
+        Self::new(
+            if self.x < rhs.x { self.x } else { rhs.x },
+            if self.y < rhs.y { self.y } else { rhs.y },
+            if self.z < rhs.z { self.z } else { rhs.z },
+        )
     }
 
     /// Returns a vector containing the maximum values for each element of `self` and `rhs`.
@@ -267,11 +263,11 @@ impl I8Vec3 {
     #[inline]
     #[must_use]
     pub fn max(self, rhs: Self) -> Self {
-        Self {
-            x: if self.x > rhs.x { self.x } else { rhs.x },
-            y: if self.y > rhs.y { self.y } else { rhs.y },
-            z: if self.z > rhs.z { self.z } else { rhs.z },
-        }
+        Self::new(
+            if self.x > rhs.x { self.x } else { rhs.x },
+            if self.y > rhs.y { self.y } else { rhs.y },
+            if self.z > rhs.z { self.z } else { rhs.z },
+        )
     }
 
     /// Component-wise clamping of values, similar to [`i8::clamp`].
@@ -430,11 +426,7 @@ impl I8Vec3 {
     #[inline]
     #[must_use]
     pub fn abs(self) -> Self {
-        Self {
-            x: self.x.abs(),
-            y: self.y.abs(),
-            z: self.z.abs(),
-        }
+        Self::new(self.x.abs(), self.y.abs(), self.z.abs())
     }
 
     /// Returns a vector with elements representing the sign of `self`.
@@ -445,11 +437,7 @@ impl I8Vec3 {
     #[inline]
     #[must_use]
     pub fn signum(self) -> Self {
-        Self {
-            x: self.x.signum(),
-            y: self.y.signum(),
-            z: self.z.signum(),
-        }
+        Self::new(self.x.signum(), self.y.signum(), self.z.signum())
     }
 
     /// Returns a bitmask with the lowest 3 bits set to the sign bits from the elements of `self`.
@@ -970,11 +958,7 @@ impl Div for I8Vec3 {
     type Output = Self;
     #[inline]
     fn div(self, rhs: Self) -> Self {
-        Self {
-            x: self.x.div(rhs.x),
-            y: self.y.div(rhs.y),
-            z: self.z.div(rhs.z),
-        }
+        Self::new(self.x.div(rhs.x), self.y.div(rhs.y), self.z.div(rhs.z))
     }
 }
 
@@ -1022,11 +1006,7 @@ impl Div<i8> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn div(self, rhs: i8) -> Self {
-        Self {
-            x: self.x.div(rhs),
-            y: self.y.div(rhs),
-            z: self.z.div(rhs),
-        }
+        Self::new(self.x.div(rhs), self.y.div(rhs), self.z.div(rhs))
     }
 }
 
@@ -1074,11 +1054,7 @@ impl Div<I8Vec3> for i8 {
     type Output = I8Vec3;
     #[inline]
     fn div(self, rhs: I8Vec3) -> I8Vec3 {
-        I8Vec3 {
-            x: self.div(rhs.x),
-            y: self.div(rhs.y),
-            z: self.div(rhs.z),
-        }
+        I8Vec3::new(self.div(rhs.x), self.div(rhs.y), self.div(rhs.z))
     }
 }
 
@@ -1110,11 +1086,7 @@ impl Mul for I8Vec3 {
     type Output = Self;
     #[inline]
     fn mul(self, rhs: Self) -> Self {
-        Self {
-            x: self.x.mul(rhs.x),
-            y: self.y.mul(rhs.y),
-            z: self.z.mul(rhs.z),
-        }
+        Self::new(self.x.mul(rhs.x), self.y.mul(rhs.y), self.z.mul(rhs.z))
     }
 }
 
@@ -1162,11 +1134,7 @@ impl Mul<i8> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn mul(self, rhs: i8) -> Self {
-        Self {
-            x: self.x.mul(rhs),
-            y: self.y.mul(rhs),
-            z: self.z.mul(rhs),
-        }
+        Self::new(self.x.mul(rhs), self.y.mul(rhs), self.z.mul(rhs))
     }
 }
 
@@ -1214,11 +1182,7 @@ impl Mul<I8Vec3> for i8 {
     type Output = I8Vec3;
     #[inline]
     fn mul(self, rhs: I8Vec3) -> I8Vec3 {
-        I8Vec3 {
-            x: self.mul(rhs.x),
-            y: self.mul(rhs.y),
-            z: self.mul(rhs.z),
-        }
+        I8Vec3::new(self.mul(rhs.x), self.mul(rhs.y), self.mul(rhs.z))
     }
 }
 
@@ -1250,11 +1214,7 @@ impl Add for I8Vec3 {
     type Output = Self;
     #[inline]
     fn add(self, rhs: Self) -> Self {
-        Self {
-            x: self.x.add(rhs.x),
-            y: self.y.add(rhs.y),
-            z: self.z.add(rhs.z),
-        }
+        Self::new(self.x.add(rhs.x), self.y.add(rhs.y), self.z.add(rhs.z))
     }
 }
 
@@ -1302,11 +1262,7 @@ impl Add<i8> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn add(self, rhs: i8) -> Self {
-        Self {
-            x: self.x.add(rhs),
-            y: self.y.add(rhs),
-            z: self.z.add(rhs),
-        }
+        Self::new(self.x.add(rhs), self.y.add(rhs), self.z.add(rhs))
     }
 }
 
@@ -1354,11 +1310,7 @@ impl Add<I8Vec3> for i8 {
     type Output = I8Vec3;
     #[inline]
     fn add(self, rhs: I8Vec3) -> I8Vec3 {
-        I8Vec3 {
-            x: self.add(rhs.x),
-            y: self.add(rhs.y),
-            z: self.add(rhs.z),
-        }
+        I8Vec3::new(self.add(rhs.x), self.add(rhs.y), self.add(rhs.z))
     }
 }
 
@@ -1390,11 +1342,7 @@ impl Sub for I8Vec3 {
     type Output = Self;
     #[inline]
     fn sub(self, rhs: Self) -> Self {
-        Self {
-            x: self.x.sub(rhs.x),
-            y: self.y.sub(rhs.y),
-            z: self.z.sub(rhs.z),
-        }
+        Self::new(self.x.sub(rhs.x), self.y.sub(rhs.y), self.z.sub(rhs.z))
     }
 }
 
@@ -1442,11 +1390,7 @@ impl Sub<i8> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn sub(self, rhs: i8) -> Self {
-        Self {
-            x: self.x.sub(rhs),
-            y: self.y.sub(rhs),
-            z: self.z.sub(rhs),
-        }
+        Self::new(self.x.sub(rhs), self.y.sub(rhs), self.z.sub(rhs))
     }
 }
 
@@ -1494,11 +1438,7 @@ impl Sub<I8Vec3> for i8 {
     type Output = I8Vec3;
     #[inline]
     fn sub(self, rhs: I8Vec3) -> I8Vec3 {
-        I8Vec3 {
-            x: self.sub(rhs.x),
-            y: self.sub(rhs.y),
-            z: self.sub(rhs.z),
-        }
+        I8Vec3::new(self.sub(rhs.x), self.sub(rhs.y), self.sub(rhs.z))
     }
 }
 
@@ -1530,11 +1470,7 @@ impl Rem for I8Vec3 {
     type Output = Self;
     #[inline]
     fn rem(self, rhs: Self) -> Self {
-        Self {
-            x: self.x.rem(rhs.x),
-            y: self.y.rem(rhs.y),
-            z: self.z.rem(rhs.z),
-        }
+        Self::new(self.x.rem(rhs.x), self.y.rem(rhs.y), self.z.rem(rhs.z))
     }
 }
 
@@ -1582,11 +1518,7 @@ impl Rem<i8> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn rem(self, rhs: i8) -> Self {
-        Self {
-            x: self.x.rem(rhs),
-            y: self.y.rem(rhs),
-            z: self.z.rem(rhs),
-        }
+        Self::new(self.x.rem(rhs), self.y.rem(rhs), self.z.rem(rhs))
     }
 }
 
@@ -1634,11 +1566,7 @@ impl Rem<I8Vec3> for i8 {
     type Output = I8Vec3;
     #[inline]
     fn rem(self, rhs: I8Vec3) -> I8Vec3 {
-        I8Vec3 {
-            x: self.rem(rhs.x),
-            y: self.rem(rhs.y),
-            z: self.rem(rhs.z),
-        }
+        I8Vec3::new(self.rem(rhs.x), self.rem(rhs.y), self.rem(rhs.z))
     }
 }
 
@@ -1724,11 +1652,7 @@ impl Neg for I8Vec3 {
     type Output = Self;
     #[inline]
     fn neg(self) -> Self {
-        Self {
-            x: self.x.neg(),
-            y: self.y.neg(),
-            z: self.z.neg(),
-        }
+        Self::new(self.x.neg(), self.y.neg(), self.z.neg())
     }
 }
 
@@ -1744,11 +1668,7 @@ impl Not for I8Vec3 {
     type Output = Self;
     #[inline]
     fn not(self) -> Self {
-        Self {
-            x: self.x.not(),
-            y: self.y.not(),
-            z: self.z.not(),
-        }
+        Self::new(self.x.not(), self.y.not(), self.z.not())
     }
 }
 
@@ -1764,11 +1684,11 @@ impl BitAnd for I8Vec3 {
     type Output = Self;
     #[inline]
     fn bitand(self, rhs: Self) -> Self::Output {
-        Self {
-            x: self.x.bitand(rhs.x),
-            y: self.y.bitand(rhs.y),
-            z: self.z.bitand(rhs.z),
-        }
+        Self::new(
+            self.x.bitand(rhs.x),
+            self.y.bitand(rhs.y),
+            self.z.bitand(rhs.z),
+        )
     }
 }
 
@@ -1814,11 +1734,11 @@ impl BitOr for I8Vec3 {
     type Output = Self;
     #[inline]
     fn bitor(self, rhs: Self) -> Self::Output {
-        Self {
-            x: self.x.bitor(rhs.x),
-            y: self.y.bitor(rhs.y),
-            z: self.z.bitor(rhs.z),
-        }
+        Self::new(
+            self.x.bitor(rhs.x),
+            self.y.bitor(rhs.y),
+            self.z.bitor(rhs.z),
+        )
     }
 }
 
@@ -1864,11 +1784,11 @@ impl BitXor for I8Vec3 {
     type Output = Self;
     #[inline]
     fn bitxor(self, rhs: Self) -> Self::Output {
-        Self {
-            x: self.x.bitxor(rhs.x),
-            y: self.y.bitxor(rhs.y),
-            z: self.z.bitxor(rhs.z),
-        }
+        Self::new(
+            self.x.bitxor(rhs.x),
+            self.y.bitxor(rhs.y),
+            self.z.bitxor(rhs.z),
+        )
     }
 }
 
@@ -1914,11 +1834,7 @@ impl BitAnd<i8> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn bitand(self, rhs: i8) -> Self::Output {
-        Self {
-            x: self.x.bitand(rhs),
-            y: self.y.bitand(rhs),
-            z: self.z.bitand(rhs),
-        }
+        Self::new(self.x.bitand(rhs), self.y.bitand(rhs), self.z.bitand(rhs))
     }
 }
 
@@ -1964,11 +1880,7 @@ impl BitOr<i8> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn bitor(self, rhs: i8) -> Self::Output {
-        Self {
-            x: self.x.bitor(rhs),
-            y: self.y.bitor(rhs),
-            z: self.z.bitor(rhs),
-        }
+        Self::new(self.x.bitor(rhs), self.y.bitor(rhs), self.z.bitor(rhs))
     }
 }
 
@@ -2014,11 +1926,7 @@ impl BitXor<i8> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn bitxor(self, rhs: i8) -> Self::Output {
-        Self {
-            x: self.x.bitxor(rhs),
-            y: self.y.bitxor(rhs),
-            z: self.z.bitxor(rhs),
-        }
+        Self::new(self.x.bitxor(rhs), self.y.bitxor(rhs), self.z.bitxor(rhs))
     }
 }
 
@@ -2064,11 +1972,7 @@ impl Shl<i8> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: i8) -> Self::Output {
-        Self {
-            x: self.x.shl(rhs),
-            y: self.y.shl(rhs),
-            z: self.z.shl(rhs),
-        }
+        Self::new(self.x.shl(rhs), self.y.shl(rhs), self.z.shl(rhs))
     }
 }
 
@@ -2114,11 +2018,7 @@ impl Shr<i8> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: i8) -> Self::Output {
-        Self {
-            x: self.x.shr(rhs),
-            y: self.y.shr(rhs),
-            z: self.z.shr(rhs),
-        }
+        Self::new(self.x.shr(rhs), self.y.shr(rhs), self.z.shr(rhs))
     }
 }
 
@@ -2164,11 +2064,7 @@ impl Shl<i16> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: i16) -> Self::Output {
-        Self {
-            x: self.x.shl(rhs),
-            y: self.y.shl(rhs),
-            z: self.z.shl(rhs),
-        }
+        Self::new(self.x.shl(rhs), self.y.shl(rhs), self.z.shl(rhs))
     }
 }
 
@@ -2214,11 +2110,7 @@ impl Shr<i16> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: i16) -> Self::Output {
-        Self {
-            x: self.x.shr(rhs),
-            y: self.y.shr(rhs),
-            z: self.z.shr(rhs),
-        }
+        Self::new(self.x.shr(rhs), self.y.shr(rhs), self.z.shr(rhs))
     }
 }
 
@@ -2264,11 +2156,7 @@ impl Shl<i32> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: i32) -> Self::Output {
-        Self {
-            x: self.x.shl(rhs),
-            y: self.y.shl(rhs),
-            z: self.z.shl(rhs),
-        }
+        Self::new(self.x.shl(rhs), self.y.shl(rhs), self.z.shl(rhs))
     }
 }
 
@@ -2314,11 +2202,7 @@ impl Shr<i32> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: i32) -> Self::Output {
-        Self {
-            x: self.x.shr(rhs),
-            y: self.y.shr(rhs),
-            z: self.z.shr(rhs),
-        }
+        Self::new(self.x.shr(rhs), self.y.shr(rhs), self.z.shr(rhs))
     }
 }
 
@@ -2364,11 +2248,7 @@ impl Shl<i64> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: i64) -> Self::Output {
-        Self {
-            x: self.x.shl(rhs),
-            y: self.y.shl(rhs),
-            z: self.z.shl(rhs),
-        }
+        Self::new(self.x.shl(rhs), self.y.shl(rhs), self.z.shl(rhs))
     }
 }
 
@@ -2414,11 +2294,7 @@ impl Shr<i64> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: i64) -> Self::Output {
-        Self {
-            x: self.x.shr(rhs),
-            y: self.y.shr(rhs),
-            z: self.z.shr(rhs),
-        }
+        Self::new(self.x.shr(rhs), self.y.shr(rhs), self.z.shr(rhs))
     }
 }
 
@@ -2464,11 +2340,7 @@ impl Shl<u8> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: u8) -> Self::Output {
-        Self {
-            x: self.x.shl(rhs),
-            y: self.y.shl(rhs),
-            z: self.z.shl(rhs),
-        }
+        Self::new(self.x.shl(rhs), self.y.shl(rhs), self.z.shl(rhs))
     }
 }
 
@@ -2514,11 +2386,7 @@ impl Shr<u8> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: u8) -> Self::Output {
-        Self {
-            x: self.x.shr(rhs),
-            y: self.y.shr(rhs),
-            z: self.z.shr(rhs),
-        }
+        Self::new(self.x.shr(rhs), self.y.shr(rhs), self.z.shr(rhs))
     }
 }
 
@@ -2564,11 +2432,7 @@ impl Shl<u16> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: u16) -> Self::Output {
-        Self {
-            x: self.x.shl(rhs),
-            y: self.y.shl(rhs),
-            z: self.z.shl(rhs),
-        }
+        Self::new(self.x.shl(rhs), self.y.shl(rhs), self.z.shl(rhs))
     }
 }
 
@@ -2614,11 +2478,7 @@ impl Shr<u16> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: u16) -> Self::Output {
-        Self {
-            x: self.x.shr(rhs),
-            y: self.y.shr(rhs),
-            z: self.z.shr(rhs),
-        }
+        Self::new(self.x.shr(rhs), self.y.shr(rhs), self.z.shr(rhs))
     }
 }
 
@@ -2664,11 +2524,7 @@ impl Shl<u32> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: u32) -> Self::Output {
-        Self {
-            x: self.x.shl(rhs),
-            y: self.y.shl(rhs),
-            z: self.z.shl(rhs),
-        }
+        Self::new(self.x.shl(rhs), self.y.shl(rhs), self.z.shl(rhs))
     }
 }
 
@@ -2714,11 +2570,7 @@ impl Shr<u32> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: u32) -> Self::Output {
-        Self {
-            x: self.x.shr(rhs),
-            y: self.y.shr(rhs),
-            z: self.z.shr(rhs),
-        }
+        Self::new(self.x.shr(rhs), self.y.shr(rhs), self.z.shr(rhs))
     }
 }
 
@@ -2764,11 +2616,7 @@ impl Shl<u64> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: u64) -> Self::Output {
-        Self {
-            x: self.x.shl(rhs),
-            y: self.y.shl(rhs),
-            z: self.z.shl(rhs),
-        }
+        Self::new(self.x.shl(rhs), self.y.shl(rhs), self.z.shl(rhs))
     }
 }
 
@@ -2814,11 +2662,7 @@ impl Shr<u64> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: u64) -> Self::Output {
-        Self {
-            x: self.x.shr(rhs),
-            y: self.y.shr(rhs),
-            z: self.z.shr(rhs),
-        }
+        Self::new(self.x.shr(rhs), self.y.shr(rhs), self.z.shr(rhs))
     }
 }
 
@@ -2865,11 +2709,7 @@ impl Shl<IVec3> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: IVec3) -> Self {
-        Self {
-            x: self.x.shl(rhs.x),
-            y: self.y.shl(rhs.y),
-            z: self.z.shl(rhs.z),
-        }
+        Self::new(self.x.shl(rhs.x), self.y.shl(rhs.y), self.z.shl(rhs.z))
     }
 }
 
@@ -2905,11 +2745,7 @@ impl Shr<IVec3> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: IVec3) -> Self {
-        Self {
-            x: self.x.shr(rhs.x),
-            y: self.y.shr(rhs.y),
-            z: self.z.shr(rhs.z),
-        }
+        Self::new(self.x.shr(rhs.x), self.y.shr(rhs.y), self.z.shr(rhs.z))
     }
 }
 
@@ -2945,11 +2781,7 @@ impl Shl<UVec3> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shl(self, rhs: UVec3) -> Self {
-        Self {
-            x: self.x.shl(rhs.x),
-            y: self.y.shl(rhs.y),
-            z: self.z.shl(rhs.z),
-        }
+        Self::new(self.x.shl(rhs.x), self.y.shl(rhs.y), self.z.shl(rhs.z))
     }
 }
 
@@ -2985,11 +2817,7 @@ impl Shr<UVec3> for I8Vec3 {
     type Output = Self;
     #[inline]
     fn shr(self, rhs: UVec3) -> Self {
-        Self {
-            x: self.x.shr(rhs.x),
-            y: self.y.shr(rhs.y),
-            z: self.z.shr(rhs.z),
-        }
+        Self::new(self.x.shr(rhs.x), self.y.shr(rhs.y), self.z.shr(rhs.z))
     }
 }
 

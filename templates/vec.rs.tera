@@ -321,24 +321,17 @@ pub const fn {{ self_t | lower }}(
 #[derive(
     Clone,
     Copy,
-    {% if is_scalar %}
+    {% if is_scalar and self_t != "Vec3A" %}
     PartialEq,
-    {% if not is_float %}
+    {% endif %}
+    {% if is_scalar and not is_float %}
     Eq,
     Hash,
     {% endif %}
-    {% endif %}
 )]
-{%- if self_t == "Vec3A" and is_scalar %}
-#[cfg_attr(feature = "bytemuck", derive(bytemuck::AnyBitPattern))]
-{%- if not is_coresimd %}
-#[cfg_attr(feature = "zerocopy", derive(FromBytes, Immutable, KnownLayout))]
-{%- endif %}
-{%- else %}
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 {%- if not is_coresimd %}
 #[cfg_attr(feature = "zerocopy", derive(FromBytes, Immutable, IntoBytes, KnownLayout))]
-{%- endif %}
 {%- endif %}
 {%- if self_t == "Vec3A" and is_scalar %}
 #[repr(align(16))]
@@ -355,6 +348,9 @@ pub struct {{ self_t }}
     {% for c in components %}
         pub {{ c }}: {{ scalar_t }},
     {%- endfor %}
+    {%- if self_t == "Vec3A" %}
+        _w: f32,
+    {%- endif %}
 }
 {% else %}
 #[repr(transparent)]
@@ -447,6 +443,9 @@ impl {{ self_t }} {
                 {% for c in components %}
                     {{ c }},
                 {%- endfor %}
+                {%- if self_t == "Vec3A" %}
+                    _w: z,
+                {%- endif %}
             }
         {% elif is_sse2 %}
             unsafe {
@@ -489,11 +488,11 @@ impl {{ self_t }} {
     #[must_use]
     pub const fn splat(v: {{ scalar_t }}) -> Self {
         {% if is_scalar %}
-            Self {
+            Self::new(
                 {% for c in components %}
-                    {{ c }}: v,
+                    v,
                 {% endfor %}
-            }
+            )
         {% elif is_wasm %}
             Self(f32x4(v, v, v, v))
         {% elif is_coresimd %}
@@ -526,11 +525,11 @@ impl {{ self_t }} {
     #[must_use]
     pub fn select(mask: {{ mask_t }}, if_true: Self, if_false: Self) -> Self {
         {% if is_scalar %}
-            Self {
+            Self::new(
                 {% for c in components %}
-                    {{ c  }}: if mask.test({{ loop.index0 }}) { if_true.{{ c }} } else { if_false.{{ c }} },
+                    if mask.test({{ loop.index0 }}) { if_true.{{ c }} } else { if_false.{{ c }} },
                 {%- endfor %}
-            }
+            )
         {% elif is_sse2 %}
             Self(unsafe { _mm_or_ps(_mm_andnot_ps(mask.0, if_false.0), _mm_and_ps(if_true.0, mask.0)) })
         {% elif is_wasm %}
@@ -618,7 +617,7 @@ impl {{ self_t }} {
     #[must_use]
     pub fn from_vec4(v: Vec4) -> Self {
         {% if is_scalar %}
-            Self { x: v.x, y: v.y, z: v.z }
+            Self::new(v.x, v.y, v.z)
         {% else %}
             Self(v.0)
         {% endif %}
@@ -630,7 +629,7 @@ impl {{ self_t }} {
     #[must_use]
     pub(crate) fn from_vec4(v: {{ vec4_t }}) -> Self {
         {% if is_scalar %}
-            Self { x: v.x, y: v.y, z: v.z }
+            Self::new(v.x, v.y, v.z)
         {% else %}
             Self(v.0)
         {% endif %}
@@ -783,11 +782,11 @@ impl {{ self_t }} {
     #[must_use]
     pub fn cross(self, rhs: Self) -> Self {
         {% if is_scalar %}
-            Self {
-                x: self.y * rhs.z - rhs.y * self.z,
-                y: self.z * rhs.x - rhs.z * self.x,
-                z: self.x * rhs.y - rhs.x * self.y,
-            }
+            Self::new(
+                self.y * rhs.z - rhs.y * self.z,
+                self.z * rhs.x - rhs.z * self.x,
+                self.x * rhs.y - rhs.x * self.y,
+            )
         {% elif is_sse2 %}
             unsafe {
                 // x  <-  a.y*b.z - a.z*b.y
@@ -858,11 +857,11 @@ impl {{ self_t }} {
     #[must_use]
     pub fn min(self, rhs: Self) -> Self {
         {% if is_scalar %}
-            Self {
+            Self::new(
                 {% for c in components %}
-                    {{ c }}: if self.{{ c }} < rhs.{{ c }} { self.{{ c }} } else { rhs.{{ c }} },
+                    if self.{{ c }} < rhs.{{ c }} { self.{{ c }} } else { rhs.{{ c }} },
                 {%- endfor %}
-            }
+            )
         {% elif is_sse2 %}
             Self(unsafe { _mm_min_ps(self.0, rhs.0) })
         {% elif is_wasm %}
@@ -888,11 +887,11 @@ impl {{ self_t }} {
     #[must_use]
     pub fn max(self, rhs: Self) -> Self {
         {% if is_scalar %}
-            Self {
+            Self::new(
                 {% for c in components %}
-                    {{ c }}: if self.{{ c }} > rhs.{{ c }} { self.{{ c }} } else { rhs.{{ c }} },
+                    if self.{{ c }} > rhs.{{ c }} { self.{{ c }} } else { rhs.{{ c }} },
                 {%- endfor %}
-            }
+            )
         {% elif is_sse2 %}
             Self(unsafe { _mm_max_ps(self.0, rhs.0) })
         {% elif is_wasm %}
@@ -1426,15 +1425,15 @@ impl {{ self_t }} {
     #[must_use]
     pub fn abs(self) -> Self {
         {% if is_scalar %}
-            Self {
+            Self::new(
                 {% for c in components %}
                     {%- if is_float %}
-                        {{ c }}: math::abs(self.{{ c }}),
+                        math::abs(self.{{ c }}),
                     {%- else %}
-                        {{ c }}: self.{{ c }}.abs(),
+                        self.{{ c }}.abs(),
                     {%- endif %}
                 {%- endfor %}
-            }
+            )
         {% elif is_sse2 %}
             Self(unsafe { crate::sse2::m128_abs(self.0) })
         {% elif is_wasm %}
@@ -1463,15 +1462,15 @@ impl {{ self_t }} {
     #[must_use]
     pub fn signum(self) -> Self {
         {% if is_scalar %}
-            Self {
+            Self::new(
                 {% for c in components %}
                     {%- if is_float %}
-                        {{ c }}: math::signum(self.{{ c }}),
+                        math::signum(self.{{ c }}),
                     {%- else %}
-                        {{ c }}: self.{{ c }}.signum(),
+                        self.{{ c }}.signum(),
                     {%- endif %}
                 {%- endfor %}
-            }
+            )
         {% elif is_coresimd %}
             Self(self.0.signum())
         {% elif is_sse2 %}
@@ -1504,11 +1503,11 @@ impl {{ self_t }} {
     #[must_use]
     pub fn copysign(self, rhs: Self) -> Self {
         {% if is_scalar %}
-            Self {
+            Self::new(
                 {% for c in components %}
-                    {{ c }}: math::copysign(self.{{ c }}, rhs.{{ c }}),
+                    math::copysign(self.{{ c }}, rhs.{{ c }}),
                 {%- endfor %}
-            }
+            )
         {% elif is_coresimd %}
             Self(self.0.copysign(rhs.0))
         {% elif is_sse2 %}
@@ -2016,11 +2015,11 @@ impl {{ self_t }} {
     #[must_use]
     pub fn round(self) -> Self {
         {% if is_scalar %}
-            Self {
+            Self::new(
                 {% for c in components %}
-                    {{ c }}: math::round(self.{{ c }}),
+                    math::round(self.{{ c }}),
                 {%- endfor %}
-            }
+            )
         {% elif is_sse2 %}
             Self(unsafe { m128_round(self.0) })
         {% elif is_wasm %}
@@ -2040,11 +2039,11 @@ impl {{ self_t }} {
     #[must_use]
     pub fn floor(self) -> Self {
         {% if is_scalar %}
-            Self {
+            Self::new(
                 {% for c in components %}
-                    {{ c }}: math::floor(self.{{ c }}),
+                    math::floor(self.{{ c }}),
                 {%- endfor %}
-            }
+            )
         {% elif is_sse2 %}
             Self(unsafe { m128_floor(self.0) })
         {% elif is_wasm %}
@@ -2064,11 +2063,11 @@ impl {{ self_t }} {
     #[must_use]
     pub fn ceil(self) -> Self {
         {% if is_scalar %}
-            Self {
+            Self::new(
                 {% for c in components %}
-                    {{ c }}: math::ceil(self.{{ c }}),
+                    math::ceil(self.{{ c }}),
                 {%- endfor %}
-            }
+            )
         {% elif is_sse2 %}
             Self(unsafe { m128_ceil(self.0) })
         {% elif is_wasm %}
@@ -2088,11 +2087,11 @@ impl {{ self_t }} {
     #[must_use]
     pub fn trunc(self) -> Self {
         {% if is_scalar %}
-            Self {
+            Self::new(
                 {% for c in components %}
-                    {{ c }}: math::trunc(self.{{ c }}),
+                    math::trunc(self.{{ c }}),
                 {%- endfor %}
-            }
+            )
         {% elif is_sse2 %}
             Self(unsafe { m128_trunc(self.0) })
         {% elif is_wasm %}
@@ -2265,11 +2264,11 @@ impl {{ self_t }} {
     #[must_use]
     pub fn recip(self) -> Self {
         {% if is_scalar %}
-            Self {
+            Self::new(
                 {% for c in components %}
-                    {{ c }}: 1.0 / self.{{ c }},
+                    1.0 / self.{{ c }},
                 {%- endfor %}
-            }
+            )
         {% elif is_sse2 %}
             Self(unsafe { _mm_div_ps(Self::ONE.0, self.0) })
         {% elif is_wasm %}
@@ -2464,10 +2463,7 @@ impl {{ self_t }} {
     #[must_use]
     pub fn from_angle(angle: {{ scalar_t }}) -> Self {
         let (sin, cos) = math::sin_cos(angle);
-        Self {
-            x: cos,
-            y: sin,
-        }
+        Self::new(cos, sin)
     }
 
     /// Returns the angle (in radians) of this vector in the range `[-π, +π]`.
@@ -2772,10 +2768,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn perp(self) -> Self {
-        Self {
-            x: -self.y,
-            y: self.x,
-        }
+        Self::new(-self.y, self.x)
     }
 
     /// The perpendicular dot product of `self` and `rhs`.
@@ -2805,10 +2798,10 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn rotate(self, rhs: Self) -> Self {
-        Self {
-            x: self.x * rhs.x - self.y * rhs.y,
-            y: self.y * rhs.x + self.x * rhs.y,
-        }
+        Self::new(
+            self.x * rhs.x - self.y * rhs.y,
+            self.y * rhs.x + self.x * rhs.y,
+        )
     }
 {% endif %}
 
@@ -3495,6 +3488,13 @@ impl PartialEq for {{ self_t }} {
         self.cmpeq(*rhs).all()
     }
 }
+{% elif self_t == "Vec3A" %}
+impl PartialEq for {{ self_t }} {
+    #[inline]
+    fn eq(&self, rhs: &Self) -> bool {
+        self.x == rhs.x && self.y == rhs.y && self.z == rhs.z
+    }
+}
 {% endif %}
 
 impl Div for {{ self_t }} {
@@ -3502,11 +3502,11 @@ impl Div for {{ self_t }} {
     #[inline]
     fn div(self, rhs: Self) -> Self {
         {% if is_scalar %}
-            Self {
+            Self::new(
                 {% for c in components %}
-                    {{ c }}: self.{{ c }}.div(rhs.{{ c }}),
+                    self.{{ c }}.div(rhs.{{ c }}),
                 {%- endfor %}
-            }
+            )
         {% elif is_sse2 %}
             Self(unsafe { _mm_div_ps(self.0, rhs.0) })
         {% elif is_wasm %}
@@ -3551,11 +3551,11 @@ impl Div<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
     fn div(self, rhs: {{ scalar_t }}) -> Self {
         {% if is_scalar %}
-            Self {
+            Self::new(
                 {% for c in components %}
-                    {{ c }}: self.{{ c }}.div(rhs),
+                    self.{{ c }}.div(rhs),
                 {%- endfor %}
-            }
+            )
         {% elif is_sse2 %}
             Self(unsafe { _mm_div_ps(self.0, _mm_set1_ps(rhs)) })
         {% elif is_wasm %}
@@ -3600,11 +3600,11 @@ impl Div<{{ self_t }}> for {{ scalar_t }} {
     #[inline]
     fn div(self, rhs: {{ self_t }}) -> {{ self_t }} {
         {% if is_scalar %}
-            {{ self_t }} {
+            {{ self_t }}::new(
                 {% for c in components %}
-                    {{ c }}: self.div(rhs.{{ c }}),
+                    self.div(rhs.{{ c }}),
                 {%- endfor %}
-            }
+            )
         {% elif is_sse2 %}
             {{ self_t }}(unsafe { _mm_div_ps(_mm_set1_ps(self), rhs.0) })
         {% elif is_wasm %}
@@ -3626,11 +3626,11 @@ impl Mul for {{ self_t }} {
     #[inline]
     fn mul(self, rhs: Self) -> Self {
         {% if is_scalar %}
-            Self {
+            Self::new(
                 {% for c in components %}
-                    {{ c }}: self.{{ c }}.mul(rhs.{{ c }}),
+                    self.{{ c }}.mul(rhs.{{ c }}),
                 {%- endfor %}
-            }
+            )
         {% elif is_sse2 %}
             Self(unsafe { _mm_mul_ps(self.0, rhs.0) })
         {% elif is_wasm %}
@@ -3675,11 +3675,11 @@ impl Mul<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
     fn mul(self, rhs: {{ scalar_t }}) -> Self {
         {% if is_scalar %}
-            Self {
+            Self::new(
                 {% for c in components %}
-                    {{ c }}: self.{{ c }}.mul(rhs),
+                    self.{{ c }}.mul(rhs),
                 {%- endfor %}
-            }
+            )
         {% elif is_sse2 %}
             Self(unsafe { _mm_mul_ps(self.0, _mm_set1_ps(rhs)) })
         {% elif is_wasm %}
@@ -3724,11 +3724,11 @@ impl Mul<{{ self_t }}> for {{ scalar_t }} {
     #[inline]
     fn mul(self, rhs: {{ self_t }}) -> {{ self_t }} {
         {% if is_scalar %}
-            {{ self_t }} {
+            {{ self_t }}::new(
                 {% for c in components %}
-                    {{ c }}: self.mul(rhs.{{ c }}),
+                    self.mul(rhs.{{ c }}),
                 {%- endfor %}
-            }
+            )
         {% elif is_sse2 %}
             {{ self_t }}(unsafe { _mm_mul_ps(_mm_set1_ps(self), rhs.0) })
         {% elif is_wasm %}
@@ -3750,11 +3750,11 @@ impl Add for {{ self_t }} {
     #[inline]
     fn add(self, rhs: Self) -> Self {
         {% if is_scalar %}
-            Self {
+            Self::new(
                 {% for c in components %}
-                    {{ c }}: self.{{ c }}.add(rhs.{{ c }}),
+                    self.{{ c }}.add(rhs.{{ c }}),
                 {%- endfor %}
-            }
+            )
         {% elif is_sse2 %}
             Self(unsafe { _mm_add_ps(self.0, rhs.0) })
         {% elif is_wasm %}
@@ -3799,11 +3799,11 @@ impl Add<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
     fn add(self, rhs: {{ scalar_t }}) -> Self {
         {% if is_scalar %}
-            Self {
+            Self::new(
                 {% for c in components %}
-                    {{ c }}: self.{{ c }}.add(rhs),
+                    self.{{ c }}.add(rhs),
                 {%- endfor %}
-            }
+            )
         {% elif is_sse2 %}
             Self(unsafe { _mm_add_ps(self.0, _mm_set1_ps(rhs)) })
         {% elif is_wasm %}
@@ -3848,11 +3848,11 @@ impl Add<{{ self_t }}> for {{ scalar_t }} {
     #[inline]
     fn add(self, rhs: {{ self_t }}) -> {{ self_t }} {
         {% if is_scalar %}
-            {{ self_t }} {
+            {{ self_t }}::new(
                 {% for c in components %}
-                    {{ c }}: self.add(rhs.{{ c }}),
+                    self.add(rhs.{{ c }}),
                 {%- endfor %}
-            }
+            )
         {% elif is_sse2 %}
             {{ self_t }}(unsafe { _mm_add_ps(_mm_set1_ps(self), rhs.0) })
         {% elif is_wasm %}
@@ -3874,11 +3874,11 @@ impl Sub for {{ self_t }} {
     #[inline]
     fn sub(self, rhs: Self) -> Self {
         {% if is_scalar %}
-            Self {
+            Self::new(
                 {% for c in components %}
-                    {{ c }}: self.{{ c }}.sub(rhs.{{ c }}),
+                    self.{{ c }}.sub(rhs.{{ c }}),
                 {%- endfor %}
-            }
+            )
         {% elif is_sse2 %}
             Self(unsafe { _mm_sub_ps(self.0, rhs.0) })
         {% elif is_wasm %}
@@ -3923,11 +3923,11 @@ impl Sub<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
     fn sub(self, rhs: {{ scalar_t }}) -> Self {
         {% if is_scalar %}
-            Self {
+            Self::new(
                 {% for c in components %}
-                    {{ c }}: self.{{ c }}.sub(rhs),
+                    self.{{ c }}.sub(rhs),
                 {%- endfor %}
-            }
+            )
         {% elif is_sse2 %}
             Self(unsafe { _mm_sub_ps(self.0, _mm_set1_ps(rhs)) })
         {% elif is_wasm %}
@@ -3972,11 +3972,11 @@ impl Sub<{{ self_t }}> for {{ scalar_t }} {
     #[inline]
     fn sub(self, rhs: {{ self_t }}) -> {{ self_t }} {
         {% if is_scalar %}
-            {{ self_t }} {
+            {{ self_t }}::new(
                 {% for c in components %}
-                    {{ c }}: self.sub(rhs.{{ c }}),
+                    self.sub(rhs.{{ c }}),
                 {%- endfor %}
-            }
+            )
         {% elif is_sse2 %}
             {{ self_t }}(unsafe { _mm_sub_ps(_mm_set1_ps(self), rhs.0) })
         {% elif is_wasm %}
@@ -3998,11 +3998,11 @@ impl Rem for {{ self_t }} {
     #[inline]
     fn rem(self, rhs: Self) -> Self {
         {% if is_scalar %}
-            Self {
+            Self::new(
                 {% for c in components %}
-                    {{ c }}: self.{{ c }}.rem(rhs.{{ c }}),
+                    self.{{ c }}.rem(rhs.{{ c }}),
                 {%- endfor %}
-            }
+            )
         {% elif is_sse2 %}
             unsafe {
                 let n = m128_floor(_mm_div_ps(self.0, rhs.0));
@@ -4048,11 +4048,11 @@ impl Rem<{{ scalar_t }}> for {{ self_t }} {
     #[inline]
     fn rem(self, rhs: {{ scalar_t }}) -> Self {
         {% if is_scalar %}
-            Self {
+            Self::new(
                 {% for c in components %}
-                    {{ c }}: self.{{ c }}.rem(rhs),
+                    self.{{ c }}.rem(rhs),
                 {%- endfor %}
-            }
+            )
         {% else %}
             self.rem(Self::splat(rhs))
         {% endif %}
@@ -4083,11 +4083,11 @@ impl Rem<{{ self_t }}> for {{ scalar_t }} {
     #[inline]
     fn rem(self, rhs: {{ self_t }}) -> {{ self_t }} {
         {% if is_scalar %}
-            {{ self_t }} {
+            {{ self_t }}::new(
                 {% for c in components %}
-                    {{ c }}: self.rem(rhs.{{ c }}),
+                    self.rem(rhs.{{ c }}),
                 {%- endfor %}
-            }
+            )
         {% else %}
             {{ self_t }}::splat(self).rem(rhs)
         {% endif %}
@@ -4156,11 +4156,11 @@ impl Neg for {{ self_t }} {
     #[inline]
     fn neg(self) -> Self {
         {% if is_scalar %}
-            Self {
+            Self::new(
                 {% for c in components %}
-                    {{ c }}: self.{{ c }}.neg(),
+                    self.{{ c }}.neg(),
                 {%- endfor %}
-            }
+            )
         {% elif is_sse2 %}
             Self(unsafe { _mm_xor_ps(_mm_set1_ps(-0.0), self.0) })
         {% elif is_wasm %}
@@ -4183,11 +4183,11 @@ impl Not for {{ self_t }} {
     type Output = Self;
     #[inline]
     fn not(self) -> Self {
-        Self {
+        Self::new(
             {% for c in components %}
-                {{ c }}: self.{{ c }}.not(),
+                self.{{ c }}.not(),
             {%- endfor %}
-        }
+        )
     }
 }
 
@@ -4197,11 +4197,11 @@ impl BitAnd for {{ self_t }} {
     type Output = Self;
     #[inline]
     fn bitand(self, rhs: Self) -> Self::Output {
-        Self {
+        Self::new(
             {% for c in components %}
-                {{ c }}: self.{{ c }}.bitand(rhs.{{ c }}),
+                self.{{ c }}.bitand(rhs.{{ c }}),
             {%- endfor %}
-        }
+        )
     }
 }
 
@@ -4213,11 +4213,11 @@ impl BitOr for {{ self_t }} {
     type Output = Self;
     #[inline]
     fn bitor(self, rhs: Self) -> Self::Output {
-        Self {
+        Self::new(
             {% for c in components %}
-                {{ c }}: self.{{ c }}.bitor(rhs.{{ c }}),
+                self.{{ c }}.bitor(rhs.{{ c }}),
             {%- endfor %}
-        }
+        )
     }
 }
 
@@ -4229,11 +4229,11 @@ impl BitXor for {{ self_t }} {
     type Output = Self;
     #[inline]
     fn bitxor(self, rhs: Self) -> Self::Output {
-        Self {
+        Self::new(
             {% for c in components %}
-                {{ c }}: self.{{ c }}.bitxor(rhs.{{ c }}),
+                self.{{ c }}.bitxor(rhs.{{ c }}),
             {%- endfor %}
-        }
+        )
     }
 }
 
@@ -4245,11 +4245,11 @@ impl BitAnd<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
     #[inline]
     fn bitand(self, rhs: {{ scalar_t }}) -> Self::Output {
-        Self {
+        Self::new(
             {% for c in components %}
-                {{ c }}: self.{{ c }}.bitand(rhs),
+                self.{{ c }}.bitand(rhs),
             {%- endfor %}
-        }
+        )
     }
 }
 
@@ -4261,11 +4261,11 @@ impl BitOr<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
     #[inline]
     fn bitor(self, rhs: {{ scalar_t }}) -> Self::Output {
-        Self {
+        Self::new(
             {% for c in components %}
-                {{ c }}: self.{{ c }}.bitor(rhs),
+                self.{{ c }}.bitor(rhs),
             {%- endfor %}
-        }
+        )
     }
 }
 
@@ -4277,11 +4277,11 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
     type Output = Self;
     #[inline]
     fn bitxor(self, rhs: {{ scalar_t }}) -> Self::Output {
-        Self {
+        Self::new(
             {% for c in components %}
-                {{ c }}: self.{{ c }}.bitxor(rhs),
+                self.{{ c }}.bitxor(rhs),
             {%- endfor %}
-        }
+        )
     }
 }
 
@@ -4294,11 +4294,11 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
         type Output = Self;
         #[inline]
         fn shl(self, rhs: {{ rhs_t }}) -> Self::Output {
-            Self {
+            Self::new(
                 {% for c in components %}
-                    {{ c }}: self.{{ c }}.shl(rhs),
+                    self.{{ c }}.shl(rhs),
                 {%- endfor %}
-            }
+            )
         }
     }
 
@@ -4310,11 +4310,11 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
         type Output = Self;
         #[inline]
         fn shr(self, rhs: {{ rhs_t }}) -> Self::Output {
-            Self {
+            Self::new(
                 {% for c in components %}
-                    {{ c }}: self.{{ c }}.shr(rhs),
+                    self.{{ c }}.shr(rhs),
                 {%- endfor %}
-            }
+            )
         }
     }
 
@@ -4331,11 +4331,11 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
             type Output = Self;
             #[inline]
             fn shl(self, rhs: {% if rhs_t != self_t %}{{ rhs_t }}{% else %}Self{% endif %}) -> Self {
-                Self {
+                Self::new(
                     {% for c in components %}
-                        {{ c }}: self.{{ c }}.shl(rhs.{{ c }}),
+                        self.{{ c }}.shl(rhs.{{ c }}),
                     {%- endfor %}
-                }
+                )
             }
         }
 
@@ -4348,11 +4348,11 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
             type Output = Self;
             #[inline]
             fn shr(self, rhs: {% if rhs_t != self_t %}{{ rhs_t }}{% else %}Self{% endif %}) -> Self {
-                Self {
+                Self::new(
                     {% for c in components %}
-                        {{ c }}: self.{{ c }}.shr(rhs.{{ c }}),
+                        self.{{ c }}.shr(rhs.{{ c }}),
                     {%- endfor %}
-                }
+                )
             }
         }
 
@@ -4541,11 +4541,7 @@ impl From<Vec3A> for Vec3 {
     #[inline]
     fn from(v: Vec3A) -> Self {
         {% if is_scalar %}
-            Self {
-                x: v.x,
-                y: v.y,
-                z: v.z,
-            }
+            Self::new(v.x, v.y, v.z)
         {% elif is_sse2 %}
             use crate::Align16;
             use core::mem::MaybeUninit;

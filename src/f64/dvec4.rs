@@ -119,15 +119,7 @@ impl DVec4 {
     #[inline]
     #[must_use]
     pub const fn splat(v: f64) -> Self {
-        Self {
-            x: v,
-
-            y: v,
-
-            z: v,
-
-            w: v,
-        }
+        Self::new(v, v, v, v)
     }
 
     /// Returns a vector containing each element of `self` modified by a mapping function `f`.
@@ -148,12 +140,12 @@ impl DVec4 {
     #[inline]
     #[must_use]
     pub fn select(mask: BVec4, if_true: Self, if_false: Self) -> Self {
-        Self {
-            x: if mask.test(0) { if_true.x } else { if_false.x },
-            y: if mask.test(1) { if_true.y } else { if_false.y },
-            z: if mask.test(2) { if_true.z } else { if_false.z },
-            w: if mask.test(3) { if_true.w } else { if_false.w },
-        }
+        Self::new(
+            if mask.test(0) { if_true.x } else { if_false.x },
+            if mask.test(1) { if_true.y } else { if_false.y },
+            if mask.test(2) { if_true.z } else { if_false.z },
+            if mask.test(3) { if_true.w } else { if_false.w },
+        )
     }
 
     /// Creates a new vector from an array.
@@ -268,12 +260,12 @@ impl DVec4 {
     #[inline]
     #[must_use]
     pub fn min(self, rhs: Self) -> Self {
-        Self {
-            x: if self.x < rhs.x { self.x } else { rhs.x },
-            y: if self.y < rhs.y { self.y } else { rhs.y },
-            z: if self.z < rhs.z { self.z } else { rhs.z },
-            w: if self.w < rhs.w { self.w } else { rhs.w },
-        }
+        Self::new(
+            if self.x < rhs.x { self.x } else { rhs.x },
+            if self.y < rhs.y { self.y } else { rhs.y },
+            if self.z < rhs.z { self.z } else { rhs.z },
+            if self.w < rhs.w { self.w } else { rhs.w },
+        )
     }
 
     /// Returns a vector containing the maximum values for each element of `self` and `rhs`.
@@ -285,12 +277,12 @@ impl DVec4 {
     #[inline]
     #[must_use]
     pub fn max(self, rhs: Self) -> Self {
-        Self {
-            x: if self.x > rhs.x { self.x } else { rhs.x },
-            y: if self.y > rhs.y { self.y } else { rhs.y },
-            z: if self.z > rhs.z { self.z } else { rhs.z },
-            w: if self.w > rhs.w { self.w } else { rhs.w },
-        }
+        Self::new(
+            if self.x > rhs.x { self.x } else { rhs.x },
+            if self.y > rhs.y { self.y } else { rhs.y },
+            if self.z > rhs.z { self.z } else { rhs.z },
+            if self.w > rhs.w { self.w } else { rhs.w },
+        )
     }
 
     /// Component-wise clamping of values, similar to [`f64::clamp`].
@@ -496,12 +488,12 @@ impl DVec4 {
     #[inline]
     #[must_use]
     pub fn abs(self) -> Self {
-        Self {
-            x: math::abs(self.x),
-            y: math::abs(self.y),
-            z: math::abs(self.z),
-            w: math::abs(self.w),
-        }
+        Self::new(
+            math::abs(self.x),
+            math::abs(self.y),
+            math::abs(self.z),
+            math::abs(self.w),
+        )
     }
 
     /// Returns a vector with elements representing the sign of `self`.
@@ -512,24 +504,24 @@ impl DVec4 {
     #[inline]
     #[must_use]
     pub fn signum(self) -> Self {
-        Self {
-            x: math::signum(self.x),
-            y: math::signum(self.y),
-            z: math::signum(self.z),
-            w: math::signum(self.w),
-        }
+        Self::new(
+            math::signum(self.x),
+            math::signum(self.y),
+            math::signum(self.z),
+            math::signum(self.w),
+        )
     }
 
     /// Returns a vector with signs of `rhs` and the magnitudes of `self`.
     #[inline]
     #[must_use]
     pub fn copysign(self, rhs: Self) -> Self {
-        Self {
-            x: math::copysign(self.x, rhs.x),
-            y: math::copysign(self.y, rhs.y),
-            z: math::copysign(self.z, rhs.z),
-            w: math::copysign(self.w, rhs.w),
-        }
+        Self::new(
+            math::copysign(self.x, rhs.x),
+            math::copysign(self.y, rhs.y),
+            math::copysign(self.z, rhs.z),
+            math::copysign(self.w, rhs.w),
+        )
     }
 
     /// Returns a bitmask with the lowest 4 bits set to the sign bits from the elements of `self`.
@@ -836,12 +828,12 @@ impl DVec4 {
     #[inline]
     #[must_use]
     pub fn round(self) -> Self {
-        Self {
-            x: math::round(self.x),
-            y: math::round(self.y),
-            z: math::round(self.z),
-            w: math::round(self.w),
-        }
+        Self::new(
+            math::round(self.x),
+            math::round(self.y),
+            math::round(self.z),
+            math::round(self.w),
+        )
     }
 
     /// Returns a vector containing the largest integer less than or equal to a number for each
@@ -849,12 +841,12 @@ impl DVec4 {
     #[inline]
     #[must_use]
     pub fn floor(self) -> Self {
-        Self {
-            x: math::floor(self.x),
-            y: math::floor(self.y),
-            z: math::floor(self.z),
-            w: math::floor(self.w),
-        }
+        Self::new(
+            math::floor(self.x),
+            math::floor(self.y),
+            math::floor(self.z),
+            math::floor(self.w),
+        )
     }
 
     /// Returns a vector containing the smallest integer greater than or equal to a number for
@@ -862,12 +854,12 @@ impl DVec4 {
     #[inline]
     #[must_use]
     pub fn ceil(self) -> Self {
-        Self {
-            x: math::ceil(self.x),
-            y: math::ceil(self.y),
-            z: math::ceil(self.z),
-            w: math::ceil(self.w),
-        }
+        Self::new(
+            math::ceil(self.x),
+            math::ceil(self.y),
+            math::ceil(self.z),
+            math::ceil(self.w),
+        )
     }
 
     /// Returns a vector containing the integer part each element of `self`. This means numbers are
@@ -875,12 +867,12 @@ impl DVec4 {
     #[inline]
     #[must_use]
     pub fn trunc(self) -> Self {
-        Self {
-            x: math::trunc(self.x),
-            y: math::trunc(self.y),
-            z: math::trunc(self.z),
-            w: math::trunc(self.w),
-        }
+        Self::new(
+            math::trunc(self.x),
+            math::trunc(self.y),
+            math::trunc(self.z),
+            math::trunc(self.w),
+        )
     }
 
     /// Returns a vector containing `0.0` if `rhs < self` and 1.0 otherwise.
@@ -1042,12 +1034,7 @@ impl DVec4 {
     #[inline]
     #[must_use]
     pub fn recip(self) -> Self {
-        Self {
-            x: 1.0 / self.x,
-            y: 1.0 / self.y,
-            z: 1.0 / self.z,
-            w: 1.0 / self.w,
-        }
+        Self::new(1.0 / self.x, 1.0 / self.y, 1.0 / self.z, 1.0 / self.w)
     }
 
     /// Performs a linear interpolation between `self` and `rhs` based on the value `s`.
@@ -1321,12 +1308,12 @@ impl Div for DVec4 {
     type Output = Self;
     #[inline]
     fn div(self, rhs: Self) -> Self {
-        Self {
-            x: self.x.div(rhs.x),
-            y: self.y.div(rhs.y),
-            z: self.z.div(rhs.z),
-            w: self.w.div(rhs.w),
-        }
+        Self::new(
+            self.x.div(rhs.x),
+            self.y.div(rhs.y),
+            self.z.div(rhs.z),
+            self.w.div(rhs.w),
+        )
     }
 }
 
@@ -1375,12 +1362,12 @@ impl Div<f64> for DVec4 {
     type Output = Self;
     #[inline]
     fn div(self, rhs: f64) -> Self {
-        Self {
-            x: self.x.div(rhs),
-            y: self.y.div(rhs),
-            z: self.z.div(rhs),
-            w: self.w.div(rhs),
-        }
+        Self::new(
+            self.x.div(rhs),
+            self.y.div(rhs),
+            self.z.div(rhs),
+            self.w.div(rhs),
+        )
     }
 }
 
@@ -1429,12 +1416,12 @@ impl Div<DVec4> for f64 {
     type Output = DVec4;
     #[inline]
     fn div(self, rhs: DVec4) -> DVec4 {
-        DVec4 {
-            x: self.div(rhs.x),
-            y: self.div(rhs.y),
-            z: self.div(rhs.z),
-            w: self.div(rhs.w),
-        }
+        DVec4::new(
+            self.div(rhs.x),
+            self.div(rhs.y),
+            self.div(rhs.z),
+            self.div(rhs.w),
+        )
     }
 }
 
@@ -1466,12 +1453,12 @@ impl Mul for DVec4 {
     type Output = Self;
     #[inline]
     fn mul(self, rhs: Self) -> Self {
-        Self {
-            x: self.x.mul(rhs.x),
-            y: self.y.mul(rhs.y),
-            z: self.z.mul(rhs.z),
-            w: self.w.mul(rhs.w),
-        }
+        Self::new(
+            self.x.mul(rhs.x),
+            self.y.mul(rhs.y),
+            self.z.mul(rhs.z),
+            self.w.mul(rhs.w),
+        )
     }
 }
 
@@ -1520,12 +1507,12 @@ impl Mul<f64> for DVec4 {
     type Output = Self;
     #[inline]
     fn mul(self, rhs: f64) -> Self {
-        Self {
-            x: self.x.mul(rhs),
-            y: self.y.mul(rhs),
-            z: self.z.mul(rhs),
-            w: self.w.mul(rhs),
-        }
+        Self::new(
+            self.x.mul(rhs),
+            self.y.mul(rhs),
+            self.z.mul(rhs),
+            self.w.mul(rhs),
+        )
     }
 }
 
@@ -1574,12 +1561,12 @@ impl Mul<DVec4> for f64 {
     type Output = DVec4;
     #[inline]
     fn mul(self, rhs: DVec4) -> DVec4 {
-        DVec4 {
-            x: self.mul(rhs.x),
-            y: self.mul(rhs.y),
-            z: self.mul(rhs.z),
-            w: self.mul(rhs.w),
-        }
+        DVec4::new(
+            self.mul(rhs.x),
+            self.mul(rhs.y),
+            self.mul(rhs.z),
+            self.mul(rhs.w),
+        )
     }
 }
 
@@ -1611,12 +1598,12 @@ impl Add for DVec4 {
     type Output = Self;
     #[inline]
     fn add(self, rhs: Self) -> Self {
-        Self {
-            x: self.x.add(rhs.x),
-            y: self.y.add(rhs.y),
-            z: self.z.add(rhs.z),
-            w: self.w.add(rhs.w),
-        }
+        Self::new(
+            self.x.add(rhs.x),
+            self.y.add(rhs.y),
+            self.z.add(rhs.z),
+            self.w.add(rhs.w),
+        )
     }
 }
 
@@ -1665,12 +1652,12 @@ impl Add<f64> for DVec4 {
     type Output = Self;
     #[inline]
     fn add(self, rhs: f64) -> Self {
-        Self {
-            x: self.x.add(rhs),
-            y: self.y.add(rhs),
-            z: self.z.add(rhs),
-            w: self.w.add(rhs),
-        }
+        Self::new(
+            self.x.add(rhs),
+            self.y.add(rhs),
+            self.z.add(rhs),
+            self.w.add(rhs),
+        )
     }
 }
 
@@ -1719,12 +1706,12 @@ impl Add<DVec4> for f64 {
     type Output = DVec4;
     #[inline]
     fn add(self, rhs: DVec4) -> DVec4 {
-        DVec4 {
-            x: self.add(rhs.x),
-            y: self.add(rhs.y),
-            z: self.add(rhs.z),
-            w: self.add(rhs.w),
-        }
+        DVec4::new(
+            self.add(rhs.x),
+            self.add(rhs.y),
+            self.add(rhs.z),
+            self.add(rhs.w),
+        )
     }
 }
 
@@ -1756,12 +1743,12 @@ impl Sub for DVec4 {
     type Output = Self;
     #[inline]
     fn sub(self, rhs: Self) -> Self {
-        Self {
-            x: self.x.sub(rhs.x),
-            y: self.y.sub(rhs.y),
-            z: self.z.sub(rhs.z),
-            w: self.w.sub(rhs.w),
-        }
+        Self::new(
+            self.x.sub(rhs.x),
+            self.y.sub(rhs.y),
+            self.z.sub(rhs.z),
+            self.w.sub(rhs.w),
+        )
     }
 }
 
@@ -1810,12 +1797,12 @@ impl Sub<f64> for DVec4 {
     type Output = Self;
     #[inline]
     fn sub(self, rhs: f64) -> Self {
-        Self {
-            x: self.x.sub(rhs),
-            y: self.y.sub(rhs),
-            z: self.z.sub(rhs),
-            w: self.w.sub(rhs),
-        }
+        Self::new(
+            self.x.sub(rhs),
+            self.y.sub(rhs),
+            self.z.sub(rhs),
+            self.w.sub(rhs),
+        )
     }
 }
 
@@ -1864,12 +1851,12 @@ impl Sub<DVec4> for f64 {
     type Output = DVec4;
     #[inline]
     fn sub(self, rhs: DVec4) -> DVec4 {
-        DVec4 {
-            x: self.sub(rhs.x),
-            y: self.sub(rhs.y),
-            z: self.sub(rhs.z),
-            w: self.sub(rhs.w),
-        }
+        DVec4::new(
+            self.sub(rhs.x),
+            self.sub(rhs.y),
+            self.sub(rhs.z),
+            self.sub(rhs.w),
+        )
     }
 }
 
@@ -1901,12 +1888,12 @@ impl Rem for DVec4 {
     type Output = Self;
     #[inline]
     fn rem(self, rhs: Self) -> Self {
-        Self {
-            x: self.x.rem(rhs.x),
-            y: self.y.rem(rhs.y),
-            z: self.z.rem(rhs.z),
-            w: self.w.rem(rhs.w),
-        }
+        Self::new(
+            self.x.rem(rhs.x),
+            self.y.rem(rhs.y),
+            self.z.rem(rhs.z),
+            self.w.rem(rhs.w),
+        )
     }
 }
 
@@ -1955,12 +1942,12 @@ impl Rem<f64> for DVec4 {
     type Output = Self;
     #[inline]
     fn rem(self, rhs: f64) -> Self {
-        Self {
-            x: self.x.rem(rhs),
-            y: self.y.rem(rhs),
-            z: self.z.rem(rhs),
-            w: self.w.rem(rhs),
-        }
+        Self::new(
+            self.x.rem(rhs),
+            self.y.rem(rhs),
+            self.z.rem(rhs),
+            self.w.rem(rhs),
+        )
     }
 }
 
@@ -2009,12 +1996,12 @@ impl Rem<DVec4> for f64 {
     type Output = DVec4;
     #[inline]
     fn rem(self, rhs: DVec4) -> DVec4 {
-        DVec4 {
-            x: self.rem(rhs.x),
-            y: self.rem(rhs.y),
-            z: self.rem(rhs.z),
-            w: self.rem(rhs.w),
-        }
+        DVec4::new(
+            self.rem(rhs.x),
+            self.rem(rhs.y),
+            self.rem(rhs.z),
+            self.rem(rhs.w),
+        )
     }
 }
 
@@ -2100,12 +2087,7 @@ impl Neg for DVec4 {
     type Output = Self;
     #[inline]
     fn neg(self) -> Self {
-        Self {
-            x: self.x.neg(),
-            y: self.y.neg(),
-            z: self.z.neg(),
-            w: self.w.neg(),
-        }
+        Self::new(self.x.neg(), self.y.neg(), self.z.neg(), self.w.neg())
     }
 }
 
