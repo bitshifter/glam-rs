@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.33.6](https://github.com/bitshifter/glam-rs/compare/0.33.5...0.33.6) - 2026-08-21
+
+### Added
+
+- *(vec3a)* add explicit padding to scalar Vec3A for bytemuck Pod/Zeroable and zerocopy IntoBytes ([#786](https://github.com/bitshifter/glam-rs/pull/786))
+
 ## [0.33.5](https://github.com/bitshifter/glam-rs/compare/0.33.4...0.33.5) - 2026-08-19
 
 ### Fixed
