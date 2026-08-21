@@ -13,19 +13,7 @@ use zerocopy_derive::*;
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(
     all(feature = "zerocopy", not(feature = "core-simd")),
-    derive(FromBytes, Immutable, KnownLayout)
-)]
-#[cfg_attr(
-    all(
-        feature = "zerocopy",
-        any(
-            target_arch = "aarch64",
-            target_feature = "sse2",
-            target_feature = "simd128"
-        ),
-        not(any(feature = "core-simd", feature = "scalar-math"))
-    ),
-    derive(IntoBytes)
+    derive(FromBytes, Immutable, IntoBytes, KnownLayout)
 )]
 #[repr(C)]
 pub struct Affine3A {
