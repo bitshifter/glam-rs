@@ -10,7 +10,7 @@ use zerocopy_derive::*;
 ///
 /// This type is 16 byte aligned.
 #[derive(Copy, Clone)]
-#[cfg_attr(feature = "bytemuck", derive(bytemuck::AnyBitPattern))]
+#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(
     all(feature = "zerocopy", not(feature = "core-simd")),
     derive(FromBytes, Immutable, KnownLayout)

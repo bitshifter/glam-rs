@@ -25,8 +25,8 @@ pub const fn vec3a(x: f32, y: f32, z: f32) -> Vec3A {
 /// or [`Into`] trait implementations.
 ///
 /// This type is 16 byte aligned.
-#[derive(Clone, Copy, PartialEq)]
-#[cfg_attr(feature = "bytemuck", derive(bytemuck::AnyBitPattern))]
+#[derive(Clone, Copy)]
+#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(feature = "zerocopy", derive(FromBytes, Immutable, KnownLayout))]
 #[repr(align(16))]
 #[repr(C)]
@@ -101,7 +101,7 @@ impl Vec3A {
     #[inline(always)]
     #[must_use]
     pub const fn new(x: f32, y: f32, z: f32) -> Self {
-        Self { x, y, z, _w: 0.0 }
+        Self { x, y, z, _w: z }
     }
 
     /// Creates a vector with all elements set to `v`.
@@ -1418,6 +1418,13 @@ impl Default for Vec3A {
     #[inline(always)]
     fn default() -> Self {
         Self::ZERO
+    }
+}
+
+impl PartialEq for Vec3A {
+    #[inline]
+    fn eq(&self, rhs: &Self) -> bool {
+        self.x == rhs.x && self.y == rhs.y && self.z == rhs.z
     }
 }
 

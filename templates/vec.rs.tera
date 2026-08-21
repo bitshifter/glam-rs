@@ -321,16 +321,16 @@ pub const fn {{ self_t | lower }}(
 #[derive(
     Clone,
     Copy,
-    {% if is_scalar %}
+    {% if is_scalar and self_t != "Vec3A" %}
     PartialEq,
-    {% if not is_float %}
+    {% endif %}
+    {% if is_scalar and not is_float %}
     Eq,
     Hash,
     {% endif %}
-    {% endif %}
 )]
 {%- if self_t == "Vec3A" and is_scalar %}
-#[cfg_attr(feature = "bytemuck", derive(bytemuck::AnyBitPattern))]
+#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 {%- if not is_coresimd %}
 #[cfg_attr(feature = "zerocopy", derive(FromBytes, Immutable, KnownLayout))]
 {%- endif %}
@@ -451,7 +451,7 @@ impl {{ self_t }} {
                     {{ c }},
                 {%- endfor %}
                 {%- if self_t == "Vec3A" %}
-                    _w: 0.0,
+                    _w: z,
                 {%- endif %}
             }
         {% elif is_sse2 %}
@@ -3493,6 +3493,13 @@ impl PartialEq for {{ self_t }} {
     #[inline]
     fn eq(&self, rhs: &Self) -> bool {
         self.cmpeq(*rhs).all()
+    }
+}
+{% elif self_t == "Vec3A" %}
+impl PartialEq for {{ self_t }} {
+    #[inline]
+    fn eq(&self, rhs: &Self) -> bool {
+        self.x == rhs.x && self.y == rhs.y && self.z == rhs.z
     }
 }
 {% endif %}
