@@ -55,6 +55,12 @@ regenerates all backends (including `neon`, which needs an ARM runner) and
 opens a pull request. When bumping the pinned `BENCH_TOOLCHAIN` in
 `.github/workflows/bench.yml`, rerun that workflow in the same pull request.
 
+Counts are also only reproducible for an identical dependency resolution, so
+the benchmarks pin their own lockfile at `benches/gungraun-baselines/Cargo.lock`
+instead of using the repository's untracked `Cargo.lock` (which is backed up
+and restored around the run). Bumping the `gungraun` dev-dependency and
+rerunning `--save` updates the lockfile together with the baselines.
+
 ## Documentation
 
 If you feel any documentation could be added or improved please

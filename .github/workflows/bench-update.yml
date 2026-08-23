@@ -33,7 +33,7 @@ jobs:
       - run: cargo run --release -p ci -- bench --save
       - name: Keep only baseline files
         run: |
-          find benches/gungraun-baselines -type f ! -name '*.base@*' -delete
+          find benches/gungraun-baselines -type f ! -name '*.base@*' ! -name 'Cargo.lock' -delete
           find benches/gungraun-baselines -type d -empty -delete
       - uses: actions/upload-artifact@v4
         with:

@@ -1,5 +1,5 @@
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use argh::FromArgs;
 use xshell::Shell;
@@ -13,10 +13,25 @@ const BASELINE_HOME: &str = concat!(
     "/../../benches/gungraun-baselines"
 );
 
+/// Lockfile the benchmarks are built with. Instruction counts are only
+/// reproducible for an identical dependency resolution (crate disambiguators
+/// affect codegen), so the benchmarks pin their own lockfile instead of using
+/// the repository's untracked, floating `Cargo.lock`.
+const BENCH_LOCK: &str = concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../benches/gungraun-baselines/Cargo.lock"
+);
+
 /// Where the ci tool installs `gungraun-runner` (kept off PATH). The runner
 /// version must exactly match the `gungraun` library version, so it is
 /// managed here instead of relying on a pre-existing installation.
 const RUNNER_ROOT: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../target/gungraun-runner");
+
+fn workspace_path(file: &str) -> PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../")
+        .join(file)
+}
 
 struct Backend {
     /// Baseline name passed to `--save-baseline` / `--baseline`.
@@ -74,20 +89,61 @@ fn remove_with_suffix(dir: &Path, suffix: &str) {
     }
 }
 
-/// Install the `gungraun-runner` binary matching the `gungraun` version in
-/// `Cargo.lock` (skipped if that exact version is already installed).
-///
-/// The runner rejects any version mismatch with the `gungraun` library, so
-/// the exact resolved version is needed here. Cargo.toml only contains a
-/// version requirement, making Cargo.lock the canonical source.
-fn gungraun_version(sh: &Shell) -> String {
-    let lock_path = Path::new(BASELINE_HOME).join("../../Cargo.lock");
+/// The bench lockfile swapped in as `Cargo.lock`: `Some(Some(backup))` if an
+/// original `Cargo.lock` was moved aside, `Some(None)` if none existed, or
+/// `None` if no swap happened.
+struct BenchLockGuard(Option<Option<PathBuf>>);
+
+/// Swap the committed bench lockfile in as `Cargo.lock`; the original (if
+/// any) is restored on drop.
+fn swap_in_bench_lock() -> BenchLockGuard {
+    let bench_lock = Path::new(BENCH_LOCK);
+    if !bench_lock.exists() {
+        return BenchLockGuard(None);
+    }
+    let root = workspace_path("Cargo.lock");
+    let backup = workspace_path("Cargo.lock.bench-backup");
+    if !root.exists() && backup.exists() {
+        // Recover from a previous run that was killed mid-swap.
+        let _ = fs::rename(&backup, &root);
+    }
+    let inner = if root.exists() {
+        fs::rename(&root, &backup).expect("failed to back up Cargo.lock");
+        Some(backup)
+    } else {
+        None
+    };
+    fs::copy(bench_lock, &root).expect("failed to copy the bench lockfile");
+    BenchLockGuard(Some(inner))
+}
+
+impl Drop for BenchLockGuard {
+    fn drop(&mut self) {
+        let root = workspace_path("Cargo.lock");
+        match &self.0 {
+            None => {}
+            Some(Some(backup)) => {
+                let _ = fs::rename(backup, &root);
+            }
+            Some(None) => {
+                let _ = fs::remove_file(&root);
+            }
+        }
+    }
+}
+
+/// The resolved `gungraun` version from `Cargo.lock`. The runner binary must
+/// be exactly this version (the runner rejects anything older or newer).
+fn gungraun_version(sh: &Shell, locked: bool) -> String {
+    let lock_path = workspace_path("Cargo.lock");
     if !lock_path.exists() {
         // Fresh checkout: generate Cargo.lock first
-        sh.cmd("cargo")
-            .arg("fetch")
-            .run()
-            .expect("cargo fetch failed");
+        let mut cmd = sh.cmd("cargo");
+        cmd = cmd.arg("fetch");
+        if locked {
+            cmd = cmd.arg("--locked");
+        }
+        cmd.run().expect("cargo fetch failed");
     }
     let lockfile = cargo_lock::Lockfile::load(&lock_path).expect("failed to read Cargo.lock");
     lockfile
@@ -117,70 +173,108 @@ fn runner_installed(sh: &Shell, version: &str) -> bool {
 pub struct Bench {
     #[argh(
         switch,
-        description = "save new baselines for this host's backends instead of comparing"
+        description = "save new baselines and the bench lockfile instead of comparing"
     )]
     pub save: bool,
 }
 
 impl Prepare for Bench {
-    fn prepare<'a>(&self, sh: &'a Shell, _args: &Args) -> Vec<PreparedCommand<'a>> {
+    // The benchmarks run inside `prepare` so that the lockfile swap is
+    // guaranteed to be reverted (via the guard's `Drop`) no matter how the
+    // commands exit.
+    fn prepare<'a>(&self, sh: &'a Shell, args: &Args) -> Vec<PreparedCommand<'a>> {
         let backends = host_backends();
         if backends.is_empty() {
             return Vec::new();
         }
 
-        let version = gungraun_version(sh);
+        let _lock = swap_in_bench_lock();
+
+        let version = gungraun_version(sh, !self.save);
         let runner_bin = format!("{RUNNER_ROOT}/bin/gungraun-runner");
 
-        let mut cmds = Vec::new();
+        let mut failure: Option<&'static str> = None;
+
         if !runner_installed(sh, &version) {
-            cmds.push(PreparedCommand {
-                name: format!("install gungraun-runner {version}"),
-                command: sh
-                    .cmd("cargo")
-                    .arg("install")
-                    .arg("gungraun-runner")
-                    .arg("--locked")
-                    .arg("--force")
-                    .arg("--version")
-                    .arg(format!("={version}"))
-                    .arg("--root")
-                    .arg(RUNNER_ROOT),
-                failure_message: "failed to install gungraun-runner",
-            });
-        }
-        for backend in backends {
-            let mut cmd = sh.cmd("cargo");
-            cmd = cmd
-                .env("GUNGRAUN_RUNNER", &runner_bin)
-                .arg("bench")
-                .arg("--bench")
-                .arg("gungraun");
-            if let Some(features) = backend.features {
-                cmd = cmd.arg("--features").arg(features);
+            eprintln!("=== install gungraun-runner {version} ===");
+            let result = sh
+                .cmd("cargo")
+                .arg("install")
+                .arg("gungraun-runner")
+                .arg("--locked")
+                .arg("--force")
+                .arg("--version")
+                .arg(format!("={version}"))
+                .arg("--root")
+                .arg(RUNNER_ROOT)
+                .run();
+            if result.is_err() {
+                failure = Some("failed to install gungraun-runner");
             }
-            cmd = cmd.arg("--").arg(format!("--home={BASELINE_HOME}"));
+        }
 
-            let (name, failure_message): (String, &'static str);
-            if self.save {
-                remove_stale_baselines(Path::new(BASELINE_HOME), backend.name);
-                cmd = cmd.arg(format!("--save-baseline={}", backend.name));
-                name = format!("bench (save {})", backend.name);
-                failure_message = "failed to save gungraun baselines";
-            } else {
+        'benches: {
+            if failure.is_some() {
+                break 'benches;
+            }
+            for backend in backends {
+                let (action, failure_message): (&str, &'static str) = if self.save {
+                    ("save", "failed to save gungraun baselines")
+                } else {
+                    (
+                        "check",
+                        "gungraun benchmarks regressed against the saved baselines",
+                    )
+                };
+                eprintln!("=== bench ({action} {}) ===", backend.name);
+
+                if self.save {
+                    remove_stale_baselines(Path::new(BASELINE_HOME), backend.name);
+                }
+
+                let mut cmd = sh.cmd("cargo");
                 cmd = cmd
-                    .arg(format!("--baseline={}", backend.name))
-                    .arg("--callgrind-limits=ir=0%");
-                name = format!("bench (check {})", backend.name);
-                failure_message = "gungraun benchmarks regressed against the saved baselines";
-            }
+                    .env("GUNGRAUN_RUNNER", &runner_bin)
+                    .arg("bench")
+                    .arg("--bench")
+                    .arg("gungraun");
+                if let Some(features) = backend.features {
+                    cmd = cmd.arg("--features").arg(features);
+                }
+                if !self.save {
+                    cmd = cmd.arg("--locked");
+                }
+                cmd = cmd.arg("--").arg(format!("--home={BASELINE_HOME}"));
+                cmd = if self.save {
+                    cmd.arg(format!("--save-baseline={}", backend.name))
+                } else {
+                    cmd.arg(format!("--baseline={}", backend.name))
+                        .arg("--callgrind-limits=ir=0%")
+                };
 
-            cmds.push(PreparedCommand {
-                name,
-                command: cmd,
-                failure_message,
-            });
+                if let Err(e) = cmd.run() {
+                    eprintln!("{failure_message}: {e}");
+                    failure = Some(failure_message);
+                    if !args.keep_going {
+                        break;
+                    }
+                }
+            }
         }
-        cmds
+
+        if self.save && failure.is_none() {
+            // Persist the lockfile the benchmarks were built with.
+            fs::copy(workspace_path("Cargo.lock"), BENCH_LOCK)
+                .expect("failed to update the bench lockfile");
+        }
+
+        match failure {
+            Some(failure_message) => vec![PreparedCommand {
+                name: "bench".into(),
+                command: sh.cmd("false"),
+                failure_message,
+            }],
+            None => Vec::new(),
+        }
     }
 }

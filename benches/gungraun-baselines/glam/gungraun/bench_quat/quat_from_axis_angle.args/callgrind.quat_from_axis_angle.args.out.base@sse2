@@ -1,8 +1,8 @@
 # callgrind format
 version: 1
 creator: callgrind-3.27.1
-pid: 205805
-cmd:  /var/home/cam/Projects/glam-rs/target/release/deps/gungraun-902067476a8a1141 --gungraun-run 00004 00001 00000
+pid: 311517
+cmd:  /var/home/cam/Projects/glam-rs/target/release/deps/gungraun-6dd5b7914f3104b5 --gungraun-run 00004 00001 00000
 part: 1
 thread: 1
 
@@ -11,7 +11,7 @@ desc: I1 cache:
 desc: D1 cache: 
 desc: LL cache: 
 
-desc: Timerange: Basic block 0 - 86463
+desc: Timerange: Basic block 0 - 86356
 desc: Trigger: Program termination
 
 positions: line
@@ -27,7 +27,7 @@ fn=0x0000000000084640
 ob=/usr/lib64/libc.so.6
 fl=???
 fn=(below main)
-cob=/var/home/cam/Projects/glam-rs/target/release/deps/gungraun-902067476a8a1141
+cob=/var/home/cam/Projects/glam-rs/target/release/deps/gungraun-6dd5b7914f3104b5
 cfi=???
 cfn=main
 calls=1 0 
@@ -43,7 +43,7 @@ fl=???
 fn=0x0000000000084640
 0 18
 
-ob=/var/home/cam/Projects/glam-rs/target/release/deps/gungraun-902067476a8a1141
+ob=/var/home/cam/Projects/glam-rs/target/release/deps/gungraun-6dd5b7914f3104b5
 fl=???
 fn=gungraun::main
 cfn=gungraun::bench_quat::__run
@@ -104,7 +104,7 @@ calls=1 0
 ob=/usr/lib64/ld-linux-x86-64.so.2
 fl=???
 fn=0x000000000001e6c0
-cob=/var/home/cam/Projects/glam-rs/target/release/deps/gungraun-902067476a8a1141
+cob=/var/home/cam/Projects/glam-rs/target/release/deps/gungraun-6dd5b7914f3104b5
 cfi=???
 cfn=(below main)
 calls=1 0 
