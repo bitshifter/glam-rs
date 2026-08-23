@@ -89,6 +89,51 @@ macro_rules! impl_mat3_tests {
             should_panic!({ $mat3::ZERO.row(3) });
         });
 
+        glam_test!(test_mat3_rows, {
+            // ARRAY1X9 is column major, so the same matrix in row major order is:
+            const ROW_MAJOR: [$t; 9] = [1.0, 4.0, 7.0, 2.0, 5.0, 8.0, 3.0, 6.0, 9.0];
+
+            let m = $mat3::from_cols_array(&ARRAY1X9);
+
+            assert_eq!(ROW_MAJOR, m.to_rows_array());
+            assert_eq!(m, $mat3::from_rows_array(&ROW_MAJOR));
+            assert_eq!(m, $mat3::from_rows_slice(&ROW_MAJOR));
+            assert_eq!(m, $mat3::from_rows(m.row(0), m.row(1), m.row(2)));
+
+            // rows are just the columns of the transpose
+            assert_eq!(m.to_rows_array(), m.transpose().to_cols_array());
+            assert_eq!(
+                $mat3::from_rows_array(&ARRAY1X9),
+                $mat3::from_cols_array(&ARRAY1X9).transpose()
+            );
+
+            let mut m2 = $mat3::ZERO;
+            m2.set_row(0, m.row(0));
+            m2.set_row(1, m.row(1));
+            m2.set_row(2, m.row(2));
+            assert_eq!(m, m2);
+
+            // these are all const
+            const M0: $mat3 = $mat3::from_rows(
+                $newvec3(1.0, 4.0, 7.0),
+                $newvec3(2.0, 5.0, 8.0),
+                $newvec3(3.0, 6.0, 9.0),
+            );
+            const M1: $mat3 = $mat3::from_rows_array(&ROW_MAJOR);
+            const M2: $mat3 = $mat3::from_rows_slice(&ROW_MAJOR);
+            const A: [$t; 9] = M0.to_rows_array();
+            assert_eq!(ARRAY1X9, M0.to_cols_array());
+            assert_eq!(ARRAY1X9, M1.to_cols_array());
+            assert_eq!(ARRAY1X9, M2.to_cols_array());
+            assert_eq!(ROW_MAJOR, A);
+
+            should_panic!({
+                let mut m = $mat3::ZERO;
+                m.set_row(3, $newvec3(0.0, 0.0, 0.0));
+            });
+            should_panic!({ $mat3::from_rows_slice(&[0.0; 8]) });
+        });
+
         glam_test!(test_mat3_from_axes, {
             let a = $mat3::from_cols_array_2d(&[[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]]);
             assert_eq!(ARRAY3X3, a.to_cols_array_2d());
