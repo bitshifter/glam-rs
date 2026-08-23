@@ -1,0 +1,97 @@
+# callgrind format
+version: 1
+creator: callgrind-3.27.1
+pid: 311468
+cmd:  /var/home/cam/Projects/glam-rs/target/release/deps/gungraun-6dd5b7914f3104b5 --gungraun-run 00003 00002 00000
+part: 1
+thread: 1
+
+
+desc: I1 cache: 
+desc: D1 cache: 
+desc: LL cache: 
+
+desc: Timerange: Basic block 0 - 86353
+desc: Trigger: Program termination
+
+positions: line
+events: Ir
+summary: 76
+
+
+ob=/usr/lib64/libc.so.6
+fl=???
+fn=(below main)
+cob=/var/home/cam/Projects/glam-rs/target/release/deps/gungraun-6dd5b7914f3104b5
+cfi=???
+cfn=main
+calls=1 0 
+0 76
+
+fn=__libc_start_main@@GLIBC_2.34
+cfn=(below main)
+calls=1 0 
+0 76
+
+ob=/var/home/cam/Projects/glam-rs/target/release/deps/gungraun-6dd5b7914f3104b5
+fl=???
+fn=gungraun::main
+cfn=gungraun::bench_mat4::__run
+calls=1 0 
+0 76
+
+fn=std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+cfn=gungraun::main
+calls=1 0 
+0 76
+
+fn=(below main)
+cob=/usr/lib64/libc.so.6
+cfi=???
+cfn=__libc_start_main@@GLIBC_2.34
+calls=1 0 
+0 76
+
+fn=std::rt::lang_start_internal
+cfn=std::rt::lang_start::<()>::{closure#0}
+calls=1 0 
+0 76
+
+fn=std::rt::lang_start::<()>::{closure#0}
+cfn=std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+calls=1 0 
+0 76
+
+fn=gungraun::bench_mat4::__run
+cfn=gungraun::mat4_from_scale_rotation_translation::__run_args
+calls=1 0 
+0 76
+
+fn=gungraun::mat4_from_scale_rotation_translation::__gungraun_wrapper_mod::mat4_from_scale_rotation_translation
+0 76
+
+fn=gungraun::mat4_from_scale_rotation_translation::__gungraun_wrapper_id_mod_args::args
+cfn=gungraun::mat4_from_scale_rotation_translation::__gungraun_wrapper_mod::mat4_from_scale_rotation_translation
+calls=1 0 
+0 76
+
+fn=main
+cfn=std::rt::lang_start_internal
+calls=1 0 
+0 76
+
+fn=gungraun::mat4_from_scale_rotation_translation::__run_args
+cfn=gungraun::mat4_from_scale_rotation_translation::__gungraun_wrapper_id_mod_args::args
+calls=1 0 
+0 76
+
+ob=/usr/lib64/ld-linux-x86-64.so.2
+fl=???
+fn=0x000000000001e6c0
+cob=/var/home/cam/Projects/glam-rs/target/release/deps/gungraun-6dd5b7914f3104b5
+cfi=???
+cfn=(below main)
+calls=1 0 
+0 76
+
+totals: 76

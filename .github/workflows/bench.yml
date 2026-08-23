@@ -1,0 +1,36 @@
+name: Bench
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Instruction counts depend on codegen, so the toolchain is pinned. Bump it
+  # together with a baseline update (see bench-update.yml).
+  BENCH_TOOLCHAIN: 1.98.0
+
+jobs:
+  gungraun:
+    name: gungraun (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        # The ci tool saves/compares the sse2 and scalar-math baselines on
+        # x86_64 Linux and the neon baseline on aarch64 Linux. Valgrind
+        # doesn't support macOS, so there are no macOS baselines.
+        os: [ubuntu-latest, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+      - uses: Swatinem/rust-cache@v2
+      - run: rustup update --no-self-update ${{ env.BENCH_TOOLCHAIN }}
+      - run: rustup default ${{ env.BENCH_TOOLCHAIN }}
+      - name: Install valgrind
+        run: sudo apt-get update && sudo apt-get install -y valgrind
+      - run: cargo run --release -p ci -- bench

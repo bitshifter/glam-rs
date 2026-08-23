@@ -6,4 +6,5 @@ publish = false
 
 [dependencies]
 argh = "0.1"
+cargo-lock = { version = "11", default-features = false }
 xshell = "0.2"

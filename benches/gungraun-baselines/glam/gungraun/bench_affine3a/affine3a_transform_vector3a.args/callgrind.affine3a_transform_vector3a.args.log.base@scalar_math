@@ -1,0 +1,12 @@
+==311703== Callgrind, a call-graph generating cache profiler
+==311703== Copyright (C) 2002-2017, and GNU GPL'd, by Josef Weidendorfer et al.
+==311703== Using Valgrind-3.27.1 and LibVEX; rerun with -h for copyright info
+==311703== Command: /var/home/cam/Projects/glam-rs/target/release/deps/gungraun-fc144a44ee2f90d4 --gungraun-run 00008 00004 00000
+==311703== Parent PID: 311612
+==311703== 
+==311703== For interactive control, run 'callgrind_control -h'.
+==311703== 
+==311703== Events    : Ir
+==311703== Collected : 45
+==311703== 
+==311703== I   refs:      45
