@@ -1,0 +1,12 @@
+==8012== Callgrind, a call-graph generating cache profiler
+==8012== Copyright (C) 2002-2017, and GNU GPL'd, by Josef Weidendorfer et al.
+==8012== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==8012== Command: /home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-fbb8c42f76aa610a --gungraun-run 00004 00007 00000
+==8012== Parent PID: 7963
+==8012== 
+==8012== For interactive control, run 'callgrind_control -h'.
+==8012== 
+==8012== Events    : Ir
+==8012== Collected : 35
+==8012== 
+==8012== I   refs:      35
