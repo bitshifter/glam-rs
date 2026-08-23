@@ -1,0 +1,97 @@
+# callgrind format
+version: 1
+creator: callgrind-3.27.1
+pid: 205779
+cmd:  /var/home/cam/Projects/glam-rs/target/release/deps/gungraun-902067476a8a1141 --gungraun-run 00001 00003 00000
+part: 1
+thread: 1
+
+
+desc: I1 cache: 
+desc: D1 cache: 
+desc: LL cache: 
+
+desc: Timerange: Basic block 0 - 86459
+desc: Trigger: Program termination
+
+positions: line
+events: Ir
+summary: 25
+
+
+ob=/usr/lib64/libc.so.6
+fl=???
+fn=(below main)
+cob=/var/home/cam/Projects/glam-rs/target/release/deps/gungraun-902067476a8a1141
+cfi=???
+cfn=main
+calls=1 0 
+0 25
+
+fn=__libc_start_main@@GLIBC_2.34
+cfn=(below main)
+calls=1 0 
+0 25
+
+ob=/var/home/cam/Projects/glam-rs/target/release/deps/gungraun-902067476a8a1141
+fl=???
+fn=gungraun::main
+cfn=gungraun::bench_mat3::__run
+calls=1 0 
+0 25
+
+fn=gungraun::mat3_mul_vec3::__gungraun_wrapper_mod::mat3_mul_vec3
+0 25
+
+fn=std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+cfn=gungraun::main
+calls=1 0 
+0 25
+
+fn=(below main)
+cob=/usr/lib64/libc.so.6
+cfi=???
+cfn=__libc_start_main@@GLIBC_2.34
+calls=1 0 
+0 25
+
+fn=std::rt::lang_start_internal
+cfn=std::rt::lang_start::<()>::{closure#0}
+calls=1 0 
+0 25
+
+fn=std::rt::lang_start::<()>::{closure#0}
+cfn=std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+calls=1 0 
+0 25
+
+fn=gungraun::bench_mat3::__run
+cfn=gungraun::mat3_mul_vec3::__run_args
+calls=1 0 
+0 25
+
+fn=main
+cfn=std::rt::lang_start_internal
+calls=1 0 
+0 25
+
+fn=gungraun::mat3_mul_vec3::__run_args
+cfn=gungraun::mat3_mul_vec3::__gungraun_wrapper_id_mod_args::args
+calls=1 0 
+0 25
+
+fn=gungraun::mat3_mul_vec3::__gungraun_wrapper_id_mod_args::args
+cfn=gungraun::mat3_mul_vec3::__gungraun_wrapper_mod::mat3_mul_vec3
+calls=1 0 
+0 25
+
+ob=/usr/lib64/ld-linux-x86-64.so.2
+fl=???
+fn=0x000000000001e6c0
+cob=/var/home/cam/Projects/glam-rs/target/release/deps/gungraun-902067476a8a1141
+cfi=???
+cfn=(below main)
+calls=1 0 
+0 25
+
+totals: 25

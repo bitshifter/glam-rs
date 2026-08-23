@@ -1,3 +1,4 @@
+pub mod bench;
 pub mod check_features;
 pub mod ci;
 pub mod clippy;

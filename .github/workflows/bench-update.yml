@@ -1,0 +1,79 @@
+name: Update gungraun baselines
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  # Keep in sync with BENCH_TOOLCHAIN in bench.yml.
+  BENCH_TOOLCHAIN: 1.98.0
+
+jobs:
+  save:
+    name: save (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+      - uses: Swatinem/rust-cache@v2
+      - run: rustup update --no-self-update ${{ env.BENCH_TOOLCHAIN }}
+      - run: rustup default ${{ env.BENCH_TOOLCHAIN }}
+      - name: Install valgrind
+        run: sudo apt-get update && sudo apt-get install -y valgrind
+      - run: cargo run --release -p ci -- bench --save
+      - name: Keep only baseline files
+        run: |
+          find benches/gungraun-baselines -type f ! -name '*.base@*' -delete
+          find benches/gungraun-baselines -type d -empty -delete
+      - uses: actions/upload-artifact@v4
+        with:
+          name: baselines-${{ matrix.os }}
+          path: benches/gungraun-baselines
+          if-no-files-found: error
+
+  pr:
+    name: Open PR
+    needs: save
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: baselines-*
+          path: benches/gungraun-baselines
+          merge-multiple: true
+      - name: Commit baselines
+        id: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B chore/gungraun-baselines
+          git add benches/gungraun-baselines
+          if git diff --cached --quiet; then
+            echo "no baseline changes"
+            exit 0
+          fi
+          git commit -m "chore: update gungraun baselines"
+          git push -f origin chore/gungraun-baselines
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+      - name: Open pull request
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr view chore/gungraun-baselines > /dev/null 2>&1 || \
+            gh pr create \
+              --base "${{ github.ref_name }}" \
+              --head chore/gungraun-baselines \
+              --title "chore: update gungraun baselines" \
+              --body "Regenerated gungraun baselines (sse2, scalar-math, neon) with toolchain ${{ env.BENCH_TOOLCHAIN }}."

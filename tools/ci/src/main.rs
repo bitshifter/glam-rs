@@ -8,6 +8,7 @@ use argh::FromArgs;
 use xshell::Shell;
 
 use args::Args;
+use commands::bench::Bench;
 use commands::check_features::CheckFeatures;
 use commands::ci::Ci;
 use commands::clippy::Clippy;
@@ -42,6 +43,7 @@ struct Cli {
 #[derive(FromArgs)]
 #[argh(subcommand)]
 enum Subcommand {
+    Bench(Bench),
     CheckFeatures(CheckFeatures),
     Ci(Ci),
     Clippy(Clippy),
@@ -66,6 +68,7 @@ enum Subcommand {
 impl Prepare for Subcommand {
     fn prepare<'a>(&self, sh: &'a Shell, args: &Args) -> Vec<PreparedCommand<'a>> {
         match self {
+            Subcommand::Bench(cmd) => cmd.prepare(sh, args),
             Subcommand::CheckFeatures(cmd) => cmd.prepare(sh, args),
             Subcommand::Ci(cmd) => cmd.prepare(sh, args),
             Subcommand::Clippy(cmd) => cmd.prepare(sh, args),

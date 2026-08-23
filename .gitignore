@@ -8,3 +8,7 @@ Cargo.lock
 Session.vim
 .cargo-ok
 cargo-timing*.html
+
+# Gungraun benchmark output; only the committed baselines (*.base@*) are kept
+benches/gungraun-baselines/**/callgrind.*
+!benches/gungraun-baselines/**/*.base@*

@@ -1,0 +1,12 @@
+==205855== Callgrind, a call-graph generating cache profiler
+==205855== Copyright (C) 2002-2017, and GNU GPL'd, by Josef Weidendorfer et al.
+==205855== Using Valgrind-3.27.1 and LibVEX; rerun with -h for copyright info
+==205855== Command: /var/home/cam/Projects/glam-rs/target/release/deps/gungraun-902067476a8a1141 --gungraun-run 00005 00002 00000
+==205855== Parent PID: 205765
+==205855== 
+==205855== For interactive control, run 'callgrind_control -h'.
+==205855== 
+==205855== Events    : Ir
+==205855== Collected : 13
+==205855== 
+==205855== I   refs:      13
