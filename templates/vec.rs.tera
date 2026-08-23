@@ -273,7 +273,7 @@ use core::arch::wasm32::*;
 use core::arch::wasm64::*;
 {% elif is_coresimd %}
 use core::simd::{cmp::SimdPartialEq, cmp::SimdPartialOrd, num::SimdFloat, *};
-use std::simd::StdFloat;
+use crate::coresimd::StdFloat;
 {% elif is_neon %}
 use core::arch::aarch64::*;
 {% endif %}
