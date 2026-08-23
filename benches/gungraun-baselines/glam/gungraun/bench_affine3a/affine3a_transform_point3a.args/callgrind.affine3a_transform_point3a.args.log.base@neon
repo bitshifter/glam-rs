@@ -1,0 +1,12 @@
+==8043== Callgrind, a call-graph generating cache profiler
+==8043== Copyright (C) 2002-2017, and GNU GPL'd, by Josef Weidendorfer et al.
+==8043== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==8043== Command: /home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-fbb8c42f76aa610a --gungraun-run 00008 00003 00000
+==8043== Parent PID: 7963
+==8043== 
+==8043== For interactive control, run 'callgrind_control -h'.
+==8043== 
+==8043== Events    : Ir
+==8043== Collected : 10
+==8043== 
+==8043== I   refs:      10
