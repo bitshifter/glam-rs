@@ -39,7 +39,9 @@ improvement.
 
 The gungraun benchmarks in `benches/gungraun.rs` run under valgrind and count
 executed instructions. Install valgrind first (e.g. `sudo apt-get install
-valgrind` on Ubuntu or `sudo dnf install valgrind` on Fedora), then:
+valgrind` on Ubuntu or `sudo dnf install valgrind` on Fedora). The
+`gungraun-runner` binary, which must exactly match the `gungraun` version in
+`Cargo.lock`, is installed automatically by the ci tool:
 
 - Check for regressions: `cargo run --release -p ci -- bench`
 - Update baselines after an intentional change: `cargo run --release -p ci -- bench --save`

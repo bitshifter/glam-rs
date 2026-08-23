@@ -13,6 +13,11 @@ const BASELINE_HOME: &str = concat!(
     "/../../benches/gungraun-baselines"
 );
 
+/// Where the ci tool installs `gungraun-runner` (kept off PATH). The runner
+/// version must exactly match the `gungraun` library version, so it is
+/// managed here instead of relying on a pre-existing installation.
+const RUNNER_ROOT: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../target/gungraun-runner");
+
 struct Backend {
     /// Baseline name passed to `--save-baseline` / `--baseline`.
     name: &'static str,
@@ -69,6 +74,42 @@ fn remove_with_suffix(dir: &Path, suffix: &str) {
     }
 }
 
+/// Install the `gungraun-runner` binary matching the `gungraun` version in
+/// `Cargo.lock` (skipped if that exact version is already installed).
+///
+/// The runner rejects any version mismatch with the `gungraun` library, so
+/// the exact resolved version is needed here. Cargo.toml only contains a
+/// version requirement, making Cargo.lock the canonical source.
+fn gungraun_version(sh: &Shell) -> String {
+    let lock_path = Path::new(BASELINE_HOME).join("../../Cargo.lock");
+    if !lock_path.exists() {
+        // Fresh checkout: generate Cargo.lock first
+        sh.cmd("cargo")
+            .arg("fetch")
+            .run()
+            .expect("cargo fetch failed");
+    }
+    let lockfile = cargo_lock::Lockfile::load(&lock_path).expect("failed to read Cargo.lock");
+    lockfile
+        .packages
+        .iter()
+        .find(|package| package.name.as_str() == "gungraun")
+        .expect("gungraun not found in Cargo.lock")
+        .version
+        .to_string()
+}
+
+/// True if `gungraun-runner` with exactly `version` is already installed in
+/// `RUNNER_ROOT`.
+fn runner_installed(sh: &Shell, version: &str) -> bool {
+    sh.cmd(format!("{RUNNER_ROOT}/bin/gungraun-runner"))
+        .arg("--version")
+        .read()
+        .map_or(false, |stdout| {
+            stdout.trim() == format!("gungraun-runner {version}")
+        })
+}
+
 #[derive(FromArgs)]
 #[argh(subcommand, name = "bench")]
 /// Run gungraun benchmarks against the committed baselines (requires
@@ -83,10 +124,38 @@ pub struct Bench {
 
 impl Prepare for Bench {
     fn prepare<'a>(&self, sh: &'a Shell, _args: &Args) -> Vec<PreparedCommand<'a>> {
+        let backends = host_backends();
+        if backends.is_empty() {
+            return Vec::new();
+        }
+
+        let version = gungraun_version(sh);
+        let runner_bin = format!("{RUNNER_ROOT}/bin/gungraun-runner");
+
         let mut cmds = Vec::new();
-        for backend in host_backends() {
+        if !runner_installed(sh, &version) {
+            cmds.push(PreparedCommand {
+                name: format!("install gungraun-runner {version}"),
+                command: sh
+                    .cmd("cargo")
+                    .arg("install")
+                    .arg("gungraun-runner")
+                    .arg("--locked")
+                    .arg("--force")
+                    .arg("--version")
+                    .arg(format!("={version}"))
+                    .arg("--root")
+                    .arg(RUNNER_ROOT),
+                failure_message: "failed to install gungraun-runner",
+            });
+        }
+        for backend in backends {
             let mut cmd = sh.cmd("cargo");
-            cmd = cmd.arg("bench").arg("--bench").arg("gungraun");
+            cmd = cmd
+                .env("GUNGRAUN_RUNNER", &runner_bin)
+                .arg("bench")
+                .arg("--bench")
+                .arg("gungraun");
             if let Some(features) = backend.features {
                 cmd = cmd.arg("--features").arg(features);
             }
