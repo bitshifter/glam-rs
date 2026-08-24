@@ -297,7 +297,7 @@ impl {{ self_t }} {
 
     /// Creates a {{ nxn }} matrix from {{ dimension_in_full }} row vectors.
     ///
-    /// Note that `glam` stores matrices in column major order, so the data given here is
+    /// Note matrices are stored in column major order, so the data given here is
     /// transposed on the way in. Prefer [`Self::from_cols`] when the data is already
     /// laid out as columns.
     #[inline(always)]
@@ -395,7 +395,7 @@ impl {{ self_t }} {
 
     /// Creates a {{ nxn }} matrix from a `[{{ scalar_t }}; {{ size }}]` array stored in row major order.
     ///
-    /// Note that `glam` stores matrices in column major order, so the data given here is
+    /// Note matrices are stored in column major order, so the data given here is
     /// transposed on the way in. Prefer [`Self::from_cols_array`] when the data is already
     /// in column major order.
     #[inline]
@@ -412,7 +412,7 @@ impl {{ self_t }} {
 
     /// Creates a `[{{ scalar_t }}; {{ size }}]` array storing data in row major order.
     ///
-    /// Note that `glam` stores matrices in column major order, so this transposes the data
+    /// Note matrices are stored in column major order, so this transposes the data
     /// on the way out. Prefer [`Self::to_cols_array`] when column major data will do.
     #[inline]
     #[must_use]
@@ -1066,7 +1066,7 @@ impl {{ self_t }} {
     /// Creates a {{ nxn }} matrix from the first {{ size }} values in `slice`, stored in row
     /// major order.
     ///
-    /// Note that `glam` stores matrices in column major order, so the data given here is
+    /// Note matrices are stored in column major order, so the data given here is
     /// transposed on the way in. Prefer [`Self::from_cols_slice`] when the slice is already
     /// in column major order.
     ///
@@ -1138,7 +1138,7 @@ impl {{ self_t }} {
 
     /// Sets the matrix row for the given `index`.
     ///
-    /// Note that `glam` stores matrices in column major order, so a row is spread across
+    /// Note matrices are stored in column major order, so a row is spread across
     /// all {{ dim }} columns and writing one touches every column. Prefer
     /// [`Self::col_mut`] when you can work with columns instead.
     ///

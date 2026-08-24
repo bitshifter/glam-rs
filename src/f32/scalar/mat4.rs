@@ -106,7 +106,7 @@ impl Mat4 {
 
     /// Creates a 4x4 matrix from four row vectors.
     ///
-    /// Note that `glam` stores matrices in column major order, so the data given here is
+    /// Note matrices are stored in column major order, so the data given here is
     /// transposed on the way in. Prefer [`Self::from_cols`] when the data is already
     /// laid out as columns.
     #[inline(always)]
@@ -187,7 +187,7 @@ impl Mat4 {
 
     /// Creates a 4x4 matrix from a `[f32; 16]` array stored in row major order.
     ///
-    /// Note that `glam` stores matrices in column major order, so the data given here is
+    /// Note matrices are stored in column major order, so the data given here is
     /// transposed on the way in. Prefer [`Self::from_cols_array`] when the data is already
     /// in column major order.
     #[inline]
@@ -201,7 +201,7 @@ impl Mat4 {
 
     /// Creates a `[f32; 16]` array storing data in row major order.
     ///
-    /// Note that `glam` stores matrices in column major order, so this transposes the data
+    /// Note matrices are stored in column major order, so this transposes the data
     /// on the way out. Prefer [`Self::to_cols_array`] when column major data will do.
     #[inline]
     #[must_use]
@@ -586,7 +586,7 @@ impl Mat4 {
     /// Creates a 4x4 matrix from the first 16 values in `slice`, stored in row
     /// major order.
     ///
-    /// Note that `glam` stores matrices in column major order, so the data given here is
+    /// Note matrices are stored in column major order, so the data given here is
     /// transposed on the way in. Prefer [`Self::from_cols_slice`] when the slice is already
     /// in column major order.
     ///
@@ -654,7 +654,7 @@ impl Mat4 {
 
     /// Sets the matrix row for the given `index`.
     ///
-    /// Note that `glam` stores matrices in column major order, so a row is spread across
+    /// Note matrices are stored in column major order, so a row is spread across
     /// all 4 columns and writing one touches every column. Prefer
     /// [`Self::col_mut`] when you can work with columns instead.
     ///
