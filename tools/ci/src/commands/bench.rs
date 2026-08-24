@@ -66,6 +66,22 @@ fn host_backends() -> Vec<Backend> {
     }
 }
 
+/// The display name for a backend: like its baseline name but using dashes
+/// (`scalar_math` -> `scalar-math`), matching how cargo features are spelled.
+#[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+fn display_name(backend: &Backend) -> String {
+    backend.name.replace('_', "-")
+}
+
+/// Resolve a `--backend` argument to a `Backend` available on this host,
+/// matching the baseline name with `-` and `_` treated interchangeably
+/// (so `scalar-math` and `scalar_math` both resolve, like cargo feature names).
+#[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+fn resolve_backend<'a>(backends: &'a [Backend], name: &str) -> Option<&'a Backend> {
+    let normalized = name.replace('-', "_");
+    backends.iter().find(|b| b.name == normalized)
+}
+
 /// Delete saved baseline files for `name` below `dir`, so that removed or
 /// renamed benchmarks don't leave stale baselines behind.
 fn remove_stale_baselines(dir: &Path, name: &str) {
@@ -176,6 +192,17 @@ pub struct Bench {
         description = "save new baselines and the bench lockfile instead of comparing"
     )]
     pub save: bool,
+
+    #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+    #[argh(
+        option,
+        description = "backend to bench (repeatable); defaults to all backends available on this host"
+    )]
+    pub backend: Vec<String>,
+
+    #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+    #[argh(switch, description = "list backends available on this host and exit")]
+    pub list_backends: bool,
 }
 
 impl Prepare for Bench {
@@ -187,6 +214,44 @@ impl Prepare for Bench {
         if backends.is_empty() {
             return Vec::new();
         }
+
+        // Only x86_64 Linux has more than one backend to choose between; on
+        // every other host the backend-selection options don't exist, so just
+        // bench everything available.
+        let selected: Vec<&Backend> = {
+            #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+            {
+                if self.list_backends {
+                    for backend in &backends {
+                        println!("  {}", display_name(backend));
+                    }
+                    return Vec::new();
+                }
+                if self.backend.is_empty() {
+                    backends.iter().collect()
+                } else {
+                    self.backend
+                        .iter()
+                        .map(|name| {
+                            resolve_backend(&backends, name).unwrap_or_else(|| {
+                                let available = backends
+                                    .iter()
+                                    .map(display_name)
+                                    .collect::<Vec<_>>()
+                                    .join(", ");
+                                panic!(
+                                    "unknown backend `{name}`; available backends on this host: {available}"
+                                )
+                            })
+                        })
+                        .collect()
+                }
+            }
+            #[cfg(not(all(target_os = "linux", target_arch = "x86_64")))]
+            {
+                backends.iter().collect()
+            }
+        };
 
         let _lock = swap_in_bench_lock();
 
@@ -217,7 +282,7 @@ impl Prepare for Bench {
             if failure.is_some() {
                 break 'benches;
             }
-            for backend in backends {
+            for backend in selected {
                 let (action, failure_message): (&str, &'static str) = if self.save {
                     ("save", "failed to save gungraun baselines")
                 } else {
