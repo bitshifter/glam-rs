@@ -259,7 +259,7 @@
 
 use core::fmt;
 use core::iter::{Product, Sum};
-use core::{f32, ops::*};
+use core::ops::*;
 
 {% if is_sse2 %}
 #[cfg(target_arch = "x86")]
