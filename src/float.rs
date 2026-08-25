@@ -45,4 +45,12 @@ pub trait FloatExt {
     /// Returns `self` clamped within the range `[0.0, 1.0]`
     #[must_use]
     fn saturate(self) -> Self;
+
+    /// Moves `self` towards `rhs` by at most the distance `d`.
+    ///
+    /// When `d` is `0.0`, the result will be equal to `self`. When `d` is greater than or
+    /// equal to the distance between `self` and `rhs`, the result will be equal to `rhs`.
+    /// Will not go past `rhs`.
+    #[must_use]
+    fn move_towards(self, rhs: Self, d: Self) -> Self;
 }
