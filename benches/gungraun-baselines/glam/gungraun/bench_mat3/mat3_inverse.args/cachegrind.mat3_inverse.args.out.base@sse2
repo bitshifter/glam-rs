@@ -1,0 +1,6 @@
+cmd: /var/home/cam/Projects/glam-rs/target/release/deps/gungraun-39e51715575b2a97 --gungraun-run 00001 00001 00000
+events: Ir
+fl=???
+fn=gungraun::mat3_inverse::__gungraun_wrapper_mod::mat3_inverse
+0 67
+summary: 67

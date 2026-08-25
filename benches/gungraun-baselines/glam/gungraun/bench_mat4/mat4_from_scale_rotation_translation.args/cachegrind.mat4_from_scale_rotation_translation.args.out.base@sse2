@@ -1,0 +1,6 @@
+cmd: /var/home/cam/Projects/glam-rs/target/release/deps/gungraun-39e51715575b2a97 --gungraun-run 00003 00002 00000
+events: Ir
+fl=???
+fn=gungraun::mat4_from_scale_rotation_translation::__gungraun_wrapper_mod::mat4_from_scale_rotation_translation
+0 82
+summary: 82

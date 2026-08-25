@@ -1,0 +1,10 @@
+cmd: /var/home/cam/Projects/glam-rs/target/release/deps/gungraun-39e51715575b2a97 --gungraun-run 00004 00002 00000
+events: Ir
+fl=???
+fn=<glam::f32::sse2::quat::Quat as glam::euler::FromEuler>::from_euler_angles
+0 101
+fn=???
+0 84
+fn=gungraun::quat_from_euler::__gungraun_wrapper_mod::quat_from_euler
+0 9
+summary: 194

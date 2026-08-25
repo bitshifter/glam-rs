@@ -759,7 +759,7 @@ main!(
     // benchmark body.
     config = LibraryBenchmarkConfig::default()
         .default_tool(ValgrindTool::Cachegrind)
-        .tool(Cachegrind::with_args(["--instr-at-start=no"]));
+        .tool(Cachegrind::with_args(["--instr-at-start=no", "--cache-sim=no"]));
     library_benchmark_groups = bench_mat2,
     bench_mat3,
     bench_mat3a,

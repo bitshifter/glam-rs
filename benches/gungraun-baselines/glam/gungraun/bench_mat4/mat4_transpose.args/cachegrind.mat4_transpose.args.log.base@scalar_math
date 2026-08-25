@@ -1,0 +1,8 @@
+==94306== Cachegrind, a high-precision tracing profiler
+==94306== Copyright (C) 2002-2024, and GNU GPL'd, by Nicholas Nethercote et al.
+==94306== Using Valgrind-3.26.0 and LibVEX; rerun with -h for copyright info
+==94306== Command: /var/home/cam/Projects/glam-rs/target/release/deps/gungraun-1a8469964d738735 --gungraun-run 00003 00009 00000
+==94306== Parent PID: 94201
+==94306== 
+==94306== 
+==94306== I refs:        35

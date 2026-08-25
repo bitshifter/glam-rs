@@ -1,0 +1,6 @@
+cmd: /var/home/cam/Projects/glam-rs/target/release/deps/gungraun-39e51715575b2a97 --gungraun-run 00004 00003 00000
+events: Ir
+fl=???
+fn=gungraun::quat_inverse::__gungraun_wrapper_mod::quat_inverse
+0 9
+summary: 9

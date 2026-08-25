@@ -1,0 +1,6 @@
+cmd: /var/home/cam/Projects/glam-rs/target/release/deps/gungraun-39e51715575b2a97 --gungraun-run 00005 00001 00000
+events: Ir
+fl=???
+fn=gungraun::vec3_cross::__gungraun_wrapper_mod::vec3_cross
+0 24
+summary: 24

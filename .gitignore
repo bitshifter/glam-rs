@@ -11,6 +11,7 @@ cargo-timing*.html
 
 # Gungraun benchmark output; only the committed baselines (*.base@*) are kept
 benches/gungraun-baselines/**/callgrind.*
+benches/gungraun-baselines/**/cachegrind.*
 !benches/gungraun-baselines/**/*.base@*
 # but the pinned lockfile used for the gungraun benchmarks is committed
 !benches/gungraun-baselines/Cargo.lock
