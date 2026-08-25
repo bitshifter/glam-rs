@@ -1,6 +1,6 @@
 macro_rules! deps {
     () => {
-        "arbitrary approx bytemuck encase mint rand rkyv bytecheck serde speedy zerocopy debug-glam-assert"
+        "arbitrary approx bytemuck encase float_eq mint rand rkyv bytecheck serde speedy zerocopy debug-glam-assert"
     };
 }
 
@@ -24,7 +24,7 @@ pub(crate) const ALL_FEATURES: &str = deps!();
 
 // core-simd profile features (no zerocopy as it doesn't compile with core-simd)
 pub(crate) const CORE_SIMD_FEATURES: &str =
-    "core-simd arbitrary approx bytemuck encase mint rand rkyv bytecheck serde speedy debug-glam-assert";
+    "core-simd arbitrary approx bytemuck encase float_eq mint rand rkyv bytecheck serde speedy debug-glam-assert";
 
 pub fn resolve_sets(index: Option<usize>) -> &'static [&'static str] {
     match index {

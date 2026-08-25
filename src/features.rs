@@ -1,6 +1,9 @@
 #[cfg(feature = "approx")]
 pub mod impl_approx;
 
+#[cfg(feature = "float_eq")]
+pub mod impl_float_eq;
+
 #[cfg(feature = "bytemuck")]
 pub mod impl_bytemuck;
 
