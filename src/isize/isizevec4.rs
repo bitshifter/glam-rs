@@ -33,7 +33,7 @@ use crate::I64Vec4;
 
 use core::fmt;
 use core::iter::{Product, Sum};
-use core::{f32, ops::*};
+use core::ops::*;
 
 #[cfg(feature = "zerocopy")]
 use zerocopy_derive::*;
