@@ -1,8 +1,10 @@
 #![allow(clippy::all)]
 
 use core::hint::black_box;
+use gungraun::client_requests;
 use gungraun::{
-    library_benchmark, library_benchmark_group, main, Callgrind, LibraryBenchmarkConfig,
+    library_benchmark, library_benchmark_group, main, Cachegrind, LibraryBenchmarkConfig,
+    ValgrindTool,
 };
 
 use glam::{Affine3A, BVec3A, EulerRot, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
@@ -103,224 +105,335 @@ fn bvec4a() -> BVec4A {
 #[library_benchmark]
 #[bench::args(mat2())]
 fn mat2_determinant(m: Mat2) -> f32 {
-    black_box(m.determinant())
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m.determinant());
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat2())]
 fn mat2_inverse(m: Mat2) -> Mat2 {
-    black_box(m.inverse())
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m.inverse());
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat2())]
 fn mat2_transpose(m: Mat2) -> Mat2 {
-    black_box(m.transpose())
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m.transpose());
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat2(), mat2())]
 fn mat2_mul_mat2(m1: Mat2, m2: Mat2) -> Mat2 {
-    black_box(m1 * m2)
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m1 * m2);
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat2(), vec2())]
 fn mat2_mul_vec2(m: Mat2, v: Vec2) -> Vec2 {
-    black_box(m * v)
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m * v);
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat2(), vec2())]
 fn mat2_mul_transpose_vec2(m: Mat2, v: Vec2) -> Vec2 {
-    black_box(m.mul_transpose_vec2(v))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m.mul_transpose_vec2(v));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat3())]
 fn mat3_determinant(m: Mat3) -> f32 {
-    black_box(m.determinant())
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m.determinant());
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat3())]
 fn mat3_inverse(m: Mat3) -> Mat3 {
-    black_box(m.inverse())
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m.inverse());
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat3())]
 fn mat3_transpose(m: Mat3) -> Mat3 {
-    black_box(m.transpose())
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m.transpose());
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat3(), mat3())]
 fn mat3_mul_mat3(m1: Mat3, m2: Mat3) -> Mat3 {
-    black_box(m1 * m2)
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m1 * m2);
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat3(), vec3())]
 fn mat3_mul_vec3(m: Mat3, v: Vec3) -> Vec3 {
-    black_box(m * v)
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m * v);
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat3(), vec3())]
 fn mat3_mul_transpose_vec3(m: Mat3, v: Vec3) -> Vec3 {
-    black_box(m.mul_transpose_vec3(v))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m.mul_transpose_vec3(v));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat3a())]
 fn mat3a_determinant(m: Mat3A) -> f32 {
-    black_box(m.determinant())
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m.determinant());
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat3a())]
 fn mat3a_inverse(m: Mat3A) -> Mat3A {
-    black_box(m.inverse())
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m.inverse());
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat3a())]
 fn mat3a_transpose(m: Mat3A) -> Mat3A {
-    black_box(m.transpose())
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m.transpose());
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat3a(), mat3a())]
 fn mat3a_mul_mat3a(m1: Mat3A, m2: Mat3A) -> Mat3A {
-    black_box(m1 * m2)
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m1 * m2);
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat3a(), vec3a())]
 fn mat3a_mul_vec3a(m: Mat3A, v: Vec3A) -> Vec3A {
-    black_box(m * v)
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m * v);
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat3a(), vec3a())]
 fn mat3a_mul_transpose_vec3a(m: Mat3A, v: Vec3A) -> Vec3A {
-    black_box(m.mul_transpose_vec3a(v))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m.mul_transpose_vec3a(v));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(quat_rot_x_240())]
 fn mat3a_from_quat(q: Quat) -> Mat3A {
-    black_box(Mat3A::from_quat(q))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(Mat3A::from_quat(q));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat4())]
 fn mat4_determinant(m: Mat4) -> f32 {
-    black_box(m.determinant())
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m.determinant());
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat4())]
 fn mat4_inverse(m: Mat4) -> Mat4 {
-    black_box(m.inverse())
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m.inverse());
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat4())]
 fn mat4_transpose(m: Mat4) -> Mat4 {
-    black_box(m.transpose())
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m.transpose());
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat4(), mat4())]
 fn mat4_mul_mat4(m1: Mat4, m2: Mat4) -> Mat4 {
-    black_box(m1 * m2)
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m1 * m2);
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat4(), vec4())]
 fn mat4_mul_vec4(m: Mat4, v: Vec4) -> Vec4 {
-    black_box(m * v)
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m * v);
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat4(), vec4())]
 fn mat4_mul_transpose_vec4(m: Mat4, v: Vec4) -> Vec4 {
-    black_box(m.mul_transpose_vec4(v))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m.mul_transpose_vec4(v));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(quat_rot_x_240())]
 fn mat4_from_quat(q: Quat) -> Mat4 {
-    black_box(Mat4::from_quat(q))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(Mat4::from_quat(q));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(vec3(), quat_rot_x_240(), vec3())]
 fn mat4_from_scale_rotation_translation(s: Vec3, r: Quat, t: Vec3) -> Mat4 {
-    black_box(Mat4::from_scale_rotation_translation(s, r, t))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(Mat4::from_scale_rotation_translation(s, r, t));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat4(), vec3())]
 fn mat4_transform_point3(m: Mat4, v: Vec3) -> Vec3 {
-    black_box(m.transform_point3(v))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m.transform_point3(v));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(mat4(), vec3())]
 fn mat4_transform_vector3(m: Mat4, v: Vec3) -> Vec3 {
-    black_box(m.transform_vector3(v))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(m.transform_vector3(v));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(quat(), quat())]
 fn quat_mul_quat(q1: Quat, q2: Quat) -> Quat {
-    black_box(q1 * q2)
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(q1 * q2);
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(quat(), quat())]
 fn quat_dot(q1: Quat, q2: Quat) -> f32 {
-    black_box(q1.dot(q2))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(q1.dot(q2));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(black_box(Vec3::X), bb_f32())]
 fn quat_from_axis_angle(axis: Vec3, angle: f32) -> Quat {
-    black_box(Quat::from_axis_angle(axis, angle))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(Quat::from_axis_angle(axis, angle));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(EulerRot::YXZ, bb_f32(), bb_f32(), bb_f32())]
 fn quat_from_euler(order: EulerRot, a: f32, b: f32, c: f32) -> Quat {
-    black_box(Quat::from_euler(order, a, b, c))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(Quat::from_euler(order, a, b, c));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(quat_rot_x_240())]
 fn quat_inverse(q: Quat) -> Quat {
-    black_box(q.inverse())
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(q.inverse());
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::positive_dot(quat(), quat_rot_x_180(), bb_f32())]
 #[bench::negative_dot(quat(), quat_rot_x_240(), bb_f32())]
 fn quat_lerp(q1: Quat, q2: Quat, t: f32) -> Quat {
-    black_box(q1.lerp(q2, t))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(q1.lerp(q2, t));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(quat(), vec3())]
 fn quat_mul_vec3(q: Quat, v: Vec3) -> Vec3 {
-    black_box(q * v)
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(q * v);
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(quat(), vec3a())]
 fn quat_mul_vec3a(q: Quat, v: Vec3A) -> Vec3A {
-    black_box(q * v)
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(q * v);
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
@@ -328,50 +441,74 @@ fn quat_mul_vec3a(q: Quat, v: Vec3A) -> Vec3A {
 #[bench::negative_dot(quat(), quat_rot_x_240(), bb_f32())]
 #[bench::nearly_parallel(quat(), quat(), bb_f32())]
 fn quat_slerp(q1: Quat, q2: Quat, t: f32) -> Quat {
-    black_box(q1.slerp(q2, t))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(q1.slerp(q2, t));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(vec3a(), vec3a())]
 fn vec3a_dot(v1: Vec3A, v2: Vec3A) -> f32 {
-    black_box(v1.dot(v2))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(v1.dot(v2));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(vec3a(), vec3a())]
 fn vec3a_cross(v1: Vec3A, v2: Vec3A) -> Vec3A {
-    black_box(v1.cross(v2))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(v1.cross(v2));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(vec3a())]
 fn vec3a_length(v: Vec3A) -> f32 {
-    black_box(v.length())
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(v.length());
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(vec3a())]
 fn vec3a_normalize(v: Vec3A) -> Vec3A {
-    black_box(v.normalize())
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(v.normalize());
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(bvec3a(), vec3a(), vec3a())]
 fn vec3a_select(b: BVec3A, v1: Vec3A, v2: Vec3A) -> Vec3A {
-    black_box(Vec3A::select(b, v1, v2))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(Vec3A::select(b, v1, v2));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(vec3a(), vec3a(), bb_f32())]
 fn vec3a_lerp(v1: Vec3A, v2: Vec3A, t: f32) -> Vec3A {
-    black_box(v1.lerp(v2, t))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(v1.lerp(v2, t));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::nonzero(vec3a())]
 #[bench::zero(black_box(Vec3A::ZERO))]
 fn vec3a_normalize_or_zero(v: Vec3A) -> Vec3A {
-    black_box(v.normalize_or_zero())
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(v.normalize_or_zero());
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
@@ -379,91 +516,136 @@ fn vec3a_normalize_or_zero(v: Vec3A) -> Vec3A {
 #[bench::anti_parallel(black_box(Vec3A::X), black_box(Vec3A::NEG_X), bb_f32())]
 #[bench::parallel(vec3a(), vec3a(), bb_f32())]
 fn vec3a_slerp(v1: Vec3A, v2: Vec3A, t: f32) -> Vec3A {
-    black_box(v1.slerp(v2, t))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(v1.slerp(v2, t));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(vec4(), vec4())]
 fn vec4_dot(v1: Vec4, v2: Vec4) -> f32 {
-    black_box(v1.dot(v2))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(v1.dot(v2));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(vec4(), vec4())]
 fn vec4_mul_vec4(v1: Vec4, v2: Vec4) -> Vec4 {
-    black_box(v1 * v2)
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(v1 * v2);
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(vec4())]
 fn vec4_length(v: Vec4) -> f32 {
-    black_box(v.length())
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(v.length());
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(vec4())]
 fn vec4_normalize(v: Vec4) -> Vec4 {
-    black_box(v.normalize())
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(v.normalize());
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(bvec4a(), vec4(), vec4())]
 fn vec4_select(b: BVec4A, v1: Vec4, v2: Vec4) -> Vec4 {
-    black_box(Vec4::select(b, v1, v2))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(Vec4::select(b, v1, v2));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(vec3(), vec3())]
 fn vec3_dot(v1: Vec3, v2: Vec3) -> f32 {
-    black_box(v1.dot(v2))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(v1.dot(v2));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(vec3(), vec3())]
 fn vec3_cross(v1: Vec3, v2: Vec3) -> Vec3 {
-    black_box(v1.cross(v2))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(v1.cross(v2));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(vec3())]
 fn vec3_length(v: Vec3) -> f32 {
-    black_box(v.length())
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(v.length());
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(vec3())]
 fn vec3_normalize(v: Vec3) -> Vec3 {
-    black_box(v.normalize())
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(v.normalize());
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(vec3(), quat_rot_x_240(), vec3())]
 fn affine3a_from_scale_rotation_translation(s: Vec3, r: Quat, t: Vec3) -> Affine3A {
-    black_box(Affine3A::from_scale_rotation_translation(s, r, t))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(Affine3A::from_scale_rotation_translation(s, r, t));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(affine3a())]
 fn affine3a_inverse(a: Affine3A) -> Affine3A {
-    black_box(a.inverse())
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(a.inverse());
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(affine3a(), affine3a())]
 fn affine3a_mul_affine3a(a1: Affine3A, a2: Affine3A) -> Affine3A {
-    black_box(a1 * a2)
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(a1 * a2);
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(affine3a(), vec3a())]
 fn affine3a_transform_point3a(a: Affine3A, v: Vec3A) -> Vec3A {
-    black_box(a.transform_point3a(v))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(a.transform_point3a(v));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 #[library_benchmark]
 #[bench::args(affine3a(), vec3a())]
 fn affine3a_transform_vector3a(a: Affine3A, v: Vec3A) -> Vec3A {
-    black_box(a.transform_vector3a(v))
+    client_requests::cachegrind::start_instrumentation();
+    let r = black_box(a.transform_vector3a(v));
+    client_requests::cachegrind::stop_instrumentation();
+    r
 }
 
 library_benchmark_group!(
@@ -572,11 +754,12 @@ library_benchmark_group!(
 );
 
 main!(
-    // Disable cache simulation: for these tiny one-shot benchmarks the cache
-    // metrics only contain noise from cold instruction fetches, which depend
-    // on linker layout rather than the code being measured.
+    // Use Cachegrind and only measure the code between the
+    // `start_instrumentation()` / `stop_instrumentation()` client requests in each
+    // benchmark body.
     config = LibraryBenchmarkConfig::default()
-        .tool(Callgrind::default().args(["cache-sim=no"]));
+        .default_tool(ValgrindTool::Cachegrind)
+        .tool(Cachegrind::with_args(["--instr-at-start=no"]));
     library_benchmark_groups = bench_mat2,
     bench_mat3,
     bench_mat3a,

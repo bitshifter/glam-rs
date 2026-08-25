@@ -31,6 +31,6 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - run: rustup update --no-self-update ${{ env.BENCH_TOOLCHAIN }}
       - run: rustup default ${{ env.BENCH_TOOLCHAIN }}
-      - name: Install valgrind
-        run: sudo apt-get update && sudo apt-get install -y valgrind
+      - name: Install valgrind, clang and libclang
+        run: sudo apt-get update && sudo apt-get install -y valgrind clang libclang-dev
       - run: cargo run --release -p ci -- bench
