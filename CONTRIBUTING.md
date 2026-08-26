@@ -7,6 +7,11 @@ The short guide to contributing is [start a discussion] on GitHub.  Pull
 requests are welcome for bug fixes, documentation improvements and
 optimizations. For anything else it would be best to discuss it first.
 
+## Use of AI
+
+All use of AI in contributions must follow the [AI Policy]. Contributions not
+following the AI Policy will be closed.
+
 ## Questions
 
 If you have a question about the usage of this library please [ask a question]
@@ -34,32 +39,6 @@ If you feel some functionality could be optimized please [open an issue] on
 GitHub or submit a pull request. Any optimization pull request should include a
 benchmark if there isn't one already, so I can confirm the performance
 improvement.
-
-## Instruction count baselines
-
-The gungraun benchmarks in `benches/gungraun.rs` run under valgrind and count
-executed instructions. Install valgrind first (e.g. `sudo apt-get install
-valgrind` on Ubuntu or `sudo dnf install valgrind` on Fedora); the
-`gungraun-runner` binary is installed automatically by the ci tool.
-
-- Check for regressions: `cargo run --release -p ci -- bench`
-- Update baselines after an intentional change: `cargo run --release -p ci -- bench --save`
-
-The results are compared against baselines committed in
-`benches/gungraun-baselines`, tracked per backend: `sse2` and `scalar_math`
-on x86_64 Linux and `neon` on aarch64 Linux. Other hosts are skipped because
-valgrind doesn't run on macOS, and counts are only comparable for the
-toolchain and target triple they were generated with. CI fails pull requests
-on any instruction-count regression; the `Update gungraun baselines` workflow
-regenerates all backends (including `neon`, which needs an ARM runner) and
-opens a pull request. When bumping the pinned `BENCH_TOOLCHAIN` in
-`.github/workflows/bench.yml`, rerun that workflow in the same pull request.
-
-Counts are also only reproducible for an identical dependency resolution, so
-the benchmarks pin their own lockfile at `benches/gungraun-baselines/Cargo.lock`
-instead of using the repository's untracked `Cargo.lock` (which is backed up
-and restored around the run). Bumping the `gungraun` dev-dependency and
-rerunning `--save` updates the lockfile together with the baselines.
 
 ## Documentation
 
@@ -139,3 +118,4 @@ Also run `cargo fmt` on any new hand-written files and `cargo clippy` on any new
 [Tera v2]: https://keats.github.io/tera/
 [Conventional Commits]: https://www.conventionalcommits.org/
 [changelog]: CHANGELOG.md
+[AI Policy]: AI_POLICY.md
