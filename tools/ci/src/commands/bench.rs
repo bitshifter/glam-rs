@@ -255,6 +255,18 @@ impl Prepare for Bench {
 
         let _lock = swap_in_bench_lock();
 
+        // The committed bench lockfile may lag behind the manifest (e.g. if a PR adds a
+        // dependency). `cargo fetch` adds only the missing entries and keeps every existing pin, so
+        // instruction counts should be unchanged unless the manifest change actually affects the
+        // benches. The `--save` path runs unlocked instead so the regenerated lock and baselines
+        // are committed together.
+        if !self.save {
+            sh.cmd("cargo")
+                .arg("fetch")
+                .run()
+                .expect("failed to reconcile the bench lockfile");
+        }
+
         let version = gungraun_version(sh, !self.save);
         let runner_bin = format!("{RUNNER_ROOT}/bin/gungraun-runner");
 
