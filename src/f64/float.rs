@@ -37,4 +37,14 @@ impl FloatExt for f64 {
     fn saturate(self) -> Self {
         self.clamp(0.0, 1.0)
     }
+
+    #[inline]
+    fn move_towards(self, rhs: Self, d: Self) -> Self {
+        let a = rhs - self;
+        if a.abs() <= d {
+            rhs
+        } else {
+            self + a.signum() * d
+        }
+    }
 }

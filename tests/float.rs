@@ -39,6 +39,16 @@ macro_rules! impl_float_tests {
             assert_approx_eq!((-2000000.123).fract_gl(), 0.877, 0.002);
             assert_approx_eq!(1000000.123.fract_gl(), 0.123, 0.002);
         });
+
+        glam_test!(test_move_towards, {
+            assert_eq!($t::move_towards(-1., 1., 0.), -1.);
+            assert_eq!($t::move_towards(-1., 1., 1.), 0.);
+            assert_eq!($t::move_towards(-1., 1., 2.), 1.);
+            assert_eq!($t::move_towards(-1., 1., 3.), 1.);
+            assert_eq!($t::move_towards(1., -1., 1.), 0.);
+            assert_eq!($t::move_towards(1., -1., 3.), -1.);
+            assert_eq!($t::move_towards(1., 1., 1.), 1.);
+        });
     };
 }
 
