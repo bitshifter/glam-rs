@@ -35,7 +35,7 @@ jobs:
         run: |
           find benches/gungraun-baselines -type f ! -name '*.base@*' ! -name 'Cargo.lock' -delete
           find benches/gungraun-baselines -type d -empty -delete
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: baselines-${{ matrix.os }}
           path: benches/gungraun-baselines
@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           pattern: baselines-*
           path: benches/gungraun-baselines
@@ -57,23 +57,27 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -B chore/gungraun-baselines
+          # Unique branch per run so we never collide with a previously
+          # merged PR that still points at a reused branch name.
+          branch="chore/gungraun-baselines-${{ github.run_id }}"
+          git checkout -B "$branch"
           git add benches/gungraun-baselines
           if git diff --cached --quiet; then
             echo "no baseline changes"
             exit 0
           fi
           git commit -m "chore: update gungraun baselines"
-          git push -f origin chore/gungraun-baselines
+          git push -f origin "$branch"
           echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
       - name: Open pull request
         if: steps.commit.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh pr view chore/gungraun-baselines > /dev/null 2>&1 || \
-            gh pr create \
-              --base "${{ github.ref_name }}" \
-              --head chore/gungraun-baselines \
-              --title "chore: update gungraun baselines" \
-              --body "Regenerated gungraun baselines (sse2, scalar-math, neon) with toolchain ${{ env.BENCH_TOOLCHAIN }}."
+          # A fresh per-run branch has no existing PR, so no guard needed.
+          gh pr create \
+            --base "${{ github.ref_name }}" \
+            --head "${{ steps.commit.outputs.branch }}" \
+            --title "chore: update gungraun baselines" \
+            --body "Regenerated gungraun baselines (sse2, scalar-math, neon) with toolchain ${{ env.BENCH_TOOLCHAIN }}."
