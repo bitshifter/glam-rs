@@ -1,8 +1,8 @@
 # callgrind format
 version: 1
-creator: callgrind-3.27.1
-pid: 311686
-cmd:  /var/home/cam/Projects/glam-rs/target/release/deps/gungraun-fc144a44ee2f90d4 --gungraun-run 00006 00006 00001
+creator: callgrind-3.22.0
+pid: 8270
+cmd:  /home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-fc144a44ee2f90d4 --gungraun-run 00006 00006 00001
 part: 1
 thread: 1
 
@@ -11,103 +11,139 @@ desc: I1 cache:
 desc: D1 cache: 
 desc: LL cache: 
 
-desc: Timerange: Basic block 0 - 86254
+desc: Timerange: Basic block 0 - 84176
 desc: Trigger: Program termination
 
 positions: line
 events: Ir
-summary: 236
+summary: 234
 
 
-ob=/usr/lib64/libm.so.6
+ob=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
 fl=???
-fn=0x0000000000084640
-0 44
+fn=0x000000000001f540
+cob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-fc144a44ee2f90d4
+cfi=???
+cfn=(below main)
+calls=1 0 
+0 234
 
-ob=/usr/lib64/libc.so.6
-fl=???
+ob=/usr/lib/x86_64-linux-gnu/libc.so.6
+fl=./csu/../csu/libc-start.c
+fn=__libc_start_main@@GLIBC_2.34
+cfi=./csu/../sysdeps/nptl/libc_start_call_main.h
+cfn=(below main)
+calls=1 29 
+360 234
+
+fl=./csu/../sysdeps/nptl/libc_start_call_main.h
 fn=(below main)
-cob=/var/home/cam/Projects/glam-rs/target/release/deps/gungraun-fc144a44ee2f90d4
+cob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-fc144a44ee2f90d4
 cfi=???
 cfn=main
 calls=1 0 
-0 236
+58 234
 
-fn=__libc_start_main@@GLIBC_2.34
-cfn=(below main)
-calls=1 0 
-0 236
-
-ob=/usr/lib64/libm.so.6
+ob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-fc144a44ee2f90d4
 fl=???
-fn=0x0000000000084640
-0 4
-
-ob=/var/home/cam/Projects/glam-rs/target/release/deps/gungraun-fc144a44ee2f90d4
-fl=???
-fn=main
-cfn=std::rt::lang_start_internal
-calls=1 0 
-0 236
-
-fn=gungraun::vec3a_slerp::__run_anti_parallel
-cfn=gungraun::vec3a_slerp::__gungraun_wrapper_id_mod_general::general
-calls=1 0 
-0 236
-
-fn=gungraun::vec3a_slerp::__gungraun_wrapper_id_mod_general::general
-cfn=gungraun::vec3a_slerp::__gungraun_wrapper_mod::vec3a_slerp
-calls=1 0 
-0 236
-
-fn=gungraun::main
-cfn=gungraun::bench_vec3a::__run
-calls=1 0 
-0 236
-
-fn=gungraun::vec3a_slerp::__gungraun_wrapper_mod::vec3a_slerp
-0 63
-cob=/usr/lib64/libm.so.6
-cfi=???
-cfn=0x0000000000084640
-calls=1 0 
-0 48
-0 125
-
-fn=std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
-cfn=gungraun::main
-calls=1 0 
-0 236
-
 fn=(below main)
-cob=/usr/lib64/libc.so.6
-cfi=???
+cob=/usr/lib/x86_64-linux-gnu/libc.so.6
+cfi=./csu/../csu/libc-start.c
 cfn=__libc_start_main@@GLIBC_2.34
-calls=1 0 
-0 236
-
-fn=std::rt::lang_start_internal
-cfn=std::rt::lang_start::<()>::{closure#0}
-calls=1 0 
-0 236
+calls=1 242 
+0 234
 
 fn=std::rt::lang_start::<()>::{closure#0}
 cfn=std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
 calls=1 0 
-0 236
+0 234
+
+fn=gungraun::vec3a_slerp::__run_anti_parallel
+cfn=gungraun::vec3a_slerp::__gungraun_wrapper_id_mod_general::general
+calls=1 0 
+0 234
+
+fn=gungraun::vec3a_slerp::__gungraun_wrapper_id_mod_general::general
+cfn=gungraun::vec3a_slerp::__gungraun_wrapper_mod::vec3a_slerp
+calls=1 0 
+0 234
+
+fn=main
+cfn=std::rt::lang_start_internal
+calls=1 0 
+0 234
+
+fn=gungraun::vec3a_slerp::__gungraun_wrapper_mod::vec3a_slerp
+0 63
+cob=/usr/lib/x86_64-linux-gnu/libm.so.6
+cfi=./math/../sysdeps/ieee754/flt-32/s_sincosf.c
+cfn=__sincosf_fma
+calls=1 44 
+0 45
+0 126
+
+fn=gungraun::main
+cfn=gungraun::bench_vec3a::__run
+calls=1 0 
+0 234
 
 fn=gungraun::bench_vec3a::__run
 cfn=gungraun::vec3a_slerp::__run_anti_parallel
 calls=1 0 
-0 236
+0 234
 
-ob=/usr/lib64/ld-linux-x86-64.so.2
-fl=???
-fn=0x000000000001e6c0
-cob=/var/home/cam/Projects/glam-rs/target/release/deps/gungraun-fc144a44ee2f90d4
-cfi=???
-cfn=(below main)
+fn=std::rt::lang_start_internal
+cfn=std::rt::lang_start::<()>::{closure#0}
 calls=1 0 
-0 236
+0 234
 
-totals: 236
+fn=std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+cfn=gungraun::main
+calls=1 0 
+0 234
+
+ob=/usr/lib/x86_64-linux-gnu/libm.so.6
+fl=./math/../sysdeps/ieee754/flt-32/s_sincosf.c
+fn=__sincosf_fma
+44 2
+fi=./math/../sysdeps/ieee754/flt-32/math_config.h
+67 1
+fe=./math/../sysdeps/ieee754/flt-32/s_sincosf.c
+45 1
+fi=./math/../sysdeps/ieee754/flt-32/s_sincosf.h
+39 3
+fe=./math/../sysdeps/ieee754/flt-32/s_sincosf.c
+50 2
+fi=./math/../sysdeps/ieee754/flt-32/math_config.h
+68 1
+fe=./math/../sysdeps/ieee754/flt-32/s_sincosf.c
+66 2
+fi=./math/../sysdeps/ieee754/flt-32/s_sincosf.h
+60 2
+61 3
+63 1
+fe=./math/../sysdeps/ieee754/flt-32/s_sincosf.c
+71 1
+fi=./math/../sysdeps/ieee754/flt-32/s_sincosf.h
+63 1
+fe=./math/../sysdeps/ieee754/flt-32/s_sincosf.c
+71 1
+48 5
+71 1
+76 1
+fi=./math/../sysdeps/x86/fpu/sincosf_poly.h
+64 4
+63 1
+67 2
+74 1
+76 1
+74 1
+78 2
+79 1
+27 1
+28 1
+29 1
+fe=./math/../sysdeps/ieee754/flt-32/s_sincosf.c
+104 1
+
+totals: 234
