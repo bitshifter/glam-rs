@@ -30,6 +30,10 @@ jobs:
       - run: rustup default ${{ env.BENCH_TOOLCHAIN }}
       - name: Install valgrind
         run: sudo apt-get update && sudo apt-get install -y valgrind
+      - name: Remove committed baselines
+        run: |
+          find benches/gungraun-baselines -type f -name '*.base@*' -delete
+          find benches/gungraun-baselines -type d -empty -delete
       - run: cargo run --release -p ci -- bench --save
       - name: Keep only baseline files
         run: |
@@ -47,6 +51,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      - name: Remove committed baselines
+        run: |
+          find benches/gungraun-baselines -type f -name '*.base@*' -delete
+          find benches/gungraun-baselines -type d -empty -delete
       - uses: actions/download-artifact@v8
         with:
           pattern: baselines-*
