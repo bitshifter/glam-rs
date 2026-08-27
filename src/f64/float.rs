@@ -14,6 +14,12 @@ impl FloatExt for f64 {
     }
 
     #[inline]
+    fn smoothstep(self, edge0: Self, edge1: Self) -> Self {
+        let t = ((self - edge0) / (edge1 - edge0)).clamp(0.0, 1.0);
+        t * t * (3.0 - 2.0 * t)
+    }
+
+    #[inline]
     fn remap(self, in_start: Self, in_end: Self, out_start: Self, out_end: Self) -> Self {
         let t = Self::inverse_lerp(in_start, in_end, self);
         Self::lerp(out_start, out_end, t)

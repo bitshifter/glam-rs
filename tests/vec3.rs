@@ -1900,6 +1900,17 @@ macro_rules! impl_vec3_float_tests {
             );
         });
 
+        glam_test!(test_smoothstep, {
+            let t = $vec3::new(0.0, 0.25, 1.0);
+            assert_approx_eq!(
+                $vec3::new(-2.0, 0.0, 4.0).smoothstep($vec3::splat(-1.0), $vec3::splat(3.0)),
+                t * t * ($vec3::splat(3.0) - $vec3::splat(2.0) * t),
+                1e-5
+            );
+            should_glam_assert!({ $vec3::ZERO.smoothstep($vec3::ZERO, $vec3::X) });
+            should_glam_assert!({ $vec3::ZERO.smoothstep($vec3::ONE, $vec3::ZERO) });
+        });
+
         glam_test!(test_saturate, {
             use glam::FloatExt;
             assert_approx_eq!(
