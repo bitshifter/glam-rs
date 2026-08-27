@@ -724,6 +724,11 @@ impl Vec2 {
     /// This is equivalent to `t * t * (3.0 - 2.0 * t)`, where `t` is clamped to `[0.0, 1.0]`.
     /// Results are undefined if any element of `edge0` is greater than or equal to the corresponding
     /// element of `edge1`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if any element of `edge0` is greater than or equal to the corresponding element
+    /// of `edge1`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     pub fn smoothstep(self, edge0: Self, edge1: Self) -> Self {
