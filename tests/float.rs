@@ -24,6 +24,14 @@ macro_rules! impl_float_tests {
             assert!($t::inverse_lerp(a, a, 1.).is_infinite());
         });
 
+        glam_test!(test_smoothstep, {
+            assert_eq!((-1. as $t).smoothstep(0., 1.), 0.);
+            assert_eq!((0. as $t).smoothstep(0., 1.), 0.);
+            assert_eq!((0.5 as $t).smoothstep(0., 1.), 0.5);
+            assert_eq!((1. as $t).smoothstep(0., 1.), 1.);
+            assert_eq!((2. as $t).smoothstep(0., 1.), 1.);
+        });
+
         glam_test!(test_remap, {
             assert_eq!($t::remap(0., 0., 2., 0., 20.), 0.);
             assert_eq!($t::remap(1., 0., 2., 0., 20.), 10.);

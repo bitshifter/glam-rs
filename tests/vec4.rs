@@ -1990,6 +1990,17 @@ macro_rules! impl_vec4_float_tests {
             );
         });
 
+        glam_test!(test_smoothstep, {
+            let t = $vec4::new(0.0, 0.25, 0.75, 1.0);
+            assert_approx_eq!(
+                $vec4::new(-2.0, 0.0, 2.0, 4.0).smoothstep($vec4::splat(-1.0), $vec4::splat(3.0)),
+                t * t * ($vec4::splat(3.0) - $vec4::splat(2.0) * t),
+                1e-5
+            );
+            should_glam_assert!({ $vec4::ZERO.smoothstep($vec4::ZERO, $vec4::X) });
+            should_glam_assert!({ $vec4::ZERO.smoothstep($vec4::ONE, $vec4::ZERO) });
+        });
+
         glam_test!(test_saturate, {
             use glam::FloatExt;
             assert_approx_eq!(

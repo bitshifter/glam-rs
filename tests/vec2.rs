@@ -1599,6 +1599,17 @@ macro_rules! impl_vec2_float_tests {
             );
         });
 
+        glam_test!(test_smoothstep, {
+            let t = $vec2::new(0.0, 0.75);
+            assert_approx_eq!(
+                $vec2::new(-2.0, 2.0).smoothstep($vec2::splat(-1.0), $vec2::splat(3.0)),
+                t * t * ($vec2::splat(3.0) - $vec2::splat(2.0) * t),
+                1e-5
+            );
+            should_glam_assert!({ $vec2::ZERO.smoothstep($vec2::ZERO, $vec2::X) });
+            should_glam_assert!({ $vec2::ZERO.smoothstep($vec2::ONE, $vec2::ZERO) });
+        });
+
         glam_test!(test_saturate, {
             use glam::FloatExt;
             assert_approx_eq!(
