@@ -7,6 +7,9 @@ use core::iter::{Product, Sum};
 use core::ops::*;
 
 use core::simd::{cmp::SimdPartialEq, cmp::SimdPartialOrd, num::SimdFloat, *};
+// StdFloat is only available with std. Without it the float methods below fall back to
+// the same scalar `math` calls the scalar backend uses.
+#[cfg(feature = "std")]
 use std::simd::StdFloat;
 
 /// Creates a 4-dimensional vector.
@@ -518,8 +521,17 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn length(self) -> f32 {
-        let dot = dot4_in_x(self.0, self.0);
-        dot.sqrt()[0]
+        #[cfg(feature = "std")]
+        {
+            let dot = dot4_in_x(self.0, self.0);
+            dot.sqrt()[0]
+        }
+        // without std there is no SIMD sqrt, so only the one lane that is used is
+        // evaluated rather than all four
+        #[cfg(not(feature = "std"))]
+        {
+            math::sqrt(self.dot(self))
+        }
     }
 
     /// Returns `true` if the vector is not the zero vector (also rejects NaN).
@@ -544,8 +556,15 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn length_recip(self) -> f32 {
-        let dot = dot4_in_x(self.0, self.0);
-        dot.sqrt().recip()[0]
+        #[cfg(feature = "std")]
+        {
+            let dot = dot4_in_x(self.0, self.0);
+            dot.sqrt().recip()[0]
+        }
+        #[cfg(not(feature = "std"))]
+        {
+            1.0 / self.length()
+        }
     }
 
     /// Computes the Euclidean distance between two points in space.
@@ -600,7 +619,12 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn normalize(self) -> Self {
+        // with std this is a single SIMD sqrt, without it every lane holds the same
+        // value so the scalar sqrt is done once and reused
+        #[cfg(feature = "std")]
         let length = dot4_into_f32x4(self.0, self.0).sqrt();
+        #[cfg(not(feature = "std"))]
+        let length = f32x4::splat(math::sqrt(self.dot(self)));
         #[allow(clippy::let_and_return)]
         let normalized = Self(self.0 / length);
         glam_assert!(normalized.is_finite());
@@ -746,7 +770,21 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn round(self) -> Self {
-        Self(self.0.round())
+        #[cfg(feature = "std")]
+        {
+            Self(self.0.round())
+        }
+        // without std this is done per element, so only the elements that are
+        // actually used get evaluated (Vec3A does not touch w)
+        #[cfg(not(feature = "std"))]
+        {
+            Self::new(
+                math::round(self.x),
+                math::round(self.y),
+                math::round(self.z),
+                math::round(self.w),
+            )
+        }
     }
 
     /// Returns a vector containing the largest integer less than or equal to a number for each
@@ -754,7 +792,21 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn floor(self) -> Self {
-        Self(self.0.floor())
+        #[cfg(feature = "std")]
+        {
+            Self(self.0.floor())
+        }
+        // without std this is done per element, so only the elements that are
+        // actually used get evaluated (Vec3A does not touch w)
+        #[cfg(not(feature = "std"))]
+        {
+            Self::new(
+                math::floor(self.x),
+                math::floor(self.y),
+                math::floor(self.z),
+                math::floor(self.w),
+            )
+        }
     }
 
     /// Returns a vector containing the smallest integer greater than or equal to a number for
@@ -762,7 +814,21 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn ceil(self) -> Self {
-        Self(self.0.ceil())
+        #[cfg(feature = "std")]
+        {
+            Self(self.0.ceil())
+        }
+        // without std this is done per element, so only the elements that are
+        // actually used get evaluated (Vec3A does not touch w)
+        #[cfg(not(feature = "std"))]
+        {
+            Self::new(
+                math::ceil(self.x),
+                math::ceil(self.y),
+                math::ceil(self.z),
+                math::ceil(self.w),
+            )
+        }
     }
 
     /// Returns a vector containing the integer part each element of `self`. This means numbers are
@@ -770,7 +836,21 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn trunc(self) -> Self {
-        Self(self.0.trunc())
+        #[cfg(feature = "std")]
+        {
+            Self(self.0.trunc())
+        }
+        // without std this is done per element, so only the elements that are
+        // actually used get evaluated (Vec3A does not touch w)
+        #[cfg(not(feature = "std"))]
+        {
+            Self::new(
+                math::trunc(self.x),
+                math::trunc(self.y),
+                math::trunc(self.z),
+                math::trunc(self.w),
+            )
+        }
     }
 
     /// Returns a vector containing `0.0` if `rhs < self` and 1.0 otherwise.
@@ -1069,7 +1149,19 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn mul_add(self, a: Self, b: Self) -> Self {
-        Self(self.0.mul_add(a.0, b.0))
+        #[cfg(feature = "std")]
+        {
+            Self(self.0.mul_add(a.0, b.0))
+        }
+        #[cfg(not(feature = "std"))]
+        {
+            Self::new(
+                math::mul_add(self.x, a.x, b.x),
+                math::mul_add(self.y, a.y, b.y),
+                math::mul_add(self.z, a.z, b.z),
+                math::mul_add(self.w, a.w, b.w),
+            )
+        }
     }
 
     /// Returns the reflection vector for a given incident vector `self` and surface normal

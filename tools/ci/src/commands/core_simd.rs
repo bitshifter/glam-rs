@@ -22,10 +22,25 @@ impl Prepare for CoreSimd {
             .arg("--features")
             .arg("core-simd");
 
-        vec![PreparedCommand {
-            name: "core-simd".into(),
-            command: cmd,
-            failure_message: "core-simd test failed",
-        }]
+        // core-simd has to keep working without std, where std::simd::StdFloat isn't
+        // available and the libm backend is used instead.
+        let nostd_cmd = toolchain::cargo(sh, tc)
+            .arg("test")
+            .arg("--no-default-features")
+            .arg("--features")
+            .arg("core-simd,libm,all-types");
+
+        vec![
+            PreparedCommand {
+                name: "core-simd".into(),
+                command: cmd,
+                failure_message: "core-simd test failed",
+            },
+            PreparedCommand {
+                name: "core-simd-nostd".into(),
+                command: nostd_cmd,
+                failure_message: "core-simd no-std test failed",
+            },
+        ]
     }
 }
