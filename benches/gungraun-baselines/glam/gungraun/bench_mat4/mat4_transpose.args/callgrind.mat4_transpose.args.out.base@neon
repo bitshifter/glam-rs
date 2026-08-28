@@ -1,8 +1,8 @@
 # callgrind format
 version: 1
 creator: callgrind-3.22.0
-pid: 5710
-cmd:  /home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-fbb8c42f76aa610a --gungraun-run 00003 00009 00000
+pid: 7753
+cmd:  /home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-d6f5a6d6136c0fd5 --gungraun-run 00003 00009 00000
 part: 1
 thread: 1
 
@@ -11,7 +11,7 @@ desc: I1 cache:
 desc: D1 cache: 
 desc: LL cache: 
 
-desc: Timerange: Basic block 0 - 71486
+desc: Timerange: Basic block 0 - 71158
 desc: Trigger: Program termination
 
 positions: line
@@ -19,132 +19,8 @@ events: Ir
 summary: 31
 
 
-ob=/usr/lib/aarch64-linux-gnu/libc.so.6
-fl=./stdlib/./stdlib/cxa_atexit.c
-fn=__cxa_atexit
-cfn=__internal_atexit
-calls=1 36 
-68 31
-
-fn=__internal_atexit
-fi=./csu/../csu/libc-start.c
-cfi=./csu/../csu/libc-start.c
-cfn=__libc_start_main@@GLIBC_2.34'2
-calls=1 145 
-144 31
-fe=./stdlib/./stdlib/cxa_atexit.c
-
-fl=./nptl/./nptl/pthread_attr_destroy.c
-fn=pthread_attr_destroy
-fi=???
-cob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-fbb8c42f76aa610a
-cfi=???
-cfn=std::sys::pal::unix::stack_overflow::imp::make_handler
-calls=1 0 
-0 31
-fe=./nptl/./nptl/pthread_attr_destroy.c
-
-fl=./nptl/./nptl/pthread_getattr_np.c
-fn=pthread_getattr_np@@GLIBC_2.32
-fi=???
-cfi=./nptl/./nptl/pthread_attr_destroy.c
-cfn=pthread_attr_destroy
-calls=1 26 
-0 31
-fe=./nptl/./nptl/pthread_getattr_np.c
-
-fl=./malloc/./malloc/malloc.c
-fn=free
-fi=???
-cob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-fbb8c42f76aa610a
-cfi=???
-cfn=__rustc::__rust_dealloc'2
-calls=1 0 
-0 31
-fe=./malloc/./malloc/malloc.c
-
-fn=free'2
-fi=???
-cob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-fbb8c42f76aa610a
-cfi=???
-cfn=gungraun::main'2
-calls=1 0 
-0 31
-fi=???
-cob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-fbb8c42f76aa610a
-cfi=???
-cfn=gungraun::bench_mat4::__run
-calls=1 0 
-0 31
-fe=./malloc/./malloc/malloc.c
-
-fl=./csu/../csu/libc-start.c
-fn=__libc_start_main@@GLIBC_2.34
-cfi=./stdlib/./stdlib/cxa_atexit.c
-cfn=__cxa_atexit
-calls=1 67 
-312 31
-
-fn=__libc_start_main@@GLIBC_2.34'2
-cfi=./csu/../sysdeps/nptl/libc_start_call_main.h
-cfn=(below main)
-calls=1 29 
-350 31
-cob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-fbb8c42f76aa610a
-cfi=???
-cfn=init_have_lse_atomics
-calls=1 0 
-145 31
-
-fl=./posix/../sysdeps/unix/sysv/linux/aarch64/sysconf.c
-fn=sysconf
-fi=???
-cfi=./nptl/./nptl/pthread_getattr_np.c
-cfn=pthread_getattr_np@@GLIBC_2.32
-calls=1 33 
-0 31
-fe=./posix/../sysdeps/unix/sysv/linux/aarch64/sysconf.c
-
-fl=./csu/../sysdeps/nptl/libc_start_call_main.h
-fn=(below main)
-cob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-fbb8c42f76aa610a
-cfi=???
-cfn=main
-calls=1 0 
-58 31
-
-ob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-fbb8c42f76aa610a
+ob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-d6f5a6d6136c0fd5
 fl=???
-fn=__rustc::__rust_dealloc
-cfn=__rustc::__rdl_dealloc
-calls=2 0 
-0 31
-
-fn=__rustc::__rust_dealloc'2
-cfn=__rustc::__rdl_dealloc'2
-calls=5 0 
-0 62
-
-fn=std::sys::pal::unix::stack_overflow::thread_info::set_current_info
-cfn=std::rt::lang_start::<()>::{closure#0}
-calls=1 0 
-0 31
-
-fn=std::env::args_os
-cfn=__rustc::__rust_dealloc
-calls=1 0 
-0 31
-
-fn=gungraun::mat4_transpose::__gungraun_wrapper_id_mod_args::args
-cfn=gungraun::mat4_transpose::__gungraun_wrapper_mod::mat4_transpose
-calls=1 0 
-0 31
-
-fn=std::rt::lang_start::<()>::{closure#0}
-cfn=std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
-calls=1 0 
-0 31
-
 fn=(below main)
 cob=/usr/lib/aarch64-linux-gnu/libc.so.6
 cfi=./csu/../csu/libc-start.c
@@ -204,6 +80,11 @@ cfn=gungraun::mat4_transpose::__gungraun_wrapper_id_mod_args::args
 calls=1 0 
 0 31
 
+fn=gungraun::mat4_transpose::__gungraun_wrapper_id_mod_args::args
+cfn=gungraun::mat4_transpose::__gungraun_wrapper_mod::mat4_transpose
+calls=1 0 
+0 31
+
 fn=__init_cpu_features
 fi=./csu/../csu/libc-start.c
 cob=/usr/lib/aarch64-linux-gnu/libc.so.6
@@ -216,9 +97,6 @@ fe=???
 fn=std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
 cfn=gungraun::main
 calls=1 0 
-0 31
-
-fn=gungraun::mat4_transpose::__gungraun_wrapper_mod::mat4_transpose
 0 31
 
 fn=std::sys::pal::unix::stack_overflow::imp::make_handler
@@ -243,6 +121,128 @@ cfn=sysconf
 calls=1 29 
 0 31
 
+fn=__rustc::__rust_dealloc
+cfn=__rustc::__rdl_dealloc
+calls=2 0 
+0 31
+
+fn=__rustc::__rust_dealloc'2
+cfn=__rustc::__rdl_dealloc'2
+calls=5 0 
+0 62
+
+fn=gungraun::mat4_transpose::__gungraun_wrapper_mod::mat4_transpose
+0 31
+
+fn=std::sys::pal::unix::stack_overflow::thread_info::set_current_info
+cfn=std::rt::lang_start::<()>::{closure#0}
+calls=1 0 
+0 31
+
+fn=std::env::args_os
+cfn=__rustc::__rust_dealloc
+calls=1 0 
+0 31
+
+fn=std::rt::lang_start::<()>::{closure#0}
+cfn=std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+calls=1 0 
+0 31
+
+ob=/usr/lib/aarch64-linux-gnu/libc.so.6
+fl=./stdlib/./stdlib/cxa_atexit.c
+fn=__cxa_atexit
+cfn=__internal_atexit
+calls=1 36 
+68 31
+
+fn=__internal_atexit
+fi=./csu/../csu/libc-start.c
+cfi=./csu/../csu/libc-start.c
+cfn=__libc_start_main@@GLIBC_2.34'2
+calls=1 145 
+144 31
+fe=./stdlib/./stdlib/cxa_atexit.c
+
+fl=./nptl/./nptl/pthread_attr_destroy.c
+fn=pthread_attr_destroy
+fi=???
+cob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-d6f5a6d6136c0fd5
+cfi=???
+cfn=std::sys::pal::unix::stack_overflow::imp::make_handler
+calls=1 0 
+0 31
+fe=./nptl/./nptl/pthread_attr_destroy.c
+
+fl=./nptl/./nptl/pthread_getattr_np.c
+fn=pthread_getattr_np@@GLIBC_2.32
+fi=???
+cfi=./nptl/./nptl/pthread_attr_destroy.c
+cfn=pthread_attr_destroy
+calls=1 26 
+0 31
+fe=./nptl/./nptl/pthread_getattr_np.c
+
+fl=./malloc/./malloc/malloc.c
+fn=free
+fi=???
+cob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-d6f5a6d6136c0fd5
+cfi=???
+cfn=__rustc::__rust_dealloc'2
+calls=1 0 
+0 31
+fe=./malloc/./malloc/malloc.c
+
+fn=free'2
+fi=???
+cob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-d6f5a6d6136c0fd5
+cfi=???
+cfn=gungraun::main'2
+calls=1 0 
+0 31
+fi=???
+cob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-d6f5a6d6136c0fd5
+cfi=???
+cfn=gungraun::bench_mat4::__run
+calls=1 0 
+0 31
+fe=./malloc/./malloc/malloc.c
+
+fl=./csu/../csu/libc-start.c
+fn=__libc_start_main@@GLIBC_2.34
+cfi=./stdlib/./stdlib/cxa_atexit.c
+cfn=__cxa_atexit
+calls=1 67 
+312 31
+
+fn=__libc_start_main@@GLIBC_2.34'2
+cfi=./csu/../sysdeps/nptl/libc_start_call_main.h
+cfn=(below main)
+calls=1 29 
+350 31
+cob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-d6f5a6d6136c0fd5
+cfi=???
+cfn=init_have_lse_atomics
+calls=1 0 
+145 31
+
+fl=./posix/../sysdeps/unix/sysv/linux/aarch64/sysconf.c
+fn=sysconf
+fi=???
+cfi=./nptl/./nptl/pthread_getattr_np.c
+cfn=pthread_getattr_np@@GLIBC_2.32
+calls=1 33 
+0 31
+fe=./posix/../sysdeps/unix/sysv/linux/aarch64/sysconf.c
+
+fl=./csu/../sysdeps/nptl/libc_start_call_main.h
+fn=(below main)
+cob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-d6f5a6d6136c0fd5
+cfi=???
+cfn=main
+calls=1 0 
+58 31
+
 ob=/usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1
 fl=./elf/./elf/rtld.c
 fn=_dl_start
@@ -263,7 +263,7 @@ calls=1 517
 fl=./elf/./elf/dl-init.c
 fn=_dl_init
 fi=./elf/../sysdeps/aarch64/dl-start.S
-cob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-fbb8c42f76aa610a
+cob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-d6f5a6d6136c0fd5
 cfi=???
 cfn=(below main)
 calls=1 0 
