@@ -5,12 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.33.6](https://github.com/bitshifter/glam-rs/compare/0.33.5...0.33.6) - 2026-08-28
+
+### Added
+
+- Add `float_eq` support behind an optional feature ([#795](https://github.com/bitshifter/glam-rs/pull/795))
+- Add `smoothstep` methods to float scalar and float vector types ([#797](https://github.com/bitshifter/glam-rs/pull/797))
+- Add float scalar `move_towards` methods ([#796](https://github.com/bitshifter/glam-rs/pull/796))
+- Add explicit padding to scalar `Vec3A` for `bytemuck` `Pod`/`Zeroable` and `zerocopy` `IntoBytes` ([#786](https://github.com/bitshifter/glam-rs/pull/786))
+
+### Fixed
+
+- Make the `core-simd` back-end compile without std ([#789](https://github.com/bitshifter/glam-rs/pull/789))
+
 ## [0.33.5](https://github.com/bitshifter/glam-rs/compare/0.33.4...0.33.5) - 2026-08-19
 
 ### Fixed
 
-- Fix remaining 32-bit layout tests and add i686 CI coveragees ([#784](https://github.com/bitshifter/glam-rs/pull/784))
-- 32-bit I64Vec3 and U64Vec3 alignment tests ([#781](https://github.com/bitshifter/glam-rs/pull/781))
+- Fix remaining 32-bit layout tests and add i686 CI coverage ([#784](https://github.com/bitshifter/glam-rs/pull/784))
+- Fix 32-bit I64Vec3 and U64Vec3 alignment tests ([#781](https://github.com/bitshifter/glam-rs/pull/781))
 
 ## [0.33.4](https://github.com/bitshifter/glam-rs/compare/0.33.3...0.33.4) - 2026-08-18
 
