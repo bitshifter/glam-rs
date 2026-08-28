@@ -30,6 +30,12 @@ impl Prepare for CoreSimd {
             .arg("--features")
             .arg("core-simd,libm,all-types");
 
+        // libm "prefers it over std", so it must also build with std enabled.
+        let libm_cmd = toolchain::cargo(sh, tc)
+            .arg("test")
+            .arg("--features")
+            .arg("core-simd,libm");
+
         vec![
             PreparedCommand {
                 name: "core-simd".into(),
@@ -40,6 +46,11 @@ impl Prepare for CoreSimd {
                 name: "core-simd-nostd".into(),
                 command: nostd_cmd,
                 failure_message: "core-simd no-std test failed",
+            },
+            PreparedCommand {
+                name: "core-simd-libm".into(),
+                command: libm_cmd,
+                failure_message: "core-simd libm test failed",
             },
         ]
     }
