@@ -191,23 +191,28 @@ mod test {
 
     // Perturbs a value by scaling it, which nudges every component by the same
     // number of ulps away from the original.
+    macro_rules! impl_float_eq_asserts {
+        ($eps:expr, $ones:expr, $near:expr, $far:expr) => {{
+            assert_float_eq!($ones, $ones, abs_all <= 0.0);
+            assert_float_eq!($ones, $ones, ulps_all <= 0);
+
+            assert_float_eq!($ones, $near, abs_all <= 4.0 * $eps);
+            assert_float_eq!($ones, $near, rmax_all <= 4.0 * $eps);
+            assert_float_eq!($ones, $near, ulps_all <= 4);
+
+            assert_float_ne!($ones, $far, abs_all <= 4.0 * $eps);
+            assert_float_ne!($ones, $far, rmax_all <= 4.0 * $eps);
+            assert_float_ne!($ones, $far, ulps_all <= 4);
+        }};
+    }
+
     macro_rules! impl_float_eq_test {
         ($prim:ident, $type:ident, $ones:expr) => {{
             let ones: $type = $ones;
             let eps = $prim::EPSILON;
             let near = ones * (1.0 + 2.0 * eps);
             let far = ones * (1.0 + 64.0 * eps);
-
-            assert_float_eq!(ones, ones, abs_all <= 0.0);
-            assert_float_eq!(ones, ones, ulps_all <= 0);
-
-            assert_float_eq!(ones, near, abs_all <= 4.0 * eps);
-            assert_float_eq!(ones, near, rmax_all <= 4.0 * eps);
-            assert_float_eq!(ones, near, ulps_all <= 4);
-
-            assert_float_ne!(ones, far, abs_all <= 4.0 * eps);
-            assert_float_ne!(ones, far, rmax_all <= 4.0 * eps);
-            assert_float_ne!(ones, far, ulps_all <= 4);
+            impl_float_eq_asserts!(eps, ones, near, far);
         }};
         ($prim:ident, $type:ident) => {
             impl_float_eq_test!($prim, $type, $type::ONE)
@@ -220,18 +225,9 @@ mod test {
         ($prim:ident, $type:ident, $n:literal) => {{
             let eps = $prim::EPSILON;
             let ones = <$type>::from_cols_array(&[1.0; $n]);
-            let mut near_cols: [$prim; $n] = [1.0; $n];
-            near_cols.iter_mut().for_each(|x| *x += 2.0 * eps);
-            let near = <$type>::from_cols_array(&near_cols);
-            let mut far_cols: [$prim; $n] = [1.0; $n];
-            far_cols.iter_mut().for_each(|x| *x += 64.0 * eps);
-            let far = <$type>::from_cols_array(&far_cols);
-
-            assert_float_eq!(ones, ones, abs_all <= 0.0);
-            assert_float_eq!(ones, near, abs_all <= 4.0 * eps);
-            assert_float_eq!(ones, near, ulps_all <= 4);
-            assert_float_ne!(ones, far, abs_all <= 4.0 * eps);
-            assert_float_ne!(ones, far, ulps_all <= 4);
+            let near = <$type>::from_cols_array(&[1.0 + 2.0 * eps; $n]);
+            let far = <$type>::from_cols_array(&[1.0 + 64.0 * eps; $n]);
+            impl_float_eq_asserts!(eps, ones, near, far);
         }};
     }
 
