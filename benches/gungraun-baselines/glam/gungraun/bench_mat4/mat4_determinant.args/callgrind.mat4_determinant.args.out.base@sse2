@@ -1,8 +1,8 @@
 # callgrind format
 version: 1
 creator: callgrind-3.22.0
-pid: 8043
-cmd:  /home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-6dd5b7914f3104b5 --gungraun-run 00003 00000 00000
+pid: 8244
+cmd:  /home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-cd5089c9cb855eb6 --gungraun-run 00003 00000 00000
 part: 1
 thread: 1
 
@@ -22,13 +22,13 @@ summary: 54
 ob=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
 fl=???
 fn=0x000000000001f540
-cob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-6dd5b7914f3104b5
+cob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-cd5089c9cb855eb6
 cfi=???
 cfn=(below main)
 calls=1 0 
 0 54
 
-ob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-6dd5b7914f3104b5
+ob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-cd5089c9cb855eb6
 fl=???
 fn=gungraun::main
 cfn=gungraun::bench_mat4::__run
@@ -90,7 +90,7 @@ fn=<glam::f32::sse2::mat4::Mat4>::determinant
 ob=/usr/lib/x86_64-linux-gnu/libc.so.6
 fl=./csu/../sysdeps/nptl/libc_start_call_main.h
 fn=(below main)
-cob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-6dd5b7914f3104b5
+cob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-cd5089c9cb855eb6
 cfi=???
 cfn=main
 calls=1 0 

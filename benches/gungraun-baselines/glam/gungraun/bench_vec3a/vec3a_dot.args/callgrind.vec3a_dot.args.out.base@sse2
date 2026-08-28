@@ -1,8 +1,8 @@
 # callgrind format
 version: 1
 creator: callgrind-3.22.0
-pid: 8073
-cmd:  /home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-6dd5b7914f3104b5 --gungraun-run 00006 00000 00000
+pid: 8278
+cmd:  /home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-cd5089c9cb855eb6 --gungraun-run 00006 00000 00000
 part: 1
 thread: 1
 
@@ -22,13 +22,13 @@ summary: 11
 ob=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
 fl=???
 fn=0x000000000001f540
-cob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-6dd5b7914f3104b5
+cob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-cd5089c9cb855eb6
 cfi=???
 cfn=(below main)
 calls=1 0 
 0 11
 
-ob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-6dd5b7914f3104b5
+ob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-cd5089c9cb855eb6
 fl=???
 fn=main
 cfn=std::rt::lang_start_internal
@@ -65,7 +65,7 @@ calls=1 0
 ob=/usr/lib/x86_64-linux-gnu/libc.so.6
 fl=./csu/../sysdeps/nptl/libc_start_call_main.h
 fn=(below main)
-cob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-6dd5b7914f3104b5
+cob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-cd5089c9cb855eb6
 cfi=???
 cfn=main
 calls=1 0 
@@ -78,7 +78,7 @@ cfn=(below main)
 calls=1 29 
 360 11
 
-ob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-6dd5b7914f3104b5
+ob=/home/runner/work/glam-rs/glam-rs/target/release/deps/gungraun-cd5089c9cb855eb6
 fl=???
 fn=gungraun::vec3a_dot::__gungraun_wrapper_mod::vec3a_dot
 0 11
