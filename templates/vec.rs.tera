@@ -273,10 +273,7 @@ use core::arch::wasm32::*;
 use core::arch::wasm64::*;
 {% elif is_coresimd %}
 use core::simd::{cmp::SimdPartialEq, cmp::SimdPartialOrd, num::SimdFloat, *};
-// StdFloat is only available with std. Without it the float methods below fall back to
-// the same scalar `math` calls the scalar backend uses.
-#[cfg(feature = "std")]
-use std::simd::StdFloat;
+use crate::coresimd;
 {% elif is_neon %}
 use core::arch::aarch64::*;
 {% endif %}
@@ -1729,17 +1726,7 @@ impl {{ self_t }} {
             let dot = dot{{ dim }}_in_x(self.0, self.0);
             f32x4_extract_lane::<0>(f32x4_sqrt(dot))
         {% elif is_coresimd %}
-            #[cfg(feature = "std")]
-            {
-                let dot = dot{{ dim }}_in_x(self.0, self.0);
-                dot.sqrt()[0]
-            }
-            // without std there is no SIMD sqrt, so only the one lane that is used is
-            // evaluated rather than all four
-            #[cfg(not(feature = "std"))]
-            {
-                math::sqrt(self.dot(self))
-            }
+            math::sqrt(self.dot(self))
         {% endif %}
     }
 
@@ -1769,7 +1756,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn length_recip(self) -> {{ scalar_t }} {
-        {% if is_scalar or is_neon %}
+        {% if is_scalar or is_neon or is_coresimd %}
             1.0 / self.length()
         {% elif is_sse2 %}
             unsafe {
@@ -1779,16 +1766,6 @@ impl {{ self_t }} {
         {% elif is_wasm %}
             let dot = dot{{ dim }}_in_x(self.0, self.0);
             f32x4_extract_lane::<0>(f32x4_div(Self::ONE.0, f32x4_sqrt(dot)))
-        {% elif is_coresimd %}
-            #[cfg(feature = "std")]
-            {
-                let dot = dot{{ dim }}_in_x(self.0, self.0);
-                dot.sqrt().recip()[0]
-            }
-            #[cfg(not(feature = "std"))]
-            {
-                1.0 / self.length()
-            }
         {% endif %}
     }
 
@@ -1864,7 +1841,7 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn normalize(self) -> Self {
-        {% if is_scalar or is_neon %}
+        {% if is_scalar or is_neon or is_coresimd %}
             #[allow(clippy::let_and_return)]
             let normalized = self.mul(self.length_recip());
             glam_assert!(normalized.is_finite());
@@ -1881,17 +1858,6 @@ impl {{ self_t }} {
             let length = f32x4_sqrt(dot{{ dim }}_into_v128(self.0, self.0));
             #[allow(clippy::let_and_return)]
             let normalized = Self(f32x4_div(self.0, length));
-            glam_assert!(normalized.is_finite());
-            normalized
-        {% elif is_coresimd %}
-            // with std this is a single SIMD sqrt, without it every lane holds the same
-            // value so the scalar sqrt is done once and reused
-            #[cfg(feature = "std")]
-            let length = dot{{ dim }}_into_f32x4(self.0, self.0).sqrt();
-            #[cfg(not(feature = "std"))]
-            let length = f32x4::splat(math::sqrt(self.dot(self)));
-            #[allow(clippy::let_and_return)]
-            let normalized = Self(self.0 / length);
             glam_assert!(normalized.is_finite());
             normalized
         {% else %}
@@ -2049,20 +2015,7 @@ impl {{ self_t }} {
         {% elif is_wasm %}
             Self(f32x4_nearest(self.0))
         {% elif is_coresimd %}
-            #[cfg(feature = "std")]
-            {
-                Self(self.0.round())
-            }
-            // without std this is done per element, so only the elements that are
-            // actually used get evaluated (Vec3A does not touch w)
-            #[cfg(not(feature = "std"))]
-            {
-                Self::new(
-                    {% for c in components %}
-                        math::round(self.{{ c }}),
-                    {%- endfor %}
-                )
-            }
+            Self(coresimd::round{{dim}}(self.0))
         {% elif is_neon %}
             Self(unsafe { vrndnq_f32(self.0) })
         {% else %}
@@ -2086,20 +2039,7 @@ impl {{ self_t }} {
         {% elif is_wasm %}
             Self(f32x4_floor(self.0))
         {% elif is_coresimd %}
-            #[cfg(feature = "std")]
-            {
-                Self(self.0.floor())
-            }
-            // without std this is done per element, so only the elements that are
-            // actually used get evaluated (Vec3A does not touch w)
-            #[cfg(not(feature = "std"))]
-            {
-                Self::new(
-                    {% for c in components %}
-                        math::floor(self.{{ c }}),
-                    {%- endfor %}
-                )
-            }
+            Self(coresimd::floor{{dim}}(self.0))
         {% elif is_neon %}
             Self(unsafe { vrndmq_f32(self.0) })
         {% else %}
@@ -2123,20 +2063,7 @@ impl {{ self_t }} {
         {% elif is_wasm %}
             Self(f32x4_ceil(self.0))
         {% elif is_coresimd %}
-            #[cfg(feature = "std")]
-            {
-                Self(self.0.ceil())
-            }
-            // without std this is done per element, so only the elements that are
-            // actually used get evaluated (Vec3A does not touch w)
-            #[cfg(not(feature = "std"))]
-            {
-                Self::new(
-                    {% for c in components %}
-                        math::ceil(self.{{ c }}),
-                    {%- endfor %}
-                )
-            }
+            Self(coresimd::ceil{{dim}}(self.0))
         {% elif is_neon %}
             Self(unsafe { vrndpq_f32(self.0) })
         {% else %}
@@ -2160,20 +2087,7 @@ impl {{ self_t }} {
         {% elif is_wasm %}
             Self(f32x4_trunc(self.0))
         {% elif is_coresimd %}
-            #[cfg(feature = "std")]
-            {
-                Self(self.0.trunc())
-            }
-            // without std this is done per element, so only the elements that are
-            // actually used get evaluated (Vec3A does not touch w)
-            #[cfg(not(feature = "std"))]
-            {
-                Self::new(
-                    {% for c in components %}
-                        math::trunc(self.{{ c }}),
-                    {%- endfor %}
-                )
-            }
+            Self(coresimd::trunc{{dim}}(self.0))
         {% elif is_neon %}
             Self(unsafe { vrndq_f32(self.0) })
         {% else %}
@@ -2498,18 +2412,7 @@ impl {{ self_t }} {
             #[cfg(not(target_feature = "fma"))]
         {% endif %}
         {% if is_coresimd %}
-            #[cfg(feature = "std")]
-            {
-                Self(self.0.mul_add(a.0, b.0))
-            }
-            #[cfg(not(feature = "std"))]
-            {
-                Self::new(
-                    {% for c in components %}
-                        math::mul_add(self.{{ c }}, a.{{ c }}, b.{{ c }}),
-                    {%- endfor %}
-                )
-            }
+            Self(coresimd::mul_add{{dim}}(self.0, a.0, b.0))
         {% elif is_neon %}
             Self(unsafe { vfmaq_f32(b.0, self.0, a.0) })
         {% else %}
