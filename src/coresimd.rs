@@ -1,19 +1,12 @@
 use core::simd::{num::SimdFloat, *};
 
-#[cfg(any(feature = "libm", all(feature = "nostd-libm", not(feature = "std"))))]
+#[cfg(not(feature = "std"))]
 pub(crate) use libm_math::*;
 
-#[cfg(all(not(feature = "libm"), feature = "std"))]
+#[cfg(feature = "std")]
 pub(crate) use std_math::*;
 
-#[cfg(all(
-    not(feature = "libm"),
-    not(feature = "std"),
-    not(feature = "nostd-libm")
-))]
-pub(crate) use no_backend_math::*;
-
-#[cfg(all(not(feature = "libm"), feature = "std"))]
+#[cfg(feature = "std")]
 mod std_math {
     use core::simd::f32x4;
     use std::simd::StdFloat;
@@ -79,7 +72,7 @@ mod std_math {
     }
 }
 
-#[cfg(any(feature = "libm", all(feature = "nostd-libm", not(feature = "std"))))]
+#[cfg(not(feature = "std"))]
 mod libm_math {
     use crate::f32::math;
     use core::simd::f32x4;
@@ -192,65 +185,6 @@ mod libm_math {
             math::sqrt(v[2]),
             math::sqrt(v[3]),
         ])
-    }
-}
-
-// Used to reduce the number of compilation errors, in the event that no other
-// math backend is specified.
-#[cfg(all(
-    not(feature = "libm"),
-    not(feature = "std"),
-    not(feature = "nostd-libm")
-))]
-mod no_backend_math {
-    use core::simd::f32x4;
-
-    pub fn round3(_: f32x4) -> f32x4 {
-        unimplemented!()
-    }
-
-    pub fn floor3(_: f32x4) -> f32x4 {
-        unimplemented!()
-    }
-
-    pub fn ceil3(_: f32x4) -> f32x4 {
-        unimplemented!()
-    }
-
-    pub fn trunc3(_: f32x4) -> f32x4 {
-        unimplemented!()
-    }
-
-    pub fn mul_add3(_: f32x4, _: f32x4, _: f32x4) -> f32x4 {
-        unimplemented!()
-    }
-
-    pub fn round4(_: f32x4) -> f32x4 {
-        unimplemented!()
-    }
-
-    pub fn floor4(_: f32x4) -> f32x4 {
-        unimplemented!()
-    }
-
-    pub fn ceil4(_: f32x4) -> f32x4 {
-        unimplemented!()
-    }
-
-    pub fn trunc4(_: f32x4) -> f32x4 {
-        unimplemented!()
-    }
-
-    pub fn mul_add4(_: f32x4, _: f32x4, _: f32x4) -> f32x4 {
-        unimplemented!()
-    }
-
-    pub fn sqrt3(_: f32x4) -> f32x4 {
-        unimplemented!()
-    }
-
-    pub fn sqrt4(_: f32x4) -> f32x4 {
-        unimplemented!()
     }
 }
 
