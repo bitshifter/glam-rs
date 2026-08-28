@@ -2216,11 +2216,15 @@ impl {{ self_t }} {
     #[inline]
     #[must_use]
     pub fn sqrt(self) -> Self {
-        Self::new(
-            {% for c in components %}
-                math::sqrt(self.{{ c }}),
-            {%- endfor %}
-        )
+        {% if is_coresimd %}
+            Self(coresimd::sqrt{{dim}}(self.0))
+        {% else %}
+            Self::new(
+                {% for c in components %}
+                    math::sqrt(self.{{ c }}),
+                {%- endfor %}
+            )
+        {% endif %}
     }
 
     /// Returns a vector containing the cosine for each element of `self`.

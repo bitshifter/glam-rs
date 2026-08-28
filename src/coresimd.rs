@@ -67,6 +67,16 @@ mod std_math {
     pub fn mul_add4(v: f32x4, a: f32x4, b: f32x4) -> f32x4 {
         v.mul_add(a, b)
     }
+
+    #[inline]
+    pub fn sqrt3(v: f32x4) -> f32x4 {
+        v.sqrt()
+    }
+
+    #[inline]
+    pub fn sqrt4(v: f32x4) -> f32x4 {
+        v.sqrt()
+    }
 }
 
 #[cfg(any(feature = "libm", all(feature = "nostd-libm", not(feature = "std"))))]
@@ -168,6 +178,21 @@ mod libm_math {
             math::mul_add(v[3], a[3], b[3]),
         ])
     }
+
+    #[inline]
+    pub fn sqrt3(v: f32x4) -> f32x4 {
+        f32x4::from_array([math::sqrt(v[0]), math::sqrt(v[1]), math::sqrt(v[2]), v[3]])
+    }
+
+    #[inline]
+    pub fn sqrt4(v: f32x4) -> f32x4 {
+        f32x4::from_array([
+            math::sqrt(v[0]),
+            math::sqrt(v[1]),
+            math::sqrt(v[2]),
+            math::sqrt(v[3]),
+        ])
+    }
 }
 
 // Used to reduce the number of compilation errors, in the event that no other
@@ -217,6 +242,14 @@ mod no_backend_math {
     }
 
     pub fn mul_add4(_: f32x4, _: f32x4, _: f32x4) -> f32x4 {
+        unimplemented!()
+    }
+
+    pub fn sqrt3(_: f32x4) -> f32x4 {
+        unimplemented!()
+    }
+
+    pub fn sqrt4(_: f32x4) -> f32x4 {
         unimplemented!()
     }
 }

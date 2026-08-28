@@ -896,12 +896,7 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn sqrt(self) -> Self {
-        Self::new(
-            math::sqrt(self.x),
-            math::sqrt(self.y),
-            math::sqrt(self.z),
-            math::sqrt(self.w),
-        )
+        Self(coresimd::sqrt4(self.0))
     }
 
     /// Returns a vector containing the cosine for each element of `self`.

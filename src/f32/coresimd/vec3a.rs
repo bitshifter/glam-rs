@@ -894,7 +894,7 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn sqrt(self) -> Self {
-        Self::new(math::sqrt(self.x), math::sqrt(self.y), math::sqrt(self.z))
+        Self(coresimd::sqrt3(self.0))
     }
 
     /// Returns a vector containing the cosine for each element of `self`.
