@@ -9,10 +9,7 @@ Session.vim
 .cargo-ok
 cargo-timing*.html
 
-# Gungraun benchmark output; only the committed baselines (*.base@*) are kept
-benches/gungraun-baselines/**/callgrind.*
-!benches/gungraun-baselines/**/*.base@*
-# but the pinned lockfile used for the gungraun benchmarks is committed
-!benches/gungraun-baselines/Cargo.lock
+# Gungraun baselines are fetched from bitshifter/glam-bench-baselines at build time
+/benches/gungraun-baselines/
 # transient backup written by the ci bench command while it runs
 /Cargo.lock.bench-backup

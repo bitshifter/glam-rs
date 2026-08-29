@@ -5,10 +5,6 @@ on:
 concurrency:
   group: ${{ github.workflow }}
 
-permissions:
-  contents: write
-  pull-requests: write
-
 env:
   # Keep in sync with BENCH_TOOLCHAIN in bench.yml.
   BENCH_TOOLCHAIN: 1.98.0
@@ -19,21 +15,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # The ci tool saves/compares the sse2 and scalar-math baselines on
+        # x86_64 Linux and the neon baseline on aarch64 Linux. Valgrind
+        # doesn't support macOS, so there are no macOS baselines.
         os: [ubuntu-latest, ubuntu-24.04-arm]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v7
         with:
           submodules: true
+      - uses: actions/checkout@v7
+        with:
+          repository: bitshifter/glam-bench-baselines
+          path: benches/gungraun-baselines
+          token: ${{ secrets.GLAM_BENCH_BASELINES_TOKEN }}
       - uses: Swatinem/rust-cache@v2
       - run: rustup update --no-self-update ${{ env.BENCH_TOOLCHAIN }}
       - run: rustup default ${{ env.BENCH_TOOLCHAIN }}
       - name: Install valgrind
         run: sudo apt-get update && sudo apt-get install -y valgrind
-      - name: Remove committed baselines
-        run: |
-          find benches/gungraun-baselines -type f -name '*.base@*' -delete
-          find benches/gungraun-baselines -type d -empty -delete
       - run: cargo run --release -p ci -- bench --save
       - name: Keep only baseline files
         run: |
@@ -45,47 +45,34 @@ jobs:
           path: benches/gungraun-baselines
           if-no-files-found: error
 
-  pr:
-    name: Open PR
+  commit:
+    name: Commit baselines
     needs: save
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: Remove committed baselines
+        with:
+          repository: bitshifter/glam-bench-baselines
+          path: baselines
+          token: ${{ secrets.GLAM_BENCH_BASELINES_TOKEN }}
+      - name: Clear previous baselines
         run: |
-          find benches/gungraun-baselines -type f -name '*.base@*' -delete
-          find benches/gungraun-baselines -type d -empty -delete
+          cd baselines
+          rm -rf glam Cargo.lock
       - uses: actions/download-artifact@v8
         with:
           pattern: baselines-*
-          path: benches/gungraun-baselines
+          path: baselines
           merge-multiple: true
       - name: Commit baselines
-        id: commit
         run: |
+          cd baselines
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # Unique branch per run so we never collide with a previously
-          # merged PR that still points at a reused branch name.
-          branch="chore/gungraun-baselines-${{ github.run_id }}"
-          git checkout -B "$branch"
-          git add benches/gungraun-baselines
+          git add -A
           if git diff --cached --quiet; then
             echo "no baseline changes"
             exit 0
           fi
-          git commit -m "chore: update gungraun baselines"
-          git push -f origin "$branch"
-          echo "changed=true" >> "$GITHUB_OUTPUT"
-          echo "branch=$branch" >> "$GITHUB_OUTPUT"
-      - name: Open pull request
-        if: steps.commit.outputs.changed == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # A fresh per-run branch has no existing PR, so no guard needed.
-          gh pr create \
-            --base "${{ github.ref_name }}" \
-            --head "${{ steps.commit.outputs.branch }}" \
-            --title "chore: update gungraun baselines" \
-            --body "Regenerated gungraun baselines (sse2, scalar-math, neon) with toolchain ${{ env.BENCH_TOOLCHAIN }}."
+          git commit -m "chore: update gungraun baselines from glam-rs@${{ github.sha }}"
+          git push
