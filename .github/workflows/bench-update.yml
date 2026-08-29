@@ -29,6 +29,10 @@ jobs:
           repository: bitshifter/glam-bench-baselines
           path: benches/gungraun-baselines
           token: ${{ secrets.GLAM_BENCH_BASELINES_TOKEN }}
+      - name: Remove baselines saved by other runners
+        run: |
+          find benches/gungraun-baselines -type f -name '*.base@*' -delete
+          find benches/gungraun-baselines -type d -empty -delete
       - uses: Swatinem/rust-cache@v2
       - run: rustup update --no-self-update ${{ env.BENCH_TOOLCHAIN }}
       - run: rustup default ${{ env.BENCH_TOOLCHAIN }}
