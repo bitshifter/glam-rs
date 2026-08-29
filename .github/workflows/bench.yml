@@ -28,6 +28,10 @@ jobs:
       - uses: actions/checkout@v7
         with:
           submodules: true
+      - uses: actions/checkout@v7
+        with:
+          repository: bitshifter/glam-bench-baselines
+          path: benches/gungraun-baselines
       - uses: Swatinem/rust-cache@v2
       - run: rustup update --no-self-update ${{ env.BENCH_TOOLCHAIN }}
       - run: rustup default ${{ env.BENCH_TOOLCHAIN }}
