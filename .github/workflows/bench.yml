@@ -20,8 +20,9 @@ jobs:
       fail-fast: false
       matrix:
         # The ci tool saves/compares the sse2 and scalar-math baselines on
-        # x86_64 Linux and the neon baseline on aarch64 Linux. Valgrind
-        # doesn't support macOS, so there are no macOS baselines.
+        # x86_64 Linux and the neon and scalar-math baselines on aarch64
+        # Linux. Valgrind doesn't support macOS, so there are no macOS
+        # baselines.
         os: [ubuntu-latest, ubuntu-24.04-arm]
     runs-on: ${{ matrix.os }}
     steps:

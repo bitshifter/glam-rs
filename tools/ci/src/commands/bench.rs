@@ -36,6 +36,8 @@ fn workspace_path(file: &str) -> PathBuf {
 struct Backend {
     /// Baseline name passed to `--save-baseline` / `--baseline`.
     name: &'static str,
+    /// Name shown by `--list-backends` and accepted by `--backend`.
+    label: &'static str,
     /// Features to enable on top of the default features.
     features: Option<&'static str>,
 }
@@ -47,18 +49,28 @@ fn host_backends() -> Vec<Backend> {
     match (std::env::consts::OS, std::env::consts::ARCH) {
         ("linux", "x86_64") => vec![
             Backend {
-                name: "sse2",
+                name: "x86_64_sse2",
+                label: "sse2",
                 features: None,
             },
             Backend {
-                name: "scalar_math",
+                name: "x86_64_scalar_math",
+                label: "scalar-math",
                 features: Some("scalar-math"),
             },
         ],
-        ("linux", "aarch64") => vec![Backend {
-            name: "neon",
-            features: None,
-        }],
+        ("linux", "aarch64") => vec![
+            Backend {
+                name: "aarch64_neon",
+                label: "neon",
+                features: None,
+            },
+            Backend {
+                name: "aarch64_scalar_math",
+                label: "scalar-math",
+                features: Some("scalar-math"),
+            },
+        ],
         (os, arch) => {
             eprintln!("skipping gungraun benches: no baselines are tracked for {arch}-{os}");
             Vec::new()
@@ -66,20 +78,21 @@ fn host_backends() -> Vec<Backend> {
     }
 }
 
-/// The display name for a backend: like its baseline name but using dashes
-/// (`scalar_math` -> `scalar-math`), matching how cargo features are spelled.
-#[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+/// The display name for a backend, shown by `--list-backends`.
+#[cfg(target_os = "linux")]
 fn display_name(backend: &Backend) -> String {
-    backend.name.replace('_', "-")
+    backend.label.to_string()
 }
 
 /// Resolve a `--backend` argument to a `Backend` available on this host,
-/// matching the baseline name with `-` and `_` treated interchangeably
+/// matching the label with `-` and `_` treated interchangeably
 /// (so `scalar-math` and `scalar_math` both resolve, like cargo feature names).
-#[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+#[cfg(target_os = "linux")]
 fn resolve_backend<'a>(backends: &'a [Backend], name: &str) -> Option<&'a Backend> {
     let normalized = name.replace('-', "_");
-    backends.iter().find(|b| b.name == normalized)
+    backends
+        .iter()
+        .find(|b| b.label.replace('-', "_") == normalized)
 }
 
 /// Delete saved baseline files for `name` below `dir`, so that removed or
@@ -193,14 +206,14 @@ pub struct Bench {
     )]
     pub save: bool,
 
-    #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+    #[cfg(target_os = "linux")]
     #[argh(
         option,
         description = "backend to bench (repeatable); defaults to all backends available on this host"
     )]
     pub backend: Vec<String>,
 
-    #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+    #[cfg(target_os = "linux")]
     #[argh(switch, description = "list backends available on this host and exit")]
     pub list_backends: bool,
 }
@@ -215,11 +228,11 @@ impl Prepare for Bench {
             return Vec::new();
         }
 
-        // Only x86_64 Linux has more than one backend to choose between; on
-        // every other host the backend-selection options don't exist, so just
-        // bench everything available.
+        // Linux hosts have more than one backend to choose between; on
+        // non-Linux hosts the backend-selection options don't exist (and
+        // `host_backends` is empty, so we returned above).
         let selected: Vec<&Backend> = {
-            #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+            #[cfg(target_os = "linux")]
             {
                 if self.list_backends {
                     for backend in &backends {
@@ -247,7 +260,7 @@ impl Prepare for Bench {
                         .collect()
                 }
             }
-            #[cfg(not(all(target_os = "linux", target_arch = "x86_64")))]
+            #[cfg(not(target_os = "linux"))]
             {
                 backends.iter().collect()
             }
