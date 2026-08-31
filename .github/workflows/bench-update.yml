@@ -33,6 +33,7 @@ jobs:
       - name: Remove baselines saved by other runners
         run: |
           find benches/gungraun-baselines -type f -name '*.base@*' -delete
+          rm -f benches/gungraun-baselines/x86_64.md benches/gungraun-baselines/aarch64.md
           find benches/gungraun-baselines -type d -empty -delete
       - uses: Swatinem/rust-cache@v2
       - run: rustup update --no-self-update ${{ env.BENCH_TOOLCHAIN }}
