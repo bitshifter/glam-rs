@@ -16,8 +16,9 @@ jobs:
       fail-fast: false
       matrix:
         # The ci tool saves/compares the sse2 and scalar-math baselines on
-        # x86_64 Linux and the neon baseline on aarch64 Linux. Valgrind
-        # doesn't support macOS, so there are no macOS baselines.
+        # x86_64 Linux and the neon and scalar-math baselines on aarch64
+        # Linux. Valgrind doesn't support macOS, so there are no macOS
+        # baselines.
         os: [ubuntu-latest, ubuntu-24.04-arm]
     runs-on: ${{ matrix.os }}
     steps:
@@ -41,7 +42,7 @@ jobs:
       - run: cargo run --release -p ci -- bench --save
       - name: Keep only baseline files
         run: |
-          find benches/gungraun-baselines -type f ! -name '*.base@*' ! -name 'Cargo.lock' -delete
+          find benches/gungraun-baselines -type f ! -name '*.base@*' ! -name 'Cargo.lock' ! -name 'x86_64.md' ! -name 'aarch64.md' -delete
           find benches/gungraun-baselines -type d -empty -delete
       - uses: actions/upload-artifact@v7
         with:
@@ -62,7 +63,7 @@ jobs:
       - name: Clear previous baselines
         run: |
           cd baselines
-          rm -rf glam Cargo.lock
+          rm -rf glam Cargo.lock x86_64.md aarch64.md
       - uses: actions/download-artifact@v8
         with:
           pattern: baselines-*
