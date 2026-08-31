@@ -1,3 +1,4 @@
+use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -116,6 +117,128 @@ fn remove_with_suffix(dir: &Path, suffix: &str) {
             let _ = fs::remove_file(&path);
         }
     }
+}
+
+/// Read the instruction count (`summary:`) out of a callgrind `.out` file.
+fn summary_ir(path: &Path) -> Option<u64> {
+    fs::read_to_string(path)
+        .ok()?
+        .lines()
+        .find_map(|line| line.trim().strip_prefix("summary: ")?.trim().parse().ok())
+}
+
+/// Collect instruction counts for every benchmark saved under `name`, keyed by
+/// benchmark name (with the default `.args` sub-case suffix dropped).
+fn collect_ir(dir: &Path, name: &str) -> BTreeMap<String, u64> {
+    let suffix = format!(".out.base@{name}");
+    let mut out = BTreeMap::new();
+    collect_ir_files(dir, &suffix, &mut out);
+    out
+}
+
+fn collect_ir_files(dir: &Path, suffix: &str, out: &mut BTreeMap<String, u64>) {
+    let Ok(entries) = fs::read_dir(dir) else {
+        return;
+    };
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if path.is_dir() {
+            collect_ir_files(&path, suffix, out);
+        } else if let Some(file_name) = path.file_name().map(|n| n.to_string_lossy().into_owned()) {
+            if let Some(stem) = file_name.strip_suffix(suffix) {
+                let bench = stem.strip_prefix("callgrind.").unwrap_or(stem);
+                let bench = bench.strip_suffix(".args").unwrap_or(bench);
+                if let Some(ir) = summary_ir(&path) {
+                    out.insert(bench.to_string(), ir);
+                }
+            }
+        }
+    }
+}
+
+/// Run a command and return its trimmed stdout, or `"unknown"` on failure.
+fn command_stdout(sh: &Shell, program: &str, args: &[&str]) -> String {
+    let mut cmd = sh.cmd(program);
+    for arg in args {
+        cmd = cmd.arg(*arg);
+    }
+    cmd.read()
+        .map(|s| s.trim().to_string())
+        .unwrap_or_else(|_| "unknown".into())
+}
+
+fn rustc_host(sh: &Shell) -> String {
+    let fallback = || format!("{}-{}", std::env::consts::ARCH, std::env::consts::OS);
+    let Ok(output) = sh.cmd("rustc").arg("-vV").read() else {
+        return fallback();
+    };
+    output
+        .lines()
+        .find_map(|line| line.trim().strip_prefix("host: ").map(str::to_string))
+        .unwrap_or_else(fallback)
+}
+
+/// Write a `{arch}.md` summary of the saved baselines for this host: one row
+/// per benchmark, one column per backend.
+fn write_summary(sh: &Shell, backends: &[Backend], gungraun: &str) {
+    let home = Path::new(BASELINE_HOME);
+    let arch = std::env::consts::ARCH;
+
+    let per_backend: Vec<(&Backend, BTreeMap<String, u64>)> = backends
+        .iter()
+        .map(|backend| (backend, collect_ir(home, backend.name)))
+        .filter(|(_, ir)| !ir.is_empty())
+        .collect();
+
+    if per_backend.is_empty() {
+        return;
+    }
+
+    let mut benches: BTreeSet<String> = BTreeSet::new();
+    for (_, ir) in &per_backend {
+        benches.extend(ir.keys().cloned());
+    }
+
+    let mut table = String::new();
+    table.push_str(&format!("# {arch} benchmarks\n\n"));
+    table.push_str(&format!(
+        "- glam-rs commit: `{}`\n",
+        command_stdout(sh, "git", &["rev-parse", "HEAD"])
+    ));
+    table.push_str(&format!(
+        "- rustc: `{}`\n",
+        command_stdout(sh, "rustc", &["--version"])
+    ));
+    table.push_str(&format!(
+        "- valgrind: `{}`\n",
+        command_stdout(sh, "valgrind", &["--version"])
+    ));
+    table.push_str(&format!("- gungraun: `{gungraun}`\n"));
+    table.push_str(&format!("- target: `{}`\n\n", rustc_host(sh)));
+
+    table.push_str("| Benchmark |");
+    for (backend, _) in &per_backend {
+        table.push_str(&format!(" {} |", backend.label));
+    }
+    table.push('\n');
+    table.push_str("| --- |");
+    for _ in &per_backend {
+        table.push_str(" --- |");
+    }
+    table.push('\n');
+
+    for bench in &benches {
+        table.push_str(&format!("| `{bench}` |"));
+        for (_, ir) in &per_backend {
+            match ir.get(bench) {
+                Some(count) => table.push_str(&format!(" {count} |")),
+                None => table.push_str(" — |"),
+            }
+        }
+        table.push('\n');
+    }
+
+    fs::write(home.join(format!("{arch}.md")), table).expect("failed to write the bench summary");
 }
 
 /// The bench lockfile swapped in as `Cargo.lock`: `Some(Some(backup))` if an
@@ -356,6 +479,7 @@ impl Prepare for Bench {
             // Persist the lockfile the benchmarks were built with.
             fs::copy(workspace_path("Cargo.lock"), BENCH_LOCK)
                 .expect("failed to update the bench lockfile");
+            write_summary(sh, &backends, &version);
         }
 
         match failure {
@@ -366,5 +490,33 @@ impl Prepare for Bench {
             }],
             None => Vec::new(),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn collects_ir_from_baseline_files() {
+        let dir = std::env::temp_dir().join(format!("glam-ci-bench-test-{}", std::process::id()));
+
+        let args_out = dir.join(
+            "glam/gungraun/bench_mat2/mat2_determinant.args/callgrind.mat2_determinant.args.out.base@x86_64_sse2",
+        );
+        fs::create_dir_all(args_out.parent().unwrap()).unwrap();
+        fs::write(&args_out, "events: Ir\nsummary: 123\n").unwrap();
+
+        let custom_out = dir.join(
+            "glam/gungraun/bench_quat/quat_lerp.positive_dot/callgrind.quat_lerp.positive_dot.out.base@x86_64_sse2",
+        );
+        fs::create_dir_all(custom_out.parent().unwrap()).unwrap();
+        fs::write(&custom_out, "summary: 42\n").unwrap();
+
+        let ir = collect_ir(&dir, "x86_64_sse2");
+        assert_eq!(ir.get("mat2_determinant"), Some(&123));
+        assert_eq!(ir.get("quat_lerp.positive_dot"), Some(&42));
+
+        fs::remove_dir_all(&dir).unwrap();
     }
 }

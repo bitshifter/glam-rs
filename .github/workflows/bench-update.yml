@@ -42,7 +42,7 @@ jobs:
       - run: cargo run --release -p ci -- bench --save
       - name: Keep only baseline files
         run: |
-          find benches/gungraun-baselines -type f ! -name '*.base@*' ! -name 'Cargo.lock' -delete
+          find benches/gungraun-baselines -type f ! -name '*.base@*' ! -name 'Cargo.lock' ! -name 'x86_64.md' ! -name 'aarch64.md' -delete
           find benches/gungraun-baselines -type d -empty -delete
       - uses: actions/upload-artifact@v7
         with:
@@ -63,7 +63,7 @@ jobs:
       - name: Clear previous baselines
         run: |
           cd baselines
-          rm -rf glam Cargo.lock
+          rm -rf glam Cargo.lock x86_64.md aarch64.md
       - uses: actions/download-artifact@v8
         with:
           pattern: baselines-*
