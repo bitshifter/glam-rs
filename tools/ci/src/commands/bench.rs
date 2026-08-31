@@ -39,6 +39,8 @@ struct Backend {
     name: &'static str,
     /// Name shown by `--list-backends` and accepted by `--backend`.
     label: &'static str,
+    /// Name used for the summary table column header.
+    header: &'static str,
     /// Features to enable on top of the default features.
     features: Option<&'static str>,
 }
@@ -52,11 +54,13 @@ fn host_backends() -> Vec<Backend> {
             Backend {
                 name: "x86_64_sse2",
                 label: "sse2",
+                header: "sse2",
                 features: None,
             },
             Backend {
                 name: "x86_64_scalar_math",
                 label: "scalar-math",
+                header: "scalar",
                 features: Some("scalar-math"),
             },
         ],
@@ -64,11 +68,13 @@ fn host_backends() -> Vec<Backend> {
             Backend {
                 name: "aarch64_neon",
                 label: "neon",
+                header: "neon",
                 features: None,
             },
             Backend {
                 name: "aarch64_scalar_math",
                 label: "scalar-math",
+                header: "scalar",
                 features: Some("scalar-math"),
             },
         ],
@@ -218,7 +224,7 @@ fn write_summary(sh: &Shell, backends: &[Backend], gungraun: &str) {
 
     table.push_str("| Benchmark |");
     for (backend, _) in &per_backend {
-        table.push_str(&format!(" {} |", backend.label));
+        table.push_str(&format!(" {} |", backend.header));
     }
     let simd = per_backend.iter().find(|(b, _)| b.features.is_none());
     let scalar = per_backend
@@ -230,10 +236,10 @@ fn write_summary(sh: &Shell, backends: &[Backend], gungraun: &str) {
     table.push('\n');
     table.push_str("| --- |");
     for _ in &per_backend {
-        table.push_str(" --- |");
+        table.push_str(" ---: |");
     }
     if simd.is_some() && scalar.is_some() {
-        table.push_str(" --- |");
+        table.push_str(" ---: |");
     }
     table.push('\n');
 
