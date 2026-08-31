@@ -220,9 +220,19 @@ fn write_summary(sh: &Shell, backends: &[Backend], gungraun: &str) {
     for (backend, _) in &per_backend {
         table.push_str(&format!(" {} |", backend.label));
     }
+    let simd = per_backend.iter().find(|(b, _)| b.features.is_none());
+    let scalar = per_backend
+        .iter()
+        .find(|(b, _)| b.features == Some("scalar-math"));
+    if simd.is_some() && scalar.is_some() {
+        table.push_str(" Δ simd−scalar |");
+    }
     table.push('\n');
     table.push_str("| --- |");
     for _ in &per_backend {
+        table.push_str(" --- |");
+    }
+    if simd.is_some() && scalar.is_some() {
         table.push_str(" --- |");
     }
     table.push('\n');
@@ -233,6 +243,12 @@ fn write_summary(sh: &Shell, backends: &[Backend], gungraun: &str) {
             match ir.get(bench) {
                 Some(count) => table.push_str(&format!(" {count} |")),
                 None => table.push_str(" — |"),
+            }
+        }
+        if let (Some((_, simd_ir)), Some((_, scalar_ir))) = (simd, scalar) {
+            match (simd_ir.get(bench), scalar_ir.get(bench)) {
+                (Some(s), Some(c)) => table.push_str(&format!(" {:+} |", *s as i64 - *c as i64)),
+                _ => table.push_str(" — |"),
             }
         }
         table.push('\n');
