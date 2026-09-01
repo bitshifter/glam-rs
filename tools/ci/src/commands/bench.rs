@@ -7,20 +7,12 @@ use xshell::Shell;
 
 use crate::args::Args;
 use crate::prepare::{Prepare, PreparedCommand};
+use crate::toolchain;
 
 /// Where baselines are committed, relative to this crate.
 const BASELINE_HOME: &str = concat!(
     env!("CARGO_MANIFEST_DIR"),
     "/../../benches/gungraun-baselines"
-);
-
-/// Lockfile the benchmarks are built with. Instruction counts are only
-/// reproducible for an identical dependency resolution (crate disambiguators
-/// affect codegen), so the benchmarks pin their own lockfile instead of using
-/// the repository's untracked, floating `Cargo.lock`.
-const BENCH_LOCK: &str = concat!(
-    env!("CARGO_MANIFEST_DIR"),
-    "/../../benches/gungraun-baselines/Cargo.lock"
 );
 
 /// Where the ci tool installs `gungraun-runner` (kept off PATH). The runner
@@ -43,6 +35,8 @@ struct Backend {
     header: &'static str,
     /// Features to enable on top of the default features.
     features: Option<&'static str>,
+    /// Toolchain to use; backends requiring one are saved but not checked by default.
+    toolchain: Option<&'static str>,
 }
 
 /// Instruction counts are only comparable between identical toolchains and
@@ -56,12 +50,21 @@ fn host_backends() -> Vec<Backend> {
                 label: "sse2",
                 header: "sse2",
                 features: None,
+                toolchain: None,
             },
             Backend {
                 name: "x86_64_scalar_math",
                 label: "scalar-math",
                 header: "scalar",
                 features: Some("scalar-math"),
+                toolchain: None,
+            },
+            Backend {
+                name: "x86_64_coresimd",
+                label: "coresimd",
+                header: "coresimd",
+                features: Some("core-simd"),
+                toolchain: Some(toolchain::NIGHTLY),
             },
         ],
         ("linux", "aarch64") => vec![
@@ -70,12 +73,21 @@ fn host_backends() -> Vec<Backend> {
                 label: "neon",
                 header: "neon",
                 features: None,
+                toolchain: None,
             },
             Backend {
                 name: "aarch64_scalar_math",
                 label: "scalar-math",
                 header: "scalar",
                 features: Some("scalar-math"),
+                toolchain: None,
+            },
+            Backend {
+                name: "aarch64_coresimd",
+                label: "coresimd",
+                header: "coresimd",
+                features: Some("core-simd"),
+                toolchain: Some(toolchain::NIGHTLY),
             },
         ],
         (os, arch) => {
@@ -100,6 +112,13 @@ fn resolve_backend<'a>(backends: &'a [Backend], name: &str) -> Option<&'a Backen
     backends
         .iter()
         .find(|b| b.label.replace('-', "_") == normalized)
+}
+
+fn default_backends(backends: &[Backend], save: bool) -> Vec<&Backend> {
+    backends
+        .iter()
+        .filter(|backend| save || backend.toolchain.is_none())
+        .collect()
 }
 
 /// Delete saved baseline files for `name` below `dir`, so that removed or
@@ -186,8 +205,7 @@ fn rustc_host(sh: &Shell) -> String {
 
 /// Write a `{arch}.md` summary of the saved baselines for this host: one row
 /// per benchmark, one column per backend.
-fn write_summary(sh: &Shell, backends: &[Backend], gungraun: &str) {
-    let home = Path::new(BASELINE_HOME);
+fn write_summary(sh: &Shell, home: &Path, backends: &[Backend], gungraun: &str) {
     let arch = std::env::consts::ARCH;
 
     let per_backend: Vec<(&Backend, BTreeMap<String, u64>)> = backends
@@ -212,15 +230,26 @@ fn write_summary(sh: &Shell, backends: &[Backend], gungraun: &str) {
         command_stdout(sh, "git", &["rev-parse", "HEAD"])
     ));
     table.push_str(&format!(
-        "- rustc: `{}`\n",
+        "- rustc stable: `{}`\n",
         command_stdout(sh, "rustc", &["--version"])
+    ));
+    table.push_str(&format!(
+        "- rustc nightly: `{}`\n",
+        command_stdout(
+            sh,
+            "rustup",
+            &["run", toolchain::NIGHTLY, "rustc", "--version"]
+        )
     ));
     table.push_str(&format!(
         "- valgrind: `{}`\n",
         command_stdout(sh, "valgrind", &["--version"])
     ));
     table.push_str(&format!("- gungraun: `{gungraun}`\n"));
-    table.push_str(&format!("- target: `{}`\n\n", rustc_host(sh)));
+    table.push_str(&format!("- target: `{}`\n", rustc_host(sh)));
+    table.push_str(
+        "- deltas: native SIMD (SSE2 or NEON) minus scalar-math/core-simd instructions\n\n",
+    );
 
     table.push_str("| Benchmark |");
     for (backend, _) in &per_backend {
@@ -230,8 +259,14 @@ fn write_summary(sh: &Shell, backends: &[Backend], gungraun: &str) {
     let scalar = per_backend
         .iter()
         .find(|(b, _)| b.features == Some("scalar-math"));
+    let coresimd = per_backend
+        .iter()
+        .find(|(b, _)| b.features == Some("core-simd"));
     if simd.is_some() && scalar.is_some() {
-        table.push_str(" Δ simd−scalar |");
+        table.push_str(" Δ scalar |");
+    }
+    if simd.is_some() && coresimd.is_some() {
+        table.push_str(" Δ coresimd |");
     }
     table.push('\n');
     table.push_str("| --- |");
@@ -239,6 +274,9 @@ fn write_summary(sh: &Shell, backends: &[Backend], gungraun: &str) {
         table.push_str(" ---: |");
     }
     if simd.is_some() && scalar.is_some() {
+        table.push_str(" ---: |");
+    }
+    if simd.is_some() && coresimd.is_some() {
         table.push_str(" ---: |");
     }
     table.push('\n');
@@ -257,6 +295,12 @@ fn write_summary(sh: &Shell, backends: &[Backend], gungraun: &str) {
                 _ => table.push_str(" — |"),
             }
         }
+        if let (Some((_, simd_ir)), Some((_, coresimd_ir))) = (simd, coresimd) {
+            match (simd_ir.get(bench), coresimd_ir.get(bench)) {
+                (Some(s), Some(c)) => table.push_str(&format!(" {:+} |", *s as i64 - *c as i64)),
+                _ => table.push_str(" — |"),
+            }
+        }
         table.push('\n');
     }
 
@@ -268,10 +312,9 @@ fn write_summary(sh: &Shell, backends: &[Backend], gungraun: &str) {
 /// `None` if no swap happened.
 struct BenchLockGuard(Option<Option<PathBuf>>);
 
-/// Swap the committed bench lockfile in as `Cargo.lock`; the original (if
-/// any) is restored on drop.
-fn swap_in_bench_lock() -> BenchLockGuard {
-    let bench_lock = Path::new(BENCH_LOCK);
+/// Swap the baseline directory's bench lockfile in as `Cargo.lock`; the
+/// original (if any) is restored on drop.
+fn swap_in_bench_lock(bench_lock: &Path) -> BenchLockGuard {
     if !bench_lock.exists() {
         return BenchLockGuard(None);
     }
@@ -351,10 +394,13 @@ pub struct Bench {
     )]
     pub save: bool,
 
+    #[argh(option, description = "directory containing gungraun baselines")]
+    pub baseline_dir: Option<PathBuf>,
+
     #[cfg(target_os = "linux")]
     #[argh(
         option,
-        description = "backend to bench (repeatable); defaults to all backends available on this host"
+        description = "backend to bench (repeatable); defaults to all save backends or stable check backends"
     )]
     pub backend: Vec<String>,
 
@@ -373,6 +419,11 @@ impl Prepare for Bench {
             return Vec::new();
         }
 
+        let baseline_dir = self
+            .baseline_dir
+            .as_deref()
+            .unwrap_or_else(|| Path::new(BASELINE_HOME));
+
         // Linux hosts have more than one backend to choose between; on
         // non-Linux hosts the backend-selection options don't exist (and
         // `host_backends` is empty, so we returned above).
@@ -386,7 +437,7 @@ impl Prepare for Bench {
                     return Vec::new();
                 }
                 if self.backend.is_empty() {
-                    backends.iter().collect()
+                    default_backends(&backends, self.save)
                 } else {
                     self.backend
                         .iter()
@@ -407,11 +458,14 @@ impl Prepare for Bench {
             }
             #[cfg(not(target_os = "linux"))]
             {
-                backends.iter().collect()
+                default_backends(&backends, self.save)
             }
         };
 
-        let _lock = swap_in_bench_lock();
+        // Instruction counts need a pinned dependency resolution, so use the
+        // selected baseline directory's lockfile instead of the workspace lockfile.
+        let bench_lock = baseline_dir.join("Cargo.lock");
+        let _lock = swap_in_bench_lock(&bench_lock);
 
         // The committed bench lockfile may lag behind the manifest (e.g. if a PR adds a
         // dependency). `cargo fetch` adds only the missing entries and keeps every existing pin, so
@@ -464,10 +518,13 @@ impl Prepare for Bench {
                 eprintln!("=== bench ({action} {}) ===", backend.name);
 
                 if self.save {
-                    remove_stale_baselines(Path::new(BASELINE_HOME), backend.name);
+                    remove_stale_baselines(baseline_dir, backend.name);
                 }
 
-                let mut cmd = sh.cmd("cargo");
+                let mut cmd = match backend.toolchain {
+                    Some(toolchain) => toolchain::cargo(sh, toolchain),
+                    None => sh.cmd("cargo"),
+                };
                 cmd = cmd
                     .env("GUNGRAUN_RUNNER", &runner_bin)
                     .arg("bench")
@@ -479,7 +536,9 @@ impl Prepare for Bench {
                 if !self.save {
                     cmd = cmd.arg("--locked");
                 }
-                cmd = cmd.arg("--").arg(format!("--home={BASELINE_HOME}"));
+                cmd = cmd
+                    .arg("--")
+                    .arg(format!("--home={}", baseline_dir.display()));
                 cmd = if self.save {
                     cmd.arg(format!("--save-baseline={}", backend.name))
                 } else {
@@ -499,9 +558,9 @@ impl Prepare for Bench {
 
         if self.save && failure.is_none() {
             // Persist the lockfile the benchmarks were built with.
-            fs::copy(workspace_path("Cargo.lock"), BENCH_LOCK)
+            fs::copy(workspace_path("Cargo.lock"), &bench_lock)
                 .expect("failed to update the bench lockfile");
-            write_summary(sh, &backends, &version);
+            write_summary(sh, baseline_dir, &backends, &version);
         }
 
         match failure {
@@ -518,6 +577,97 @@ impl Prepare for Bench {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn default_check_excludes_nightly_backends() {
+        let backends = [
+            Backend {
+                name: "stable",
+                label: "stable",
+                header: "stable",
+                features: None,
+                toolchain: None,
+            },
+            Backend {
+                name: "nightly",
+                label: "nightly",
+                header: "nightly",
+                features: Some("core-simd"),
+                toolchain: Some(toolchain::NIGHTLY),
+            },
+        ];
+
+        assert_eq!(
+            default_backends(&backends, false)
+                .iter()
+                .map(|backend| backend.name)
+                .collect::<Vec<_>>(),
+            ["stable"]
+        );
+        assert_eq!(
+            default_backends(&backends, true)
+                .iter()
+                .map(|backend| backend.name)
+                .collect::<Vec<_>>(),
+            ["stable", "nightly"]
+        );
+    }
+
+    #[test]
+    fn summary_includes_coresimd_delta() {
+        let dir = std::env::temp_dir().join(format!("glam-ci-summary-test-{}", std::process::id()));
+        let base = dir.join("glam/gungraun/bench_mat2/mat2_determinant.args");
+        fs::create_dir_all(&base).unwrap();
+        for (name, ir) in [
+            ("aarch64_neon", 10),
+            ("aarch64_scalar_math", 14),
+            ("aarch64_coresimd", 12),
+        ] {
+            fs::write(
+                base.join(format!("callgrind.mat2_determinant.args.out.base@{name}")),
+                format!("summary: {ir}\n"),
+            )
+            .unwrap();
+        }
+        let backends = [
+            Backend {
+                name: "aarch64_neon",
+                label: "neon",
+                header: "neon",
+                features: None,
+                toolchain: None,
+            },
+            Backend {
+                name: "aarch64_scalar_math",
+                label: "scalar-math",
+                header: "scalar",
+                features: Some("scalar-math"),
+                toolchain: None,
+            },
+            Backend {
+                name: "aarch64_coresimd",
+                label: "coresimd",
+                header: "coresimd",
+                features: Some("core-simd"),
+                toolchain: Some(toolchain::NIGHTLY),
+            },
+        ];
+
+        write_summary(&Shell::new().unwrap(), &dir, &backends, "test");
+        let summary =
+            fs::read_to_string(dir.join(format!("{}.md", std::env::consts::ARCH))).unwrap();
+        assert!(summary.contains("- rustc stable:"));
+        assert!(summary.contains("- rustc nightly:"));
+        assert!(
+            summary.contains("| Benchmark | neon | scalar | coresimd | Δ scalar | Δ coresimd |")
+        );
+        assert!(summary.contains(
+            "- deltas: native SIMD (SSE2 or NEON) minus scalar-math/core-simd instructions"
+        ));
+        assert!(summary.contains("| `mat2_determinant` | 10 | 14 | 12 | -4 | -2 |"));
+
+        fs::remove_dir_all(&dir).unwrap();
+    }
 
     #[test]
     fn collects_ir_from_baseline_files() {
