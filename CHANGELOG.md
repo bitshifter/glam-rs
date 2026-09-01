@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- [**breaking**] `rkyv` support now archives each type to a dedicated `Archived*` type
+  instead of the native `glam` type, so archives no longer inherit the native type's
+  endianness or SIMD-backend-dependent layout, and no longer copy uninitialised padding.
+  This changes the archived format, and reading an archived value now converts it instead
+  of casting a reference.
+
+### Added
+
+- `bytemuck::Pod` and `bytemuck::Zeroable` impls for the `rkyv` archived types, so they
+  can still be cast to bytes for a GPU upload or file write without a serializer.
+
+- `From` conversions between each type and its `rkyv` archived form.
+
+- `Archive::COPY_OPTIMIZATION` for the `rkyv` impls whose archived form is a byte-for-byte
+  copy of the native form, so slices serialize with a single `memcpy`.
+
+### Fixed
+
+- `NoUndef` is now only implemented for the padding-free `rkyv` archived types, so
+  uninitialised padding is no longer copied into archives.
+
+- `Portable` is now implemented on the `rkyv` archived types, which have a layout identical
+  on all targets, instead of the native types that depended on the SIMD backend.
+
 ## [0.33.6](https://github.com/bitshifter/glam-rs/compare/0.33.5...0.33.6) - 2026-08-28
 
 ### Added
