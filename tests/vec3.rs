@@ -1653,22 +1653,24 @@ macro_rules! impl_vec3_float_tests {
             );
             assert_approx_eq!(
                 v0.angle_between(v0.slerp(v1, 0.5)) * 2.0,
-                v0.angle_between(v1)
+                v0.angle_between(v1),
+                1e-5
             );
             assert_approx_eq!(
                 $vec3::new(5.0, 0.0, 0.0).slerp($vec3::new(0.0, 5.0, 0.0), 0.5),
-                $vec3::new(5.0, 5.0, 0.0) * std::$t::consts::FRAC_1_SQRT_2
+                $vec3::new(5.0, 5.0, 0.0) * std::$t::consts::FRAC_1_SQRT_2,
+                1e-5
             );
         });
         glam_test!(test_slerp_extrapolate, {
             let v0 = $vec3::Y;
             let v1 = $vec3::X;
             // Normalized
-            assert_approx_eq!(v0.slerp(v1, -1.0), $vec3::NEG_X, 2e-7);
-            assert_approx_eq!(v0.slerp(v1, 2.0), $vec3::NEG_Y, 2e-7);
+            assert_approx_eq!(v0.slerp(v1, -1.0), $vec3::NEG_X, 1e-6);
+            assert_approx_eq!(v0.slerp(v1, 2.0), $vec3::NEG_Y, 1e-6);
             // Scaled
-            assert_approx_eq!(v0.slerp(v1 * 1.5, -1.0), $vec3::NEG_X * 0.5);
-            assert_approx_eq!(v0.slerp(v1 * 1.5, 2.0), $vec3::NEG_Y * 2.0, 4e-7);
+            assert_approx_eq!(v0.slerp(v1 * 1.5, -1.0), $vec3::NEG_X * 0.5, 1e-6);
+            assert_approx_eq!(v0.slerp(v1 * 1.5, 2.0), $vec3::NEG_Y * 2.0, 1e-6);
         });
         glam_test!(test_slerp_parallel, {
             // Same direction

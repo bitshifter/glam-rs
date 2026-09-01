@@ -1339,9 +1339,20 @@ impl Vec3A {
             // Angle between the vectors [0, +π]
             let theta = math::acos_approx(dot);
             // Sine of the angle between vectors [0, 1]
-            let sin_theta = math::sin(theta);
-            let t1 = math::sin(theta * (1.0 - s));
-            let t2 = math::sin(theta * s);
+
+            let x = 1.0 - s;
+            let y = s;
+            let z = 1.0;
+
+            let (sin_theta, t1, t2) = unsafe {
+                let tmp = _mm_mul_ps(_mm_set_ps1(theta), _mm_set_ps(0.0, z, y, x));
+                let tmp = m128_sin(tmp);
+                (
+                    _mm_cvtss_f32(_mm_shuffle_ps(tmp, tmp, 0b10_10_10_10)), // sin(theta)
+                    _mm_cvtss_f32(_mm_shuffle_ps(tmp, tmp, 0b00_00_00_00)), // sin(theta * (1.0 - s))
+                    _mm_cvtss_f32(_mm_shuffle_ps(tmp, tmp, 0b01_01_01_01)), // sin(theta * s)
+                )
+            };
 
             // Interpolate vector lengths
             let result_length = self_length.lerp(rhs_length, s);
