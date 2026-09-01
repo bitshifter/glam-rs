@@ -1,4 +1,4 @@
-name: Update gungraun baselines
+name: Update bench baselines
 on:
   workflow_dispatch:
 
@@ -12,6 +12,11 @@ env:
 jobs:
   save:
     name: save (${{ matrix.os }})
+    # Baselines are saved from this repo's code and committed to the shared
+    # bitshifter/glam-bench-baselines repo, which the Bench workflow compares
+    # against. Saving from any ref other than main would overwrite the shared
+    # baselines with non-main instruction counts, so only allow main for now.
+    if: github.ref == 'refs/heads/main'
     strategy:
       fail-fast: false
       matrix:
@@ -81,5 +86,5 @@ jobs:
             echo "no baseline changes"
             exit 0
           fi
-          git commit -m "chore: update gungraun baselines from glam-rs@${{ github.sha }}"
+          git commit -m "chore: update bench baselines from glam-rs@${{ github.sha }}"
           git push
