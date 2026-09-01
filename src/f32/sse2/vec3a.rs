@@ -1339,7 +1339,6 @@ impl Vec3A {
             // Angle between the vectors [0, +π]
             let theta = math::acos_approx(dot);
             // Sine of the angle between vectors [0, 1]
-
             let x = 1.0 - s;
             let y = s;
             let z = 1.0;
