@@ -5,7 +5,9 @@ use gungraun::{
     library_benchmark, library_benchmark_group, main, Callgrind, LibraryBenchmarkConfig,
 };
 
-use glam::{Affine3A, BVec3A, EulerRot, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
+use glam::{
+    Affine2, Affine3A, BVec3A, EulerRot, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4,
+};
 
 #[cfg(feature = "scalar-math")]
 use glam::BVec4 as BVec4A;
@@ -42,6 +44,15 @@ fn mat4() -> Mat4 {
     black_box(Mat4::from_cols_array(&[
         1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0,
     ]))
+}
+
+#[inline]
+fn affine2() -> Affine2 {
+    black_box(Affine2::from_scale_angle_translation(
+        Vec2::new(2.0, 3.0),
+        1.0,
+        Vec2::new(1.0, 2.0),
+    ))
 }
 
 #[inline]
@@ -443,6 +454,36 @@ fn affine3a_from_scale_rotation_translation(s: Vec3, r: Quat, t: Vec3) -> Affine
 }
 
 #[library_benchmark]
+#[bench::args(vec2(), bb_f32(), vec2())]
+fn affine2_from_scale_angle_translation(s: Vec2, a: f32, t: Vec2) -> Affine2 {
+    black_box(Affine2::from_scale_angle_translation(s, a, t))
+}
+
+#[library_benchmark]
+#[bench::args(affine2())]
+fn affine2_inverse(a: Affine2) -> Affine2 {
+    black_box(a.inverse())
+}
+
+#[library_benchmark]
+#[bench::args(affine2(), affine2())]
+fn affine2_mul_affine2(a1: Affine2, a2: Affine2) -> Affine2 {
+    black_box(a1 * a2)
+}
+
+#[library_benchmark]
+#[bench::args(affine2(), vec2())]
+fn affine2_transform_point2(a: Affine2, v: Vec2) -> Vec2 {
+    black_box(a.transform_point2(v))
+}
+
+#[library_benchmark]
+#[bench::args(affine2(), vec2())]
+fn affine2_transform_vector2(a: Affine2, v: Vec2) -> Vec2 {
+    black_box(a.transform_vector2(v))
+}
+
+#[library_benchmark]
 #[bench::args(affine3a())]
 fn affine3a_inverse(a: Affine3A) -> Affine3A {
     black_box(a.inverse())
@@ -562,6 +603,16 @@ library_benchmark_group!(
 );
 
 library_benchmark_group!(
+    name = bench_affine2;
+    benchmarks =
+        affine2_from_scale_angle_translation,
+        affine2_inverse,
+        affine2_mul_affine2,
+        affine2_transform_point2,
+        affine2_transform_vector2,
+);
+
+library_benchmark_group!(
     name = bench_affine3a;
     benchmarks =
         affine3a_from_scale_rotation_translation,
@@ -585,5 +636,6 @@ main!(
     bench_vec3,
     bench_vec3a,
     bench_vec4,
+    bench_affine2,
     bench_affine3a
 );
