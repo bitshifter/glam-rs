@@ -20,6 +20,12 @@ const BASELINE_HOME: &str = concat!(
 /// managed here instead of relying on a pre-existing installation.
 const RUNNER_ROOT: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../target/gungraun-runner");
 
+/// Default absolute instruction-count increase tolerated before a benchmark
+/// is considered regressed. Unrelated changes can shift counts by a couple
+/// of instructions, so gungraun's percentage-based `--callgrind-limits=ir=0%`
+/// (which fails on any increase at all) is too strict.
+const DEFAULT_IR_TOLERANCE: u64 = 3;
+
 fn workspace_path(file: &str) -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../../")
@@ -179,6 +185,30 @@ fn collect_ir_files(dir: &Path, suffix: &str, out: &mut BTreeMap<String, u64>) {
             }
         }
     }
+}
+
+/// Collect instruction counts for the most recent (unsaved) benchmark run.
+fn collect_current_ir(dir: &Path) -> BTreeMap<String, u64> {
+    let mut out = BTreeMap::new();
+    collect_ir_files(dir, ".out", &mut out);
+    out
+}
+
+/// Compare the current run's instruction counts against the saved baseline
+/// and return `(benchmark, baseline, current)` for every benchmark that grew
+/// by more than `IR_TOLERANCE` instructions.
+fn regressed_benchmarks(dir: &Path, name: &str, tolerance: u64) -> Vec<(String, u64, u64)> {
+    let baseline = collect_ir(dir, name);
+    let current = collect_current_ir(dir);
+    let mut regressed = current
+        .iter()
+        .filter_map(|(bench, &new)| {
+            let &old = baseline.get(bench)?;
+            (new > old.saturating_add(tolerance)).then_some((bench.clone(), old, new))
+        })
+        .collect::<Vec<_>>();
+    regressed.sort();
+    regressed
 }
 
 /// Run a command and return its trimmed stdout, or `"unknown"` on failure.
@@ -397,6 +427,12 @@ pub struct Bench {
     #[argh(option, description = "directory containing gungraun baselines")]
     pub baseline_dir: Option<PathBuf>,
 
+    #[argh(
+        option,
+        description = "allowed absolute instruction-count increase before failing (default: 2)"
+    )]
+    pub ir_tolerance: Option<u64>,
+
     #[cfg(target_os = "linux")]
     #[argh(
         option,
@@ -543,7 +579,6 @@ impl Prepare for Bench {
                     cmd.arg(format!("--save-baseline={}", backend.name))
                 } else {
                     cmd.arg(format!("--baseline={}", backend.name))
-                        .arg("--callgrind-limits=ir=0%")
                 };
 
                 if let Err(e) = cmd.run() {
@@ -551,6 +586,19 @@ impl Prepare for Bench {
                     failure = Some(failure_message);
                     if !args.keep_going {
                         break;
+                    }
+                } else if !self.save {
+                    let tolerance = self.ir_tolerance.unwrap_or(DEFAULT_IR_TOLERANCE);
+                    let regressions = regressed_benchmarks(baseline_dir, backend.name, tolerance);
+                    if !regressions.is_empty() {
+                        eprintln!("{failure_message}:");
+                        for (bench, old, new) in &regressions {
+                            eprintln!("  {bench}: {old} -> {new} (+{} instructions)", new - old);
+                        }
+                        failure = Some(failure_message);
+                        if !args.keep_going {
+                            break;
+                        }
                     }
                 }
             }
@@ -665,6 +713,31 @@ mod tests {
             "- deltas: native SIMD (SSE2 or NEON) minus scalar-math/core-simd instructions"
         ));
         assert!(summary.contains("| `mat2_determinant` | 10 | 14 | 12 | -4 | -2 |"));
+
+        fs::remove_dir_all(&dir).unwrap();
+    }
+
+    #[test]
+    fn regression_tolerance_allows_small_increases() {
+        let dir =
+            std::env::temp_dir().join(format!("glam-ci-regression-test-{}", std::process::id()));
+        let args_out = dir.join("glam/gungraun/bench_mat2/mat2_determinant.args");
+        fs::create_dir_all(&args_out).unwrap();
+
+        let baseline = args_out.join("callgrind.mat2_determinant.args.out.base@x86_64_sse2");
+        let current = args_out.join("callgrind.mat2_determinant.args.out");
+        fs::write(&baseline, "summary: 100\n").unwrap();
+
+        // An increase of `IR_TOLERANCE` instructions is allowed.
+        fs::write(&current, "summary: 102\n").unwrap();
+        assert!(regressed_benchmarks(&dir, "x86_64_sse2", DEFAULT_IR_TOLERANCE).is_empty());
+
+        // One instruction beyond the tolerance is a regression.
+        fs::write(&current, "summary: 103\n").unwrap();
+        assert_eq!(
+            regressed_benchmarks(&dir, "x86_64_sse2", DEFAULT_IR_TOLERANCE),
+            vec![("mat2_determinant".to_string(), 100, 103)]
+        );
 
         fs::remove_dir_all(&dir).unwrap();
     }

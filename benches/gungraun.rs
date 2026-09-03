@@ -5,7 +5,9 @@ use gungraun::{
     library_benchmark, library_benchmark_group, main, Callgrind, LibraryBenchmarkConfig,
 };
 
-use glam::{Affine3A, BVec3A, EulerRot, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
+use glam::{
+    Affine2, Affine3A, BVec3A, EulerRot, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4,
+};
 
 #[cfg(feature = "scalar-math")]
 use glam::BVec4 as BVec4A;
@@ -42,6 +44,59 @@ fn mat4() -> Mat4 {
     black_box(Mat4::from_cols_array(&[
         1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0,
     ]))
+}
+
+// The `*_invertible` and `*_singular` matrices are used by the `inverse`,
+// `try_inverse` and `inverse_or_zero` benchmarks. `IDENTITY` exercises the
+// success paths, `ZERO` exercises the failure paths.
+
+#[inline]
+fn mat2_invertible() -> Mat2 {
+    black_box(Mat2::IDENTITY)
+}
+
+#[inline]
+fn mat2_singular() -> Mat2 {
+    black_box(Mat2::ZERO)
+}
+
+#[inline]
+fn mat3_invertible() -> Mat3 {
+    black_box(Mat3::IDENTITY)
+}
+
+#[inline]
+fn mat3_singular() -> Mat3 {
+    black_box(Mat3::ZERO)
+}
+
+#[inline]
+fn mat3a_invertible() -> Mat3A {
+    black_box(Mat3A::IDENTITY)
+}
+
+#[inline]
+fn mat3a_singular() -> Mat3A {
+    black_box(Mat3A::ZERO)
+}
+
+#[inline]
+fn mat4_invertible() -> Mat4 {
+    black_box(Mat4::IDENTITY)
+}
+
+#[inline]
+fn mat4_singular() -> Mat4 {
+    black_box(Mat4::ZERO)
+}
+
+#[inline]
+fn affine2() -> Affine2 {
+    black_box(Affine2::from_scale_angle_translation(
+        Vec2::new(2.0, 3.0),
+        1.0,
+        Vec2::new(1.0, 2.0),
+    ))
 }
 
 #[inline]
@@ -107,15 +162,29 @@ fn mat2_determinant(m: Mat2) -> f32 {
 }
 
 #[library_benchmark]
-#[bench::args(mat2())]
+#[bench::args(mat2_invertible())]
 fn mat2_inverse(m: Mat2) -> Mat2 {
     black_box(m.inverse())
+}
+
+#[library_benchmark]
+#[bench::success(mat2_invertible())]
+#[bench::failure(mat2_singular())]
+fn mat2_inverse_or_zero(m: Mat2) -> Mat2 {
+    black_box(m.inverse_or_zero())
 }
 
 #[library_benchmark]
 #[bench::args(mat2())]
 fn mat2_transpose(m: Mat2) -> Mat2 {
     black_box(m.transpose())
+}
+
+#[library_benchmark]
+#[bench::success(mat2_invertible())]
+#[bench::failure(mat2_singular())]
+fn mat2_try_inverse(m: Mat2) -> Option<Mat2> {
+    black_box(m.try_inverse())
 }
 
 #[library_benchmark]
@@ -143,15 +212,29 @@ fn mat3_determinant(m: Mat3) -> f32 {
 }
 
 #[library_benchmark]
-#[bench::args(mat3())]
+#[bench::args(mat3_invertible())]
 fn mat3_inverse(m: Mat3) -> Mat3 {
     black_box(m.inverse())
+}
+
+#[library_benchmark]
+#[bench::success(mat3_invertible())]
+#[bench::failure(mat3_singular())]
+fn mat3_inverse_or_zero(m: Mat3) -> Mat3 {
+    black_box(m.inverse_or_zero())
 }
 
 #[library_benchmark]
 #[bench::args(mat3())]
 fn mat3_transpose(m: Mat3) -> Mat3 {
     black_box(m.transpose())
+}
+
+#[library_benchmark]
+#[bench::success(mat3_invertible())]
+#[bench::failure(mat3_singular())]
+fn mat3_try_inverse(m: Mat3) -> Option<Mat3> {
+    black_box(m.try_inverse())
 }
 
 #[library_benchmark]
@@ -179,15 +262,29 @@ fn mat3a_determinant(m: Mat3A) -> f32 {
 }
 
 #[library_benchmark]
-#[bench::args(mat3a())]
+#[bench::args(mat3a_invertible())]
 fn mat3a_inverse(m: Mat3A) -> Mat3A {
     black_box(m.inverse())
+}
+
+#[library_benchmark]
+#[bench::success(mat3a_invertible())]
+#[bench::failure(mat3a_singular())]
+fn mat3a_inverse_or_zero(m: Mat3A) -> Mat3A {
+    black_box(m.inverse_or_zero())
 }
 
 #[library_benchmark]
 #[bench::args(mat3a())]
 fn mat3a_transpose(m: Mat3A) -> Mat3A {
     black_box(m.transpose())
+}
+
+#[library_benchmark]
+#[bench::success(mat3a_invertible())]
+#[bench::failure(mat3a_singular())]
+fn mat3a_try_inverse(m: Mat3A) -> Option<Mat3A> {
+    black_box(m.try_inverse())
 }
 
 #[library_benchmark]
@@ -221,15 +318,29 @@ fn mat4_determinant(m: Mat4) -> f32 {
 }
 
 #[library_benchmark]
-#[bench::args(mat4())]
+#[bench::args(mat4_invertible())]
 fn mat4_inverse(m: Mat4) -> Mat4 {
     black_box(m.inverse())
+}
+
+#[library_benchmark]
+#[bench::success(mat4_invertible())]
+#[bench::failure(mat4_singular())]
+fn mat4_inverse_or_zero(m: Mat4) -> Mat4 {
+    black_box(m.inverse_or_zero())
 }
 
 #[library_benchmark]
 #[bench::args(mat4())]
 fn mat4_transpose(m: Mat4) -> Mat4 {
     black_box(m.transpose())
+}
+
+#[library_benchmark]
+#[bench::success(mat4_invertible())]
+#[bench::failure(mat4_singular())]
+fn mat4_try_inverse(m: Mat4) -> Option<Mat4> {
+    black_box(m.try_inverse())
 }
 
 #[library_benchmark]
@@ -443,6 +554,36 @@ fn affine3a_from_scale_rotation_translation(s: Vec3, r: Quat, t: Vec3) -> Affine
 }
 
 #[library_benchmark]
+#[bench::args(vec2(), bb_f32(), vec2())]
+fn affine2_from_scale_angle_translation(s: Vec2, a: f32, t: Vec2) -> Affine2 {
+    black_box(Affine2::from_scale_angle_translation(s, a, t))
+}
+
+#[library_benchmark]
+#[bench::args(affine2())]
+fn affine2_inverse(a: Affine2) -> Affine2 {
+    black_box(a.inverse())
+}
+
+#[library_benchmark]
+#[bench::args(affine2(), affine2())]
+fn affine2_mul_affine2(a1: Affine2, a2: Affine2) -> Affine2 {
+    black_box(a1 * a2)
+}
+
+#[library_benchmark]
+#[bench::args(affine2(), vec2())]
+fn affine2_transform_point2(a: Affine2, v: Vec2) -> Vec2 {
+    black_box(a.transform_point2(v))
+}
+
+#[library_benchmark]
+#[bench::args(affine2(), vec2())]
+fn affine2_transform_vector2(a: Affine2, v: Vec2) -> Vec2 {
+    black_box(a.transform_vector2(v))
+}
+
+#[library_benchmark]
 #[bench::args(affine3a())]
 fn affine3a_inverse(a: Affine3A) -> Affine3A {
     black_box(a.inverse())
@@ -471,10 +612,12 @@ library_benchmark_group!(
     benchmarks =
         mat2_determinant,
         mat2_inverse,
+        mat2_inverse_or_zero,
         mat2_mul_mat2,
         mat2_mul_vec2,
         mat2_mul_transpose_vec2,
         mat2_transpose,
+        mat2_try_inverse,
 );
 
 library_benchmark_group!(
@@ -482,10 +625,12 @@ library_benchmark_group!(
     benchmarks =
         mat3_determinant,
         mat3_inverse,
+        mat3_inverse_or_zero,
         mat3_mul_mat3,
         mat3_mul_vec3,
         mat3_mul_transpose_vec3,
         mat3_transpose,
+        mat3_try_inverse,
 );
 
 library_benchmark_group!(
@@ -494,10 +639,12 @@ library_benchmark_group!(
         mat3a_determinant,
         mat3a_from_quat,
         mat3a_inverse,
+        mat3a_inverse_or_zero,
         mat3a_mul_mat3a,
         mat3a_mul_vec3a,
         mat3a_mul_transpose_vec3a,
         mat3a_transpose,
+        mat3a_try_inverse,
 );
 
 library_benchmark_group!(
@@ -507,12 +654,14 @@ library_benchmark_group!(
         mat4_from_quat,
         mat4_from_scale_rotation_translation,
         mat4_inverse,
+        mat4_inverse_or_zero,
         mat4_mul_mat4,
         mat4_mul_vec4,
         mat4_mul_transpose_vec4,
         mat4_transform_point3,
         mat4_transform_vector3,
         mat4_transpose,
+        mat4_try_inverse,
 );
 
 library_benchmark_group!(
@@ -562,6 +711,16 @@ library_benchmark_group!(
 );
 
 library_benchmark_group!(
+    name = bench_affine2;
+    benchmarks =
+        affine2_from_scale_angle_translation,
+        affine2_inverse,
+        affine2_mul_affine2,
+        affine2_transform_point2,
+        affine2_transform_vector2,
+);
+
+library_benchmark_group!(
     name = bench_affine3a;
     benchmarks =
         affine3a_from_scale_rotation_translation,
@@ -585,5 +744,6 @@ main!(
     bench_vec3,
     bench_vec3a,
     bench_vec4,
+    bench_affine2,
     bench_affine3a
 );
