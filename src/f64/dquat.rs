@@ -616,29 +616,16 @@ impl DQuat {
         DVec4::from(self).is_normalized()
     }
 
+    /// Returns `true` if `self` represents a rotation near the identity.
     #[inline]
     #[must_use]
     pub fn is_near_identity(self) -> bool {
         // Based on https://github.com/nfrechette/rtm `rtm::quat_near_identity`
-        // Because of floating point precision, we cannot represent very small rotations.
-        // The closest f32 to 1.0 that is not 1.0 itself yields:
-        // 0.99999994.acos() * 2.0  = 0.000690533954 rad
-        //
-        // An error threshold of 1.e-6 is used by default.
-        // (1.0 - 1.e-6).acos() * 2.0 = 0.00284714461 rad
-        // (1.0 - 1.e-7).acos() * 2.0 = 0.00097656250 rad
-        //
-        // We don't really care about the angle value itself, only if it's close to 0.
-        // This will happen whenever quat.w is close to 1.0.
-        // If the quat.w is close to -1.0, the angle will be near 2*PI which is close to
-        // a negative 0 rotation. By forcing quat.w to be positive, we'll end up with
-        // the shortest path.
-        //
-        // For f64 we're using a threshhold of
-        // (1.0 - 1e-14).acos() * 2.0
-        const THRESHOLD_ANGLE: f64 = 2.827_296_549_232_347_4e-7;
-        let positive_w_angle = math::acos_approx(math::abs(self.w)) * 2.0;
-        positive_w_angle < THRESHOLD_ANGLE
+        // The shortest rotation angle is `2 * acos(abs(w))`. Since `acos` is monotonically
+        // decreasing, comparing `abs(w)` to the cosine threshold avoids calculating the angle.
+        // Equivalent to an angular threshold of `(1.0 - 1e-14).acos() * 2.0`.
+        const THRESHOLD: f64 = 1.0 - 1e-14;
+        math::abs(self.w) > THRESHOLD
     }
 
     /// Returns the angle (in radians) for the minimal rotation between two quaternions

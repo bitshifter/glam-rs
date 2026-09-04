@@ -885,6 +885,26 @@ mod quat {
         );
     });
 
+    glam_test!(test_is_near_identity_threshold, {
+        let threshold_w = 0.999_999_f32;
+        let inside_w = f32::from_bits(threshold_w.to_bits() + 1);
+        let threshold = quat(
+            (1.0 - threshold_w * threshold_w).sqrt(),
+            0.0,
+            0.0,
+            threshold_w,
+        );
+        let inside = quat((1.0 - inside_w * inside_w).sqrt(), 0.0, 0.0, inside_w);
+
+        assert!(threshold.is_normalized());
+        assert!(inside.is_normalized());
+        assert!(!threshold.is_near_identity());
+        assert!(inside.is_near_identity());
+        assert!(!(-threshold).is_near_identity());
+        assert!((-inside).is_near_identity());
+        assert!(!Quat::NAN.is_near_identity());
+    });
+
     impl_quat_tests!(f32, quat, Mat3, Mat4, Quat, Vec2, Vec3, Vec4);
 }
 
@@ -898,6 +918,26 @@ mod dquat {
         use std::mem;
         assert_eq!(32, mem::size_of::<DQuat>());
         assert_eq!(mem::align_of::<f64>(), mem::align_of::<DQuat>());
+    });
+
+    glam_test!(test_is_near_identity_threshold, {
+        let threshold_w = 0.999_999_999_999_99_f64;
+        let inside_w = f64::from_bits(threshold_w.to_bits() + 1);
+        let threshold = dquat(
+            (1.0 - threshold_w * threshold_w).sqrt(),
+            0.0,
+            0.0,
+            threshold_w,
+        );
+        let inside = dquat((1.0 - inside_w * inside_w).sqrt(), 0.0, 0.0, inside_w);
+
+        assert!(threshold.is_normalized());
+        assert!(inside.is_normalized());
+        assert!(!threshold.is_near_identity());
+        assert!(inside.is_near_identity());
+        assert!(!(-threshold).is_near_identity());
+        assert!((-inside).is_near_identity());
+        assert!(!DQuat::NAN.is_near_identity());
     });
 
     impl_quat_tests!(f64, dquat, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4);
