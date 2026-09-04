@@ -295,6 +295,30 @@ impl {{ self_t }} {
         {% endif %}
     }
 
+    /// Creates a {{ nxn }} matrix from {{ dimension_in_full }} row vectors.
+    ///
+    /// Note matrices are stored in column major order, so the data given here is
+    /// transposed on the way in. Prefer [`Self::from_cols`] when the data is already
+    /// laid out as columns.
+    #[inline(always)]
+    #[must_use]
+    pub const fn from_rows(
+        {% for i in range(end = dim) %}
+            row{{ i }}: {{ col_t }},
+        {% endfor %}
+    ) -> Self {
+        {% for i in range(end = dim) %}
+            let [{% for j in range(end = dim) %}m{{ i }}{{ j }}, {% endfor %}] = row{{ i }}.to_array();
+        {%- endfor %}
+        Self::new(
+            {% for i in range(end = dim) %}
+                {%- for j in range(end = dim) %}
+                    m{{ j }}{{ i }},
+                {%- endfor %}
+            {%- endfor %}
+        )
+    }
+
     /// Creates a {{ nxn }} matrix from a `[{{ scalar_t }}; {{ size }}]` array stored in column major order.
     /// If your data is stored in row major you will need to `transpose` the returned
     /// matrix.
@@ -367,6 +391,40 @@ impl {{ self_t }} {
                 {%- endfor %}
             ]
         {% endif %}
+    }
+
+    /// Creates a {{ nxn }} matrix from a `[{{ scalar_t }}; {{ size }}]` array stored in row major order.
+    ///
+    /// Note matrices are stored in column major order, so the data given here is
+    /// transposed on the way in. Prefer [`Self::from_cols_array`] when the data is already
+    /// in column major order.
+    #[inline]
+    #[must_use]
+    pub const fn from_rows_array(m: &[{{ scalar_t }}; {{ size }}]) -> Self {
+        Self::new(
+            {% for i in range(end = dim) %}
+                {%- for j in range(end = dim) %}
+                    m[{{ j * dim + i }}],
+                {%- endfor %}
+            {%- endfor %}
+        )
+    }
+
+    /// Creates a `[{{ scalar_t }}; {{ size }}]` array storing data in row major order.
+    ///
+    /// Note matrices are stored in column major order, so this transposes the data
+    /// on the way out. Prefer [`Self::to_cols_array`] when column major data will do.
+    #[inline]
+    #[must_use]
+    pub const fn to_rows_array(&self) -> [{{ scalar_t }}; {{ size }}] {
+        let m = self.to_cols_array();
+        [
+            {% for i in range(end = dim) %}
+                {%- for j in range(end = dim) %}
+                    m[{{ j * dim + i }}],
+                {%- endfor %}
+            {%- endfor %}
+        ]
     }
 
     /// Creates a {{ nxn }} matrix with its diagonal set to `diagonal` and all other entries set to 0.
@@ -1005,6 +1063,28 @@ impl {{ self_t }} {
         {%- endfor %}
     }
 
+    /// Creates a {{ nxn }} matrix from the first {{ size }} values in `slice`, stored in row
+    /// major order.
+    ///
+    /// Note matrices are stored in column major order, so the data given here is
+    /// transposed on the way in. Prefer [`Self::from_cols_slice`] when the slice is already
+    /// in column major order.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `slice` is less than {{ size }} elements long.
+    #[inline]
+    #[must_use]
+    pub const fn from_rows_slice(slice: &[{{ scalar_t }}]) -> Self {
+        Self::new(
+            {% for i in range(end = dim) %}
+                {%- for j in range(end = dim) %}
+                    slice[{{ j * dim + i }}],
+                {%- endfor %}
+            {%- endfor %}
+        )
+    }
+
     /// Returns the matrix column for the given `index`.
     ///
     /// # Panics
@@ -1051,6 +1131,29 @@ impl {{ self_t }} {
                         self.{{ axis }}.{{ components[i] }},
                     {%- endfor %}
                 ),
+            {%- endfor %}
+            _ => panic!("index out of bounds"),
+        }
+    }
+
+    /// Sets the matrix row for the given `index`.
+    ///
+    /// Note matrices are stored in column major order, so a row is spread across
+    /// all {{ dim }} columns and writing one touches every column. Prefer
+    /// [`Self::col_mut`] when you can work with columns instead.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `index` is greater than {{ dim - 1 }}.
+    #[inline]
+    pub fn set_row(&mut self, index: usize, row: {{ col_t }}) {
+        match index {
+            {% for i in range(end=dim) %}
+                {{ i }} => {
+                    {% for j in range(end=dim) %}
+                        self.{{ axes[j] }}.{{ components[i] }} = row.{{ components[j] }};
+                    {%- endfor %}
+                }
             {%- endfor %}
             _ => panic!("index out of bounds"),
         }
