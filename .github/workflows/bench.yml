@@ -15,8 +15,43 @@ env:
   BENCH_TOOLCHAIN: 1.98.0
 
 jobs:
+  # Skip the push-to-main compare when a `bench-update`-labeled PR was
+  # merged: the update workflow rewrites the baselines for that commit, so
+  # comparing against them is pointless and would race. Other events always
+  # compare. Runs on every event (no job `if`) so gungraun never depends on a
+  # skipped job.
+  skip-update:
+    name: Skip if baselines were updated for this commit
+    runs-on: ubuntu-latest
+    outputs:
+      baselines-updated: ${{ steps.check.outputs.updated }}
+    permissions:
+      pull-requests: read # find the merged PR for this commit and its labels
+    steps:
+      - name: Check for merged bench-update PR
+        id: check
+        # Only pushes to main can be merges.
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # A squash-merged PR is returned for its single commit on main.
+          labels="$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" \
+            --jq '[.[].labels[].name] | unique | join(",")' || true)"
+          if grep -q 'bench-update' <<<"$labels"; then
+            echo "updated=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "updated=false" >> "$GITHUB_OUTPUT"
+          fi
+        # Fail-open: a broken check still compares instead of silently
+        # skipping.
+        continue-on-error: true
+
   gungraun:
     name: gungraun (${{ matrix.os }})
+    needs: skip-update
+    # Compare unless a `bench-update`-merged PR was found for this commit.
+    if: needs.skip-update.outputs.baselines-updated != 'true'
     strategy:
       fail-fast: false
       matrix:

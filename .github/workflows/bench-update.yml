@@ -1,6 +1,22 @@
 name: Update bench baselines
+
+# Saves instruction-count baselines from this repo into the shared
+# bitshifter/glam-bench-baselines repo, which the Bench workflow compares
+# against.
+#
+# Triggers:
+# - workflow_dispatch: manual run on main.
+# - pull_request_target (closed): merged PR labeled `bench-update`. Used
+#   instead of `pull_request` so the baselines push secret works for fork
+#   PRs. Only the merged commit (merge_commit_sha, already on main) is ever
+#   checked out, never the PR head, so it has the same trust level as a manual
+#   run on main. Only maintainers can apply the label, so PR authors can't
+#   trigger this.
 on:
   workflow_dispatch:
+  pull_request_target:
+    branches: [main]
+    types: [closed]
 
 concurrency:
   group: ${{ github.workflow }}
@@ -9,14 +25,21 @@ env:
   # Keep in sync with BENCH_TOOLCHAIN in bench.yml.
   BENCH_TOOLCHAIN: 1.98.0
 
+permissions:
+  contents: read # checkout; pushes to the baselines repo use the PAT below
+  actions: write # upload artifacts (save job), not otherwise used
+
 jobs:
   save:
     name: save (${{ matrix.os }})
-    # Baselines are saved from this repo's code and committed to the shared
-    # bitshifter/glam-bench-baselines repo, which the Bench workflow compares
-    # against. Saving from any ref other than main would overwrite the shared
-    # baselines with non-main instruction counts, so only allow main for now.
-    if: github.ref == 'refs/heads/main'
+    # Only save from main's code: a manual dispatch on main, or a merged PR
+    # labeled `bench-update` (base main; the checked-out merge_commit_sha is
+    # then on main).
+    if: |
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'pull_request_target' && github.event.action == 'closed' &&
+       github.event.pull_request.merged && github.event.pull_request.base.ref == 'main' &&
+       contains(github.event.pull_request.labels.*.name, 'bench-update'))
     strategy:
       fail-fast: false
       matrix:
@@ -30,6 +53,9 @@ jobs:
       - uses: actions/checkout@v7
         with:
           submodules: true
+          # workflow_dispatch: HEAD of main; pull_request_target: the merged
+          # commit on main. Never the PR head (github.sha on PR events).
+          ref: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
       - uses: actions/checkout@v7
         with:
           repository: bitshifter/glam-bench-baselines
@@ -86,5 +112,5 @@ jobs:
             echo "no baseline changes"
             exit 0
           fi
-          git commit -m "chore: update bench baselines from glam-rs@${{ github.sha }}"
+          git commit -m "chore: update bench baselines from glam-rs@${{ github.event.pull_request.merge_commit_sha || github.sha }}"
           git push
