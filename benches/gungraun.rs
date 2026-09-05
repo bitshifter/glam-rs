@@ -416,6 +416,12 @@ fn quat_inverse(q: Quat) -> Quat {
 }
 
 #[library_benchmark]
+#[bench::args(quat())]
+fn quat_is_near_identity(q: Quat) -> bool {
+    black_box(q.is_near_identity())
+}
+
+#[library_benchmark]
 #[bench::positive_dot(quat(), quat_rot_x_180(), bb_f32())]
 #[bench::negative_dot(quat(), quat_rot_x_240(), bb_f32())]
 fn quat_lerp(q1: Quat, q2: Quat, t: f32) -> Quat {
@@ -671,6 +677,7 @@ library_benchmark_group!(
         quat_from_axis_angle,
         quat_from_euler,
         quat_inverse,
+        quat_is_near_identity,
         quat_lerp,
         quat_mul_quat,
         quat_mul_vec3,

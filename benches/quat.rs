@@ -45,6 +45,13 @@ bench_binop!(
     from => random_quat
 );
 
+bench_unop!(
+    quat_is_near_identity,
+    "quat is_near_identity",
+    op => is_near_identity,
+    from => random_quat
+);
+
 bench_trinop!(
     quat_lerp,
     "quat lerp",
@@ -69,6 +76,7 @@ criterion_group!(
     benches,
     quat_conjugate,
     quat_dot,
+    quat_is_near_identity,
     quat_lerp,
     quat_slerp,
     quat_mul_quat,
