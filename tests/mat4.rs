@@ -444,7 +444,8 @@ macro_rules! impl_mat4_tests {
             any(feature = "glam-assert", feature = "debug-glam-assert")
         ))]
         glam_test!(test_mat4_decompose_singular, {
-            for column in 0..3 {
+            // A zero fourth column makes the full matrix singular even when its linear part is not.
+            for column in 0..4 {
                 let mut matrix = $mat4::IDENTITY;
                 *matrix.col_mut(column) = $vec4::ZERO;
                 should_glam_assert!({ matrix.to_scale_rotation_translation() });
