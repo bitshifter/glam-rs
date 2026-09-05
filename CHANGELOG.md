@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.33.7](https://github.com/bitshifter/glam-rs/compare/0.33.6...0.33.7) - 2026-09-05
+
+### Other
+
+- *(quat)* avoid acos in is_near_identity ([#824](https://github.com/bitshifter/glam-rs/pull/824))
+- Use m128_sin in Vec3A::slerp ([#819](https://github.com/bitshifter/glam-rs/pull/819))
+
 ## [0.33.6](https://github.com/bitshifter/glam-rs/compare/0.33.5...0.33.6) - 2026-08-28
 
 ### Added
