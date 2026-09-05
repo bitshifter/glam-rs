@@ -20,6 +20,8 @@ impl Prepare for Msrv {
         let a = |features: &str| {
             toolchain::cargo(sh, tc)
                 .arg("check")
+                .arg("--manifest-path")
+                .arg("tools/msrv/Cargo.toml")
                 .arg("--features")
                 .arg(features)
         };
@@ -39,6 +41,8 @@ impl Prepare for Msrv {
                 name: "msrv check: libm scalar-math (no-default-features)".into(),
                 command: toolchain::cargo(sh, tc)
                     .arg("check")
+                    .arg("--manifest-path")
+                    .arg("tools/msrv/Cargo.toml")
                     .arg("--no-default-features")
                     .arg("--features")
                     .arg(format!(
