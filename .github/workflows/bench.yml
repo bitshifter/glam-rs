@@ -15,8 +15,42 @@ env:
   BENCH_TOOLCHAIN: 1.98.0
 
 jobs:
+  # When a PR labeled `bench-update` is merged, the Update bench baselines
+  # workflow rewrites the shared baselines from the merged commit. Skip the
+  # push-to-main compare for that commit: running both at once would race on
+  # the baselines repo, and comparing against freshly saved baselines is
+  # pointless. PRs during review (pull_request events) always compare, label
+  # or not.
+  skip-update:
+    name: Skip if baselines were updated for this commit
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    outputs:
+      baselines-updated: ${{ steps.check.outputs.updated }}
+    permissions:
+      pull-requests: read # list the merged PR for this commit, read its labels
+    steps:
+      - id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # For a squash-merged PR this endpoint returns the merged PR (and
+          # thus its labels) for the single commit that landed on main.
+          labels="$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" \
+            --jq '[.[].labels[].name] | unique | join(",")' || true)"
+          if grep -q 'bench-update' <<<"$labels"; then
+            echo "updated=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "updated=false" >> "$GITHUB_OUTPUT"
+          fi
+
   gungraun:
     name: gungraun (${{ matrix.os }})
+    needs: skip-update
+    # Compare unless this push is the merge of a `bench-update`-labeled PR
+    # (i.e. the gate job found an update). Runs when the gate job itself was
+    # skipped: pull_request events and manual runs still compare.
+    if: ${{ !(needs.skip-update.result == 'success' && needs.skip-update.outputs.baselines-updated == 'true') }}
     strategy:
       fail-fast: false
       matrix:
