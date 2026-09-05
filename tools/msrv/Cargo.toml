@@ -1,0 +1,33 @@
+[package]
+name = "glam-msrv"
+description = "Checks glam compiles with the MSRV toolchain from an external consumer"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+# Standalone workspace: this crate must not join the parent workspace, whose
+# shared lockfile resolves glam's dev-dependencies with the MSRV toolchain.
+[workspace]
+
+# Deliberately NOT a workspace member: checking glam from a consumer project
+# only resolves glam's library dependencies. Dev-dependencies (e.g. the wasm
+# test stack) do not participate, so their latest releases cannot break the
+# MSRV check the way they could when the shared workspace lock was resolved
+# with the MSRV cargo.
+
+[dependencies]
+glam = { path = "../..", default-features = false }
+
+[features]
+# Mirrors glam's default features (std math backend); checks 1-2 in
+# tools/ci/src/commands/msrv.rs use this. Check 3 passes
+# --no-default-features and enables libm instead, like the original check.
+default = ["glam/std"]
+all-types = ["glam/all-types"]
+arbitrary = ["glam/arbitrary"]
+approx = ["glam/approx"]
+mint = ["glam/mint"]
+speedy = ["glam/speedy"]
+debug-glam-assert = ["glam/debug-glam-assert"]
+scalar-math = ["glam/scalar-math"]
+libm = ["glam/libm"]
