@@ -381,6 +381,79 @@ macro_rules! impl_mat4_tests {
             should_glam_assert!({ $mat4::ZERO.inverse() });
         });
 
+        glam_test!(test_mat4_decompose_reflections, {
+            for i in 0..32 {
+                let rotation = $quat::from_euler(
+                    glam::EulerRot::XYZ,
+                    (i as $t - 16.0) * 0.13,
+                    (i as $t - 7.0) * 0.29,
+                    (i as $t - 23.0) * 0.37,
+                );
+                for signs in 0..8 {
+                    for magnitude in [1.0e-9, 1.0, 1.0e9] {
+                        let scale = $vec3::new(
+                            if signs & 1 == 0 { magnitude } else { -magnitude },
+                            if signs & 2 == 0 { 2.0 } else { -2.0 },
+                            if signs & 4 == 0 { 1.0 / magnitude } else { -1.0 / magnitude },
+                        );
+                        let translation = $vec3::new(-0.0, i as $t, -1.0e10);
+                        let matrix = $mat4::from_scale_rotation_translation(scale, rotation, translation);
+                        let (s, r, t) = matrix.to_scale_rotation_translation();
+                        assert_eq!(s.x.signum(), matrix.determinant().signum());
+                        assert_eq!(s.x.signum(), (scale.x * scale.y * scale.z).signum());
+                        assert!(s.y > 0.0 && s.z > 0.0);
+                        assert!(r.is_normalized());
+                        assert_eq!(t.to_array().map($t::to_bits), translation.to_array().map($t::to_bits));
+                        let rebuilt = $mat4::from_scale_rotation_translation(s, r, t);
+                        for column in 0..3 {
+                            let tolerance = 32.0 * $t::EPSILON * scale[column].abs();
+                            assert!(rebuilt.col(column).abs_diff_eq(matrix.col(column), tolerance));
+                        }
+                    }
+                }
+            }
+        });
+
+        glam_test!(test_mat4_decompose_small_determinant, {
+            let small = $t::from_bits(1).cbrt();
+            let scale = $vec3::splat(small);
+            let mut checked = 0;
+            for i in 0..64 {
+                let rotation = $quat::from_euler(
+                    glam::EulerRot::XYZ,
+                    i as $t * 0.13,
+                    i as $t * 0.29,
+                    i as $t * 0.37,
+                );
+                let matrix = $mat4::from_scale_rotation_translation(scale, rotation, $vec3::ZERO);
+                // Check inputs accepted by the full 4x4 determinant, even near underflow.
+                if matrix.determinant() != 0.0 {
+                    let (s, r, t) = matrix.to_scale_rotation_translation();
+                    assert!(s.abs_diff_eq(scale, 32.0 * $t::EPSILON * small));
+                    assert!(r.is_normalized());
+                    assert_eq!(t, $vec3::ZERO);
+                    checked += 1;
+                }
+            }
+            assert!(checked > 0);
+        });
+
+        #[cfg(all(
+            feature = "std",
+            panic = "unwind",
+            any(feature = "glam-assert", feature = "debug-glam-assert")
+        ))]
+        glam_test!(test_mat4_decompose_singular, {
+            for column in 0..3 {
+                let mut matrix = $mat4::IDENTITY;
+                *matrix.col_mut(column) = $vec4::ZERO;
+                should_glam_assert!({ matrix.to_scale_rotation_translation() });
+            }
+            let mut matrix = $mat4::IDENTITY;
+            matrix.y_axis = matrix.x_axis;
+            should_glam_assert!({ matrix.to_scale_rotation_translation() });
+        });
+
         glam_test!(test_mat4_decompose, {
             // identity
             let (out_scale, out_rotation, out_translation) =

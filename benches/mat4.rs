@@ -3,7 +3,7 @@
 mod macros;
 mod support;
 
-use criterion::{criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion, Throughput};
 use glam::Mat4;
 use std::ops::Mul;
 use support::*;
@@ -90,6 +90,25 @@ bench_from_ypr!(
     ty => Mat4
 );
 
+pub fn mat4_to_srt(c: &mut Criterion) {
+    let mut rng = PCG32::default();
+    let mut group = c.benchmark_group("mat4 to srt");
+    for size in [1, 256] {
+        let inputs: Vec<_> = (0..size).map(|_| random_srt_mat4(&mut rng)).collect();
+        let mut outputs = vec![Mat4::IDENTITY.to_scale_rotation_translation(); size];
+        group.throughput(Throughput::Elements(size as u64));
+        group.bench_function(size.to_string(), |b| {
+            b.iter(|| {
+                for (input, output) in core::hint::black_box(&inputs).iter().zip(&mut outputs) {
+                    *output = input.to_scale_rotation_translation();
+                }
+                core::hint::black_box(&outputs);
+            });
+        });
+    }
+    group.finish();
+}
+
 pub fn mat4_from_srt(c: &mut Criterion) {
     use glam::{Quat, Vec3};
     const SIZE: usize = 1 << 13;
@@ -123,6 +142,7 @@ criterion_group!(
     benches,
     mat4_determinant,
     mat4_from_srt,
+    mat4_to_srt,
     mat4_from_ypr,
     mat4_inverse,
     mat4_mul_mat4,

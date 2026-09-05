@@ -247,7 +247,12 @@ impl Mat4 {
     #[inline]
     #[must_use]
     pub fn to_scale_rotation_translation(&self) -> (Vec3, Quat, Vec3) {
-        let det = self.determinant();
+        // The determinant of an affine matrix is the determinant of its linear part.
+        // Expand along the first column, like `determinant()`, to preserve underflow behavior.
+        let det = self
+            .x_axis
+            .xyz()
+            .dot(self.y_axis.xyz().cross(self.z_axis.xyz()));
         glam_assert!(det != 0.0);
 
         let scale = Vec3::new(
