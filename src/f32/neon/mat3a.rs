@@ -49,6 +49,10 @@ pub const fn mat3a(x_axis: Vec3A, y_axis: Vec3A, z_axis: Vec3A) -> Mat3A {
 /// 2D inputs as 3D vectors with an implicit `z` value of `1` for points and `0` for
 /// vectors respectively. These methods assume that `Self` contains a valid affine
 /// transform.
+///
+/// SIMD vector types are used for storage on supported platforms.
+///
+/// This type is 16 byte aligned.
 #[derive(Clone, Copy)]
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(

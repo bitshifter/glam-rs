@@ -46,6 +46,16 @@ fn mat4() -> Mat4 {
     ]))
 }
 
+// A non-singular affine matrix
+#[inline]
+fn mat4_srt() -> Mat4 {
+    black_box(Mat4::from_scale_rotation_translation(
+        vec3(),
+        quat_rot_x_240(),
+        vec3(),
+    ))
+}
+
 // The `*_invertible` and `*_singular` matrices are used by the `inverse`,
 // `try_inverse` and `inverse_or_zero` benchmarks. `IDENTITY` exercises the
 // success paths, `ZERO` exercises the failure paths.
@@ -374,6 +384,12 @@ fn mat4_from_scale_rotation_translation(s: Vec3, r: Quat, t: Vec3) -> Mat4 {
 }
 
 #[library_benchmark]
+#[bench::args(mat4_srt())]
+fn mat4_to_scale_rotation_translation(m: Mat4) -> (Vec3, Quat, Vec3) {
+    black_box(m.to_scale_rotation_translation())
+}
+
+#[library_benchmark]
 #[bench::args(mat4(), vec3())]
 fn mat4_transform_point3(m: Mat4, v: Vec3) -> Vec3 {
     black_box(m.transform_point3(v))
@@ -664,6 +680,7 @@ library_benchmark_group!(
         mat4_mul_mat4,
         mat4_mul_vec4,
         mat4_mul_transpose_vec4,
+        mat4_to_scale_rotation_translation,
         mat4_transform_point3,
         mat4_transform_vector3,
         mat4_transpose,

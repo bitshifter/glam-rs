@@ -245,26 +245,24 @@ impl DMat4 {
     /// expected to be a 3D affine transformation matrix otherwise the output will be invalid.
     ///
     /// # Panics
-    ///
-    /// Will panic if the determinant of `self` is zero or if the resulting scale vector
-    /// contains any zero elements when `glam_assert` is enabled.
+    /// Will panic if `self` is not a valid affine transformation matrix, if the determinant of the
+    /// 3x3 linear part (the rotation and scale part of the transform) is zero, when `glam_assert`
+    /// is enabled.
     #[inline]
     #[must_use]
     pub fn to_scale_rotation_translation(&self) -> (DVec3, DQuat, DVec3) {
-        // The full matrix can be singular even when its linear part is not.
-        glam_assert!(self.determinant() != 0.0);
+        glam_assert!(self.row(3).abs_diff_eq(DVec4::W, 1e-6));
 
-        // The determinant of an affine matrix is the determinant of its linear part.
-        // Expand along the first column, like `determinant()`, to preserve underflow behavior.
-        let det = self
-            .x_axis
-            .xyz()
-            .dot(self.y_axis.xyz().cross(self.z_axis.xyz()));
+        let r = DMat3::from_mat4(*self);
+
+        let det = r.determinant();
+
+        glam_assert!(det != 0.0);
 
         let scale = DVec3::new(
-            self.x_axis.length() * math::signum(det),
-            self.y_axis.length(),
-            self.z_axis.length(),
+            r.x_axis.length() * math::signum(det),
+            r.y_axis.length(),
+            r.z_axis.length(),
         );
 
         glam_assert!(scale.cmpne(DVec3::ZERO).all());
@@ -272,9 +270,9 @@ impl DMat4 {
         let inv_scale = scale.recip();
 
         let rotation = DQuat::from_rotation_axes(
-            self.x_axis.mul(inv_scale.x).xyz(),
-            self.y_axis.mul(inv_scale.y).xyz(),
-            self.z_axis.mul(inv_scale.z).xyz(),
+            r.x_axis.mul(inv_scale.x),
+            r.y_axis.mul(inv_scale.y),
+            r.z_axis.mul(inv_scale.z),
         );
 
         let translation = self.w_axis.xyz();
