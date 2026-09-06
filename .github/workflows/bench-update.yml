@@ -70,12 +70,23 @@ jobs:
       - run: rustup update --no-self-update ${{ env.BENCH_TOOLCHAIN }}
       - run: rustup default ${{ env.BENCH_TOOLCHAIN }}
       - run: rustup update --no-self-update nightly
+      # Needed for full source annotations from `cargo asm --rust` (std/core
+      # sources); glam and bench sources annotate without it.
+      - run: rustup component add rust-src
+      - run: rustup component add rust-src --toolchain nightly
       - name: Install valgrind
         run: sudo apt-get update && sudo apt-get install -y valgrind
-      - run: cargo run --release -p ci -- bench --save
-      - name: Keep only baseline files
+      # cargo-asm (cargo-show-asm) powers `--save --asm`; pinned version so
+      # output/CLI can't drift.
+      - name: Install cargo-asm
+        run: cargo install cargo-show-asm --version 0.2.62 --locked
+      - run: cargo run --release -p ci -- bench --save --asm
+      - name: Keep only baseline and asm files
         run: |
-          find benches/gungraun-baselines -type f ! -name '*.base@*' ! -name 'Cargo.lock' ! -name 'x86_64.md' ! -name 'aarch64.md' -delete
+          find benches/gungraun-baselines -type f \
+            ! -name '*.base@*' ! -name 'Cargo.lock' \
+            ! -name 'x86_64.md' ! -name 'aarch64.md' \
+            ! -path 'benches/gungraun-baselines/asm/*' -delete
           find benches/gungraun-baselines -type d -empty -delete
       - uses: actions/upload-artifact@v7
         with:
@@ -96,7 +107,7 @@ jobs:
       - name: Clear previous baselines
         run: |
           cd baselines
-          rm -rf glam Cargo.lock x86_64.md aarch64.md
+          rm -rf glam Cargo.lock x86_64.md aarch64.md asm
       - uses: actions/download-artifact@v8
         with:
           pattern: baselines-*
