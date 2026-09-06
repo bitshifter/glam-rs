@@ -426,8 +426,8 @@ macro_rules! impl_mat4_tests {
                     i as $t * 0.37,
                 );
                 let matrix = $mat4::from_scale_rotation_translation(scale, rotation, $vec3::ZERO);
-                // Check inputs accepted by the full 4x4 determinant, even near underflow.
-                if matrix.determinant() != 0.0 {
+                // Check inputs accepted by the 3x3 submatrix determinant, even near underflow.
+                if $mat3::from_mat4(matrix).determinant() != 0.0 {
                     let (s, r, t) = matrix.to_scale_rotation_translation();
                     assert!(s.abs_diff_eq(scale, 32.0 * $t::EPSILON * small));
                     assert!(r.is_normalized());
@@ -444,7 +444,6 @@ macro_rules! impl_mat4_tests {
             any(feature = "glam-assert", feature = "debug-glam-assert")
         ))]
         glam_test!(test_mat4_decompose_singular, {
-            // A zero fourth column makes the full matrix singular even when its linear part is not.
             for column in 0..4 {
                 let mut matrix = $mat4::IDENTITY;
                 *matrix.col_mut(column) = $vec4::ZERO;
