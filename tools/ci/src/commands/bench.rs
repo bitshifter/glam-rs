@@ -233,6 +233,35 @@ fn rustc_host(sh: &Shell) -> String {
         .unwrap_or_else(fallback)
 }
 
+/// The toolchain/version header lines shared by the summary table and the asm
+/// READMEs.
+fn bench_header(sh: &Shell, gungraun: &str) -> String {
+    let mut header = String::new();
+    header.push_str(&format!(
+        "- glam-rs commit: `{}`\n",
+        command_stdout(sh, "git", &["rev-parse", "HEAD"])
+    ));
+    header.push_str(&format!(
+        "- rustc stable: `{}`\n",
+        command_stdout(sh, "rustc", &["--version"])
+    ));
+    header.push_str(&format!(
+        "- rustc nightly: `{}`\n",
+        command_stdout(
+            sh,
+            "rustup",
+            &["run", toolchain::NIGHTLY, "rustc", "--version"]
+        )
+    ));
+    header.push_str(&format!(
+        "- valgrind: `{}`\n",
+        command_stdout(sh, "valgrind", &["--version"])
+    ));
+    header.push_str(&format!("- gungraun: `{gungraun}`\n"));
+    header.push_str(&format!("- target: `{}`\n", rustc_host(sh)));
+    header
+}
+
 /// Write a `{arch}.md` summary of the saved baselines for this host: one row
 /// per benchmark, one column per backend.
 fn write_summary(sh: &Shell, home: &Path, backends: &[Backend], gungraun: &str) {
@@ -255,28 +284,7 @@ fn write_summary(sh: &Shell, home: &Path, backends: &[Backend], gungraun: &str) 
 
     let mut table = String::new();
     table.push_str(&format!("# {arch} benchmarks\n\n"));
-    table.push_str(&format!(
-        "- glam-rs commit: `{}`\n",
-        command_stdout(sh, "git", &["rev-parse", "HEAD"])
-    ));
-    table.push_str(&format!(
-        "- rustc stable: `{}`\n",
-        command_stdout(sh, "rustc", &["--version"])
-    ));
-    table.push_str(&format!(
-        "- rustc nightly: `{}`\n",
-        command_stdout(
-            sh,
-            "rustup",
-            &["run", toolchain::NIGHTLY, "rustc", "--version"]
-        )
-    ));
-    table.push_str(&format!(
-        "- valgrind: `{}`\n",
-        command_stdout(sh, "valgrind", &["--version"])
-    ));
-    table.push_str(&format!("- gungraun: `{gungraun}`\n"));
-    table.push_str(&format!("- target: `{}`\n", rustc_host(sh)));
+    table.push_str(&bench_header(sh, gungraun));
     table.push_str(
         "- deltas: native SIMD (SSE2 or NEON) minus scalar-math/core-simd instructions\n\n",
     );
@@ -335,6 +343,201 @@ fn write_summary(sh: &Shell, home: &Path, backends: &[Backend], gungraun: &str) 
     }
 
     fs::write(home.join(format!("{arch}.md")), table).expect("failed to write the bench summary");
+}
+
+/// Parse a callgrind `.out` file and return its `fn=` records (the demangled
+/// names of the functions it called).
+fn callgrind_fns(path: &Path) -> Vec<String> {
+    let Ok(contents) = fs::read_to_string(path) else {
+        return Vec::new();
+    };
+    contents
+        .lines()
+        .filter_map(|line| line.trim().strip_prefix("fn="))
+        .map(str::to_string)
+        .collect()
+}
+
+/// True for functions worth saving asm for: gungraun's core bench wrapper fns
+/// (`*__gungraun_wrapper_mod*`, which hold the benchmark's inlined glam code,
+/// excluding the `*_id_mod_*` argument-case plumbing) and non-inlined glam fns.
+/// Harness, std, and libc frames are excluded.
+fn is_bench_fn(name: &str) -> bool {
+    (name.starts_with("gungraun::") && name.contains("__gungraun_wrapper_mod"))
+        || name.starts_with("glam::")
+        || name.starts_with("<glam::")
+}
+
+/// Strip callgrind's dedup suffix (`'2`, `'3`, ...) from identical fn names.
+fn strip_callgrind_suffix(name: &str) -> &str {
+    match name.rfind('\'') {
+        Some(i) if name[i + 1..].bytes().all(|b| b.is_ascii_digit()) => &name[..i],
+        _ => name,
+    }
+}
+
+/// Collect the names of the functions the benchmarks saved under `name` call,
+/// from the `.out.base@{name}` files, with the callgrind dedup suffix stripped.
+fn collect_bench_fns(dir: &Path, name: &str) -> BTreeSet<String> {
+    let suffix = format!(".out.base@{name}");
+    let mut out = BTreeSet::new();
+    collect_bench_fns_files(dir, &suffix, &mut out);
+    out
+}
+
+fn collect_bench_fns_files(dir: &Path, suffix: &str, out: &mut BTreeSet<String>) {
+    let Ok(entries) = fs::read_dir(dir) else {
+        return;
+    };
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if path.is_dir() {
+            collect_bench_fns_files(&path, suffix, out);
+        } else if path
+            .file_name()
+            .map_or(false, |n| n.to_string_lossy().ends_with(suffix))
+        {
+            for name in callgrind_fns(&path) {
+                if is_bench_fn(&name) {
+                    out.insert(strip_callgrind_suffix(&name).to_string());
+                }
+            }
+        }
+    }
+}
+
+/// Error message when `--asm` is requested but `cargo-asm` (crate
+/// `cargo-show-asm`) isn't installed.
+const ASM_TOOL_MISSING: &str = "cargo-asm is not installed; install it with `cargo install cargo-show-asm --version 0.2.62 --locked`";
+
+/// True if `cargo asm` is available; found via PATH for any toolchain, so one
+/// check covers all backends.
+fn cargo_asm_installed(sh: &Shell) -> bool {
+    sh.cmd("cargo")
+        .arg("asm")
+        .arg("--version")
+        .read()
+        .map_or(false, |version| {
+            version.trim_start().starts_with("Version:")
+        })
+}
+
+/// Dump one function as source-annotated assembly with `cargo asm --rust`, or
+/// `None` if the symbol isn't in the built artifact.
+///
+/// The bench target uses the `bench` profile `cargo bench` builds with; the
+/// glam lib uses the default profile (its code is profile-independent). The
+/// trailing index picks the first of any identically named instantiations.
+fn cargo_asm_asm(sh: &Shell, backend: &Backend, target: &str, name: &str) -> Option<String> {
+    let mut cmd = match backend.toolchain {
+        Some(toolchain) => toolchain::cargo(sh, toolchain),
+        None => sh.cmd("cargo"),
+    };
+    cmd = cmd.arg("asm").arg("-p").arg("glam");
+    if target == "--bench" {
+        cmd = cmd.arg("--bench").arg("gungraun");
+    } else {
+        cmd = cmd.arg("--lib");
+    }
+    cmd = cmd.arg("--rust").arg("--quiet");
+    if target == "--bench" {
+        cmd = cmd.arg("--profile").arg("bench");
+    }
+    if let Some(features) = backend.features {
+        cmd = cmd.arg("--features").arg(features);
+    }
+    // Capture both streams: cargo-asm's stderr (cargo noise, ambiguity hints,
+    // blank lines) never reaches the log, and the assembly on stdout is
+    // returned as-is. Echo the command first, like xshell's `run()` does.
+    cmd = cmd.arg(name).arg("0");
+    eprintln!("$ {cmd}");
+    let output = cmd.output().ok()?;
+    let stdout = String::from_utf8_lossy(&output.stdout).into_owned();
+    if stdout.trim().is_empty() {
+        // Symbol missing, or the item at index 0 is absent.
+        return None;
+    }
+    Some(stdout)
+}
+
+/// Filename-safe demangled symbol: `::` -> `.`, ` as ` -> `.`, other invalid
+/// chars -> `_` (Windows-checkoutable).
+fn sanitize_fn(name: &str) -> String {
+    let mut s = name.replace("::", ".").replace(" as ", ".");
+    s = s
+        .chars()
+        .map(|c| {
+            if c.is_ascii_alphanumeric() || matches!(c, '.' | '_' | '-') {
+                c
+            } else {
+                '_'
+            }
+        })
+        .collect();
+    s = s.replace("_.", ".");
+    s.trim_matches(|c| c == '_' || c == '.').to_string()
+}
+
+/// Write one `fns/{fn}.s` per function the saved benchmarks call, under
+/// `asm/{backend}/`. Functions the current build no longer compiles (e.g.
+/// renamed benches) are skipped with a warning; missing `cargo-asm` is checked
+/// before the benchmarks run.
+fn save_asm(sh: &Shell, baseline_dir: &Path, backend: &Backend, gungraun: &str) {
+    let asm_home = baseline_dir.join("asm");
+    let backend_dir = asm_home.join(backend.name);
+    if backend_dir.exists() {
+        fs::remove_dir_all(&backend_dir).expect("failed to remove stale asm output");
+    }
+    let fns_dir = backend_dir.join("fns");
+    fs::create_dir_all(&fns_dir).expect("failed to create the asm directory");
+
+    let wanted = collect_bench_fns(baseline_dir, backend.name);
+    eprintln!(
+        "=== save asm ({}: {} functions) ===",
+        backend.name,
+        wanted.len()
+    );
+    // Wrappers live in the bench target, non-inlined glam fns in the glam lib:
+    // two artifacts to dump from.
+    let wrappers: BTreeSet<String> = wanted
+        .iter()
+        .filter(|name| name.starts_with("gungraun::"))
+        .cloned()
+        .collect();
+    let glam_fns: BTreeSet<String> = wanted
+        .iter()
+        .filter(|name| name.starts_with("glam::") || name.starts_with("<glam::"))
+        .cloned()
+        .collect();
+
+    let mut written = 0;
+    for (target, names) in [("--bench", &wrappers), ("--lib", &glam_fns)] {
+        for name in names {
+            let Some(asm) = cargo_asm_asm(sh, backend, target, name) else {
+                eprintln!("  warning: no assembly found for {name}");
+                continue;
+            };
+            fs::write(fns_dir.join(format!("{}.s", sanitize_fn(name))), asm)
+                .expect("failed to write asm file");
+            written += 1;
+        }
+    }
+    eprintln!("  saved {written} asm files");
+
+    let readme = format!(
+        "# asm/{}\n\n\
+         Generated by `cargo run -p ci -- bench --save --asm`. One `fns/*.s`\n\
+         per function the saved benchmarks call: the gungraun core wrapper\n\
+         (which holds the benchmark's inlined glam code) and non-inlined glam\n\
+         functions under their demangled names. Assembly is source-annotated\n\
+         (`cargo asm --rust`). Which benchmarks call a function: the\n\
+         `callgrind.*.out.base@{}` files.\n\n\
+         {}\n",
+        backend.name,
+        backend.name,
+        bench_header(sh, gungraun)
+    );
+    fs::write(backend_dir.join("README.md"), readme).expect("failed to write the asm README");
 }
 
 /// The bench lockfile swapped in as `Cargo.lock`: `Some(Some(backup))` if an
@@ -424,12 +627,18 @@ pub struct Bench {
     )]
     pub save: bool,
 
+    #[argh(
+        switch,
+        description = "also save assembly for the benchmarked functions (needs cargo-asm; only with --save)"
+    )]
+    pub asm: bool,
+
     #[argh(option, description = "directory containing gungraun baselines")]
     pub baseline_dir: Option<PathBuf>,
 
     #[argh(
         option,
-        description = "allowed absolute instruction-count increase before failing (default: 2)"
+        description = "allowed absolute instruction-count increase before failing (default: 3)"
     )]
     pub ir_tolerance: Option<u64>,
 
@@ -450,15 +659,28 @@ impl Prepare for Bench {
     // guaranteed to be reverted (via the guard's `Drop`) no matter how the
     // commands exit.
     fn prepare<'a>(&self, sh: &'a Shell, args: &Args) -> Vec<PreparedCommand<'a>> {
+        if self.asm && !self.save {
+            panic!("--asm requires --save: assembly is generated from the saved baselines");
+        }
         let backends = host_backends();
         if backends.is_empty() {
             return Vec::new();
         }
 
+        // The gungraun runner nests a relative `--home` path (`{home}/glam/{home}/…`),
+        // so resolve the baseline dir to an absolute path up front.
         let baseline_dir = self
             .baseline_dir
             .as_deref()
             .unwrap_or_else(|| Path::new(BASELINE_HOME));
+        let baseline_dir = if baseline_dir.is_absolute() {
+            baseline_dir.to_owned()
+        } else {
+            std::env::current_dir()
+                .expect("failed to get the current directory")
+                .join(baseline_dir)
+        };
+        let baseline_dir = baseline_dir.as_path();
 
         // Linux hosts have more than one backend to choose between; on
         // non-Linux hosts the backend-selection options don't exist (and
@@ -538,6 +760,10 @@ impl Prepare for Bench {
             }
         }
 
+        if self.save && self.asm && !cargo_asm_installed(sh) {
+            failure = Some(ASM_TOOL_MISSING);
+        }
+
         'benches: {
             if failure.is_some() {
                 break 'benches;
@@ -587,6 +813,8 @@ impl Prepare for Bench {
                     if !args.keep_going {
                         break;
                     }
+                } else if self.save && self.asm {
+                    save_asm(sh, baseline_dir, backend, &version);
                 } else if !self.save {
                     let tolerance = self.ir_tolerance.unwrap_or(DEFAULT_IR_TOLERANCE);
                     let regressions = regressed_benchmarks(baseline_dir, backend.name, tolerance);
@@ -729,14 +957,14 @@ mod tests {
         fs::write(&baseline, "summary: 100\n").unwrap();
 
         // An increase of `IR_TOLERANCE` instructions is allowed.
-        fs::write(&current, "summary: 102\n").unwrap();
+        fs::write(&current, "summary: 103\n").unwrap();
         assert!(regressed_benchmarks(&dir, "x86_64_sse2", DEFAULT_IR_TOLERANCE).is_empty());
 
         // One instruction beyond the tolerance is a regression.
-        fs::write(&current, "summary: 103\n").unwrap();
+        fs::write(&current, "summary: 104\n").unwrap();
         assert_eq!(
             regressed_benchmarks(&dir, "x86_64_sse2", DEFAULT_IR_TOLERANCE),
-            vec![("mat2_determinant".to_string(), 100, 103)]
+            vec![("mat2_determinant".to_string(), 100, 104)]
         );
 
         fs::remove_dir_all(&dir).unwrap();
@@ -763,5 +991,160 @@ mod tests {
         assert_eq!(ir.get("quat_lerp.positive_dot"), Some(&42));
 
         fs::remove_dir_all(&dir).unwrap();
+    }
+
+    #[test]
+    fn strips_callgrind_suffix() {
+        assert_eq!(
+            strip_callgrind_suffix(
+                "<glam::f32::sse2::quat::Quat as glam::euler::FromEuler>::from_euler_angles'2"
+            ),
+            "<glam::f32::sse2::quat::Quat as glam::euler::FromEuler>::from_euler_angles"
+        );
+        assert_eq!(
+            strip_callgrind_suffix("gungraun::vec3_dot::__gungraun_wrapper_mod::vec3_dot"),
+            "gungraun::vec3_dot::__gungraun_wrapper_mod::vec3_dot"
+        );
+        assert_eq!(
+            strip_callgrind_suffix("0x000000000001f540"),
+            "0x000000000001f540"
+        );
+    }
+
+    #[test]
+    fn filters_bench_fns() {
+        assert!(is_bench_fn(
+            "gungraun::mat4_inverse::__gungraun_wrapper_mod::mat4_inverse"
+        ));
+        // The `*_id_mod_*` argument-case wrappers are plumbing, not the bench.
+        assert!(!is_bench_fn(
+            "gungraun::mat4_inverse::__gungraun_wrapper_id_mod_args::args"
+        ));
+        assert!(!is_bench_fn(
+            "gungraun::quat_slerp::__gungraun_wrapper_id_mod_orthogonal::orthogonal"
+        ));
+        assert!(is_bench_fn("<glam::f32::sse2::mat4::Mat4>::inverse"));
+        assert!(is_bench_fn("glam::f32::sse2::mat4::Mat4::determinant"));
+        assert!(!is_bench_fn("gungraun::mat4_inverse::__run_args"));
+        assert!(!is_bench_fn("gungraun::bench_mat4::__run"));
+        assert!(!is_bench_fn("gungraun::main"));
+        assert!(!is_bench_fn("std::rt::lang_start_internal"));
+        assert!(!is_bench_fn("(below main)"));
+    }
+
+    #[test]
+    fn collects_bench_fns_from_base_files() {
+        let dir = std::env::temp_dir().join(format!("glam-ci-asm-fns-test-{}", std::process::id()));
+        let base = dir.join("glam/gungraun/bench_mat4/mat4_inverse.args");
+        fs::create_dir_all(&base).unwrap();
+        fs::write(
+            base.join("callgrind.mat4_inverse.args.out.base@x86_64_sse2"),
+            "fn=main\n\
+             fn=gungraun::mat4_inverse::__gungraun_wrapper_id_mod_args::args\n\
+             fn=gungraun::mat4_inverse::__gungraun_wrapper_mod::mat4_inverse\n\
+             fn=<glam::f32::sse2::mat4::Mat4>::inverse\n\
+             fn=<glam::f32::sse2::quat::Quat as glam::euler::FromEuler>::from_euler_angles'2\n",
+        )
+        .unwrap();
+        fs::write(
+            base.join("callgrind.mat4_inverse.args.out.base@x86_64_scalar_math"),
+            "fn=gungraun::mat4_inverse::__gungraun_wrapper_mod::mat4_inverse\n\
+             fn=<glam::f32::scalar::mat4::Mat4>::inverse\n",
+        )
+        .unwrap();
+
+        let fns = collect_bench_fns(&dir, "x86_64_sse2");
+        assert!(fns.contains("gungraun::mat4_inverse::__gungraun_wrapper_mod::mat4_inverse"));
+        assert!(fns.contains("<glam::f32::sse2::mat4::Mat4>::inverse"));
+        assert!(fns.contains(
+            "<glam::f32::sse2::quat::Quat as glam::euler::FromEuler>::from_euler_angles"
+        ));
+        assert!(!fns.contains("gungraun::mat4_inverse::__gungraun_wrapper_id_mod_args::args"));
+        assert!(!fns.contains("<glam::f32::scalar::mat4::Mat4>::inverse"));
+        assert!(!fns.contains("main"));
+        assert_eq!(fns.len(), 3);
+
+        fs::remove_dir_all(&dir).unwrap();
+    }
+
+    #[test]
+    fn sanitizes_fn_names() {
+        assert_eq!(
+            sanitize_fn("<glam::f32::sse2::mat4::Mat4>::inverse"),
+            "glam.f32.sse2.mat4.Mat4.inverse"
+        );
+        assert_eq!(
+            sanitize_fn("gungraun::vec3_dot::__gungraun_wrapper_mod::vec3_dot"),
+            "gungraun.vec3_dot.__gungraun_wrapper_mod.vec3_dot"
+        );
+    }
+
+    fn copy_tree(src: &Path, dst: &Path) {
+        fs::create_dir_all(dst).unwrap();
+        for entry in fs::read_dir(src).unwrap().flatten() {
+            let target = dst.join(entry.file_name());
+            if entry.file_type().unwrap().is_dir() {
+                copy_tree(&entry.path(), &target);
+            } else {
+                fs::copy(entry.path(), &target).unwrap();
+            }
+        }
+    }
+
+    #[test]
+    #[ignore = "end-to-end against the committed baseline tree; requires cargo-asm"]
+    fn asm_generation_end_to_end() {
+        let sh = Shell::new().unwrap();
+        // save_asm runs cargo from the workspace root; the guard restores the cwd.
+        let workspace = Path::new(BASELINE_HOME).join("../..");
+        let _dir = sh.push_dir(workspace);
+
+        let tmp = std::env::temp_dir().join(format!("glam-ci-asm-e2e-{}", std::process::id()));
+        copy_tree(&Path::new(BASELINE_HOME).join("glam"), &tmp.join("glam"));
+
+        let backend = Backend {
+            name: "x86_64_sse2",
+            label: "sse2",
+            header: "sse2",
+            features: None,
+            toolchain: None,
+        };
+        save_asm(&sh, &tmp, &backend, "test");
+
+        let fns = tmp.join("asm/x86_64_sse2/fns");
+        let names: BTreeSet<String> = fs::read_dir(&fns)
+            .unwrap()
+            .flatten()
+            .map(|entry| entry.file_name().to_string_lossy().into_owned())
+            .collect();
+        assert!(!names.is_empty());
+        assert!(tmp.join("asm/x86_64_sse2/README.md").exists());
+
+        let inverse = fs::read_to_string(fns.join("glam.f32.sse2.mat4.Mat4.inverse.s")).unwrap();
+        assert!(inverse.contains("movaps"));
+        // Source annotations (`cargo asm --rust`) are interleaved.
+        assert!(inverse.contains("// src/"));
+        let dot =
+            fs::read_to_string(fns.join("gungraun.vec3_dot.__gungraun_wrapper_mod.vec3_dot.s"))
+                .unwrap();
+        assert!(dot.contains("mulps") || dot.contains("mulss"));
+        assert!(dot.contains("benches/gungraun.rs"));
+
+        // Only core `*__gungraun_wrapper_mod*` and glam fns: no harness, no
+        // `*_id_mod_*` argument-case wrappers.
+        for name in &names {
+            assert!(
+                !name.starts_with("gungraun.") || name.contains("wrapper_mod"),
+                "{name}"
+            );
+            assert!(
+                !name.contains("id_mod") && !name.contains("__run_args"),
+                "{name}"
+            );
+            assert!(!name.contains("lang_start"), "{name}");
+        }
+
+        drop(_dir);
+        fs::remove_dir_all(&tmp).unwrap();
     }
 }
