@@ -1728,6 +1728,15 @@ macro_rules! impl_vec4_float_tests {
             assert_eq!($vec4::new(0.0, 21.1, 0.0, 0.0).round().y, 21.0);
             assert_eq!($vec4::new(0.0, 0.0, 0.0, 11.123).round().w, 11.0);
             assert_eq!($vec4::new(0.0, 0.0, 11.501, 0.0).round().z, 12.0);
+            // half-way cases round away from zero, not to the nearest even integer
+            assert_eq!(
+                $vec4::new(0.5, -0.5, 2.5, -2.5).round(),
+                $vec4::new(1.0, -1.0, 3.0, -3.0)
+            );
+            assert_eq!(
+                $vec4::new(3.5, -3.5, 4.5, -4.5).round(),
+                $vec4::new(4.0, -4.0, 5.0, -5.0)
+            );
             assert_eq!(
                 $vec4::new($t::NEG_INFINITY, $t::INFINITY, 1.0, -1.0).round(),
                 $vec4::new($t::NEG_INFINITY, $t::INFINITY, 1.0, -1.0)

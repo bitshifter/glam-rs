@@ -34,6 +34,7 @@ const PS_SIN_COEFFICIENTS1: __m128 = m128_from_f32x4([
     -0.000_185_246_7, /*Est3*/
 ]);
 const PS_ONE: __m128 = m128_from_f32x4([1.0; 4]);
+const PS_HALF: __m128 = m128_from_f32x4([0.5; 4]);
 const PS_TWO_PI: __m128 = m128_from_f32x4([core::f32::consts::TAU; 4]);
 const PS_RECIPROCAL_TWO_PI: __m128 = m128_from_f32x4([0.159_154_94; 4]);
 
@@ -144,8 +145,10 @@ pub(crate) unsafe fn m128_neg_mul_sub(a: __m128, b: __m128, c: __m128) -> __m128
     _mm_sub_ps(c, _mm_mul_ps(a, b))
 }
 
+/// Rounds each lane to the nearest integer, rounding half-way cases to the
+/// nearest even integer.
 #[inline]
-pub(crate) unsafe fn m128_round(v: __m128) -> __m128 {
+pub(crate) unsafe fn m128_round_ties_even(v: __m128) -> __m128 {
     // Based on https://github.com/microsoft/DirectXMath `XMVectorRound`
     let sign = _mm_and_ps(v, PS_SIGN_MASK);
     let s_magic = _mm_or_ps(PS_NO_FRACTION, sign);
@@ -156,6 +159,20 @@ pub(crate) unsafe fn m128_round(v: __m128) -> __m128 {
     let r2 = _mm_andnot_ps(mask, v);
     let r1 = _mm_and_ps(r1, mask);
     _mm_xor_ps(r1, r2)
+}
+
+/// Rounds each lane to the nearest integer, rounding half-way cases away from
+/// zero, matching `f32::round`.
+#[inline]
+pub(crate) unsafe fn m128_round(v: __m128) -> __m128 {
+    // The two roundings only differ on half-way cases that `m128_round_ties_even`
+    // rounded towards zero, and those are exactly the lanes where the difference
+    // between the input and the result is `0.5` with the sign of the input, so
+    // move those one further away from zero.
+    let rounded = m128_round_ties_even(v);
+    let sign = _mm_and_ps(v, PS_SIGN_MASK);
+    let ties_down = _mm_cmpeq_ps(_mm_sub_ps(v, rounded), _mm_or_ps(PS_HALF, sign));
+    _mm_add_ps(rounded, _mm_and_ps(ties_down, _mm_or_ps(PS_ONE, sign)))
 }
 
 #[inline]
@@ -182,7 +199,7 @@ pub(crate) unsafe fn m128_trunc(v: __m128) -> __m128 {
 pub(crate) unsafe fn m128_mod_angles(angles: __m128) -> __m128 {
     // Based on https://github.com/microsoft/DirectXMath `XMVectorModAngles`
     let v = _mm_mul_ps(angles, PS_RECIPROCAL_TWO_PI);
-    let v = m128_round(v);
+    let v = m128_round_ties_even(v);
     m128_neg_mul_sub(PS_TWO_PI, v, angles)
 }
 

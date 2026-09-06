@@ -1346,6 +1346,9 @@ macro_rules! impl_vec2_float_tests {
             assert_eq!($vec2::new(0.0, 21.1).round().y, 21.0);
             assert_eq!($vec2::new(0.0, 11.123).round().y, 11.0);
             assert_eq!($vec2::new(0.0, 11.499).round().y, 11.0);
+            // half-way cases round away from zero, not to the nearest even integer
+            assert_eq!($vec2::new(0.5, -0.5).round(), $vec2::new(1.0, -1.0));
+            assert_eq!($vec2::new(2.5, -2.5).round(), $vec2::new(3.0, -3.0));
             assert_eq!(
                 $vec2::new($t::NEG_INFINITY, $t::INFINITY).round(),
                 $vec2::new($t::NEG_INFINITY, $t::INFINITY)

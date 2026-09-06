@@ -782,7 +782,7 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn round(self) -> Self {
-        Self(unsafe { vrndnq_f32(self.0) })
+        Self(unsafe { vrndaq_f32(self.0) })
     }
 
     /// Returns a vector containing the largest integer less than or equal to a number for each
