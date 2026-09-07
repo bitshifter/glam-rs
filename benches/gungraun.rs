@@ -534,6 +534,12 @@ fn vec4_length(v: Vec4) -> f32 {
 }
 
 #[library_benchmark]
+#[bench::args(vec4(), vec4())]
+fn vec4_dot_into_vec(v1: Vec4, v2: Vec4) -> Vec4 {
+    black_box(v1.dot_into_vec(v2))
+}
+
+#[library_benchmark]
 #[bench::args(vec4())]
 fn vec4_normalize(v: Vec4) -> Vec4 {
     black_box(v.normalize())
@@ -719,6 +725,7 @@ library_benchmark_group!(
     name = bench_vec4;
     benchmarks =
         vec4_dot,
+        vec4_dot_into_vec,
         vec4_length,
         vec4_mul_vec4,
         vec4_normalize,
