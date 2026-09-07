@@ -17,9 +17,9 @@ pub(crate) const fn u32x4_from_array(u32x4: [u32; 4]) -> uint32x4_t {
     unsafe { UnionCast { u32x4 }.u }
 }
 
-const U64X4_NEGATIVE_ZERO: uint32x4_t = u32x4_from_array([0x8000_0000; 4]);
-const U64X4_PI: uint32x4_t = u32x4_from_array([core::f32::consts::PI.to_bits(); 4]);
-const F32X4_HALF_PI: float32x4_t = f32x4_from_array([core::f32::consts::FRAC_PI_2; 4]);
+const U32X4_NEG_ZERO: uint32x4_t = u32x4_from_array([0x8000_0000; 4]);
+const F32X4_PI: float32x4_t = f32x4_from_array([core::f32::consts::PI; 4]);
+const F32X4_FRAC_PI_2: float32x4_t = f32x4_from_array([core::f32::consts::FRAC_PI_2; 4]);
 const F32X4_SIN_COEFFICIENTS0: float32x4_t =
     f32x4_from_array([-0.16666667, 0.008_333_331, -0.00019840874, 2.752_556_2e-6]);
 const F32X4_SIN_COEFFICIENTS1: float32x4_t = f32x4_from_array([
@@ -30,7 +30,7 @@ const F32X4_SIN_COEFFICIENTS1: float32x4_t = f32x4_from_array([
 ]);
 const F32X4_ONE: float32x4_t = f32x4_from_array([1.0; 4]);
 const F32X4_TAU: float32x4_t = f32x4_from_array([core::f32::consts::TAU; 4]);
-const F32X4_RECIPROCAL_TWO_PI: float32x4_t = f32x4_from_array([0.159_154_94; 4]);
+const F32X4_FRAC_1_TAU: float32x4_t = f32x4_from_array([0.159_154_94; 4]);
 
 // #[inline]
 // pub(crate) unsafe fn dot3_in_x(lhs: float32x4_t, rhs: float32x4_t) -> float32x4_t {
@@ -76,7 +76,7 @@ pub(crate) unsafe fn dot4_into_f32x4(lhs: float32x4_t, rhs: float32x4_t) -> floa
 pub(crate) unsafe fn f32x4_mod_angles(angles: float32x4_t) -> float32x4_t {
     // Based on https://github.com/microsoft/DirectXMath `XMVectorModAngles`
     // Modulo the range of the given angles such that -XM_PI <= Angles < XM_PI
-    let mut v = vmulq_f32(angles, F32X4_RECIPROCAL_TWO_PI);
+    let mut v = vmulq_f32(angles, F32X4_FRAC_1_TAU);
     v = vrndnq_f32(v);
     vmlsq_f32(angles, v, F32X4_TAU)
 }
@@ -94,11 +94,11 @@ pub(crate) unsafe fn f32x4_sin(v: float32x4_t) -> float32x4_t {
     let mut x = f32x4_mod_angles(v);
 
     // Map in [-pi/2,pi/2] with sin(y) = sin(x).
-    let sign = vandq_u32(vreinterpretq_u32_f32(x), U64X4_NEGATIVE_ZERO);
-    let c = vorrq_u32(U64X4_PI, sign); // pi when x >= 0, -pi when x < 0
+    let sign = vandq_u32(vreinterpretq_u32_f32(x), U32X4_NEG_ZERO);
+    let c = vorrq_u32(vreinterpretq_u32_f32(F32X4_PI), sign); // pi when x >= 0, -pi when x < 0
     let absx = vabsq_f32(x);
     let rflx = vsubq_f32(vreinterpretq_f32_u32(c), x);
-    let comp = vcleq_f32(absx, F32X4_HALF_PI);
+    let comp = vcleq_f32(absx, F32X4_FRAC_PI_2);
     x = vbslq_f32(comp, x, rflx);
 
     let x2 = vmulq_f32(x, x);
