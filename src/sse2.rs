@@ -76,8 +76,10 @@ pub(crate) unsafe fn dot4(lhs: __m128, rhs: __m128) -> f32 {
 
 #[inline]
 pub(crate) unsafe fn dot4_into_m128(lhs: __m128, rhs: __m128) -> __m128 {
-    let dot_in_x = dot4_in_x(lhs, rhs);
-    _mm_shuffle_ps(dot_in_x, dot_in_x, 0b00_00_00_00)
+    let products = _mm_mul_ps(lhs, rhs);
+    // Sum both pairs in every lane, keeping the (x + z) + (y + w) grouping.
+    let pairs = _mm_add_ps(products, _mm_shuffle_ps(products, products, 0b01_00_11_10));
+    _mm_add_ps(pairs, _mm_shuffle_ps(pairs, pairs, 0b10_11_00_01))
 }
 
 #[inline]
