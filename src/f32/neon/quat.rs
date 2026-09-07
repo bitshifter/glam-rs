@@ -740,10 +740,20 @@ impl Quat {
     fn slerp_impl(self, end: Self, dot: f32, s: f32) -> Self {
         let theta = math::acos_approx(dot);
 
-        let scale1 = math::sin(theta * (1.0 - s));
-        let scale2 = math::sin(theta * s);
-        let theta_sin = math::sin(theta);
-        ((self * scale1) + (end * scale2)) * (1.0 / theta_sin)
+        let coefs = [1.0 - s, s, 1.0, 0.0];
+        unsafe {
+            let tmp = vmulq_f32(vdupq_n_f32(theta), vld1q_f32(coefs.as_ptr()));
+            let tmp = f32x4_sin(tmp);
+
+            let scale1 = vdupq_n_f32(vgetq_lane_f32(tmp, 0));
+            let scale2 = vdupq_n_f32(vgetq_lane_f32(tmp, 1));
+            let theta_sin = vdupq_n_f32(vgetq_lane_f32(tmp, 2));
+
+            Self(vdivq_f32(
+                vaddq_f32(vmulq_f32(self.0, scale1), vmulq_f32(end.0, scale2)),
+                theta_sin,
+            ))
+        }
     }
 
     /// Performs a spherical linear interpolation between `self` and `end`
