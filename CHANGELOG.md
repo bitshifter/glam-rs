@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.33.7](https://github.com/bitshifter/glam-rs/compare/0.33.6...0.33.7) - 2026-09-07
+
+### Fixed
+
+- *(vec)* round half-way cases away from zero in the SIMD backends ([#831](https://github.com/bitshifter/glam-rs/pull/831))
+
+### Other
+
+- add neon float32x4_t sin implementation. ([#834](https://github.com/bitshifter/glam-rs/pull/834))
+- further optimisations to to_scale_rotation_translation ([#829](https://github.com/bitshifter/glam-rs/pull/829))
+- *(mat4)* specialize affine determinant in SRT decomposition ([#827](https://github.com/bitshifter/glam-rs/pull/827))
+- *(quat)* avoid acos in is_near_identity ([#824](https://github.com/bitshifter/glam-rs/pull/824))
+- Use m128_sin in Vec3A::slerp ([#819](https://github.com/bitshifter/glam-rs/pull/819))
+
 ## [0.33.6](https://github.com/bitshifter/glam-rs/compare/0.33.5...0.33.6) - 2026-08-28
 
 ### Added
