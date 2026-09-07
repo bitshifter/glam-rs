@@ -685,7 +685,7 @@ impl Mat3A {
     #[must_use]
     pub fn transform_vector2(&self, rhs: Vec2) -> Vec2 {
         glam_assert!(self.row(2).abs_diff_eq(Vec3A::Z, 1e-6));
-        Mat2::from_cols(self.x_axis.xy(), self.y_axis.xy()) * rhs
+        self.x_axis.xy() * rhs.x + self.y_axis.xy() * rhs.y
     }
 
     /// Creates a left-handed view matrix using a facing direction and an up direction.

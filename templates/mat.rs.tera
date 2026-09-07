@@ -1773,7 +1773,11 @@ impl {{ self_t }} {
     #[must_use]
     pub fn transform_vector2(&self, rhs: {{ vec2_t }}) -> {{ vec2_t }} {
         glam_assert!(self.row(2).abs_diff_eq({{ col_t }}::Z, 1e-6));
+        {%- if self_t == "Mat3A" %}
+        self.x_axis.xy() * rhs.x + self.y_axis.xy() * rhs.y
+        {% else %}
         {{ mat2_t }}::from_cols(self.x_axis.xy(), self.y_axis.xy()) * rhs
+        {% endif %}
     }
 
     /// Creates a left-handed view matrix using a facing direction and an up direction.

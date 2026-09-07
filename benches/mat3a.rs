@@ -3,8 +3,9 @@
 mod macros;
 mod support;
 
-use criterion::{criterion_group, criterion_main, Criterion};
-use glam::Mat3A;
+use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion, Throughput};
+use glam::{Mat3A, Vec2};
+use std::hint::black_box;
 use std::ops::Mul;
 use support::*;
 
@@ -56,13 +57,26 @@ bench_binop!(
     from2 => random_vec2
 );
 
-bench_binop!(
-    mat3a_transform_vector2,
-    "mat3a transform vector2",
-    op => transform_vector2,
-    from1 => random_srt_mat3a,
-    from2 => random_vec2
-);
+fn mat3a_transform_vector2(c: &mut Criterion) {
+    let mut group = c.benchmark_group("mat3a transform vector2");
+    let mut rng = PCG32::default();
+    for size in [1, 256] {
+        let inputs: Vec<_> = (0..size)
+            .map(|_| (random_srt_mat3a(&mut rng), random_vec2(&mut rng)))
+            .collect();
+        let mut outputs = vec![Vec2::ZERO; size];
+        group.throughput(Throughput::Elements(size as u64));
+        group.bench_with_input(BenchmarkId::from_parameter(size), &size, |b, _| {
+            b.iter(|| {
+                for ((matrix, vector), output) in black_box(&inputs).iter().zip(&mut outputs) {
+                    *output = matrix.transform_vector2(*vector);
+                }
+                black_box(&outputs);
+            });
+        });
+    }
+    group.finish();
+}
 
 criterion_group!(
     benches,

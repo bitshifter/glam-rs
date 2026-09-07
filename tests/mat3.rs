@@ -193,6 +193,57 @@ macro_rules! impl_mat3_tests {
             assert_approx_eq!(result2, (m * $vec2::Y.extend(1.0)).truncate());
         });
 
+        glam_test!(test_transform_vector2_edge_cases, {
+            let tiny = $t::from_bits(1);
+            // Each case specifies the two linear columns, input, and expected output.
+            let cases = [
+                ([2.0, -3.0, 4.0, 5.0], [7.0, -2.0], [6.0, -31.0]),
+                ([-0.0, 0.0, -0.0, -0.0], [1.0, 1.0], [-0.0, 0.0]),
+                ([tiny, tiny, tiny, tiny], [0.5, 0.5], [0.0, 0.0]),
+                ([tiny, tiny, tiny, tiny], [1.0, 1.0], [tiny * 2.0; 2]),
+                ([$t::MAX, 1.0, -$t::MAX, 1.0], [2.0, 2.0], [$t::NAN, 4.0]),
+                (
+                    [1.0, 0.0, 0.0, 1.0],
+                    [$t::INFINITY, 1.0],
+                    [$t::INFINITY, $t::NAN],
+                ),
+                ([$t::NAN, 2.0, 3.0, 4.0], [1.0, 1.0], [$t::NAN, 6.0]),
+            ];
+            for (columns, input, expected) in cases {
+                let matrix = $mat3::from_cols_array(&[
+                    columns[0],
+                    columns[1],
+                    0.0,
+                    columns[2],
+                    columns[3],
+                    0.0,
+                    // Translation must not contribute, even when it is non-finite.
+                    $t::NAN,
+                    $t::INFINITY,
+                    1.0,
+                ]);
+                let result = matrix.transform_vector2($vec2::from_array(input));
+                for (actual, expected) in result.to_array().into_iter().zip(expected) {
+                    if expected.is_nan() {
+                        assert!(actual.is_nan());
+                    } else {
+                        assert_eq!(actual.to_bits(), expected.to_bits());
+                    }
+                }
+            }
+        });
+
+        glam_test!(test_transform_vector2_affine_row, {
+            let vector = $vec2::new(2.0, -3.0);
+            for column in 0..3 {
+                let mut matrix = $mat3::IDENTITY;
+                matrix.col_mut(column).z += 0.5e-6;
+                assert_eq!(matrix.transform_vector2(vector), vector);
+                matrix.col_mut(column).z += 1.0e-3;
+                should_glam_assert!({ matrix.transform_vector2(vector) });
+            }
+        });
+
         glam_test!(test_from_ypr, {
             use glam::EulerRot;
             let zero = deg(0.0);
