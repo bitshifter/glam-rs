@@ -784,7 +784,7 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn round(self) -> Self {
-        Self(f32x4_nearest(self.0))
+        Self(crate::wasm::f32x4_round(self.0))
     }
 
     /// Returns a vector containing the largest integer less than or equal to a number for each
