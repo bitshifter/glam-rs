@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.33.7](https://github.com/bitshifter/glam-rs/compare/0.33.6...0.33.7) - 2026-09-07
+
+### Fixed
+
+- Vec3A and Vec4 round half-way cases away from zero in the SIMD back-ends ([#831](https://github.com/bitshifter/glam-rs/pull/831))
+
+### Performance
+
+- Add NEON sin implementation used in `Quat` and `Vec3A` `slerp`. ([#834](https://github.com/bitshifter/glam-rs/pull/834))
+- Further optimisations to to_scale_rotation_translation ([#829](https://github.com/bitshifter/glam-rs/pull/829))
+- Specialize affine determinant in `Mat4::to_scale_rotation_translation decomposition` ([#827](https://github.com/bitshifter/glam-rs/pull/827))
+- Avoid acos in quaternion `is_near_identity` ([#824](https://github.com/bitshifter/glam-rs/pull/824))
+- Use SSE2 sin implementation in `Vec3A::slerp` ([#819](https://github.com/bitshifter/glam-rs/pull/819))
+
 ## [0.33.6](https://github.com/bitshifter/glam-rs/compare/0.33.5...0.33.6) - 2026-08-28
 
 ### Added
