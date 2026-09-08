@@ -109,6 +109,58 @@ macro_rules! impl_mat4_tests {
             should_panic!({ $mat4::ZERO.row(4) });
         });
 
+        glam_test!(test_mat4_rows, {
+            // ARRAY1X16 is column major, so the same matrix in row major order is:
+            const ROW_MAJOR: [$t; 16] = [
+                1.0, 5.0, 9.0, 13.0, //
+                2.0, 6.0, 10.0, 14.0, //
+                3.0, 7.0, 11.0, 15.0, //
+                4.0, 8.0, 12.0, 16.0, //
+            ];
+
+            let m = $mat4::from_cols_array(&ARRAY1X16);
+
+            assert_eq!(ROW_MAJOR, m.to_rows_array());
+            assert_eq!(m, $mat4::from_rows_array(&ROW_MAJOR));
+            assert_eq!(m, $mat4::from_rows_slice(&ROW_MAJOR));
+            assert_eq!(m, $mat4::from_rows(m.row(0), m.row(1), m.row(2), m.row(3)));
+
+            // rows are just the columns of the transpose
+            assert_eq!(m.to_rows_array(), m.transpose().to_cols_array());
+            assert_eq!(
+                $mat4::from_rows_array(&ARRAY1X16),
+                $mat4::from_cols_array(&ARRAY1X16).transpose()
+            );
+
+            let mut m2 = $mat4::ZERO;
+            m2.set_row(0, m.row(0));
+            m2.set_row(1, m.row(1));
+            m2.set_row(2, m.row(2));
+            m2.set_row(3, m.row(3));
+            assert_eq!(m, m2);
+
+            // these are all const
+            const M0: $mat4 = $mat4::from_rows(
+                $newvec4(1.0, 5.0, 9.0, 13.0),
+                $newvec4(2.0, 6.0, 10.0, 14.0),
+                $newvec4(3.0, 7.0, 11.0, 15.0),
+                $newvec4(4.0, 8.0, 12.0, 16.0),
+            );
+            const M1: $mat4 = $mat4::from_rows_array(&ROW_MAJOR);
+            const M2: $mat4 = $mat4::from_rows_slice(&ROW_MAJOR);
+            const A: [$t; 16] = M0.to_rows_array();
+            assert_eq!(ARRAY1X16, M0.to_cols_array());
+            assert_eq!(ARRAY1X16, M1.to_cols_array());
+            assert_eq!(ARRAY1X16, M2.to_cols_array());
+            assert_eq!(ROW_MAJOR, A);
+
+            should_panic!({
+                let mut m = $mat4::ZERO;
+                m.set_row(4, $vec4::ZERO);
+            });
+            should_panic!({ $mat4::from_rows_slice(&[0.0; 15]) });
+        });
+
         glam_test!(test_mat4_from_axes, {
             let a = $mat4::from_cols_array_2d(&[
                 [1.0, 2.0, 3.0, 4.0],
