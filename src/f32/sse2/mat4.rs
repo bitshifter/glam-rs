@@ -6,7 +6,6 @@ use crate::DMat4;
 use crate::{
     euler::{FromEuler, ToEuler},
     f32::math,
-    sse2::*,
     swizzles::*,
     EulerRot, Mat3, Mat3A, Quat, Vec3, Vec3A, Vec4,
 };
@@ -675,7 +674,10 @@ impl Mat4 {
             let addres = _mm_add_ps(subres, mulfacc);
             let detcof = _mm_mul_ps(addres, _mm_setr_ps(1.0, -1.0, 1.0, -1.0));
 
-            dot4(self.x_axis.0, detcof)
+            let prod = _mm_mul_ps(self.x_axis.0, detcof);
+            let sub0 = _mm_add_ps(prod, _mm_shuffle_ps(prod, prod, 0b00_00_00_01));
+            let add1 = _mm_add_ps(sub0, _mm_shuffle_ps(prod, prod, 0b00_00_00_10));
+            _mm_cvtss_f32(_mm_add_ps(add1, _mm_shuffle_ps(prod, prod, 0b00_00_00_11)))
         }
     }
 
@@ -820,7 +822,14 @@ impl Mat4 {
             let row1 = _mm_shuffle_ps(inv2, inv3, 0b00_00_00_00);
             let row2 = _mm_shuffle_ps(row0, row1, 0b10_00_10_00);
 
-            let dot0 = dot4(self.x_axis.0, row2);
+            let prod = _mm_mul_ps(self.x_axis.0, row2);
+            let dot0 = _mm_cvtss_f32(_mm_add_ps(
+                _mm_add_ps(
+                    _mm_add_ps(prod, _mm_shuffle_ps(prod, prod, 0b00_00_00_01)),
+                    _mm_shuffle_ps(prod, prod, 0b00_00_00_10),
+                ),
+                _mm_shuffle_ps(prod, prod, 0b00_00_00_11),
+            ));
 
             if CHECKED {
                 if dot0 == 0.0 {

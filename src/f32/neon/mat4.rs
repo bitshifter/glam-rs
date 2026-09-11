@@ -816,7 +816,17 @@ impl Mat4 {
             let row1 = swizzle0044(inv2, inv3);
             let row2 = swizzle0246(row0, row1);
 
-            let dot0 = dot4(self.x_axis.0, row2);
+            let prod = vmulq_f32(self.x_axis.0, row2);
+            let dot0 = vgetq_lane_f32(
+                vaddq_f32(
+                    vaddq_f32(
+                        vaddq_f32(prod, vdupq_laneq_f32(prod, 1)),
+                        vdupq_laneq_f32(prod, 2),
+                    ),
+                    vdupq_laneq_f32(prod, 3),
+                ),
+                0,
+            );
 
             if CHECKED {
                 if dot0 == 0.0 {

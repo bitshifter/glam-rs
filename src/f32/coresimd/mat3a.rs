@@ -579,7 +579,7 @@ impl Mat3A {
     #[inline]
     #[must_use]
     pub fn determinant(&self) -> f32 {
-        self.z_axis.dot(self.x_axis.cross(self.y_axis))
+        self.x_axis.dot(self.y_axis.cross(self.z_axis))
     }
 
     /// If `CHECKED` is true then if the determinant is zero this function will return a tuple
@@ -599,7 +599,7 @@ impl Mat3A {
         let tmp0 = self.y_axis.cross(self.z_axis);
         let tmp1 = self.z_axis.cross(self.x_axis);
         let tmp2 = self.x_axis.cross(self.y_axis);
-        let det = self.z_axis.dot(tmp2);
+        let det = self.x_axis.dot(tmp0);
         if CHECKED {
             if det == 0.0 {
                 return (Self::ZERO, false);

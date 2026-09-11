@@ -4,7 +4,6 @@
 use crate::DMat4;
 
 use crate::{
-    coresimd::*,
     euler::{FromEuler, ToEuler},
     f32::math,
     swizzles::*,
@@ -662,7 +661,10 @@ impl Mat4 {
         let addres = subres + mulfacc;
         let detcof = addres * f32x4::from_array([1.0, -1.0, 1.0, -1.0]);
 
-        dot4(self.x_axis.0, detcof)
+        let prod = self.x_axis.0 * detcof;
+        let sub0 = prod + simd_swizzle!(prod, [1, 0, 0, 0]);
+        let add1 = sub0 + simd_swizzle!(prod, [2, 0, 0, 0]);
+        (add1 + simd_swizzle!(prod, [3, 0, 0, 0]))[0]
     }
 
     /// If `CHECKED` is true then if the determinant is zero this function will return a tuple
@@ -805,7 +807,11 @@ impl Mat4 {
         let row1 = simd_swizzle!(inv2, inv3, [0, 0, 4, 4]);
         let row2 = simd_swizzle!(row0, row1, [0, 2, 4, 6]);
 
-        let dot0 = dot4(self.x_axis.0, row2);
+        let prod = self.x_axis.0 * row2;
+        let dot0 = (prod
+            + simd_swizzle!(prod, [1, 0, 0, 0])
+            + simd_swizzle!(prod, [2, 0, 0, 0])
+            + simd_swizzle!(prod, [3, 0, 0, 0]))[0];
 
         if CHECKED {
             if dot0 == 0.0 {

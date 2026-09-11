@@ -126,7 +126,14 @@
         let row1 = _mm_shuffle_ps(inv2, inv3, 0b00_00_00_00);
         let row2 = _mm_shuffle_ps(row0, row1, 0b10_00_10_00);
 
-        let dot0 = dot4(self.x_axis.0, row2);
+        let prod = _mm_mul_ps(self.x_axis.0, row2);
+        let dot0 = _mm_cvtss_f32(_mm_add_ps(
+            _mm_add_ps(
+                _mm_add_ps(prod, _mm_shuffle_ps(prod, prod, 0b00_00_00_01)),
+                _mm_shuffle_ps(prod, prod, 0b00_00_00_10),
+            ),
+            _mm_shuffle_ps(prod, prod, 0b00_00_00_11),
+        ));
 
         if CHECKED {
             if dot0 == 0.0 {

@@ -87,12 +87,8 @@ use crate::{
     Mat{{ dim }},
 {% endif %}
 {% if self_t == "Mat4" %}
-    {% if is_sse2 %}
-        sse2::*,
-    {% elif is_wasm %}
+    {% if is_wasm %}
         wasm::*,
-    {% elif is_coresimd %}
-        coresimd::*,
     {% elif is_neon %}
         neon::*,
     {% endif %}
@@ -1332,7 +1328,10 @@ impl {{ self_t }} {
                 let addres = _mm_add_ps(subres, mulfacc);
                 let detcof = _mm_mul_ps(addres, _mm_setr_ps(1.0, -1.0, 1.0, -1.0));
 
-                dot4(self.x_axis.0, detcof)
+                let prod = _mm_mul_ps(self.x_axis.0, detcof);
+                let sub0 = _mm_add_ps(prod, _mm_shuffle_ps(prod, prod, 0b00_00_00_01));
+                let add1 = _mm_add_ps(sub0, _mm_shuffle_ps(prod, prod, 0b00_00_00_10));
+                _mm_cvtss_f32(_mm_add_ps(add1, _mm_shuffle_ps(prod, prod, 0b00_00_00_11)))
             }
         {% elif self_t == "Mat4" and is_wasm %}
             // Based on https://github.com/g-truc/glm `glm_mat4_determinant`
@@ -1367,7 +1366,10 @@ impl {{ self_t }} {
             let addres = f32x4_add(subres, mulfacc);
             let detcof = f32x4_mul(addres, f32x4(1.0, -1.0, 1.0, -1.0));
 
-            dot4(self.x_axis.0, detcof)
+            let prod = f32x4_mul(self.x_axis.0, detcof);
+            let sub0 = f32x4_add(prod, i32x4_shuffle::<1, 0, 0, 0>(prod, prod));
+            let add1 = f32x4_add(sub0, i32x4_shuffle::<2, 0, 0, 0>(prod, prod));
+            f32x4_extract_lane::<0>(f32x4_add(add1, i32x4_shuffle::<3, 0, 0, 0>(prod, prod)))
         {% elif self_t == "Mat4" and is_coresimd %}
             // Based on https://github.com/g-truc/glm `glm_mat4_determinant`
             let swp2a = simd_swizzle!(self.z_axis.0, [2, 1, 1, 0]);
@@ -1401,7 +1403,10 @@ impl {{ self_t }} {
             let addres = subres + mulfacc;
             let detcof = addres * f32x4::from_array([1.0, -1.0, 1.0, -1.0]);
 
-            dot4(self.x_axis.0, detcof)
+            let prod = self.x_axis.0 * detcof;
+            let sub0 = prod + simd_swizzle!(prod, [1, 0, 0, 0]);
+            let add1 = sub0 + simd_swizzle!(prod, [2, 0, 0, 0]);
+            (add1 + simd_swizzle!(prod, [3, 0, 0, 0]))[0]
         {#
         // neon implementation is slower than scalar
         // {% elif self_t == "Mat4" and is_neon %}
@@ -1474,7 +1479,7 @@ impl {{ self_t }} {
         {% elif dim == 2 %}
             self.x_axis.x * self.y_axis.y - self.x_axis.y * self.y_axis.x
         {% elif dim == 3 %}
-            self.z_axis.dot(self.x_axis.cross(self.y_axis))
+            self.x_axis.dot(self.y_axis.cross(self.z_axis))
         {% elif dim == 4 %}
             let (m00, m01, m02, m03) = self.x_axis.into();
             let (m10, m11, m12, m13) = self.y_axis.into();
@@ -1611,7 +1616,7 @@ impl {{ self_t }} {
             let tmp0 = self.y_axis.cross(self.z_axis);
             let tmp1 = self.z_axis.cross(self.x_axis);
             let tmp2 = self.x_axis.cross(self.y_axis);
-            let det = self.z_axis.dot(tmp2);
+            let det = self.x_axis.dot(tmp0);
             if CHECKED {
                 if det == 0.0 {
                     return (Self::ZERO, false);
