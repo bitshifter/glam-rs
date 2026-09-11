@@ -672,7 +672,10 @@ impl Mat4 {
         let addres = f32x4_add(subres, mulfacc);
         let detcof = f32x4_mul(addres, f32x4(1.0, -1.0, 1.0, -1.0));
 
-        dot4(self.x_axis.0, detcof)
+        let prod = f32x4_mul(self.x_axis.0, detcof);
+        let sub0 = f32x4_add(prod, i32x4_shuffle::<1, 0, 0, 0>(prod, prod));
+        let add1 = f32x4_add(sub0, i32x4_shuffle::<2, 0, 0, 0>(prod, prod));
+        f32x4_extract_lane::<0>(f32x4_add(add1, i32x4_shuffle::<3, 0, 0, 0>(prod, prod)))
     }
 
     /// If `CHECKED` is true then if the determinant is zero this function will return a tuple
@@ -815,7 +818,14 @@ impl Mat4 {
         let row1 = i32x4_shuffle::<0, 0, 4, 4>(inv2, inv3);
         let row2 = i32x4_shuffle::<0, 2, 4, 6>(row0, row1);
 
-        let dot0 = dot4(self.x_axis.0, row2);
+        let prod = f32x4_mul(self.x_axis.0, row2);
+        let dot0 = f32x4_extract_lane::<0>(f32x4_add(
+            f32x4_add(
+                f32x4_add(prod, i32x4_shuffle::<1, 0, 0, 0>(prod, prod)),
+                i32x4_shuffle::<2, 0, 0, 0>(prod, prod),
+            ),
+            i32x4_shuffle::<3, 0, 0, 0>(prod, prod),
+        ));
 
         if CHECKED {
             if dot0 == 0.0 {

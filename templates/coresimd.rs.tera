@@ -237,7 +237,9 @@
     let row1 = simd_swizzle!(inv2, inv3, [0, 0, 4, 4]);
     let row2 = simd_swizzle!(row0, row1, [0, 2, 4, 6]);
 
-    let dot0 = dot4(self.x_axis.0, row2);
+    let prod = self.x_axis.0 * row2;
+    let dot0 = (prod + simd_swizzle!(prod, [1, 0, 0, 0]) + simd_swizzle!(prod, [2, 0, 0, 0])
+        + simd_swizzle!(prod, [3, 0, 0, 0]))[0];
 
     if CHECKED {
         if dot0 == 0.0 {

@@ -282,6 +282,67 @@ macro_rules! impl_mat3_tests {
             );
         });
 
+        glam_test!(test_affine_determinant_and_inverse_consistency, {
+            // For an affine transform M = [A t; 0 1], det(M) = det(A), and the
+            // 3x3 block of M^-1 is A^-1. The 3x3 family and all Mat4 backends
+            // must agree bit-exactly on both.
+            let mut checked = 0;
+            for i in 0..64 {
+                let rotation = $quat::from_euler(
+                    glam::EulerRot::XYZ,
+                    i as $t * 0.13,
+                    i as $t * 0.29,
+                    i as $t * 0.37,
+                );
+                let scale = $vec3::new(1.0, 1.5, 3.0);
+                let translation = $vec3::new(-0.0, i as $t, -1.0e10);
+                let matrix = $mat4::from_scale_rotation_translation(scale, rotation, translation);
+                let linear = $mat3::from_mat4(matrix);
+                let det = linear.determinant();
+                assert_eq!(
+                    det.to_bits(),
+                    matrix.determinant().to_bits(),
+                    "Mat3/Mat4 determinant mismatch"
+                );
+                assert_eq!(
+                    linear.inverse(),
+                    $mat3::from_mat4(matrix.inverse()),
+                    "Mat3/Mat4 inverse mismatch"
+                );
+                if det != 0.0 {
+                    checked += 1;
+                }
+            }
+            assert!(checked > 0);
+
+            // Embedded 2D affine (z_axis = (0, 0, 1)): its Mat3 determinant
+            // collapses to the 2x2 determinant, so Mat2 must agree bit-exactly
+            // (Mat2 has its own SIMD implementation on some backends).
+            for i in 0..64 {
+                let angle = i as $t * 0.13;
+                let (sin, cos) = angle.sin_cos();
+                // Rotation-style and general (non-rotation) 2D linear parts,
+                // including a negative-determinant case.
+                let (x0, x1, y0, y1) = match i % 4 {
+                    0 => (cos, sin, -sin * 4.0, cos * 4.0),
+                    1 => (1.3, 0.7, -2.7, 0.9),
+                    2 => (0.6, -1.1, 2.4, 0.5),
+                    _ => (1.0, 0.0, 0.0, -1.0),
+                };
+                let m2 = $mat2::from_cols($vec2::new(x0, x1), $vec2::new(y0, y1));
+                let m3 = $mat3::from_cols(
+                    $newvec3(x0, x1, 0.0),
+                    $newvec3(y0, y1, 0.0),
+                    $newvec3(0.0, 0.0, 1.0),
+                );
+                assert_eq!(
+                    m2.determinant().to_bits(),
+                    m3.determinant().to_bits(),
+                    "Mat2/Mat3 determinant mismatch"
+                );
+            }
+        });
+
         glam_test!(test_mat3_inverse, {
             assert_eq!(None, $mat3::ZERO.try_inverse());
             assert_eq!($mat3::ZERO, $mat3::ZERO.inverse_or_zero());
