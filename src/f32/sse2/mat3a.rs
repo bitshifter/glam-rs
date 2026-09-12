@@ -609,8 +609,6 @@ impl Mat3A {
     #[must_use]
     fn inverse_checked<const CHECKED: bool>(&self) -> (Self, bool) {
         let tmp0 = self.y_axis.cross(self.z_axis);
-        let tmp1 = self.z_axis.cross(self.x_axis);
-        let tmp2 = self.x_axis.cross(self.y_axis);
         let det = self.x_axis.dot(tmp0);
         if CHECKED {
             if det == 0.0 {
@@ -619,6 +617,8 @@ impl Mat3A {
         } else {
             glam_assert!(det != 0.0);
         }
+        let tmp1 = self.z_axis.cross(self.x_axis);
+        let tmp2 = self.x_axis.cross(self.y_axis);
         let inv_det = Vec3A::splat(1.0 / det);
         (
             Self::from_cols(tmp0.mul(inv_det), tmp1.mul(inv_det), tmp2.mul(inv_det)).transpose(),
