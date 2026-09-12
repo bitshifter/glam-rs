@@ -125,14 +125,7 @@
     let row1 = i32x4_shuffle::<0, 0, 4, 4>(inv2, inv3);
     let row2 = i32x4_shuffle::<0, 2, 4, 6>(row0, row1);
 
-    let prod = f32x4_mul(self.x_axis.0, row2);
-    let dot0 = f32x4_extract_lane::<0>(f32x4_add(
-        f32x4_add(
-            f32x4_add(prod, i32x4_shuffle::<1, 0, 0, 0>(prod, prod)),
-            i32x4_shuffle::<2, 0, 0, 0>(prod, prod),
-        ),
-        i32x4_shuffle::<3, 0, 0, 0>(prod, prod),
-    ));
+    let dot0 = dot4(self.x_axis.0, row2);
 
     if CHECKED {
         if dot0 == 0.0 {
