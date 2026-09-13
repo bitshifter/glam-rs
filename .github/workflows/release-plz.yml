@@ -46,8 +46,8 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
           submodules: true # tools/codegen is a workspace member submodule
-      - run: rustup update --no-self-update stable
-      - run: rustup default stable
+      - run: rustup update --no-self-update nightly
+      - run: rustup default nightly
       - uses: release-plz/action@v0.5
         with:
           command: release-pr
