@@ -2251,28 +2251,28 @@ mod vec3a {
         use core::arch::x86_64::*;
 
         #[repr(C, align(16))]
-        struct F32x3_A16([f32; 3]);
+        struct F32x4_A16([f32; 4]);
 
         let v0 = Vec3A::new(1.0, 2.0, 3.0);
         let m0: __m128 = v0.into();
-        let mut a0 = F32x3_A16([0.0, 0.0, 0.0]);
+        let mut a0 = F32x4_A16([0.0; 4]);
         unsafe {
             _mm_store_ps(a0.0.as_mut_ptr(), m0);
         }
-        assert_eq!([1.0, 2.0, 3.0], a0.0);
+        assert_eq!([1.0, 2.0, 3.0], a0.0[..3]);
         let v1 = Vec3A::from(m0);
         assert_eq!(v0, v1);
 
         #[repr(C, align(16))]
-        struct U32x3_A16([u32; 3]);
+        struct U32x4_A16([u32; 4]);
 
         let v0 = BVec3A::new(true, false, true);
         let m0: __m128 = v0.into();
-        let mut a0 = U32x3_A16([1, 2, 3]);
+        let mut a0 = U32x4_A16([0; 4]);
         unsafe {
             _mm_store_ps(a0.0.as_mut_ptr() as *mut f32, m0);
         }
-        assert_eq!([0xffffffff, 0, 0xffffffff], a0.0);
+        assert_eq!([0xffffffff, 0, 0xffffffff], a0.0[..3]);
     }
 
     glam_test!(test_min_max_from_vec4, {
