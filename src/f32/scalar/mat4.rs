@@ -124,6 +124,7 @@ impl Mat4 {
     }
 
     /// Creates a 4x4 matrix from a `[f32; 16]` array stored in column major order.
+    ///
     /// If your data is stored in row major order use [`Self::from_rows_array`] instead.
     #[inline]
     #[must_use]
@@ -135,6 +136,7 @@ impl Mat4 {
     }
 
     /// Creates a `[f32; 16]` array storing data in column major order.
+    ///
     /// If you require data in row major order use [`Self::to_rows_array`] instead.
     #[inline]
     #[must_use]
@@ -160,6 +162,7 @@ impl Mat4 {
     }
 
     /// Creates a 4x4 matrix from a `[[f32; 4]; 4]` 4D array stored in column major order.
+    ///
     /// If your data is in row major order you will need to `transpose` the returned
     /// matrix.
     #[inline]
@@ -174,6 +177,7 @@ impl Mat4 {
     }
 
     /// Creates a `[[f32; 4]; 4]` 4D array storing data in column major order.
+    ///
     /// If you require data in row major order `transpose` the matrix first.
     #[inline]
     #[must_use]
