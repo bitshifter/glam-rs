@@ -6,6 +6,17 @@ description = "A simple and fast 3D math library for games and graphics"
 repository = "https://github.com/bitshifter/glam-rs"
 readme = "README.md"
 license = "MIT OR Apache-2.0"
+include = [
+    "/src/**/*.rs",
+    "/tests/**",
+    "/benches/*.rs",
+    "/benches/support/*.rs",
+    "/ATTRIBUTION.md",
+    "/README.md",
+    "/CHANGELOG.md",
+    "/LICENSE-APACHE",
+    "/LICENSE-MIT",
+]
 keywords = ["gamedev", "math", "matrix", "vector", "quaternion"]
 categories = ["game-engines", "no-std"]
 rust-version = "1.68.2"
