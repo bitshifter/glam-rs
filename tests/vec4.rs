@@ -1431,6 +1431,41 @@ macro_rules! impl_vec4_float_tests {
             assert!(!$vec4::NAN.is_finite());
         });
 
+        glam_test!(test_dot_into_vec_matches_dot, {
+            let tiny = $t::from_bits(1);
+            let cases = [
+                $vec4::ZERO,
+                $vec4::splat(-0.0),
+                $vec4::ONE,
+                $vec4::NEG_ONE,
+                $new(1.0, 2.0, 3.0, 4.0),
+                $new(-0.0, 0.0, -0.0, 0.0),
+                $new(1.0e20, 1.0, -1.0e20, 1.0),
+                $new(tiny, -tiny, $t::MIN_POSITIVE, -$t::MIN_POSITIVE),
+                $new($t::MAX, -$t::MAX, 1.0, -1.0),
+                $new($t::INFINITY, 1.0, 2.0, 3.0),
+                $new(1.0, $t::NEG_INFINITY, 2.0, 3.0),
+                $new(1.0, 2.0, $t::INFINITY, 3.0),
+                $new(1.0, 2.0, 3.0, $t::NEG_INFINITY),
+                $new($t::NAN, 1.0, 2.0, 3.0),
+                $new(1.0, $t::NAN, 2.0, 3.0),
+                $new(1.0, 2.0, $t::NAN, 3.0),
+                $new(1.0, 2.0, 3.0, $t::NAN),
+            ];
+            for lhs in cases {
+                for rhs in cases {
+                    let expected = lhs.dot(rhs);
+                    for lane in lhs.dot_into_vec(rhs).to_array() {
+                        if expected.is_nan() {
+                            assert!(lane.is_nan());
+                        } else {
+                            assert_eq!(lane.to_bits(), expected.to_bits());
+                        }
+                    }
+                }
+            }
+        });
+
         glam_test!(test_funcs, {
             let x = $new(1.0, 0.0, 0.0, 0.0);
             let y = $new(0.0, 1.0, 0.0, 0.0);
