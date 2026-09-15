@@ -50,6 +50,8 @@ impl DMat2 {
     }
 
     /// Creates a 2x2 matrix from two column vectors.
+    ///
+    /// See also [`Self::from_rows`] when the data is in row major order.
     #[inline(always)]
     #[must_use]
     pub const fn from_cols(x_axis: DVec2, y_axis: DVec2) -> Self {
@@ -58,9 +60,9 @@ impl DMat2 {
 
     /// Creates a 2x2 matrix from two row vectors.
     ///
-    /// Note matrices are stored in column major order, so the data given here is
-    /// transposed on the way in. Prefer [`Self::from_cols`] when the data is already
-    /// laid out as columns.
+    /// Matrices are stored in column major order, so the given rows are permuted into
+    /// the matrix layout. Use [`Self::from_cols`] instead when the data is already in
+    /// column major order.
     #[inline(always)]
     #[must_use]
     pub const fn from_rows(row0: DVec2, row1: DVec2) -> Self {
@@ -70,8 +72,7 @@ impl DMat2 {
     }
 
     /// Creates a 2x2 matrix from a `[f64; 4]` array stored in column major order.
-    /// If your data is stored in row major you will need to `transpose` the returned
-    /// matrix.
+    /// If your data is stored in row major order use [`Self::from_rows_array`] instead.
     #[inline]
     #[must_use]
     pub const fn from_cols_array(m: &[f64; 4]) -> Self {
@@ -79,7 +80,7 @@ impl DMat2 {
     }
 
     /// Creates a `[f64; 4]` array storing data in column major order.
-    /// If you require data in row major order `transpose` the matrix first.
+    /// If you require data in row major order use [`Self::to_rows_array`] instead.
     #[inline]
     #[must_use]
     pub const fn to_cols_array(&self) -> [f64; 4] {
@@ -105,9 +106,9 @@ impl DMat2 {
 
     /// Creates a 2x2 matrix from a `[f64; 4]` array stored in row major order.
     ///
-    /// Note matrices are stored in column major order, so the data given here is
-    /// transposed on the way in. Prefer [`Self::from_cols_array`] when the data is already
-    /// in column major order.
+    /// Matrices are stored in column major order, so the array is permuted into the
+    /// matrix layout. Use [`Self::from_cols_array`] instead when the data is already in
+    /// column major order.
     #[inline]
     #[must_use]
     pub const fn from_rows_array(m: &[f64; 4]) -> Self {
@@ -116,8 +117,9 @@ impl DMat2 {
 
     /// Creates a `[f64; 4]` array storing data in row major order.
     ///
-    /// Note matrices are stored in column major order, so this transposes the data
-    /// on the way out. Prefer [`Self::to_cols_array`] when column major data will do.
+    /// Matrices are stored in column major order, so the array is permuted out of the
+    /// column major storage. Use [`Self::to_cols_array`] instead when you want data in
+    /// column major order.
     #[inline]
     #[must_use]
     pub const fn to_rows_array(&self) -> [f64; 4] {
@@ -182,6 +184,8 @@ impl DMat2 {
 
     /// Creates a 2x2 matrix from the first 4 values in `slice`.
     ///
+    /// See also [`Self::from_rows_slice`] when the slice is in row major order.
+    ///
     /// # Panics
     ///
     /// Panics if `slice` is less than 4 elements long.
@@ -207,9 +211,9 @@ impl DMat2 {
     /// Creates a 2x2 matrix from the first 4 values in `slice`, stored in row
     /// major order.
     ///
-    /// Note matrices are stored in column major order, so the data given here is
-    /// transposed on the way in. Prefer [`Self::from_cols_slice`] when the slice is already
-    /// in column major order.
+    /// Matrices are stored in column major order, so the slice is permuted into the
+    /// matrix layout. Use [`Self::from_cols_slice`] instead when the slice is already in
+    /// column major order.
     ///
     /// # Panics
     ///
@@ -266,9 +270,9 @@ impl DMat2 {
 
     /// Sets the matrix row for the given `index`.
     ///
-    /// Note matrices are stored in column major order, so a row is spread across
-    /// all 2 columns and writing one touches every column. Prefer
-    /// [`Self::col_mut`] when you can work with columns instead.
+    /// Matrices are stored in column major order, so the row is spread across all
+    /// 2 columns and writing it touches every column. Use [`Self::col_mut`]
+    /// instead when you can work with columns. See also [`Self::row`].
     ///
     /// # Panics
     ///
