@@ -122,7 +122,7 @@ impl DMat4 {
 
     /// Creates a 4x4 matrix from a `[f64; 16]` array stored in column major order.
     ///
-    /// If your data is stored in row major order use [`Self::from_rows_array`] instead.
+    /// If the data is in row major order use [`Self::from_rows_array`] instead.
     #[inline]
     #[must_use]
     pub const fn from_cols_array(m: &[f64; 16]) -> Self {
@@ -134,7 +134,7 @@ impl DMat4 {
 
     /// Creates a `[f64; 16]` array storing data in column major order.
     ///
-    /// If you require data in row major order use [`Self::to_rows_array`] instead.
+    /// If you require the data in row major order use [`Self::to_rows_array`] instead.
     #[inline]
     #[must_use]
     pub const fn to_cols_array(&self) -> [f64; 16] {
@@ -160,8 +160,7 @@ impl DMat4 {
 
     /// Creates a 4x4 matrix from a `[[f64; 4]; 4]` 4D array stored in column major order.
     ///
-    /// If your data is in row major order you will need to `transpose` the returned
-    /// matrix.
+    /// If the data is in row major order `transpose` the returned matrix.
     #[inline]
     #[must_use]
     pub const fn from_cols_array_2d(m: &[[f64; 4]; 4]) -> Self {
@@ -175,7 +174,7 @@ impl DMat4 {
 
     /// Creates a `[[f64; 4]; 4]` 4D array storing data in column major order.
     ///
-    /// If you require data in row major order `transpose` the matrix first.
+    /// If you require row major order `transpose` the matrix first.
     #[inline]
     #[must_use]
     pub const fn to_cols_array_2d(&self) -> [[f64; 4]; 4] {
@@ -634,6 +633,8 @@ impl DMat4 {
     }
 
     /// Returns the matrix row for the given `index`.
+    ///
+    /// See also [`Self::set_row`] when you need to change the row.
     ///
     /// # Panics
     ///

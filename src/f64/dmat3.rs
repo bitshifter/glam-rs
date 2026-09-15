@@ -117,7 +117,7 @@ impl DMat3 {
 
     /// Creates a 3x3 matrix from a `[f64; 9]` array stored in column major order.
     ///
-    /// If your data is stored in row major order use [`Self::from_rows_array`] instead.
+    /// If the data is in row major order use [`Self::from_rows_array`] instead.
     #[inline]
     #[must_use]
     pub const fn from_cols_array(m: &[f64; 9]) -> Self {
@@ -126,7 +126,7 @@ impl DMat3 {
 
     /// Creates a `[f64; 9]` array storing data in column major order.
     ///
-    /// If you require data in row major order use [`Self::to_rows_array`] instead.
+    /// If you require the data in row major order use [`Self::to_rows_array`] instead.
     #[inline]
     #[must_use]
     pub const fn to_cols_array(&self) -> [f64; 9] {
@@ -145,8 +145,7 @@ impl DMat3 {
 
     /// Creates a 3x3 matrix from a `[[f64; 3]; 3]` 3D array stored in column major order.
     ///
-    /// If your data is in row major order you will need to `transpose` the returned
-    /// matrix.
+    /// If the data is in row major order `transpose` the returned matrix.
     #[inline]
     #[must_use]
     pub const fn from_cols_array_2d(m: &[[f64; 3]; 3]) -> Self {
@@ -159,7 +158,7 @@ impl DMat3 {
 
     /// Creates a `[[f64; 3]; 3]` 3D array storing data in column major order.
     ///
-    /// If you require data in row major order `transpose` the matrix first.
+    /// If you require row major order `transpose` the matrix first.
     #[inline]
     #[must_use]
     pub const fn to_cols_array_2d(&self) -> [[f64; 3]; 3] {
@@ -524,6 +523,8 @@ impl DMat3 {
     }
 
     /// Returns the matrix row for the given `index`.
+    ///
+    /// See also [`Self::set_row`] when you need to change the row.
     ///
     /// # Panics
     ///

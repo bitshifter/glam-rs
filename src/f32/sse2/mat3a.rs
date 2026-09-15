@@ -129,7 +129,7 @@ impl Mat3A {
 
     /// Creates a 3x3 matrix from a `[f32; 9]` array stored in column major order.
     ///
-    /// If your data is stored in row major order use [`Self::from_rows_array`] instead.
+    /// If the data is in row major order use [`Self::from_rows_array`] instead.
     #[inline]
     #[must_use]
     pub const fn from_cols_array(m: &[f32; 9]) -> Self {
@@ -138,7 +138,7 @@ impl Mat3A {
 
     /// Creates a `[f32; 9]` array storing data in column major order.
     ///
-    /// If you require data in row major order use [`Self::to_rows_array`] instead.
+    /// If you require the data in row major order use [`Self::to_rows_array`] instead.
     #[inline]
     #[must_use]
     pub const fn to_cols_array(&self) -> [f32; 9] {
@@ -154,8 +154,7 @@ impl Mat3A {
 
     /// Creates a 3x3 matrix from a `[[f32; 3]; 3]` 3D array stored in column major order.
     ///
-    /// If your data is in row major order you will need to `transpose` the returned
-    /// matrix.
+    /// If the data is in row major order `transpose` the returned matrix.
     #[inline]
     #[must_use]
     pub const fn from_cols_array_2d(m: &[[f32; 3]; 3]) -> Self {
@@ -168,7 +167,7 @@ impl Mat3A {
 
     /// Creates a `[[f32; 3]; 3]` 3D array storing data in column major order.
     ///
-    /// If you require data in row major order `transpose` the matrix first.
+    /// If you require row major order `transpose` the matrix first.
     #[inline]
     #[must_use]
     pub const fn to_cols_array_2d(&self) -> [[f32; 3]; 3] {
@@ -597,6 +596,8 @@ impl Mat3A {
     }
 
     /// Returns the matrix row for the given `index`.
+    ///
+    /// See also [`Self::set_row`] when you need to change the row.
     ///
     /// # Panics
     ///

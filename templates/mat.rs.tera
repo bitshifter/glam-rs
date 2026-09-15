@@ -324,7 +324,7 @@ impl {{ self_t }} {
 
     /// Creates a {{ nxn }} matrix from a `[{{ scalar_t }}; {{ size }}]` array stored in column major order.
     ///
-    /// If your data is stored in row major order use [`Self::from_rows_array`] instead.
+    /// If the data is in row major order use [`Self::from_rows_array`] instead.
     #[inline]
     #[must_use]
     pub const fn from_cols_array(m: &[{{ scalar_t }}; {{ size }}]) -> Self {
@@ -341,7 +341,7 @@ impl {{ self_t }} {
 
     /// Creates a `[{{ scalar_t }}; {{ size }}]` array storing data in column major order.
     ///
-    /// If you require data in row major order use [`Self::to_rows_array`] instead.
+    /// If you require the data in row major order use [`Self::to_rows_array`] instead.
     #[inline]
     #[must_use]
     pub const fn to_cols_array(&self) -> [{{ scalar_t }}; {{ size }}] {
@@ -370,8 +370,7 @@ impl {{ self_t }} {
 
     /// Creates a {{ nxn }} matrix from a `[[{{ scalar_t }}; {{ dim }}]; {{ dim }}]` {{ dim }}D array stored in column major order.
     ///
-    /// If your data is in row major order you will need to `transpose` the returned
-    /// matrix.
+    /// If the data is in row major order `transpose` the returned matrix.
     #[inline]
     #[must_use]
     pub const fn from_cols_array_2d(m: &[[{{ scalar_t }}; {{ dim }}]; {{ dim }}]) -> Self {
@@ -384,7 +383,7 @@ impl {{ self_t }} {
 
     /// Creates a `[[{{ scalar_t }}; {{ dim }}]; {{ dim }}]` {{ dim }}D array storing data in column major order.
     ///
-    /// If you require data in row major order `transpose` the matrix first.
+    /// If you require row major order `transpose` the matrix first.
     #[inline]
     #[must_use]
     pub const fn to_cols_array_2d(&self) -> [[{{ scalar_t }}; {{ dim }}]; {{ dim }}] {
@@ -1145,6 +1144,8 @@ impl {{ self_t }} {
     }
 
     /// Returns the matrix row for the given `index`.
+    ///
+    /// See also [`Self::set_row`] when you need to change the row.
     ///
     /// # Panics
     ///
