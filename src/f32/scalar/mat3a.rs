@@ -102,6 +102,20 @@ impl Mat3A {
         }
     }
 
+    /// Creates a 3x3 matrix from three row vectors.
+    ///
+    /// Note matrices are stored in column major order, so the data given here is
+    /// transposed on the way in. Prefer [`Self::from_cols`] when the data is already
+    /// laid out as columns.
+    #[inline(always)]
+    #[must_use]
+    pub const fn from_rows(row0: Vec3A, row1: Vec3A, row2: Vec3A) -> Self {
+        let [m00, m01, m02] = row0.to_array();
+        let [m10, m11, m12] = row1.to_array();
+        let [m20, m21, m22] = row2.to_array();
+        Self::new(m00, m10, m20, m01, m11, m21, m02, m12, m22)
+    }
+
     /// Creates a 3x3 matrix from a `[f32; 9]` array stored in column major order.
     /// If your data is stored in row major you will need to `transpose` the returned
     /// matrix.
@@ -152,6 +166,28 @@ impl Mat3A {
             self.y_axis.to_array(),
             self.z_axis.to_array(),
         ]
+    }
+
+    /// Creates a 3x3 matrix from a `[f32; 9]` array stored in row major order.
+    ///
+    /// Note matrices are stored in column major order, so the data given here is
+    /// transposed on the way in. Prefer [`Self::from_cols_array`] when the data is already
+    /// in column major order.
+    #[inline]
+    #[must_use]
+    pub const fn from_rows_array(m: &[f32; 9]) -> Self {
+        Self::new(m[0], m[3], m[6], m[1], m[4], m[7], m[2], m[5], m[8])
+    }
+
+    /// Creates a `[f32; 9]` array storing data in row major order.
+    ///
+    /// Note matrices are stored in column major order, so this transposes the data
+    /// on the way out. Prefer [`Self::to_cols_array`] when column major data will do.
+    #[inline]
+    #[must_use]
+    pub const fn to_rows_array(&self) -> [f32; 9] {
+        let m = self.to_cols_array();
+        [m[0], m[3], m[6], m[1], m[4], m[7], m[2], m[5], m[8]]
     }
 
     /// Creates a 3x3 matrix with its diagonal set to `diagonal` and all other entries set to 0.
@@ -496,6 +532,25 @@ impl Mat3A {
         slice[8] = self.z_axis.z;
     }
 
+    /// Creates a 3x3 matrix from the first 9 values in `slice`, stored in row
+    /// major order.
+    ///
+    /// Note matrices are stored in column major order, so the data given here is
+    /// transposed on the way in. Prefer [`Self::from_cols_slice`] when the slice is already
+    /// in column major order.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `slice` is less than 9 elements long.
+    #[inline]
+    #[must_use]
+    pub const fn from_rows_slice(slice: &[f32]) -> Self {
+        Self::new(
+            slice[0], slice[3], slice[6], slice[1], slice[4], slice[7], slice[2], slice[5],
+            slice[8],
+        )
+    }
+
     /// Returns the matrix column for the given `index`.
     ///
     /// # Panics
@@ -539,6 +594,37 @@ impl Mat3A {
             0 => Vec3A::new(self.x_axis.x, self.y_axis.x, self.z_axis.x),
             1 => Vec3A::new(self.x_axis.y, self.y_axis.y, self.z_axis.y),
             2 => Vec3A::new(self.x_axis.z, self.y_axis.z, self.z_axis.z),
+            _ => panic!("index out of bounds"),
+        }
+    }
+
+    /// Sets the matrix row for the given `index`.
+    ///
+    /// Note matrices are stored in column major order, so a row is spread across
+    /// all 3 columns and writing one touches every column. Prefer
+    /// [`Self::col_mut`] when you can work with columns instead.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `index` is greater than 2.
+    #[inline]
+    pub fn set_row(&mut self, index: usize, row: Vec3A) {
+        match index {
+            0 => {
+                self.x_axis.x = row.x;
+                self.y_axis.x = row.y;
+                self.z_axis.x = row.z;
+            }
+            1 => {
+                self.x_axis.y = row.x;
+                self.y_axis.y = row.y;
+                self.z_axis.y = row.z;
+            }
+            2 => {
+                self.x_axis.z = row.x;
+                self.y_axis.z = row.y;
+                self.z_axis.z = row.z;
+            }
             _ => panic!("index out of bounds"),
         }
     }

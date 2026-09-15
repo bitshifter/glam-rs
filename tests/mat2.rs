@@ -64,6 +64,46 @@ macro_rules! impl_mat2_tests {
             should_panic!({ $mat2::ZERO.row(2) });
         });
 
+        glam_test!(test_mat2_rows, {
+            // ARRAY1X4 is column major, so the same matrix in row major order is:
+            const ROW_MAJOR: [$t; 4] = [1.0, 3.0, 2.0, 4.0];
+
+            let m = $mat2::from_cols_array(&ARRAY1X4);
+
+            assert_eq!(ROW_MAJOR, m.to_rows_array());
+            assert_eq!(m, $mat2::from_rows_array(&ROW_MAJOR));
+            assert_eq!(m, $mat2::from_rows_slice(&ROW_MAJOR));
+            assert_eq!(m, $mat2::from_rows(m.row(0), m.row(1)));
+
+            // rows are just the columns of the transpose
+            assert_eq!(m.to_rows_array(), m.transpose().to_cols_array());
+            assert_eq!(
+                $mat2::from_rows_array(&ARRAY1X4),
+                $mat2::from_cols_array(&ARRAY1X4).transpose()
+            );
+
+            let mut m2 = $mat2::ZERO;
+            m2.set_row(0, m.row(0));
+            m2.set_row(1, m.row(1));
+            assert_eq!(m, m2);
+
+            // these are all const
+            const M0: $mat2 = $mat2::from_rows($newvec2(1.0, 3.0), $newvec2(2.0, 4.0));
+            const M1: $mat2 = $mat2::from_rows_array(&ROW_MAJOR);
+            const M2: $mat2 = $mat2::from_rows_slice(&ROW_MAJOR);
+            const A: [$t; 4] = M0.to_rows_array();
+            assert_eq!(ARRAY1X4, M0.to_cols_array());
+            assert_eq!(ARRAY1X4, M1.to_cols_array());
+            assert_eq!(ARRAY1X4, M2.to_cols_array());
+            assert_eq!(ROW_MAJOR, A);
+
+            should_panic!({
+                let mut m = $mat2::ZERO;
+                m.set_row(2, $vec2::ZERO);
+            });
+            should_panic!({ $mat2::from_rows_slice(&[0.0; 3]) });
+        });
+
         glam_test!(test_mat2_from_axes, {
             let a = $mat2::from_cols_array_2d(&ARRAY2X2);
             assert_eq!(ARRAY2X2, a.to_cols_array_2d());
