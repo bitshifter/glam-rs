@@ -88,6 +88,49 @@ this seemed preferable to needing setter and getter methods to read and write
 component values. When SIMD is not available or the `scalar-math` feature is
 enabled, these types instead expose their components as public fields directly.
 
+## Deviations from the Rust API guidelines
+
+Following the [API guidelines] is a design goal, however `glam` deliberately
+deviates in a few places. The rationale for component access via `Deref`
+([C-DEREF]) and the lack of generics ([C-GENERIC]) is covered above. The
+remaining deviations are:
+
+- **Public fields** ([C-STRUCT-PRIVATE]): all type fields are public. For a
+  math library the memory layout is part of the API, enabling interop with
+  GPU APIs and other math libraries, so the layout is deliberately frozen
+  rather than hidden.
+- **Conversion naming** ([C-CONV]): `as_*` methods perform a consuming cast
+  of the element type, e.g. `DVec3::as_vec3`, following the intuition of the
+  `as` keyword rather than the guideline's cheap reference-to-reference
+  meaning. `to_*` is used for conversions that change alignment or storage,
+  e.g. `Vec3::to_vec3a`.
+- **Free function constructors** ([C-CTOR]): the `camera` and `dcamera`
+  modules use free functions namespaced by handedness and target graphics
+  API, e.g. `camera::rh::proj::opengl::perspective`, instead of inherent
+  constructors. Namespacing keeps the large number of view and projection
+  variants organised without overwhelming the documentation of any single
+  type.
+- **Opt-in validation** ([C-VALIDATE]): argument validation is disabled by
+  default for performance and is enabled via the `glam-assert` or
+  `debug-glam-assert` features.
+- **Unstable public dependencies** ([C-STABLE]): several optional integration
+  dependencies have no stable release (`approx`, `encase`, `libm`, `mint`,
+  `rkyv`, `speedy`, `zerocopy`). Breaking upstream releases are adopted only
+  in breaking `glam` releases; versioned features may be introduced if
+  earlier adoption of a specific dependency is needed.
+- **`ISizeVec3` and `USizeVec3` casing** ([C-CASE]): these follow `glam`'s
+  established `I`/`U` prefix convention (e.g. `I64Vec3`) rather than strict
+  RFC 430 casing.
+
+[C-DEREF]: https://rust-lang.github.io/api-guidelines/predictability.html#c-deref
+[C-GENERIC]: https://rust-lang.github.io/api-guidelines/flexibility.html#c-generic
+[C-STRUCT-PRIVATE]: https://rust-lang.github.io/api-guidelines/future-proofing.html#c-struct-private
+[C-CONV]: https://rust-lang.github.io/api-guidelines/naming.html#c-conv
+[C-CTOR]: https://rust-lang.github.io/api-guidelines/predictability.html#c-ctor
+[C-VALIDATE]: https://rust-lang.github.io/api-guidelines/dependability.html#c-validate
+[C-STABLE]: https://rust-lang.github.io/api-guidelines/necessities.html#c-stable
+[C-CASE]: https://rust-lang.github.io/api-guidelines/naming.html#c-case
+
 ## Code generation
 
 See the [codegen README] for information on `glam`'s code generation process.
