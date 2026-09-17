@@ -51,11 +51,7 @@ pub(crate) unsafe fn dot3_in_x(lhs: __m128, rhs: __m128) -> __m128 {
 /// Calculates the vector 4 dot product and returns answer in x lane of __m128.
 #[inline(always)]
 pub(crate) unsafe fn dot4_in_x(lhs: __m128, rhs: __m128) -> __m128 {
-    let x2_y2_z2_w2 = _mm_mul_ps(lhs, rhs);
-    let z2_w2_0_0 = _mm_shuffle_ps(x2_y2_z2_w2, x2_y2_z2_w2, 0b00_00_11_10);
-    let x2z2_y2w2_0_0 = _mm_add_ps(x2_y2_z2_w2, z2_w2_0_0);
-    let y2w2_0_0_0 = _mm_shuffle_ps(x2z2_y2w2_0_0, x2z2_y2w2_0_0, 0b00_00_00_01);
-    _mm_add_ps(x2z2_y2w2_0_0, y2w2_0_0_0)
+    dot4_into_m128(lhs, rhs)
 }
 
 #[inline]
@@ -74,10 +70,13 @@ pub(crate) unsafe fn dot4(lhs: __m128, rhs: __m128) -> f32 {
     _mm_cvtss_f32(dot4_in_x(lhs, rhs))
 }
 
+/// Calculates the vector 4 dot product and returns the answer in every lane of __m128.
 #[inline]
 pub(crate) unsafe fn dot4_into_m128(lhs: __m128, rhs: __m128) -> __m128 {
-    let dot_in_x = dot4_in_x(lhs, rhs);
-    _mm_shuffle_ps(dot_in_x, dot_in_x, 0b00_00_00_00)
+    let products = _mm_mul_ps(lhs, rhs);
+    // Sum both pairs in every lane, keeping the (x + z) + (y + w) grouping.
+    let pairs = _mm_add_ps(products, _mm_shuffle_ps(products, products, 0b01_00_11_10));
+    _mm_add_ps(pairs, _mm_shuffle_ps(pairs, pairs, 0b10_11_00_01))
 }
 
 #[inline]
