@@ -225,11 +225,12 @@ performance.
 * All dependencies are optional (e.g. `mint`, `rand` and `serde`)
 * Follows the [Rust API Guidelines] where possible
 * Aiming for 100% test [coverage]
-* Common functionality is benchmarked using [Criterion.rs]
+* Common functionality is benchmarked using [Criterion.rs] and [Gungraun]
 
 [Rust API Guidelines]: https://rust-lang-nursery.github.io/api-guidelines/
 [coverage]: coveralls.io
-[Criterion.rs]: https://bheisler.github.io/criterion.rs/book/index.html
+[Criterion.rs]: https://criterion-rs.github.io/book/index.html
+[Gungraun]: https://gungraun.github.io/gungraun/
 
 ## Architecture
 
