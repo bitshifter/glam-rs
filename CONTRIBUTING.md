@@ -40,18 +40,27 @@ GitHub or submit a pull request. Any optimization pull request should include a
 benchmark if there isn't one already, so I can confirm the performance
 improvement.
 
+Prefer optimizations that do less work over ones that coax the compiler into
+emitting better code. Codegen tricks are brittle: they can depend on the
+compiler version, the surrounding code, inlining decisions and the target, and
+they can stop working without any change on your part. Fewer operations,
+cheaper operations, or avoiding intermediate work are more durable wins. If an
+optimization relies on a specific codegen outcome, mention that in the pull
+request and include the assembly you checked.
+
 ## Benchmarks
 
 There are two benchmark harnesses:
 
-- `gungraun` (`benches/gungraun.rs`) is the CI gate. It compares instruction
-  counts against committed baselines, so it is the stable, deterministic
-  signal.
-- Criterion (`benches/*.rs`) measures wall-clock time locally and complements
-  instruction counts, since fewer instructions can still be slower when the
-  dependency chain is longer. It is not run in CI.
+- [`gungraun`][gungraun] is a benchmarking harness that runs under Valgrind's
+  Callgrind and counts executed instructions. `glam` runs `gungraun` in CI
+  (`benches/gungraun.rs`) and compares the counts against committed baselines.
+  Unrelated changes can still cause them to fluctuate, so small differences may
+  be noise.
+- [Criterion.rs] (`benches/*.rs`) measures wall-clock time locally and
+  complements instruction counts, since fewer instructions can still be slower.
 
-Most criterion benches use the shared macros in `benches/support/macros.rs`.
+Most Criterion benches use the shared macros in `benches/support/macros.rs`.
 Each macro emits a benchmark group with one case per size, runs a batch of
 independent operations per iteration, and reports results per element via
 `Throughput::Elements`. The default operating points are `[16, 1024]`: 16 is
@@ -64,10 +73,21 @@ suite by passing a filter, e.g. `cargo bench --bench mat4 -- "mat4 inverse"`.
 Use `cargo bench -- --quick` for faster, less precise iteration. `--test` runs
 each benchmark once to check that it executes without reporting results.
 
+Benchmarks of small functions are inherently noisy. Criterion timings and
+gungraun instruction counts are both signals rather than definitive
+measurements: system load, CPU frequency and thermal state, code layout and
+alignment, compiler version and surrounding code can all affect results.
+
+For small changes it can also be worth checking the generated assembly. The
+`cargo asm` command from [cargo-show-asm] can dump source-annotated assembly
+for a function and [llvm-mca] can estimate throughput and latency from it. The
+gungraun baselines under `benches/gungraun-baselines/asm` include saved assembly
+for the benchmarked functions and can be a useful reference.
+
 ## Documentation
 
 If you feel any documentation could be added or improved please
-[open a GitHub issue] or submit a pull request.
+[open an issue] or submit a pull request.
 
 ## Pull request titles
 
@@ -86,7 +106,7 @@ area is optional, e.g. `feat(quat): ...` or `fix(vec3): ...`.
 
 Breaking changes append `!` after the type or scope, e.g.
 `feat(quat)!: remove the deprecated camera methods`. Breaking changes
-bump the minor version at the next release while glam is pre-1.0; they
+bump the minor version at the next release while `glam` is pre-1.0; they
 are also detected automatically by cargo-semver-checks when the release
 PR is prepared, so a minor bump can occur even without the `!` marker.
 
@@ -95,6 +115,8 @@ The check is not required and titles can also be adjusted in the merge
 dialog when squashing; dependabot, release-plz and draft PRs are exempt.
 
 ## Code contributions
+
+See [ARCHITECTURE.md] for background on `glam`'s design and internals.
 
 Most of `glam`'s source code is generated. See the [codegen README] for how to
 modify the code templates and generate new source code.
@@ -138,6 +160,11 @@ Also run `cargo fmt` on any new hand-written files and `cargo clippy` on any new
 [open an issue]: https://GitHub.com/bitshifter/glam-rs/issues/new
 [ask a question]: https://github.com/bitshifter/glam-rs/discussions/new?category=q-a
 [suggest a new feature]: https://github.com/bitshifter/glam-rs/discussions/new?category=ideas
+[Criterion.rs]: https://bheisler.github.io/criterion.rs/book/index.html
+[gungraun]: https://github.com/gungraun/gungraun
+[cargo-show-asm]: https://github.com/pacak/cargo-show-asm
+[llvm-mca]: https://llvm.org/docs/CommandGuide/llvm-mca.html
+[ARCHITECTURE.md]: ARCHITECTURE.md
 [codegen README]: https://github.com/bitshifter/glam-codegen/blob/main/README.md
 [Tera v2]: https://keats.github.io/tera/
 [Conventional Commits]: https://www.conventionalcommits.org/
