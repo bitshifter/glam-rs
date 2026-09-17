@@ -40,6 +40,30 @@ GitHub or submit a pull request. Any optimization pull request should include a
 benchmark if there isn't one already, so I can confirm the performance
 improvement.
 
+## Benchmarks
+
+There are two benchmark harnesses:
+
+- `gungraun` (`benches/gungraun.rs`) is the CI gate. It compares instruction
+  counts against committed baselines, so it is the stable, deterministic
+  signal.
+- Criterion (`benches/*.rs`) measures wall-clock time locally and complements
+  instruction counts, since fewer instructions can still be slower when the
+  dependency chain is longer. It is not run in CI.
+
+Most criterion benches use the shared macros in `benches/support/macros.rs`.
+Each macro emits a benchmark group with one case per size, runs a batch of
+independent operations per iteration, and reports results per element via
+`Throughput::Elements`. The default operating points are `[16, 1024]`: 16 is
+L1-resident and shows per-op overhead, 1024 exposes cache pressure for larger
+types. Pass `sizes => [..]` to override, e.g.
+`bench_unop!(name, "desc", op => inverse, from => random_mat4, sizes => [16, 1024, 8192])`.
+
+Run a single suite with `cargo bench --bench mat4`. Run one benchmark from a
+suite by passing a filter, e.g. `cargo bench --bench mat4 -- "mat4 inverse"`.
+Use `cargo bench -- --quick` for faster, less precise iteration. `--test` runs
+each benchmark once to check that it executes without reporting results.
+
 ## Documentation
 
 If you feel any documentation could be added or improved please
