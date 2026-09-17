@@ -52,8 +52,8 @@ request and include the assembly you checked.
 
 There are two benchmark harnesses:
 
-- [`gungraun`][gungraun] is a benchmarking harness that runs under Valgrind's
-  Callgrind and counts executed instructions. `glam` runs `gungraun` in CI
+- [Gungraun] is a benchmarking harness that runs under Valgrind's Callgrind
+  and counts executed instructions. `glam` runs Gungraun in CI
   (`benches/gungraun.rs`) and compares the counts against committed baselines.
   Unrelated changes can still cause them to fluctuate, so small differences may
   be noise.
@@ -75,7 +75,7 @@ Use `cargo bench --bench mat4 -- --quick` for faster, less precise iteration.
 results.
 
 Benchmarks of small functions are inherently noisy. Criterion timings and
-gungraun instruction counts are both signals rather than definitive
+Gungraun instruction counts are both signals rather than definitive
 measurements: system load, CPU frequency and thermal state, code layout and
 alignment, compiler version and surrounding code can all affect results.
 
@@ -162,7 +162,7 @@ Also run `cargo fmt` on any new hand-written files and `cargo clippy` on any new
 [ask a question]: https://github.com/bitshifter/glam-rs/discussions/new?category=q-a
 [suggest a new feature]: https://github.com/bitshifter/glam-rs/discussions/new?category=ideas
 [Criterion.rs]: https://criterion-rs.github.io/book/index.html
-[gungraun]: https://gungraun.github.io/gungraun/
+[Gungraun]: https://gungraun.github.io/gungraun/
 [cargo-show-asm]: https://github.com/pacak/cargo-show-asm
 [glam-bench-baselines]: https://github.com/bitshifter/glam-bench-baselines
 [llvm-mca]: https://llvm.org/docs/CommandGuide/llvm-mca.html
