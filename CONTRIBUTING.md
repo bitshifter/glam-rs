@@ -162,7 +162,7 @@ Also run `cargo fmt` on any new hand-written files and `cargo clippy` on any new
 [ask a question]: https://github.com/bitshifter/glam-rs/discussions/new?category=q-a
 [suggest a new feature]: https://github.com/bitshifter/glam-rs/discussions/new?category=ideas
 [Criterion.rs]: https://criterion-rs.github.io/book/index.html
-[gungraun]: https://github.com/gungraun/gungraun
+[gungraun]: https://gungraun.github.io/gungraun/
 [cargo-show-asm]: https://github.com/pacak/cargo-show-asm
 [glam-bench-baselines]: https://github.com/bitshifter/glam-bench-baselines
 [llvm-mca]: https://llvm.org/docs/CommandGuide/llvm-mca.html
