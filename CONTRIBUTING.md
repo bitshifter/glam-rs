@@ -61,17 +61,18 @@ There are two benchmark harnesses:
   complements instruction counts, since fewer instructions can still be slower.
 
 Most Criterion benches use the shared macros in `benches/support/macros.rs`.
-Each macro emits a benchmark group with one case per size, runs a batch of
-independent operations per iteration, and reports results per element via
-`Throughput::Elements`. The default operating points are `[16, 1024]`: 16 is
-L1-resident and shows per-op overhead, 1024 exposes cache pressure for larger
-types. Pass `sizes => [..]` to override, e.g.
+Each `bench_*` macro emits a benchmark group with one case per size, runs a
+batch of independent operations per iteration, and reports results per element
+via `Throughput::Elements`. The default operating points are `[16, 1024]`: 16
+is L1-resident and shows per-op overhead, 1024 exposes cache pressure for
+larger types. Pass `sizes => [..]` to override, e.g.
 `bench_unop!(name, "desc", op => inverse, from => random_mat4, sizes => [16, 1024, 8192])`.
 
 Run a single suite with `cargo bench --bench mat4`. Run one benchmark from a
 suite by passing a filter, e.g. `cargo bench --bench mat4 -- "mat4 inverse"`.
-Use `cargo bench -- --quick` for faster, less precise iteration. `--test` runs
-each benchmark once to check that it executes without reporting results.
+Use `cargo bench --bench mat4 -- --quick` for faster, less precise iteration.
+`--test` runs each benchmark once to check that it executes without reporting
+results.
 
 Benchmarks of small functions are inherently noisy. Criterion timings and
 gungraun instruction counts are both signals rather than definitive
@@ -81,8 +82,8 @@ alignment, compiler version and surrounding code can all affect results.
 For small changes it can also be worth checking the generated assembly. The
 `cargo asm` command from [cargo-show-asm] can dump source-annotated assembly
 for a function and [llvm-mca] can estimate throughput and latency from it. The
-gungraun baselines under `benches/gungraun-baselines/asm` include saved assembly
-for the benchmarked functions and can be a useful reference.
+[glam-bench-baselines] repository includes saved assembly for the benchmarked
+functions under `asm/` and can be a useful reference.
 
 ## Documentation
 
@@ -160,9 +161,10 @@ Also run `cargo fmt` on any new hand-written files and `cargo clippy` on any new
 [open an issue]: https://GitHub.com/bitshifter/glam-rs/issues/new
 [ask a question]: https://github.com/bitshifter/glam-rs/discussions/new?category=q-a
 [suggest a new feature]: https://github.com/bitshifter/glam-rs/discussions/new?category=ideas
-[Criterion.rs]: https://bheisler.github.io/criterion.rs/book/index.html
+[Criterion.rs]: https://criterion-rs.github.io/book/index.html
 [gungraun]: https://github.com/gungraun/gungraun
 [cargo-show-asm]: https://github.com/pacak/cargo-show-asm
+[glam-bench-baselines]: https://github.com/bitshifter/glam-bench-baselines
 [llvm-mca]: https://llvm.org/docs/CommandGuide/llvm-mca.html
 [ARCHITECTURE.md]: ARCHITECTURE.md
 [codegen README]: https://github.com/bitshifter/glam-codegen/blob/main/README.md

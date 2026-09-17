@@ -229,7 +229,7 @@ performance.
 
 [Rust API Guidelines]: https://rust-lang-nursery.github.io/api-guidelines/
 [coverage]: coveralls.io
-[Criterion.rs]: https://bheisler.github.io/criterion.rs/book/index.html
+[Criterion.rs]: https://criterion-rs.github.io/book/index.html
 
 ## Architecture
 
