@@ -750,7 +750,7 @@ impl Quat {
             let theta_sin = vdupq_n_f32(vgetq_lane_f32(tmp, 2));
 
             Self(vdivq_f32(
-                vaddq_f32(vmulq_f32(self.0, scale1), vmulq_f32(end.0, scale2)),
+                vfmaq_f32(vmulq_f32(self.0, scale1), end.0, scale2),
                 theta_sin,
             ))
         }
@@ -869,8 +869,6 @@ impl Quat {
             //let l_zwxy = simd_swizzle!(l_wzyx, [1, 0, 3, 2]);
             let l_zwxy = vrev64q_f32(l_wzyx);
 
-            let lwrx_nlzrx_lyrx_nlxrx = vmulq_f32(lwrx_lzrx_lyrx_lxrx, CONTROL_WZYX);
-
             let lzry_lwry_lxry_lyry = vmulq_f32(r_yyyy, l_zwxy);
             // let l_yxwz = simd_swizzle!(l_zwxy, [3, 2, 1, 0]);
             let l_yxwz = vrev64q_f32(l_zwxy);
@@ -879,10 +877,9 @@ impl Quat {
             let lzry_lwry_nlxry_nlyry = vmulq_f32(lzry_lwry_lxry_lyry, CONTROL_ZWXY);
 
             let lyrz_lxrz_lwrz_lzrz = vmulq_f32(r_zzzz, l_yxwz);
-            let result0 = vaddq_f32(lxrw_lyrw_lzrw_lwrw, lwrx_nlzrx_lyrx_nlxrx);
+            let result0 = vfmaq_f32(lxrw_lyrw_lzrw_lwrw, lwrx_lzrx_lyrx_lxrx, CONTROL_WZYX);
 
-            let nlyrz_lxrz_lwrz_wlzrz = vmulq_f32(lyrz_lxrz_lwrz_lzrz, CONTROL_YXWZ);
-            let result1 = vaddq_f32(lzry_lwry_nlxry_nlyry, nlyrz_lxrz_lwrz_wlzrz);
+            let result1 = vfmaq_f32(lzry_lwry_nlxry_nlyry, lyrz_lxrz_lwrz_lzrz, CONTROL_YXWZ);
             Self(vaddq_f32(result0, result1))
         }
     }

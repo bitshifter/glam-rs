@@ -12,6 +12,7 @@ pub mod lints;
 pub mod msrv;
 pub mod pre_push;
 pub mod test_features;
+pub mod test_fma;
 pub mod test_i686;
 pub mod wasm32;
 pub mod wasm32_chrome;

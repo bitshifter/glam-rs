@@ -22,6 +22,7 @@ use commands::lints::Lints;
 use commands::msrv::Msrv;
 use commands::pre_push::PrePush;
 use commands::test_features::TestFeatures;
+use commands::test_fma::TestFma;
 use commands::test_i686::TestI686;
 use commands::wasm32::Wasm32;
 use commands::wasm32_chrome::Wasm32Chrome;
@@ -57,6 +58,7 @@ enum Subcommand {
     Msrv(Msrv),
     PrePush(PrePush),
     TestFeatures(TestFeatures),
+    TestFma(TestFma),
     TestI686(TestI686),
     Wasm32(Wasm32),
     Wasm32Chrome(Wasm32Chrome),
@@ -82,6 +84,7 @@ impl Prepare for Subcommand {
             Subcommand::Msrv(cmd) => cmd.prepare(sh, args),
             Subcommand::PrePush(cmd) => cmd.prepare(sh, args),
             Subcommand::TestFeatures(cmd) => cmd.prepare(sh, args),
+            Subcommand::TestFma(cmd) => cmd.prepare(sh, args),
             Subcommand::TestI686(cmd) => cmd.prepare(sh, args),
             Subcommand::Wasm32(cmd) => cmd.prepare(sh, args),
             Subcommand::Wasm32Chrome(cmd) => cmd.prepare(sh, args),

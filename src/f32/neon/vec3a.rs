@@ -287,7 +287,7 @@ impl Vec3A {
             let rhs_yzx = vsetq_lane_f32(vgetq_lane_f32(rhs, 0), rhs_yzwx, 2);
 
             // result = part_a - (a.zxy * b.yzx)
-            let result = vmlsq_f32(part_a, lhs_zxy, rhs_yzx);
+            let result = vfmsq_f32(part_a, lhs_zxy, rhs_yzx);
             Self(result)
         }
     }
