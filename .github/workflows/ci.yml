@@ -37,6 +37,19 @@ jobs:
       - run: rustup default ${{ matrix.toolchain }}
       - run: cargo run --release -p ci -- test-features
 
+  test-fma:
+    name: Test FMA
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+
+      - uses: Swatinem/rust-cache@v2
+      - run: rustup update --no-self-update stable
+      - run: rustup default stable
+      - run: cargo run --release -p ci -- test-fma
+
   test-i686:
     name: Test i686 (32-bit)
     strategy:

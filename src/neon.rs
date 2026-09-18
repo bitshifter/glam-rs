@@ -78,7 +78,7 @@ pub(crate) unsafe fn f32x4_mod_angles(angles: float32x4_t) -> float32x4_t {
     // Modulo the range of the given angles such that -XM_PI <= Angles < XM_PI
     let mut v = vmulq_f32(angles, F32X4_FRAC_1_TAU);
     v = vrndnq_f32(v);
-    vmlsq_f32(angles, v, F32X4_TAU)
+    vfmsq_f32(angles, v, F32X4_TAU)
 }
 
 /// Computes the sine of the angle in each lane of `v`. Values outside
@@ -107,18 +107,18 @@ pub(crate) unsafe fn f32x4_sin(v: float32x4_t) -> float32x4_t {
     const SC1: float32x4_t = F32X4_SIN_COEFFICIENTS1;
     const SC0: float32x4_t = F32X4_SIN_COEFFICIENTS0;
     let mut v_constants = vdupq_lane_f32(vget_high_f32(SC0), 1);
-    let mut result = vmlaq_lane_f32(v_constants, x2, vget_low_f32(SC1), 0);
+    let mut result = vfmaq_lane_f32(v_constants, x2, vget_low_f32(SC1), 0);
 
     v_constants = vdupq_lane_f32(vget_high_f32(SC0), 0);
-    result = vmlaq_f32(v_constants, result, x2);
+    result = vfmaq_f32(v_constants, result, x2);
 
     v_constants = vdupq_lane_f32(vget_low_f32(SC0), 1);
-    result = vmlaq_f32(v_constants, result, x2);
+    result = vfmaq_f32(v_constants, result, x2);
 
     v_constants = vdupq_lane_f32(vget_low_f32(SC0), 0);
-    result = vmlaq_f32(v_constants, result, x2);
+    result = vfmaq_f32(v_constants, result, x2);
 
-    result = vmlaq_f32(F32X4_ONE, result, x2);
+    result = vfmaq_f32(F32X4_ONE, result, x2);
     result = vmulq_f32(result, x);
 
     result

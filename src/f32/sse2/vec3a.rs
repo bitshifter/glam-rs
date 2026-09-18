@@ -283,8 +283,7 @@ impl Vec3A {
             let lhszxy = _mm_shuffle_ps(self.0, self.0, 0b01_01_00_10);
             let rhszxy = _mm_shuffle_ps(rhs.0, rhs.0, 0b01_01_00_10);
             let lhszxy_rhs = _mm_mul_ps(lhszxy, rhs.0);
-            let rhszxy_lhs = _mm_mul_ps(rhszxy, self.0);
-            let sub = _mm_sub_ps(lhszxy_rhs, rhszxy_lhs);
+            let sub = m128_neg_mul_sub(rhszxy, self.0, lhszxy_rhs);
             Self(_mm_shuffle_ps(sub, sub, 0b01_01_00_10))
         }
     }

@@ -750,7 +750,7 @@ impl Quat {
             let theta_sin = _mm_shuffle_ps(tmp, tmp, 0b10_10_10_10);
 
             Self(_mm_div_ps(
-                _mm_add_ps(_mm_mul_ps(self.0, scale1), _mm_mul_ps(end.0, scale2)),
+                m128_mul_add(end.0, scale2, _mm_mul_ps(self.0, scale1)),
                 theta_sin,
             ))
         }
@@ -867,18 +867,15 @@ impl Quat {
             let lwrx_lzrx_lyrx_lxrx = _mm_mul_ps(r_xxxx, l_wzyx);
             let l_zwxy = _mm_shuffle_ps(l_wzyx, l_wzyx, 0b10_11_00_01);
 
-            let lwrx_nlzrx_lyrx_nlxrx = _mm_mul_ps(lwrx_lzrx_lyrx_lxrx, CONTROL_WZYX);
-
             let lzry_lwry_lxry_lyry = _mm_mul_ps(r_yyyy, l_zwxy);
             let l_yxwz = _mm_shuffle_ps(l_zwxy, l_zwxy, 0b00_01_10_11);
 
             let lzry_lwry_nlxry_nlyry = _mm_mul_ps(lzry_lwry_lxry_lyry, CONTROL_ZWXY);
 
             let lyrz_lxrz_lwrz_lzrz = _mm_mul_ps(r_zzzz, l_yxwz);
-            let result0 = _mm_add_ps(lxrw_lyrw_lzrw_lwrw, lwrx_nlzrx_lyrx_nlxrx);
+            let result0 = m128_mul_add(lwrx_lzrx_lyrx_lxrx, CONTROL_WZYX, lxrw_lyrw_lzrw_lwrw);
 
-            let nlyrz_lxrz_lwrz_wlzrz = _mm_mul_ps(lyrz_lxrz_lwrz_lzrz, CONTROL_YXWZ);
-            let result1 = _mm_add_ps(lzry_lwry_nlxry_nlyry, nlyrz_lxrz_lwrz_wlzrz);
+            let result1 = m128_mul_add(lyrz_lxrz_lwrz_lzrz, CONTROL_YXWZ, lzry_lwry_nlxry_nlyry);
 
             Self(_mm_add_ps(result0, result1))
         }

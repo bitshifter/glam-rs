@@ -126,14 +126,15 @@ pub(crate) unsafe fn m128_abs(v: __m128) -> __m128 {
 
 #[inline(always)]
 pub(crate) unsafe fn m128_mul_add(a: __m128, b: __m128, c: __m128) -> __m128 {
-    // Only enable fused multiply-adds here if "fast-math" is enabled and the
-    // platform supports it. Otherwise this may break cross-platform determinism.
-    #[cfg(all(feature = "fast-math", target_feature = "fma"))]
+    // Use a fused multiply-add whenever the target supports it. Fusing has a
+    // single rounding step and so is at least as accurate as a separate multiply
+    // and add, but may produce different results to targets without FMA.
+    #[cfg(target_feature = "fma")]
     {
         _mm_fmadd_ps(a, b, c)
     }
 
-    #[cfg(any(not(feature = "fast-math"), not(target_feature = "fma")))]
+    #[cfg(not(target_feature = "fma"))]
     {
         _mm_add_ps(_mm_mul_ps(a, b), c)
     }
@@ -141,7 +142,16 @@ pub(crate) unsafe fn m128_mul_add(a: __m128, b: __m128, c: __m128) -> __m128 {
 
 #[inline(always)]
 pub(crate) unsafe fn m128_neg_mul_sub(a: __m128, b: __m128, c: __m128) -> __m128 {
-    _mm_sub_ps(c, _mm_mul_ps(a, b))
+    // Computes `c - a * b`, fused when the target supports it.
+    #[cfg(target_feature = "fma")]
+    {
+        _mm_fnmadd_ps(a, b, c)
+    }
+
+    #[cfg(not(target_feature = "fma"))]
+    {
+        _mm_sub_ps(c, _mm_mul_ps(a, b))
+    }
 }
 
 /// Rounds each lane to the nearest integer, rounding half-way cases to the

@@ -60,11 +60,8 @@ scalar-math = []
 # align types to match CUDA requirements
 cuda = []
 
-# Enables platform specific optimizations that might speed-up certain operations.
-# This will cause APIs to output different results depending on the platform used
-# and will likely break cross-platform determinism.
-# This should NOT be enabled by intermediate libraries, deferring the decision to
-# the end binary build instead.
+# Deprecated and no longer has any effect. Kept so existing Cargo manifests
+# continue to build; will be removed in a future breaking release.
 fast-math = []
 
 serde = ["dep:serde_core"]

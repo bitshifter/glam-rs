@@ -260,10 +260,8 @@ assert_eq!(format!("{}", a), "[1, 2, 3, 4]");
 * `glam-assert` - adds assertions to all builds which check the validity of parameters passed to
   `glam` to help catch runtime errors.
 * `cuda` - forces `glam` types to match expected cuda alignment
-* `fast-math` - By default, glam attempts to provide bit-for-bit identical results on all platforms.
-  Using this feature will enable platform specific optimizations that may not be identical to other
-  platforms. **Intermediate libraries should not use this feature and defer the decision to the
-  final binary build**.
+* `fast-math` - **Deprecated.** This feature no longer has any effect and will be removed in a
+  future release.
 * `core-simd` - enables SIMD support via the portable simd module. This is an unstable feature which
   requires a nightly Rust toolchain and `std` support.
 
