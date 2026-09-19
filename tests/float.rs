@@ -28,6 +28,9 @@ macro_rules! impl_float_tests {
             assert_eq!($t::lerp_monotonic(a, b, 0.), a);
             assert_eq!($t::lerp_monotonic(a, b, 0.5), 0.);
             assert_eq!($t::lerp_monotonic(a, b, 1.), b);
+            // Extrapolates linearly outside `[0, 1]`.
+            assert_eq!($t::lerp_monotonic(a, b, -1.), -3.);
+            assert_eq!($t::lerp_monotonic(a, b, 2.), 3.);
 
             // Equal values are preserved exactly, which `lerp` does not guarantee.
             let c = 0.1;

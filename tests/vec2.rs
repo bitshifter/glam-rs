@@ -1449,6 +1449,10 @@ macro_rules! impl_vec2_float_tests {
                 prev = v;
             }
 
+            // Extrapolates linearly outside `[0, 1]`.
+            assert_approx_eq!($vec2::new(-3.0, -3.0), v0.lerp_monotonic(v1, -1.0));
+            assert_approx_eq!($vec2::new(3.0, 3.0), v0.lerp_monotonic(v1, 2.0));
+
             // Documented tradeoff: evaluating `rhs - self` first loses `rhs` when the inputs differ
             // greatly in magnitude, and overflows to infinity for opposite-sign extremes. `lerp`
             // is unaffected, which `test_lerp_big_difference` covers.
