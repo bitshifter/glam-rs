@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{f32::math, wasm::*, BVec3, BVec3A, FloatExt, Quat, Vec2, Vec3, Vec4};
+use crate::{f32::math, wasm::*, BVec3, BVec3A, Quat, Vec2, Vec3, Vec4};
 
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -1333,8 +1333,9 @@ impl Vec3A {
             let t1 = math::sin(theta * (1.0 - s));
             let t2 = math::sin(theta * s);
 
-            // Interpolate vector lengths
-            let result_length = self_length.lerp(rhs_length, s);
+            // Interpolate vector lengths. The monotonic form keeps equal lengths exact.
+            // TODO: use `FloatExt::lerp_monotonic` once it is available.
+            let result_length = self_length + (rhs_length - self_length) * s;
             // Scale the vectors to the target length and interpolate them
             return (self * (result_length / self_length) * t1
                 + rhs * (result_length / rhs_length) * t2)
@@ -1346,8 +1347,9 @@ impl Vec3A {
             // Create a rotation from self to rhs along some axis
             let axis = self.any_orthogonal_vector().normalize().into();
             let rotation = Quat::from_axis_angle(axis, core::f32::consts::PI * s);
-            // Interpolate vector lengths
-            let result_length = self_length.lerp(rhs_length, s);
+            // Interpolate vector lengths. The monotonic form keeps equal lengths exact.
+            // TODO: use `FloatExt::lerp_monotonic` once it is available.
+            let result_length = self_length + (rhs_length - self_length) * s;
             rotation * self * (result_length / self_length)
         } else {
             // Vectors are almost parallel in the same direction, or dot was NaN
