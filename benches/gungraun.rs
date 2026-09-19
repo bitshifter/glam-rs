@@ -501,6 +501,12 @@ fn vec3a_lerp(v1: Vec3A, v2: Vec3A, t: f32) -> Vec3A {
 }
 
 #[library_benchmark]
+#[bench::args(vec3a(), vec3a(), bb_f32())]
+fn vec3a_lerp_monotonic(v1: Vec3A, v2: Vec3A, t: f32) -> Vec3A {
+    black_box(v1.lerp_monotonic(v2, t))
+}
+
+#[library_benchmark]
 #[bench::nonzero(vec3a())]
 #[bench::zero(black_box(Vec3A::ZERO))]
 fn vec3a_normalize_or_zero(v: Vec3A) -> Vec3A {
@@ -715,6 +721,7 @@ library_benchmark_group!(
         vec3a_cross,
         vec3a_length,
         vec3a_lerp,
+        vec3a_lerp_monotonic,
         vec3a_normalize,
         vec3a_normalize_or_zero,
         vec3a_slerp,
