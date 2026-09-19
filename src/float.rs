@@ -12,6 +12,22 @@ pub trait FloatExt {
     #[must_use]
     fn lerp(self, rhs: Self, s: Self) -> Self;
 
+    /// Performs a linear interpolation between `self` and `rhs` based on the value `s`, using the
+    /// monotonic form `self + (rhs - self) * s`.
+    ///
+    /// When `s` is `0`, the result will be `self`.  When `s` is `1`, the result
+    /// will be `rhs`. When `s` is outside of the range `[0, 1]`, the result is linearly
+    /// extrapolated.
+    ///
+    /// Prefer this over [`lerp`](Self::lerp) when interpolating between values that may be equal or
+    /// nearly equal: the result is monotonic in `s` and equal values are preserved exactly, avoiding
+    /// the rounding jitter that [`lerp`](Self::lerp) can introduce. The tradeoff is that
+    /// `rhs - self` is evaluated first, so this is less accurate than [`lerp`](Self::lerp) when
+    /// `self` and `rhs` differ greatly in magnitude, and overflows to infinity when they have
+    /// opposite signs and large magnitudes.
+    #[must_use]
+    fn lerp_monotonic(self, rhs: Self, s: Self) -> Self;
+
     /// Returns `v` normalized to the range `[a, b]`.
     ///
     /// When `v` is equal to `a` the result will be `0`.  When `v` is equal to `b` will be `1`.
