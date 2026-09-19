@@ -1683,6 +1683,8 @@ macro_rules! impl_vec3_float_tests {
             let overflowed = max.lerp_monotonic(-max, 0.5);
             assert!(!overflowed.is_finite());
             assert!(!overflowed.is_nan());
+            // `rhs - self` overflows, so even `s == 0.0` does not return `self` here.
+            assert!(max.lerp_monotonic(-max, 0.0).is_nan());
         });
 
         glam_test!(test_slerp, {
