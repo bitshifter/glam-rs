@@ -1,10 +1,14 @@
 /// A trait for extending [`prim@f32`] and [`prim@f64`] with extra methods.
 pub trait FloatExt {
-    /// Performs a linear interpolation between `self` and `rhs` based on the value `s`.
+    /// Performs a linear interpolation between `self` and `rhs` based on the value `s`, using the
+    /// form `self * (1.0 - s) + rhs * s`.
     ///
     /// When `s` is `0`, the result will be `self`.  When `s` is `1`, the result
     /// will be `rhs`. When `s` is outside of the range `[0, 1]`, the result is linearly
     /// extrapolated.
+    ///
+    /// This form is exact at `s == 0` and `s == 1`, but it may not preserve equal values exactly and
+    /// is not monotonic in `s` for nearly equal inputs.
     #[must_use]
     fn lerp(self, rhs: Self, s: Self) -> Self;
 

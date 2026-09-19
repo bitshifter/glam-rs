@@ -704,10 +704,13 @@ impl Quat {
     }
 
     /// Performs a linear interpolation between `self` and `rhs` based on
-    /// the value `s`.
+    /// the value `s`, using the form `self * (1.0 - s) + end * s` before normalizing.
     ///
     /// When `s` is `0.0`, the result will be equal to `self`.  When `s`
     /// is `1.0`, the result will be equal to `rhs`.
+    ///
+    /// This interpolates linearly between the two rotations and does not rotate at a constant
+    /// angular velocity; see [`slerp`](Self::slerp) if that is required.
     ///
     /// # Panics
     ///

@@ -993,16 +993,42 @@ impl Vec3A {
         Self::new(1.0 / self.x, 1.0 / self.y, 1.0 / self.z)
     }
 
-    /// Performs a linear interpolation between `self` and `rhs` based on the value `s`.
+    /// Performs a linear interpolation between `self` and `rhs` based on the value `s`, using the
+    /// form `self * (1.0 - s) + rhs * s`.
     ///
     /// When `s` is `0.0`, the result will be equal to `self`.  When `s` is `1.0`, the result
     /// will be equal to `rhs`. When `s` is outside of range `[0, 1]`, the result is linearly
     /// extrapolated.
+    ///
+    /// This form guarantees `self` at `s == 0.0` and `rhs` at `s == 1.0` even when the values
+    /// differ greatly in magnitude, but it is not monotonic in `s` for nearly equal inputs and may
+    /// not preserve equal inputs exactly. Consider [`lerp_monotonic`](Self::lerp_monotonic) instead
+    /// when interpolating between values that may be equal or nearly equal.
     #[doc(alias = "mix")]
     #[inline]
     #[must_use]
     pub fn lerp(self, rhs: Self, s: f32) -> Self {
         self * (1.0 - s) + rhs * s
+    }
+
+    /// Performs a linear interpolation between `self` and `rhs` based on the value `s`, using the
+    /// monotonic form `self + (rhs - self) * s`.
+    ///
+    /// When `s` is `0.0`, the result will be equal to `self`. When `s` is `1.0`, the result will
+    /// be equal to `rhs`. When `s` is outside of range `[0, 1]`, the result is linearly
+    /// extrapolated.
+    ///
+    /// Prefer this over [`lerp`](Self::lerp) when interpolating between values that may be equal or
+    /// nearly equal: the result is monotonic in `s` and equal inputs are preserved exactly, avoiding
+    /// the rounding jitter that [`lerp`](Self::lerp) can introduce. The tradeoff is that
+    /// `rhs - self` is evaluated first, so this is less accurate than [`lerp`](Self::lerp) when
+    /// `self` and `rhs` differ greatly in magnitude, and overflows to infinity when they have
+    /// opposite signs and large magnitudes.
+    #[doc(alias = "mix")]
+    #[inline]
+    #[must_use]
+    pub fn lerp_monotonic(self, rhs: Self, s: f32) -> Self {
+        self + (rhs - self) * s
     }
 
     /// Moves towards `rhs` based on the value `d`.
