@@ -13,6 +13,15 @@ macro_rules! impl_float_tests {
             assert_eq!($t::lerp(a, a, 1.), a);
         });
 
+        glam_test!(test_lerp_big_difference, {
+            // `lerp` uses the form `self * (1 - s) + rhs * s`, which guarantees `rhs` at `s == 1`
+            // even when the inputs differ greatly in magnitude.
+            let a = -16.0e30;
+            let b = 16.0;
+            assert_eq!($t::lerp(a, b, 0.), a);
+            assert_eq!($t::lerp(a, b, 1.), b);
+        });
+
         glam_test!(test_inverse_lerp, {
             let a = 0.;
             let b = 10.;
@@ -37,8 +46,10 @@ macro_rules! impl_float_tests {
             assert_eq!($t::remap(1., 0., 2., 0., 20.), 10.);
             assert_eq!($t::remap(2., 0., 2., 0., 20.), 20.);
             assert_eq!($t::remap(-5., -10., 30., 60., 20.), 55.);
+            // When one of the input ranges is degenerate `inverse_lerp` is infinite or NaN, which
+            // `lerp` (using the precise form) propagates as NaN.
             assert!($t::remap(0., 0., 0., 0., 1.).is_nan());
-            assert!($t::remap(1., 0., 0., 0., 1.).is_infinite());
+            assert!($t::remap(1., 0., 0., 0., 1.).is_nan());
         });
 
         glam_test!(test_fract_gl, {

@@ -5,7 +5,7 @@ use crate::float::FloatExt;
 impl FloatExt for f64 {
     #[inline]
     fn lerp(self, rhs: Self, t: Self) -> Self {
-        self + (rhs - self) * t
+        self * (1.0 - t) + rhs * t
     }
 
     #[inline]
