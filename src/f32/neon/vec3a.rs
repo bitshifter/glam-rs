@@ -984,16 +984,45 @@ impl Vec3A {
         Self(unsafe { vdivq_f32(Self::ONE.0, self.0) })
     }
 
-    /// Performs a linear interpolation between `self` and `rhs` based on the value `s`.
+    /// Performs a linear interpolation between `self` and `rhs` based on the value `s`, using the
+    /// form `self * (1.0 - s) + rhs * s`.
     ///
-    /// When `s` is `0.0`, the result will be equal to `self`.  When `s` is `1.0`, the result
-    /// will be equal to `rhs`. When `s` is outside of range `[0, 1]`, the result is linearly
+    /// When `s` is `0.0`, the result will be equal to `self`. When `s` is `1.0`, the result will
+    /// be equal to `rhs`. When `s` is outside of the range `[0, 1]`, the result is linearly
     /// extrapolated.
+    ///
+    /// The result is guaranteed to be `self` at `s == 0.0` and `rhs` at `s == 1.0`, even when the
+    /// values differ greatly in magnitude, but it is not monotonic in `s` for nearly equal inputs
+    /// and may not preserve equal inputs exactly. Consider [`lerp_monotonic`](Self::lerp_monotonic)
+    /// instead when interpolating between values that may be equal or nearly equal.
     #[doc(alias = "mix")]
     #[inline]
     #[must_use]
     pub fn lerp(self, rhs: Self, s: f32) -> Self {
         self * (1.0 - s) + rhs * s
+    }
+
+    /// Performs a linear interpolation between `self` and `rhs` based on the value `s`, using the
+    /// monotonic form `self + (rhs - self) * s`.
+    ///
+    /// When `s` is `0.0`, the result will be equal to `self`. When `s` is `1.0`, the result will
+    /// be equal to `rhs`. When `s` is outside of the range `[0, 1]`, the result is linearly
+    /// extrapolated.
+    ///
+    /// Prefer this over [`lerp`](Self::lerp) when interpolating between values that may be equal or
+    /// nearly equal: the result is monotonic in `s` and equal inputs are preserved exactly, avoiding
+    /// the rounding jitter that [`lerp`](Self::lerp) can introduce. The tradeoff is that
+    /// `rhs - self` is evaluated first, so this is less accurate than [`lerp`](Self::lerp) when
+    /// `self` and `rhs` differ greatly in magnitude, and overflows to infinity when they have
+    /// opposite signs and large magnitudes.
+    ///
+    /// On SIMD back-ends the multiply and add are fused when the target supports it, which has a
+    /// single rounding step and can be more accurate than a separate multiply and add.
+    #[doc(alias = "mix")]
+    #[inline]
+    #[must_use]
+    pub fn lerp_monotonic(self, rhs: Self, s: f32) -> Self {
+        Self(unsafe { vfmaq_f32(self.0, vsubq_f32(rhs.0, self.0), vdupq_n_f32(s)) })
     }
 
     /// Moves towards `rhs` based on the value `d`.
@@ -1337,8 +1366,8 @@ impl Vec3A {
                 )
             };
 
-            // Interpolate vector lengths
-            let result_length = self_length.lerp(rhs_length, s);
+            // Interpolate vector lengths. The monotonic form keeps equal lengths exact.
+            let result_length = self_length.lerp_monotonic(rhs_length, s);
             // Scale the vectors to the target length and interpolate them
             return (self * (result_length / self_length) * t1
                 + rhs * (result_length / rhs_length) * t2)
@@ -1350,8 +1379,8 @@ impl Vec3A {
             // Create a rotation from self to rhs along some axis
             let axis = self.any_orthogonal_vector().normalize().into();
             let rotation = Quat::from_axis_angle(axis, core::f32::consts::PI * s);
-            // Interpolate vector lengths
-            let result_length = self_length.lerp(rhs_length, s);
+            // Interpolate vector lengths. The monotonic form keeps equal lengths exact.
+            let result_length = self_length.lerp_monotonic(rhs_length, s);
             rotation * self * (result_length / self_length)
         } else {
             // Vectors are almost parallel in the same direction, or dot was NaN
