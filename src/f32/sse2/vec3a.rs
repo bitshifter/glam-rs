@@ -1018,11 +1018,20 @@ impl Vec3A {
     /// `rhs - self` is evaluated first, so this is less accurate than [`lerp`](Self::lerp) when
     /// `self` and `rhs` differ greatly in magnitude, and overflows to infinity when they have
     /// opposite signs and large magnitudes.
+    ///
+    /// On SIMD back-ends the multiply and add are fused when the target supports it, which has a
+    /// single rounding step and can be more accurate than a separate multiply and add.
     #[doc(alias = "mix")]
     #[inline]
     #[must_use]
     pub fn lerp_monotonic(self, rhs: Self, s: f32) -> Self {
-        self + (rhs - self) * s
+        unsafe {
+            Self(m128_mul_add(
+                _mm_sub_ps(rhs.0, self.0),
+                _mm_set_ps1(s),
+                self.0,
+            ))
+        }
     }
 
     /// Moves towards `rhs` based on the value `d`.
