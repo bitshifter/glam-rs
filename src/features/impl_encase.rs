@@ -5,13 +5,12 @@ use crate::{Mat2, Mat3, Mat4, Vec2, Vec3, Vec4};
 use crate::{UVec2, UVec3, UVec4};
 
 #[cfg(feature = "encase_0_12")]
-use encase12::{
-    matrix::{impl_matrix, AsMutMatrixParts, AsRefMatrixParts, FromMatrixParts, MatrixScalar},
-    vector::impl_vector,
-};
+use encase12 as encase;
 
 #[cfg(feature = "encase_0_13")]
-use encase13::{
+use encase13 as encase;
+
+use encase::{
     matrix::{impl_matrix, AsMutMatrixParts, AsRefMatrixParts, FromMatrixParts, MatrixScalar},
     vector::impl_vector,
 };
