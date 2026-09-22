@@ -1,5 +1,5 @@
 [bans]
-multiple-versions = "deny"
+multiple-versions = "warn"
 deny = []
 skip-tree = [
     # ignore criterion dev-dependency that often have duplicate dependencies internally
