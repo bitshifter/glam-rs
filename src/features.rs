@@ -22,7 +22,7 @@ pub mod impl_speedy;
 #[cfg(feature = "rkyv")]
 pub mod impl_rkyv;
 
-#[cfg(feature = "encase")]
+#[cfg(any(feature = "encase_0_12", feature = "encase_0_13"))]
 pub mod impl_encase;
 
 #[cfg(feature = "zerocopy")]

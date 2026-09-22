@@ -3,7 +3,15 @@ use crate::{IVec2, IVec3, IVec4};
 use crate::{Mat2, Mat3, Mat4, Vec2, Vec3, Vec4};
 #[cfg(feature = "u32")]
 use crate::{UVec2, UVec3, UVec4};
-use encase::{
+
+#[cfg(feature = "encase_0_12")]
+use encase12::{
+    matrix::{impl_matrix, AsMutMatrixParts, AsRefMatrixParts, FromMatrixParts, MatrixScalar},
+    vector::impl_vector,
+};
+
+#[cfg(feature = "encase_0_13")]
+use encase13::{
     matrix::{impl_matrix, AsMutMatrixParts, AsRefMatrixParts, FromMatrixParts, MatrixScalar},
     vector::impl_vector,
 };

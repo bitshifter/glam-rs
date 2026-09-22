@@ -79,6 +79,9 @@ libm = ["dep:libm"]
 # enables libm but will prefer std if available
 nostd-libm = ["dep:libm"]
 
+encase_0_12 = ["dep:encase12"]
+encase_0_13 = ["dep:encase13"]
+
 [dependencies]
 approx = { version = "0.5", optional = true, default-features = false }
 bytemuck = { version = "1.9", optional = true, default-features = false, features = ["derive", "aarch64_simd", "wasm_simd"] }
@@ -88,7 +91,8 @@ serde_core = { version = "1.0", optional = true, default-features = false }
 rkyv = { version = "0.8", optional = true, default-features = false }
 libm = { version = "0.2", optional = true, default-features = false }
 speedy = { version = "0.8", optional = true, default-features = false }
-encase = { version = "0.12", optional = true, default-features = false }
+encase12 = { package = "encase", version = "0.12", optional = true, default-features = false }
+encase13 = { package = "encase", version = "0.13", optional = true, default-features = false }
 zerocopy = { version = "0.8", optional = true, default-features = false, features = ["simd"] }
 zerocopy-derive = { version = "0.8", optional = true, default-features = false }
 arbitrary = { version = "1.4.2", default-features = false, optional = true }
