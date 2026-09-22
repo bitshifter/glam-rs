@@ -79,6 +79,7 @@ libm = ["dep:libm"]
 # enables libm but will prefer std if available
 nostd-libm = ["dep:libm"]
 
+encase = ["dep:encase13"]
 encase_0_12 = ["dep:encase12"]
 encase_0_13 = ["dep:encase13"]
 
