@@ -22,8 +22,17 @@ pub mod impl_speedy;
 #[cfg(feature = "rkyv")]
 pub mod impl_rkyv;
 
-#[cfg(feature = "encase")]
-pub mod impl_encase;
+#[cfg(feature = "encase-012")]
+mod impl_encase_012 {
+    use encase_012 as encase;
+    include!("features/impl_encase.rs");
+}
+
+#[cfg(feature = "encase-013")]
+mod impl_encase_013 {
+    use encase_013 as encase;
+    include!("features/impl_encase.rs");
+}
 
 #[cfg(feature = "zerocopy")]
 pub mod impl_zerocopy;
