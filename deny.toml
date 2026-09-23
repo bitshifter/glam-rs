@@ -4,6 +4,8 @@ deny = []
 skip-tree = [
     # ignore criterion dev-dependency that often have duplicate dependencies internally
     { name = "criterion" },
+    # encase 0.12 is intentionally supported alongside 0.13, see #857
+    { crate = "encase:>=0.12,<0.13", reason = "encase 0.12 is supported alongside 0.13" },
 ]
 
 [licenses]
