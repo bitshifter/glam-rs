@@ -3,6 +3,7 @@ use crate::{IVec2, IVec3, IVec4};
 use crate::{Mat2, Mat3, Mat4, Vec2, Vec3, Vec4};
 #[cfg(feature = "u32")]
 use crate::{UVec2, UVec3, UVec4};
+
 use encase::{
     matrix::{impl_matrix, AsMutMatrixParts, AsRefMatrixParts, FromMatrixParts, MatrixScalar},
     vector::impl_vector,
@@ -132,7 +133,7 @@ mod test {
     use crate::{Mat2, Mat3, Mat4, Vec2, Vec3, Vec4};
     #[cfg(feature = "u32")]
     use crate::{UVec2, UVec3, UVec4};
-    use encase::StorageBuffer;
+    use super::encase::StorageBuffer;
 
     impl_vec_test!(2, vec2, Vec2, [1.12, 3.04]);
     #[cfg(feature = "i32")]

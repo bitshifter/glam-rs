@@ -79,6 +79,13 @@ libm = ["dep:libm"]
 # enables libm but will prefer std if available
 nostd-libm = ["dep:libm"]
 
+# `encase` is the historic, backwards-compatible name for the encase 0.12
+# integration. `encase-012`/`encase-013` select a specific encase version; both
+# may be enabled at once so downstream crates on either version keep working.
+encase = ["encase-012"]
+encase-012 = ["dep:encase-012"]
+encase-013 = ["dep:encase-013"]
+
 [dependencies]
 approx = { version = "0.5", optional = true, default-features = false }
 bytemuck = { version = "1.9", optional = true, default-features = false, features = ["derive", "aarch64_simd", "wasm_simd"] }
@@ -88,7 +95,8 @@ serde_core = { version = "1.0", optional = true, default-features = false }
 rkyv = { version = "0.8", optional = true, default-features = false }
 libm = { version = "0.2", optional = true, default-features = false }
 speedy = { version = "0.8", optional = true, default-features = false }
-encase = { version = "0.12", optional = true, default-features = false }
+encase-012 = { package = "encase", version = "0.12", optional = true, default-features = false }
+encase-013 = { package = "encase", version = "0.13", optional = true, default-features = false }
 zerocopy = { version = "0.8", optional = true, default-features = false, features = ["simd"] }
 zerocopy-derive = { version = "0.8", optional = true, default-features = false }
 arbitrary = { version = "1.4.2", default-features = false, optional = true }
