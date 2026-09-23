@@ -10,10 +10,29 @@ use zerocopy_derive::*;
 ///
 /// This type is 16 byte aligned.
 #[derive(Copy, Clone)]
-#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(
-    all(feature = "zerocopy", not(feature = "core-simd")),
+    all(feature = "bytemuck", not(target_arch = "spirv")),
+    derive(bytemuck::Pod, bytemuck::Zeroable)
+)]
+#[cfg_attr(
+    all(feature = "bytemuck", target_arch = "spirv"),
+    derive(bytemuck::AnyBitPattern)
+)]
+#[cfg_attr(
+    all(
+        feature = "zerocopy",
+        not(feature = "core-simd"),
+        not(target_arch = "spirv")
+    ),
     derive(FromBytes, Immutable, IntoBytes, KnownLayout)
+)]
+#[cfg_attr(
+    all(
+        feature = "zerocopy",
+        not(feature = "core-simd"),
+        target_arch = "spirv"
+    ),
+    derive(FromBytes, Immutable, KnownLayout)
 )]
 #[repr(C)]
 pub struct Affine3A {

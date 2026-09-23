@@ -90,8 +90,10 @@ use zerocopy_derive::*;
     derive(FromBytes, Immutable, KnownLayout))
 ]
 {%- elif self_t == "Affine3A" and is_scalar %}
-#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
-#[cfg_attr(all(feature = "zerocopy", not(feature = "core-simd")), derive(FromBytes, Immutable, IntoBytes, KnownLayout))]
+#[cfg_attr(all(feature = "bytemuck", not(target_arch = "spirv")), derive(bytemuck::Pod, bytemuck::Zeroable))]
+#[cfg_attr(all(feature = "bytemuck", target_arch = "spirv"), derive(bytemuck::AnyBitPattern))]
+#[cfg_attr(all(feature = "zerocopy", not(feature = "core-simd"), not(target_arch = "spirv")), derive(FromBytes, Immutable, IntoBytes, KnownLayout))]
+#[cfg_attr(all(feature = "zerocopy", not(feature = "core-simd"), target_arch = "spirv"), derive(FromBytes, Immutable, KnownLayout))]
 {%- else %}
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(

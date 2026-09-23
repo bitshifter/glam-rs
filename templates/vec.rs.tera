@@ -329,9 +329,18 @@ pub const fn {{ self_t | lower }}(
     Hash,
     {% endif %}
 )]
+{%- if is_scalar and self_t == "Vec3A" %}
+#[cfg_attr(all(feature = "bytemuck", not(target_arch = "spirv")), derive(bytemuck::Pod, bytemuck::Zeroable))]
+#[cfg_attr(all(feature = "bytemuck", target_arch = "spirv"), derive(bytemuck::AnyBitPattern))]
+{%- if not is_coresimd %}
+#[cfg_attr(all(feature = "zerocopy", not(target_arch = "spirv")), derive(FromBytes, Immutable, IntoBytes, KnownLayout))]
+#[cfg_attr(all(feature = "zerocopy", target_arch = "spirv"), derive(FromBytes, Immutable, KnownLayout))]
+{%- endif %}
+{%- else %}
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 {%- if not is_coresimd %}
 #[cfg_attr(feature = "zerocopy", derive(FromBytes, Immutable, IntoBytes, KnownLayout))]
+{%- endif %}
 {%- endif %}
 {%- if self_t == "Vec3A" and is_scalar %}
 #[repr(align(16))]
@@ -349,6 +358,7 @@ pub struct {{ self_t }}
         pub {{ c }}: {{ scalar_t }},
     {%- endfor %}
     {%- if self_t == "Vec3A" %}
+        #[cfg(not(target_arch = "spirv"))]
         _w: f32,
     {%- endif %}
 }
@@ -439,14 +449,31 @@ impl {{ self_t }} {
         {% endfor %}
     ) -> Self {
         {% if is_scalar %}
-            Self {
-                {% for c in components %}
-                    {{ c }},
-                {%- endfor %}
-                {%- if self_t == "Vec3A" %}
-                    _w: z,
-                {%- endif %}
-            }
+            {%- if self_t == "Vec3A" %}
+              #[cfg(not(target_arch = "spirv"))]
+              {
+                  Self {
+                      {% for c in components %}
+                          {{ c }},
+                      {%- endfor %}
+                      _w: z,
+                  }
+              }
+              #[cfg(target_arch = "spirv")]
+              {
+                  Self {
+                      {% for c in components %}
+                          {{ c }},
+                      {%- endfor %}
+                  }
+              }
+            {%- else %}
+              Self {
+                  {% for c in components %}
+                      {{ c }},
+                  {%- endfor %}
+              }
+            {%- endif %}
         {% elif is_sse2 %}
             unsafe {
                 UnionCast { a: [
