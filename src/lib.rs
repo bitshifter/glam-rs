@@ -273,11 +273,10 @@ and benchmarks.
 * `approx` - traits and macros for approximate float comparisons
 * `arbitrary` - implementations of `Arbitrary` trait for all `glam` types.
 * `bytemuck` - for casting into slices of bytes
-* `encase` - `encase` trait implementations for `glam` types. This is a
-  backwards-compatible alias for the `encase-012` feature.
+* `encase` - `encase` trait implementations for `glam` types. This is a backwards-compatible alias
+  for the `encase-012` feature.
 * `encase-012` - `encase` 0.12 trait implementations for `glam` types.
-* `encase-013` - `encase` 0.13 trait implementations for `glam` types. Can be
-  enabled together with `encase-012` to support both versions at once.
+* `encase-013` - `encase` 0.13 trait implementations for `glam` types.
 * `float_eq` - traits and macros for comparing float types using various tolerances.
 * `libm` - uses `libm` math functions instead of `std`
 * `mint` - for interoperating with other 3D math libraries
