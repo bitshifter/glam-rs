@@ -193,9 +193,18 @@ pub const fn {{ self_t | lower }}(
 /// This type is 16 byte aligned.
 {%- endif %}
 #[derive(Clone, Copy)]
+{%- if self_t == "Mat3A" and is_scalar %}
+#[cfg_attr(all(feature = "bytemuck", not(target_arch = "spirv")), derive(bytemuck::Pod, bytemuck::Zeroable))]
+#[cfg_attr(all(feature = "bytemuck", target_arch = "spirv"), derive(bytemuck::AnyBitPattern))]
+{%- if not is_coresimd %}
+#[cfg_attr(all(feature = "zerocopy", not(target_arch = "spirv")), derive(FromBytes, Immutable, IntoBytes, KnownLayout))]
+#[cfg_attr(all(feature = "zerocopy", target_arch = "spirv"), derive(FromBytes, Immutable, KnownLayout))]
+{%- endif %}
+{%- else %}
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 {%- if not is_coresimd %}
 #[cfg_attr(feature = "zerocopy", derive(FromBytes, Immutable, IntoBytes, KnownLayout))]
+{%- endif %}
 {%- endif %}
 {%- if self_t == "Mat4" and is_scalar %}
 #[cfg_attr(any(not(feature = "scalar-math"), feature = "cuda"), repr(align(16)))]
