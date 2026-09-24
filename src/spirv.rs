@@ -17,10 +17,5 @@ macro_rules! unsupported_features {
 
 #[cfg(target_arch = "spirv")]
 unsupported_features! {
-    "approx",
-    "debug-glam-assert",
-    "glam-assert",
-    "rand",
-    "serde",
     "std",
 }
