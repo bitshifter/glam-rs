@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Added `lerp_monotonic` methods to the float vector types and to `FloatExt`. These interpolate
+  using the monotonic form `self + (rhs - self) * s`, which preserves equal inputs exactly and is
+  monotonic in `s`, avoiding the rounding jitter that `lerp` can introduce between nearly equal
+  values ([#823](https://github.com/bitshifter/glam-rs/issues/823)).
+
+### Changed
+
+- `FloatExt::lerp` for `f32` and `f64` now uses the same form as the vector `lerp` methods,
+  `self * (1 - s) + rhs * s`.
+
 ## [0.33.10](https://github.com/bitshifter/glam-rs/compare/0.33.9...0.33.10) - 2026-09-24
 
 ### Fixed

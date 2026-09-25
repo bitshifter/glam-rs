@@ -5,6 +5,11 @@ use crate::float::FloatExt;
 impl FloatExt for f32 {
     #[inline]
     fn lerp(self, rhs: Self, t: Self) -> Self {
+        self * (1.0 - t) + rhs * t
+    }
+
+    #[inline]
+    fn lerp_monotonic(self, rhs: Self, t: Self) -> Self {
         self + (rhs - self) * t
     }
 
