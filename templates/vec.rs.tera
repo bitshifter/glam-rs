@@ -236,6 +236,7 @@
     {% if is_float %}
         {{ scalar_t }}::math,
         {% if dim == 3 %}
+            FloatExt,
             {{ quat_t }},
         {% endif %}
     {% endif %}
@@ -2783,8 +2784,8 @@ impl {{ self_t }} {
             let t2 = math::sin(theta * s);
             {% endif %}
         
-            // Interpolate vector lengths using the monotone form to keep equal lengths exact.
-            let result_length = self_length + (rhs_length - self_length) * s;
+            // Interpolate vector lengths. The monotonic form keeps equal lengths exact.
+            let result_length = self_length.lerp_monotonic(rhs_length, s);
             // Scale the vectors to the target length and interpolate them
             return (self * (result_length / self_length) * t1
                 + rhs * (result_length / rhs_length) * t2)
@@ -2796,8 +2797,8 @@ impl {{ self_t }} {
             // Create a rotation from self to rhs along some axis
             let axis = self.any_orthogonal_vector().normalize(){% if is_align %}.into(){% endif %};
             let rotation = {{ quat_t }}::from_axis_angle(axis, core::{{ scalar_t }}::consts::PI * s);
-            // Interpolate vector lengths using the monotone form to keep equal lengths exact.
-            let result_length = self_length + (rhs_length - self_length) * s;
+            // Interpolate vector lengths. The monotonic form keeps equal lengths exact.
+            let result_length = self_length.lerp_monotonic(rhs_length, s);
             rotation * self * (result_length / self_length) 
         } else {
             // Vectors are almost parallel in the same direction, or dot was NaN

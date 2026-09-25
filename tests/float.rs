@@ -22,6 +22,27 @@ macro_rules! impl_float_tests {
             assert_eq!($t::lerp(a, b, 1.), b);
         });
 
+        glam_test!(test_lerp_monotonic, {
+            let a = -1.;
+            let b = 1.;
+            assert_eq!($t::lerp_monotonic(a, b, 0.), a);
+            assert_eq!($t::lerp_monotonic(a, b, 0.5), 0.);
+            assert_eq!($t::lerp_monotonic(a, b, 1.), b);
+            // Extrapolates linearly outside `[0, 1]`.
+            assert_eq!($t::lerp_monotonic(a, b, -1.), -3.);
+            assert_eq!($t::lerp_monotonic(a, b, 2.), 3.);
+
+            // Equal values are preserved exactly, which `lerp` does not guarantee.
+            let c = 0.1;
+            assert_eq!($t::lerp_monotonic(c, c, 0.25), c);
+
+            // Documented tradeoff: `rhs - self` overflows for opposite-sign extremes, so even the
+            // endpoints are not exact in that case. `lerp` is unaffected.
+            let max = $t::MAX;
+            assert!($t::lerp_monotonic(max, -max, 0.5).is_infinite());
+            assert!($t::lerp_monotonic(max, -max, 0.).is_nan());
+        });
+
         glam_test!(test_inverse_lerp, {
             let a = 0.;
             let b = 10.;
@@ -46,7 +67,7 @@ macro_rules! impl_float_tests {
             assert_eq!($t::remap(1., 0., 2., 0., 20.), 10.);
             assert_eq!($t::remap(2., 0., 2., 0., 20.), 20.);
             assert_eq!($t::remap(-5., -10., 30., 60., 20.), 55.);
-            // Pins the precise `lerp`: a monotone form would return 0 here.
+            // Pins the precise `lerp`: `lerp_monotonic` returns 0 here.
             assert_eq!(20., $t::remap(2., 0., 2., -1e30, 20.));
             // When one of the input ranges is degenerate `inverse_lerp` is infinite or NaN, which
             // `lerp` (using the precise form) propagates as NaN.
