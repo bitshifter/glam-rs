@@ -9,11 +9,6 @@ impl FloatExt for f32 {
     }
 
     #[inline]
-    fn lerp_monotonic(self, rhs: Self, t: Self) -> Self {
-        self + (rhs - self) * t
-    }
-
-    #[inline]
     fn inverse_lerp(a: Self, b: Self, v: Self) -> Self {
         (v - a) / (b - a)
     }
