@@ -9,10 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added `lerp_monotonic` methods to the float vector types and to `FloatExt`. These interpolate
-  using the monotonic form `self + (rhs - self) * s`, which preserves equal inputs exactly and is
-  monotonic in `s`, avoiding the rounding jitter that `lerp` can introduce between nearly equal
-  values ([#823](https://github.com/bitshifter/glam-rs/issues/823)).
+- Added `lerp_monotonic` methods to the float vector types. These interpolate using the monotonic
+  form `self + (rhs - self) * s`, which preserves equal inputs exactly and is monotonic in `s`,
+  avoiding the rounding jitter that `lerp` can introduce between nearly equal values
+  ([#823](https://github.com/bitshifter/glam-rs/issues/823)).
 
 ### Changed
 
