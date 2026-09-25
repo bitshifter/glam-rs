@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.34.0](https://github.com/bitshifter/glam-rs/compare/0.33.10...0.34.0) - 2026-09-25
+
+### Added
+
+- add `lerp_monotonic` for float vector types ([#854](https://github.com/bitshifter/glam-rs/pull/854))
+
 ### Added
 
 - Added `lerp_monotonic` methods to the float vector types and to `FloatExt`. These interpolate
