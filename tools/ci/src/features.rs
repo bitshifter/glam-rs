@@ -1,6 +1,6 @@
 macro_rules! deps {
     () => {
-        "arbitrary approx bytemuck encase encase-013 float_eq mint rand rkyv bytecheck serde speedy zerocopy debug-glam-assert"
+        "arbitrary approx bytemuck encase encase-013 float_eq mint rand rkyv-08 bytecheck serde speedy zerocopy debug-glam-assert"
     };
 }
 
@@ -14,6 +14,9 @@ pub(crate) const FEATURE_SETS: &[&str] = &[
     concat!("libm ", deps!()),
     concat!("libm all-types ", deps!()),
     concat!("libm all-types scalar-math ", deps!()),
+    // The legacy `rkyv` feature is not part of the dependency set above, which
+    // enables `rkyv-08` instead, so cover it on its own.
+    "std all-types rkyv bytecheck",
 ];
 
 // MSRV reduced set — some optional deps need a newer rustc
@@ -24,7 +27,7 @@ pub(crate) const ALL_FEATURES: &str = deps!();
 
 // core-simd profile features (no zerocopy as it doesn't compile with core-simd)
 pub(crate) const CORE_SIMD_FEATURES: &str =
-    "core-simd arbitrary approx bytemuck encase encase-013 float_eq mint rand rkyv bytecheck serde speedy debug-glam-assert";
+    "core-simd arbitrary approx bytemuck encase encase-013 float_eq mint rand rkyv-08 bytecheck serde speedy debug-glam-assert";
 
 pub fn resolve_sets(index: Option<usize>) -> &'static [&'static str] {
     match index {

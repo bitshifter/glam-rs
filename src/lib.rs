@@ -281,11 +281,12 @@ and benchmarks.
 * `libm` - uses `libm` math functions instead of `std`
 * `mint` - for interoperating with other 3D math libraries
 * `rand` - implementations of `Distribution` trait for all `glam` types.
-* `rkyv` - implementations of `Archive`, `Serialize` and `Deserialize` for all
-  `glam` types. Note that serialization is not interoperable with and without the
-  `scalar-math` feature. It should work between all other builds of `glam`.
-  Endian conversion is currently not supported
-* `bytecheck` - to perform archive validation when using the `rkyv` feature
+* `rkyv` - the current implementation is unsound and will be removed in the next major
+  release. Use `rkyv-08` instead.
+* `rkyv-08` - `rkyv` 0.8 `Archive`, `Serialize` and `Deserialize` implementations for all
+  `glam` types, archiving to `glam::rkyv_08` types instead of the native type.
+* `bytecheck` - enables `rkyv`'s archive validation; only has an effect when an `rkyv`
+  feature is enabled
 * `serde` - implementations of `Serialize` and `Deserialize` for all `glam`
   types. Note that serialization should work between builds of `glam` with and without SIMD enabled
 * `speedy` - implementations of `speedy`'s `Readable` and `Writable` for all `glam` types.
@@ -327,6 +328,12 @@ mod align16;
 mod deref;
 mod euler;
 mod features;
+
+#[cfg(feature = "rkyv-08")]
+pub use features::impl_rkyv_08 as rkyv_08;
+
+#[cfg(all(feature = "rkyv", not(feature = "rkyv-08")))]
+pub use features::impl_rkyv as rkyv;
 
 #[cfg(all(
     target_arch = "aarch64",

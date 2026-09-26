@@ -19,7 +19,10 @@ pub mod impl_serde;
 #[cfg(feature = "speedy")]
 pub mod impl_speedy;
 
-#[cfg(feature = "rkyv")]
+#[cfg(feature = "rkyv-08")]
+pub mod impl_rkyv_08;
+
+#[cfg(all(feature = "rkyv", not(feature = "rkyv-08")))]
 pub mod impl_rkyv;
 
 #[cfg(feature = "encase-012")]

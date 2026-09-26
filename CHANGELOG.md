@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added a `rkyv-08` feature, which archives each `glam` type to a dedicated `Archived*` type
+  at `glam::rkyv_08` instead of archiving the native type, so archives are endianness
+  explicit and independent of the SIMD backend `glam` was built with
+  ([#766](https://github.com/bitshifter/glam-rs/pull/766)).
+
+- Added `bytemuck::Pod` and `bytemuck::Zeroable` impls for the `rkyv-08` archived types, so
+  they can still be cast to bytes for a GPU upload or file write without a serializer.
+
+- Added `From` conversions between each type and its `rkyv-08` archived form.
+
+- Added `Archive::COPY_OPTIMIZATION` to the `rkyv-08` impls whose archived form is a
+  byte-for-byte copy of the native form, so slices serialize with a single `memcpy`.
+
 - Added `lerp_monotonic` methods to the float vector types. These interpolate using the monotonic
   form `self + (rhs - self) * s`, which preserves equal inputs exactly and is monotonic in `s`,
   avoiding the rounding jitter that `lerp` can introduce between nearly equal values
@@ -18,6 +31,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `FloatExt::lerp` for `f32` and `f64` now uses the same form as the vector `lerp` methods,
   `self * (1 - s) + rhs * s`.
+
+### Deprecated
+
+- The `rkyv` feature, whose implementation is unsound and will be removed in the next major
+  release. Use `rkyv-08` instead ([#766](https://github.com/bitshifter/glam-rs/pull/766)).
+
+### Fixed
+
+- The `rkyv-08` archived types only implement `NoUndef` where they carry no padding, so
+  uninitialised padding is no longer copied into archives.
+
+- `Portable` is now implemented on the `rkyv-08` archived types, which have a layout identical
+  on all targets, instead of the native types that depended on the SIMD backend.
 
 ## [0.33.10](https://github.com/bitshifter/glam-rs/compare/0.33.9...0.33.10) - 2026-09-24
 
