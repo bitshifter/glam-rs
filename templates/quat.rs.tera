@@ -82,8 +82,8 @@ use core::ops::{
 };
 
 {% if not is_coresimd %}
-#[cfg(feature = "zerocopy")]
-use zerocopy_derive::*;
+#[cfg(feature = "zerocopy-08")]
+use zerocopy_derive_08::*;
 {% endif %}
 
 {% if is_sse2 or is_neon %}
@@ -118,7 +118,7 @@ pub const fn {{ self_t | lower }}(x: {{ scalar_t }}, y: {{ scalar_t }}, z: {{ sc
 #[derive(Clone, Copy)]
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 {%- if not is_coresimd %}
-#[cfg_attr(feature = "zerocopy", derive(FromBytes, Immutable, IntoBytes, KnownLayout))]
+#[cfg_attr(feature = "zerocopy-08", derive(FromBytes, Immutable, IntoBytes, KnownLayout))]
 {%- endif %}
 {%- if is_scalar %}
 {%- if scalar_t == "f32" %}

@@ -35,8 +35,8 @@ use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::*;
 
-#[cfg(feature = "zerocopy")]
-use zerocopy_derive::*;
+#[cfg(feature = "zerocopy-08")]
+use zerocopy_derive_08::*;
 
 /// Creates a 4-dimensional vector.
 #[inline(always)]
@@ -49,7 +49,7 @@ pub const fn isizevec4(x: isize, y: isize, z: isize, w: isize) -> ISizeVec4 {
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(
-    feature = "zerocopy",
+    feature = "zerocopy-08",
     derive(FromBytes, Immutable, IntoBytes, KnownLayout)
 )]
 #[cfg_attr(feature = "cuda", repr(align(16)))]

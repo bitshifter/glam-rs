@@ -37,8 +37,8 @@ mod impl_encase_013 {
     include!("features/impl_encase.rs");
 }
 
-#[cfg(feature = "zerocopy")]
-pub mod impl_zerocopy;
+#[cfg(feature = "zerocopy-08")]
+pub mod impl_zerocopy_08;
 
 #[cfg(feature = "arbitrary")]
 pub mod impl_arbitrary;

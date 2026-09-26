@@ -22,6 +22,7 @@ mod test {
     #[cfg(feature = "u32")]
     use crate::{UVec2, UVec3, UVec4};
     use core::mem;
+    use zerocopy_08 as zerocopy;
 
     macro_rules! test_into_bytes_t {
         ($name:ident, $t:ty) => {

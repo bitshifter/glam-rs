@@ -180,7 +180,10 @@ Pre-1.0 dependencies that appear in `glam`'s public API use versioned feature na
   in the next major release.
 * [`speedy-08`] - `speedy` 0.8 implementations of `Readable` and `Writable` for all
   `glam` types.
-* [`zerocopy`] - implementations of zerocopy traits for safe transmutes.
+* [`zerocopy`] - **Deprecated.** Alias for the `zerocopy-08` feature, will be removed
+  in the next major release.
+* [`zerocopy-08`] - `zerocopy` 0.8 implementations of zerocopy traits for safe
+  transmutes.
 
 [`approx`]: https://docs.rs/approx
 [`approx-05`]: https://docs.rs/approx/0.5
@@ -202,6 +205,7 @@ Pre-1.0 dependencies that appear in `glam`'s public API use versioned feature na
 [`speedy`]: https://docs.rs/speedy
 [`speedy-08`]: https://docs.rs/speedy/0.8
 [`zerocopy`]: https://github.com/google/zerocopy
+[`zerocopy-08`]: https://docs.rs/zerocopy/0.8
 
 ### Minimum Supported Rust Version (MSRV)
 
