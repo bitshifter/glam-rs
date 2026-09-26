@@ -1,5 +1,5 @@
-#[cfg(feature = "approx")]
-pub mod impl_approx;
+#[cfg(feature = "approx-05")]
+pub mod impl_approx_05;
 
 #[cfg(feature = "float_eq")]
 pub mod impl_float_eq;

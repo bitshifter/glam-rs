@@ -273,7 +273,9 @@ and benchmarks.
 Pre-1.0 dependencies that appear in `glam`'s public API use versioned feature names
 (e.g. `rand-010`), so a new version can be added without a breaking change.
 
-* `approx` - traits and macros for approximate float comparisons
+* `approx` - **Deprecated.** Alias for the `approx-05` feature, will be removed in
+  the next major release.
+* `approx-05` - `approx` 0.5 traits and macros for approximate float comparisons.
 * `arbitrary` - implementations of `Arbitrary` trait for all `glam` types.
 * `bytemuck` - for casting into slices of bytes
 * `encase` - **Deprecated.** Alias for the `encase-012` feature, will be removed in

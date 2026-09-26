@@ -80,6 +80,10 @@ libm = ["dep:libm"]
 # enables libm but will prefer std if available
 nostd-libm = ["dep:libm"]
 
+# Unversioned `approx` is deprecated and will be removed in the next major release.
+approx = ["approx-05"]
+approx-05 = ["dep:approx-05"]
+
 # Unversioned `rand` is deprecated and will be removed in the next major release.
 rand = ["rand-010"]
 rand-010 = ["dep:rand-010"]
@@ -94,7 +98,7 @@ rkyv = ["dep:rkyv-08"]
 rkyv-08 = ["dep:rkyv-08"]
 
 [dependencies]
-approx = { version = "0.5", optional = true, default-features = false }
+approx-05 = { package = "approx", version = "0.5", optional = true, default-features = false }
 bytemuck = { version = "1.9", optional = true, default-features = false, features = ["derive", "aarch64_simd", "wasm_simd"] }
 mint = { version = "0.5.8", optional = true, default-features = false }
 rand-010 = { package = "rand", version = "0.10", optional = true, default-features = false }
