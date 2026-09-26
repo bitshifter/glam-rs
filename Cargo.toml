@@ -72,7 +72,9 @@ core-simd = ["bytemuck?/nightly_portable_simd"]
 # `rkyv`'s archive validation. Only has an effect when an `rkyv` feature is enabled.
 bytecheck = ["rkyv-08?/bytecheck"]
 
-zerocopy = ["dep:zerocopy", "dep:zerocopy-derive"]
+# Unversioned `zerocopy` is deprecated and will be removed in the next major release.
+zerocopy = ["zerocopy-08"]
+zerocopy-08 = ["dep:zerocopy-08", "dep:zerocopy-derive-08"]
 
 # enables libm and prefers it over std
 libm = ["dep:libm"]
@@ -116,8 +118,8 @@ libm = { version = "0.2", optional = true, default-features = false }
 speedy-08 = { package = "speedy", version = "0.8", optional = true, default-features = false }
 encase-012 = { package = "encase", version = "0.12", optional = true, default-features = false }
 encase-013 = { package = "encase", version = "0.13", optional = true, default-features = false }
-zerocopy = { version = "0.8", optional = true, default-features = false, features = ["simd"] }
-zerocopy-derive = { version = "0.8", optional = true, default-features = false }
+zerocopy-08 = { package = "zerocopy", version = "0.8", optional = true, default-features = false, features = ["simd"] }
+zerocopy-derive-08 = { package = "zerocopy-derive", version = "0.8", optional = true, default-features = false }
 arbitrary = { version = "1.4.2", default-features = false, optional = true }
 float_eq = { version = "1.0.1", default-features = false, optional = true }
 

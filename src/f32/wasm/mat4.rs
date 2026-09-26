@@ -19,8 +19,8 @@ use core::arch::wasm32::*;
 #[cfg(target_arch = "wasm64")]
 use core::arch::wasm64::*;
 
-#[cfg(feature = "zerocopy")]
-use zerocopy_derive::*;
+#[cfg(feature = "zerocopy-08")]
+use zerocopy_derive_08::*;
 
 /// Creates a 4x4 matrix from four column vectors.
 #[inline(always)]
@@ -51,7 +51,7 @@ pub const fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat
 #[derive(Clone, Copy)]
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(
-    feature = "zerocopy",
+    feature = "zerocopy-08",
     derive(FromBytes, Immutable, IntoBytes, KnownLayout)
 )]
 #[repr(C)]

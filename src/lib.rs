@@ -302,7 +302,9 @@ Pre-1.0 dependencies that appear in `glam`'s public API use versioned feature na
   the next major release.
 * `speedy-08` - `speedy` 0.8 implementations of `Readable` and `Writable` for all
   `glam` types.
-* `zerocopy` - implementations of zerocopy traits for safe transmutes.
+* `zerocopy` - **Deprecated.** Alias for the `zerocopy-08` feature, will be removed in
+  the next major release.
+* `zerocopy-08` - `zerocopy` 0.8 implementations of zerocopy traits for safe transmutes.
 
 ## Minimum Supported Rust Version (MSRV)
 
@@ -332,6 +334,13 @@ The minimum supported Rust version is `1.68.2`.
 compile_error!(
     "You must specify a math backend. Consider enabling either `std`, `libm`, or `nostd-libm`."
 );
+
+// The `zerocopy` dependency is renamed to `zerocopy-08` (see Cargo.toml), but the
+// `zerocopy-derive` macros reference the crate as `zerocopy`. An `extern crate`
+// alias puts `zerocopy` in the crate root so the generated impls resolve without a
+// per-type `#[zerocopy(crate = "...")]` attribute.
+#[cfg(feature = "zerocopy-08")]
+extern crate zerocopy_08 as zerocopy;
 
 #[macro_use]
 mod macros;

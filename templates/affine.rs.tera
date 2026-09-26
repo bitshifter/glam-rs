@@ -65,12 +65,12 @@ use core::ops::{Deref, DerefMut, Mul, MulAssign};
 
 #[cfg(
     {% if scalar_t != "f64" %}
-        all(feature = "zerocopy", not(feature = "core-simd"))
+        all(feature = "zerocopy-08", not(feature = "core-simd"))
     {% else %}
-        feature = "zerocopy"
+        feature = "zerocopy-08"
     {% endif %}
     )]
-use zerocopy_derive::*;
+use zerocopy_derive_08::*;
 
 /// A {{ dim }}D affine transform, which can represent translation, rotation, scaling and shear.
 {%- if is_align %}
@@ -83,24 +83,24 @@ use zerocopy_derive::*;
 #[cfg_attr(all(feature = "bytemuck", feature = "scalar-math"), derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(
     {% if scalar_t != "f64" %}
-    all(feature = "zerocopy", not(feature = "core-simd")),
+    all(feature = "zerocopy-08", not(feature = "core-simd")),
     {% else %}
-    feature = "zerocopy",
+    feature = "zerocopy-08",
     {% endif %}
     derive(FromBytes, Immutable, KnownLayout))
 ]
 {%- elif self_t == "Affine3A" and is_scalar %}
 #[cfg_attr(all(feature = "bytemuck", not(target_arch = "spirv")), derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(all(feature = "bytemuck", target_arch = "spirv"), derive(bytemuck::AnyBitPattern))]
-#[cfg_attr(all(feature = "zerocopy", not(feature = "core-simd"), not(target_arch = "spirv")), derive(FromBytes, Immutable, IntoBytes, KnownLayout))]
-#[cfg_attr(all(feature = "zerocopy", not(feature = "core-simd"), target_arch = "spirv"), derive(FromBytes, Immutable, KnownLayout))]
+#[cfg_attr(all(feature = "zerocopy-08", not(feature = "core-simd"), not(target_arch = "spirv")), derive(FromBytes, Immutable, IntoBytes, KnownLayout))]
+#[cfg_attr(all(feature = "zerocopy-08", not(feature = "core-simd"), target_arch = "spirv"), derive(FromBytes, Immutable, KnownLayout))]
 {%- else %}
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(
     {% if scalar_t != "f64" %}
-    all(feature = "zerocopy", not(feature = "core-simd")),
+    all(feature = "zerocopy-08", not(feature = "core-simd")),
     {% else %}
-    feature = "zerocopy",
+    feature = "zerocopy-08",
     {% endif %}
     derive(FromBytes, Immutable, IntoBytes, KnownLayout))
 ]

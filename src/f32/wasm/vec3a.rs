@@ -11,8 +11,8 @@ use core::arch::wasm32::*;
 #[cfg(target_arch = "wasm64")]
 use core::arch::wasm64::*;
 
-#[cfg(feature = "zerocopy")]
-use zerocopy_derive::*;
+#[cfg(feature = "zerocopy-08")]
+use zerocopy_derive_08::*;
 
 /// Creates a 3-dimensional vector.
 #[inline(always)]
@@ -33,7 +33,7 @@ pub const fn vec3a(x: f32, y: f32, z: f32) -> Vec3A {
 #[derive(Clone, Copy)]
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(
-    feature = "zerocopy",
+    feature = "zerocopy-08",
     derive(FromBytes, Immutable, IntoBytes, KnownLayout)
 )]
 #[repr(transparent)]

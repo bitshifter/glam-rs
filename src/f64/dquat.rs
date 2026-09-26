@@ -10,8 +10,8 @@ use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
-#[cfg(feature = "zerocopy")]
-use zerocopy_derive::*;
+#[cfg(feature = "zerocopy-08")]
+use zerocopy_derive_08::*;
 
 /// Creates a quaternion from `x`, `y`, `z` and `w` values.
 ///
@@ -31,7 +31,7 @@ pub const fn dquat(x: f64, y: f64, z: f64, w: f64) -> DQuat {
 #[derive(Clone, Copy)]
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(
-    feature = "zerocopy",
+    feature = "zerocopy-08",
     derive(FromBytes, Immutable, IntoBytes, KnownLayout)
 )]
 #[repr(C)]

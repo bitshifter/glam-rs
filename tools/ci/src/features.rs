@@ -1,6 +1,6 @@
 macro_rules! deps {
     () => {
-        "arbitrary approx-05 bytemuck encase encase-013 float_eq mint-05 rand-010 rkyv-08 bytecheck serde speedy-08 zerocopy debug-glam-assert"
+        "arbitrary approx-05 bytemuck encase encase-013 float_eq mint-05 rand-010 rkyv-08 bytecheck serde speedy-08 zerocopy-08 debug-glam-assert"
     };
 }
 
@@ -16,7 +16,7 @@ pub(crate) const FEATURE_SETS: &[&str] = &[
     concat!("libm all-types scalar-math ", deps!()),
     // Deprecated feature aliases are not part of the dependency set above, which
     // enables the versioned features instead.
-    "std all-types rkyv bytecheck rand approx mint speedy",
+    "std all-types rkyv bytecheck rand approx mint speedy zerocopy",
 ];
 
 // MSRV reduced set — some optional deps need a newer rustc

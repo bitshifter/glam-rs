@@ -6,8 +6,8 @@ use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::*;
 
-#[cfg(feature = "zerocopy")]
-use zerocopy_derive::*;
+#[cfg(feature = "zerocopy-08")]
+use zerocopy_derive_08::*;
 
 /// Creates a 3-dimensional vector.
 #[inline(always)]
@@ -35,11 +35,11 @@ pub const fn vec3a(x: f32, y: f32, z: f32) -> Vec3A {
     derive(bytemuck::AnyBitPattern)
 )]
 #[cfg_attr(
-    all(feature = "zerocopy", not(target_arch = "spirv")),
+    all(feature = "zerocopy-08", not(target_arch = "spirv")),
     derive(FromBytes, Immutable, IntoBytes, KnownLayout)
 )]
 #[cfg_attr(
-    all(feature = "zerocopy", target_arch = "spirv"),
+    all(feature = "zerocopy-08", target_arch = "spirv"),
     derive(FromBytes, Immutable, KnownLayout)
 )]
 #[repr(align(16))]

@@ -10,8 +10,8 @@ use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
-#[cfg(feature = "zerocopy")]
-use zerocopy_derive::*;
+#[cfg(feature = "zerocopy-08")]
+use zerocopy_derive_08::*;
 
 /// Creates a 4x4 matrix from four column vectors.
 #[inline(always)]
@@ -38,7 +38,7 @@ pub const fn dmat4(x_axis: DVec4, y_axis: DVec4, z_axis: DVec4, w_axis: DVec4) -
 #[derive(Clone, Copy)]
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(
-    feature = "zerocopy",
+    feature = "zerocopy-08",
     derive(FromBytes, Immutable, IntoBytes, KnownLayout)
 )]
 #[cfg_attr(feature = "cuda", repr(align(16)))]

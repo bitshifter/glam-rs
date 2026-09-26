@@ -13,8 +13,8 @@ use core::arch::wasm32::*;
 #[cfg(target_arch = "wasm64")]
 use core::arch::wasm64::*;
 
-#[cfg(feature = "zerocopy")]
-use zerocopy_derive::*;
+#[cfg(feature = "zerocopy-08")]
+use zerocopy_derive_08::*;
 
 /// Creates a 2x2 matrix from two column vectors.
 #[inline(always)]
@@ -31,7 +31,7 @@ pub const fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
 #[derive(Clone, Copy)]
 #[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(
-    feature = "zerocopy",
+    feature = "zerocopy-08",
     derive(FromBytes, Immutable, IntoBytes, KnownLayout)
 )]
 #[repr(transparent)]

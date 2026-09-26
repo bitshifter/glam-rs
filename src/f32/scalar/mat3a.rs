@@ -13,8 +13,8 @@ use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
-#[cfg(feature = "zerocopy")]
-use zerocopy_derive::*;
+#[cfg(feature = "zerocopy-08")]
+use zerocopy_derive_08::*;
 
 /// Creates a 3x3 matrix from three column vectors.
 #[inline(always)]
@@ -57,11 +57,11 @@ pub const fn mat3a(x_axis: Vec3A, y_axis: Vec3A, z_axis: Vec3A) -> Mat3A {
     derive(bytemuck::AnyBitPattern)
 )]
 #[cfg_attr(
-    all(feature = "zerocopy", not(target_arch = "spirv")),
+    all(feature = "zerocopy-08", not(target_arch = "spirv")),
     derive(FromBytes, Immutable, IntoBytes, KnownLayout)
 )]
 #[cfg_attr(
-    all(feature = "zerocopy", target_arch = "spirv"),
+    all(feature = "zerocopy-08", target_arch = "spirv"),
     derive(FromBytes, Immutable, KnownLayout)
 )]
 #[repr(C)]

@@ -3,8 +3,8 @@
 use crate::{Affine3, Mat3, Mat3A, Mat4, Quat, Vec3, Vec3A};
 use core::ops::{Deref, DerefMut, Mul, MulAssign};
 
-#[cfg(all(feature = "zerocopy", not(feature = "core-simd")))]
-use zerocopy_derive::*;
+#[cfg(all(feature = "zerocopy-08", not(feature = "core-simd")))]
+use zerocopy_derive_08::*;
 
 /// A 3D affine transform, which can represent translation, rotation, scaling and shear.
 ///
@@ -20,7 +20,7 @@ use zerocopy_derive::*;
 )]
 #[cfg_attr(
     all(
-        feature = "zerocopy",
+        feature = "zerocopy-08",
         not(feature = "core-simd"),
         not(target_arch = "spirv")
     ),
@@ -28,7 +28,7 @@ use zerocopy_derive::*;
 )]
 #[cfg_attr(
     all(
-        feature = "zerocopy",
+        feature = "zerocopy-08",
         not(feature = "core-simd"),
         target_arch = "spirv"
     ),
