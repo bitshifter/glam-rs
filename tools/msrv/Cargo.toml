@@ -25,7 +25,7 @@ glam = { path = "../..", default-features = false }
 default = ["glam/std"]
 all-types = ["glam/all-types"]
 arbitrary = ["glam/arbitrary"]
-approx = ["glam/approx"]
+approx-05 = ["glam/approx-05"]
 mint = ["glam/mint"]
 speedy = ["glam/speedy"]
 debug-glam-assert = ["glam/debug-glam-assert"]

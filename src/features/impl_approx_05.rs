@@ -1,7 +1,7 @@
 use crate::{Affine2, Affine3, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
 #[cfg(feature = "f64")]
 use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
-use approx::{AbsDiffEq, RelativeEq, UlpsEq};
+use approx_05::{AbsDiffEq, RelativeEq, UlpsEq};
 
 macro_rules! impl_approx_as_ref {
     ($prim:ident, $type:ty) => {
@@ -166,7 +166,7 @@ impl_approx_as_ref!(f64, DVec4);
 #[cfg(test)]
 mod test {
     use crate::*;
-    use approx::*;
+    use approx_05::{self as approx, *};
 
     macro_rules! impl_approx_test {
         ($prim:ident, $type:ident, $ones:expr) => {

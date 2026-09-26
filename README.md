@@ -150,7 +150,9 @@ glam = { default-features = false, features = ["nostd-libm"] }
 Pre-1.0 dependencies that appear in `glam`'s public API use versioned feature names
 (e.g. `rand-010`), so a new version can be added without a breaking change.
 
-* [`approx`] - traits and macros for approximate float comparisons
+* [`approx`] - **Deprecated.** Alias for the `approx-05` feature, will be removed
+  in the next major release.
+* [`approx-05`] - `approx` 0.5 traits and macros for approximate float comparisons.
 * [`arbitrary`] - `arbitrary` trait implementations for `glam` types.
 * [`bytemuck`] - for casting into slices of bytes
 * [`encase`] - **Deprecated.** Alias for the `encase-012` feature, will be removed
@@ -177,6 +179,7 @@ Pre-1.0 dependencies that appear in `glam`'s public API use versioned feature na
 * [`zerocopy`] - implementations of zerocopy traits for safe transmutes.
 
 [`approx`]: https://docs.rs/approx
+[`approx-05`]: https://docs.rs/approx/0.5
 [`arbitrary`]: https://docs.rs/arbitrary
 [`bytecheck`]: https://github.com/rkyv/bytecheck
 [`bytemuck`]: https://docs.rs/bytemuck
