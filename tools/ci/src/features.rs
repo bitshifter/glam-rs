@@ -1,6 +1,6 @@
 macro_rules! deps {
     () => {
-        "arbitrary approx-05 bytemuck encase encase-013 float_eq mint-05 rand-010 rkyv-08 bytecheck serde speedy zerocopy debug-glam-assert"
+        "arbitrary approx-05 bytemuck encase encase-013 float_eq mint-05 rand-010 rkyv-08 bytecheck serde speedy-08 zerocopy debug-glam-assert"
     };
 }
 
@@ -16,19 +16,19 @@ pub(crate) const FEATURE_SETS: &[&str] = &[
     concat!("libm all-types scalar-math ", deps!()),
     // Deprecated feature aliases are not part of the dependency set above, which
     // enables the versioned features instead.
-    "std all-types rkyv bytecheck rand approx mint",
+    "std all-types rkyv bytecheck rand approx mint speedy",
 ];
 
 // MSRV reduced set — some optional deps need a newer rustc
 pub(crate) const MSRV_FEATURES: &str =
-    "all-types arbitrary approx-05 mint-05 speedy debug-glam-assert";
+    "all-types arbitrary approx-05 mint-05 speedy-08 debug-glam-assert";
 
 // All optional deps used by clippy, doc, and coverage
 pub(crate) const ALL_FEATURES: &str = deps!();
 
 // core-simd profile features (no zerocopy as it doesn't compile with core-simd)
 pub(crate) const CORE_SIMD_FEATURES: &str =
-    "core-simd arbitrary approx-05 bytemuck encase encase-013 float_eq mint-05 rand-010 rkyv-08 bytecheck serde speedy debug-glam-assert";
+    "core-simd arbitrary approx-05 bytemuck encase encase-013 float_eq mint-05 rand-010 rkyv-08 bytecheck serde speedy-08 debug-glam-assert";
 
 pub fn resolve_sets(index: Option<usize>) -> &'static [&'static str] {
     match index {

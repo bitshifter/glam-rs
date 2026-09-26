@@ -298,7 +298,10 @@ Pre-1.0 dependencies that appear in `glam`'s public API use versioned feature na
   feature is enabled
 * `serde` - implementations of `Serialize` and `Deserialize` for all `glam`
   types. Note that serialization should work between builds of `glam` with and without SIMD enabled
-* `speedy` - implementations of `speedy`'s `Readable` and `Writable` for all `glam` types.
+* `speedy` - **Deprecated.** Alias for the `speedy-08` feature, will be removed in
+  the next major release.
+* `speedy-08` - `speedy` 0.8 implementations of `Readable` and `Writable` for all
+  `glam` types.
 * `zerocopy` - implementations of zerocopy traits for safe transmutes.
 
 ## Minimum Supported Rust Version (MSRV)

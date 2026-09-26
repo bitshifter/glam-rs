@@ -176,7 +176,9 @@ Pre-1.0 dependencies that appear in `glam`'s public API use versioned feature na
 * [`serde`] - implementations of `Serialize` and `Deserialize` for all `glam`
   types. Note that serialization should work between builds of `glam` with and
   without SIMD enabled
-* [`speedy`] - implementations of `speedy`'s `Readable` and `Writable` for all
+* [`speedy`] - **Deprecated.** Alias for the `speedy-08` feature, will be removed
+  in the next major release.
+* [`speedy-08`] - `speedy` 0.8 implementations of `Readable` and `Writable` for all
   `glam` types.
 * [`zerocopy`] - implementations of zerocopy traits for safe transmutes.
 
@@ -198,6 +200,7 @@ Pre-1.0 dependencies that appear in `glam`'s public API use versioned feature na
 [`rkyv-08`]: https://docs.rs/rkyv/0.8
 [`serde`]: https://serde.rs
 [`speedy`]: https://docs.rs/speedy
+[`speedy-08`]: https://docs.rs/speedy/0.8
 [`zerocopy`]: https://github.com/google/zerocopy
 
 ### Minimum Supported Rust Version (MSRV)
