@@ -8,7 +8,7 @@ macro_rules! impl_vec_types {
         $upper_range_multiplier:expr
     ) => {
         use super::{UniformVec2, UniformVec3, UniformVec4};
-        use rand::{
+        use rand_010::{
             distr::{
                 uniform::{Error as UniformError, SampleBorrow, SampleUniform, UniformSampler},
                 Distribution, StandardUniform,
@@ -336,7 +336,7 @@ macro_rules! impl_vec_types {
 
         #[test]
         fn test_vec2_rand_standard() {
-            use rand::{RngExt, SeedableRng};
+            use rand_010::{RngExt, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
             let a: ($t, $t) = rng1.random();
@@ -347,7 +347,7 @@ macro_rules! impl_vec_types {
 
         #[test]
         fn test_vec3_rand_standard() {
-            use rand::{RngExt, SeedableRng};
+            use rand_010::{RngExt, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
             let a: ($t, $t, $t) = rng1.random();
@@ -358,7 +358,7 @@ macro_rules! impl_vec_types {
 
         #[test]
         fn test_vec4_rand_standard() {
-            use rand::{RngExt, SeedableRng};
+            use rand_010::{RngExt, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
             let a: ($t, $t, $t, $t) = rng1.random();
@@ -418,7 +418,7 @@ macro_rules! test_vec_type_uniform {
         /// convert the result into the vector type.
         #[test]
         fn $equality_test_name() {
-            use rand::{distr::Uniform, RngExt, SeedableRng};
+            use rand_010::{distr::Uniform, RngExt, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
 
             let mut int_rng = Xoshiro256Plus::seed_from_u64(0);
@@ -519,7 +519,7 @@ macro_rules! test_vec_type_uniform {
 #[allow(unused_macros)]
 macro_rules! impl_int_types {
     ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident) => {
-        use rand::distr::uniform::UniformInt;
+        use rand_010::distr::uniform::UniformInt;
 
         impl_vec_types!($t, $vec2, $vec3, $vec4, UniformInt, 1);
     };
@@ -527,7 +527,7 @@ macro_rules! impl_int_types {
 
 macro_rules! impl_float_types {
     ($t:ident, $mat2:ident, $mat3:ident, $mat4:ident, $quat:ident, $vec2:ident, $vec3:ident, $vec4:ident) => {
-        use rand::distr::uniform::UniformFloat;
+        use rand_010::distr::uniform::UniformFloat;
 
         impl_vec_types!($t, $vec2, $vec3, $vec4, UniformFloat, 10.0);
 
@@ -566,7 +566,7 @@ macro_rules! impl_float_types {
 
         #[test]
         fn test_mat2_rand_standard() {
-            use rand::{RngExt, SeedableRng};
+            use rand_010::{RngExt, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
             let a = $mat2::from_cols_array(&rng1.random::<[$t; 4]>());
@@ -577,7 +577,7 @@ macro_rules! impl_float_types {
 
         #[test]
         fn test_mat3_rand_standard() {
-            use rand::{RngExt, SeedableRng};
+            use rand_010::{RngExt, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
             let a = $mat3::from_cols_array(&rng1.random::<[$t; 9]>());
@@ -588,7 +588,7 @@ macro_rules! impl_float_types {
 
         #[test]
         fn test_mat4_rand_standard() {
-            use rand::{RngExt, SeedableRng};
+            use rand_010::{RngExt, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
             let a = $mat4::from_cols_array(&rng1.random::<[$t; 16]>());
@@ -599,7 +599,7 @@ macro_rules! impl_float_types {
 
         #[test]
         fn test_quat_rand_standard() {
-            use rand::{RngExt, SeedableRng};
+            use rand_010::{RngExt, SeedableRng};
             use rand_xoshiro::Xoshiro256Plus;
             let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
             let a: $quat = rng1.random();
@@ -648,7 +648,7 @@ mod f32 {
 
     #[test]
     fn test_vec3a_rand_standard() {
-        use rand::{RngExt, SeedableRng};
+        use rand_010::{RngExt, SeedableRng};
         use rand_xoshiro::Xoshiro256Plus;
         let mut rng1 = Xoshiro256Plus::seed_from_u64(0);
         let a: (f32, f32, f32) = rng1.random();

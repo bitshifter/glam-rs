@@ -27,6 +27,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   avoiding the rounding jitter that `lerp` can introduce between nearly equal values
   ([#823](https://github.com/bitshifter/glam-rs/issues/823)).
 
+- Added a `rand-010` feature that adds the `rand` 0.10 `Distribution` implementations,
+  following the versioned feature policy in
+  [#857](https://github.com/bitshifter/glam-rs/issues/857).
+
 ### Changed
 
 - `FloatExt::lerp` for `f32` and `f64` now uses the same form as the vector `lerp` methods,
@@ -36,6 +40,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - The `rkyv` feature, whose implementation is unsound and will be removed in the next major
   release. Use `rkyv-08` instead ([#766](https://github.com/bitshifter/glam-rs/pull/766)).
+
+- The `rand` feature, which is an alias for `rand-010` and will be removed in the next major
+  release.
 
 ### Fixed
 
