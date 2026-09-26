@@ -92,6 +92,10 @@ mint-05 = ["dep:mint-05"]
 rand = ["rand-010"]
 rand-010 = ["dep:rand-010"]
 
+# Unversioned `speedy` is deprecated and will be removed in the next major release.
+speedy = ["speedy-08"]
+speedy-08 = ["dep:speedy-08"]
+
 # Unversioned `encase` is deprecated and will be removed in the next major release.
 encase = ["encase-012"]
 encase-012 = ["dep:encase-012"]
@@ -109,7 +113,7 @@ rand-010 = { package = "rand", version = "0.10", optional = true, default-featur
 serde_core = { version = "1.0", optional = true, default-features = false }
 rkyv-08 = { package = "rkyv", version = "0.8", optional = true, default-features = false }
 libm = { version = "0.2", optional = true, default-features = false }
-speedy = { version = "0.8", optional = true, default-features = false }
+speedy-08 = { package = "speedy", version = "0.8", optional = true, default-features = false }
 encase-012 = { package = "encase", version = "0.12", optional = true, default-features = false }
 encase-013 = { package = "encase", version = "0.13", optional = true, default-features = false }
 zerocopy = { version = "0.8", optional = true, default-features = false, features = ["simd"] }

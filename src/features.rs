@@ -16,8 +16,8 @@ pub mod impl_rand_010;
 #[cfg(feature = "serde")]
 pub mod impl_serde;
 
-#[cfg(feature = "speedy")]
-pub mod impl_speedy;
+#[cfg(feature = "speedy-08")]
+pub mod impl_speedy_08;
 
 #[cfg(feature = "rkyv-08")]
 pub mod impl_rkyv_08;

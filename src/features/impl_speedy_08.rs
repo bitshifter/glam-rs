@@ -9,6 +9,7 @@ use crate::{IVec2, IVec3, IVec4};
 #[cfg(feature = "u32")]
 use crate::{UVec2, UVec3, UVec4};
 use speedy::{Context, Readable, Reader, Writable, Writer};
+use speedy_08 as speedy;
 
 macro_rules! impl_for_vec {
     ($T:ty, $ctor:ident, $comp_ty:ty, $comp_read_fn:ident, $comp_write_fn:ident, $($comp:ident),+) => {
