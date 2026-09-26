@@ -80,20 +80,16 @@ libm = ["dep:libm"]
 # enables libm but will prefer std if available
 nostd-libm = ["dep:libm"]
 
-# The unversioned `rand` feature is a deprecated alias for `rand-010` and will be
-# removed in the next major release.
+# Unversioned `rand` is deprecated and will be removed in the next major release.
 rand = ["rand-010"]
 rand-010 = ["dep:rand-010"]
 
-# `encase` is the historic, backwards-compatible name for the encase 0.12
-# integration. `encase-012`/`encase-013` select a specific encase version; both
-# may be enabled at once so downstream crates on either version keep working.
+# Unversioned `encase` is deprecated and will be removed in the next major release.
 encase = ["encase-012"]
 encase-012 = ["dep:encase-012"]
 encase-013 = ["dep:encase-013"]
 
-# The current `rkyv` implementation is unsound and will be removed in the next
-# major release. Use `rkyv-08` instead.
+# Unversioned `rkyv` is deprecated (unsound) and will be removed in the next major release.
 rkyv = ["dep:rkyv-08"]
 rkyv-08 = ["dep:rkyv-08"]
 

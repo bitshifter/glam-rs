@@ -270,11 +270,14 @@ assert_eq!(format!("{}", a), "[1, 2, 3, 4]");
 All `glam` dependencies are optional, however some are required for tests
 and benchmarks.
 
+Pre-1.0 dependencies that appear in `glam`'s public API use versioned feature names
+(e.g. `rand-010`), so a new version can be added without a breaking change.
+
 * `approx` - traits and macros for approximate float comparisons
 * `arbitrary` - implementations of `Arbitrary` trait for all `glam` types.
 * `bytemuck` - for casting into slices of bytes
-* `encase` - `encase` trait implementations for `glam` types. This is a backwards-compatible alias
-  for the `encase-012` feature.
+* `encase` - **Deprecated.** Alias for the `encase-012` feature, will be removed in
+  the next major release.
 * `encase-012` - `encase` 0.12 trait implementations for `glam` types.
 * `encase-013` - `encase` 0.13 trait implementations for `glam` types.
 * `float_eq` - traits and macros for comparing float types using various tolerances.
@@ -283,8 +286,8 @@ and benchmarks.
 * `rand` - **Deprecated.** Alias for the `rand-010` feature, will be removed in the
   next major release.
 * `rand-010` - `rand` 0.10 `Distribution` implementations for all `glam` types.
-* `rkyv` - the current implementation is unsound and will be removed in the next major
-  release. Use `rkyv-08` instead.
+* `rkyv` - **Deprecated.** The current implementation is unsound and will be removed in the next
+  major release. Use `rkyv-08` instead.
 * `rkyv-08` - `rkyv` 0.8 `Archive`, `Serialize` and `Deserialize` implementations for all
   `glam` types, archiving to `glam::rkyv_08` types instead of the native type.
 * `bytecheck` - enables `rkyv`'s archive validation; only has an effect when an `rkyv`
