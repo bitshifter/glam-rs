@@ -84,6 +84,10 @@ nostd-libm = ["dep:libm"]
 approx = ["approx-05"]
 approx-05 = ["dep:approx-05"]
 
+# Unversioned `mint` is deprecated and will be removed in the next major release.
+mint = ["mint-05"]
+mint-05 = ["dep:mint-05"]
+
 # Unversioned `rand` is deprecated and will be removed in the next major release.
 rand = ["rand-010"]
 rand-010 = ["dep:rand-010"]
@@ -100,7 +104,7 @@ rkyv-08 = ["dep:rkyv-08"]
 [dependencies]
 approx-05 = { package = "approx", version = "0.5", optional = true, default-features = false }
 bytemuck = { version = "1.9", optional = true, default-features = false, features = ["derive", "aarch64_simd", "wasm_simd"] }
-mint = { version = "0.5.8", optional = true, default-features = false }
+mint-05 = { package = "mint", version = "0.5.8", optional = true, default-features = false }
 rand-010 = { package = "rand", version = "0.10", optional = true, default-features = false }
 serde_core = { version = "1.0", optional = true, default-features = false }
 rkyv-08 = { package = "rkyv", version = "0.8", optional = true, default-features = false }
