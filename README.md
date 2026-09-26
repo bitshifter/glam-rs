@@ -157,7 +157,9 @@ glam = { default-features = false, features = ["nostd-libm"] }
 * [`float_eq`] - traits and macros for comparing float types using various tolerances.
 * [`libm`] - uses `libm` math functions instead of `std`
 * [`mint`] - for interoperating with other 3D math libraries
-* [`rand`] - implementations of `Distribution` trait for all `glam` types.
+* [`rand`] - **Deprecated.** Alias for the `rand-010` feature, will be removed in
+  the next major release.
+* `rand-010` - `rand` 0.10 `Distribution` implementations for all `glam` types.
 * [`rkyv`] - the current implementation is unsound and will be removed in the next
   major release. Use `rkyv-08` instead.
 * `rkyv-08` - `rkyv` 0.8 `Archive`, `Serialize` and `Deserialize` implementations
