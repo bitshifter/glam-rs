@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.33.11](https://github.com/bitshifter/glam-rs/compare/0.33.10...0.33.11) - 2026-09-26
+
+### Added
+
+- Add a `speedy-08` versioned feature ([#874](https://github.com/bitshifter/glam-rs/pull/874))
+- Add a `mint-05` versioned feature ([#873](https://github.com/bitshifter/glam-rs/pull/873))
+- Add an `approx-05` versioned feature ([#872](https://github.com/bitshifter/glam-rs/pull/872))
+- Add a `rand-010` versioned feature ([#870](https://github.com/bitshifter/glam-rs/pull/870))
+- add a `rkyv-08` feature with dedicated portable archived types ([#869](https://github.com/bitshifter/glam-rs/pull/869))
+- add `lerp_monotonic` for float vector types ([#854](https://github.com/bitshifter/glam-rs/pull/854))
+
+### Fixed
+
+- remove `lerp_monotonic` from `FloatExt` ([#865](https://github.com/bitshifter/glam-rs/pull/865))
+
 ### Added
 
 - Added a `rkyv-08` feature, which archives each `glam` type to a dedicated `Archived*` type
