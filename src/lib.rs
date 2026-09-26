@@ -284,7 +284,9 @@ Pre-1.0 dependencies that appear in `glam`'s public API use versioned feature na
 * `encase-013` - `encase` 0.13 trait implementations for `glam` types.
 * `float_eq` - traits and macros for comparing float types using various tolerances.
 * `libm` - uses `libm` math functions instead of `std`
-* `mint` - for interoperating with other 3D math libraries
+* `mint` - **Deprecated.** Alias for the `mint-05` feature, will be removed in the
+  next major release.
+* `mint-05` - `mint` 0.5 for interoperating with other 3D math libraries.
 * `rand` - **Deprecated.** Alias for the `rand-010` feature, will be removed in the
   next major release.
 * `rand-010` - `rand` 0.10 `Distribution` implementations for all `glam` types.

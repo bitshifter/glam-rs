@@ -7,8 +7,8 @@ pub mod impl_float_eq;
 #[cfg(feature = "bytemuck")]
 pub mod impl_bytemuck;
 
-#[cfg(feature = "mint")]
-pub mod impl_mint;
+#[cfg(feature = "mint-05")]
+pub mod impl_mint_05;
 
 #[cfg(feature = "rand-010")]
 pub mod impl_rand_010;

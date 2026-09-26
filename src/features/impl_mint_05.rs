@@ -1,4 +1,5 @@
 use mint::IntoMint;
+use mint_05 as mint;
 
 use crate::{Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
 
@@ -356,7 +357,7 @@ mod test {
     macro_rules! impl_vec_tests {
         ($t:ty, $vec2:ident, $vec3:ident, $vec4:ident) => {
             use crate::{$vec2, $vec3, $vec4};
-            use mint;
+            use mint_05 as mint;
 
             #[test]
             fn test_point2() {

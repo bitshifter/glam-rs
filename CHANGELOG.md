@@ -35,6 +35,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   versioned feature policy in
   [#857](https://github.com/bitshifter/glam-rs/issues/857).
 
+- Added a `mint-05` feature that adds the `mint` 0.5 impls, following the
+  versioned feature policy in
+  [#857](https://github.com/bitshifter/glam-rs/issues/857).
+
 ### Changed
 
 - `FloatExt::lerp` for `f32` and `f64` now uses the same form as the vector `lerp` methods,
@@ -49,6 +53,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   release.
 
 - The `approx` feature, which is an alias for `approx-05` and will be removed in the next
+  major release.
+
+- The `mint` feature, which is an alias for `mint-05` and will be removed in the next
   major release.
 
 ### Fixed
