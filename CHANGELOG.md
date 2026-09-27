@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.33.11](https://github.com/bitshifter/glam-rs/compare/0.33.10...0.33.11) - 2026-09-27
+
 ### Added
 
 - Added a `rkyv-08` feature, which archives each `glam` type to a dedicated `Archived*` type
