@@ -113,11 +113,11 @@ remaining deviations are:
 - **Opt-in validation** ([C-VALIDATE]): argument validation is disabled by
   default for performance and is enabled via the `glam-assert` or
   `debug-glam-assert` features.
-- **Unstable public dependencies** ([C-STABLE]): several optional integration
-  dependencies have no stable release (`approx`, `encase`, `libm`, `mint`,
-  `rkyv`, `speedy`, `zerocopy`). Breaking upstream releases are adopted only
-  in breaking `glam` releases; versioned features may be introduced if
-  earlier adoption of a specific dependency is needed.
+- **Pre-1.0 public dependencies** ([C-STABLE]): optional dependencies whose
+  traits `glam` implements are part of `glam`'s public API. Pre-1.0 ones use
+  versioned features (e.g. `rand-010`) so a new dependency version can be
+  supported without a breaking change. Stable and internal dependencies keep a
+  plain feature.
 - **`ISizeVec3` and `USizeVec3` casing** ([C-CASE]): these follow `glam`'s
   established `I`/`U` prefix convention (e.g. `I64Vec3`) rather than strict
   RFC 430 casing.

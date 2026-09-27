@@ -27,25 +27,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   avoiding the rounding jitter that `lerp` can introduce between nearly equal values
   ([#823](https://github.com/bitshifter/glam-rs/issues/823)).
 
-- Added a `rand-010` feature that adds the `rand` 0.10 `Distribution` implementations,
-  following the versioned feature policy in
-  [#857](https://github.com/bitshifter/glam-rs/issues/857).
-
-- Added an `approx-05` feature that adds the `approx` 0.5 impls, following the
-  versioned feature policy in
-  [#857](https://github.com/bitshifter/glam-rs/issues/857).
-
-- Added a `mint-05` feature that adds the `mint` 0.5 impls, following the
-  versioned feature policy in
-  [#857](https://github.com/bitshifter/glam-rs/issues/857).
-
-- Added a `speedy-08` feature that adds the `speedy` 0.8 impls, following the
-  versioned feature policy in
-  [#857](https://github.com/bitshifter/glam-rs/issues/857).
-
-- Added a `zerocopy-08` feature that adds the `zerocopy` 0.8 impls, following the
-  versioned feature policy in
-  [#857](https://github.com/bitshifter/glam-rs/issues/857).
+- Added versioned features for the pre-1.0 dependencies in `glam`'s public API:
+  `approx-05`, `mint-05`, `rand-010`, `speedy-08` and `zerocopy-08`. Each
+  integration can now add support for a new dependency version without a
+  breaking change
+  ([#857](https://github.com/bitshifter/glam-rs/issues/857)).
 
 ### Changed
 
@@ -57,20 +43,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `rkyv` feature, whose implementation is unsound and will be removed in the next major
   release. Use `rkyv-08` instead ([#766](https://github.com/bitshifter/glam-rs/pull/766)).
 
-- The `rand` feature, which is an alias for `rand-010` and will be removed in the next major
-  release.
-
-- The `approx` feature, which is an alias for `approx-05` and will be removed in the next
-  major release.
-
-- The `mint` feature, which is an alias for `mint-05` and will be removed in the next
-  major release.
-
-- The `speedy` feature, which is an alias for `speedy-08` and will be removed in the next
-  major release.
-
-- The `zerocopy` feature, which is an alias for `zerocopy-08` and will be removed in the
-  next major release.
+- The unversioned `approx`, `encase`, `mint`, `rand`, `speedy` and `zerocopy`
+  features, which are aliases for their versioned features and will be removed in
+  the next major release
+  ([#857](https://github.com/bitshifter/glam-rs/issues/857)).
 
 ### Fixed
 
@@ -85,10 +61,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - rust-gpu breakage after PR 786 / v0.33.6 ([#861](https://github.com/bitshifter/glam-rs/pull/861))
-
-### Other
-
-- Mention multiple encase versions in README ([#862](https://github.com/bitshifter/glam-rs/pull/862))
 
 ## [0.33.9](https://github.com/bitshifter/glam-rs/compare/0.33.8...0.33.9) - 2026-09-23
 
