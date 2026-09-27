@@ -33,6 +33,22 @@ initially but commonly used functionality that is missing is very welcome. If
 you do submit a pull request please ensure any new functionality also has a
 test.
 
+## Dependencies
+
+`glam` keeps its own version independent of its dependencies' versions.
+
+Optional dependencies whose traits `glam` implements are part of `glam`'s
+public API. If such a dependency has no stable release it gets a versioned
+feature named after the dependency and version, e.g. `rand-010` or
+`encase-012`, with one feature per supported version. Adding a versioned
+feature is a non-breaking change; removing one is breaking. When a pre-1.0
+dependency makes a breaking release, add a new dependency entry and a
+versioned feature rather than changing the existing ones.
+
+Dependencies that are already stable (a `1` or later version requirement) keep
+a plain feature, e.g. `bytemuck`. Dependencies that are not part of the public
+API, such as `libm`, also keep a plain feature. Dev-dependencies are exempt.
+
 ## Optimizations
 
 If you feel some functionality could be optimized please [open an issue] on

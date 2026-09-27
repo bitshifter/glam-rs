@@ -109,10 +109,11 @@ rkyv-08 = ["dep:rkyv-08"]
 
 [dependencies]
 approx-05 = { package = "approx", version = "0.5", optional = true, default-features = false }
+# `aarch64_simd` and `wasm_simd` were added in bytemuck 1.9.
 bytemuck = { version = "1.9", optional = true, default-features = false, features = ["derive", "aarch64_simd", "wasm_simd"] }
-mint-05 = { package = "mint", version = "0.5.8", optional = true, default-features = false }
+mint-05 = { package = "mint", version = "0.5", optional = true, default-features = false }
 rand-010 = { package = "rand", version = "0.10", optional = true, default-features = false }
-serde_core = { version = "1.0", optional = true, default-features = false }
+serde_core = { version = "1", optional = true, default-features = false }
 rkyv-08 = { package = "rkyv", version = "0.8", optional = true, default-features = false }
 libm = { version = "0.2", optional = true, default-features = false }
 speedy-08 = { package = "speedy", version = "0.8", optional = true, default-features = false }
@@ -120,15 +121,16 @@ encase-012 = { package = "encase", version = "0.12", optional = true, default-fe
 encase-013 = { package = "encase", version = "0.13", optional = true, default-features = false }
 zerocopy-08 = { package = "zerocopy", version = "0.8", optional = true, default-features = false, features = ["simd"] }
 zerocopy-derive-08 = { package = "zerocopy-derive", version = "0.8", optional = true, default-features = false }
-arbitrary = { version = "1.4.2", default-features = false, optional = true }
-float_eq = { version = "1.0.1", default-features = false, optional = true }
+arbitrary = { version = "1", default-features = false, optional = true }
+float_eq = { version = "1", default-features = false, optional = true }
 
 [dev-dependencies]
-# rand_xoshiro is required for tests if rand is enabled
+# rand_xoshiro is required for tests if rand is enabled.
+# It tracks the `rand` version and must match the `rand-NNN` feature under test.
 rand_xoshiro = "0.8"
 # "alloc" is needed to support to_bytes()/deserialize() in tests.
 rkyv-08 = { package = "rkyv", version = "0.8", default-features = false, features = ["alloc"] }
-serde_json = "1.0"
+serde_json = "1"
 
 [target.'cfg(not(target_family = "wasm"))'.dev-dependencies]
 criterion = { version = "0.8", features = ["html_reports"] }
