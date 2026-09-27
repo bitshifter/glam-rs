@@ -384,14 +384,7 @@ impl Mat2 {
     #[inline]
     #[must_use]
     pub fn determinant(&self) -> f32 {
-        unsafe {
-            let abcd = self.0;
-            let badc = vrev64q_f32(abcd);
-            let dcba = vextq_f32(badc, badc, 2);
-            let prod = vmulq_f32(abcd, dcba);
-            let det = vsubq_f32(prod, vdupq_laneq_f32(prod, 1));
-            vgetq_lane_f32(det, 0)
-        }
+        self.x_axis.x * self.y_axis.y - self.x_axis.y * self.y_axis.x
     }
 
     /// If `CHECKED` is true then if the determinant is zero this function will return a tuple
@@ -409,22 +402,21 @@ impl Mat2 {
     #[must_use]
     fn inverse_checked<const CHECKED: bool>(&self) -> (Self, bool) {
         unsafe {
-            use crate::Vec4;
             const SIGN: float32x4_t = crate::neon::f32x4_from_array([1.0, -1.0, -1.0, 1.0]);
             let abcd = self.0;
-            let badc = vrev64q_f32(abcd);
-            let dcba = vextq_f32(badc, badc, 2);
-            let prod = vmulq_f32(abcd, dcba);
-            let sub = vsubq_f32(prod, vdupq_laneq_f32(prod, 1));
-            let det = vdupq_laneq_f32(sub, 0);
+            let ab = vget_low_f32(abcd);
+            let cd = vget_high_f32(abcd);
+            let ad = vmul_lane_f32(ab, cd, 1);
+            let bc = vmul_lane_f32(cd, ab, 1);
+            let det = vget_lane_f32(vsub_f32(ad, bc), 0);
             if CHECKED {
-                if Vec4(det) == Vec4::ZERO {
+                if det == 0.0 {
                     return (Self::ZERO, false);
                 }
             } else {
-                glam_assert!(Vec4(det).cmpne(Vec4::ZERO).all());
+                glam_assert!(det != 0.0);
             }
-            let tmp = vdivq_f32(SIGN, det);
+            let tmp = vmulq_n_f32(SIGN, 1.0f32 / det);
             let dbca = vsetq_lane_f32(
                 vgetq_lane_f32(abcd, 0),
                 vsetq_lane_f32(vgetq_lane_f32(abcd, 3), abcd, 0),
