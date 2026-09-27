@@ -48,7 +48,7 @@ jobs:
             removed
             security
           ignoreLabels: |
-            dependencies # dependabot PRs
-            release # release-plz PRs ("Prepare <version> release")
+            dependencies
+            release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
