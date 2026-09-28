@@ -1717,6 +1717,7 @@ macro_rules! impl_vec2_float_tests {
                 $vec2::new(6.0, 8.0) // lengthened to length 10.0
             );
             should_glam_assert!({ $vec2::ONE.clamp_length(1.0, 0.0) });
+            should_glam_assert!({ $vec2::ONE.clamp_length(-1.0, 1.0) });
         });
 
         glam_test!(test_clamp_length_max, {
@@ -1730,6 +1731,7 @@ macro_rules! impl_vec2_float_tests {
                 $vec2::new(2.0, 1.0).clamp_length_max(5.0),
                 $vec2::new(2.0, 1.0) // unchanged
             );
+            should_glam_assert!({ $vec2::ONE.clamp_length_max(-1.0) });
         });
 
         glam_test!(test_clamp_length_min, {
@@ -1743,6 +1745,7 @@ macro_rules! impl_vec2_float_tests {
                 $vec2::new(0.6, 0.8).clamp_length_min(10.0),
                 $vec2::new(6.0, 8.0) // lengthened to length 10.0
             );
+            should_glam_assert!({ $vec2::ONE.clamp_length_min(-1.0) });
         });
 
         #[cfg(any(feature = "glam-assert", feature = "debug-glam-assert"))]
@@ -1791,6 +1794,8 @@ macro_rules! impl_vec2_float_tests {
             let incident = $vec2::new(1.0, -1.0);
             let normal = $vec2::Y;
             assert_approx_eq!(incident.reflect(normal), $vec2::ONE);
+
+            should_glam_assert!({ incident.reflect($vec2::ONE) });
         });
 
         glam_test!(test_refract, {
@@ -1801,6 +1806,9 @@ macro_rules! impl_vec2_float_tests {
             let incident = $vec2::new(1.0, -1.0).normalize();
             let normal = $vec2::Y;
             assert_approx_eq!(incident.refract(normal, 1.5), $vec2::ZERO);
+
+            should_glam_assert!({ $vec2::ONE.refract($vec2::Y, 0.5) });
+            should_glam_assert!({ $vec2::X.refract($vec2::ONE, 0.5) });
         });
     };
 }

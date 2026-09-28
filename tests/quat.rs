@@ -80,6 +80,10 @@ macro_rules! impl_quat_tests {
             let y5 = $quat::from_rotation_axes(m0.x_axis, m0.y_axis, m0.z_axis);
             assert_approx_eq!(y0, y5);
 
+            should_glam_assert!({ $quat::from_rotation_axes($vec3::ONE, $vec3::Y, $vec3::Z) });
+            should_glam_assert!({ $quat::from_rotation_axes($vec3::X, $vec3::ONE, $vec3::Z) });
+            should_glam_assert!({ $quat::from_rotation_axes($vec3::X, $vec3::Y, $vec3::ONE) });
+
             let x0 = $quat::from_rotation_x(pitch);
             assert!(x0.is_normalized());
             let (axis, angle) = x0.to_axis_angle();
@@ -272,6 +276,9 @@ macro_rules! impl_quat_tests {
             assert_approx_eq!(q1.angle_between(q6), TAU - TAU * 0.94, eps);
             assert_approx_eq!((q5 * q1).angle_between(q5 * q6), TAU - TAU * 0.94, eps);
             assert_approx_eq!((q1 * q5).angle_between(q6 * q5), TAU - TAU * 0.94, eps);
+
+            should_glam_assert!({ ($quat::IDENTITY * 2.0).angle_between($quat::IDENTITY) });
+            should_glam_assert!({ $quat::IDENTITY.angle_between($quat::IDENTITY * 0.5) });
         });
 
         glam_test!(test_lerp, {
@@ -466,7 +473,14 @@ macro_rules! impl_quat_tests {
             // Small angles
             let q0 = $quat::from_euler(EulerRot::YXZ, 0.0, 0.0, 0.0);
             let q1 = $quat::from_euler(EulerRot::YXZ, 1e-4, 0.0, 0.0);
-            assert_eq!(q1, q0.rotate_towards(q1, FRAC_PI_2))
+            assert_eq!(q1, q0.rotate_towards(q1, FRAC_PI_2));
+
+            should_glam_assert!({
+                ($quat::IDENTITY * 2.0).rotate_towards($quat::IDENTITY, FRAC_PI_2)
+            });
+            should_glam_assert!({
+                $quat::IDENTITY.rotate_towards($quat::IDENTITY * 0.5, FRAC_PI_2)
+            });
         });
 
         glam_test!(test_fmt, {

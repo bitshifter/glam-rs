@@ -245,6 +245,8 @@ macro_rules! impl_mat3_tests {
             assert_eq!($vec2::new(0.0, 4.0), m.transform_point2($vec2::Y));
 
             should_glam_assert!({ $mat3::from_scale($vec2::ZERO) });
+            should_glam_assert!({ $mat3::ZERO.transform_point2($vec2::ZERO) });
+            should_glam_assert!({ $mat3::ZERO.transform_vector2($vec2::ZERO) });
 
             let m = $mat3::from_scale_angle_translation(
                 $vec2::new(0.5, 1.5),
