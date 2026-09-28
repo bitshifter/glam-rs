@@ -2035,6 +2035,7 @@ macro_rules! impl_vec3_float_tests {
 
             should_glam_assert!({ $vec3::ZERO.angle_to($vec3::X, $vec3::Z) });
             should_glam_assert!({ $vec3::X.angle_to($vec3::ZERO, $vec3::Z) });
+            should_glam_assert!({ $vec3::X.angle_to($vec3::Y, $vec3::ONE) });
         });
 
         glam_test!(test_clamp_length, {
@@ -2054,6 +2055,7 @@ macro_rules! impl_vec3_float_tests {
                 $vec3::new(6.0, 8.0, 0.0) // lengthened to length 10.0
             );
             should_glam_assert!({ $vec3::ONE.clamp_length(1.0, 0.0) });
+            should_glam_assert!({ $vec3::ONE.clamp_length(-1.0, 1.0) });
         });
 
         glam_test!(test_clamp_length_max, {
@@ -2067,6 +2069,7 @@ macro_rules! impl_vec3_float_tests {
                 $vec3::new(2.0, 1.0, 0.0).clamp_length_max(5.0),
                 $vec3::new(2.0, 1.0, 0.0) // unchanged
             );
+            should_glam_assert!({ $vec3::ONE.clamp_length_max(-1.0) });
         });
 
         glam_test!(test_clamp_length_min, {
@@ -2080,6 +2083,7 @@ macro_rules! impl_vec3_float_tests {
                 $vec3::new(0.6, 0.8, 0.0).clamp_length_min(10.0),
                 $vec3::new(6.0, 8.0, 0.0) // lengthened to length 10.0
             );
+            should_glam_assert!({ $vec3::ONE.clamp_length_min(-1.0) });
         });
 
         glam_test!(test_any_ortho, {
@@ -2100,6 +2104,9 @@ macro_rules! impl_vec3_float_tests {
                 assert!(a.is_normalized() && n.dot(a).abs() < eps);
                 assert!(b.is_normalized() && n.dot(b).abs() < eps);
             }
+
+            should_glam_assert!({ $vec3::ONE.any_orthonormal_vector() });
+            should_glam_assert!({ $vec3::ONE.any_orthonormal_pair() });
         });
 
         glam_test!(test_mul_add, {
@@ -2119,6 +2126,8 @@ macro_rules! impl_vec3_float_tests {
             let incident = $vec3::new(1.0, -1.0, 1.0);
             let normal = $vec3::Y;
             assert_approx_eq!(incident.reflect(normal), $vec3::ONE);
+
+            should_glam_assert!({ incident.reflect($vec3::ONE) });
         });
 
         glam_test!(test_refract, {
@@ -2129,11 +2138,16 @@ macro_rules! impl_vec3_float_tests {
             let incident = $vec3::new(1.0, -1.0, 0.0).normalize();
             let normal = $vec3::Y;
             assert_approx_eq!(incident.refract(normal, 1.5), $vec3::ZERO);
+
+            should_glam_assert!({ $vec3::ONE.refract($vec3::Y, 0.5) });
+            should_glam_assert!({ $vec3::X.refract($vec3::ONE, 0.5) });
         });
 
         glam_test!(test_homogeneous, {
             let v = $vec3::new(1.0, 2.0, 3.0);
             assert_approx_eq!(v, $vec3::from_homogeneous(v.to_homogeneous()));
+
+            should_glam_assert!({ $vec3::from_homogeneous(v.to_homogeneous().with_w(0.0)) });
         });
     };
 }

@@ -262,6 +262,15 @@ macro_rules! impl_affine3_tests {
                 $affine3::from_scale_rotation_translation(out_scale, out_rotation, out_translation),
                 1e-6
             );
+
+            // A zero determinant panics.
+            should_glam_assert!({ $affine3::ZERO.to_scale_rotation_translation() });
+            // A subnormal column has zero length, so the resulting scale has a
+            // zero element even though the determinant is non-zero.
+            should_glam_assert!({
+                $affine3::from_scale($vec3::new($t::MIN_POSITIVE, 1.0, 1.0))
+                    .to_scale_rotation_translation()
+            });
         });
 
         glam_test!(test_affine3_ops, {
