@@ -811,10 +811,6 @@ impl DQuat {
     /// represent the combined rotation.
     ///
     /// Note that due to floating point rounding the result may not be perfectly normalized.
-    ///
-    /// # Panics
-    ///
-    /// Will panic if `self` or `rhs` are not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     pub fn mul_quat(self, rhs: Self) -> Self {
@@ -1080,10 +1076,6 @@ impl Mul for DQuat {
     ///
     /// Note that due to floating point rounding the result may not be perfectly
     /// normalized.
-    ///
-    /// # Panics
-    ///
-    /// Will panic if `self` or `rhs` are not normalized when `glam_assert` is enabled.
     #[inline]
     fn mul(self, rhs: Self) -> Self {
         self.mul_quat(rhs)

@@ -754,8 +754,8 @@ impl DMat4 {
     /// inverted matrix and true is returned.
     ///
     /// If `CHECKED` is false then the determinant is not checked and if it is zero the resulting
-    /// inverted matrix will be invalid. Will panic if the determinant of `self` is zero when
-    /// `glam_assert` is enabled.
+    /// inverted matrix will be invalid. Will panic if the resulting inverted matrix is not finite
+    /// when `glam_assert` is enabled.
     ///
     /// A tuple containing the inverted matrix and a bool is used instead of an option here as
     /// regular Rust enums put the discriminant first which can result in a lot of padding if the
@@ -1164,7 +1164,7 @@ impl DMat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
+    /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is
     /// enabled.
     #[deprecated(
         since = "0.33.1",
@@ -1222,7 +1222,7 @@ impl DMat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
+    /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is
     /// enabled.
     #[deprecated(
         since = "0.33.1",

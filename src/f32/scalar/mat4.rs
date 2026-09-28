@@ -769,8 +769,8 @@ impl Mat4 {
     /// inverted matrix and true is returned.
     ///
     /// If `CHECKED` is false then the determinant is not checked and if it is zero the resulting
-    /// inverted matrix will be invalid. Will panic if the determinant of `self` is zero when
-    /// `glam_assert` is enabled.
+    /// inverted matrix will be invalid. Will panic if the resulting inverted matrix is not finite
+    /// when `glam_assert` is enabled.
     ///
     /// A tuple containing the inverted matrix and a bool is used instead of an option here as
     /// regular Rust enums put the discriminant first which can result in a lot of padding if the
@@ -1179,7 +1179,7 @@ impl Mat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
+    /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is
     /// enabled.
     #[deprecated(
         since = "0.33.1",
@@ -1237,7 +1237,7 @@ impl Mat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
+    /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is
     /// enabled.
     #[deprecated(
         since = "0.33.1",
@@ -1460,15 +1460,29 @@ impl Mat4 {
     /// Transforms the given [`Vec3A`] as 3D point.
     ///
     /// This is the equivalent of multiplying the [`Vec3A`] as a 4D vector where `w` is `1.0`.
+    ///
+    /// This method assumes that `self` contains a valid affine transform. If `self` contains a
+    /// perspective transform, or if you are unsure, the [`Self::project_point3a()`] method should
+    /// be used instead.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if the 3rd row of `self` is not `(0, 0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     pub fn transform_point3a(&self, rhs: Vec3A) -> Vec3A {
         self.transform_point3(rhs.into()).into()
     }
 
-    /// Transforms the give [`Vec3A`] as 3D vector.
+    /// Transforms the given [`Vec3A`] as 3D vector.
     ///
     /// This is the equivalent of multiplying the [`Vec3A`] as a 4D vector where `w` is `0.0`.
+    ///
+    /// This method assumes that `self` contains a valid affine transform.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if the 3rd row of `self` is not `(0, 0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     pub fn transform_vector3a(&self, rhs: Vec3A) -> Vec3A {

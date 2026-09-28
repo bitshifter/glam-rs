@@ -843,10 +843,6 @@ impl Quat {
     /// represent the combined rotation.
     ///
     /// Note that due to floating point rounding the result may not be perfectly normalized.
-    ///
-    /// # Panics
-    ///
-    /// Will panic if `self` or `rhs` are not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     pub fn mul_quat(self, rhs: Self) -> Self {
@@ -919,9 +915,15 @@ impl Quat {
     }
 
     /// Multiplies a quaternion and a 3D vector, returning the rotated vector.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `self` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     pub fn mul_vec3a(self, rhs: Vec3A) -> Vec3A {
+        glam_assert!(self.is_normalized());
+
         unsafe {
             const TWO: __m128 = m128_from_f32x4([2.0; 4]);
             let w = _mm_shuffle_ps(self.0, self.0, 0b11_11_11_11);
@@ -1175,10 +1177,6 @@ impl Mul for Quat {
     ///
     /// Note that due to floating point rounding the result may not be perfectly
     /// normalized.
-    ///
-    /// # Panics
-    ///
-    /// Will panic if `self` or `rhs` are not normalized when `glam_assert` is enabled.
     #[inline]
     fn mul(self, rhs: Self) -> Self {
         self.mul_quat(rhs)
@@ -1262,6 +1260,11 @@ impl Mul<Vec3> for &Quat {
 
 impl Mul<Vec3A> for Quat {
     type Output = Vec3A;
+    /// Multiplies a quaternion and a 3D vector, returning the rotated vector.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `self` is not normalized when `glam_assert` is enabled.
     #[inline]
     fn mul(self, rhs: Vec3A) -> Self::Output {
         self.mul_vec3a(rhs)
