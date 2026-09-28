@@ -156,24 +156,20 @@
 
         let dot0 = dot4(self.x_axis.0, row2);
 
+        let rcp0 = dot0.recip();
+        let m = Self {
+            x_axis: Vec4(vmulq_n_f32(inv0, rcp0)),
+            y_axis: Vec4(vmulq_n_f32(inv1, rcp0)),
+            z_axis: Vec4(vmulq_n_f32(inv2, rcp0)),
+            w_axis: Vec4(vmulq_n_f32(inv3, rcp0)),
+        };
         if CHECKED {
-            if dot0 == 0.0 {
+            if !m.is_finite() {
                 return (Self::ZERO, false);
             }
         } else {
-            glam_assert!(dot0 != 0.0);
+            glam_assert!(m.is_finite());
         }
-
-        let rcp0 = dot0.recip();
-
-        (
-            Self {
-                x_axis: Vec4(vmulq_n_f32(inv0, rcp0)),
-                y_axis: Vec4(vmulq_n_f32(inv1, rcp0)),
-                z_axis: Vec4(vmulq_n_f32(inv2, rcp0)),
-                w_axis: Vec4(vmulq_n_f32(inv3, rcp0)),
-            },
-            true
-        )
+        (m, true)
     }
 {% endcomponent %}

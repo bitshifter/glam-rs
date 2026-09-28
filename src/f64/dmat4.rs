@@ -828,32 +828,37 @@ impl DMat4 {
 
         let dot0 = self.x_axis.mul(col0);
         let dot1 = dot0.x + dot0.y + dot0.z + dot0.w;
+        let m = inverse.mul(1.0 / dot1);
 
         if CHECKED {
-            if dot1 == 0.0 {
+            if !m.is_finite() {
                 return (Self::ZERO, false);
             }
         } else {
-            glam_assert!(dot1 != 0.0);
+            glam_assert!(m.is_finite());
         }
 
-        let rcp_det = 1.0 / dot1;
-        (inverse.mul(rcp_det), true)
+        (m, true)
     }
 
     /// Returns the inverse of `self`.
     ///
-    /// If the matrix is not invertible the returned matrix will be invalid.
+    /// If the matrix is not invertible the returned matrix will be invalid. The
+    /// returned matrix will also be invalid if the inverse is not finite, which can
+    /// happen when `self` contains very large or very small values. Use
+    /// [`Self::try_inverse`] or [`Self::inverse_or_zero`] to detect these cases.
     ///
     /// # Panics
     ///
-    /// Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
+    /// Will panic if the resulting inverted matrix is not finite when `glam_assert`
+    /// is enabled.
     #[must_use]
     pub fn inverse(&self) -> Self {
         self.inverse_checked::<false>().0
     }
 
-    /// Returns the inverse of `self` or `None` if the matrix is not invertible.
+    /// Returns the inverse of `self` or `None` if the matrix is not invertible, or if
+    /// the inverse is not finite.
     #[must_use]
     pub fn try_inverse(&self) -> Option<Self> {
         let (m, is_valid) = self.inverse_checked::<true>();
@@ -864,7 +869,8 @@ impl DMat4 {
         }
     }
 
-    /// Returns the inverse of `self` or `DMat4::ZERO` if the matrix is not invertible.
+    /// Returns the inverse of `self` or `DMat4::ZERO` if the matrix is not
+    /// invertible, or if the inverse is not finite.
     #[must_use]
     pub fn inverse_or_zero(&self) -> Self {
         self.inverse_checked::<true>().0

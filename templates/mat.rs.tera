@@ -1623,60 +1623,60 @@ impl {{ self_t }} {
     fn inverse_checked<const CHECKED: bool>(&self) -> (Self, bool) {
         {% if self_t == "Mat2" and is_sse2 %}
             unsafe {
-                use crate::Vec4;
                 const SIGN: __m128 = crate::sse2::m128_from_f32x4([1.0, -1.0, -1.0, 1.0]);
                 let abcd = self.0;
                 let dcba = _mm_shuffle_ps(abcd, abcd, 0b00_01_10_11);
                 let prod = _mm_mul_ps(abcd, dcba);
                 let sub = _mm_sub_ps(prod, _mm_shuffle_ps(prod, prod, 0b01_01_01_01));
                 let det = _mm_shuffle_ps(sub, sub, 0b00_00_00_00);
+                let tmp = _mm_div_ps(SIGN, det);
+                let dbca = _mm_shuffle_ps(abcd, abcd, 0b00_10_01_11);
+                let m = Self(_mm_mul_ps(dbca, tmp));
                 if CHECKED {
-                    if Vec4(det) == Vec4::ZERO {
+                    if !m.is_finite() {
                         return (Self::ZERO, false);
                     }
                 } else {
-                    glam_assert!(Vec4(det).cmpne(Vec4::ZERO).all());
+                    glam_assert!(m.is_finite());
                 }
-                let tmp = _mm_div_ps(SIGN, det);
-                let dbca = _mm_shuffle_ps(abcd, abcd, 0b00_10_01_11);
-                (Self(_mm_mul_ps(dbca, tmp)), true)
+                (m, true)
             }
         {% elif self_t == "Mat2" and is_wasm %}
-            use crate::Vec4;
             const SIGN: v128 = crate::wasm::v128_from_f32x4([1.0, -1.0, -1.0, 1.0]);
             let abcd = self.0;
             let dcba = i32x4_shuffle::<3, 2, 5, 4>(abcd, abcd);
             let prod = f32x4_mul(abcd, dcba);
             let sub = f32x4_sub(prod, i32x4_shuffle::<1, 1, 5, 5>(prod, prod));
             let det = i32x4_shuffle::<0, 0, 4, 4>(sub, sub);
+            let tmp = f32x4_div(SIGN, det);
+            let dbca = i32x4_shuffle::<3, 1, 6, 4>(abcd, abcd);
+            let m = Self(f32x4_mul(dbca, tmp));
             if CHECKED {
-                if Vec4(det) == Vec4::ZERO {
+                if !m.is_finite() {
                     return (Self::ZERO, false);
                 }
             } else {
-                glam_assert!(Vec4(det).cmpne(Vec4::ZERO).all());
+                glam_assert!(m.is_finite());
             }
-            let tmp = f32x4_div(SIGN, det);
-            let dbca = i32x4_shuffle::<3, 1, 6, 4>(abcd, abcd);
-            (Self(f32x4_mul(dbca, tmp)), true)
+            (m, true)
         {% elif self_t == "Mat2" and is_coresimd %}
-            use crate::Vec4;
             const SIGN: f32x4 = f32x4::from_array([1.0, -1.0, -1.0, 1.0]);
             let abcd = self.0;
             let dcba = simd_swizzle!(abcd, [3, 2, 1, 0]);
             let prod = abcd * dcba;
             let sub = prod - simd_swizzle!(prod, [1, 1, 1, 1]);
             let det = simd_swizzle!(sub, [0, 0, 0, 0]);
+            let tmp = SIGN / det;
+            let dbca = simd_swizzle!(abcd, [3, 1, 2, 0]);
+            let m = Self(dbca.mul(tmp));
             if CHECKED {
-                if Vec4(det) == Vec4::ZERO {
+                if !m.is_finite() {
                     return (Self::ZERO, false);
                 }
             } else {
-                glam_assert!(Vec4(det).cmpne(Vec4::ZERO).all());
+                glam_assert!(m.is_finite());
             }
-            let tmp = SIGN / det;
-            let dbca = simd_swizzle!(abcd, [3, 1, 2, 0]);
-            (Self(dbca.mul(tmp)), true)
+            (m, true)
         {% elif self_t == "Mat2" and is_neon %}
             unsafe {
                 const SIGN: float32x4_t = crate::neon::f32x4_from_array([1.0, -1.0, -1.0, 1.0]);
@@ -1686,52 +1686,52 @@ impl {{ self_t }} {
                 let ad = vmul_lane_f32(ab, cd, 1);
                 let bc = vmul_lane_f32(cd, ab, 1);
                 let det = vget_lane_f32(vsub_f32(ad, bc), 0);
-                if CHECKED {
-                    if det == 0.0 {
-                        return (Self::ZERO, false);
-                    }
-                } else {
-                    glam_assert!(det != 0.0);
-                }
                 let tmp = vmulq_n_f32(SIGN, 1.0f32 / det);
                 let dbca = vsetq_lane_f32(
                     vgetq_lane_f32(abcd, 0),
                     vsetq_lane_f32(vgetq_lane_f32(abcd, 3), abcd, 0),
                     3,
                 );
-                (Self(vmulq_f32(dbca, tmp)), true)
+                let m = Self(vmulq_f32(dbca, tmp));
+                if CHECKED {
+                    if !m.is_finite() {
+                        return (Self::ZERO, false);
+                    }
+                } else {
+                    glam_assert!(m.is_finite());
+                }
+                (m, true)
             }
         {% elif dim == 2 %}
-            let det = self.determinant();
-            if CHECKED {
-                if det == 0.0 {
-                    return (Self::ZERO, false);
-                }
-            } else {
-                glam_assert!(det != 0.0);
-            }
-            let inv_det = 1.0 / det;
-            (Self::new(
+            let inv_det = 1.0 / self.determinant();
+            let m = Self::new(
                 self.y_axis.y * inv_det,
                 self.x_axis.y * -inv_det,
                 self.y_axis.x * -inv_det,
                 self.x_axis.x * inv_det,
-            ),
-            true)
-        {% elif dim == 3 %}
-            let tmp0 = self.y_axis.cross(self.z_axis);
-            let det = self.x_axis.dot(tmp0);
+            );
             if CHECKED {
-                if det == 0.0 {
+                if !m.is_finite() {
                     return (Self::ZERO, false);
                 }
             } else {
-                glam_assert!(det != 0.0);
+                glam_assert!(m.is_finite());
             }
+            (m, true)
+        {% elif dim == 3 %}
+            let tmp0 = self.y_axis.cross(self.z_axis);
             let tmp1 = self.z_axis.cross(self.x_axis);
             let tmp2 = self.x_axis.cross(self.y_axis);
-            let inv_det = {{ col_t }}::splat(1.0 / det);
-            (Self::from_cols(tmp0.mul(inv_det), tmp1.mul(inv_det), tmp2.mul(inv_det)).transpose(), true)
+            let inv_det = {{ col_t }}::splat(1.0 / self.x_axis.dot(tmp0));
+            let m = Self::from_cols(tmp0.mul(inv_det), tmp1.mul(inv_det), tmp2.mul(inv_det)).transpose();
+            if CHECKED {
+                if !m.is_finite() {
+                    return (Self::ZERO, false);
+                }
+            } else {
+                glam_assert!(m.is_finite());
+            }
+            (m, true)
         {% elif self_t == "Mat4" and is_sse2 %}
             {{ <sse2_mat4_inverse/> }}
         {% elif self_t == "Mat4" and is_wasm %}
@@ -1806,27 +1806,31 @@ impl {{ self_t }} {
 
             let dot0 = self.x_axis.mul(col0);
             let dot1 = dot0.x + dot0.y + dot0.z + dot0.w;
+            let m = inverse.mul(1.0 / dot1);
 
             if CHECKED {
-                if dot1 == 0.0 {
+                if !m.is_finite() {
                     return (Self::ZERO, false);
                 }
             } else {
-                glam_assert!(dot1 != 0.0);
+                glam_assert!(m.is_finite());
             }
 
-            let rcp_det = 1.0 / dot1;
-            (inverse.mul(rcp_det), true)
+            (m, true)
         {% endif %}
     }
 
     /// Returns the inverse of `self`.
     ///
-    /// If the matrix is not invertible the returned matrix will be invalid.
+    /// If the matrix is not invertible the returned matrix will be invalid. The
+    /// returned matrix will also be invalid if the inverse is not finite, which can
+    /// happen when `self` contains very large or very small values. Use
+    /// [`Self::try_inverse`] or [`Self::inverse_or_zero`] to detect these cases.
     ///
     /// # Panics
     ///
-    /// Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
+    /// Will panic if the resulting inverted matrix is not finite when `glam_assert`
+    /// is enabled.
     {%- if dim < 4 %}
     #[inline]
     {%- endif %}
@@ -1835,7 +1839,8 @@ impl {{ self_t }} {
         self.inverse_checked::<false>().0
     }
 
-    /// Returns the inverse of `self` or `None` if the matrix is not invertible.
+    /// Returns the inverse of `self` or `None` if the matrix is not invertible, or if
+    /// the inverse is not finite.
     {%- if dim < 4 %}
     #[inline]
     {%- endif %}
@@ -1845,7 +1850,8 @@ impl {{ self_t }} {
         if is_valid { Some(m) } else { None }
     }
 
-    /// Returns the inverse of `self` or `{{ self_t }}::ZERO` if the matrix is not invertible.
+    /// Returns the inverse of `self` or `{{ self_t }}::ZERO` if the matrix is not
+    /// invertible, or if the inverse is not finite.
     {%- if dim < 4 %}
     #[inline]
     {%- endif %}
