@@ -931,41 +931,42 @@ impl Mat4 {
 
             let dot0 = dot4(self.x_axis.0, row2);
 
+            let rcp0 = dot0.recip();
+            let m = Self {
+                x_axis: Vec4(vmulq_n_f32(inv0, rcp0)),
+                y_axis: Vec4(vmulq_n_f32(inv1, rcp0)),
+                z_axis: Vec4(vmulq_n_f32(inv2, rcp0)),
+                w_axis: Vec4(vmulq_n_f32(inv3, rcp0)),
+            };
             if CHECKED {
-                if dot0 == 0.0 {
+                if !m.is_finite() {
                     return (Self::ZERO, false);
                 }
             } else {
-                glam_assert!(dot0 != 0.0);
+                glam_assert!(m.is_finite());
             }
-
-            let rcp0 = dot0.recip();
-
-            (
-                Self {
-                    x_axis: Vec4(vmulq_n_f32(inv0, rcp0)),
-                    y_axis: Vec4(vmulq_n_f32(inv1, rcp0)),
-                    z_axis: Vec4(vmulq_n_f32(inv2, rcp0)),
-                    w_axis: Vec4(vmulq_n_f32(inv3, rcp0)),
-                },
-                true,
-            )
+            (m, true)
         }
     }
 
     /// Returns the inverse of `self`.
     ///
-    /// If the matrix is not invertible the returned matrix will be invalid.
+    /// If the matrix is not invertible the returned matrix will be invalid. The
+    /// returned matrix will also be invalid if the inverse is not finite, which can
+    /// happen when `self` contains very large or very small values. Use
+    /// [`Self::try_inverse`] or [`Self::inverse_or_zero`] to detect these cases.
     ///
     /// # Panics
     ///
-    /// Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
+    /// Will panic if the resulting inverted matrix is not finite when `glam_assert`
+    /// is enabled.
     #[must_use]
     pub fn inverse(&self) -> Self {
         self.inverse_checked::<false>().0
     }
 
-    /// Returns the inverse of `self` or `None` if the matrix is not invertible.
+    /// Returns the inverse of `self` or `None` if the matrix is not invertible, or if
+    /// the inverse is not finite.
     #[must_use]
     pub fn try_inverse(&self) -> Option<Self> {
         let (m, is_valid) = self.inverse_checked::<true>();
@@ -976,7 +977,8 @@ impl Mat4 {
         }
     }
 
-    /// Returns the inverse of `self` or `Mat4::ZERO` if the matrix is not invertible.
+    /// Returns the inverse of `self` or `Mat4::ZERO` if the matrix is not
+    /// invertible, or if the inverse is not finite.
     #[must_use]
     pub fn inverse_or_zero(&self) -> Self {
         self.inverse_checked::<true>().0

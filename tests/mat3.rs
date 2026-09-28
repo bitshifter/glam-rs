@@ -13,6 +13,28 @@ macro_rules! impl_mat3_tests {
             [13.0, 14.0, 15.0, 16.0],
         ];
 
+        glam_test!(test_inverse_tiny_entries, {
+            // A subnormal determinant makes `1.0 / det` overflow to infinity; the
+            // fallible inverse reports this instead of returning inf.
+            let t: $t = $t::MIN_POSITIVE / 8.0;
+            let m = $mat3::from_diagonal($vec3::new(t, 1.0, 1.0));
+            assert!(m.try_inverse().is_none());
+            assert_eq!(m.inverse_or_zero(), $mat3::ZERO);
+            should_glam_assert!({ m.inverse() });
+        });
+
+        glam_test!(test_inverse_cofactor_overflow, {
+            // The determinant and its reciprocal are finite, but a cofactor
+            // overflows, so the resulting inverse is not finite.
+            let a: $t = $t::MAX.sqrt() * 2.0;
+            let m = $mat3::from_diagonal($vec3::new(a, a, 1.0 / a));
+            assert!(m.determinant().is_finite());
+            assert!((1.0 / m.determinant()).is_finite());
+            assert!(m.try_inverse().is_none());
+            assert_eq!(m.inverse_or_zero(), $mat3::ZERO);
+            should_glam_assert!({ m.inverse() });
+        });
+
         glam_test!(test_const, {
             const M0: $mat3 = $mat3::from_cols(
                 $newvec3(1.0, 2.0, 3.0),

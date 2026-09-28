@@ -1325,6 +1325,15 @@ macro_rules! impl_vec3_float_tests {
             should_glam_assert!({ $vec3::ONE.reject_from_normalized($vec3::ONE) });
         });
 
+        glam_test!(test_project_reject_tiny, {
+            // Very small `rhs` used to produce NaN because `1.0 / rhs.dot(rhs)`
+            // overflows to infinity when `rhs.dot(rhs)` is subnormal.
+            let v = $vec3::splat(1.0e-20);
+            let p = v.project_onto(v);
+            assert!(p.is_finite(), "{:?}", p);
+            assert_approx_eq!(p, v, 1.0e-6);
+        });
+
         glam_test!(test_min_max_nan, {
             // NaN propogation is not consistent between scalar and different simd architectures.
             // The purpose of this test is to document the different behaviour.

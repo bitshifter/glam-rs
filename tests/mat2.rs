@@ -8,6 +8,16 @@ macro_rules! impl_mat2_tests {
         const ARRAY1X4: [$t; 4] = [1.0, 2.0, 3.0, 4.0];
         const ARRAY3X3: [[$t; 3]; 3] = [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]];
 
+        glam_test!(test_inverse_tiny_entries, {
+            // A subnormal determinant makes `1.0 / det` overflow to infinity; the
+            // fallible inverse reports this instead of returning inf.
+            let t: $t = $t::MIN_POSITIVE / 8.0;
+            let m = $mat2::from_diagonal($vec2::new(t, 1.0));
+            assert!(m.try_inverse().is_none());
+            assert_eq!(m.inverse_or_zero(), $mat2::ZERO);
+            should_glam_assert!({ m.inverse() });
+        });
+
         glam_test!(test_const, {
             const M0: $mat2 = $mat2::from_cols($newvec2(1.0, 2.0), $newvec2(3.0, 4.0));
             const M1: $mat2 = $mat2::from_cols_array(&ARRAY1X4);

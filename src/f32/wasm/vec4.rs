@@ -707,9 +707,9 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn project_onto(self, rhs: Self) -> Self {
-        let other_len_sq_rcp = 1.0 / rhs.dot(rhs);
-        glam_assert!(other_len_sq_rcp.is_finite());
-        rhs * self.dot(rhs) * other_len_sq_rcp
+        let rhs_len_sq = rhs.dot(rhs);
+        glam_assert!(rhs_len_sq != 0.0);
+        rhs * (self.dot(rhs) / rhs_len_sq)
     }
 
     /// Returns the vector rejection of `self` from `rhs`.

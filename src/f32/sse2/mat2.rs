@@ -405,40 +405,45 @@ impl Mat2 {
     #[must_use]
     fn inverse_checked<const CHECKED: bool>(&self) -> (Self, bool) {
         unsafe {
-            use crate::Vec4;
             const SIGN: __m128 = crate::sse2::m128_from_f32x4([1.0, -1.0, -1.0, 1.0]);
             let abcd = self.0;
             let dcba = _mm_shuffle_ps(abcd, abcd, 0b00_01_10_11);
             let prod = _mm_mul_ps(abcd, dcba);
             let sub = _mm_sub_ps(prod, _mm_shuffle_ps(prod, prod, 0b01_01_01_01));
             let det = _mm_shuffle_ps(sub, sub, 0b00_00_00_00);
+            let tmp = _mm_div_ps(SIGN, det);
+            let dbca = _mm_shuffle_ps(abcd, abcd, 0b00_10_01_11);
+            let m = Self(_mm_mul_ps(dbca, tmp));
             if CHECKED {
-                if Vec4(det) == Vec4::ZERO {
+                if !m.is_finite() {
                     return (Self::ZERO, false);
                 }
             } else {
-                glam_assert!(Vec4(det).cmpne(Vec4::ZERO).all());
+                glam_assert!(m.is_finite());
             }
-            let tmp = _mm_div_ps(SIGN, det);
-            let dbca = _mm_shuffle_ps(abcd, abcd, 0b00_10_01_11);
-            (Self(_mm_mul_ps(dbca, tmp)), true)
+            (m, true)
         }
     }
 
     /// Returns the inverse of `self`.
     ///
-    /// If the matrix is not invertible the returned matrix will be invalid.
+    /// If the matrix is not invertible the returned matrix will be invalid. The
+    /// returned matrix will also be invalid if the inverse is not finite, which can
+    /// happen when `self` contains very large or very small values. Use
+    /// [`Self::try_inverse`] or [`Self::inverse_or_zero`] to detect these cases.
     ///
     /// # Panics
     ///
-    /// Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
+    /// Will panic if the resulting inverted matrix is not finite when `glam_assert`
+    /// is enabled.
     #[inline]
     #[must_use]
     pub fn inverse(&self) -> Self {
         self.inverse_checked::<false>().0
     }
 
-    /// Returns the inverse of `self` or `None` if the matrix is not invertible.
+    /// Returns the inverse of `self` or `None` if the matrix is not invertible, or if
+    /// the inverse is not finite.
     #[inline]
     #[must_use]
     pub fn try_inverse(&self) -> Option<Self> {
@@ -450,7 +455,8 @@ impl Mat2 {
         }
     }
 
-    /// Returns the inverse of `self` or `Mat2::ZERO` if the matrix is not invertible.
+    /// Returns the inverse of `self` or `Mat2::ZERO` if the matrix is not
+    /// invertible, or if the inverse is not finite.
     #[inline]
     #[must_use]
     pub fn inverse_or_zero(&self) -> Self {
