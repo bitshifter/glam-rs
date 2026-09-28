@@ -808,6 +808,9 @@ mod quat {
         assert_approx_eq!(Vec3A::Y, qrz.mul_vec3a(Vec3A::X));
         assert_approx_eq!(Vec3A::Y, -qrz * Vec3A::X);
         assert_approx_eq!(Vec3A::Y, qrz.neg().mul_vec3a(Vec3A::X));
+
+        should_glam_assert!({ (Quat::IDENTITY * 0.5).mul_vec3a(Vec3A::X) });
+        should_glam_assert!({ (Quat::IDENTITY * 0.5) * Vec3A::X });
         assert_approx_eq!(-Vec3A::X, qrz * Vec3A::Y);
         assert_approx_eq!(-Vec3A::X, qrz.mul_vec3a(Vec3A::Y));
         assert_approx_eq!(-Vec3A::X, -qrz * Vec3A::Y);
