@@ -398,6 +398,13 @@ macro_rules! impl_camera_tests {
                 should_glam_assert!({ $camera::lh::view::look_to_quat($vec3::ZERO, $vec3::ONE) });
                 should_glam_assert!({ $camera::rh::view::look_to_quat($vec3::ONE, $vec3::ZERO) });
                 should_glam_assert!({ $camera::rh::view::look_to_quat($vec3::ZERO, $vec3::ONE) });
+
+                should_glam_assert!({ $quat::look_to_lh($vec3::ONE, $vec3::ZERO) });
+                should_glam_assert!({ $quat::look_to_lh($vec3::ZERO, $vec3::ONE) });
+                should_glam_assert!({ $quat::look_to_rh($vec3::ONE, $vec3::ZERO) });
+                should_glam_assert!({ $quat::look_to_rh($vec3::ZERO, $vec3::ONE) });
+                should_glam_assert!({ $quat::look_at_lh($vec3::ONE, $vec3::ZERO, $vec3::ZERO) });
+                should_glam_assert!({ $quat::look_at_rh($vec3::ONE, $vec3::ZERO, $vec3::ZERO) });
             });
 
             glam_test!(test_mat3_look_at, {
@@ -432,6 +439,13 @@ macro_rules! impl_camera_tests {
                 should_glam_assert!({ $camera::lh::view::look_to_mat3($vec3::ZERO, $vec3::ONE) });
                 should_glam_assert!({ $camera::rh::view::look_to_mat3($vec3::ONE, $vec3::ZERO) });
                 should_glam_assert!({ $camera::rh::view::look_to_mat3($vec3::ZERO, $vec3::ONE) });
+
+                should_glam_assert!({ $mat3::look_to_lh($vec3::ONE, $vec3::ZERO) });
+                should_glam_assert!({ $mat3::look_to_lh($vec3::ZERO, $vec3::ONE) });
+                should_glam_assert!({ $mat3::look_to_rh($vec3::ONE, $vec3::ZERO) });
+                should_glam_assert!({ $mat3::look_to_rh($vec3::ZERO, $vec3::ONE) });
+                should_glam_assert!({ $mat3::look_at_lh($vec3::ONE, $vec3::ZERO, $vec3::ZERO) });
+                should_glam_assert!({ $mat3::look_at_rh($vec3::ONE, $vec3::ZERO, $vec3::ZERO) });
             });
 
             glam_test!(test_affine3_look_at, {
@@ -468,6 +482,11 @@ macro_rules! impl_camera_tests {
                 should_glam_assert!({
                     $camera::rh::view::look_at_affine3($vec3::ONE, $vec3::ZERO, $vec3::ZERO)
                 });
+
+                should_glam_assert!({ $affine3::look_to_lh($vec3::ONE, $vec3::ZERO, $vec3::ZERO) });
+                should_glam_assert!({ $affine3::look_to_rh($vec3::ONE, $vec3::ZERO, $vec3::ZERO) });
+                should_glam_assert!({ $affine3::look_at_lh($vec3::ONE, $vec3::ZERO, $vec3::ZERO) });
+                should_glam_assert!({ $affine3::look_at_rh($vec3::ONE, $vec3::ZERO, $vec3::ZERO) });
             });
 
             glam_test!(test_mat4_look_at, {
@@ -510,6 +529,26 @@ macro_rules! impl_camera_tests {
                 should_glam_assert!({
                     $camera::rh::view::look_to_mat4($vec3::ZERO, $vec3::ZERO, $vec3::ONE)
                 });
+
+                should_glam_assert!({ $mat4::look_to_lh($vec3::ZERO, $vec3::ONE, $vec3::ZERO) });
+                should_glam_assert!({ $mat4::look_to_rh($vec3::ZERO, $vec3::ONE, $vec3::ZERO) });
+                should_glam_assert!({ $mat4::look_at_lh($vec3::ZERO, $vec3::ONE, $vec3::ZERO) });
+                should_glam_assert!({ $mat4::look_at_rh($vec3::ZERO, $vec3::ONE, $vec3::ZERO) });
+            });
+
+            glam_test!(test_deprecated_projection_glam_assert, {
+                should_glam_assert!({ $mat4::frustum_lh(-1.0, 1.0, -1.0, 1.0, 0.0, 1.0) });
+                should_glam_assert!({ $mat4::frustum_lh(-1.0, 1.0, -1.0, 1.0, 1.0, 0.0) });
+                should_glam_assert!({ $mat4::frustum_rh(-1.0, 1.0, -1.0, 1.0, 0.0, 1.0) });
+                should_glam_assert!({ $mat4::frustum_rh(-1.0, 1.0, -1.0, 1.0, 1.0, 0.0) });
+                should_glam_assert!({ $mat4::perspective_lh(0.0, 1.0, 0.0, 1.0) });
+                should_glam_assert!({ $mat4::perspective_lh(0.0, 1.0, 1.0, 0.0) });
+                should_glam_assert!({ $mat4::perspective_rh(0.0, 1.0, 0.0, 1.0) });
+                should_glam_assert!({ $mat4::perspective_rh(0.0, 1.0, 1.0, 0.0) });
+                should_glam_assert!({ $mat4::perspective_infinite_lh(0.0, 1.0, 0.0) });
+                should_glam_assert!({ $mat4::perspective_infinite_rh(0.0, 1.0, 0.0) });
+                should_glam_assert!({ $mat4::perspective_infinite_reverse_lh(0.0, 1.0, 0.0) });
+                should_glam_assert!({ $mat4::perspective_infinite_reverse_rh(0.0, 1.0, 0.0) });
             });
 
             glam_test!(test_mat4_frustum_gl_rh, {

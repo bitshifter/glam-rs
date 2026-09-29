@@ -154,6 +154,12 @@ macro_rules! impl_quat_tests {
 
             should_glam_assert!({ ($quat::IDENTITY * 2.0).inverse() });
             should_glam_assert!({ $quat::from_axis_angle($vec3::ZERO, 0.0) });
+            should_glam_assert!({
+                $quat::from_mat3(&$mat3::from_cols($vec3::ONE, $vec3::Y, $vec3::Z))
+            });
+            should_glam_assert!({
+                $quat::from_mat4(&$mat4::from_cols($vec4::ONE, $vec4::Y, $vec4::Z, $vec4::W))
+            });
         });
 
         glam_test!(test_from_scaled_axis, {
@@ -180,6 +186,8 @@ macro_rules! impl_quat_tests {
                     assert!(($quat::from_scaled_axis(v).to_scaled_axis() - v).length() < 1e-6,);
                 }
             }
+
+            should_glam_assert!({ $quat::from_scaled_axis($vec3::NAN) });
         });
 
         glam_test!(test_mul_vec3, {
@@ -871,6 +879,14 @@ mod quat {
         let q = Quat::from_rotation_y(deg(30.0));
         let a = Affine3A::from_quat(q);
         assert_approx_eq!(q, Quat::from_affine3a(&a));
+
+        should_glam_assert!({
+            Quat::from_affine3a(&Affine3A::from_mat3(Mat3::from_cols(
+                Vec3::ONE,
+                Vec3::Y,
+                Vec3::Z,
+            )))
+        });
     });
 
     glam_test!(test_quat_deref_mut, {
@@ -887,6 +903,10 @@ mod quat {
         assert_approx_eq!(y0, y1);
         let y2 = Quat::from_mat3a(&Mat3A::from_quat(y0));
         assert_approx_eq!(y0, y2);
+
+        should_glam_assert!({
+            Quat::from_mat3a(&Mat3A::from_cols(Vec3A::ONE, Vec3A::Y, Vec3A::Z))
+        });
     });
 
     #[cfg(feature = "f64")]

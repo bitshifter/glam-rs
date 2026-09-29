@@ -160,6 +160,10 @@ impl Affine3A {
         }
     }
     /// Creates an affine transform from the given `rotation` quaternion.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     #[track_caller]
@@ -172,6 +176,10 @@ impl Affine3A {
 
     /// Creates an affine transform containing a 3D rotation around a normalized
     /// rotation `axis` of `angle` (in radians).
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     #[track_caller]
@@ -257,6 +265,10 @@ impl Affine3A {
     ///
     /// Equivalent to `Affine3A::from_translation(translation) *
     /// Affine3A::from_quat(rotation) * Affine3A::from_scale(scale)`
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     #[track_caller]
@@ -276,6 +288,10 @@ impl Affine3A {
     /// Creates an affine transform from the given 3D `rotation` and `translation`.
     ///
     /// Equivalent to `Affine3A::from_translation(translation) * Affine3A::from_quat(rotation)`
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     #[track_caller]
@@ -344,6 +360,11 @@ impl Affine3A {
     /// direction.
     ///
     /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `dir` or `up` is zero length or not finite, or if `dir` and `up` are parallel,
+    /// when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::lh::view::look_to_affine3` function instead"
@@ -360,6 +381,11 @@ impl Affine3A {
     /// direction.
     ///
     /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `dir` or `up` is zero length or not finite, or if `dir` and `up` are parallel,
+    /// when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::rh::view::look_to_affine3` function instead"
@@ -500,6 +526,10 @@ impl Affine3A {
     /// Return the inverse of this transform.
     ///
     /// Note that if the transform is not invertible the result will be invalid.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if the resulting inverted matrix is not finite when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     #[track_caller]

@@ -1286,6 +1286,10 @@ impl Vec3A {
     /// When `max_angle` is `0.0`, the result will be equal to `self`. When `max_angle` is equal to
     /// `self.angle_between(rhs)`, the result will be parallel to `rhs`. If `max_angle` is negative,
     /// rotates towards the exact opposite of `rhs`. Will not go past the target.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `self` or `rhs` are zero length when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     #[track_caller]
@@ -1362,6 +1366,10 @@ impl Vec3A {
     /// When `s` is `0.0`, the result will be equal to `self`.  When `s` is `1.0`, the result
     /// will be equal to `rhs`. When `s` is outside of range `[0, 1]`, the result is linearly
     /// extrapolated.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `self` or `rhs` have a length close to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     #[track_caller]
