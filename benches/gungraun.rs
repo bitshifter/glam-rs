@@ -39,6 +39,26 @@ fn mat3a() -> Mat3A {
     ]))
 }
 
+// A non-singular 2D affine transform (SRT) for the `transform_point2` and
+// `transform_vector2` benchmarks.
+#[inline]
+fn mat3_srt() -> Mat3 {
+    black_box(Mat3::from_scale_angle_translation(
+        Vec2::new(2.0, 3.0),
+        1.0,
+        Vec2::new(1.0, 2.0),
+    ))
+}
+
+#[inline]
+fn mat3a_srt() -> Mat3A {
+    black_box(Mat3A::from_scale_angle_translation(
+        Vec2::new(2.0, 3.0),
+        1.0,
+        Vec2::new(1.0, 2.0),
+    ))
+}
+
 #[inline]
 fn mat4() -> Mat4 {
     black_box(Mat4::from_cols_array(&[
@@ -266,6 +286,18 @@ fn mat3_mul_transpose_vec3(m: Mat3, v: Vec3) -> Vec3 {
 }
 
 #[library_benchmark]
+#[bench::args(mat3_srt(), vec2())]
+fn mat3_transform_point2(m: Mat3, v: Vec2) -> Vec2 {
+    black_box(m.transform_point2(v))
+}
+
+#[library_benchmark]
+#[bench::args(mat3_srt(), vec2())]
+fn mat3_transform_vector2(m: Mat3, v: Vec2) -> Vec2 {
+    black_box(m.transform_vector2(v))
+}
+
+#[library_benchmark]
 #[bench::args(mat3a())]
 fn mat3a_determinant(m: Mat3A) -> f32 {
     black_box(m.determinant())
@@ -313,6 +345,18 @@ fn mat3a_mul_vec3a(m: Mat3A, v: Vec3A) -> Vec3A {
 #[bench::args(mat3a(), vec3a())]
 fn mat3a_mul_transpose_vec3a(m: Mat3A, v: Vec3A) -> Vec3A {
     black_box(m.mul_transpose_vec3a(v))
+}
+
+#[library_benchmark]
+#[bench::args(mat3a_srt(), vec2())]
+fn mat3a_transform_point2(m: Mat3A, v: Vec2) -> Vec2 {
+    black_box(m.transform_point2(v))
+}
+
+#[library_benchmark]
+#[bench::args(mat3a_srt(), vec2())]
+fn mat3a_transform_vector2(m: Mat3A, v: Vec2) -> Vec2 {
+    black_box(m.transform_vector2(v))
 }
 
 #[library_benchmark]
@@ -663,6 +707,8 @@ library_benchmark_group!(
         mat3_mul_mat3,
         mat3_mul_vec3,
         mat3_mul_transpose_vec3,
+        mat3_transform_point2,
+        mat3_transform_vector2,
         mat3_transpose,
         mat3_try_inverse,
 );
@@ -677,6 +723,8 @@ library_benchmark_group!(
         mat3a_mul_mat3a,
         mat3a_mul_vec3a,
         mat3a_mul_transpose_vec3a,
+        mat3a_transform_point2,
+        mat3a_transform_vector2,
         mat3a_transpose,
         mat3a_try_inverse,
 );
