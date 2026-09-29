@@ -21,7 +21,8 @@ use crate::{dcamera::camera_impl, DAffine3, DMat3, DMat4, DQuat, DVec3};
 ///
 /// # Panics
 ///
-/// Will panic if `up` is not normalized when `glam_assert` is enabled.
+/// Will panic if `up` is not normalized, if `center` is equal to `eye`, or if the view
+/// direction is parallel to `up`, when `glam_assert` is enabled.
 #[inline]
 #[must_use]
 #[track_caller]
@@ -35,7 +36,8 @@ pub fn look_at_mat4(eye: DVec3, center: DVec3, up: DVec3) -> DMat4 {
 ///
 /// # Panics
 ///
-/// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
+/// Will panic if `dir` or `up` are not normalized, or if `dir` and `up` are parallel,
+/// when `glam_assert` is enabled.
 #[inline]
 #[must_use]
 #[track_caller]
@@ -49,7 +51,8 @@ pub fn look_to_mat4(eye: DVec3, dir: DVec3, up: DVec3) -> DMat4 {
 ///
 /// # Panics
 ///
-/// Will panic if `up` is not normalized when `glam_assert` is enabled.
+/// Will panic if `up` is not normalized, if `center` is equal to `eye`, or if the view
+/// direction is parallel to `up`, when `glam_assert` is enabled.
 #[inline]
 #[must_use]
 #[track_caller]
@@ -63,7 +66,8 @@ pub fn look_at_affine3(eye: DVec3, center: DVec3, up: DVec3) -> DAffine3 {
 ///
 /// # Panics
 ///
-/// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
+/// Will panic if `dir` or `up` are not normalized, or if `dir` and `up` are parallel,
+/// when `glam_assert` is enabled.
 #[inline]
 #[must_use]
 #[track_caller]
@@ -77,7 +81,8 @@ pub fn look_to_affine3(eye: DVec3, dir: DVec3, up: DVec3) -> DAffine3 {
 ///
 /// # Panics
 ///
-/// Will panic if `up` is not normalized when `glam_assert` is enabled.
+/// Will panic if `up` is not normalized, if `center` is equal to `eye`, or if the view
+/// direction is parallel to `up`, when `glam_assert` is enabled.
 #[inline]
 #[must_use]
 #[track_caller]
@@ -91,7 +96,8 @@ pub fn look_at_mat3(eye: DVec3, center: DVec3, up: DVec3) -> DMat3 {
 ///
 /// # Panics
 ///
-/// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
+/// Will panic if `dir` or `up` are not normalized, or if `dir` and `up` are parallel,
+/// when `glam_assert` is enabled.
 #[inline]
 #[must_use]
 #[track_caller]
@@ -105,7 +111,8 @@ pub fn look_to_mat3(dir: DVec3, up: DVec3) -> DMat3 {
 ///
 /// # Panics
 ///
-/// Will panic if `up` is not normalized when `glam_assert` is enabled.
+/// Will panic if `up` is not normalized, if `center` is equal to `eye`, or if the view
+/// direction is parallel to `up`, when `glam_assert` is enabled.
 #[inline]
 #[must_use]
 #[track_caller]
@@ -119,7 +126,8 @@ pub fn look_at_quat(eye: DVec3, center: DVec3, up: DVec3) -> DQuat {
 ///
 /// # Panics
 ///
-/// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
+/// Will panic if `dir` or `up` are not normalized, or if `dir` and `up` are parallel,
+/// when `glam_assert` is enabled.
 #[inline]
 #[must_use]
 #[track_caller]

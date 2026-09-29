@@ -405,6 +405,25 @@ macro_rules! impl_camera_tests {
                 should_glam_assert!({ $quat::look_to_rh($vec3::ZERO, $vec3::ONE) });
                 should_glam_assert!({ $quat::look_at_lh($vec3::ONE, $vec3::ZERO, $vec3::ZERO) });
                 should_glam_assert!({ $quat::look_at_rh($vec3::ONE, $vec3::ZERO, $vec3::ZERO) });
+
+                // `dir` and `up` are parallel.
+                should_glam_assert!({ $camera::lh::view::look_to_quat($vec3::X, $vec3::X) });
+                should_glam_assert!({ $camera::rh::view::look_to_quat($vec3::X, $vec3::X) });
+                should_glam_assert!({ $quat::look_to_lh($vec3::X, $vec3::X) });
+                should_glam_assert!({ $quat::look_to_rh($vec3::X, $vec3::X) });
+                // `center == eye`, and `center - eye` parallel to `up`.
+                should_glam_assert!({
+                    $camera::lh::view::look_at_quat($vec3::X, $vec3::X, $vec3::Y)
+                });
+                should_glam_assert!({
+                    $camera::rh::view::look_at_quat($vec3::X, $vec3::X, $vec3::Y)
+                });
+                should_glam_assert!({ $quat::look_at_lh($vec3::X, $vec3::X, $vec3::Y) });
+                should_glam_assert!({ $quat::look_at_rh($vec3::X, $vec3::X, $vec3::Y) });
+                should_glam_assert!({
+                    $camera::rh::view::look_at_quat($vec3::ZERO, $vec3::X, $vec3::X)
+                });
+                should_glam_assert!({ $quat::look_at_rh($vec3::ZERO, $vec3::X, $vec3::X) });
             });
 
             glam_test!(test_mat3_look_at, {
@@ -446,6 +465,25 @@ macro_rules! impl_camera_tests {
                 should_glam_assert!({ $mat3::look_to_rh($vec3::ZERO, $vec3::ONE) });
                 should_glam_assert!({ $mat3::look_at_lh($vec3::ONE, $vec3::ZERO, $vec3::ZERO) });
                 should_glam_assert!({ $mat3::look_at_rh($vec3::ONE, $vec3::ZERO, $vec3::ZERO) });
+
+                // `dir` and `up` are parallel.
+                should_glam_assert!({ $camera::lh::view::look_to_mat3($vec3::X, $vec3::X) });
+                should_glam_assert!({ $camera::rh::view::look_to_mat3($vec3::X, $vec3::X) });
+                should_glam_assert!({ $mat3::look_to_lh($vec3::X, $vec3::X) });
+                should_glam_assert!({ $mat3::look_to_rh($vec3::X, $vec3::X) });
+                // `center == eye`, and `center - eye` parallel to `up`.
+                should_glam_assert!({
+                    $camera::lh::view::look_at_mat3($vec3::X, $vec3::X, $vec3::Y)
+                });
+                should_glam_assert!({
+                    $camera::rh::view::look_at_mat3($vec3::X, $vec3::X, $vec3::Y)
+                });
+                should_glam_assert!({ $mat3::look_at_lh($vec3::X, $vec3::X, $vec3::Y) });
+                should_glam_assert!({ $mat3::look_at_rh($vec3::X, $vec3::X, $vec3::Y) });
+                should_glam_assert!({
+                    $camera::rh::view::look_at_mat3($vec3::ZERO, $vec3::X, $vec3::X)
+                });
+                should_glam_assert!({ $mat3::look_at_rh($vec3::ZERO, $vec3::X, $vec3::X) });
             });
 
             glam_test!(test_affine3_look_at, {
@@ -487,6 +525,29 @@ macro_rules! impl_camera_tests {
                 should_glam_assert!({ $affine3::look_to_rh($vec3::ONE, $vec3::ZERO, $vec3::ZERO) });
                 should_glam_assert!({ $affine3::look_at_lh($vec3::ONE, $vec3::ZERO, $vec3::ZERO) });
                 should_glam_assert!({ $affine3::look_at_rh($vec3::ONE, $vec3::ZERO, $vec3::ZERO) });
+
+                // `dir` and `up` are parallel.
+                should_glam_assert!({
+                    $camera::lh::view::look_to_affine3($vec3::ZERO, $vec3::X, $vec3::X)
+                });
+                should_glam_assert!({
+                    $camera::rh::view::look_to_affine3($vec3::ZERO, $vec3::X, $vec3::X)
+                });
+                should_glam_assert!({ $affine3::look_to_lh($vec3::ZERO, $vec3::X, $vec3::X) });
+                should_glam_assert!({ $affine3::look_to_rh($vec3::ZERO, $vec3::X, $vec3::X) });
+                // `center == eye`, and `center - eye` parallel to `up`.
+                should_glam_assert!({
+                    $camera::lh::view::look_at_affine3($vec3::X, $vec3::X, $vec3::Y)
+                });
+                should_glam_assert!({
+                    $camera::rh::view::look_at_affine3($vec3::X, $vec3::X, $vec3::Y)
+                });
+                should_glam_assert!({ $affine3::look_at_lh($vec3::X, $vec3::X, $vec3::Y) });
+                should_glam_assert!({ $affine3::look_at_rh($vec3::X, $vec3::X, $vec3::Y) });
+                should_glam_assert!({
+                    $camera::rh::view::look_at_affine3($vec3::ZERO, $vec3::X, $vec3::X)
+                });
+                should_glam_assert!({ $affine3::look_at_rh($vec3::ZERO, $vec3::X, $vec3::X) });
             });
 
             glam_test!(test_mat4_look_at, {
@@ -534,6 +595,29 @@ macro_rules! impl_camera_tests {
                 should_glam_assert!({ $mat4::look_to_rh($vec3::ZERO, $vec3::ONE, $vec3::ZERO) });
                 should_glam_assert!({ $mat4::look_at_lh($vec3::ZERO, $vec3::ONE, $vec3::ZERO) });
                 should_glam_assert!({ $mat4::look_at_rh($vec3::ZERO, $vec3::ONE, $vec3::ZERO) });
+
+                // `dir` and `up` are parallel.
+                should_glam_assert!({
+                    $camera::lh::view::look_to_mat4($vec3::ZERO, $vec3::X, $vec3::X)
+                });
+                should_glam_assert!({
+                    $camera::rh::view::look_to_mat4($vec3::ZERO, $vec3::X, $vec3::X)
+                });
+                should_glam_assert!({ $mat4::look_to_lh($vec3::ZERO, $vec3::X, $vec3::X) });
+                should_glam_assert!({ $mat4::look_to_rh($vec3::ZERO, $vec3::X, $vec3::X) });
+                // `center == eye`, and `center - eye` parallel to `up`.
+                should_glam_assert!({
+                    $camera::lh::view::look_at_mat4($vec3::X, $vec3::X, $vec3::Y)
+                });
+                should_glam_assert!({
+                    $camera::rh::view::look_at_mat4($vec3::X, $vec3::X, $vec3::Y)
+                });
+                should_glam_assert!({ $mat4::look_at_lh($vec3::X, $vec3::X, $vec3::Y) });
+                should_glam_assert!({ $mat4::look_at_rh($vec3::X, $vec3::X, $vec3::Y) });
+                should_glam_assert!({
+                    $camera::rh::view::look_at_mat4($vec3::ZERO, $vec3::X, $vec3::X)
+                });
+                should_glam_assert!({ $mat4::look_at_rh($vec3::ZERO, $vec3::X, $vec3::X) });
             });
 
             glam_test!(test_deprecated_projection_glam_assert, {
@@ -1187,6 +1271,15 @@ mod camera {
                 should_glam_assert!({ lh_view::look_to_mat3a(Vec3::ZERO, Vec3::ONE) });
                 should_glam_assert!({ rh_view::look_to_mat3a(Vec3::ONE, Vec3::ZERO) });
                 should_glam_assert!({ rh_view::look_to_mat3a(Vec3::ZERO, Vec3::ONE) });
+
+                should_glam_assert!({ lh_view::look_to_mat3a(Vec3::X, Vec3::X) });
+                should_glam_assert!({ rh_view::look_to_mat3a(Vec3::X, Vec3::X) });
+                should_glam_assert!({ Mat3A::look_to_lh(Vec3::X, Vec3::X) });
+                should_glam_assert!({ Mat3A::look_to_rh(Vec3::X, Vec3::X) });
+                should_glam_assert!({ lh_view::look_at_mat3a(Vec3::X, Vec3::X, Vec3::Y) });
+                should_glam_assert!({ rh_view::look_at_mat3a(Vec3::X, Vec3::X, Vec3::Y) });
+                should_glam_assert!({ Mat3A::look_at_lh(Vec3::X, Vec3::X, Vec3::Y) });
+                should_glam_assert!({ Mat3A::look_at_rh(Vec3::X, Vec3::X, Vec3::Y) });
             });
         }
     }
