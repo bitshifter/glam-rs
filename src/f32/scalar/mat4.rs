@@ -1034,8 +1034,8 @@ impl Mat4 {
     /// # Panics
     ///
     /// Will panic if `left` is greater than or equal to `right`, if `bottom` is greater than or
-    /// equal to `top`, or if `z_near` or `z_far` are less than or equal to zero when
-    /// `glam_assert` is enabled.
+    /// equal to `top`, or if `z_near` or `z_far` are less than or equal to zero, or if `z_near`
+    /// is equal to `z_far`, when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::lh::proj::directx::frustum` function instead"
@@ -1052,7 +1052,7 @@ impl Mat4 {
         z_far: f32,
     ) -> Self {
         glam_assert!(left < right && bottom < top);
-        glam_assert!(z_near > 0.0 && z_far > 0.0);
+        glam_assert!(z_near > 0.0 && z_far > 0.0 && z_near != z_far);
         let inv_width = 1.0 / (right - left);
         let inv_height = 1.0 / (top - bottom);
         let inv_depth = 1.0 / (z_far - z_near);
@@ -1074,8 +1074,8 @@ impl Mat4 {
     /// # Panics
     ///
     /// Will panic if `left` is greater than or equal to `right`, if `bottom` is greater than or
-    /// equal to `top`, or if `z_near` or `z_far` are less than or equal to zero when
-    /// `glam_assert` is enabled.
+    /// equal to `top`, or if `z_near` or `z_far` are less than or equal to zero, or if `z_near`
+    /// is equal to `z_far`, when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::rh::proj::directx::frustum` function instead"
@@ -1092,7 +1092,7 @@ impl Mat4 {
         z_far: f32,
     ) -> Self {
         glam_assert!(left < right && bottom < top);
-        glam_assert!(z_near > 0.0 && z_far > 0.0);
+        glam_assert!(z_near > 0.0 && z_far > 0.0 && z_near != z_far);
         let inv_width = 1.0 / (right - left);
         let inv_height = 1.0 / (top - bottom);
         let inv_depth = 1.0 / (z_far - z_near);
@@ -1147,8 +1147,8 @@ impl Mat4 {
     /// # Panics
     ///
     /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is not
-    /// positive, or if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
-    /// enabled.
+    /// positive, or if `z_near` or `z_far` are less than or equal to zero, or if `z_near` is
+    /// equal to `z_far`, when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::lh::proj::directx::perspective` function instead"
@@ -1159,7 +1159,7 @@ impl Mat4 {
     pub fn perspective_lh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32, z_far: f32) -> Self {
         glam_assert!(fov_y_radians > 0.0 && fov_y_radians < core::f32::consts::PI);
         glam_assert!(aspect_ratio > 0.0);
-        glam_assert!(z_near > 0.0 && z_far > 0.0);
+        glam_assert!(z_near > 0.0 && z_far > 0.0 && z_near != z_far);
         let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
         let w = h / aspect_ratio;
@@ -1179,8 +1179,8 @@ impl Mat4 {
     /// # Panics
     ///
     /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is not
-    /// positive, or if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
-    /// enabled.
+    /// positive, or if `z_near` or `z_far` are less than or equal to zero, or if `z_near` is
+    /// equal to `z_far`, when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::rh::proj::directx::perspective` function instead"
@@ -1191,7 +1191,7 @@ impl Mat4 {
     pub fn perspective_rh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32, z_far: f32) -> Self {
         glam_assert!(fov_y_radians > 0.0 && fov_y_radians < core::f32::consts::PI);
         glam_assert!(aspect_ratio > 0.0);
-        glam_assert!(z_near > 0.0 && z_far > 0.0);
+        glam_assert!(z_near > 0.0 && z_far > 0.0 && z_near != z_far);
         let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
         let w = h / aspect_ratio;

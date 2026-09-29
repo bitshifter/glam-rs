@@ -640,6 +640,10 @@ macro_rules! impl_camera_tests {
                 should_glam_assert!({ $mat4::perspective_infinite_rh(fov, 1.0, 0.0) });
                 should_glam_assert!({ $mat4::perspective_infinite_reverse_lh(fov, 1.0, 0.0) });
                 should_glam_assert!({ $mat4::perspective_infinite_reverse_rh(fov, 1.0, 0.0) });
+                should_glam_assert!({ $mat4::frustum_lh(-1.0, 1.0, -1.0, 1.0, 1.0, 1.0) });
+                should_glam_assert!({ $mat4::frustum_rh(-1.0, 1.0, -1.0, 1.0, 1.0, 1.0) });
+                should_glam_assert!({ $mat4::perspective_lh(fov, 1.0, 1.0, 1.0) });
+                should_glam_assert!({ $mat4::perspective_rh(fov, 1.0, 1.0, 1.0) });
 
                 // `fov_y_radians` outside `(0, π)`.
                 should_glam_assert!({ $mat4::perspective_lh(0.0, 1.0, 1.0, 2.0) });
@@ -736,6 +740,9 @@ macro_rules! impl_camera_tests {
                 should_glam_assert!({
                     $camera::lh::proj::directx::frustum(-1.0, 1.0, 1.0, 1.0, 1.0, 2.0)
                 });
+                should_glam_assert!({
+                    $camera::lh::proj::directx::frustum(-1.0, 1.0, -1.0, 1.0, 1.0, 1.0)
+                });
             });
 
             glam_test!(test_mat4_frustum_rh, {
@@ -774,6 +781,9 @@ macro_rules! impl_camera_tests {
                 });
                 should_glam_assert!({
                     $camera::rh::proj::directx::frustum(-1.0, 1.0, 1.0, 1.0, 1.0, 2.0)
+                });
+                should_glam_assert!({
+                    $camera::rh::proj::directx::frustum(-1.0, 1.0, -1.0, 1.0, 1.0, 1.0)
                 });
             });
 
@@ -823,6 +833,9 @@ macro_rules! impl_camera_tests {
                 });
                 should_glam_assert!({
                     $camera::lh::proj::directx::perspective(fov, 0.0, 1.0, 2.0)
+                });
+                should_glam_assert!({
+                    $camera::lh::proj::directx::perspective(fov, 1.0, 1.0, 1.0)
                 });
             });
 
@@ -922,6 +935,9 @@ macro_rules! impl_camera_tests {
                 });
                 should_glam_assert!({
                     $camera::rh::proj::directx::perspective(fov, 0.0, 1.0, 2.0)
+                });
+                should_glam_assert!({
+                    $camera::rh::proj::directx::perspective(fov, 1.0, 1.0, 1.0)
                 });
             });
 

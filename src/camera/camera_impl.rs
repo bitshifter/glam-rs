@@ -127,7 +127,7 @@ pub(crate) fn look_to_quat<const RH: bool>(dir: Vec3, up: Vec3) -> Quat {
 /// # Panics
 ///
 /// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is not positive,
-/// or if `near` or `far` are <= 0 when `glam_assert` is enabled.
+/// or if `near` or `far` are <= 0, or if `near` is equal to `far`, when `glam_assert` is enabled.
 #[inline]
 #[must_use]
 #[track_caller]
@@ -139,7 +139,7 @@ pub(crate) fn perspective<const RH: bool, const ZO: bool, const YFLIP: bool>(
 ) -> Mat4 {
     glam_assert!(vertical_fov > 0.0 && vertical_fov < core::f32::consts::PI);
     glam_assert!(aspect_ratio > 0.0);
-    glam_assert!(near > 0.0 && far > 0.0);
+    glam_assert!(near > 0.0 && far > 0.0 && near != far);
     let (sin_fov, cos_fov) = math::sin_cos(0.5 * vertical_fov);
     let h = cos_fov / sin_fov;
     let xx = h / aspect_ratio;
@@ -290,7 +290,8 @@ pub(crate) fn orthographic<const RH: bool, const ZO: bool, const YFLIP: bool>(
 /// # Panics
 ///
 /// Will panic if `left` is greater than or equal to `right`, if `bottom` is greater than or
-/// equal to `top`, or if `near` or `far` are <= 0 when `glam_assert` is enabled.
+/// equal to `top`, or if `near` or `far` are <= 0, or if `near` is equal to `far`, when
+/// `glam_assert` is enabled.
 #[inline]
 #[must_use]
 #[track_caller]
@@ -303,7 +304,7 @@ pub(crate) fn frustum<const RH: bool, const ZO: bool, const YFLIP: bool>(
     far: f32,
 ) -> Mat4 {
     glam_assert!(left < right && bottom < top);
-    glam_assert!(near > 0.0 && far > 0.0);
+    glam_assert!(near > 0.0 && far > 0.0 && near != far);
     let inv_width = 1.0 / (right - left);
     let inv_height = 1.0 / (top - bottom);
     let inv_depth = 1.0 / (far - near);
