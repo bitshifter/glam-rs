@@ -97,7 +97,8 @@ pub(crate) fn look_to_quat<const RH: bool>(dir: DVec3, up: DVec3) -> DQuat {
 ///
 /// # Panics
 ///
-/// Will panic if `near` or `far` are <= 0 when `glam_assert` is enabled.
+/// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is not positive,
+/// or if `near` or `far` are <= 0 when `glam_assert` is enabled.
 #[inline]
 #[must_use]
 #[track_caller]
@@ -107,6 +108,8 @@ pub(crate) fn perspective<const RH: bool, const ZO: bool, const YFLIP: bool>(
     near: f64,
     far: f64,
 ) -> DMat4 {
+    glam_assert!(vertical_fov > 0.0 && vertical_fov < core::f64::consts::PI);
+    glam_assert!(aspect_ratio > 0.0);
     glam_assert!(near > 0.0 && far > 0.0);
     let (sin_fov, cos_fov) = math::sin_cos(0.5 * vertical_fov);
     let h = cos_fov / sin_fov;
@@ -143,7 +146,8 @@ pub(crate) fn perspective<const RH: bool, const ZO: bool, const YFLIP: bool>(
 ///
 /// # Panics
 ///
-/// Will panic if `near` <= 0 when `glam_assert` is enabled.
+/// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is not positive,
+/// or if `near` is <= 0 when `glam_assert` is enabled.
 #[inline]
 #[must_use]
 #[track_caller]
@@ -152,6 +156,8 @@ pub(crate) fn perspective_infinite<const RH: bool, const ZO: bool, const YFLIP: 
     aspect_ratio: f64,
     near: f64,
 ) -> DMat4 {
+    glam_assert!(vertical_fov > 0.0 && vertical_fov < core::f64::consts::PI);
+    glam_assert!(aspect_ratio > 0.0);
     glam_assert!(near > 0.0);
     let (sin_fov, cos_fov) = math::sin_cos(0.5 * vertical_fov);
     let h = cos_fov / sin_fov;
@@ -174,7 +180,8 @@ pub(crate) fn perspective_infinite<const RH: bool, const ZO: bool, const YFLIP: 
 ///
 /// # Panics
 ///
-/// Will panic if `near` <= 0 when `glam_assert` is enabled.
+/// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is not positive,
+/// or if `near` is <= 0 when `glam_assert` is enabled.
 #[inline]
 #[must_use]
 #[track_caller]
@@ -183,6 +190,8 @@ pub(crate) fn perspective_infinite_reverse<const RH: bool, const YFLIP: bool>(
     aspect_ratio: f64,
     near: f64,
 ) -> DMat4 {
+    glam_assert!(vertical_fov > 0.0 && vertical_fov < core::f64::consts::PI);
+    glam_assert!(aspect_ratio > 0.0);
     glam_assert!(near > 0.0);
     let (sin_fov, cos_fov) = math::sin_cos(0.5 * vertical_fov);
     let h = cos_fov / sin_fov;
@@ -243,7 +252,8 @@ pub(crate) fn orthographic<const RH: bool, const ZO: bool, const YFLIP: bool>(
 ///
 /// # Panics
 ///
-/// Will panic if `near` or `far` are <= 0 when `glam_assert` is enabled.
+/// Will panic if `left` is greater than or equal to `right`, if `bottom` is greater than or
+/// equal to `top`, or if `near` or `far` are <= 0 when `glam_assert` is enabled.
 #[inline]
 #[must_use]
 #[track_caller]
@@ -255,6 +265,7 @@ pub(crate) fn frustum<const RH: bool, const ZO: bool, const YFLIP: bool>(
     near: f64,
     far: f64,
 ) -> DMat4 {
+    glam_assert!(left < right && bottom < top);
     glam_assert!(near > 0.0 && far > 0.0);
     let inv_width = 1.0 / (right - left);
     let inv_height = 1.0 / (top - bottom);

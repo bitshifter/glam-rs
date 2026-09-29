@@ -1130,8 +1130,9 @@ impl Mat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
-    /// enabled.
+    /// Will panic if `left` is greater than or equal to `right`, if `bottom` is greater than or
+    /// equal to `top`, or if `z_near` or `z_far` are less than or equal to zero when
+    /// `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::lh::proj::directx::frustum` function instead"
@@ -1147,6 +1148,7 @@ impl Mat4 {
         z_near: f32,
         z_far: f32,
     ) -> Self {
+        glam_assert!(left < right && bottom < top);
         glam_assert!(z_near > 0.0 && z_far > 0.0);
         let inv_width = 1.0 / (right - left);
         let inv_height = 1.0 / (top - bottom);
@@ -1168,8 +1170,9 @@ impl Mat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
-    /// enabled.
+    /// Will panic if `left` is greater than or equal to `right`, if `bottom` is greater than or
+    /// equal to `top`, or if `z_near` or `z_far` are less than or equal to zero when
+    /// `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::rh::proj::directx::frustum` function instead"
@@ -1185,6 +1188,7 @@ impl Mat4 {
         z_near: f32,
         z_far: f32,
     ) -> Self {
+        glam_assert!(left < right && bottom < top);
         glam_assert!(z_near > 0.0 && z_far > 0.0);
         let inv_width = 1.0 / (right - left);
         let inv_height = 1.0 / (top - bottom);
@@ -1239,7 +1243,8 @@ impl Mat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
+    /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is not
+    /// positive, or if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
     /// enabled.
     #[deprecated(
         since = "0.33.1",
@@ -1249,6 +1254,8 @@ impl Mat4 {
     #[must_use]
     #[track_caller]
     pub fn perspective_lh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32, z_far: f32) -> Self {
+        glam_assert!(fov_y_radians > 0.0 && fov_y_radians < core::f32::consts::PI);
+        glam_assert!(aspect_ratio > 0.0);
         glam_assert!(z_near > 0.0 && z_far > 0.0);
         let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
@@ -1268,7 +1275,8 @@ impl Mat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
+    /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is not
+    /// positive, or if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
     /// enabled.
     #[deprecated(
         since = "0.33.1",
@@ -1278,6 +1286,8 @@ impl Mat4 {
     #[must_use]
     #[track_caller]
     pub fn perspective_rh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32, z_far: f32) -> Self {
+        glam_assert!(fov_y_radians > 0.0 && fov_y_radians < core::f32::consts::PI);
+        glam_assert!(aspect_ratio > 0.0);
         glam_assert!(z_near > 0.0 && z_far > 0.0);
         let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
@@ -1298,8 +1308,8 @@ impl Mat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is
-    /// enabled.
+    /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is not
+    /// positive, or if `z_near` is less than or equal to zero when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::lh::proj::directx::perspective_infinite` function instead"
@@ -1308,6 +1318,8 @@ impl Mat4 {
     #[must_use]
     #[track_caller]
     pub fn perspective_infinite_lh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Self {
+        glam_assert!(fov_y_radians > 0.0 && fov_y_radians < core::f32::consts::PI);
+        glam_assert!(aspect_ratio > 0.0);
         glam_assert!(z_near > 0.0);
         let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
@@ -1326,7 +1338,8 @@ impl Mat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is not
+    /// positive, or if `z_near` is less than or equal to zero when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::lh::proj::directx::perspective_infinite_reverse` function instead"
@@ -1339,6 +1352,8 @@ impl Mat4 {
         aspect_ratio: f32,
         z_near: f32,
     ) -> Self {
+        glam_assert!(fov_y_radians > 0.0 && fov_y_radians < core::f32::consts::PI);
+        glam_assert!(aspect_ratio > 0.0);
         glam_assert!(z_near > 0.0);
         let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
@@ -1358,8 +1373,8 @@ impl Mat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is
-    /// enabled.
+    /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is not
+    /// positive, or if `z_near` is less than or equal to zero when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::rh::proj::directx::perspective_infinite` function instead"
@@ -1368,6 +1383,8 @@ impl Mat4 {
     #[must_use]
     #[track_caller]
     pub fn perspective_infinite_rh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Self {
+        glam_assert!(fov_y_radians > 0.0 && fov_y_radians < core::f32::consts::PI);
+        glam_assert!(aspect_ratio > 0.0);
         glam_assert!(z_near > 0.0);
         let f = 1.0 / math::tan(0.5 * fov_y_radians);
         Self::from_cols(
@@ -1384,7 +1401,8 @@ impl Mat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is not
+    /// positive, or if `z_near` is less than or equal to zero when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::rh::proj::directx::perspective_infinite_reverse` function instead"
@@ -1397,6 +1415,8 @@ impl Mat4 {
         aspect_ratio: f32,
         z_near: f32,
     ) -> Self {
+        glam_assert!(fov_y_radians > 0.0 && fov_y_radians < core::f32::consts::PI);
+        glam_assert!(aspect_ratio > 0.0);
         glam_assert!(z_near > 0.0);
         let f = 1.0 / math::tan(0.5 * fov_y_radians);
         Self::from_cols(
