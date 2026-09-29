@@ -870,6 +870,7 @@ impl {{ self_t }} {
 
     #[inline(always)]
     #[must_use]
+    #[track_caller]
     fn lerp_impl(self, end: Self, s: {{ scalar_t }}) -> Self {
         (self * (1.0 - s) + end * s).normalize()
     }

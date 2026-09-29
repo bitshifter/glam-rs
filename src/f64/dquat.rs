@@ -712,6 +712,7 @@ impl DQuat {
 
     #[inline(always)]
     #[must_use]
+    #[track_caller]
     fn lerp_impl(self, end: Self, s: f64) -> Self {
         (self * (1.0 - s) + end * s).normalize()
     }

@@ -731,6 +731,7 @@ impl Quat {
 
     #[inline(always)]
     #[must_use]
+    #[track_caller]
     fn lerp_impl(self, end: Self, s: f32) -> Self {
         (self * (1.0 - s) + end * s).normalize()
     }

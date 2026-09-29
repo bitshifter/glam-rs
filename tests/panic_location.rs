@@ -4,7 +4,10 @@
 //! these checks also cover delegating public APIs and private helpers.
 
 #![cfg(all(
-    any(feature = "glam-assert", feature = "debug-glam-assert"),
+    any(
+        feature = "glam-assert",
+        all(debug_assertions, feature = "debug-glam-assert")
+    ),
     feature = "std",
     panic = "unwind"
 ))]
@@ -70,6 +73,9 @@ fn test_panics_report_caller_location() {
     assert_panics_at_caller("Quat::to_euler", || {
         Quat::from_xyzw(0.0, 0.0, 0.0, 2.0).to_euler(EulerRot::XYZ)
     });
+
+    // Private helper (`lerp_impl`) normalizing a zero interpolation result.
+    assert_panics_at_caller("Quat::slerp", || Quat::IDENTITY.slerp(Quat::IDENTITY, 1e38));
 
     // Affine type delegating into the matrix type.
     assert_panics_at_caller("Affine3::from_quat", || {
