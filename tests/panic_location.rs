@@ -50,7 +50,7 @@ fn test_panics_report_caller_location() {
         Mat3::from_cols(Vec3::splat(1e30), Vec3::splat(1e30), Vec3::splat(1e30)).inverse()
     });
 
-    // Undocumented delegation through `Quat::from_axis_angle` and `Vec3::normalize`.
+    // Public API delegating into another type (`Quat::from_axis_angle`).
     assert_panics_at_caller("Vec3::rotate_axis", || Vec3::X.rotate_axis(Vec3::ZERO, 0.0));
 
     // Trait implementations, by value and by reference.
