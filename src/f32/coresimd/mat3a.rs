@@ -313,6 +313,7 @@ impl Mat3A {
     /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn from_quat(rotation: Quat) -> Self {
         glam_assert!(rotation.is_normalized());
 
@@ -344,6 +345,7 @@ impl Mat3A {
     /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
         glam_assert!(axis.is_normalized());
 
@@ -380,6 +382,7 @@ impl Mat3A {
     /// Will panic if any input matrix column is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn to_euler(&self, order: EulerRot) -> (f32, f32, f32) {
         glam_assert!(
             self.x_axis.is_normalized()
@@ -481,6 +484,7 @@ impl Mat3A {
     /// Will panic if all elements of `scale` are zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn from_scale(scale: Vec2) -> Self {
         // Do not panic as long as any component is non-zero
         glam_assert!(scale.cmpne(Vec2::ZERO).any());
@@ -690,6 +694,7 @@ impl Mat3A {
     /// matrix is aligned.
     #[inline(always)]
     #[must_use]
+    #[track_caller]
     fn inverse_checked<const CHECKED: bool>(&self) -> (Self, bool) {
         let tmp0 = self.y_axis.cross(self.z_axis);
         let tmp1 = self.z_axis.cross(self.x_axis);
@@ -720,6 +725,7 @@ impl Mat3A {
     /// is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn inverse(&self) -> Self {
         self.inverse_checked::<false>().0
     }
@@ -756,6 +762,7 @@ impl Mat3A {
     /// Will panic if the 2nd row of `self` is not `(0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn transform_point2(&self, rhs: Vec2) -> Vec2 {
         glam_assert!(self.row(2).abs_diff_eq(Vec3A::Z, 1e-6));
         Mat2::from_cols(self.x_axis.xy(), self.y_axis.xy()) * rhs + self.z_axis.xy()
@@ -772,6 +779,7 @@ impl Mat3A {
     /// Will panic if the 2nd row of `self` is not `(0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn transform_vector2(&self, rhs: Vec2) -> Vec2 {
         glam_assert!(self.row(2).abs_diff_eq(Vec3A::Z, 1e-6));
         Mat2::from_cols(self.x_axis.xy(), self.y_axis.xy()) * rhs
@@ -790,6 +798,7 @@ impl Mat3A {
     )]
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn look_to_lh(dir: Vec3, up: Vec3) -> Self {
         #[allow(deprecated)]
         Self::look_to_rh(-dir, up)
@@ -808,6 +817,7 @@ impl Mat3A {
     )]
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn look_to_rh(dir: Vec3, up: Vec3) -> Self {
         glam_assert!(dir.is_normalized());
         glam_assert!(up.is_normalized());
@@ -836,6 +846,7 @@ impl Mat3A {
     )]
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn look_at_lh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
         #[allow(deprecated)]
         Self::look_to_lh(center.sub(eye).normalize(), up)
@@ -854,6 +865,7 @@ impl Mat3A {
         note = "use the `glam::camera::rh::view::look_at_mat3` function instead"
     )]
     #[inline]
+    #[track_caller]
     pub fn look_at_rh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
         #[allow(deprecated)]
         Self::look_to_rh(center.sub(eye).normalize(), up)

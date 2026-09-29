@@ -202,6 +202,7 @@ impl Vec3A {
     /// Will panic if `v.w` is `0` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn from_homogeneous(v: Vec4) -> Self {
         glam_assert!(v.w != 0.0);
         Self::from_vec4(v) / v.w
@@ -307,6 +308,7 @@ impl Vec3A {
     /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn clamp(self, min: Self, max: Self) -> Self {
         glam_assert!(min.cmple(max).all(), "clamp: expected min <= max");
         self.max(min).min(max)
@@ -637,6 +639,7 @@ impl Vec3A {
     /// Will panic if the resulting normalized vector is not finite when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn normalize(self) -> Self {
         let length = f32x4_sqrt(dot3_into_v128(self.0, self.0));
         #[allow(clippy::let_and_return)]
@@ -725,6 +728,7 @@ impl Vec3A {
     /// Will panic if `rhs` is zero length when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn project_onto(self, rhs: Self) -> Self {
         let rhs_len_sq = rhs.dot(rhs);
         glam_assert!(rhs_len_sq != 0.0);
@@ -744,6 +748,7 @@ impl Vec3A {
     #[doc(alias("plane"))]
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn reject_from(self, rhs: Self) -> Self {
         self - self.project_onto(rhs)
     }
@@ -757,6 +762,7 @@ impl Vec3A {
     /// Will panic if `rhs` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn project_onto_normalized(self, rhs: Self) -> Self {
         glam_assert!(rhs.is_normalized());
         rhs * self.dot(rhs)
@@ -775,6 +781,7 @@ impl Vec3A {
     #[doc(alias("plane"))]
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn reject_from_normalized(self, rhs: Self) -> Self {
         self - self.project_onto_normalized(rhs)
     }
@@ -832,6 +839,7 @@ impl Vec3A {
     /// of `edge1`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn smoothstep(self, edge0: Self, edge1: Self) -> Self {
         glam_assert!(edge0.cmplt(edge1).all());
         let t = ((self - edge0) / (edge1 - edge0)).saturate();
@@ -1042,6 +1050,7 @@ impl Vec3A {
     /// Will panic if `min` is greater than `max`, or if either `min` or `max` is negative, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn clamp_length(self, min: f32, max: f32) -> Self {
         glam_assert!(0.0 <= min);
         glam_assert!(min <= max);
@@ -1062,6 +1071,7 @@ impl Vec3A {
     /// Will panic if `max` is negative when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn clamp_length_max(self, max: f32) -> Self {
         glam_assert!(0.0 <= max);
         let length_sq = self.length_squared();
@@ -1079,6 +1089,7 @@ impl Vec3A {
     /// Will panic if `min` is negative when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn clamp_length_min(self, min: f32) -> Self {
         glam_assert!(0.0 <= min);
         let length_sq = self.length_squared();
@@ -1116,6 +1127,7 @@ impl Vec3A {
     /// Will panic if `normal` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn reflect(self, normal: Self) -> Self {
         glam_assert!(normal.is_normalized());
         self - 2.0 * self.dot(normal) * normal
@@ -1132,6 +1144,7 @@ impl Vec3A {
     /// Will panic if `self` or `normal` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn refract(self, normal: Self, eta: f32) -> Self {
         glam_assert!(self.is_normalized());
         glam_assert!(normal.is_normalized());
@@ -1156,6 +1169,7 @@ impl Vec3A {
     /// Will panic if `self` or `rhs` has zero length when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn angle_between(self, rhs: Self) -> f32 {
         glam_assert!(self.is_non_zero());
         glam_assert!(rhs.is_non_zero());
@@ -1183,6 +1197,7 @@ impl Vec3A {
     #[doc(alias = "signed_angle")]
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn angle_to(self, rhs: Self, axis: Self) -> f32 {
         glam_assert!(axis.is_normalized());
         glam_assert!(self.is_non_zero());
@@ -1235,6 +1250,7 @@ impl Vec3A {
     /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn rotate_axis(self, axis: Self, angle: f32) -> Self {
         Quat::from_axis_angle(axis.into(), angle) * self
     }
@@ -1246,6 +1262,7 @@ impl Vec3A {
     /// rotates towards the exact opposite of `rhs`. Will not go past the target.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn rotate_towards(self, rhs: Self, max_angle: f32) -> Self {
         let angle_between = self.angle_between(rhs);
         // When `max_angle < 0`, rotate no further than `PI` radians away
@@ -1283,6 +1300,7 @@ impl Vec3A {
     /// Will panic if `self` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn any_orthonormal_vector(self) -> Self {
         glam_assert!(self.is_normalized());
         // From https://graphics.pixar.com/library/OrthonormalB/paper.pdf
@@ -1300,6 +1318,7 @@ impl Vec3A {
     /// Will panic if `self` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn any_orthonormal_pair(self) -> (Self, Self) {
         glam_assert!(self.is_normalized());
         // From https://graphics.pixar.com/library/OrthonormalB/paper.pdf
@@ -1319,6 +1338,7 @@ impl Vec3A {
     /// extrapolated.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn slerp(self, rhs: Self, s: f32) -> Self {
         let self_length = self.length();
         let rhs_length = rhs.length();

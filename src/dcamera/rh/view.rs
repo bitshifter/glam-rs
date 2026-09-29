@@ -24,6 +24,7 @@ use crate::{dcamera::camera_impl, DAffine3, DMat3, DMat4, DQuat, DVec3};
 /// Will panic if `up` is not normalized when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[track_caller]
 pub fn look_at_mat4(eye: DVec3, center: DVec3, up: DVec3) -> DMat4 {
     look_to_mat4(eye, (center - eye).normalize(), up)
 }
@@ -37,6 +38,7 @@ pub fn look_at_mat4(eye: DVec3, center: DVec3, up: DVec3) -> DMat4 {
 /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[track_caller]
 pub fn look_to_mat4(eye: DVec3, dir: DVec3, up: DVec3) -> DMat4 {
     camera_impl::look_to_mat4::<true>(eye, dir, up)
 }
@@ -50,6 +52,7 @@ pub fn look_to_mat4(eye: DVec3, dir: DVec3, up: DVec3) -> DMat4 {
 /// Will panic if `up` is not normalized when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[track_caller]
 pub fn look_at_affine3(eye: DVec3, center: DVec3, up: DVec3) -> DAffine3 {
     look_to_affine3(eye, (center - eye).normalize(), up)
 }
@@ -63,6 +66,7 @@ pub fn look_at_affine3(eye: DVec3, center: DVec3, up: DVec3) -> DAffine3 {
 /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[track_caller]
 pub fn look_to_affine3(eye: DVec3, dir: DVec3, up: DVec3) -> DAffine3 {
     camera_impl::look_to_affine3::<true>(eye, dir, up)
 }
@@ -76,6 +80,7 @@ pub fn look_to_affine3(eye: DVec3, dir: DVec3, up: DVec3) -> DAffine3 {
 /// Will panic if `up` is not normalized when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[track_caller]
 pub fn look_at_mat3(eye: DVec3, center: DVec3, up: DVec3) -> DMat3 {
     look_to_mat3((center - eye).normalize(), up)
 }
@@ -89,6 +94,7 @@ pub fn look_at_mat3(eye: DVec3, center: DVec3, up: DVec3) -> DMat3 {
 /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[track_caller]
 pub fn look_to_mat3(dir: DVec3, up: DVec3) -> DMat3 {
     camera_impl::look_to_mat3::<true>(dir, up)
 }
@@ -102,6 +108,7 @@ pub fn look_to_mat3(dir: DVec3, up: DVec3) -> DMat3 {
 /// Will panic if `up` is not normalized when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[track_caller]
 pub fn look_at_quat(eye: DVec3, center: DVec3, up: DVec3) -> DQuat {
     look_to_quat((center - eye).normalize(), up)
 }
@@ -115,6 +122,7 @@ pub fn look_at_quat(eye: DVec3, center: DVec3, up: DVec3) -> DQuat {
 /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[track_caller]
 pub fn look_to_quat(dir: DVec3, up: DVec3) -> DQuat {
     camera_impl::look_to_quat::<true>(dir, up)
 }

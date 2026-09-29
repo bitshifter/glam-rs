@@ -385,6 +385,7 @@ impl Mat2 {
     /// matrix is aligned.
     #[inline(always)]
     #[must_use]
+    #[track_caller]
     fn inverse_checked<const CHECKED: bool>(&self) -> (Self, bool) {
         const SIGN: v128 = crate::wasm::v128_from_f32x4([1.0, -1.0, -1.0, 1.0]);
         let abcd = self.0;
@@ -418,6 +419,7 @@ impl Mat2 {
     /// is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn inverse(&self) -> Self {
         self.inverse_checked::<false>().0
     }

@@ -45,6 +45,7 @@ pub mod opengl {
     /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn perspective(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
         camera_impl::perspective::<{{ is_rh }}, false, false>(vertical_fov, aspect_ratio, near, far)
     }
@@ -78,6 +79,7 @@ pub mod opengl {
     /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn frustum(left: {{ scalar_t }}, right: {{ scalar_t }}, bottom: {{ scalar_t }}, top: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
         camera_impl::frustum::<{{ is_rh }}, false, false>(left, right, bottom, top, near, far)
     }
@@ -121,6 +123,7 @@ pub mod {{ api }} {
     /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn perspective(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
         camera_impl::perspective::<{{ is_rh }}, {{ is_zo }}, {{ yflip }}>(vertical_fov, aspect_ratio, near, far)
     }
@@ -138,6 +141,7 @@ pub mod {{ api }} {
     /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn perspective_infinite(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, near: {{ scalar_t }}) -> {{ mat4_t }} {
         camera_impl::perspective_infinite::<{{ is_rh }}, {{ is_zo }}, {{ yflip }}>(vertical_fov, aspect_ratio, near)
     }
@@ -157,6 +161,7 @@ pub mod {{ api }} {
     /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn perspective_infinite_reverse(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, near: {{ scalar_t }}) -> {{ mat4_t }} {
         camera_impl::perspective_infinite_reverse::<{{ is_rh }}, {{ yflip }}>(vertical_fov, aspect_ratio, near)
     }
@@ -181,6 +186,7 @@ pub mod {{ api }} {
     /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn frustum(left: {{ scalar_t }}, right: {{ scalar_t }}, bottom: {{ scalar_t }}, top: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
         camera_impl::frustum::<{{ is_rh }}, {{ is_zo }}, {{ yflip }}>(left, right, bottom, top, near, far)
     }

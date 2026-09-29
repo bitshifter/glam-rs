@@ -30,6 +30,7 @@ pub mod opengl {
     /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn perspective(vertical_fov: f32, aspect_ratio: f32, near: f32, far: f32) -> Mat4 {
         camera_impl::perspective::<true, false, false>(vertical_fov, aspect_ratio, near, far)
     }
@@ -59,6 +60,7 @@ pub mod opengl {
     /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn frustum(left: f32, right: f32, bottom: f32, top: f32, near: f32, far: f32) -> Mat4 {
         camera_impl::frustum::<true, false, false>(left, right, bottom, top, near, far)
     }
@@ -83,6 +85,7 @@ pub mod vulkan {
     /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn perspective(vertical_fov: f32, aspect_ratio: f32, near: f32, far: f32) -> Mat4 {
         camera_impl::perspective::<true, true, true>(vertical_fov, aspect_ratio, near, far)
     }
@@ -100,6 +103,7 @@ pub mod vulkan {
     /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn perspective_infinite(vertical_fov: f32, aspect_ratio: f32, near: f32) -> Mat4 {
         camera_impl::perspective_infinite::<true, true, true>(vertical_fov, aspect_ratio, near)
     }
@@ -119,6 +123,7 @@ pub mod vulkan {
     /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn perspective_infinite_reverse(vertical_fov: f32, aspect_ratio: f32, near: f32) -> Mat4 {
         camera_impl::perspective_infinite_reverse::<true, true>(vertical_fov, aspect_ratio, near)
     }
@@ -143,6 +148,7 @@ pub mod vulkan {
     /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn frustum(left: f32, right: f32, bottom: f32, top: f32, near: f32, far: f32) -> Mat4 {
         camera_impl::frustum::<true, true, true>(left, right, bottom, top, near, far)
     }
@@ -168,6 +174,7 @@ pub mod directx {
     /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn perspective(vertical_fov: f32, aspect_ratio: f32, near: f32, far: f32) -> Mat4 {
         camera_impl::perspective::<true, true, false>(vertical_fov, aspect_ratio, near, far)
     }
@@ -185,6 +192,7 @@ pub mod directx {
     /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn perspective_infinite(vertical_fov: f32, aspect_ratio: f32, near: f32) -> Mat4 {
         camera_impl::perspective_infinite::<true, true, false>(vertical_fov, aspect_ratio, near)
     }
@@ -204,6 +212,7 @@ pub mod directx {
     /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn perspective_infinite_reverse(vertical_fov: f32, aspect_ratio: f32, near: f32) -> Mat4 {
         camera_impl::perspective_infinite_reverse::<true, false>(vertical_fov, aspect_ratio, near)
     }
@@ -228,6 +237,7 @@ pub mod directx {
     /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn frustum(left: f32, right: f32, bottom: f32, top: f32, near: f32, far: f32) -> Mat4 {
         camera_impl::frustum::<true, true, false>(left, right, bottom, top, near, far)
     }

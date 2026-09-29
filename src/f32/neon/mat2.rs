@@ -400,6 +400,7 @@ impl Mat2 {
     /// matrix is aligned.
     #[inline(always)]
     #[must_use]
+    #[track_caller]
     fn inverse_checked<const CHECKED: bool>(&self) -> (Self, bool) {
         unsafe {
             const SIGN: float32x4_t = crate::neon::f32x4_from_array([1.0, -1.0, -1.0, 1.0]);
@@ -440,6 +441,7 @@ impl Mat2 {
     /// is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn inverse(&self) -> Self {
         self.inverse_checked::<false>().0
     }

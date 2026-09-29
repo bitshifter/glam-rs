@@ -107,7 +107,7 @@
     }
 {% endcomponent %}
 
-{% component impl_ref_binop(imp, self_t, rhs_t, output_t) %}
+{% component impl_ref_binop(imp, self_t, rhs_t, output_t, track_caller="") %}
     {% set op = imp | lower %}
     {% if rhs_t == self_t %}
         {% set val_rhs_t = "Self" %}
@@ -125,7 +125,7 @@
     {%- endif %}
     impl {{ imp }}<&{{ val_rhs_t }}> for {{ self_t }} {
         type Output = {{ val_output_t }};
-        #[inline]
+        #[inline] {{ track_caller }}
         fn {{ op }}(self, rhs: &{{ val_rhs_t }}) -> {{ val_output_t }}
         {
             self.{{ op }}(*rhs)
@@ -137,7 +137,7 @@
     {%- endif %}
     impl {{ imp }}<&{{ rhs_t }}> for &{{ self_t }} {
         type Output = {{ output_t }};
-        #[inline]
+        #[inline] {{ track_caller }}
         fn {{ op }}(self, rhs: &{{ rhs_t }}) -> {{ output_t }} {
             (*self).{{ op }}(*rhs)
         }
@@ -148,7 +148,7 @@
     {%- endif %}
     impl {{ imp }}<{{ rhs_t }}> for &{{ self_t }} {
         type Output = {{ output_t }};
-        #[inline]
+        #[inline] {{ track_caller }}
         fn {{ op }}(self, rhs: {{ rhs_t }}) -> {{ output_t }} {
             (*self).{{ op }}(rhs)
         }

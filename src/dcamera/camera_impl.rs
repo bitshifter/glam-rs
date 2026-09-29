@@ -17,6 +17,7 @@ use crate::{f64::math, DAffine3, DMat3, DMat4, DQuat, DVec3, DVec4};
 /// Computes an orthonormal view basis from eye, direction, and up.
 #[inline(always)]
 #[must_use]
+#[track_caller]
 fn look_to_axes4<const RH: bool>(eye: DVec3, dir: DVec3, up: DVec3) -> [DVec3; 4] {
     glam_assert!(dir.is_normalized());
     glam_assert!(up.is_normalized());
@@ -34,6 +35,7 @@ fn look_to_axes4<const RH: bool>(eye: DVec3, dir: DVec3, up: DVec3) -> [DVec3; 4
 /// Same as [`look_to_axes4`] but without the translation row.
 #[inline(always)]
 #[must_use]
+#[track_caller]
 fn look_to_axes3<const RH: bool>(dir: DVec3, up: DVec3) -> [DVec3; 3] {
     glam_assert!(dir.is_normalized());
     glam_assert!(up.is_normalized());
@@ -50,6 +52,7 @@ fn look_to_axes3<const RH: bool>(dir: DVec3, up: DVec3) -> [DVec3; 3] {
 /// Assembles a `DMat4` view matrix from eye, direction, and up.
 #[inline]
 #[must_use]
+#[track_caller]
 pub(crate) fn look_to_mat4<const RH: bool>(eye: DVec3, dir: DVec3, up: DVec3) -> DMat4 {
     let axes = look_to_axes4::<RH>(eye, dir, up);
     DMat4::from_cols(
@@ -63,6 +66,7 @@ pub(crate) fn look_to_mat4<const RH: bool>(eye: DVec3, dir: DVec3, up: DVec3) ->
 /// Assembles an `DAffine3` view transform from eye, direction, and up.
 #[inline]
 #[must_use]
+#[track_caller]
 pub(crate) fn look_to_affine3<const RH: bool>(eye: DVec3, dir: DVec3, up: DVec3) -> DAffine3 {
     let axes = look_to_axes4::<RH>(eye, dir, up);
     DAffine3 {
@@ -74,6 +78,7 @@ pub(crate) fn look_to_affine3<const RH: bool>(eye: DVec3, dir: DVec3, up: DVec3)
 /// Returns a `DMat3` view rotation (no translation) from direction and up.
 #[inline]
 #[must_use]
+#[track_caller]
 pub(crate) fn look_to_mat3<const RH: bool>(dir: DVec3, up: DVec3) -> DMat3 {
     let axes = look_to_axes3::<RH>(dir, up);
     DMat3::from_cols(axes[0], axes[1], axes[2])
@@ -82,6 +87,7 @@ pub(crate) fn look_to_mat3<const RH: bool>(dir: DVec3, up: DVec3) -> DMat3 {
 /// Returns a `DQuat` representing a view rotation from direction and up.
 #[inline]
 #[must_use]
+#[track_caller]
 pub(crate) fn look_to_quat<const RH: bool>(dir: DVec3, up: DVec3) -> DQuat {
     let axes = look_to_axes3::<RH>(dir, up);
     DQuat::from_rotation_axes(axes[0], axes[1], axes[2])
@@ -94,6 +100,7 @@ pub(crate) fn look_to_quat<const RH: bool>(dir: DVec3, up: DVec3) -> DQuat {
 /// Will panic if `near` or `far` are <= 0 when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[track_caller]
 pub(crate) fn perspective<const RH: bool, const ZO: bool, const YFLIP: bool>(
     vertical_fov: f64,
     aspect_ratio: f64,
@@ -139,6 +146,7 @@ pub(crate) fn perspective<const RH: bool, const ZO: bool, const YFLIP: bool>(
 /// Will panic if `near` <= 0 when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[track_caller]
 pub(crate) fn perspective_infinite<const RH: bool, const ZO: bool, const YFLIP: bool>(
     vertical_fov: f64,
     aspect_ratio: f64,
@@ -169,6 +177,7 @@ pub(crate) fn perspective_infinite<const RH: bool, const ZO: bool, const YFLIP: 
 /// Will panic if `near` <= 0 when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[track_caller]
 pub(crate) fn perspective_infinite_reverse<const RH: bool, const YFLIP: bool>(
     vertical_fov: f64,
     aspect_ratio: f64,
@@ -237,6 +246,7 @@ pub(crate) fn orthographic<const RH: bool, const ZO: bool, const YFLIP: bool>(
 /// Will panic if `near` or `far` are <= 0 when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[track_caller]
 pub(crate) fn frustum<const RH: bool, const ZO: bool, const YFLIP: bool>(
     left: f64,
     right: f64,

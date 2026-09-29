@@ -205,6 +205,7 @@ impl DVec3 {
     /// Will panic if `v.w` is `0` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn from_homogeneous(v: DVec4) -> Self {
         glam_assert!(v.w != 0.0);
         Self::from_vec4(v) / v.w
@@ -310,6 +311,7 @@ impl DVec3 {
     /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn clamp(self, min: Self, max: Self) -> Self {
         glam_assert!(min.cmple(max).all(), "clamp: expected min <= max");
         self.max(min).min(max)
@@ -636,6 +638,7 @@ impl DVec3 {
     /// Will panic if the resulting normalized vector is not finite when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn normalize(self) -> Self {
         #[allow(clippy::let_and_return)]
         let normalized = self.mul(self.length_recip());
@@ -723,6 +726,7 @@ impl DVec3 {
     /// Will panic if `rhs` is zero length when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn project_onto(self, rhs: Self) -> Self {
         let rhs_len_sq = rhs.dot(rhs);
         glam_assert!(rhs_len_sq != 0.0);
@@ -742,6 +746,7 @@ impl DVec3 {
     #[doc(alias("plane"))]
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn reject_from(self, rhs: Self) -> Self {
         self - self.project_onto(rhs)
     }
@@ -755,6 +760,7 @@ impl DVec3 {
     /// Will panic if `rhs` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn project_onto_normalized(self, rhs: Self) -> Self {
         glam_assert!(rhs.is_normalized());
         rhs * self.dot(rhs)
@@ -773,6 +779,7 @@ impl DVec3 {
     #[doc(alias("plane"))]
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn reject_from_normalized(self, rhs: Self) -> Self {
         self - self.project_onto_normalized(rhs)
     }
@@ -842,6 +849,7 @@ impl DVec3 {
     /// of `edge1`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn smoothstep(self, edge0: Self, edge1: Self) -> Self {
         glam_assert!(edge0.cmplt(edge1).all());
         let t = ((self - edge0) / (edge1 - edge0)).saturate();
@@ -1052,6 +1060,7 @@ impl DVec3 {
     /// Will panic if `min` is greater than `max`, or if either `min` or `max` is negative, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn clamp_length(self, min: f64, max: f64) -> Self {
         glam_assert!(0.0 <= min);
         glam_assert!(min <= max);
@@ -1072,6 +1081,7 @@ impl DVec3 {
     /// Will panic if `max` is negative when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn clamp_length_max(self, max: f64) -> Self {
         glam_assert!(0.0 <= max);
         let length_sq = self.length_squared();
@@ -1089,6 +1099,7 @@ impl DVec3 {
     /// Will panic if `min` is negative when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn clamp_length_min(self, min: f64) -> Self {
         glam_assert!(0.0 <= min);
         let length_sq = self.length_squared();
@@ -1126,6 +1137,7 @@ impl DVec3 {
     /// Will panic if `normal` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn reflect(self, normal: Self) -> Self {
         glam_assert!(normal.is_normalized());
         self - 2.0 * self.dot(normal) * normal
@@ -1142,6 +1154,7 @@ impl DVec3 {
     /// Will panic if `self` or `normal` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn refract(self, normal: Self, eta: f64) -> Self {
         glam_assert!(self.is_normalized());
         glam_assert!(normal.is_normalized());
@@ -1166,6 +1179,7 @@ impl DVec3 {
     /// Will panic if `self` or `rhs` has zero length when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn angle_between(self, rhs: Self) -> f64 {
         glam_assert!(self.is_non_zero());
         glam_assert!(rhs.is_non_zero());
@@ -1193,6 +1207,7 @@ impl DVec3 {
     #[doc(alias = "signed_angle")]
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn angle_to(self, rhs: Self, axis: Self) -> f64 {
         glam_assert!(axis.is_normalized());
         glam_assert!(self.is_non_zero());
@@ -1245,6 +1260,7 @@ impl DVec3 {
     /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn rotate_axis(self, axis: Self, angle: f64) -> Self {
         DQuat::from_axis_angle(axis, angle) * self
     }
@@ -1256,6 +1272,7 @@ impl DVec3 {
     /// rotates towards the exact opposite of `rhs`. Will not go past the target.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn rotate_towards(self, rhs: Self, max_angle: f64) -> Self {
         let angle_between = self.angle_between(rhs);
         // When `max_angle < 0`, rotate no further than `PI` radians away
@@ -1293,6 +1310,7 @@ impl DVec3 {
     /// Will panic if `self` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn any_orthonormal_vector(self) -> Self {
         glam_assert!(self.is_normalized());
         // From https://graphics.pixar.com/library/OrthonormalB/paper.pdf
@@ -1310,6 +1328,7 @@ impl DVec3 {
     /// Will panic if `self` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn any_orthonormal_pair(self) -> (Self, Self) {
         glam_assert!(self.is_normalized());
         // From https://graphics.pixar.com/library/OrthonormalB/paper.pdf
@@ -1329,6 +1348,7 @@ impl DVec3 {
     /// extrapolated.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn slerp(self, rhs: Self, s: f64) -> Self {
         let self_length = self.length();
         let rhs_length = rhs.length();

@@ -141,6 +141,7 @@ impl DAffine3 {
     /// Creates an affine transform from the given `rotation` quaternion.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn from_quat(rotation: DQuat) -> Self {
         Self {
             matrix3: DMat3::from_quat(rotation),
@@ -152,6 +153,7 @@ impl DAffine3 {
     /// rotation `axis` of `angle` (in radians).
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn from_axis_angle(axis: DVec3, angle: f64) -> Self {
         Self {
             matrix3: DMat3::from_axis_angle(axis, angle),
@@ -236,6 +238,7 @@ impl DAffine3 {
     /// DAffine3::from_quat(rotation) * DAffine3::from_scale(scale)`
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn from_scale_rotation_translation(
         scale: DVec3,
         rotation: DQuat,
@@ -258,6 +261,7 @@ impl DAffine3 {
     /// Equivalent to `DAffine3::from_translation(translation) * DAffine3::from_quat(rotation)`
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn from_rotation_translation(rotation: DQuat, translation: DVec3) -> Self {
         #[allow(clippy::useless_conversion)]
         Self {
@@ -292,6 +296,7 @@ impl DAffine3 {
     /// vector contains any zero elements when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn to_scale_rotation_translation(&self) -> (DVec3, DQuat, DVec3) {
         use crate::f64::math;
         let det = self.matrix3.determinant();
@@ -328,6 +333,7 @@ impl DAffine3 {
     )]
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn look_to_lh(eye: DVec3, dir: DVec3, up: DVec3) -> Self {
         #[allow(deprecated)]
         Self::look_to_rh(eye, -dir, up)
@@ -343,6 +349,7 @@ impl DAffine3 {
     )]
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn look_to_rh(eye: DVec3, dir: DVec3, up: DVec3) -> Self {
         let f = dir.normalize();
         let s = f.cross(up).normalize();
@@ -371,6 +378,7 @@ impl DAffine3 {
     )]
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn look_at_lh(eye: DVec3, center: DVec3, up: DVec3) -> Self {
         glam_assert!(up.is_normalized());
         #[allow(deprecated)]
@@ -390,6 +398,7 @@ impl DAffine3 {
     )]
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn look_at_rh(eye: DVec3, center: DVec3, up: DVec3) -> Self {
         glam_assert!(up.is_normalized());
         #[allow(deprecated)]
@@ -459,6 +468,7 @@ impl DAffine3 {
     /// Note that if the transform is not invertible the result will be invalid.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn inverse(&self) -> Self {
         let matrix3 = self.matrix3.inverse();
         // transform negative translation by the matrix inverse:
