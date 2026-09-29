@@ -1018,8 +1018,8 @@ impl DMat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `left` is greater than or equal to `right`, if `bottom` is greater than or
-    /// equal to `top`, or if `z_near` or `z_far` are less than or equal to zero, or if `z_near`
+    /// Will panic if `left` is equal to `right`, if `bottom` is equal to
+    /// `top`, or if `z_near` or `z_far` are less than or equal to zero, or if `z_near`
     /// is equal to `z_far`, when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
@@ -1036,7 +1036,7 @@ impl DMat4 {
         z_near: f64,
         z_far: f64,
     ) -> Self {
-        glam_assert!(left < right && bottom < top);
+        glam_assert!(left != right && bottom != top);
         glam_assert!(z_near > 0.0 && z_far > 0.0 && z_near != z_far);
         let inv_width = 1.0 / (right - left);
         let inv_height = 1.0 / (top - bottom);
@@ -1058,8 +1058,8 @@ impl DMat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `left` is greater than or equal to `right`, if `bottom` is greater than or
-    /// equal to `top`, or if `z_near` or `z_far` are less than or equal to zero, or if `z_near`
+    /// Will panic if `left` is equal to `right`, if `bottom` is equal to
+    /// `top`, or if `z_near` or `z_far` are less than or equal to zero, or if `z_near`
     /// is equal to `z_far`, when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
@@ -1076,7 +1076,7 @@ impl DMat4 {
         z_near: f64,
         z_far: f64,
     ) -> Self {
-        glam_assert!(left < right && bottom < top);
+        glam_assert!(left != right && bottom != top);
         glam_assert!(z_near > 0.0 && z_far > 0.0 && z_near != z_far);
         let inv_width = 1.0 / (right - left);
         let inv_height = 1.0 / (top - bottom);
@@ -1131,8 +1131,8 @@ impl DMat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is not
-    /// positive, or if `z_near` or `z_far` are less than or equal to zero, or if `z_near` is
+    /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is
+    /// zero, or if `z_near` or `z_far` are less than or equal to zero, or if `z_near` is
     /// equal to `z_far`, when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
@@ -1143,7 +1143,7 @@ impl DMat4 {
     #[track_caller]
     pub fn perspective_lh(fov_y_radians: f64, aspect_ratio: f64, z_near: f64, z_far: f64) -> Self {
         glam_assert!(fov_y_radians > 0.0 && fov_y_radians < core::f64::consts::PI);
-        glam_assert!(aspect_ratio > 0.0);
+        glam_assert!(aspect_ratio != 0.0);
         glam_assert!(z_near > 0.0 && z_far > 0.0 && z_near != z_far);
         let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
@@ -1163,8 +1163,8 @@ impl DMat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is not
-    /// positive, or if `z_near` or `z_far` are less than or equal to zero, or if `z_near` is
+    /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is
+    /// zero, or if `z_near` or `z_far` are less than or equal to zero, or if `z_near` is
     /// equal to `z_far`, when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
@@ -1175,7 +1175,7 @@ impl DMat4 {
     #[track_caller]
     pub fn perspective_rh(fov_y_radians: f64, aspect_ratio: f64, z_near: f64, z_far: f64) -> Self {
         glam_assert!(fov_y_radians > 0.0 && fov_y_radians < core::f64::consts::PI);
-        glam_assert!(aspect_ratio > 0.0);
+        glam_assert!(aspect_ratio != 0.0);
         glam_assert!(z_near > 0.0 && z_far > 0.0 && z_near != z_far);
         let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
@@ -1196,8 +1196,8 @@ impl DMat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is not
-    /// positive, or if `z_near` is less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is
+    /// zero, or if `z_near` is less than or equal to zero when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::dcamera::lh::proj::directx::perspective_infinite` function instead"
@@ -1207,7 +1207,7 @@ impl DMat4 {
     #[track_caller]
     pub fn perspective_infinite_lh(fov_y_radians: f64, aspect_ratio: f64, z_near: f64) -> Self {
         glam_assert!(fov_y_radians > 0.0 && fov_y_radians < core::f64::consts::PI);
-        glam_assert!(aspect_ratio > 0.0);
+        glam_assert!(aspect_ratio != 0.0);
         glam_assert!(z_near > 0.0);
         let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
@@ -1226,8 +1226,8 @@ impl DMat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is not
-    /// positive, or if `z_near` is less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is
+    /// zero, or if `z_near` is less than or equal to zero when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::dcamera::lh::proj::directx::perspective_infinite_reverse` function instead"
@@ -1241,7 +1241,7 @@ impl DMat4 {
         z_near: f64,
     ) -> Self {
         glam_assert!(fov_y_radians > 0.0 && fov_y_radians < core::f64::consts::PI);
-        glam_assert!(aspect_ratio > 0.0);
+        glam_assert!(aspect_ratio != 0.0);
         glam_assert!(z_near > 0.0);
         let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
@@ -1261,8 +1261,8 @@ impl DMat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is not
-    /// positive, or if `z_near` is less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is
+    /// zero, or if `z_near` is less than or equal to zero when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::dcamera::rh::proj::directx::perspective_infinite` function instead"
@@ -1272,7 +1272,7 @@ impl DMat4 {
     #[track_caller]
     pub fn perspective_infinite_rh(fov_y_radians: f64, aspect_ratio: f64, z_near: f64) -> Self {
         glam_assert!(fov_y_radians > 0.0 && fov_y_radians < core::f64::consts::PI);
-        glam_assert!(aspect_ratio > 0.0);
+        glam_assert!(aspect_ratio != 0.0);
         glam_assert!(z_near > 0.0);
         let f = 1.0 / math::tan(0.5 * fov_y_radians);
         Self::from_cols(
@@ -1289,8 +1289,8 @@ impl DMat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is not
-    /// positive, or if `z_near` is less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is
+    /// zero, or if `z_near` is less than or equal to zero when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::dcamera::rh::proj::directx::perspective_infinite_reverse` function instead"
@@ -1304,7 +1304,7 @@ impl DMat4 {
         z_near: f64,
     ) -> Self {
         glam_assert!(fov_y_radians > 0.0 && fov_y_radians < core::f64::consts::PI);
-        glam_assert!(aspect_ratio > 0.0);
+        glam_assert!(aspect_ratio != 0.0);
         glam_assert!(z_near > 0.0);
         let f = 1.0 / math::tan(0.5 * fov_y_radians);
         Self::from_cols(

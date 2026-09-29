@@ -279,6 +279,9 @@ macro_rules! impl_camera_tests {
                 assert_approx_eq!(p.z_axis, $vec4::new(0.0, 0.0, 0.1, 0.0));
                 assert_approx_eq!(p.w_axis, $vec4::new(0.0, 0.0, 0.0, 1.0));
 
+                // Mirrored bounds are allowed.
+                let _ = proj::opengl::orthographic(1.0, -1.0, 1.0, -1.0, 1.0, 2.0);
+
                 should_glam_assert!({ proj::opengl::orthographic(1.0, 1.0, -1.0, 1.0, 1.0, 2.0) });
                 should_glam_assert!({ proj::opengl::orthographic(-1.0, 1.0, 1.0, 1.0, 1.0, 2.0) });
                 should_glam_assert!({ proj::opengl::orthographic(-1.0, 1.0, -1.0, 1.0, 1.0, 1.0) });
@@ -657,11 +660,15 @@ macro_rules! impl_camera_tests {
 
                 // `aspect_ratio` not positive.
                 should_glam_assert!({ $mat4::perspective_lh(fov, 0.0, 1.0, 2.0) });
-                should_glam_assert!({ $mat4::perspective_rh(fov, -1.0, 1.0, 2.0) });
+                should_glam_assert!({ $mat4::perspective_rh(fov, 0.0, 1.0, 2.0) });
                 should_glam_assert!({ $mat4::perspective_infinite_lh(fov, 0.0, 1.0) });
-                should_glam_assert!({ $mat4::perspective_infinite_rh(fov, -1.0, 1.0) });
+                should_glam_assert!({ $mat4::perspective_infinite_rh(fov, 0.0, 1.0) });
                 should_glam_assert!({ $mat4::perspective_infinite_reverse_lh(fov, 0.0, 1.0) });
-                should_glam_assert!({ $mat4::perspective_infinite_reverse_rh(fov, -1.0, 1.0) });
+                should_glam_assert!({ $mat4::perspective_infinite_reverse_rh(fov, 0.0, 1.0) });
+
+                // Negative aspect ratios and mirrored frustum bounds are allowed.
+                let _ = $mat4::perspective_lh(fov, -1.0, 1.0, 2.0);
+                let _ = $mat4::frustum_lh(1.0, -1.0, 1.0, -1.0, 1.0, 2.0);
 
                 // Degenerate frustum bounds.
                 should_glam_assert!({ $mat4::frustum_lh(1.0, 1.0, -1.0, 1.0, 1.0, 2.0) });
@@ -819,6 +826,8 @@ macro_rules! impl_camera_tests {
                 assert_approx_eq!($vec4::new(2.5, 5.0, 0.0, 5.0), projected, 1e-6);
 
                 let fov = $t::to_radians(90.0);
+                // Negative aspect ratio is allowed.
+                let _ = $camera::lh::proj::directx::perspective(fov, -2.0, 1.0, 2.0);
                 should_glam_assert!({
                     $camera::lh::proj::directx::perspective(fov, 1.0, 1.0, 0.0)
                 });
