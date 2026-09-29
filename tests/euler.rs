@@ -206,6 +206,12 @@ mod euler {
                 let test = |order| test_order_angles(order, &test_euler);
                 test_all_orders(&test);
             }
+
+            #[test]
+            fn test_to_euler_glam_assert() {
+                // Non-normalized quaternions panic.
+                should_glam_assert!({ ($quat::IDENTITY * 2.0).to_euler(EulerRot::XYZ) });
+            }
         };
     }
 

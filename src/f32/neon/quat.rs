@@ -535,8 +535,13 @@ impl Quat {
     }
 
     /// Returns the rotation angles for the given euler rotation sequence.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `self` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn to_euler(self, order: EulerRot) -> (f32, f32, f32) {
         self.to_euler_angles(order)
     }
@@ -1113,7 +1118,6 @@ impl Mul<f32> for Quat {
     ///
     /// The product is not guaranteed to be normalized.
     #[inline]
-    #[track_caller]
     fn mul(self, rhs: f32) -> Self {
         Self::from_vec4(Vec4::from(self) * rhs)
     }
@@ -1213,7 +1217,6 @@ impl Mul for Quat {
     /// Note that due to floating point rounding the result may not be perfectly
     /// normalized.
     #[inline]
-    #[track_caller]
     fn mul(self, rhs: Self) -> Self {
         self.mul_quat(rhs)
     }

@@ -89,6 +89,7 @@ impl Default for EulerRot {
 
 pub(crate) trait ToEuler {
     type Scalar;
+    #[track_caller]
     fn to_euler_angles(self, order: EulerRot) -> (Self::Scalar, Self::Scalar, Self::Scalar);
 }
 
@@ -350,6 +351,7 @@ macro_rules! impl_mat3_to_euler {
     ($scalar:ident, $mat3:ident, $vec3:ident) => {
         impl ToEuler for $mat3 {
             type Scalar = $scalar;
+            #[track_caller]
             fn to_euler_angles(
                 self,
                 euler: EulerRot,
@@ -405,6 +407,7 @@ macro_rules! impl_mat4_to_euler {
     ($scalar:ident, $mat4:ident, $mat3:ident) => {
         impl ToEuler for $mat4 {
             type Scalar = $scalar;
+            #[track_caller]
             fn to_euler_angles(
                 self,
                 order: EulerRot,
@@ -419,6 +422,7 @@ macro_rules! impl_quat_to_euler {
     ($scalar:ident, $quat:ident, $mat3:ident) => {
         impl ToEuler for $quat {
             type Scalar = $scalar;
+            #[track_caller]
             fn to_euler_angles(
                 self,
                 order: EulerRot,

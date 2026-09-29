@@ -514,8 +514,13 @@ impl DQuat {
     }
 
     /// Returns the rotation angles for the given euler rotation sequence.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `self` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn to_euler(self, order: EulerRot) -> (f64, f64, f64) {
         self.to_euler_angles(order)
     }
@@ -1007,7 +1012,6 @@ impl Mul<f64> for DQuat {
     ///
     /// The product is not guaranteed to be normalized.
     #[inline]
-    #[track_caller]
     fn mul(self, rhs: f64) -> Self {
         Self::from_vec4(DVec4::from(self) * rhs)
     }
@@ -1107,7 +1111,6 @@ impl Mul for DQuat {
     /// Note that due to floating point rounding the result may not be perfectly
     /// normalized.
     #[inline]
-    #[track_caller]
     fn mul(self, rhs: Self) -> Self {
         self.mul_quat(rhs)
     }

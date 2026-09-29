@@ -25,7 +25,9 @@ pub mod opengl {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is not
+    /// positive, or if `near` or `far` are less than or equal to zero, or if `near` is equal to
+    /// `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     #[track_caller]
@@ -63,7 +65,9 @@ pub mod opengl {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `left` is greater than or equal to `right`, if `bottom` is greater than or
+    /// equal to `top`, or if `near` or `far` are less than or equal to zero, or if `near` is
+    /// equal to `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     #[track_caller]
@@ -88,7 +92,9 @@ pub mod vulkan {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is not
+    /// positive, or if `near` or `far` are less than or equal to zero, or if `near` is equal to
+    /// `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     #[track_caller]
@@ -106,7 +112,8 @@ pub mod vulkan {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is not
+    /// positive, or if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     #[track_caller]
@@ -126,7 +133,8 @@ pub mod vulkan {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is not
+    /// positive, or if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     #[track_caller]
@@ -164,7 +172,9 @@ pub mod vulkan {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `left` is greater than or equal to `right`, if `bottom` is greater than or
+    /// equal to `top`, or if `near` or `far` are less than or equal to zero, or if `near` is
+    /// equal to `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     #[track_caller]
@@ -190,7 +200,9 @@ pub mod directx {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is not
+    /// positive, or if `near` or `far` are less than or equal to zero, or if `near` is equal to
+    /// `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     #[track_caller]
@@ -208,7 +220,8 @@ pub mod directx {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is not
+    /// positive, or if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     #[track_caller]
@@ -228,7 +241,8 @@ pub mod directx {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is not
+    /// positive, or if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     #[track_caller]
@@ -266,7 +280,9 @@ pub mod directx {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `left` is greater than or equal to `right`, if `bottom` is greater than or
+    /// equal to `top`, or if `near` or `far` are less than or equal to zero, or if `near` is
+    /// equal to `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     #[track_caller]

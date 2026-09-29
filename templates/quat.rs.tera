@@ -652,8 +652,13 @@ impl {{ self_t }} {
     }
 
     /// Returns the rotation angles for the given euler rotation sequence.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `self` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn to_euler(self, order: EulerRot) -> ({{ scalar_t }}, {{ scalar_t }}, {{ scalar_t }}) {
         self.to_euler_angles(order)
     }
@@ -1406,7 +1411,6 @@ impl Mul<{{ scalar_t }}> for {{ self_t }} {
     ///
     /// The product is not guaranteed to be normalized.
     #[inline]
-    #[track_caller]
     fn mul(self, rhs: {{ scalar_t }}) -> Self {
         Self::from_vec4({{ vec4_t }}::from(self) * rhs)
     }
@@ -1438,7 +1442,6 @@ impl Mul for {{ self_t }} {
     /// Note that due to floating point rounding the result may not be perfectly
     /// normalized.
     #[inline]
-    #[track_caller]
     fn mul(self, rhs: Self) -> Self {
         self.mul_quat(rhs)
     }

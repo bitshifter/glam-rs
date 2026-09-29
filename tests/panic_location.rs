@@ -9,7 +9,7 @@
     panic = "unwind"
 ))]
 
-use glam::{Affine3, Mat3, Quat, Vec3, Vec4};
+use glam::{Affine3, EulerRot, Mat3, Quat, Vec3, Vec4};
 use std::panic;
 use std::sync::Mutex;
 
@@ -61,9 +61,14 @@ fn test_panics_report_caller_location() {
         &Quat::from_xyzw(0.0, 0.0, 0.0, 0.0) * &Vec3::X
     });
 
-    // Deprecated convenience wrapper delegating to the non-deprecated method.
+    // Deprecated wrapper delegating to another deprecated method.
     assert_panics_at_caller("Mat3::look_at_rh", || {
         Mat3::look_at_rh(Vec3::X, Vec3::ZERO, Vec3::splat(1.0))
+    });
+
+    // Delegation through the private `ToEuler` trait (`Quat` -> `Mat3::from_quat`).
+    assert_panics_at_caller("Quat::to_euler", || {
+        Quat::from_xyzw(0.0, 0.0, 0.0, 2.0).to_euler(EulerRot::XYZ)
     });
 
     // Affine type delegating into the matrix type.
