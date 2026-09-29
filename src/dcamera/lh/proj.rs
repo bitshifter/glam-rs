@@ -37,8 +37,14 @@ pub mod opengl {
     ///
     /// Expects a left-handed Y-up view space input.
     /// Outputs NDC with Z in [-1, 1] and Y-up.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `left` is greater than or equal to `right`, if `bottom` is greater than or
+    /// equal to `top`, or if `near` is equal to `far` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn orthographic(
         left: f64,
         right: f64,
@@ -132,8 +138,14 @@ pub mod vulkan {
     ///
     /// Expects a left-handed Y-up view space input.
     /// Outputs NDC with Z in [0, 1] and Y-down.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `left` is greater than or equal to `right`, if `bottom` is greater than or
+    /// equal to `top`, or if `near` is equal to `far` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn orthographic(
         left: f64,
         right: f64,
@@ -228,8 +240,14 @@ pub mod directx {
     ///
     /// Expects a left-handed Y-up view space input.
     /// Outputs NDC with Z in [0, 1] and Y-up.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `left` is greater than or equal to `right`, if `bottom` is greater than or
+    /// equal to `top`, or if `near` is equal to `far` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn orthographic(
         left: f64,
         right: f64,

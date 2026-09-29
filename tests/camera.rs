@@ -278,6 +278,10 @@ macro_rules! impl_camera_tests {
                 let p = proj::opengl::orthographic(-10.0, 10.0, -5.0, 5.0, -10.0, 10.0);
                 assert_approx_eq!(p.z_axis, $vec4::new(0.0, 0.0, 0.1, 0.0));
                 assert_approx_eq!(p.w_axis, $vec4::new(0.0, 0.0, 0.0, 1.0));
+
+                should_glam_assert!({ proj::opengl::orthographic(1.0, 1.0, -1.0, 1.0, 1.0, 2.0) });
+                should_glam_assert!({ proj::opengl::orthographic(-1.0, 1.0, 1.0, 1.0, 1.0, 2.0) });
+                should_glam_assert!({ proj::opengl::orthographic(-1.0, 1.0, -1.0, 1.0, 1.0, 1.0) });
             });
 
             glam_test!(test_frustum_opengl, {
@@ -1154,6 +1158,10 @@ macro_rules! impl_pipeline_tests {
             check_view(&$world, &v);
             check_proj_direction(&$world, &NDC_OPENGL, &v, &p);
             check_proj_near_far(&$world, &NDC_OPENGL, &v, &p);
+
+            should_glam_assert!({ proj::opengl::orthographic(1.0, 1.0, -1.0, 1.0, 1.0, 2.0) });
+            should_glam_assert!({ proj::opengl::orthographic(-1.0, 1.0, 1.0, 1.0, 1.0, 2.0) });
+            should_glam_assert!({ proj::opengl::orthographic(-1.0, 1.0, -1.0, 1.0, 1.0, 1.0) });
         });
 
         glam_test!(test_vulkan_orthographic_pipeline, {
@@ -1162,6 +1170,10 @@ macro_rules! impl_pipeline_tests {
             check_view(&$world, &v);
             check_proj_direction(&$world, &NDC_VULKAN, &v, &p);
             check_proj_near_far(&$world, &NDC_VULKAN, &v, &p);
+
+            should_glam_assert!({ proj::vulkan::orthographic(1.0, 1.0, -1.0, 1.0, 1.0, 2.0) });
+            should_glam_assert!({ proj::vulkan::orthographic(-1.0, 1.0, 1.0, 1.0, 1.0, 2.0) });
+            should_glam_assert!({ proj::vulkan::orthographic(-1.0, 1.0, -1.0, 1.0, 1.0, 1.0) });
         });
 
         glam_test!(test_directx_orthographic_pipeline, {
@@ -1170,6 +1182,10 @@ macro_rules! impl_pipeline_tests {
             check_view(&$world, &v);
             check_proj_direction(&$world, &NDC_DIRECTX, &v, &p);
             check_proj_near_far(&$world, &NDC_DIRECTX, &v, &p);
+
+            should_glam_assert!({ proj::directx::orthographic(1.0, 1.0, -1.0, 1.0, 1.0, 2.0) });
+            should_glam_assert!({ proj::directx::orthographic(-1.0, 1.0, 1.0, 1.0, 1.0, 2.0) });
+            should_glam_assert!({ proj::directx::orthographic(-1.0, 1.0, -1.0, 1.0, 1.0, 1.0) });
         });
 
         // ---- frustum ----

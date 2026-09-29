@@ -237,8 +237,14 @@ pub(crate) fn perspective_infinite_reverse<const RH: bool, const YFLIP: bool>(
 }
 
 /// Builds an orthographic projection from left, right, bottom, top, near, far bounds.
+///
+/// # Panics
+///
+/// Will panic if `left` is greater than or equal to `right`, if `bottom` is greater than or
+/// equal to `top`, or if `near` is equal to `far` when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[track_caller]
 pub(crate) fn orthographic<const RH: bool, const ZO: bool, const YFLIP: bool>(
     left: f32,
     right: f32,
@@ -247,6 +253,8 @@ pub(crate) fn orthographic<const RH: bool, const ZO: bool, const YFLIP: bool>(
     near: f32,
     far: f32,
 ) -> Mat4 {
+    glam_assert!(left < right && bottom < top);
+    glam_assert!(near != far);
     let width_inv = 1.0 / (right - left);
     let height_inv = 1.0 / (top - bottom);
     let depth_inv = 1.0 / (far - near);

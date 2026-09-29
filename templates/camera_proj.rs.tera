@@ -58,8 +58,14 @@ pub mod opengl {
     ///
     /// This is the OpenGL `glOrtho` equivalent.
     {%- endif %}
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `left` is greater than or equal to `right`, if `bottom` is greater than or
+    /// equal to `top`, or if `near` is equal to `far` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn orthographic(left: {{ scalar_t }}, right: {{ scalar_t }}, bottom: {{ scalar_t }}, top: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
         camera_impl::orthographic::<{{ is_rh }}, false, false>(left, right, bottom, top, near, far)
     }
@@ -170,8 +176,14 @@ pub mod {{ api }} {
     ///
     /// Expects a {{ handedness }} Y-up view space input.
     /// Outputs NDC with Z in {{ api_z }} and {{ api_y }}.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `left` is greater than or equal to `right`, if `bottom` is greater than or
+    /// equal to `top`, or if `near` is equal to `far` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn orthographic(left: {{ scalar_t }}, right: {{ scalar_t }}, bottom: {{ scalar_t }}, top: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
         camera_impl::orthographic::<{{ is_rh }}, {{ is_zo }}, {{ yflip }}>(left, right, bottom, top, near, far)
     }

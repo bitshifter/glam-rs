@@ -37,8 +37,14 @@ pub mod opengl {
     ///
     /// Expects a left-handed Y-up view space input.
     /// Outputs NDC with Z in [-1, 1] and Y-up.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `left` is greater than or equal to `right`, if `bottom` is greater than or
+    /// equal to `top`, or if `near` is equal to `far` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn orthographic(left: f32, right: f32, bottom: f32, top: f32, near: f32, far: f32) -> Mat4 {
         camera_impl::orthographic::<false, false, false>(left, right, bottom, top, near, far)
     }
@@ -125,8 +131,14 @@ pub mod vulkan {
     ///
     /// Expects a left-handed Y-up view space input.
     /// Outputs NDC with Z in [0, 1] and Y-down.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `left` is greater than or equal to `right`, if `bottom` is greater than or
+    /// equal to `top`, or if `near` is equal to `far` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn orthographic(left: f32, right: f32, bottom: f32, top: f32, near: f32, far: f32) -> Mat4 {
         camera_impl::orthographic::<false, true, true>(left, right, bottom, top, near, far)
     }
@@ -214,8 +226,14 @@ pub mod directx {
     ///
     /// Expects a left-handed Y-up view space input.
     /// Outputs NDC with Z in [0, 1] and Y-up.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `left` is greater than or equal to `right`, if `bottom` is greater than or
+    /// equal to `top`, or if `near` is equal to `far` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn orthographic(left: f32, right: f32, bottom: f32, top: f32, near: f32, far: f32) -> Mat4 {
         camera_impl::orthographic::<false, true, false>(left, right, bottom, top, near, far)
     }
