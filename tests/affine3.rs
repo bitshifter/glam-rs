@@ -125,6 +125,21 @@ macro_rules! impl_affine3_tests {
 
             should_glam_assert!({ $affine3::from_axis_angle($vec3::ZERO, 0.0) });
             should_glam_assert!({ $affine3::from_quat($quat::IDENTITY * 2.0) });
+            should_glam_assert!({
+                $affine3::from_rotation_translation($quat::IDENTITY * 2.0, $vec3::ZERO)
+            });
+            should_glam_assert!({
+                $affine3::from_scale_rotation_translation(
+                    $vec3::ONE,
+                    $quat::IDENTITY * 2.0,
+                    $vec3::ZERO,
+                )
+            });
+            should_glam_assert!({
+                $quat::from_affine3(
+                    &$affine3::from_mat3($mat3::from_cols($vec3::ONE, $vec3::Y, $vec3::Z)).into(),
+                )
+            });
         });
 
         glam_test!(test_affine3_mul, {

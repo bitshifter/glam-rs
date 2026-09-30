@@ -232,6 +232,7 @@ impl Mat4 {
 
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     fn quat_to_axes(rotation: Quat) -> (Vec4, Vec4, Vec4) {
         glam_assert!(rotation.is_normalized());
 
@@ -266,6 +267,7 @@ impl Mat4 {
     /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_scale_rotation_translation(scale: Vec3, rotation: Quat, translation: Vec3) -> Self {
         let (x_axis, y_axis, z_axis) = Self::quat_to_axes(rotation);
         Self::from_cols(
@@ -286,6 +288,7 @@ impl Mat4 {
     /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_rotation_translation(rotation: Quat, translation: Vec3) -> Self {
         let (x_axis, y_axis, z_axis) = Self::quat_to_axes(rotation);
         Self::from_cols(x_axis, y_axis, z_axis, Vec4::from((translation, 1.0)))
@@ -300,6 +303,7 @@ impl Mat4 {
     /// is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn to_scale_rotation_translation(&self) -> (Vec3, Quat, Vec3) {
         glam_assert!(self.row(3).abs_diff_eq(Vec4::W, 1e-6));
 
@@ -340,6 +344,7 @@ impl Mat4 {
     /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_quat(rotation: Quat) -> Self {
         let (x_axis, y_axis, z_axis) = Self::quat_to_axes(rotation);
         Self::from_cols(x_axis, y_axis, z_axis, Vec4::W)
@@ -418,6 +423,7 @@ impl Mat4 {
     /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
         glam_assert!(axis.is_normalized());
 
@@ -473,6 +479,7 @@ impl Mat4 {
     /// `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn to_euler(&self, order: EulerRot) -> (f32, f32, f32) {
         glam_assert!(
             self.x_axis.xyz().is_normalized()
@@ -543,6 +550,7 @@ impl Mat4 {
     /// Will panic if all elements of `scale` are zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_scale(scale: Vec3) -> Self {
         // Do not panic as long as any component is non-zero
         glam_assert!(scale.cmpne(Vec3::ZERO).any());
@@ -564,6 +572,7 @@ impl Mat4 {
     /// Panics if `slice` is less than 16 elements long.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub const fn from_cols_slice(slice: &[f32]) -> Self {
         Self::new(
             slice[0], slice[1], slice[2], slice[3], slice[4], slice[5], slice[6], slice[7],
@@ -577,6 +586,7 @@ impl Mat4 {
     ///
     /// Panics if `slice` is less than 16 elements long.
     #[inline]
+    #[track_caller]
     pub fn write_cols_to_slice(&self, slice: &mut [f32]) {
         slice[0] = self.x_axis.x;
         slice[1] = self.x_axis.y;
@@ -608,6 +618,7 @@ impl Mat4 {
     /// Panics if `slice` is less than 16 elements long.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub const fn from_rows_slice(slice: &[f32]) -> Self {
         Self::new(
             slice[0], slice[4], slice[8], slice[12], slice[1], slice[5], slice[9], slice[13],
@@ -622,6 +633,7 @@ impl Mat4 {
     /// Panics if `index` is greater than 3.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn col(&self, index: usize) -> Vec4 {
         match index {
             0 => self.x_axis,
@@ -638,6 +650,7 @@ impl Mat4 {
     ///
     /// Panics if `index` is greater than 3.
     #[inline]
+    #[track_caller]
     pub fn col_mut(&mut self, index: usize) -> &mut Vec4 {
         match index {
             0 => &mut self.x_axis,
@@ -657,6 +670,7 @@ impl Mat4 {
     /// Panics if `index` is greater than 3.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn row(&self, index: usize) -> Vec4 {
         match index {
             0 => Vec4::new(self.x_axis.x, self.y_axis.x, self.z_axis.x, self.w_axis.x),
@@ -677,6 +691,7 @@ impl Mat4 {
     ///
     /// Panics if `index` is greater than 3.
     #[inline]
+    #[track_caller]
     pub fn set_row(&mut self, index: usize, row: Vec4) {
         match index {
             0 => {
@@ -805,6 +820,7 @@ impl Mat4 {
     /// matrix is aligned.
     #[inline(always)]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     fn inverse_checked<const CHECKED: bool>(&self) -> (Self, bool) {
         unsafe {
             // Based on https://github.com/g-truc/glm `glm_mat4_inverse`
@@ -965,6 +981,7 @@ impl Mat4 {
     /// Will panic if the resulting inverted matrix is not finite when `glam_assert`
     /// is enabled.
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn inverse(&self) -> Self {
         self.inverse_checked::<false>().0
     }
@@ -995,13 +1012,15 @@ impl Mat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
+    /// Will panic if `dir` or `up` are not normalized, or if `dir` and `up` are parallel,
+    /// when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::lh::view::look_to_mat4` function instead"
     )]
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn look_to_lh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
         #[allow(deprecated)]
         Self::look_to_rh(eye, -dir, up)
@@ -1014,13 +1033,15 @@ impl Mat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
+    /// Will panic if `dir` or `up` are not normalized, or if `dir` and `up` are parallel,
+    /// when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::rh::view::look_to_mat4` function instead"
     )]
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn look_to_rh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
         glam_assert!(dir.is_normalized());
         glam_assert!(up.is_normalized());
@@ -1043,13 +1064,15 @@ impl Mat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    /// Will panic if `up` is not normalized, if `center` is equal to `eye`, or if the view
+    /// direction is parallel to `up`, when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::lh::view::look_at_mat4` function instead"
     )]
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn look_at_lh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
         #[allow(deprecated)]
         Self::look_to_lh(eye, center.sub(eye).normalize(), up)
@@ -1062,12 +1085,14 @@ impl Mat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    /// Will panic if `up` is not normalized, if `center` is equal to `eye`, or if the view
+    /// direction is parallel to `up`, when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::rh::view::look_at_mat4` function instead"
     )]
     #[inline]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn look_at_rh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
         #[allow(deprecated)]
         Self::look_to_rh(eye, center.sub(eye).normalize(), up)
@@ -1112,14 +1137,15 @@ impl Mat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
-    /// enabled.
+    /// Will panic if `left` equals `right`, `bottom` equals `top`, `z_near` equals `z_far`,
+    /// or `z_near` or `z_far` are not positive when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::lh::proj::directx::frustum` function instead"
     )]
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn frustum_lh(
         left: f32,
         right: f32,
@@ -1128,7 +1154,8 @@ impl Mat4 {
         z_near: f32,
         z_far: f32,
     ) -> Self {
-        glam_assert!(z_near > 0.0 && z_far > 0.0);
+        glam_assert!(left != right && bottom != top);
+        glam_assert!(z_near > 0.0 && z_far > 0.0 && z_near != z_far);
         let inv_width = 1.0 / (right - left);
         let inv_height = 1.0 / (top - bottom);
         let inv_depth = 1.0 / (z_far - z_near);
@@ -1149,14 +1176,15 @@ impl Mat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
-    /// enabled.
+    /// Will panic if `left` equals `right`, `bottom` equals `top`, `z_near` equals `z_far`,
+    /// or `z_near` or `z_far` are not positive when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::rh::proj::directx::frustum` function instead"
     )]
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn frustum_rh(
         left: f32,
         right: f32,
@@ -1165,7 +1193,8 @@ impl Mat4 {
         z_near: f32,
         z_far: f32,
     ) -> Self {
-        glam_assert!(z_near > 0.0 && z_far > 0.0);
+        glam_assert!(left != right && bottom != top);
+        glam_assert!(z_near > 0.0 && z_far > 0.0 && z_near != z_far);
         let inv_width = 1.0 / (right - left);
         let inv_height = 1.0 / (top - bottom);
         let inv_depth = 1.0 / (z_far - z_near);
@@ -1219,16 +1248,20 @@ impl Mat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
-    /// enabled.
+    /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is
+    /// zero, or if `z_near` or `z_far` are less than or equal to zero, or if `z_near` is
+    /// equal to `z_far`, when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::lh::proj::directx::perspective` function instead"
     )]
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective_lh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32, z_far: f32) -> Self {
-        glam_assert!(z_near > 0.0 && z_far > 0.0);
+        glam_assert!(fov_y_radians > 0.0 && fov_y_radians < core::f32::consts::PI);
+        glam_assert!(aspect_ratio != 0.0);
+        glam_assert!(z_near > 0.0 && z_far > 0.0 && z_near != z_far);
         let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
         let w = h / aspect_ratio;
@@ -1247,16 +1280,20 @@ impl Mat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `z_near` or `z_far` are less than or equal to zero when `glam_assert` is
-    /// enabled.
+    /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is
+    /// zero, or if `z_near` or `z_far` are less than or equal to zero, or if `z_near` is
+    /// equal to `z_far`, when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::rh::proj::directx::perspective` function instead"
     )]
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective_rh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32, z_far: f32) -> Self {
-        glam_assert!(z_near > 0.0 && z_far > 0.0);
+        glam_assert!(fov_y_radians > 0.0 && fov_y_radians < core::f32::consts::PI);
+        glam_assert!(aspect_ratio != 0.0);
+        glam_assert!(z_near > 0.0 && z_far > 0.0 && z_near != z_far);
         let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
         let w = h / aspect_ratio;
@@ -1276,15 +1313,18 @@ impl Mat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is
-    /// enabled.
+    /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is
+    /// zero, or if `z_near` is less than or equal to zero when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::lh::proj::directx::perspective_infinite` function instead"
     )]
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective_infinite_lh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Self {
+        glam_assert!(fov_y_radians > 0.0 && fov_y_radians < core::f32::consts::PI);
+        glam_assert!(aspect_ratio != 0.0);
         glam_assert!(z_near > 0.0);
         let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
@@ -1303,18 +1343,22 @@ impl Mat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is
+    /// zero, or if `z_near` is less than or equal to zero when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::lh::proj::directx::perspective_infinite_reverse` function instead"
     )]
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective_infinite_reverse_lh(
         fov_y_radians: f32,
         aspect_ratio: f32,
         z_near: f32,
     ) -> Self {
+        glam_assert!(fov_y_radians > 0.0 && fov_y_radians < core::f32::consts::PI);
+        glam_assert!(aspect_ratio != 0.0);
         glam_assert!(z_near > 0.0);
         let (sin_fov, cos_fov) = math::sin_cos(0.5 * fov_y_radians);
         let h = cos_fov / sin_fov;
@@ -1334,15 +1378,18 @@ impl Mat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is
-    /// enabled.
+    /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is
+    /// zero, or if `z_near` is less than or equal to zero when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::rh::proj::directx::perspective_infinite` function instead"
     )]
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective_infinite_rh(fov_y_radians: f32, aspect_ratio: f32, z_near: f32) -> Self {
+        glam_assert!(fov_y_radians > 0.0 && fov_y_radians < core::f32::consts::PI);
+        glam_assert!(aspect_ratio != 0.0);
         glam_assert!(z_near > 0.0);
         let f = 1.0 / math::tan(0.5 * fov_y_radians);
         Self::from_cols(
@@ -1359,18 +1406,22 @@ impl Mat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `fov_y_radians` is not in the range `(0, π)`, if `aspect_ratio` is
+    /// zero, or if `z_near` is less than or equal to zero when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::rh::proj::directx::perspective_infinite_reverse` function instead"
     )]
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective_infinite_reverse_rh(
         fov_y_radians: f32,
         aspect_ratio: f32,
         z_near: f32,
     ) -> Self {
+        glam_assert!(fov_y_radians > 0.0 && fov_y_radians < core::f32::consts::PI);
+        glam_assert!(aspect_ratio != 0.0);
         glam_assert!(z_near > 0.0);
         let f = 1.0 / math::tan(0.5 * fov_y_radians);
         Self::from_cols(
@@ -1513,6 +1564,7 @@ impl Mat4 {
     /// Will panic if the 3rd row of `self` is not `(0, 0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn transform_point3(&self, rhs: Vec3) -> Vec3 {
         glam_assert!(self.row(3).abs_diff_eq(Vec4::W, 1e-6));
         let mut res = self.x_axis.mul(rhs.x);
@@ -1534,6 +1586,7 @@ impl Mat4 {
     /// Will panic if the 3rd row of `self` is not `(0, 0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn transform_vector3(&self, rhs: Vec3) -> Vec3 {
         glam_assert!(self.row(3).abs_diff_eq(Vec4::W, 1e-6));
         let mut res = self.x_axis.mul(rhs.x);
@@ -1572,6 +1625,7 @@ impl Mat4 {
     /// Will panic if the 3rd row of `self` is not `(0, 0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn transform_point3a(&self, rhs: Vec3A) -> Vec3A {
         glam_assert!(self.row(3).abs_diff_eq(Vec4::W, 1e-6));
         let mut res = self.x_axis.mul(rhs.xxxx());
@@ -1592,6 +1646,7 @@ impl Mat4 {
     /// Will panic if the 3rd row of `self` is not `(0, 0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn transform_vector3a(&self, rhs: Vec3A) -> Vec3A {
         glam_assert!(self.row(3).abs_diff_eq(Vec4::W, 1e-6));
         let mut res = self.x_axis.mul(rhs.xxxx());

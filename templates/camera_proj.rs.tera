@@ -42,9 +42,12 @@ pub mod opengl {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is
+    /// zero, or if `near` or `far` are less than or equal to zero, or if `near` is equal to
+    /// `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
         camera_impl::perspective::<{{ is_rh }}, false, false>(vertical_fov, aspect_ratio, near, far)
     }
@@ -57,8 +60,14 @@ pub mod opengl {
     ///
     /// This is the OpenGL `glOrtho` equivalent.
     {%- endif %}
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `left` is equal to `right`, if `bottom` is equal to
+    /// `top`, or if `near` is equal to `far` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn orthographic(left: {{ scalar_t }}, right: {{ scalar_t }}, bottom: {{ scalar_t }}, top: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
         camera_impl::orthographic::<{{ is_rh }}, false, false>(left, right, bottom, top, near, far)
     }
@@ -75,9 +84,12 @@ pub mod opengl {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `left` is equal to `right`, if `bottom` is equal to
+    /// `top`, or if `near` or `far` are less than or equal to zero, or if `near` is
+    /// equal to `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn frustum(left: {{ scalar_t }}, right: {{ scalar_t }}, bottom: {{ scalar_t }}, top: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
         camera_impl::frustum::<{{ is_rh }}, false, false>(left, right, bottom, top, near, far)
     }
@@ -118,9 +130,12 @@ pub mod {{ api }} {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is
+    /// zero, or if `near` or `far` are less than or equal to zero, or if `near` is equal to
+    /// `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
         camera_impl::perspective::<{{ is_rh }}, {{ is_zo }}, {{ yflip }}>(vertical_fov, aspect_ratio, near, far)
     }
@@ -135,9 +150,11 @@ pub mod {{ api }} {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is
+    /// zero, or if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective_infinite(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, near: {{ scalar_t }}) -> {{ mat4_t }} {
         camera_impl::perspective_infinite::<{{ is_rh }}, {{ is_zo }}, {{ yflip }}>(vertical_fov, aspect_ratio, near)
     }
@@ -154,9 +171,11 @@ pub mod {{ api }} {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is
+    /// zero, or if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective_infinite_reverse(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, near: {{ scalar_t }}) -> {{ mat4_t }} {
         camera_impl::perspective_infinite_reverse::<{{ is_rh }}, {{ yflip }}>(vertical_fov, aspect_ratio, near)
     }
@@ -165,8 +184,14 @@ pub mod {{ api }} {
     ///
     /// Expects a {{ handedness }} Y-up view space input.
     /// Outputs NDC with Z in {{ api_z }} and {{ api_y }}.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `left` is equal to `right`, if `bottom` is equal to
+    /// `top`, or if `near` is equal to `far` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn orthographic(left: {{ scalar_t }}, right: {{ scalar_t }}, bottom: {{ scalar_t }}, top: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
         camera_impl::orthographic::<{{ is_rh }}, {{ is_zo }}, {{ yflip }}>(left, right, bottom, top, near, far)
     }
@@ -178,9 +203,12 @@ pub mod {{ api }} {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `left` is equal to `right`, if `bottom` is equal to
+    /// `top`, or if `near` or `far` are less than or equal to zero, or if `near` is
+    /// equal to `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn frustum(left: {{ scalar_t }}, right: {{ scalar_t }}, bottom: {{ scalar_t }}, top: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
         camera_impl::frustum::<{{ is_rh }}, {{ is_zo }}, {{ yflip }}>(left, right, bottom, top, near, far)
     }

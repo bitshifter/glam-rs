@@ -17,6 +17,7 @@ use crate::{f32::math, Affine3, Affine3A, Mat3, Mat3A, Mat4, Quat, Vec3, Vec3A, 
 /// Computes an orthonormal view basis from eye, direction, and up.
 #[inline(always)]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 fn look_to_axes4<const RH: bool>(eye: Vec3, dir: Vec3, up: Vec3) -> [Vec3; 4] {
     glam_assert!(dir.is_normalized());
     glam_assert!(up.is_normalized());
@@ -34,6 +35,7 @@ fn look_to_axes4<const RH: bool>(eye: Vec3, dir: Vec3, up: Vec3) -> [Vec3; 4] {
 /// Same as [`look_to_axes4`] but without the translation row.
 #[inline(always)]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 fn look_to_axes3<const RH: bool>(dir: Vec3, up: Vec3) -> [Vec3; 3] {
     glam_assert!(dir.is_normalized());
     glam_assert!(up.is_normalized());
@@ -50,6 +52,7 @@ fn look_to_axes3<const RH: bool>(dir: Vec3, up: Vec3) -> [Vec3; 3] {
 /// Assembles a `Mat4` view matrix from eye, direction, and up.
 #[inline]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub(crate) fn look_to_mat4<const RH: bool>(eye: Vec3, dir: Vec3, up: Vec3) -> Mat4 {
     let axes = look_to_axes4::<RH>(eye, dir, up);
     Mat4::from_cols(
@@ -63,6 +66,7 @@ pub(crate) fn look_to_mat4<const RH: bool>(eye: Vec3, dir: Vec3, up: Vec3) -> Ma
 /// Assembles an `Affine3` view transform from eye, direction, and up.
 #[inline]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub(crate) fn look_to_affine3<const RH: bool>(eye: Vec3, dir: Vec3, up: Vec3) -> Affine3 {
     let axes = look_to_axes4::<RH>(eye, dir, up);
     Affine3 {
@@ -74,6 +78,7 @@ pub(crate) fn look_to_affine3<const RH: bool>(eye: Vec3, dir: Vec3, up: Vec3) ->
 /// Assembles an `Affine3A` view transform from eye, direction, and up.
 #[inline]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub(crate) fn look_to_affine3a<const RH: bool>(eye: Vec3, dir: Vec3, up: Vec3) -> Affine3A {
     let axes = look_to_axes4::<RH>(eye, dir, up);
     Affine3A {
@@ -89,6 +94,7 @@ pub(crate) fn look_to_affine3a<const RH: bool>(eye: Vec3, dir: Vec3, up: Vec3) -
 /// Returns a `Mat3A` view rotation (no translation) from direction and up.
 #[inline]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub(crate) fn look_to_mat3a<const RH: bool>(dir: Vec3, up: Vec3) -> Mat3A {
     let axes = look_to_axes3::<RH>(dir, up);
     Mat3A::from_cols(
@@ -101,6 +107,7 @@ pub(crate) fn look_to_mat3a<const RH: bool>(dir: Vec3, up: Vec3) -> Mat3A {
 /// Returns a `Mat3` view rotation (no translation) from direction and up.
 #[inline]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub(crate) fn look_to_mat3<const RH: bool>(dir: Vec3, up: Vec3) -> Mat3 {
     let axes = look_to_axes3::<RH>(dir, up);
     Mat3::from_cols(axes[0], axes[1], axes[2])
@@ -109,6 +116,7 @@ pub(crate) fn look_to_mat3<const RH: bool>(dir: Vec3, up: Vec3) -> Mat3 {
 /// Returns a `Quat` representing a view rotation from direction and up.
 #[inline]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub(crate) fn look_to_quat<const RH: bool>(dir: Vec3, up: Vec3) -> Quat {
     let axes = look_to_axes3::<RH>(dir, up);
     Quat::from_rotation_axes(axes[0], axes[1], axes[2])
@@ -118,16 +126,20 @@ pub(crate) fn look_to_quat<const RH: bool>(dir: Vec3, up: Vec3) -> Quat {
 ///
 /// # Panics
 ///
-/// Will panic if `near` or `far` are <= 0 when `glam_assert` is enabled.
+/// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is zero,
+/// or if `near` or `far` are <= 0, or if `near` is equal to `far`, when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub(crate) fn perspective<const RH: bool, const ZO: bool, const YFLIP: bool>(
     vertical_fov: f32,
     aspect_ratio: f32,
     near: f32,
     far: f32,
 ) -> Mat4 {
-    glam_assert!(near > 0.0 && far > 0.0);
+    glam_assert!(vertical_fov > 0.0 && vertical_fov < core::f32::consts::PI);
+    glam_assert!(aspect_ratio != 0.0);
+    glam_assert!(near > 0.0 && far > 0.0 && near != far);
     let (sin_fov, cos_fov) = math::sin_cos(0.5 * vertical_fov);
     let h = cos_fov / sin_fov;
     let xx = h / aspect_ratio;
@@ -163,14 +175,18 @@ pub(crate) fn perspective<const RH: bool, const ZO: bool, const YFLIP: bool>(
 ///
 /// # Panics
 ///
-/// Will panic if `near` <= 0 when `glam_assert` is enabled.
+/// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is zero,
+/// or if `near` is <= 0 when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub(crate) fn perspective_infinite<const RH: bool, const ZO: bool, const YFLIP: bool>(
     vertical_fov: f32,
     aspect_ratio: f32,
     near: f32,
 ) -> Mat4 {
+    glam_assert!(vertical_fov > 0.0 && vertical_fov < core::f32::consts::PI);
+    glam_assert!(aspect_ratio != 0.0);
     glam_assert!(near > 0.0);
     let (sin_fov, cos_fov) = math::sin_cos(0.5 * vertical_fov);
     let h = cos_fov / sin_fov;
@@ -193,14 +209,18 @@ pub(crate) fn perspective_infinite<const RH: bool, const ZO: bool, const YFLIP: 
 ///
 /// # Panics
 ///
-/// Will panic if `near` <= 0 when `glam_assert` is enabled.
+/// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is zero,
+/// or if `near` is <= 0 when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub(crate) fn perspective_infinite_reverse<const RH: bool, const YFLIP: bool>(
     vertical_fov: f32,
     aspect_ratio: f32,
     near: f32,
 ) -> Mat4 {
+    glam_assert!(vertical_fov > 0.0 && vertical_fov < core::f32::consts::PI);
+    glam_assert!(aspect_ratio != 0.0);
     glam_assert!(near > 0.0);
     let (sin_fov, cos_fov) = math::sin_cos(0.5 * vertical_fov);
     let h = cos_fov / sin_fov;
@@ -217,8 +237,14 @@ pub(crate) fn perspective_infinite_reverse<const RH: bool, const YFLIP: bool>(
 }
 
 /// Builds an orthographic projection from left, right, bottom, top, near, far bounds.
+///
+/// # Panics
+///
+/// Will panic if `left` is equal to `right`, if `bottom` is equal to
+/// `top`, or if `near` is equal to `far` when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub(crate) fn orthographic<const RH: bool, const ZO: bool, const YFLIP: bool>(
     left: f32,
     right: f32,
@@ -227,6 +253,8 @@ pub(crate) fn orthographic<const RH: bool, const ZO: bool, const YFLIP: bool>(
     near: f32,
     far: f32,
 ) -> Mat4 {
+    glam_assert!(left != right && bottom != top);
+    glam_assert!(near != far);
     let width_inv = 1.0 / (right - left);
     let height_inv = 1.0 / (top - bottom);
     let depth_inv = 1.0 / (far - near);
@@ -261,9 +289,11 @@ pub(crate) fn orthographic<const RH: bool, const ZO: bool, const YFLIP: bool>(
 ///
 /// # Panics
 ///
-/// Will panic if `near` or `far` are <= 0 when `glam_assert` is enabled.
+/// Will panic if `left` equals `right`, `bottom` equals `top`, `near` equals `far`, or
+/// `near` or `far` are not positive when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub(crate) fn frustum<const RH: bool, const ZO: bool, const YFLIP: bool>(
     left: f32,
     right: f32,
@@ -272,7 +302,8 @@ pub(crate) fn frustum<const RH: bool, const ZO: bool, const YFLIP: bool>(
     near: f32,
     far: f32,
 ) -> Mat4 {
-    glam_assert!(near > 0.0 && far > 0.0);
+    glam_assert!(left != right && bottom != top);
+    glam_assert!(near > 0.0 && far > 0.0 && near != far);
     let inv_width = 1.0 / (right - left);
     let inv_height = 1.0 / (top - bottom);
     let inv_depth = 1.0 / (far - near);

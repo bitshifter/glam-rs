@@ -98,6 +98,7 @@ impl BVec3A {
     /// Panics if `index` is greater than 2.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn test(self, index: usize) -> bool {
         match index {
             0 => (self.bitmask() & (1 << 0)) != 0,
@@ -111,6 +112,7 @@ impl BVec3A {
     ///
     /// Panics if `index` is greater than 2.
     #[inline]
+    #[track_caller]
     pub fn set(&mut self, index: usize, value: bool) {
         self.0 = match index {
             0 => unsafe { vsetq_lane_u32(MASK[value as usize], self.0, 0) },

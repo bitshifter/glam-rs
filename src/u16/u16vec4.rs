@@ -151,6 +151,7 @@ impl U16Vec4 {
     /// Panics if `slice` is less than 4 elements long.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub const fn from_slice(slice: &[u16]) -> Self {
         assert!(slice.len() >= 4);
         Self::new(slice[0], slice[1], slice[2], slice[3])
@@ -162,6 +163,7 @@ impl U16Vec4 {
     ///
     /// Panics if `slice` is less than 4 elements long.
     #[inline]
+    #[track_caller]
     pub fn write_to_slice(self, slice: &mut [u16]) {
         slice[..4].copy_from_slice(&self.to_array());
     }
@@ -259,6 +261,7 @@ impl U16Vec4 {
     /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn clamp(self, min: Self, max: Self) -> Self {
         glam_assert!(min.cmple(max).all(), "clamp: expected min <= max");
         self.max(min).min(max)
@@ -2959,6 +2962,7 @@ impl Shr<UVec4> for &U16Vec4 {
 impl Index<usize> for U16Vec4 {
     type Output = u16;
     #[inline]
+    #[track_caller]
     fn index(&self, index: usize) -> &Self::Output {
         match index {
             0 => &self.x,
@@ -2972,6 +2976,7 @@ impl Index<usize> for U16Vec4 {
 
 impl IndexMut<usize> for U16Vec4 {
     #[inline]
+    #[track_caller]
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         match index {
             0 => &mut self.x,

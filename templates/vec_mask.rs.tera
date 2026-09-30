@@ -282,6 +282,7 @@ impl {{ self_t }} {
     /// Panics if `index` is greater than {{ dim  - 1 }}.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn test(self, index: usize) -> bool {
         {% if is_coresimd %}
             assert!(index < {{ dim }}, "index out of bounds");
@@ -306,6 +307,7 @@ impl {{ self_t }} {
     ///
     /// Panics if `index` is greater than {{ dim  - 1 }}.
     #[inline]
+    #[track_caller]
     pub fn set(&mut self, index: usize, value: bool) {
         {% if is_scalar %}
             match index {

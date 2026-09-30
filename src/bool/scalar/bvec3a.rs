@@ -83,6 +83,7 @@ impl BVec3A {
     /// Panics if `index` is greater than 2.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn test(self, index: usize) -> bool {
         match index {
             0 => (self.x & 0x1) != 0,
@@ -96,6 +97,7 @@ impl BVec3A {
     ///
     /// Panics if `index` is greater than 2.
     #[inline]
+    #[track_caller]
     pub fn set(&mut self, index: usize, value: bool) {
         match index {
             0 => self.x = MASK[value as usize],

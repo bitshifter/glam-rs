@@ -1541,6 +1541,9 @@ macro_rules! impl_vec2_float_tests {
 
             // Parallel
             assert_approx_eq!($vec2::Y, $vec2::X.rotate_towards(-$vec2::X, FRAC_PI_2), eps);
+
+            should_glam_assert!({ $vec2::ZERO.rotate_towards($vec2::X, FRAC_PI_2) });
+            should_glam_assert!({ $vec2::X.rotate_towards($vec2::ZERO, FRAC_PI_2) });
         });
 
         glam_test!(test_midpoint, {

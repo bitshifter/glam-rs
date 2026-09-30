@@ -221,6 +221,7 @@ impl DMat3 {
     /// Panics if `i` or `j` is greater than 3.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn from_mat4_minor(m: DMat4, i: usize, j: usize) -> Self {
         match (i, j) {
             (0, 0) => Self::from_cols(m.y_axis.yzw(), m.z_axis.yzw(), m.w_axis.yzw()),
@@ -250,6 +251,7 @@ impl DMat3 {
     /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_quat(rotation: DQuat) -> Self {
         glam_assert!(rotation.is_normalized());
 
@@ -281,6 +283,7 @@ impl DMat3 {
     /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_axis_angle(axis: DVec3, angle: f64) -> Self {
         glam_assert!(axis.is_normalized());
 
@@ -317,6 +320,7 @@ impl DMat3 {
     /// Will panic if any input matrix column is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn to_euler(&self, order: EulerRot) -> (f64, f64, f64) {
         glam_assert!(
             self.x_axis.is_normalized()
@@ -418,6 +422,7 @@ impl DMat3 {
     /// Will panic if all elements of `scale` are zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_scale(scale: DVec2) -> Self {
         // Do not panic as long as any component is non-zero
         glam_assert!(scale.cmpne(DVec2::ZERO).any());
@@ -447,6 +452,7 @@ impl DMat3 {
     /// Panics if `slice` is less than 9 elements long.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub const fn from_cols_slice(slice: &[f64]) -> Self {
         Self::new(
             slice[0], slice[1], slice[2], slice[3], slice[4], slice[5], slice[6], slice[7],
@@ -460,6 +466,7 @@ impl DMat3 {
     ///
     /// Panics if `slice` is less than 9 elements long.
     #[inline]
+    #[track_caller]
     pub fn write_cols_to_slice(&self, slice: &mut [f64]) {
         slice[0] = self.x_axis.x;
         slice[1] = self.x_axis.y;
@@ -484,6 +491,7 @@ impl DMat3 {
     /// Panics if `slice` is less than 9 elements long.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub const fn from_rows_slice(slice: &[f64]) -> Self {
         Self::new(
             slice[0], slice[3], slice[6], slice[1], slice[4], slice[7], slice[2], slice[5],
@@ -498,6 +506,7 @@ impl DMat3 {
     /// Panics if `index` is greater than 2.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn col(&self, index: usize) -> DVec3 {
         match index {
             0 => self.x_axis,
@@ -513,6 +522,7 @@ impl DMat3 {
     ///
     /// Panics if `index` is greater than 2.
     #[inline]
+    #[track_caller]
     pub fn col_mut(&mut self, index: usize) -> &mut DVec3 {
         match index {
             0 => &mut self.x_axis,
@@ -531,6 +541,7 @@ impl DMat3 {
     /// Panics if `index` is greater than 2.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn row(&self, index: usize) -> DVec3 {
         match index {
             0 => DVec3::new(self.x_axis.x, self.y_axis.x, self.z_axis.x),
@@ -550,6 +561,7 @@ impl DMat3 {
     ///
     /// Panics if `index` is greater than 2.
     #[inline]
+    #[track_caller]
     pub fn set_row(&mut self, index: usize, row: DVec3) {
         match index {
             0 => {
@@ -624,6 +636,7 @@ impl DMat3 {
     /// matrix is aligned.
     #[inline(always)]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     fn inverse_checked<const CHECKED: bool>(&self) -> (Self, bool) {
         let tmp0 = self.y_axis.cross(self.z_axis);
         let tmp1 = self.z_axis.cross(self.x_axis);
@@ -654,6 +667,7 @@ impl DMat3 {
     /// is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn inverse(&self) -> Self {
         self.inverse_checked::<false>().0
     }
@@ -690,6 +704,7 @@ impl DMat3 {
     /// Will panic if the 2nd row of `self` is not `(0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn transform_point2(&self, rhs: DVec2) -> DVec2 {
         glam_assert!(self.row(2).abs_diff_eq(DVec3::Z, 1e-6));
         DMat2::from_cols(self.x_axis.xy(), self.y_axis.xy()) * rhs + self.z_axis.xy()
@@ -706,6 +721,7 @@ impl DMat3 {
     /// Will panic if the 2nd row of `self` is not `(0, 0, 1)` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn transform_vector2(&self, rhs: DVec2) -> DVec2 {
         glam_assert!(self.row(2).abs_diff_eq(DVec3::Z, 1e-6));
         DMat2::from_cols(self.x_axis.xy(), self.y_axis.xy()) * rhs
@@ -717,13 +733,15 @@ impl DMat3 {
     ///
     /// # Panics
     ///
-    /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
+    /// Will panic if `dir` or `up` are not normalized, or if `dir` and `up` are parallel,
+    /// when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::dcamera::lh::view::look_to_mat3` function instead"
     )]
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn look_to_lh(dir: DVec3, up: DVec3) -> Self {
         #[allow(deprecated)]
         Self::look_to_rh(-dir, up)
@@ -735,13 +753,15 @@ impl DMat3 {
     ///
     /// # Panics
     ///
-    /// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
+    /// Will panic if `dir` or `up` are not normalized, or if `dir` and `up` are parallel,
+    /// when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::dcamera::rh::view::look_to_mat3` function instead"
     )]
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn look_to_rh(dir: DVec3, up: DVec3) -> Self {
         glam_assert!(dir.is_normalized());
         glam_assert!(up.is_normalized());
@@ -763,13 +783,15 @@ impl DMat3 {
     ///
     /// # Panics
     ///
-    /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    /// Will panic if `up` is not normalized, if `center` is equal to `eye`, or if the view
+    /// direction is parallel to `up`, when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::dcamera::lh::view::look_at_mat3` function instead"
     )]
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn look_at_lh(eye: DVec3, center: DVec3, up: DVec3) -> Self {
         #[allow(deprecated)]
         Self::look_to_lh(center.sub(eye).normalize(), up)
@@ -782,12 +804,14 @@ impl DMat3 {
     ///
     /// # Panics
     ///
-    /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    /// Will panic if `up` is not normalized, if `center` is equal to `eye`, or if the view
+    /// direction is parallel to `up`, when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::dcamera::rh::view::look_at_mat3` function instead"
     )]
     #[inline]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn look_at_rh(eye: DVec3, center: DVec3, up: DVec3) -> Self {
         #[allow(deprecated)]
         Self::look_to_rh(center.sub(eye).normalize(), up)

@@ -78,6 +78,7 @@ impl BVec2 {
     /// Panics if `index` is greater than 1.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn test(self, index: usize) -> bool {
         match index {
             0 => self.x,
@@ -90,6 +91,7 @@ impl BVec2 {
     ///
     /// Panics if `index` is greater than 1.
     #[inline]
+    #[track_caller]
     pub fn set(&mut self, index: usize, value: bool) {
         match index {
             0 => self.x = value,

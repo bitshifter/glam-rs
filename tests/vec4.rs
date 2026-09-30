@@ -2155,6 +2155,8 @@ macro_rules! impl_vec4_float_tests {
         glam_test!(test_homogeneous, {
             let v = $vec4::new(1.0, 2.0, 3.0, 1.0);
             assert_approx_eq!(v, v.project().to_homogeneous());
+
+            should_glam_assert!({ $vec4::new(1.0, 2.0, 3.0, 0.0).project() });
         });
     };
 }

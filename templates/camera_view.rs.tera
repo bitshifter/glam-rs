@@ -49,9 +49,11 @@ use crate::{
 ///
 /// # Panics
 ///
-/// Will panic if `up` is not normalized when `glam_assert` is enabled.
+/// Will panic if `up` is not normalized, if `center` is equal to `eye`, or if the view
+/// direction is parallel to `up`, when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub fn look_at_mat4(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ mat4 }} {
     look_to_mat4(eye, (center - eye).normalize(), up)
 }
@@ -62,9 +64,11 @@ pub fn look_at_mat4(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ m
 ///
 /// # Panics
 ///
-/// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
+/// Will panic if `dir` or `up` are not normalized, or if `dir` and `up` are parallel,
+/// when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub fn look_to_mat4(eye: {{ vec3 }}, dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ mat4 }} {
     camera_impl::look_to_mat4::<{{ is_rh }}>(eye, dir, up)
 }
@@ -75,9 +79,11 @@ pub fn look_to_mat4(eye: {{ vec3 }}, dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ mat4
 ///
 /// # Panics
 ///
-/// Will panic if `up` is not normalized when `glam_assert` is enabled.
+/// Will panic if `up` is not normalized, if `center` is equal to `eye`, or if the view
+/// direction is parallel to `up`, when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub fn look_at_affine3(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ affine3 }} {
     look_to_affine3(eye, (center - eye).normalize(), up)
 }
@@ -88,9 +94,11 @@ pub fn look_at_affine3(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {
 ///
 /// # Panics
 ///
-/// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
+/// Will panic if `dir` or `up` are not normalized, or if `dir` and `up` are parallel,
+/// when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub fn look_to_affine3(eye: {{ vec3 }}, dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ affine3 }} {
     camera_impl::look_to_affine3::<{{ is_rh }}>(eye, dir, up)
 }
@@ -102,9 +110,11 @@ pub fn look_to_affine3(eye: {{ vec3 }}, dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ a
 ///
 /// # Panics
 ///
-/// Will panic if `up` is not normalized when `glam_assert` is enabled.
+/// Will panic if `up` is not normalized, if `center` is equal to `eye`, or if the view
+/// direction is parallel to `up`, when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub fn look_at_affine3a(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ affine3a }} {
     look_to_affine3a(eye, (center - eye).normalize(), up)
 }
@@ -115,9 +125,11 @@ pub fn look_at_affine3a(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> 
 ///
 /// # Panics
 ///
-/// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
+/// Will panic if `dir` or `up` are not normalized, or if `dir` and `up` are parallel,
+/// when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub fn look_to_affine3a(eye: {{ vec3 }}, dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ affine3a }} {
     camera_impl::look_to_affine3a::<{{ is_rh }}>(eye, dir, up)
 }
@@ -129,9 +141,11 @@ pub fn look_to_affine3a(eye: {{ vec3 }}, dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ 
 ///
 /// # Panics
 ///
-/// Will panic if `up` is not normalized when `glam_assert` is enabled.
+/// Will panic if `up` is not normalized, if `center` is equal to `eye`, or if the view
+/// direction is parallel to `up`, when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub fn look_at_mat3(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ mat3 }} {
     look_to_mat3((center - eye).normalize(), up)
 }
@@ -142,9 +156,11 @@ pub fn look_at_mat3(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ m
 ///
 /// # Panics
 ///
-/// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
+/// Will panic if `dir` or `up` are not normalized, or if `dir` and `up` are parallel,
+/// when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub fn look_to_mat3(dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ mat3 }} {
     camera_impl::look_to_mat3::<{{ is_rh }}>(dir, up)
 }
@@ -156,9 +172,11 @@ pub fn look_to_mat3(dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ mat3 }} {
 ///
 /// # Panics
 ///
-/// Will panic if `up` is not normalized when `glam_assert` is enabled.
+/// Will panic if `up` is not normalized, if `center` is equal to `eye`, or if the view
+/// direction is parallel to `up`, when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub fn look_at_mat3a(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ mat3a }} {
     look_to_mat3a((center - eye).normalize(), up)
 }
@@ -169,9 +187,11 @@ pub fn look_at_mat3a(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ 
 ///
 /// # Panics
 ///
-/// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
+/// Will panic if `dir` or `up` are not normalized, or if `dir` and `up` are parallel,
+/// when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub fn look_to_mat3a(dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ mat3a }} {
     camera_impl::look_to_mat3a::<{{ is_rh }}>(dir, up)
 }
@@ -183,9 +203,11 @@ pub fn look_to_mat3a(dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ mat3a }} {
 ///
 /// # Panics
 ///
-/// Will panic if `up` is not normalized when `glam_assert` is enabled.
+/// Will panic if `up` is not normalized, if `center` is equal to `eye`, or if the view
+/// direction is parallel to `up`, when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub fn look_at_quat(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ quat }} {
     look_to_quat((center - eye).normalize(), up)
 }
@@ -196,9 +218,11 @@ pub fn look_at_quat(eye: {{ vec3 }}, center: {{ vec3 }}, up: {{ vec3 }}) -> {{ q
 ///
 /// # Panics
 ///
-/// Will panic if `dir` or `up` are not normalized when `glam_assert` is enabled.
+/// Will panic if `dir` or `up` are not normalized, or if `dir` and `up` are parallel,
+/// when `glam_assert` is enabled.
 #[inline]
 #[must_use]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub fn look_to_quat(dir: {{ vec3 }}, up: {{ vec3 }}) -> {{ quat }} {
     camera_impl::look_to_quat::<{{ is_rh }}>(dir, up)
 }

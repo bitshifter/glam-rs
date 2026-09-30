@@ -1741,6 +1741,16 @@ macro_rules! impl_vec3_float_tests {
             assert_approx_eq!(($vec3::Y * 0.5).slerp($vec3::NEG_Y * 1.5, 0.5), $vec3::X);
         });
         glam_test!(test_slerp_zero_length, {
+            should_glam_assert!({ $vec3::ZERO.slerp($vec3::ZERO, 0.5) });
+            should_glam_assert!({ $vec3::ZERO.slerp($vec3::ONE, 0.5) });
+            should_glam_assert!({ $vec3::ONE.slerp($vec3::ZERO, 0.5) });
+            should_glam_assert!({
+                $vec3::new($t::MIN_POSITIVE, 0.0, 0.0).slerp($vec3::NEG_X, 0.5)
+            });
+        });
+
+        #[cfg(not(any(feature = "debug-glam-assert", feature = "glam-assert")))]
+        glam_test!(test_slerp_zero_length_no_glam_assert, {
             assert_approx_eq!($vec3::ZERO.slerp($vec3::ZERO, 0.5), $vec3::ZERO);
             assert_approx_eq!($vec3::ZERO.slerp($vec3::ONE, 0.5), $vec3::splat(0.5));
             assert_approx_eq!($vec3::ONE.slerp($vec3::ZERO, 0.5), $vec3::splat(0.5));
@@ -1797,6 +1807,8 @@ macro_rules! impl_vec3_float_tests {
                 $quat::from_axis_angle(axis.into(), PI * 2. / 3.) * $vec3::X,
                 $vec3::X.rotate_axis(axis, PI * 2. / 3.)
             );
+
+            should_glam_assert!({ $vec3::X.rotate_axis($vec3::ZERO, 0.0) });
         });
 
         glam_test!(test_rotate_towards, {
@@ -1844,6 +1856,9 @@ macro_rules! impl_vec3_float_tests {
 
             // Parallel
             assert_approx_eq!($vec3::Y, $vec3::X.rotate_towards($vec3::NEG_X, PI / 2.));
+
+            should_glam_assert!({ $vec3::ZERO.rotate_towards($vec3::X, PI / 2.) });
+            should_glam_assert!({ $vec3::X.rotate_towards($vec3::ZERO, PI / 2.) });
         });
 
         glam_test!(test_midpoint, {

@@ -89,6 +89,7 @@ impl Default for EulerRot {
 
 pub(crate) trait ToEuler {
     type Scalar;
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     fn to_euler_angles(self, order: EulerRot) -> (Self::Scalar, Self::Scalar, Self::Scalar);
 }
 

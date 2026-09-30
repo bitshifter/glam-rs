@@ -25,9 +25,12 @@ pub mod opengl {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is
+    /// zero, or if `near` or `far` are less than or equal to zero, or if `near` is equal to
+    /// `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective(vertical_fov: f64, aspect_ratio: f64, near: f64, far: f64) -> DMat4 {
         camera_impl::perspective::<false, false, false>(vertical_fov, aspect_ratio, near, far)
     }
@@ -36,8 +39,14 @@ pub mod opengl {
     ///
     /// Expects a left-handed Y-up view space input.
     /// Outputs NDC with Z in [-1, 1] and Y-up.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `left` is equal to `right`, if `bottom` is equal to
+    /// `top`, or if `near` is equal to `far` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn orthographic(
         left: f64,
         right: f64,
@@ -56,9 +65,12 @@ pub mod opengl {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `left` is equal to `right`, if `bottom` is equal to
+    /// `top`, or if `near` or `far` are less than or equal to zero, or if `near` is
+    /// equal to `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn frustum(left: f64, right: f64, bottom: f64, top: f64, near: f64, far: f64) -> DMat4 {
         camera_impl::frustum::<false, false, false>(left, right, bottom, top, near, far)
     }
@@ -80,9 +92,12 @@ pub mod vulkan {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is
+    /// zero, or if `near` or `far` are less than or equal to zero, or if `near` is equal to
+    /// `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective(vertical_fov: f64, aspect_ratio: f64, near: f64, far: f64) -> DMat4 {
         camera_impl::perspective::<false, true, true>(vertical_fov, aspect_ratio, near, far)
     }
@@ -97,9 +112,11 @@ pub mod vulkan {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is
+    /// zero, or if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective_infinite(vertical_fov: f64, aspect_ratio: f64, near: f64) -> DMat4 {
         camera_impl::perspective_infinite::<false, true, true>(vertical_fov, aspect_ratio, near)
     }
@@ -116,9 +133,11 @@ pub mod vulkan {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is
+    /// zero, or if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective_infinite_reverse(vertical_fov: f64, aspect_ratio: f64, near: f64) -> DMat4 {
         camera_impl::perspective_infinite_reverse::<false, true>(vertical_fov, aspect_ratio, near)
     }
@@ -127,8 +146,14 @@ pub mod vulkan {
     ///
     /// Expects a left-handed Y-up view space input.
     /// Outputs NDC with Z in [0, 1] and Y-down.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `left` is equal to `right`, if `bottom` is equal to
+    /// `top`, or if `near` is equal to `far` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn orthographic(
         left: f64,
         right: f64,
@@ -147,9 +172,12 @@ pub mod vulkan {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `left` is equal to `right`, if `bottom` is equal to
+    /// `top`, or if `near` or `far` are less than or equal to zero, or if `near` is
+    /// equal to `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn frustum(left: f64, right: f64, bottom: f64, top: f64, near: f64, far: f64) -> DMat4 {
         camera_impl::frustum::<false, true, true>(left, right, bottom, top, near, far)
     }
@@ -172,9 +200,12 @@ pub mod directx {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is
+    /// zero, or if `near` or `far` are less than or equal to zero, or if `near` is equal to
+    /// `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective(vertical_fov: f64, aspect_ratio: f64, near: f64, far: f64) -> DMat4 {
         camera_impl::perspective::<false, true, false>(vertical_fov, aspect_ratio, near, far)
     }
@@ -189,9 +220,11 @@ pub mod directx {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is
+    /// zero, or if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective_infinite(vertical_fov: f64, aspect_ratio: f64, near: f64) -> DMat4 {
         camera_impl::perspective_infinite::<false, true, false>(vertical_fov, aspect_ratio, near)
     }
@@ -208,9 +241,11 @@ pub mod directx {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` is less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `vertical_fov` is not in the range `(0, π)`, if `aspect_ratio` is
+    /// zero, or if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective_infinite_reverse(vertical_fov: f64, aspect_ratio: f64, near: f64) -> DMat4 {
         camera_impl::perspective_infinite_reverse::<false, false>(vertical_fov, aspect_ratio, near)
     }
@@ -219,8 +254,14 @@ pub mod directx {
     ///
     /// Expects a left-handed Y-up view space input.
     /// Outputs NDC with Z in [0, 1] and Y-up.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `left` is equal to `right`, if `bottom` is equal to
+    /// `top`, or if `near` is equal to `far` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn orthographic(
         left: f64,
         right: f64,
@@ -239,9 +280,12 @@ pub mod directx {
     ///
     /// # Panics
     ///
-    /// Will panic if `near` or `far` are less than or equal to zero when `glam_assert` is enabled.
+    /// Will panic if `left` is equal to `right`, if `bottom` is equal to
+    /// `top`, or if `near` or `far` are less than or equal to zero, or if `near` is
+    /// equal to `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn frustum(left: f64, right: f64, bottom: f64, top: f64, near: f64, far: f64) -> DMat4 {
         camera_impl::frustum::<false, true, false>(left, right, bottom, top, near, far)
     }

@@ -191,6 +191,7 @@ impl Mat2 {
     /// Panics if `i` or `j` is greater than 2.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn from_mat3_minor(m: Mat3, i: usize, j: usize) -> Self {
         match (i, j) {
             (0, 0) => Self::from_cols(m.y_axis.yz(), m.z_axis.yz()),
@@ -221,6 +222,7 @@ impl Mat2 {
     /// Panics if `i` or `j` is greater than 2.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn from_mat3a_minor(m: Mat3A, i: usize, j: usize) -> Self {
         match (i, j) {
             (0, 0) => Self::from_cols(m.y_axis.yz(), m.z_axis.yz()),
@@ -245,6 +247,7 @@ impl Mat2 {
     /// Panics if `slice` is less than 4 elements long.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub const fn from_cols_slice(slice: &[f32]) -> Self {
         Self::new(slice[0], slice[1], slice[2], slice[3])
     }
@@ -255,6 +258,7 @@ impl Mat2 {
     ///
     /// Panics if `slice` is less than 4 elements long.
     #[inline]
+    #[track_caller]
     pub fn write_cols_to_slice(&self, slice: &mut [f32]) {
         slice[0] = self.x_axis.x;
         slice[1] = self.x_axis.y;
@@ -274,6 +278,7 @@ impl Mat2 {
     /// Panics if `slice` is less than 4 elements long.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub const fn from_rows_slice(slice: &[f32]) -> Self {
         Self::new(slice[0], slice[2], slice[1], slice[3])
     }
@@ -285,6 +290,7 @@ impl Mat2 {
     /// Panics if `index` is greater than 1.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn col(&self, index: usize) -> Vec2 {
         match index {
             0 => self.x_axis,
@@ -299,6 +305,7 @@ impl Mat2 {
     ///
     /// Panics if `index` is greater than 1.
     #[inline]
+    #[track_caller]
     pub fn col_mut(&mut self, index: usize) -> &mut Vec2 {
         match index {
             0 => &mut self.x_axis,
@@ -316,6 +323,7 @@ impl Mat2 {
     /// Panics if `index` is greater than 1.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn row(&self, index: usize) -> Vec2 {
         match index {
             0 => Vec2::new(self.x_axis.x, self.y_axis.x),
@@ -334,6 +342,7 @@ impl Mat2 {
     ///
     /// Panics if `index` is greater than 1.
     #[inline]
+    #[track_caller]
     pub fn set_row(&mut self, index: usize, row: Vec2) {
         match index {
             0 => {
@@ -403,6 +412,7 @@ impl Mat2 {
     /// matrix is aligned.
     #[inline(always)]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     fn inverse_checked<const CHECKED: bool>(&self) -> (Self, bool) {
         unsafe {
             const SIGN: __m128 = crate::sse2::m128_from_f32x4([1.0, -1.0, -1.0, 1.0]);
@@ -438,6 +448,7 @@ impl Mat2 {
     /// is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn inverse(&self) -> Self {
         self.inverse_checked::<false>().0
     }

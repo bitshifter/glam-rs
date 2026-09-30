@@ -160,8 +160,13 @@ impl Affine3A {
         }
     }
     /// Creates an affine transform from the given `rotation` quaternion.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_quat(rotation: Quat) -> Self {
         Self {
             matrix3: Mat3A::from_quat(rotation),
@@ -171,8 +176,13 @@ impl Affine3A {
 
     /// Creates an affine transform containing a 3D rotation around a normalized
     /// rotation `axis` of `angle` (in radians).
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
         Self {
             matrix3: Mat3A::from_axis_angle(axis, angle),
@@ -255,8 +265,13 @@ impl Affine3A {
     ///
     /// Equivalent to `Affine3A::from_translation(translation) *
     /// Affine3A::from_quat(rotation) * Affine3A::from_scale(scale)`
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_scale_rotation_translation(scale: Vec3, rotation: Quat, translation: Vec3) -> Self {
         let rotation = Mat3A::from_quat(rotation);
         #[allow(clippy::useless_conversion)]
@@ -273,8 +288,13 @@ impl Affine3A {
     /// Creates an affine transform from the given 3D `rotation` and `translation`.
     ///
     /// Equivalent to `Affine3A::from_translation(translation) * Affine3A::from_quat(rotation)`
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_rotation_translation(rotation: Quat, translation: Vec3) -> Self {
         #[allow(clippy::useless_conversion)]
         Self {
@@ -309,6 +329,7 @@ impl Affine3A {
     /// vector contains any zero elements when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn to_scale_rotation_translation(&self) -> (Vec3, Quat, Vec3) {
         use crate::f32::math;
         let det = self.matrix3.determinant();
@@ -339,12 +360,18 @@ impl Affine3A {
     /// direction.
     ///
     /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `dir` or `up` is zero length or not finite, or if `dir` and `up` are parallel,
+    /// when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::lh::view::look_to_affine3` function instead"
     )]
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn look_to_lh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
         #[allow(deprecated)]
         Self::look_to_rh(eye, -dir, up)
@@ -354,12 +381,18 @@ impl Affine3A {
     /// direction.
     ///
     /// For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if `dir` or `up` is zero length or not finite, or if `dir` and `up` are parallel,
+    /// when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::rh::view::look_to_affine3` function instead"
     )]
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn look_to_rh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
         let f = dir.normalize();
         let s = f.cross(up).normalize();
@@ -381,13 +414,15 @@ impl Affine3A {
     ///
     /// # Panics
     ///
-    /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    /// Will panic if `up` is not normalized, if `center` is equal to `eye`, or if the view
+    /// direction is parallel to `up`, when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::lh::view::look_at_affine3` function instead"
     )]
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn look_at_lh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
         glam_assert!(up.is_normalized());
         #[allow(deprecated)]
@@ -400,13 +435,15 @@ impl Affine3A {
     ///
     /// # Panics
     ///
-    /// Will panic if `up` is not normalized when `glam_assert` is enabled.
+    /// Will panic if `up` is not normalized, if `center` is equal to `eye`, or if the view
+    /// direction is parallel to `up`, when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::rh::view::look_at_affine3` function instead"
     )]
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn look_at_rh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
         glam_assert!(up.is_normalized());
         #[allow(deprecated)]
@@ -491,8 +528,13 @@ impl Affine3A {
     /// Return the inverse of this transform.
     ///
     /// Note that if the transform is not invertible the result will be invalid.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if the resulting inverted matrix is not finite when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn inverse(&self) -> Self {
         let matrix3 = self.matrix3.inverse();
         // transform negative translation by the matrix inverse:

@@ -229,6 +229,7 @@ impl DAffine2 {
     /// vector contains any zero elements when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn to_scale_angle_translation(&self) -> (DVec2, f64, DVec2) {
         use crate::f64::math;
         let det = self.matrix2.determinant();
@@ -298,8 +299,13 @@ impl DAffine2 {
     /// Return the inverse of this transform.
     ///
     /// Note that if the transform is not invertible the result will be invalid.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if the resulting inverted matrix is not finite when `glam_assert` is enabled.
     #[inline]
     #[must_use]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn inverse(&self) -> Self {
         let matrix2 = self.matrix2.inverse();
         // transform negative translation by the matrix inverse:
