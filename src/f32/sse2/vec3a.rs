@@ -1389,11 +1389,13 @@ impl Vec3A {
     ///
     /// # Panics
     ///
-    /// Will panic if `self` or `rhs` have a length close to zero when `glam_assert` is enabled.
+    /// Will panic if `self` or `rhs` has zero length when `glam_assert` is enabled.
     #[inline]
     #[must_use]
     #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn slerp(self, rhs: Self, s: f32) -> Self {
+        glam_assert!(self.is_non_zero());
+        glam_assert!(rhs.is_non_zero());
         let self_length = self.length();
         let rhs_length = rhs.length();
         // Cosine of the angle between the vectors [-1, 1], or NaN if either vector has a zero length

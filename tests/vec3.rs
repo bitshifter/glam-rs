@@ -1741,13 +1741,19 @@ macro_rules! impl_vec3_float_tests {
             assert_approx_eq!(($vec3::Y * 0.5).slerp($vec3::NEG_Y * 1.5, 0.5), $vec3::X);
         });
         glam_test!(test_slerp_zero_length, {
-            assert_approx_eq!($vec3::ZERO.slerp($vec3::ZERO, 0.5), $vec3::ZERO);
-            assert_approx_eq!($vec3::ZERO.slerp($vec3::ONE, 0.5), $vec3::splat(0.5));
-            assert_approx_eq!($vec3::ONE.slerp($vec3::ZERO, 0.5), $vec3::splat(0.5));
-
+            should_glam_assert!({ $vec3::ZERO.slerp($vec3::ZERO, 0.5) });
+            should_glam_assert!({ $vec3::ZERO.slerp($vec3::ONE, 0.5) });
+            should_glam_assert!({ $vec3::ONE.slerp($vec3::ZERO, 0.5) });
             should_glam_assert!({
                 $vec3::new($t::MIN_POSITIVE, 0.0, 0.0).slerp($vec3::NEG_X, 0.5)
             });
+        });
+
+        #[cfg(not(any(feature = "debug-glam-assert", feature = "glam-assert")))]
+        glam_test!(test_slerp_zero_length_no_glam_assert, {
+            assert_approx_eq!($vec3::ZERO.slerp($vec3::ZERO, 0.5), $vec3::ZERO);
+            assert_approx_eq!($vec3::ZERO.slerp($vec3::ONE, 0.5), $vec3::splat(0.5));
+            assert_approx_eq!($vec3::ONE.slerp($vec3::ZERO, 0.5), $vec3::splat(0.5));
         });
 
         glam_test!(test_move_towards, {
