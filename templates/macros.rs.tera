@@ -39,6 +39,7 @@
     /// Panics if `i` or `j` is greater than 2.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn from_mat3{{ align }}_minor(m: {{ mat3_t }}, i: usize, j: usize) -> Self {
         match (i, j) {
             (0, 0) => Self::from_cols(m.y_axis.yz(), m.z_axis.yz()),
@@ -73,6 +74,7 @@
     /// Panics if `i` or `j` is greater than 3.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn from_mat4_minor(m: {{ mat4_t }}, i: usize, j: usize) -> Self {
         match (i, j) {
             (0, 0) => Self::from_cols({{ b }}m.y_axis.yzw{{ w }}(){{ e }}, {{ b }}m.z_axis.yzw{{ w }}(){{ e }}, {{ b }}m.w_axis.yzw{{ w }}(){{ e }}),

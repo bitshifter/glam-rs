@@ -151,6 +151,7 @@ impl U64Vec4 {
     /// Panics if `slice` is less than 4 elements long.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub const fn from_slice(slice: &[u64]) -> Self {
         assert!(slice.len() >= 4);
         Self::new(slice[0], slice[1], slice[2], slice[3])
@@ -162,6 +163,7 @@ impl U64Vec4 {
     ///
     /// Panics if `slice` is less than 4 elements long.
     #[inline]
+    #[track_caller]
     pub fn write_to_slice(self, slice: &mut [u64]) {
         slice[..4].copy_from_slice(&self.to_array());
     }
@@ -2960,6 +2962,7 @@ impl Shr<UVec4> for &U64Vec4 {
 impl Index<usize> for U64Vec4 {
     type Output = u64;
     #[inline]
+    #[track_caller]
     fn index(&self, index: usize) -> &Self::Output {
         match index {
             0 => &self.x,
@@ -2973,6 +2976,7 @@ impl Index<usize> for U64Vec4 {
 
 impl IndexMut<usize> for U64Vec4 {
     #[inline]
+    #[track_caller]
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         match index {
             0 => &mut self.x,

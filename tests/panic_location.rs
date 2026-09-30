@@ -84,4 +84,10 @@ fn test_panics_report_caller_location() {
 
     // Homogeneous projection (`Vec4::project` -> `Vec3::from_homogeneous`).
     assert_panics_at_caller("Vec4::project", || Vec4::new(1.0, 2.0, 3.0, 0.0).project());
+
+    // Plain `assert!` and indexing panics (always active, not feature gated).
+    assert_panics_at_caller("Vec3::from_slice", || Vec3::from_slice(&[1.0, 2.0]));
+    assert_panics_at_caller("Mat3::col", || Mat3::IDENTITY.col(3));
+    assert_panics_at_caller("Mat3::from_cols_slice", || Mat3::from_cols_slice(&[0.0; 8]));
+    assert_panics_at_caller("BVec3::test", || glam::BVec3::new(true, true, true).test(3));
 }

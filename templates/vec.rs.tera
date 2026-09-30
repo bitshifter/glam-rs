@@ -600,6 +600,7 @@ impl {{ self_t }} {
     /// Panics if `slice` is less than {{ dim }} elements long.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub const fn from_slice(slice: &[{{ scalar_t }}]) -> Self {
         assert!(slice.len() >= {{ dim }});
         Self::new(
@@ -615,6 +616,7 @@ impl {{ self_t }} {
     ///
     /// Panics if `slice` is less than {{ dim }} elements long.
     #[inline]
+    #[track_caller]
     pub fn write_to_slice(self, slice: &mut [{{ scalar_t }}]) {
         {% if self_t == "Vec4" and is_sse2 %}
             assert!(slice.len() >= 4);
@@ -4497,6 +4499,7 @@ impl BitXor<{{ scalar_t }}> for {{ self_t }} {
 impl Index<usize> for {{ self_t }} {
     type Output = {{ scalar_t }};
     #[inline]
+    #[track_caller]
     fn index(&self, index: usize) -> &Self::Output {
         {% if is_coresimd %}
             &self.0[index]
@@ -4513,6 +4516,7 @@ impl Index<usize> for {{ self_t }} {
 
 impl IndexMut<usize> for {{ self_t }} {
     #[inline]
+    #[track_caller]
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         {% if is_coresimd %}
             &mut self.0[index]

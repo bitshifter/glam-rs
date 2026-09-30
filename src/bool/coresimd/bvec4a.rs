@@ -94,6 +94,7 @@ impl BVec4A {
     /// Panics if `index` is greater than 3.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn test(self, index: usize) -> bool {
         assert!(index < 4, "index out of bounds");
         self.0.test(index)
@@ -103,6 +104,7 @@ impl BVec4A {
     ///
     /// Panics if `index` is greater than 3.
     #[inline]
+    #[track_caller]
     pub fn set(&mut self, index: usize, value: bool) {
         self.0.set(index, value)
     }

@@ -121,6 +121,7 @@ impl Quat {
     /// Panics if `slice` length is less than 4.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn from_slice(slice: &[f32]) -> Self {
         assert!(slice.len() >= 4);
         Self(unsafe { _mm_loadu_ps(slice.as_ptr()) })
@@ -132,6 +133,7 @@ impl Quat {
     ///
     /// Panics if `slice` length is less than 4.
     #[inline]
+    #[track_caller]
     pub fn write_to_slice(self, slice: &mut [f32]) {
         assert!(slice.len() >= 4);
         unsafe { _mm_storeu_ps(slice.as_mut_ptr(), self.0) }

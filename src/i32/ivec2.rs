@@ -148,6 +148,7 @@ impl IVec2 {
     /// Panics if `slice` is less than 2 elements long.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub const fn from_slice(slice: &[i32]) -> Self {
         assert!(slice.len() >= 2);
         Self::new(slice[0], slice[1])
@@ -159,6 +160,7 @@ impl IVec2 {
     ///
     /// Panics if `slice` is less than 2 elements long.
     #[inline]
+    #[track_caller]
     pub fn write_to_slice(self, slice: &mut [i32]) {
         slice[..2].copy_from_slice(&self.to_array());
     }
@@ -2737,6 +2739,7 @@ impl Shr<UVec2> for &IVec2 {
 impl Index<usize> for IVec2 {
     type Output = i32;
     #[inline]
+    #[track_caller]
     fn index(&self, index: usize) -> &Self::Output {
         match index {
             0 => &self.x,
@@ -2748,6 +2751,7 @@ impl Index<usize> for IVec2 {
 
 impl IndexMut<usize> for IVec2 {
     #[inline]
+    #[track_caller]
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         match index {
             0 => &mut self.x,

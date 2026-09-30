@@ -105,6 +105,7 @@ impl Quat {
     /// Panics if `slice` length is less than 4.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn from_slice(slice: &[f32]) -> Self {
         Self::from_xyzw(slice[0], slice[1], slice[2], slice[3])
     }
@@ -115,6 +116,7 @@ impl Quat {
     ///
     /// Panics if `slice` length is less than 4.
     #[inline]
+    #[track_caller]
     pub fn write_to_slice(self, slice: &mut [f32]) {
         slice[0] = self.x;
         slice[1] = self.y;

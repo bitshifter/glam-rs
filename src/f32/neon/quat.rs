@@ -118,6 +118,7 @@ impl Quat {
     /// Panics if `slice` length is less than 4.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn from_slice(slice: &[f32]) -> Self {
         assert!(slice.len() >= 4);
         Self(unsafe { vld1q_f32(slice.as_ptr()) })
@@ -129,6 +130,7 @@ impl Quat {
     ///
     /// Panics if `slice` length is less than 4.
     #[inline]
+    #[track_caller]
     pub fn write_to_slice(self, slice: &mut [f32]) {
         assert!(slice.len() >= 4);
         unsafe { vst1q_f32(slice.as_mut_ptr(), self.0) }

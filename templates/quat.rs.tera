@@ -220,6 +220,7 @@ impl {{ self_t }} {
     /// Panics if `slice` length is less than 4.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn from_slice(slice: &[{{ scalar_t }}]) -> Self {
         {% if is_sse2 %}
             assert!(slice.len() >= 4);
@@ -238,6 +239,7 @@ impl {{ self_t }} {
     ///
     /// Panics if `slice` length is less than 4.
     #[inline]
+    #[track_caller]
     pub fn write_to_slice(self, slice: &mut [{{ scalar_t }}]) {
         {% if is_sse2 %}
             assert!(slice.len() >= 4);

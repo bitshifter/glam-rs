@@ -227,6 +227,7 @@ impl Mat3A {
     /// Panics if `i` or `j` is greater than 3.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn from_mat4_minor(m: Mat4, i: usize, j: usize) -> Self {
         match (i, j) {
             (0, 0) => Self::from_cols(
@@ -521,6 +522,7 @@ impl Mat3A {
     /// Panics if `slice` is less than 9 elements long.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub const fn from_cols_slice(slice: &[f32]) -> Self {
         Self::new(
             slice[0], slice[1], slice[2], slice[3], slice[4], slice[5], slice[6], slice[7],
@@ -534,6 +536,7 @@ impl Mat3A {
     ///
     /// Panics if `slice` is less than 9 elements long.
     #[inline]
+    #[track_caller]
     pub fn write_cols_to_slice(&self, slice: &mut [f32]) {
         slice[0] = self.x_axis.x;
         slice[1] = self.x_axis.y;
@@ -558,6 +561,7 @@ impl Mat3A {
     /// Panics if `slice` is less than 9 elements long.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub const fn from_rows_slice(slice: &[f32]) -> Self {
         Self::new(
             slice[0], slice[3], slice[6], slice[1], slice[4], slice[7], slice[2], slice[5],
@@ -572,6 +576,7 @@ impl Mat3A {
     /// Panics if `index` is greater than 2.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn col(&self, index: usize) -> Vec3A {
         match index {
             0 => self.x_axis,
@@ -587,6 +592,7 @@ impl Mat3A {
     ///
     /// Panics if `index` is greater than 2.
     #[inline]
+    #[track_caller]
     pub fn col_mut(&mut self, index: usize) -> &mut Vec3A {
         match index {
             0 => &mut self.x_axis,
@@ -605,6 +611,7 @@ impl Mat3A {
     /// Panics if `index` is greater than 2.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn row(&self, index: usize) -> Vec3A {
         match index {
             0 => Vec3A::new(self.x_axis.x, self.y_axis.x, self.z_axis.x),
@@ -624,6 +631,7 @@ impl Mat3A {
     ///
     /// Panics if `index` is greater than 2.
     #[inline]
+    #[track_caller]
     pub fn set_row(&mut self, index: usize, row: Vec3A) {
         match index {
             0 => {

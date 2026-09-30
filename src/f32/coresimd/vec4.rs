@@ -147,6 +147,7 @@ impl Vec4 {
     /// Panics if `slice` is less than 4 elements long.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub const fn from_slice(slice: &[f32]) -> Self {
         assert!(slice.len() >= 4);
         Self::new(slice[0], slice[1], slice[2], slice[3])
@@ -158,6 +159,7 @@ impl Vec4 {
     ///
     /// Panics if `slice` is less than 4 elements long.
     #[inline]
+    #[track_caller]
     pub fn write_to_slice(self, slice: &mut [f32]) {
         slice[..4].copy_from_slice(&self.to_array());
     }
@@ -1950,6 +1952,7 @@ impl Neg for &Vec4 {
 impl Index<usize> for Vec4 {
     type Output = f32;
     #[inline]
+    #[track_caller]
     fn index(&self, index: usize) -> &Self::Output {
         &self.0[index]
     }
@@ -1957,6 +1960,7 @@ impl Index<usize> for Vec4 {
 
 impl IndexMut<usize> for Vec4 {
     #[inline]
+    #[track_caller]
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         &mut self.0[index]
     }

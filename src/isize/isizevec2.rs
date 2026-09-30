@@ -148,6 +148,7 @@ impl ISizeVec2 {
     /// Panics if `slice` is less than 2 elements long.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub const fn from_slice(slice: &[isize]) -> Self {
         assert!(slice.len() >= 2);
         Self::new(slice[0], slice[1])
@@ -159,6 +160,7 @@ impl ISizeVec2 {
     ///
     /// Panics if `slice` is less than 2 elements long.
     #[inline]
+    #[track_caller]
     pub fn write_to_slice(self, slice: &mut [isize]) {
         slice[..2].copy_from_slice(&self.to_array());
     }
@@ -2745,6 +2747,7 @@ impl Shr<UVec2> for &ISizeVec2 {
 impl Index<usize> for ISizeVec2 {
     type Output = isize;
     #[inline]
+    #[track_caller]
     fn index(&self, index: usize) -> &Self::Output {
         match index {
             0 => &self.x,
@@ -2756,6 +2759,7 @@ impl Index<usize> for ISizeVec2 {
 
 impl IndexMut<usize> for ISizeVec2 {
     #[inline]
+    #[track_caller]
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         match index {
             0 => &mut self.x,

@@ -1089,6 +1089,7 @@ impl {{ self_t }} {
     /// Panics if `slice` is less than {{ size }} elements long.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub const fn from_cols_slice(slice: &[{{ scalar_t }}]) -> Self {
         Self::new(
             {% for i in range(end = size) %}
@@ -1103,6 +1104,7 @@ impl {{ self_t }} {
     ///
     /// Panics if `slice` is less than {{ size }} elements long.
     #[inline]
+    #[track_caller]
     pub fn write_cols_to_slice(&self, slice: &mut [{{ scalar_t }}]) {
         {% for i in range(end = dim) %}
             {%- for j in range(end = dim) %}
@@ -1123,6 +1125,7 @@ impl {{ self_t }} {
     /// Panics if `slice` is less than {{ size }} elements long.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub const fn from_rows_slice(slice: &[{{ scalar_t }}]) -> Self {
         Self::new(
             {% for i in range(end = dim) %}
@@ -1140,6 +1143,7 @@ impl {{ self_t }} {
     /// Panics if `index` is greater than {{ dim - 1 }}.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn col(&self, index: usize) -> {{ col_t }} {
         match index {
             {% for axis in axes %}
@@ -1155,6 +1159,7 @@ impl {{ self_t }} {
     ///
     /// Panics if `index` is greater than {{ dim - 1 }}.
     #[inline]
+    #[track_caller]
     pub fn col_mut(&mut self, index: usize) -> &mut {{ col_t }} {
         match index {
             {% for axis in axes %}
@@ -1173,6 +1178,7 @@ impl {{ self_t }} {
     /// Panics if `index` is greater than {{ dim - 1 }}.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn row(&self, index: usize) -> {{ col_t }} {
         match index {
             {% for i in range(end=dim) %}
@@ -1196,6 +1202,7 @@ impl {{ self_t }} {
     ///
     /// Panics if `index` is greater than {{ dim - 1 }}.
     #[inline]
+    #[track_caller]
     pub fn set_row(&mut self, index: usize, row: {{ col_t }}) {
         match index {
             {% for i in range(end=dim) %}

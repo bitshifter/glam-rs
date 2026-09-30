@@ -572,6 +572,7 @@ impl Mat4 {
     /// Panics if `slice` is less than 16 elements long.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub const fn from_cols_slice(slice: &[f32]) -> Self {
         Self::new(
             slice[0], slice[1], slice[2], slice[3], slice[4], slice[5], slice[6], slice[7],
@@ -585,6 +586,7 @@ impl Mat4 {
     ///
     /// Panics if `slice` is less than 16 elements long.
     #[inline]
+    #[track_caller]
     pub fn write_cols_to_slice(&self, slice: &mut [f32]) {
         slice[0] = self.x_axis.x;
         slice[1] = self.x_axis.y;
@@ -616,6 +618,7 @@ impl Mat4 {
     /// Panics if `slice` is less than 16 elements long.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub const fn from_rows_slice(slice: &[f32]) -> Self {
         Self::new(
             slice[0], slice[4], slice[8], slice[12], slice[1], slice[5], slice[9], slice[13],
@@ -630,6 +633,7 @@ impl Mat4 {
     /// Panics if `index` is greater than 3.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn col(&self, index: usize) -> Vec4 {
         match index {
             0 => self.x_axis,
@@ -646,6 +650,7 @@ impl Mat4 {
     ///
     /// Panics if `index` is greater than 3.
     #[inline]
+    #[track_caller]
     pub fn col_mut(&mut self, index: usize) -> &mut Vec4 {
         match index {
             0 => &mut self.x_axis,
@@ -665,6 +670,7 @@ impl Mat4 {
     /// Panics if `index` is greater than 3.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn row(&self, index: usize) -> Vec4 {
         match index {
             0 => Vec4::new(self.x_axis.x, self.y_axis.x, self.z_axis.x, self.w_axis.x),
@@ -685,6 +691,7 @@ impl Mat4 {
     ///
     /// Panics if `index` is greater than 3.
     #[inline]
+    #[track_caller]
     pub fn set_row(&mut self, index: usize, row: Vec4) {
         match index {
             0 => {

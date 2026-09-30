@@ -143,6 +143,7 @@ impl U16Vec3 {
     /// Panics if `slice` is less than 3 elements long.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub const fn from_slice(slice: &[u16]) -> Self {
         assert!(slice.len() >= 3);
         Self::new(slice[0], slice[1], slice[2])
@@ -154,6 +155,7 @@ impl U16Vec3 {
     ///
     /// Panics if `slice` is less than 3 elements long.
     #[inline]
+    #[track_caller]
     pub fn write_to_slice(self, slice: &mut [u16]) {
         slice[..3].copy_from_slice(&self.to_array());
     }
@@ -2689,6 +2691,7 @@ impl Shr<UVec3> for &U16Vec3 {
 impl Index<usize> for U16Vec3 {
     type Output = u16;
     #[inline]
+    #[track_caller]
     fn index(&self, index: usize) -> &Self::Output {
         match index {
             0 => &self.x,
@@ -2701,6 +2704,7 @@ impl Index<usize> for U16Vec3 {
 
 impl IndexMut<usize> for U16Vec3 {
     #[inline]
+    #[track_caller]
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         match index {
             0 => &mut self.x,

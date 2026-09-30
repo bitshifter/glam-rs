@@ -157,6 +157,7 @@ impl Vec3A {
     /// Panics if `slice` is less than 3 elements long.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub const fn from_slice(slice: &[f32]) -> Self {
         assert!(slice.len() >= 3);
         Self::new(slice[0], slice[1], slice[2])
@@ -168,6 +169,7 @@ impl Vec3A {
     ///
     /// Panics if `slice` is less than 3 elements long.
     #[inline]
+    #[track_caller]
     pub fn write_to_slice(self, slice: &mut [f32]) {
         slice[..3].copy_from_slice(&self.to_array());
     }
@@ -2215,6 +2217,7 @@ impl Neg for &Vec3A {
 impl Index<usize> for Vec3A {
     type Output = f32;
     #[inline]
+    #[track_caller]
     fn index(&self, index: usize) -> &Self::Output {
         match index {
             0 => &self.x,
@@ -2227,6 +2230,7 @@ impl Index<usize> for Vec3A {
 
 impl IndexMut<usize> for Vec3A {
     #[inline]
+    #[track_caller]
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         match index {
             0 => &mut self.x,

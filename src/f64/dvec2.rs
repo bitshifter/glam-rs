@@ -151,6 +151,7 @@ impl DVec2 {
     /// Panics if `slice` is less than 2 elements long.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub const fn from_slice(slice: &[f64]) -> Self {
         assert!(slice.len() >= 2);
         Self::new(slice[0], slice[1])
@@ -162,6 +163,7 @@ impl DVec2 {
     ///
     /// Panics if `slice` is less than 2 elements long.
     #[inline]
+    #[track_caller]
     pub fn write_to_slice(self, slice: &mut [f64]) {
         slice[..2].copy_from_slice(&self.to_array());
     }
@@ -1957,6 +1959,7 @@ impl Neg for &DVec2 {
 impl Index<usize> for DVec2 {
     type Output = f64;
     #[inline]
+    #[track_caller]
     fn index(&self, index: usize) -> &Self::Output {
         match index {
             0 => &self.x,
@@ -1968,6 +1971,7 @@ impl Index<usize> for DVec2 {
 
 impl IndexMut<usize> for DVec2 {
     #[inline]
+    #[track_caller]
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         match index {
             0 => &mut self.x,

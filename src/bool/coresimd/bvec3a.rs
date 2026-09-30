@@ -89,6 +89,7 @@ impl BVec3A {
     /// Panics if `index` is greater than 2.
     #[inline]
     #[must_use]
+    #[track_caller]
     pub fn test(self, index: usize) -> bool {
         assert!(index < 3, "index out of bounds");
         self.0.test(index)
@@ -98,6 +99,7 @@ impl BVec3A {
     ///
     /// Panics if `index` is greater than 2.
     #[inline]
+    #[track_caller]
     pub fn set(&mut self, index: usize, value: bool) {
         assert!(index < 3, "index out of bounds");
         self.0.set(index, value)
