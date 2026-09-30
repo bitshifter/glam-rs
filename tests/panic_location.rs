@@ -33,10 +33,11 @@ fn assert_panics_at_caller<R>(name: &str, f: impl FnOnce() -> R + panic::UnwindS
 
     assert!(result.is_err(), "{name} did not panic");
     let location = LOCATION.lock().unwrap().take().unwrap();
-    assert!(
-        location.ends_with("tests/panic_location.rs"),
-        "{name} panicked at {location}"
-    );
+    let file = std::path::Path::new(&location)
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or_default();
+    assert_eq!(file, "panic_location.rs", "{name} panicked at {location}");
 }
 
 #[test]
