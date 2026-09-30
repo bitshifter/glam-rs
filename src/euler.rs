@@ -351,7 +351,6 @@ macro_rules! impl_mat3_to_euler {
     ($scalar:ident, $mat3:ident, $vec3:ident) => {
         impl ToEuler for $mat3 {
             type Scalar = $scalar;
-            #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
             fn to_euler_angles(
                 self,
                 euler: EulerRot,
@@ -407,7 +406,6 @@ macro_rules! impl_mat4_to_euler {
     ($scalar:ident, $mat4:ident, $mat3:ident) => {
         impl ToEuler for $mat4 {
             type Scalar = $scalar;
-            #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
             fn to_euler_angles(
                 self,
                 order: EulerRot,
@@ -422,7 +420,6 @@ macro_rules! impl_quat_to_euler {
     ($scalar:ident, $quat:ident, $mat3:ident) => {
         impl ToEuler for $quat {
             type Scalar = $scalar;
-            #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
             fn to_euler_angles(
                 self,
                 order: EulerRot,

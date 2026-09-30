@@ -314,9 +314,8 @@ pub(crate) fn orthographic<const RH: bool, const ZO: bool, const YFLIP: bool>(
 ///
 /// # Panics
 ///
-/// Will panic if `left` is equal to `right`, if `bottom` is equal to
-/// `top`, or if `near` or `far` are <= 0, or if `near` is equal to `far`, when
-/// `glam_assert` is enabled.
+/// Will panic if `left` equals `right`, `bottom` equals `top`, `near` equals `far`, or
+/// `near` or `far` are not positive when `glam_assert` is enabled.
 #[inline]
 #[must_use]
 #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]

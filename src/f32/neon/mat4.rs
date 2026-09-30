@@ -1133,9 +1133,8 @@ impl Mat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `left` is equal to `right`, if `bottom` is equal to
-    /// `top`, or if `z_near` or `z_far` are less than or equal to zero, or if `z_near`
-    /// is equal to `z_far`, when `glam_assert` is enabled.
+    /// Will panic if `left` equals `right`, `bottom` equals `top`, `z_near` equals `z_far`,
+    /// or `z_near` or `z_far` are not positive when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::lh::proj::directx::frustum` function instead"
@@ -1173,9 +1172,8 @@ impl Mat4 {
     ///
     /// # Panics
     ///
-    /// Will panic if `left` is equal to `right`, if `bottom` is equal to
-    /// `top`, or if `z_near` or `z_far` are less than or equal to zero, or if `z_near`
-    /// is equal to `z_far`, when `glam_assert` is enabled.
+    /// Will panic if `left` equals `right`, `bottom` equals `top`, `z_near` equals `z_far`,
+    /// or `z_near` or `z_far` are not positive when `glam_assert` is enabled.
     #[deprecated(
         since = "0.33.1",
         note = "use the `glam::camera::rh::proj::directx::frustum` function instead"
