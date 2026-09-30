@@ -25,7 +25,7 @@ use crate::{dcamera::camera_impl, DAffine3, DMat3, DMat4, DQuat, DVec3};
 /// direction is parallel to `up`, when `glam_assert` is enabled.
 #[inline]
 #[must_use]
-#[track_caller]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub fn look_at_mat4(eye: DVec3, center: DVec3, up: DVec3) -> DMat4 {
     look_to_mat4(eye, (center - eye).normalize(), up)
 }
@@ -40,7 +40,7 @@ pub fn look_at_mat4(eye: DVec3, center: DVec3, up: DVec3) -> DMat4 {
 /// when `glam_assert` is enabled.
 #[inline]
 #[must_use]
-#[track_caller]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub fn look_to_mat4(eye: DVec3, dir: DVec3, up: DVec3) -> DMat4 {
     camera_impl::look_to_mat4::<true>(eye, dir, up)
 }
@@ -55,7 +55,7 @@ pub fn look_to_mat4(eye: DVec3, dir: DVec3, up: DVec3) -> DMat4 {
 /// direction is parallel to `up`, when `glam_assert` is enabled.
 #[inline]
 #[must_use]
-#[track_caller]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub fn look_at_affine3(eye: DVec3, center: DVec3, up: DVec3) -> DAffine3 {
     look_to_affine3(eye, (center - eye).normalize(), up)
 }
@@ -70,7 +70,7 @@ pub fn look_at_affine3(eye: DVec3, center: DVec3, up: DVec3) -> DAffine3 {
 /// when `glam_assert` is enabled.
 #[inline]
 #[must_use]
-#[track_caller]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub fn look_to_affine3(eye: DVec3, dir: DVec3, up: DVec3) -> DAffine3 {
     camera_impl::look_to_affine3::<true>(eye, dir, up)
 }
@@ -85,7 +85,7 @@ pub fn look_to_affine3(eye: DVec3, dir: DVec3, up: DVec3) -> DAffine3 {
 /// direction is parallel to `up`, when `glam_assert` is enabled.
 #[inline]
 #[must_use]
-#[track_caller]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub fn look_at_mat3(eye: DVec3, center: DVec3, up: DVec3) -> DMat3 {
     look_to_mat3((center - eye).normalize(), up)
 }
@@ -100,7 +100,7 @@ pub fn look_at_mat3(eye: DVec3, center: DVec3, up: DVec3) -> DMat3 {
 /// when `glam_assert` is enabled.
 #[inline]
 #[must_use]
-#[track_caller]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub fn look_to_mat3(dir: DVec3, up: DVec3) -> DMat3 {
     camera_impl::look_to_mat3::<true>(dir, up)
 }
@@ -115,7 +115,7 @@ pub fn look_to_mat3(dir: DVec3, up: DVec3) -> DMat3 {
 /// direction is parallel to `up`, when `glam_assert` is enabled.
 #[inline]
 #[must_use]
-#[track_caller]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub fn look_at_quat(eye: DVec3, center: DVec3, up: DVec3) -> DQuat {
     look_to_quat((center - eye).normalize(), up)
 }
@@ -130,7 +130,7 @@ pub fn look_at_quat(eye: DVec3, center: DVec3, up: DVec3) -> DQuat {
 /// when `glam_assert` is enabled.
 #[inline]
 #[must_use]
-#[track_caller]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub fn look_to_quat(dir: DVec3, up: DVec3) -> DQuat {
     camera_impl::look_to_quat::<true>(dir, up)
 }

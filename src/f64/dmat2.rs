@@ -349,7 +349,7 @@ impl DMat2 {
     /// matrix is aligned.
     #[inline(always)]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     fn inverse_checked<const CHECKED: bool>(&self) -> (Self, bool) {
         let inv_det = 1.0 / self.determinant();
         let m = Self::new(
@@ -381,7 +381,7 @@ impl DMat2 {
     /// is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn inverse(&self) -> Self {
         self.inverse_checked::<false>().0
     }

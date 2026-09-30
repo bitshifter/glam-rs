@@ -30,7 +30,7 @@ pub mod opengl {
     /// `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective(vertical_fov: f32, aspect_ratio: f32, near: f32, far: f32) -> Mat4 {
         camera_impl::perspective::<false, false, false>(vertical_fov, aspect_ratio, near, far)
     }
@@ -46,7 +46,7 @@ pub mod opengl {
     /// `top`, or if `near` is equal to `far` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn orthographic(left: f32, right: f32, bottom: f32, top: f32, near: f32, far: f32) -> Mat4 {
         camera_impl::orthographic::<false, false, false>(left, right, bottom, top, near, far)
     }
@@ -63,7 +63,7 @@ pub mod opengl {
     /// equal to `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn frustum(left: f32, right: f32, bottom: f32, top: f32, near: f32, far: f32) -> Mat4 {
         camera_impl::frustum::<false, false, false>(left, right, bottom, top, near, far)
     }
@@ -90,7 +90,7 @@ pub mod vulkan {
     /// `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective(vertical_fov: f32, aspect_ratio: f32, near: f32, far: f32) -> Mat4 {
         camera_impl::perspective::<false, true, true>(vertical_fov, aspect_ratio, near, far)
     }
@@ -109,7 +109,7 @@ pub mod vulkan {
     /// zero, or if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective_infinite(vertical_fov: f32, aspect_ratio: f32, near: f32) -> Mat4 {
         camera_impl::perspective_infinite::<false, true, true>(vertical_fov, aspect_ratio, near)
     }
@@ -130,7 +130,7 @@ pub mod vulkan {
     /// zero, or if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective_infinite_reverse(vertical_fov: f32, aspect_ratio: f32, near: f32) -> Mat4 {
         camera_impl::perspective_infinite_reverse::<false, true>(vertical_fov, aspect_ratio, near)
     }
@@ -146,7 +146,7 @@ pub mod vulkan {
     /// `top`, or if `near` is equal to `far` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn orthographic(left: f32, right: f32, bottom: f32, top: f32, near: f32, far: f32) -> Mat4 {
         camera_impl::orthographic::<false, true, true>(left, right, bottom, top, near, far)
     }
@@ -163,7 +163,7 @@ pub mod vulkan {
     /// equal to `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn frustum(left: f32, right: f32, bottom: f32, top: f32, near: f32, far: f32) -> Mat4 {
         camera_impl::frustum::<false, true, true>(left, right, bottom, top, near, far)
     }
@@ -191,7 +191,7 @@ pub mod directx {
     /// `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective(vertical_fov: f32, aspect_ratio: f32, near: f32, far: f32) -> Mat4 {
         camera_impl::perspective::<false, true, false>(vertical_fov, aspect_ratio, near, far)
     }
@@ -210,7 +210,7 @@ pub mod directx {
     /// zero, or if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective_infinite(vertical_fov: f32, aspect_ratio: f32, near: f32) -> Mat4 {
         camera_impl::perspective_infinite::<false, true, false>(vertical_fov, aspect_ratio, near)
     }
@@ -231,7 +231,7 @@ pub mod directx {
     /// zero, or if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective_infinite_reverse(vertical_fov: f32, aspect_ratio: f32, near: f32) -> Mat4 {
         camera_impl::perspective_infinite_reverse::<false, false>(vertical_fov, aspect_ratio, near)
     }
@@ -247,7 +247,7 @@ pub mod directx {
     /// `top`, or if `near` is equal to `far` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn orthographic(left: f32, right: f32, bottom: f32, top: f32, near: f32, far: f32) -> Mat4 {
         camera_impl::orthographic::<false, true, false>(left, right, bottom, top, near, far)
     }
@@ -264,7 +264,7 @@ pub mod directx {
     /// equal to `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn frustum(left: f32, right: f32, bottom: f32, top: f32, near: f32, far: f32) -> Mat4 {
         camera_impl::frustum::<false, true, false>(left, right, bottom, top, near, far)
     }

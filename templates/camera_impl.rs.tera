@@ -44,7 +44,7 @@ use crate::{
 /// Computes an orthonormal view basis from eye, direction, and up.
 #[inline(always)]
 #[must_use]
-#[track_caller]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 fn look_to_axes4<const RH: bool>(eye: {{ vec3_t }}, dir: {{ vec3_t }}, up: {{ vec3_t }}) -> [{{ vec3_t }}; 4] {
     glam_assert!(dir.is_normalized());
     glam_assert!(up.is_normalized());
@@ -62,7 +62,7 @@ fn look_to_axes4<const RH: bool>(eye: {{ vec3_t }}, dir: {{ vec3_t }}, up: {{ ve
 /// Same as [`look_to_axes4`] but without the translation row.
 #[inline(always)]
 #[must_use]
-#[track_caller]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 fn look_to_axes3<const RH: bool>(dir: {{ vec3_t }}, up: {{ vec3_t }}) -> [{{ vec3_t }}; 3] {
     glam_assert!(dir.is_normalized());
     glam_assert!(up.is_normalized());
@@ -80,7 +80,7 @@ fn look_to_axes3<const RH: bool>(dir: {{ vec3_t }}, up: {{ vec3_t }}) -> [{{ vec
 /// Assembles a `{{ mat4_t }}` view matrix from eye, direction, and up.
 #[inline]
 #[must_use]
-#[track_caller]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub(crate) fn look_to_mat4<const RH: bool>(eye: {{ vec3_t }}, dir: {{ vec3_t }}, up: {{ vec3_t }}) -> {{ mat4_t }} {
     let axes = look_to_axes4::<RH>(eye, dir, up);
     {{ mat4_t }}::from_cols(
@@ -94,7 +94,7 @@ pub(crate) fn look_to_mat4<const RH: bool>(eye: {{ vec3_t }}, dir: {{ vec3_t }},
 /// Assembles an `{{ affine3_t }}` view transform from eye, direction, and up.
 #[inline]
 #[must_use]
-#[track_caller]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub(crate) fn look_to_affine3<const RH: bool>(eye: {{ vec3_t }}, dir: {{ vec3_t }}, up: {{ vec3_t }}) -> {{ affine3_t }} {
     let axes = look_to_axes4::<RH>(eye, dir, up);
     {{ affine3_t }} {
@@ -111,7 +111,7 @@ pub(crate) fn look_to_affine3<const RH: bool>(eye: {{ vec3_t }}, dir: {{ vec3_t 
 /// Assembles an `{{ affine3a_t }}` view transform from eye, direction, and up.
 #[inline]
 #[must_use]
-#[track_caller]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub(crate) fn look_to_affine3a<const RH: bool>(eye: {{ vec3_t }}, dir: {{ vec3_t }}, up: {{ vec3_t }}) -> {{ affine3a_t }} {
     let axes = look_to_axes4::<RH>(eye, dir, up);
     {{ affine3a_t }} {
@@ -127,7 +127,7 @@ pub(crate) fn look_to_affine3a<const RH: bool>(eye: {{ vec3_t }}, dir: {{ vec3_t
 /// Returns a `{{ mat3a_t }}` view rotation (no translation) from direction and up.
 #[inline]
 #[must_use]
-#[track_caller]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub(crate) fn look_to_mat3a<const RH: bool>(dir: {{ vec3_t }}, up: {{ vec3_t }}) -> {{ mat3a_t }} {
     let axes = look_to_axes3::<RH>(dir, up);
     {{ mat3a_t }}::from_cols(
@@ -141,7 +141,7 @@ pub(crate) fn look_to_mat3a<const RH: bool>(dir: {{ vec3_t }}, up: {{ vec3_t }})
 /// Returns a `{{ mat3_t }}` view rotation (no translation) from direction and up.
 #[inline]
 #[must_use]
-#[track_caller]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub(crate) fn look_to_mat3<const RH: bool>(dir: {{ vec3_t }}, up: {{ vec3_t }}) -> {{ mat3_t }} {
     let axes = look_to_axes3::<RH>(dir, up);
     {{ mat3_t }}::from_cols(
@@ -154,7 +154,7 @@ pub(crate) fn look_to_mat3<const RH: bool>(dir: {{ vec3_t }}, up: {{ vec3_t }}) 
 /// Returns a `{{ quat_t }}` representing a view rotation from direction and up.
 #[inline]
 #[must_use]
-#[track_caller]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub(crate) fn look_to_quat<const RH: bool>(dir: {{ vec3_t }}, up: {{ vec3_t }}) -> {{ quat_t }} {
     let axes = look_to_axes3::<RH>(dir, up);
     {{ quat_t }}::from_rotation_axes(
@@ -172,7 +172,7 @@ pub(crate) fn look_to_quat<const RH: bool>(dir: {{ vec3_t }}, up: {{ vec3_t }}) 
 /// or if `near` or `far` are <= 0, or if `near` is equal to `far`, when `glam_assert` is enabled.
 #[inline]
 #[must_use]
-#[track_caller]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub(crate) fn perspective<const RH: bool, const ZO: bool, const YFLIP: bool>(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
     glam_assert!(vertical_fov > 0.0 && vertical_fov < core::{{ scalar_t }}::consts::PI);
     glam_assert!(aspect_ratio != 0.0);
@@ -216,7 +216,7 @@ pub(crate) fn perspective<const RH: bool, const ZO: bool, const YFLIP: bool>(ver
 /// or if `near` is <= 0 when `glam_assert` is enabled.
 #[inline]
 #[must_use]
-#[track_caller]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub(crate) fn perspective_infinite<const RH: bool, const ZO: bool, const YFLIP: bool>(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, near: {{ scalar_t }}) -> {{ mat4_t }} {
     glam_assert!(vertical_fov > 0.0 && vertical_fov < core::{{ scalar_t }}::consts::PI);
     glam_assert!(aspect_ratio != 0.0);
@@ -246,7 +246,7 @@ pub(crate) fn perspective_infinite<const RH: bool, const ZO: bool, const YFLIP: 
 /// or if `near` is <= 0 when `glam_assert` is enabled.
 #[inline]
 #[must_use]
-#[track_caller]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub(crate) fn perspective_infinite_reverse<const RH: bool, const YFLIP: bool>(
     vertical_fov: {{ scalar_t }},
     aspect_ratio: {{ scalar_t }},
@@ -277,7 +277,7 @@ pub(crate) fn perspective_infinite_reverse<const RH: bool, const YFLIP: bool>(
 /// `top`, or if `near` is equal to `far` when `glam_assert` is enabled.
 #[inline]
 #[must_use]
-#[track_caller]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub(crate) fn orthographic<const RH: bool, const ZO: bool, const YFLIP: bool>(
     left: {{ scalar_t }},
     right: {{ scalar_t }},
@@ -319,7 +319,7 @@ pub(crate) fn orthographic<const RH: bool, const ZO: bool, const YFLIP: bool>(
 /// `glam_assert` is enabled.
 #[inline]
 #[must_use]
-#[track_caller]
+#[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
 pub(crate) fn frustum<const RH: bool, const ZO: bool, const YFLIP: bool>(left: {{ scalar_t }}, right: {{ scalar_t }}, bottom: {{ scalar_t }}, top: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
     glam_assert!(left != right && bottom != top);
     glam_assert!(near > 0.0 && far > 0.0 && near != far);

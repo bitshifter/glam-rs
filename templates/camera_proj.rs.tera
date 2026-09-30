@@ -47,7 +47,7 @@ pub mod opengl {
     /// `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
         camera_impl::perspective::<{{ is_rh }}, false, false>(vertical_fov, aspect_ratio, near, far)
     }
@@ -67,7 +67,7 @@ pub mod opengl {
     /// `top`, or if `near` is equal to `far` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn orthographic(left: {{ scalar_t }}, right: {{ scalar_t }}, bottom: {{ scalar_t }}, top: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
         camera_impl::orthographic::<{{ is_rh }}, false, false>(left, right, bottom, top, near, far)
     }
@@ -89,7 +89,7 @@ pub mod opengl {
     /// equal to `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn frustum(left: {{ scalar_t }}, right: {{ scalar_t }}, bottom: {{ scalar_t }}, top: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
         camera_impl::frustum::<{{ is_rh }}, false, false>(left, right, bottom, top, near, far)
     }
@@ -135,7 +135,7 @@ pub mod {{ api }} {
     /// `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
         camera_impl::perspective::<{{ is_rh }}, {{ is_zo }}, {{ yflip }}>(vertical_fov, aspect_ratio, near, far)
     }
@@ -154,7 +154,7 @@ pub mod {{ api }} {
     /// zero, or if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective_infinite(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, near: {{ scalar_t }}) -> {{ mat4_t }} {
         camera_impl::perspective_infinite::<{{ is_rh }}, {{ is_zo }}, {{ yflip }}>(vertical_fov, aspect_ratio, near)
     }
@@ -175,7 +175,7 @@ pub mod {{ api }} {
     /// zero, or if `near` is less than or equal to zero when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn perspective_infinite_reverse(vertical_fov: {{ scalar_t }}, aspect_ratio: {{ scalar_t }}, near: {{ scalar_t }}) -> {{ mat4_t }} {
         camera_impl::perspective_infinite_reverse::<{{ is_rh }}, {{ yflip }}>(vertical_fov, aspect_ratio, near)
     }
@@ -191,7 +191,7 @@ pub mod {{ api }} {
     /// `top`, or if `near` is equal to `far` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn orthographic(left: {{ scalar_t }}, right: {{ scalar_t }}, bottom: {{ scalar_t }}, top: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
         camera_impl::orthographic::<{{ is_rh }}, {{ is_zo }}, {{ yflip }}>(left, right, bottom, top, near, far)
     }
@@ -208,7 +208,7 @@ pub mod {{ api }} {
     /// equal to `far`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn frustum(left: {{ scalar_t }}, right: {{ scalar_t }}, bottom: {{ scalar_t }}, top: {{ scalar_t }}, near: {{ scalar_t }}, far: {{ scalar_t }}) -> {{ mat4_t }} {
         camera_impl::frustum::<{{ is_rh }}, {{ is_zo }}, {{ yflip }}>(left, right, bottom, top, near, far)
     }

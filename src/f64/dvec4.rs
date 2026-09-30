@@ -201,7 +201,7 @@ impl DVec4 {
     /// Will panic if `self.w` is `0` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn project(self) -> DVec3 {
         DVec3::from_homogeneous(self)
     }
@@ -298,7 +298,7 @@ impl DVec4 {
     /// Will panic if `min` is greater than `max` when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn clamp(self, min: Self, max: Self) -> Self {
         glam_assert!(min.cmple(max).all(), "clamp: expected min <= max");
         self.max(min).min(max)
@@ -684,7 +684,7 @@ impl DVec4 {
     /// Will panic if the resulting normalized vector is not finite when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn normalize(self) -> Self {
         #[allow(clippy::let_and_return)]
         let normalized = self.mul(self.length_recip());
@@ -772,7 +772,7 @@ impl DVec4 {
     /// Will panic if `rhs` is zero length when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn project_onto(self, rhs: Self) -> Self {
         let rhs_len_sq = rhs.dot(rhs);
         glam_assert!(rhs_len_sq != 0.0);
@@ -792,7 +792,7 @@ impl DVec4 {
     #[doc(alias("plane"))]
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn reject_from(self, rhs: Self) -> Self {
         self - self.project_onto(rhs)
     }
@@ -806,7 +806,7 @@ impl DVec4 {
     /// Will panic if `rhs` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn project_onto_normalized(self, rhs: Self) -> Self {
         glam_assert!(rhs.is_normalized());
         rhs * self.dot(rhs)
@@ -825,7 +825,7 @@ impl DVec4 {
     #[doc(alias("plane"))]
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn reject_from_normalized(self, rhs: Self) -> Self {
         self - self.project_onto_normalized(rhs)
     }
@@ -903,7 +903,7 @@ impl DVec4 {
     /// of `edge1`, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn smoothstep(self, edge0: Self, edge1: Self) -> Self {
         glam_assert!(edge0.cmplt(edge1).all());
         let t = ((self - edge0) / (edge1 - edge0)).saturate();
@@ -1151,7 +1151,7 @@ impl DVec4 {
     /// Will panic if `min` is greater than `max`, or if either `min` or `max` is negative, when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn clamp_length(self, min: f64, max: f64) -> Self {
         glam_assert!(0.0 <= min);
         glam_assert!(min <= max);
@@ -1172,7 +1172,7 @@ impl DVec4 {
     /// Will panic if `max` is negative when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn clamp_length_max(self, max: f64) -> Self {
         glam_assert!(0.0 <= max);
         let length_sq = self.length_squared();
@@ -1190,7 +1190,7 @@ impl DVec4 {
     /// Will panic if `min` is negative when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn clamp_length_min(self, min: f64) -> Self {
         glam_assert!(0.0 <= min);
         let length_sq = self.length_squared();
@@ -1229,7 +1229,7 @@ impl DVec4 {
     /// Will panic if `normal` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn reflect(self, normal: Self) -> Self {
         glam_assert!(normal.is_normalized());
         self - 2.0 * self.dot(normal) * normal
@@ -1246,7 +1246,7 @@ impl DVec4 {
     /// Will panic if `self` or `normal` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn refract(self, normal: Self, eta: f64) -> Self {
         glam_assert!(self.is_normalized());
         glam_assert!(normal.is_normalized());

@@ -143,7 +143,7 @@ impl Affine3 {
     /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_quat(rotation: Quat) -> Self {
         Self {
             matrix3: Mat3::from_quat(rotation),
@@ -159,7 +159,7 @@ impl Affine3 {
     /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
         Self {
             matrix3: Mat3::from_axis_angle(axis, angle),
@@ -248,7 +248,7 @@ impl Affine3 {
     /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_scale_rotation_translation(scale: Vec3, rotation: Quat, translation: Vec3) -> Self {
         let rotation = Mat3::from_quat(rotation);
         #[allow(clippy::useless_conversion)]
@@ -271,7 +271,7 @@ impl Affine3 {
     /// Will panic if `rotation` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_rotation_translation(rotation: Quat, translation: Vec3) -> Self {
         #[allow(clippy::useless_conversion)]
         Self {
@@ -306,7 +306,7 @@ impl Affine3 {
     /// vector contains any zero elements when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn to_scale_rotation_translation(&self) -> (Vec3, Quat, Vec3) {
         use crate::f32::math;
         let det = self.matrix3.determinant();
@@ -348,7 +348,7 @@ impl Affine3 {
     )]
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn look_to_lh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
         #[allow(deprecated)]
         Self::look_to_rh(eye, -dir, up)
@@ -369,7 +369,7 @@ impl Affine3 {
     )]
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn look_to_rh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
         let f = dir.normalize();
         let s = f.cross(up).normalize();
@@ -399,7 +399,7 @@ impl Affine3 {
     )]
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn look_at_lh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
         glam_assert!(up.is_normalized());
         #[allow(deprecated)]
@@ -420,7 +420,7 @@ impl Affine3 {
     )]
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn look_at_rh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
         glam_assert!(up.is_normalized());
         #[allow(deprecated)]
@@ -494,7 +494,7 @@ impl Affine3 {
     /// Will panic if the resulting inverted matrix is not finite when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn inverse(&self) -> Self {
         let matrix3 = self.matrix3.inverse();
         // transform negative translation by the matrix inverse:

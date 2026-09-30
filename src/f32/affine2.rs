@@ -247,7 +247,7 @@ impl Affine2 {
     /// vector contains any zero elements when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn to_scale_angle_translation(&self) -> (Vec2, f32, Vec2) {
         use crate::f32::math;
         let det = self.matrix2.determinant();
@@ -323,7 +323,7 @@ impl Affine2 {
     /// Will panic if the resulting inverted matrix is not finite when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn inverse(&self) -> Self {
         let matrix2 = self.matrix2.inverse();
         // transform negative translation by the matrix inverse:

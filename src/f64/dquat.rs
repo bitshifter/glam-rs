@@ -137,7 +137,7 @@ impl DQuat {
     /// Will panic if `axis` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_axis_angle(axis: DVec3, angle: f64) -> Self {
         glam_assert!(axis.is_normalized());
         let (s, c) = math::sin_cos(angle * 0.5);
@@ -154,7 +154,7 @@ impl DQuat {
     /// Will panic if `v` is not finite when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_scaled_axis(v: DVec3) -> Self {
         let length = v.length();
         if length == 0.0 {
@@ -205,7 +205,7 @@ impl DQuat {
     /// Will panic if any axis is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_rotation_axes(x_axis: DVec3, y_axis: DVec3, z_axis: DVec3) -> Self {
         glam_assert!(x_axis.is_normalized() && y_axis.is_normalized() && z_axis.is_normalized());
         // Based on https://github.com/microsoft/DirectXMath `XMQuaternionRotationMatrix`
@@ -275,7 +275,7 @@ impl DQuat {
     /// Will panic if any input matrix column is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_mat3(mat: &DMat3) -> Self {
         Self::from_rotation_axes(mat.x_axis, mat.y_axis, mat.z_axis)
     }
@@ -291,7 +291,7 @@ impl DQuat {
     /// `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_mat4(mat: &DMat4) -> Self {
         Self::from_rotation_axes(
             mat.x_axis.truncate(),
@@ -314,7 +314,7 @@ impl DQuat {
     ///
     /// Will panic if `from` or `to` are not normalized when `glam_assert` is enabled.
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_rotation_arc(from: DVec3, to: DVec3) -> Self {
         glam_assert!(from.is_normalized());
         glam_assert!(to.is_normalized());
@@ -349,7 +349,7 @@ impl DQuat {
     /// Will panic if `from` or `to` are not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_rotation_arc_colinear(from: DVec3, to: DVec3) -> Self {
         if from.dot(to) < 0.0 {
             Self::from_rotation_arc(from, -to)
@@ -372,7 +372,7 @@ impl DQuat {
     ///
     /// Will panic if `from` or `to` are not normalized when `glam_assert` is enabled.
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_rotation_arc_2d(from: DVec2, to: DVec2) -> Self {
         glam_assert!(from.is_normalized());
         glam_assert!(to.is_normalized());
@@ -412,7 +412,7 @@ impl DQuat {
     )]
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn look_to_lh(dir: DVec3, up: DVec3) -> Self {
         #[allow(deprecated)]
         Self::look_to_rh(-dir, up)
@@ -432,7 +432,7 @@ impl DQuat {
     )]
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn look_to_rh(dir: DVec3, up: DVec3) -> Self {
         glam_assert!(dir.is_normalized());
         glam_assert!(up.is_normalized());
@@ -462,7 +462,7 @@ impl DQuat {
     )]
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn look_at_lh(eye: DVec3, center: DVec3, up: DVec3) -> Self {
         #[allow(deprecated)]
         Self::look_to_lh(center.sub(eye).normalize(), up)
@@ -483,7 +483,7 @@ impl DQuat {
     )]
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn look_at_rh(eye: DVec3, center: DVec3, up: DVec3) -> Self {
         #[allow(deprecated)]
         Self::look_to_rh(center.sub(eye).normalize(), up)
@@ -520,7 +520,7 @@ impl DQuat {
     /// Will panic if `self` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn to_euler(self, order: EulerRot) -> (f64, f64, f64) {
         self.to_euler_angles(order)
     }
@@ -563,7 +563,7 @@ impl DQuat {
     /// Will panic if `self` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn inverse(self) -> Self {
         glam_assert!(self.is_normalized());
         self.conjugate()
@@ -614,7 +614,7 @@ impl DQuat {
     /// Will panic if `self` is zero length when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn normalize(self) -> Self {
         Self::from_vec4(DVec4::from(self).normalize())
     }
@@ -665,7 +665,7 @@ impl DQuat {
     /// Will panic if `self` or `rhs` are not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn angle_between(self, rhs: Self) -> f64 {
         glam_assert!(self.is_normalized() && rhs.is_normalized());
         math::acos_approx(math::abs(self.dot(rhs))) * 2.0
@@ -684,7 +684,7 @@ impl DQuat {
     /// Will panic if `self` or `rhs` are not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn rotate_towards(self, rhs: Self, max_angle: f64) -> Self {
         glam_assert!(self.is_normalized() && rhs.is_normalized());
         let angle = self.angle_between(rhs);
@@ -712,7 +712,7 @@ impl DQuat {
 
     #[inline(always)]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     fn lerp_impl(self, end: Self, s: f64) -> Self {
         (self * (1.0 - s) + end * s).normalize()
     }
@@ -732,7 +732,7 @@ impl DQuat {
     #[doc(alias = "mix")]
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn lerp(self, end: Self, s: f64) -> Self {
         glam_assert!(self.is_normalized());
         glam_assert!(end.is_normalized());
@@ -764,7 +764,7 @@ impl DQuat {
     /// Will panic if `self` or `end` are not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn slerp(self, mut end: Self, s: f64) -> Self {
         // http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/
         glam_assert!(self.is_normalized());
@@ -806,7 +806,7 @@ impl DQuat {
     /// Will panic if `self` or `end` are not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn slerp_long(self, end: Self, s: f64) -> Self {
         glam_assert!(self.is_normalized());
         glam_assert!(end.is_normalized());
@@ -829,7 +829,7 @@ impl DQuat {
     /// Will panic if `self` is not normalized when `glam_assert` is enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn mul_vec3(self, rhs: DVec3) -> DVec3 {
         glam_assert!(self.is_normalized());
 
@@ -869,7 +869,7 @@ impl DQuat {
     /// enabled.
     #[inline]
     #[must_use]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn from_affine3(a: &crate::DAffine3) -> Self {
         Self::from_rotation_axes(a.matrix3.x_axis, a.matrix3.y_axis, a.matrix3.z_axis)
     }
@@ -1163,7 +1163,7 @@ impl Mul<DVec3> for DQuat {
     ///
     /// Will panic if `self` is not normalized when `glam_assert` is enabled.
     #[inline]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     fn mul(self, rhs: DVec3) -> Self::Output {
         self.mul_vec3(rhs)
     }
@@ -1172,7 +1172,7 @@ impl Mul<DVec3> for DQuat {
 impl Mul<&DVec3> for DQuat {
     type Output = DVec3;
     #[inline]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     fn mul(self, rhs: &DVec3) -> DVec3 {
         self.mul(*rhs)
     }
@@ -1181,7 +1181,7 @@ impl Mul<&DVec3> for DQuat {
 impl Mul<&DVec3> for &DQuat {
     type Output = DVec3;
     #[inline]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     fn mul(self, rhs: &DVec3) -> DVec3 {
         (*self).mul(*rhs)
     }
@@ -1190,7 +1190,7 @@ impl Mul<&DVec3> for &DQuat {
 impl Mul<DVec3> for &DQuat {
     type Output = DVec3;
     #[inline]
-    #[track_caller]
+    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     fn mul(self, rhs: DVec3) -> DVec3 {
         (*self).mul(rhs)
     }
