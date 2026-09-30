@@ -470,7 +470,7 @@ impl DMat4 {
                 && self.y_axis.xyz().is_normalized()
                 && self.z_axis.xyz().is_normalized()
         );
-        self.to_euler_angles(order)
+        DMat3::from_mat4(*self).to_euler_angles(order)
     }
 
     /// Creates an affine transformation matrix containing a 3D rotation around the x axis of

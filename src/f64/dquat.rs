@@ -524,7 +524,7 @@ impl DQuat {
     #[must_use]
     #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn to_euler(self, order: EulerRot) -> (f64, f64, f64) {
-        self.to_euler_angles(order)
+        DMat3::from_quat(self).to_euler_angles(order)
     }
 
     /// Converts `self` to `[x, y, z, w]`

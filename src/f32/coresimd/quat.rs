@@ -533,7 +533,7 @@ impl Quat {
     #[must_use]
     #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn to_euler(self, order: EulerRot) -> (f32, f32, f32) {
-        self.to_euler_angles(order)
+        Mat3::from_quat(self).to_euler_angles(order)
     }
 
     /// Converts `self` to `[x, y, z, w]`

@@ -89,7 +89,6 @@ impl Default for EulerRot {
 
 pub(crate) trait ToEuler {
     type Scalar;
-    #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     fn to_euler_angles(self, order: EulerRot) -> (Self::Scalar, Self::Scalar, Self::Scalar);
 }
 
@@ -402,41 +401,11 @@ macro_rules! impl_mat3_to_euler {
     };
 }
 
-macro_rules! impl_mat4_to_euler {
-    ($scalar:ident, $mat4:ident, $mat3:ident) => {
-        impl ToEuler for $mat4 {
-            type Scalar = $scalar;
-            fn to_euler_angles(
-                self,
-                order: EulerRot,
-            ) -> (Self::Scalar, Self::Scalar, Self::Scalar) {
-                $mat3::from_mat4(self).to_euler_angles(order)
-            }
-        }
-    };
-}
-
-macro_rules! impl_quat_to_euler {
-    ($scalar:ident, $quat:ident, $mat3:ident) => {
-        impl ToEuler for $quat {
-            type Scalar = $scalar;
-            fn to_euler_angles(
-                self,
-                order: EulerRot,
-            ) -> (Self::Scalar, Self::Scalar, Self::Scalar) {
-                $mat3::from_quat(self).to_euler_angles(order)
-            }
-        }
-    };
-}
-
 impl_mat3_to_euler!(f32, Mat3, Vec3);
 impl_mat3_from_euler!(f32, Mat3, Vec3);
 impl_mat3_to_euler!(f32, Mat3A, Vec3A);
 impl_mat3_from_euler!(f32, Mat3A, Vec3A);
 impl_mat4_from_euler!(f32, Mat4, Mat3);
-impl_mat4_to_euler!(f32, Mat4, Mat3);
-impl_quat_to_euler!(f32, Quat, Mat3);
 impl_quat_from_euler!(f32, Quat, Vec3);
 
 #[cfg(feature = "f64")]
@@ -444,10 +413,6 @@ impl_mat3_to_euler!(f64, DMat3, DVec3);
 #[cfg(feature = "f64")]
 impl_mat3_from_euler!(f64, DMat3, DVec3);
 #[cfg(feature = "f64")]
-impl_mat4_to_euler!(f64, DMat4, DMat3);
-#[cfg(feature = "f64")]
 impl_mat4_from_euler!(f64, DMat4, DMat3);
-#[cfg(feature = "f64")]
-impl_quat_to_euler!(f64, DQuat, DMat3);
 #[cfg(feature = "f64")]
 impl_quat_from_euler!(f64, DQuat, DVec3);
