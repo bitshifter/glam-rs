@@ -19,9 +19,9 @@ pub(crate) const FEATURE_SETS: &[&str] = &[
     "std all-types rkyv bytecheck rand approx mint speedy zerocopy",
 ];
 
-// MSRV reduced set — some optional deps need a newer rustc
-pub(crate) const MSRV_FEATURES: &str =
-    "all-types arbitrary approx-05 mint-05 speedy-08 debug-glam-assert";
+// MSRV reduced set. `scalar-math`, `cuda`, `libm` and `nostd-libm` are added by
+// the individual checks in tools/ci/src/commands/msrv.rs.
+pub(crate) const MSRV_FEATURES: &str = "all-types glam-assert debug-glam-assert";
 
 // All optional deps used by clippy, doc, and coverage
 pub(crate) const ALL_FEATURES: &str = deps!();

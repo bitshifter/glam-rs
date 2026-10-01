@@ -265,7 +265,7 @@ assert_eq!(format!("{}", a), "[1, 2, 3, 4]");
 * `core-simd` - enables SIMD support via the portable simd module. This is an unstable feature which
   requires a nightly Rust toolchain and `std` support.
 
-## Optional features
+## Optional dependencies
 
 All `glam` dependencies are optional, however some are required for tests
 and benchmarks.
@@ -308,7 +308,17 @@ Pre-1.0 dependencies that appear in `glam`'s public API use versioned feature na
 
 ## Minimum Supported Rust Version (MSRV)
 
-The minimum supported Rust version is `1.68.2`.
+The minimum supported version of Rust is `1.68.2`.
+
+Raising the MSRV is treated as a non-breaking change, following Cargo's [semver guidance].
+
+`glam` itself and all of its features are expected to build with the MSRV unless otherwise
+documented. Optional dependencies are exempt, per Cargo's [support expectations]: they are not
+required to build with `glam`'s MSRV, so a feature that enables one may require a newer toolchain
+than `glam` itself.
+
+[semver guidance]: https://doc.rust-lang.org/cargo/reference/semver.html#env-new-rust
+[support expectations]: https://doc.rust-lang.org/cargo/reference/rust-version.html#support-expectations
 
 */
 #![cfg_attr(not(feature = "std"), no_std)]

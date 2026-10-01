@@ -145,7 +145,7 @@ glam = { default-features = false, features = ["nostd-libm"] }
 
 [cuda alignment]: https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#built-in-vector-types
 
-### Optional features
+### Optional dependencies
 
 Pre-1.0 dependencies that appear in `glam`'s public API use versioned feature names
 (e.g. `rand-010`), so a new version can be added without a breaking change.
@@ -210,6 +210,17 @@ Pre-1.0 dependencies that appear in `glam`'s public API use versioned feature na
 ### Minimum Supported Rust Version (MSRV)
 
 The minimum supported version of Rust for `glam` is `1.68.2`.
+
+Raising the MSRV is treated as a non-breaking change, following Cargo's
+[semver guidance].
+
+`glam` itself and all of its features are expected to build with the MSRV
+unless otherwise documented. Optional dependencies are exempt, per Cargo's
+[support expectations]: they are not required to build with `glam`'s MSRV, so a
+feature that enables one may require a newer toolchain than `glam` itself.
+
+[semver guidance]: https://doc.rust-lang.org/cargo/reference/semver.html#env-new-rust
+[support expectations]: https://doc.rust-lang.org/cargo/reference/rust-version.html#support-expectations
 
 ## Conventions
 
