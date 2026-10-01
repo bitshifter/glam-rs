@@ -1,6 +1,6 @@
 // Generated from float.rs.tera template. Edit the template, not the generated file.
 
-use crate::float::FloatExt;
+use crate::{f32::math, float::FloatExt};
 
 impl FloatExt for f32 {
     #[inline]
@@ -27,7 +27,7 @@ impl FloatExt for f32 {
 
     #[inline]
     fn fract_gl(self) -> Self {
-        self - crate::f32::math::floor(self)
+        self - math::floor(self)
     }
 
     #[inline]
@@ -47,10 +47,10 @@ impl FloatExt for f32 {
     #[inline]
     fn move_towards(self, rhs: Self, d: Self) -> Self {
         let a = rhs - self;
-        if a.abs() <= d {
+        if math::abs(a) <= d {
             rhs
         } else {
-            self + a.signum() * d
+            self + math::signum(a) * d
         }
     }
 }

@@ -1045,7 +1045,7 @@ impl {{ self_t }} {
         let dot = self.dot(end);
 
         const DOT_THRESHOLD: {{ scalar_t }} = 1.0 - {{ scalar_t }}::EPSILON;
-        if dot.abs() > DOT_THRESHOLD {
+        if math::abs(dot) > DOT_THRESHOLD {
             // if above threshold perform linear interpolation to avoid divide by zero
             self.lerp_impl(end, s)
         } else {

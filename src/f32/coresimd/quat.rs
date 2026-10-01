@@ -824,7 +824,7 @@ impl Quat {
         let dot = self.dot(end);
 
         const DOT_THRESHOLD: f32 = 1.0 - f32::EPSILON;
-        if dot.abs() > DOT_THRESHOLD {
+        if math::abs(dot) > DOT_THRESHOLD {
             // if above threshold perform linear interpolation to avoid divide by zero
             self.lerp_impl(end, s)
         } else {

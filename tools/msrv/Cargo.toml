@@ -19,15 +19,11 @@ publish = false
 glam = { path = "../..", default-features = false }
 
 [features]
-# Mirrors glam's default features (std math backend); checks 1-2 in
-# tools/ci/src/commands/msrv.rs use this. Check 3 passes
-# --no-default-features and enables libm instead, like the original check.
 default = ["glam/std"]
 all-types = ["glam/all-types"]
-arbitrary = ["glam/arbitrary"]
-approx-05 = ["glam/approx-05"]
-mint-05 = ["glam/mint-05"]
-speedy-08 = ["glam/speedy-08"]
+glam-assert = ["glam/glam-assert"]
 debug-glam-assert = ["glam/debug-glam-assert"]
 scalar-math = ["glam/scalar-math"]
+cuda = ["glam/cuda"]
 libm = ["glam/libm"]
+nostd-libm = ["glam/nostd-libm"]

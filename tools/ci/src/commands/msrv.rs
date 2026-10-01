@@ -38,6 +38,11 @@ impl Prepare for Msrv {
                 failure_message: "msrv check (scalar-math) failed",
             },
             PreparedCommand {
+                name: format!("msrv check: cuda {}", crate::features::MSRV_FEATURES),
+                command: a(&format!("cuda {}", crate::features::MSRV_FEATURES)),
+                failure_message: "msrv check (cuda) failed",
+            },
+            PreparedCommand {
                 name: "msrv check: libm scalar-math (no-default-features)".into(),
                 command: toolchain::cargo(sh, tc)
                     .arg("check")
@@ -50,6 +55,20 @@ impl Prepare for Msrv {
                         crate::features::MSRV_FEATURES
                     )),
                 failure_message: "msrv check (libm, no_std) failed",
+            },
+            PreparedCommand {
+                name: "msrv check: nostd-libm scalar-math (no-default-features)".into(),
+                command: toolchain::cargo(sh, tc)
+                    .arg("check")
+                    .arg("--manifest-path")
+                    .arg("tools/msrv/Cargo.toml")
+                    .arg("--no-default-features")
+                    .arg("--features")
+                    .arg(format!(
+                        "nostd-libm scalar-math {}",
+                        crate::features::MSRV_FEATURES
+                    )),
+                failure_message: "msrv check (nostd-libm, no_std) failed",
             },
         ]
     }
