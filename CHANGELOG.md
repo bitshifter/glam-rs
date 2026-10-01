@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.33.12](https://github.com/bitshifter/glam-rs/compare/0.33.11...0.33.12) - 2026-10-01
+
+### Added
+
+- *(assert)* report caller location for glam_assert panics ([#884](https://github.com/bitshifter/glam-rs/pull/884))
+
+### Fixed
+
+- *(quat,mat)* add missing glam_assert and correct panic docs ([#882](https://github.com/bitshifter/glam-rs/pull/882))
+- *(mat)* only return a finite inverse from try_inverse/inverse_or_zero ([#880](https://github.com/bitshifter/glam-rs/pull/880))
+
+### Other
+
+- *(mat2)* speed up NEON Mat2 determinant and inverse ([#878](https://github.com/bitshifter/glam-rs/pull/878))
+
 ## [0.33.11](https://github.com/bitshifter/glam-rs/compare/0.33.10...0.33.11) - 2026-09-27
 
 ### Added
