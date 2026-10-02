@@ -38,7 +38,7 @@
 * [`usize`](mod@usize) types
   * vectors: [`USizeVec2`], [`USizeVec3`] and [`USizeVec4`]
 * [`bool`](mod@bool) types
-  * vectors: [`BVec2`], [`BVec3`] and [`BVec4`]
+  * vectors: [`BVec2`], [`BVec3`], [`BVec3A`], [`BVec4`] and [`BVec4A`]
 
 All types are enabled by default. Only `f32` and `bool` types are built-in.
 All other types are optional and can be disabled if not needed for faster
@@ -75,14 +75,12 @@ of three `Vec3A` columns.
 |[`Mat3`]    |           36|            4|          36|        0|
 |[`Mat3A`]   |           36|           16|          48|       12|
 
-Despite this wasted space the SIMD implementations tend to outperform `f32` implementations in
-[**mathbench**](https://github.com/bitshifter/mathbench-rs) benchmarks.
-
 `glam` treats [`Vec3`] as the default 3D vector type and [`Vec3A`] a special case for optimization.
 When methods need to return a 3D vector they will generally return [`Vec3`].
 
-There are [`From`] trait implementations for converting from [`Vec4`] to a [`Vec3A`] and between
-[`Vec3`] and [`Vec3A`] (and vice versa).
+There are [`From`] trait implementations for converting between [`Vec3`] and [`Vec3A`]. There is
+also a [`Vec3A::from_vec4`] method for converting from [`Vec4`] to [`Vec3A`], discarding the `w`
+element.
 
 ```
 use glam::{Vec3, Vec3A, Vec4};
@@ -106,7 +104,7 @@ assert_eq!(Vec3A::new(1.0, 2.0, 3.0), v3a);
 ## Affine2, Affine3 and Affine3A
 
 `Affine2`, `Affine3` and `Affine3A` are composed of a linear transform matrix and a vector
-translation. The represent 2D and 3D affine transformations which are commonly used in games.
+translation. They represent 2D and 3D affine transformations which are commonly used in games.
 
 `Affine3` is composed from `Vec3` and `Mat3` whereas `Affine3A` is composed from `Mat3A` and
 `Vec3A`. `Affine3A` will generally be faster but is 16 byte aligned and 64 bytes versus `Affine3`
@@ -186,7 +184,7 @@ assert_eq!(4.0, v.z);
 `glam` does not enforce validity checks on method parameters at runtime. For example methods that
 require normalized vectors as input such as `Quat::from_axis_angle(axis, angle)` will not check
 that axis is a valid normalized vector. To help catch unintended misuse of `glam` the
-`debug-glam-assert` or `glam-assert` features can be enabled to add checks ensure that inputs to
+`debug-glam-assert` or `glam-assert` features can be enabled to add checks to ensure that inputs
 are valid.
 
 ## Vector swizzles
