@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - *(floatext)* add `lerp_monotonic` to `FloatExt` ([#866](https://github.com/bitshifter/glam-rs/pull/866))
-- [**breaking**] *(traits)* seal the `FloatExt`, `Vec2Swizzles`, `Vec3Swizzles` and `Vec4Swizzles` traits ([#891](https://github.com/bitshifter/glam-rs/pull/891))
+- *(traits)* [**breaking**] seal the `FloatExt`, `Vec2Swizzles`, `Vec3Swizzles` and `Vec4Swizzles` traits ([#891](https://github.com/bitshifter/glam-rs/pull/891))
 
 ### Changed
 
@@ -25,8 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- [**breaking**] *(api)* remove the `Mat3`/`Mat3A`/`DMat3`, `Mat4`/`DMat4`, `Quat`/`DQuat` and `Affine3`/`Affine3A`/`DAffine3` `look_to_*`/`look_at_*` methods, the `Mat4`/`DMat4` `frustum_*`, `perspective_*`, `perspective_infinite_*` and `orthographic_*` methods, and the `USES_WASM32_SIMD` constants, all deprecated since 0.31.0; use the `camera`/`dcamera` modules and `USES_WASM_SIMD` instead ([#846](https://github.com/bitshifter/glam-rs/issues/846))
-- [**breaking**] *(features)* remove the unversioned `approx`, `encase`, `mint`, `rand`, `rkyv`, `speedy` and `zerocopy` features and the no-op `fast-math` feature; use the versioned features instead ([#846](https://github.com/bitshifter/glam-rs/issues/846))
+- *(api)* [**breaking**] remove the `Mat3`/`Mat3A`/`DMat3`, `Mat4`/`DMat4`, `Quat`/`DQuat` and `Affine3`/`Affine3A`/`DAffine3` `look_to_*`/`look_at_*` methods, the `Mat4`/`DMat4` `frustum_*`, `perspective_*`, `perspective_infinite_*` and `orthographic_*` methods, and the `USES_WASM32_SIMD` constants, all deprecated since 0.31.0; use the `camera`/`dcamera` modules and `USES_WASM_SIMD` instead ([#846](https://github.com/bitshifter/glam-rs/issues/846))
+- *(features)* [**breaking**] remove the unversioned `approx`, `encase`, `mint`, `rand`, `rkyv`, `speedy` and `zerocopy` features and the no-op `fast-math` feature; use the versioned features instead ([#846](https://github.com/bitshifter/glam-rs/issues/846))
 
 ## [0.33.12](https://github.com/bitshifter/glam-rs/compare/0.33.11...0.33.12) - 2026-10-01
 
