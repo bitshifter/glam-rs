@@ -2,12 +2,14 @@
 
 #![allow(clippy::useless_conversion)]
 
-use crate::{Vec2, Vec3A, Vec3Swizzles, Vec4};
+use crate::{sealed::Sealed, Vec2, Vec3A, Vec3Swizzles, Vec4};
 
 #[cfg(target_arch = "x86")]
 use core::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use core::arch::x86_64::*;
+
+impl Sealed for Vec3A {}
 
 impl Vec3Swizzles for Vec3A {
     type Vec2 = Vec2;

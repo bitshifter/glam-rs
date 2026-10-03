@@ -486,3 +486,10 @@ pub use euler::EulerRot;
 /** A trait for extending [`prim@f32`] and [`prim@f64`] with extra methods. */
 mod float;
 pub use float::FloatExt;
+
+// Private supertrait used to seal glam's public traits so that methods can be
+// added after 1.0 without breaking downstream implementors. See C-SEALED:
+// https://rust-lang.github.io/api-guidelines/future-proofing.html#sealed-traits-protect-against-downstream-implementations-c-sealed
+mod sealed {
+    pub trait Sealed {}
+}

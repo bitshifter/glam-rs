@@ -2,6 +2,7 @@
 
 {% set components = ["x", "y", "z", "w"] %}
 {% set dimensions = [2, 3, 4] %}
+
 {% for dim in dimensions %}
     {% set vec2_t = "Self::Vec2" %}
     {% set vec3_t = "Self::Vec3" %}
@@ -15,7 +16,10 @@
         {% set vec2_t = "Self" %}
     {% endif %}
 
-    pub trait Vec{{ dim }}Swizzles: Sized + Copy + Clone {
+    /// Swizzle methods for `{{ dim }}`-dimensional vector types.
+    ///
+    /// This trait is sealed and cannot be implemented for types outside of `glam`.
+    pub trait Vec{{ dim }}Swizzles: Sized + Copy + Clone + crate::sealed::Sealed {
         {% if dim != 2 %}
         type Vec2;
         {% endif %}
