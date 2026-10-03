@@ -114,7 +114,7 @@ glob argument limits regeneration to matching files for faster iteration, e.g.
 already rustfmt-formatted, so `cargo fmt` is only needed for hand-written files
 such as tests.
 
-The minimum supported Rust version is 1.68.2 and is checked by
+The minimum supported Rust version is 1.85.0 and is checked by
 `cargo run -p ci -- msrv`, so avoid using newer language features in code or
 tests. Optional dependencies are exempt: they may require a newer toolchain
 than `glam` itself (see the MSRV policy in the README).

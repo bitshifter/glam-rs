@@ -1,7 +1,7 @@
 [package]
 name = "glam"
 version = "0.33.12"
-edition = "2021"
+edition = "2024"
 description = "A simple and fast 3D math library for games and graphics"
 documentation = "https://docs.rs/glam"
 repository = "https://github.com/bitshifter/glam-rs"
@@ -20,7 +20,7 @@ include = [
 ]
 keywords = ["gamedev", "math", "matrix", "vector", "quaternion"]
 categories = ["game-engines", "no-std"]
-rust-version = "1.68.2"
+rust-version = "1.85.0"
 
 [badges]
 maintenance = { status = "actively-developed" }

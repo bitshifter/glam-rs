@@ -4,10 +4,10 @@
 use crate::DMat3;
 
 use crate::{
+    EulerRot, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A,
     euler::{FromEuler, ToEuler},
     f32::math,
     swizzles::*,
-    EulerRot, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A,
 };
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -744,11 +744,7 @@ impl Mat3A {
     #[must_use]
     pub fn try_inverse(&self) -> Option<Self> {
         let (m, is_valid) = self.inverse_checked::<true>();
-        if is_valid {
-            Some(m)
-        } else {
-            None
-        }
+        if is_valid { Some(m) } else { None }
     }
 
     /// Returns the inverse of `self` or `Mat3A::ZERO` if the matrix is not

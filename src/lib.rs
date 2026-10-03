@@ -306,7 +306,7 @@ Pre-1.0 dependencies that appear in `glam`'s public API use versioned feature na
 
 ## Minimum Supported Rust Version (MSRV)
 
-The minimum supported version of Rust is `1.68.2`.
+The minimum supported version of Rust is `1.85.0`.
 
 Raising the MSRV is treated as a non-breaking change, following Cargo's [semver guidance].
 

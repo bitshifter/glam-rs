@@ -13,7 +13,7 @@
 //! Functions returning `DMat3`, or `DQuat` return
 //! only the view rotation.
 
-use crate::{dcamera::camera_impl, DAffine3, DMat3, DMat4, DQuat, DVec3};
+use crate::{DAffine3, DMat3, DMat4, DQuat, DVec3, dcamera::camera_impl};
 
 /// Returns a `DMat4` view matrix from eye, focal point, and up.
 ///

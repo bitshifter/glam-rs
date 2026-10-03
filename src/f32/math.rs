@@ -4,7 +4,7 @@ fn acos_approx_f32(v: f32) -> f32 {
     // Based on https://github.com/microsoft/DirectXMath `XMScalarAcos`
     // Clamp input to [-1,1].
     let nonnegative = v >= 0.0;
-    let x = abs(v);
+    let x = v.abs();
     let mut omx = 1.0 - x;
     if omx < 0.0 {
         omx = 0.0;
@@ -34,11 +34,6 @@ fn acos_approx_f32(v: f32) -> f32 {
 
 #[cfg(any(feature = "libm", all(feature = "nostd-libm", not(feature = "std"))))]
 mod libm_math {
-    #[inline(always)]
-    pub(crate) fn abs(f: f32) -> f32 {
-        libm::fabsf(f)
-    }
-
     #[inline(always)]
     pub(crate) fn acos_approx(f: f32) -> f32 {
         super::acos_approx_f32(f)
@@ -74,20 +69,6 @@ mod libm_math {
     #[inline(always)]
     pub(crate) fn sqrt(f: f32) -> f32 {
         libm::sqrtf(f)
-    }
-
-    #[inline(always)]
-    pub(crate) fn copysign(f: f32, sign: f32) -> f32 {
-        libm::copysignf(f, sign)
-    }
-
-    #[inline(always)]
-    pub(crate) fn signum(f: f32) -> f32 {
-        if f.is_nan() {
-            f32::NAN
-        } else {
-            copysign(1.0, f)
-        }
     }
 
     #[inline(always)]
@@ -153,21 +134,12 @@ mod libm_math {
     #[inline]
     pub fn rem_euclid(a: f32, b: f32) -> f32 {
         let r = a % b;
-        if r < 0.0 {
-            r + abs(b)
-        } else {
-            r
-        }
+        if r < 0.0 { r + b.abs() } else { r }
     }
 }
 
 #[cfg(all(not(feature = "libm"), feature = "std"))]
 mod std_math {
-    #[inline(always)]
-    pub(crate) fn abs(f: f32) -> f32 {
-        f32::abs(f)
-    }
-
     #[inline(always)]
     pub(crate) fn acos_approx(f: f32) -> f32 {
         super::acos_approx_f32(f)
@@ -203,16 +175,6 @@ mod std_math {
     #[inline(always)]
     pub(crate) fn sqrt(f: f32) -> f32 {
         f32::sqrt(f)
-    }
-
-    #[inline(always)]
-    pub(crate) fn copysign(f: f32, sign: f32) -> f32 {
-        f32::copysign(f, sign)
-    }
-
-    #[inline(always)]
-    pub(crate) fn signum(f: f32) -> f32 {
-        f32::signum(f)
     }
 
     #[inline(always)]
@@ -284,10 +246,6 @@ mod std_math {
     not(feature = "nostd-libm")
 ))]
 mod no_backend_math {
-    pub(crate) fn abs(_: f32) -> f32 {
-        unimplemented!()
-    }
-
     pub(crate) fn acos_approx(_: f32) -> f32 {
         unimplemented!()
     }
@@ -313,14 +271,6 @@ mod no_backend_math {
     }
 
     pub(crate) fn sqrt(_: f32) -> f32 {
-        unimplemented!()
-    }
-
-    pub(crate) fn copysign(_: f32, _: f32) -> f32 {
-        unimplemented!()
-    }
-
-    pub(crate) fn signum(_: f32) -> f32 {
         unimplemented!()
     }
 

@@ -300,7 +300,7 @@ macro_rules! impl_affine2_tests {
 }
 
 mod affine2 {
-    use super::support::{deg, FloatCompare};
+    use super::support::{FloatCompare, deg};
     use glam::{Affine2, Mat2, Mat3, Vec2};
 
     impl FloatCompare for Affine2 {
@@ -366,7 +366,7 @@ mod affine2 {
 
 #[cfg(feature = "f64")]
 mod daffine2 {
-    use super::support::{deg, FloatCompare};
+    use super::support::{FloatCompare, deg};
     use glam::{DAffine2, DMat2, DMat3, DVec2};
 
     impl FloatCompare for DAffine2 {

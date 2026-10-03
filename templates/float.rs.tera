@@ -57,10 +57,10 @@ impl FloatExt for {{ scalar_t }} {
     #[inline]
     fn move_towards(self, rhs: Self, d: Self) -> Self {
         let a = rhs - self;
-        if math::abs(a) <= d {
+        if a.abs() <= d {
             rhs
         } else {
-            self + math::signum(a) * d
+            self + a.signum() * d
         }
     }
 }

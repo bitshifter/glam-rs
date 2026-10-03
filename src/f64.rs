@@ -12,13 +12,13 @@ pub(crate) mod math;
 
 pub use daffine2::DAffine2;
 pub use daffine3::DAffine3;
-pub use dmat2::{dmat2, DMat2};
-pub use dmat3::{dmat3, DMat3};
-pub use dmat4::{dmat4, DMat4};
-pub use dquat::{dquat, DQuat};
-pub use dvec2::{dvec2, DVec2};
-pub use dvec3::{dvec3, DVec3};
-pub use dvec4::{dvec4, DVec4};
+pub use dmat2::{DMat2, dmat2};
+pub use dmat3::{DMat3, dmat3};
+pub use dmat4::{DMat4, dmat4};
+pub use dquat::{DQuat, dquat};
+pub use dvec2::{DVec2, dvec2};
+pub use dvec3::{DVec3, dvec3};
+pub use dvec4::{DVec4, dvec4};
 
 #[cfg(not(target_arch = "spirv"))]
 mod test {

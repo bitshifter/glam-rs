@@ -308,12 +308,11 @@ impl Affine3 {
     #[must_use]
     #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn to_scale_rotation_translation(&self) -> (Vec3, Quat, Vec3) {
-        use crate::f32::math;
         let det = self.matrix3.determinant();
         glam_assert!(det != 0.0);
 
         let scale = Vec3::new(
-            self.matrix3.x_axis.length() * math::signum(det),
+            self.matrix3.x_axis.length() * det.signum(),
             self.matrix3.y_axis.length(),
             self.matrix3.z_axis.length(),
         );

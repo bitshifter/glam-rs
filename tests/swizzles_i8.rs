@@ -4,7 +4,7 @@ mod support;
 
 #[cfg(feature = "i8")]
 glam_test!(test_i8vec4_swizzles, {
-    use glam::{i8vec2, i8vec3, i8vec4, Vec4Swizzles};
+    use glam::{Vec4Swizzles, i8vec2, i8vec3, i8vec4};
     let v = i8vec4(1_i8, 2_i8, 3_i8, 4_i8);
     let rhs3 = i8vec3(11_i8, 12_i8, 13_i8);
     let rhs2 = i8vec2(11_i8, 12_i8);
@@ -384,7 +384,7 @@ glam_test!(test_i8vec4_swizzles, {
 
 #[cfg(feature = "i8")]
 glam_test!(test_i8vec3_swizzles, {
-    use glam::{i8vec2, i8vec3, i8vec4, Vec3Swizzles};
+    use glam::{Vec3Swizzles, i8vec2, i8vec3, i8vec4};
     let v = i8vec3(1_i8, 2_i8, 3_i8);
     let rhs2 = i8vec2(11_i8, 12_i8);
     assert_eq!(v, v.xyz());
@@ -514,7 +514,7 @@ glam_test!(test_i8vec3_swizzles, {
 
 #[cfg(feature = "i8")]
 glam_test!(test_i8vec2_swizzles, {
-    use glam::{i8vec2, i8vec3, i8vec4, Vec2Swizzles};
+    use glam::{Vec2Swizzles, i8vec2, i8vec3, i8vec4};
     let v = i8vec2(1_i8, 2_i8);
     assert_eq!(v, v.xy());
     assert_eq!(v.xxxx(), i8vec4(1_i8, 1_i8, 1_i8, 1_i8));

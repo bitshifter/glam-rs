@@ -1,11 +1,6 @@
 #[cfg(any(feature = "libm", all(feature = "nostd-libm", not(feature = "std"))))]
 mod libm_math {
     #[inline(always)]
-    pub(crate) fn abs(f: f64) -> f64 {
-        libm::fabs(f)
-    }
-
-    #[inline(always)]
     pub(crate) fn acos_approx(f: f64) -> f64 {
         libm::acos(f.clamp(-1.0, 1.0))
     }
@@ -38,20 +33,6 @@ mod libm_math {
     #[inline(always)]
     pub(crate) fn sqrt(f: f64) -> f64 {
         libm::sqrt(f)
-    }
-
-    #[inline(always)]
-    pub(crate) fn copysign(f: f64, sign: f64) -> f64 {
-        libm::copysign(f, sign)
-    }
-
-    #[inline(always)]
-    pub(crate) fn signum(f: f64) -> f64 {
-        if f.is_nan() {
-            f64::NAN
-        } else {
-            copysign(1.0, f)
-        }
     }
 
     #[inline(always)]
@@ -117,21 +98,12 @@ mod libm_math {
     #[inline]
     pub fn rem_euclid(a: f64, b: f64) -> f64 {
         let r = a % b;
-        if r < 0.0 {
-            r + abs(b)
-        } else {
-            r
-        }
+        if r < 0.0 { r + b.abs() } else { r }
     }
 }
 
 #[cfg(all(not(feature = "libm"), feature = "std"))]
 mod std_math {
-    #[inline(always)]
-    pub(crate) fn abs(f: f64) -> f64 {
-        f64::abs(f)
-    }
-
     #[inline(always)]
     pub(crate) fn acos_approx(f: f64) -> f64 {
         f64::acos(f64::clamp(f, -1.0, 1.0))
@@ -165,16 +137,6 @@ mod std_math {
     #[inline(always)]
     pub(crate) fn sqrt(f: f64) -> f64 {
         f64::sqrt(f)
-    }
-
-    #[inline(always)]
-    pub(crate) fn copysign(f: f64, sign: f64) -> f64 {
-        f64::copysign(f, sign)
-    }
-
-    #[inline(always)]
-    pub(crate) fn signum(f: f64) -> f64 {
-        f64::signum(f)
     }
 
     #[inline(always)]
@@ -246,10 +208,6 @@ mod std_math {
     not(feature = "nostd-libm")
 ))]
 mod no_backend_math {
-    pub(crate) fn abs(_: f64) -> f64 {
-        unimplemented!()
-    }
-
     pub(crate) fn acos_approx(_: f64) -> f64 {
         unimplemented!()
     }
@@ -275,14 +233,6 @@ mod no_backend_math {
     }
 
     pub(crate) fn sqrt(_: f64) -> f64 {
-        unimplemented!()
-    }
-
-    pub(crate) fn copysign(_: f64, _: f64) -> f64 {
-        unimplemented!()
-    }
-
-    pub(crate) fn signum(_: f64) -> f64 {
         unimplemented!()
     }
 

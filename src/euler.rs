@@ -184,11 +184,7 @@ impl Order {
     }
 
     const fn prev_axis(i: usize) -> usize {
-        if i > 0 {
-            i - 1
-        } else {
-            2
-        }
+        if i > 0 { i - 1 } else { 2 }
     }
 
     const fn angle_order(self) -> (usize, usize, usize) {

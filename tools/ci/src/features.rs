@@ -27,8 +27,7 @@ pub(crate) const MSRV_FEATURES: &str = "all-types glam-assert debug-glam-assert"
 pub(crate) const ALL_FEATURES: &str = deps!();
 
 // core-simd profile features (no zerocopy as it doesn't compile with core-simd)
-pub(crate) const CORE_SIMD_FEATURES: &str =
-    "core-simd arbitrary approx-05 bytemuck encase encase-013 float_eq mint-05 rand-010 rkyv-08 bytecheck serde speedy-08 debug-glam-assert";
+pub(crate) const CORE_SIMD_FEATURES: &str = "core-simd arbitrary approx-05 bytemuck encase encase-013 float_eq mint-05 rand-010 rkyv-08 bytecheck serde speedy-08 debug-glam-assert";
 
 // A small subset of the CI tests, used by the reduced pre-push check.
 pub(crate) const PRE_PUSH_FEATURE_SETS: &[&str] = &[

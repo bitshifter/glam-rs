@@ -2,9 +2,9 @@ mod u8vec2;
 mod u8vec3;
 mod u8vec4;
 
-pub use u8vec2::{u8vec2, U8Vec2};
-pub use u8vec3::{u8vec3, U8Vec3};
-pub use u8vec4::{u8vec4, U8Vec4};
+pub use u8vec2::{U8Vec2, u8vec2};
+pub use u8vec3::{U8Vec3, u8vec3};
+pub use u8vec4::{U8Vec4, u8vec4};
 
 #[cfg(not(target_arch = "spirv"))]
 mod test {

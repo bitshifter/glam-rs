@@ -1,9 +1,9 @@
 // Generated from quat.rs.tera template. Edit the template, not the generated file.
 
 use crate::{
+    DMat3, DMat4, DVec2, DVec3, DVec4, Quat,
     euler::{EulerRot, FromEuler, ToEuler},
     f64::math,
-    DMat3, DMat4, DVec2, DVec3, DVec4, Quat,
 };
 
 use core::fmt;
@@ -654,7 +654,7 @@ impl DQuat {
         // decreasing, comparing `abs(w)` to the cosine threshold avoids calculating the angle.
         // Equivalent to an angular threshold of `(1.0 - 1e-14).acos() * 2.0`.
         const THRESHOLD: f64 = 1.0 - 1e-14;
-        math::abs(self.w) > THRESHOLD
+        self.w.abs() > THRESHOLD
     }
 
     /// Returns the angle (in radians) for the minimal rotation between two quaternions
@@ -670,7 +670,7 @@ impl DQuat {
     #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn angle_between(self, rhs: Self) -> f64 {
         glam_assert!(self.is_normalized() && rhs.is_normalized());
-        math::acos_approx(math::abs(self.dot(rhs))) * 2.0
+        math::acos_approx(self.dot(rhs).abs()) * 2.0
     }
 
     /// Rotates towards `rhs` up to `max_angle` (in radians).
@@ -816,7 +816,7 @@ impl DQuat {
         let dot = self.dot(end);
 
         const DOT_THRESHOLD: f64 = 1.0 - f64::EPSILON;
-        if math::abs(dot) > DOT_THRESHOLD {
+        if dot.abs() > DOT_THRESHOLD {
             // if above threshold perform linear interpolation to avoid divide by zero
             self.lerp_impl(end, s)
         } else {

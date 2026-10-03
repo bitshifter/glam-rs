@@ -2,9 +2,9 @@ mod isizevec2;
 mod isizevec3;
 mod isizevec4;
 
-pub use isizevec2::{isizevec2, ISizeVec2};
-pub use isizevec3::{isizevec3, ISizeVec3};
-pub use isizevec4::{isizevec4, ISizeVec4};
+pub use isizevec2::{ISizeVec2, isizevec2};
+pub use isizevec3::{ISizeVec3, isizevec3};
+pub use isizevec4::{ISizeVec4, isizevec4};
 
 #[cfg(not(target_arch = "spirv"))]
 mod test {

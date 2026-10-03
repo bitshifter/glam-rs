@@ -1,3 +1,8 @@
+// The helpers below are thin wrappers around SSE2 intrinsics and are `unsafe` as a
+// whole; allow the edition 2024 `unsafe_op_in_unsafe_fn` lint here instead of
+// wrapping every intrinsic call in its own `unsafe` block.
+#![allow(unsafe_op_in_unsafe_fn)]
+
 #[cfg(target_arch = "x86")]
 use core::arch::x86::*;
 #[cfg(target_arch = "x86_64")]

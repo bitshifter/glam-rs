@@ -12,7 +12,7 @@
 //! These are called by the public wrappers in `lh::proj`, `rh::proj`,
 //! `lh::view`, and `rh::view` and should not be used directly.
 
-use crate::{f32::math, Affine3, Affine3A, Mat3, Mat3A, Mat4, Quat, Vec3, Vec3A, Vec4};
+use crate::{Affine3, Affine3A, Mat3, Mat3A, Mat4, Quat, Vec3, Vec3A, Vec4, f32::math};
 
 /// Computes an orthonormal view basis from eye, direction, and up.
 #[inline(always)]

@@ -13,7 +13,7 @@
 //! Functions returning `Mat3`, `Mat3A`, or `Quat` return
 //! only the view rotation.
 
-use crate::{camera::camera_impl, Affine3, Affine3A, Mat3, Mat3A, Mat4, Quat, Vec3};
+use crate::{Affine3, Affine3A, Mat3, Mat3A, Mat4, Quat, Vec3, camera::camera_impl};
 
 /// Returns a `Mat4` view matrix from eye, focal point, and up.
 ///

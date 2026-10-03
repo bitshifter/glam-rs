@@ -4,7 +4,7 @@ mod support;
 
 #[cfg(feature = "usize")]
 glam_test!(test_usizevec4_swizzles, {
-    use glam::{usizevec2, usizevec3, usizevec4, Vec4Swizzles};
+    use glam::{Vec4Swizzles, usizevec2, usizevec3, usizevec4};
     let v = usizevec4(1_usize, 2_usize, 3_usize, 4_usize);
     let rhs3 = usizevec3(11_usize, 12_usize, 13_usize);
     let rhs2 = usizevec2(11_usize, 12_usize);
@@ -492,7 +492,7 @@ glam_test!(test_usizevec4_swizzles, {
 
 #[cfg(feature = "usize")]
 glam_test!(test_usizevec3_swizzles, {
-    use glam::{usizevec2, usizevec3, usizevec4, Vec3Swizzles};
+    use glam::{Vec3Swizzles, usizevec2, usizevec3, usizevec4};
     let v = usizevec3(1_usize, 2_usize, 3_usize);
     let rhs2 = usizevec2(11_usize, 12_usize);
     assert_eq!(v, v.xyz());
@@ -622,7 +622,7 @@ glam_test!(test_usizevec3_swizzles, {
 
 #[cfg(feature = "usize")]
 glam_test!(test_usizevec2_swizzles, {
-    use glam::{usizevec2, usizevec3, usizevec4, Vec2Swizzles};
+    use glam::{Vec2Swizzles, usizevec2, usizevec3, usizevec4};
     let v = usizevec2(1_usize, 2_usize);
     assert_eq!(v, v.xy());
     assert_eq!(v.xxxx(), usizevec4(1_usize, 1_usize, 1_usize, 1_usize));

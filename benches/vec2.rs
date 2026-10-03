@@ -3,7 +3,7 @@
 mod macros;
 mod support;
 
-use criterion::{criterion_group, criterion_main, Criterion};
+use criterion::{Criterion, criterion_group, criterion_main};
 use glam::Vec2;
 use std::ops::Mul;
 use support::*;

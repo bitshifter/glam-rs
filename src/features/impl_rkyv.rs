@@ -68,7 +68,7 @@ mod f32 {
     use crate::{
         Affine2, Affine3, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4,
     };
-    use rkyv_08::{rancor::Fallible, Archive, Deserialize, Place, Serialize};
+    use rkyv_08::{Archive, Deserialize, Place, Serialize, rancor::Fallible};
     impl_rkyv!(Affine2);
     impl_rkyv!(Affine3);
     impl_rkyv!(Affine3A);
@@ -86,7 +86,7 @@ mod f32 {
 #[cfg(feature = "f64")]
 mod f64 {
     use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
-    use rkyv_08::{rancor::Fallible, Archive, Deserialize, Place, Serialize};
+    use rkyv_08::{Archive, Deserialize, Place, Serialize, rancor::Fallible};
 
     impl_rkyv!(DAffine2);
     impl_rkyv!(DAffine3);
@@ -102,7 +102,7 @@ mod f64 {
 #[cfg(feature = "i8")]
 mod i8 {
     use crate::{I8Vec2, I8Vec3, I8Vec4};
-    use rkyv_08::{rancor::Fallible, Archive, Deserialize, Place, Serialize};
+    use rkyv_08::{Archive, Deserialize, Place, Serialize, rancor::Fallible};
 
     impl_rkyv!(I8Vec2);
     impl_rkyv!(I8Vec3);
@@ -112,7 +112,7 @@ mod i8 {
 #[cfg(feature = "i16")]
 mod i16 {
     use crate::{I16Vec2, I16Vec3, I16Vec4};
-    use rkyv_08::{rancor::Fallible, Archive, Deserialize, Place, Serialize};
+    use rkyv_08::{Archive, Deserialize, Place, Serialize, rancor::Fallible};
 
     impl_rkyv!(I16Vec2);
     impl_rkyv!(I16Vec3);
@@ -122,7 +122,7 @@ mod i16 {
 #[cfg(feature = "i32")]
 mod i32 {
     use crate::{IVec2, IVec3, IVec4};
-    use rkyv_08::{rancor::Fallible, Archive, Deserialize, Place, Serialize};
+    use rkyv_08::{Archive, Deserialize, Place, Serialize, rancor::Fallible};
 
     impl_rkyv!(IVec2);
     impl_rkyv!(IVec3);
@@ -132,7 +132,7 @@ mod i32 {
 #[cfg(feature = "i64")]
 mod i64 {
     use crate::{I64Vec2, I64Vec3, I64Vec4};
-    use rkyv_08::{rancor::Fallible, Archive, Deserialize, Place, Serialize};
+    use rkyv_08::{Archive, Deserialize, Place, Serialize, rancor::Fallible};
 
     impl_rkyv!(I64Vec2);
     impl_rkyv!(I64Vec3);
@@ -142,7 +142,7 @@ mod i64 {
 #[cfg(feature = "u8")]
 mod u8 {
     use crate::{U8Vec2, U8Vec3, U8Vec4};
-    use rkyv_08::{rancor::Fallible, Archive, Deserialize, Place, Serialize};
+    use rkyv_08::{Archive, Deserialize, Place, Serialize, rancor::Fallible};
 
     impl_rkyv!(U8Vec2);
     impl_rkyv!(U8Vec3);
@@ -152,7 +152,7 @@ mod u8 {
 #[cfg(feature = "u16")]
 mod u16 {
     use crate::{U16Vec2, U16Vec3, U16Vec4};
-    use rkyv_08::{rancor::Fallible, Archive, Deserialize, Place, Serialize};
+    use rkyv_08::{Archive, Deserialize, Place, Serialize, rancor::Fallible};
 
     impl_rkyv!(U16Vec2);
     impl_rkyv!(U16Vec3);
@@ -162,7 +162,7 @@ mod u16 {
 #[cfg(feature = "u32")]
 mod u32 {
     use crate::{UVec2, UVec3, UVec4};
-    use rkyv_08::{rancor::Fallible, Archive, Deserialize, Place, Serialize};
+    use rkyv_08::{Archive, Deserialize, Place, Serialize, rancor::Fallible};
 
     impl_rkyv!(UVec2);
     impl_rkyv!(UVec3);
@@ -172,7 +172,7 @@ mod u32 {
 #[cfg(feature = "u64")]
 mod u64 {
     use crate::{U64Vec2, U64Vec3, U64Vec4};
-    use rkyv_08::{rancor::Fallible, Archive, Deserialize, Place, Serialize};
+    use rkyv_08::{Archive, Deserialize, Place, Serialize, rancor::Fallible};
 
     impl_rkyv!(U64Vec2);
     impl_rkyv!(U64Vec3);

@@ -3,7 +3,7 @@
 #[cfg(feature = "f64")]
 use crate::DMat2;
 
-use crate::{f32::math, swizzles::*, Mat3, Mat3A, Vec2};
+use crate::{Mat3, Mat3A, Vec2, f32::math, swizzles::*};
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
@@ -461,11 +461,7 @@ impl Mat2 {
     #[must_use]
     pub fn try_inverse(&self) -> Option<Self> {
         let (m, is_valid) = self.inverse_checked::<true>();
-        if is_valid {
-            Some(m)
-        } else {
-            None
-        }
+        if is_valid { Some(m) } else { None }
     }
 
     /// Returns the inverse of `self` or `Mat2::ZERO` if the matrix is not

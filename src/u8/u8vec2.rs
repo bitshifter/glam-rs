@@ -257,11 +257,7 @@ impl U8Vec2 {
     #[inline]
     #[must_use]
     pub fn min_position(self) -> usize {
-        if self.x <= self.y {
-            0
-        } else {
-            1
-        }
+        if self.x <= self.y { 0 } else { 1 }
     }
 
     /// Returns the index of the first maximum element of `self`.
@@ -269,11 +265,7 @@ impl U8Vec2 {
     #[inline]
     #[must_use]
     pub fn max_position(self) -> usize {
-        if self.x >= self.y {
-            0
-        } else {
-            1
-        }
+        if self.x >= self.y { 0 } else { 1 }
     }
 
     /// Returns the sum of all elements of `self`.

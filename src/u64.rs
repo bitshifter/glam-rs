@@ -2,9 +2,9 @@ mod u64vec2;
 mod u64vec3;
 mod u64vec4;
 
-pub use u64vec2::{u64vec2, U64Vec2};
-pub use u64vec3::{u64vec3, U64Vec3};
-pub use u64vec4::{u64vec4, U64Vec4};
+pub use u64vec2::{U64Vec2, u64vec2};
+pub use u64vec3::{U64Vec3, u64vec3};
+pub use u64vec4::{U64Vec4, u64vec4};
 
 #[cfg(not(target_arch = "spirv"))]
 mod test {

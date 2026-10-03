@@ -1061,7 +1061,9 @@ mod f32 {
         ser::{Serialize, SerializeTupleStruct, Serializer},
     };
 
-    impl_serde_float_types!(f32, Affine2, Affine3, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4);
+    impl_serde_float_types!(
+        f32, Affine2, Affine3, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec4
+    );
     impl_serde_affine3!(test_affine3a_serde, f32, Affine3A);
     impl_serde_mat3!(f32, Mat3A, test_mat3a_serde);
     impl_serde_vec3!(f32, Vec3A, test_vec3a_serde);

@@ -819,7 +819,7 @@ impl {{ self_t }} {
         glam_assert!(det != 0.0);
 
         let scale = {{ vec3_t }}::new(
-            r.x_axis.length() * math::signum(det),
+            r.x_axis.length() * det.signum(),
             r.y_axis.length(),
             r.z_axis.length(),
         );

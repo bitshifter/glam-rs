@@ -798,7 +798,7 @@ macro_rules! impl_quat_tests {
 mod quat {
     use crate::support::{deg, rad};
     use core::ops::Neg;
-    use glam::{quat, EulerRot, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
+    use glam::{EulerRot, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4, quat};
 
     glam_test!(test_align, {
         use std::mem;
@@ -949,7 +949,7 @@ mod quat {
 mod dquat {
     use crate::support::{deg, rad};
     use core::ops::Neg;
-    use glam::{dquat, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, EulerRot};
+    use glam::{DMat3, DMat4, DQuat, DVec2, DVec3, DVec4, EulerRot, dquat};
 
     glam_test!(test_align, {
         use std::mem;

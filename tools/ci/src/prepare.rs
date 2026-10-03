@@ -1,4 +1,4 @@
-use xshell::{cmd, Cmd, Shell};
+use xshell::{Cmd, Shell, cmd};
 
 use crate::args::Args;
 

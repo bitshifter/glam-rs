@@ -1,8 +1,8 @@
 use argh::FromArgs;
-use xshell::{cmd, Shell};
+use xshell::{Shell, cmd};
 
 use crate::args::Args;
-use crate::prepare::{test_feature_commands, Prepare, PreparedCommand};
+use crate::prepare::{Prepare, PreparedCommand, test_feature_commands};
 
 #[derive(FromArgs, Default)]
 #[argh(subcommand, name = "test-features")]

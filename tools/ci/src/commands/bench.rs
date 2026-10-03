@@ -143,7 +143,7 @@ fn remove_with_suffix(dir: &Path, suffix: &str) {
             remove_with_suffix(&path, suffix);
         } else if path
             .file_name()
-            .map_or(false, |n| n.to_string_lossy().ends_with(suffix))
+            .is_some_and(|n| n.to_string_lossy().ends_with(suffix))
         {
             let _ = fs::remove_file(&path);
         }
@@ -395,7 +395,7 @@ fn collect_bench_fns_files(dir: &Path, suffix: &str, out: &mut BTreeSet<String>)
             collect_bench_fns_files(&path, suffix, out);
         } else if path
             .file_name()
-            .map_or(false, |n| n.to_string_lossy().ends_with(suffix))
+            .is_some_and(|n| n.to_string_lossy().ends_with(suffix))
         {
             for name in callgrind_fns(&path) {
                 if is_bench_fn(&name) {
@@ -417,9 +417,7 @@ fn cargo_asm_installed(sh: &Shell) -> bool {
         .arg("asm")
         .arg("--version")
         .read()
-        .map_or(false, |version| {
-            version.trim_start().starts_with("Version:")
-        })
+        .is_ok_and(|version| version.trim_start().starts_with("Version:"))
 }
 
 /// Dump one function as source-annotated assembly with `cargo asm --rust`, or
@@ -611,9 +609,7 @@ fn runner_installed(sh: &Shell, version: &str) -> bool {
     sh.cmd(format!("{RUNNER_ROOT}/bin/gungraun-runner"))
         .arg("--version")
         .read()
-        .map_or(false, |stdout| {
-            stdout.trim() == format!("gungraun-runner {version}")
-        })
+        .is_ok_and(|stdout| stdout.trim() == format!("gungraun-runner {version}"))
 }
 
 #[derive(FromArgs)]

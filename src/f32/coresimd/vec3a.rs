@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{coresimd::*, f32::math, BVec3, BVec3A, FloatExt, Quat, Vec2, Vec3, Vec4};
+use crate::{BVec3, BVec3A, FloatExt, Quat, Vec2, Vec3, Vec4, coresimd::*, f32::math};
 
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -696,7 +696,7 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn is_normalized(self) -> bool {
-        math::abs(self.length_squared() - 1.0) <= 2e-4
+        (self.length_squared() - 1.0).abs() <= 2e-4
     }
 
     /// Returns the vector projection of `self` onto `rhs`.
@@ -1264,7 +1264,7 @@ impl Vec3A {
     #[must_use]
     pub fn any_orthogonal_vector(self) -> Self {
         // This can probably be optimized
-        if math::abs(self.x) > math::abs(self.y) {
+        if self.x.abs() > self.y.abs() {
             Self::new(-self.z, 0.0, self.x) // self.cross(Self::Y)
         } else {
             Self::new(0.0, self.z, -self.y) // self.cross(Self::X)
@@ -1284,7 +1284,7 @@ impl Vec3A {
     pub fn any_orthonormal_vector(self) -> Self {
         glam_assert!(self.is_normalized());
         // From https://graphics.pixar.com/library/OrthonormalB/paper.pdf
-        let sign = math::signum(self.z);
+        let sign = self.z.signum();
         let a = -1.0 / (sign + self.z);
         let b = self.x * self.y * a;
         Self::new(b, sign + self.y * self.y * a, -self.y)
@@ -1302,7 +1302,7 @@ impl Vec3A {
     pub fn any_orthonormal_pair(self) -> (Self, Self) {
         glam_assert!(self.is_normalized());
         // From https://graphics.pixar.com/library/OrthonormalB/paper.pdf
-        let sign = math::signum(self.z);
+        let sign = self.z.signum();
         let a = -1.0 / (sign + self.z);
         let b = self.x * self.y * a;
         (
@@ -1331,7 +1331,7 @@ impl Vec3A {
         // Cosine of the angle between the vectors [-1, 1], or NaN if either vector has a zero length
         let dot = self.dot(rhs) / (self_length * rhs_length);
         // If dot is close to 1 or -1, or is NaN the calculations for t1 and t2 break down
-        if math::abs(dot) < 1.0 - 3e-7 {
+        if dot.abs() < 1.0 - 3e-7 {
             // Angle between the vectors [0, +π]
             let theta = math::acos_approx(dot);
             // Sine of the angle between vectors [0, 1]
