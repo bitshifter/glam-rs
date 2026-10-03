@@ -1,5 +1,7 @@
 /// A trait for extending [`prim@f32`] and [`prim@f64`] with extra methods.
-pub trait FloatExt {
+///
+/// This trait is sealed and cannot be implemented for types outside of `glam`.
+pub trait FloatExt: crate::sealed::Sealed {
     /// Performs a linear interpolation between `self` and `rhs` based on the value `s`, using the
     /// form `self * (1.0 - s) + rhs * s`.
     ///

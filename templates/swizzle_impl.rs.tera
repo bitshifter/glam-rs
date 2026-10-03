@@ -23,6 +23,7 @@
 {% set h = ["4", "5", "6", "7"] %}
 
 use crate::{
+    sealed::Sealed,
     Vec{{ dim }}Swizzles,
     {{vec2_t}}, {{vec3_t}}, {{vec4_t}},
 };
@@ -40,6 +41,8 @@ use core::arch::wasm64::*;
 {% elif is_coresimd %}
 use core::simd::*;
 {% endif %}
+
+impl Sealed for {{ self_t }} {}
 
 impl Vec{{ dim }}Swizzles for {{ self_t }} {
     {% if dim != 2 %}

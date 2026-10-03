@@ -2,6 +2,8 @@
 
 use crate::{f64::math, float::FloatExt};
 
+impl crate::sealed::Sealed for f64 {}
+
 impl FloatExt for f64 {
     #[inline]
     fn lerp(self, rhs: Self, t: Self) -> Self {

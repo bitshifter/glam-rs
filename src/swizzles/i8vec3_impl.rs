@@ -1,6 +1,8 @@
 // Generated from swizzle_impl.rs.tera template. Edit the template, not the generated file.
 
-use crate::{I8Vec2, I8Vec3, I8Vec4, Vec3Swizzles};
+use crate::{sealed::Sealed, I8Vec2, I8Vec3, I8Vec4, Vec3Swizzles};
+
+impl Sealed for I8Vec3 {}
 
 impl Vec3Swizzles for I8Vec3 {
     type Vec2 = I8Vec2;

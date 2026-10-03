@@ -1,6 +1,9 @@
 // Generated from swizzle_traits.rs.tera template. Edit the template, not the generated file.
 
-pub trait Vec2Swizzles: Sized + Copy + Clone {
+/// Swizzle methods for `2`-dimensional vector types.
+///
+/// This trait is sealed and cannot be implemented for types outside of `glam`.
+pub trait Vec2Swizzles: Sized + Copy + Clone + crate::sealed::Sealed {
     type Vec3;
 
     type Vec4;
@@ -93,7 +96,10 @@ pub trait Vec2Swizzles: Sized + Copy + Clone {
     fn yyyy(self) -> Self::Vec4;
 }
 
-pub trait Vec3Swizzles: Sized + Copy + Clone {
+/// Swizzle methods for `3`-dimensional vector types.
+///
+/// This trait is sealed and cannot be implemented for types outside of `glam`.
+pub trait Vec3Swizzles: Sized + Copy + Clone + crate::sealed::Sealed {
     type Vec2;
 
     type Vec4;
@@ -471,7 +477,10 @@ pub trait Vec3Swizzles: Sized + Copy + Clone {
     fn zzzz(self) -> Self::Vec4;
 }
 
-pub trait Vec4Swizzles: Sized + Copy + Clone {
+/// Swizzle methods for `4`-dimensional vector types.
+///
+/// This trait is sealed and cannot be implemented for types outside of `glam`.
+pub trait Vec4Swizzles: Sized + Copy + Clone + crate::sealed::Sealed {
     type Vec2;
 
     type Vec3;

@@ -5,6 +5,8 @@ use crate::{
     float::FloatExt,
 };
 
+impl crate::sealed::Sealed for {{ scalar_t }} {}
+
 impl FloatExt for {{ scalar_t }} {
     #[inline]
     fn lerp(self, rhs: Self, t: Self) -> Self {

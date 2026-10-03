@@ -2,6 +2,8 @@
 
 use crate::{f32::math, float::FloatExt};
 
+impl crate::sealed::Sealed for f32 {}
+
 impl FloatExt for f32 {
     #[inline]
     fn lerp(self, rhs: Self, t: Self) -> Self {
