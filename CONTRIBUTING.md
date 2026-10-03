@@ -7,6 +7,8 @@ The short guide to contributing is [start a discussion] on GitHub.  Pull
 requests are welcome for bug fixes, documentation improvements and
 optimizations. For anything else it would be best to discuss it first.
 
+All participation must follow the [Code of Conduct].
+
 ## Use of AI
 
 All use of AI in contributions must follow the [AI Policy]. Contributions not
@@ -23,31 +25,19 @@ If you find a bug please [open an issue] on GitHub or submit a pull request. A
 unit test for any bug that slipped through existing coverage would also be
 greatly appreciated.
 
+## Documentation
+
+If you feel any documentation could be added or improved please
+[open an issue] or submit a pull request.
+
 ## New functions and methods
 
 If `glam` is missing functionality on existing types, [suggest a new feature]
 with GitHub Discussions describing what feature you would like added and
 ideally what your use case is for it just so I have a better understanding of
 the feature. I'd like to keep `glam` reasonably light functionality wise
-initially but commonly used functionality that is missing is very welcome. If
-you do submit a pull request please ensure any new functionality also has a
-test.
-
-## Dependencies
-
-`glam` keeps its own version independent of its dependencies' versions.
-
-Optional dependencies whose traits `glam` implements are part of `glam`'s
-public API. If such a dependency has no stable release it gets a versioned
-feature named after the dependency and version, e.g. `rand-010` or
-`encase-012`, with one feature per supported version. Adding a versioned
-feature is a non-breaking change; removing one is breaking. When a pre-1.0
-dependency makes a breaking release, add a new dependency entry and a
-versioned feature rather than changing the existing ones.
-
-Dependencies that are already stable (a `1` or later version requirement) keep
-a plain feature, e.g. `bytemuck`. Dependencies that are not part of the public
-API, such as `libm`, also keep a plain feature. Dev-dependencies are exempt.
+but commonly used functionality that is missing is very welcome. If you do
+submit a pull request please ensure any new functionality also has a test.
 
 ## Optimizations
 
@@ -101,36 +91,6 @@ for a function and [llvm-mca] can estimate throughput and latency from it. The
 [glam-bench-baselines] repository includes saved assembly for the benchmarked
 functions under `asm/` and can be a useful reference.
 
-## Documentation
-
-If you feel any documentation could be added or improved please
-[open an issue] or submit a pull request.
-
-## Pull request titles
-
-PR titles should follow the [Conventional Commits] format, since the
-squash-merged title becomes the commit message that is used to generate the
-[changelog] and determine the version bump when a release is prepared with
-release-plz:
-
-```
-<type>(<scope>): <description>
-```
-
-Common types are `feat`, `fix`, `refactor`, `perf`, `docs`, `test`,
-`chore`, `ci`, `build` and `revert`. A scope describing the affected code
-area is optional, e.g. `feat(quat): ...` or `fix(vec3): ...`.
-
-Breaking changes append `!` after the type or scope, e.g.
-`feat(quat)!: remove the deprecated camera methods`. Breaking changes
-bump the minor version at the next release while `glam` is pre-1.0; they
-are also detected automatically by cargo-semver-checks when the release
-PR is prepared, so a minor bump can occur even without the `!` marker.
-
-A check on the PR will suggest this format for titles that don't follow it.
-The check is not required and titles can also be adjusted in the merge
-dialog when squashing; dependabot, release-plz and draft PRs are exempt.
-
 ## Code contributions
 
 See [ARCHITECTURE.md] for background on `glam`'s design and internals.
@@ -166,16 +126,62 @@ You can run `glam`'s test suite locally:
 - Some tests assert that `glam_assert!` panics on invalid input; these only
   take effect with the `glam-assert` or `debug-glam-assert` feature enabled, so
   run `cargo test --features=debug-glam-assert` to check them.
-- `cargo run -p ci` runs the same checks as the pre-push hook (fmt, clippy and
-  tests across feature combinations). It's worth running that before creating a
-  PR. The fuller `cargo run -p ci -- ci` suite additionally checks the MSRV and
-  wasm targets and needs nightly and wasm toolchains installed, so it's usually
-  best left to GitHub Actions.
+- `cargo run -p ci` runs the `pre-push` checks: fmt, clippy, codegen and a
+  quick test pass. It's worth running before every push. The fuller
+  `cargo run -p ci -- ci` suite adds docs, the remaining feature
+  combinations, and the MSRV, core-simd and wasm checks; it needs extra
+  toolchains, so it's usually best left to GitHub Actions.
 
-Also run `cargo fmt` on any new hand-written files and `cargo clippy` on any new code.
+Also run `cargo fmt` on any new hand-written files and `cargo clippy` on any new
+code.
+
+## Dependencies
+
+`glam` keeps its own version independent of its dependencies' versions.
+
+Optional dependencies whose traits `glam` implements are part of `glam`'s
+public API. If such a dependency has no stable release it gets a versioned
+feature named after the dependency and version, e.g. `rand-010` or
+`encase-012`, with one feature per supported version. Adding a versioned
+feature is a non-breaking change; removing one is breaking. When a pre-1.0
+dependency makes a breaking release, add a new dependency entry and a
+versioned feature rather than changing the existing ones.
+
+Dependencies that are already stable (a `1` or later version requirement) keep
+a plain feature, e.g. `bytemuck`. Dependencies that are not part of the public
+API, such as `libm`, also keep a plain feature. Dev-dependencies are exempt.
+
+## Pull request titles
+
+PR titles should follow the [Conventional Commits] format, since the
+squash-merged title becomes the commit message that is used to generate the
+[changelog] and determine the version bump when a release is prepared with
+release-plz:
+
+```
+<type>(<scope>): <description>
+```
+
+- Types that trigger a release, each bumping the patch version: `feat`,
+  `fix`, `perf`, `changed`, `deprecated`, `removed` and `security` (the
+  `release_commits` allowlist in `release-plz.toml`).
+- Other types do not trigger a release on their own and ride along with the
+  next one: `refactor`, `docs`, `test`, `chore`, `style`, `ci`, `build` and
+  `revert`.
+- The scope is optional and describes the affected code area, e.g.
+  `feat(quat): ...` or `fix(vec3): ...`.
+- Append `!` after the type or scope to mark a breaking change, e.g.
+  `feat(quat)!: remove the deprecated camera methods`. Breaking changes bump
+  the minor version at the next release while `glam` is pre-1.0; they are also
+  detected automatically by cargo-semver-checks when the release PR is
+  prepared, so a minor bump can occur even without the `!` marker.
+
+A check on the PR will suggest this format for titles that don't follow it.
+The check is not required and titles can also be adjusted in the merge
+dialog when squashing; dependabot, release-plz and draft PRs are exempt.
 
 [start a discussion]: https://github.com/bitshifter/glam-rs/discussions/new
-[open an issue]: https://GitHub.com/bitshifter/glam-rs/issues/new
+[open an issue]: https://github.com/bitshifter/glam-rs/issues/new
 [ask a question]: https://github.com/bitshifter/glam-rs/discussions/new?category=q-a
 [suggest a new feature]: https://github.com/bitshifter/glam-rs/discussions/new?category=ideas
 [Criterion.rs]: https://criterion-rs.github.io/book/index.html
@@ -189,3 +195,4 @@ Also run `cargo fmt` on any new hand-written files and `cargo clippy` on any new
 [Conventional Commits]: https://www.conventionalcommits.org/
 [changelog]: CHANGELOG.md
 [AI Policy]: AI_POLICY.md
+[Code of Conduct]: CODE_OF_CONDUCT.md

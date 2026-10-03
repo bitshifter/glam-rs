@@ -2,7 +2,7 @@ use argh::FromArgs;
 use xshell::{cmd, Shell};
 
 use crate::args::Args;
-use crate::prepare::{Prepare, PreparedCommand};
+use crate::prepare::{test_feature_commands, Prepare, PreparedCommand};
 
 #[derive(FromArgs, Default)]
 #[argh(subcommand, name = "test-features")]
@@ -22,20 +22,8 @@ impl Prepare for TestFeatures {
             return Vec::new();
         }
 
-        let mut cmds = Vec::new();
-
-        let sets = crate::features::resolve_sets(self.index);
-        let total = crate::features::FEATURE_SETS.len();
-
-        for (i, features) in sets.iter().enumerate() {
-            let idx = self.index.unwrap_or(i + 1);
-            let cmd = cmd!(sh, "cargo test --no-default-features --features {features}");
-            cmds.push(PreparedCommand {
-                name: format!("test [{idx}/{total}]: {features}"),
-                command: cmd,
-                failure_message: "test feature set failed",
-            });
-        }
+        let mut cmds =
+            test_feature_commands(sh, crate::features::resolve_sets(self.index), self.index);
 
         let cmd = cmd!(sh, "cargo check").env("RUSTFLAGS", "-C target-feature=+fma");
         cmds.push(PreparedCommand {

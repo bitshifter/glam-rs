@@ -41,7 +41,7 @@ A simple and fast 3D math library for games and graphics.
 * `usize` types
   * vectors: `USizeVec2`, `USizeVec3` and `USizeVec4`
 * `bool` types
-  * vectors: `BVec2`, `BVec3` and `BVec4`
+  * vectors: `BVec2`, `BVec3`, `BVec3A`, `BVec4` and `BVec4A`
 
 All types are enabled by default. Only `f32` and `bool` types are built-in.
 All other types are optional and can be disabled if not needed for faster
@@ -50,21 +50,16 @@ compile times.
 ### SIMD
 
 The `Vec3A`, `Vec4`, `Quat`, `Mat2`, `Mat3A`, `Mat4`, `Affine2` and `Affine3A`
-types use 128-bit wide SIMD vector types for storage on `x86`, `x86_64` and
+types use 128-bit wide SIMD vector types for storage on `x86`, `x86_64`, `aarch64` and
 `wasm32`/`wasm64` architectures.  As a result, these types are all 16 byte aligned and
 depending on the size of the type or the type's members, they may contain
 internal padding.  This results in some wasted space in the cases of `Vec3A`,
 `Mat3A`, `Affine2` and `Affine3A`.  However, the use of SIMD generally results
 in better performance than scalar math.
 
-`glam` outperforms similar Rust libraries for common operations as tested by the
-[`mathbench`][mathbench] project.
-
-[mathbench]: https://github.com/bitshifter/mathbench-rs
-
 ### Enabling SIMD
 
-SIMD is supported on `x86`, `x86_64`, `wasm32` and `wasm64` targets.
+SIMD is supported on `x86`, `x86_64`, `aarch64`, `wasm32` and `wasm64` targets.
 
 * `SSE2` is enabled by default on `x86_64` targets.
 * To enable `SSE2` on `x86` targets add `-C target-feature=+sse2` to
@@ -133,7 +128,7 @@ glam = { default-features = false, features = ["nostd-libm"] }
 * `f64`, `i8`, `i16`, `i32`, `i64`, `isize`, `u8`, `u16`, `u32`, `u64`, `usize`
   - enables glam types for the given intrinsic type
 * `nostd-libm` - uses `libm` math functions if `std` is not available
-* `scalar-math` - compiles with SIMD support disabled
+* `scalar-math` - disables SIMD support and uses native alignment for all types
 * `debug-glam-assert` - adds assertions in debug builds which check the validity
   of parameters passed to `glam` to help catch runtime errors
 * `glam-assert` - adds validation assertions to all builds
@@ -262,7 +257,7 @@ performance.
 * Common functionality is benchmarked using [Criterion.rs] and [Gungraun]
 
 [Rust API Guidelines]: https://rust-lang-nursery.github.io/api-guidelines/
-[coverage]: coveralls.io
+[coverage]: https://coveralls.io/github/bitshifter/glam-rs?branch=main
 [Criterion.rs]: https://criterion-rs.github.io/book/index.html
 [Gungraun]: https://gungraun.github.io/gungraun/
 
