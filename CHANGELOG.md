@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+> **1.0 status:** `0.34.0` is the last breaking pre-1.0 release and the
+> 1.0 API candidate. See
+> [The road to glam 1.0](https://github.com/bitshifter/glam-rs/discussions/889).
+
 ## [Unreleased]
 
 ## [0.34.0](https://github.com/bitshifter/glam-rs/compare/0.33.12...0.34.0) - 2026-10-03
@@ -12,37 +16,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - *(floatext)* add `lerp_monotonic` to `FloatExt` ([#866](https://github.com/bitshifter/glam-rs/pull/866))
-- [**breaking**] seal FloatExt and swizzle traits ([#891](https://github.com/bitshifter/glam-rs/pull/891))
-
-### Removed
-
-- [**breaking**] remove deprecated items and features ([#894](https://github.com/bitshifter/glam-rs/pull/894))
-
-> **1.0 status:** the next release is `0.34.0`, the last breaking pre-1.0
-> release and the 1.0 API candidate. See
-> [The road to glam 1.0](https://github.com/bitshifter/glam-rs/discussions/889).
+- [**breaking**] *(traits)* seal the `FloatExt`, `Vec2Swizzles`, `Vec3Swizzles` and `Vec4Swizzles` traits ([#891](https://github.com/bitshifter/glam-rs/pull/891))
 
 ### Changed
 
-- Minimum Supported Rust Version bumped to `1.85.0` and the crate moved to Rust
-  edition 2024 ([#850](https://github.com/bitshifter/glam-rs/issues/850)).
-- The `abs`, `copysign` and `signum` helpers were removed from the internal
-  `f32`/`f64` math backends and now use the standard library methods, which are
-  available in `core` on the new MSRV.
+- *(msrv)* bump the MSRV to `1.85.0` and adopt Rust edition 2024 ([#850](https://github.com/bitshifter/glam-rs/issues/850))
+- *(math)* use the standard library `abs`, `copysign` and `signum` methods in the internal `f32`/`f64` backends
 
 ### Removed
 
-- Removed items deprecated since 0.31.0: the `Mat3`/`Mat3A`/`DMat3`,
-  `Mat4`/`DMat4`, `Quat`/`DQuat` and `Affine3`/`Affine3A`/`DAffine3`
-  `look_to_*`/`look_at_*` methods, the `Mat4`/`DMat4` `frustum_*`,
-  `perspective_*`, `perspective_infinite_*` and `orthographic_*` methods, and the
-  `USES_WASM32_SIMD` constants. Use the `camera`/`dcamera` modules and
-  `USES_WASM_SIMD` instead
-  ([#846](https://github.com/bitshifter/glam-rs/issues/846)).
-- Removed the deprecated unversioned `approx`, `encase`, `mint`, `rand`, `rkyv`,
-  `speedy` and `zerocopy` features; use the versioned features instead. Also
-  removed the no-op `fast-math` feature
-  ([#846](https://github.com/bitshifter/glam-rs/issues/846)).
+- [**breaking**] *(api)* remove the `Mat3`/`Mat3A`/`DMat3`, `Mat4`/`DMat4`, `Quat`/`DQuat` and `Affine3`/`Affine3A`/`DAffine3` `look_to_*`/`look_at_*` methods, the `Mat4`/`DMat4` `frustum_*`, `perspective_*`, `perspective_infinite_*` and `orthographic_*` methods, and the `USES_WASM32_SIMD` constants, all deprecated since 0.31.0; use the `camera`/`dcamera` modules and `USES_WASM_SIMD` instead ([#846](https://github.com/bitshifter/glam-rs/issues/846))
+- [**breaking**] *(features)* remove the unversioned `approx`, `encase`, `mint`, `rand`, `rkyv`, `speedy` and `zerocopy` features and the no-op `fast-math` feature; use the versioned features instead ([#846](https://github.com/bitshifter/glam-rs/issues/846))
 
 ## [0.33.12](https://github.com/bitshifter/glam-rs/compare/0.33.11...0.33.12) - 2026-10-01
 
