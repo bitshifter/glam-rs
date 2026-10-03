@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+> **1.0 status:** the next release is `0.34.0`, the last breaking pre-1.0
+> release and the 1.0 API candidate. See
+> [The road to glam 1.0](https://github.com/bitshifter/glam-rs/discussions/889).
+
 ## [0.33.12](https://github.com/bitshifter/glam-rs/compare/0.33.11...0.33.12) - 2026-10-01
 
 ### Added
