@@ -47,52 +47,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added a `rkyv-08` feature, which archives each `glam` type to a dedicated `Archived*` type
-  at `glam::rkyv_08` instead of archiving the native type, so archives are endianness
-  explicit and independent of the SIMD backend `glam` was built with
-  ([#766](https://github.com/bitshifter/glam-rs/pull/766)).
-
-- Added `bytemuck::Pod` and `bytemuck::Zeroable` impls for the `rkyv-08` archived types, so
-  they can still be cast to bytes for a GPU upload or file write without a serializer.
-
-- Added `From` conversions between each type and its `rkyv-08` archived form.
-
-- Added `Archive::COPY_OPTIMIZATION` to the `rkyv-08` impls whose archived form is a
-  byte-for-byte copy of the native form, so slices serialize with a single `memcpy`.
-
-- Added `lerp_monotonic` methods to the float vector types. These interpolate using the monotonic
-  form `self + (rhs - self) * s`, which preserves equal inputs exactly and is monotonic in `s`,
-  avoiding the rounding jitter that `lerp` can introduce between nearly equal values
-  ([#823](https://github.com/bitshifter/glam-rs/issues/823)).
-
-- Added versioned features for the pre-1.0 dependencies in `glam`'s public API:
-  `approx-05`, `mint-05`, `rand-010`, `speedy-08` and `zerocopy-08`. Each
-  integration can now add support for a new dependency version without a
-  breaking change
-  ([#857](https://github.com/bitshifter/glam-rs/issues/857)).
+- *(rkyv)* add a `rkyv-08` feature, which archives each `glam` type to a dedicated `Archived*` type at `glam::rkyv_08` instead of archiving the native type, so archives are endianness explicit and independent of the SIMD backend `glam` was built with ([#766](https://github.com/bitshifter/glam-rs/pull/766))
+- *(rkyv)* add `bytemuck::Pod` and `bytemuck::Zeroable` impls for the `rkyv-08` archived types, so they can still be cast to bytes for a GPU upload or file write without a serializer
+- *(rkyv)* add `From` conversions between each type and its `rkyv-08` archived form
+- *(rkyv)* add `Archive::COPY_OPTIMIZATION` to the `rkyv-08` impls whose archived form is a byte-for-byte copy of the native form, so slices serialize with a single `memcpy`
+- *(vec)* add `lerp_monotonic` methods to the float vector types; they interpolate using the monotonic form `self + (rhs - self) * s`, which preserves equal inputs exactly and is monotonic in `s`, avoiding the rounding jitter that `lerp` can introduce between nearly equal values ([#823](https://github.com/bitshifter/glam-rs/issues/823))
+- *(features)* add versioned features for the pre-1.0 dependencies in `glam`'s public API: `approx-05`, `mint-05`, `rand-010`, `speedy-08` and `zerocopy-08`, so each integration can add support for a new dependency version without a breaking change ([#857](https://github.com/bitshifter/glam-rs/issues/857))
 
 ### Changed
 
-- `FloatExt::lerp` for `f32` and `f64` now uses the same form as the vector `lerp` methods,
-  `self * (1 - s) + rhs * s`.
+- *(floatext)* `FloatExt::lerp` for `f32` and `f64` now uses the same form as the vector `lerp` methods, `self * (1 - s) + rhs * s`
 
 ### Deprecated
 
-- The `rkyv` feature, whose implementation is unsound and will be removed in the next major
-  release. Use `rkyv-08` instead ([#766](https://github.com/bitshifter/glam-rs/pull/766)).
-
-- The unversioned `approx`, `encase`, `mint`, `rand`, `speedy` and `zerocopy`
-  features, which are aliases for their versioned features and will be removed in
-  the next major release
-  ([#857](https://github.com/bitshifter/glam-rs/issues/857)).
+- *(rkyv)* deprecate the `rkyv` feature, whose implementation is unsound and will be removed in the next major release; use `rkyv-08` instead ([#766](https://github.com/bitshifter/glam-rs/pull/766))
+- *(features)* deprecate the unversioned `approx`, `encase`, `mint`, `rand`, `speedy` and `zerocopy` features; they are aliases for their versioned features and will be removed in the next major release ([#857](https://github.com/bitshifter/glam-rs/issues/857))
 
 ### Fixed
 
-- The `rkyv-08` archived types only implement `NoUndef` where they carry no padding, so
-  uninitialised padding is no longer copied into archives.
-
-- `Portable` is now implemented on the `rkyv-08` archived types, which have a layout identical
-  on all targets, instead of the native types that depended on the SIMD backend.
+- *(rkyv)* only implement `NoUndef` on the `rkyv-08` archived types where they carry no padding, so uninitialised padding is no longer copied into archives
+- *(rkyv)* implement `Portable` on the `rkyv-08` archived types, which have a layout identical on all targets, instead of the native types that depended on the SIMD backend
 
 ## [0.33.10](https://github.com/bitshifter/glam-rs/compare/0.33.9...0.33.10) - 2026-09-24
 
@@ -110,19 +84,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add `from_rows`, `from_rows_array`, `from_rows_slice`, `to_rows_array` and `set_row` to the matrix types ([#790](https://github.com/bitshifter/glam-rs/pull/790))
+- *(mat)* add `from_rows`, `from_rows_array`, `from_rows_slice`, `to_rows_array` and `set_row` to the matrix types ([#790](https://github.com/bitshifter/glam-rs/pull/790))
 
 ### Changed
 
-- Deprecate the `fast-math` feature. It is now a no-op and will be removed in a future breaking release; the SIMD back-ends use fused multiply-add whenever the target supports it, which is at least as accurate as before ([#853](https://github.com/bitshifter/glam-rs/pull/853))
+- *(features)* deprecate the `fast-math` feature: it is now a no-op and will be removed in a future breaking release; the SIMD back-ends use fused multiply-add whenever the target supports it, which is at least as accurate as before ([#853](https://github.com/bitshifter/glam-rs/pull/853))
 
 ### Fixed
 
-- Align `Mat3`, `Mat3A` and `DMat3` determinant and inverse with `Mat4`, so an affine matrix and its linear part agree bit-exactly ([#828](https://github.com/bitshifter/glam-rs/pull/828)) ([#836](https://github.com/bitshifter/glam-rs/pull/836)) ([#837](https://github.com/bitshifter/glam-rs/pull/837))
+- *(mat)* align `Mat3`, `Mat3A` and `DMat3` determinant and inverse with `Mat4`, so an affine matrix and its linear part agree bit-exactly ([#828](https://github.com/bitshifter/glam-rs/pull/828)) ([#836](https://github.com/bitshifter/glam-rs/pull/836)) ([#837](https://github.com/bitshifter/glam-rs/pull/837))
 
 ### Performance
 
-- Broadcast dot product without an extra shuffle in the SIMD back-ends ([#833](https://github.com/bitshifter/glam-rs/pull/833))
+- *(simd)* broadcast dot product without an extra shuffle in the SIMD back-ends ([#833](https://github.com/bitshifter/glam-rs/pull/833))
 
 ## [0.33.7](https://github.com/bitshifter/glam-rs/compare/0.33.6...0.33.7) - 2026-09-07
 
