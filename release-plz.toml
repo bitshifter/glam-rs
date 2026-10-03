@@ -61,6 +61,7 @@ commit_parsers = [
     { message = '^deprecated', group = "deprecated" },
     { message = '^removed', group = "removed" },
     { message = '^fix', group = "fixed" },
+    { message = '^perf', group = "performance" },
     { message = '^security', group = "security" },
     { message = '^(docs|chore|ci|test|refactor|style|build|revert)(\(.*\))?!?:', skip = true },
     { message = '^.*', group = "other" },

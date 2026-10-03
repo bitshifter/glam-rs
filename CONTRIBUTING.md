@@ -126,12 +126,11 @@ You can run `glam`'s test suite locally:
 - Some tests assert that `glam_assert!` panics on invalid input; these only
   take effect with the `glam-assert` or `debug-glam-assert` feature enabled, so
   run `cargo test --features=debug-glam-assert` to check them.
-- `cargo run -p ci` runs the `pre-push` checks: lints (fmt, clippy, codegen and
-  doc) plus the feature-combination test suite. It's worth running that before
-  creating a PR. The fuller `cargo run -p ci -- ci` suite additionally checks
-  the MSRV, core-simd and wasm targets, and needs the MSRV toolchain, nightly,
-  wasm-pack and wasmtime installed, so it's usually best left to GitHub
-  Actions.
+- `cargo run -p ci` runs the `pre-push` checks: fmt, clippy, codegen and a
+  quick test pass. It's worth running before every push. The fuller
+  `cargo run -p ci -- ci` suite adds docs, the remaining feature
+  combinations, and the MSRV, core-simd and wasm checks; it needs extra
+  toolchains, so it's usually best left to GitHub Actions.
 
 Also run `cargo fmt` on any new hand-written files and `cargo clippy` on any new
 code.
@@ -163,8 +162,12 @@ release-plz:
 <type>(<scope>): <description>
 ```
 
-- Common types: `feat`, `fix`, `refactor`, `perf`, `docs`, `test`, `chore`,
-  `ci`, `build` and `revert`.
+- Types that trigger a release, each bumping the patch version: `feat`,
+  `fix`, `perf`, `changed`, `deprecated`, `removed` and `security` (the
+  `release_commits` allowlist in `release-plz.toml`).
+- Other types do not trigger a release on their own and ride along with the
+  next one: `refactor`, `docs`, `test`, `chore`, `style`, `ci`, `build` and
+  `revert`.
 - The scope is optional and describes the affected code area, e.g.
   `feat(quat): ...` or `fix(vec3): ...`.
 - Append `!` after the type or scope to mark a breaking change, e.g.

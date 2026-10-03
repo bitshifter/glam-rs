@@ -30,6 +30,12 @@ pub(crate) const ALL_FEATURES: &str = deps!();
 pub(crate) const CORE_SIMD_FEATURES: &str =
     "core-simd arbitrary approx-05 bytemuck encase encase-013 float_eq mint-05 rand-010 rkyv-08 bytecheck serde speedy-08 debug-glam-assert";
 
+// A small subset of the CI tests, used by the reduced pre-push check.
+pub(crate) const PRE_PUSH_FEATURE_SETS: &[&str] = &[
+    concat!("std ", deps!()),
+    concat!("std all-types scalar-math ", deps!()),
+];
+
 pub fn resolve_sets(index: Option<usize>) -> &'static [&'static str] {
     match index {
         Some(i) => {
