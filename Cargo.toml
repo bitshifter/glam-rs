@@ -60,20 +60,14 @@ scalar-math = []
 # align types to match CUDA requirements
 cuda = []
 
-# Deprecated and no longer has any effect. Kept so existing Cargo manifests
-# continue to build; will be removed in a future breaking release.
-fast-math = []
-
 serde = ["dep:serde_core"]
 
 # experimental nightly portable-simd support
 core-simd = ["bytemuck?/nightly_portable_simd"]
 
-# `rkyv`'s archive validation. Only has an effect when an `rkyv` feature is enabled.
+# `rkyv`'s archive validation. Only has an effect when the `rkyv-08` feature is enabled.
 bytecheck = ["rkyv-08?/bytecheck"]
 
-# Unversioned `zerocopy` is deprecated and will be removed in the next major release.
-zerocopy = ["zerocopy-08"]
 zerocopy-08 = ["dep:zerocopy-08", "dep:zerocopy-derive-08"]
 
 # enables libm and prefers it over std
@@ -82,29 +76,17 @@ libm = ["dep:libm"]
 # enables libm but will prefer std if available
 nostd-libm = ["dep:libm"]
 
-# Unversioned `approx` is deprecated and will be removed in the next major release.
-approx = ["approx-05"]
 approx-05 = ["dep:approx-05"]
 
-# Unversioned `mint` is deprecated and will be removed in the next major release.
-mint = ["mint-05"]
 mint-05 = ["dep:mint-05"]
 
-# Unversioned `rand` is deprecated and will be removed in the next major release.
-rand = ["rand-010"]
 rand-010 = ["dep:rand-010"]
 
-# Unversioned `speedy` is deprecated and will be removed in the next major release.
-speedy = ["speedy-08"]
 speedy-08 = ["dep:speedy-08"]
 
-# Unversioned `encase` is deprecated and will be removed in the next major release.
-encase = ["encase-012"]
 encase-012 = ["dep:encase-012"]
 encase-013 = ["dep:encase-013"]
 
-# Unversioned `rkyv` is deprecated (unsound) and will be removed in the next major release.
-rkyv = ["dep:rkyv-08"]
 rkyv-08 = ["dep:rkyv-08"]
 
 [dependencies]

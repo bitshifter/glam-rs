@@ -136,8 +136,6 @@ glam = { default-features = false, features = ["nostd-libm"] }
   of parameters passed to `glam` to help catch runtime errors
 * `glam-assert` - adds validation assertions to all builds
 * `cuda` - forces `glam` types to match expected [cuda alignment]
-* `fast-math` - **Deprecated.** This feature no longer has any effect and will
-  be removed in a future release.
 * `core-simd` - enables SIMD support via the [portable simd] module. This is an
   unstable feature which requires a nightly Rust toolchain and `std` support.
 
@@ -148,61 +146,40 @@ glam = { default-features = false, features = ["nostd-libm"] }
 Pre-1.0 dependencies that appear in `glam`'s public API use versioned feature names
 (e.g. `rand-010`), so a new version can be added without a breaking change.
 
-* [`approx`] - **Deprecated.** Alias for the `approx-05` feature, will be removed
-  in the next major release.
 * [`approx-05`] - `approx` 0.5 traits and macros for approximate float comparisons.
 * [`arbitrary`] - `arbitrary` trait implementations for `glam` types.
 * [`bytemuck`] - for casting into slices of bytes
-* [`encase`] - **Deprecated.** Alias for the `encase-012` feature, will be removed
-  in the next major release.
 * [`encase-012`] - `encase` 0.12 trait implementations for `glam` types.
 * [`encase-013`] - `encase` 0.13 trait implementations for `glam` types.
 * [`float_eq`] - traits and macros for comparing float types using various tolerances.
 * [`libm`] - uses `libm` math functions instead of `std`
-* [`mint`] - **Deprecated.** Alias for the `mint-05` feature, will be removed in
-  the next major release.
 * [`mint-05`] - `mint` 0.5 for interoperating with other 3D math libraries.
-* [`rand`] - **Deprecated.** Alias for the `rand-010` feature, will be removed in
-  the next major release.
 * [`rand-010`] - `rand` 0.10 `Distribution` implementations for all `glam` types.
-* [`rkyv`] - **Deprecated.** The current implementation is unsound and will be
-  removed in the next major release. Use `rkyv-08` instead.
 * [`rkyv-08`] - `rkyv` 0.8 `Archive`, `Serialize` and `Deserialize` implementations
   for all `glam` types, archiving to `glam::rkyv_08` types instead of the native type.
-* [`bytecheck`] - enables `rkyv`'s archive validation; only has an effect when an
-  `rkyv` feature is enabled
+* [`bytecheck`] - enables `rkyv`'s archive validation; only has an effect when
+  the `rkyv-08` feature is enabled
 * [`serde`] - implementations of `Serialize` and `Deserialize` for all `glam`
   types. Note that serialization should work between builds of `glam` with and
   without SIMD enabled
-* [`speedy`] - **Deprecated.** Alias for the `speedy-08` feature, will be removed
-  in the next major release.
 * [`speedy-08`] - `speedy` 0.8 implementations of `Readable` and `Writable` for all
   `glam` types.
-* [`zerocopy`] - **Deprecated.** Alias for the `zerocopy-08` feature, will be removed
-  in the next major release.
 * [`zerocopy-08`] - `zerocopy` 0.8 implementations of zerocopy traits for safe
   transmutes.
 
-[`approx`]: https://docs.rs/approx
 [`approx-05`]: https://docs.rs/approx/0.5
 [`arbitrary`]: https://docs.rs/arbitrary
 [`bytecheck`]: https://github.com/rkyv/bytecheck
 [`bytemuck`]: https://docs.rs/bytemuck
-[`encase`]: https://github.com/teoxoy/encase
 [`encase-012`]: https://docs.rs/encase/0.12
 [`encase-013`]: https://docs.rs/encase/0.13
 [`float_eq`]: https://docs.rs/float_eq
 [`libm`]: https://github.com/rust-lang/libm
-[`mint`]: https://github.com/kvark/mint
 [`mint-05`]: https://docs.rs/mint/0.5
-[`rand`]: https://github.com/rust-random/rand
 [`rand-010`]: https://docs.rs/rand/0.10
-[`rkyv`]: https://github.com/rkyv/rkyv
 [`rkyv-08`]: https://docs.rs/rkyv/0.8
 [`serde`]: https://serde.rs
-[`speedy`]: https://docs.rs/speedy
 [`speedy-08`]: https://docs.rs/speedy/0.8
-[`zerocopy`]: https://github.com/google/zerocopy
 [`zerocopy-08`]: https://docs.rs/zerocopy/0.8
 
 ### Minimum Supported Rust Version (MSRV)

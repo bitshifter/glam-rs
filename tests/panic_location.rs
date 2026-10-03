@@ -41,7 +41,7 @@ fn assert_panics_at_caller<R>(name: &str, f: impl FnOnce() -> R + panic::UnwindS
 }
 
 #[test]
-#[allow(deprecated, clippy::op_ref)]
+#[allow(clippy::op_ref)]
 fn test_panics_report_caller_location() {
     // Direct `glam_assert!` in a public API.
     assert_panics_at_caller("Vec3::normalize", || Vec3::ZERO.normalize());
@@ -63,11 +63,6 @@ fn test_panics_report_caller_location() {
     });
     assert_panics_at_caller("&Quat * &Vec3", || {
         &Quat::from_xyzw(0.0, 0.0, 0.0, 0.0) * &Vec3::X
-    });
-
-    // Deprecated wrapper delegating to another deprecated method.
-    assert_panics_at_caller("Mat3::look_at_rh", || {
-        Mat3::look_at_rh(Vec3::X, Vec3::ZERO, Vec3::splat(1.0))
     });
 
     // Delegation through the private `ToEuler` trait (`Quat` -> `Mat3::from_quat`).
