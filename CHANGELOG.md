@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.34.0](https://github.com/bitshifter/glam-rs/compare/0.33.12...0.34.0) - 2026-10-03
+
+### Added
+
+- *(floatext)* add `lerp_monotonic` to `FloatExt` ([#866](https://github.com/bitshifter/glam-rs/pull/866))
+- [**breaking**] seal FloatExt and swizzle traits ([#891](https://github.com/bitshifter/glam-rs/pull/891))
+
+### Removed
+
+- [**breaking**] remove deprecated items and features ([#894](https://github.com/bitshifter/glam-rs/pull/894))
+
 > **1.0 status:** the next release is `0.34.0`, the last breaking pre-1.0
 > release and the 1.0 API candidate. See
 > [The road to glam 1.0](https://github.com/bitshifter/glam-rs/discussions/889).
