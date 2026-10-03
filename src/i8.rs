@@ -2,9 +2,9 @@ mod i8vec2;
 mod i8vec3;
 mod i8vec4;
 
-pub use i8vec2::{i8vec2, I8Vec2};
-pub use i8vec3::{i8vec3, I8Vec3};
-pub use i8vec4::{i8vec4, I8Vec4};
+pub use i8vec2::{I8Vec2, i8vec2};
+pub use i8vec3::{I8Vec3, i8vec3};
+pub use i8vec4::{I8Vec4, i8vec4};
 
 #[cfg(not(target_arch = "spirv"))]
 mod test {

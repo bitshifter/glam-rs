@@ -2,7 +2,7 @@ use argh::FromArgs;
 use xshell::Shell;
 
 use crate::args::Args;
-use crate::prepare::{test_feature_commands, Prepare, PreparedCommand};
+use crate::prepare::{Prepare, PreparedCommand, test_feature_commands};
 
 use super::clippy::Clippy;
 use super::codegen::Codegen;

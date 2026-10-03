@@ -1,5 +1,5 @@
 use argh::FromArgs;
-use xshell::{cmd, Shell};
+use xshell::{Shell, cmd};
 
 use crate::args::Args;
 use crate::prepare::{Prepare, PreparedCommand};

@@ -2,7 +2,7 @@
 
 #![allow(clippy::useless_conversion)]
 
-use crate::{sealed::Sealed, Vec2, Vec3A, Vec3Swizzles, Vec4};
+use crate::{Vec2, Vec3A, Vec3Swizzles, Vec4, sealed::Sealed};
 
 #[cfg(target_arch = "x86")]
 use core::arch::x86::*;

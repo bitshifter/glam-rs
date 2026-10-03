@@ -2,9 +2,9 @@ mod i16vec2;
 mod i16vec3;
 mod i16vec4;
 
-pub use i16vec2::{i16vec2, I16Vec2};
-pub use i16vec3::{i16vec3, I16Vec3};
-pub use i16vec4::{i16vec4, I16Vec4};
+pub use i16vec2::{I16Vec2, i16vec2};
+pub use i16vec3::{I16Vec3, i16vec3};
+pub use i16vec4::{I16Vec4, i16vec4};
 
 #[cfg(not(target_arch = "spirv"))]
 mod test {

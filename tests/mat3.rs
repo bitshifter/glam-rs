@@ -554,7 +554,7 @@ macro_rules! impl_as_ref_tests {
 
 mod mat3 {
     use super::support::deg;
-    use glam::{mat3, swizzles::*, vec3, vec3a, Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A};
+    use glam::{Mat2, Mat3, Mat4, Quat, Vec2, Vec3, Vec3A, mat3, swizzles::*, vec3, vec3a};
 
     glam_test!(test_align, {
         use std::mem;
@@ -587,7 +587,7 @@ mod mat3 {
 
 mod mat3a {
     use super::support::deg;
-    use glam::{mat3a, swizzles::*, vec3a, Mat2, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A};
+    use glam::{Mat2, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, mat3a, swizzles::*, vec3a};
 
     glam_test!(test_align, {
         use std::mem;
@@ -622,7 +622,7 @@ mod mat3a {
 #[cfg(feature = "f64")]
 mod dmat3 {
     use super::support::deg;
-    use glam::{dmat3, dvec3, swizzles::*, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3};
+    use glam::{DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, dmat3, dvec3, swizzles::*};
 
     glam_test!(test_align, {
         use std::mem;

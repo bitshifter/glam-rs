@@ -16,7 +16,7 @@ pub mod opengl {
     //!
     //! Expects a left-handed Y-up view space input.
 
-    use crate::{dcamera::camera_impl, DMat4};
+    use crate::{DMat4, dcamera::camera_impl};
 
     /// Creates a perspective projection matrix for use with OpenGL.
     ///
@@ -83,7 +83,7 @@ pub mod vulkan {
     //!
     //! Includes standard, infinite-far, and reverse-depth variants.
 
-    use crate::{dcamera::camera_impl, DMat4};
+    use crate::{DMat4, dcamera::camera_impl};
 
     /// Creates a perspective projection matrix for use with Vulkan.
     ///
@@ -191,7 +191,7 @@ pub mod directx {
     //!
     //! Includes standard, infinite-far, and reverse-depth variants.
 
-    use crate::{dcamera::camera_impl, DMat4};
+    use crate::{DMat4, dcamera::camera_impl};
 
     /// Creates a perspective projection matrix for use with DirectX and WebGPU.
     ///

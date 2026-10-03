@@ -154,10 +154,10 @@ mod euler {
     macro_rules! impl_quat_euler_test {
         ($quat:ident, $t:ident) => {
             use super::{
-                axis_order, is_intrinsic, test_all_orders, test_order_angles, $t::deg_to_rad,
-                CanonicalQuat, EulerEpsilon,
+                CanonicalQuat, EulerEpsilon, axis_order, is_intrinsic, test_all_orders,
+                test_order_angles, $t::deg_to_rad,
             };
-            use glam::{$quat, EulerRot};
+            use glam::{EulerRot, $quat};
 
             const AXIS_ANGLE: [fn($t) -> $quat; 3] = [
                 $quat::from_rotation_x,
@@ -218,10 +218,10 @@ mod euler {
     macro_rules! impl_mat_euler_test {
         ($mat:ident, $t:ident) => {
             use super::{
-                axis_order, is_intrinsic, test_all_orders, test_order_angles, $t::deg_to_rad,
-                EulerEpsilon,
+                EulerEpsilon, axis_order, is_intrinsic, test_all_orders, test_order_angles,
+                $t::deg_to_rad,
             };
-            use glam::{$mat, EulerRot};
+            use glam::{EulerRot, $mat};
 
             const AXIS_ANGLE: [fn($t) -> $mat; 3] = [
                 $mat::from_rotation_x,

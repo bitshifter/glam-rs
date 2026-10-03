@@ -2,9 +2,9 @@ mod ivec2;
 mod ivec3;
 mod ivec4;
 
-pub use ivec2::{ivec2, IVec2};
-pub use ivec3::{ivec3, IVec3};
-pub use ivec4::{ivec4, IVec4};
+pub use ivec2::{IVec2, ivec2};
+pub use ivec3::{IVec3, ivec3};
+pub use ivec4::{IVec4, ivec4};
 
 #[cfg(not(target_arch = "spirv"))]
 mod test {

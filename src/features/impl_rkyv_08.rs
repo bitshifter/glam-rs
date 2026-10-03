@@ -11,28 +11,28 @@
 //! no arithmetic. Use `rkyv::Deserialize` to recover the native glam type.
 
 use rkyv_08::{
+    Archive, Archived, Deserialize, Place, Portable, Serialize,
     rancor::Fallible,
     traits::{CopyOptimization, NoUndef},
-    Archive, Archived, Deserialize, Place, Portable, Serialize,
 };
 
 use crate::{Affine2, Affine3, Affine3A, Mat2, Mat3, Mat3A, Mat4, Quat, Vec2, Vec3, Vec3A, Vec4};
 #[cfg(feature = "f64")]
 use crate::{DAffine2, DAffine3, DMat2, DMat3, DMat4, DQuat, DVec2, DVec3, DVec4};
+#[cfg(feature = "i8")]
+use crate::{I8Vec2, I8Vec3, I8Vec4};
 #[cfg(feature = "i16")]
 use crate::{I16Vec2, I16Vec3, I16Vec4};
 #[cfg(feature = "i64")]
 use crate::{I64Vec2, I64Vec3, I64Vec4};
-#[cfg(feature = "i8")]
-use crate::{I8Vec2, I8Vec3, I8Vec4};
 #[cfg(feature = "i32")]
 use crate::{IVec2, IVec3, IVec4};
+#[cfg(feature = "u8")]
+use crate::{U8Vec2, U8Vec3, U8Vec4};
 #[cfg(feature = "u16")]
 use crate::{U16Vec2, U16Vec3, U16Vec4};
 #[cfg(feature = "u64")]
 use crate::{U64Vec2, U64Vec3, U64Vec4};
-#[cfg(feature = "u8")]
-use crate::{U8Vec2, U8Vec3, U8Vec4};
 #[cfg(feature = "u32")]
 use crate::{UVec2, UVec3, UVec4};
 
@@ -519,8 +519,8 @@ mod test {
     #[cfg(feature = "bytemuck")]
     #[test]
     fn archived_types_are_pod() {
-        use crate::rkyv_08::ArchivedVec3;
         use crate::Vec3;
+        use crate::rkyv_08::ArchivedVec3;
 
         let values = [
             ArchivedVec3::from(Vec3::new(1.0, 2.0, 3.0)),

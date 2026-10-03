@@ -3,7 +3,7 @@
 mod support;
 
 glam_test!(test_vec4_swizzles, {
-    use glam::{vec2, vec3, vec4, Vec4Swizzles};
+    use glam::{Vec4Swizzles, vec2, vec3, vec4};
     let v = vec4(1_f32, 2_f32, 3_f32, 4_f32);
     let rhs3 = vec3(11_f32, 12_f32, 13_f32);
     let rhs2 = vec2(11_f32, 12_f32);
@@ -382,7 +382,7 @@ glam_test!(test_vec4_swizzles, {
 });
 
 glam_test!(test_vec3a_swizzles, {
-    use glam::{vec2, vec3a, vec4, Vec3Swizzles};
+    use glam::{Vec3Swizzles, vec2, vec3a, vec4};
     let v = vec3a(1_f32, 2_f32, 3_f32);
     let rhs2 = vec2(11_f32, 12_f32);
     assert_eq!(v, v.xyz());
@@ -511,7 +511,7 @@ glam_test!(test_vec3a_swizzles, {
 });
 
 glam_test!(test_vec3_swizzles, {
-    use glam::{vec2, vec3, vec4, Vec3Swizzles};
+    use glam::{Vec3Swizzles, vec2, vec3, vec4};
     let v = vec3(1_f32, 2_f32, 3_f32);
     let rhs2 = vec2(11_f32, 12_f32);
     assert_eq!(v, v.xyz());
@@ -640,7 +640,7 @@ glam_test!(test_vec3_swizzles, {
 });
 
 glam_test!(test_vec2_swizzles, {
-    use glam::{vec2, vec3, vec4, Vec2Swizzles};
+    use glam::{Vec2Swizzles, vec2, vec3, vec4};
     let v = vec2(1_f32, 2_f32);
     assert_eq!(v, v.xy());
     assert_eq!(v.xxxx(), vec4(1_f32, 1_f32, 1_f32, 1_f32));

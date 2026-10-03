@@ -5,7 +5,7 @@ use crate::BVec4 as BVec4A;
 
 #[cfg(not(feature = "scalar-math"))]
 use crate::BVec4A;
-use crate::{f32::math, BVec4, Vec2, Vec3, Vec3A};
+use crate::{BVec4, Vec2, Vec3, Vec3A, f32::math};
 
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -491,12 +491,7 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn abs(self) -> Self {
-        Self::new(
-            math::abs(self.x),
-            math::abs(self.y),
-            math::abs(self.z),
-            math::abs(self.w),
-        )
+        Self::new(self.x.abs(), self.y.abs(), self.z.abs(), self.w.abs())
     }
 
     /// Returns a vector with elements representing the sign of `self`.
@@ -508,10 +503,10 @@ impl Vec4 {
     #[must_use]
     pub fn signum(self) -> Self {
         Self::new(
-            math::signum(self.x),
-            math::signum(self.y),
-            math::signum(self.z),
-            math::signum(self.w),
+            self.x.signum(),
+            self.y.signum(),
+            self.z.signum(),
+            self.w.signum(),
         )
     }
 
@@ -520,10 +515,10 @@ impl Vec4 {
     #[must_use]
     pub fn copysign(self, rhs: Self) -> Self {
         Self::new(
-            math::copysign(self.x, rhs.x),
-            math::copysign(self.y, rhs.y),
-            math::copysign(self.z, rhs.z),
-            math::copysign(self.w, rhs.w),
+            self.x.copysign(rhs.x),
+            self.y.copysign(rhs.y),
+            self.z.copysign(rhs.z),
+            self.w.copysign(rhs.w),
         )
     }
 
@@ -761,7 +756,7 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn is_normalized(self) -> bool {
-        math::abs(self.length_squared() - 1.0) <= 2e-4
+        (self.length_squared() - 1.0).abs() <= 2e-4
     }
 
     /// Returns the vector projection of `self` onto `rhs`.

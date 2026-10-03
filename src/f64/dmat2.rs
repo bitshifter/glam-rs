@@ -1,6 +1,6 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
-use crate::{f64::math, swizzles::*, DMat3, DVec2, Mat2};
+use crate::{DMat3, DVec2, Mat2, f64::math, swizzles::*};
 use core::fmt;
 use core::iter::{Product, Sum};
 use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
@@ -400,11 +400,7 @@ impl DMat2 {
     #[must_use]
     pub fn try_inverse(&self) -> Option<Self> {
         let (m, is_valid) = self.inverse_checked::<true>();
-        if is_valid {
-            Some(m)
-        } else {
-            None
-        }
+        if is_valid { Some(m) } else { None }
     }
 
     /// Returns the inverse of `self` or `DMat2::ZERO` if the matrix is not

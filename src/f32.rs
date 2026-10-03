@@ -74,15 +74,15 @@ use coresimd::*;
 pub use affine2::Affine2;
 pub use affine3::Affine3;
 pub use affine3a::Affine3A;
-pub use mat2::{mat2, Mat2};
-pub use mat3::{mat3, Mat3};
-pub use mat3a::{mat3a, Mat3A};
-pub use mat4::{mat4, Mat4};
-pub use quat::{quat, Quat};
-pub use vec2::{vec2, Vec2};
-pub use vec3::{vec3, Vec3};
-pub use vec3a::{vec3a, Vec3A};
-pub use vec4::{vec4, Vec4};
+pub use mat2::{Mat2, mat2};
+pub use mat3::{Mat3, mat3};
+pub use mat3a::{Mat3A, mat3a};
+pub use mat4::{Mat4, mat4};
+pub use quat::{Quat, quat};
+pub use vec2::{Vec2, vec2};
+pub use vec3::{Vec3, vec3};
+pub use vec3a::{Vec3A, vec3a};
+pub use vec4::{Vec4, vec4};
 
 #[cfg(not(target_arch = "spirv"))]
 mod test {

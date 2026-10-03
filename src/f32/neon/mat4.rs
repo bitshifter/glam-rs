@@ -4,11 +4,11 @@
 use crate::DMat4;
 
 use crate::{
+    EulerRot, Mat3, Mat3A, Quat, Vec3, Vec3A, Vec4,
     euler::{FromEuler, ToEuler},
     f32::math,
     neon::*,
     swizzles::*,
-    EulerRot, Mat3, Mat3A, Quat, Vec3, Vec3A, Vec4,
 };
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -311,7 +311,7 @@ impl Mat4 {
         glam_assert!(det != 0.0);
 
         let scale = Vec3::new(
-            r.x_axis.length() * math::signum(det),
+            r.x_axis.length() * det.signum(),
             r.y_axis.length(),
             r.z_axis.length(),
         );
@@ -987,11 +987,7 @@ impl Mat4 {
     #[must_use]
     pub fn try_inverse(&self) -> Option<Self> {
         let (m, is_valid) = self.inverse_checked::<true>();
-        if is_valid {
-            Some(m)
-        } else {
-            None
-        }
+        if is_valid { Some(m) } else { None }
     }
 
     /// Returns the inverse of `self` or `Mat4::ZERO` if the matrix is not

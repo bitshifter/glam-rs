@@ -377,7 +377,7 @@ impl {{ self_t }} {
         glam_assert!(det != 0.0);
 
         let scale = {{ col_t }}::new(
-            self.matrix2.x_axis.length() * math::signum(det),
+            self.matrix2.x_axis.length() * det.signum(),
             self.matrix2.y_axis.length(),
         );
 
@@ -591,12 +591,11 @@ impl {{ self_t }} {
     #[must_use]
     #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn to_scale_rotation_translation(&self) -> ({{ vec3_t }}, {{ quat_t }}, {{ vec3_t }}) {
-        use crate::{{ scalar_t }}::math;
         let det = self.matrix3.determinant();
         glam_assert!(det != 0.0);
 
         let scale = {{ vec3_t }}::new(
-            self.matrix3.x_axis.length() * math::signum(det),
+            self.matrix3.x_axis.length() * det.signum(),
             self.matrix3.y_axis.length(),
             self.matrix3.z_axis.length(),
         );

@@ -2,9 +2,9 @@ mod usizevec2;
 mod usizevec3;
 mod usizevec4;
 
-pub use usizevec2::{usizevec2, USizeVec2};
-pub use usizevec3::{usizevec3, USizeVec3};
-pub use usizevec4::{usizevec4, USizeVec4};
+pub use usizevec2::{USizeVec2, usizevec2};
+pub use usizevec3::{USizeVec3, usizevec3};
+pub use usizevec4::{USizeVec4, usizevec4};
 
 #[cfg(not(target_arch = "spirv"))]
 mod test {

@@ -1287,13 +1287,13 @@ macro_rules! impl_pipeline_tests {
 }
 
 mod camera {
-    use glam::{camera, Affine3, Mat3, Mat4, Quat, Vec3, Vec4};
+    use glam::{Affine3, Mat3, Mat4, Quat, Vec3, Vec4, camera};
     impl_camera_tests!(f32, Affine3, Mat4, Mat3, Vec4, Vec3, Quat, camera);
 
     mod affine3a {
+        use glam::Vec3;
         use glam::camera::lh::view as lh_view;
         use glam::camera::rh::view as rh_view;
-        use glam::Vec3;
 
         glam_test!(test_rh_look_at_affine3a, {
             let eye = Vec3::new(0.0, 0.0, -5.0);
@@ -1427,6 +1427,6 @@ mod camera {
 
 #[cfg(feature = "f64")]
 mod dcamera {
-    use glam::{dcamera, DAffine3, DMat3, DMat4, DQuat, DVec3, DVec4};
+    use glam::{DAffine3, DMat3, DMat4, DQuat, DVec3, DVec4, dcamera};
     impl_camera_tests!(f64, DAffine3, DMat4, DMat3, DVec4, DVec3, DQuat, dcamera);
 }

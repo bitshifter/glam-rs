@@ -4,7 +4,7 @@ mod support;
 
 #[cfg(feature = "u32")]
 glam_test!(test_uvec4_swizzles, {
-    use glam::{uvec2, uvec3, uvec4, Vec4Swizzles};
+    use glam::{Vec4Swizzles, uvec2, uvec3, uvec4};
     let v = uvec4(1_u32, 2_u32, 3_u32, 4_u32);
     let rhs3 = uvec3(11_u32, 12_u32, 13_u32);
     let rhs2 = uvec2(11_u32, 12_u32);
@@ -384,7 +384,7 @@ glam_test!(test_uvec4_swizzles, {
 
 #[cfg(feature = "u32")]
 glam_test!(test_uvec3_swizzles, {
-    use glam::{uvec2, uvec3, uvec4, Vec3Swizzles};
+    use glam::{Vec3Swizzles, uvec2, uvec3, uvec4};
     let v = uvec3(1_u32, 2_u32, 3_u32);
     let rhs2 = uvec2(11_u32, 12_u32);
     assert_eq!(v, v.xyz());
@@ -514,7 +514,7 @@ glam_test!(test_uvec3_swizzles, {
 
 #[cfg(feature = "u32")]
 glam_test!(test_uvec2_swizzles, {
-    use glam::{uvec2, uvec3, uvec4, Vec2Swizzles};
+    use glam::{Vec2Swizzles, uvec2, uvec3, uvec4};
     let v = uvec2(1_u32, 2_u32);
     assert_eq!(v, v.xy());
     assert_eq!(v.xxxx(), uvec4(1_u32, 1_u32, 1_u32, 1_u32));

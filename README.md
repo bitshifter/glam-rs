@@ -2,7 +2,7 @@
 
 [![Build Status]][github-ci] [![Coverage Status]][coveralls.io]
 [![Latest Version]][crates.io] [![docs]][docs.rs]
-[![Minimum Supported Rust Version]][Rust 1.68.2]
+[![Minimum Supported Rust Version]][Rust 1.85.0]
 
 A simple and fast 3D math library for games and graphics.
 
@@ -207,7 +207,7 @@ Pre-1.0 dependencies that appear in `glam`'s public API use versioned feature na
 
 ### Minimum Supported Rust Version (MSRV)
 
-The minimum supported version of Rust for `glam` is `1.68.2`.
+The minimum supported version of Rust for `glam` is `1.85.0`.
 
 Raising the MSRV is treated as a non-breaking change, following Cargo's
 [semver guidance].
@@ -350,5 +350,5 @@ See [ATTRIBUTION.md] for details.
 [crates.io]: https://crates.io/crates/glam/
 [docs]: https://docs.rs/glam/badge.svg
 [docs.rs]: https://docs.rs/glam/
-[Minimum Supported Rust Version]: https://img.shields.io/badge/Rust-1.68.2-blue?color=fc8d62&logo=rust
-[Rust 1.68.2]: https://github.com/rust-lang/rust/blob/master/RELEASES.md#version-1682-2023-03-28
+[Minimum Supported Rust Version]: https://img.shields.io/badge/Rust-1.85.0-blue?color=fc8d62&logo=rust
+[Rust 1.85.0]: https://github.com/rust-lang/rust/blob/master/RELEASES.md#version-1850-2025-02-20

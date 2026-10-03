@@ -1,10 +1,10 @@
 // Generated from mat.rs.tera template. Edit the template, not the generated file.
 
 use crate::{
+    DMat2, DMat4, DQuat, DVec2, DVec3, EulerRot, Mat3,
     euler::{FromEuler, ToEuler},
     f64::math,
     swizzles::*,
-    DMat2, DMat4, DQuat, DVec2, DVec3, EulerRot, Mat3,
 };
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -678,11 +678,7 @@ impl DMat3 {
     #[must_use]
     pub fn try_inverse(&self) -> Option<Self> {
         let (m, is_valid) = self.inverse_checked::<true>();
-        if is_valid {
-            Some(m)
-        } else {
-            None
-        }
+        if is_valid { Some(m) } else { None }
     }
 
     /// Returns the inverse of `self` or `DMat3::ZERO` if the matrix is not

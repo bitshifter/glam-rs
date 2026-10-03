@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{f32::math, neon::*, BVec4, BVec4A, Vec2, Vec3, Vec3A};
+use crate::{BVec4, BVec4A, Vec2, Vec3, Vec3A, f32::math, neon::*};
 
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -716,7 +716,7 @@ impl Vec4 {
     #[inline]
     #[must_use]
     pub fn is_normalized(self) -> bool {
-        math::abs(self.length_squared() - 1.0) <= 2e-4
+        (self.length_squared() - 1.0).abs() <= 2e-4
     }
 
     /// Returns the vector projection of `self` onto `rhs`.

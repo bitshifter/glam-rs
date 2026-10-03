@@ -2,7 +2,7 @@
 
 use core::hint::black_box;
 use gungraun::{
-    library_benchmark, library_benchmark_group, main, Callgrind, LibraryBenchmarkConfig,
+    Callgrind, LibraryBenchmarkConfig, library_benchmark, library_benchmark_group, main,
 };
 
 use glam::{

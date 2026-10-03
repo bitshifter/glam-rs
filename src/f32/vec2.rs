@@ -1,6 +1,6 @@
 // Generated from vec.rs.tera template. Edit the template, not the generated file.
 
-use crate::{f32::math, BVec2, Vec3};
+use crate::{BVec2, Vec3, f32::math};
 
 use core::fmt;
 use core::iter::{Product, Sum};
@@ -276,11 +276,7 @@ impl Vec2 {
     #[inline]
     #[must_use]
     pub fn min_position(self) -> usize {
-        if self.x <= self.y {
-            0
-        } else {
-            1
-        }
+        if self.x <= self.y { 0 } else { 1 }
     }
 
     /// Returns the index of the first maximum element of `self`.
@@ -288,11 +284,7 @@ impl Vec2 {
     #[inline]
     #[must_use]
     pub fn max_position(self) -> usize {
-        if self.x >= self.y {
-            0
-        } else {
-            1
-        }
+        if self.x >= self.y { 0 } else { 1 }
     }
 
     /// Returns the sum of all elements of `self`.
@@ -383,7 +375,7 @@ impl Vec2 {
     #[inline]
     #[must_use]
     pub fn abs(self) -> Self {
-        Self::new(math::abs(self.x), math::abs(self.y))
+        Self::new(self.x.abs(), self.y.abs())
     }
 
     /// Returns a vector with elements representing the sign of `self`.
@@ -394,14 +386,14 @@ impl Vec2 {
     #[inline]
     #[must_use]
     pub fn signum(self) -> Self {
-        Self::new(math::signum(self.x), math::signum(self.y))
+        Self::new(self.x.signum(), self.y.signum())
     }
 
     /// Returns a vector with signs of `rhs` and the magnitudes of `self`.
     #[inline]
     #[must_use]
     pub fn copysign(self, rhs: Self) -> Self {
-        Self::new(math::copysign(self.x, rhs.x), math::copysign(self.y, rhs.y))
+        Self::new(self.x.copysign(rhs.x), self.y.copysign(rhs.y))
     }
 
     /// Returns a bitmask with the lowest 2 bits set to the sign bits from the elements of `self`.
@@ -616,7 +608,7 @@ impl Vec2 {
     #[inline]
     #[must_use]
     pub fn is_normalized(self) -> bool {
-        math::abs(self.length_squared() - 1.0) <= 2e-4
+        (self.length_squared() - 1.0).abs() <= 2e-4
     }
 
     /// Returns the vector projection of `self` onto `rhs`.
@@ -1088,7 +1080,7 @@ impl Vec2 {
             self.dot(rhs) / math::sqrt(self.length_squared() * rhs.length_squared()),
         );
 
-        angle * math::signum(self.perp_dot(rhs))
+        angle * self.perp_dot(rhs).signum()
     }
 
     /// Returns a vector that is equal to `self` rotated by 90 degrees.
@@ -1147,9 +1139,9 @@ impl Vec2 {
     #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn rotate_towards(self, rhs: Self, max_angle: f32) -> Self {
         let a = self.angle_to(rhs);
-        let abs_a = math::abs(a);
+        let abs_a = a.abs();
         // When `max_angle < 0`, rotate no further than `PI` radians away
-        let angle = max_angle.clamp(abs_a - core::f32::consts::PI, abs_a) * math::signum(a);
+        let angle = max_angle.clamp(abs_a - core::f32::consts::PI, abs_a) * a.signum();
         Self::from_angle(angle).rotate(self)
     }
 

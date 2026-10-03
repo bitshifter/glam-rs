@@ -1,3 +1,8 @@
+// The helpers below are thin wrappers around NEON intrinsics and are `unsafe` as a
+// whole; allow the edition 2024 `unsafe_op_in_unsafe_fn` lint here instead of
+// wrapping every intrinsic call in its own `unsafe` block.
+#![allow(unsafe_op_in_unsafe_fn)]
+
 use core::arch::aarch64::*;
 
 union UnionCast {

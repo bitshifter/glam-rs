@@ -1,10 +1,10 @@
 // Generated from quat.rs.tera template. Edit the template, not the generated file.
 
 use crate::{
+    Mat3, Mat3A, Mat4, Vec2, Vec3, Vec3A, Vec4,
     coresimd::*,
     euler::{EulerRot, FromEuler, ToEuler},
     f32::math,
-    Mat3, Mat3A, Mat4, Vec2, Vec3, Vec3A, Vec4,
 };
 
 #[cfg(feature = "f64")]
@@ -659,7 +659,7 @@ impl Quat {
         // decreasing, comparing `abs(w)` to the cosine threshold avoids calculating the angle.
         // Equivalent to an angular threshold of `(1.0 - 1e-6).acos() * 2.0`.
         const THRESHOLD: f32 = 1.0 - 1e-6;
-        math::abs(self.w) > THRESHOLD
+        self.w.abs() > THRESHOLD
     }
 
     /// Returns the angle (in radians) for the minimal rotation between two quaternions
@@ -675,7 +675,7 @@ impl Quat {
     #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn angle_between(self, rhs: Self) -> f32 {
         glam_assert!(self.is_normalized() && rhs.is_normalized());
-        math::acos_approx(math::abs(self.dot(rhs))) * 2.0
+        math::acos_approx(self.dot(rhs).abs()) * 2.0
     }
 
     /// Rotates towards `rhs` up to `max_angle` (in radians).
@@ -824,7 +824,7 @@ impl Quat {
         let dot = self.dot(end);
 
         const DOT_THRESHOLD: f32 = 1.0 - f32::EPSILON;
-        if math::abs(dot) > DOT_THRESHOLD {
+        if dot.abs() > DOT_THRESHOLD {
             // if above threshold perform linear interpolation to avoid divide by zero
             self.lerp_impl(end, s)
         } else {

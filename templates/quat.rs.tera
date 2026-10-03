@@ -812,7 +812,7 @@ impl {{ self_t }} {
             // Equivalent to an angular threshold of `(1.0 - 1e-14).acos() * 2.0`.
             const THRESHOLD: f64 = 1.0 - 1e-14;
         {%- endif %}
-        math::abs(self.w) > THRESHOLD
+        self.w.abs() > THRESHOLD
     }
 
     /// Returns the angle (in radians) for the minimal rotation between two quaternions
@@ -828,7 +828,7 @@ impl {{ self_t }} {
     #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn angle_between(self, rhs: Self) -> {{ scalar_t }} {
         glam_assert!(self.is_normalized() && rhs.is_normalized());
-        math::acos_approx(math::abs(self.dot(rhs))) * 2.0
+        math::acos_approx(self.dot(rhs).abs()) * 2.0
     }
 
     /// Rotates towards `rhs` up to `max_angle` (in radians).
@@ -1045,7 +1045,7 @@ impl {{ self_t }} {
         let dot = self.dot(end);
 
         const DOT_THRESHOLD: {{ scalar_t }} = 1.0 - {{ scalar_t }}::EPSILON;
-        if math::abs(dot) > DOT_THRESHOLD {
+        if dot.abs() > DOT_THRESHOLD {
             // if above threshold perform linear interpolation to avoid divide by zero
             self.lerp_impl(end, s)
         } else {

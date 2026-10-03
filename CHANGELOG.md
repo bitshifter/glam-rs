@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > release and the 1.0 API candidate. See
 > [The road to glam 1.0](https://github.com/bitshifter/glam-rs/discussions/889).
 
+### Changed
+
+- Minimum Supported Rust Version bumped to `1.85.0` and the crate moved to Rust
+  edition 2024 ([#850](https://github.com/bitshifter/glam-rs/issues/850)).
+- The `abs`, `copysign` and `signum` helpers were removed from the internal
+  `f32`/`f64` math backends and now use the standard library methods, which are
+  available in `core` on the new MSRV.
+
 ## [0.33.12](https://github.com/bitshifter/glam-rs/compare/0.33.11...0.33.12) - 2026-10-01
 
 ### Added

@@ -9,11 +9,11 @@ macro_rules! impl_vec_types {
     ) => {
         use super::{UniformVec2, UniformVec3, UniformVec4};
         use rand_010::{
-            distr::{
-                uniform::{Error as UniformError, SampleBorrow, SampleUniform, UniformSampler},
-                Distribution, StandardUniform,
-            },
             RngExt,
+            distr::{
+                Distribution, StandardUniform,
+                uniform::{Error as UniformError, SampleBorrow, SampleUniform, UniformSampler},
+            },
         };
 
         impl Distribution<$vec2> for StandardUniform {

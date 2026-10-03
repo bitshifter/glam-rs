@@ -2,7 +2,7 @@
 name = "glam-msrv"
 description = "Checks glam compiles with the MSRV toolchain from an external consumer"
 version = "0.0.0"
-edition = "2021"
+edition = "2024"
 publish = false
 
 # Standalone workspace: this crate must not join the parent workspace, whose

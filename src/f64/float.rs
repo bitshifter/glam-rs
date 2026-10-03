@@ -39,11 +39,7 @@ impl FloatExt for f64 {
 
     #[inline]
     fn step(self, value: Self) -> Self {
-        if value < self {
-            0.0
-        } else {
-            1.0
-        }
+        if value < self { 0.0 } else { 1.0 }
     }
 
     #[inline]
@@ -54,10 +50,10 @@ impl FloatExt for f64 {
     #[inline]
     fn move_towards(self, rhs: Self, d: Self) -> Self {
         let a = rhs - self;
-        if math::abs(a) <= d {
+        if a.abs() <= d {
             rhs
         } else {
-            self + math::signum(a) * d
+            self + a.signum() * d
         }
     }
 }

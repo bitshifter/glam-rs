@@ -236,7 +236,7 @@ impl DAffine2 {
         glam_assert!(det != 0.0);
 
         let scale = DVec2::new(
-            self.matrix2.x_axis.length() * math::signum(det),
+            self.matrix2.x_axis.length() * det.signum(),
             self.matrix2.y_axis.length(),
         );
 

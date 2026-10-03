@@ -4,7 +4,7 @@ mod support;
 
 #[cfg(feature = "f64")]
 glam_test!(test_dvec4_swizzles, {
-    use glam::{dvec2, dvec3, dvec4, Vec4Swizzles};
+    use glam::{Vec4Swizzles, dvec2, dvec3, dvec4};
     let v = dvec4(1_f64, 2_f64, 3_f64, 4_f64);
     let rhs3 = dvec3(11_f64, 12_f64, 13_f64);
     let rhs2 = dvec2(11_f64, 12_f64);
@@ -384,7 +384,7 @@ glam_test!(test_dvec4_swizzles, {
 
 #[cfg(feature = "f64")]
 glam_test!(test_dvec3_swizzles, {
-    use glam::{dvec2, dvec3, dvec4, Vec3Swizzles};
+    use glam::{Vec3Swizzles, dvec2, dvec3, dvec4};
     let v = dvec3(1_f64, 2_f64, 3_f64);
     let rhs2 = dvec2(11_f64, 12_f64);
     assert_eq!(v, v.xyz());
@@ -514,7 +514,7 @@ glam_test!(test_dvec3_swizzles, {
 
 #[cfg(feature = "f64")]
 glam_test!(test_dvec2_swizzles, {
-    use glam::{dvec2, dvec3, dvec4, Vec2Swizzles};
+    use glam::{Vec2Swizzles, dvec2, dvec3, dvec4};
     let v = dvec2(1_f64, 2_f64);
     assert_eq!(v, v.xy());
     assert_eq!(v.xxxx(), dvec4(1_f64, 1_f64, 1_f64, 1_f64));
