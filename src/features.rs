@@ -22,9 +22,6 @@ pub mod impl_speedy_08;
 #[cfg(feature = "rkyv-08")]
 pub mod impl_rkyv_08;
 
-#[cfg(all(feature = "rkyv", not(feature = "rkyv-08")))]
-pub mod impl_rkyv;
-
 #[cfg(feature = "encase-012")]
 mod impl_encase_012 {
     use encase_012 as encase;

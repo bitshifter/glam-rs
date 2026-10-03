@@ -62,11 +62,6 @@ mod libm_math {
     }
 
     #[inline(always)]
-    pub(crate) fn tan(f: f32) -> f32 {
-        libm::tanf(f)
-    }
-
-    #[inline(always)]
     pub(crate) fn sqrt(f: f32) -> f32 {
         libm::sqrtf(f)
     }
@@ -168,11 +163,6 @@ mod std_math {
     }
 
     #[inline(always)]
-    pub(crate) fn tan(f: f32) -> f32 {
-        f32::tan(f)
-    }
-
-    #[inline(always)]
     pub(crate) fn sqrt(f: f32) -> f32 {
         f32::sqrt(f)
     }
@@ -263,10 +253,6 @@ mod no_backend_math {
     }
 
     pub(crate) fn sin_cos(_: f32) -> (f32, f32) {
-        unimplemented!()
-    }
-
-    pub(crate) fn tan(_: f32) -> f32 {
         unimplemented!()
     }
 

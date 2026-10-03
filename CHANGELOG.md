@@ -19,6 +19,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `f32`/`f64` math backends and now use the standard library methods, which are
   available in `core` on the new MSRV.
 
+### Removed
+
+- Removed items deprecated since 0.31.0: the `Mat3`/`Mat3A`/`DMat3`,
+  `Mat4`/`DMat4`, `Quat`/`DQuat` and `Affine3`/`Affine3A`/`DAffine3`
+  `look_to_*`/`look_at_*` methods, the `Mat4`/`DMat4` `frustum_*`,
+  `perspective_*`, `perspective_infinite_*` and `orthographic_*` methods, and the
+  `USES_WASM32_SIMD` constants. Use the `camera`/`dcamera` modules and
+  `USES_WASM_SIMD` instead
+  ([#846](https://github.com/bitshifter/glam-rs/issues/846)).
+- Removed the deprecated unversioned `approx`, `encase`, `mint`, `rand`, `rkyv`,
+  `speedy` and `zerocopy` features; use the versioned features instead. Also
+  removed the no-op `fast-math` feature
+  ([#846](https://github.com/bitshifter/glam-rs/issues/846)).
+
 ## [0.33.12](https://github.com/bitshifter/glam-rs/compare/0.33.11...0.33.12) - 2026-10-01
 
 ### Added
