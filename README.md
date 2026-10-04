@@ -6,8 +6,8 @@
 
 A simple and fast 3D math library for games and graphics.
 
-> **glam is heading for 1.0.** `0.34.0` is the last breaking pre-1.0 release and
-> the 1.0 API candidate. See [The road to glam 1.0](https://github.com/bitshifter/glam-rs/discussions/889).
+> **glam is heading for 1.0.** `0.34.0` is the final breaking pre-1.0 release.
+> See [The road to glam 1.0](https://github.com/bitshifter/glam-rs/discussions/889).
 
 ## Features
 
