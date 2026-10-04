@@ -5,8 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-> **1.0 status:** `0.34.0` is the last breaking pre-1.0 release and the
-> 1.0 API candidate. See
+> **1.0 status:** `0.34.0` is the final breaking pre-1.0 release. See
 > [The road to glam 1.0](https://github.com/bitshifter/glam-rs/discussions/889).
 
 ## [Unreleased]
