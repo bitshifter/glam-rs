@@ -2986,7 +2986,7 @@ mod isizevec4 {
         #[cfg(not(feature = "cuda"))]
         assert_eq!(mem::align_of::<isize>(), mem::align_of::<ISizeVec4>());
         #[cfg(feature = "cuda")]
-        assert_eq!(16, mem::align_of::<ISizeVec4>());
+        assert_eq!(mem::align_of::<usize>() * 2, mem::align_of::<ISizeVec4>());
     });
 
     impl_vec4_isize_try_from_tests!(ISizeVec4, isize);
@@ -3031,7 +3031,7 @@ mod usizevec4 {
         #[cfg(not(feature = "cuda"))]
         assert_eq!(mem::align_of::<usize>(), mem::align_of::<USizeVec4>());
         #[cfg(feature = "cuda")]
-        assert_eq!(16, mem::align_of::<USizeVec4>());
+        assert_eq!(mem::align_of::<usize>() * 2, mem::align_of::<USizeVec4>());
     });
 
     impl_vec4_usize_try_from_tests!(USizeVec4, usize);

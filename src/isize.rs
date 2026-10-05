@@ -10,13 +10,10 @@ pub use isizevec4::{ISizeVec4, isizevec4};
 mod test {
     use super::*;
     mod const_test_isizevec2 {
-        #[cfg(not(all(feature = "cuda", target_pointer_width = "32")))]
         const_assert_eq!(
             core::mem::size_of::<isize>() * 2,
             core::mem::size_of::<super::ISizeVec2>()
         );
-        #[cfg(all(feature = "cuda", target_pointer_width = "32"))]
-        const_assert_eq!(16, core::mem::size_of::<super::ISizeVec2>());
 
         #[cfg(not(feature = "cuda"))]
         const_assert_eq!(
@@ -24,7 +21,10 @@ mod test {
             core::mem::align_of::<super::ISizeVec2>()
         );
         #[cfg(feature = "cuda")]
-        const_assert_eq!(16, core::mem::align_of::<super::ISizeVec2>());
+        const_assert_eq!(
+            core::mem::align_of::<isize>() * 2,
+            core::mem::align_of::<super::ISizeVec2>()
+        );
     }
 
     mod const_test_isizevec3 {
@@ -51,6 +51,9 @@ mod test {
             core::mem::align_of::<super::ISizeVec4>()
         );
         #[cfg(feature = "cuda")]
-        const_assert_eq!(16, core::mem::align_of::<super::ISizeVec4>());
+        const_assert_eq!(
+            core::mem::align_of::<isize>() * 2,
+            core::mem::align_of::<super::ISizeVec4>()
+        );
     }
 }

@@ -165,8 +165,7 @@
     {% elif scalar_t == "f64" or scalar_t == "i64" or scalar_t == "u64" %}
         {% set cuda_align = 16 %}
     {% elif scalar_t == "usize" or scalar_t == "isize" %}
-        {# assuming 64 bit here #}
-        {% set cuda_align = 16 %}
+        {# needs special handling #}
     {% endif %}
 {% elif dim == 4 %}
     {% if scalar_t == "i8" or scalar_t == "u8" %}
@@ -178,8 +177,7 @@
     {% elif scalar_t == "f64" or scalar_t == "i64" or scalar_t == "u64" %}
         {% set cuda_align = 16 %}
     {% elif scalar_t == "usize" or scalar_t == "isize" %}
-        {# assuming 64 bit here #}
-        {% set cuda_align = 16 %}
+        {# needs special handling #}
     {% endif %}
 {% endif %}
 
@@ -347,7 +345,13 @@ pub const fn {{ self_t | lower }}(
 {%- elif self_t == "Vec4" and is_scalar %}
 #[cfg_attr(any(not(feature = "scalar-math"), feature = "cuda"), repr(align(16)))]
 {%- elif dim != 3 and is_scalar %}
+{% if scalar_t == "usize" or scalar_t == "isize" %}
+#[cfg_attr(all(feature = "cuda", target_pointer_width = "16"), repr(align(4)))]
+#[cfg_attr(all(feature = "cuda", target_pointer_width = "32"), repr(align(8)))]
+#[cfg_attr(all(feature = "cuda", target_pointer_width = "64"), repr(align(16)))]
+{%- else %}
 #[cfg_attr(feature = "cuda", repr(align({{ cuda_align }})))]
+{%- endif %}
 {%- endif %}
 {%- if is_scalar %}
 #[repr(C)]
