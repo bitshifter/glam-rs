@@ -342,7 +342,9 @@ pub const fn {{ self_t | lower }}(
 {%- endif %}
 {%- if is_scalar %}
 #[repr(C)]
+{%- if self_t != "Vec3A" %}
 #[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
+{%- endif %}
 pub struct {{ self_t }}
 {
     {% for c in components %}

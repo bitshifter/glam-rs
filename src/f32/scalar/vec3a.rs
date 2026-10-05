@@ -33,7 +33,6 @@ pub const fn vec3a(x: f32, y: f32, z: f32) -> Vec3A {
 )]
 #[repr(align(16))]
 #[repr(C)]
-#[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct Vec3A {
     pub x: f32,
     pub y: f32,
