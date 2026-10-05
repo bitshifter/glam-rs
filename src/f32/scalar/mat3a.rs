@@ -48,21 +48,10 @@ pub const fn mat3a(x_axis: Vec3A, y_axis: Vec3A, z_axis: Vec3A) -> Mat3A {
 /// vectors respectively. These methods assume that `Self` contains a valid affine
 /// transform.
 #[derive(Clone, Copy)]
+#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(
-    all(feature = "bytemuck", not(target_arch = "spirv")),
-    derive(bytemuck::Pod, bytemuck::Zeroable)
-)]
-#[cfg_attr(
-    all(feature = "bytemuck", target_arch = "spirv"),
-    derive(bytemuck::AnyBitPattern)
-)]
-#[cfg_attr(
-    all(feature = "zerocopy-08", not(target_arch = "spirv")),
+    feature = "zerocopy-08",
     derive(FromBytes, Immutable, IntoBytes, KnownLayout)
-)]
-#[cfg_attr(
-    all(feature = "zerocopy-08", target_arch = "spirv"),
-    derive(FromBytes, Immutable, KnownLayout)
 )]
 #[repr(C)]
 pub struct Mat3A {

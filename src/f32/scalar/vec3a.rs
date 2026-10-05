@@ -26,21 +26,10 @@ pub const fn vec3a(x: f32, y: f32, z: f32) -> Vec3A {
 ///
 /// This type is 16 byte aligned.
 #[derive(Clone, Copy)]
+#[cfg_attr(feature = "bytemuck", derive(bytemuck::Pod, bytemuck::Zeroable))]
 #[cfg_attr(
-    all(feature = "bytemuck", not(target_arch = "spirv")),
-    derive(bytemuck::Pod, bytemuck::Zeroable)
-)]
-#[cfg_attr(
-    all(feature = "bytemuck", target_arch = "spirv"),
-    derive(bytemuck::AnyBitPattern)
-)]
-#[cfg_attr(
-    all(feature = "zerocopy-08", not(target_arch = "spirv")),
+    feature = "zerocopy-08",
     derive(FromBytes, Immutable, IntoBytes, KnownLayout)
-)]
-#[cfg_attr(
-    all(feature = "zerocopy-08", target_arch = "spirv"),
-    derive(FromBytes, Immutable, KnownLayout)
 )]
 #[repr(align(16))]
 #[repr(C)]
@@ -49,7 +38,6 @@ pub struct Vec3A {
     pub x: f32,
     pub y: f32,
     pub z: f32,
-    #[cfg(not(target_arch = "spirv"))]
     _w: f32,
 }
 
@@ -114,14 +102,7 @@ impl Vec3A {
     #[inline(always)]
     #[must_use]
     pub const fn new(x: f32, y: f32, z: f32) -> Self {
-        #[cfg(not(target_arch = "spirv"))]
-        {
-            Self { x, y, z, _w: z }
-        }
-        #[cfg(target_arch = "spirv")]
-        {
-            Self { x, y, z }
-        }
+        Self { x, y, z, _w: z }
     }
 
     /// Creates a vector with all elements set to `v`.
