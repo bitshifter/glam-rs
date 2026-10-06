@@ -50,7 +50,8 @@ pub const fn usizevec2(x: usize, y: usize) -> USizeVec2 {
     feature = "zerocopy-08",
     derive(FromBytes, Immutable, IntoBytes, KnownLayout)
 )]
-#[cfg_attr(feature = "cuda", repr(align(16)))]
+#[cfg_attr(all(feature = "cuda", target_pointer_width = "64"), repr(align(16)))]
+#[cfg_attr(all(feature = "cuda", target_pointer_width = "32"), repr(align(8)))]
 #[repr(C)]
 #[cfg_attr(target_arch = "spirv", rust_gpu::vector::v1)]
 pub struct USizeVec2 {
