@@ -1,6 +1,6 @@
 [package]
 name = "glam"
-version = "0.34.0"
+version = "0.34.1"
 edition = "2024"
 description = "A simple and fast 3D math library for games and graphics"
 documentation = "https://docs.rs/glam"
