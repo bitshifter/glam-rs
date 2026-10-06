@@ -2544,14 +2544,13 @@ mod isizevec2 {
 
     glam_test!(test_align, {
         use core::mem;
-        #[cfg(not(all(feature = "cuda", target_pointer_width = "32")))]
         assert_eq!(mem::size_of::<isize>() * 2, mem::size_of::<ISizeVec2>());
-        #[cfg(all(feature = "cuda", target_pointer_width = "32"))]
-        assert_eq!(16, mem::size_of::<ISizeVec2>());
         #[cfg(not(feature = "cuda"))]
         assert_eq!(mem::align_of::<isize>(), mem::align_of::<ISizeVec2>());
-        #[cfg(feature = "cuda")]
+        #[cfg(all(feature = "cuda", target_pointer_width = "64"))]
         assert_eq!(16, mem::align_of::<ISizeVec2>());
+        #[cfg(all(feature = "cuda", target_pointer_width = "32"))]
+        assert_eq!(8, mem::align_of::<ISizeVec2>());
     });
 
     impl_vec2_isize_try_from_tests!(ISizeVec2, isize);
@@ -2592,14 +2591,13 @@ mod usizevec2 {
 
     glam_test!(test_align, {
         use core::mem;
-        #[cfg(not(all(feature = "cuda", target_pointer_width = "32")))]
         assert_eq!(mem::size_of::<usize>() * 2, mem::size_of::<USizeVec2>());
-        #[cfg(all(feature = "cuda", target_pointer_width = "32"))]
-        assert_eq!(16, mem::size_of::<USizeVec2>());
         #[cfg(not(feature = "cuda"))]
         assert_eq!(mem::align_of::<usize>(), mem::align_of::<USizeVec2>());
-        #[cfg(feature = "cuda")]
+        #[cfg(all(feature = "cuda", target_pointer_width = "64"))]
         assert_eq!(16, mem::align_of::<USizeVec2>());
+        #[cfg(all(feature = "cuda", target_pointer_width = "32"))]
+        assert_eq!(8, mem::align_of::<USizeVec2>());
     });
 
     impl_vec2_usize_try_from_tests!(USizeVec2, usize);

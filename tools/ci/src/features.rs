@@ -7,7 +7,7 @@ macro_rules! deps {
 pub(crate) const FEATURE_SETS: &[&str] = &[
     concat!("std ", deps!()),
     concat!("std all-types scalar-math ", deps!()),
-    "std all-types cuda",
+    concat!("std all-types cuda ", deps!()),
     "std all-types scalar-math cuda",
     "std all-types libm",
     "std all-types scalar-math libm",
