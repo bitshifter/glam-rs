@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- correct cuda alignment of USizeVec2/ISizeVec2 on 32-bit ([#900](https://github.com/bitshifter/glam-rs/pull/900))
+- *(cuda)* correct cuda alignment of USizeVec2/ISizeVec2 on 32-bit ([#900](https://github.com/bitshifter/glam-rs/pull/900))
 - *(rust-gpu)* remove Vec3A special casing ([#898](https://github.com/bitshifter/glam-rs/pull/898))
 
 ## [0.34.0](https://github.com/bitshifter/glam-rs/compare/0.33.12...0.34.0) - 2026-10-03
