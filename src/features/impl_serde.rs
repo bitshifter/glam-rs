@@ -984,7 +984,7 @@ mod bool {
             state.serialize_field(&a[0])?;
             state.serialize_field(&a[1])?;
             state.serialize_field(&a[2])?;
-            state.serialize_field(&a[2])?;
+            state.serialize_field(&a[3])?;
             state.end()
         }
     }
@@ -1034,6 +1034,14 @@ mod bool {
         assert_eq!(SX4, serialized);
         let deserialized = serde_json::from_str(&serialized).unwrap();
         assert_eq!(a, deserialized);
+
+        // distinct component values catch mis-indexed fields in `serialize`
+        let b = BVec4A::new(true, false, true, false);
+        let serialized = serde_json::to_string(&b).unwrap();
+        assert_eq!("[true,false,true,false]", serialized);
+        let deserialized = serde_json::from_str::<BVec4A>(&serialized).unwrap();
+        assert_eq!(b, deserialized);
+
         let deserialized = serde_json::from_str::<BVec4A>(SX0);
         assert!(deserialized.is_err());
         let deserialized = serde_json::from_str::<BVec4A>(SX1);
