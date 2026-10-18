@@ -144,6 +144,9 @@ macro_rules! impl_serde_vec3 {
 
 macro_rules! impl_serde_vec4 {
     ($t:ty, $vec4:ident) => {
+        impl_serde_vec4!($t, $vec4, new, test_vec4_serde);
+    };
+    ($t:ty, $vec4:ident, $ctor:ident, $test_name:ident) => {
         /// Serialize as a sequence of 4 values.
         impl Serialize for $vec4 {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -190,7 +193,7 @@ macro_rules! impl_serde_vec4 {
                         let w = seq
                             .next_element()?
                             .ok_or_else(|| de::Error::invalid_length(3, &self))?;
-                        Ok($vec4::new(x, y, z, w))
+                        Ok($vec4::$ctor(x, y, z, w))
                     }
                 }
 
@@ -199,8 +202,8 @@ macro_rules! impl_serde_vec4 {
         }
 
         #[test]
-        fn test_vec4_serde() {
-            let a = $vec4::new(V1, V2, V3, V4);
+        fn $test_name() {
+            let a = $vec4::$ctor(V1, V2, V3, V4);
             let serialized = serde_json::to_string(&a).unwrap();
             assert_eq!(SX4, serialized);
             let deserialized = serde_json::from_str(&serialized).unwrap();
@@ -223,80 +226,7 @@ macro_rules! impl_serde_vec4 {
 
 macro_rules! impl_serde_quat {
     ($t:ty, $quat:ident) => {
-        /// Serialize as a sequence of 4 values.
-        impl Serialize for $quat {
-            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-            where
-                S: Serializer,
-            {
-                let mut state = serializer.serialize_tuple_struct(stringify!($quat), 4)?;
-                state.serialize_field(&self.x)?;
-                state.serialize_field(&self.y)?;
-                state.serialize_field(&self.z)?;
-                state.serialize_field(&self.w)?;
-                state.end()
-            }
-        }
-
-        /// Deserialize expects a sequence of 4 values.
-        impl<'de> Deserialize<'de> for $quat {
-            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-            where
-                D: Deserializer<'de>,
-            {
-                struct QuatVisitor;
-
-                impl<'de> Visitor<'de> for QuatVisitor {
-                    type Value = $quat;
-
-                    fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(&concat!("a sequence of 4 ", stringify!($t), " values"))
-                    }
-
-                    fn visit_seq<V>(self, mut seq: V) -> Result<$quat, V::Error>
-                    where
-                        V: SeqAccess<'de>,
-                    {
-                        let x = seq
-                            .next_element()?
-                            .ok_or_else(|| de::Error::invalid_length(0, &self))?;
-                        let y = seq
-                            .next_element()?
-                            .ok_or_else(|| de::Error::invalid_length(1, &self))?;
-                        let z = seq
-                            .next_element()?
-                            .ok_or_else(|| de::Error::invalid_length(2, &self))?;
-                        let w = seq
-                            .next_element()?
-                            .ok_or_else(|| de::Error::invalid_length(3, &self))?;
-                        Ok($quat::from_xyzw(x, y, z, w))
-                    }
-                }
-
-                deserializer.deserialize_tuple_struct(stringify!($quat), 4, QuatVisitor)
-            }
-        }
-
-        #[test]
-        fn test_quat_serde() {
-            let a = $quat::from_xyzw(V1, V2, V3, V4);
-            let serialized = serde_json::to_string(&a).unwrap();
-            assert_eq!(serialized, "[1.0,2.0,3.0,4.0]");
-            let deserialized = serde_json::from_str(&serialized).unwrap();
-            assert_eq!(a, deserialized);
-            let deserialized = serde_json::from_str::<$quat>("[]");
-            assert!(deserialized.is_err());
-            let deserialized = serde_json::from_str::<$quat>("[1.0]");
-            assert!(deserialized.is_err());
-            let deserialized = serde_json::from_str::<$quat>("[1.0,2.0]");
-            assert!(deserialized.is_err());
-            let deserialized = serde_json::from_str::<$quat>("[1.0,2.0,3.0]");
-            assert!(deserialized.is_err());
-            let deserialized = serde_json::from_str::<$quat>("[1.0,2.0,3.0,4.0,5.0]");
-            assert!(deserialized.is_err());
-            let deserialized = serde_json::from_str::<$quat>("{}");
-            assert!(deserialized.is_err());
-        }
+        impl_serde_vec4!($t, $quat, from_xyzw, test_quat_serde);
     };
 }
 
@@ -308,12 +238,10 @@ macro_rules! impl_serde_mat2 {
             where
                 S: Serializer,
             {
-                let f: &[_; 4] = self.as_ref();
                 let mut state = serializer.serialize_tuple_struct(stringify!($mat2), 4)?;
-                state.serialize_field(&f[0])?;
-                state.serialize_field(&f[1])?;
-                state.serialize_field(&f[2])?;
-                state.serialize_field(&f[3])?;
+                for f in self.as_ref() {
+                    state.serialize_field(f)?;
+                }
                 state.end()
             }
         }
@@ -330,7 +258,7 @@ macro_rules! impl_serde_mat2 {
                     type Value = $mat2;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(&concat!("a sequence of 4 ", stringify!($t), "values"))
+                        formatter.write_str(&concat!("a sequence of 4 ", stringify!($t), " values"))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$mat2, V::Error>
@@ -417,7 +345,7 @@ macro_rules! impl_serde_mat3 {
                     type Value = $mat3;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(&concat!("a sequence of 9 ", stringify!($t), "values"))
+                        formatter.write_str(&concat!("a sequence of 9 ", stringify!($t), " values"))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$mat3, V::Error>
@@ -492,7 +420,11 @@ macro_rules! impl_serde_mat4 {
                     type Value = $mat4;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(&concat!("a sequence of 16 ", stringify!($t), "values"))
+                        formatter.write_str(&concat!(
+                            "a sequence of 16 ",
+                            stringify!($t),
+                            " values"
+                        ))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$mat4, V::Error>
@@ -581,7 +513,7 @@ macro_rules! impl_serde_affine2 {
                     type Value = $affine2;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(&concat!("a sequence of 6 ", stringify!($t), "values"))
+                        formatter.write_str(&concat!("a sequence of 6 ", stringify!($t), " values"))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$affine2, V::Error>
@@ -670,7 +602,11 @@ macro_rules! impl_serde_affine3 {
                     type Value = $affine3;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                        formatter.write_str(&concat!("a sequence of 12 ", stringify!($t), "values"))
+                        formatter.write_str(&concat!(
+                            "a sequence of 12 ",
+                            stringify!($t),
+                            " values"
+                        ))
                     }
 
                     fn visit_seq<V>(self, mut seq: V) -> Result<$affine3, V::Error>
@@ -1029,9 +965,9 @@ mod bool {
 
     #[test]
     fn test_bvec4a_serde() {
-        let a = BVec4A::new(V1, V2, V3, V4);
+        let a = BVec4A::new(V1, V2, V3, !V4);
         let serialized = serde_json::to_string(&a).unwrap();
-        assert_eq!(SX4, serialized);
+        assert_eq!(serialized, "[true,true,true,false]");
         let deserialized = serde_json::from_str(&serialized).unwrap();
         assert_eq!(a, deserialized);
 
@@ -1257,373 +1193,173 @@ mod usize {
 
 mod euler {
     use crate::EulerRot;
+    use core::fmt;
+    use serde_core::de::{self, Deserialize, Deserializer, VariantAccess, Visitor};
+    use serde_core::ser::{Serialize, Serializer};
 
-    impl serde_core::Serialize for EulerRot {
-        fn serialize<S: serde_core::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-            match *self {
-                EulerRot::ZYX => serde_core::Serializer::serialize_unit_variant(
-                    serializer, "EulerRot", 0u32, "ZYX",
-                ),
-                EulerRot::ZXY => serde_core::Serializer::serialize_unit_variant(
-                    serializer, "EulerRot", 1u32, "ZXY",
-                ),
-                EulerRot::YXZ => serde_core::Serializer::serialize_unit_variant(
-                    serializer, "EulerRot", 2u32, "YXZ",
-                ),
-                EulerRot::YZX => serde_core::Serializer::serialize_unit_variant(
-                    serializer, "EulerRot", 3u32, "YZX",
-                ),
-                EulerRot::XYZ => serde_core::Serializer::serialize_unit_variant(
-                    serializer, "EulerRot", 4u32, "XYZ",
-                ),
-                EulerRot::XZY => serde_core::Serializer::serialize_unit_variant(
-                    serializer, "EulerRot", 5u32, "XZY",
-                ),
-                EulerRot::ZYZ => serde_core::Serializer::serialize_unit_variant(
-                    serializer, "EulerRot", 6u32, "ZYZ",
-                ),
-                EulerRot::ZXZ => serde_core::Serializer::serialize_unit_variant(
-                    serializer, "EulerRot", 7u32, "ZXZ",
-                ),
-                EulerRot::YXY => serde_core::Serializer::serialize_unit_variant(
-                    serializer, "EulerRot", 8u32, "YXY",
-                ),
-                EulerRot::YZY => serde_core::Serializer::serialize_unit_variant(
-                    serializer, "EulerRot", 9u32, "YZY",
-                ),
-                EulerRot::XYX => serde_core::Serializer::serialize_unit_variant(
-                    serializer, "EulerRot", 10u32, "XYX",
-                ),
-                EulerRot::XZX => serde_core::Serializer::serialize_unit_variant(
-                    serializer, "EulerRot", 11u32, "XZX",
-                ),
-                EulerRot::ZYXEx => serde_core::Serializer::serialize_unit_variant(
-                    serializer, "EulerRot", 12u32, "ZYXEx",
-                ),
-                EulerRot::ZXYEx => serde_core::Serializer::serialize_unit_variant(
-                    serializer, "EulerRot", 13u32, "ZXYEx",
-                ),
-                EulerRot::YXZEx => serde_core::Serializer::serialize_unit_variant(
-                    serializer, "EulerRot", 14u32, "YXZEx",
-                ),
-                EulerRot::YZXEx => serde_core::Serializer::serialize_unit_variant(
-                    serializer, "EulerRot", 15u32, "YZXEx",
-                ),
-                EulerRot::XYZEx => serde_core::Serializer::serialize_unit_variant(
-                    serializer, "EulerRot", 16u32, "XYZEx",
-                ),
-                EulerRot::XZYEx => serde_core::Serializer::serialize_unit_variant(
-                    serializer, "EulerRot", 17u32, "XZYEx",
-                ),
-                EulerRot::ZYZEx => serde_core::Serializer::serialize_unit_variant(
-                    serializer, "EulerRot", 18u32, "ZYZEx",
-                ),
-                EulerRot::ZXZEx => serde_core::Serializer::serialize_unit_variant(
-                    serializer, "EulerRot", 19u32, "ZXZEx",
-                ),
-                EulerRot::YXYEx => serde_core::Serializer::serialize_unit_variant(
-                    serializer, "EulerRot", 20u32, "YXYEx",
-                ),
-                EulerRot::YZYEx => serde_core::Serializer::serialize_unit_variant(
-                    serializer, "EulerRot", 21u32, "YZYEx",
-                ),
-                EulerRot::XYXEx => serde_core::Serializer::serialize_unit_variant(
-                    serializer, "EulerRot", 22u32, "XYXEx",
-                ),
-                EulerRot::XZXEx => serde_core::Serializer::serialize_unit_variant(
-                    serializer, "EulerRot", 23u32, "XZXEx",
-                ),
+    /// Defines the `EulerRot` serde wire format from a single list of
+    /// `(wire index, variant, name)` entries, in wire-index order.
+    ///
+    /// `$count` must equal the number of entries.
+    macro_rules! euler_rot_variants {
+        ($count:literal; $(($wire_index:literal, $variant:ident, $name:literal)),+ $(,)?) => {
+            /// The serde names of every variant, in wire-index order.
+            const VARIANT_NAMES: &[&str] = &[$($name),+];
+
+            const _: () = assert!(VARIANT_NAMES.len() == $count);
+
+            /// The expected variant index range, for deserialization errors.
+            const VARIANT_INDEX_RANGE: &str = concat!("variant index 0 <= i < ", $count);
+
+            impl EulerRot {
+                /// The serde wire index and name for this variant.
+                const fn variant_info(self) -> (u32, &'static str) {
+                    match self {
+                        $(EulerRot::$variant => ($wire_index, $name)),+
+                    }
+                }
+
+                /// The variant for a serde wire index, if the index is known.
+                const fn variant_at(wire_index: u32) -> Option<EulerRot> {
+                    match wire_index {
+                        $($wire_index => Some(EulerRot::$variant),)+
+                        _ => None,
+                    }
+                }
+
+                /// The variant with the given serde name, if the name is known.
+                fn variant_from_name(name: &str) -> Option<EulerRot> {
+                    match name {
+                        $($name => Some(EulerRot::$variant),)+
+                        _ => None,
+                    }
+                }
             }
+        };
+    }
+
+    euler_rot_variants![
+        24;
+        (0, ZYX, "ZYX"),
+        (1, ZXY, "ZXY"),
+        (2, YXZ, "YXZ"),
+        (3, YZX, "YZX"),
+        (4, XYZ, "XYZ"),
+        (5, XZY, "XZY"),
+        (6, ZYZ, "ZYZ"),
+        (7, ZXZ, "ZXZ"),
+        (8, YXY, "YXY"),
+        (9, YZY, "YZY"),
+        (10, XYX, "XYX"),
+        (11, XZX, "XZX"),
+        (12, ZYXEx, "ZYXEx"),
+        (13, ZXYEx, "ZXYEx"),
+        (14, YXZEx, "YXZEx"),
+        (15, YZXEx, "YZXEx"),
+        (16, XYZEx, "XYZEx"),
+        (17, XZYEx, "XZYEx"),
+        (18, ZYZEx, "ZYZEx"),
+        (19, ZXZEx, "ZXZEx"),
+        (20, YXYEx, "YXYEx"),
+        (21, YZYEx, "YZYEx"),
+        (22, XYXEx, "XYXEx"),
+        (23, XZXEx, "XZXEx"),
+    ];
+
+    impl Serialize for EulerRot {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            let (wire_index, wire_name) = self.variant_info();
+            serializer.serialize_unit_variant("EulerRot", wire_index, wire_name)
         }
     }
 
-    impl<'de> serde_core::Deserialize<'de> for EulerRot {
+    impl<'de> Deserialize<'de> for EulerRot {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
-            D: serde_core::Deserializer<'de>,
+            D: Deserializer<'de>,
         {
-            #[allow(clippy::upper_case_acronyms)]
-            enum Field {
-                ZYX,
-                ZXY,
-                YXZ,
-                YZX,
-                XYZ,
-                XZY,
-                ZYZ,
-                ZXZ,
-                YXY,
-                YZY,
-                XYX,
-                XZX,
-                ZYXEx,
-                ZXYEx,
-                YXZEx,
-                YZXEx,
-                XYZEx,
-                XZYEx,
-                ZYZEx,
-                ZXZEx,
-                YXYEx,
-                YZYEx,
-                XYXEx,
-                XZXEx,
-            }
             struct FieldVisitor;
 
-            impl serde_core::de::Visitor<'_> for FieldVisitor {
-                type Value = Field;
-                fn expecting(&self, formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-                    core::fmt::Formatter::write_str(formatter, "a variant identifier")
+            impl<'de> Visitor<'de> for FieldVisitor {
+                type Value = EulerRot;
+
+                fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+                    formatter.write_str("a variant identifier")
                 }
+
                 fn visit_u64<E>(self, value: u64) -> Result<Self::Value, E>
                 where
-                    E: serde_core::de::Error,
+                    E: de::Error,
                 {
-                    match value {
-                        0u64 => Ok(Field::ZYX),
-                        1u64 => Ok(Field::ZXY),
-                        2u64 => Ok(Field::YXZ),
-                        3u64 => Ok(Field::YZX),
-                        4u64 => Ok(Field::XYZ),
-                        5u64 => Ok(Field::XZY),
-                        6u64 => Ok(Field::ZYZ),
-                        7u64 => Ok(Field::ZXZ),
-                        8u64 => Ok(Field::YXY),
-                        9u64 => Ok(Field::YZY),
-                        10u64 => Ok(Field::XYX),
-                        11u64 => Ok(Field::XZX),
+                    u32::try_from(value)
+                        .ok()
+                        .and_then(EulerRot::variant_at)
+                        .ok_or_else(|| {
+                            de::Error::invalid_value(
+                                de::Unexpected::Unsigned(value),
+                                &VARIANT_INDEX_RANGE,
+                            )
+                        })
+                }
 
-                        12u64 => Ok(Field::ZYXEx),
-                        13u64 => Ok(Field::ZXYEx),
-                        14u64 => Ok(Field::YXZEx),
-                        15u64 => Ok(Field::YZXEx),
-                        16u64 => Ok(Field::XYZEx),
-                        17u64 => Ok(Field::XZYEx),
-                        18u64 => Ok(Field::ZYZEx),
-                        19u64 => Ok(Field::ZXZEx),
-                        20u64 => Ok(Field::YXYEx),
-                        21u64 => Ok(Field::YZYEx),
-                        22u64 => Ok(Field::XYXEx),
-                        23u64 => Ok(Field::XZXEx),
-                        _ => Err(serde_core::de::Error::invalid_value(
-                            serde_core::de::Unexpected::Unsigned(value),
-                            &"variant index 0 <= i < 24",
+                fn visit_str<E>(self, value: &str) -> Result<Self::Value, E>
+                where
+                    E: de::Error,
+                {
+                    EulerRot::variant_from_name(value)
+                        .ok_or_else(|| de::Error::unknown_variant(value, VARIANT_NAMES))
+                }
+
+                fn visit_bytes<E>(self, value: &[u8]) -> Result<Self::Value, E>
+                where
+                    E: de::Error,
+                {
+                    match core::str::from_utf8(value) {
+                        Ok(s) => self.visit_str(s),
+                        Err(_) => Err(de::Error::unknown_variant(
+                            "\u{fffd}\u{fffd}\u{fffd}",
+                            VARIANT_NAMES,
                         )),
                     }
                 }
-                fn visit_str<E>(self, value: &str) -> Result<Self::Value, E>
-                where
-                    E: serde_core::de::Error,
-                {
-                    match value {
-                        "ZYX" => Ok(Field::ZYX),
-                        "ZXY" => Ok(Field::ZXY),
-                        "YXZ" => Ok(Field::YXZ),
-                        "YZX" => Ok(Field::YZX),
-                        "XYZ" => Ok(Field::XYZ),
-                        "XZY" => Ok(Field::XZY),
-                        "ZYZ" => Ok(Field::ZYZ),
-                        "ZXZ" => Ok(Field::ZXZ),
-                        "YXY" => Ok(Field::YXY),
-                        "YZY" => Ok(Field::YZY),
-                        "XYX" => Ok(Field::XYX),
-                        "XZX" => Ok(Field::XZX),
-                        "ZYXEx" => Ok(Field::ZYXEx),
-                        "ZXYEx" => Ok(Field::ZXYEx),
-                        "YXZEx" => Ok(Field::YXZEx),
-                        "YZXEx" => Ok(Field::YZXEx),
-                        "XYZEx" => Ok(Field::XYZEx),
-                        "XZYEx" => Ok(Field::XZYEx),
-                        "ZYZEx" => Ok(Field::ZYZEx),
-                        "ZXZEx" => Ok(Field::ZXZEx),
-                        "YXYEx" => Ok(Field::YXYEx),
-                        "YZYEx" => Ok(Field::YZYEx),
-                        "XYXEx" => Ok(Field::XYXEx),
-                        "XZXEx" => Ok(Field::XZXEx),
-                        _ => Err(serde_core::de::Error::unknown_variant(value, VARIANTS)),
-                    }
-                }
-                fn visit_bytes<E>(self, value: &[u8]) -> Result<Self::Value, E>
-                where
-                    E: serde_core::de::Error,
-                {
-                    match value {
-                        b"ZYX" => Ok(Field::ZYX),
-                        b"ZXY" => Ok(Field::ZXY),
-                        b"YXZ" => Ok(Field::YXZ),
-                        b"YZX" => Ok(Field::YZX),
-                        b"XYZ" => Ok(Field::XYZ),
-                        b"XZY" => Ok(Field::XZY),
-                        b"ZYZ" => Ok(Field::ZYZ),
-                        b"ZXZ" => Ok(Field::ZXZ),
-                        b"YXY" => Ok(Field::YXY),
-                        b"YZY" => Ok(Field::YZY),
-                        b"XYX" => Ok(Field::XYX),
-                        b"XZX" => Ok(Field::XZX),
-                        b"ZYXEx" => Ok(Field::ZYXEx),
-                        b"ZXYEx" => Ok(Field::ZXYEx),
-                        b"YXZEx" => Ok(Field::YXZEx),
-                        b"YZXEx" => Ok(Field::YZXEx),
-                        b"XYZEx" => Ok(Field::XYZEx),
-                        b"XZYEx" => Ok(Field::XZYEx),
-                        b"ZYZEx" => Ok(Field::ZYZEx),
-                        b"ZXZEx" => Ok(Field::ZXZEx),
-                        b"YXYEx" => Ok(Field::YXYEx),
-                        b"YZYEx" => Ok(Field::YZYEx),
-                        b"XYXEx" => Ok(Field::XYXEx),
-                        b"XZXEx" => Ok(Field::XZXEx),
-                        _ => {
-                            #[cfg(feature = "std")]
-                            let value = &String::from_utf8_lossy(value);
-                            #[cfg(not(feature = "std"))]
-                            let value =
-                                core::str::from_utf8(value).unwrap_or("\u{fffd}\u{fffd}\u{fffd}");
-                            Err(serde_core::de::Error::unknown_variant(value, VARIANTS))
-                        }
-                    }
-                }
             }
-            impl<'de> serde_core::Deserialize<'de> for Field {
-                #[inline]
-                fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-                where
-                    D: serde_core::Deserializer<'de>,
-                {
-                    serde_core::Deserializer::deserialize_identifier(deserializer, FieldVisitor)
-                }
-            }
-            struct Visitor<'de> {
-                marker: core::marker::PhantomData<EulerRot>,
-                lifetime: core::marker::PhantomData<&'de ()>,
-            }
-            impl<'de> serde_core::de::Visitor<'de> for Visitor<'de> {
+
+            struct FieldSeed;
+
+            impl<'de> de::DeserializeSeed<'de> for FieldSeed {
                 type Value = EulerRot;
-                fn expecting(
-                    &self,
-                    __formatter: &mut core::fmt::Formatter<'_>,
-                ) -> core::fmt::Result {
-                    core::fmt::Formatter::write_str(__formatter, "an EulerRot enum")
+
+                fn deserialize<D>(self, deserializer: D) -> Result<Self::Value, D::Error>
+                where
+                    D: Deserializer<'de>,
+                {
+                    deserializer.deserialize_identifier(FieldVisitor)
                 }
+            }
+
+            struct EnumVisitor;
+
+            impl<'de> Visitor<'de> for EnumVisitor {
+                type Value = EulerRot;
+
+                fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+                    formatter.write_str("an EulerRot enum")
+                }
+
                 fn visit_enum<A>(self, data: A) -> Result<Self::Value, A::Error>
                 where
-                    A: serde_core::de::EnumAccess<'de>,
+                    A: de::EnumAccess<'de>,
                 {
-                    match serde_core::de::EnumAccess::variant(data)? {
-                        (Field::ZYX, variant) => {
-                            serde_core::de::VariantAccess::unit_variant(variant)?;
-                            Ok(EulerRot::ZYX)
-                        }
-                        (Field::ZXY, variant) => {
-                            serde_core::de::VariantAccess::unit_variant(variant)?;
-                            Ok(EulerRot::ZXY)
-                        }
-                        (Field::YXZ, variant) => {
-                            serde_core::de::VariantAccess::unit_variant(variant)?;
-                            Ok(EulerRot::YXZ)
-                        }
-                        (Field::YZX, variant) => {
-                            serde_core::de::VariantAccess::unit_variant(variant)?;
-                            Ok(EulerRot::YZX)
-                        }
-                        (Field::XYZ, variant) => {
-                            serde_core::de::VariantAccess::unit_variant(variant)?;
-                            Ok(EulerRot::XYZ)
-                        }
-                        (Field::XZY, variant) => {
-                            serde_core::de::VariantAccess::unit_variant(variant)?;
-                            Ok(EulerRot::XZY)
-                        }
-
-                        (Field::ZYZ, variant) => {
-                            serde_core::de::VariantAccess::unit_variant(variant)?;
-                            Ok(EulerRot::ZYZ)
-                        }
-                        (Field::ZXZ, variant) => {
-                            serde_core::de::VariantAccess::unit_variant(variant)?;
-                            Ok(EulerRot::ZXZ)
-                        }
-                        (Field::YXY, variant) => {
-                            serde_core::de::VariantAccess::unit_variant(variant)?;
-                            Ok(EulerRot::YXY)
-                        }
-                        (Field::YZY, variant) => {
-                            serde_core::de::VariantAccess::unit_variant(variant)?;
-                            Ok(EulerRot::YZY)
-                        }
-                        (Field::XYX, variant) => {
-                            serde_core::de::VariantAccess::unit_variant(variant)?;
-                            Ok(EulerRot::XYX)
-                        }
-                        (Field::XZX, variant) => {
-                            serde_core::de::VariantAccess::unit_variant(variant)?;
-                            Ok(EulerRot::XZX)
-                        }
-                        (Field::ZYXEx, variant) => {
-                            serde_core::de::VariantAccess::unit_variant(variant)?;
-                            Ok(EulerRot::ZYXEx)
-                        }
-                        (Field::ZXYEx, variant) => {
-                            serde_core::de::VariantAccess::unit_variant(variant)?;
-                            Ok(EulerRot::ZXYEx)
-                        }
-                        (Field::YXZEx, variant) => {
-                            serde_core::de::VariantAccess::unit_variant(variant)?;
-                            Ok(EulerRot::YXZEx)
-                        }
-                        (Field::YZXEx, variant) => {
-                            serde_core::de::VariantAccess::unit_variant(variant)?;
-                            Ok(EulerRot::YZXEx)
-                        }
-                        (Field::XYZEx, variant) => {
-                            serde_core::de::VariantAccess::unit_variant(variant)?;
-                            Ok(EulerRot::XYZEx)
-                        }
-                        (Field::XZYEx, variant) => {
-                            serde_core::de::VariantAccess::unit_variant(variant)?;
-                            Ok(EulerRot::XZYEx)
-                        }
-                        (Field::ZYZEx, variant) => {
-                            serde_core::de::VariantAccess::unit_variant(variant)?;
-                            Ok(EulerRot::ZYZEx)
-                        }
-                        (Field::ZXZEx, variant) => {
-                            serde_core::de::VariantAccess::unit_variant(variant)?;
-                            Ok(EulerRot::ZXZEx)
-                        }
-                        (Field::YXYEx, variant) => {
-                            serde_core::de::VariantAccess::unit_variant(variant)?;
-                            Ok(EulerRot::YXYEx)
-                        }
-                        (Field::YZYEx, variant) => {
-                            serde_core::de::VariantAccess::unit_variant(variant)?;
-                            Ok(EulerRot::YZYEx)
-                        }
-                        (Field::XYXEx, variant) => {
-                            serde_core::de::VariantAccess::unit_variant(variant)?;
-                            Ok(EulerRot::XYXEx)
-                        }
-                        (Field::XZXEx, variant) => {
-                            serde_core::de::VariantAccess::unit_variant(variant)?;
-                            Ok(EulerRot::XZXEx)
-                        }
-                    }
+                    let (variant, variant_access) = data.variant_seed(FieldSeed)?;
+                    variant_access.unit_variant()?;
+                    Ok(variant)
                 }
             }
-            const VARIANTS: &[&str] = &[
-                "ZYX", "ZXY", "YXZ", "YZX", "XYZ", "XZY", "ZYZ", "ZXZ", "YXY", "YZY", "XYX", "XZX",
-                "ZYXEx", "ZXYEx", "YXZEx", "YZXEx", "XYZEx", "XZYEx", "ZYZEx", "ZXZEx", "YXYEx",
-                "YZYEx", "XYXEx", "XZXEx",
-            ];
-            serde_core::Deserializer::deserialize_enum(
-                deserializer,
-                "EulerRot",
-                VARIANTS,
-                Visitor {
-                    marker: core::marker::PhantomData::<EulerRot>,
-                    lifetime: core::marker::PhantomData,
-                },
-            )
+
+            deserializer.deserialize_enum("EulerRot", VARIANT_NAMES, EnumVisitor)
         }
     }
 
@@ -1655,11 +1391,29 @@ mod euler {
             (EulerRot::XYXEx, "\"XYXEx\""),
             (EulerRot::XZXEx, "\"XZXEx\""),
         ];
-        for (enum_value, enum_string) in PAIRS {
+        assert_eq!(VARIANT_NAMES.len(), PAIRS.len());
+        assert!(EulerRot::variant_at(VARIANT_NAMES.len() as u32).is_none());
+        assert_eq!(EulerRot::variant_from_name("NotAVariant"), None);
+
+        for (index, (enum_value, enum_string)) in PAIRS.into_iter().enumerate() {
             let serialized = serde_json::to_string(&enum_value).unwrap();
             assert_eq!(enum_string, serialized);
             let deserialized = serde_json::from_str(&serialized).unwrap();
             assert_eq!(enum_value, deserialized);
+
+            // Check the generated lookups agree with the expected wire format.
+            let wire_name = enum_string.trim_matches('"');
+            assert_eq!(enum_value.variant_info(), (index as u32, wire_name));
+            assert_eq!(EulerRot::variant_at(index as u32), Some(enum_value));
+            assert_eq!(EulerRot::variant_from_name(wire_name), Some(enum_value));
+            assert_eq!(VARIANT_NAMES[index], wire_name);
+
+            // Check the numeric (binary format) decode path.
+            let deserializer =
+                serde_core::de::value::U32Deserializer::<serde_core::de::value::Error>::new(
+                    index as u32,
+                );
+            assert_eq!(EulerRot::deserialize(deserializer).unwrap(), enum_value);
         }
     }
 }
