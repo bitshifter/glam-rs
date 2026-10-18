@@ -10,6 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.34.2](https://github.com/bitshifter/glam-rs/compare/0.34.1...0.34.2) - 2026-10-18
+
+### Fixed
+
+- *(serde)* Remove unnecessary stringify from BVec3A and BVec3A serde impls ([#904](https://github.com/bitshifter/glam-rs/pull/904))
+- *(serde)* BVec4A serialization wasn't serializing w correctly. ([#901](https://github.com/bitshifter/glam-rs/pull/901))
+
 ## [0.34.1](https://github.com/bitshifter/glam-rs/compare/0.34.0...0.34.1) - 2026-10-06
 
 ### Fixed
