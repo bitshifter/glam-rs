@@ -933,7 +933,7 @@ mod bool {
                 type Value = BVec3A;
 
                 fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                    formatter.write_str(concat!("a sequence of 3 ", stringify!($t), "values"))
+                    formatter.write_str("a sequence of 3 bool values")
                 }
 
                 fn visit_seq<V>(self, mut seq: V) -> Result<BVec3A, V::Error>
@@ -953,7 +953,7 @@ mod bool {
                 }
             }
 
-            deserializer.deserialize_tuple_struct(stringify!($vec3), 3, Vec3Visitor)
+            deserializer.deserialize_tuple_struct("BVec3A", 3, Vec3Visitor)
         }
     }
 
@@ -979,7 +979,7 @@ mod bool {
         where
             S: Serializer,
         {
-            let mut state = serializer.serialize_tuple_struct(stringify!(BVec4A), 4)?;
+            let mut state = serializer.serialize_tuple_struct("BVec4A", 4)?;
             let a: [bool; 4] = (*self).into();
             state.serialize_field(&a[0])?;
             state.serialize_field(&a[1])?;
@@ -1000,7 +1000,7 @@ mod bool {
                 type Value = BVec4A;
 
                 fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-                    formatter.write_str(concat!("a sequence of 4 ", stringify!($t), "values"))
+                    formatter.write_str("a sequence of 4 bool values")
                 }
 
                 fn visit_seq<V>(self, mut seq: V) -> Result<BVec4A, V::Error>
@@ -1023,7 +1023,7 @@ mod bool {
                 }
             }
 
-            deserializer.deserialize_tuple_struct(stringify!(BVec4A), 4, Vec4Visitor)
+            deserializer.deserialize_tuple_struct("BVec4A", 4, Vec4Visitor)
         }
     }
 
