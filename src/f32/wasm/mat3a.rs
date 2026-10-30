@@ -819,19 +819,41 @@ impl Mat3A {
     /// Transforms a 3D vector by the transpose of `self`.
     #[inline]
     #[must_use]
+    pub fn transpose_mul_vec3(&self, rhs: Vec3) -> Vec3 {
+        self.transpose_mul_vec3a(rhs.into()).into()
+    }
+
+    /// Transforms a 3D vector by the transpose of `self`.
+    #[inline]
+    #[must_use]
+    #[deprecated(
+        since = "0.34.2",
+        note = "Use `transpose_mul_vec3` instead, whose word order matches its order of operations and is consistent with `transpose().mul_vec3`."
+    )]
     pub fn mul_transpose_vec3(&self, rhs: Vec3) -> Vec3 {
-        self.mul_transpose_vec3a(rhs.into()).into()
+        self.transpose_mul_vec3(rhs)
     }
 
     /// Transforms a [`Vec3A`] by the transpose of `self`.
     #[inline]
     #[must_use]
-    pub fn mul_transpose_vec3a(&self, rhs: Vec3A) -> Vec3A {
+    pub fn transpose_mul_vec3a(&self, rhs: Vec3A) -> Vec3A {
         Vec3A::new(
             self.x_axis.dot(rhs),
             self.y_axis.dot(rhs),
             self.z_axis.dot(rhs),
         )
+    }
+
+    /// Transforms a [`Vec3A`] by the transpose of `self`.
+    #[inline]
+    #[must_use]
+    #[deprecated(
+        since = "0.34.2",
+        note = "Use `transpose_mul_vec3a` instead, whose word order matches its order of operations and is consistent with `transpose().mul_vec3a`."
+    )]
+    pub fn mul_transpose_vec3a(&self, rhs: Vec3A) -> Vec3A {
+        self.transpose_mul_vec3a(rhs)
     }
 
     /// Multiplies two 3x3 matrices.

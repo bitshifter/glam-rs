@@ -742,12 +742,23 @@ impl Mat3 {
     /// Transforms a 3D vector by the transpose of `self`.
     #[inline]
     #[must_use]
-    pub fn mul_transpose_vec3(&self, rhs: Vec3) -> Vec3 {
+    pub fn transpose_mul_vec3(&self, rhs: Vec3) -> Vec3 {
         Vec3::new(
             self.x_axis.dot(rhs),
             self.y_axis.dot(rhs),
             self.z_axis.dot(rhs),
         )
+    }
+
+    /// Transforms a 3D vector by the transpose of `self`.
+    #[inline]
+    #[must_use]
+    #[deprecated(
+        since = "0.34.2",
+        note = "Use `transpose_mul_vec3` instead, whose word order matches its order of operations and is consistent with `transpose().mul_vec3`."
+    )]
+    pub fn mul_transpose_vec3(&self, rhs: Vec3) -> Vec3 {
+        self.transpose_mul_vec3(rhs)
     }
 
     /// Multiplies two 3x3 matrices.

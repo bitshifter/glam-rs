@@ -214,10 +214,18 @@ macro_rules! impl_mat3_tests {
             assert_approx_eq!($vec3::NEG_X, m.mul_vec3($vec3::Y))
         });
 
+        glam_test!(test_mat3_transpose_mul_vec3, {
+            let v = $vec3::new(1.0, 2.0, 3.0);
+            let m = $mat3::from_cols_array(&ARRAY1X9);
+            assert_eq!(m.transpose().mul_vec3(v), m.transpose_mul_vec3(v));
+        });
+
         glam_test!(test_mat3_mul_transpose_vec3, {
             let v = $vec3::new(1.0, 2.0, 3.0);
             let m = $mat3::from_cols_array(&ARRAY1X9);
-            assert_eq!(m.transpose().mul_vec3(v), m.mul_transpose_vec3(v));
+            #[allow(deprecated)]
+            let deprecated = m.mul_transpose_vec3(v);
+            assert_eq!(m.transpose_mul_vec3(v), deprecated);
         });
 
         glam_test!(test_mat3_mul_diagonal, {
@@ -601,10 +609,18 @@ mod mat3a {
         assert_approx_eq!(vec3a(-1.0, 0.0, 0.0), mat_a.mul_vec3a(Vec3A::Y));
     });
 
+    glam_test!(test_transpose_mul_vec3a, {
+        let v = Vec3A::new(1.0, 2.0, 3.0);
+        let m = Mat3A::from_cols_array(&[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]);
+        assert_eq!(m.transpose().mul_vec3a(v), m.transpose_mul_vec3a(v));
+    });
+
     glam_test!(test_mul_transpose_vec3a, {
         let v = Vec3A::new(1.0, 2.0, 3.0);
         let m = Mat3A::from_cols_array(&[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]);
-        assert_eq!(m.transpose().mul_vec3a(v), m.mul_transpose_vec3a(v));
+        #[allow(deprecated)]
+        let deprecated = m.mul_transpose_vec3a(v);
+        assert_eq!(m.transpose_mul_vec3a(v), deprecated);
     });
 
     #[cfg(feature = "f64")]

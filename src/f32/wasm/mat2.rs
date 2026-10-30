@@ -470,8 +470,19 @@ impl Mat2 {
     /// Transforms a 2D vector by the transpose of `self`.
     #[inline]
     #[must_use]
-    pub fn mul_transpose_vec2(&self, rhs: Vec2) -> Vec2 {
+    pub fn transpose_mul_vec2(&self, rhs: Vec2) -> Vec2 {
         Vec2::new(self.x_axis.dot(rhs), self.y_axis.dot(rhs))
+    }
+
+    /// Transforms a 2D vector by the transpose of `self`.
+    #[inline]
+    #[must_use]
+    #[deprecated(
+        since = "0.34.2",
+        note = "Use `transpose_mul_vec2` instead, whose word order matches its order of operations and is consistent with `transpose().mul_vec2`."
+    )]
+    pub fn mul_transpose_vec2(&self, rhs: Vec2) -> Vec2 {
+        self.transpose_mul_vec2(rhs)
     }
 
     /// Multiplies two 2x2 matrices.

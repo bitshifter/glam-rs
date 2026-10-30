@@ -41,9 +41,9 @@ bench_binop!(
 );
 
 bench_binop!(
-    mat3a_mul_transpose_vec3a,
-    "mat3a mul transpose vec3a",
-    op => mul,
+    mat3a_transpose_mul_vec3a,
+    "mat3a transpose mul vec3a",
+    op => transpose_mul_vec3a,
     from1 => random_mat3a,
     from2 => random_vec3a
 );
@@ -71,7 +71,7 @@ criterion_group!(
     mat3a_inverse,
     mat3a_mul_vec3,
     mat3a_mul_vec3a,
-    mat3a_mul_transpose_vec3a,
+    mat3a_transpose_mul_vec3a,
     mat3a_mul_mat3a,
     mat3a_from_ypr,
     mat3a_transform_vector2,

@@ -231,8 +231,8 @@ fn mat2_mul_vec2(m: Mat2, v: Vec2) -> Vec2 {
 
 #[library_benchmark]
 #[bench::args(mat2(), vec2())]
-fn mat2_mul_transpose_vec2(m: Mat2, v: Vec2) -> Vec2 {
-    black_box(m.mul_transpose_vec2(v))
+fn mat2_transpose_mul_vec2(m: Mat2, v: Vec2) -> Vec2 {
+    black_box(m.transpose_mul_vec2(v))
 }
 
 #[library_benchmark]
@@ -281,8 +281,8 @@ fn mat3_mul_vec3(m: Mat3, v: Vec3) -> Vec3 {
 
 #[library_benchmark]
 #[bench::args(mat3(), vec3())]
-fn mat3_mul_transpose_vec3(m: Mat3, v: Vec3) -> Vec3 {
-    black_box(m.mul_transpose_vec3(v))
+fn mat3_transpose_mul_vec3(m: Mat3, v: Vec3) -> Vec3 {
+    black_box(m.transpose_mul_vec3(v))
 }
 
 #[library_benchmark]
@@ -343,8 +343,8 @@ fn mat3a_mul_vec3a(m: Mat3A, v: Vec3A) -> Vec3A {
 
 #[library_benchmark]
 #[bench::args(mat3a(), vec3a())]
-fn mat3a_mul_transpose_vec3a(m: Mat3A, v: Vec3A) -> Vec3A {
-    black_box(m.mul_transpose_vec3a(v))
+fn mat3a_transpose_mul_vec3a(m: Mat3A, v: Vec3A) -> Vec3A {
+    black_box(m.transpose_mul_vec3a(v))
 }
 
 #[library_benchmark]
@@ -411,8 +411,8 @@ fn mat4_mul_vec4(m: Mat4, v: Vec4) -> Vec4 {
 
 #[library_benchmark]
 #[bench::args(mat4(), vec4())]
-fn mat4_mul_transpose_vec4(m: Mat4, v: Vec4) -> Vec4 {
-    black_box(m.mul_transpose_vec4(v))
+fn mat4_transpose_mul_vec4(m: Mat4, v: Vec4) -> Vec4 {
+    black_box(m.transpose_mul_vec4(v))
 }
 
 #[library_benchmark]
@@ -693,7 +693,7 @@ library_benchmark_group!(
         mat2_inverse_or_zero,
         mat2_mul_mat2,
         mat2_mul_vec2,
-        mat2_mul_transpose_vec2,
+        mat2_transpose_mul_vec2,
         mat2_transpose,
         mat2_try_inverse,
 );
@@ -706,7 +706,7 @@ library_benchmark_group!(
         mat3_inverse_or_zero,
         mat3_mul_mat3,
         mat3_mul_vec3,
-        mat3_mul_transpose_vec3,
+        mat3_transpose_mul_vec3,
         mat3_transform_point2,
         mat3_transform_vector2,
         mat3_transpose,
@@ -722,7 +722,7 @@ library_benchmark_group!(
         mat3a_inverse_or_zero,
         mat3a_mul_mat3a,
         mat3a_mul_vec3a,
-        mat3a_mul_transpose_vec3a,
+        mat3a_transpose_mul_vec3a,
         mat3a_transform_point2,
         mat3a_transform_vector2,
         mat3a_transpose,
@@ -739,7 +739,7 @@ library_benchmark_group!(
         mat4_inverse_or_zero,
         mat4_mul_mat4,
         mat4_mul_vec4,
-        mat4_mul_transpose_vec4,
+        mat4_transpose_mul_vec4,
         mat4_to_scale_rotation_translation,
         mat4_transform_point3,
         mat4_transform_vector3,
