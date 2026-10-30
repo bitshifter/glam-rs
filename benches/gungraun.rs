@@ -558,6 +558,18 @@ fn vec3a_normalize_or_zero(v: Vec3A) -> Vec3A {
 }
 
 #[library_benchmark]
+#[bench::args(vec3a())]
+fn vec3a_try_normalize(v: Vec3A) -> Option<Vec3A> {
+    black_box(v.try_normalize())
+}
+
+#[library_benchmark]
+#[bench::args(vec3a())]
+fn vec3a_normalize_and_length(v: Vec3A) -> (Vec3A, f32) {
+    black_box(v.normalize_and_length())
+}
+
+#[library_benchmark]
 #[bench::general(black_box(Vec3A::X), black_box(Vec3A::Y), bb_f32())]
 #[bench::anti_parallel(black_box(Vec3A::X), black_box(Vec3A::NEG_X), bb_f32())]
 #[bench::parallel(vec3a(), vec3a(), bb_f32())]
@@ -623,6 +635,18 @@ fn vec3_length(v: Vec3) -> f32 {
 #[bench::args(vec3())]
 fn vec3_normalize(v: Vec3) -> Vec3 {
     black_box(v.normalize())
+}
+
+#[library_benchmark]
+#[bench::args(vec3())]
+fn vec3_try_normalize(v: Vec3) -> Option<Vec3> {
+    black_box(v.try_normalize())
+}
+
+#[library_benchmark]
+#[bench::args(vec3())]
+fn vec3_normalize_and_length(v: Vec3) -> (Vec3, f32) {
+    black_box(v.normalize_and_length())
 }
 
 #[library_benchmark]
@@ -771,7 +795,9 @@ library_benchmark_group!(
         vec3a_lerp,
         vec3a_lerp_monotonic,
         vec3a_normalize,
+        vec3a_normalize_and_length,
         vec3a_normalize_or_zero,
+        vec3a_try_normalize,
         vec3a_slerp,
         vec3a_select,
 );
@@ -794,6 +820,8 @@ library_benchmark_group!(
         vec3_cross,
         vec3_length,
         vec3_normalize,
+        vec3_normalize_and_length,
+        vec3_try_normalize,
 );
 
 library_benchmark_group!(
