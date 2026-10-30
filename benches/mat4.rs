@@ -38,9 +38,9 @@ bench_binop!(
 );
 
 bench_binop!(
-    mat4_mul_transpose_vec4,
-    "mat4 mul transpose vec4",
-    op => mul,
+    mat4_transpose_mul_vec4,
+    "mat4 transpose mul vec4",
+    op => transpose_mul_vec4,
     from1 => random_srt_mat4,
     from2 => random_vec4
 );
@@ -135,7 +135,7 @@ criterion_group!(
     mat4_inverse,
     mat4_mul_mat4,
     mat4_mul_vec4,
-    mat4_mul_transpose_vec4,
+    mat4_transpose_mul_vec4,
     mat4_transform_point3,
     mat4_transform_point3a,
     mat4_transform_vector3,

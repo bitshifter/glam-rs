@@ -965,13 +965,24 @@ impl DMat4 {
     /// Transforms a 4D vector by the transpose of `self`.
     #[inline]
     #[must_use]
-    pub fn mul_transpose_vec4(&self, rhs: DVec4) -> DVec4 {
+    pub fn transpose_mul_vec4(&self, rhs: DVec4) -> DVec4 {
         DVec4::new(
             self.x_axis.dot(rhs),
             self.y_axis.dot(rhs),
             self.z_axis.dot(rhs),
             self.w_axis.dot(rhs),
         )
+    }
+
+    /// Transforms a 4D vector by the transpose of `self`.
+    #[inline]
+    #[must_use]
+    #[deprecated(
+        since = "0.34.2",
+        note = "Use `transpose_mul_vec4` instead, whose word order matches its order of operations and is consistent with `transpose().mul_vec4`."
+    )]
+    pub fn mul_transpose_vec4(&self, rhs: DVec4) -> DVec4 {
+        self.transpose_mul_vec4(rhs)
     }
 
     /// Multiplies two 4x4 matrices.

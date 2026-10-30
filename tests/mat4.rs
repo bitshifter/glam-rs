@@ -280,10 +280,18 @@ macro_rules! impl_mat4_tests {
             assert_approx_eq!($vec4::NEG_X, m.mul_vec4($vec4::Y))
         });
 
+        glam_test!(test_mat4_transpose_mul_vec4, {
+            let v = $vec4::new(1.0, 2.0, 3.0, 4.0);
+            let m = $mat4::from_cols_array(&ARRAY1X16);
+            assert_eq!(m.transpose().mul_vec4(v), m.transpose_mul_vec4(v));
+        });
+
         glam_test!(test_mat4_mul_transpose_vec4, {
             let v = $vec4::new(1.0, 2.0, 3.0, 4.0);
             let m = $mat4::from_cols_array(&ARRAY1X16);
-            assert_eq!(m.transpose().mul_vec4(v), m.mul_transpose_vec4(v));
+            #[allow(deprecated)]
+            let deprecated = m.mul_transpose_vec4(v);
+            assert_eq!(m.transpose_mul_vec4(v), deprecated);
         });
 
         glam_test!(test_mat4_mul_diagonal, {
