@@ -2204,13 +2204,13 @@ impl {{ self_t }} {
         )
     }
 
-    /// Returns a vector containing each element of `self` raised to the power of `n`.
+    /// Returns a vector containing each element of `self` raised to the power of the corresponding element of `rhs`.
     #[inline]
     #[must_use]
-    pub fn powf(self, n: {{ scalar_t }}) -> Self {
+    pub fn powf(self, rhs: Self) -> Self {
         Self::new(
             {% for c in components %}
-                math::powf(self.{{ c }}, n),
+                math::powf(self.{{ c }}, rhs.{{ c }}),
             {%- endfor %}
         )
     }
