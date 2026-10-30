@@ -607,8 +607,16 @@ impl Quat {
         if angle <= 1e-4 {
             return rhs;
         }
-        let s = (max_angle / angle).clamp(-1.0, 1.0);
-        self.slerp(rhs, s)
+        if max_angle < 0.0 {
+            // The rotation opposite `rhs` is the component of `self` orthogonal to it.
+            let target = (self - rhs * self.dot(rhs)).normalize();
+            let angle = self.angle_between(target);
+            if angle <= 1e-4 {
+                return target;
+            }
+            return self.slerp(target, (-max_angle / angle).clamp(0.0, 1.0));
+        }
+        self.slerp(rhs, (max_angle / angle).clamp(0.0, 1.0))
     }
 
     /// Returns true if the absolute difference of all elements between `self` and `rhs`
