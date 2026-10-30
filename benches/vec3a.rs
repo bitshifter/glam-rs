@@ -115,6 +115,30 @@ bench_func!(
     from => random_vec3a
 );
 
+#[inline]
+fn vec3a_try_normalize(v: Vec3A) -> Option<Vec3A> {
+    v.try_normalize()
+}
+
+bench_func!(
+    vec3a_try_normalize_bench,
+    "vec3a try_normalize",
+    op => vec3a_try_normalize,
+    from => random_vec3a
+);
+
+#[inline]
+fn vec3a_normalize_and_length(v: Vec3A) -> (Vec3A, f32) {
+    v.normalize_and_length()
+}
+
+bench_func!(
+    vec3a_normalize_and_length_bench,
+    "vec3a normalize_and_length",
+    op => vec3a_normalize_and_length,
+    from => random_vec3a
+);
+
 bench_binop!(
     vec3a_angle_between,
     "vec3a angle_between",
@@ -168,6 +192,8 @@ criterion_group!(
     vec3a_normalize_bench,
     vec3a_normalize_or_bench,
     vec3a_normalize_or_zero_bench,
+    vec3a_try_normalize_bench,
+    vec3a_normalize_and_length_bench,
     vec3a_angle_between,
     vec3a_cross,
     vec3a_dot,
