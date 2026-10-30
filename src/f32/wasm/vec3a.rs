@@ -641,9 +641,7 @@ impl Vec3A {
     #[must_use]
     #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn normalize(self) -> Self {
-        let length = f32x4_sqrt(dot3_into_v128(self.0, self.0));
-        #[allow(clippy::let_and_return)]
-        let normalized = Self(f32x4_div(self.0, length));
+        let normalized = self.normalize_and_length().0;
         glam_assert!(normalized.is_finite());
         normalized
     }
@@ -657,9 +655,9 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn try_normalize(self) -> Option<Self> {
-        let rcp = self.length_recip();
-        if rcp.is_finite() && rcp > 0.0 {
-            Some(self * rcp)
+        let (normalized, length) = self.normalize_and_length();
+        if length.is_finite() && length > 0.0 {
+            Some(normalized)
         } else {
             None
         }
@@ -675,12 +673,7 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn normalize_or(self, fallback: Self) -> Self {
-        let rcp = self.length_recip();
-        if rcp.is_finite() && rcp > 0.0 {
-            self * rcp
-        } else {
-            fallback
-        }
+        self.try_normalize().unwrap_or(fallback)
     }
 
     /// Returns `self` normalized to length 1.0 if possible, else returns zero.
@@ -705,8 +698,11 @@ impl Vec3A {
     #[inline]
     #[must_use]
     pub fn normalize_and_length(self) -> (Self, f32) {
-        let length = self.length();
-        (self * (1.0 / length), length)
+        let length = f32x4_sqrt(dot3_into_v128(self.0, self.0));
+        (
+            Self(f32x4_div(self.0, length)),
+            f32x4_extract_lane::<0>(length),
+        )
     }
 
     /// Returns whether `self` is length `1.0` or not.
