@@ -727,17 +727,16 @@ impl Vec3A {
 
     /// Returns `self` normalized to length 1.0 and the length of `self`.
     ///
-    /// If `self` is zero length then `(Self::X, 0.0)` is returned.
+    /// For valid results, `self` must be finite and _not_ of length zero, nor very close to zero.
+    ///
+    /// Zero length vectors are not handled specially, it is up to the caller to check the
+    /// returned length and handle that case as required. See also [`Self::try_normalize()`] and
+    /// [`Self::normalize_or_zero()`].
     #[inline]
     #[must_use]
     pub fn normalize_and_length(self) -> (Self, f32) {
         let length = self.length();
-        let rcp = 1.0 / length;
-        if rcp.is_finite() && rcp > 0.0 {
-            (self * rcp, length)
-        } else {
-            (Self::X, 0.0)
-        }
+        (self * (1.0 / length), length)
     }
 
     /// Returns whether `self` is length `1.0` or not.
