@@ -295,7 +295,7 @@ Thank you to all of the `glam` [contributors]!
 [Code of Conduct]: https://www.rust-lang.org/en-US/conduct.html
 [start a discussion]: https://github.com/bitshifter/glam-rs/discussions
 [CONTRIBUTING.md]: CONTRIBUTING.md
-[codegen README]: tools/codegen/README.md
+[codegen README]: https://github.com/bitshifter/glam-codegen/blob/main/README.md
 [contributors]: https://github.com/bitshifter/glam-rs/graphs/contributors
 
 ## Support
