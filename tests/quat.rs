@@ -478,6 +478,23 @@ macro_rules! impl_quat_tests {
             assert_approx_eq!(q2, q0.rotate_towards(q1, -FRAC_PI_2), eps);
             assert_approx_eq!(q2, q0.rotate_towards(q1, -FRAC_PI_2 * 1.5), eps);
 
+            // Negative delta stabilizes once the rotations are `PI` apart.
+            // Regression test for https://github.com/bitshifter/glam-rs/issues/906
+            let opposite = q0.rotate_towards(q1, -core::$t::consts::PI);
+            assert_approx_eq!(q2, opposite, eps);
+            assert_approx_eq!(
+                opposite,
+                opposite.rotate_towards(q1, -core::$t::consts::PI),
+                eps
+            );
+            // Calling it repeatedly must not drift or alternate.
+            let mut q = opposite;
+            for _ in 0..100 {
+                q = q.rotate_towards(q1, -0.5);
+            }
+            assert_approx_eq!(opposite, q, eps);
+            assert_approx_eq!(opposite, q.rotate_towards(q1, -0.5), eps);
+
             // Small angles
             let q0 = $quat::from_euler(EulerRot::YXZ, 0.0, 0.0, 0.0);
             let q1 = $quat::from_euler(EulerRot::YXZ, 1e-4, 0.0, 0.0);
