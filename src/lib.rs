@@ -234,6 +234,17 @@ assert_eq!(Vec4::new(2.0, 2.0, 1.0, 1.0), yyxx);
 that they will serialize and deserialize exactly the same whether or not
 SIMD support is being used.
 
+As of glam 0.35.0 the serde wire format mirrors each type's public fields:
+`Vec2`, `Vec3`, `Vec3A`, `Vec4` and quaternions use `x`/`y`/`z`/`w` fields,
+matrices use `x_axis` through `w_axis`, and affine types nest
+`matrix2`/`matrix3` plus `translation`. `EulerRot` remains a unit enum using
+its variant names.
+
+Human-readable formats such as JSON, TOML and RON also accept the legacy flat
+array format, so data written by older `glam` versions still loads.
+Non-self-describing formats such as postcard and bincode keep the same compact
+byte encoding as before; only the text representation changed.
+
 The SIMD versions implement the `core::fmt::Debug` and `core::fmt::Display`
 traits so they print the same as the scalar version.
 

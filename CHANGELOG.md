@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- *(serde)* [**breaking**] serialize types as reflection-aligned named structs instead of flat arrays; human-readable deserializers still accept the legacy flat format, and non-self-describing formats keep their existing byte encoding ([#908](https://github.com/bitshifter/glam-rs/issues/908))
+
 ## [0.34.1](https://github.com/bitshifter/glam-rs/compare/0.34.0...0.34.1) - 2026-10-06
 
 ### Fixed
