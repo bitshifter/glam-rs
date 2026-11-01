@@ -1,0 +1,54 @@
+name: Signed-zero determinism
+
+# This workflow is exploratory. It runs on demand, or automatically when this
+# branch is pushed. It checks
+# some comparison-based selections to FMINNM/FMAXNM. Those instructions have
+# different rules for equal operands (including +0.0 and -0.0) than the scalar
+# comparisons used by glam's fallback implementation.
+on:
+  workflow_dispatch:
+  # `workflow_dispatch` only appears in the Actions UI once the workflow is on
+  # the default branch, so also run it automatically when this exploration
+  # branch is pushed.
+  push:
+    branches:
+      - test/scalar-math-signed-zero
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  signed-zero:
+    name: Signed zero (${{ matrix.os }}, ${{ matrix.toolchain }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # x86-64 control: the scalar comparison semantics are preserved.
+          - os: ubuntu-latest
+            toolchain: stable
+          # AArch64: expected to fail with Rust 1.96.0 and xfail with newer
+          # toolchains if the compiler no longer uses FMIN/FMAX here.
+          - os: ubuntu-24.04-arm
+            toolchain: stable
+          - os: ubuntu-24.04-arm
+            toolchain: "1.96.0"
+          - os: macos-14
+            toolchain: stable
+          - os: macos-14
+            toolchain: "1.96.0"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+
+      - uses: Swatinem/rust-cache@v2
+
+      - run: rustup toolchain install "${{ matrix.toolchain }}" --profile minimal
+      - run: rustc +"${{ matrix.toolchain }}" -vV
+      - run: >-
+          cargo +"${{ matrix.toolchain }}" test --release
+          --features scalar-math,libm
+          --test scalar_math_signed_zero
