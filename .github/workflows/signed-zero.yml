@@ -1,18 +1,27 @@
 name: Signed-zero determinism
 
-# This workflow is exploratory. It runs on demand, or automatically when this
-# branch is pushed. It checks
-# some comparison-based selections to FMINNM/FMAXNM. Those instructions have
-# different rules for equal operands (including +0.0 and -0.0) than the scalar
-# comparisons used by glam's fallback implementation.
+# Regression guard for scalar-math signed-zero selection.
+#
+# LLVM issue #93414 caused fcmp+select to be folded to minnum/maxnum, letting
+# AArch64 FMINNM/FMAXNM change the sign of zero results. It was fixed in LLVM
+# 23 by https://github.com/llvm/llvm-project/pull/210077 and shipped in Rust
+# 1.99.0.
+#
+# This runs weekly and on demand rather than on every PR. It also runs when
+# the test or this workflow changes.
 on:
   workflow_dispatch:
-  # `workflow_dispatch` only appears in the Actions UI once the workflow is on
-  # the default branch, so also run it automatically when this exploration
-  # branch is pushed.
+  schedule:
+    # Every Monday at 06:00 UTC.
+    - cron: "0 6 * * 1"
   push:
-    branches:
-      - test/scalar-math-signed-zero
+    paths:
+      - ".github/workflows/signed-zero.yml"
+      - "tests/scalar_math_signed_zero.rs"
+  pull_request:
+    paths:
+      - ".github/workflows/signed-zero.yml"
+      - "tests/scalar_math_signed_zero.rs"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -28,16 +37,15 @@ jobs:
           # x86-64 control: the scalar comparison semantics are preserved.
           - os: ubuntu-latest
             toolchain: stable
-          # AArch64: expected to fail with Rust 1.96.0 and xfail with newer
-          # toolchains if the compiler no longer uses FMIN/FMAX here.
+          # AArch64 is where the LLVM fold used FMINNM/FMAXNM.
           - os: ubuntu-24.04-arm
             toolchain: stable
           - os: ubuntu-24.04-arm
-            toolchain: "1.96.0"
+            toolchain: beta
           - os: macos-14
             toolchain: stable
           - os: macos-14
-            toolchain: "1.96.0"
+            toolchain: beta
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v7

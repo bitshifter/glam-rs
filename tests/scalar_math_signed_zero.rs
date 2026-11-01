@@ -12,19 +12,21 @@
 //!   `FMAX`/`FMAXNM` return `+0.0`.
 //! * x86 `MINPS`/`MAXPS` return the second operand for equal operands.
 //!
-//! This means that `scalar-math` + `libm` is not sufficient for cross-platform
-//! determinism when the compiler turns the comparisons into min/max
-//! instructions. These tests pin the scalar comparison semantics so the
-//! divergence is visible rather than silently changing a sign bit.
+//! This was the cause of the signed-zero non-determinism reported for
+//! `scalar-math` + `libm`. It was an LLVM miscompile, not a property of the
+//! scalar implementation: see LLVM issue
+//! <https://github.com/llvm/llvm-project/issues/93414>, fixed by
+//! <https://github.com/llvm/llvm-project/pull/210077> in LLVM 23 and shipped
+//! in Rust 1.99.0.
 //!
-//! The tests only run with the `scalar-math` feature. They must be built with
-//! optimizations enabled (`cargo test --release`) because the divergence comes
-//! from an optimization; an unoptimized build follows the source comparisons.
+//! For example, with Rust 1.96.0 on AArch64 `Vec4::splat(-0.0).min(Vec4::ZERO)`
+//! returned `-0.0` instead of `+0.0`.
 //!
-//! At the time of writing this fails on AArch64 with Rust 1.96.0, where for
-//! example `Vec4::splat(-0.0).min(Vec4::ZERO)` returns `-0.0` instead of
-//! `+0.0`. It does not reproduce on AArch64 with Rust 1.99.0, so the result
-//! also depends on the compiler/LLVM version, not only on the target.
+//! The tests pin the scalar comparison semantics so a future compiler
+//! regression is visible rather than silently changing a sign bit. They only
+//! run with the `scalar-math` feature and must be built with optimizations
+//! enabled (`cargo test --release`); an unoptimized build follows the source
+//! comparisons.
 
 #![cfg(feature = "scalar-math")]
 
