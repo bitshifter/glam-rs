@@ -1317,6 +1317,13 @@
           "properties": { "scalar_t": "f64", "is_rh": false }
         }
       }
+    },
+    "camera_model.rs.tera": {
+      "properties": { "scalar_t": null },
+      "outputs": {
+        "src/camera/model.rs": { "properties": { "scalar_t": "f32" } },
+        "src/dcamera/model.rs": { "properties": { "scalar_t": "f64" } }
+      }
     }
   }
 }

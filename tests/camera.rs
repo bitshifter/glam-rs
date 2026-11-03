@@ -592,9 +592,235 @@ macro_rules! impl_pipeline_tests {
     };
 }
 
+macro_rules! impl_model_tests {
+    ($vec3:ident, $mat3:ident, $mat4:ident, $quat:ident, $camera:ident) => {
+        use glam::$camera::model;
+        use glam::$camera::{lh, rh};
+
+        const EPS: f32 = 1e-6;
+
+        /// Direction that the model frame is rotated to face, normalized.
+        const DIR: $vec3 = $vec3::new(0.6, 0.0, 0.8);
+        /// Object translation used by the transform variants.
+        const EYE: $vec3 = $vec3::new(1.0, 2.0, 3.0);
+
+        /// A world up plus the object's local forward and up axes.
+        struct Convention {
+            world_up: $vec3,
+            fwd_axis: $vec3,
+            up_axis: $vec3,
+        }
+
+        /// Bevy / OpenGL: -Z forward, Y up.
+        const BEVY: Convention = Convention {
+            world_up: $vec3::Y,
+            fwd_axis: $vec3::NEG_Z,
+            up_axis: $vec3::Y,
+        };
+        /// Unreal Engine: X forward, Z up.
+        const UNREAL: Convention = Convention {
+            world_up: $vec3::Z,
+            fwd_axis: $vec3::X,
+            up_axis: $vec3::Z,
+        };
+        /// Unity / glTF: Z forward, Y up.
+        const UNITY: Convention = Convention {
+            world_up: $vec3::Y,
+            fwd_axis: $vec3::Z,
+            up_axis: $vec3::Y,
+        };
+        /// Blender: Y forward, Z up.
+        const BLENDER: Convention = Convention {
+            world_up: $vec3::Z,
+            fwd_axis: $vec3::Y,
+            up_axis: $vec3::Z,
+        };
+
+        const CONVENTIONS: [Convention; 4] = [BEVY, UNREAL, UNITY, BLENDER];
+
+        fn orthogonalize(v: $vec3, n: $vec3) -> $vec3 {
+            (v - n * v.dot(n)).normalize()
+        }
+
+        fn rotation(convention: &Convention) -> $mat3 {
+            model::look_to_mat3(
+                DIR,
+                convention.world_up,
+                convention.fwd_axis,
+                convention.up_axis,
+            )
+        }
+
+        fn check_rotation(rot: &$mat3, convention: &Convention) {
+            // The local forward axis maps to `dir`, the local up axis maps to the
+            // world up orthogonalized against `dir`.
+            assert_approx_eq!(*rot * convention.fwd_axis, DIR, EPS);
+            assert_approx_eq!(
+                *rot * convention.up_axis,
+                orthogonalize(convention.world_up, DIR),
+                EPS
+            );
+
+            // The result is a proper rotation: orthonormal and no reflection.
+            assert_approx_eq!(*rot * rot.transpose(), $mat3::IDENTITY, EPS);
+            assert_approx_eq!(rot.determinant(), 1.0, EPS);
+        }
+
+        glam_test!(test_look_to_quat_bevy, {
+            let q = model::look_to_quat(DIR, BEVY.world_up, BEVY.fwd_axis, BEVY.up_axis);
+            assert_approx_eq!(q * BEVY.fwd_axis, DIR, EPS);
+            assert_approx_eq!(q * BEVY.up_axis, BEVY.world_up, EPS);
+        });
+
+        glam_test!(test_look_to_quat_unreal, {
+            let q = model::look_to_quat(DIR, UNREAL.world_up, UNREAL.fwd_axis, UNREAL.up_axis);
+            assert_approx_eq!(q * UNREAL.fwd_axis, DIR, EPS);
+            assert_approx_eq!(q * UNREAL.up_axis, orthogonalize(UNREAL.world_up, DIR), EPS);
+        });
+
+        glam_test!(test_look_to_mat3_for_all_conventions, {
+            for convention in &CONVENTIONS {
+                check_rotation(&rotation(convention), convention);
+            }
+        });
+
+        glam_test!(test_look_to_variants_agree, {
+            for convention in &CONVENTIONS {
+                let world_up = convention.world_up;
+                let fwd_axis = convention.fwd_axis;
+                let up_axis = convention.up_axis;
+
+                let rot = rotation(convention);
+                let quat = model::look_to_quat(DIR, world_up, fwd_axis, up_axis);
+                let mat = model::look_to_mat4(EYE, DIR, world_up, fwd_axis, up_axis);
+                let affine = model::look_to_affine3(EYE, DIR, world_up, fwd_axis, up_axis);
+
+                assert_approx_eq!($mat3::from_quat(quat), rot, EPS);
+                assert_approx_eq!($mat4::from(affine), mat, EPS);
+                assert_approx_eq!(affine.matrix3, rot, EPS);
+                assert_approx_eq!(affine.translation, EYE, EPS);
+                assert_approx_eq!(mat.w_axis.truncate(), EYE, EPS);
+            }
+        });
+
+        glam_test!(test_look_at_matches_look_to, {
+            let center = EYE + DIR * 5.0;
+
+            for convention in &CONVENTIONS {
+                let world_up = convention.world_up;
+                let fwd_axis = convention.fwd_axis;
+                let up_axis = convention.up_axis;
+
+                let quat = model::look_to_quat(DIR, world_up, fwd_axis, up_axis);
+                let at_quat = model::look_at_quat(EYE, center, world_up, fwd_axis, up_axis);
+                assert_approx_eq!($mat3::from_quat(at_quat), $mat3::from_quat(quat), EPS);
+
+                let rot = rotation(convention);
+                let at_rot = model::look_at_mat3(EYE, center, world_up, fwd_axis, up_axis);
+                assert_approx_eq!(at_rot, rot, EPS);
+
+                let mat = model::look_to_mat4(EYE, DIR, world_up, fwd_axis, up_axis);
+                let at_mat = model::look_at_mat4(EYE, center, world_up, fwd_axis, up_axis);
+                assert_approx_eq!(at_mat, mat, EPS);
+
+                let affine = model::look_to_affine3(EYE, DIR, world_up, fwd_axis, up_axis);
+                let at_affine = model::look_at_affine3(EYE, center, world_up, fwd_axis, up_axis);
+                assert_approx_eq!(at_affine, affine, EPS);
+            }
+        });
+
+        fn check_view_inverse(model_rot: $mat3, view_rot: $quat) {
+            // Compare matrices since `q` and `-q` describe the same rotation.
+            assert_approx_eq!(model_rot, $mat3::from_quat(view_rot), EPS);
+        }
+
+        glam_test!(test_look_to_quat_matches_view_inverse_rh, {
+            let q = model::look_to_quat(DIR, BEVY.world_up, BEVY.fwd_axis, BEVY.up_axis);
+            check_view_inverse(
+                $mat3::from_quat(q),
+                rh::view::look_to_quat(DIR, BEVY.world_up).inverse(),
+            );
+        });
+
+        glam_test!(test_look_to_quat_matches_view_inverse_lh, {
+            let q = model::look_to_quat(DIR, UNITY.world_up, UNITY.fwd_axis, UNITY.up_axis);
+            check_view_inverse(
+                $mat3::from_quat(q),
+                lh::view::look_to_quat(DIR, UNITY.world_up).inverse(),
+            );
+        });
+
+        glam_test!(test_look_to_mat4_translation, {
+            let mat = model::look_to_mat4(EYE, DIR, BEVY.world_up, BEVY.fwd_axis, BEVY.up_axis);
+            assert_approx_eq!(mat.w_axis.truncate(), EYE, EPS);
+            // The rotation block orients the local forward axis to face `dir`.
+            assert_approx_eq!(mat.transform_vector3(BEVY.fwd_axis), DIR, EPS);
+            assert_approx_eq!(mat.transform_point3($vec3::ZERO), EYE, EPS);
+        });
+
+        glam_test!(test_look_to_glam_assert, {
+            should_glam_assert!({
+                model::look_to_quat(DIR * 2.0, BEVY.world_up, BEVY.fwd_axis, BEVY.up_axis)
+            });
+            should_glam_assert!({
+                model::look_to_quat(DIR, BEVY.world_up * 2.0, BEVY.fwd_axis, BEVY.up_axis)
+            });
+            should_glam_assert!({
+                model::look_to_mat3(DIR, BEVY.world_up, BEVY.fwd_axis * 2.0, BEVY.up_axis)
+            });
+            should_glam_assert!({
+                model::look_to_mat4(EYE, DIR, BEVY.world_up, BEVY.fwd_axis, BEVY.up_axis * 2.0)
+            });
+            should_glam_assert!({
+                // local forward and up axes are not perpendicular
+                model::look_to_quat(DIR, BEVY.world_up, BEVY.fwd_axis, BEVY.fwd_axis)
+            });
+        });
+    };
+}
 mod camera {
     use glam::{Mat3, Mat4, Vec3, Vec4};
     impl_camera_tests!(f32, Mat4, Mat3, Vec4, Vec3, camera);
+
+    mod model {
+        use glam::{Mat3, Mat4, Quat, Vec3, Vec3A};
+
+        impl_model_tests!(Vec3, Mat3, Mat4, Quat, camera);
+
+        glam_test!(test_look_to_mat3a_matches_mat3, {
+            let center = EYE + DIR * 5.0;
+
+            for convention in &CONVENTIONS {
+                let (world_up, fwd_axis, up_axis) =
+                    (convention.world_up, convention.fwd_axis, convention.up_axis);
+
+                let rot = rotation(convention);
+                let rot_a = model::look_to_mat3a(DIR, world_up, fwd_axis, up_axis);
+                assert_approx_eq!(Mat3::from(rot_a), rot, EPS);
+
+                let at_rot_a = model::look_at_mat3a(EYE, center, world_up, fwd_axis, up_axis);
+                assert_approx_eq!(at_rot_a, rot_a, EPS);
+            }
+        });
+
+        glam_test!(test_look_to_affine3a_matches_affine3, {
+            let center = EYE + DIR * 5.0;
+
+            for convention in &CONVENTIONS {
+                let (world_up, fwd_axis, up_axis) =
+                    (convention.world_up, convention.fwd_axis, convention.up_axis);
+
+                let affine = model::look_to_affine3(EYE, DIR, world_up, fwd_axis, up_axis);
+                let affine_a = model::look_to_affine3a(EYE, DIR, world_up, fwd_axis, up_axis);
+                assert_approx_eq!(Mat4::from(affine_a), Mat4::from(affine), EPS);
+                assert_approx_eq!(Mat3::from(affine_a.matrix3), affine.matrix3, EPS);
+                assert_approx_eq!(affine_a.translation, Vec3A::from(affine.translation), EPS);
+
+                let at_affine_a = model::look_at_affine3a(EYE, center, world_up, fwd_axis, up_axis);
+                assert_approx_eq!(at_affine_a, affine_a, EPS);
+            }
+        });
+    }
 
     mod affine3a {
         use glam::Vec3;
@@ -687,4 +913,10 @@ mod camera {
 mod dcamera {
     use glam::{DMat3, DMat4, DVec3, DVec4};
     impl_camera_tests!(f64, DMat4, DMat3, DVec4, DVec3, dcamera);
+
+    mod model {
+        use glam::{DMat3, DMat4, DQuat, DVec3};
+
+        impl_model_tests!(DVec3, DMat3, DMat4, DQuat, dcamera);
+    }
 }
