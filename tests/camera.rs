@@ -255,6 +255,37 @@ macro_rules! impl_camera_tests {
                 let projected = p * original.extend(1.0);
                 assert_approx_eq!(projected, $vec4::new(2.5, 5.0, 15.0, 15.0), 1.0e-6);
             });
+
+            // Use asymmetric bounds (0..10) in the tests below to keep the translation
+            // column non-zero. With symmetric bounds (-5..5), `top + bottom` is zero, which
+            // hides sign errors in the Y-translation of the Y-flipped projection (vulkan).
+
+            glam_test!(test_transform_opengl_orthographic, {
+                let p = proj::opengl::orthographic(0.0, 10.0, 0.0, 10.0, 1.0, 10.0);
+                let projected = p * $vec3::new(0.0, 0.0, -1.0).extend(1.0);
+                assert_approx_eq!(projected, $vec4::new(-1.0, -1.0, -1.0, 1.0), 1.0e-6);
+
+                let projected = p * $vec3::new(10.0, 10.0, -10.0).extend(1.0);
+                assert_approx_eq!(projected, $vec4::new(1.0, 1.0, 1.0, 1.0), 1.0e-6);
+            });
+
+            glam_test!(test_transform_vulkan_orthographic, {
+                let p = proj::vulkan::orthographic(0.0, 10.0, 0.0, 10.0, 1.0, 10.0);
+                let projected = p * $vec3::new(0.0, 0.0, -1.0).extend(1.0);
+                assert_approx_eq!(projected, $vec4::new(-1.0, 1.0, 0.0, 1.0), 1.0e-6);
+
+                let projected = p * $vec3::new(10.0, 10.0, -10.0).extend(1.0);
+                assert_approx_eq!(projected, $vec4::new(1.0, -1.0, 1.0, 1.0), 1.0e-6);
+            });
+
+            glam_test!(test_transform_directx_orthographic, {
+                let p = proj::directx::orthographic(0.0, 10.0, 0.0, 10.0, 1.0, 10.0);
+                let projected = p * $vec3::new(0.0, 0.0, -1.0).extend(1.0);
+                assert_approx_eq!(projected, $vec4::new(-1.0, -1.0, 0.0, 1.0), 1.0e-6);
+
+                let projected = p * $vec3::new(10.0, 10.0, -10.0).extend(1.0);
+                assert_approx_eq!(projected, $vec4::new(1.0, 1.0, 1.0, 1.0), 1.0e-6);
+            });
         }
 
         mod proj_lh {
@@ -325,6 +356,35 @@ macro_rules! impl_camera_tests {
                 let original = $vec3::new(5.0, 5.0, 15.0);
                 let projected = p * original.extend(1.0);
                 assert_approx_eq!(projected, $vec4::new(2.5, 5.0, 15.0, 15.0), 1.0e-6);
+            });
+
+            // See the note on asymmetric bounds in `proj_rh`.
+
+            glam_test!(test_transform_opengl_orthographic, {
+                let p = proj::opengl::orthographic(0.0, 10.0, 0.0, 10.0, 1.0, 10.0);
+                let projected = p * $vec3::new(0.0, 0.0, 1.0).extend(1.0);
+                assert_approx_eq!(projected, $vec4::new(-1.0, -1.0, -1.0, 1.0), 1.0e-6);
+
+                let projected = p * $vec3::new(10.0, 10.0, 10.0).extend(1.0);
+                assert_approx_eq!(projected, $vec4::new(1.0, 1.0, 1.0, 1.0), 1.0e-6);
+            });
+
+            glam_test!(test_transform_vulkan_orthographic, {
+                let p = proj::vulkan::orthographic(0.0, 10.0, 0.0, 10.0, 1.0, 10.0);
+                let projected = p * $vec3::new(0.0, 0.0, 1.0).extend(1.0);
+                assert_approx_eq!(projected, $vec4::new(-1.0, 1.0, 0.0, 1.0), 1.0e-6);
+
+                let projected = p * $vec3::new(10.0, 10.0, 10.0).extend(1.0);
+                assert_approx_eq!(projected, $vec4::new(1.0, -1.0, 1.0, 1.0), 1.0e-6);
+            });
+
+            glam_test!(test_transform_directx_orthographic, {
+                let p = proj::directx::orthographic(0.0, 10.0, 0.0, 10.0, 1.0, 10.0);
+                let projected = p * $vec3::new(0.0, 0.0, 1.0).extend(1.0);
+                assert_approx_eq!(projected, $vec4::new(-1.0, -1.0, 0.0, 1.0), 1.0e-6);
+
+                let projected = p * $vec3::new(10.0, 10.0, 10.0).extend(1.0);
+                assert_approx_eq!(projected, $vec4::new(1.0, 1.0, 1.0, 1.0), 1.0e-6);
             });
         }
 

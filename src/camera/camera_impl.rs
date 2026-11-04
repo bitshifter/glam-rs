@@ -271,7 +271,11 @@ pub(crate) fn orthographic<const RH: bool, const ZO: bool, const YFLIP: bool>(
         (false, false) => 2.0 * depth_inv,
     };
     let tx = -(left + right) * width_inv;
-    let ty = -(top + bottom) * height_inv;
+    let ty = if YFLIP {
+        (top + bottom) * height_inv
+    } else {
+        -(top + bottom) * height_inv
+    };
     let tz = if ZO {
         -near * depth_inv
     } else {
