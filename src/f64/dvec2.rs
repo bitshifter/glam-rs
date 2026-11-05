@@ -540,8 +540,7 @@ impl DVec2 {
     #[must_use]
     #[cfg_attr(any(debug_assertions, feature = "glam-assert"), track_caller)]
     pub fn normalize(self) -> Self {
-        #[allow(clippy::let_and_return)]
-        let normalized = self.mul(self.length_recip());
+        let normalized = self.normalize_and_length().0;
         glam_assert!(normalized.is_finite());
         normalized
     }
@@ -555,9 +554,9 @@ impl DVec2 {
     #[inline]
     #[must_use]
     pub fn try_normalize(self) -> Option<Self> {
-        let rcp = self.length_recip();
-        if rcp.is_finite() && rcp > 0.0 {
-            Some(self * rcp)
+        let (normalized, length) = self.normalize_and_length();
+        if length.is_finite() && length > 0.0 {
+            Some(normalized)
         } else {
             None
         }
@@ -573,12 +572,7 @@ impl DVec2 {
     #[inline]
     #[must_use]
     pub fn normalize_or(self, fallback: Self) -> Self {
-        let rcp = self.length_recip();
-        if rcp.is_finite() && rcp > 0.0 {
-            self * rcp
-        } else {
-            fallback
-        }
+        self.try_normalize().unwrap_or(fallback)
     }
 
     /// Returns `self` normalized to length 1.0 if possible, else returns zero.
@@ -595,17 +589,16 @@ impl DVec2 {
 
     /// Returns `self` normalized to length 1.0 and the length of `self`.
     ///
-    /// If `self` is zero length then `(Self::X, 0.0)` is returned.
+    /// For valid results, `self` must be finite and _not_ of length zero, nor very close to zero.
+    ///
+    /// Zero length vectors are not handled specially, it is up to the caller to check the
+    /// returned length and handle that case as required. See also [`Self::try_normalize()`] and
+    /// [`Self::normalize_or_zero()`].
     #[inline]
     #[must_use]
     pub fn normalize_and_length(self) -> (Self, f64) {
         let length = self.length();
-        let rcp = 1.0 / length;
-        if rcp.is_finite() && rcp > 0.0 {
-            (self * rcp, length)
-        } else {
-            (Self::X, 0.0)
-        }
+        (self.mul(1.0 / length), length)
     }
 
     /// Returns whether `self` is length `1.0` or not.
