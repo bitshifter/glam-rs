@@ -987,15 +987,15 @@ impl DVec4 {
         )
     }
 
-    /// Returns a vector containing each element of `self` raised to the power of `n`.
+    /// Returns a vector containing each element of `self` raised to the power of the corresponding element of `rhs`.
     #[inline]
     #[must_use]
-    pub fn powf(self, n: f64) -> Self {
+    pub fn powf(self, rhs: Self) -> Self {
         Self::new(
-            math::powf(self.x, n),
-            math::powf(self.y, n),
-            math::powf(self.z, n),
-            math::powf(self.w, n),
+            math::powf(self.x, rhs.x),
+            math::powf(self.y, rhs.y),
+            math::powf(self.z, rhs.z),
+            math::powf(self.w, rhs.w),
         )
     }
 

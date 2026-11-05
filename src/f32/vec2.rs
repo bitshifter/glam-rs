@@ -798,11 +798,11 @@ impl Vec2 {
         Self::new(math::log2(self.x), math::log2(self.y))
     }
 
-    /// Returns a vector containing each element of `self` raised to the power of `n`.
+    /// Returns a vector containing each element of `self` raised to the power of the corresponding element of `rhs`.
     #[inline]
     #[must_use]
-    pub fn powf(self, n: f32) -> Self {
-        Self::new(math::powf(self.x, n), math::powf(self.y, n))
+    pub fn powf(self, rhs: Self) -> Self {
+        Self::new(math::powf(self.x, rhs.x), math::powf(self.y, rhs.y))
     }
 
     /// Returns a vector containing the square root for each element of `self`.

@@ -1582,7 +1582,10 @@ macro_rules! impl_vec2_float_tests {
         });
 
         glam_test!(test_powf, {
-            assert_eq!($vec2::new(2.0, 4.0).powf(2.0), $vec2::new(4.0, 16.0));
+            assert_eq!(
+                $vec2::new(2.0, 4.0).powf($vec2::new(2.0, 3.0)),
+                $vec2::new(4.0, 64.0)
+            );
         });
 
         glam_test!(test_exp, {

@@ -1898,8 +1898,8 @@ macro_rules! impl_vec3_float_tests {
 
         glam_test!(test_powf, {
             assert_eq!(
-                $vec3::new(2.0, 4.0, 8.0).powf(2.0),
-                $vec3::new(4.0, 16.0, 64.0)
+                $vec3::new(2.0, 4.0, 8.0).powf($vec3::new(2.0, 3.0, 2.0)),
+                $vec3::new(4.0, 64.0, 64.0)
             );
         });
 

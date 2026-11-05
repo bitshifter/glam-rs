@@ -1918,8 +1918,8 @@ macro_rules! impl_vec4_float_tests {
 
         glam_test!(test_powf, {
             assert_eq!(
-                $vec4::new(2.0, 4.0, 8.0, 16.0).powf(2.0),
-                $vec4::new(4.0, 16.0, 64.0, 256.0)
+                $vec4::new(2.0, 4.0, 8.0, 16.0).powf($vec4::new(2.0, 3.0, 2.0, 1.0)),
+                $vec4::new(4.0, 64.0, 64.0, 16.0)
             );
         });
 
