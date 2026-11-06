@@ -10,6 +10,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.34.3](https://github.com/bitshifter/glam-rs/compare/0.34.2...0.34.3) - 2026-11-06
+
+### Added
+
+- *(camera)* add model module for local -> world transforms ([#918](https://github.com/bitshifter/glam-rs/pull/918))
+
+### Fixed
+
+- *(camera)* apply handedness to the frustum X and Y translation ([#922](https://github.com/bitshifter/glam-rs/pull/922))
+- *(camera)* fix Y translation of Y-flipped orthographic projection ([#920](https://github.com/bitshifter/glam-rs/pull/920))
+
 ### Added
 
 - *(camera)* add `camera::model` and `dcamera::model` modules with `look_to_*` and `look_at_*` functions that return local -> world transforms for orienting objects, taking explicit `fwd_axis` and `up_axis` parameters for the object's local axes ([#903](https://github.com/bitshifter/glam-rs/issues/903))
