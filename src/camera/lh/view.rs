@@ -8,6 +8,9 @@
 //! * `look_at_*` targets a focal point (`center`)
 //! * `look_to_*` targets a forward direction (`dir`)
 //!
+//! `dir` and `up` must be normalized and must not be parallel. `look_at_*` functions
+//! derive `dir` from `center - eye`.
+//!
 //! Functions returning `Mat4`, `Affine3`, `Affine3A`, or
 //! similar return a full view transform (rotation and translation).
 //! Functions returning `Mat3`, `Mat3A`, or `Quat` return

@@ -1,9 +1,9 @@
 // Generated from camera_mod.rs.tera template. Edit the template, not the generated file.
 
-//! View and projection transform helpers.
+//! View, projection and model transform helpers.
 //!
-//! This module provides view matrix (`look_at`, `look_to`) and projection matrix (`perspective`,
-//! `orthographic`, `frustum`) constructors.
+//! This module provides view matrix (`look_at`, `look_to`), projection matrix (`perspective`,
+//! `orthographic`, `frustum`) and model (local -> world) transform constructors.
 //!
 //! ## Choosing a sub-module
 //!
@@ -29,8 +29,18 @@
 //! | `opengl`   | [-1, 1] | Up    |
 //! | `directx`  | [0, 1]  | Up    |
 //! | `vulkan`   | [0, 1]  | Down  |
+//!
+//! ## Model transforms
+//!
+//! The [`model`] submodule provides local -> world transforms for orienting objects,
+//! taking the object's local axes as parameters.
+//!
+//! Use [`model`] when orienting objects, and [`rh::view`] or [`lh::view`] when building
+//! camera view matrices.
 
 mod camera_impl;
+
+pub mod model;
 
 /// View functions produce right-handed Y-up view space with
 /// X-right and the negative Z axis pointing forward.
