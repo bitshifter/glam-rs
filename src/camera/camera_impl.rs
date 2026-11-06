@@ -318,11 +318,16 @@ pub(crate) fn frustum<const RH: bool, const ZO: bool, const YFLIP: bool>(
     } else {
         two_near * inv_height
     };
-    let zx = (right + left) * inv_width;
-    let zy = if YFLIP {
-        -(top + bottom) * inv_height
+    // `w` is `-z` in RH view space and `z` in LH view space, so the X and Y
+    // translation terms flip with handedness too, unlike `orthographic`.
+    let zx = if RH {
+        (right + left) * inv_width
     } else {
-        (top + bottom) * inv_height
+        -(right + left) * inv_width
+    };
+    let zy = match (RH, YFLIP) {
+        (true, false) | (false, true) => (top + bottom) * inv_height,
+        (true, true) | (false, false) => -(top + bottom) * inv_height,
     };
     let (zz, zw, tz) = match (RH, ZO) {
         (true, true) => (-far * inv_depth, -1.0, -(far * near) * inv_depth),

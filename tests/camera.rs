@@ -256,9 +256,9 @@ macro_rules! impl_camera_tests {
                 assert_approx_eq!(projected, $vec4::new(2.5, 5.0, 15.0, 15.0), 1.0e-6);
             });
 
-            // Use asymmetric bounds (0..10) in the tests below to keep the translation
-            // column non-zero. With symmetric bounds (-5..5), `top + bottom` is zero, which
-            // hides sign errors in the Y-translation of the Y-flipped projection (vulkan).
+            // Use asymmetric bounds (0..10) below so the translation terms are non-zero;
+            // with symmetric bounds (-5..5) they cancel, hiding sign errors. Only vulkan
+            // flips Y, so the opengl and directx cases check that Y is not flipped there.
 
             glam_test!(test_transform_opengl_orthographic, {
                 let p = proj::opengl::orthographic(0.0, 10.0, 0.0, 10.0, 1.0, 10.0);
@@ -285,6 +285,35 @@ macro_rules! impl_camera_tests {
 
                 let projected = p * $vec3::new(10.0, 10.0, -10.0).extend(1.0);
                 assert_approx_eq!(projected, $vec4::new(1.0, 1.0, 1.0, 1.0), 1.0e-6);
+            });
+
+            glam_test!(test_transform_opengl_frustum, {
+                let p = proj::opengl::frustum(0.0, 10.0, 0.0, 10.0, 1.0, 10.0);
+                let projected = p * $vec3::new(0.0, 0.0, -1.0).extend(1.0);
+                assert_approx_eq!(projected, $vec4::new(-1.0, -1.0, -1.0, 1.0), 1.0e-6);
+
+                // The far plane corner is scaled by `far / near`, so (100, 100, -10)
+                // is the top-right corner; this also pins the perspective divide.
+                let projected = p * $vec3::new(100.0, 100.0, -10.0).extend(1.0);
+                assert_approx_eq!(projected, $vec4::new(10.0, 10.0, 10.0, 10.0), 1.0e-6);
+            });
+
+            glam_test!(test_transform_vulkan_frustum, {
+                let p = proj::vulkan::frustum(0.0, 10.0, 0.0, 10.0, 1.0, 10.0);
+                let projected = p * $vec3::new(0.0, 0.0, -1.0).extend(1.0);
+                assert_approx_eq!(projected, $vec4::new(-1.0, 1.0, 0.0, 1.0), 1.0e-6);
+
+                let projected = p * $vec3::new(100.0, 100.0, -10.0).extend(1.0);
+                assert_approx_eq!(projected, $vec4::new(10.0, -10.0, 10.0, 10.0), 1.0e-6);
+            });
+
+            glam_test!(test_transform_directx_frustum, {
+                let p = proj::directx::frustum(0.0, 10.0, 0.0, 10.0, 1.0, 10.0);
+                let projected = p * $vec3::new(0.0, 0.0, -1.0).extend(1.0);
+                assert_approx_eq!(projected, $vec4::new(-1.0, -1.0, 0.0, 1.0), 1.0e-6);
+
+                let projected = p * $vec3::new(100.0, 100.0, -10.0).extend(1.0);
+                assert_approx_eq!(projected, $vec4::new(10.0, 10.0, 10.0, 10.0), 1.0e-6);
             });
         }
 
@@ -385,6 +414,34 @@ macro_rules! impl_camera_tests {
 
                 let projected = p * $vec3::new(10.0, 10.0, 10.0).extend(1.0);
                 assert_approx_eq!(projected, $vec4::new(1.0, 1.0, 1.0, 1.0), 1.0e-6);
+            });
+
+            glam_test!(test_transform_opengl_frustum, {
+                let p = proj::opengl::frustum(0.0, 10.0, 0.0, 10.0, 1.0, 10.0);
+                let projected = p * $vec3::new(0.0, 0.0, 1.0).extend(1.0);
+                assert_approx_eq!(projected, $vec4::new(-1.0, -1.0, -1.0, 1.0), 1.0e-6);
+
+                // See the far plane corner note in `proj_rh`.
+                let projected = p * $vec3::new(100.0, 100.0, 10.0).extend(1.0);
+                assert_approx_eq!(projected, $vec4::new(10.0, 10.0, 10.0, 10.0), 1.0e-6);
+            });
+
+            glam_test!(test_transform_vulkan_frustum, {
+                let p = proj::vulkan::frustum(0.0, 10.0, 0.0, 10.0, 1.0, 10.0);
+                let projected = p * $vec3::new(0.0, 0.0, 1.0).extend(1.0);
+                assert_approx_eq!(projected, $vec4::new(-1.0, 1.0, 0.0, 1.0), 1.0e-6);
+
+                let projected = p * $vec3::new(100.0, 100.0, 10.0).extend(1.0);
+                assert_approx_eq!(projected, $vec4::new(10.0, -10.0, 10.0, 10.0), 1.0e-6);
+            });
+
+            glam_test!(test_transform_directx_frustum, {
+                let p = proj::directx::frustum(0.0, 10.0, 0.0, 10.0, 1.0, 10.0);
+                let projected = p * $vec3::new(0.0, 0.0, 1.0).extend(1.0);
+                assert_approx_eq!(projected, $vec4::new(-1.0, -1.0, 0.0, 1.0), 1.0e-6);
+
+                let projected = p * $vec3::new(100.0, 100.0, 10.0).extend(1.0);
+                assert_approx_eq!(projected, $vec4::new(10.0, 10.0, 10.0, 10.0), 1.0e-6);
             });
         }
 
