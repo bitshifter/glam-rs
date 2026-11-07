@@ -1334,142 +1334,58 @@ macro_rules! impl_vec3_float_tests {
             assert_approx_eq!(p, v, 1.0e-6);
         });
 
+        glam_test!(test_min_max_mixed_signs, {
+            // `test_min_max` only uses non-negative integers; cover negative and
+            // infinite operands directly.
+            let a = $vec3::new(-3.0, 4.0, $t::NEG_INFINITY);
+            let b = $vec3::new(-8.0, -5.0, 6.0);
+            let min = (-8.0 as $t, -5.0 as $t, $t::NEG_INFINITY);
+            let max = (-3.0 as $t, 4.0 as $t, 6.0 as $t);
+            assert_eq!(min, a.min(b).into());
+            assert_eq!(min, b.min(a).into());
+            assert_eq!(max, a.max(b).into());
+            assert_eq!(max, b.max(a).into());
+
+            let v = $vec3::new(-2.0, 3.0, -4.0);
+            assert_eq!(-4.0 as $t, v.min_element());
+            assert_eq!(3.0 as $t, v.max_element());
+        });
+
         glam_test!(test_min_max_nan, {
-            // NaN propogation is not consistent between scalar and different simd architectures.
-            // The purpose of this test is to document the different behaviour.
-            if $vec3::USES_SCALAR_MATH {
-                assert!(!$vec3::NAN.min($vec3::ZERO).is_nan_mask().all());
-                assert!($vec3::ZERO.min($vec3::NAN).is_nan_mask().all());
-                assert!($vec3::NAN.min($vec3::NAN).is_nan_mask().all());
-                assert!(!$vec3::NAN.max($vec3::ZERO).is_nan_mask().all());
-                assert!($vec3::ZERO.max($vec3::NAN).is_nan_mask().all());
-                assert!($vec3::NAN.max($vec3::NAN).is_nan_mask().all());
-            } else if $vec3::USES_NEON {
-                assert!($vec3::NAN.min($vec3::ZERO).is_nan_mask().all());
-                assert!($vec3::ZERO.min($vec3::NAN).is_nan_mask().all());
-                assert!($vec3::NAN.min($vec3::NAN).is_nan_mask().all());
-                assert!($vec3::NAN.max($vec3::ZERO).is_nan_mask().all());
-                assert!($vec3::ZERO.max($vec3::NAN).is_nan_mask().all());
-                assert!($vec3::NAN.max($vec3::NAN).is_nan_mask().all());
-            } else if $vec3::USES_SSE2 {
-                assert!(!$vec3::NAN.min($vec3::ZERO).is_nan_mask().all());
-                assert!($vec3::ZERO.min($vec3::NAN).is_nan_mask().all());
-                assert!($vec3::NAN.min($vec3::NAN).is_nan_mask().all());
-                assert!(!$vec3::NAN.max($vec3::ZERO).is_nan_mask().all());
-                assert!($vec3::ZERO.max($vec3::NAN).is_nan_mask().all());
-                assert!($vec3::NAN.max($vec3::NAN).is_nan_mask().all());
-            } else if $vec3::USES_WASM_SIMD {
-                assert!($vec3::NAN.min($vec3::ZERO).is_nan_mask().all());
-                assert!(!$vec3::ZERO.min($vec3::NAN).is_nan_mask().all());
-                assert!($vec3::NAN.min($vec3::NAN).is_nan_mask().all());
-                assert!($vec3::NAN.max($vec3::ZERO).is_nan_mask().all());
-                assert!(!$vec3::ZERO.max($vec3::NAN).is_nan_mask().all());
-                assert!($vec3::NAN.max($vec3::NAN).is_nan_mask().all());
-            } else if $vec3::USES_CORE_SIMD {
-                assert!(!$vec3::NAN.min($vec3::ZERO).is_nan_mask().all());
-                assert!($vec3::ZERO.min($vec3::NAN).is_nan_mask().all());
-                assert!($vec3::NAN.min($vec3::NAN).is_nan_mask().all());
-                assert!(!$vec3::NAN.max($vec3::ZERO).is_nan_mask().all());
-                assert!($vec3::ZERO.max($vec3::NAN).is_nan_mask().all());
-                assert!($vec3::NAN.max($vec3::NAN).is_nan_mask().all());
-            }
+            // The right-hand operand is returned if either value is NaN, on every
+            // implementation.
+            assert!(!$vec3::NAN.min($vec3::ZERO).is_nan_mask().all());
+            assert!($vec3::ZERO.min($vec3::NAN).is_nan_mask().all());
+            assert!($vec3::NAN.min($vec3::NAN).is_nan_mask().all());
+            assert!(!$vec3::NAN.max($vec3::ZERO).is_nan_mask().all());
+            assert!($vec3::ZERO.max($vec3::NAN).is_nan_mask().all());
+            assert!($vec3::NAN.max($vec3::NAN).is_nan_mask().all());
         });
 
         glam_test!(test_min_max_element_nan, {
-            // NaN propogation is not consistent between scalar and different simd architectures.
-            // The purpose of this test is to document the different behaviour.
             let v = $vec3::new(3.0, 2.0, $t::NAN);
-            if $vec3::USES_SCALAR_MATH {
-                assert!(v.min_element().is_nan());
-                assert!(v.max_element().is_nan());
-            } else if $vec3::USES_NEON {
-                assert_eq!(2.0, v.min_element());
-                assert_eq!(3.0, v.max_element());
-            } else if $vec3::USES_SSE2 {
-                assert!(v.min_element().is_nan());
-                assert!(v.max_element().is_nan());
-            } else if $vec3::USES_WASM_SIMD {
-                assert_eq!(2.0, v.min_element());
-                assert_eq!(3.0, v.max_element());
-            } else if $vec3::USES_CORE_SIMD {
-                assert!(v.min_element().is_nan());
-                assert!(v.max_element().is_nan());
-            }
+            assert!(v.min_element().is_nan());
+            assert!(v.max_element().is_nan());
+
+            // The reduction order is not part of the contract, but it decides
+            // whether a NaN survives. Pinning it catches a backend that starts
+            // reducing in a different order.
+            let v = $vec3::new($t::NAN, 1.0, 2.0);
+            assert_eq!(1.0, v.min_element());
+            assert_eq!(2.0, v.max_element());
         });
 
         glam_test!(test_clamp_nan, {
-            // NaN propogation is not consistent between scalar and different simd architectures.
-            // The purpose of this test is to document the different behaviour.
-            if $vec3::USES_SCALAR_MATH {
-                assert_eq!($vec3::NEG_ONE, $vec3::NAN.clamp($vec3::NEG_ONE, $vec3::ONE));
-                #[cfg(not(any(feature = "debug-glam-assert", feature = "glam-assert")))]
-                {
-                    assert_eq!($vec3::ONE, $vec3::NAN.clamp($vec3::NAN, $vec3::ONE));
-                    assert!(
-                        $vec3::NAN
-                            .clamp($vec3::NEG_ONE, $vec3::NAN)
-                            .is_nan_mask()
-                            .all()
-                    );
-                }
-            } else if $vec3::USES_NEON {
+            assert_eq!($vec3::NEG_ONE, $vec3::NAN.clamp($vec3::NEG_ONE, $vec3::ONE));
+            #[cfg(not(any(feature = "debug-glam-assert", feature = "glam-assert")))]
+            {
+                assert_eq!($vec3::ONE, $vec3::NAN.clamp($vec3::NAN, $vec3::ONE));
                 assert!(
                     $vec3::NAN
-                        .clamp($vec3::NEG_ONE, $vec3::ONE)
+                        .clamp($vec3::NEG_ONE, $vec3::NAN)
                         .is_nan_mask()
                         .all()
                 );
-                #[cfg(not(any(feature = "debug-glam-assert", feature = "glam-assert")))]
-                {
-                    assert!($vec3::NAN.clamp($vec3::NAN, $vec3::ONE).is_nan_mask().all());
-                    assert!(
-                        $vec3::NAN
-                            .clamp($vec3::NEG_ONE, $vec3::NAN)
-                            .is_nan_mask()
-                            .all()
-                    );
-                }
-            } else if $vec3::USES_SSE2 {
-                assert_eq!($vec3::NEG_ONE, $vec3::NAN.clamp($vec3::NEG_ONE, $vec3::ONE));
-                #[cfg(not(any(feature = "debug-glam-assert", feature = "glam-assert")))]
-                {
-                    assert_eq!($vec3::ONE, $vec3::NAN.clamp($vec3::NAN, $vec3::ONE));
-                    assert!(
-                        $vec3::NAN
-                            .clamp($vec3::NEG_ONE, $vec3::NAN)
-                            .is_nan_mask()
-                            .all()
-                    );
-                }
-            } else if $vec3::USES_WASM_SIMD {
-                assert!(
-                    $vec3::NAN
-                        .clamp($vec3::NEG_ONE, $vec3::ONE)
-                        .is_nan_mask()
-                        .all()
-                );
-                #[cfg(not(any(feature = "debug-glam-assert", feature = "glam-assert")))]
-                {
-                    assert!($vec3::NAN.clamp($vec3::NAN, $vec3::ONE).is_nan_mask().all());
-                    assert!(
-                        $vec3::NAN
-                            .clamp($vec3::NEG_ONE, $vec3::NAN)
-                            .is_nan_mask()
-                            .all()
-                    );
-                }
-            } else if $vec3::USES_CORE_SIMD {
-                assert_eq!($vec3::NEG_ONE, $vec3::NAN.clamp($vec3::NEG_ONE, $vec3::ONE));
-                #[cfg(not(any(feature = "debug-glam-assert", feature = "glam-assert")))]
-                {
-                    assert_eq!($vec3::ONE, $vec3::NAN.clamp($vec3::NAN, $vec3::ONE));
-                    assert!(
-                        $vec3::NAN
-                            .clamp($vec3::NEG_ONE, $vec3::NAN)
-                            .is_nan_mask()
-                            .all()
-                    );
-                }
             }
         });
 
@@ -2010,6 +1926,13 @@ macro_rules! impl_vec3_float_tests {
                     (2.0 as $t).saturate(),
                     (3.0 as $t).saturate(),
                 ),
+                1e-5
+            );
+
+            // Both bounds, not just the upper one.
+            assert_approx_eq!(
+                $vec3::new(-0.5, 0.25, 1.5).saturate(),
+                $vec3::new(0.0 as $t, 0.25 as $t, 1.0 as $t),
                 1e-5
             );
         });

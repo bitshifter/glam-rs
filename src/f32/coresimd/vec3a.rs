@@ -267,8 +267,9 @@ impl Vec3A {
     ///
     /// In other words this computes `[min(x, rhs.x), min(self.y, rhs.y), ..]`.
     ///
-    /// NaN propogation does not follow IEEE 754-2008 semantics for minNum and may differ on
-    /// different SIMD architectures.
+    /// `-0.0` and `+0.0` compare equal, so `rhs` is returned.
+    ///
+    /// NaN propagation does not follow IEEE 754-2008 semantics for minNum.
     #[inline]
     #[must_use]
     pub fn min(self, rhs: Self) -> Self {
@@ -279,8 +280,9 @@ impl Vec3A {
     ///
     /// In other words this computes `[max(self.x, rhs.x), max(self.y, rhs.y), ..]`.
     ///
-    /// NaN propogation does not follow IEEE 754-2008 semantics for maxNum and may differ on
-    /// different SIMD architectures.
+    /// `-0.0` and `+0.0` compare equal, so `rhs` is returned.
+    ///
+    /// NaN propagation does not follow IEEE 754-2008 semantics for maxNum.
     #[inline]
     #[must_use]
     pub fn max(self, rhs: Self) -> Self {
@@ -291,8 +293,7 @@ impl Vec3A {
     ///
     /// Each element in `min` must be less-or-equal to the corresponding element in `max`.
     ///
-    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
-    /// different SIMD architectures.
+    /// NaN propagation does not follow IEEE 754-2008 semantics.
     ///
     /// # Panics
     ///
@@ -309,15 +310,14 @@ impl Vec3A {
     ///
     /// In other words this computes `min(x, y, ..)`.
     ///
-    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
-    /// different SIMD architectures.
+    /// NaN propagation does not follow IEEE 754-2008 semantics for minNum.
     #[inline]
     #[must_use]
     pub fn min_element(self) -> f32 {
         let min = |a: f32x4, b: f32x4| a.simd_lt(b).select(a, b);
         let v = self.0;
-        let v = min(v, simd_swizzle!(v, [2, 2, 1, 1]));
         let v = min(v, simd_swizzle!(v, [1, 0, 0, 0]));
+        let v = min(v, simd_swizzle!(self.0, [2, 0, 0, 0]));
         v[0]
     }
 
@@ -325,15 +325,14 @@ impl Vec3A {
     ///
     /// In other words this computes `max(x, y, ..)`.
     ///
-    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
-    /// different SIMD architectures.
+    /// NaN propagation does not follow IEEE 754-2008 semantics for maxNum.
     #[inline]
     #[must_use]
     pub fn max_element(self) -> f32 {
         let max = |a: f32x4, b: f32x4| a.simd_gt(b).select(a, b);
         let v = self.0;
-        let v = max(v, simd_swizzle!(v, [2, 2, 0, 0]));
         let v = max(v, simd_swizzle!(v, [1, 0, 0, 0]));
+        let v = max(v, simd_swizzle!(self.0, [2, 0, 0, 0]));
         v[0]
     }
 

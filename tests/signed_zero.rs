@@ -1,4 +1,4 @@
-//! Signed-zero results of the `scalar-math` selection operations.
+//! Signed-zero results of the vector selection operations.
 //!
 //! See <https://github.com/bitshifter/glam-rs/discussions/909> for the report
 //! that prompted these tests.
@@ -11,6 +11,7 @@
 //! * AArch64 `FMIN`/`FMINNM` return `-0.0` for equal operands, while
 //!   `FMAX`/`FMAXNM` return `+0.0`.
 //! * x86 `MINPS`/`MAXPS` return the second operand for equal operands.
+//! * wasm `pmin`/`pmax` return the first operand for equal operands.
 //!
 //! This was the cause of the signed-zero non-determinism reported for
 //! `scalar-math` + `libm`. It was an LLVM miscompile, not a property of the
@@ -22,13 +23,19 @@
 //! For example, with Rust 1.96.0 on AArch64 `Vec4::splat(-0.0).min(Vec4::ZERO)`
 //! returned `-0.0` instead of `+0.0`.
 //!
-//! The tests pin the scalar comparison semantics so a future compiler
-//! regression is visible rather than silently changing a sign bit. They only
-//! run with the `scalar-math` feature and must be built with optimizations
-//! enabled (`cargo test --release`); an unoptimized build follows the source
+//! For the same reason the `neon` implementations of `min`, `max`,
+//! `min_element` and `max_element` select with a comparison and a bit select
+//! rather than using `FMIN`/`FMAX`/`FMINNM`/`FMAXNM`, and the `wasm`
+//! implementations pass the operands to `pmin`/`pmax` in the opposite order,
+//! because those instructions return their first operand when the values
+//! compare equal.
+//!
+//! These tests pin the result of every implementation so that a future
+//! compiler or intrinsic change is visible rather than silently changing a
+//! sign bit. They are most meaningful in release builds (`cargo test
+//! --release`), where the compiler can fold the scalar comparisons into
+//! min/max instructions; an unoptimized build always follows the source
 //! comparisons.
-
-#![cfg(feature = "scalar-math")]
 
 #[macro_use]
 mod support;
@@ -55,6 +62,15 @@ macro_rules! impl_signed_zero_tests {
                 );
             });
 
+            glam_test!(test_min_with_constant_negative_zero, {
+                let positive_zero = opaque(<$vec>::ZERO);
+                assert_eq!(
+                    positive_zero.min(<$vec>::splat(-0.0)).x.to_bits(),
+                    $neg_zero_bits,
+                    "min(+0.0, -0.0) must return the right-hand -0.0"
+                );
+            });
+
             glam_test!(test_max_with_constant_negative_zero, {
                 let positive_zero = opaque(<$vec>::ZERO);
                 let neg_zero = <$vec>::splat(-0.0);
@@ -62,6 +78,15 @@ macro_rules! impl_signed_zero_tests {
                     positive_zero.max(neg_zero).x.to_bits(),
                     $neg_zero_bits,
                     "max(+0.0, -0.0) must return the right-hand -0.0"
+                );
+            });
+
+            glam_test!(test_max_with_constant_positive_zero, {
+                let neg_zero = opaque(<$vec>::splat(-0.0));
+                assert_eq!(
+                    neg_zero.max(<$vec>::ZERO).x.to_bits(),
+                    $zero_bits,
+                    "max(-0.0, +0.0) must return the right-hand +0.0"
                 );
             });
 
@@ -110,6 +135,34 @@ macro_rules! impl_signed_zero_tests {
                     value.max_element().to_bits(),
                     $neg_zero_bits,
                     "max_element([+0.0, -0.0, ...]) must return -0.0"
+                );
+            });
+
+            glam_test!(test_copysign_negative_zero, {
+                let neg_zero = opaque(<$vec>::splat(-0.0));
+                assert_eq!(
+                    <$vec>::ZERO.copysign(neg_zero).x.to_bits(),
+                    $neg_zero_bits,
+                    "copysign(+0.0, -0.0) must return -0.0"
+                );
+                assert_eq!(
+                    <$vec>::ONE.copysign(neg_zero).x.to_bits(),
+                    (-<$vec>::ONE.x).to_bits(),
+                    "copysign(1.0, -0.0) must return -1.0"
+                );
+            });
+
+            glam_test!(test_copysign_positive_zero, {
+                let positive_zero = opaque(<$vec>::ZERO);
+                assert_eq!(
+                    <$vec>::splat(-0.0).copysign(positive_zero).x.to_bits(),
+                    $zero_bits,
+                    "copysign(-0.0, +0.0) must return +0.0"
+                );
+                assert_eq!(
+                    (-<$vec>::ONE).copysign(positive_zero).x.to_bits(),
+                    <$vec>::ONE.x.to_bits(),
+                    "copysign(-1.0, +0.0) must return 1.0"
                 );
             });
         }
