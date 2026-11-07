@@ -289,7 +289,7 @@ impl ISizeVec4 {
     #[must_use]
     pub fn min_element(self) -> isize {
         let min = |a, b| if a < b { a } else { b };
-        min(self.x, min(self.y, min(self.z, self.w)))
+        min(min(self.x, self.y), min(self.z, self.w))
     }
 
     /// Returns the horizontal maximum of `self`.
@@ -299,7 +299,7 @@ impl ISizeVec4 {
     #[must_use]
     pub fn max_element(self) -> isize {
         let max = |a, b| if a > b { a } else { b };
-        max(self.x, max(self.y, max(self.z, self.w)))
+        max(max(self.x, self.y), max(self.z, self.w))
     }
 
     /// Returns the index of the first minimum element of `self`.
