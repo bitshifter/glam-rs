@@ -855,8 +855,9 @@ impl {{ self_t }} {
     /// In other words this computes `[min(x, rhs.x), min(self.y, rhs.y), ..]`.
 {%- if is_float  %}
     /// 
-    /// NaN propogation does not follow IEEE 754-2008 semantics for minNum and may differ on
-    /// different SIMD architectures.
+    /// `-0.0` and `+0.0` compare equal, so `rhs` is returned.
+    ///
+    /// NaN propagation does not follow IEEE 754-2008 semantics for minNum.
 {%- endif %}
     #[inline]
     #[must_use]
@@ -870,11 +871,11 @@ impl {{ self_t }} {
         {% elif is_sse2 %}
             Self(unsafe { _mm_min_ps(self.0, rhs.0) })
         {% elif is_wasm %}
-            Self(f32x4_pmin(self.0, rhs.0))
+            Self(f32x4_pmin(rhs.0, self.0))
         {% elif is_coresimd %}
             Self(self.0.simd_lt(rhs.0).select(self.0, rhs.0))
         {% elif is_neon %}
-            Self(unsafe { vminq_f32(self.0, rhs.0) })
+            Self(unsafe { vbslq_f32(vcltq_f32(self.0, rhs.0), self.0, rhs.0) })
         {% else %}
              unimplemented!()
         {% endif %}
@@ -885,8 +886,9 @@ impl {{ self_t }} {
     /// In other words this computes `[max(self.x, rhs.x), max(self.y, rhs.y), ..]`.
 {%- if is_float  %}
     /// 
-    /// NaN propogation does not follow IEEE 754-2008 semantics for maxNum and may differ on
-    /// different SIMD architectures.
+    /// `-0.0` and `+0.0` compare equal, so `rhs` is returned.
+    ///
+    /// NaN propagation does not follow IEEE 754-2008 semantics for maxNum.
 {%- endif %}
     #[inline]
     #[must_use]
@@ -900,11 +902,11 @@ impl {{ self_t }} {
         {% elif is_sse2 %}
             Self(unsafe { _mm_max_ps(self.0, rhs.0) })
         {% elif is_wasm %}
-            Self(f32x4_pmax(self.0, rhs.0))
+            Self(f32x4_pmax(rhs.0, self.0))
         {% elif is_coresimd %}
             Self(self.0.simd_gt(rhs.0).select(self.0, rhs.0))
         {% elif is_neon %}
-            Self(unsafe { vmaxq_f32(self.0, rhs.0) })
+            Self(unsafe { vbslq_f32(vcgtq_f32(self.0, rhs.0), self.0, rhs.0) })
         {% else %}
              unimplemented!()
         {% endif %}
@@ -915,8 +917,7 @@ impl {{ self_t }} {
     /// Each element in `min` must be less-or-equal to the corresponding element in `max`.
 {%- if is_float  %}
     /// 
-    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
-    /// different SIMD architectures.
+    /// NaN propagation does not follow IEEE 754-2008 semantics.
 {%- endif %}
     ///
     /// # Panics
@@ -935,8 +936,7 @@ impl {{ self_t }} {
     /// In other words this computes `min(x, y, ..)`.
 {%- if is_float  %}
     /// 
-    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
-    /// different SIMD architectures.
+    /// NaN propagation does not follow IEEE 754-2008 semantics for minNum.
 {%- endif %}
     #[inline]
     #[must_use]
@@ -946,56 +946,63 @@ impl {{ self_t }} {
             {%- if dim == 2 %}
                 min(self.x, self.y)
             {%- elif dim == 3 %}
-                min(self.x, min(self.y, self.z))
+                min(min(self.x, self.y), self.z)
             {%- elif dim == 4 %}
-                min(self.x, min(self.y, min(self.z, self.w)))
+                min(min(self.x, self.y), min(self.z, self.w))
             {% endif %}
         {% elif is_sse2 %}
             {% if dim == 3 %}
                 unsafe {
                     let v = self.0;
-                    let v = _mm_min_ps(v, _mm_shuffle_ps(v, v, 0b01_01_10_10));
                     let v = _mm_min_ps(v, _mm_shuffle_ps(v, v, 0b00_00_00_01));
+                    let v = _mm_min_ps(v, _mm_shuffle_ps(self.0, self.0, 0b00_00_00_10));
                     _mm_cvtss_f32(v)
                 }
             {% elif dim == 4 %}
                 unsafe {
                     let v = self.0;
-                    let v = _mm_min_ps(v, _mm_shuffle_ps(v, v, 0b00_00_11_10));
-                    let v = _mm_min_ps(v, _mm_shuffle_ps(v, v, 0b00_00_00_01));
+                    let v = _mm_min_ps(v, _mm_shuffle_ps(v, v, 0b10_11_00_01));
+                    let v = _mm_min_ps(v, _mm_shuffle_ps(v, v, 0b00_00_00_10));
                     _mm_cvtss_f32(v)
                 }
             {% endif %}
         {% elif is_wasm %}
             {% if dim == 3 %}
                 let v = self.0;
-                let v = f32x4_pmin(v, i32x4_shuffle::<2, 2, 1, 1>(v, v));
-                let v = f32x4_pmin(v, i32x4_shuffle::<1, 0, 0, 0>(v, v));
+                let v = f32x4_pmin(i32x4_shuffle::<1, 0, 0, 0>(v, v), v);
+                let v = f32x4_pmin(i32x4_shuffle::<2, 0, 0, 0>(self.0, self.0), v);
                 f32x4_extract_lane::<0>(v)
             {% elif dim == 4 %}
                 let v = self.0;
-                let v = f32x4_pmin(v, i32x4_shuffle::<2, 3, 0, 0>(v, v));
-                let v = f32x4_pmin(v, i32x4_shuffle::<1, 0, 0, 0>(v, v));
+                let v = f32x4_pmin(i32x4_shuffle::<1, 0, 3, 2>(v, v), v);
+                let v = f32x4_pmin(i32x4_shuffle::<2, 0, 0, 0>(v, v), v);
                 f32x4_extract_lane::<0>(v)
             {% endif %}
         {% elif is_coresimd %}
             let min = |a: {{ simd_t }}, b: {{ simd_t }}| a.simd_lt(b).select(a, b);
             {%- if dim == 3 %}
                 let v = self.0;
-                let v = min(v, simd_swizzle!(v, [2, 2, 1, 1]));
                 let v = min(v, simd_swizzle!(v, [1, 0, 0, 0]));
+                let v = min(v, simd_swizzle!(self.0, [2, 0, 0, 0]));
                 v[0]
             {%- elif dim == 4 %}
                 let v = self.0;
-                let v = min(v, simd_swizzle!(v, [2, 3, 0, 0]));
-                let v = min(v, simd_swizzle!(v, [1, 0, 0, 0]));
+                let v = min(v, simd_swizzle!(v, [1, 0, 3, 2]));
+                let v = min(v, simd_swizzle!(v, [2, 0, 0, 0]));
                 v[0]
             {% endif %}
         {% elif is_neon %}
-            {% if dim == 3 %}
-                self.x.min(self.y.min(self.z))
-            {% elif dim == 4 %}
-                unsafe { vminnmvq_f32(self.0) }
+            let min = |a: {{ simd_t }}, b: {{ simd_t }}| unsafe { vbslq_f32(vcltq_f32(a, b), a, b) };
+            {%- if dim == 3 %}
+                let v = self.0;
+                let v = min(v, unsafe { vrev64q_f32(v) });
+                let v = min(v, unsafe { vextq_f32(self.0, self.0, 2) });
+                unsafe { vgetq_lane_f32::<0>(v) }
+            {%- elif dim == 4 %}
+                let v = self.0;
+                let v = min(v, unsafe { vrev64q_f32(v) });
+                let v = min(v, unsafe { vextq_f32(v, v, 2) });
+                unsafe { vgetq_lane_f32::<0>(v) }
             {% endif %}
         {% else %}
              unimplemented!()
@@ -1007,8 +1014,7 @@ impl {{ self_t }} {
     /// In other words this computes `max(x, y, ..)`.
 {%- if is_float  %}
     /// 
-    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
-    /// different SIMD architectures.
+    /// NaN propagation does not follow IEEE 754-2008 semantics for maxNum.
 {%- endif %}
     #[inline]
     #[must_use]
@@ -1018,56 +1024,63 @@ impl {{ self_t }} {
             {%- if dim == 2 %}
                 max(self.x, self.y)
             {%- elif dim == 3 %}
-                max(self.x, max(self.y, self.z))
+                max(max(self.x, self.y), self.z)
             {%- elif dim == 4 %}
-                max(self.x, max(self.y, max(self.z, self.w)))
+                max(max(self.x, self.y), max(self.z, self.w))
             {% endif %}
         {% elif is_sse2 %}
             {% if dim == 3 %}
                 unsafe {
                     let v = self.0;
-                    let v = _mm_max_ps(v, _mm_shuffle_ps(v, v, 0b00_00_10_10));
                     let v = _mm_max_ps(v, _mm_shuffle_ps(v, v, 0b00_00_00_01));
+                    let v = _mm_max_ps(v, _mm_shuffle_ps(self.0, self.0, 0b00_00_00_10));
                     _mm_cvtss_f32(v)
                 }
             {% elif dim == 4 %}
                 unsafe {
                     let v = self.0;
-                    let v = _mm_max_ps(v, _mm_shuffle_ps(v, v, 0b00_00_11_10));
-                    let v = _mm_max_ps(v, _mm_shuffle_ps(v, v, 0b00_00_00_01));
+                    let v = _mm_max_ps(v, _mm_shuffle_ps(v, v, 0b10_11_00_01));
+                    let v = _mm_max_ps(v, _mm_shuffle_ps(v, v, 0b00_00_00_10));
                     _mm_cvtss_f32(v)
                 }
             {% endif %}
         {% elif is_wasm %}
             {% if dim == 3 %}
                 let v = self.0;
-                let v = f32x4_pmax(v, i32x4_shuffle::<2, 2, 0, 0>(v, v));
-                let v = f32x4_pmax(v, i32x4_shuffle::<1, 0, 0, 0>(v, v));
+                let v = f32x4_pmax(i32x4_shuffle::<1, 0, 0, 0>(v, v), v);
+                let v = f32x4_pmax(i32x4_shuffle::<2, 0, 0, 0>(self.0, self.0), v);
                 f32x4_extract_lane::<0>(v)
             {% elif dim == 4 %}
                 let v = self.0;
-                let v = f32x4_pmax(v, i32x4_shuffle::<2, 3, 0, 0>(v, v));
-                let v = f32x4_pmax(v, i32x4_shuffle::<1, 0, 0, 0>(v, v));
+                let v = f32x4_pmax(i32x4_shuffle::<1, 0, 3, 2>(v, v), v);
+                let v = f32x4_pmax(i32x4_shuffle::<2, 0, 0, 0>(v, v), v);
                 f32x4_extract_lane::<0>(v)
             {% endif %}
         {% elif is_coresimd %}
             let max = |a: {{ simd_t }}, b: {{ simd_t }}| a.simd_gt(b).select(a, b);
             {%- if dim == 3 %}
                 let v = self.0;
-                let v = max(v, simd_swizzle!(v, [2, 2, 0, 0]));
                 let v = max(v, simd_swizzle!(v, [1, 0, 0, 0]));
+                let v = max(v, simd_swizzle!(self.0, [2, 0, 0, 0]));
                 v[0]
             {%- elif dim == 4 %}
                 let v = self.0;
-                let v = max(v, simd_swizzle!(v, [2, 3, 0, 0]));
-                let v = max(v, simd_swizzle!(v, [1, 0, 0, 0]));
+                let v = max(v, simd_swizzle!(v, [1, 0, 3, 2]));
+                let v = max(v, simd_swizzle!(v, [2, 0, 0, 0]));
                 v[0]
             {% endif %}
         {% elif is_neon %}
-            {% if dim == 3 %}
-                self.x.max(self.y.max(self.z))
-            {% elif dim == 4 %}
-                unsafe { vmaxnmvq_f32(self.0) }
+            let max = |a: {{ simd_t }}, b: {{ simd_t }}| unsafe { vbslq_f32(vcgtq_f32(a, b), a, b) };
+            {%- if dim == 3 %}
+                let v = self.0;
+                let v = max(v, unsafe { vrev64q_f32(v) });
+                let v = max(v, unsafe { vextq_f32(self.0, self.0, 2) });
+                unsafe { vgetq_lane_f32::<0>(v) }
+            {%- elif dim == 4 %}
+                let v = self.0;
+                let v = max(v, unsafe { vrev64q_f32(v) });
+                let v = max(v, unsafe { vextq_f32(v, v, 2) });
+                unsafe { vgetq_lane_f32::<0>(v) }
             {% endif %}
         {% else %}
              unimplemented!()

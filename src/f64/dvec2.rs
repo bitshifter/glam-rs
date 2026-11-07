@@ -207,8 +207,9 @@ impl DVec2 {
     ///
     /// In other words this computes `[min(x, rhs.x), min(self.y, rhs.y), ..]`.
     ///
-    /// NaN propogation does not follow IEEE 754-2008 semantics for minNum and may differ on
-    /// different SIMD architectures.
+    /// `-0.0` and `+0.0` compare equal, so `rhs` is returned.
+    ///
+    /// NaN propagation does not follow IEEE 754-2008 semantics for minNum.
     #[inline]
     #[must_use]
     pub fn min(self, rhs: Self) -> Self {
@@ -222,8 +223,9 @@ impl DVec2 {
     ///
     /// In other words this computes `[max(self.x, rhs.x), max(self.y, rhs.y), ..]`.
     ///
-    /// NaN propogation does not follow IEEE 754-2008 semantics for maxNum and may differ on
-    /// different SIMD architectures.
+    /// `-0.0` and `+0.0` compare equal, so `rhs` is returned.
+    ///
+    /// NaN propagation does not follow IEEE 754-2008 semantics for maxNum.
     #[inline]
     #[must_use]
     pub fn max(self, rhs: Self) -> Self {
@@ -237,8 +239,7 @@ impl DVec2 {
     ///
     /// Each element in `min` must be less-or-equal to the corresponding element in `max`.
     ///
-    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
-    /// different SIMD architectures.
+    /// NaN propagation does not follow IEEE 754-2008 semantics.
     ///
     /// # Panics
     ///
@@ -255,8 +256,7 @@ impl DVec2 {
     ///
     /// In other words this computes `min(x, y, ..)`.
     ///
-    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
-    /// different SIMD architectures.
+    /// NaN propagation does not follow IEEE 754-2008 semantics for minNum.
     #[inline]
     #[must_use]
     pub fn min_element(self) -> f64 {
@@ -268,8 +268,7 @@ impl DVec2 {
     ///
     /// In other words this computes `max(x, y, ..)`.
     ///
-    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
-    /// different SIMD architectures.
+    /// NaN propagation does not follow IEEE 754-2008 semantics for maxNum.
     #[inline]
     #[must_use]
     pub fn max_element(self) -> f64 {

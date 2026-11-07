@@ -1,14 +1,29 @@
 name: Signed-zero determinism
 
-# Regression guard for scalar-math signed-zero selection.
+# Regression guard for signed-zero selection results.
+#
+# `min`, `max`, `clamp` and friends must return the right-hand operand when the
+# values compare equal, including `+0.0` and `-0.0`, on every implementation.
+# The scalar implementation gets this from its comparisons, but the architected
+# min/max instructions disagree about the sign of zero, so the `neon` and
+# `wasm` implementations select explicitly.
 #
 # LLVM issue #93414 caused fcmp+select to be folded to minnum/maxnum, letting
 # AArch64 FMINNM/FMAXNM change the sign of zero results. It was fixed in LLVM
 # 23 by https://github.com/llvm/llvm-project/pull/210077 and shipped in Rust
 # 1.99.0.
 #
-# This runs weekly and on demand rather than on every PR. It also runs when
-# the test or this workflow changes.
+# The compiler only performs that fold when it optimizes the code. A debug
+# build keeps the comparisons and cannot catch a regression, so this workflow is
+# the only place the tests run with `--release`: default features and
+# `scalar-math,libm` on x86-64 and AArch64, on stable and beta. The `CI`
+# workflow runs the test suite unoptimized. This one runs weekly and on demand
+# rather than on every PR so that the optimized builds stay off the critical
+# path.
+#
+# The assertions live in their own test file so that these runs build one small
+# `--test signed_zero` binary rather than the three large `tests/vec{2,3,4}.rs`
+# binaries.
 on:
   workflow_dispatch:
   schedule:
@@ -17,11 +32,13 @@ on:
   push:
     paths:
       - ".github/workflows/signed-zero.yml"
-      - "tests/scalar_math_signed_zero.rs"
+      - "src/**"
+      - "tests/signed_zero.rs"
   pull_request:
     paths:
       - ".github/workflows/signed-zero.yml"
-      - "tests/scalar_math_signed_zero.rs"
+      - "src/**"
+      - "tests/signed_zero.rs"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -34,17 +51,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # x86-64 control: the scalar comparison semantics are preserved.
+          # x86-64 SSE2 control: the scalar comparison semantics are preserved.
           - os: ubuntu-latest
             toolchain: stable
-          # AArch64 is where the LLVM fold used FMINNM/FMAXNM.
+          # AArch64 NEON is where the LLVM fold used FMINNM/FMAXNM.
           - os: ubuntu-24.04-arm
             toolchain: stable
           - os: ubuntu-24.04-arm
             toolchain: beta
-          - os: macos-14
+          # Apple Silicon: `macos-latest` resolves to the arm64 image.
+          - os: macos-latest
             toolchain: stable
-          - os: macos-14
+          - os: macos-latest
             toolchain: beta
     runs-on: ${{ matrix.os }}
     steps:
@@ -56,7 +74,44 @@ jobs:
 
       - run: rustup toolchain install "${{ matrix.toolchain }}" --profile minimal
       - run: rustc +"${{ matrix.toolchain }}" -vV
+
+      # Default features exercise the native SIMD backend of the runner.
+      - run: >-
+          cargo +"${{ matrix.toolchain }}" test --release
+          --test signed_zero
+
+      # The non-determinism was reported for `scalar-math` + `libm`.
       - run: >-
           cargo +"${{ matrix.toolchain }}" test --release
           --features scalar-math,libm
-          --test scalar_math_signed_zero
+          --test signed_zero
+
+  wasm32:
+    name: Signed zero (wasm32 Node)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install wasm-pack
+        uses: jetli/wasm-pack-action@v0.4.0
+
+      # `+simd128` selects the wasm SIMD backend, which is the one that relies on
+      # the `pmin`/`pmax` operand order.
+      - name: wasm SIMD backend
+        run: >-
+          wasm-pack test --release --node
+          -- --test signed_zero
+        env:
+          RUSTFLAGS: -Ctarget-feature=+simd128
+
+      - name: wasm scalar backend
+        run: >-
+          wasm-pack test --release --node
+          -- --test signed_zero
+          --features scalar-math,libm
+        env:
+          RUSTFLAGS: -Ctarget-feature=+simd128

@@ -247,32 +247,33 @@ impl Vec4 {
     ///
     /// In other words this computes `[min(x, rhs.x), min(self.y, rhs.y), ..]`.
     ///
-    /// NaN propogation does not follow IEEE 754-2008 semantics for minNum and may differ on
-    /// different SIMD architectures.
+    /// `-0.0` and `+0.0` compare equal, so `rhs` is returned.
+    ///
+    /// NaN propagation does not follow IEEE 754-2008 semantics for minNum.
     #[inline]
     #[must_use]
     pub fn min(self, rhs: Self) -> Self {
-        Self(f32x4_pmin(self.0, rhs.0))
+        Self(f32x4_pmin(rhs.0, self.0))
     }
 
     /// Returns a vector containing the maximum values for each element of `self` and `rhs`.
     ///
     /// In other words this computes `[max(self.x, rhs.x), max(self.y, rhs.y), ..]`.
     ///
-    /// NaN propogation does not follow IEEE 754-2008 semantics for maxNum and may differ on
-    /// different SIMD architectures.
+    /// `-0.0` and `+0.0` compare equal, so `rhs` is returned.
+    ///
+    /// NaN propagation does not follow IEEE 754-2008 semantics for maxNum.
     #[inline]
     #[must_use]
     pub fn max(self, rhs: Self) -> Self {
-        Self(f32x4_pmax(self.0, rhs.0))
+        Self(f32x4_pmax(rhs.0, self.0))
     }
 
     /// Component-wise clamping of values, similar to [`f32::clamp`].
     ///
     /// Each element in `min` must be less-or-equal to the corresponding element in `max`.
     ///
-    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
-    /// different SIMD architectures.
+    /// NaN propagation does not follow IEEE 754-2008 semantics.
     ///
     /// # Panics
     ///
@@ -289,14 +290,13 @@ impl Vec4 {
     ///
     /// In other words this computes `min(x, y, ..)`.
     ///
-    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
-    /// different SIMD architectures.
+    /// NaN propagation does not follow IEEE 754-2008 semantics for minNum.
     #[inline]
     #[must_use]
     pub fn min_element(self) -> f32 {
         let v = self.0;
-        let v = f32x4_pmin(v, i32x4_shuffle::<2, 3, 0, 0>(v, v));
-        let v = f32x4_pmin(v, i32x4_shuffle::<1, 0, 0, 0>(v, v));
+        let v = f32x4_pmin(i32x4_shuffle::<1, 0, 3, 2>(v, v), v);
+        let v = f32x4_pmin(i32x4_shuffle::<2, 0, 0, 0>(v, v), v);
         f32x4_extract_lane::<0>(v)
     }
 
@@ -304,14 +304,13 @@ impl Vec4 {
     ///
     /// In other words this computes `max(x, y, ..)`.
     ///
-    /// NaN propogation does not follow IEEE 754-2008 semantics and may differ on
-    /// different SIMD architectures.
+    /// NaN propagation does not follow IEEE 754-2008 semantics for maxNum.
     #[inline]
     #[must_use]
     pub fn max_element(self) -> f32 {
         let v = self.0;
-        let v = f32x4_pmax(v, i32x4_shuffle::<2, 3, 0, 0>(v, v));
-        let v = f32x4_pmax(v, i32x4_shuffle::<1, 0, 0, 0>(v, v));
+        let v = f32x4_pmax(i32x4_shuffle::<1, 0, 3, 2>(v, v), v);
+        let v = f32x4_pmax(i32x4_shuffle::<2, 0, 0, 0>(v, v), v);
         f32x4_extract_lane::<0>(v)
     }
 
