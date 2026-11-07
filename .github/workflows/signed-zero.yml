@@ -59,9 +59,10 @@ jobs:
             toolchain: stable
           - os: ubuntu-24.04-arm
             toolchain: beta
-          - os: macos-14
+          # Apple Silicon: `macos-latest` resolves to the arm64 image.
+          - os: macos-latest
             toolchain: stable
-          - os: macos-14
+          - os: macos-latest
             toolchain: beta
     runs-on: ${{ matrix.os }}
     steps:
