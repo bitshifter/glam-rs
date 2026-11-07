@@ -1141,6 +1141,21 @@ macro_rules! impl_vec2_float_tests {
             should_glam_assert!({ $vec2::ONE.reject_from_normalized($vec2::ONE) });
         });
 
+        glam_test!(test_min_max_mixed_signs, {
+            // `test_min_max` only uses non-negative integers; cover negative and
+            // infinite operands directly.
+            let a = $vec2::new(-3.0, 4.0);
+            let b = $vec2::new(-8.0, $t::NEG_INFINITY);
+            assert_eq!((-8.0 as $t, $t::NEG_INFINITY), a.min(b).into());
+            assert_eq!((-8.0 as $t, $t::NEG_INFINITY), b.min(a).into());
+            assert_eq!((-3.0 as $t, 4.0 as $t), a.max(b).into());
+            assert_eq!((-3.0 as $t, 4.0 as $t), b.max(a).into());
+
+            let v = $vec2::new(-2.0, 3.0);
+            assert_eq!(-2.0 as $t, v.min_element());
+            assert_eq!(3.0 as $t, v.max_element());
+        });
+
         glam_test!(test_min_max_nan, {
             // The right-hand operand is returned if either value is NaN, on every
             // implementation.
@@ -1575,6 +1590,13 @@ macro_rules! impl_vec2_float_tests {
             assert_approx_eq!(
                 $vec2::new(1.0, 2.0).saturate(),
                 $vec2::new((1.0 as $t).saturate(), (2.0 as $t).saturate(),),
+                1e-5
+            );
+
+            // Both bounds, not just the upper one.
+            assert_approx_eq!(
+                $vec2::new(-0.5, 1.5).saturate(),
+                $vec2::new(0.0 as $t, 1.0 as $t),
                 1e-5
             );
         });
