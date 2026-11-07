@@ -32,10 +32,12 @@ on:
   push:
     paths:
       - ".github/workflows/signed-zero.yml"
+      - "src/**"
       - "tests/signed_zero.rs"
   pull_request:
     paths:
       - ".github/workflows/signed-zero.yml"
+      - "src/**"
       - "tests/signed_zero.rs"
 
 concurrency:
@@ -82,3 +84,33 @@ jobs:
           cargo +"${{ matrix.toolchain }}" test --release
           --features scalar-math,libm
           --test signed_zero
+
+  wasm32:
+    name: Signed zero (wasm32 Node)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install wasm-pack
+        uses: jetli/wasm-pack-action@v0.4.0
+
+      # `+simd128` selects the wasm SIMD backend, which is the one that relies on
+      # the `pmin`/`pmax` operand order.
+      - name: wasm SIMD backend
+        run: >-
+          wasm-pack test --release --node
+          -- --test signed_zero
+        env:
+          RUSTFLAGS: -Ctarget-feature=+simd128
+
+      - name: wasm scalar backend
+        run: >-
+          wasm-pack test --release --node
+          -- --test signed_zero
+          --features scalar-math,libm
+        env:
+          RUSTFLAGS: -Ctarget-feature=+simd128

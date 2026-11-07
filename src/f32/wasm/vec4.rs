@@ -247,9 +247,9 @@ impl Vec4 {
     ///
     /// In other words this computes `[min(x, rhs.x), min(self.y, rhs.y), ..]`.
     ///
-    /// `-0.0` and `+0.0` compare equal, as required by IEEE 754.
+    /// `-0.0` and `+0.0` compare equal, so `rhs` is returned.
     ///
-    /// NaN propogation does not follow IEEE 754-2008 semantics for minNum.
+    /// NaN propagation does not follow IEEE 754-2008 semantics for minNum.
     #[inline]
     #[must_use]
     pub fn min(self, rhs: Self) -> Self {
@@ -260,9 +260,9 @@ impl Vec4 {
     ///
     /// In other words this computes `[max(self.x, rhs.x), max(self.y, rhs.y), ..]`.
     ///
-    /// `-0.0` and `+0.0` compare equal, as required by IEEE 754.
+    /// `-0.0` and `+0.0` compare equal, so `rhs` is returned.
     ///
-    /// NaN propogation does not follow IEEE 754-2008 semantics for maxNum.
+    /// NaN propagation does not follow IEEE 754-2008 semantics for maxNum.
     #[inline]
     #[must_use]
     pub fn max(self, rhs: Self) -> Self {
@@ -273,7 +273,7 @@ impl Vec4 {
     ///
     /// Each element in `min` must be less-or-equal to the corresponding element in `max`.
     ///
-    /// NaN propogation does not follow IEEE 754-2008 semantics.
+    /// NaN propagation does not follow IEEE 754-2008 semantics.
     ///
     /// # Panics
     ///
@@ -290,7 +290,7 @@ impl Vec4 {
     ///
     /// In other words this computes `min(x, y, ..)`.
     ///
-    /// NaN propogation does not follow IEEE 754-2008 semantics for minNum.
+    /// NaN propagation does not follow IEEE 754-2008 semantics for minNum.
     #[inline]
     #[must_use]
     pub fn min_element(self) -> f32 {
@@ -304,7 +304,7 @@ impl Vec4 {
     ///
     /// In other words this computes `max(x, y, ..)`.
     ///
-    /// NaN propogation does not follow IEEE 754-2008 semantics for maxNum.
+    /// NaN propagation does not follow IEEE 754-2008 semantics for maxNum.
     #[inline]
     #[must_use]
     pub fn max_element(self) -> f32 {

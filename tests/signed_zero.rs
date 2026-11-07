@@ -23,14 +23,19 @@
 //! For example, with Rust 1.96.0 on AArch64 `Vec4::splat(-0.0).min(Vec4::ZERO)`
 //! returned `-0.0` instead of `+0.0`.
 //!
-//! For the same reason the `neon` and `wasm` implementations of `min`, `max`,
+//! For the same reason the `neon` implementations of `min`, `max`,
 //! `min_element` and `max_element` select with a comparison and a bit select
-//! rather than using `FMIN`/`FMAX`/`FMINNM`/`FMAXNM` or `pmin`/`pmax`. These
-//! tests pin the result of every implementation so that a future compiler or
-//! intrinsic change is visible rather than silently changing a sign bit. They
-//! are most meaningful in release builds (`cargo test --release`), where the
-//! compiler can fold the scalar comparisons into min/max instructions; an
-//! unoptimized build always follows the source comparisons.
+//! rather than using `FMIN`/`FMAX`/`FMINNM`/`FMAXNM`, and the `wasm`
+//! implementations pass the operands to `pmin`/`pmax` in the opposite order,
+//! because those instructions return their first operand when the values
+//! compare equal.
+//!
+//! These tests pin the result of every implementation so that a future
+//! compiler or intrinsic change is visible rather than silently changing a
+//! sign bit. They are most meaningful in release builds (`cargo test
+//! --release`), where the compiler can fold the scalar comparisons into
+//! min/max instructions; an unoptimized build always follows the source
+//! comparisons.
 
 #[macro_use]
 mod support;

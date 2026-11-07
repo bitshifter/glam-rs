@@ -1349,6 +1349,13 @@ macro_rules! impl_vec3_float_tests {
             let v = $vec3::new(3.0, 2.0, $t::NAN);
             assert!(v.min_element().is_nan());
             assert!(v.max_element().is_nan());
+
+            // The reduction order is not part of the contract, but it decides
+            // whether a NaN survives. Pinning it catches a backend that starts
+            // reducing in a different order.
+            let v = $vec3::new($t::NAN, 1.0, 2.0);
+            assert_eq!(1.0, v.min_element());
+            assert_eq!(2.0, v.max_element());
         });
 
         glam_test!(test_clamp_nan, {

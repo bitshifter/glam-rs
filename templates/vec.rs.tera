@@ -855,9 +855,9 @@ impl {{ self_t }} {
     /// In other words this computes `[min(x, rhs.x), min(self.y, rhs.y), ..]`.
 {%- if is_float  %}
     /// 
-    /// `-0.0` and `+0.0` compare equal, as required by IEEE 754.
+    /// `-0.0` and `+0.0` compare equal, so `rhs` is returned.
     ///
-    /// NaN propogation does not follow IEEE 754-2008 semantics for minNum.
+    /// NaN propagation does not follow IEEE 754-2008 semantics for minNum.
 {%- endif %}
     #[inline]
     #[must_use]
@@ -886,9 +886,9 @@ impl {{ self_t }} {
     /// In other words this computes `[max(self.x, rhs.x), max(self.y, rhs.y), ..]`.
 {%- if is_float  %}
     /// 
-    /// `-0.0` and `+0.0` compare equal, as required by IEEE 754.
+    /// `-0.0` and `+0.0` compare equal, so `rhs` is returned.
     ///
-    /// NaN propogation does not follow IEEE 754-2008 semantics for maxNum.
+    /// NaN propagation does not follow IEEE 754-2008 semantics for maxNum.
 {%- endif %}
     #[inline]
     #[must_use]
@@ -917,7 +917,7 @@ impl {{ self_t }} {
     /// Each element in `min` must be less-or-equal to the corresponding element in `max`.
 {%- if is_float  %}
     /// 
-    /// NaN propogation does not follow IEEE 754-2008 semantics.
+    /// NaN propagation does not follow IEEE 754-2008 semantics.
 {%- endif %}
     ///
     /// # Panics
@@ -936,7 +936,7 @@ impl {{ self_t }} {
     /// In other words this computes `min(x, y, ..)`.
 {%- if is_float  %}
     /// 
-    /// NaN propogation does not follow IEEE 754-2008 semantics for minNum.
+    /// NaN propagation does not follow IEEE 754-2008 semantics for minNum.
 {%- endif %}
     #[inline]
     #[must_use]
@@ -1014,7 +1014,7 @@ impl {{ self_t }} {
     /// In other words this computes `max(x, y, ..)`.
 {%- if is_float  %}
     /// 
-    /// NaN propogation does not follow IEEE 754-2008 semantics for maxNum.
+    /// NaN propagation does not follow IEEE 754-2008 semantics for maxNum.
 {%- endif %}
     #[inline]
     #[must_use]
