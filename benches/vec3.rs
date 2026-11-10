@@ -103,6 +103,30 @@ bench_func!(
     from => random_vec3
 );
 
+#[inline]
+fn vec3_try_normalize(v: Vec3) -> Option<Vec3> {
+    v.try_normalize()
+}
+
+bench_func!(
+    vec3_try_normalize_bench,
+    "vec3 try_normalize",
+    op => vec3_try_normalize,
+    from => random_vec3
+);
+
+#[inline]
+fn vec3_normalize_and_length(v: Vec3) -> (Vec3, f32) {
+    v.normalize_and_length()
+}
+
+bench_func!(
+    vec3_normalize_and_length_bench,
+    "vec3 normalize_and_length",
+    op => vec3_normalize_and_length,
+    from => random_vec3
+);
+
 // ---
 
 #[inline(always)]
@@ -216,6 +240,8 @@ criterion_group!(
     vec3_normalize_bench,
     vec3_normalize_or_bench,
     vec3_normalize_or_zero_bench,
+    vec3_try_normalize_bench,
+    vec3_normalize_and_length_bench,
     vec3_select,
     vec3_to_array_fields,
     vec3_to_array_into,
